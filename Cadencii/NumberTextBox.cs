@@ -15,6 +15,7 @@
 package org.kbinani.cadencii;
 
 import java.awt.*;
+import javax.swing.event.DocumentEvent;
 import org.kbinani.*;
 import org.kbinani.windows.forms.*;
 #else
@@ -25,6 +26,7 @@ using org.kbinani.java.awt;
 using org.kbinani.windows.forms;
 
 namespace org.kbinani.cadencii {
+    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -66,14 +68,27 @@ namespace org.kbinani.cadencii {
             m_value_type = value;
         }
 
+#if JAVA
+        public void update( DocumentEvent e ){
+            super.updates( e );
+            validateText();
+        }
+#endif
+
 #if !JAVA
         protected override void OnTextChanged( EventArgs e ) {
             base.OnTextChanged( e );
-            bool valid = false;
+            validateText();
+        }
+#endif
+
+        private void validateText() {
+            boolean valid = false;
+            String text = getText();
             if ( m_value_type == ValueType.Double ) {
                 double dou;
                 try {
-                    dou = PortUtil.parseDouble( base.Text );
+                    dou = PortUtil.parseDouble( text );
                     valid = true;
                 } catch ( Exception ex ) {
                     valid = false;
@@ -81,7 +96,7 @@ namespace org.kbinani.cadencii {
             } else if ( m_value_type == ValueType.Float ) {
                 float flo;
                 try {
-                    flo = PortUtil.parseFloat( base.Text );
+                    flo = PortUtil.parseFloat( text );
                     valid = true;
                 } catch ( Exception ex ) {
                     valid = false;
@@ -89,21 +104,21 @@ namespace org.kbinani.cadencii {
             } else if ( m_value_type == ValueType.Integer ) {
                 int inte;
                 try {
-                    inte = PortUtil.parseInt( base.Text );
+                    inte = PortUtil.parseInt( text );
                     valid = true;
                 } catch ( Exception ex ) {
                     valid = false;
                 }
             }
             if ( valid ) {
-                this.setForeground( m_textcolor_normal );
-                this.setBackground( m_backcolor_normal );
+                setForeground( m_textcolor_normal );
+                setBackground( m_backcolor_normal );
             } else {
-                this.setForeground( m_textcolor_invalid );
-                this.setBackground( m_backcolor_invalid );
+                setForeground( m_textcolor_invalid );
+                setBackground( m_backcolor_invalid );
             }
         }
-#endif
+
     }
 
 #if !JAVA

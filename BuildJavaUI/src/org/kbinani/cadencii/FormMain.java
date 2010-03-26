@@ -30,6 +30,7 @@ import org.kbinani.windows.forms.BToolBar;
 import org.kbinani.windows.forms.BVScrollBar;
 import javax.swing.WindowConstants;
 import java.awt.Color;
+import java.awt.Insets;
 
 //SECTION-END-IMPORT
 public class FormMain extends BForm {
@@ -347,7 +348,8 @@ public class FormMain extends BForm {
     private JLabel jLabel = null;
 	private BPictureBox pictOverview = null;
     private BMenuItem menuHiddenPlayFromStartMarker = null;
-
+    private BPanel panelZooMooz = null;
+    private JPanel panelOverviewRight = null;
     //SECTION-END-FIELD
     public FormMain( String vsq_file ) {
         super();
@@ -551,6 +553,62 @@ public class FormMain extends BForm {
             menuHiddenPlayFromStartMarker.setText("Play From Start Marker");
         }
         return menuHiddenPlayFromStartMarker;
+    }
+
+    /**
+     * This method initializes jPanel2	
+     * 	
+     * @return javax.swing.JPanel	
+     */
+    private JPanel getJPanel22() {
+        if (panelZooMooz == null) {
+            GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
+            gridBagConstraints2.gridx = 2;
+            gridBagConstraints2.weighty = 1.0D;
+            gridBagConstraints2.gridy = 1;
+            GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
+            gridBagConstraints1.gridx = 2;
+            gridBagConstraints1.weighty = 1.0D;
+            gridBagConstraints1.gridy = 0;
+            GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
+            gridBagConstraints3.gridheight = 2;
+            gridBagConstraints3.gridy = 0;
+            gridBagConstraints3.gridx = 1;
+            GridBagConstraints gridBagConstraints = new GridBagConstraints();
+            gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.gridy = 0;
+            gridBagConstraints.weighty = 1.0D;
+            gridBagConstraints.gridheight = 2;
+            panelZooMooz = new BPanel();
+            panelZooMooz.setLayout(new GridBagLayout());
+            panelZooMooz.add(getJButton(), gridBagConstraints);
+            panelZooMooz.add(getBtnZoom(), gridBagConstraints3);
+            panelZooMooz.add(getBtnLeft1(), gridBagConstraints1);
+            panelZooMooz.add(getBtnRight1(), gridBagConstraints2);
+        }
+        return panelZooMooz;
+    }
+
+    /**
+     * This method initializes jPanel4	
+     * 	
+     * @return javax.swing.JPanel	
+     */
+    private JPanel getJPanel42() {
+        if (panelOverviewRight == null) {
+            GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
+            gridBagConstraints5.gridx = 0;
+            gridBagConstraints5.gridy = 1;
+            GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
+            gridBagConstraints4.gridx = 0;
+            gridBagConstraints4.gridy = 0;
+            panelOverviewRight = new JPanel();
+            panelOverviewRight.setLayout(new GridBagLayout());
+            panelOverviewRight.add(getBtnLeft2(), gridBagConstraints4);
+            panelOverviewRight.add(getBtnRight2(), gridBagConstraints5);
+        }
+        return panelOverviewRight;
     }
 
     public static void main( String[] args ){
@@ -2400,7 +2458,8 @@ public class FormMain extends BForm {
     private BButton getStripBtnFileNew() {
         if (stripBtnFileNew == null) {
             stripBtnFileNew = new BButton();
-            stripBtnFileNew.setText("New");
+            stripBtnFileNew.setText("");
+            stripBtnFileNew.setPreferredSize(new Dimension(23, 22));
         }
         return stripBtnFileNew;
     }
@@ -2413,7 +2472,8 @@ public class FormMain extends BForm {
     private BButton getStripBtnFileOpen() {
         if (stripBtnFileOpen == null) {
             stripBtnFileOpen = new BButton();
-            stripBtnFileOpen.setText("Open");
+            stripBtnFileOpen.setText("");
+            stripBtnFileOpen.setPreferredSize(new Dimension(23, 22));
         }
         return stripBtnFileOpen;
     }
@@ -2426,7 +2486,8 @@ public class FormMain extends BForm {
     private BButton getStripBtnFileSave() {
         if (stripBtnFileSave == null) {
             stripBtnFileSave = new BButton();
-            stripBtnFileSave.setText("Save");
+            stripBtnFileSave.setText("");
+            stripBtnFileSave.setPreferredSize(new Dimension(23, 22));
         }
         return stripBtnFileSave;
     }
@@ -2439,7 +2500,8 @@ public class FormMain extends BForm {
     private BButton getStripBtnCut() {
         if (stripBtnCut == null) {
             stripBtnCut = new BButton();
-            stripBtnCut.setText("Cut");
+            stripBtnCut.setText("");
+            stripBtnCut.setPreferredSize(new Dimension(23, 22));
         }
         return stripBtnCut;
     }
@@ -2452,7 +2514,8 @@ public class FormMain extends BForm {
     private BButton getStripBtnCopy() {
         if (stripBtnCopy == null) {
             stripBtnCopy = new BButton();
-            stripBtnCopy.setText("Copy");
+            stripBtnCopy.setText("");
+            stripBtnCopy.setPreferredSize(new Dimension(23, 22));
         }
         return stripBtnCopy;
     }
@@ -2465,7 +2528,8 @@ public class FormMain extends BForm {
     private BButton getStripBtnPaste() {
         if (stripBtnPaste == null) {
             stripBtnPaste = new BButton();
-            stripBtnPaste.setText("Paste");
+            stripBtnPaste.setText("");
+            stripBtnPaste.setPreferredSize(new Dimension(23, 22));
         }
         return stripBtnPaste;
     }
@@ -2478,7 +2542,8 @@ public class FormMain extends BForm {
     private BButton getStripBtnUndo() {
         if (stripBtnUndo == null) {
             stripBtnUndo = new BButton();
-            stripBtnUndo.setText("Undo");
+            stripBtnUndo.setText("");
+            stripBtnUndo.setPreferredSize(new Dimension(23, 22));
         }
         return stripBtnUndo;
     }
@@ -2491,7 +2556,8 @@ public class FormMain extends BForm {
     private BButton getStripBtnRedo() {
         if (stripBtnRedo == null) {
             stripBtnRedo = new BButton();
-            stripBtnRedo.setText("Redo");
+            stripBtnRedo.setText("");
+            stripBtnRedo.setPreferredSize(new Dimension(23, 22));
         }
         return stripBtnRedo;
     }
@@ -2526,7 +2592,9 @@ public class FormMain extends BForm {
     private BButton getStripBtnMoveTop() {
         if (stripBtnMoveTop == null) {
             stripBtnMoveTop = new BButton();
-            stripBtnMoveTop.setText("|<");
+            stripBtnMoveTop.setText("");
+            stripBtnMoveTop.setSize(new Dimension(16, 16));
+            stripBtnMoveTop.setPreferredSize(new Dimension(23, 22));
         }
         return stripBtnMoveTop;
     }
@@ -2564,7 +2632,8 @@ public class FormMain extends BForm {
     private BButton getStripBtnRewind() {
         if (stripBtnRewind == null) {
             stripBtnRewind = new BButton();
-            stripBtnRewind.setText("<<");
+            stripBtnRewind.setText("");
+            stripBtnRewind.setPreferredSize(new Dimension(23, 22));
         }
         return stripBtnRewind;
     }
@@ -2577,7 +2646,8 @@ public class FormMain extends BForm {
     private BButton getStripBtnForward() {
         if (stripBtnForward == null) {
             stripBtnForward = new BButton();
-            stripBtnForward.setText(">>");
+            stripBtnForward.setText("");
+            stripBtnForward.setPreferredSize(new Dimension(23, 22));
         }
         return stripBtnForward;
     }
@@ -2590,7 +2660,8 @@ public class FormMain extends BForm {
     private BButton getStripBtnMoveEnd() {
         if (stripBtnMoveEnd == null) {
             stripBtnMoveEnd = new BButton();
-            stripBtnMoveEnd.setText(">|");
+            stripBtnMoveEnd.setText("");
+            stripBtnMoveEnd.setPreferredSize(new Dimension(23, 22));
         }
         return stripBtnMoveEnd;
     }
@@ -2603,7 +2674,8 @@ public class FormMain extends BForm {
     private BButton getStripBtnPlay() {
         if (stripBtnPlay == null) {
             stripBtnPlay = new BButton();
-            stripBtnPlay.setText(">");
+            stripBtnPlay.setText("");
+            stripBtnPlay.setPreferredSize(new Dimension(23, 22));
         }
         return stripBtnPlay;
     }
@@ -2616,7 +2688,8 @@ public class FormMain extends BForm {
     private BButton getStripBtnStop() {
         if (stripBtnStop == null) {
             stripBtnStop = new BButton();
-            stripBtnStop.setText("[  ]");
+            stripBtnStop.setText("");
+            stripBtnStop.setPreferredSize(new Dimension(23, 22));
         }
         return stripBtnStop;
     }
@@ -2629,7 +2702,8 @@ public class FormMain extends BForm {
     private BToggleButton getStripBtnScroll() {
         if (stripBtnScroll == null) {
             stripBtnScroll = new BToggleButton();
-            stripBtnScroll.setText("Scroll");
+            stripBtnScroll.setText("");
+            stripBtnScroll.setPreferredSize(new Dimension(23, 22));
         }
         return stripBtnScroll;
     }
@@ -2642,7 +2716,8 @@ public class FormMain extends BForm {
     private BToggleButton getStripBtnLoop() {
         if (stripBtnLoop == null) {
             stripBtnLoop = new BToggleButton();
-            stripBtnLoop.setText("Loop");
+            stripBtnLoop.setText("");
+            stripBtnLoop.setPreferredSize(new Dimension(23, 22));
         }
         return stripBtnLoop;
     }
@@ -3861,46 +3936,24 @@ public class FormMain extends BForm {
      */
     private BPanel getPanel3() {
         if (panel3 == null) {
+            GridBagConstraints gridBagConstraints210 = new GridBagConstraints();
+            gridBagConstraints210.gridx = 2;
+            gridBagConstraints210.gridy = 0;
+            GridBagConstraints gridBagConstraints110 = new GridBagConstraints();
+            gridBagConstraints110.gridx = 0;
+            gridBagConstraints110.gridy = 0;
             GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
-            gridBagConstraints6.gridx = 3;
+            gridBagConstraints6.gridx = 1;
             gridBagConstraints6.weightx = 1.0D;
             gridBagConstraints6.gridheight = 2;
             gridBagConstraints6.weighty = 1.0D;
             gridBagConstraints6.fill = GridBagConstraints.BOTH;
             gridBagConstraints6.gridy = 0;
-            GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
-            gridBagConstraints5.gridx = 4;
-            gridBagConstraints5.gridy = 1;
-            GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
-            gridBagConstraints4.gridx = 4;
-            gridBagConstraints4.gridy = 0;
-            GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
-            gridBagConstraints3.gridx = 1;
-            gridBagConstraints3.gridheight = 2;
-            gridBagConstraints3.gridy = 0;
-            GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
-            gridBagConstraints2.gridx = 2;
-            gridBagConstraints2.weighty = 1.0D;
-            gridBagConstraints2.gridy = 1;
-            GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-            gridBagConstraints1.gridx = 2;
-            gridBagConstraints1.weighty = 1.0D;
-            gridBagConstraints1.gridy = 0;
-            GridBagConstraints gridBagConstraints = new GridBagConstraints();
-            gridBagConstraints.gridx = 0;
-            gridBagConstraints.gridheight = 2;
-            gridBagConstraints.weighty = 1.0D;
-            gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-            gridBagConstraints.gridy = 0;
             panel3 = new BPanel();
             panel3.setLayout(new GridBagLayout());
-            panel3.add(getJButton(), gridBagConstraints);
-            panel3.add(getBtnLeft1(), gridBagConstraints1);
-            panel3.add(getBtnRight1(), gridBagConstraints2);
-            panel3.add(getBtnZoom(), gridBagConstraints3);
-            panel3.add(getBtnLeft2(), gridBagConstraints4);
-            panel3.add(getBtnRight2(), gridBagConstraints5);
+            panel3.add(getJPanel22(), gridBagConstraints110);
             panel3.add(getPanelOverview(), gridBagConstraints6);
+            panel3.add(getJPanel42(), gridBagConstraints210);
         }
         return panel3;
     }
@@ -3913,13 +3966,13 @@ public class FormMain extends BForm {
     private BPanel getPanelOverview() {
         if (panelOverview == null) {
             GridBagConstraints gridBagConstraints30 = new GridBagConstraints();
-            gridBagConstraints30.gridheight = 0;
+            gridBagConstraints30.gridheight = 1;
             gridBagConstraints30.gridx = 1;
             gridBagConstraints30.gridy = 1;
             gridBagConstraints30.fill = GridBagConstraints.BOTH;
             gridBagConstraints30.weightx = 1.0D;
             gridBagConstraints30.weighty = 1.0D;
-            gridBagConstraints30.gridwidth = 0;
+            gridBagConstraints30.gridwidth = 1;
             panelOverview = new BPanel();
             panelOverview.setLayout(new GridBagLayout());
             panelOverview.add(getPictOverview(), gridBagConstraints30);
@@ -3936,6 +3989,7 @@ public class FormMain extends BForm {
         if (btnMooz == null) {
             btnMooz = new BButton();
             btnMooz.setText("-");
+            btnMooz.setPreferredSize(new Dimension(23, 23));
         }
         return btnMooz;
     }
@@ -3949,6 +4003,7 @@ public class FormMain extends BForm {
         if (btnLeft1 == null) {
             btnLeft1 = new BButton();
             btnLeft1.setText("<");
+            btnLeft1.setPreferredSize(new Dimension(16, 23));
         }
         return btnLeft1;
     }
@@ -3962,6 +4017,7 @@ public class FormMain extends BForm {
         if (btnRight1 == null) {
             btnRight1 = new BButton();
             btnRight1.setText(">");
+            btnRight1.setPreferredSize(new Dimension(16, 23));
         }
         return btnRight1;
     }
@@ -3975,6 +4031,7 @@ public class FormMain extends BForm {
         if (btnZoom == null) {
             btnZoom = new BButton();
             btnZoom.setText("+");
+            btnZoom.setPreferredSize(new Dimension(23, 23));
         }
         return btnZoom;
     }
@@ -3988,6 +4045,7 @@ public class FormMain extends BForm {
         if (btnLeft2 == null) {
             btnLeft2 = new BButton();
             btnLeft2.setText("<");
+            btnLeft2.setPreferredSize(new Dimension(16, 23));
         }
         return btnLeft2;
     }
@@ -4001,6 +4059,7 @@ public class FormMain extends BForm {
         if (btnRight2 == null) {
             btnRight2 = new BButton();
             btnRight2.setText(">");
+            btnRight2.setPreferredSize(new Dimension(16, 23));
         }
         return btnRight2;
     }
@@ -4051,6 +4110,11 @@ public class FormMain extends BForm {
         if (pictureBox3 == null) {
             GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
             gridBagConstraints12.anchor = GridBagConstraints.EAST;
+            gridBagConstraints12.gridy = 0;
+            gridBagConstraints12.weightx = 1.0D;
+            gridBagConstraints12.fill = GridBagConstraints.VERTICAL;
+            gridBagConstraints12.insets = new Insets(0, 0, 0, 2);
+            gridBagConstraints12.gridx = 0;
             pictureBox3 = new BPanel();
             pictureBox3.setLayout(new GridBagLayout());
             pictureBox3.setPreferredSize(new Dimension(68, 0));
@@ -4080,6 +4144,7 @@ public class FormMain extends BForm {
     private BButton getPictKeyLengthSplitter() {
         if (pictKeyLengthSplitter == null) {
             pictKeyLengthSplitter = new BButton();
+            pictKeyLengthSplitter.setPreferredSize(new Dimension(16, 16));
         }
         return pictKeyLengthSplitter;
     }

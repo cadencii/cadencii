@@ -12,7 +12,6 @@ import org.kbinani.windows.forms.BCheckBox;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BSlider;
 import org.kbinani.windows.forms.BTextBox;
-import javax.swing.JCheckBox;
 
 //SECTION-END-IMPORT
 public class VolumeTracker extends JPanel {

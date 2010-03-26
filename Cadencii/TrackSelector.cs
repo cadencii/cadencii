@@ -1881,9 +1881,6 @@ namespace org.kbinani.cadencii {
         /// <param name="track"></param>
         /// <param name="color"></param>
         public void drawVEL( Graphics2D g, VsqTrack track, Color color, boolean is_front, CurveType type ) {
-#if JAVA
-            System.out.println( "TrackSelector#drawVEL" );
-#endif
             Point pmouse = pointToClient( PortUtil.getMousePosition() );
             Point mouse = new Point( pmouse.x, pmouse.y );
 

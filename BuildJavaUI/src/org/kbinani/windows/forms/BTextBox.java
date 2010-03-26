@@ -2,6 +2,7 @@ package org.kbinani.windows.forms;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.im.InputContext;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -42,11 +43,29 @@ public class BTextBox extends JTextField
     }
     
     public boolean isImeModeOn(){
-        return getInputContext().isCompositionEnabled();
+        try{
+            InputContext ic = getInputContext();
+            if( ic == null ){
+                return false;
+            }
+            boolean ret = ic.isCompositionEnabled();
+            return ret;
+        }catch( Exception ex ){
+            System.err.println( "BTextBox#isImeModeOn; ex=" + ex );
+        }
+        return false;
     }
     
     public void setImeModeOn( boolean value ){
-        getInputContext().setCompositionEnabled( value );
+        try{
+            InputContext ic = getInputContext();
+            if( ic == null ){
+                return;
+            }
+            ic.setCompositionEnabled( value );
+        }catch( Exception ex ){
+            System.err.println( "BTextBox#setImeModeOn; ex=" + ex );
+        }
     }
     
     /* root implementation of bocoree.windows.forms.[component] */
@@ -63,7 +82,7 @@ public class BTextBox extends JTextField
     }
     /* END REGION */
     
-    // root imol of KeyListener is in BButton
+    // root impl of KeyListener is in BButton
     public BEvent<BPreviewKeyDownEventHandler> previewKeyDownEvent = new BEvent<BPreviewKeyDownEventHandler>();
     public BEvent<BKeyEventHandler> keyDownEvent = new BEvent<BKeyEventHandler>();
     public BEvent<BKeyEventHandler> keyUpEvent = new BEvent<BKeyEventHandler>();

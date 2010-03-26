@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowFocusListener;
+import java.awt.im.InputContext;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JWindow;
@@ -36,11 +37,37 @@ public class TextBoxEx extends JWindow implements WindowFocusListener, Component
     }
     
     public boolean isImeModeOn(){
-        return jTextField.getInputContext().isCompositionEnabled();
+        try{
+            JTextField jtf = getJTextField();
+            if( jtf == null ){
+                return false;
+            }
+            InputContext ic = jtf.getInputContext();
+            if( ic == null ){
+                return false;
+            }
+            boolean ret = ic.isCompositionEnabled();
+            return ret;
+        }catch( Exception ex ){
+            System.err.println( "TextBoxEx#isImeModeOn; ex=" + ex );
+        }
+        return false;
     }
 
     public void setImeModeOn( boolean value ){
-        jTextField.getInputContext().setCompositionEnabled( value );
+        try{
+            JTextField jtf = getJTextField();
+            if( jtf == null ){
+                return;
+            }
+            InputContext ic = jtf.getInputContext();
+            if( ic == null ){
+                return;
+            }
+            ic.setCompositionEnabled( value );
+        }catch( Exception ex ){
+            System.err.println( "TextBoxEx#setImeModeOn; ex=" + ex );
+        }
     }
 
     /* REGION bocoree.windows.forms.[component] */

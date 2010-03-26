@@ -116,7 +116,7 @@ public class BDelegate{
             if( file.equals( "" ) ){
                 continue;
             }
-            System.err.println( header + e.getClassName() + "#" + e.getMethodName() + "[" + file + "(" + e.getLineNumber() + ")]" );
+            System.err.println( header + e.getClassName() + "." + e.getMethodName() + "(" + file + ":" + e.getLineNumber() + ")" );
         }
         printThrowableRecurse( ex.getCause(), level + 1 );
     }

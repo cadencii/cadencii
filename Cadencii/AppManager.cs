@@ -61,6 +61,13 @@ namespace org.kbinani.cadencii {
         /// 強弱記号の，ピアノロール画面上の表示幅（ピクセル）
         /// </summary>
         public const int DYNAFF_ITEM_WIDTH = 40;
+#if JAVA
+        public const int FONT_SIZE8 = 10;
+#else
+        public const int FONT_SIZE8 = 8;
+#endif
+        public const int FONT_SIZE9 = FONT_SIZE8 + 1;
+        public const int FONT_SIZE10 = FONT_SIZE8 + 2;
 
         /// <summary>
         /// 鍵盤の表示幅(pixel)

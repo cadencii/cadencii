@@ -1653,7 +1653,15 @@ namespace org.kbinani.cadencii {
         }
 
         public void updateLayout() {
-#if !JAVA
+#if JAVA
+            int keywidth = AppManager.keyWidth;
+            Dimension d1 = new Dimension( keywidth, panelZooMooz.getHeight() );
+            panelZooMooz.setPreferredSize( d1 );
+            panelZooMooz.setSize( d1 );
+            Dimension d2 = new Dimension( keywidth, pictureBox3.getHeight() );
+            pictureBox3.setPreferredSize( d2 );
+            pictureBox3.setSize( d2 );
+#else
             int width = panel1.Width;
             int height = panel1.Height;
 
@@ -16791,21 +16799,21 @@ namespace org.kbinani.cadencii {
             this.cMenuTrackSelectorSelectAll = new org.kbinani.windows.forms.BMenuItem();
             this.trackBar = new org.kbinani.windows.forms.BSlider();
             this.panel1 = new org.kbinani.windows.forms.BPanel();
-            this.pictKeyLengthSplitter = new org.kbinani.windows.forms.BPictureBox();
             this.panelOverview = new org.kbinani.windows.forms.BPanel();
-            this.btnRight1 = new org.kbinani.windows.forms.BButton();
             this.btnLeft2 = new org.kbinani.windows.forms.BButton();
-            this.btnZoom = new org.kbinani.windows.forms.BButton();
-            this.btnMooz = new org.kbinani.windows.forms.BButton();
-            this.btnLeft1 = new org.kbinani.windows.forms.BButton();
             this.btnRight2 = new org.kbinani.windows.forms.BButton();
             this.pictOverview = new org.kbinani.windows.forms.BPictureBox();
+            this.pictKeyLengthSplitter = new org.kbinani.windows.forms.BPictureBox();
             this.vScroll = new org.kbinani.windows.forms.BVScrollBar();
             this.hScroll = new org.kbinani.cadencii.HScroll();
             this.picturePositionIndicator = new org.kbinani.windows.forms.BPictureBox();
             this.pictPianoRoll = new org.kbinani.cadencii.PictPianoRoll();
             this.pictureBox3 = new org.kbinani.windows.forms.BPictureBox();
             this.pictureBox2 = new org.kbinani.windows.forms.BPictureBox();
+            this.btnRight1 = new org.kbinani.windows.forms.BButton();
+            this.btnZoom = new org.kbinani.windows.forms.BButton();
+            this.btnMooz = new org.kbinani.windows.forms.BButton();
+            this.btnLeft1 = new org.kbinani.windows.forms.BButton();
             this.toolStripTool = new org.kbinani.windows.forms.BToolBar();
             this.stripBtnPointer = new org.kbinani.windows.forms.BToolStripButton();
             this.stripBtnPencil = new org.kbinani.windows.forms.BToolStripButton();
@@ -16839,6 +16847,7 @@ namespace org.kbinani.cadencii {
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.statusLabel = new org.kbinani.windows.forms.BStatusLabel();
             this.splitContainerProperty = new org.kbinani.apputil.BSplitContainer();
+            this.panelZooMooz = new org.kbinani.windows.forms.BPanel();
             this.panel2 = new org.kbinani.windows.forms.BPanel();
             this.splitContainer2 = new org.kbinani.apputil.BSplitContainer();
             this.splitContainer1 = new org.kbinani.apputil.BSplitContainer();
@@ -16896,9 +16905,9 @@ namespace org.kbinani.cadencii {
             this.cMenuTrackSelector.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar)).BeginInit();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictKeyLengthSplitter)).BeginInit();
             this.panelOverview.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictOverview)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictKeyLengthSplitter)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picturePositionIndicator)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -16910,6 +16919,7 @@ namespace org.kbinani.cadencii {
             this.toolStripContainer.SuspendLayout();
             this.toolStripBottom.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            this.panelZooMooz.SuspendLayout();
             this.toolStripFile.SuspendLayout();
             this.toolStripPosition.SuspendLayout();
             this.toolStripMeasure.SuspendLayout();
@@ -18719,8 +18729,8 @@ namespace org.kbinani.cadencii {
             // 
             // panel1
             // 
-            this.panel1.Controls.Add( this.pictKeyLengthSplitter );
             this.panel1.Controls.Add( this.panelOverview );
+            this.panel1.Controls.Add( this.pictKeyLengthSplitter );
             this.panel1.Controls.Add( this.vScroll );
             this.panel1.Controls.Add( this.hScroll );
             this.panel1.Controls.Add( this.picturePositionIndicator );
@@ -18733,28 +18743,11 @@ namespace org.kbinani.cadencii {
             this.panel1.Size = new System.Drawing.Size( 421, 282 );
             this.panel1.TabIndex = 16;
             // 
-            // pictKeyLengthSplitter
-            // 
-            this.pictKeyLengthSplitter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.pictKeyLengthSplitter.BackColor = System.Drawing.SystemColors.Control;
-            this.pictKeyLengthSplitter.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.pictKeyLengthSplitter.Cursor = System.Windows.Forms.Cursors.NoMoveHoriz;
-            this.pictKeyLengthSplitter.Location = new System.Drawing.Point( 50, 266 );
-            this.pictKeyLengthSplitter.Margin = new System.Windows.Forms.Padding( 0 );
-            this.pictKeyLengthSplitter.Name = "pictKeyLengthSplitter";
-            this.pictKeyLengthSplitter.Size = new System.Drawing.Size( 16, 16 );
-            this.pictKeyLengthSplitter.TabIndex = 20;
-            this.pictKeyLengthSplitter.TabStop = false;
-            // 
             // panelOverview
             // 
             this.panelOverview.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelOverview.Controls.Add( this.btnRight1 );
             this.panelOverview.Controls.Add( this.btnLeft2 );
-            this.panelOverview.Controls.Add( this.btnZoom );
-            this.panelOverview.Controls.Add( this.btnMooz );
-            this.panelOverview.Controls.Add( this.btnLeft1 );
             this.panelOverview.Controls.Add( this.btnRight2 );
             this.panelOverview.Controls.Add( this.pictOverview );
             this.panelOverview.Location = new System.Drawing.Point( 0, 0 );
@@ -18763,18 +18756,6 @@ namespace org.kbinani.cadencii {
             this.panelOverview.Size = new System.Drawing.Size( 421, 45 );
             this.panelOverview.TabIndex = 19;
             this.panelOverview.TabStop = false;
-            // 
-            // btnRight1
-            // 
-            this.btnRight1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnRight1.Location = new System.Drawing.Point( 52, 23 );
-            this.btnRight1.Margin = new System.Windows.Forms.Padding( 0 );
-            this.btnRight1.Name = "btnRight1";
-            this.btnRight1.Size = new System.Drawing.Size( 16, 22 );
-            this.btnRight1.TabIndex = 24;
-            this.btnRight1.TabStop = false;
-            this.btnRight1.Text = ">";
-            this.btnRight1.UseVisualStyleBackColor = true;
             // 
             // btnLeft2
             // 
@@ -18787,39 +18768,6 @@ namespace org.kbinani.cadencii {
             this.btnLeft2.TabStop = false;
             this.btnLeft2.Text = "<";
             this.btnLeft2.UseVisualStyleBackColor = true;
-            // 
-            // btnZoom
-            // 
-            this.btnZoom.Location = new System.Drawing.Point( 26, 12 );
-            this.btnZoom.Name = "btnZoom";
-            this.btnZoom.Size = new System.Drawing.Size( 23, 23 );
-            this.btnZoom.TabIndex = 22;
-            this.btnZoom.TabStop = false;
-            this.btnZoom.Text = "+";
-            this.btnZoom.UseVisualStyleBackColor = true;
-            // 
-            // btnMooz
-            // 
-            this.btnMooz.Location = new System.Drawing.Point( 3, 12 );
-            this.btnMooz.Name = "btnMooz";
-            this.btnMooz.Size = new System.Drawing.Size( 23, 23 );
-            this.btnMooz.TabIndex = 21;
-            this.btnMooz.TabStop = false;
-            this.btnMooz.Text = "-";
-            this.btnMooz.UseVisualStyleBackColor = true;
-            // 
-            // btnLeft1
-            // 
-            this.btnLeft1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnLeft1.Location = new System.Drawing.Point( 52, 0 );
-            this.btnLeft1.Margin = new System.Windows.Forms.Padding( 0 );
-            this.btnLeft1.Name = "btnLeft1";
-            this.btnLeft1.Size = new System.Drawing.Size( 16, 23 );
-            this.btnLeft1.TabIndex = 20;
-            this.btnLeft1.TabStop = false;
-            this.btnLeft1.Text = "<";
-            this.btnLeft1.UseVisualStyleBackColor = true;
             // 
             // btnRight2
             // 
@@ -18846,6 +18794,19 @@ namespace org.kbinani.cadencii {
             this.pictOverview.Size = new System.Drawing.Size( 337, 45 );
             this.pictOverview.TabIndex = 18;
             this.pictOverview.TabStop = false;
+            // 
+            // pictKeyLengthSplitter
+            // 
+            this.pictKeyLengthSplitter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.pictKeyLengthSplitter.BackColor = System.Drawing.SystemColors.Control;
+            this.pictKeyLengthSplitter.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.pictKeyLengthSplitter.Cursor = System.Windows.Forms.Cursors.NoMoveHoriz;
+            this.pictKeyLengthSplitter.Location = new System.Drawing.Point( 50, 266 );
+            this.pictKeyLengthSplitter.Margin = new System.Windows.Forms.Padding( 0 );
+            this.pictKeyLengthSplitter.Name = "pictKeyLengthSplitter";
+            this.pictKeyLengthSplitter.Size = new System.Drawing.Size( 16, 16 );
+            this.pictKeyLengthSplitter.TabIndex = 20;
+            this.pictKeyLengthSplitter.TabStop = false;
             // 
             // vScroll
             // 
@@ -18912,6 +18873,51 @@ namespace org.kbinani.cadencii {
             this.pictureBox2.Size = new System.Drawing.Size( 16, 16 );
             this.pictureBox2.TabIndex = 5;
             this.pictureBox2.TabStop = false;
+            // 
+            // btnRight1
+            // 
+            this.btnRight1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnRight1.Location = new System.Drawing.Point( 51, 23 );
+            this.btnRight1.Margin = new System.Windows.Forms.Padding( 0 );
+            this.btnRight1.Name = "btnRight1";
+            this.btnRight1.Size = new System.Drawing.Size( 16, 23 );
+            this.btnRight1.TabIndex = 24;
+            this.btnRight1.TabStop = false;
+            this.btnRight1.Text = ">";
+            this.btnRight1.UseVisualStyleBackColor = true;
+            // 
+            // btnZoom
+            // 
+            this.btnZoom.Location = new System.Drawing.Point( 26, 12 );
+            this.btnZoom.Name = "btnZoom";
+            this.btnZoom.Size = new System.Drawing.Size( 23, 23 );
+            this.btnZoom.TabIndex = 22;
+            this.btnZoom.TabStop = false;
+            this.btnZoom.Text = "+";
+            this.btnZoom.UseVisualStyleBackColor = true;
+            // 
+            // btnMooz
+            // 
+            this.btnMooz.Location = new System.Drawing.Point( 3, 12 );
+            this.btnMooz.Name = "btnMooz";
+            this.btnMooz.Size = new System.Drawing.Size( 23, 23 );
+            this.btnMooz.TabIndex = 21;
+            this.btnMooz.TabStop = false;
+            this.btnMooz.Text = "-";
+            this.btnMooz.UseVisualStyleBackColor = true;
+            // 
+            // btnLeft1
+            // 
+            this.btnLeft1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnLeft1.Location = new System.Drawing.Point( 51, 0 );
+            this.btnLeft1.Margin = new System.Windows.Forms.Padding( 0 );
+            this.btnLeft1.Name = "btnLeft1";
+            this.btnLeft1.Size = new System.Drawing.Size( 16, 23 );
+            this.btnLeft1.TabIndex = 20;
+            this.btnLeft1.TabStop = false;
+            this.btnLeft1.Text = "<";
+            this.btnLeft1.UseVisualStyleBackColor = true;
             // 
             // toolStripTool
             // 
@@ -18994,6 +19000,7 @@ namespace org.kbinani.cadencii {
             // 
             this.toolStripContainer.ContentPanel.AutoScroll = true;
             this.toolStripContainer.ContentPanel.Controls.Add( this.splitContainerProperty );
+            this.toolStripContainer.ContentPanel.Controls.Add( this.panelZooMooz );
             this.toolStripContainer.ContentPanel.Controls.Add( this.panel2 );
             this.toolStripContainer.ContentPanel.Controls.Add( this.splitContainer2 );
             this.toolStripContainer.ContentPanel.Controls.Add( this.splitContainer1 );
@@ -19232,6 +19239,19 @@ namespace org.kbinani.cadencii {
             this.splitContainerProperty.SplitterWidth = 4;
             this.splitContainerProperty.TabIndex = 20;
             this.splitContainerProperty.Text = "bSplitContainer1";
+            // 
+            // panelZooMooz
+            // 
+            this.panelZooMooz.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)));
+            this.panelZooMooz.Controls.Add( this.btnRight1 );
+            this.panelZooMooz.Controls.Add( this.btnMooz );
+            this.panelZooMooz.Controls.Add( this.btnZoom );
+            this.panelZooMooz.Controls.Add( this.btnLeft1 );
+            this.panelZooMooz.Location = new System.Drawing.Point( 3, 3 );
+            this.panelZooMooz.Name = "panelZooMooz";
+            this.panelZooMooz.Size = new System.Drawing.Size( 66, 45 );
+            this.panelZooMooz.TabIndex = 21;
             // 
             // panel2
             // 
@@ -19735,9 +19755,9 @@ namespace org.kbinani.cadencii {
             this.cMenuTrackSelector.ResumeLayout( false );
             ((System.ComponentModel.ISupportInitialize)(this.trackBar)).EndInit();
             this.panel1.ResumeLayout( false );
-            ((System.ComponentModel.ISupportInitialize)(this.pictKeyLengthSplitter)).EndInit();
             this.panelOverview.ResumeLayout( false );
             ((System.ComponentModel.ISupportInitialize)(this.pictOverview)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictKeyLengthSplitter)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picturePositionIndicator)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
@@ -19755,6 +19775,7 @@ namespace org.kbinani.cadencii {
             this.toolStripBottom.PerformLayout();
             this.statusStrip1.ResumeLayout( false );
             this.statusStrip1.PerformLayout();
+            this.panelZooMooz.ResumeLayout( false );
             this.toolStripFile.ResumeLayout( false );
             this.toolStripFile.PerformLayout();
             this.toolStripPosition.ResumeLayout( false );
@@ -20121,6 +20142,7 @@ namespace org.kbinani.cadencii {
         private BMenuItem cMenuTrackTabPlayAfterSynth;
         private BMenuItem menuTrackPlayAfterSynth;
         public BMenuItem menuHiddenPlayFromStartMarker;
+        private BPanel panelZooMooz;
 
 #endif
         #endregion
