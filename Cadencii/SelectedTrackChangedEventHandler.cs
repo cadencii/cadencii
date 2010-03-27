@@ -30,7 +30,15 @@ using System;
 
 namespace org.kbinani.cadencii {
 
-    public delegate void SelectedTrackChangedEventHandler( Object sender, int selected_track );
+    public class SelectedTrackChangedEventHandler : BEventHandler {
+        public SelectedTrackChangedEventHandler( Object sender, String method_name )
+            : base( sender, method_name, typeof( void ), typeof( Object ), typeof( int ) ) {
+        }
+
+        public SelectedTrackChangedEventHandler( Type sender, String method_name )
+            : base( sender, method_name, typeof( void ), typeof( Object ), typeof( int ) ) {
+        }
+    }
 
 }
 #endif

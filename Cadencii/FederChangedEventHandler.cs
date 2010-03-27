@@ -26,9 +26,19 @@ public class FederChangedEventHandler extends BEventHandler{
     }
 }
 #else
+using System;
+
 namespace org.kbinani.cadencii {
 
-    public delegate void FederChangedEventHandler( int track, int feder );
+    public class FederChangedEventHandler : BEventHandler {
+        public FederChangedEventHandler( Object sender, String method_name )
+            : base( sender, method_name, typeof( void ), typeof( int ), typeof( int ) ) {
+        }
+
+        public FederChangedEventHandler( Type sender, String method_name )
+            : base( sender, method_name, typeof( void ), typeof( int ), typeof( int ) ) {
+        }
+    }
 
 }
 #endif

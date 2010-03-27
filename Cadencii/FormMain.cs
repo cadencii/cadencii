@@ -158,7 +158,7 @@ namespace org.kbinani.cadencii {
             new AuthorListEntry(),
             new AuthorListEntry( "     ... and you !", 3 ),
         };
-        public readonly Font s_F9PT = new Font( "SansSerif", java.awt.Font.PLAIN, 9 );
+        public readonly Font s_F9PT = new Font( "SansSerif", java.awt.Font.PLAIN, AppManager.FONT_SIZE9 );
         #endregion
 
         #region Constants and internal enums
@@ -545,10 +545,10 @@ namespace org.kbinani.cadencii {
             org.kbinani.debug.push_log( "    FormID=" + AppManager.getID() );
             AppManager.debugWriteLine( "FormMain..ctor()" );
 #endif
-            AppManager.baseFont10Bold = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.BOLD, 10 );
-            AppManager.baseFont8 = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, 8 );
-            AppManager.baseFont10 = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, 10 );
-            AppManager.baseFont9 = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, 9 );
+            AppManager.baseFont10Bold = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.BOLD, AppManager.FONT_SIZE10 );
+            AppManager.baseFont8 = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE8 );
+            AppManager.baseFont10 = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE10 );
+            AppManager.baseFont9 = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE9 );
 
             s_modifier_key = ((AppManager.editorConfig.Platform == PlatformEnum.Macintosh) ? InputEvent.META_MASK : InputEvent.CTRL_MASK);
 
@@ -630,38 +630,25 @@ namespace org.kbinani.cadencii {
             updateTrackSelectorVisibleCurve();
             trackSelector.setBackground( new Color( 108, 108, 108 ) );
             trackSelector.setCurveVisible( true );
-#if JAVA
-            // TODO: FormMain#.ctor; trackSelectorの初期化
-            /*trackSelector.MouseClick += new MouseEventHandler( this.trackSelector_MouseClick );
-            trackSelector.SelectedTrackChanged += new SelectedTrackChangedEventHandler( this.trackSelector_SelectedTrackChanged );
-            trackSelector.MouseUp += new MouseEventHandler( this.trackSelector_MouseUp );
-            trackSelector.MouseDown += new MouseEventHandler( trackSelector_MouseDown );
-            trackSelector.SelectedCurveChanged += new SelectedCurveChangedEventHandler( this.trackSelector_SelectedCurveChanged );
-            trackSelector.MouseMove += new MouseEventHandler( this.trackSelector_MouseMove );
-            trackSelector.RenderRequired += new RenderRequiredEventHandler( this.trackSelector_RenderRequired );
-            trackSelector.PreviewKeyDown += new PreviewKeyDownEventHandler( this.trackSelector_PreviewKeyDown );
-            trackSelector.KeyDown += new KeyEventHandler( commonCaptureSpaceKeyDown );
-            trackSelector.KeyUp += new KeyEventHandler( commonCaptureSpaceKeyUp );
-            trackSelector.PreferredMinHeightChanged += new EventHandler( trackSelector_PreferredMinHeightChanged );*/
-#else
+            trackSelector.setSelectedCurve( CurveType.VEL );
+#if !JAVA
             trackSelector.setLocation( new Point( 0, 242 ) );
             trackSelector.Margin = new System.Windows.Forms.Padding( 0 );
             trackSelector.Name = "trackSelector";
-            trackSelector.setSelectedCurve( CurveType.VEL );
             trackSelector.setSize( 446, 250 );
             trackSelector.TabIndex = 0;
-            trackSelector.MouseClick += new System.Windows.Forms.MouseEventHandler( this.trackSelector_MouseClick );
-            trackSelector.SelectedTrackChanged += new SelectedTrackChangedEventHandler( this.trackSelector_SelectedTrackChanged );
-            trackSelector.MouseUp += new System.Windows.Forms.MouseEventHandler( this.trackSelector_MouseUp );
-            trackSelector.MouseDown += new System.Windows.Forms.MouseEventHandler( trackSelector_MouseDown );
-            trackSelector.SelectedCurveChanged += new SelectedCurveChangedEventHandler( this.trackSelector_SelectedCurveChanged );
-            trackSelector.MouseMove += new System.Windows.Forms.MouseEventHandler( this.trackSelector_MouseMove );
-            trackSelector.RenderRequired += new RenderRequiredEventHandler( this.trackSelector_RenderRequired );
-            trackSelector.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler( this.trackSelector_PreviewKeyDown );
-            trackSelector.KeyDown += new System.Windows.Forms.KeyEventHandler( commonCaptureSpaceKeyDown );
-            trackSelector.KeyUp += new System.Windows.Forms.KeyEventHandler( commonCaptureSpaceKeyUp );
-            trackSelector.PreferredMinHeightChanged += new EventHandler( trackSelector_PreferredMinHeightChanged );
 #endif
+            trackSelector.mouseClickEvent.add( new BMouseEventHandler( this, "trackSelector_MouseClick" ) );
+            trackSelector.mouseUpEvent.add( new BMouseEventHandler( this, "trackSelector_MouseUp" ) );
+            trackSelector.mouseDownEvent.add( new BMouseEventHandler( this, "trackSelector_MouseDown" ) );
+            trackSelector.mouseMoveEvent.add( new BMouseEventHandler( this, "trackSelector_MouseMove" ) );
+            trackSelector.keyDownEvent.add( new BKeyEventHandler( this, "commonCaptureSpaceKeyDown" ) );
+            trackSelector.keyUpEvent.add( new BKeyEventHandler( this, "commonCaptureSpaceKeyUp" ) );
+            trackSelector.previewKeyDownEvent.add( new BPreviewKeyDownEventHandler( this, "trackSelector_PreviewKeyDown" ) );
+            trackSelector.selectedTrackChangedEvent.add( new SelectedTrackChangedEventHandler( this, "trackSelector_SelectedTrackChanged" ) );
+            trackSelector.selectedCurveChangedEvent.add( new SelectedCurveChangedEventHandler( this, "trackSelector_SelectedCurveChanged" ) );
+            trackSelector.renderRequiredEvent.add( new RenderRequiredEventHandler( this, "trackSelector_RenderRequired" ) );
+            trackSelector.preferredMinHeightChangedEvent.add( new BEventHandler( this, "trackSelector_PreferredMinHeightChanged" ) );
 
 #if !JAVA
             splitContainer1.Panel2MinSize = trackSelector.getPreferredMinSize();
@@ -841,7 +828,7 @@ namespace org.kbinani.cadencii {
             AppManager.inputTextBox.setBackground( Color.white );
             AppManager.inputTextBox.setFont( new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, 9 ) );
             AppManager.inputTextBox.setEnabled( false );
-            AppManager.inputTextBox.keyPressedEvent.add( new BKeyEventHandler( this, "m_input_textbox_KeyPress" ) );
+            AppManager.inputTextBox.keyPressEvent.add( new BKeyPressEventHandler( this, "m_input_textbox_KeyPress" ) );
 #else
             AppManager.inputTextBox = new TextBoxEx();
             AppManager.inputTextBox.setVisible( false );
@@ -849,7 +836,7 @@ namespace org.kbinani.cadencii {
             AppManager.inputTextBox.Width = 80;
             AppManager.inputTextBox.AcceptsReturn = true;
             AppManager.inputTextBox.setBackground( Color.white );
-            AppManager.inputTextBox.setFont( new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, 9 ) );
+            AppManager.inputTextBox.setFont( new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE9 ) );
             AppManager.inputTextBox.setEnabled( false );
             AppManager.inputTextBox.KeyPress += m_input_textbox_KeyPress;
             AppManager.inputTextBox.Parent = pictPianoRoll;
@@ -5425,7 +5412,7 @@ namespace org.kbinani.cadencii {
                 float scalex = AppManager.scaleX;
                 Font SMALL_FONT = null;
                 try {
-                    SMALL_FONT = new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, 8 );
+                    SMALL_FONT = new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE8 );
                     int track_height = AppManager.editorConfig.PxTrackHeight;
                     VsqFileEx vsq = AppManager.getVsqFile();
                     int track_count = vsq.Track.size();
@@ -5728,7 +5715,7 @@ namespace org.kbinani.cadencii {
                 AppManager.inputTextBox.setText( phrase );
                 AppManager.inputTextBox.setBackground( Color.white );
             }
-            AppManager.inputTextBox.setFont( new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, 9 ) );
+            AppManager.inputTextBox.setFont( new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE9 ) );
             AppManager.inputTextBox.setLocation( position.x + 4, position.y + 2 );
 #if !JAVA
             AppManager.inputTextBox.Parent = pictPianoRoll;
@@ -5898,10 +5885,10 @@ namespace org.kbinani.cadencii {
                 Util.applyFontRecurse( m_preference_dlg, font );
             }
 
-            AppManager.baseFont10Bold = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.BOLD, 10 );
-            AppManager.baseFont8 = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, 8 );
-            AppManager.baseFont10 = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, 10 );
-            AppManager.baseFont9 = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, 9 );
+            AppManager.baseFont10Bold = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.BOLD, AppManager.FONT_SIZE10 );
+            AppManager.baseFont8 = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE8 );
+            AppManager.baseFont10 = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE10 );
+            AppManager.baseFont9 = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE9 );
             AppManager.baseFont10OffsetHeight = Util.getStringDrawOffset( AppManager.baseFont10 );
             AppManager.baseFont8OffsetHeight = Util.getStringDrawOffset( AppManager.baseFont8 );
             AppManager.baseFont9OffsetHeight = Util.getStringDrawOffset( AppManager.baseFont9 );
@@ -5911,7 +5898,7 @@ namespace org.kbinani.cadencii {
             Graphics2D g = (Graphics2D)g1;
             Font SMALL_FONT = null;
             try {
-                SMALL_FONT = new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, 8 );
+                SMALL_FONT = new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE8 );
                 int width = picturePositionIndicator.getWidth();
                 int height = picturePositionIndicator.getHeight();
 
@@ -9742,30 +9729,18 @@ namespace org.kbinani.cadencii {
 
             updateMenuFonts();
 
-#if JAVA
             AppManager.mixerWindow.federChangedEvent.add( new FederChangedEventHandler( this, "m_mixer_dlg_FederChanged" ) );
             AppManager.mixerWindow.panpotChangedEvent.add( new PanpotChangedEventHandler( this, "m_mixer_dlg_PanpotChanged" ) );
             AppManager.mixerWindow.muteChangedEvent.add( new MuteChangedEventHandler( this, "m_mixer_dlg_MuteChanged" ) );
             AppManager.mixerWindow.soloChangedEvent.add( new SoloChangedEventHandler( this, "m_mixer_dlg_SoloChanged" ) );
             AppManager.mixerWindow.topMostChangedEvent.add( new TopMostChangedEventHandler( this, "m_mixer_dlg_TopMostChanged" ) );
-#else
-            AppManager.mixerWindow.FederChanged += new FederChangedEventHandler( m_mixer_dlg_FederChanged );
-            AppManager.mixerWindow.PanpotChanged += new PanpotChangedEventHandler( m_mixer_dlg_PanpotChanged );
-            AppManager.mixerWindow.MuteChanged += new MuteChangedEventHandler( m_mixer_dlg_MuteChanged );
-            AppManager.mixerWindow.SoloChanged += new SoloChangedEventHandler( m_mixer_dlg_SoloChanged );
-            AppManager.mixerWindow.TopMostChanged += new TopMostChangedEventHandler( m_mixer_dlg_TopMostChanged );
-#endif
             AppManager.mixerWindow.setShowTopMost( AppManager.editorConfig.MixerTopMost );
             AppManager.mixerWindow.updateStatus();
             if ( AppManager.editorConfig.MixerVisible ) {
                 AppManager.mixerWindow.setVisible( true );
             }
 
-#if JAVA
             trackSelector.commandExecutedEvent.add( new BEventHandler( this, "trackSelector_CommandExecuted" ) );
-#else
-            trackSelector.CommandExecuted += new EventHandler( trackSelector_CommandExecuted );
-#endif
 
 #if ENABLE_SCRIPT
             updateScriptShortcut();
@@ -11581,8 +11556,8 @@ namespace org.kbinani.cadencii {
             if ( m_preference_dlg == null ) {
                 m_preference_dlg = new Preference();
             }
-            m_preference_dlg.setBaseFont( new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, 9 ) );
-            m_preference_dlg.setScreenFont( new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, 9 ) );
+            m_preference_dlg.setBaseFont( new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE9 ) );
+            m_preference_dlg.setScreenFont( new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE9 ) );
             m_preference_dlg.setWheelOrder( AppManager.editorConfig.WheelOrder );
             m_preference_dlg.setCursorFixed( AppManager.editorConfig.CursorFixed );
             m_preference_dlg.setDefaultVibratoLength( AppManager.editorConfig.DefaultVibratoLength );
@@ -13311,7 +13286,7 @@ namespace org.kbinani.cadencii {
                             break;
                         }
                         String s = PortUtil.formatDecimal( "#.00", 60e6 / (float)AppManager.getVsqFile().TempoTable.get( i ).Tempo );
-                        Dimension size = Util.measureString( s, new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, 8 ) );
+                        Dimension size = Util.measureString( s, new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE8 ) );
                         if ( isInRect( new Point( e.X, e.Y ), new Rectangle( x, 14, (int)size.width, 14 ) ) ) {
                             index = i;
                             break;
@@ -13369,7 +13344,7 @@ namespace org.kbinani.cadencii {
                     for ( int i = 0; i < AppManager.getVsqFile().TimesigTable.size(); i++ ) {
                         String s = AppManager.getVsqFile().TimesigTable.get( i ).Numerator + "/" + AppManager.getVsqFile().TimesigTable.get( i ).Denominator;
                         int x = AppManager.xCoordFromClocks( AppManager.getVsqFile().TimesigTable.get( i ).Clock );
-                        Dimension size = Util.measureString( s, new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, 8 ) );
+                        Dimension size = Util.measureString( s, new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE8 ) );
                         if ( isInRect( new Point( e.X, e.Y ), new Rectangle( x, 28, (int)size.width, 14 ) ) ) {
                             index = i;
                             break;

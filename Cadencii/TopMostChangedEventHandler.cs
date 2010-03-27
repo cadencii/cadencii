@@ -26,9 +26,19 @@ public class TopMostChangedEventHandler extends BEventHandler{
     }
 }
 #else
+using System;
+
 namespace org.kbinani.cadencii {
 
-    public delegate void TopMostChangedEventHandler( object sender, bool top_most );
+    public class TopMostChangedEventHandler : BEventHandler {
+        public TopMostChangedEventHandler( Object sender, String method_name )
+            : base( sender, method_name, typeof( void ), typeof( object ), typeof( bool ) ) {
+        }
+
+        public TopMostChangedEventHandler( Type sender, String method_name )
+            : base( sender, method_name, typeof( void ), typeof( object ), typeof( bool ) ) {
+        }
+    }
 
 }
 #endif

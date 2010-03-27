@@ -90,7 +90,7 @@ namespace org.kbinani.cadencii {
         private readonly Color s_dynaff_fill = PortUtil.Pink;
         private readonly Color s_dynaff_fill_highlight = new Color( 66, 193, 169 );
         private readonly BasicStroke s_pen_dashed_171_171_171 = new BasicStroke( 1.0f, 0, 0, 10.0f, new float[] { 3.0f }, 0.0f );
-        private readonly Font s_F9PT = new Font( "SansSerif", java.awt.Font.PLAIN, 9 );
+        private readonly Font s_F9PT = new Font( "SansSerif", java.awt.Font.PLAIN, AppManager.FONT_SIZE9 );
         /// <summary>
         /// パフォーマンスカウンタ用バッファの容量
         /// </summary>

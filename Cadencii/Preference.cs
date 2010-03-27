@@ -251,6 +251,17 @@ namespace org.kbinani.cadencii {
             }
             chkLoadSecondaryVOCALOID1_CheckedChanged( null, null );
 
+            // default pre-measure
+            comboDefaultPremeasure.removeAllItems();
+            for ( int i = 1; i <= 8; i++ ) {
+                comboDefaultPremeasure.addItem( i + "" );
+            }
+
+            // wave channel
+            comboChannel.removeAllItems();
+            comboChannel.addItem( _( "Monoral" ) );
+            comboChannel.addItem( _( "Stereo" ) );
+
             registerEventHandlers();
             setResources();
         }

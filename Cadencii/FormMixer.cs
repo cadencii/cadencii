@@ -49,19 +49,11 @@ namespace org.kbinani.cadencii {
         private FormMain m_parent;
         private Vector<VolumeTracker> m_tracker = null;
 
-#if JAVA
         public BEvent<FederChangedEventHandler> federChangedEvent = new BEvent<FederChangedEventHandler>();
         public BEvent<PanpotChangedEventHandler> panpotChangedEvent = new BEvent<PanpotChangedEventHandler>();
         public BEvent<SoloChangedEventHandler> soloChangedEvent = new BEvent<SoloChangedEventHandler>();
         public BEvent<MuteChangedEventHandler> muteChangedEvent = new BEvent<MuteChangedEventHandler>();
         public BEvent<TopMostChangedEventHandler> topMostChangedEvent = new BEvent<TopMostChangedEventHandler>();
-#else
-        public event FederChangedEventHandler FederChanged;
-        public event PanpotChangedEventHandler PanpotChanged;
-        public event SoloChangedEventHandler SoloChanged;
-        public event MuteChangedEventHandler MuteChanged;
-        public event TopMostChangedEventHandler TopMostChanged;
-#endif
 
         public FormMixer( FormMain parent ) {
 #if JAVA
@@ -231,10 +223,7 @@ namespace org.kbinani.cadencii {
                 tracker.setSolo( (vme.Solo == 1) );
                 tracker.setTag( j + 1 );
                 tracker.setSoloButtonVisible( true );
-#if JAVA
-#else
-                panel1.Controls.Add( tracker );
-#endif
+                addToPanel1( tracker, j );
             }
             int count = AppManager.getBgmCount();
             for ( int i = 0; i < count; i++ ) {
@@ -251,10 +240,7 @@ namespace org.kbinani.cadencii {
                 tracker.setSolo( false );
                 tracker.setTag( (int)(-i - 1) );
                 tracker.setSoloButtonVisible( false );
-#if JAVA
-#else
-                panel1.Controls.Add( tracker );
-#endif
+                addToPanel1( tracker, j );
             }
             volumeMaster.setFeder( vsq.Mixer.MasterFeder );
             volumeMaster.setPanpot( vsq.Mixer.MasterPanpot );
@@ -282,6 +268,21 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region helper methods
+        private void addToPanel1( VolumeTracker item, int ix ) {
+#if JAVA
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.gridx = ix;
+            gbc.gridy = 0;
+            gbc.weightx = 1.0D;
+            gbc.weighty = 1.0D;
+            gbc.anchor = GridBagConstraints.WEST;
+            gbc.fill = GridBagConstraints.VERTICAL;
+            panel1.add( item, gbc );
+#else
+            panel1.Controls.Add( item );
+#endif
+        }
+
         private static String _( String id ) {
             return Messaging.getMessage( id );
         }
@@ -315,17 +316,11 @@ namespace org.kbinani.cadencii {
             if ( tag == null ) return;
             if ( !(tag is Integer) ) return;
             int track = (Integer)tag;
-#if JAVA
             try{
                 panpotChangedEvent.raise( track, parent.getPanpot() );
             }catch( Exception ex ){
-                System.err.println( "FormMixer#FormMixer_PanpotChanged; ex=" + ex );
+                PortUtil.stderr.println( "FormMixer#FormMixer_PanpotChanged; ex=" + ex );
             }
-#else
-            if ( PanpotChanged != null ) {
-                PanpotChanged( track, parent.getPanpot() );
-            }
-#endif
         }
 
         public void FormMixer_FederChanged( Object sender, BEventArgs e ) {
@@ -336,50 +331,32 @@ namespace org.kbinani.cadencii {
             if ( tag == null ) return;
             if ( !(tag is Integer) ) return;
             int track = (Integer)tag;
-#if JAVA
             try{
                 federChangedEvent.raise( track, parent.getFeder() );
             }catch( Exception ex ){
-                System.err.println( "FormMixer#FormMixer_FederChanged; ex=" + ex );
+                PortUtil.stderr.println( "FormMixer#FormMixer_FederChanged; ex=" + ex );
             }
-#else
-            if ( FederChanged != null ) {
-                FederChanged( track, parent.getFeder() );
-            }
-#endif
         }
 
         public void FormMixer_SoloButtonClick( Object sender, BEventArgs e ) {
             VolumeTracker parent = (VolumeTracker)sender;
             int track = (Integer)parent.getTag();
-#if JAVA
             try{
                 soloChangedEvent.raise( track, parent.isSolo() );
             }catch( Exception ex ){
-                System.err.println( "FormMixer#FormMixer_IsSoloChanged; ex=" + ex );
+                PortUtil.stderr.println( "FormMixer#FormMixer_IsSoloChanged; ex=" + ex );
             }
-#else
-            if ( SoloChanged != null ) {
-                SoloChanged( track, parent.isSolo() );
-            }
-#endif
             updateSoloMute();
         }
 
         public void FormMixer_MuteButtonClick( Object sender, BEventArgs e ) {
             VolumeTracker parent = (VolumeTracker)sender;
             int track = (Integer)parent.getTag();
-#if JAVA
             try{
                 muteChangedEvent.raise( track, parent.isMuted() );
             }catch( Exception ex ){
-                System.err.println( "FormMixer#FormMixer_IsMutedChanged; ex=" + ex );
+                PortUtil.stderr.println( "FormMixer#FormMixer_IsMutedChanged; ex=" + ex );
             }
-#else
-            if ( MuteChanged != null ) {
-                MuteChanged( track, parent.isMuted() );
-            }
-#endif
             updateSoloMute();
         }
 
@@ -416,59 +393,35 @@ namespace org.kbinani.cadencii {
         }
 
         public void volumeMaster_FederChanged( Object sender, BEventArgs e ) {
-#if JAVA
             try{
                 federChangedEvent.raise( 0, volumeMaster.getFeder() );
             }catch( Exception ex ){
-                System.err.println( "FormMixer#volumeMaster_FederChanged; ex=" + ex );
+                PortUtil.stderr.println( "FormMixer#volumeMaster_FederChanged; ex=" + ex );
             }
-#else
-            if ( FederChanged != null ) {
-                FederChanged( 0, volumeMaster.getFeder() );
-            }
-#endif
         }
 
         public void volumeMaster_PanpotChanged( Object sender, BEventArgs e ) {
-#if JAVA
             try{
                 panpotChangedEvent.raise( 0, volumeMaster.getPanpot() );
             }catch( Exception ex ){
-                System.err.println( "FormMixer#volumeMaster_PanpotChanged; ex=" + ex );
+                PortUtil.stderr.println( "FormMixer#volumeMaster_PanpotChanged; ex=" + ex );
             }
-#else
-            if ( PanpotChanged != null ) {
-                PanpotChanged( 0, volumeMaster.getPanpot() );
-            }
-#endif
         }
 
         public void volumeMaster_MuteButtonClick( Object sender, BEventArgs e ) {
-#if JAVA
             try{
                 muteChangedEvent.raise( 0, volumeMaster.isMuted() );
             }catch( Exception ex ){
-                System.err.println( "FormMixer#volumeMaster_IsMutedChanged; ex=" + ex );
+                PortUtil.stderr.println( "FormMixer#volumeMaster_IsMutedChanged; ex=" + ex );
             }
-#else
-            if ( MuteChanged != null ) {
-                MuteChanged( 0, volumeMaster.isMuted() );
-            }
-#endif
         }
 
         public void chkTopmost_CheckedChanged( Object sender, BEventArgs e ) {
-#if JAVA
             try{
                 topMostChangedEvent.raise( this, chkTopmost.isSelected() );
             }catch( Exception ex ){
-                System.err.println( "FormMixer#chkTopmost_CheckedChanged; ex=" + ex );
+                PortUtil.stderr.println( "FormMixer#chkTopmost_CheckedChanged; ex=" + ex );
             }
-#else
-            if ( TopMostChanged != null ) {
-                TopMostChanged( this, chkTopmost.isSelected() );
-            }
-#endif
             setAlwaysOnTop( chkTopmost.isSelected() ); // ここはthis.ShowTopMostにしてはいけない
         }
 

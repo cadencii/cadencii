@@ -26,9 +26,19 @@ public class PanpotChangedEventHandler extends BEventHandler{
     }
 }
 #else
+using System;
+
 namespace org.kbinani.cadencii {
 
-    public delegate void PanpotChangedEventHandler( int track, int panpot );
+    public class PanpotChangedEventHandler : BEventHandler {
+        public PanpotChangedEventHandler( Object sender, String method_name )
+            : base( sender, method_name, typeof( void ), typeof( int ), typeof( int ) ) {
+        }
+
+        public PanpotChangedEventHandler( Type sender, String method_name )
+            : base( sender, method_name, typeof( void ), typeof( int ), typeof( int ) ) {
+        }
+    }
 
 }
 #endif

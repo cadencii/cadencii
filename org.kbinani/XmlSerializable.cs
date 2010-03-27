@@ -13,6 +13,7 @@
  */
 #if JAVA
 package org.kbinani.xml;
+
 #else
 using System;
 

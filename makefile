@@ -28,6 +28,7 @@ jcorlib: pp_cs2java.exe ./org.kbinani/*.cs
 	$(CP) ./build/java/org/kbinani/InternalStdErr.java ./BuildJavaUI/src/org/kbinani/InternalStdErr.java
 	$(CP) ./build/java/org/kbinani/InternalStdOut.java ./BuildJavaUI/src/org/kbinani/InternalStdOut.java
 	$(CP) ./build/java/org/kbinani/ByRef.java ./BuildJavaUI/src/org/kbinani/ByRef.java
+	$(CP) ./build/java/org/kbinani/xml/XmlSerializable.java ./BuildJavaUI/src/org/kbinani/xml/XmlSerializable.java
 
 japputil: pp_cs2java.exe ./org.kbinani.apputil/*.cs
 	mono ./pp_cs2java.exe -DJAVA -DRELEASE -DCLIPBOARD_AS_TEXT -b ./build/java -encoding "UTF-8" -s -4 -c -t ./org.kbinani.apputil

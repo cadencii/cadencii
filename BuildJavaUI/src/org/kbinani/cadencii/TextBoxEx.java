@@ -17,6 +17,8 @@ import javax.swing.JWindow;
 import org.kbinani.BEvent;
 import org.kbinani.windows.forms.BKeyEventArgs;
 import org.kbinani.windows.forms.BKeyEventHandler;
+import org.kbinani.windows.forms.BKeyPressEventArgs;
+import org.kbinani.windows.forms.BKeyPressEventHandler;
 
 public class TextBoxEx extends JWindow implements WindowFocusListener, ComponentListener, KeyListener {
 
@@ -87,7 +89,7 @@ public class TextBoxEx extends JWindow implements WindowFocusListener, Component
     /* root implementation of java.awt.Component is in BForm.cs(java) */
     public BEvent<BKeyEventHandler> keyUpEvent = new BEvent<BKeyEventHandler>();
     public BEvent<BKeyEventHandler> keyDownEvent = new BEvent<BKeyEventHandler>();
-    public BEvent<BKeyEventHandler> keyPressedEvent = new BEvent<BKeyEventHandler>();
+    public BEvent<BKeyPressEventHandler> keyPressEvent = new BEvent<BKeyPressEventHandler>();
 
     public void keyPressed( KeyEvent e0 ){
         try{
@@ -109,8 +111,8 @@ public class TextBoxEx extends JWindow implements WindowFocusListener, Component
 
     public void keyTyped( KeyEvent e0 ){
         try{
-            BKeyEventArgs e = new BKeyEventArgs( e0 );
-            keyPressedEvent.raise( this, e );
+            BKeyPressEventArgs e = new BKeyPressEventArgs( e0 );
+            keyPressEvent.raise( this, e );
         }catch( Exception ex ){
             System.err.println( "BForm#keyTyped; ex=" + ex );
         }

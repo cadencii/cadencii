@@ -27,9 +27,19 @@ public class SoloChangedEventHandler extends BEventHandler{
     }
 }
 #else
+using System;
+
 namespace org.kbinani.cadencii {
 
-    public delegate void SoloChangedEventHandler( int track, bool solo );
+    public class SoloChangedEventHandler : BEventHandler {
+        public SoloChangedEventHandler( Object sender, String method_name )
+            : base( sender, method_name, typeof( void ), typeof( int ), typeof( bool ) ) {
+        }
+
+        public SoloChangedEventHandler( Type sender, String method_name )
+            : base( sender, method_name, typeof( void ), typeof( int ), typeof( bool ) ) {
+        }
+    }
 
 }
 #endif

@@ -16,12 +16,10 @@
 -org.kbinani.dllの*EventHandler.csのJava実装部分がBuildJavaUIからプリプロセッサ・インポートしない書き方になっているのでこれを直す．eclipseで開いたときこれらのイベントハンドラが無いとテスト実行できないので．
 
 -jcadencii todo--------------------------------------------------------
--JavaVMが1.5のとき，Arrays#binarySearch(int[],int,int,int)がNoSuchMethodErrorになる(MacのデフォルトのJavaVMが1.5)
 -BListViewのカラム・ヘッダーの扱いがヤバイ
--FormMixerで，volumeMasterのみが有効になっている．各トラックのアイテムの扱いはどうなってた？
 -BForm, BDialogを継承している全てのクラスで，コンストラクタの先頭にsuper();initialize();を忘れていないかチェック
 -BListViewで，行ごとの選択ができない
--デフォルトの表示フォントが小さい．
+-XmlMember; protectedなアイテムをリストアップしないようにする。
 
 -v3.1.4todo------------------------------------------------------------
 -ピアノロール上でピッチベンドを編集する機能

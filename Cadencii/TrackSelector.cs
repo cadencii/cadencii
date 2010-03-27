@@ -349,22 +349,15 @@ namespace org.kbinani.cadencii {
         private Vector<BPPair> m_moving_points = new Vector<BPPair>();
         private int m_last_preferred_min_height;
         private PolylineDrawer drawer = new PolylineDrawer( null, 1024 );
-#if JAVA
+
         public BEvent<SelectedCurveChangedEventHandler> selectedCurveChangedEvent = new BEvent<SelectedCurveChangedEventHandler>();
         public BEvent<SelectedTrackChangedEventHandler> selectedTrackChangedEvent = new BEvent<SelectedTrackChangedEventHandler>();
         public BEvent<BEventHandler> commandExecutedEvent = new BEvent<BEventHandler>();
         public BEvent<RenderRequiredEventHandler> renderRequiredEvent = new BEvent<RenderRequiredEventHandler>();
-        public BEvent<BEventHandler> preferredMinHeightChangedEvent = new BEvent<BEventHandler>();
-#else
-        public event SelectedCurveChangedEventHandler SelectedCurveChanged;
-        public event SelectedTrackChangedEventHandler SelectedTrackChanged;
-        public event EventHandler CommandExecuted;
-        public event RenderRequiredEventHandler RenderRequired;
         /// <summary>
         /// このコントロールの推奨表示高さが変わったとき発生します
         /// </summary>
-        public event EventHandler PreferredMinHeightChanged;
-#endif
+        public BEvent<BEventHandler> preferredMinHeightChangedEvent = new BEvent<BEventHandler>();
 
         public TrackSelector() {
 #if JAVA
@@ -769,17 +762,11 @@ namespace org.kbinani.cadencii {
             } else {
                 AppManager.getVsqFile().executeCommand( command );
             }
-#if JAVA
             try{
                 commandExecutedEvent.raise( this, new BEventArgs() );
             }catch( Exception ex ){
-                System.err.println( "TrackSelector#executeCommand; ex=" + ex );
+                PortUtil.stderr.println( "TrackSelector#executeCommand; ex=" + ex );
             }
-#else
-            if ( CommandExecuted != null ) {
-                CommandExecuted( this, new BEventArgs() );
-            }
-#endif
         }
 
         public ValuePair<Integer, Integer> getSelectedRegion() {
@@ -802,17 +789,11 @@ namespace org.kbinani.cadencii {
             m_selected_curve = value;
             if ( !old.equals( m_selected_curve ) ) {
                 m_last_selected_curve = old;
-#if JAVA
                 try{
                     selectedCurveChangedEvent.raise( this, m_selected_curve );
                 }catch( Exception ex ){
-                    System.err.println( "TrackSelector#setSelectedCurve; ex=" + ex );
+                    PortUtil.stderr.println( "TrackSelector#setSelectedCurve; ex=" + ex );
                 }
-#else
-                if ( SelectedCurveChanged != null ) {
-                    SelectedCurveChanged( this, m_selected_curve );
-                }
-#endif
             }
         }
 
@@ -907,17 +888,11 @@ namespace org.kbinani.cadencii {
             int y = centre - row_per_column * UNIT_HEIGHT_PER_CURVE / 2 + 2 + UNIT_HEIGHT_PER_CURVE * iy;
             int min_size = getPreferredMinSize();
             if ( m_last_preferred_min_height != min_size ){
-#if JAVA
                 try{
                     preferredMinHeightChangedEvent.raise( this, new BEventArgs() );
                 }catch( Exception ex ){
-                    System.err.println( "TrackSelector#getRectFromCurveType; ex=" + ex );
+                    PortUtil.stderr.println( "TrackSelector#getRectFromCurveType; ex=" + ex );
                 }
-#else
-                if ( PreferredMinHeightChanged != null ) {
-                    PreferredMinHeightChanged( this, new BEventArgs() );
-                }
-#endif
                 m_last_preferred_min_height = min_size;
             }
             return new Rectangle( x, y, 56, 14 );
@@ -3234,32 +3209,20 @@ namespace org.kbinani.cadencii {
                                     int new_selected = i + 1;
                                     if ( AppManager.getSelected() != new_selected ) {
                                         AppManager.setSelected( i + 1 );
-#if JAVA
                                         try{
                                             selectedTrackChangedEvent.raise( this, i + 1 );
                                         }catch( Exception ex ){
-                                            System.err.println( "TrackSelector#TrackSelector_MouseDown; ex=" + ex );
+                                            PortUtil.stderr.println( "TrackSelector#TrackSelector_MouseDown; ex=" + ex );
                                         }
-#else
-                                        if ( SelectedTrackChanged != null ) {
-                                            SelectedTrackChanged( this, i + 1 );
-                                        }
-#endif
                                         invalidate();
                                         return;
                                     } else if ( x + selecter_width - _PX_WIDTH_RENDER <= e.X && e.X < e.X + selecter_width ) {
                                         if ( AppManager.getRenderRequired( AppManager.getSelected() ) && !AppManager.isPlaying() ) {
-#if JAVA
                                             try{
                                                 renderRequiredEvent.raise( this, new int[]{ AppManager.getSelected() } );
                                             }catch( Exception ex ){
-                                                System.err.println( "TrackSelector#TrackSelector_MouseDown; ex=" + ex );
+                                                PortUtil.stderr.println( "TrackSelector#TrackSelector_MouseDown; ex=" + ex );
                                             }
-#else
-                                            if ( RenderRequired != null ) {
-                                                RenderRequired( this, new int[] { AppManager.getSelected() } );
-                                            }
-#endif
                                         }
                                     }
                                 }
@@ -4016,17 +3979,11 @@ namespace org.kbinani.cadencii {
             if ( !m_selected_curve.equals( curve ) ) {
                 m_last_selected_curve = m_selected_curve;
                 m_selected_curve = curve;
-#if JAVA
                 try{
                     selectedCurveChangedEvent.raise( this, curve );
                 }catch( Exception ex ){
-                    System.err.println( "TrackSelector#changeCurve; ex=" + ex );
+                    PortUtil.stderr.println( "TrackSelector#changeCurve; ex=" + ex );
                 }
-#else
-                if ( SelectedCurveChanged != null ) {
-                    SelectedCurveChanged( this, curve );
-                }
-#endif
             }
         }
 

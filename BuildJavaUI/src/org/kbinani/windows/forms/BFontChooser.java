@@ -121,6 +121,7 @@ public class BFontChooser extends BDialog {
         lblName = new JLabel();
         lblName.setText("Font Name");
         this.setSize(new Dimension(477, 300));
+        this.setModal(true);
         this.setTitle("Font");
         this.setContentPane(getJPanel1());
     		
@@ -230,7 +231,7 @@ public class BFontChooser extends BDialog {
             gridBagConstraints13.insets = new Insets(16, 0, 16, 0);
             gridBagConstraints13.gridy = 4;
             lblSample = new JLabel();
-            lblSample.setText("Aa‚ ‚ŸƒAƒ@ˆŸ‰F");
+            lblSample.setText("Aaï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½@ï¿½ï¿½ï¿½F");
             GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
             gridBagConstraints6.gridx = 2;
             gridBagConstraints6.anchor = GridBagConstraints.WEST;

@@ -26,6 +26,69 @@ namespace org.kbinani.windows.forms {
         }
         #endregion
 
+        #region event impl MouseClick
+        // root impl of MouseClick is in BButton
+        public BEvent<BMouseEventHandler> mouseClickEvent = new BEvent<BMouseEventHandler>();
+        protected override void OnMouseClick( System.Windows.Forms.MouseEventArgs e ) {
+            base.OnMouseClick( e );
+            mouseClickEvent.raise( this, e );
+        }
+        #endregion
+
+        #region event impl MouseUp
+        // root impl of MouseUp event is in BButton
+        public BEvent<BMouseEventHandler> mouseUpEvent = new BEvent<BMouseEventHandler>();
+        protected override void OnMouseUp( System.Windows.Forms.MouseEventArgs mevent ) {
+            base.OnMouseUp( mevent );
+            mouseUpEvent.raise( this, mevent );
+        }
+        #endregion
+
+        #region event impl MouseDown
+        // root impl of MouseDown event is in BButton
+        public BEvent<BMouseEventHandler> mouseDownEvent = new BEvent<BMouseEventHandler>();
+        protected override void OnMouseDown( System.Windows.Forms.MouseEventArgs mevent ) {
+            base.OnMouseDown( mevent );
+            mouseDownEvent.raise( this, mevent );
+        }
+        #endregion
+
+        #region event impl MouseMove
+        // root impl of MouseMove event is in BButton
+        public BEvent<BMouseEventHandler> mouseMoveEvent = new BEvent<BMouseEventHandler>();
+        protected override void OnMouseMove( System.Windows.Forms.MouseEventArgs mevent ) {
+            base.OnMouseMove( mevent );
+            mouseMoveEvent.raise( this, mevent );
+        }
+        #endregion
+
+        #region event impl PreviewKeyDown
+        // root implf of PreviewKeyDown is in BButton
+        public BEvent<BPreviewKeyDownEventHandler> previewKeyDownEvent = new BEvent<BPreviewKeyDownEventHandler>();
+        protected override void OnPreviewKeyDown( System.Windows.Forms.PreviewKeyDownEventArgs e ) {
+            base.OnPreviewKeyDown( e );
+            previewKeyDownEvent.raise( this, e );
+        }
+        #endregion
+
+        #region event impl KeyUp
+        // root impl of KeyUp event is in BTextBox
+        public BEvent<BKeyEventHandler> keyUpEvent = new BEvent<BKeyEventHandler>();
+        protected override void OnKeyUp( System.Windows.Forms.KeyEventArgs e ) {
+            base.OnKeyUp( e );
+            keyUpEvent.raise( this, e );
+        }
+        #endregion
+
+        #region event impl KeyDown
+        // root impl of KeyDown event is in BTextBox
+        public BEvent<BKeyEventHandler> keyDownEvent = new BEvent<BKeyEventHandler>();
+        protected override void OnKeyDown( System.Windows.Forms.KeyEventArgs e ) {
+            base.OnKeyDown( e );
+            keyDownEvent.raise( this, e );
+        }
+        #endregion
+        
         #region java.awt.Component
         // root implementation of java.awt.Component is in BForm.cs
         public java.awt.Dimension getMinimumSize() {

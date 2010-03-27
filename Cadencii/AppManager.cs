@@ -62,7 +62,7 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public const int DYNAFF_ITEM_WIDTH = 40;
 #if JAVA
-        public const int FONT_SIZE8 = 10;
+        public const int FONT_SIZE8 = 14;
 #else
         public const int FONT_SIZE8 = 8;
 #endif
@@ -89,16 +89,16 @@ namespace org.kbinani.cadencii {
 #else
         public static XmlSerializer xmlSerializerListBezierCurves = new XmlSerializer( typeof( AttachedCurve ) );
 #endif
-        public static Font baseFont8 = new Font( "Dialog", Font.PLAIN, 8 );
-        public static Font baseFont9 = new Font( "Dialog", Font.PLAIN, 9 );
+        public static Font baseFont8 = new Font( "Dialog", Font.PLAIN, FONT_SIZE8 );
+        public static Font baseFont9 = new Font( "Dialog", Font.PLAIN, FONT_SIZE9 );
         /// <summary>
         /// ピアノロールの歌詞の描画に使用されるフォント。
         /// </summary>
-        public static Font baseFont10 = new Font( "Dialog", Font.PLAIN, 10 );
+        public static Font baseFont10 = new Font( "Dialog", Font.PLAIN, FONT_SIZE10 );
         /// <summary>
         /// ピアノロールの歌詞の描画に使用されるフォント。（発音記号固定の物の場合）
         /// </summary>
-        public static Font baseFont10Bold = new Font( "Dialog", Font.BOLD, 10 );
+        public static Font baseFont10Bold = new Font( "Dialog", Font.BOLD, FONT_SIZE10 );
         /// <summary>
         /// 歌詞を音符の（高さ方向の）真ん中に描画するためのオフセット
         /// </summary>

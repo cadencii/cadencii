@@ -26,9 +26,19 @@ public class MuteChangedEventHandler extends BEventHandler{
     }
 }
 #else
+using System;
+
 namespace org.kbinani.cadencii {
 
-    public delegate void MuteChangedEventHandler( int track, bool mute );
+    public class MuteChangedEventHandler : BEventHandler {
+        public MuteChangedEventHandler( Object sender, String method_name )
+            : base( sender, method_name, typeof( void ), typeof( int ), typeof( bool ) ) {
+        }
+
+        public MuteChangedEventHandler( Type sender, String method_name )
+            : base( sender, method_name, typeof( void ), typeof( int ), typeof( bool ) ) {
+        }
+    }
 
 }
 #endif

@@ -68,6 +68,7 @@ public class BFolderBrowser extends BDialog {
      */
     private void initialize() {
         this.setSize(new Dimension(341, 416));
+        this.setModal(true);
         this.setContentPane(getJPanel());
     		
     }
