@@ -1,10 +1,19 @@
 package org.kbinani.xml;
 
 import java.util.*;
+import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.lang.reflect.*;
 import org.kbinani.PortUtil;
 
 public class XmlMember{
+    /**
+     * スーパークラスに対する再帰的なメンバー検索を行わないクラスのリスト
+     */
+    private static Class<?>[] ignoreRecursiveMemberExtraction = 
+        new Class<?>[]{ Object.class, Rectangle.class, Rectangle2D.class, Point.class, Point2D.class };
     private String m_name;
     private Method m_getter = null;
     private Method m_setter = null;
@@ -58,11 +67,21 @@ public class XmlMember{
     
         // superクラスのプロパティを取得
         Class<?> superclass = t.getSuperclass();
-        if( superclass != null && !(superclass.equals( Object.class )) ){
+//PortUtil.println( "XmlMember#extractMembers; t=" + t );
+        if( superclass != null ){
+            boolean check_this_superclass = true;
+            for( Class<?> cls : ignoreRecursiveMemberExtraction ){
+                if( t.equals( cls ) ){
+                    check_this_superclass = false;
+                    break;
+                }
+            }
+            if( check_this_superclass ){
 PortUtil.println( "XmlMember#extractMembers; superclass=" + superclass );
-            XmlMember[] super_members = extractMembers( superclass );
-            for( XmlMember xm : super_members ){
-                members.add( xm );
+                XmlMember[] super_members = extractMembers( superclass );
+                for( XmlMember xm : super_members ){
+                    members.add( xm );
+                }
             }
         }
         Vector<String> props = new Vector<String>();

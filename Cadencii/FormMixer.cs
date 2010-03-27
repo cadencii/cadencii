@@ -247,6 +247,27 @@ namespace org.kbinani.cadencii {
             volumeMaster.setSoloButtonVisible( false );
 
 #if JAVA
+            this.setResizable( true );
+            //panel1.setPreferredSize( new Dimension( (VolumeTracker.WIDTH + 1) * (screen_num - 1), VolumeTracker.HEIGHT ) );
+            JPanel c = getJContentPane();
+            Dimension size = c.getSize();
+            Rectangle rc = new Rectangle();
+            rc = c.getBounds( rc );
+            int xdiff = this.getWidth() - rc.width;
+            int ydiff = this.getHeight() - rc.height;
+            PortUtil.println( "FormMixer#updateStatus; this.getWidth()=" + this.getWidth() + "; this.getHeight()=" + this.getHeight() );
+            PortUtil.println( "FormMixer#updateStatus; rc.width=" + rc.width + "; rc.height=" + rc.height );
+            int w = screen_num * (VolumeTracker.WIDTH + 1) + 3;
+            int h = VolumeTracker.HEIGHT + hScroll.getHeight();
+            this.setSize( w, h + hScroll.getHeight() + menuMain.getHeight() );
+            PortUtil.println( "FormMixer#updateStatus; w=" + w + "; h=" + h + "; xdiff=" + xdiff + "; ydiff=" + ydiff );
+            /*c.setMaximumSize( null );
+            c.setMinimumSize( null );
+            Dimension s = new Dimension( w, h );
+            c.setPreferredSize( s );
+            c.setMaximumSize( s );
+            c.setMinimumSize( s );*/
+            this.setResizable( false );
 #else
             panel1.Width = (VolumeTracker.WIDTH + 1) * (screen_num - 1);
             volumeMaster.Location = new System.Drawing.Point( (screen_num - 1) * (VolumeTracker.WIDTH + 1) + 3, 0 );

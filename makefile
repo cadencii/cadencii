@@ -9,6 +9,9 @@ all: first $(TARGET)/Cadencii.exe
 first: ./first.pl
 	perl ./first.pl
 
+jcadencii_win: jcadencii
+	exewrap -g -t 1.6 -o .\build\java\jCadencii.exe -i .\Cadencii\resources\icon.ico .\build\java\Cadencii.jar
+
 jcadencii: pp_cs2java.exe jcorlib japputil jmedia jvsq ./Cadencii/Resources.cs
 	mono ./pp_cs2java.exe -DJAVA -DRELEASE -DCLIPBOARD_AS_TEXT -b ./build/java -encoding "UTF-8" -s -4 -c -t ./Cadencii
 	$(CP) ./build/java/org/kbinani/cadencii/NumberTextBox.java ./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java

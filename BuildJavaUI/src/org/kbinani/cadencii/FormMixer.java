@@ -11,6 +11,7 @@ import org.kbinani.windows.forms.BHScrollBar;
 import org.kbinani.windows.forms.BMenu;
 import org.kbinani.windows.forms.BMenuItem;
 import org.kbinani.windows.forms.BPanel;
+import java.awt.Dimension;
 
 //SECTION-END-IMPORT
 public class FormMixer extends BForm {
@@ -42,7 +43,7 @@ public class FormMixer extends BForm {
 	 * @return void
 	 */
 	private void initialize() {
-		this.setSize(377, 653);
+		this.setSize(161, 343);
 		this.setJMenuBar(getMenuMain());
 		this.setContentPane(getJContentPane());
 		this.setTitle("JFrame");
@@ -58,7 +59,7 @@ public class FormMixer extends BForm {
 			GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
 			gridBagConstraints5.gridx = 1;
 			gridBagConstraints5.weightx = 0.0D;
-			gridBagConstraints5.anchor = GridBagConstraints.SOUTH;
+			gridBagConstraints5.anchor = GridBagConstraints.WEST;
 			gridBagConstraints5.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints5.gridy = 1;
 			GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
@@ -78,7 +79,7 @@ public class FormMixer extends BForm {
 			gridBagConstraints1.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints1.gridy = 1;
 			gridBagConstraints1.weighty = 0.0D;
-			gridBagConstraints1.anchor = GridBagConstraints.SOUTH;
+			gridBagConstraints1.anchor = GridBagConstraints.WEST;
 			gridBagConstraints1.weightx = 1.0D;
 			gridBagConstraints1.gridx = 0;
 			GridBagConstraints gridBagConstraints = new GridBagConstraints();
@@ -89,9 +90,9 @@ public class FormMixer extends BForm {
 			gridBagConstraints.gridy = 0;
 			jContentPane = new JPanel();
 			jContentPane.setLayout(new GridBagLayout());
-			jContentPane.add(getHScroll(), gridBagConstraints1);
 			jContentPane.add(getPanel1(), gridBagConstraints3);
 			jContentPane.add(getVolumeMaster(), gridBagConstraints4);
+			jContentPane.add(getHScroll(), gridBagConstraints1);
 			jContentPane.add(getChkTopmost(), gridBagConstraints5);
 		}
 		return jContentPane;
