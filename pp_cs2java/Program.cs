@@ -13,6 +13,7 @@ class pp_cs2java {
     static String s_base_dir = "";     // 出力先
     static String s_target_dir = "";   // ファイルの検索開始位置
     static string s_target_file = "";
+    static string s_target_file_out = "";
     static bool s_recurse = false;
     static String s_encoding = "UTF-8";
     static bool s_ignore_empty = true; // プリプロセッサを通すと中身が空になるファイルを無視する場合はtrue
@@ -87,7 +88,7 @@ class pp_cs2java {
         Console.WriteLine( "Copyright (C) kbinani, All Rights Reserved" );
         Console.WriteLine( "Usage:" );
         Console.WriteLine( "    pp_cs2java -t [search path] -b [output path] {options}" );
-        Console.WriteLine( "    pp_cs2java -i [file] -b [output path] {options}" );
+        Console.WriteLine( "    pp_cs2java -i [in file] -o [out file] {options}" );
         Console.WriteLine( "Options:" );
         Console.WriteLine( "    -r                     enable recursive search" );
         Console.WriteLine( "    -e                     disable ignoring empty file" );
@@ -95,6 +96,7 @@ class pp_cs2java {
         Console.WriteLine( "    -D[name]               define preprocessor directive" );
         Console.WriteLine( "    -t [path]              set search directory path" );
         Console.WriteLine( "    -i [path]              set target file" );
+        Console.WriteLine( "    -o [path]              name of output file" );
         Console.WriteLine( "    -b [path]              set output directory path" );
         Console.WriteLine( "    -s [number]            increase indent [number] column(s)" );
         Console.WriteLine( "                           (decrease if minus)" );
@@ -153,8 +155,16 @@ class pp_cs2java {
                 } else if ( current_parse == "-i" ) {
                     s_target_file = args[i];
                     current_parse = "";
+                } else if( current_parse == "-o" ) {
+                    s_target_file_out = args[i];
+                    current_parse = "";
                 }
             }
+        }
+
+        if( s_target_dir != "" && s_target_file != "" ){
+            Console.WriteLine( "error; confliction in command line arguments. -i and -t option can't co-exists" );
+            return;
         }
 
         if ( print_usage ) {
@@ -169,12 +179,12 @@ class pp_cs2java {
             return;
         }
 
-        if ( s_base_dir == "" ) {
-            Console.WriteLine( "error; output path has not specified" );
-            return;
-        }
-
         if ( s_target_dir != "" ) {
+            if ( s_base_dir == "" ) {
+                Console.WriteLine( "error; output path has not specified" );
+                return;
+            }
+
             if ( s_recurse ) {
                 preprocessRecurse( s_target_dir );
             } else {
@@ -500,27 +510,31 @@ class pp_cs2java {
 		//Console.WriteLine( "pp_cs2java#preprocessCor; package=" + package );
 #endif
         String out_path = "";
-        if ( package == "" ) {
-            out_path = Path.Combine( s_base_dir, Path.GetFileNameWithoutExtension( path ) + ".java" );
-        } else {
-            String[] spl = package.Split( '.' );
-            if ( !Directory.Exists( s_base_dir ) ) {
-                Directory.CreateDirectory( s_base_dir );
-            }
-            for ( int i = 0; i < spl.Length; i++ ) {
-                String dir = s_base_dir;
-                for ( int j = 0; j <= i; j++ ) {
-                    dir = Path.Combine( dir, spl[j] );
+        if( s_target_file_out == "" ){
+            if ( package == "" ) {
+                out_path = Path.Combine( s_base_dir, Path.GetFileNameWithoutExtension( path ) + ".java" );
+            } else {
+                String[] spl = package.Split( '.' );
+                if ( !Directory.Exists( s_base_dir ) ) {
+                    Directory.CreateDirectory( s_base_dir );
                 }
-                if ( !Directory.Exists( dir ) ) {
-                    Directory.CreateDirectory( dir );
+                for ( int i = 0; i < spl.Length; i++ ) {
+                    String dir = s_base_dir;
+                    for ( int j = 0; j <= i; j++ ) {
+                        dir = Path.Combine( dir, spl[j] );
+                    }
+                    if ( !Directory.Exists( dir ) ) {
+                        Directory.CreateDirectory( dir );
+                    }
                 }
+                out_path = s_base_dir;
+                for ( int i = 0; i < spl.Length; i++ ) {
+                    out_path = Path.Combine( out_path, spl[i] );
+                }
+                out_path = Path.Combine( out_path, Path.GetFileNameWithoutExtension( path ) + ".java" );
             }
-            out_path = s_base_dir;
-            for ( int i = 0; i < spl.Length; i++ ) {
-                out_path = Path.Combine( out_path, spl[i] );
-            }
-            out_path = Path.Combine( out_path, Path.GetFileNameWithoutExtension( path ) + ".java" );
+        }else{
+            out_path = s_target_file_out;
         }
 #if DEBUG
         //Console.WriteLine( "pp_cs2java#preprocessCor; out_path=" + out_path );
