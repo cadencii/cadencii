@@ -25,7 +25,7 @@ jeditotoini: pp_cs2java.exe jcorlib japputil jmedia jvsq
 	javac $(JROOT)/editotoini/*.java $(JROOT)/*.java $(JROOT)/windows/forms/*.java $(JROOT)/componentmodel/*.java $(JROOT)/vsq/*.java $(JROOT)/xml/*.java $(JROOT)/apputil/*.java $(JROOT)/media/*.java -encoding UTF8
 
 jcorlib: pp_cs2java.exe ./org.kbinani/*.cs
-	mono ./pp_cs2java.exe -DJAVA -DRELEASE -DCLIPBOARD_AS_TEXT -b ./build/java -encoding "UTF-8" -s -4 -c -t ./org.kbinani
+	mono ./pp_cs2java.exe -DJAVA -DRELEASE -DCLIPBOARD_AS_TEXT -b ./build/java/ -encoding "UTF-8" -s -4 -c -t ./org.kbinani/
 	$(CP) ./build/java/org/kbinani/math.java ./BuildJavaUI/src/org/kbinani/math.java
 	$(CP) ./build/java/org/kbinani/PortUtil.java ./BuildJavaUI/src/org/kbinani/PortUtil.java
 	$(CP) ./build/java/org/kbinani/InternalStdErr.java ./BuildJavaUI/src/org/kbinani/InternalStdErr.java

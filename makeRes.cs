@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 //using System.Drawing;
 
@@ -87,6 +87,9 @@ class makeRes{
             sw.WriteLine();
             string line = "";
             while( (line = sr.ReadLine()) != null ){
+				// 区切り文字を置換
+				line = line.Replace( '/', Path.DirectorySeparatorChar );
+				line = line.Replace( '\\', Path.DirectorySeparatorChar );
                 string[] spl = line.Split( '\t' );
                 if( spl.Length < 3 ){
                     continue;
