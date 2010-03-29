@@ -183,13 +183,13 @@ first: ./first.pl
 	$(MKDIR) build/java/org
 	$(MKDIR) build/java/org/kbinani
 	$(MKDIR) build/java/org/kbinani/apputil
+	$(MKDIR) build/java/org/kbinani/cadencii
 	$(MKDIR) build/java/org/kbinani/componentmodel
 	$(MKDIR) build/java/org/kbinani/media
 	$(MKDIR) build/java/org/kbinani/vsq
 	$(MKDIR) build/java/org/kbinani/windows
 	$(MKDIR) build/java/org/kbinani/windows/forms
 	$(MKDIR) build/java/org/kbinani/xml
-#	perl ./first.pl
 
 jcadencii_win: jcadencii
 	exewrap -g -t 1.6 -o .\build\java\jCadencii.exe -i .\Cadencii\resources\icon.ico .\build\java\Cadencii.jar
@@ -203,6 +203,7 @@ jcadencii: pp_cs2java.exe jcorlib japputil jmedia jvsq $(SRC_JCADENCII) ./Cadenc
 	$(CP) ./Cadencii/resources/*.png ./build/java/resources/*.png
 	$(CP) ./Cadencii/resources/*.txt ./build/java/resources/*.txt
 	$(CP) ./Cadencii/resources/*.ico ./build/java/resources/*.ico
+	$(CP) ./Cadencii/resources/*.icns ./build/java/resources/*.icns
 
 jeditotoini: pp_cs2java.exe jcorlib japputil jmedia jvsq
 	mono ./pp_cs2java.exe $(PPCS2JAVA_OPT) -b ./build/java -t ./EditOtoIni
@@ -231,6 +232,7 @@ $(TARGET)/Cadencii.exe: ./Cadencii/Resources.cs ./Cadencii/*.cs ./Cadencii/resou
 	$(CP) ./Cadencii/resources/*.png $(TARGET)/resources/*.png
 	$(CP) ./Cadencii/resources/*.txt $(TARGET)/resources/*.txt
 	$(CP) ./Cadencii/resources/*.ico $(TARGET)/resources/*.ico
+	$(CP) ./Cadencii/resources/*.icns $(TARGET)/resources/*.icns
 
 ./Cadencii/Resources.cs: ./Cadencii/Resources.list makeRes.exe
 	mono ./makeRes.exe -i ./Cadencii/Resources.list -o ./Cadencii/Resources.cs -p org.kbinani.cadencii -n org.kbinani.cadencii
