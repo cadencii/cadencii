@@ -14,7 +14,7 @@
     <RootNamespace>Documentation</RootNamespace>
     <Name>Documentation</Name>
     <!-- SHFB properties -->
-    <OutputPath>.\docs\</OutputPath>
+    <OutputPath>.\docs\msdnstyle\</OutputPath>
     <HtmlHelpName>Documentation</HtmlHelpName>
     <Language>ja-JP</Language>
     <FrameworkVersion>2.0.50727</FrameworkVersion>

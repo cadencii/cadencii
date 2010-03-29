@@ -239,7 +239,11 @@ public class Utau_Plugin_Invoker : Form {
         if ( next != null ) {
             tust.getTrack( 0 ).getEvent( tust.getTrack( 0 ).getEventCount() - 1 ).Index = int.MaxValue;
         }
-        tust.write( temp, false );
+        UstFileWriteOptions options = new UstFileWriteOptions();
+        options.settingTempo = true;
+        options.settingVoiceDir = true;
+        options.settingCacheDir = true;
+        tust.write( temp, options );
 
         // 起動 -----------------------------------------------------------------------------
         Utau_Plugin_Invoker dialog = new Utau_Plugin_Invoker( exe_path, temp );

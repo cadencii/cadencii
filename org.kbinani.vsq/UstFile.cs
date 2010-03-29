@@ -430,37 +430,68 @@ namespace org.kbinani.vsq {
         }
 
         public void write( String file ) {
-            write( file, true );
+            UstFileWriteOptions opt = new UstFileWriteOptions();
+            opt.settingCacheDir = true;
+            opt.settingOutFile = true;
+            opt.settingProjectName = true;
+            opt.settingTempo = true;
+            opt.settingTool1 = true;
+            opt.settingTool2 = true;
+            opt.settingTracks = true;
+            opt.settingVoiceDir = true;
+            opt.trackEnd = true;
+            write( file, opt );
         }
 
         public void write( String file, boolean print_track_end ) {
+            UstFileWriteOptions opt = new UstFileWriteOptions();
+            opt.settingCacheDir = true;
+            opt.settingOutFile = true;
+            opt.settingProjectName = true;
+            opt.settingTempo = true;
+            opt.settingTool1 = true;
+            opt.settingTool2 = true;
+            opt.settingTracks = true;
+            opt.settingVoiceDir = true;
+            opt.trackEnd = print_track_end;
+            write( file, opt );
+        }
+
+        public void write( String file, UstFileWriteOptions options ) {
             BufferedWriter sw = null;
             try {
                 sw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( file ), "Shift_JIS" ) );
-                sw.write( "[#SETTING]" );
-                sw.newLine();
-                sw.write( "Tempo=" + m_tempo );
-                sw.newLine();
-                sw.write( "Tracks=1" );
-                sw.newLine();
-                sw.write( "ProjectName=" + m_project_name );
-                sw.newLine();
-                sw.write( "VoiceDir=" + m_voice_dir );
-                sw.newLine();
-                sw.write( "OutFile=" + m_out_file );
-                sw.newLine();
-                sw.write( "CacheDir=" + m_cache_dir );
-                sw.newLine();
-                sw.write( "Tool1=" + m_tool1 );
-                sw.newLine();
-                sw.write( "Tool2=" + m_tool2 );
-                sw.newLine();
+                sw.write( "[#SETTING]" ); sw.newLine();
+                if ( options.settingTempo ) {
+                    sw.write( "Tempo=" + m_tempo ); sw.newLine();
+                }
+                if ( options.settingTracks ) {
+                    sw.write( "Tracks=1" ); sw.newLine();
+                }
+                if ( options.settingProjectName ) {
+                    sw.write( "ProjectName=" + m_project_name ); sw.newLine();
+                }
+                if ( options.settingVoiceDir ) {
+                    sw.write( "VoiceDir=" + m_voice_dir ); sw.newLine();
+                }
+                if ( options.settingOutFile ) {
+                    sw.write( "OutFile=" + m_out_file ); sw.newLine();
+                }
+                if ( options.settingCacheDir ) {
+                    sw.write( "CacheDir=" + m_cache_dir ); sw.newLine();
+                }
+                if ( options.settingTool1 ) {
+                    sw.write( "Tool1=" + m_tool1 ); sw.newLine();
+                }
+                if ( options.settingTool2 ) {
+                    sw.write( "Tool2=" + m_tool2 ); sw.newLine();
+                }
                 UstTrack target = m_tracks.get( 0 );
                 int count = target.getEventCount();
                 for ( int i = 0; i < count; i++ ) {
                     target.getEvent( i ).print( sw );
                 }
-                if ( print_track_end ) {
+                if ( options.trackEnd ) {
                     sw.write( "[#TRACKEND]" );
                 }
                 sw.newLine();

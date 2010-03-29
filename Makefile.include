@@ -1,5 +1,6 @@
 CP=@CP@
 RM=@RM@
+MKDIR=@MKDIR@
 TARGET=@TARGET@
 MCS_OPT=-warn:0
 JROOT=./build/java/org/kbinani
@@ -87,7 +88,7 @@ SRC_JVSQ=./build/java/org/kbinani/vsq/BPPair.java ./build/java/org/kbinani/vsq/D
            ./build/java/org/kbinani/vsq/VsqMixerEntry.java ./build/java/org/kbinani/vsq/VsqNote.java \
            ./build/java/org/kbinani/vsq/VsqNrpn.java ./build/java/org/kbinani/vsq/VsqPhoneticSymbol.java \
            ./build/java/org/kbinani/vsq/VsqTrack.java ./build/java/org/kbinani/vsq/VsqVoiceLanguage.java \
-           ./build/java/org/kbinani/vsq/WrappedStreamWriter.java
+           ./build/java/org/kbinani/vsq/WrappedStreamWriter.java ./build/java/org/kbinani/vsq/UstFileWriteOptions.java
 
 SRC_JCADENCII=./build/java/org/kbinani/cadencii/AmplifyCoefficient.java ./build/java/org/kbinani/cadencii/AppManager.java \
               ./build/java/org/kbinani/cadencii/AttachedCurve.java ./build/java/org/kbinani/cadencii/AttackVariation.java \
@@ -174,9 +175,21 @@ SRC_JCADENCII=./build/java/org/kbinani/cadencii/AmplifyCoefficient.java ./build/
 all: first $(TARGET)/Cadencii.exe
 
 first: ./first.pl
-	perl ./first.pl
-
-work/Test.java: work/Test.cs
+	$(MKDIR) build
+	$(MKDIR) $(TARGET)
+	$(MKDIR) $(TARGET)/resources
+	$(MKDIR) build/java
+	$(MKDIR) build/java/resources
+	$(MKDIR) build/java/org
+	$(MKDIR) build/java/org/kbinani
+	$(MKDIR) build/java/org/kbinani/apputil
+	$(MKDIR) build/java/org/kbinani/componentmodel
+	$(MKDIR) build/java/org/kbinani/media
+	$(MKDIR) build/java/org/kbinani/vsq
+	$(MKDIR) build/java/org/kbinani/windows
+	$(MKDIR) build/java/org/kbinani/windows/forms
+	$(MKDIR) build/java/org/kbinani/xml
+#	perl ./first.pl
 
 jcadencii_win: jcadencii
 	exewrap -g -t 1.6 -o .\build\java\jCadencii.exe -i .\Cadencii\resources\icon.ico .\build\java\Cadencii.jar
@@ -187,6 +200,9 @@ jcadencii: pp_cs2java.exe jcorlib japputil jmedia jvsq $(SRC_JCADENCII) ./Cadenc
 	javac ./build/java/Cadencii.java ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/*.java ./build/java/org/kbinani/apputil/*.java ./build/java/org/kbinani/media/*.java ./build/java/org/kbinani/vsq/*.java ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/componentmodel/*.java ./build/java/org/kbinani/windows/forms/*.java ./build/java/org/kbinani/xml/*.java -encoding UTF8 -target 1.5 -source 1.5
 	$(CP) ./Cadencii/Cadencii.mf ./build/java/Cadencii.mf
 	cd ./build/java && jar cfm Cadencii.jar Cadencii.mf Cadencii.class org/kbinani/cadencii/*.class org/kbinani/*.class org/kbinani/apputil/*.class org/kbinani/media/*.class org/kbinani/vsq/*.class org/kbinani/cadencii/*.class org/kbinani/componentmodel/*.class org/kbinani/windows/forms/*.class org/kbinani/xml/*.class
+	$(CP) ./Cadencii/resources/*.png ./build/java/resources/*.png
+	$(CP) ./Cadencii/resources/*.txt ./build/java/resources/*.txt
+	$(CP) ./Cadencii/resources/*.ico ./build/java/resources/*.ico
 
 jeditotoini: pp_cs2java.exe jcorlib japputil jmedia jvsq
 	mono ./pp_cs2java.exe $(PPCS2JAVA_OPT) -b ./build/java -t ./EditOtoIni
@@ -210,8 +226,11 @@ pp_cs2java.exe: first $(TARGET)/org.kbinani.dll ./pp_cs2java/Program.cs
 	gmcs ./pp_cs2java/Program.cs -out:./pp_cs2java.exe -r:$(TARGET)/org.kbinani.dll,System.Drawing $(MCS_OPT) -define:DEBUG
 	$(CP) $(TARGET)/org.kbinani.dll ./org.kbinani.dll
 
-$(TARGET)/Cadencii.exe: ./Cadencii/Resources.cs ./Cadencii/*.cs $(TARGET)/org.kbinani.dll $(TARGET)/org.kbinani.apputil.dll $(TARGET)/org.kbinani.media.dll $(TARGET)/org.kbinani.vsq.dll $(TARGET)/PlaySound.dll
-	gmcs -recurse:./Cadencii/*.cs -define:MONO,ENABLE_VOCALOID,ENABLE_AQUESTONE,ENABLE_MIDI,ENABLE_PROPERTY -out:$(TARGET)/Cadencii.exe -r:System.Windows.Forms,System.Drawing,$(TARGET)/org.kbinani.dll,$(TARGET)/org.kbinani.apputil.dll,$(TARGET)/org.kbinani.media.dll,$(TARGET)/org.kbinani.vsq.dll -unsafe+ -codepage:utf8 $(MCS_OPT)
+$(TARGET)/Cadencii.exe: ./Cadencii/Resources.cs ./Cadencii/*.cs ./Cadencii/resources/*.png ./Cadencii/resources/*.txt ./Cadencii/resources/*.ico $(TARGET)/org.kbinani.dll $(TARGET)/org.kbinani.apputil.dll $(TARGET)/org.kbinani.media.dll $(TARGET)/org.kbinani.vsq.dll $(TARGET)/PlaySound.dll
+	gmcs -recurse:./Cadencii/*.cs -define:MONO,ENABLE_VOCALOID,ENABLE_AQUESTONE,ENABLE_MIDI,ENABLE_PROPERTY -out:$(TARGET)/Cadencii.exe -r:System.Windows.Forms,System.Drawing,$(TARGET)/org.kbinani.dll,$(TARGET)/org.kbinani.apputil.dll,$(TARGET)/org.kbinani.media.dll,$(TARGET)/org.kbinani.vsq.dll -unsafe+ -codepage:utf8 -win32icon:./Cadencii/resources/icon.ico $(MCS_OPT)
+	$(CP) ./Cadencii/resources/*.png $(TARGET)/resources/*.png
+	$(CP) ./Cadencii/resources/*.txt $(TARGET)/resources/*.txt
+	$(CP) ./Cadencii/resources/*.ico $(TARGET)/resources/*.ico
 
 ./Cadencii/Resources.cs: ./Cadencii/Resources.list makeRes.exe
 	mono ./makeRes.exe -i ./Cadencii/Resources.list -o ./Cadencii/Resources.cs -p org.kbinani.cadencii -n org.kbinani.cadencii
@@ -235,7 +254,7 @@ $(TARGET)/org.kbinani.vsq.dll: $(TARGET)/org.kbinani.dll ./org.kbinani.vsq/*.cs
 	gmcs -recurse:./org.kbinani.vsq/*.cs -target:library -define:MONO -out:$(TARGET)/org.kbinani.vsq.dll -r:System.Windows.Forms,System.Drawing,$(TARGET)/org.kbinani.dll  -codepage:utf8 $(MCS_OPT)
 
 doc: jcadencii
-	javadoc -sourcepath ./build/java org.kbinani.vsq org.kbinani org.kbinani.apputil org.kbinani.media org.kbinani.cadencii -encoding UTF8 -use -public
+	javadoc -sourcepath ./build/java org.kbinani.windows.forms org.kbinani.vsq org.kbinani org.kbinani.apputil org.kbinani.media org.kbinani.cadencii -encoding UTF8 -use -public -d ./docs/javadoc/
 
 clean:
 	$(RM) $(TARGET)/org.kbinani.dll $(TARGET)/org.kbinani.apputil.dll $(TARGET)/org.kbinani.media.dll $(TARGET)/org.kbinani.vsq.dll $(TARGET)/Cadencii.exe $(TARGET)/PlaySound.dll pp_cs2java.exe org.kbinani.dll
@@ -487,6 +506,8 @@ clean_jcadencii:
 	$(CP) ./org.kbinani.vsq/UstEvent.java ./build/java/org/kbinani/vsq/UstEvent.java
 ./build/java/org/kbinani/vsq/UstFile.java: ./org.kbinani.vsq/UstFile.java
 	$(CP) ./org.kbinani.vsq/UstFile.java ./build/java/org/kbinani/vsq/UstFile.java
+./build/java/org/kbinani/vsq/UstFileWriteOptions.java: ./org.kbinani.vsq/UstFileWriteOptions.java
+	$(CP) ./org.kbinani.vsq/UstFileWriteOptions.java ./build/java/org/kbinani/vsq/UstFileWriteOptions.java
 ./build/java/org/kbinani/vsq/UstPortamento.java: ./org.kbinani.vsq/UstPortamento.java
 	$(CP) ./org.kbinani.vsq/UstPortamento.java ./build/java/org/kbinani/vsq/UstPortamento.java
 ./build/java/org/kbinani/vsq/UstPortamentoPoint.java: ./org.kbinani.vsq/UstPortamentoPoint.java

@@ -263,7 +263,11 @@ class UtauPluginManager : Form {
         "        if ( next != null ) {\n" +
         "            tust.getTrack( 0 ).getEvent( tust.getTrack( 0 ).getEventCount() - 1 ).Index = int.MaxValue;\n" +
         "        }\n" +
-        "        tust.write( temp, false );\n" +
+        "        UstFileWriteOptions options = new UstFileWriteOptions();\n" +
+        "        options.settingTempo = true;\n" +
+        "        options.settingVoiceDir = true;\n" +
+        "        options.settingCacheDir = true;\n" +
+        "        tust.write( temp, options );\n" +
         "\n" +
         "        // 起動 -----------------------------------------------------------------------------\n" +
         "        {0} dialog = new {0}( exe_path, temp );\n" +

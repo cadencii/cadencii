@@ -78,6 +78,11 @@ class makeRes{
             sw.WriteLine();
             sw.WriteLine( cs_space + "public class Resources{" );
             sw.WriteLine( cs_space + "    private static String basePath = null;" );
+            sw.WriteLine();
+            sw.WriteLine( cs_space + "    public static void setBasePath( String value ){" );
+            sw.WriteLine( cs_space + "        basePath = value;" );
+            sw.WriteLine( cs_space + "    }" );
+            sw.WriteLine();
             sw.WriteLine( cs_space + "    private static String getBasePath(){" );
             sw.WriteLine( cs_space + "        if( basePath == null ){" );
             sw.WriteLine( cs_space + "            basePath = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), \"resources\" );" );
@@ -87,9 +92,9 @@ class makeRes{
             sw.WriteLine();
             string line = "";
             while( (line = sr.ReadLine()) != null ){
-				// 区切り文字を置換
-				line = line.Replace( '/', Path.DirectorySeparatorChar );
-				line = line.Replace( '\\', Path.DirectorySeparatorChar );
+                // 区切り文字を置換
+                line = line.Replace( '/', Path.DirectorySeparatorChar );
+                line = line.Replace( '\\', Path.DirectorySeparatorChar );
                 string[] spl = line.Split( '\t' );
                 if( spl.Length < 3 ){
                     continue;

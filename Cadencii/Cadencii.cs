@@ -12,6 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
+import org.kbinani.*;
 import org.kbinani.cadencii.*;
 #else
 using System;
@@ -23,17 +24,52 @@ namespace org.kbinani.cadencii{
 #endif
 
     public class Cadencii {
+#if !JAVA
+        delegate void VoidDelegate();
+#endif
         static FormSplash splash = null;
         static Thread splashThread = null;
 
+        /// <summary>
+        /// 起動時に渡されたコマンドライン引数を評価します。
+        /// 戻り値は、コマンドライン引数のうちVSQ,またはXVSQファイルとして指定された引数、または空文字です。
+        /// </summary>
+        /// <param name="arg"></param>
+        /// <returns></returns>
+        private static String parseArguments( String[] arg ) {
+            String ret = "";
+            String resources = "";
+            String currentparse = "";
+
+            for ( int i = 0; i < arg.Length; i++ ) {
+                if ( arg[i].StartsWith( "-" ) ) {
+                    currentparse = arg[i];
+                } else {
+                    if ( currentparse.Equals( "" ) ) {
+                        ret = arg[i];
+                    } else if ( currentparse.Equals( "-resources" ) ) {
+                        resources = arg[i];
+                    }
+                    currentparse = "";
+                }
+            }
+
+            PortUtil.println( "Cadencii#parseArguments; resources=" + resources );
+            if ( !resources.Equals( "" ) ) {
+                Resources.setBasePath( resources );
+            }
+
+            return ret;
+        }
+
 #if JAVA
         public static void main( String[] args ){
+            String file = parseArguments( args );
             AppManager.init();
-            AppManager.mainWindow = new FormMain( "" );
+            AppManager.mainWindow = new FormMain( file );
             AppManager.mainWindow.setVisible( true );
         }
 #else
-        delegate void VoidDelegate();
 
         [STAThread]
         public static void Main( String[] args ) {
@@ -49,10 +85,7 @@ namespace org.kbinani.cadencii{
             splashThread.Start();
 #endif
 
-            String file = "";
-            if ( args.Length > 0 ) {
-                file = args[0];
-            }
+            String file = parseArguments( args );
             AppManager.init();
 #if ENABLE_SCRIPT
             try {
