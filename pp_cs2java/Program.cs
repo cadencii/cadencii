@@ -243,6 +243,7 @@ class pp_cs2java {
         if ( -s_shift_indent > 0 ) {
             indent = new string( ' ', -s_shift_indent );
         }
+        DateTime lastwritetime = File.GetLastWriteTime( path );
         using ( StreamWriter sw = new StreamWriter( tmp2, false, Encoding.GetEncoding( s_encoding ) ) )
         using ( StreamReader sr = new StreamReader( path, Encoding.GetEncoding( s_encoding ) ) ) {
             string line = "";
@@ -551,6 +552,7 @@ class pp_cs2java {
 #endif
                 s_classes.Add( class_name );
                 File.Copy( tmp, out_path );
+                File.SetLastWriteTime( out_path, lastwritetime );
             }
         }
         File.Delete( tmp );

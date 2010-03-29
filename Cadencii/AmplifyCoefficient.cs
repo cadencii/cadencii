@@ -22,6 +22,8 @@ namespace org.kbinani.cadencii {
         public double left;
         public double right;
     }
+    
+    
 
 #if !JAVA
 }
