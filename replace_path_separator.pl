@@ -9,12 +9,14 @@ while( $line = <FILE> ){
 		$line =~ s/\@CP\@/copy/g;
 		$line =~ s/\@RM\@/del/g;
 		$line =~ s/\@TARGET\@/.\\build\\win/g;
-		$line =~ s/\@MKDIR\@/perl mkdir_win\.pl/g;
+		$line =~ s/\@MKDIR\@/perl safe_mkdir\.pl/g;
+		$line =~ s/\@PLAY_SOUND_DLL\@/\$\(TARGET\)\\PlaySound\.dll/g;
 	}else{
 		$line =~ s/\@CP\@/cp/g;
 		$line =~ s/\@RM\@/rm/g;
 		$line =~ s/\@TARGET\@/\.\/build\/win/g;
-		$line =~ s/\@MKDIR\@/mkdir/g;
+		$line =~ s/\@MKDIR\@/perl safe_mkdir\.pl/g;
+		$line =~ s/\@PLAY_SOUND_DLL\@//g;
 	}
 	print OUT $line;
 }

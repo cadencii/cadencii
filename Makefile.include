@@ -3,6 +3,7 @@ RM=@RM@
 MKDIR=@MKDIR@
 TARGET=@TARGET@
 MCS_OPT=-warn:0
+PLAY_SOUND_DLL=@PLAY_SOUND_DLL@
 JROOT=./build/java/org/kbinani
 PPCS2JAVA_OPT=-DJAVA -DRELEASE -DCLIPBOARD_AS_TEXT -encoding "UTF-8" -s -4 -c
 
@@ -200,10 +201,9 @@ jcadencii: pp_cs2java.exe jcorlib japputil jmedia jvsq $(SRC_JCADENCII) ./Cadenc
 	javac ./build/java/Cadencii.java ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/*.java ./build/java/org/kbinani/apputil/*.java ./build/java/org/kbinani/media/*.java ./build/java/org/kbinani/vsq/*.java ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/componentmodel/*.java ./build/java/org/kbinani/windows/forms/*.java ./build/java/org/kbinani/xml/*.java -encoding UTF8 -target 1.5 -source 1.5
 	$(CP) ./Cadencii/Cadencii.mf ./build/java/Cadencii.mf
 	cd ./build/java && jar cfm Cadencii.jar Cadencii.mf Cadencii.class org/kbinani/cadencii/*.class org/kbinani/*.class org/kbinani/apputil/*.class org/kbinani/media/*.class org/kbinani/vsq/*.class org/kbinani/cadencii/*.class org/kbinani/componentmodel/*.class org/kbinani/windows/forms/*.class org/kbinani/xml/*.class
-	$(CP) ./Cadencii/resources/*.png ./build/java/resources/*.png
-	$(CP) ./Cadencii/resources/*.txt ./build/java/resources/*.txt
-	$(CP) ./Cadencii/resources/*.ico ./build/java/resources/*.ico
-	$(CP) ./Cadencii/resources/*.icns ./build/java/resources/*.icns
+	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .png
+	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .txt
+	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .ico
 
 jeditotoini: pp_cs2java.exe jcorlib japputil jmedia jvsq
 	mono ./pp_cs2java.exe $(PPCS2JAVA_OPT) -b ./build/java -t ./EditOtoIni
@@ -227,12 +227,11 @@ pp_cs2java.exe: first $(TARGET)/org.kbinani.dll ./pp_cs2java/Program.cs
 	gmcs ./pp_cs2java/Program.cs -out:./pp_cs2java.exe -r:$(TARGET)/org.kbinani.dll,System.Drawing $(MCS_OPT) -define:DEBUG
 	$(CP) $(TARGET)/org.kbinani.dll ./org.kbinani.dll
 
-$(TARGET)/Cadencii.exe: ./Cadencii/Resources.cs ./Cadencii/*.cs ./Cadencii/resources/*.png ./Cadencii/resources/*.txt ./Cadencii/resources/*.ico $(TARGET)/org.kbinani.dll $(TARGET)/org.kbinani.apputil.dll $(TARGET)/org.kbinani.media.dll $(TARGET)/org.kbinani.vsq.dll $(TARGET)/PlaySound.dll
+$(TARGET)/Cadencii.exe: ./Cadencii/Resources.cs ./Cadencii/*.cs ./Cadencii/resources/*.png ./Cadencii/resources/*.txt ./Cadencii/resources/*.ico $(TARGET)/org.kbinani.dll $(TARGET)/org.kbinani.apputil.dll $(TARGET)/org.kbinani.media.dll $(TARGET)/org.kbinani.vsq.dll $(PLAY_SOUND_DLL)
 	gmcs -recurse:./Cadencii/*.cs -define:MONO,ENABLE_VOCALOID,ENABLE_AQUESTONE,ENABLE_MIDI,ENABLE_PROPERTY -out:$(TARGET)/Cadencii.exe -r:System.Windows.Forms,System.Drawing,$(TARGET)/org.kbinani.dll,$(TARGET)/org.kbinani.apputil.dll,$(TARGET)/org.kbinani.media.dll,$(TARGET)/org.kbinani.vsq.dll -unsafe+ -codepage:utf8 -win32icon:./Cadencii/resources/icon.ico $(MCS_OPT)
-	$(CP) ./Cadencii/resources/*.png $(TARGET)/resources/*.png
-	$(CP) ./Cadencii/resources/*.txt $(TARGET)/resources/*.txt
-	$(CP) ./Cadencii/resources/*.ico $(TARGET)/resources/*.ico
-	$(CP) ./Cadencii/resources/*.icns $(TARGET)/resources/*.icns
+	perl copy_with_ext.pl ./Cadencii/resources/ $(TARGET)/resources/ .png
+	perl copy_with_ext.pl ./Cadencii/resources/ $(TARGET)/resources/ .txt
+	perl copy_with_ext.pl ./Cadencii/resources/ $(TARGET)/resources/ .ico
 
 ./Cadencii/Resources.cs: ./Cadencii/Resources.list makeRes.exe
 	mono ./makeRes.exe -i ./Cadencii/Resources.list -o ./Cadencii/Resources.cs -p org.kbinani.cadencii -n org.kbinani.cadencii
