@@ -134,7 +134,6 @@ class UtauPluginManager : Form {
         "        // 方針は，一度VsqFileに音符を格納->UstFile#.ctor( VsqFile )を使って一括変換\n" +
         "        // メイン画面で選択されているアイテムを列挙\n" +
         "        List<VsqEvent> items = new List<VsqEvent>(); // Ustに追加する音符のリスト\n" +
-        "        List<int> map_id = new List<int>(); // ustの[#index]が、map_id[index].InternalIDというIDを持つVsqEventに相当することを記録しておくリスト\n" +
         "        int num_selected = 0; // 選択されていた音符の個数\n" +
         "        for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {\n" +
         "            SelectedEventEntry item_itr = (SelectedEventEntry)itr.next();\n" +
@@ -225,7 +224,7 @@ class UtauPluginManager : Form {
         "        // [#PREV]を追加\n" +
         "        if ( prev != null ) {\n" +
         "            prev.Clock -= clock_begin;\n" +
-        "            conv_track.addEvent( prev );\n" +
+        "            conv_track.addEvent( prev, prev.InternalID );\n" +
         "        }\n" +
         "\n" +
         "        // ゲートタイムを計算しながら追加\n" +
@@ -233,14 +232,13 @@ class UtauPluginManager : Form {
         "        for ( int i = 0; i < count; i++ ) {\n" +
         "            VsqEvent itemi = items[i];\n" +
         "            itemi.Clock -= clock_begin;\n" +
-        "            conv_track.addEvent( itemi );\n" +
-        "            map_id.Add( itemi.InternalID );\n" +
+        "            conv_track.addEvent( itemi, itemi.InternalID );\n" +
         "        }\n" +
         "\n" +
         "        // [#NEXT]を追加\n" +
         "        if ( next != null ) {\n" +
         "            next.Clock -= clock_begin;\n" +
-        "            conv_track.addEvent( next );\n" +
+        "            conv_track.addEvent( next, next.InternalID );\n" +
         "        }\n" +
         "\n" +
         "        // PIT, PBSを追加\n" +
@@ -248,7 +246,31 @@ class UtauPluginManager : Form {
         "        copyCurve( vsq_track.getCurve( \"pbs\" ), conv_track.getCurve( \"pbs\" ), clock_begin );\n" +
         "\n" +
         "        string temp = Path.GetTempFileName();\n" +
-        "        UstFile tust = new UstFile( conv, 1 );\n" +
+        "        UstFile tust = new UstFile( conv, 1, true );\n" +
+        "\n" +
+        "        // internal_idと#hogeとの関係をリストアップ\n" +
+        "        Dictionary<int, int> map_id = new Dictionary<int, int>(); // キーが[#   ]の番号、値がInternalID\n" +
+        "        UstTrack ust_track = tust.getTrack( 0 );\n" +
+        "        int c = ust_track.getEventCount();\n" +
+        "        for ( int i = 0; i < c; i++ ) {\n" +
+        "            UstEvent itemi = ust_track.getEvent( i );\n" +
+        "            if ( itemi.Tag == null ) {\n" +
+        "                continue;\n" +
+        "            }\n" +
+        "            if ( itemi.Tag == \"\" ) {\n" +
+        "                continue;\n" +
+        "            }\n" +
+        "            int num = -1;\n" +
+        "            if ( !int.TryParse( itemi.Tag, out num ) ) {\n" +
+        "                num = -1;\n" +
+        "            }\n" +
+        "            if ( num >= 0 ) {\n" +
+        "                if ( !map_id.ContainsKey( itemi.Index ) ) {\n" +
+        "                    map_id.Add( itemi.Index, num );\n" +
+        "                }\n" +
+        "            }\n" +
+        "        }\n" +
+        "\n" +
         "        VsqEvent singer_event = vsq.Track.get( 1 ).getSingerEventAt( clock_begin );\n" +
         "        string voice_dir = \"\";\n" +
         "        SingerConfig sc = AppManager.getSingerInfoUtau( singer_event.ID.IconHandle.Language, singer_event.ID.IconHandle.Program );\n" +
@@ -258,10 +280,10 @@ class UtauPluginManager : Form {
         "        tust.setVoiceDir( voice_dir );\n" +
         "\n" +
         "        if ( prev != null ) {\n" +
-        "            tust.getTrack( 0 ).getEvent( 0 ).Index = int.MinValue;\n" +
+        "            tust.getTrack( 0 ).getEvent( 0 ).Index = UstFile.PREV_INDEX;\n" +
         "        }\n" +
         "        if ( next != null ) {\n" +
-        "            tust.getTrack( 0 ).getEvent( tust.getTrack( 0 ).getEventCount() - 1 ).Index = int.MaxValue;\n" +
+        "            tust.getTrack( 0 ).getEvent( tust.getTrack( 0 ).getEventCount() - 1 ).Index = UstFile.NEXT_INDEX;\n" +
         "        }\n" +
         "        UstFileWriteOptions options = new UstFileWriteOptions();\n" +
         "        options.settingTempo = true;\n" +
@@ -298,7 +320,7 @@ class UtauPluginManager : Form {
         "                    if ( !int.TryParse( str_num, out num ) ) {\n" +
         "                        continue;\n" +
         "                    }\n" +
-        "                    if ( num < 0 || map_id.Count <= num ) {\n" +
+        "                    if ( !map_id.ContainsKey( num ) ) {\n" +
         "                        continue;\n" +
         "                    }\n" +
         "                    VsqEvent target = vsq_track.findEventFromID( map_id[num] );\n" +

@@ -249,12 +249,27 @@ namespace org.kbinani.vsq {
             }
         }
 
+        public UstFile( VsqFile vsq, int track_index )
+#if JAVA
+            {
+#else
+            :
+#endif
+            this( vsq, track_index, false )
+#if JAVA
+            ;
+#else
+        {
+#endif
+        }
+
         /// <summary>
         /// vsqの指定したトラックを元に，トラックを1つだけ持つustを構築します
         /// </summary>
         /// <param name="vsq"></param>
         /// <param name="track_index"></param>
-        public UstFile( VsqFile vsq, int track_index ) {
+        /// <param name="set_tag_for_internal_id">UstEeventのTagフィールドに、オリジナルのVsqEventのInternalIDの値を代入するかどうか</param>
+        public UstFile( VsqFile vsq, int track_index, boolean set_tag_for_internal_id ) {
             VsqTrack track = vsq.Track.get( track_index );
             
             // デフォルトのテンポ
@@ -287,6 +302,9 @@ namespace org.kbinani.vsq {
                     itemust.setLength( item.Clock - last_clock );
                     itemust.Index = index;
                     index++;
+                    if ( set_tag_for_internal_id ) {
+                        itemust.Tag = "-1";
+                    }
                     track_add.addEvent( itemust );
                 }
                 UstEvent item_add = new UstEvent();
@@ -298,6 +316,9 @@ namespace org.kbinani.vsq {
                 item_add.Moduration = item.UstEvent.Moduration;
                 item_add.PreUtterance = item.UstEvent.PreUtterance;
                 item_add.VoiceOverlap = item.UstEvent.VoiceOverlap;
+                if ( set_tag_for_internal_id ) {
+                    item_add.Tag = item.InternalID + "";
+                }
                 if ( item.UstEvent.Envelope != null ) {
                     item_add.Envelope = (UstEnvelope)item.UstEvent.Envelope.clone();
                 }

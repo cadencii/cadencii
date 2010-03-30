@@ -110,7 +110,6 @@ public class Utau_Plugin_Invoker : Form {
         // 方針は，一度VsqFileに音符を格納->UstFile#.ctor( VsqFile )を使って一括変換
         // メイン画面で選択されているアイテムを列挙
         List<VsqEvent> items = new List<VsqEvent>(); // Ustに追加する音符のリスト
-        List<int> map_id = new List<int>(); // ustの[#index]が、map_id[index].InternalIDというIDを持つVsqEventに相当することを記録しておくリスト
         int num_selected = 0; // 選択されていた音符の個数
         for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
             SelectedEventEntry item_itr = (SelectedEventEntry)itr.next();
@@ -201,7 +200,7 @@ public class Utau_Plugin_Invoker : Form {
         // [#PREV]を追加
         if ( prev != null ) {
             prev.Clock -= clock_begin;
-            conv_track.addEvent( prev );
+            conv_track.addEvent( prev, prev.InternalID );
         }
 
         // ゲートタイムを計算しながら追加
@@ -209,14 +208,13 @@ public class Utau_Plugin_Invoker : Form {
         for ( int i = 0; i < count; i++ ) {
             VsqEvent itemi = items[i];
             itemi.Clock -= clock_begin;
-            conv_track.addEvent( itemi );
-            map_id.Add( itemi.InternalID );
+            conv_track.addEvent( itemi, itemi.InternalID );
         }
 
         // [#NEXT]を追加
         if ( next != null ) {
             next.Clock -= clock_begin;
-            conv_track.addEvent( next );
+            conv_track.addEvent( next, next.InternalID );
         }
 
         // PIT, PBSを追加
@@ -224,7 +222,31 @@ public class Utau_Plugin_Invoker : Form {
         copyCurve( vsq_track.getCurve( "pbs" ), conv_track.getCurve( "pbs" ), clock_begin );
 
         string temp = Path.GetTempFileName();
-        UstFile tust = new UstFile( conv, 1 );
+        UstFile tust = new UstFile( conv, 1, true );
+
+        // internal_idと#hogeとの関係をリストアップ
+        Dictionary<int, int> map_id = new Dictionary<int, int>(); // キーが[#   ]の番号、値がInternalID
+        UstTrack ust_track = tust.getTrack( 0 );
+        int c = ust_track.getEventCount();
+        for ( int i = 0; i < c; i++ ) {
+            UstEvent itemi = ust_track.getEvent( i );
+            if ( itemi.Tag == null ) {
+                continue;
+            }
+            if ( itemi.Tag == "" ) {
+                continue;
+            }
+            int num = -1;
+            if ( !int.TryParse( itemi.Tag, out num ) ) {
+                num = -1;
+            }
+            if ( num >= 0 ) {
+                if ( !map_id.ContainsKey( itemi.Index ) ) {
+                    map_id.Add( itemi.Index, num );
+                }
+            }
+        }
+
         VsqEvent singer_event = vsq.Track.get( 1 ).getSingerEventAt( clock_begin );
         string voice_dir = "";
         SingerConfig sc = AppManager.getSingerInfoUtau( singer_event.ID.IconHandle.Language, singer_event.ID.IconHandle.Program );
@@ -274,7 +296,7 @@ public class Utau_Plugin_Invoker : Form {
                     if ( !int.TryParse( str_num, out num ) ) {
                         continue;
                     }
-                    if ( num < 0 || map_id.Count <= num ) {
+                    if ( !map_id.ContainsKey( num ) ) {
                         continue;
                     }
                     VsqEvent target = vsq_track.findEventFromID( map_id[num] );

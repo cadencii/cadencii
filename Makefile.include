@@ -5,7 +5,7 @@ TARGET=@TARGET@
 MCS_OPT=-warn:0
 PLAY_SOUND_DLL=@PLAY_SOUND_DLL@
 JROOT=./build/java/org/kbinani
-PPCS2JAVA_OPT=-DJAVA -DRELEASE -DCLIPBOARD_AS_TEXT -encoding "UTF-8" -s -4 -c
+PPCS2JAVA_OPT=-DJAVA -DJAVA_1_5 -DRELEASE -DCLIPBOARD_AS_TEXT -encoding "UTF-8" -s -4 -c
 
 SRC_JAPPUTIL=./build/java/org/kbinani/apputil/AuthorListEntry.java ./build/java/org/kbinani/apputil/InputBox.java \
             ./build/java/org/kbinani/apputil/MessageBody.java ./build/java/org/kbinani/apputil/MessageBodyEntry.java \

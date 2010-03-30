@@ -604,7 +604,18 @@ namespace org.kbinani.vsq {
 
         private int find( int value ) {
 #if JAVA
+            // caution: length of array 'clocks' is equal to or larger than the value of 'length' field.
+            // 配列clocksの長さは、フィールドlengthの値と等しいか、大きい。
+#if JAVA_1_5
+            for( int i = 0; i < length; i++ ){
+                if( clocks[i] == value ){
+                    return i;
+                }
+            }
+            return -1;
+#else
             return Arrays.binarySearch( clocks, 0, length, value );
+#endif
 #else
             return Array.BinarySearch( clocks, 0, length, value );
 #endif
