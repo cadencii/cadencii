@@ -234,10 +234,10 @@ public class Utau_Plugin_Invoker : Form {
         tust.setVoiceDir( voice_dir );
 
         if ( prev != null ) {
-            tust.getTrack( 0 ).getEvent( 0 ).Index = int.MinValue;
+            tust.getTrack( 0 ).getEvent( 0 ).Index = UstFile.PREV_INDEX;
         }
         if ( next != null ) {
-            tust.getTrack( 0 ).getEvent( tust.getTrack( 0 ).getEventCount() - 1 ).Index = int.MaxValue;
+            tust.getTrack( 0 ).getEvent( tust.getTrack( 0 ).getEventCount() - 1 ).Index = UstFile.NEXT_INDEX;
         }
         UstFileWriteOptions options = new UstFileWriteOptions();
         options.settingTempo = true;
