@@ -10978,35 +10978,10 @@ namespace org.kbinani.cadencii {
         public void menuFileExportMusicXml_Click( Object sender, EventArgs e ) {
             BFileChooser dialog = null;
             try {
-                boolean convertTempo = false;
                 VsqFileEx vsq = AppManager.getVsqFile();
                 if ( vsq == null ) {
                     return;
                 }
-                int tempo = (int)(60e6 / vsq.getTempoAt( 0 ));
-                FormExportMusicXml optionDialog = null;
-                try {
-                    optionDialog = new FormExportMusicXml();
-                    optionDialog.setLocation( getFormPreferedLocation( optionDialog ) );
-                    optionDialog.setModal( true );
-                    optionDialog.setVisible( true );
-                    if ( optionDialog.getDialogResult() == BDialogResult.OK ) {
-                        convertTempo = optionDialog.isTempoConversionRequired();
-                    } else {
-                        return;
-                    }
-                } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "FormMain#menuFileExportMusicXml_Click; ex=" + ex );
-                } finally {
-                    if ( optionDialog != null ) {
-                        try {
-                            optionDialog.close();
-                        } catch ( Exception ex2 ) {
-                            PortUtil.stderr.println( "FormMain#menuFileExportMusicXml_Click; ex2=" + ex2 );
-                        }
-                    }
-                }
-
                 String dir = "";
                 String lastFile = "";
                 if ( AppManager.editorConfig.LastMusicXmlPath != null && !AppManager.editorConfig.LastMusicXmlPath.Equals( "" ) ) {
@@ -11023,14 +10998,7 @@ namespace org.kbinani.cadencii {
                 }
                 String file = dialog.getSelectedFile();
                 String software = "Cadencii version " + BAssemblyInfo.fileVersion;
-#if DEBUG
-                PortUtil.println( "FormMain#menuFileExportMusicXml_Click; convertTempo=" + convertTempo + "; tempo=" + tempo );
-#endif
-                if ( convertTempo ) {
-                    vsq.printAsMusicXml( file, "UTF-8", software, tempo );
-                } else {
-                    vsq.printAsMusicXml( file, "UTF-8", software );
-                }
+                vsq.printAsMusicXml( file, "UTF-8", software );
                 AppManager.editorConfig.LastMusicXmlPath = file;
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "FormMain#menuFileExportMusicXml_Click; ex=" + ex );
