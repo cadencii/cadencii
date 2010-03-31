@@ -162,6 +162,14 @@ namespace org.kbinani.java.awt {
             for ( int i = 0; i < nPoints; i++ ) {
                 points[i] = new System.Drawing.Point( xPoints[i], yPoints[i] );
             }
+            nativeGraphics.DrawPolygon( stroke.pen, points );
+        }
+
+        public void drawPolyline( int[] xPoints, int[] yPoints, int nPoints ) {
+            System.Drawing.Point[] points = new System.Drawing.Point[nPoints];
+            for ( int i = 0; i < nPoints; i++ ) {
+                points[i] = new System.Drawing.Point( xPoints[i], yPoints[i] );
+            }
             nativeGraphics.DrawLines( stroke.pen, points );
         }
 

@@ -549,6 +549,7 @@ namespace org.kbinani.cadencii {
             AppManager.baseFont8 = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE8 );
             AppManager.baseFont10 = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE10 );
             AppManager.baseFont9 = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE9 );
+            AppManager.baseFont50Bold = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.BOLD, AppManager.FONT_SIZE50 );
 
             s_modifier_key = ((AppManager.editorConfig.Platform == PlatformEnum.Macintosh) ? InputEvent.META_MASK : InputEvent.CTRL_MASK);
 
@@ -1785,23 +1786,23 @@ namespace org.kbinani.cadencii {
             Point ul = new Point( x_vibin_end, y0 - boxheight / 2 - px_shift );
             Point dl = new Point( x_vibin_end, y0 + boxheight / 2 - px_shift );
             g.setColor( Color.black );
-            g.drawPolygon( new int[] { x0, ul.x, dl.x },
-                           new int[] { y0, ul.y, dl.y },
-                           3 );
+            g.drawPolyline( new int[] { x0, ul.x, dl.x },
+                            new int[] { y0, ul.y, dl.y },
+                            3 );
 
             // vibrato out
             int cl_vibout_start = clock_start + clock_width - (int)(clock_width * vibrato.Out / 100.0);
             int x_vibout_start = AppManager.xCoordFromClocks( cl_vibout_start );
             Point ur = new Point( x_vibout_start, y0 - boxheight / 2 - px_shift );
             Point dr = new Point( x_vibout_start, y0 + boxheight / 2 - px_shift );
-            g.drawPolygon( new int[] { x0 + px_width, ur.x, dr.x },
+            g.drawPolyline( new int[] { x0 + px_width, ur.x, dr.x },
                            new int[] { y0, ur.y, dr.y },
                            3 );
 
             // box
             int boxwidth = x_vibout_start - x_vibin_end;
             if ( boxwidth > 0 ) {
-                g.drawPolygon( new int[] { ul.x, dl.x, dr.x, ur.x },
+                g.drawPolyline( new int[] { ul.x, dl.x, dr.x, ur.x },
                                new int[] { ul.y, dl.y, dr.y, ur.y },
                                4 );
             }
@@ -1873,7 +1874,7 @@ namespace org.kbinani.cadencii {
 #endif
                 if ( listx.Length >= 2 ) {
                     g.setColor( Color.red );
-                    g.drawPolygon( listx, listy, listx.Length );
+                    g.drawPolyline( listx, listy, listx.Length );
                 }
                 //g.SmoothingMode = old;
             } catch ( Exception oex ) {
@@ -5889,16 +5890,22 @@ namespace org.kbinani.cadencii {
             AppManager.baseFont8 = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE8 );
             AppManager.baseFont10 = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE10 );
             AppManager.baseFont9 = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE9 );
+            AppManager.baseFont50Bold = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.BOLD, AppManager.FONT_SIZE50 );
             AppManager.baseFont10OffsetHeight = Util.getStringDrawOffset( AppManager.baseFont10 );
             AppManager.baseFont8OffsetHeight = Util.getStringDrawOffset( AppManager.baseFont8 );
             AppManager.baseFont9OffsetHeight = Util.getStringDrawOffset( AppManager.baseFont9 );
+            AppManager.baseFont50OffsetHeight = Util.getStringDrawOffset( AppManager.baseFont50Bold );
+            AppManager.baseFont8Height = Util.measureString( Util.PANGRAM, AppManager.baseFont8 ).height;
+            AppManager.baseFont9Height = Util.measureString( Util.PANGRAM, AppManager.baseFont9 ).height;
+            AppManager.baseFont10Height = Util.measureString( Util.PANGRAM, AppManager.baseFont10 ).height;
+            AppManager.baseFont50Height = Util.measureString( Util.PANGRAM, AppManager.baseFont50Bold ).height;
         }
 
         public void picturePositionIndicatorDrawTo( java.awt.Graphics g1 ) {
             Graphics2D g = (Graphics2D)g1;
-            Font SMALL_FONT = null;
+            Font SMALL_FONT = AppManager.baseFont8;
+            int small_font_offset = AppManager.baseFont8OffsetHeight;
             try {
-                SMALL_FONT = new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE8 );
                 int width = picturePositionIndicator.getWidth();
                 int height = picturePositionIndicator.getHeight();
 
@@ -5916,7 +5923,7 @@ namespace org.kbinani.cadencii {
                         //g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
                         g.setColor( Color.black );
                         g.setFont( SMALL_FONT );
-                        g.drawString( current + "", x + 4, 6 );
+                        g.drawString( current + "", x + 4, 8 - small_font_offset + 1 );
                         //g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
                     } else {
                         g.setColor( s_pen_105_105_105 );
@@ -5950,10 +5957,10 @@ namespace org.kbinani.cadencii {
                         g.setFont( SMALL_FONT );
                         if ( AppManager.isSelectedTimesigContains( barcount ) ) {
                             g.setColor( AppManager.getHilightColor() );
-                            g.drawString( s, x + 4, 36 );
+                            g.drawString( s, x + 4, 40 - small_font_offset + 1 );
                         } else {
                             g.setColor( Color.black );
-                            g.drawString( s, x + 4, 36 );
+                            g.drawString( s, x + 4, 40 - small_font_offset + 1 );
                         }
 
                         if ( m_position_indicator_mouse_down_mode == PositionIndicatorMouseDownMode.TIMESIG ) {
@@ -5981,10 +5988,10 @@ namespace org.kbinani.cadencii {
                         String s = PortUtil.formatDecimal( "#.00", 60e6 / (float)AppManager.getVsqFile().TempoTable.get( i ).Tempo );
                         if ( AppManager.isSelectedTempoContains( clock ) ) {
                             g.setColor( AppManager.getHilightColor() );
-                            g.drawString( s, x + 4, 21 );
+                            g.drawString( s, x + 4, 24 - small_font_offset + 1 );
                         } else {
                             g.setColor( Color.black );
-                            g.drawString( s, x + 4, 21 );
+                            g.drawString( s, x + 4, 24 - small_font_offset + 1 );
                         }
 
                         if ( m_position_indicator_mouse_down_mode == PositionIndicatorMouseDownMode.TEMPO ) {
@@ -6061,8 +6068,8 @@ namespace org.kbinani.cadencii {
                 g.drawLine( AppManager.keyWidth, 48, width - 18, 48 );
                 g.setFont( SMALL_FONT );
                 g.setColor( Color.black );
-                g.drawString( "TEMPO", 11, 20 );
-                g.drawString( "BEAT", 11, 35 );
+                g.drawString( "TEMPO", 11, 24 - small_font_offset + 1 );
+                g.drawString( "BEAT", 11, 40 - small_font_offset + 1 );
                 g.setColor( new Color( 172, 168, 153 ) );
                 g.drawLine( 0, 0, width, 0 );
                 g.setColor( new Color( 113, 111, 100 ) );
@@ -6070,12 +6077,7 @@ namespace org.kbinani.cadencii {
 
                 #endregion
             } catch ( Exception ex ) {
-            } finally {
-#if !JAVA
-                if ( SMALL_FONT != null && SMALL_FONT.font != null ) {
-                    SMALL_FONT.font.Dispose();
-                }
-#endif
+                PortUtil.stderr.println( "FormMain#picturePositionIndicatorDrawTo; ex=" + ex );
             }
         }
 
@@ -15710,7 +15712,7 @@ namespace org.kbinani.cadencii {
                         if ( !barcountstr.Equals( "" ) ) {
                             g.setColor( Color.white );
                             g.setFont( AppManager.baseFont9 );
-                            g.drawString( barcountstr, barcountx + 1, 1 );
+                            g.drawString( barcountstr, barcountx + 1, 1 + AppManager.baseFont9Height / 2 - AppManager.baseFont9OffsetHeight + 1 );
                         }
                         barcountstr = barcount + "";
                         barcountx = x;

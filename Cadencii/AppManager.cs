@@ -68,6 +68,7 @@ namespace org.kbinani.cadencii {
 #endif
         public const int FONT_SIZE9 = FONT_SIZE8 + 1;
         public const int FONT_SIZE10 = FONT_SIZE8 + 2;
+        public const int FONT_SIZE50 = FONT_SIZE8 + 42;
 
         /// <summary>
         /// 鍵盤の表示幅(pixel)
@@ -99,12 +100,18 @@ namespace org.kbinani.cadencii {
         /// ピアノロールの歌詞の描画に使用されるフォント。（発音記号固定の物の場合）
         /// </summary>
         public static Font baseFont10Bold = new Font( "Dialog", Font.BOLD, FONT_SIZE10 );
+        public static Font baseFont50Bold = new Font( "Dialog", Font.BOLD, FONT_SIZE50 );
         /// <summary>
         /// 歌詞を音符の（高さ方向の）真ん中に描画するためのオフセット
         /// </summary>
         public static int baseFont10OffsetHeight = 0;
         public static int baseFont8OffsetHeight = 0;
         public static int baseFont9OffsetHeight = 0;
+        public static int baseFont50OffsetHeight = 0;
+        public static int baseFont8Height = FONT_SIZE8;
+        public static int baseFont9Height = FONT_SIZE9;
+        public static int baseFont10Height = FONT_SIZE10;
+        public static int baseFont50Height = FONT_SIZE50;
 #if ENABLE_PROPERTY
         public static PropertyPanel propertyPanel;
         public static FormNoteProperty propertyWindow;
@@ -1843,6 +1850,9 @@ namespace org.kbinani.cadencii {
             s_locker = new Object();
             SymbolTable.loadDictionary();
             VSTiProxy.CurrentUser = "";
+#if JAVA
+            Util.isApplyFontRecurseEnabled = false;
+#endif
 
             #region Apply User Dictionary Configuration
             try {

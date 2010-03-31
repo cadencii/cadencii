@@ -17,6 +17,7 @@ package org.kbinani.apputil;
 import java.awt.*;
 import javax.swing.*;
 import java.awt.image.*;
+import org.kbinani.*;
 #else
 using System;
 using System.Collections.Generic;
@@ -37,12 +38,25 @@ namespace org.kbinani.apputil {
 #else
     public static partial class Util {
 #endif
+        public static readonly String PANGRAM = "cozy lummox gives smart squid who asks for job pen. 01234567890 THE QUICK BROWN FOX JUMPED OVER THE LAZY DOGS.";
+        /// <summary>
+        /// このクラスのメソッド'applyFontRecurse', 'applyToolStripFontRecurse', 'applyContextMenuFontRecurse'の呼び出しを有効とするかどうか。
+        /// デフォルトではtrue
+        /// </summary>
+        public static boolean isApplyFontRecurseEnabled = true;
+
 #if JAVA
         public static void applyContextMenuFontRecurse( MenuElement item, Font font ){
+            if ( !isApplyFontRecurseEnabled ) {
+                return;
+            }
             applyToolStripFontRecurse( item, font );
         }
 #else
         public static void applyContextMenuFontRecurse( ContextMenuStrip item, org.kbinani.java.awt.Font font ) {
+            if ( !isApplyFontRecurseEnabled ) {
+                return;
+            }
             item.Font = font.font;
             foreach ( ToolStripItem tsi in item.Items ) {
                 applyToolStripFontRecurse( tsi, font );
@@ -52,6 +66,9 @@ namespace org.kbinani.apputil {
 
 #if JAVA
         public static void applyToolStripFontRecurse( MenuElement item, Font font ){
+            if ( !isApplyFontRecurseEnabled ) {
+                return;
+            }
             if( item instanceof Component ){
                 ((Component)item).setFont( font );
             }
@@ -61,6 +78,9 @@ namespace org.kbinani.apputil {
         }
 #else
         public static void applyToolStripFontRecurse( ToolStripItem item, org.kbinani.java.awt.Font font ) {
+            if ( !isApplyFontRecurseEnabled ) {
+                return;
+            }
             item.Font = font.font;
             if ( item is ToolStripMenuItem ) {
                 ToolStripMenuItem tsmi = (ToolStripMenuItem)item;
@@ -83,8 +103,7 @@ namespace org.kbinani.apputil {
         /// <returns></returns>
         public static int getStringDrawOffset( java.awt.Font font ) {
             int ret = 0;
-            String pangram = "cozy lummox gives smart squid who asks for job pen. 01234567890 THE QUICK BROWN FOX JUMPED OVER THE LAZY DOGS.";
-            java.awt.Dimension size = measureString( pangram, font );
+            java.awt.Dimension size = measureString( PANGRAM, font );
             if ( size.height <= 0 ) {
                 return 0;
             }
@@ -96,19 +115,19 @@ namespace org.kbinani.apputil {
             BitmapEx b2 = null;
 #endif
             try {
-                int w = size.width * 3;
-                int h = size.height * 3;
+                int string_desty = size.height * 2; // 文字列が書き込まれるy座標
+                int w = size.width * 4;
+                int h = size.height * 4;
                 b = new java.awt.image.BufferedImage( w, h, java.awt.image.BufferedImage.TYPE_INT_BGR );
                 g = b.createGraphics();
                 g.setColor( java.awt.Color.white );
                 g.fillRect( 0, 0, w, h );
                 g.setFont( font );
                 g.setColor( java.awt.Color.black );
-                g.drawString( pangram, size.width, size.height );
+                g.drawString( PANGRAM, size.width, string_desty );
 
 #if JAVA
-                Graphics2D g2 = b.createGraphics();
-                g2.drawImage( b, 0, 0, null );
+                b2 = b;
 #else
                 b2 = new BitmapEx( b.m_image );
 #endif
@@ -157,8 +176,9 @@ namespace org.kbinani.apputil {
                 }
 
                 int center = (firsty + endy) / 2;
-                ret = center - (int)size.height;
+                ret = center - string_desty;
             } catch ( Exception ex ) {
+                PortUtil.stderr.println( "Util#getStringDrawOffset; ex=" + ex );
             } finally {
 #if JAVA
 #else
@@ -455,6 +475,9 @@ namespace org.kbinani.apputil {
 #else
         public static void applyFontRecurse( Control c, java.awt.Font font ) {
 #endif
+            if ( !isApplyFontRecurseEnabled ) {
+                return;
+            }
 #if JAVA
             c.setFont( font );
             if( c instanceof Container ){

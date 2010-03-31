@@ -430,7 +430,7 @@ namespace org.kbinani.cadencii {
 
                 // 現在選択されている歌声合成システムの名前をオーバーレイ表示する
                 if ( AppManager.drawOverSynthNameOnPianoroll ) {
-                    g.setFont( new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.BOLD, 50 ) );
+                    g.setFont( AppManager.baseFont50Bold );
                     g.setColor( new Color( 0, 0, 0, 32 ) );
                     String str = "VOCALOID2";
                     if ( renderer == RendererKind.AQUES_TONE ) {
@@ -444,7 +444,7 @@ namespace org.kbinani.cadencii {
                     } else if ( renderer == RendererKind.UTAU ) {
                         str = "UTAU";
                     }
-                    g.drawString( str, key_width + 10, 10 );
+                    g.drawString( str, key_width + 10, 10 + AppManager.baseFont50Height / 2 - AppManager.baseFont50OffsetHeight + 1 );
                 }
 
                 #region トラックのエントリを描画
@@ -486,9 +486,9 @@ namespace org.kbinani.cadencii {
                                     g.drawLine( x + 1, y + shift_center,
                                                 x + lyric_width - 1, y + shift_center );
                                     g.setColor( s_HIDDEN[i] );
-                                    g.drawPolygon( new int[] { x, x + 1, x + lyric_width - 1, x + lyric_width, x + lyric_width - 1, x + 1, x },
-                                                   new int[] { y + shift_center, y + shift_center - 1, y + shift_center - 1, y + shift_center, y + shift_center + 1, y + shift_center + 1, y + shift_center },
-                                                   7 );
+                                    g.drawPolyline( new int[] { x, x + 1, x + lyric_width - 1, x + lyric_width, x + lyric_width - 1, x + 1, x },
+                                                    new int[] { y + shift_center, y + shift_center - 1, y + shift_center - 1, y + shift_center, y + shift_center + 1, y + shift_center + 1, y + shift_center },
+                                                    7 );
                                 }
                             }
                         }
@@ -1164,9 +1164,9 @@ namespace org.kbinani.cadencii {
             //SmoothingMode sm = g.SmoothingMode;
             //g.SmoothingMode = SmoothingMode.AntiAlias;
             g.setColor( Color.black );
-            g.drawPolygon( new int[] { x0, x0 + 2, x0 + 8, x0 + 13, x0 + 16, x0 + 20 },
-                           new int[] { y0, y0, y0 - height, y0, y0, y0 - 4 },
-                           6 );
+            g.drawPolyline( new int[] { x0, x0 + 2, x0 + 8, x0 + 13, x0 + 16, x0 + 20 },
+                            new int[] { y0, y0, y0 - height, y0, y0, y0 - 4 },
+                            6 );
             //g.SmoothingMode = sm;
         }
 
@@ -1242,7 +1242,7 @@ namespace org.kbinani.cadencii {
                 for ( int j = 0; j < _BASE_X.Length; j++ ) {
                     _BASE_X[j] += _UWID;
                 }
-                g.drawPolygon( _BASE_X, _BASE_Y, _BASE_X.Length );
+                g.drawPolyline( _BASE_X, _BASE_Y, _BASE_X.Length );
             }
             //g.SmoothingMode = sm;
             g.setClip( old );

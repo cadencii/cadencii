@@ -1297,9 +1297,9 @@ namespace org.kbinani.cadencii {
                                 SelectedEventEntry item = itr.next();
                                 int x = AppManager.xCoordFromClocks( item.editing.Clock );
                                 g.setColor( s_pen_128_128_128 );
-                                g.drawPolygon( new int[] { x, x, x + SINGER_ITEM_WIDTH, x + SINGER_ITEM_WIDTH },
-                                               new int[] { size.height - OFFSET_TRACK_TAB, size.height - 2 * OFFSET_TRACK_TAB + 1, size.height - 2 * OFFSET_TRACK_TAB + 1, size.height - OFFSET_TRACK_TAB },
-                                               4 );
+                                g.drawPolyline( new int[] { x, x, x + SINGER_ITEM_WIDTH, x + SINGER_ITEM_WIDTH },
+                                                new int[] { size.height - OFFSET_TRACK_TAB, size.height - 2 * OFFSET_TRACK_TAB + 1, size.height - 2 * OFFSET_TRACK_TAB + 1, size.height - OFFSET_TRACK_TAB },
+                                                4 );
                                 g.setColor( s_pen_246_251_010 );
                                 g.drawLine( x, size.height - OFFSET_TRACK_TAB,
                                             x + SINGER_ITEM_WIDTH, size.height - OFFSET_TRACK_TAB );
@@ -1325,12 +1325,12 @@ namespace org.kbinani.cadencii {
                     //sf.LineAlignment = StringAlignment.Far;
                     g.setFont( AppManager.baseFont9 );
                     g.setColor( brs_string );
-                    g.drawString( numeric_view + "", num_view.x, num_view.y ); // sf );
+                    g.drawString( numeric_view + "", num_view.x, num_view.y + num_view.height / 2 - AppManager.baseFont9OffsetHeight + 1 ); // sf );
 
                     // 現在表示されているカーブの名前
                     //sf.Alignment = StringAlignment.Center;
                     //sf.LineAlignment = StringAlignment.Near;
-                    g.drawString( m_selected_curve.getName(), 7, 24 ); // new Rectangle( 7, 24, 56, 14 ), sf
+                    g.drawString( m_selected_curve.getName(), 7, 24 + AppManager.baseFont9Height / 2 - AppManager.baseFont9OffsetHeight + 1 ); // new Rectangle( 7, 24, 56, 14 ), sf
 
                     for ( Iterator<CurveType> itr = m_viewing_curves.iterator(); itr.hasNext(); ) {
                         CurveType curve = itr.next();
@@ -1505,7 +1505,7 @@ namespace org.kbinani.cadencii {
                 g.setColor( brs );
                 g.fillPolygon( points );
                 g.setColor( Color.white );
-                g.drawPolygon( points );
+                g.drawPolyline( points.xpoints, points.ypoints, points.npoints );
                 last = item;
             }
             int dotwid = DOT_WID * 2 + 1;
@@ -1564,7 +1564,7 @@ namespace org.kbinani.cadencii {
                 g.setColor( brs );
                 g.fillPolygon( points );
                 g.setColor( Color.white );
-                g.drawPolygon( points );
+                g.drawPolyline( points.xpoints, points.ypoints, points.npoints );
             }
             if ( highlight != null ) {
                 for ( int i = 1; i < 6; i++ ) {
@@ -2287,9 +2287,9 @@ namespace org.kbinani.cadencii {
                 pointsx.removeElementAt( 0 ); pointsy.removeElementAt( 0 );
                 pointsx.removeElementAt( 0 ); pointsy.removeElementAt( 0 );
                 g.setColor( pen );
-                g.drawPolygon( PortUtil.convertIntArray( pointsx.toArray( new Integer[] { } ) ),
-                               PortUtil.convertIntArray( pointsy.toArray( new Integer[] { } ) ),
-                               pointsx.size() );
+                g.drawPolyline( PortUtil.convertIntArray( pointsx.toArray( new Integer[] { } ) ),
+                                PortUtil.convertIntArray( pointsy.toArray( new Integer[] { } ) ),
+                                pointsx.size() );
                 pointsx.insertElementAt( b2x, 0 ); pointsy.insertElementAt( b2y, 0 );
                 pointsx.insertElementAt( b1x, 0 ); pointsy.insertElementAt( b1y, 0 );
 
@@ -2453,9 +2453,9 @@ namespace org.kbinani.cadencii {
                 pointsx.removeElementAt( 0 ); pointsy.removeElementAt( 0 );
                 pointsx.removeElementAt( 0 ); pointsy.removeElementAt( 0 );
                 g.setColor( pen );
-                g.drawPolygon( PortUtil.convertIntArray( pointsx.toArray( new Integer[] { } ) ),
-                               PortUtil.convertIntArray( pointsy.toArray( new Integer[] { } ) ),
-                               pointsx.size() );
+                g.drawPolyline( PortUtil.convertIntArray( pointsx.toArray( new Integer[] { } ) ),
+                                PortUtil.convertIntArray( pointsy.toArray( new Integer[] { } ) ),
+                                pointsx.size() );
                 pointsx.insertElementAt( b2x, 0 ); pointsy.insertElementAt( b2y, 0 );
                 pointsx.insertElementAt( b1x, 0 ); pointsy.insertElementAt( b1y, 0 );
 
