@@ -45,14 +45,24 @@ namespace org.kbinani.vsq {
             m_ids = new Vector<Integer>();
         }
 
-        public VsqEvent findFromID( int internal_id ) {
-            for ( Iterator<VsqEvent> itr = Events.iterator(); itr.hasNext(); ) {
-                VsqEvent item = itr.next();
+        public int findIndexFromID( int internal_id ) {
+            int c = Events.size();
+            for ( int i = 0; i < c; i++ ) {
+                VsqEvent item = Events.get( i );
                 if ( item.InternalID == internal_id ) {
-                    return item;
+                    return i;
                 }
             }
-            return null;
+            return -1;
+        }
+
+        public VsqEvent findFromID( int internal_id ) {
+            int index = findIndexFromID( internal_id );
+            if ( 0 <= index && index < Events.size() ) {
+                return Events.get( index );
+            } else {
+                return null;
+            }
         }
 
         public void setForID( int internal_id, VsqEvent value ) {
@@ -82,13 +92,15 @@ namespace org.kbinani.vsq {
             return Events.iterator();
         }
 
-        public void add( VsqEvent item ) {
-            add( item, getNextId( 0 ) );
+        public int add( VsqEvent item ) {
+            int id = getNextId( 0 );
+            add( item, id );
             Collections.sort( Events );
             int count = Events.size();
             for ( int i = 0; i < count; i++ ) {
                 m_ids.set( i, Events.get( i ).InternalID );
             }
+            return id;
         }
 
         public void add( VsqEvent item, int internal_id ) {

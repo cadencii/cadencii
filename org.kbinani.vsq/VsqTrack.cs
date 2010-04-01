@@ -768,12 +768,16 @@ namespace org.kbinani.vsq {
             return MetaText.getEventList().findFromID( internal_id );
         }
 
+        public int findEventIndexFromID( int internal_id ) {
+            return MetaText.getEventList().findIndexFromID( internal_id );
+        }
+
         public void setEvent( int index, VsqEvent item ) {
             MetaText.getEventList().setElement( index, item );
         }
 
-        public void addEvent( VsqEvent item ) {
-            MetaText.getEventList().add( item );
+        public int addEvent( VsqEvent item ) {
+            return MetaText.getEventList().add( item );
         }
 
         public void addEvent( VsqEvent item, int internal_id ) {

@@ -16,10 +16,12 @@ class UtauPluginManager : Form {
     private Button btnCancel;
     /// <summary>
     /// この部分は、Utau Plugin Invoker.csについて、以下のテキスト処理を行ったもの。
-    /// 1. 「"」を「\"」に置換（テキストモード）
-    /// 2. 「\n」を「\\n" +\n"」に置換（正規表現モード）
-    /// 3. 「Utau_Plugin_Invoker」を「{0}」に置換。
-    /// 4. 「s_plugin_txt_path = @"E:\Program Files\UTAU\..(一部略)..";」を「s_plugin_txt_path = @"{1}";」に書き換え。
+    ///     1. 「"」を「\"」に置換（テキストモード）
+    ///     2. 「\n」を「\\n" +\n"」に置換（正規表現モード）
+    ///     3. 「Utau_Plugin_Invoker」を「{0}」に置換。
+    ///     4. 「s_plugin_txt_path = @"E:\Program Files\UTAU\..(一部略)..";」を「s_plugin_txt_path = @"{1}";」に書き換え。
+    /// または、付属のツールで次のように処理する
+    ///     ParseUtauPluginInvoker.exe ".\ScriptImplement\Utau Plugin Invoker.cs" out.txt
     /// </summary>
     private static readonly String TEXT = "" +
         "using System;\n" +
@@ -31,8 +33,9 @@ class UtauPluginManager : Form {
         "using org.kbinani.cadencii;\n" +
         "using org.kbinani.java.util;\n" +
         "using org.kbinani.vsq;\n" +
+        "using org.kbinani;\n" +
         "\n" +
-        "public class {0} : Form {\n" +
+        "public class Utau_Plugin_Invoker : Form {\n" +
         "    class StartPluginArgs {\n" +
         "        public string exePath = \"\";\n" +
         "        public string tmpFile = \"\";\n" +
@@ -40,14 +43,14 @@ class UtauPluginManager : Form {
         "\n" +
         "    private static string s_plugin_txt_path = @\"{1}\";\n" +
         "    private Label lblMessage;\n" +
-        "    private static readonly string s_class_name = \"{0}\";\n" +
-        "    private static readonly string s_display_name = \"{0}\";\n" +
+        "    private static readonly string s_class_name = \"Utau_Plugin_Invoker\";\n" +
+        "    private static readonly string s_display_name = \"Utau_Plugin_Invoker\";\n" +
         "\n" +
         "    private string m_exe_path = \"\";\n" +
         "    private System.ComponentModel.BackgroundWorker bgWork;\n" +
         "    private string m_temp = \"\";\n" +
         "\n" +
-        "    private {0}( string exe_path, string temp_file ) {\n" +
+        "    private Utau_Plugin_Invoker( string exe_path, string temp_file ) {\n" +
         "        InitializeComponent();\n" +
         "        m_exe_path = exe_path;\n" +
         "        m_temp = temp_file;\n" +
@@ -74,19 +77,19 @@ class UtauPluginManager : Form {
         "        this.bgWork.DoWork += new System.ComponentModel.DoWorkEventHandler( this.bgWork_DoWork );\n" +
         "        this.bgWork.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler( this.bgWork_RunWorkerCompleted );\n" +
         "        // \n" +
-        "        // {0}\n" +
+        "        // Utau_Plugin_Invoker\n" +
         "        // \n" +
         "        this.ClientSize = new System.Drawing.Size( 313, 119 );\n" +
         "        this.Controls.Add( this.lblMessage );\n" +
         "        this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;\n" +
         "        this.MaximizeBox = false;\n" +
         "        this.MinimizeBox = false;\n" +
-        "        this.Name = \"{0}\";\n" +
+        "        this.Name = \"Utau_Plugin_Invoker\";\n" +
         "        this.ShowIcon = false;\n" +
         "        this.ShowInTaskbar = false;\n" +
         "        this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;\n" +
         "        this.Text = \"Utau Plugin Invoker\";\n" +
-        "        this.Load += new System.EventHandler( this.{0}_Load );\n" +
+        "        this.Load += new System.EventHandler( this.Utau_Plugin_Invoker_Load );\n" +
         "        this.ResumeLayout( false );\n" +
         "\n" +
         "    }\n" +
@@ -246,30 +249,8 @@ class UtauPluginManager : Form {
         "        copyCurve( vsq_track.getCurve( \"pbs\" ), conv_track.getCurve( \"pbs\" ), clock_begin );\n" +
         "\n" +
         "        string temp = Path.GetTempFileName();\n" +
-        "        UstFile tust = new UstFile( conv, 1, true );\n" +
-        "\n" +
-        "        // internal_idと#hogeとの関係をリストアップ\n" +
-        "        Dictionary<int, int> map_id = new Dictionary<int, int>(); // キーが[#   ]の番号、値がInternalID\n" +
-        "        UstTrack ust_track = tust.getTrack( 0 );\n" +
-        "        int c = ust_track.getEventCount();\n" +
-        "        for ( int i = 0; i < c; i++ ) {\n" +
-        "            UstEvent itemi = ust_track.getEvent( i );\n" +
-        "            if ( itemi.Tag == null ) {\n" +
-        "                continue;\n" +
-        "            }\n" +
-        "            if ( itemi.Tag == \"\" ) {\n" +
-        "                continue;\n" +
-        "            }\n" +
-        "            int num = -1;\n" +
-        "            if ( !int.TryParse( itemi.Tag, out num ) ) {\n" +
-        "                num = -1;\n" +
-        "            }\n" +
-        "            if ( num >= 0 ) {\n" +
-        "                if ( !map_id.ContainsKey( itemi.Index ) ) {\n" +
-        "                    map_id.Add( itemi.Index, num );\n" +
-        "                }\n" +
-        "            }\n" +
-        "        }\n" +
+        "        Vector<ValuePair<int, int>> map_id = new Vector<ValuePair<int, int>>(); // キーが[#   ]の番号、値がInternalID\n" +
+        "        UstFile tust = new UstFile( conv, 1, map_id );\n" +
         "\n" +
         "        VsqEvent singer_event = vsq.Track.get( 1 ).getSingerEventAt( clock_begin );\n" +
         "        string voice_dir = \"\";\n" +
@@ -292,7 +273,7 @@ class UtauPluginManager : Form {
         "        tust.write( temp, options );\n" +
         "\n" +
         "        // 起動 -----------------------------------------------------------------------------\n" +
-        "        {0} dialog = new {0}( exe_path, temp );\n" +
+        "        Utau_Plugin_Invoker dialog = new Utau_Plugin_Invoker( exe_path, temp );\n" +
         "        dialog.ShowDialog();\n" +
         "\n" +
         "        // 結果を反映 -----------------------------------------------------------------------\n" +
@@ -302,10 +283,33 @@ class UtauPluginManager : Form {
         "            string current_parse = \"\";\n" +
         "            int clock = clock_begin;\n" +
         "            int tlength = 0;\n" +
+        "            int index = 0; // 先頭から何番目の音符か？map_id.get( index ).getKey()が、現在処理中のUstEvent.Index, map_id.get( index ).getValue()が、現在処理中のVsqEvent.InternalID\n" +
         "            while ( (line = sr.ReadLine()) != null ) {\n" +
         "                if ( line.StartsWith( \"[#\" ) ){\n" +
         "                    current_parse = line;\n" +
         "                    clock += tlength;\n" +
+        "                    if ( line != \"[#SETTING]\" && line != \"[#TRACKEND]\" && line != \"[#INSERT]\" ) {\n" +
+        "                        index++;\n" +
+        "                    }\n" +
+        "                    if ( current_parse == \"[#INSERT]\" ) {\n" +
+        "                        VsqEvent newitem = new VsqEvent();\n" +
+        "                        newitem.Clock = clock;\n" +
+        "                        newitem.ID.setLength( 0 );\n" +
+        "                        newitem.ID.type = VsqIDType.Anote;\n" +
+        "                        int id = vsq_track.addEvent( newitem );\n" +
+        "                        int max_num = -1;\n" +
+        "                        for ( Iterator<ValuePair<int, int>> itr = map_id.iterator(); itr.hasNext(); ) {\n" +
+        "                            int num = itr.next().getKey();\n" +
+        "                            max_num = Math.Max( max_num, num );\n" +
+        "                        }\n" +
+        "                        max_num++;\n" +
+        "                        map_id.Add( new ValuePair<int, int>( max_num, id ) ); // 末尾に追加されるので、indexとの整合性は破綻しない\n" +
+        "                        current_parse = \"[#\" + PortUtil.formatDecimal( \"0000\", max_num ) + \"]\";\n" +
+        "                    } else if ( current_parse == \"[#DELETE]\" ) {\n" +
+        "                        int internal_id = map_id.get( index ).getValue();\n" +
+        "                        int i = vsq_track.findEventIndexFromID( internal_id );\n" +
+        "                        vsq_track.removeEvent( i );\n" +
+        "                    }\n" +
         "                    continue;\n" +
         "                }\n" +
         "\n" +
@@ -313,6 +317,9 @@ class UtauPluginManager : Form {
         "                } else if ( current_parse == \"[#TRACKEND]\" ) {\n" +
         "                } else if ( current_parse == \"[#PREV]\" ) {\n" +
         "                } else if ( current_parse == \"[#NEXT]\" ) {\n" +
+        "                //} else if ( current_parse == \"[#INSERT]\" ) { NEVER ENEBLE THIS LINE!!\n" +
+        "                } else if ( current_parse == \"[#DELETE]\" ) {\n" +
+        "                    //TODO:\n" +
         "                } else if ( current_parse.StartsWith( \"[#\" ) ) {\n" +
         "                    int indx_blacket = current_parse.IndexOf( ']' );\n" +
         "                    string str_num = current_parse.Substring( 2, indx_blacket - 2 );\n" +
@@ -320,13 +327,24 @@ class UtauPluginManager : Form {
         "                    if ( !int.TryParse( str_num, out num ) ) {\n" +
         "                        continue;\n" +
         "                    }\n" +
-        "                    if ( !map_id.ContainsKey( num ) ) {\n" +
+        "                    int id = -1;\n" +
+        "                    bool found = false;\n" +
+        "                    for ( Iterator<ValuePair<int, int>> itr = map_id.iterator(); itr.hasNext(); ) {\n" +
+        "                        ValuePair<int, int> item = itr.next();\n" +
+        "                        if ( num == item.getKey() ) {\n" +
+        "                            id = item.getValue();\n" +
+        "                            found = true;\n" +
+        "                            break;\n" +
+        "                        }\n" +
+        "                    }\n" +
+        "                    if ( !found ) {\n" +
         "                        continue;\n" +
         "                    }\n" +
-        "                    VsqEvent target = vsq_track.findEventFromID( map_id[num] );\n" +
+        "                    VsqEvent target = vsq_track.findEventFromID( id );\n" +
         "                    if ( target == null ) {\n" +
         "                        continue;\n" +
         "                    }\n" +
+        "                    target.Clock = clock;\n" +
         "                    if ( target.UstEvent == null ) {\n" +
         "                        target.UstEvent = new UstEvent();\n" +
         "                    }\n" +
@@ -388,8 +406,8 @@ class UtauPluginManager : Form {
         "                        }\n" +
         "                        target.UstEvent.Pitches = t;\n" +
         "\n" +
-        "                        if ( !pit_added_ids.Contains( map_id[num] ) ) {\n" +
-        "                            pit_added_ids.Add( map_id[num] );\n" +
+        "                        if ( !pit_added_ids.Contains( id ) ) {\n" +
+        "                            pit_added_ids.Add( id );\n" +
         "                        }\n" +
         "                    } else if ( left == \"Tempo\" ) {\n" +
         "                        float v = 125f;\n" +
@@ -566,7 +584,7 @@ class UtauPluginManager : Form {
         "        }\n" +
         "    }\n" +
         "\n" +
-        "    private void {0}_Load( object sender, EventArgs e ) {\n" +
+        "    private void Utau_Plugin_Invoker_Load( object sender, EventArgs e ) {\n" +
         "        bgWork.RunWorkerAsync();\n" +
         "    }\n" +
         "\n" +
@@ -589,8 +607,7 @@ class UtauPluginManager : Form {
         "    public static String GetDisplayName() {\n" +
         "        return s_display_name;\n" +
         "    }\n" +
-        "}\n" +
-        "";
+        "}\n";
     private ListView listPlugins;
     private ColumnHeader headerName;
     private ColumnHeader headerPath;

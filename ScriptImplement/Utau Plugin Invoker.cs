@@ -7,6 +7,7 @@ using System.Threading;
 using org.kbinani.cadencii;
 using org.kbinani.java.util;
 using org.kbinani.vsq;
+using org.kbinani;
 
 public class Utau_Plugin_Invoker : Form {
     class StartPluginArgs {
@@ -222,30 +223,8 @@ public class Utau_Plugin_Invoker : Form {
         copyCurve( vsq_track.getCurve( "pbs" ), conv_track.getCurve( "pbs" ), clock_begin );
 
         string temp = Path.GetTempFileName();
-        UstFile tust = new UstFile( conv, 1, true );
-
-        // internal_idと#hogeとの関係をリストアップ
-        Dictionary<int, int> map_id = new Dictionary<int, int>(); // キーが[#   ]の番号、値がInternalID
-        UstTrack ust_track = tust.getTrack( 0 );
-        int c = ust_track.getEventCount();
-        for ( int i = 0; i < c; i++ ) {
-            UstEvent itemi = ust_track.getEvent( i );
-            if ( itemi.Tag == null ) {
-                continue;
-            }
-            if ( itemi.Tag == "" ) {
-                continue;
-            }
-            int num = -1;
-            if ( !int.TryParse( itemi.Tag, out num ) ) {
-                num = -1;
-            }
-            if ( num >= 0 ) {
-                if ( !map_id.ContainsKey( itemi.Index ) ) {
-                    map_id.Add( itemi.Index, num );
-                }
-            }
-        }
+        Vector<ValuePair<int, int>> map_id = new Vector<ValuePair<int, int>>(); // キーが[#   ]の番号、値がInternalID
+        UstFile tust = new UstFile( conv, 1, map_id );
 
         VsqEvent singer_event = vsq.Track.get( 1 ).getSingerEventAt( clock_begin );
         string voice_dir = "";
@@ -278,10 +257,33 @@ public class Utau_Plugin_Invoker : Form {
             string current_parse = "";
             int clock = clock_begin;
             int tlength = 0;
+            int index = 0; // 先頭から何番目の音符か？map_id.get( index ).getKey()が、現在処理中のUstEvent.Index, map_id.get( index ).getValue()が、現在処理中のVsqEvent.InternalID
             while ( (line = sr.ReadLine()) != null ) {
                 if ( line.StartsWith( "[#" ) ){
                     current_parse = line;
                     clock += tlength;
+                    if ( line != "[#SETTING]" && line != "[#TRACKEND]" && line != "[#INSERT]" ) {
+                        index++;
+                    }
+                    if ( current_parse == "[#INSERT]" ) {
+                        VsqEvent newitem = new VsqEvent();
+                        newitem.Clock = clock;
+                        newitem.ID.setLength( 0 );
+                        newitem.ID.type = VsqIDType.Anote;
+                        int id = vsq_track.addEvent( newitem );
+                        int max_num = -1;
+                        for ( Iterator<ValuePair<int, int>> itr = map_id.iterator(); itr.hasNext(); ) {
+                            int num = itr.next().getKey();
+                            max_num = Math.Max( max_num, num );
+                        }
+                        max_num++;
+                        map_id.Add( new ValuePair<int, int>( max_num, id ) ); // 末尾に追加されるので、indexとの整合性は破綻しない
+                        current_parse = "[#" + PortUtil.formatDecimal( "0000", max_num ) + "]";
+                    } else if ( current_parse == "[#DELETE]" ) {
+                        int internal_id = map_id.get( index ).getValue();
+                        int i = vsq_track.findEventIndexFromID( internal_id );
+                        vsq_track.removeEvent( i );
+                    }
                     continue;
                 }
 
@@ -289,6 +291,9 @@ public class Utau_Plugin_Invoker : Form {
                 } else if ( current_parse == "[#TRACKEND]" ) {
                 } else if ( current_parse == "[#PREV]" ) {
                 } else if ( current_parse == "[#NEXT]" ) {
+                //} else if ( current_parse == "[#INSERT]" ) { NEVER ENEBLE THIS LINE!!
+                } else if ( current_parse == "[#DELETE]" ) {
+                    //TODO:
                 } else if ( current_parse.StartsWith( "[#" ) ) {
                     int indx_blacket = current_parse.IndexOf( ']' );
                     string str_num = current_parse.Substring( 2, indx_blacket - 2 );
@@ -296,13 +301,24 @@ public class Utau_Plugin_Invoker : Form {
                     if ( !int.TryParse( str_num, out num ) ) {
                         continue;
                     }
-                    if ( !map_id.ContainsKey( num ) ) {
+                    int id = -1;
+                    bool found = false;
+                    for ( Iterator<ValuePair<int, int>> itr = map_id.iterator(); itr.hasNext(); ) {
+                        ValuePair<int, int> item = itr.next();
+                        if ( num == item.getKey() ) {
+                            id = item.getValue();
+                            found = true;
+                            break;
+                        }
+                    }
+                    if ( !found ) {
                         continue;
                     }
-                    VsqEvent target = vsq_track.findEventFromID( map_id[num] );
+                    VsqEvent target = vsq_track.findEventFromID( id );
                     if ( target == null ) {
                         continue;
                     }
+                    target.Clock = clock;
                     if ( target.UstEvent == null ) {
                         target.UstEvent = new UstEvent();
                     }
@@ -364,8 +380,8 @@ public class Utau_Plugin_Invoker : Form {
                         }
                         target.UstEvent.Pitches = t;
 
-                        if ( !pit_added_ids.Contains( map_id[num] ) ) {
-                            pit_added_ids.Add( map_id[num] );
+                        if ( !pit_added_ids.Contains( id ) ) {
+                            pit_added_ids.Add( id );
                         }
                     } else if ( left == "Tempo" ) {
                         float v = 125f;

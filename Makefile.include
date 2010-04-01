@@ -113,7 +113,7 @@ SRC_JCADENCII=./build/java/org/kbinani/cadencii/AmplifyCoefficient.java ./build/
               ./build/java/org/kbinani/cadencii/FormAskKeySoundGeneration.java ./build/java/org/kbinani/cadencii/FormBeatConfig.java \
               ./build/java/org/kbinani/cadencii/FormBezierPointEdit.java ./build/java/org/kbinani/cadencii/FormCompileResult.java \
               ./build/java/org/kbinani/cadencii/FormCurvePointEdit.java ./build/java/org/kbinani/cadencii/FormDeleteBar.java \
-              ./build/java/org/kbinani/cadencii/FormExportMusicXml.java ./build/java/org/kbinani/cadencii/FormGameControlerConfig.java \
+              ./build/java/org/kbinani/cadencii/FormGameControlerConfig.java \
               ./build/java/org/kbinani/cadencii/FormGenerateKeySound.java ./build/java/org/kbinani/cadencii/FormIconPalette.java \
               ./build/java/org/kbinani/cadencii/FormImportLyric.java ./build/java/org/kbinani/cadencii/FormInsertBar.java \
               ./build/java/org/kbinani/cadencii/FormMain.java \
@@ -195,7 +195,7 @@ first: ./first.pl
 jcadencii_win: jcadencii
 	exewrap -g -t 1.6 -o .\build\java\jCadencii.exe -i .\Cadencii\resources\icon.ico .\build\java\Cadencii.jar
 
-jcadencii: pp_cs2java.exe jcorlib japputil jmedia jvsq $(SRC_JCADENCII) ./Cadencii/Resources.cs
+jcadencii: pp_cs2java.exe $(SRC_JCORLIB) $(SRC_JAPPUTIL) $(SRC_JMEDIA) $(SRC_JVSQ) $(SRC_JCADENCII) ./Cadencii/Resources.cs
 	$(CP) ./build/java/org/kbinani/cadencii/NumberTextBox.java ./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java
 	$(CP) ./build/java/org/kbinani/cadencii/NumericUpDownEx.java ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java
 	javac ./build/java/Cadencii.java ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/*.java ./build/java/org/kbinani/apputil/*.java ./build/java/org/kbinani/media/*.java ./build/java/org/kbinani/vsq/*.java ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/componentmodel/*.java ./build/java/org/kbinani/windows/forms/*.java ./build/java/org/kbinani/xml/*.java -encoding UTF8 -target 1.5 -source 1.5
@@ -216,12 +216,6 @@ jcorlib: pp_cs2java.exe $(SRC_JCORLIB)
 	$(CP) ./build/java/org/kbinani/InternalStdOut.java ./BuildJavaUI/src/org/kbinani/InternalStdOut.java
 	$(CP) ./build/java/org/kbinani/ByRef.java ./BuildJavaUI/src/org/kbinani/ByRef.java
 	$(CP) ./build/java/org/kbinani/xml/XmlSerializable.java ./BuildJavaUI/src/org/kbinani/xml/XmlSerializable.java
-
-japputil: pp_cs2java.exe $(SRC_JAPPUTIL)
-
-jmedia: pp_cs2java.exe $(SRC_JMEDIA)
-
-jvsq: pp_cs2java.exe $(SRC_JVSQ)
 
 pp_cs2java.exe: first $(TARGET)/org.kbinani.dll ./pp_cs2java/Program.cs
 	gmcs ./pp_cs2java/Program.cs -out:./pp_cs2java.exe -r:$(TARGET)/org.kbinani.dll,System.Drawing $(MCS_OPT) -define:DEBUG

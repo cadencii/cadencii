@@ -26,6 +26,7 @@ using org.kbinani.java.io;
 namespace org.kbinani.vsq {
     using Float = System.Single;
     using boolean = System.Boolean;
+    using Integer = System.Int32;
 #endif
 
 #if JAVA
@@ -255,7 +256,7 @@ namespace org.kbinani.vsq {
 #else
             :
 #endif
-            this( vsq, track_index, false )
+            this( vsq, track_index, new Vector<ValuePair<Integer, Integer>>() )
 #if JAVA
             ;
 #else
@@ -268,8 +269,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="vsq"></param>
         /// <param name="track_index"></param>
-        /// <param name="set_tag_for_internal_id">UstEeventのTagフィールドに、オリジナルのVsqEventのInternalIDの値を代入するかどうか</param>
-        public UstFile( VsqFile vsq, int track_index, boolean set_tag_for_internal_id ) {
+        /// <param name="id_map">UstEventのIndexフィールドと、元になったVsqEventのInternalIDを対応付けるマップ。キーがIndex、値がInternalIDを表す</param>
+        public UstFile( VsqFile vsq, int track_index, Vector<ValuePair<Integer, Integer>> id_map ) {
             VsqTrack track = vsq.Track.get( track_index );
             
             // デフォルトのテンポ
@@ -302,9 +303,7 @@ namespace org.kbinani.vsq {
                     itemust.setLength( item.Clock - last_clock );
                     itemust.Index = index;
                     index++;
-                    if ( set_tag_for_internal_id ) {
-                        itemust.Tag = "-1";
-                    }
+                    id_map.add( new ValuePair<Integer, Integer>( itemust.Index, -1 ) );
                     track_add.addEvent( itemust );
                 }
                 UstEvent item_add = new UstEvent();
@@ -316,9 +315,7 @@ namespace org.kbinani.vsq {
                 item_add.Moduration = item.UstEvent.Moduration;
                 item_add.PreUtterance = item.UstEvent.PreUtterance;
                 item_add.VoiceOverlap = item.UstEvent.VoiceOverlap;
-                if ( set_tag_for_internal_id ) {
-                    item_add.Tag = item.InternalID + "";
-                }
+                id_map.add( new ValuePair<Integer, Integer>( item_add.Index, item.InternalID ) );
                 if ( item.UstEvent.Envelope != null ) {
                     item_add.Envelope = (UstEnvelope)item.UstEvent.Envelope.clone();
                 }
