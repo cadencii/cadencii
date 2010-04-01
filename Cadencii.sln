@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.kbinani", "org.kbinani\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckSinger", "CheckSinger\CheckSinger.csproj", "{711503AA-C2FE-43BD-A09F-C6BB655CC8EC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestUtauScript", "TestUtauScript\TestUtauScript.csproj", "{EE49D4AF-12EB-42C8-AE1A-82608C1DBBFA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -107,6 +109,13 @@ Global
 		{711503AA-C2FE-43BD-A09F-C6BB655CC8EC}.Release|x86.ActiveCfg = Release|x86
 		{711503AA-C2FE-43BD-A09F-C6BB655CC8EC}.Release|x86.Build.0 = Release|x86
 		{711503AA-C2FE-43BD-A09F-C6BB655CC8EC}.ReleaseMinimal|x86.ActiveCfg = Release|x86
+		{EE49D4AF-12EB-42C8-AE1A-82608C1DBBFA}.Debug|x86.ActiveCfg = Debug|x86
+		{EE49D4AF-12EB-42C8-AE1A-82608C1DBBFA}.DebugMinimal|x86.ActiveCfg = Debug|x86
+		{EE49D4AF-12EB-42C8-AE1A-82608C1DBBFA}.DebugMinimal|x86.Build.0 = Debug|x86
+		{EE49D4AF-12EB-42C8-AE1A-82608C1DBBFA}.Release|x86.ActiveCfg = Release|x86
+		{EE49D4AF-12EB-42C8-AE1A-82608C1DBBFA}.Release|x86.Build.0 = Release|x86
+		{EE49D4AF-12EB-42C8-AE1A-82608C1DBBFA}.ReleaseMinimal|x86.ActiveCfg = Release|x86
+		{EE49D4AF-12EB-42C8-AE1A-82608C1DBBFA}.ReleaseMinimal|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

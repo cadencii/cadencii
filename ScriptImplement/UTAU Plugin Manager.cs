@@ -35,7 +35,7 @@ class UtauPluginManager : Form {
         "using org.kbinani.vsq;\n" +
         "using org.kbinani;\n" +
         "\n" +
-        "public class Utau_Plugin_Invoker : Form {\n" +
+        "public class {0} : Form {\n" +
         "    class StartPluginArgs {\n" +
         "        public string exePath = \"\";\n" +
         "        public string tmpFile = \"\";\n" +
@@ -43,14 +43,14 @@ class UtauPluginManager : Form {
         "\n" +
         "    private static string s_plugin_txt_path = @\"{1}\";\n" +
         "    private Label lblMessage;\n" +
-        "    private static readonly string s_class_name = \"Utau_Plugin_Invoker\";\n" +
-        "    private static readonly string s_display_name = \"Utau_Plugin_Invoker\";\n" +
+        "    private static readonly string s_class_name = \"{0}\";\n" +
+        "    private static readonly string s_display_name = \"{0}\";\n" +
         "\n" +
         "    private string m_exe_path = \"\";\n" +
         "    private System.ComponentModel.BackgroundWorker bgWork;\n" +
         "    private string m_temp = \"\";\n" +
         "\n" +
-        "    private Utau_Plugin_Invoker( string exe_path, string temp_file ) {\n" +
+        "    private {0}( string exe_path, string temp_file ) {\n" +
         "        InitializeComponent();\n" +
         "        m_exe_path = exe_path;\n" +
         "        m_temp = temp_file;\n" +
@@ -77,19 +77,19 @@ class UtauPluginManager : Form {
         "        this.bgWork.DoWork += new System.ComponentModel.DoWorkEventHandler( this.bgWork_DoWork );\n" +
         "        this.bgWork.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler( this.bgWork_RunWorkerCompleted );\n" +
         "        // \n" +
-        "        // Utau_Plugin_Invoker\n" +
+        "        // {0}\n" +
         "        // \n" +
         "        this.ClientSize = new System.Drawing.Size( 313, 119 );\n" +
         "        this.Controls.Add( this.lblMessage );\n" +
         "        this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;\n" +
         "        this.MaximizeBox = false;\n" +
         "        this.MinimizeBox = false;\n" +
-        "        this.Name = \"Utau_Plugin_Invoker\";\n" +
+        "        this.Name = \"{0}\";\n" +
         "        this.ShowIcon = false;\n" +
         "        this.ShowInTaskbar = false;\n" +
         "        this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;\n" +
         "        this.Text = \"Utau Plugin Invoker\";\n" +
-        "        this.Load += new System.EventHandler( this.Utau_Plugin_Invoker_Load );\n" +
+        "        this.Load += new System.EventHandler( this.{0}_Load );\n" +
         "        this.ResumeLayout( false );\n" +
         "\n" +
         "    }\n" +
@@ -273,17 +273,19 @@ class UtauPluginManager : Form {
         "        tust.write( temp, options );\n" +
         "\n" +
         "        // 起動 -----------------------------------------------------------------------------\n" +
-        "        Utau_Plugin_Invoker dialog = new Utau_Plugin_Invoker( exe_path, temp );\n" +
+        "        {0} dialog = new {0}( exe_path, temp );\n" +
         "        dialog.ShowDialog();\n" +
         "\n" +
         "        // 結果を反映 -----------------------------------------------------------------------\n" +
         "        List<int> pit_added_ids = new List<int>(); // Pitchesが追加されたので、後でPIT, PBSに反映させる処理が必要なVsqEventの、InternalID\n" +
+        "        VsqEvent dustbox = new VsqEvent(); // Lyric=Rのプロパティを捨てるためのゴミ箱\n" +
+        "        dustbox.ID.LyricHandle = new LyricHandle( \"a\", \"a\" );\n" +
         "        using ( StreamReader sr = new StreamReader( temp, Encoding.GetEncoding( 932 ) ) ) {\n" +
         "            string line = \"\";\n" +
         "            string current_parse = \"\";\n" +
         "            int clock = clock_begin;\n" +
         "            int tlength = 0;\n" +
-        "            int index = 0; // 先頭から何番目の音符か？map_id.get( index ).getKey()が、現在処理中のUstEvent.Index, map_id.get( index ).getValue()が、現在処理中のVsqEvent.InternalID\n" +
+        "            int index = -1; // 先頭から何番目の音符か？map_id.get( index ).getKey()が、現在処理中のUstEvent.Index, map_id.get( index ).getValue()が、現在処理中のVsqEvent.InternalID\n" +
         "            while ( (line = sr.ReadLine()) != null ) {\n" +
         "                if ( line.StartsWith( \"[#\" ) ){\n" +
         "                    current_parse = line;\n" +
@@ -308,7 +310,9 @@ class UtauPluginManager : Form {
         "                    } else if ( current_parse == \"[#DELETE]\" ) {\n" +
         "                        int internal_id = map_id.get( index ).getValue();\n" +
         "                        int i = vsq_track.findEventIndexFromID( internal_id );\n" +
-        "                        vsq_track.removeEvent( i );\n" +
+        "                        if ( i <= 0 && i < vsq_track.getEventCount() ) {\n" +
+        "                            vsq_track.removeEvent( i );\n" +
+        "                        }\n" +
         "                    }\n" +
         "                    continue;\n" +
         "                }\n" +
@@ -319,7 +323,7 @@ class UtauPluginManager : Form {
         "                } else if ( current_parse == \"[#NEXT]\" ) {\n" +
         "                //} else if ( current_parse == \"[#INSERT]\" ) { NEVER ENEBLE THIS LINE!!\n" +
         "                } else if ( current_parse == \"[#DELETE]\" ) {\n" +
-        "                    //TODO:\n" +
+        "                    //do nothing\n" +
         "                } else if ( current_parse.StartsWith( \"[#\" ) ) {\n" +
         "                    int indx_blacket = current_parse.IndexOf( ']' );\n" +
         "                    string str_num = current_parse.Substring( 2, indx_blacket - 2 );\n" +
@@ -342,7 +346,7 @@ class UtauPluginManager : Form {
         "                    }\n" +
         "                    VsqEvent target = vsq_track.findEventFromID( id );\n" +
         "                    if ( target == null ) {\n" +
-        "                        continue;\n" +
+        "                        target = dustbox;\n" +
         "                    }\n" +
         "                    target.Clock = clock;\n" +
         "                    if ( target.UstEvent == null ) {\n" +
@@ -584,7 +588,7 @@ class UtauPluginManager : Form {
         "        }\n" +
         "    }\n" +
         "\n" +
-        "    private void Utau_Plugin_Invoker_Load( object sender, EventArgs e ) {\n" +
+        "    private void {0}_Load( object sender, EventArgs e ) {\n" +
         "        bgWork.RunWorkerAsync();\n" +
         "    }\n" +
         "\n" +
@@ -953,14 +957,12 @@ class UtauPluginManager : Form {
             }
         }
 
-#if ENABLE_SCRIPT
         if ( AppManager.mainWindow != null ) {
             VoidDelegate deleg = new VoidDelegate( AppManager.mainWindow.updateScriptShortcut );
             if ( deleg != null ) {
                 AppManager.mainWindow.Invoke( deleg );
             }
         }
-#endif
     }
 
     public static String GetDisplayName() {

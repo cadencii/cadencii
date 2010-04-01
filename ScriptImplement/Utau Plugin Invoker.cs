@@ -15,7 +15,7 @@ public class Utau_Plugin_Invoker : Form {
         public string tmpFile = "";
     }
 
-    private static string s_plugin_txt_path = @"E:\Program Files\UTAU\plugins\picedit\plugin.txt";
+    private static string s_plugin_txt_path = @"E:\Program Files\UTAU\plugins\TestUtauScript\plugin.txt";
     private Label lblMessage;
     private static readonly string s_class_name = "Utau_Plugin_Invoker";
     private static readonly string s_display_name = "Utau_Plugin_Invoker";
@@ -226,6 +226,12 @@ public class Utau_Plugin_Invoker : Form {
         Vector<ValuePair<int, int>> map_id = new Vector<ValuePair<int, int>>(); // キーが[#   ]の番号、値がInternalID
         UstFile tust = new UstFile( conv, 1, map_id );
 
+        Console.WriteLine( "Utau_Plugin_Invoker#Edit;" );
+        for ( int i = 0; i < map_id.size(); i++ ) {
+            ValuePair<int, int> itemi = map_id.get( i );
+            Console.WriteLine( "[#" + PortUtil.formatDecimal( "0000", itemi.getKey() ) + "] => " + itemi.getValue() );
+        }
+
         VsqEvent singer_event = vsq.Track.get( 1 ).getSingerEventAt( clock_begin );
         string voice_dir = "";
         SingerConfig sc = AppManager.getSingerInfoUtau( singer_event.ID.IconHandle.Language, singer_event.ID.IconHandle.Program );
@@ -252,12 +258,14 @@ public class Utau_Plugin_Invoker : Form {
 
         // 結果を反映 -----------------------------------------------------------------------
         List<int> pit_added_ids = new List<int>(); // Pitchesが追加されたので、後でPIT, PBSに反映させる処理が必要なVsqEventの、InternalID
+        VsqEvent dustbox = new VsqEvent(); // Lyric=Rのプロパティを捨てるためのゴミ箱
+        dustbox.ID.LyricHandle = new LyricHandle( "a", "a" );
         using ( StreamReader sr = new StreamReader( temp, Encoding.GetEncoding( 932 ) ) ) {
             string line = "";
             string current_parse = "";
             int clock = clock_begin;
             int tlength = 0;
-            int index = 0; // 先頭から何番目の音符か？map_id.get( index ).getKey()が、現在処理中のUstEvent.Index, map_id.get( index ).getValue()が、現在処理中のVsqEvent.InternalID
+            int index = -1; // 先頭から何番目の音符か？map_id.get( index ).getKey()が、現在処理中のUstEvent.Index, map_id.get( index ).getValue()が、現在処理中のVsqEvent.InternalID
             while ( (line = sr.ReadLine()) != null ) {
                 if ( line.StartsWith( "[#" ) ){
                     current_parse = line;
@@ -282,7 +290,12 @@ public class Utau_Plugin_Invoker : Form {
                     } else if ( current_parse == "[#DELETE]" ) {
                         int internal_id = map_id.get( index ).getValue();
                         int i = vsq_track.findEventIndexFromID( internal_id );
-                        vsq_track.removeEvent( i );
+
+                        Console.WriteLine( "Utau_Plugin_Invoker#Edit; DELETE; internal_id=" + internal_id + "; index=" + i );
+
+                        if ( 0 <= i && i < vsq_track.getEventCount() ) {
+                            vsq_track.removeEvent( i );
+                        }
                     }
                     continue;
                 }
@@ -293,7 +306,7 @@ public class Utau_Plugin_Invoker : Form {
                 } else if ( current_parse == "[#NEXT]" ) {
                 //} else if ( current_parse == "[#INSERT]" ) { NEVER ENEBLE THIS LINE!!
                 } else if ( current_parse == "[#DELETE]" ) {
-                    //TODO:
+                    //do nothing
                 } else if ( current_parse.StartsWith( "[#" ) ) {
                     int indx_blacket = current_parse.IndexOf( ']' );
                     string str_num = current_parse.Substring( 2, indx_blacket - 2 );
@@ -316,7 +329,7 @@ public class Utau_Plugin_Invoker : Form {
                     }
                     VsqEvent target = vsq_track.findEventFromID( id );
                     if ( target == null ) {
-                        continue;
+                        target = dustbox;
                     }
                     target.Clock = clock;
                     if ( target.UstEvent == null ) {
