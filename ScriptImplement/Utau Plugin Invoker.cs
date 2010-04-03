@@ -293,7 +293,7 @@ public class Utau_Plugin_Invoker : Form {
 
                         Console.WriteLine( "Utau_Plugin_Invoker#Edit; DELETE; internal_id=" + internal_id + "; index=" + i );
 
-                        if ( 0 <= i && i < vsq_track.getEventCount() ) {
+                        if ( 0 <= i  && i < vsq_track.getEventCount() ) {
                             vsq_track.removeEvent( i );
                         }
                     }
