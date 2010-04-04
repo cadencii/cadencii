@@ -20,6 +20,8 @@
 -BForm, BDialogを継承している全てのクラスで，コンストラクタの先頭にsuper();initialize();を忘れていないかチェック
 -BListViewで，行ごとの選択ができない
 -XmlMember; protectedなアイテムをリストアップしないようにする。
+-Preference#txtVibratoDepth
+-Preference#txtVibratoRate
 
 -v3.1.5todo------------------------------------------------------------
 -ピアノロール上でピッチベンドを編集する機能
@@ -27,7 +29,7 @@
 -EditOtoIniでflacを読み込めるようにする
 -Utau Plugin Managerで，[#INSERT], [#DELETE]セクションに対応していない->実装した。確認すること
 -Lengthが変わると、後ろのアイテムもずれるはずだが、これができてない
--Vibrato Rate, Depthのプリセット値
+-Vibrato Rate, Depthのプリセット値->実装してみたが、DefaultVibratoTypeとの整合性がNGだ。Rate, Depthを値で選ぶのか、DefaultVibratoTypeで選ぶのか。
 
 -v3.1.4done------------------------------------------------------------
 -UTAU用のプラグインを使う機能で、[#SETTING]セクションに余分なものを出力していたのを修正
@@ -55,7 +57,10 @@
 -Ctrl + ENDでエンドマーカーへ移動するようにした
 
 -v3.0.18todo-----------------------------------------------------------
--ダブルクリックで開く機能をv3.1.*から輸入する
+-Vibrato Rate, Depthのプリセット値->実装してみたが、DefaultVibratoTypeとの整合性がNGだ。Rate, Depthを値で選ぶのか、DefaultVibratoTypeで選ぶのか。
+
+-v3.0.18done-----------------------------------------------------------
+-VSQファイルまたはXVSQファイルのパスをCadencii.exeの第一引数にすると、自動で読み込むようにした。（XVSQ、VSQをCadenciiで開くよう関連付けておくと、ダブルクリックしたファイルが自動で開かれるようにした）
 
 -v3.0.17done-----------------------------------------------------------
 -org.kbinani.java.util.IteartorをIterator<E>に書き換えた

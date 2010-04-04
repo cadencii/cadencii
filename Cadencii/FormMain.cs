@@ -892,6 +892,42 @@ namespace org.kbinani.cadencii {
                     }
                 }
             }
+
+#if DEBUG
+            System.Collections.Generic.List<ValuePair<string, string>> list = new System.Collections.Generic.List<ValuePair<string, string>>();
+            foreach ( System.Reflection.FieldInfo fi in typeof( EditorConfig ).GetFields() ) {
+                if ( fi.IsPublic && !fi.IsStatic ) {
+                    list.Add( new ValuePair<string, string>( fi.Name, fi.FieldType.ToString() ) );
+                }
+            }
+
+            foreach ( System.Reflection.PropertyInfo pi in typeof( EditorConfig ).GetProperties() ) {
+                if ( !pi.CanRead || !pi.CanWrite ) {
+                    continue;
+                }
+                System.Reflection.MethodInfo getmethod = pi.GetGetMethod();
+                System.Reflection.MethodInfo setmethod = pi.GetSetMethod();
+                if ( !setmethod.IsPublic || setmethod.IsStatic ) {
+                    continue;
+                }
+                if ( !getmethod.IsPublic || getmethod.IsStatic ) {
+                    continue;
+                }
+                list.Add( new ValuePair<string, string>( pi.Name, pi.PropertyType.ToString() ) );
+            }
+
+            list.Sort();
+
+            using ( System.IO.StreamWriter sw = new System.IO.StreamWriter( "EditorConfig.txt" ) ) {
+                foreach ( ValuePair<string, string> s in list ) {
+                    sw.WriteLine( s.Key );
+                }
+                sw.WriteLine( "--------------------------------------------" );
+                foreach ( ValuePair<string, string> s in list ) {
+                    sw.WriteLine( s.Value + "\t" + s.Key + ";" );
+                }
+            }
+#endif
         }
         #endregion
 
@@ -4091,6 +4127,8 @@ namespace org.kbinani.cadencii {
                     VsqEvent edited = (VsqEvent)ev.clone();
                     if ( dlg.getVibratoHandle() != null ) {
                         edited.ID.VibratoHandle = (VibratoHandle)dlg.getVibratoHandle().clone();
+                        edited.ID.VibratoHandle.setStartDepth( AppManager.editorConfig.DefaultVibratoDepth );
+                        edited.ID.VibratoHandle.setStartRate( AppManager.editorConfig.DefaultVibratoRate );
                         edited.ID.VibratoDelay = ev.ID.getLength() - dlg.getVibratoHandle().getLength();
                     } else {
                         edited.ID.VibratoHandle = null;
@@ -7876,6 +7914,8 @@ namespace org.kbinani.cadencii {
                                             int vibrato_length = t.VibratoHandle.getLength();
                                             int note_length = selectedEvent.ID.getLength();
                                             t.VibratoDelay = note_length - vibrato_length;
+                                            t.VibratoHandle.setStartDepth( AppManager.editorConfig.DefaultVibratoDepth );
+                                            t.VibratoHandle.setStartRate( AppManager.editorConfig.DefaultVibratoRate );
                                         }
                                         CadenciiCommand run = new CadenciiCommand(
                                             VsqCommand.generateCommandEventChangeIDContaints( selected,
@@ -8864,6 +8904,8 @@ namespace org.kbinani.cadencii {
                                     default_icon_id = AppManager.editorConfig.AutoVibratoType1;
                                 }
                                 vibrato = VocaloSysUtil.getDefaultVibratoHandle( default_icon_id, vibrato_clocks, type );
+                                vibrato.setStartDepth( AppManager.editorConfig.DefaultVibratoDepth );
+                                vibrato.setStartRate( AppManager.editorConfig.DefaultVibratoRate );
                                 vibrato_delay = note_length - vibrato_clocks;
                             }
                         }
@@ -11592,6 +11634,8 @@ namespace org.kbinani.cadencii {
             m_preference_dlg.setLoadVocaloid101( !AppManager.editorConfig.DoNotUseVocaloid101 );
             m_preference_dlg.setLoadVocaloid2( !AppManager.editorConfig.DoNotUseVocaloid2 );
             m_preference_dlg.setBufferSize( AppManager.editorConfig.BufferSizeMilliSeconds );
+            m_preference_dlg.setDefaultVibratoDepth( AppManager.editorConfig.DefaultVibratoDepth );
+            m_preference_dlg.setDefaultVibratoRate( AppManager.editorConfig.DefaultVibratoRate );
 
             m_preference_dlg.setLocation( getFormPreferedLocation( m_preference_dlg ) );
 
@@ -11793,6 +11837,8 @@ namespace org.kbinani.cadencii {
                 AppManager.editorConfig.DoNotUseVocaloid2 = !m_preference_dlg.isLoadVocaloid2();
                 AppManager.editorConfig.LoadSecondaryVocaloid1Dll = m_preference_dlg.isLoadSecondaryVocaloid1Dll();
                 AppManager.editorConfig.BufferSizeMilliSeconds = m_preference_dlg.getBufferSize();
+                AppManager.editorConfig.DefaultVibratoRate = m_preference_dlg.getDefaultVibratoRate();
+                AppManager.editorConfig.DefaultVibratoDepth = m_preference_dlg.getDefaultVibratoDepth();
 
                 Vector<CurveType> visible_curves = new Vector<CurveType>();
                 trackSelector.clearViewingCurve();

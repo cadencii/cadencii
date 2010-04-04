@@ -64,6 +64,8 @@ namespace org.kbinani.cadencii {
         public boolean ShowLyric = true;
         public boolean ShowExpLine = true;
         public DefaultVibratoLengthEnum DefaultVibratoLength = DefaultVibratoLengthEnum.L66;
+        public int DefaultVibratoRate = 64;
+        public int DefaultVibratoDepth = 64;
         public AutoVibratoMinLengthEnum AutoVibratoMinimumLength = AutoVibratoMinLengthEnum.L1;
         public String AutoVibratoType1 = "$04040001";
         public String AutoVibratoType2 = "$04040001";
