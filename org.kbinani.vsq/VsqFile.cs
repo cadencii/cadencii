@@ -2394,7 +2394,7 @@ namespace org.kbinani.vsq {
                 int midi_event_size = midi_event.size();
                 for ( int j = 0; j < midi_event_size; j++ ) {
                     MidiEvent itemj = midi_event.get( j );
-                    if ( itemj.firstByte == (byte)0xff && itemj.data.Length >= 4 && itemj.data[0] == (byte)0x51 ) {
+                    if ( itemj.firstByte == 0xff && itemj.data.Length >= 4 && itemj.data[0] == 0x51 ) {
                         count++;
                         if ( count == 0 && itemj.clock != 0 ) {
                             TempoTable.add( new TempoTableEntry( 0, 500000, 0.0 ) );
@@ -2417,7 +2417,7 @@ namespace org.kbinani.vsq {
                 int numer = 4;
                 count = -1;
                 for ( int j = 0; j < midi_event.size(); j++ ) {
-                    if ( midi_event.get( j ).firstByte == (byte)0xff && midi_event.get( j ).data.Length >= 5 && midi_event.get( j ).data[0] == (byte)0x58 ) {
+                    if ( midi_event.get( j ).firstByte == 0xff && midi_event.get( j ).data.Length >= 5 && midi_event.get( j ).data[0] == 0x58 ) {
                         count++;
                         numer = midi_event.get( j ).data[1];
                         dnomi = 1;
@@ -2618,9 +2618,9 @@ namespace org.kbinani.vsq {
                             byte[] prefix = getLinePrefixBytes( line_count );
                             MidiEvent add = new MidiEvent();
                             add.clock = 0;
-                            add.firstByte = (byte)0xff;
-                            add.data = new byte[128];
-                            add.data[0] = (byte)0x01;
+                            add.firstByte = 0xff;
+                            add.data = new int[128];
+                            add.data[0] = 0x01;
                             int remain = 127;
                             for ( int i = 0; i < prefix.Length; i++ ) {
                                 add.data[i + 1] = prefix[i];
@@ -2639,9 +2639,9 @@ namespace org.kbinani.vsq {
                             byte[] prefix = getLinePrefixBytes( line_count );
                             MidiEvent add = new MidiEvent();
                             add.clock = 0;
-                            add.firstByte = (byte)0xff;
-                            add.data = new byte[128];
-                            add.data[0] = (byte)0x01;
+                            add.firstByte = 0xff;
+                            add.data = new int[128];
+                            add.data[0] = 0x01;
                             int remain = 127;
                             for ( int i = 0; i < prefix.Length; i++ ) {
                                 add.data[i + 1] = prefix[i];
@@ -2657,10 +2657,10 @@ namespace org.kbinani.vsq {
                             byte[] prefix = getLinePrefixBytes( line_count );
                             MidiEvent add = new MidiEvent();
                             add.clock = 0;
-                            add.firstByte = (byte)0xff;
+                            add.firstByte = 0xff;
                             int remain = prefix.Length + buffer.size();
-                            add.data = new byte[remain + 1];
-                            add.data[0] = (byte)0x01;
+                            add.data = new int[remain + 1];
+                            add.data[0] = 0x01;
                             for ( int i = 0; i < prefix.Length; i++ ) {
                                 add.data[i + 1] = prefix[i];
                             }

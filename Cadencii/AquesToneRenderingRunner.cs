@@ -148,12 +148,12 @@ namespace org.kbinani.cadencii {
             driver.process( left, right );
             MidiEvent f_noteon = new MidiEvent();
             f_noteon.firstByte = 0x90;
-            f_noteon.data = new byte[] { 0x40, 0x40 };
+            f_noteon.data = new int[] { 0x40, 0x40 };
             driver.send( new MidiEvent[] { f_noteon } );
             driver.process( left, right );
             MidiEvent f_noteoff = new MidiEvent();
             f_noteoff.firstByte = 0x80;
-            f_noteoff.data = new byte[] { 0x40, 0x7F };
+            f_noteoff.data = new int[] { 0x40, 0x7F };
             driver.send( new MidiEvent[] { f_noteoff } );
             for ( int i = 0; i < 3; i++ ) {
                 driver.process( left, right );
@@ -351,11 +351,11 @@ namespace org.kbinani.cadencii {
 
                             // index行目に移動するコマンドを贈る
                             MidiEvent moveline = new MidiEvent();
-                            moveline.firstByte = (byte)0xb0;
-                            moveline.data = new byte[] { (byte)0x0a, (byte)index };
+                            moveline.firstByte = 0xb0;
+                            moveline.data = new [] { 0x0a, index };
                             MidiEvent noteon = new MidiEvent();
-                            noteon.firstByte = (byte)0x90;
-                            noteon.data = new byte[] { (byte)item.ID.Note, (byte)item.ID.Dynamics };
+                            noteon.firstByte = 0x90;
+                            noteon.data = new int[] { item.ID.Note, item.ID.Dynamics };
                             Vector<MidiEvent> add = Arrays.asList( new MidiEvent[] { moveline, noteon } );
                             queue.noteon.addAll( add );
                             pit_send.add( new Point( item.Clock, item.Clock ) );
@@ -534,8 +534,8 @@ namespace org.kbinani.cadencii {
                     // noteoff MIDIイベントを作成
                     if ( contains_end ) {
                         MidiEvent noteoff = new MidiEvent();
-                        noteoff.firstByte = (byte)0x80;
-                        noteoff.data = new byte[] { (byte)item.ID.Note, 0x40 }; // ここのvel
+                        noteoff.firstByte = 0x80;
+                        noteoff.data = new int[] { item.ID.Note, 0x40 }; // ここのvel
                         Vector<MidiEvent> a_noteoff = Arrays.asList( new MidiEvent[] { noteoff } );
                         if ( !list.containsKey( endclock ) ) {
                             list.put( endclock, new MidiEventQueue() );
@@ -661,11 +661,11 @@ namespace org.kbinani.cadencii {
 
         private static MidiEvent getPitMidiEvent( int pitch_bend ) {
             int value = (0x3fff & (pitch_bend + 0x2000));
-            byte msb = (byte)(value >> 7);
-            byte lsb = (byte)(value - (msb << 7));
+            int msb = 0xff & (value >> 7);
+            int lsb = 0xff & (value - (msb << 7));
             MidiEvent pbs0 = new MidiEvent();
             pbs0.firstByte = 0xE0;
-            pbs0.data = new byte[] { lsb, msb };
+            pbs0.data = new int[] { lsb, msb };
             return pbs0;
         }
 

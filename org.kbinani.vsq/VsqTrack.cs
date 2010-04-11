@@ -866,17 +866,17 @@ namespace org.kbinani.vsq {
             try {
                 sw = new TextStream();
                 int count = midi_event.size();
-                Vector<Byte> buffer = new Vector<Byte>();
+                Vector<Integer> buffer = new Vector<Integer>();
                 for ( int i = 0; i < count; i++ ) {
                     MidiEvent item = midi_event.get( i );
                     if ( item.firstByte == 0xff && item.data.Length > 0 ) {
                         // meta textを抽出
-                        byte type = item.data[0];
+                        int type = item.data[0];
                         if ( type == 0x01 || type == 0x03 ) {
                             if ( type == 0x01 ) {
                                 int colon_count = 0;
                                 for ( int j = 0; j < item.data.Length - 1; j++ ) {
-                                    byte d = item.data[j + 1];
+                                    int d = item.data[j + 1];
                                     if ( d == 0x3a ) {
                                         colon_count++;
                                         if ( colon_count <= 2 ) {
@@ -893,7 +893,7 @@ namespace org.kbinani.vsq {
                                 while ( index_0x0a >= 0 ) {
                                     byte[] cpy = new byte[index_0x0a];
                                     for ( int j = 0; j < index_0x0a; j++ ) {
-                                        cpy[j] = buffer.get( 0 );
+                                        cpy[j] = (byte)(0xff & (int)buffer.get( 0 ));
                                         buffer.removeElementAt( 0 );
                                     }
 
@@ -909,8 +909,12 @@ namespace org.kbinani.vsq {
                                 for ( int j = 0; j < item.data.Length - 1; j++ ) {
                                     buffer.add( item.data[j + 1] );
                                 }
-                                track_name = PortUtil.getDecodedString( encoding, 
-                                                                        PortUtil.convertByteArray( buffer.toArray( new Byte[] { } ) ) );
+                                int c = buffer.size();
+                                byte[] d = new byte[c];
+                                for ( int j = 0; j < c; j++ ) {
+                                    d[j] = (byte)(0xff & buffer.get( j ));
+                                }
+                                track_name = PortUtil.getDecodedString( encoding, d );
                                 buffer.clear();
                             }
                         }
@@ -923,7 +927,7 @@ namespace org.kbinani.vsq {
                 if ( remain > 0 ) {
                     byte[] cpy = new byte[remain];
                     for ( int j = 0; j < remain; j++ ) {
-                        cpy[j] = buffer.get( j );
+                        cpy[j] = (byte)(0xff & buffer.get( j ));
                     }
                     String line = PortUtil.getDecodedString( encoding, cpy );
                     sw.writeLine( line );

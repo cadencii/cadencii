@@ -64,7 +64,7 @@ namespace org.kbinani.cadencii {
             TreeMap<String, BKeys[]> dict = AppManager.editorConfig.getShortcutKeysDictionary();
             if ( dict.containsKey( "menuVisualIconPalette" ) ) {
                 BKeys[] keys = dict.get( "menuVisualIconPalette" );
-                KeyStroke shortcut = PortUtil.getKeyStrokeFromBKeys( keys );
+                KeyStroke shortcut = BKeysUtility.getKeyStrokeFromBKeys( keys );
                 menuWindowHide.setAccelerator( shortcut );
             }
         }

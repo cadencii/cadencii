@@ -235,7 +235,7 @@ namespace org.kbinani.cadencii {
 
                     for ( int i = 0; i < nEvents; i++ ) {
                         MidiEvent pProcessEvent = events[i];
-                        byte event_code = pProcessEvent.firstByte;
+                        //byte event_code = (byte)pProcessEvent.firstByte;
                         VstEvent* pVSTEvent = (VstEvent*)0;
                         VstMidiEvent* pMidiEvent;
                         pMidiEvent = (VstMidiEvent*)mman.malloc( (int)(sizeof( VstMidiEvent ) + (pProcessEvent.data.Length + 1) * sizeof( byte )) ).ToPointer();
@@ -249,9 +249,9 @@ namespace org.kbinani.cadencii {
                         pMidiEvent->reserved1 = 0;
                         pMidiEvent->reserved2 = 0;
                         pMidiEvent->type = VstEventTypes.kVstMidiType;
-                        pMidiEvent->midiData[0] = pProcessEvent.firstByte;
+                        pMidiEvent->midiData[0] = (byte)(0xff & pProcessEvent.firstByte);
                         for ( int j = 0; j < pProcessEvent.data.Length; j++ ) {
-                            pMidiEvent->midiData[j + 1] = pProcessEvent.data[j];
+                            pMidiEvent->midiData[j + 1] = (byte)(0xff & pProcessEvent.data[j]);
                         }
                         pVSTEvents->events[pVSTEvents->numEvents++] = (int)(VstEvent*)pMidiEvent;
                     }

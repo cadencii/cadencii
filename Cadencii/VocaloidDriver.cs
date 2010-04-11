@@ -196,7 +196,7 @@ namespace org.kbinani.cadencii {
                     //pEvent.dwOffset = 0;
                     if ( targetTrack == 0 ) {
                         pEvent.firstByte = 0xff;
-                        pEvent.data = new byte[5];
+                        pEvent.data = new int[5];
                         pEvent.data[0] = 0x51;
                         pEvent.data[1] = 0x03;
                         pEvent.data[2] = src[count];
@@ -217,7 +217,7 @@ namespace org.kbinani.cadencii {
                     }
 #endif
                         pEvent.firstByte = src[count];
-                        pEvent.data = new byte[3];
+                        pEvent.data = new int[3];
                         pEvent.data[0] = src[count + 1];
                         pEvent.data[1] = src[count + 2];
                         pEvent.data[2] = 0x00;
@@ -391,7 +391,7 @@ namespace org.kbinani.cadencii {
 
                         for ( int i = 0; i < nEvents; i++ ) {
                             MidiEvent pProcessEvent = lpEvents.get( process_event_count );
-                            byte event_code = pProcessEvent.firstByte;
+                            int event_code = pProcessEvent.firstByte;
                             VstEvent* pVSTEvent = (VstEvent*)0;
                             VstMidiEvent* pMidiEvent;
 
@@ -412,9 +412,9 @@ namespace org.kbinani.cadencii {
                                     pMidiEvent->reserved1 = 0;
                                     pMidiEvent->reserved2 = 0;
                                     pMidiEvent->type = VstEventTypes.kVstMidiType;
-                                    pMidiEvent->midiData[0] = pProcessEvent.firstByte;
+                                    pMidiEvent->midiData[0] = (byte)(0xff & pProcessEvent.firstByte);
                                     for ( int j = 0; j < pProcessEvent.data.Length; j++ ) {
-                                        pMidiEvent->midiData[j + 1] = pProcessEvent.data[j];
+                                        pMidiEvent->midiData[j + 1] = (byte)(0xff & pProcessEvent.data[j]);
                                     }
                                     pVSTEvents->events[pVSTEvents->numEvents++] = (int)(VstEvent*)pMidiEvent;
                                     break;

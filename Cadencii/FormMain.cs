@@ -2762,7 +2762,7 @@ namespace org.kbinani.cadencii {
                         // 最初に戻る、の機能を発動
                         BKeys[] specialGoToFirst = AppManager.editorConfig.SpecialShortcutGoToFirst;
                         if ( specialGoToFirst != null && specialGoToFirst.Length > 0 ) {
-                            KeyStroke ks = PortUtil.getKeyStrokeFromBKeys( specialGoToFirst );
+                            KeyStroke ks = BKeysUtility.getKeyStrokeFromBKeys( specialGoToFirst );
 #if JAVA
                             if( e.KeyCode == ks.getKeyCode() )
 #else
@@ -3313,7 +3313,7 @@ namespace org.kbinani.cadencii {
                 // ミキサーウィンドウ
                 if ( AppManager.mixerWindow != null ) {
                     if ( dict.containsKey( "menuVisualMixer" ) ) {
-                        KeyStroke shortcut = PortUtil.getKeyStrokeFromBKeys( dict.get( "menuVisualMixer" ) );
+                        KeyStroke shortcut = BKeysUtility.getKeyStrokeFromBKeys( dict.get( "menuVisualMixer" ) );
                         AppManager.mixerWindow.applyShortcut( shortcut );
                     }
                 }
@@ -3321,7 +3321,7 @@ namespace org.kbinani.cadencii {
                 // アイコンパレット
                 if ( AppManager.iconPalette != null ) {
                     if ( dict.containsKey( "menuVisualIconPalette" ) ) {
-                        KeyStroke shortcut = PortUtil.getKeyStrokeFromBKeys( dict.get( "menuVisualIconPalette" ) );
+                        KeyStroke shortcut = BKeysUtility.getKeyStrokeFromBKeys( dict.get( "menuVisualIconPalette" ) );
                         AppManager.iconPalette.applyShortcut( shortcut );
                     }
                 }
@@ -3375,7 +3375,7 @@ namespace org.kbinani.cadencii {
                 if ( dict.containsKey( item_name ) ) {
 #if JAVA
                     if( item instanceof JMenuItem ){
-                        ((JMenuItem)item).setAccelerator( PortUtil.getKeyStrokeFromBKeys( dict.get( item_name ) ) );
+                        ((JMenuItem)item).setAccelerator( BKeysUtility.getKeyStrokeFromBKeys( dict.get( item_name ) ) );
                     }
 #else
 #if DEBUG
@@ -3386,13 +3386,13 @@ namespace org.kbinani.cadencii {
                     if ( item is BMenuItem ) {
                         BMenuItem menu = (BMenuItem)item;
                         BKeys[] keys = dict.get( item_name );
-                        System.Windows.Forms.Keys shortcut = PortUtil.getKeyStrokeFromBKeys( keys ).keys;
+                        System.Windows.Forms.Keys shortcut = BKeysUtility.getKeyStrokeFromBKeys( keys ).keys;
 
                         if ( shortcut == System.Windows.Forms.Keys.Delete ) {
                             menu.ShortcutKeyDisplayString = "Delete";
                             menu.ShortcutKeys = System.Windows.Forms.Keys.None;
                             specialShortcutHolders.add(
-                                new SpecialShortcutHolder( PortUtil.getKeyStrokeFromBKeys( keys ), menu ) );
+                                new SpecialShortcutHolder( BKeysUtility.getKeyStrokeFromBKeys( keys ), menu ) );
                         } else {
                             try {
                                 menu.ShortcutKeyDisplayString = "";
@@ -3402,7 +3402,7 @@ namespace org.kbinani.cadencii {
                                 menu.ShortcutKeyDisplayString = Utility.getShortcutDisplayString( keys );
                                 menu.ShortcutKeys = System.Windows.Forms.Keys.None;
                                 specialShortcutHolders.add(
-                                    new SpecialShortcutHolder( PortUtil.getKeyStrokeFromBKeys( keys ), menu ) );
+                                    new SpecialShortcutHolder( BKeysUtility.getKeyStrokeFromBKeys( keys ), menu ) );
 #if DEBUG
                                 PortUtil.println( "FormMain#applyMenuItemShortcut; display_string=" + menu.ShortcutKeyDisplayString + "; menu.getName()=" + menu.getName() );
 #endif
@@ -3417,7 +3417,7 @@ namespace org.kbinani.cadencii {
                     }
 #else
                     if ( item is BMenuItem ) {
-                        ((BMenuItem)item).setAccelerator( PortUtil.getKeyStrokeFromBKeys( new BKeys[] { BKeys.None } ) );
+                        ((BMenuItem)item).setAccelerator( BKeysUtility.getKeyStrokeFromBKeys( new BKeys[] { BKeys.None } ) );
                     }
 #endif
                 }
@@ -10472,7 +10472,11 @@ namespace org.kbinani.cadencii {
                 for ( int j = 0; j < events_count; j++ ) {
                     MidiEvent item = events.get( j );
                     if ( item.firstByte == 0xff && item.data.Length >= 2 && item.data[0] == 0x03 ) {
-                        track_name = PortUtil.getDecodedString( "Shift_JIS", item.data, 1, item.data.Length - 1 );
+                        byte[] d = new byte[item.data.Length];
+                        for ( int k = 0; k < item.data.Length; k++ ) {
+                            d[k] = (byte)(0xff & item.data[k]);
+                        }
+                        track_name = PortUtil.getDecodedString( "Shift_JIS", d, 1, item.data.Length - 1 );
                         break;
                     }
                 }
@@ -10702,7 +10706,11 @@ namespace org.kbinani.cadencii {
                                         MidiEvent itemk = events.get( k );
                                         if ( onclock_each_note[note] <= (int)itemk.clock && (int)itemk.clock <= clock_off ) {
                                             if ( itemk.firstByte == 0xff && itemk.data.Length >= 2 && itemk.data[0] == 0x05 ) {
-                                                phrase = PortUtil.getDecodedString( "Shift_JIS", itemk.data, 1, itemk.data.Length - 1 );
+                                                byte[] d = new byte[itemk.data.Length - 1];
+                                                for ( int m = 1; m < itemk.data.Length; m++ ) {
+                                                    d[m - 1] = (byte)(0xff & itemk.data[m]);
+                                                }
+                                                phrase = PortUtil.getDecodedString( "Shift_JIS", d, 0, itemk.data.Length );
                                                 break;
                                             }
                                         }
@@ -10881,16 +10889,16 @@ namespace org.kbinani.cadencii {
                                     }
                                     MidiEvent noteon = new MidiEvent();
                                     noteon.clock = clock_on;
-                                    noteon.firstByte = (byte)0x90;
-                                    noteon.data = new byte[2];
-                                    noteon.data[0] = (byte)ve.ID.Note;
-                                    noteon.data[1] = (byte)ve.ID.Dynamics;
+                                    noteon.firstByte = 0x90;
+                                    noteon.data = new int[2];
+                                    noteon.data[0] = ve.ID.Note;
+                                    noteon.data[1] = ve.ID.Dynamics;
                                     events.add( noteon );
                                     MidiEvent noteoff = new MidiEvent();
                                     noteoff.clock = clock_off;
-                                    noteoff.firstByte = (byte)0x80;
-                                    noteoff.data = new byte[2];
-                                    noteoff.data[0] = (byte)ve.ID.Note;
+                                    noteoff.firstByte = 0x80;
+                                    noteoff.data = new int[2];
+                                    noteoff.data[0] = ve.ID.Note;
                                     noteoff.data[1] = 0x7f;
                                     events.add( noteoff );
                                 }
@@ -10907,10 +10915,10 @@ namespace org.kbinani.cadencii {
                                     }
                                     MidiEvent add = new MidiEvent();
                                     add.clock = clock_on;
-                                    add.firstByte = (byte)0xff;
+                                    add.firstByte = 0xff;
                                     byte[] lyric = PortUtil.getEncodedByte( "Shift_JIS", ve.ID.LyricHandle.L0.Phrase );
-                                    add.data = new byte[lyric.Length + 1];
-                                    add.data[0] = (byte)0x05;
+                                    add.data = new int[lyric.Length + 1];
+                                    add.data[0] = 0x05;
                                     for ( int j = 0; j < lyric.Length; j++ ) {
                                         add.data[j + 1] = lyric[j];
                                     }
@@ -10936,8 +10944,8 @@ namespace org.kbinani.cadencii {
                                 for ( int j = 0; j < nrpn.Length; j++ ) {
                                     MidiEvent me = new MidiEvent();
                                     me.clock = nrpn[j].getClock();
-                                    me.firstByte = (byte)0xb0;
-                                    me.data = new byte[2];
+                                    me.firstByte = 0xb0;
+                                    me.data = new int[2];
                                     me.data[0] = nrpn[j].getParameter();
                                     me.data[1] = nrpn[j].Value;
                                     vocaloid_nrpn_midievent.add( me );

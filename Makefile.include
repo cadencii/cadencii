@@ -34,7 +34,8 @@ SRC_JCORLIB=./build/java/org/kbinani/Base64.java ./build/java/org/kbinani/BDeleg
             ./build/java/org/kbinani/windows/forms/BGroupBox.java ./build/java/org/kbinani/windows/forms/BHScrollBar.java \
             ./build/java/org/kbinani/windows/forms/BKeyEventArgs.java ./build/java/org/kbinani/windows/forms/BKeyEventHandler.java \
             ./build/java/org/kbinani/windows/forms/BKeyPressEventArgs.java ./build/java/org/kbinani/windows/forms/BKeyPressEventHandler.java \
-            ./build/java/org/kbinani/windows/forms/BKeys.java ./build/java/org/kbinani/windows/forms/BLabel.java \
+            ./build/java/org/kbinani/windows/forms/BKeys.java ./build/java/org/kbinani/windows/forms/BKeysUtility.java \
+            ./build/java/org/kbinani/windows/forms/BLabel.java \
             ./build/java/org/kbinani/windows/forms/BListView.java ./build/java/org/kbinani/windows/forms/BListViewItem.java \
             ./build/java/org/kbinani/windows/forms/BMenu.java ./build/java/org/kbinani/windows/forms/BMenuBar.java \
             ./build/java/org/kbinani/windows/forms/BMenuItem.java ./build/java/org/kbinani/windows/forms/BMenuSeparator.java \
@@ -357,6 +358,8 @@ clean_jcadencii:
 	$(CP) ./org.kbinani/BKeyPressEventHandler.java ./build/java/org/kbinani/windows/forms/BKeyPressEventHandler.java
 ./build/java/org/kbinani/windows/forms/BKeys.java: ./org.kbinani/BKeys.java
 	$(CP) ./org.kbinani/BKeys.java ./build/java/org/kbinani/windows/forms/BKeys.java
+./build/java/org/kbinani/windows/forms/BKeysUtility.java: ./org.kbinani/BKeysUtility.java
+	$(CP) ./org.kbinani/BKeysUtility.java ./build/java/org/kbinani/windows/forms/BKeysUtility.java
 ./build/java/org/kbinani/windows/forms/BLabel.java: ./org.kbinani/BLabel.java
 	$(CP) ./org.kbinani/BLabel.java ./build/java/org/kbinani/windows/forms/BLabel.java
 ./build/java/org/kbinani/windows/forms/BListView.java: ./org.kbinani/BListView.java

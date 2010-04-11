@@ -24,6 +24,7 @@ using org.kbinani.java.io;
 namespace org.kbinani.vsq {
     using boolean = System.Boolean;
     using Long = System.Int64;
+    using Integer = System.Int32;
 #endif
 
     /// <summary>
@@ -35,8 +36,8 @@ namespace org.kbinani.vsq {
     public struct MidiEvent : IComparable<MidiEvent> {
 #endif
         public long clock;
-        public byte firstByte;
-        public byte[] data;
+        public int firstByte;
+        public int[] data;
 
         private static void writeDeltaClock( RandomAccessFile stream, long number )
 #if JAVA
@@ -95,14 +96,14 @@ namespace org.kbinani.vsq {
             return ret;
         }
 
-        public static MidiEvent read( RandomAccessFile stream, ByRef<Long> last_clock, ByRef<Byte> last_status_byte )
+        public static MidiEvent read( RandomAccessFile stream, ByRef<Long> last_clock, ByRef<Integer> last_status_byte )
 #if JAVA
             throws IOException, Exception
 #endif
         {
             long delta_clock = readDeltaClock( stream );
             last_clock.value += delta_clock;
-            byte first_byte = (byte)stream.read();
+            int first_byte = stream.read();
             if ( first_byte < 0x80 ) {
                 // ランニングステータスが適用される
                 long pos = stream.getFilePointer();
@@ -111,7 +112,7 @@ namespace org.kbinani.vsq {
             } else {
                 last_status_byte.value = first_byte;
             }
-            byte ctrl = (byte)(first_byte & (byte)0xf0);
+            int ctrl = first_byte & 0xf0;
             if ( ctrl == 0x80 || ctrl == 0x90 || ctrl == 0xA0 || ctrl == 0xB0 || ctrl == 0xE0 || first_byte == 0xF2 ) {
                 // 3byte使用するチャンネルメッセージ：
                 //     0x8*: ノートオフ
@@ -124,8 +125,12 @@ namespace org.kbinani.vsq {
                 MidiEvent me = new MidiEvent();
                 me.clock = last_clock.value;
                 me.firstByte = first_byte;
-                me.data = new byte[2];
-                stream.read( me.data, 0, 2 );
+                me.data = new int[2];
+                byte[] d = new byte[2];
+                stream.read( d, 0, 2 );
+                for ( int i = 0; i < 2; i++ ) {
+                    me.data[i] = 0xff & d[i];
+                }
                 return me;
             } else if ( ctrl == 0xC0 || ctrl == 0xD0 || first_byte == 0xF1 || first_byte == 0xF2 ) {
                 // 2byte使用するチャンネルメッセージ
@@ -137,8 +142,10 @@ namespace org.kbinani.vsq {
                 MidiEvent me = new MidiEvent();
                 me.clock = last_clock.value;
                 me.firstByte = first_byte;
-                me.data = new byte[1];
-                stream.read( me.data, 0, 1 );
+                me.data = new int[1];
+                byte[] d = new byte[1];
+                stream.read( d, 0, 1 );
+                me.data[0] = 0xff & d[0];
                 return me;
             } else if ( first_byte == 0xF6 ) {
                 // 1byte使用するシステムメッセージ
@@ -153,18 +160,22 @@ namespace org.kbinani.vsq {
                 MidiEvent me = new MidiEvent();
                 me.clock = last_clock.value;
                 me.firstByte = first_byte;
-                me.data = new byte[0];
+                me.data = new int[0];
                 return me;
             } else if ( first_byte == 0xff ) {
                 // メタイベント
-                byte meta_event_type = (byte)stream.read();
+                int meta_event_type = stream.read();
                 long meta_event_length = readDeltaClock( stream );
                 MidiEvent me = new MidiEvent();
                 me.clock = last_clock.value;
                 me.firstByte = first_byte;
-                me.data = new byte[(int)meta_event_length + 1];
+                me.data = new int[(int)meta_event_length + 1];
                 me.data[0] = meta_event_type;
-                stream.read( me.data, 1, (int)meta_event_length );
+                byte[] d = new byte[(int)meta_event_length + 1];
+                stream.read( d, 1, (int)meta_event_length );
+                for ( int i = 1; i < meta_event_length + 1; i++ ) {
+                    me.data[i] = 0xff & d[i];
+                }
                 return me;
             } else if ( first_byte == 0xf0 ) {
                 // f0ステータスのSysEx
@@ -172,8 +183,12 @@ namespace org.kbinani.vsq {
                 me.clock = last_clock.value;
                 me.firstByte = first_byte;
                 long sysex_length = readDeltaClock( stream );
-                me.data = new byte[(int)sysex_length + 1];
-                stream.read( me.data, 0, (int)(sysex_length + 1) );
+                me.data = new int[(int)sysex_length + 1];
+                byte[] d = new byte[(int)sysex_length + 1];
+                stream.read( d, 0, (int)(sysex_length + 1) );
+                for ( int i = 0; i < sysex_length + 1; i++ ) {
+                    me.data[i] = 0xff & d[i];
+                }
                 return me;
             } else if ( first_byte == 0xf7 ) {
                 // f7ステータスのSysEx
@@ -181,8 +196,12 @@ namespace org.kbinani.vsq {
                 me.clock = last_clock.value;
                 me.firstByte = first_byte;
                 long sysex_length = readDeltaClock( stream );
-                me.data = new byte[(int)sysex_length];
-                stream.read( me.data, 0, (int)sysex_length );
+                me.data = new int[(int)sysex_length];
+                byte[] d = new byte[(int)sysex_length];
+                stream.read( d, 0, (int)sysex_length );
+                for ( int i = 0; i < sysex_length; i++ ) {
+                    me.data[i] = 0xff & d[i];
+                }
                 return me;
             } else {
                 throw new Exception( "don't know how to process first_byte: 0x" + PortUtil.toHexString( first_byte ) );
@@ -198,10 +217,15 @@ namespace org.kbinani.vsq {
             if ( firstByte == 0xff ) {
                 stream.write( data[0] );
                 writeDeltaClock( stream, data.Length - 1 );
-                //stream.WriteByte( (byte)(Data.Length - 1) );
-                stream.write( data, 1, data.Length - 1 );
+                for ( int i = 1; i < data.Length; i++ ) {
+                    stream.writeByte( data[i] );
+                }
+                //stream.write( data, 1, data.Length - 1 );
             } else {
-                stream.write( data, 0, data.Length );
+                for ( int i = 0; i < data.Length; i++ ) {
+                    stream.writeByte( data[i] );
+                }
+                //stream.write( data, 0, data.Length );
             }
         }
 
@@ -254,25 +278,25 @@ namespace org.kbinani.vsq {
         public static MidiEvent generateTimeSigEvent( int clock, int numerator, int denominator ) {
             MidiEvent ret = new MidiEvent();
             ret.clock = clock;
-            ret.firstByte = (byte)0xff;
-            byte b_numer = (byte)(Math.Log( denominator ) / Math.Log( 2 ) + 0.1);
+            ret.firstByte = 0xff;
+            int b_numer = (int)(Math.Log( denominator ) / Math.Log( 2 ) + 0.1);
 #if DEBUG
             PortUtil.println( "VsqEvent.generateTimeSigEvent; b_number=" + b_numer + "; denominator=" + denominator );
 #endif
-            ret.data = new byte[] { 0x58, (byte)numerator, b_numer, 0x18, 0x08 };
+            ret.data = new int[] { 0x58, numerator, b_numer, 0x18, 0x08 };
             return ret;
         }
 
         public static MidiEvent generateTempoChangeEvent( int clock, int tempo ) {
             MidiEvent ret = new MidiEvent();
             ret.clock = clock;
-            ret.firstByte = (byte)0xff;
-            byte b1 = (byte)(tempo & 0xff);
+            ret.firstByte = 0xff;
+            int b1 = tempo & 0xff;
             tempo = tempo >> 8;
-            byte b2 = (byte)(tempo & 0xff);
+            int b2 = tempo & 0xff;
             tempo = tempo >> 8;
-            byte b3 = (byte)(tempo & 0xff);
-            ret.data = new byte[] { (byte)0x51, b3, b2, b1 };
+            int b3 = tempo & 0xff;
+            ret.data = new int[] { 0x51, b3, b2, b1 };
             return ret;
         }
     }

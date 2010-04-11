@@ -26,6 +26,7 @@ using org.kbinani.java.io;
 namespace org.kbinani.vsq {
     using boolean = System.Boolean;
     using Long = System.Int64;
+    using Integer = System.Int32;
 #endif
 
     public class MidiFile {
@@ -81,7 +82,7 @@ namespace org.kbinani.vsq {
 
                     // チャンクの終わりまで読込み
                     ByRef<Long> clock = new ByRef<Long>( (long)0 );
-                    ByRef<Byte> last_status_byte = new ByRef<Byte>( (byte)0x00 );
+                    ByRef<Integer> last_status_byte = new ByRef<Integer>( 0x00 );
                     while ( stream.getFilePointer() < startpos + size ) {
                         MidiEvent mi = MidiEvent.read( stream, clock, last_status_byte );
                         track_events.add( mi );
@@ -159,11 +160,13 @@ namespace org.kbinani.vsq {
                 }
 #endif
             } catch ( Exception ex ) {
+                PortUtil.stderr.println( "MidiFile#.ctor; ex=" + ex );
             } finally {
                 if ( stream != null ) {
                     try {
                         stream.close();
                     } catch ( Exception ex2 ) {
+                        PortUtil.stderr.println( "MidiFile#.ctor; ex2=" + ex2 );
                     }
                 }
             }

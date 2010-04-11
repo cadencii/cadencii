@@ -54,11 +54,11 @@ namespace org.kbinani.cadencii {
         }
 
         public BKeys[] getFormCloseShortcutKey() {
-            return PortUtil.getBKeysFromKeyStroke( menuClose.getAccelerator() );
+            return BKeysUtility.getBKeysFromKeyStroke( menuClose.getAccelerator() );
         }
 
         public void setFormCloseShortcutKey( BKeys[] value ) {
-            menuClose.setAccelerator( PortUtil.getKeyStrokeFromBKeys( value ) );
+            menuClose.setAccelerator( BKeysUtility.getKeyStrokeFromBKeys( value ) );
         }
         #endregion
 
