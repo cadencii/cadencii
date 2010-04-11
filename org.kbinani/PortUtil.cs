@@ -650,19 +650,27 @@ namespace org.kbinani {
         }
 
         public static long make_int64_le( byte[] buf ) {
-            return (long)((long)((long)((long)((long)((long)((long)((long)((long)(((buf[7] << 8) | buf[6]) << 8) | buf[5]) << 8) | buf[4]) << 8) | buf[3]) << 8 | buf[2]) << 8) | buf[1]) << 8 | buf[0];
+            return (long)((long)((long)((long)((long)((long)((long)((long)((long)((((0xff & buf[7]) << 8) | (0xff & buf[6])) << 8) | (0xff & buf[5])) << 8) | (0xff & buf[4])) << 8) | (0xff & buf[3])) << 8 | (0xff & buf[2])) << 8) | (0xff & buf[1])) << 8 | (0xff & buf[0]);
         }
 
         public static long make_int64_be( byte[] buf ) {
-            return (long)((long)((long)((long)((long)((long)((long)((long)((long)(((buf[0] << 8) | buf[1]) << 8) | buf[2]) << 8) | buf[3]) << 8) | buf[4]) << 8 | buf[5]) << 8) | buf[6]) << 8 | buf[7];
+            return (long)((long)((long)((long)((long)((long)((long)((long)((long)((((0xff & buf[0]) << 8) | (0xff & buf[1])) << 8) | (0xff & buf[2])) << 8) | (0xff & buf[3])) << 8) | (0xff & buf[4])) << 8 | (0xff & buf[5])) << 8) | (0xff & buf[6])) << 8 | (0xff & buf[7]);
+        }
+
+        public static long make_uint32_le( byte[] buf, int index ) {
+            return (long)((long)((long)((long)(((0xff & buf[index + 3]) << 8) | (0xff & buf[index + 2])) << 8) | (0xff & buf[index + 1])) << 8) | (0xff & buf[index]);
         }
 
         public static long make_uint32_le( byte[] buf ) {
-            return (long)((long)((long)((long)((buf[3] << 8) | buf[2]) << 8) | buf[1]) << 8) | buf[0];
+            return make_uint32_le( buf, 0 );
+        }
+
+        public static long make_uint32_be( byte[] buf, int index ) {
+            return (long)((long)((long)((long)(((0xff & buf[index]) << 8) | (0xff & buf[index + 1])) << 8) | (0xff & buf[index + 2])) << 8) | (0xff & buf[index + 3]);
         }
 
         public static long make_uint32_be( byte[] buf ) {
-            return (long)((long)((long)((long)((buf[0] << 8) | buf[1]) << 8) | buf[2]) << 8) | buf[3];
+            return make_uint32_be( buf, 0 );
         }
 
         public static int make_int32_le( byte[] buf ) {
@@ -678,12 +686,20 @@ namespace org.kbinani {
         /// </summary>
         /// <param name="buf"></param>
         /// <returns></returns>
+        public static int make_uint16_le( byte[] buf, int index ) {
+            return (int)((int)((0xff & buf[index + 1]) << 8) | (0xff & buf[index]));
+        }
+
         public static int make_uint16_le( byte[] buf ) {
-            return (int)((int)(buf[1] << 8) | buf[0]);
+            return make_uint16_le( buf, 0 );
+        }
+
+        public static int make_uint16_be( byte[] buf, int index ) {
+            return (int)((int)((0xff & buf[index]) << 8) | (0xff & buf[index + 1]));
         }
 
         public static int make_uint16_be( byte[] buf ) {
-            return (int)((int)(buf[0] << 8) | buf[1]);
+            return make_uint16_be( buf, 0 );
         }
 
         /// <summary>
@@ -691,12 +707,16 @@ namespace org.kbinani {
         /// </summary>
         /// <param name="buf"></param>
         /// <returns></returns>
-        public static short make_int16_le( byte[] buf ) {
-            int i = make_uint16_le( buf );
+        public static short make_int16_le( byte[] buf, int index ) {
+            int i = make_uint16_le( buf, index );
             if ( i >= 32768 ) {
                 i = i - 65536;
             }
             return (short)i;
+        }
+
+        public static short make_int16_le( byte[] buf ) {
+            return make_int16_le( buf, 0 );
         }
 
         public static double make_double_le( byte[] buf ) {

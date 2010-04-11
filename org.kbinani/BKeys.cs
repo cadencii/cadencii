@@ -227,6 +227,7 @@ public enum BKeys{
             return item.getValue() == getValue();
         }
     }
+    
 }
 #else
 namespace org.kbinani.windows.forms {

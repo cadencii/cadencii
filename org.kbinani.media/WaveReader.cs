@@ -292,8 +292,8 @@ namespace org.kbinani.media {
                             }
                             break;
                         }
-                        short l = (short)(buf[0] | buf[1] << 8);
-                        short r = (short)(buf[2] | buf[3] << 8);
+                        short l = PortUtil.make_int16_le( buf, 0 );
+                        short r = PortUtil.make_int16_le( buf, 2 );
                         left[i] = l * coeff_left;
                         right[i] = r * coeff_right;
                     }
@@ -309,7 +309,7 @@ namespace org.kbinani.media {
                             }
                             break;
                         }
-                        short l = (short)(buf[0] | buf[1] << 8);
+                        short l = PortUtil.make_int16_le( buf, 0 );
                         left[i] = l * coeff_left;
                         right[i] = left[i];
                     }
@@ -328,8 +328,8 @@ namespace org.kbinani.media {
                             }
                             break;
                         }
-                        left[i] = (buf[0] - 64.0f) * coeff_left;
-                        right[i] = (buf[1] - 64.0f) * coeff_right;
+                        left[i] = ((0xff & buf[0]) - 64.0f) * coeff_left;
+                        right[i] = ((0xff & buf[1]) - 64.0f) * coeff_right;
                     }
                 } else {
                     byte[] buf = new byte[1];
@@ -343,7 +343,7 @@ namespace org.kbinani.media {
                             }
                             break;
                         }
-                        left[i] = (buf[0] - 64.0f) * coeff_left;
+                        left[i] = ((0xff & buf[0]) - 64.0f) * coeff_left;
                         right[i] = left[i];
                     }
                 }
@@ -400,8 +400,8 @@ namespace org.kbinani.media {
                             }
                             break;
                         }
-                        short l = (short)(buf[0] | buf[1] << 8);
-                        short r = (short)(buf[2] | buf[3] << 8);
+                        short l = PortUtil.make_int16_le( buf, 0 );
+                        short r = PortUtil.make_int16_le( buf, 2 );
                         left.value[i] = l * coeff_left;
                         right.value[i] = r * coeff_right;
                     }
@@ -417,7 +417,7 @@ namespace org.kbinani.media {
                             }
                             break;
                         }
-                        short l = (short)(buf[0] | buf[1] << 8);
+                        short l = PortUtil.make_int16_le( buf, 0 );
                         left.value[i] = l * coeff_left;
                         right.value[i] = left.value[i];
                     }
@@ -436,8 +436,8 @@ namespace org.kbinani.media {
                             }
                             break;
                         }
-                        left.value[i] = (buf[0] - 64.0f) * coeff_left;
-                        right.value[i] = (buf[1] - 64.0f) * coeff_right;
+                        left.value[i] = ((0xff & buf[0]) - 64.0f) * coeff_left;
+                        right.value[i] = ((0xff & buf[1]) - 64.0f) * coeff_right;
                     }
                 } else {
                     byte[] buf = new byte[1];
@@ -451,7 +451,7 @@ namespace org.kbinani.media {
                             }
                             break;
                         }
-                        left.value[i] = (buf[0] - 64.0f) * coeff_left;
+                        left.value[i] = ((0xff & buf[0]) - 64.0f) * coeff_left;
                         right.value[i] = left.value[i];
                     }
                 }
@@ -505,8 +505,8 @@ namespace org.kbinani.media {
                             }
                             break;
                         }
-                        short l = (short)(buf[0] | buf[1] << 8);
-                        short r = (short)(buf[2] | buf[3] << 8);
+                        short l = PortUtil.make_int16_le( buf, 0 );
+                        short r = PortUtil.make_int16_le( buf, 2 );
                         left[i] = l * coeff_left;
                         right[i] = r * coeff_right;
                     }
@@ -522,7 +522,7 @@ namespace org.kbinani.media {
                             }
                             break;
                         }
-                        short l = (short)(buf[0] | buf[1] << 8);
+                        short l = PortUtil.make_int16_le( buf, 0 );
                         left[i] = l * coeff_left;
                         right[i] = left[i];
                     }
@@ -541,8 +541,8 @@ namespace org.kbinani.media {
                             }
                             break;
                         }
-                        left[i] = (buf[0] - 64.0f) * coeff_left;
-                        right[i] = (buf[1] - 64.0f) * coeff_right;
+                        left[i] = ((0xff & buf[0]) - 64.0f) * coeff_left;
+                        right[i] = ((0xff & buf[1]) - 64.0f) * coeff_right;
                     }
                 } else {
                     byte[] buf = new byte[1];
@@ -556,7 +556,7 @@ namespace org.kbinani.media {
                             }
                             break;
                         }
-                        left[i] = (buf[0] - 64.0f) * coeff_left;
+                        left[i] = ((0xff & buf[0]) - 64.0f) * coeff_left;
                         right[i] = left[i];
                     }
                 }
