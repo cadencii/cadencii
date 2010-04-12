@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckSinger", "CheckSinger\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestUtauScript", "TestUtauScript\TestUtauScript.csproj", "{EE49D4AF-12EB-42C8-AE1A-82608C1DBBFA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.kbinani.windows.forms", "org.kbinani.windows.forms\org.kbinani.windows.forms.csproj", "{B9481E3B-6842-4AB3-8ED4-29C86C2579A3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -116,6 +118,13 @@ Global
 		{EE49D4AF-12EB-42C8-AE1A-82608C1DBBFA}.Release|x86.Build.0 = Release|x86
 		{EE49D4AF-12EB-42C8-AE1A-82608C1DBBFA}.ReleaseMinimal|x86.ActiveCfg = Release|x86
 		{EE49D4AF-12EB-42C8-AE1A-82608C1DBBFA}.ReleaseMinimal|x86.Build.0 = Release|x86
+		{B9481E3B-6842-4AB3-8ED4-29C86C2579A3}.Debug|x86.ActiveCfg = Debug|x86
+		{B9481E3B-6842-4AB3-8ED4-29C86C2579A3}.DebugMinimal|x86.ActiveCfg = Debug|x86
+		{B9481E3B-6842-4AB3-8ED4-29C86C2579A3}.DebugMinimal|x86.Build.0 = Debug|x86
+		{B9481E3B-6842-4AB3-8ED4-29C86C2579A3}.Release|x86.ActiveCfg = Release|x86
+		{B9481E3B-6842-4AB3-8ED4-29C86C2579A3}.Release|x86.Build.0 = Release|x86
+		{B9481E3B-6842-4AB3-8ED4-29C86C2579A3}.ReleaseMinimal|x86.ActiveCfg = Release|x86
+		{B9481E3B-6842-4AB3-8ED4-29C86C2579A3}.ReleaseMinimal|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

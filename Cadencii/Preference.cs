@@ -1226,7 +1226,7 @@ namespace org.kbinani.cadencii {
                 AppManager.showMessageBox( _( "Restart Cadencii to complete your changes" ),
                                            "Cadencii",
                                            PortUtil.OK_OPTION,
-                                           PortUtil.MSGBOX_INFORMATION_MESSAGE );
+                                           org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
             }
 
             setDialogResult( BDialogResult.OK );

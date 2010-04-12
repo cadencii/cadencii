@@ -804,8 +804,8 @@ class UtauPluginManager : Form {
                 org.kbinani.windows.forms.BDialogResult dr =
                     AppManager.showMessageBox( string.Format( _( "Script named '{0}' is already registered. Overwrite?" ), name ),
                                                "UTAU Plugin Manager",
-                                               PortUtil.MSGBOX_OK_CANCEL_OPTION,
-                                               PortUtil.MSGBOX_QUESTION_MESSAGE );
+                                               org.kbinani.windows.forms.Utility.MSGBOX_OK_CANCEL_OPTION,
+                                               org.kbinani.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE );
                 if ( dr != org.kbinani.windows.forms.BDialogResult.YES ) {
                     return;
                 }
@@ -908,8 +908,8 @@ class UtauPluginManager : Form {
         org.kbinani.windows.forms.BDialogResult dr =
             AppManager.showMessageBox( string.Format( _( "Remove '{0}'?" ), name ),
                                        "UTAU Plugin Manager",
-                                       PortUtil.MSGBOX_YES_NO_OPTION,
-                                       PortUtil.MSGBOX_QUESTION_MESSAGE );
+                                       org.kbinani.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
+                                       org.kbinani.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE );
         if ( dr != org.kbinani.windows.forms.BDialogResult.YES ) {
             return;
         }

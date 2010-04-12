@@ -107,10 +107,10 @@ namespace org.kbinani.editotoini {
             if ( m_mode == GenerateMode.STF ) {
                 #region STF
                 if ( !PortUtil.isFileExists( straightVoiceDB ) ) {
-                    PortUtil.showMessageBox( _( "Analyzer, 'straightVoiceDB.exe' does not exist." ),
+                    org.kbinani.windows.forms.Utility.showMessageBox( _( "Analyzer, 'straightVoiceDB.exe' does not exist." ),
                                              _( "Error" ),
                                              PortUtil.OK_OPTION,
-                                             PortUtil.MSGBOX_WARNING_MESSAGE );
+                                             org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
                     return;
                 }
                 String dir = PortUtil.getDirectoryName( m_oto_ini );
@@ -213,10 +213,10 @@ namespace org.kbinani.editotoini {
                 #endregion
             } else {
                 if ( !PortUtil.isFileExists( resampler ) ) {
-                    PortUtil.showMessageBox( _( "Don't know the path of 'resampler.exe'. Please check the configuration of Cadencii." ),
+                    org.kbinani.windows.forms.Utility.showMessageBox( _( "Don't know the path of 'resampler.exe'. Please check the configuration of Cadencii." ),
                                      _( "Error" ),
                                      PortUtil.OK_OPTION,
-                                     PortUtil.MSGBOX_WARNING_MESSAGE );
+                                     org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
                     return;
                 }
                 String dir = PortUtil.getDirectoryName( m_oto_ini );

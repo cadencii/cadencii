@@ -117,6 +117,10 @@
       <Project>{673347F3-6FC2-4F82-9273-BF158E0F8CB1}</Project>
       <Name>org.kbinani.vsq</Name>
     </ProjectReference>
+    <ProjectReference Include="..\org.kbinani.windows.forms\org.kbinani.windows.forms.csproj">
+      <Project>{B9481E3B-6842-4AB3-8ED4-29C86C2579A3}</Project>
+      <Name>org.kbinani.windows.forms</Name>
+    </ProjectReference>
     <ProjectReference Include="..\org.kbinani\org.kbinani.csproj">
       <Project>{C8AAE632-9C6C-4372-8175-811528A66742}</Project>
       <Name>org.kbinani</Name>

@@ -4,6 +4,8 @@ using System.Text;
 using System.Windows.Forms;
 using org.kbinani.apputil;
 using org.kbinani.vsq;
+using org.kbinani.windows.forms;
+
 public class GenerateVLF{
     public static bool Edit( VsqFile vsq ){
         int track = 1;

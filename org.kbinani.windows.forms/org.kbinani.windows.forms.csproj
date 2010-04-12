@@ -1,0 +1,182 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B9481E3B-6842-4AB3-8ED4-29C86C2579A3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>org.kbinani.windows.forms</RootNamespace>
+    <AssemblyName>org.kbinani.windows.forms</AssemblyName>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BCheckBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BDialogResult.cs" />
+    <Compile Include="BFileChooser.cs" />
+    <Compile Include="BFolderBrowser.cs" />
+    <Compile Include="BFontChooser.cs" />
+    <Compile Include="BForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BFormClosedEventArgs.cs" />
+    <Compile Include="BFormClosedEventHandler.cs" />
+    <Compile Include="BFormClosingEventArgs.cs" />
+    <Compile Include="BFormClosingEventHandler.cs" />
+    <Compile Include="BFormWindowState.cs" />
+    <Compile Include="BGroupBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BHScrollBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BKeyEventArgs.cs" />
+    <Compile Include="BKeyEventHandler.cs" />
+    <Compile Include="BKeyPressEventArgs.cs" />
+    <Compile Include="BKeyPressEventHandler.cs" />
+    <Compile Include="BKeys.cs" />
+    <Compile Include="BKeysUtility.cs" />
+    <Compile Include="BLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BListViewItem.cs" />
+    <Compile Include="BMenu.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BMenuBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BMenuItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BMenuSeparator.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BMouseButtons.cs" />
+    <Compile Include="BMouseEventArgs.cs" />
+    <Compile Include="BMouseEventHandler.cs" />
+    <Compile Include="BNumericUpDown.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BPaintEventArgs.cs" />
+    <Compile Include="BPaintEventHandler.cs" />
+    <Compile Include="BPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="BPictureBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BPopupMenu.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BPreviewKeyDownEventArgs.cs" />
+    <Compile Include="BPreviewKeyDownEventHandler.cs" />
+    <Compile Include="BProgressBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BProgressChangedEventArgs.cs" />
+    <Compile Include="BProgressChangedEventHandler.cs" />
+    <Compile Include="BRadioButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BScrollBar.cs" />
+    <Compile Include="BSlider.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BSplitPane.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BStatusLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BTextArea.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BTimer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BToggleButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BToolBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BToolStripButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BToolStripDropDownButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BToolStripLabel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BToolStripTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BVScrollBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="InputBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utility.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\org.kbinani\org.kbinani.csproj">
+      <Project>{C8AAE632-9C6C-4372-8175-811528A66742}</Project>
+      <Name>org.kbinani</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -65,9 +65,6 @@
     <Compile Include="DockPanelContainer.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="InputBox.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="ISO639.cs" />
     <Compile Include="MessageBodyEntry.cs" />
     <Compile Include="Messaging.cs" />

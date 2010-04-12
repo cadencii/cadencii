@@ -126,7 +126,7 @@ namespace org.kbinani.cadencii {
                         ret = ScriptReturnStatus.ERROR;
                     }
                     if ( ret == ScriptReturnStatus.ERROR ) {
-                        AppManager.showMessageBox( _( "Script aborted" ), "Cadencii", PortUtil.MSGBOX_DEFAULT_OPTION, PortUtil.MSGBOX_INFORMATION_MESSAGE );
+                        AppManager.showMessageBox( _( "Script aborted" ), "Cadencii", org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
                     } else if ( ret == ScriptReturnStatus.EDITED ) {
                         CadenciiCommand run = VsqFileEx.generateCommandReplace( work );
                         AppManager.register( vsq.executeCommand( run ) );
@@ -154,11 +154,11 @@ namespace org.kbinani.cadencii {
                     }
                     return (ret == ScriptReturnStatus.EDITED);
                 } catch ( Exception ex ) {
-                    AppManager.showMessageBox( _( "Script runtime error:" ) + " " + ex, _( "Error" ), PortUtil.MSGBOX_DEFAULT_OPTION, PortUtil.MSGBOX_INFORMATION_MESSAGE );
+                    AppManager.showMessageBox( _( "Script runtime error:" ) + " " + ex, _( "Error" ), org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
                     PortUtil.stderr.println( "AppManager#invokeScript; ex=" + ex );
                 }
             } else {
-                AppManager.showMessageBox( _( "Script compilation failed." ), _( "Error" ), PortUtil.MSGBOX_DEFAULT_OPTION, PortUtil.MSGBOX_WARNING_MESSAGE );
+                AppManager.showMessageBox( _( "Script compilation failed." ), _( "Error" ), org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
             }
             return false;
         }

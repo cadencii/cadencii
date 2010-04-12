@@ -1,4 +1,4 @@
-/*
+﻿/*
  * BDelegate.cs
  * Copyright (c) 2009 kbinani
  *
@@ -21,8 +21,8 @@ public class BDelegate{
     String m_name = "";
     
     /**
-     * ���̃f���Q�[�g���C�w�肳�ꂽ�A�C�e���Ɠ����ł����true��Ԃ��܂��D
-     * ���̃f���Q�[�g���\�����\�b�h�̈����E�߂�l�̌^�ƁC�f���Q�[�g�̔������̃I�u�W�F�N�g���S�ē������ꍇ�ɁC�f���Q�[�g�������ł���Ɣ��肳��܂��D
+     * このデリゲートが，指定されたアイテムと同じであればtrueを返します．
+     * このデリゲートが表すメソッドの引数・戻り値の型と，デリゲートの発動元のオブジェクトが全て等しい場合に，デリゲートが同じであると判定されます．
      */
     public boolean equals( Object item ){
         if( item == null ){

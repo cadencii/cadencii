@@ -7,52 +7,54 @@ PLAY_SOUND_DLL=@PLAY_SOUND_DLL@
 JROOT=./build/java/org/kbinani
 PPCS2JAVA_OPT=-DJAVA -DJAVA_1_5 -DRELEASE -DCLIPBOARD_AS_TEXT -encoding "UTF-8" -s -4 -c
 
-SRC_JAPPUTIL=./build/java/org/kbinani/apputil/AuthorListEntry.java ./build/java/org/kbinani/apputil/InputBox.java \
+SRC_JAPPUTIL=./build/java/org/kbinani/apputil/AuthorListEntry.java \
             ./build/java/org/kbinani/apputil/MessageBody.java ./build/java/org/kbinani/apputil/MessageBodyEntry.java \
             ./build/java/org/kbinani/apputil/PolylineDrawer.java ./build/java/org/kbinani/apputil/Util.java \
             ./build/java/org/kbinani/apputil/Messaging.java
 
-SRC_JCORLIB=./build/java/org/kbinani/Base64.java ./build/java/org/kbinani/BDelegate.java \
-            ./build/java/org/kbinani/BEvent.java ./build/java/org/kbinani/BEventArgs.java \
-            ./build/java/org/kbinani/BEventHandler.java ./build/java/org/kbinani/ByRef.java \
-            ./build/java/org/kbinani/InternalStdErr.java ./build/java/org/kbinani/InternalStdOut.java \
-            ./build/java/org/kbinani/math.java ./build/java/org/kbinani/PortUtil.java \
-            ./build/java/org/kbinani/ValuePair.java ./build/java/org/kbinani/XmlPoint.java \
+SRC_JCORLIB=./build/java/org/kbinani/Base64.java                                      ./build/java/org/kbinani/BDelegate.java \
+            ./build/java/org/kbinani/BEvent.java                                      ./build/java/org/kbinani/BEventArgs.java \
+            ./build/java/org/kbinani/BEventHandler.java                               ./build/java/org/kbinani/ByRef.java \
+            ./build/java/org/kbinani/InternalStdErr.java                              ./build/java/org/kbinani/InternalStdOut.java \
+            ./build/java/org/kbinani/math.java                                        ./build/java/org/kbinani/PortUtil.java \
+            ./build/java/org/kbinani/ValuePair.java                                   ./build/java/org/kbinani/XmlPoint.java \
             ./build/java/org/kbinani/XmlRectangle.java \
-            ./build/java/org/kbinani/componentmodel/BBackgroundWorker.java ./build/java/org/kbinani/componentmodel/BCancelEventArgs.java \
-            ./build/java/org/kbinani/componentmodel/BCancelEventHandler.java ./build/java/org/kbinani/componentmodel/BDoWorkEventArgs.java \
-            ./build/java/org/kbinani/componentmodel/BDoWorkEventHandler.java ./build/java/org/kbinani/componentmodel/BProgressChangedEventArgs.java \
+            ./build/java/org/kbinani/componentmodel/BBackgroundWorker.java            ./build/java/org/kbinani/componentmodel/BCancelEventArgs.java \
+            ./build/java/org/kbinani/componentmodel/BCancelEventHandler.java          ./build/java/org/kbinani/componentmodel/BDoWorkEventArgs.java \
+            ./build/java/org/kbinani/componentmodel/BDoWorkEventHandler.java          ./build/java/org/kbinani/componentmodel/BProgressChangedEventArgs.java \
             ./build/java/org/kbinani/componentmodel/BProgressChangedEventHandler.java ./build/java/org/kbinani/componentmodel/BRunWorkerCompletedEventArgs.java \
             ./build/java/org/kbinani/componentmodel/BRunWorkerCompletedEventHandler.java \
-            ./build/java/org/kbinani/windows/forms/BButton.java ./build/java/org/kbinani/windows/forms/BCheckBox.java \
-            ./build/java/org/kbinani/windows/forms/BComboBox.java ./build/java/org/kbinani/windows/forms/BDialog.java \
-            ./build/java/org/kbinani/windows/forms/BDialogResult.java ./build/java/org/kbinani/windows/forms/BFileChooser.java \
-            ./build/java/org/kbinani/windows/forms/BFolderBrowser.java ./build/java/org/kbinani/windows/forms/BFontChooser.java \
-            ./build/java/org/kbinani/windows/forms/BForm.java ./build/java/org/kbinani/windows/forms/BFormClosedEventArgs.java \
-            ./build/java/org/kbinani/windows/forms/BFormClosedEventHandler.java ./build/java/org/kbinani/windows/forms/BFormClosingEventArgs.java \
-            ./build/java/org/kbinani/windows/forms/BFormClosingEventHandler.java ./build/java/org/kbinani/windows/forms/BFormWindowState.java \
-            ./build/java/org/kbinani/windows/forms/BGroupBox.java ./build/java/org/kbinani/windows/forms/BHScrollBar.java \
-            ./build/java/org/kbinani/windows/forms/BKeyEventArgs.java ./build/java/org/kbinani/windows/forms/BKeyEventHandler.java \
-            ./build/java/org/kbinani/windows/forms/BKeyPressEventArgs.java ./build/java/org/kbinani/windows/forms/BKeyPressEventHandler.java \
-            ./build/java/org/kbinani/windows/forms/BKeys.java ./build/java/org/kbinani/windows/forms/BKeysUtility.java \
-            ./build/java/org/kbinani/windows/forms/BLabel.java \
-            ./build/java/org/kbinani/windows/forms/BListView.java ./build/java/org/kbinani/windows/forms/BListViewItem.java \
-            ./build/java/org/kbinani/windows/forms/BMenu.java ./build/java/org/kbinani/windows/forms/BMenuBar.java \
-            ./build/java/org/kbinani/windows/forms/BMenuItem.java ./build/java/org/kbinani/windows/forms/BMenuSeparator.java \
-            ./build/java/org/kbinani/windows/forms/BMouseButtons.java ./build/java/org/kbinani/windows/forms/BMouseEventArgs.java \
-            ./build/java/org/kbinani/windows/forms/BMouseEventHandler.java ./build/java/org/kbinani/windows/forms/BNumericUpDown.java \
-            ./build/java/org/kbinani/windows/forms/BPaintEventArgs.java ./build/java/org/kbinani/windows/forms/BPaintEventHandler.java \
-            ./build/java/org/kbinani/windows/forms/BPanel.java ./build/java/org/kbinani/windows/forms/BPictureBox.java \
-            ./build/java/org/kbinani/windows/forms/BPopupMenu.java ./build/java/org/kbinani/windows/forms/BPreviewKeyDownEventArgs.java \
-            ./build/java/org/kbinani/windows/forms/BPreviewKeyDownEventHandler.java ./build/java/org/kbinani/windows/forms/BProgressBar.java \
-            ./build/java/org/kbinani/windows/forms/BRadioButton.java ./build/java/org/kbinani/windows/forms/BScrollBar.java \
-            ./build/java/org/kbinani/windows/forms/BSlider.java ./build/java/org/kbinani/windows/forms/BSplitPane.java \
-            ./build/java/org/kbinani/windows/forms/BStatusLabel.java ./build/java/org/kbinani/windows/forms/BTextArea.java \
-            ./build/java/org/kbinani/windows/forms/BTextBox.java ./build/java/org/kbinani/windows/forms/BTimer.java \
-            ./build/java/org/kbinani/windows/forms/BToggleButton.java ./build/java/org/kbinani/windows/forms/BToolBar.java \
-            ./build/java/org/kbinani/windows/forms/BToolStripButton.java ./build/java/org/kbinani/windows/forms/BVScrollBar.java \
-            ./build/java/org/kbinani/xml/XmlMember.java ./build/java/org/kbinani/xml/XmlSerializable.java \
+            ./build/java/org/kbinani/xml/XmlMember.java                               ./build/java/org/kbinani/xml/XmlSerializable.java \
             ./build/java/org/kbinani/xml/XmlSerializer.java
+
+SRC_JWINFORMS=./build/java/org/kbinani/windows/forms/BButton.java                   ./build/java/org/kbinani/windows/forms/BCheckBox.java \
+            ./build/java/org/kbinani/windows/forms/BComboBox.java                   ./build/java/org/kbinani/windows/forms/BDialog.java \
+            ./build/java/org/kbinani/windows/forms/BDialogResult.java               ./build/java/org/kbinani/windows/forms/BFileChooser.java \
+            ./build/java/org/kbinani/windows/forms/BFolderBrowser.java              ./build/java/org/kbinani/windows/forms/BFontChooser.java \
+            ./build/java/org/kbinani/windows/forms/BForm.java                       ./build/java/org/kbinani/windows/forms/BFormClosedEventArgs.java \
+            ./build/java/org/kbinani/windows/forms/BFormClosedEventHandler.java     ./build/java/org/kbinani/windows/forms/BFormClosingEventArgs.java \
+            ./build/java/org/kbinani/windows/forms/BFormClosingEventHandler.java    ./build/java/org/kbinani/windows/forms/BFormWindowState.java \
+            ./build/java/org/kbinani/windows/forms/BGroupBox.java                   ./build/java/org/kbinani/windows/forms/BHScrollBar.java \
+            ./build/java/org/kbinani/windows/forms/BKeyEventArgs.java               ./build/java/org/kbinani/windows/forms/BKeyEventHandler.java \
+            ./build/java/org/kbinani/windows/forms/BKeyPressEventArgs.java          ./build/java/org/kbinani/windows/forms/BKeyPressEventHandler.java \
+            ./build/java/org/kbinani/windows/forms/BKeys.java                       ./build/java/org/kbinani/windows/forms/BKeysUtility.java \
+            ./build/java/org/kbinani/windows/forms/BLabel.java \
+            ./build/java/org/kbinani/windows/forms/BListView.java                   ./build/java/org/kbinani/windows/forms/BListViewItem.java \
+            ./build/java/org/kbinani/windows/forms/BMenu.java                       ./build/java/org/kbinani/windows/forms/BMenuBar.java \
+            ./build/java/org/kbinani/windows/forms/BMenuItem.java                   ./build/java/org/kbinani/windows/forms/BMenuSeparator.java \
+            ./build/java/org/kbinani/windows/forms/BMouseButtons.java               ./build/java/org/kbinani/windows/forms/BMouseEventArgs.java \
+            ./build/java/org/kbinani/windows/forms/BMouseEventHandler.java          ./build/java/org/kbinani/windows/forms/BNumericUpDown.java \
+            ./build/java/org/kbinani/windows/forms/BPaintEventArgs.java             ./build/java/org/kbinani/windows/forms/BPaintEventHandler.java \
+            ./build/java/org/kbinani/windows/forms/BPanel.java                      ./build/java/org/kbinani/windows/forms/BPictureBox.java \
+            ./build/java/org/kbinani/windows/forms/BPopupMenu.java                  ./build/java/org/kbinani/windows/forms/BPreviewKeyDownEventArgs.java \
+            ./build/java/org/kbinani/windows/forms/BPreviewKeyDownEventHandler.java ./build/java/org/kbinani/windows/forms/BProgressBar.java \
+            ./build/java/org/kbinani/windows/forms/BRadioButton.java                ./build/java/org/kbinani/windows/forms/BScrollBar.java \
+            ./build/java/org/kbinani/windows/forms/BSlider.java                     ./build/java/org/kbinani/windows/forms/BSplitPane.java \
+            ./build/java/org/kbinani/windows/forms/BStatusLabel.java                ./build/java/org/kbinani/windows/forms/BTextArea.java \
+            ./build/java/org/kbinani/windows/forms/BTextBox.java                    ./build/java/org/kbinani/windows/forms/BTimer.java \
+            ./build/java/org/kbinani/windows/forms/BToggleButton.java               ./build/java/org/kbinani/windows/forms/BToolBar.java \
+            ./build/java/org/kbinani/windows/forms/BToolStripButton.java            ./build/java/org/kbinani/windows/forms/BVScrollBar.java \
+            ./build/java/org/kbinani/windows/forms/InputBox.java ./build/java/org/kbinani/windows/forms/Utility.java
 
 SRC_JMEDIA=./build/java/org/kbinani/media/BSoundPlayer.java ./build/java/org/kbinani/media/IWaveReceiver.java \
            ./build/java/org/kbinani/media/MidiInDevice.java ./build/java/org/kbinani/media/Wave.java \
@@ -196,7 +198,7 @@ first: ./first.pl
 jcadencii_win: jcadencii
 	exewrap -g -t 1.6 -o .\build\java\jCadencii.exe -i .\Cadencii\resources\icon.ico .\build\java\Cadencii.jar
 
-jcadencii: pp_cs2java.exe $(SRC_JCORLIB) $(SRC_JAPPUTIL) $(SRC_JMEDIA) $(SRC_JVSQ) $(SRC_JCADENCII) ./Cadencii/Resources.cs
+jcadencii: pp_cs2java.exe $(SRC_JCORLIB) $(SRC_JWINFORMS) $(SRC_JAPPUTIL) $(SRC_JMEDIA) $(SRC_JVSQ) $(SRC_JCADENCII) ./Cadencii/Resources.cs
 	$(CP) ./build/java/org/kbinani/cadencii/NumberTextBox.java ./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java
 	$(CP) ./build/java/org/kbinani/cadencii/NumericUpDownEx.java ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java
 	javac ./build/java/Cadencii.java ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/*.java ./build/java/org/kbinani/apputil/*.java ./build/java/org/kbinani/media/*.java ./build/java/org/kbinani/vsq/*.java ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/componentmodel/*.java ./build/java/org/kbinani/windows/forms/*.java ./build/java/org/kbinani/xml/*.java -encoding UTF8 -target 1.5 -source 1.5
@@ -218,12 +220,12 @@ jcorlib: pp_cs2java.exe $(SRC_JCORLIB)
 	$(CP) ./build/java/org/kbinani/ByRef.java ./BuildJavaUI/src/org/kbinani/ByRef.java
 	$(CP) ./build/java/org/kbinani/xml/XmlSerializable.java ./BuildJavaUI/src/org/kbinani/xml/XmlSerializable.java
 
-pp_cs2java.exe: first $(TARGET)/org.kbinani.dll ./pp_cs2java/Program.cs
-	gmcs ./pp_cs2java/Program.cs -out:./pp_cs2java.exe -r:$(TARGET)/org.kbinani.dll,System.Drawing $(MCS_OPT) -define:DEBUG
+pp_cs2java.exe: first $(TARGET)/org.kbinani.dll $(TARGET)/org.kbinani.windows.forms.dll ./pp_cs2java/Program.cs
+	gmcs ./pp_cs2java/Program.cs -out:./pp_cs2java.exe -r:$(TARGET)/org.kbinani.dll,$(TARGET)/org.kbinani.windows.forms.dll,System.Drawing $(MCS_OPT) -define:DEBUG
 	$(CP) $(TARGET)/org.kbinani.dll ./org.kbinani.dll
 
-$(TARGET)/Cadencii.exe: ./Cadencii/Resources.cs ./Cadencii/*.cs ./Cadencii/resources/*.png ./Cadencii/resources/*.txt ./Cadencii/resources/*.ico $(TARGET)/org.kbinani.dll $(TARGET)/org.kbinani.apputil.dll $(TARGET)/org.kbinani.media.dll $(TARGET)/org.kbinani.vsq.dll $(PLAY_SOUND_DLL)
-	gmcs -recurse:./Cadencii/*.cs -define:MONO,ENABLE_VOCALOID,ENABLE_AQUESTONE,ENABLE_MIDI,ENABLE_PROPERTY -out:$(TARGET)/Cadencii.exe -r:System.Windows.Forms,System.Drawing,$(TARGET)/org.kbinani.dll,$(TARGET)/org.kbinani.apputil.dll,$(TARGET)/org.kbinani.media.dll,$(TARGET)/org.kbinani.vsq.dll -unsafe+ -codepage:utf8 -win32icon:./Cadencii/resources/icon.ico $(MCS_OPT)
+$(TARGET)/Cadencii.exe: ./Cadencii/Resources.cs ./Cadencii/*.cs ./Cadencii/resources/*.png ./Cadencii/resources/*.txt ./Cadencii/resources/*.ico $(TARGET)/org.kbinani.dll $(TARGET)/org.kbinani.windows.forms.dll $(TARGET)/org.kbinani.apputil.dll $(TARGET)/org.kbinani.media.dll $(TARGET)/org.kbinani.vsq.dll $(PLAY_SOUND_DLL)
+	gmcs -recurse:./Cadencii/*.cs -define:MONO,ENABLE_VOCALOID,ENABLE_AQUESTONE,ENABLE_MIDI,ENABLE_PROPERTY -out:$(TARGET)/Cadencii.exe -r:System.Windows.Forms,System.Drawing,$(TARGET)/org.kbinani.dll,$(TARGET)/org.kbinani.apputil.dll,$(TARGET)/org.kbinani.media.dll,$(TARGET)/org.kbinani.vsq.dll,$(TARGET)/org.kbinani.windows.forms.dll -unsafe+ -codepage:utf8 -win32icon:./Cadencii/resources/icon.ico $(MCS_OPT)
 	perl copy_with_ext.pl ./Cadencii/resources/ $(TARGET)/resources/ .png
 	perl copy_with_ext.pl ./Cadencii/resources/ $(TARGET)/resources/ .txt
 	perl copy_with_ext.pl ./Cadencii/resources/ $(TARGET)/resources/ .ico
@@ -249,6 +251,9 @@ $(TARGET)/org.kbinani.media.dll: $(TARGET)/org.kbinani.dll ./org.kbinani.media/*
 $(TARGET)/org.kbinani.vsq.dll: $(TARGET)/org.kbinani.dll ./org.kbinani.vsq/*.cs
 	gmcs -recurse:./org.kbinani.vsq/*.cs -target:library -define:MONO -out:$(TARGET)/org.kbinani.vsq.dll -r:System.Windows.Forms,System.Drawing,$(TARGET)/org.kbinani.dll  -codepage:utf8 $(MCS_OPT)
 
+$(TARGET)/org.kbinani.windows.forms.dll: $(TARGET)/org.kbinani.dll ./org.kbinani.windows.forms/*.cs
+	gmcs -recurse:./org.kbinani.windows.forms/*.cs -target:library -define:MONO -out:$(TARGET)/org.kbinani.windows.forms.dll -r:System.Windows.Forms,System.Drawing,$(TARGET)/org.kbinani.dll  -codepage:utf8 $(MCS_OPT)
+
 doc: jcadencii
 	javadoc -sourcepath ./build/java org.kbinani.windows.forms org.kbinani.vsq org.kbinani org.kbinani.apputil org.kbinani.media org.kbinani.cadencii -encoding UTF8 -use -public -d ./docs/javadoc/
 
@@ -260,8 +265,8 @@ clean_jcadencii:
 
 ./build/java/org/kbinani/apputil/AuthorListEntry.java: ./org.kbinani.apputil/AuthorListEntry.java
 	$(CP) ./org.kbinani.apputil/AuthorListEntry.java ./build/java/org/kbinani/apputil/AuthorListEntry.java
-./build/java/org/kbinani/apputil/InputBox.java: ./org.kbinani.apputil/InputBox.java
-	$(CP) ./org.kbinani.apputil/InputBox.java ./build/java/org/kbinani/apputil/InputBox.java
+./build/java/org/kbinani/windows/forms/InputBox.java: ./org.kbinani.windows.forms/InputBox.java
+	$(CP) ./org.kbinani.windows.forms/InputBox.java ./build/java/org/kbinani/windows/forms/InputBox.java
 ./build/java/org/kbinani/apputil/MessageBody.java: ./org.kbinani.apputil/MessageBody.java
 	$(CP) ./org.kbinani.apputil/MessageBody.java ./build/java/org/kbinani/apputil/MessageBody.java
 ./build/java/org/kbinani/apputil/MessageBodyEntry.java: ./org.kbinani.apputil/MessageBodyEntry.java
@@ -316,112 +321,114 @@ clean_jcadencii:
 	$(CP) ./org.kbinani/BRunWorkerCompletedEventArgs.java ./build/java/org/kbinani/componentmodel/BRunWorkerCompletedEventArgs.java
 ./build/java/org/kbinani/componentmodel/BRunWorkerCompletedEventHandler.java: ./org.kbinani/BRunWorkerCompletedEventHandler.java
 	$(CP) ./org.kbinani/BRunWorkerCompletedEventHandler.java ./build/java/org/kbinani/componentmodel/BRunWorkerCompletedEventHandler.java
-./build/java/org/kbinani/windows/forms/BButton.java: ./org.kbinani/BButton.java
-	$(CP) ./org.kbinani/BButton.java ./build/java/org/kbinani/windows/forms/BButton.java
-./build/java/org/kbinani/windows/forms/BCheckBox.java: ./org.kbinani/BCheckBox.java
-	$(CP) ./org.kbinani/BCheckBox.java ./build/java/org/kbinani/windows/forms/BCheckBox.java
-./build/java/org/kbinani/windows/forms/BComboBox.java: ./org.kbinani/BComboBox.java
-	$(CP) ./org.kbinani/BComboBox.java ./build/java/org/kbinani/windows/forms/BComboBox.java
-./build/java/org/kbinani/windows/forms/BDialog.java: ./org.kbinani/BDialog.java
-	$(CP) ./org.kbinani/BDialog.java ./build/java/org/kbinani/windows/forms/BDialog.java
-./build/java/org/kbinani/windows/forms/BDialogResult.java: ./org.kbinani/BDialogResult.java
-	$(CP) ./org.kbinani/BDialogResult.java ./build/java/org/kbinani/windows/forms/BDialogResult.java
-./build/java/org/kbinani/windows/forms/BFileChooser.java: ./org.kbinani/BFileChooser.java
-	$(CP) ./org.kbinani/BFileChooser.java ./build/java/org/kbinani/windows/forms/BFileChooser.java
-./build/java/org/kbinani/windows/forms/BFolderBrowser.java: ./org.kbinani/BFolderBrowser.java
-	$(CP) ./org.kbinani/BFolderBrowser.java ./build/java/org/kbinani/windows/forms/BFolderBrowser.java
-./build/java/org/kbinani/windows/forms/BFontChooser.java: ./org.kbinani/BFontChooser.java
-	$(CP) ./org.kbinani/BFontChooser.java ./build/java/org/kbinani/windows/forms/BFontChooser.java
-./build/java/org/kbinani/windows/forms/BForm.java: ./org.kbinani/BForm.java
-	$(CP) ./org.kbinani/BForm.java ./build/java/org/kbinani/windows/forms/BForm.java
-./build/java/org/kbinani/windows/forms/BFormClosedEventArgs.java: ./org.kbinani/BFormClosedEventArgs.java
-	$(CP) ./org.kbinani/BFormClosedEventArgs.java ./build/java/org/kbinani/windows/forms/BFormClosedEventArgs.java
-./build/java/org/kbinani/windows/forms/BFormClosedEventHandler.java: ./org.kbinani/BFormClosedEventHandler.java
-	$(CP) ./org.kbinani/BFormClosedEventHandler.java ./build/java/org/kbinani/windows/forms/BFormClosedEventHandler.java
-./build/java/org/kbinani/windows/forms/BFormClosingEventArgs.java: ./org.kbinani/BFormClosingEventArgs.java
-	$(CP) ./org.kbinani/BFormClosingEventArgs.java ./build/java/org/kbinani/windows/forms/BFormClosingEventArgs.java
-./build/java/org/kbinani/windows/forms/BFormClosingEventHandler.java: ./org.kbinani/BFormClosingEventHandler.java
-	$(CP) ./org.kbinani/BFormClosingEventHandler.java ./build/java/org/kbinani/windows/forms/BFormClosingEventHandler.java
-./build/java/org/kbinani/windows/forms/BFormWindowState.java: ./org.kbinani/BFormWindowState.java
-	$(CP) ./org.kbinani/BFormWindowState.java ./build/java/org/kbinani/windows/forms/BFormWindowState.java
-./build/java/org/kbinani/windows/forms/BGroupBox.java: ./org.kbinani/BGroupBox.java
-	$(CP) ./org.kbinani/BGroupBox.java ./build/java/org/kbinani/windows/forms/BGroupBox.java
-./build/java/org/kbinani/windows/forms/BHScrollBar.java: ./org.kbinani/BHScrollBar.java
-	$(CP) ./org.kbinani/BHScrollBar.java ./build/java/org/kbinani/windows/forms/BHScrollBar.java
-./build/java/org/kbinani/windows/forms/BKeyEventArgs.java: ./org.kbinani/BKeyEventArgs.java
-	$(CP) ./org.kbinani/BKeyEventArgs.java ./build/java/org/kbinani/windows/forms/BKeyEventArgs.java
-./build/java/org/kbinani/windows/forms/BKeyEventHandler.java: ./org.kbinani/BKeyEventHandler.java
-	$(CP) ./org.kbinani/BKeyEventHandler.java ./build/java/org/kbinani/windows/forms/BKeyEventHandler.java
-./build/java/org/kbinani/windows/forms/BKeyPressEventArgs.java: ./org.kbinani/BKeyPressEventArgs.java
-	$(CP) ./org.kbinani/BKeyPressEventArgs.java ./build/java/org/kbinani/windows/forms/BKeyPressEventArgs.java
-./build/java/org/kbinani/windows/forms/BKeyPressEventHandler.java: ./org.kbinani/BKeyPressEventHandler.java
-	$(CP) ./org.kbinani/BKeyPressEventHandler.java ./build/java/org/kbinani/windows/forms/BKeyPressEventHandler.java
-./build/java/org/kbinani/windows/forms/BKeys.java: ./org.kbinani/BKeys.java
-	$(CP) ./org.kbinani/BKeys.java ./build/java/org/kbinani/windows/forms/BKeys.java
-./build/java/org/kbinani/windows/forms/BKeysUtility.java: ./org.kbinani/BKeysUtility.java
-	$(CP) ./org.kbinani/BKeysUtility.java ./build/java/org/kbinani/windows/forms/BKeysUtility.java
-./build/java/org/kbinani/windows/forms/BLabel.java: ./org.kbinani/BLabel.java
-	$(CP) ./org.kbinani/BLabel.java ./build/java/org/kbinani/windows/forms/BLabel.java
-./build/java/org/kbinani/windows/forms/BListView.java: ./org.kbinani/BListView.java
-	$(CP) ./org.kbinani/BListView.java ./build/java/org/kbinani/windows/forms/BListView.java
-./build/java/org/kbinani/windows/forms/BListViewItem.java: ./org.kbinani/BListViewItem.java
-	$(CP) ./org.kbinani/BListViewItem.java ./build/java/org/kbinani/windows/forms/BListViewItem.java
-./build/java/org/kbinani/windows/forms/BMenu.java: ./org.kbinani/BMenu.java
-	$(CP) ./org.kbinani/BMenu.java ./build/java/org/kbinani/windows/forms/BMenu.java
-./build/java/org/kbinani/windows/forms/BMenuBar.java: ./org.kbinani/BMenuBar.java
-	$(CP) ./org.kbinani/BMenuBar.java ./build/java/org/kbinani/windows/forms/BMenuBar.java
-./build/java/org/kbinani/windows/forms/BMenuItem.java: ./org.kbinani/BMenuItem.java
-	$(CP) ./org.kbinani/BMenuItem.java ./build/java/org/kbinani/windows/forms/BMenuItem.java
-./build/java/org/kbinani/windows/forms/BMenuSeparator.java: ./org.kbinani/BMenuSeparator.java
-	$(CP) ./org.kbinani/BMenuSeparator.java ./build/java/org/kbinani/windows/forms/BMenuSeparator.java
-./build/java/org/kbinani/windows/forms/BMouseButtons.java: ./org.kbinani/BMouseButtons.java
-	$(CP) ./org.kbinani/BMouseButtons.java ./build/java/org/kbinani/windows/forms/BMouseButtons.java
-./build/java/org/kbinani/windows/forms/BMouseEventArgs.java: ./org.kbinani/BMouseEventArgs.java
-	$(CP) ./org.kbinani/BMouseEventArgs.java ./build/java/org/kbinani/windows/forms/BMouseEventArgs.java
-./build/java/org/kbinani/windows/forms/BMouseEventHandler.java: ./org.kbinani/BMouseEventHandler.java
-	$(CP) ./org.kbinani/BMouseEventHandler.java ./build/java/org/kbinani/windows/forms/BMouseEventHandler.java
-./build/java/org/kbinani/windows/forms/BNumericUpDown.java: ./org.kbinani/BNumericUpDown.java
-	$(CP) ./org.kbinani/BNumericUpDown.java ./build/java/org/kbinani/windows/forms/BNumericUpDown.java
-./build/java/org/kbinani/windows/forms/BPaintEventArgs.java: ./org.kbinani/BPaintEventArgs.java
-	$(CP) ./org.kbinani/BPaintEventArgs.java ./build/java/org/kbinani/windows/forms/BPaintEventArgs.java
-./build/java/org/kbinani/windows/forms/BPaintEventHandler.java: ./org.kbinani/BPaintEventHandler.java
-	$(CP) ./org.kbinani/BPaintEventHandler.java ./build/java/org/kbinani/windows/forms/BPaintEventHandler.java
-./build/java/org/kbinani/windows/forms/BPanel.java: ./org.kbinani/BPanel.java
-	$(CP) ./org.kbinani/BPanel.java ./build/java/org/kbinani/windows/forms/BPanel.java
-./build/java/org/kbinani/windows/forms/BPictureBox.java: ./org.kbinani/BPictureBox.java
-	$(CP) ./org.kbinani/BPictureBox.java ./build/java/org/kbinani/windows/forms/BPictureBox.java
-./build/java/org/kbinani/windows/forms/BPopupMenu.java: ./org.kbinani/BPopupMenu.java
-	$(CP) ./org.kbinani/BPopupMenu.java ./build/java/org/kbinani/windows/forms/BPopupMenu.java
-./build/java/org/kbinani/windows/forms/BPreviewKeyDownEventArgs.java: ./org.kbinani/BPreviewKeyDownEventArgs.java
-	$(CP) ./org.kbinani/BPreviewKeyDownEventArgs.java ./build/java/org/kbinani/windows/forms/BPreviewKeyDownEventArgs.java
-./build/java/org/kbinani/windows/forms/BPreviewKeyDownEventHandler.java: ./org.kbinani/BPreviewKeyDownEventHandler.java
-	$(CP) ./org.kbinani/BPreviewKeyDownEventHandler.java ./build/java/org/kbinani/windows/forms/BPreviewKeyDownEventHandler.java
-./build/java/org/kbinani/windows/forms/BProgressBar.java: ./org.kbinani/BProgressBar.java
-	$(CP) ./org.kbinani/BProgressBar.java ./build/java/org/kbinani/windows/forms/BProgressBar.java
-./build/java/org/kbinani/windows/forms/BRadioButton.java: ./org.kbinani/BRadioButton.java
-	$(CP) ./org.kbinani/BRadioButton.java ./build/java/org/kbinani/windows/forms/BRadioButton.java
-./build/java/org/kbinani/windows/forms/BScrollBar.java: ./org.kbinani/BScrollBar.java
-	$(CP) ./org.kbinani/BScrollBar.java ./build/java/org/kbinani/windows/forms/BScrollBar.java
-./build/java/org/kbinani/windows/forms/BSlider.java: ./org.kbinani/BSlider.java
-	$(CP) ./org.kbinani/BSlider.java ./build/java/org/kbinani/windows/forms/BSlider.java
-./build/java/org/kbinani/windows/forms/BSplitPane.java: ./org.kbinani/BSplitPane.java
-	$(CP) ./org.kbinani/BSplitPane.java ./build/java/org/kbinani/windows/forms/BSplitPane.java
-./build/java/org/kbinani/windows/forms/BStatusLabel.java: ./org.kbinani/BStatusLabel.java
-	$(CP) ./org.kbinani/BStatusLabel.java ./build/java/org/kbinani/windows/forms/BStatusLabel.java
-./build/java/org/kbinani/windows/forms/BTextArea.java: ./org.kbinani/BTextArea.java
-	$(CP) ./org.kbinani/BTextArea.java ./build/java/org/kbinani/windows/forms/BTextArea.java
-./build/java/org/kbinani/windows/forms/BTextBox.java: ./org.kbinani/BTextBox.java
-	$(CP) ./org.kbinani/BTextBox.java ./build/java/org/kbinani/windows/forms/BTextBox.java
-./build/java/org/kbinani/windows/forms/BTimer.java: ./org.kbinani/BTimer.java
-	$(CP) ./org.kbinani/BTimer.java ./build/java/org/kbinani/windows/forms/BTimer.java
-./build/java/org/kbinani/windows/forms/BToggleButton.java: ./org.kbinani/BToggleButton.java
-	$(CP) ./org.kbinani/BToggleButton.java ./build/java/org/kbinani/windows/forms/BToggleButton.java
-./build/java/org/kbinani/windows/forms/BToolBar.java: ./org.kbinani/BToolBar.java
-	$(CP) ./org.kbinani/BToolBar.java ./build/java/org/kbinani/windows/forms/BToolBar.java
-./build/java/org/kbinani/windows/forms/BToolStripButton.java: ./org.kbinani/BToolStripButton.java
-	$(CP) ./org.kbinani/BToolStripButton.java ./build/java/org/kbinani/windows/forms/BToolStripButton.java
-./build/java/org/kbinani/windows/forms/BVScrollBar.java: ./org.kbinani/BVScrollBar.java
-	$(CP) ./org.kbinani/BVScrollBar.java ./build/java/org/kbinani/windows/forms/BVScrollBar.java
+./build/java/org/kbinani/windows/forms/BButton.java: ./org.kbinani.windows.forms/BButton.java
+	$(CP) ./org.kbinani.windows.forms/BButton.java ./build/java/org/kbinani/windows/forms/BButton.java
+./build/java/org/kbinani/windows/forms/BCheckBox.java: ./org.kbinani.windows.forms/BCheckBox.java
+	$(CP) ./org.kbinani.windows.forms/BCheckBox.java ./build/java/org/kbinani/windows/forms/BCheckBox.java
+./build/java/org/kbinani/windows/forms/BComboBox.java: ./org.kbinani.windows.forms/BComboBox.java
+	$(CP) ./org.kbinani.windows.forms/BComboBox.java ./build/java/org/kbinani/windows/forms/BComboBox.java
+./build/java/org/kbinani/windows/forms/BDialog.java: ./org.kbinani.windows.forms/BDialog.java
+	$(CP) ./org.kbinani.windows.forms/BDialog.java ./build/java/org/kbinani/windows/forms/BDialog.java
+./build/java/org/kbinani/windows/forms/BDialogResult.java: ./org.kbinani.windows.forms/BDialogResult.java
+	$(CP) ./org.kbinani.windows.forms/BDialogResult.java ./build/java/org/kbinani/windows/forms/BDialogResult.java
+./build/java/org/kbinani/windows/forms/BFileChooser.java: ./org.kbinani.windows.forms/BFileChooser.java
+	$(CP) ./org.kbinani.windows.forms/BFileChooser.java ./build/java/org/kbinani/windows/forms/BFileChooser.java
+./build/java/org/kbinani/windows/forms/BFolderBrowser.java: ./org.kbinani.windows.forms/BFolderBrowser.java
+	$(CP) ./org.kbinani.windows.forms/BFolderBrowser.java ./build/java/org/kbinani/windows/forms/BFolderBrowser.java
+./build/java/org/kbinani/windows/forms/BFontChooser.java: ./org.kbinani.windows.forms/BFontChooser.java
+	$(CP) ./org.kbinani.windows.forms/BFontChooser.java ./build/java/org/kbinani/windows/forms/BFontChooser.java
+./build/java/org/kbinani/windows/forms/BForm.java: ./org.kbinani.windows.forms/BForm.java
+	$(CP) ./org.kbinani.windows.forms/BForm.java ./build/java/org/kbinani/windows/forms/BForm.java
+./build/java/org/kbinani/windows/forms/BFormClosedEventArgs.java: ./org.kbinani.windows.forms/BFormClosedEventArgs.java
+	$(CP) ./org.kbinani.windows.forms/BFormClosedEventArgs.java ./build/java/org/kbinani/windows/forms/BFormClosedEventArgs.java
+./build/java/org/kbinani/windows/forms/BFormClosedEventHandler.java: ./org.kbinani.windows.forms/BFormClosedEventHandler.java
+	$(CP) ./org.kbinani.windows.forms/BFormClosedEventHandler.java ./build/java/org/kbinani/windows/forms/BFormClosedEventHandler.java
+./build/java/org/kbinani/windows/forms/BFormClosingEventArgs.java: ./org.kbinani.windows.forms/BFormClosingEventArgs.java
+	$(CP) ./org.kbinani.windows.forms/BFormClosingEventArgs.java ./build/java/org/kbinani/windows/forms/BFormClosingEventArgs.java
+./build/java/org/kbinani/windows/forms/BFormClosingEventHandler.java: ./org.kbinani.windows.forms/BFormClosingEventHandler.java
+	$(CP) ./org.kbinani.windows.forms/BFormClosingEventHandler.java ./build/java/org/kbinani/windows/forms/BFormClosingEventHandler.java
+./build/java/org/kbinani/windows/forms/BFormWindowState.java: ./org.kbinani.windows.forms/BFormWindowState.java
+	$(CP) ./org.kbinani.windows.forms/BFormWindowState.java ./build/java/org/kbinani/windows/forms/BFormWindowState.java
+./build/java/org/kbinani/windows/forms/BGroupBox.java: ./org.kbinani.windows.forms/BGroupBox.java
+	$(CP) ./org.kbinani.windows.forms/BGroupBox.java ./build/java/org/kbinani/windows/forms/BGroupBox.java
+./build/java/org/kbinani/windows/forms/BHScrollBar.java: ./org.kbinani.windows.forms/BHScrollBar.java
+	$(CP) ./org.kbinani.windows.forms/BHScrollBar.java ./build/java/org/kbinani/windows/forms/BHScrollBar.java
+./build/java/org/kbinani/windows/forms/BKeyEventArgs.java: ./org.kbinani.windows.forms/BKeyEventArgs.java
+	$(CP) ./org.kbinani.windows.forms/BKeyEventArgs.java ./build/java/org/kbinani/windows/forms/BKeyEventArgs.java
+./build/java/org/kbinani/windows/forms/BKeyEventHandler.java: ./org.kbinani.windows.forms/BKeyEventHandler.java
+	$(CP) ./org.kbinani.windows.forms/BKeyEventHandler.java ./build/java/org/kbinani/windows/forms/BKeyEventHandler.java
+./build/java/org/kbinani/windows/forms/BKeyPressEventArgs.java: ./org.kbinani.windows.forms/BKeyPressEventArgs.java
+	$(CP) ./org.kbinani.windows.forms/BKeyPressEventArgs.java ./build/java/org/kbinani/windows/forms/BKeyPressEventArgs.java
+./build/java/org/kbinani/windows/forms/BKeyPressEventHandler.java: ./org.kbinani.windows.forms/BKeyPressEventHandler.java
+	$(CP) ./org.kbinani.windows.forms/BKeyPressEventHandler.java ./build/java/org/kbinani/windows/forms/BKeyPressEventHandler.java
+./build/java/org/kbinani/windows/forms/BKeys.java: ./org.kbinani.windows.forms/BKeys.java
+	$(CP) ./org.kbinani.windows.forms/BKeys.java ./build/java/org/kbinani/windows/forms/BKeys.java
+./build/java/org/kbinani/windows/forms/BKeysUtility.java: ./org.kbinani.windows.forms/BKeysUtility.java
+	$(CP) ./org.kbinani.windows.forms/BKeysUtility.java ./build/java/org/kbinani/windows/forms/BKeysUtility.java
+./build/java/org/kbinani/windows/forms/BLabel.java: ./org.kbinani.windows.forms/BLabel.java
+	$(CP) ./org.kbinani.windows.forms/BLabel.java ./build/java/org/kbinani/windows/forms/BLabel.java
+./build/java/org/kbinani/windows/forms/BListView.java: ./org.kbinani.windows.forms/BListView.java
+	$(CP) ./org.kbinani.windows.forms/BListView.java ./build/java/org/kbinani/windows/forms/BListView.java
+./build/java/org/kbinani/windows/forms/BListViewItem.java: ./org.kbinani.windows.forms/BListViewItem.java
+	$(CP) ./org.kbinani.windows.forms/BListViewItem.java ./build/java/org/kbinani/windows/forms/BListViewItem.java
+./build/java/org/kbinani/windows/forms/BMenu.java: ./org.kbinani.windows.forms/BMenu.java
+	$(CP) ./org.kbinani.windows.forms/BMenu.java ./build/java/org/kbinani/windows/forms/BMenu.java
+./build/java/org/kbinani/windows/forms/BMenuBar.java: ./org.kbinani.windows.forms/BMenuBar.java
+	$(CP) ./org.kbinani.windows.forms/BMenuBar.java ./build/java/org/kbinani/windows/forms/BMenuBar.java
+./build/java/org/kbinani/windows/forms/BMenuItem.java: ./org.kbinani.windows.forms/BMenuItem.java
+	$(CP) ./org.kbinani.windows.forms/BMenuItem.java ./build/java/org/kbinani/windows/forms/BMenuItem.java
+./build/java/org/kbinani/windows/forms/BMenuSeparator.java: ./org.kbinani.windows.forms/BMenuSeparator.java
+	$(CP) ./org.kbinani.windows.forms/BMenuSeparator.java ./build/java/org/kbinani/windows/forms/BMenuSeparator.java
+./build/java/org/kbinani/windows/forms/BMouseButtons.java: ./org.kbinani.windows.forms/BMouseButtons.java
+	$(CP) ./org.kbinani.windows.forms/BMouseButtons.java ./build/java/org/kbinani/windows/forms/BMouseButtons.java
+./build/java/org/kbinani/windows/forms/BMouseEventArgs.java: ./org.kbinani.windows.forms/BMouseEventArgs.java
+	$(CP) ./org.kbinani.windows.forms/BMouseEventArgs.java ./build/java/org/kbinani/windows/forms/BMouseEventArgs.java
+./build/java/org/kbinani/windows/forms/BMouseEventHandler.java: ./org.kbinani.windows.forms/BMouseEventHandler.java
+	$(CP) ./org.kbinani.windows.forms/BMouseEventHandler.java ./build/java/org/kbinani/windows/forms/BMouseEventHandler.java
+./build/java/org/kbinani/windows/forms/BNumericUpDown.java: ./org.kbinani.windows.forms/BNumericUpDown.java
+	$(CP) ./org.kbinani.windows.forms/BNumericUpDown.java ./build/java/org/kbinani/windows/forms/BNumericUpDown.java
+./build/java/org/kbinani/windows/forms/BPaintEventArgs.java: ./org.kbinani.windows.forms/BPaintEventArgs.java
+	$(CP) ./org.kbinani.windows.forms/BPaintEventArgs.java ./build/java/org/kbinani/windows/forms/BPaintEventArgs.java
+./build/java/org/kbinani/windows/forms/BPaintEventHandler.java: ./org.kbinani.windows.forms/BPaintEventHandler.java
+	$(CP) ./org.kbinani.windows.forms/BPaintEventHandler.java ./build/java/org/kbinani/windows/forms/BPaintEventHandler.java
+./build/java/org/kbinani/windows/forms/BPanel.java: ./org.kbinani.windows.forms/BPanel.java
+	$(CP) ./org.kbinani.windows.forms/BPanel.java ./build/java/org/kbinani/windows/forms/BPanel.java
+./build/java/org/kbinani/windows/forms/BPictureBox.java: ./org.kbinani.windows.forms/BPictureBox.java
+	$(CP) ./org.kbinani.windows.forms/BPictureBox.java ./build/java/org/kbinani/windows/forms/BPictureBox.java
+./build/java/org/kbinani/windows/forms/BPopupMenu.java: ./org.kbinani.windows.forms/BPopupMenu.java
+	$(CP) ./org.kbinani.windows.forms/BPopupMenu.java ./build/java/org/kbinani/windows/forms/BPopupMenu.java
+./build/java/org/kbinani/windows/forms/BPreviewKeyDownEventArgs.java: ./org.kbinani.windows.forms/BPreviewKeyDownEventArgs.java
+	$(CP) ./org.kbinani.windows.forms/BPreviewKeyDownEventArgs.java ./build/java/org/kbinani/windows/forms/BPreviewKeyDownEventArgs.java
+./build/java/org/kbinani/windows/forms/BPreviewKeyDownEventHandler.java: ./org.kbinani.windows.forms/BPreviewKeyDownEventHandler.java
+	$(CP) ./org.kbinani.windows.forms/BPreviewKeyDownEventHandler.java ./build/java/org/kbinani/windows/forms/BPreviewKeyDownEventHandler.java
+./build/java/org/kbinani/windows/forms/BProgressBar.java: ./org.kbinani.windows.forms/BProgressBar.java
+	$(CP) ./org.kbinani.windows.forms/BProgressBar.java ./build/java/org/kbinani/windows/forms/BProgressBar.java
+./build/java/org/kbinani/windows/forms/BRadioButton.java: ./org.kbinani.windows.forms/BRadioButton.java
+	$(CP) ./org.kbinani.windows.forms/BRadioButton.java ./build/java/org/kbinani/windows/forms/BRadioButton.java
+./build/java/org/kbinani/windows/forms/BScrollBar.java: ./org.kbinani.windows.forms/BScrollBar.java
+	$(CP) ./org.kbinani.windows.forms/BScrollBar.java ./build/java/org/kbinani/windows/forms/BScrollBar.java
+./build/java/org/kbinani/windows/forms/BSlider.java: ./org.kbinani.windows.forms/BSlider.java
+	$(CP) ./org.kbinani.windows.forms/BSlider.java ./build/java/org/kbinani/windows/forms/BSlider.java
+./build/java/org/kbinani/windows/forms/BSplitPane.java: ./org.kbinani.windows.forms/BSplitPane.java
+	$(CP) ./org.kbinani.windows.forms/BSplitPane.java ./build/java/org/kbinani/windows/forms/BSplitPane.java
+./build/java/org/kbinani/windows/forms/BStatusLabel.java: ./org.kbinani.windows.forms/BStatusLabel.java
+	$(CP) ./org.kbinani.windows.forms/BStatusLabel.java ./build/java/org/kbinani/windows/forms/BStatusLabel.java
+./build/java/org/kbinani/windows/forms/BTextArea.java: ./org.kbinani.windows.forms/BTextArea.java
+	$(CP) ./org.kbinani.windows.forms/BTextArea.java ./build/java/org/kbinani/windows/forms/BTextArea.java
+./build/java/org/kbinani/windows/forms/BTextBox.java: ./org.kbinani.windows.forms/BTextBox.java
+	$(CP) ./org.kbinani.windows.forms/BTextBox.java ./build/java/org/kbinani/windows/forms/BTextBox.java
+./build/java/org/kbinani/windows/forms/BTimer.java: ./org.kbinani.windows.forms/BTimer.java
+	$(CP) ./org.kbinani.windows.forms/BTimer.java ./build/java/org/kbinani/windows/forms/BTimer.java
+./build/java/org/kbinani/windows/forms/BToggleButton.java: ./org.kbinani.windows.forms/BToggleButton.java
+	$(CP) ./org.kbinani.windows.forms/BToggleButton.java ./build/java/org/kbinani/windows/forms/BToggleButton.java
+./build/java/org/kbinani/windows/forms/BToolBar.java: ./org.kbinani.windows.forms/BToolBar.java
+	$(CP) ./org.kbinani.windows.forms/BToolBar.java ./build/java/org/kbinani/windows/forms/BToolBar.java
+./build/java/org/kbinani/windows/forms/BToolStripButton.java: ./org.kbinani.windows.forms/BToolStripButton.java
+	$(CP) ./org.kbinani.windows.forms/BToolStripButton.java ./build/java/org/kbinani/windows/forms/BToolStripButton.java
+./build/java/org/kbinani/windows/forms/BVScrollBar.java: ./org.kbinani.windows.forms/BVScrollBar.java
+	$(CP) ./org.kbinani.windows.forms/BVScrollBar.java ./build/java/org/kbinani/windows/forms/BVScrollBar.java
+./build/java/org/kbinani/windows/forms/Utility.java: ./org.kbinani.windows.forms/Utility.java
+	$(CP) ./org.kbinani.windows.forms/Utility.java ./build/java/org/kbinani/windows/forms/Utility.java
 ./build/java/org/kbinani/xml/XmlMember.java: ./org.kbinani/XmlMember.java
 	$(CP) ./org.kbinani/XmlMember.java ./build/java/org/kbinani/xml/XmlMember.java
 ./build/java/org/kbinani/xml/XmlSerializable.java: ./org.kbinani/XmlSerializable.java
