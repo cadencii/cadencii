@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Reflection;
@@ -472,7 +473,7 @@ class pp_cs2java {
                                     continue;
                                 }
                                 comment_indent = line.Substring( 0, ind );
-                                line = comment_indent + " *" + line.Substring( ind + 3 );
+                                line = comment_indent + " *" + parseParamComment( line.Substring( ind + 3 ) );
                             } else {
                                 // コメントモードが終了したとき
                                 sw.WriteLine( comment_indent + " */" );
@@ -488,7 +489,7 @@ class pp_cs2java {
                                     continue;
                                 } else {
                                     comment_indent = line.Substring( 0, ind );
-                                    line = comment_indent + " * " + line.Substring( ind + 3 );
+                                    line = comment_indent + " * " + parseParamComment( line.Substring( ind + 3 ) );
                                 }
                             }
                         }
@@ -558,4 +559,38 @@ class pp_cs2java {
         File.Delete( tmp );
     }
 
+    /// <summary>
+    /// &lt;param name="foo"&gt;comment&lt;param/&gt;
+    /// のようなコメントを
+    /// @param foo comment
+    /// みたいに整形する
+    /// </summary>
+    private static string parseParamComment( string line ){
+        Regex r = new Regex( @"(?<header>\s*)<param name=""(?<name>.*)"">(?<text>.*)</param>(?<footer>\s*)" );
+        Match m = r.Match( line );
+        string ret = line;
+        if( m.Success ){
+            string header = m.Groups["header"].Value;
+            string name = m.Groups["name"].Value;
+            string text = m.Groups["text"].Value;
+            string footer = m.Groups["footer"].Value;
+            ret = header + "@param " + name + " " + text + footer;
+        }
+
+        ValuePair<string, string>[] token = new ValuePair<string, string>[]{
+            new ValuePair<string, string>( "returns", "return" ),
+        };
+        foreach( ValuePair<string, string> t in token ){
+            Regex r2 = new Regex( @"(?<header>\s*)<" + t.Key + ">(?<text>.*)</" + t.Key + @">(?<footer>\s*)" );
+            Match m2 = r2.Match( ret );
+            if( m2.Success ){
+                string header2 = m2.Groups["header"].Value;
+                string text2 = m2.Groups["text"].Value;
+                string footer2 = m2.Groups["footer"].Value;
+                ret = header2 + "@" + t.Value + " " + text2 + footer2;
+            }
+        }
+        
+        return ret;
+    }
 }
