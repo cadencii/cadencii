@@ -274,28 +274,28 @@ namespace org.kbinani {
         /// </summary>
         /// <param name="lpCriticalSection">元はLPCRITICAL_SECTION</param>
         [DllImport( "kernel32.dll" )]
-        public static extern void InitializeCriticalSection( IntPtr lpCriticalSection );
+        public static extern void InitializeCriticalSection( ref IntPtr lpCriticalSection );
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="lpCriticalSection">元はLPCRITICAL_SECTION</param>
         [DllImport( "kernel32.dll" )]
-        public static extern void DeleteCriticalSection( IntPtr lpCriticalSection );
+        public static extern void DeleteCriticalSection( ref IntPtr lpCriticalSection );
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="lpCriticalSection">もとはLPCRITICAL_SECTION</param>
         [DllImport( "kernel32.dll" )]
-        public static extern void LeaveCriticalSection( IntPtr lpCriticalSection );
+        public static extern void LeaveCriticalSection( ref IntPtr lpCriticalSection );
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="lpCriticalSection">LPCRITICAL_SECTION</param>
         [DllImport( "kernel32.dll" )]
-        public static extern void EnterCriticalSection( IntPtr lpCriticalSection );
+        public static extern void EnterCriticalSection( ref IntPtr lpCriticalSection );
 
         /// <summary>
         /// 

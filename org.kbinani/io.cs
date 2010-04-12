@@ -21,6 +21,9 @@ namespace org.kbinani.java.io {
     }
 
     public interface InputStream {
+        void close();
+        int read( byte[] b );
+        int read( byte[] b, int off, int len );
     }
 
     public class ObjectInputStream : InputStream {
@@ -34,6 +37,18 @@ namespace org.kbinani.java.io {
 
         public object readObject() {
             return m_formatter.Deserialize( m_stream );
+        }
+
+        public int read( byte[] b ) {
+            return m_stream.Read( b, 0, b.Length );
+        }
+
+        public int read( byte[] b, int off, int len ) {
+            return m_stream.Read( b, off, len );
+        }
+
+        public void close() {
+            m_stream.Close();
         }
     }
 
@@ -67,6 +82,18 @@ namespace org.kbinani.java.io {
     public class ByteArrayInputStream : System.IO.MemoryStream, InputStream {
         public ByteArrayInputStream( byte[] buf )
             : base( buf ) {
+        }
+
+        public void close() {
+            base.Close();
+        }
+
+        public int read( byte[] b ) {
+            return base.Read( b, 0, b.Length );
+        }
+
+        public int read( byte[] b, int off, int len ) {
+            return base.Read( b, off, len );
         }
     }
 

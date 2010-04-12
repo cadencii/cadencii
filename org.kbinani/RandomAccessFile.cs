@@ -16,7 +16,7 @@ using System;
 
 namespace org.kbinani.java.io {
 
-    public class RandomAccessFile {
+    public class RandomAccessFile : InputStream {
         private System.IO.FileStream m_stream;
 
         public RandomAccessFile( String name, String mode ) {

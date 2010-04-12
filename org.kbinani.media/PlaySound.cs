@@ -2,12 +2,12 @@
  * PlaySound.cs
  * Copyright (C) 2009-2010 kbinani
  *
- * This file is part of org.kbinani.cadencii.
+ * This file is part of org.kbinani.media.
  *
- * org.kbinani.cadencii is free software; you can redistribute it and/or
- * modify it under the terms of the GPLv3 License.
+ * org.kbinani.media is free software; you can redistribute it and/or
+ * modify it under the terms of the BSD License.
  *
- * org.kbinani.cadencii is distributed in the hope that it will be useful,
+ * org.kbinani.media is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -23,7 +23,7 @@ using System;
 using System.Runtime.InteropServices;
 using org.kbinani;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.media {
     using DWORD = System.UInt32;
     using UINT = System.UInt32;
     using WORD = System.UInt16;
@@ -39,28 +39,28 @@ namespace org.kbinani.cadencii {
         private static byte[] m_buffer;
 #else
 #if USE_PLAYSOUND_DLL
-        [DllImport( "PlaySound" )]
+        [DllImport( "org.kbinani.media.helper.dll" )]
         private static extern void SoundInit();
-        [DllImport( "PlaySound" )]
+        [DllImport( "org.kbinani.media.helper.dll" )]
         private static extern void SoundPrepare( int sample_rate );
-        [DllImport( "PlaySound" )]
+        [DllImport( "org.kbinani.media.helper.dll" )]
         private static extern void SoundAppend( IntPtr left, IntPtr right, int length );
-        [DllImport( "PlaySound" )]
+        [DllImport( "org.kbinani.media.helper.dll" )]
         private static extern void SoundExit();
-        [DllImport( "PlaySound" )]
+        [DllImport( "org.kbinani.media.helper.dll" )]
         private static extern double SoundGetPosition();
-        /*[DllImport( "PlaySound" )]
+        /*[DllImport( "org.kbinani.media.helper" )]
         private static extern bool SoundIsBusy();*/
-        [DllImport( "PlaySound" )]
+        [DllImport( "org.kbinani.media.helper.dll" )]
         private static extern void SoundWaitForExit();
-        [DllImport( "PlaySound" )]
+        [DllImport( "org.kbinani.media.helper.dll" )]
         private static extern void SoundSetResolution( int resolution );
-        [DllImport( "PlaySound" )]
+        [DllImport( "org.kbinani.media.helper.dll" )]
         private static extern void SoundKill();
-        [DllImport( "PlaySound" )]
+        [DllImport( "org.kbinani.media.helper.dll" )]
         private static extern void SoundUnprepare();
 #else
-#error 途中で詰まる場合があるので使わないでね(org.kbinani.cadencii.PlaySound)
+//#error 途中で詰まる場合があるので使わないでね(org.kbinani.cadencii.PlaySound)
         private static void SoundInit() {
             impl.PlaySound.SoundInit();
         }
@@ -264,7 +264,7 @@ namespace org.kbinani.cadencii {
 #if !JAVA
 }
 
-namespace org.kbinani.cadencii.impl {
+namespace org.kbinani.media.impl {
     using DWORD = System.UInt32;
     using UINT = System.UInt32;
     using WORD = System.UInt16;
@@ -289,7 +289,7 @@ namespace org.kbinani.cadencii.impl {
                 return;
             }
 
-            win32.EnterCriticalSection( locker );
+            win32.EnterCriticalSection( ref locker );
             for ( int i = 0; i < NUM_BUF; i++ ) {
                 win32.waveOutUnprepareHeader( 
                     wave_out,
@@ -299,18 +299,18 @@ namespace org.kbinani.cadencii.impl {
             }
             win32.waveOutClose( wave_out );
             wave_out = IntPtr.Zero;
-            win32.LeaveCriticalSection( locker );
+            win32.LeaveCriticalSection( ref locker );
         }
 
         public static void SoundInit() {
             locker = Marshal.AllocHGlobal( sizeof( CRITICAL_SECTION ) );
-            win32.InitializeCriticalSection( locker );
+            win32.InitializeCriticalSection( ref locker );
             proc = new delegateWaveOutProc( SoundCallback );
         }
 
         public static void SoundKill() {
             SoundExit();
-            win32.DeleteCriticalSection( locker );
+            win32.DeleteCriticalSection( ref locker );
         }
 
         public static double SoundGetPosition() {
@@ -340,7 +340,7 @@ namespace org.kbinani.cadencii.impl {
                 return;
             }
 
-            win32.EnterCriticalSection( locker );
+            win32.EnterCriticalSection( ref locker );
             // buffer_indexがNUM_BUF未満なら、まだ1つもwaveOutWriteしていないので、書き込む
             if ( buffer_index < NUM_BUF ) {
                 for ( int i = 0; i < buffer_index; i++ ) {
@@ -389,7 +389,7 @@ namespace org.kbinani.cadencii.impl {
                     break;
                 }
             }
-            win32.LeaveCriticalSection( locker );
+            win32.LeaveCriticalSection( ref locker );
 
             // リセット処理
             SoundExit();
@@ -403,7 +403,7 @@ namespace org.kbinani.cadencii.impl {
             if ( IntPtr.Zero == wave_out ) {
                 return;
             }
-            win32.EnterCriticalSection( locker );
+            win32.EnterCriticalSection( ref locker );
             int appended = 0; // 転送したデータの個数
             while ( appended < length ) {
                 // このループ内では、バッファに1個づつデータを転送する
@@ -446,7 +446,7 @@ namespace org.kbinani.cadencii.impl {
                     }
                 }
             }
-            win32.LeaveCriticalSection( locker );
+            win32.LeaveCriticalSection( ref locker );
         }
 
         /// <summary>
@@ -489,7 +489,7 @@ namespace org.kbinani.cadencii.impl {
                 SoundUnprepare();
             }
 
-            win32.EnterCriticalSection( locker );
+            win32.EnterCriticalSection( ref locker );
             // フォーマットを指定
             wave_format.wFormatTag = win32.WAVE_FORMAT_PCM;
             wave_format.nChannels = 2;
@@ -526,7 +526,7 @@ namespace org.kbinani.cadencii.impl {
             buffer_loc = 0;
             abort_required = false;
 
-            win32.LeaveCriticalSection( locker );
+            win32.LeaveCriticalSection( ref locker );
         }
 
         /// <summary>
@@ -535,9 +535,9 @@ namespace org.kbinani.cadencii.impl {
         public static void SoundExit() {
             if ( IntPtr.Zero != wave_out ) {
                 abort_required = true;
-                win32.EnterCriticalSection( locker );
+                win32.EnterCriticalSection( ref locker );
                 win32.waveOutReset( wave_out );
-                win32.LeaveCriticalSection( locker );
+                win32.LeaveCriticalSection( ref locker );
             }
         }
 

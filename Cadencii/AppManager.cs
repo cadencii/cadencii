@@ -25,6 +25,7 @@ import org.kbinani.apputil.*;
 import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*;
 import org.kbinani.xml.*;
+import org.kbinani.media.*;
 #else
 using System;
 using System.CodeDom.Compiler;
@@ -35,6 +36,7 @@ using org.kbinani.apputil;
 using org.kbinani.java.awt;
 using org.kbinani.java.io;
 using org.kbinani.java.util;
+using org.kbinani.media;
 using org.kbinani.vsq;
 using org.kbinani.windows.forms;
 using org.kbinani.xml;
