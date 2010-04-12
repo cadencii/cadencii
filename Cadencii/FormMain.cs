@@ -13752,6 +13752,30 @@ namespace org.kbinani.cadencii {
                 }
             }
 
+            try {
+                System.IO.FileStream fs = new System.IO.FileStream( @"C:\Users\kbinani\Desktop\kaerimichi.wav", System.IO.FileMode.Open, System.IO.FileAccess.Read );
+                long remain = fs.Length;
+                int buflen = 1024;
+                byte[] b = new byte[buflen];
+                bool written = false;
+                System.IO.MemoryStream ms = new System.IO.MemoryStream();
+                while ( remain > 0 ) {
+                    int draft = remain > buflen ? buflen : (int)remain;
+                    fs.Read( b, 0, draft );
+                    remain -= draft;
+                    ms.Write( b, 0, draft );
+                    if ( !written ) {
+                        System.IO.BufferedStream bs = new System.IO.BufferedStream( ms );
+                        System.Media.SoundPlayer sp = new SoundPlayer();
+                        sp.Stream = ms;
+                        sp.Play();
+                        written = true;
+                    }
+                }
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "FormMain#menuHelpDebug_Click; ex=" + ex );
+            }
+
             /*VsqFileEx vsq = AppManager.getVsqFile();
             int ms_presend = AppManager.editorConfig.PreSendTime;
             for ( int i = vsq.getPreMeasureClocks(); i < vsq.TotalClocks; i++ ) {

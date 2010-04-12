@@ -338,6 +338,10 @@ namespace org.kbinani {
         [DllImport( "user32.dll" )]
         public static extern bool InvalidateRect( IntPtr hWnd, IntPtr lpRect, bool bErase );
         #endregion
+
+        public static int MAKELONG( int a, int b ) {
+            return 0xffff & a | ((0xffff & b) << 16);
+        }
     }
 
     public delegate bool EnumChildProc( IntPtr hwnd, int lParam );
