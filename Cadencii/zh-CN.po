@@ -70,7 +70,7 @@ msgid "Data Poin"
 msgstr "数据点"
 
 msgid "Clock"
-msgstr "时钟"
+msgstr "Clock"
 
 msgid "Value"
 msgstr "数值"
@@ -329,7 +329,7 @@ msgid "Insert Lyrics"
 msgstr "插入歌词"
 
 msgid "Import ReWire Host Tempo"
-msgstr "自ReWire Host取得Tempo"
+msgstr "从ReWire Host导入节奏"
 
 msgid "Start Realtime Input"
 msgstr "开始实时输入"
@@ -479,7 +479,7 @@ msgid "now synthesizing..."
 msgstr "合成中..."
 
 msgid "Global Tempo"
-msgstr "全局 Tempo"
+msgstr "全局节奏"
 
 msgid "Tempo"
 msgstr "节奏"
@@ -536,7 +536,7 @@ msgid "Enable Automatic Vibrato"
 msgstr "启用自动Vibrato"
 
 msgid "Minimum note length for Automatic Vibrato"
-msgstr "可使用自动Vibrato的最短音符长度"
+msgstr "可使用自动颤音的最短音符长度"
 
 msgid "Vibrato Type"
 msgstr "Vibrato的类型"
@@ -632,7 +632,7 @@ msgid "Enable Quantize for Curve Selecting"
 msgstr "启用曲线量化选择"
 
 msgid "MIDI In Port Number"
-msgstr "MIDI In Port Number"
+msgstr "MIDI 端口号"
 
 msgid "Platform"
 msgstr "使用平台"
@@ -918,7 +918,7 @@ msgid "Shortcut Key"
 msgstr "快捷键"
 
 msgid "Speed"
-msgstr "节奏"
+msgstr "速度"
 
 msgid "Start Lyric Input"
 msgstr "开始歌词输入"
@@ -930,7 +930,7 @@ msgid "Up-Portamento"
 msgstr "Up-Portamento"
 
 msgid "Velocity"
-msgstr "Velocity"
+msgstr "触键力度"
 
 msgid "Vibrato Length"
 msgstr "Vibrato长度"
@@ -1035,7 +1035,7 @@ msgid "Import Standard MIDI."
 msgstr "导入标准MIDI."
 
 msgid "Import tempo from ReWire host."
-msgstr "导入 tempo from ReWire host."
+msgstr "从ReWire host导入节奏."
 
 msgid "Import VSQ / VOCALOID MIDI."
 msgstr "导入 VSQ / VOCALOID MIDI."
@@ -1074,7 +1074,7 @@ msgid "Navigation"
 msgstr "导航"
 
 msgid "Offset"
-msgstr "偏移量"
+msgstr "修饰"
 
 msgid "Open Cadencii project."
 msgstr "打开Cadencii工程."
