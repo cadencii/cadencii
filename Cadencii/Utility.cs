@@ -1205,6 +1205,7 @@ namespace org.kbinani.cadencii{
                 PortUtil.combinePath( path, "Cadencii.exe" ),
                 PortUtil.combinePath( path, "org.kbinani.media.dll" ),
                 PortUtil.combinePath( path, "org.kbinani.apputil.dll" ),
+                PortUtil.combinePath( path, "org.kbinani.windows.forms.dll" ),
                 PortUtil.combinePath( path, "org.kbinani.dll" ) } );
             parameters.ReferencedAssemblies.Add( "System.Windows.Forms.dll" );
             parameters.ReferencedAssemblies.Add( "System.dll" );

@@ -40,7 +40,7 @@ msgid "Script compilation failed."
 msgstr "脚本编辑失败"
 
 msgid "Beat Change"
-msgstr "更改节拍"
+msgstr "变更节拍"
 
 msgid "Position"
 msgstr "位置"
@@ -103,7 +103,7 @@ msgid "End"
 msgstr "结束"
 
 msgid "Push buttons in turn as shown below"
-msgstr "Push buttons in turn as shown below"
+msgstr "按下图顺序按按键"
 
 msgid "Game controler is not available"
 msgstr "游戏控制器未激活"
@@ -127,7 +127,7 @@ msgid "_PREFIX_TH_"
 msgstr "第"
 
 msgid "Length"
-msgstr "长度"
+msgstr "音符长度"
 
 msgid "th bar"
 msgstr "小节"
@@ -139,7 +139,7 @@ msgid "Expression control property"
 msgstr "表情控制属性"
 
 msgid "Save this sequence?"
-msgstr "保存文件?"
+msgstr "保存sequence?"
 
 msgid "Affirmation"
 msgstr "确认"
@@ -278,13 +278,13 @@ msgid "Select All"
 msgstr "全选"
 
 msgid "Select All Events"
-msgstr "选择所有活动"
+msgstr "选择所有事件"
 
 msgid "View"
 msgstr "查看"
 
 msgid "Control Track"
-msgstr "音轨控制"
+msgstr "控制音轨"
 
 msgid "Mixer"
 msgstr "混音器"
@@ -332,7 +332,7 @@ msgid "Import ReWire Host Tempo"
 msgstr "从ReWire Host导入节奏"
 
 msgid "Start Realtime Input"
-msgstr "开始实时输入"
+msgstr "开始即时输出"
 
 msgid "Reload VSTi"
 msgstr "重新载入VSTi"
@@ -398,7 +398,7 @@ msgid "Singing Style Defaults"
 msgstr "默认歌手风格"
 
 msgid "Quantize"
-msgstr "量化"
+msgstr "节拍"
 
 msgid "Off"
 msgstr "关闭"
@@ -422,13 +422,13 @@ msgid "About Cadencii"
 msgstr "关于Cadencii"
 
 msgid "Arrow"
-msgstr "箭头"
+msgstr "游标"
 
 msgid "Note Fixed Length"
 msgstr "输入固定长度的音符"
 
 msgid "Dot"
-msgstr "附点"
+msgstr "点"
 
 msgid "Show/Hide Grid Line"
 msgstr "显示/隐藏网格线"
@@ -446,19 +446,19 @@ msgid "Pitch Control"
 msgstr "音高控制"
 
 msgid "Bend Depth"
-msgstr "滑音深度"
+msgstr "Bend深度"
 
 msgid "Bend Length"
-msgstr "滑音长度"
+msgstr "Bend长度"
 
 msgid "Add portamento in rising movement"
-msgstr "在上行形付加滑音"
+msgstr "在上行形附加滑音"
 
 msgid "Add portamento in falling movement"
-msgstr "在下行形付加滑音"
+msgstr "在下行形附加滑音"
 
 msgid "Dynamics Control"
-msgstr "力度控制"
+msgstr "动态控制"
 
 msgid "Decay"
 msgstr "延迟"
@@ -515,7 +515,7 @@ msgid "Resolution(VSTi)"
 msgstr "解析度(VSTi)"
 
 msgid "Dynamics"
-msgstr "力道"
+msgstr "动态"
 
 msgid "Vibrato Depth"
 msgstr "Vibrato的振幅"
@@ -539,7 +539,7 @@ msgid "Minimum note length for Automatic Vibrato"
 msgstr "可使用自动颤音的最短音符长度"
 
 msgid "Vibrato Type"
-msgstr "Vibrato的类型"
+msgstr "Vibrato类型"
 
 msgid "Other Settings"
 msgstr "其他设置"
@@ -590,7 +590,7 @@ msgid "UI Language"
 msgstr "UI语言"
 
 msgid "Change"
-msgstr "更改"
+msgstr "变更"
 
 msgid "Track Height (pixel)"
 msgstr "音轨高度 (pixel)"
@@ -611,7 +611,7 @@ msgid "Horizontal Scroll when Mouse wheel"
 msgstr "让鼠标滚轮以水平方向滚动"
 
 msgid "Place Tempo/Beat Dialog to appropriate Position"
-msgstr "让Tempo/拍子对话框以适当位置显示"
+msgstr "让节奏/拍子对话框以适当位置显示"
 
 msgid "Maximum Frame Rate"
 msgstr "最大帧数"
@@ -656,7 +656,7 @@ msgid "Capacity of RecentFiles"
 msgstr "「最近使用的文件列表」大小"
 
 msgid "Default scale for width direction in pixel/clock"
-msgstr "Default scale for width direction in pixel/clock"
+msgstr "横向默认表示比例(pixel/clock)"
 
 msgid "Default value of pre-measure"
 msgstr "默认前置拍"
@@ -680,10 +680,10 @@ msgid "Program change of default singer"
 msgstr "更改默认歌手"
 
 msgid "Show actual pitch line or not"
-msgstr "Show actual pitch line or not"
+msgstr "是否显示pitch曲线"
 
 msgid "Tolerance of mouse operation (in pixel)"
-msgstr "Tolerance of mouse operation (in pixel)"
+msgstr "鼠标操作允许范围(in pixel)"
 
 msgid "Whether scroll horizontally with mouse-wheel"
 msgstr "Whether scroll horizontally with mouse-wheel"
@@ -701,10 +701,10 @@ msgid "lyric"
 msgstr "歌词"
 
 msgid "Master Tuning"
-msgstr "Master Tuning"
+msgstr "精细调音"
 
 msgid "Master Tuning in Cent"
-msgstr "Master Tuning in Cent"
+msgstr "精细调音(单位:Cent)"
 
 msgid "Midi Export"
 msgstr "导出Midi"
@@ -725,7 +725,7 @@ msgid "Option"
 msgstr "选项"
 
 msgid "Palette Tool"
-msgstr "Palette Tool"
+msgstr "调色板"
 
 msgid "Pitch Line"
 msgstr "音高线"
@@ -758,7 +758,7 @@ msgid "Font size in GraphicsUnit.Point unit"
 msgstr "Font size in GraphicsUnit.Point unit"
 
 msgid "Invoke resampler with Wine"
-msgstr "在wine下使用resampler"
+msgstr "由Wine启动resampler"
 
 msgid "Add"
 msgstr "添加"
@@ -767,7 +767,7 @@ msgid "Executable(*.exe)|*.exe"
 msgstr "可执行文件(*.exe)|*.exe"
 
 msgid "Invoke UTAU cores with Wine"
-msgstr "在wine下使用UTAU核心"
+msgstr "由Wine启动UTAU核心"
 
 msgid "Misc"
 msgstr "杂项"
@@ -818,7 +818,7 @@ msgid "Command"
 msgstr "命令"
 
 msgid "Do you wish to remove track? {0} : '{1}'"
-msgstr "Do you wish to remove track? {0} : '{1}'"
+msgstr "真的要移除音轨吗? {0} : '{1}'"
 
 msgid "Down-Portamento"
 msgstr "Down-Portamento"
@@ -872,16 +872,16 @@ msgid "Overlap"
 msgstr "重叠"
 
 msgid "Phonetic Symbol"
-msgstr "注音符号"
+msgstr "发音记号"
 
 msgid "Phrase"
-msgstr "乐句"
+msgstr "歌词"
 
 msgid "Pre Utterance"
-msgstr "Pre Utterance"
+msgstr "先行发音"
 
 msgid "Preview"
-msgstr "预览"
+msgstr "试听"
 
 msgid "Previous Control Curve"
 msgstr "上一曲线"
@@ -890,10 +890,10 @@ msgid "Previous Track"
 msgstr "上一轨"
 
 msgid "Program#"
-msgstr "Program#"
+msgstr "工程#"
 
 msgid "Program# (Bell)"
-msgstr "Program# (Bell)"
+msgstr "工程# (Bell)"
 
 msgid "Property Window"
 msgstr "窗口属性"
@@ -908,8 +908,8 @@ msgid ""
 "Select command and hit key(s) you want to set.\n"
 "Hit Delete or Backspace if you want to remove shortcut key."
 msgstr ""
-"Select command and hit key(s) you want to set.\n"
-"Hit Delete or Backspace if you want to remove shortcut key."
+"选择命令按下要设置的按键.\n"
+"按DEL或backspace移除快捷键."
 
 msgid "Shortcut Config"
 msgstr "快捷设定"
@@ -939,7 +939,7 @@ msgid "VSQ/Vocaloid Midi Import"
 msgstr "导入VSQ/Vocaloid Midi"
 
 msgid "(not implemented)"
-msgstr "(not implemented)"
+msgstr "(未执行)"
 
 msgid "Add new track."
 msgstr "添加新音轨."
@@ -984,7 +984,7 @@ msgid "Copy selected items."
 msgstr "复制所选项目."
 
 msgid "Correct overlapped item."
-msgstr "校对重叠项目."
+msgstr "修正重叠项目."
 
 msgid "Create new project."
 msgstr "创建工程."
@@ -993,7 +993,7 @@ msgid "Cut selected items."
 msgstr "剪切所选项目."
 
 msgid "Delete bar."
-msgstr "删除栏."
+msgstr "删除小节."
 
 msgid "Delete current track."
 msgstr "删除当前音轨."
@@ -1002,7 +1002,7 @@ msgid "Delete selected items."
 msgstr "删除所选项目."
 
 msgid "Dynamics Control (VOCALOID2)"
-msgstr "力度控制(VOCALOID2)"
+msgstr "动态控制(VOCALOID2)"
 
 msgid "Enable current track."
 msgstr "启用当前音轨."
@@ -1023,7 +1023,7 @@ msgid "Export to WAVE file."
 msgstr "导出WAVE文件."
 
 msgid "file '{0}' is already registered as BGM."
-msgstr "file '{0}' is already registered as BGM."
+msgstr "制定文件 '{0}' 为BGM."
 
 msgid "File Name"
 msgstr "文件名"
@@ -1047,19 +1047,19 @@ msgid "Input Offset Seconds"
 msgstr "Input Offset Seconds"
 
 msgid "Insert bar."
-msgstr "插入栏."
+msgstr "插入小节."
 
 msgid "Inserting start at pre-measure"
 msgstr "Inserting start at pre-measure"
 
 msgid "interval"
-msgstr "每隔"
+msgstr "间隔"
 
 msgid "Invalid MIDI file."
-msgstr "MIDI文件无效."
+msgstr "无效的MIDI文件."
 
 msgid "Invalid VSQ/VOCALOID MIDI file"
-msgstr "VSQ / VOCALOID MIDI文件无效"
+msgstr "无效的VSQ/VOCALOID MIDI文件"
 
 msgid "Lengthen note end to neighboring note."
 msgstr "Lengthen note end to neighboring note."
@@ -1074,7 +1074,7 @@ msgid "Navigation"
 msgstr "导航"
 
 msgid "Offset"
-msgstr "修饰"
+msgstr "偏移量"
 
 msgid "Open Cadencii project."
 msgstr "打开Cadencii工程."
@@ -1089,7 +1089,7 @@ msgid "Open VSQ / VOCALOID MIDI and create new project."
 msgstr "打开 VSQ/VOCALOID MIDI并新建工程."
 
 msgid "Paste copied items to current song position."
-msgstr "Paste copied items to current song position."
+msgstr "粘贴复制的项目至当前位置."
 
 msgid "Randomize items."
 msgstr "随机项目."
@@ -1107,19 +1107,19 @@ msgid "remove '{0}'?"
 msgstr "移除 '{0}'?"
 
 msgid "Render all tracks."
-msgstr "渲染所有音轨."
+msgstr "合并所有音轨 ."
 
 msgid "Render current track."
-msgstr "渲染当前音轨."
+msgstr "合并当前音轨."
 
 msgid "Save current project with new name."
-msgstr "Save current project with new name."
+msgstr "另存当前工程."
 
 msgid "Save current project."
 msgstr "保存当前工程."
 
 msgid "Save Voice DB configuration file with new name."
-msgstr "Save Voice DB configuration file with new name."
+msgstr "另存为Voice DB设置文件."
 
 msgid "Save Voice DB configuration file."
 msgstr "保存Voice DB配置文件."
@@ -1128,20 +1128,20 @@ msgid "seconds"
 msgstr "秒"
 
 msgid "Select all items and control curves of current track."
-msgstr "Select all items and control curves of current track."
+msgstr "选择当前音轨的所有项目与控制曲线."
 
 msgid "Select all items of current track."
-msgstr "Select all items of current track."
+msgstr "选择所有项目与控制曲线."
 
 msgid ""
 "Select command and hit key(s) you want to set.\n"
 "Hit Backspace if you want to remove shortcut key."
 msgstr ""
-"Select command and hit key(s) you want to set.\n"
-"Hit Backspace if you want to remove shortcut key."
+"选择命令并按按键.\n"
+"按Backspace键移除快捷键."
 
 msgid "Select voice synthesis engine."
-msgstr "Select voice synthesis engine."
+msgstr "选择声音合成引擎."
 
 msgid "Set global pitch shift."
 msgstr "Set global pitch shift."
@@ -1150,13 +1150,13 @@ msgid "Set Offset Seconds"
 msgstr "Set Offset Seconds"
 
 msgid "Show background items."
-msgstr "显示背景项."
+msgstr "显示背景项目."
 
 msgid "Show/Hide control curves."
 msgstr "显示/隐藏控制曲线."
 
 msgid "Show/Hide expression lines."
-msgstr "显示/隐藏网格线."
+msgstr "显示/隐藏表情线."
 
 msgid "Show/Hide grid line."
 msgstr "显示/隐藏网格线."
@@ -1168,7 +1168,7 @@ msgid "Show/Hide mixer window."
 msgstr "显示/隐藏混频器窗口."
 
 msgid "Show/Hide pitch bend lines."
-msgstr "Show/Hide pitch bend lines."
+msgstr "显示/隐藏pitch bend线."
 
 msgid "Show/Hide property window."
 msgstr "显示/隐藏属性窗口."
