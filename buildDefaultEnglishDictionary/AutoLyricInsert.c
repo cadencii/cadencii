@@ -1,6 +1,13 @@
 #include <windows.h>
 #include <stdio.h>
 
+#define WORDS_PER_FILE 2500
+
+HWND hMainWindow = NULL;
+UINT idMenuFileOpen = 0;
+UINT idMenuFileSaveNamed = 0;
+UINT idMenuJobImportLyric = 0;
+
 /**
  * 指定したタイトルを持つウィンドウを探し、最初に見つかったウィンドウのハンドルを返す
  */
@@ -50,11 +57,11 @@ UINT FindMenuIdFromText( HMENU parent, TCHAR *text ){
     return id;
 }
 
-int main(){
-    HWND hMainWindow = FindWindowFromTitle( NULL, "VOCALOID Editor - " );
+void init(){
+    hMainWindow = FindWindowFromTitle( NULL, "VOCALOID Editor - " );
     printf( "hMainWindow=0x%X\n", hMainWindow );
     if( hMainWindow == NULL ){
-        return 0;
+        return;
     }
 
     HMENU hMenu = GetMenu( hMainWindow );
@@ -93,20 +100,22 @@ int main(){
     printf( "hMenuEdit=0x%X\n", hMenuEdit );
 
     // File->Openを取得
-    UINT idMenuFileOpen = FindMenuIdFromText( hMenuFile, TEXT( "Open" ) );
+    idMenuFileOpen = FindMenuIdFromText( hMenuFile, TEXT( "Open" ) );
     if( idMenuFileOpen == 0 ){
         idMenuFileOpen = FindMenuIdFromText( hMenuFile, TEXT( "開く" ) );
     }
     printf( "idMenuFileOpen=0x%X\n", idMenuFileOpen );
 
-    // Edit->Select All Eventsを取得
-    UINT idMenuEditSelectAllEvents = FindMenuIdFromText( hMenuEdit, TEXT( "Ctrl+Shift+A" ) );
-    printf( "idMenuEditSelectAllEvents=0x%X\n", idMenuEditSelectAllEvents );
+    idMenuFileSaveNamed = FindMenuIdFromText( hMenuFile, TEXT( "(&A)" ) );
+    printf( "idMenuFileSaveNamed=0x%X\n", idMenuFileSaveNamed );
 
     // Job->歌詞の流し込みを取得
-    UINT idMenuJobImportLyric = FindMenuIdFromText( hMenuJob, TEXT( "(&L)" ) );
+    idMenuJobImportLyric = FindMenuIdFromText( hMenuJob, TEXT( "(&L)" ) );
     printf( "idMenuJobImportLyric=0x%X\n", idMenuJobImportLyric );
+}
 
+HWND GetLyricTextBoxHandle( HWND *hLyricDialog ){
+    HWND ret = NULL;
     //File->Openを実行
     PostMessage( hMainWindow, WM_COMMAND, idMenuFileOpen, 0 );
 
@@ -194,39 +203,83 @@ int main(){
 
     // Max:5000[notes]というStaticクラスの子を持つダイアログをしらみつぶしに探す
     lastChild = NULL;
-    HWND hLyricDialog = NULL;
+    HWND hDialog = NULL;
     while( 1 ){
         HWND child = FindWindowEx( NULL, lastChild, NULL, NULL );
         if( NULL == child ){
             break;
         }
+        printf( "child=0x%X\n", child );
         HWND lastChild2 = NULL;
         while( 1 ){
             HWND child2 = FindWindowEx( child, lastChild2, TEXT( "Static" ), NULL );
             if( NULL == child2 ){
                 break;
             }
+            printf( "child2=0x%X\n", child2 );
             TCHAR obtained[MAX_PATH];
             if( GetWindowText( child2, obtained, MAX_PATH ) ){
                 printf( "obtained=%s\n", obtained );
-                if( strstr( obtained, TEXT( "Max:5000[notes]" ) ) ){
-                    hLyricDialog = child;
+                if( strstr( obtained, TEXT( "Max:" ) ) &&
+                    strstr( obtained, TEXT( "[notes]" ) ) ){
+                    hDialog = child;
                     break;
                 }
             }
             lastChild2 = child2;
         }
-        if( hLyricDialog ){
+        if( NULL != hDialog ){
             break;
         }
         lastChild = child;
     }
-    printf( "hLyricDialog=0x%X\n", hLyricDialog );
+    printf( "hDialog=0x%X\n", hDialog );
+    *hLyricDialog = hDialog;
 
     // テキストボックスを特定する
-    HWND hLyricTextbox = FindWindowEx( hLyricDialog, NULL, TEXT( "Edit" ), NULL );
-    printf( "hLyricTextbox=0x%X\n", hLyricTextbox );
+    ret = FindWindowEx( hDialog, NULL, TEXT( "Edit" ), NULL );
+    printf( "hLyricTextbox=0x%X\n", ret );
 
-    return 0;
+    return ret;
 }
 
+int main(){
+    init();
+
+    FILE *fp = fopen( "data.txt", "r" );
+    if( !fp ){
+        printf( "file 'data.txt' not found\n" );
+        return 0;
+    }
+    const int BUFLEN = 512;
+    TCHAR line[BUFLEN];
+    while( 1 ){
+        HWND hLyricDialog = NULL;
+        HWND hTextbox = GetLyricTextBoxHandle( &hLyricDialog );
+        int i;
+        BOOL eof = FALSE;
+        for( i = 0; i < WORDS_PER_FILE; i++ ){
+            if( fgets( line, BUFLEN, fp ) ){
+                int len = strlen( line );
+                int j;
+                for( j = 0; j < len; j++ ){
+                    PostMessage( hTextbox, WM_CHAR, line[j], 0 );
+                }
+            }else{
+                eof = TRUE;
+                break;
+            }
+        }
+
+        // OKボタンを押す
+        PostMessage( hLyricDialog, WM_COMMAND, IDOK, 0 );
+        Sleep( 1000 );
+
+        // 名前を付けて保存
+        PostMessage( hMainWindow, WM_COMMAND, idMenuFileSaveNamed, 0 );
+
+        if( eof ){
+            break;
+        }
+    }
+}
