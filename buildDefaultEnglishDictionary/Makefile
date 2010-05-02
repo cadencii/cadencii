@@ -1,4 +1,4 @@
-all: wordsFromDBFiles.exe makeMids.exe extractDictionary.exe diffWordsList.exe mergeWordsList.exe mergeAll.exe
+all: wordsFromDBFiles.exe makeMids.exe extractDictionary.exe diffWordsList.exe mergeWordsList.exe mergeAll.exe AutoLyricInsert.exe
 
 wordsFromDBFiles.exe: wordsFromDBFiles.cs
 	gmcs wordsFromDBFiles.cs
@@ -17,3 +17,6 @@ mergeWordsList.exe: mergeWordsList.cs
 
 mergeAll.exe: mergeAll.cs
 	gmcs mergeAll.cs
+
+AutoLyricInsert.exe: AutoLyricInsert.c
+	gcc AutoLyricInsert.c -o AutoLyricInsert.exe
