@@ -154,6 +154,7 @@ namespace org.kbinani.cadencii {
             new AuthorListEntry( "いぬくま" ),
             new AuthorListEntry( "shu-t (@shu_sonicwave)" ),
             new AuthorListEntry( "さささ (@sasasa3396)" ),
+            new AuthorListEntry( "あろも～ら (@aromora)" ),
             new AuthorListEntry( "all members of Cadencii bbs", 2 ),
             new AuthorListEntry(),
             new AuthorListEntry( "     ... and you !", 3 ),
