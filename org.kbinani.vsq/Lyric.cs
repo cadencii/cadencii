@@ -234,41 +234,93 @@ namespace org.kbinani.vsq {
         }
 
         /// <summary>
-        /// 文字列からのコンストラクタ
+        /// 文字列(ex."a","a",0.0000,0.0)からのコンストラクタ
         /// </summary>
-        /// <param name="_line">生成元の文字列</param>
-        public Lyric( String _line ) {
-            String[] spl = PortUtil.splitString( _line, ',' );
-            int c_length = spl.Length - 3;
-            if ( spl.Length < 4 ) {
+        /// <param name="line"></param>
+        public Lyric( String line ) {
+            int len = PortUtil.getStringLength( line );
+            if ( len == 0 ) {
                 Phrase = "a";
                 setPhoneticSymbol( "a" );
                 UnknownFloat = 0.0f;
                 PhoneticSymbolProtected = false;
-            } else {
-                Phrase = spl[0];
-                if ( Phrase.StartsWith( "\"" ) ) {
-                    Phrase = Phrase.Substring( 1 );
-                }
-                if ( Phrase.EndsWith( "\"" ) ) {
-                    Phrase = Phrase.Substring( 0, PortUtil.getStringLength( Phrase ) - 1 );
-                }
-                String symbols = spl[1];
-                if ( symbols.StartsWith( "\"" ) ) {
-                    symbols = symbols.Substring( 1 );
-                }
-                if ( symbols.EndsWith( "\"" ) ) {
-                    symbols = symbols.Substring( 0, PortUtil.getStringLength( symbols ) - 1 );
-                }
-                setPhoneticSymbol( symbols );
-                UnknownFloat = PortUtil.parseFloat( spl[2] );
-                PhoneticSymbolProtected = (spl[spl.Length - 1].Equals( "0" )) ? false : true;
+                setConsonantAdjustment( "0" );
+                return;
             }
+            int indx = -1;
+            int dquote_count = 0;
+            String work = "";
+            String consonant_adjustment = "";
+            for ( int i = 0; i < len; i++ ) {
+#if JAVA
+                char c = line.charAt( i );
+#else
+                char c = line[i];
+#endif
+                if ( c == ',' ) {
+                    if ( dquote_count % 2 == 0 ) {
+                        // ,の左側に偶数個の"がある場合→,は区切り文字
+                        indx++;
+                        if ( indx == 0 ) {
+                            // Phrase
+                            work = work.Replace( "\"\"", "\"" );  // "は""として保存される
+                            if ( work.StartsWith( "\"" ) && work.EndsWith( "\"" ) ) {
+                                int l = PortUtil.getStringLength( work );
+                                if ( l > 2 ) {
+                                    Phrase = work.Substring( 1, l - 2 );
+                                } else {
+                                    Phrase = "a";
+                                }
+                            } else {
+                                Phrase = work;
+                            }
+                            work = "";
+                        } else if ( indx == 1 ) {
+                            // symbols
+                            String symbols = "";
+                            if ( work.StartsWith( "\"" ) && work.EndsWith( "\"" ) ) {
+                                int l = PortUtil.getStringLength( work );
+                                if ( l > 2 ) {
+                                    symbols = work.Substring( 1, l - 2 );
+                                } else {
+                                    symbols = "a";
+                                }
+                            } else {
+                                symbols = work;
+                            }
+                            setPhoneticSymbol( symbols );
+                            work = "";
+                        } else if ( indx == 2 ) {
+                            // UnknownFloat
+                            UnknownFloat = PortUtil.parseFloat( work );
+                            work = "";
+                        } else {
+                            if ( indx - 3 < m_phonetic_symbol.Length ) {
+                                // consonant adjustment
+                                if ( indx - 3 == 0 ) {
+                                    consonant_adjustment += work;
+                                } else {
+                                    consonant_adjustment += "," + work;
+                                }
+                            } else {
+                                // protected
+                                PhoneticSymbolProtected = work.Equals( "1" );
+                            }
+                            work = "";
+                        }
+                    } else {
+                        // ,の左側に奇数個の"がある場合→,は歌詞等の一部
+                        work += "" + c;
+                    }
+                } else {
+                    work += "" + c;
+                    if ( c == '"' ) {
+                        dquote_count++;
+                    }
+                }
+            }
+            setConsonantAdjustment( consonant_adjustment );
         }
-
-        /*public String toString() {
-            return toString( true );
-        }*/
 
         /// <summary>
         /// このインスタンスを文字列に変換します
