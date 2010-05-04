@@ -61,10 +61,11 @@
 
 -v3.0.18todo-----------------------------------------------------------
 -Vibrato Rate, Depthのプリセット値->実装してみたが、DefaultVibratoTypeとの整合性がNGだ。Rate, Depthを値で選ぶのか、DefaultVibratoTypeで選ぶのか。
--歌詞にコンマが含まれるVSQを正しく読み込めないのを修正(trunkのを移植)
+-CheckEditorConfigDiffs.csをsvn add
 
 -v3.0.18done-----------------------------------------------------------
 -VSQファイルまたはXVSQファイルのパスをCadencii.exeの第一引数にすると、自動で読み込むようにした。（XVSQ、VSQをCadenciiで開くよう関連付けておくと、ダブルクリックしたファイルが自動で開かれるようにした）
+-歌詞にコンマが含まれるVSQを正しく読み込めないのを修正(trunkのを移植)
 
 -v3.0.17done-----------------------------------------------------------
 -org.kbinani.java.util.IteartorをIterator<E>に書き換えた
