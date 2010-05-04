@@ -22,7 +22,7 @@ using System;
 using org.kbinani.java.io;
 using org.kbinani.java.util;
 
-namespace org.kbinani.vsq.impl {
+namespace org.kbinani.vsq {
     using boolean = System.Boolean;
     using Integer = System.Int32;
 #endif
@@ -59,57 +59,13 @@ namespace org.kbinani.vsq.impl {
 #if DEBUG
             PortUtil.println( "SymbolTable.LoadDictionary()" );
 #endif
-            Vector<String[]> listja = new Vector<String[]>();
-            BufferedReader brja = null;
-            try {
-                String filejp = PortUtil.combinePath( PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "resources" ), "dict_ja.txt" );
-                brja = new BufferedReader( new InputStreamReader( new FileInputStream( filejp ), "UTF-8" ) );
-                String line = "";
-                while ( (line = brja.readLine()) != null ) {
-                    String[] spl = PortUtil.splitString( line, new String[]{ "\t\t" }, false );
-                    if ( spl.Length < 2 ) {
-                        continue;
-                    }
-                    listja.add( new String[] { spl[0], spl[1] } );
-                }
-            } catch ( Exception ex ) {
-                PortUtil.stderr.println( "SymbolTable#loadDictionary; ex=" + ex );
-            } finally {
-                if ( brja != null ) {
-                    try {
-                        brja.close();
-                    } catch ( Exception ex2 ) {
-                        PortUtil.stderr.println( "SymbolTable#loadDictionary; ex2=" + ex2 );
-                    }
-                }
-            }
-            s_default_jp = new SymbolTable( "DEFAULT_JP", listja.toArray( new String[][] { } ), true );
+            String filejp = PortUtil.combinePath( PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "resources" ), "dict_ja.txt" );
+            s_default_jp = new SymbolTable( filejp, false, true );
+            s_default_jp.m_name = "DEFAULT_JP";
 
-            Vector<String[]> listen = new Vector<String[]>();
-            BufferedReader bren = null;
-            try {
-                String fileen = PortUtil.combinePath( PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "resources" ), "dict_en.txt" );
-                bren = new BufferedReader( new InputStreamReader( new FileInputStream( fileen ), "UTF-8" ) );
-                String line = "";
-                while ( (line = bren.readLine()) != null ) {
-                    String[] spl = PortUtil.splitString( line, '\t' );
-                    if ( spl.Length < 2 ) {
-                        continue;
-                    }
-                    listen.add( new String[] { spl[0], spl[1] } );
-                }
-            } catch ( Exception ex ) {
-                PortUtil.stderr.println( "SymbolTable#loadDictionary; ex=" + ex );
-            } finally {
-                if ( bren != null ) {
-                    try {
-                        bren.close();
-                    } catch ( Exception ex2 ) {
-                        PortUtil.stderr.println( "SymbolTable#loadDictionary; ex2=" + ex2 );
-                    }
-                }
-            }
-            s_default_en = new SymbolTable( "DEFAULT_EN", listen.toArray( new String[][] { } ), true );
+            String fileen = PortUtil.combinePath( PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "resources" ), "dict_en.txt" );
+            s_default_en = new SymbolTable( fileen, false, true );
+            s_default_en.m_name = "DEFAULT_EN";
 
             s_table.clear();
             int count = 0;
@@ -256,7 +212,7 @@ namespace org.kbinani.vsq.impl {
                         return;
                     }
                 } else {
-                    sr = new BufferedReader( new InputStreamReader( new FileInputStream( path ), "UTF8" ) );
+                    sr = new BufferedReader( new InputStreamReader( new FileInputStream( path ), "UTF-8" ) );
                     if ( sr == null ) {
                         return;
                     }
@@ -264,16 +220,32 @@ namespace org.kbinani.vsq.impl {
                 String line;
                 while ( sr.ready() ) {
                     line = sr.readLine();
-                    if ( !line.StartsWith( "//" ) ) {
+                    if ( line.StartsWith( "//" ) ) {
+                        continue;
+                    }
+                    String key = "";
+                    String word = "";
+                    String symbol = "";
+                    if ( is_udc_mode ) {
                         String[] spl = PortUtil.splitString( line, new String[] { "\t" }, 2, true );
                         if ( spl.Length >= 2 ) {
-                            String key = spl[0].ToLower();
-                            if ( m_dict.containsKey( key ) ) {
-                                PortUtil.println( "SymbolTable..ctor" );
-                                PortUtil.println( "    dictionary already contains key: " + key );
-                            } else {
-                                m_dict.put( key, spl[1] );
-                            }
+                            key = spl[0].ToLower();
+                            word = key;
+                            symbol = spl[1];
+                        }
+                    } else {
+                        String[] spl = PortUtil.splitString( line, new String[] { "\t\t" }, 2, true );
+                        if ( spl.Length >= 2 ) {
+                            key = spl[0].Replace( "-\t", "" );
+                            word = spl[0];
+                            symbol = spl[1];
+                        }
+                    }
+                    if ( !key.Equals( "" ) ) {
+                        if ( m_dict.containsKey( key ) ) {
+                            PortUtil.stdout.println( "SymbolTable#.ctor; dictionary already contains key: " + key );
+                        } else {
+                            m_dict.put( key, new SymbolTableEntry( word, symbol ) );
                         }
                     }
                 }
@@ -293,7 +265,7 @@ namespace org.kbinani.vsq.impl {
         private boolean attatchImp( String phrase, ByRef<String> result ) {
             String s = phrase.ToLower();
             if ( m_dict.containsKey( s ) ) {
-                result.value = m_dict.get( s );
+                result.value = m_dict.get( s ).Symbol.Replace( '\t', ' ' );
                 return true;
             } else {
                 result.value = "a";
@@ -301,10 +273,10 @@ namespace org.kbinani.vsq.impl {
             }
         }
 
-        private SymbolTable( String name, String[][] key, boolean enabled ) {
+        /*private SymbolTable( String name, String[][] key, boolean enabled ) {
             m_enabled = enabled;
             m_name = name;
-            m_dict = new TreeMap<String, String>();
+            m_dict = new TreeMap<String, SymbolTableEntry>();
             for( int i = 0; i < key.Length; i++ ){
                 String k = key[i][0].ToLower();
                 if( m_dict.containsKey( k ) ){
@@ -312,7 +284,7 @@ namespace org.kbinani.vsq.impl {
                 }
                 m_dict.put( k, key[i][1] );
             }
-        }
+        }*/
     }
 
 #if !JAVA
@@ -320,7 +292,7 @@ namespace org.kbinani.vsq.impl {
 #endif
 
 #if !JAVA
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq.old {
     using boolean = System.Boolean;
     using Integer = System.Int32;
 #endif
