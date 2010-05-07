@@ -1,7 +1,7 @@
 #include <windows.h>
 #include <stdio.h>
 
-#define WORDS_PER_FILE 2500
+#define CHARS_PER_FILE 9500
 
 HWND hMainWindow = NULL;
 UINT idMenuFileOpen = 0;
@@ -318,7 +318,7 @@ HWND GetLyricTextBoxHandle( HWND *hLyricDialog ){
                 posx = rc.right - 30;
             }
             SetCursorPos( posx, posy );
-            Sleep( 1 );
+            Sleep( 0 );
         }
     }
     RECT rcHScroll;
@@ -337,7 +337,7 @@ HWND GetLyricTextBoxHandle( HWND *hLyricDialog ){
         ScreenToClient( hPianoroll, &p );
         PostMessage( hPianoroll, WM_MOUSEMOVE, MK_LBUTTON, (0xffff0000 & (p.y << 16)) | (0xffff & p.x) );
         SetCursorPos( ix, posy );
-        Sleep( 1 );
+        Sleep( 0 );
     }
     posx += 10;
     for( iy = posy; iy < rcHScroll.bottom - 20; iy++ ){
@@ -346,7 +346,7 @@ HWND GetLyricTextBoxHandle( HWND *hLyricDialog ){
         ScreenToClient( hPianoroll, &p );
         PostMessage( hPianoroll, WM_MOUSEMOVE, MK_LBUTTON, (0xffff0000 & (p.y << 16)) | (0xffff & p.x) );
         SetCursorPos( posx, iy );
-        Sleep( 1 );
+        Sleep( 0 );
     }
     posy = rcHScroll.bottom - 20;
     SetCursorPos( posx, posy );
@@ -433,9 +433,11 @@ int main(){
         }
         int i;
         BOOL eof = FALSE;
-        for( i = 0; i < WORDS_PER_FILE; i++ ){
+        int charcount = 0;
+        while( charcount < CHARS_PER_FILE ){
             if( fgets( line, BUFLEN, fp ) ){
                 int len = strlen( line );
+                charcount += len;
                 int j;
                 for( j = 0; j < len; j++ ){
                     PostMessage( hTextbox, WM_CHAR, line[j], 0 );
