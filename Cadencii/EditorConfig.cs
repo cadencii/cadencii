@@ -110,7 +110,6 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public ToolStripLocation ToolMeasureLocation = new ToolStripLocation( new Point( 212, 25 ), ToolStripLocation.ParentPanel.Top );
         public ToolStripLocation ToolFileLocation = new ToolStripLocation( new Point( 461, 0 ), ToolStripLocation.ParentPanel.Top );
-        //public ToolStripLocation ToolPaletteLocation = new ToolStripLocation( new Point( 3, 100 ), ToolStripLocation.ParentPanel.Top );
         public boolean WindowMaximized = false;
         public Rectangle WindowRect = new Rectangle( 0, 0, 970, 718 );
         /// <summary>
@@ -285,7 +284,6 @@ namespace org.kbinani.cadencii {
         public MidiPortConfig MidiDeviceGeneral = new MidiPortConfig();
         public boolean MetronomeEnabled = true;
         public PropertyPanelState PropertyWindowStatus = new PropertyPanelState();
-        //public FormConfigUtauVoiceConfig FormConfigUtauVoiceConfig = new FormConfigUtauVoiceConfig( new Size( 714, 533 ), 70.0f, 60.0f, 20 );
         /// <summary>
         /// 概観ペインが表示されているかどうか
         /// </summary>

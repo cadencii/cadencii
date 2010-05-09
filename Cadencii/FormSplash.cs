@@ -37,8 +37,8 @@ namespace org.kbinani.cadencii {
 #else
     public class FormSplash : BDialog {
 #endif
-        const int ICON_WIDTH = 16;
-        const int ICON_HEIGHT = 16;
+        const int ICON_WIDTH = 64;
+        const int ICON_HEIGHT = 64;
 
         boolean mouseDowned = false;
         private FlowLayoutPanel panelIcon;
@@ -58,6 +58,10 @@ namespace org.kbinani.cadencii {
 #endif
             registerEventHandlers();
             setResources();
+#if DEBUG
+            addIcon( "", "foo" );
+            addIcon( "", "bar" );
+#endif
         }
 
         #region public methods
@@ -72,9 +76,11 @@ namespace org.kbinani.cadencii {
             p.setSize( d );
             p.setMaximumSize( d );
             p.setMinimumSize( d );
+            p.setForeground( Color.darkGray );
 #if JAVA
             //fixme: FormSplash#addIcon(String,String)
 #else
+            p.BorderStyle = BorderStyle.FixedSingle;
             System.IO.FileStream fs = null;
             try {
                 fs = new System.IO.FileStream( path_image, System.IO.FileMode.Open, System.IO.FileAccess.Read );
@@ -92,6 +98,7 @@ namespace org.kbinani.cadencii {
                 }
             }
 
+            panelIcon.BringToFront();
             panelIcon.Controls.Add( p );
 #endif
         }
@@ -148,6 +155,7 @@ namespace org.kbinani.cadencii {
             // 
             this.panelIcon.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelIcon.BackColor = System.Drawing.Color.Transparent;
             this.panelIcon.Location = new System.Drawing.Point( 12, 200 );
             this.panelIcon.Name = "panelIcon";
             this.panelIcon.Size = new System.Drawing.Size( 476, 123 );

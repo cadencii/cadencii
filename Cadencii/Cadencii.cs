@@ -87,6 +87,7 @@ namespace org.kbinani.cadencii{
 
             String file = parseArguments( args );
             AppManager.init();
+
 #if ENABLE_SCRIPT
             try {
                 ScriptServer.reload();

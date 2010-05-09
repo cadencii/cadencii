@@ -14,6 +14,36 @@
 -straightSynthesizer.cpp(rev672) "log.txt"の処理を#ifdef DEBUGする
 -PortUtil.getbytes*, make_*系の実装の妥当性確認。
 -org.kbinani.dllの*EventHandler.csのJava実装部分がBuildJavaUIからプリプロセッサ・インポートしない書き方になっているのでこれを直す．eclipseで開いたときこれらのイベントハンドラが無いとテスト実行できないので．
+-アイコンパレード用のアイコン
+--MEIKO
+--KAITO
+--Leon
+--Lola
+--Miriam
+--初音ミク
+--鏡音リン
+--鏡音レン
+--鏡音リンAct2
+--鏡音レンAct2
+--巡音ルカ(Luka_EN)
+--巡音ルカ(Luka_JP)
+--初音ミクsweet
+--初音ミクdark
+--初音ミクsoft
+--初音ミクlight
+--初音ミクvivid
+--初音ミクsolid
+--がくっぽいど
+--Megpoid
+--歌愛ユキ
+--氷山キヨテル
+--SF-A2 開発コード miki
+--Prima
+--Sonika
+--Sweet Ann
+--Big Al
+--AquesTone
+--(UTAUの各シンガー)
 
 -jcadencii todo--------------------------------------------------------
 -BListViewのカラム・ヘッダーの扱いがヤバイ
@@ -30,7 +60,8 @@
 -Utau Plugin Managerで，[#INSERT], [#DELETE]セクションに対応していない->実装した。確認すること
 -Lengthが変わると、後ろのアイテムもずれるはずだが、これができてない
 -Vibrato Rate, Depthのプリセット値->実装してみたが、DefaultVibratoTypeとの整合性がNGだ。Rate, Depthを値で選ぶのか、DefaultVibratoTypeで選ぶのか。
--音節に分けられる英単語が入力された場合の処理。SymbolTableの仕様を変える必要あり
+-音節に分けられる英単語が入力された場合の処理。AppManager.inputTextBoxのイベントハンドラ処理
+-歌詞インポート時の、英単語の処理
 -最小化状態から復帰したとき、プロパティウィンドウの表示幅が正しく戻らないのを修正
 
 -v3.1.5done------------------------------------------------------------
