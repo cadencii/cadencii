@@ -15,26 +15,40 @@
 package org.kbinani.cadencii;
 
 import java.awt.*;
+import javax.imageio.*;
 import org.kbinani.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
 using org.kbinani.java.awt;
+using org.kbinani.javax.imageio;
 using org.kbinani.windows.forms;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 #endif
 
+    /// <summary>
+    /// 起動時に表示されるスプラッシュウィンドウ
+    /// </summary>
 #if JAVA
     public class FormSplash extends BDialog {
 #else
     public class FormSplash : BDialog {
 #endif
+        const int ICON_WIDTH = 16;
+        const int ICON_HEIGHT = 16;
+
         boolean mouseDowned = false;
+        private FlowLayoutPanel panelIcon;
+        private ToolTip toolTip;
+        private System.ComponentModel.IContainer components;
         Point mouseDownedLocation = new Point( 0, 0 );
 
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
         public FormSplash() {
 #if JAVA
             super();
@@ -45,6 +59,43 @@ namespace org.kbinani.cadencii {
             registerEventHandlers();
             setResources();
         }
+
+        #region public methods
+        /// <summary>
+        /// アイコンパレードの末尾にアイコンを追加します
+        /// </summary>
+        /// <param name="path_image">イメージファイルへのパス</param>
+        /// <param name="singer_name">歌手の名前</param>
+        public void addIcon( String path_image, String singer_name ) {
+            BPictureBox p = new BPictureBox();
+            Dimension d = new Dimension( ICON_WIDTH, ICON_HEIGHT );
+            p.setSize( d );
+            p.setMaximumSize( d );
+            p.setMinimumSize( d );
+#if JAVA
+            //fixme: FormSplash#addIcon(String,String)
+#else
+            System.IO.FileStream fs = null;
+            try {
+                fs = new System.IO.FileStream( path_image, System.IO.FileMode.Open, System.IO.FileAccess.Read );
+                System.Drawing.Image img = System.Drawing.Image.FromStream( fs );
+                p.Image = img;
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "FormSplash#addIcon; ex=" + ex );
+            } finally {
+                if ( fs != null ) {
+                    try {
+                        fs.Close();
+                    } catch ( Exception ex2 ) {
+                        PortUtil.stderr.println( "FormSplash#addICon; ex2=" + ex2 );
+                    }
+                }
+            }
+
+            panelIcon.Controls.Add( p );
+#endif
+        }
+        #endregion
 
         #region helper methods
         private void setResources() {
@@ -81,18 +132,31 @@ namespace org.kbinani.cadencii {
         }
         #endregion
 
-        #region UI implementation
+        #region ui implementation
 #if JAVA
         private void initialize(){
             setSize( 500, 335 );
         }
 #else
         private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
+            this.panelIcon = new System.Windows.Forms.FlowLayoutPanel();
+            this.toolTip = new System.Windows.Forms.ToolTip( this.components );
             this.SuspendLayout();
+            // 
+            // panelIcon
+            // 
+            this.panelIcon.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelIcon.Location = new System.Drawing.Point( 12, 200 );
+            this.panelIcon.Name = "panelIcon";
+            this.panelIcon.Size = new System.Drawing.Size( 476, 123 );
+            this.panelIcon.TabIndex = 1;
             // 
             // FormSplash
             // 
             this.ClientSize = new System.Drawing.Size( 500, 335 );
+            this.Controls.Add( this.panelIcon );
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.MaximizeBox = false;
             this.MinimizeBox = false;

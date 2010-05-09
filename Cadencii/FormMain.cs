@@ -64,22 +64,39 @@ namespace org.kbinani.cadencii {
 
 #endif
 
+    /// <summary>
+    /// エディタのメイン画面クラス
+    /// </summary>
 #if JAVA
     public class FormMain extends BForm{
 #else
     public class FormMain : BForm {
 #endif
+        /// <summary>
+        /// 通常のショートカットを登録できないメニューアイテムと、ショートカットキーとの紐付けを保持するクラスです。
+        /// </summary>
         private class SpecialShortcutHolder {
+            /// <summary>
+            /// ショートカットキーを表すKeyStrokeクラスのインスタンス
+            /// </summary>
             public KeyStroke shortcut;
+            /// <summary>
+            /// ショートカットキーとの紐付けを行う相手先のメニューアイテム
+            /// </summary>
             public BMenuItem menu;
 
+            /// <summary>
+            /// ショートカットキーとメニューアイテムを指定したコンストラクタ
+            /// </summary>
+            /// <param name="shortcut">ショートカットキー</param>
+            /// <param name="menu">ショートカットキーとの紐付けを行うメニューアイテム</param>
             public SpecialShortcutHolder( KeyStroke shortcut, BMenuItem menu ) {
                 this.shortcut = shortcut;
                 this.menu = menu;
             }
         }
 
-        #region Static Readonly Field
+        #region static readonly field
         private readonly Color s_pen_105_105_105 = new Color( 105, 105, 105 );
         private readonly Color s_pen_187_187_255 = new Color( 187, 187, 255 );
         public readonly Color s_pen_007_007_151 = new Color( 7, 7, 151 );
@@ -90,6 +107,7 @@ namespace org.kbinani.cadencii {
             new AuthorListEntry( "is developped by:", 2 ),
             new AuthorListEntry( "kbinani (@kbinani)" ),
             new AuthorListEntry( "修羅場P (@shurabaP)" ),
+            new AuthorListEntry( "もみじぱん (@momijipan)" ),
             new AuthorListEntry(),
             new AuthorListEntry(),
             new AuthorListEntry( "Special Thanks to", 3 ),
@@ -124,6 +142,7 @@ namespace org.kbinani.cadencii {
             new AuthorListEntry( "translator:", 2 ),
             new AuthorListEntry( "Eji (zh-TW translation, @ejiwarp)" ),
             new AuthorListEntry( "kankan (zh-TW translation)" ),
+            new AuthorListEntry( "yxmline (zh-CN translation)" ),
             new AuthorListEntry(),
             new AuthorListEntry(),
             new AuthorListEntry( "Thanks to", 3 ),
@@ -136,7 +155,6 @@ namespace org.kbinani.cadencii {
             new AuthorListEntry( "beginner" ),
             new AuthorListEntry( "b2ox (@b2ox)" ),
             new AuthorListEntry( "麻太郎" ),
-            new AuthorListEntry( "もみじぱん (@momijipan)" ),
             new AuthorListEntry( "PEX (@pex_zeo)" ),
             new AuthorListEntry( "やなぎがうら" ),
             new AuthorListEntry( "cocoonP (@cocoonP)" ),
@@ -155,6 +173,7 @@ namespace org.kbinani.cadencii {
             new AuthorListEntry( "shu-t (@shu_sonicwave)" ),
             new AuthorListEntry( "さささ (@sasasa3396)" ),
             new AuthorListEntry( "あろも～ら (@aromora)" ),
+            new AuthorListEntry( "空耳P (@soramiku)" ),
             new AuthorListEntry( "all members of Cadencii bbs", 2 ),
             new AuthorListEntry(),
             new AuthorListEntry( "     ... and you !", 3 ),
@@ -162,7 +181,7 @@ namespace org.kbinani.cadencii {
         public readonly Font s_F9PT = new Font( "SansSerif", java.awt.Font.PLAIN, AppManager.FONT_SIZE9 );
         #endregion
 
-        #region Constants and internal enums
+        #region constants and internal enums
         /// <summary>
         /// カーブエディタ画面の編集モード
         /// </summary>
@@ -291,14 +310,14 @@ namespace org.kbinani.cadencii {
         const int MIN_WAVE_MSEC_RESOLUTION = 100;
         #endregion
 
-        #region Static Field
+        #region static field
         /// <summary>
         /// CTRLキー。MacOSXの場合はMenu
         /// </summary>
         public int s_modifier_key = InputEvent.CTRL_MASK;
         #endregion
 
-        #region Fields
+        #region fields
         public VersionInfo m_versioninfo = null;
 #if !JAVA
         public System.Windows.Forms.Cursor HAND;
@@ -441,19 +460,19 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public double m_overview_btn_downed;
         /// <summary>
-        /// Overview画面左端でのクロック
+        /// ミニチュア・ピアノロール画面左端でのクロック
         /// </summary>
         public int m_overview_start_to_draw_clock = 0;
         /// <summary>
-        /// Overview画面の表示倍率
+        /// ミニチュア・ピアノロール画面の表示倍率
         /// </summary>
         public float m_overview_px_per_clock = 0.01f;
         /// <summary>
-        /// Overview画面に表示されている音符の，平均ノートナンバー．これが，縦方向の中心線に反映される
+        /// ミニチュア・ピアノロール画面に表示されている音符の，平均ノートナンバー．これが，縦方向の中心線に反映される
         /// </summary>
         public float m_overview_average_note = 60.0f;
         /// <summary>
-        /// Overview画面でマウスが降りている状態かどうか
+        /// ミニチュア・ピアノロール画面でマウスが降りている状態かどうか
         /// </summary>
         private OverviewMouseDownMode m_overview_mouse_down_mode = OverviewMouseDownMode.NONE;
         /// <summary>
@@ -461,7 +480,7 @@ namespace org.kbinani.cadencii {
         /// </summary>
         private PositionIndicatorMouseDownMode m_position_indicator_mouse_down_mode = PositionIndicatorMouseDownMode.NONE;
         /// <summary>
-        /// Overview画面で、マウスが下りた位置のx座標
+        /// ミニチュア・ピアノロール画面で、マウスが下りた位置のx座標
         /// </summary>
         public int m_overview_mouse_downed_locationx;
         public int m_overview_scale_count = 5;
@@ -1356,12 +1375,19 @@ namespace org.kbinani.cadencii {
             ensureVisible( clock );
         }
 
+        /// <summary>
+        /// 画像等のリソースを設定します。
+        /// </summary>
         public void initResource() {
 #if ENABLE_MIDI
             m_strip_ddbtn_metronome.setIcon( new ImageIcon( Resources.get_alarm_clock() ) );
 #endif
         }
 
+        /// <summary>
+        /// リアルタイム入力の再生速度を変更します
+        /// </summary>
+        /// <param name="newv">再生速度の倍率。1が等倍を表す</param>
         public void changeRealtimeInputSpeed( float newv ) {
             float old = AppManager.editorConfig.getRealtimeInputSpeed();
             double now = PortUtil.getCurrentTime();
@@ -1383,6 +1409,11 @@ namespace org.kbinani.cadencii {
         }
 #endif
 
+        /// <summary>
+        /// ミニチュア・ピアノロール上のマウスの位置から、ピアノロールに設定するべきStartToDrawXの値を計算します。
+        /// </summary>
+        /// <param name="mouse_x"></param>
+        /// <returns></returns>
         public int getOverviewStartToDrawX( int mouse_x ) {
             float clock = mouse_x / m_overview_px_per_clock + m_overview_start_to_draw_clock;
             int clock_at_left = (int)(clock - (pictPianoRoll.getWidth() - AppManager.keyWidth) / AppManager.scaleX / 2);
@@ -16541,7 +16572,7 @@ namespace org.kbinani.cadencii {
         }
         #endregion
 
-        #region UI implementation
+        #region ui implementation
 #if JAVA
         //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/Cadencii/FormMain.java
         BMenuItem stripDDBtnQuantize04 = null;

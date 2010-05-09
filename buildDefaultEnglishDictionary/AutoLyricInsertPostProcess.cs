@@ -8,8 +8,7 @@ using org.kbinani.vsq;
 class AutoLyricInsertPostProcess{
     public static void Main( string[] args ){
         int count = 0;
-        List<string> list_phrase = new List<string>();
-        List<string> list_symbol = new List<string>();
+        List<string> list = new List<string>();
         while( true ){
             count++;
             string dirname = count + "";
@@ -23,7 +22,7 @@ class AutoLyricInsertPostProcess{
                 if( !File.Exists( fname ) ){
                     break;
                 }
-                Console.Write( "\r" + fname );
+                Console.Write( "\r" + fname + "                     " );
                 VsqFile vsq = new VsqFile( fname, "Shift_JIS" );
                 VsqTrack vsq_track = vsq.Track.get( 1 );
                 string cache_phrase = "";
@@ -45,8 +44,7 @@ class AutoLyricInsertPostProcess{
                     }
                     if( !phrase.EndsWith( "-" ) ){
                         if( cache_phrase != "a" && cache_symbol != "u:" && !all_symbol_default ){
-                            list_phrase.Add( cache_phrase );
-                            list_symbol.Add( cache_symbol );
+                            list.Add( cache_phrase + "\t\t" + cache_symbol );
                         }
                         all_symbol_default = true;
                         cache_phrase = "";
@@ -56,29 +54,14 @@ class AutoLyricInsertPostProcess{
             }
         }
 
-        bool changed = true;
-        int c = list_phrase.Count;
-        while( changed ){
-            changed = false;
-            for( int i = 0; i < c - 1; i++ ){
-                string itemi = list_phrase[i];
-                string itemip = list_phrase[i + 1];
-                if( itemi.CompareTo( itemip ) > 0 ){
-                    list_phrase[i] = itemip;
-                    list_phrase[i + 1] = itemi;
-                    string s = list_symbol[i];
-                    list_symbol[i] = list_symbol[i + 1];
-                    list_symbol[i + 1] = s;
-                    changed = true;
-                }
-            }
-        }
+        list.Sort();
         string last = "";
+        int c = list.Count;
         using( StreamWriter sw = new StreamWriter( "extracted.txt" ) ){
             for( int i = 0; i < c; i++ ){
-                string s = list_phrase[i];
+                string s = list[i];
                 if( s != last ){
-                    sw.WriteLine( s + "\t\t" + list_symbol[i] );
+                    sw.WriteLine( s );
                     last = s;
                 }
             }
