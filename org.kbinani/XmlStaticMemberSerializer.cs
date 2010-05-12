@@ -335,12 +335,7 @@ namespace org.kbinani.xml {
             }
         }
 
-        /// <summary>
-        /// シリアライズ用の内部型をコンパイルし，m_xsが使用できるようにします
-        /// </summary>
-        private void GenerateConfigType() {
-            List<MemberEntry> config_names = CollectScriptConfigEntries( m_item );
-            string code = GenerateClassCodeForXmlSerialization( config_names, m_item );
+        protected virtual Assembly Compile( String code ) {
             CSharpCodeProvider provider = new CSharpCodeProvider();
             CompilerParameters parameters = new CompilerParameters();
             parameters.ReferencedAssemblies.Add( "System.Windows.Forms.dll" );
@@ -351,10 +346,19 @@ namespace org.kbinani.xml {
             parameters.GenerateExecutable = false;
             parameters.IncludeDebugInformation = true;
 #if DEBUG
-            PortUtil.println( "XmlStaticMemberSerializer#GenerateConfigtype; code=" + code );
+            PortUtil.println( "XmlStaticMemberSerializer#Compile; code=" + code );
 #endif
             CompilerResults results = provider.CompileAssemblyFromSource( parameters, code );
-            Assembly asm = results.CompiledAssembly;
+            return results.CompiledAssembly;
+        }
+
+        /// <summary>
+        /// シリアライズ用の内部型をコンパイルし，m_xsが使用できるようにします
+        /// </summary>
+        private void GenerateConfigType() {
+            List<MemberEntry> config_names = CollectScriptConfigEntries( m_item );
+            string code = GenerateClassCodeForXmlSerialization( config_names, m_item );
+            Assembly asm = Compile( code );
             if ( asm.GetTypes().Length <= 0 ) {
                 m_config_type = null;
                 m_xs = null;

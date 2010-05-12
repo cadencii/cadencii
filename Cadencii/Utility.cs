@@ -70,6 +70,10 @@ namespace org.kbinani.cadencii{
         private static int[] RANDOMIZE_PIT_PATTERN1 = null;
         private static int[] RANDOMIZE_PIT_PATTERN2 = null;
         private static int[] RANDOMIZE_PIT_PATTERN3 = null;
+        /// <summary>
+        /// 使用中のアセンブリ・キャッシュのフルパス
+        /// </summary>
+        private static Vector<String> usedAssemblyChache = new Vector<String>();
 
         public static int[] getRandomizePitPattern1() {
             if ( RANDOMIZE_PIT_PATTERN1 == null ) {
@@ -1192,33 +1196,95 @@ namespace org.kbinani.cadencii{
             return dir2;
         }
 
+        /// <summary>
+        /// 使用されていないアセンブリのキャッシュを削除します
+        /// </summary>
+        public static void cleanupUnusedAssemblyCache() {
+            String dir = getCachedAssemblyPath();
+            String[] files = PortUtil.listFiles( dir, ".dll" );
+            foreach ( String file in files ) {
+                String full = PortUtil.combinePath( dir, file );
+                if ( !usedAssemblyChache.contains( full ) ) {
+                    try {
+                        PortUtil.deleteFile( full );
+                    } catch ( Exception ex ) {
+                        PortUtil.stderr.println( "Utility#cleanupUnusedAssemblyCache; ex=" + ex );
+                    }
+                }
+            }
+        }
+
 #if ENABLE_SCRIPT
-        public static CompilerResults compileScript( String code ) {
+        public static Assembly compileScript( String code, Vector<String> errors ) {
 #if DEBUG
             PortUtil.println( "Utility#compileScript" );
 #endif
-            CompilerResults ret = null;
-            CSharpCodeProvider provider = new CSharpCodeProvider();
-            String path = System.Windows.Forms.Application.StartupPath;
-            CompilerParameters parameters = new CompilerParameters( new String[] {
+            Assembly ret = null;
+
+            String md5 = PortUtil.getMD5FromString( code ).Replace( "_", "" );
+            String cached_asm_file = PortUtil.combinePath( getCachedAssemblyPath(), md5 + ".dll" );
+            boolean compiled = false;
+            if ( PortUtil.isFileExists( cached_asm_file ) ) {
+                ret = Assembly.LoadFile( cached_asm_file );
+                if ( ret != null ) {
+                    if ( !usedAssemblyChache.contains( cached_asm_file ) ) {
+                        usedAssemblyChache.add( cached_asm_file );
+                    }
+                }
+            }
+
+            CompilerResults cr = null;
+            if ( ret == null ) {
+#if DEBUG
+                PortUtil.println( "Utility#compileScriptl code=" + code );
+#endif
+                CSharpCodeProvider provider = new CSharpCodeProvider();
+                String path = System.Windows.Forms.Application.StartupPath;
+                CompilerParameters parameters = new CompilerParameters( new String[] {
                 PortUtil.combinePath( path, "org.kbinani.vsq.dll" ),
                 PortUtil.combinePath( path, "Cadencii.exe" ),
                 PortUtil.combinePath( path, "org.kbinani.media.dll" ),
                 PortUtil.combinePath( path, "org.kbinani.apputil.dll" ),
                 PortUtil.combinePath( path, "org.kbinani.windows.forms.dll" ),
                 PortUtil.combinePath( path, "org.kbinani.dll" ) } );
-            parameters.ReferencedAssemblies.Add( "System.Windows.Forms.dll" );
-            parameters.ReferencedAssemblies.Add( "System.dll" );
-            parameters.ReferencedAssemblies.Add( "System.Drawing.dll" );
-            parameters.ReferencedAssemblies.Add( "System.Xml.dll" );
-            parameters.GenerateInMemory = true;
-            parameters.GenerateExecutable = false;
-            parameters.IncludeDebugInformation = true;
-            try {
-                ret = provider.CompileAssemblyFromSource( parameters, code );
-            } catch ( Exception ex ) {
-                PortUtil.stderr.println( "Utility#compileScript; ex=" + ex );
+                parameters.ReferencedAssemblies.Add( "System.Windows.Forms.dll" );
+                parameters.ReferencedAssemblies.Add( "System.dll" );
+                parameters.ReferencedAssemblies.Add( "System.Drawing.dll" );
+                parameters.ReferencedAssemblies.Add( "System.Xml.dll" );
+                parameters.GenerateInMemory = false;
+                parameters.GenerateExecutable = false;
+                parameters.IncludeDebugInformation = true;
+                try {
+                    cr = provider.CompileAssemblyFromSource( parameters, code );
+                    ret = cr.CompiledAssembly;
+                    int c = cr.Errors.Count;
+                    for ( int i = 0; i < c; i++ ) {
+                        errors.add( _( "line" ) + ":" + cr.Errors[i].Line + " " + cr.Errors[i].ErrorText );
+                    }
+                    compiled = true;
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "Utility#compileScript; ex=" + ex );
+                }
             }
+
+            if ( compiled ) {
+                if ( !usedAssemblyChache.contains( cached_asm_file ) ) {
+                    usedAssemblyChache.add( cached_asm_file );
+                }
+                if ( PortUtil.isFileExists( cached_asm_file ) ) {
+                    try {
+                        PortUtil.deleteFile( cached_asm_file );
+                    } catch ( Exception ex ) {
+                        PortUtil.stderr.println( "Utility#compileScript; ex=" + ex );
+                    }
+                }
+                try {
+                    PortUtil.copyFile( cr.PathToAssembly, cached_asm_file );
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "Utility#compileScript; ex=" + ex );
+                }
+            }
+            
             return ret;
         }
 #endif
@@ -1273,34 +1339,18 @@ namespace org.kbinani.cadencii{
             code += "}";
             ret.ErrorMessage = "";
 
-            CompilerResults results = Utility.compileScript( code );
-            Assembly testAssembly = null;
-            if ( results != null ) {
-                try {
-                    testAssembly = results.CompiledAssembly;
-                } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "Utility#loadScript; ex=" + ex );
-                    testAssembly = null;
-                }
-            }
-#if DEBUG
-            PortUtil.println( "Utility#loadScript; (results==null)=" + (results == null) );
-            PortUtil.println( "Utility#loadScript; (testAssembly==null)=" + (testAssembly == null) );
-#endif
-
+            Vector<String> errors = new Vector<String>();
+            Assembly testAssembly = Utility.compileScript( code, errors );
             if ( testAssembly == null ) {
                 ret.scriptDelegate = null;
-                if ( results == null ) {
+                if ( errors.size() == 0 ) {
                     ret.ErrorMessage = "failed compiling";
-                    return ret;
                 } else {
-                    if ( results.Errors.Count != 0 ) {
-                        for ( int i = 0; i < results.Errors.Count; i++ ) {
-                            ret.ErrorMessage += _( "line" ) + ":" + results.Errors[i].Line + " " + results.Errors[i].ErrorText + Environment.NewLine;
-                        }
+                    for ( int i = 0; i < errors.size(); i++ ) {
+                        ret.ErrorMessage += errors.get( i );
                     }
-                    return ret;
                 }
+                return ret;
             } else {
                 foreach ( Type implemented in testAssembly.GetTypes() ) {
                     Object scriptDelegate = null;
@@ -1332,7 +1382,11 @@ namespace org.kbinani.cadencii{
                     if ( scriptDelegate != null ) {
                         ret.ScriptType = implemented;
                         ret.scriptDelegate = scriptDelegate;
+#if JAVA
                         ret.Serializer = new XmlSerializer( implemented, true );
+#else
+                        ret.Serializer = new XmlStaticMemberSerializerEx( implemented );
+#endif
                         ret.getDisplayNameDelegate = getDisplayNameDelegate;
 
                         if ( !PortUtil.isFileExists( config_file ) ) {
@@ -1405,6 +1459,18 @@ namespace org.kbinani.cadencii{
         /// <returns></returns>
         public static String getScriptPath() {
             String dir = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "script" );
+            if ( !PortUtil.isDirectoryExists( dir ) ) {
+                PortUtil.createDirectory( dir );
+            }
+            return dir;
+        }
+
+        /// <summary>
+        /// キャッシュされたアセンブリが保存されているディレクトリのパスを取得します。
+        /// </summary>
+        /// <returns></returns>
+        public static String getCachedAssemblyPath() {
+            String dir = PortUtil.combinePath( Utility.getApplicationDataPath(), "cachedAssembly" );
             if ( !PortUtil.isDirectoryExists( dir ) ) {
                 PortUtil.createDirectory( dir );
             }

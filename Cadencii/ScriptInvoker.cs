@@ -51,7 +51,11 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// スクリプト設定を保存し/読み込むためのXMLシリアライザ
         /// </summary>
+#if JAVA
         public XmlSerializer Serializer;
+#else
+        public XmlStaticMemberSerializerEx Serializer;
+#endif
         /// <summary>
         /// 最後にスクリプトをコンパイルしたときの，スクリプトが記述されたファイルのタイムスタンプ
         /// </summary>

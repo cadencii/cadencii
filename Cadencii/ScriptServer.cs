@@ -13,7 +13,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
-using org.kbinani;
 using org.kbinani.apputil;
 using org.kbinani.java.io;
 using org.kbinani.java.util;
@@ -21,6 +20,9 @@ using org.kbinani.java.util;
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 
+    /// <summary>
+    /// スクリプトを管理するクラス
+    /// </summary>
     public static class ScriptServer {
         private static TreeMap<String, ScriptInvoker> scripts = new TreeMap<String, ScriptInvoker>();
 
@@ -251,5 +253,4 @@ namespace org.kbinani.cadencii {
     }
 
 }
-
 #endif

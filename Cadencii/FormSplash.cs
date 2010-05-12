@@ -37,8 +37,12 @@ namespace org.kbinani.cadencii {
 #else
     public class FormSplash : BDialog {
 #endif
-        const int ICON_WIDTH = 64;
-        const int ICON_HEIGHT = 64;
+        /// <summary>
+        /// addIconメソッドを呼び出すときに使うデリゲート
+        /// </summary>
+        /// <param name="path_image"></param>
+        /// <param name="singer_name"></param>
+        private delegate void AddIconThreadSafeDelegate( String path_image, String singer_name );
 
         boolean mouseDowned = false;
         private FlowLayoutPanel panelIcon;
@@ -58,34 +62,36 @@ namespace org.kbinani.cadencii {
 #endif
             registerEventHandlers();
             setResources();
-#if DEBUG
-            addIcon( "", "foo" );
-            addIcon( "", "bar" );
-#endif
         }
 
         #region public methods
+        /// <summary>
+        /// アイコンパレードの末尾にアイコンを追加します。デリゲートを使用し、スレッド・セーフな処理を行います。
+        /// </summary>
+        /// <param name="path_image"></param>
+        /// <param name="singer_name"></param>
+        public void addIconThreadSafe( String path_image, String singer_name ) {
+            Delegate deleg = (Delegate)new AddIconThreadSafeDelegate( addIcon );
+            if ( deleg != null ) {
+                this.Invoke( deleg, new String[] { path_image, singer_name } );
+            }
+        }
+
         /// <summary>
         /// アイコンパレードの末尾にアイコンを追加します
         /// </summary>
         /// <param name="path_image">イメージファイルへのパス</param>
         /// <param name="singer_name">歌手の名前</param>
         public void addIcon( String path_image, String singer_name ) {
-            BPictureBox p = new BPictureBox();
-            Dimension d = new Dimension( ICON_WIDTH, ICON_HEIGHT );
-            p.setSize( d );
-            p.setMaximumSize( d );
-            p.setMinimumSize( d );
-            p.setForeground( Color.darkGray );
 #if JAVA
             //fixme: FormSplash#addIcon(String,String)
 #else
-            p.BorderStyle = BorderStyle.FixedSingle;
+            IconParader p = new IconParader();
             System.IO.FileStream fs = null;
             try {
                 fs = new System.IO.FileStream( path_image, System.IO.FileMode.Open, System.IO.FileAccess.Read );
                 System.Drawing.Image img = System.Drawing.Image.FromStream( fs );
-                p.Image = img;
+                p.setImage( img );
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "FormSplash#addIcon; ex=" + ex );
             } finally {

@@ -9704,6 +9704,7 @@ namespace org.kbinani.cadencii {
             }
 #endif
             PlaySound.kill();
+            Utility.cleanupUnusedAssemblyCache();
 #if JAVA
             System.exit( 0 );
 #endif

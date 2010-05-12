@@ -27,7 +27,7 @@ namespace org.kbinani.cadencii{
 #if !JAVA
         delegate void VoidDelegate();
 #endif
-        static FormSplash splash = null;
+        public static FormSplash splash = null;
         static Thread splashThread = null;
 
         /// <summary>

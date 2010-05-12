@@ -1847,7 +1847,68 @@ namespace org.kbinani.cadencii {
 
         public static void init() {
             loadConfig();
+#if !JAVA
+            // UTAU歌手のアイコンを読み込み、起動画面に表示を要求する
+            int c = editorConfig.UtauSingers.size();
+            for ( int i = 0; i < c; i++ ) {
+                SingerConfig sc = editorConfig.UtauSingers.get( i );
+                if ( sc == null ) {
+                    continue;
+                }
+                String dir = sc.VOICEIDSTR;
+#if DEBUG
+                PortUtil.stdout.println( "AppManager#init; dir=" + dir );
+#endif
+                String character = PortUtil.combinePath( dir, "character.txt" );
+                if ( !PortUtil.isFileExists( character ) ) {
+#if DEBUG
+                    PortUtil.println( "AppManager#init; file not found: " + character );
+#endif
+                    continue;
+                }
+
+                String path_image = "";
+                BufferedReader br = null;
+                try {
+                    br = new BufferedReader( new InputStreamReader( new FileInputStream( character ), "Shift_JIS" ) );
+                    String line = "";
+                    while ( (line = br.readLine()) != null ) {
+                        if ( !line.StartsWith( "image" ) ) {
+                            continue;
+                        }
+                        String[] spl = line.Split( '=' );
+                        if ( spl.Length < 2 ) {
+                            continue;
+                        }
+                        String token = spl[0].Trim().ToLower();
+                        String img = spl[1].Trim();
+                        if ( !token.Equals( "image" ) ) {
+                            continue;
+                        }
+                        path_image = PortUtil.combinePath( dir, img );
+                        break;
+                    }
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "AppManager#init; ex=" + ex );
+                } finally {
+                    if ( br != null ) {
+                        try {
+                            br.close();
+                        } catch ( Exception ex2 ) {
+                            PortUtil.stderr.println( "AppManager#init; ex2=" + ex2 );
+                        }
+                    }
+                }
+
+#if DEBUG
+                PortUtil.println( "AppManager#init; path_image=" + path_image );
+#endif
+                Cadencii.splash.addIconThreadSafe( path_image, sc.VOICENAME );
+            }
+#endif
+
             VSTiProxy.init();
+
             PlaySound.init();
             s_locker = new Object();
             SymbolTable.loadDictionary();

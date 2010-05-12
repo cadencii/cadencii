@@ -17,17 +17,26 @@ using System.CodeDom.Compiler;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
+using org.kbinani.apputil;
 using org.kbinani.java.util;
 using org.kbinani.vsq;
 using org.kbinani.xml;
-using org.kbinani.apputil;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 
+    /// <summary>
+    /// パレットツールを一元管理するクラス
+    /// </summary>
     public static class PaletteToolServer {
+        /// <summary>
+        /// 読み込まれたパレットツールのコレクション
+        /// </summary>
         public static TreeMap<String, Object> loadedTools = new TreeMap<String, Object>();
 
+        /// <summary>
+        /// パレットツールを読み込みます
+        /// </summary>
         public static void init() {
             String path = Utility.getToolPath();
             if ( !Directory.Exists( path ) ) {
@@ -40,17 +49,23 @@ namespace org.kbinani.cadencii {
                 using ( StreamReader sr = new StreamReader( file.FullName ) ){
                     code += sr.ReadToEnd();
                 }
-                CompilerResults results = Utility.compileScript( code );
-                if ( results == null ) {
-                    continue;
-                }
+
                 Assembly asm = null;
+                Vector<String> errors = new Vector<String>();
                 try {
-                    asm = results.CompiledAssembly;
+                    asm = Utility.compileScript( code, errors );
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "PaletteToolServer#init; ex=" + ex );
+                    asm = null;
+                }
+                if ( asm == null ) {
                     continue;
                 }
+
+                if ( asm == null ) {
+                    continue;
+                }
+
                 foreach ( Type t in asm.GetTypes() ) {
                     if ( t.IsClass && t.IsPublic && !t.IsAbstract && t.GetInterface( typeof( IPaletteTool ).FullName ) != null ) {
                         try {
@@ -94,9 +109,6 @@ namespace org.kbinani.cadencii {
                             }
                             String id = Path.GetFileNameWithoutExtension( file.FullName );
                             loadedTools.put( id, instance );
-#if DEBUG
-                            AppManager.debugWriteLine( "PaletteToolServer#init; id=" + id );
-#endif
                         } catch ( Exception ex ) {
                             PortUtil.stderr.println( "PlaetteToolServer#init; ex=" + ex );
                         }
@@ -109,6 +121,14 @@ namespace org.kbinani.cadencii {
             return Messaging.getMessage( id );
         }
 
+        /// <summary>
+        /// パレットツールを実行します
+        /// </summary>
+        /// <param name="id">実行するパレットツールのID</param>
+        /// <param name="track">編集対象のトラック番号</param>
+        /// <param name="vsq_event_intrenal_ids">編集対象のInternalIDのリスト</param>
+        /// <param name="button">パレットツールが押し下げられた時のマウスボタンの種類</param>
+        /// <returns>パレットツールによって編集が加えられた場合true。そうでなければfalse(パレットツールがエラーを起こした場合も含む)。</returns>
         public static boolean invokePaletteTool( String id, int track, int[] vsq_event_intrenal_ids, MouseButtons button ) {
             if ( loadedTools.containsKey( id ) ) {
                 VsqFileEx vsq = AppManager.getVsqFile();
