@@ -587,7 +587,13 @@ namespace org.kbinani.vsq {
                 search.Equals( "megpoid" ) ||
                 search.Equals( "sfa2_miki" ) ||
                 search.Equals( "yuki" ) ||
-                search.Equals( "kiyoteru" ) )
+                search.Equals( "kiyoteru" ) ||
+                search.Equals( "miku_sweet" ) ||
+                search.Equals( "miku_dark" ) ||
+                search.Equals( "miku_soft" ) ||
+                search.Equals( "miku_light" ) ||
+                search.Equals( "miku_vivid" ) ||
+                search.Equals( "miku_solid" ) )
             {
                 return VsqVoiceLanguage.Japanese;
             } else if ( search.Equals( "sweet_ann" ) ||

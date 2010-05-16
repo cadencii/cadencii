@@ -118,8 +118,9 @@ namespace org.kbinani.cadencii {
         }
 
         private void registerEventHandlers() {
+            PortUtil.stderr.println( "foo" );
 #if JAVA
-            //TODO: fixme: FormSplash#registerEventHandlers
+            PortUtil.stdout.println( "//TODO: fixme: FormSplash#registerEventHandlers" );
 #else
             mouseDownEvent.add( new BMouseEventHandler( this, "FormSplash_MouseDown" ) );
             mouseUpEvent.add( new BMouseEventHandler( this, "FormSplash_MouseUp" ) );
