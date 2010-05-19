@@ -367,7 +367,6 @@
     <Content Include="ja.po">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="app.config" />
     <None Include="makefile" />
   </ItemGroup>
   <ItemGroup>
