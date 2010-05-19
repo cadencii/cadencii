@@ -23,26 +23,37 @@ namespace org.kbinani.apputil {
 #endif
 
     public class AuthorListEntry {
-        String m_name;
+        String m_name = "";
         int m_style;
+        String m_twtr_id = "";
 
-        public AuthorListEntry( String name, int style ) {
+        public AuthorListEntry( String name, String twitter_id, int style ) {
             m_name = name;
+            m_twtr_id = twitter_id;
             m_style = style;
+        }
+
+        public AuthorListEntry( String name, int style )
+            : this( name, "", style ) {
+        }
+
+        public AuthorListEntry( String name, String twitter_id )
+            : this( name, twitter_id, Font.PLAIN ) {
         }
 
 #if JAVA
         public AuthorListEntry( String name ){
-            this( name, Font.PLAIN );
+            this( name, "", Font.PLAIN );
 #else
         public AuthorListEntry( String name )
-            : this( name, Font.PLAIN ) {
+            : this( name, "", Font.PLAIN ) {
 #endif
         }
 
         public AuthorListEntry() {
             m_name = "";
             m_style = Font.PLAIN;
+            m_twtr_id = "";
         }
 
         public String getName() {
@@ -51,6 +62,10 @@ namespace org.kbinani.apputil {
 
         public int getStyle() {
             return m_style;
+        }
+
+        public String getTwitterID() {
+            return m_twtr_id;
         }
     }
 

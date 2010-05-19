@@ -362,6 +362,9 @@
     </Compile>
     <Compile Include="winmmhelp.cs" />
     <Compile Include="XmlStaticMemberSerializerEx.cs" />
+    <EmbeddedResource Include="VersionInfo.resx">
+      <DependentUpon>VersionInfo.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Content Include="ja.po">

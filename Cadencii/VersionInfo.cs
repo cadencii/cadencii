@@ -44,24 +44,29 @@ namespace org.kbinani.cadencii {
 #else
     public class VersionInfo : BDialog {
 #endif
-        double m_scroll_started;
-        private AuthorListEntry[] m_credit;
         const float m_speed = 35f;
-        String m_version;
-        boolean m_credit_mode = false;
-        float m_last_t = 0f;
-        float m_last_speed = 0f;
-        float m_shift = 0f;
-        int m_button_width_about = 75;
-        int m_button_width_credit = 75;
-        BufferedImage m_scroll;
         const int m_height = 380;
-        readonly Color m_background = Color.white;
+
+        private readonly Color m_background = Color.white;
+
+        private double m_scroll_started;
+        private AuthorListEntry[] m_credit;
+        private String m_version;
+        private boolean m_credit_mode = false;
+        private float m_last_t = 0f;
+        private float m_last_speed = 0f;
+        private float m_shift = 0f;
+        private int m_button_width_about = 75;
+        private int m_button_width_credit = 75;
+        private BufferedImage m_scroll = null;
+        private BufferedImage m_scroll_with_id = null;
         private String m_app_name = "";
         private Color m_app_name_color = Color.black;
         private Color m_version_color = new Color( 105, 105, 105 );
         private boolean m_shadow_enablde = false;
         private BTimer timer;
+        private BCheckBox chkTwitterID;
+        private boolean m_show_twitter_id = false;
 
         public VersionInfo( String app_name, String version ) {
 #if JAVA
@@ -70,6 +75,9 @@ namespace org.kbinani.cadencii {
             timer = new BTimer();
 #else
             InitializeComponent();
+            if ( this.components == null ) {
+                this.components = new System.ComponentModel.Container();
+            }
             timer = new BTimer( this.components );
 #endif
             m_version = version;
@@ -87,18 +95,21 @@ namespace org.kbinani.cadencii {
 #endif
 
             m_credit = new AuthorListEntry[] { };
-            btnSaveAuthorList.setVisible( false );
             lblVstLogo.setForeground( m_version_color );
             lblStraightAcknowledgement.setForeground( m_version_color );
 #if DEBUG
-            generateAuthorList();
-            btnSaveAuthorList.setVisible( true );
-#if JAVA
-            btnSaveAuthorList.clickEvent.add( new BEventHandler( this, "btnSaveAuthorList_Click" ) );
-#else
-            btnSaveAuthorList.Click += new EventHandler( btnSaveAuthorList_Click );
+            m_scroll = generateAuthorListB( false );
+            m_scroll_with_id = generateAuthorListB( true );
 #endif
-#endif
+            chkTwitterID.setVisible( false );
+        }
+
+        public boolean isShowTwitterID() {
+            return m_show_twitter_id;
+        }
+
+        public void setShowTwitterID( boolean value ) {
+            m_show_twitter_id = value;
         }
 
         public void applyLanguage() {
@@ -116,10 +127,6 @@ namespace org.kbinani.cadencii {
                 btnFlip.setText( credit );
             }
             setTitle( about );
-        }
-
-        public void setSaveAuthorListVisible( boolean value ) {
-            btnSaveAuthorList.setVisible( value );
         }
 
         public static String _( String s ) {
@@ -166,14 +173,11 @@ namespace org.kbinani.cadencii {
 
         public void setAuthorList( AuthorListEntry[] value ) {
             m_credit = value;
-#if JAVA
-            generateAuthorList();
-#else
-            generateAuthorList();
-#endif
+            m_scroll = generateAuthorListB( false );
+            m_scroll_with_id = generateAuthorListB( true );
         }
 
-        private void generateAuthorList() {
+        private BufferedImage generateAuthorListB( boolean show_twitter_id ) {
             int shadow_shift = 2;
             String font_name = "Arial";
             int font_size = 10;
@@ -182,10 +186,10 @@ namespace org.kbinani.cadencii {
             int width = getWidth();
             int height = size.height;
             //StringFormat sf = new StringFormat();
-            m_scroll = new BufferedImage( (int)width, (int)(40f + m_credit.Length * height * 1.1f), BufferedImage.TYPE_INT_BGR );
-            Graphics2D g = m_scroll.createGraphics();
+            BufferedImage ret = new BufferedImage( (int)width, (int)(40f + m_credit.Length * height * 1.1f), BufferedImage.TYPE_INT_BGR );
+            Graphics2D g = ret.createGraphics();
             g.setColor( Color.white );
-            g.fillRect( 0, 0, m_scroll.getWidth( null ), m_scroll.getHeight( null ) );
+            g.fillRect( 0, 0, ret.getWidth( null ), ret.getHeight( null ) );
             int align = 0;
             int valign = 0;
             //sf.Alignment = StringAlignment.Center;
@@ -206,11 +210,17 @@ namespace org.kbinani.cadencii {
                                    align,
                                    valign );
             for ( int i = 0; i < m_credit.Length; i++ ) {
-                Font f2 = new Font( font_name, m_credit[i].getStyle(), font_size );
+                AuthorListEntry itemi = m_credit[i];
+                Font f2 = new Font( font_name, itemi.getStyle(), font_size );
+                String id = show_twitter_id ? itemi.getTwitterID() : "";
+                if ( id == null ) {
+                    id = "";
+                }
+                String str = itemi.getName() + (id.Equals( "" ) ? "" : (" (" + id + ")"));
                 if ( m_shadow_enablde ) {
                     g.setColor( new Color( 0, 0, 0, 40 ) );
                     PortUtil.drawStringEx( g,
-                                           m_credit[i].getName(),
+                                           str,
                                            font,
                                            new Rectangle( 0 + shadow_shift, 40 + (int)(i * height * 1.1) + shadow_shift, width, height ),
                                            align,
@@ -218,12 +228,13 @@ namespace org.kbinani.cadencii {
                 }
                 g.setColor( Color.black );
                 PortUtil.drawStringEx( g,
-                                       m_credit[i].getName(),
+                                       str,
                                        f2,
                                        new Rectangle( 0, 40 + (int)(i * height * 1.1), width, height ),
                                        align,
                                        valign );
             }
+            return ret;
         }
 
         void btnSaveAuthorList_Click( Object sender, BEventArgs e ) {
@@ -257,6 +268,7 @@ namespace org.kbinani.cadencii {
                 pictVstLogo.setVisible( false );
                 lblVstLogo.setVisible( false );
                 lblStraightAcknowledgement.setVisible( false );
+                chkTwitterID.setVisible( true );
                 timer.start();
             } else {
                 timer.stop();
@@ -265,6 +277,7 @@ namespace org.kbinani.cadencii {
                 pictVstLogo.setVisible( true );
                 lblVstLogo.setVisible( true );
                 lblStraightAcknowledgement.setVisible( true );
+                chkTwitterID.setVisible( false );
             }
             invalidate();
         }
@@ -299,10 +312,11 @@ namespace org.kbinani.cadencii {
                 m_shift += (speed + m_last_speed) * dt / 2f;
                 m_last_t = times;
                 m_last_speed = speed;
-                float dx = (getWidth() - m_scroll.getWidth( null )) * 0.5f;
-                if ( m_scroll != null ) {
-                    g.drawImage( m_scroll, (int)dx, (int)(90f - m_shift), null );
-                    if ( 90f - m_shift + m_scroll.getHeight( null ) < 0 ) {
+                BufferedImage image = m_show_twitter_id ? m_scroll_with_id : m_scroll;
+                float dx = (getWidth() - image.getWidth( null )) * 0.5f;
+                if ( image != null ) {
+                    g.drawImage( image, (int)dx, (int)(90f - m_shift), null );
+                    if ( 90f - m_shift + image.getHeight( null ) < 0 ) {
                         m_shift = -m_height * 1.5f;
                     }
                 }
@@ -348,6 +362,11 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
+        public void chkTwitterID_CheckedChanged( Object sender, BEventArgs e ) {
+            m_show_twitter_id = chkTwitterID.isSelected();
+            repaint();
+        }
+
         private void registerEventHandlers() {
 #if JAVA
 #else
@@ -358,6 +377,7 @@ namespace org.kbinani.cadencii {
             this.KeyDown += new System.Windows.Forms.KeyEventHandler( this.VersionInfo_KeyDown );
             this.FontChanged += new System.EventHandler( this.VersionInfo_FontChanged );
 #endif
+            chkTwitterID.checkedChangedEvent.add( new BEventHandler( this, "chkTwitterID_CheckedChanged" ) );
         }
 
         private void setResources() {
@@ -394,13 +414,12 @@ namespace org.kbinani.cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.components = new System.ComponentModel.Container();
             this.btnFlip = new org.kbinani.windows.forms.BButton();
             this.btnOK = new org.kbinani.windows.forms.BButton();
-            this.btnSaveAuthorList = new org.kbinani.windows.forms.BButton();
             this.lblVstLogo = new org.kbinani.windows.forms.BLabel();
             this.pictVstLogo = new org.kbinani.windows.forms.BPictureBox();
             this.lblStraightAcknowledgement = new org.kbinani.windows.forms.BLabel();
+            this.chkTwitterID = new org.kbinani.windows.forms.BCheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictVstLogo)).BeginInit();
             this.SuspendLayout();
             // 
@@ -424,16 +443,6 @@ namespace org.kbinani.cadencii {
             this.btnOK.TabIndex = 1;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
-            // 
-            // btnSaveAuthorList
-            // 
-            this.btnSaveAuthorList.Location = new System.Drawing.Point( 123, 391 );
-            this.btnSaveAuthorList.Name = "btnSaveAuthorList";
-            this.btnSaveAuthorList.Size = new System.Drawing.Size( 43, 21 );
-            this.btnSaveAuthorList.TabIndex = 3;
-            this.btnSaveAuthorList.Text = "button1";
-            this.btnSaveAuthorList.UseVisualStyleBackColor = true;
-            this.btnSaveAuthorList.Visible = false;
             // 
             // lblVstLogo
             // 
@@ -464,15 +473,28 @@ namespace org.kbinani.cadencii {
             this.lblStraightAcknowledgement.Text = "Components of Cadencii, \"vConnect.exe\" and \"straightVoiceDB.exe\", are powererd by" +
                 " STRAIGHT LIBRARY.";
             // 
+            // chkTwitterID
+            // 
+            this.chkTwitterID.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkTwitterID.Appearance = System.Windows.Forms.Appearance.Button;
+            this.chkTwitterID.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.chkTwitterID.Location = new System.Drawing.Point( 148, 391 );
+            this.chkTwitterID.Name = "chkTwitterID";
+            this.chkTwitterID.Size = new System.Drawing.Size( 57, 21 );
+            this.chkTwitterID.TabIndex = 8;
+            this.chkTwitterID.Text = "Twtr ID";
+            this.chkTwitterID.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.chkTwitterID.UseVisualStyleBackColor = true;
+            // 
             // VersionInfo
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size( 300, 419 );
+            this.Controls.Add( this.chkTwitterID );
             this.Controls.Add( this.pictVstLogo );
             this.Controls.Add( this.lblStraightAcknowledgement );
             this.Controls.Add( this.lblVstLogo );
-            this.Controls.Add( this.btnSaveAuthorList );
             this.Controls.Add( this.btnOK );
             this.Controls.Add( this.btnFlip );
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -494,7 +516,6 @@ namespace org.kbinani.cadencii {
 
         private BButton btnFlip;
         private BButton btnOK;
-        private BButton btnSaveAuthorList;
         private BPictureBox pictVstLogo;
         private BLabel lblVstLogo;
         private BLabel lblStraightAcknowledgement;

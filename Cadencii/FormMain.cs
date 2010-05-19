@@ -29,7 +29,6 @@ import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*;
 #else
 //#define MONITOR_FPS
-#define AUTHOR_LIST_SAVE_BUTTON_VISIBLE
 using System;
 using System.Diagnostics;
 using System.Media;
@@ -105,31 +104,31 @@ namespace org.kbinani.cadencii {
         public readonly Color s_note_fill = new Color( 181, 220, 86 );
         private readonly AuthorListEntry[] _CREDIT = new AuthorListEntry[]{
             new AuthorListEntry( "is developped by:", 2 ),
-            new AuthorListEntry( "kbinani (@kbinani)" ),
-            new AuthorListEntry( "修羅場P (@shurabaP)" ),
-            new AuthorListEntry( "もみじぱん (@momijipan)" ),
+            new AuthorListEntry( "kbinani", "@kbinani" ),
+            new AuthorListEntry( "修羅場P", "@shurabaP" ),
+            new AuthorListEntry( "もみじぱん", "@momijipan" ),
             new AuthorListEntry(),
             new AuthorListEntry(),
             new AuthorListEntry( "Special Thanks to", 3 ),
             new AuthorListEntry(),
             new AuthorListEntry( "tool icons designer:", 2 ),
-            new AuthorListEntry( "Yusuke KAMIYAMANE (@ykamiyamane)" ),
+            new AuthorListEntry( "Yusuke KAMIYAMANE", "@ykamiyamane" ),
             new AuthorListEntry(),
             new AuthorListEntry( "developper of STRAIGHT LIBRARY:", 2 ),
             new AuthorListEntry( "Hideki KAWAHARA" ),
             new AuthorListEntry( "Tetsu TAKAHASHI" ),
             new AuthorListEntry( "Hideki BANNO" ),
-            new AuthorListEntry( "Masanori MORISE (@m_morise)" ),
+            new AuthorListEntry( "Masanori MORISE", "@m_morise" ),
             new AuthorListEntry( "(sorry, list is not complete)", 2 ),
             new AuthorListEntry(),
             new AuthorListEntry( "developper of v.Connect:", 2 ),
-            new AuthorListEntry( "修羅場P (@shurabaP)" ),
+            new AuthorListEntry( "修羅場P", "@shurabaP" ),
             new AuthorListEntry(),
             new AuthorListEntry( "developper of UTAU:", 2 ),
-            new AuthorListEntry( "飴屋/菖蒲 (@ameyaP_)" ),
+            new AuthorListEntry( "飴屋/菖蒲", "@ameyaP_" ),
             new AuthorListEntry(),
             new AuthorListEntry( "promoter:", 2 ),
-            new AuthorListEntry( "zhuo (@zhuop)" ),
+            new AuthorListEntry( "zhuo", "@zhuop" ),
             new AuthorListEntry(),
             new AuthorListEntry( "library tester:", 2 ),
             new AuthorListEntry( "evm" ),
@@ -140,7 +139,7 @@ namespace org.kbinani.cadencii {
             new AuthorListEntry( "逃亡者" ),
             new AuthorListEntry(),
             new AuthorListEntry( "translator:", 2 ),
-            new AuthorListEntry( "Eji (zh-TW translation, @ejiwarp)" ),
+            new AuthorListEntry( "Eji (zh-TW translation)", "@ejiwarp" ),
             new AuthorListEntry( "kankan (zh-TW translation)" ),
             new AuthorListEntry( "yxmline (zh-CN translation)" ),
             new AuthorListEntry(),
@@ -153,27 +152,27 @@ namespace org.kbinani.cadencii {
             new AuthorListEntry( "Amby" ),
             new AuthorListEntry( "ケロッグ" ),
             new AuthorListEntry( "beginner" ),
-            new AuthorListEntry( "b2ox (@b2ox)" ),
+            new AuthorListEntry( "b2ox", "@b2ox" ),
             new AuthorListEntry( "麻太郎" ),
-            new AuthorListEntry( "PEX (@pex_zeo)" ),
+            new AuthorListEntry( "PEX", "@pex_zeo" ),
             new AuthorListEntry( "やなぎがうら" ),
-            new AuthorListEntry( "cocoonP (@cocoonP)" ),
+            new AuthorListEntry( "cocoonP", "@cocoonP" ),
             new AuthorListEntry( "かつ" ),
             new AuthorListEntry( "ちゃそ" ),
             new AuthorListEntry( "ちょむ" ),
             new AuthorListEntry( "whimsoft" ),
-            new AuthorListEntry( "kitiketao (@okoktaokokta)" ),
+            new AuthorListEntry( "kitiketao", "@okoktaokokta" ),
             new AuthorListEntry( "カプチ２" ),
             new AuthorListEntry( "あにぃ" ),
             new AuthorListEntry( "tomo" ),
-            new AuthorListEntry( "ナウ□マP (@now_romaP)" ),
-            new AuthorListEntry( "内藤　魅亜 (@mianaito)" ),
-            new AuthorListEntry( "空茶 (@maizeziam)" ),
+            new AuthorListEntry( "ナウ□マP", "@now_romaP" ),
+            new AuthorListEntry( "内藤　魅亜", "@mianaito" ),
+            new AuthorListEntry( "空茶", "@maizeziam" ),
             new AuthorListEntry( "いぬくま" ),
-            new AuthorListEntry( "shu-t (@shu_sonicwave)" ),
-            new AuthorListEntry( "さささ (@sasasa3396)" ),
-            new AuthorListEntry( "あろも～ら (@aromora)" ),
-            new AuthorListEntry( "空耳P (@soramiku)" ),
+            new AuthorListEntry( "shu-t", "@shu_sonicwave" ),
+            new AuthorListEntry( "さささ", "@sasasa3396" ),
+            new AuthorListEntry( "あろも～ら", "@aromora" ),
+            new AuthorListEntry( "空耳P", "@soramiku" ),
             new AuthorListEntry( "all members of Cadencii bbs", 2 ),
             new AuthorListEntry(),
             new AuthorListEntry( "     ... and you !", 3 ),
@@ -13733,17 +13732,7 @@ namespace org.kbinani.cadencii {
 #endif
             if ( m_versioninfo == null ) {
                 m_versioninfo = new VersionInfo( _APP_NAME, version_str );
-                //m_versioninfo.Credit = Boare.Cadencii.Properties.Resources.author_list;
                 m_versioninfo.setAuthorList( _CREDIT );
-#if DEBUG
-#if AUTHOR_LIST_SAVE_BUTTON_VISIBLE
-                m_versioninfo.setSaveAuthorListVisible( true );
-#else
-                m_versioninfo.setSaveAuthorListVisible( false );
-#endif
-#else
-                m_versioninfo.setSaveAuthorListVisible( false );
-#endif
                 m_versioninfo.setVisible( true );
             } else {
 #if !JAVA
@@ -13751,17 +13740,7 @@ namespace org.kbinani.cadencii {
 #endif
                 {
                     m_versioninfo = new VersionInfo( _APP_NAME, version_str );
-                    //m_versioninfo.Credit = Boare.Cadencii.Properties.Resources.author_list;
                     m_versioninfo.setAuthorList( _CREDIT );
-#if DEBUG
-#if AUTHOR_LIST_SAVE_BUTTON_VISIBLE
-                    m_versioninfo.setSaveAuthorListVisible( true );
-#else
-                    m_versioninfo.setSaveAuthorListVisible( false );
-#endif
-#else
-                    m_versioninfo.setSaveAuthorListVisible( false );
-#endif
                 }
                 m_versioninfo.setVisible( true );
             }
