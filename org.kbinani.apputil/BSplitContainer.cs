@@ -441,24 +441,24 @@ namespace org.kbinani.apputil {
 
         public int SplitterDistance {
             get {
-                return m_splitter_distance;
+                return getDividerLocation();
             }
             set {
-                UpdateLayout( value, m_splitter_width, m_panel1_min, m_panel2_min, false );
-                if ( m_orientation == Orientation.Horizontal ) {
-                    m_panel2_distance = this.Width - m_splitter_distance;
-                } else {
-                    m_panel2_distance = this.Height - m_splitter_distance;
-                }
+                setDividerLocation( value );
             }
         }
 
         public int getDividerLocation() {
-            return this.SplitterDistance;
+            return m_splitter_distance;
         }
 
         public void setDividerLocation( int value ) {
-            this.SplitterDistance = value;
+            UpdateLayout( value, m_splitter_width, m_panel1_min, m_panel2_min, false );
+            if ( m_orientation == Orientation.Horizontal ) {
+                m_panel2_distance = this.Width - m_splitter_distance;
+            } else {
+                m_panel2_distance = this.Height - m_splitter_distance;
+            }
         }
 
         public Orientation Orientation {

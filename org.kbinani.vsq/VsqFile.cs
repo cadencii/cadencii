@@ -2591,12 +2591,16 @@ namespace org.kbinani.vsq {
         }
 
         public Vector<MidiEvent> generateMetaTextEvent( int track, String encoding ) {
+            return generateMetaTextEvent( track, encoding, calculatePreMeasureInClock() );
+        }
+
+        public Vector<MidiEvent> generateMetaTextEvent( int track, String encoding, int start_clock ) {
             String _NL = "" + (char)(byte)0x0a;
             Vector<MidiEvent> ret = new Vector<MidiEvent>();
             TextStream sr = null;
             try {
                 sr = new TextStream();
-                Track.get( track ).printMetaText( sr, TotalClocks + 120, calculatePreMeasureInClock() );
+                Track.get( track ).printMetaText( sr, TotalClocks + 120, start_clock );
                 sr.setPointer( -1 );
                 int line_count = -1;
                 String tmp = "";
@@ -2786,7 +2790,7 @@ namespace org.kbinani.vsq {
             fs.write( seq_name, 0, seq_name.Length );
 
             //Meta Textを準備
-            Vector<MidiEvent> meta = vsq.generateMetaTextEvent( track, encoding );
+            Vector<MidiEvent> meta = vsq.generateMetaTextEvent( track, encoding, 0 );
             long lastclock = 0;
             for ( int i = 0; i < meta.size(); i++ ) {
                 writeFlexibleLengthUnsignedLong( fs, (long)(meta.get( i ).clock - lastclock) );

@@ -183,6 +183,7 @@
     <Compile Include="Range.cs" />
     <Compile Include="RenderedStatus.cs" />
     <Compile Include="RendererKind.cs" />
+    <Compile Include="RendererKindUtil.cs" />
     <Compile Include="RenderingRunner.cs" />
     <Compile Include="NoteNumberExpressionType.cs" />
     <Compile Include="NoteNumberProperty.cs" />
@@ -322,6 +323,9 @@
     <Compile Include="TextBoxEx.cs">
       <SubType>Component</SubType>
     </Compile>
+    <EmbeddedResource Include="Preference.resx">
+      <DependentUpon>Preference.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -362,9 +366,6 @@
     </Compile>
     <Compile Include="winmmhelp.cs" />
     <Compile Include="XmlStaticMemberSerializerEx.cs" />
-    <EmbeddedResource Include="VersionInfo.resx">
-      <DependentUpon>VersionInfo.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Content Include="ja.po">

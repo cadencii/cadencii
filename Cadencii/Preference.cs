@@ -45,21 +45,24 @@ namespace org.kbinani.cadencii {
 #else
     class Preference : BDialog {
 #endif
-        Font m_base_font;
-        Font m_screen_font;
-        Font m_counter_font;
-        Vector<String> m_program_change = null;
-        private PlatformEnum m_platform = PlatformEnum.Windows;
-        private Vector<SingerConfig> m_utau_singers = new Vector<SingerConfig>();
-        private BFileChooser openUtauCore;
         private static int columnWidthHeaderProgramChange = 60;
         private static int columnWidthHeaderName = 100;
         private static int columnWidthHeaderPath = 250;
+
+        Font m_base_font;
+        Font m_screen_font;
+        Vector<String> m_program_change = null;
+        private PlatformEnum m_platform = PlatformEnum.Windows;
+        private Vector<SingerConfig> m_utau_singers = new Vector<SingerConfig>();
+        
+        private BFileChooser openUtauCore;
         private BFontChooser fontDialog;
         private BLabel lblVibratoDepth;
         private BLabel lblVibratoRate;
         private NumberTextBox txtVibratoDepth;
         private NumberTextBox txtVibratoRate;
+        private BGroupBox groupDefaultSynthesizer;
+        private BComboBox comboDefaultSynthesizer;
         private BFolderBrowser folderBrowserSingers;
 
         public Preference() {
@@ -266,11 +269,62 @@ namespace org.kbinani.cadencii {
             comboChannel.addItem( _( "Monoral" ) );
             comboChannel.addItem( _( "Stereo" ) );
 
+            // default synthesizer
+            comboDefaultSynthesizer.removeAllItems();
+#if JAVA
+            for( RendererKind p : RendererKind.values() ) {
+#else
+            foreach ( RendererKind p in Enum.GetValues( typeof( RendererKind ) ) ) {
+#endif
+                if ( p == RendererKind.NULL ) {
+                    continue;
+                }
+                comboDefaultSynthesizer.addItem( RendererKindUtil.getString( p ) );
+            }
+            comboDefaultSynthesizer.setSelectedIndex( 0 );
+
             registerEventHandlers();
             setResources();
         }
 
         #region public methods
+        /// <summary>
+        /// デフォルトの音声合成システムを設定します
+        /// </summary>
+        /// <param name="value"></param>
+        public void setDefaultSynthesizer( RendererKind value ) {
+            int c = comboDefaultSynthesizer.getItemCount();
+            int select_indx = 0;
+            for ( int i = 0; i < c; i++ ) {
+                String str = (String)comboDefaultSynthesizer.getItemAt( i );
+                RendererKind p = RendererKindUtil.fromString( str );
+                if ( p == value ) {
+                    select_indx = i;
+                    break;
+                }
+            }
+            comboDefaultSynthesizer.setSelectedIndex( select_indx );
+        }
+
+        /// <summary>
+        /// デフォルトの音声合成システムを取得します
+        /// </summary>
+        /// <returns></returns>
+        public RendererKind getDefaultSynthesizer() {
+            String selstr = (String)comboDefaultSynthesizer.getSelectedItem();
+#if JAVA
+            for( RendererKind p : RendererKind.values() ){
+#else
+            foreach ( RendererKind p in Enum.GetValues( typeof( RendererKind ) ) ) {
+#endif
+                String str = RendererKindUtil.getString( p );
+                if ( str.Equals( selstr ) ) {
+                    return p;
+                }
+            }
+            return RendererKind.VOCALOID2;
+        }
+
         /// <summary>
         /// デフォルトのビブラート振幅の設定値を取得します
         /// </summary>
@@ -1491,25 +1545,29 @@ namespace org.kbinani.cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
+            System.Windows.Forms.ListViewGroup listViewGroup20 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup21 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup22 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup23 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup24 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup25 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup26 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup27 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup28 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup29 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup30 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup31 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup32 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup33 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup34 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup35 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup36 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup37 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup38 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup39 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup40 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup41 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup42 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup43 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup44 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup45 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup46 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup47 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup48 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup49 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup50 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup51 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             this.tabPreference = new System.Windows.Forms.TabControl();
             this.tabSequence = new System.Windows.Forms.TabPage();
+            this.txtVibratoDepth = new org.kbinani.cadencii.NumberTextBox();
+            this.txtVibratoRate = new org.kbinani.cadencii.NumberTextBox();
             this.lblVibratoDepth = new org.kbinani.windows.forms.BLabel();
             this.lblVibratoRate = new org.kbinani.windows.forms.BLabel();
             this.label5 = new org.kbinani.windows.forms.BLabel();
@@ -1638,6 +1696,7 @@ namespace org.kbinani.cadencii {
             this.chkAutoBackup = new org.kbinani.windows.forms.BCheckBox();
             this.numAutoBackupInterval = new org.kbinani.cadencii.NumericUpDownEx();
             this.tabSingingSynth = new System.Windows.Forms.TabPage();
+            this.groupDefaultSynthesizer = new org.kbinani.windows.forms.BGroupBox();
             this.groupSynthesizerDll = new org.kbinani.windows.forms.BGroupBox();
             this.chkLoadAquesTone = new org.kbinani.windows.forms.BCheckBox();
             this.chkLoadSecondaryVOCALOID1 = new org.kbinani.windows.forms.BCheckBox();
@@ -1654,8 +1713,7 @@ namespace org.kbinani.cadencii {
             this.lblVOCALOID1 = new org.kbinani.windows.forms.BLabel();
             this.btnCancel = new org.kbinani.windows.forms.BButton();
             this.btnOK = new org.kbinani.windows.forms.BButton();
-            this.txtVibratoRate = new org.kbinani.cadencii.NumberTextBox();
-            this.txtVibratoDepth = new org.kbinani.cadencii.NumberTextBox();
+            this.comboDefaultSynthesizer = new org.kbinani.windows.forms.BComboBox();
             this.tabPreference.SuspendLayout();
             this.tabSequence.SuspendLayout();
             this.groupAutoVibratoConfig.SuspendLayout();
@@ -1681,6 +1739,7 @@ namespace org.kbinani.cadencii {
             this.tabFile.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numAutoBackupInterval)).BeginInit();
             this.tabSingingSynth.SuspendLayout();
+            this.groupDefaultSynthesizer.SuspendLayout();
             this.groupSynthesizerDll.SuspendLayout();
             this.groupVsti.SuspendLayout();
             this.SuspendLayout();
@@ -1736,6 +1795,26 @@ namespace org.kbinani.cadencii {
             this.tabSequence.TabIndex = 0;
             this.tabSequence.Text = "Sequence";
             this.tabSequence.UseVisualStyleBackColor = true;
+            // 
+            // txtVibratoDepth
+            // 
+            this.txtVibratoDepth.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))) );
+            this.txtVibratoDepth.ForeColor = System.Drawing.Color.White;
+            this.txtVibratoDepth.Location = new System.Drawing.Point( 214, 205 );
+            this.txtVibratoDepth.Name = "txtVibratoDepth";
+            this.txtVibratoDepth.Size = new System.Drawing.Size( 100, 19 );
+            this.txtVibratoDepth.TabIndex = 6;
+            this.txtVibratoDepth.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
+            // 
+            // txtVibratoRate
+            // 
+            this.txtVibratoRate.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))) );
+            this.txtVibratoRate.ForeColor = System.Drawing.Color.White;
+            this.txtVibratoRate.Location = new System.Drawing.Point( 214, 176 );
+            this.txtVibratoRate.Name = "txtVibratoRate";
+            this.txtVibratoRate.Size = new System.Drawing.Size( 100, 19 );
+            this.txtVibratoRate.TabIndex = 5;
+            this.txtVibratoRate.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // lblVibratoDepth
             // 
@@ -3098,57 +3177,63 @@ namespace org.kbinani.cadencii {
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.listSingers.FullRowSelect = true;
+            listViewGroup20.Header = "ListViewGroup";
+            listViewGroup21.Header = "ListViewGroup";
+            listViewGroup21.Name = null;
+            listViewGroup22.Header = "ListViewGroup";
+            listViewGroup22.Name = null;
+            listViewGroup23.Header = "ListViewGroup";
+            listViewGroup23.Name = null;
+            listViewGroup24.Header = "ListViewGroup";
+            listViewGroup24.Name = null;
+            listViewGroup25.Header = "ListViewGroup";
+            listViewGroup25.Name = null;
+            listViewGroup26.Header = "ListViewGroup";
+            listViewGroup26.Name = null;
+            listViewGroup27.Header = "ListViewGroup";
+            listViewGroup27.Name = null;
+            listViewGroup28.Header = "ListViewGroup";
+            listViewGroup28.Name = null;
+            listViewGroup29.Header = "ListViewGroup";
+            listViewGroup29.Name = null;
+            listViewGroup30.Header = "ListViewGroup";
+            listViewGroup30.Name = null;
+            listViewGroup31.Header = "ListViewGroup";
+            listViewGroup31.Name = null;
+            listViewGroup32.Header = "ListViewGroup";
+            listViewGroup32.Name = null;
+            listViewGroup33.Header = "ListViewGroup";
+            listViewGroup33.Name = null;
+            listViewGroup34.Header = "ListViewGroup";
+            listViewGroup34.Name = null;
             listViewGroup35.Header = "ListViewGroup";
+            listViewGroup35.Name = null;
             listViewGroup36.Header = "ListViewGroup";
             listViewGroup36.Name = null;
             listViewGroup37.Header = "ListViewGroup";
             listViewGroup37.Name = null;
             listViewGroup38.Header = "ListViewGroup";
             listViewGroup38.Name = null;
-            listViewGroup39.Header = "ListViewGroup";
-            listViewGroup39.Name = null;
-            listViewGroup40.Header = "ListViewGroup";
-            listViewGroup40.Name = null;
-            listViewGroup41.Header = "ListViewGroup";
-            listViewGroup41.Name = null;
-            listViewGroup42.Header = "ListViewGroup";
-            listViewGroup42.Name = null;
-            listViewGroup43.Header = "ListViewGroup";
-            listViewGroup43.Name = null;
-            listViewGroup44.Header = "ListViewGroup";
-            listViewGroup44.Name = null;
-            listViewGroup45.Header = "ListViewGroup";
-            listViewGroup45.Name = null;
-            listViewGroup46.Header = "ListViewGroup";
-            listViewGroup46.Name = null;
-            listViewGroup47.Header = "ListViewGroup";
-            listViewGroup47.Name = null;
-            listViewGroup48.Header = "ListViewGroup";
-            listViewGroup48.Name = null;
-            listViewGroup49.Header = "ListViewGroup";
-            listViewGroup49.Name = null;
-            listViewGroup50.Header = "ListViewGroup";
-            listViewGroup50.Name = null;
-            listViewGroup51.Header = "ListViewGroup";
-            listViewGroup51.Name = null;
             this.listSingers.Groups.AddRange( new System.Windows.Forms.ListViewGroup[] {
+            listViewGroup20,
+            listViewGroup21,
+            listViewGroup22,
+            listViewGroup23,
+            listViewGroup24,
+            listViewGroup25,
+            listViewGroup26,
+            listViewGroup27,
+            listViewGroup28,
+            listViewGroup29,
+            listViewGroup30,
+            listViewGroup31,
+            listViewGroup32,
+            listViewGroup33,
+            listViewGroup34,
             listViewGroup35,
             listViewGroup36,
             listViewGroup37,
-            listViewGroup38,
-            listViewGroup39,
-            listViewGroup40,
-            listViewGroup41,
-            listViewGroup42,
-            listViewGroup43,
-            listViewGroup44,
-            listViewGroup45,
-            listViewGroup46,
-            listViewGroup47,
-            listViewGroup48,
-            listViewGroup49,
-            listViewGroup50,
-            listViewGroup51} );
+            listViewGroup38} );
             this.listSingers.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.listSingers.Location = new System.Drawing.Point( 17, 23 );
             this.listSingers.MultiSelect = false;
@@ -3231,6 +3316,7 @@ namespace org.kbinani.cadencii {
             // 
             // tabSingingSynth
             // 
+            this.tabSingingSynth.Controls.Add( this.groupDefaultSynthesizer );
             this.tabSingingSynth.Controls.Add( this.groupSynthesizerDll );
             this.tabSingingSynth.Controls.Add( this.groupVsti );
             this.tabSingingSynth.Location = new System.Drawing.Point( 4, 38 );
@@ -3240,6 +3326,16 @@ namespace org.kbinani.cadencii {
             this.tabSingingSynth.TabIndex = 8;
             this.tabSingingSynth.Text = "Synthesizer";
             this.tabSingingSynth.UseVisualStyleBackColor = true;
+            // 
+            // groupDefaultSynthesizer
+            // 
+            this.groupDefaultSynthesizer.Controls.Add( this.comboDefaultSynthesizer );
+            this.groupDefaultSynthesizer.Location = new System.Drawing.Point( 23, 275 );
+            this.groupDefaultSynthesizer.Name = "groupDefaultSynthesizer";
+            this.groupDefaultSynthesizer.Size = new System.Drawing.Size( 407, 71 );
+            this.groupDefaultSynthesizer.TabIndex = 111;
+            this.groupDefaultSynthesizer.TabStop = false;
+            this.groupDefaultSynthesizer.Text = "Default Synthesizer";
             // 
             // groupSynthesizerDll
             // 
@@ -3402,25 +3498,30 @@ namespace org.kbinani.cadencii {
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             // 
-            // txtVibratoRate
+            // comboDefaultSynthesizer
             // 
-            this.txtVibratoRate.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))) );
-            this.txtVibratoRate.ForeColor = System.Drawing.Color.White;
-            this.txtVibratoRate.Location = new System.Drawing.Point( 214, 176 );
-            this.txtVibratoRate.Name = "txtVibratoRate";
-            this.txtVibratoRate.Size = new System.Drawing.Size( 100, 19 );
-            this.txtVibratoRate.TabIndex = 5;
-            this.txtVibratoRate.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
-            // 
-            // txtVibratoDepth
-            // 
-            this.txtVibratoDepth.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))) );
-            this.txtVibratoDepth.ForeColor = System.Drawing.Color.White;
-            this.txtVibratoDepth.Location = new System.Drawing.Point( 214, 205 );
-            this.txtVibratoDepth.Name = "txtVibratoDepth";
-            this.txtVibratoDepth.Size = new System.Drawing.Size( 100, 19 );
-            this.txtVibratoDepth.TabIndex = 6;
-            this.txtVibratoDepth.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
+            this.comboDefaultSynthesizer.FormattingEnabled = true;
+            this.comboDefaultSynthesizer.Items.AddRange( new object[] {
+            "[Normal] Type 1",
+            "[Normal] Type 2",
+            "[Normal] Type 3",
+            "[Normal] Type 4",
+            "[Extreme] Type 1",
+            "[Extreme] Type 2",
+            "[Extreme] Type 3",
+            "[Extreme] Type 4",
+            "[Fast] Type 1",
+            "[Fast] Type 2",
+            "[Fast] Type 3",
+            "[Fast] Type 4",
+            "[Slight] Type 1",
+            "[Slight] Type 2",
+            "[Slight] Type 3",
+            "[Slight] Type 4"} );
+            this.comboDefaultSynthesizer.Location = new System.Drawing.Point( 18, 29 );
+            this.comboDefaultSynthesizer.Name = "comboDefaultSynthesizer";
+            this.comboDefaultSynthesizer.Size = new System.Drawing.Size( 182, 20 );
+            this.comboDefaultSynthesizer.TabIndex = 11;
             // 
             // Preference
             // 
@@ -3477,6 +3578,7 @@ namespace org.kbinani.cadencii {
             this.tabFile.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numAutoBackupInterval)).EndInit();
             this.tabSingingSynth.ResumeLayout( false );
+            this.groupDefaultSynthesizer.ResumeLayout( false );
             this.groupSynthesizerDll.ResumeLayout( false );
             this.groupSynthesizerDll.PerformLayout();
             this.groupVsti.ResumeLayout( false );

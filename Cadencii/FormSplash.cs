@@ -87,21 +87,26 @@ namespace org.kbinani.cadencii {
             //fixme: FormSplash#addIcon(String,String)
 #else
             IconParader p = new IconParader();
-            System.IO.FileStream fs = null;
-            try {
-                fs = new System.IO.FileStream( path_image, System.IO.FileMode.Open, System.IO.FileAccess.Read );
-                System.Drawing.Image img = System.Drawing.Image.FromStream( fs );
-                p.setImage( img );
-            } catch ( Exception ex ) {
-                PortUtil.stderr.println( "FormSplash#addIcon; ex=" + ex );
-            } finally {
-                if ( fs != null ) {
-                    try {
-                        fs.Close();
-                    } catch ( Exception ex2 ) {
-                        PortUtil.stderr.println( "FormSplash#addICon; ex2=" + ex2 );
+
+            if ( PortUtil.isFileExists( path_image ) ) {
+                System.IO.FileStream fs = null;
+                try {
+                    fs = new System.IO.FileStream( path_image, System.IO.FileMode.Open, System.IO.FileAccess.Read );
+                    System.Drawing.Image img = System.Drawing.Image.FromStream( fs );
+                    p.setImage( img );
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "FormSplash#addIcon; ex=" + ex );
+                } finally {
+                    if ( fs != null ) {
+                        try {
+                            fs.Close();
+                        } catch ( Exception ex2 ) {
+                            PortUtil.stderr.println( "FormSplash#addICon; ex2=" + ex2 );
+                        }
                     }
                 }
+            } else {
+                p.setImage( null );
             }
 
             panelIcon.BringToFront();

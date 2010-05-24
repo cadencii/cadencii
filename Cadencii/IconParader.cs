@@ -42,33 +42,32 @@ namespace org.kbinani.cadencii {
         }
 
         public void setImage( Image img ) {
-            if( img == null ){
-                return;
-            }
             Bitmap bmp = new Bitmap( ICON_WIDTH, ICON_HEIGHT );
             using ( Graphics g = Graphics.FromImage( bmp ) ) {
-                double a = img.Height / (double)img.Width;
-                double aspecto = ICON_HEIGHT / (double)ICON_WIDTH;
-
-                int x = 0;
-                int y = 0;
-                int w = ICON_WIDTH;
-                int h = ICON_HEIGHT;
-                if ( a >= aspecto ) {
-                    // アイコンより縦長
-                    double act_width = ICON_WIDTH / a;
-                    x = (int)((ICON_WIDTH - act_width) / 2.0);
-                    w = (int)act_width;
-                } else {
-                    // アイコンより横長
-                    double act_height = ICON_HEIGHT * a;
-                    y = (int)((ICON_HEIGHT - act_height) / 2.0);
-                    h = (int)act_height;
-                }
-                Rectangle destRect = new Rectangle( x, y, w, h );
-                Rectangle srcRect = new Rectangle( 0, 0, img.Width, img.Height );
                 g.SmoothingMode = SmoothingMode.HighQuality;
-                g.DrawImage( img, destRect, srcRect, GraphicsUnit.Pixel );
+                if ( img != null ) {
+                    double a = img.Height / (double)img.Width;
+                    double aspecto = ICON_HEIGHT / (double)ICON_WIDTH;
+
+                    int x = 0;
+                    int y = 0;
+                    int w = ICON_WIDTH;
+                    int h = ICON_HEIGHT;
+                    if ( a >= aspecto ) {
+                        // アイコンより縦長
+                        double act_width = ICON_WIDTH / a;
+                        x = (int)((ICON_WIDTH - act_width) / 2.0);
+                        w = (int)act_width;
+                    } else {
+                        // アイコンより横長
+                        double act_height = ICON_HEIGHT * a;
+                        y = (int)((ICON_HEIGHT - act_height) / 2.0);
+                        h = (int)act_height;
+                    }
+                    Rectangle destRect = new Rectangle( x, y, w, h );
+                    Rectangle srcRect = new Rectangle( 0, 0, img.Width, img.Height );
+                    g.DrawImage( img, destRect, srcRect, GraphicsUnit.Pixel );
+                }
                 g.FillRegion( getBrush(), getInvRegion() );
                 g.DrawPath( Pens.DarkGray, getGraphicsPath() );
             }

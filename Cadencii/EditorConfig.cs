@@ -366,6 +366,10 @@ namespace org.kbinani.cadencii {
         /// WAVE再生時のバッファーサイズ。既定では1000ms。
         /// </summary>
         public int BufferSizeMilliSeconds = 1000;
+        /// <summary>
+        /// トラックを新規作成するときのデフォルトの音声合成システム
+        /// </summary>
+        public RendererKind DefaultSynthesizer = RendererKind.VOCALOID2;
 
         #region Static Fields
         public static readonly Vector<ValuePairOfStringArrayOfKeys> DEFAULT_SHORTCUT_KEYS = new Vector<ValuePairOfStringArrayOfKeys>( Arrays.asList(

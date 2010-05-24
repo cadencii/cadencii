@@ -489,6 +489,67 @@ namespace org.kbinani.cadencii {
         private const String TEMPDIR_NAME = "cadencii";
 
         /// <summary>
+        /// 指定した音声合成システムを識別する文字列(DSB301, DSB202等)を取得します
+        /// </summary>
+        /// <param name="kind">音声合成システムの種類</param>
+        /// <returns>音声合成システムを識別する文字列(VOCALOID2=DSB301, VOCALOID1[1.0,1.1]=DSB202, AquesTone=AQT000, Straight x UTAU=STR000, UTAU=UTAU000)</returns>
+        public static String getVersionStringFromRendererKind( RendererKind kind ) {
+            if ( kind == RendererKind.AQUES_TONE ) {
+                return "AQT000";
+            } else if ( kind == RendererKind.STRAIGHT_UTAU ) {
+                return "STR000";
+            } else if ( kind == RendererKind.UTAU ) {
+                return "UTU000";
+            } else if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
+                return "DSB202";
+            } else if ( kind == RendererKind.VOCALOID2 ) {
+                return "DSB301";
+            }
+            return "";
+        }
+
+        /// <summary>
+        /// 指定した音声合成システムが使用する歌手のリストを取得します
+        /// </summary>
+        /// <param name="kind">音声合成システムの種類</param>
+        /// <returns>歌手のリスト</returns>
+        public static Vector<VsqID> getSingerListFromRendererKind( RendererKind kind ) {
+            Vector<VsqID> singers = null;
+            if ( kind == RendererKind.AQUES_TONE ) {
+                singers = new Vector<VsqID>();
+#if ENABLE_AQUESTONE
+                SingerConfig[] list = AquesToneDriver.SINGERS;
+                for ( int i = 0; i < list.Length; i++ ) {
+                    SingerConfig sc = list[i];
+                    singers.add( getSingerIDAquesTone( sc.Program ) );
+                }
+#endif
+            } else if ( kind == RendererKind.STRAIGHT_UTAU || kind == RendererKind.UTAU ) {
+                Vector<SingerConfig> list = editorConfig.UtauSingers;
+                singers = new Vector<VsqID>();
+                for ( Iterator<SingerConfig> itr = list.iterator(); itr.hasNext(); ) {
+                    SingerConfig sc = itr.next();
+                    singers.add( getSingerIDUtau( sc.Language, sc.Program ) );
+                }
+            } else if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
+                SingerConfig[] configs = VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID1 );
+                singers = new Vector<VsqID>();
+                for ( int i = 0; i < configs.Length; i++ ) {
+                    SingerConfig sc = configs[i];
+                    singers.add( VocaloSysUtil.getSingerID( sc.Language, sc.Program, SynthesizerType.VOCALOID1 ) );
+                }
+            } else if ( kind == RendererKind.VOCALOID2 ) {
+                singers = new Vector<VsqID>();
+                SingerConfig[] configs = VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID2 );
+                for ( int i = 0; i < configs.Length; i++ ) {
+                    SingerConfig sc = configs[i];
+                    singers.add( VocaloSysUtil.getSingerID( sc.Language, sc.Program, SynthesizerType.VOCALOID2 ) );
+                }
+            }
+            return singers;
+        }
+
+        /// <summary>
         /// 指定したVSQファイルの，指定したトラック上の，指定したゲートタイム位置に音符イベントがあると仮定して，
         /// 指定した音符イベントの歌詞を指定した値に変更します．Consonant Adjustment，VoiceOverlap，およびPreUtteranceが同時に自動で変更されます．
         /// </summary>
@@ -1908,6 +1969,45 @@ namespace org.kbinani.cadencii {
 #endif
 
             VSTiProxy.init();
+#if !JAVA
+            // アイコンパレード, VOCALOID1
+            SingerConfigSys singer_config_sys1 = VocaloSysUtil.getSingerConfigSys( SynthesizerType.VOCALOID1 );
+            if ( singer_config_sys1 != null ) {
+                foreach ( SingerConfig sc in singer_config_sys1.getInstalledSingers() ) {
+                    if ( sc == null ) {
+                        continue;
+                    }
+                    String name = sc.VOICENAME.ToLower();
+                    String path_image = PortUtil.combinePath(
+                                            PortUtil.combinePath(
+                                                PortUtil.getApplicationStartupPath(), "resources" ),
+                                            name + ".png" );
+#if DEBUG
+                    PortUtil.println( "AppManager#init; path_image=" + path_image );
+#endif
+                    Cadencii.splash.addIconThreadSafe( path_image, sc.VOICENAME );
+                }
+            }
+
+            // アイコンパレード、VOCALOID2
+            SingerConfigSys singer_config_sys2 = VocaloSysUtil.getSingerConfigSys( SynthesizerType.VOCALOID2 );
+            if ( singer_config_sys2 != null ) {
+                foreach ( SingerConfig sc in singer_config_sys2.getInstalledSingers() ) {
+                    if ( sc == null ) {
+                        continue;
+                    }
+                    String name = sc.VOICENAME.ToLower();
+                    String path_image = PortUtil.combinePath(
+                                            PortUtil.combinePath(
+                                                PortUtil.getApplicationStartupPath(), "resources" ),
+                                            name + ".png" );
+#if DEBUG
+                    PortUtil.println( "AppManager#init; path_image=" + path_image );
+#endif
+                    Cadencii.splash.addIconThreadSafe( path_image, sc.VOICENAME );
+                }
+            }
+#endif
 
             PlaySound.init();
             s_locker = new Object();
@@ -2242,6 +2342,19 @@ namespace org.kbinani.cadencii {
             }
             if ( ret == null ) {
                 ret = new EditorConfig();
+#if !JAVA
+                String name = Application.CurrentCulture.Name;
+                String lang = "";
+                if ( name.Equals( "ja" ) ||
+                     name.StartsWith( "ja-" ) ) {
+                    lang = "ja";
+                } else {
+                    lang = name;
+                }
+                ret.Language = lang;
+                Messaging.setLanguage( lang );
+                PortUtil.println( "AppManager#loadConfig; Application.CurrentCulture.Name=" + Application.CurrentCulture.Name );
+#endif
             }
             editorConfig = ret;
             int count = SymbolTable.getCount();
