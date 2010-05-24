@@ -2410,16 +2410,24 @@ namespace org.kbinani.cadencii {
             ByRef<String> phonetic_symbol = new ByRef<String>( "" );
             phrase = AppManager.inputTextBox.getText();
             if ( !phonetic_symbol_edit_mode ) {
+                // 歌詞を編集するモードで、
                 if ( AppManager.editorConfig.SelfDeRomanization ) {
+                    // かつローマ字の入力を自動でひらがなに展開する設定だった場合。
+                    // ローマ字をひらがなに展開
                     phrase = KanaDeRomanization.Attach( phrase );
                 }
             }
+
+            // 発音記号または歌詞が変更された場合の処理
             if ( (phonetic_symbol_edit_mode && AppManager.inputTextBox.getText() != original_symbol) ||
                  (!phonetic_symbol_edit_mode && phrase != original_phrase) ) {
                 TagLyricTextBox kvp = (TagLyricTextBox)AppManager.inputTextBox.getTag();
                 if ( phonetic_symbol_edit_mode ) {
+                    // 発音記号を編集するモード
                     phrase = kvp.getBufferText();
                     phonetic_symbol.value = AppManager.inputTextBox.getText();
+
+                    // 入力された発音記号のうち、有効なものだけをピックアップ
                     String[] spl = PortUtil.splitString( phonetic_symbol.value, new char[] { ' ' }, true );
                     Vector<String> list = new Vector<String>();
                     for ( int i = 0; i < spl.Length; i++ ) {
@@ -2428,6 +2436,8 @@ namespace org.kbinani.cadencii {
                             list.add( s );
                         }
                     }
+
+                    // ピックアップした発音記号をスペース区切りで結合
                     phonetic_symbol.value = "";
                     boolean first = true;
                     for ( Iterator<String> itr = list.iterator(); itr.hasNext(); ) {
@@ -2439,17 +2449,23 @@ namespace org.kbinani.cadencii {
                             phonetic_symbol.value += " " + s;
                         }
                     }
+
+                    // 発音記号を編集すると、自動で「発音記号をプロテクトする」モードになるよ
                     symbol_protected = true;
                 } else {
+                    // 歌詞を編集するモード
                     if ( !symbol_protected ) {
+                        // 発音記号をプロテクトしない場合、歌詞から発音記号を引当てる
                         SymbolTable.attatch( phrase, phonetic_symbol );
                     } else {
+                        // 発音記号をプロテクトする場合、発音記号は最初のやつを使う
                         phonetic_symbol.value = original_symbol;
                     }
                 }
 #if DEBUG
                 AppManager.debugWriteLine( "    phrase,phonetic_symbol=" + phrase + "," + phonetic_symbol );
 #endif
+
                 VsqEvent item = (VsqEvent)last_selected_event.original.clone();
                 if ( phonetic_symbol_edit_mode ) {
                     item.ID.LyricHandle.L0.setPhoneticSymbol( phonetic_symbol.value );
@@ -2481,6 +2497,9 @@ namespace org.kbinani.cadencii {
             }
         }
 
+        /// <summary>
+        /// 識別済みのゲームコントローラを取り外します
+        /// </summary>
         public void removeGameControler() {
 #if !JAVA
             if ( m_timer != null ) {
@@ -2493,6 +2512,9 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
+        /// <summary>
+        /// PCに接続されているゲームコントローラを識別・接続します
+        /// </summary>
         public void loadGameControler() {
 #if !JAVA
             try {
@@ -2526,6 +2548,9 @@ namespace org.kbinani.cadencii {
         }
 
 #if ENABLE_MIDI
+        /// <summary>
+        /// MIDI入力句デバイスを再読込みします
+        /// </summary>
         public void reloadMidiIn() {
             if ( m_midi_in != null ) {
                 m_midi_in.MidiReceived -= m_midi_in_MidiReceived;
@@ -6670,26 +6695,28 @@ namespace org.kbinani.cadencii {
 #if JAVA
             int keycode = e.getKeyCode();
             int modifiers = e.getModifiers();
-            if ( keycode == KeyEvent.VK_TAB || keycode == KeyEvent.VK_ENTER )
+            if ( keycode == KeyEvent.VK_TAB || 
+                 keycode == KeyEvent.VK_ENTER ) {
 #else
-            if ( e.KeyCode == System.Windows.Forms.Keys.Tab || e.KeyCode == System.Windows.Forms.Keys.Return )
+            if ( e.KeyCode == System.Windows.Forms.Keys.Tab || 
+                 e.KeyCode == System.Windows.Forms.Keys.Return ) {
 #endif
-            {
                 executeLyricChangeCommand();
                 int selected = AppManager.getSelected();
                 int index = -1;
                 VsqTrack track = AppManager.getVsqFile().Track.get( selected );
                 track.sortEvent();
 #if JAVA
-                if( keycode == KeyEvent.VK_TAB )
+                if( keycode == KeyEvent.VK_TAB ) {
 #else
-                if ( e.KeyCode == System.Windows.Forms.Keys.Tab ) 
+                if ( e.KeyCode == System.Windows.Forms.Keys.Tab ) {
 #endif
-                {
                     int clock = 0;
-                    for ( int i = 0; i < track.getEventCount(); i++ ) {
+                    int search_index = AppManager.getLastSelectedEvent().original.InternalID;
+                    int c = track.getEventCount();
+                    for ( int i = 0; i < c; i++ ) {
                         VsqEvent item = track.getEvent( i );
-                        if ( item.InternalID == AppManager.getLastSelectedEvent().original.InternalID ) {
+                        if ( item.InternalID == search_index ) {
                             index = i;
                             clock = item.Clock;
                             break;
@@ -6714,7 +6741,8 @@ namespace org.kbinani.cadencii {
                     } else {
                         // 1個後の音符イベントを検索
                         int tindex = -1;
-                        for ( int i = 0; i < track.getEventCount(); i++ ) {
+                        int c2 = track.getEventCount();
+                        for ( int i = 0; i < c2; i++ ) {
                             VsqEvent ve = track.getEvent( i );
                             if ( ve.ID.type == VsqIDType.Anote && i != index && ve.Clock >= clock ) {
                                 tindex = i;
@@ -6730,11 +6758,13 @@ namespace org.kbinani.cadencii {
                     AppManager.addSelectedEvent( item.InternalID );
                     int x = AppManager.xCoordFromClocks( item.Clock );
                     int y = yCoordFromNote( item.ID.Note );
-                    boolean phonetic_symbol_edit_mode = ((TagLyricTextBox)AppManager.inputTextBox.getTag()).isPhoneticSymbolEditMode();
-                    showInputTextBox( item.ID.LyricHandle.L0.Phrase,
-                                            item.ID.LyricHandle.L0.getPhoneticSymbol(),
-                                            new Point( x, y ),
-                                            phonetic_symbol_edit_mode );
+                    boolean phonetic_symbol_edit_mode = 
+                        ((TagLyricTextBox)AppManager.inputTextBox.getTag()).isPhoneticSymbolEditMode();
+                    showInputTextBox( 
+                        item.ID.LyricHandle.L0.Phrase,
+                        item.ID.LyricHandle.L0.getPhoneticSymbol(),
+                        new Point( x, y ),
+                        phonetic_symbol_edit_mode );
                     int clWidth = (int)(AppManager.inputTextBox.getWidth() / AppManager.scaleX);
 
                     // 画面上にAppManager.inputTextBoxが見えるように，移動
