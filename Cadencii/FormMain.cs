@@ -11106,7 +11106,7 @@ namespace org.kbinani.cadencii {
                             // vocaloid metatext
                             Vector<MidiEvent> meta;
                             if ( m_midi_imexport_dialog.isVocaloidMetatext() && i > 0 ) {
-                                meta = vsq.generateMetaTextEvent( i, "Shift_JIS", 0 );
+                                meta = vsq.generateMetaTextEvent( i, "Shift_JIS" );
                             } else {
                                 meta = new Vector<MidiEvent>();
                             }

@@ -2791,7 +2791,7 @@ namespace org.kbinani.vsq {
             fs.write( seq_name, 0, seq_name.Length );
 
             //Meta Textを準備
-            Vector<MidiEvent> meta = vsq.generateMetaTextEvent( track, encoding, 0 );
+            Vector<MidiEvent> meta = vsq.generateMetaTextEvent( track, encoding );
             long lastclock = 0;
             for ( int i = 0; i < meta.size(); i++ ) {
                 writeFlexibleLengthUnsignedLong( fs, (long)(meta.get( i ).clock - lastclock) );

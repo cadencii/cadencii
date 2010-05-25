@@ -478,14 +478,28 @@ namespace org.kbinani.vsq {
 #if JAVA
             throws IOException
 #endif
- {
+        {
             writer.writeLine( header );
+            int lastvalue = defaultValue;
+            boolean value_at_start_written = false;
             for ( int i = 0; i < length; i++ ) {
                 int key = clocks[i];
-                if ( start_clock <= key ) {
+                if ( start_clock == key ) {
+                    writer.writeLine( key + "=" + items[i].value );
+                    value_at_start_written = true;
+                } else if ( start_clock < key ) {
+                    if ( !value_at_start_written && lastvalue != defaultValue ) {
+                        writer.writeLine( start_clock + "=" + lastvalue );
+                        value_at_start_written = true;
+                    }
                     int val = items[i].value;
                     writer.writeLine( key + "=" + val );
+                } else {
+                    lastvalue = items[i].value;
                 }
+            }
+            if ( !value_at_start_written && lastvalue != defaultValue ) {
+                writer.writeLine( start_clock + "=" + lastvalue );
             }
         }
 

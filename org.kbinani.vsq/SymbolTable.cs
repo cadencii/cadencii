@@ -243,6 +243,7 @@ namespace org.kbinani.vsq {
             }
             ret.m_name = m_name;
             ret.m_enabled = m_enabled;
+            ret.m_max_divisions = m_max_divisions;
             return ret;
         }
 
