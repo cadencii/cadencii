@@ -166,6 +166,9 @@
     <Compile Include="IconParader.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="LyricTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="MemoryManager.cs" />
     <Compile Include="MuteChangedEventHandler.cs" />
     <Compile Include="NumberTextBox.cs">
@@ -319,10 +322,6 @@
     <Compile Include="SelectedRegion.cs" />
     <Compile Include="SelectedTempoEntry.cs" />
     <Compile Include="SelectedTimesigEntry.cs" />
-    <Compile Include="TagLyricTextBox.cs" />
-    <Compile Include="TextBoxEx.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

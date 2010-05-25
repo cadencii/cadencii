@@ -18,15 +18,24 @@ import java.io.*;
 #else
 using System;
 
-namespace org.kbinani.vsq{
+namespace org.kbinani.vsq {
 #endif
 
+    /// <summary>
+    /// SymbolTableの要素を表すクラス。
+    /// </summary>
 #if JAVA
     public class SymbolTableEntry implements Cloneable {
 #else
     public class SymbolTableEntry : ICloneable {
 #endif
+        /// <summary>
+        /// 単語（英語の場合、分節位置にハイフンが入る）
+        /// </summary>
         public String Word = "";
+        /// <summary>
+        /// 発音記号列
+        /// </summary>
         public String Symbol = "";
 
         public SymbolTableEntry( String word, String symbol ) {
@@ -40,12 +49,20 @@ namespace org.kbinani.vsq{
             }
         }
 
+        /// <summary>
+        /// このオブジェクトのディープ・コピーを取得します
+        /// </summary>
+        /// <returns></returns>
         public Object clone() {
             return new SymbolTableEntry( Word, Symbol );
         }
 
+        /// <summary>
+        /// このオブジェクトのディープ・コピーを取得します
+        /// </summary>
+        /// <returns></returns>
 #if !JAVA
-        public Object Clone(){
+        public Object Clone() {
             return clone();
         }
 #endif

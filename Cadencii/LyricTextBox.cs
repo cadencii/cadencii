@@ -14,6 +14,7 @@
 #if JAVA
 //INCLUDE ../BuildJavaUI/src/org/kbinani/Cadencii/TextBoxEx.java
 #else
+using System;
 using System.Windows.Forms;
 using org.kbinani.windows.forms;
 using org.kbinani;
@@ -21,8 +22,30 @@ using org.kbinani;
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 
+    /// <summary>
+    /// 歌詞入力用のテキストボックス
+    /// </summary>
     public class TextBoxEx : BTextBox {
         private boolean compositioning = false;
+        private String m_buf_text;
+        private boolean m_phonetic_symbol_edit_mode;
+
+        public boolean isPhoneticSymbolEditMode() {
+            return m_phonetic_symbol_edit_mode;
+        }
+
+        public void setPhoneticSymbolEditMode( boolean value ) {
+            m_phonetic_symbol_edit_mode = value;
+        }
+
+        public String getBufferText() {
+            return m_buf_text;
+        }
+
+        public void setBufferText( String value ) {
+            m_buf_text = value;
+        }
+
         protected override boolean IsInputKey( Keys keyData ) {
             switch ( keyData ) {
                 case Keys.Tab:

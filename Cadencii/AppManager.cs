@@ -559,9 +559,14 @@ namespace org.kbinani.cadencii {
         /// <param name="clock"></param>
         /// <param name="new_phrase"></param>
         public static void changePhrase( VsqFileEx vsq, int track, VsqEvent item, int clock, String new_phrase ) {
-            ByRef<String> phonetic_symbol = new ByRef<String>( "" );
-            SymbolTable.attatch( new_phrase, phonetic_symbol );
-            String str_phonetic_symbol = phonetic_symbol.value;
+            String phonetic_symbol = "";
+            SymbolTableEntry entry = SymbolTable.attatch( new_phrase );
+            if ( entry == null ) {
+                phonetic_symbol = "a";
+            } else {
+                phonetic_symbol = entry.Symbol.Replace( '\t', ' ' );
+            }
+            String str_phonetic_symbol = phonetic_symbol;
 
             // consonant adjustment
             String[] spl = PortUtil.splitString( str_phonetic_symbol, new char[] { ' ', ',' }, true );
@@ -2011,7 +2016,18 @@ namespace org.kbinani.cadencii {
 
             PlaySound.init();
             s_locker = new Object();
-            SymbolTable.loadDictionary();
+            // VOCALOID2の辞書を読み込み
+            SymbolTable.loadSystemDictionaries();
+            // 日本語辞書
+            SymbolTable.loadDictionary(
+                PortUtil.combinePath( PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "resources" ), "dict_ja.txt" ), 
+                "DEFAULT_JP" );
+            // 英語辞書
+            SymbolTable.loadDictionary( 
+                PortUtil.combinePath( PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "resources" ), "dict_en.txt" ),
+                "DEFAULT_EN" );
+            // 拡張辞書
+            SymbolTable.loadAllDictionaries( PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "udic" ) );
             VSTiProxy.CurrentUser = "";
 #if JAVA
             Util.isApplyFontRecurseEnabled = false;

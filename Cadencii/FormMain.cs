@@ -2395,40 +2395,96 @@ namespace org.kbinani.cadencii {
                 return;
             }
 #endif
-            int selected = AppManager.getSelected();
             SelectedEventEntry last_selected_event = AppManager.getLastSelectedEvent();
-            String original_phrase = last_selected_event.original.ID.LyricHandle.L0.Phrase;
-            String original_symbol = last_selected_event.original.ID.LyricHandle.L0.getPhoneticSymbol();
-            boolean symbol_protected = last_selected_event.original.ID.LyricHandle.L0.PhoneticSymbolProtected;
-            boolean phonetic_symbol_edit_mode = ((TagLyricTextBox)AppManager.inputTextBox.getTag()).isPhoneticSymbolEditMode();
+            boolean phonetic_symbol_edit_mode = AppManager.inputTextBox.isPhoneticSymbolEditMode();
+
+            int selected = AppManager.getSelected();
+            VsqFileEx vsq = AppManager.getVsqFile();
+            VsqTrack vsq_track = vsq.Track.get( selected );
+
+            // 後続に、連続している音符が何個あるか検査
+            int maxcount = SymbolTable.getMaxDivisions(); // 音節の分割によって，高々maxcount個までにしか分割されない
+            boolean check_started = false;
+            int endclock = 0;  // 直前の音符の終了クロック
+            int count = 0;     // 後続音符の連続個数
+            int start_index = -1;
+            int indx = -1;
+            for ( Iterator<Integer> itr = vsq_track.indexIterator( IndexIteratorKind.NOTE ); itr.hasNext(); ) {
+                indx = itr.next();
+                VsqEvent itemi = vsq_track.getEvent( indx );
+                if ( itemi.InternalID == last_selected_event.original.InternalID ) {
+                    check_started = true;
+                    endclock = itemi.Clock + itemi.ID.getLength();
+                    count = 1;
+                    start_index = indx;
+                    continue;
+                }
+                if ( check_started ) {
+                    if ( count + 1 > maxcount ) {
+                        break;
+                    }
+                    if ( itemi.Clock <= endclock ) {
+                        count++;
+                        endclock = itemi.Clock + itemi.ID.getLength();
+                    } else {
+                        break;
+                    }
+                }
+            }
+
+            // 後続の音符をリストアップ
+            VsqEvent[] items = new VsqEvent[count];
+            String[] original_symbol = new String[count];
+            String[] original_phrase = new String[count];
+            boolean[] symbol_protected = new boolean[count];
+            indx = -1;
+            for ( Iterator<Integer> itr = vsq_track.indexIterator( IndexIteratorKind.NOTE ); itr.hasNext(); ) {
+                int index = itr.next();
+                if ( index < start_index ) {
+                    continue;
+                }
+                indx++;
+                if ( count <= indx ) {
+                    break;
+                }
+                VsqEvent ve = vsq_track.getEvent( index );
+                items[indx] = (VsqEvent)ve.clone();
+                original_symbol[indx] = ve.ID.LyricHandle.L0.getPhoneticSymbol();
+                original_phrase[indx] = ve.ID.LyricHandle.L0.Phrase;
+                symbol_protected[indx] = ve.ID.LyricHandle.L0.PhoneticSymbolProtected;
+            }
+
 #if DEBUG
-            AppManager.debugWriteLine( "    original_phase,symbol=" + original_phrase + "," + original_symbol );
+            AppManager.debugWriteLine( "    original_phase,symbol=" + original_phrase + "," + original_symbol[0] );
             AppManager.debugWriteLine( "    phonetic_symbol_edit_mode=" + phonetic_symbol_edit_mode );
             AppManager.debugWriteLine( "    AppManager.inputTextBox.setText(=" + AppManager.inputTextBox.getText() );
 #endif
-            String phrase;
-            ByRef<String> phonetic_symbol = new ByRef<String>( "" );
-            phrase = AppManager.inputTextBox.getText();
+            String[] phrase = new String[count];
+            String[] phonetic_symbol = new String[count];
+            for ( int i = 0; i < count; i++ ) {
+                phrase[i] = original_phrase[i];
+                phonetic_symbol[i] = original_symbol[i];
+            }
+            phrase[0] = AppManager.inputTextBox.getText().Replace( "-", "" );
             if ( !phonetic_symbol_edit_mode ) {
                 // 歌詞を編集するモードで、
                 if ( AppManager.editorConfig.SelfDeRomanization ) {
                     // かつローマ字の入力を自動でひらがなに展開する設定だった場合。
                     // ローマ字をひらがなに展開
-                    phrase = KanaDeRomanization.Attach( phrase );
+                    phrase[0] = KanaDeRomanization.Attach( phrase[0] );
                 }
             }
 
             // 発音記号または歌詞が変更された場合の処理
-            if ( (phonetic_symbol_edit_mode && AppManager.inputTextBox.getText() != original_symbol) ||
-                 (!phonetic_symbol_edit_mode && phrase != original_phrase) ) {
-                TagLyricTextBox kvp = (TagLyricTextBox)AppManager.inputTextBox.getTag();
+            if ( (phonetic_symbol_edit_mode && !AppManager.inputTextBox.getText().Equals( original_symbol[0] )) ||
+                 (!phonetic_symbol_edit_mode && !phrase[0].Equals( original_phrase[0] )) ) {
                 if ( phonetic_symbol_edit_mode ) {
                     // 発音記号を編集するモード
-                    phrase = kvp.getBufferText();
-                    phonetic_symbol.value = AppManager.inputTextBox.getText();
+                    phrase[0] = AppManager.inputTextBox.getBufferText();
+                    phonetic_symbol[0] = AppManager.inputTextBox.getText();
 
                     // 入力された発音記号のうち、有効なものだけをピックアップ
-                    String[] spl = PortUtil.splitString( phonetic_symbol.value, new char[] { ' ' }, true );
+                    String[] spl = PortUtil.splitString( phonetic_symbol[0], new char[] { ' ' }, true );
                     Vector<String> list = new Vector<String>();
                     for ( int i = 0; i < spl.Length; i++ ) {
                         String s = spl[i];
@@ -2438,61 +2494,81 @@ namespace org.kbinani.cadencii {
                     }
 
                     // ピックアップした発音記号をスペース区切りで結合
-                    phonetic_symbol.value = "";
+                    phonetic_symbol[0] = "";
                     boolean first = true;
                     for ( Iterator<String> itr = list.iterator(); itr.hasNext(); ) {
                         String s = itr.next();
                         if ( first ) {
-                            phonetic_symbol.value += s;
+                            phonetic_symbol[0] += s;
                             first = false;
                         } else {
-                            phonetic_symbol.value += " " + s;
+                            phonetic_symbol[0] += " " + s;
                         }
                     }
 
                     // 発音記号を編集すると、自動で「発音記号をプロテクトする」モードになるよ
-                    symbol_protected = true;
+                    symbol_protected[0] = true;
                 } else {
                     // 歌詞を編集するモード
-                    if ( !symbol_protected ) {
+                    if ( !symbol_protected[0] ) {
                         // 発音記号をプロテクトしない場合、歌詞から発音記号を引当てる
-                        SymbolTable.attatch( phrase, phonetic_symbol );
+                        SymbolTableEntry entry = SymbolTable.attatch( phrase[0] );
+                        if ( entry == null ) {
+                            phonetic_symbol[0] = "a";
+                        } else {
+                            phonetic_symbol[0] = entry.Symbol.Replace( '\t', ' ' );
+                            // 分節の分割記号'-'が入っている場合
+                            if ( entry.Word.IndexOf( '-' ) >= 0 ) {
+                                String[] spl_phrase = PortUtil.splitString( entry.Word, '\t' );
+                                if ( spl_phrase.Length <= count ) {
+                                    // 分節の分割数が，後続の音符数と同じか少ない場合
+                                    String[] spl_symbol = PortUtil.splitString( entry.Symbol, '\t' );
+                                    for ( int i = 0; i < spl_phrase.Length; i++ ) {
+                                        phrase[i] = spl_phrase[i];
+                                        phonetic_symbol[i] = spl_symbol[i];
+                                    }
+                                } else {
+                                    // 後続の音符の個数が足りない
+                                    phrase[0] = entry.Word.Replace( "\t", "" );
+                                }
+                            }
+                        }
                     } else {
                         // 発音記号をプロテクトする場合、発音記号は最初のやつを使う
-                        phonetic_symbol.value = original_symbol;
+                        phonetic_symbol[0] = original_symbol[0];
                     }
                 }
 #if DEBUG
                 AppManager.debugWriteLine( "    phrase,phonetic_symbol=" + phrase + "," + phonetic_symbol );
 #endif
 
-                VsqEvent item = (VsqEvent)last_selected_event.original.clone();
-                if ( phonetic_symbol_edit_mode ) {
-                    item.ID.LyricHandle.L0.setPhoneticSymbol( phonetic_symbol.value );
-                } else {
-                    item.ID.LyricHandle.L0.Phrase = phrase;
-                    item.ID.LyricHandle.L0.setPhoneticSymbol( phonetic_symbol.value );
-                    VsqTrack vsq_track = AppManager.getVsqFile().Track.get( selected );
-                    VsqEvent singer = vsq_track.getSingerEventAt( item.Clock );
-                    SingerConfig sc = AppManager.getSingerInfoUtau( singer.ID.IconHandle.Language, singer.ID.IconHandle.Program );
-                    if ( sc != null && AppManager.utauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
-                        UtauVoiceDB db = AppManager.utauVoiceDB.get( sc.VOICEIDSTR );
-                        OtoArgs oa = db.attachFileNameFromLyric( phrase );
-                        item.UstEvent.PreUtterance = oa.msPreUtterance;
-                        item.UstEvent.VoiceOverlap = oa.msOverlap;
+                for ( int j = 0; j < count; j++ ) {
+                    if ( phonetic_symbol_edit_mode ) {
+                        items[j].ID.LyricHandle.L0.setPhoneticSymbol( phonetic_symbol[j] );
+                    } else {
+                        items[j].ID.LyricHandle.L0.Phrase = phrase[j];
+                        items[j].ID.LyricHandle.L0.setPhoneticSymbol( phonetic_symbol[j] );
+                        VsqEvent singer = vsq_track.getSingerEventAt( items[j].Clock );
+                        SingerConfig sc = AppManager.getSingerInfoUtau( singer.ID.IconHandle.Language, singer.ID.IconHandle.Program );
+                        if ( sc != null && AppManager.utauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
+                            UtauVoiceDB db = AppManager.utauVoiceDB.get( sc.VOICEIDSTR );
+                            OtoArgs oa = db.attachFileNameFromLyric( phrase[j] );
+                            items[j].UstEvent.PreUtterance = oa.msPreUtterance;
+                            items[j].UstEvent.VoiceOverlap = oa.msOverlap;
+                        }
                     }
-                }
-                if ( !original_symbol.Equals( phonetic_symbol.value ) ) {
-                    String[] spl = item.ID.LyricHandle.L0.getPhoneticSymbolList();
-                    int[] adjustment = new int[spl.Length];
-                    for ( int i = 0; i < adjustment.Length; i++ ) {
-                        adjustment[i] = VsqPhoneticSymbol.isConsonant( spl[i] ) ? 64 : 0;
+                    if ( !original_symbol[j].Equals( phonetic_symbol[j] ) ) {
+                        String[] spl = items[j].ID.LyricHandle.L0.getPhoneticSymbolList();
+                        int[] adjustment = new int[spl.Length];
+                        for ( int i = 0; i < adjustment.Length; i++ ) {
+                            adjustment[i] = VsqPhoneticSymbol.isConsonant( spl[i] ) ? 64 : 0;
+                        }
+                        items[j].ID.LyricHandle.L0.setConsonantAdjustmentList( adjustment );
                     }
-                    item.ID.LyricHandle.L0.setConsonantAdjustmentList( adjustment );
                 }
 
-                CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventReplace( selected, item ) );
-                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventReplaceRange( selected, items ) );
+                AppManager.register( vsq.executeCommand( run ) );
                 setEdited( true );
             }
         }
@@ -4095,10 +4171,10 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
+        /// <summary>
+        /// 歌詞の流し込みダイアログを開き，選択された音符を起点に歌詞を流し込みます
+        /// </summary>
         public void importLyric() {
-#if DEBUG
-            AppManager.debugWriteLine( "ImportLyric" );
-#endif
             int start = 0;
             int selected = AppManager.getSelected();
             VsqFileEx vsq = AppManager.getVsqFile();
@@ -4112,9 +4188,6 @@ namespace org.kbinani.cadencii {
                 }
             }
             int count = vsq_track.getEventCount() - 1 - start + 1;
-#if DEBUG
-            AppManager.debugWriteLine( "    count=" + count );
-#endif
             FormImportLyric dlg = null;
             try {
                 dlg = new FormImportLyric( count );
@@ -4124,27 +4197,58 @@ namespace org.kbinani.cadencii {
                 if ( dlg.getDialogResult() == BDialogResult.OK ) {
                     String[] phrases = dlg.getLetters();
 #if DEBUG
-                    for ( int i = 0; i < phrases.Length; i++ ) {
-                        AppManager.debugWriteLine( "    " + phrases[i] );
+                    foreach ( String s in phrases ) {
+                        PortUtil.println( "FormMain#importLyric; phrases; s=" + s );
                     }
 #endif
                     int min = Math.Min( count, phrases.Length );
-                    String[] new_phrases = new String[min];
-                    String[] new_symbols = new String[min];
-                    for ( int i = 0; i < min; i++ ) {
-                        new_phrases[i] = phrases[i];
-                        ByRef<String> symb = new ByRef<String>( "" );
-                        SymbolTable.attatch( phrases[i], symb );
-                        new_symbols[i] = symb.value;
+                    Vector<String> new_phrases = new Vector<String>();
+                    Vector<String> new_symbols = new Vector<String>();
+                    for ( int i = 0; i < phrases.Length; i++ ) {
+                        SymbolTableEntry entry = SymbolTable.attatch( phrases[i] );
+                        if( new_phrases.size() + 1 > count ){
+                            break;
+                        }
+                        if ( entry == null ) {
+                            new_phrases.add( phrases[i] );
+                            new_symbols.add( "a" );
+                        } else {
+                            if ( entry.Word.IndexOf( '-' ) >= 0 ) {
+                                // 分節に分割する必要がある
+                                String[] spl = PortUtil.splitString( entry.Word, '\t' );
+                                if( new_phrases.size() + spl.Length > count ){
+                                    // 分節の全部を分割すると制限個数を超えてしまう
+                                    // 分割せずにハイフンを付けたまま登録
+                                    new_phrases.add( entry.Word.Replace( "\t", "" ) );
+                                    new_symbols.add( entry.Symbol.Replace( '\t', ' ' ) );
+                                }else{
+                                    String[] spl_symbol = PortUtil.splitString( entry.Symbol, '\t' );
+                                    for( int j = 0; j < spl.Length; j++ ){
+                                        new_phrases.add( spl[j] );
+                                        new_symbols.add( spl_symbol[j] );
+                                    }
+                                }
+                            } else {
+                                // 分節に分割しない
+                                new_phrases.add( phrases[i] );
+                                new_symbols.add( entry.Symbol.Replace( '\t', ' ' ) );
+                            }
+                        }
                     }
-                    VsqID[] new_ids = new VsqID[min];
-                    int[] ids = new int[min];
-                    for ( int i = start; i < start + min; i++ ) {
-                        VsqEvent item = vsq_track.getEvent( i );
-                        new_ids[i - start] = (VsqID)item.ID.clone();
-                        new_ids[i - start].LyricHandle.L0.Phrase = new_phrases[i - start];
-                        new_ids[i - start].LyricHandle.L0.setPhoneticSymbol( new_symbols[i - start] );
-                        ids[i - start] = item.InternalID;
+                    VsqID[] new_ids = new VsqID[new_phrases.size()];
+                    int[] ids = new int[new_phrases.size()];
+                    int indx = -1;
+                    for ( Iterator<Integer> itr = vsq_track.indexIterator( IndexIteratorKind.NOTE ); itr.hasNext(); ) {
+                        int index = itr.next();
+                        if ( index < start ) {
+                            continue;
+                        }
+                        indx++;
+                        VsqEvent item = vsq_track.getEvent( index );
+                        new_ids[indx] = (VsqID)item.ID.clone();
+                        new_ids[indx].LyricHandle.L0.Phrase = new_phrases.get( indx );
+                        new_ids[indx].LyricHandle.L0.setPhoneticSymbol( new_symbols.get( indx ) );
+                        ids[indx] = item.InternalID;
                     }
                     CadenciiCommand run = new CadenciiCommand(
                         VsqCommand.generateCommandEventChangeIDContaintsRange( selected, ids, new_ids ) );
@@ -5813,11 +5917,13 @@ namespace org.kbinani.cadencii {
 #endif
             AppManager.inputTextBox.setImeModeOn( m_last_is_imemode_on );
             if ( phonetic_symbol_edit_mode ) {
-                AppManager.inputTextBox.setTag( new TagLyricTextBox( phrase, true ) );
+                AppManager.inputTextBox.setBufferText( phrase );
+                AppManager.inputTextBox.setPhoneticSymbolEditMode( true );
                 AppManager.inputTextBox.setText( phonetic_symbol );
                 AppManager.inputTextBox.setBackground( s_txtbox_backcolor );
             } else {
-                AppManager.inputTextBox.setTag( new TagLyricTextBox( phonetic_symbol, false ) );
+                AppManager.inputTextBox.setBufferText( phonetic_symbol );
+                AppManager.inputTextBox.setPhoneticSymbolEditMode( false );
                 AppManager.inputTextBox.setText( phrase );
                 AppManager.inputTextBox.setBackground( Color.white );
             }
@@ -5843,10 +5949,7 @@ namespace org.kbinani.cadencii {
             AppManager.inputTextBox.KeyDown -= m_input_textbox_KeyDown;
             AppManager.inputTextBox.ImeModeChanged -= m_input_textbox_ImeModeChanged;
 #endif
-            if ( AppManager.inputTextBox.getTag() != null && AppManager.inputTextBox.getTag() is TagLyricTextBox ) {
-                TagLyricTextBox tltb = (TagLyricTextBox)AppManager.inputTextBox.getTag();
-                m_last_symbol_edit_mode = tltb.isPhoneticSymbolEditMode();
-            }
+            m_last_symbol_edit_mode = AppManager.inputTextBox.isPhoneticSymbolEditMode();
             AppManager.inputTextBox.setVisible( false );
 #if !JAVA
             AppManager.inputTextBox.Parent = null;
@@ -5860,15 +5963,15 @@ namespace org.kbinani.cadencii {
         /// 歌詞入力用テキストボックスのモード（歌詞/発音記号）を切り替えます
         /// </summary>
         public void flipInputTextBoxMode() {
-            TagLyricTextBox kvp = (TagLyricTextBox)AppManager.inputTextBox.getTag();
             String new_value = AppManager.inputTextBox.getText();
-            if ( !kvp.isPhoneticSymbolEditMode() ) {
+            if ( !AppManager.inputTextBox.isPhoneticSymbolEditMode() ) {
                 AppManager.inputTextBox.setBackground( s_txtbox_backcolor );
             } else {
                 AppManager.inputTextBox.setBackground( Color.white );
             }
-            AppManager.inputTextBox.setText( kvp.getBufferText() );
-            AppManager.inputTextBox.setTag( new TagLyricTextBox( new_value, !kvp.isPhoneticSymbolEditMode() ) );
+            AppManager.inputTextBox.setText( AppManager.inputTextBox.getBufferText() );
+            AppManager.inputTextBox.setBufferText( new_value );
+            AppManager.inputTextBox.setPhoneticSymbolEditMode( !AppManager.inputTextBox.isPhoneticSymbolEditMode() );
         }
 
         /// <summary>
@@ -6723,11 +6826,10 @@ namespace org.kbinani.cadencii {
                         }
                     }
 #if JAVA
-                    if( (modifiers & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK )
+                    if( (modifiers & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
 #else
-                    if ( (e.Modifiers & System.Windows.Forms.Keys.Shift) == System.Windows.Forms.Keys.Shift )
+                    if ( (e.Modifiers & System.Windows.Forms.Keys.Shift) == System.Windows.Forms.Keys.Shift ) {
 #endif
-                    {
                         // 1個前の音符イベントを検索
                         int tindex = -1;
                         for ( int i = track.getEventCount() - 1; i >= 0; i-- ) {
@@ -6758,8 +6860,7 @@ namespace org.kbinani.cadencii {
                     AppManager.addSelectedEvent( item.InternalID );
                     int x = AppManager.xCoordFromClocks( item.Clock );
                     int y = yCoordFromNote( item.ID.Note );
-                    boolean phonetic_symbol_edit_mode = 
-                        ((TagLyricTextBox)AppManager.inputTextBox.getTag()).isPhoneticSymbolEditMode();
+                    boolean phonetic_symbol_edit_mode = AppManager.inputTextBox.isPhoneticSymbolEditMode();
                     showInputTextBox( 
                         item.ID.LyricHandle.L0.Phrase,
                         item.ID.LyricHandle.L0.getPhoneticSymbol(),
@@ -12235,15 +12336,17 @@ namespace org.kbinani.cadencii {
                 }
                 String phrase = id.LyricHandle.L0.Phrase;
                 String symbolOld = id.LyricHandle.L0.getPhoneticSymbol();
-                ByRef<String> symbolResult = new ByRef<String>( symbolOld );
-                if ( !SymbolTable.attatch( phrase, symbolResult ) ) {
+                String symbolResult = symbolOld;
+                SymbolTableEntry entry = SymbolTable.attatch( phrase );
+                if ( entry == null ) {
                     continue;
                 }
-                if ( symbolResult.value.Equals( symbolOld ) ) {
+                symbolResult = entry.Symbol.Replace( '\t', ' ' );
+                if ( symbolResult.Equals( symbolOld ) ) {
                     continue;
                 }
                 VsqID idNew = (VsqID)id.clone();
-                idNew.LyricHandle.L0.setPhoneticSymbol( symbolResult.value );
+                idNew.LyricHandle.L0.setPhoneticSymbol( symbolResult );
                 ids.add( idNew );
                 internal_ids.add( item.InternalID );
             }
@@ -14887,8 +14990,7 @@ namespace org.kbinani.cadencii {
                                   original.ID.LyricHandle.L0.getPhoneticSymbol(),
                                   pos, m_last_symbol_edit_mode );
             } else if ( input_enabled ) {
-                TagLyricTextBox tltb = (TagLyricTextBox)AppManager.inputTextBox.getTag();
-                if ( tltb.isPhoneticSymbolEditMode() ) {
+                if ( AppManager.inputTextBox.isPhoneticSymbolEditMode() ) {
                     flipInputTextBoxMode();
                 }
             }

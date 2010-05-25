@@ -257,12 +257,17 @@ namespace org.kbinani.cadencii {
                     editing.ID.LyricHandle.L0.Phrase = phrase;
 
                     // 発音記号
-                    ByRef<String> phonetic_symbol = new ByRef<String>( "" );
-                    SymbolTable.attatch( phrase, phonetic_symbol );
-                    editing.ID.LyricHandle.L0.setPhoneticSymbol( phonetic_symbol.value );
+                    String phonetic_symbol = "";
+                    SymbolTableEntry entry = SymbolTable.attatch( phrase );
+                    if ( entry == null ) {
+                        phonetic_symbol = "a";
+                    } else {
+                        phonetic_symbol = entry.Symbol.Replace( '\t', ' ' );
+                    }
+                    editing.ID.LyricHandle.L0.setPhoneticSymbol( phonetic_symbol );
 
                     // consonant adjustment
-                    String[] spl = PortUtil.splitString( phonetic_symbol.value, new char[] { ' ', ',' }, true );
+                    String[] spl = PortUtil.splitString( phonetic_symbol, new char[] { ' ', ',' }, true );
                     String consonant_adjustment = "";
                     for ( int i = 0; i < spl.Length; i++ ) {
                         consonant_adjustment += (i == 0 ? "" : " ") + (VsqPhoneticSymbol.isConsonant( spl[i] ) ? 64 : 0);

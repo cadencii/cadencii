@@ -77,11 +77,12 @@ namespace org.kbinani.vsq {
                 if ( ue.Lyric != "R" ) {
                     VsqID id = new VsqID( 0 );
                     id.setLength( ue.getLength() );
-                    ByRef<String> psymbol = new ByRef<String>( "a" );
-                    if ( !SymbolTable.attatch( ue.Lyric, psymbol ) ) {
-                        psymbol.value = "a";
+                    String psymbol = "a";
+                    SymbolTableEntry entry = SymbolTable.attatch( ue.Lyric );
+                    if( entry != null ){
+                        psymbol = entry.Symbol.Replace( '\t', ' ' );
                     }
-                    id.LyricHandle = new LyricHandle( ue.Lyric, psymbol.value );
+                    id.LyricHandle = new LyricHandle( ue.Lyric, psymbol );
                     id.Note = ue.Note;
                     id.type = VsqIDType.Anote;
                     VsqEvent ve = new VsqEvent( clock_count, id );
