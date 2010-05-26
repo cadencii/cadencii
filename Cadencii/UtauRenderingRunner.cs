@@ -143,12 +143,13 @@ namespace org.kbinani.cadencii {
                 log.WriteLine( "reading voice db. configs..." );
 #endif
                 for ( int pc = 0; pc < singers.size(); pc++ ) {
+                    SingerConfig sc = singers.get( pc );
                     String singer_name = singers.get( pc ).VOICENAME;
                     String singer_path = singers.get( pc ).VOICEIDSTR;
 
                     //TODO: mono on linuxにて、singer_pathが取得できていない？
                     String config_file = PortUtil.combinePath( singer_path, "oto.ini" );
-                    UtauVoiceDB db = new UtauVoiceDB( config_file );
+                    UtauVoiceDB db = new UtauVoiceDB( sc );
 #if MAKEBAT_SP
                     log.Write( "    #" + pc + "; PortUtil.isFileExists( oto.ini )=" + PortUtil.isFileExists( config_file ) );
                     log.WriteLine( "; name=" + db.getName() );

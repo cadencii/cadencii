@@ -154,7 +154,10 @@ namespace org.kbinani.cadencii {
             if ( m_voicedb_configs.containsKey( oto_ini ) ) {
                 voicedb = m_voicedb_configs.get( oto_ini );
             } else {
-                voicedb = new UtauVoiceDB( oto_ini );
+                SingerConfig sc = new SingerConfig();
+                sc.VOICEIDSTR = PortUtil.getDirectoryName( oto_ini );
+                sc.VOICENAME = singer;
+                voicedb = new UtauVoiceDB( sc );
                 m_voicedb_configs.put( oto_ini, voicedb );
             }
 

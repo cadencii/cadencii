@@ -2081,9 +2081,8 @@ namespace org.kbinani.cadencii {
             for ( Iterator<SingerConfig> itr = editorConfig.UtauSingers.iterator(); itr.hasNext(); ) {
                 SingerConfig config = itr.next();
                 UtauVoiceDB db = null;
-                String dir = PortUtil.combinePath( config.VOICEIDSTR, "oto.ini" );
                 try {
-                    db = new UtauVoiceDB( dir );
+                    db = new UtauVoiceDB( config );
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "AppManager#init; ex=" + ex );
                     db = null;

@@ -555,6 +555,48 @@ namespace org.kbinani.cadencii{
         }
 
         /// <summary>
+        /// 指定したディレクトリをUTAU音源のディレクトリとみなし，音源名と音源の保存パスを保持したSingerConfigを返します
+        /// </summary>
+        /// <param name="directory"></param>
+        /// <returns></returns>
+        public static SingerConfig readUtauSingerConfig( String directory ) {
+            SingerConfig sc = new SingerConfig();
+            sc.VOICEIDSTR = directory;
+
+            // character.txt読込み
+            String character = PortUtil.combinePath( directory, "character.txt" );
+            if ( PortUtil.isFileExists( character ) ) {
+                BufferedReader sr2 = null;
+                try {
+                    sr2 = new BufferedReader( new InputStreamReader( new FileInputStream( character ), "Shift_JIS" ) );
+                    String line = "";
+                    while ( (line = sr2.readLine()) != null ) {
+                        String[] spl = PortUtil.splitString( line, '=' );
+                        if ( spl.Length > 1 ) {
+                            if ( spl[0].ToLower().Equals( "name" ) ) {
+                                sc.VOICENAME = spl[1];
+                                break;
+                            }
+                        }
+                    }
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "UtauVoiceDB#.ctor; ex=" + ex );
+                } finally {
+                    if ( sr2 != null ) {
+                        try {
+                            sr2.close();
+                        } catch ( Exception ex2 ) {
+                            PortUtil.stderr.println( "UtauVoiceDB#.ctor; ex2=" + ex2 );
+                        }
+                    }
+                }
+            } else {
+                sc.VOICENAME = PortUtil.getFileNameWithoutExtension( directory );
+            }
+            return sc;
+        }
+
+        /// <summary>
         /// VSQイベントの長さを変更すると同時に、ビブラートの長さを指定したルールに則って変更します。
         /// </summary>
         /// <param name="vsq_event"></param>

@@ -4283,7 +4283,11 @@ namespace org.kbinani.cadencii {
             }
             FormVibratoConfig dlg = null;
             try {
-                dlg = new FormVibratoConfig( ev.ID.VibratoHandle, ev.ID.getLength(), AppManager.editorConfig.DefaultVibratoLength, type );
+                dlg = new FormVibratoConfig( 
+                    ev.ID.VibratoHandle, 
+                    ev.ID.getLength(), 
+                    AppManager.editorConfig.DefaultVibratoLength,
+                    type );
                 dlg.setLocation( getFormPreferedLocation( dlg ) );
                 dlg.setModal( true );
                 dlg.setVisible( true );
@@ -4291,8 +4295,8 @@ namespace org.kbinani.cadencii {
                     VsqEvent edited = (VsqEvent)ev.clone();
                     if ( dlg.getVibratoHandle() != null ) {
                         edited.ID.VibratoHandle = (VibratoHandle)dlg.getVibratoHandle().clone();
-                        edited.ID.VibratoHandle.setStartDepth( AppManager.editorConfig.DefaultVibratoDepth );
-                        edited.ID.VibratoHandle.setStartRate( AppManager.editorConfig.DefaultVibratoRate );
+                        //edited.ID.VibratoHandle.setStartDepth( AppManager.editorConfig.DefaultVibratoDepth );
+                        //edited.ID.VibratoHandle.setStartRate( AppManager.editorConfig.DefaultVibratoRate );
                         edited.ID.VibratoDelay = ev.ID.getLength() - dlg.getVibratoHandle().getLength();
                     } else {
                         edited.ID.VibratoHandle = null;
@@ -8087,8 +8091,8 @@ namespace org.kbinani.cadencii {
                                             int vibrato_length = t.VibratoHandle.getLength();
                                             int note_length = selectedEvent.ID.getLength();
                                             t.VibratoDelay = note_length - vibrato_length;
-                                            t.VibratoHandle.setStartDepth( AppManager.editorConfig.DefaultVibratoDepth );
-                                            t.VibratoHandle.setStartRate( AppManager.editorConfig.DefaultVibratoRate );
+                                            //t.VibratoHandle.setStartDepth( AppManager.editorConfig.DefaultVibratoDepth );
+                                            //t.VibratoHandle.setStartRate( AppManager.editorConfig.DefaultVibratoRate );
                                         }
                                         CadenciiCommand run = new CadenciiCommand(
                                             VsqCommand.generateCommandEventChangeIDContaints( selected,
@@ -9070,15 +9074,11 @@ namespace org.kbinani.cadencii {
                                     vibrato_clocks = note_length * 3 / 4;
                                 }
                                 SynthesizerType type = SynthesizerType.VOCALOID2;
-                                String default_icon_id = AppManager.editorConfig.AutoVibratoType2;
                                 RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( selected ) );
                                 if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
                                     type = SynthesizerType.VOCALOID1;
-                                    default_icon_id = AppManager.editorConfig.AutoVibratoType1;
                                 }
-                                vibrato = VocaloSysUtil.getDefaultVibratoHandle( default_icon_id, vibrato_clocks, type );
-                                vibrato.setStartDepth( AppManager.editorConfig.DefaultVibratoDepth );
-                                vibrato.setStartRate( AppManager.editorConfig.DefaultVibratoRate );
+                                vibrato = AppManager.editorConfig.createAutoVibrato( type, vibrato_clocks );
                                 vibrato_delay = note_length - vibrato_clocks;
                             }
                         }
@@ -10921,9 +10921,7 @@ namespace org.kbinani.cadencii {
                                             vibrato_clocks = note_length * 3 / 4;
                                         }
                                         // とりあえずVOCALOID2のデフォルトビブラートの設定を使用
-                                        vid.VibratoHandle = VocaloSysUtil.getDefaultVibratoHandle( AppManager.editorConfig.AutoVibratoType2,
-                                                                                                   vibrato_clocks,
-                                                                                                   SynthesizerType.VOCALOID2 );
+                                        vid.VibratoHandle = AppManager.editorConfig.createAutoVibrato( SynthesizerType.VOCALOID2, vibrato_clocks );
                                         vid.VibratoDelay = note_length - vibrato_clocks;
                                     }
                                 }
@@ -11829,6 +11827,7 @@ namespace org.kbinani.cadencii {
             m_preference_dlg.setDefaultVibratoDepth( AppManager.editorConfig.DefaultVibratoDepth );
             m_preference_dlg.setDefaultVibratoRate( AppManager.editorConfig.DefaultVibratoRate );
             m_preference_dlg.setDefaultSynthesizer( AppManager.editorConfig.DefaultSynthesizer );
+            m_preference_dlg.setUseUserDefinedAutoVibratoType( AppManager.editorConfig.UseUserDefinedAutoVibratoType );
 
             m_preference_dlg.setLocation( getFormPreferedLocation( m_preference_dlg ) );
 
@@ -11936,7 +11935,7 @@ namespace org.kbinani.cadencii {
                     SingerConfig sc = itr.next();
                     AppManager.editorConfig.UtauSingers.add( (SingerConfig)sc.clone() );
                     try {
-                        UtauVoiceDB db = new UtauVoiceDB( PortUtil.combinePath( sc.VOICEIDSTR, "oto.ini" ) );
+                        UtauVoiceDB db = new UtauVoiceDB( sc );
                         AppManager.utauVoiceDB.put( sc.VOICEIDSTR, db );
                     } catch ( Exception ex ) {
                         PortUtil.stderr.println( "FormMain#menuSettingPreference_Click; ex=" + ex );
@@ -12033,6 +12032,7 @@ namespace org.kbinani.cadencii {
                 AppManager.editorConfig.DefaultVibratoRate = m_preference_dlg.getDefaultVibratoRate();
                 AppManager.editorConfig.DefaultVibratoDepth = m_preference_dlg.getDefaultVibratoDepth();
                 AppManager.editorConfig.DefaultSynthesizer = m_preference_dlg.getDefaultSynthesizer();
+                AppManager.editorConfig.UseUserDefinedAutoVibratoType = m_preference_dlg.isUseUserDefinedAutoVibratoType();
 
                 Vector<CurveType> visible_curves = new Vector<CurveType>();
                 trackSelector.clearViewingCurve();

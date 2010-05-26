@@ -17,11 +17,13 @@ package org.kbinani.cadencii;
 import java.util.*;
 import java.io.*;
 import org.kbinani.*;
+import org.kbinani.vsq.*;
 #else
 using System;
 using org.kbinani;
 using org.kbinani.java.util;
 using org.kbinani.java.io;
+using org.kbinani.vsq;
 
 namespace org.kbinani.cadencii {
 #endif
@@ -30,7 +32,13 @@ namespace org.kbinani.cadencii {
         private Vector<OtoArgs> m_configs = new Vector<OtoArgs>();
         private String m_name = "Unknown";
 
-        public UtauVoiceDB( String oto_ini ) {
+        public UtauVoiceDB( SingerConfig singer_config ) {
+            m_name = singer_config.VOICENAME;
+            String oto_ini = PortUtil.combinePath( singer_config.VOICEIDSTR, "oto.ini" );
+            readOtoIni( oto_ini );
+        }
+
+        private void readOtoIni( String oto_ini ) {
             if ( !PortUtil.isFileExists( oto_ini ) ) {
                 return;
             }
@@ -95,7 +103,7 @@ namespace org.kbinani.cadencii {
                 }
             }
 
-            // character.txt読込み
+            /* // character.txt読込み
             String character = PortUtil.combinePath( PortUtil.getDirectoryName( oto_ini ), "character.txt" );
             if ( PortUtil.isFileExists( character ) ) {
                 BufferedReader sr2 = null;
@@ -103,7 +111,7 @@ namespace org.kbinani.cadencii {
                     sr2 = new BufferedReader( new InputStreamReader( new FileInputStream( character ), "Shift_JIS" ) );
                     String line = "";
                     while ( (line = sr2.readLine()) != null ) {
-                        String[] spl = PortUtil.splitString(  line, '=' );
+                        String[] spl = PortUtil.splitString( line, '=' );
                         if ( spl.Length > 1 ) {
                             if ( spl[0].ToLower().Equals( "name" ) ) {
                                 m_name = spl[1];
@@ -121,7 +129,9 @@ namespace org.kbinani.cadencii {
                         }
                     }
                 }
-            }
+            } else {
+                m_name = PortUtil.getFileNameWithoutExtension( m_directory );
+            }*/
         }
 
         /// <summary>

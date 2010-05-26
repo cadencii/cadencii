@@ -370,6 +370,10 @@ namespace org.kbinani.cadencii {
         /// トラックを新規作成するときのデフォルトの音声合成システム
         /// </summary>
         public RendererKind DefaultSynthesizer = RendererKind.VOCALOID2;
+        /// <summary>
+        /// 自動ビブラートを作成するとき，ユーザー定義タイプのビブラートを利用するかどうか．デフォルトではfalse
+        /// </summary>
+        public boolean UseUserDefinedAutoVibratoType = false;
 
         #region Static Fields
         public static readonly Vector<ValuePairOfStringArrayOfKeys> DEFAULT_SHORTCUT_KEYS = new Vector<ValuePairOfStringArrayOfKeys>( Arrays.asList(
@@ -466,6 +470,34 @@ namespace org.kbinani.cadencii {
         /// 変更された時発生します
         /// </summary>
         public static BEvent<BEventHandler> quantizeModeChangedEvent = new BEvent<BEventHandler>();
+
+        /// <summary>
+        /// 自動ビブラートを作成します
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="vibrato_clocks"></param>
+        /// <returns></returns>
+        public VibratoHandle createAutoVibrato( SynthesizerType type, int vibrato_clocks ) {
+            if ( UseUserDefinedAutoVibratoType ) {
+                VibratoHandle ret = new VibratoHandle();
+                ret.IconID = "$04040001";
+                ret.setStartDepth( DefaultVibratoDepth );
+                ret.setStartRate( DefaultVibratoRate );
+                ret.setLength( vibrato_clocks );
+                return ret;
+            } else {
+                String iconid = type == SynthesizerType.VOCALOID1 ? AutoVibratoType1 : AutoVibratoType2;
+                VibratoHandle ret = VocaloSysUtil.getDefaultVibratoHandle( iconid,
+                                                                           vibrato_clocks,
+                                                                           type );
+                if ( ret == null ) {
+                    ret = new VibratoHandle();
+                    ret.IconID = "$04040001";
+                    ret.setLength( vibrato_clocks );
+                }
+                return ret;
+            }
+        }
 
         public int getControlCurveResolutionValue() {
             return ClockResolutionUtility.getValue( ControlCurveResolution );

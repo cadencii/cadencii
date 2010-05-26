@@ -63,6 +63,11 @@ namespace org.kbinani.cadencii {
         private NumberTextBox txtVibratoRate;
         private BGroupBox groupDefaultSynthesizer;
         private BComboBox comboDefaultSynthesizer;
+        private BLabel label6;
+        private BGroupBox groupUserDefined;
+        private BLabel lblAutoVibratoType;
+        private BRadioButton radioVocaloidEditorCompatible;
+        private BRadioButton radioUserDefined;
         private BFolderBrowser folderBrowserSingers;
 
         public Preference() {
@@ -125,16 +130,13 @@ namespace org.kbinani.cadencii {
 
             comboDynamics.removeAllItems();
             comboAmplitude.removeAllItems();
-            comboPeriod.removeAllItems();
             for ( Iterator<ClockResolution> itr = ClockResolutionUtility.iterator(); itr.hasNext(); ) {
                 ClockResolution cr = itr.next();
                 comboDynamics.addItem( ClockResolutionUtility.toString( cr ) );
                 comboAmplitude.addItem( ClockResolutionUtility.toString( cr ) );
-                comboPeriod.addItem( ClockResolutionUtility.toString( cr ) );
             }
             comboDynamics.setSelectedIndex( 0 );
             comboAmplitude.setSelectedIndex( 0 );
-            comboPeriod.setSelectedIndex( 0 );
 
             comboLanguage.removeAllItems();
             String[] list = Messaging.getRegisteredLanguage();
@@ -288,6 +290,24 @@ namespace org.kbinani.cadencii {
         }
 
         #region public methods
+        /// <summary>
+        /// 自動ビブラートを作成するとき，ユーザー定義タイプのビブラートを利用するかどうか，を表す値を取得します
+        /// </summary>
+        /// <returns></returns>
+        public boolean isUseUserDefinedAutoVibratoType() {
+            return radioUserDefined.isSelected();
+        }
+
+        /// <summary>
+        /// 自動ビブラートを作成するとき，ユーザー定義タイプのビブラートを利用するかどうか，を表す値を設定します
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public void setUseUserDefinedAutoVibratoType( boolean value ) {
+            radioUserDefined.setSelected( value );
+            radioVocaloidEditorCompatible.setSelected( !value );
+        }
+
         /// <summary>
         /// デフォルトの音声合成システムを設定します
         /// </summary>
@@ -846,10 +866,11 @@ namespace org.kbinani.cadencii {
             lblResolution.setText( _( "Resolution(VSTi)" ) );
             lblDynamics.setText( _( "Dynamics" ) + "(&D)" );
             lblAmplitude.setText( _( "Vibrato Depth" ) + "(&R)" );
-            lblPeriod.setText( _( "Vibrato Rate" ) + "(&V)" );
-            lblVibratoConfig.setText( _( "Vibrato Settings" ) );
             lblVibratoLength.setText( _( "Default Vibrato Length" ) + "(&L)" );
-            groupAutoVibratoConfig.setTitle( _( "Auto Vibrato Settings" ) );
+            groupVocaloidEditorCompatible.setTitle( _( "VOCALOID Editor Compatible" ) );
+            groupUserDefined.setTitle( _( "User Defined" ) );
+            radioVocaloidEditorCompatible.setText( _( "VOCALOID Editor Compatible" ) );
+            radioUserDefined.setText( _( "User Defined" ) );
             chkEnableAutoVibrato.setText( _( "Enable Automatic Vibrato" ) + "(&E)" );
             lblAutoVibratoMinLength.setText( _( "Minimum note length for Automatic Vibrato" ) + "(&M)" );
             lblAutoVibratoType1.setText( _( "Vibrato Type" ) + ": VOCALOID1 (&T)" );
@@ -1363,8 +1384,8 @@ namespace org.kbinani.cadencii {
             folderBrowserSingers.setVisible( true );
             if ( folderBrowserSingers.getDialogResult() == BDialogResult.OK ) {
                 String dir = folderBrowserSingers.getSelectedPath();
-                SingerConfig sc = new SingerConfig();
-                String character = PortUtil.combinePath( dir, "character.txt" );
+                SingerConfig sc = Utility.readUtauSingerConfig( dir );
+                /*String character = PortUtil.combinePath( dir, "character.txt" );
                 String name = "";
                 sc.VOICEIDSTR = dir;
                 if ( PortUtil.isFileExists( character ) ) {
@@ -1394,7 +1415,7 @@ namespace org.kbinani.cadencii {
                 if ( name.Equals( "" ) ) {
                     name = "Unknown";
                 }
-                sc.VOICENAME = name;
+                sc.VOICENAME = name;*/
                 m_utau_singers.add( sc );
                 UpdateUtauSingerList();
             }
@@ -1462,6 +1483,11 @@ namespace org.kbinani.cadencii {
         public void btnCancel_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.CANCEL );
         }
+
+        public void commonChangeAutoVibratoType( Object sender, BEventArgs e ) {
+            groupVocaloidEditorCompatible.setEnabled( radioVocaloidEditorCompatible.isSelected() );
+            groupUserDefined.setEnabled( radioUserDefined.isSelected() );
+        }
         #endregion
 
         #region helper methods
@@ -1508,6 +1534,7 @@ namespace org.kbinani.cadencii {
             formClosingEvent.add( new BFormClosingEventHandler( this, "Preference_FormClosing" ) );
             btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
             chkLoadSecondaryVOCALOID1.checkedChangedEvent.add( new BEventHandler( this, "chkLoadSecondaryVOCALOID1_CheckedChanged" ) );
+            radioVocaloidEditorCompatible.checkedChangedEvent.add( new BEventHandler( this, "commonChangeAutoVibratoType" ) );
         }
 
         private void setResources() {
@@ -1545,59 +1572,62 @@ namespace org.kbinani.cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
+            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup9 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup10 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup11 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup12 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup13 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup14 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup15 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup16 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup17 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup18 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup19 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup20 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup21 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup22 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup23 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup24 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup25 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup26 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup27 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup28 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup29 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup30 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup31 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup32 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup33 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup34 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup35 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup36 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup37 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup38 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             this.tabPreference = new System.Windows.Forms.TabControl();
             this.tabSequence = new System.Windows.Forms.TabPage();
-            this.txtVibratoDepth = new org.kbinani.cadencii.NumberTextBox();
-            this.txtVibratoRate = new org.kbinani.cadencii.NumberTextBox();
-            this.lblVibratoDepth = new org.kbinani.windows.forms.BLabel();
+            this.radioUserDefined = new org.kbinani.windows.forms.BRadioButton();
+            this.lblAutoVibratoType = new org.kbinani.windows.forms.BLabel();
+            this.radioVocaloidEditorCompatible = new org.kbinani.windows.forms.BRadioButton();
+            this.groupUserDefined = new org.kbinani.windows.forms.BGroupBox();
             this.lblVibratoRate = new org.kbinani.windows.forms.BLabel();
-            this.label5 = new org.kbinani.windows.forms.BLabel();
+            this.lblVibratoDepth = new org.kbinani.windows.forms.BLabel();
+            this.label6 = new org.kbinani.windows.forms.BLabel();
+            this.comboAutoVibratoMinLength = new org.kbinani.windows.forms.BComboBox();
             this.label4 = new org.kbinani.windows.forms.BLabel();
+            this.lblAutoVibratoMinLength = new org.kbinani.windows.forms.BLabel();
             this.label2 = new org.kbinani.windows.forms.BLabel();
-            this.comboPeriod = new org.kbinani.windows.forms.BComboBox();
+            this.chkEnableAutoVibrato = new org.kbinani.windows.forms.BCheckBox();
             this.comboAmplitude = new org.kbinani.windows.forms.BComboBox();
             this.comboDynamics = new org.kbinani.windows.forms.BComboBox();
-            this.lblPeriod = new org.kbinani.windows.forms.BLabel();
             this.lblAmplitude = new org.kbinani.windows.forms.BLabel();
             this.lblDynamics = new org.kbinani.windows.forms.BLabel();
             this.label1 = new org.kbinani.windows.forms.BLabel();
             this.lblResolution = new org.kbinani.windows.forms.BLabel();
             this.label7 = new org.kbinani.windows.forms.BLabel();
-            this.groupAutoVibratoConfig = new org.kbinani.windows.forms.BGroupBox();
+            this.groupVocaloidEditorCompatible = new org.kbinani.windows.forms.BGroupBox();
             this.comboAutoVibratoType2 = new org.kbinani.windows.forms.BComboBox();
             this.lblAutoVibratoType2 = new org.kbinani.windows.forms.BLabel();
-            this.label6 = new org.kbinani.windows.forms.BLabel();
             this.comboAutoVibratoType1 = new org.kbinani.windows.forms.BComboBox();
-            this.comboAutoVibratoMinLength = new org.kbinani.windows.forms.BComboBox();
             this.lblAutoVibratoType1 = new org.kbinani.windows.forms.BLabel();
-            this.lblAutoVibratoMinLength = new org.kbinani.windows.forms.BLabel();
-            this.chkEnableAutoVibrato = new org.kbinani.windows.forms.BCheckBox();
             this.label3 = new org.kbinani.windows.forms.BLabel();
             this.comboVibratoLength = new org.kbinani.windows.forms.BComboBox();
             this.lblVibratoLength = new org.kbinani.windows.forms.BLabel();
-            this.lblVibratoConfig = new org.kbinani.windows.forms.BLabel();
             this.tabAnother = new System.Windows.Forms.TabPage();
             this.bLabel2 = new org.kbinani.windows.forms.BLabel();
-            this.numBuffer = new org.kbinani.cadencii.NumericUpDownEx();
             this.lblBuffer = new org.kbinani.windows.forms.BLabel();
             this.groupWaveFileOutput = new org.kbinani.windows.forms.BGroupBox();
             this.radioCurrentTrack = new org.kbinani.windows.forms.BRadioButton();
@@ -1613,8 +1643,6 @@ namespace org.kbinani.cadencii {
             this.lblWait = new org.kbinani.windows.forms.BLabel();
             this.lblPreSendTime = new org.kbinani.windows.forms.BLabel();
             this.lblDefaultSinger = new org.kbinani.windows.forms.BLabel();
-            this.numWait = new org.kbinani.cadencii.NumericUpDownEx();
-            this.numPreSendTime = new org.kbinani.cadencii.NumericUpDownEx();
             this.tabAppearance = new System.Windows.Forms.TabPage();
             this.groupFont = new org.kbinani.windows.forms.BGroupBox();
             this.labelMenu = new org.kbinani.windows.forms.BLabel();
@@ -1648,22 +1676,18 @@ namespace org.kbinani.cadencii {
             this.lblTrackHeight = new org.kbinani.windows.forms.BLabel();
             this.comboLanguage = new org.kbinani.windows.forms.BComboBox();
             this.lblLanguage = new org.kbinani.windows.forms.BLabel();
-            this.numTrackHeight = new org.kbinani.cadencii.NumericUpDownEx();
             this.tabOperation = new System.Windows.Forms.TabPage();
             this.groupMisc = new org.kbinani.windows.forms.BGroupBox();
             this.comboMtcMidiInPortNumber = new org.kbinani.windows.forms.BComboBox();
             this.labelMtcMidiInPort = new org.kbinani.windows.forms.BLabel();
             this.lblMaximumFrameRate = new org.kbinani.windows.forms.BLabel();
             this.comboMidiInPortNumber = new org.kbinani.windows.forms.BComboBox();
-            this.numMaximumFrameRate = new org.kbinani.cadencii.NumericUpDownEx();
             this.lblMidiInPort = new org.kbinani.windows.forms.BLabel();
             this.lblMouseHoverTime = new org.kbinani.windows.forms.BLabel();
             this.lblMilliSecond = new org.kbinani.windows.forms.BLabel();
-            this.numMouseHoverTime = new org.kbinani.cadencii.NumericUpDownEx();
             this.groupPianoroll = new org.kbinani.windows.forms.BGroupBox();
             this.chkUseSpaceKeyAsMiddleButtonModifier = new org.kbinani.windows.forms.BCheckBox();
             this.labelWheelOrder = new org.kbinani.windows.forms.BLabel();
-            this.numericUpDownEx1 = new org.kbinani.cadencii.NumericUpDownEx();
             this.chkCursorFix = new org.kbinani.windows.forms.BCheckBox();
             this.chkCurveSelectingQuantized = new org.kbinani.windows.forms.BCheckBox();
             this.chkScrollHorizontal = new org.kbinani.windows.forms.BCheckBox();
@@ -1694,9 +1718,9 @@ namespace org.kbinani.cadencii {
             this.lblAutoBackupMinutes = new org.kbinani.windows.forms.BLabel();
             this.lblAutoBackupInterval = new org.kbinani.windows.forms.BLabel();
             this.chkAutoBackup = new org.kbinani.windows.forms.BCheckBox();
-            this.numAutoBackupInterval = new org.kbinani.cadencii.NumericUpDownEx();
             this.tabSingingSynth = new System.Windows.Forms.TabPage();
             this.groupDefaultSynthesizer = new org.kbinani.windows.forms.BGroupBox();
+            this.comboDefaultSynthesizer = new org.kbinani.windows.forms.BComboBox();
             this.groupSynthesizerDll = new org.kbinani.windows.forms.BGroupBox();
             this.chkLoadAquesTone = new org.kbinani.windows.forms.BCheckBox();
             this.chkLoadSecondaryVOCALOID1 = new org.kbinani.windows.forms.BCheckBox();
@@ -1713,35 +1737,45 @@ namespace org.kbinani.cadencii {
             this.lblVOCALOID1 = new org.kbinani.windows.forms.BLabel();
             this.btnCancel = new org.kbinani.windows.forms.BButton();
             this.btnOK = new org.kbinani.windows.forms.BButton();
-            this.comboDefaultSynthesizer = new org.kbinani.windows.forms.BComboBox();
+            this.txtVibratoDepth = new org.kbinani.cadencii.NumberTextBox();
+            this.txtVibratoRate = new org.kbinani.cadencii.NumberTextBox();
+            this.numBuffer = new org.kbinani.cadencii.NumericUpDownEx();
+            this.numWait = new org.kbinani.cadencii.NumericUpDownEx();
+            this.numPreSendTime = new org.kbinani.cadencii.NumericUpDownEx();
+            this.numTrackHeight = new org.kbinani.cadencii.NumericUpDownEx();
+            this.numMaximumFrameRate = new org.kbinani.cadencii.NumericUpDownEx();
+            this.numMouseHoverTime = new org.kbinani.cadencii.NumericUpDownEx();
+            this.numericUpDownEx1 = new org.kbinani.cadencii.NumericUpDownEx();
+            this.numAutoBackupInterval = new org.kbinani.cadencii.NumericUpDownEx();
             this.tabPreference.SuspendLayout();
             this.tabSequence.SuspendLayout();
-            this.groupAutoVibratoConfig.SuspendLayout();
+            this.groupUserDefined.SuspendLayout();
+            this.groupVocaloidEditorCompatible.SuspendLayout();
             this.tabAnother.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numBuffer)).BeginInit();
             this.groupWaveFileOutput.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numWait)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numPreSendTime)).BeginInit();
             this.tabAppearance.SuspendLayout();
             this.groupFont.SuspendLayout();
             this.groupVisibleCurve.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numTrackHeight)).BeginInit();
             this.tabOperation.SuspendLayout();
             this.groupMisc.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numMaximumFrameRate)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numMouseHoverTime)).BeginInit();
             this.groupPianoroll.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownEx1)).BeginInit();
             this.tabPlatform.SuspendLayout();
             this.groupUtauCores.SuspendLayout();
             this.groupPlatform.SuspendLayout();
             this.tabUtauSingers.SuspendLayout();
             this.tabFile.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numAutoBackupInterval)).BeginInit();
             this.tabSingingSynth.SuspendLayout();
             this.groupDefaultSynthesizer.SuspendLayout();
             this.groupSynthesizerDll.SuspendLayout();
             this.groupVsti.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numBuffer)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numWait)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numPreSendTime)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numTrackHeight)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numMaximumFrameRate)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numMouseHoverTime)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownEx1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numAutoBackupInterval)).BeginInit();
             this.SuspendLayout();
             // 
             // tabPreference
@@ -1762,86 +1796,124 @@ namespace org.kbinani.cadencii {
             this.tabPreference.Multiline = true;
             this.tabPreference.Name = "tabPreference";
             this.tabPreference.SelectedIndex = 0;
-            this.tabPreference.Size = new System.Drawing.Size( 462, 434 );
+            this.tabPreference.Size = new System.Drawing.Size( 462, 452 );
             this.tabPreference.TabIndex = 0;
             // 
             // tabSequence
             // 
-            this.tabSequence.Controls.Add( this.txtVibratoDepth );
-            this.tabSequence.Controls.Add( this.txtVibratoRate );
-            this.tabSequence.Controls.Add( this.lblVibratoDepth );
-            this.tabSequence.Controls.Add( this.lblVibratoRate );
-            this.tabSequence.Controls.Add( this.label5 );
+            this.tabSequence.Controls.Add( this.radioUserDefined );
+            this.tabSequence.Controls.Add( this.lblAutoVibratoType );
+            this.tabSequence.Controls.Add( this.radioVocaloidEditorCompatible );
+            this.tabSequence.Controls.Add( this.groupUserDefined );
+            this.tabSequence.Controls.Add( this.label6 );
+            this.tabSequence.Controls.Add( this.comboAutoVibratoMinLength );
             this.tabSequence.Controls.Add( this.label4 );
+            this.tabSequence.Controls.Add( this.lblAutoVibratoMinLength );
             this.tabSequence.Controls.Add( this.label2 );
-            this.tabSequence.Controls.Add( this.comboPeriod );
+            this.tabSequence.Controls.Add( this.chkEnableAutoVibrato );
             this.tabSequence.Controls.Add( this.comboAmplitude );
             this.tabSequence.Controls.Add( this.comboDynamics );
-            this.tabSequence.Controls.Add( this.lblPeriod );
             this.tabSequence.Controls.Add( this.lblAmplitude );
             this.tabSequence.Controls.Add( this.lblDynamics );
             this.tabSequence.Controls.Add( this.label1 );
             this.tabSequence.Controls.Add( this.lblResolution );
             this.tabSequence.Controls.Add( this.label7 );
-            this.tabSequence.Controls.Add( this.groupAutoVibratoConfig );
+            this.tabSequence.Controls.Add( this.groupVocaloidEditorCompatible );
             this.tabSequence.Controls.Add( this.label3 );
             this.tabSequence.Controls.Add( this.comboVibratoLength );
             this.tabSequence.Controls.Add( this.lblVibratoLength );
-            this.tabSequence.Controls.Add( this.lblVibratoConfig );
-            this.tabSequence.Location = new System.Drawing.Point( 4, 38 );
+            this.tabSequence.Location = new System.Drawing.Point( 4, 40 );
             this.tabSequence.Name = "tabSequence";
             this.tabSequence.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabSequence.Size = new System.Drawing.Size( 454, 392 );
+            this.tabSequence.Size = new System.Drawing.Size( 454, 408 );
             this.tabSequence.TabIndex = 0;
             this.tabSequence.Text = "Sequence";
             this.tabSequence.UseVisualStyleBackColor = true;
             // 
-            // txtVibratoDepth
+            // radioUserDefined
             // 
-            this.txtVibratoDepth.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))) );
-            this.txtVibratoDepth.ForeColor = System.Drawing.Color.White;
-            this.txtVibratoDepth.Location = new System.Drawing.Point( 214, 205 );
-            this.txtVibratoDepth.Name = "txtVibratoDepth";
-            this.txtVibratoDepth.Size = new System.Drawing.Size( 100, 19 );
-            this.txtVibratoDepth.TabIndex = 6;
-            this.txtVibratoDepth.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
+            this.radioUserDefined.AutoSize = true;
+            this.radioUserDefined.Location = new System.Drawing.Point( 345, 181 );
+            this.radioUserDefined.Name = "radioUserDefined";
+            this.radioUserDefined.Size = new System.Drawing.Size( 90, 16 );
+            this.radioUserDefined.TabIndex = 9;
+            this.radioUserDefined.Text = "User Defined";
+            this.radioUserDefined.UseVisualStyleBackColor = true;
             // 
-            // txtVibratoRate
+            // lblAutoVibratoType
             // 
-            this.txtVibratoRate.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))) );
-            this.txtVibratoRate.ForeColor = System.Drawing.Color.White;
-            this.txtVibratoRate.Location = new System.Drawing.Point( 214, 176 );
-            this.txtVibratoRate.Name = "txtVibratoRate";
-            this.txtVibratoRate.Size = new System.Drawing.Size( 100, 19 );
-            this.txtVibratoRate.TabIndex = 5;
-            this.txtVibratoRate.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
+            this.lblAutoVibratoType.AutoSize = true;
+            this.lblAutoVibratoType.Location = new System.Drawing.Point( 15, 183 );
+            this.lblAutoVibratoType.Name = "lblAutoVibratoType";
+            this.lblAutoVibratoType.Size = new System.Drawing.Size( 99, 12 );
+            this.lblAutoVibratoType.TabIndex = 35;
+            this.lblAutoVibratoType.Text = "Auto Vibrato Type";
             // 
-            // lblVibratoDepth
+            // radioVocaloidEditorCompatible
             // 
-            this.lblVibratoDepth.AutoSize = true;
-            this.lblVibratoDepth.Location = new System.Drawing.Point( 35, 208 );
-            this.lblVibratoDepth.Name = "lblVibratoDepth";
-            this.lblVibratoDepth.Size = new System.Drawing.Size( 133, 12 );
-            this.lblVibratoDepth.TabIndex = 36;
-            this.lblVibratoDepth.Text = "Default Vibrato Depth(&D)";
+            this.radioVocaloidEditorCompatible.AutoSize = true;
+            this.radioVocaloidEditorCompatible.Checked = true;
+            this.radioVocaloidEditorCompatible.Location = new System.Drawing.Point( 136, 181 );
+            this.radioVocaloidEditorCompatible.Name = "radioVocaloidEditorCompatible";
+            this.radioVocaloidEditorCompatible.Size = new System.Drawing.Size( 175, 16 );
+            this.radioVocaloidEditorCompatible.TabIndex = 8;
+            this.radioVocaloidEditorCompatible.TabStop = true;
+            this.radioVocaloidEditorCompatible.Text = "VOCALOID Editor Compatible";
+            this.radioVocaloidEditorCompatible.UseVisualStyleBackColor = true;
+            // 
+            // groupUserDefined
+            // 
+            this.groupUserDefined.Controls.Add( this.lblVibratoRate );
+            this.groupUserDefined.Controls.Add( this.txtVibratoDepth );
+            this.groupUserDefined.Controls.Add( this.lblVibratoDepth );
+            this.groupUserDefined.Controls.Add( this.txtVibratoRate );
+            this.groupUserDefined.Enabled = false;
+            this.groupUserDefined.Location = new System.Drawing.Point( 66, 300 );
+            this.groupUserDefined.Name = "groupUserDefined";
+            this.groupUserDefined.Size = new System.Drawing.Size( 372, 81 );
+            this.groupUserDefined.TabIndex = 15;
+            this.groupUserDefined.TabStop = false;
+            this.groupUserDefined.Text = "User Defined";
             // 
             // lblVibratoRate
             // 
             this.lblVibratoRate.AutoSize = true;
-            this.lblVibratoRate.Location = new System.Drawing.Point( 35, 179 );
+            this.lblVibratoRate.Location = new System.Drawing.Point( 16, 25 );
             this.lblVibratoRate.Name = "lblVibratoRate";
             this.lblVibratoRate.Size = new System.Drawing.Size( 127, 12 );
-            this.lblVibratoRate.TabIndex = 35;
+            this.lblVibratoRate.TabIndex = 16;
             this.lblVibratoRate.Text = "Default Vibrato Rate(&R)";
             // 
-            // label5
+            // lblVibratoDepth
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point( 286, 96 );
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size( 38, 12 );
-            this.label5.TabIndex = 34;
-            this.label5.Text = "clocks";
+            this.lblVibratoDepth.AutoSize = true;
+            this.lblVibratoDepth.Location = new System.Drawing.Point( 16, 54 );
+            this.lblVibratoDepth.Name = "lblVibratoDepth";
+            this.lblVibratoDepth.Size = new System.Drawing.Size( 133, 12 );
+            this.lblVibratoDepth.TabIndex = 18;
+            this.lblVibratoDepth.Text = "Default Vibrato Depth(&D)";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point( 382, 154 );
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size( 27, 12 );
+            this.label6.TabIndex = 26;
+            this.label6.Text = "beat";
+            // 
+            // comboAutoVibratoMinLength
+            // 
+            this.comboAutoVibratoMinLength.FormattingEnabled = true;
+            this.comboAutoVibratoMinLength.Items.AddRange( new object[] {
+            "1",
+            "2",
+            "3",
+            "4"} );
+            this.comboAutoVibratoMinLength.Location = new System.Drawing.Point( 310, 151 );
+            this.comboAutoVibratoMinLength.Name = "comboAutoVibratoMinLength";
+            this.comboAutoVibratoMinLength.Size = new System.Drawing.Size( 66, 20 );
+            this.comboAutoVibratoMinLength.TabIndex = 7;
             // 
             // label4
             // 
@@ -1852,6 +1924,15 @@ namespace org.kbinani.cadencii {
             this.label4.TabIndex = 33;
             this.label4.Text = "clocks";
             // 
+            // lblAutoVibratoMinLength
+            // 
+            this.lblAutoVibratoMinLength.AutoSize = true;
+            this.lblAutoVibratoMinLength.Location = new System.Drawing.Point( 35, 154 );
+            this.lblAutoVibratoMinLength.Name = "lblAutoVibratoMinLength";
+            this.lblAutoVibratoMinLength.Size = new System.Drawing.Size( 243, 12 );
+            this.lblAutoVibratoMinLength.TabIndex = 6;
+            this.lblAutoVibratoMinLength.Text = "Minimum note length for Automatic Vibrato(&M)";
+            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -1861,14 +1942,15 @@ namespace org.kbinani.cadencii {
             this.label2.TabIndex = 32;
             this.label2.Text = "clocks";
             // 
-            // comboPeriod
+            // chkEnableAutoVibrato
             // 
-            this.comboPeriod.Enabled = false;
-            this.comboPeriod.FormattingEnabled = true;
-            this.comboPeriod.Location = new System.Drawing.Point( 179, 93 );
-            this.comboPeriod.Name = "comboPeriod";
-            this.comboPeriod.Size = new System.Drawing.Size( 101, 20 );
-            this.comboPeriod.TabIndex = 3;
+            this.chkEnableAutoVibrato.AutoSize = true;
+            this.chkEnableAutoVibrato.Location = new System.Drawing.Point( 15, 96 );
+            this.chkEnableAutoVibrato.Name = "chkEnableAutoVibrato";
+            this.chkEnableAutoVibrato.Size = new System.Drawing.Size( 170, 16 );
+            this.chkEnableAutoVibrato.TabIndex = 3;
+            this.chkEnableAutoVibrato.Text = "Enable Automatic Vibrato(&E)";
+            this.chkEnableAutoVibrato.UseVisualStyleBackColor = true;
             // 
             // comboAmplitude
             // 
@@ -1886,15 +1968,6 @@ namespace org.kbinani.cadencii {
             this.comboDynamics.Name = "comboDynamics";
             this.comboDynamics.Size = new System.Drawing.Size( 101, 20 );
             this.comboDynamics.TabIndex = 1;
-            // 
-            // lblPeriod
-            // 
-            this.lblPeriod.AutoSize = true;
-            this.lblPeriod.Location = new System.Drawing.Point( 35, 96 );
-            this.lblPeriod.Name = "lblPeriod";
-            this.lblPeriod.Size = new System.Drawing.Size( 86, 12 );
-            this.lblPeriod.TabIndex = 28;
-            this.lblPeriod.Text = "Vibrato Rate(&V)";
             // 
             // lblAmplitude
             // 
@@ -1933,28 +2006,25 @@ namespace org.kbinani.cadencii {
             // 
             // label7
             // 
+            this.label7.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label7.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.label7.Location = new System.Drawing.Point( 115, 125 );
+            this.label7.Location = new System.Drawing.Point( 189, 103 );
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size( 323, 1 );
+            this.label7.Size = new System.Drawing.Size( 246, 1 );
             this.label7.TabIndex = 5;
             // 
-            // groupAutoVibratoConfig
+            // groupVocaloidEditorCompatible
             // 
-            this.groupAutoVibratoConfig.Controls.Add( this.comboAutoVibratoType2 );
-            this.groupAutoVibratoConfig.Controls.Add( this.lblAutoVibratoType2 );
-            this.groupAutoVibratoConfig.Controls.Add( this.label6 );
-            this.groupAutoVibratoConfig.Controls.Add( this.comboAutoVibratoType1 );
-            this.groupAutoVibratoConfig.Controls.Add( this.comboAutoVibratoMinLength );
-            this.groupAutoVibratoConfig.Controls.Add( this.lblAutoVibratoType1 );
-            this.groupAutoVibratoConfig.Controls.Add( this.lblAutoVibratoMinLength );
-            this.groupAutoVibratoConfig.Controls.Add( this.chkEnableAutoVibrato );
-            this.groupAutoVibratoConfig.Location = new System.Drawing.Point( 37, 237 );
-            this.groupAutoVibratoConfig.Name = "groupAutoVibratoConfig";
-            this.groupAutoVibratoConfig.Size = new System.Drawing.Size( 401, 140 );
-            this.groupAutoVibratoConfig.TabIndex = 7;
-            this.groupAutoVibratoConfig.TabStop = false;
-            this.groupAutoVibratoConfig.Text = "Auto Vibrato Settings";
+            this.groupVocaloidEditorCompatible.Controls.Add( this.comboAutoVibratoType2 );
+            this.groupVocaloidEditorCompatible.Controls.Add( this.lblAutoVibratoType2 );
+            this.groupVocaloidEditorCompatible.Controls.Add( this.comboAutoVibratoType1 );
+            this.groupVocaloidEditorCompatible.Controls.Add( this.lblAutoVibratoType1 );
+            this.groupVocaloidEditorCompatible.Location = new System.Drawing.Point( 66, 213 );
+            this.groupVocaloidEditorCompatible.Name = "groupVocaloidEditorCompatible";
+            this.groupVocaloidEditorCompatible.Size = new System.Drawing.Size( 372, 81 );
+            this.groupVocaloidEditorCompatible.TabIndex = 10;
+            this.groupVocaloidEditorCompatible.TabStop = false;
+            this.groupVocaloidEditorCompatible.Text = "VOCALOID Editor Compatible";
             // 
             // comboAutoVibratoType2
             // 
@@ -1976,28 +2046,19 @@ namespace org.kbinani.cadencii {
             "[Slight] Type 2",
             "[Slight] Type 3",
             "[Slight] Type 4"} );
-            this.comboAutoVibratoType2.Location = new System.Drawing.Point( 209, 105 );
+            this.comboAutoVibratoType2.Location = new System.Drawing.Point( 225, 51 );
             this.comboAutoVibratoType2.Name = "comboAutoVibratoType2";
-            this.comboAutoVibratoType2.Size = new System.Drawing.Size( 182, 20 );
-            this.comboAutoVibratoType2.TabIndex = 11;
+            this.comboAutoVibratoType2.Size = new System.Drawing.Size( 131, 20 );
+            this.comboAutoVibratoType2.TabIndex = 14;
             // 
             // lblAutoVibratoType2
             // 
             this.lblAutoVibratoType2.AutoSize = true;
-            this.lblAutoVibratoType2.Location = new System.Drawing.Point( 19, 108 );
+            this.lblAutoVibratoType2.Location = new System.Drawing.Point( 18, 54 );
             this.lblAutoVibratoType2.Name = "lblAutoVibratoType2";
             this.lblAutoVibratoType2.Size = new System.Drawing.Size( 155, 12 );
-            this.lblAutoVibratoType2.TabIndex = 29;
+            this.lblAutoVibratoType2.TabIndex = 13;
             this.lblAutoVibratoType2.Text = "Vibrato Type: VOCALOID2(&T)";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point( 364, 54 );
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size( 27, 12 );
-            this.label6.TabIndex = 26;
-            this.label6.Text = "beat";
             // 
             // comboAutoVibratoType1
             // 
@@ -2019,56 +2080,24 @@ namespace org.kbinani.cadencii {
             "[Slight] Type 2",
             "[Slight] Type 3",
             "[Slight] Type 4"} );
-            this.comboAutoVibratoType1.Location = new System.Drawing.Point( 209, 79 );
+            this.comboAutoVibratoType1.Location = new System.Drawing.Point( 225, 22 );
             this.comboAutoVibratoType1.Name = "comboAutoVibratoType1";
-            this.comboAutoVibratoType1.Size = new System.Drawing.Size( 182, 20 );
-            this.comboAutoVibratoType1.TabIndex = 10;
-            // 
-            // comboAutoVibratoMinLength
-            // 
-            this.comboAutoVibratoMinLength.FormattingEnabled = true;
-            this.comboAutoVibratoMinLength.Items.AddRange( new object[] {
-            "1",
-            "2",
-            "3",
-            "4"} );
-            this.comboAutoVibratoMinLength.Location = new System.Drawing.Point( 292, 51 );
-            this.comboAutoVibratoMinLength.Name = "comboAutoVibratoMinLength";
-            this.comboAutoVibratoMinLength.Size = new System.Drawing.Size( 66, 20 );
-            this.comboAutoVibratoMinLength.TabIndex = 9;
+            this.comboAutoVibratoType1.Size = new System.Drawing.Size( 131, 20 );
+            this.comboAutoVibratoType1.TabIndex = 12;
             // 
             // lblAutoVibratoType1
             // 
             this.lblAutoVibratoType1.AutoSize = true;
-            this.lblAutoVibratoType1.Location = new System.Drawing.Point( 19, 82 );
+            this.lblAutoVibratoType1.Location = new System.Drawing.Point( 18, 25 );
             this.lblAutoVibratoType1.Name = "lblAutoVibratoType1";
             this.lblAutoVibratoType1.Size = new System.Drawing.Size( 155, 12 );
-            this.lblAutoVibratoType1.TabIndex = 27;
+            this.lblAutoVibratoType1.TabIndex = 11;
             this.lblAutoVibratoType1.Text = "Vibrato Type: VOCALOID1(&T)";
-            // 
-            // lblAutoVibratoMinLength
-            // 
-            this.lblAutoVibratoMinLength.AutoSize = true;
-            this.lblAutoVibratoMinLength.Location = new System.Drawing.Point( 19, 54 );
-            this.lblAutoVibratoMinLength.Name = "lblAutoVibratoMinLength";
-            this.lblAutoVibratoMinLength.Size = new System.Drawing.Size( 243, 12 );
-            this.lblAutoVibratoMinLength.TabIndex = 24;
-            this.lblAutoVibratoMinLength.Text = "Minimum note length for Automatic Vibrato(&M)";
-            // 
-            // chkEnableAutoVibrato
-            // 
-            this.chkEnableAutoVibrato.AutoSize = true;
-            this.chkEnableAutoVibrato.Location = new System.Drawing.Point( 19, 22 );
-            this.chkEnableAutoVibrato.Name = "chkEnableAutoVibrato";
-            this.chkEnableAutoVibrato.Size = new System.Drawing.Size( 170, 16 );
-            this.chkEnableAutoVibrato.TabIndex = 8;
-            this.chkEnableAutoVibrato.Text = "Enable Automatic Vibrato(&E)";
-            this.chkEnableAutoVibrato.UseVisualStyleBackColor = true;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point( 311, 150 );
+            this.label3.Location = new System.Drawing.Point( 313, 125 );
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size( 11, 12 );
             this.label3.TabIndex = 22;
@@ -2082,33 +2111,23 @@ namespace org.kbinani.cadencii {
             "66",
             "75",
             "100"} );
-            this.comboVibratoLength.Location = new System.Drawing.Point( 214, 147 );
+            this.comboVibratoLength.Location = new System.Drawing.Point( 213, 122 );
             this.comboVibratoLength.Name = "comboVibratoLength";
             this.comboVibratoLength.Size = new System.Drawing.Size( 86, 20 );
-            this.comboVibratoLength.TabIndex = 4;
+            this.comboVibratoLength.TabIndex = 5;
             // 
             // lblVibratoLength
             // 
             this.lblVibratoLength.AutoSize = true;
-            this.lblVibratoLength.Location = new System.Drawing.Point( 35, 150 );
+            this.lblVibratoLength.Location = new System.Drawing.Point( 35, 125 );
             this.lblVibratoLength.Name = "lblVibratoLength";
             this.lblVibratoLength.Size = new System.Drawing.Size( 135, 12 );
-            this.lblVibratoLength.TabIndex = 20;
+            this.lblVibratoLength.TabIndex = 4;
             this.lblVibratoLength.Text = "Default Vibrato Length(&L)";
-            // 
-            // lblVibratoConfig
-            // 
-            this.lblVibratoConfig.AutoSize = true;
-            this.lblVibratoConfig.Location = new System.Drawing.Point( 15, 121 );
-            this.lblVibratoConfig.Name = "lblVibratoConfig";
-            this.lblVibratoConfig.Size = new System.Drawing.Size( 88, 12 );
-            this.lblVibratoConfig.TabIndex = 0;
-            this.lblVibratoConfig.Text = "Vibrato Settings";
             // 
             // tabAnother
             // 
             this.tabAnother.Controls.Add( this.bLabel2 );
-            this.tabAnother.Controls.Add( this.numBuffer );
             this.tabAnother.Controls.Add( this.lblBuffer );
             this.tabAnother.Controls.Add( this.groupWaveFileOutput );
             this.tabAnother.Controls.Add( this.label13 );
@@ -2120,12 +2139,13 @@ namespace org.kbinani.cadencii {
             this.tabAnother.Controls.Add( this.lblWait );
             this.tabAnother.Controls.Add( this.lblPreSendTime );
             this.tabAnother.Controls.Add( this.lblDefaultSinger );
+            this.tabAnother.Controls.Add( this.numBuffer );
             this.tabAnother.Controls.Add( this.numWait );
             this.tabAnother.Controls.Add( this.numPreSendTime );
-            this.tabAnother.Location = new System.Drawing.Point( 4, 38 );
+            this.tabAnother.Location = new System.Drawing.Point( 4, 40 );
             this.tabAnother.Name = "tabAnother";
             this.tabAnother.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabAnother.Size = new System.Drawing.Size( 454, 392 );
+            this.tabAnother.Size = new System.Drawing.Size( 454, 408 );
             this.tabAnother.TabIndex = 2;
             this.tabAnother.Text = "Other Settings";
             this.tabAnother.UseVisualStyleBackColor = true;
@@ -2138,28 +2158,6 @@ namespace org.kbinani.cadencii {
             this.bLabel2.Size = new System.Drawing.Size( 88, 12 );
             this.bLabel2.TabIndex = 30;
             this.bLabel2.Text = "msec(100-1000)";
-            // 
-            // numBuffer
-            // 
-            this.numBuffer.Location = new System.Drawing.Point( 216, 180 );
-            this.numBuffer.Maximum = new decimal( new int[] {
-            1000,
-            0,
-            0,
-            0} );
-            this.numBuffer.Minimum = new decimal( new int[] {
-            100,
-            0,
-            0,
-            0} );
-            this.numBuffer.Name = "numBuffer";
-            this.numBuffer.Size = new System.Drawing.Size( 68, 19 );
-            this.numBuffer.TabIndex = 31;
-            this.numBuffer.Value = new decimal( new int[] {
-            1000,
-            0,
-            0,
-            0} );
             // 
             // lblBuffer
             // 
@@ -2220,7 +2218,7 @@ namespace org.kbinani.cadencii {
             this.comboChannel.Items.AddRange( new object[] {
             "Mono",
             "Stereo"} );
-            this.comboChannel.Location = new System.Drawing.Point( 113, 24 );
+            this.comboChannel.Location = new System.Drawing.Point( 135, 24 );
             this.comboChannel.Name = "comboChannel";
             this.comboChannel.Size = new System.Drawing.Size( 97, 20 );
             this.comboChannel.TabIndex = 27;
@@ -2316,51 +2314,6 @@ namespace org.kbinani.cadencii {
             this.lblDefaultSinger.TabIndex = 0;
             this.lblDefaultSinger.Text = "Default Singer(&S)";
             // 
-            // numWait
-            // 
-            this.numWait.Enabled = false;
-            this.numWait.Location = new System.Drawing.Point( 216, 87 );
-            this.numWait.Maximum = new decimal( new int[] {
-            2000,
-            0,
-            0,
-            0} );
-            this.numWait.Minimum = new decimal( new int[] {
-            200,
-            0,
-            0,
-            0} );
-            this.numWait.Name = "numWait";
-            this.numWait.Size = new System.Drawing.Size( 68, 19 );
-            this.numWait.TabIndex = 22;
-            this.numWait.Value = new decimal( new int[] {
-            300,
-            0,
-            0,
-            0} );
-            // 
-            // numPreSendTime
-            // 
-            this.numPreSendTime.Location = new System.Drawing.Point( 216, 56 );
-            this.numPreSendTime.Maximum = new decimal( new int[] {
-            5000,
-            0,
-            0,
-            0} );
-            this.numPreSendTime.Minimum = new decimal( new int[] {
-            500,
-            0,
-            0,
-            0} );
-            this.numPreSendTime.Name = "numPreSendTime";
-            this.numPreSendTime.Size = new System.Drawing.Size( 68, 19 );
-            this.numPreSendTime.TabIndex = 21;
-            this.numPreSendTime.Value = new decimal( new int[] {
-            500,
-            0,
-            0,
-            0} );
-            // 
             // tabAppearance
             // 
             this.tabAppearance.Controls.Add( this.groupFont );
@@ -2369,10 +2322,10 @@ namespace org.kbinani.cadencii {
             this.tabAppearance.Controls.Add( this.comboLanguage );
             this.tabAppearance.Controls.Add( this.lblLanguage );
             this.tabAppearance.Controls.Add( this.numTrackHeight );
-            this.tabAppearance.Location = new System.Drawing.Point( 4, 38 );
+            this.tabAppearance.Location = new System.Drawing.Point( 4, 40 );
             this.tabAppearance.Name = "tabAppearance";
             this.tabAppearance.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabAppearance.Size = new System.Drawing.Size( 454, 392 );
+            this.tabAppearance.Size = new System.Drawing.Size( 454, 408 );
             this.tabAppearance.TabIndex = 3;
             this.tabAppearance.Text = "Appearance";
             this.tabAppearance.UseVisualStyleBackColor = true;
@@ -2712,36 +2665,14 @@ namespace org.kbinani.cadencii {
             this.lblLanguage.TabIndex = 9;
             this.lblLanguage.Text = "UI Language";
             // 
-            // numTrackHeight
-            // 
-            this.numTrackHeight.Location = new System.Drawing.Point( 210, 139 );
-            this.numTrackHeight.Maximum = new decimal( new int[] {
-            50,
-            0,
-            0,
-            0} );
-            this.numTrackHeight.Minimum = new decimal( new int[] {
-            5,
-            0,
-            0,
-            0} );
-            this.numTrackHeight.Name = "numTrackHeight";
-            this.numTrackHeight.Size = new System.Drawing.Size( 120, 19 );
-            this.numTrackHeight.TabIndex = 45;
-            this.numTrackHeight.Value = new decimal( new int[] {
-            14,
-            0,
-            0,
-            0} );
-            // 
             // tabOperation
             // 
             this.tabOperation.Controls.Add( this.groupMisc );
             this.tabOperation.Controls.Add( this.groupPianoroll );
-            this.tabOperation.Location = new System.Drawing.Point( 4, 38 );
+            this.tabOperation.Location = new System.Drawing.Point( 4, 40 );
             this.tabOperation.Name = "tabOperation";
             this.tabOperation.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabOperation.Size = new System.Drawing.Size( 454, 392 );
+            this.tabOperation.Size = new System.Drawing.Size( 454, 408 );
             this.tabOperation.TabIndex = 5;
             this.tabOperation.Text = "Operation";
             this.tabOperation.UseVisualStyleBackColor = true;
@@ -2802,28 +2733,6 @@ namespace org.kbinani.cadencii {
             this.comboMidiInPortNumber.Size = new System.Drawing.Size( 225, 20 );
             this.comboMidiInPortNumber.TabIndex = 89;
             // 
-            // numMaximumFrameRate
-            // 
-            this.numMaximumFrameRate.Location = new System.Drawing.Point( 176, 21 );
-            this.numMaximumFrameRate.Maximum = new decimal( new int[] {
-            1000,
-            0,
-            0,
-            0} );
-            this.numMaximumFrameRate.Minimum = new decimal( new int[] {
-            5,
-            0,
-            0,
-            0} );
-            this.numMaximumFrameRate.Name = "numMaximumFrameRate";
-            this.numMaximumFrameRate.Size = new System.Drawing.Size( 120, 19 );
-            this.numMaximumFrameRate.TabIndex = 84;
-            this.numMaximumFrameRate.Value = new decimal( new int[] {
-            30,
-            0,
-            0,
-            0} );
-            // 
             // lblMidiInPort
             // 
             this.lblMidiInPort.AutoSize = true;
@@ -2850,23 +2759,6 @@ namespace org.kbinani.cadencii {
             this.lblMilliSecond.Size = new System.Drawing.Size( 66, 12 );
             this.lblMilliSecond.TabIndex = 10;
             this.lblMilliSecond.Text = "milli second";
-            // 
-            // numMouseHoverTime
-            // 
-            this.numMouseHoverTime.Location = new System.Drawing.Point( 176, 48 );
-            this.numMouseHoverTime.Maximum = new decimal( new int[] {
-            2000,
-            0,
-            0,
-            0} );
-            this.numMouseHoverTime.Name = "numMouseHoverTime";
-            this.numMouseHoverTime.Size = new System.Drawing.Size( 120, 19 );
-            this.numMouseHoverTime.TabIndex = 86;
-            this.numMouseHoverTime.Value = new decimal( new int[] {
-            500,
-            0,
-            0,
-            0} );
             // 
             // groupPianoroll
             // 
@@ -2903,28 +2795,6 @@ namespace org.kbinani.cadencii {
             this.labelWheelOrder.Size = new System.Drawing.Size( 99, 12 );
             this.labelWheelOrder.TabIndex = 1;
             this.labelWheelOrder.Text = "Mouse wheel Rate";
-            // 
-            // numericUpDownEx1
-            // 
-            this.numericUpDownEx1.Location = new System.Drawing.Point( 199, 21 );
-            this.numericUpDownEx1.Maximum = new decimal( new int[] {
-            50,
-            0,
-            0,
-            0} );
-            this.numericUpDownEx1.Minimum = new decimal( new int[] {
-            5,
-            0,
-            0,
-            0} );
-            this.numericUpDownEx1.Name = "numericUpDownEx1";
-            this.numericUpDownEx1.Size = new System.Drawing.Size( 120, 19 );
-            this.numericUpDownEx1.TabIndex = 80;
-            this.numericUpDownEx1.Value = new decimal( new int[] {
-            20,
-            0,
-            0,
-            0} );
             // 
             // chkCursorFix
             // 
@@ -2980,10 +2850,10 @@ namespace org.kbinani.cadencii {
             // 
             this.tabPlatform.Controls.Add( this.groupUtauCores );
             this.tabPlatform.Controls.Add( this.groupPlatform );
-            this.tabPlatform.Location = new System.Drawing.Point( 4, 38 );
+            this.tabPlatform.Location = new System.Drawing.Point( 4, 40 );
             this.tabPlatform.Name = "tabPlatform";
             this.tabPlatform.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabPlatform.Size = new System.Drawing.Size( 454, 392 );
+            this.tabPlatform.Size = new System.Drawing.Size( 454, 408 );
             this.tabPlatform.TabIndex = 4;
             this.tabPlatform.Text = "Platform";
             this.tabPlatform.UseVisualStyleBackColor = true;
@@ -3123,10 +2993,10 @@ namespace org.kbinani.cadencii {
             this.tabUtauSingers.Controls.Add( this.btnUp );
             this.tabUtauSingers.Controls.Add( this.btnDown );
             this.tabUtauSingers.Controls.Add( this.listSingers );
-            this.tabUtauSingers.Location = new System.Drawing.Point( 4, 38 );
+            this.tabUtauSingers.Location = new System.Drawing.Point( 4, 40 );
             this.tabUtauSingers.Name = "tabUtauSingers";
             this.tabUtauSingers.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabUtauSingers.Size = new System.Drawing.Size( 454, 392 );
+            this.tabUtauSingers.Size = new System.Drawing.Size( 454, 408 );
             this.tabUtauSingers.TabIndex = 6;
             this.tabUtauSingers.Text = "UTAU Singers";
             this.tabUtauSingers.UseVisualStyleBackColor = true;
@@ -3177,7 +3047,46 @@ namespace org.kbinani.cadencii {
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.listSingers.FullRowSelect = true;
+            listViewGroup1.Header = "ListViewGroup";
+            listViewGroup1.Name = null;
+            listViewGroup2.Header = "ListViewGroup";
+            listViewGroup2.Name = null;
+            listViewGroup3.Header = "ListViewGroup";
+            listViewGroup3.Name = null;
+            listViewGroup4.Header = "ListViewGroup";
+            listViewGroup4.Name = null;
+            listViewGroup5.Header = "ListViewGroup";
+            listViewGroup5.Name = null;
+            listViewGroup6.Header = "ListViewGroup";
+            listViewGroup6.Name = null;
+            listViewGroup7.Header = "ListViewGroup";
+            listViewGroup7.Name = null;
+            listViewGroup8.Header = "ListViewGroup";
+            listViewGroup8.Name = null;
+            listViewGroup9.Header = "ListViewGroup";
+            listViewGroup9.Name = null;
+            listViewGroup10.Header = "ListViewGroup";
+            listViewGroup10.Name = null;
+            listViewGroup11.Header = "ListViewGroup";
+            listViewGroup11.Name = null;
+            listViewGroup12.Header = "ListViewGroup";
+            listViewGroup12.Name = null;
+            listViewGroup13.Header = "ListViewGroup";
+            listViewGroup13.Name = null;
+            listViewGroup14.Header = "ListViewGroup";
+            listViewGroup14.Name = null;
+            listViewGroup15.Header = "ListViewGroup";
+            listViewGroup15.Name = null;
+            listViewGroup16.Header = "ListViewGroup";
+            listViewGroup16.Name = null;
+            listViewGroup17.Header = "ListViewGroup";
+            listViewGroup17.Name = null;
+            listViewGroup18.Header = "ListViewGroup";
+            listViewGroup18.Name = null;
+            listViewGroup19.Header = "ListViewGroup";
+            listViewGroup19.Name = null;
             listViewGroup20.Header = "ListViewGroup";
+            listViewGroup20.Name = null;
             listViewGroup21.Header = "ListViewGroup";
             listViewGroup21.Name = null;
             listViewGroup22.Header = "ListViewGroup";
@@ -3188,52 +3097,32 @@ namespace org.kbinani.cadencii {
             listViewGroup24.Name = null;
             listViewGroup25.Header = "ListViewGroup";
             listViewGroup25.Name = null;
-            listViewGroup26.Header = "ListViewGroup";
-            listViewGroup26.Name = null;
-            listViewGroup27.Header = "ListViewGroup";
-            listViewGroup27.Name = null;
-            listViewGroup28.Header = "ListViewGroup";
-            listViewGroup28.Name = null;
-            listViewGroup29.Header = "ListViewGroup";
-            listViewGroup29.Name = null;
-            listViewGroup30.Header = "ListViewGroup";
-            listViewGroup30.Name = null;
-            listViewGroup31.Header = "ListViewGroup";
-            listViewGroup31.Name = null;
-            listViewGroup32.Header = "ListViewGroup";
-            listViewGroup32.Name = null;
-            listViewGroup33.Header = "ListViewGroup";
-            listViewGroup33.Name = null;
-            listViewGroup34.Header = "ListViewGroup";
-            listViewGroup34.Name = null;
-            listViewGroup35.Header = "ListViewGroup";
-            listViewGroup35.Name = null;
-            listViewGroup36.Header = "ListViewGroup";
-            listViewGroup36.Name = null;
-            listViewGroup37.Header = "ListViewGroup";
-            listViewGroup37.Name = null;
-            listViewGroup38.Header = "ListViewGroup";
-            listViewGroup38.Name = null;
             this.listSingers.Groups.AddRange( new System.Windows.Forms.ListViewGroup[] {
+            listViewGroup1,
+            listViewGroup2,
+            listViewGroup3,
+            listViewGroup4,
+            listViewGroup5,
+            listViewGroup6,
+            listViewGroup7,
+            listViewGroup8,
+            listViewGroup9,
+            listViewGroup10,
+            listViewGroup11,
+            listViewGroup12,
+            listViewGroup13,
+            listViewGroup14,
+            listViewGroup15,
+            listViewGroup16,
+            listViewGroup17,
+            listViewGroup18,
+            listViewGroup19,
             listViewGroup20,
             listViewGroup21,
             listViewGroup22,
             listViewGroup23,
             listViewGroup24,
-            listViewGroup25,
-            listViewGroup26,
-            listViewGroup27,
-            listViewGroup28,
-            listViewGroup29,
-            listViewGroup30,
-            listViewGroup31,
-            listViewGroup32,
-            listViewGroup33,
-            listViewGroup34,
-            listViewGroup35,
-            listViewGroup36,
-            listViewGroup37,
-            listViewGroup38} );
+            listViewGroup25} );
             this.listSingers.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.listSingers.Location = new System.Drawing.Point( 17, 23 );
             this.listSingers.MultiSelect = false;
@@ -3250,10 +3139,10 @@ namespace org.kbinani.cadencii {
             this.tabFile.Controls.Add( this.lblAutoBackupInterval );
             this.tabFile.Controls.Add( this.chkAutoBackup );
             this.tabFile.Controls.Add( this.numAutoBackupInterval );
-            this.tabFile.Location = new System.Drawing.Point( 4, 38 );
+            this.tabFile.Location = new System.Drawing.Point( 4, 40 );
             this.tabFile.Name = "tabFile";
             this.tabFile.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabFile.Size = new System.Drawing.Size( 454, 392 );
+            this.tabFile.Size = new System.Drawing.Size( 454, 408 );
             this.tabFile.TabIndex = 7;
             this.tabFile.Text = "File";
             this.tabFile.UseVisualStyleBackColor = true;
@@ -3296,33 +3185,15 @@ namespace org.kbinani.cadencii {
             this.chkAutoBackup.Text = "Automatical Backup";
             this.chkAutoBackup.UseVisualStyleBackColor = true;
             // 
-            // numAutoBackupInterval
-            // 
-            this.numAutoBackupInterval.Location = new System.Drawing.Point( 256, 22 );
-            this.numAutoBackupInterval.Minimum = new decimal( new int[] {
-            1,
-            0,
-            0,
-            0} );
-            this.numAutoBackupInterval.Name = "numAutoBackupInterval";
-            this.numAutoBackupInterval.Size = new System.Drawing.Size( 69, 19 );
-            this.numAutoBackupInterval.TabIndex = 2;
-            this.numAutoBackupInterval.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.numAutoBackupInterval.Value = new decimal( new int[] {
-            10,
-            0,
-            0,
-            0} );
-            // 
             // tabSingingSynth
             // 
             this.tabSingingSynth.Controls.Add( this.groupDefaultSynthesizer );
             this.tabSingingSynth.Controls.Add( this.groupSynthesizerDll );
             this.tabSingingSynth.Controls.Add( this.groupVsti );
-            this.tabSingingSynth.Location = new System.Drawing.Point( 4, 38 );
+            this.tabSingingSynth.Location = new System.Drawing.Point( 4, 40 );
             this.tabSingingSynth.Name = "tabSingingSynth";
             this.tabSingingSynth.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabSingingSynth.Size = new System.Drawing.Size( 454, 392 );
+            this.tabSingingSynth.Size = new System.Drawing.Size( 454, 408 );
             this.tabSingingSynth.TabIndex = 8;
             this.tabSingingSynth.Text = "Synthesizer";
             this.tabSingingSynth.UseVisualStyleBackColor = true;
@@ -3336,6 +3207,31 @@ namespace org.kbinani.cadencii {
             this.groupDefaultSynthesizer.TabIndex = 111;
             this.groupDefaultSynthesizer.TabStop = false;
             this.groupDefaultSynthesizer.Text = "Default Synthesizer";
+            // 
+            // comboDefaultSynthesizer
+            // 
+            this.comboDefaultSynthesizer.FormattingEnabled = true;
+            this.comboDefaultSynthesizer.Items.AddRange( new object[] {
+            "[Normal] Type 1",
+            "[Normal] Type 2",
+            "[Normal] Type 3",
+            "[Normal] Type 4",
+            "[Extreme] Type 1",
+            "[Extreme] Type 2",
+            "[Extreme] Type 3",
+            "[Extreme] Type 4",
+            "[Fast] Type 1",
+            "[Fast] Type 2",
+            "[Fast] Type 3",
+            "[Fast] Type 4",
+            "[Slight] Type 1",
+            "[Slight] Type 2",
+            "[Slight] Type 3",
+            "[Slight] Type 4"} );
+            this.comboDefaultSynthesizer.Location = new System.Drawing.Point( 18, 29 );
+            this.comboDefaultSynthesizer.Name = "comboDefaultSynthesizer";
+            this.comboDefaultSynthesizer.Size = new System.Drawing.Size( 182, 20 );
+            this.comboDefaultSynthesizer.TabIndex = 11;
             // 
             // groupSynthesizerDll
             // 
@@ -3481,7 +3377,7 @@ namespace org.kbinani.cadencii {
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point( 374, 457 );
+            this.btnCancel.Location = new System.Drawing.Point( 374, 475 );
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size( 88, 23 );
             this.btnCancel.TabIndex = 201;
@@ -3491,37 +3387,200 @@ namespace org.kbinani.cadencii {
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.Location = new System.Drawing.Point( 280, 457 );
+            this.btnOK.Location = new System.Drawing.Point( 280, 475 );
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size( 88, 23 );
             this.btnOK.TabIndex = 200;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             // 
-            // comboDefaultSynthesizer
+            // txtVibratoDepth
             // 
-            this.comboDefaultSynthesizer.FormattingEnabled = true;
-            this.comboDefaultSynthesizer.Items.AddRange( new object[] {
-            "[Normal] Type 1",
-            "[Normal] Type 2",
-            "[Normal] Type 3",
-            "[Normal] Type 4",
-            "[Extreme] Type 1",
-            "[Extreme] Type 2",
-            "[Extreme] Type 3",
-            "[Extreme] Type 4",
-            "[Fast] Type 1",
-            "[Fast] Type 2",
-            "[Fast] Type 3",
-            "[Fast] Type 4",
-            "[Slight] Type 1",
-            "[Slight] Type 2",
-            "[Slight] Type 3",
-            "[Slight] Type 4"} );
-            this.comboDefaultSynthesizer.Location = new System.Drawing.Point( 18, 29 );
-            this.comboDefaultSynthesizer.Name = "comboDefaultSynthesizer";
-            this.comboDefaultSynthesizer.Size = new System.Drawing.Size( 182, 20 );
-            this.comboDefaultSynthesizer.TabIndex = 11;
+            this.txtVibratoDepth.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))) );
+            this.txtVibratoDepth.ForeColor = System.Drawing.Color.White;
+            this.txtVibratoDepth.Location = new System.Drawing.Point( 190, 51 );
+            this.txtVibratoDepth.Name = "txtVibratoDepth";
+            this.txtVibratoDepth.Size = new System.Drawing.Size( 100, 19 );
+            this.txtVibratoDepth.TabIndex = 19;
+            this.txtVibratoDepth.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
+            // 
+            // txtVibratoRate
+            // 
+            this.txtVibratoRate.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))) );
+            this.txtVibratoRate.ForeColor = System.Drawing.Color.White;
+            this.txtVibratoRate.Location = new System.Drawing.Point( 190, 22 );
+            this.txtVibratoRate.Name = "txtVibratoRate";
+            this.txtVibratoRate.Size = new System.Drawing.Size( 100, 19 );
+            this.txtVibratoRate.TabIndex = 17;
+            this.txtVibratoRate.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
+            // 
+            // numBuffer
+            // 
+            this.numBuffer.Location = new System.Drawing.Point( 216, 180 );
+            this.numBuffer.Maximum = new decimal( new int[] {
+            1000,
+            0,
+            0,
+            0} );
+            this.numBuffer.Minimum = new decimal( new int[] {
+            100,
+            0,
+            0,
+            0} );
+            this.numBuffer.Name = "numBuffer";
+            this.numBuffer.Size = new System.Drawing.Size( 68, 19 );
+            this.numBuffer.TabIndex = 31;
+            this.numBuffer.Value = new decimal( new int[] {
+            1000,
+            0,
+            0,
+            0} );
+            // 
+            // numWait
+            // 
+            this.numWait.Enabled = false;
+            this.numWait.Location = new System.Drawing.Point( 216, 87 );
+            this.numWait.Maximum = new decimal( new int[] {
+            2000,
+            0,
+            0,
+            0} );
+            this.numWait.Minimum = new decimal( new int[] {
+            200,
+            0,
+            0,
+            0} );
+            this.numWait.Name = "numWait";
+            this.numWait.Size = new System.Drawing.Size( 68, 19 );
+            this.numWait.TabIndex = 22;
+            this.numWait.Value = new decimal( new int[] {
+            300,
+            0,
+            0,
+            0} );
+            // 
+            // numPreSendTime
+            // 
+            this.numPreSendTime.Location = new System.Drawing.Point( 216, 56 );
+            this.numPreSendTime.Maximum = new decimal( new int[] {
+            5000,
+            0,
+            0,
+            0} );
+            this.numPreSendTime.Minimum = new decimal( new int[] {
+            500,
+            0,
+            0,
+            0} );
+            this.numPreSendTime.Name = "numPreSendTime";
+            this.numPreSendTime.Size = new System.Drawing.Size( 68, 19 );
+            this.numPreSendTime.TabIndex = 21;
+            this.numPreSendTime.Value = new decimal( new int[] {
+            500,
+            0,
+            0,
+            0} );
+            // 
+            // numTrackHeight
+            // 
+            this.numTrackHeight.Location = new System.Drawing.Point( 210, 139 );
+            this.numTrackHeight.Maximum = new decimal( new int[] {
+            50,
+            0,
+            0,
+            0} );
+            this.numTrackHeight.Minimum = new decimal( new int[] {
+            5,
+            0,
+            0,
+            0} );
+            this.numTrackHeight.Name = "numTrackHeight";
+            this.numTrackHeight.Size = new System.Drawing.Size( 120, 19 );
+            this.numTrackHeight.TabIndex = 45;
+            this.numTrackHeight.Value = new decimal( new int[] {
+            14,
+            0,
+            0,
+            0} );
+            // 
+            // numMaximumFrameRate
+            // 
+            this.numMaximumFrameRate.Location = new System.Drawing.Point( 176, 21 );
+            this.numMaximumFrameRate.Maximum = new decimal( new int[] {
+            1000,
+            0,
+            0,
+            0} );
+            this.numMaximumFrameRate.Minimum = new decimal( new int[] {
+            5,
+            0,
+            0,
+            0} );
+            this.numMaximumFrameRate.Name = "numMaximumFrameRate";
+            this.numMaximumFrameRate.Size = new System.Drawing.Size( 120, 19 );
+            this.numMaximumFrameRate.TabIndex = 84;
+            this.numMaximumFrameRate.Value = new decimal( new int[] {
+            30,
+            0,
+            0,
+            0} );
+            // 
+            // numMouseHoverTime
+            // 
+            this.numMouseHoverTime.Location = new System.Drawing.Point( 176, 48 );
+            this.numMouseHoverTime.Maximum = new decimal( new int[] {
+            2000,
+            0,
+            0,
+            0} );
+            this.numMouseHoverTime.Name = "numMouseHoverTime";
+            this.numMouseHoverTime.Size = new System.Drawing.Size( 120, 19 );
+            this.numMouseHoverTime.TabIndex = 86;
+            this.numMouseHoverTime.Value = new decimal( new int[] {
+            500,
+            0,
+            0,
+            0} );
+            // 
+            // numericUpDownEx1
+            // 
+            this.numericUpDownEx1.Location = new System.Drawing.Point( 199, 21 );
+            this.numericUpDownEx1.Maximum = new decimal( new int[] {
+            50,
+            0,
+            0,
+            0} );
+            this.numericUpDownEx1.Minimum = new decimal( new int[] {
+            5,
+            0,
+            0,
+            0} );
+            this.numericUpDownEx1.Name = "numericUpDownEx1";
+            this.numericUpDownEx1.Size = new System.Drawing.Size( 120, 19 );
+            this.numericUpDownEx1.TabIndex = 80;
+            this.numericUpDownEx1.Value = new decimal( new int[] {
+            20,
+            0,
+            0,
+            0} );
+            // 
+            // numAutoBackupInterval
+            // 
+            this.numAutoBackupInterval.Location = new System.Drawing.Point( 256, 22 );
+            this.numAutoBackupInterval.Minimum = new decimal( new int[] {
+            1,
+            0,
+            0,
+            0} );
+            this.numAutoBackupInterval.Name = "numAutoBackupInterval";
+            this.numAutoBackupInterval.Size = new System.Drawing.Size( 69, 19 );
+            this.numAutoBackupInterval.TabIndex = 2;
+            this.numAutoBackupInterval.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.numAutoBackupInterval.Value = new decimal( new int[] {
+            10,
+            0,
+            0,
+            0} );
             // 
             // Preference
             // 
@@ -3529,7 +3588,7 @@ namespace org.kbinani.cadencii {
             this.AutoScaleDimensions = new System.Drawing.SizeF( 96F, 96F );
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size( 475, 496 );
+            this.ClientSize = new System.Drawing.Size( 475, 514 );
             this.Controls.Add( this.btnOK );
             this.Controls.Add( this.btnCancel );
             this.Controls.Add( this.tabPreference );
@@ -3544,30 +3603,25 @@ namespace org.kbinani.cadencii {
             this.tabPreference.ResumeLayout( false );
             this.tabSequence.ResumeLayout( false );
             this.tabSequence.PerformLayout();
-            this.groupAutoVibratoConfig.ResumeLayout( false );
-            this.groupAutoVibratoConfig.PerformLayout();
+            this.groupUserDefined.ResumeLayout( false );
+            this.groupUserDefined.PerformLayout();
+            this.groupVocaloidEditorCompatible.ResumeLayout( false );
+            this.groupVocaloidEditorCompatible.PerformLayout();
             this.tabAnother.ResumeLayout( false );
             this.tabAnother.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numBuffer)).EndInit();
             this.groupWaveFileOutput.ResumeLayout( false );
             this.groupWaveFileOutput.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numWait)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numPreSendTime)).EndInit();
             this.tabAppearance.ResumeLayout( false );
             this.tabAppearance.PerformLayout();
             this.groupFont.ResumeLayout( false );
             this.groupFont.PerformLayout();
             this.groupVisibleCurve.ResumeLayout( false );
             this.groupVisibleCurve.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numTrackHeight)).EndInit();
             this.tabOperation.ResumeLayout( false );
             this.groupMisc.ResumeLayout( false );
             this.groupMisc.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numMaximumFrameRate)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numMouseHoverTime)).EndInit();
             this.groupPianoroll.ResumeLayout( false );
             this.groupPianoroll.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownEx1)).EndInit();
             this.tabPlatform.ResumeLayout( false );
             this.groupUtauCores.ResumeLayout( false );
             this.groupUtauCores.PerformLayout();
@@ -3576,13 +3630,20 @@ namespace org.kbinani.cadencii {
             this.tabUtauSingers.ResumeLayout( false );
             this.tabFile.ResumeLayout( false );
             this.tabFile.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numAutoBackupInterval)).EndInit();
             this.tabSingingSynth.ResumeLayout( false );
             this.groupDefaultSynthesizer.ResumeLayout( false );
             this.groupSynthesizerDll.ResumeLayout( false );
             this.groupSynthesizerDll.PerformLayout();
             this.groupVsti.ResumeLayout( false );
             this.groupVsti.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numBuffer)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numWait)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numPreSendTime)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numTrackHeight)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numMaximumFrameRate)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numMouseHoverTime)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownEx1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numAutoBackupInterval)).EndInit();
             this.ResumeLayout( false );
 
         }
@@ -3601,15 +3662,13 @@ namespace org.kbinani.cadencii {
         private BLabel labelScreen;
         private BButton btnChangeScreenFont;
         private BLabel labelScreenFontName;
-        private BLabel lblVibratoConfig;
         private BComboBox comboVibratoLength;
         private BLabel lblVibratoLength;
-        private BGroupBox groupAutoVibratoConfig;
+        private BGroupBox groupVocaloidEditorCompatible;
         private BLabel label3;
         private BLabel lblAutoVibratoType1;
         private BLabel lblAutoVibratoMinLength;
         private BCheckBox chkEnableAutoVibrato;
-        private BLabel label6;
         private BComboBox comboAutoVibratoType1;
         private BComboBox comboAutoVibratoMinLength;
         private BLabel label7;
@@ -3624,15 +3683,12 @@ namespace org.kbinani.cadencii {
         private NumericUpDownEx numWait;
         private NumericUpDownEx numPreSendTime;
         private BLabel label13;
-        private BLabel lblPeriod;
         private BLabel lblAmplitude;
         private BLabel lblDynamics;
         private BLabel label1;
         private BLabel lblResolution;
-        private BComboBox comboPeriod;
         private BComboBox comboAmplitude;
         private BComboBox comboDynamics;
-        private BLabel label5;
         private BLabel label4;
         private BLabel label2;
         private BComboBox comboLanguage;

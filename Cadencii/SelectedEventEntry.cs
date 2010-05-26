@@ -873,20 +873,11 @@ namespace org.kbinani.cadencii {
                             String iconid = AppManager.editorConfig.AutoVibratoType2;
                             SynthesizerType type = SynthesizerType.VOCALOID2;
                             RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
-                            if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
-                                iconid = AppManager.editorConfig.AutoVibratoType1;
+                            if ( kind == RendererKind.VOCALOID1_100 ||
+                                kind == RendererKind.VOCALOID1_101 ) {
                                 type = SynthesizerType.VOCALOID1;
                             }
-                            if ( iconid == "" ) {
-                                iconid = "$04040001";
-                            }
-                            for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
-                                VibratoHandle handle = itr.next();
-                                if ( iconid.Equals( handle.IconID ) ) {
-                                    editing.ID.VibratoHandle = (VibratoHandle)handle.clone();
-                                    break;
-                                }
-                            }
+                            editing.ID.VibratoHandle = AppManager.editorConfig.createAutoVibrato( type, 480 ); // 480はダミー
                         }
                         if ( editing.ID.VibratoHandle == null ) {
                             editing.ID.VibratoHandle = new VibratoHandle();
