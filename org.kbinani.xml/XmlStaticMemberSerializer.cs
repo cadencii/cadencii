@@ -3,12 +3,12 @@
  * XmlStaticMemberSerializer.cs
  * Copyright (C) 2009-2010 kbinani
  *
- * This file is part of org.kbinani.
+ * This file is part of org.kbinani.xml.
  *
- * org.kbinani is free software; you can redistribute it and/or
+ * org.kbinani.xml is free software; you can redistribute it and/or
  * modify it under the terms of the BSD License.
  *
- * org.kbinani is distributed in the hope that it will be useful,
+ * org.kbinani.xml is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
@@ -170,7 +170,7 @@ namespace org.kbinani.xml {
         private static List<MemberEntry> CollectScriptConfigEntries( Type item, bool static_mode ) {
             List<MemberEntry> config_names = new List<MemberEntry>();
             BindingFlags binding = static_mode ? (BindingFlags.Static | BindingFlags.Public) : BindingFlags.Public;
-            
+
             // XmlSerializableを実装しているかどうか
             Type itfc = item.GetInterface( typeof( org.kbinani.xml.XmlSerializable ).Name );
             if ( itfc == null ) {
@@ -437,7 +437,7 @@ namespace org.kbinani.xml {
 
                 int num = 0;
                 if ( int.TryParse( str_num, out num ) ) {
-                    string[] spl = contains.Split( new char[]{ ',' }, num );
+                    string[] spl = contains.Split( new char[] { ',' }, num );
                     string ret = body + "<";
                     for ( int i = 0; i < num; i++ ) {
                         ret += (i > 0 ? "," : "") + actualTypeNameFrom( spl[i] );

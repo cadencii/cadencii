@@ -11,22 +11,6 @@ open( OUT, ">Makefile" );
 &getSrcList( "./org.kbinani.xml", "./build/java/org/kbinani/xml/", $src_xml, $cp_xml );
 
 while( $line = <FILE> ){
-    if( $ARGV[0] eq "MSWin32" ){
-        if( ($line =~ /\$\(CP\)/) | ($line =~ /\$\(RM\)/) | ($line =~ /\$\(MKDIR\)/) ){
-            $line =~ s/\//\\/g;
-        }
-        $line =~ s/\@CP\@/copy/g;
-        $line =~ s/\@RM\@/del/g;
-        $line =~ s/\@TARGET\@/.\\build\\win/g;
-        $line =~ s/\@MKDIR\@/perl safe_mkdir\.pl/g;
-        $line =~ s/\@PLAY_SOUND_DLL\@/\$\(TARGET\)\\PlaySound\.dll/g;
-    }else{
-        $line =~ s/\@CP\@/cp/g;
-        $line =~ s/\@RM\@/rm/g;
-        $line =~ s/\@TARGET\@/\.\/build\/win/g;
-        $line =~ s/\@MKDIR\@/perl safe_mkdir\.pl/g;
-        $line =~ s/\@PLAY_SOUND_DLL\@//g;
-    }
     $line =~ s/\@SRC_JAPPUTIL\@/$src_apputil/g;
     $line =~ s/\@CP_JAPPUTIL\@/$cp_apputil/g;
     $line =~ s/\@SRC_JCORLIB\@/$src_corlib/g;
@@ -43,6 +27,22 @@ while( $line = <FILE> ){
     $line =~ s/\@CP_JCOMPONENTMODEL\@/$cp_componentmodel/g;
     $line =~ s/\@SRC_JXML\@/$src_xml/g;
     $line =~ s/\@CP_JXML\@/$cp_xml/g;
+    if( $ARGV[0] eq "MSWin32" ){
+        if( ($line =~ /\$\(CP\)/) | ($line =~ /\$\(RM\)/) | ($line =~ /\$\(MKDIR\)/) ){
+            $line =~ s/\//\\/g;
+        }
+        $line =~ s/\@CP\@/copy/g;
+        $line =~ s/\@RM\@/del/g;
+        $line =~ s/\@TARGET\@/.\\build\\win/g;
+        $line =~ s/\@MKDIR\@/perl safe_mkdir\.pl/g;
+        $line =~ s/\@PLAY_SOUND_DLL\@/\$\(TARGET\)\\PlaySound\.dll/g;
+    }else{
+        $line =~ s/\@CP\@/cp/g;
+        $line =~ s/\@RM\@/rm/g;
+        $line =~ s/\@TARGET\@/\.\/build\/win/g;
+        $line =~ s/\@MKDIR\@/perl safe_mkdir\.pl/g;
+        $line =~ s/\@PLAY_SOUND_DLL\@//g;
+    }
     print OUT $line;
 }
 
