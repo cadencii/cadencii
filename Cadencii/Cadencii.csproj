@@ -170,6 +170,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="MemoryManager.cs" />
+    <Compile Include="MouseTracer.cs" />
     <Compile Include="MuteChangedEventHandler.cs" />
     <Compile Include="NumberTextBox.cs">
       <SubType>Component</SubType>
@@ -183,7 +184,6 @@
     <Compile Include="PlatformEnum.cs" />
     <Compile Include="PointD.cs" />
     <Compile Include="QuantizeModeUtil.cs" />
-    <Compile Include="Range.cs" />
     <Compile Include="RenderedStatus.cs" />
     <Compile Include="RendererKind.cs" />
     <Compile Include="RendererKindUtil.cs" />
@@ -242,7 +242,6 @@
     <Compile Include="PropertyPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="SymmetricMatrix.cs" />
     <Compile Include="ScreenStatus.cs" />
     <Compile Include="DrawObject.cs" />
     <Compile Include="EditMode.cs" />
@@ -322,9 +321,6 @@
     <Compile Include="SelectedRegion.cs" />
     <Compile Include="SelectedTempoEntry.cs" />
     <Compile Include="SelectedTimesigEntry.cs" />
-    <EmbeddedResource Include="Preference.resx">
-      <DependentUpon>Preference.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -344,7 +340,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="VibratoLengthEditingRule.cs" />
-    <Compile Include="VibratoPoint.cs" />
     <Compile Include="VibratoPointIterator.cs" />
     <Compile Include="VibratoVariation.cs" />
     <Compile Include="VibratoVariationConverter.cs" />
@@ -359,7 +354,6 @@
     <Compile Include="VSTiProxy.cs" />
     <Compile Include="VstSdk.cs" />
     <Compile Include="WaveDrawContext.cs" />
-    <Compile Include="WaveReceiver.cs" />
     <Compile Include="WaveView.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -602,6 +596,10 @@
       <Project>{0C58B068-272F-4390-A14F-3D72AFCF3DFB}</Project>
       <Name>org.kbinani.apputil</Name>
     </ProjectReference>
+    <ProjectReference Include="..\org.kbinani.componentmodel\org.kbinani.componentmodel.csproj">
+      <Project>{D4F87D2E-CAAF-4DEE-AB43-BE151B410931}</Project>
+      <Name>org.kbinani.componentmodel</Name>
+    </ProjectReference>
     <ProjectReference Include="..\org.kbinani.media\org.kbinani.media.csproj">
       <Project>{F4F8F601-4E3D-43F5-A8A8-AA1FB7F48452}</Project>
       <Name>org.kbinani.media</Name>
@@ -613,6 +611,10 @@
     <ProjectReference Include="..\org.kbinani.windows.forms\org.kbinani.windows.forms.csproj">
       <Project>{B9481E3B-6842-4AB3-8ED4-29C86C2579A3}</Project>
       <Name>org.kbinani.windows.forms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\org.kbinani.xml\org.kbinani.xml.csproj">
+      <Project>{23C7549D-A0FD-402A-8470-95DB4BE6081C}</Project>
+      <Name>org.kbinani.xml</Name>
     </ProjectReference>
     <ProjectReference Include="..\org.kbinani\org.kbinani.csproj">
       <Project>{C8AAE632-9C6C-4372-8175-811528A66742}</Project>

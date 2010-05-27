@@ -1,4 +1,5 @@
-﻿/*
+﻿#if !JAVA
+/*
  * PipedAviWriter.cs
  * Copyright (C) 2008-2010 kbinani
  *
@@ -248,4 +249,5 @@ namespace org.kbinani.media {
     }
 
 }
+#endif
 #endif

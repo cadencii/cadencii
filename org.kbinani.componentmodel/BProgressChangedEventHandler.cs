@@ -2,12 +2,12 @@
  * BProgressChangedEventHandler.cs
  * Copyright (C) 2009-2010 kbinani
  *
- * This file is part of org.kbinani.windows.forms.
+ * This file is part of org.kbinani.componentmodel.
  *
- * org.kbinani.windows.forms is free software; you can redistribute it and/or
+ * org.kbinani.componentmodel is free software; you can redistribute it and/or
  * modify it under the terms of the BSD License.
  *
- * org.kbinani.windows.forms is distributed in the hope that it will be useful,
+ * org.kbinani.componentmodel is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */

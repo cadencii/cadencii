@@ -1,4 +1,5 @@
-﻿/*
+﻿#if !JAVA
+/*
  * VibratoVariation.cs
  * Copyright (C) 2009-2010 kbinani
  *
@@ -39,3 +40,4 @@ namespace org.kbinani.cadencii {
     }
 
 }
+#endif

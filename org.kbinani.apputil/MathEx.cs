@@ -1,4 +1,5 @@
-﻿/*
+﻿#if !JAVA
+/*
  * MathEx.cs
  * Copyright (C) 2008-2010 kbinani
  *
@@ -19,3 +20,4 @@ namespace Boare.Lib.AppUtil {
 
 
 }
+#endif

@@ -1,4 +1,5 @@
-﻿/*
+﻿#if !JAVA
+/*
  * Array.cs
  * Copyright (C) 2009-2010 kbinani
  *
@@ -11,7 +12,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if !JAVA
 using System;
 using System.Collections.Generic;
 

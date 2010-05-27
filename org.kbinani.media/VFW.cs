@@ -1,4 +1,5 @@
-﻿/*
+﻿#if !JAVA
+/*
  * VFW.cs
  * Copyright (C) 2007-2010 kbinani
  *
@@ -382,3 +383,4 @@ namespace org.kbinani.media {
         public Int32 bfOffBits;
     }
 }
+#endif

@@ -27,6 +27,7 @@ import org.kbinani.windows.forms.*;
 #else
 #define COMPONENT_ENABLE_LOCATION
 //#define MONITOR_FPS
+//#define OLD_IMPL_MOUSE_TRACER
 using System;
 using System.Threading;
 using org.kbinani.apputil;
@@ -214,14 +215,9 @@ namespace org.kbinani.cadencii {
         /// </summary>
         private boolean m_mouse_downed = false;
         /// <summary>
-        /// マウスのトレース。
+        /// マウスのトレーサ
         /// </summary>
-        private TreeMap<Integer, Integer> m_mouse_trace;
-        /// <summary>
-        /// マウスのトレース時、前回リストに追加されたx座標の値
-        /// </summary>
-        private int m_mouse_trace_last_x;
-        private int m_mouse_trace_last_y;
+        private MouseTracer m_mouse_tracer = new MouseTracer();
         private boolean m_pencil_moved = false;
         private Thread m_mouse_hover_thread = null;
         /// <summary>
@@ -1228,7 +1224,7 @@ namespace org.kbinani.cadencii {
                             g.setColor( s_pen_050_140_150 );
                             g.drawLine( xini, yini, AppManager.xCoordFromClocks( clock_at_mouse ), yCoordFromValue( value ) );
                         } else if ( tool == EditTool.PENCIL ) {
-                            if ( m_mouse_trace != null && !AppManager.isCurveMode() ) {
+                            if ( m_mouse_tracer.size() > 0 && !AppManager.isCurveMode() ) {
                                 Vector<Integer> ptx = new Vector<Integer>();
                                 Vector<Integer> pty = new Vector<Integer>();
                                 //int stdx = AppManager.startToDrawX;
@@ -1237,10 +1233,11 @@ namespace org.kbinani.cadencii {
                                 int count = 0;
                                 int lastx = 0;
                                 int lasty = 0;
-                                for ( Iterator<Integer> itr = m_mouse_trace.keySet().iterator(); itr.hasNext(); ) {
-                                    int key = itr.next();
+                                for ( Iterator<Point> itr = m_mouse_tracer.iterator(); itr.hasNext(); ) {
+                                    Point pt = itr.next();
+                                    int key = pt.x;
                                     int x = key - stdx;
-                                    int y = m_mouse_trace.get( key );
+                                    int y = pt.y;
                                     if ( y < 8 ) {
                                         y = 8;
                                     } else if ( height < y ) {
@@ -2899,7 +2896,8 @@ namespace org.kbinani.cadencii {
                         m_pencil_moved = false;
                     }
 
-                    if ( m_mouse_trace != null ) {
+                    m_mouse_tracer.append( e.X + AppManager.startToDrawX, e.Y );
+                    /*if ( m_mouse_trace != null ) {
                         Vector<Integer> removelist = new Vector<Integer>();
                         int x = e.X + AppManager.startToDrawX;
                         if ( x < m_mouse_trace_last_x ) {
@@ -2935,7 +2933,7 @@ namespace org.kbinani.cadencii {
                             m_mouse_trace_last_x = x;
                             m_mouse_trace_last_y = e.Y;
                         }
-                    }
+                    }*/
                 } else if ( selected == EditTool.ARROW ||
                             selected == EditTool.ERASER ) {
                     int draft_clock = clock;
@@ -3199,7 +3197,7 @@ namespace org.kbinani.cadencii {
                     #region MouseDown occured on track list
                     m_mouse_down_mode = MouseDownMode.TRACK_LIST;
                     //AppManager.isCurveSelectedIntervalEnabled() = false;
-                    m_mouse_trace = null;
+                    m_mouse_tracer.clear();
                     int selecter_width = getSelectorWidth();
                     if ( AppManager.getVsqFile() != null ) {
                         for ( int i = 0; i < 16; i++ ) {
@@ -3235,7 +3233,7 @@ namespace org.kbinani.cadencii {
                 #region MouseDown occured on singer tab
                 m_mouse_down_mode = MouseDownMode.SINGER_LIST;
                 AppManager.clearSelectedPoint();
-                m_mouse_trace = null;
+                m_mouse_tracer.clear();
                 VsqEvent ve = findItemAt( e.X, e.Y );
                 if ( AppManager.getSelectedTool() == EditTool.ERASER ) {
                     #region EditTool.Eraser
@@ -3401,12 +3399,12 @@ namespace org.kbinani.cadencii {
                                         return;
                                     }
                                 }
-                                m_mouse_trace = null;
-                                m_mouse_trace = new TreeMap<Integer, Integer>();
+                                m_mouse_tracer.clear();
+                                //m_mouse_trace = new TreeMap<Integer, Integer>();
                                 int x = e.X + AppManager.startToDrawX;
-                                m_mouse_trace.put( x, e.Y );
-                                m_mouse_trace_last_x = x;
-                                m_mouse_trace_last_y = e.Y;
+                                m_mouse_tracer.appendFirst( x, e.Y );
+                                //m_mouse_trace_last_x = x;
+                                //m_mouse_trace_last_y = e.Y;
                                 m_pencil_moved = false;
 
 #if JAVA
@@ -4407,8 +4405,8 @@ namespace org.kbinani.cadencii {
                             int stdx = AppManager.startToDrawX;
                             if ( m_selected_curve.equals( CurveType.VEL ) || m_selected_curve.equals( CurveType.Accent ) || m_selected_curve.equals( CurveType.Decay ) ) {
                                 #region VEL Accent Decay
-                                int start = m_mouse_trace.firstKey();
-                                int end = m_mouse_trace.lastKey();
+                                int start = m_mouse_tracer.firstKey();
+                                int end = m_mouse_tracer.lastKey();
                                 start = AppManager.clockFromXCoord( start - stdx );
                                 end = AppManager.clockFromXCoord( end - stdx );
 #if DEBUG
@@ -4421,12 +4419,16 @@ namespace org.kbinani.cadencii {
                                     if ( start <= ve.Clock && ve.Clock < end ) {
                                         int i = -1;
                                         int lkey = 0;
-                                        int count = m_mouse_trace.size();
-                                        for ( Iterator<Integer> itr2 = m_mouse_trace.keySet().iterator(); itr2.hasNext(); ) {
+                                        int lvalue = 0;
+                                        int count = m_mouse_tracer.size();
+                                        for ( Iterator<Point> itr2 = m_mouse_tracer.iterator(); itr2.hasNext(); ) {
                                             i++;
-                                            int key = itr2.next();
+                                            Point p = itr2.next();
+                                            int key = p.x;
+                                            int value = p.y;
                                             if ( i == 0 ) {
                                                 lkey = key;
+                                                lvalue = value;
                                                 continue;
                                             }
                                             int key0 = lkey;
@@ -4437,18 +4439,19 @@ namespace org.kbinani.cadencii {
                                             AppManager.debugWriteLine( "        key0,key1=" + key0 + "," + key1 );
 #endif
                                             if ( key0_clock < ve.Clock && ve.Clock < key1_clock ) {
-                                                int key0_value = valueFromYCoord( m_mouse_trace.get( key0 ) );
-                                                int key1_value = valueFromYCoord( m_mouse_trace.get( key1 ) );
+                                                int key0_value = valueFromYCoord( lvalue );
+                                                int key1_value = valueFromYCoord( value );
                                                 float a = (key1_value - key0_value) / (float)(key1_clock - key0_clock);
                                                 float b = key0_value - a * key0_clock;
                                                 int new_value = (int)(a * ve.Clock + b);
                                                 velocity.put( ve.InternalID, new_value );
                                             } else if ( key0_clock == ve.Clock ) {
-                                                velocity.put( ve.InternalID, valueFromYCoord( m_mouse_trace.get( key0 ) ) );
+                                                velocity.put( ve.InternalID, valueFromYCoord( lvalue ) );
                                             } else if ( key1_clock == ve.Clock ) {
-                                                velocity.put( ve.InternalID, valueFromYCoord( m_mouse_trace.get( key1 ) ) );
+                                                velocity.put( ve.InternalID, valueFromYCoord( value ) );
                                             }
                                             lkey = key;
+                                            lvalue = value;
                                         }
                                     }
                                 }
@@ -4477,8 +4480,8 @@ namespace org.kbinani.cadencii {
                                 if ( step_px <= 0 ) {
                                     step_px = 1;
                                 }
-                                int start = m_mouse_trace.firstKey();
-                                int end = m_mouse_trace.lastKey();
+                                int start = m_mouse_tracer.firstKey();
+                                int end = m_mouse_tracer.lastKey();
 #if DEBUG
                                 AppManager.debugWriteLine( "    start,end=" + start + " " + end );
 #endif
@@ -4501,19 +4504,42 @@ namespace org.kbinani.cadencii {
 #endif
                                     if ( chk_start < chk_end ) {    // オーバーラップしている。
                                         Vector<ValuePair<Float, Integer>> edit = new Vector<ValuePair<Float, Integer>>();
+#if !OLD_IMPL_MOUSE_TRACER
+                                        boolean end_added = false;
+                                        int lkey = -2 * step_px;
+                                        for ( Iterator<Point> itr2 = m_mouse_tracer.iterator(); itr2.hasNext(); ) {
+                                            Point p = itr2.next();
+                                            if ( p.x < chk_start ) {
+                                                continue;
+                                            } else if ( chk_end < p.x ) {
+                                                break;
+                                            }
+                                            if ( lkey + step_px > p.x ) {
+                                                continue;
+                                            }
+                                            int val = valueFromYCoord( p.y );
+                                            if ( val < min ) {
+                                                val = min;
+                                            } else if ( max < val ) {
+                                                val = max;
+                                            }
+                                            int clock = AppManager.clockFromXCoord( p.x - stdx );
+                                            edit.add( new ValuePair<Float, Integer>( (clock - cl_vib_start) / cl_vib_length,
+                                                                                     val ) );
+                                        }
+#else
                                         for ( int i = chk_start; i < chk_end; i += step_px ) {
-                                            if ( m_mouse_trace.containsKey( i ) ) {
+                                            if ( m_mouse_tracer.containsKey( i ) ) {
                                                 edit.add( new ValuePair<Float, Integer>( (AppManager.clockFromXCoord( i - stdx ) - cl_vib_start) / cl_vib_length,
                                                                                         valueFromYCoord( m_mouse_trace.get( i ) ) ) );
                                             } else {
-                                                //for ( int j = 0; j < m_mouse_trace.Keys.Count - 1; j++ ) {
                                                 int j = -1;
                                                 int lkey = 0;
                                                 int lvalue = 0;
                                                 for ( Iterator<Integer> itr2 = m_mouse_trace.keySet().iterator(); itr2.hasNext(); ) {
                                                     j++;
                                                     int key = itr2.next();
-                                                    int value = m_mouse_trace.get( key );
+                                                    int value = m_mouse_tracer.get( key );
                                                     if ( j == 0 ) {
                                                         lkey = key;
                                                         lvalue = value;
@@ -4552,6 +4578,7 @@ namespace org.kbinani.cadencii {
                                             }
                                             edit.add( new ValuePair<Float, Integer>( lastx, v ) );
                                         }
+#endif
                                         if ( ve.ID.VibratoHandle != null ) {
                                             VibratoBPList target = null;
                                             if ( m_selected_curve.equals( CurveType.VibratoRate ) ) {
@@ -4605,8 +4632,8 @@ namespace org.kbinani.cadencii {
                                 if ( step_px <= 0 ) {
                                     step_px = 1;
                                 }
-                                int start = m_mouse_trace.firstKey();
-                                int end = m_mouse_trace.lastKey();
+                                int start = m_mouse_tracer.firstKey();
+                                int end = m_mouse_tracer.lastKey();
                                 int clock_start = AppManager.clockFromXCoord( start - stdx );
                                 int clock_end = AppManager.clockFromXCoord( end - stdx );
                                 int last = start;
@@ -4634,6 +4661,35 @@ namespace org.kbinani.cadencii {
                                 AppManager.debugWriteLine( "    start=" + start );
                                 AppManager.debugWriteLine( "    end=" + end );
 #endif
+
+#if !OLD_IMPL_MOUSE_TRACER
+                                int lkey = int.MinValue;
+                                int lvalue = int.MinValue;
+                                int index = 0;
+                                for ( Iterator<Point> itr = m_mouse_tracer.iterator(); itr.hasNext(); ) {
+                                    Point p = itr.next();
+                                    if ( p.x < start ) {
+                                        continue;
+                                    } else if ( end < p.x ) {
+                                        break;
+                                    }
+                                    if ( lkey + step_px > p.x ) {
+                                        continue;
+                                    }
+                                    int clock = AppManager.clockFromXCoord( p.x - stdx );
+                                    int value = valueFromYCoord( p.y );
+                                    if ( value < min ) {
+                                        value = min;
+                                    } else if ( max < value ) {
+                                        value = max;
+                                    }
+                                    if ( value != lvalue ) {
+                                        index++;
+                                        add.put( clock, new VsqBPPair( value, maxid + index ) );
+                                        lvalue = value;
+                                    }
+                                }
+#else
                                 int last_value = int.MinValue;
                                 int index = 0;
                                 for ( int i = start; i <= end; i += step_px ) {
@@ -4700,6 +4756,7 @@ namespace org.kbinani.cadencii {
                                     index++;
                                     add.put( clock, new VsqBPPair( value, maxid + index ) );
                                 }
+#endif
 
                                 // clock_endでの値
                                 int valueAtEnd = list.getValue( clock_end );
@@ -4718,7 +4775,7 @@ namespace org.kbinani.cadencii {
                                 #endregion
                             }
                         }
-                        m_mouse_trace = null;
+                        m_mouse_tracer.clear();
                         #endregion
                     } else if ( !AppManager.isCurveMode() && AppManager.getSelectedTool() == EditTool.LINE ) {
                         #region Line

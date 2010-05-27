@@ -1,4 +1,5 @@
-﻿/*
+﻿#if !JAVA
+/*
  * VersionInfo.Designer.cs
  * Copyright (C) 2008-2010 kbinani
  *
@@ -134,3 +135,4 @@ namespace org.kbinani.apputil {
         private System.Windows.Forms.Button btnSaveAuthorList;
     }
 }
+#endif

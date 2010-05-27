@@ -1,4 +1,5 @@
-﻿/*
+﻿#if !JAVA
+/*
  * BHScrollBar.Designer.cs
  * Copyright (C) 2009-2010 kbinani
  *
@@ -65,3 +66,4 @@ namespace org.kbinani.apputil {
 
     }
 }
+#endif

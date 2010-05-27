@@ -37,12 +37,15 @@ namespace org.kbinani.cadencii {
 #else
     public class FormSplash : BDialog {
 #endif
+
+#if !JAVA
         /// <summary>
         /// addIconメソッドを呼び出すときに使うデリゲート
         /// </summary>
         /// <param name="path_image"></param>
         /// <param name="singer_name"></param>
         private delegate void AddIconThreadSafeDelegate( String path_image, String singer_name );
+#endif
 
         boolean mouseDowned = false;
         private FlowLayoutPanel panelIcon;

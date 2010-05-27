@@ -34,19 +34,44 @@ namespace org.kbinani.apputil {
         }
 
         public AuthorListEntry( String name, int style )
-            : this( name, "", style ) {
+#if JAVA
+        {
+#else
+            :
+#endif
+            this( name, "", style )
+#if JAVA
+            ;
+#else
+        {
+#endif
         }
 
         public AuthorListEntry( String name, String twitter_id )
-            : this( name, twitter_id, Font.PLAIN ) {
+#if JAVA
+        {
+#else
+            :
+#endif
+            this( name, twitter_id, Font.PLAIN )
+#if JAVA
+            ;
+#else
+        {
+#endif
         }
 
-#if JAVA
-        public AuthorListEntry( String name ){
-            this( name, "", Font.PLAIN );
-#else
         public AuthorListEntry( String name )
-            : this( name, "", Font.PLAIN ) {
+#if JAVA
+        {
+#else
+            :
+#endif
+            this( name, "", Font.PLAIN )
+#if JAVA
+            ;
+#else
+        {
 #endif
         }
 

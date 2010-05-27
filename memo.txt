@@ -48,10 +48,6 @@
 -EditOtoIniでflacを読み込めるようにする
 -Utau Plugin Managerで，[#INSERT], [#DELETE]セクションに対応していない->実装した。確認すること
 -Lengthが変わると、後ろのアイテムもずれるはずだが、これができてない
--MIDI読込みで音符がちゃんとインポートされない不具合
--軽量化(PictPianoRoll, TrackSelector)
--[Preference, EditorConfig]DynamicsのResolutionの表記をControl Curveに
--[Preference, EditorConfig]VibratoのResolution設定が使われていない
 
 -v3.1.5done------------------------------------------------------------
 -歌詞にコンマが含まれるVSQを正しく読み込めないのを修正

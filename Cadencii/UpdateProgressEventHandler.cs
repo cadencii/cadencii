@@ -1,4 +1,5 @@
-﻿/*
+﻿#if !JAVA
+/*
  * UpdateProgressEventHandler.cs
  * Copyright (C) 2009-2010 kbinani
  *
@@ -16,3 +17,4 @@ namespace org.kbinani.cadencii {
     public delegate void UpdateProgressEventHandler( object sender, int value );
 
 }
+#endif

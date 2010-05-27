@@ -19,12 +19,10 @@ import java.awt.*;
 using System.Xml.Serialization;
 using org.kbinani.java.awt;
 
-namespace org.kbinani
-{
+namespace org.kbinani {
 #endif
 
-    public class XmlPoint
-    {
+    public class XmlPoint {
 #if !JAVA
         [XmlIgnore]
 #endif
@@ -34,68 +32,54 @@ namespace org.kbinani
 #endif
         public int y;
 
-        public XmlPoint()
-        {
+        public XmlPoint() {
         }
 
-        public XmlPoint( int x_, int y_ )
-        {
+        public XmlPoint( int x_, int y_ ) {
             x = x_;
             y = y_;
         }
 
-        public XmlPoint( Point p )
-        {
+        public XmlPoint( Point p ) {
             x = p.x;
             y = p.y;
         }
 
-        public Point toPoint()
-        {
+        public Point toPoint() {
             return new Point( x, y );
         }
 
-        public int getX()
-        {
+        public int getX() {
             return x;
         }
 
-        public void setX( int value )
-        {
+        public void setX( int value ) {
             x = value;
         }
 
-        public int getY()
-        {
+        public int getY() {
             return y;
         }
 
-        public void setY( int value )
-        {
+        public void setY( int value ) {
             y = value;
         }
 
 #if !JAVA
-        public int X
-        {
-            get
-            {
+        public int X {
+            get {
                 return getX();
             }
-            set
-            {
+            set {
                 setX( value );
             }
         }
 
-        public int Y
-        {
-            get
-            {
+        public int Y {
+            get {
                 return getY();
             }
-            set
-            {
+            set {
                 setY( value );
             }
         }

@@ -1,4 +1,5 @@
-﻿#define VST_2_4_EXTENSIONS
+﻿#if !JAVA
+#define VST_2_4_EXTENSIONS
 
 using System;
 using System.Runtime.InteropServices;
@@ -989,3 +990,4 @@ namespace VstSdk {
     #endregion
 
 }
+#endif

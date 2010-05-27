@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if JAVA
+#else
+using System;
 using System.Collections.Generic;
 
 namespace org.kbinani {
@@ -83,3 +85,4 @@ namespace org.kbinani {
     }
 
 }
+#endif

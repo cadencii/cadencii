@@ -66,21 +66,10 @@
     <Compile Include="awt.image.cs" />
     <Compile Include="BArray.cs" />
     <Compile Include="Base64.cs" />
-    <Compile Include="BBackgroundWorker.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="BCancelEventArgs.cs" />
-    <Compile Include="BCancelEventHandler.cs" />
     <Compile Include="BDelegate.cs" />
-    <Compile Include="BDoWorkEventArgs.cs" />
-    <Compile Include="BDoWorkEventHandler.cs" />
     <Compile Include="BEvent.cs" />
     <Compile Include="BEventArgs.cs" />
     <Compile Include="BEventHandler.cs" />
-    <Compile Include="BProgressChangedEventArgs.cs" />
-    <Compile Include="BProgressChangedEventHandler.cs" />
-    <Compile Include="BRunWorkerCompletedEventHandler.cs" />
-    <Compile Include="BRunWorkerCompletedEventArgs.cs" />
     <Compile Include="BufferedReader.cs" />
     <Compile Include="BufferedWriter.cs" />
     <Compile Include="ByRef.cs" />
@@ -110,13 +99,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="windows.cs" />
     <Compile Include="wingdi.cs" />
-    <Compile Include="XmlMember.cs" />
-    <Compile Include="XmlPoint.cs" />
-    <Compile Include="XmlRectangle.cs" />
-    <Compile Include="XmlSerializable.cs" />
-    <Compile Include="XmlSerializer.cs" />
-    <Compile Include="XmlSerializeWithDescription.cs" />
-    <Compile Include="XmlStaticMemberSerializer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

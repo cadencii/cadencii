@@ -1,4 +1,5 @@
-﻿/*
+﻿#if !JAVA
+/*
  * AviWriter.cs
  * Copyright (C) 2007-2010 kbinani
  *
@@ -548,3 +549,4 @@ namespace org.kbinani.media {
         }
     }
 }
+#endif

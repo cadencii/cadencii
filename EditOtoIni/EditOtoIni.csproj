@@ -112,6 +112,10 @@
       <Project>{0C58B068-272F-4390-A14F-3D72AFCF3DFB}</Project>
       <Name>org.kbinani.apputil</Name>
     </ProjectReference>
+    <ProjectReference Include="..\org.kbinani.componentmodel\org.kbinani.componentmodel.csproj">
+      <Project>{D4F87D2E-CAAF-4DEE-AB43-BE151B410931}</Project>
+      <Name>org.kbinani.componentmodel</Name>
+    </ProjectReference>
     <ProjectReference Include="..\org.kbinani.media\org.kbinani.media.csproj">
       <Project>{F4F8F601-4E3D-43F5-A8A8-AA1FB7F48452}</Project>
       <Name>org.kbinani.media</Name>
@@ -123,6 +127,10 @@
     <ProjectReference Include="..\org.kbinani.windows.forms\org.kbinani.windows.forms.csproj">
       <Project>{B9481E3B-6842-4AB3-8ED4-29C86C2579A3}</Project>
       <Name>org.kbinani.windows.forms</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\org.kbinani.xml\org.kbinani.xml.csproj">
+      <Project>{23C7549D-A0FD-402A-8470-95DB4BE6081C}</Project>
+      <Name>org.kbinani.xml</Name>
     </ProjectReference>
     <ProjectReference Include="..\org.kbinani\org.kbinani.csproj">
       <Project>{C8AAE632-9C6C-4372-8175-811528A66742}</Project>

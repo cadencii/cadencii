@@ -1,5 +1,5 @@
-﻿/*#if !JAVA
-using System;
+﻿#if !JAVA
+/*using System;
 using System.Collections.Generic;
 
 namespace bocoree {
@@ -471,5 +471,5 @@ namespace bocoree {
     public interface FileFilter {
         bool accept( File filepath );
     }
-}
-#endif*/
+}*/
+#endif

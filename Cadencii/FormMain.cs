@@ -356,7 +356,7 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// トラック名の入力に使用するテキストボックス
         /// </summary>
-        public TextBoxEx m_txtbox_track_name;
+        public LyricTextBox m_txtbox_track_name;
         /// <summary>
         /// ピアノロールの画面外へのドラッグ時、前回自動スクロール操作を行った時刻
         /// </summary>
@@ -854,7 +854,7 @@ namespace org.kbinani.cadencii {
             AppManager.inputTextBox.setEnabled( false );
             AppManager.inputTextBox.keyPressEvent.add( new BKeyPressEventHandler( this, "m_input_textbox_KeyPress" ) );
 #else
-            AppManager.inputTextBox = new TextBoxEx();
+            AppManager.inputTextBox = new LyricTextBox();
             AppManager.inputTextBox.setVisible( false );
             AppManager.inputTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             AppManager.inputTextBox.Width = 80;
@@ -5211,7 +5211,7 @@ namespace org.kbinani.cadencii {
 #if JAVA
             m_txtbox_track_name = new TextBoxEx( this );
 #else
-            m_txtbox_track_name = new TextBoxEx();
+            m_txtbox_track_name = new LyricTextBox();
 #endif
             m_txtbox_track_name.setVisible( false );
             int selector_width = trackSelector.getSelectorWidth();

@@ -1,1 +1,1 @@
-perl replace_path_separator.pl
+perl replace_path_separator.pl MSWin32

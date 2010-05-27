@@ -1,4 +1,5 @@
-﻿/*
+﻿#if !JAVA
+/*
  * Util.cs
  * Copyright (C) 2007-2010 kbinani
  *
@@ -220,3 +221,4 @@ namespace org.kbinani.media {
     }
 
 }
+#endif

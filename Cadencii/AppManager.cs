@@ -404,7 +404,7 @@ namespace org.kbinani.cadencii {
         /// 画面に描かれるエントリのリスト．trackBar.Valueの変更やエントリの編集などのたびに更新される
         /// </summary>
         public static Vector<Vector<DrawObject>> drawObjects;
-        public static TextBoxEx inputTextBox = null;
+        public static LyricTextBox inputTextBox = null;
         public static int addingEventLength;
         public static VsqEvent addingEvent;
         /// <summary>

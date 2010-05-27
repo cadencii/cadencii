@@ -1,5 +1,5 @@
 ﻿/*
- * TextBoxEx.cs
+ * LyricTextBox.cs
  * Copyright (C) 2008-2010 kbinani
  *
  * This file is part of org.kbinani.cadencii.
@@ -25,27 +25,49 @@ namespace org.kbinani.cadencii {
     /// <summary>
     /// 歌詞入力用のテキストボックス
     /// </summary>
-    public class TextBoxEx : BTextBox {
-        private boolean compositioning = false;
+    public class LyricTextBox : BTextBox {
         private String m_buf_text;
         private boolean m_phonetic_symbol_edit_mode;
 
+        /// <summary>
+        /// 発音記号を編集するモードかどうかを表すブール値を取得します
+        /// </summary>
+        /// <returns></returns>
         public boolean isPhoneticSymbolEditMode() {
             return m_phonetic_symbol_edit_mode;
         }
 
+        /// <summary>
+        /// 発音記号を編集するモードかどうかを表すブール値を設定します
+        /// </summary>
+        /// <param name="value"></param>
         public void setPhoneticSymbolEditMode( boolean value ) {
             m_phonetic_symbol_edit_mode = value;
         }
 
+        /// <summary>
+        /// バッファーテキストを取得します
+        /// (バッファーテキストには，発音記号モードでは歌詞，歌詞モードでは発音記号がそれぞれ格納される)
+        /// </summary>
+        /// <returns></returns>
         public String getBufferText() {
             return m_buf_text;
         }
 
+        /// <summary>
+        /// バッファーテキストを設定します
+        /// (バッファーテキストには，発音記号モードでは歌詞，歌詞モードでは発音記号がそれぞれ格納される)
+        /// </summary>
+        /// <param name="value"></param>
         public void setBufferText( String value ) {
             m_buf_text = value;
         }
 
+        /// <summary>
+        /// オーバーライド．(Tab)または(Tab+Shift)も入力キーとみなすようオーバーライドされている
+        /// </summary>
+        /// <param name="keyData">キーの値の一つ</param>
+        /// <returns>指定されているキーが入力キーである場合は true．それ以外の場合は false．</returns>
         protected override boolean IsInputKey( Keys keyData ) {
             switch ( keyData ) {
                 case Keys.Tab:
@@ -56,29 +78,6 @@ namespace org.kbinani.cadencii {
             }
             return true;
         }
-
-        /*protected override void WndProc( ref Message m ) {
-            base.WndProc( ref m );
-            if ( m.Msg == win32.WM_IME_STARTCOMPOSITION ) {
-                compositioning = true;
-#if DEBUG
-                PortUtil.println( "TextBoxEx#WndProc; compositioning=" + compositioning );
-#endif
-            } else if ( m.Msg == win32.WM_IME_ENDCOMPOSITION ) {
-                compositioning = false;
-#if DEBUG
-                PortUtil.println( "TextBoxEx#WndProc; compositioning=" + compositioning );
-#endif
-            }
-        }
-
-        /// <summary>
-        /// IMEが変換中かどうかを調べます。
-        /// </summary>
-        /// <returns></returns>
-        public boolean isComposition() {
-            return compositioning;
-        }*/
     }
 
 }
