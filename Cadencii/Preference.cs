@@ -863,15 +863,21 @@ namespace org.kbinani.cadencii {
             #region tabSequence
             lblResolution.setText( _( "Resolution(VSTi)" ) );
             lblResolControlCurve.setText( _( "Control Curve" ) + "(&C)" );
+
+            chkEnableAutoVibrato.setText( _( "Enable Automatic Vibrato" ) + "(&E)" );
             lblVibratoLength.setText( _( "Default Vibrato Length" ) + "(&L)" );
+            lblAutoVibratoMinLength.setText( _( "Minimum note length for Automatic Vibrato" ) + "(&M)" );
+
+            lblAutoVibratoType.setText( _( "Auto Vibrato Type" ) );
             groupVocaloidEditorCompatible.setTitle( _( "VOCALOID Editor Compatible" ) );
             groupUserDefined.setTitle( _( "User Defined" ) );
             radioVocaloidEditorCompatible.setText( _( "VOCALOID Editor Compatible" ) );
             radioUserDefined.setText( _( "User Defined" ) );
             chkEnableAutoVibrato.setText( _( "Enable Automatic Vibrato" ) + "(&E)" );
-            lblAutoVibratoMinLength.setText( _( "Minimum note length for Automatic Vibrato" ) + "(&M)" );
             lblAutoVibratoType1.setText( _( "Vibrato Type" ) + ": VOCALOID1 (&T)" );
             lblAutoVibratoType2.setText( _( "Vibrato Type" ) + ": VOCALOID2 (&T)" );
+            lblVibratoRate.setText( _( "Default Vibrato Rate" ) + "(&R)" );
+            lblVibratoDepth.setText( _( "Default Vibrato Depth" ) + "(&D)" );
             #endregion
 
             #region tabAnother
@@ -880,6 +886,7 @@ namespace org.kbinani.cadencii {
             lblWait.setText( _( "Waiting Time" ) + "(&W)" );
             lblDefaultPremeasure.setText( _( "Default Pre-measure" ) + "(&M)" );
             chkChasePastEvent.setText( _( "Chase Event" ) + "(&C)" );
+            lblBuffer.setText( _( "Buffer Size" ) + "(&B)" );
             groupWaveFileOutput.setTitle( _( "Wave File Output" ) );
             lblChannel.setText( _( "Channel" ) + "(&C)" );
             radioMasterTrack.setText( _( "Master Track" ) );
@@ -898,20 +905,22 @@ namespace org.kbinani.cadencii {
             #endregion
 
             #region tabOperation
+            groupPianoroll.setTitle( _( "Piano Roll" ) );
             labelWheelOrder.setText( _( "Mouse wheel Rate" ) );
+
             chkCursorFix.setText( _( "Fix Play Cursor to Center" ) );
             chkScrollHorizontal.setText( _( "Horizontal Scroll when Mouse wheel" ) );
-            lblMaximumFrameRate.setText( _( "Maximum Frame Rate" ) );
             chkKeepLyricInputMode.setText( _( "Keep Lyric Input Mode" ) );
-            lblMouseHoverTime.setText( _( "Waiting Time for Preview" ) );
-            lblMilliSecond.setText( _( "milli second" ) );
             chkPlayPreviewWhenRightClick.setText( _( "Play Preview On Right Click" ) );
             chkCurveSelectingQuantized.setText( _( "Enable Quantize for Curve Selecting" ) );
-            lblMidiInPort.setText( _( "MIDI In Port Number" ) );
             chkUseSpaceKeyAsMiddleButtonModifier.setText( _( "Use space key as Middle button modifier" ) );
 
-            groupPianoroll.setTitle( _( "Piano Roll" ) );
             groupMisc.setTitle( _( "Misc" ) );
+            lblMaximumFrameRate.setText( _( "Maximum Frame Rate" ) );
+            lblMilliSecond.setText( _( "milli second" ) );
+            lblMouseHoverTime.setText( _( "Waiting Time for Preview" ) );
+            lblMidiInPort.setText( _( "MIDI In Port Number" ) );
+            labelMtcMidiInPort.setText( _( "MTC MIDI In Port Number" ) );
             #endregion
 
             #region tabPlatform
@@ -942,6 +951,8 @@ namespace org.kbinani.cadencii {
             #region tabSingingSynth
             groupSynthesizerDll.setTitle( _( "Synthesizer DLL Usage" ) );
             chkLoadSecondaryVOCALOID1.setText( _( "Load secondary VOCALOID1 DLL" ) );
+
+            groupDefaultSynthesizer.setTitle( _( "Default Synthesizer" ) );
             #endregion
         }
 

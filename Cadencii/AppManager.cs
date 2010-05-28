@@ -444,10 +444,6 @@ namespace org.kbinani.cadencii {
         /// ピアノロール画面に，コントロールカーブをオーバーレイしているモード
         /// </summary>
         public static boolean curveOnPianoroll = false;
-        /// <summary>
-        /// ピアノロール画面上のマウスの軌跡．keyがクロック単位，valueがCent単位
-        /// </summary>
-        public static TreeMap<Integer, Float> curveOnPianorollMouseTrace = null;
 
         #region 裏設定項目
         /// <summary>

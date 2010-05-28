@@ -1,14 +1,14 @@
 open( FILE, "<Makefile.include" );
 open( OUT, ">Makefile" );
 
-&getSrcList( "./org.kbinani.apputil", "./build/java/org/kbinani/apputil/", $src_apputil, $cp_apputil );
 &getSrcList( "./org.kbinani", "./build/java/org/kbinani/", $src_corlib, $cp_corlib );
-&getSrcList( "./org.kbinani.windows.forms", "./build/java/org/kbinani/windows/forms/", $src_winforms, $cp_winforms );
+&getSrcList( "./org.kbinani.apputil", "./build/java/org/kbinani/apputil/", $src_apputil, $cp_apputil );
+&getSrcList( "./org.kbinani.componentmodel", "./build/java/org/kbinani/componentmodel/", $src_componentmodel, $cp_componentmodel );
 &getSrcList( "./org.kbinani.media", "./build/java/org/kbinani/media/", $src_media, $cp_media );
 &getSrcList( "./org.kbinani.vsq", "./build/java/org/kbinani/vsq/", $src_vsq, $cp_vsq );
-&getSrcList( "./Cadencii", "./build/java/org/kbinani/cadencii/", $src_cadencii, $cp_cadencii );
-&getSrcList( "./org.kbinani.componentmodel", "./build/java/org/kbinani/componentmodel/", $src_componentmodel, $cp_componentmodel );
+&getSrcList( "./org.kbinani.windows.forms", "./build/java/org/kbinani/windows/forms/", $src_winforms, $cp_winforms );
 &getSrcList( "./org.kbinani.xml", "./build/java/org/kbinani/xml/", $src_xml, $cp_xml );
+&getSrcList( "./Cadencii", "./build/java/org/kbinani/cadencii/", $src_cadencii, $cp_cadencii );
 
 while( $line = <FILE> ){
     $line =~ s/\@SRC_JAPPUTIL\@/$src_apputil/g;

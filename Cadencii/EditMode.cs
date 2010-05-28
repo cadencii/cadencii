@@ -79,6 +79,10 @@ namespace org.kbinani.cadencii {
         /// MTCスレーブ状態で，同期再生中
         /// </summary>
         REALTIME_MTC,
+        /// <summary>
+        /// ピアノロール上でカーブを描くモード
+        /// </summary>
+        CURVE_ON_PIANOROLL,
     }
 
 #if !JAVA

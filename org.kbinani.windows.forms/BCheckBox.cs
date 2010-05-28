@@ -286,8 +286,7 @@ namespace org.kbinani.windows.forms {
             return base.Text.Replace( "&", "" );
         }
 
-        public void setText( string value ) {
-            string text = getText();
+        public void setText( string text ) {
             if ( 0 <= m_mnemonic_index && m_mnemonic_index < text.Length ) {
                 text = text.Substring( 0, m_mnemonic_index ) + "&" + (m_mnemonic_index + 1 < text.Length ? text.Substring( m_mnemonic_index ) : "");
             }

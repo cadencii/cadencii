@@ -319,8 +319,8 @@ namespace org.kbinani.apputil {
                 return m_splitter_width;
             }
             set {
-                if ( value < 1 ) {
-                    value = 1;
+                if ( value < 0 ) {
+                    value = 0;
                 }
                 UpdateLayout( m_splitter_distance, value, m_panel1_min, m_panel2_min, false );
             }
@@ -386,7 +386,6 @@ namespace org.kbinani.apputil {
                     m_lbl_splitter.Width = splitter_width;
                     m_lbl_splitter.Height = this.Height;
                 }
-                return true;
             } else {
                 int p1 = splitter_distance;
                 if ( p1 < 0 ) {
@@ -435,8 +434,8 @@ namespace org.kbinani.apputil {
                     m_lbl_splitter.Width = this.Width;
                     m_lbl_splitter.Height = splitter_width;
                 }
-                return true;
             }
+            return true;
         }
 
         public int SplitterDistance {

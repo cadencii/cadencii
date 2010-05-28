@@ -106,7 +106,7 @@ namespace org.kbinani.cadencii{
             }
 
             public void remove() {
-                // do nothing
+                throw new NotSupportedException( "MouseTraser.MouseTracerIterator.remove(void)" );
             }
         }
 

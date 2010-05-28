@@ -100,6 +100,23 @@ namespace org.kbinani.cadencii {
         /// </summary>
         private const int _PX_ACCENT_HEADER = 21;
 
+        /// <summary>
+        /// ピアノ上のマウスのトレーサ
+        /// </summary>
+        public MouseTracer mouseTracer = new MouseTracer();
+        /// <summary>
+        /// 幅が2ピクセルのストローク
+        /// </summary>
+        private BasicStroke stroke2px = null;
+        /// <summary>
+        /// デフォルトのストローク
+        /// </summary>
+        private BasicStroke strokeDefault = null;
+        /// <summary>
+        /// 破線を表すストローク
+        /// </summary>
+        private BasicStroke strokeDashed = null;
+
 #if !JAVA
         #region event impl PreviewKeyDown
         // root implf of PreviewKeyDown is in BButton
@@ -156,7 +173,36 @@ namespace org.kbinani.cadencii {
         }
 #endif
         #endregion
-        
+
+        /// <summary>
+        /// 幅が2ピクセルのストロークを取得します
+        /// </summary>
+        /// <returns></returns>
+        private BasicStroke getStroke2px() {
+            if ( stroke2px == null ) {
+                stroke2px = new BasicStroke( 2.0f );
+            }
+            return stroke2px;
+        }
+
+        /// <summary>
+        /// デフォルトのストロークを取得します
+        /// </summary>
+        /// <returns></returns>
+        private BasicStroke getStrokeDefault() {
+            if ( strokeDefault == null ) {
+                strokeDefault = new BasicStroke();
+            }
+            return strokeDefault;
+        }
+
+        private BasicStroke getStrokeDashed() {
+            if ( strokeDashed == null ) {
+                strokeDashed = new BasicStroke( 1.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f, new float[] { 3.0f, 3.0f }, 0.0f );
+            }
+            return strokeDashed;
+        }
+
         public void paint( Graphics g1 ) {
             Graphics2D g = (Graphics2D)g1;
             try {
@@ -183,8 +229,6 @@ namespace org.kbinani.cadencii {
                 int y, dy;
                 float scalex = AppManager.scaleX;
                 float inv_scalex = 1f / scalex;
-                BasicStroke defaultStroke = new BasicStroke();
-                BasicStroke dashedStroke = new BasicStroke( 1.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f, new float[] { 3.0f, 3.0f }, 0.0f );
 
                 if ( AppManager.getSelectedEventCount() > 0 && AppManager.inputTextBox.isVisible() ) {
                     VsqEvent original = AppManager.getLastSelectedEvent().original;
@@ -404,7 +448,7 @@ namespace org.kbinani.cadencii {
                         VsqBarLineType blt = itr.next();
                         int local_clock_step = 1920 / blt.getLocalDenominator();
                         int x = (int)(blt.clock() * scalex + xoffset);
-                        g.setStroke( defaultStroke );
+                        g.setStroke( getStrokeDefault() );
                         if ( blt.isSeparator() ) {
                             //ピアノロール上
                             g.setColor( bar );
@@ -417,12 +461,12 @@ namespace org.kbinani.cadencii {
                         if ( dashed_line_step > 1 && AppManager.isGridVisible() ) {
                             int numDashedLine = local_clock_step / dashed_line_step;
                             g.setColor( beat );
-                            g.setStroke( dashedStroke );
+                            g.setStroke( getStrokeDashed() );
                             for ( int i = 1; i < numDashedLine; i++ ) {
                                 int x2 = (int)((blt.clock() + i * dashed_line_step) * scalex + xoffset);
                                 g.drawLine( x2, 0, x2, height );
                             }
-                            g.setStroke( defaultStroke );
+                            g.setStroke( getStrokeDefault() );
                         }
                     }
                 }
@@ -730,7 +774,7 @@ namespace org.kbinani.cadencii {
                                     g.setColor( new Color( 171, 171, 171 ) );
                                     g.setStroke( s_pen_dashed_171_171_171 );
                                     g.drawRect( x, y, 10, track_height - 1 );
-                                    g.setStroke( defaultStroke );
+                                    g.setStroke( getStrokeDefault() );
                                 } else {
                                     int length = (int)(ev.editing.ID.getLength() * scalex);
                                     g.setColor( s_pen_a136_000_000_000 );
@@ -1010,8 +1054,7 @@ namespace org.kbinani.cadencii {
                     }
 
                     Color pitline = PortUtil.MidnightBlue;
-                    BasicStroke stroke = new BasicStroke( 2.0f );
-                    g.setStroke( stroke );
+                    g.setStroke( getStroke2px() );
                     lock ( AppManager.drawObjects ) {
                         Vector<DrawObject> list = AppManager.drawObjects.get( selected - 1 );
                         int j_start = AppManager.drawStartIndex[selected - 1];
@@ -1134,6 +1177,17 @@ namespace org.kbinani.cadencii {
                     Color fill = new Color( 0, 0, 0, 128 );
                     g.setColor( fill );
                     g.fill( fillarea );
+
+                    if ( mouseTracer.size() > 1 ) {
+                        PolylineDrawer pdrawer = new PolylineDrawer( g, 1024 );
+                        g.setColor( Color.red );
+                        g.setStroke( getStroke2px() );
+                        for ( Iterator<Point> itr = mouseTracer.iterator(); itr.hasNext(); ) {
+                            Point pt = itr.next();
+                            pdrawer.append( pt.x - start_draw_x, pt.y - start_draw_y );
+                        }
+                        pdrawer.flush();
+                    }
                 }
                 #endregion
 
@@ -1141,9 +1195,9 @@ namespace org.kbinani.cadencii {
                 int marker_x = (int)(AppManager.getCurrentClock() * AppManager.scaleX + AppManager.keyOffset + key_width - AppManager.startToDrawX);
                 if ( key_width <= marker_x && marker_x <= getWidth() ) {
                     g.setColor( Color.white );
-                    g.setStroke( new BasicStroke( 2f ) );
+                    g.setStroke( getStroke2px() );
                     g.drawLine( marker_x, 0, marker_x, getHeight() );
-                    g.setStroke( defaultStroke );
+                    g.setStroke( getStrokeDefault() );
                 }
             } catch ( Exception ex ) {
 #if JAVA

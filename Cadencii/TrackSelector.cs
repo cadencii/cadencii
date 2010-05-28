@@ -341,6 +341,14 @@ namespace org.kbinani.cadencii {
         private Vector<BPPair> m_moving_points = new Vector<BPPair>();
         private int m_last_preferred_min_height;
         private PolylineDrawer drawer = new PolylineDrawer( null, 1024 );
+        /// <summary>
+        /// 描画幅が2ピクセルのストローク
+        /// </summary>
+        private BasicStroke stroke2px = null;
+        /// <summary>
+        /// デフォルトのストローク
+        /// </summary>
+        private BasicStroke strokeDefault = null;
 
         public BEvent<SelectedCurveChangedEventHandler> selectedCurveChangedEvent = new BEvent<SelectedCurveChangedEventHandler>();
         public BEvent<SelectedTrackChangedEventHandler> selectedTrackChangedEvent = new BEvent<SelectedTrackChangedEventHandler>();
@@ -656,6 +664,28 @@ namespace org.kbinani.cadencii {
         }
 #endif
 
+        /// <summary>
+        /// 描画幅が2ピクセルのストロークを取得します
+        /// </summary>
+        /// <returns></returns>
+        private BasicStroke getStroke2px() {
+            if ( stroke2px == null ) {
+                stroke2px = new BasicStroke( 2.0f );
+            }
+            return stroke2px;
+        }
+
+        /// <summary>
+        /// デフォルトのストロークを取得します
+        /// </summary>
+        /// <returns></returns>
+        private BasicStroke getStrokeDefault() {
+            if ( strokeDefault == null ) {
+                strokeDefault = new BasicStroke();
+            }
+            return strokeDefault;
+        }
+
         public void applyLanguage() {
         }
 
@@ -917,8 +947,6 @@ namespace org.kbinani.cadencii {
                 g.setColor( m_generic_line );
                 g.drawLine( 2, size.height - 2 * OFFSET_TRACK_TAB,
                             size.width - 3, size.height - 2 * OFFSET_TRACK_TAB );
-                g.drawLine( key_width, size.height - 2 * OFFSET_TRACK_TAB + 1,
-                            key_width, size.height - 2 * OFFSET_TRACK_TAB + 15 );
                 g.setFont( AppManager.baseFont8 );
                 g.setColor( brs_string );
                 g.drawString( "SINGER", 9, size.height - 2 * OFFSET_TRACK_TAB + OFFSET_TRACK_TAB / 2 - AppManager.baseFont8OffsetHeight );
@@ -1193,7 +1221,6 @@ namespace org.kbinani.cadencii {
                     }
 
                     if ( AppManager.isWholeSelectedIntervalEnabled() ) {
-                        //int stdx = AppManager.startToDrawX;
                         int start = AppManager.xCoordFromClocks( AppManager.wholeSelectedInterval.getStart() ) + 2;
                         int end = AppManager.xCoordFromClocks( AppManager.wholeSelectedInterval.getEnd() ) + 2;
                         g.setColor( s_brs_a098_000_000_000 );
@@ -1225,15 +1252,22 @@ namespace org.kbinani.cadencii {
                                 Point pt = m_mouse_tracer.iterator().next();
                                 int xini = pt.x - stdx;
                                 int yini = pt.y;
-                                g.setColor( s_pen_050_140_150 );
+                                g.setColor( Color.ORANGE );
+                                g.setStroke( getStroke2px() );
+#if !JAVA
+                                g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+#endif
                                 g.drawLine( xini, yini, AppManager.xCoordFromClocks( clock_at_mouse ), yCoordFromValue( value ) );
+#if !JAVA
+                                g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
+#endif
+                                g.setStroke( getStrokeDefault() );
                             }
 #endif
                         } else if ( tool == EditTool.PENCIL ) {
                             if ( m_mouse_tracer.size() > 0 && !AppManager.isCurveMode() ) {
                                 Vector<Integer> ptx = new Vector<Integer>();
                                 Vector<Integer> pty = new Vector<Integer>();
-                                //int stdx = AppManager.startToDrawX;
                                 int height = getHeight() - 42;
 
                                 int count = 0;
@@ -1323,16 +1357,11 @@ namespace org.kbinani.cadencii {
                     Rectangle num_view = new Rectangle( 13, 4, 38, 16 );
                     g.setColor( new Color( 125, 123, 124 ) );
                     g.drawRect( num_view.x, num_view.y, num_view.width, num_view.height );
-                    //StringFormat sf = new StringFormat();
-                    //sf.Alignment = StringAlignment.Far;
-                    //sf.LineAlignment = StringAlignment.Far;
                     g.setFont( AppManager.baseFont9 );
                     g.setColor( brs_string );
                     g.drawString( numeric_view + "", num_view.x, num_view.y + num_view.height / 2 - AppManager.baseFont9OffsetHeight + 1 ); // sf );
 
                     // 現在表示されているカーブの名前
-                    //sf.Alignment = StringAlignment.Center;
-                    //sf.LineAlignment = StringAlignment.Near;
                     g.drawString( m_selected_curve.getName(), 7, 24 + AppManager.baseFont9Height / 2 - AppManager.baseFont9OffsetHeight + 1 ); // new Rectangle( 7, 24, 56, 14 ), sf
 
                     for ( Iterator<CurveType> itr = m_viewing_curves.iterator(); itr.hasNext(); ) {
