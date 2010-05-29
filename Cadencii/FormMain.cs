@@ -9055,6 +9055,7 @@ namespace org.kbinani.cadencii {
             CurveType selected_curve = trackSelector.getSelectedCurve();
             int stdx = AppManager.startToDrawX;
             int stdy = getStartToDrawY();
+            double d2_13 = 8192; // = 2^13
 
             if ( edit_mode == EditMode.CURVE_ON_PIANOROLL ) {
                 if ( pictPianoRoll.mouseTracer.size() > 1 ) {
@@ -9066,15 +9067,55 @@ namespace org.kbinani.cadencii {
                     int cl_start = AppManager.clockFromXCoord( px_start - stdx );
                     int cl_end = AppManager.clockFromXCoord( px_end - stdx );
 
+                    // 編集が行われたかどうか
+                    boolean edited = false;
+                    // 作業用のPITカーブのコピー
+                    VsqBPList pit = (VsqBPList)vsq_track.getCurve( "pit" ).clone();
+                    VsqBPList pbs = (VsqBPList)vsq_track.getCurve( "pbs" ); // こっちはクローンしないよ
+
+                    // トラック内の全音符に対して、マウス軌跡と被っている部分のPITを編集する
                     for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
                         VsqEvent item = itr.next();
-                        if ( cl_end < item.Clock ) {
+                        int cl_item_start = item.Clock;
+                        if ( cl_end < cl_item_start ) {
+                            break;
+                        }
+                        int cl_item_end = cl_item_start + item.ID.getLength();
+                        if ( cl_item_end < cl_start ) {
                             continue;
                         }
-                        if ( item.Clock + item.ID.getLength() < cl_start ) {
-                            continue;
+                        int px_item_start = AppManager.xCoordFromClocks( cl_item_start ) + stdx;
+                        int px_item_end = AppManager.xCoordFromClocks( cl_item_end ) + stdx;
+
+                        for ( Iterator<Point> itr2 = pictPianoRoll.mouseTracer.iterator(); itr2.hasNext(); ) {
+                            Point p = itr2.next();
+                            if ( p.x < px_item_start ) {
+                                continue;
+                            }
+                            if ( px_item_end < p.x ) {
+                                break;
+                            }
+                            
+                            // ここに到達するってことは、pitに編集が加えられるってこと。
+                            int clock = AppManager.clockFromXCoord( p.x - stdx );
+                            double note = noteFromYCoord( p.y - stdy );
+                            int v_pit = (int)(d2_13 / (double)pbs.getValue( clock ) * (note - item.ID.Note));
+                            if ( v_pit < pit.getMinimum() ) {
+                                v_pit = pit.getMinimum();
+                            } else if ( pit.getMaximum() < v_pit ) {
+                                v_pit = pit.getMaximum();
+                            }
+
+                            //TODO: FormMain#pictPianoRoll_MouseUpこのへんから
                         }
-                        //TODO: FormMain#pictPianoRoll_MouseUpこのへんから
+                    }
+
+                    // 編集操作が行われた場合のみ、コマンドを発行
+                    if ( edited ) {
+                        CadenciiCommand run = new CadenciiCommand(
+                            VsqCommand.generateCommandTrackCurveReplace( selected, "PIT", pit ) );
+                        AppManager.register( vsq.executeCommand( run ) );
+                        setEdited( true );
                     }
                 }
                 pictPianoRoll.mouseTracer.clear();
