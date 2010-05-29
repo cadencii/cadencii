@@ -5996,7 +5996,15 @@ namespace org.kbinani.cadencii {
         /// <param name="y"></param>
         /// <returns></returns>
         public int noteFromYCoord( int y ) {
-            return 127 - (int)((double)(getStartToDrawY() + y) / (double)AppManager.editorConfig.PxTrackHeight);
+            return 127 - (int)noteFromYCoordCore( y );
+        }
+
+        public double noteFromYCoordDoublePrecision( int y ) {
+            return 127.0 - noteFromYCoordCore( y );
+        }
+
+        private double noteFromYCoordCore( int y ) {
+            return (double)(getStartToDrawY() + y) / (double)AppManager.editorConfig.PxTrackHeight;
         }
 
         /// <summary>
@@ -9084,9 +9092,32 @@ namespace org.kbinani.cadencii {
                         if ( cl_item_end < cl_start ) {
                             continue;
                         }
+
+                        // ここに到達するってことは、pitに編集が加えられるってこと。
+                        edited = true;
+                        
+                        // マウス軌跡と被っている部分のPITを削除
+                        int cl_remove_start = Math.Max( cl_item_start, cl_start );
+                        int cl_remove_end = Math.Min( cl_item_end, cl_end );
+                        int value_at_remove_end = pit.getValue( cl_remove_end );
+                        int value_at_remove_start = pit.getValue( cl_remove_start );
+                        Vector<Integer> remove = new Vector<Integer>();
+                        for ( Iterator<Integer> itr2 = pit.keyClockIterator(); itr2.hasNext(); ) {
+                            int clock = itr2.next();
+                            if ( cl_remove_start <= clock && clock <= cl_remove_end ) {
+                                remove.add( clock );
+                            }
+                        }
+                        for ( Iterator<Integer> itr2 = remove.iterator(); itr2.hasNext(); ) {
+                            int clock = itr2.next();
+                            pit.remove( clock );
+                        }
+                        remove = null;
+
                         int px_item_start = AppManager.xCoordFromClocks( cl_item_start ) + stdx;
                         int px_item_end = AppManager.xCoordFromClocks( cl_item_end ) + stdx;
 
+                        int lastv = value_at_remove_start;
                         for ( Iterator<Point> itr2 = pictPianoRoll.mouseTracer.iterator(); itr2.hasNext(); ) {
                             Point p = itr2.next();
                             if ( p.x < px_item_start ) {
@@ -9096,17 +9127,25 @@ namespace org.kbinani.cadencii {
                                 break;
                             }
                             
-                            // ここに到達するってことは、pitに編集が加えられるってこと。
                             int clock = AppManager.clockFromXCoord( p.x - stdx );
-                            double note = noteFromYCoord( p.y - stdy );
+                            double note = noteFromYCoordDoublePrecision( p.y - stdy );
                             int v_pit = (int)(d2_13 / (double)pbs.getValue( clock ) * (note - item.ID.Note));
+#if DEBUG
+                            PortUtil.println( "FormMain#pictPianoRoll_MouseUp; v_pit=" + v_pit );
+#endif
+
+                            // 正規化
                             if ( v_pit < pit.getMinimum() ) {
                                 v_pit = pit.getMinimum();
                             } else if ( pit.getMaximum() < v_pit ) {
                                 v_pit = pit.getMaximum();
                             }
 
-                            //TODO: FormMain#pictPianoRoll_MouseUpこのへんから
+                            // 直前の値と違っている場合にのみ追加
+                            if ( v_pit != lastv ) {
+                                pit.add( clock, v_pit );
+                                lastv = v_pit;
+                            }
                         }
                     }
 

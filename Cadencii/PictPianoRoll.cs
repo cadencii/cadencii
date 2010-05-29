@@ -1263,12 +1263,25 @@ namespace org.kbinani.cadencii {
                                                              clock_end - clock_start,
                                                              (float)(tempo * 1e-6 / 480.0) );
             g.setColor( Color.blue );
+#if !JAVA
+            System.Drawing.Drawing2D.SmoothingMode sm = g.nativeGraphics.SmoothingMode;
+            g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+#endif
+            int lx = 0;
             for ( ; itr.hasNext(); ) {
                 PointD p = itr.next();
-                drawer.append( AppManager.xCoordFromClocks( vsq.getClockFromSec( p.getX() ) ),
-                               (int)(p.getY() * px_track_height + y0) );
+                int x = AppManager.xCoordFromClocks( vsq.getClockFromSec( p.getX() ) );
+                int y = (int)(p.getY() * px_track_height + y0);
+                if ( x - lx > 0 ) {
+                    continue;
+                }
+                drawer.append( x, y );
+                lx = x;
             }
-            drawer.flush();                                                  
+            drawer.flush();
+#if !JAVA
+            g.nativeGraphics.SmoothingMode = sm;
+#endif
         }
 
         private void drawVibratoLine( Graphics g, Point origin, int vibrato_length ) {
