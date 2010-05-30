@@ -172,6 +172,8 @@ namespace org.kbinani.cadencii {
             new AuthorListEntry( "さささ", "@sasasa3396" ),
             new AuthorListEntry( "あろも～ら", "@aromora" ),
             new AuthorListEntry( "空耳P", "@soramiku" ),
+            new AuthorListEntry( "kotoi" ),
+            new AuthorListEntry( "げっぺータロー", "@geppeitaro" ),
             new AuthorListEntry( "all members of Cadencii bbs", 2 ),
             new AuthorListEntry(),
             new AuthorListEntry( "     ... and you !", 3 ),
@@ -10862,7 +10864,13 @@ namespace org.kbinani.cadencii {
                 tempo.TempoTable.add( new TempoTableEntry( 0, 500000, 0.0 ) );
             }
             contains_zero = false;
-            c = tempo.TempoTable.size();
+            // =>
+            // Thanks, げっぺータロー.
+            // BEFORE:
+            // c = tempo.TempoTable.size();
+            // AFTER:
+            c = tempo.TimesigTable.size();
+            // <=
             for ( int i = 0; i < c; i++ ) {
                 if ( tempo.TimesigTable.get( i ).Clock == 0 ) {
                     contains_zero = true;
