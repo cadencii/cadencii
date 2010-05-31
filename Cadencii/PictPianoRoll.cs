@@ -1029,14 +1029,8 @@ namespace org.kbinani.cadencii {
                 g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
 #endif
 
-                #region コントロールカーブのオーバーレイ表示
-                if ( AppManager.curveOnPianoroll ) {
-                    g.setClip( null ); 
-                   
-                    Area fillarea = new Area( new Rectangle( key_width, 0, width - key_width, height ) ); // 塗りつぶす領域．最後に処理する
-                    g.setColor( new Color( 255, 255, 255, 64 ) );
-                    g.fillRect( key_width, 0, width - key_width, height );
-
+                #region ピッチ曲線を描く
+                if ( AppManager.editorConfig.ViewAtcualPitch ) {
                     VsqBPList pit = vsq.Track.get( selected ).getCurve( "pit" );
                     if ( pit == null ) {
                         pit = new VsqBPList( CurveType.PIT.getName(),
@@ -1044,6 +1038,17 @@ namespace org.kbinani.cadencii {
                                              CurveType.PIT.getMinimum(),
                                              CurveType.PIT.getMaximum() );
                     }
+
+                }
+                #endregion
+
+                #region コントロールカーブのオーバーレイ表示
+                if ( AppManager.curveOnPianoroll ) {
+                    g.setClip( null ); 
+                   
+                    Area fillarea = new Area( new Rectangle( key_width, 0, width - key_width, height ) ); // 塗りつぶす領域．最後に処理する
+                    g.setColor( new Color( 255, 255, 255, 64 ) );
+                    g.fillRect( key_width, 0, width - key_width, height );
 
                     VsqBPList pbs = vsq.Track.get( selected ).getCurve( "pbs" );
                     if ( pbs == null ) {
@@ -1066,7 +1071,6 @@ namespace org.kbinani.cadencii {
                         double a = 1.0 / 8192.0;
 
                         ByRef<Integer> pit_index = new ByRef<Integer>( 0 );
-                        int pit_count = pit.size();
                         PolylineDrawer pdrawer = new PolylineDrawer( g, 20 );
                         ByRef<Integer> pbs_index_for_pit = new ByRef<Integer>( 0 );
 
@@ -1131,9 +1135,11 @@ namespace org.kbinani.cadencii {
                                     last_pbs_value = pbs_value;
                                 }
                             }
+                        }
 
+                        {
                             // PITを描画
-                            pdrawer.clear();
+                            /* pdrawer.clear();
                             g.setColor( pitline );
                             if ( pit_index.value > 0 ) {
                                 pit_index.value--;
@@ -1170,7 +1176,7 @@ namespace org.kbinani.cadencii {
                                 }
                                 pit_last_y = pit_y;
                             }
-                            pdrawer.flush();
+                            pdrawer.flush(); */
                         }
                     }
 
