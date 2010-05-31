@@ -1136,48 +1136,6 @@ namespace org.kbinani.cadencii {
                                 }
                             }
                         }
-
-                        {
-                            // PITを描画
-                            /* pdrawer.clear();
-                            g.setColor( pitline );
-                            if ( pit_index.value > 0 ) {
-                                pit_index.value--;
-                            }
-                            if ( pbs_index_for_pit.value > 0 ){
-                                pbs_index_for_pit.value--;
-                            }
-                            double last_pit_value = pit.getValue( clock, pit_index );
-                            double last_pbs_value_for_pit = pbs.getValue( clock, pbs_index_for_pit );
-                            int pit_last_y = (int)(-(dobj.note + (last_pit_value * last_pbs_value_for_pit * a) - 0.5) * track_height + yoffset);
-                            pdrawer.append( x_at_clock, pit_last_y );
-                            for ( ; pit_index.value < pit_count; pit_index.value++ ) {
-                                double pit_value;
-                                int pit_clock;
-                                if ( 0 <= pit_index.value + 1 && pit_index.value + 1 < pit_count ) {
-                                    pit_value = pit.getElement( pit_index.value + 1 );
-                                    pit_clock = pit.getKeyClock( pit_index.value + 1 );
-                                } else {
-                                    pit_value = last_pit_value;
-                                    pit_clock = clock + dobj.length;
-                                }
-                                double pbs_value = pbs.getValue( pit_clock, pbs_index_for_pit );
-                                double delta = pbs_value * pit_value * a;
-                                int pit_y = (int)(-(dobj.note + delta - 0.5) * track_height + yoffset);
-                                int x = (int)(pit_clock * scalex + xoffset);
-
-                                if ( pit_clock < clock + dobj.length ) {
-                                    pdrawer.append( x, pit_last_y );
-                                    pdrawer.append( x, pit_y );
-                                } else {
-                                    x = (int)((clock + dobj.length) * scalex + xoffset);
-                                    pdrawer.append( x, pit_last_y );
-                                    break;
-                                }
-                                pit_last_y = pit_y;
-                            }
-                            pdrawer.flush(); */
-                        }
                     }
 
                     Color fill = new Color( 0, 0, 0, 128 );
