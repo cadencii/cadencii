@@ -8538,6 +8538,7 @@ namespace org.kbinani.cadencii {
             int stdx = AppManager.getStartToDrawX();
             int stdy = AppManager.getStartToDrawY();
             int selected = AppManager.getSelected();
+            EditTool selected_tool = AppManager.getSelectedTool();
 
             if ( edit_mode == EditMode.CURVE_ON_PIANOROLL && AppManager.curveOnPianoroll ) {
                 pictPianoRoll.mouseTracer.append( e.X + stdx, e.Y + stdy );
@@ -8933,7 +8934,9 @@ namespace org.kbinani.cadencii {
             updatePositionViewFromMousePosition( clock );
 
             // カーソルの形を決める
-            if ( !m_mouse_downed && edit_mode != EditMode.CURVE_ON_PIANOROLL ) {
+            if ( !m_mouse_downed && 
+                 edit_mode != EditMode.CURVE_ON_PIANOROLL && 
+                 !(AppManager.curveOnPianoroll && (selected_tool == EditTool.PENCIL || selected_tool == EditTool.LINE)) ) {
                 boolean split_cursor = false;
                 boolean hand_cursor = false;
                 int min_width = 4 * _EDIT_HANDLE_WIDTH;
@@ -9096,9 +9099,13 @@ namespace org.kbinani.cadencii {
 
                         int lastv = value_at_remove_start;
                         boolean cl_item_end_added = false;
+                        boolean cl_item_start_added = false;
+                        int last_px = 0, last_py = 0;
                         for ( Iterator<Point> itr2 = pictPianoRoll.mouseTracer.iterator(); itr2.hasNext(); ) {
                             Point p = itr2.next();
                             if ( p.x < px_item_start ) {
+                                last_px = p.x;
+                                last_py = p.y;
                                 continue;
                             }
                             if ( px_item_end < p.x ) {
@@ -9107,6 +9114,8 @@ namespace org.kbinani.cadencii {
                             
                             int clock = AppManager.clockFromXCoord( p.x - stdx );
                             if ( clock < cl_item_start ) {
+                                last_px = p.x;
+                                last_py = p.y;
                                 continue;
                             } else if ( cl_item_end < clock ) {
                                 break;
@@ -9124,12 +9133,28 @@ namespace org.kbinani.cadencii {
                                 v_pit = pit.getMaximum();
                             }
 
+                            if ( cl_item_start < clock && !cl_item_start_added &&
+                                 cl_start <= cl_item_start && cl_item_start < cl_end ) {
+                                // これから追加しようとしているデータ点の時刻が、音符の開始時刻よりも後なんだけれど、
+                                // 音符の開始時刻におけるデータをまだ書き込んでない場合
+                                double a = (p.y - last_py) / (double)(p.x - last_px);
+                                double x_at_clock = AppManager.xCoordFromClocks( cl_item_start ) + stdx;
+                                double ext_y = last_py + a * (x_at_clock - last_px);
+                                double tnote = AppManager.noteFromYCoordDoublePrecision( (int)(ext_y - stdy - half_track_height) );
+                                int t_vpit = (int)(d2_13 / (double)pbs.getValue( cl_item_start ) * (tnote - item.ID.Note));
+                                pit.add( cl_item_start, t_vpit );
+                                lastv = t_vpit;
+                                cl_item_start_added = true;
+                            }
+
                             // 直前の値と違っている場合にのみ追加
                             if ( v_pit != lastv ) {
                                 pit.add( clock, v_pit );
                                 lastv = v_pit;
                                 if ( clock == cl_item_end ) {
                                     cl_item_end_added = true;
+                                } else if ( clock == cl_item_start ) {
+                                    cl_item_start_added = true;
                                 }
                             }
                         }

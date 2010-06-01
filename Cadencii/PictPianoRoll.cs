@@ -656,7 +656,7 @@ namespace org.kbinani.cadencii {
                                             }
 
                                             #region ピッチベンド
-                                            if ( AppManager.editorConfig.ViewAtcualPitch ) {
+                                            if ( AppManager.editorConfig.ViewAtcualPitch || AppManager.curveOnPianoroll ) {
                                                 int cl_start = dobj.clock;
                                                 int cl_end = cl_start + dobj.length;
 
