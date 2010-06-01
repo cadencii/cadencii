@@ -1154,8 +1154,8 @@ namespace org.kbinani.cadencii {
             lock ( AppManager.drawObjects ) {
                 Vector<DrawObject> dobj_list = AppManager.drawObjects.get( selected - 1 );
                 int count = dobj_list.size();
-                int start_to_draw_x = AppManager.startToDrawX;
-                int start_to_draw_y = getStartToDrawY();
+                int start_to_draw_x = AppManager.getStartToDrawX();
+                int start_to_draw_y = AppManager.getStartToDrawY();
                 int key_width = AppManager.keyWidth;
                 int pianoroll_width = pictPianoRoll.getWidth();
                 for ( int i = 0; i < count; i++ ) {
@@ -1221,7 +1221,7 @@ namespace org.kbinani.cadencii {
                                 int length = itemj.ID.getLength();
                                 int note = itemj.ID.Note;
                                 int x = AppManager.xCoordFromClocks( clock );
-                                int y = yCoordFromNote( note );
+                                int y = AppManager.yCoordFromNote( note );
                                 int lyric_width = (int)(length * AppManager.scaleX);
                                 if ( x + lyric_width < 0 ) {
                                     continue;
@@ -1241,7 +1241,7 @@ namespace org.kbinani.cadencii {
                                 int length = itemj.ID.getLength();
                                 int note = itemj.ID.Note;
                                 int x = AppManager.xCoordFromClocks( clock );
-                                int y = yCoordFromNote( note );
+                                int y = AppManager.yCoordFromNote( note );
                                 //int lyric_width = 
                             }
                         }
@@ -1846,7 +1846,7 @@ namespace org.kbinani.cadencii {
             //SmoothingMode old = g.SmoothingMode;
             //g.SmoothingMode = SmoothingMode.AntiAlias;
             // 魚雷を描いてみる
-            int y0 = yCoordFromNote( note - 0.5f );
+            int y0 = AppManager.yCoordFromNote( note - 0.5f );
             int x0 = AppManager.xCoordFromClocks( clock_start );
             int px_width = AppManager.xCoordFromClocks( clock_start + clock_width ) - x0;
             int boxheight = (int)(vibrato.Depth * 2 / 100.0f * AppManager.editorConfig.PxTrackHeight);
@@ -2750,8 +2750,8 @@ namespace org.kbinani.cadencii {
                 return;
             }
             int height = vScroll.getHeight();
-            int noteTop = noteFromYCoord( 0 ); //画面上端でのノートナンバー
-            int noteBottom = noteFromYCoord( height ); // 画面下端でのノートナンバー
+            int noteTop = AppManager.noteFromYCoord( 0 ); //画面上端でのノートナンバー
+            int noteBottom = AppManager.noteFromYCoord( height ); // 画面下端でのノートナンバー
 
             int maximum = vScroll.getMaximum();
             int track_height = AppManager.editorConfig.PxTrackHeight;
@@ -4489,7 +4489,7 @@ namespace org.kbinani.cadencii {
                 if ( AppManager.isWholeSelectedIntervalEnabled() ) {
                     VsqFileEx work = (VsqFileEx)vsq.clone();
                     work.executeCommand( run );
-                    int stdx = AppManager.startToDrawX;
+                    int stdx = AppManager.getStartToDrawX();
                     int start_clock = AppManager.wholeSelectedInterval.getStart();
                     int end_clock = AppManager.wholeSelectedInterval.getEnd();
                     Vector<Vector<BPPair>> curves = new Vector<Vector<BPPair>>();
@@ -4866,7 +4866,7 @@ namespace org.kbinani.cadencii {
 #if DEBUG
                 PortUtil.println( "FormMain#copyEvent; selected with CTRL key" );
 #endif
-                int stdx = AppManager.startToDrawX;
+                int stdx = AppManager.getStartToDrawX();
                 int start_clock = AppManager.wholeSelectedInterval.getStart();
                 int end_clock = AppManager.wholeSelectedInterval.getEnd();
                 ClipboardEntry ce = new ClipboardEntry();
@@ -5017,7 +5017,7 @@ namespace org.kbinani.cadencii {
 
             // Ctrlキーを押しながらドラッグしたか、そうでないかで分岐
             if ( AppManager.isWholeSelectedIntervalEnabled() || AppManager.getSelectedPointIDCount() > 0 ) {
-                int stdx = AppManager.startToDrawX;
+                int stdx = AppManager.getStartToDrawX();
                 int start_clock, end_clock;
                 if ( AppManager.isWholeSelectedIntervalEnabled() ) {
                     start_clock = AppManager.wholeSelectedInterval.getStart();
@@ -5980,36 +5980,6 @@ namespace org.kbinani.cadencii {
         }
 
         /// <summary>
-        /// 音の高さを表すnoteから、画面に描くべきy座標を計算します
-        /// </summary>
-        /// <param name="note"></param>
-        /// <returns></returns>
-        public int yCoordFromNote( float note ) {
-            return yCoordFromNote( note, getStartToDrawY() );
-        }
-
-        public int yCoordFromNote( float note, int start_to_draw_y ) {
-            return (int)(-1 * (note - 127.0f) * AppManager.editorConfig.PxTrackHeight) - start_to_draw_y;
-        }
-
-        /// <summary>
-        /// ピアノロール画面のy座標から、その位置における音の高さを取得します
-        /// </summary>
-        /// <param name="y"></param>
-        /// <returns></returns>
-        public int noteFromYCoord( int y ) {
-            return 127 - (int)noteFromYCoordCore( y );
-        }
-
-        public double noteFromYCoordDoublePrecision( int y ) {
-            return 127.0 - noteFromYCoordCore( y );
-        }
-
-        private double noteFromYCoordCore( int y ) {
-            return (double)(getStartToDrawY() + y) / (double)AppManager.editorConfig.PxTrackHeight;
-        }
-
-        /// <summary>
         /// アンドゥ処理を行います
         /// </summary>
         public void undo() {
@@ -6060,7 +6030,7 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 現在表示されているピアノロール画面の右上の、仮想スクリーン上座標で見たときのy座標(pixel)を取得します
         /// </summary>
-        public int getStartToDrawY() {
+        private int calculateStartToDrawY() {
             return (int)((128 * AppManager.editorConfig.PxTrackHeight - vScroll.getHeight()) * (float)vScroll.getValue() / ((float)vScroll.getMaximum()));
         }
 
@@ -6252,7 +6222,7 @@ namespace org.kbinani.cadencii {
                 #endregion
 
                 #region 現在のマーカー
-                float xoffset = AppManager.keyWidth + AppManager.keyOffset - AppManager.startToDrawX;
+                float xoffset = AppManager.keyWidth + AppManager.keyOffset - AppManager.getStartToDrawX();
                 int marker_x = (int)(AppManager.getCurrentClock() * AppManager.scaleX + xoffset);
                 if ( AppManager.keyWidth <= marker_x && marker_x <= width ) {
                     g.setStroke( new BasicStroke( 2.0f ) );
@@ -6499,6 +6469,7 @@ namespace org.kbinani.cadencii {
             menuHiddenGoToEndMarker.clickEvent.add( new BEventHandler( this, "menuHiddenGoToEndMarker_Click" ) );
             menuHiddenGoToStartMarker.clickEvent.add( new BEventHandler( this, "menuHiddenGoToStartMarker_Click" ) );
             menuHiddenPlayFromStartMarker.clickEvent.add( new BEventHandler( this, "menuHiddenPlayFromStartMarker_Click" ) );
+            menuHiddenFlipCurveOnPianorollMode.clickEvent.add( new BEventHandler( this, "menuHiddenFlipCurveOnPianorollMode_Click" ) );
 
             cMenuPiano.openingEvent.add( new BCancelEventHandler( this, "cMenuPiano_Opening" ) );
             cMenuPianoPointer.clickEvent.add( new BEventHandler( this, "cMenuPianoPointer_Click" ) );
@@ -6872,7 +6843,7 @@ namespace org.kbinani.cadencii {
                     VsqEvent item = track.getEvent( index );
                     AppManager.addSelectedEvent( item.InternalID );
                     int x = AppManager.xCoordFromClocks( item.Clock );
-                    int y = yCoordFromNote( item.ID.Note );
+                    int y = AppManager.yCoordFromNote( item.ID.Note );
                     boolean phonetic_symbol_edit_mode = AppManager.inputTextBox.isPhoneticSymbolEditMode();
                     showInputTextBox( 
                         item.ID.LyricHandle.L0.Phrase,
@@ -7785,7 +7756,8 @@ namespace org.kbinani.cadencii {
                      edit_mode != EditMode.MOVE_ENTRY_WHOLE &&
                      edit_mode != EditMode.EDIT_LEFT_EDGE &&
                      edit_mode != EditMode.EDIT_RIGHT_EDGE &&
-                     edit_mode != EditMode.MIDDLE_DRAG ) {
+                     edit_mode != EditMode.MIDDLE_DRAG &&
+                     edit_mode != EditMode.CURVE_ON_PIANOROLL ) {
                     if ( (modefiers & InputEvent.SHIFT_MASK) != InputEvent.SHIFT_MASK && (modefiers & s_modifier_key) != s_modifier_key ) {
                         AppManager.clearSelectedEvent();
                     }
@@ -7834,11 +7806,11 @@ namespace org.kbinani.cadencii {
                     }
                     if ( AppManager.getSelectedTool() == EditTool.ERASER ) {
                         // マウス位置にビブラートの波波があったら削除する
-                        int stdx = AppManager.startToDrawX;
-                        int stdy = getStartToDrawY();
+                        int stdx = AppManager.getStartToDrawX();
+                        int stdy = AppManager.getStartToDrawY();
                         for ( int i = 0; i < AppManager.drawObjects.get( selected - 1 ).size(); i++ ) {
                             DrawObject dobj = AppManager.drawObjects.get( selected - 1 ).get( i );
-                            if ( dobj.pxRectangle.x + AppManager.startToDrawX + dobj.pxRectangle.width - stdx < 0 ) {
+                            if ( dobj.pxRectangle.x + AppManager.getStartToDrawX() + dobj.pxRectangle.width - stdx < 0 ) {
                                 continue;
                             } else if ( pictPianoRoll.getWidth() < dobj.pxRectangle.x + AppManager.keyWidth - stdx ) {
                                 break;
@@ -7926,7 +7898,7 @@ namespace org.kbinani.cadencii {
 #endif
                     if ( item != null ) {
                         int itemx = AppManager.xCoordFromClocks( item.Clock );
-                        int itemy = yCoordFromNote( item.ID.Note );
+                        int itemy = AppManager.yCoordFromNote( item.ID.Note );
                     }
                 }
             } else if ( e.Button == BMouseButtons.Middle ) {
@@ -7988,8 +7960,8 @@ namespace org.kbinani.cadencii {
                 AppManager.clearSelectedEvent();
                 hideInputTextBox();
                 if ( AppManager.editorConfig.ShowExpLine && AppManager.keyWidth <= e.X ) {
-                    int stdx = AppManager.startToDrawX;
-                    int stdy = getStartToDrawY();
+                    int stdx = AppManager.getStartToDrawX();
+                    int stdy = AppManager.getStartToDrawY();
                     for ( Iterator<DrawObject> itr = AppManager.drawObjects.get( selected - 1 ).iterator(); itr.hasNext(); ) {
                         DrawObject dobj = itr.next();
                         // 表情コントロールプロパティを表示するかどうかを決める
@@ -8163,7 +8135,7 @@ namespace org.kbinani.cadencii {
 
             m_mouse_moved = false;
             if ( !AppManager.isPlaying() && 0 <= e.X && e.X <= AppManager.keyWidth ) {
-                int note = noteFromYCoord( e.Y );
+                int note = AppManager.noteFromYCoord( e.Y );
                 if ( 0 <= note && note <= 126 ) {
                     if ( e.Button == BMouseButtons.Left ) {
                         KeySoundPlayer.play( note );
@@ -8205,11 +8177,12 @@ namespace org.kbinani.cadencii {
                 return;
             }
 
-            int stdx = AppManager.startToDrawX;
-            int stdy = getStartToDrawY();
-            if ( e.Button == BMouseButtons.Left && AppManager.curveOnPianoroll ) {
+            int stdx = AppManager.getStartToDrawX();
+            int stdy = AppManager.getStartToDrawY();
+            if ( e.Button == BMouseButtons.Left && AppManager.curveOnPianoroll && (selected_tool == EditTool.PENCIL || selected_tool == EditTool.LINE) ) {
                 pictPianoRoll.mouseTracer.clear();
                 pictPianoRoll.mouseTracer.appendFirst( e.X + stdx, e.Y + stdy );
+                setCursor( new Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
                 AppManager.setEditMode( EditMode.CURVE_ON_PIANOROLL );
                 return;
             }
@@ -8291,7 +8264,7 @@ namespace org.kbinani.cadencii {
                         }
                         if ( vibrato_found ) {
                             int clock = AppManager.clockFromXCoord( pxFound.x + pxFound.width - px_vibrato_length - stdx );
-                            int note = noteFromYCoord( pxFound.y + AppManager.editorConfig.PxTrackHeight - stdy );
+                            int note = AppManager.noteFromYCoord( pxFound.y + AppManager.editorConfig.PxTrackHeight - stdy );
                             int length = (int)(pxFound.width / AppManager.scaleX);
                             AppManager.addingEvent = new VsqEvent( clock, new VsqID( 0 ) );
                             AppManager.addingEvent.ID.type = VsqIDType.Anote;
@@ -8313,7 +8286,7 @@ namespace org.kbinani.cadencii {
                                 if ( AppManager.getVsqFile().getPreMeasureClocks() > clock ) { //だけど矯正するよ。
                                     clock = AppManager.getVsqFile().getPreMeasureClocks();
                                 }
-                                int note = noteFromYCoord( e.Y );
+                                int note = AppManager.noteFromYCoord( e.Y );
                                 AppManager.clearSelectedEvent();
                                 int unit = AppManager.getPositionQuantizeClock();
                                 int new_clock = doQuantize( clock, unit );
@@ -8562,8 +8535,8 @@ namespace org.kbinani.cadencii {
             }
 
             EditMode edit_mode = AppManager.getEditMode();
-            int stdx = AppManager.startToDrawX;
-            int stdy = getStartToDrawY();
+            int stdx = AppManager.getStartToDrawX();
+            int stdy = AppManager.getStartToDrawY();
             int selected = AppManager.getSelected();
 
             if ( edit_mode == EditMode.CURVE_ON_PIANOROLL && AppManager.curveOnPianoroll ) {
@@ -8842,7 +8815,7 @@ namespace org.kbinani.cadencii {
                 #region MOVE_ENTRY, MOVE_ENTRY_WHOLE
                 if ( AppManager.getSelectedEventCount() > 0 ) {
                     VsqEvent original = AppManager.getLastSelectedEvent().original;
-                    int note = noteFromYCoord( e.Y );                           // 現在のマウス位置でのnote
+                    int note = AppManager.noteFromYCoord( e.Y );                           // 現在のマウス位置でのnote
                     int note_init = original.ID.Note;
                     int dnote = (edit_mode == EditMode.MOVE_ENTRY) ? note - note_init : 0;
 
@@ -8916,7 +8889,7 @@ namespace org.kbinani.cadencii {
                 #endregion
             } else if ( edit_mode == EditMode.ADD_FIXED_LENGTH_ENTRY ) {
                 #region AddFixedLengthEntry
-                int note = noteFromYCoord( e.Y );
+                int note = AppManager.noteFromYCoord( e.Y );
                 int unit = AppManager.getPositionQuantizeClock();
                 int new_clock = doQuantize( AppManager.clockFromXCoord( e.X ), unit );
                 AppManager.addingEvent.ID.Note = note;
@@ -8952,7 +8925,7 @@ namespace org.kbinani.cadencii {
                 // クオンタイズの処理
                 int unit = AppManager.getPositionQuantizeClock();
                 int clock1 = doQuantize( clock, unit );
-                int note = noteFromYCoord( e.Y );
+                int note = AppManager.noteFromYCoord( e.Y );
                 AppManager.addingEvent.Clock = clock1;
                 AppManager.addingEvent.ID.Note = note;
                 #endregion
@@ -8960,7 +8933,7 @@ namespace org.kbinani.cadencii {
             updatePositionViewFromMousePosition( clock );
 
             // カーソルの形を決める
-            if ( !m_mouse_downed ) {
+            if ( !m_mouse_downed && edit_mode != EditMode.CURVE_ON_PIANOROLL ) {
                 boolean split_cursor = false;
                 boolean hand_cursor = false;
                 int min_width = 4 * _EDIT_HANDLE_WIDTH;
@@ -9063,9 +9036,11 @@ namespace org.kbinani.cadencii {
             int selected = AppManager.getSelected();
             VsqTrack vsq_track = vsq.Track.get( selected );
             CurveType selected_curve = trackSelector.getSelectedCurve();
-            int stdx = AppManager.startToDrawX;
-            int stdy = getStartToDrawY();
+            int stdx = AppManager.getStartToDrawX();
+            int stdy = AppManager.getStartToDrawY();
             double d2_13 = 8192; // = 2^13
+            int track_height = AppManager.editorConfig.PxTrackHeight;
+            int half_track_height = track_height / 2;
 
             if ( edit_mode == EditMode.CURVE_ON_PIANOROLL ) {
                 if ( pictPianoRoll.mouseTracer.size() > 1 ) {
@@ -9120,6 +9095,7 @@ namespace org.kbinani.cadencii {
                         int px_item_end = AppManager.xCoordFromClocks( cl_item_end ) + stdx;
 
                         int lastv = value_at_remove_start;
+                        boolean cl_item_end_added = false;
                         for ( Iterator<Point> itr2 = pictPianoRoll.mouseTracer.iterator(); itr2.hasNext(); ) {
                             Point p = itr2.next();
                             if ( p.x < px_item_start ) {
@@ -9130,7 +9106,12 @@ namespace org.kbinani.cadencii {
                             }
                             
                             int clock = AppManager.clockFromXCoord( p.x - stdx );
-                            double note = noteFromYCoordDoublePrecision( p.y - stdy );
+                            if ( clock < cl_item_start ) {
+                                continue;
+                            } else if ( cl_item_end < clock ) {
+                                break;
+                            }
+                            double note = AppManager.noteFromYCoordDoublePrecision( p.y - stdy - half_track_height );
                             int v_pit = (int)(d2_13 / (double)pbs.getValue( clock ) * (note - item.ID.Note));
 #if DEBUG
                             PortUtil.println( "FormMain#pictPianoRoll_MouseUp; v_pit=" + v_pit );
@@ -9147,7 +9128,15 @@ namespace org.kbinani.cadencii {
                             if ( v_pit != lastv ) {
                                 pit.add( clock, v_pit );
                                 lastv = v_pit;
+                                if ( clock == cl_item_end ) {
+                                    cl_item_end_added = true;
+                                }
                             }
+                        }
+
+                        if ( !cl_item_end_added &&
+                             cl_start <= cl_item_end && cl_item_end <= cl_end ) {
+                             pit.add( cl_item_end, lastv );
                         }
                     }
 
@@ -9578,34 +9567,6 @@ namespace org.kbinani.cadencii {
         }
 
         public void pictPianoRoll_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e ) {
-#if DEBUG
-            System.Diagnostics.Debug.WriteLine( "pictureBox1_PreviewKeyDown" );
-            System.Diagnostics.Debug.WriteLine( "    e.KeyCode=" + e.KeyCode );
-#endif
-
-#if JAVA
-            if ( e.KeyValue == KeyEvent.VK_TAB && AppManager.getSelectedEventCount() > 0 ) {
-#else
-            if ( e.KeyCode == System.Windows.Forms.Keys.Tab && AppManager.getSelectedEventCount() > 0 ) {
-#endif
-                VsqEvent original = AppManager.getLastSelectedEvent().original;
-                if ( original == null ) {
-                    return;
-                }
-                int x = AppManager.xCoordFromClocks( original.Clock );
-                int y = yCoordFromNote( original.ID.Note );
-                if ( !AppManager.editorConfig.KeepLyricInputMode ) {
-                    m_last_symbol_edit_mode = false;
-                }
-                showInputTextBox( original.ID.LyricHandle.L0.Phrase,
-                                  original.ID.LyricHandle.L0.getPhoneticSymbol(),
-                                  new Point( x, y ),
-                                  m_last_symbol_edit_mode );
-#if !JAVA
-                e.IsInputKey = true;
-#endif
-                refreshScreen();
-            }
 #if JAVA
             BKeyEventArgs e0 = new BKeyEventArgs( e.getRawEvent() );
 #else
@@ -12184,6 +12145,9 @@ namespace org.kbinani.cadencii {
                 updateRendererMenu();
                 AppManager.updateAutoBackupTimerStatus();
 
+                // editorConfig.PxTrackHeightが変更されている可能性があるので，更新が必要
+                AppManager.setStartToDrawY( calculateStartToDrawY() );
+
                 if ( menuVisualControlTrack.isSelected() ) {
                     splitContainer1.setPanel2MinSize( trackSelector.getPreferredMinSize() );
                 }
@@ -13218,10 +13182,12 @@ namespace org.kbinani.cadencii {
         }
 
         public void vScroll_Resize( Object sender, EventArgs e ) {
+            AppManager.setStartToDrawY( calculateStartToDrawY() );
             setVScrollRange( vScroll.getMaximum() );
         }
 
         public void vScroll_ValueChanged( Object sender, EventArgs e ) {
+            AppManager.setStartToDrawY( calculateStartToDrawY() );
             if ( m_txtbox_track_name != null ) {
 #if !JAVA
                 if ( !m_txtbox_track_name.IsDisposed ) {
@@ -13251,7 +13217,7 @@ namespace org.kbinani.cadencii {
             //PortUtil.println( "    Value/Maximum=" + hScroll.getValue() + "/" + hScroll.getMaximum() );
             //PortUtil.println( "    LargeChange=" + hScroll.LargeChange );
 #endif
-            AppManager.startToDrawX = (int)(hScroll.getValue() * AppManager.scaleX);
+            AppManager.setStartToDrawX( calculateStartToDrawX() );
             if ( m_txtbox_track_name != null ) {
 #if !JAVA
                 if ( !m_txtbox_track_name.IsDisposed ) {
@@ -13263,6 +13229,10 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
         #endregion
+
+        private int calculateStartToDrawX() {
+            return (int)(hScroll.getValue() * AppManager.scaleX);
+        }
 
         #region picturePositionIndicator
         public void picturePositionIndicator_MouseWheel( Object sender, BMouseEventArgs e ) {
@@ -14007,7 +13977,7 @@ namespace org.kbinani.cadencii {
 
         public void trackBar_ValueChanged( Object sender, EventArgs e ) {
             AppManager.scaleX = trackBar.getValue() / 480f;
-            AppManager.startToDrawX = (int)(hScroll.getValue() * AppManager.scaleX);
+            AppManager.setStartToDrawX( calculateStartToDrawX() );
             updateDrawObjectList();
             repaint();
         }
@@ -14047,46 +14017,7 @@ namespace org.kbinani.cadencii {
         public void menuHelpDebug_Click( Object sender, EventArgs e ) {
             PortUtil.println( "FormMain#menuHelpDebug_Click" );
 #if DEBUG
-            PortUtil.println( "AppManager#loadConfig; Application.CurrentCulture.NativeName=" + System.Windows.Forms.Application.CurrentCulture.NativeName );
-
             AppManager.curveOnPianoroll = !AppManager.curveOnPianoroll;
-
-            int mnemonic = menuFile.getMnemonic();
-            AppManager.showMessageBox( "mnemonic=" + new string( (char)mnemonic, 1 ) );
-            InputBox ib = new InputBox( "enter new mnemonic" );
-            ib.setModal( true );
-            ib.setVisible( true );
-            if ( ib.getDialogResult() == BDialogResult.OK ) {
-                String s = ib.getResult();
-                if ( PortUtil.getStringLength( s ) > 0 ) {
-                    int code = (int)s[0];
-                    menuFile.setMnemonic( code );
-                }
-            }
-
-            try {
-                System.IO.FileStream fs = new System.IO.FileStream( @"C:\Users\kbinani\Desktop\kaerimichi.wav", System.IO.FileMode.Open, System.IO.FileAccess.Read );
-                long remain = fs.Length;
-                int buflen = 1024;
-                byte[] b = new byte[buflen];
-                bool written = false;
-                System.IO.MemoryStream ms = new System.IO.MemoryStream();
-                while ( remain > 0 ) {
-                    int draft = remain > buflen ? buflen : (int)remain;
-                    fs.Read( b, 0, draft );
-                    remain -= draft;
-                    ms.Write( b, 0, draft );
-                    if ( !written ) {
-                        System.IO.BufferedStream bs = new System.IO.BufferedStream( ms );
-                        System.Media.SoundPlayer sp = new SoundPlayer();
-                        sp.Stream = ms;
-                        sp.Play();
-                        written = true;
-                    }
-                }
-            } catch ( Exception ex ) {
-                PortUtil.stderr.println( "FormMain#menuHelpDebug_Click; ex=" + ex );
-            }
 
             /*VsqFileEx vsq = AppManager.getVsqFile();
             int ms_presend = AppManager.editorConfig.PreSendTime;
@@ -15020,6 +14951,11 @@ namespace org.kbinani.cadencii {
             pasteEvent();
         }
 
+        public void menuHiddenFlipCurveOnPianorollMode_Click( Object sender, EventArgs e ) {
+            AppManager.curveOnPianoroll = !AppManager.curveOnPianoroll;
+            refreshScreen();
+        }
+
         public void menuHiddenGoToEndMarker_Click( Object sender, EventArgs e ) {
             if ( AppManager.isPlaying() ) {
                 return;
@@ -15124,7 +15060,7 @@ namespace org.kbinani.cadencii {
                 VsqEvent original = AppManager.getLastSelectedEvent().original;
                 int clock = original.Clock;
                 int note = original.ID.Note;
-                Point pos = new Point( AppManager.xCoordFromClocks( clock ), yCoordFromNote( note ) );
+                Point pos = new Point( AppManager.xCoordFromClocks( clock ), AppManager.yCoordFromNote( note ) );
                 if ( !AppManager.editorConfig.KeepLyricInputMode ) {
                     m_last_symbol_edit_mode = false;
                 }
@@ -15920,7 +15856,7 @@ namespace org.kbinani.cadencii {
                 if ( draft < 0 ) {
                     draft = 0;
                 }
-                AppManager.startToDrawX = draft;
+                AppManager.setStartToDrawX( draft );
                 refreshScreen();
             } else if ( m_overview_mouse_down_mode == OverviewMouseDownMode.MIDDLE ) {
                 int dx = e.X - m_overview_mouse_downed_locationx;
@@ -15953,7 +15889,7 @@ namespace org.kbinani.cadencii {
                     if ( draft < 0 ) {
                         draft = 0;
                     }
-                    AppManager.startToDrawX = draft;
+                    AppManager.setStartToDrawX( draft );
                     refreshScreen();
                 }
             }
@@ -15961,7 +15897,7 @@ namespace org.kbinani.cadencii {
 
         public void pictOverview_MouseUp( Object sender, BMouseEventArgs e ) {
             if ( m_overview_mouse_down_mode == OverviewMouseDownMode.LEFT ) {
-                AppManager.startToDrawX = (int)(hScroll.getValue() * AppManager.scaleX);
+                AppManager.setStartToDrawX( calculateStartToDrawX() );
             }
             m_overview_mouse_down_mode = OverviewMouseDownMode.NONE;
             refreshScreen();
@@ -16047,10 +15983,11 @@ namespace org.kbinani.cadencii {
             g.setClip( null );
 
             // 移動中している最中に，移動開始直前の部分を影付で表示する
+            int stdx = AppManager.getStartToDrawX();
             int act_start_to_draw_x = (int)(hScroll.getValue() * AppManager.scaleX);
-            if ( act_start_to_draw_x != AppManager.startToDrawX ) {
-                int act_start_clock = AppManager.clockFromXCoord( AppManager.keyWidth - AppManager.startToDrawX + act_start_to_draw_x );
-                int act_end_clock = AppManager.clockFromXCoord( pictPianoRoll.getWidth() - AppManager.startToDrawX + act_start_to_draw_x );
+            if ( act_start_to_draw_x != stdx ) {
+                int act_start_clock = AppManager.clockFromXCoord( AppManager.keyWidth - stdx + act_start_to_draw_x );
+                int act_end_clock = AppManager.clockFromXCoord( pictPianoRoll.getWidth() - stdx + act_start_to_draw_x );
                 int act_start_x = getOverviewXCoordFromClock( act_start_clock );
                 int act_end_x = getOverviewXCoordFromClock( act_end_clock );
                 Rectangle rcm = new Rectangle( act_start_x, 0, act_end_x - act_start_x, height );
@@ -16668,7 +16605,7 @@ namespace org.kbinani.cadencii {
             int unit = AppManager.getPositionQuantizeClock();
             int clock = doQuantize( clock1, unit );
 
-            int note = noteFromYCoord( y );
+            int note = AppManager.noteFromYCoord( y );
             VsqFileEx vsq = AppManager.getVsqFile();
             int clockAtPremeasure = vsq.getPreMeasureClocks();
             if ( clock < clockAtPremeasure ) {
@@ -17101,6 +17038,7 @@ namespace org.kbinani.cadencii {
             this.cMenuTrackSelectorSelectAll = new org.kbinani.windows.forms.BMenuItem();
             this.trackBar = new org.kbinani.windows.forms.BSlider();
             this.panel1 = new org.kbinani.windows.forms.BPanel();
+            this.hScroll = new org.kbinani.cadencii.HScroll();
             this.pictureBox3 = new org.kbinani.windows.forms.BPictureBox();
             this.pictKeyLengthSplitter = new org.kbinani.windows.forms.BPictureBox();
             this.pictureBox2 = new org.kbinani.windows.forms.BPictureBox();
@@ -17115,6 +17053,7 @@ namespace org.kbinani.cadencii {
             this.btnRight2 = new org.kbinani.windows.forms.BButton();
             this.pictOverview = new org.kbinani.windows.forms.BPictureBox();
             this.picturePositionIndicator = new org.kbinani.windows.forms.BPictureBox();
+            this.pictPianoRoll = new org.kbinani.cadencii.PictPianoRoll();
             this.toolStripTool = new org.kbinani.windows.forms.BToolBar();
             this.stripBtnPointer = new org.kbinani.windows.forms.BToolStripButton();
             this.stripBtnPencil = new org.kbinani.windows.forms.BToolStripButton();
@@ -17199,8 +17138,7 @@ namespace org.kbinani.cadencii {
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.stripBtnStartMarker = new org.kbinani.windows.forms.BToolStripButton();
             this.stripBtnEndMarker = new org.kbinani.windows.forms.BToolStripButton();
-            this.hScroll = new org.kbinani.cadencii.HScroll();
-            this.pictPianoRoll = new org.kbinani.cadencii.PictPianoRoll();
+            this.menuHiddenFlipCurveOnPianorollMode = new org.kbinani.windows.forms.BMenuItem();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
@@ -17214,6 +17152,7 @@ namespace org.kbinani.cadencii {
             this.panelZooMooz.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictOverview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picturePositionIndicator)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).BeginInit();
             this.toolStripTool.SuspendLayout();
             this.toolStripContainer.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
@@ -17224,7 +17163,6 @@ namespace org.kbinani.cadencii {
             this.toolStripFile.SuspendLayout();
             this.toolStripPosition.SuspendLayout();
             this.toolStripMeasure.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStripMain
@@ -18204,7 +18142,8 @@ namespace org.kbinani.cadencii {
             this.menuHiddenShorten,
             this.menuHiddenGoToStartMarker,
             this.menuHiddenGoToEndMarker,
-            this.menuHiddenPlayFromStartMarker} );
+            this.menuHiddenPlayFromStartMarker,
+            this.menuHiddenFlipCurveOnPianorollMode} );
             this.menuHidden.Name = "menuHidden";
             this.menuHidden.Size = new System.Drawing.Size( 91, 22 );
             this.menuHidden.Text = "MenuHidden";
@@ -19046,6 +18985,15 @@ namespace org.kbinani.cadencii {
             this.panel1.Size = new System.Drawing.Size( 421, 282 );
             this.panel1.TabIndex = 16;
             // 
+            // hScroll
+            // 
+            this.hScroll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.hScroll.Location = new System.Drawing.Point( 66, 266 );
+            this.hScroll.Name = "hScroll";
+            this.hScroll.Size = new System.Drawing.Size( 256, 16 );
+            this.hScroll.TabIndex = 16;
+            // 
             // pictureBox3
             // 
             this.pictureBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -19209,6 +19157,19 @@ namespace org.kbinani.cadencii {
             this.picturePositionIndicator.Size = new System.Drawing.Size( 421, 48 );
             this.picturePositionIndicator.TabIndex = 10;
             this.picturePositionIndicator.TabStop = false;
+            // 
+            // pictPianoRoll
+            // 
+            this.pictPianoRoll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictPianoRoll.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))) );
+            this.pictPianoRoll.Location = new System.Drawing.Point( 0, 93 );
+            this.pictPianoRoll.Margin = new System.Windows.Forms.Padding( 0 );
+            this.pictPianoRoll.Name = "pictPianoRoll";
+            this.pictPianoRoll.Size = new System.Drawing.Size( 405, 173 );
+            this.pictPianoRoll.TabIndex = 12;
+            this.pictPianoRoll.TabStop = false;
             // 
             // toolStripTool
             // 
@@ -20016,27 +19977,11 @@ namespace org.kbinani.cadencii {
             this.stripBtnEndMarker.Size = new System.Drawing.Size( 23, 22 );
             this.stripBtnEndMarker.Text = "EndMarker";
             // 
-            // hScroll
+            // menuHiddenFlipCurveOnPianorollMode
             // 
-            this.hScroll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.hScroll.Location = new System.Drawing.Point( 66, 266 );
-            this.hScroll.Name = "hScroll";
-            this.hScroll.Size = new System.Drawing.Size( 256, 16 );
-            this.hScroll.TabIndex = 16;
-            // 
-            // pictPianoRoll
-            // 
-            this.pictPianoRoll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictPianoRoll.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))) );
-            this.pictPianoRoll.Location = new System.Drawing.Point( 0, 93 );
-            this.pictPianoRoll.Margin = new System.Windows.Forms.Padding( 0 );
-            this.pictPianoRoll.Name = "pictPianoRoll";
-            this.pictPianoRoll.Size = new System.Drawing.Size( 405, 173 );
-            this.pictPianoRoll.TabIndex = 12;
-            this.pictPianoRoll.TabStop = false;
+            this.menuHiddenFlipCurveOnPianorollMode.Name = "menuHiddenFlipCurveOnPianorollMode";
+            this.menuHiddenFlipCurveOnPianorollMode.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenFlipCurveOnPianorollMode.Text = "Flip Curve on Pianoroll Mode";
             // 
             // FormMain
             // 
@@ -20065,6 +20010,7 @@ namespace org.kbinani.cadencii {
             this.panelZooMooz.ResumeLayout( false );
             ((System.ComponentModel.ISupportInitialize)(this.pictOverview)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picturePositionIndicator)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).EndInit();
             this.toolStripTool.ResumeLayout( false );
             this.toolStripTool.PerformLayout();
             this.toolStripContainer.BottomToolStripPanel.ResumeLayout( false );
@@ -20084,7 +20030,6 @@ namespace org.kbinani.cadencii {
             this.toolStripPosition.PerformLayout();
             this.toolStripMeasure.ResumeLayout( false );
             this.toolStripMeasure.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).EndInit();
             this.ResumeLayout( false );
             this.PerformLayout();
 
@@ -20446,6 +20391,7 @@ namespace org.kbinani.cadencii {
         private BMenuItem menuTrackPlayAfterSynth;
         public BMenuItem menuHiddenPlayFromStartMarker;
         private BPanel panelZooMooz;
+        public BMenuItem menuHiddenFlipCurveOnPianorollMode;
 
 #endif
         #endregion

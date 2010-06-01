@@ -206,11 +206,17 @@ namespace org.kbinani.cadencii {
         public void paint( Graphics g1 ) {
             Graphics2D g = (Graphics2D)g1;
             try {
+                PolylineDrawer commonDrawer = new PolylineDrawer( g, 1024 );
+                VsqFileEx vsq = AppManager.getVsqFile();
+                int selected = AppManager.getSelected();
+                VsqTrack vsq_track = vsq.Track.get( selected );
+
                 Dimension window_size = new Dimension( getWidth(), getHeight() );
                 Point p = pointToClient( PortUtil.getMousePosition() );
                 Point mouse_position = new Point( p.x, p.y );
-                int start_draw_x = AppManager.startToDrawX;
-                int start_draw_y = (AppManager.mainWindow != null) ? AppManager.mainWindow.getStartToDrawY() : 0;
+                int stdx = AppManager.getStartToDrawX();
+                int stdy = AppManager.getStartToDrawY();
+                int key_width = AppManager.keyWidth;
 
                 int width = window_size.width;
                 int height = window_size.height;
@@ -221,8 +227,8 @@ namespace org.kbinani.cadencii {
                 //
                 // [screen_x] = [clock] * _scalex + 73 - StartToDrawX
                 // [screen_y] = -[note] * TRACK_HEIGHT + 127 * TRACK_HEIGHT - StartToDrawY
-                int xoffset = AppManager.keyOffset + AppManager.keyWidth - start_draw_x;
-                int yoffset = 127 * track_height - start_draw_y;
+                int xoffset = AppManager.keyOffset + key_width - stdx;
+                int yoffset = 127 * track_height - stdy;
                 //      ↓
                 // [screen_x] = [clock] * _scalex + xoffset
                 // [screen_y] = -[note] * TRACK_HEIGHT + yoffset
@@ -248,13 +254,10 @@ namespace org.kbinani.cadencii {
                 Color beat = AppManager.editorConfig.PianorollColorVocalo2Beat.getColor();
                 RendererKind renderer = RendererKind.VOCALOID2;
 
-                VsqFileEx vsq = AppManager.getVsqFile();
                 EditMode edit_mode = AppManager.getEditMode();
-                int key_width = AppManager.keyWidth;
-                int selected = AppManager.getSelected();
 
                 if ( vsq != null ) {
-                    renderer = VsqFileEx.getTrackRendererKind( vsq.Track.get( selected ) );
+                    renderer = VsqFileEx.getTrackRendererKind( vsq_track );
                 }
 
                 if ( renderer == RendererKind.UTAU ) {
@@ -295,7 +298,7 @@ namespace org.kbinani.cadencii {
                 #region ピアノロール本体
                 if ( vsq != null ) {
                     int odd = -1;
-                    y = 128 * track_height - start_draw_y;
+                    y = 128 * track_height - stdy;
                     dy = -track_height;
                     for ( int i = 0; i <= 127; i++ ) {
                         odd++;
@@ -382,7 +385,7 @@ namespace org.kbinani.cadencii {
                 g.drawLine( key_width, 0,
                             key_width, height );
                 int odd2 = -1;
-                y = 128 * track_height - start_draw_y;
+                y = 128 * track_height - stdy;
                 dy = -track_height;
                 for ( int i = 0; i <= 127; i++ ) {
                     odd2++;
@@ -504,15 +507,15 @@ namespace org.kbinani.cadencii {
                                 Vector<DrawObject> target_list = AppManager.drawObjects.get( i );
                                 int j_start = AppManager.drawStartIndex[i];
                                 boolean first = true;
-                                int shift_center = AppManager.editorConfig.PxTrackHeight / 2;
+                                int shift_center = half_track_height;
                                 int target_list_count = target_list.size();
                                 for ( int j = j_start; j < target_list_count; j++ ) {
                                     DrawObject dobj = target_list.get( j );
                                     if ( dobj.type != DrawObjectType.Note ) {
                                         continue;
                                     }
-                                    int x = dobj.pxRectangle.x + key_width - start_draw_x;
-                                    y = dobj.pxRectangle.y - start_draw_y;
+                                    int x = dobj.pxRectangle.x + key_width - stdx;
+                                    y = dobj.pxRectangle.y - stdy;
                                     int lyric_width = dobj.pxRectangle.width;
                                     if ( x + lyric_width < 0 ) {
                                         continue;
@@ -544,18 +547,21 @@ namespace org.kbinani.cadencii {
                     if ( selected >= 1 ) {
                         Shape r = g.getClip();
                         g.clipRect( key_width, 0,
-                                    getWidth() - key_width, getHeight() );
+                                    window_size.width - key_width, window_size.height );
                         int j_start = AppManager.drawStartIndex[selected - 1];
 
                         boolean first = true;
                         lock ( AppManager.drawObjects ) { //ここでロックを取得しないと、描画中にUpdateDrawObjectのサイズが0になる可能性がある
                             if ( selected - 1 < AppManager.drawObjects.size() ) {
                                 Vector<DrawObject> target_list = AppManager.drawObjects.get( selected - 1 );
+                                VsqBPList pit = vsq_track.getCurve( "pit" );
+                                VsqBPList pbs = vsq_track.getCurve( "pbs" );
+
                                 int c = target_list.size();
                                 for ( int j = j_start; j < c; j++ ) {
                                     DrawObject dobj = target_list.get( j );
-                                    int x = dobj.pxRectangle.x + key_width - start_draw_x;
-                                    y = dobj.pxRectangle.y - start_draw_y;
+                                    int x = dobj.pxRectangle.x + key_width - stdx;
+                                    y = dobj.pxRectangle.y - stdy;
                                     int lyric_width = dobj.pxRectangle.width;
                                     if ( x + lyric_width < 0 ) {
                                         continue;
@@ -598,15 +604,9 @@ namespace org.kbinani.cadencii {
                                             g.setColor( s_pen_125_123_124 );
                                             g.drawRect( x, y + 1, lyric_width, track_height - 1 );
                                             if ( show_lyrics ) {
-#if DEBUG
-                                                g.setFont( lyric_font );
-                                                g.setColor( Color.black );
-                                                g.drawString( dobj.text + "(ID:" + dobj.internalID + ")", x + 1, y + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
-#else
                                                 g.setFont( lyric_font );
                                                 g.setColor( Color.black );
                                                 g.drawString( dobj.text, x + 1, y + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
-#endif
                                             }
                                             if ( show_exp_line && lyric_width > 21 ) {
                                                 #region 表情線
@@ -654,6 +654,52 @@ namespace org.kbinani.cadencii {
                                                                           vibrato_width );
                                                 }
                                             }
+
+                                            #region ピッチベンド
+                                            if ( AppManager.editorConfig.ViewAtcualPitch ) {
+                                                int cl_start = dobj.clock;
+                                                int cl_end = cl_start + dobj.length;
+
+                                                commonDrawer.clear();
+#if !JAVA
+                                                //g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+#endif
+                                                g.setColor( Color.blue );
+                                                g.setStroke( getStroke2px() );
+                                                // この音符の範囲についてのみ，ピッチベンド曲線を描く
+                                                int lasty = int.MinValue;
+                                                ByRef<Integer> indx_pit = new ByRef<Integer>( 0 );
+                                                ByRef<Integer> indx_pbs = new ByRef<Integer>( 0 );
+                                                for ( int cl = cl_start; cl < cl_end; cl++ ) {
+                                                    int vpit = pit.getValue( cl, indx_pit );
+                                                    int vpbs = pbs.getValue( cl, indx_pbs );
+
+                                                    float delta = vpit * (float)vpbs / 8192.0f;
+                                                    float note = dobj.note + delta;
+
+                                                    int py = AppManager.yCoordFromNote( note ) + half_track_height;
+                                                    if ( cl + 1 == cl_end ) {
+                                                        int px = AppManager.xCoordFromClocks( cl + 1 );
+                                                        commonDrawer.append( px, lasty );
+                                                    } else {
+                                                        if ( py == lasty ) {
+                                                            continue;
+                                                        }
+                                                        int px = AppManager.xCoordFromClocks( cl );
+                                                        if ( cl != cl_start ) {
+                                                            commonDrawer.append( px, lasty );
+                                                        }
+                                                        commonDrawer.append( px, py );
+                                                        lasty = py;
+                                                    }
+                                                }
+                                                commonDrawer.flush();
+#if !JAVA
+                                                g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
+#endif
+                                                g.setStroke( getStrokeDefault() );
+                                            }
+                                            #endregion
                                         }
                                         #endregion
                                     } else if ( dobj.type == DrawObjectType.Dynaff ) {
@@ -838,20 +884,20 @@ namespace org.kbinani.cadencii {
                         g.drawLine( x, 0, x, y - 1 );
                         g.drawLine( x, y + track_height, x, height );
                         // 横線
-                        g.drawLine( key_width, y + track_height / 2 - 2,
-                                    x - 1, y + track_height / 2 - 2 );
-                        g.drawLine( x + length + 1, y + track_height / 2 - 2,
-                                    width, y + track_height / 2 - 2 );
+                        g.drawLine( key_width, y + half_track_height - 2,
+                                    x - 1, y + half_track_height - 2 );
+                        g.drawLine( x + length + 1, y + half_track_height - 2,
+                                    width, y + half_track_height - 2 );
                         // 縦線
                         g.setColor( s_pen_RD );
                         g.drawLine( x + 1, 0, x + 1, y - 1 );
                         g.drawLine( x + 1, y + track_height,
                                     x + 1, height );
                         // 横線
-                        g.drawLine( key_width, y + track_height / 2 - 1,
-                                    x - 1, y + track_height / 2 - 1 );
-                        g.drawLine( x + length + 1, y + track_height / 2 - 1,
-                                    width, y + track_height / 2 - 1 );
+                        g.drawLine( key_width, y + half_track_height - 1,
+                                    x - 1, y + half_track_height - 1 );
+                        g.drawLine( x + length + 1, y + half_track_height - 1,
+                                    width, y + half_track_height - 1 );
                     }
                     #endregion
                 } else if ( edit_mode == EditMode.ADD_FIXED_LENGTH_ENTRY || edit_mode == EditMode.DRAG_DROP ) {
@@ -871,19 +917,19 @@ namespace org.kbinani.cadencii {
                     g.drawLine( x, 0, x, y - 1 );
                     g.drawLine( x, y + track_height, x, height );
                     // 横線
-                    g.drawLine( key_width, y + track_height / 2 - 2,
-                                x - 1, y + track_height / 2 - 2 );
-                    g.drawLine( x + length + 1, y + track_height / 2 - 2,
-                                width, y + track_height / 2 - 2 );
+                    g.drawLine( key_width, y + half_track_height - 2,
+                                x - 1, y + half_track_height - 2 );
+                    g.drawLine( x + length + 1, y + half_track_height - 2,
+                                width, y + half_track_height - 2 );
                     // 縦線
                     g.setColor( s_pen_RD );
                     g.drawLine( x + 1, 0, x + 1, y - 1 );
                     g.drawLine( x + 1, y + track_height, x + 1, height );
                     // 横線
-                    g.drawLine( key_width, y + track_height / 2 - 1,
-                                x - 1, y + track_height / 2 - 1 );
-                    g.drawLine( x + length + 1, y + track_height / 2 - 1,
-                                width, y + track_height / 2 - 1 );
+                    g.drawLine( key_width, y + half_track_height - 1,
+                                x - 1, y + half_track_height - 1 );
+                    g.drawLine( x + length + 1, y + half_track_height - 1,
+                                width, y + half_track_height - 1 );
                     #endregion
                 } else if ( edit_mode == EditMode.EDIT_LEFT_EDGE ) {
                     #region EditMode.EditLeftEdge
@@ -984,7 +1030,7 @@ namespace org.kbinani.cadencii {
                     Point pmouse = pointToClient( PortUtil.getMousePosition() );
                     Point mouse = new Point( pmouse.x, pmouse.y );
                     int tx, ty, twidth, theight;
-                    int lx = AppManager.mouseDownLocation.x - AppManager.startToDrawX;
+                    int lx = AppManager.mouseDownLocation.x - stdx;
                     if ( lx < mouse.x ) {
                         tx = lx;
                         twidth = mouse.x - lx;
@@ -992,7 +1038,7 @@ namespace org.kbinani.cadencii {
                         tx = mouse.x;
                         twidth = lx - mouse.x;
                     }
-                    int ly = AppManager.mouseDownLocation.y - start_draw_y;
+                    int ly = AppManager.mouseDownLocation.y - stdy;
                     if ( ly < mouse.y ) {
                         ty = ly;
                         theight = mouse.y - ly;
@@ -1029,28 +1075,15 @@ namespace org.kbinani.cadencii {
                 g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
 #endif
 
-                #region ピッチ曲線を描く
-                if ( AppManager.editorConfig.ViewAtcualPitch ) {
-                    VsqBPList pit = vsq.Track.get( selected ).getCurve( "pit" );
-                    if ( pit == null ) {
-                        pit = new VsqBPList( CurveType.PIT.getName(),
-                                             CurveType.PIT.getDefault(),
-                                             CurveType.PIT.getMinimum(),
-                                             CurveType.PIT.getMaximum() );
-                    }
-
-                }
-                #endregion
-
                 #region コントロールカーブのオーバーレイ表示
                 if ( AppManager.curveOnPianoroll ) {
                     g.setClip( null ); 
                    
                     Area fillarea = new Area( new Rectangle( key_width, 0, width - key_width, height ) ); // 塗りつぶす領域．最後に処理する
-                    g.setColor( new Color( 255, 255, 255, 64 ) );
-                    g.fillRect( key_width, 0, width - key_width, height );
+                    //g.setColor( new Color( 255, 255, 255, 64 ) );
+                    //g.fillRect( key_width, 0, width - key_width, height );
 
-                    VsqBPList pbs = vsq.Track.get( selected ).getCurve( "pbs" );
+                    VsqBPList pbs = vsq_track.getCurve( "pbs" );
                     if ( pbs == null ) {
                         pbs = new VsqBPList( CurveType.PBS.getName(), 
                                              CurveType.PBS.getDefault(), 
@@ -1066,13 +1099,11 @@ namespace org.kbinani.cadencii {
                         int c = list.size();
                         int last_x = key_width;
                         
-                        ByRef<Integer> pbs_index = new ByRef<Integer>( 0 );
                         int pbs_count = pbs.size();
                         double a = 1.0 / 8192.0;
 
-                        ByRef<Integer> pit_index = new ByRef<Integer>( 0 );
-                        PolylineDrawer pdrawer = new PolylineDrawer( g, 20 );
-                        ByRef<Integer> pbs_index_for_pit = new ByRef<Integer>( 0 );
+                        //ByRef<Integer> pit_index = new ByRef<Integer>( 0 );
+                        //ByRef<Integer> pbs_index_for_pit = new ByRef<Integer>( 0 );
 
                         for ( int j = j_start; j < c; j++ ) {
                             DrawObject dobj = list.get( j );
@@ -1081,9 +1112,7 @@ namespace org.kbinani.cadencii {
                             last_x = x_at_clock;
 
                             // 音符の区間中に，PBSがあるかもしれないのでPBSのデータ点を探しながら塗りつぶす
-                            if ( pbs_index.value > 0 ) {
-                                pbs_index.value--;
-                            }
+                            ByRef<Integer> pbs_index = new ByRef<Integer>( 0 );
                             int last_pbs_value = pbs.getValue( clock, pbs_index );
 
                             if ( pbs_count <= 0 ) {
@@ -1143,21 +1172,21 @@ namespace org.kbinani.cadencii {
                     g.fill( fillarea );
 
                     if ( mouseTracer.size() > 1 ) {
-                        PolylineDrawer pdrawer = new PolylineDrawer( g, 1024 );
+                        commonDrawer.clear();
                         g.setColor( Color.red );
                         g.setStroke( getStroke2px() );
                         for ( Iterator<Point> itr = mouseTracer.iterator(); itr.hasNext(); ) {
                             Point pt = itr.next();
-                            pdrawer.append( pt.x - start_draw_x, pt.y - start_draw_y );
+                            commonDrawer.append( pt.x - stdx, pt.y - stdy );
                         }
-                        pdrawer.flush();
+                        commonDrawer.flush();
                     }
                 }
                 #endregion
 
                 // マーカー
-                int marker_x = (int)(AppManager.getCurrentClock() * AppManager.scaleX + AppManager.keyOffset + key_width - AppManager.startToDrawX);
-                if ( key_width <= marker_x && marker_x <= getWidth() ) {
+                int marker_x = (int)(AppManager.getCurrentClock() * scalex + AppManager.keyOffset + key_width - stdx);
+                if ( key_width <= marker_x && marker_x <= window_size.width ) {
                     g.setColor( Color.white );
                     g.setStroke( getStroke2px() );
                     g.drawLine( marker_x, 0, marker_x, getHeight() );
@@ -1210,7 +1239,7 @@ namespace org.kbinani.cadencii {
             if ( rate == null || depth == null ) {
                 return;
             }
-            int y0 = AppManager.mainWindow != null ? AppManager.mainWindow.yCoordFromNote( note - 0.5f ) : 0;
+            int y0 = AppManager.yCoordFromNote( note - 0.5f );
             float px_track_height = AppManager.editorConfig.PxTrackHeight;
             VsqFileEx vsq = AppManager.getVsqFile();
             int clock_start = AppManager.clockFromXCoord( x_start );

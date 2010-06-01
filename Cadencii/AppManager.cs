@@ -389,9 +389,15 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public static double previewStartedTime;
         /// <summary>
-        /// 画面左端位置での、仮想画面上の仮想画面左端から測ったピクセル数．FormMain.hScroll.ValueとFormMain.trackBar.Valueで決まる．
+        /// 画面左端位置での、仮想画面上の画面左端から測ったピクセル数．
+        /// FormMain.hScroll.ValueとFormMain.trackBar.Valueで決まる．
         /// </summary>
-        public static int startToDrawX;
+        private static int startToDrawX;
+        /// <summary>
+        /// 画面上端位置での、仮想画面上の画面上端から図ったピクセル数．
+        /// FormMain.vScroll.Value，FormMain.vScroll.Height，FormMain.vScroll.Maximum,AppManager.editorConfig.PxTrackHeightによって決まる
+        /// </summary>
+        private static int startToDrawY;
         public static String selectedPaletteTool = "";
         public static ScreenStatus lastScreenStatus = new ScreenStatus();
         private static String s_id = "";
@@ -483,6 +489,52 @@ namespace org.kbinani.cadencii {
         public static BEvent<BEventHandler> currentClockChangedEvent = new BEvent<BEventHandler>();
 
         private const String TEMPDIR_NAME = "cadencii";
+
+        public static int getStartToDrawX() {
+            return startToDrawX;
+        }
+
+        public static void setStartToDrawX( int value ) {
+            startToDrawX = value;
+        }
+
+        public static int getStartToDrawY() {
+            return startToDrawY;
+        }
+
+        public static void setStartToDrawY( int value ) {
+            startToDrawY = value;
+        }
+
+        /// <summary>
+        /// 音の高さを表すnoteから、画面に描くべきy座標を計算します
+        /// </summary>
+        /// <param name="note"></param>
+        /// <returns></returns>
+        public static int yCoordFromNote( float note ) {
+            return yCoordFromNote( note, startToDrawY );
+        }
+
+        public static int yCoordFromNote( float note, int start_to_draw_y ) {
+            return (int)(-1 * (note - 127.0f) * editorConfig.PxTrackHeight) - start_to_draw_y;
+        }
+
+        /// <summary>
+        /// ピアノロール画面のy座標から、その位置における音の高さを取得します
+        /// </summary>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public static int noteFromYCoord( int y ) {
+            return 127 - (int)noteFromYCoordCore( y );
+        }
+
+        public static double noteFromYCoordDoublePrecision( int y ) {
+            return 127.0 - noteFromYCoordCore( y );
+        }
+
+        private static double noteFromYCoordCore( int y ) {
+            return (double)(startToDrawY + y) / (double)editorConfig.PxTrackHeight;
+        }
 
         /// <summary>
         /// 指定した音声合成システムを識別する文字列(DSB301, DSB202等)を取得します

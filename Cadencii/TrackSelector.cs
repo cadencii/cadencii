@@ -937,7 +937,7 @@ namespace org.kbinani.cadencii {
             VsqFileEx vsq = AppManager.getVsqFile();
             int selected = AppManager.getSelected();
             int key_width = AppManager.keyWidth;
-            int stdx = AppManager.startToDrawX;
+            int stdx = AppManager.getStartToDrawX();
             int graphHeight = getGraphHeight();
             int width = getWidth();
 
@@ -1896,7 +1896,7 @@ namespace org.kbinani.cadencii {
             float order = (type.equals( CurveType.VEL )) ? height / 127f : height / 100f;
             int oy = getHeight() - 42;
             Shape last_clip = g.getClip();
-            int xoffset = AppManager.keyOffset + AppManager.keyWidth - AppManager.startToDrawX;
+            int xoffset = AppManager.keyOffset + AppManager.keyWidth - AppManager.getStartToDrawX();
             g.clipRect( AppManager.keyWidth, HEADER, getWidth() - AppManager.keyWidth - vScroll.getWidth(), height );
             float scale = AppManager.scaleX;
             int count = track.getEventCount();
@@ -2362,7 +2362,7 @@ namespace org.kbinani.cadencii {
                 if ( m_mouse_down_mode == MouseDownMode.POINT_MOVE ) {
                     Point pmouse = pointToClient( PortUtil.getMousePosition() );
                     Point mouse = new Point( pmouse.x, pmouse.y );
-                    int dx = mouse.x + AppManager.startToDrawX - m_mouse_down_location.x;
+                    int dx = mouse.x + AppManager.getStartToDrawX() - m_mouse_down_location.x;
                     int dy = mouse.y - m_mouse_down_location.y;
                     int w = DOT_WID * 2 + 1;
                     for ( Iterator<BPPair> itr = m_moving_points.iterator(); itr.hasNext(); ) {
@@ -2528,7 +2528,7 @@ namespace org.kbinani.cadencii {
                 if ( m_mouse_down_mode == MouseDownMode.POINT_MOVE ) {
                     Point pmouse = pointToClient( PortUtil.getMousePosition() );
                     Point mouse = new Point( pmouse.x, pmouse.y );
-                    int dx = mouse.x + AppManager.startToDrawX - m_mouse_down_location.x;
+                    int dx = mouse.x + AppManager.getStartToDrawX() - m_mouse_down_location.x;
                     int dy = mouse.y - m_mouse_down_location.y;
                     int w = DOT_WID * 2 + 1;
                     for ( Iterator<BPPair> itr = m_moving_points.iterator(); itr.hasNext(); ) {
@@ -2889,7 +2889,7 @@ namespace org.kbinani.cadencii {
             if ( e.Button == BMouseButtons.None ) {
                 return;
             }
-            int stdx = AppManager.startToDrawX;
+            int stdx = AppManager.getStartToDrawX();
             if ( (e.X + stdx != m_mouse_down_location.x || e.Y != m_mouse_down_location.y) ) {
 #if JAVA
                 if( m_mouse_hover_thread != null && m_mouse_hover_thread.isAlive() ){
@@ -3161,7 +3161,7 @@ namespace org.kbinani.cadencii {
             AppManager.debugWriteLine( "TrackSelector_MouseDown" );
 #endif
             VsqFileEx vsq = AppManager.getVsqFile();
-            m_mouse_down_location = new Point( e.X + AppManager.startToDrawX, e.Y );
+            m_mouse_down_location = new Point( e.X + AppManager.getStartToDrawX(), e.Y );
             int clock = AppManager.clockFromXCoord( e.X );
             int selected = AppManager.getSelected();
             m_mouse_moved = false;
@@ -3172,7 +3172,7 @@ namespace org.kbinani.cadencii {
 #endif
                 return;
             }
-            int stdx = AppManager.startToDrawX;
+            int stdx = AppManager.getStartToDrawX();
             m_modifier_on_mouse_down = PortUtil.getCurrentModifierKey();
             int max = m_selected_curve.getMaximum();
             int min = m_selected_curve.getMinimum();
@@ -3391,7 +3391,7 @@ namespace org.kbinani.cadencii {
                                     }
                                 }
                                 m_mouse_tracer.clear();
-                                int x = e.X + AppManager.startToDrawX;
+                                int x = e.X + AppManager.getStartToDrawX();
                                 m_mouse_tracer.appendFirst( x, e.Y );
                                 m_pencil_moved = false;
 
@@ -4055,7 +4055,7 @@ namespace org.kbinani.cadencii {
             }
 
             int selected = AppManager.getSelected();
-            int stdx = AppManager.startToDrawX;
+            int stdx = AppManager.getStartToDrawX();
 
             int max = m_selected_curve.getMaximum();
             int min = m_selected_curve.getMinimum();
@@ -4795,7 +4795,7 @@ namespace org.kbinani.cadencii {
                 if ( m_mouse_moved ) {
                     Point pmouse = pointToClient( PortUtil.getMousePosition() );
                     Point mouse = new Point( pmouse.x, pmouse.y );
-                    int dx = mouse.x + AppManager.startToDrawX - m_mouse_down_location.x;
+                    int dx = mouse.x + AppManager.getStartToDrawX() - m_mouse_down_location.x;
                     int dy = mouse.y - m_mouse_down_location.y;
 
                     String curve = m_selected_curve.getName();

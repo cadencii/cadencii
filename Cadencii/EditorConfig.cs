@@ -457,7 +457,8 @@ namespace org.kbinani.cadencii {
             new ValuePairOfStringArrayOfKeys( "menuSettingPaletteTool", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuSettingShortcut", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuSettingSingerProperty", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuHelpAbout", new BKeys[]{} ) } ) );
+            new ValuePairOfStringArrayOfKeys( "menuHelpAbout", new BKeys[]{} ),
+            new ValuePairOfStringArrayOfKeys( "menuHiddenFlipCurveOnPianorollMode", new BKeys[]{ BKeys.Tab } ) } ) );
 #if JAVA
         private static XmlSerializer s_serializer = new XmlSerializer( EditorConfig.class );
 #else
