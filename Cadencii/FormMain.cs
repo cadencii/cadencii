@@ -2517,13 +2517,13 @@ namespace org.kbinani.cadencii {
                         if ( entry == null ) {
                             phonetic_symbol[0] = "a";
                         } else {
-                            phonetic_symbol[0] = entry.Symbol.Replace( '\t', ' ' );
+                            phonetic_symbol[0] = entry.getSymbol();
                             // 分節の分割記号'-'が入っている場合
                             if ( entry.Word.IndexOf( '-' ) >= 0 ) {
                                 String[] spl_phrase = PortUtil.splitString( entry.Word, '\t' );
                                 if ( spl_phrase.Length <= count ) {
                                     // 分節の分割数が，後続の音符数と同じか少ない場合
-                                    String[] spl_symbol = PortUtil.splitString( entry.Symbol, '\t' );
+                                    String[] spl_symbol = PortUtil.splitString( entry.getRawSymbol(), '\t' );
                                     for ( int i = 0; i < spl_phrase.Length; i++ ) {
                                         phrase[i] = spl_phrase[i];
                                         phonetic_symbol[i] = spl_symbol[i];
@@ -4221,9 +4221,9 @@ namespace org.kbinani.cadencii {
                                     // 分節の全部を分割すると制限個数を超えてしまう
                                     // 分割せずにハイフンを付けたまま登録
                                     new_phrases.add( entry.Word.Replace( "\t", "" ) );
-                                    new_symbols.add( entry.Symbol.Replace( '\t', ' ' ) );
+                                    new_symbols.add( entry.getSymbol() );
                                 }else{
-                                    String[] spl_symbol = PortUtil.splitString( entry.Symbol, '\t' );
+                                    String[] spl_symbol = PortUtil.splitString( entry.getRawSymbol(), '\t' );
                                     for( int j = 0; j < spl.Length; j++ ){
                                         new_phrases.add( spl[j] );
                                         new_symbols.add( spl_symbol[j] );
@@ -4232,7 +4232,7 @@ namespace org.kbinani.cadencii {
                             } else {
                                 // 分節に分割しない
                                 new_phrases.add( phrases[i] );
-                                new_symbols.add( entry.Symbol.Replace( '\t', ' ' ) );
+                                new_symbols.add( entry.getSymbol() );
                             }
                         }
                     }
@@ -12474,7 +12474,7 @@ namespace org.kbinani.cadencii {
                 if ( entry == null ) {
                     continue;
                 }
-                symbolResult = entry.Symbol.Replace( '\t', ' ' );
+                symbolResult = entry.getSymbol();
                 if ( symbolResult.Equals( symbolOld ) ) {
                     continue;
                 }

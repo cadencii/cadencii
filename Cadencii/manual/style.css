@@ -1,4 +1,18 @@
-﻿h4{
+﻿h2{
+    height: 1.4em;
+    font-family:Verdana,sans-serif;
+    font-weight: bold;
+    font-size: x-large;
+    color: rgb(0,0,0);
+    background-color: rgb(180,180,180);
+    border-top:solid 1px;
+    border-left:solid 5px;
+    border-bottom:solid 3px;
+    border-right:solid 3px;
+    border-color: rgb(0,0,0);
+    padding-left: 0.25em;
+}
+h4{
     height: 1.3em;
     font-family:Verdana,sans-serif;
     font-weight: bold;
@@ -17,12 +31,13 @@ h3{
     font-weight: bold;
     font-size: x-large;
     color: rgb(0,0,0);
-    background-color: rgb(180,180,180);
-    border-top:solid 1px;
-    border-left:solid 1px;
-    border-bottom:solid 3px;
-    border-right:solid 3px;
-    border-color: rgb(0,0,0);
+    //background-color: rgb(180,180,180);
+    border-top: solid 0px;
+    border-left: solid 5px;
+    border-bottom:solid 1px;
+    border-right: solid 0px;
+    border-color: rgb(100,100,100);
+    padding-left: 0.25em;
 }
 body,td{
     font-size:0.95em;

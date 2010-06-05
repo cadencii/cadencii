@@ -612,7 +612,7 @@ namespace org.kbinani.cadencii {
             if ( entry == null ) {
                 phonetic_symbol = "a";
             } else {
-                phonetic_symbol = entry.Symbol.Replace( '\t', ' ' );
+                phonetic_symbol = entry.getSymbol();
             }
             String str_phonetic_symbol = phonetic_symbol;
 

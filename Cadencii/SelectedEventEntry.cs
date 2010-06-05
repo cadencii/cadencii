@@ -262,7 +262,7 @@ namespace org.kbinani.cadencii {
                     if ( entry == null ) {
                         phonetic_symbol = "a";
                     } else {
-                        phonetic_symbol = entry.Symbol.Replace( '\t', ' ' );
+                        phonetic_symbol = entry.getSymbol();
                     }
                     editing.ID.LyricHandle.L0.setPhoneticSymbol( phonetic_symbol );
 

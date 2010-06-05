@@ -80,7 +80,7 @@ namespace org.kbinani.vsq {
                     String psymbol = "a";
                     SymbolTableEntry entry = SymbolTable.attatch( ue.Lyric );
                     if( entry != null ){
-                        psymbol = entry.Symbol.Replace( '\t', ' ' );
+                        psymbol = entry.getSymbol();
                     }
                     id.LyricHandle = new LyricHandle( ue.Lyric, psymbol );
                     id.Note = ue.Note;

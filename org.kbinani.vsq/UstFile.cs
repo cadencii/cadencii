@@ -218,7 +218,7 @@ namespace org.kbinani.vsq {
                                 ue.Flags = line.Substring( 6 );
                             } else if ( spl[0].Equals( "StartPoint" ) ){
                                 try {
-                                    ue.StartPoint = PortUtil.tryParseInt( spl[1] );
+                                    ue.StartPoint = PortUtil.parseInt( spl[1] );
                                 } catch ( Exception ex ) {
                                     ue.StartPoint = 0;
                                 }
