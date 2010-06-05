@@ -26,9 +26,9 @@ namespace org.kbinani.cadencii{
     public class Cadencii {
 #if !JAVA
         delegate void VoidDelegate();
-#endif
         public static FormSplash splash = null;
         static Thread splashThread = null;
+#endif
 
         /// <summary>
         /// 起動時に渡されたコマンドライン引数を評価します。

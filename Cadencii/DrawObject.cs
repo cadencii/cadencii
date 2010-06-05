@@ -61,6 +61,11 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public int clock;
         public DrawObjectType type;
+        /// <summary>
+        /// UTAUモード、またはStraight x UTAUモードにて、歌詞から*.frqまたはanalyzed\*.stfを引き当てられたかどうか。
+        /// これがfalseのとき、ピアノロール上で警告色で描かれる
+        /// </summary>
+        public boolean isValid = false;
 
         public DrawObject( DrawObjectType type,
                            Rectangle rect, 
@@ -77,7 +82,8 @@ namespace org.kbinani.cadencii {
                            int note_,
                            UstEnvelope ust_envelope,
                            int length,
-                           int clock ) {
+                           int clock,
+                           boolean isValid ) {
             this.type = type;
             pxRectangle = rect;
             text = text_;
@@ -94,6 +100,7 @@ namespace org.kbinani.cadencii {
             ustEnvelope = ust_envelope;
             this.length = length;
             this.clock = clock;
+            this.isValid = isValid;
         }
 
         public int compareTo( DrawObject item ) {

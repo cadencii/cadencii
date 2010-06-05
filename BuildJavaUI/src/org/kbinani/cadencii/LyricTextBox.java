@@ -20,7 +20,7 @@ import org.kbinani.windows.forms.BKeyEventHandler;
 import org.kbinani.windows.forms.BKeyPressEventArgs;
 import org.kbinani.windows.forms.BKeyPressEventHandler;
 
-public class TextBoxEx extends JWindow implements WindowFocusListener, ComponentListener, KeyListener {
+public class LyricTextBox extends JWindow implements WindowFocusListener, ComponentListener, KeyListener {
 
     private static final long serialVersionUID = 1L;
     private JPanel jContentPane = null;
@@ -163,7 +163,7 @@ public class TextBoxEx extends JWindow implements WindowFocusListener, Component
     /**
      * @param owner
      */
-    public TextBoxEx(Frame owner) {
+    public LyricTextBox(Frame owner) {
         super( owner );
         initialize();
         addWindowFocusListener( this );

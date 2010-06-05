@@ -131,6 +131,9 @@ namespace org.kbinani.vsq {
                                 m_tool2 = spl[1];
                             }
                         } else if ( type == 1 ) {
+                            if ( spl.Length < 2 ) {
+                                continue;
+                            }
                             // readin event section
                             if ( spl[0].Equals( "Length" ) ) {
                                 ue.setLength( 0 );
@@ -213,6 +216,12 @@ namespace org.kbinani.vsq {
                                 }
                             } else if ( spl[0].Equals( "Flags" ) ) {
                                 ue.Flags = line.Substring( 6 );
+                            } else if ( spl[0].Equals( "StartPoint" ) ){
+                                try {
+                                    ue.StartPoint = PortUtil.tryParseInt( spl[1] );
+                                } catch ( Exception ex ) {
+                                    ue.StartPoint = 0;
+                                }
                             } else {
 #if DEBUG
                                 PortUtil.println( "UstFile#.ctor; info: don't know how to process this line; line=" + line );

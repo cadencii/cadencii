@@ -5681,7 +5681,8 @@ namespace org.kbinani.cadencii {
                                                          ev.ID.Note,
                                                          ev.UstEvent.Envelope,
                                                          length,
-                                                         timesig ) );
+                                                         timesig,
+                                                         true ) );
                             }
                         }
 
@@ -5757,7 +5758,8 @@ namespace org.kbinani.cadencii {
                                                      item.ID.Note,
                                                      null,
                                                      length,
-                                                     clock ) );
+                                                     clock,
+                                                     true ) );
                         }
 
                         // 重複部分があるかどうかを判定

@@ -1,4 +1,5 @@
-﻿/*
+﻿#if !JAVA
+/*
  * FormSplash.cs
  * Copyright (C) 2010 kbinani
  *
@@ -198,4 +199,5 @@ namespace org.kbinani.cadencii {
 
 #if !JAVA
 }
+#endif
 #endif

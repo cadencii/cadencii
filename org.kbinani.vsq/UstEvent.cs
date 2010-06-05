@@ -46,6 +46,7 @@ namespace org.kbinani.vsq {
         public String Flags = "";
         public int Moduration = 100;
         public int Index;
+        public int StartPoint;
 
         public UstEvent() {
         }
@@ -85,6 +86,7 @@ namespace org.kbinani.vsq {
             ret.VoiceOverlap = VoiceOverlap;
             ret.Flags = Flags;
             ret.Moduration = Moduration;
+            ret.StartPoint = StartPoint;
             ret.Tag = Tag;
             return ret;
         }
@@ -162,6 +164,10 @@ namespace org.kbinani.vsq {
             }
             if ( Moduration >= 0 ) {
                 sw.write( "Moduration=" + Moduration );
+                sw.newLine();
+            }
+            if ( StartPoint != 0 ) {
+                sw.write( "StartPoint=" + StartPoint );
                 sw.newLine();
             }
         }
