@@ -1,4 +1,5 @@
 <?php
+
 class POFile{
     static $dict = array();
 
@@ -18,7 +19,7 @@ class POFile{
                 if( strcmp( $msgid, "" ) != 0 ){
                     $this->dict[$msgid] = $msgstr;
                 }
-                $indx = strpos( $line, "\"", 5 ); // 引用符の開始位置
+                $indx = strpos( $line, "\"", 5 ); // pﾌ開nﾊ置
                 $msgid = substr( $line, $indx + 1 );
                 $msgid = $this->trimQuote( $msgid );
                 $msgstr = "";
@@ -75,9 +76,8 @@ class Messaging{
     static $dict = array();
     static $current_lang = "en";
 
-    static public function init(){
-        $basedir = "../";
-        $d = opendir( $basedir );
+    static public function init( $po_dir ){
+        $d = opendir( $po_dir );
         while( false !== ($f = readdir( $d )) ){
             $len = strlen( $f );
             if( $len <= 3 ){
@@ -85,10 +85,10 @@ class Messaging{
             }
             $indx = strripos( $f, ".po" );
             if( $indx == $len - 3 ){
-                $lang = substr( $f, 0, $len - 3 );
+                $l = substr( $f, 0, $len - 3 );
                 $po = new POFile();
-                $po->init( $basedir . $f );
-                self::$dict[$lang] = $po;
+                $po->init( $po_dir . $f );
+                self::$dict[$l] = $po;
             }
         }
         closedir( $d );
@@ -108,8 +108,8 @@ class Messaging{
         }
     }
 
-    static public function setLanguage( $lang ){
-        self::$current_lang = $lang;
+    static public function setLanguage( $language ){
+        self::$current_lang = $language;
     }
 
     static public function getLanguage(){
@@ -117,7 +117,8 @@ class Messaging{
     }
 }
 
-Messaging::init();
+$po_dir = str_replace( "\\", "/", $argv[2] );
+Messaging::init( $argv[2] );
 Messaging::setLanguage( $argv[1] );
 
 function msg( $message ){
@@ -128,11 +129,11 @@ function msg( $message ){
 <html>
 <head>
 <META HTTP-EQUIV="Content-type" CONTENT="text/html; charset=UTF-8">
-<title>Cadencii version 3.2 Manual</title>
+<title>Cadencii version 3.2 <?php print msg( "Manual" ) ?></title>
 <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-  <h2>Cadencii verion 3.2 Manual</h2>
+  <h2>Cadencii verion 3.2 <?php print msg( "Manual" ) ?></h2>
 
   <!-- section 0 -->
   <h3>0. <?php print msg( "Table of contents" ) ?></h3>
@@ -168,16 +169,17 @@ function msg( $message ){
   </p>
   <p class=indent>
     Screen shot<br />
-    <img src="" alt="screen shot of Cadencii">
+    <img src="img/screen_shot.png" alt="screen shot of Cadencii">
   </p>
 
   <!-- section 2 -->
   <a name="platform"></a>
   <h3>2. <?php print msg( "Platform" ) ?></h3>
   <p class=indent>
-    Operating System: Windows 2000, Windows XP, Windows Vista, Windows7<br />
-    with .NET Framework 2.0 or later
+    <?php print msg( "Operating System" ) ?>: Windows 2000, Windows XP, Windows Vista, Windows7<br />
+    <?php print msg( "with .NET Framework 2.0 or later" ) ?>
   </p>
+
   <!-- section 3 -->
   <a name="how_to_install"></a>
   <h3>3. <?php print msg( "How to install" ) ?></h3>

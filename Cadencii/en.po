@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-06 15:34+0900\n"
+"POT-Creation-Date: 2010-06-07 00:06+0900\n"
 "PO-Revision-Date: \n"
 "Last-Translator: kbinani <kbinani@msn.com>\n"
 "Language-Team: \n"
@@ -13,7 +13,7 @@ msgstr ""
 "X-Poedit-Country: UNITED STATES\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: ..\\\n"
-"X-Poedit-KeywordsList: _;gettext\n"
+"X-Poedit-KeywordsList: _;gettext;msg\n"
 "X-Poedit-SearchPath-0: Cadencii\n"
 "X-Poedit-SearchPath-1: org.kbinani.apputil\n"
 "X-Poedit-SearchPath-2: EditOtoIni\n"
@@ -1635,29 +1635,42 @@ msgstr ""
 msgid "Credit"
 msgstr ""
 
-#: Cadencii/manual/index.php:96
+#: Cadencii/manual/index.php:138
 msgid "Table of contents"
 msgstr ""
 
-#: Cadencii/manual/index.php:99
-#: Cadencii/manual/index.php:110
+#: Cadencii/manual/index.php:141
+#: Cadencii/manual/index.php:152
 msgid "Preface"
 msgstr ""
 
-#: Cadencii/manual/index.php:101
+#: Cadencii/manual/index.php:143
+#: Cadencii/manual/index.php:183
 msgid "How to install"
 msgstr ""
 
-#: Cadencii/manual/index.php:102
+#: Cadencii/manual/index.php:144
+#: Cadencii/manual/index.php:187
 msgid "How to use"
 msgstr ""
 
-#: Cadencii/manual/index.php:103
+#: Cadencii/manual/index.php:145
+#: Cadencii/manual/index.php:191
 msgid "FAQ"
 msgstr ""
 
-#: Cadencii/manual/index.php:104
+#: Cadencii/manual/index.php:146
+#: Cadencii/manual/index.php:195
 msgid "License"
+msgstr ""
+
+#: Cadencii/manual/index.php:154
+msgid "Cadenncii is a free software for editing scores for several singing synthesis systems."
+msgstr ""
+
+#: Cadencii/manual/index.php:166
+#, php-format
+msgid "At this time, <a href=\"%s\">VOCALOID</a>, <a href=\"%s\">VOCALOID2</a>, <a href=\"%s\">UTAU</a>, STRAIGHT with UTAU, and <a href=\"%s\">AquesTone</a> are available as synthesizer."
 msgstr ""
 
 #: Cadencii/Cadencii.cs:108

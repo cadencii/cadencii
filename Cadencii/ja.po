@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-06-06 15:35+0900\n"
+"POT-Creation-Date: 2010-06-07 00:17+0900\n"
 "PO-Revision-Date: \n"
 "Last-Translator: kbinani <kbinani@msn.com>\n"
 "Language-Team: \n"
@@ -13,7 +13,7 @@ msgstr ""
 "X-Poedit-Country: JAPAN\n"
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Poedit-Basepath: ..\\\n"
-"X-Poedit-KeywordsList: _;gettext\n"
+"X-Poedit-KeywordsList: _;gettext;msg\n"
 "X-Poedit-SearchPath-0: Cadencii\n"
 "X-Poedit-SearchPath-1: org.kbinani.apputil\n"
 "X-Poedit-SearchPath-2: EditOtoIni\n"
@@ -1635,30 +1635,56 @@ msgstr "{0}について"
 msgid "Credit"
 msgstr "クレジット"
 
-#: Cadencii/manual/index.php:96
+#: Cadencii/manual/index.php:132
+#: Cadencii/manual/index.php:136
+msgid "Manual"
+msgstr "マニュアル"
+
+#: Cadencii/manual/index.php:139
 msgid "Table of contents"
 msgstr "目次"
 
-#: Cadencii/manual/index.php:99
-#: Cadencii/manual/index.php:110
+#: Cadencii/manual/index.php:142
+#: Cadencii/manual/index.php:153
 msgid "Preface"
 msgstr "はじめに"
 
-#: Cadencii/manual/index.php:101
+#: Cadencii/manual/index.php:144
+#: Cadencii/manual/index.php:184
 msgid "How to install"
 msgstr "インストール"
 
-#: Cadencii/manual/index.php:102
+#: Cadencii/manual/index.php:145
+#: Cadencii/manual/index.php:188
 msgid "How to use"
 msgstr "使い方"
 
-#: Cadencii/manual/index.php:103
+#: Cadencii/manual/index.php:146
+#: Cadencii/manual/index.php:192
 msgid "FAQ"
 msgstr "よくある質問"
 
-#: Cadencii/manual/index.php:104
+#: Cadencii/manual/index.php:147
+#: Cadencii/manual/index.php:196
 msgid "License"
 msgstr "ライセンス"
+
+#: Cadencii/manual/index.php:155
+msgid "Cadenncii is a free software for editing scores for several singing synthesis systems."
+msgstr "Cadenciiは歌声合成システムのための、フリーの楽譜編集ソフトウェアです。"
+
+#: Cadencii/manual/index.php:167
+#, php-format
+msgid "At this time, <a href=\"%s\">VOCALOID</a>, <a href=\"%s\">VOCALOID2</a>, <a href=\"%s\">UTAU</a>, STRAIGHT with UTAU, and <a href=\"%s\">AquesTone</a> are available as synthesizer."
+msgstr "今のところ、<a href=\"%s\">VOCALOID</a>、<a href=\"%s\">VOCALOID2</a>、<a href=\"%s\">UTAU</a>、STRAIGHT with UTAU、および<a href=\"%s\">AquesTone</a>を合成システムとして利用できます。"
+
+#: Cadencii/manual/index.php:179
+msgid "Operating System"
+msgstr "オペレーティングシステム"
+
+#: Cadencii/manual/index.php:180
+msgid "with .NET Framework 2.0 or later"
+msgstr "ただし.NET Framework 2.0またはこれより新しい.NET Frameworkがインストールしてあること"
 
 #: Cadencii/Cadencii.cs:108
 msgid "Failed to launch Cadencii. Please send the exception report to developer"

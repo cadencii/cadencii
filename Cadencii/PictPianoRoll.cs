@@ -211,15 +211,15 @@ namespace org.kbinani.cadencii {
                 int selected = AppManager.getSelected();
                 VsqTrack vsq_track = vsq.Track.get( selected );
 
-                Dimension window_size = new Dimension( getWidth(), getHeight() );
+                //Dimension window_size = new Dimension( getWidth(), getHeight() );
                 Point p = pointToClient( PortUtil.getMousePosition() );
                 Point mouse_position = new Point( p.x, p.y );
                 int stdx = AppManager.getStartToDrawX();
                 int stdy = AppManager.getStartToDrawY();
                 int key_width = AppManager.keyWidth;
 
-                int width = window_size.width;
-                int height = window_size.height;
+                int width = getWidth();
+                int height = getHeight();
                 int track_height = AppManager.editorConfig.PxTrackHeight;
                 int half_track_height = track_height / 2;
                 // [screen_x] = 67 + [clock] * ScaleX - StartToDrawX + 6
@@ -547,7 +547,7 @@ namespace org.kbinani.cadencii {
                     if ( selected >= 1 ) {
                         Shape r = g.getClip();
                         g.clipRect( key_width, 0,
-                                    window_size.width - key_width, window_size.height );
+                                    width - key_width, height );
                         int j_start = AppManager.drawStartIndex[selected - 1];
 
                         boolean first = true;
@@ -1186,7 +1186,7 @@ namespace org.kbinani.cadencii {
 
                 // マーカー
                 int marker_x = (int)(AppManager.getCurrentClock() * scalex + AppManager.keyOffset + key_width - stdx);
-                if ( key_width <= marker_x && marker_x <= window_size.width ) {
+                if ( key_width <= marker_x && marker_x <= width ) {
                     g.setColor( Color.white );
                     g.setStroke( getStroke2px() );
                     g.drawLine( marker_x, 0, marker_x, getHeight() );

@@ -367,6 +367,9 @@
     <None Include="makefile" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="manual\img\screen_shot.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="manual\style.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1002,9 +1005,9 @@
   <PropertyGroup>
     <PostBuildEvent>@set PATH=$(DevEnvDir);%25PATH%25
 "$(DevEnvDir)..\..\VC\bin\editbin.exe" /NXCOMPAT:NO "$(TargetPath)"
-php "$(ProjectDir)\manual\index.php" en &gt;"$(TargetDir)\manual\index_en.html"
-php "$(ProjectDir)\manual\index.php" ja &gt;"$(TargetDir)\manual\index_ja.html"
-php "$(ProjectDir)\manual\index.php" zh-TW &gt;"$(TargetDir)\manual\index_zh-TW.html"
-php "$(ProjectDir)\manual\index.php" zh-CN &gt;"$(TargetDir)\manual\index_zh-CN.html"</PostBuildEvent>
+php "$(ProjectDir)manual\index.php" en "$(ProjectDir)\" &gt;"$(TargetDir)\manual\index_en.html"
+php "$(ProjectDir)manual\index.php" ja "$(ProjectDir)\" &gt;"$(TargetDir)\manual\index_ja.html"
+php "$(ProjectDir)manual\index.php" zh-TW "$(ProjectDir)\" &gt;"$(TargetDir)\manual\index_zh-TW.html"
+php "$(ProjectDir)manual\index.php" zh-CN "$(ProjectDir)\" &gt;"$(TargetDir)\manual\index_zh-CN.html"</PostBuildEvent>
   </PropertyGroup>
 </Project>
