@@ -8,33 +8,69 @@ class POFile{
             return;
         }
         $current = "";
+        $msgid = "";
+        $msgstr = "";
         while( !feof( $f ) ){
-            $line = fgets( $f );
-            $indx = strpos( $line, "msgid" );
-            if( $indx == 0 ){
+            $line = rtrim( fgets( $f ) );
+            
+            if( strpos( $line, "msgid" ) === 0 ){
                 $current = "msgid";
-            }
-            $indx = strpos( $line, "msgstr" );
-            if( $indx == 0 ){
+                if( strcmp( $msgid, "" ) != 0 ){
+                    $this->dict[$msgid] = $msgstr;
+                }
+                $indx = strpos( $line, "\"", 5 ); // 引用符の開始位置
+                $msgid = substr( $line, $indx + 1 );
+                $msgid = $this->trimQuote( $msgid );
+                $msgstr = "";
+            }else if( strpos( $line, "msgstr" ) === 0 ){
                 $current = "msgstr";
+                $indx = strpos( $line, "\"", 6 );
+                $msgstr = substr( $line, $indx + 1 );
+                $msgstr = $this->trimQuote( $msgstr );
+            }else if( strcmp( $line, "" ) == 0 ){
+                $current = "";
+            }else if( strpos( $line, "#" ) === 0 ){
+                continue;
+            }else{
+                if( strcmp( $current, "msgid" ) == 0 ){
+                    $msgid = $msgid . $this->trimQuote( $line );
+                }else if( strcmp( $current, "msgstr" ) == 0 ){
+                    $msgstr = $msgstr . $this->trimQuote( $line );
+                }
             }
-            //TODO: 縺薙�ｮ霎ｺ縺九ｉ
         }
         fclose( $f );
     }
 
     public function getMessage( $message ){
-        $s = $dict[$message];
+        $s = $this->dict[$message];
         if( is_null( $s ) ){
             return $message;
         }else{
             return $s;
         }
     }
-}
-?>
 
-<?php
+    function trimQuote( $str ){
+        if( is_null( $str ) ){
+            return "";
+        }
+        if( strcmp( $str, '"' ) == 0 ){
+            return "";
+        }
+        if( strcmp( $str, '""' ) == 0 ){
+            return "";
+        }
+        if( strcmp( substr( $str, 0, 1 ), '"' ) == 0 ){
+            $str = substr( $str, 1 );
+        }
+        if( strcmp( substr( $str, strlen( $str ) - 1, 1 ), '"') == 0 ){
+            $str = substr( $str, 0, strlen( $str ) - 1 );
+        }
+        return $str;
+    }
+}
+
 class Messaging{
     static $dict = array();
     static $current_lang = "en";
@@ -52,35 +88,40 @@ class Messaging{
                 $lang = substr( $f, 0, $len - 3 );
                 $po = new POFile();
                 $po->init( $basedir . $f );
-                $dict[$lang] = $po;
+                self::$dict[$lang] = $po;
             }
         }
         closedir( $d );
     }
 
     static public function gettext( $message ){
-        $d = $dict[$current_lang];
+        $d = self::$dict[self::$current_lang];
         if( is_null( $d ) ){
             return $message;
         }else{
-            return $d->getMessage( $message );
+            $ret = self::$dict[self::$current_lang]->getMessage( $message );
+            if( strcmp( $ret, "" ) == 0 ){
+                return $message;
+            }else{
+                return $ret;
+            }
         }
     }
 
     static public function setLanguage( $lang ){
-        $current_lang = $lang;
+        self::$current_lang = $lang;
     }
 
     static public function getLanguage(){
-        return $current_lang;
+        return self::$current_lang;
     }
 }
 
 Messaging::init();
 Messaging::setLanguage( $argv[1] );
 
-function _( $message ){
-    echo Messaging::gettext( $message );
+function msg( $message ){
+    return Messaging::gettext( $message );
 }
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -94,27 +135,36 @@ function _( $message ){
   <h2>Cadencii verion 3.2 Manual</h2>
 
   <!-- section 0 -->
-  <h3>0. <?php _( "Table of contents" ) ?></h3>
+  <h3>0. <?php print msg( "Table of contents" ) ?></h3>
   <div class=indent>
     <ol>
-      <li><a href="#preface"><?php _( "Preface" ) ?></a>
-      <li><a href="#platform"><?php _( "Platform" ) ?></a>
-      <li><a href="#how_to_install"><?php _( "How to install" ) ?></a>
-      <li><a href="#how_to_use"><?php _( "How to use" ) ?></a>
-      <li><a href="#faq"><?php _( "FAQ" ) ?></a>
-      <li><a href="#license"><?php _( "License" ) ?></a>
+      <li><a href="#preface"><?php print msg( "Preface" ) ?></a>
+      <li><a href="#platform"><?php print msg( "Platform" ) ?></a>
+      <li><a href="#how_to_install"><?php print msg( "How to install" ) ?></a>
+      <li><a href="#how_to_use"><?php print msg( "How to use" ) ?></a>
+      <li><a href="#faq"><?php print msg( "FAQ" ) ?></a>
+      <li><a href="#license"><?php print msg( "License" ) ?></a>
     </ol>
   </div>
 
   <!-- section 1 -->
   <a name="preface"></a>
-  <h3>1. <?php _( "Preface" ) ?></h3>
+  <h3>1. <?php print msg( "Preface" ) ?></h3>
   <p class=indent>
-    Cadenncii is a free software for editing scores for several singing synthesis systems.
-    At this time, <a href="http://www.vocaloid.com/en/index.html">VOCALOID</a>,
-    <a href="http://www.vocaloid.com/index.en.html">VOCALOID2</a>,
-    <a href="http://utau2008.web.fc2.com/">UTAU</a>, STRAIGHT with UTAU, and 
-    <a href="http://www.a-quest.com/products/aquestone_en.html">AquesTone</a> are available as synthesizer.
+    <?php print msg( "Cadenncii is a free software for editing scores for several singing synthesis systems." ) . "\n" ?>
+    <?php
+      $url_vocaloid = "http://www.vocaloid.com/en/index.html";
+      $url_vocaloid2 = "http://www.vocaloid.com/index.en.html";
+      $url_utau = "http://utau2008.web.fc2.com/";
+      $url_aquestone = "http://www.a-quest.com/products/aquestone_en.html";
+      $lang = Messaging::getLanguage();
+      if( strcmp( $lang, "ja" ) == 0 ){
+          $url_vocaloid = "http://www.vocaloid.com/jp/index.html";
+          $url_vocaloid2 = "http://www.vocaloid.com/";
+          $url_aquestone = "http://www.a-quest.com/products/aquestone.html";
+      }
+      print sprintf( msg( "At this time, <a href=\"%s\">VOCALOID</a>, <a href=\"%s\">VOCALOID2</a>, <a href=\"%s\">UTAU</a>, STRAIGHT with UTAU, and <a href=\"%s\">AquesTone</a> are available as synthesizer." ), $url_vocaloid, $url_vocaloid2, $url_utau, $url_aquestone );
+    ?>
   </p>
   <p class=indent>
     Screen shot<br />
@@ -123,25 +173,25 @@ function _( $message ){
 
   <!-- section 2 -->
   <a name="platform"></a>
-  <h3>2. Platform</h3>
+  <h3>2. <?php print msg( "Platform" ) ?></h3>
   <p class=indent>
     Operating System: Windows 2000, Windows XP, Windows Vista, Windows7<br />
     with .NET Framework 2.0 or later
   </p>
   <!-- section 3 -->
   <a name="how_to_install"></a>
-  <h3>3. How to install</h3>
+  <h3>3. <?php print msg( "How to install" ) ?></h3>
 
   <!-- section 4 -->
   <a name="how_to_use"></a>
-  <h3>4. How to use</h3>
+  <h3>4. <?php print msg( "How to use" ) ?></h3>
 
   <!-- section 5 -->
   <a name="faq"></a>
-  <h3>5. FAQs (Frequently Asked Questions)</h3>
+  <h3>5. <?php print msg( "FAQ" ) ?></h3>
 
   <!-- section 6 -->
   <a name="license"></a>
-  <h3>6. License</h3>
+  <h3>6. <?php print msg( "License" ) ?></h3>
 </body>
 </html>
