@@ -367,9 +367,7 @@
     <None Include="makefile" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="manual\index.html">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="manual\index.src.html" />
     <Content Include="manual\style.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

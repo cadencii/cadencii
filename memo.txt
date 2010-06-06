@@ -1,3 +1,45 @@
+0163	5a99f1e8a00593a08d1ce2be4cd6cc18 *resampler.exe
+0186	8caf02e5f1344eb01ac56e69525ea2af *resampler.exe
+0187	8caf02e5f1344eb01ac56e69525ea2af *resampler.exe
+0207	332be76a27ae2c6cd42a59d3607edbbd *resampler.exe
+0207	57f17443bfc057d9a5a6ff81ec12b862 *resampler7.exe
+0208	332be76a27ae2c6cd42a59d3607edbbd *resampler.exe
+0208	57f17443bfc057d9a5a6ff81ec12b862 *resampler7.exe
+0209	332be76a27ae2c6cd42a59d3607edbbd *resampler.exe
+0209	57f17443bfc057d9a5a6ff81ec12b862 *resampler7.exe
+0230	a50f91ec51c399a6cbbcb33996bbcbb3 *resampler.exe
+0230	8e6b45e4fbfe30e58eb0cf436a0ea4f6 *resampler7.exe
+0231	a50f91ec51c399a6cbbcb33996bbcbb3 *resampler.exe
+0231	8e6b45e4fbfe30e58eb0cf436a0ea4f6 *resampler7.exe
+0232	1e0963f2d6ea2b50bafa5875bc6a4695 *resampler.exe
+0232	782352589e4905033b47db6ab7ecb017 *resampler7.exe
+0233	d09e914d05b11f752595a1d65d9654b9 *resampler.exe
+0233	ada3d7bde7ccc237277ef4a55373a246 *resampler7.exe
+0234	d09e914d05b11f752595a1d65d9654b9 *resampler.exe
+0234	ada3d7bde7ccc237277ef4a55373a246 *resampler7.exe
+0235	d09e914d05b11f752595a1d65d9654b9 *resampler.exe
+0235	ada3d7bde7ccc237277ef4a55373a246 *resampler7.exe
+0236	13215465025a35e4ab4d4d7cb8c8978e *resampler.exe
+0236	90df9c9861b085f30f1ced4fb210d7ca *resampler7.exe
+0240	a23ba6bed253afd85dab69f3db4ac396 *resampler.exe
+0240	90df9c9861b085f30f1ced4fb210d7ca *resampler7.exe
+0241	a23ba6bed253afd85dab69f3db4ac396 *resampler.exe
+0241	90df9c9861b085f30f1ced4fb210d7ca *resampler7.exe
+0243	a23ba6bed253afd85dab69f3db4ac396 *resampler.exe
+0246	3028ca062a6fe5dd4770be55df2ccee7 *resampler.exe
+0247	b92cab9928b3d8d16bd795a74aa49b27 *resampler.exe
+0248	bca753dc7813d79cf3f79fbd037822f5 *resampler.exe
+0249	dae09d2524c1ef628518ed318cef8990 *resampler.exe
+0260	b51df5d2ca1f4b7daf10e9f19c90e3b2 *resampler.exe
+0261	b51df5d2ca1f4b7daf10e9f19c90e3b2 *resampler.exe
+0270	b51df5d2ca1f4b7daf10e9f19c90e3b2 *resampler.exe
+0271	b51df5d2ca1f4b7daf10e9f19c90e3b2 *resampler.exe
+0272	1860ae04d3835fc1513f3b45e17db75c *resampler.exe
+0273	24bc223a47b2bb5475f75cd50edfd9d0 *resampler.exe
+0274	bbf1be0e6de17c7391adc1b1cd6ff91a *resampler.exe
+0275	bbf1be0e6de17c7391adc1b1cd6ff91a *resampler.exe
+0276	03230de6583d22a8daf90ea325d4a023 *resampler.exe
+
 -general todo----------------------------------------------------------
 -操作内容を記録するマクロ機能。
 -コントロールカーブのアナログ入力
@@ -34,6 +76,13 @@
 --Big Al
 --AquesTone
 -音量のコントロールを1系統増やす
+-Cadencii.exeをコマンドラインツール化出来ないか？
+--MusicXML出力「cadencii foo.vsq -o foo.xml」
+--XVSQ->VSQ「cadencii foo.xvsq -o foo.vsq」
+--VSQ->XVSQ「cadencii foo.vsq -o foo.xvsq」
+--すべてレンダリング「cadencii foo.vsq -o foo.wav」
+--時間範囲(10秒後から300秒分)を指定してレンダリング「cadencii foo.vsq -o foo.wav -ss 10 -d 300」
+--トラック(第1,3,4,5トラック)、時間範囲を指定してレンダリング「cadencii foo.vsq -o foo.wav -ss 10 -d 300 -t 1,3-5」
 
 -jcadencii todo--------------------------------------------------------
 -BListViewのカラム・ヘッダーの扱いがヤバイ
@@ -51,6 +100,7 @@
 -UTAUのとき、*.wavを引き当てられないとき音符の色を変える
 -ピッチ曲線に，ビブラートの波線を反映させる
 -カーブの種類の一覧を左側にまとめるのではなく、タブ形式にしてはどうか？
+-manual/index.phpのPOFile#initの実装の続き
 
 -v3.0.21todo-----------------------------------------------------------
 
