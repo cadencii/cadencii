@@ -117,7 +117,6 @@ class Messaging{
     }
 }
 
-$po_dir = str_replace( "\\", "/", $argv[2] );
 Messaging::init( $argv[2] );
 Messaging::setLanguage( $argv[1] );
 
@@ -169,20 +168,32 @@ function msg( $message ){
   </p>
   <p class=indent>
     Screen shot<br />
-    <img src="img/screen_shot.png" alt="screen shot of Cadencii">
+    <img src="img/screen_shot.png" alt="<?php print msg( "screen shot of Cadencii" ) ?>" />
   </p>
 
   <!-- section 2 -->
   <a name="platform"></a>
   <h3>2. <?php print msg( "Platform" ) ?></h3>
   <p class=indent>
-    <?php print msg( "Operating System" ) ?>: Windows 2000, Windows XP, Windows Vista, Windows7<br />
+    <?php print msg( "Operating System" ) ?>: Windows 2000, Windows XP, Windows Vista, Windows 7<br />
     <?php print msg( "with .NET Framework 2.0 or later" ) ?>
   </p>
 
   <!-- section 3 -->
   <a name="how_to_install"></a>
   <h3>3. <?php print msg( "How to install" ) ?></h3>
+  <div class=indent>
+    <h4>case A: Windows Vista, Windows 7</h4>
+      <div class=indent>
+        <ol>
+          <li>Check .NET Framework is enabled or not.
+          <li>Install Visual C++ Runtime(x86)
+          <li>Unzip "Cadencii_v3.2.*.zip". (* is a number, means maintenance release number)
+        </ol>
+      </div>
+    <h4>case B: Windows XP</h4>
+    <h4>case C: Windows 2000</h4>
+  </div>
 
   <!-- section 4 -->
   <a name="how_to_use"></a>
