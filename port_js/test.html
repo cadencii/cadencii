@@ -1,8 +1,168 @@
-<html>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
+<script type="text/javascript" src="org/kbinani/vsq/BPPair.js"></script>
+<script type="text/javascript" src="org/kbinani/Base64.js"></script>
+<script type="text/javascript" src="main.js"></script>
+<style type="text/css">
+.wkey{
+    position: absolute;
+    width: 32px;
+    height: 13px;
+    left: 0px;
+    background-color: rgb( 240, 240, 240 );
+    border-top: none;
+    border-bottom: solid 1px;
+    border-left: none;
+    border-right: none;
+    border-color: rgb( 212, 212, 212 );
+}
+.bkey{
+    position: absolute;
+    width: 32px;
+    height: 13px;
+    left: 0px;
+    background-color: rgb( 125, 123, 124 );
+    border-top: none;
+    border-bottom: solid 1px;
+    border-left: none;
+    border-right: none;
+    border-color: rgb( 212, 212, 212 );
+}
+.key{
+    position: absolute;
+    width: 36px;
+    height: 13px;
+    left: 32px;
+    background-color: rgb( 240, 240, 240 );
+    font-size: 12px;
+    font-family: "Verdana";
+    border-top: none;
+    border-bottom: solid 1px;
+    border-left: none;
+    border-right: solid 1px;
+    border-color: rgb( 212, 212, 212 );
+    text-align: center;
+}
+</style>
+<title>test</title>
 </head>
 <body>
-<script src="org/kbinani/vsq/BPPair.js"></script>
-<script src="org/kbinani/Base64.js"></script>
+<div id="dropbox" style="top: 0px; left: 0px; width: 200%; height: 1456px; background-color: gray; position: absolute;">
+<div id="keyboard">
+<div id="key127a" class=wkey style="top:   0px;"></div><div id="key127b" class=key style="top:   0px;"></div>
+<div id="key126a" class=bkey style="top:  14px;"></div><div id="key126b" class=key style="top:  14px;"></div>
+<div id="key125a" class=wkey style="top:  28px;"></div><div id="key125b" class=key style="top:  28px;"></div>
+<div id="key124a" class=wkey style="top:  42px;"></div><div id="key124b" class=key style="top:  42px;"></div>
+<div id="key123a" class=bkey style="top:  56px;"></div><div id="key123b" class=key style="top:  56px;"></div>
+<div id="key122a" class=wkey style="top:  70px;"></div><div id="key122b" class=key style="top:  70px;"></div>
+<div id="key121a" class=bkey style="top:  84px;"></div><div id="key121b" class=key style="top:  84px;"></div>
+<div id="key120a" class=wkey style="top:  98px;"></div><div id="key120b" class=key style="top:  98px;">C8</div>
+
+<div id="key119a" class=wkey style="top: 112px;"></div><div id="key119b" class=key style="top: 112px;"></div>
+<div id="key118a" class=bkey style="top: 126px;"></div><div id="key118b" class=key style="top: 126px;"></div>
+<div id="key117a" class=wkey style="top: 140px;"></div><div id="key117b" class=key style="top: 140px;"></div>
+<div id="key116a" class=bkey style="top: 154px;"></div><div id="key116b" class=key style="top: 154px;"></div>
+<div id="key115a" class=wkey style="top: 168px;"></div><div id="key115b" class=key style="top: 168px;"></div>
+<div id="key114a" class=bkey style="top: 182px;"></div><div id="key114b" class=key style="top: 182px;"></div>
+<div id="key113a" class=wkey style="top: 196px;"></div><div id="key113b" class=key style="top: 196px;"></div>
+<div id="key112a" class=wkey style="top: 210px;"></div><div id="key112b" class=key style="top: 210px;"></div>
+<div id="key111a" class=bkey style="top: 224px;"></div><div id="key111b" class=key style="top: 224px;"></div>
+<div id="key110a" class=wkey style="top: 238px;"></div><div id="key110b" class=key style="top: 238px;"></div>
+<div id="key109a" class=bkey style="top: 252px;"></div><div id="key109b" class=key style="top: 252px;"></div>
+<div id="key108a" class=wkey style="top: 266px;"></div><div id="key108b" class=key style="top: 266px;">C7</div>
+
+<div id="key107a" class=wkey style="top: 280px;"></div><div id="key107b" class=key style="top: 280px;"></div>
+<div id="key106a" class=bkey style="top: 294px;"></div><div id="key106b" class=key style="top: 294px;"></div>
+<div id="key105a" class=wkey style="top: 308px;"></div><div id="key105b" class=key style="top: 308px;"></div>
+<div id="key104a" class=bkey style="top: 322px;"></div><div id="key104b" class=key style="top: 322px;"></div>
+<div id="key103a" class=wkey style="top: 336px;"></div><div id="key103b" class=key style="top: 336px;"></div>
+<div id="key102a" class=bkey style="top: 350px;"></div><div id="key102b" class=key style="top: 350px;"></div>
+<div id="key101a" class=wkey style="top: 364px;"></div><div id="key101b" class=key style="top: 364px;"></div>
+<div id="key100a" class=wkey style="top: 378px;"></div><div id="key100b" class=key style="top: 378px;"></div>
+<div id="key099a" class=bkey style="top: 392px;"></div><div id="key099b" class=key style="top: 392px;"></div>
+<div id="key098a" class=wkey style="top: 406px;"></div><div id="key098b" class=key style="top: 406px;"></div>
+<div id="key097a" class=bkey style="top: 420px;"></div><div id="key097b" class=key style="top: 420px;"></div>
+<div id="key096a" class=wkey style="top: 434px;"></div><div id="key096b" class=key style="top: 434px;">C6</div>
+
+<div id="key095a" class=wkey style="top: 448px;"></div><div id="key095b" class=key style="top: 448px;"></div>
+<div id="key094a" class=bkey style="top: 462px;"></div><div id="key094b" class=key style="top: 462px;"></div>
+<div id="key093a" class=wkey style="top: 476px;"></div><div id="key093b" class=key style="top: 476px;"></div>
+<div id="key092a" class=bkey style="top: 490px;"></div><div id="key092b" class=key style="top: 490px;"></div>
+<div id="key091a" class=wkey style="top: 504px;"></div><div id="key091b" class=key style="top: 504px;"></div>
+<div id="key090a" class=bkey style="top: 518px;"></div><div id="key090b" class=key style="top: 518px;"></div>
+<div id="key089a" class=wkey style="top: 532px;"></div><div id="key089b" class=key style="top: 532px;"></div>
+<div id="key088a" class=wkey style="top: 546px;"></div><div id="key088b" class=key style="top: 546px;"></div>
+<div id="key087a" class=bkey style="top: 560px;"></div><div id="key087b" class=key style="top: 560px;"></div>
+<div id="key086a" class=wkey style="top: 574px;"></div><div id="key086b" class=key style="top: 574px;"></div>
+<div id="key085a" class=bkey style="top: 588px;"></div><div id="key085b" class=key style="top: 588px;"></div>
+<div id="key084a" class=wkey style="top: 602px;"></div><div id="key084b" class=key style="top: 602px;">C5</div>
+
+<div id="key083a" class=wkey style="top: 616px;"></div><div id="key083b" class=key style="top: 616px;"></div>
+<div id="key082a" class=bkey style="top: 630px;"></div><div id="key082b" class=key style="top: 630px;"></div>
+<div id="key081a" class=wkey style="top: 644px;"></div><div id="key081b" class=key style="top: 644px;"></div>
+<div id="key080a" class=bkey style="top: 658px;"></div><div id="key080b" class=key style="top: 658px;"></div>
+<div id="key079a" class=wkey style="top: 672px;"></div><div id="key079b" class=key style="top: 672px;"></div>
+<div id="key078a" class=bkey style="top: 686px;"></div><div id="key078b" class=key style="top: 686px;"></div>
+<div id="key077a" class=wkey style="top: 700px;"></div><div id="key077b" class=key style="top: 700px;"></div>
+<div id="key076a" class=wkey style="top: 714px;"></div><div id="key076b" class=key style="top: 714px;"></div>
+<div id="key075a" class=bkey style="top: 728px;"></div><div id="key075b" class=key style="top: 728px;"></div>
+<div id="key074a" class=wkey style="top: 742px;"></div><div id="key074b" class=key style="top: 742px;"></div>
+<div id="key073a" class=bkey style="top: 756px;"></div><div id="key073b" class=key style="top: 756px;"></div>
+<div id="key072a" class=wkey style="top: 770px;"></div><div id="key072b" class=key style="top: 770px;">C4</div>
+
+<div id="key081a" class=wkey style="top: 784px;"></div><div id="key081b" class=key style="top: 784px;"></div>
+<div id="key080a" class=bkey style="top: 798px;"></div><div id="key080b" class=key style="top: 798px;"></div>
+<div id="key089a" class=wkey style="top: 812px;"></div><div id="key079b" class=key style="top: 812px;"></div>
+<div id="key088a" class=bkey style="top: 826px;"></div><div id="key078b" class=key style="top: 826px;"></div>
+<div id="key077a" class=wkey style="top: 840px;"></div><div id="key077b" class=key style="top: 840px;"></div>
+<div id="key076a" class=bkey style="top: 854px;"></div><div id="key076b" class=key style="top: 854px;"></div>
+<div id="key075a" class=wkey style="top: 868px;"></div><div id="key075b" class=key style="top: 868px;"></div>
+<div id="key074a" class=wkey style="top: 882px;"></div><div id="key074b" class=key style="top: 882px;"></div>
+<div id="key073a" class=bkey style="top: 896px;"></div><div id="key073b" class=key style="top: 896px;"></div>
+<div id="key072a" class=wkey style="top: 910px;"></div><div id="key072b" class=key style="top: 910px;"></div>
+<div id="key071a" class=bkey style="top: 924px;"></div><div id="key071b" class=key style="top: 924px;"></div>
+<div id="key070a" class=wkey style="top: 938px;"></div><div id="key070b" class=key style="top: 938px;">C3</div>
+
+<div id="key069a" class=wkey style="top: 952px;"></div><div id="key069b" class=key style="top: 952px;"></div>
+<div id="key068a" class=bkey style="top: 966px;"></div><div id="key068b" class=key style="top: 966px;"></div>
+<div id="key067a" class=wkey style="top: 980px;"></div><div id="key067b" class=key style="top: 980px;"></div>
+<div id="key066a" class=bkey style="top: 994px;"></div><div id="key066b" class=key style="top: 994px;"></div>
+<div id="key065a" class=wkey style="top:1008px;"></div><div id="key065b" class=key style="top:1008px;"></div>
+<div id="key064a" class=bkey style="top:1022px;"></div><div id="key064b" class=key style="top:1022px;"></div>
+<div id="key063a" class=wkey style="top:1036px;"></div><div id="key063b" class=key style="top:1036px;"></div>
+<div id="key062a" class=wkey style="top:1050px;"></div><div id="key062b" class=key style="top:1050px;"></div>
+<div id="key061a" class=bkey style="top:1064px;"></div><div id="key061b" class=key style="top:1064px;"></div>
+<div id="key060a" class=wkey style="top:1078px;"></div><div id="key060b" class=key style="top:1078px;"></div>
+<div id="key059a" class=bkey style="top:1092px;"></div><div id="key059b" class=key style="top:1092px;"></div>
+<div id="key058a" class=wkey style="top:1106px;"></div><div id="key058b" class=key style="top:1106px;">C2</div>
+
+<div id="key057a" class=wkey style="top:1120px;"></div><div id="key057b" class=key style="top:1120px;"></div>
+<div id="key056a" class=bkey style="top:1134px;"></div><div id="key056b" class=key style="top:1134px;"></div>
+<div id="key055a" class=wkey style="top:1148px;"></div><div id="key055b" class=key style="top:1148px;"></div>
+<div id="key054a" class=bkey style="top:1162px;"></div><div id="key054b" class=key style="top:1162px;"></div>
+<div id="key053a" class=wkey style="top:1176px;"></div><div id="key053b" class=key style="top:1176px;"></div>
+<div id="key052a" class=bkey style="top:1190px;"></div><div id="key052b" class=key style="top:1190px;"></div>
+<div id="key051a" class=wkey style="top:1204px;"></div><div id="key051b" class=key style="top:1204px;"></div>
+<div id="key050a" class=wkey style="top:1218px;"></div><div id="key050b" class=key style="top:1218px;"></div>
+<div id="key049a" class=bkey style="top:1232px;"></div><div id="key049b" class=key style="top:1232px;"></div>
+<div id="key048a" class=wkey style="top:1246px;"></div><div id="key048b" class=key style="top:1246px;"></div>
+<div id="key047a" class=bkey style="top:1260px;"></div><div id="key047b" class=key style="top:1260px;"></div>
+<div id="key046a" class=wkey style="top:1274px;"></div><div id="key046b" class=key style="top:1274px;">C1</div>
+
+<div id="key045a" class=wkey style="top:1288px;"></div><div id="key045b" class=key style="top:1288px;"></div>
+<div id="key044a" class=bkey style="top:1302px;"></div><div id="key044b" class=key style="top:1302px;"></div>
+<div id="key043a" class=wkey style="top:1316px;"></div><div id="key043b" class=key style="top:1316px;"></div>
+<div id="key042a" class=bkey style="top:1330px;"></div><div id="key042b" class=key style="top:1330px;"></div>
+<div id="key041a" class=wkey style="top:1344px;"></div><div id="key041b" class=key style="top:1344px;"></div>
+<div id="key040a" class=bkey style="top:1358px;"></div><div id="key040b" class=key style="top:1358px;"></div>
+<div id="key039a" class=wkey style="top:1372px;"></div><div id="key039b" class=key style="top:1372px;"></div>
+<div id="key038a" class=wkey style="top:1386px;"></div><div id="key038b" class=key style="top:1386px;"></div>
+<div id="key037a" class=bkey style="top:1400px;"></div><div id="key037b" class=key style="top:1400px;"></div>
+<div id="key036a" class=wkey style="top:1414px;"></div><div id="key036b" class=key style="top:1414px;"></div>
+<div id="key035a" class=bkey style="top:1428px;"></div><div id="key035b" class=key style="top:1428px;"></div>
+<div id="key034a" class=wkey style="top:1442px;"></div><div id="key034b" class=key style="top:1442px;">C0</div>
+</div>
+</div>
 </body>
 </html>
