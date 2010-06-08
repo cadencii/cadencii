@@ -115,7 +115,7 @@ if( org.kbinani.vsq.MidiEvent == undefined ){
      * @param last_status_byte [ByRef<Integer>]
      */
     org.kbinani.vsq.MidiEvent.read = function( stream, last_clock, last_status_byte ){
-        var delta_clock = readDeltaClock( stream ); // [long]
+        var delta_clock = this.readDeltaClock( stream ); // [long]
         last_clock.value += delta_clock;
         var first_byte = stream.read(); // [int]
         if ( first_byte < 0x80 ) {
@@ -136,12 +136,12 @@ if( org.kbinani.vsq.MidiEvent == undefined ){
             //     0xE*: ピッチベンドチェンジ
             // 3byte使用するシステムメッセージ
             //     0xF2: ソングポジション・ポインタ
-            var me = new MidiEvent(); // [MidiEvent]
+            var me = new org.kbinani.vsq.MidiEvent(); // [MidiEvent]
             me.clock = last_clock.value;
             me.firstByte = first_byte;
             me.data = new Array( 2 ); //int[2];
             var d = new Array( 2 ); // byte[2];
-            stream.read( d, 0, 2 );
+            stream.readArray( d, 0, 2 );
             for ( var i = 0; i < 2; i++ ) {
                 me.data[i] = 0xff & d[i];
             }
@@ -153,12 +153,12 @@ if( org.kbinani.vsq.MidiEvent == undefined ){
             // 2byte使用するシステムメッセージ
             //     0xF1: クォータフレーム
             //     0xF3: ソングセレクト
-            var me = new MidiEvent(); // [MidiEvent]
+            var me = new org.kbinani.vsq.MidiEvent(); // [MidiEvent]
             me.clock = last_clock.value;
             me.firstByte = first_byte;
             me.data = new Array( 1 );// int[1];
             var d = new Array( 1 );// byte[1];
-            stream.read( d, 0, 1 );
+            stream.readArray( d, 0, 1 );
             me.data[0] = 0xff & d[0];
             return me;
         } else if ( first_byte == 0xF6 ) {
@@ -179,40 +179,40 @@ if( org.kbinani.vsq.MidiEvent == undefined ){
         } else if ( first_byte == 0xff ) {
             // メタイベント
             var meta_event_type = stream.read(); //[int]
-            var meta_event_length = readDeltaClock( stream ); // [long]
-            var me = new MidiEvent(); //[MidiEvent]
+            var meta_event_length = this.readDeltaClock( stream ); // [long]
+            var me = new org.kbinani.vsq.MidiEvent(); //[MidiEvent]
             me.clock = last_clock.value;
             me.firstByte = first_byte;
             me.data = new Array( meta_event_length + 1 ); // int[]
             me.data[0] = meta_event_type;
             var d = new Array( meta_event_length + 1 ); // byte[]
-            stream.read( d, 1, meta_event_length );
+            stream.readArray( d, 1, meta_event_length );
             for ( var i = 1; i < meta_event_length + 1; i++ ) {
                 me.data[i] = 0xff & d[i];
             }
             return me;
         } else if ( first_byte == 0xf0 ) {
             // f0ステータスのSysEx
-            var me = new MidiEvent();// [MidiEvent]
+            var me = new org.kbinani.vsq.MidiEvent();// [MidiEvent]
             me.clock = last_clock.value;
             me.firstByte = first_byte;
-            var sysex_length = readDeltaClock( stream ); // [long]
+            var sysex_length = this.readDeltaClock( stream ); // [long]
             me.data = new Array( sysex_length + 1 ); // int[]
             var d = new Array( sysex_length + 1 ); // byte[]
-            stream.read( d, 0, sysex_length + 1 );
+            stream.readArray( d, 0, sysex_length + 1 );
             for ( var i = 0; i < sysex_length + 1; i++ ) {
                 me.data[i] = 0xff & d[i];
             }
             return me;
         } else if ( first_byte == 0xf7 ) {
             // f7ステータスのSysEx
-            var me = new MidiEvent();
+            var me = new org.kbinani.vsq.MidiEvent();
             me.clock = last_clock.value;
             me.firstByte = first_byte;
-            var sysex_length = readDeltaClock( stream );
+            var sysex_length = this.readDeltaClock( stream );
             me.data = new Array( sysex_length );
             var d = new Array( sysex_length );//byte[]
-            stream.read( d, 0, sysex_length );
+            stream.readArray( d, 0, sysex_length );
             for ( var i = 0; i < sysex_length; i++ ) {
                 me.data[i] = 0xff & d[i];
             }
@@ -233,7 +233,7 @@ if( org.kbinani.vsq.MidiEvent == undefined ){
             stream.write( firstByte );
             if ( firstByte == 0xff ) {
                 stream.write( data[0] );
-                writeDeltaClock( stream, data.length - 1 );
+                this.writeDeltaClock( stream, data.length - 1 );
                 for ( var i = 1; i < data.length; i++ ) {
                     stream.writeByte( data[i] );
                 }

@@ -106,8 +106,91 @@ function handleFile( file ){
         if( dat.indexOf( search ) == 0 ){
             var b64 = dat.substring( search.length );
             var decoded = org.kbinani.Base64.decode( b64 );
-            //var smf = new org.kbinani.vsq.MidiFile( decoded );
-            //var tracks = smf. ...
+            var stream = new org.kbinani.ByteArrayInputStream( decoded );
+            var smf = new org.kbinani.vsq.MidiFile( stream );
+            //alert( "smf.getTrackCount()=" + smf.getTrackCount() );
+            var tracks = smf.getTrackCount();
+            for( var track = 1; track < tracks; track++ ){
+                var sw = "";
+                var midi_event = smf.getMidiEventList( track );
+                var count = midi_event.length;
+                var buffer = new Array();
+                for( var i = 0; i < count; i++ ){
+                    var item = midi_event[i];
+//alert( "item.data.length=" + item.data.length );
+                    if( item.firstByte == 0xff && item.data.length > 0 ){
+                        var type = item.data[0];
+                        if( type == 0x01 || type == 0x03 ){
+                            if( type == 0x01 ) {
+                                var colon_count = 0;
+                                for ( var j = 0; j < item.data.length - 1; j++ ) {
+                                    var d = item.data[j + 1];
+                                    if ( d == 0x3a ) {
+                                        colon_count++;
+                                        if ( colon_count <= 2 ) {
+                                            continue;
+                                        }
+                                    }
+                                    if ( colon_count < 2 ) {
+                                        continue;
+                                    }
+                                    buffer.push( d );
+                                }
+
+                                var index_0x0a = -1;
+                                for( var k = 0; k < buffer.length; k++ ){
+                                    if( buffer[k] == 0x0a ){
+                                        index_0x0a = k;
+                                        break;
+                                    }
+                                }
+//alert( "index_0x0a=" + index_0x0a );
+                                while ( index_0x0a >= 0 ) {
+                                    var cpy = new Array( index_0x0a );// byte[index_0x0a];
+                                    for ( var j = 0; j < index_0x0a; j++ ) {
+                                        cpy[j] = 0xff & buffer[0];
+                                        buffer.shift();
+                                    }
+
+                                    var line = "";
+                                    for( var k = 0; k < cpy.length; k++ ){
+                                        line += String.fromCharCode( cpy[k] );
+                                    }// PortUtil.getDecodedString( encoding, cpy );
+                                    //sw.writeLine( line );
+                                    sw += line + "\n";
+//alert( "line=" + line );
+                                    buffer.shift();
+                                    index_0x0a = -1;
+                                    for( var k = 0; k < buffer.length; k++ ){
+                                        if( buffer[k] == 0x0a ){
+                                            index_0x0a = k;
+                                            break;
+                                        }
+                                    }
+                                }
+                            } else {
+                                for ( var j = 0; j < item.data.Length - 1; j++ ) {
+                                    buffer.add( item.data[j + 1] );
+                                }
+                                var c = buffer.length;
+                                var d = new Array( c );// byte[c];
+                                for ( var j = 0; j < c; j++ ) {
+                                    d[j] = 0xff & buffer[j];
+                                }
+                                track_name = "";
+                                for( var k = 0; k < d.length; k++ ){
+                                    track_name += String.fromCharCode( d[k] );
+                                }
+alert( "track_name=" + track_name );
+                                buffer = new Array();
+                            }
+                        }
+                    }else{
+                        continue;
+                    }
+                }
+alert( "sw=" + sw );
+            }
         }
     }
 

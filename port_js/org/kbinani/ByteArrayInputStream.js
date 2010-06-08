@@ -19,8 +19,8 @@ if( org.kbinani.ByteArrayInputStream == undefined ){
          */
         read : function(){
             this.index++;
-            if( this.index < byte_array.length ){
-                return byte_array[this.index];
+            if( this.index < this.byte_array.length ){
+                return this.byte_array[this.index];
             }else{
                 return -1;
             }
@@ -47,7 +47,7 @@ if( org.kbinani.ByteArrayInputStream == undefined ){
          * @param length [int]
          * @return read length [int]
          */
-        read : function( byte_array, offset, length ){
+        readArray : function( byte_array, offset, length ){
             var i = 0;
             for( i = 0; i < length; i++ ){
                 var c = this.read();
