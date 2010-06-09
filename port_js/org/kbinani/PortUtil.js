@@ -960,47 +960,61 @@ if( org.kbinani.PortUtil == undefined ){
     #endregion*/
 
     org.kbinani.PortUtil.splitString = function(){
-        if( 
-    private static String[] splitStringCorA( String s, String[] separator, int count, boolean ignore_empty_entries ) {
-#if JAVA
-        if( separator.length == 0 ){
-            return new String[]{ s };
-        }
-        Vector<String> ret = new Vector<String>();
-        String remain = s;
-        int len = separator.length;
-        int index = remain.indexOf( separator[0] );
-        int i = 1;
-        while( index < 0 && i < separator.length ){
-            index = remain.indexOf( separator[i] );
-        }
-        int added_count = 0;
-        while( index >= 0 ){
-            if( !ignore_empty_entries || (ignore_empty_entries && index > 0) ){
-                if( added_count + 1 == count ){
-                    break;
-                }else{
-                    ret.add( remain.substring( 0, index ) );
-                }
-                added_count++;
+        if( typeof( arguments[1] ) == "object" ){
+            // splitString( String s, String[] separator, int count, bool ignore_empty_entries );
+            // たぶんarguments[1]の型はstringのArrayだろう。
+            var s = arguments[0];
+            var separator = arguments[1]; //String[]
+            var count = -1;
+            if( arguments.length >= 3 ){
+                count = arguments[2];
             }
-            remain = remain.substring( index + len );
-            index = remain.indexOf( separator[0] );
-            i = 1;
+            var ignore_empty_entries = false;
+            if( arguments.length >= 4 ){
+                ignore_empty_entries = arguments[3];
+            }
+            var ret = new Array();
+            if( separator.length == 0 ){
+                ret.push( s );
+                return ret;
+            }
+            var remain = s;
+            var len = separator.length;
+            var index = remain.indexOf( separator[0] );
+            var i = 1;
             while( index < 0 && i < separator.length ){
                 index = remain.indexOf( separator[i] );
             }
+            var added_count = 0;
+            while( index >= 0 ){
+                if( !ignore_empty_entries || (ignore_empty_entries && index > 0) ){
+                    if( added_count + 1 == count ){
+                        break;
+                    }else{
+                        ret.push( remain.substring( 0, index ) );
+                    }
+                    added_count++;
+                }
+                remain = remain.substring( index + len );
+                index = remain.indexOf( separator[0] );
+                i = 1;
+                while( index < 0 && i < separator.length ){
+                    index = remain.indexOf( separator[i] );
+                }
+            }
+            if( !ignore_empty_entries || (ignore_empty_entries && remain.length() > 0) ){
+                ret.push( remain );
+            }
+            return ret;
+        }else if( typeof( arguments[1] ) == "string" ){
+            // splitString( String s, String separator );
+            var s = arguments[0];
+            var separator = arguments[1];
+            return s.split( separator );
         }
-        if( !ignore_empty_entries || (ignore_empty_entries && remain.length() > 0) ){
-            ret.add( remain );
-        }
-        return ret.toArray( new String[]{} );
-#else
-        return s.Split( separator, count, (ignore_empty_entries ? StringSplitOptions.RemoveEmptyEntries : StringSplitOptions.None) );
-#endif
-    }
+    };
 
-    public static int getStringLength( String s ) {
+    /*public static int getStringLength( String s ) {
         if ( s == null ) {
             return 0;
         } else {
