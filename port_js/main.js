@@ -102,6 +102,7 @@ function handleFile( file ){
 
     reader.onloadend = function(){
         var dat = reader.result;
+        alert( dat );
         var search = "data:application/octet-stream;base64,";
         if( dat.indexOf( search ) == 0 ){
             var b64 = dat.substring( search.length );
@@ -152,11 +153,7 @@ function handleFile( file ){
                                         buffer.shift();
                                     }
 
-                                    var line = "";
-                                    for( var k = 0; k < cpy.length; k++ ){
-                                        line += String.fromCharCode( cpy[k] );
-                                    }// PortUtil.getDecodedString( encoding, cpy );
-                                    //sw.writeLine( line );
+                                    var line = org.kbinani.Cp932.convertToUTF8( cpy );
                                     sw += line + "\n";
 //alert( "line=" + line );
                                     buffer.shift();
@@ -169,8 +166,8 @@ function handleFile( file ){
                                     }
                                 }
                             } else {
-                                for ( var j = 0; j < item.data.Length - 1; j++ ) {
-                                    buffer.add( item.data[j + 1] );
+                                for ( var j = 0; j < item.data.length - 1; j++ ) {
+                                    buffer.push( item.data[j + 1] );
                                 }
                                 var c = buffer.length;
                                 var d = new Array( c );// byte[c];
