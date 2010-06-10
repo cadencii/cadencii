@@ -17,6 +17,52 @@ if( org.kbinani.vsq == undefined ) org.kbinani.vsq = {};
 if( org.kbinani.vsq.NoteHeadHandle == undefined ){
 
     org.kbinani.vsq.NoteHeadHandle = function(){
+        // copy of IconParameter.ctor =>
+        /// <summary>
+        /// アイコン設定の種類
+        /// [ArticulationType]
+        /// </summary>
+        this.articulation = org.kbinani.vsq.ArticulationType.Dynaff;
+        /// <summary>
+        /// アイコンのボタンに使用される画像ファイルへの相対パス
+        /// </summary>
+        this.button = "";
+        /// <summary>
+        /// キャプション
+        /// </summary>
+        this.caption = "";
+
+        /// <summary>
+        /// ゲートタイム長さ
+        /// </summary>
+        this.length = 0;
+        /// <summary>
+        /// ビブラート深さの開始値
+        /// </summary>
+        this.startDepth = 64;
+        /// <summary>
+        /// ビブラート深さの終了値
+        /// </summary>
+        this.endDepth = 64;
+        /// <summary>
+        /// ビブラート速さの開始値
+        /// </summary>
+        this.startRate = 64;
+        /// <summary>
+        /// ビブラート速さの終了値
+        /// </summary>
+        this.endRate = 64;
+        this.startDyn = 64;
+        this.endDyn = 64;
+        this.duration = 1;
+        this.depth = 64;
+        this.dynBP = null;
+        this.depthBP = null;
+        this.rateBP = null;
+        this.buttonImageFullPath = "";
+        // <=
+
+        this.articulation = org.kbinani.vsq.ArticulationType.NoteAttack;
         this.Index = 0;
         this.IconID = "";
         this.IDS = "";
