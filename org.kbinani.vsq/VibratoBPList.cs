@@ -47,7 +47,7 @@ namespace org.kbinani.vsq {
             }
             String[] bpx = PortUtil.splitString( strBPX, ',' );
             String[] bpy= PortUtil.splitString( strBPY, ',' );
-            int actNum = Math.Min( num, Math.Min( PortUtil.getStringLength( strBPX ), PortUtil.getStringLength( strBPY ) ) );
+            int actNum = Math.Min( num, Math.Min( bpx.Length, bpy.Length ) );
             if ( actNum > 0 ) {
                 float[] x = new float[actNum];
                 int[] y = new int[actNum];

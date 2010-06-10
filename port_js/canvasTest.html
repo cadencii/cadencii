@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<script type="text/javascript">
+var timer;
+var scr;
+var loadTime;
+var pxPerSec = 5.0;
+var frameCount = 0;
+var width = 0, height = 0;
+
+function window_load(){
+    var d = new Date();
+    loadTime = d.getTime();
+    //alert( "window_load; loadTime=" + loadTime );
+    scr = document.getElementById( "scr" );
+    timer = setInterval( timer_tick, 0 );
+    window_onresize();
+}
+
+function timer_tick(){
+    var context = scr.getContext( '2d' );
+    context.clearRect( 0, 0, width, height );
+    context.fillStyle = "rgb(0, 0, 0)";
+    var d = new Date();
+    var sec = (d.getTime() - loadTime) / 1000.0;
+    var x = sec * pxPerSec;
+    frameCount++;
+    context.fillRect( x, 100, 100, 100 );
+    context.font = "12px 'Arial'";
+    context.fillStyle = "#000000";
+    var f = Math.floor( (frameCount / sec) * 1000 ) / 1000;
+    context.fillText( "frame: " + frameCount, 0, 24 );
+    context.fillText( "time: " + sec, 0, 48 );
+    context.fillText( "frameRate: " + f, 0, 72 );
+}
+
+function window_onresize(){
+	width = window.innerWidth;
+	height = window.innerHeight;
+    scr.setAttribute( "width", width );
+    scr.setAttribute( "height", height );
+}
+
+window.addEventListener( "load", window_load, true );
+window.addEventListener( "resize", window_onresize, true );
+</script>
+</head>
+<body>
+<canvas id="scr" width="0" height="0" style="position: absolute; overlap: hidden; top: 0px; left: 0px;"></canvas>
+</body>
+</html>

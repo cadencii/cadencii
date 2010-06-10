@@ -306,7 +306,7 @@ if( org.kbinani.vsq.Lyric == undefined ){
                 result += ",0";
             }
             return result;
-        }
-    }
+        },
+    };
 
 }
