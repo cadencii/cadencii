@@ -239,7 +239,7 @@ namespace org.kbinani.vsq {
                     m_type = VsqHandleType.NoteHeadHandle;
                     Duration = PortUtil.parseInt( spl[1] );
                 } else if ( search.Equals( "Depth" ) ) {
-                    Duration = PortUtil.parseInt( spl[1] );
+                    Depth = PortUtil.parseInt( spl[1] );
                 } else if ( search.Equals( "StartDyn" ) ) {
                     m_type = VsqHandleType.DynamicsHandle;
                     StartDyn = PortUtil.parseInt( spl[1] );
