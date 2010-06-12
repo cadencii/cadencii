@@ -37,7 +37,7 @@ if( org.kbinani.vsq.VsqBPList == undefined ){
         this.m_pos = -1;
     };
 
-    org.kbianni.vsq.VsqBPList.KeyClockIterator.prototype = {
+    org.kbinani.vsq.VsqBPList.KeyClockIterator.prototype = {
         /**
          * @param list [VsqBPList]
          * @return [void]
@@ -283,7 +283,7 @@ if( org.kbinani.vsq.VsqBPList == undefined ){
          */
         remove : function( clock ) {
             _ensureBufferLength( this.length );
-            var index = find( clock );
+            var index = _find( clock );
             removeElementAt( index );
         },
 
@@ -307,7 +307,7 @@ if( org.kbinani.vsq.VsqBPList == undefined ){
          */
         isContainsKey : function( clock ) {
             _ensureBufferLength( this.length );
-            return (find( clock ) >= 0);
+            return (_find( clock ) >= 0);
         },
 
         /**
@@ -322,7 +322,7 @@ if( org.kbinani.vsq.VsqBPList == undefined ){
          */
         move : function( clock, new_clock, new_value ) {
             _ensureBufferLength( this.length );
-            var index = find( clock );
+            var index = _find( clock );
             if ( index < 0 ) {
                 return;
             }
@@ -332,7 +332,7 @@ if( org.kbinani.vsq.VsqBPList == undefined ){
                 this.items[i] = this.items[i + 1];
             }
             this.length--;
-            var index_new = find( new_clock );
+            var index_new = _find( new_clock );
             if ( index_new >= 0 ) {
                 item.value = new_value;
                 this.items[index_new] = item;
@@ -342,7 +342,7 @@ if( org.kbinani.vsq.VsqBPList == undefined ){
                 _ensureBufferLength( this.length );
                 this.clocks[this.length - 1] = new_clock;
                 org.kbinani.PortUtil.sort( clocks, 0, length );
-                index_new = find( new_clock );
+                index_new = _find( new_clock );
                 item.value = new_value;
                 for ( var i = this.length - 1; i > index_new; i-- ) {
                     this.items[i] = this.items[i - 1];
@@ -527,26 +527,22 @@ if( org.kbinani.vsq.VsqBPList == undefined ){
             printCor( writer, start, header );
         }*/
 
-        /// <summary>
-        /// テキストファイルからデータ点を読込み、現在のリストに追加します
-        /// </summary>
-        /// <param name="reader"></param>
-        /// <returns></returns>
-        public String appendFromText( TextStream reader ) {
-#if DEBUG
-            PortUtil.println( "VsqBPList#appendFromText; start" );
-            double started = PortUtil.getCurrentTime();
-            int count = 0;
-#endif
-            int clock = 0;
-            int value = 0;
-            int minus = 1;
-            int mode = 0; // 0: clockを読んでいる, 1: valueを読んでいる
+        /**
+         * テキストファイルからデータ点を読込み、現在のリストに追加します
+         *
+         * @param reader [TextStream]
+         * @return [string]
+         */
+        appendFromText : function( reader ) {
+            var clock = 0;
+            var value = 0;
+            var minus = 1;
+            var mode = 0; // 0: clockを読んでいる, 1: valueを読んでいる
             while ( reader.ready() ) {
-                char ch = reader.get();
+                var ch = reader.get();
                 if ( ch == '\n' ) {
                     if ( mode == 1 ) {
-                        addWithoutSort( clock, value * minus );
+                        _addWithoutSort( clock, value * minus );
                         mode = 0;
                         clock = 0;
                         value = 0;
@@ -556,7 +552,7 @@ if( org.kbinani.vsq.VsqBPList == undefined ){
                 }
                 if ( ch == '[' ) {
                     if ( mode == 1 ) {
-                        addWithoutSort( clock, value * minus );
+                        _addWithoutSort( clock, value * minus );
                         mode = 0;
                         clock = 0;
                         value = 0;
@@ -573,31 +569,29 @@ if( org.kbinani.vsq.VsqBPList == undefined ){
                     minus = -1;
                     continue;
                 }
-#if JAVA
-                if( Character.isDigit( ch ) ){
-#else
-                if ( Char.IsNumber( ch ) ) {
-#endif
-                    int num = 0;
-                    if ( ch == '1' ) {
-                        num = 1;
-                    } else if ( ch == '2' ) {
-                        num = 2;
-                    } else if ( ch == '3' ) {
-                        num = 3;
-                    } else if ( ch == '4' ) {
-                        num = 4;
-                    } else if ( ch == '5' ) {
-                        num = 5;
-                    } else if ( ch == '6' ) {
-                        num = 6;
-                    } else if ( ch == '7' ) {
-                        num = 7;
-                    } else if ( ch == '8' ) {
-                        num = 8;
-                    } else if ( ch == '9' ) {
-                        num = 9;
-                    }
+                var num = -1;
+                if ( ch == '0' ) {
+                    num = 0;
+                } else if ( ch == '1' ) {
+                    num = 1;
+                } else if ( ch == '2' ) {
+                    num = 2;
+                } else if ( ch == '3' ) {
+                    num = 3;
+                } else if ( ch == '4' ) {
+                    num = 4;
+                } else if ( ch == '5' ) {
+                    num = 5;
+                } else if ( ch == '6' ) {
+                    num = 6;
+                } else if ( ch == '7' ) {
+                    num = 7;
+                } else if ( ch == '8' ) {
+                    num = 8;
+                } else if ( ch == '9' ) {
+                    num = 9;
+                }
+                if( num >= 0 ){
                     if ( mode == 0 ) {
                         clock = clock * 10 + num;
                     } else {
@@ -606,149 +600,153 @@ if( org.kbinani.vsq.VsqBPList == undefined ){
                 }
             }
             return reader.readLine();
-        }
+        },
 
-        public int size() {
-            return length;
-        }
+        /**
+         * @return [int]
+         */
+        size : function() {
+            return this.length;
+        },
 
-        public Iterator<Integer> keyClockIterator() {
-            return new KeyClockIterator( this );
-        }
+        /**
+         * @return [Iterator<int>]
+         */
+        keyClockIterator : function() {
+            return new org.kbinani.vsq.VsqBPList.KeyClockIterator( this );
+        },
 
-        private int find( int value ) {
-#if JAVA
-            // caution: length of array 'clocks' is equal to or larger than the value of 'length' field.
-            // 配列clocksの長さは、フィールドlengthの値と等しいか、大きい。
-#if JAVA_1_5
-            for( int i = 0; i < length; i++ ){
-                if( clocks[i] == value ){
+        /**
+         * @param value [int]
+         * @return [int]
+         */
+        _find : function( value ) {
+            for( var i = 0; i < this.length; i++ ){
+                if( this.clocks[i] == value ){
                     return i;
                 }
             }
             return -1;
-#else
-            return Arrays.binarySearch( clocks, 0, length, value );
-#endif
-#else
-            return Array.BinarySearch( clocks, 0, length, value );
-#endif
-            //return Array.IndexOf( clocks, value, 0, length );
-        }
+        },
 
-        /// <summary>
-        /// 並べ替え，既存の値との重複チェックを行わず，リストの末尾にデータ点を追加する
-        /// </summary>
-        /// <param name="clock"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        private void addWithoutSort( int clock, int value ) {
-            ensureBufferLength( length + 1 );
-            clocks[length] = clock;
-            maxId++;
-#if JAVA
-            items[length] = new VsqBPPair( value, maxId );
-#else
-            items[length].value = value;
-            items[length].id = maxId;
-#endif
-            length++;
-        }
+        /**
+         * 並べ替え，既存の値との重複チェックを行わず，リストの末尾にデータ点を追加する
+         *
+         * @param clock [int]
+         * @param value [int]
+         * @return [void]
+         */
+        _addWithoutSort : function( clock, value ) {
+            _ensureBufferLength( this.length + 1 );
+            this.clocks[length] = clock;
+            this.maxId++;
+            this.items[this.length].value = value;
+            this.items[this.length].id = maxId;
+            this.length++;
+        },
 
-        public long add( int clock, int value ) {
-            ensureBufferLength( length );
-            int index = find( clock );
+        /**
+         * @param clock [int]
+         * @param value [int]
+         * @return [long]
+         */
+        add : function( clock, value ) {
+            _ensureBufferLength( length );
+            var index = _find( clock );
             if ( index >= 0 ) {
-                VsqBPPair v = items[index];
+                var v = this.items[index];
                 v.value = value;
-                items[index] = v;
+                this.items[index] = v;
                 return v.id;
             } else {
-                length++;
-                ensureBufferLength( length );
-                clocks[length - 1] = clock;
-#if JAVA
-                Arrays.sort( clocks, 0, length );
-#else
-                Array.Sort( clocks, 0, length );
-#endif
-                index = find( clock );
-                maxId++;
-                for ( int i = length - 1; i > index; i-- ) {
-                    items[i] = items[i - 1];
+                this.length++;
+                _ensureBufferLength( this.length );
+                this.clocks[this.length - 1] = clock;
+                org.kbinani.PortUtil.sort( this.clocks, 0, this.length );
+                index = _find( clock );
+                this.maxId++;
+                for ( var i = this.length - 1; i > index; i-- ) {
+                    this.items[i] = this.items[i - 1];
                 }
-                items[index] = new VsqBPPair( value, maxId );
-                return maxId;
+                this.items[index] = new org.kbinani.vsq.VsqBPPair( value, this.maxId );
+                return this.maxId;
             }
-        }
+        },
 
-        public void addWithID( int clock, int value, long id ) {
-            ensureBufferLength( length );
-            int index = find( clock );
+        /**
+         * @param clock [int]
+         * @param value [int]
+         * @param id [long]
+         * @return [void]
+         */
+        addWithID : function( clock, value, id ) {
+            _ensureBufferLength( this.length );
+            var index = _find( clock );
             if ( index >= 0 ) {
-                VsqBPPair v = items[index];
+                var v = this.items[index];
                 v.value = value;
                 v.id = id;
-                items[index] = v;
+                this.items[index] = v;
             } else {
-                length++;
-                ensureBufferLength( length );
-                clocks[length - 1] = clock;
-#if JAVA
-                Arrays.sort( clocks, 0, length );
-#else
-                Array.Sort( clocks, 0, length );
-#endif
-                index = find( clock );
-                for ( int i = length - 1; i > index; i-- ) {
-                    items[i] = items[i - 1];
+                this.length++;
+                _ensureBufferLength( this.length );
+                this.clocks[this.length - 1] = clock;
+                org.kbinani.PortUtil.sort( this.clocks, 0, this.length );
+                index = _find( clock );
+                for ( var i = this.length - 1; i > index; i-- ) {
+                    this.items[i] = this.items[i - 1];
                 }
-                items[index] = new VsqBPPair( value, id );
-                maxId = Math.Max( maxId, id );
+                this.items[index] = new org.kbinani.vsq.VsqBPPair( value, id );
+                this.maxId = Math.max( this.maxId, id );
             }
-        }
+        },
 
-        public void removeWithID( long id ) {
-            for ( int i = 0; i < length; i++ ) {
-                if ( items[i].id == id ) {
-                    for ( int j = i; j < length - 1; j++ ) {
-                        items[j] = items[j + 1];
-                        clocks[j] = clocks[j + 1];
+        /**
+         * @param id [long]
+         * @return [void]
+         */
+        removeWithID : function( id ) {
+            for ( var i = 0; i < this.length; i++ ) {
+                if ( this.items[i].id == id ) {
+                    for ( var j = i; j < this.length - 1; j++ ) {
+                        this.items[j] = this.items[j + 1];
+                        this.clocks[j] = this.clocks[j + 1];
                     }
-                    length--;
+                    this.length--;
                     break;
                 }
             }
-        }
+        },
 
-        public int getValue( int clock ) {
-            ensureBufferLength( length );
-            int index = find( clock );
+        /**
+         * @param clock [int]
+         * @return [int]
+         */
+        getValue : function( clock ) {
+            _ensureBufferLength( this.length );
+            var index = _find( clock );
             if ( index >= 0 ) {
-                return items[index].value;
+                return this.items[index].value;
             } else {
-                if ( length <= 0 ) {
-                    return defaultValue;
+                if ( this.length <= 0 ) {
+                    return this.defaultValue;
                 } else {
-                    int draft = -1;
-                    for ( int i = 0; i < length; i++ ) {
-                        int c = clocks[i];
+                    var draft = -1;
+                    for ( var i = 0; i < this.length; i++ ) {
+                        var c = this.clocks[i];
                         if ( clock < c ) {
                             break;
                         }
                         draft = i;
                     }
                     if ( draft < 0 ) {
-                        return defaultValue;
+                        return this.defaultValue;
                     } else {
-                        return items[draft].value;
+                        return this.items[draft].value;
                     }
                 }
             }
-        }
-    }
+        },
+    };
 
-#if !JAVA
 }
-#endif
-
