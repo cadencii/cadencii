@@ -49,45 +49,48 @@ if( org.kbinani.vsq.VsqCommon == undefined ){
          * PlayModeがOff(-1)にされる直前に，PlayAfterSynthかPlayWithSynthのどちらが指定されていたかを記憶しておく．
          */
         this.LastPlayMode = org.kbinani.vsq.PlayMode.PlayWithSynth;
-
-        if( arguments.length == 2 ){
-            var text_stream = arguments[0];
-            var last_line = arguments[1];
-            this.Version = "";
-            this.Name = "";
-            this.Color = "0,0,0";
-            this.DynamicsMode = 0;
-            this.PlayMode = 1;
-            last_line.value = sr.readLine();
-            while ( last_line.value.charAt( 0 ) != "[" ) {
-                var spl = last_line.value.split( "=" );
-                var search = spl[0];
-                if ( search == "Version" ) {
-                    this.Version = spl[1];
-                } else if ( search == "Name" ) {
-                    this.Name = spl[1];
-                } else if ( search == "Color" ) {
-                    this.Color = spl[1];
-                } else if ( search == "DynamicsMode" ) {
-                    this.DynamicsMode = parseInt( spl[1], 10 );
-                } else if ( search == "PlayMode" ) {
-                    this.PlayMode = parseInt( spl[1], 10 );
-                }
-                if ( !sr.ready() ) {
-                    break;
-                }
-                last_line.value = sr.readLine();
-            }
-        }else if( arguments.length = 6 ){
-            this.Version = "DSB301";
-            this.Name = arguments[0];
-            this.Color = arguments[1] + "," + arguments[2] + "," + arguments[3];
-            this.DynamicsMode = arguments[4];
-            this.PlayMode = arguments[5];
-        }
     };
 
     org.kbinani.vsq.VsqCommon.prototype = {
+        init : function(){
+            if( arguments.length == 2 ){
+                var text_stream = arguments[0];
+                var last_line = arguments[1];
+                this.Version = "";
+                this.Name = "";
+                this.Color = "0,0,0";
+                this.DynamicsMode = 0;
+                this.PlayMode = 1;
+                last_line.value = sr.readLine();
+                while ( last_line.value.charAt( 0 ) != "[" ) {
+                    var spl = last_line.value.split( "=" );
+                    var search = spl[0];
+                    if ( search == "Version" ) {
+                        this.Version = spl[1];
+                    } else if ( search == "Name" ) {
+                        this.Name = spl[1];
+                    } else if ( search == "Color" ) {
+                        this.Color = spl[1];
+                    } else if ( search == "DynamicsMode" ) {
+                        this.DynamicsMode = parseInt( spl[1], 10 );
+                    } else if ( search == "PlayMode" ) {
+                        this.PlayMode = parseInt( spl[1], 10 );
+                    }
+                    if ( !sr.ready() ) {
+                        break;
+                    }
+                    last_line.value = sr.readLine();
+                }
+            }else if( arguments.length = 6 ){
+                this.Version = "DSB301";
+                this.Name = arguments[0];
+                this.Color = arguments[1] + "," + arguments[2] + "," + arguments[3];
+                this.DynamicsMode = arguments[4];
+                this.PlayMode = arguments[5];
+            }
+            return this;
+        },
+
         clone : function() {
             var spl = this.Color.split( "," );
             var r = parseInt( spl[0], 10 );

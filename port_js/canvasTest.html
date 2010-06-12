@@ -16,6 +16,21 @@ function window_load(){
     scr = document.getElementById( "scr" );
     timer = setInterval( timer_tick, 0 );
     window_onresize();
+    var hashtable = {};
+    hashtable[1] = "1";
+    hashtable[4] = "4";
+    var value1 = hashtable[1];
+    var value2 = hashtable[2];
+    if( value2 == undefined ){
+    	alert( "value2 is undefined" );
+   	}else{
+   		alert( "value2 is NOT undefined" );
+   	}
+   	if( value1 != undefined ){
+   		alert( "value1 is NOT undefined" );
+   	}else{
+   		alert( "value1 is undefined" );
+	}
 }
 
 function timer_tick(){

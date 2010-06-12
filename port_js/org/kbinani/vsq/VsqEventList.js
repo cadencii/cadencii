@@ -88,12 +88,10 @@ if( org.kbinani.vsq.VsqEventList == undefined ){
         /**
          * @return [void]
          */
-        public void clear() {
+        clear : function() {
             var c = this.Events.length;
-            for( var i = 0; i < c; i++ ){
-                this.Events.pop();
-                this._m_ids.pop();
-            }
+            this.Events.splice( 0, c );
+            this._m_ids.splice( 0, c );
         },
 
         /**
@@ -162,51 +160,55 @@ if( org.kbinani.vsq.VsqEventList == undefined ){
          */
         _getNextId : function( next ) {
             updateIDList();
-            var index = -1;
-            Vector<Integer> current = new Vector<Integer>( m_ids );
-            int nfound = 0;
-            while ( true ) {
-                index++;
-                if ( !current.contains( index ) ) {
-                    nfound++;
-                    if ( nfound == next + 1 ) {
-                        return index;
-                    } else {
-                        current.add( index );
-                    }
-                }
+            var max = -1;
+            for( var i = 0; i < this._m_ids.length; i++ ){
+                max = Math.max( max, this._m_ids[i] );
             }
-        }
+            return max + 1 + next;
+        },
 
-        public int getCount() {
-            return Events.size();
-        }
+        /**
+         * @return [int]
+         */
+        getCount : function() {
+            return this.Events.length;
+        },
 
-        public VsqEvent getElement( int index ) {
-            return Events.get( index );
-        }
+        /**
+         * @param index [int]
+         * @return [VsqEvent]
+         */
+        getElement : function( index ) {
+            return this.Events[index];
+        },
 
-        public void setElement( int index, VsqEvent value ) {
-            value.InternalID = Events.get( index ).InternalID;
-            Events.set( index, value );
-        }
+        /**
+         * @param index [int]
+         * @param value [VsqEvent]
+         * @return [void]
+         */
+        setElement : function( index, value ) {
+            value.InternalID = this.Events[index].InternalID;
+            this.Events[index] = value;
+        },
 
-        public void updateIDList() {
-            if ( m_ids.size() != Events.size() ) {
-                m_ids.clear();
-                int count = Events.size();
-                for ( int i = 0; i < count; i++ ) {
-                    m_ids.add( Events.get( i ).InternalID );
+        /**
+         * @return [void]
+         */
+        updateIDList : function() {
+            if ( this._m_ids.length != this.Events.length ) {
+                this._m_ids.splice( 0, this.m_ids.length );
+                var count = this.Events.length;
+                for ( var i = 0; i < count; i++ ) {
+                    this._m_ids.push( this.Events[i].InternalID );
                 }
             } else {
-                int count = Events.size();
-                for ( int i = 0; i < count; i++ ) {
-                    m_ids.set( i, Events.get( i ).InternalID );
+                var count = this.Events.length;
+                for ( var i = 0; i < count; i++ ) {
+                    this._m_ids[i] = this.Events[i].InternalID;
                 }
             }
-        }
-    }
+        },
+    };
 
-#if !JAVA
 }
-#endif

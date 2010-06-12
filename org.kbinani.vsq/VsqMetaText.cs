@@ -935,7 +935,7 @@ namespace org.kbinani.vsq {
                         String[] spl2 = PortUtil.splitString( last_line.value, new char[] { '=' } );
                         int clock = PortUtil.parseInt( spl2[0] );
                         int id_number = -1;
-                        if ( spl2[1] != "EOS" ) {
+                        if ( !spl2[1].Equals( "EOS" ) ) {
                             String[] ids = PortUtil.splitString( spl2[1], ',' );
                             for ( int i = 0; i < ids.Length; i++ ) {
                                 String[] spl3 = PortUtil.splitString( ids[i], new char[] { '#' } );
