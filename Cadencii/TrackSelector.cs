@@ -1145,7 +1145,7 @@ namespace org.kbinani.cadencii {
                                 Color dash = new Color( 0, 0, 0, 128 );
                                 Stroke nrml_stroke = new BasicStroke();
                                 Stroke dash_stroke = new BasicStroke( 1.0f, 0, 0, 10.0f, new float[] { 2.0f, 2.0f }, 0.0f );
-                                VsqBPList pbs = vsq_track.getCurve( CurveType.PBS.getName() );
+                                VsqBPList pbs = vsq_track.MetaText.PBS;
                                 pbs_at_mouse = pbs.getValue( clock_at_mouse );
                                 int c = pbs.size();
                                 int premeasure = vsq.getPreMeasureClocks();

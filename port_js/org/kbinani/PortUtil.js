@@ -20,6 +20,31 @@ org.kbinani.PortUtil.s_shift = false;
 org.kbinani.PortUtil.s_alt = false;
 org.kbinani.PortUtil.s_instance = null;
 
+org.kbinani.PortUtil.castToInt = function( value ){
+    if( value >= 0.0 ){
+        return Math.floor( value );
+    }else{
+        return Math.ceil( value );
+    }
+};
+
+org.kbinani.PortUtil.arrayIndexOf = function( array, search ){
+    if( search['equals'] == undefined ){
+        for( var i = 0; i < array.length; i++ ){
+            if( search == array[i] ){
+                return i;
+            }
+        }
+    }else{
+        for( var i = 0; i < array.length; i++ ){
+            if( search.equals( array[i] ) ){
+                return i;
+            }
+        }
+    }
+    return -1;
+};
+
 /**
  * overload1
  * sort( array )

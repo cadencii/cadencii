@@ -554,8 +554,8 @@ namespace org.kbinani.cadencii {
                         lock ( AppManager.drawObjects ) { //ここでロックを取得しないと、描画中にUpdateDrawObjectのサイズが0になる可能性がある
                             if ( selected - 1 < AppManager.drawObjects.size() ) {
                                 Vector<DrawObject> target_list = AppManager.drawObjects.get( selected - 1 );
-                                VsqBPList pit = vsq_track.getCurve( "pit" );
-                                VsqBPList pbs = vsq_track.getCurve( "pbs" );
+                                VsqBPList pit = vsq_track.MetaText.PIT;
+                                VsqBPList pbs = vsq_track.MetaText.PBS;
 
                                 int c = target_list.size();
                                 for ( int j = j_start; j < c; j++ ) {
@@ -1083,7 +1083,7 @@ namespace org.kbinani.cadencii {
                     //g.setColor( new Color( 255, 255, 255, 64 ) );
                     //g.fillRect( key_width, 0, width - key_width, height );
 
-                    VsqBPList pbs = vsq_track.getCurve( "pbs" );
+                    VsqBPList pbs = vsq_track.MetaText.PBS;
                     if ( pbs == null ) {
                         pbs = new VsqBPList( CurveType.PBS.getName(), 
                                              CurveType.PBS.getDefault(), 
