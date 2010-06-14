@@ -54,7 +54,7 @@ if( org.kbinani.ByteArrayInputStream == undefined ){
                 if( c < 0 ){
                     return i;
                 }
-                byte_array[i] = c;
+                byte_array[i + offset] = c;
             }
             return i;
         },

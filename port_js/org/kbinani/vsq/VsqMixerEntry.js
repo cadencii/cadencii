@@ -34,6 +34,14 @@ if( org.kbinani.vsq.VsqMixerEntry == undefined ){
     };
 
     org.kbinani.vsq.VsqMixerEntry.prototype = {
+        _init_4 : function( feder, panpot, mute, solo ){
+            this.Feder = feder;
+            this.Panpot = panpot;
+            this.Mute = mute;
+            this.Solo = solo;
+            return this;
+        },
+
         clone : function() {
             var res = new org.kbinani.vsq.VsqMixerEntry( this.Feder, this.Panpot, this.Mute, this.Solo );
             return res;

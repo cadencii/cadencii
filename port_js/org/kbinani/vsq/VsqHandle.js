@@ -45,6 +45,9 @@ if( org.kbinani.vsq.VsqHandle == undefined ){
         /// 歌詞・発音記号列の前後にクォーテーションマークを付けるかどうか
         /// </summary>
         this.addQuotationMark = true;
+        if( arguments.length == 3 ){
+            this._init_3( arguments[0], arguments[1], arguments[2] );
+        }
     };
 
     /**
@@ -181,7 +184,7 @@ if( org.kbinani.vsq.VsqHandle == undefined ){
          * @param index [int]
          * @param last_line [ByRef<string>]
          */
-        init : function( sr, index, last_line ) {
+        _init_3 : function( sr, index, last_line ) {
             this.Index = index;
             var spl;
             var spl2;

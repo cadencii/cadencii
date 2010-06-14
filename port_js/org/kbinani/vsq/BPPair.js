@@ -16,12 +16,21 @@ if( org.kbinani == undefined ) org.kbinani = {};
 if( org.kbinani.vsq == undefined ) org.kbinani.vsq = {};
 if( org.kbinani.vsq.BPPair == undefined ){
 
-	org.kbinani.vsq.BPPair = function( clock, value ){
-	    this.clock = clock;
-	    this.value = value;
-	}
+	org.kbinani.vsq.BPPair = function(){
+	    this.clock = 0;
+	    this.value = 0;
+        if( arguments.length == 2 ){
+            this._init_2( arguments[0], arguments[1] );
+        }
+	};
 
     org.kbinani.vsq.BPPair.prototype = {
+        _init_2 : function( clock, value ){
+            this.clock = clock;
+            this.value = value;
+            return this;
+        },
+
 	    compareTo : function( item ){
 	        if ( this.clock > item.clock ) {
 	            return 1;

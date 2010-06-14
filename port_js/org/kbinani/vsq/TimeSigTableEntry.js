@@ -33,21 +33,20 @@ if( org.kbinani.vsq.TimeSigTableEntry == undefined ){
         /// 何小節目か
         /// </summary>
         this.BarCount = 0;
+        if( arguments.length == 4 ){
+            this._init_4( arguments[0], arguments[1], arguments[2], arguments[3] );
+        }
     };
 
     org.kbinani.vsq.TimeSigTableEntry.prototype = {
         /**
-         * overload1
-         * @return [TimeSigTableEntry]
-         *
-         * overload2
          * @param clock [int]
          * @param numerator [int]
          * @param denominator [int]
          * @param bar_count [int]
          * @return [TimeSigTableEntry]
          */
-        init : function(){
+        _init_4 : function(){
             if( arguments.length == 4 ){
                 this.Clock = arguments[0];
                 this.Numerator = arguments[1];
@@ -68,7 +67,7 @@ if( org.kbinani.vsq.TimeSigTableEntry == undefined ){
          * @return [object]
          */
         clone : function() {
-            return new org.kbinani.vsq.TimeSigTableEntry().init( this.Clock, this.Numerator, this.Denominator, this.BarCount );
+            return new org.kbinani.vsq.TimeSigTableEntry( this.Clock, this.Numerator, this.Denominator, this.BarCount );
         },
 
         /**

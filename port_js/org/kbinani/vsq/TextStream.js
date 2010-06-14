@@ -95,7 +95,7 @@ if( org.kbinani.vsq.TextStream == undefined ){
             var len = str.length;
             var newSize = this.length + len;
             var offset = length;
-            _ensureCapacity( newSize );
+            this._ensureCapacity( newSize );
             for ( var i = 0; i < len; i++ ) {
                 this.array[offset + i] = str.charAt( i );
             }
@@ -110,7 +110,7 @@ if( org.kbinani.vsq.TextStream == undefined ){
             var len = str.length;
             var newSize = length + len + 1;
             var offset = length;
-            _ensureCapacity( newSize );
+            this._ensureCapacity( newSize );
             for ( var i = 0; i < len; i++ ) {
                 this.array[offset + i] = str.charAt( i );
             }

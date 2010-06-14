@@ -27,7 +27,7 @@ if( org.kbinani.vsq.VsqEventList == undefined ){
         /**
          * [Vector<int>]
          */
-        this.m_ids = new Array();
+        this._m_ids = new Array();
     };
 
     org.kbinani.vsq.VsqEventList.prototype = {
@@ -81,7 +81,7 @@ if( org.kbinani.vsq.VsqEventList == undefined ){
             //lock ( this )
             {
                 this.Events.sort( org.kbinani.vsq.VsqEvent.compare );
-                updateIDList();
+                this.updateIDList();
             }
         },
 
@@ -197,7 +197,7 @@ if( org.kbinani.vsq.VsqEventList == undefined ){
          */
         updateIDList : function() {
             if ( this._m_ids.length != this.Events.length ) {
-                this._m_ids.splice( 0, this.m_ids.length );
+                this._m_ids.splice( 0, this._m_ids.length );
                 var count = this.Events.length;
                 for ( var i = 0; i < count; i++ ) {
                     this._m_ids.push( this.Events[i].InternalID );

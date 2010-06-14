@@ -70,89 +70,86 @@ if( org.kbinani.vsq.VsqID == undefined ){
 
     org.kbinani.vsq.VsqID.prototype = {
         /**
-         * ovarload1
          * @param value [int]
          * @return [VsqID]
-         *
-         * overload2
+         */
+        _init_1 : function( value ){
+            this.value = value;
+        },
+
+        /**
          * テキストファイルからのコンストラクタ
          * @param sr [TextStream] 読み込み対象
          * @param value [int] 
          * @param last_line [ByRef<string>] 読み込んだ最後の行が返されます
          * @return [VsqID]
          */
-        init : function(){
-            if( arguments.length == 1 ){
-                var value = arguments[0];
-                this.value = value;
-            }else if( arguments.length == 3 ){
-                var sr = arguments[0];
-                var value = arguments[1];
-                var last_line = arguments[2];
-                var spl;
-                this.value = value;
-                this.type = VsqIDType.Unknown;
-                this.IconHandle_index = -2;
-                this.LyricHandle_index = -1;
-                this.VibratoHandle_index = -1;
-                this.NoteHeadHandle_index = -1;
-                this.setLength( 0 );
-                this.Note = 0;
-                this.Dynamics = 64;
-                this.PMBendDepth = 8;
-                this.PMBendLength = 0;
-                this.PMbPortamentoUse = 0;
-                this.DEMdecGainRate = 50;
-                this.DEMaccent = 50;
-                this.VibratoDelay = 0;
-                last_line.value = sr.readLine();
-                while ( last_line.indexOf( "[" ) !== 0 ) {
-                    spl = last_line.value.split( '=' );
-                    var search = spl[0];
-                    if ( search == "Type" ) {
-                        if ( spl[1] == "Anote" ) {
-                            type = org.kbinani.vsq.VsqIDType.Anote;
-                        } else if ( spl[1] == "Singer" ) {
-                            type = org.kbinani.vsq.VsqIDType.Singer;
-                        } else if ( spl[1] == "Aicon" ) {
-                            type = org.kbinani.vsq.VsqIDType.Aicon;
-                        } else {
-                            type = org.kbinani.vsq.VsqIDType.Unknown;
-                        }
-                    } else if ( search == "Length" ) {
-                        this.setLength( parseInt( spl[1], 10 ) );
-                    } else if ( search == "Note#" ) {
-                        this.Note = parseInt( spl[1], 10 );
-                    } else if ( search == "Dynamics" ) {
-                        this.Dynamics = parseInt( spl[1], 10 );
-                    } else if ( search == "PMBendDepth" ) {
-                        this.PMBendDepth = parseInt( spl[1], 10 );
-                    } else if ( search == "PMBendLength" ) {
-                        this.PMBendLength = parseInt( spl[1], 10 );
-                    } else if ( search == "DEMdecGainRate" ) {
-                        this.DEMdecGainRate = parseInt( spl[1], 10 );
-                    } else if ( search ==  "DEMaccent" ) {
-                        this.DEMaccent = parseInt( spl[1], 10 );
-                    } else if ( search == "LyricHandle" ) {
-                        this.LyricHandle_index = org.kbinani.vsq.VsqHandle.handleIndexFromString( spl[1] );
-                    } else if ( search == "IconHandle" ) {
-                        this.IconHandle_index = org.kbinani.vsq.VsqHandle.handleIndexFromString( spl[1] );
-                    } else if ( search == "VibratoHandle" ) {
-                        this.VibratoHandle_index = org.kbinani.vsq.VsqHandle.handleIndexFromString( spl[1] );
-                    } else if ( search == "VibratoDelay" ) {
-                        this.VibratoDelay = parseInt( spl[1], 10 );
-                    } else if ( search == "PMbPortamentoUse" ) {
-                        this.PMbPortamentoUse = parseInt( spl[1], 10 );
-                    } else if ( search == "NoteHeadHandle" ) {
-                        this.NoteHeadHandle_index = org.kbinani.vsq.VsqHandle.handleIndexFromString( spl[1] );
+        _init_3 : function( sr, value, last_line ){
+            var sr = arguments[0];
+            var value = arguments[1];
+            var last_line = arguments[2];
+            var spl;
+            this.value = value;
+            this.type = VsqIDType.Unknown;
+            this.IconHandle_index = -2;
+            this.LyricHandle_index = -1;
+            this.VibratoHandle_index = -1;
+            this.NoteHeadHandle_index = -1;
+            this.setLength( 0 );
+            this.Note = 0;
+            this.Dynamics = 64;
+            this.PMBendDepth = 8;
+            this.PMBendLength = 0;
+            this.PMbPortamentoUse = 0;
+            this.DEMdecGainRate = 50;
+            this.DEMaccent = 50;
+            this.VibratoDelay = 0;
+            last_line.value = sr.readLine();
+            while ( last_line.indexOf( "[" ) !== 0 ) {
+                spl = last_line.value.split( '=' );
+                var search = spl[0];
+                if ( search == "Type" ) {
+                    if ( spl[1] == "Anote" ) {
+                        type = org.kbinani.vsq.VsqIDType.Anote;
+                    } else if ( spl[1] == "Singer" ) {
+                        type = org.kbinani.vsq.VsqIDType.Singer;
+                    } else if ( spl[1] == "Aicon" ) {
+                        type = org.kbinani.vsq.VsqIDType.Aicon;
+                    } else {
+                        type = org.kbinani.vsq.VsqIDType.Unknown;
                     }
-                    if ( !sr.ready() ) {
-                        break;
-                    }
-                    last_line.value = sr.readLine();
+                } else if ( search == "Length" ) {
+                    this.setLength( parseInt( spl[1], 10 ) );
+                } else if ( search == "Note#" ) {
+                    this.Note = parseInt( spl[1], 10 );
+                } else if ( search == "Dynamics" ) {
+                    this.Dynamics = parseInt( spl[1], 10 );
+                } else if ( search == "PMBendDepth" ) {
+                    this.PMBendDepth = parseInt( spl[1], 10 );
+                } else if ( search == "PMBendLength" ) {
+                    this.PMBendLength = parseInt( spl[1], 10 );
+                } else if ( search == "DEMdecGainRate" ) {
+                    this.DEMdecGainRate = parseInt( spl[1], 10 );
+                } else if ( search ==  "DEMaccent" ) {
+                    this.DEMaccent = parseInt( spl[1], 10 );
+                } else if ( search == "LyricHandle" ) {
+                    this.LyricHandle_index = org.kbinani.vsq.VsqHandle.handleIndexFromString( spl[1] );
+                } else if ( search == "IconHandle" ) {
+                    this.IconHandle_index = org.kbinani.vsq.VsqHandle.handleIndexFromString( spl[1] );
+                } else if ( search == "VibratoHandle" ) {
+                    this.VibratoHandle_index = org.kbinani.vsq.VsqHandle.handleIndexFromString( spl[1] );
+                } else if ( search == "VibratoDelay" ) {
+                    this.VibratoDelay = parseInt( spl[1], 10 );
+                } else if ( search == "PMbPortamentoUse" ) {
+                    this.PMbPortamentoUse = parseInt( spl[1], 10 );
+                } else if ( search == "NoteHeadHandle" ) {
+                    this.NoteHeadHandle_index = org.kbinani.vsq.VsqHandle.handleIndexFromString( spl[1] );
                 }
+                if ( !sr.ready() ) {
+                    break;
+                }
+                last_line.value = sr.readLine();
             }
-            return this;
         },
 
         /**
@@ -176,7 +173,7 @@ if( org.kbinani.vsq.VsqID == undefined ){
          * @return [object] このインスタンスの簡易コピー
          */
         clone : function() {
-            var result = (new org.kbinani.vsq.VsqID()).init( this.value );
+            var result = new org.kbinani.vsq.VsqID( this.value );
             result.type = this.type;
             if ( this.IconHandle != null ) {
                 result.IconHandle = this.IconHandle.clone();

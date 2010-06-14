@@ -171,7 +171,7 @@ if( org.kbinani.vsq.MidiEvent == undefined ){
             //     0xFC: ストップ
             //     0xFE: アクティブセンシング
             //     0xFF: システムリセット
-            var me = new MidiEvent(); // [MidiEvent]
+            var me = new org.kbinani.vsq.MidiEvent(); // [MidiEvent]
             me.clock = last_clock.value;
             me.firstByte = first_byte;
             me.data = new Array(); //int[0];

@@ -34,6 +34,13 @@ if( org.kbinani.vsq.VsqEvent == undefined ){
          * [UstEvent]
          */
         this.UstEvent = null;//new UstEvent();
+        if( arguments.length == 0 ){
+            this._init_0();
+        }else if( arguments.length == 1 ){
+            this._init_1( arguments[0] );
+        }else if( arguments.length == 2 ){
+            this._init_2( arguments[0], arguments[1] );
+        }
     };
 
     org.kbinani.vsq.VsqEvent.prototype = {
@@ -214,7 +221,7 @@ if( org.kbinani.vsq.VsqEvent == undefined ){
          * @return [object]
          */
         clone : function() {
-            var ret = (new VsqEvent()).init( this.Clock, this.ID.clone() );
+            var ret = new org.kbinani.vsq.VsqEvent( this.Clock, this.ID.clone() );
             ret.InternalID = this.InternalID;
             if ( this.UstEvent != null ) {
                 ret.UstEvent = this.UstEvent.clone();
@@ -241,38 +248,32 @@ if( org.kbinani.vsq.VsqEvent == undefined ){
         },
 
         /**
-         * overload1
          * @param line [string]
          * @return [VsqEvent]
-         *
-         * overload2
+         */
+        _init_1 : function( line ){
+            var spl = line.split( '=' );
+            this.Clock = parseInt( spl[0], 10 );
+            if ( spl[1] == "EOS" ) {
+                this.ID = org.kbinani.vsq.VsqID.EOS.clone();
+            }
+        },
+
+        _init_0 : function(){
+            this.Clock = 0;
+            this.ID = new org.kbinani.vsq.VsqID();
+            this.InternalID = 0;
+        },
+
+        /**
          * @param clcok [int]
          * @param id [VsqID]
          * @return [VsqEvent]
          */
-        init : function(){
-            if( arguments.length == 1 ){
-                var line = arguments[0];
-                var spl = line.split( '=' );
-                this.Clock = parseInt( spl[0], 10 );
-                if ( spl[1] == "EOS" ) {
-                    this.ID = org.kbinani.vsq.VsqID.EOS.clone();
-                }
-            }else if( arguments.length == 2 || arguments.length == 0 ){
-                var clock;
-                var id;
-                if( arguments.length == 2 ){
-                    clock = arguments[0];
-                    id = arguments[1];
-                }else{
-                    clock = 0;
-                    id = new org.kbinani.vsq.VsqID();
-                }
-                this.Clock = clock;
-                this.ID = id;
-                this.InternalID = 0;
-            }
-            return this;
+        _init_2 : function( clock, id ){
+            this.Clock = clock;
+            this.ID = id;
+            this.InternalID = 0;
         },
     };
 

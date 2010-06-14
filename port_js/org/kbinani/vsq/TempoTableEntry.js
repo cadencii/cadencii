@@ -20,6 +20,9 @@ if( org.kbinani.vsq.TempoTableEntry == undefined ){
         this.Clock = 0;
         this.Tempo = 0;
         this.Time = 0.0;
+        if( arguments.length == 3 ){
+            this._init_3( arguments[0], arguments[1], arguments[2] );
+        }
     };
 
     org.kbinani.vsq.TempoTableEntry.prototype = {
@@ -34,7 +37,7 @@ if( org.kbinani.vsq.TempoTableEntry == undefined ){
          * @return [object]
          */
         clone : function() {
-            return new org.kbinani.vsq.TempoTableEntry().init( this.Clock, this.Tempo, this.Time );
+            return new org.kbinani.vsq.TempoTableEntry( this.Clock, this.Tempo, this.Time );
         },
 
         /**
@@ -47,7 +50,7 @@ if( org.kbinani.vsq.TempoTableEntry == undefined ){
          * @param _time [int]
          * @return [TempoTableEntry]
          */
-        init : function() {
+        _init_3 : function() {
             if( arguments.length == 3 ){
                 this.Clock = arguments[0];
                 this.Tempo = arguments[1];

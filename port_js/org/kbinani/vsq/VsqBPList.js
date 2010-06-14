@@ -28,6 +28,9 @@ if( org.kbinani.vsq.VsqBPList == undefined ){
         this.minValue = 0;
         this.maxId = 0;
         this.name = "";
+        if( arguments.length == 4 ){
+            this._init_4( arguments[0], arguments[1], arguments[2], arguments[3] );
+        }
     };
 
     org.kbinani.vsq.VsqBPList.INIT_BUFLEN = 512;
@@ -35,6 +38,9 @@ if( org.kbinani.vsq.VsqBPList == undefined ){
     org.kbinani.vsq.VsqBPList.KeyClockIterator = function(){
         this.m_list = null;
         this.m_pos = -1;
+        if( arguments.length == 1 ){
+            this._init_1( arguments[0] );
+        }
     };
 
     org.kbinani.vsq.VsqBPList.KeyClockIterator.prototype = {
@@ -42,9 +48,10 @@ if( org.kbinani.vsq.VsqBPList == undefined ){
          * @param list [VsqBPList]
          * @return [void]
          */
-        init : function( list ) {
+        _init_1 : function( list ) {
             this.m_list = list;
             this.m_pos = -1;
+            return this;
         },
 
         /**
@@ -86,19 +93,12 @@ if( org.kbinani.vsq.VsqBPList == undefined ){
          * initializer
          * @return [void]
          */
-        init : function(){
-            if( arguments.length == 4 ){
-                var name = arguments[0];
-                var default_value = arguments[1];
-                var minimum = arguments[2];
-                var maximum = arguments[3];
-                
-                this.name = name;
-                this.defaultValue = default_value;
-                this.maxValue = maximum;
-                this.minValue = minimum;
-                this.maxId = 0;
-            }
+        _init_4 : function( name, default_value, minimum, maximum ){
+            this.name = name;
+            this.defaultValue = default_value;
+            this.maxValue = maximum;
+            this.minValue = minimum;
+            this.maxId = 0;
         },
 
         /**

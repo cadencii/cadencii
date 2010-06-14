@@ -20,26 +20,48 @@ if( org.kbinani.vsq.VsqMixer == undefined ){
     /// vsqファイルのメタテキストの[Mixer]セクションに記録される内容を取り扱う
     /// </summary>
 
-    /// <summary>
-    /// 各パラメータを指定したコンストラクタ
-    /// </summary>
-    /// <param name="master_fader">MasterFader値</param>
-    /// <param name="master_panpot">MasterPanpot値</param>
-    /// <param name="master_mute">MasterMute値</param>
-    /// <param name="output_mode">OutputMode値</param>
-    org.kbinani.vsq.VsqMixer = function( master_fader, master_panpot, master_mute, output_mode ) {
-        if( arguments.length == 4 ){
-            this.MasterFeder = arguments[0];
-            this.MasterMute = arguments[1];
-            this.MasterPanpot = arguments[2];
-            this.OutputMode = arguments[3];
-            /// <summary>
-            /// vsqファイルの各トラックのfader, panpot, muteおよびoutputmode値を保持します
-            /// </summary>
-            this.Slave = new Array();
-        }else if( arguments.length == 2 ){
-            var sr = arguments[0];
-            var last_line = arguments[1];
+    org.kbinani.vsq.VsqMixer = function() {
+        this.MasterFeder = arguments[0];
+        this.MasterMute = arguments[1];
+        this.MasterPanpot = arguments[2];
+        this.OutputMode = arguments[3];
+        /// <summary>
+        /// vsqファイルの各トラックのfader, panpot, muteおよびoutputmode値を保持します
+        /// </summary>
+        this.Slave = new Array();
+        if( arguments.length == 2 ){
+            this._init_2( arguments[0], arguments[1] );
+        }else if( arguments.length == 4 ){
+            this._init_4( arguments[0], arguments[1], arguments[2], arguments[3] );
+        }
+    };
+
+    org.kbinani.vsq.VsqMixer.prototype = {
+        /**
+         * 各パラメータを指定したコンストラクタ
+         * @param master_fader [int] MasterFader値
+         * @param master_panpot [int] MasterPanpot値
+         * @param master_mute [int] MasterMute値
+         * @param output_mode [int]
+         * @return [VsqMixer]
+         */
+        _init_4 : function( master_feder, master_panpot, master_mute, output_mode ){
+                this.MasterFeder = master_feder;
+                this.MasterMute = master_panpot;
+                this.MasterPanpot = master_mute;
+                this.OutputMode = output_mode;
+                /// <summary>
+                /// vsqファイルの各トラックのfader, panpot, muteおよびoutputmode値を保持します
+                /// </summary>
+                this.Slave = new Array();
+        },
+
+        /**
+         * @param sr [TextStream]
+         * @param last_line [ByRef<string>]
+         * @return [VsqMixer]
+         */
+        _init_2 : function( sr, last_line ){
             this.MasterFeder = 0;
             this.MasterPanpot = 0;
             this.MasterMute = 0;
@@ -103,10 +125,8 @@ if( org.kbinani.vsq.VsqMixer == undefined ){
                 }
 
             }
-        }
-    };
+        },
 
-    org.kbinani.vsq.VsqMixer.prototype = {
         clone : function() {
             var res = new org.kbinani.vsq.VsqMixer( this.MasterFeder, this.MasterPanpot, this.MasterMute, this.OutputMode );
             res.Slave = new Array();

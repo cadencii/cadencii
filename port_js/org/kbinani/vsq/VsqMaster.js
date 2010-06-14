@@ -23,10 +23,25 @@ if( org.kbinani.vsq.VsqMaster == undefined ){
     org.kbinani.vsq.VsqMaster = function(){
         this.PreMeasure = 1;
         if( arguments.length == 1 ){
-            this.PreMeasure = arguments[0];
+            this._init_1( arguments[0] );
         }else if( arguments.length == 2 ){
-            var sr = arguments[0]; //TextStream
-            var last_line = arguments[1]; //ByRef<String>
+            this._init_2( arguments[0], arguments[1] );
+        }
+    };
+
+    org.kbinani.vsq.VsqMaster.prototype = {
+        /**
+         *
+         */
+        _init_1 : function( pre_measure ){
+            this.PreMeasure = pre_measure;
+        },
+
+        /**
+         * @param sr [TextStream]
+         * @param last_line [ByRef<string>]
+         */
+        _init_2 : function( sr, last_line ){
             this.PreMeasure = 0;
             var spl;
             last_line.value = sr.readLine();
@@ -40,10 +55,8 @@ if( org.kbinani.vsq.VsqMaster == undefined ){
                 }
                 last_line.value = sr.readLine();
             }
-        }
-    };
+        },
 
-    org.kbinani.vsq.VsqMaster.prototype = {
         clone : function() {
             var res = new org.kbinani.VsqMaster( this.PreMeasure );
             return res;

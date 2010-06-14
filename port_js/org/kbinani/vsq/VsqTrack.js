@@ -22,6 +22,17 @@ if( org.kbinani.vsq.VsqTrack == undefined ){
     org.kbinani.vsq.VsqTrack = function(){
         this.Tag = "";
         this.MetaText = null;
+        if( arguments.length == 0 ){
+            this._init_0();
+        }else if( arguments.length == 2 ){
+            if( typeof( arguments[0] ) == "string" ){
+                this._init_2a( arguments[0], arguments[1] );
+            }else{
+                this._init_2b( arguments[0], arguments[1] );
+            }
+        }else if( arguments.length == 3 ){
+            this._init_3( arguments[0], arguments[1], arguments[2] );
+        }
     };
 
     org.kbinani.vsq.VsqTrack.IndexIterator = function(){
@@ -35,6 +46,9 @@ if( org.kbinani.vsq.VsqTrack == undefined ){
         this._kindCrescend = false;
         this._kindDecrescend = false;
         this._kindDynaff = false;
+        if( arguments.length == 2 ){
+            this._init_2( arguments[0], arguments[1] );
+        }
     };
 
     org.kbinani.vsq.VsqTrack.IndexIterator.prototype = {
@@ -43,7 +57,7 @@ if( org.kbinani.vsq.VsqTrack == undefined ){
          * @param iterator_kind[int]
          * @return [IndexIterator]
          */
-        init : function( list, iterator_kind ) {
+        _init_2 : function( list, iterator_kind ) {
             this._list = list;
             this._pos = -1;
             this._kindSinger = (iterator_kind & org.kbinani.vsq.IndexIteratorKind.SINGER) == org.kbinani.vsq.IndexIteratorKind.SINGER;
@@ -152,6 +166,9 @@ if( org.kbinani.vsq.VsqTrack == undefined ){
     org.kbinani.vsq.VsqTrack.SingerEventIterator = function(){
         this._m_list = null;
         this._m_pos = -1;
+        if( arguments.length == 1 ){
+            this._init_1( arguments[0] );
+        }
     };
 
     org.kbinani.vsq.VsqTrack.SingerEventIterator.prototype = {
@@ -159,7 +176,7 @@ if( org.kbinani.vsq.VsqTrack == undefined ){
          * @param list [VsqEventList]
          * @return [SingerEventIterator]
          */
-        init : function( list ) {
+        _init_1 : function( list ) {
             this._m_list = list;
             this._m_pos = -1;
             return this;
@@ -206,6 +223,9 @@ if( org.kbinani.vsq.VsqTrack == undefined ){
     org.kbinani.vsq.VsqTrack.NoteEventIterator = function(){
         this._m_list = null;
         this._m_pos = -1;
+        if( arguments.length == 1 ){
+            this._init_1( arguments[0] );
+        }
     };
 
     org.kbinani.vsq.VsqTrack.NoteEventIterator.prototype = {
@@ -213,7 +233,7 @@ if( org.kbinani.vsq.VsqTrack == undefined ){
          * @param list [VsqEventList]
          * @return [NoteEventIterator]
          */
-        init : function( list ) {
+        _init_1 : function( list ) {
             this._m_list = list;
             this._m_pos = -1;
             return this;
@@ -260,6 +280,9 @@ if( org.kbinani.vsq.VsqTrack == undefined ){
     org.kbinani.vsq.VsqTrack.DynamicsEventIterator = function(){
         this._m_list = null;
         this._m_pos = -1;
+        if( arguments.length == 1 ){
+            this._init_1( arguments[0] );
+        }
     };
 
     org.kbinani.vsq.VsqTrack.DynamicsEventIterator.prototype = {
@@ -267,7 +290,7 @@ if( org.kbinani.vsq.VsqTrack == undefined ){
          * @param list [VsqEventList]
          * @return [DynamicsEventIterator]
          */
-        init : function( list ) {
+        _init_1 : function( list ) {
             this._m_list = list;
             this._m_pos = -1;
         },
@@ -313,6 +336,9 @@ if( org.kbinani.vsq.VsqTrack == undefined ){
     org.kbinani.vsq.VsqTrack.EventIterator = function(){
         this._m_list = null;
         this._m_pos = -1;
+        if( arguments.length == 1 ){
+            this._init_1( arguments[0] );
+        }
     };
 
     org.kbinani.vsq.VsqTrack.EventIterator.prototype = {
@@ -320,7 +346,7 @@ if( org.kbinani.vsq.VsqTrack == undefined ){
          * @param list [VsqEventList]
          * @return [EventIterator]
          */
-        init : function( list ) {
+        _init_1 : function( list ) {
             this._m_list = list;
             this._m_pos = -1;
             return this;
@@ -363,7 +389,7 @@ if( org.kbinani.vsq.VsqTrack == undefined ){
          */
         indexIterator : function( iterator_kind ) {
             if ( this.MetaText == null ) {
-                return new org.kbinani.vsq.VsqTrack.IndexIterator( new org.kbinani.vsq.VsqEventList().init(), iterator_kind );
+                return new org.kbinani.vsq.VsqTrack.IndexIterator( new org.kbinani.vsq.VsqEventList(), iterator_kind );
             } else {
                 return new org.kbinani.vsq.VsqTrack.IndexIterator( this.MetaText.getEventList(), iterator_kind );
             }
@@ -397,7 +423,7 @@ if( org.kbinani.vsq.VsqTrack == undefined ){
         setPlayMode : function( value ) {
             if ( this.MetaText == null ) return;
             if ( this.MetaText.Common == null ) {
-                this.MetaText.Common = new org.kbinani.vsq.VsqCommon().init( "Miku", 128, 128, 128, org.kbinani.vsq.DynamicsMode.Expert, value );
+                this.MetaText.Common = new org.kbinani.vsq.VsqCommon( "Miku", 128, 128, 128, org.kbinani.vsq.DynamicsMode.Expert, value );
                 return;
             }
             if ( value == org.kbinani.vsq.PlayMode.Off ) {
@@ -429,7 +455,7 @@ if( org.kbinani.vsq.VsqTrack == undefined ){
         setTrackOn : function( value ) {
             if ( this.MetaText == null ) return;
             if ( this.MetaText.Common == null ) {
-                this.MetaText.Common = new org.kbinani.vsq.VsqCommon().init( "Miku", 128, 128, 128, org.kbinani.vsq.DynamicsMode.Expert, value ? org.kbinani.vsq.PlayMode.PlayWithSynth : org.kbinani.vsq.PlayMode.Off );
+                this.MetaText.Common = new org.kbinani.vsq.VsqCommon( "Miku", 128, 128, 128, org.kbinani.vsq.DynamicsMode.Expert, value ? org.kbinani.vsq.PlayMode.PlayWithSynth : org.kbinani.vsq.PlayMode.Off );
             }
             if ( value ) {
                 if ( this.MetaText.Common.LastPlayMode != org.kbinani.vsq.PlayMode.PlayAfterSynth &&
@@ -467,7 +493,7 @@ if( org.kbinani.vsq.VsqTrack == undefined ){
         setName : function( value ) {
             if ( this.MetaText != null ) {
                 if ( this.MetaText.Common == null ) {
-                    this.MetaText.Common = new org.kbinani.vsq.VsqCommon().init();
+                    this.MetaText.Common = new org.kbinani.vsq.VsqCommon();
                 }
                 this.MetaText.Common.Name = value;
             }
@@ -638,7 +664,7 @@ if( org.kbinani.vsq.VsqTrack == undefined ){
          */
         getNoteEventIterator : function() {
             if ( this.MetaText == null ) {
-                return new org.kbinani.vsq.VsqTrack.NoteEventIterator( new org.kbinani.vsq.VsqEventList().init() );
+                return new org.kbinani.vsq.VsqTrack.NoteEventIterator( new org.kbinani.vsq.VsqEventList() );
             } else {
                 return new org.kbinani.vsq.VsqTrack.NoteEventIterator( this.MetaText.getEventList() );
             }
@@ -651,7 +677,7 @@ if( org.kbinani.vsq.VsqTrack == undefined ){
          */
         getDynamicsEventIterator : function() {
             if ( this.MetaText == null ) {
-                return new org.kbinani.vsq.VsqTrack.DynamicsEventIterator( new org.kbinani.vsq.VsqEventList().init() );
+                return new org.kbinani.vsq.VsqTrack.DynamicsEventIterator( new org.kbinani.vsq.VsqEventList() );
             } else {
                 return new org.kbinani.vsq.VsqTrack.DynamicsEventIterator( this.MetaText.getEventList() );
             }
@@ -764,9 +790,9 @@ if( org.kbinani.vsq.VsqTrack == undefined ){
             var default_id = null;
             var singers_size = singers.length;
             if ( singers_size <= 0 ) {
-                default_id = new org.kbinani.vsq.VsqID().init();
+                default_id = new org.kbinani.vsq.VsqID();
                 default_id.type = org.kbinani.vsq.VsqIDType.Singer;
-                var singer_handle = new org.kbinani.vsq.IconHandle().init();
+                var singer_handle = new org.kbinani.vsq.IconHandle();
                 singer_handle.IconID = "$0701" + org.kbinani.PortUtil.sprintf( "%04X", 0 );
                 singer_handle.IDS = "Unknown";
                 singer_handle.Index = 0;
@@ -898,7 +924,7 @@ if( org.kbinani.vsq.VsqTrack == undefined ){
          * @return [object]
          */
         clone : function() {
-            var res = new org.kbinani.vsq.VsqTrack().init();
+            var res = new org.kbinani.vsq.VsqTrack();
             res.setName( this.getName() );
             if ( this.MetaText != null ) {
                 res.MetaText = this.MetaText.clone();
@@ -922,119 +948,111 @@ if( org.kbinani.vsq.VsqTrack == undefined ){
         },
 
         /**
-         * ovaerload1
          * Master Trackを構築
          * @param tempo [int]
          * @param numerator [int]
          * @param denominator [int]
          * @return [VsqTrack]
-         *
-         * overload2
+         */
+        _init_3 : function( tempo, numerator, denominator ){
+            this.MetaText = null;
+        },
+
+        /**
          * Master Trackでないトラックを構築。
          * @param name [string]
          * @param singer [string]
          * @return [VsqTrack]
-         *
-         * overload3
-         * デフォルトのコンストラクタ
-         * @return [VsqTrack]
-         *
-         * overload4
+         */
+        _init_2a : function( name, singer ){
+            this._initCor( name, singer );
+        },
+
+        /**
          * @param midi_event [Array<MidiEvent>]
          * @param encoding [string]
          */
-        init : function(){
-            if( arguments.length == 3 ){
-                // overload1
-                var tempo = arguments[0];
-                var numerator = arguments[1];
-                var denominator = arguments[2];
-                this.MetaText = null;
-            }else if( arguments.length == 2 ){
-                if( typeof( arguments[0] ) == "string" ){
-                    var name = arguments[0];
-                    var singer = arguments[1];
-                    this._initCor( name, singer );
-                }else{
-                    var midi_event = arguments[0];
-                    var encoding = arguments[1];
-                    var track_name = "";
+        _init_2b : function( midi_event, encoding ){
+            var track_name = "";
 
-                    var sw = null;
-                    sw = new org.kbinani.vsq.TextStream();
-                    var count = midi_event.size();
-                    var buffer = new Array(); // Vector<Integer>();
-                    for ( var i = 0; i < count; i++ ) {
-                        var item = midi_event[i];
-                        if ( item.firstByte == 0xff && item.data.length > 0 ) {
-                            // meta textを抽出
-                            var type = item.data[0];
-                            if ( type == 0x01 || type == 0x03 ) {
-                                if ( type == 0x01 ) {
-                                    var colon_count = 0;
-                                    for ( var j = 0; j < item.data.length - 1; j++ ) {
-                                        var d = item.data[j + 1];
-                                        if ( d == 0x3a ) {
-                                            colon_count++;
-                                            if ( colon_count <= 2 ) {
-                                                continue;
-                                            }
-                                        }
-                                        if ( colon_count < 2 ) {
-                                            continue;
-                                        }
-                                        buffer.push( d );
+            var sw = null;
+            sw = new org.kbinani.vsq.TextStream();
+            var count = midi_event.length;
+            var buffer = new Array(); // Vector<Integer>();
+            for ( var i = 0; i < count; i++ ) {
+                var item = midi_event[i];
+                if ( item.firstByte == 0xff && item.data.length > 0 ) {
+                    // meta textを抽出
+                    var type = item.data[0];
+                    if ( type == 0x01 || type == 0x03 ) {
+                        if ( type == 0x01 ) {
+                            var colon_count = 0;
+                            for ( var j = 0; j < item.data.length - 1; j++ ) {
+                                var d = item.data[j + 1];
+                                if ( d == 0x3a ) {
+                                    colon_count++;
+                                    if ( colon_count <= 2 ) {
+                                        continue;
                                     }
-
-                                    var index_0x0a = org.kbinani.PortUtil.arrayIndexOf( buffer, 0x0a );
-                                    while ( index_0x0a >= 0 ) {
-                                        var cpy = new Array( index_0x0a );
-                                        for ( var j = 0; j < index_0x0a; j++ ) {
-                                            cpy[j] = 0xff & buffer[0];
-                                            buffer.shift();
-                                        }
-
-                                        var line = org.kbinani.Cp932.convertToUTF8( cpy );
-                                        sw.writeLine( line );
-                                        buffer.shift();
-                                        index_0x0a = org.kbinani.PortUtil.arrayIndexOf( buffer, 0x0a );
-                                    }
-                                } else {
-                                    for ( var j = 0; j < item.data.length - 1; j++ ) {
-                                        buffer.push( item.data[j + 1] );
-                                    }
-                                    var c = buffer.length;
-                                    var d = new Array( c );
-                                    for ( var j = 0; j < c; j++ ) {
-                                        d[j] = 0xff & buffer[j];
-                                    }
-                                    track_name = org.kbinani.Cp932.convertToUTF8( d );
-                                    buffer.splice( 0, buffer.length );
                                 }
+                                if ( colon_count < 2 ) {
+                                    continue;
+                                }
+                                buffer.push( d );
+                            }
+
+                            var index_0x0a = org.kbinani.PortUtil.arrayIndexOf( buffer, 0x0a );
+                            while ( index_0x0a >= 0 ) {
+                                var cpy = new Array( index_0x0a );
+                                for ( var j = 0; j < index_0x0a; j++ ) {
+                                    cpy[j] = 0xff & buffer[0];
+                                    buffer.shift();
+                                }
+
+                                var line = org.kbinani.Cp932.convertToUTF8( cpy );
+                                sw.writeLine( line );
+                                buffer.shift();
+                                index_0x0a = org.kbinani.PortUtil.arrayIndexOf( buffer, 0x0a );
                             }
                         } else {
-                            continue;
+                            for ( var j = 0; j < item.data.length - 1; j++ ) {
+                                buffer.push( item.data[j + 1] );
+                            }
+                            var c = buffer.length;
+                            var d = new Array( c );
+                            for ( var j = 0; j < c; j++ ) {
+                                d[j] = 0xff & buffer[j];
+                            }
+                            track_name = org.kbinani.Cp932.convertToUTF8( d );
+                            buffer.splice( 0, buffer.length );
                         }
                     }
-                    // oketa ketaoさんありがとう =>
-                    var remain = buffer.length;
-                    if ( remain > 0 ) {
-                        var cpy = new Array( remain );
-                        for ( var j = 0; j < remain; j++ ) {
-                            cpy[j] = 0xff & buffer[j];
-                        }
-                        var line = org.kbinani.Cp932.convertToUTF8( cpy );
-                        sw.writeLine( line );
-                    }
-                    // <=
-                    //sw.rewind();
-                    this.MetaText = new org.kbinani.vsq.VsqMetaText().init( sw );
-                    this.setName( track_name );
+                } else {
+                    continue;
                 }
-            }else if( arguments.length == 0 ){
-                this._intiCor( "Voice1", "Miku" );
             }
-            return this;
+            // oketa ketaoさんありがとう =>
+            var remain = buffer.length;
+            if ( remain > 0 ) {
+                var cpy = new Array( remain );
+                for ( var j = 0; j < remain; j++ ) {
+                    cpy[j] = 0xff & buffer[j];
+                }
+                var line = org.kbinani.Cp932.convertToUTF8( cpy );
+                sw.writeLine( line );
+            }
+            // <=
+            //sw.rewind();
+            this.MetaText = new org.kbinani.vsq.VsqMetaText( sw );
+            this.setName( track_name );
+        },
+
+        /**
+         * デフォルトのコンストラクタ
+         * @return [VsqTrack]
+         */
+        _init_0 : function(){
+            this._intiCor( "Voice1", "Miku" );
         },
 
         /**
@@ -1042,7 +1060,7 @@ if( org.kbinani.vsq.VsqTrack == undefined ){
          * @param singer [string]
          */
         _initCor : function( name, singer ){
-            this.MetaText = new org.kbinani.vsq.VsqMetaText().init( name, singer );
+            this.MetaText = new org.kbinani.vsq.VsqMetaText( name, singer );
         },
     };
 

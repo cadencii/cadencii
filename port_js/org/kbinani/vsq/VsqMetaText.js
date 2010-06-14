@@ -92,6 +92,15 @@ if( org.kbinani.vsq.VsqMetaText == undefined ){
          *  OPE。オープニング(openingBPList)。default=127
          */
         this.OPE = null;
+        if( arguments.length == 0 ){
+            this._init_0();
+        }else if( arguments.length == 1 ){
+            this._init_1( arguments[0] );
+        }else if( arguments.length == 2 ){
+            this._init_2( arguments[0], arguments[1] );
+        }else if( arguments.length == 3 ){
+            this._init_3( arguments[0], arguments[1], arguments[2] );
+        }
     };
 
     org.kbinani.vsq.VsqMetaText.prototype = {
@@ -200,7 +209,7 @@ if( org.kbinani.vsq.VsqMetaText == undefined ){
          * @return [VsqBPList]
          */
         getElement : function( curve ) {
-            var search = curve.toLower();
+            var search = curve.toLowerCase();
             if ( search == "bre" ) {
                 return this.BRE;
             } else if ( search == "bri" ) {
@@ -613,205 +622,201 @@ if( org.kbinani.vsq.VsqMetaText == undefined ){
         }*/
 
         /**
-         * ovarload0
          * 何も無いVsqMetaTextを構築する。これは、Master Track用のMetaTextとしてのみ使用されるべき
          * @return [VsqMetaText]
-         *
-         * overload1
+         */
+        _init_0 : function(){
+        },
+
+        /**
          * @param sr [TextStream]
          * @return [VsqMetaText]
-         *
-         * overload2
+         */
+        _init_1 : function( sr ){
+            var t_event_list = new Array();
+            var __id = {};// new TreeMap<Integer, VsqID>();
+            var __handle = {};// new TreeMap<Integer, VsqHandle>();
+            this.PIT = new org.kbinani.vsq.VsqBPList( "pit", 0, -8192, 8191 );
+            this.PBS = new org.kbinani.vsq.VsqBPList( "pbs", 2, 0, 24 );
+            this.DYN = new org.kbinani.vsq.VsqBPList( "dyn", 64, 0, 127 );
+            this.BRE = new org.kbinani.vsq.VsqBPList( "bre", 0, 0, 127 );
+            this.BRI = new org.kbinani.vsq.VsqBPList( "bri", 64, 0, 127 );
+            this.CLE = new org.kbinani.vsq.VsqBPList( "cle", 0, 0, 127 );
+            this.reso1FreqBPList = new org.kbinani.vsq.VsqBPList( "reso1freq", 64, 0, 127 );
+            this.reso2FreqBPList = new org.kbinani.vsq.VsqBPList( "reso2freq", 64, 0, 127 );
+            this.reso3FreqBPList = new org.kbinani.vsq.VsqBPList( "reso3freq", 64, 0, 127 );
+            this.reso4FreqBPList = new org.kbinani.vsq.VsqBPList( "reso4freq", 64, 0, 127 );
+            this.reso1BWBPList = new org.kbinani.vsq.VsqBPList( "reso1bw", 64, 0, 127 );
+            this.reso2BWBPList = new org.kbinani.vsq.VsqBPList( "reso2bw", 64, 0, 127 );
+            this.reso3BWBPList = new org.kbinani.vsq.VsqBPList( "reso3bw", 64, 0, 127 );
+            this.reso4BWBPList = new org.kbinani.vsq.VsqBPList( "reso4bw", 64, 0, 127 );
+            this.reso1AmpBPList = new org.kbinani.vsq.VsqBPList( "reso1amp", 64, 0, 127 );
+            this.reso2AmpBPList = new org.kbinani.vsq.VsqBPList( "reso2amp", 64, 0, 127 );
+            this.reso3AmpBPList = new org.kbinani.vsq.VsqBPList( "reso3amp", 64, 0, 127 );
+            this.reso4AmpBPList = new org.kbinani.vsq.VsqBPList( "reso4amp", 64, 0, 127 );
+            this.harmonics = new org.kbinani.vsq.VsqBPList( "harmonics", 64, 0, 127 );
+            this.fx2depth = new org.kbinani.vsq.VsqBPList( "fx2depth", 64, 0, 127 );
+            this.GEN = new org.kbinani.vsq.VsqBPList( "gen", 64, 0, 127 );
+            this.POR = new org.kbinani.vsq.VsqBPList( "por", 64, 0, 127 );
+            this.OPE = new org.kbinani.vsq.VsqBPList( "ope", 127, 0, 127 );
+
+            var last_line = new org.kbinani.ByRef( sr.readLine() );
+            while ( true ) {
+                // "TextMemoryStreamから順次読込み"
+                if ( last_line.value.length == 0 ) {
+                    break;
+                }
+                if ( last_line.value == "[Common]" ) {
+                    this.Common = new org.kbinani.vsq.VsqCommon( sr, last_line );
+                } else if ( last_line.value == "[Master]" ) {
+                    this.master = new org.kbinani.vsq.VsqMaster( sr, last_line );
+                } else if ( last_line.value == "[Mixer]" ) {
+                    this.mixer = new org.kbinani.vsq.VsqMixer( sr, last_line );
+                } else if ( last_line.value == "[EventList]" ) {
+                    last_line.value = sr.readLine();
+                    while ( last_line.value.indexOf( "[" ) !== 0 ) {
+                        var spl2 = last_line.value.split( '=' );
+                        var clock = parseInt( spl2[0], 10 );
+                        var id_number = -1;
+                        if ( spl2[1] != "EOS" ) {
+                            var ids = spl2[1].split( ',' );
+                            for ( var i = 0; i < ids.length; i++ ) {
+                                var spl3 = ids[i].split( '#' );
+                                id_number = parseInt( spl3[1], 10 );
+                                t_event_list.push( new org.kbinani.ValuePair( clock, id_number ) );
+                            }
+                        } else {
+                            t_event_list.push( new org.kbinani.ValuePair( clock, -1 ) );
+                        }
+                        if ( !sr.ready() ) {
+                            break;
+                        } else {
+                            last_line.value = sr.readLine();
+                        }
+                    }
+                } else if ( last_line.value == "[PitchBendBPList]" ) {
+                    last_line.value = this.PIT.appendFromText( sr );
+                } else if ( last_line.value == "[PitchBendSensBPList]" ) {
+                    last_line.value = this.PBS.appendFromText( sr );
+                } else if ( last_line.value == "[DynamicsBPList]" ) {
+                    last_line.value = this.DYN.appendFromText( sr );
+                } else if ( last_line.value == "[EpRResidualBPList]" ) {
+                    last_line.value = this.BRE.appendFromText( sr );
+                } else if ( last_line.value == "[EpRESlopeBPList]" ) {
+                    last_line.value = this.BRI.appendFromText( sr );
+                } else if ( last_line.value == "[EpRESlopeDepthBPList]" ) {
+                    last_line.value = this.CLE.appendFromText( sr );
+                } else if ( last_line.value == "[EpRSineBPList]" ) {
+                    last_line.value = this.harmonics.appendFromText( sr );
+                } else if ( last_line.value == "[VibTremDepthBPList]" ) {
+                    last_line.value = this.fx2depth.appendFromText( sr );
+                } else if ( last_line.value == "[Reso1FreqBPList]" ) {
+                    last_line.value = this.reso1FreqBPList.appendFromText( sr );
+                } else if ( last_line.value == "[Reso2FreqBPList]" ) {
+                    last_line.value = this.reso2FreqBPList.appendFromText( sr );
+                } else if ( last_line.value == "[Reso3FreqBPList]" ) {
+                    last_line.value = this.reso3FreqBPList.appendFromText( sr );
+                } else if ( last_line.value == "[Reso4FreqBPList]" ) {
+                    last_line.value = this.reso4FreqBPList.appendFromText( sr );
+                } else if ( last_line.value == "[Reso1BWBPList]" ) {
+                    last_line.value = this.reso1BWBPList.appendFromText( sr );
+                } else if ( last_line.value == "[Reso2BWBPList]" ) {
+                    last_line.value = this.reso2BWBPList.appendFromText( sr );
+                } else if ( last_line.value == "[Reso3BWBPList]" ) {
+                    last_line.value = this.reso3BWBPList.appendFromText( sr );
+                } else if ( last_line.value == "[Reso4BWBPList]" ) {
+                    last_line.value = this.reso4BWBPList.appendFromText( sr );
+                } else if ( last_line.value == "[Reso1AmpBPList]" ) {
+                    last_line.value = this.reso1AmpBPList.appendFromText( sr );
+                } else if ( last_line.value == "[Reso2AmpBPList]" ) {
+                    last_line.value = this.reso2AmpBPList.appendFromText( sr );
+                } else if ( last_line.value == "[Reso3AmpBPList]" ) {
+                    last_line.value = this.reso3AmpBPList.appendFromText( sr );
+                } else if ( last_line.value == "[Reso4AmpBPList]" ) {
+                    last_line.value = this.reso4AmpBPList.appendFromText( sr );
+                } else if ( last_line.value == "[GenderFactorBPList]" ) {
+                    last_line.value = this.GEN.appendFromText( sr );
+                } else if ( last_line.value == "[PortamentoTimingBPList]" ) {
+                    last_line.value = this.POR.appendFromText( sr );
+                } else if ( last_line.value == "[OpeningBPList]" ) {
+                    last_line.value = this.OPE.appendFromText( sr );
+                } else {
+                    var buffer = last_line.value;
+                    buffer = buffer.replace( "[", "" );
+                    buffer = buffer.replace( "]", "" );
+                    var spl = buffer.split( '#' );
+                    var index = parseInt( spl[1], 10 );
+                    if ( last_line.value.indexOf( "[ID#" ) === 0 ) {
+                        __id[index] = new org.kbinani.vsq.VsqID( sr, index, last_line );
+                    } else if ( last_line.value.indexOf( "[h#" ) === 0 ) {
+                        __handle[index] = new org.kbinani.vsq.VsqHandle( sr, index, last_line );
+                    }
+                }
+
+                if ( !sr.ready() ) {
+                    break;
+                }
+            }
+
+            // まずhandleをidに埋め込み
+            //var c = __id.size();
+            for ( var i in __id ) {
+                var id = __id[i];
+                if ( __handle[id.IconHandle_index] != undefined ) {
+                    if ( id.type == org.kbinani.vsq.VsqIDType.Singer ) {
+                        id.IconHandle = __handle[id.IconHandle_index].castToIconHandle();
+                    } else if ( id.type == org.kbinani.vsq.VsqIDType.Aicon ) {
+                        id.IconDynamicsHandle = __handle[id.IconHandle_index].castToIconDynamicsHandle();
+                    }
+                }
+                if ( __handle[id.LyricHandle_index] != undefined ) {
+                    id.LyricHandle = __handle[id.LyricHandle_index].castToLyricHandle();
+                }
+                if ( __handle[id.VibratoHandle_index] != undefined ) {
+                    id.VibratoHandle = __handle[id.VibratoHandle_index].castToVibratoHandle();
+                }
+                if ( __handle[id.NoteHeadHandle_index] != undefined ) {
+                    id.NoteHeadHandle = __handle[id.NoteHeadHandle_index].castToNoteHeadHandle();
+                }
+            }
+
+            // idをeventListに埋め込み
+            this.Events = new org.kbinani.vsq.VsqEventList();
+            var count = 0;
+            for ( var i = 0; i < t_event_list.length; i++ ) {
+                var clock = t_event_list[i].getKey();
+                var id_number = t_event_list[i].getValue();
+                if ( __id[id_number] != undefined ) {
+                    count++;
+                    this.Events.add( new org.kbinani.vsq.VsqEvent( clock, __id[id_number].clone() ), count );
+                }
+            }
+            this.Events.sort();
+
+            if ( this.Common == null ) {
+                this.Common = new org.kbinani.vsq.VsqCommon();
+            }
+        },
+
+        /**
          * 最初のトラック以外の一般のメタテキストを構築。(Masterが作られない)
          * @param name [string]
          * @param singer [string]
          * @return [VsqMetaText]
-         *
-         * overload3
+         */
+        _init_2 : function( name, singer ){
+            this._initCor( name, 0, singer, false );
+        },
+
+        /**
          * 最初のトラックのメタテキストを構築。(Masterが作られる)
          * @param name [string]
          * @param singer [string]
          * @param pre_measure [int]
          * @return [VsqMetaText]
          */
-        init : function(){
-            if( arguments.length == 0 ){
-            }else if( arguments.length == 1 ){
-                var sr = arguments[0];
-                var t_event_list = new Array();
-                var __id = {};// new TreeMap<Integer, VsqID>();
-                var __handle = {};// new TreeMap<Integer, VsqHandle>();
-                this.PIT = new org.kbinani.vsq.VsqBPList( "pit", 0, -8192, 8191 );
-                this.PBS = new org.kbinani.vsq.VsqBPList( "pbs", 2, 0, 24 );
-                this.DYN = new org.kbinani.vsq.VsqBPList( "dyn", 64, 0, 127 );
-                this.BRE = new org.kbinani.vsq.VsqBPList( "bre", 0, 0, 127 );
-                this.BRI = new org.kbinani.vsq.VsqBPList( "bri", 64, 0, 127 );
-                this.CLE = new org.kbinani.vsq.VsqBPList( "cle", 0, 0, 127 );
-                this.reso1FreqBPList = new org.kbinani.vsq.VsqBPList( "reso1freq", 64, 0, 127 );
-                this.reso2FreqBPList = new org.kbinani.vsq.VsqBPList( "reso2freq", 64, 0, 127 );
-                this.reso3FreqBPList = new org.kbinani.vsq.VsqBPList( "reso3freq", 64, 0, 127 );
-                this.reso4FreqBPList = new org.kbinani.vsq.VsqBPList( "reso4freq", 64, 0, 127 );
-                this.reso1BWBPList = new org.kbinani.vsq.VsqBPList( "reso1bw", 64, 0, 127 );
-                this.reso2BWBPList = new org.kbinani.vsq.VsqBPList( "reso2bw", 64, 0, 127 );
-                this.reso3BWBPList = new org.kbinani.vsq.VsqBPList( "reso3bw", 64, 0, 127 );
-                this.reso4BWBPList = new org.kbinani.vsq.VsqBPList( "reso4bw", 64, 0, 127 );
-                this.reso1AmpBPList = new org.kbinani.vsq.VsqBPList( "reso1amp", 64, 0, 127 );
-                this.reso2AmpBPList = new org.kbinani.vsq.VsqBPList( "reso2amp", 64, 0, 127 );
-                this.reso3AmpBPList = new org.kbinani.vsq.VsqBPList( "reso3amp", 64, 0, 127 );
-                this.reso4AmpBPList = new org.kbinani.vsq.VsqBPList( "reso4amp", 64, 0, 127 );
-                this.harmonics = new org.kbinani.vsq.VsqBPList( "harmonics", 64, 0, 127 );
-                this.fx2depth = new org.kbinani.vsq.VsqBPList( "fx2depth", 64, 0, 127 );
-                this.GEN = new org.kbinani.vsq.VsqBPList( "gen", 64, 0, 127 );
-                this.POR = new org.kbinani.vsq.VsqBPList( "por", 64, 0, 127 );
-                this.OPE = new org.kbinani.vsq.VsqBPList( "ope", 127, 0, 127 );
-
-                var last_line = new org.kbinani.ByRef( sr.readLine() );
-                while ( true ) {
-                    // "TextMemoryStreamから順次読込み"
-                    if ( last_line.value.length == 0 ) {
-                        break;
-                    }
-                    if ( last_line.value == "[Common]" ) {
-                        this.Common = (new org.kbinani.vsq.VsqCommon()).init( sr, last_line );
-                    } else if ( last_line.value == "[Master]" ) {
-                        this.master = (new org.kbinani.vsq.VsqMaster()).init( sr, last_line );
-                    } else if ( last_line.value == "[Mixer]" ) {
-                        this.mixer = new VsqMixer().init( sr, last_line );
-                    } else if ( last_line.value == "[EventList]" ) {
-                        last_line.value = sr.readLine();
-                        while ( last_line.value.indexOf( "[" ) !== 0 ) {
-                            var spl2 = last_line.value.split( '=' );
-                            var clock = parseInt( spl2[0], 10 );
-                            var id_number = -1;
-                            if ( spl2[1] != "EOS" ) {
-                                var ids = spl2[1].split( ',' );
-                                for ( var i = 0; i < ids.length; i++ ) {
-                                    var spl3 = ids[i].split( '#' );
-                                    id_number = parseInt( spl3[1], 10 );
-                                    t_event_list.push( new ValuePair().init( clock, id_number ) );
-                                }
-                            } else {
-                                t_event_list.push( new ValuePair().init( clock, -1 ) );
-                            }
-                            if ( !sr.ready() ) {
-                                break;
-                            } else {
-                                last_line.value = sr.readLine();
-                            }
-                        }
-                    } else if ( last_line.value == "[PitchBendBPList]" ) {
-                        last_line.value = this.PIT.appendFromText( sr );
-                    } else if ( last_line.value == "[PitchBendSensBPList]" ) {
-                        last_line.value = this.PBS.appendFromText( sr );
-                    } else if ( last_line.value == "[DynamicsBPList]" ) {
-                        last_line.value = this.DYN.appendFromText( sr );
-                    } else if ( last_line.value == "[EpRResidualBPList]" ) {
-                        last_line.value = this.BRE.appendFromText( sr );
-                    } else if ( last_line.value == "[EpRESlopeBPList]" ) {
-                        last_line.value = this.BRI.appendFromText( sr );
-                    } else if ( last_line.value == "[EpRESlopeDepthBPList]" ) {
-                        last_line.value = this.CLE.appendFromText( sr );
-                    } else if ( last_line.value == "[EpRSineBPList]" ) {
-                        last_line.value = this.harmonics.appendFromText( sr );
-                    } else if ( last_line.value == "[VibTremDepthBPList]" ) {
-                        last_line.value = this.fx2depth.appendFromText( sr );
-                    } else if ( last_line.value == "[Reso1FreqBPList]" ) {
-                        last_line.value = this.reso1FreqBPList.appendFromText( sr );
-                    } else if ( last_line.value == "[Reso2FreqBPList]" ) {
-                        last_line.value = this.reso2FreqBPList.appendFromText( sr );
-                    } else if ( last_line.value == "[Reso3FreqBPList]" ) {
-                        last_line.value = this.reso3FreqBPList.appendFromText( sr );
-                    } else if ( last_line.value == "[Reso4FreqBPList]" ) {
-                        last_line.value = this.reso4FreqBPList.appendFromText( sr );
-                    } else if ( last_line.value == "[Reso1BWBPList]" ) {
-                        last_line.value = this.reso1BWBPList.appendFromText( sr );
-                    } else if ( last_line.value == "[Reso2BWBPList]" ) {
-                        last_line.value = this.reso2BWBPList.appendFromText( sr );
-                    } else if ( last_line.value == "[Reso3BWBPList]" ) {
-                        last_line.value = this.reso3BWBPList.appendFromText( sr );
-                    } else if ( last_line.value == "[Reso4BWBPList]" ) {
-                        last_line.value = this.reso4BWBPList.appendFromText( sr );
-                    } else if ( last_line.value == "[Reso1AmpBPList]" ) {
-                        last_line.value = this.reso1AmpBPList.appendFromText( sr );
-                    } else if ( last_line.value == "[Reso2AmpBPList]" ) {
-                        last_line.value = this.reso2AmpBPList.appendFromText( sr );
-                    } else if ( last_line.value == "[Reso3AmpBPList]" ) {
-                        last_line.value = this.reso3AmpBPList.appendFromText( sr );
-                    } else if ( last_line.value == "[Reso4AmpBPList]" ) {
-                        last_line.value = this.reso4AmpBPList.appendFromText( sr );
-                    } else if ( last_line.value == "[GenderFactorBPList]" ) {
-                        last_line.value = this.GEN.appendFromText( sr );
-                    } else if ( last_line.value == "[PortamentoTimingBPList]" ) {
-                        last_line.value = this.POR.appendFromText( sr );
-                    } else if ( last_line.value == "[OpeningBPList]" ) {
-                        last_line.value = this.OPE.appendFromText( sr );
-                    } else {
-                        var buffer = last_line.value;
-                        buffer = buffer.replace( "[", "" );
-                        buffer = buffer.replace( "]", "" );
-                        var spl = buffer.split( '#' );
-                        var index = parseInt( spl[1], 10 );
-                        if ( last_line.value.indexOf( "[ID#" ) === 0 ) {
-                            __id[index] = new VsqID.init( sr, index, last_line );
-                        } else if ( last_line.value.indexOf( "[h#" ) === 0 ) {
-                            __handle[index] = new VsqHandle().init( sr, index, last_line );
-                        }
-                    }
-
-                    if ( !sr.ready() ) {
-                        break;
-                    }
-                }
-
-                // まずhandleをidに埋め込み
-                //var c = __id.size();
-                for ( var i in __id ) {
-                    var id = __id[i];
-                    if ( __handle[id.IconHandle_index] != undefined ) {
-                        if ( id.type == org.kbinani.vsq.VsqIDType.Singer ) {
-                            id.IconHandle = __handle[id.IconHandle_index].castToIconHandle();
-                        } else if ( id.type == org.kbinani.vsq.VsqIDType.Aicon ) {
-                            id.IconDynamicsHandle = __handle[id.IconHandle_index].castToIconDynamicsHandle();
-                        }
-                    }
-                    if ( __handle[id.LyricHandle_index] != undefined ) {
-                        id.LyricHandle = __handle[id.LyricHandle_index].castToLyricHandle();
-                    }
-                    if ( __handle[id.VibratoHandle_index] != undefined ) {
-                        id.VibratoHandle = __handle[id.VibratoHandle_index].castToVibratoHandle();
-                    }
-                    if ( __handle[id.NoteHeadHandle_index] != undefined ) {
-                        id.NoteHeadHandle = __handle[id.NoteHeadHandle_index].castToNoteHeadHandle();
-                    }
-                }
-
-                // idをeventListに埋め込み
-                this.Events = new org.kbinani.vsq.VsqEventList();
-                var count = 0;
-                for ( var i = 0; i < t_event_list.length; i++ ) {
-                    var clock = t_event_list[i].getKey();
-                    var id_number = t_event_list[i].getValue();
-                    if ( __id[id_number] != undefined ) {
-                        count++;
-                        this.Events.add( new org.kbinani.vsq.VsqEvent().init( clock, __id[id_number].clone() ), count );
-                    }
-                }
-                this.Events.sort();
-
-                if ( this.Common == null ) {
-                    this.Common = new org.kbinani.vsq.VsqCommon();
-                }
-            }else if( arguments.length == 2 ){
-                var name = arguments[0];
-                var singer = arguments[1];
-                _initCor( name, 0, singer, false );
-            }else if( arguments.length == 3 ){
-                var name = arguments[0];
-                var singer = arguments[1];
-                var pre_measure = arguments[2];
-                _initCor( name, pre_measure, singer, true );
-            }
-            return this;
+        _init_3 : function( name, singer, pre_measure ){
+            this._initCor( name, pre_measure, singer, true );
         },
 
         /**
@@ -852,7 +857,7 @@ if( org.kbinani.vsq.VsqMetaText == undefined ){
                 this.master = null;
             }
             this.Events = new org.kbinani.vsq.VsqEventList();
-            var id = (new VsqID).init( 0 );
+            var id = new org.kbinani.vsq.VsqID( 0 );
             id.type = org.kbinani.vsq.VsqIDType.Singer;
             var ish = new org.kbinani.vsq.IconHandle();
             ish.IconID = "$07010000";
@@ -863,7 +868,7 @@ if( org.kbinani.vsq.VsqMetaText == undefined ){
             ish.Language = 0;
             ish.Program = 0;
             id.IconHandle = ish;
-            this.Events.push( (new org.kbiani.vsq.VsqEvent()).init( 0, id ) );
+            this.Events.push( new org.kbiani.vsq.VsqEvent( 0, id ) );
         },
     };
 
