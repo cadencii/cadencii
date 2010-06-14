@@ -1072,6 +1072,7 @@ org.kbinani.PortUtil.splitString = function(){
         var i = 1;
         while( index < 0 && i < separator.length ){
             index = remain.indexOf( separator[i] );
+            i++;
         }
         var added_count = 0;
         while( index >= 0 ){
@@ -1090,7 +1091,7 @@ org.kbinani.PortUtil.splitString = function(){
                 index = remain.indexOf( separator[i] );
             }
         }
-        if( !ignore_empty_entries || (ignore_empty_entries && remain.length() > 0) ){
+        if( !ignore_empty_entries || (ignore_empty_entries && remain.length > 0) ){
             ret.push( remain );
         }
         return ret;

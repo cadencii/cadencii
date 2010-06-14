@@ -36,7 +36,6 @@ if( org.kbinani.vsq.MidiFile == undefined ){
             // ヘッダ
             var byte4 = new Array( 4 ); //byte[]
             stream.readArray( byte4, 0, 4 );
-            alert( byte4 );
             if ( org.kbinani.PortUtil.make_uint32_be( byte4 ) != 0x4d546864 ) {
                 alert( "header erro :MThd" );
                 return;//throw new Exception( "header error: MThd" );

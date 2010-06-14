@@ -1010,6 +1010,7 @@ if( org.kbinani.vsq.VsqTrack == undefined ){
                                 }
 
                                 var line = org.kbinani.Cp932.convertToUTF8( cpy );
+//alert( "VsqTrack#_init_2b; line=" + line );
                                 sw.writeLine( line );
                                 buffer.shift();
                                 index_0x0a = org.kbinani.PortUtil.arrayIndexOf( buffer, 0x0a );
@@ -1043,6 +1044,7 @@ if( org.kbinani.vsq.VsqTrack == undefined ){
             }
             // <=
             //sw.rewind();
+//alert( "VsqTrack#_init_2b; sw.toString()=" + sw.toString() );
             this.MetaText = new org.kbinani.vsq.VsqMetaText( sw );
             this.setName( track_name );
         },

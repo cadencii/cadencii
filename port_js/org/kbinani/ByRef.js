@@ -5,12 +5,12 @@ if( org.kbinani.ByRef == undefined ){
     org.kbinani.ByRef = function(){
         this.value = null;
         if( arguments.length == 1 ){
-            this.init( arguments[0] );
+            this._init_1( arguments[0] );
         }
     };
 
     org.kbinani.ByRef.prototype = {
-        init : function( value ){
+        _init_1 : function( value ){
             this.value = value;
             return this;
         },

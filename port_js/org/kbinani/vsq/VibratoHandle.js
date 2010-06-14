@@ -72,10 +72,10 @@ if( org.kbinani.vsq.VibratoHandle == undefined ){
     org.kbinani.vsq.VibratoHandle.prototype = new org.kbinani.vsq.IconParameter();
     
     /**
-     * @return [void]
+     * @return [string]
      */
     org.kbinani.vsq.VibratoHandle.prototype.toString = function(){
-        return getDisplayString();
+        return this.getDisplayString();
     };
 
     /**
@@ -185,7 +185,7 @@ if( org.kbinani.vsq.VibratoHandle == undefined ){
         result.IDS = this.IDS;
         result.Original = this.Original;
         result.setCaption( this.caption );
-        result.setLength( getLength() );
+        result.setLength( this.getLength() );
         result.setStartDepth( this.startDepth );
         if ( this.depthBP != null ) {
             result.setDepthBP( this.depthBP.clone() );
@@ -208,7 +208,7 @@ if( org.kbinani.vsq.VibratoHandle == undefined ){
         ret.IDS = this.IDS;
         ret.Original = this.Original;
         ret.Caption = this.caption;
-        ret.setLength( getLength() );
+        ret.setLength( this.getLength() );
         ret.StartDepth = this.startDepth;
         ret.StartRate = this.startRate;
         ret.DepthBP = this.depthBP.clone();

@@ -47,7 +47,7 @@ if( org.kbinani.vsq.IconHandle == undefined ){
         this.Language = 0;
     };
 
-    org.kbinani.vsq.IconHandle.ptototype = {
+    org.kbinani.vsq.IconHandle.prototype = {
         /**
          * ゲートタイム長さを取得します。
          *

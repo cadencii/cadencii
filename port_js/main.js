@@ -47,13 +47,6 @@ function key_mouseout( e ){
     }
 }
 
-/*
- * ノートナンバーから，その音階を表す文字列を取得する
- */
-function string_from_note( note ){
-    
-}
-
 function key_mouseover( e ){
     var id = e.target.id;
     var i = parseInt( id.substr( 3, 3 ), 10 );
@@ -102,7 +95,6 @@ function handleFile( file ){
 
     reader.onloadend = function(){
         var dat = reader.result;
-        alert( dat );
         var search = "data:application/octet-stream;base64,";
         if( dat.indexOf( search ) == 0 ){
             var b64 = dat.substring( search.length );
@@ -112,10 +104,12 @@ function handleFile( file ){
             alert( "number of tracks=" + vsq.Track.length );
             for( var i = 0; i < vsq.Track.length; i++ ){
                 alert( "track#" + i );
-                alert( "number of events=" + vsq.Track[i].getEventCount() );
-                for( var itr = vsq.Track[i].getNoteEventIterator(); itr.hasNext(); ){
-                    var item = itr.next();
-                    alert( "clock=" + item.Clock );
+                var vsq_track = vsq.Track[i];
+                alert( "number of events=" + vsq_track.getEventCount() );
+                var c = vsq_track.getEventCount();
+                for( var j = 0; j < c; j++ ){
+                    var item = vsq_track.getEvent( j );
+                    alert( "clock=" + item.Clock + "; ID.type=" + item.ID.type );
                 }
             }
         }

@@ -120,8 +120,8 @@ if( org.kbinani.vsq.VsqMetaText == undefined ){
             }
             if ( this.Events != null ) {
                 res.Events = new org.kbinani.vsq.VsqEventList();
-                for ( var i = 0; i < this.Events.length; i++ ) {
-                    var item = this.Events[i];
+                for ( var i = 0; i < this.Events.getCount(); i++ ) {
+                    var item = this.Events.getElement( i );
                     res.Events.push( item.clone(), item.InternalID );
                 }
             }
@@ -662,6 +662,7 @@ if( org.kbinani.vsq.VsqMetaText == undefined ){
 
             var last_line = new org.kbinani.ByRef( sr.readLine() );
             while ( true ) {
+//alert( "VsqMetaText#_init_1; last_line.value=" + last_line.value );
                 // "TextMemoryStreamから順次読込み"
                 if ( last_line.value.length == 0 ) {
                     break;
@@ -762,6 +763,7 @@ if( org.kbinani.vsq.VsqMetaText == undefined ){
             //var c = __id.size();
             for ( var i in __id ) {
                 var id = __id[i];
+alert( "VsqMetaText#_init_1; i=" + i + "; id.IconHandle_index=" + id.IconHandle_index + "; id.LyricHandle_index=" + id.LyricHandle_index + "; id.NoteHeadHandle_index=" + id.NoteHeadHandle_index );
                 if ( __handle[id.IconHandle_index] != undefined ) {
                     if ( id.type == org.kbinani.vsq.VsqIDType.Singer ) {
                         id.IconHandle = __handle[id.IconHandle_index].castToIconHandle();
@@ -868,7 +870,7 @@ if( org.kbinani.vsq.VsqMetaText == undefined ){
             ish.Language = 0;
             ish.Program = 0;
             id.IconHandle = ish;
-            this.Events.push( new org.kbiani.vsq.VsqEvent( 0, id ) );
+            this.Events.add( new org.kbiani.vsq.VsqEvent( 0, id ) );
         },
     };
 

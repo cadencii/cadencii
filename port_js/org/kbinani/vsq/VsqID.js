@@ -60,6 +60,11 @@ if( org.kbinani.vsq.VsqID == undefined ){
          * [IconDynamicsHandle]
          */
         this.IconDynamicsHandle = null;
+        if( arguments.length == 1 ){
+            this._init_1( arguments[0] );
+        }else if( arguments.length == 3 ){
+            this._init_3( arguments[0], arguments[1], arguments[2] );
+        }
     };
 
     org.kbinani.vsq.VsqID.EOS = new org.kbinani.vsq.VsqID();
@@ -90,7 +95,7 @@ if( org.kbinani.vsq.VsqID == undefined ){
             var last_line = arguments[2];
             var spl;
             this.value = value;
-            this.type = VsqIDType.Unknown;
+            this.type = org.kbinani.vsq.VsqIDType.Unknown;
             this.IconHandle_index = -2;
             this.LyricHandle_index = -1;
             this.VibratoHandle_index = -1;
@@ -105,18 +110,18 @@ if( org.kbinani.vsq.VsqID == undefined ){
             this.DEMaccent = 50;
             this.VibratoDelay = 0;
             last_line.value = sr.readLine();
-            while ( last_line.indexOf( "[" ) !== 0 ) {
+            while ( last_line.value.indexOf( "[" ) !== 0 ) {
                 spl = last_line.value.split( '=' );
                 var search = spl[0];
                 if ( search == "Type" ) {
                     if ( spl[1] == "Anote" ) {
-                        type = org.kbinani.vsq.VsqIDType.Anote;
+                        this.type = org.kbinani.vsq.VsqIDType.Anote;
                     } else if ( spl[1] == "Singer" ) {
-                        type = org.kbinani.vsq.VsqIDType.Singer;
+                        this.type = org.kbinani.vsq.VsqIDType.Singer;
                     } else if ( spl[1] == "Aicon" ) {
-                        type = org.kbinani.vsq.VsqIDType.Aicon;
+                        this.type = org.kbinani.vsq.VsqIDType.Aicon;
                     } else {
-                        type = org.kbinani.vsq.VsqIDType.Unknown;
+                        this.type = org.kbinani.vsq.VsqIDType.Unknown;
                     }
                 } else if ( search == "Length" ) {
                     this.setLength( parseInt( spl[1], 10 ) );
@@ -178,7 +183,7 @@ if( org.kbinani.vsq.VsqID == undefined ){
             if ( this.IconHandle != null ) {
                 result.IconHandle = this.IconHandle.clone();
             }
-            result.setLength( getLength() );
+            result.setLength( this.getLength() );
             result.Note = this.Note;
             result.Dynamics = this.Dynamics;
             result.PMBendDepth = this.PMBendDepth;
@@ -212,7 +217,7 @@ if( org.kbinani.vsq.VsqID == undefined ){
         toString : function() {
             var ret = "{Type=" + this.type;
             if ( this.type == org.kbinani.vsq.VsqIDType.Anote ) {
-                ret += ", Length=" + getLength();
+                ret += ", Length=" + this.getLength();
                 ret += ", Note#=" + this.Note;
                 ret += ", Dynamics=" + this.Dynamics;
                 ret += ", PMBendDepth=" + this.PMBendDepth;

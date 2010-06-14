@@ -18,15 +18,15 @@ if( org.kbinani.ValuePair == undefined ){
     org.kbinani.ValuePair = function(){
         this._key = null;
         this._value = null;
+        if( arguments.length == 2 ){
+            this._init_2( arguments[0], arguments[1] );
+        }
     };
 
     org.kbinani.ValuePair.prototype = {
-        init : function(){
-            if( arguments.length == 2 ){
-                this._key = arguments[0];
-                this._value = arguments[1];
-            }
-            return this;
+        _init_2 : function( key, value ){
+            this._key = key;
+            this._value = value;
         },
 
         /**

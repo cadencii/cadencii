@@ -85,7 +85,7 @@ if( org.kbinani.vsq.VibratoBPList == undefined ){
          */
         clone : function() {
             var ret = new org.kbinani.vsq.VibratoBPList();
-            for ( var i = 0; i < m_list.length; i++ ) {
+            for ( var i = 0; i < this.m_list.length; i++ ) {
                 ret.m_list.push( new org.kbinani.vsqVibratoBPPair( this.m_list[i].X, this.m_list[i].Y ) );
             }
             return ret;
@@ -121,7 +121,7 @@ if( org.kbinani.vsq.VibratoBPList == undefined ){
         getData : function() {
             var ret = "";
             for ( var i = 0; i < this.m_list.length; i++ ) {
-                ret += (i == 0 ? "" : ",") + m_list[i].X + "=" + m_list[i].Y;
+                ret += (i == 0 ? "" : ",") + this.m_list[i].X + "=" + this.m_list[i].Y;
             }
             return ret;
         },

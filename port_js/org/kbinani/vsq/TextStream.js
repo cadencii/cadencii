@@ -108,8 +108,8 @@ if( org.kbinani.vsq.TextStream == undefined ){
          */
         writeLine : function( str ) {
             var len = str.length;
-            var newSize = length + len + 1;
-            var offset = length;
+            var newSize = this.length + len + 1;
+            var offset = this.length;
             this._ensureCapacity( newSize );
             for ( var i = 0; i < len; i++ ) {
                 this.array[offset + i] = str.charAt( i );
@@ -124,6 +124,17 @@ if( org.kbinani.vsq.TextStream == undefined ){
         close : function() {
             this.array = null;
             this.length = 0;
+        },
+
+        /**
+         *
+         */
+        toString : function(){
+            var ret = "";
+            for( var i = 0; i < this.length; i++ ){
+                ret += this.array[i];
+            }
+            return ret;
         },
     };
 

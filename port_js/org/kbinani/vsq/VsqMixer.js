@@ -108,7 +108,7 @@ if( org.kbinani.vsq.VsqMixer == undefined ){
                 spl2 = spl[i].split( "=" );
                 if ( spl2[0].indexOf( "Feder" ) === 0 ) {
                     ind = spl2[0].replace( "Feder", "" );
-                    index = PortUtil.parseInt( ind );
+                    index = parseInt( ind, 10 );
                     this.Slave[index].Feder = parseInt( spl2[1], 10 );
                 } else if ( spl2[0].indexOf( "Panpot" ) === 0 ) {
                     ind = spl2[0].replace( "Panpot", "" );

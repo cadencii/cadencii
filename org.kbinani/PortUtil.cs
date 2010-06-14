@@ -1237,6 +1237,7 @@ namespace org.kbinani {
             int i = 1;
             while( index < 0 && i < separator.length ){
                 index = remain.indexOf( separator[i] );
+                i++;
             }
             int added_count = 0;
             while( index >= 0 ){

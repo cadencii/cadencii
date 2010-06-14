@@ -51,7 +51,7 @@ if( org.kbinani.vsq.VsqEventList == undefined ){
          * @return [VsqEvent]
          */
         findFromID : function( internal_id ) {
-            var index = findIndexFromID( internal_id );
+            var index = this.findIndexFromID( internal_id );
             if ( 0 <= index && index < this.Events.length ) {
                 return this.Events[index];
             } else {
@@ -98,7 +98,7 @@ if( org.kbinani.vsq.VsqEventList == undefined ){
          * @return [ArrayIterator(VsqEven)]
          */
         iterator : function() {
-            updateIDList();
+            this.updateIDList();
             return new org.kbinani.ArrayIterator( this.Events );
         },
 
@@ -116,7 +116,7 @@ if( org.kbinani.vsq.VsqEventList == undefined ){
             if( arguments.length == 1 ){
                 var item = arguments[0];
                 var id = getNextId( 0 );
-                _addCor( item, id );
+                this._addCor( item, id );
                 this.Events.sort( org.kbinani.vsq.VsqEvent.compare );
                 var count = this.Events.length;
                 for ( var i = 0; i < count; i++ ) {
@@ -126,7 +126,7 @@ if( org.kbinani.vsq.VsqEventList == undefined ){
             }else if ( arguments.length == 2 ){
                 var item = arguments[0];
                 var internal_id = arguments[1];
-                _addCor( item, internal_id );
+                this._addCor( item, internal_id );
                 return internal_id;
             }
             return -1;
@@ -138,7 +138,7 @@ if( org.kbinani.vsq.VsqEventList == undefined ){
          * @return [void]
          */
         _addCor : function( item, internal_id ){
-            updateIDList();
+            this.updateIDList();
             item.InternalID = internal_id;
             this.Events.push( item );
             this._m_ids.push( internal_id );
@@ -149,7 +149,7 @@ if( org.kbinani.vsq.VsqEventList == undefined ){
          * @return [void]
          */
         removeAt : function( index ) {
-            updateIDList();
+            this.updateIDList();
             this.Events.splice( index, 1 );
             this._m_ids.splice( index, 1 );
         },
@@ -159,7 +159,7 @@ if( org.kbinani.vsq.VsqEventList == undefined ){
          * @return [int]
          */
         _getNextId : function( next ) {
-            updateIDList();
+            this.updateIDList();
             var max = -1;
             for( var i = 0; i < this._m_ids.length; i++ ){
                 max = Math.max( max, this._m_ids[i] );

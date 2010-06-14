@@ -81,7 +81,7 @@ if( org.kbinani.vsq.VsqHandle == undefined ){
          * @return [LyricHandle]
          */
         castToLyricHandle : function() {
-            var ret = new LyricHandle();
+            var ret = new org.kbinani.vsq.LyricHandle();
             ret.L0 = this.L0;
             ret.Index = this.Index;
             ret.Trailing = this.Trailing;
@@ -92,7 +92,7 @@ if( org.kbinani.vsq.VsqHandle == undefined ){
          * @return [VsqHandle]
          */
         castToVibratoHandle : function() {
-            var ret = new VibratoHandle();
+            var ret = new org.kbinani.vsq.VibratoHandle();
             ret.Index = this.Index;
             ret.setCaption( this.Caption );
             ret.setDepthBP( this.DepthBP.clone() );
@@ -111,7 +111,7 @@ if( org.kbinani.vsq.VsqHandle == undefined ){
          * @return [IconHandle]
          */
         castToIconHandle : function() {
-            var ret = new IconHandle();
+            var ret = new org.kbinani.vsq.IconHandle();
             ret.Index = this.Index;
             ret.Caption = this.Caption;
             ret.IconID = this.IconID;
@@ -128,13 +128,13 @@ if( org.kbinani.vsq.VsqHandle == undefined ){
          * @return [NoteHeadHandle]
          */
         castToNoteHeadHandle : function() {
-            var ret = new NoteHeadHandle();
+            var ret = new org.kbinani.vsq.NoteHeadHandle();
             ret.setCaption( this.Caption );
             ret.setDepth( this.Depth );
             ret.setDuration( this.Duration );
             ret.IconID = this.IconID;
             ret.IDS = this.IDS;
-            ret.setLength( getLength() );
+            ret.setLength( this.getLength() );
             ret.Original = this.Original;
             return ret;
         },
@@ -143,14 +143,14 @@ if( org.kbinani.vsq.VsqHandle == undefined ){
          * @return [IconDynamicsHandle]
          */
         castToIconDynamicsHandle : function() {
-            var ret = new IconDynamicsHandle();
+            var ret = new org.kbinani.vsq.IconDynamicsHandle();
             ret.IDS = this.IDS;
             ret.IconID = this.IconID;
             ret.Original = this.Original;
             ret.setCaption( this.Caption );
             ret.setDynBP( this.DynBP );
             ret.setEndDyn( this.EndDyn );
-            ret.setLength( getLength() );
+            ret.setLength( this.getLength() );
             ret.setStartDyn( this.StartDyn );
             return ret;
         },

@@ -31,10 +31,10 @@ if( org.kbinani.vsq.Lyric == undefined ){
             var len = line.length;
             if ( len == 0 ) {
                 this.Phrase = "a";
-                setPhoneticSymbol( "a" );
+                this.setPhoneticSymbol( "a" );
                 this.UnknownFloat = 0.0;
                 this.PhoneticSymbolProtected = false;
-                setConsonantAdjustment( "0" );
+                this.setConsonantAdjustment( "0" );
                 return;
             }
             var indx = -1;
@@ -58,7 +58,7 @@ if( org.kbinani.vsq.Lyric == undefined ){
                                     this.Phrase = "a";
                                 }
                             } else {
-                                Phrase = work;
+                                this.Phrase = work;
                             }
                             work = "";
                         } else if ( indx == 1 ) {
@@ -74,7 +74,7 @@ if( org.kbinani.vsq.Lyric == undefined ){
                             } else {
                                 symbols = work;
                             }
-                            setPhoneticSymbol( symbols );
+                            this.setPhoneticSymbol( symbols );
                             work = "";
                         } else if ( indx == 2 ) {
                             // UnknownFloat
@@ -105,7 +105,7 @@ if( org.kbinani.vsq.Lyric == undefined ){
                     }
                 }
             }
-            setConsonantAdjustment( consonant_adjustment );
+            this.setConsonantAdjustment( consonant_adjustment );
         }else if( arguments.length == 2 ){
             var phrase = arguments[0];
             var phonetic_symbol = arguments[1];
@@ -153,7 +153,7 @@ if( org.kbinani.vsq.Lyric == undefined ){
          */
         getConsonantAdjustment : function() {
             var ret = "";
-            var arr = getConsonantAdjustmentList();
+            var arr = this.getConsonantAdjustmentList();
             for ( var i = 0; i < arr.length; i++ ) {
                 ret += (i == 0 ? "" : " ") + arr[i];
             }
@@ -173,7 +173,7 @@ if( org.kbinani.vsq.Lyric == undefined ){
                 var v = parseInt( spl[i], 10 );
                 arr[i] = v;
             }
-            setConsonantAdjustmentList( arr );
+            this.setConsonantAdjustmentList( arr );
         },
 
         /**
@@ -182,17 +182,17 @@ if( org.kbinani.vsq.Lyric == undefined ){
          * @return [int[]]
          */
         getConsonantAdjustmentList : function() {
-            if ( m_consonant_adjustment == null ) {
-                if ( m_phonetic_symbol == null ) {
-                    m_consonant_adjustment = new Array();
+            if ( this.m_consonant_adjustment == null ) {
+                if ( this.m_phonetic_symbol == null ) {
+                    this.m_consonant_adjustment = new Array();
                 } else {
-                    m_consonant_adjustment = new Array( m_phonetic_symbol.length );
-                    for ( var i = 0; i < m_phonetic_symbol.length; i++ ) {
-                        m_consonant_adjustment[i] = org.kbinani.vsq.VsqPhoneticSymbol.isConsonant( m_phonetic_symbol[i] ) ? 64 : 0;
+                    this.m_consonant_adjustment = new Array( this.m_phonetic_symbol.length );
+                    for ( var i = 0; i < this.m_phonetic_symbol.length; i++ ) {
+                        this.m_consonant_adjustment[i] = org.kbinani.vsq.VsqPhoneticSymbol.isConsonant( this.m_phonetic_symbol[i] ) ? 64 : 0;
                     }
                 }
             }
-            return m_consonant_adjustment;
+            return this.m_consonant_adjustment;
         },
 
         /**
@@ -239,7 +239,7 @@ if( org.kbinani.vsq.Lyric == undefined ){
          * @return [String]
          */
         getPhoneticSymbol : function() {
-            var symbol = getPhoneticSymbolList();
+            var symbol = this.getPhoneticSymbolList();
             var ret = "";
             for ( var i = 0; i < symbol.length; i++ ) {
                 ret += (i == 0 ? "" : " ") + symbol[i];
@@ -255,7 +255,7 @@ if( org.kbinani.vsq.Lyric == undefined ){
          */
         setPhoneticSymbol : function( value ) {
             var s = value.replace( "  ", " " );
-            this.m_phonetic_symbol = org.kbinani.vsq.PortUtil.splitString( s, new Array( " " ), 16, true );
+            this.m_phonetic_symbol = org.kbinani.PortUtil.splitString( s, new Array( " " ), 16, true );
             for ( var i = 0; i < this.m_phonetic_symbol.length; i++ ) {
                 this.m_phonetic_symbol[i] = this.m_phonetic_symbol[i].replace( "\\" + "\\", "\\" );
             }
@@ -282,8 +282,8 @@ if( org.kbinani.vsq.Lyric == undefined ){
             var quot = (add_quatation_mark ? "\"" : "");
             var result;
             result = quot + this.Phrase + quot + ",";
-            var symbol = getPhoneticSymbolList();
-            var strSymbol = getPhoneticSymbol();
+            var symbol = this.getPhoneticSymbolList();
+            var strSymbol = this.getPhoneticSymbol();
             if( !add_quatation_mark ){
                 if( strSymbol == null || (strSymbol != null && strSymbol == "" ) ){
                     strSymbol = "u:";

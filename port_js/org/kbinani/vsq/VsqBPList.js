@@ -21,7 +21,7 @@ if( org.kbinani.vsq.VsqBPList == undefined ){
     /// </summary>
     org.kbinani.vsq.VsqBPList = function(){
         this.clocks = null;
-        this.tems = null;
+        this.items = null;
         this.length = 0; // clocks, itemsに入っているアイテムの個数
         this.defaultValue = 0;
         this.maxValue = 127;
@@ -107,17 +107,21 @@ if( org.kbinani.vsq.VsqBPList == undefined ){
          */
         _ensureBufferLength : function( _length ) {
             if ( this.clocks == null ) {
-                this.clocks = new Array( org.kbinani.vsq.VsqBPList.INIT_BUFLEN );
+                this.clocks = new Array( _length );
             }
             if ( this.items == null ) {
-                this.items = new Array( org.kbinani.vsq.VsqBPList.INIT_BUFLEN );
+                this.items = new Array();
+                for( var i = 0; i < _length; i++ ){
+                    this.items.push( new org.kbinani.vsq.VsqBPPair() );
+                }
             }
+//alert( "VsqBPList#_ensureBufferLength; _length=" + length + "; this.clocks.length=" + this.clocks.length );
             if ( _length > this.clocks.length ) {
                 var newLength = _length;
                 if ( this.length <= 0 ) {
                     newLength = Math.floor( _length * 1.2 );
                 } else {
-                    var order = Math.floor( _length / this.clocks.Length );
+                    var order = Math.floor( _length / this.clocks.length );
                     if ( order <= 1 ) {
                         order = 2;
                     }
@@ -218,7 +222,7 @@ if( org.kbinani.vsq.VsqBPList == undefined ){
                 }
                 var clock = parseInt( spl2[0], 10 );
                 if( !isNaN( clock ) ){
-                    _ensureBufferLength( this.length + 1 );
+                    this._ensureBufferLength( this.length + 1 );
                     this.clocks[length] = clock;
                     this.items[length] = new org.kbinani.vsq.VsqBPPair( parseInt( spl2[1], 10 ), this.maxId + 1 );
                     this.maxId++;
@@ -282,9 +286,9 @@ if( org.kbinani.vsq.VsqBPList == undefined ){
          * @return [void]
          */
         remove : function( clock ) {
-            _ensureBufferLength( this.length );
+            this._ensureBufferLength( this.length );
             var index = _find( clock );
-            removeElementAt( index );
+            this.removeElementAt( index );
         },
 
         /**
@@ -306,7 +310,7 @@ if( org.kbinani.vsq.VsqBPList == undefined ){
          * @return [bool]
          */
         isContainsKey : function( clock ) {
-            _ensureBufferLength( this.length );
+            this._ensureBufferLength( this.length );
             return (_find( clock ) >= 0);
         },
 
@@ -321,7 +325,7 @@ if( org.kbinani.vsq.VsqBPList == undefined ){
          * @return [void]
          */
         move : function( clock, new_clock, new_value ) {
-            _ensureBufferLength( this.length );
+            this._ensureBufferLength( this.length );
             var index = _find( clock );
             if ( index < 0 ) {
                 return;
@@ -339,7 +343,7 @@ if( org.kbinani.vsq.VsqBPList == undefined ){
                 return;
             } else {
                 this.length++;
-                _ensureBufferLength( this.length );
+                this._ensureBufferLength( this.length );
                 this.clocks[this.length - 1] = new_clock;
                 org.kbinani.PortUtil.sort( clocks, 0, length );
                 index_new = _find( new_clock );
@@ -363,7 +367,7 @@ if( org.kbinani.vsq.VsqBPList == undefined ){
          * @return [int]
          */
         getElement : function( index ) {
-            return getElementA( index );
+            return this.getElementA( index );
         },
 
         /**
@@ -542,7 +546,7 @@ if( org.kbinani.vsq.VsqBPList == undefined ){
                 var ch = reader.get();
                 if ( ch == '\n' ) {
                     if ( mode == 1 ) {
-                        _addWithoutSort( clock, value * minus );
+                        this._addWithoutSort( clock, value * minus );
                         mode = 0;
                         clock = 0;
                         value = 0;
@@ -552,7 +556,7 @@ if( org.kbinani.vsq.VsqBPList == undefined ){
                 }
                 if ( ch == '[' ) {
                     if ( mode == 1 ) {
-                        _addWithoutSort( clock, value * minus );
+                        this._addWithoutSort( clock, value * minus );
                         mode = 0;
                         clock = 0;
                         value = 0;
@@ -632,16 +636,16 @@ if( org.kbinani.vsq.VsqBPList == undefined ){
         /**
          * 並べ替え，既存の値との重複チェックを行わず，リストの末尾にデータ点を追加する
          *
-         * @param clock [int]
+         * @param _clock [int]
          * @param value [int]
          * @return [void]
          */
-        _addWithoutSort : function( clock, value ) {
-            _ensureBufferLength( this.length + 1 );
-            this.clocks[length] = clock;
+        _addWithoutSort : function( _clock, value ) {
+            this._ensureBufferLength( this.length + 1 );
+            this.clocks[this.length] = _clock;
             this.maxId++;
             this.items[this.length].value = value;
-            this.items[this.length].id = maxId;
+            this.items[this.length].id = this.maxId;
             this.length++;
         },
 
@@ -651,7 +655,7 @@ if( org.kbinani.vsq.VsqBPList == undefined ){
          * @return [long]
          */
         add : function( clock, value ) {
-            _ensureBufferLength( length );
+            this._ensureBufferLength( length );
             var index = _find( clock );
             if ( index >= 0 ) {
                 var v = this.items[index];
@@ -660,7 +664,7 @@ if( org.kbinani.vsq.VsqBPList == undefined ){
                 return v.id;
             } else {
                 this.length++;
-                _ensureBufferLength( this.length );
+                this._ensureBufferLength( this.length );
                 this.clocks[this.length - 1] = clock;
                 org.kbinani.PortUtil.sort( this.clocks, 0, this.length );
                 index = _find( clock );
@@ -680,7 +684,7 @@ if( org.kbinani.vsq.VsqBPList == undefined ){
          * @return [void]
          */
         addWithID : function( clock, value, id ) {
-            _ensureBufferLength( this.length );
+            this._ensureBufferLength( this.length );
             var index = _find( clock );
             if ( index >= 0 ) {
                 var v = this.items[index];
@@ -689,7 +693,7 @@ if( org.kbinani.vsq.VsqBPList == undefined ){
                 this.items[index] = v;
             } else {
                 this.length++;
-                _ensureBufferLength( this.length );
+                this._ensureBufferLength( this.length );
                 this.clocks[this.length - 1] = clock;
                 org.kbinani.PortUtil.sort( this.clocks, 0, this.length );
                 index = _find( clock );
@@ -723,7 +727,7 @@ if( org.kbinani.vsq.VsqBPList == undefined ){
          * @return [int]
          */
         getValue : function( clock ) {
-            _ensureBufferLength( this.length );
+            this._ensureBufferLength( this.length );
             var index = _find( clock );
             if ( index >= 0 ) {
                 return this.items[index].value;

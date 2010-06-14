@@ -57,7 +57,12 @@ if( org.kbinani.vsq.VsqCommon == undefined ){
     };
 
     org.kbinani.vsq.VsqCommon.prototype = {
-        _init_2 : function( text_stream, last_line ){
+        /**
+         * @param sr [TextStream]
+         * @param last_line [ByRef<string>]
+         * @return [void]
+         */
+        _init_2 : function( sr, last_line ){
             this.Version = "";
             this.Name = "";
             this.Color = "0,0,0";
