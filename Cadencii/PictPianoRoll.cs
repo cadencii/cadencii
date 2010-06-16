@@ -358,7 +358,7 @@ namespace org.kbinani.cadencii {
                             premeasure_start_x = key_width;
                         }
                         int premeasure_end_x = (int)(vsq.getPreMeasureClocks() * scalex + xoffset);
-                        if ( premeasure_start_x >= key_width ) {
+                        if ( premeasure_end_x >= key_width ) {
                             if ( note_is_whitekey ) {
                                 g.setColor( s_brs_153_153_153 );
                                 g.fillRect( premeasure_start_x, y,
