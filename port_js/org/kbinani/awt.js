@@ -1,11 +1,11 @@
 ﻿/*
- * awt.cs
+ * awt.js
  * Copyright (C) 2009-2010 kbinani
  *
  * This file is part of org.kbinani.
  *
  * org.kbinani is free software; you can redistribute it and/or
- * modify it under the terms of the BSD License.
+ * modify it under the terms of the GPLv3 License.
  *
  * org.kbinani is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -163,11 +163,11 @@ org.kbinani.java.awt.Graphics.prototype = {
         m_font = font.font;
     }*/
 
-    /*public void drawString( string str, float x, float y ) {
-        nativeGraphics.DrawString( str, m_font, brush, x, y );
-    }
+    drawString : function( str, x, y ) {
+        this.nativeGraphics.fillText( str, x, y );
+    },
 
-    public void drawPolygon( Polygon p ) {
+    /*public void drawPolygon( Polygon p ) {
         drawPolygon( p.xpoints, p.ypoints, p.npoints );
     }
 
@@ -424,40 +424,46 @@ org.kbinani.java.awt.Color.yellow = new org.kbinani.java.awt.Color( 255, 255, 0 
  */
 org.kbinani.java.awt.Color.YELLOW = new org.kbinani.java.awt.Color( 255, 255, 0 );
 
-/*    [Serializable]
-    public struct Rectangle : Shape {
-        public int height;
-        public int width;
-        public int x;
-        public int y;
+org.kbinani.java.awt.Rectangle = function(){
+    this.height = 0;
+    this.width = 0;
+    this.x = 0;
+    this.y = 0;
+    if( arguments.length == 1 ){
+        this._init_1( arguments[0] );
+    }else if( arguments.length == 2 ){
+        this._init_2( arguments[0], arguments[1] );
+    }else if( arguments.length == 4 ){
+        this._init_4( arguments[0], arguments[1], arguments[2], arguments[3] );
+    }
+};
 
-        public Rectangle( int width_, int height_ ) {
-            x = 0;
-            y = 0;
-            width = width_;
-            height = height_;
-        }
+org.kbinani.java.awt.Rectangle.prototype = {
+    _init_2 : function( width_, height_ ) {
+        this.x = 0;
+        this.y = 0;
+        this.width = width_;
+        this.height = height_;
+    },
 
-        public Rectangle( int x_, int y_, int width_, int height_ ) {
-            x = x_;
-            y = y_;
-            width = width_;
-            height = height_;
-        }
+    _init_4 : function( x_, y_, width_, height_ ) {
+        this.x = x_;
+        this.y = y_;
+        this.width = width_;
+        this.height = height_;
+    },
 
-        public Rectangle( Rectangle r ) {
-            x = r.x;
-            y = r.y;
-            width = r.width;
-            height = r.height;
-        }
+    _init_1 : function( r ) {
+        this.x = r.x;
+        this.y = r.y;
+        this.width = r.width;
+        this.height = r.height;
+    },
 
-#if !JAVA
-        public override string ToString() {
-            return "{x=" + x + ", y=" + y + ", width=" + width + ", height=" + height + "}";
-        }
-#endif
-    }*/
+    toString : function() {
+        return "{x=" + this.x + ", y=" + this.y + ", width=" + this.width + ", height=" + this.height + "}";
+    },
+};
 
 org.kbinani.java.awt.Point = function(){
     this.x = 0;

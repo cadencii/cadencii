@@ -5,7 +5,7 @@
  * This file is part of org.kbinani.vsq.
  *
  * org.kbinani.vsq is free software; you can redistribute it and/or
- * modify it under the terms of the BSD License.
+ * modify it under the terms of the GPLv3 License.
  *
  * org.kbinani.vsq is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -132,7 +132,7 @@ if( org.kbinani.vsq.VsqFile == undefined ){
             if ( master == null ) {
                 this.Master = new org.kbinani.vsq.VsqMaster( 4 );
             } else {
-                this.Master = this.master.clone();
+                this.Master = master.clone();
             }
             var mixer = this.Track[1].getMixer();
             if ( mixer == null ) {
@@ -142,20 +142,18 @@ if( org.kbinani.vsq.VsqFile == undefined ){
                     this.Mixer.Slave.push( new org.kbinani.vsq.VsqMixerEntry() );
                 }
             } else {
-                this.Mixer = this.mixer.clone();
+                this.Mixer = mixer.clone();
             }
             this.Track[1].setMaster( null );
             this.Track[1].setMixer( null );
 
             var master_track = -1;
             for ( var i = 0; i < this.Track.length; i++ ) {
-alert( "VsqFile#init; this.Track[i].getName()=" + this.Track[i].getName() );
                 if ( this.Track[i].getName() == "Master Track" ) {
                     master_track = i;
                     break;
                 }
             }
-alert( "VsqFile#init; master_track=" + master_track );
             var prev_tempo;
             var prev_index;
             var prev_time;
@@ -2401,31 +2399,31 @@ alert( "VsqFile#init; master_track=" + master_track );
                 }
             }
             return TempoTable.get( index ).Tempo;
-        }
+        }*/
 
-        /// <summary>
-        /// 指定した小節の開始クロックを調べます。ここで使用する小節数は、プリメジャーを考慮しない。即ち、曲頭の小節が0である。
-        /// </summary>
-        /// <param name="bar_count"></param>
-        /// <returns></returns>
-        public int getClockFromBarCount( int bar_count ) {
-            int index = 0;
-            int c = TimesigTable.size();
-            for ( int i = c - 1; i >= 0; i-- ) {
+        /**
+         * 指定した小節の開始クロックを調べます。ここで使用する小節数は、プリメジャーを考慮しない。即ち、曲頭の小節が0である。
+         * @param bar_count [int]
+         */
+        getClockFromBarCount : function( bar_count ) {
+            var index = 0;
+            var c = this.TimesigTable.length;
+            for ( var i = c - 1; i >= 0; i-- ) {
                 index = i;
-                if ( TimesigTable.get( i ).BarCount <= bar_count ) {
+                if ( this.TimesigTable[i].BarCount <= bar_count ) {
                     break;
                 }
             }
-            TimeSigTableEntry item = TimesigTable.get( index );
-            int numerator = item.Numerator;
-            int denominator = item.Denominator;
-            int init_clock = item.Clock;
-            int init_bar_count = item.BarCount;
-            int clock_per_bar = numerator * 480 * 4 / denominator;
+            var item = this.TimesigTable[index];
+            var numerator = item.Numerator;
+            var denominator = item.Denominator;
+            var init_clock = item.Clock;
+            var init_bar_count = item.BarCount;
+            var clock_per_bar = numerator * 480 * 4 / denominator;
             return init_clock + (bar_count - init_bar_count) * clock_per_bar;
-        }
+        },
 
+        /*
         /// <summary>
         /// 指定したクロックが、曲頭から何小節目に属しているかを調べます。ここで使用する小節数は、プリメジャーを考慮しない。即ち、曲頭の小節が0である。
         /// </summary>
@@ -2464,7 +2462,6 @@ alert( "VsqFile#init; master_track=" + master_track );
          * @return [void]
          */
         updateTimesigInfo : function() {
-  alert( "VsqFile#updateTimesigInfo; this.TimesigTable.length=" + this.TimesigTable.length );
             if ( this.TimesigTable[0].Clock !== 0 ) {
                 return;
             }

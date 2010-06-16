@@ -5,7 +5,7 @@
  * This file is part of org.kbinani.vsq.
  *
  * org.kbinani.vsq is free software; you can redistribute it and/or
- * modify it under the terms of the BSD License.
+ * modify it under the terms of the GPLv3 License.
  *
  * org.kbinani.vsq is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -86,7 +86,7 @@ if( org.kbinani.vsq.VibratoBPList == undefined ){
         clone : function() {
             var ret = new org.kbinani.vsq.VibratoBPList();
             for ( var i = 0; i < this.m_list.length; i++ ) {
-                ret.m_list.push( new org.kbinani.vsqVibratoBPPair( this.m_list[i].X, this.m_list[i].Y ) );
+                ret.m_list.push( new org.kbinani.vsq.VibratoBPPair( this.m_list[i].X, this.m_list[i].Y ) );
             }
             return ret;
         },

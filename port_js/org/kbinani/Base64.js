@@ -1,6 +1,16 @@
 /*
+ * ValuePair.js
  * Copyright (C) 1999 Masanao Izumo <iz@onicos.co.jp>
  * Copyright (C) 2010 kbinani <kbinani@msn.com>,
+ *
+ * This file is part of org.kbinani.
+ *
+ * org.kbinani is free software; you can redistribute it and/or
+ * modify it under the terms of the GPLv3 License.
+ *
+ * org.kbinani is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  *
  * this library is modified version of "http://www.onicos.com/staff/iz/amuse/javascript/expert/base64.txt"
  */

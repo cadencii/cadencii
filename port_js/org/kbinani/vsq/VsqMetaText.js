@@ -1,11 +1,11 @@
 ﻿/*
- * VsqMetaText.cs
+ * VsqMetaText.js
  * Copyright (C) 2008-2010 kbinani
  *
  * This file is part of org.kbinani.vsq.
  *
  * Boare.Lib.Vsq is free software; you can redistribute it and/or
- * modify it under the terms of the BSD License.
+ * modify it under the terms of the GPLv3 License.
  *
  * Boare.Lib.Vsq is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -763,7 +763,6 @@ if( org.kbinani.vsq.VsqMetaText == undefined ){
             //var c = __id.size();
             for ( var i in __id ) {
                 var id = __id[i];
-alert( "VsqMetaText#_init_1; i=" + i + "; id.IconHandle_index=" + id.IconHandle_index + "; id.LyricHandle_index=" + id.LyricHandle_index + "; id.NoteHeadHandle_index=" + id.NoteHeadHandle_index );
                 if ( __handle[id.IconHandle_index] != undefined ) {
                     if ( id.type == org.kbinani.vsq.VsqIDType.Singer ) {
                         id.IconHandle = __handle[id.IconHandle_index].castToIconHandle();
@@ -870,7 +869,7 @@ alert( "VsqMetaText#_init_1; i=" + i + "; id.IconHandle_index=" + id.IconHandle_
             ish.Language = 0;
             ish.Program = 0;
             id.IconHandle = ish;
-            this.Events.add( new org.kbiani.vsq.VsqEvent( 0, id ) );
+            this.Events.add( new org.kbinani.vsq.VsqEvent( 0, id ) );
         },
     };
 

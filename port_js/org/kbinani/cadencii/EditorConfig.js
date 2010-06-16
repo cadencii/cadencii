@@ -20,59 +20,59 @@ if( org.kbinani.cadencii.EditorConfig == undefined ){
     /// Cadenciiの環境設定
     /// </summary>
     org.kbinani.cadencii.EditorConfig = function(){
-        org.kbinani.cadencii.EditorConfig.DefaultPreMeasure = 4;
-        org.kbinani.cadencii.EditorConfig.DefaultSingerName = "Miku";
-        org.kbinani.cadencii.EditorConfig.DefaultXScale = 65;
-        org.kbinani.cadencii.EditorConfig.BaseFontName = "MS UI Gothic";
-        org.kbinani.cadencii.EditorConfig.BaseFontSize = 9.0;
-        org.kbinani.cadencii.EditorConfig.ScreenFontName = "MS UI Gothic";
-        org.kbinani.cadencii.EditorConfig.WheelOrder = 20;
-        org.kbinani.cadencii.EditorConfig.CursorFixed = false;
+        this.DefaultPreMeasure = 4;
+        this.DefaultSingerName = "Miku";
+        this.DefaultXScale = 65;
+        this.BaseFontName = "MS UI Gothic";
+        this.BaseFontSize = 9.0;
+        this.ScreenFontName = "MS UI Gothic";
+        this.WheelOrder = 20;
+        this.CursorFixed = false;
         /// <summary>
         /// RecentFilesに登録することの出来る最大のファイル数
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.NumRecentFiles = 5;
+        this.NumRecentFiles = 5;
         /// <summary>
         /// 最近使用したファイルのリスト
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.RecentFiles = new Array();
-        org.kbinani.cadencii.EditorConfig.DefaultPMBendDepth = 8;
-        org.kbinani.cadencii.EditorConfig.DefaultPMBendLength = 0;
-        org.kbinani.cadencii.EditorConfig.DefaultPMbPortamentoUse = 3;
-        org.kbinani.cadencii.EditorConfig.DefaultDEMdecGainRate = 50;
-        org.kbinani.cadencii.EditorConfig.DefaultDEMaccent = 50;
-        org.kbinani.cadencii.EditorConfig.ShowLyric = true;
-        org.kbinani.cadencii.EditorConfig.ShowExpLine = true;
+        this.RecentFiles = new Array();
+        this.DefaultPMBendDepth = 8;
+        this.DefaultPMBendLength = 0;
+        this.DefaultPMbPortamentoUse = 3;
+        this.DefaultDEMdecGainRate = 50;
+        this.DefaultDEMaccent = 50;
+        this.ShowLyric = true;
+        this.ShowExpLine = true;
         /*public DefaultVibratoLengthEnum DefaultVibratoLength = DefaultVibratoLengthEnum.L66;*/
-        org.kbinani.cadencii.EditorConfig.DefaultVibratoRate = 64;
-        org.kbinani.cadencii.EditorConfig.DefaultVibratoDepth = 64;
+        this.DefaultVibratoRate = 64;
+        this.DefaultVibratoDepth = 64;
         /*public AutoVibratoMinLengthEnum AutoVibratoMinimumLength = AutoVibratoMinLengthEnum.L1;*/
-        org.kbinani.cadencii.EditorConfig.AutoVibratoType1 = "$04040001";
-        org.kbinani.cadencii.EditorConfig.AutoVibratoType2 = "$04040001";
-        org.kbinani.cadencii.EditorConfig.EnableAutoVibrato = true;
-        org.kbinani.cadencii.EditorConfig.PxTrackHeight = 14;
-        org.kbinani.cadencii.EditorConfig.MouseDragIncrement = 50;
-        org.kbinani.cadencii.EditorConfig.MouseDragMaximumRate = 600;
-        org.kbinani.cadencii.EditorConfig.MixerVisible = false;
-        org.kbinani.cadencii.EditorConfig.PreSendTime = 500;
+        this.AutoVibratoType1 = "$04040001";
+        this.AutoVibratoType2 = "$04040001";
+        this.EnableAutoVibrato = true;
+        this.PxTrackHeight = 14;
+        this.MouseDragIncrement = 50;
+        this.MouseDragMaximumRate = 600;
+        this.MixerVisible = false;
+        this.PreSendTime = 500;
         /*public ClockResolution ControlCurveResolution = ClockResolution.L30;*/
-        org.kbinani.cadencii.EditorConfig.Language = "";
+        this.Language = "";
         /// <summary>
         /// マウスの操作などの許容範囲。プリメジャーにPxToleranceピクセルめり込んだ入力を行っても、エラーにならない。(補正はされる)
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.PxTolerance = 10;
+        this.PxTolerance = 10;
         /// <summary>
         /// マウスホイールでピアノロールを水平方向にスクロールするかどうか。
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.ScrollHorizontalOnWheel = true;
+        this.ScrollHorizontalOnWheel = true;
         /// <summary>
         /// 画面描画の最大フレームレート
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.MaximumFrameRate = 15;
+        this.MaximumFrameRate = 15;
         /// <summary>
         /// ユーザー辞書のOn/Offと順序
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.UserDictionaries = new Array();
+        this.UserDictionaries = new Array();
         /// <summary>
         /// 実行環境
         /// </summary>
@@ -92,32 +92,32 @@ if( org.kbinani.cadencii.EditorConfig == undefined ){
         /// </summary>
         public ToolStripLocation ToolMeasureLocation = new ToolStripLocation( new Point( 212, 25 ), ToolStripLocation.ParentPanel.Top );*/
         /*public ToolStripLocation ToolFileLocation = new ToolStripLocation( new Point( 461, 0 ), ToolStripLocation.ParentPanel.Top );*/
-        org.kbinani.cadencii.EditorConfig.WindowMaximized = false;
+        this.WindowMaximized = false;
         /*public Rectangle WindowRect = new Rectangle( 0, 0, 970, 718 );*/
         /// <summary>
         /// hScrollのスクロールボックスの最小幅(px)
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.MinimumScrollHandleWidth = 20;
+        this.MinimumScrollHandleWidth = 20;
         /// <summary>
         /// 発音記号入力モードを，維持するかどうか
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.KeepLyricInputMode = false;
+        this.KeepLyricInputMode = false;
         /// <summary>
         /// 最後に使用したVSQファイルへのパス
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.LastVsqPath = "";
+        this.LastVsqPath = "";
         /// <summary>
         /// ピアノロールの何もないところをクリックした場合、右クリックでもプレビュー音を再生するかどうか
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.PlayPreviewWhenRightClick = false;
+        this.PlayPreviewWhenRightClick = false;
         /// <summary>
         /// ゲームコントローラで、異なるイベントと識別する最小の時間間隔(millisec)
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.GameControlerMinimumEventInterval = 100;
+        this.GameControlerMinimumEventInterval = 100;
         /// <summary>
         /// カーブの選択範囲もクオンタイズするかどうか
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.CurveSelectingQuantized = true;
+        this.CurveSelectingQuantized = true;
 
         /*private QuantizeMode m_position_quantize = QuantizeMode.p32;
         private boolean m_position_quantize_triplet = false;
@@ -127,80 +127,80 @@ if( org.kbinani.cadencii.EditorConfig == undefined ){
         /// <summary>
         /// Button index of "△"
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.GameControlerTriangle = 0;
+        this.GameControlerTriangle = 0;
         /// <summary>
         /// Button index of "○"
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.GameControlerCircle = 1;
+        this.GameControlerCircle = 1;
         /// <summary>
         /// Button index of "×"
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.GameControlerCross = 2;
+        this.GameControlerCross = 2;
         /// <summary>
         /// Button index of "□"
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.GameControlerRectangle = 3;
+        this.GameControlerRectangle = 3;
         /// <summary>
         /// Button index of "L1"
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.GameControlL1 = 4;
+        this.GameControlL1 = 4;
         /// <summary>
         /// Button index of "R1"
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.GameControlR1 = 5;
+        this.GameControlR1 = 5;
         /// <summary>
         /// Button index of "L2"
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.GameControlL2 = 6;
+        this.GameControlL2 = 6;
         /// <summary>
         /// Button index of "R2"
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.GameControlR2 = 7;
+        this.GameControlR2 = 7;
         /// <summary>
         /// Button index of "SELECT"
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.GameControlSelect = 8;
+        this.GameControlSelect = 8;
         /// <summary>
         /// Button index of "START"
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.GameControlStart = 9;
+        this.GameControlStart = 9;
         /// <summary>
         /// Button index of Left Stick
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.GameControlStirckL = 10;
+        this.GameControlStirckL = 10;
         /// <summary>
         /// Button index of Right Stick
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.GameControlStirckR = 11;
-        org.kbinani.cadencii.EditorConfig.CurveVisibleVelocity = true;
-        org.kbinani.cadencii.EditorConfig.CurveVisibleAccent = true;
-        org.kbinani.cadencii.EditorConfig.CurveVisibleDecay = true;
-        org.kbinani.cadencii.EditorConfig.CurveVisibleVibratoRate = true;
-        org.kbinani.cadencii.EditorConfig.CurveVisibleVibratoDepth = true;
-        org.kbinani.cadencii.EditorConfig.CurveVisibleDynamics = true;
-        org.kbinani.cadencii.EditorConfig.CurveVisibleBreathiness = true;
-        org.kbinani.cadencii.EditorConfig.CurveVisibleBrightness = true;
-        org.kbinani.cadencii.EditorConfig.CurveVisibleClearness = true;
-        org.kbinani.cadencii.EditorConfig.CurveVisibleOpening = true;
-        org.kbinani.cadencii.EditorConfig.CurveVisibleGendorfactor = true;
-        org.kbinani.cadencii.EditorConfig.CurveVisiblePortamento = true;
-        org.kbinani.cadencii.EditorConfig.CurveVisiblePit = true;
-        org.kbinani.cadencii.EditorConfig.CurveVisiblePbs = true;
-        org.kbinani.cadencii.EditorConfig.CurveVisibleHarmonics = false;
-        org.kbinani.cadencii.EditorConfig.CurveVisibleFx2Depth = false;
-        org.kbinani.cadencii.EditorConfig.CurveVisibleReso1 = false;
-        org.kbinani.cadencii.EditorConfig.CurveVisibleReso2 = false;
-        org.kbinani.cadencii.EditorConfig.CurveVisibleReso3 = false;
-        org.kbinani.cadencii.EditorConfig.CurveVisibleReso4 = false;
-        org.kbinani.cadencii.EditorConfig.CurveVisibleEnvelope = false;
-        org.kbinani.cadencii.EditorConfig.GameControlPovRight = 9000;
-        org.kbinani.cadencii.EditorConfig.GameControlPovLeft = 27000;
-        org.kbinani.cadencii.EditorConfig.GameControlPovUp = 0;
-        org.kbinani.cadencii.EditorConfig.GameControlPovDown = 18000;
+        this.GameControlStirckR = 11;
+        this.CurveVisibleVelocity = true;
+        this.CurveVisibleAccent = true;
+        this.CurveVisibleDecay = true;
+        this.CurveVisibleVibratoRate = true;
+        this.CurveVisibleVibratoDepth = true;
+        this.CurveVisibleDynamics = true;
+        this.CurveVisibleBreathiness = true;
+        this.CurveVisibleBrightness = true;
+        this.CurveVisibleClearness = true;
+        this.CurveVisibleOpening = true;
+        this.CurveVisibleGendorfactor = true;
+        this.CurveVisiblePortamento = true;
+        this.CurveVisiblePit = true;
+        this.CurveVisiblePbs = true;
+        this.CurveVisibleHarmonics = false;
+        this.CurveVisibleFx2Depth = false;
+        this.CurveVisibleReso1 = false;
+        this.CurveVisibleReso2 = false;
+        this.CurveVisibleReso3 = false;
+        this.CurveVisibleReso4 = false;
+        this.CurveVisibleEnvelope = false;
+        this.GameControlPovRight = 9000;
+        this.GameControlPovLeft = 27000;
+        this.GameControlPovUp = 0;
+        this.GameControlPovDown = 18000;
         /// <summary>
         /// wave波形を表示するかどうか
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.ViewWaveform = false;
+        this.ViewWaveform = false;
         /*
         /// <summary>
         /// キーボードからの入力に使用するデバイス
@@ -231,27 +231,27 @@ if( org.kbinani.cadencii.EditorConfig == undefined ){
         public RgbColor PianorollColorAquesToneBar = new RgbColor( 7, 107, 175 );
         public RgbColor PianorollColorAquesToneBeat = new RgbColor( 234, 190, 62 );*/
 
-        org.kbinani.cadencii.EditorConfig.ViewAtcualPitch = false;
-        org.kbinani.cadencii.EditorConfig.InvokeUtauCoreWithWine = false;
+        this.ViewAtcualPitch = false;
+        this.InvokeUtauCoreWithWine = false;
         /*public Vector<SingerConfig> UtauSingers = new Vector<SingerConfig>();*/
-        org.kbinani.cadencii.EditorConfig.PathResampler = "";
-        org.kbinani.cadencii.EditorConfig.PathWavtool = "";
+        this.PathResampler = "";
+        this.PathWavtool = "";
         /// <summary>
         /// ベジエ制御点を掴む時の，掴んだと判定する際の誤差．制御点の外輪からPxToleranceBezierピクセルずれていても，掴んだと判定する．
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.PxToleranceBezier = 10;
+        this.PxToleranceBezier = 10;
         /// <summary>
         /// 歌詞入力においてローマ字が入力されたとき，Cadencii側でひらがなに変換するかどうか
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.SelfDeRomanization = false;
+        this.SelfDeRomanization = false;
         /// <summary>
         /// openMidiDialogで最後に選択された拡張子
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.LastUsedExtension = ".vsq";
+        this.LastUsedExtension = ".vsq";
         /// <summary>
         /// ミキサーダイアログを常に手前に表示するかどうか
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.MixerTopMost = false;
+        this.MixerTopMost = false;
         /*public Vector<ValuePairOfStringArrayOfKeys> ShortcutKeys = new Vector<ValuePairOfStringArrayOfKeys>();
         /// <summary>
         /// リアルタイム再生時の再生速度
@@ -261,33 +261,33 @@ if( org.kbinani.cadencii.EditorConfig == undefined ){
         public byte MidiProgramBell = 9;
         public byte MidiNoteNormal = 65;
         public byte MidiNoteBell = 65;*/
-        org.kbinani.cadencii.EditorConfig.MidiRingBell = true;
-        org.kbinani.cadencii.EditorConfig.MidiPreUtterance = 0;
+        this.MidiRingBell = true;
+        this.MidiPreUtterance = 0;
         /*public MidiPortConfig MidiDeviceMetronome = new MidiPortConfig();
         public MidiPortConfig MidiDeviceGeneral = new MidiPortConfig();*/
-        org.kbinani.cadencii.EditorConfig.MetronomeEnabled = true;
+        this.MetronomeEnabled = true;
         /*public PropertyPanelState PropertyWindowStatus = new PropertyPanelState();*/
         /// <summary>
         /// 概観ペインが表示されているかどうか
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.OverviewEnabled = false;
-        org.kbinani.cadencii.EditorConfig.OverviewScaleCount = 5;
+        this.OverviewEnabled = false;
+        this.OverviewScaleCount = 5;
         /*public FormMidiImExportConfig MidiImExportConfigExport = new FormMidiImExportConfig();
         public FormMidiImExportConfig MidiImExportConfigImport = new FormMidiImExportConfig();
         public FormMidiImExportConfig MidiImExportConfigImportVsq = new FormMidiImExportConfig();*/
-        org.kbinani.cadencii.EditorConfig.AutoBackupIntervalMinutes = 10;
+        this.AutoBackupIntervalMinutes = 10;
         /// <summary>
         /// 鍵盤の表示幅、ピクセル,AppManager.keyWidthに代入。
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.KeyWidth = 68;
+        this.KeyWidth = 68;
         /// <summary>
         /// スペースキーを押しながら左クリックで、中ボタンクリックとみなす動作をさせるかどうか。
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.UseSpaceKeyAsMiddleButtonModifier = false;
+        this.UseSpaceKeyAsMiddleButtonModifier = false;
         /// <summary>
         /// AquesToneのVSTi dllへのパス
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.PathAquesTone = "";
+        this.PathAquesTone = "";
         /*
         /// <summary>
         /// アイコンパレット・ウィンドウの位置
@@ -296,11 +296,11 @@ if( org.kbinani.cadencii.EditorConfig == undefined ){
         /// <summary>
         /// アイコンパレット・ウィンドウを常に手前に表示するかどうか
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.FormIconTopMost = true;
+        this.FormIconTopMost = true;
         /// <summary>
         /// 前回エクスポートしたMusicXmlのパス
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.LastMusicXmlPath = "";
+        this.LastMusicXmlPath = "";
         /*
         /// <summary>
         /// 最初に戻る、のショートカットキー
@@ -309,11 +309,11 @@ if( org.kbinani.cadencii.EditorConfig == undefined ){
         /// <summary>
         /// waveファイル出力時のチャンネル数（1または2）
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.WaveFileOutputChannel = 2;
+        this.WaveFileOutputChannel = 2;
         /// <summary>
         /// waveファイル出力時に、全トラックをmixして出力するかどうか
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.WaveFileOutputFromMasterTrack = false;
+        this.WaveFileOutputFromMasterTrack = false;
         /*
         /// <summary>
         /// MTCスレーブ動作を行う際使用するMIDI INポートの設定
@@ -322,36 +322,36 @@ if( org.kbinani.cadencii.EditorConfig == undefined ){
         /// <summary>
         /// プロジェクトごとのキャッシュディレクトリを使うかどうか
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.UseProjectCache = true;
+        this.UseProjectCache = true;
         /// <summary>
         /// 鍵盤用のキャッシュが無いとき、FormGenerateKeySoundを表示しないかどうか。
         /// trueなら表示しない、falseなら表示する（デフォルト）
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.DoNotAskKeySoundGeneration = false;
+        this.DoNotAskKeySoundGeneration = false;
         /// <summary>
         /// VOCALOID1 (1.0)のDLLを読み込まない場合true。既定ではfalse
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.DoNotUseVocaloid100 = false;
+        this.DoNotUseVocaloid100 = false;
         /// <summary>
         /// VOCALOID1 (1.1)のDLLを読み込まない場合true。既定ではfalse
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.DoNotUseVocaloid101 = false;
+        this.DoNotUseVocaloid101 = false;
         /// <summary>
         /// VOCALOID2のDLLを読み込まない場合true。既定ではfalse
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.DoNotUseVocaloid2 = false;
+        this.DoNotUseVocaloid2 = false;
         /// <summary>
         /// AquesToneのDLLを読み込まない場合true。既定ではfalse
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.DoNotUseAquesTone = false;
+        this.DoNotUseAquesTone = false;
         /// <summary>
         /// 2個目のVOCALOID1 DLLを読み込むかどうか。既定ではfalse
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.LoadSecondaryVocaloid1Dll = false;
+        this.LoadSecondaryVocaloid1Dll = false;
         /// <summary>
         /// WAVE再生時のバッファーサイズ。既定では1000ms。
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.BufferSizeMilliSeconds = 1000;
+        this.BufferSizeMilliSeconds = 1000;
         /*
         /// <summary>
         /// トラックを新規作成するときのデフォルトの音声合成システム
@@ -360,7 +360,7 @@ if( org.kbinani.cadencii.EditorConfig == undefined ){
         /// <summary>
         /// 自動ビブラートを作成するとき，ユーザー定義タイプのビブラートを利用するかどうか．デフォルトではfalse
         /// </summary>
-        org.kbinani.cadencii.EditorConfig.UseUserDefinedAutoVibratoType = false;
+        this.UseUserDefinedAutoVibratoType = false;
     };
 
     /*

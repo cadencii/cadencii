@@ -4,10 +4,10 @@ function dragenter( e ){
 
 var dropbox;
 var keyA, keyB, bar;
-var filename;
 var pictPianoRoll;
 var m_mouse_down_x, m_mouse_down_y, m_stdx, m_stdy;
 var mouseDowned = false;
+var _PX_ACCENT_HEADER = 21;
 
 function init(){
     window.addEventListener( "dragenter", dragenter, true );
@@ -15,7 +15,7 @@ function init(){
     window.addEventListener( "dragleave", dragleave, true );
     dropbox.addEventListener( "dragover", dragover, true );
     dropbox.addEventListener( "drop", drop, true );
-    filename = document.getElementById( "filename" );
+    updateDrawObjectList();
     pictPianoRoll = document.getElementById( "pictPianoroll" );
     pictPianoRoll.addEventListener( "mousemove", pictPianoRoll_mouseMove, true );
     pictPianoRoll.addEventListener( "mousedown", pictPianoRoll_mouseDown, true );
@@ -65,11 +65,16 @@ function pictPianoRoll_paint( context ){
     var s_pen_212_212_212 = new org.kbinani.java.awt.Color( 212, 212, 212 );
     var s_brs_125_123_124 = new org.kbinani.java.awt.Color( 125, 123, 124 );
     var s_brs_072_077_098 = new org.kbinani.java.awt.Color( 72, 77, 98 );
+    var s_pen_160_160_160 = new org.kbinani.java.awt.Color( 160, 160, 160 );
+    var s_pen_105_105_105 = new org.kbinani.java.awt.Color( 105, 105, 105 );
+    var s_note_fill = new org.kbinani.java.awt.Color( 181, 220, 86 );
+    var s_pen_125_123_124 = new org.kbinani.java.awt.Color( 125, 123, 124 );
 
-    /*PolylineDrawer commonDrawer = new PolylineDrawer( g, 1024 );
-    VsqFileEx vsq = AppManager.getVsqFile();
-    int selected = AppManager.getSelected();
-    VsqTrack vsq_track = vsq.Track.get( selected );*/
+
+    /*PolylineDrawer commonDrawer = new PolylineDrawer( g, 1024 );*/
+    var vsq = org.kbinani.cadencii.AppManager.getVsqFile();
+    var selected = org.kbinani.cadencii.AppManager.getSelected();
+    var vsq_track = vsq.Track[selected];
 
     var width = pictPianoRoll.getAttribute( "width" );
     var height = pictPianoRoll.getAttribute( "height" );
@@ -79,7 +84,7 @@ function pictPianoRoll_paint( context ){
     var stdy = org.kbinani.cadencii.AppManager.getStartToDrawY();
     var stdx = org.kbinani.cadencii.AppManager.getStartToDrawX();
     var key_width = org.kbinani.cadencii.AppManager.keyWidth;
-    var track_height = 14; //int track_height = AppManager.editorConfig.PxTrackHeight;
+    var track_height = org.kbinani.cadencii.AppManager.editorConfig.PxTrackHeight;
     var half_track_height = track_height / 2;
     /*
     // [screen_x] = 67 + [clock] * ScaleX - StartToDrawX + 6
@@ -155,7 +160,7 @@ function pictPianoRoll_paint( context ){
     g.drawLine( 2, height - 1, width - 1, height - 1 );
 
     // ピアノロール本体
-    //if ( vsq != null ) {
+    if ( vsq != null ) {
         var odd = -1;
         y = 128 * track_height - stdy;
         dy = -track_height;
@@ -232,7 +237,7 @@ function pictPianoRoll_paint( context ){
             }
 
         }
-    //}
+    }
 
     //ピアノロールと鍵盤部分の縦線
     var hilighted_note = -1;
@@ -345,283 +350,259 @@ function pictPianoRoll_paint( context ){
             str = "UTAU";
         }
         g.drawString( str, key_width + 10, 10 + AppManager.baseFont50Height / 2 - AppManager.baseFont50OffsetHeight + 1 );
-    }
+    }*/
 
-    #region トラックのエントリを描画
-    if ( AppManager.drawObjects != null ) {
-        if ( AppManager.isOverlay() ) {
+    // トラックのエントリを描画
+    if ( org.kbinani.cadencii.AppManager.drawObjects != null ) {
+        /*if ( org.kbinani.cadencii.AppManager.isOverlay() ) {
             // まず、選択されていないトラックの簡易表示を行う
-            lock ( AppManager.drawObjects ) {
-                int c = AppManager.drawObjects.size();
-                for ( int i = 0; i < c; i++ ) {
-                    if ( i == selected - 1 ) {
+            var c = AppManager.drawObjects.size();
+            for ( var i = 0; i < c; i++ ) {
+                if ( i == selected - 1 ) {
+                    continue;
+                }
+                var target_list = org.kbinani.cadencii.AppManager.drawObjects[i];
+                var j_start = org.kbinani.cadencii.AppManager.drawStartIndex[i];
+                var first = true;
+                var shift_center = half_track_height;
+                var target_list_count = target_list.size();
+                for ( var j = j_start; j < target_list_count; j++ ) {
+                    var dobj = target_list[j];
+                    if ( dobj.type != org.kbinani.cadencii.DrawObjectType.Note ) {
                         continue;
                     }
-                    Vector<DrawObject> target_list = AppManager.drawObjects.get( i );
-                    int j_start = AppManager.drawStartIndex[i];
-                    boolean first = true;
-                    int shift_center = half_track_height;
-                    int target_list_count = target_list.size();
-                    for ( int j = j_start; j < target_list_count; j++ ) {
-                        DrawObject dobj = target_list.get( j );
-                        if ( dobj.type != DrawObjectType.Note ) {
-                            continue;
-                        }
-                        int x = dobj.pxRectangle.x + key_width - stdx;
-                        y = dobj.pxRectangle.y - stdy;
-                        int lyric_width = dobj.pxRectangle.width;
-                        if ( x + lyric_width < 0 ) {
-                            continue;
-                        } else if ( width < x ) {
-                            break;
-                        }
-                        if ( AppManager.isPlaying() && first ) {
-                            AppManager.drawStartIndex[i] = j;
-                            first = false;
-                        }
-                        if ( y + track_height < 0 || y > height ) {
-                            continue;
-                        }
-                        g.setColor( AppManager.HILIGHT[i] );
-                        g.drawLine( x + 1, y + shift_center,
-                                    x + lyric_width - 1, y + shift_center );
-                        g.setColor( s_HIDDEN[i] );
-                        g.drawPolyline( new int[] { x, x + 1, x + lyric_width - 1, x + lyric_width, x + lyric_width - 1, x + 1, x },
-                                        new int[] { y + shift_center, y + shift_center - 1, y + shift_center - 1, y + shift_center, y + shift_center + 1, y + shift_center + 1, y + shift_center },
-                                        7 );
+                    var x = dobj.pxRectangle.x + key_width - stdx;
+                    y = dobj.pxRectangle.y - stdy;
+                    var lyric_width = dobj.pxRectangle.width;
+                    if ( x + lyric_width < 0 ) {
+                        continue;
+                    } else if ( width < x ) {
+                        break;
                     }
+                    if ( org.kbinani.cadencii.AppManager.isPlaying() && first ) {
+                        org.kbinani.cadencii.AppManager.drawStartIndex[i] = j;
+                        first = false;
+                    }
+                    if ( y + track_height < 0 || y > height ) {
+                        continue;
+                    }
+                    g.setColor( org.kbinani.cadencii.AppManager.HILIGHT[i] );
+                    g.drawLine( x + 1, y + shift_center,
+                                x + lyric_width - 1, y + shift_center );
+                    g.setColor( s_HIDDEN[i] );
+                    g.drawPolyline( new int[] { x, x + 1, x + lyric_width - 1, x + lyric_width, x + lyric_width - 1, x + 1, x },
+                                    new int[] { y + shift_center, y + shift_center - 1, y + shift_center - 1, y + shift_center, y + shift_center + 1, y + shift_center + 1, y + shift_center },
+                                    7 );
                 }
             }
-        }
+        }*/
 
         // 選択されているトラックの表示を行う
-        boolean show_lyrics = AppManager.editorConfig.ShowLyric;
-        boolean show_exp_line = AppManager.editorConfig.ShowExpLine;
+        var show_lyrics = org.kbinani.cadencii.AppManager.editorConfig.ShowLyric;
+        var show_exp_line = org.kbinani.cadencii.AppManager.editorConfig.ShowExpLine;
         if ( selected >= 1 ) {
-            Shape r = g.getClip();
+            /*Shape r = g.getClip();
             g.clipRect( key_width, 0,
-                        width - key_width, height );
-            int j_start = AppManager.drawStartIndex[selected - 1];
+                        width - key_width, height );*/
+            var j_start = 0;/* org.kbinani.cadencii.AppManager.drawStartIndex[selected - 1];*/
 
-            boolean first = true;
-            lock ( AppManager.drawObjects ) { //ここでロックを取得しないと、描画中にUpdateDrawObjectのサイズが0になる可能性がある
-                if ( selected - 1 < AppManager.drawObjects.size() ) {
-                    Vector<DrawObject> target_list = AppManager.drawObjects.get( selected - 1 );
-                    VsqBPList pit = vsq_track.MetaText.PIT;
-                    VsqBPList pbs = vsq_track.MetaText.PBS;
+            var first = true;
+            //lock ( AppManager.drawObjects ) { //ここでロックを取得しないと、描画中にUpdateDrawObjectのサイズが0になる可能性がある
+            if ( selected - 1 < org.kbinani.cadencii.AppManager.drawObjects.length ) {
+                var target_list = org.kbinani.cadencii.AppManager.drawObjects[selected - 1];
+                var pit = vsq_track.MetaText.PIT;
+                var pbs = vsq_track.MetaText.PBS;
 
-                    int c = target_list.size();
-                    for ( int j = j_start; j < c; j++ ) {
-                        DrawObject dobj = target_list.get( j );
-                        int x = dobj.pxRectangle.x + key_width - stdx;
-                        y = dobj.pxRectangle.y - stdy;
-                        int lyric_width = dobj.pxRectangle.width;
-                        if ( x + lyric_width < 0 ) {
-                            continue;
-                        } else if ( width < x ) {
-                            break;
-                        }
-                        if ( AppManager.isPlaying() && first ) {
-                            AppManager.drawStartIndex[selected - 1] = j;
-                            first = false;
-                        }
-                        if ( y + 2 * track_height < 0 || y > height ) {
-                            continue;
-                        }
+                var c = target_list.length;
+                for ( var j = j_start; j < c; j++ ) {
+                    var dobj = target_list[j];
+                    var x = dobj.pxRectangle.x + key_width - stdx;
+                    y = dobj.pxRectangle.y - stdy;
+                    var lyric_width = dobj.pxRectangle.width;
+                    if ( x + lyric_width < 0 ) {
+                        continue;
+                    } else if ( width < x ) {
+                        break;
+                    }
+                    if ( org.kbinani.cadencii.AppManager.isPlaying() && first ) {
+                        org.kbinani.cadencii.AppManager.drawStartIndex[selected - 1] = j;
+                        first = false;
+                    }
+                    if ( y + 2 * track_height < 0 || y > height ) {
+                        continue;
+                    }
 
-                        if ( dobj.type == DrawObjectType.Note ) {
-                            #region Note
-                            Color id_fill;
-                            if ( AppManager.getSelectedEventCount() > 0 ) {
-                                boolean found = AppManager.isSelectedEventContains( selected, dobj.internalID );
-                                if ( found ) {
-                                    id_fill = AppManager.getHilightColor();
-                                } else {
-                                    id_fill = s_note_fill;
-                                }
+                    if ( dobj.type == org.kbinani.cadencii.DrawObjectType.Note ) {
+                        // Note
+                        var id_fill;
+                        if ( org.kbinani.cadencii.AppManager.getSelectedEventCount() > 0 ) {
+                            var found = org.kbinani.cadencii.AppManager.isSelectedEventContains( selected, dobj.internalID );
+                            if ( found ) {
+                                id_fill = Aorg.kbinani.cadencii.AppManager.getHilightColor();
                             } else {
                                 id_fill = s_note_fill;
                             }
-                            g.setColor( id_fill );
-                            g.fillRect( x, y + 1, lyric_width, track_height - 1 );
-                            Font lyric_font = dobj.symbolProtected ? AppManager.baseFont10Bold : AppManager.baseFont10;
-                            if ( dobj.overlappe ) {
-                                g.setColor( s_pen_125_123_124 );
-                                g.drawRect( x, y + 1, lyric_width, track_height - 1 );
-                                if ( show_lyrics ) {
-                                    g.setFont( lyric_font );
-                                    g.setColor( s_brs_147_147_147 );
-                                    g.drawString( dobj.text, x + 1, y + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
-                                }
-                            } else {
-                                g.setColor( s_pen_125_123_124 );
-                                g.drawRect( x, y + 1, lyric_width, track_height - 1 );
-                                if ( show_lyrics ) {
-                                    g.setFont( lyric_font );
-                                    g.setColor( Color.black );
-                                    g.drawString( dobj.text, x + 1, y + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
-                                }
-                                if ( show_exp_line && lyric_width > 21 ) {
-                                    #region 表情線
-                                    DrawAccentLine( g, new Point( x, y + track_height + 1 ), dobj.accent );
-                                    int vibrato_start = x + lyric_width;
-                                    int vibrato_end = x;
-                                    if ( dobj.pxVibratoDelay <= lyric_width ) {
-                                        int vibrato_delay = dobj.pxVibratoDelay;
-                                        int vibrato_width = dobj.pxRectangle.width - vibrato_delay;
-                                        vibrato_start = x + vibrato_delay;
-                                        vibrato_end = x + vibrato_delay + vibrato_width;
-                                        if ( vibrato_start - x < 21 ) {
-                                            vibrato_start = x + 21;
-                                        }
-                                    }
-                                    g.setColor( s_pen_051_051_000 );
-                                    g.drawLine( x + 21, y + track_height + 7,
-                                                vibrato_start, y + track_height + 7 );
-                                    if ( dobj.pxVibratoDelay <= lyric_width ) {
-                                        int next_draw = vibrato_start;
-                                        if ( vibrato_start < vibrato_end ) {
-                                            drawVibratoLine( g,
-                                                             new Point( vibrato_start, y + track_height + 1 ),
-                                                             vibrato_end - vibrato_start );
-                                        }
-                                    }
-                                    #endregion
-                                }
-                                // ビブラートがあれば
-                                if ( AppManager.editorConfig.ViewAtcualPitch ) {
-                                    if ( dobj.vibRate != null ) {
-                                        int vibrato_delay = dobj.pxVibratoDelay;
-                                        int vibrato_width = dobj.pxRectangle.width - vibrato_delay;
-                                        int vibrato_start = x + vibrato_delay;
-                                        int vibrato_end = x + vibrato_delay + vibrato_width;
-                                        int cl_sx = AppManager.clockFromXCoord( vibrato_start );
-                                        int cl_ex = AppManager.clockFromXCoord( vibrato_end );
-                                        drawVibratoPitchbend( g,
-                                                              dobj.vibRate,
-                                                              dobj.vibStartRate,
-                                                              dobj.vibDepth,
-                                                              dobj.vibStartDepth,
-                                                              dobj.note,
-                                                              vibrato_start,
-                                                              vibrato_width );
-                                    }
-                                }
-
-                                #region ピッチベンド
-                                if ( AppManager.editorConfig.ViewAtcualPitch || AppManager.curveOnPianoroll ) {
-                                    int cl_start = dobj.clock;
-                                    int cl_end = cl_start + dobj.length;
-
-                                    commonDrawer.clear();
-#if !JAVA
-                                    //g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-#endif
-                                    g.setColor( Color.blue );
-                                    g.setStroke( getStroke2px() );
-                                    // この音符の範囲についてのみ，ピッチベンド曲線を描く
-                                    int lasty = int.MinValue;
-                                    ByRef<Integer> indx_pit = new ByRef<Integer>( 0 );
-                                    ByRef<Integer> indx_pbs = new ByRef<Integer>( 0 );
-                                    for ( int cl = cl_start; cl < cl_end; cl++ ) {
-                                        int vpit = pit.getValue( cl, indx_pit );
-                                        int vpbs = pbs.getValue( cl, indx_pbs );
-
-                                        float delta = vpit * (float)vpbs / 8192.0f;
-                                        float note = dobj.note + delta;
-
-                                        int py = AppManager.yCoordFromNote( note ) + half_track_height;
-                                        if ( cl + 1 == cl_end ) {
-                                            int px = AppManager.xCoordFromClocks( cl + 1 );
-                                            commonDrawer.append( px, lasty );
-                                        } else {
-                                            if ( py == lasty ) {
-                                                continue;
-                                            }
-                                            int px = AppManager.xCoordFromClocks( cl );
-                                            if ( cl != cl_start ) {
-                                                commonDrawer.append( px, lasty );
-                                            }
-                                            commonDrawer.append( px, py );
-                                            lasty = py;
-                                        }
-                                    }
-                                    commonDrawer.flush();
-#if !JAVA
-                                    g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
-#endif
-                                    g.setStroke( getStrokeDefault() );
-                                }
-                                #endregion
-                            }
-                            #endregion
-                        } else if ( dobj.type == DrawObjectType.Dynaff ) {
-                            #region Dynaff
-                            Color fill = s_dynaff_fill;
-                            if ( AppManager.isSelectedEventContains( selected, dobj.internalID ) ) {
-                                fill = s_dynaff_fill_highlight;
-                            }
-                            g.setColor( fill );
-                            g.fillRect( x, y, 40, track_height );
-                            g.setColor( s_pen_125_123_124 );
-                            g.drawRect( x, y, 40, track_height );
-                            g.setColor( Color.black );
-                            g.setFont( AppManager.baseFont10 );
-                            if ( dobj.overlappe ) {
-                                g.setColor( s_brs_147_147_147 );
-                            }
-                            String str = dobj.text;
-#if DEBUG
-                            str += "(" + dobj.internalID + ")";
-#endif
-                            g.drawString( str, x + 1, y + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
-                            #endregion
                         } else {
-                            #region Crescend and Descrescend
-                            int xend = x + lyric_width;
-                            Color fill = s_dynaff_fill;
-                            if ( AppManager.isSelectedEventContains( selected, dobj.internalID ) ) {
-                                fill = s_dynaff_fill_highlight;
-                            }
-                            g.setColor( fill );
-                            g.fillRect( x, y, xend - x, track_height );
+                            id_fill = s_note_fill;
+                        }
+                        g.setColor( id_fill );
+                        g.fillRect( x, y + 1, lyric_width, track_height - 1 );
+                        /*var lyric_font = dobj.symbolProtected ? AppManager.baseFont10Bold : AppManager.baseFont10;*/
+                        if ( dobj.overlappe ) {
                             g.setColor( s_pen_125_123_124 );
-                            g.drawRect( x, y, xend - x, track_height );
-                            if ( dobj.overlappe ) {
+                            g.drawRect( x, y + 1, lyric_width, track_height - 1 );
+                            if ( show_lyrics ) {
+                                //g.setFont( lyric_font );
                                 g.setColor( s_brs_147_147_147 );
-                            } else {
-                                g.setColor( Color.black );
+                                g.drawString( dobj.text, x + 1, y + half_track_height /*- AppManager.baseFont10OffsetHeight*/ + 1 );
                             }
-                            g.setFont( AppManager.baseFont10 );
-                            String str = dobj.text;
-#if DEBUG
-                            str += "(" + dobj.internalID + ")";
-#endif
-                            g.drawString( str, x + 1, y + track_height + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
-#if !JAVA
-                            System.Drawing.Drawing2D.SmoothingMode old = g.nativeGraphics.SmoothingMode;
-                            g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-#endif
-                            if ( dobj.type == DrawObjectType.Crescend ) {
-                                g.drawLine( xend - 2, y + 4, x + 3, y + half_track_height );
-                                g.drawLine( x + 3, y + half_track_height, xend - 2, y + track_height - 3 );
-                            } else if ( dobj.type == DrawObjectType.Decrescend ) {
-                                g.drawLine( x + 3, y + 4, xend - 2, y + half_track_height );
-                                g.drawLine( xend - 2, y + half_track_height, x + 3, y + track_height - 3 );
+                        } else {
+                            g.setColor( s_pen_125_123_124 );
+                            g.drawRect( x, y + 1, lyric_width, track_height - 1 );
+                            if ( show_lyrics ) {
+                                //g.setFont( lyric_font );
+                                g.setColor( org.kbinani.java.awt.Color.black );
+                                g.drawString( dobj.text, x + 1, y + half_track_height /*- AppManager.baseFont10OffsetHeight*/ + 1 );
                             }
+                            if ( show_exp_line && lyric_width > 21 ) {
+                                // 表情線
+                                /*DrawAccentLine( g, new Point( x, y + track_height + 1 ), dobj.accent );
+                                int vibrato_start = x + lyric_width;
+                                int vibrato_end = x;
+                                if ( dobj.pxVibratoDelay <= lyric_width ) {
+                                    int vibrato_delay = dobj.pxVibratoDelay;
+                                    int vibrato_width = dobj.pxRectangle.width - vibrato_delay;
+                                    vibrato_start = x + vibrato_delay;
+                                    vibrato_end = x + vibrato_delay + vibrato_width;
+                                    if ( vibrato_start - x < 21 ) {
+                                        vibrato_start = x + 21;
+                                    }
+                                }
+                                g.setColor( s_pen_051_051_000 );
+                                g.drawLine( x + 21, y + track_height + 7,
+                                            vibrato_start, y + track_height + 7 );
+                                if ( dobj.pxVibratoDelay <= lyric_width ) {
+                                    int next_draw = vibrato_start;
+                                    if ( vibrato_start < vibrato_end ) {
+                                        drawVibratoLine( g,
+                                                         new Point( vibrato_start, y + track_height + 1 ),
+                                                         vibrato_end - vibrato_start );
+                                    }
+                                }*/
+                            }
+                            // ビブラートがあれば
+                            if ( org.kbinani.cadencii.AppManager.editorConfig.ViewAtcualPitch ) {
+                                /*if ( dobj.vibRate != null ) {
+                                    int vibrato_delay = dobj.pxVibratoDelay;
+                                    int vibrato_width = dobj.pxRectangle.width - vibrato_delay;
+                                    int vibrato_start = x + vibrato_delay;
+                                    int vibrato_end = x + vibrato_delay + vibrato_width;
+                                    int cl_sx = AppManager.clockFromXCoord( vibrato_start );
+                                    int cl_ex = AppManager.clockFromXCoord( vibrato_end );
+                                    drawVibratoPitchbend( g,
+                                                          dobj.vibRate,
+                                                          dobj.vibStartRate,
+                                                          dobj.vibDepth,
+                                                          dobj.vibStartDepth,
+                                                          dobj.note,
+                                                          vibrato_start,
+                                                          vibrato_width );
+                                }*/
+                            }
+
+                            // ピッチベンド
+                            /*if ( AppManager.editorConfig.ViewAtcualPitch || AppManager.curveOnPianoroll ) {
+                                int cl_start = dobj.clock;
+                                int cl_end = cl_start + dobj.length;
+
+                                commonDrawer.clear();
+                                g.setColor( Color.blue );
+                                g.setStroke( getStroke2px() );
+                                // この音符の範囲についてのみ，ピッチベンド曲線を描く
+                                int lasty = int.MinValue;
+                                ByRef<Integer> indx_pit = new ByRef<Integer>( 0 );
+                                ByRef<Integer> indx_pbs = new ByRef<Integer>( 0 );
+                                for ( int cl = cl_start; cl < cl_end; cl++ ) {
+                                    int vpit = pit.getValue( cl, indx_pit );
+                                    int vpbs = pbs.getValue( cl, indx_pbs );
+
+                                    float delta = vpit * (float)vpbs / 8192.0f;
+                                    float note = dobj.note + delta;
+
+                                    int py = AppManager.yCoordFromNote( note ) + half_track_height;
+                                    if ( cl + 1 == cl_end ) {
+                                        int px = AppManager.xCoordFromClocks( cl + 1 );
+                                        commonDrawer.append( px, lasty );
+                                    } else {
+                                        if ( py == lasty ) {
+                                            continue;
+                                        }
+                                        int px = AppManager.xCoordFromClocks( cl );
+                                        if ( cl != cl_start ) {
+                                            commonDrawer.append( px, lasty );
+                                        }
+                                        commonDrawer.append( px, py );
+                                        lasty = py;
+                                    }
+                                }
+                                commonDrawer.flush();
 #if !JAVA
-                            g.nativeGraphics.SmoothingMode = old;
+                                g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
 #endif
-                            #endregion
+                                g.setStroke( getStrokeDefault() );
+                            }*/
+                        }
+                    } else if ( dobj.type == org.kbinani.cadencii.DrawObjectType.Dynaff ) {
+                        // Dynaff
+                        var fill = s_dynaff_fill;
+                        if ( org.kbinani.cadencii.AppManager.isSelectedEventContains( selected, dobj.internalID ) ) {
+                            fill = s_dynaff_fill_highlight;
+                        }
+                        g.setColor( fill );
+                        g.fillRect( x, y, 40, track_height );
+                        g.setColor( s_pen_125_123_124 );
+                        g.drawRect( x, y, 40, track_height );
+                        g.setColor( Color.black );
+                        g.setFont( AppManager.baseFont10 );
+                        if ( dobj.overlappe ) {
+                            g.setColor( s_brs_147_147_147 );
+                        }
+                        var str = dobj.text;
+                        /*g.drawString( str, x + 1, y + half_track_height - AppManager.baseFont10OffsetHeight + 1 );*/
+                    } else {
+                        // Crescend and Descrescend
+                        var xend = x + lyric_width;
+                        var fill = s_dynaff_fill;
+                        if ( AppManager.isSelectedEventContains( selected, dobj.internalID ) ) {
+                            fill = s_dynaff_fill_highlight;
+                        }
+                        g.setColor( fill );
+                        g.fillRect( x, y, xend - x, track_height );
+                        g.setColor( s_pen_125_123_124 );
+                        g.drawRect( x, y, xend - x, track_height );
+                        if ( dobj.overlappe ) {
+                            g.setColor( s_brs_147_147_147 );
+                        } else {
+                            g.setColor( Color.black );
+                        }
+                        g.setFont( AppManager.baseFont10 );
+                        var str = dobj.text;
+                        /*g.drawString( str, x + 1, y + track_height + half_track_height - AppManager.baseFont10OffsetHeight + 1 );*/
+                        if ( dobj.type == DrawObjectType.Crescend ) {
+                            g.drawLine( xend - 2, y + 4, x + 3, y + half_track_height );
+                            g.drawLine( x + 3, y + half_track_height, xend - 2, y + track_height - 3 );
+                        } else if ( dobj.type == DrawObjectType.Decrescend ) {
+                            g.drawLine( x + 3, y + 4, xend - 2, y + half_track_height );
+                            g.drawLine( xend - 2, y + half_track_height, x + 3, y + track_height - 3 );
                         }
                     }
                 }
             }
-            g.setClip( r );
+            /*g.setClip( r );*/
         }
 
         // 編集中のエントリを表示
-        if ( edit_mode == EditMode.ADD_ENTRY ||
+        /*if ( edit_mode == EditMode.ADD_ENTRY ||
              edit_mode == EditMode.ADD_FIXED_LENGTH_ENTRY ||
              edit_mode == EditMode.REALTIME ||
              edit_mode == EditMode.DRAG_DROP ) {
@@ -691,16 +672,12 @@ function pictPianoRoll_paint( context ){
                 g.drawLine( x_start, 0, x_start, height );
                 g.drawLine( x_end, 0, x_end, height );
             }
-        }
+        }*/
     }
-    #endregion
+    /*g.setClip( null );*/
 
-    g.setClip( null );
-
-    #endregion
-
-    #region 音符編集時の補助線
-    if ( edit_mode == EditMode.ADD_ENTRY ) {
+    // 音符編集時の補助線
+    /*if ( edit_mode == EditMode.ADD_ENTRY ) {
         #region EditMode.AddEntry
         int x = (int)(AppManager.addingEvent.Clock * scalex + xoffset);
         y = -AppManager.addingEvent.ID.Note * track_height + yoffset + 1;
@@ -843,10 +820,10 @@ function pictPianoRoll_paint( context ){
         g.setFont( s_F9PT );
         g.drawString( percent, pxArea.x, pxArea.y );// , sf );
         #endregion
-    }
+    }*/
 
     // マウス位置での音階名
-    if ( hilighted_note >= 0 ) {
+    /*if ( hilighted_note >= 0 ) {
         int align = 1;
         int valign = 0;
         g.setColor( Color.black );
@@ -856,20 +833,18 @@ function pictPianoRoll_paint( context ){
                                new Rectangle( mouse_position.x - 110, mouse_position.y - 50, 100, 100 ),
                                align,
                                valign );
-    }
-    #endregion
+    }*/
 
-    #region 外枠
+    // 外枠
     // 左(外側)
     g.setColor( s_pen_160_160_160 );
     g.drawLine( 0, 0, 0, height );
     // 左(内側)
     g.setColor( s_pen_105_105_105 );
     g.drawLine( 1, 0, 1, height );
-    #endregion
 
-    #region pictPianoRoll_Paintより
-    if ( AppManager.isWholeSelectedIntervalEnabled() ) {
+    // pictPianoRoll_Paintより
+    /*if ( AppManager.isWholeSelectedIntervalEnabled() ) {
         int start = (int)(AppManager.wholeSelectedInterval.getStart() * scalex) + xoffset;
         if ( start < key_width ) {
             start = key_width;
@@ -914,22 +889,10 @@ function pictPianoRoll_paint( context ){
         g.setStroke( new BasicStroke( 1.0f, 0, BasicStroke.JOIN_ROUND ) );
         g.setColor( pen );
         g.drawRect( rc.x, rc.y, rc.width, rc.height );
-    }
-#if MONITOR_FPS
-e.Graphics.DrawString(
-    m_fps.ToString( "000.000" ),
-    new Font( "Verdana", 40, FontStyle.Bold ),
-    Brushes.Red,
-    new PointF( 0, 0 ) );
-#endif
-    #endregion
+    }*/
 
-#if !JAVA
-    g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
-#endif
-
-    #region コントロールカーブのオーバーレイ表示
-    if ( AppManager.curveOnPianoroll ) {
+    // コントロールカーブのオーバーレイ表示
+    /*if ( AppManager.curveOnPianoroll ) {
         g.setClip( null ); 
        
         Area fillarea = new Area( new Rectangle( key_width, 0, width - key_width, height ) ); // 塗りつぶす領域．最後に処理する
@@ -1034,17 +997,224 @@ e.Graphics.DrawString(
             }
             commonDrawer.flush();
         }
-    }
-    #endregion
+    }*/
 
     // マーカー
-    int marker_x = (int)(AppManager.getCurrentClock() * scalex + AppManager.keyOffset + key_width - stdx);
+    var marker_x = org.kbinani.PortUtil.castToInt( 
+        org.kbinani.cadencii.AppManager.getCurrentClock() * scalex
+      + org.kbinani.cadencii.AppManager.keyOffset + key_width - stdx );
     if ( key_width <= marker_x && marker_x <= width ) {
-        g.setColor( Color.white );
-        g.setStroke( getStroke2px() );
-        g.drawLine( marker_x, 0, marker_x, getHeight() );
-        g.setStroke( getStrokeDefault() );
-    }*/
+        g.setColor( org.kbinani.java.awt.Color.white );
+        /*g.setStroke( getStroke2px() );*/
+        g.drawLine( marker_x, 0, marker_x, height );
+        /*g.setStroke( getStrokeDefault() );*/
+    }
+}
+
+/// <summary>
+/// 描画すべきオブジェクトのリスト，AppManager.drawObjectsを更新します
+/// </summary>
+function updateDrawObjectList() {
+    if ( org.kbinani.cadencii.AppManager.drawObjects == null ) {
+        org.kbinani.cadencii.AppManager.drawObjects = new Array();
+    }
+    if ( org.kbinani.cadencii.AppManager.getVsqFile() == null ) {
+        return;
+    }
+    for ( var i = 0; i < org.kbinani.cadencii.AppManager.drawStartIndex.length; i++ ) {
+        org.kbinani.cadencii.AppManager.drawStartIndex[i] = 0;
+    }
+    if ( org.kbinani.cadencii.AppManager.drawObjects != null ) {
+        for ( var itr = new org.kbinani.ArrayIterator( org.kbinani.cadencii.AppManager.drawObjects ); itr.hasNext(); ) {
+            var list = itr.next();
+            list.splice( 0, list.length );
+        }
+        org.kbinani.cadencii.AppManager.drawObjects.splice( org.kbinani.cadencii.AppManager.drawObjects.length );
+    }
+
+    var xoffset = 6;
+    var yoffset = 127 * org.kbinani.cadencii.AppManager.editorConfig.PxTrackHeight;
+    var scalex = org.kbinani.cadencii.AppManager.scaleX;
+    var SMALL_FONT = null;
+    /*SMALL_FONT = new Font( org.kbinani.cadencii.AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, org.kbinani.cadencii.AppManager.FONT_SIZE8 );*/
+    var track_height = org.kbinani.cadencii.AppManager.editorConfig.PxTrackHeight;
+    var vsq = org.kbinani.cadencii.AppManager.getVsqFile();
+    var track_count = vsq.Track.length;
+    for ( var track = 1; track < track_count; track++ ) {
+        var vsq_track = vsq.Track[track];
+        org.kbinani.cadencii.AppManager.drawObjects[track - 1] = new Array();
+
+        // 音符イベント
+        for ( var itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
+            var ev = itr.next();
+            var timesig = ev.Clock;
+            if ( ev.ID.LyricHandle != null ) {
+                var length = ev.ID.getLength();
+                var note = ev.ID.Note;
+                var x = org.kbinani.PortUtil.castToInt( timesig * scalex + xoffset );
+                var y = -note * track_height + yoffset;
+                var lyric_width = org.kbinani.PortUtil.castToInt( length * scalex );
+                var lyric_jp = ev.ID.LyricHandle.L0.Phrase;
+                var lyric_en = ev.ID.LyricHandle.L0.getPhoneticSymbol();
+                var title = lyric_jp + " [" + lyric_en + "]";/*Utility.trimString( lyric_jp + " [" + lyric_en + "]", SMALL_FONT, lyric_width );*/
+                var accent = ev.ID.DEMaccent;
+                var vibrato_start = x + lyric_width;
+                var vibrato_end = x;
+                var vibrato_delay = lyric_width * 2;
+                if ( ev.ID.VibratoHandle != null ) {
+                    var rate = ev.ID.VibratoDelay / length;
+                    vibrato_delay = _PX_ACCENT_HEADER + org.kbinani.PortUtil.castToInt( (lyric_width - _PX_ACCENT_HEADER) * rate );
+                }
+                var rate_bp = null;
+                var depth_bp = null;
+                var rate_start = 0;
+                var depth_start = 0;
+                if ( ev.ID.VibratoHandle != null ) {
+                    rate_bp = ev.ID.VibratoHandle.getRateBP();
+                    depth_bp = ev.ID.VibratoHandle.getDepthBP();
+                    rate_start = ev.ID.VibratoHandle.getStartRate();
+                    depth_start = ev.ID.VibratoHandle.getStartDepth();
+                }
+                org.kbinani.cadencii.AppManager.drawObjects[track - 1].push( new org.kbinani.cadencii.DrawObject( 
+                                         org.kbinani.cadencii.DrawObjectType.Note,
+                                         new org.kbinani.java.awt.Rectangle( x, y, lyric_width, track_height ),
+                                         title,
+                                         accent,
+                                         ev.InternalID,
+                                         vibrato_delay,
+                                         false,
+                                         ev.ID.LyricHandle.L0.PhoneticSymbolProtected,
+                                         rate_bp,
+                                         depth_bp,
+                                         rate_start,
+                                         depth_start,
+                                         ev.ID.Note,
+                                         null/*ev.UstEvent.Envelope*/,
+                                         length,
+                                         timesig,
+                                         true ) );
+            }
+        }
+
+        // Dynaff, Crescendイベント
+        for ( var itr = vsq_track.getDynamicsEventIterator(); itr.hasNext(); ) {
+            var item = itr.next();
+            var handle = item.ID.IconDynamicsHandle;
+            if ( handle == null ) {
+                continue;
+            }
+            var clock = item.Clock;
+            var length = item.ID.getLength();
+            if ( length <= 0 ) {
+                length = 1;
+            }
+            var raw_width = (int)(length * scalex);
+            var type = org.kbinani.cadencii.DrawObjectType.Note;
+            var width = 0;
+            var str = "";
+            if ( handle.isDynaffType() ) {
+                // 強弱記号
+                type = org.kbinani.cadencii.DrawObjectType.Dynaff;
+                width = org.kbinani.cadencii.AppManager.DYNAFF_ITEM_WIDTH;
+                var startDyn = handle.getStartDyn();
+                if ( startDyn == 120 ) {
+                    str = "fff";
+                } else if ( startDyn == 104 ) {
+                    str = "ff";
+                } else if ( startDyn == 88 ) {
+                    str = "f";
+                } else if ( startDyn == 72 ) {
+                    str = "mf";
+                } else if ( startDyn == 56 ) {
+                    str = "mp";
+                } else if ( startDyn == 40 ) {
+                    str = "p";
+                } else if ( startDyn == 24 ) {
+                    str = "pp";
+                } else if ( startDyn == 8 ) {
+                    str = "ppp";
+                } else {
+                    str = "?";
+                }
+            } else if ( handle.isCrescendType() ) {
+                // クレッシェンド
+                type = org.kbinani.cadencii.DrawObjectType.Crescend;
+                width = raw_width;
+                str = handle.IDS;
+            } else if ( handle.isDecrescendType() ) {
+                // デクレッシェンド
+                type = org.kbinani.cadencii.DrawObjectType.Decrescend;
+                width = raw_width;
+                str = handle.IDS;
+            }
+            if ( type == DrawObjectType.Note ) {
+                continue;
+            }
+            var note = item.ID.Note;
+            var x = org.kbinani.PortUtil.castToInt( clock * scalex + xoffset );
+            var y = -note * org.kbinani.cadencii.AppManager.editorConfig.PxTrackHeight + yoffset;
+            org.kbinani.cadencii.AppManager.drawObjects[track - 1].push( new org.kbinani.cadencii.DrawObject( type,
+                                     new org.kbinani.java.awt.Rectangle( x, y, width, track_height ),
+                                     str,
+                                     0,
+                                     item.InternalID,
+                                     0,
+                                     false,
+                                     false,
+                                     null,
+                                     null,
+                                     0,
+                                     0,
+                                     item.ID.Note,
+                                     null,
+                                     length,
+                                     clock,
+                                     true ) );
+        }
+
+        // 重複部分があるかどうかを判定
+        var count = org.kbinani.cadencii.AppManager.drawObjects[track - 1].length;
+        for ( var i = 0; i < count - 1; i++ ) {
+            var itemi = org.kbinani.cadencii.AppManager.drawObjects[track - 1][i];
+            var parent_type = itemi.type;
+            /*if ( itemi.type != DrawObjectType.Note ) {
+                continue;
+            }*/
+            var overwrapped = false;
+            var istart = itemi.clock;
+            var iend = istart + itemi.length;
+            if ( itemi.overlappe ) {
+                continue;
+            }
+            for ( var j = i + 1; j < count; j++ ) {
+                var itemj = org.kbinani.cadencii.AppManager.drawObjects[track - 1][j];
+                if ( (itemj.type == org.kbinani.cadencii.DrawObjectType.Note && parent_type != org.kbinani.cadencii.DrawObjectType.Note) ||
+                     (itemj.type != org.kbinani.cadencii.DrawObjectType.Note && parent_type == org.kbinani.cadencii.DrawObjectType.Note) ) {
+                    continue;
+                }
+                var jstart = itemj.clock;
+                var jend = jstart + itemj.length;
+                if ( jstart <= istart ) {
+                    if ( istart < jend ) {
+                        overwrapped = true;
+                        itemj.overlappe = true;
+                        // breakできない．2個以上の重複を検出する必要があるので．
+                    }
+                }
+                if ( istart <= jstart ) {
+                    if ( jstart < iend ) {
+                        overwrapped = true;
+                        itemj.overlappe = true;
+                    }
+                }
+            }
+            if ( overwrapped ) {
+                itemi.overlappe = true;
+            }
+        }
+        org.kbinani.cadencii.AppManager.drawObjects.sort( org.kbinani.cadencii.DrawObject.compare );
+        //org.kbinani.cadencii.AppManager.drawObjects.push( tmp );
+    }
 }
 
 function get_style_attribute( style, attr ){
@@ -1081,7 +1251,6 @@ function drop( e ){
 }
 
 function handleFile( file ){
-    alert( file.name );
     var reader = new FileReader();
 
     reader.onloadend = function(){
@@ -1092,17 +1261,8 @@ function handleFile( file ){
             var decoded = org.kbinani.Base64.decode( b64 );
             var stream = new org.kbinani.ByteArrayInputStream( decoded );
             var vsq = new org.kbinani.vsq.VsqFile( stream, "Shift_JIS" );
-            alert( "number of tracks=" + vsq.Track.length );
-            for( var i = 0; i < vsq.Track.length; i++ ){
-                alert( "track#" + i );
-                var vsq_track = vsq.Track[i];
-                alert( "number of events=" + vsq_track.getEventCount() );
-                var c = vsq_track.getEventCount();
-                for( var j = 0; j < c; j++ ){
-                    var item = vsq_track.getEvent( j );
-                    alert( "clock=" + item.Clock + "; ID.type=" + item.ID.type );
-                }
-            }
+            org.kbinani.cadencii.AppManager.setVsqFile( vsq );
+            updateDrawObjectList();
         }
     }
 

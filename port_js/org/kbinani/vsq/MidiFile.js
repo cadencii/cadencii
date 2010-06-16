@@ -5,7 +5,7 @@
  * This file is part of org.kbinani.vsq.
  *
  * org.kbinani.vsq is free software; you can redistribute it and/or
- * modify it under the terms of the BSD License.
+ * modify it under the terms of the GPLv3 License.
  *
  * org.kbinani.vsq is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -37,7 +37,7 @@ if( org.kbinani.vsq.MidiFile == undefined ){
             var byte4 = new Array( 4 ); //byte[]
             stream.readArray( byte4, 0, 4 );
             if ( org.kbinani.PortUtil.make_uint32_be( byte4 ) != 0x4d546864 ) {
-                alert( "header erro :MThd" );
+                alert( "header error :MThd" );
                 return;//throw new Exception( "header error: MThd" );
             }
 
@@ -59,7 +59,7 @@ if( org.kbinani.vsq.MidiFile == undefined ){
             this.m_time_format = org.kbinani.PortUtil.make_uint16_be( byte4 );
 
             // 各トラックを読込み
-            this.m_events = new Array( new Array() );
+            this.m_events = new Array();
             for ( var track = 0; track < tracks; track++ ) {
                 var track_events = new Array();// Vector<MidiEvent>();
                 // ヘッダー

@@ -5,7 +5,7 @@
 * This file is part of org.kbinani.vsq.
 *
 * Boare.Lib.Vsq is free software; you can redistribute it and/or
-* modify it under the terms of the BSD License.
+* modify it under the terms of the GPLv3 License.
 *
 * Boare.Lib.Vsq is distributed in the hope that it will be useful,
 * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -58,7 +58,7 @@ if( org.kbinani.vsq.VsqMaster == undefined ){
         },
 
         clone : function() {
-            var res = new org.kbinani.VsqMaster( this.PreMeasure );
+            var res = new org.kbinani.vsq.VsqMaster( this.PreMeasure );
             return res;
         },
 

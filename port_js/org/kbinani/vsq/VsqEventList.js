@@ -5,7 +5,7 @@
  * This file is part of org.kbinani.vsq.
  *
  * org.kbinani.vsq is free software; you can redistribute it and/or
- * modify it under the terms of the BSD License.
+ * modify it under the terms of the GPLv3 License.
  *
  * org.kbinani.vsq is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -115,7 +115,7 @@ if( org.kbinani.vsq.VsqEventList == undefined ){
         add : function() {
             if( arguments.length == 1 ){
                 var item = arguments[0];
-                var id = getNextId( 0 );
+                var id = this._getNextId( 0 );
                 this._addCor( item, id );
                 this.Events.sort( org.kbinani.vsq.VsqEvent.compare );
                 var count = this.Events.length;

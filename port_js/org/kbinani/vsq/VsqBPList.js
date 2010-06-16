@@ -5,7 +5,7 @@
  * This file is part of org.kbinani.vsq.
  *
  * org.kbinani.vsq is free software; you can redistribute it and/or
- * modify it under the terms of the BSD License.
+ * modify it under the terms of the GPLv3 License.
  *
  * org.kbinani.vsq is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -127,7 +127,7 @@ if( org.kbinani.vsq.VsqBPList == undefined ){
                     }
                     newLength = this.clocks.length * order;
                 }
-                var delta = newLength - this.clock.length;
+                var delta = newLength - this.clocks.length;
                 for( var i = 0; i < delta; i++ ){
                     this.clocks.push( 0 );
                     this.items.push( new org.kbinani.vsq.VsqBPPair() );
