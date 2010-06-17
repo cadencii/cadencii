@@ -47,13 +47,14 @@ if( org.kbinani.vsq.Lyric == undefined ){
                     if ( dquote_count % 2 == 0 ) {
                         // ,の左側に偶数個の"がある場合→,は区切り文字
                         indx++;
+                        var search = "\"";
                         if ( indx == 0 ) {
                             // Phrase
                             work = work.replace( "\"\"", "\"" );  // "は""として保存される
-                            if ( work.indexOf( "\"" ) === 0 && work.lastIndexOf( "\"" ) === work.length - "\"".length ) {
+                            if ( work.indexOf( search ) === 0 && work.lastIndexOf( search ) === (work.length - search.length) ) {
                                 var l = work.length;
                                 if ( l > 2 ) {
-                                    this.Phrase = work.substring( 1, l - 2 );
+                                    this.Phrase = work.substr( 1, l - 2 );
                                 } else {
                                     this.Phrase = "a";
                                 }
@@ -64,10 +65,10 @@ if( org.kbinani.vsq.Lyric == undefined ){
                         } else if ( indx == 1 ) {
                             // symbols
                             var symbols = "";
-                            if ( work.indexOf( "\"" ) === 0 && work.lastIndexOf( "\"" ) === work.length - "\"".length ) {
+                            if ( work.indexOf( search ) === 0 && work.lastIndexOf( search ) === (work.length - search.length) ) {
                                 var l = work.length;
                                 if ( l > 2 ) {
-                                    symbols = work.substring( 1, l - 2 );
+                                    symbols = work.substr( 1, l - 2 );
                                 } else {
                                     symbols = "a";
                                 }

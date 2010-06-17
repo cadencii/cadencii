@@ -86,6 +86,7 @@ function pictPianoRoll_paint( context ){
     var key_width = org.kbinani.cadencii.AppManager.keyWidth;
     var track_height = org.kbinani.cadencii.AppManager.editorConfig.PxTrackHeight;
     var half_track_height = track_height / 2;
+    context.font = track_height + "px 'メイリオ'";
     /*
     // [screen_x] = 67 + [clock] * ScaleX - StartToDrawX + 6
     // [screen_y] = -1 * ([note] - 127) * TRACK_HEIGHT - StartToDrawY
@@ -454,7 +455,7 @@ function pictPianoRoll_paint( context ){
                             if ( show_lyrics ) {
                                 //g.setFont( lyric_font );
                                 g.setColor( s_brs_147_147_147 );
-                                g.drawString( dobj.text, x + 1, y + half_track_height /*- AppManager.baseFont10OffsetHeight*/ + 1 );
+                                g.drawString( dobj.text, x + 1, y + track_height + 1 );
                             }
                         } else {
                             g.setColor( s_pen_125_123_124 );
@@ -462,7 +463,7 @@ function pictPianoRoll_paint( context ){
                             if ( show_lyrics ) {
                                 //g.setFont( lyric_font );
                                 g.setColor( org.kbinani.java.awt.Color.black );
-                                g.drawString( dobj.text, x + 1, y + half_track_height /*- AppManager.baseFont10OffsetHeight*/ + 1 );
+                                g.drawString( dobj.text, x + 1, y + track_height + 1 );
                             }
                             if ( show_exp_line && lyric_width > 21 ) {
                                 // 表情線
@@ -1056,6 +1057,7 @@ function updateDrawObjectList() {
                 var lyric_width = org.kbinani.PortUtil.castToInt( length * scalex );
                 var lyric_jp = ev.ID.LyricHandle.L0.Phrase;
                 var lyric_en = ev.ID.LyricHandle.L0.getPhoneticSymbol();
+//alert( "updateDrawObjectList; lyric_jp=" + lyric_jp + "; lyric_en=" + lyric_en );
                 var title = lyric_jp + " [" + lyric_en + "]";/*Utility.trimString( lyric_jp + " [" + lyric_en + "]", SMALL_FONT, lyric_width );*/
                 var accent = ev.ID.DEMaccent;
                 var vibrato_start = x + lyric_width;
@@ -1243,6 +1245,7 @@ function drop( e ){
 
     // ファイルでないものがドロップされた場合
     if( files.length == 0 ){
+        handleStream( e.dataTransfer.getData( "application/octet-stream" ) );
         return;
     }
 
@@ -1250,20 +1253,24 @@ function drop( e ){
     handleFile( files[0] );
 }
 
+function handleStream( dat ){
+    var search = "data:application/octet-stream;base64,";
+    if( dat.indexOf( search ) == 0 ){
+        var b64 = dat.substring( search.length );
+        var decoded = org.kbinani.Base64.decode( b64 );
+        var stream = new org.kbinani.ByteArrayInputStream( decoded );
+        var vsq = new org.kbinani.vsq.VsqFile( stream, "Shift_JIS" );
+        org.kbinani.cadencii.AppManager.setVsqFile( vsq );
+        updateDrawObjectList();
+    }
+}
+
 function handleFile( file ){
     var reader = new FileReader();
 
     reader.onloadend = function(){
         var dat = reader.result;
-        var search = "data:application/octet-stream;base64,";
-        if( dat.indexOf( search ) == 0 ){
-            var b64 = dat.substring( search.length );
-            var decoded = org.kbinani.Base64.decode( b64 );
-            var stream = new org.kbinani.ByteArrayInputStream( decoded );
-            var vsq = new org.kbinani.vsq.VsqFile( stream, "Shift_JIS" );
-            org.kbinani.cadencii.AppManager.setVsqFile( vsq );
-            updateDrawObjectList();
-        }
+        handleStream( dat );
     }
 
     reader.readAsDataURL( file );

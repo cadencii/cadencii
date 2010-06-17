@@ -1254,6 +1254,7 @@ namespace org.kbinani {
                 i = 1;
                 while( index < 0 && i < separator.length ){
                     index = remain.indexOf( separator[i] );
+                    i++;
                 }
             }
             if( !ignore_empty_entries || (ignore_empty_entries && remain.length() > 0) ){
