@@ -63,6 +63,96 @@ if( org.kbinani.vsq.VsqFile == undefined ){
     org.kbinani.vsq.VsqFile._MASTER_TRACK = new Array( 0x4D, 0x61, 0x73, 0x74, 0x65, 0x72, 0x20, 0x54, 0x72, 0x61, 0x63, 0x6B );
     org.kbinani.vsq.VsqFile._CURVES = new Array( "VEL", "DYN", "BRE", "BRI", "CLE", "OPE", "GEN", "POR", "PIT", "PBS" );
 
+    org.kbinani.vsq.VsqFile.BarLineIterator = function(){
+        /**
+         * [Vector<TimeSigTableEntry>]
+         */
+        this._m_list = null;
+        this._m_end_clock = 0;
+        this._i = 0;
+        this._clock = 0;
+        this._local_denominator = 4;
+        this._local_numerator = 4;
+        this._clock_step = 1;
+        this._t_end = 0;
+        this._local_clock = 0;
+        this._bar_counter = 0;
+    };
+    
+    org.kbinani.vsq.VsqFile.BarLineIterator.prototype = {
+        /**
+         * @param list [Vector<TimeSigTableEntry>]
+         * @param end_clock [int]
+         */
+        _init_2 : function( list, end_clock ) {
+            this._m_list = list;
+            this._m_end_clock = end_clock;
+            this._i = 0;
+            this._t_end = -1;
+            this._clock = 0;
+        },
+
+        /**
+         * @return [VsqBarLineType]
+         */
+        next : function() {
+            var mod = this._clock_step * this._local_numerator;
+            if ( this._clock < this._t_end ) {
+                if ( (this._clock - this._local_clock) % mod == 0 ) {
+                    this._bar_counter++;
+                    var ret = new org.kbinani.vsq.VsqBarLineType( this._clock, true, this._local_denominator, this._local_numerator, this._bar_counter );
+                    this._clock += this._clock_step;
+                    return ret;
+                } else {
+                    var ret = new org.kbinani.vsq.VsqBarLineType( this._clock, false, this._local_denominator, this._local_numerator, this._bar_counter );
+                    this._clock += this._clock_step;
+                    return ret;
+                }
+            }
+
+            if ( i < this._m_list.length ) {
+                this._local_denominator = this._m_list.get( i ).Denominator;
+                this._local_numerator = this._m_list.get( i ).Numerator;
+                this._local_clock = this._m_list.get( i ).Clock;
+                var local_bar_count = this._m_list.get( i ).BarCount;
+                this._clock_step = 480 * 4 / this._local_denominator;
+                mod = this._clock_step * this._local_numerator;
+                this._bar_counter = this._local_bar_count - 1;
+                this._t_end = this._m_end_clock;
+                if ( i + 1 < this._m_list.size() ) {
+                    this._t_end = this._m_list.get( i + 1 ).Clock;
+                }
+                i++;
+                this._clock = this._local_clock;
+                if ( this._clock < this._t_end ) {
+                    if ( (this._clock - this._local_clock) % mod == 0 ) {
+                        this._bar_counter++;
+                        var ret = new org.kbinani.vsq.VsqBarLineType( this._clock, true, this._local_denominator, this._local_numerator, this._bar_counter );
+                        this._clock += this._clock_step;
+                        return ret;
+                    } else {
+                        var ret = new org.kbinani.vsq.VsqBarLineType( this._clock, false, this._local_denominator, this._local_numerator, this._bar_counter );
+                        this._clock += this._clock_step;
+                        return ret;
+                    }
+                }
+            }
+            return new org.kbinani.vsq.VsqBarLineType();
+        },
+
+        remove : function() {
+            //throw new Exception( "com.boare.vsq.VsqFile.BarLineIterator#remove; not implemented" );
+        },
+
+        hasNext : function() {
+            if ( this._clock < this._m_end_clock ) {
+                return true;
+            } else {
+                return false;
+            }
+        },
+    };
+
     org.kbinani.vsq.VsqFile.prototype = {
         /**
          * @param ust [UstFile]
@@ -2184,86 +2274,6 @@ if( org.kbinani.vsq.VsqFile == undefined ){
             ret.Mixer = this.Mixer.clone();
             return ret;
         },
-
-        /*
-        //TODO: VsqFile#BarLineIterator (class)
-        private class BarLineIterator implements Iterator{
-            private Vector<TimeSigTableEntry> m_list;
-            private int m_end_clock;
-            private int i;
-            private int clock;
-            int local_denominator;
-            int local_numerator;
-            int clock_step;
-            int t_end;
-            int local_clock;
-            int bar_counter;
-
-            public BarLineIterator( Vector<TimeSigTableEntry> list, int end_clock ) {
-                m_list = list;
-                m_end_clock = end_clock;
-                i = 0;
-                t_end = -1;
-                clock = 0;
-            }
-
-            public VsqBarLineType next() {
-                int mod = clock_step * local_numerator;
-                if ( clock < t_end ) {
-                    if ( (clock - local_clock) % mod == 0 ) {
-                        bar_counter++;
-                        VsqBarLineType ret = new VsqBarLineType( clock, true, local_denominator, local_numerator, bar_counter );
-                        clock += clock_step;
-                        return ret;
-                    } else {
-                        VsqBarLineType ret = new VsqBarLineType( clock, false, local_denominator, local_numerator, bar_counter );
-                        clock += clock_step;
-                        return ret;
-                    }
-                }
-
-                if ( i < m_list.size() ) {
-                    local_denominator = m_list.get( i ).Denominator;
-                    local_numerator = m_list.get( i ).Numerator;
-                    local_clock = m_list.get( i ).Clock;
-                    int local_bar_count = m_list.get( i ).BarCount;
-                    clock_step = 480 * 4 / local_denominator;
-                    mod = clock_step * local_numerator;
-                    bar_counter = local_bar_count - 1;
-                    t_end = m_end_clock;
-                    if ( i + 1 < m_list.size() ) {
-                        t_end = m_list.get( i + 1 ).Clock;
-                    }
-                    i++;
-                    clock = local_clock;
-                    if ( clock < t_end ) {
-                        if ( (clock - local_clock) % mod == 0 ) {
-                            bar_counter++;
-                            VsqBarLineType ret = new VsqBarLineType( clock, true, local_denominator, local_numerator, bar_counter );
-                            clock += clock_step;
-                            return ret;
-                        } else {
-                            VsqBarLineType ret = new VsqBarLineType( clock, false, local_denominator, local_numerator, bar_counter );
-                            clock += clock_step;
-                            return ret;
-                        }
-                    }
-                }
-                return new VsqBarLineType();
-            }
-
-            public void remove() {
-                //throw new Exception( "com.boare.vsq.VsqFile.BarLineIterator#remove; not implemented" );
-            }
-
-            public boolean hasNext() {
-                if ( clock < m_end_clock ) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        }*/
 
         /*
         //TODO: VsqFile#getBarLineIterator
