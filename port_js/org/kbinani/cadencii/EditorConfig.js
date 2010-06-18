@@ -1,5 +1,5 @@
 ﻿/*
- * EditorConfig.cs
+ * EditorConfig.js
  * Copyright (C) 2008-2010 kbinani
  *
  * This file is part of org.kbinani.cadencii.
@@ -119,11 +119,20 @@ if( org.kbinani.cadencii.EditorConfig == undefined ){
         /// </summary>
         this.CurveSelectingQuantized = true;
 
-        /*private QuantizeMode m_position_quantize = QuantizeMode.p32;
-        private boolean m_position_quantize_triplet = false;
-        private QuantizeMode m_length_quantize = QuantizeMode.p32;
-        private boolean m_length_quantize_triplet = false;
-        private int m_mouse_hover_time = 500;*/
+        /**
+         * [QuantizeMode]
+         */
+        if( org.kbinani.cadencii.QuantizeMode == undefined ){
+            alert( "EditorConfig; QuantizeMode.js should be load before EditorConfig.js" );
+        }
+        this._m_position_quantize = org.kbinani.cadencii.QuantizeMode.p32;
+        this._m_position_quantize_triplet = false;
+        /**
+         * [QuantizeMode]
+         */
+        this._m_length_quantize = org.kbinani.cadencii.QuantizeMode.p32;
+        this._m_length_quantize_triplet = false;
+        this._m_mouse_hover_time = 500;
         /// <summary>
         /// Button index of "△"
         /// </summary>
@@ -205,31 +214,31 @@ if( org.kbinani.cadencii.EditorConfig == undefined ){
         /// <summary>
         /// キーボードからの入力に使用するデバイス
         /// </summary>
-        public MidiPortConfig MidiInPort = new MidiPortConfig();
-        public RgbColor PianorollColorVocalo2Black = new RgbColor( 212, 212, 212 );
-        public RgbColor PianorollColorVocalo2White = new RgbColor( 240, 240, 240 );
-        public RgbColor PianorollColorVocalo1Black = new RgbColor( 210, 205, 172 );
-        public RgbColor PianorollColorVocalo1White = new RgbColor( 240, 235, 214 );
+        public MidiPortConfig MidiInPort = new MidiPortConfig();*/
+        this.PianorollColorVocalo2Black = new org.kbinani.cadencii.RgbColor( 212, 212, 212 );
+        this.PianorollColorVocalo2White = new org.kbinani.cadencii.RgbColor( 240, 240, 240 );
+        this.PianorollColorVocalo1Black = new org.kbinani.cadencii.RgbColor( 210, 205, 172 );
+        this.PianorollColorVocalo1White = new org.kbinani.cadencii.RgbColor( 240, 235, 214 );
 
-        public RgbColor PianorollColorVocalo1Bar = new RgbColor( 161, 157, 136 );
-        public RgbColor PianorollColorVocalo1Beat = new RgbColor( 209, 204, 172 );
-        public RgbColor PianorollColorVocalo2Bar = new RgbColor( 161, 157, 136 );
-        public RgbColor PianorollColorVocalo2Beat = new RgbColor( 209, 204, 172 );
+        this.PianorollColorVocalo1Bar = new org.kbinani.cadencii.RgbColor( 161, 157, 136 );
+        this.PianorollColorVocalo1Beat = new org.kbinani.cadencii.RgbColor( 209, 204, 172 );
+        this.PianorollColorVocalo2Bar = new org.kbinani.cadencii.RgbColor( 161, 157, 136 );
+        this.PianorollColorVocalo2Beat = new org.kbinani.cadencii.RgbColor( 209, 204, 172 );
 
-        public RgbColor PianorollColorUtauBlack = new RgbColor( 212, 212, 212 );
-        public RgbColor PianorollColorUtauWhite = new RgbColor( 240, 240, 240 );
-        public RgbColor PianorollColorUtauBar = new RgbColor( 255, 64, 255 );
-        public RgbColor PianorollColorUtauBeat = new RgbColor( 128, 128, 255 );
+        this.PianorollColorUtauBlack = new org.kbinani.cadencii.RgbColor( 212, 212, 212 );
+        this.PianorollColorUtauWhite = new org.kbinani.cadencii.RgbColor( 240, 240, 240 );
+        this.PianorollColorUtauBar = new org.kbinani.cadencii.RgbColor( 255, 64, 255 );
+        this.PianorollColorUtauBeat = new org.kbinani.cadencii.RgbColor( 128, 128, 255 );
 
-        public RgbColor PianorollColorStraightBlack = new RgbColor( 212, 212, 212 );
-        public RgbColor PianorollColorStraightWhite = new RgbColor( 240, 240, 240 );
-        public RgbColor PianorollColorStraightBar = new RgbColor( 255, 153, 0 );
-        public RgbColor PianorollColorStraightBeat = new RgbColor( 128, 128, 255 );
+        this.PianorollColorStraightBlack = new org.kbinani.cadencii.RgbColor( 212, 212, 212 );
+        this.PianorollColorStraightWhite = new org.kbinani.cadencii.RgbColor( 240, 240, 240 );
+        this.PianorollColorStraightBar = new org.kbinani.cadencii.RgbColor( 255, 153, 0 );
+        this.PianorollColorStraightBeat = new org.kbinani.cadencii.RgbColor( 128, 128, 255 );
 
-        public RgbColor PianorollColorAquesToneBlack = new RgbColor( 212, 212, 212 );
-        public RgbColor PianorollColorAquesToneWhite = new RgbColor( 240, 240, 240 );
-        public RgbColor PianorollColorAquesToneBar = new RgbColor( 7, 107, 175 );
-        public RgbColor PianorollColorAquesToneBeat = new RgbColor( 234, 190, 62 );*/
+        this.PianorollColorAquesToneBlack = new org.kbinani.cadencii.RgbColor( 212, 212, 212 );
+        this.PianorollColorAquesToneWhite = new org.kbinani.cadencii.RgbColor( 240, 240, 240 );
+        this.PianorollColorAquesToneBar = new org.kbinani.cadencii.RgbColor( 7, 107, 175 );
+        this.PianorollColorAquesToneBeat = new org.kbinani.cadencii.RgbColor( 234, 190, 62 );
 
         this.ViewAtcualPitch = false;
         this.InvokeUtauCoreWithWine = false;
@@ -460,7 +469,10 @@ if( org.kbinani.cadencii.EditorConfig == undefined ){
         /// 変更された時発生します
         /// </summary>
         public static BEvent<BEventHandler> quantizeModeChangedEvent = new BEvent<BEventHandler>();
+*/
 
+    org.kbinani.cadencii.EditorConfig.prototype = {
+/*
         /// <summary>
         /// 自動ビブラートを作成します
         /// </summary>
@@ -619,130 +631,93 @@ if( org.kbinani.cadencii.EditorConfig == undefined ){
             } else {
                 m_mouse_hover_time = value;
             }
-        }
+        }*/
 
-#if !JAVA
-        // XMLシリアライズ用
-        /// <summary>
-        /// ピアノロール上でマウスホバーイベントが発生するまでの時間(millisec)
-        /// </summary>
-        public int MouseHoverTime {
-            get {
-                return getMouseHoverTime();
-            }
-            set {
-                setMouseHoverTime( value );
-            }
-        }
-#endif
+        /**
+         * @return [QuantizeMode]
+         */
+        getPositionQuantize : function() {
+            return this._m_position_quantize;
+        },
 
-        public QuantizeMode getPositionQuantize() {
-            return m_position_quantize;
-        }
-
-        public void setPositionQuantize( QuantizeMode value ) {
-            if ( m_position_quantize != value ) {
-                m_position_quantize = value;
-                try {
+        /**
+         * @param value [QuantizeMode]
+         */
+        setPositionQuantize : function( value ) {
+            if ( this._m_position_quantize != value ) {
+                this._m_position_quantize = value;
+                /*try {
                     quantizeModeChangedEvent.raise( typeof( EditorConfig ), new BEventArgs() );
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "EditorConfig#setPositionQuantize; ex=" + ex );
-                }
+                }*/
             }
-        }
+        },
 
-#if !JAVA
-        // XMLシリアライズ用
-        public QuantizeMode PositionQuantize {
-            get {
-                return getPositionQuantize();
-            }
-            set {
-                setPositionQuantize( value );
-            }
-        }
-#endif
+        /**
+         * @return [bool]
+         */
+        isPositionQuantizeTriplet : function() {
+            return this._m_position_quantize_triplet;
+        },
 
-        public boolean isPositionQuantizeTriplet() {
-            return m_position_quantize_triplet;
-        }
-
-        public void setPositionQuantizeTriplet( boolean value ) {
-            if ( m_position_quantize_triplet != value ) {
-                m_position_quantize_triplet = value;
-                try {
+        /**
+         * @param value [bool]
+         */
+        setPositionQuantizeTriplet : function( value ) {
+            if ( this._m_position_quantize_triplet != value ) {
+                this._m_position_quantize_triplet = value;
+                /*try {
                     quantizeModeChangedEvent.raise( typeof( EditorConfig ), new BEventArgs() );
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "EditorConfig#setPositionQuantizeTriplet; ex=" + ex );
-                }
+                }*/
             }
-        }
+        },
 
-#if !JAVA
-        // XMLシリアライズ用
-        public boolean PositionQuantizeTriplet {
-            get {
-                return isPositionQuantizeTriplet();
-            }
-            set {
-                setPositionQuantizeTriplet( value );
-            }
-        }
-#endif
+        /**
+         * @return [QuantizeMode]
+         */
+        getLengthQuantize : function() {
+            return this._m_length_quantize;
+        },
 
-        public QuantizeMode getLengthQuantize() {
-            return m_length_quantize;
-        }
-
-        public void setLengthQuantize( QuantizeMode value ) {
-            if ( m_length_quantize != value ) {
-                m_length_quantize = value;
-                try {
+        /**
+         * @param value [QuantizeMode]
+         */
+        setLengthQuantize : function( value ) {
+            if ( this._m_length_quantize != value ) {
+                this._m_length_quantize = value;
+                /*try {
                     quantizeModeChangedEvent.raise( typeof( EditorConfig ), new BEventArgs() );
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "EditorConfig#setLengthQuantize; ex=" + ex );
-                }
+                }*/
             }
-        }
+        },
 
-#if !JAVA
-        public QuantizeMode LengthQuantize {
-            get {
-                return getLengthQuantize();
-            }
-            set {
-                setLengthQuantize( value );
-            }
-        }
-#endif
+        /**
+         * @return [bool]
+         */
+        isLengthQuantizeTriplet : function() {
+            return this._m_length_quantize_triplet;
+        },
 
-        public boolean isLengthQuantizeTriplet() {
-            return m_length_quantize_triplet;
-        }
-
-        public void setLengthQuantizeTriplet( boolean value ) {
-            if ( m_length_quantize_triplet != value ) {
-                m_length_quantize_triplet = value;
-                try {
+        /**
+         * @param value [bool]
+         */
+        setLengthQuantizeTriplet : function( value ) {
+            if ( this._m_length_quantize_triplet != value ) {
+                this._m_length_quantize_triplet = value;
+                /*try {
                     quantizeModeChangedEvent.raise( typeof( EditorConfig ), new BEventArgs() );
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "EditorConfig#setLengthQuantizeTriplet; ex=" + ex );
-                }
+                }*/
             }
-        }
+        },
 
-#if !JAVA
-        // XMLシリアライズ用
-        public boolean LengthQuantizeTriplet {
-            get {
-                return isLengthQuantizeTriplet();
-            }
-            set {
-                setLengthQuantizeTriplet( value );
-            }
-        }
-#endif
-
+        /*
         /// <summary>
         /// 「最近使用したファイル」のリストに、アイテムを追加します
         /// </summary>
@@ -798,10 +773,7 @@ if( org.kbinani.cadencii.EditorConfig == undefined ){
                 RecentFiles.removeElementAt( index );
             }
             RecentFiles.insertElementAt( new_file, 0 );
-        }
-    }
+        }*/
+    };
 
-#if !JAVA
-}
-#endif*/
 }

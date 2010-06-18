@@ -215,10 +215,10 @@ if( org.kbinani.cadencii.AppManager == undefined ){
     } ) );
     #endregion
 
-    #region Private Static Fields
-    private static int s_base_tempo = 480000;
-    private static Color s_hilight_brush = PortUtil.CornflowerBlue;
-    private static Object s_locker;
+    #region Private Static Fields*/
+    org.kbinani.cadencii.AppManager._s_base_tempo = 480000;
+    org.kbinani.cadencii.AppManager._s_hilight_brush = org.kbinani.PortUtil.CornflowerBlue.clone();
+    /*private static Object s_locker;
     private static BTimer s_auto_backup_timer;
     #endregion*/
 
@@ -234,7 +234,7 @@ if( org.kbinani.cadencii.AppManager == undefined ){
     /// <summary>
     /// トラックのオーバーレイ表示
     /// </summary>
-    org.kbinani.cadencii.AppManager.__s_overlay = true;
+    org.kbinani.cadencii.AppManager._s_overlay = true;
     /// <summary>
     /// 選択されているイベントのリスト
     /// </summary>
@@ -644,27 +644,27 @@ if( org.kbinani.cadencii.AppManager == undefined ){
                 }
             }
         }
-    }
+    }*/
 
-    /// <summary>
-    /// クロック数から、画面に描くべきx座標の値を取得します。
-    /// </summary>
-    /// <param name="clocks"></param>
-    /// <returns></returns>
-    public static int xCoordFromClocks( double clocks ) {
-        return (int)(keyWidth + clocks * scaleX - startToDrawX) + keyOffset;
-    }
+    /**
+     * クロック数から、画面に描くべきx座標の値を取得します。
+     * @param clocks [double]
+     * @return [int]
+     */
+    org.kbinani.cadencii.AppManager.xCoordFromClocks = function( clocks ) {
+        return org.kbinani.PortUtil.castToInt( this.keyWidth + clocks * this.scaleX - this._startToDrawX ) + this.keyOffset;
+    };
 
-    /// <summary>
-    /// 画面のx座標からクロック数を取得します
-    /// </summary>
-    /// <param name="x"></param>
-    /// <returns></returns>
-    public static int clockFromXCoord( int x ) {
-        return (int)((x + startToDrawX - keyOffset - keyWidth) / scaleX);
-    }
+    /**
+     * 画面のx座標からクロック数を取得します
+     * @param x [int]
+     * @return [int]
+     */
+    org.kbinani.cadencii.AppManager.clockFromXCoord = function( x ) {
+        return org.kbinani.PortUtil.castToInt( (x + this._startToDrawX - this.keyOffset - this.keyWidth) / this.scaleX );
+    };
 
-    #region 選択範囲の管理
+    /*#region 選択範囲の管理
     public static boolean isWholeSelectedIntervalEnabled() {
         return wholeSelectedIntervalEnabled;
     }
@@ -1599,36 +1599,36 @@ if( org.kbinani.cadencii.AppManager == undefined ){
 
     public static void setEditMode( EditMode value ) {
         s_edit_mode = value;
-    }
+    }*/
 
-    /// <summary>
-    /// グリッドを表示するか否かを表すフラグを取得または設定します
-    /// </summary>
-    public static boolean isGridVisible() {
-        return _s_grid_visible;
-    }
+    /**
+     * グリッドを表示するか否かを表すフラグを取得または設定します
+     */
+    org.kbinani.cadencii.AppManager.isGridVisible = function() {
+        return this._s_grid_visible;
+    };
 
-    public static void setGridVisible( boolean value ) {
-        if ( value != _s_grid_visible ) {
-            _s_grid_visible = value;
-            try {
+    org.kbinani.cadencii.AppManager.setGridVisible = function( value ) {
+        if ( value != this._s_grid_visible ) {
+            this._s_grid_visible = value;
+            /*try {
                 gridVisibleChangedEvent.raise( typeof( AppManager ), new BEventArgs() );
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "AppManager#setGridVisible; ex=" + ex );
-            }
+            }*/
         }
-    }
+    };
 
-    /// <summary>
-    /// 現在のプレビューがリピートモードであるかどうかを表す値を取得または設定します
-    /// </summary>
-    public static boolean isRepeatMode() {
-        return _s_repeat_mode;
-    }
+    /**
+     * 現在のプレビューがリピートモードであるかどうかを表す値を取得または設定します
+     */
+    org.kbinani.cadencii.AppManager.isRepeatMode = function() {
+        return this._s_repeat_mode;
+    };
 
-    public static void setRepeatMode( boolean value ) {
-        _s_repeat_mode = value;
-    }*/
+    org.kbinani.cadencii.AppManager.setRepeatMode = function( value ) {
+        this._s_repeat_mode = value;
+    };
 
     /// <summary>
     /// 現在プレビュー中かどうかを示す値を取得または設定します
@@ -2284,24 +2284,25 @@ if( org.kbinani.cadencii.AppManager == undefined ){
     public static void setCopiedBezier( TreeMap<CurveType, Vector<BezierChain>> item, int copy_started_clock ) {
         setClipboard( null, null, null, null, item, copy_started_clock );
     }
-    #endregion
+    #endregion*/
 
-    /// <summary>
-    /// 位置クオンタイズ時の音符の最小単位を、クロック数に換算したものを取得します
-    /// </summary>
-    /// <returns></returns>
-    public static int getPositionQuantizeClock() {
-        return QuantizeModeUtil.getQuantizeClock( editorConfig.getPositionQuantize(), editorConfig.isPositionQuantizeTriplet() );
-    }
+    /**
+     * 位置クオンタイズ時の音符の最小単位を、クロック数に換算したものを取得します
+     * @return [int]
+     */
+    org.kbinani.cadencii.AppManager.getPositionQuantizeClock = function() {
+        return org.kbinani.cadencii.QuantizeModeUtil.getQuantizeClock( this.editorConfig.getPositionQuantize(), this.editorConfig.isPositionQuantizeTriplet() );
+    };
 
-    /// <summary>
-    /// 音符長さクオンタイズ時の音符の最小単位を、クロック数に換算したものを取得します
-    /// </summary>
-    /// <returns></returns>
-    public static int getLengthQuantizeClock() {
-        return QuantizeModeUtil.getQuantizeClock( editorConfig.getLengthQuantize(), editorConfig.isLengthQuantizeTriplet() );
-    }
+    /**
+     * 音符長さクオンタイズ時の音符の最小単位を、クロック数に換算したものを取得します
+     * @return [int]
+     */
+    org.kbinani.cadencii.AppManager.getLengthQuantizeClock = function() {
+        return org.kbinani.cadencii.QuantizeModeUtil.getQuantizeClock( this.editorConfig.getLengthQuantize(), this.editorConfig.isLengthQuantizeTriplet() );
+    };
 
+    /*
     /// <summary>
     /// 現在の設定を設定ファイルに書き込みます。
     /// </summary>
@@ -2490,24 +2491,25 @@ if( org.kbinani.cadencii.AppManager == undefined ){
 #if ENABLE_AQUESTONE
         }
 #endif
-    }
+    }*/
 
-    public static Color getHilightColor() {
-        return s_hilight_brush;
-    }
+    org.kbinani.cadencii.AppManager.getHilightColor = function() {
+        return this._s_hilight_brush;
+    };
 
-    public static void setHilightColor( Color value ) {
-        s_hilight_brush = value;
-    }
+    org.kbinani.cadencii.AppManager.setHilightColor = function( value ) {
+        this._s_hilight_brush = value;
+    };
 
+/*
     /// <summary>
     /// ベースとなるテンポ。
     /// </summary>
     public static int getBaseTempo() {
-        return s_base_tempo;
+        return _s_base_tempo;
     }
 
     public static void setBaseTempo( int value ) {
-        s_base_tempo = value;
+        _s_base_tempo = value;
     }*/
 }

@@ -77,9 +77,27 @@ if( org.kbinani.vsq.VsqFile == undefined ){
         this._t_end = 0;
         this._local_clock = 0;
         this._bar_counter = 0;
+        if( arguments.length == 2 ){
+            this._init_2( arguments[0], arguments[1] );
+        }
     };
     
     org.kbinani.vsq.VsqFile.BarLineIterator.prototype = {
+        reset : function(){
+            if( arguments.length == 2 ){
+                this._m_list = arguments[0];
+                this._m_end_clock = arguments[1];
+            }
+            this._i = 0;
+            this._clock = 0;
+            this._local_denominator = 4;
+            this._local_numerator = 4;
+            this._clock_step = 1;
+            this._t_end = 0;
+            this._local_clock = 0;
+            this._bar_counter = 0;
+        },
+
         /**
          * @param list [Vector<TimeSigTableEntry>]
          * @param end_clock [int]
@@ -110,19 +128,19 @@ if( org.kbinani.vsq.VsqFile == undefined ){
                 }
             }
 
-            if ( i < this._m_list.length ) {
-                this._local_denominator = this._m_list.get( i ).Denominator;
-                this._local_numerator = this._m_list.get( i ).Numerator;
-                this._local_clock = this._m_list.get( i ).Clock;
-                var local_bar_count = this._m_list.get( i ).BarCount;
+            if ( this._i < this._m_list.length ) {
+                this._local_denominator = this._m_list[this._i].Denominator;
+                this._local_numerator = this._m_list[this._i].Numerator;
+                this._local_clock = this._m_list[this._i].Clock;
+                var local_bar_count = this._m_list[this._i].BarCount;
                 this._clock_step = 480 * 4 / this._local_denominator;
                 mod = this._clock_step * this._local_numerator;
-                this._bar_counter = this._local_bar_count - 1;
+                this._bar_counter = local_bar_count - 1;
                 this._t_end = this._m_end_clock;
-                if ( i + 1 < this._m_list.size() ) {
-                    this._t_end = this._m_list.get( i + 1 ).Clock;
+                if ( this._i + 1 < this._m_list.length ) {
+                    this._t_end = this._m_list[this._i + 1].Clock;
                 }
-                i++;
+                this._i++;
                 this._clock = this._local_clock;
                 if ( this._clock < this._t_end ) {
                     if ( (this._clock - this._local_clock) % mod == 0 ) {
@@ -2275,15 +2293,19 @@ if( org.kbinani.vsq.VsqFile == undefined ){
             return ret;
         },
 
-        /*
-        //TODO: VsqFile#getBarLineIterator
-        /// <summary>
-        /// 小節の区切りを順次返すIterator。
-        /// </summary>
-        /// <returns></returns>
-        public Iterator<VsqBarLineType> getBarLineIterator( int end_clock ) {
-            return new BarLineIterator( TimesigTable, end_clock );
-        }*/
+        /**
+         * 小節の区切りを順次返すIterator。
+         * @param end_clock [int]
+         * @return [BarLineIterator]
+         */
+        getBarLineIterator : function( end_clock ) {
+            if( this._barLineIterator == undefined ){
+                this._barLineIterator = new org.kbinani.vsq.VsqFile.BarLineIterator( this.TimesigTable, end_clock );
+            }else{
+                this._barLineIterator.reset( this.TimesigTable, end_clock );
+            }
+            return this._barLineIterator;
+        },
 
         /**
          * 基本テンポ値を取得します

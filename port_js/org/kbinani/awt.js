@@ -289,6 +289,10 @@ org.kbinani.java.awt.Color = function(){
 };
 
 org.kbinani.java.awt.Color.prototype = {
+    clone : function(){
+        return new org.kbinani.java.awt.Color( this.r, this.g, this.b, this.a );
+    },
+
     _init_3 : function( r, g, b ) {
         this.r = r;
         this.g = g;

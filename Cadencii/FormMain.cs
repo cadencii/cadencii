@@ -6101,15 +6101,16 @@ namespace org.kbinani.cadencii {
             try {
                 int width = picturePositionIndicator.getWidth();
                 int height = picturePositionIndicator.getHeight();
+                VsqFileEx vsq = AppManager.getVsqFile();
 
                 #region 小節ごとの線
                 int dashed_line_step = AppManager.getPositionQuantizeClock();
-                for ( Iterator<VsqBarLineType> itr = AppManager.getVsqFile().getBarLineIterator( AppManager.clockFromXCoord( width ) ); itr.hasNext(); ) {
+                for ( Iterator<VsqBarLineType> itr = vsq.getBarLineIterator( AppManager.clockFromXCoord( width ) ); itr.hasNext(); ) {
                     VsqBarLineType blt = itr.next();
                     int local_clock_step = 480 * 4 / blt.getLocalDenominator();
                     int x = AppManager.xCoordFromClocks( blt.clock() );
                     if ( blt.isSeparator() ) {
-                        int current = blt.getBarCount() - AppManager.getVsqFile().getPreMeasure() + 1;
+                        int current = blt.getBarCount() - vsq.getPreMeasure() + 1;
                         g.setColor( s_pen_105_105_105 );
                         g.drawLine( x, 3, x, 46 );
                         // 小節の数字
@@ -6137,16 +6138,18 @@ namespace org.kbinani.cadencii {
                 }
                 #endregion
 
-                if ( AppManager.getVsqFile() != null ) {
+                if ( vsq != null ) {
                     #region 拍子の変更
-                    for ( int i = 0; i < AppManager.getVsqFile().TimesigTable.size(); i++ ) {
-                        int clock = AppManager.getVsqFile().TimesigTable.get( i ).Clock;
-                        int barcount = AppManager.getVsqFile().TimesigTable.get( i ).BarCount;
+                    int c = vsq.TimesigTable.size();
+                    for ( int i = 0; i < c; i++ ) {
+                        TimeSigTableEntry itemi = vsq.TimesigTable.get( i );
+                        int clock = itemi.Clock;
+                        int barcount = itemi.BarCount;
                         int x = AppManager.xCoordFromClocks( clock );
                         if ( width < x ) {
                             break;
                         }
-                        String s = AppManager.getVsqFile().TimesigTable.get( i ).Numerator + "/" + AppManager.getVsqFile().TimesigTable.get( i ).Denominator;
+                        String s = itemi.Numerator + "/" + itemi.Denominator;
                         g.setFont( SMALL_FONT );
                         if ( AppManager.isSelectedTimesigContains( barcount ) ) {
                             g.setColor( AppManager.getHilightColor() );
@@ -6158,7 +6161,7 @@ namespace org.kbinani.cadencii {
 
                         if ( m_position_indicator_mouse_down_mode == PositionIndicatorMouseDownMode.TIMESIG ) {
                             if ( AppManager.isSelectedTimesigContains( barcount ) ) {
-                                int edit_clock_x = AppManager.xCoordFromClocks( AppManager.getVsqFile().getClockFromBarCount( AppManager.getSelectedTimesig( barcount ).editing.BarCount ) );
+                                int edit_clock_x = AppManager.xCoordFromClocks( vsq.getClockFromBarCount( AppManager.getSelectedTimesig( barcount ).editing.BarCount ) );
                                 g.setColor( s_pen_187_187_255 );
                                 g.drawLine( edit_clock_x - 1, 32,
                                             edit_clock_x - 1, picturePositionIndicator.getHeight() - 1 );
@@ -6172,13 +6175,15 @@ namespace org.kbinani.cadencii {
 
                     #region テンポの変更
                     g.setFont( SMALL_FONT );
-                    for ( int i = 0; i < AppManager.getVsqFile().TempoTable.size(); i++ ) {
-                        int clock = AppManager.getVsqFile().TempoTable.get( i ).Clock;
+                    c = vsq.TempoTable.size();
+                    for ( int i = 0; i < c; i++ ) {
+                        TempoTableEntry itemi = vsq.TempoTable.get( i );
+                        int clock = itemi.Clock;
                         int x = AppManager.xCoordFromClocks( clock );
                         if ( width < x ) {
                             break;
                         }
-                        String s = PortUtil.formatDecimal( "#.00", 60e6 / (float)AppManager.getVsqFile().TempoTable.get( i ).Tempo );
+                        String s = PortUtil.formatDecimal( "#.00", 60e6 / (float)itemi.Tempo );
                         if ( AppManager.isSelectedTempoContains( clock ) ) {
                             g.setColor( AppManager.getHilightColor() );
                             g.drawString( s, x + 4, 24 - small_font_offset + 1 );
@@ -16966,6 +16971,7 @@ namespace org.kbinani.cadencii {
             this.menuHiddenGoToStartMarker = new org.kbinani.windows.forms.BMenuItem();
             this.menuHiddenGoToEndMarker = new org.kbinani.windows.forms.BMenuItem();
             this.menuHiddenPlayFromStartMarker = new org.kbinani.windows.forms.BMenuItem();
+            this.menuHiddenFlipCurveOnPianorollMode = new org.kbinani.windows.forms.BMenuItem();
             this.cMenuPiano = new org.kbinani.windows.forms.BPopupMenu( this.components );
             this.cMenuPianoPointer = new org.kbinani.windows.forms.BMenuItem();
             this.cMenuPianoPencil = new org.kbinani.windows.forms.BMenuItem();
@@ -17165,7 +17171,6 @@ namespace org.kbinani.cadencii {
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.stripBtnStartMarker = new org.kbinani.windows.forms.BToolStripButton();
             this.stripBtnEndMarker = new org.kbinani.windows.forms.BToolStripButton();
-            this.menuHiddenFlipCurveOnPianorollMode = new org.kbinani.windows.forms.BMenuItem();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
@@ -18319,6 +18324,12 @@ namespace org.kbinani.cadencii {
             this.menuHiddenPlayFromStartMarker.Name = "menuHiddenPlayFromStartMarker";
             this.menuHiddenPlayFromStartMarker.Size = new System.Drawing.Size( 304, 22 );
             this.menuHiddenPlayFromStartMarker.Text = "Play From Start Marker";
+            // 
+            // menuHiddenFlipCurveOnPianorollMode
+            // 
+            this.menuHiddenFlipCurveOnPianorollMode.Name = "menuHiddenFlipCurveOnPianorollMode";
+            this.menuHiddenFlipCurveOnPianorollMode.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenFlipCurveOnPianorollMode.Text = "Flip Curve on Pianoroll Mode";
             // 
             // cMenuPiano
             // 
@@ -20003,12 +20014,6 @@ namespace org.kbinani.cadencii {
             this.stripBtnEndMarker.Name = "stripBtnEndMarker";
             this.stripBtnEndMarker.Size = new System.Drawing.Size( 23, 22 );
             this.stripBtnEndMarker.Text = "EndMarker";
-            // 
-            // menuHiddenFlipCurveOnPianorollMode
-            // 
-            this.menuHiddenFlipCurveOnPianorollMode.Name = "menuHiddenFlipCurveOnPianorollMode";
-            this.menuHiddenFlipCurveOnPianorollMode.Size = new System.Drawing.Size( 304, 22 );
-            this.menuHiddenFlipCurveOnPianorollMode.Text = "Flip Curve on Pianoroll Mode";
             // 
             // FormMain
             // 
