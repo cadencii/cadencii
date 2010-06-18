@@ -1,6 +1,7 @@
-﻿function dragenter( e ){
-    dropbox.setAttribute( "dragenter", true );
-}
+﻿var _PX_ACCENT_HEADER = 21;
+var _PICT_POSITION_INDICATOR_HEIGHT = 48;
+var _MAX_FPS = 60.0;
+var _MIN_PAINT_INTERVAL = 1.0 / _MAX_FPS;
 
 var dropbox;
 var pictPianoRoll, divPictPianoRoll;
@@ -8,9 +9,12 @@ var trackSelector, divTrackSelector;
 
 var m_mouse_down_x, m_mouse_down_y, m_stdx, m_stdy;
 var mouseDowned = false;
-var _PX_ACCENT_HEADER = 21;
 var mouseX = 0, mouseY = 0;
-var _PICT_POSITION_INDICATOR_HEIGHT = 48;
+var _last_paint_time = 0.0;
+
+function dragenter( e ){
+    dropbox.setAttribute( "dragenter", true );
+}
 
 function updateLayout(){
     var trackselector_height = 0;
@@ -78,6 +82,11 @@ function formMain_resize( e ){
 }
 
 function pictPianoRoll_paint( context ){
+    var t = org.kbinani.PortUtil.getCurrentTime();
+    if( t - _last_paint_time < _MIN_PAINT_INTERVAL ){
+        return;
+    }
+    _last_paint_time = t;
     var g = new org.kbinani.java.awt.Graphics( context );
     var s_brs_180_180_180 = new org.kbinani.java.awt.Color( 180,180,180);
     var s_brs_106_108_108 = new org.kbinani.java.awt.Color( 106, 108, 108 );
