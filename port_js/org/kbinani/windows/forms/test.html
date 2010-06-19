@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript" src="bytefx_OS.js"></script>
+<script type="text/javascript" src="Component.js"></script>
+<script type="text/javascript" src="TestImplement.js"></script>
+<script type="text/javascript" src="../../awt.js"></script>
+<script type="text/javascript">
+var comp;
+
+function window_resize(){
+	var w = comp.getWidth();
+	var h = comp.getHeight();
+alert( "window_resize; w=" + w + "; h=" + h );
+	comp.setWidth( h );
+	comp.setHeight( w );
+	comp.repaint();
+}
+
+function window_load(){
+	var divComp = document.getElementById( "comp" );
+	comp = new org.kbinani.windows.forms.TestImplement();
+	comp.bind( divComp );
+	comp.repaint();
+}
+
+window.addEventListener( "load", window_load, true );
+window.addEventListener( "resize", window_resize, true );
+</script>
+</head>
+<body style="margin: 0px;">
+<div id="comp" style="overflow: hidden; position: absolute; width: 100px; height: 14px; top: 100px; left: 100px;"></div>
+</body>
+</html>
