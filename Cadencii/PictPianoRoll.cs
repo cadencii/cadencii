@@ -116,6 +116,10 @@ namespace org.kbinani.cadencii {
         /// 破線を表すストローク
         /// </summary>
         private BasicStroke strokeDashed = null;
+        /// <summary>
+        /// 共用の折れ線描画プラクシ
+        /// </summary>
+        private PolylineDrawer commonPolylineDrawer = null;
 
 #if !JAVA
         #region event impl PreviewKeyDown
@@ -203,10 +207,20 @@ namespace org.kbinani.cadencii {
             return strokeDashed;
         }
 
+        private PolylineDrawer getCommonPolylineDrawer( Graphics2D g ) {
+            if ( commonPolylineDrawer == null ) {
+                commonPolylineDrawer = new PolylineDrawer( g, 1024 );
+            } else {
+                commonPolylineDrawer.clear();
+                commonPolylineDrawer.setGraphics( g );
+            }
+            return commonPolylineDrawer;
+        }
+
         public void paint( Graphics g1 ) {
             Graphics2D g = (Graphics2D)g1;
             try {
-                PolylineDrawer commonDrawer = new PolylineDrawer( g, 1024 );
+                PolylineDrawer commonDrawer = getCommonPolylineDrawer( g );
                 VsqFileEx vsq = AppManager.getVsqFile();
                 int selected = AppManager.getSelected();
                 VsqTrack vsq_track = vsq.Track.get( selected );
@@ -610,7 +624,7 @@ namespace org.kbinani.cadencii {
                                             }
                                             if ( show_exp_line && lyric_width > 21 ) {
                                                 #region 表情線
-                                                DrawAccentLine( g, new Point( x, y + track_height + 1 ), dobj.accent );
+                                                drawAccentLine( g, new Point( x, y + track_height + 1 ), dobj.accent );
                                                 int vibrato_start = x + lyric_width;
                                                 int vibrato_end = x;
                                                 if ( dobj.pxVibratoDelay <= lyric_width ) {
@@ -644,7 +658,7 @@ namespace org.kbinani.cadencii {
                                                     int vibrato_end = x + vibrato_delay + vibrato_width;
                                                     int cl_sx = AppManager.clockFromXCoord( vibrato_start );
                                                     int cl_ex = AppManager.clockFromXCoord( vibrato_end );
-                                                    drawVibratoPitchbend( g,
+                                                    drawVibratoPitchbend( commonDrawer,
                                                                           dobj.vibRate,
                                                                           dobj.vibStartRate,
                                                                           dobj.vibDepth,
@@ -664,17 +678,63 @@ namespace org.kbinani.cadencii {
 #if !JAVA
                                                 //g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 #endif
-                                                g.setColor( Color.blue );
-                                                g.setStroke( getStroke2px() );
-                                                // この音符の範囲についてのみ，ピッチベンド曲線を描く
-                                                int lasty = int.MinValue;
+                                                Color color_normal_picthbend = PortUtil.DarkOrchid;
+                                                Color color_thin_pitchbend = new Color( color_normal_picthbend.getRed(), color_normal_picthbend.getGreen(), color_normal_picthbend.getBlue(), 128 );
                                                 ByRef<Integer> indx_pit = new ByRef<Integer>( 0 );
                                                 ByRef<Integer> indx_pbs = new ByRef<Integer>( 0 );
+                                                int viblength = dobj.length - dobj.vibDelay;
+                                                int lasty = int.MinValue;
+                                                g.setStroke( getStroke2px() );
+
+                                                // ビブラート部分の、ビブラートなしの場合のピッチベンドを描画
+                                                if ( viblength > 0 ) {
+                                                    g.setColor( color_thin_pitchbend );
+                                                    indx_pit = new ByRef<Integer>( 0 );
+                                                    indx_pbs = new ByRef<Integer>( 0 );
+                                                    cl_start = dobj.clock + dobj.vibDelay;
+                                                    for ( int cl = cl_start; cl < cl_end; cl++ ) {
+                                                        int vpit = pit.getValue( cl, indx_pit );
+                                                        int vpbs = pbs.getValue( cl, indx_pbs );
+
+                                                        float delta = vpit * (float)vpbs / 8192.0f;
+                                                        float note = dobj.note + delta;
+
+                                                        int py = AppManager.yCoordFromNote( note ) + half_track_height;
+                                                        if ( cl + 1 == cl_end ) {
+                                                            int px = AppManager.xCoordFromClocks( cl + 1 );
+                                                            commonDrawer.append( px, lasty );
+                                                        } else {
+                                                            if ( py == lasty ) {
+                                                                continue;
+                                                            }
+                                                            int px = AppManager.xCoordFromClocks( cl );
+                                                            if ( cl != cl_start ) {
+                                                                commonDrawer.append( px, lasty );
+                                                            }
+                                                            commonDrawer.append( px, py );
+                                                            lasty = py;
+                                                        }
+                                                    }
+                                                    commonDrawer.flush();
+                                                }
+                                                
+                                                // この音符の範囲についてのみ，ピッチベンド曲線を描く
+                                                g.setColor( color_normal_picthbend );
+                                                cl_start = dobj.clock;
+                                                commonDrawer.clear();
+                                                lasty = int.MinValue;
+                                                indx_pit.value = 0;
+                                                indx_pbs.value = 0;
                                                 for ( int cl = cl_start; cl < cl_end; cl++ ) {
                                                     int vpit = pit.getValue( cl, indx_pit );
                                                     int vpbs = pbs.getValue( cl, indx_pbs );
 
                                                     float delta = vpit * (float)vpbs / 8192.0f;
+                                                    if ( viblength > 0 ) {
+                                                        delta += (float)VibratoHandle.calculatePitchbendCor( dobj.vibStartRate, dobj.vibRate,
+                                                                                                             dobj.vibStartDepth, dobj.vibDepth,
+                                                                                                             cl, dobj.clock + dobj.vibDelay, viblength, vsq );
+                                                    }
                                                     float note = dobj.note + delta;
 
                                                     int py = AppManager.yCoordFromNote( note ) + half_track_height;
@@ -1173,7 +1233,7 @@ namespace org.kbinani.cadencii {
 
                     if ( mouseTracer.size() > 1 ) {
                         commonDrawer.clear();
-                        g.setColor( Color.red );
+                        g.setColor( PortUtil.Orchid );
                         g.setStroke( getStroke2px() );
                         for ( Iterator<Point> itr = mouseTracer.iterator(); itr.hasNext(); ) {
                             Point pt = itr.next();
@@ -1204,7 +1264,7 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="g"></param>
         /// <param name="accent"></param>
-        private void DrawAccentLine( Graphics g, Point origin, int accent ) {
+        private void drawAccentLine( Graphics g, Point origin, int accent ) {
             int x0 = origin.x + 1;
             int y0 = origin.y + 10;
             int height = 4 + accent * 4 / 100;
@@ -1228,7 +1288,7 @@ namespace org.kbinani.cadencii {
         /// <param name="note">描画する音符のノートナンバー</param>
         /// <param name="clock_start">ビブラートが始まるクロック位置</param>
         /// <param name="clock_width">ビブラートのクロック長さ</param>
-        private void drawVibratoPitchbend( Graphics2D g,
+        private void drawVibratoPitchbend( PolylineDrawer drawer,
                                            VibratoBPList rate,
                                            int start_rate,
                                            VibratoBPList depth,
@@ -1246,7 +1306,7 @@ namespace org.kbinani.cadencii {
             int clock_end = AppManager.clockFromXCoord( x_start + px_width );
             int tempo = vsq.getTempoAt( clock_start );
 
-            PolylineDrawer drawer = new PolylineDrawer( g, 1024 );
+            drawer.clear();
             Iterator<PointD> itr = new VibratoPointIterator( vsq,
                                                              rate,
                                                              start_rate,
@@ -1255,6 +1315,7 @@ namespace org.kbinani.cadencii {
                                                              clock_start,
                                                              clock_end - clock_start,
                                                              (float)(tempo * 1e-6 / 480.0) );
+            Graphics2D g = drawer.getGraphics();
             g.setColor( Color.blue );
 #if !JAVA
             System.Drawing.Drawing2D.SmoothingMode sm = g.nativeGraphics.SmoothingMode;

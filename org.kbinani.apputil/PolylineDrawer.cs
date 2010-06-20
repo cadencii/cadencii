@@ -86,6 +86,14 @@ namespace org.kbinani.apputil {
         }
 
         /// <summary>
+        /// 描画に使用するグラフィクスオブジェクトを取得します。
+        /// </summary>
+        /// <returns></returns>
+        public Graphics2D getGraphics() {
+            return this.g;
+        }
+
+        /// <summary>
         /// 座標データを追加します。描画が必要になった場合は、描画も行われます。
         /// </summary>
         /// <param name="x"></param>

@@ -56,6 +56,7 @@ namespace org.kbinani.vsq {
         protected const int baseTempo = 500000; 
         public VsqMaster Master;  // VsqMaster, VsqMixerは通常，最初の非Master Trackに記述されるが，可搬性のため，
         public VsqMixer Mixer;    // ここではVsqFileに直属するものとして取り扱う．
+        private BarLineIterator barLineIterator = null;
         public Object Tag;
 
         static readonly byte[] _MTRK = new byte[] { (byte)0x4d, (byte)0x54, (byte)0x72, (byte)0x6b };
@@ -2053,6 +2054,18 @@ namespace org.kbinani.vsq {
                 clock = 0;
             }
 
+            public void reset( int end_clock ) {
+                this.m_end_clock = end_clock;
+                this.i = 0;
+                this.t_end = -1;
+                this.clock = 0;
+                this.local_denominator = 0;
+                this.local_numerator = 0;
+                this.clock_step = 0;
+                this.local_clock = 0;
+                this.bar_counter = 0;
+            }
+
             public VsqBarLineType next() {
                 int mod = clock_step * local_numerator;
                 if ( clock < t_end ) {
@@ -2116,7 +2129,12 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <returns></returns>
         public Iterator<VsqBarLineType> getBarLineIterator( int end_clock ) {
-            return new BarLineIterator( TimesigTable, end_clock );
+            if ( this.barLineIterator == null ) {
+                this.barLineIterator = new BarLineIterator( this.TimesigTable, end_clock );
+            } else {
+                this.barLineIterator.reset( end_clock );
+            }
+            return this.barLineIterator;
         }
 
         /// <summary>
@@ -2145,18 +2163,21 @@ namespace org.kbinani.vsq {
         /// </summary>
         private int calculatePreMeasureInClock() {
             int pre_measure = Master.PreMeasure;
-            int last_bar_count = TimesigTable.get( 0 ).BarCount;
-            int last_clock = TimesigTable.get( 0 ).Clock;
-            int last_denominator = TimesigTable.get( 0 ).Denominator;
-            int last_numerator = TimesigTable.get( 0 ).Numerator;
-            for ( int i = 1; i < TimesigTable.size(); i++ ) {
-                if ( TimesigTable.get( i ).BarCount >= pre_measure ) {
+            TimeSigTableEntry item0 = this.TimesigTable.get( 0 );
+            int last_bar_count = item0.BarCount;
+            int last_clock = item0.Clock;
+            int last_denominator = item0.Denominator;
+            int last_numerator = item0.Numerator;
+            int c = this.TimesigTable.size();
+            for ( int i = 1; i < c; i++ ) {
+                TimeSigTableEntry itemi = this.TimesigTable.get( i );
+                if ( itemi.BarCount >= pre_measure ) {
                     break;
                 } else {
-                    last_bar_count = TimesigTable.get( i ).BarCount;
-                    last_clock = TimesigTable.get( i ).Clock;
-                    last_denominator = TimesigTable.get( i ).Denominator;
-                    last_numerator = TimesigTable.get( i ).Numerator;
+                    last_bar_count = itemi.BarCount;
+                    last_clock = itemi.Clock;
+                    last_denominator = itemi.Denominator;
+                    last_numerator = itemi.Numerator;
                 }
             }
 

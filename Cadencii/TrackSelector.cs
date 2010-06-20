@@ -4498,6 +4498,8 @@ namespace org.kbinani.cadencii {
 
                                     Vector<ValuePair<Float, Integer>> edit = new Vector<ValuePair<Float, Integer>>();
                                     int lclock = -2 * step_clock;
+                                    ValuePair<Float, Integer> first = null; // xの値が0以下の最大のデータ点
+                                    ValuePair<Float, Integer> last = null;//xの値が1以上の最小のデータ点
                                     for ( Iterator<Point> itr2 = m_mouse_tracer.iterator(); itr2.hasNext(); ) {
                                         Point p = itr2.next();
                                         if ( p.x < chk_start ) {
@@ -4515,9 +4517,24 @@ namespace org.kbinani.cadencii {
                                         } else if ( max < val ) {
                                             val = max;
                                         }
-                                        edit.add( new ValuePair<Float, Integer>( (clock - cl_vib_start) / cl_vib_length,
-                                                                                 val ) );
+                                        float x = (clock - cl_vib_start) / cl_vib_length;
+                                        ValuePair<Float, Integer> tmp = new ValuePair<Float,Integer>( x, val );
+                                        if ( 0.0f < x && x < 1.0f ) {
+                                            edit.add( tmp );
+                                        } else if ( x <= 0.0f ) {
+                                            first = tmp;
+                                        }else if( 1.0f <= x && last != null ){
+                                            last = tmp;
+                                        }
                                         lclock = clock;
+                                    }
+                                    if ( first != null ) {
+                                        first.setKey( 0.0f );
+                                        edit.add( first );
+                                    }
+                                    if ( last != null ) {
+                                        last.setKey( 1.0f );
+                                        edit.add( last );
                                     }
 
                                     VibratoBPList target = null;

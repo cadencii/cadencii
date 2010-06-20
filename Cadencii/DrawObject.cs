@@ -66,6 +66,7 @@ namespace org.kbinani.cadencii {
         /// これがfalseのとき、ピアノロール上で警告色で描かれる
         /// </summary>
         public boolean isValid = false;
+        public int vibDelay = 0;
 
         public DrawObject( DrawObjectType type,
                            Rectangle rect, 
@@ -83,7 +84,8 @@ namespace org.kbinani.cadencii {
                            UstEnvelope ust_envelope,
                            int length,
                            int clock,
-                           boolean isValid ) {
+                           boolean isValid,
+                           int vib_delay ) {
             this.type = type;
             pxRectangle = rect;
             text = text_;
@@ -96,11 +98,13 @@ namespace org.kbinani.cadencii {
             vibDepth = vib_depth;
             vibStartRate = vib_start_rate;
             vibStartDepth = vib_start_depth;
+
             note = note_;
             ustEnvelope = ust_envelope;
             this.length = length;
             this.clock = clock;
             this.isValid = isValid;
+            this.vibDelay = vib_delay;
         }
 
         public int compareTo( DrawObject item ) {
