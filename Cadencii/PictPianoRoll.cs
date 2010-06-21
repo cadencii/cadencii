@@ -725,15 +725,23 @@ namespace org.kbinani.cadencii {
                                                 lasty = int.MinValue;
                                                 indx_pit.value = 0;
                                                 indx_pbs.value = 0;
+                                                VibratoPointIterator2 vibitr = null;
+                                                if ( viblength > 0 ) {
+                                                    vibitr = new VibratoPointIterator2( vsq,
+                                                        dobj.vibRate, dobj.vibStartRate,
+                                                        dobj.vibDepth, dobj.vibStartDepth,
+                                                        dobj.clock + dobj.vibDelay, viblength, 1 );
+                                                }
                                                 for ( int cl = cl_start; cl < cl_end; cl++ ) {
                                                     int vpit = pit.getValue( cl, indx_pit );
                                                     int vpbs = pbs.getValue( cl, indx_pbs );
 
                                                     float delta = vpit * (float)vpbs / 8192.0f;
-                                                    if ( viblength > 0 ) {
-                                                        delta += (float)VibratoHandle.calculatePitchbendCor( dobj.vibStartRate, dobj.vibRate,
+                                                    if ( cl >= dobj.clock + dobj.vibDelay && vibitr != null && vibitr.hasNext() ) {
+                                                        /*delta += (float)VibratoHandle.calculatePitchbendCor( dobj.vibStartRate, dobj.vibRate,
                                                                                                              dobj.vibStartDepth, dobj.vibDepth,
-                                                                                                             cl, dobj.clock + dobj.vibDelay, viblength, vsq );
+                                                                                                             cl, dobj.clock + dobj.vibDelay, viblength, vsq );*/
+                                                        delta += (float)vibitr.next();
                                                     }
                                                     float note = dobj.note + delta;
 
