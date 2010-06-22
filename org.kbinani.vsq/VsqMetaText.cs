@@ -999,17 +999,9 @@ namespace org.kbinani.vsq {
                     last_line.value = OPE.appendFromText( sr );
                 } else {
                     String buffer = last_line.value;
-#if DEBUG
-                    PortUtil.println( "VsqMetaText#.ctor; buffer=" + buffer );
-#endif
                     buffer = buffer.Replace( "[", "" );
                     buffer = buffer.Replace( "]", "" );
                     String[] spl = PortUtil.splitString( buffer, new char[] { '#' } );
-#if DEBUG
-                    if ( spl.Length < 2 ) {
-                        PortUtil.println( "VsqMetaText#.ctor; spl.Length=" + spl.Length + "; buffer=" + buffer );
-                    }
-#endif
                     int index = PortUtil.parseInt( spl[1] );
                     if ( last_line.value.StartsWith( "[ID#" ) ) {
                         __id.put( index, new VsqID( sr, index, last_line ) );
@@ -1029,9 +1021,6 @@ namespace org.kbinani.vsq {
             for ( int i = 0; i < c; i++ ) {
                 VsqID id = __id.get( i );
                 if ( __handle.containsKey( id.IconHandle_index ) ) {
-#if DEBUG
-                    Console.WriteLine( "VsqMetaText#.ctor; id.type=" + id.type + "; id.IconHandle_index=" + id.IconHandle_index );
-#endif
                     if ( id.type == VsqIDType.Singer ) {
                         id.IconHandle = __handle.get( id.IconHandle_index ).castToIconHandle();
                     } else if ( id.type == VsqIDType.Aicon ) {

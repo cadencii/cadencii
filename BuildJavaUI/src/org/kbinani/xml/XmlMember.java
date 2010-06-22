@@ -18,9 +18,9 @@ public class XmlMember{
     private Method m_getter = null;
     private Method m_setter = null;
     private Field m_field = null;
-    private Class m_type = null;
-    private Method m_elementname_getter = null;
-    private Method m_isignored_getter = null;
+    private Class<?> m_type = null;
+    //private Method m_elementname_getter = null;
+    //private Method m_isignored_getter = null;
     
     private XmlMember(){
     }
@@ -29,11 +29,11 @@ public class XmlMember{
         return m_name;
     }
     
-    public Class getType(){
+    public Class<?> getType(){
         return m_type;
     }
     
-    public static XmlMember[] extractMembers( Class t ){
+    public static XmlMember[] extractMembers( Class<?> t ){
         XmlSerializable descripter = null;
         try{
             Object tinstance = t.newInstance();
@@ -148,7 +148,7 @@ PortUtil.println( "XmlMember#extractMembers; superclass=" + superclass );
         return members.toArray( new XmlMember[]{} );
     }
     
-    public static XmlMember extract( Class cls, String property_name ){
+    public static XmlMember extract( Class<?> cls, String property_name ){
         for( Field f : cls.getDeclaredFields() ){
             int m = f.getModifiers();
             if( !Modifier.isPublic( m ) || Modifier.isStatic( m ) ){
@@ -169,14 +169,14 @@ PortUtil.println( "XmlMember#extractMembers; superclass=" + superclass );
         // get, set, isで始まるメソッド名を持つ、publicでstaticでないメソッドを抽出
         Method getter = null;
         Method setter = null;
-        Class prop_type = null;
+        Class<?> prop_type = null;
         for( Method method : cls.getDeclaredMethods() ){
             int m = method.getModifiers();
             if( !Modifier.isPublic( m ) || Modifier.isStatic( m ) ){
                 continue;
             }
             String name = method.getName();
-            Class ret_type = method.getReturnType();
+            Class<?> ret_type = method.getReturnType();
             if( name.startsWith( "set" ) && setter == null ){
                 if( !name.substring( 3 ).equals( property_name ) ){
                     continue;
@@ -187,7 +187,7 @@ PortUtil.println( "XmlMember#extractMembers; superclass=" + superclass );
                 }
     
                 // 引数の個数は1
-                Class[] args = method.getParameterTypes();
+                Class<?>[] args = method.getParameterTypes();
                 if( args.length != 1 ){
                     continue;
                 }
@@ -217,7 +217,7 @@ PortUtil.println( "XmlMember#extractMembers; superclass=" + superclass );
                 }
     
                 // 引数の個数は0
-                Class[] args = method.getParameterTypes();
+                Class<?>[] args = method.getParameterTypes();
                 if( args.length != 0 ){
                     continue;
                 }
@@ -235,7 +235,7 @@ PortUtil.println( "XmlMember#extractMembers; superclass=" + superclass );
                     continue;
                 }
                 // 引数の個数は0
-                Class[] args = method.getParameterTypes();
+                Class<?>[] args = method.getParameterTypes();
                 if( args.length != 0 ){
                     continue;
                 }

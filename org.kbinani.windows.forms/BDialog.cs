@@ -145,7 +145,7 @@ namespace org.kbinani.windows.forms {
             m_is_modal = is_modal;
         }
 
-        public void setVisible( bool value ) {
+        public virtual void setVisible( bool value ) {
             if ( value ) {
                 if ( m_is_modal ) {
                     System.Windows.Forms.DialogResult ret = base.ShowDialog();

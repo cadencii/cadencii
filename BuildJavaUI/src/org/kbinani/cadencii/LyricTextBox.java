@@ -25,6 +25,38 @@ public class LyricTextBox extends JWindow implements WindowFocusListener, Compon
     private static final long serialVersionUID = 1L;
     private JPanel jContentPane = null;
     private JTextField jTextField = null;
+    private String m_buf_text;
+    private boolean m_phonetic_symbol_edit_mode;
+
+    /**
+     * 発音記号を編集するモードかどうかを表すブール値を取得します
+     */
+    public boolean isPhoneticSymbolEditMode() {
+        return m_phonetic_symbol_edit_mode;
+    }
+
+    /**
+     * 発音記号を編集するモードかどうかを表すブール値を設定します
+     */
+    public void setPhoneticSymbolEditMode( boolean value ) {
+        m_phonetic_symbol_edit_mode = value;
+    }
+
+    /**
+     * バッファーテキストを取得します
+     * (バッファーテキストには，発音記号モードでは歌詞，歌詞モードでは発音記号がそれぞれ格納される)
+     */
+    public String getBufferText() {
+        return m_buf_text;
+    }
+
+    /**
+     * バッファーテキストを設定します
+     * (バッファーテキストには，発音記号モードでは歌詞，歌詞モードでは発音記号がそれぞれ格納される)
+     */
+    public void setBufferText( String value ) {
+        m_buf_text = value;
+    }
 
     public void selectAll(){
         jTextField.selectAll();

@@ -83,7 +83,7 @@ namespace org.kbinani.cadencii {
                           AppManager.clockFromXCoord( AppManager.keyWidth ),
                           AppManager.clockFromXCoord( AppManager.keyWidth + width ),
                           AppManager.getVsqFile().TempoTable,
-                          AppManager.scaleX );
+                          AppManager.getScaleX() );
         }
 
         public void unloadAll() {

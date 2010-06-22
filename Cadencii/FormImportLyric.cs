@@ -30,6 +30,7 @@ using org.kbinani.windows.forms;
 namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
     using Character = System.Char;
+    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -49,17 +50,41 @@ namespace org.kbinani.cadencii {
             registerEventHandlers();
             setResources();
             applyLanguage();
-            String notes = (max_notes > 1) ? " [notes]" : " [note]";
-            lblNotes.setText( "Max : " + max_notes + notes );
-            m_max_notes = max_notes;
+            setMaxNotes( max_notes );
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
         #region public methods
+#if JAVA
+        public void setVisible( boolean value ){
+            super.setVisible( value );
+#else
+        public override void setVisible( boolean value ) {
+            base.setVisible( value );
+#endif
+#if JAVA
+            //TODO: FormImportLyric#setVisible
+#else
+            this.txtLyrics.HideSelection = false;
+            this.txtLyrics.SelectAll();
+            this.txtLyrics.Focus();
+#endif
+        }
+
         public void applyLanguage() {
             setTitle( _( "Import lyrics" ) );
             btnCancel.setText( _( "Cancel" ) );
             btnOK.setText( _( "OK" ) );
+        }
+
+        /// <summary>
+        /// このダイアログに入力できる最大の文字数を設定します．
+        /// </summary>
+        /// <param name="max_notes"></param>
+        public void setMaxNotes( int max_notes ) {
+            String notes = (max_notes > 1) ? " [notes]" : " [note]";
+            this.lblNotes.setText( "Max : " + max_notes + notes );
+            this.m_max_notes = max_notes;
         }
 
         public String[] getLetters() {
@@ -190,7 +215,7 @@ namespace org.kbinani.cadencii {
             this.btnCancel.Location = new System.Drawing.Point( 363, 317 );
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size( 75, 23 );
-            this.btnCancel.TabIndex = 1;
+            this.btnCancel.TabIndex = 2;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             // 
@@ -199,7 +224,7 @@ namespace org.kbinani.cadencii {
             this.btnOK.Location = new System.Drawing.Point( 269, 317 );
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size( 75, 23 );
-            this.btnOK.TabIndex = 2;
+            this.btnOK.TabIndex = 1;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             // 

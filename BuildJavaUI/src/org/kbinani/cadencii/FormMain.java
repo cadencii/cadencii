@@ -350,6 +350,7 @@ public class FormMain extends BForm {
     private BMenuItem menuHiddenPlayFromStartMarker = null;
     private BPanel panelZooMooz = null;
     private JPanel panelOverviewRight = null;
+    private BMenuItem menuHiddenFlipCurveOnPianorollMode = null;
     //SECTION-END-FIELD
     public FormMain( String vsq_file ) {
         super();
@@ -609,6 +610,19 @@ public class FormMain extends BForm {
             panelOverviewRight.add(getBtnRight2(), gridBagConstraints5);
         }
         return panelOverviewRight;
+    }
+
+    /**
+     * This method initializes menuHiddenFlipCurveOnPianorollMode	
+     * 	
+     * @return org.kbinani.windows.forms.BMenuItem	
+     */
+    private BMenuItem getMenuHiddenFlipCurveOnPianorollMode() {
+        if (menuHiddenFlipCurveOnPianorollMode == null) {
+            menuHiddenFlipCurveOnPianorollMode = new BMenuItem();
+            menuHiddenFlipCurveOnPianorollMode.setText("Flip Curve on Pianoroll Mode");
+        }
+        return menuHiddenFlipCurveOnPianorollMode;
     }
 
     public static void main( String[] args ){
@@ -4247,6 +4261,7 @@ public class FormMain extends BForm {
             menuHidden.add(getMenuHiddenGoToStartMarker());
             menuHidden.add(getMenuHiddenGoToEndMarker());
             menuHidden.add(getMenuHiddenPlayFromStartMarker());
+            menuHidden.add(getMenuHiddenFlipCurveOnPianorollMode());
         }
         return menuHidden;
     }

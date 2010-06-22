@@ -10,22 +10,22 @@ msgstr ""
 "MIME-Version: 1.0\n"
 
 msgid "capacity of RecentFiles"
-msgstr "capacity of RecentFiles"
+msgstr "最近文件容量"
 
 msgid "list of files recentry used"
-msgstr "list of files recentry used"
+msgstr "列出最近使用的文件"
 
 msgid "tolerance of mouse operation (in pixel)"
-msgstr "tolerance of mouse operation (in pixel)"
+msgstr "鼠标操作偏差(/像素)"
 
 msgid "whether scroll horizontally with mouse-wheel"
-msgstr "whether scroll horizontally with mouse-wheel"
+msgstr "是否用鼠标滚轮水平滚动"
 
 msgid "maximum frame rate(in frames per second)"
-msgstr "maximum frame rate(in frames per second)"
+msgstr "最大帧速(/帧每秒)"
 
 msgid "line"
-msgstr "线"
+msgstr "行"
 
 msgid "Script aborted"
 msgstr "忽略脚本"
@@ -70,7 +70,7 @@ msgid "Data Poin"
 msgstr "数据点"
 
 msgid "Clock"
-msgstr "Clock"
+msgstr "时钟"
 
 msgid "Value"
 msgstr "数值"
@@ -106,7 +106,7 @@ msgid "Push buttons in turn as shown below"
 msgstr "按下图顺序按按键"
 
 msgid "Game controler is not available"
-msgstr "游戏控制器未激活"
+msgstr "游戏控制器未连接"
 
 msgid "Game Controler Configuration"
 msgstr "游戏控制器设置"
@@ -136,10 +136,10 @@ msgid "bar"
 msgstr "小节"
 
 msgid "Expression control property"
-msgstr "表情控制属性"
+msgstr "表情(Expression)控制属性"
 
 msgid "Save this sequence?"
-msgstr "保存sequence?"
+msgstr "保存音序?"
 
 msgid "Affirmation"
 msgstr "确认"
@@ -149,7 +149,7 @@ msgid ""
 "Track {0} : {1}\n"
 "\n"
 "-> Piano roll : Blank sequence."
-msgstr "错误的音符信息. Track {0} : {1}  -> Piano roll : 空的 sequence."
+msgstr "错误的音符信息. Track {0} : {1}  -> Piano roll : 空的音序."
 
 msgid "Wave Export"
 msgstr "导出Wave文件"
@@ -191,7 +191,7 @@ msgid "VSQ Format(*.vsq)|*.vsq"
 msgstr "VSQ 格式(*.vsq)|*.vsq"
 
 msgid "Original Format(*.evsq)|*.evsq"
-msgstr "Original 格式(*.evsq)|*.evsq"
+msgstr "旧版本格式(*.evsq)|*.evsq"
 
 msgid "MIDI Format(*.mid)|*.mid"
 msgstr "MIDI 格式(*.mid)|*.mid"
@@ -305,7 +305,7 @@ msgid "Lyrics/Phoneme"
 msgstr "歌词/发音标记"
 
 msgid "Note Expression/Vibrato"
-msgstr "音符表情/Vibrato"
+msgstr "音符表情/颤音"
 
 msgid "Job"
 msgstr "工程"
@@ -329,7 +329,7 @@ msgid "Insert Lyrics"
 msgstr "插入歌词"
 
 msgid "Import ReWire Host Tempo"
-msgstr "从ReWire Host导入节奏"
+msgstr "从ReWire Host导入曲速(tempo)"
 
 msgid "Start Realtime Input"
 msgstr "开始即时输出"
@@ -341,7 +341,7 @@ msgid "Track"
 msgstr "音轨"
 
 msgid "Track On"
-msgstr "打开音轨"
+msgstr "音轨 开"
 
 msgid "Add Track"
 msgstr "添加音轨"
@@ -371,7 +371,7 @@ msgid "Note Expression Property"
 msgstr "音符表情属性"
 
 msgid "Note Vibrato Property"
-msgstr "音符Vibrato属性"
+msgstr "音符颤音属性"
 
 msgid "Phoneme Transformation"
 msgstr "发音记号转换"
@@ -446,19 +446,19 @@ msgid "Pitch Control"
 msgstr "音高控制"
 
 msgid "Bend Depth"
-msgstr "Bend深度"
+msgstr "弯曲(Bend)深度"
 
 msgid "Bend Length"
-msgstr "Bend长度"
+msgstr "弯曲(Bend)长度"
 
 msgid "Add portamento in rising movement"
-msgstr "在上行形附加滑音"
+msgstr "附加上行滑音"
 
 msgid "Add portamento in falling movement"
-msgstr "在下行形附加滑音"
+msgstr "附加下行滑音"
 
 msgid "Dynamics Control"
-msgstr "动态控制"
+msgstr "力度(DYN)控制"
 
 msgid "Decay"
 msgstr "延迟"
@@ -479,19 +479,19 @@ msgid "now synthesizing..."
 msgstr "合成中..."
 
 msgid "Global Tempo"
-msgstr "全局节奏"
+msgstr "全局曲速"
 
 msgid "Tempo"
-msgstr "节奏"
+msgstr "曲速"
 
 msgid "Vibrato property"
-msgstr "Vibrato属性"
+msgstr "颤音属性"
 
 msgid "Vibrato length"
-msgstr "Vibrato长度"
+msgstr "颤音长度"
 
 msgid "Vibrato type"
-msgstr "Vibrato类型"
+msgstr "颤音类型"
 
 msgid "User Dictionary Configuration"
 msgstr "用户字典设定"
@@ -509,37 +509,37 @@ msgid "VST dll(*.dll)|*.dll"
 msgstr "VST dll(*.dll)|*.dll"
 
 msgid "Sequence"
-msgstr "Sequence"
+msgstr "音序"
 
 msgid "Resolution(VSTi)"
 msgstr "解析度(VSTi)"
 
 msgid "Dynamics"
-msgstr "动态"
+msgstr "力度(DYN)"
 
 msgid "Vibrato Depth"
-msgstr "Vibrato的振幅"
+msgstr "颤音振幅"
 
 msgid "Vibrato Rate"
-msgstr "Vibrato的周期"
+msgstr "颤音周期"
 
 msgid "Vibrato Settings"
-msgstr "Vibrato设置"
+msgstr "颤音设置"
 
 msgid "Default Vibrato Length"
-msgstr "默认Vibrato长度"
+msgstr "默认颤音长度"
 
 msgid "Auto Vibrato Settings"
-msgstr "自动Vibrato设置"
+msgstr "自动颤音设置"
 
 msgid "Enable Automatic Vibrato"
-msgstr "启用自动Vibrato"
+msgstr "启用自动颤音"
 
 msgid "Minimum note length for Automatic Vibrato"
 msgstr "可使用自动颤音的最短音符长度"
 
 msgid "Vibrato Type"
-msgstr "Vibrato类型"
+msgstr "颤音类型"
 
 msgid "Other Settings"
 msgstr "其他设置"
@@ -548,19 +548,19 @@ msgid "Default Singer"
 msgstr "默认歌手"
 
 msgid "Pre-Send time"
-msgstr "Pre-Send time"
+msgstr "预置输送时间"
 
 msgid "Waiting Time"
-msgstr "待机时间"
+msgstr "等待时间"
 
 msgid "Default Pre-measure"
-msgstr "默认前置拍"
+msgstr "默认前置小节"
 
 msgid "Chase Event"
-msgstr "跟踪事件"
+msgstr "追踪事件"
 
 msgid "Playback Sample Sound"
-msgstr "合成音Sample输出"
+msgstr "合成音样本输出"
 
 msgid "Enable"
 msgstr "启用"
@@ -569,7 +569,7 @@ msgid "Timing"
 msgstr "时序"
 
 msgid "Pre-Send Time for sample sound"
-msgstr "Sample音输出前的Pre-Send Time"
+msgstr "样本声音的预置输送时间"
 
 msgid "Appearance"
 msgstr "外观"
@@ -587,13 +587,13 @@ msgid "Counter"
 msgstr "计数器"
 
 msgid "UI Language"
-msgstr "UI语言"
+msgstr "界面语言"
 
 msgid "Change"
 msgstr "变更"
 
 msgid "Track Height (pixel)"
-msgstr "音轨高度 (pixel)"
+msgstr "音轨高度(像素)"
 
 msgid "Visible Control Curve"
 msgstr "显示控制曲线"
@@ -611,7 +611,7 @@ msgid "Horizontal Scroll when Mouse wheel"
 msgstr "让鼠标滚轮以水平方向滚动"
 
 msgid "Place Tempo/Beat Dialog to appropriate Position"
-msgstr "让节奏/拍子对话框以适当位置显示"
+msgstr "让曲速/拍子对话框以适当位置显示"
 
 msgid "Maximum Frame Rate"
 msgstr "最大帧数"
@@ -629,7 +629,7 @@ msgid "Play Preview On Right Click"
 msgstr "按右键演奏预览音"
 
 msgid "Enable Quantize for Curve Selecting"
-msgstr "启用曲线量化选择"
+msgstr "启用节拍的曲线选择"
 
 msgid "MIDI In Port Number"
 msgstr "MIDI 端口号"
@@ -656,7 +656,7 @@ msgid "Capacity of RecentFiles"
 msgstr "「最近使用的文件列表」大小"
 
 msgid "Default scale for width direction in pixel/clock"
-msgstr "横向默认表示比例(pixel/clock)"
+msgstr "横向默认表示比例(像素/时钟)"
 
 msgid "Default value of pre-measure"
 msgstr "默认前置拍"
@@ -665,28 +665,28 @@ msgid "Drawing lyrics to screen or not"
 msgstr "是否在屏幕上描绘歌词"
 
 msgid "Fix play cursor to the center of screen"
-msgstr "Fix play cursor to the center of screen"
+msgstr "校准播放指针至当前屏幕"
 
 msgid "List of files recentry used"
 msgstr "最近使用的文件"
 
 msgid "Maximum frame rate(in frames per second)"
-msgstr "最大帧数(in frames per second)"
+msgstr "最大帧数(/帧每秒)"
 
 msgid "Mouse wheel speed"
 msgstr "鼠标滚动速度"
 
 msgid "Program change of default singer"
-msgstr "更改默认歌手"
+msgstr "默认歌手程序改变"
 
 msgid "Show actual pitch line or not"
-msgstr "是否显示pitch曲线"
+msgstr "是否显示高音曲线"
 
 msgid "Tolerance of mouse operation (in pixel)"
-msgstr "鼠标操作允许范围(in pixel)"
+msgstr "鼠标操作允许范围(/像素)"
 
 msgid "Whether scroll horizontally with mouse-wheel"
-msgstr "Whether scroll horizontally with mouse-wheel"
+msgstr "是否用鼠标滚轮水平滚动"
 
 msgid "beat"
 msgstr "拍子"
@@ -725,10 +725,10 @@ msgid "Option"
 msgstr "选项"
 
 msgid "Palette Tool"
-msgstr "调色板"
+msgstr "调音板"
 
 msgid "Pitch Line"
-msgstr "音高线"
+msgstr "高音曲线"
 
 msgid "Renderer"
 msgstr "渲染"
@@ -779,7 +779,7 @@ msgid "Path"
 msgstr "路径"
 
 msgid "Piano Roll"
-msgstr "钢琴谱"
+msgstr "钢琴卷轴窗口"
 
 msgid "Program Change"
 msgstr "程序更改"
@@ -809,10 +809,10 @@ msgid "VSQ / Vocaloid Midi"
 msgstr "VSQ / Vocaloid Midi"
 
 msgid "Chagne Tool Pointer / Eraser"
-msgstr "Chagne Tool Pointer / Eraser"
+msgstr "更改工具 指针/橡皮擦"
 
 msgid "Change Tool Pointer / Pencil"
-msgstr "Change Tool Pointer / Pencil"
+msgstr "更改工具 指针/铅笔"
 
 msgid "Command"
 msgstr "命令"
@@ -821,10 +821,10 @@ msgid "Do you wish to remove track? {0} : '{1}'"
 msgstr "真的要移除音轨吗? {0} : '{1}'"
 
 msgid "Down-Portamento"
-msgstr "Down-Portamento"
+msgstr "下行滑音"
 
 msgid "Load Default"
-msgstr "载入默认"
+msgstr "读取默认值"
 
 msgid "Metronome"
 msgstr "节拍器"
@@ -836,7 +836,7 @@ msgid "MIDI Device"
 msgstr "MIDI设备"
 
 msgid "Moduration"
-msgstr "Moduration"
+msgstr "变调(Moduration)"
 
 msgid "Next Control Curve"
 msgstr "下一曲线"
@@ -848,7 +848,7 @@ msgid "Note"
 msgstr "音符"
 
 msgid "Note Property"
-msgstr "音符属性"
+msgstr "音符特性"
 
 msgid "Note#"
 msgstr "音符#"
@@ -878,10 +878,10 @@ msgid "Phrase"
 msgstr "歌词"
 
 msgid "Pre Utterance"
-msgstr "先行发音"
+msgstr "预置发音"
 
 msgid "Preview"
-msgstr "试听"
+msgstr "预览"
 
 msgid "Previous Control Curve"
 msgstr "上一曲线"
@@ -927,13 +927,13 @@ msgid "Stop Realtime Input"
 msgstr "结束实时输入"
 
 msgid "Up-Portamento"
-msgstr "Up-Portamento"
+msgstr "上行滑音"
 
 msgid "Velocity"
-msgstr "触键力度"
+msgstr "速度(VEL)"
 
 msgid "Vibrato Length"
-msgstr "Vibrato长度"
+msgstr "颤音长度"
 
 msgid "VSQ/Vocaloid Midi Import"
 msgstr "导入VSQ/Vocaloid Midi"
@@ -963,7 +963,7 @@ msgid "Automatical Backup"
 msgstr "自动备份"
 
 msgid "Avoid automaticaly polyphonic editing."
-msgstr "Avoid automaticaly polyphonic editing."
+msgstr "避免自动多声部编辑."
 
 msgid "Blank"
 msgstr "空白"
@@ -981,28 +981,34 @@ msgid "Copy current track."
 msgstr "复制当前音轨."
 
 msgid "Copy selected items."
-msgstr "复制所选项目."
+msgstr "复制选择的音符."
 
 msgid "Correct overlapped item."
-msgstr "修正重叠项目."
+msgstr "修正重叠音符."
 
 msgid "Create new project."
 msgstr "创建工程."
 
 msgid "Cut selected items."
-msgstr "剪切所选项目."
+msgstr "剪切选择的音符."
 
 msgid "Delete bar."
 msgstr "删除小节."
+
+msgid "Devide Note"
+msgstr "音符分割"
+
+msgid "Devide Note."
+msgstr "音符分割."
 
 msgid "Delete current track."
 msgstr "删除当前音轨."
 
 msgid "Delete selected items."
-msgstr "删除所选项目."
+msgstr "删除选择的音符."
 
 msgid "Dynamics Control (VOCALOID2)"
-msgstr "动态控制(VOCALOID2)"
+msgstr "DYN控制 (VOCALOID2)"
 
 msgid "Enable current track."
 msgstr "启用当前音轨."
@@ -1014,7 +1020,7 @@ msgid "Enable/Disable start marker."
 msgstr "启用/禁用起始标记."
 
 msgid "Export pre-measure part"
-msgstr "Export pre-measure part"
+msgstr "导出前置小节部分"
 
 msgid "Export to Standard MIDI."
 msgstr "导出标准MIDI."
@@ -1035,7 +1041,7 @@ msgid "Import Standard MIDI."
 msgstr "导入标准MIDI."
 
 msgid "Import tempo from ReWire host."
-msgstr "从ReWire host导入节奏."
+msgstr "从ReWire host导入曲速(tempo)."
 
 msgid "Import VSQ / VOCALOID MIDI."
 msgstr "导入 VSQ / VOCALOID MIDI."
@@ -1044,13 +1050,13 @@ msgid "Import."
 msgstr "导入."
 
 msgid "Input Offset Seconds"
-msgstr "Input Offset Seconds"
+msgstr "输入延迟时间"
 
 msgid "Insert bar."
 msgstr "插入小节."
 
 msgid "Inserting start at pre-measure"
-msgstr "Inserting start at pre-measure"
+msgstr "插入开始预留时间量"
 
 msgid "interval"
 msgstr "间隔"
@@ -1062,7 +1068,7 @@ msgid "Invalid VSQ/VOCALOID MIDI file"
 msgstr "无效的VSQ/VOCALOID MIDI文件"
 
 msgid "Lengthen note end to neighboring note."
-msgstr "Lengthen note end to neighboring note."
+msgstr "延长音符长度至相邻音符."
 
 msgid "Load"
 msgstr "载入"
@@ -1083,7 +1089,7 @@ msgid "Open UTAU project and create new project."
 msgstr "打开UTAU工程并新建工程."
 
 msgid "Open Voice DB configuration file"
-msgstr "打开Voice DB配置文件"
+msgstr "打开声音库配置文件"
 
 msgid "Open VSQ / VOCALOID MIDI and create new project."
 msgstr "打开 VSQ/VOCALOID MIDI并新建工程."
@@ -1092,7 +1098,7 @@ msgid "Paste copied items to current song position."
 msgstr "粘贴复制的项目至当前位置."
 
 msgid "Randomize items."
-msgstr "随机项目."
+msgstr "随机化音符."
 
 msgid "Recent projects."
 msgstr "历史工程."
@@ -1144,19 +1150,19 @@ msgid "Select voice synthesis engine."
 msgstr "选择声音合成引擎."
 
 msgid "Set global pitch shift."
-msgstr "Set global pitch shift."
+msgstr "设定全局高音移位"
 
 msgid "Set Offset Seconds"
-msgstr "Set Offset Seconds"
+msgstr "设定偏移时间"
 
 msgid "Show background items."
-msgstr "显示背景项目."
+msgstr "显示背景音符."
 
 msgid "Show/Hide control curves."
 msgstr "显示/隐藏控制曲线."
 
 msgid "Show/Hide expression lines."
-msgstr "显示/隐藏表情线."
+msgstr "显示/隐藏表情(expression)线."
 
 msgid "Show/Hide grid line."
 msgstr "显示/隐藏网格线."
@@ -1165,10 +1171,10 @@ msgid "Show/Hide lyrics."
 msgstr "显示/隐藏歌词."
 
 msgid "Show/Hide mixer window."
-msgstr "显示/隐藏混频器窗口."
+msgstr "显示/隐藏混音器界面."
 
 msgid "Show/Hide pitch bend lines."
-msgstr "显示/隐藏pitch bend线."
+msgstr "显示/隐藏高音弯曲(PIT)线."
 
 msgid "Show/Hide property window."
 msgstr "显示/隐藏属性窗口."
@@ -1177,7 +1183,7 @@ msgid "Show/Hide waveform."
 msgstr "显示/隐藏波形图."
 
 msgid "Start After Premeasure"
-msgstr "Start After Premeasure"
+msgstr "从前置小节后开始"
 
 msgid "Start realtime input."
 msgstr "开始实时输入."
@@ -1189,10 +1195,10 @@ msgid "UTAU"
 msgstr "UTAU"
 
 msgid "UTAU Voice DB"
-msgstr "UTAU Voice DB"
+msgstr "UTAU声音库"
 
 msgid "Vibrato"
-msgstr "Vibrato"
+msgstr "颤音"
 
 msgid "VOCALOID1"
 msgstr "VOCALOID1"
@@ -1206,3 +1212,20 @@ msgstr "Voice DB 配置"
 msgid "Voice DB Config(*.ini)|*.ini"
 msgstr "Voice DB 配置(*.ini)|*.ini"
 
+msgid "Transpose Plus 1 Degree"
+msgstr "音调升高一度"
+
+msgid "Transpose Plus 1 Degree."
+msgstr "音调升高一度."
+
+msgid "Generate VLF."
+msgstr "生成VLF."
+
+msgid "Render As UTAU."
+msgstr "用UTAU演奏."
+
+msgid "Generate VLF"
+msgstr "生成VLF"
+
+msgid "Render As UTAU"
+msgstr "用UTAU演奏"

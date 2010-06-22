@@ -29,26 +29,18 @@ public class Preference extends JFrame {
     //SECTION-BEGIN-FIELD
 
     private static final long serialVersionUID = 1L;
-	private BPanel tabSequence = null;
+	private BPanel tabSequence = null;  //  @jve:decl-index=0:visual-constraint="-67,793"
 	private BLabel lblResolution = null;
 	private BPanel BPanel = null;
-	private BLabel lblDynamics = null;
-	private BComboBox comboDynamics = null;
-	private BLabel lblAmplitude = null;
-	private BComboBox comboAmplitude = null;
-	private BLabel lblPeriod = null;
-	private BComboBox comboPeriod = null;
+	private BLabel lblResolControlCurve = null;
+	private BComboBox comboResolControlCurve = null;
 	private BLabel jLabel1 = null;
-	private BLabel jLabel11 = null;
-	private BLabel jLabel12 = null;
-	private BLabel lblVibratoConfig = null;
 	private BPanel jPanel1 = null;
 	private BLabel lblVibratoLength = null;
 	private BComboBox comboVibratoLength = null;
 	private BLabel jLabel13 = null;
-	private BGroupBox groupAutoVibratoConfig = null;
+	private BGroupBox groupUserDefined = null;
 	private BPanel jPanel3 = null;
-	private BCheckBox chkEnableAutoVibrato = null;
 	private BLabel lblAutoVibratoMinLength = null;
 	private BComboBox comboAutoVibratoMinLength = null;
 	private BLabel jLabel4 = null;
@@ -186,6 +178,19 @@ public class Preference extends JFrame {
     private BCheckBox chkLoadVocaloid2 = null;
     private BCheckBox chkLoadAquesTone = null;
     private BCheckBox chkKeepProjectCache = null;
+    private BCheckBox chkEnableAutoVibrato = null;
+    private BLabel lblAutoVibratoType = null;
+    private BPanel jPanel11 = null;
+    private BGroupBox groupVocaloidEditorCompatible = null;
+    private BPanel jPanel31 = null;
+    private BPanel jPanel41 = null;
+    private BLabel lblVibratoRate = null;
+    private BLabel lblVibratoDepth = null;
+    private NumberTextBox txtVibratoRate = null;
+    private NumberTextBox txtVibratoDepth = null;
+    private JPanel jPanel21 = null;
+    private BRadioButton radioVocaloidEditorCompatible = null;
+    private BRadioButton radioUserDefined = null;
     //SECTION-END-FIELD
 	/**
 	 * This is the default constructor
@@ -235,21 +240,30 @@ public class Preference extends JFrame {
 	 */
 	private BPanel getTabSequence() {
 		if (tabSequence == null) {
+			GridBagConstraints gridBagConstraints410 = new GridBagConstraints();
+			gridBagConstraints410.gridx = 0;
+			gridBagConstraints410.fill = GridBagConstraints.HORIZONTAL;
+			gridBagConstraints410.insets = new Insets(3, 12, 3, 0);
+			gridBagConstraints410.weighty = 1.0D;
+			gridBagConstraints410.anchor = GridBagConstraints.NORTHWEST;
+			gridBagConstraints410.gridy = 5;
+			GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
+			gridBagConstraints7.gridx = 0;
+			gridBagConstraints7.anchor = GridBagConstraints.WEST;
+			gridBagConstraints7.insets = new Insets(12, 12, 3, 0);
+			gridBagConstraints7.gridy = 4;
+			GridBagConstraints gridBagConstraints = new GridBagConstraints();
+			gridBagConstraints.gridx = 0;
+			gridBagConstraints.anchor = GridBagConstraints.WEST;
+			gridBagConstraints.insets = new Insets(12, 12, 3, 0);
+			gridBagConstraints.gridy = 2;
 			GridBagConstraints gridBagConstraints20 = new GridBagConstraints();
 			gridBagConstraints20.gridx = 0;
 			gridBagConstraints20.insets = new Insets(3, 12, 3, 0);
 			gridBagConstraints20.anchor = GridBagConstraints.NORTHWEST;
 			gridBagConstraints20.fill = GridBagConstraints.HORIZONTAL;
-			gridBagConstraints20.weighty = 1.0D;
+			gridBagConstraints20.weighty = 0.0D;
 			gridBagConstraints20.gridy = 3;
-			GridBagConstraints gridBagConstraints31 = new GridBagConstraints();
-			gridBagConstraints31.gridx = 0;
-			gridBagConstraints31.anchor = GridBagConstraints.WEST;
-			gridBagConstraints31.insets = new Insets(3, 12, 3, 0);
-			gridBagConstraints31.weightx = 1.0D;
-			gridBagConstraints31.gridy = 2;
-			lblVibratoConfig = new BLabel();
-			lblVibratoConfig.setText("Vibrato Setting");
 			GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
 			gridBagConstraints21.anchor = GridBagConstraints.WEST;
 			gridBagConstraints21.gridy = 1;
@@ -265,10 +279,13 @@ public class Preference extends JFrame {
 			lblResolution.setText("Resolution(VSTi)");
 			tabSequence = new BPanel();
 			tabSequence.setLayout(new GridBagLayout());
+			tabSequence.setSize(new Dimension(465, 459));
 			tabSequence.add(lblResolution, gridBagConstraints1);
 			tabSequence.add(getJPanel(), gridBagConstraints21);
-			tabSequence.add(lblVibratoConfig, gridBagConstraints31);
 			tabSequence.add(getJPanel1(), gridBagConstraints20);
+			tabSequence.add(getChkEnableAutoVibrato(), gridBagConstraints);
+			tabSequence.add(lblAutoVibratoType, gridBagConstraints7);
+			tabSequence.add(getJPanel11(), gridBagConstraints410);
 		}
 		return tabSequence;
 	}
@@ -280,22 +297,6 @@ public class Preference extends JFrame {
 	 */
 	private BPanel getJPanel() {
 		if (BPanel == null) {
-			GridBagConstraints gridBagConstraints10 = new GridBagConstraints();
-			gridBagConstraints10.gridx = 4;
-			gridBagConstraints10.anchor = GridBagConstraints.WEST;
-			gridBagConstraints10.weightx = 1.0D;
-			gridBagConstraints10.insets = new Insets(0, 12, 0, 0);
-			gridBagConstraints10.gridy = 3;
-			jLabel12 = new BLabel();
-			jLabel12.setText("clocks");
-			GridBagConstraints gridBagConstraints9 = new GridBagConstraints();
-			gridBagConstraints9.gridx = 4;
-			gridBagConstraints9.anchor = GridBagConstraints.WEST;
-			gridBagConstraints9.weightx = 1.0D;
-			gridBagConstraints9.insets = new Insets(0, 12, 0, 0);
-			gridBagConstraints9.gridy = 1;
-			jLabel11 = new BLabel();
-			jLabel11.setText("clocks");
 			GridBagConstraints gridBagConstraints8 = new GridBagConstraints();
 			gridBagConstraints8.gridx = 4;
 			gridBagConstraints8.weightx = 1.0D;
@@ -304,34 +305,6 @@ public class Preference extends JFrame {
 			gridBagConstraints8.gridy = 0;
 			jLabel1 = new BLabel();
 			jLabel1.setText("clocks");
-			GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
-			gridBagConstraints7.fill = GridBagConstraints.NONE;
-			gridBagConstraints7.gridy = 3;
-			gridBagConstraints7.weightx = 0.0D;
-			gridBagConstraints7.anchor = GridBagConstraints.WEST;
-			gridBagConstraints7.insets = new Insets(3, 24, 3, 0);
-			gridBagConstraints7.gridx = 3;
-			GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
-			gridBagConstraints6.gridx = 0;
-			gridBagConstraints6.anchor = GridBagConstraints.WEST;
-			gridBagConstraints6.insets = new Insets(0, 24, 0, 0);
-			gridBagConstraints6.gridy = 3;
-			lblPeriod = new BLabel();
-			lblPeriod.setText("Vibrato Rate");
-			GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
-			gridBagConstraints5.fill = GridBagConstraints.NONE;
-			gridBagConstraints5.gridy = 1;
-			gridBagConstraints5.weightx = 0.0D;
-			gridBagConstraints5.anchor = GridBagConstraints.WEST;
-			gridBagConstraints5.insets = new Insets(3, 24, 3, 0);
-			gridBagConstraints5.gridx = 3;
-			GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
-			gridBagConstraints4.gridx = 0;
-			gridBagConstraints4.anchor = GridBagConstraints.WEST;
-			gridBagConstraints4.insets = new Insets(0, 24, 0, 0);
-			gridBagConstraints4.gridy = 1;
-			lblAmplitude = new BLabel();
-			lblAmplitude.setText("Vibrato Depth");
 			GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
 			gridBagConstraints3.fill = GridBagConstraints.NONE;
 			gridBagConstraints3.gridy = 0;
@@ -344,60 +317,28 @@ public class Preference extends JFrame {
 			gridBagConstraints2.anchor = GridBagConstraints.WEST;
 			gridBagConstraints2.insets = new Insets(0, 24, 0, 0);
 			gridBagConstraints2.gridy = 0;
-			lblDynamics = new BLabel();
-			lblDynamics.setText("Dynamics");
+			lblResolControlCurve = new BLabel();
+			lblResolControlCurve.setText("Control Curve");
 			BPanel = new BPanel();
 			BPanel.setLayout(new GridBagLayout());
-			BPanel.add(lblDynamics, gridBagConstraints2);
-			BPanel.add(getComboDynamics(), gridBagConstraints3);
-			BPanel.add(lblAmplitude, gridBagConstraints4);
-			BPanel.add(getComboAmplitude(), gridBagConstraints5);
-			BPanel.add(lblPeriod, gridBagConstraints6);
-			BPanel.add(getComboPeriod(), gridBagConstraints7);
+			BPanel.add(lblResolControlCurve, gridBagConstraints2);
+			BPanel.add(getComboResolControlCurve(), gridBagConstraints3);
 			BPanel.add(jLabel1, gridBagConstraints8);
-			BPanel.add(jLabel11, gridBagConstraints9);
-			BPanel.add(jLabel12, gridBagConstraints10);
 		}
 		return BPanel;
 	}
 
 	/**
-	 * This method initializes comboDynamics	
+	 * This method initializes comboResolControlCurve	
 	 * 	
 	 * @return javax.swing.BComboBox	
 	 */
-	private BComboBox getComboDynamics() {
-		if (comboDynamics == null) {
-			comboDynamics = new BComboBox();
-			comboDynamics.setPreferredSize(new Dimension(101, 20));
+	private BComboBox getComboResolControlCurve() {
+		if (comboResolControlCurve == null) {
+			comboResolControlCurve = new BComboBox();
+			comboResolControlCurve.setPreferredSize(new Dimension(101, 20));
 		}
-		return comboDynamics;
-	}
-
-	/**
-	 * This method initializes comboAmplitude	
-	 * 	
-	 * @return javax.swing.BComboBox	
-	 */
-	private BComboBox getComboAmplitude() {
-		if (comboAmplitude == null) {
-			comboAmplitude = new BComboBox();
-			comboAmplitude.setPreferredSize(new Dimension(101, 20));
-		}
-		return comboAmplitude;
-	}
-
-	/**
-	 * This method initializes comboPeriod	
-	 * 	
-	 * @return javax.swing.BComboBox	
-	 */
-	private BComboBox getComboPeriod() {
-		if (comboPeriod == null) {
-			comboPeriod = new BComboBox();
-			comboPeriod.setPreferredSize(new Dimension(101, 20));
-		}
-		return comboPeriod;
+		return comboResolControlCurve;
 	}
 
 	/**
@@ -407,13 +348,25 @@ public class Preference extends JFrame {
 	 */
 	private BPanel getJPanel1() {
 		if (jPanel1 == null) {
-			GridBagConstraints gridBagConstraints19 = new GridBagConstraints();
-			gridBagConstraints19.gridx = 0;
-			gridBagConstraints19.gridwidth = 5;
-			gridBagConstraints19.anchor = GridBagConstraints.WEST;
-			gridBagConstraints19.fill = GridBagConstraints.HORIZONTAL;
-			gridBagConstraints19.insets = new Insets(3, 24, 3, 12);
-			gridBagConstraints19.gridy = 1;
+			lblAutoVibratoType = new BLabel();
+			lblAutoVibratoType.setText("Auto Vibrato Type");
+			GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
+			gridBagConstraints6.anchor = GridBagConstraints.WEST;
+			gridBagConstraints6.gridy = 1;
+			gridBagConstraints6.weightx = 1.0D;
+			gridBagConstraints6.gridx = 4;
+			GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
+			gridBagConstraints5.fill = GridBagConstraints.NONE;
+			gridBagConstraints5.gridx = 3;
+			gridBagConstraints5.gridy = 1;
+			gridBagConstraints5.weightx = 0.0D;
+			gridBagConstraints5.anchor = GridBagConstraints.WEST;
+			gridBagConstraints5.insets = new Insets(3, 24, 3, 0);
+			GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
+			gridBagConstraints4.gridx = 0;
+			gridBagConstraints4.anchor = GridBagConstraints.WEST;
+			gridBagConstraints4.insets = new Insets(0, 24, 0, 0);
+			gridBagConstraints4.gridy = 1;
 			GridBagConstraints gridBagConstraints81 = new GridBagConstraints();
 			gridBagConstraints81.anchor = GridBagConstraints.WEST;
 			gridBagConstraints81.gridx = 4;
@@ -441,7 +394,9 @@ public class Preference extends JFrame {
 			jPanel1.add(lblVibratoLength, gridBagConstraints22);
 			jPanel1.add(getComboVibratoLength(), gridBagConstraints32);
 			jPanel1.add(jLabel13, gridBagConstraints81);
-			jPanel1.add(getGroupAutoVibratoConfig(), gridBagConstraints19);
+			jPanel1.add(lblAutoVibratoMinLength, gridBagConstraints4);
+			jPanel1.add(getComboAutoVibratoMinLength(), gridBagConstraints5);
+			jPanel1.add(jLabel4, gridBagConstraints6);
 		}
 		return jPanel1;
 	}
@@ -460,36 +415,30 @@ public class Preference extends JFrame {
 	}
 
 	/**
-	 * This method initializes groupAutoVibratoConfig	
+	 * This method initializes groupUserDefined	
 	 * 	
 	 * @return javax.swing.BPanel	
 	 */
-	private BGroupBox getGroupAutoVibratoConfig() {
-		if (groupAutoVibratoConfig == null) {
-			GridBagConstraints gridBagConstraints51 = new GridBagConstraints();
-			gridBagConstraints51.gridx = 0;
-			gridBagConstraints51.anchor = GridBagConstraints.WEST;
-			gridBagConstraints51.insets = new Insets(3, 12, 3, 0);
-			gridBagConstraints51.gridy = 2;
+	private BGroupBox getGroupUserDefined() {
+		if (groupUserDefined == null) {
+			GridBagConstraints gridBagConstraints10 = new GridBagConstraints();
+			gridBagConstraints10.gridx = 0;
+			gridBagConstraints10.fill = GridBagConstraints.HORIZONTAL;
+			gridBagConstraints10.weightx = 1.0D;
+			gridBagConstraints10.gridy = 0;
 			GridBagConstraints gridBagConstraints14 = new GridBagConstraints();
 			gridBagConstraints14.gridx = 0;
 			gridBagConstraints14.anchor = GridBagConstraints.WEST;
 			gridBagConstraints14.insets = new Insets(3, 12, 3, 0);
 			gridBagConstraints14.gridy = 1;
-			GridBagConstraints gridBagConstraints = new GridBagConstraints();
-			gridBagConstraints.gridx = 0;
-			gridBagConstraints.anchor = GridBagConstraints.WEST;
-			gridBagConstraints.weightx = 1.0D;
-			gridBagConstraints.insets = new Insets(3, 12, 3, 0);
-			gridBagConstraints.gridy = 0;
-			groupAutoVibratoConfig = new BGroupBox();
-			groupAutoVibratoConfig.setLayout(new GridBagLayout());
-			groupAutoVibratoConfig.setBorder(BorderFactory.createTitledBorder(null, "Auto Vibrato Settings", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
-			groupAutoVibratoConfig.add(getChkEnableAutoVibrato(), gridBagConstraints);
-			groupAutoVibratoConfig.add(getJPanel3(), gridBagConstraints14);
-			groupAutoVibratoConfig.add(getJPanel4(), gridBagConstraints51);
+			groupUserDefined = new BGroupBox();
+			groupUserDefined.setLayout(new GridBagLayout());
+			groupUserDefined.setBorder(BorderFactory.createTitledBorder(null, "Auto Vibrato Settings", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
+			groupUserDefined.setTitle("User Defined");
+			groupUserDefined.add(getJPanel3(), gridBagConstraints14);
+			groupUserDefined.add(getJPanel41(), gridBagConstraints10);
 		}
-		return groupAutoVibratoConfig;
+		return groupUserDefined;
 	}
 
 	/**
@@ -499,44 +448,14 @@ public class Preference extends JFrame {
 	 */
 	private BPanel getJPanel3() {
 		if (jPanel3 == null) {
-			GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
-			gridBagConstraints13.gridx = 2;
-			gridBagConstraints13.weightx = 1.0D;
-			gridBagConstraints13.anchor = GridBagConstraints.WEST;
-			gridBagConstraints13.gridy = 0;
 			jLabel4 = new BLabel();
 			jLabel4.setText("beat");
-			GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
-			gridBagConstraints12.fill = GridBagConstraints.NONE;
-			gridBagConstraints12.gridy = 0;
-			gridBagConstraints12.weightx = 0.0D;
-			gridBagConstraints12.insets = new Insets(0, 12, 0, 12);
-			gridBagConstraints12.gridx = 1;
-			GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
-			gridBagConstraints11.gridx = 0;
-			gridBagConstraints11.gridy = 0;
 			lblAutoVibratoMinLength = new BLabel();
 			lblAutoVibratoMinLength.setText("Minimum note length for Automatic Vibrato");
 			jPanel3 = new BPanel();
 			jPanel3.setLayout(new GridBagLayout());
-			jPanel3.add(lblAutoVibratoMinLength, gridBagConstraints11);
-			jPanel3.add(getComboAutoVibratoMinLength(), gridBagConstraints12);
-			jPanel3.add(jLabel4, gridBagConstraints13);
 		}
 		return jPanel3;
-	}
-
-	/**
-	 * This method initializes chkEnableAutoVibrato	
-	 * 	
-	 * @return javax.swing.BCheckBox	
-	 */
-	private BCheckBox getChkEnableAutoVibrato() {
-		if (chkEnableAutoVibrato == null) {
-			chkEnableAutoVibrato = new BCheckBox();
-			chkEnableAutoVibrato.setText("Enable Automatic Vibrato");
-		}
-		return chkEnableAutoVibrato;
 	}
 
 	/**
@@ -568,6 +487,7 @@ public class Preference extends JFrame {
 			gridBagConstraints18.gridx = 1;
 			GridBagConstraints gridBagConstraints17 = new GridBagConstraints();
 			gridBagConstraints17.gridx = 0;
+			gridBagConstraints17.insets = new Insets(0, 12, 0, 0);
 			gridBagConstraints17.gridy = 1;
 			lblAutoVibratoType2 = new BLabel();
 			lblAutoVibratoType2.setText("Vibrato Type VOCALOID2");
@@ -580,6 +500,7 @@ public class Preference extends JFrame {
 			gridBagConstraints16.gridx = 1;
 			GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
 			gridBagConstraints15.gridx = 0;
+			gridBagConstraints15.insets = new Insets(0, 12, 0, 0);
 			gridBagConstraints15.gridy = 0;
 			lblAutoVibratoType1 = new BLabel();
 			lblAutoVibratoType1.setText("Vibrato Type VOCALOID1");
@@ -2792,6 +2713,211 @@ public class Preference extends JFrame {
             chkKeepProjectCache.setText("Keep Project Cache");
         }
         return chkKeepProjectCache;
+    }
+
+    /**
+     * This method initializes chkEnableAutoVibrato	
+     * 	
+     * @return org.kbinani.windows.forms.BCheckBox	
+     */
+    private BCheckBox getChkEnableAutoVibrato() {
+        if (chkEnableAutoVibrato == null) {
+            chkEnableAutoVibrato = new BCheckBox();
+            chkEnableAutoVibrato.setText("Enable Automatic Vibrato");
+        }
+        return chkEnableAutoVibrato;
+    }
+
+    /**
+     * This method initializes jPanel11	
+     * 	
+     * @return org.kbinani.windows.forms.BPanel	
+     */
+    private BPanel getJPanel11() {
+        if (jPanel11 == null) {
+            GridBagConstraints gridBagConstraints31 = new GridBagConstraints();
+            gridBagConstraints31.gridx = 0;
+            gridBagConstraints31.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints31.weighty = 1.0D;
+            gridBagConstraints31.anchor = GridBagConstraints.NORTHWEST;
+            gridBagConstraints31.insets = new Insets(3, 48, 3, 12);
+            gridBagConstraints31.gridy = 2;
+            GridBagConstraints gridBagConstraints19 = new GridBagConstraints();
+            gridBagConstraints19.gridx = 0;
+            gridBagConstraints19.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints19.insets = new Insets(3, 48, 3, 12);
+            gridBagConstraints19.gridy = 1;
+            GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
+            gridBagConstraints13.gridx = 0;
+            gridBagConstraints13.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints13.weightx = 1.0D;
+            gridBagConstraints13.gridy = 0;
+            jPanel11 = new BPanel();
+            jPanel11.setLayout(new GridBagLayout());
+            jPanel11.add(getJPanel21(), gridBagConstraints13);
+            jPanel11.add(getGroupVocaloidEditorCompatible(), gridBagConstraints19);
+            jPanel11.add(getGroupUserDefined(), gridBagConstraints31);
+        }
+        return jPanel11;
+    }
+
+    /**
+     * This method initializes groupVocaloidEditorCompatible	
+     * 	
+     * @return org.kbinani.windows.forms.BGroupBox	
+     */
+    private BGroupBox getGroupVocaloidEditorCompatible() {
+        if (groupVocaloidEditorCompatible == null) {
+            GridBagConstraints gridBagConstraints9 = new GridBagConstraints();
+            gridBagConstraints9.gridx = 1;
+            gridBagConstraints9.weightx = 1.0D;
+            gridBagConstraints9.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints9.gridy = 1;
+            GridBagConstraints gridBagConstraints144 = new GridBagConstraints();
+            gridBagConstraints144.anchor = GridBagConstraints.WEST;
+            gridBagConstraints144.gridx = 1;
+            gridBagConstraints144.gridy = 1;
+            gridBagConstraints144.insets = new Insets(3, 12, 3, 0);
+            groupVocaloidEditorCompatible = new BGroupBox();
+            groupVocaloidEditorCompatible.setLayout(new GridBagLayout());
+            groupVocaloidEditorCompatible.setBorder(BorderFactory.createTitledBorder(null, "Auto Vibrato Settings", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
+            groupVocaloidEditorCompatible.setTitle("VOCALOID Editor Compatible");
+            groupVocaloidEditorCompatible.add(getJPanel31(), gridBagConstraints144);
+            groupVocaloidEditorCompatible.add(getJPanel4(), gridBagConstraints9);
+        }
+        return groupVocaloidEditorCompatible;
+    }
+
+    /**
+     * This method initializes jPanel31	
+     * 	
+     * @return org.kbinani.windows.forms.BPanel	
+     */
+    private BPanel getJPanel31() {
+        if (jPanel31 == null) {
+            jPanel31 = new BPanel();
+            jPanel31.setLayout(new GridBagLayout());
+        }
+        return jPanel31;
+    }
+
+    /**
+     * This method initializes jPanel41	
+     * 	
+     * @return org.kbinani.windows.forms.BPanel	
+     */
+    private BPanel getJPanel41() {
+        if (jPanel41 == null) {
+            GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
+            gridBagConstraints12.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints12.gridy = 1;
+            gridBagConstraints12.weightx = 1.0;
+            gridBagConstraints12.anchor = GridBagConstraints.WEST;
+            gridBagConstraints12.insets = new Insets(3, 12, 3, 12);
+            gridBagConstraints12.gridx = 1;
+            GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
+            gridBagConstraints11.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints11.gridy = 0;
+            gridBagConstraints11.weightx = 1.0D;
+            gridBagConstraints11.insets = new Insets(3, 12, 3, 12);
+            gridBagConstraints11.anchor = GridBagConstraints.WEST;
+            gridBagConstraints11.gridx = 1;
+            GridBagConstraints gridBagConstraints171 = new GridBagConstraints();
+            gridBagConstraints171.gridx = 0;
+            gridBagConstraints171.insets = new Insets(0, 12, 0, 0);
+            gridBagConstraints171.gridy = 1;
+            lblVibratoDepth = new BLabel();
+            lblVibratoDepth.setText("Default Vibrto Depth");
+            GridBagConstraints gridBagConstraints151 = new GridBagConstraints();
+            gridBagConstraints151.gridx = 0;
+            gridBagConstraints151.insets = new Insets(0, 12, 0, 0);
+            gridBagConstraints151.gridy = 0;
+            lblVibratoRate = new BLabel();
+            lblVibratoRate.setText("Default Vibrato Rate");
+            jPanel41 = new BPanel();
+            jPanel41.setLayout(new GridBagLayout());
+            jPanel41.add(lblVibratoRate, gridBagConstraints151);
+            jPanel41.add(lblVibratoDepth, gridBagConstraints171);
+            jPanel41.add(getTxtVibratoRate(), gridBagConstraints11);
+            jPanel41.add(getTxtVibratoDepth(), gridBagConstraints12);
+        }
+        return jPanel41;
+    }
+
+    /**
+     * This method initializes txtVibratoRate	
+     * 	
+     * @return org.kbinani.windows.forms.BTextBox	
+     */
+    private NumberTextBox getTxtVibratoRate() {
+        if (txtVibratoRate == null) {
+            txtVibratoRate = new NumberTextBox();
+        }
+        return txtVibratoRate;
+    }
+
+    /**
+     * This method initializes txtVibratoDepth	
+     * 	
+     * @return org.kbinani.cadencii.NumberTextBox	
+     */
+    private NumberTextBox getTxtVibratoDepth() {
+        if (txtVibratoDepth == null) {
+            txtVibratoDepth = new NumberTextBox();
+        }
+        return txtVibratoDepth;
+    }
+
+    /**
+     * This method initializes jPanel21	
+     * 	
+     * @return javax.swing.JPanel	
+     */
+    private JPanel getJPanel21() {
+        if (jPanel21 == null) {
+            GridBagConstraints gridBagConstraints1291 = new GridBagConstraints();
+            gridBagConstraints1291.anchor = GridBagConstraints.WEST;
+            gridBagConstraints1291.gridx = 1;
+            gridBagConstraints1291.gridy = 0;
+            gridBagConstraints1291.weightx = 1.0D;
+            gridBagConstraints1291.insets = new Insets(3, 12, 3, 0);
+            GridBagConstraints gridBagConstraints1281 = new GridBagConstraints();
+            gridBagConstraints1281.anchor = GridBagConstraints.WEST;
+            gridBagConstraints1281.gridx = 0;
+            gridBagConstraints1281.gridy = 0;
+            gridBagConstraints1281.insets = new Insets(3, 24, 3, 0);
+            jPanel21 = new JPanel();
+            jPanel21.setLayout(new GridBagLayout());
+            jPanel21.add(getRadioVocaloidEditorCompatible(), gridBagConstraints1281);
+            jPanel21.add(getRadioUserDefined(), gridBagConstraints1291);
+        }
+        return jPanel21;
+    }
+
+    /**
+     * This method initializes radioVocaloidEditorCompatible	
+     * 	
+     * @return org.kbinani.windows.forms.BRadioButton	
+     */
+    private BRadioButton getRadioVocaloidEditorCompatible() {
+        if (radioVocaloidEditorCompatible == null) {
+            radioVocaloidEditorCompatible = new BRadioButton();
+            radioVocaloidEditorCompatible.setText("VOCALOID Editor Compatible");
+        }
+        return radioVocaloidEditorCompatible;
+    }
+
+    /**
+     * This method initializes radioUserDefined	
+     * 	
+     * @return org.kbinani.windows.forms.BRadioButton	
+     */
+    private BRadioButton getRadioUserDefined() {
+        if (radioUserDefined == null) {
+            radioUserDefined = new BRadioButton();
+            radioUserDefined.setText("User Defined");
+        }
+        return radioUserDefined;
     }
 
 	//SECTION-END-METHOD

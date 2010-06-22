@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ../BuildJavaUI/src/org/kbinani/Cadencii/TextBoxEx.java
+//INCLUDE ../BuildJavaUI/src/org/kbinani/Cadencii/LyricTextBox.java
 #else
 using System;
 using System.Windows.Forms;

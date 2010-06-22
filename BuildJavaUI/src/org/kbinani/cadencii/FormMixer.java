@@ -11,7 +11,6 @@ import org.kbinani.windows.forms.BHScrollBar;
 import org.kbinani.windows.forms.BMenu;
 import org.kbinani.windows.forms.BMenuItem;
 import org.kbinani.windows.forms.BPanel;
-import java.awt.Dimension;
 
 //SECTION-END-IMPORT
 public class FormMixer extends BForm {

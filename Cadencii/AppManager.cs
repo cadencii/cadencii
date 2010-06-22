@@ -359,7 +359,11 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// x方向の表示倍率(pixel/clock)
         /// </summary>
-        public static float scaleX = 0.1f;
+        private static float _scaleX = 0.1f;
+        /// <summary>
+        /// _scaleXの逆数
+        /// </summary>
+        private static float _invScaleX = 1.0f / _scaleX;
         /// <summary>
         /// スタートマーカーの位置(clock)
         /// </summary>
@@ -489,6 +493,31 @@ namespace org.kbinani.cadencii {
         public static BEvent<BEventHandler> currentClockChangedEvent = new BEvent<BEventHandler>();
 
         private const String TEMPDIR_NAME = "cadencii";
+
+        /// <summary>
+        /// ピアノロールの，X方向のスケールを取得します(pixel/clock)
+        /// </summary>
+        /// <returns></returns>
+        public static float getScaleX() {
+            return _scaleX;
+        }
+
+        /// <summary>
+        /// ピアノロールの，X方向のスケールの逆数を取得します(clock/pixel)
+        /// </summary>
+        /// <returns></returns>
+        public static float getScaleXInv() {
+            return _invScaleX;
+        }
+
+        /// <summary>
+        /// ピアノロールの，X方向のスケールを設定します
+        /// </summary>
+        /// <param name="scale_x"></param>
+        public static void setScaleX( float scale_x ) {
+            _scaleX = scale_x;
+            _invScaleX = 1.0f / _scaleX;
+        }
 
         public static int getStartToDrawX() {
             return startToDrawX;
@@ -690,7 +719,7 @@ namespace org.kbinani.cadencii {
         /// <param name="clocks"></param>
         /// <returns></returns>
         public static int xCoordFromClocks( double clocks ) {
-            return (int)(keyWidth + clocks * scaleX - startToDrawX) + keyOffset;
+            return (int)(keyWidth + clocks * _scaleX - startToDrawX) + keyOffset;
         }
 
         /// <summary>
@@ -699,7 +728,7 @@ namespace org.kbinani.cadencii {
         /// <param name="x"></param>
         /// <returns></returns>
         public static int clockFromXCoord( int x ) {
-            return (int)((x + startToDrawX - keyOffset - keyWidth) / scaleX);
+            return (int)((x + startToDrawX - keyOffset - keyWidth) * _invScaleX);
         }
 
         #region 選択範囲の管理

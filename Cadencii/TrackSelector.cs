@@ -349,6 +349,18 @@ namespace org.kbinani.cadencii {
         /// デフォルトのストローク
         /// </summary>
         private BasicStroke strokeDefault = null;
+#if JAVA
+        /**
+         * drawVsqBPListで使う，座標のバッファ
+         */
+        private int[] _pointBufferX = new int[0];
+        private int[] _pointBufferY = new int[0];
+#else
+        /// <summary>
+        /// drawVsqBPListで使う，座標のバッファ
+        /// </summary>
+        private System.Drawing.Point[] _pointBuffer = new System.Drawing.Point[0];
+#endif
 
         public BEvent<SelectedCurveChangedEventHandler> selectedCurveChangedEvent = new BEvent<SelectedCurveChangedEventHandler>();
         public BEvent<SelectedTrackChangedEventHandler> selectedTrackChangedEvent = new BEvent<SelectedTrackChangedEventHandler>();
@@ -1898,7 +1910,7 @@ namespace org.kbinani.cadencii {
             Shape last_clip = g.getClip();
             int xoffset = AppManager.keyOffset + AppManager.keyWidth - AppManager.getStartToDrawX();
             g.clipRect( AppManager.keyWidth, HEADER, getWidth() - AppManager.keyWidth - vScroll.getWidth(), height );
-            float scale = AppManager.scaleX;
+            float scale = AppManager.getScaleX();
             int count = track.getEventCount();
 
             g.setFont( AppManager.baseFont10Bold );
@@ -2378,6 +2390,25 @@ namespace org.kbinani.cadencii {
             g.setClip( last_clip );
         }
 
+        private void ensurePointBufferLength( int length ) {
+#if JAVA
+            // バッファの長さが64の倍数になるようにする
+            int nlength = (length >> 6 + 1) * 64;
+            if( nlength > _pointBufferX.length ){
+                int[] buf = new int[length];
+                System.arrayCopy( _pointBufferX, 0, buf, 0, _pointBufferX.length );
+                _pointBufferX = buf;
+                buf = new int[length];
+                System.arrayCopy( _pointBufferY, 0, buf, 0, _pointBufferY.length );
+                _pointBufferY = buf;
+            }
+#else
+            if ( length > _pointBuffer.Length ) {
+                Array.Resize( ref _pointBuffer, length );
+            }
+#endif
+        }
+
         /// <summary>
         /// Draws VsqBPList using specified Graphics "g", toward rectangular region "rect".
         /// </summary>
@@ -2414,11 +2445,34 @@ namespace org.kbinani.cadencii {
             int hilight_end_x = AppManager.xCoordFromClocks( hilight_end );
 
             Color brush = color;
-            Vector<Integer> pointsx = new Vector<Integer>();
-            Vector<Integer> pointsy = new Vector<Integer>();
+#if !JAVA
+            // 点座標のバッファを全て無意味な座標で埋める
+            System.Drawing.Point nullp = new System.Drawing.Point( 2 * width, 2 * graphHeight );
+            for ( int i = 0; i < _pointBuffer.Length; i++ ) {
+                _pointBuffer[i] = nullp;
+            }
+#endif
+            int indx = -1;
             Vector<Integer> index_selected_in_points = new Vector<Integer>(); // pointsのうち、選択された状態のものが格納されたインデックス
-            pointsx.add( width - vScroll.getWidth() ); pointsy.add( oy );
-            pointsx.add( AppManager.keyWidth ); pointsy.add( oy );
+
+            // 最初の2点
+            ensurePointBufferLength( 2 );
+#if JAVA
+            indx++;
+            _pointBufferX[indx] = width - vScroll.getWidth();
+            _pointBufferY[indx] = oy;
+            indx++;
+            _pointBufferX[indx] = AppManager.keyWidth;
+            _pointBufferY[indx] = oy;
+#else
+            indx++;
+            _pointBuffer[indx].X = width - vScroll.getWidth();
+            _pointBuffer[indx].Y = oy;
+            indx++;
+            _pointBuffer[indx].X = AppManager.keyWidth;
+            _pointBuffer[indx].Y = oy;
+#endif
+
             int first_y = list.getValue( start_clock );
             int last_y = oy - (int)((first_y - min) * order);
 
@@ -2442,7 +2496,15 @@ namespace org.kbinani.cadencii {
                         last_y = yCoordFromValue( list.getValue( AppManager.clockFromXCoord( AppManager.keyWidth ) ),
                                                   max,
                                                   min );
-                        pointsx.add( AppManager.keyWidth ); pointsy.add( last_y );
+                        indx++;
+                        ensurePointBufferLength( indx );
+#if JAVA
+                        _pointBufferX[indx] = AppManager.keyWidth;
+                        _pointBufferY[indx] = last_y;
+#else
+                        _pointBuffer[indx].X = AppManager.keyWidth;
+                        _pointBuffer[indx].Y = last_y;
+#endif
                         first = false;
                     }
 
@@ -2450,12 +2512,26 @@ namespace org.kbinani.cadencii {
                     VsqBPPair v = list.getElementB( i );
                     int y = oy - (int)((v.value - min) * order);
 
-                    pointsx.add( x ); pointsy.add( last_y );
-                    pointsx.add( x ); pointsy.add( y );
+                    ensurePointBufferLength( indx + 3 );
+#if JAVA
+                    indx++;
+                    _pointBufferX[indx] = x;
+                    _pointBufferY[indx] = last_y;
+                    indx++;
+                    _pointBufferX[indx] = x;
+                    _pointBufferY[indx] = y;
+#else
+                    indx++;
+                    _pointBuffer[indx].X = x;
+                    _pointBuffer[indx].Y = last_y;
+                    indx++;
+                    _pointBuffer[indx].X = x;
+                    _pointBuffer[indx].Y = y;
+#endif
                     if ( AppManager.isSelectedPointContains( v.id ) ) {
-                        index_selected_in_points.add( pointsx.size() - 1 );
+                        index_selected_in_points.add( indx );
                     } else if ( select_enabled && isInRect( clock, v.value, select_window ) ) {
-                        index_selected_in_points.add( pointsx.size() - 1 );
+                        index_selected_in_points.add( indx );
                     }
                     last_y = y;
                 }
@@ -2464,49 +2540,110 @@ namespace org.kbinani.cadencii {
                 last_y = yCoordFromValue( list.getValue( AppManager.clockFromXCoord( AppManager.keyWidth ) ),
                                           max,
                                           min );
-                pointsx.add( AppManager.keyWidth ); pointsy.add( last_y );
+                ensurePointBufferLength( indx + 2 );
+                indx++;
+#if JAVA
+                _pointBufferX[indx] = AppManager.keyWidth;
+                _pointBufferY[indx] = last_y;
+#else
+                _pointBuffer[indx].X = AppManager.keyWidth;
+                _pointBuffer[indx].Y = last_y;
+#endif
             }
             last_y = oy - (int)((list.getValue( end_clock ) - min) * order);
-            pointsx.add( width - vScroll.getWidth() ); pointsy.add( last_y );
+            ensurePointBufferLength( indx + 2 );
+            indx++;
+#if JAVA
+            _pointBufferX[indx] = width - vScroll.getWidth();
+            _pointBufferY[indx] = last_y;
+#else
+            _pointBuffer[indx].X = width - vScroll.getWidth();
+            _pointBuffer[indx].Y = last_y;
+#endif
             g.setColor( brush );
-            g.fillPolygon( PortUtil.convertIntArray( pointsx.toArray( new Integer[] { } ) ),
-                           PortUtil.convertIntArray( pointsy.toArray( new Integer[] { } ) ),
-                           pointsx.size() );
+#if JAVA
+            g.fillPolygon( _pointBufferX, _pointBufferY, indx + 1 );
+#else
+            g.nativeGraphics.FillPolygon( g.brush, _pointBuffer );
+#endif
 
             if ( is_front ) {
                 // データ点を描画
-                int c_points = pointsx.size();
+                int c_points = indx + 1;
                 int w = DOT_WID * 2 + 1;
                 Color pen = Color.white;
-                int b1x = pointsx.get( 0 );
-                int b1y = pointsy.get( 0 );
-                int b2x = pointsx.get( 1 );
-                int b2y = pointsy.get( 1 );
-                pointsx.removeElementAt( 0 ); pointsy.removeElementAt( 0 );
-                pointsx.removeElementAt( 0 ); pointsy.removeElementAt( 0 );
+#if JAVA
+                int b1x = _pointBufferX[0];
+                int b1y = _pointBufferY[0];
+                int b2x = _pointBufferX[1];
+                int b2y = _pointBufferY[1];
+                for( int i = 0; i < indx - 2; i++ ){
+                    _pointBufferX[i] = _pointBufferX[i + 2];
+                    _pointBufferY[i] = _pointBufferY[i + 2];
+                }
+#else
+                int b1x = _pointBuffer[0].X;
+                int b1y = _pointBuffer[0].Y;
+                int b2x = _pointBuffer[1].X;
+                int b2y = _pointBuffer[1].Y;
+                // 先頭の2個を削除する
+                for ( int i = 0; i < _pointBuffer.Length - 2; i++ ) {
+                    _pointBuffer[i] = _pointBuffer[i + 2];
+                }
+                Array.Resize( ref _pointBuffer, c_points - 2 );
+#endif
                 g.setColor( pen );
-                g.drawPolyline( PortUtil.convertIntArray( pointsx.toArray( new Integer[] { } ) ),
-                                PortUtil.convertIntArray( pointsy.toArray( new Integer[] { } ) ),
-                                pointsx.size() );
-                pointsx.insertElementAt( b2x, 0 ); pointsy.insertElementAt( b2y, 0 );
-                pointsx.insertElementAt( b1x, 0 ); pointsy.insertElementAt( b1y, 0 );
+#if JAVA
+                g.drawPolyline( _pointBufferX, _pointBufferY, c_points - 2 );
+#else
+                g.nativeGraphics.DrawLines( g.stroke.pen, _pointBuffer );
+#endif
+                // 削除した点を元に戻す
+#if JAVA
+                for( int i = indx; i >= 2; i-- ){
+                    _pointBufferX[i] = _pointBufferX[i - 2];
+                    _pointBufferY[i] = _pointBufferY[i - 2];
+                }
+                _pointBufferX[0] = b1x;
+                _pointBufferY[0] = b1y;
+                _pointBufferX[1] = b2x;
+                _pointBufferY[1] = b2y;
+#else
+                ensurePointBufferLength( indx + 1 );
+                for ( int i = indx; i >= 2; i-- ) {
+                    _pointBuffer[i] = _pointBuffer[i - 2];
+                }
+                _pointBuffer[0].X = b1x;
+                _pointBuffer[0].Y = b1y;
+                _pointBuffer[1].X = b2x;
+                _pointBuffer[1].Y = b2y;
+#endif
 
                 boolean draw_dot_near_mouse = AppManager.drawCurveDotInControlCurveView; // マウスの近くのデータ点だけ描画するモード
                 int threshold_near_px = 200;  // マウスに「近い」と判定する距離（ピクセル単位）。
+                double inv_threshold_near_px = 1.0 / threshold_near_px;
                 Point pmouse = pointToClient( PortUtil.getMousePosition() );
                 Point mouse = new Point( pmouse.x, pmouse.y );
                 Color white5 = new Color( 255, 255, 255, 200 );
+                int index_selected_in_points_size = index_selected_in_points.size();
                 for ( int i = 4; i < c_points; i += 2 ) {
-                    Point p = new Point( pointsx.get( i ), pointsy.get( i ) );
-                    if ( index_selected_in_points.contains( i ) ) {
+#if JAVA
+                    int px = _pointBufferX[i];
+                    int py = _pointBufferY[i];
+#else
+                    System.Drawing.Point pp = _pointBuffer[i];
+                    int px = pp.X;
+                    int py = pp.Y;
+#endif
+                    if ( index_selected_in_points_size > 0 && index_selected_in_points.contains( i ) ) {
                         g.setColor( CURVE_COLOR_DOT );
-                        g.fillRect( p.x - DOT_WID, p.y - DOT_WID, w, w );
+                        g.fillRect( px - DOT_WID, py - DOT_WID, w, w );
                     } else {
                         if ( draw_dot_near_mouse ) {
                             if ( mouse.y < 0 || getHeight() < mouse.y ) {
                                 continue;
                             }
-                            double x = Math.Abs( p.x - mouse.x ) / (double)threshold_near_px;
+                            double x = Math.Abs( px - mouse.x ) * inv_threshold_near_px;
                             double sigma = 0.3;
                             int alpha = (int)(255.0 * Math.Exp( -(x * x) / (2.0 * sigma * sigma) ));
                             if ( alpha <= 0 ) {
@@ -2514,10 +2651,10 @@ namespace org.kbinani.cadencii {
                             }
                             Color brs = new Color( 255, 255, 255, alpha );
                             g.setColor( brs );
-                            g.fillRect( p.x - DOT_WID, p.y - DOT_WID, w, w );
+                            g.fillRect( px - DOT_WID, py - DOT_WID, w, w );
                         } else {
                             g.setColor( white5 );
-                            g.fillRect( p.x - DOT_WID, p.y - DOT_WID, w, w );
+                            g.fillRect( px - DOT_WID, py - DOT_WID, w, w );
                         }
                     }
                 }
@@ -2783,7 +2920,7 @@ namespace org.kbinani.cadencii {
                     break;
                 }
             }
-            float scale_x = AppManager.scaleX;
+            float scale_x = AppManager.getScaleX();
             float scale_y = getScaleY();
             BezierPoint ret = new BezierPoint( 0, 0 );
             if ( index >= 0 ) {
@@ -4460,7 +4597,7 @@ namespace org.kbinani.cadencii {
                             } else if ( m_selected_curve.equals( CurveType.VibratoRate ) || m_selected_curve.equals( CurveType.VibratoDepth ) ) {
                                 #region VibratoRate || VibratoDepth
                                 int step_clock = AppManager.editorConfig.getControlCurveResolutionValue();
-                                int step_px = (int)(step_clock * AppManager.scaleX);
+                                int step_px = (int)(step_clock * AppManager.getScaleX());
                                 if ( step_px <= 0 ) {
                                     step_px = 1;
                                 }
@@ -4583,7 +4720,7 @@ namespace org.kbinani.cadencii {
                                 #region Other Curves
                                 int track = selected;
                                 int step_clock = AppManager.editorConfig.getControlCurveResolutionValue();
-                                int step_px = (int)(step_clock * AppManager.scaleX);
+                                int step_px = (int)(step_clock * AppManager.getScaleX());
                                 if ( step_px <= 0 ) {
                                     step_px = 1;
                                 }

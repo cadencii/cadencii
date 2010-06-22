@@ -470,7 +470,7 @@ namespace org.kbinani.cadencii {
                         }
                         // ビブラート部分のピッチを取得
                         Vector<PointD> ret = new Vector<PointD>();
-                        for ( Iterator<PointD> itr2 = new VibratoPointIterator( vsq,
+                        for ( Iterator<PointD> itr2 = new VibratoPointIteratorBySec( vsq,
                                                                                item.ID.VibratoHandle.getRateBP(),
                                                                                item.ID.VibratoHandle.getStartRate(),
                                                                                item.ID.VibratoHandle.getDepthBP(),

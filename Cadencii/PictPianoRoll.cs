@@ -247,7 +247,7 @@ namespace org.kbinani.cadencii {
                 // [screen_x] = [clock] * _scalex + xoffset
                 // [screen_y] = -[note] * TRACK_HEIGHT + yoffset
                 int y, dy;
-                float scalex = AppManager.scaleX;
+                float scalex = AppManager.getScaleX();
                 float inv_scalex = 1f / scalex;
 
                 if ( AppManager.getSelectedEventCount() > 0 && AppManager.inputTextBox.isVisible() ) {
@@ -617,11 +617,6 @@ namespace org.kbinani.cadencii {
                                         } else {
                                             g.setColor( s_pen_125_123_124 );
                                             g.drawRect( x, y + 1, lyric_width, track_height - 1 );
-                                            if ( show_lyrics ) {
-                                                g.setFont( lyric_font );
-                                                g.setColor( Color.black );
-                                                g.drawString( dobj.text, x + 1, y + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
-                                            }
                                             if ( show_exp_line && lyric_width > 21 ) {
                                                 #region 表情線
                                                 drawAccentLine( g, new Point( x, y + track_height + 1 ), dobj.accent );
@@ -725,9 +720,9 @@ namespace org.kbinani.cadencii {
                                                 lasty = int.MinValue;
                                                 indx_pit.value = 0;
                                                 indx_pbs.value = 0;
-                                                VibratoPointIterator2 vibitr = null;
+                                                VibratoPointIteratorByClock vibitr = null;
                                                 if ( viblength > 0 ) {
-                                                    vibitr = new VibratoPointIterator2( vsq,
+                                                    vibitr = new VibratoPointIteratorByClock( vsq,
                                                         dobj.vibRate, dobj.vibStartRate,
                                                         dobj.vibDepth, dobj.vibStartDepth,
                                                         dobj.clock + dobj.vibDelay, viblength, 1 );
@@ -768,6 +763,12 @@ namespace org.kbinani.cadencii {
                                                 g.setStroke( getStrokeDefault() );
                                             }
                                             #endregion
+
+                                            if ( show_lyrics ) {
+                                                g.setFont( lyric_font );
+                                                g.setColor( Color.black );
+                                                g.drawString( dobj.text, x + 1, y + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
+                                            }
                                         }
                                         #endregion
                                     } else if ( dobj.type == DrawObjectType.Dynaff ) {
@@ -1315,7 +1316,7 @@ namespace org.kbinani.cadencii {
             int tempo = vsq.getTempoAt( clock_start );
 
             drawer.clear();
-            Iterator<PointD> itr = new VibratoPointIterator( vsq,
+            Iterator<PointD> itr = new VibratoPointIteratorBySec( vsq,
                                                              rate,
                                                              start_rate,
                                                              depth,
