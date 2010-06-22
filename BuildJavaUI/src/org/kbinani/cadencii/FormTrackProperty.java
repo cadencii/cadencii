@@ -10,7 +10,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BForm;
+import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BPanel;
+import org.kbinani.windows.forms.BTextBox;
 
 //SECTION-END-IMPORT
 public class FormTrackProperty extends BForm {
@@ -18,8 +20,8 @@ public class FormTrackProperty extends BForm {
 
     private static final long serialVersionUID = 1L;
     private JPanel jPanel = null;
-    private JLabel lblMasterTuning = null;
-    private JTextField txtMasterTuning = null;
+    private BLabel lblMasterTuning = null;
+    private BTextBox txtMasterTuning = null;
     private BPanel jPanel2 = null;
     private BButton btnOK = null;
     private BButton btnCancel = null;
@@ -71,7 +73,7 @@ public class FormTrackProperty extends BForm {
             gridBagConstraints.anchor = GridBagConstraints.WEST;
             gridBagConstraints.insets = new Insets(12, 12, 2, 0);
             gridBagConstraints.gridy = 0;
-            lblMasterTuning = new JLabel();
+            lblMasterTuning = new BLabel();
             lblMasterTuning.setText("Master Tuning in Cent");
             jPanel = new JPanel();
             jPanel.setLayout(new GridBagLayout());
@@ -85,11 +87,11 @@ public class FormTrackProperty extends BForm {
     /**
      * This method initializes txtMasterTuning	
      * 	
-     * @return javax.swing.JTextField	
+     * @return org.kbinani.windows.forms.BTextBox	
      */
-    private JTextField getTxtMasterTuning() {
+    private BTextBox getTxtMasterTuning() {
         if (txtMasterTuning == null) {
-            txtMasterTuning = new JTextField();
+            txtMasterTuning = new BTextBox();
             txtMasterTuning.setPreferredSize(new Dimension(187, 20));
         }
         return txtMasterTuning;

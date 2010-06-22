@@ -53,7 +53,7 @@ namespace org.kbinani.cadencii {
         int i;
         boolean first = true;
 
-        public double next() {
+        public Double next() {
             if ( first ) {
                 i = 0;
                 first = false;

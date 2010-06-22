@@ -12,14 +12,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani;
+package org.kbinani.xml;
 
 import java.awt.*;
 #else
 using System.Xml.Serialization;
 using org.kbinani.java.awt;
 
-namespace org.kbinani{
+namespace org.kbinani.xml{
 #endif
 
     public class XmlRectangle{

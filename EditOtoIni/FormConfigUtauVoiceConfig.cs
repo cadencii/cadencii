@@ -16,12 +16,14 @@ package org.kbinani.editotoini;
 
 import org.kbinani.*;
 import org.kbinani.windows.forms.*;
+import org.kbinani.xml.*;
 #else
 using System;
 using System.Drawing;
 using System.Windows.Forms;
 using org.kbinani;
 using org.kbinani.windows.forms;
+using org.kbinani.xml;
 
 namespace org.kbinani.editotoini {
 #endif

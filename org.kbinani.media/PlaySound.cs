@@ -14,7 +14,7 @@
 #define USE_PLAYSOUND_DLL
 
 #if JAVA
-package org.kbinani.cadencii;
+package org.kbinani.media;
 
 import javax.sound.sampled.*;
 import org.kbinani.*;

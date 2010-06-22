@@ -29,7 +29,7 @@ public class Preference extends JFrame {
     //SECTION-BEGIN-FIELD
 
     private static final long serialVersionUID = 1L;
-	private BPanel tabSequence = null;  //  @jve:decl-index=0:visual-constraint="-67,793"
+	private BPanel tabSequence = null;  //  @jve:decl-index=0:visual-constraint="-105,793"
 	private BLabel lblResolution = null;
 	private BPanel BPanel = null;
 	private BLabel lblResolControlCurve = null;
@@ -170,7 +170,7 @@ public class Preference extends JFrame {
     private JPanel jPanel2 = null;
     private BLabel labelMtcMidiInPort = null;
     private BComboBox comboMtcMidiInPortNumber = null;
-    private BPanel tabSingingSynth = null;  //  @jve:decl-index=0:visual-constraint="397,668"
+    private BPanel tabSingingSynth = null;  //  @jve:decl-index=0:visual-constraint="378,555"
     private BGroupBox groupSynthesizerDll = null;
     private BCheckBox chkLoadSecondaryVOCALOID1 = null;
     private BCheckBox chkLoadVocaloid100 = null;
@@ -191,6 +191,8 @@ public class Preference extends JFrame {
     private JPanel jPanel21 = null;
     private BRadioButton radioVocaloidEditorCompatible = null;
     private BRadioButton radioUserDefined = null;
+    private BGroupBox groupDefaultSynthesizer = null;
+    private BComboBox comboDefaultSynthesizer = null;
     //SECTION-END-FIELD
 	/**
 	 * This is the default constructor
@@ -2567,12 +2569,19 @@ public class Preference extends JFrame {
      */
     private BPanel getTabSingingSynth() {
         if (tabSingingSynth == null) {
+            GridBagConstraints gridBagConstraints145 = new GridBagConstraints();
+            gridBagConstraints145.gridx = 0;
+            gridBagConstraints145.weighty = 1.0D;
+            gridBagConstraints145.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints145.insets = new Insets(3, 12, 3, 12);
+            gridBagConstraints145.anchor = GridBagConstraints.NORTHWEST;
+            gridBagConstraints145.gridy = 2;
             GridBagConstraints gridBagConstraints137 = new GridBagConstraints();
             gridBagConstraints137.gridx = 0;
             gridBagConstraints137.fill = GridBagConstraints.HORIZONTAL;
             gridBagConstraints137.insets = new Insets(3, 12, 3, 12);
             gridBagConstraints137.anchor = GridBagConstraints.NORTH;
-            gridBagConstraints137.weighty = 1.0D;
+            gridBagConstraints137.weighty = 0.0D;
             gridBagConstraints137.gridy = 1;
             GridBagConstraints gridBagConstraints98 = new GridBagConstraints();
             gridBagConstraints98.anchor = GridBagConstraints.NORTH;
@@ -2583,9 +2592,10 @@ public class Preference extends JFrame {
             gridBagConstraints98.fill = GridBagConstraints.HORIZONTAL;
             tabSingingSynth = new BPanel();
             tabSingingSynth.setLayout(new GridBagLayout());
-            tabSingingSynth.setSize(new Dimension(422, 268));
+            tabSingingSynth.setSize(new Dimension(422, 379));
             tabSingingSynth.add(getGroupVsti(), gridBagConstraints98);
             tabSingingSynth.add(getGroupSynthesizerDll(), gridBagConstraints137);
+            tabSingingSynth.add(getGroupDefaultSynthesizer(), gridBagConstraints145);
         }
         return tabSingingSynth;
     }
@@ -2809,14 +2819,14 @@ public class Preference extends JFrame {
     private BPanel getJPanel41() {
         if (jPanel41 == null) {
             GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
-            gridBagConstraints12.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints12.fill = GridBagConstraints.NONE;
             gridBagConstraints12.gridy = 1;
             gridBagConstraints12.weightx = 1.0;
             gridBagConstraints12.anchor = GridBagConstraints.WEST;
             gridBagConstraints12.insets = new Insets(3, 12, 3, 12);
             gridBagConstraints12.gridx = 1;
             GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
-            gridBagConstraints11.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints11.fill = GridBagConstraints.NONE;
             gridBagConstraints11.gridy = 0;
             gridBagConstraints11.weightx = 1.0D;
             gridBagConstraints11.insets = new Insets(3, 12, 3, 12);
@@ -2852,6 +2862,7 @@ public class Preference extends JFrame {
     private NumberTextBox getTxtVibratoRate() {
         if (txtVibratoRate == null) {
             txtVibratoRate = new NumberTextBox();
+            txtVibratoRate.setPreferredSize(new Dimension(101, 20));
         }
         return txtVibratoRate;
     }
@@ -2864,6 +2875,7 @@ public class Preference extends JFrame {
     private NumberTextBox getTxtVibratoDepth() {
         if (txtVibratoDepth == null) {
             txtVibratoDepth = new NumberTextBox();
+            txtVibratoDepth.setPreferredSize(new Dimension(101, 20));
         }
         return txtVibratoDepth;
     }
@@ -2918,6 +2930,42 @@ public class Preference extends JFrame {
             radioUserDefined.setText("User Defined");
         }
         return radioUserDefined;
+    }
+
+    /**
+     * This method initializes groupDefaultSynthesizer	
+     * 	
+     * @return org.kbinani.windows.forms.BGroupBox	
+     */
+    private BGroupBox getGroupDefaultSynthesizer() {
+        if (groupDefaultSynthesizer == null) {
+            GridBagConstraints gridBagConstraints51 = new GridBagConstraints();
+            gridBagConstraints51.fill = GridBagConstraints.NONE;
+            gridBagConstraints51.gridy = 0;
+            gridBagConstraints51.weightx = 1.0;
+            gridBagConstraints51.insets = new Insets(3, 12, 3, 12);
+            gridBagConstraints51.anchor = GridBagConstraints.NORTHWEST;
+            gridBagConstraints51.gridx = 0;
+            groupDefaultSynthesizer = new BGroupBox();
+            groupDefaultSynthesizer.setLayout(new GridBagLayout());
+            groupDefaultSynthesizer.setBorder(BorderFactory.createTitledBorder(null, "VST Instruments", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
+            groupDefaultSynthesizer.setTitle("Default Synthesizer");
+            groupDefaultSynthesizer.add(getComboDefaultSynthesizer(), gridBagConstraints51);
+        }
+        return groupDefaultSynthesizer;
+    }
+
+    /**
+     * This method initializes comboDefaultSynthesizer	
+     * 	
+     * @return org.kbinani.windows.forms.BComboBox	
+     */
+    private BComboBox getComboDefaultSynthesizer() {
+        if (comboDefaultSynthesizer == null) {
+            comboDefaultSynthesizer = new BComboBox();
+            comboDefaultSynthesizer.setPreferredSize(new Dimension(222, 20));
+        }
+        return comboDefaultSynthesizer;
     }
 
 	//SECTION-END-METHOD

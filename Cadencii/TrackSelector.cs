@@ -954,6 +954,9 @@ namespace org.kbinani.cadencii {
             int width = getWidth();
 
             try {
+#if JAVA
+                PortUtil.stdout.println( "TrackSelector#paint; SINGER" );
+#endif
                 #region SINGER
                 Shape last = g.getClip();
                 g.setColor( m_generic_line );
@@ -996,6 +999,9 @@ namespace org.kbinani.cadencii {
                 g.setClip( last );
                 #endregion
 
+#if JAVA
+                PortUtil.stdout.println( "TrackSelector#paint; トラック選択欄" );
+#endif
                 #region トラック選択欄
                 int selecter_width = getSelectorWidth();
                 g.setColor( m_generic_line );
@@ -1029,6 +1035,9 @@ namespace org.kbinani.cadencii {
                 int clock_at_mouse = AppManager.clockFromXCoord( mouse.x );
                 int pbs_at_mouse = 0;
                 if ( m_curve_visible ) {
+#if JAVA
+                    PortUtil.stdout.println( "TrackSelector#paint; カーブエディタ" );
+#endif
                     #region カーブエディタ
                     // カーブエディタの下の線
                     g.setColor( new Color( 156, 161, 169 ) );
@@ -1360,6 +1369,9 @@ namespace org.kbinani.cadencii {
                 }
 
                 if ( m_curve_visible ) {
+#if DEBUG
+                    PortUtil.stdout.println( "TrackSelector#paint; カーブの種類一覧" );
+#endif
                     #region カーブの種類一覧
                     Color font_color_normal = Color.black;
                     g.setColor( new Color( 212, 212, 212 ) );
@@ -1467,6 +1479,9 @@ namespace org.kbinani.cadencii {
                 #endregion
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "TrackSelector#paint; ex= "+ ex );
+#if JAVA
+                ex.printStackTrace();
+#endif
             }
         }
 
@@ -2393,13 +2408,13 @@ namespace org.kbinani.cadencii {
         private void ensurePointBufferLength( int length ) {
 #if JAVA
             // バッファの長さが64の倍数になるようにする
-            int nlength = (length >> 6 + 1) * 64;
+            int nlength = ((length >>> 6) + 1) * 64;
             if( nlength > _pointBufferX.length ){
-                int[] buf = new int[length];
-                System.arrayCopy( _pointBufferX, 0, buf, 0, _pointBufferX.length );
+                int[] buf = new int[nlength];
+                System.arraycopy( _pointBufferX, 0, buf, 0, _pointBufferX.length );
                 _pointBufferX = buf;
-                buf = new int[length];
-                System.arrayCopy( _pointBufferY, 0, buf, 0, _pointBufferY.length );
+                buf = new int[nlength];
+                System.arraycopy( _pointBufferY, 0, buf, 0, _pointBufferY.length );
                 _pointBufferY = buf;
             }
 #else

@@ -49,7 +49,7 @@ namespace org.kbinani.cadencii {
             setResources();
             applyLanguage();
             m_master_tuning = master_tuning_in_cent;
-            txtMasterTuning.setText( master_tuning_in_cent.ToString() );
+            txtMasterTuning.setText( master_tuning_in_cent + "" );
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 

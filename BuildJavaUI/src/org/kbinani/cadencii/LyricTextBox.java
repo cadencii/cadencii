@@ -1,4 +1,4 @@
-package org.kbinani.cadencii;
+ï»¿package org.kbinani.cadencii;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -29,30 +29,30 @@ public class LyricTextBox extends JWindow implements WindowFocusListener, Compon
     private boolean m_phonetic_symbol_edit_mode;
 
     /**
-     * ”­‰¹‹L†‚ğ•ÒW‚·‚éƒ‚[ƒh‚©‚Ç‚¤‚©‚ğ•\‚·ƒu[ƒ‹’l‚ğæ“¾‚µ‚Ü‚·
+     * ç™ºéŸ³è¨˜å·ã‚’ç·¨é›†ã™ã‚‹ãƒ¢ãƒ¼ãƒ‰ã‹ã©ã†ã‹ã‚’è¡¨ã™ãƒ–ãƒ¼ãƒ«å€¤ã‚’å–å¾—ã—ã¾ã™
      */
     public boolean isPhoneticSymbolEditMode() {
         return m_phonetic_symbol_edit_mode;
     }
 
     /**
-     * ”­‰¹‹L†‚ğ•ÒW‚·‚éƒ‚[ƒh‚©‚Ç‚¤‚©‚ğ•\‚·ƒu[ƒ‹’l‚ğİ’è‚µ‚Ü‚·
+     * ç™ºéŸ³è¨˜å·ã‚’ç·¨é›†ã™ã‚‹ãƒ¢ãƒ¼ãƒ‰ã‹ã©ã†ã‹ã‚’è¡¨ã™ãƒ–ãƒ¼ãƒ«å€¤ã‚’è¨­å®šã—ã¾ã™
      */
     public void setPhoneticSymbolEditMode( boolean value ) {
         m_phonetic_symbol_edit_mode = value;
     }
 
     /**
-     * ƒoƒbƒtƒ@[ƒeƒLƒXƒg‚ğæ“¾‚µ‚Ü‚·
-     * (ƒoƒbƒtƒ@[ƒeƒLƒXƒg‚É‚ÍC”­‰¹‹L†ƒ‚[ƒh‚Å‚Í‰ÌŒC‰ÌŒƒ‚[ƒh‚Å‚Í”­‰¹‹L†‚ª‚»‚ê‚¼‚êŠi”[‚³‚ê‚é)
+     * ãƒãƒƒãƒ•ã‚¡ãƒ¼ãƒ†ã‚­ã‚¹ãƒˆã‚’å–å¾—ã—ã¾ã™
+     * (ãƒãƒƒãƒ•ã‚¡ãƒ¼ãƒ†ã‚­ã‚¹ãƒˆã«ã¯ï¼Œç™ºéŸ³è¨˜å·ãƒ¢ãƒ¼ãƒ‰ã§ã¯æ­Œè©ï¼Œæ­Œè©ãƒ¢ãƒ¼ãƒ‰ã§ã¯ç™ºéŸ³è¨˜å·ãŒãã‚Œãã‚Œæ ¼ç´ã•ã‚Œã‚‹)
      */
     public String getBufferText() {
         return m_buf_text;
     }
 
     /**
-     * ƒoƒbƒtƒ@[ƒeƒLƒXƒg‚ğİ’è‚µ‚Ü‚·
-     * (ƒoƒbƒtƒ@[ƒeƒLƒXƒg‚É‚ÍC”­‰¹‹L†ƒ‚[ƒh‚Å‚Í‰ÌŒC‰ÌŒƒ‚[ƒh‚Å‚Í”­‰¹‹L†‚ª‚»‚ê‚¼‚êŠi”[‚³‚ê‚é)
+     * ãƒãƒƒãƒ•ã‚¡ãƒ¼ãƒ†ã‚­ã‚¹ãƒˆã‚’è¨­å®šã—ã¾ã™
+     * (ãƒãƒƒãƒ•ã‚¡ãƒ¼ãƒ†ã‚­ã‚¹ãƒˆã«ã¯ï¼Œç™ºéŸ³è¨˜å·ãƒ¢ãƒ¼ãƒ‰ã§ã¯æ­Œè©ï¼Œæ­Œè©ãƒ¢ãƒ¼ãƒ‰ã§ã¯ç™ºéŸ³è¨˜å·ãŒãã‚Œãã‚Œæ ¼ç´ã•ã‚Œã‚‹)
      */
     public void setBufferText( String value ) {
         m_buf_text = value;

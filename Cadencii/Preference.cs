@@ -57,18 +57,6 @@ namespace org.kbinani.cadencii {
         
         private BFileChooser openUtauCore;
         private BFontChooser fontDialog;
-        private BLabel lblVibratoDepth;
-        private BLabel lblVibratoRate;
-        private NumberTextBox txtVibratoDepth;
-        private NumberTextBox txtVibratoRate;
-        private BGroupBox groupDefaultSynthesizer;
-        private BComboBox comboDefaultSynthesizer;
-        private BLabel label6;
-        private BGroupBox groupUserDefined;
-        private BLabel lblAutoVibratoType;
-        private BRadioButton radioVocaloidEditorCompatible;
-        private BRadioButton radioUserDefined;
-        private BLabel bLabel1;
         private BFolderBrowser folderBrowserSingers;
 
         public Preference() {
@@ -1560,8 +1548,8 @@ namespace org.kbinani.cadencii {
         #region ui implementation
 #if JAVA
         #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/Cadencii/Preference.java
-        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/Cadencii/Preference.java
+        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/cadencii/Preference.java
+        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/cadencii/Preference.java
         #endregion
 #else
         #region UI Impl for C#
@@ -3795,6 +3783,18 @@ namespace org.kbinani.cadencii {
         private BLabel bLabel2;
         private NumericUpDownEx numBuffer;
         private BLabel lblBuffer;
+        private BLabel lblVibratoDepth;
+        private BLabel lblVibratoRate;
+        private NumberTextBox txtVibratoDepth;
+        private NumberTextBox txtVibratoRate;
+        private BGroupBox groupDefaultSynthesizer;
+        private BComboBox comboDefaultSynthesizer;
+        private BLabel label6;
+        private BGroupBox groupUserDefined;
+        private BLabel lblAutoVibratoType;
+        private BRadioButton radioVocaloidEditorCompatible;
+        private BRadioButton radioUserDefined;
+        private BLabel bLabel1;
         #endregion
 #endif
         #endregion

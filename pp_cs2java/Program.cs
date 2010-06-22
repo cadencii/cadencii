@@ -26,6 +26,9 @@ class pp_cs2java {
     static List<string> s_classes = new List<string>();
     static string s_main_class_path = "";
     static List<string> s_defines = new List<string>();
+    static string s_logfile = ""; // ログファイルの名前
+    static bool s_logfile_overwrite = false; // ログファイルを上書きするかどうか(trueなら上書きする、falseなら末尾に追加)
+    static List<string> s_included = new List<string>(); // インクルードされたファイルのリスト
     static readonly string[,] REPLACE = new string[,]{
         {".Equals(", ".equals(" },
         {".ToString(", ".toString(" },
@@ -104,6 +107,8 @@ class pp_cs2java {
         Console.WriteLine( "    -encoding [enc. name]  set text file encoding" );
         Console.WriteLine( "    -m [path]              set path of source code for debug" );
         Console.WriteLine( "    -u                     enable ignoring unknown package" );
+        Console.WriteLine( "    -l [path]              set path of \"import\" log-file" );
+        Console.WriteLine( "    -ly                    overwrite \"import\" log-file" );
         Console.WriteLine( "    -h,-help               print this help" );
     }
 
@@ -136,6 +141,8 @@ class pp_cs2java {
                     current_parse = "";
                 } else if ( current_parse == "-h" || current_parse == "-help" ) {
                     print_usage = true;
+                } else if( current_parse == "-ly" ){
+                    s_logfile_overwrite = true;
                 }
             } else {
                 if ( current_parse == "-t" ) {
@@ -158,6 +165,9 @@ class pp_cs2java {
                     current_parse = "";
                 } else if( current_parse == "-o" ) {
                     s_target_file_out = args[i];
+                    current_parse = "";
+                } else if( current_parse == "-l" ){
+                    s_logfile = args[i];
                     current_parse = "";
                 }
             }
@@ -212,6 +222,32 @@ class pp_cs2java {
                 sw.WriteLine( "}" );
             }
         }
+
+        if( s_logfile != "" ){
+            StreamWriter sw = null;
+            try{
+                if( File.Exists( s_logfile ) ){
+                    if( s_logfile_overwrite ){
+                        sw = new StreamWriter( s_logfile );
+                    }else{
+                        sw = new StreamWriter( s_logfile, true );
+                    }
+                }else{
+                    sw = new StreamWriter( s_logfile );
+                }
+                foreach( string s in s_included ){
+                    sw.WriteLine( s );
+                }
+            }catch( Exception ex ){
+            }finally{
+                if( sw != null ){
+                    try{
+                        sw.Close();
+                    }catch( Exception ex2 ){
+                    }
+                }
+            }
+        }
     }
 
     static void preprocess( String path ) {
@@ -253,6 +289,9 @@ class pp_cs2java {
                 if ( linetrim.StartsWith( "//INCLUDE " ) ) {
                     string p = linetrim.Substring( 10 );
                     string include_path = Path.Combine( Path.GetDirectoryName( path ), p );
+                    if( !s_included.Contains( p ) ){
+                        s_included.Add( p );
+                    }
 #if DEBUG
                     //Console.WriteLine( "include_path=" + include_path );
                     //Console.WriteLine( "File.Exists(include_path)=" + File.Exists( include_path ) );
@@ -274,6 +313,9 @@ class pp_cs2java {
 #endif
                     string p = spl[1];
                     string include_path = Path.Combine( Path.GetDirectoryName( path ), p );
+                    if( !s_included.Contains( p ) ){
+                        s_included.Add( p );
+                    }
 #if DEBUG
                    // Console.WriteLine( "include_path=" + include_path );
                     //Console.WriteLine( "File.Exists(include_path)=" + File.Exists( include_path ) );

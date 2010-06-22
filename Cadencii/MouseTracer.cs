@@ -55,11 +55,7 @@ namespace org.kbinani.cadencii {
             }
 
             public void remove() {
-#if JAVA
-                throw new Exception( "MouseTracer#ArrayIterator<T>#remove(void); this method is not supported." );
-#else
-                throw new NotSupportedException( "MouseTracer#ArrayIterator<T>#remove(void)" );
-#endif
+                // do nothing
             }
         }
 
@@ -199,13 +195,6 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <returns></returns>
         public int firstKey() {
-            if ( m_size <= 0 ) {
-#if JAVA
-                throw new Exception( "MouseTracer#firstKey(void); no such key exception" );
-#else
-                throw new System.Collections.Generic.KeyNotFoundException( "MouseTracer#firstKey(void)" );
-#endif
-            }
             return m_x_at0;
         }
 
@@ -214,13 +203,6 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <returns></returns>
         public int lastKey() {
-            if ( m_size <= 0 ) {
-#if JAVA
-                throw new Exception( "MouseTracer#lastKey(void); no such key exception" );
-#else
-                throw new System.Collections.Generic.KeyNotFoundException( "MouseTracer#lastKey(void)" );
-#endif
-            }
             return m_x_at0 + m_size - 1;
         }
 
@@ -238,7 +220,7 @@ namespace org.kbinani.cadencii {
                 if ( m_trace.Length < new_length ) {
 #if JAVA
                     int[] newarray = new int[new_length];
-                    System.arrayCopy( m_trace, 0, newarray, 0, m_size );
+                    System.arraycopy( m_trace, 0, newarray, 0, m_size );
                     m_trace = null;
                     m_trace = newarray;
 #else

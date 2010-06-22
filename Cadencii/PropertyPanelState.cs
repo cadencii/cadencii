@@ -18,12 +18,14 @@ import java.util.*;
 import java.io.*;
 import org.kbinani.*;
 import org.kbinani.windows.forms.*;
+import org.kbinani.xml.*;
 #else
 using System;
 using org.kbinani;
 using org.kbinani.java.util;
 using org.kbinani.java.io;
 using org.kbinani.windows.forms;
+using org.kbinani.xml;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;

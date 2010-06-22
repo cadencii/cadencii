@@ -736,7 +736,11 @@ namespace org.kbinani.cadencii {
                                                         /*delta += (float)VibratoHandle.calculatePitchbendCor( dobj.vibStartRate, dobj.vibRate,
                                                                                                              dobj.vibStartDepth, dobj.vibDepth,
                                                                                                              cl, dobj.clock + dobj.vibDelay, viblength, vsq );*/
+#if JAVA
+                                                        delta += vibitr.next().floatValue();
+#else
                                                         delta += (float)vibitr.next();
+#endif
                                                     }
                                                     float note = dobj.note + delta;
 

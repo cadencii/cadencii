@@ -5,7 +5,7 @@ TARGET=@TARGET@
 MCS_OPT=-warn:0 --stacktrace -v
 PLAY_SOUND_DLL=@PLAY_SOUND_DLL@
 JROOT=./build/java/org/kbinani
-PPCS2JAVA_OPT=-DJAVA -DJAVA_1_5 -DRELEASE -DCLIPBOARD_AS_TEXT -encoding "UTF-8" -s -4 -c -e
+PPCS2JAVA_OPT=-DJAVA -DJAVA_1_5 -DRELEASE -DCLIPBOARD_AS_TEXT -encoding "UTF-8" -s -4 -c -e -l pp_cs2java.log
 
 SRC_JAPPUTIL=@SRC_JAPPUTIL@
 SRC_JCORLIB=@SRC_JCORLIB@
@@ -44,9 +44,12 @@ jcadencii_win: jcadencii
 	exewrap -g -t 1.6 -o .\build\java\jCadencii.exe -i .\Cadencii\resources\icon.ico .\build\java\Cadencii.jar
 
 jcadencii: pp_cs2java.exe $(SRC_JCORLIB) $(SRC_JWINFORMS) $(SRC_JAPPUTIL) $(SRC_JMEDIA) $(SRC_JVSQ) $(SRC_JCADENCII) $(SRC_JCOMPONENTMODEL) $(SRC_JXML) ./Cadencii/Resources.cs
+	$(CP) ./build/java/org/kbinani/cadencii/Cadencii.java ./build/java/Cadencii.java
+	$(RM) ./build/java/org/kbinani/cadencii/Cadencii.java
+	$(RM) pp_cs2java.log
 	$(CP) ./build/java/org/kbinani/cadencii/NumberTextBox.java ./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java
 	$(CP) ./build/java/org/kbinani/cadencii/NumericUpDownEx.java ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java
-	javac ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/*.java ./build/java/org/kbinani/apputil/*.java ./build/java/org/kbinani/media/*.java ./build/java/org/kbinani/vsq/*.java ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/componentmodel/*.java ./build/java/org/kbinani/windows/forms/*.java ./build/java/org/kbinani/xml/*.java -encoding UTF8 -target 1.5 -source 1.5
+	javac ./build/java/Cadencii.java ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/*.java ./build/java/org/kbinani/apputil/*.java ./build/java/org/kbinani/media/*.java ./build/java/org/kbinani/vsq/*.java ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/componentmodel/*.java ./build/java/org/kbinani/windows/forms/*.java ./build/java/org/kbinani/xml/*.java -encoding UTF8 -target 1.5 -source 1.5
 	$(CP) ./Cadencii/Cadencii.mf ./build/java/Cadencii.mf
 	cd ./build/java && jar cfm Cadencii.jar Cadencii.mf org/kbinani/cadencii/*.class org/kbinani/*.class org/kbinani/apputil/*.class org/kbinani/media/*.class org/kbinani/vsq/*.class org/kbinani/cadencii/*.class org/kbinani/componentmodel/*.class org/kbinani/windows/forms/*.class org/kbinani/xml/*.class
 	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .png
@@ -117,6 +120,49 @@ clean:
 
 clean_jcadencii:
 	$(RM) ./Cadencii/*.java ./org.kbinani/*.java ./org.kbinani.apputil/*.java ./org.kbinani.media/*.java ./org.kbinani.vsq/*.java
+	$(RM) ./build/java/org/kbinani/*.java ./build/java/org/kbinani/apputil/*.java ./build/java/org/kbinani/media/*.java ./build/java/org/kbinani/vsq/*.java ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/componentmodel/*.java ./build/java/org/kbinani/windows/forms/*.java ./build/java/org/kbinani/xml/*.java
+	$(RM) ./build/java/org/kbinani/*.class ./build/java/org/kbinani/apputil/*.class ./build/java/org/kbinani/media/*.class ./build/java/org/kbinani/vsq/*.class ./build/java/org/kbinani/cadencii/*.class ./build/java/org/kbinani/componentmodel/*.class ./build/java/org/kbinani/windows/forms/*.class ./build/java/org/kbinani/xml/*.class
+
+#additional dependency
+./org.kbinani.windows.forms/BDialog.java:        ./BuildJavaUI/src/org/kbinani/windows/forms/BDialog.java
+./Cadencii/FormImportLyric.java:                 ./BuildJavaUI/src/org/kbinani/Cadencii/FormImportLyric.java
+./Cadencii/FormMain.java:                        ./BuildJavaUI/src/org/kbinani/Cadencii/FormMain.java
+./Cadencii/LyricTextBox.java:                    ./BuildJavaUI/src/org/kbinani/Cadencii/LyricTextBox.java
+./Cadencii/TrackSelector.java:                   ./BuildJavaUI/src/org/kbinani/Cadencii/TrackSelector.java
+./Cadencii/LyricTextBox.java:                    ./BuildJavaUI/src/org/kbinani/Cadencii/LyricTextBox.java
+./org.kbinani/BDelegate.java:                    ./BuildJavaUI/src/org/kbinani/BDelegate.java
+./org.kbinani/BEvent.java:                       ./BuildJavaUI/src/org/kbinani/BEvent.java
+./org.kbinani/BEventArgs.java:                   ./BuildJavaUI/src/org/kbinani/BEventArgs.java
+./org.kbinani/BEventHandler.java:                ./BuildJavaUI/src/org/kbinani/BEventHandler.java
+#./org.kbinani/IEventHandler.java:                ./BuildJavaUI/src/org/kbinani/IEventHandler.java
+./Cadencii/Preference.java:                      ./BuildJavaUI/src/org/kbinani/cadencii/Preference.java
+./Cadencii/FormAskKeySoundGeneration.java:       ./BuildJavaUI/src/org/kbinani/cadencii/FormAskKeySoundGeneration.java
+./Cadencii/FormBeatConfig.java:                  ./BuildJavaUI/src/org/kbinani/Cadencii/FormBeatConfig.java
+./Cadencii/FormBezierPointEdit.java:             ./BuildJavaUI/src/org/kbinani/Cadencii/FormBezierPointEdit.java
+./Cadencii/FormCompileResult.java:               ./BuildJavaUI/src/org/kbinani/Cadencii/FormCompileResult.java
+./Cadencii/FormCurvePointEdit.java:              ./BuildJavaUI/src/org/kbinani/Cadencii/FormCurvePointEdit.java
+./Cadencii/FormDeleteBar.java:                   ./BuildJavaUI/src/org/kbinani/Cadencii/FormDeleteBar.java
+./Cadencii/FormGameControlerConfig.java:         ./BuildJavaUI/src/org/kbinani/Cadencii/FormGameControlerConfig.java
+./Cadencii/FormGenerateKeySound.java:            ./BuildJavaUI/src/org/kbinani/Cadencii/FormGenerateKeySound.java
+./Cadencii/FormIconPalette.java:                 ./BuildJavaUI/src/org/kbinani/Cadencii/FormIconPalette.java
+./Cadencii/FormImportLyric.java:                 ./BuildJavaUI/src/org/kbinani/Cadencii/FormImportLyric.java
+./Cadencii/FormInsertBar.java:                   ./BuildJavaUI/src/org/kbinani/Cadencii/FormInsertBar.java
+./Cadencii/FormMain.java:                        ./BuildJavaUI/src/org/kbinani/Cadencii/FormMain.java
+./Cadencii/FormMidiConfig.java:                  ./BuildJavaUI/src/org/kbinani/Cadencii/FormMidiConfig.java
+./Cadencii/FormMidiImExport.java:                ./BuildJavaUI/src/org/kbinani/Cadencii/FormMidiImExport.java
+./Cadencii/FormMixer.java:                       ./BuildJavaUI/src/org/kbinani/Cadencii/FormMixer.java
+./Cadencii/FormNoteExpressionConfig.java:        ./BuildJavaUI/src/org/kbinani/Cadencii/FormNoteExpressionConfig.java
+./Cadencii/FormNoteProperty.java:                ./BuildJavaUI/src/org/kbinani/Cadencii/FormNoteProperty.java
+./Cadencii/FormRandomize.java:                   ./BuildJavaUI/src/org/kbinani/Cadencii/FormRandomize.java
+./Cadencii/FormRealtimeConfig.java:              ./BuildJavaUI/src/org/kbinani/Cadencii/FormRealtimeConfig.java
+./Cadencii/FormShortcutKeys.java:                ./BuildJavaUI/src/org/kbinani/Cadencii/FormShortcutKeys.java
+./Cadencii/FormSingerStyleConfig.java:           ./BuildJavaUI/src/org/kbinani/Cadencii/FormSingerStyleConfig.java
+./Cadencii/FormSynthesize.java:                  ./BuildJavaUI/src/org/kbinani/Cadencii/FormSynthesize.java
+./Cadencii/FormTempoConfig.java:                 ./BuildJavaUI/src/org/kbinani/Cadencii/FormTempoConfig.java
+./Cadencii/FormTrackProperty.java:               ./BuildJavaUI/src/org/kbinani/Cadencii/FormTrackProperty.java
+./Cadencii/FormVibratoConfig.java:               ./BuildJavaUI/src/org/kbinani/Cadencii/FormVibratoConfig.java
+./Cadencii/FormWordDictionary.java:              ./BuildJavaUI/src/org/kbinani/Cadencii/FormWordDictionary.java
+./Cadencii/LyricTextBox.java:                    ./BuildJavaUI/src/org/kbinani/Cadencii/LyricTextBox.java
 
 @CP_JAPPUTIL@
 @CP_JCORLIB@

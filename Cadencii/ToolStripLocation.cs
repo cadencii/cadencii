@@ -16,9 +16,11 @@ package org.kbinani.cadencii;
 
 import java.awt.*;
 import org.kbinani.*;
+import org.kbinani.xml.*;
 #else
 using org.kbinani;
 using org.kbinani.java.awt;
+using org.kbinani.xml;
 
 namespace org.kbinani.cadencii {
 #endif

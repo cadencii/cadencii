@@ -321,9 +321,6 @@
     <Compile Include="SelectedRegion.cs" />
     <Compile Include="SelectedTempoEntry.cs" />
     <Compile Include="SelectedTimesigEntry.cs" />
-    <EmbeddedResource Include="FormImportLyric.resx">
-      <DependentUpon>FormImportLyric.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

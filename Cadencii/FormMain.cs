@@ -27,6 +27,7 @@ import org.kbinani.componentmodel.*;
 import org.kbinani.media.*;
 import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*;
+import org.kbinani.xml.*;
 #else
 //#define MONITOR_FPS
 using System;
