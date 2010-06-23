@@ -1300,19 +1300,26 @@ namespace org.kbinani {
 #endif
         }
 
-        public static String getDecodedString( String encoding, byte[] data, int offset, int length ) {
+        public static String getDecodedString( String encoding, int[] data, int offset, int length ) {
 #if JAVA
             Charset enc = Charset.forName( encoding );
             ByteBuffer bb = ByteBuffer.allocate( length );
-            bb.put( data, offset, length );
+            for( int i = offset; i < offset + length; i++ ){
+                bb.put( (Integer.valueOf( data[i] )).byteValue() );
+            }
+            bb.rewind();
             return enc.decode( bb ).toString();
 #else
             Encoding enc = Encoding.GetEncoding( encoding );
-            return enc.GetString( data, offset, length );
+            byte[] d = new byte[data.Length];
+            for ( int i = 0; i < data.Length; i++ ) {
+                d[i] = (byte)data[i];
+            }
+            return enc.GetString( d, offset, length );
 #endif
         }
 
-        public static String getDecodedString( String encoding, byte[] data ) {
+        public static String getDecodedString( String encoding, int[] data ) {
 #if JAVA
             return getDecodedString( encoding, data, 0, data.length );
 #else

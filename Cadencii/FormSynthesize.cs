@@ -244,8 +244,7 @@ namespace org.kbinani.cadencii {
                     int count = m_vsq.Track.get( track ).getEventCount();
                     if ( count > 0 ) {
 #if DEBUG
-                        AppManager.debugWriteLine( "FormSynthesize+bgWork_DoWork" );
-                        AppManager.debugWriteLine( "    System.IO.Directory.GetCurrentDirectory()=" + System.IO.Directory.GetCurrentDirectory() );
+                        AppManager.debugWriteLine( "FormSynthesize#bgWork_DoWork" );
                         AppManager.debugWriteLine( "    VsqUtil.VstiDllPath=" + VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID2 ) );
 #endif
                         double amp_track = VocaloSysUtil.getAmplifyCoeffFromFeder( m_vsq.Mixer.Slave.get( track - 1 ).Feder );

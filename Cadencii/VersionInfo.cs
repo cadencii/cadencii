@@ -238,12 +238,14 @@ namespace org.kbinani.cadencii {
         }
 
         void btnSaveAuthorList_Click( Object sender, BEventArgs e ) {
+#if !JAVA
 #if DEBUG
             using ( SaveFileDialog dlg = new SaveFileDialog() ) {
                 if ( dlg.ShowDialog() == DialogResult.OK ) {
                     javax.imageio.ImageIO.write( m_scroll, "png", new java.io.File( dlg.FileName ) );
                 }
             }
+#endif
 #endif
         }
 
@@ -295,8 +297,7 @@ namespace org.kbinani.cadencii {
 #endif
             } catch ( Exception ex ) {
 #if DEBUG
-                Console.WriteLine( "VersionInfoEx_Paint" );
-                Console.WriteLine( ex.StackTrace );
+                PortUtil.stderr.println( "VersionInfo_Paint; ex=" + ex );
 #endif
             }
         }

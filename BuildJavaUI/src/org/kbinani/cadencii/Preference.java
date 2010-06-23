@@ -242,6 +242,12 @@ public class Preference extends JFrame {
 	 */
 	private BPanel getTabSequence() {
 		if (tabSequence == null) {
+			GridBagConstraints gridBagConstraints146 = new GridBagConstraints();
+			gridBagConstraints146.gridx = 0;
+			gridBagConstraints146.fill = GridBagConstraints.HORIZONTAL;
+			gridBagConstraints146.anchor = GridBagConstraints.NORTHWEST;
+			gridBagConstraints146.insets = new Insets(3, 12, 3, 0);
+			gridBagConstraints146.gridy = 3;
 			GridBagConstraints gridBagConstraints410 = new GridBagConstraints();
 			gridBagConstraints410.gridx = 0;
 			gridBagConstraints410.fill = GridBagConstraints.HORIZONTAL;
@@ -259,13 +265,6 @@ public class Preference extends JFrame {
 			gridBagConstraints.anchor = GridBagConstraints.WEST;
 			gridBagConstraints.insets = new Insets(12, 12, 3, 0);
 			gridBagConstraints.gridy = 2;
-			GridBagConstraints gridBagConstraints20 = new GridBagConstraints();
-			gridBagConstraints20.gridx = 0;
-			gridBagConstraints20.insets = new Insets(3, 12, 3, 0);
-			gridBagConstraints20.anchor = GridBagConstraints.NORTHWEST;
-			gridBagConstraints20.fill = GridBagConstraints.HORIZONTAL;
-			gridBagConstraints20.weighty = 0.0D;
-			gridBagConstraints20.gridy = 3;
 			GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
 			gridBagConstraints21.anchor = GridBagConstraints.WEST;
 			gridBagConstraints21.gridy = 1;
@@ -279,15 +278,17 @@ public class Preference extends JFrame {
 			gridBagConstraints1.insets = new Insets(12, 12, 3, 0);
 			lblResolution = new BLabel();
 			lblResolution.setText("Resolution(VSTi)");
+            lblAutoVibratoType = new BLabel();
+            lblAutoVibratoType.setText("Auto Vibrato Type");
 			tabSequence = new BPanel();
 			tabSequence.setLayout(new GridBagLayout());
 			tabSequence.setSize(new Dimension(465, 459));
 			tabSequence.add(lblResolution, gridBagConstraints1);
 			tabSequence.add(getJPanel(), gridBagConstraints21);
-			tabSequence.add(getJPanel1(), gridBagConstraints20);
 			tabSequence.add(getChkEnableAutoVibrato(), gridBagConstraints);
 			tabSequence.add(lblAutoVibratoType, gridBagConstraints7);
 			tabSequence.add(getJPanel11(), gridBagConstraints410);
+			tabSequence.add(getJPanel1(), gridBagConstraints146);
 		}
 		return tabSequence;
 	}
@@ -350,8 +351,6 @@ public class Preference extends JFrame {
 	 */
 	private BPanel getJPanel1() {
 		if (jPanel1 == null) {
-			lblAutoVibratoType = new BLabel();
-			lblAutoVibratoType.setText("Auto Vibrato Type");
 			GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
 			gridBagConstraints6.anchor = GridBagConstraints.WEST;
 			gridBagConstraints6.gridy = 1;

@@ -50,7 +50,7 @@ namespace org.kbinani.apputil {
             poHeader = "";
             BufferedReader sr = null;
             try {
-                sr = new BufferedReader( new FileReader( file ) );
+                sr = new BufferedReader( new InputStreamReader( new FileInputStream( file ), "UTF-8" ) );
                 String line2 = "";
                 while ( (line2 = sr.readLine()) != null ) {
                     ByRef<String> msgid = new ByRef<String>( "" );
@@ -126,7 +126,7 @@ namespace org.kbinani.apputil {
         public void write( String file ) {
             BufferedWriter sw = null;
             try {
-                sw = new BufferedWriter( new FileWriter( file ) );
+                sw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( file ), "UTF-8" ) );
                 if ( !poHeader.Equals( "" ) ) {
                     sw.write( "msgid \"\"" );
                     sw.newLine();

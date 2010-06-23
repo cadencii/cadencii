@@ -259,7 +259,7 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// このコントロールが表示を担当しているカーブのリスト
         /// </summary>
-        private Vector<CurveType> m_viewing_curves = new Vector<CurveType>();
+        private Vector<CurveType> ____viewing_curves____ = new Vector<CurveType>();
         private Color m_generic_line = new Color( 118, 123, 138 );
         /// <summary>
         /// スペースキーが押されているかどうか。
@@ -374,6 +374,9 @@ namespace org.kbinani.cadencii {
         public TrackSelector() {
 #if JAVA
             super();
+#if DEBUG
+            PortUtil.println( "TrackSelector#.ctor()" );
+#endif
             initialize();
             getCmenuCurve();
             getCmenuSinger();        
@@ -717,8 +720,8 @@ namespace org.kbinani.cadencii {
 
         public int getRowsPerColumn() {
             int max_columns = getMaxColumns();
-            int row_per_column = m_viewing_curves.size() / max_columns;
-            if ( row_per_column * max_columns < m_viewing_curves.size() ) {
+            int row_per_column = AppManager.getViewingCurveCount() / max_columns;
+            if ( row_per_column * max_columns < AppManager.getViewingCurveCount() ) {
                 row_per_column++;
             }
             return row_per_column;
@@ -729,60 +732,6 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public int getPreferredMinSize() {
             return HEIGHT_WITHOUT_CURVE + UNIT_HEIGHT_PER_CURVE * getRowsPerColumn();
-        }
-
-        /// <summary>
-        /// このコントロールに担当させるカーブを追加します
-        /// </summary>
-        /// <param name="curve"></param>
-        public void addViewingCurve( CurveType curve ) {
-            addViewingCurve( new CurveType[] { curve } );
-        }
-
-        public void addViewingCurve( CurveType[] curve ) {
-            for ( int j = 0; j < curve.Length; j++ ) {
-                boolean found = false;
-                for ( int i = 0; i < m_viewing_curves.size(); i++ ) {
-                    if ( m_viewing_curves.get( i ).equals( curve[j] ) ) {
-                        found = true;
-                        break;
-                    }
-                }
-                if ( !found ) {
-                    m_viewing_curves.add( curve[j] );
-                }
-            }
-            if ( m_viewing_curves.size() >= 2 ) {
-                boolean changed = true;
-                while ( changed ) {
-                    changed = false;
-                    for ( int i = 0; i < m_viewing_curves.size() - 1; i++ ) {
-                        if ( m_viewing_curves.get( i ).getIndex() > m_viewing_curves.get( i + 1 ).getIndex() ) {
-                            CurveType b = m_viewing_curves.get( i );
-                            m_viewing_curves.set( i, m_viewing_curves.get( i + 1 ) );
-                            m_viewing_curves.set( i + 1, b );
-                            changed = true;
-                        }
-                    }
-                }
-            }
-        }
-
-        public void clearViewingCurve() {
-            m_viewing_curves.clear();
-        }
-
-        /// <summary>
-        /// このコントロールに担当させるカーブを削除します
-        /// </summary>
-        /// <param name="curve"></param>
-        public void removeViewingCurve( CurveType curve ) {
-            for ( int i = 0; i < m_viewing_curves.size(); i++ ) {
-                if ( m_viewing_curves.get( i ).equals( curve ) ) {
-                    m_viewing_curves.removeElementAt( i );
-                    break;
-                }
-            }
         }
 
         /// <summary>
@@ -910,8 +859,8 @@ namespace org.kbinani.cadencii {
 
             int centre = 17 + getGraphHeight() / 2 + 8;
             int index = 100;
-            for ( int i = 0; i < m_viewing_curves.size(); i++ ) {
-                if ( m_viewing_curves.get( i ).equals( curve ) ) {
+            for ( int i = 0; i < AppManager.getViewingCurveCount(); i++ ) {
+                if ( AppManager.getViewingCurveElement( i ).equals( curve ) ) {
                     index = i;
                     break;
                 }
@@ -932,7 +881,7 @@ namespace org.kbinani.cadencii {
             return new Rectangle( x, y, 56, 14 );
         }
 
-        public void paint( Graphics graphics ) {
+        public void paint( Graphics graphics ){
 #if JAVA
             super.paint( graphics );
 #endif
@@ -954,9 +903,6 @@ namespace org.kbinani.cadencii {
             int width = getWidth();
 
             try {
-#if JAVA
-                PortUtil.stdout.println( "TrackSelector#paint; SINGER" );
-#endif
                 #region SINGER
                 Shape last = g.getClip();
                 g.setColor( m_generic_line );
@@ -999,9 +945,6 @@ namespace org.kbinani.cadencii {
                 g.setClip( last );
                 #endregion
 
-#if JAVA
-                PortUtil.stdout.println( "TrackSelector#paint; トラック選択欄" );
-#endif
                 #region トラック選択欄
                 int selecter_width = getSelectorWidth();
                 g.setColor( m_generic_line );
@@ -1035,9 +978,6 @@ namespace org.kbinani.cadencii {
                 int clock_at_mouse = AppManager.clockFromXCoord( mouse.x );
                 int pbs_at_mouse = 0;
                 if ( m_curve_visible ) {
-#if JAVA
-                    PortUtil.stdout.println( "TrackSelector#paint; カーブエディタ" );
-#endif
                     #region カーブエディタ
                     // カーブエディタの下の線
                     g.setColor( new Color( 156, 161, 169 ) );
@@ -1369,9 +1309,6 @@ namespace org.kbinani.cadencii {
                 }
 
                 if ( m_curve_visible ) {
-#if DEBUG
-                    PortUtil.stdout.println( "TrackSelector#paint; カーブの種類一覧" );
-#endif
                     #region カーブの種類一覧
                     Color font_color_normal = Color.black;
                     g.setColor( new Color( 212, 212, 212 ) );
@@ -1388,8 +1325,8 @@ namespace org.kbinani.cadencii {
                     // 現在表示されているカーブの名前
                     g.drawString( m_selected_curve.getName(), 7, 24 + AppManager.baseFont9Height / 2 - AppManager.baseFont9OffsetHeight + 1 ); // new Rectangle( 7, 24, 56, 14 ), sf
 
-                    for ( Iterator<CurveType> itr = m_viewing_curves.iterator(); itr.hasNext(); ) {
-                        CurveType curve = itr.next();
+                    for ( int i = 0; i < AppManager.getViewingCurveCount(); i++ ) {
+                        CurveType curve = AppManager.getViewingCurveElement( i );
                         Rectangle rc = getRectFromCurveType( curve );
                         if ( curve.equals( m_selected_curve ) || curve.equals( m_last_selected_curve ) ) {
                             g.setColor( new Color( 108, 108, 108 ) );
@@ -2710,7 +2647,7 @@ namespace org.kbinani.cadencii {
             return getWidth() - AppManager.keyWidth - vScroll.getWidth();
         }
 
-        private void TrackSelector_Load( Object sender, BEventArgs e ) {
+        public void TrackSelector_Load( Object sender, BEventArgs e ) {
 #if !JAVA
             this.SetStyle( System.Windows.Forms.ControlStyles.DoubleBuffer, true );
             this.SetStyle( System.Windows.Forms.ControlStyles.UserPaint, true );
@@ -2718,12 +2655,12 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        private void TrackSelector_MouseClick( Object sender, BMouseEventArgs e ) {
+        public void TrackSelector_MouseClick( Object sender, BMouseEventArgs e ) {
             if ( m_curve_visible ) {
                 if ( e.Button == BMouseButtons.Left ) {
                     // カーブの種類一覧上で発生したイベントかどうかを検査
-                    for ( Iterator<CurveType> itr = m_viewing_curves.iterator(); itr.hasNext(); ) {
-                        CurveType curve = itr.next();
+                    for( int i = 0; i < AppManager.getViewingCurveCount(); i++ ){
+                        CurveType curve = AppManager.getViewingCurveElement( i );
                         Rectangle r = getRectFromCurveType( curve );
                         if ( isInRect( e.X, e.Y, r ) ) {
                             changeCurve( curve );
@@ -2893,35 +2830,35 @@ namespace org.kbinani.cadencii {
 
         public void SelectNextCurve() {
             int index = 0;
-            if ( m_viewing_curves.size() >= 2 ) {
-                for ( int i = 0; i < m_viewing_curves.size(); i++ ) {
-                    if ( m_viewing_curves.get( i ).equals( m_selected_curve ) ) {
+            if ( AppManager.getViewingCurveCount() >= 2 ) {
+                for ( int i = 0; i < AppManager.getViewingCurveCount(); i++ ) {
+                    if ( AppManager.getViewingCurveElement( i ).equals( m_selected_curve ) ) {
                         index = i;
                         break;
                     }
                 }
                 index++;
-                if ( m_viewing_curves.size() <= index ) {
+                if ( AppManager.getViewingCurveCount() <= index ) {
                     index = 0;
                 }
-                changeCurve( m_viewing_curves.get( index ) );
+                changeCurve( AppManager.getViewingCurveElement( index ) );
             }
         }
 
         public void SelectPreviousCurve() {
             int index = 0;
-            if ( m_viewing_curves.size() >= 2 ) {
-                for ( int i = 0; i < m_viewing_curves.size(); i++ ) {
-                    if ( m_viewing_curves.get( i ).equals( m_selected_curve ) ) {
+            if ( AppManager.getViewingCurveCount() >= 2 ) {
+                for ( int i = 0; i < AppManager.getViewingCurveCount(); i++ ) {
+                    if ( AppManager.getViewingCurveElement( i ).equals( m_selected_curve ) ) {
                         index = i;
                         break;
                     }
                 }
                 index--;
                 if ( index < 0 ) {
-                    index = m_viewing_curves.size() - 1;
+                    index = AppManager.getViewingCurveCount() - 1;
                 }
-                changeCurve( m_viewing_curves.get( index ) );
+                changeCurve( AppManager.getViewingCurveElement( index ) );
             }
         }
 
@@ -3026,7 +2963,7 @@ namespace org.kbinani.cadencii {
             return HandleMouseMoveForBezierMove( clock, value, value_raw, picked );
         }
 
-        private void TrackSelector_MouseMove( Object sender, BMouseEventArgs e ) {
+        public void TrackSelector_MouseMove( Object sender, BMouseEventArgs e ) {
             int value = valueFromYCoord( e.Y );
             int value_raw = value;
             int max = m_selected_curve.getMaximum();
@@ -3213,6 +3150,9 @@ namespace org.kbinani.cadencii {
                 float draft_overlap = m_pre_ovl_original.UstEvent.VoiceOverlap + (float)(dsec * 1000);
                 m_pre_ovl_editing.UstEvent.VoiceOverlap = draft_overlap;
             }
+#if JAVA
+            repaint();
+#endif
         }
 
         /// <summary>
@@ -4114,12 +4054,15 @@ namespace org.kbinani.cadencii {
         }
 
         private void changeCurve( CurveType curve ) {
+#if DEBUG
+            PortUtil.println( "TrackSelector#changCurve; AppManager.getViewingCurveCount()=" + AppManager.getViewingCurveCount() );
+#endif
             if ( !m_selected_curve.equals( curve ) ) {
                 m_last_selected_curve = m_selected_curve;
                 m_selected_curve = curve;
-                try{
+                try {
                     selectedCurveChangedEvent.raise( this, curve );
-                }catch( Exception ex ){
+                } catch ( Exception ex ) {
                     PortUtil.stderr.println( "TrackSelector#changeCurve; ex=" + ex );
                 }
             }
@@ -5003,7 +4946,7 @@ namespace org.kbinani.cadencii {
             invalidate();
         }
 
-        private void TrackSelector_MouseHover( Object sender, BEventArgs e ) {
+        public void TrackSelector_MouseHover( Object sender, BEventArgs e ) {
 #if DEBUG
             AppManager.debugWriteLine( "TrackSelector_MouseHover" );
             AppManager.debugWriteLine( "    m_mouse_downed=" + m_mouse_downed );
@@ -5195,7 +5138,7 @@ namespace org.kbinani.cadencii {
         }
 #endif
 
-        private void TrackSelector_MouseDoubleClick( Object sender, BMouseEventArgs e ) {
+        public void TrackSelector_MouseDoubleClick( Object sender, BMouseEventArgs e ) {
 #if JAVA
             if( m_mouse_hover_thread != null && m_mouse_hover_thread.isAlive() ){
                 m_mouse_hover_thread.stop();
@@ -5574,10 +5517,6 @@ namespace org.kbinani.cadencii {
         }
 
         private void tsmi_Click( Object sender, BEventArgs e ) {
-#if DEBUG
-            AppManager.debugWriteLine( "CmenuSingerClick" );
-            AppManager.debugWriteLine( "    sender.GetType()=" + sender.GetType() );
-#endif
             if ( sender is BMenuItem ) {
                 TagForCMenuSinger tag = (TagForCMenuSinger)cmenuSinger.getTag();
                 TagForCMenuSingerDropDown tag_dditem = (TagForCMenuSingerDropDown)((BMenuItem)sender).getTag();
@@ -5600,7 +5539,7 @@ namespace org.kbinani.cadencii {
                         CadenciiCommand run = new CadenciiCommand(
                             VsqCommand.generateCommandEventChangeIDContaints( selected, id, item ) );
 #if DEBUG
-                        AppManager.debugWriteLine( "tsmi_Click; item.IconHandle.Program" + item.IconHandle.Program );
+                        AppManager.debugWriteLine( "TrackSelector#tsmi_Click; item.IconHandle.Program" + item.IconHandle.Program );
 #endif
                         executeCommand( run, true );
                     } else {
@@ -5622,7 +5561,7 @@ namespace org.kbinani.cadencii {
             System.Drawing.Rectangle rrc = e.Bounds;
             Rectangle rc = new Rectangle( rrc.X, rrc.Y, rrc.Width, rrc.Height );
 #if DEBUG
-            PortUtil.println( "FormMain#toolTip_Draw; sender.GetType()=" + sender.GetType() );
+            PortUtil.println( "TrackSelector#toolTip_Draw; sender.GetType()=" + sender.GetType() );
 #endif
 
             System.Windows.Forms.ToolTip tooltip = (System.Windows.Forms.ToolTip)sender;
@@ -5661,7 +5600,7 @@ namespace org.kbinani.cadencii {
         }
 #endif
 
-        private void TrackSelector_KeyDown( Object sender, BKeyEventArgs e ) {
+        public void TrackSelector_KeyDown( Object sender, BKeyEventArgs e ) {
 #if JAVA
             if( (e.KeyCode & KeyEvent.VK_SPACE) == KeyEvent.VK_SPACE )
 #else
@@ -5672,7 +5611,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void TrackSelector_KeyUp( Object sender, BKeyEventArgs e ) {
+        public void TrackSelector_KeyUp( Object sender, BKeyEventArgs e ) {
 #if JAVA
             if( (e.KeyCode & KeyEvent.VK_SPACE) == KeyEvent.VK_SPACE )
 #else
@@ -5771,14 +5710,16 @@ namespace org.kbinani.cadencii {
             this.panelZoomButton.MouseDown += new System.Windows.Forms.MouseEventHandler( this.panelZoomButton_MouseDown );
             this.cmenuCurveEnvelope.Click += new System.EventHandler( this.cmenuCurveCommon_Click );
             this.Load += new System.EventHandler( this.TrackSelector_Load );
-            this.MouseMove += new System.Windows.Forms.MouseEventHandler( this.TrackSelector_MouseMove );
-            this.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler( this.TrackSelector_MouseDoubleClick );
-            this.KeyUp += new System.Windows.Forms.KeyEventHandler( this.TrackSelector_KeyUp );
-            this.MouseClick += new System.Windows.Forms.MouseEventHandler( this.TrackSelector_MouseClick );
-            this.MouseDown += new System.Windows.Forms.MouseEventHandler( this.TrackSelector_MouseDown );
-            this.MouseUp += new System.Windows.Forms.MouseEventHandler( this.TrackSelector_MouseUp );
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler( this.TrackSelector_KeyDown );
 #endif
+            this.mouseMoveEvent.add( new BMouseEventHandler( this, "TrackSelector_MouseMove" ) );
+#if !JAVA
+            this.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler( this.TrackSelector_MouseDoubleClick );
+#endif
+            this.keyUpEvent.add( new BKeyEventHandler( this, "TrackSelector_KeyUp" ) );
+            this.mouseClickEvent.add( new BMouseEventHandler( this, "TrackSelector_MouseClick" ) );
+            this.mouseDownEvent.add( new BMouseEventHandler( this, "TrackSelector_MouseDown" ) );
+            this.mouseUpEvent.add( new BMouseEventHandler( this, "TrackSelector_MouseUp" ) );
+            this.keyDownEvent.add( new BKeyEventHandler( this, "TrackSelector_KeyDown" ) );
         }
 
         private void setResources() {

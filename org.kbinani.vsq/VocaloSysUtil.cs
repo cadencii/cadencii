@@ -97,7 +97,9 @@ namespace org.kbinani.vsq {
 #if DEBUG
                 BufferedWriter sw = null;
                 try {
-                    sw = new BufferedWriter( new FileWriter( PortUtil.combinePath( System.Windows.Forms.Application.StartupPath, "reg_keys_vocalo1.txt" ) ) );
+                    sw = new BufferedWriter( 
+                        new FileWriter( 
+                            PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "reg_keys_vocalo1.txt" ) ) );
                     foreach ( String s in dir1 ) {
                         sw.write( s );
                         sw.newLine();
@@ -124,7 +126,8 @@ namespace org.kbinani.vsq {
                          installed_singers1 );
                 s_path_vsti.put( SynthesizerType.VOCALOID1, path_vsti.value );
                 s_path_editor.put( SynthesizerType.VOCALOID1, path_editor.value );
-                SingerConfigSys singer_config_sys = new SingerConfigSys( path_voicedb1.value, installed_singers1.toArray( new String[] { } ) );
+                SingerConfigSys singer_config_sys = 
+                    new SingerConfigSys( path_voicedb1.value, installed_singers1.toArray( new String[] { } ) );
                 String expression_map = PortUtil.combinePath( path_expdb1.value, "expression.map" );
                 if ( PortUtil.isFileExists( expression_map ) ) {
                     exp_config_sys1 = new ExpressionConfigSys( path_editor.value, path_expdb1.value );
@@ -141,7 +144,8 @@ namespace org.kbinani.vsq {
                 }
 
                 // VOCALOID.iniから、DSEVersionを取得
-                if ( path_editor.value != null && !path_editor.value.Equals( "" ) && PortUtil.isFileExists( path_editor.value ) ) {
+                if ( path_editor.value != null && !path_editor.value.Equals( "" ) && 
+                     PortUtil.isFileExists( path_editor.value ) ) {
                     String dir = PortUtil.getDirectoryName( path_editor.value );
                     String ini = PortUtil.combinePath( dir, "VOCALOID.ini" );
                     if ( PortUtil.isFileExists( ini ) ) {
@@ -201,7 +205,9 @@ namespace org.kbinani.vsq {
 #if DEBUG
                 BufferedWriter sw = null;
                 try {
-                    sw = new BufferedWriter( new FileWriter( PortUtil.combinePath( System.Windows.Forms.Application.StartupPath, "reg_keys_vocalo2.txt" ) ) );
+                    sw = new BufferedWriter( 
+                        new FileWriter( 
+                            PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "reg_keys_vocalo2.txt" ) ) );
                     foreach ( String s in dir2 ) {
                         sw.write( s );
                         sw.newLine();

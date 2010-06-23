@@ -454,6 +454,10 @@ namespace org.kbinani.cadencii {
         /// ピアノロール画面に，コントロールカーブをオーバーレイしているモード
         /// </summary>
         public static boolean curveOnPianoroll = false;
+        /// <summary>
+        /// TrackSelectorで表示させているカーブの一覧
+        /// </summary>
+        private static Vector<CurveType> _viewingCurves = new Vector<CurveType>();
 
         #region 裏設定項目
         /// <summary>
@@ -493,6 +497,68 @@ namespace org.kbinani.cadencii {
         public static BEvent<BEventHandler> currentClockChangedEvent = new BEvent<BEventHandler>();
 
         private const String TEMPDIR_NAME = "cadencii";
+
+        public static int getViewingCurveCount() {
+            return _viewingCurves.size();
+        }
+
+        public static CurveType getViewingCurveElement( int index ) {
+            return _viewingCurves.get( index );
+        }
+
+        /// <summary>
+        /// このコントロールに担当させるカーブを追加します
+        /// </summary>
+        /// <param name="curve"></param>
+        public static void addViewingCurveRange( CurveType[] curve ) {
+            for ( int j = 0; j < curve.Length; j++ ) {
+                boolean found = false;
+                for ( int i = 0; i < _viewingCurves.size(); i++ ) {
+                    if ( _viewingCurves.get( i ).equals( curve[j] ) ) {
+                        found = true;
+                        break;
+                    }
+                }
+                if ( !found ) {
+                    _viewingCurves.add( curve[j] );
+                }
+            }
+            if ( _viewingCurves.size() >= 2 ) {
+                boolean changed = true;
+                while ( changed ) {
+                    changed = false;
+                    for ( int i = 0; i < _viewingCurves.size() - 1; i++ ) {
+                        if ( _viewingCurves.get( i ).getIndex() > _viewingCurves.get( i + 1 ).getIndex() ) {
+                            CurveType b = (CurveType)_viewingCurves.get( i ).clone();
+                            _viewingCurves.set( i, (CurveType)_viewingCurves.get( i + 1 ).clone() );
+                            _viewingCurves.set( i + 1, b );
+                            changed = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        public static void addViewingCurve( CurveType curve ) {
+            addViewingCurveRange( new CurveType[] { curve } );
+        }
+
+        public static void clearViewingCurve() {
+            _viewingCurves.clear();
+        }
+
+        /// <summary>
+        /// このコントロールに担当させるカーブを削除します
+        /// </summary>
+        /// <param name="curve"></param>
+        public void removeViewingCurve( CurveType curve ) {
+            for ( int i = 0; i < _viewingCurves.size(); i++ ) {
+                if ( _viewingCurves.get( i ).equals( curve ) ) {
+                    _viewingCurves.removeElementAt( i );
+                    break;
+                }
+            }
+        }
 
         /// <summary>
         /// ピアノロールの，X方向のスケールを取得します(pixel/clock)
@@ -1703,10 +1769,6 @@ namespace org.kbinani.cadencii {
 
         public static void setPlaying( boolean value ) {
             lock ( playingPropertyLocker ) {
-#if DEBUG
-                DateTime time = DateTime.Now;
-                PortUtil.println( "AppManager#setPlaying; entry; now=" + time + "; s_playing=" + s_playing + "; value=" + value );
-#endif
                 boolean previous = s_playing;
                 s_playing = value;
                 if ( previous != s_playing ) {
@@ -1724,9 +1786,6 @@ namespace org.kbinani.cadencii {
                         }
                     }
                 }
-#if DEBUG
-                PortUtil.println( "AppManager#setPlaying; done; now=" + time );
-#endif
             }
         }
 
@@ -2385,6 +2444,7 @@ namespace org.kbinani.cadencii {
         /// 現在の設定を設定ファイルに書き込みます。
         /// </summary>
         public static void saveConfig() {
+#if !JAVA
             // ユーザー辞書の情報を取り込む
             editorConfig.UserDictionaries.clear();
             int count = SymbolTable.getCount();
@@ -2400,6 +2460,7 @@ namespace org.kbinani.cadencii {
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "AppManager#saveConfig; ex=" + ex );
             }
+#endif
         }
 
         /// <summary>

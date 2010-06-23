@@ -365,9 +365,6 @@ namespace org.kbinani.cadencii {
                                 }
                             }
                             try {
-#if DEBUG
-                                org.kbinani.debug.push_log( "UtauRenderingRunner#run; deleting... \"" + delfile + "\"" );
-#endif
                                 PortUtil.deleteFile( delfile );
                             } catch ( Exception ex ) {
                                 PortUtil.stderr.println( "UtauRenderingRunner#run; ex=" + ex );
@@ -399,16 +396,6 @@ namespace org.kbinani.cadencii {
                 log.WriteLine( "...done" );
 #endif
 
-#if DEBUG
-                org.kbinani.debug.push_log( "UtauRenderingRunner#run; s_cache:" );
-                for ( Iterator<String> itr = s_cache.keySet().iterator(); itr.hasNext(); ){
-                    String key = itr.next();
-                    ValuePair<String, Double> value = s_cache.get( key );
-                    org.kbinani.debug.push_log( "UtauRenderingRunner#run;     arg=" + key );
-                    org.kbinani.debug.push_log( "UtauRenderingRunner#run;     file=" + value.getKey() );
-                }
-#endif
-
                 int num_queues = m_resampler_queue.size();
                 int processed_sample = 0; //WaveIncomingで受け渡した波形の合計サンプル数
                 int channel = 0; // .whdに記録されたチャンネル数
@@ -416,9 +403,6 @@ namespace org.kbinani.cadencii {
                 // 引き続き、wavtoolを呼ぶ作業に移行
                 boolean first = true;
                 int trim_remain = (int)(trimMillisec / 1000.0 * sampleRate); //先頭から省かなければならないサンプル数の残り
-#if DEBUG
-                org.kbinani.debug.push_log( "UtauRenderingRunner#run; trim_remain=" + trim_remain );
-#endif
                 VsqBPList dyn_curve = m_vsq.Track.get( renderingTrack ).getCurve( "dyn" );
 #if MAKEBAT_SP
                 bat = new StreamWriter( Path.Combine( m_temp_dir, "utau.bat" ), false, Encoding.GetEncoding( "Shift_JIS" ) );
@@ -427,9 +411,6 @@ namespace org.kbinani.cadencii {
                     RenderQueue rq = m_resampler_queue.get( i );
                     if ( !rq.ResamplerFinished ) {
                         String arg = rq.ResamplerArg;
-#if DEBUG
-                        org.kbinani.debug.push_log( "UtauRenderingRunner#run; resampler arg=" + arg );
-#endif
 #if MAKEBAT_SP
                         bat.WriteLine( "\"" + m_resampler + "\" " + arg );
 #endif
@@ -476,7 +457,7 @@ namespace org.kbinani.cadencii {
 #if MAKEBAT_SP
                     bat.WriteLine( "\"" + m_wavtool + "\" " + arg_wavtool );
 #endif
-                    ProcessWavtool( arg_wavtool, file, m_temp_dir, m_wavtool, m_invoke_with_wine );
+                    processWavtool( arg_wavtool, file, m_temp_dir, m_wavtool, m_invoke_with_wine );
 
                     // できたwavを読み取ってWaveIncomingイベントを発生させる
                     int sample_end = (int)(sec_fin * sampleRate);
@@ -496,7 +477,6 @@ namespace org.kbinani.cadencii {
                             if ( buf[0] != 'R' || buf[1] != 'I' || buf[2] != 'F' || buf[3] != 'F' ) {
 #if DEBUG
                                 AppManager.debugWriteLine( "UtauRenderingRunner#run; whd header error" );
-                                AppManager.debugWriteLine( ((char)buf[0]).ToString() + "" + ((char)buf[1]).ToString() + "" + ((char)buf[2]).ToString() + "" + ((char)buf[3]).ToString() + " must be RIFF" );
 #endif
                                 continue;
                             }
@@ -507,7 +487,6 @@ namespace org.kbinani.cadencii {
                             if ( buf[0] != 'W' || buf[1] != 'A' || buf[2] != 'V' || buf[3] != 'E' ) {
 #if DEBUG
                                 AppManager.debugWriteLine( "UtauRenderingRunner#run; whd header error" );
-                                AppManager.debugWriteLine( ((char)buf[0]).ToString() + "" + ((char)buf[1]).ToString() + "" + ((char)buf[2]).ToString() + "" + ((char)buf[3]).ToString() + " must be WAVE" );
 #endif
                                 continue;
                             }
@@ -516,7 +495,6 @@ namespace org.kbinani.cadencii {
                             if ( buf[0] != 'f' || buf[1] != 'm' || buf[2] != 't' || buf[3] != ' ' ) {
 #if DEBUG
                                 AppManager.debugWriteLine( "UtauRenderingRunner#run; whd header error" );
-                                AppManager.debugWriteLine( ((char)buf[0]).ToString() + "" + ((char)buf[1]).ToString() + "" + ((char)buf[2]).ToString() + "" + ((char)buf[3]).ToString() + " must be fmt " );
 #endif
                                 continue;
                             }
@@ -550,7 +528,6 @@ namespace org.kbinani.cadencii {
                             if ( buf[0] != 'd' || buf[1] != 'a' || buf[2] != 't' || buf[3] != 'a' ) {
 #if DEBUG
                                 AppManager.debugWriteLine( "UtauRenderingRunner#run; whd header error" );
-                                AppManager.debugWriteLine( ((char)buf[0]).ToString() + "" + ((char)buf[1]).ToString() + "" + ((char)buf[2]).ToString() + "" + ((char)buf[3]).ToString() + " must be data" );
 #endif
                                 continue;
                             }
@@ -840,11 +817,7 @@ namespace org.kbinani.cadencii {
             return draft;
         }
 
-        private static void ProcessWavtool( String arg, String filebase, String temp_dir, String wavtool, boolean invoke_with_wine ) {
-#if DEBUG
-            org.kbinani.debug.push_log( "UtauRenderingRunner#run; wavtool arg=" + arg );
-#endif
-
+        private static void processWavtool( String arg, String filebase, String temp_dir, String wavtool, boolean invoke_with_wine ) {
 #if JAVA
             String[] args = new String[]{ (invoke_with_wine ? "wine \"" : "\"") + wavtool + "\"", arg };
             ProcessBuilder pb = new ProcessBuilder( args );

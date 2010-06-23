@@ -1064,7 +1064,11 @@ namespace org.kbinani.vsq {
                         byte[] byte_ved = new byte[(int)fs_ved.length()];
                         fs_ved.read( byte_ved, 0, byte_ved.Length );
                         TransCodeUtil.decodeBytes( byte_ved );
-                        String str = PortUtil.getDecodedString( "ASCII", byte_ved );
+                        int[] int_ved = new int[byte_ved.Length];
+                        for ( int j = 0; j < byte_ved.Length; j++ ) {
+                            int_ved[j] = 0xff & byte_ved[j];
+                        }
+                        String str = PortUtil.getDecodedString( "ASCII", int_ved );
                         String[] spl = PortUtil.splitString( str, new String[] { NL }, true );
                         String current_entry = "";
                         for ( int j = 0; j < spl.Length; j++ ) {

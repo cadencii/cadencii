@@ -256,7 +256,7 @@ namespace org.kbinani.cadencii {
                 exists = vsq.Track.get( AppManager.getSelected() ).getCurve( m_curve.getName() ).findElement( m_editing_id ).index >= 0;
             }
 #if DEBUG
-            Console.WriteLine( "FormCurvePointEdit#handleUndoRedo_Click; exists=" + exists );
+            PortUtil.println( "FormCurvePointEdit#handleUndoRedo_Click; exists=" + exists );
 #endif
             txtDataPointClock.setEnabled( exists );
             txtDataPointValue.setEnabled( exists );

@@ -151,10 +151,6 @@ namespace org.kbinani.cadencii {
             }
 
             comboPlatform.removeAllItems();
-#if DEBUG
-            AppManager.debugWriteLine( "Preference.ctor()" );
-            AppManager.debugWriteLine( "    Environment.OSVersion.Platform=" + Environment.OSVersion.Platform );
-#endif
 
 #if DEBUG
 #if JAVA

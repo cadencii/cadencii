@@ -890,8 +890,7 @@ namespace org.kbinani.vsq {
         /// <returns>編集結果を元に戻すためのコマンドを返します</returns>
         public VsqCommand executeCommand( VsqCommand command ) {
 #if DEBUG
-            PortUtil.println( "VsqFile.Execute(VsqCommand)" );
-            PortUtil.println( "    type=" + command.Type );
+            PortUtil.stdout.println( "VsqFile#executeCommand(VsqCommand); type=" + command.Type );
 #endif
             VsqCommandType type = command.Type;
             if ( type == VsqCommandType.CHANGE_PRE_MEASURE ) {
@@ -904,9 +903,6 @@ namespace org.kbinani.vsq {
                 #endregion
             } else if ( type == VsqCommandType.TRACK_ADD ) {
                 #region TRACK_ADD
-#if DEBUG
-                System.Diagnostics.Debug.WriteLine( "    AddTrack" );
-#endif
                 VsqTrack track = (VsqTrack)command.Args[0];
                 VsqMixerEntry mixer = (VsqMixerEntry)command.Args[1];
                 int position = (Integer)command.Args[2];
@@ -1110,7 +1106,7 @@ namespace org.kbinani.vsq {
             } else if ( type == VsqCommandType.EVENT_ADD_RANGE ) {
                 #region EVENT_ADD_RANGE
 #if DEBUG
-                PortUtil.println( "    TrackAddNoteRange" );
+                PortUtil.stdout.println( "    TrackAddNoteRange" );
 #endif
                 int track = (Integer)command.Args[0];
                 VsqEvent[] items = (VsqEvent[])command.Args[1];
@@ -1123,12 +1119,12 @@ namespace org.kbinani.vsq {
                     min_clock = Math.Min( min_clock, item.Clock );
                     max_clock = Math.Max( max_clock, item.Clock + item.ID.getLength() );
 #if DEBUG
-                    Console.Write( "        i=" + i + "; item.InternalID=" + item.InternalID );
+                    PortUtil.stdout.println( "        i=" + i + "; item.InternalID=" + item.InternalID );
 #endif
                     target.addEvent( item );
                     inv_ids.add( item.InternalID );
 #if DEBUG
-                    PortUtil.println( " => " + item.InternalID );
+                    PortUtil.stdout.println( " => " + item.InternalID );
 #endif
                 }
                 updateTotalClocks();
@@ -1709,13 +1705,6 @@ namespace org.kbinani.vsq {
                     internal_ids,
                     PortUtil.convertIntArray( inv_clock.toArray( new Integer[] { } ) ),
                     inv_id.toArray( new VsqID[] { } ) );
-#if DEBUG
-                PortUtil.println( "    TrackChangeClockAndIDContaintsRange" );
-                PortUtil.println( "    track=" + track );
-                for ( int i = 0; i < internal_ids.Length; i++ ) {
-                    PortUtil.println( "    id=" + internal_ids[i] + "; clock=" + clocks[i] + "; ID=" + values[i].ToString() );
-                }
-#endif
                 #endregion
             } else if ( type == VsqCommandType.TRACK_CHANGE_NAME ) {
                 #region TRACK_CHANGE_NAME
@@ -2387,12 +2376,12 @@ namespace org.kbinani.vsq {
             Track.get( 1 ).setMixer( null );
 
 #if DEBUG
-            System.Diagnostics.Debug.WriteLine( "VsqFile.ctor()" );
+            PortUtil.stdout.println( "VsqFile#ctor(String,String)" );
 #endif
             int master_track = -1;
             for ( int i = 0; i < Track.size(); i++ ) {
 #if DEBUG
-                System.Diagnostics.Debug.WriteLine( "    m_tracks[i].Name=" + Track.get( i ).getName() );
+                PortUtil.stdout.println( "    m_tracks[i].Name=" + Track.get( i ).getName() );
 #endif
                 if ( Track.get( i ).getName().Equals( "Master Track" ) ) {
                     master_track = i;
@@ -2477,7 +2466,7 @@ namespace org.kbinani.vsq {
             updateTimesigInfo();
             updateTotalClocks();
 #if DEBUG
-            System.Diagnostics.Debug.WriteLine( "    m_total_clocks=" + TotalClocks );
+            PortUtil.stdout.println( "    m_total_clocks=" + TotalClocks );
 #endif
         }
 
@@ -2761,7 +2750,7 @@ namespace org.kbinani.vsq {
                 }
             }
 #if DEBUG
-            Console.WriteLine( "VsqFile#generateMetaTextEvent; ret.size()=" + ret.size() );
+            PortUtil.stdout.println( "VsqFile#generateMetaTextEvent; ret.size()=" + ret.size() );
 #endif
             return ret;
         }

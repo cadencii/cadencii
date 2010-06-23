@@ -220,7 +220,7 @@ namespace org.kbinani.cadencii {
                 if ( m_trace.Length < new_length ) {
 #if JAVA
                     int[] newarray = new int[new_length];
-                    System.arraycopy( m_trace, 0, newarray, 0, m_size );
+                    System.arraycopy( m_trace, 0, newarray, 0, m_trace.length );
                     m_trace = null;
                     m_trace = newarray;
 #else

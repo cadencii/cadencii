@@ -233,9 +233,6 @@ namespace org.kbinani.vsq {
                         }
                         line = sr.readLine();
                     }
-#if DEBUG
-                    org.kbinani.debug.push_log( "(ue==null)=" + (ue == null) );
-#endif
                     if ( type == 0 ) {
                         type = 1;
                     } else if ( type == 1 ) {
@@ -247,7 +244,7 @@ namespace org.kbinani.vsq {
                 updateTempoInfo();
             } catch ( Exception ex ) {
 #if DEBUG
-                org.kbinani.debug.push_log( "ex=" + ex );
+                PortUtil.stderr.println( "UstFile#.ctor(String); ex=" + ex );
 #endif
             } finally {
                 if ( sr != null ) {

@@ -123,7 +123,11 @@ namespace org.kbinani.vsq {
                 byte[] dat = new byte[length];
                 fs.read( dat, 0, length );
                 TransCodeUtil.decodeBytes( dat );
-                String str = PortUtil.getDecodedString( "Shift_JIS", dat );
+                int[] idat = new int[length];
+                for ( int i = 0; i < length; i++ ) {
+                    idat[i] = dat[i];
+                }
+                String str = PortUtil.getDecodedString( "Shift_JIS", idat );
 #if DEBUG
                 PortUtil.println( "SingerConfig.readSingerConfig; str=" + str );
 #endif

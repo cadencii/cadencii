@@ -561,9 +561,6 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if DEBUG
-            org.kbinani.debug.push_log( "FormMain..ctor()" );
-            org.kbinani.debug.push_log( "    " + Environment.OSVersion.ToString() );
-            org.kbinani.debug.push_log( "    FormID=" + AppManager.getID() );
             AppManager.debugWriteLine( "FormMain..ctor()" );
 #endif
             AppManager.baseFont10Bold = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.BOLD, AppManager.FONT_SIZE10 );
@@ -919,6 +916,7 @@ namespace org.kbinani.cadencii {
                 }
             }
 
+#if !JAVA
 #if DEBUG
             System.Collections.Generic.List<ValuePair<string, string>> list = new System.Collections.Generic.List<ValuePair<string, string>>();
             foreach ( System.Reflection.FieldInfo fi in typeof( EditorConfig ).GetFields() ) {
@@ -953,6 +951,7 @@ namespace org.kbinani.cadencii {
                     sw.WriteLine( s.Value + "\t" + s.Key + ";" );
                 }
             }
+#endif
 #endif
         }
         #endregion
@@ -1884,9 +1883,6 @@ namespace org.kbinani.cadencii {
                                4 );
             }
 
-#if DEBUG
-            BufferedWriter sw = new BufferedWriter( new FileWriter( "list.txt" ) );
-#endif
             // buf1に、vibrato in/outによる増幅率を代入
             float[] buf1 = new float[clock_width + 1];
             for ( int clock = clock_start; clock <= clock_start + clock_width; clock++ ) {
@@ -1897,10 +1893,6 @@ namespace org.kbinani.cadencii {
                 for ( int clock = clock_start; clock <= cl_vibin_end; clock++ ) {
                     int i = clock - clock_start;
                     buf1[i] *= i / (float)(cl_vibin_end - clock_start);
-#if DEBUG
-                    sw.write( "vibin: " + i + "\t" + buf1[i] );
-                    sw.newLine();
-#endif
                 }
             }
             if ( clock_start + clock_width - cl_vibout_start > 0 ) {
@@ -1908,10 +1900,6 @@ namespace org.kbinani.cadencii {
                     int i = clock - clock_start;
                     float v = (clock_start + clock_width - clock) / (float)(clock_start + clock_width - cl_vibout_start);
                     buf1[i] = buf1[i] * v;
-#if DEBUG
-                    sw.write( "vibout: " + i + "\t" + buf1[i] );
-                    sw.newLine();
-#endif
                 }
             }
 
@@ -1940,15 +1928,6 @@ namespace org.kbinani.cadencii {
                     listx[i] = AppManager.xCoordFromClocks( clock );
                     listy[i] = (int)(y0 + buf2[i]);
                 }
-#if DEBUG
-                AppManager.debugWriteLine( "DrawUtauVibrato" );
-                for ( int i = 0; i < listx.Length; i++ ) {
-                    sw.write( listx[i] + "\t" + listy[i] );
-                    sw.newLine();
-                }
-                sw.close();
-                sw = null;
-#endif
                 if ( listx.Length >= 2 ) {
                     g.setColor( Color.red );
                     g.drawPolyline( listx, listy, listx.Length );
@@ -2284,77 +2263,83 @@ namespace org.kbinani.cadencii {
         /// trackSelectorに表示するコントロールのカーブの種類を、AppManager.EditorConfigの設定に応じて更新します
         /// </summary>
         public void updateTrackSelectorVisibleCurve() {
+#if DEBUG
+            PortUtil.println( "FormMain#updateTrackSelectorVisibleCurve; before; AppManager.getViewingCurveCount()" + AppManager.getViewingCurveCount() );
+#endif
             if ( AppManager.editorConfig.CurveVisibleVelocity ) {
-                trackSelector.addViewingCurve( CurveType.VEL );
+                AppManager.addViewingCurve( CurveType.VEL );
             }
             if ( AppManager.editorConfig.CurveVisibleAccent ) {
-                trackSelector.addViewingCurve( CurveType.Accent );
+                AppManager.addViewingCurve( CurveType.Accent );
             }
             if ( AppManager.editorConfig.CurveVisibleDecay ) {
-                trackSelector.addViewingCurve( CurveType.Decay );
+                AppManager.addViewingCurve( CurveType.Decay );
             }
             if ( AppManager.editorConfig.CurveVisibleVibratoRate ) {
-                trackSelector.addViewingCurve( CurveType.VibratoRate );
+                AppManager.addViewingCurve( CurveType.VibratoRate );
             }
             if ( AppManager.editorConfig.CurveVisibleVibratoDepth ) {
-                trackSelector.addViewingCurve( CurveType.VibratoDepth );
+                AppManager.addViewingCurve( CurveType.VibratoDepth );
             }
             if ( AppManager.editorConfig.CurveVisibleDynamics ) {
-                trackSelector.addViewingCurve( CurveType.DYN );
+                AppManager.addViewingCurve( CurveType.DYN );
             }
             if ( AppManager.editorConfig.CurveVisibleBreathiness ) {
-                trackSelector.addViewingCurve( CurveType.BRE );
+                AppManager.addViewingCurve( CurveType.BRE );
             }
             if ( AppManager.editorConfig.CurveVisibleBrightness ) {
-                trackSelector.addViewingCurve( CurveType.BRI );
+                AppManager.addViewingCurve( CurveType.BRI );
             }
             if ( AppManager.editorConfig.CurveVisibleClearness ) {
-                trackSelector.addViewingCurve( CurveType.CLE );
+                AppManager.addViewingCurve( CurveType.CLE );
             }
             if ( AppManager.editorConfig.CurveVisibleOpening ) {
-                trackSelector.addViewingCurve( CurveType.OPE );
+                AppManager.addViewingCurve( CurveType.OPE );
             }
             if ( AppManager.editorConfig.CurveVisibleGendorfactor ) {
-                trackSelector.addViewingCurve( CurveType.GEN );
+                AppManager.addViewingCurve( CurveType.GEN );
             }
             if ( AppManager.editorConfig.CurveVisiblePortamento ) {
-                trackSelector.addViewingCurve( CurveType.POR );
+                AppManager.addViewingCurve( CurveType.POR );
             }
             if ( AppManager.editorConfig.CurveVisiblePit ) {
-                trackSelector.addViewingCurve( CurveType.PIT );
+                AppManager.addViewingCurve( CurveType.PIT );
             }
             if ( AppManager.editorConfig.CurveVisiblePbs ) {
-                trackSelector.addViewingCurve( CurveType.PBS );
+                AppManager.addViewingCurve( CurveType.PBS );
             }
             if ( AppManager.editorConfig.CurveVisibleHarmonics ) {
-                trackSelector.addViewingCurve( CurveType.harmonics );
+                AppManager.addViewingCurve( CurveType.harmonics );
             }
             if ( AppManager.editorConfig.CurveVisibleFx2Depth ) {
-                trackSelector.addViewingCurve( CurveType.fx2depth );
+                AppManager.addViewingCurve( CurveType.fx2depth );
             }
             if ( AppManager.editorConfig.CurveVisibleReso1 ) {
-                trackSelector.addViewingCurve( CurveType.reso1freq );
-                trackSelector.addViewingCurve( CurveType.reso1bw );
-                trackSelector.addViewingCurve( CurveType.reso1amp );
+                AppManager.addViewingCurve( CurveType.reso1freq );
+                AppManager.addViewingCurve( CurveType.reso1bw );
+                AppManager.addViewingCurve( CurveType.reso1amp );
             }
             if ( AppManager.editorConfig.CurveVisibleReso2 ) {
-                trackSelector.addViewingCurve( CurveType.reso2freq );
-                trackSelector.addViewingCurve( CurveType.reso2bw );
-                trackSelector.addViewingCurve( CurveType.reso2amp );
+                AppManager.addViewingCurve( CurveType.reso2freq );
+                AppManager.addViewingCurve( CurveType.reso2bw );
+                AppManager.addViewingCurve( CurveType.reso2amp );
             }
             if ( AppManager.editorConfig.CurveVisibleReso3 ) {
-                trackSelector.addViewingCurve( CurveType.reso3freq );
-                trackSelector.addViewingCurve( CurveType.reso3bw );
-                trackSelector.addViewingCurve( CurveType.reso3amp );
+                AppManager.addViewingCurve( CurveType.reso3freq );
+                AppManager.addViewingCurve( CurveType.reso3bw );
+                AppManager.addViewingCurve( CurveType.reso3amp );
             }
             if ( AppManager.editorConfig.CurveVisibleReso4 ) {
-                trackSelector.addViewingCurve( CurveType.reso4freq );
-                trackSelector.addViewingCurve( CurveType.reso4bw );
-                trackSelector.addViewingCurve( CurveType.reso4amp );
+                AppManager.addViewingCurve( CurveType.reso4freq );
+                AppManager.addViewingCurve( CurveType.reso4bw );
+                AppManager.addViewingCurve( CurveType.reso4amp );
             }
             if ( AppManager.editorConfig.CurveVisibleEnvelope ) {
-                trackSelector.addViewingCurve( CurveType.Env );
+                AppManager.addViewingCurve( CurveType.Env );
             }
+#if DEBUG
+            PortUtil.println( "FormMain#updateTrackSelectorVisibleCurve; after; AppManager.getViewingCurveCount()=" + AppManager.getViewingCurveCount() );
+#endif
         }
 
         /// <summary>
@@ -3299,8 +3284,9 @@ namespace org.kbinani.cadencii {
 
         public void refreshScreen() {
 #if JAVA
-            //refreshScreenCore( this, new EventArgs() );
-            repaint();
+            refreshScreenCore( this, null );
+            //repaint();
+            //trackSelector.repaint();
 #else
             if ( !bgWorkScreen.IsBusy ) {
                 bgWorkScreen.RunWorkerAsync();
@@ -3669,11 +3655,14 @@ namespace org.kbinani.cadencii {
                             PortUtil.deleteFile( file );
                             break;
                         } catch ( Exception ex ) {
+#if !JAVA
 #if DEBUG
                             org.kbinani.debug.push_log( "FormMain+ClearTempWave()" );
                             org.kbinani.debug.push_log( "    ex=" + ex.ToString() );
                             org.kbinani.debug.push_log( "    error_count=" + error );
 #endif
+#endif
+
 #if JAVA
                             try{
                                 Thread.sleep( 100 );
@@ -4445,9 +4434,12 @@ namespace org.kbinani.cadencii {
             AppManager.clearSelectedTimesig();
             AppManager.clearSelectedEvent();
             AppManager.clearSelectedPoint();
-            int premeasureclock = AppManager.getVsqFile().getPreMeasureClocks();
+            int selected = AppManager.getSelected();
+            VsqFileEx vsq = AppManager.getVsqFile();
+            VsqTrack vsq_track = vsq.Track.get( selected );
+            int premeasureclock = vsq.getPreMeasureClocks();
             Vector<Integer> add_required = new Vector<Integer>();
-            for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getEventIterator(); itr.hasNext(); ) {
+            for ( Iterator<VsqEvent> itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
                 VsqEvent ev = itr.next();
                 if ( ev.ID.type == VsqIDType.Anote && ev.Clock >= premeasureclock ) {
                     add_required.add( ev.InternalID );
@@ -4461,8 +4453,9 @@ namespace org.kbinani.cadencii {
 
         public void deleteEvent() {
 #if DEBUG
-            AppManager.debugWriteLine( "DeleteEvent()" );
-            AppManager.debugWriteLine( "    AppManager.inputTextBox.isEnabled()=" + AppManager.inputTextBox.Enabled );
+            AppManager.debugWriteLine( 
+                "FormMain#deleteEvent(); AppManager.inputTextBox.isEnabled()=" + 
+                AppManager.inputTextBox.isEnabled() );
 #endif
 
             if ( AppManager.inputTextBox.isVisible() ) {
@@ -4497,13 +4490,15 @@ namespace org.kbinani.cadencii {
                     int end_clock = AppManager.wholeSelectedInterval.getEnd();
                     Vector<Vector<BPPair>> curves = new Vector<Vector<BPPair>>();
                     Vector<CurveType> types = new Vector<CurveType>();
+                    VsqTrack work_vsq_track = work.Track.get( selected );
                     foreach ( CurveType vct in Utility.CURVE_USAGE ) {
                         if ( vct.isScalar() || vct.isAttachNote() ) {
                             continue;
                         }
+                        VsqBPList work_curve = work_vsq_track.getCurve( vct.getName() );
                         Vector<BPPair> t = new Vector<BPPair>();
-                        t.add( new BPPair( start_clock, work.Track.get( selected ).getCurve( vct.getName() ).getValue( start_clock ) ) );
-                        t.add( new BPPair( end_clock, work.Track.get( selected ).getCurve( vct.getName() ).getValue( end_clock ) ) );
+                        t.add( new BPPair( start_clock, work_curve.getValue( start_clock ) ) );
+                        t.add( new BPPair( end_clock, work_curve.getValue( end_clock ) ) );
                         curves.add( t );
                         types.add( vct );
                     }
@@ -4511,9 +4506,8 @@ namespace org.kbinani.cadencii {
                     for ( int i = 0; i < types.size(); i++ ) {
                         strs.add( types.get( i ).getName() );
                     }
-                    CadenciiCommand delete_curve = new CadenciiCommand( VsqCommand.generateCommandTrackCurveEditRange( selected,
-                                                                                                                       strs,
-                                                                                                                       curves ) );
+                    CadenciiCommand delete_curve = new CadenciiCommand(
+                        VsqCommand.generateCommandTrackCurveEditRange( selected, strs, curves ) );
                     work.executeCommand( delete_curve );
                     if ( contains_aicon ) {
                         work.Track.get( selected ).reflectDynamics();
@@ -4543,7 +4537,6 @@ namespace org.kbinani.cadencii {
                 Vector<Integer> clocks = new Vector<Integer>();
                 for ( Iterator<ValuePair<Integer, SelectedTempoEntry>> itr = AppManager.getSelectedTempoIterator(); itr.hasNext(); ) {
                     ValuePair<Integer, SelectedTempoEntry> item = itr.next();
-                    //SelectedTempoEntry value = AppManager.getSelectedTempo().get( key );
                     if ( item.getKey() <= 0 ) {
                         statusLabel.setText( _( "Cannot remove first symbol of track!" ) );
 #if !JAVA
@@ -4557,8 +4550,10 @@ namespace org.kbinani.cadencii {
                 for ( int i = 0; i < dum.Length; i++ ) {
                     dum[i] = -1;
                 }
-                CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandUpdateTempoRange( PortUtil.convertIntArray( clocks.toArray( new Integer[] { } ) ),
-                                                                                                       PortUtil.convertIntArray( clocks.toArray( new Integer[] { } ) ), dum ) );
+                CadenciiCommand run = new CadenciiCommand( 
+                    VsqCommand.generateCommandUpdateTempoRange( PortUtil.convertIntArray( clocks.toArray( new Integer[] { } ) ),
+                                                                PortUtil.convertIntArray( clocks.toArray( new Integer[] { } ) ), 
+                                                                dum ) );
                 AppManager.register( vsq.executeCommand( run ) );
                 setEdited( true );
                 AppManager.clearSelectedTempo();
@@ -4615,9 +4610,10 @@ namespace org.kbinani.cadencii {
                     for ( int i = 0; i < count; i++ ) {
                         list.remove( remove_clock_queue.get( i ) );
                     }
-                    CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandTrackCurveReplace( selected,
-                                                                                                            trackSelector.getSelectedCurve().getName(),
-                                                                                                            list ) );
+                    CadenciiCommand run = new CadenciiCommand( 
+                        VsqCommand.generateCommandTrackCurveReplace( selected,
+                                                                     trackSelector.getSelectedCurve().getName(),
+                                                                     list ) );
                     AppManager.register( vsq.executeCommand( run ) );
                     setEdited( true );
                 } else {
@@ -4653,7 +4649,8 @@ namespace org.kbinani.cadencii {
                         item.Clock = copied_events.get( i ).Clock + dclock;
                         paste.add( item );
                     }
-                    add_event = VsqCommand.generateCommandEventAddRange( AppManager.getSelected(), paste.toArray( new VsqEvent[] { } ) );
+                    add_event = VsqCommand.generateCommandEventAddRange( 
+                        AppManager.getSelected(), paste.toArray( new VsqEvent[] { } ) );
                 }
             }
             Vector<TempoTableEntry> copied_tempo = ce.tempo;
@@ -4668,7 +4665,8 @@ namespace org.kbinani.cadencii {
                     clocks[i] = item.Clock + dclock;
                     tempos[i] = item.Tempo;
                 }
-                CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandUpdateTempoRange( clocks, clocks, tempos ) );
+                CadenciiCommand run = new CadenciiCommand( 
+                    VsqCommand.generateCommandUpdateTempoRange( clocks, clocks, tempos ) );
                 AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                 setEdited( true );
                 refreshScreen();
@@ -4695,7 +4693,8 @@ namespace org.kbinani.cadencii {
                     denominators[i] = item.Denominator;
                 }
                 CadenciiCommand run = new CadenciiCommand(
-                    VsqCommand.generateCommandUpdateTimesigRange( barcounts, barcounts, numerators, denominators ) );
+                    VsqCommand.generateCommandUpdateTimesigRange( 
+                        barcounts, barcounts, numerators, denominators ) );
                 AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                 setEdited( true );
                 refreshScreen();
@@ -10721,9 +10720,6 @@ namespace org.kbinani.cadencii {
                 double started = PortUtil.getCurrentTime();
                 fs.setModal( true );
                 fs.setVisible( true );
-#if DEBUG
-                org.kbinani.debug.push_log( "elapsed time=" + (PortUtil.getCurrentTime() - started) + "sec" );
-#endif
             } catch ( Exception ex ) {
             } finally {
                 if ( fs != null ) {
@@ -10775,9 +10771,9 @@ namespace org.kbinani.cadencii {
                 for ( int j = 0; j < events_count; j++ ) {
                     MidiEvent item = events.get( j );
                     if ( item.firstByte == 0xff && item.data.Length >= 2 && item.data[0] == 0x03 ) {
-                        byte[] d = new byte[item.data.Length];
+                        int[] d = new int[item.data.Length];
                         for ( int k = 0; k < item.data.Length; k++ ) {
-                            d[k] = (byte)(0xff & item.data[k]);
+                            d[k] = 0xff & item.data[k];
                         }
                         track_name = PortUtil.getDecodedString( "Shift_JIS", d, 1, item.data.Length - 1 );
                         break;
@@ -10978,7 +10974,7 @@ namespace org.kbinani.cadencii {
                             }
                         }
 #if DEBUG
-                        Console.WriteLine( "FormMain#menuFileImprotMidi_Click; not_closed_note=" + not_closed_note );
+                        PortUtil.println( "FormMain#menuFileImprotMidi_Click; not_closed_note=" + not_closed_note );
 #endif
                         if ( ((itemj.firstByte & 0xf0) == 0x90 && itemj.data.Length >= 2 && itemj.data[1] == 0) ||
                              ((itemj.firstByte & 0xf0) == 0x80 && itemj.data.Length >= 2) ||
@@ -11010,7 +11006,7 @@ namespace org.kbinani.cadencii {
                                 vid.type = VsqIDType.Anote;
                                 vid.setLength( add_clock_off - add_clock_on );
 #if DEBUG
-                                Console.WriteLine( "FormMain#menuFileImportMidi_Click; vid.Length=" + vid.getLength() );
+                                PortUtil.println( "FormMain#menuFileImportMidi_Click; vid.Length=" + vid.getLength() );
 #endif
                                 String phrase = "a";
                                 if ( m_midi_imexport_dialog.isLyric() ) {
@@ -11018,9 +11014,9 @@ namespace org.kbinani.cadencii {
                                         MidiEvent itemk = events.get( k );
                                         if ( onclock_each_note[note] <= (int)itemk.clock && (int)itemk.clock <= clock_off ) {
                                             if ( itemk.firstByte == 0xff && itemk.data.Length >= 2 && itemk.data[0] == 0x05 ) {
-                                                byte[] d = new byte[itemk.data.Length - 1];
+                                                int[] d = new int[itemk.data.Length - 1];
                                                 for ( int m = 1; m < itemk.data.Length; m++ ) {
-                                                    d[m - 1] = (byte)(0xff & itemk.data[m]);
+                                                    d[m - 1] = 0xff & itemk.data[m];
                                                 }
                                                 phrase = PortUtil.getDecodedString( "Shift_JIS", d, 0, itemk.data.Length );
                                                 break;
@@ -12181,8 +12177,7 @@ namespace org.kbinani.cadencii {
                 AppManager.editorConfig.DefaultSynthesizer = m_preference_dlg.getDefaultSynthesizer();
                 AppManager.editorConfig.UseUserDefinedAutoVibratoType = m_preference_dlg.isUseUserDefinedAutoVibratoType();
 
-                Vector<CurveType> visible_curves = new Vector<CurveType>();
-                trackSelector.clearViewingCurve();
+                AppManager.clearViewingCurve();
                 trackSelector.prepareSingerMenu( VsqFileEx.getTrackRendererKind( AppManager.getVsqFile().Track.get( AppManager.getSelected() ) ) );
 
                 updateTrackSelectorVisibleCurve();
@@ -12560,10 +12555,6 @@ namespace org.kbinani.cadencii {
         }
 
         public void menuJob_DropDownOpening( Object sender, EventArgs e ) {
-#if DEBUG
-            AppManager.debugWriteLine( "menuJob_DropDownOpening" );
-            AppManager.debugWriteLine( "    menuJob.Bounds=" + menuJob.Bounds );
-#endif
             if ( AppManager.getSelectedEventCount() <= 1 ) {
                 menuJobConnect.setEnabled( false );
             } else {
@@ -12708,12 +12699,7 @@ namespace org.kbinani.cadencii {
                                         PointD t = adding2.points.get( i ).getBase();
                                         adding2.points.get( i ).setBase( new PointD( t.getX() + dclock, t.getY() ) );
                                     }
-                                    //PointD t2 = adding1.points[adding1.points.Count - 1].Base;
                                     adding1.points.get( adding1.points.size() - 1 ).setControlRightType( BezierControlType.None );
-                                    /*BezierPoint bp = new BezierPoint( t2.X + dclock, t2.Y );
-                                    bp.ControlLeftType = BezierControlType.None;
-                                    bp.ControlRightType = BezierControlType.None;
-                                    adding1.points.Add( bp );*/
                                     adding2.points.get( 0 ).setControlLeftType( BezierControlType.None );
                                     for ( int i = 0; i < adding2.points.size(); i++ ) {
                                         adding1.points.add( adding2.points.get( i ) );

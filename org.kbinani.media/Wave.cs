@@ -193,7 +193,7 @@ namespace org.kbinani.media {
 
             double hz_from_index = 1.0 / (double)window_size * m_sample_rate * 0.5;
 #if DEBUG
-            Console.WriteLine( "Wave+GetF0" );
+            PortUtil.println( "Wave+GetF0" );
             if ( s_test ) {
                 BufferedWriter sw = null;
                 try {
@@ -220,7 +220,7 @@ namespace org.kbinani.media {
                 ma_width_sample = 1;
             }
 #if DEBUG
-            Console.WriteLine( "ma_width_sample=" + ma_width_sample );
+            PortUtil.println( "Wave#GetF0; ma_width_sample=" + ma_width_sample );
 #endif
             double[] ma = new double[length];
             for ( int i = 0; i < length; i++ ) {
@@ -328,7 +328,7 @@ namespace org.kbinani.media {
                     min_peak_distance = Math.Min( min_peak_distance, peaks[i] - peaks[i - 1] );
                 }*/
 #if DEBUG
-                Console.WriteLine( "min_peak_distance=" + min_peak_distance );
+                PortUtil.println( "Wave#GetF0; min_peak_distance=" + min_peak_distance );
                 if ( s_test ) {
                     BufferedWriter sw = null;
                     try {
@@ -637,7 +637,7 @@ namespace org.kbinani.media {
 
         public void replace( Wave srcWave, int srcStart, int destStart, int count ) {
 #if DEBUG
-            Console.WriteLine( "Wave.Replace(Wave,uint,uint,uint)" );
+            PortUtil.println( "Wave#replace(Wave,int,int,int)" );
 #endif
             if ( m_channel != srcWave.m_channel || m_bit_per_sample != srcWave.m_bit_per_sample ) {
                 return;
@@ -1071,9 +1071,6 @@ namespace org.kbinani.media {
         /// 前後の無音部分を削除します
         /// </summary>
         public void trimSilence() {
-#if DEBUG
-            Console.WriteLine( "Wave.TrimSilence" );
-#endif
             if ( m_bit_per_sample == 8 ) {
                 if ( m_channel == WaveChannel.Monoral ) {
                     int non_silence_begin = 1;
@@ -1161,10 +1158,6 @@ namespace org.kbinani.media {
                             break;
                         }
                     }
-#if DEBUG
-                    Console.WriteLine( "    non_silence_beign=" + non_silence_begin );
-                    Console.WriteLine( "    non_silence_end=" + non_silence_end );
-#endif
                     int count = non_silence_end - non_silence_begin + 1;
                     short[] buf = new short[count];
                     copyArray( L16, non_silence_begin, buf, 0, count );
@@ -1236,7 +1229,7 @@ namespace org.kbinani.media {
                 String tag = new String( new char[] { (char)buf[0], (char)buf[1], (char)buf[2], (char)buf[3] } );
                 if ( !tag.Equals( "AIFF" ) ) {
 #if DEBUG
-                    Console.WriteLine( "Wave#parseAiffHeader; error; tag=" + tag + " and must be AIFF" );
+                    PortUtil.stderr.println( "Wave#parseAiffHeader; error; tag=" + tag + " and must be AIFF" );
 #endif
                     return false;
                 }
@@ -1244,7 +1237,7 @@ namespace org.kbinani.media {
                 tag = new String( new char[] { (char)buf[0], (char)buf[1], (char)buf[2], (char)buf[3] } );
                 if ( !tag.Equals( "COMM" ) ) {
 #if DEBUG
-                    Console.WriteLine( "Wave#parseAiffHeader; error; tag=" + tag + " and must be COMM" );
+                    PortUtil.stderr.println( "Wave#parseAiffHeader; error; tag=" + tag + " and must be COMM" );
 #endif
                     return false;
                 }
@@ -1261,7 +1254,7 @@ namespace org.kbinani.media {
                 fs.read( buf, 0, 4 ); // number of samples
                 m_total_samples = PortUtil.make_uint32_be( buf );
 #if DEBUG
-                Console.WriteLine( "Wave#parseAiffHeader; m_total_samples=" + m_total_samples );
+                PortUtil.println( "Wave#parseAiffHeader; m_total_samples=" + m_total_samples );
 #endif
                 fs.read( buf, 0, 2 ); // block size
                 m_bit_per_sample = PortUtil.make_uint16_be( buf );
@@ -1269,7 +1262,7 @@ namespace org.kbinani.media {
                 fs.read( buf10, 0, 10 ); // sample rate
                 m_sample_rate = (long)make_double_from_extended( buf10 );
 #if DEBUG
-                Console.WriteLine( "Wave#parseAiffHeader; m_sample_rate=" + m_sample_rate );
+                PortUtil.println( "Wave#parseAiffHeader; m_sample_rate=" + m_sample_rate );
 #endif
                 fs.seek( chunk_loc_comm + (long)chunk_size_comm );
 
@@ -1277,7 +1270,7 @@ namespace org.kbinani.media {
                 tag = new String( new char[] { (char)buf[0], (char)buf[1], (char)buf[2], (char)buf[3] } );
                 if ( !tag.Equals( "SSND" ) ) {
 #if DEBUG
-                    Console.WriteLine( "Wave#parseAiffHeader; error; tag=" + tag + " and must be SSND" );
+                    PortUtil.stderr.println( "Wave#parseAiffHeader; error; tag=" + tag + " and must be SSND" );
 #endif
                     return false;
                 }
@@ -1335,7 +1328,7 @@ namespace org.kbinani.media {
                 fs.read( buf, 0, 4 );
                 long riff_chunk_size = PortUtil.make_uint32_le( buf );
 #if DEBUG
-                System.Diagnostics.Debug.WriteLine( "riff_chunk_size=" + riff_chunk_size );
+                PortUtil.println( "Wave#parseWaveHeader; riff_chunk_size=" + riff_chunk_size );
 #endif
 
                 // check wave header
@@ -1346,7 +1339,7 @@ namespace org.kbinani.media {
                     buf[2] != 0x56 ||
                     buf[3] != 0x45 ) {
 #if DEBUG
-                    System.Diagnostics.Debug.WriteLine( "invalid wave header" );
+                    PortUtil.stderr.println( "Wave#parseWaveHeader; invalid wave header" );
 #endif
                     fs.close();
                     return false;
@@ -1359,7 +1352,7 @@ namespace org.kbinani.media {
                     buf[2] != 0x74 ||
                     buf[3] != 0x20 ) {
 #if DEBUG
-                    System.Diagnostics.Debug.WriteLine( "invalid fmt header" );
+                    PortUtil.stderr.println( "Wave#parseWaveHeader; invalid fmt header" );
 #endif
                     fs.close();
                     return false;
@@ -1370,7 +1363,7 @@ namespace org.kbinani.media {
                 fs.read( buf, 0, 4 );
                 fmt_chunk_bytes = PortUtil.make_uint32_le( buf );
 #if DEBUG
-                System.Diagnostics.Debug.WriteLine( "fmt_chunk_bytes=" + fmt_chunk_bytes );
+                PortUtil.println( "Wave#parseWaveHeader; fmt_chunk_bytes=" + fmt_chunk_bytes );
 #endif
 
                 // get format ID
@@ -1381,7 +1374,7 @@ namespace org.kbinani.media {
                     return false;
                 }
 #if DEBUG
-                System.Diagnostics.Debug.WriteLine( "format_id=" + format_id );
+                PortUtil.println( "Wave#parseWaveHeader; format_id=" + format_id );
 #endif
 
                 // get the number of channel(s)
@@ -1396,14 +1389,14 @@ namespace org.kbinani.media {
                     return false;
                 }
 #if DEBUG
-                System.Diagnostics.Debug.WriteLine( "num_channels=" + num_channels );
+                PortUtil.println( "Wave#parseWaveHeader; num_channels=" + num_channels );
 #endif
 
                 // get sampling rate
                 fs.read( buf, 0, 4 );
                 m_sample_rate = PortUtil.make_uint32_le( buf );
 #if DEBUG
-                System.Diagnostics.Debug.WriteLine( "m_sample_rate=" + m_sample_rate );
+                PortUtil.println( "Wave#parseWaveHeader; m_sample_rate=" + m_sample_rate );
 #endif
 
                 // get bit per sample
@@ -1411,7 +1404,7 @@ namespace org.kbinani.media {
                 fs.read( buf, 0, 2 );
                 m_bit_per_sample = PortUtil.make_uint16_le( buf );
 #if DEBUG
-                System.Diagnostics.Debug.WriteLine( "m_bit_per_sample=" + m_bit_per_sample );
+                PortUtil.println( "Wave#parseWaveHeader; m_bit_per_sample=" + m_bit_per_sample );
 #endif
                 if ( m_bit_per_sample != 0x08 && m_bit_per_sample != 0x10 ) {
                     fs.close();
@@ -1425,7 +1418,7 @@ namespace org.kbinani.media {
                 fs.read( buf, 0, 4 );
                 String tag = new String( new char[] { (char)buf[0], (char)buf[1], (char)buf[2], (char)buf[3] } );
 #if DEBUG
-                System.Diagnostics.Debug.WriteLine( "tag=" + tag );
+                PortUtil.println( "Wave#parseWaveHeader; tag=" + tag );
 #endif
                 while ( tag != "data" ) {
                     fs.read( buf, 0, 4 );
@@ -1434,7 +1427,7 @@ namespace org.kbinani.media {
                     fs.read( buf, 0, 4 );
                     tag = new String( new char[] { (char)buf[0], (char)buf[1], (char)buf[2], (char)buf[3] } );
 #if DEBUG
-                    System.Diagnostics.Debug.WriteLine( "tag=" + tag );
+                    PortUtil.println( "Wave#parseWaveHeader; tag=" + tag );
 #endif
                 }
 
@@ -1443,12 +1436,12 @@ namespace org.kbinani.media {
                 long data_chunk_bytes = PortUtil.make_uint32_le( buf );
                 m_total_samples = (long)(data_chunk_bytes / (num_channels * m_bit_per_sample / 8));
 #if DEBUG
-                System.Diagnostics.Debug.WriteLine( "m_total_samples=" + m_total_samples );
+                PortUtil.println( "Wave#parseWaveHeader; m_total_samples=" + m_total_samples );
 #endif
 
             } catch ( Exception ex ) {
 #if DEBUG
-                System.Diagnostics.Debug.Write( ex.StackTrace );
+                PortUtil.stderr.println( "Wave#parseWaveHeader; ex=" + ex );
 #endif
             }
             return true;

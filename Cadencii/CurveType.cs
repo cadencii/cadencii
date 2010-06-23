@@ -159,6 +159,10 @@ namespace org.kbinani.cadencii {
             m_index = index;
         }
 
+        public Object clone() {
+            return new CurveType( this.m_type, this.m_is_scalar, this.m_is_attach_note, this.m_minimum, this.m_maximum, this.m_default, this.m_index );
+        }
+
         public int compareTo( CurveType item ) {
             if ( m_index == -1 ) {
                 if ( item.m_index == -1 ) {
@@ -224,12 +228,14 @@ namespace org.kbinani.cadencii {
         }
 
         public boolean equals( CurveType other ) {
-            return (m_type == other.m_type && m_is_scalar == other.m_is_scalar);
+            return (m_type.Equals( other.m_type ) && m_is_scalar == other.m_is_scalar);
         }
 
-        public boolean Equals( CurveType other ) {
-            return equals( other );
+#if !JAVA
+        public boolean Equals( CurveType obj ) {
+            return this.equals( obj );
         }
+#endif
     }
 
 #if !JAVA

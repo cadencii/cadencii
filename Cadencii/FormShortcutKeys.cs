@@ -63,7 +63,7 @@ namespace org.kbinani.cadencii {
 #endif
             } catch ( Exception ex ) {
 #if DEBUG
-                Console.WriteLine( "FormShortcutKeys#.ctor; ex=" + ex );
+                PortUtil.stderr.println( "FormShortcutKeys#.ctor; ex=" + ex );
 #endif
             }
 
@@ -359,7 +359,7 @@ namespace org.kbinani.cadencii {
             columnWidthCommand = list.getColumnWidth( 0 );
             columnWidthShortcutKey = list.getColumnWidth( 1 );
 #if DEBUG
-            Console.WriteLine( "FormShortcutKeys_FormClosing; columnWidthCommand,columnWidthShortcutKey=" + columnWidthCommand + "," + columnWidthShortcutKey );
+            PortUtil.println( "FormShortCurKeys#FormShortcutKeys_FormClosing; columnWidthCommand,columnWidthShortcutKey=" + columnWidthCommand + "," + columnWidthShortcutKey );
 #endif
         }
 

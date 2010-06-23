@@ -418,18 +418,10 @@ namespace org.kbinani.cadencii {
             double[] cached_data_l = null;
             double[] cached_data_r = null;
             double processed_samples = 0.0;
-#if DEBUG
-            BufferedWriter log = new BufferedWriter( new FileWriter( PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "StraightRenderingRunner.log" ) ) );
-            log.write( "#startFrame\tstartFrame+wave_length\tnext_wave_start\tchache length" );
-            log.newLine();
-#endif
             for ( int i = 0; i < count; i++ ) {
                 if ( m_abort_required ) {
                     m_rendering = false;
                     m_abort_required = false;
-#if DEBUG
-                    log.close();
-#endif
                     return;
                 }
                 StraightRenderingQueue queue = m_queue.get( i );
@@ -541,10 +533,6 @@ namespace org.kbinani.cadencii {
                     int wave_samples = 0;
                     if ( wr != null ) wave_samples = wr.getTotalSamples();
                     int overlapped = 0;
-#if DEBUG
-                    log.write( queue.startFrame + "\t" + (queue.startFrame + wave_samples) + "\t" + next_wave_start + "\t" + (cached_data_l == null ? 0 : cached_data_l.Length) );
-                    log.newLine();
-#endif
                     if ( next_wave_start <= queue.startFrame + wave_samples ) {
                         // 次のキューの開始位置が、このキューの終了位置よりも早い場合
                         // オーバーラップしているサンプル数
@@ -566,9 +554,6 @@ namespace org.kbinani.cadencii {
                         while ( remain > 0 ) {
                             if ( m_abort_required ) {
                                 m_rendering = false;
-#if DEBUG
-                                log.close();
-#endif
                                 return;
                             }
                             int len = (remain > BUF_LEN) ? BUF_LEN : remain;
@@ -871,8 +856,6 @@ namespace org.kbinani.cadencii {
             }
 #if DEBUG
             PortUtil.println( "StraightRenderingRunner#m_mode_infinite=" + m_mode_infinite );
-            log.newLine();
-            log.close();
 #endif
 
             double[] silence_l0 = new double[sampleRate];

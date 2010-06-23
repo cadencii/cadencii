@@ -857,9 +857,6 @@ namespace org.kbinani.vsq {
         }
 
         public VsqTrack( Vector<MidiEvent> midi_event, String encoding ) {
-#if DEBUG
-            org.kbinani.debug.push_log( "VsqTrack..ctor" );
-#endif
             String track_name = "";
 
             TextStream sw = null;
@@ -890,18 +887,25 @@ namespace org.kbinani.vsq {
                                 }
 
                                 int index_0x0a = buffer.indexOf( 0x0a );
+#if DEBUG
+#if JAVA
+                                PortUtil.println( "VsqTrack#.ctor; index_0x0a=" + index_0x0a );
+#endif
+#endif
                                 while ( index_0x0a >= 0 ) {
-                                    byte[] cpy = new byte[index_0x0a];
+                                    int[] cpy = new int[index_0x0a];
                                     for ( int j = 0; j < index_0x0a; j++ ) {
-                                        cpy[j] = (byte)(0xff & (int)buffer.get( 0 ));
+                                        cpy[j] = 0xff & (int)buffer.get( 0 );
                                         buffer.removeElementAt( 0 );
                                     }
 
                                     String line = PortUtil.getDecodedString( encoding, cpy );
-                                    sw.writeLine( line );
 #if DEBUG
-                                    //org.kbinani.debug.push_log( line );
+#if JAVA
+                                    PortUtil.println( "VsqTrack#.ctor; line=" + line );
 #endif
+#endif
+                                    sw.writeLine( line );
                                     buffer.removeElementAt( 0 );
                                     index_0x0a = buffer.indexOf( 0x0a );
                                 }
@@ -910,9 +914,9 @@ namespace org.kbinani.vsq {
                                     buffer.add( item.data[j + 1] );
                                 }
                                 int c = buffer.size();
-                                byte[] d = new byte[c];
+                                int[] d = new int[c];
                                 for ( int j = 0; j < c; j++ ) {
-                                    d[j] = (byte)(0xff & buffer.get( j ));
+                                    d[j] = 0xff & buffer.get( j );
                                 }
                                 track_name = PortUtil.getDecodedString( encoding, d );
                                 buffer.clear();
@@ -925,15 +929,17 @@ namespace org.kbinani.vsq {
                 // oketa ketaoさんありがとう =>
                 int remain = buffer.size();
                 if ( remain > 0 ) {
-                    byte[] cpy = new byte[remain];
+                    int[] cpy = new int[remain];
                     for ( int j = 0; j < remain; j++ ) {
-                        cpy[j] = (byte)(0xff & buffer.get( j ));
+                        cpy[j] = 0xff & buffer.get( j );
                     }
                     String line = PortUtil.getDecodedString( encoding, cpy );
-                    sw.writeLine( line );
 #if DEBUG
-                    //org.kbinani.debug.push_log( line );
+#if JAVA
+                    PortUtil.println( "VsqTrack#.ctor; line=" + line );
 #endif
+#endif
+                    sw.writeLine( line );
                 }
                 // <=
                 //sw.rewind();

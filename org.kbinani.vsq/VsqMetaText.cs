@@ -1008,8 +1008,8 @@ namespace org.kbinani.vsq {
                     } else if ( last_line.value.StartsWith( "[h#" ) ) {
                         __handle.put( index, new VsqHandle( sr, index, last_line ) );
                     }
-                #endregion
                 }
+                #endregion
 
                 if ( !sr.ready() ) {
                     break;

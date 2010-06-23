@@ -933,6 +933,7 @@ namespace org.kbinani.cadencii {
 #endif
     }
 
+#if !JAVA
 #if DEBUG
     public class DEBUG_GatetimePropertyConverter : ExpandableObjectConverter {
         public override bool CanConvertFrom( ITypeDescriptorContext context, Type sourceType ) {
@@ -1017,6 +1018,7 @@ namespace org.kbinani.cadencii {
             }
         }
     }
+#endif
 #endif
 
 #if !JAVA

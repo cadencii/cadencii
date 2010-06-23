@@ -82,15 +82,9 @@ namespace org.kbinani.apputil {
         /// <param name="directory"></param>
         public static void loadMessages( String directory ) {
             s_messages.clear();
-#if DEBUG
-            Console.WriteLine( "Messaging+LoadMessages()" );
-#endif
             String[] files = PortUtil.listFiles( directory, ".po" );
             for ( int i = 0; i < files.Length; i++ ){
                 String fname = PortUtil.combinePath( directory, files[i] );
-#if DEBUG
-                Console.WriteLine( "    fname=" + fname );
-#endif
                 appendFromFile( fname );
             }
         }

@@ -4146,6 +4146,8 @@ public class FormMain extends BForm {
         if (trackBar == null) {
             trackBar = new BSlider();
             trackBar.setPreferredSize(new Dimension(83, 16));
+            trackBar.setMinimum(17);
+            trackBar.setMaximum(609);
         }
         return trackBar;
     }

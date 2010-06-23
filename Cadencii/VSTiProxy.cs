@@ -74,7 +74,7 @@ namespace org.kbinani.cadencii {
         public static Thread directPlayThread = null;
 
 #if DEBUG
-        delegate int PADDFUNC( int a, int b );
+        //delegate int PADDFUNC( int a, int b );
 #endif
 
         private static RenderingRunner s_rendering_context;
@@ -374,9 +374,6 @@ namespace org.kbinani.cadencii {
                 reader.add( files[i] );
             }
 
-#if DEBUG
-            org.kbinani.debug.push_log( "s_working_renderer=" + s_working_renderer );
-#endif
             VsqFileEx split = (VsqFileEx)vsq.clone();
             split.updateTotalClocks();
             int clock_start = (int)vsq.getClockFromSec( start_sec );
@@ -565,10 +562,6 @@ namespace org.kbinani.cadencii {
                 AquesToneRenderingRunner arg = (AquesToneRenderingRunner)argument;
                 arg.run();
             }
-#endif
-
-#if DEBUG
-            PortUtil.println( "VSTiProxy#renderWithDirectPlay; exit; now=" + now );
 #endif
         }
 #if JAVA
