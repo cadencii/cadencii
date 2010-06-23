@@ -3247,6 +3247,15 @@ namespace org.kbinani.cadencii {
         }
 
         public void setHScrollRange( int draft_length ) {
+#if JAVA
+            draft_length += 240;
+            // 画面上で何クロックが見えてるか？
+            int visible_clocks = (int)((pictPianoRoll.getWidth() - AppManager.keyWidth) * AppManager.getScaleXInv());
+            if( draft_length + visible_clocks > hScroll.getMaximum() ){
+                hScroll.setMaximum( draft_length + visible_clocks );
+            }
+            hScroll.setVisibleAmount( visible_clocks );
+#else
             int _ARROWS = 40; // 両端の矢印の表示幅px（おおよその値）
             draft_length += 240;
             if ( draft_length > hScroll.getMaximum() ) {
@@ -3264,9 +3273,18 @@ namespace org.kbinani.cadencii {
             if ( large_change > 0 ) {
                 hScroll.setVisibleAmount( large_change );
             }
+#endif
         }
 
         public void setVScrollRange( int draft_length ) {
+#if JAVA
+            // 画面上で何ピクセルが見えてるか？
+            int visible_amount = (int)pictPianoRoll.getHeight();
+            if( draft_length + visible_amount > vScroll.getMaximum() ){
+                vScroll.setMaximum( draft_length );
+            }
+            vScroll.setVisibleAmount( visible_amount );
+#else
             int _ARROWS = 40; // 両端の矢印の表示幅px（おおよその値）
             if ( draft_length > vScroll.getMaximum() ) {
                 vScroll.setMaximum( draft_length );
@@ -3280,12 +3298,13 @@ namespace org.kbinani.cadencii {
             if ( large_change > 0 ) {
                 vScroll.setVisibleAmount( large_change );
             }
+#endif
         }
 
         public void refreshScreen() {
 #if JAVA
-            refreshScreenCore( this, null );
-            //repaint();
+            //refreshScreenCore( this, null );
+            this.repaint();
             //trackSelector.repaint();
 #else
             if ( !bgWorkScreen.IsBusy ) {
@@ -5902,9 +5921,10 @@ namespace org.kbinani.cadencii {
             //AppManager.setRenderRequired( AppManager.getSelected(), true );
             if ( AppManager.getVsqFile() != null ) {
                 int draft = AppManager.getVsqFile().TotalClocks;
-                if ( draft > hScroll.getMaximum() ) {
-                    setHScrollRange( draft );
-                }
+#if DEBUG
+                PortUtil.println( "FormMain#setEdited; total_clocks=" + draft );
+#endif
+                setHScrollRange( draft );
             }
             updateDrawObjectList();
 
@@ -13237,7 +13257,11 @@ namespace org.kbinani.cadencii {
 
         public void hScroll_Resize( Object sender, EventArgs e ) {
             if ( getExtendedState() != BForm.ICONIFIED ) {
-                setHScrollRange( AppManager.getVsqFile().TotalClocks );
+                int length = AppManager.getVsqFile().TotalClocks;
+#if DEBUG
+                PortUtil.println( "FormMain#hScroll_Resize; total_clocks=" + length );
+#endif
+                setHScrollRange( length );
             }
         }
 
@@ -16514,7 +16538,7 @@ namespace org.kbinani.cadencii {
         public void refreshScreenCore( Object sender, EventArgs e ) {
             pictPianoRoll.repaint();
             picturePositionIndicator.repaint();
-            trackSelector.repaint();
+            trackSelector.invalidate();
             if ( menuVisualWaveform.isSelected() ) {
                 waveView.repaint();
             }

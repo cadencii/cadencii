@@ -256,10 +256,6 @@ namespace org.kbinani.cadencii {
         /// CTRLキー。MacOSXの場合はMenu
         /// </summary>
         private int m_modifier_key = InputEvent.CTRL_MASK;
-        /// <summary>
-        /// このコントロールが表示を担当しているカーブのリスト
-        /// </summary>
-        private Vector<CurveType> ____viewing_curves____ = new Vector<CurveType>();
         private Color m_generic_line = new Color( 118, 123, 138 );
         /// <summary>
         /// スペースキーが押されているかどうか。
@@ -269,7 +265,7 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// マウスがDownした位置の座標．xは仮想スクリーン座標．yは通常のe.Location.Y
         /// </summary>
-        private Point m_mouse_down_location;
+        private Point m_mouse_down_location = new Point();
         /// <summary>
         /// エンベロープ点を動かすモードで，選択されているInternalID．
         /// </summary>
@@ -3253,7 +3249,8 @@ namespace org.kbinani.cadencii {
             AppManager.debugWriteLine( "TrackSelector_MouseDown" );
 #endif
             VsqFileEx vsq = AppManager.getVsqFile();
-            m_mouse_down_location = new Point( e.X + AppManager.getStartToDrawX(), e.Y );
+            m_mouse_down_location.x = e.X + AppManager.getStartToDrawX();
+            m_mouse_down_location.y = e.Y;
             int clock = AppManager.clockFromXCoord( e.X );
             int selected = AppManager.getSelected();
             m_mouse_moved = false;
@@ -4943,7 +4940,11 @@ namespace org.kbinani.cadencii {
                 m_moving_points.clear();
             }
             m_mouse_down_mode = MouseDownMode.NONE;
+#if JAVA
+            repaint();
+#else
             invalidate();
+#endif
         }
 
         public void TrackSelector_MouseHover( Object sender, BEventArgs e ) {
