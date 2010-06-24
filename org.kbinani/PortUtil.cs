@@ -263,7 +263,7 @@ namespace org.kbinani {
         /// <returns></returns>
         public static double getCurrentTime() {
 #if JAVA
-            return new Date().getTime();
+            return new Date().getTime() / 1000.0;
 #else
             return DateTime.Now.Ticks * 100.0 / 1e9;
 #endif

@@ -101,11 +101,6 @@ namespace org.kbinani.vsq {
             throws IOException, Exception
 #endif
         {
-#if DEBUG
-#if JAVA
-            PortUtil.println( "MidiEvent#read" );
-#endif
-#endif
             long delta_clock = readDeltaClock( stream );
             last_clock.value += delta_clock;
             int first_byte = stream.read();
@@ -178,17 +173,7 @@ namespace org.kbinani.vsq {
                 me.data[0] = meta_event_type;
                 byte[] d = new byte[(int)meta_event_length + 1];
                 stream.read( d, 1, (int)meta_event_length );
-#if DEBUG
-#if JAVA
-                    PortUtil.println( "MidiEvent#read; first_byte is 0xff" );
-#endif
-#endif
                 for ( int i = 1; i < meta_event_length + 1; i++ ) {
-#if DEBUG
-#if JAVA
-                    PortUtil.println( "MidiEvent#read; (0xff&d[" + i + "])=" + new String( new char[]{ (char)(0xff & d[i]) } ) );
-#endif
-#endif
 
                     me.data[i] = 0xff & d[i];
                 }
@@ -236,12 +221,10 @@ namespace org.kbinani.vsq {
                 for ( int i = 1; i < data.Length; i++ ) {
                     stream.writeByte( data[i] );
                 }
-                //stream.write( data, 1, data.Length - 1 );
             } else {
                 for ( int i = 0; i < data.Length; i++ ) {
                     stream.writeByte( data[i] );
                 }
-                //stream.write( data, 0, data.Length );
             }
         }
 

@@ -1444,9 +1444,13 @@ namespace org.kbinani.cadencii {
         public void updateOverview() {
 #endif
             boolean д = true;
+#if DEBUG
+            int count = 0;
+#endif
             for ( ; д; ) {
 #if DEBUG
-                PortUtil.println( "updateOverview" );
+                count++;
+                PortUtil.println( "FormMain#updateOverview; count=" + count );
 #endif
 #if JAVA
                 try{
@@ -1474,7 +1478,11 @@ namespace org.kbinani.cadencii {
 #endif
                     break;
                 }
+#if JAVA
+                repaint();
+#else
                 pictOverview.invalidate();// this.Invoke( new BEventHandler( invalidatePictOverview ) );
+#endif
             }
 #if JAVA
         }
