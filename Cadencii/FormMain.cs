@@ -5941,13 +5941,15 @@ namespace org.kbinani.cadencii {
             AppManager.debugWriteLine( "InitializeInputTextBox" );
 #endif
             hideInputTextBox();
+            
+            AppManager.inputTextBox.keyUpEvent.add( new BKeyEventHandler( this, "m_input_textbox_KeyUp" ) );
+            AppManager.inputTextBox.keyDownEvent.add( new BKeyEventHandler( this, "m_input_textbox_KeyDown" ) );
 #if JAVA
-            // TODO: FormMain#showInputTextBox
+            //TODO: FormMain#showInputTextBox
 #else
-            AppManager.inputTextBox.KeyUp += m_input_textbox_KeyUp;
-            AppManager.inputTextBox.KeyDown += m_input_textbox_KeyDown;
             AppManager.inputTextBox.ImeModeChanged += m_input_textbox_ImeModeChanged;
 #endif
+
             AppManager.inputTextBox.setImeModeOn( m_last_is_imemode_on );
             if ( phonetic_symbol_edit_mode ) {
                 AppManager.inputTextBox.setBufferText( phrase );
@@ -5972,14 +5974,12 @@ namespace org.kbinani.cadencii {
         }
 
         public void hideInputTextBox() {
+            AppManager.inputTextBox.keyUpEvent.remove( new BKeyEventHandler( this, "m_input_textbox_KeyUp" ) );
+            AppManager.inputTextBox.keyDownEvent.remove( new BKeyEventHandler( this, "m_input_textbox_KeyDown" ) );
 #if JAVA
             // TODO: FormMain#hideInputTextBox
-            /*AppManager.inputTextBox.KeyUp -= m_input_textbox_KeyUp;
-            AppManager.inputTextBox.KeyDown -= m_input_textbox_KeyDown;
-            AppManager.inputTextBox.ImeModeChanged -= m_input_textbox_ImeModeChanged;*/
+            /*AppManager.inputTextBox.ImeModeChanged -= m_input_textbox_ImeModeChanged;*/
 #else
-            AppManager.inputTextBox.KeyUp -= m_input_textbox_KeyUp;
-            AppManager.inputTextBox.KeyDown -= m_input_textbox_KeyDown;
             AppManager.inputTextBox.ImeModeChanged -= m_input_textbox_ImeModeChanged;
 #endif
             m_last_symbol_edit_mode = AppManager.inputTextBox.isPhoneticSymbolEditMode();
@@ -6812,6 +6812,9 @@ namespace org.kbinani.cadencii {
 
         #region AppManager.inputTextBox
         public void m_input_textbox_KeyDown( Object sender, BKeyEventArgs e ) {
+#if DEBUG
+            PortUtil.println( "FormMain#m_input_textbox_KeyDown" );
+#endif
 #if JAVA
             int keycode = e.getKeyCode();
             int modifiers = e.getModifiers();
@@ -6920,6 +6923,9 @@ namespace org.kbinani.cadencii {
         }
 
         public void m_input_textbox_KeyUp( Object sender, BKeyEventArgs e ) {
+#if DEBUG
+            PortUtil.println( "FormMain#m_input_textbox_KeyUp" );
+#endif
 #if JAVA
             boolean flip = (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) && ((e.getModifiers() & InputEvent.ALT_MASK) == InputEvent.ALT_MASK);
             boolean hide = (e.getKeyCode() == KeyEvent.VK_ESCAPE);
@@ -6942,10 +6948,10 @@ namespace org.kbinani.cadencii {
         }
 
         public void m_input_textbox_KeyPress( Object sender, BKeyPressEventArgs e ) {
-#if !JAVA
 #if DEBUG
-            PortUtil.println( "FormMain#m_input_textbox_KeyPress; e.KeyChar=" + e.KeyChar );
+            PortUtil.println( "FormMain#m_input_textbox_KeyPress" );
 #endif
+#if !JAVA
             //           Enter                                  Tab
             e.Handled = (e.KeyChar == Convert.ToChar( 13 )) || (e.KeyChar == Convert.ToChar( 09 ));
 #endif

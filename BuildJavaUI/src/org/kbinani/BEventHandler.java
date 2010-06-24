@@ -9,6 +9,7 @@ public class BEventHandler{
             m_delegate = new BDelegate( invoker, method_name, return_type, arg1, arg2 );
         }catch( Exception ex ){
             System.err.println( "BEventHandler#.ctor; ex=" + ex );
+            ex.printStackTrace();
         }
     }
     
@@ -18,6 +19,7 @@ public class BEventHandler{
             m_delegate = new BDelegate( invoker, method_name, return_type, arg1, arg2 );
         }catch( Exception ex ){
             System.err.println( "BEventHandler#.ctor; ex=" + ex );
+            ex.printStackTrace();
         }
     }
 
@@ -33,11 +35,17 @@ public class BEventHandler{
         if( item == null ){
             return false;
         }
-        if( !(item instanceof BEventHandler) ){
+        /*if( !(item instanceof BDelegate) ){
             return false;
+        }*/
+        BEventHandler casted = null;
+        try{
+            casted = (BEventHandler)item;
+            return this.m_delegate.equals( casted.m_delegate );
+        }catch( Exception ex ){
+            System.err.println( "BEventHandler#equals; ex=" + ex );
         }
-        BEventHandler casted = (BEventHandler)item;
-        return m_delegate.equals( casted );
+        return false;
     }
     
     public void invoke( Object... arguments ){
@@ -45,6 +53,7 @@ public class BEventHandler{
             m_delegate.invoke( arguments );
         }catch( Exception ex ){
             System.err.println( "BEventHandler#invoke; ex=" + ex );
+            ex.printStackTrace();
         }
     }
     

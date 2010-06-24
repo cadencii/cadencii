@@ -33,7 +33,7 @@ namespace org.kbinani.windows.forms {
 #else
             :
 #endif
-            base( sender, method_name, typeof( void ), typeof( Object ), typeof( KeyEventArgs ) )
+            base( sender, method_name, typeof( void ), typeof( Object ), typeof( KeyPressEventArgs ) )
 #if JAVA
             ;
 #else
@@ -47,7 +47,7 @@ namespace org.kbinani.windows.forms {
 #else
             :
 #endif
-            base( sender, method_name, typeof( void ), typeof( Object ), typeof( KeyEventArgs ) )
+            base( sender, method_name, typeof( void ), typeof( Object ), typeof( KeyPressEventArgs ) )
 #if JAVA
             ;
 #else
@@ -59,3 +59,4 @@ namespace org.kbinani.windows.forms {
 #if !JAVA
 }
 #endif
+

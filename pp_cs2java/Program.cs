@@ -84,6 +84,7 @@ class pp_cs2java {
         {" FormClosedEventArgs", " BFormClosedEventArgs"},
         {" FormClosingEventArgs", " BFormClosingEventArgs"},
         {" PaintEventArgs", " BPaintEventArgs"},
+        {" KeyPressEventArgs", " BKeyPressEventArgs"},
         {" Type ", " Class "},
     };
 
