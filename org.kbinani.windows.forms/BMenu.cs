@@ -23,17 +23,94 @@ using System.Windows.Forms;
 using org.kbinani.javax.swing;
 
 namespace org.kbinani.windows.forms {
-    // このクラスの中身はBMenuItem.csのコピー
     public class BMenu : System.Windows.Forms.ToolStripMenuItem, MenuElement {
-        // root implementation of javax.swing.AbstractButton
         #region javax.swing.AbstractButton
-        public string getText() {
-            return base.Text;
+        // root implementation of javax.swing.AbstractButton is in BMenuItem.cs
+        private static int getMnemonicFromText( string text ) {
+            if ( text.Length < 2 ) {
+                return 0;
+            }
+
+            char lastc = text[0];
+            int detected = 0;
+            for ( int i = 1; i < text.Length; i++ ) {
+                char c = text[i];
+                if ( lastc == '&' && c != '&' ) {
+                    c = Char.ToUpper( c );
+                    int code = (int)c;
+                    if ( 48 <= code && code <= 57 ) {
+                        detected = code;
+                    } else if ( 65 <= code && code <= 90 ) {
+                        detected = code;
+                    }
+                }
+                lastc = c;
+            }
+            return detected;
         }
 
-        public void setText( string value ) {
-            base.Text = value;
+        private static string setMnemonicFromText( string text, int value ) {
+            if ( value == 0 ) {
+                return text;
+            }
+            if ( (value < 48 || 57 < value) && (value < 65 || 90 < value) ) {
+                return text;
+            }
+
+            if ( text.Length >= 2 ) {
+                char lastc = text[0];
+                int index = -1; // 第index文字目が、ニーモニック
+                for ( int i = 1; i < text.Length; i++ ) {
+                    char c = text[i];
+                    if ( lastc == '&' && c != '&' ) {
+                        index = i;
+                    }
+                    lastc = c;
+                }
+
+                if ( index >= 0 ) {
+                    string newtext = text.Substring( 0, index ) + new string( (char)value, 1 ) + ((index + 1 < text.Length) ? text.Substring( index + 1 ) : "");
+                    return newtext;
+                }
+            }
+            text = text + "(&" + new string( (char)value, 1 ) + ")";
+            return text;
         }
+
+        public int getMnemonic() {
+            return getMnemonicFromText( getText() );
+        }
+
+        public void setMnemonic( int value ) {
+            setText( setMnemonicFromText( getText(), value ) );
+        }
+
+        int m_mnemonic_index = -1;
+        public void setDisplayedMnemonicIndex( int value ) {
+            string text = getText();
+            if ( 0 <= value && value < text.Length ) {
+                m_mnemonic_index = value;
+                setText( text );
+            } else {
+                m_mnemonic_index = -1;
+            }
+        }
+
+        public int getDisplayedMnemonicIndex() {
+            return m_mnemonic_index;
+        }
+
+        public string getText() {
+            return base.Text.Replace( "&", "" );
+        }
+
+        public void setText( string text ) {
+            if ( 0 <= m_mnemonic_index && m_mnemonic_index < text.Length ) {
+                text = text.Substring( 0, m_mnemonic_index ) + "&" + (m_mnemonic_index + 1 < text.Length ? text.Substring( m_mnemonic_index ) : "");
+            }
+            base.Text = text;
+        }
+
 #if ABSTRACT_BUTTON_ENABLE_IS_SELECTED
         public bool isSelected() {
             return base.Checked;
@@ -43,12 +120,19 @@ namespace org.kbinani.windows.forms {
             base.Checked = value;
         }
 #endif
-        public System.Drawing.Image getIcon() {
-            return base.Image;
+
+        public org.kbinani.java.awt.Icon getIcon() {
+            org.kbinani.java.awt.Icon ret = new org.kbinani.java.awt.Icon();
+            ret.image = base.Image;
+            return ret;
         }
 
-        public void setIcon( System.Drawing.Image value ) {
-            base.Image = value;
+        public void setIcon( org.kbinani.java.awt.Icon value ) {
+            if ( value == null ) {
+                base.Image = null;
+            } else {
+                base.Image = value.image;
+            }
         }
         #endregion
 
@@ -305,6 +389,15 @@ namespace org.kbinani.windows.forms {
                 }
             }
             return list.ToArray();
+        }
+        #endregion
+
+        #region event impl MouseEnter
+        // root impl of MouseEnter event is in BButton
+        public BEvent<BEventHandler> mouseEnterEvent = new BEvent<BEventHandler>();
+        protected override void OnMouseEnter( System.EventArgs e ) {
+            base.OnMouseEnter( e );
+            mouseEnterEvent.raise( this, e );
         }
         #endregion
 

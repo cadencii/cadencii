@@ -92,20 +92,68 @@ namespace org.kbinani.windows.forms {
         }
         #endregion
 
-        public string getText() {
-            return base.Text.Replace( "&", "" );
-        }
-
-        public void setText( string text ) {
-            if ( 0 <= m_mnemonic_index && m_mnemonic_index < text.Length ) {
-                text = text.Substring( 0, m_mnemonic_index ) + "&" + (m_mnemonic_index + 1 < text.Length ? text.Substring( m_mnemonic_index ) : "");
-            }
-            base.Text = text;
-        }
-
         // root implementation of javax.swing.AbstractButton
         #region javax.swing.AbstractButton
         // root implementation of javax.swing.AbstractButton is in BMenuItem.cs
+        public static int getMnemonicFromText( string text ) {
+            if ( text.Length < 2 ) {
+                return 0;
+            }
+
+            char lastc = text[0];
+            int detected = 0;
+            for ( int i = 1; i < text.Length; i++ ) {
+                char c = text[i];
+                if ( lastc == '&' && c != '&' ) {
+                    c = Char.ToUpper( c );
+                    int code = (int)c;
+                    if ( 48 <= code && code <= 57 ) {
+                        detected = code;
+                    } else if ( 65 <= code && code <= 90 ) {
+                        detected = code;
+                    }
+                }
+                lastc = c;
+            }
+            return detected;
+        }
+
+        public static string setMnemonicFromText( string text, int value ) {
+            if ( value == 0 ) {
+                return text;
+            }
+            if ( (value < 48 || 57 < value) && (value < 65 || 90 < value) ) {
+                return text;
+            }
+
+            if ( text.Length >= 2 ) {
+                char lastc = text[0];
+                int index = -1; // 第index文字目が、ニーモニック
+                for ( int i = 1; i < text.Length; i++ ) {
+                    char c = text[i];
+                    if ( lastc == '&' && c != '&' ) {
+                        index = i;
+                    }
+                    lastc = c;
+                }
+
+                if ( index >= 0 ) {
+                    string newtext = text.Substring( 0, index ) + new string( (char)value, 1 ) + ((index + 1 < text.Length) ? text.Substring( index + 1 ) : "");
+                    return newtext;
+                }
+            }
+            text = text + "(&" + new string( (char)value, 1 ) + ")";
+            return text;
+        }
+
+        public int getMnemonic() {
+            return getMnemonicFromText( getText() );
+        }
+
+        public void setMnemonic( int value ) {
+            setText( setMnemonicFromText( getText(), value ) );
+        }
+
         int m_mnemonic_index = -1;
         public void setDisplayedMnemonicIndex( int value ) {
             string text = getText();
@@ -119,6 +167,17 @@ namespace org.kbinani.windows.forms {
 
         public int getDisplayedMnemonicIndex() {
             return m_mnemonic_index;
+        }
+
+        public string getText() {
+            return base.Text.Replace( "&", "" );
+        }
+
+        public void setText( string text ) {
+            if ( 0 <= m_mnemonic_index && m_mnemonic_index < text.Length ) {
+                text = text.Substring( 0, m_mnemonic_index ) + "&" + (m_mnemonic_index + 1 < text.Length ? text.Substring( m_mnemonic_index ) : "");
+            }
+            base.Text = text;
         }
 
 #if ABSTRACT_BUTTON_ENABLE_IS_SELECTED
@@ -401,67 +460,6 @@ namespace org.kbinani.windows.forms {
             return list.ToArray();
         }
         #endregion
-
-        #region static helper methods
-        public static int getMnemonicFromText( string text ) {
-            if ( text.Length < 2 ) {
-                return 0;
-            }
-
-            char lastc = text[0];
-            int detected = 0;
-            for ( int i = 1; i < text.Length; i++ ) {
-                char c = text[i];
-                if ( lastc == '&' && c != '&' ) {
-                    c = Char.ToUpper( c );
-                    int code = (int)c;
-                    if ( 48 <= code && code <= 57 ) {
-                        detected = code;
-                    } else if ( 65 <= code && code <= 90 ) {
-                        detected = code;
-                    }
-                }
-                lastc = c;
-            }
-            return detected;
-        }
-
-        public static string setMnemonicFromText( string text, int value ) {
-            if ( value == 0 ) {
-                return text;
-            }
-            if ( (value < 48 || 57 < value) && (value < 65 || 90 < value) ) {
-                return text;
-            }
-
-            if ( text.Length >= 2 ) {
-                char lastc = text[0];
-                int index = -1; // 第index文字目が、ニーモニック
-                for ( int i = 1; i < text.Length; i++ ) {
-                    char c = text[i];
-                    if ( lastc == '&' && c != '&' ) {
-                        index = i;
-                    }
-                    lastc = c;
-                }
-
-                if ( index >= 0 ) {
-                    string newtext = text.Substring( 0, index ) + new string( (char)value, 1 ) + ((index + 1 < text.Length) ? text.Substring( index + 1 ) : "");
-                    return newtext;
-                }
-            }
-            text = text + "(&" + new string( (char)value, 1 ) + ")";
-            return text;
-        }
-        #endregion
-
-        public int getMnemonic() {
-            return getMnemonicFromText( getText() );
-        }
-
-        public void setMnemonic( int value ) {
-            setText( setMnemonicFromText( getText(), value ) );
-        }
 
         public bool isCheckOnClick() {
             return base.CheckOnClick;

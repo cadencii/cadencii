@@ -50,7 +50,7 @@ public class FormMain extends BForm {
     private BMenu menuFileImport = null;
     private BMenu menuFileExport = null;
     private JSeparator toolStripMenuItem101 = null;
-    private BMenuItem menuFileRecent = null;
+    private BMenu menuFileRecent = null;
     private JSeparator toolStripMenuItem102 = null;
     private BMenuItem menuFileQuit = null;
     private BMenuItem menuFileImportVsq = null;
@@ -854,9 +854,9 @@ public class FormMain extends BForm {
      *  
      * @return javax.swing.BMenuItem    
      */
-    private BMenuItem getBMenuItem4() {
+    private BMenu getBMenuItem4() {
         if (menuFileRecent == null) {
-            menuFileRecent = new BMenuItem();
+            menuFileRecent = new BMenu();
             menuFileRecent.setText("Recent Files");
         }
         return menuFileRecent;

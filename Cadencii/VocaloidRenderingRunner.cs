@@ -59,6 +59,9 @@ namespace org.kbinani.cadencii {
 #else
         {
 #endif
+#if DEBUG
+            PortUtil.println( "VocaloidRenderingRunner#.ctor; reader_.size()=" + reader_.size() );
+#endif
             msPresend = ms_presend;
             nrpn = nrpn_;
             tempo = tempo_;

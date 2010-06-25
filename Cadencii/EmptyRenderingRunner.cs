@@ -55,6 +55,9 @@ namespace org.kbinani.cadencii {
 #else
  {
 #endif
+#if DEBUG
+     PortUtil.println( "EmptyRenderingRunner#.ctor; readers.size()=" + readers.size() );
+#endif
             modeInfinite = mode_infinite;
         }
 

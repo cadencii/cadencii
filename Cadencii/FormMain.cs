@@ -1503,7 +1503,7 @@ namespace org.kbinani.cadencii {
             if ( count > 0 ) {
                 for ( int i = 0; i < count; i++ ) {
                     BgmFile item = AppManager.getBgm( i );
-                    BMenuItem menu = new BMenuItem();
+                    BMenu menu = new BMenu();
                     menu.setText( PortUtil.getFileName( item.file ) );
                     menu.setToolTipText( item.file );
 
@@ -16870,7 +16870,7 @@ namespace org.kbinani.cadencii {
             this.menuFileExportMidi = new org.kbinani.windows.forms.BMenuItem();
             this.menuFileExportMusicXml = new org.kbinani.windows.forms.BMenuItem();
             this.toolStripMenuItem11 = new System.Windows.Forms.ToolStripSeparator();
-            this.menuFileRecent = new org.kbinani.windows.forms.BMenuItem();
+            this.menuFileRecent = new org.kbinani.windows.forms.BMenu();
             this.toolStripMenuItem12 = new System.Windows.Forms.ToolStripSeparator();
             this.menuFileQuit = new org.kbinani.windows.forms.BMenuItem();
             this.menuEdit = new org.kbinani.windows.forms.BMenuItem();
@@ -16938,7 +16938,7 @@ namespace org.kbinani.cadencii {
             this.menuTrackRendererStraight = new org.kbinani.windows.forms.BMenuItem();
             this.menuTrackRendererAquesTone = new org.kbinani.windows.forms.BMenuItem();
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
-            this.menuTrackBgm = new org.kbinani.windows.forms.BMenuItem();
+            this.menuTrackBgm = new org.kbinani.windows.forms.BMenu();
             this.menuTrackManager = new org.kbinani.windows.forms.BMenuItem();
             this.menuLyric = new org.kbinani.windows.forms.BMenuItem();
             this.menuLyricExpressionProperty = new org.kbinani.windows.forms.BMenuItem();
@@ -20219,7 +20219,7 @@ namespace org.kbinani.cadencii {
         public BMenuItem cMenuPianoLengthOff;
         public System.Windows.Forms.ToolStripSeparator toolStripMenuItem32;
         public BMenuItem cMenuPianoLengthTriplet;
-        public BMenuItem menuFileRecent;
+        public BMenu menuFileRecent;
         public System.Windows.Forms.ToolTip toolTip;
         public BMenuItem menuEditCut;
         public BMenuItem menuEditCopy;
@@ -20432,7 +20432,7 @@ namespace org.kbinani.cadencii {
         public BButton btnRight1;
         public org.kbinani.apputil.BSplitContainer splitContainer1;
         public System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
-        public BMenuItem menuTrackBgm;
+        public BMenu menuTrackBgm;
         public BMenuItem menuTrackRendererStraight;
         public BMenuItem menuTrackManager;
         public BMenuItem cMenuTrackTabRendererStraight;

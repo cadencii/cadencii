@@ -366,6 +366,7 @@ namespace org.kbinani.cadencii {
                     System.Windows.Forms.Application.DoEvents();
 #endif
                 }
+                s_rendering_context = null;
             }
 
             s_working_renderer = VsqFileEx.getTrackRendererKind( vsq.Track.get( track ) );
@@ -406,6 +407,7 @@ namespace org.kbinani.cadencii {
 #if DEBUG
             PortUtil.println( "VSTiProxy#render; split.Track.get( track ).getEventCount()=" + split.Track.get( track ).getEventCount() );
             PortUtil.println( "VSTiProxy#render; trim_msec=" + trim_msec );
+            PortUtil.println( "VSTiProxy#render; s_working_renderer=" + s_working_renderer );
 #endif
 
             s_rendering_context = null;
@@ -475,18 +477,9 @@ namespace org.kbinani.cadencii {
                                                                     reflect_amp_to_wave );
 #endif
 #endif
-            } else if ( s_working_renderer == RendererKind.NULL ){
-                s_rendering_context = new EmptyRenderingRunner( track,
-                                                                reflect_amp_to_wave,
-                                                                wave_writer,
-                                                                wave_read_offset_seconds,
-                                                                reader,
-                                                                direct_play,
-                                                                trim_msec,
-                                                                total_samples,
-                                                                SAMPLE_RATE,
-                                                                mode_infinite );
-            } else {
+            } else if( s_working_renderer == RendererKind.VOCALOID2 ||
+                       s_working_renderer == RendererKind.VOCALOID1_100 ||
+                       s_working_renderer == RendererKind.VOCALOID1_101 ){
 #if ENABLE_VOCALOID
                 VocaloidDriver driver = null;
                 for ( int i = 0; i < vocaloidDriver.size(); i++ ) {
@@ -511,10 +504,22 @@ namespace org.kbinani.cadencii {
                                                                    reflect_amp_to_wave,
                                                                    SAMPLE_RATE,
                                                                    ms_presend );
-#else
-                return;
 #endif
             }
+
+            if ( s_rendering_context == null ) {
+                s_rendering_context = new EmptyRenderingRunner( track,
+                                                                reflect_amp_to_wave,
+                                                                wave_writer,
+                                                                wave_read_offset_seconds,
+                                                                reader,
+                                                                direct_play,
+                                                                trim_msec,
+                                                                total_samples,
+                                                                SAMPLE_RATE,
+                                                                mode_infinite );
+            }
+
             if ( direct_play ) {
 #if JAVA
                 directPlayThread = new Thread( s_rendering_context );
