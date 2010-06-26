@@ -35,39 +35,28 @@ public class XmlMember{
     
     public static XmlMember[] extractMembers( Class<?> t ){
         XmlSerializable descripter = null;
+        Object tinstance = null;
         try{
-            Object tinstance = t.newInstance();
+            tinstance = t.newInstance();
+        }catch( Exception ex ){
+            tinstance = null;
+        }
+        if( tinstance == null ){
+            // 何らかの理由でインスタンスを作成できない場合。
+            return new XmlMember[0];
+        }
+        try{
             if( tinstance instanceof XmlSerializable ){
                 descripter = (XmlSerializable)tinstance;
             }
         }catch( Exception ex ){
             System.err.println( "XmlMember#extractMembers; ex=" + ex );
+            ex.printStackTrace();
         }
-        //Method elementname_getter = null;
-        //Method isignored_getter = null;
-        /*try{
-            elementname_getter = t.getMethod( "getXmlElementName", String.class );
-            int m = elementname_getter.getModifiers();
-            if( !Modifier.isPublic( m ) || !Modifier.isStatic( m ) ){
-                elementname_getter = null;
-            }
-        }catch( Exception ex ){
-            elementname_getter = null;
-        }
-        try{
-            isignored_getter = t.getMethod( "isXmlIgnored", String.class );
-            int m = isignored_getter.getModifiers();
-            if( !Modifier.isPublic( m ) || !Modifier.isStatic( m ) ){
-                isignored_getter = null;
-            }
-        }catch( Exception ex ){
-            isignored_getter = null;
-        }*/
         Vector<XmlMember> members = new Vector<XmlMember>();
     
         // superクラスのプロパティを取得
         Class<?> superclass = t.getSuperclass();
-//PortUtil.println( "XmlMember#extractMembers; t=" + t );
         if( superclass != null ){
             boolean check_this_superclass = true;
             for( Class<?> cls : ignoreRecursiveMemberExtraction ){
@@ -125,6 +114,7 @@ PortUtil.println( "XmlMember#extractMembers; superclass=" + superclass );
                     ignore = descripter.isXmlIgnored( name );
                 }catch( Exception ex ){
                     System.err.println( "XmlMember#extractMembers; ex=" + ex );
+                    ex.printStackTrace();
                 }
             }
             if( ignore ){
@@ -136,6 +126,7 @@ PortUtil.println( "XmlMember#extractMembers; superclass=" + superclass );
                     xmlname = descripter.getXmlElementName( name );
                 }catch( Exception ex ){
                     System.err.println( "XmlMember#extractMembers; ex=" + ex );
+                    ex.printStackTrace();
                 }
             }
             XmlMember xm = extract( t, name );

@@ -7,12 +7,14 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import org.kbinani.windows.forms.BButton;
+import org.kbinani.windows.forms.BCheckBox;
 import org.kbinani.windows.forms.BForm;
+import org.kbinani.windows.forms.BPanel;
 import org.kbinani.windows.forms.BPictureBox;
 
 //SECTION-END-IMPORT
@@ -21,16 +23,17 @@ public class VersionInfo extends BForm {
 
     private static final long serialVersionUID = 1L;
     private JPanel jPanel = null;
-    private JScrollPane jScrollPane = null;
+    private BPanel panelCredit = null;
     private JPanel jPanel1 = null;
     private JPanel jPanel2 = null;
-    private JButton btnFlip = null;
-    private JButton btnSaveAuthorList = null;
-    private JButton btnOK = null;
+    private BButton btnFlip = null;
+    private BButton btnSaveAuthorList = null;
+    private BButton btnOK = null;
     private JLabel jLabel1 = null;
     private JTextArea lblVstLogo = null;
     private JTextArea lblStraightAcknowledgement = null;
     private BPictureBox pictVstLogo = null;
+    private BCheckBox chkTwitterID = null;
     
     //SECTION-END-FIELD
     /**
@@ -60,10 +63,17 @@ public class VersionInfo extends BForm {
      */
     private JPanel getJPanel() {
         if (jPanel == null) {
+            GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
+            gridBagConstraints11.gridx = 1;
+            gridBagConstraints11.weightx = 0.0D;
+            gridBagConstraints11.insets = new Insets(0, 0, 12, 6);
+            gridBagConstraints11.anchor = GridBagConstraints.EAST;
+            gridBagConstraints11.gridy = 1;
             GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
             gridBagConstraints3.gridx = 2;
-            gridBagConstraints3.weightx = 1.0D;
-            gridBagConstraints3.insets = new Insets(0, 0, 12, 0);
+            gridBagConstraints3.weightx = 0.0D;
+            gridBagConstraints3.insets = new Insets(0, 6, 12, 24);
+            gridBagConstraints3.anchor = GridBagConstraints.EAST;
             gridBagConstraints3.gridy = 1;
             GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
             gridBagConstraints2.gridx = 1;
@@ -72,7 +82,8 @@ public class VersionInfo extends BForm {
             GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
             gridBagConstraints1.gridx = 0;
             gridBagConstraints1.weightx = 1.0D;
-            gridBagConstraints1.insets = new Insets(0, 0, 12, 0);
+            gridBagConstraints1.insets = new Insets(0, 24, 12, 0);
+            gridBagConstraints1.anchor = GridBagConstraints.WEST;
             gridBagConstraints1.gridy = 1;
             GridBagConstraints gridBagConstraints = new GridBagConstraints();
             gridBagConstraints.gridwidth = 3;
@@ -87,22 +98,23 @@ public class VersionInfo extends BForm {
             jPanel.add(getJPanel2(), gridBagConstraints);
             jPanel.add(getBtnFlip(), gridBagConstraints1);
             jPanel.add(getBtnSaveAuthorList(), gridBagConstraints2);
+            jPanel.add(getChkTwitterID(), gridBagConstraints11);
             jPanel.add(getBtnOK(), gridBagConstraints3);
         }
         return jPanel;
     }
 
     /**
-     * This method initializes jScrollPane	
+     * This method initializes panelCredit	
      * 	
      * @return javax.swing.JScrollPane	
      */
-    private JScrollPane getJScrollPane() {
-        if (jScrollPane == null) {
-            jScrollPane = new JScrollPane();
-            jScrollPane.setName("jScrollPane");
+    private BPanel getPanelCredit() {
+        if (panelCredit == null) {
+            panelCredit = new BPanel();
+            panelCredit.setName("jScrollPane");
         }
-        return jScrollPane;
+        return panelCredit;
     }
 
     /**
@@ -161,7 +173,7 @@ public class VersionInfo extends BForm {
         if (jPanel2 == null) {
             jPanel2 = new JPanel();
             jPanel2.setLayout(new CardLayout());
-            jPanel2.add(getJScrollPane(), getJScrollPane().getName());
+            jPanel2.add(getPanelCredit(), getPanelCredit().getName());
             jPanel2.add(getJPanel1(), getJPanel1().getName());
         }
         return jPanel2;
@@ -172,9 +184,9 @@ public class VersionInfo extends BForm {
      * 	
      * @return javax.swing.JButton	
      */
-    private JButton getBtnFlip() {
+    private BButton getBtnFlip() {
         if (btnFlip == null) {
-            btnFlip = new JButton();
+            btnFlip = new BButton();
             btnFlip.setText("Credit");
         }
         return btnFlip;
@@ -185,9 +197,9 @@ public class VersionInfo extends BForm {
      * 	
      * @return javax.swing.JButton	
      */
-    private JButton getBtnSaveAuthorList() {
+    private BButton getBtnSaveAuthorList() {
         if (btnSaveAuthorList == null) {
-            btnSaveAuthorList = new JButton();
+            btnSaveAuthorList = new BButton();
             btnSaveAuthorList.setVisible(false);
         }
         return btnSaveAuthorList;
@@ -198,9 +210,9 @@ public class VersionInfo extends BForm {
      * 	
      * @return javax.swing.JButton	
      */
-    private JButton getBtnOK() {
+    private BButton getBtnOK() {
         if (btnOK == null) {
-            btnOK = new JButton();
+            btnOK = new BButton();
             btnOK.setText("OK");
         }
         return btnOK;
@@ -245,6 +257,20 @@ public class VersionInfo extends BForm {
             pictVstLogo.setLayout(new GridBagLayout());
         }
         return pictVstLogo;
+    }
+
+    /**
+     * This method initializes chkTwitterID	
+     * 	
+     * @return javax.swing.JButton	
+     */
+    private BCheckBox getChkTwitterID() {
+        if (chkTwitterID == null) {
+            chkTwitterID = new BCheckBox();
+            chkTwitterID.setText("TwtrID");
+            chkTwitterID.setName("btnOK1");
+        }
+        return chkTwitterID;
     }
 
     //SECTION-END-METHOD

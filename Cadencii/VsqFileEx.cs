@@ -1248,12 +1248,18 @@ namespace org.kbinani.cadencii {
                 ret = (VsqFileEx)s_vsq_serializer.deserialize( fs );
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "VsqFileEx#readFromXml; ex=" + ex );
+#if JAVA
+                ex.printStackTrace();
+#endif
             } finally {
                 if ( fs != null ) {
                     try {
                         fs.close();
                     } catch ( Exception ex2 ) {
                         PortUtil.stderr.println( "VsqFileEx#readFromXml; ex2=" + ex2 );
+#if JAVA
+                        ex2.printStackTrace();
+#endif
                     }
                 }
             }

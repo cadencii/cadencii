@@ -14,7 +14,7 @@
 #if JAVA
 package org.kbinani.cadencii;
 
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/Cadencii/VersionInfo.java
+//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/VersionInfo.java
 
 import java.awt.*;
 import java.awt.event.*;
@@ -65,7 +65,6 @@ namespace org.kbinani.cadencii {
         private Color m_version_color = new Color( 105, 105, 105 );
         private boolean m_shadow_enablde = false;
         private BTimer timer;
-        private BCheckBox chkTwitterID;
         private boolean m_show_twitter_id = false;
 
         public VersionInfo( String app_name, String version ) {
@@ -98,8 +97,8 @@ namespace org.kbinani.cadencii {
             lblVstLogo.setForeground( m_version_color );
             lblStraightAcknowledgement.setForeground( m_version_color );
 #if DEBUG
-            m_scroll = generateAuthorListB( false );
-            m_scroll_with_id = generateAuthorListB( true );
+            //m_scroll = generateAuthorListB( false );
+            //m_scroll_with_id = generateAuthorListB( true );
 #endif
             chkTwitterID.setVisible( false );
         }
@@ -120,10 +119,14 @@ namespace org.kbinani.cadencii {
             m_button_width_about = Math.Max( 75, (int)(size1.width * 1.3) );
             m_button_width_credit = Math.Max( 75, (int)(size2.width * 1.3) );
             if ( m_credit_mode ) {
+#if !JAVA
                 btnFlip.setPreferredSize( new Dimension( m_button_width_about, btnFlip.getHeight() ) );
+#endif
                 btnFlip.setText( about );
             } else {
+#if !JAVA
                 btnFlip.setPreferredSize( new Dimension( m_button_width_credit, btnFlip.getHeight() ) );
+#endif
                 btnFlip.setText( credit );
             }
             setTitle( about );
@@ -249,12 +252,13 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        private void btnOK_Click( Object sender, BEventArgs e ) {
+        public void btnOK_Click( Object sender, BEventArgs e ) {
             setDialogResult( BDialogResult.OK );
+            timer.stop();
             close();
         }
 
-        private void btnFlip_Click( Object sender, BEventArgs e ) {
+        public void btnFlip_Click( Object sender, BEventArgs e ) {
             m_credit_mode = !m_credit_mode;
             if ( m_credit_mode ) {
                 btnFlip.setPreferredSize( new Dimension( m_button_width_about, btnFlip.getHeight() ) );
@@ -284,16 +288,25 @@ namespace org.kbinani.cadencii {
             invalidate();
         }
 
-        private void timer_Tick( Object sender, BEventArgs e ) {
+        public void timer_Tick( Object sender, BEventArgs e ) {
+#if DEBUG
+            PortUtil.println( "VersionInfo#timer_Tick" );
+#endif
+#if JAVA
+            this.repaint();
+#else
             invalidate();
+#endif
         }
 
-        private void VersionInfo_Paint( Object sender, BPaintEventArgs e ) {
+        public void VersionInfo_Paint( Object sender, BPaintEventArgs e ) {
             try {
 #if JAVA
-                paint( e.Graphics );
+                e.Graphics.setColor( Color.white );
+                e.Graphics.fillRect( 0, 0, this.getWidth(), this.getHeight() );
+                paintCor( e.Graphics );
 #else
-                paint( new Graphics2D( e.Graphics ) );
+                paintCor( new Graphics2D( e.Graphics ) );
 #endif
             } catch ( Exception ex ) {
 #if DEBUG
@@ -302,7 +315,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void paint( Graphics g1 ) {
+        private void paintCor( Graphics g1 ) {
             Graphics2D g = (Graphics2D)g1;
             g.clipRect( 0, 0, getWidth(), m_height );
             g.clearRect( 0, 0, getWidth(), getHeight() );
@@ -314,8 +327,8 @@ namespace org.kbinani.cadencii {
                 m_last_t = times;
                 m_last_speed = speed;
                 BufferedImage image = m_show_twitter_id ? m_scroll_with_id : m_scroll;
-                float dx = (getWidth() - image.getWidth( null )) * 0.5f;
                 if ( image != null ) {
+                    float dx = (getWidth() - image.getWidth( null )) * 0.5f;
                     g.drawImage( image, (int)dx, (int)(90f - m_shift), null );
                     if ( 90f - m_shift + image.getHeight( null ) < 0 ) {
                         m_shift = -m_height * 1.5f;
@@ -370,28 +383,27 @@ namespace org.kbinani.cadencii {
 
         private void registerEventHandlers() {
 #if JAVA
+            this.panelCredit.paintEvent.add( new BPaintEventHandler( this, "VersionInfo_Paint" ) );
 #else
-            this.btnFlip.Click += new System.EventHandler( this.btnFlip_Click );
-            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
-            this.timer.Tick += new System.EventHandler( this.timer_Tick );
             this.Paint += new System.Windows.Forms.PaintEventHandler( this.VersionInfo_Paint );
             this.KeyDown += new System.Windows.Forms.KeyEventHandler( this.VersionInfo_KeyDown );
             this.FontChanged += new System.EventHandler( this.VersionInfo_FontChanged );
 #endif
-            chkTwitterID.checkedChangedEvent.add( new BEventHandler( this, "chkTwitterID_CheckedChanged" ) );
+            this.timer.tickEvent.add( new BEventHandler( this, "timer_Tick" ) );
+            this.btnFlip.clickEvent.add( new BEventHandler( this, "btnFlip_Click" ) );
+            this.btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
+            this.chkTwitterID.checkedChangedEvent.add( new BEventHandler( this, "chkTwitterID_CheckedChanged" ) );
         }
 
         private void setResources() {
             pictVstLogo.setImage( Resources.get_VSTonWht() );
         }
 
+        #region ui implementation
 #if JAVA
-        #region UI Impl for Java
         //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/Cadencii/VersionInfo.java
         //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/Cadencii/VersionInfo.java
-        #endregion
 #else
-        #region UI Impl for C#
         /// <summary>
         /// 必要なデザイナ変数です。
         /// </summary>
@@ -520,8 +532,9 @@ namespace org.kbinani.cadencii {
         private BPictureBox pictVstLogo;
         private BLabel lblVstLogo;
         private BLabel lblStraightAcknowledgement;
-        #endregion
+        private BCheckBox chkTwitterID;
 #endif
+        #endregion
     }
 
 #if !JAVA

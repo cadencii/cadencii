@@ -114,6 +114,12 @@ class pp_cs2java {
     }
 
     static void Main( string[] args ) {
+//string _debug_line = "int second = s.IndexOf( '\"', first_end + 1 );";
+/*WordReplaceContext ct = new WordReplaceContext();
+string _debug_ret = replaceText( _debug_line, ct );
+Console.WriteLine( _debug_line );
+Console.WriteLine( _debug_ret );
+return;*/
         String current_parse = "";
         bool print_usage = false;
         if ( args.Length <= 0 ) {
@@ -364,6 +370,7 @@ class pp_cs2java {
             int line_num = 0;
             bool comment_mode = false;
             String comment_indent = "";
+            WordReplaceContext context = new WordReplaceContext();
             while ( (line = sr.ReadLine()) != null ) {
 #if DEBUG
                 //Console.WriteLine( "pp_cs2java#preprocessCor; line=" + line );
@@ -444,9 +451,7 @@ class pp_cs2java {
 #endif
 
                 if ( print_this_line ) {
-                    for ( int i = 0; i < REPLACE.GetLength( 0 ); i++ ) {
-                        line = line.Replace( REPLACE[i, 0], REPLACE[i, 1] );
-                    }
+                    line = replaceText( line, context );
                     int index_typeof = line.IndexOf( "typeof" );
                     while( index_typeof >= 0 ){
                         int bra = line.IndexOf( "(", index_typeof );
@@ -634,6 +639,142 @@ class pp_cs2java {
             }
         }
         
+        return ret;
+    }
+
+    private static string replaceText_OLD( string line, WordReplaceContext context ){
+        for ( int i = 0; i < REPLACE.GetLength( 0 ); i++ ) {
+            line = line.Replace( REPLACE[i, 0], REPLACE[i, 1] );
+        }
+        return line;
+    }
+
+    private static bool[] checkStringLiteralAndComment( string line, WordReplaceContext context ){
+        // 文字を無視するかどうかを表す
+        bool[] status = new bool[line.Length];
+        for( int i = 0; i < status.Length; i++ ){
+            status[i] = false;
+        }
+
+        // /**/によるコメントアウトを検出
+        bool line_comment_started = false; // //による行コメントが開始されているかどうか
+        for( int i = 0; i < line.Length; i++ ){
+            char c = line[i];
+            if( line_comment_started ){
+                status[i] = true;
+                continue;
+            }
+            if( c == '/' ){
+                if( context.isStringLiteralStarted ){
+                    status[i] = true;
+                }else{
+                    if( context.isCommentStarted ){
+                        if( i > 0 && line[i - 1] == '*' ){
+                            status[i - 1] = true;
+                            status[i] = true;
+                            context.isCommentStarted = false;
+                        }
+                    }else{
+                        if( i > 0 && line[i - 1] == '/' ){
+                            status[i - 1] = true;
+                            status[i] = true;
+                            line_comment_started = true;
+                        }
+                    }
+                }
+            }else if( c == '*' ){
+                if( context.isStringLiteralStarted ){
+                    status[i] = true;
+                }else{
+                    if( !context.isCommentStarted ){
+                        if( i > 0 && line[i - 1] == '/' ){
+                            status[i - 1] = true;
+                            status[i] = true;
+                            context.isCommentStarted = true;
+                        }
+                    }
+                }
+            }else if( c == '"' ){
+                if( context.isStringLiteralStarted ){
+                    if( i > 0 && line[i - 1] == '\\' ){
+                        status[i] = true;
+                    }else{
+                        status[i] = true;
+                        context.isStringLiteralStarted = false;
+                    }
+                }else{
+                    if( context.isCommentStarted ){
+                        status[i] = true;
+                    }else{
+                        status[i] = true;
+                        context.isStringLiteralStarted = true;
+                    }
+                }
+            }else{
+                if( context.isStringLiteralStarted || 
+                    context.isCommentStarted ){
+                    status[i] = true;
+                }
+            }
+        }
+/*string d = "";
+for( int i = 0; i < status.Length; i++ ){
+    d += (status[i] ? "T" : "F");
+}
+Console.WriteLine( line );
+Console.WriteLine( d );*/
+        return status;
+    }
+
+    private static string replaceText( string line, WordReplaceContext context ){
+        // 置換する文字列を検索
+        for ( int i = 0; i < REPLACE.GetLength( 0 ); i++ ) {
+            string search = REPLACE[i, 0];
+            string replace = REPLACE[i, 1];
+            bool changed = true;
+            int start = 0;
+            int indx = line.IndexOf( search, start );
+            while( changed || indx >= 0 ){
+                changed = false;
+                WordReplaceContext ct = (WordReplaceContext)context.Clone();
+                bool[] status = checkStringLiteralAndComment( line, ct );
+//Console.WriteLine( "replaceText_DRAFT; search=" + search + "; indx=" + indx );
+                if( indx >= 0 ){
+                    bool replace_ok = true;
+                    for( int j = indx; j < indx + search.Length; j++ ){
+                        if( status[j] ){
+                            replace_ok = false;
+                            break;
+                        }
+                    }
+//Console.WriteLine( "replaceText_DRAFT; replace_ok=" + replace_ok );
+                    if( replace_ok ){
+                        line = (indx > 0 ? line.Substring( 0, indx ) : "") + replace + line.Substring( indx + search.Length );
+                        start = indx + 1;
+                        changed = true;
+                    }else{
+                        start++;
+                    }
+                }
+                indx = line.IndexOf( search, start );
+            }
+        }
+        checkStringLiteralAndComment( line, context );
+        context.isStringLiteralStarted = false;
+        return line;
+    }
+}
+
+class WordReplaceContext{
+    // "/*"によるコメントの途中かどうか
+    public bool isCommentStarted = false;
+    // 文字列が開始されたかどうか
+    public bool isStringLiteralStarted = false;
+
+    public object Clone(){
+        WordReplaceContext ret = new WordReplaceContext();
+        ret.isCommentStarted = this.isCommentStarted;
+        ret.isStringLiteralStarted = this.isStringLiteralStarted;
         return ret;
     }
 }

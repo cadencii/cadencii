@@ -2,15 +2,17 @@ open( FILE, "<Makefile.include" );
 open( OUT, ">Makefile" );
 
 @special_dependencies = (
-"./org.kbinani.windows.forms/BDialog.java",
-"./Cadencii/FormImportLyric.java",
-"./Cadencii/FormMain.java",
-"./Cadencii/LyricTextBox.java",
-"./Cadencii/TrackSelector.java",
 "./org.kbinani/BDelegate.java",
 "./org.kbinani/BEvent.java",
 "./org.kbinani/BEventArgs.java",
 "./org.kbinani/BEventHandler.java",
+"./org.kbinani.windows.forms/BDialog.java",
+"./org.kbinani.xml/XmlMember.java",
+"./org.kbinani.xml/XmlSerializer.java",
+"./Cadencii/FormImportLyric.java",
+"./Cadencii/FormMain.java",
+"./Cadencii/LyricTextBox.java",
+"./Cadencii/TrackSelector.java",
 "./Cadencii/Preference.java",
 "./Cadencii/FormAskKeySoundGeneration.java",
 "./Cadencii/FormBeatConfig.java",
@@ -36,6 +38,7 @@ open( OUT, ">Makefile" );
 "./Cadencii/FormTrackProperty.java",
 "./Cadencii/FormVibratoConfig.java",
 "./Cadencii/FormWordDictionary.java",
+"./Cadencii/VersionInfo.java",
 );
 
 &getSrcList( "./org.kbinani", "./build/java/org/kbinani/", $src_corlib, $cp_corlib, $dep_corlib );
@@ -60,10 +63,17 @@ foreach my $sdep ( @special_dependencies ){
         $prefix = "org/kbinani";
     }elsif( index( $sdep, "./org.kbinani.windows.forms/" ) == 0 ){
         $prefix = "org/kbinani/windows/forms";
+    }elsif( index( $sdep, "./org.kbinani.xml/" ) == 0 ){
+        $prefix = "org/kbinani/xml";
+    }elsif( index( $sdep, "./org.kbinani.vsq/" ) == 0 ){
+        $prefix = "org/kbinani/vsq";
+    }elsif( index( $sdep, "./org.kbinani.media/" ) == 0 ){
+        $prefix = "org/kbinani/media";
+    }elsif( index( $sdep, "./org.kbinani.apputil/" ) == 0 ){
+        $prefix = "org/kbinani/apputil";
     }
     $dep_special .= "./build/java/$prefix/$fname: ./BuildJavaUI/src/$prefix/$fname $sdep_cs\n";
-    $dep_special .= "\tmono ./pp_cs2java.exe \$(PPCS2JAVA_OPT) -i $sdep_cs -o $sdep\n";
-    $dep_special .= "\t\$(CP) $sdep ./build/java/$prefix/$fname\n\n";
+    $dep_special .= "\tmono ./pp_cs2java.exe \$(PPCS2JAVA_OPT) -i $sdep_cs -o ./build/java/$prefix/$fname\n\n";
 }
 
 while( $line = <FILE> ){
@@ -75,15 +85,6 @@ while( $line = <FILE> ){
     $line =~ s/\@SRC_JCADENCII\@/$src_cadencii/g;
     $line =~ s/\@SRC_JCOMPONENTMODEL\@/$src_componentmodel/g;
     $line =~ s/\@SRC_JXML\@/$src_xml/g;
-
-#    $line =~ s/\@CP_JAPPUTIL\@/$cp_apputil/g;
-#    $line =~ s/\@CP_JCORLIB\@/$cp_corlib/g;
-#    $line =~ s/\@CP_JWINFORMS\@/$cp_winforms/g;
-#    $line =~ s/\@CP_JMEDIA\@/$cp_media/g;
-#    $line =~ s/\@CP_JVSQ\@/$cp_vsq/g;
-#    $line =~ s/\@CP_JCADENCII\@/$cp_cadencii/g;
-#    $line =~ s/\@CP_JCOMPONENTMODEL\@/$cp_componentmodel/g;
-#    $line =~ s/\@CP_JXML\@/$cp_xml/g;
 
     $line =~ s/\@DEP_JAPPUTIL\@/$dep_apputil/g;
     $line =~ s/\@DEP_JCORLIB\@/$dep_corlib/g;
@@ -165,12 +166,7 @@ sub getSrcList{
         my $cname = $src[$i];
         my $s = $cname . ".java";
         $_[3] = $_[3] . "$prefix$s:$dir/$s\n\t\$(CP) $dir/$s $prefix$s\n";
-        #old => $_[4] = $_[4] . "$prefix$cname.java: $dir/$cname.cs\n";
         $_[4] .= "$prefix$cname.java: $dir/$cname.cs\n";
-        $_[4] .= "\tmono ./pp_cs2java.exe \$(PPCS2JAVA_OPT) -i $dir/$cname.cs -o $dir/$cname.java\n";
-        $_[4] .= "\t\$(CP) $dir/$cname.java $prefix$cname.java\n\n";
-#    $dep_special .= "./build/java/$prefix/$fname: ./BuildJavaUI/src/$prefix/$fname $sdep_cs\n";
-#    $dep_special .= "\tmono ./pp_cs2java.exe \$(PPCS2JAVA_OPT) -i $sdep_cs -o $sdep\n";
-#    $dep_special .= "\t\$(CP) $sdep ./build/java/$prefix/$fname\n\n";
+        $_[4] .= "\tmono ./pp_cs2java.exe \$(PPCS2JAVA_OPT) -i $dir/$cname.cs -o $prefix$cname.java\n\n";
     }
 }

@@ -998,7 +998,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private static void handleAutoBackupTimerTick( Object sender, BEventArgs e ) {
+        public static void handleAutoBackupTimerTick( Object sender, BEventArgs e ) {
             if ( !s_file.Equals( "" ) && PortUtil.isFileExists( s_file ) ) {
                 String path = PortUtil.getDirectoryName( s_file );
                 String backup = PortUtil.combinePath( path, "~$" + PortUtil.getFileName( s_file ) );
@@ -1984,6 +1984,9 @@ namespace org.kbinani.cadencii {
                 newvsq = VsqFileEx.readFromXml( file );
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "AppManager#readVsq; ex=" + ex );
+#if JAVA
+                ex.printStackTrace();
+#endif
                 return;
             }
             if ( newvsq == null ) {
