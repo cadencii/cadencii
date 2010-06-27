@@ -88,9 +88,10 @@
 -BListViewのカラム・ヘッダーの扱いがヤバイ
 -BForm, BDialogを継承している全てのクラスで，コンストラクタの先頭にsuper();initialize();を忘れていないかチェック
 -BListViewで，行ごとの選択ができない
--XmlMember; protectedなアイテムをリストアップしないようにする。
--Preference#txtVibratoDepth
--Preference#txtVibratoRate
+-キャッシュディレクトリの名前が*.cadenciiではなく*.xvsq.cadenciiになってしまう
+-pictOverviewの小節の線が、ボタンの上に描かれている
+-pictOverviewの左側のボタンが、中央そろえになってる
+-About Cadenciiダイアログを複数同時に表示できてしまう
 
 -v3.1.5todo------------------------------------------------------------
 -EditOtoIniでflacを読み込めるようにする
