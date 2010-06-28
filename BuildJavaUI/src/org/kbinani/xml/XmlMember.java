@@ -41,17 +41,15 @@ public class XmlMember{
         }catch( Exception ex ){
             tinstance = null;
         }
-        if( tinstance == null ){
-            // 何らかの理由でインスタンスを作成できない場合。
-            return new XmlMember[0];
-        }
-        try{
-            if( tinstance instanceof XmlSerializable ){
-                descripter = (XmlSerializable)tinstance;
+        if( tinstance != null ){
+            try{
+                if( tinstance instanceof XmlSerializable ){
+                    descripter = (XmlSerializable)tinstance;
+                }
+            }catch( Exception ex ){
+                System.err.println( "XmlMember#extractMembers; ex=" + ex );
+                ex.printStackTrace();
             }
-        }catch( Exception ex ){
-            System.err.println( "XmlMember#extractMembers; ex=" + ex );
-            ex.printStackTrace();
         }
         Vector<XmlMember> members = new Vector<XmlMember>();
     
