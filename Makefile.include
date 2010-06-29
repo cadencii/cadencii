@@ -53,6 +53,7 @@ jcadencii: pp_cs2java.exe $(SRC_JCORLIB) $(SRC_JWINFORMS) $(SRC_JAPPUTIL) $(SRC_
 	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .png
 	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .txt
 	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .ico
+	$(MAKE) jpostprocess
 
 ./build/java/Cadencii.mf: ./Cadencii/Cadencii.mf
 	$(CP) ./Cadencii/Cadencii.mf ./build/java/Cadencii.mf
@@ -79,6 +80,8 @@ jcorlib: pp_cs2java.exe $(SRC_JCORLIB) ./BuildJavaUI/src/org/kbinani/math.java .
 ########################################################################
 # post process for BuildJavaUI
 #
+jpostprocess: ./BuildJavaUI/src/org/kbinani/math.java ./BuildJavaUI/src/org/kbinani/PortUtil.java ./BuildJavaUI/src/org/kbinani/InternalStdErr.java ./BuildJavaUI/src/org/kbinani/InternalStdOut.java ./BuildJavaUI/src/org/kbinani/ByRef.java ./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java
+
 ./BuildJavaUI/src/org/kbinani/math.java: ./build/java/org/kbinani/math.java
 	$(CP) ./build/java/org/kbinani/math.java ./BuildJavaUI/src/org/kbinani/math.java
 

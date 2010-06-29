@@ -264,6 +264,7 @@ PortUtil.println( "XmlMember#extractMembers; superclass=" + superclass );
             }
         }catch( Exception ex ){
             System.err.println( "XmlMember#get; ex=" + ex );
+            ex.printStackTrace();
             return null;
         }
     }
@@ -277,6 +278,7 @@ PortUtil.println( "XmlMember#extractMembers; superclass=" + superclass );
             }
         }catch( Exception ex ){
             System.err.println( "XmlMember#set; ex=" + ex );
+            ex.printStackTrace();
         }
     }
 }

@@ -125,6 +125,7 @@ public class XmlSerializer{
     }
 
     private Object parseNode( Class t, Class<?> parent_class, Node node ){
+PortUtil.println( "XmlSerializer#parseNode; t=" + t + "; parent_class=" + parent_class + ", node.getNodeName()=" + node.getNodeName() );
         NodeList childs = node.getChildNodes();
         int numChild = childs.getLength();
         Object obj;
@@ -144,56 +145,53 @@ public class XmlSerializer{
         }else if( t.equals( String.class ) ){
             return str;
         }else if( t.isEnum() ){
-            return Enum.valueOf( t, str );
+PortUtil.println( "XmlSerializer#parseNode; t.isEnum()=true" );
+            Object ret = null;
+            try{
+                ret = Enum.valueOf( t, str );
+            }catch( Exception ex ){
+                PortUtil.stderr.println( "XmlSerializer#parseNode; ex=" + ex );
+                ex.printStackTrace();
+            }
+PortUtil.println( "XmlSerializer#parseNode; ret=" + ret );
+            return ret;
         }else if( t.isArray() || t.equals( Vector.class ) ){
 PortUtil.println( "XmlSerializer#parseNode; t is array or Vector" );
-            // Class tがstatic String getGenericTypeName( String )を実装しているかどうか調べる
-            Method method = null;
-            if( parent_class == null ){
-PortUtil.println( "XmlSerializer#parseNode; parent_class is null; abort" );
-                return null;
-            }
-            for( Method m : parent_class.getDeclaredMethods() ){
-                if( !m.getName().equals( "getGenericTypeName" ) ){
-                    continue;
-                }
-                int modifier = m.getModifiers();
-                if( !Modifier.isStatic( modifier ) || !Modifier.isPublic( modifier ) ){
-                    continue;
-                }
-                if( !m.getReturnType().equals( String.class ) ){
-                    continue;
-                }
-                Class<?>[] args = m.getParameterTypes();
-                if( args.length != 1 ){
-                    continue;
-                }
-                if( !args[0].equals( String.class ) ){
-                    continue;
-                }
-                method = m;
-                break;
-            }
-            if( method == null ){
-PortUtil.println( "XmlSerializer#parseNode; type t does not have method named 'getGenericTypeName'; abort" );
-                return null;
-            }
             try{
-                String content_class_name = (String)method.invoke( null, node.getNodeName() );
-                Class<?> content_class = Class.forName( content_class_name );
-                Vector<Object> vec = new Vector<Object>();
-                String element_name = getCliTypeName( content_class );
-                if( element_name.equals( "" ) ){
-                    element_name = content_class.getSimpleName();
+                //String content_class_name = "";//(String)method.invoke( null, node.getNodeName() );
+                Class<?> content_class = null;// Class.forName( content_class_name );
+                if( t.isArray() ){
+                    // 配列の場合
+                    content_class = t.getComponentType();
                 }
+System.out.println( "XmlSerializer#parseNode; content_class=" + content_class );
+                Vector<Object> vec = new Vector<Object>();
+                //String element_name = getCliTypeName( content_class );
+                /*if( element_name.equals( "" ) ){
+                    element_name = content_class.getSimpleName();
+                }*/
+//System.out.println( "XmlSerializer#parseNode; element_name=" + element_name );
                 for( int i = 0; i < numChild; i++ ){
                     Node c = childs.item( i );
                     if( c.getNodeType() == Node.ELEMENT_NODE ){
                         Element f = (Element)c;
-                        if( !f.getTagName().equals( element_name ) ){
-                            continue;
+                        if( content_class == null )
+                        try{
+                            System.out.println( "XmlSerializer#parseNode; f.getTagName()=" + f.getTagName() );
+                            content_class = getClassForCliTypeName( f.getTagName() );
+                            if( content_class == null ){
+                                content_class = Class.forName( f.getTagName() );
+                            }
+                            System.out.println( "XmlSerializer#parseNode; content_class=" + content_class );
+                        }catch( Exception ex ){
+                            ex.printStackTrace();
                         }
-                        vec.add( parseNode( content_class, t, c ) );
+                        /*if( !f.getTagName().equals( element_name ) ){
+                            continue;
+                        }*/
+                        if( content_class != null ){
+                            vec.add( parseNode( content_class, t, c ) );
+                        }
                     }
                 }
                 if( t.isArray() ){
@@ -273,10 +271,16 @@ PortUtil.println( "XmlSerializer#parseNode; type t does not have method named 'g
             if ( !tryWriteValueType( t, obj, parent ) ){
                 if( t.isArray() || t.equals( Vector.class ) ){
                     Object[] array = null;
-                    if( t.isArray() ){
-                        array = (Object[])obj;
-                    }else if( t.equals( Vector.class ) ){
-                        array = ((Vector)obj).toArray();
+                    if( obj != null ){
+                        if( t.isArray() ){
+                            int length = Array.getLength( obj );
+                            array = new Object[length];
+                            for( int i = 0; i < length; i++ ){
+                                array[i] = Array.get( obj, i );
+                            }
+                        }else if( t.equals( Vector.class ) ){
+                            array = ((Vector)obj).toArray();
+                        }
                     }
                     if( array != null ){
                         for( Object o : array ){
@@ -296,7 +300,8 @@ PortUtil.println( "XmlSerializer#parseNode; type t does not have method named 'g
                 }
             }
         }catch( Exception ex ){
-            System.err.println( "printItemRecurse; ex=" + ex );
+            System.err.println( "XmlSerializer#printItemRecurse; ex=" + ex );
+            ex.printStackTrace();
         }
     }
 
@@ -320,6 +325,29 @@ PortUtil.println( "XmlSerializer#parseNode; type t does not have method named 'g
         }
     }
 
+    private static Class<?> getClassForCliTypeName( String name ){
+        if( name == null ){
+            return null;
+        }
+        if( name.equals( "bool" ) ){
+            return Boolean.TYPE; 
+        }else if( name.equals( "double" ) ){
+            return Double.TYPE;
+        }else if( name.equals( "int" ) ){
+            return Integer.TYPE;
+        }else if( name.equals( "long" ) ){
+            return Long.TYPE;
+        }else if( name.equals( "short" ) ){
+            return Short.TYPE;
+        }else if( name.equals( "float" ) ){
+            return Float.TYPE;
+        }else if( name.equals( "string" ) ){
+            return String.class;
+        }else{
+            return null;
+        }
+    }
+    
     private boolean tryWriteValueType( Class t, Object obj, Element element ){
         if( t.equals( Boolean.class ) || t.equals( Boolean.TYPE ) ){
             element.appendChild( m_document.createTextNode( (Boolean)obj + "" ) );

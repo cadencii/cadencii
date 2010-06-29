@@ -16,6 +16,7 @@ package org.kbinani.vsq;
 
 import java.io.*;
 import org.kbinani.*;
+import org.kbinani.xml.*;
 #else
 using System;
 using org.kbinani;
@@ -28,7 +29,7 @@ namespace org.kbinani.vsq {
     /// VsqHandleに格納される歌詞の情報を扱うクラス。
     /// </summary>
 #if JAVA
-    public class Lyric implements Serializable{
+    public class Lyric implements Serializable, XmlSerializable {
 #else
     [Serializable]
     public class Lyric {
@@ -41,6 +42,39 @@ namespace org.kbinani.vsq {
         public float UnknownFloat;
         private int[] m_consonant_adjustment;
         public boolean PhoneticSymbolProtected;
+
+        /// <summary>
+        /// インターフェースXmlSerializableの実装
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public String getXmlElementName( String name ) {
+            return name;
+        }
+
+        /// <summary>
+        /// インターフェースXmlSerializableの実装
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public boolean isXmlIgnored( String name ) {
+            if ( name == null ) {
+                return true;
+            }
+            if ( name.Equals( "ConsonantAdjustmentList" ) ) {
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// インターフェースXmlSerializableの実装
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public String getGenericTypeName( String name ) {
+            return "";
+        }
 
         /// <summary>
         /// このオブジェクトのインスタンスと、指定されたアイテムが同じかどうかを調べます。
@@ -226,6 +260,9 @@ namespace org.kbinani.vsq {
 #endif
 
         public String[] getPhoneticSymbolList() {
+            if ( this.m_phonetic_symbol == null ) {
+                this.m_phonetic_symbol = new String[0];
+            }
             String[] ret = new String[m_phonetic_symbol.Length];
             for ( int i = 0; i < m_phonetic_symbol.Length; i++ ) {
                 ret[i] = m_phonetic_symbol[i];
