@@ -78,7 +78,6 @@
     <Compile Include="cp932reader.cs" />
     <Compile Include="cp932writer.cs" />
     <Compile Include="fft.cs" />
-    <Compile Include="IEventHandler.cs" />
     <Compile Include="imageio.cs" />
     <Compile Include="InternalStdErr.cs" />
     <Compile Include="InternalStdOut.cs" />

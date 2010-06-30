@@ -34,7 +34,7 @@ namespace org.kbinani.vsq {
     /// VSQファイルの内容を保持するクラス
     /// </summary>
 #if JAVA
-    public class VsqFile implements Cloneable, Serializable{
+    public class VsqFile implements Cloneable, Serializable {
 #else
     [Serializable]
     public class VsqFile : ICloneable {
@@ -108,6 +108,43 @@ namespace org.kbinani.vsq {
             updateTotalClocks();
             updateTimesigInfo();
             reflectPitch( this, 1, pitch );
+        }
+
+        /// <summary>
+        /// このクラスの指定した名前のプロパティが総称型引数を用いる型である場合に，
+        /// その型の限定名を返します．それ以外の場合は空文字を返します．
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static String getGenericTypeName( String name ) {
+            if ( name != null ) {
+                if ( name.Equals( "Track" ) ) {
+                    return "org.kbinani.vsq.VsqTrack";
+                } else if ( name.Equals( "TimesigTable" ) ) {
+                    return "org.kbinani.vsq.TimeSigTableEntry";
+                }
+            }
+            return "";
+        }
+
+        /// <summary>
+        /// このクラスの指定した名前のプロパティを，XMLシリアライズ時に無視するかどうかを表す
+        /// ブール値を返します．デフォルトの実装では戻り値は全てfalseです．
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static boolean isXmlIgnored( String name ) {
+            return false;
+        }
+
+        /// <summary>
+        /// このクラスの指定した名前のプロパティをXMLシリアライズする際に使用する
+        /// 要素名を取得します．
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static String getXmlElementName( String name ) {
+            return name;
         }
 
         public virtual void adjustClockToMatchWith( double tempo ) {

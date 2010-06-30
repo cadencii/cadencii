@@ -32,7 +32,6 @@
     <Compile Include="XmlMember.cs" />
     <Compile Include="XmlPoint.cs" />
     <Compile Include="XmlRectangle.cs" />
-    <Compile Include="XmlSerializable.cs" />
     <Compile Include="XmlSerializer.cs" />
     <Compile Include="XmlSerializeWithDescription.cs" />
     <Compile Include="XmlStaticMemberSerializer.cs" />

@@ -92,26 +92,36 @@ namespace org.kbinani.vsq {
         }
 #endif
 
-#if JAVA
+        /// <summary>
+        /// このクラスの指定した名前のプロパティを，XMLシリアライズ時に無視するかどうかを表す
+        /// ブール値を返します．デフォルトの実装では戻り値は全てfalseです．
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public static boolean isXmlIgnored( String name ){
-            if( name.equals( "IconHandle_index" ) ){
+            if( name.Equals( "IconHandle_index" ) ){
                 return true;
-            }else if( name.equals( "value" ) ){
+            }else if( name.Equals( "value" ) ){
                 return true;
-            }else if( name.equals( "LyricHandle_index" ) ){
+            }else if( name.Equals( "LyricHandle_index" ) ){
                 return true;
-            }else if( name.equals( "NoteHeadHandle_index" ) ){
+            }else if( name.Equals( "NoteHeadHandle_index" ) ){
                 return true;
-            }else if( name.equals( "VibratoHandle_index" ) ){
+            }else if( name.Equals( "VibratoHandle_index" ) ){
                 return true;
             }
             return false;
         }
 
+        /// <summary>
+        /// このクラスの指定した名前のプロパティをXMLシリアライズする際に使用する
+        /// 要素名を取得します．
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public static String getXmlElementName( String name ){
             return name;
         }
-#endif
 
         /// <summary>
         /// このインスタンスの簡易コピーを取得します。
@@ -247,7 +257,7 @@ namespace org.kbinani.vsq {
             }
         }
 
-        public override String ToString() {
+        public String toString() {
             String ret = "{Type=" + type;
             if ( type == VsqIDType.Anote ) {
                 ret += ", Length=" + getLength();
@@ -271,6 +281,13 @@ namespace org.kbinani.vsq {
             ret += "}";
             return ret;
         }
+
+#if !JAVA
+        public override string ToString() {
+            return toString();
+        }
+#endif
+
     }
 
 #if !JAVA

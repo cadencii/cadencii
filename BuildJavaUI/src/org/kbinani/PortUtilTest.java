@@ -36,6 +36,15 @@ public class PortUtilTest {
         System.out.println( "pt2=" + pt2 );
     }
 
+    public static String getGenericTypeName( String name ){
+        if( name != null ){
+            if( name.equals( "vector" ) ){
+                return "org.kbinani.PortUtilTest";
+            }
+        }
+        return "";
+    }
+    
     public String toString(){
         String ret = "{a=" + this.a + ", b=" + this.b + ", vector={";
         if( vector != null ){

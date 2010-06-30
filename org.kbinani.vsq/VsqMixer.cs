@@ -23,6 +23,7 @@ using org.kbinani;
 using org.kbinani.java.util;
 
 namespace org.kbinani.vsq {
+    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -43,6 +44,41 @@ namespace org.kbinani.vsq {
         /// vsqファイルの各トラックのfader, panpot, muteおよびoutputmode値を保持します
         /// </summary>
         public Vector<VsqMixerEntry> Slave = new Vector<VsqMixerEntry>();
+
+        /// <summary>
+        /// このクラスの指定した名前のプロパティが総称型引数を用いる型である場合に，
+        /// その型の限定名を返します．それ以外の場合は空文字を返します．
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static String getGenericTypeName( String name ) {
+            if ( name != null ) {
+                if ( name.Equals( "Slave" ) ) {
+                    return "org.kbinani.vsq.VsqMixerEntry";
+                }
+            }
+            return "";
+        }
+
+        /// <summary>
+        /// このクラスの指定した名前のプロパティを，XMLシリアライズ時に無視するかどうかを表す
+        /// ブール値を返します．デフォルトの実装では戻り値は全てfalseです．
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static boolean isXmlIgnored( String name ) {
+            return false;
+        }
+
+        /// <summary>
+        /// このクラスの指定した名前のプロパティをXMLシリアライズする際に使用する
+        /// 要素名を取得します．
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static String getXmlElementName( String name ) {
+            return name;
+        }
 
         public Object clone() {
             VsqMixer res = new VsqMixer( MasterFeder, MasterPanpot, MasterMute, OutputMode );

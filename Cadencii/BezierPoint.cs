@@ -48,6 +48,12 @@ namespace org.kbinani.cadencii {
 #endif
         int m_id;
 
+        /// <summary>
+        /// このクラスの指定した名前のプロパティを，XMLシリアライズ時に無視するかどうかを表す
+        /// ブール値を返します．デフォルトの実装では戻り値は全てfalseです．
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public static boolean isXmlIgnored( String name ) {
             if ( name.Equals( "ID" ) ) {
                 return true;

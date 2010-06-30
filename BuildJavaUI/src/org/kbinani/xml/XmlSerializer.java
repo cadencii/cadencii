@@ -124,7 +124,104 @@ public class XmlSerializer{
         }
     }
 
-    private Object parseNode( Class t, Class<?> parent_class, Node node ){
+    /**
+     * 指定したクラスの，指定した名前のプロパティが総称型引数を持つ型だった場合，
+     * その型に定義されているstatic String getGenericTypeName(String property_name)メソッド
+     * を呼び出すことによって，その型を表すClass<?>を返します．
+     * 上記のメソッドが定義されていない場合，nullを返します．上記メソッドが定義されている場合であって，
+     * 上記メソッドの戻り値が正確でない場合(正しい限定名でないなど)や呼び出しに失敗した場合も，
+     * nullを返します．
+     * @param cls 検査対象の型
+     * @param property_name 検査対象のプロパティ名
+     * @return 検査対象の型の，指定したプロパティの型の型引数の型を表すClass<?>
+     */
+    public static Class<?> getGenericType( Class<?> cls, String property_name ){
+        for( Method m : cls.getMethods() ){
+            int modifier = m.getModifiers();
+            if( Modifier.isPublic( modifier ) && 
+                Modifier.isStatic( modifier ) &&
+                m.getName().equals( "getGenericTypeName" ) &&
+                m.getReturnType().equals( String.class ) ){
+                Class<?>[] param_types = m.getParameterTypes();
+                if( param_types.length == 1 &&
+                    param_types[0].equals( String.class ) ){
+                    try{
+                        String cls_name = (String)m.invoke( null, property_name );
+                        Class<?> ret = Class.forName( cls_name );
+                        return ret;
+                    }catch( Exception ex ){
+                        System.err.println( "XmlSerializer#getComponentType; ex=" + ex );
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * このクラスの指定した名前のプロパティをXMLシリアライズする際に使用する
+     * 要素名を取得します．
+     * @param cls 検査対象のクラス
+     * @param property_name 検査対象のプロパティ名
+     * @return
+     */
+    public static String getXmlElementName( Class<?> cls, String property_name ){
+        for( Method m : cls.getMethods() ){
+            int modifier = m.getModifiers();
+            if( Modifier.isPublic( modifier ) && 
+                Modifier.isStatic( modifier ) &&
+                m.getName().equals( "getXmlElementName" ) &&
+                m.getReturnType().equals( String.class ) ){
+                Class<?>[] param_types = m.getParameterTypes();
+                if( param_types.length == 1 &&
+                    param_types[0].equals( String.class ) ){
+                    try{
+                        String element_name = (String)m.invoke( null, property_name );
+                        return element_name;
+                    }catch( Exception ex ){
+                        System.err.println( "XmlSerializer#getXmlElementName; ex=" + ex );
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        }
+        return property_name;
+    }
+
+    /**
+     * このクラスの指定した名前のプロパティを，XMLシリアライズ時に無視するかどうかを表す
+     * ブール値を返します．デフォルトの実装では戻り値は全てfalseです．
+     * @param cls 検査対象のクラス
+     * @param property_name 検査対象のプロパティ名
+     * @return
+     */
+    public static boolean isXmlIgnored( Class<?> cls, String property_name ){
+        for( Method m : cls.getMethods() ){
+            int modifier = m.getModifiers();
+            if( Modifier.isPublic( modifier ) && 
+                Modifier.isStatic( modifier ) &&
+                m.getName().equals( "isXmlIgnored" ) &&
+                m.getReturnType().equals( Boolean.TYPE ) ){
+                Class<?>[] param_types = m.getParameterTypes();
+                if( param_types.length == 1 &&
+                    param_types[0].equals( String.class ) ){
+                    try{
+                        Boolean ret = (Boolean)m.invoke( null, property_name );
+                        return ret.booleanValue();
+                    }catch( Exception ex ){
+                        System.err.println( "XmlSerializer#isXmlIgnored; ex=" + ex );
+                        ex.printStackTrace();
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    
+    private Object parseNode( Class t, Class<?> parent_class, Node node )
+        throws Exception
+    {
 PortUtil.println( "XmlSerializer#parseNode; t=" + t + "; parent_class=" + parent_class + ", node.getNodeName()=" + node.getNodeName() );
         NodeList childs = node.getChildNodes();
         int numChild = childs.getLength();
@@ -156,42 +253,30 @@ PortUtil.println( "XmlSerializer#parseNode; t.isEnum()=true" );
 PortUtil.println( "XmlSerializer#parseNode; ret=" + ret );
             return ret;
         }else if( t.isArray() || t.equals( Vector.class ) ){
-PortUtil.println( "XmlSerializer#parseNode; t is array or Vector" );
             try{
-                //String content_class_name = "";//(String)method.invoke( null, node.getNodeName() );
-                Class<?> content_class = null;// Class.forName( content_class_name );
+                Class<?> content_class = null;
                 if( t.isArray() ){
                     // 配列の場合
                     content_class = t.getComponentType();
+                }else{
+                    content_class = getGenericType( parent_class, node.getNodeName() );
                 }
-System.out.println( "XmlSerializer#parseNode; content_class=" + content_class );
+                if( content_class == null ){
+                    throw new Exception(
+                        "XmlSerializer#parseNode; error; " + 
+                        "cannot specify generic type of property named '" + 
+                        node.getNodeName() + "' in class '" + parent_class + "'.\n" +
+                        "please implement 'static String' method named 'getGenericTypeName( String property_name )'" );
+                }
                 Vector<Object> vec = new Vector<Object>();
-                //String element_name = getCliTypeName( content_class );
-                /*if( element_name.equals( "" ) ){
-                    element_name = content_class.getSimpleName();
-                }*/
-//System.out.println( "XmlSerializer#parseNode; element_name=" + element_name );
                 for( int i = 0; i < numChild; i++ ){
                     Node c = childs.item( i );
                     if( c.getNodeType() == Node.ELEMENT_NODE ){
-                        Element f = (Element)c;
-                        if( content_class == null )
-                        try{
-                            System.out.println( "XmlSerializer#parseNode; f.getTagName()=" + f.getTagName() );
-                            content_class = getClassForCliTypeName( f.getTagName() );
-                            if( content_class == null ){
-                                content_class = Class.forName( f.getTagName() );
-                            }
-                            System.out.println( "XmlSerializer#parseNode; content_class=" + content_class );
-                        }catch( Exception ex ){
-                            ex.printStackTrace();
-                        }
-                        /*if( !f.getTagName().equals( element_name ) ){
+                        /*Element f = (Element)c;
+                        if( !f.getTagName().equals( element_name ) ){
                             continue;
                         }*/
-                        if( content_class != null ){
-                            vec.add( parseNode( content_class, t, c ) );
-                        }
+                        vec.add( parseNode( content_class, t, c ) );
                     }
                 }
                 if( t.isArray() ){

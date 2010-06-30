@@ -171,13 +171,11 @@ namespace org.kbinani.xml {
             List<MemberEntry> config_names = new List<MemberEntry>();
             BindingFlags binding = static_mode ? (BindingFlags.Static | BindingFlags.Public) : BindingFlags.Public;
 
-            // XmlSerializableを実装しているかどうか
+            /* // XmlSerializableを実装しているかどうか
             Type itfc = item.GetInterface( typeof( org.kbinani.xml.XmlSerializable ).Name );
             if ( itfc == null ) {
                 return config_names;
-            }
-
-
+            }*/
 
             foreach ( PropertyInfo pi in item.GetProperties( binding ) ) {
                 object[] attrs = pi.GetCustomAttributes( true );

@@ -16,7 +16,6 @@ package org.kbinani.vsq;
 
 import java.io.*;
 import org.kbinani.*;
-import org.kbinani.xml.*;
 #else
 using System;
 using org.kbinani;
@@ -29,7 +28,7 @@ namespace org.kbinani.vsq {
     /// VsqHandleに格納される歌詞の情報を扱うクラス。
     /// </summary>
 #if JAVA
-    public class Lyric implements Serializable, XmlSerializable {
+    public class Lyric implements Serializable {
 #else
     [Serializable]
     public class Lyric {
@@ -44,20 +43,22 @@ namespace org.kbinani.vsq {
         public boolean PhoneticSymbolProtected;
 
         /// <summary>
-        /// インターフェースXmlSerializableの実装
+        /// このクラスの指定した名前のプロパティをXMLシリアライズする際に使用する
+        /// 要素名を取得します．
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public String getXmlElementName( String name ) {
+        public static String getXmlElementName( String name ) {
             return name;
         }
 
         /// <summary>
-        /// インターフェースXmlSerializableの実装
+        /// このクラスの指定した名前のプロパティを，XMLシリアライズ時に無視するかどうかを表す
+        /// ブール値を返します．デフォルトの実装では戻り値は全てfalseです．
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public boolean isXmlIgnored( String name ) {
+        public static boolean isXmlIgnored( String name ) {
             if ( name == null ) {
                 return true;
             }
@@ -68,11 +69,12 @@ namespace org.kbinani.vsq {
         }
 
         /// <summary>
-        /// インターフェースXmlSerializableの実装
+        /// このクラスの指定した名前のプロパティが総称型引数を用いる型である場合に，
+        /// その型の限定名を返します．それ以外の場合は空文字を返します．
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public String getGenericTypeName( String name ) {
+        public static String getGenericTypeName( String name ) {
             return "";
         }
 

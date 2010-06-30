@@ -19,8 +19,6 @@ public class XmlMember{
     private Method m_setter = null;
     private Field m_field = null;
     private Class<?> m_type = null;
-    //private Method m_elementname_getter = null;
-    //private Method m_isignored_getter = null;
     
     private XmlMember(){
     }
@@ -34,23 +32,6 @@ public class XmlMember{
     }
     
     public static XmlMember[] extractMembers( Class<?> t ){
-        XmlSerializable descripter = null;
-        Object tinstance = null;
-        try{
-            tinstance = t.newInstance();
-        }catch( Exception ex ){
-            tinstance = null;
-        }
-        if( tinstance != null ){
-            try{
-                if( tinstance instanceof XmlSerializable ){
-                    descripter = (XmlSerializable)tinstance;
-                }
-            }catch( Exception ex ){
-                System.err.println( "XmlMember#extractMembers; ex=" + ex );
-                ex.printStackTrace();
-            }
-        }
         Vector<XmlMember> members = new Vector<XmlMember>();
     
         // superクラスのプロパティを取得
@@ -106,27 +87,11 @@ PortUtil.println( "XmlMember#extractMembers; superclass=" + superclass );
         }
     
         for( String name : props ){
-            boolean ignore = false;
-            if( descripter != null ){
-                try{
-                    ignore = descripter.isXmlIgnored( name );
-                }catch( Exception ex ){
-                    System.err.println( "XmlMember#extractMembers; ex=" + ex );
-                    ex.printStackTrace();
-                }
-            }
+            boolean ignore = XmlSerializer.isXmlIgnored( t, name );
             if( ignore ){
                 continue;
             }
-            String xmlname = name;
-            if( descripter != null ){
-                try{
-                    xmlname = descripter.getXmlElementName( name );
-                }catch( Exception ex ){
-                    System.err.println( "XmlMember#extractMembers; ex=" + ex );
-                    ex.printStackTrace();
-                }
-            }
+            String xmlname = XmlSerializer.getXmlElementName( t, name );
             XmlMember xm = extract( t, name );
             if( xm != null ){
                 xm.m_name = xmlname;
