@@ -122,6 +122,8 @@ namespace org.kbinani.vsq {
                     return "org.kbinani.vsq.VsqTrack";
                 } else if ( name.Equals( "TimesigTable" ) ) {
                     return "org.kbinani.vsq.TimeSigTableEntry";
+                } else if ( name.Equals( "TempoTable" ) ) {
+                    return "org.kbinani.vsq.TempoTableEntry";
                 }
             }
             return "";

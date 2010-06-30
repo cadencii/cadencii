@@ -1266,8 +1266,8 @@ namespace org.kbinani.cadencii {
                     g.setStroke( getStrokeDefault() );
                 }
             } catch ( Exception ex ) {
-#if JAVA
-                System.err.println( "PictPianoRoll#paint; ex=" + ex );
+#if DEBUG
+                PortUtil.stderr.println( "PictPianoRoll#paint; ex=" + ex );
 #endif
             }
         }

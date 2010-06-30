@@ -351,20 +351,66 @@ PortUtil.println( "XmlSerializer#parseNode; ret=" + ret );
         }
     }
 
+    //TODO: この辺が未だ
+    /**
+     * 指定したクラスが、指定したインターフェースを実装しているかどうかを調べます
+     * @param cls
+     * @param itfc
+     * @return
+     */
+    public static boolean isInterfaceDeclared( Class<?> cls, Class<?> itfc ){
+System.out.println( "XmlSerializer#isInterfaceDeclared; cls=" + cls + "; itfc=" + itfc );
+        Type[] classes = cls.getGenericInterfaces();
+System.out.println( "XmlSerializer#isInterfaceDeclared; classes.length=" + classes.length );
+        for( Type t : classes ){
+System.out.println( "XmlSerializer#isInterfaceDeclared; t=" + t );
+            if( t.equals( itfc ) ){
+                return true;
+            }
+System.out.println( "XmlSerializer#isInterfaceDeclared; (t instanceof Class)=" + (t instanceof Class) );
+            if( t instanceof Class ){
+                Class c = (Class)t;
+                boolean ret = isInterfaceDeclared( c, itfc );
+                if( ret ){
+                    return true;
+                }
+            }
+        }
+        Class<?> super_class = cls.getSuperclass();
+        if( super_class != null ){
+            return isInterfaceDeclared( super_class, itfc );
+        }
+        return false;
+    }
+    
     private void printItemRecurse( Class t, Object obj, Element parent ) throws IllegalAccessException{
         try{
             if ( !tryWriteValueType( t, obj, parent ) ){
-                if( t.isArray() || t.equals( Vector.class ) ){
+                if( t.isArray() || t.equals( Vector.class ) || isInterfaceDeclared( t, Iterable.class ) ){
                     Object[] array = null;
                     if( obj != null ){
                         if( t.isArray() ){
+                            // 配列の場合
                             int length = Array.getLength( obj );
                             array = new Object[length];
                             for( int i = 0; i < length; i++ ){
                                 array[i] = Array.get( obj, i );
                             }
                         }else if( t.equals( Vector.class ) ){
+                            // ベクターの場合
                             array = ((Vector)obj).toArray();
+                        }else{
+                            // 配列でもベクターでもない場合
+                            // Iterableを実装してないか？
+                            Iterator<?> iterator = ((Iterable<?>)obj).iterator();
+                            // Iteratorを取得できた場合
+                            // Vectorにまず格納
+                            Vector<Object> vec = new Vector<Object>();
+                            for( ;iterator.hasNext(); ){
+                                vec.add( iterator.next() );
+                            }
+                            // 配列に変換
+                            array = vec.toArray();
                         }
                     }
                     if( array != null ){

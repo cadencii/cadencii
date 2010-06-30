@@ -1420,7 +1420,7 @@ namespace org.kbinani.media {
 #if DEBUG
                 PortUtil.println( "Wave#parseWaveHeader; tag=" + tag );
 #endif
-                while ( tag != "data" ) {
+                while ( !tag.Equals( "data" ) ) {
                     fs.read( buf, 0, 4 );
                     long size = PortUtil.make_uint32_le( buf );
                     fs.seek( fs.getFilePointer() + size );
