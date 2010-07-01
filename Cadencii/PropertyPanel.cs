@@ -12,6 +12,8 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if ENABLE_PROPERTY
+#if JAVA
+#else
 using System;
 using System.Windows.Forms;
 using org.kbinani.apputil;
@@ -24,15 +26,25 @@ namespace org.kbinani.cadencii {
     using Integer = System.Int32;
 
     public delegate void CommandExecuteRequiredEventHandler( CadenciiCommand command );
+#endif
 
+#if JAVA
+    public class PropertyPanel : BPanel {
+#else
     public class PropertyPanel : UserControl {
+#endif
         public event CommandExecuteRequiredEventHandler CommandExecuteRequired;
         private Vector<SelectedEventEntry> m_items;
         private int m_track;
         private boolean m_editing;
 
         public PropertyPanel() {
+#if JAVA
+            super();
+            initialize();
+#else
             InitializeComponent();
+#endif
             registerEventHandlers();
             setResources();
             m_items = new Vector<SelectedEventEntry>();
@@ -208,6 +220,14 @@ namespace org.kbinani.cadencii {
         }
 
 #if JAVA
+        private BPropertyGrid propertyGrid;
+
+        private void initialize(){
+            if( propertyGrid == null ){
+                propertyGrid = new BPropertyGrid()+
+            }
+            this.add( propertyGrid );
+        }
 #else
         #region UI Impl for C#
         /// <summary> 

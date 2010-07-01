@@ -222,7 +222,6 @@ public class XmlSerializer{
     private Object parseNode( Class t, Class<?> parent_class, Node node )
         throws Exception
     {
-PortUtil.println( "XmlSerializer#parseNode; t=" + t + "; parent_class=" + parent_class + ", node.getNodeName()=" + node.getNodeName() );
         NodeList childs = node.getChildNodes();
         int numChild = childs.getLength();
         Object obj;
@@ -242,17 +241,15 @@ PortUtil.println( "XmlSerializer#parseNode; t=" + t + "; parent_class=" + parent
         }else if( t.equals( String.class ) ){
             return str;
         }else if( t.isEnum() ){
-PortUtil.println( "XmlSerializer#parseNode; t.isEnum()=true" );
             Object ret = null;
-            try{
-                ret = Enum.valueOf( t, str );
-            }catch( Exception ex ){
-                PortUtil.stderr.println( "XmlSerializer#parseNode; ex=" + ex );
-                ex.printStackTrace();
+            for( Object o : t.getEnumConstants() ){
+                if( o.toString().equals( str ) ){
+                    ret = o;
+                    break;
+                }
             }
-PortUtil.println( "XmlSerializer#parseNode; ret=" + ret );
             return ret;
-        }else if( t.isArray() || t.equals( Vector.class ) ){
+        }else if( t.isArray() || t.equals( Vector.class ) || isInterfaceDeclared( t, AbstractList.class ) ){
             try{
                 Class<?> content_class = null;
                 if( t.isArray() ){
@@ -280,6 +277,7 @@ PortUtil.println( "XmlSerializer#parseNode; ret=" + ret );
                     }
                 }
                 if( t.isArray() ){
+                    // 配列の場合
                     int length = vec.size();
                     Object arr = Array.newInstance( content_class, length );
                     for( int i = 0; i < length; i++ ){
@@ -287,7 +285,25 @@ PortUtil.println( "XmlSerializer#parseNode; ret=" + ret );
                     }
                     return arr;
                 }else if( t.equals( Vector.class ) ){
+                    // Vectorの場合
                     return vec;
+                }else{
+                    // AbstractListを実装した型の場合
+                    Object ret = null;
+                    try{
+                        ret = t.newInstance();
+                    }catch( Exception ex ){
+                        throw new Exception( "XmlSerializer#parseNode; error; " +
+                                             "cannot make new instance of '" + t + "'." +
+                                             "in order to enable XML serialization, " + 
+                                             "please enable constructor which has no parameter" );
+                    }
+                    AbstractList abst_list = (AbstractList<?>)ret;
+                    int length = vec.size();
+                    for( int i = 0; i < length; i++ ){
+                        abst_list.add( vec.get( i ) );
+                    }
+                    return ret;
                 }
             }catch( Exception ex ){
                 System.err.println( "XmlSerializer.parseNode; ex=" + ex );
@@ -297,7 +313,10 @@ PortUtil.println( "XmlSerializer#parseNode; ret=" + ret );
         try{
             obj = t.newInstance();
         }catch( Exception ex ){
-            return null;
+            throw new Exception( "XmlSerializer#parseNode; error; " +
+                    "cannot make new instance of '" + t + "'." +
+                    "in order to enable XML serialization, " + 
+                    "please enable constructor which has no parameter" );
         }
         XmlMember[] members = XmlMember.extractMembers( t );
         for( int i = 0; i < numChild; i++ ){
@@ -351,33 +370,31 @@ PortUtil.println( "XmlSerializer#parseNode; ret=" + ret );
         }
     }
 
-    //TODO: この辺が未だ
     /**
      * 指定したクラスが、指定したインターフェースを実装しているかどうかを調べます
-     * @param cls
-     * @param itfc
-     * @return
+     * @param cls 検査対象のクラス
+     * @param itfc 検出するインターフェースのクラス
+     * @return 指定したインターフェースを実装していればtrue，そうでなければfalse
      */
     public static boolean isInterfaceDeclared( Class<?> cls, Class<?> itfc ){
-System.out.println( "XmlSerializer#isInterfaceDeclared; cls=" + cls + "; itfc=" + itfc );
-        Type[] classes = cls.getGenericInterfaces();
-System.out.println( "XmlSerializer#isInterfaceDeclared; classes.length=" + classes.length );
-        for( Type t : classes ){
-System.out.println( "XmlSerializer#isInterfaceDeclared; t=" + t );
-            if( t.equals( itfc ) ){
+        if( cls.equals( itfc ) ){
+            return true;
+        }
+        for( Class<?> c : cls.getInterfaces() ){
+            if( c.equals( itfc ) ){
                 return true;
             }
-System.out.println( "XmlSerializer#isInterfaceDeclared; (t instanceof Class)=" + (t instanceof Class) );
-            if( t instanceof Class ){
-                Class c = (Class)t;
-                boolean ret = isInterfaceDeclared( c, itfc );
-                if( ret ){
-                    return true;
-                }
+            boolean ret = isInterfaceDeclared( c, itfc );
+            if( ret ){
+                return ret;
             }
         }
+        
         Class<?> super_class = cls.getSuperclass();
         if( super_class != null ){
+            if( super_class.equals( itfc ) ){
+                return true;
+            }
             return isInterfaceDeclared( super_class, itfc );
         }
         return false;
@@ -386,7 +403,7 @@ System.out.println( "XmlSerializer#isInterfaceDeclared; (t instanceof Class)=" +
     private void printItemRecurse( Class t, Object obj, Element parent ) throws IllegalAccessException{
         try{
             if ( !tryWriteValueType( t, obj, parent ) ){
-                if( t.isArray() || t.equals( Vector.class ) || isInterfaceDeclared( t, Iterable.class ) ){
+                if( t.isArray() || t.equals( Vector.class ) || isInterfaceDeclared( t, AbstractList.class ) ){
                     Object[] array = null;
                     if( obj != null ){
                         if( t.isArray() ){
@@ -398,16 +415,14 @@ System.out.println( "XmlSerializer#isInterfaceDeclared; (t instanceof Class)=" +
                             }
                         }else if( t.equals( Vector.class ) ){
                             // ベクターの場合
-                            array = ((Vector)obj).toArray();
+                            array = ((Vector<?>)obj).toArray();
                         }else{
-                            // 配列でもベクターでもない場合
-                            // Iterableを実装してないか？
-                            Iterator<?> iterator = ((Iterable<?>)obj).iterator();
-                            // Iteratorを取得できた場合
-                            // Vectorにまず格納
+                            // AbstractListを実装している型である場合
+                            AbstractList<?> abst_list = (AbstractList<?>)obj;
                             Vector<Object> vec = new Vector<Object>();
-                            for( ;iterator.hasNext(); ){
-                                vec.add( iterator.next() );
+                            int size = abst_list.size();
+                            for( int i = 0; i < size; i++ ){
+                                vec.add( abst_list.get( i ) );
                             }
                             // 配列に変換
                             array = vec.toArray();
@@ -436,7 +451,13 @@ System.out.println( "XmlSerializer#isInterfaceDeclared; (t instanceof Class)=" +
         }
     }
 
-    private static String getCliTypeName( Class t ){
+    /**
+     * 指定した型の，対応するCLI型の(C#での)名称を取得します．
+     * 該当するものがなければ空文字を返します．
+     * @param t
+     * @return
+     */
+    public static String getCliTypeName( Class<?> t ){
         if( t.equals( Boolean.class ) || t.equals( Boolean.TYPE ) ){
             return "bool";
         }else if( t.equals( Double.class ) || t.equals( Double.TYPE ) ){

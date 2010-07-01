@@ -91,7 +91,9 @@
 -pictOverviewの小節の線が、ボタンの上に描かれている
 -pictOverviewの左側のボタンが、中央そろえになってる
 -About Cadenciiダイアログを複数同時に表示できてしまう
--XmlSerializerを使ったVsqFileのシリアライズ・テスト
+-PropertyGridを実装
+-ファイルダイアログの拡張子
+-EditorConfigのシリアライズ，デシリアライズはうまくいってるか
 
 -v3.1.5todo------------------------------------------------------------
 -EditOtoIniでflacを読み込めるようにする

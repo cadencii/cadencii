@@ -55,8 +55,14 @@ namespace org.kbinani.cadencii {
         /// <param name="name"></param>
         /// <returns></returns>
         public static boolean isXmlIgnored( String name ) {
-            if ( name.Equals( "ID" ) ) {
-                return true;
+            if ( name != null ) {
+                if ( name.Equals( "ID" ) ) {
+                    return true;
+                } else if ( name.Equals( "controlLeft" ) ) {
+                    return true;
+                } else if ( name.Equals( "controlRight" ) ) {
+                    return true;
+                }
             }
             return false;
         }
@@ -83,8 +89,13 @@ namespace org.kbinani.cadencii {
                 "m_type_right=" + m_type_right + "\n";
         }
 
+#if JAVA
+        public BezierPoint(){
+        }
+#else
         private BezierPoint() {
         }
+#endif
 
 #if JAVA
         public BezierPoint( PointD p1 ){

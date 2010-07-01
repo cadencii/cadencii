@@ -45,7 +45,6 @@ public class XmlMember{
                 }
             }
             if( check_this_superclass ){
-PortUtil.println( "XmlMember#extractMembers; superclass=" + superclass );
                 XmlMember[] super_members = extractMembers( superclass );
                 for( XmlMember xm : super_members ){
                     members.add( xm );

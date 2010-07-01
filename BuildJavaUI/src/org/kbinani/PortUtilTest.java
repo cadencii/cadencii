@@ -4,36 +4,16 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
-import java.util.Vector;
+import java.util.*;
 import org.kbinani.xml.XmlSerializer;
 
-public class PortUtilTest {
+public class PortUtilTest extends Vector<Integer> {
     public int a = 0;
     public Integer b = 0;
     public Vector<PortUtilTest> vector = null;
         
-    public static void main( String[] args ) throws Exception{
-        PortUtilTest pt  = new PortUtilTest();
-        pt.a = 10;
-        pt.vector = new Vector<PortUtilTest>();
-        pt.vector.add( new PortUtilTest() );
-        
-        System.out.println( "pt=" + pt );
-        XmlSerializer xs = new XmlSerializer( PortUtilTest.class );
-        FileOutputStream fos = new FileOutputStream( "foo.xml" );
-        xs.serialize( fos, pt );
-        fos.close();
-
-        BufferedReader bsr = new BufferedReader( new InputStreamReader( new FileInputStream( "foo.xml" ) ) );
-        while( bsr.ready() ){
-            System.out.println( bsr.readLine() );
-        }
-        bsr.close();
-        
-        FileInputStream fis = new FileInputStream( "foo.xml" );
-        PortUtilTest pt2 = (PortUtilTest)xs.deserialize( fis );
-        fis.close();
-        System.out.println( "pt2=" + pt2 );
+    public static void main( String[] args ){
+        System.out.println( XmlSerializer.isInterfaceDeclared( PortUtilTest.class, AbstractList.class ) );
     }
 
     public static String getGenericTypeName( String name ){

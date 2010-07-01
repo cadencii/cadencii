@@ -41,6 +41,21 @@ namespace org.kbinani.cadencii {
         const double EPSILON = 1e-9;
 
         /// <summary>
+        /// このクラスの指定した名前のプロパティが総称型引数を用いる型である場合に，
+        /// その型の限定名を返します．それ以外の場合は空文字を返します．
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static String getGenericTypeName( String name ) {
+            if ( name != null ) {
+                if ( name.Equals( "points" ) ) {
+                    return "org.kbinani.cadencii.BezierPoint";
+                }
+            }
+            return "";
+        }
+
+        /// <summary>
         /// このベジエ曲線の開始位置を取得します。データ点が1つも無い場合はdouble.NaNを返します
         /// </summary>
         public double getStart() {

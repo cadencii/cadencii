@@ -82,6 +82,20 @@ namespace org.kbinani.cadencii {
             PitchBendSensitivity = new Vector<BezierChain>();
         }
 
+        /// <summary>
+        /// このクラスの指定した名前のプロパティが総称型引数を用いる型である場合に，
+        /// その型の限定名を返します．それ以外の場合は空文字を返します．
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static String getGenericTypeName( String name ) {
+            if ( name != null ) {
+                // 手抜き実装
+                return "org.kbinani.cadencii.BezierChain";
+            }
+            return "";
+        }
+
         public BezierChain getBezierChain( CurveType curve_type, int chain_id ) {
             Vector<BezierChain> list = this.get( curve_type );
             int count = list.size();
