@@ -1,0 +1,22 @@
+﻿Jar Bundlerの使い方メモ
+(1) Build Informationタブ
+	*Options for Main
+        "Main Class" -> Chooseボタンを押してCadencii.jarを選択
+	    "Arguments to Main" -> "-resources ./"と入力
+	*Options
+	    アイコンを選択
+		ほかは特に変更なし
+(2) Classpath and Files
+    *Additional Files and Resources
+	    Addボタンを押して、リソースファイル（.pngなど）を選択
+(3) Properties
+    *Basic Properties
+	    下の方のSet Working Directory to Inside Applicatio Packageのチェックを入れる
+	*Additional Properties
+	    Addボタンを押してKeyにcom.apple.macos.useScreenMenuBar、Valueにtrueと入力
+
+以上の設定が終わったら、Createボタンを押して適当なディレクトリに出力する
+アイコンファイル(*.icns)の作成は、Img2icnsを使った。
+
+Windows用のアイコンファイルをPNGに変えるには、OSXについているプレビューで*.icoを
+開き、別名保存でPNGに保存する。

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Utility.cs
  * Copyright (C) 2010 kbinani
  *
@@ -1224,7 +1224,27 @@ namespace org.kbinani.cadencii{
         /// </summary>
         public static String getApplicationDataPath() {
 #if JAVA
-            String dir = PortUtil.combinePath( System.getenv( "APPDATA" ), "Boare" );
+            String osname =  System.getProperty( "os.name" );
+            String appdata = "./";
+            if ( osname.indexOf( "Windows" ) >= 0 ) {
+			    appdata = System.getenv( "LOCALAPPDATA" );
+                if ( appdata == null ) {
+                    appdata = System.getenv( "APPDATA" );
+                    if ( appdata != null ) {
+    					String roaming = "Roaming";
+                        int indx = appdata.indexOf( roaming );
+                        if( indx > 0 ){
+                            appdata = appdata.substring( 0, indx ) + "Local" + appdata.substring( indx + roaming.length() );
+                        }
+                    }
+				}
+			} else {
+                String home = System.getenv( "HOME" );
+                if ( name != null ) {
+                    appdata = PortUtil.combinePath( PortUtil.combinePath( home, "Library" ), "Preference" );
+				}
+			}
+            String dir = PortUtil.combinePath( appdata, "Boare" );
 #else
             String dir = PortUtil.combinePath( Environment.GetFolderPath( Environment.SpecialFolder.LocalApplicationData ), "Boare" );
 #endif

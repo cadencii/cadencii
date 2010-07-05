@@ -18,7 +18,6 @@ using System;
 using System.Windows.Forms;
 
 namespace org.kbinani.windows.forms {
-#endif
 
     public class BPropertyGrid : PropertyGrid  {
         public object[] getSelectedObjects() {
@@ -30,6 +29,5 @@ namespace org.kbinani.windows.forms {
         }
     }
 
-#if !JAVA
 }
 #endif

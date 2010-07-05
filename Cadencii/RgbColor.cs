@@ -32,6 +32,13 @@ namespace org.kbinani.cadencii {
             B = b;
         }
 
+#if JAVA
+        public RgbColor() {
+            // XmlSrializeのために必要
+            this( 0, 0, 0 );
+        }
+#endif
+
         public Color getColor() {
             return new Color( R, G, B );
         }

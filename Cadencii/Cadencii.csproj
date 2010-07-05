@@ -336,6 +336,7 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="UtauFreq.cs" />
+    <Compile Include="ValuePairOfStringBoolean.cs" />
     <Compile Include="VersionInfo.cs">
       <SubType>Form</SubType>
     </Compile>

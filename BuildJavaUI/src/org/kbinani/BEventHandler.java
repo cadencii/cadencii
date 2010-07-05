@@ -35,9 +35,6 @@ public class BEventHandler{
         if( item == null ){
             return false;
         }
-        /*if( !(item instanceof BDelegate) ){
-            return false;
-        }*/
         BEventHandler casted = null;
         try{
             casted = (BEventHandler)item;

@@ -1,4 +1,4 @@
-package org.kbinani.windows.forms;
+ï»¿package org.kbinani.windows.forms;
 
 import java.awt.Dimension;
 import java.awt.event.ComponentEvent;
@@ -147,7 +147,7 @@ public class BDialog extends JDialog
     }
     
     public void componentHidden(ComponentEvent e) {
-        // TODO ©“®¶¬‚³‚ê‚½ƒƒ\ƒbƒhEƒXƒ^ƒu
+        // TODO è‡ªå‹•ç”Ÿæˆã•ã‚ŒãŸãƒ¡ã‚½ãƒƒãƒ‰ãƒ»ã‚¹ã‚¿ãƒ–
         
     }
 
@@ -168,7 +168,7 @@ public class BDialog extends JDialog
     }
 
     public void componentShown(ComponentEvent e) {
-        // TODO ©“®¶¬‚³‚ê‚½ƒƒ\ƒbƒhEƒXƒ^ƒu
+        // TODO è‡ªå‹•ç”Ÿæˆã•ã‚ŒãŸãƒ¡ã‚½ãƒƒãƒ‰ãƒ»ã‚¹ã‚¿ãƒ–
         
     }
 }

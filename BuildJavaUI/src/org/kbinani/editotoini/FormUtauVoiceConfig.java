@@ -1,4 +1,4 @@
-package org.kbinani.editotoini;
+﻿package org.kbinani.editotoini;
 
 //SECTION-BEGIN-IMPORT
 import java.awt.BorderLayout;

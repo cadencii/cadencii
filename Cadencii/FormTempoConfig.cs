@@ -99,25 +99,19 @@ namespace org.kbinani.cadencii {
         }
 
         private void registerEventHandlers() {
-#if JAVA
-#else
-            this.btnOK.Click += new System.EventHandler( this.btnOK_Click );
-            btnCancel.Click += new EventHandler( btnCancel_Click );
-#endif
+            this.btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
+            this.btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
         }
 
         private void setResources() {
         }
         #endregion
 
-        #region event handlers
+        #region ui implementation
 #if JAVA
-        #region UI Impl for Java
         //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/Cadencii/FormTempoConfig.java
         //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/Cadencii/FormTempoConfig.java
-        #endregion
 #else
-        #region UI Impl for C#
         /// <summary>
         /// 必要なデザイナ変数です。
         /// </summary>
@@ -332,7 +326,6 @@ namespace org.kbinani.cadencii {
         private NumericUpDownEx numBeat;
         private BLabel lblTempoRange;
         private NumericUpDownEx numTempo;
-        #endregion
 #endif
         #endregion
 

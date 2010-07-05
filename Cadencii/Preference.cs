@@ -1496,10 +1496,17 @@ namespace org.kbinani.cadencii {
         }
 
         private void UpdateFonts( String font_name ) {
+            if ( font_name == null ) {
+                return;
+            }
             if ( font_name.Equals( "" ) ) {
                 return;
             }
-            Font font = new Font( font_name, java.awt.Font.PLAIN, (int)getFont().getSize() );
+            Font f = this.getFont();
+            if ( f == null ) {
+                return;
+            }
+            Font font = new Font( font_name, java.awt.Font.PLAIN, (int)f.getSize() );
             Util.applyFontRecurse( this, font );
         }
 

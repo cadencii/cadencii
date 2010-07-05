@@ -35,6 +35,15 @@ namespace org.kbinani.windows.forms {
         }
         #endregion
 
+        #region event impl MouseDoubleClick
+        // root impl of MouseDoubleClick is in BButton
+        public BEvent<BMouseEventHandler> mouseDoubleClickEvent = new BEvent<BMouseEventHandler>();
+        protected override void OnMouseDoubleClick( System.Windows.Forms.MouseEventArgs e ) {
+            base.OnMouseDoubleClick( e );
+            mouseDoubleClickEvent.raise( this, e );
+        }
+        #endregion
+
         #region event impl MouseUp
         // root impl of MouseUp event is in BButton
         public BEvent<BMouseEventHandler> mouseUpEvent = new BEvent<BMouseEventHandler>();

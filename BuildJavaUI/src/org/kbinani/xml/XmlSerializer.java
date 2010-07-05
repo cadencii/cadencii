@@ -145,12 +145,13 @@ public class XmlSerializer{
                 Class<?>[] param_types = m.getParameterTypes();
                 if( param_types.length == 1 &&
                     param_types[0].equals( String.class ) ){
+                    String cls_name = null;
                     try{
-                        String cls_name = (String)m.invoke( null, property_name );
+                        cls_name = (String)m.invoke( null, property_name );
                         Class<?> ret = Class.forName( cls_name );
                         return ret;
                     }catch( Exception ex ){
-                        System.err.println( "XmlSerializer#getComponentType; ex=" + ex );
+                        System.err.println( "XmlSerializer#getComponentType; ex=" + ex + "; cls_name=" + cls_name + "; property_name=" + property_name );
                         ex.printStackTrace();
                     }
                 }

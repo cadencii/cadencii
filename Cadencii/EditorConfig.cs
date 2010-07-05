@@ -473,6 +473,27 @@ namespace org.kbinani.cadencii {
         public static BEvent<BEventHandler> quantizeModeChangedEvent = new BEvent<BEventHandler>();
 
         /// <summary>
+        /// このクラスの指定した名前のプロパティが総称型引数を用いる型である場合に，
+        /// その型の限定名を返します．それ以外の場合は空文字を返します．
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static String getGenericTypeName( String name ) {
+            if ( name != null ) {
+                if ( name.Equals( "RecentFiles" ) ) {
+                    return "java.lang.String";
+                } else if ( name.Equals( "UserDictionaries" ) ) {
+                    return "java.lang.String";
+                } else if ( name.Equals( "UtauSingers" ) ) {
+                    return "org.kbinani.vsq.SingerConfig";
+                } else if ( name.Equals( "ShortcutKeys" ) ) {
+                    return "org.kbinani.cadencii.ValuePairOfStringArrayOfKeys";
+                }
+            }
+            return "";
+        }
+
+        /// <summary>
         /// 自動ビブラートを作成します
         /// </summary>
         /// <param name="type"></param>
@@ -586,6 +607,10 @@ namespace org.kbinani.cadencii {
                 fs = new FileInputStream( file );
                 ret = (EditorConfig)s_serializer.deserialize( fs );
             } catch ( Exception ex ) {
+#if JAVA
+                PortUtil.stderr.println( "EditorConfig#deserialize; ex=" + ex );
+                ex.printStackTrace();
+#endif
             } finally {
                 if ( fs != null ) {
                     try {

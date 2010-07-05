@@ -127,9 +127,10 @@ public class BPanel extends JPanel
     public BEvent<BEventHandler> mouseLeaveEvent = new BEvent<BEventHandler>();
     public void mouseClicked( MouseEvent e ){
         try{
-            mouseClickEvent.raise( this, BMouseEventArgs.fromMouseEvent( e ) );
             if( e.getClickCount() >= 2 ){
                 mouseDoubleClickEvent.raise( this, BMouseEventArgs.fromMouseEvent( e ) );
+            }else{
+                mouseClickEvent.raise( this, BMouseEventArgs.fromMouseEvent( e ) );
             }
         }catch( Exception ex ){
             System.err.println( "BButton#mouseClicked; ex=" + ex );

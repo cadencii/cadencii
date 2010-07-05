@@ -1,4 +1,4 @@
-package org.kbinani.cadencii;
+﻿package org.kbinani.cadencii;
 
 //SECTION-BEGIN-IMPORT
 import java.awt.Dimension;
@@ -50,7 +50,7 @@ public class FormTempoConfig extends BForm {
      * 
      */
     private void initialize() {
-        this.setSize(new Dimension(352, 213));
+        this.setSize(new Dimension(371, 213));
         this.setTitle("Global Tempo");
         this.setContentPane(getJPanel());
     		
@@ -99,7 +99,7 @@ public class FormTempoConfig extends BForm {
     private BGroupBox getGroupPosition() {
         if (groupPosition == null) {
             GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
-            gridBagConstraints5.fill = GridBagConstraints.NONE;
+            gridBagConstraints5.fill = GridBagConstraints.HORIZONTAL;
             gridBagConstraints5.gridy = 2;
             gridBagConstraints5.weightx = 1.0;
             gridBagConstraints5.anchor = GridBagConstraints.WEST;
@@ -113,7 +113,7 @@ public class FormTempoConfig extends BForm {
             lblClock = new BLabel();
             lblClock.setText("Clock");
             GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
-            gridBagConstraints3.fill = GridBagConstraints.NONE;
+            gridBagConstraints3.fill = GridBagConstraints.HORIZONTAL;
             gridBagConstraints3.gridy = 1;
             gridBagConstraints3.weightx = 1.0;
             gridBagConstraints3.anchor = GridBagConstraints.WEST;
@@ -127,7 +127,7 @@ public class FormTempoConfig extends BForm {
             lblBeat = new BLabel();
             lblBeat.setText("Beat");
             GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-            gridBagConstraints1.fill = GridBagConstraints.NONE;
+            gridBagConstraints1.fill = GridBagConstraints.HORIZONTAL;
             gridBagConstraints1.gridy = 0;
             gridBagConstraints1.weightx = 1.0;
             gridBagConstraints1.anchor = GridBagConstraints.WEST;
@@ -211,14 +211,14 @@ public class FormTempoConfig extends BForm {
             gridBagConstraints11.insets = new Insets(8, 12, 4, 0);
             gridBagConstraints11.gridx = 1;
             gridBagConstraints11.gridy = 0;
-            gridBagConstraints11.weightx = 0.0D;
+            gridBagConstraints11.weightx = 1.0D;
             gridBagConstraints11.weighty = 0.0D;
-            gridBagConstraints11.fill = GridBagConstraints.NONE;
+            gridBagConstraints11.fill = GridBagConstraints.HORIZONTAL;
             GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
             gridBagConstraints7.anchor = GridBagConstraints.WEST;
             gridBagConstraints7.gridx = 2;
             gridBagConstraints7.gridy = 0;
-            gridBagConstraints7.weightx = 1.0D;
+            gridBagConstraints7.weightx = 0.0D;
             gridBagConstraints7.weighty = 0.0D;
             gridBagConstraints7.insets = new Insets(0, 12, 0, 0);
             lblTempoRange = new BLabel();

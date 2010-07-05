@@ -17,9 +17,21 @@ package org.kbinani.cadencii;
 namespace org.kbinani.cadencii {
 #endif
 
+    /// <summary>
+    /// ドッキング可能なパネルの状態を表す列挙型
+    /// </summary>
     public enum PanelState {
+        /// <summary>
+        /// 非表示状態
+        /// </summary>
         Hidden,
+        /// <summary>
+        /// ウィンドウに分離された状態
+        /// </summary>
         Window,
+        /// <summary>
+        /// ドッキングされた状態
+        /// </summary>
         Docked,
     }
 

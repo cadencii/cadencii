@@ -2447,7 +2447,10 @@ namespace org.kbinani.cadencii {
         /// 現在の設定を設定ファイルに書き込みます。
         /// </summary>
         public static void saveConfig() {
-#if !JAVA
+#if JAVA
+            //TODO: AppManager#saveConfig
+            PortUtil.println( "AppManager#saveConfig; FIXME" );
+#else
             // ユーザー辞書の情報を取り込む
             editorConfig.UserDictionaries.clear();
             int count = SymbolTable.getCount();
@@ -2472,11 +2475,17 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public static void loadConfig() {
             String appdata = Utility.getApplicationDataPath();
+#if DEBUG
+            PortUtil.println( "AppManager#loadConfig; appdata=" + appdata );
+#endif
             if ( appdata.Equals( "" ) ) {
                 editorConfig = new EditorConfig();
                 return;
             }
             String config_file = PortUtil.combinePath( appdata, CONFIG_FILE_NAME );
+#if DEBUG
+            PortUtil.println( "AppManager#loadConfig; config_file=" + config_file + "; isFileExists(config_file)=" + PortUtil.isFileExists( config_file ) );
+#endif
             EditorConfig ret = null;
             if ( PortUtil.isFileExists( config_file ) ) {
                 try {

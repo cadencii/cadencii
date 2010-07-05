@@ -3263,6 +3263,12 @@ namespace org.kbinani.cadencii {
                 hScroll.setMaximum( draft_length + visible_clocks );
             }
             hScroll.setVisibleAmount( visible_clocks );
+            int unit_increment = visible_clocks / 10;
+            if( unit_increment <= 0 ){
+                unit_increment = 1;
+            }
+            hScroll.setUnitIncrement( unit_increment );
+            hScroll.setBlockIncrement( visible_clocks );
 #else
             int _ARROWS = 40; // 両端の矢印の表示幅px（おおよその値）
             draft_length += 240;
@@ -3292,6 +3298,12 @@ namespace org.kbinani.cadencii {
                 vScroll.setMaximum( draft_length );
             }
             vScroll.setVisibleAmount( visible_amount );
+            int unit_increment = visible_amount / 10;
+            if( unit_increment <= 0 ){
+                unit_increment = 1;
+            }
+            vScroll.setUnitIncrement( unit_increment );
+            vScroll.setBlockIncrement( visible_amount );
 #else
             int _ARROWS = 40; // 両端の矢印の表示幅px（おおよその値）
             if ( draft_length > vScroll.getMaximum() ) {
@@ -13280,11 +13292,6 @@ namespace org.kbinani.cadencii {
         }
 
         public void hScroll_ValueChanged( Object sender, EventArgs e ) {
-#if DEBUG
-            //PortUtil.println( "hScroll_ValueChanged" );
-            //PortUtil.println( "    Value/Maximum=" + hScroll.getValue() + "/" + hScroll.getMaximum() );
-            //PortUtil.println( "    LargeChange=" + hScroll.LargeChange );
-#endif
             AppManager.setStartToDrawX( calculateStartToDrawX() );
             if ( m_txtbox_track_name != null ) {
 #if !JAVA

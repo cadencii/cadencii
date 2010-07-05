@@ -1,4 +1,4 @@
-package org.kbinani.windows.forms;
+﻿package org.kbinani.windows.forms;
 
 public enum BDialogResult {
     OK,

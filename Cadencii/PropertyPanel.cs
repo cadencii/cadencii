@@ -75,8 +75,8 @@ namespace org.kbinani.cadencii {
         private void popGridItemExpandStatusCore( GridItem item ) {
             if ( item.Expandable ) {
                 String s = getGridItemIdentifier( item );
-                for ( Iterator<ValuePair<String, Boolean>> itr = AppManager.editorConfig.PropertyWindowStatus.ExpandStatus.iterator(); itr.hasNext(); ) {
-                    ValuePair<String, Boolean> v = itr.next();
+                for ( Iterator<ValuePairOfStringBoolean> itr = AppManager.editorConfig.PropertyWindowStatus.ExpandStatus.iterator(); itr.hasNext(); ) {
+                    ValuePairOfStringBoolean v = itr.next();
                     String key = v.getKey();
                     if ( key == null ) {
                         key = "";
@@ -109,15 +109,15 @@ namespace org.kbinani.cadencii {
             if ( item.Expandable ) {
                 String s = getGridItemIdentifier( item );
                 boolean found = false;
-                for ( Iterator<ValuePair<String, Boolean>> itr = AppManager.editorConfig.PropertyWindowStatus.ExpandStatus.iterator(); itr.hasNext(); ) {
-                    ValuePair<String, Boolean> v = itr.next();
+                for ( Iterator<ValuePairOfStringBoolean> itr = AppManager.editorConfig.PropertyWindowStatus.ExpandStatus.iterator(); itr.hasNext(); ) {
+                    ValuePairOfStringBoolean v = itr.next();
                     if ( v.getKey().Equals( s ) ) {
                         found = true;
                         v.setValue( item.Expanded );
                     }
                 }
                 if ( !found ) {
-                    AppManager.editorConfig.PropertyWindowStatus.ExpandStatus.add( new ValuePair<String, boolean>( s, item.Expanded ) );
+                    AppManager.editorConfig.PropertyWindowStatus.ExpandStatus.add( new ValuePairOfStringBoolean( s, item.Expanded ) );
                 }
             }
             foreach ( GridItem child in item.GridItems ) {

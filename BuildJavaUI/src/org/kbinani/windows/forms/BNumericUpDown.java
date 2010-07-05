@@ -104,13 +104,15 @@ public class BNumericUpDown extends JPanel{
 	private void initialize() {
 		GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
 		gridBagConstraints2.gridx = 1;
-		gridBagConstraints2.weighty = 1.0D;
-		gridBagConstraints2.anchor = GridBagConstraints.NORTH;
+		gridBagConstraints2.weighty = 0.5D;
+		gridBagConstraints2.anchor = GridBagConstraints.EAST;
+		gridBagConstraints2.fill = GridBagConstraints.BOTH;
 		gridBagConstraints2.gridy = 1;
 		GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
 		gridBagConstraints1.gridx = 1;
-		gridBagConstraints1.weighty = 1.0D;
-		gridBagConstraints1.anchor = GridBagConstraints.SOUTH;
+		gridBagConstraints1.weighty = 0.5D;
+		gridBagConstraints1.anchor = GridBagConstraints.EAST;
+		gridBagConstraints1.fill = GridBagConstraints.BOTH;
 		gridBagConstraints1.gridy = 0;
 		GridBagConstraints gridBagConstraints = new GridBagConstraints();
 		gridBagConstraints.fill = GridBagConstraints.BOTH;
@@ -119,7 +121,7 @@ public class BNumericUpDown extends JPanel{
 		gridBagConstraints.gridheight = 2;
 		gridBagConstraints.weighty = 1.0D;
 		gridBagConstraints.gridx = 0;
-		this.setSize(127, 23);
+		this.setSize(78, 33);
 		this.setLayout(new GridBagLayout());
 		this.add(getTxtValue(), gridBagConstraints);
 		this.add(getBtnUp(), gridBagConstraints1);
@@ -193,4 +195,4 @@ public class BNumericUpDown extends JPanel{
 		}
 		return btnDown;
 	}
-}
+}  //  @jve:decl-index=0:visual-constraint="10,10"
