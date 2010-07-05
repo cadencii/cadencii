@@ -238,8 +238,8 @@ namespace org.kbinani.cadencii {
                             singer = singers.get( program_change ).VOICEIDSTR;
                         }
                         RenderQueue rq = new RenderQueue();
-                        rq.ResamplerArg = "";
-                        rq.WavtoolArgPrefix = "\"" + file + "\" \"" + PortUtil.combinePath( singer, "R.wav" ) + "\" 0 " + item.Clock + "@" + PortUtil.formatMessage( "{0:f2}", t_temp2 );
+                        //rq.ResamplerArg = "";
+                        rq.WavtoolArgPrefix = "\"" + file + "\" \"" + PortUtil.combinePath( singer, "R.wav" ) + "\" 0 " + item.Clock + "@" + PortUtil.formatDecimal( "0.00",t_temp2 );
                         rq.WavtoolArgSuffix = " 0 0";
                         rq.Oto = new OtoArgs();
                         rq.FileName = "";
@@ -280,11 +280,21 @@ namespace org.kbinani.cadencii {
 #if DEBUG
                     PortUtil.println( "UtauRenderingRunner#run; wavPath=" + wavPath );
 #endif
-                    String resampler_arg_prefix = "\"" + wavPath + "\" ";
-                    String resampler_arg_suffix = "\"" + note + "\" 100 " + item.UstEvent.Flags + "L" + " " + oa.msOffset + " " + millisec + " " + oa.msConsonant + " " + oa.msBlank + " 100 " + item.UstEvent.Moduration;
+                    String[] resampler_arg_prefix = new String[]{ "\"" + wavPath + "\"" };
+                    String[] resampler_arg_suffix = new String[]{
+                        "\"" + note + "\"",
+                        "100",
+                        item.UstEvent.Flags,
+                        "L", 
+                        oa.msOffset + "",
+                        millisec + "",
+                        oa.msConsonant + "",
+                        oa.msBlank + "",
+                        "100",
+                        item.UstEvent.Moduration + "" };
 
                     // ピッチを取得
-                    String pitch = "";
+                    Vector<String> pitch = new Vector<String>();
                     boolean allzero = true;
                     int delta_clock = 5;  //ピッチを取得するクロック間隔
                     int tempo = 120;
@@ -298,9 +308,9 @@ namespace org.kbinani.cadencii {
                             if ( pvalue != 0 ) {
                                 allzero = false;
                             }
-                            pitch += " " + PortUtil.formatDecimal( "0.00", pvalue );
+                            pitch.add( PortUtil.formatDecimal( "0.00", pvalue ) );
                             if ( i == 0 ) {
-                                pitch += "Q" + tempo;
+                                pitch.add( "Q" + tempo );
                             }
                         }
                     } else {
@@ -312,9 +322,9 @@ namespace org.kbinani.cadencii {
                             double gtime = sec_start_act + delta_sec * i;
                             int clock = (int)m_vsq.getClockFromSec( gtime );
                             float pvalue = (float)target.getPitchAt( clock );
-                            pitch += " " + PortUtil.formatDecimal( "0.00", pvalue );
+                            pitch.add( PortUtil.formatDecimal( "0.00", pvalue ) );
                             if ( totalcount == 0 ) {
-                                pitch += "Q" + tempo;
+                                pitch.add( "Q" + tempo );
                             }
                             totalcount++;
                         }
@@ -331,9 +341,9 @@ namespace org.kbinani.cadencii {
                             float gtime = (float)ret.getX();
                             int clock = (int)m_vsq.getClockFromSec( gtime );
                             float pvalue = (float)target.getPitchAt( clock );
-                            pitch += " " + PortUtil.formatDecimal( "0.00", pvalue + ret.getY() * 100.0f );
+                            pitch.add( PortUtil.formatDecimal( "0.00", pvalue + ret.getY() * 100.0f ) );
                             if ( totalcount == 0 ) {
-                                pitch += "Q" + tempo;
+                                pitch.add( "Q" + tempo );
                             }
                             totalcount++;
                         }
@@ -341,14 +351,26 @@ namespace org.kbinani.cadencii {
                     }
 
                     //4_あ_C#4_550.wav
-                    String filename = PortUtil.combinePath( m_temp_dir, PortUtil.getMD5FromString( s_cache.size() + resampler_arg_prefix + resampler_arg_suffix + pitch ) + ".wav" );
+                    String md5_src = "";
+                    foreach( String s in resampler_arg_prefix ){
+                        md5_src += s + " ";
+                    }
+                    foreach ( String s in resampler_arg_suffix ) {
+                        md5_src += s + " ";
+                    }
+                    foreach ( String s in pitch ) {
+                        md5_src += s + " ";
+                    }
+                    String filename = PortUtil.combinePath( m_temp_dir, PortUtil.getMD5FromString( s_cache.size() + md5_src ) + ".wav" );
 
-                    rq2.ResamplerArg = resampler_arg_prefix + " \"" + filename + "\" " + resampler_arg_suffix;
+                    rq2.appendArgRange( resampler_arg_prefix );
+                    rq2.appendArg( "\"" + filename + "\"" );
+                    rq2.appendArgRange( resampler_arg_suffix );
                     if ( !allzero ) {
-                        rq2.ResamplerArg += pitch;
+                        rq2.appendArgRange( pitch.toArray( new String[0] ) );
                     }
 
-                    String search_key = resampler_arg_prefix + resampler_arg_suffix + pitch;
+                    String search_key = md5_src;
                     boolean exist_in_cache = s_cache.containsKey( search_key );
                     if ( !exist_in_cache ) {
                         if ( s_cache.size() + 1 >= MAX_CACHE ) {
@@ -376,7 +398,7 @@ namespace org.kbinani.cadencii {
                         filename = s_cache.get( search_key ).getKey();
                     }
 
-                    rq2.WavtoolArgPrefix = "\"" + file + "\" \"" + filename + "\" 0 " + item.ID.getLength() + "@" + PortUtil.formatMessage( "{0:f2}", t_temp );
+                    rq2.WavtoolArgPrefix = "\"" + file + "\" \"" + filename + "\" 0 " + item.ID.getLength() + "@" + PortUtil.formatDecimal( "0.00", t_temp );
                     UstEnvelope env = item.UstEvent.Envelope;
                     if ( env == null ) {
                         env = new UstEnvelope();
@@ -410,21 +432,42 @@ namespace org.kbinani.cadencii {
                 for ( int i = 0; i < num_queues; i++ ) {
                     RenderQueue rq = m_resampler_queue.get( i );
                     if ( !rq.ResamplerFinished ) {
-                        String arg = rq.ResamplerArg;
 #if MAKEBAT_SP
-                        bat.WriteLine( "\"" + m_resampler + "\" " + arg );
+                        bat.WriteLine( "\"" + m_resampler + "\" " + rq.getResamplerArgString() );
 #endif
 
 #if JAVA
-                        String[] args = m_invoke_with_wine ? new String[]{ "wine \"" + m_resampler + "\"", arg }
-                                                           : new String[]{ "\"" + m_resampler + "\"", arg };
-                        ProcessBuilder pb = new ProcessBuilder( args );
+                        Vector<String> list = new Vector<String>();
+                        if( m_invoke_with_wine ){
+                            list.add( "wine" );
+                        }
+                        list.add( "\"" + m_resampler.replace( "\\", "\\" + "\\" ) + "\"" );
+                        for( String s : rq.getResamplerArg() ){
+                            s = s.replace( "\\", "\\" + "\\" );
+                            list.add( s );
+                        }
+#if DEBUG
+                        PortUtil.println( "UtauRenderingRunner#run; args=" );
+                        for( String s : list ){
+                            PortUtil.println( "UtauRenderingRunner#run; " + s );
+                        }
+#endif
+                        ProcessBuilder pb = new ProcessBuilder( list );
                         Process process = pb.start();
-                        process.waitFor();                        
+                        boolean д = true;
+                        for( ;д; ){
+                            try{
+                                int ecode = process.exitValue();
+                            }catch( Exception ex ){
+                                continue;
+                            }
+                            break;
+                        }
+                        //process.waitFor();
 #else
                         using ( Process process = new Process() ) {
                             process.StartInfo.FileName = (m_invoke_with_wine ? "wine \"" : "\"") + m_resampler + "\"";
-                            process.StartInfo.Arguments = arg;
+                            process.StartInfo.Arguments = rq.getResamplerArgString();
                             process.StartInfo.WorkingDirectory = m_temp_dir;
                             process.StartInfo.CreateNoWindow = true;
                             process.StartInfo.UseShellExecute = false;
@@ -789,6 +832,9 @@ namespace org.kbinani.cadencii {
                 }
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "UtauRenderingRunner#run; ex=" + ex );
+#if JAVA
+                ex.printStackTrace();
+#endif
             } finally {
 #if MAKEBAT_SP
                 if ( bat != null ) {

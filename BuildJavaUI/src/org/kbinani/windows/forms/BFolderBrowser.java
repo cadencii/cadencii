@@ -28,12 +28,11 @@ public class BFolderBrowser extends BDialog {
     private JFileChooser dialog = null;
     
     public boolean isNewFolderButtonVisible(){
-        return false;
+        return btnNew.isVisible();
     }
     
     public void setNewFolderButtonVisible( boolean value ){
-        //do nothing
-        //btnNew.setVisible( value );
+        btnNew.setVisible( value );
     }
     
     public String getDescription(){
@@ -50,6 +49,22 @@ public class BFolderBrowser extends BDialog {
     
     public String getSelectedPath(){
         return dialog.getSelectedFile().getAbsolutePath();
+    }
+    
+    //TODO:
+    /**
+     * オーバーライド。jTreeの実装が完了したら消すこと
+     */
+    public void setVisible( boolean value ){
+        dialog.setVisible( value );
+    }
+    
+    //TODO:
+    /**
+     * オーバーライド。jTreeの実装が完了したら消すこと
+     */
+    public boolean isVisible(){
+        return dialog.isVisible();
     }
     
     /**
@@ -70,7 +85,6 @@ public class BFolderBrowser extends BDialog {
         this.setSize(new Dimension(341, 416));
         this.setModal(true);
         this.setContentPane(getJPanel());
-    		
     }
 
     /**

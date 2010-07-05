@@ -45,6 +45,15 @@ namespace org.kbinani.cadencii {
             track = new VsqTrack( 0, 0, 0 );
             tempo = new TempoVector();
         }
+
+        public String getGenericTypeName( String name ) {
+            if ( name != null ) {
+                if ( name.Equals( "tempo" ) ) {
+                    return "org.kbinani.vsq.TempoTableEntry";
+                }
+            }
+            return "";
+        }
     }
 
 #if !JAVA

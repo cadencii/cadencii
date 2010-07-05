@@ -8,6 +8,8 @@ open( OUT, ">Makefile" );
 "./org.kbinani/BEventHandler.java",
 "./org.kbinani.windows.forms/BDialog.java",
 "./org.kbinani.windows.forms/BPropertyGrid.java",
+"./org.kbinani.windows.forms/BListView.java",
+"./org.kbinani.windows.forms/BFolderBrowser.java",
 "./org.kbinani.xml/XmlMember.java",
 "./org.kbinani.xml/XmlSerializer.java",
 "./Cadencii/FormImportLyric.java",

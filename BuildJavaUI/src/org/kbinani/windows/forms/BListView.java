@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -73,6 +74,7 @@ public class BListView extends JPanel implements MouseMotionListener{
             setHorizontalScrollBarPolicy( JScrollPane.HORIZONTAL_SCROLLBAR_NEVER );
             setViewportView( table );
             label = new JLabel( groupTitle );
+            setBorder( new EmptyBorder( 0, 0, 0, 0 ) );
         }
 
         public BListViewItem getItemAt( int index ){
@@ -433,13 +435,8 @@ public class BListView extends JPanel implements MouseMotionListener{
     }
     
     public BListViewItem getItemAt( String group, int index ){
-        //Group g = getGroupFromName( group );
-        /*int columns = tmodel.getColumnCount() - 1;
-        String[] sub = new String[columns];
-        for( int i = 0; i < columns; i++ ){
-            sub[i] = (String)tmodel.getValueAt( index, i + 1 );
-        }*/
-        return null;
+        Group g = getGroupFromName( group );
+        return g.getItemAt( index );
     }
     
     public int getItemCount( String group ){
@@ -574,10 +571,10 @@ public class BListView extends JPanel implements MouseMotionListener{
     
     public void addItem( String group, BListViewItem item, boolean enabled ){
         if ( group == null || (group != null && group.equals( "" )) ){
-            // defaultGroup‚É’Ç‰Á
+            // defaultGroup
             defaultGroup.addItemCor( item );
         }else{
-            //  “¯–¼‚Ìgroup‚ª‚ ‚é‚©‚Ç‚¤‚©
+            // 
             int count = groups.size();
             Group g = null;
             for( int i = 0; i < count; i++ ){

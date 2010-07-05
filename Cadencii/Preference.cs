@@ -57,7 +57,15 @@ namespace org.kbinani.cadencii {
         
         private BFileChooser openUtauCore;
         private BFontChooser fontDialog;
+#if JAVA
+        private BFileChooser folderBrowserSingers;
+#else
+#if DEBUG
+        private BFileChooser folderBrowserSingers;
+#else
         private BFolderBrowser folderBrowserSingers;
+#endif
+#endif
 
         public Preference() {
 #if JAVA
@@ -73,8 +81,17 @@ namespace org.kbinani.cadencii {
             fontDialog.dialog.ShowEffects = false;
 #endif
             openUtauCore = new BFileChooser( "" );
+
+#if JAVA
+            folderBrowserSingers = new BFileChooser( "" );
+#else
+#if DEBUG
+            folderBrowserSingers = new BFileChooser( "" );
+#else
             folderBrowserSingers = new BFolderBrowser();
             folderBrowserSingers.setNewFolderButtonVisible( false );
+#endif
+#endif
             applyLanguage();
 
             comboVibratoLength.removeAllItems();
@@ -805,7 +822,15 @@ namespace org.kbinani.cadencii {
                 openUtauCore.addFileFilter( "All Files(*.*)|*.*" );
             }
 
+#if JAVA
+            folderBrowserSingers.setDialogTitle( _( "Select Singer Directory" ) );
+#else
+#if DEBUG
+            folderBrowserSingers.setDialogTitle( _( "Select Singer Directory" ) );
+#else
             folderBrowserSingers.setDescription( _( "Select Singer Directory" ) );
+#endif
+#endif
 
             #region tabのタイトル
 #if JAVA
@@ -1381,9 +1406,29 @@ namespace org.kbinani.cadencii {
         }
 
         public void btnAdd_Click( Object sender, BEventArgs e ) {
+#if JAVA
+            if( folderBrowserSingers.showOpenDialog( this ) == BFileChooser.APPROVE_OPTION ){
+                String dir = folderBrowserSingers.getSelectedFile();
+#else
+#if DEBUG
+            if ( folderBrowserSingers.showOpenDialog( this ) == BFileChooser.APPROVE_OPTION ){
+                String dir = folderBrowserSingers.getSelectedFile();
+#else
             folderBrowserSingers.setVisible( true );
             if ( folderBrowserSingers.getDialogResult() == BDialogResult.OK ) {
                 String dir = folderBrowserSingers.getSelectedPath();
+#endif
+#endif
+#if DEBUG
+                PortUtil.println( "Preference#btnAdd_Click; dir=" + dir );
+                PortUtil.println( "Preference#btnAdd_Clicl; PortUtil.isDirectoryExists(dir)=" + PortUtil.isDirectoryExists( dir ) );
+                PortUtil.println( "Preference#btnAdd_Clicl; PortUtil.isFileExists(dir)=" + PortUtil.isFileExists( dir ) );
+#endif
+                if ( !PortUtil.isDirectoryExists( dir ) && PortUtil.isFileExists( dir ) ) {
+                    // dirの指すパスがフォルダではなくファイルだった場合、
+                    // そのファイルの存在するパスに修正
+                    dir = PortUtil.getDirectoryName( dir );
+                }
                 SingerConfig sc = Utility.readUtauSingerConfig( dir );
                 /*String character = PortUtil.combinePath( dir, "character.txt" );
                 String name = "";

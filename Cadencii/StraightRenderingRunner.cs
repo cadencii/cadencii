@@ -460,13 +460,27 @@ namespace org.kbinani.cadencii {
                 tmp_file = PortUtil.combinePath( tmp_dir, hash );
                 if ( !s_cache.containsKey( hash ) || !PortUtil.isFileExists( tmp_file + ".wav" ) ) {
 #if JAVA
-                    String[] args = new String[]{ straight_synth, "\"" + tmp_file + ".usq\"", "\"" + tmp_file + ".wav\"" };
+                    String[] args = new String[]{ 
+                        straight_synth.replace( "\\", "\\" + "\\" ), 
+                        "\"" + tmp_file.replace( "\\", "\\" + "\\" ) + ".usq\"",
+                        "\"" + tmp_file.replace( "\\", "\\" + "\\" ) + ".wav\"" };
+#if DEBUG
+                    PortUtil.println( "StraightRenderingRunner#run; args=" );
+                    for( String s : args ){
+                        PortUtil.println( "StraightRenderingRunner#run; " + s );
+                    }
+#endif
                     ProcessBuilder pb = new ProcessBuilder( args );
+                    pb.redirectErrorStream( true );
                     try{
                         Process process = pb.start();
-                        process.waitFor();
+                        InputStream stream = process.getInputStream();
+                        while( stream.read() >= 0 && !m_abort_required );
                     }catch( Exception ex ){
                         System.err.println( "StraightRenderingRunner#run; ex=" + ex );
+#if DEBUG
+                        ex.printStackTrace();
+#endif
                     }
 #else
                     using ( Process process = new Process() ) {

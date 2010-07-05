@@ -10868,9 +10868,20 @@ namespace org.kbinani.cadencii {
                 for ( int j = 0; j < events_Count; j++ ) {
                     MidiEvent itemj = events.get( j );
                     if ( !tempo_added && itemj.firstByte == 0xff && itemj.data.Length >= 4 && itemj.data[0] == 0x51 ) {
-                        int vtempo = itemj.data[1] << 16 | itemj.data[2] << 8 | itemj.data[3];
-                        tempo.TempoTable.add( new TempoTableEntry( (int)itemj.clock, vtempo, 0.0 ) );
-                        t_tempo_added = true;
+                        boolean contains_same_clock = false;
+                        int size = tempo.TempoTable.size();
+                        // 同時刻のテンポ変更は、最初以外無視する
+                        for ( int k = 0; k < size; k++ ) {
+                            if ( tempo.TempoTable.get( k ).Clock == itemj.clock ) {
+                                contains_same_clock = true;
+                                break;
+                            }
+                        }
+                        if ( !contains_same_clock ) {
+                            int vtempo = itemj.data[1] << 16 | itemj.data[2] << 8 | itemj.data[3];
+                            tempo.TempoTable.add( new TempoTableEntry( (int)itemj.clock, vtempo, 0.0 ) );
+                            t_tempo_added = true;
+                        }
                     }
                     if ( !timesig_added && itemj.firstByte == 0xff && itemj.data.Length >= 5 && itemj.data[0] == 0x58 ) {
                         int num = itemj.data[1];
@@ -10880,12 +10891,23 @@ namespace org.kbinani.cadencii {
                         }
                         int clock_per_bar = last_num * 480 * 4 / last_den;
                         int barcount_at_itemj = last_barcount + ((int)itemj.clock - last_timesig_clock) / clock_per_bar;
-                        tempo.TimesigTable.add( new TimeSigTableEntry( (int)itemj.clock, num, den, barcount_at_itemj ) );
-                        last_timesig_clock = (int)itemj.clock;
-                        last_den = den;
-                        last_num = num;
-                        last_barcount = barcount_at_itemj;
-                        t_timesig_added = true;
+                        // 同時刻の拍子変更は、最初以外無視する
+                        int size = tempo.TimesigTable.size();
+                        boolean contains_same_clock = false;
+                        for ( int k = 0; k < size; k++ ) {
+                            if ( tempo.TimesigTable.get( k ).Clock == itemj.clock ) {
+                                contains_same_clock = true;
+                                break;
+                            }
+                        }
+                        if ( !contains_same_clock ) {
+                            tempo.TimesigTable.add( new TimeSigTableEntry( (int)itemj.clock, num, den, barcount_at_itemj ) );
+                            last_timesig_clock = (int)itemj.clock;
+                            last_den = den;
+                            last_num = num;
+                            last_barcount = barcount_at_itemj;
+                            t_timesig_added = true;
+                        }
                     }
                 }
                 if ( t_tempo_added ) {

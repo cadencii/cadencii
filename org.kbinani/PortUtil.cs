@@ -998,9 +998,9 @@ namespace org.kbinani {
             File f = new File( path );
             if( f.exists() ){
                 if( f.isFile() ){
-                    return true;
-                }else{
                     return false;
+                }else{
+                    return true;
                 }
             }else{
                 return false;
@@ -1012,7 +1012,16 @@ namespace org.kbinani {
 
         public static boolean isFileExists( String path ) {
 #if JAVA
-            return (new File( path )).exists();
+            File f = new File( path );
+            if( f.exists() ){
+                if( f.isFile() ){
+                    return true;
+                }else{
+                    return false;
+                }
+            }else{
+                return false;
+            }
 #else
             return System.IO.File.Exists( path );
 #endif

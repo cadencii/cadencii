@@ -94,6 +94,19 @@
 -PropertyGridを実装
 -ファイルダイアログの拡張子
 -EditorConfigのシリアライズ，デシリアライズはうまくいってるか
+-VSQの読込みで歌詞の1文字目が撮れてない？
+-TrackSelectorの最小表示高さが更新できてない
+-*RenderingRunnerのProcessの処理
+--getInputStream()の処理を忘れてないか
+--m_abort_requiredで脱出したとき、process.destroy()を忘れてないか
+--ProcessBuilderに渡す引数がすべて文字列型の配列になってるか
+-合成器の合成結果待ちの時、プレイカーソルが一定区間を周期的に往復する現象
+-Preference,Cadenciiを再起動すると設定が反映されます、のダイアログの判定がおかしいんじゃないか
+-TrackSelector歌手変更の表示が見えなくなってる
+-PictPianoRollのコンテキストメニュー
+-TrackSelectorの右クリックコンテキストメニュー
+-TrackSelector,歌手変更用のコンテキストメニュー
+-etc.
 
 -v3.1.5todo------------------------------------------------------------
 -EditOtoIniでflacを読み込めるようにする

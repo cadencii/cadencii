@@ -510,9 +510,10 @@ public class FormMidiImExport extends BForm {
             lblOffsetUnit = new BLabel();
             lblOffsetUnit.setText("clocks");
             GridBagConstraints gridBagConstraints18 = new GridBagConstraints();
-            gridBagConstraints18.fill = GridBagConstraints.VERTICAL;
+            gridBagConstraints18.fill = GridBagConstraints.HORIZONTAL;
             gridBagConstraints18.gridy = 1;
             gridBagConstraints18.weightx = 1.0;
+            gridBagConstraints18.insets = new Insets(3, 3, 3, 3);
             gridBagConstraints18.gridx = 5;
             GridBagConstraints gridBagConstraints17 = new GridBagConstraints();
             gridBagConstraints17.gridx = 4;
