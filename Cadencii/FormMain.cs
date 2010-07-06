@@ -2464,7 +2464,14 @@ namespace org.kbinani.cadencii {
                 phrase[i] = original_phrase[i];
                 phonetic_symbol[i] = original_symbol[i];
             }
-            phrase[0] = AppManager.inputTextBox.getText().Replace( "-", "" );
+            String txt = AppManager.inputTextBox.getText();
+            int txtlen = PortUtil.getStringLength( txt );
+            if ( txtlen > 0 ) {
+                // 1文字目は，UTAUの連続音入力のハイフンの可能性があるので，無駄に置換されるのを回避
+                phrase[0] = txt.Substring( 0, 1 ) + ((txtlen > 1) ? txt.Substring( 1 ).Replace( "-", "" ) : "");
+            } else {
+                phrase[0] = "";
+            }
             if ( !phonetic_symbol_edit_mode ) {
                 // 歌詞を編集するモードで、
                 if ( AppManager.editorConfig.SelfDeRomanization ) {
@@ -3263,12 +3270,12 @@ namespace org.kbinani.cadencii {
                 hScroll.setMaximum( draft_length + visible_clocks );
             }
             hScroll.setVisibleAmount( visible_clocks );
-            int unit_increment = visible_clocks / 10;
+            /*int unit_increment = visible_clocks / 10;
             if( unit_increment <= 0 ){
                 unit_increment = 1;
             }
             hScroll.setUnitIncrement( unit_increment );
-            hScroll.setBlockIncrement( visible_clocks );
+            hScroll.setBlockIncrement( visible_clocks );*/
 #else
             int _ARROWS = 40; // 両端の矢印の表示幅px（おおよその値）
             draft_length += 240;
@@ -3298,12 +3305,12 @@ namespace org.kbinani.cadencii {
                 vScroll.setMaximum( draft_length );
             }
             vScroll.setVisibleAmount( visible_amount );
-            int unit_increment = visible_amount / 10;
+            /*int unit_increment = visible_amount / 10;
             if( unit_increment <= 0 ){
                 unit_increment = 1;
             }
             vScroll.setUnitIncrement( unit_increment );
-            vScroll.setBlockIncrement( visible_amount );
+            vScroll.setBlockIncrement( visible_amount );*/
 #else
             int _ARROWS = 40; // 両端の矢印の表示幅px（おおよその値）
             if ( draft_length > vScroll.getMaximum() ) {
@@ -5709,6 +5716,47 @@ namespace org.kbinani.cadencii {
                                     rate_start = ev.ID.VibratoHandle.getStartRate();
                                     depth_start = ev.ID.VibratoHandle.getStartDepth();
                                 }
+
+                                // analyzed/のSTFが引き当てられるかどうか
+                                boolean is_valid_for_straight = false;
+                                // UTAUのWAVが引き当てられるかどうか
+                                boolean is_valid_for_utau = false;
+                                VsqEvent singer_at_clock = vsq_track.getSingerEventAt( timesig );
+                                int program = singer_at_clock.ID.IconHandle.Program;
+                                if ( 0 <= program && program < AppManager.editorConfig.UtauSingers.size() ) {
+                                    SingerConfig sc = AppManager.editorConfig.UtauSingers.get( program );
+                                    // 通常のUTAU音源
+                                    if ( AppManager.utauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
+                                        UtauVoiceDB db = AppManager.utauVoiceDB.get( sc.VOICEIDSTR );
+                                        OtoArgs oa = db.attachFileNameFromLyric( lyric_jp );
+                                        if ( oa.fileName == null ||
+                                            (oa.fileName != null && oa.fileName.Equals( "" )) ) {
+                                            is_valid_for_utau = false;
+                                        } else {
+                                            is_valid_for_utau = PortUtil.isFileExists( PortUtil.combinePath( sc.VOICEIDSTR, oa.fileName ) );
+                                        }
+                                    }
+                                    // STRAIGHT用の解析音源
+                                    String analyzed = PortUtil.combinePath( sc.VOICEIDSTR, "analyzed" );
+#if DEBUG
+                                    PortUtil.println( "FormMain#updateDrawObjectList; analyzed=" + analyzed + "; AppManager.utauVoiceDB.containsKey(analyzed)=" + AppManager.utauVoiceDB.containsKey( analyzed ) );
+#endif
+                                    if ( AppManager.utauVoiceDB.containsKey( analyzed ) ) {
+                                        UtauVoiceDB db = AppManager.utauVoiceDB.get( analyzed );
+                                        OtoArgs oa = db.attachFileNameFromLyric( lyric_jp );
+#if DEBUG
+                                        PortUtil.println( "FormMain#updateDrawObjectList; oa.fileName=" + oa.fileName );
+#endif
+                                        if ( oa.fileName == null ||
+                                             (oa.fileName != null && oa.fileName.Equals( "" )) ) {
+                                            is_valid_for_straight = false;
+                                        } else {
+                                            is_valid_for_straight = PortUtil.isFileExists( PortUtil.combinePath( analyzed, oa.fileName ) );
+                                        }
+                                    }
+                                }
+
+                                //追加
                                 tmp.add( new DrawObject( DrawObjectType.Note,
                                                          new Rectangle( x, y, lyric_width, track_height ),
                                                          title,
@@ -5725,7 +5773,8 @@ namespace org.kbinani.cadencii {
                                                          ev.UstEvent.Envelope,
                                                          length,
                                                          timesig,
-                                                         true,
+                                                         is_valid_for_utau,
+                                                         is_valid_for_straight,
                                                          vib_delay ) );
                             }
                         }
@@ -5804,6 +5853,7 @@ namespace org.kbinani.cadencii {
                                                      length,
                                                      clock,
                                                      true,
+                                                     true,
                                                      length ) );
                         }
 
@@ -5818,7 +5868,7 @@ namespace org.kbinani.cadencii {
                             boolean overwrapped = false;
                             int istart = itemi.clock;
                             int iend = istart + itemi.length;
-                            if ( itemi.overlappe ) {
+                            if ( itemi.isOverlapped ) {
                                 continue;
                             }
                             for ( int j = i + 1; j < count; j++ ) {
@@ -5832,19 +5882,19 @@ namespace org.kbinani.cadencii {
                                 if ( jstart <= istart ) {
                                     if ( istart < jend ) {
                                         overwrapped = true;
-                                        itemj.overlappe = true;
+                                        itemj.isOverlapped = true;
                                         // breakできない．2個以上の重複を検出する必要があるので．
                                     }
                                 }
                                 if ( istart <= jstart ) {
                                     if ( jstart < iend ) {
                                         overwrapped = true;
-                                        itemj.overlappe = true;
+                                        itemj.isOverlapped = true;
                                     }
                                 }
                             }
                             if ( overwrapped ) {
-                                itemi.overlappe = true;
+                                itemi.isOverlapped = true;
                             }
                         }
                         Collections.sort( tmp );
@@ -9037,7 +9087,7 @@ namespace org.kbinani.cadencii {
                                         dobj.pxRectangle.width,
                                         dobj.pxRectangle.height );
                     if ( dobj.type == DrawObjectType.Note ) {
-                        if ( AppManager.editorConfig.ShowExpLine && !dobj.overlappe ) {
+                        if ( AppManager.editorConfig.ShowExpLine && !dobj.isOverlapped ) {
                             rc.height *= 2;
                             if ( isInRect( new Point( e.X, e.Y ), rc ) ) {
                                 // ビブラートの開始位置
@@ -12140,18 +12190,14 @@ namespace org.kbinani.cadencii {
                 AppManager.editorConfig.InvokeUtauCoreWithWine = m_preference_dlg.isInvokeWithWine();
                 AppManager.editorConfig.PathResampler = m_preference_dlg.getPathResampler();
                 AppManager.editorConfig.PathWavtool = m_preference_dlg.getPathWavtool();
+
                 AppManager.editorConfig.UtauSingers.clear();
-                AppManager.utauVoiceDB.clear();
                 for ( Iterator<SingerConfig> itr = m_preference_dlg.getUtauSingers().iterator(); itr.hasNext(); ) {
                     SingerConfig sc = itr.next();
                     AppManager.editorConfig.UtauSingers.add( (SingerConfig)sc.clone() );
-                    try {
-                        UtauVoiceDB db = new UtauVoiceDB( sc );
-                        AppManager.utauVoiceDB.put( sc.VOICEIDSTR, db );
-                    } catch ( Exception ex ) {
-                        PortUtil.stderr.println( "FormMain#menuSettingPreference_Click; ex=" + ex );
-                    }
                 }
+                AppManager.reloadUtauVoiceDB();
+                
                 AppManager.editorConfig.SelfDeRomanization = m_preference_dlg.isSelfDeRomantization();
                 AppManager.editorConfig.AutoBackupIntervalMinutes = m_preference_dlg.getAutoBackupIntervalMinutes();
                 AppManager.editorConfig.UseSpaceKeyAsMiddleButtonModifier = m_preference_dlg.isUseSpaceKeyAsMiddleButtonModifier();

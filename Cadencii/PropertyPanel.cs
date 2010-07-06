@@ -111,6 +111,10 @@ namespace org.kbinani.cadencii {
                 boolean found = false;
                 for ( Iterator<ValuePairOfStringBoolean> itr = AppManager.editorConfig.PropertyWindowStatus.ExpandStatus.iterator(); itr.hasNext(); ) {
                     ValuePairOfStringBoolean v = itr.next();
+                    String key = v.getKey();
+                    if ( key == null ) {
+                        continue;
+                    }
                     if ( v.getKey().Equals( s ) ) {
                         found = true;
                         v.setValue( item.Expanded );

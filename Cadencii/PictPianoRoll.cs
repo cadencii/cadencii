@@ -592,26 +592,35 @@ namespace org.kbinani.cadencii {
 
                                     if ( dobj.type == DrawObjectType.Note ) {
                                         #region Note
-                                        Color id_fill;
+                                        Color id_fill = s_note_fill;
+                                        if ( (!dobj.isValidForUtau && renderer == RendererKind.UTAU) ||
+                                             (!dobj.isValidForStraight && renderer == RendererKind.STRAIGHT_UTAU) ) {
+                                            id_fill = AppManager.getAlertColor();
+                                        }
                                         if ( AppManager.getSelectedEventCount() > 0 ) {
                                             boolean found = AppManager.isSelectedEventContains( selected, dobj.internalID );
                                             if ( found ) {
                                                 id_fill = AppManager.getHilightColor();
-                                            } else {
-                                                id_fill = s_note_fill;
+                                                if ( (!dobj.isValidForUtau && renderer == RendererKind.UTAU) ||
+                                                     (!dobj.isValidForStraight && renderer == RendererKind.STRAIGHT_UTAU) ) {
+                                                    id_fill = AppManager.getAlertHilightColor();
+                                                }
                                             }
-                                        } else {
-                                            id_fill = s_note_fill;
                                         }
                                         g.setColor( id_fill );
                                         g.fillRect( x, y + 1, lyric_width, track_height - 1 );
-                                        Font lyric_font = dobj.symbolProtected ? AppManager.baseFont10Bold : AppManager.baseFont10;
-                                        if ( dobj.overlappe ) {
+                                        Font lyric_font = dobj.isSymbolProtected ? AppManager.baseFont10Bold : AppManager.baseFont10;
+                                        if ( dobj.isOverlapped ) {
                                             g.setColor( s_pen_125_123_124 );
                                             g.drawRect( x, y + 1, lyric_width, track_height - 1 );
                                             if ( show_lyrics ) {
                                                 g.setFont( lyric_font );
-                                                g.setColor( s_brs_147_147_147 );
+                                                if ( (!dobj.isValidForUtau && renderer == RendererKind.UTAU) ||
+                                                     (!dobj.isValidForStraight && renderer == RendererKind.STRAIGHT_UTAU) ) {
+                                                    g.setColor( Color.white );
+                                                } else {
+                                                    g.setColor( s_brs_147_147_147 );
+                                                }
                                                 g.drawString( dobj.text, x + 1, y + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
                                             }
                                         } else {
@@ -770,7 +779,12 @@ namespace org.kbinani.cadencii {
 
                                             if ( show_lyrics ) {
                                                 g.setFont( lyric_font );
-                                                g.setColor( Color.black );
+                                                if ( (!dobj.isValidForUtau && renderer == RendererKind.UTAU) ||
+                                                     (!dobj.isValidForStraight && renderer == RendererKind.STRAIGHT_UTAU) ) {
+                                                    g.setColor( Color.white );
+                                                } else {
+                                                    g.setColor( Color.black );
+                                                }
                                                 g.drawString( dobj.text, x + 1, y + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
                                             }
                                         }
@@ -787,7 +801,7 @@ namespace org.kbinani.cadencii {
                                         g.drawRect( x, y, 40, track_height );
                                         g.setColor( Color.black );
                                         g.setFont( AppManager.baseFont10 );
-                                        if ( dobj.overlappe ) {
+                                        if ( dobj.isOverlapped ) {
                                             g.setColor( s_brs_147_147_147 );
                                         }
                                         String str = dobj.text;
@@ -807,7 +821,7 @@ namespace org.kbinani.cadencii {
                                         g.fillRect( x, y, xend - x, track_height );
                                         g.setColor( s_pen_125_123_124 );
                                         g.drawRect( x, y, xend - x, track_height );
-                                        if ( dobj.overlappe ) {
+                                        if ( dobj.isOverlapped ) {
                                             g.setColor( s_brs_147_147_147 );
                                         } else {
                                             g.setColor( Color.black );

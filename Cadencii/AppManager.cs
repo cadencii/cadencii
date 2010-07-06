@@ -2217,19 +2217,7 @@ namespace org.kbinani.cadencii {
             String log = PortUtil.combinePath( getTempWaveDir(), "run.log" );
 #endif
 
-            for ( Iterator<SingerConfig> itr = editorConfig.UtauSingers.iterator(); itr.hasNext(); ) {
-                SingerConfig config = itr.next();
-                UtauVoiceDB db = null;
-                try {
-                    db = new UtauVoiceDB( config );
-                } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "AppManager#init; ex=" + ex );
-                    db = null;
-                }
-                if ( db != null ) {
-                    utauVoiceDB.put( config.VOICEIDSTR, db );
-                }
-            }
+            reloadUtauVoiceDB();
 
             s_auto_backup_timer = new BTimer();
 #if JAVA
@@ -2237,6 +2225,45 @@ namespace org.kbinani.cadencii {
 #else
             s_auto_backup_timer.Tick += handleAutoBackupTimerTick;
 #endif
+        }
+
+        /// <summary>
+        /// utauVoiceDBフィールドのリストを一度クリアし，
+        /// editorConfig.UtauSingersの情報を元に最新の情報に更新します
+        /// </summary>
+        public static void reloadUtauVoiceDB() {
+            utauVoiceDB.clear();
+            for ( Iterator<SingerConfig> itr = editorConfig.UtauSingers.iterator(); itr.hasNext(); ) {
+                SingerConfig config = itr.next();
+
+                // 通常のUTAU音源
+                UtauVoiceDB db = null;
+                try {
+                    db = new UtauVoiceDB( config );
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "AppManager#reloadUtauVoiceDB; ex=" + ex );
+                    db = null;
+                }
+                if ( db != null ) {
+                    utauVoiceDB.put( config.VOICEIDSTR, db );
+                }
+
+                // Straight用に解析されたUTAU音源
+                SingerConfig sc = (SingerConfig)config.clone();
+                sc.VOICEIDSTR = PortUtil.combinePath( sc.VOICEIDSTR, "analyzed" );
+                if ( PortUtil.isDirectoryExists( sc.VOICEIDSTR ) ) {
+                    UtauVoiceDB db2 = null;
+                    try {
+                        db2 = new UtauVoiceDB( sc );
+                    } catch ( Exception ex ) {
+                        PortUtil.stderr.println( "AppManager#reloadUtauVoiceDB; ex=" + ex );
+                        db2 = null;
+                    }
+                    if ( db2 != null ) {
+                        utauVoiceDB.put( sc.VOICEIDSTR, db2 );
+                    }
+                }
+            }
         }
 
         #region クリップボードの管理
@@ -2650,6 +2677,24 @@ namespace org.kbinani.cadencii {
 
         public static void setHilightColor( Color value ) {
             s_hilight_brush = value;
+        }
+
+        /// <summary>
+        /// ピアノロール上の音符の警告色を取得します．
+        /// 音抜けの可能性がある音符の背景色として利用されます
+        /// </summary>
+        /// <returns></returns>
+        public static Color getAlertColor() {
+            return PortUtil.HotPink;
+        }
+
+        /// <summary>
+        /// ピアノロール上の音符の警告色を取得します．
+        /// 音抜けの可能性のある音符であって，かつ現在選択されている音符の背景色として利用されます．
+        /// </summary>
+        /// <returns></returns>
+        public static Color getAlertHilightColor() {
+            return PortUtil.DeepPink;
         }
 
         /// <summary>

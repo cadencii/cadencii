@@ -48,7 +48,7 @@ namespace org.kbinani {
         public void remove( T aDelegate ) {
             int count = m_delegates.Count;
             for ( int i = 0; i < count; i++ ) {
-                T item = m_delegates[1];
+                T item = m_delegates[i];
                 if ( aDelegate.equals( item ) ) {
                     m_delegates.RemoveAt( i );
                     break;

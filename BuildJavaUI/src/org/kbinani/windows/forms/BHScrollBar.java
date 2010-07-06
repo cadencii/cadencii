@@ -8,4 +8,14 @@ public class BHScrollBar extends BScrollBar {
     public BHScrollBar(){
         super( JScrollBar.HORIZONTAL );
     }
+
+    public void setVisibleAmount( int value ){
+        super.setVisibleAmount( value );
+        int unit_increment = value / 10;
+        if( unit_increment <= 0 ){
+            unit_increment = 1;
+        }
+        setUnitIncrement( unit_increment );
+        setBlockIncrement( value );
+    }
 }

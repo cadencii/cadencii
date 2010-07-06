@@ -44,8 +44,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// このアイテムが他のアイテムと再生時にオーバーラップするかどうかを表すフラグ
         /// </summary>
-        public boolean overlappe;
-        public boolean symbolProtected;
+        public boolean isOverlapped;
+        public boolean isSymbolProtected;
         public VibratoBPList vibRate;
         public VibratoBPList vibDepth;
         public int vibStartRate;
@@ -62,10 +62,15 @@ namespace org.kbinani.cadencii {
         public int clock;
         public DrawObjectType type;
         /// <summary>
-        /// UTAUモード、またはStraight x UTAUモードにて、歌詞から*.frqまたはanalyzed\*.stfを引き当てられたかどうか。
+        /// UTAUモードにて、歌詞から*.wavを引き当てられたかどうか。
         /// これがfalseのとき、ピアノロール上で警告色で描かれる
         /// </summary>
-        public boolean isValid = false;
+        public boolean isValidForUtau = false;
+        /// <summary>
+        /// Straight x UTAUモードにて、歌詞からanalyzed\*.stfを引き当てられたかどうか。
+        /// これがfalseのとき、ピアノロール上で警告色で描かれる
+        /// </summary>
+        public boolean isValidForStraight = false;
         public int vibDelay = 0;
 
         public DrawObject( DrawObjectType type,
@@ -84,7 +89,8 @@ namespace org.kbinani.cadencii {
                            UstEnvelope ust_envelope,
                            int length,
                            int clock,
-                           boolean isValid,
+                           boolean is_valid_for_utau,
+                           boolean is_valid_for_straight,
                            int vib_delay ) {
             this.type = type;
             pxRectangle = rect;
@@ -92,8 +98,8 @@ namespace org.kbinani.cadencii {
             accent = accent_;
             internalID = internal_id;
             pxVibratoDelay = vibrato_delay;
-            overlappe = overwrapped;
-            symbolProtected = symbol_protected;
+            isOverlapped = overwrapped;
+            isSymbolProtected = symbol_protected;
             vibRate = vib_rate;
             vibDepth = vib_depth;
             vibStartRate = vib_start_rate;
@@ -103,7 +109,8 @@ namespace org.kbinani.cadencii {
             ustEnvelope = ust_envelope;
             this.length = length;
             this.clock = clock;
-            this.isValid = isValid;
+            this.isValidForUtau = is_valid_for_utau;
+            this.isValidForStraight = is_valid_for_straight;
             this.vibDelay = vib_delay;
         }
 
