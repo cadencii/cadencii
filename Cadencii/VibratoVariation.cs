@@ -12,9 +12,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+using System;
 using System.ComponentModel;
 
 namespace org.kbinani.cadencii {
+    using boolean = System.Boolean;
 
     [TypeConverter( typeof( VibratoVariationConverter ) )]
     public class VibratoVariation {
@@ -30,14 +32,30 @@ namespace org.kbinani.cadencii {
             this.description = description;
         }
 
-        public override bool Equals( object obj ) {
+        public boolean equals( Object obj ){
             if ( obj != null && obj is VibratoVariation ) {
                 return ((VibratoVariation)obj).description.Equals( description );
             } else {
                 return base.Equals( obj );
             }
         }
-    }
 
+#if !JAVA
+        public override bool Equals( object obj ) {
+            return equals( obj );
+        }
+#endif
+
+        public Object clone() {
+            return new VibratoVariation( this.description );
+        }
+
+#if !JAVA
+        public object Clone() {
+            return clone();
+        }
+#endif
+
+    }
 }
 #endif

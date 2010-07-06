@@ -816,19 +816,21 @@ namespace org.kbinani.cadencii {
                         last_length = editing.ID.VibratoHandle.getLength();
                     }
 
-                    VsqFileEx vsq = AppManager.getVsqFile();
-                    if ( vsq != null ) {
-                        SynthesizerType type = SynthesizerType.VOCALOID2;
-                        RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
-                        if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
-                            type = SynthesizerType.VOCALOID1;
-                        }
-                        String description = value.description;
-                        for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
-                            VibratoHandle vconfig = itr.next();
-                            if ( description.Equals( vconfig.getDisplayString() ) ) {
-                                editing.ID.VibratoHandle = (VibratoHandle)vconfig.clone();
-                                break;
+                    if ( m_vibrato != null && value != null && !m_vibrato.equals( value ) ) {
+                        VsqFileEx vsq = AppManager.getVsqFile();
+                        if ( vsq != null ) {
+                            SynthesizerType type = SynthesizerType.VOCALOID2;
+                            RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
+                            if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
+                                type = SynthesizerType.VOCALOID1;
+                            }
+                            String description = value.description;
+                            for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
+                                VibratoHandle vconfig = itr.next();
+                                if ( description.Equals( vconfig.getDisplayString() ) ) {
+                                    editing.ID.VibratoHandle = (VibratoHandle)vconfig.clone();
+                                    break;
+                                }
                             }
                         }
                     }
