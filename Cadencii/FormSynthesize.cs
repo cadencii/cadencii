@@ -273,6 +273,10 @@ namespace org.kbinani.cadencii {
                         }
 
                         try {
+                            // 上書きするので消す
+                            PortUtil.deleteFile( m_files[k] );
+                            // WaveWriter内のファイルストリーム入出力クラスRandomAccessFileは、書き込みモードのみ
+                            // というのを選択できないので。
                             ww = new WaveWriter( m_files[k], channel, 16, VSTiProxy.SAMPLE_RATE );
                             int end = m_clock_end[k];
                             if ( end == int.MaxValue ) {

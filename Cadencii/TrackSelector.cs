@@ -5351,8 +5351,26 @@ namespace org.kbinani.cadencii {
                 #region MouseDown occured on singer list
                 if ( AppManager.getSelectedTool() != EditTool.ERASER ) {
                     VsqEvent ve = findItemAt( e.X, e.Y );
-                    RendererKind renderer = VsqFileEx.getTrackRendererKind( AppManager.getVsqFile().Track.get( AppManager.getSelected() ) );
+                    VsqFileEx vsq = AppManager.getVsqFile();
+                    int selected = AppManager.getSelected();
+                    VsqTrack vsq_track = vsq.Track.get( selected );
+                    RendererKind renderer = VsqFileEx.getTrackRendererKind( vsq_track );
+                    if ( ve == null ) {
+                        int x_at_left = AppManager.keyWidth + AppManager.keyOffset;
+                        Rectangle rc_left_singer_box =
+                            new Rectangle( 
+                                x_at_left,
+                                this.getHeight() - 2 * OFFSET_TRACK_TAB + 1,
+                                SINGER_ITEM_WIDTH, OFFSET_TRACK_TAB - 2 );
+                        if ( isInRect( e.X, e.Y, rc_left_singer_box ) ) {
+                            // マウス位置に歌手変更が無かった場合であって、かつ、
+                            // マウス位置が左端の常時歌手表示部の内部だった場合
+                            int clock_at_left = AppManager.clockFromXCoord( x_at_left );
+                            ve = vsq_track.getSingerEventAt( clock_at_left );
+                        }
+                    }
                     if ( ve != null ) {
+                        // マウス位置に何らかのアイテムがあった場合
                         if ( ve.ID.type != VsqIDType.Singer ) {
                             return;
                         }
@@ -5367,7 +5385,7 @@ namespace org.kbinani.cadencii {
                         for ( int i = 0; i < sub_cmenu_singer.Length; i++ ) {
                             BMenuItem tsmi = (BMenuItem)sub_cmenu_singer[i];
                             TagForCMenuSingerDropDown tag2 = (TagForCMenuSingerDropDown)tsmi.getTag();
-                            if ( tag2.Language == ve.ID.IconHandle.Language && 
+                            if ( tag2.Language == ve.ID.IconHandle.Language &&
                                  tag2.Program == ve.ID.IconHandle.Program ) {
                                 tsmi.setSelected( true );
                             } else {
@@ -5376,6 +5394,7 @@ namespace org.kbinani.cadencii {
                         }
                         cmenuSinger.show( this, e.X, e.Y );
                     } else {
+                        // マウス位置に何もアイテムが無かった場合
                         if ( !_cmenu_singer_prepared.Equals( renderer ) ) {
                             prepareSingerMenu( renderer );
                         }

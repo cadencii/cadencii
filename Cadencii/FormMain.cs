@@ -16627,7 +16627,7 @@ namespace org.kbinani.cadencii {
         public void refreshScreenCore( Object sender, EventArgs e ) {
             pictPianoRoll.repaint();
             picturePositionIndicator.repaint();
-            trackSelector.invalidate();
+            trackSelector.repaint();
             if ( menuVisualWaveform.isSelected() ) {
                 waveView.repaint();
             }

@@ -17,6 +17,7 @@ package org.kbinani.cadencii;
 using System;
 
 namespace org.kbinani.cadencii {
+    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -30,6 +31,23 @@ namespace org.kbinani.cadencii {
         public float msBlank;
         public float msPreUtterance;
         public float msOverlap;
+
+        public boolean equals( OtoArgs obj ) {
+            if ( obj == null ) {
+                return false;
+            }
+            if ( this.fileName != null && this.fileName.Equals( obj.fileName ) &&
+                 this.Alias != null && this.Alias.Equals( obj.Alias ) &&
+                 this.msOffset == obj.msOffset &&
+                 this.msConsonant == obj.msConsonant &&
+                 this.msBlank == obj.msBlank &&
+                 this.msPreUtterance == obj.msPreUtterance &&
+                 this.msOverlap == obj.msOverlap ) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 
 #if !JAVA

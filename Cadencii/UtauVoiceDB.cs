@@ -26,6 +26,7 @@ using org.kbinani.java.io;
 using org.kbinani.vsq;
 
 namespace org.kbinani.cadencii {
+    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -106,7 +107,18 @@ namespace org.kbinani.cadencii {
                         } catch ( Exception ex ) {
                             oa.msOverlap = 0;
                         }
-                        _configs.add( oa );
+
+                        // 重複登録が無いかチェック
+                        boolean found = false;
+                        foreach ( OtoArgs o in _configs ) {
+                            if ( o != null && o.equals( oa ) ) {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if ( !found ) {
+                            _configs.add( oa );
+                        }
                     }
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "UtauVoiceDB#.ctor; ex=" + ex );
