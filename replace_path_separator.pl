@@ -10,6 +10,8 @@ open( OUT, ">Makefile" );
 "./org.kbinani.windows.forms/BPropertyGrid.java",
 "./org.kbinani.windows.forms/BListView.java",
 "./org.kbinani.windows.forms/BFolderBrowser.java",
+"./org.kbinani.windows.forms/BHScrollBar.java",
+"./org.kbinani.windows.forms/BVScrollBar.java",
 "./org.kbinani.xml/XmlMember.java",
 "./org.kbinani.xml/XmlSerializer.java",
 "./Cadencii/FormImportLyric.java",

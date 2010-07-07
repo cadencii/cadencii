@@ -33,6 +33,7 @@ public class FormTempoConfig extends BForm {
     private BButton btnOK = null;
     private BButton btnCancel = null;
     private BLabel jLabel4 = null;
+    private BLabel jLabel41 = null;
     
     //SECTION-END-FIELD
     /**
@@ -50,7 +51,7 @@ public class FormTempoConfig extends BForm {
      * 
      */
     private void initialize() {
-        this.setSize(new Dimension(371, 213));
+        this.setSize(new Dimension(446, 240));
         this.setTitle("Global Tempo");
         this.setContentPane(getJPanel());
     		
@@ -68,19 +69,22 @@ public class FormTempoConfig extends BForm {
             gridBagConstraints9.gridwidth = 2;
             gridBagConstraints9.anchor = GridBagConstraints.NORTHEAST;
             gridBagConstraints9.weightx = 1.0D;
-            gridBagConstraints9.weighty = 1.0D;
+            gridBagConstraints9.weighty = 0.0D;
+            gridBagConstraints9.insets = new Insets(0, 0, 16, 16);
             gridBagConstraints9.gridy = 1;
             GridBagConstraints gridBagConstraints8 = new GridBagConstraints();
             gridBagConstraints8.gridx = 1;
             gridBagConstraints8.fill = GridBagConstraints.BOTH;
-            gridBagConstraints8.weightx = 1.0D;
+            gridBagConstraints8.weightx = 0.5D;
             gridBagConstraints8.insets = new Insets(12, 6, 12, 12);
+            gridBagConstraints8.weighty = 1.0D;
             gridBagConstraints8.gridy = 0;
             GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
             gridBagConstraints6.gridx = 0;
             gridBagConstraints6.fill = GridBagConstraints.BOTH;
-            gridBagConstraints6.weightx = 1.0D;
+            gridBagConstraints6.weightx = 0.5D;
             gridBagConstraints6.insets = new Insets(12, 12, 12, 6);
+            gridBagConstraints6.weighty = 1.0D;
             gridBagConstraints6.gridy = 0;
             jPanel = new JPanel();
             jPanel.setLayout(new GridBagLayout());
@@ -98,6 +102,12 @@ public class FormTempoConfig extends BForm {
      */
     private BGroupBox getGroupPosition() {
         if (groupPosition == null) {
+            GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
+            gridBagConstraints12.gridx = 0;
+            gridBagConstraints12.weighty = 1.0D;
+            gridBagConstraints12.gridy = 3;
+            jLabel41 = new BLabel();
+            jLabel41.setText(" ");
             GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
             gridBagConstraints5.fill = GridBagConstraints.HORIZONTAL;
             gridBagConstraints5.gridy = 2;
@@ -150,6 +160,7 @@ public class FormTempoConfig extends BForm {
             groupPosition.add(getNumBeat(), gridBagConstraints3);
             groupPosition.add(lblClock, gridBagConstraints4);
             groupPosition.add(getNumClock(), gridBagConstraints5);
+            groupPosition.add(jLabel41, gridBagConstraints12);
         }
         return groupPosition;
     }
@@ -261,7 +272,7 @@ public class FormTempoConfig extends BForm {
             gridBagConstraints52.anchor = GridBagConstraints.SOUTHWEST;
             gridBagConstraints52.gridx = 1;
             gridBagConstraints52.gridy = 0;
-            gridBagConstraints52.insets = new Insets(0, 0, 0, 16);
+            gridBagConstraints52.insets = new Insets(0, 0, 0, 0);
             GridBagConstraints gridBagConstraints42 = new GridBagConstraints();
             gridBagConstraints42.anchor = GridBagConstraints.WEST;
             gridBagConstraints42.gridx = 0;

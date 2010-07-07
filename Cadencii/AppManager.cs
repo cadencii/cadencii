@@ -252,6 +252,10 @@ namespace org.kbinani.cadencii {
             BKeys.Home,
             BKeys.End,
         } ) );
+        /// <summary>
+        /// UTAU関連のテキストファイルで受け付けるエンコーディングの種類
+        /// </summary>
+        public static readonly String[] TEXT_ENCODINGS_IN_UTAU = new String[] { "Shift_JIS", "UTF-16", "US-ANSI" };
         #endregion
 
         #region Private Static Fields

@@ -1430,37 +1430,6 @@ namespace org.kbinani.cadencii {
                     dir = PortUtil.getDirectoryName( dir );
                 }
                 SingerConfig sc = Utility.readUtauSingerConfig( dir );
-                /*String character = PortUtil.combinePath( dir, "character.txt" );
-                String name = "";
-                sc.VOICEIDSTR = dir;
-                if ( PortUtil.isFileExists( character ) ) {
-                    BufferedReader sr = null;
-                    try {
-                        sr = new BufferedReader( new InputStreamReader( new FileInputStream( character ), "Shift_JIS" ) );
-                        String line = "";
-                        while ( (line = sr.readLine()) != null ) {
-                            String[] spl = PortUtil.splitString( line, '=' );
-                            if ( spl.Length >= 2 ) {
-                                if ( spl[0].ToLower().Equals( "name" ) ) {
-                                    name = spl[1];
-                                    break;
-                                }
-                            }
-                        }
-                    } catch ( Exception ex ) {
-                    } finally {
-                        if ( sr != null ) {
-                            try {
-                                sr.close();
-                            } catch ( Exception ex ) {
-                            }
-                        }
-                    }
-                }
-                if ( name.Equals( "" ) ) {
-                    name = "Unknown";
-                }
-                sc.VOICENAME = name;*/
                 m_utau_singers.add( sc );
                 UpdateUtauSingerList();
             }

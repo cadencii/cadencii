@@ -34,14 +34,13 @@ public class FormBeatConfig extends BForm {
     private BComboBox comboDenominator = null;
     private BPanel jPanel1 = null;
     private BLabel jLabel2 = null;
-    private BLabel jLabel3 = null;
     private BButton btnOK = null;
     private BButton btnCancel = null;
     private BLabel jLabel4 = null;
-    private BLabel jLabel5 = null;
-    private BLabel jLabel6 = null;
     private BLabel jLabel7 = null;
     private BLabel jLabel8 = null;
+    private BLabel jLabel41 = null;
+    private BLabel jLabel42 = null;
 
     //SECTION-END-FIELD
     public FormBeatConfig(){
@@ -57,7 +56,7 @@ public class FormBeatConfig extends BForm {
      */
     private void initialize() {
         this.setTitle("Beat Change");
-        this.setSize(310, 338);
+        this.setSize(314, 330);
         this.setContentPane(getJContentPane());
         this.setTitle("JFrame");
     }
@@ -75,7 +74,7 @@ public class FormBeatConfig extends BForm {
             gridBagConstraints18.ipadx = 180;
             gridBagConstraints18.ipady = 42;
             gridBagConstraints18.weightx = 1.0D;
-            gridBagConstraints18.weighty = 1.0D;
+            gridBagConstraints18.weighty = 0.0D;
             gridBagConstraints18.anchor = GridBagConstraints.NORTH;
             gridBagConstraints18.fill = GridBagConstraints.BOTH;
             gridBagConstraints18.gridx = 0;
@@ -83,19 +82,21 @@ public class FormBeatConfig extends BForm {
             gridBagConstraints8.gridx = 0;
             gridBagConstraints8.ipadx = 141;
             gridBagConstraints8.ipady = 42;
-            gridBagConstraints8.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints8.fill = GridBagConstraints.BOTH;
             gridBagConstraints8.insets = new Insets(0, 12, 0, 12);
             gridBagConstraints8.weightx = 1.0D;
             gridBagConstraints8.anchor = GridBagConstraints.NORTH;
+            gridBagConstraints8.weighty = 0.5D;
             gridBagConstraints8.gridy = 1;
             GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
             gridBagConstraints6.gridx = 0;
             gridBagConstraints6.ipadx = 147;
             gridBagConstraints6.ipady = 41;
             gridBagConstraints6.insets = new Insets(12, 12, 12, 12);
-            gridBagConstraints6.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints6.fill = GridBagConstraints.BOTH;
             gridBagConstraints6.weightx = 1.0D;
             gridBagConstraints6.anchor = GridBagConstraints.NORTH;
+            gridBagConstraints6.weighty = 0.5D;
             gridBagConstraints6.gridy = 0;
             jContentPane = new BPanel();
             jContentPane.setLayout(new GridBagLayout());
@@ -113,34 +114,29 @@ public class FormBeatConfig extends BForm {
      */
     private BGroupBox getGroupPosition() {
         if (groupPosition == null) {
+            GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
+            gridBagConstraints21.gridx = 0;
+            gridBagConstraints21.weighty = 1.0D;
+            gridBagConstraints21.gridy = 3;
+            jLabel41 = new BLabel();
+            jLabel41.setText(" ");
             GridBagConstraints gridBagConstraints61 = new GridBagConstraints();
-            gridBagConstraints61.gridx = 5;
+            gridBagConstraints61.gridx = 3;
             gridBagConstraints61.gridy = 2;
             jLabel8 = new BLabel();
             jLabel8.setText("     ");
             GridBagConstraints gridBagConstraints51 = new GridBagConstraints();
-            gridBagConstraints51.gridx = 5;
+            gridBagConstraints51.gridx = 3;
             gridBagConstraints51.gridy = 0;
             jLabel7 = new BLabel();
             jLabel7.setText("     ");
-            GridBagConstraints gridBagConstraints41 = new GridBagConstraints();
-            gridBagConstraints41.gridx = 0;
-            gridBagConstraints41.gridy = 2;
-            jLabel6 = new BLabel();
-            jLabel6.setText("     ");
-            GridBagConstraints gridBagConstraints31 = new GridBagConstraints();
-            gridBagConstraints31.gridx = 0;
-            gridBagConstraints31.anchor = GridBagConstraints.WEST;
-            gridBagConstraints31.gridy = 0;
-            jLabel5 = new BLabel();
-            jLabel5.setText("     ");
             GridBagConstraints gridBagConstraints9 = new GridBagConstraints();
             gridBagConstraints9.fill = GridBagConstraints.VERTICAL;
             gridBagConstraints9.gridy = -1;
             gridBagConstraints9.weightx = 1.0;
             gridBagConstraints9.gridx = -1;
             GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
-            gridBagConstraints5.gridx = 4;
+            gridBagConstraints5.gridx = 2;
             gridBagConstraints5.anchor = GridBagConstraints.WEST;
             gridBagConstraints5.insets = new Insets(0, 9, 0, 0);
             gridBagConstraints5.gridy = 2;
@@ -151,12 +147,13 @@ public class FormBeatConfig extends BForm {
             gridBagConstraints4.gridy = 2;
             gridBagConstraints4.weightx = 1.0;
             gridBagConstraints4.insets = new Insets(3, 0, 3, 0);
-            gridBagConstraints4.gridx = 3;
+            gridBagConstraints4.gridx = 1;
             GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
-            gridBagConstraints3.gridx = 1;
+            gridBagConstraints3.gridx = 0;
+            gridBagConstraints3.insets = new Insets(0, 16, 0, 0);
             gridBagConstraints3.gridy = 2;
             GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
-            gridBagConstraints2.gridx = 4;
+            gridBagConstraints2.gridx = 2;
             gridBagConstraints2.anchor = GridBagConstraints.WEST;
             gridBagConstraints2.insets = new Insets(0, 9, 0, 0);
             gridBagConstraints2.gridy = 0;
@@ -167,9 +164,10 @@ public class FormBeatConfig extends BForm {
             gridBagConstraints1.gridy = 0;
             gridBagConstraints1.weightx = 0.0D;
             gridBagConstraints1.insets = new Insets(3, 0, 3, 0);
-            gridBagConstraints1.gridx = 3;
+            gridBagConstraints1.gridx = 1;
             GridBagConstraints gridBagConstraints = new GridBagConstraints();
-            gridBagConstraints.gridx = 1;
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.insets = new Insets(0, 16, 0, 0);
             gridBagConstraints.gridy = 0;
             lblStart = new BLabel();
             lblStart.setText("From");
@@ -182,10 +180,9 @@ public class FormBeatConfig extends BForm {
             groupPosition.add(getChkEnd(), gridBagConstraints3);
             groupPosition.add(getNumEnd(), gridBagConstraints4);
             groupPosition.add(lblBar2, gridBagConstraints5);
-            groupPosition.add(jLabel5, gridBagConstraints31);
-            groupPosition.add(jLabel6, gridBagConstraints41);
             groupPosition.add(jLabel7, gridBagConstraints51);
             groupPosition.add(jLabel8, gridBagConstraints61);
+            groupPosition.add(jLabel41, gridBagConstraints21);
         }
         return groupPosition;
     }
@@ -238,11 +235,12 @@ public class FormBeatConfig extends BForm {
         if (groupBeat == null) {
             GridBagConstraints gridBagConstraints14 = new GridBagConstraints();
             gridBagConstraints14.gridx = 0;
-            gridBagConstraints14.gridy = 0;
-            jLabel3 = new BLabel();
-            jLabel3.setText("     ");
+            gridBagConstraints14.weighty = 1.0D;
+            gridBagConstraints14.gridy = 1;
+            jLabel42 = new BLabel();
+            jLabel42.setText(" ");
             GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
-            gridBagConstraints13.gridx = 5;
+            gridBagConstraints13.gridx = 4;
             gridBagConstraints13.gridy = 0;
             jLabel2 = new BLabel();
             jLabel2.setText("     ");
@@ -251,14 +249,14 @@ public class FormBeatConfig extends BForm {
             gridBagConstraints12.gridy = 0;
             gridBagConstraints12.weightx = 0.5D;
             gridBagConstraints12.insets = new Insets(3, 0, 3, 0);
-            gridBagConstraints12.gridx = 4;
+            gridBagConstraints12.gridx = 3;
             GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
-            gridBagConstraints11.gridx = 3;
+            gridBagConstraints11.gridx = 2;
             gridBagConstraints11.gridy = 0;
             jLabel1 = new BLabel();
             jLabel1.setText(" /    ");
             GridBagConstraints gridBagConstraints10 = new GridBagConstraints();
-            gridBagConstraints10.gridx = 2;
+            gridBagConstraints10.gridx = 1;
             gridBagConstraints10.gridy = 0;
             jLabel = new BLabel();
             jLabel.setText(" (1-255) ");
@@ -266,8 +264,8 @@ public class FormBeatConfig extends BForm {
             gridBagConstraints7.fill = GridBagConstraints.HORIZONTAL;
             gridBagConstraints7.gridy = 0;
             gridBagConstraints7.weightx = 0.5D;
-            gridBagConstraints7.insets = new Insets(3, 0, 3, 0);
-            gridBagConstraints7.gridx = 1;
+            gridBagConstraints7.insets = new Insets(3, 16, 3, 0);
+            gridBagConstraints7.gridx = 0;
             groupBeat = new BGroupBox();
             groupBeat.setLayout(new GridBagLayout());
             groupBeat.setTitle("Position");
@@ -276,7 +274,7 @@ public class FormBeatConfig extends BForm {
             groupBeat.add(jLabel1, gridBagConstraints11);
             groupBeat.add(getComboDenominator(), gridBagConstraints12);
             groupBeat.add(jLabel2, gridBagConstraints13);
-            groupBeat.add(jLabel3, gridBagConstraints14);
+            groupBeat.add(jLabel42, gridBagConstraints14);
         }
         return groupBeat;
     }

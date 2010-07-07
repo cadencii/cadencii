@@ -565,34 +565,46 @@ namespace org.kbinani.cadencii{
 
             // character.txt読込み
             String character = PortUtil.combinePath( directory, "character.txt" );
+            String name = null;
             if ( PortUtil.isFileExists( character ) ) {
-                BufferedReader sr2 = null;
-                try {
-                    sr2 = new BufferedReader( new InputStreamReader( new FileInputStream( character ), "Shift_JIS" ) );
-                    String line = "";
-                    while ( (line = sr2.readLine()) != null ) {
-                        String[] spl = PortUtil.splitString( line, '=' );
-                        if ( spl.Length > 1 ) {
-                            if ( spl[0].ToLower().Equals( "name" ) ) {
-                                sc.VOICENAME = spl[1];
-                                break;
+                // 読み込みを試みるエンコーディングのリスト
+                foreach ( String encoding in AppManager.TEXT_ENCODINGS_IN_UTAU ) {
+                    BufferedReader sr2 = null;
+                    try {
+                        sr2 = new BufferedReader( new InputStreamReader( new FileInputStream( character ), encoding ) );
+                        String line = "";
+                        while ( (line = sr2.readLine()) != null ) {
+                            String[] spl = PortUtil.splitString( line, '=' );
+                            if ( spl.Length > 1 ) {
+                                if ( spl[0].ToLower().Equals( "name" ) ) {
+                                    name = spl[1];
+                                    break;
+                                }
+                            }
+                        }
+                    } catch ( Exception ex ) {
+                        PortUtil.stderr.println( "Utility#readUtauSingerConfig; ex=" + ex );
+                    } finally {
+                        if ( sr2 != null ) {
+                            try {
+                                sr2.close();
+                            } catch ( Exception ex2 ) {
+                                PortUtil.stderr.println( "Utility#readUtauSingerConfig; ex2=" + ex2 );
                             }
                         }
                     }
-                } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "UtauVoiceDB#.ctor; ex=" + ex );
-                } finally {
-                    if ( sr2 != null ) {
-                        try {
-                            sr2.close();
-                        } catch ( Exception ex2 ) {
-                            PortUtil.stderr.println( "UtauVoiceDB#.ctor; ex2=" + ex2 );
-                        }
+                    if ( name != null ) {
+#if DEBUG
+                        PortUtil.println( "Utility#readUtauSingerConfig; name=" + name + "; encoding=" + encoding );
+#endif
+                        break;
                     }
                 }
-            } else {
-                sc.VOICENAME = PortUtil.getFileNameWithoutExtension( directory );
             }
+            if ( name == null ){
+                name = PortUtil.getFileNameWithoutExtension( directory );
+            }
+            sc.VOICENAME = name;
             return sc;
         }
 

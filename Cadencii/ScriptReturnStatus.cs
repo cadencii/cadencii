@@ -17,6 +17,9 @@ package org.kbinani.cadencii;
 namespace org.kbinani.cadencii {
 #endif
 
+    /// <summary>
+    /// スクリプトの編集・実行結果を表すための列挙型
+    /// </summary>
     public enum ScriptReturnStatus {
         /// <summary>
         /// スクリプトの実行が成功し、編集が行われた。

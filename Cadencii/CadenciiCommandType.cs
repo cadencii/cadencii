@@ -17,17 +17,49 @@ package org.kbinani.cadencii;
 namespace org.kbinani.cadencii {
 #endif
 
+    /// <summary>
+    /// VsqFileExクラスのための編集コマンドの種類を表す列挙型
+    /// </summary>
     public enum CadenciiCommandType {
+        /// <summary>
+        /// org.kbinani.vsqネイティブの編集コマンド
+        /// </summary>
         VSQ_COMMAND,
+        /// <summary>
+        /// ベジエ曲線の追加
+        /// </summary>
         BEZIER_CHAIN_ADD,
+        /// <summary>
+        /// ベジエ曲線の削除
+        /// </summary>
         BEZIER_CHAIN_DELETE,
+        /// <summary>
+        /// ベジエ曲線の置換
+        /// </summary>
         BEZIER_CHAIN_REPLACE,
+        /// <summary>
+        /// VsqFileEx全体の置換
+        /// </summary>
         REPLACE,
+        /// <summary>
+        /// ベジエ曲線の一括置換
+        /// </summary>
         ATTACHED_CURVE_REPLACE_RANGE,
+        /// <summary>
+        /// トラックの追加
+        /// </summary>
         TRACK_ADD,
+        /// <summary>
+        /// トラックの削除
+        /// </summary>
         TRACK_DELETE,
-        TRACK_EDIT_CURVE,
+        /// <summary>
+        /// トラックの置換
+        /// </summary>
         TRACK_REPLACE,
+        /// <summary>
+        /// BGMの編集
+        /// </summary>
         BGM_UPDATE,
     }
 

@@ -17,10 +17,25 @@ package org.kbinani.cadencii;
 namespace org.kbinani.cadencii {
 #endif
 
+    /// <summary>
+    /// ビブラートの自動追加を行うかどうかを決める音符長さの閾値を表す列挙型
+    /// </summary>
     public enum AutoVibratoMinLengthEnum {
+        /// <summary>
+        /// 1拍
+        /// </summary>
         L1,
+        /// <summary>
+        /// 2拍
+        /// </summary>
         L2,
+        /// <summary>
+        /// 3拍
+        /// </summary>
         L3,
+        /// <summary>
+        /// 4拍
+        /// </summary>
         L4,
     }
 

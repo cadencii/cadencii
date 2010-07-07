@@ -14,6 +14,11 @@
  */
 namespace org.kbinani.cadencii {
 
+    /// <summary>
+    /// 進捗状況の報告を行うためのイベントハンドラ．
+    /// </summary>
+    /// <param name="sender">イベントの送信元</param>
+    /// <param name="value">進捗状況を表す値</param>
     public delegate void UpdateProgressEventHandler( object sender, int value );
 
 }

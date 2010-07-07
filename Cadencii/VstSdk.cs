@@ -10,7 +10,13 @@ namespace VstSdk {
     using VstIntPtr = System.Int32;
     using VstInt16 = System.Int16;
 
+    /// <summary>
+    /// 定数値のコンテナクラス
+    /// </summary>
     public static class Constants {
+        /// <summary>
+        /// VST SDKのバージョンを表す定数
+        /// </summary>
         public const int kVstVersion = 2400;
     }
 
