@@ -111,7 +111,12 @@ namespace org.kbinani.cadencii {
                         // 重複登録が無いかチェック
                         boolean found = false;
                         foreach ( OtoArgs o in _configs ) {
-                            if ( o != null && o.equals( oa ) ) {
+#if JAVA
+                            if ( o == null ) {
+                                continue;
+                            }
+#endif
+                            if ( o.equals( oa ) ) {
                                 found = true;
                                 break;
                             }

@@ -304,9 +304,6 @@ namespace org.kbinani.cadencii {
                     g.setColor( s_brs_240_240_240 );
                     g.fillRect( 3, 0, key_width, height );
                 }
-                // ピアノロールとカーブエディタの境界
-                g.setColor( s_pen_112_112_112 );
-                g.drawLine( 2, height - 1, width - 1, height - 1 );
                 #endregion
 
                 #region ピアノロール本体
@@ -415,7 +412,7 @@ namespace org.kbinani.cadencii {
 
                     #region 鍵盤部分
                     g.setColor( s_pen_212_212_212 );
-                    g.drawLine( 3, y, key_width, y );
+                    g.drawLine( 0, y, key_width, y );
                     boolean hilighted = false;
                     if ( edit_mode == EditMode.ADD_ENTRY ) {
                         if ( AppManager.addingEvent.ID.Note == i ) {
@@ -1091,15 +1088,6 @@ namespace org.kbinani.cadencii {
                                            align,
                                            valign );
                 }
-                #endregion
-
-                #region 外枠
-                // 左(外側)
-                g.setColor( s_pen_160_160_160 );
-                g.drawLine( 0, 0, 0, height );
-                // 左(内側)
-                g.setColor( s_pen_105_105_105 );
-                g.drawLine( 1, 0, 1, height );
                 #endregion
 
                 #region pictPianoRoll_Paintより

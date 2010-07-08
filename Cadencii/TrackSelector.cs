@@ -142,10 +142,6 @@ namespace org.kbinani.cadencii {
         /// </summary>
         private static readonly Color _COLOR_SINGERBOX_BORDER = new Color( 182, 182, 182 );
         /// <summary>
-        /// よく使うボーダー線の色
-        /// </summary>
-        private static readonly Color _COLOR_BORDER = new Color( 118, 123, 138 );
-        /// <summary>
         /// ベロシティを画面に描くときの，棒グラフの幅(pixel)
         /// </summary>
         public const int VEL_BAR_WIDTH = 8;
@@ -185,7 +181,7 @@ namespace org.kbinani.cadencii {
         /// カーブの種類を除いた部分の高さ（ピクセル）．
         /// TrackSelectorの推奨表示高さは，HEIGHT_WITHOUT_CURVE + UNIT_HEIGHT_PER_CURVE * (カーブの個数)となる
         /// </summary>
-        const int HEIGHT_WITHOUT_CURVE = 76;
+        const int HEIGHT_WITHOUT_CURVE = OFFSET_TRACK_TAB * 2 + UNIT_HEIGHT_PER_CURVE;
         /// <summary>
         /// トラックの名前表示部分の最大表示幅（ピクセル）
         /// </summary>
@@ -710,21 +706,6 @@ namespace org.kbinani.cadencii {
 #endif
         #endregion
 
-#if !JAVA
-        protected override void OnResize( BEventArgs e ) {
-            base.OnResize( e );
-            vScroll.Width = VSCROLL_WIDTH;
-            vScroll.Height = getHeight() - ZOOMPANEL_HEIGHT - 2;
-            vScroll.Left = getWidth() - VSCROLL_WIDTH;
-            vScroll.Top = 0;
-
-            panelZoomButton.Width = VSCROLL_WIDTH;
-            panelZoomButton.Height = ZOOMPANEL_HEIGHT;
-            panelZoomButton.Left = getWidth() - VSCROLL_WIDTH;
-            panelZoomButton.Top = getHeight() - ZOOMPANEL_HEIGHT - 2;
-        }
-#endif
-
         /// <summary>
         /// 描画幅が2ピクセルのストロークを取得します
         /// </summary>
@@ -900,10 +881,15 @@ namespace org.kbinani.cadencii {
             return getGraphHeight() / (float)(max - min);
         }
 
+        /// <summary>
+        /// 指定したコントロールカーブの名前を表示するボックスが，どの位置にあるかを計算します．
+        /// </summary>
+        /// <param name="curve"></param>
+        /// <returns></returns>
         public Rectangle getRectFromCurveType( CurveType curve ) {
             int row_per_column = getRowsPerColumn();
 
-            int centre = 17 + getGraphHeight() / 2 + 8;
+            int centre = (getGraphHeight() + UNIT_HEIGHT_PER_CURVE) / 2 + 3;
             int index = 100;
             for ( int i = 0; i < AppManager.getViewingCurveCount(); i++ ) {
                 if ( AppManager.getViewingCurveElement( i ).equals( curve ) ) {
@@ -936,7 +922,7 @@ namespace org.kbinani.cadencii {
             super.paint( graphics );
 #endif
             int width = getWidth();
-            Dimension size = new Dimension( width - vScroll.getWidth() + 2, getHeight() );
+            Dimension size = new Dimension( width + 2, getHeight() );
             Graphics2D g = (Graphics2D)graphics;
             Color brs_string = Color.black;
             Color rect_curve = new Color( 41, 46, 55 );
@@ -955,9 +941,9 @@ namespace org.kbinani.cadencii {
             try {
                 #region SINGER
                 Shape last = g.getClip();
-                g.setColor( _COLOR_BORDER );
-                g.drawLine( 2, size.height - 2 * OFFSET_TRACK_TAB,
-                            size.width - 3, size.height - 2 * OFFSET_TRACK_TAB );
+                g.setColor( AppManager.COLOR_BORDER );
+                g.drawLine( 0, size.height - 2 * OFFSET_TRACK_TAB,
+                            size.width - 0, size.height - 2 * OFFSET_TRACK_TAB );
                 g.setFont( AppManager.baseFont8 );
                 g.setColor( brs_string );
                 g.drawString( 
@@ -1026,9 +1012,9 @@ namespace org.kbinani.cadencii {
 
                 #region トラック選択欄
                 int selecter_width = getSelectorWidth();
-                g.setColor( _COLOR_BORDER );
-                g.drawLine( 1, size.height - OFFSET_TRACK_TAB,
-                            size.width - 2, size.height - OFFSET_TRACK_TAB );
+                g.setColor( AppManager.COLOR_BORDER );
+                g.drawLine( 0, size.height - OFFSET_TRACK_TAB,
+                            size.width, size.height - OFFSET_TRACK_TAB );
                 g.setColor( brs_string );
                 g.drawString( "TRACK", 9, size.height - OFFSET_TRACK_TAB + OFFSET_TRACK_TAB / 2 - AppManager.baseFont8OffsetHeight );
                 if ( vsq != null ) {
@@ -1390,15 +1376,17 @@ namespace org.kbinani.cadencii {
                     g.fillRect( 0, 0, key_width, size.height - 2 * OFFSET_TRACK_TAB );
 
                     // 数値ビュー
-                    Rectangle num_view = new Rectangle( 13, 4, 38, 16 );
+                    /*Rectangle num_view = new Rectangle( 13, 4, 38, 16 );
                     g.setColor( new Color( 125, 123, 124 ) );
                     g.drawRect( num_view.x, num_view.y, num_view.width, num_view.height );
                     g.setFont( AppManager.baseFont9 );
                     g.setColor( brs_string );
-                    g.drawString( numeric_view + "", num_view.x, num_view.y + num_view.height / 2 - AppManager.baseFont9OffsetHeight + 1 ); // sf );
+                    g.drawString( numeric_view + "", num_view.x, num_view.y + num_view.height / 2 - AppManager.baseFont9OffsetHeight + 1 ); // sf );*/
 
                     // 現在表示されているカーブの名前
-                    g.drawString( _selected_curve.getName(), 7, 24 + AppManager.baseFont9Height / 2 - AppManager.baseFont9OffsetHeight + 1 ); // new Rectangle( 7, 24, 56, 14 ), sf
+                    g.setFont( AppManager.baseFont9 );
+                    g.setColor( brs_string );
+                    g.drawString( _selected_curve.getName(), 7, AppManager.baseFont9Height / 2 - AppManager.baseFont9OffsetHeight + 1 ); // new Rectangle( 7, 24, 56, 14 ), sf
 
                     for ( int i = 0; i < AppManager.getViewingCurveCount(); i++ ) {
                         CurveType curve = AppManager.getViewingCurveElement( i );
@@ -1872,7 +1860,7 @@ namespace org.kbinani.cadencii {
                             destRect.x + destRect.width, destRect.y + destRect.height - 1 );
             }
             g.setClip( null );
-            g.setColor( _COLOR_BORDER );
+            g.setColor( AppManager.COLOR_BORDER );
             g.drawLine( destRect.x + destRect.width, destRect.y,
                         destRect.x + destRect.width, destRect.y + destRect.height );
         }
@@ -1882,7 +1870,7 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public int getSelectorWidth() {
             int draft = TRACK_SELECTOR_MAX_WIDTH;
-            int maxTotalWidth = getWidth() - vScroll.getWidth() - AppManager.keyWidth; // トラックの一覧を表示するのに利用できる最大の描画幅
+            int maxTotalWidth = getWidth() - AppManager.keyWidth; // トラックの一覧を表示するのに利用できる最大の描画幅
             int numTrack = 1;
             VsqFileEx vsq = AppManager.getVsqFile();
             if ( vsq != null ) {
@@ -1911,7 +1899,7 @@ namespace org.kbinani.cadencii {
             int oy = getHeight() - 42;
             Shape last_clip = g.getClip();
             int xoffset = AppManager.keyOffset + AppManager.keyWidth - AppManager.getStartToDrawX();
-            g.clipRect( AppManager.keyWidth, HEADER, getWidth() - AppManager.keyWidth - vScroll.getWidth(), height );
+            g.clipRect( AppManager.keyWidth, HEADER, getWidth() - AppManager.keyWidth, height );
             float scale = AppManager.getScaleX();
             int count = track.getEventCount();
 
@@ -1926,7 +1914,7 @@ namespace org.kbinani.cadencii {
                 int x = (int)(clock * scale) + xoffset;
                 if ( x + VEL_BAR_WIDTH < 0 ) {
                     continue;
-                } else if ( getWidth() - vScroll.getWidth() < x ) {
+                } else if ( getWidth() < x ) {
                     break;
                 } else {
                     int value = 0;
@@ -2117,11 +2105,11 @@ namespace org.kbinani.cadencii {
             Shape last_clip = g.getClip();
             int graph_height = getGraphHeight();
             g.clipRect( AppManager.keyWidth, HEADER,
-                        getWidth() - AppManager.keyWidth - vScroll.getWidth(), graph_height );
+                        getWidth() - AppManager.keyWidth, graph_height );
 
             //int track = AppManager.Selected;
             int cl_start = AppManager.clockFromXCoord( AppManager.keyWidth );
-            int cl_end = AppManager.clockFromXCoord( getWidth() - vScroll.getWidth() );
+            int cl_end = AppManager.clockFromXCoord( getWidth() );
             if ( is_front ) {
                 /* // draw shadow of non-note area
                 Shape last_clip2 = g.getClip();
@@ -2222,7 +2210,7 @@ namespace org.kbinani.cadencii {
                     }
                 }
                 g.setColor( shadow );
-                g.fillRect( last_shadow_x, HEADER, getWidth() - AppManager.keyWidth - vScroll.getWidth(), graph_height );
+                g.fillRect( last_shadow_x, HEADER, getWidth() - AppManager.keyWidth, graph_height );
             }
             g.setClip( last_clip );
         }
@@ -2242,7 +2230,7 @@ namespace org.kbinani.cadencii {
             int oy = getHeight() - 42;
             Shape last_clip = g.getClip();
             g.clipRect( AppManager.keyWidth, HEADER,
-                        getWidth() - AppManager.keyWidth - vScroll.getWidth(), getHeight() - 2 * OFFSET_TRACK_TAB );
+                        getWidth() - AppManager.keyWidth, getHeight() - 2 * OFFSET_TRACK_TAB );
 
             // 選択範囲。この四角の中に入っていたら、選択されているとみなす
             Rectangle select_window = new Rectangle( Math.Min( AppManager.curveSelectingRectangle.x, AppManager.curveSelectingRectangle.x + AppManager.curveSelectingRectangle.width ),
@@ -2254,7 +2242,7 @@ namespace org.kbinani.cadencii {
 
             int start = AppManager.keyWidth;
             int start_clock = AppManager.clockFromXCoord( start );
-            int end = getWidth() - vScroll.getWidth();
+            int end = getWidth();
             int end_clock = AppManager.clockFromXCoord( end );
             int hilight_start = AppManager.curveSelectedInterval.getStart();
             int hilight_end = AppManager.curveSelectedInterval.getEnd();
@@ -2265,7 +2253,7 @@ namespace org.kbinani.cadencii {
             Vector<Integer> pointsx = new Vector<Integer>();
             Vector<Integer> pointsy = new Vector<Integer>();
             Vector<Integer> index_selected_in_points = new Vector<Integer>(); // pointsのうち、選択された状態のものが格納されたインデックス
-            pointsx.add( getWidth() - vScroll.getWidth() ); pointsy.add( oy );
+            pointsx.add( getWidth() ); pointsy.add( oy );
             pointsx.add( AppManager.keyWidth ); pointsy.add( oy );
             int first_y = list.getValue( start_clock );
             int last_y = oy - (int)((first_y - min) * order);
@@ -2315,7 +2303,7 @@ namespace org.kbinani.cadencii {
                 pointsx.add( AppManager.keyWidth ); pointsy.add( last_y );
             }
             last_y = oy - (int)((list.getValue( end_clock ) - min) * order);
-            pointsx.add( getWidth() - vScroll.getWidth() ); pointsy.add( last_y );
+            pointsx.add( getWidth() ); pointsy.add( last_y );
             g.setColor( brush );
             g.fillPolygon( PortUtil.convertIntArray( pointsx.toArray( new Integer[] { } ) ),
                            PortUtil.convertIntArray( pointsy.toArray( new Integer[] { } ) ),
@@ -2427,7 +2415,7 @@ namespace org.kbinani.cadencii {
             int oy = getHeight() - 42;
             Shape last_clip = g.getClip();
             g.clipRect( AppManager.keyWidth, HEADER,
-                        width - AppManager.keyWidth - vScroll.getWidth(), getHeight() - 2 * OFFSET_TRACK_TAB );
+                        width - AppManager.keyWidth, getHeight() - 2 * OFFSET_TRACK_TAB );
 
             // 選択範囲。この四角の中に入っていたら、選択されているとみなす
             Rectangle select_window = new Rectangle( Math.Min( AppManager.curveSelectingRectangle.x, AppManager.curveSelectingRectangle.x + AppManager.curveSelectingRectangle.width ),
@@ -2439,7 +2427,7 @@ namespace org.kbinani.cadencii {
 
             int start = AppManager.keyWidth;
             int start_clock = AppManager.clockFromXCoord( start );
-            int end = width - vScroll.getWidth();
+            int end = width;
             int end_clock = AppManager.clockFromXCoord( end );
             int hilight_start = AppManager.curveSelectedInterval.getStart();
             int hilight_end = AppManager.curveSelectedInterval.getEnd();
@@ -2461,14 +2449,14 @@ namespace org.kbinani.cadencii {
             ensurePointBufferLength( 2 );
 #if JAVA
             indx++;
-            _pointBufferX[indx] = width - vScroll.getWidth();
+            _pointBufferX[indx] = width;
             _pointBufferY[indx] = oy;
             indx++;
             _pointBufferX[indx] = AppManager.keyWidth;
             _pointBufferY[indx] = oy;
 #else
             indx++;
-            _pointBuffer[indx].X = width - vScroll.getWidth();
+            _pointBuffer[indx].X = width;
             _pointBuffer[indx].Y = oy;
             indx++;
             _pointBuffer[indx].X = AppManager.keyWidth;
@@ -2556,10 +2544,10 @@ namespace org.kbinani.cadencii {
             ensurePointBufferLength( indx + 2 );
             indx++;
 #if JAVA
-            _pointBufferX[indx] = width - vScroll.getWidth();
+            _pointBufferX[indx] = width;
             _pointBufferY[indx] = last_y;
 #else
-            _pointBuffer[indx].X = width - vScroll.getWidth();
+            _pointBuffer[indx].X = width;
             _pointBuffer[indx].Y = last_y;
 #endif
             g.setColor( brush );
@@ -2694,7 +2682,7 @@ namespace org.kbinani.cadencii {
         /// カーブエディタのグラフ部分の幅を取得します。(pixel)
         /// </summary>
         public int getGraphWidth() {
-            return getWidth() - AppManager.keyWidth - vScroll.getWidth();
+            return getWidth() - AppManager.keyWidth;
         }
 
 #if !JAVA
@@ -3423,7 +3411,7 @@ namespace org.kbinani.cadencii {
                 #region MouseDown occred on other position
                 boolean clock_inner_note = false; //マウスの降りたクロックが，ノートの範囲内かどうかをチェック
                 int left_clock = AppManager.clockFromXCoord( AppManager.keyWidth );
-                int right_clock = AppManager.clockFromXCoord( getWidth() - vScroll.getWidth() );
+                int right_clock = AppManager.clockFromXCoord( getWidth() );
                 for ( Iterator<VsqEvent> itr = vsq.Track.get( AppManager.getSelected() ).getEventIterator(); itr.hasNext(); ) {
                     VsqEvent ve = itr.next();
                     if ( ve.ID.type == VsqIDType.Anote ) {
@@ -5204,224 +5192,225 @@ namespace org.kbinani.cadencii {
             }
 #endif
 
-            //int modifier = PortUtil.getCurrentModifierKey();
-            if ( 0 <= e.Y && e.Y <= getHeight() - 2 * OFFSET_TRACK_TAB ) {
-                #region MouseDown occured on curve-pane
-                if ( AppManager.keyWidth <= e.X && e.X <= getWidth() ) {
-                    if ( !_selected_curve.equals( CurveType.VEL ) &&
-                         !_selected_curve.equals( CurveType.Accent ) &&
-                         !_selected_curve.equals( CurveType.Decay ) &&
-                         !_selected_curve.equals( CurveType.Env ) ) {
-                        // ベジエデータ点にヒットしているかどうかを検査
-                        int track = AppManager.getSelected();
-                        int clock = AppManager.clockFromXCoord( e.X );
-                        Vector<BezierChain> dict = AppManager.getVsqFile().AttachedCurves.get( track - 1 ).get( _selected_curve );
-                        BezierChain target_chain = null;
-                        BezierPoint target_point = null;
-                        boolean found = false;
-                        int dict_size = dict.size();
-                        for ( int i = 0; i < dict_size; i++ ) {
-                            BezierChain bc = dict.get( i );
-                            for ( Iterator<BezierPoint> itr = bc.points.iterator(); itr.hasNext(); ) {
-                                BezierPoint bp = itr.next();
-                                Point pt = getScreenCoord( bp.getBase() );
-                                Rectangle rc = new Rectangle( pt.x - DOT_WID, pt.y - DOT_WID, 2 * DOT_WID + 1, 2 * DOT_WID + 1 );
-                                if ( isInRect( e.X, e.Y, rc ) ) {
-                                    found = true;
-                                    target_point = (BezierPoint)bp.clone();
-                                    target_chain = (BezierChain)bc.clone();
-                                    break;
-                                }
+            if ( e.Button == BMouseButtons.Left ) {
+                if ( 0 <= e.Y && e.Y <= getHeight() - 2 * OFFSET_TRACK_TAB ) {
+                    #region MouseDown occured on curve-pane
+                    if ( AppManager.keyWidth <= e.X && e.X <= getWidth() ) {
+                        if ( !_selected_curve.equals( CurveType.VEL ) &&
+                             !_selected_curve.equals( CurveType.Accent ) &&
+                             !_selected_curve.equals( CurveType.Decay ) &&
+                             !_selected_curve.equals( CurveType.Env ) ) {
+                            // ベジエデータ点にヒットしているかどうかを検査
+                            int track = AppManager.getSelected();
+                            int clock = AppManager.clockFromXCoord( e.X );
+                            Vector<BezierChain> dict = AppManager.getVsqFile().AttachedCurves.get( track - 1 ).get( _selected_curve );
+                            BezierChain target_chain = null;
+                            BezierPoint target_point = null;
+                            boolean found = false;
+                            int dict_size = dict.size();
+                            for ( int i = 0; i < dict_size; i++ ) {
+                                BezierChain bc = dict.get( i );
+                                for ( Iterator<BezierPoint> itr = bc.points.iterator(); itr.hasNext(); ) {
+                                    BezierPoint bp = itr.next();
+                                    Point pt = getScreenCoord( bp.getBase() );
+                                    Rectangle rc = new Rectangle( pt.x - DOT_WID, pt.y - DOT_WID, 2 * DOT_WID + 1, 2 * DOT_WID + 1 );
+                                    if ( isInRect( e.X, e.Y, rc ) ) {
+                                        found = true;
+                                        target_point = (BezierPoint)bp.clone();
+                                        target_chain = (BezierChain)bc.clone();
+                                        break;
+                                    }
 
-                                if ( bp.getControlLeftType() != BezierControlType.None ) {
-                                    pt = getScreenCoord( bp.getControlLeft() );
-                                    rc = new Rectangle( pt.x - DOT_WID, pt.y - DOT_WID, 2 * DOT_WID + 1, 2 * DOT_WID + 1 );
-                                    if ( isInRect( e.X, e.Y, rc ) ) {
-                                        found = true;
-                                        target_point = (BezierPoint)bp.clone();
-                                        target_chain = (BezierChain)bc.clone();
-                                        break;
+                                    if ( bp.getControlLeftType() != BezierControlType.None ) {
+                                        pt = getScreenCoord( bp.getControlLeft() );
+                                        rc = new Rectangle( pt.x - DOT_WID, pt.y - DOT_WID, 2 * DOT_WID + 1, 2 * DOT_WID + 1 );
+                                        if ( isInRect( e.X, e.Y, rc ) ) {
+                                            found = true;
+                                            target_point = (BezierPoint)bp.clone();
+                                            target_chain = (BezierChain)bc.clone();
+                                            break;
+                                        }
                                     }
-                                }
-                                if ( bp.getControlRightType() != BezierControlType.None ) {
-                                    pt = getScreenCoord( bp.getControlRight() );
-                                    rc = new Rectangle( pt.x - DOT_WID, pt.y - DOT_WID, 2 * DOT_WID + 1, 2 * DOT_WID + 1 );
-                                    if ( isInRect( e.X, e.Y, rc ) ) {
-                                        found = true;
-                                        target_point = (BezierPoint)bp.clone();
-                                        target_chain = (BezierChain)bc.clone();
-                                        break;
-                                    }
-                                }
-                            }
-                            if ( found ) {
-                                break;
-                            }
-                        }
-                        if ( found ) {
-                            #region ダブルクリックした位置にベジエデータ点があった場合
-                            int chain_id = target_chain.id;
-                            BezierChain before = (BezierChain)target_chain.clone();
-                            FormBezierPointEdit fbpe = null;
-                            try {
-                                fbpe = new FormBezierPointEdit( this,
-                                                                _selected_curve,
-                                                                chain_id,
-                                                                target_point.getID() );
-                                EditingChainID = chain_id;
-                                EditingPointID = target_point.getID();
-                                fbpe.setModal( true );
-                                fbpe.setVisible( true );
-                                BDialogResult ret = fbpe.getDialogResult();
-                                EditingChainID = -1;
-                                EditingPointID = -1;
-                                BezierChain after = AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).getBezierChain( _selected_curve, chain_id );
-                                // 編集前の状態に戻す
-                                CadenciiCommand revert = VsqFileEx.generateCommandReplaceBezierChain( track,
-                                                                                               _selected_curve,
-                                                                                               chain_id,
-                                                                                               before,
-                                                                                               AppManager.editorConfig.getControlCurveResolutionValue() );
-                                executeCommand( revert, false );
-                                if ( ret == BDialogResult.OK ) {
-                                    // ダイアログの結果がOKで、かつベジエ曲線が単調増加なら編集を適用
-                                    if ( BezierChain.isBezierImplicit( target_chain ) ) {
-                                        CadenciiCommand run = VsqFileEx.generateCommandReplaceBezierChain( track,
-                                                                                                    _selected_curve,
-                                                                                                    chain_id,
-                                                                                                    after,
-                                                                                                    AppManager.editorConfig.getControlCurveResolutionValue() );
-                                        executeCommand( run, true );
-                                    }
-                                }
-                            } catch ( Exception ex ) {
-                            } finally {
-                                if ( fbpe != null ) {
-                                    try {
-                                        fbpe.close();
-                                    } catch ( Exception ex2 ) {
-                                    }
-                                }
-                            }
-                            #endregion
-                        } else {
-                            #region ダブルクリックした位置にベジエデータ点が無かった場合
-                            VsqBPList list = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( _selected_curve.getName() );
-                            boolean bp_found = false;
-                            long bp_id = -1;
-                            int tclock = 0;
-                            if ( list != null ) {
-                                int list_size = list.size();
-                                for ( int i = 0; i < list_size; i++ ) {
-                                    int c = list.getKeyClock( i );
-                                    int bpx = AppManager.xCoordFromClocks( c );
-                                    if ( e.X < bpx - DOT_WID ) {
-                                        break;
-                                    }
-                                    if ( bpx - DOT_WID <= e.X && e.X <= bpx + DOT_WID ) {
-                                        VsqBPPair bp = list.getElementB( i );
-                                        int bpy = yCoordFromValue( bp.value );
-                                        if ( bpy - DOT_WID <= e.Y && e.Y <= bpy + DOT_WID ) {
-                                            bp_found = true;
-                                            bp_id = bp.id;
-                                            tclock = c;
+                                    if ( bp.getControlRightType() != BezierControlType.None ) {
+                                        pt = getScreenCoord( bp.getControlRight() );
+                                        rc = new Rectangle( pt.x - DOT_WID, pt.y - DOT_WID, 2 * DOT_WID + 1, 2 * DOT_WID + 1 );
+                                        if ( isInRect( e.X, e.Y, rc ) ) {
+                                            found = true;
+                                            target_point = (BezierPoint)bp.clone();
+                                            target_chain = (BezierChain)bc.clone();
                                             break;
                                         }
                                     }
                                 }
+                                if ( found ) {
+                                    break;
+                                }
                             }
-
-                            if ( bp_found ) {
-                                AppManager.clearSelectedPoint();
-                                AppManager.addSelectedPoint( _selected_curve, bp_id );
-                                FormCurvePointEdit dialog = new FormCurvePointEdit( bp_id, _selected_curve );
-                                int tx = AppManager.xCoordFromClocks( tclock );
-                                Point pt = pointToScreen( new Point( tx, 0 ) );
-                                invalidate();
-                                dialog.setLocation( new Point( pt.x - dialog.getWidth() / 2, pt.y - dialog.getHeight() ) );
-                                dialog.setModal( true );
-                                dialog.setVisible( true );
-                            }
-                            #endregion
-                        }
-                    }
-                }
-                #endregion
-            } else if ( getHeight() - 2 * OFFSET_TRACK_TAB <= e.Y && e.Y <= getHeight() - OFFSET_TRACK_TAB ) {
-                #region MouseDown occured on singer list
-                if ( AppManager.getSelectedTool() != EditTool.ERASER ) {
-                    VsqEvent ve = findItemAt( e.X, e.Y );
-                    VsqFileEx vsq = AppManager.getVsqFile();
-                    int selected = AppManager.getSelected();
-                    VsqTrack vsq_track = vsq.Track.get( selected );
-                    RendererKind renderer = VsqFileEx.getTrackRendererKind( vsq_track );
-                    if ( ve == null ) {
-                        int x_at_left = AppManager.keyWidth + AppManager.keyOffset;
-                        Rectangle rc_left_singer_box =
-                            new Rectangle( 
-                                x_at_left,
-                                this.getHeight() - 2 * OFFSET_TRACK_TAB + 1,
-                                SINGER_ITEM_WIDTH, OFFSET_TRACK_TAB - 2 );
-                        if ( isInRect( e.X, e.Y, rc_left_singer_box ) ) {
-                            // マウス位置に歌手変更が無かった場合であって、かつ、
-                            // マウス位置が左端の常時歌手表示部の内部だった場合
-                            int clock_at_left = AppManager.clockFromXCoord( x_at_left );
-                            ve = vsq_track.getSingerEventAt( clock_at_left );
-                        }
-                    }
-                    if ( ve != null ) {
-                        // マウス位置に何らかのアイテムがあった場合
-                        if ( ve.ID.type != VsqIDType.Singer ) {
-                            return;
-                        }
-                        if ( !_cmenu_singer_prepared.Equals( renderer ) ) {
-                            prepareSingerMenu( renderer );
-                        }
-                        TagForCMenuSinger tag = new TagForCMenuSinger();
-                        tag.SingerChangeExists = true;
-                        tag.InternalID = ve.InternalID;
-                        cmenuSinger.setTag( tag );//                        new KeyValuePair<boolean, int>( true, ve.InternalID );
-                        MenuElement[] sub_cmenu_singer = cmenuSinger.getSubElements();
-                        for ( int i = 0; i < sub_cmenu_singer.Length; i++ ) {
-                            BMenuItem tsmi = (BMenuItem)sub_cmenu_singer[i];
-                            TagForCMenuSingerDropDown tag2 = (TagForCMenuSingerDropDown)tsmi.getTag();
-                            if ( tag2.Language == ve.ID.IconHandle.Language &&
-                                 tag2.Program == ve.ID.IconHandle.Program ) {
-                                tsmi.setSelected( true );
+                            if ( found ) {
+                                #region ダブルクリックした位置にベジエデータ点があった場合
+                                int chain_id = target_chain.id;
+                                BezierChain before = (BezierChain)target_chain.clone();
+                                FormBezierPointEdit fbpe = null;
+                                try {
+                                    fbpe = new FormBezierPointEdit( this,
+                                                                    _selected_curve,
+                                                                    chain_id,
+                                                                    target_point.getID() );
+                                    EditingChainID = chain_id;
+                                    EditingPointID = target_point.getID();
+                                    fbpe.setModal( true );
+                                    fbpe.setVisible( true );
+                                    BDialogResult ret = fbpe.getDialogResult();
+                                    EditingChainID = -1;
+                                    EditingPointID = -1;
+                                    BezierChain after = AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).getBezierChain( _selected_curve, chain_id );
+                                    // 編集前の状態に戻す
+                                    CadenciiCommand revert = VsqFileEx.generateCommandReplaceBezierChain( track,
+                                                                                                   _selected_curve,
+                                                                                                   chain_id,
+                                                                                                   before,
+                                                                                                   AppManager.editorConfig.getControlCurveResolutionValue() );
+                                    executeCommand( revert, false );
+                                    if ( ret == BDialogResult.OK ) {
+                                        // ダイアログの結果がOKで、かつベジエ曲線が単調増加なら編集を適用
+                                        if ( BezierChain.isBezierImplicit( target_chain ) ) {
+                                            CadenciiCommand run = VsqFileEx.generateCommandReplaceBezierChain( track,
+                                                                                                        _selected_curve,
+                                                                                                        chain_id,
+                                                                                                        after,
+                                                                                                        AppManager.editorConfig.getControlCurveResolutionValue() );
+                                            executeCommand( run, true );
+                                        }
+                                    }
+                                } catch ( Exception ex ) {
+                                } finally {
+                                    if ( fbpe != null ) {
+                                        try {
+                                            fbpe.close();
+                                        } catch ( Exception ex2 ) {
+                                        }
+                                    }
+                                }
+                                #endregion
                             } else {
+                                #region ダブルクリックした位置にベジエデータ点が無かった場合
+                                VsqBPList list = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( _selected_curve.getName() );
+                                boolean bp_found = false;
+                                long bp_id = -1;
+                                int tclock = 0;
+                                if ( list != null ) {
+                                    int list_size = list.size();
+                                    for ( int i = 0; i < list_size; i++ ) {
+                                        int c = list.getKeyClock( i );
+                                        int bpx = AppManager.xCoordFromClocks( c );
+                                        if ( e.X < bpx - DOT_WID ) {
+                                            break;
+                                        }
+                                        if ( bpx - DOT_WID <= e.X && e.X <= bpx + DOT_WID ) {
+                                            VsqBPPair bp = list.getElementB( i );
+                                            int bpy = yCoordFromValue( bp.value );
+                                            if ( bpy - DOT_WID <= e.Y && e.Y <= bpy + DOT_WID ) {
+                                                bp_found = true;
+                                                bp_id = bp.id;
+                                                tclock = c;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if ( bp_found ) {
+                                    AppManager.clearSelectedPoint();
+                                    AppManager.addSelectedPoint( _selected_curve, bp_id );
+                                    FormCurvePointEdit dialog = new FormCurvePointEdit( bp_id, _selected_curve );
+                                    int tx = AppManager.xCoordFromClocks( tclock );
+                                    Point pt = pointToScreen( new Point( tx, 0 ) );
+                                    invalidate();
+                                    dialog.setLocation( new Point( pt.x - dialog.getWidth() / 2, pt.y - dialog.getHeight() ) );
+                                    dialog.setModal( true );
+                                    dialog.setVisible( true );
+                                }
+                                #endregion
+                            }
+                        }
+                    }
+                    #endregion
+                } else if ( getHeight() - 2 * OFFSET_TRACK_TAB <= e.Y && e.Y <= getHeight() - OFFSET_TRACK_TAB ) {
+                    #region MouseDown occured on singer list
+                    if ( AppManager.getSelectedTool() != EditTool.ERASER ) {
+                        VsqEvent ve = findItemAt( e.X, e.Y );
+                        VsqFileEx vsq = AppManager.getVsqFile();
+                        int selected = AppManager.getSelected();
+                        VsqTrack vsq_track = vsq.Track.get( selected );
+                        RendererKind renderer = VsqFileEx.getTrackRendererKind( vsq_track );
+                        if ( ve == null ) {
+                            int x_at_left = AppManager.keyWidth + AppManager.keyOffset;
+                            Rectangle rc_left_singer_box =
+                                new Rectangle(
+                                    x_at_left,
+                                    this.getHeight() - 2 * OFFSET_TRACK_TAB + 1,
+                                    SINGER_ITEM_WIDTH, OFFSET_TRACK_TAB - 2 );
+                            if ( isInRect( e.X, e.Y, rc_left_singer_box ) ) {
+                                // マウス位置に歌手変更が無かった場合であって、かつ、
+                                // マウス位置が左端の常時歌手表示部の内部だった場合
+                                int clock_at_left = AppManager.clockFromXCoord( x_at_left );
+                                ve = vsq_track.getSingerEventAt( clock_at_left );
+                            }
+                        }
+                        if ( ve != null ) {
+                            // マウス位置に何らかのアイテムがあった場合
+                            if ( ve.ID.type != VsqIDType.Singer ) {
+                                return;
+                            }
+                            if ( !_cmenu_singer_prepared.Equals( renderer ) ) {
+                                prepareSingerMenu( renderer );
+                            }
+                            TagForCMenuSinger tag = new TagForCMenuSinger();
+                            tag.SingerChangeExists = true;
+                            tag.InternalID = ve.InternalID;
+                            cmenuSinger.setTag( tag );//                        new KeyValuePair<boolean, int>( true, ve.InternalID );
+                            MenuElement[] sub_cmenu_singer = cmenuSinger.getSubElements();
+                            for ( int i = 0; i < sub_cmenu_singer.Length; i++ ) {
+                                BMenuItem tsmi = (BMenuItem)sub_cmenu_singer[i];
+                                TagForCMenuSingerDropDown tag2 = (TagForCMenuSingerDropDown)tsmi.getTag();
+                                if ( tag2.Language == ve.ID.IconHandle.Language &&
+                                     tag2.Program == ve.ID.IconHandle.Program ) {
+                                    tsmi.setSelected( true );
+                                } else {
+                                    tsmi.setSelected( false );
+                                }
+                            }
+                            cmenuSinger.show( this, e.X, e.Y );
+                        } else {
+                            // マウス位置に何もアイテムが無かった場合
+                            if ( !_cmenu_singer_prepared.Equals( renderer ) ) {
+                                prepareSingerMenu( renderer );
+                            }
+                            String singer = AppManager.editorConfig.DefaultSingerName;
+                            int clock = AppManager.clockFromXCoord( e.X );
+                            int last_clock = 0;
+                            for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getSingerEventIterator(); itr.hasNext(); ) {
+                                VsqEvent ve2 = itr.next();
+                                if ( last_clock <= clock && clock < ve2.Clock ) {
+                                    singer = ((IconHandle)ve2.ID.IconHandle).IDS;
+                                    break;
+                                }
+                                last_clock = ve2.Clock;
+                            }
+                            TagForCMenuSinger tag = new TagForCMenuSinger();
+                            tag.SingerChangeExists = false;
+                            tag.Clock = clock;
+                            cmenuSinger.setTag( tag );//                        new KeyValuePair<boolean, int>( false, clock );
+                            MenuElement[] sub_cmenu_singer = cmenuSinger.getSubElements();
+                            for ( int i = 0; i < sub_cmenu_singer.Length; i++ ) {
+                                BMenuItem tsmi = (BMenuItem)sub_cmenu_singer[i];
                                 tsmi.setSelected( false );
                             }
+                            cmenuSinger.show( this, e.X, e.Y );
                         }
-                        cmenuSinger.show( this, e.X, e.Y );
-                    } else {
-                        // マウス位置に何もアイテムが無かった場合
-                        if ( !_cmenu_singer_prepared.Equals( renderer ) ) {
-                            prepareSingerMenu( renderer );
-                        }
-                        String singer = AppManager.editorConfig.DefaultSingerName;
-                        int clock = AppManager.clockFromXCoord( e.X );
-                        int last_clock = 0;
-                        for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getSingerEventIterator(); itr.hasNext(); ) {
-                            VsqEvent ve2 = itr.next();
-                            if ( last_clock <= clock && clock < ve2.Clock ) {
-                                singer = ((IconHandle)ve2.ID.IconHandle).IDS;
-                                break;
-                            }
-                            last_clock = ve2.Clock;
-                        }
-                        TagForCMenuSinger tag = new TagForCMenuSinger();
-                        tag.SingerChangeExists = false;
-                        tag.Clock = clock;
-                        cmenuSinger.setTag( tag );//                        new KeyValuePair<boolean, int>( false, clock );
-                        MenuElement[] sub_cmenu_singer = cmenuSinger.getSubElements();
-                        for ( int i = 0; i < sub_cmenu_singer.Length; i++ ) {
-                            BMenuItem tsmi = (BMenuItem)sub_cmenu_singer[i];
-                            tsmi.setSelected( false );
-                        }
-                        cmenuSinger.show( this, e.X, e.Y );
                     }
+                    #endregion
                 }
-                #endregion
             }
         }
 
@@ -5702,48 +5691,6 @@ namespace org.kbinani.cadencii {
             }
         }
 
-#if !JAVA
-        private void panelZoomButton_Paint( Object sender, System.Windows.Forms.PaintEventArgs e ) {
-            Graphics2D g = new Graphics2D( e.Graphics );
-            // 外枠
-            int halfheight = panelZoomButton.Height / 2;
-            g.setColor( new Color( 118, 123, 138 ) );
-            g.drawRect( 0, 0, panelZoomButton.Width - 1, panelZoomButton.Height - 1 );
-            g.drawLine( 0, halfheight, panelZoomButton.Width, halfheight );
-            /*if ( m_selected_curve == CurveType.PIT ) {
-                int halfwidth = panelZoomButton.Width / 2;
-                int quoterheight = panelZoomButton.Height / 4;
-                // +の文字
-                e.Graphics.drawLine( Pens.Black, new Point( halfwidth - 4, quoterheight ), new Point( halfwidth + 4, quoterheight ) );
-                e.Graphics.drawLine( Pens.Black, new Point( halfwidth, quoterheight - 4 ), new Point( halfwidth, quoterheight + 4 ) );
-
-                // -の文字
-                e.Graphics.drawLine( Pens.Black, new Point( halfwidth - 4, quoterheight + halfheight ), new Point( halfwidth + 4, quoterheight + halfheight ) );
-            }*/
-        }
-#endif
-
-        private void panelZoomButton_MouseDown( Object sender, BMouseEventArgs e ) {
-            return;
-            /* // Pitch表示のとき、縦方向倍率変更ボタン上のMouseDownかどうかを検査
-            if ( m_selected_curve == CurveType.PIT && e.Button == MouseButtons.Left ) {
-                if ( 0 <= e.X && e.X < panelZoomButton.Width ) {
-                    int halfheight = panelZoomButton.Height / 2;
-                    if ( 0 <= e.Y && e.Y < halfheight ) {
-                        if ( m_internal_pbs - 1 >= 1 ) {
-                            m_internal_pbs--;
-                            this.Invalidate();
-                        }
-                    } else if ( halfheight < e.Y && e.Y < panelZoomButton.Height ) {
-                        if ( m_internal_pbs + 1 <= 24 ) {
-                            m_internal_pbs++;
-                            this.Invalidate();
-                        }
-                    }
-                }
-            }*/
-        }
-
         private void registerEventHandlers() {
 #if JAVA
 #else
@@ -5780,8 +5727,6 @@ namespace org.kbinani.cadencii {
             this.cmenuCurveEnvelope.clickEvent.add( new BEventHandler( this, "cmenuCurveCommon_Click" ) );
 #if !JAVA
             this.Load += new System.EventHandler( this.TrackSelector_Load );
-            this.panelZoomButton.Paint += new System.Windows.Forms.PaintEventHandler( this.panelZoomButton_Paint );
-            this.panelZoomButton.MouseDown += new System.Windows.Forms.MouseEventHandler( this.panelZoomButton_MouseDown );
 #endif
 
             this.mouseMoveEvent.add( new BMouseEventHandler( this, "TrackSelector_MouseMove" ) );
@@ -5868,8 +5813,6 @@ namespace org.kbinani.cadencii {
             this.cmenuCurveSeparator5 = new org.kbinani.windows.forms.BMenuSeparator();
             this.cmenuCurveEffect2Depth = new org.kbinani.windows.forms.BMenuItem();
             this.cmenuCurveEnvelope = new org.kbinani.windows.forms.BMenuItem();
-            this.vScroll = new org.kbinani.windows.forms.BVScrollBar();
-            this.panelZoomButton = new System.Windows.Forms.Panel();
             this.cmenuCurve.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -5976,19 +5919,19 @@ namespace org.kbinani.cadencii {
             // cmenuCurveReso1Freq
             // 
             this.cmenuCurveReso1Freq.Name = "cmenuCurveReso1Freq";
-            this.cmenuCurveReso1Freq.Size = new System.Drawing.Size( 152, 22 );
+            this.cmenuCurveReso1Freq.Size = new System.Drawing.Size( 143, 22 );
             this.cmenuCurveReso1Freq.Text = "Frequency";
             // 
             // cmenuCurveReso1BW
             // 
             this.cmenuCurveReso1BW.Name = "cmenuCurveReso1BW";
-            this.cmenuCurveReso1BW.Size = new System.Drawing.Size( 152, 22 );
+            this.cmenuCurveReso1BW.Size = new System.Drawing.Size( 143, 22 );
             this.cmenuCurveReso1BW.Text = "Band Width";
             // 
             // cmenuCurveReso1Amp
             // 
             this.cmenuCurveReso1Amp.Name = "cmenuCurveReso1Amp";
-            this.cmenuCurveReso1Amp.Size = new System.Drawing.Size( 152, 22 );
+            this.cmenuCurveReso1Amp.Size = new System.Drawing.Size( 143, 22 );
             this.cmenuCurveReso1Amp.Text = "Amplitude";
             // 
             // cmenuCurveReso2
@@ -6004,19 +5947,19 @@ namespace org.kbinani.cadencii {
             // cmenuCurveReso2Freq
             // 
             this.cmenuCurveReso2Freq.Name = "cmenuCurveReso2Freq";
-            this.cmenuCurveReso2Freq.Size = new System.Drawing.Size( 152, 22 );
+            this.cmenuCurveReso2Freq.Size = new System.Drawing.Size( 143, 22 );
             this.cmenuCurveReso2Freq.Text = "Frequency";
             // 
             // cmenuCurveReso2BW
             // 
             this.cmenuCurveReso2BW.Name = "cmenuCurveReso2BW";
-            this.cmenuCurveReso2BW.Size = new System.Drawing.Size( 152, 22 );
+            this.cmenuCurveReso2BW.Size = new System.Drawing.Size( 143, 22 );
             this.cmenuCurveReso2BW.Text = "Band Width";
             // 
             // cmenuCurveReso2Amp
             // 
             this.cmenuCurveReso2Amp.Name = "cmenuCurveReso2Amp";
-            this.cmenuCurveReso2Amp.Size = new System.Drawing.Size( 152, 22 );
+            this.cmenuCurveReso2Amp.Size = new System.Drawing.Size( 143, 22 );
             this.cmenuCurveReso2Amp.Text = "Amplitude";
             // 
             // cmenuCurveReso3
@@ -6032,19 +5975,19 @@ namespace org.kbinani.cadencii {
             // cmenuCurveReso3Freq
             // 
             this.cmenuCurveReso3Freq.Name = "cmenuCurveReso3Freq";
-            this.cmenuCurveReso3Freq.Size = new System.Drawing.Size( 152, 22 );
+            this.cmenuCurveReso3Freq.Size = new System.Drawing.Size( 143, 22 );
             this.cmenuCurveReso3Freq.Text = "Frequency";
             // 
             // cmenuCurveReso3BW
             // 
             this.cmenuCurveReso3BW.Name = "cmenuCurveReso3BW";
-            this.cmenuCurveReso3BW.Size = new System.Drawing.Size( 152, 22 );
+            this.cmenuCurveReso3BW.Size = new System.Drawing.Size( 143, 22 );
             this.cmenuCurveReso3BW.Text = "Band Width";
             // 
             // cmenuCurveReso3Amp
             // 
             this.cmenuCurveReso3Amp.Name = "cmenuCurveReso3Amp";
-            this.cmenuCurveReso3Amp.Size = new System.Drawing.Size( 152, 22 );
+            this.cmenuCurveReso3Amp.Size = new System.Drawing.Size( 143, 22 );
             this.cmenuCurveReso3Amp.Text = "Amplitude";
             // 
             // cmenuCurveReso4
@@ -6060,19 +6003,19 @@ namespace org.kbinani.cadencii {
             // cmenuCurveReso4Freq
             // 
             this.cmenuCurveReso4Freq.Name = "cmenuCurveReso4Freq";
-            this.cmenuCurveReso4Freq.Size = new System.Drawing.Size( 128, 22 );
+            this.cmenuCurveReso4Freq.Size = new System.Drawing.Size( 143, 22 );
             this.cmenuCurveReso4Freq.Text = "Frequency";
             // 
             // cmenuCurveReso4BW
             // 
             this.cmenuCurveReso4BW.Name = "cmenuCurveReso4BW";
-            this.cmenuCurveReso4BW.Size = new System.Drawing.Size( 128, 22 );
+            this.cmenuCurveReso4BW.Size = new System.Drawing.Size( 143, 22 );
             this.cmenuCurveReso4BW.Text = "Band Width";
             // 
             // cmenuCurveReso4Amp
             // 
             this.cmenuCurveReso4Amp.Name = "cmenuCurveReso4Amp";
-            this.cmenuCurveReso4Amp.Size = new System.Drawing.Size( 128, 22 );
+            this.cmenuCurveReso4Amp.Size = new System.Drawing.Size( 143, 22 );
             this.cmenuCurveReso4Amp.Text = "Amplitude";
             // 
             // cmenuCurveSeparator3
@@ -6156,33 +6099,11 @@ namespace org.kbinani.cadencii {
             this.cmenuCurveEnvelope.Size = new System.Drawing.Size( 184, 22 );
             this.cmenuCurveEnvelope.Text = "Envelope";
             // 
-            // vScroll
-            // 
-            this.vScroll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.vScroll.Enabled = false;
-            this.vScroll.Location = new System.Drawing.Point( 414, 0 );
-            this.vScroll.Name = "vScroll";
-            this.vScroll.Size = new System.Drawing.Size( 16, 193 );
-            this.vScroll.TabIndex = 2;
-            // 
-            // panelZoomButton
-            // 
-            this.panelZoomButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelZoomButton.BackColor = System.Drawing.Color.DarkGray;
-            this.panelZoomButton.Location = new System.Drawing.Point( 414, 193 );
-            this.panelZoomButton.Margin = new System.Windows.Forms.Padding( 0 );
-            this.panelZoomButton.Name = "panelZoomButton";
-            this.panelZoomButton.Size = new System.Drawing.Size( 16, 33 );
-            this.panelZoomButton.TabIndex = 3;
-            // 
             // TrackSelector
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 12F );
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.DarkGray;
-            this.Controls.Add( this.vScroll );
-            this.Controls.Add( this.panelZoomButton );
             this.DoubleBuffered = true;
             this.Name = "TrackSelector";
             this.Size = new System.Drawing.Size( 430, 228 );
@@ -6231,8 +6152,6 @@ namespace org.kbinani.cadencii {
         private BMenuItem cmenuCurveDecay;
         private BMenuItem cmenuCurveVibratoRate;
         private BMenuItem cmenuCurveVibratoDepth;
-        private BVScrollBar vScroll;
-        private System.Windows.Forms.Panel panelZoomButton;
         private BMenuItem cmenuCurvePitchBend;
         private BMenuItem cmenuCurvePitchBendSensitivity;
         private BMenuItem cmenuCurveEnvelope;

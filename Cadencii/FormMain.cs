@@ -538,6 +538,38 @@ namespace org.kbinani.cadencii {
         /// 歌詞流し込み用のダイアログ
         /// </summary>
         private FormImportLyric formImportLyric = null;
+        /// <summary>
+        /// ミニチュアピアノロールの左側の第1ボタン上でマウスが下りている状態かどうか
+        /// </summary>
+        private boolean _overviewButtonLeft1MouseDowned = false;
+        /// <summary>
+        /// ミニチュアピアノロールの左側の第2ボタン上でマウスが下りている状態かどうか
+        /// </summary>
+        private boolean _overviewButtonLeft2MouseDowned = false;
+        /// <summary>
+        /// ミニチュアピアノロールの右側の第1ボタン上でマウスが下りている状態かどうか
+        /// </summary>
+        private boolean _overviewButtonRight1MouseDowned = false;
+        /// <summary>
+        /// ミニチュアピアノロールの右側の第2ボタン上でマウスが下りている状態かどうか
+        /// </summary>
+        private boolean _overviewButtonRight2MouseDowned = false;
+        /// <summary>
+        /// ミニチュアピアノロールの拡大ボタン上でマウスが下りている状態かどうか
+        /// </summary>
+        private boolean _overviewButtonZoomMouseDowned = false;
+        /// <summary>
+        /// ミニチュアピアノロールの縮小ボタン上でマウスが下りている状態かどうか
+        /// </summary>
+        private boolean _overviewButtonMoozMouseDowned = false;
+        /// <summary>
+        /// デフォルトのストローク
+        /// </summary>
+        private BasicStroke _strokeDefault = null;
+        /// <summary>
+        /// 描画幅2pxのストローク
+        /// </summary>
+        private BasicStroke _stroke2px = null;
         #endregion
 
         #region constructor
@@ -673,6 +705,7 @@ namespace org.kbinani.cadencii {
             trackSelector.selectedCurveChangedEvent.add( new SelectedCurveChangedEventHandler( this, "trackSelector_SelectedCurveChanged" ) );
             trackSelector.renderRequiredEvent.add( new RenderRequiredEventHandler( this, "trackSelector_RenderRequired" ) );
             trackSelector.preferredMinHeightChangedEvent.add( new BEventHandler( this, "trackSelector_PreferredMinHeightChanged" ) );
+            trackSelector.mouseDoubleClickEvent.add( new BMouseEventHandler( this, "trackSelector_MouseDoubleClick" ) );
 
 #if !JAVA
             splitContainer1.Panel2MinSize = trackSelector.getPreferredMinSize();
@@ -957,6 +990,28 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region helper methods
+        /// <summary>
+        /// デフォルトのストロークを取得します
+        /// </summary>
+        /// <returns></returns>
+        private BasicStroke getStrokeDefault() {
+            if ( _strokeDefault == null ) {
+                _strokeDefault = new BasicStroke();
+            }
+            return _strokeDefault;
+        }
+
+        /// <summary>
+        /// 描画幅が2pxのストロークを取得します
+        /// </summary>
+        /// <returns></returns>
+        private BasicStroke getStroke2px() {
+            if ( _stroke2px == null ) {
+                _stroke2px = new BasicStroke( 2.0f );
+            }
+            return _stroke2px;
+        }
+
         /// <summary>
         /// 選択された音符の長さを、指定したゲートタイム分長くします。
         /// </summary>
@@ -1254,12 +1309,6 @@ namespace org.kbinani.cadencii {
             }
             return null;
         }
-
-        private void changeCurrentClockView( Object sender, EventArgs e ) {
-            stripLblBeat.setText( AppManager.getPlayPosition().numerator + "/" + AppManager.getPlayPosition().denominator );
-            stripLblTempo.setText( PortUtil.formatDecimal( "#.00#", 60e6 / (float)AppManager.getPlayPosition().tempo ) );
-            stripLblCursor.setText( AppManager.getPlayPosition().barCount + " : " + AppManager.getPlayPosition().beat + " : " + PortUtil.formatDecimal( "000", AppManager.getPlayPosition().clock ) );
-        }
         #endregion
 
         #region public methods
@@ -1461,11 +1510,12 @@ namespace org.kbinani.cadencii {
 #else
                 Thread.Sleep( 100 );
 #endif
+                int key_width = AppManager.keyWidth;
                 double dt = PortUtil.getCurrentTime() - m_overview_btn_downed;
                 int draft = (int)(m_overview_start_to_draw_clock_initial_value + m_overview_direction * dt * _OVERVIEW_SCROLL_SPEED / m_overview_px_per_clock);
-                int clock = getOverviewClockFromXCoord( pictOverview.getWidth(), draft );
+                int clock = getOverviewClockFromXCoord( panelOverview.getWidth() - key_width, draft );
                 if ( AppManager.getVsqFile().TotalClocks < clock ) {
-                    draft = AppManager.getVsqFile().TotalClocks - (int)(pictOverview.getWidth() / m_overview_px_per_clock);
+                    draft = AppManager.getVsqFile().TotalClocks - (int)((panelOverview.getWidth() - key_width) / m_overview_px_per_clock);
                 }
                 if ( draft < 0 ) {
                     draft = 0;
@@ -1481,7 +1531,7 @@ namespace org.kbinani.cadencii {
 #if JAVA
                 repaint();
 #else
-                pictOverview.invalidate();// this.Invoke( new BEventHandler( invalidatePictOverview ) );
+                panelOverview.invalidate();// this.Invoke( new BEventHandler( invalidatePictOverview ) );
 #endif
             }
 #if JAVA
@@ -1490,7 +1540,7 @@ namespace org.kbinani.cadencii {
         }
 
         public void invalidatePictOverview( Object sender, EventArgs e ) {
-            pictOverview.invalidate();
+            panelOverview.invalidate();
         }
 
         public float getOverviewScaleX( int scale_count ) {
@@ -1727,9 +1777,6 @@ namespace org.kbinani.cadencii {
         public void updateLayout() {
 #if JAVA
             int keywidth = AppManager.keyWidth;
-            Dimension d1 = new Dimension( keywidth, panelZooMooz.getHeight() );
-            panelZooMooz.setPreferredSize( d1 );
-            panelZooMooz.setSize( d1 );
             Dimension d2 = new Dimension( keywidth, pictureBox3.getHeight() );
             pictureBox3.setPreferredSize( d2 );
             pictureBox3.setSize( d2 );
@@ -1744,13 +1791,9 @@ namespace org.kbinani.cadencii {
             }
             panelOverview.Width = width;
             int key_width = AppManager.keyWidth;
-            pictOverview.Left = key_width;
-            pictOverview.Width = panelOverview.Width - key_width;
-            pictOverview.Top = 0;
-            pictOverview.Height = panelOverview.Height;
 
-            btnMooz.setBounds( 3, 12, 23, 23 );
-            btnZoom.setBounds( 26, 12, 23, 23 );
+            /*btnMooz.setBounds( 3, 12, 23, 23 );
+            btnZoom.setBounds( 26, 12, 23, 23 );*/
 
             picturePositionIndicator.Width = width;
             picturePositionIndicator.Height = _PICT_POSITION_INDICATOR_HEIGHT;
@@ -5629,25 +5672,6 @@ namespace org.kbinani.cadencii {
         }
 
         /// <summary>
-        /// 画面上のマウス位置におけるクロック値を元に，_toolbar_measureの場所表示文字列を更新します．
-        /// </summary>
-        /// <param name="mouse_pos_x"></param>
-        public void updatePositionViewFromMousePosition( int clock ) {
-            int barcount = AppManager.getVsqFile().getBarCountFromClock( clock );
-            //int numerator, denominator;
-            Timesig timesig = AppManager.getVsqFile().getTimesigAt( clock );
-            int clock_per_beat = 480 / 4 * timesig.denominator;
-            int barcount_clock = AppManager.getVsqFile().getClockFromBarCount( barcount );
-            int beat = (clock - barcount_clock) / clock_per_beat;
-            int odd = clock - barcount_clock - beat * clock_per_beat;
-#if OBSOLUTE
-            m_toolbar_measure.Measure = (barcount - AppManager.VsqFile.PreMeasure + 1) + " : " + (beat + 1) + " : " + odd.ToString( "000" );
-#else
-            stripLblMeasure.setText( (barcount - AppManager.getVsqFile().getPreMeasure() + 1) + " : " + (beat + 1) + " : " + PortUtil.formatDecimal( "000", odd ) );
-#endif
-        }
-
-        /// <summary>
         /// 描画すべきオブジェクトのリスト，AppManager.drawObjectsを更新します
         /// </summary>
         public void updateDrawObjectList() {
@@ -6208,7 +6232,7 @@ namespace org.kbinani.cadencii {
                     if ( blt.isSeparator() ) {
                         int current = blt.getBarCount() - vsq.getPreMeasure() + 1;
                         g.setColor( s_pen_105_105_105 );
-                        g.drawLine( x, 3, x, 46 );
+                        g.drawLine( x, 0, x, 49 );
                         // 小節の数字
                         //g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
                         g.setColor( Color.black );
@@ -6303,34 +6327,13 @@ namespace org.kbinani.cadencii {
                     #endregion
                 }
 
-                #region 外枠
-                /* 左(外側) */
-                g.setColor( new Color( 160, 160, 160 ) );
-                g.drawLine( 0, 0, 0, height - 1 );
-                /* 左(内側) */
-                g.setColor( new Color( 105, 105, 105 ) );
-                g.drawLine( 1, 1, 1, height - 2 );
-                /* 中(上側) */
-                g.setColor( new Color( 160, 160, 160 ) );
-                g.drawLine( 1, 47, width - 2, 47 );
-                /* 中(下側) */
-                g.setColor( new Color( 105, 105, 105 ) );
-                g.drawLine( 2, 48, width - 3, 48 );
-                // 右(外側)
-                g.setColor( Color.white );
-                g.drawLine( width - 1, 0, width - 1, height - 1 );
-                // 右(内側)
-                g.setColor( new Color( 241, 239, 226 ) );
-                g.drawLine( width - 2, 1, width - 2, height - 1 );
-                #endregion
-
                 #region 現在のマーカー
                 float xoffset = AppManager.keyWidth + AppManager.keyOffset - AppManager.getStartToDrawX();
                 int marker_x = (int)(AppManager.getCurrentClock() * AppManager.getScaleX() + xoffset);
                 if ( AppManager.keyWidth <= marker_x && marker_x <= width ) {
                     g.setStroke( new BasicStroke( 2.0f ) );
                     g.setColor( Color.white );
-                    g.drawLine( marker_x, 2, marker_x, height );
+                    g.drawLine( marker_x, 0, marker_x, height );
                     g.setStroke( new BasicStroke() );
                 }
                 if ( AppManager.startMarkerEnabled ) {
@@ -6348,27 +6351,22 @@ namespace org.kbinani.cadencii {
                 #region TEMPO & BEAT
                 // TEMPO BEATの文字の部分。小節数が被っている可能性があるので、塗り潰す
                 g.setColor( picturePositionIndicator.getBackground() );
-                g.fillRect( 2, 3, AppManager.keyWidth - 2, 45 );
+                g.fillRect( 0, 0, AppManager.keyWidth, 48 );
                 // 横ライン上
                 g.setColor( new Color( 104, 104, 104 ) );
-                g.drawLine( 2, 17, width - 3, 17 );
+                g.drawLine( 0, 17, width, 17 );
                 // 横ライン中央
-                g.drawLine( 2, 32, width - 3, 32 );
+                g.drawLine( 0, 32, width, 32 );
                 // 横ライン下
-                g.drawLine( 2, 47, width - 3, 47 );
+                g.drawLine( 0, 47, width, 47 );
                 // 縦ライン
-                g.drawLine( AppManager.keyWidth, 2, AppManager.keyWidth, 46 );
+                g.drawLine( AppManager.keyWidth, 0, AppManager.keyWidth, 48 );
                 /* TEMPO&BEATとピアノロールの境界 */
                 g.drawLine( AppManager.keyWidth, 48, width - 18, 48 );
                 g.setFont( SMALL_FONT );
                 g.setColor( Color.black );
                 g.drawString( "TEMPO", 11, 24 - small_font_offset + 1 );
                 g.drawString( "BEAT", 11, 40 - small_font_offset + 1 );
-                g.setColor( new Color( 172, 168, 153 ) );
-                g.drawLine( 0, 0, width, 0 );
-                g.setColor( new Color( 113, 111, 100 ) );
-                g.drawLine( 1, 1, width - 1, 1 );
-
                 #endregion
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "FormMain#picturePositionIndicatorDrawTo; ex=" + ex );
@@ -6657,7 +6655,7 @@ namespace org.kbinani.cadencii {
             pictKeyLengthSplitter.mouseMoveEvent.add( new BMouseEventHandler( this, "pictKeyLengthSplitter_MouseMove" ) );
             pictKeyLengthSplitter.mouseDownEvent.add( new BMouseEventHandler( this, "pictKeyLengthSplitter_MouseDown" ) );
             pictKeyLengthSplitter.mouseUpEvent.add( new BMouseEventHandler( this, "pictKeyLengthSplitter_MouseUp" ) );
-            btnRight1.mouseDownEvent.add( new BMouseEventHandler( this, "btnRight_MouseDown" ) );
+            /*btnRight1.mouseDownEvent.add( new BMouseEventHandler( this, "btnRight_MouseDown" ) );
             btnRight1.mouseUpEvent.add( new BMouseEventHandler( this, "btnRight_MouseUp" ) );
             btnRight1.mouseLeaveEvent.add( new BEventHandler( this, "overviewCommon_MouseLeave" ) );
             btnLeft2.mouseDownEvent.add( new BMouseEventHandler( this, "btnLeft_MouseDown" ) );
@@ -6670,14 +6668,14 @@ namespace org.kbinani.cadencii {
             btnLeft1.mouseLeaveEvent.add( new BEventHandler( this, "overviewCommon_MouseLeave" ) );
             btnRight2.mouseDownEvent.add( new BMouseEventHandler( this, "btnRight_MouseDown" ) );
             btnRight2.mouseUpEvent.add( new BMouseEventHandler( this, "btnRight_MouseUp" ) );
-            btnRight2.mouseLeaveEvent.add( new BEventHandler( this, "overviewCommon_MouseLeave" ) );
-            pictOverview.mouseMoveEvent.add( new BMouseEventHandler( this, "pictOverview_MouseMove" ) );
-            pictOverview.mouseDoubleClickEvent.add( new BMouseEventHandler( this, "pictOverview_MouseDoubleClick" ) );
-            pictOverview.mouseDownEvent.add( new BMouseEventHandler( this, "pictOverview_MouseDown" ) );
-            pictOverview.paintEvent.add( new BPaintEventHandler( this, "pictOverview_Paint" ) );
-            pictOverview.mouseUpEvent.add( new BMouseEventHandler( this, "pictOverview_MouseUp" ) );
-            pictOverview.keyUpEvent.add( new BKeyEventHandler( this, "commonCaptureSpaceKeyUp" ) );
-            pictOverview.keyDownEvent.add( new BKeyEventHandler( this, "commonCaptureSpaceKeyDown" ) );
+            btnRight2.mouseLeaveEvent.add( new BEventHandler( this, "overviewCommon_MouseLeave" ) );*/
+            panelOverview.mouseMoveEvent.add( new BMouseEventHandler( this, "pictOverview_MouseMove" ) );
+            panelOverview.mouseDoubleClickEvent.add( new BMouseEventHandler( this, "pictOverview_MouseDoubleClick" ) );
+            panelOverview.mouseDownEvent.add( new BMouseEventHandler( this, "pictOverview_MouseDown" ) );
+            panelOverview.paintEvent.add( new BPaintEventHandler( this, "pictOverview_Paint" ) );
+            panelOverview.mouseUpEvent.add( new BMouseEventHandler( this, "pictOverview_MouseUp" ) );
+            panelOverview.keyUpEvent.add( new BKeyEventHandler( this, "commonCaptureSpaceKeyUp" ) );
+            panelOverview.keyDownEvent.add( new BKeyEventHandler( this, "commonCaptureSpaceKeyDown" ) );
             vScroll.valueChangedEvent.add( new BEventHandler( this, "vScroll_ValueChanged" ) );
             vScroll.resizeEvent.add( new BEventHandler( this, "vScroll_Resize" ) );
             vScroll.enterEvent.add( new BEventHandler( this, "vScroll_Enter" ) );
@@ -7073,17 +7071,6 @@ namespace org.kbinani.cadencii {
         }
 
         #region AppManager
-        public void AppManager_CurrentClockChanged( Object sender, EventArgs e ) {
-#if JAVA
-            changeCurrentClockView( null, null );
-#else
-            EventHandler handler = new EventHandler( changeCurrentClockView );
-            if ( handler != null ) {
-                this.Invoke( handler );
-            }
-#endif
-        }
-
         public void AppManager_GridVisibleChanged( Object sender, EventArgs e ) {
             menuVisualGridline.setSelected( AppManager.isGridVisible() );
             stripBtnGrid.setSelected( AppManager.isGridVisible() );
@@ -8216,7 +8203,7 @@ namespace org.kbinani.cadencii {
                     int clock = doQuantize( AppManager.clockFromXCoord( e.X ), AppManager.getPositionQuantizeClock() );
                     AppManager.setCurrentClock( clock );
                 }
-            } else if ( e.Button == BMouseButtons.Right ) {
+            } else if ( e.Button == BMouseButtons.Middle ) {
                 // ツールをポインター <--> 鉛筆に切り替える
                 if ( AppManager.keyWidth < e.X ) {
                     if ( AppManager.getSelectedTool() == EditTool.ARROW ) {
@@ -9025,7 +9012,6 @@ namespace org.kbinani.cadencii {
                 }
                 AppManager.addingEvent.Clock = new_vibrato_start;
                 AppManager.addingEvent.ID.setLength( new_vibrato_length );
-                updatePositionViewFromMousePosition( clock );
                 if ( !timer.isRunning() ) {
                     refreshScreen();
                 }
@@ -9041,7 +9027,6 @@ namespace org.kbinani.cadencii {
                 AppManager.addingEvent.ID.Note = note;
                 #endregion
             }
-            updatePositionViewFromMousePosition( clock );
 
             // カーソルの形を決める
             if ( !m_mouse_downed && 
@@ -14501,6 +14486,20 @@ namespace org.kbinani.cadencii {
             }
         }
 
+        public void trackSelector_MouseDoubleClick( Object sender, BMouseEventArgs e ) {
+            if ( e.Button == BMouseButtons.Middle ) {
+                // ツールをポインター <--> 鉛筆に切り替える
+                if ( AppManager.keyWidth < e.X &&
+                     e.Y < trackSelector.getHeight() - TrackSelector.OFFSET_TRACK_TAB * 2 ) {
+                    if ( AppManager.getSelectedTool() == EditTool.ARROW ) {
+                        AppManager.setSelectedTool( EditTool.PENCIL );
+                    } else {
+                        AppManager.setSelectedTool( EditTool.ARROW );
+                    }
+                }
+            }
+        }
+
         public void trackSelector_MouseDown( Object sender, BMouseEventArgs e ) {
             if ( AppManager.keyWidth < e.X ) {
                 m_mouse_downed_trackselector = true;
@@ -14534,8 +14533,6 @@ namespace org.kbinani.cadencii {
                 }
             }
             if ( e.Button == BMouseButtons.None ) {
-                int cl = AppManager.clockFromXCoord( e.X );
-                updatePositionViewFromMousePosition( cl );
                 refreshScreen();
                 return;
             }
@@ -14608,8 +14605,6 @@ namespace org.kbinani.cadencii {
                     hScroll.setValue( draft );
                 }
             }
-            int clock = AppManager.clockFromXCoord( e.X );
-            updatePositionViewFromMousePosition( clock );
             refreshScreen();
         }
 
@@ -15994,8 +15989,9 @@ namespace org.kbinani.cadencii {
         }
 
         public void pictOverview_MouseMove( Object sender, BMouseEventArgs e ) {
+            int xoffset = AppManager.keyWidth + AppManager.keyOffset;
             if ( m_overview_mouse_down_mode == OverviewMouseDownMode.LEFT ) {
-                int draft = getOverviewStartToDrawX( e.X );
+                int draft = getOverviewStartToDrawX( e.X - xoffset );
                 if ( draft < 0 ) {
                     draft = 0;
                 }
@@ -16004,9 +16000,10 @@ namespace org.kbinani.cadencii {
             } else if ( m_overview_mouse_down_mode == OverviewMouseDownMode.MIDDLE ) {
                 int dx = e.X - m_overview_mouse_downed_locationx;
                 int draft = m_overview_start_to_draw_clock_initial_value - (int)(dx / m_overview_px_per_clock);
-                int clock = getOverviewClockFromXCoord( pictOverview.getWidth(), draft );
+                int key_width = AppManager.keyWidth;
+                int clock = getOverviewClockFromXCoord( panelOverview.getWidth() - xoffset, draft );
                 if ( AppManager.getVsqFile().TotalClocks < clock ) {
-                    draft = AppManager.getVsqFile().TotalClocks - (int)(pictOverview.getWidth() / m_overview_px_per_clock);
+                    draft = AppManager.getVsqFile().TotalClocks - (int)((panelOverview.getWidth() - xoffset) / m_overview_px_per_clock);
                 }
                 if ( draft < 0 ) {
                     draft = 0;
@@ -16026,19 +16023,60 @@ namespace org.kbinani.cadencii {
                 m_overview_mouse_downed_locationx = e.X;
                 m_overview_start_to_draw_clock_initial_value = m_overview_start_to_draw_clock;
             } else if ( e.Button == BMouseButtons.Left ) {
-                if ( e.Clicks == 1 ) {
-                    m_overview_mouse_down_mode = OverviewMouseDownMode.LEFT;
-                    int draft = getOverviewStartToDrawX( e.X );
-                    if ( draft < 0 ) {
-                        draft = 0;
+                if ( e.X <= AppManager.keyWidth || panelOverview.getWidth() - 19 <= e.X ) {
+                    Point mouse = new Point( e.X, e.Y );
+                    if ( isInRect( mouse, getButtonBoundsLeft1() ) ) {
+                        btnLeft_MouseDown( null, null );
+                        _overviewButtonLeft1MouseDowned = true;
+                    } else if ( isInRect( mouse, getButtonBoundsRight1() ) ) {
+                        btnLeft_MouseDown( null, null );
+                        _overviewButtonRight1MouseDowned = true;
+                    } else if ( isInRect( mouse, getButtonBoundsLeft2() ) ) {
+                        btnRight_MouseDown( null, null );
+                        _overviewButtonLeft2MouseDowned = true;
+                    } else if ( isInRect( mouse, getButtonBoundsRight2() ) ) {
+                        btnRight_MouseDown( null, null );
+                        _overviewButtonRight2MouseDowned = true;
+                    } else if ( isInRect( mouse, getButtonBoundsZoom() ) ) {
+                        btnZoom_Click( null, null );
+                        _overviewButtonZoomMouseDowned = true;
+                    } else if ( isInRect( mouse, getButtonBoundsMooz() ) ) {
+                        btnMooz_Click( null, null );
+                        _overviewButtonMoozMouseDowned = true;
                     }
-                    AppManager.setStartToDrawX( draft );
-                    refreshScreen();
+                    panelOverview.invalidate();
+                } else {
+                    if ( e.Clicks == 1 ) {
+                        m_overview_mouse_down_mode = OverviewMouseDownMode.LEFT;
+                        int draft = getOverviewStartToDrawX( e.X - AppManager.keyWidth - AppManager.keyOffset );
+                        if ( draft < 0 ) {
+                            draft = 0;
+                        }
+                        AppManager.setStartToDrawX( draft );
+                        refreshScreen();
+                        return;
+                    }
                 }
             }
         }
 
         public void pictOverview_MouseUp( Object sender, BMouseEventArgs e ) {
+            Point mouse = new Point( e.X, e.Y );
+            if ( isInRect( mouse, getButtonBoundsLeft1() ) ){
+                btnLeft_MouseUp( null, null );
+            } else if ( isInRect( mouse, getButtonBoundsRight1() ) ) {
+                btnLeft_MouseUp( null, null );
+            } else if ( isInRect( mouse, getButtonBoundsLeft2() ) ){
+                btnRight_MouseUp( null, null );
+            } else if ( isInRect( mouse, getButtonBoundsRight2() ) ) {
+                btnRight_MouseUp( null, null );
+            }
+            _overviewButtonLeft1MouseDowned = false;
+            _overviewButtonLeft2MouseDowned = false;
+            _overviewButtonRight1MouseDowned = false;
+            _overviewButtonRight2MouseDowned = false;
+            _overviewButtonZoomMouseDowned = false;
+            _overviewButtonMoozMouseDowned = false;
             if ( m_overview_mouse_down_mode == OverviewMouseDownMode.LEFT ) {
                 AppManager.setStartToDrawX( calculateStartToDrawX() );
             }
@@ -16054,17 +16092,18 @@ namespace org.kbinani.cadencii {
 #endif
             int count = 0;
             int sum = 0;
-            int height = pictOverview.getHeight();
+            int height = panelOverview.getHeight();
             BasicStroke pen = new java.awt.BasicStroke( _OVERVIEW_DOT_DIAM );
             g.setStroke( pen );
             g.setColor( s_note_fill );
+            int xoffset = AppManager.keyWidth + AppManager.keyOffset;
             for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getNoteEventIterator(); itr.hasNext(); ) {
                 VsqEvent item = itr.next();
                 int x = getOverviewXCoordFromClock( item.Clock );
                 if ( x < 0 ) {
                     continue;
                 }
-                if ( pictOverview.getWidth() < x ) {
+                if ( panelOverview.getWidth() - AppManager.keyWidth < x ) {
                     break;
                 }
                 count++;
@@ -16074,7 +16113,7 @@ namespace org.kbinani.cadencii {
                 if ( length < _OVERVIEW_DOT_DIAM ) {
                     length = _OVERVIEW_DOT_DIAM;
                 }
-                g.drawLine( x, y, x + length, y );
+                g.drawLine( x + xoffset, y, x + length + xoffset, y );
             }
             g.setStroke( new BasicStroke() );
             //}
@@ -16085,7 +16124,7 @@ namespace org.kbinani.cadencii {
 
             // 小節ごとの線
             int clock_start = getOverviewClockFromXCoord( 0 );
-            int clock_end = getOverviewClockFromXCoord( pictOverview.getWidth() );
+            int clock_end = getOverviewClockFromXCoord( panelOverview.getWidth() - AppManager.keyWidth );
             int premeasure = AppManager.getVsqFile().getPreMeasure();
             g.setClip( null );
             BasicStroke pen_bold = new java.awt.BasicStroke( 2 );
@@ -16098,7 +16137,7 @@ namespace org.kbinani.cadencii {
                 if ( bar.clock() < clock_start ) {
                     continue;
                 }
-                if ( pictOverview.getWidth() < barcountx ) {
+                if ( panelOverview.getWidth() - AppManager.keyWidth < barcountx ) {
                     break;
                 }
                 if ( bar.isSeparator() ) {
@@ -16107,19 +16146,19 @@ namespace org.kbinani.cadencii {
                     if ( (barcount % 5 == 0 && barcount > 0) || barcount == 1 ) {
                         g.setColor( pen_color );
                         g.setStroke( pen_bold );
-                        g.drawLine( x, 0, x, pictOverview.getHeight() );
+                        g.drawLine( x + xoffset, 0, x + xoffset, panelOverview.getHeight() );
 
                         g.setStroke( new BasicStroke() );
                         if ( !barcountstr.Equals( "" ) ) {
                             g.setColor( Color.white );
                             g.setFont( AppManager.baseFont9 );
-                            g.drawString( barcountstr, barcountx + 1, 1 + AppManager.baseFont9Height / 2 - AppManager.baseFont9OffsetHeight + 1 );
+                            g.drawString( barcountstr, barcountx + 1 + xoffset, 1 + AppManager.baseFont9Height / 2 - AppManager.baseFont9OffsetHeight + 1 );
                         }
                         barcountstr = barcount + "";
                         barcountx = x;
                     } else {
                         g.setColor( pen_color );
-                        g.drawLine( x, 0, x, pictOverview.getHeight() );
+                        g.drawLine( x + xoffset, 0, x + xoffset, panelOverview.getHeight() );
                     }
                 }
             }
@@ -16135,15 +16174,15 @@ namespace org.kbinani.cadencii {
                 int act_end_x = getOverviewXCoordFromClock( act_end_clock );
                 Rectangle rcm = new Rectangle( act_start_x, 0, act_end_x - act_start_x, height );
                 g.setColor( new Color( 0, 0, 0, 100 ) );
-                g.fillRect( rcm.x, rcm.y, rcm.width, rcm.height );
+                g.fillRect( rcm.x + xoffset, rcm.y, rcm.width, rcm.height );
             }
 
             // 現在の表示範囲
             Rectangle rc = new Rectangle( x_start, 0, x_end - x_start, height - 1 );
             g.setColor( new Color( 255, 255, 255, 50 ) );
-            g.fillRect( rc.x, rc.y, rc.width, rc.height );
+            g.fillRect( rc.x + xoffset, rc.y, rc.width, rc.height );
             g.setColor( AppManager.getHilightColor() );
-            g.drawRect( rc.x, rc.y, rc.width, rc.height );
+            g.drawRect( rc.x + xoffset, rc.y, rc.width, rc.height );
             if ( count > 0 ) {
                 m_overview_average_note = sum / (float)count;
             }
@@ -16152,21 +16191,147 @@ namespace org.kbinani.cadencii {
             int px_current_clock = (int)((AppManager.getCurrentClock() - m_overview_start_to_draw_clock) * m_overview_px_per_clock);
             g.setStroke( new BasicStroke( 2 ) );
             g.setColor( Color.white );
-            g.drawLine( px_current_clock, 0, px_current_clock, pictOverview.getHeight() );
+            g.drawLine( px_current_clock + xoffset, 0, px_current_clock + xoffset, panelOverview.getHeight() );
             g.setStroke( new BasicStroke() );
+
+            int btn_width = 16;
+            // 左側のボタン類
+            g.setStroke( getStrokeDefault() );
+            g.setColor( Color.lightGray );
+            g.fillRect( 0, 0, AppManager.keyWidth, panelOverview.getHeight() );
+            g.setColor( AppManager.COLOR_BORDER );
+            // zoomボタン
+            rc = getButtonBoundsZoom();
+            g.setColor( _overviewButtonZoomMouseDowned ? Color.gray : Color.lightGray );
+            g.fillRect( rc.x, rc.y, rc.width, rc.height );
+            g.setColor( AppManager.COLOR_BORDER );
+            g.drawRect( rc.x, rc.y, rc.width, rc.height );
+            int centerx = rc.x + rc.width / 2 + 1;
+            int centery = rc.y + rc.height / 2 + 1;
+            g.setColor( _overviewButtonZoomMouseDowned ? Color.lightGray : Color.gray );
+            g.setStroke( getStroke2px() );
+            g.drawLine( centerx - 4, centery, centerx + 4, centery );
+            g.drawLine( centerx, centery - 4, centerx, centery + 4 );
+            g.setStroke( getStrokeDefault() );
+            // moozボタン
+            rc = getButtonBoundsMooz();
+            g.setColor( _overviewButtonMoozMouseDowned ? Color.gray : Color.lightGray );
+            g.fillRect( rc.x, rc.y, rc.width, rc.height );
+            g.setColor( AppManager.COLOR_BORDER );
+            g.drawRect( rc.x, rc.y, rc.width, rc.height );
+            centerx = rc.x + rc.width / 2 + 1;
+            centery = rc.y + rc.height / 2 + 1;
+            g.setColor( _overviewButtonMoozMouseDowned ? Color.lightGray : Color.gray );
+            g.setStroke( getStroke2px() );
+            g.drawLine( centerx - 4, centery, centerx + 4, centery );
+            g.setStroke( getStrokeDefault() );
+            // left1ボタン
+            rc = getButtonBoundsLeft1();
+            g.setColor( _overviewButtonLeft1MouseDowned ? Color.gray : Color.lightGray );
+            g.fillRect( rc.x, rc.y, rc.width, rc.height );
+            g.setColor( AppManager.COLOR_BORDER );
+            g.drawRect( rc.x, rc.y, rc.width, rc.height );
+            centerx = rc.x + rc.width / 2 + 1;
+            centery = rc.y + rc.height / 2 + 1;
+            g.setColor( _overviewButtonLeft1MouseDowned ? Color.lightGray : Color.gray );
+            g.drawPolyline( new int[] { centerx + 4, centerx - 4, centerx + 4 }, new int[] { centery - 4, centery, centery + 4 }, 3 );
+            // left2ボタン
+            rc = getButtonBoundsLeft2();
+            g.setColor( _overviewButtonLeft2MouseDowned ? Color.gray : Color.lightGray );
+            g.fillRect( rc.x, rc.y, rc.width, rc.height );
+            g.setColor( AppManager.COLOR_BORDER );
+            g.drawRect( rc.x, rc.y, rc.width, rc.height );
+            centerx = rc.x + rc.width / 2 + 1;
+            centery = rc.y + rc.height / 2 + 1;
+            g.setColor( _overviewButtonLeft2MouseDowned ? Color.lightGray : Color.gray );
+            g.drawPolyline( new int[] { centerx - 4, centerx + 4, centerx - 4 }, new int[] { centery - 4, centery, centery + 4 }, 3 );
+
+            // 右側のボタン類
+            g.setColor( Color.lightGray );
+            g.fillRect( panelOverview.getWidth() - btn_width - 3, 0, btn_width + 3, panelOverview.getHeight() );
+            // right1ボタン
+            rc = getButtonBoundsRight1();
+            g.setColor( _overviewButtonRight1MouseDowned ? Color.gray : Color.lightGray );
+            g.fillRect( rc.x, rc.y, rc.width, rc.height );
+            g.setColor( AppManager.COLOR_BORDER );
+            g.drawRect( rc.x, rc.y, rc.width, rc.height );
+            centerx = rc.x + rc.width / 2 + 1;
+            centery = rc.y + rc.height / 2 + 1;
+            g.setColor( _overviewButtonRight1MouseDowned ? Color.lightGray : Color.gray );
+            g.drawPolyline( new int[] { centerx + 4, centerx - 4, centerx + 4 }, new int[] { centery - 4, centery, centery + 4 }, 3 );
+            // right2ボタン
+            rc = getButtonBoundsRight2();
+            g.setColor( _overviewButtonRight2MouseDowned ? Color.gray : Color.lightGray );
+            g.fillRect( rc.x, rc.y, rc.width, rc.height );
+            g.setColor( AppManager.COLOR_BORDER );
+            g.drawRect( rc.x, rc.y, rc.width, rc.height );
+            centerx = rc.x + rc.width / 2 + 1;
+            centery = rc.y + rc.height / 2 + 1;
+            g.setColor( _overviewButtonRight2MouseDowned ? Color.lightGray : Color.gray );
+            g.drawPolyline( new int[] { centerx - 4, centerx + 4, centerx - 4 }, new int[] { centery - 4, centery, centery + 4 }, 3 );
+        }
+
+        /// <summary>
+        /// btnLeft1の描画位置を取得します
+        /// </summary>
+        /// <returns></returns>
+        private Rectangle getButtonBoundsLeft1() {
+            return new Rectangle( AppManager.keyWidth - 16 - 2, 1, 16, 26 );
+        }
+
+        /// <summary>
+        /// btnLeft2の描画位置を取得します
+        /// </summary>
+        /// <returns></returns>
+        private Rectangle getButtonBoundsLeft2() {
+            return new Rectangle( AppManager.keyWidth - 16 - 2, 26 + 3, 16, 19 );
+        }
+
+        /// <summary>
+        /// btnRight1の描画位置を取得します
+        /// </summary>
+        /// <returns></returns>
+        private Rectangle getButtonBoundsRight1() {
+            return new Rectangle( panelOverview.getWidth() - 16 - 2, 1, 16, 19 );
+        }
+
+        /// <summary>
+        /// btnRight2の描画位置を取得します
+        /// </summary>
+        /// <returns></returns>
+        private Rectangle getButtonBoundsRight2() {
+            return new Rectangle( panelOverview.getWidth() - 16 - 2, 19 + 3, 16, 26 );
+        }
+
+        /// <summary>
+        /// Zoomボタンの描画位置を取得します
+        /// </summary>
+        /// <returns></returns>
+        private Rectangle getButtonBoundsZoom() {
+            return new Rectangle( AppManager.keyWidth - 16 - 2 - 24, 13, 22, 23 );
+        }
+
+        /// <summary>
+        /// Moozボタンの描画位置を取得します
+        /// </summary>
+        /// <returns></returns>
+        private Rectangle getButtonBoundsMooz() {
+            return new Rectangle( AppManager.keyWidth - 16 - 2 - 48, 13, 22, 23 );
         }
 
         public void pictOverview_MouseDoubleClick( Object sender, BMouseEventArgs e ) {
-            m_overview_mouse_down_mode = OverviewMouseDownMode.NONE;
-            int draft_stdx = getOverviewStartToDrawX( e.X );
-            int draft = (int)(draft_stdx * AppManager.getScaleXInv());
-            if ( draft < hScroll.getMinimum() ) {
-                draft = hScroll.getMinimum();
-            } else if ( hScroll.getMaximum() < draft ) {
-                draft = hScroll.getMaximum();
+            if ( AppManager.keyWidth < e.X && e.X < panelOverview.getWidth() - 19 ) {
+                m_overview_mouse_down_mode = OverviewMouseDownMode.NONE;
+                int draft_stdx = getOverviewStartToDrawX( e.X - AppManager.keyWidth - AppManager.keyOffset );
+                int draft = (int)(draft_stdx * AppManager.getScaleXInv());
+                if ( draft < hScroll.getMinimum() ) {
+                    draft = hScroll.getMinimum();
+                } else if ( hScroll.getMaximum() < draft ) {
+                    draft = hScroll.getMaximum();
+                }
+                hScroll.setValue( draft );
+                refreshScreen();
             }
-            hScroll.setValue( draft );
-            refreshScreen();
         }
 
         public void btnLeft_MouseDown( Object sender, BMouseEventArgs e ) {
@@ -16632,7 +16797,7 @@ namespace org.kbinani.cadencii {
                 waveView.repaint();
             }
             if ( AppManager.editorConfig.OverviewEnabled ) {
-                pictOverview.repaint();
+                panelOverview.repaint();
             }
         }
 
@@ -17182,22 +17347,12 @@ namespace org.kbinani.cadencii {
             this.cMenuTrackSelectorSelectAll = new org.kbinani.windows.forms.BMenuItem();
             this.trackBar = new org.kbinani.windows.forms.BSlider();
             this.panel1 = new org.kbinani.windows.forms.BPanel();
-            this.hScroll = new org.kbinani.cadencii.HScroll();
             this.pictureBox3 = new org.kbinani.windows.forms.BPictureBox();
             this.pictKeyLengthSplitter = new org.kbinani.windows.forms.BPictureBox();
             this.pictureBox2 = new org.kbinani.windows.forms.BPictureBox();
             this.vScroll = new org.kbinani.windows.forms.BVScrollBar();
-            this.panelOverview = new org.kbinani.windows.forms.BPanel();
-            this.panelZooMooz = new org.kbinani.windows.forms.BPanel();
-            this.btnRight1 = new org.kbinani.windows.forms.BButton();
-            this.btnMooz = new org.kbinani.windows.forms.BButton();
-            this.btnZoom = new org.kbinani.windows.forms.BButton();
-            this.btnLeft1 = new org.kbinani.windows.forms.BButton();
-            this.btnLeft2 = new org.kbinani.windows.forms.BButton();
-            this.btnRight2 = new org.kbinani.windows.forms.BButton();
-            this.pictOverview = new org.kbinani.windows.forms.BPictureBox();
+            this.panelOverview = new org.kbinani.windows.forms.BPictureBox();
             this.picturePositionIndicator = new org.kbinani.windows.forms.BPictureBox();
-            this.pictPianoRoll = new org.kbinani.cadencii.PictPianoRoll();
             this.toolStripTool = new org.kbinani.windows.forms.BToolBar();
             this.stripBtnPointer = new org.kbinani.windows.forms.BToolStripButton();
             this.stripBtnPencil = new org.kbinani.windows.forms.BToolStripButton();
@@ -17208,15 +17363,6 @@ namespace org.kbinani.cadencii {
             this.stripBtnCurve = new org.kbinani.windows.forms.BToolStripButton();
             this.toolStripContainer = new System.Windows.Forms.ToolStripContainer();
             this.toolStripBottom = new org.kbinani.windows.forms.BToolBar();
-            this.toolStripLabel6 = new org.kbinani.windows.forms.BToolStripLabel();
-            this.stripLblCursor = new org.kbinani.windows.forms.BToolStripLabel();
-            this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripLabel8 = new org.kbinani.windows.forms.BToolStripLabel();
-            this.stripLblTempo = new org.kbinani.windows.forms.BToolStripLabel();
-            this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripLabel10 = new org.kbinani.windows.forms.BToolStripLabel();
-            this.stripLblBeat = new org.kbinani.windows.forms.BToolStripLabel();
-            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.toolStripStatusLabel1 = new org.kbinani.windows.forms.BStatusLabel();
             this.stripLblGameCtrlMode = new org.kbinani.windows.forms.BStatusLabel();
             this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
@@ -17256,9 +17402,6 @@ namespace org.kbinani.cadencii {
             this.stripBtnScroll = new org.kbinani.windows.forms.BToolStripButton();
             this.stripBtnLoop = new org.kbinani.windows.forms.BToolStripButton();
             this.toolStripMeasure = new org.kbinani.windows.forms.BToolBar();
-            this.toolStripLabel5 = new org.kbinani.windows.forms.BToolStripLabel();
-            this.stripLblMeasure = new org.kbinani.windows.forms.BToolStripLabel();
-            this.toolStripButton1 = new System.Windows.Forms.ToolStripSeparator();
             this.stripDDBtnLength = new org.kbinani.windows.forms.BToolStripDropDownButton();
             this.stripDDBtnLength04 = new org.kbinani.windows.forms.BMenuItem();
             this.stripDDBtnLength08 = new org.kbinani.windows.forms.BMenuItem();
@@ -17282,6 +17425,8 @@ namespace org.kbinani.cadencii {
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.stripBtnStartMarker = new org.kbinani.windows.forms.BToolStripButton();
             this.stripBtnEndMarker = new org.kbinani.windows.forms.BToolStripButton();
+            this.hScroll = new org.kbinani.cadencii.HScroll();
+            this.pictPianoRoll = new org.kbinani.cadencii.PictPianoRoll();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
@@ -17291,11 +17436,8 @@ namespace org.kbinani.cadencii {
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictKeyLengthSplitter)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-            this.panelOverview.SuspendLayout();
-            this.panelZooMooz.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictOverview)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.panelOverview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picturePositionIndicator)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).BeginInit();
             this.toolStripTool.SuspendLayout();
             this.toolStripContainer.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
@@ -17306,6 +17448,7 @@ namespace org.kbinani.cadencii {
             this.toolStripFile.SuspendLayout();
             this.toolStripPosition.SuspendLayout();
             this.toolStripMeasure.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStripMain
@@ -18288,7 +18431,7 @@ namespace org.kbinani.cadencii {
             this.menuHiddenPlayFromStartMarker,
             this.menuHiddenFlipCurveOnPianorollMode} );
             this.menuHidden.Name = "menuHidden";
-            this.menuHidden.Size = new System.Drawing.Size( 91, 20 );
+            this.menuHidden.Size = new System.Drawing.Size( 91, 22 );
             this.menuHidden.Text = "MenuHidden";
             this.menuHidden.Visible = false;
             // 
@@ -18474,47 +18617,47 @@ namespace org.kbinani.cadencii {
             this.cMenuPiano.Name = "cMenuPiano";
             this.cMenuPiano.ShowCheckMargin = true;
             this.cMenuPiano.ShowImageMargin = false;
-            this.cMenuPiano.Size = new System.Drawing.Size( 217, 480 );
+            this.cMenuPiano.Size = new System.Drawing.Size( 242, 480 );
             // 
             // cMenuPianoPointer
             // 
             this.cMenuPianoPointer.Name = "cMenuPianoPointer";
-            this.cMenuPianoPointer.Size = new System.Drawing.Size( 216, 22 );
+            this.cMenuPianoPointer.Size = new System.Drawing.Size( 241, 22 );
             this.cMenuPianoPointer.Text = "Arrow(&A)";
             // 
             // cMenuPianoPencil
             // 
             this.cMenuPianoPencil.Name = "cMenuPianoPencil";
-            this.cMenuPianoPencil.Size = new System.Drawing.Size( 216, 22 );
+            this.cMenuPianoPencil.Size = new System.Drawing.Size( 241, 22 );
             this.cMenuPianoPencil.Text = "Pencil(&W)";
             // 
             // cMenuPianoEraser
             // 
             this.cMenuPianoEraser.Name = "cMenuPianoEraser";
-            this.cMenuPianoEraser.Size = new System.Drawing.Size( 216, 22 );
+            this.cMenuPianoEraser.Size = new System.Drawing.Size( 241, 22 );
             this.cMenuPianoEraser.Text = "Eraser(&E)";
             // 
             // cMenuPianoPaletteTool
             // 
             this.cMenuPianoPaletteTool.Name = "cMenuPianoPaletteTool";
-            this.cMenuPianoPaletteTool.Size = new System.Drawing.Size( 216, 22 );
+            this.cMenuPianoPaletteTool.Size = new System.Drawing.Size( 241, 22 );
             this.cMenuPianoPaletteTool.Text = "Palette Tool";
             // 
             // toolStripSeparator15
             // 
             this.toolStripSeparator15.Name = "toolStripSeparator15";
-            this.toolStripSeparator15.Size = new System.Drawing.Size( 213, 6 );
+            this.toolStripSeparator15.Size = new System.Drawing.Size( 238, 6 );
             // 
             // cMenuPianoCurve
             // 
             this.cMenuPianoCurve.Name = "cMenuPianoCurve";
-            this.cMenuPianoCurve.Size = new System.Drawing.Size( 216, 22 );
+            this.cMenuPianoCurve.Size = new System.Drawing.Size( 241, 22 );
             this.cMenuPianoCurve.Text = "Curve(&V)";
             // 
             // toolStripMenuItem13
             // 
             this.toolStripMenuItem13.Name = "toolStripMenuItem13";
-            this.toolStripMenuItem13.Size = new System.Drawing.Size( 213, 6 );
+            this.toolStripMenuItem13.Size = new System.Drawing.Size( 238, 6 );
             // 
             // cMenuPianoFixed
             // 
@@ -18532,7 +18675,7 @@ namespace org.kbinani.cadencii {
             this.cMenuPianoFixedTriplet,
             this.cMenuPianoFixedDotted} );
             this.cMenuPianoFixed.Name = "cMenuPianoFixed";
-            this.cMenuPianoFixed.Size = new System.Drawing.Size( 216, 22 );
+            this.cMenuPianoFixed.Size = new System.Drawing.Size( 241, 22 );
             this.cMenuPianoFixed.Text = "Note Fixed Length(&N)";
             // 
             // cMenuPianoFixed01
@@ -18619,7 +18762,7 @@ namespace org.kbinani.cadencii {
             this.toolStripMenuItem26,
             this.cMenuPianoQuantizeTriplet} );
             this.cMenuPianoQuantize.Name = "cMenuPianoQuantize";
-            this.cMenuPianoQuantize.Size = new System.Drawing.Size( 216, 22 );
+            this.cMenuPianoQuantize.Size = new System.Drawing.Size( 241, 22 );
             this.cMenuPianoQuantize.Text = "Quantize(&Q)";
             // 
             // cMenuPianoQuantize04
@@ -18688,7 +18831,7 @@ namespace org.kbinani.cadencii {
             this.toolStripMenuItem32,
             this.cMenuPianoLengthTriplet} );
             this.cMenuPianoLength.Name = "cMenuPianoLength";
-            this.cMenuPianoLength.Size = new System.Drawing.Size( 216, 22 );
+            this.cMenuPianoLength.Size = new System.Drawing.Size( 241, 22 );
             this.cMenuPianoLength.Text = "Length(&L)";
             // 
             // cMenuPianoLength04
@@ -18747,93 +18890,93 @@ namespace org.kbinani.cadencii {
             // cMenuPianoGrid
             // 
             this.cMenuPianoGrid.Name = "cMenuPianoGrid";
-            this.cMenuPianoGrid.Size = new System.Drawing.Size( 216, 22 );
+            this.cMenuPianoGrid.Size = new System.Drawing.Size( 241, 22 );
             this.cMenuPianoGrid.Text = "Show/Hide Grid Line(&S)";
             // 
             // toolStripMenuItem14
             // 
             this.toolStripMenuItem14.Name = "toolStripMenuItem14";
-            this.toolStripMenuItem14.Size = new System.Drawing.Size( 213, 6 );
+            this.toolStripMenuItem14.Size = new System.Drawing.Size( 238, 6 );
             // 
             // cMenuPianoUndo
             // 
             this.cMenuPianoUndo.Name = "cMenuPianoUndo";
-            this.cMenuPianoUndo.Size = new System.Drawing.Size( 216, 22 );
+            this.cMenuPianoUndo.Size = new System.Drawing.Size( 241, 22 );
             this.cMenuPianoUndo.Text = "Undo(&U)";
             // 
             // cMenuPianoRedo
             // 
             this.cMenuPianoRedo.Name = "cMenuPianoRedo";
-            this.cMenuPianoRedo.Size = new System.Drawing.Size( 216, 22 );
+            this.cMenuPianoRedo.Size = new System.Drawing.Size( 241, 22 );
             this.cMenuPianoRedo.Text = "Redo(&R)";
             // 
             // toolStripMenuItem15
             // 
             this.toolStripMenuItem15.Name = "toolStripMenuItem15";
-            this.toolStripMenuItem15.Size = new System.Drawing.Size( 213, 6 );
+            this.toolStripMenuItem15.Size = new System.Drawing.Size( 238, 6 );
             // 
             // cMenuPianoCut
             // 
             this.cMenuPianoCut.Name = "cMenuPianoCut";
-            this.cMenuPianoCut.Size = new System.Drawing.Size( 216, 22 );
+            this.cMenuPianoCut.Size = new System.Drawing.Size( 241, 22 );
             this.cMenuPianoCut.Text = "Cut(&T)";
             // 
             // cMenuPianoCopy
             // 
             this.cMenuPianoCopy.Name = "cMenuPianoCopy";
-            this.cMenuPianoCopy.Size = new System.Drawing.Size( 216, 22 );
+            this.cMenuPianoCopy.Size = new System.Drawing.Size( 241, 22 );
             this.cMenuPianoCopy.Text = "Copy(&C)";
             // 
             // cMenuPianoPaste
             // 
             this.cMenuPianoPaste.Name = "cMenuPianoPaste";
-            this.cMenuPianoPaste.Size = new System.Drawing.Size( 216, 22 );
+            this.cMenuPianoPaste.Size = new System.Drawing.Size( 241, 22 );
             this.cMenuPianoPaste.Text = "Paste(&P)";
             // 
             // cMenuPianoDelete
             // 
             this.cMenuPianoDelete.Name = "cMenuPianoDelete";
-            this.cMenuPianoDelete.Size = new System.Drawing.Size( 216, 22 );
+            this.cMenuPianoDelete.Size = new System.Drawing.Size( 241, 22 );
             this.cMenuPianoDelete.Text = "Delete(&D)";
             // 
             // toolStripMenuItem16
             // 
             this.toolStripMenuItem16.Name = "toolStripMenuItem16";
-            this.toolStripMenuItem16.Size = new System.Drawing.Size( 213, 6 );
+            this.toolStripMenuItem16.Size = new System.Drawing.Size( 238, 6 );
             // 
             // cMenuPianoSelectAll
             // 
             this.cMenuPianoSelectAll.Name = "cMenuPianoSelectAll";
-            this.cMenuPianoSelectAll.Size = new System.Drawing.Size( 216, 22 );
+            this.cMenuPianoSelectAll.Size = new System.Drawing.Size( 241, 22 );
             this.cMenuPianoSelectAll.Text = "Select All(&A)";
             // 
             // cMenuPianoSelectAllEvents
             // 
             this.cMenuPianoSelectAllEvents.Name = "cMenuPianoSelectAllEvents";
-            this.cMenuPianoSelectAllEvents.Size = new System.Drawing.Size( 216, 22 );
+            this.cMenuPianoSelectAllEvents.Size = new System.Drawing.Size( 241, 22 );
             this.cMenuPianoSelectAllEvents.Text = "Select All Events(&E)";
             // 
             // toolStripMenuItem17
             // 
             this.toolStripMenuItem17.Name = "toolStripMenuItem17";
-            this.toolStripMenuItem17.Size = new System.Drawing.Size( 213, 6 );
+            this.toolStripMenuItem17.Size = new System.Drawing.Size( 238, 6 );
             // 
             // cMenuPianoImportLyric
             // 
             this.cMenuPianoImportLyric.Name = "cMenuPianoImportLyric";
-            this.cMenuPianoImportLyric.Size = new System.Drawing.Size( 216, 22 );
+            this.cMenuPianoImportLyric.Size = new System.Drawing.Size( 241, 22 );
             this.cMenuPianoImportLyric.Text = "Insert Lyrics(&L)";
             // 
             // cMenuPianoExpressionProperty
             // 
             this.cMenuPianoExpressionProperty.Name = "cMenuPianoExpressionProperty";
-            this.cMenuPianoExpressionProperty.Size = new System.Drawing.Size( 216, 22 );
+            this.cMenuPianoExpressionProperty.Size = new System.Drawing.Size( 241, 22 );
             this.cMenuPianoExpressionProperty.Text = "Note Expression Property(&P)";
             // 
             // cMenuPianoVibratoProperty
             // 
             this.cMenuPianoVibratoProperty.Name = "cMenuPianoVibratoProperty";
-            this.cMenuPianoVibratoProperty.Size = new System.Drawing.Size( 216, 22 );
+            this.cMenuPianoVibratoProperty.Size = new System.Drawing.Size( 241, 22 );
             this.cMenuPianoVibratoProperty.Text = "Note Vibrato Property";
             // 
             // cMenuTrackTab
@@ -18853,75 +18996,75 @@ namespace org.kbinani.cadencii {
             this.cMenuTrackTabOverlay,
             this.cMenuTrackTabRenderer} );
             this.cMenuTrackTab.Name = "cMenuTrackTab";
-            this.cMenuTrackTab.Size = new System.Drawing.Size( 197, 242 );
+            this.cMenuTrackTab.Size = new System.Drawing.Size( 220, 242 );
             // 
             // cMenuTrackTabTrackOn
             // 
             this.cMenuTrackTabTrackOn.Name = "cMenuTrackTabTrackOn";
-            this.cMenuTrackTabTrackOn.Size = new System.Drawing.Size( 196, 22 );
+            this.cMenuTrackTabTrackOn.Size = new System.Drawing.Size( 219, 22 );
             this.cMenuTrackTabTrackOn.Text = "Track On(&K)";
             // 
             // cMenuTrackTabPlayAfterSynth
             // 
             this.cMenuTrackTabPlayAfterSynth.Name = "cMenuTrackTabPlayAfterSynth";
-            this.cMenuTrackTabPlayAfterSynth.Size = new System.Drawing.Size( 196, 22 );
+            this.cMenuTrackTabPlayAfterSynth.Size = new System.Drawing.Size( 219, 22 );
             this.cMenuTrackTabPlayAfterSynth.Text = "Play After Synth(&P)";
             // 
             // toolStripMenuItem24
             // 
             this.toolStripMenuItem24.Name = "toolStripMenuItem24";
-            this.toolStripMenuItem24.Size = new System.Drawing.Size( 193, 6 );
+            this.toolStripMenuItem24.Size = new System.Drawing.Size( 216, 6 );
             // 
             // cMenuTrackTabAdd
             // 
             this.cMenuTrackTabAdd.Name = "cMenuTrackTabAdd";
-            this.cMenuTrackTabAdd.Size = new System.Drawing.Size( 196, 22 );
+            this.cMenuTrackTabAdd.Size = new System.Drawing.Size( 219, 22 );
             this.cMenuTrackTabAdd.Text = "Add Track(&A)";
             // 
             // cMenuTrackTabCopy
             // 
             this.cMenuTrackTabCopy.Name = "cMenuTrackTabCopy";
-            this.cMenuTrackTabCopy.Size = new System.Drawing.Size( 196, 22 );
+            this.cMenuTrackTabCopy.Size = new System.Drawing.Size( 219, 22 );
             this.cMenuTrackTabCopy.Text = "Copy Track(&C)";
             // 
             // cMenuTrackTabChangeName
             // 
             this.cMenuTrackTabChangeName.Name = "cMenuTrackTabChangeName";
-            this.cMenuTrackTabChangeName.Size = new System.Drawing.Size( 196, 22 );
+            this.cMenuTrackTabChangeName.Size = new System.Drawing.Size( 219, 22 );
             this.cMenuTrackTabChangeName.Text = "Rename Track";
             // 
             // cMenuTrackTabDelete
             // 
             this.cMenuTrackTabDelete.Name = "cMenuTrackTabDelete";
-            this.cMenuTrackTabDelete.Size = new System.Drawing.Size( 196, 22 );
+            this.cMenuTrackTabDelete.Size = new System.Drawing.Size( 219, 22 );
             this.cMenuTrackTabDelete.Text = "Delete Track(&D)";
             // 
             // toolStripMenuItem25
             // 
             this.toolStripMenuItem25.Name = "toolStripMenuItem25";
-            this.toolStripMenuItem25.Size = new System.Drawing.Size( 193, 6 );
+            this.toolStripMenuItem25.Size = new System.Drawing.Size( 216, 6 );
             // 
             // cMenuTrackTabRenderCurrent
             // 
             this.cMenuTrackTabRenderCurrent.Name = "cMenuTrackTabRenderCurrent";
-            this.cMenuTrackTabRenderCurrent.Size = new System.Drawing.Size( 196, 22 );
+            this.cMenuTrackTabRenderCurrent.Size = new System.Drawing.Size( 219, 22 );
             this.cMenuTrackTabRenderCurrent.Text = "Render Current Track(&T)";
             // 
             // cMenuTrackTabRenderAll
             // 
             this.cMenuTrackTabRenderAll.Name = "cMenuTrackTabRenderAll";
-            this.cMenuTrackTabRenderAll.Size = new System.Drawing.Size( 196, 22 );
+            this.cMenuTrackTabRenderAll.Size = new System.Drawing.Size( 219, 22 );
             this.cMenuTrackTabRenderAll.Text = "Render All Tracks(&S)";
             // 
             // toolStripMenuItem27
             // 
             this.toolStripMenuItem27.Name = "toolStripMenuItem27";
-            this.toolStripMenuItem27.Size = new System.Drawing.Size( 193, 6 );
+            this.toolStripMenuItem27.Size = new System.Drawing.Size( 216, 6 );
             // 
             // cMenuTrackTabOverlay
             // 
             this.cMenuTrackTabOverlay.Name = "cMenuTrackTabOverlay";
-            this.cMenuTrackTabOverlay.Size = new System.Drawing.Size( 196, 22 );
+            this.cMenuTrackTabOverlay.Size = new System.Drawing.Size( 219, 22 );
             this.cMenuTrackTabOverlay.Text = "Overlay(&O)";
             // 
             // cMenuTrackTabRenderer
@@ -18934,7 +19077,7 @@ namespace org.kbinani.cadencii {
             this.cMenuTrackTabRendererStraight,
             this.cMenuTrackTabRendererAquesTone} );
             this.cMenuTrackTabRenderer.Name = "cMenuTrackTabRenderer";
-            this.cMenuTrackTabRenderer.Size = new System.Drawing.Size( 196, 22 );
+            this.cMenuTrackTabRenderer.Size = new System.Drawing.Size( 219, 22 );
             this.cMenuTrackTabRenderer.Text = "Renderer(&R)";
             // 
             // cMenuTrackTabRendererVOCALOID100
@@ -18995,110 +19138,110 @@ namespace org.kbinani.cadencii {
             this.toolStripMenuItem31,
             this.cMenuTrackSelectorSelectAll} );
             this.cMenuTrackSelector.Name = "cMenuTrackSelector";
-            this.cMenuTrackSelector.Size = new System.Drawing.Size( 186, 336 );
+            this.cMenuTrackSelector.Size = new System.Drawing.Size( 206, 336 );
             // 
             // cMenuTrackSelectorPointer
             // 
             this.cMenuTrackSelectorPointer.Name = "cMenuTrackSelectorPointer";
-            this.cMenuTrackSelectorPointer.Size = new System.Drawing.Size( 185, 22 );
+            this.cMenuTrackSelectorPointer.Size = new System.Drawing.Size( 205, 22 );
             this.cMenuTrackSelectorPointer.Text = "Arrow(&A)";
             // 
             // cMenuTrackSelectorPencil
             // 
             this.cMenuTrackSelectorPencil.Name = "cMenuTrackSelectorPencil";
-            this.cMenuTrackSelectorPencil.Size = new System.Drawing.Size( 185, 22 );
+            this.cMenuTrackSelectorPencil.Size = new System.Drawing.Size( 205, 22 );
             this.cMenuTrackSelectorPencil.Text = "Pencil(&W)";
             // 
             // cMenuTrackSelectorLine
             // 
             this.cMenuTrackSelectorLine.Name = "cMenuTrackSelectorLine";
-            this.cMenuTrackSelectorLine.Size = new System.Drawing.Size( 185, 22 );
+            this.cMenuTrackSelectorLine.Size = new System.Drawing.Size( 205, 22 );
             this.cMenuTrackSelectorLine.Text = "Line(&L)";
             // 
             // cMenuTrackSelectorEraser
             // 
             this.cMenuTrackSelectorEraser.Name = "cMenuTrackSelectorEraser";
-            this.cMenuTrackSelectorEraser.Size = new System.Drawing.Size( 185, 22 );
+            this.cMenuTrackSelectorEraser.Size = new System.Drawing.Size( 205, 22 );
             this.cMenuTrackSelectorEraser.Text = "Eraser(&E)";
             // 
             // cMenuTrackSelectorPaletteTool
             // 
             this.cMenuTrackSelectorPaletteTool.Name = "cMenuTrackSelectorPaletteTool";
-            this.cMenuTrackSelectorPaletteTool.Size = new System.Drawing.Size( 185, 22 );
+            this.cMenuTrackSelectorPaletteTool.Size = new System.Drawing.Size( 205, 22 );
             this.cMenuTrackSelectorPaletteTool.Text = "Palette Tool";
             // 
             // toolStripSeparator14
             // 
             this.toolStripSeparator14.Name = "toolStripSeparator14";
-            this.toolStripSeparator14.Size = new System.Drawing.Size( 182, 6 );
+            this.toolStripSeparator14.Size = new System.Drawing.Size( 202, 6 );
             // 
             // cMenuTrackSelectorCurve
             // 
             this.cMenuTrackSelectorCurve.Name = "cMenuTrackSelectorCurve";
-            this.cMenuTrackSelectorCurve.Size = new System.Drawing.Size( 185, 22 );
+            this.cMenuTrackSelectorCurve.Size = new System.Drawing.Size( 205, 22 );
             this.cMenuTrackSelectorCurve.Text = "Curve(&V)";
             // 
             // toolStripMenuItem28
             // 
             this.toolStripMenuItem28.Name = "toolStripMenuItem28";
-            this.toolStripMenuItem28.Size = new System.Drawing.Size( 182, 6 );
+            this.toolStripMenuItem28.Size = new System.Drawing.Size( 202, 6 );
             // 
             // cMenuTrackSelectorUndo
             // 
             this.cMenuTrackSelectorUndo.Name = "cMenuTrackSelectorUndo";
-            this.cMenuTrackSelectorUndo.Size = new System.Drawing.Size( 185, 22 );
+            this.cMenuTrackSelectorUndo.Size = new System.Drawing.Size( 205, 22 );
             this.cMenuTrackSelectorUndo.Text = "Undo(&U)";
             // 
             // cMenuTrackSelectorRedo
             // 
             this.cMenuTrackSelectorRedo.Name = "cMenuTrackSelectorRedo";
-            this.cMenuTrackSelectorRedo.Size = new System.Drawing.Size( 185, 22 );
+            this.cMenuTrackSelectorRedo.Size = new System.Drawing.Size( 205, 22 );
             this.cMenuTrackSelectorRedo.Text = "Redo(&R)";
             // 
             // toolStripMenuItem29
             // 
             this.toolStripMenuItem29.Name = "toolStripMenuItem29";
-            this.toolStripMenuItem29.Size = new System.Drawing.Size( 182, 6 );
+            this.toolStripMenuItem29.Size = new System.Drawing.Size( 202, 6 );
             // 
             // cMenuTrackSelectorCut
             // 
             this.cMenuTrackSelectorCut.Name = "cMenuTrackSelectorCut";
-            this.cMenuTrackSelectorCut.Size = new System.Drawing.Size( 185, 22 );
+            this.cMenuTrackSelectorCut.Size = new System.Drawing.Size( 205, 22 );
             this.cMenuTrackSelectorCut.Text = "Cut(&T)";
             // 
             // cMenuTrackSelectorCopy
             // 
             this.cMenuTrackSelectorCopy.Name = "cMenuTrackSelectorCopy";
-            this.cMenuTrackSelectorCopy.Size = new System.Drawing.Size( 185, 22 );
+            this.cMenuTrackSelectorCopy.Size = new System.Drawing.Size( 205, 22 );
             this.cMenuTrackSelectorCopy.Text = "Copy(&C)";
             // 
             // cMenuTrackSelectorPaste
             // 
             this.cMenuTrackSelectorPaste.Name = "cMenuTrackSelectorPaste";
-            this.cMenuTrackSelectorPaste.Size = new System.Drawing.Size( 185, 22 );
+            this.cMenuTrackSelectorPaste.Size = new System.Drawing.Size( 205, 22 );
             this.cMenuTrackSelectorPaste.Text = "Paste(&P)";
             // 
             // cMenuTrackSelectorDelete
             // 
             this.cMenuTrackSelectorDelete.Name = "cMenuTrackSelectorDelete";
-            this.cMenuTrackSelectorDelete.Size = new System.Drawing.Size( 185, 22 );
+            this.cMenuTrackSelectorDelete.Size = new System.Drawing.Size( 205, 22 );
             this.cMenuTrackSelectorDelete.Text = "Delete(&D)";
             // 
             // cMenuTrackSelectorDeleteBezier
             // 
             this.cMenuTrackSelectorDeleteBezier.Name = "cMenuTrackSelectorDeleteBezier";
-            this.cMenuTrackSelectorDeleteBezier.Size = new System.Drawing.Size( 185, 22 );
+            this.cMenuTrackSelectorDeleteBezier.Size = new System.Drawing.Size( 205, 22 );
             this.cMenuTrackSelectorDeleteBezier.Text = "Delete Bezier Point(&B)";
             // 
             // toolStripMenuItem31
             // 
             this.toolStripMenuItem31.Name = "toolStripMenuItem31";
-            this.toolStripMenuItem31.Size = new System.Drawing.Size( 182, 6 );
+            this.toolStripMenuItem31.Size = new System.Drawing.Size( 202, 6 );
             // 
             // cMenuTrackSelectorSelectAll
             // 
             this.cMenuTrackSelectorSelectAll.Name = "cMenuTrackSelectorSelectAll";
-            this.cMenuTrackSelectorSelectAll.Size = new System.Drawing.Size( 185, 22 );
+            this.cMenuTrackSelectorSelectAll.Size = new System.Drawing.Size( 205, 22 );
             this.cMenuTrackSelectorSelectAll.Text = "Select All Events(&E)";
             // 
             // trackBar
@@ -19134,19 +19277,10 @@ namespace org.kbinani.cadencii {
             this.panel1.Size = new System.Drawing.Size( 421, 282 );
             this.panel1.TabIndex = 16;
             // 
-            // hScroll
-            // 
-            this.hScroll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.hScroll.Location = new System.Drawing.Point( 66, 266 );
-            this.hScroll.Name = "hScroll";
-            this.hScroll.Size = new System.Drawing.Size( 256, 16 );
-            this.hScroll.TabIndex = 16;
-            // 
             // pictureBox3
             // 
             this.pictureBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.pictureBox3.BackColor = System.Drawing.SystemColors.Control;
+            this.pictureBox3.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))) );
             this.pictureBox3.Location = new System.Drawing.Point( 0, 266 );
             this.pictureBox3.Margin = new System.Windows.Forms.Padding( 0 );
             this.pictureBox3.Name = "pictureBox3";
@@ -19191,110 +19325,13 @@ namespace org.kbinani.cadencii {
             // 
             this.panelOverview.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelOverview.Controls.Add( this.panelZooMooz );
-            this.panelOverview.Controls.Add( this.btnLeft2 );
-            this.panelOverview.Controls.Add( this.btnRight2 );
-            this.panelOverview.Controls.Add( this.pictOverview );
+            this.panelOverview.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(106)))), ((int)(((byte)(108)))), ((int)(((byte)(108)))) );
             this.panelOverview.Location = new System.Drawing.Point( 0, 0 );
             this.panelOverview.Margin = new System.Windows.Forms.Padding( 0 );
             this.panelOverview.Name = "panelOverview";
             this.panelOverview.Size = new System.Drawing.Size( 421, 45 );
             this.panelOverview.TabIndex = 19;
             this.panelOverview.TabStop = false;
-            // 
-            // panelZooMooz
-            // 
-            this.panelZooMooz.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)));
-            this.panelZooMooz.Controls.Add( this.btnRight1 );
-            this.panelZooMooz.Controls.Add( this.btnMooz );
-            this.panelZooMooz.Controls.Add( this.btnZoom );
-            this.panelZooMooz.Controls.Add( this.btnLeft1 );
-            this.panelZooMooz.Location = new System.Drawing.Point( 0, 0 );
-            this.panelZooMooz.Name = "panelZooMooz";
-            this.panelZooMooz.Size = new System.Drawing.Size( 66, 45 );
-            this.panelZooMooz.TabIndex = 21;
-            this.panelZooMooz.TabStop = false;
-            // 
-            // btnRight1
-            // 
-            this.btnRight1.Location = new System.Drawing.Point( 51, 23 );
-            this.btnRight1.Margin = new System.Windows.Forms.Padding( 0 );
-            this.btnRight1.Name = "btnRight1";
-            this.btnRight1.Size = new System.Drawing.Size( 16, 22 );
-            this.btnRight1.TabIndex = 24;
-            this.btnRight1.TabStop = false;
-            this.btnRight1.Text = ">";
-            this.btnRight1.UseVisualStyleBackColor = true;
-            // 
-            // btnMooz
-            // 
-            this.btnMooz.Location = new System.Drawing.Point( 3, 12 );
-            this.btnMooz.Name = "btnMooz";
-            this.btnMooz.Size = new System.Drawing.Size( 23, 23 );
-            this.btnMooz.TabIndex = 21;
-            this.btnMooz.TabStop = false;
-            this.btnMooz.Text = "-";
-            this.btnMooz.UseVisualStyleBackColor = true;
-            // 
-            // btnZoom
-            // 
-            this.btnZoom.Location = new System.Drawing.Point( 26, 12 );
-            this.btnZoom.Name = "btnZoom";
-            this.btnZoom.Size = new System.Drawing.Size( 23, 23 );
-            this.btnZoom.TabIndex = 22;
-            this.btnZoom.TabStop = false;
-            this.btnZoom.Text = "+";
-            this.btnZoom.UseVisualStyleBackColor = true;
-            // 
-            // btnLeft1
-            // 
-            this.btnLeft1.Location = new System.Drawing.Point( 51, 0 );
-            this.btnLeft1.Margin = new System.Windows.Forms.Padding( 0 );
-            this.btnLeft1.Name = "btnLeft1";
-            this.btnLeft1.Size = new System.Drawing.Size( 16, 23 );
-            this.btnLeft1.TabIndex = 20;
-            this.btnLeft1.TabStop = false;
-            this.btnLeft1.Text = "<";
-            this.btnLeft1.UseVisualStyleBackColor = true;
-            // 
-            // btnLeft2
-            // 
-            this.btnLeft2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnLeft2.Location = new System.Drawing.Point( 405, 0 );
-            this.btnLeft2.Margin = new System.Windows.Forms.Padding( 0 );
-            this.btnLeft2.Name = "btnLeft2";
-            this.btnLeft2.Size = new System.Drawing.Size( 16, 22 );
-            this.btnLeft2.TabIndex = 23;
-            this.btnLeft2.TabStop = false;
-            this.btnLeft2.Text = "<";
-            this.btnLeft2.UseVisualStyleBackColor = true;
-            // 
-            // btnRight2
-            // 
-            this.btnRight2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnRight2.Location = new System.Drawing.Point( 405, 22 );
-            this.btnRight2.Margin = new System.Windows.Forms.Padding( 0 );
-            this.btnRight2.Name = "btnRight2";
-            this.btnRight2.Size = new System.Drawing.Size( 16, 23 );
-            this.btnRight2.TabIndex = 19;
-            this.btnRight2.TabStop = false;
-            this.btnRight2.Text = ">";
-            this.btnRight2.UseVisualStyleBackColor = true;
-            // 
-            // pictOverview
-            // 
-            this.pictOverview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictOverview.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(106)))), ((int)(((byte)(108)))), ((int)(((byte)(108)))) );
-            this.pictOverview.Location = new System.Drawing.Point( 68, 0 );
-            this.pictOverview.Margin = new System.Windows.Forms.Padding( 0 );
-            this.pictOverview.Name = "pictOverview";
-            this.pictOverview.Size = new System.Drawing.Size( 337, 45 );
-            this.pictOverview.TabIndex = 18;
-            this.pictOverview.TabStop = false;
             // 
             // picturePositionIndicator
             // 
@@ -19307,19 +19344,6 @@ namespace org.kbinani.cadencii {
             this.picturePositionIndicator.Size = new System.Drawing.Size( 421, 48 );
             this.picturePositionIndicator.TabIndex = 10;
             this.picturePositionIndicator.TabStop = false;
-            // 
-            // pictPianoRoll
-            // 
-            this.pictPianoRoll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictPianoRoll.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))) );
-            this.pictPianoRoll.Location = new System.Drawing.Point( 0, 93 );
-            this.pictPianoRoll.Margin = new System.Windows.Forms.Padding( 0 );
-            this.pictPianoRoll.Name = "pictPianoRoll";
-            this.pictPianoRoll.Size = new System.Drawing.Size( 405, 173 );
-            this.pictPianoRoll.TabIndex = 12;
-            this.pictPianoRoll.TabStop = false;
             // 
             // toolStripTool
             // 
@@ -19429,15 +19453,6 @@ namespace org.kbinani.cadencii {
             // 
             this.toolStripBottom.Dock = System.Windows.Forms.DockStyle.None;
             this.toolStripBottom.Items.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripLabel6,
-            this.stripLblCursor,
-            this.toolStripSeparator8,
-            this.toolStripLabel8,
-            this.stripLblTempo,
-            this.toolStripSeparator9,
-            this.toolStripLabel10,
-            this.stripLblBeat,
-            this.toolStripSeparator4,
             this.toolStripStatusLabel1,
             this.stripLblGameCtrlMode,
             this.toolStripSeparator10,
@@ -19447,71 +19462,8 @@ namespace org.kbinani.cadencii {
             this.stripDDBtnSpeed} );
             this.toolStripBottom.Location = new System.Drawing.Point( 5, 0 );
             this.toolStripBottom.Name = "toolStripBottom";
-            this.toolStripBottom.Size = new System.Drawing.Size( 736, 25 );
+            this.toolStripBottom.Size = new System.Drawing.Size( 409, 25 );
             this.toolStripBottom.TabIndex = 22;
-            // 
-            // toolStripLabel6
-            // 
-            this.toolStripLabel6.Name = "toolStripLabel6";
-            this.toolStripLabel6.Size = new System.Drawing.Size( 58, 22 );
-            this.toolStripLabel6.Text = "CURSOR";
-            // 
-            // stripLblCursor
-            // 
-            this.stripLblCursor.AutoSize = false;
-            this.stripLblCursor.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.stripLblCursor.Font = new System.Drawing.Font( "MS UI Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)) );
-            this.stripLblCursor.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.stripLblCursor.Name = "stripLblCursor";
-            this.stripLblCursor.Size = new System.Drawing.Size( 90, 22 );
-            this.stripLblCursor.Text = "0 : 0 : 000";
-            // 
-            // toolStripSeparator8
-            // 
-            this.toolStripSeparator8.Name = "toolStripSeparator8";
-            this.toolStripSeparator8.Size = new System.Drawing.Size( 6, 25 );
-            // 
-            // toolStripLabel8
-            // 
-            this.toolStripLabel8.Name = "toolStripLabel8";
-            this.toolStripLabel8.Size = new System.Drawing.Size( 49, 22 );
-            this.toolStripLabel8.Text = "TEMPO";
-            // 
-            // stripLblTempo
-            // 
-            this.stripLblTempo.AutoSize = false;
-            this.stripLblTempo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.stripLblTempo.Font = new System.Drawing.Font( "MS UI Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)) );
-            this.stripLblTempo.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.stripLblTempo.Name = "stripLblTempo";
-            this.stripLblTempo.Size = new System.Drawing.Size( 60, 22 );
-            this.stripLblTempo.Text = "120.00";
-            // 
-            // toolStripSeparator9
-            // 
-            this.toolStripSeparator9.Name = "toolStripSeparator9";
-            this.toolStripSeparator9.Size = new System.Drawing.Size( 6, 25 );
-            // 
-            // toolStripLabel10
-            // 
-            this.toolStripLabel10.Name = "toolStripLabel10";
-            this.toolStripLabel10.Size = new System.Drawing.Size( 38, 22 );
-            this.toolStripLabel10.Text = "BEAT";
-            // 
-            // stripLblBeat
-            // 
-            this.stripLblBeat.AutoSize = false;
-            this.stripLblBeat.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.stripLblBeat.Font = new System.Drawing.Font( "MS UI Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)) );
-            this.stripLblBeat.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.stripLblBeat.Name = "stripLblBeat";
-            this.stripLblBeat.Size = new System.Drawing.Size( 45, 22 );
-            this.stripLblBeat.Text = "4/4";
-            // 
-            // toolStripSeparator4
-            // 
-            this.toolStripSeparator4.Name = "toolStripSeparator4";
-            this.toolStripSeparator4.Size = new System.Drawing.Size( 6, 25 );
             // 
             // toolStripStatusLabel1
             // 
@@ -19932,9 +19884,6 @@ namespace org.kbinani.cadencii {
             // 
             this.toolStripMeasure.Dock = System.Windows.Forms.DockStyle.None;
             this.toolStripMeasure.Items.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripLabel5,
-            this.stripLblMeasure,
-            this.toolStripButton1,
             this.stripDDBtnLength,
             this.stripDDBtnQuantize,
             this.toolStripSeparator6,
@@ -19942,27 +19891,8 @@ namespace org.kbinani.cadencii {
             this.stripBtnEndMarker} );
             this.toolStripMeasure.Location = new System.Drawing.Point( 3, 50 );
             this.toolStripMeasure.Name = "toolStripMeasure";
-            this.toolStripMeasure.Size = new System.Drawing.Size( 415, 25 );
+            this.toolStripMeasure.Size = new System.Drawing.Size( 269, 25 );
             this.toolStripMeasure.TabIndex = 19;
-            // 
-            // toolStripLabel5
-            // 
-            this.toolStripLabel5.Name = "toolStripLabel5";
-            this.toolStripLabel5.Size = new System.Drawing.Size( 65, 22 );
-            this.toolStripLabel5.Text = "MEASURE";
-            // 
-            // stripLblMeasure
-            // 
-            this.stripLblMeasure.Font = new System.Drawing.Font( "MS UI Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)) );
-            this.stripLblMeasure.Name = "stripLblMeasure";
-            this.stripLblMeasure.Size = new System.Drawing.Size( 75, 22 );
-            this.stripLblMeasure.Text = "0 : 0 : 000";
-            this.stripLblMeasure.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // toolStripButton1
-            // 
-            this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size( 6, 25 );
             // 
             // stripDDBtnLength
             // 
@@ -19987,54 +19917,54 @@ namespace org.kbinani.cadencii {
             // stripDDBtnLength04
             // 
             this.stripDDBtnLength04.Name = "stripDDBtnLength04";
-            this.stripDDBtnLength04.Size = new System.Drawing.Size( 113, 22 );
+            this.stripDDBtnLength04.Size = new System.Drawing.Size( 152, 22 );
             this.stripDDBtnLength04.Text = "1/4";
             // 
             // stripDDBtnLength08
             // 
             this.stripDDBtnLength08.Name = "stripDDBtnLength08";
-            this.stripDDBtnLength08.Size = new System.Drawing.Size( 113, 22 );
+            this.stripDDBtnLength08.Size = new System.Drawing.Size( 152, 22 );
             this.stripDDBtnLength08.Text = "1/8";
             // 
             // stripDDBtnLength16
             // 
             this.stripDDBtnLength16.Name = "stripDDBtnLength16";
-            this.stripDDBtnLength16.Size = new System.Drawing.Size( 113, 22 );
+            this.stripDDBtnLength16.Size = new System.Drawing.Size( 152, 22 );
             this.stripDDBtnLength16.Text = "1/16";
             // 
             // stripDDBtnLength32
             // 
             this.stripDDBtnLength32.Name = "stripDDBtnLength32";
-            this.stripDDBtnLength32.Size = new System.Drawing.Size( 113, 22 );
+            this.stripDDBtnLength32.Size = new System.Drawing.Size( 152, 22 );
             this.stripDDBtnLength32.Text = "1/32";
             // 
             // stripDDBtnLength64
             // 
             this.stripDDBtnLength64.Name = "stripDDBtnLength64";
-            this.stripDDBtnLength64.Size = new System.Drawing.Size( 113, 22 );
+            this.stripDDBtnLength64.Size = new System.Drawing.Size( 152, 22 );
             this.stripDDBtnLength64.Text = "1/64";
             // 
             // stripDDBtnLength128
             // 
             this.stripDDBtnLength128.Name = "stripDDBtnLength128";
-            this.stripDDBtnLength128.Size = new System.Drawing.Size( 113, 22 );
+            this.stripDDBtnLength128.Size = new System.Drawing.Size( 152, 22 );
             this.stripDDBtnLength128.Text = "1/128";
             // 
             // stripDDBtnLengthOff
             // 
             this.stripDDBtnLengthOff.Name = "stripDDBtnLengthOff";
-            this.stripDDBtnLengthOff.Size = new System.Drawing.Size( 113, 22 );
+            this.stripDDBtnLengthOff.Size = new System.Drawing.Size( 152, 22 );
             this.stripDDBtnLengthOff.Text = "Off";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size( 110, 6 );
+            this.toolStripSeparator2.Size = new System.Drawing.Size( 149, 6 );
             // 
             // stripDDBtnLengthTriplet
             // 
             this.stripDDBtnLengthTriplet.Name = "stripDDBtnLengthTriplet";
-            this.stripDDBtnLengthTriplet.Size = new System.Drawing.Size( 113, 22 );
+            this.stripDDBtnLengthTriplet.Size = new System.Drawing.Size( 152, 22 );
             this.stripDDBtnLengthTriplet.Text = "Triplet";
             // 
             // stripDDBtnQuantize
@@ -20131,6 +20061,28 @@ namespace org.kbinani.cadencii {
             this.stripBtnEndMarker.Size = new System.Drawing.Size( 23, 22 );
             this.stripBtnEndMarker.Text = "EndMarker";
             // 
+            // hScroll
+            // 
+            this.hScroll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.hScroll.Location = new System.Drawing.Point( 66, 266 );
+            this.hScroll.Name = "hScroll";
+            this.hScroll.Size = new System.Drawing.Size( 256, 16 );
+            this.hScroll.TabIndex = 16;
+            // 
+            // pictPianoRoll
+            // 
+            this.pictPianoRoll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictPianoRoll.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))) );
+            this.pictPianoRoll.Location = new System.Drawing.Point( 0, 93 );
+            this.pictPianoRoll.Margin = new System.Windows.Forms.Padding( 0 );
+            this.pictPianoRoll.Name = "pictPianoRoll";
+            this.pictPianoRoll.Size = new System.Drawing.Size( 405, 173 );
+            this.pictPianoRoll.TabIndex = 12;
+            this.pictPianoRoll.TabStop = false;
+            // 
             // FormMain
             // 
             this.AllowDrop = true;
@@ -20154,11 +20106,8 @@ namespace org.kbinani.cadencii {
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictKeyLengthSplitter)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            this.panelOverview.ResumeLayout( false );
-            this.panelZooMooz.ResumeLayout( false );
-            ((System.ComponentModel.ISupportInitialize)(this.pictOverview)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.panelOverview)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picturePositionIndicator)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).EndInit();
             this.toolStripTool.ResumeLayout( false );
             this.toolStripTool.PerformLayout();
             this.toolStripContainer.BottomToolStripPanel.ResumeLayout( false );
@@ -20178,6 +20127,7 @@ namespace org.kbinani.cadencii {
             this.toolStripPosition.PerformLayout();
             this.toolStripMeasure.ResumeLayout( false );
             this.toolStripMeasure.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).EndInit();
             this.ResumeLayout( false );
             this.PerformLayout();
 
@@ -20389,8 +20339,6 @@ namespace org.kbinani.cadencii {
         public BToolStripButton stripBtnLoop;
         public BToolStripButton stripBtnCurve;
         public BToolBar toolStripMeasure;
-        public BToolStripLabel stripLblMeasure;
-        public System.Windows.Forms.ToolStripSeparator toolStripButton1;
         public BToolStripDropDownButton stripDDBtnLength;
         public BMenuItem stripDDBtnLength04;
         public BMenuItem stripDDBtnLength08;
@@ -20409,7 +20357,6 @@ namespace org.kbinani.cadencii {
         public BMenuItem stripDDBtnQuantizeOff;
         public System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
         public BMenuItem stripDDBtnQuantizeTriplet;
-        public BToolStripLabel toolStripLabel5;
         public System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         public System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
         public BToolStripButton stripBtnStartMarker;
@@ -20420,17 +20367,8 @@ namespace org.kbinani.cadencii {
         public BMenuItem cMenuPianoVibratoProperty;
         public System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
         public System.Windows.Forms.StatusStrip statusStrip1;
-        public BToolStripLabel toolStripLabel6;
-        public BToolStripLabel stripLblCursor;
-        public System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
-        public BToolStripLabel toolStripLabel8;
-        public BToolStripLabel stripLblTempo;
-        public System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
-        public BToolStripLabel toolStripLabel10;
-        public BToolStripLabel stripLblBeat;
         public BMenuItem menuScriptUpdate;
         public BMenuItem menuSettingGameControler;
-        public System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         public BStatusLabel stripLblGameCtrlMode;
         public System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
         public BToolStripDropDownButton stripDDBtnSpeed;
@@ -20496,15 +20434,8 @@ namespace org.kbinani.cadencii {
         public BToolBar toolStripBottom;
         public BStatusLabel statusLabel;
         public org.kbinani.apputil.BSplitContainer splitContainerProperty;
-        public BPictureBox pictOverview;
         public BMenuItem menuVisualOverview;
-        public BPanel panelOverview;
-        public BButton btnLeft1;
-        public BButton btnRight2;
-        public BButton btnZoom;
-        public BButton btnMooz;
-        public BButton btnLeft2;
-        public BButton btnRight1;
+        public BPictureBox panelOverview;
         public org.kbinani.apputil.BSplitContainer splitContainer1;
         public System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
         public BMenu menuTrackBgm;
@@ -20538,7 +20469,6 @@ namespace org.kbinani.cadencii {
         private BMenuItem cMenuTrackTabPlayAfterSynth;
         private BMenuItem menuTrackPlayAfterSynth;
         public BMenuItem menuHiddenPlayFromStartMarker;
-        private BPanel panelZooMooz;
         public BMenuItem menuHiddenFlipCurveOnPianorollMode;
 
 #endif

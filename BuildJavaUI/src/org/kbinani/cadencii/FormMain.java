@@ -31,6 +31,7 @@ import org.kbinani.windows.forms.BVScrollBar;
 import javax.swing.WindowConstants;
 import java.awt.Color;
 import java.awt.Insets;
+import java.awt.SystemColor;
 
 //SECTION-END-IMPORT
 public class FormMain extends BForm {
@@ -284,13 +285,7 @@ public class FormMain extends BForm {
     private BMenuItem cMenuPianoQuantizeOff = null;
     private BMenuItem cMenuPianoLengthOff = null;
     private BPanel panel3 = null;
-    private BPanel panelOverview = null;
-    private BButton btnMooz = null;
-    private BButton btnLeft1 = null;
-    private BButton btnRight1 = null;
-    private BButton btnZoom = null;
-    private BButton btnLeft2 = null;
-    private BButton btnRight2 = null;
+    private BPictureBox panelOverview = null;
     private PictPianoRoll pictPianoRoll = null;
     private BVScrollBar vScroll = null;
     private BHScrollBar hScroll = null;
@@ -346,10 +341,7 @@ public class FormMain extends BForm {
     private BMenuItem menuVisualIconPalette = null;
     private JPanel jPanel = null;
     private JLabel jLabel = null;
-	private BPictureBox pictOverview = null;
-    private BMenuItem menuHiddenPlayFromStartMarker = null;
-    private BPanel panelZooMooz = null;
-    private JPanel panelOverviewRight = null;
+	private BMenuItem menuHiddenPlayFromStartMarker = null;
     private BMenuItem menuHiddenFlipCurveOnPianorollMode = null;
     //SECTION-END-FIELD
     public FormMain( String vsq_file ) {
@@ -530,20 +522,6 @@ public class FormMain extends BForm {
     }
 
     /**
-	 * This method initializes pictOverview	
-	 * 	
-	 * @return org.kbinani.windows.forms.BPictureBox	
-	 */
-	private BPictureBox getPictOverview() {
-		if (pictOverview == null) {
-			pictOverview = new BPictureBox();
-			pictOverview.setLayout(new GridBagLayout());
-			pictOverview.setBackground(new Color(106, 108, 108));
-		}
-		return pictOverview;
-	}
-
-	/**
      * This method initializes menuHiddenPlayFromStartMarker	
      * 	
      * @return org.kbinani.windows.forms.BMenuItem	
@@ -554,62 +532,6 @@ public class FormMain extends BForm {
             menuHiddenPlayFromStartMarker.setText("Play From Start Marker");
         }
         return menuHiddenPlayFromStartMarker;
-    }
-
-    /**
-     * This method initializes jPanel2	
-     * 	
-     * @return javax.swing.JPanel	
-     */
-    private JPanel getJPanel22() {
-        if (panelZooMooz == null) {
-            GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
-            gridBagConstraints2.gridx = 2;
-            gridBagConstraints2.weighty = 1.0D;
-            gridBagConstraints2.gridy = 1;
-            GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-            gridBagConstraints1.gridx = 2;
-            gridBagConstraints1.weighty = 1.0D;
-            gridBagConstraints1.gridy = 0;
-            GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
-            gridBagConstraints3.gridheight = 2;
-            gridBagConstraints3.gridy = 0;
-            gridBagConstraints3.gridx = 1;
-            GridBagConstraints gridBagConstraints = new GridBagConstraints();
-            gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
-            gridBagConstraints.gridx = 0;
-            gridBagConstraints.gridy = 0;
-            gridBagConstraints.weighty = 1.0D;
-            gridBagConstraints.gridheight = 2;
-            panelZooMooz = new BPanel();
-            panelZooMooz.setLayout(new GridBagLayout());
-            panelZooMooz.add(getJButton(), gridBagConstraints);
-            panelZooMooz.add(getBtnZoom(), gridBagConstraints3);
-            panelZooMooz.add(getBtnLeft1(), gridBagConstraints1);
-            panelZooMooz.add(getBtnRight1(), gridBagConstraints2);
-        }
-        return panelZooMooz;
-    }
-
-    /**
-     * This method initializes jPanel4	
-     * 	
-     * @return javax.swing.JPanel	
-     */
-    private JPanel getJPanel42() {
-        if (panelOverviewRight == null) {
-            GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
-            gridBagConstraints5.gridx = 0;
-            gridBagConstraints5.gridy = 1;
-            GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
-            gridBagConstraints4.gridx = 0;
-            gridBagConstraints4.gridy = 0;
-            panelOverviewRight = new JPanel();
-            panelOverviewRight.setLayout(new GridBagLayout());
-            panelOverviewRight.add(getBtnLeft2(), gridBagConstraints4);
-            panelOverviewRight.add(getBtnRight2(), gridBagConstraints5);
-        }
-        return panelOverviewRight;
     }
 
     /**
@@ -3950,12 +3872,6 @@ public class FormMain extends BForm {
      */
     private BPanel getPanel3() {
         if (panel3 == null) {
-            GridBagConstraints gridBagConstraints210 = new GridBagConstraints();
-            gridBagConstraints210.gridx = 2;
-            gridBagConstraints210.gridy = 0;
-            GridBagConstraints gridBagConstraints110 = new GridBagConstraints();
-            gridBagConstraints110.gridx = 0;
-            gridBagConstraints110.gridy = 0;
             GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
             gridBagConstraints6.gridx = 1;
             gridBagConstraints6.weightx = 1.0D;
@@ -3965,9 +3881,7 @@ public class FormMain extends BForm {
             gridBagConstraints6.gridy = 0;
             panel3 = new BPanel();
             panel3.setLayout(new GridBagLayout());
-            panel3.add(getJPanel22(), gridBagConstraints110);
             panel3.add(getPanelOverview(), gridBagConstraints6);
-            panel3.add(getJPanel42(), gridBagConstraints210);
         }
         return panel3;
     }
@@ -3977,105 +3891,14 @@ public class FormMain extends BForm {
      *  
      * @return javax.swing.BPanel   
      */
-    private BPanel getPanelOverview() {
+    private BPictureBox getPanelOverview() {
         if (panelOverview == null) {
-            GridBagConstraints gridBagConstraints30 = new GridBagConstraints();
-            gridBagConstraints30.gridheight = 1;
-            gridBagConstraints30.gridx = 1;
-            gridBagConstraints30.gridy = 1;
-            gridBagConstraints30.fill = GridBagConstraints.BOTH;
-            gridBagConstraints30.weightx = 1.0D;
-            gridBagConstraints30.weighty = 1.0D;
-            gridBagConstraints30.gridwidth = 1;
-            panelOverview = new BPanel();
+            panelOverview = new BPictureBox();
             panelOverview.setLayout(new GridBagLayout());
-            panelOverview.add(getPictOverview(), gridBagConstraints30);
+            panelOverview.setBackground(new Color(106, 108, 108));
+            panelOverview.setPreferredSize(new Dimension(421, 50));
         }
         return panelOverview;
-    }
-
-    /**
-     * This method initializes BButton  
-     *  
-     * @return javax.swing.BButton  
-     */
-    private BButton getJButton() {
-        if (btnMooz == null) {
-            btnMooz = new BButton();
-            btnMooz.setText("-");
-            btnMooz.setPreferredSize(new Dimension(23, 23));
-        }
-        return btnMooz;
-    }
-
-    /**
-     * This method initializes btnLeft1 
-     *  
-     * @return javax.swing.BButton  
-     */
-    private BButton getBtnLeft1() {
-        if (btnLeft1 == null) {
-            btnLeft1 = new BButton();
-            btnLeft1.setText("<");
-            btnLeft1.setPreferredSize(new Dimension(16, 23));
-        }
-        return btnLeft1;
-    }
-
-    /**
-     * This method initializes btnRight1 
-     *  
-     * @return javax.swing.BButton  
-     */
-    private BButton getBtnRight1() {
-        if (btnRight1 == null) {
-            btnRight1 = new BButton();
-            btnRight1.setText(">");
-            btnRight1.setPreferredSize(new Dimension(16, 23));
-        }
-        return btnRight1;
-    }
-
-    /**
-     * This method initializes btnZoom 
-     *  
-     * @return javax.swing.BButton  
-     */
-    private BButton getBtnZoom() {
-        if (btnZoom == null) {
-            btnZoom = new BButton();
-            btnZoom.setText("+");
-            btnZoom.setPreferredSize(new Dimension(23, 23));
-        }
-        return btnZoom;
-    }
-
-    /**
-     * This method initializes btnLeft2 
-     *  
-     * @return javax.swing.BButton  
-     */
-    private BButton getBtnLeft2() {
-        if (btnLeft2 == null) {
-            btnLeft2 = new BButton();
-            btnLeft2.setText("<");
-            btnLeft2.setPreferredSize(new Dimension(16, 23));
-        }
-        return btnLeft2;
-    }
-
-    /**
-     * This method initializes btnRight2 
-     *  
-     * @return javax.swing.BButton  
-     */
-    private BButton getBtnRight2() {
-        if (btnRight2 == null) {
-            btnRight2 = new BButton();
-            btnRight2.setText(">");
-            btnRight2.setPreferredSize(new Dimension(16, 23));
-        }
-        return btnRight2;
     }
 
     /**
@@ -4132,6 +3955,7 @@ public class FormMain extends BForm {
             pictureBox3 = new BPanel();
             pictureBox3.setLayout(new GridBagLayout());
             pictureBox3.setPreferredSize(new Dimension(68, 0));
+            pictureBox3.setBackground(Color.lightGray);
             pictureBox3.add(getPictKeyLengthSplitter(), gridBagConstraints12);
         }
         return pictureBox3;

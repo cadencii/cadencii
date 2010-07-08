@@ -33,9 +33,11 @@ namespace org.kbinani.cadencii {
         public float msOverlap;
 
         public boolean equals( OtoArgs obj ) {
+#if JAVA
             if ( obj == null ) {
                 return false;
             }
+#endif
             if ( this.fileName != null && this.fileName.Equals( obj.fileName ) &&
                  this.Alias != null && this.Alias.Equals( obj.Alias ) &&
                  this.msOffset == obj.msOffset &&

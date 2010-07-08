@@ -57,7 +57,6 @@ public class TrackSelector extends JPanel {
     private JSeparator cmenuCurveSeparator4 = null;
     private JSeparator cmenuCurveSeparator5 = null;
     private BPopupMenu cmenuSinger = null;  //  @jve:decl-index=0:visual-constraint="305,282"
-    private JScrollBar vScroll = null;
     private JToolTip toolTip = null;  //  @jve:decl-index=0:visual-constraint="468,277"
 
     //SECTION-END-FIELD
@@ -82,7 +81,6 @@ public class TrackSelector extends JPanel {
         this.setLayout(new BorderLayout());
         this.setSize(new Dimension(525, 200));
         this.setBackground(new Color(169, 169, 169));
-        this.add(getVScroll(), BorderLayout.EAST);    		
     }
 
     /**
@@ -634,18 +632,6 @@ public class TrackSelector extends JPanel {
             cmenuSinger = new BPopupMenu();
         }
         return cmenuSinger;
-    }
-
-    /**
-     * This method initializes vScroll	
-     * 	
-     * @return javax.swing.JScrollBar	
-     */
-    private JScrollBar getVScroll() {
-        if (vScroll == null) {
-            vScroll = new JScrollBar();
-        }
-        return vScroll;
     }
 
     /**
