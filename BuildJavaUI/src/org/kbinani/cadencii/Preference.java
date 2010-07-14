@@ -160,7 +160,7 @@ public class Preference extends JFrame {
     private BButton btnAquesTone = null;
     private BLabel lblBuffer = null;
     private BNumericUpDown numBuffer = null;
-    private BLabel jLabel811 = null;
+    private BLabel lblBufferSize = null;
     private BGroupBox groupWaveFileOutput = null;
     private BLabel lblChannel = null;
     private BComboBox comboChannel = null;
@@ -559,8 +559,8 @@ public class Preference extends JFrame {
 			gridBagConstraints124.anchor = GridBagConstraints.WEST;
 			gridBagConstraints124.insets = new Insets(3, 12, 3, 0);
 			gridBagConstraints124.gridy = 5;
-			jLabel811 = new BLabel();
-			jLabel811.setText("msec(100-1000)");
+			lblBufferSize = new BLabel();
+			lblBufferSize.setText("msec(100-1000)");
 			GridBagConstraints gridBagConstraints123 = new GridBagConstraints();
 			gridBagConstraints123.gridx = 1;
 			gridBagConstraints123.anchor = GridBagConstraints.WEST;
@@ -676,7 +676,7 @@ public class Preference extends JFrame {
 			tabAnother.add(getChkChasePastEvent(), gridBagConstraints90);
 			tabAnother.add(lblBuffer, gridBagConstraints122);
 			tabAnother.add(getNumBuffer(), gridBagConstraints123);
-			tabAnother.add(jLabel811, gridBagConstraints124);
+			tabAnother.add(lblBufferSize, gridBagConstraints124);
 			tabAnother.add(getGroupWaveFileOutput(), gridBagConstraints125);
 		}
 		return tabAnother;
