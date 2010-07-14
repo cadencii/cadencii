@@ -6,7 +6,7 @@
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A97A6445-5A48-4CEC-A7CE-05B10126CA2A}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>org.kbinani.cadencii</RootNamespace>
     <AssemblyName>Cadencii</AssemblyName>
@@ -366,7 +366,6 @@
     <Content Include="ja.po">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <None Include="app.config" />
     <None Include="makefile" />
   </ItemGroup>
   <ItemGroup>
@@ -1012,5 +1011,9 @@ php "$(ProjectDir)manual\index.php" en "$(ProjectDir)\" &gt;"$(TargetDir)\manual
 php "$(ProjectDir)manual\index.php" ja "$(ProjectDir)\" &gt;"$(TargetDir)\manual\index_ja.html"
 php "$(ProjectDir)manual\index.php" zh-TW "$(ProjectDir)\" &gt;"$(TargetDir)\manual\index_zh-TW.html"
 php "$(ProjectDir)manual\index.php" zh-CN "$(ProjectDir)\" &gt;"$(TargetDir)\manual\index_zh-CN.html"</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>gmcs "$(SolutionDir)makeRes.cs" &amp;&amp; mono "$(SolutionDir)makeRes.exe" -i "$(ProjectDir)Resources.list" -o "$(ProjectDir)Resources.cs" -p "org.kbinani.cadencii" -n "org.kbinani.cadencii"
+</PreBuildEvent>
   </PropertyGroup>
 </Project>

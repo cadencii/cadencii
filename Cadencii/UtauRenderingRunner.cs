@@ -878,6 +878,10 @@ namespace org.kbinani.cadencii {
                 process.StartInfo.Arguments = arg;
                 process.StartInfo.WorkingDirectory = temp_dir;
                 process.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
+#if DEBUG
+                PortUtil.println( "UtauRenderingRunner#processWavTool; invoke_with_wine=" + invoke_with_wine );
+                PortUtil.println( "UtauRenderingRunner#processWavTool; .FileName=" + process.StartInfo.FileName + "; .Arguments=" + process.StartInfo.Arguments );
+#endif
                 process.Start();
                 process.WaitForExit();
             }

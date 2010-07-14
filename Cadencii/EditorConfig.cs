@@ -375,6 +375,14 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public boolean UseUserDefinedAutoVibratoType = false;
 
+        /// <summary>
+        /// バッファーサイズに設定できる最大値
+        /// </summary>
+        public const int MAX_BUFFER_MILLISEC = 1000;
+        /// <summary>
+        /// バッファーサイズに設定できる最小値
+        public const int MIN_BUFFER_MILLIXEC = 100;
+
         #region Static Fields
         public static readonly Vector<ValuePairOfStringArrayOfKeys> DEFAULT_SHORTCUT_KEYS = new Vector<ValuePairOfStringArrayOfKeys>( Arrays.asList(
             new ValuePairOfStringArrayOfKeys[]{
@@ -635,6 +643,13 @@ namespace org.kbinani.cadencii {
                 if ( !found ) {
                     ret.ShortcutKeys.add( DEFAULT_SHORTCUT_KEYS.get( j ) );
                 }
+            }
+
+            // バッファーサイズを正規化
+            if ( ret.BufferSizeMilliSeconds < MIN_BUFFER_MILLIXEC ) {
+                ret.BufferSizeMilliSeconds = MIN_BUFFER_MILLIXEC;
+            } else if ( MAX_BUFFER_MILLISEC < ret.BufferSizeMilliSeconds ) {
+                ret.BufferSizeMilliSeconds = MAX_BUFFER_MILLISEC;
             }
             return ret;
         }

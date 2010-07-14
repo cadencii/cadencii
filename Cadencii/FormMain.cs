@@ -10118,7 +10118,6 @@ namespace org.kbinani.cadencii {
             AppManager.previewAbortedEvent.add( new BEventHandler( this, "AppManager_PreviewAborted" ) );
             AppManager.gridVisibleChangedEvent.add( new BEventHandler( this, "AppManager_GridVisibleChanged" ) );
             AppManager.selectedEventChangedEvent.add( new SelectedEventChangedEventHandler( this, "AppManager_SelectedEventChanged" ) );
-            AppManager.currentClockChangedEvent.add( new BEventHandler( this, "AppManager_CurrentClockChanged" ) );
             AppManager.selectedToolChangedEvent.add( new BEventHandler( this, "AppManager_SelectedToolChanged" ) );
             EditorConfig.quantizeModeChangedEvent.add( new BEventHandler( this, "EditorConfig_QuantizeModeChanged" ) );
 
@@ -11989,315 +11988,319 @@ namespace org.kbinani.cadencii {
 #endif
 
         public void menuSettingPreference_Click( Object sender, EventArgs e ) {
-            if ( m_preference_dlg == null ) {
-                m_preference_dlg = new Preference();
-            }
-            m_preference_dlg.setBaseFont( new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE9 ) );
-            m_preference_dlg.setScreenFont( new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE9 ) );
-            m_preference_dlg.setWheelOrder( AppManager.editorConfig.WheelOrder );
-            m_preference_dlg.setCursorFixed( AppManager.editorConfig.CursorFixed );
-            m_preference_dlg.setDefaultVibratoLength( AppManager.editorConfig.DefaultVibratoLength );
-            m_preference_dlg.setAutoVibratoMinimumLength( AppManager.editorConfig.AutoVibratoMinimumLength );
-            m_preference_dlg.setAutoVibratoType1( AppManager.editorConfig.AutoVibratoType1 );
-            m_preference_dlg.setAutoVibratoType2( AppManager.editorConfig.AutoVibratoType2 );
-            m_preference_dlg.setEnableAutoVibrato( AppManager.editorConfig.EnableAutoVibrato );
-            m_preference_dlg.setPreMeasure( AppManager.getVsqFile().getPreMeasure() );
-            m_preference_dlg.setPreSendTime( AppManager.editorConfig.PreSendTime );
-            m_preference_dlg.setControlCurveResolution( AppManager.editorConfig.ControlCurveResolution );
-            m_preference_dlg.setDefaultSingerName( AppManager.editorConfig.DefaultSingerName );
-            m_preference_dlg.setScrollHorizontalOnWheel( AppManager.editorConfig.ScrollHorizontalOnWheel );
-            m_preference_dlg.setMaximumFrameRate( AppManager.editorConfig.MaximumFrameRate );
-            m_preference_dlg.setPlatform( AppManager.editorConfig.Platform );
-            m_preference_dlg.setKeepLyricInputMode( AppManager.editorConfig.KeepLyricInputMode );
-            m_preference_dlg.setPxTrackHeight( AppManager.editorConfig.PxTrackHeight );
-            m_preference_dlg.setMouseHoverTime( AppManager.editorConfig.getMouseHoverTime() );
-            m_preference_dlg.setPlayPreviewWhenRightClick( AppManager.editorConfig.PlayPreviewWhenRightClick );
-            m_preference_dlg.setCurveSelectingQuantized( AppManager.editorConfig.CurveSelectingQuantized );
-            m_preference_dlg.setCurveVisibleAccent( AppManager.editorConfig.CurveVisibleAccent );
-            m_preference_dlg.setCurveVisibleBre( AppManager.editorConfig.CurveVisibleBreathiness );
-            m_preference_dlg.setCurveVisibleBri( AppManager.editorConfig.CurveVisibleBrightness );
-            m_preference_dlg.setCurveVisibleCle( AppManager.editorConfig.CurveVisibleClearness );
-            m_preference_dlg.setCurveVisibleDecay( AppManager.editorConfig.CurveVisibleDecay );
-            m_preference_dlg.setCurveVisibleDyn( AppManager.editorConfig.CurveVisibleDynamics );
-            m_preference_dlg.setCurveVisibleGen( AppManager.editorConfig.CurveVisibleGendorfactor );
-            m_preference_dlg.setCurveVisibleOpe( AppManager.editorConfig.CurveVisibleOpening );
-            m_preference_dlg.setCurveVisiblePit( AppManager.editorConfig.CurveVisiblePit );
-            m_preference_dlg.setCurveVisiblePbs( AppManager.editorConfig.CurveVisiblePbs );
-            m_preference_dlg.setCurveVisiblePor( AppManager.editorConfig.CurveVisiblePortamento );
-            m_preference_dlg.setCurveVisibleVel( AppManager.editorConfig.CurveVisibleVelocity );
-            m_preference_dlg.setCurveVisibleVibratoDepth( AppManager.editorConfig.CurveVisibleVibratoDepth );
-            m_preference_dlg.setCurveVisibleVibratoRate( AppManager.editorConfig.CurveVisibleVibratoRate );
-            m_preference_dlg.setCurveVisibleFx2Depth( AppManager.editorConfig.CurveVisibleFx2Depth );
-            m_preference_dlg.setCurveVisibleHarmonics( AppManager.editorConfig.CurveVisibleHarmonics );
-            m_preference_dlg.setCurveVisibleReso1( AppManager.editorConfig.CurveVisibleReso1 );
-            m_preference_dlg.setCurveVisibleReso2( AppManager.editorConfig.CurveVisibleReso2 );
-            m_preference_dlg.setCurveVisibleReso3( AppManager.editorConfig.CurveVisibleReso3 );
-            m_preference_dlg.setCurveVisibleReso4( AppManager.editorConfig.CurveVisibleReso4 );
-            m_preference_dlg.setCurveVisibleEnvelope( AppManager.editorConfig.CurveVisibleEnvelope );
+            try {
+                if ( m_preference_dlg == null ) {
+                    m_preference_dlg = new Preference();
+                }
+                m_preference_dlg.setBaseFont( new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE9 ) );
+                m_preference_dlg.setScreenFont( new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE9 ) );
+                m_preference_dlg.setWheelOrder( AppManager.editorConfig.WheelOrder );
+                m_preference_dlg.setCursorFixed( AppManager.editorConfig.CursorFixed );
+                m_preference_dlg.setDefaultVibratoLength( AppManager.editorConfig.DefaultVibratoLength );
+                m_preference_dlg.setAutoVibratoMinimumLength( AppManager.editorConfig.AutoVibratoMinimumLength );
+                m_preference_dlg.setAutoVibratoType1( AppManager.editorConfig.AutoVibratoType1 );
+                m_preference_dlg.setAutoVibratoType2( AppManager.editorConfig.AutoVibratoType2 );
+                m_preference_dlg.setEnableAutoVibrato( AppManager.editorConfig.EnableAutoVibrato );
+                m_preference_dlg.setPreMeasure( AppManager.getVsqFile().getPreMeasure() );
+                m_preference_dlg.setPreSendTime( AppManager.editorConfig.PreSendTime );
+                m_preference_dlg.setControlCurveResolution( AppManager.editorConfig.ControlCurveResolution );
+                m_preference_dlg.setDefaultSingerName( AppManager.editorConfig.DefaultSingerName );
+                m_preference_dlg.setScrollHorizontalOnWheel( AppManager.editorConfig.ScrollHorizontalOnWheel );
+                m_preference_dlg.setMaximumFrameRate( AppManager.editorConfig.MaximumFrameRate );
+                m_preference_dlg.setPlatform( AppManager.editorConfig.Platform );
+                m_preference_dlg.setKeepLyricInputMode( AppManager.editorConfig.KeepLyricInputMode );
+                m_preference_dlg.setPxTrackHeight( AppManager.editorConfig.PxTrackHeight );
+                m_preference_dlg.setMouseHoverTime( AppManager.editorConfig.getMouseHoverTime() );
+                m_preference_dlg.setPlayPreviewWhenRightClick( AppManager.editorConfig.PlayPreviewWhenRightClick );
+                m_preference_dlg.setCurveSelectingQuantized( AppManager.editorConfig.CurveSelectingQuantized );
+                m_preference_dlg.setCurveVisibleAccent( AppManager.editorConfig.CurveVisibleAccent );
+                m_preference_dlg.setCurveVisibleBre( AppManager.editorConfig.CurveVisibleBreathiness );
+                m_preference_dlg.setCurveVisibleBri( AppManager.editorConfig.CurveVisibleBrightness );
+                m_preference_dlg.setCurveVisibleCle( AppManager.editorConfig.CurveVisibleClearness );
+                m_preference_dlg.setCurveVisibleDecay( AppManager.editorConfig.CurveVisibleDecay );
+                m_preference_dlg.setCurveVisibleDyn( AppManager.editorConfig.CurveVisibleDynamics );
+                m_preference_dlg.setCurveVisibleGen( AppManager.editorConfig.CurveVisibleGendorfactor );
+                m_preference_dlg.setCurveVisibleOpe( AppManager.editorConfig.CurveVisibleOpening );
+                m_preference_dlg.setCurveVisiblePit( AppManager.editorConfig.CurveVisiblePit );
+                m_preference_dlg.setCurveVisiblePbs( AppManager.editorConfig.CurveVisiblePbs );
+                m_preference_dlg.setCurveVisiblePor( AppManager.editorConfig.CurveVisiblePortamento );
+                m_preference_dlg.setCurveVisibleVel( AppManager.editorConfig.CurveVisibleVelocity );
+                m_preference_dlg.setCurveVisibleVibratoDepth( AppManager.editorConfig.CurveVisibleVibratoDepth );
+                m_preference_dlg.setCurveVisibleVibratoRate( AppManager.editorConfig.CurveVisibleVibratoRate );
+                m_preference_dlg.setCurveVisibleFx2Depth( AppManager.editorConfig.CurveVisibleFx2Depth );
+                m_preference_dlg.setCurveVisibleHarmonics( AppManager.editorConfig.CurveVisibleHarmonics );
+                m_preference_dlg.setCurveVisibleReso1( AppManager.editorConfig.CurveVisibleReso1 );
+                m_preference_dlg.setCurveVisibleReso2( AppManager.editorConfig.CurveVisibleReso2 );
+                m_preference_dlg.setCurveVisibleReso3( AppManager.editorConfig.CurveVisibleReso3 );
+                m_preference_dlg.setCurveVisibleReso4( AppManager.editorConfig.CurveVisibleReso4 );
+                m_preference_dlg.setCurveVisibleEnvelope( AppManager.editorConfig.CurveVisibleEnvelope );
 #if ENABLE_MIDI
-            m_preference_dlg.setMidiInPort( AppManager.editorConfig.MidiInPort.PortNumber );
+                m_preference_dlg.setMidiInPort( AppManager.editorConfig.MidiInPort.PortNumber );
 #endif
 #if ENABLE_MTC
             m_preference_dlg.setMtcMidiInPort( AppManager.editorConfig.MidiInPortMtc.PortNumber );
 
 #endif
-            m_preference_dlg.setInvokeWithWine( AppManager.editorConfig.InvokeUtauCoreWithWine );
-            m_preference_dlg.setPathResampler( AppManager.editorConfig.PathResampler );
-            m_preference_dlg.setPathWavtool( AppManager.editorConfig.PathWavtool );
-            m_preference_dlg.setUtauSingers( AppManager.editorConfig.UtauSingers );
-            m_preference_dlg.setSelfDeRomantization( AppManager.editorConfig.SelfDeRomanization );
-            m_preference_dlg.setAutoBackupIntervalMinutes( AppManager.editorConfig.AutoBackupIntervalMinutes );
-            m_preference_dlg.setUseSpaceKeyAsMiddleButtonModifier( AppManager.editorConfig.UseSpaceKeyAsMiddleButtonModifier );
-            m_preference_dlg.setPathAquesTone( AppManager.editorConfig.PathAquesTone );
-            m_preference_dlg.setWaveFileOutputFromMasterTrack( AppManager.editorConfig.WaveFileOutputFromMasterTrack );
-            m_preference_dlg.setWaveFileOutputChannel( AppManager.editorConfig.WaveFileOutputChannel );
-            m_preference_dlg.setUseProjectCache( AppManager.editorConfig.UseProjectCache );
-            m_preference_dlg.setLoadAquesTone( !AppManager.editorConfig.DoNotUseAquesTone );
-            m_preference_dlg.setLoadSecondaryVocaloid1Dll( AppManager.editorConfig.LoadSecondaryVocaloid1Dll );
-            m_preference_dlg.setLoadVocaloid100( !AppManager.editorConfig.DoNotUseVocaloid100 );
-            m_preference_dlg.setLoadVocaloid101( !AppManager.editorConfig.DoNotUseVocaloid101 );
-            m_preference_dlg.setLoadVocaloid2( !AppManager.editorConfig.DoNotUseVocaloid2 );
-            m_preference_dlg.setBufferSize( AppManager.editorConfig.BufferSizeMilliSeconds );
-            m_preference_dlg.setDefaultVibratoDepth( AppManager.editorConfig.DefaultVibratoDepth );
-            m_preference_dlg.setDefaultVibratoRate( AppManager.editorConfig.DefaultVibratoRate );
-            m_preference_dlg.setDefaultSynthesizer( AppManager.editorConfig.DefaultSynthesizer );
-            m_preference_dlg.setUseUserDefinedAutoVibratoType( AppManager.editorConfig.UseUserDefinedAutoVibratoType );
+                m_preference_dlg.setInvokeWithWine( AppManager.editorConfig.InvokeUtauCoreWithWine );
+                m_preference_dlg.setPathResampler( AppManager.editorConfig.PathResampler );
+                m_preference_dlg.setPathWavtool( AppManager.editorConfig.PathWavtool );
+                m_preference_dlg.setUtauSingers( AppManager.editorConfig.UtauSingers );
+                m_preference_dlg.setSelfDeRomantization( AppManager.editorConfig.SelfDeRomanization );
+                m_preference_dlg.setAutoBackupIntervalMinutes( AppManager.editorConfig.AutoBackupIntervalMinutes );
+                m_preference_dlg.setUseSpaceKeyAsMiddleButtonModifier( AppManager.editorConfig.UseSpaceKeyAsMiddleButtonModifier );
+                m_preference_dlg.setPathAquesTone( AppManager.editorConfig.PathAquesTone );
+                m_preference_dlg.setWaveFileOutputFromMasterTrack( AppManager.editorConfig.WaveFileOutputFromMasterTrack );
+                m_preference_dlg.setWaveFileOutputChannel( AppManager.editorConfig.WaveFileOutputChannel );
+                m_preference_dlg.setUseProjectCache( AppManager.editorConfig.UseProjectCache );
+                m_preference_dlg.setLoadAquesTone( !AppManager.editorConfig.DoNotUseAquesTone );
+                m_preference_dlg.setLoadSecondaryVocaloid1Dll( AppManager.editorConfig.LoadSecondaryVocaloid1Dll );
+                m_preference_dlg.setLoadVocaloid100( !AppManager.editorConfig.DoNotUseVocaloid100 );
+                m_preference_dlg.setLoadVocaloid101( !AppManager.editorConfig.DoNotUseVocaloid101 );
+                m_preference_dlg.setLoadVocaloid2( !AppManager.editorConfig.DoNotUseVocaloid2 );
+                m_preference_dlg.setBufferSize( AppManager.editorConfig.BufferSizeMilliSeconds );
+                m_preference_dlg.setDefaultVibratoDepth( AppManager.editorConfig.DefaultVibratoDepth );
+                m_preference_dlg.setDefaultVibratoRate( AppManager.editorConfig.DefaultVibratoRate );
+                m_preference_dlg.setDefaultSynthesizer( AppManager.editorConfig.DefaultSynthesizer );
+                m_preference_dlg.setUseUserDefinedAutoVibratoType( AppManager.editorConfig.UseUserDefinedAutoVibratoType );
 
-            m_preference_dlg.setLocation( getFormPreferedLocation( m_preference_dlg ) );
+                m_preference_dlg.setLocation( getFormPreferedLocation( m_preference_dlg ) );
 
-            m_preference_dlg.setModal( true );
-            m_preference_dlg.setVisible( true );
-            if ( m_preference_dlg.getDialogResult() == BDialogResult.OK ) {
-                String old_base_font_name = AppManager.editorConfig.BaseFontName;
-                float old_base_font_size = AppManager.editorConfig.BaseFontSize;
-                Font new_base_font = m_preference_dlg.getBaseFont();
+                m_preference_dlg.setModal( true );
+                m_preference_dlg.setVisible( true );
+                if ( m_preference_dlg.getDialogResult() == BDialogResult.OK ) {
+                    String old_base_font_name = AppManager.editorConfig.BaseFontName;
+                    float old_base_font_size = AppManager.editorConfig.BaseFontSize;
+                    Font new_base_font = m_preference_dlg.getBaseFont();
 #if DEBUG
                 PortUtil.println( "FormMain#menuSettingPreference; old_base_font_name=" + old_base_font_name + "; new_base_font.getName()=" + new_base_font.getName() );
                 PortUtil.println( "FormMain#menuSettingPreference; old_base_font_size=" + old_base_font_size + "; new_base_font.getSize2D()=" + new_base_font.getSize2D() );
 #endif
-                if ( !old_base_font_name.Equals( new_base_font.getName() ) ||
-                     old_base_font_size != new_base_font.getSize2D() ) {
+                    if ( !old_base_font_name.Equals( new_base_font.getName() ) ||
+                         old_base_font_size != new_base_font.getSize2D() ) {
 #if DEBUG
                     PortUtil.println( "FormMain#menuSettingPreference; font changed" );
 #endif
-                    AppManager.editorConfig.BaseFontName = m_preference_dlg.getBaseFont().getName();
-                    AppManager.editorConfig.BaseFontSize = m_preference_dlg.getBaseFont().getSize2D();
-                    updateMenuFonts();
-                }
+                        AppManager.editorConfig.BaseFontName = m_preference_dlg.getBaseFont().getName();
+                        AppManager.editorConfig.BaseFontSize = m_preference_dlg.getBaseFont().getSize2D();
+                        updateMenuFonts();
+                    }
 
-                AppManager.editorConfig.ScreenFontName = m_preference_dlg.getScreenFont().getName();
-                AppManager.editorConfig.WheelOrder = m_preference_dlg.getWheelOrder();
-                AppManager.editorConfig.CursorFixed = m_preference_dlg.isCursorFixed();
+                    AppManager.editorConfig.ScreenFontName = m_preference_dlg.getScreenFont().getName();
+                    AppManager.editorConfig.WheelOrder = m_preference_dlg.getWheelOrder();
+                    AppManager.editorConfig.CursorFixed = m_preference_dlg.isCursorFixed();
 
-                AppManager.editorConfig.DefaultVibratoLength = m_preference_dlg.getDefaultVibratoLength();
-                AppManager.editorConfig.AutoVibratoMinimumLength = m_preference_dlg.getAutoVibratoMinimumLength();
-                AppManager.editorConfig.AutoVibratoType1 = m_preference_dlg.getAutoVibratoType1();
-                AppManager.editorConfig.AutoVibratoType2 = m_preference_dlg.getAutoVibratoType2();
+                    AppManager.editorConfig.DefaultVibratoLength = m_preference_dlg.getDefaultVibratoLength();
+                    AppManager.editorConfig.AutoVibratoMinimumLength = m_preference_dlg.getAutoVibratoMinimumLength();
+                    AppManager.editorConfig.AutoVibratoType1 = m_preference_dlg.getAutoVibratoType1();
+                    AppManager.editorConfig.AutoVibratoType2 = m_preference_dlg.getAutoVibratoType2();
 
-                AppManager.editorConfig.EnableAutoVibrato = m_preference_dlg.isEnableAutoVibrato();
-                AppManager.editorConfig.PreSendTime = m_preference_dlg.getPreSendTime();
-                AppManager.editorConfig.DefaultPreMeasure = m_preference_dlg.getPreMeasure();
-                if ( m_preference_dlg.getPreMeasure() != AppManager.getVsqFile().getPreMeasure() ) {
-                    CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandChangePreMeasure( m_preference_dlg.getPreMeasure() ) );
-                    AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
-                    setEdited( true );
-                }
-                AppManager.editorConfig.Language = m_preference_dlg.getLanguage();
-                if ( !Messaging.getLanguage().Equals( AppManager.editorConfig.Language ) ) {
-                    Messaging.setLanguage( AppManager.editorConfig.Language );
-                    applyLanguage();
-                    m_preference_dlg.applyLanguage();
-                    AppManager.mixerWindow.applyLanguage();
+                    AppManager.editorConfig.EnableAutoVibrato = m_preference_dlg.isEnableAutoVibrato();
+                    AppManager.editorConfig.PreSendTime = m_preference_dlg.getPreSendTime();
+                    AppManager.editorConfig.DefaultPreMeasure = m_preference_dlg.getPreMeasure();
+                    if ( m_preference_dlg.getPreMeasure() != AppManager.getVsqFile().getPreMeasure() ) {
+                        CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandChangePreMeasure( m_preference_dlg.getPreMeasure() ) );
+                        AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                        setEdited( true );
+                    }
+                    AppManager.editorConfig.Language = m_preference_dlg.getLanguage();
+                    if ( !Messaging.getLanguage().Equals( AppManager.editorConfig.Language ) ) {
+                        Messaging.setLanguage( AppManager.editorConfig.Language );
+                        applyLanguage();
+                        m_preference_dlg.applyLanguage();
+                        AppManager.mixerWindow.applyLanguage();
 #if JAVA
                     if ( m_versioninfo != null ) {
 #else
-                    if ( m_versioninfo != null && !m_versioninfo.IsDisposed ) {
+                        if ( m_versioninfo != null && !m_versioninfo.IsDisposed ) {
 #endif
-                        m_versioninfo.applyLanguage();
-                    }
+                            m_versioninfo.applyLanguage();
+                        }
 #if ENABLE_PROPERTY
-                    AppManager.propertyWindow.applyLanguage();
-                    AppManager.propertyPanel.UpdateValue( AppManager.getSelected() );
+                        AppManager.propertyWindow.applyLanguage();
+                        AppManager.propertyPanel.UpdateValue( AppManager.getSelected() );
 #endif
-                }
+                    }
 
-                AppManager.editorConfig.ControlCurveResolution = m_preference_dlg.getControlCurveResolution();
-                AppManager.editorConfig.DefaultSingerName = m_preference_dlg.getDefaultSingerName();
-                AppManager.editorConfig.ScrollHorizontalOnWheel = m_preference_dlg.isScrollHorizontalOnWheel();
-                AppManager.editorConfig.MaximumFrameRate = m_preference_dlg.getMaximumFrameRate();
-                int fps = 1000 / AppManager.editorConfig.MaximumFrameRate;
-                timer.setDelay( (fps <= 0) ? 1 : fps );
-                AppManager.editorConfig.Platform = m_preference_dlg.getPlatform();
-                s_modifier_key = ((AppManager.editorConfig.Platform == PlatformEnum.Macintosh) ? InputEvent.META_MASK : InputEvent.CTRL_MASK);
-                applyShortcut();
-                AppManager.editorConfig.KeepLyricInputMode = m_preference_dlg.isKeepLyricInputMode();
-                if ( AppManager.editorConfig.PxTrackHeight != m_preference_dlg.getPxTrackHeight() ) {
-                    AppManager.editorConfig.PxTrackHeight = m_preference_dlg.getPxTrackHeight();
-                    updateDrawObjectList();
-                }
-                AppManager.editorConfig.setMouseHoverTime( m_preference_dlg.getMouseHoverTime() );
-                AppManager.editorConfig.PlayPreviewWhenRightClick = m_preference_dlg.isPlayPreviewWhenRightClick();
-                AppManager.editorConfig.CurveSelectingQuantized = m_preference_dlg.isCurveSelectingQuantized();
+                    AppManager.editorConfig.ControlCurveResolution = m_preference_dlg.getControlCurveResolution();
+                    AppManager.editorConfig.DefaultSingerName = m_preference_dlg.getDefaultSingerName();
+                    AppManager.editorConfig.ScrollHorizontalOnWheel = m_preference_dlg.isScrollHorizontalOnWheel();
+                    AppManager.editorConfig.MaximumFrameRate = m_preference_dlg.getMaximumFrameRate();
+                    int fps = 1000 / AppManager.editorConfig.MaximumFrameRate;
+                    timer.setDelay( (fps <= 0) ? 1 : fps );
+                    AppManager.editorConfig.Platform = m_preference_dlg.getPlatform();
+                    s_modifier_key = ((AppManager.editorConfig.Platform == PlatformEnum.Macintosh) ? InputEvent.META_MASK : InputEvent.CTRL_MASK);
+                    applyShortcut();
+                    AppManager.editorConfig.KeepLyricInputMode = m_preference_dlg.isKeepLyricInputMode();
+                    if ( AppManager.editorConfig.PxTrackHeight != m_preference_dlg.getPxTrackHeight() ) {
+                        AppManager.editorConfig.PxTrackHeight = m_preference_dlg.getPxTrackHeight();
+                        updateDrawObjectList();
+                    }
+                    AppManager.editorConfig.setMouseHoverTime( m_preference_dlg.getMouseHoverTime() );
+                    AppManager.editorConfig.PlayPreviewWhenRightClick = m_preference_dlg.isPlayPreviewWhenRightClick();
+                    AppManager.editorConfig.CurveSelectingQuantized = m_preference_dlg.isCurveSelectingQuantized();
 
-                AppManager.editorConfig.CurveVisibleAccent = m_preference_dlg.isCurveVisibleAccent();
-                AppManager.editorConfig.CurveVisibleBreathiness = m_preference_dlg.isCurveVisibleBre();
-                AppManager.editorConfig.CurveVisibleBrightness = m_preference_dlg.isCurveVisibleBri();
-                AppManager.editorConfig.CurveVisibleClearness = m_preference_dlg.isCurveVisibleCle();
-                AppManager.editorConfig.CurveVisibleDecay = m_preference_dlg.isCurveVisibleDecay();
-                AppManager.editorConfig.CurveVisibleDynamics = m_preference_dlg.isCurveVisibleDyn();
-                AppManager.editorConfig.CurveVisibleGendorfactor = m_preference_dlg.isCurveVisibleGen();
-                AppManager.editorConfig.CurveVisibleOpening = m_preference_dlg.isCurveVisibleOpe();
-                AppManager.editorConfig.CurveVisiblePit = m_preference_dlg.isCurveVisiblePit();
-                AppManager.editorConfig.CurveVisiblePbs = m_preference_dlg.isCurveVisiblePbs();
-                AppManager.editorConfig.CurveVisiblePortamento = m_preference_dlg.isCurveVisiblePor();
-                AppManager.editorConfig.CurveVisibleVelocity = m_preference_dlg.isCurveVisibleVel();
-                AppManager.editorConfig.CurveVisibleVibratoDepth = m_preference_dlg.isCurveVisibleVibratoDepth();
-                AppManager.editorConfig.CurveVisibleVibratoRate = m_preference_dlg.isCurveVisibleVibratoRate();
-                AppManager.editorConfig.CurveVisibleFx2Depth = m_preference_dlg.isCurveVisibleFx2Depth();
-                AppManager.editorConfig.CurveVisibleHarmonics = m_preference_dlg.isCurveVisibleHarmonics();
-                AppManager.editorConfig.CurveVisibleReso1 = m_preference_dlg.isCurveVisibleReso1();
-                AppManager.editorConfig.CurveVisibleReso2 = m_preference_dlg.isCurveVisibleReso2();
-                AppManager.editorConfig.CurveVisibleReso3 = m_preference_dlg.isCurveVisibleReso3();
-                AppManager.editorConfig.CurveVisibleReso4 = m_preference_dlg.isCurveVisibleReso4();
-                AppManager.editorConfig.CurveVisibleEnvelope = m_preference_dlg.isCurveVisibleEnvelope();
+                    AppManager.editorConfig.CurveVisibleAccent = m_preference_dlg.isCurveVisibleAccent();
+                    AppManager.editorConfig.CurveVisibleBreathiness = m_preference_dlg.isCurveVisibleBre();
+                    AppManager.editorConfig.CurveVisibleBrightness = m_preference_dlg.isCurveVisibleBri();
+                    AppManager.editorConfig.CurveVisibleClearness = m_preference_dlg.isCurveVisibleCle();
+                    AppManager.editorConfig.CurveVisibleDecay = m_preference_dlg.isCurveVisibleDecay();
+                    AppManager.editorConfig.CurveVisibleDynamics = m_preference_dlg.isCurveVisibleDyn();
+                    AppManager.editorConfig.CurveVisibleGendorfactor = m_preference_dlg.isCurveVisibleGen();
+                    AppManager.editorConfig.CurveVisibleOpening = m_preference_dlg.isCurveVisibleOpe();
+                    AppManager.editorConfig.CurveVisiblePit = m_preference_dlg.isCurveVisiblePit();
+                    AppManager.editorConfig.CurveVisiblePbs = m_preference_dlg.isCurveVisiblePbs();
+                    AppManager.editorConfig.CurveVisiblePortamento = m_preference_dlg.isCurveVisiblePor();
+                    AppManager.editorConfig.CurveVisibleVelocity = m_preference_dlg.isCurveVisibleVel();
+                    AppManager.editorConfig.CurveVisibleVibratoDepth = m_preference_dlg.isCurveVisibleVibratoDepth();
+                    AppManager.editorConfig.CurveVisibleVibratoRate = m_preference_dlg.isCurveVisibleVibratoRate();
+                    AppManager.editorConfig.CurveVisibleFx2Depth = m_preference_dlg.isCurveVisibleFx2Depth();
+                    AppManager.editorConfig.CurveVisibleHarmonics = m_preference_dlg.isCurveVisibleHarmonics();
+                    AppManager.editorConfig.CurveVisibleReso1 = m_preference_dlg.isCurveVisibleReso1();
+                    AppManager.editorConfig.CurveVisibleReso2 = m_preference_dlg.isCurveVisibleReso2();
+                    AppManager.editorConfig.CurveVisibleReso3 = m_preference_dlg.isCurveVisibleReso3();
+                    AppManager.editorConfig.CurveVisibleReso4 = m_preference_dlg.isCurveVisibleReso4();
+                    AppManager.editorConfig.CurveVisibleEnvelope = m_preference_dlg.isCurveVisibleEnvelope();
 
 #if ENABLE_MIDI
-                AppManager.editorConfig.MidiInPort.PortNumber = m_preference_dlg.getMidiInPort();
+                    AppManager.editorConfig.MidiInPort.PortNumber = m_preference_dlg.getMidiInPort();
 #endif
 #if ENABLE_MTC
                 AppManager.editorConfig.MidiInPortMtc.PortNumber = m_preference_dlg.getMtcMidiInPort();
 #endif
 #if ENABLE_MIDI || ENABLE_MTC
-                updateMidiInStatus();
-                reloadMidiIn();
+                    updateMidiInStatus();
+                    reloadMidiIn();
 #endif
 
-                AppManager.editorConfig.InvokeUtauCoreWithWine = m_preference_dlg.isInvokeWithWine();
-                AppManager.editorConfig.PathResampler = m_preference_dlg.getPathResampler();
-                AppManager.editorConfig.PathWavtool = m_preference_dlg.getPathWavtool();
+                    AppManager.editorConfig.InvokeUtauCoreWithWine = m_preference_dlg.isInvokeWithWine();
+                    AppManager.editorConfig.PathResampler = m_preference_dlg.getPathResampler();
+                    AppManager.editorConfig.PathWavtool = m_preference_dlg.getPathWavtool();
 
-                AppManager.editorConfig.UtauSingers.clear();
-                for ( Iterator<SingerConfig> itr = m_preference_dlg.getUtauSingers().iterator(); itr.hasNext(); ) {
-                    SingerConfig sc = itr.next();
-                    AppManager.editorConfig.UtauSingers.add( (SingerConfig)sc.clone() );
-                }
-                AppManager.reloadUtauVoiceDB();
-                
-                AppManager.editorConfig.SelfDeRomanization = m_preference_dlg.isSelfDeRomantization();
-                AppManager.editorConfig.AutoBackupIntervalMinutes = m_preference_dlg.getAutoBackupIntervalMinutes();
-                AppManager.editorConfig.UseSpaceKeyAsMiddleButtonModifier = m_preference_dlg.isUseSpaceKeyAsMiddleButtonModifier();
+                    AppManager.editorConfig.UtauSingers.clear();
+                    for ( Iterator<SingerConfig> itr = m_preference_dlg.getUtauSingers().iterator(); itr.hasNext(); ) {
+                        SingerConfig sc = itr.next();
+                        AppManager.editorConfig.UtauSingers.add( (SingerConfig)sc.clone() );
+                    }
+                    AppManager.reloadUtauVoiceDB();
+
+                    AppManager.editorConfig.SelfDeRomanization = m_preference_dlg.isSelfDeRomantization();
+                    AppManager.editorConfig.AutoBackupIntervalMinutes = m_preference_dlg.getAutoBackupIntervalMinutes();
+                    AppManager.editorConfig.UseSpaceKeyAsMiddleButtonModifier = m_preference_dlg.isUseSpaceKeyAsMiddleButtonModifier();
 #if ENABLE_AQUESTONE
-                String old_aquestone_dll = AppManager.editorConfig.PathAquesTone;
-                String new_aquestone_dll = m_preference_dlg.getPathAquesTone();
-                AppManager.editorConfig.PathAquesTone = m_preference_dlg.getPathAquesTone();
-                if ( !old_aquestone_dll.Equals( new_aquestone_dll ) ) {
-                    VSTiProxy.reloadAquesTone();
-                }
+                    String old_aquestone_dll = AppManager.editorConfig.PathAquesTone;
+                    String new_aquestone_dll = m_preference_dlg.getPathAquesTone();
+                    AppManager.editorConfig.PathAquesTone = m_preference_dlg.getPathAquesTone();
+                    if ( !old_aquestone_dll.Equals( new_aquestone_dll ) ) {
+                        VSTiProxy.reloadAquesTone();
+                    }
 #endif
-                AppManager.editorConfig.WaveFileOutputFromMasterTrack = m_preference_dlg.isWaveFileOutputFromMasterTrack();
-                AppManager.editorConfig.WaveFileOutputChannel = m_preference_dlg.getWaveFileOutputChannel();
-                if ( AppManager.editorConfig.UseProjectCache && !m_preference_dlg.isUseProjectCache() ) {
-                    // プロジェクト用キャッシュを使用していたが，使用しないように変更された場合.
-                    // プロジェクト用キャッシュが存在するなら，共用のキャッシュに移動する．
-                    String file = AppManager.getFileName();
-                    if( file != null && !file.Equals( "" ) ){
-                        String dir = PortUtil.getDirectoryName( file );
-                        String name = PortUtil.getFileNameWithoutExtension( file );
-                        String projectCacheDir = PortUtil.combinePath( dir, name + ".cadencii" );
-                        String commonCacheDir = PortUtil.combinePath( AppManager.getCadenciiTempDir(), AppManager.getID() );
-                        if ( PortUtil.isDirectoryExists( projectCacheDir ) ) {
-                            VsqFileEx vsq = AppManager.getVsqFile();
-                            for ( int i = 1; i < vsq.Track.size(); i++ ) {
-                                // wavを移動
-                                String wavFrom = PortUtil.combinePath( projectCacheDir, i + ".wav" );
-                                String wavTo = PortUtil.combinePath( commonCacheDir, i + ".wav" );
-                                if ( !PortUtil.isFileExists( wavFrom ) ) {
-                                    continue;
-                                }
-                                if ( PortUtil.isFileExists( wavTo ) ) {
-                                    try {
-                                        PortUtil.deleteFile( wavTo );
-                                    } catch ( Exception ex ) {
-                                        PortUtil.stderr.println( "FormMain#menuSettingPreference_Click; ex=" + ex );
+                    AppManager.editorConfig.WaveFileOutputFromMasterTrack = m_preference_dlg.isWaveFileOutputFromMasterTrack();
+                    AppManager.editorConfig.WaveFileOutputChannel = m_preference_dlg.getWaveFileOutputChannel();
+                    if ( AppManager.editorConfig.UseProjectCache && !m_preference_dlg.isUseProjectCache() ) {
+                        // プロジェクト用キャッシュを使用していたが，使用しないように変更された場合.
+                        // プロジェクト用キャッシュが存在するなら，共用のキャッシュに移動する．
+                        String file = AppManager.getFileName();
+                        if ( file != null && !file.Equals( "" ) ) {
+                            String dir = PortUtil.getDirectoryName( file );
+                            String name = PortUtil.getFileNameWithoutExtension( file );
+                            String projectCacheDir = PortUtil.combinePath( dir, name + ".cadencii" );
+                            String commonCacheDir = PortUtil.combinePath( AppManager.getCadenciiTempDir(), AppManager.getID() );
+                            if ( PortUtil.isDirectoryExists( projectCacheDir ) ) {
+                                VsqFileEx vsq = AppManager.getVsqFile();
+                                for ( int i = 1; i < vsq.Track.size(); i++ ) {
+                                    // wavを移動
+                                    String wavFrom = PortUtil.combinePath( projectCacheDir, i + ".wav" );
+                                    String wavTo = PortUtil.combinePath( commonCacheDir, i + ".wav" );
+                                    if ( !PortUtil.isFileExists( wavFrom ) ) {
                                         continue;
                                     }
-                                }
-                                try {
-                                    PortUtil.moveFile( wavFrom, wavTo );
-                                } catch ( Exception ex ) {
-                                    PortUtil.stderr.println( "FormMain#menuSettingPreference_Click; ex=" + ex );
-                                }
-
-                                // xmlを移動
-                                String xmlFrom = PortUtil.combinePath( projectCacheDir, i + ".xml" );
-                                String xmlTo = PortUtil.combinePath( commonCacheDir, i + ".xml" );
-                                if ( !PortUtil.isFileExists( xmlFrom ) ) {
-                                    continue;
-                                }
-                                if ( PortUtil.isFileExists( xmlTo ) ) {
+                                    if ( PortUtil.isFileExists( wavTo ) ) {
+                                        try {
+                                            PortUtil.deleteFile( wavTo );
+                                        } catch ( Exception ex ) {
+                                            PortUtil.stderr.println( "FormMain#menuSettingPreference_Click; ex=" + ex );
+                                            continue;
+                                        }
+                                    }
                                     try {
-                                        PortUtil.deleteFile( xmlTo );
+                                        PortUtil.moveFile( wavFrom, wavTo );
                                     } catch ( Exception ex ) {
                                         PortUtil.stderr.println( "FormMain#menuSettingPreference_Click; ex=" + ex );
+                                    }
+
+                                    // xmlを移動
+                                    String xmlFrom = PortUtil.combinePath( projectCacheDir, i + ".xml" );
+                                    String xmlTo = PortUtil.combinePath( commonCacheDir, i + ".xml" );
+                                    if ( !PortUtil.isFileExists( xmlFrom ) ) {
                                         continue;
                                     }
+                                    if ( PortUtil.isFileExists( xmlTo ) ) {
+                                        try {
+                                            PortUtil.deleteFile( xmlTo );
+                                        } catch ( Exception ex ) {
+                                            PortUtil.stderr.println( "FormMain#menuSettingPreference_Click; ex=" + ex );
+                                            continue;
+                                        }
+                                    }
+                                    try {
+                                        PortUtil.moveFile( xmlFrom, xmlTo );
+                                    } catch ( Exception ex ) {
+                                        PortUtil.stderr.println( "FormMain#menuSettingPreference_Click; ex=" + ex );
+                                    }
                                 }
-                                try {
-                                    PortUtil.moveFile( xmlFrom, xmlTo );
-                                } catch ( Exception ex ) {
-                                    PortUtil.stderr.println( "FormMain#menuSettingPreference_Click; ex=" + ex );
-                                }
-                            }
 
-                            // projectCacheDirが空なら，ディレクトリごと削除する
-                            String[] files = PortUtil.listFiles( projectCacheDir, "*.*" );
-                            if ( files.Length <= 0 ) {
-                                try {
-                                    PortUtil.deleteDirectory( projectCacheDir );
-                                } catch ( Exception ex ) {
-                                    PortUtil.stderr.println( "FormMain#menuSettingPreference_Click; ex=" + ex );
+                                // projectCacheDirが空なら，ディレクトリごと削除する
+                                String[] files = PortUtil.listFiles( projectCacheDir, "*.*" );
+                                if ( files.Length <= 0 ) {
+                                    try {
+                                        PortUtil.deleteDirectory( projectCacheDir );
+                                    } catch ( Exception ex ) {
+                                        PortUtil.stderr.println( "FormMain#menuSettingPreference_Click; ex=" + ex );
+                                    }
                                 }
-                            }
 
-                            // キャッシュのディレクトリを再指定
-                            AppManager.setTempWaveDir( commonCacheDir );
+                                // キャッシュのディレクトリを再指定
+                                AppManager.setTempWaveDir( commonCacheDir );
+                            }
                         }
                     }
-                }
-                AppManager.editorConfig.UseProjectCache = m_preference_dlg.isUseProjectCache();
-                AppManager.editorConfig.DoNotUseAquesTone = !m_preference_dlg.isLoadAquesTone();
-                AppManager.editorConfig.DoNotUseVocaloid100 = !m_preference_dlg.isLoadVocaloid100();
-                AppManager.editorConfig.DoNotUseVocaloid101 = !m_preference_dlg.isLoadVocaloid101();
-                AppManager.editorConfig.DoNotUseVocaloid2 = !m_preference_dlg.isLoadVocaloid2();
-                AppManager.editorConfig.LoadSecondaryVocaloid1Dll = m_preference_dlg.isLoadSecondaryVocaloid1Dll();
-                AppManager.editorConfig.BufferSizeMilliSeconds = m_preference_dlg.getBufferSize();
-                AppManager.editorConfig.DefaultVibratoRate = m_preference_dlg.getDefaultVibratoRate();
-                AppManager.editorConfig.DefaultVibratoDepth = m_preference_dlg.getDefaultVibratoDepth();
-                AppManager.editorConfig.DefaultSynthesizer = m_preference_dlg.getDefaultSynthesizer();
-                AppManager.editorConfig.UseUserDefinedAutoVibratoType = m_preference_dlg.isUseUserDefinedAutoVibratoType();
+                    AppManager.editorConfig.UseProjectCache = m_preference_dlg.isUseProjectCache();
+                    AppManager.editorConfig.DoNotUseAquesTone = !m_preference_dlg.isLoadAquesTone();
+                    AppManager.editorConfig.DoNotUseVocaloid100 = !m_preference_dlg.isLoadVocaloid100();
+                    AppManager.editorConfig.DoNotUseVocaloid101 = !m_preference_dlg.isLoadVocaloid101();
+                    AppManager.editorConfig.DoNotUseVocaloid2 = !m_preference_dlg.isLoadVocaloid2();
+                    AppManager.editorConfig.LoadSecondaryVocaloid1Dll = m_preference_dlg.isLoadSecondaryVocaloid1Dll();
+                    AppManager.editorConfig.BufferSizeMilliSeconds = m_preference_dlg.getBufferSize();
+                    AppManager.editorConfig.DefaultVibratoRate = m_preference_dlg.getDefaultVibratoRate();
+                    AppManager.editorConfig.DefaultVibratoDepth = m_preference_dlg.getDefaultVibratoDepth();
+                    AppManager.editorConfig.DefaultSynthesizer = m_preference_dlg.getDefaultSynthesizer();
+                    AppManager.editorConfig.UseUserDefinedAutoVibratoType = m_preference_dlg.isUseUserDefinedAutoVibratoType();
 
-                AppManager.clearViewingCurve();
-                trackSelector.prepareSingerMenu( VsqFileEx.getTrackRendererKind( AppManager.getVsqFile().Track.get( AppManager.getSelected() ) ) );
+                    AppManager.clearViewingCurve();
+                    trackSelector.prepareSingerMenu( VsqFileEx.getTrackRendererKind( AppManager.getVsqFile().Track.get( AppManager.getSelected() ) ) );
 
-                updateTrackSelectorVisibleCurve();
-                updateRendererMenu();
-                AppManager.updateAutoBackupTimerStatus();
+                    updateTrackSelectorVisibleCurve();
+                    updateRendererMenu();
+                    AppManager.updateAutoBackupTimerStatus();
 
-                // editorConfig.PxTrackHeightが変更されている可能性があるので，更新が必要
-                AppManager.setStartToDrawY( calculateStartToDrawY() );
+                    // editorConfig.PxTrackHeightが変更されている可能性があるので，更新が必要
+                    AppManager.setStartToDrawY( calculateStartToDrawY() );
 
-                if ( menuVisualControlTrack.isSelected() ) {
-                    splitContainer1.setPanel2MinSize( trackSelector.getPreferredMinSize() );
-                }
+                    if ( menuVisualControlTrack.isSelected() ) {
+                        splitContainer1.setPanel2MinSize( trackSelector.getPreferredMinSize() );
+                    }
 
-                AppManager.saveConfig();
-                applyLanguage();
+                    AppManager.saveConfig();
+                    applyLanguage();
 #if ENABLE_SCRIPT
-                updateScriptShortcut();
+                    updateScriptShortcut();
 #endif
 
-                updateDrawObjectList();
-                refreshScreen();
+                    updateDrawObjectList();
+                    refreshScreen();
+                }
+            } catch ( Exception ex ) {
+                AppManager.debugWriteLine( "FormMain#menuSettingPreference_Click; ex=" + ex );
             }
         }
 

@@ -91,7 +91,9 @@ namespace org.kbinani.cadencii {
             if ( m_singer_config2.Length > 0 ) {
                 comboSingingSynthSystem.addItem( "VOCALOID2" );
             }
-            if ( m_singer_config_utau.Length > 0 ) {
+            if ( m_singer_config_utau.Length > 0 &&
+                 AppManager.editorConfig.PathWavtool != null && PortUtil.isFileExists( AppManager.editorConfig.PathWavtool ) &&
+                 AppManager.editorConfig.PathResampler != null && PortUtil.isFileExists( AppManager.editorConfig.PathResampler ) ) {
                 comboSingingSynthSystem.addItem( "UTAU" );
             }
             if ( comboSingingSynthSystem.getItemCount() > 0 ) {
@@ -99,11 +101,13 @@ namespace org.kbinani.cadencii {
             }
             updateSinger();
             txtDir.setText( Utility.getKeySoundPath() );
+
+            registerEventHandlers();
         }
 
         #region helper methods
         private void registerEventHandlers() {
-            bgWork.doWorkEvent.add( new BDoWorkEventHandler( this, "this.bgWork_DoWork" ) );
+            bgWork.doWorkEvent.add( new BDoWorkEventHandler( this, "bgWork_DoWork" ) );
             bgWork.runWorkerCompletedEvent.add( new BRunWorkerCompletedEventHandler( this, "bgWork_RunWorkerCompleted" ) );
 #if JAVA
             //TODO: fixme FormGenerateKeySound#registerEventHandlers; bgWork.progressChangedEvent
@@ -199,7 +203,10 @@ namespace org.kbinani.cadencii {
             bgWork.runWorkerAsync( arg );
         }
 
-        private void bgWork_DoWork( Object sender, BDoWorkEventArgs e ) {
+        public void bgWork_DoWork( Object sender, BDoWorkEventArgs e ) {
+#if DEBUG
+            PortUtil.println( "FormGenerateKeySound#bgWork_DoWork" );
+#endif
             PrepareStartArgument arg = (PrepareStartArgument)e.Argument;
             String singer = arg.singer;
             double amp = arg.amplitude;

@@ -514,6 +514,9 @@ msgstr "音序"
 msgid "Resolution(VSTi)"
 msgstr "解析度(VSTi)"
 
+msgid "Control Curve"
+msgstr "曲线控制"
+
 msgid "Dynamics"
 msgstr "力度(DYN)"
 
@@ -538,6 +541,21 @@ msgstr "启用自动颤音"
 msgid "Minimum note length for Automatic Vibrato"
 msgstr "可使用自动颤音的最短音符长度"
 
+msgid "Auto Vibrato Type"
+msgstr "自动颤音类型"
+
+msgid "VOCALOID Editor Compatible"
+msgstr "兼容VOCALOID Editor"
+
+msgid "User Defined"
+msgstr "用户自定义"
+
+msgid "Default Vibrato Rate"
+msgstr "默认颤音周期"
+
+msgid "Default Vibrato Depth"
+msgstr "默认颤音振幅"
+
 msgid "Vibrato Type"
 msgstr "颤音类型"
 
@@ -558,6 +576,21 @@ msgstr "默认前置小节"
 
 msgid "Chase Event"
 msgstr "追踪事件"
+
+msgid "Buffer Size"
+msgstr "缓冲大小"
+
+msgid "Wave File Output"
+msgstr "Wave文件输出"
+
+msgid "Channel"
+msgstr "通道"
+
+msgid "Master Track"
+msgstr "主音轨"
+
+msgid "Current Track"
+msgstr "当前音轨"
 
 msgid "Playback Sample Sound"
 msgstr "合成音样本输出"
@@ -631,17 +664,23 @@ msgstr "按右键演奏预览音"
 msgid "Enable Quantize for Curve Selecting"
 msgstr "启用节拍的曲线选择"
 
+msgid "Use space key as Middle button modifier"
+msgstr "把空格键作为鼠标中键使用"
+
 msgid "MIDI In Port Number"
 msgstr "MIDI 端口号"
 
+msgid "MTC MIDI In Port Number"
+msgstr "MTC MIDI 端口号"
+
 msgid "Platform"
-msgstr "使用平台"
+msgstr "环境"
 
 msgid "Current Platform"
-msgstr "現在使用的平台"
+msgstr "当前执行环境"
 
 msgid "Use Command key as Control key"
-msgstr "把command键当ctrl键使用"
+msgstr "把命令键作为控制键使用"
 
 msgid "About {0}"
 msgstr "关于{0}"
@@ -1229,3 +1268,30 @@ msgstr "生成VLF"
 
 msgid "Render As UTAU"
 msgstr "用UTAU演奏"
+
+msgid "Icon Palette"
+msgstr "图标调色板"
+
+msgid "VSTi Plugin UI"
+msgstr "VSTi插件界面"
+
+msgid "Play After Synth"
+msgstr "合成后播放"
+
+msgid "Synthesizer"
+msgstr "合成器"
+
+msgid "Synthesizer DLL Usage"
+msgstr "合成器DLL使用"
+
+msgid "Load secondary VOCALOID1 DLL"
+msgstr "载入次级VOCALOID1 DLL"
+
+msgid "Default Synthesizer"
+msgstr "默认合成器"
+
+msgid "Restart Cadencii to complete your changes"
+msgstr "重新启动Cadencii并完成所做的更改"
+
+msgid "Keep Project Cache"
+msgstr "保持工程缓存"

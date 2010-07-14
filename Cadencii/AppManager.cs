@@ -466,6 +466,12 @@ namespace org.kbinani.cadencii {
         /// TrackSelectorで表示させているカーブの一覧
         /// </summary>
         private static Vector<CurveType> _viewingCurves = new Vector<CurveType>();
+#if DEBUG
+        /// <summary>
+        /// ログ出力用
+        /// </summary>
+        private static BufferedWriter _debugLog = null;
+#endif
 
         #region 裏設定項目
         /// <summary>
@@ -499,10 +505,6 @@ namespace org.kbinani.cadencii {
         public static BEvent<BEventHandler> previewAbortedEvent = new BEvent<BEventHandler>();
         public static BEvent<SelectedEventChangedEventHandler> selectedEventChangedEvent = new BEvent<SelectedEventChangedEventHandler>();
         public static BEvent<BEventHandler> selectedToolChangedEvent = new BEvent<BEventHandler>();
-        /// <summary>
-        /// CurrentClockプロパティの値が変更された時発生します
-        /// </summary>
-        public static BEvent<BEventHandler> currentClockChangedEvent = new BEvent<BEventHandler>();
 
         private const String TEMPDIR_NAME = "cadencii";
 
@@ -1030,6 +1032,16 @@ namespace org.kbinani.cadencii {
 
         public static void debugWriteLine( String message ) {
 #if DEBUG
+            try {
+                if ( _debugLog == null ) {
+                    String log_file = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "log.txt" );
+                    _debugLog = new BufferedWriter( new FileWriter( log_file ) );
+                }
+                _debugLog.write( message );
+                _debugLog.newLine();
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "AppManager#debugWriteLine; ex=" + ex );
+            }
             PortUtil.println( message );
 #endif
         }
@@ -1940,13 +1952,6 @@ namespace org.kbinani.cadencii {
             s_current_play_position.denominator = timesig.denominator;
             s_current_play_position.numerator = timesig.numerator;
             s_current_play_position.tempo = s_vsq.getTempoAt( s_current_clock );
-            if ( old != s_current_clock ) {
-                try {
-                    currentClockChangedEvent.raise( typeof( AppManager ), new BEventArgs() );
-                } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "AppManager#setCurrentClock; ex=" + ex );
-                }
-            }
         }
 
         /// <summary>
@@ -2116,7 +2121,13 @@ namespace org.kbinani.cadencii {
 #if DEBUG
                 PortUtil.println( "AppManager#init; path_image=" + path_image );
 #endif
-                Cadencii.splash.addIconThreadSafe( path_image, sc.VOICENAME );
+                if ( Cadencii.splash != null ){
+                    try{
+                        Cadencii.splash.addIconThreadSafe( path_image, sc.VOICENAME );
+                    }catch( Exception ex ){
+                        PortUtil.stderr.println( "AppManager#init; ex=" + ex );
+                    }
+                }
             }
 #endif
 
@@ -2137,7 +2148,13 @@ namespace org.kbinani.cadencii {
 #if DEBUG
                     PortUtil.println( "AppManager#init; path_image=" + path_image );
 #endif
-                    Cadencii.splash.addIconThreadSafe( path_image, sc.VOICENAME );
+                    if ( Cadencii.splash != null ) {
+                        try {
+                            Cadencii.splash.addIconThreadSafe( path_image, sc.VOICENAME );
+                        } catch ( Exception ex ) {
+                            PortUtil.stderr.println( "AppManager#init; ex=" + ex );
+                        }
+                    }
                 }
             }
 
@@ -2156,7 +2173,13 @@ namespace org.kbinani.cadencii {
 #if DEBUG
                     PortUtil.println( "AppManager#init; path_image=" + path_image );
 #endif
-                    Cadencii.splash.addIconThreadSafe( path_image, sc.VOICENAME );
+                    if ( Cadencii.splash != null ) {
+                        try {
+                            Cadencii.splash.addIconThreadSafe( path_image, sc.VOICENAME );
+                        } catch ( Exception ex ) {
+                            PortUtil.stderr.println( "AppManager#init; ex=" + ex );
+                        }
+                    }
                 }
             }
 #endif
