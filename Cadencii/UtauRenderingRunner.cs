@@ -136,29 +136,7 @@ namespace org.kbinani.cadencii {
                 log = new StreamWriter( Path.Combine( m_temp_dir, "UtauRenderingRunner.log" ), false, Encoding.GetEncoding( "Shift_JIS" ) );
 #endif
                 // 原音設定を読み込み
-                TreeMap<Integer, UtauVoiceDB> config = new TreeMap<Integer, UtauVoiceDB>();
-                Vector<SingerConfig> singers = m_singer_config_sys;
                 VsqTrack target = m_vsq.Track.get( renderingTrack );
-#if MAKEBAT_SP
-                log.WriteLine( "reading voice db. configs..." );
-#endif
-                for ( int pc = 0; pc < singers.size(); pc++ ) {
-                    SingerConfig sc = singers.get( pc );
-                    String singer_name = singers.get( pc ).VOICENAME;
-                    String singer_path = singers.get( pc ).VOICEIDSTR;
-
-                    //TODO: mono on linuxにて、singer_pathが取得できていない？
-                    String config_file = PortUtil.combinePath( singer_path, "oto.ini" );
-                    UtauVoiceDB db = new UtauVoiceDB( sc );
-#if MAKEBAT_SP
-                    log.Write( "    #" + pc + "; PortUtil.isFileExists( oto.ini )=" + PortUtil.isFileExists( config_file ) );
-                    log.WriteLine( "; name=" + db.getName() );
-#endif
-                    config.put( pc, db );
-                }
-#if MAKEBAT_SP
-                log.WriteLine( "...done" );
-#endif
 
                 String file = PortUtil.combinePath( m_temp_dir, FILEBASE );
                 if ( PortUtil.isFileExists( file ) ) {
@@ -205,6 +183,10 @@ namespace org.kbinani.cadencii {
                     } else {
                         program_change = singer_event.ID.IconHandle.Program;
                     }
+                    String singer = "";
+                    if ( 0 <= program_change && program_change < AppManager.editorConfig.UtauSingers.size() ) {
+                        singer = AppManager.editorConfig.UtauSingers.get( program_change ).VOICEIDSTR;
+                    }
 #if MAKEBAT_SP
                     log.Write( "; pc=" + program_change );
 #endif
@@ -233,10 +215,6 @@ namespace org.kbinani.cadencii {
                         double sec_start2 = sec_end_old;
                         double sec_end2 = sec_start;
                         float t_temp2 = (float)(item.Clock / (sec_end2 - sec_start2) / 8.0);
-                        String singer = "";
-                        if ( 0 <= program_change && program_change < singers.size() ) {
-                            singer = singers.get( program_change ).VOICEIDSTR;
-                        }
                         RenderQueue rq = new RenderQueue();
                         //rq.ResamplerArg = "";
                         rq.WavtoolArgPrefix = "\"" + file + "\" \"" + PortUtil.combinePath( singer, "R.wav" ) + "\" 0 " + item.Clock + "@" + PortUtil.formatDecimal( "0.00",t_temp2 );
@@ -253,17 +231,13 @@ namespace org.kbinani.cadencii {
                     int millisec = (int)((sec_end_act - sec_start_act) * 1000) + 50;
 
                     OtoArgs oa = new OtoArgs();
-                    if ( config.containsKey( program_change ) ) {
-                        UtauVoiceDB db = config.get( program_change );
+                    if ( AppManager.utauVoiceDB.containsKey( singer ) ) {
+                        UtauVoiceDB db = AppManager.utauVoiceDB.get( singer );
                         oa = db.attachFileNameFromLyric( lyric );
                     }
 #if MAKEBAT_SP
                     log.Write( "; lyric=" + lyric + "; fileName=" + oa.fileName );
 #endif
-                    String singer2 = "";
-                    if ( 0 <= program_change && program_change < singers.size() ) {
-                        singer2 = singers.get( program_change ).VOICEIDSTR;
-                    }
                     oa.msPreUtterance = item.UstEvent.PreUtterance;
                     oa.msOverlap = item.UstEvent.VoiceOverlap;
 #if DEBUG
@@ -273,9 +247,9 @@ namespace org.kbinani.cadencii {
                     RenderQueue rq2 = new RenderQueue();
                     String wavPath = "";
                     if ( PortUtil.getStringLength( oa.fileName ) > 0 ) {
-                        wavPath = PortUtil.combinePath( singer2, oa.fileName );
+                        wavPath = PortUtil.combinePath( singer, oa.fileName );
                     } else {
-                        wavPath = PortUtil.combinePath( singer2, lyric + ".wav" );
+                        wavPath = PortUtil.combinePath( singer, lyric + ".wav" );
                     }
 #if DEBUG
                     PortUtil.println( "UtauRenderingRunner#run; wavPath=" + wavPath );
