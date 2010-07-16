@@ -98,6 +98,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActiveGenerator.cs" />
     <Compile Include="AmplifyCoefficient.cs" />
     <Compile Include="AquesToneDriver.cs">
     </Compile>
@@ -118,6 +119,9 @@
     <Compile Include="Cadencii.cs" />
     <Compile Include="CadenciiCommand.cs" />
     <Compile Include="CadenciiCommandType.cs" />
+    <Compile Include="CircuitDiagram.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="ClipboardEntry.cs" />
     <Compile Include="ClockResolution.cs" />
     <Compile Include="ClockResolutionUtility.cs" />
@@ -159,6 +163,7 @@
     <Compile Include="FormWordDictionary.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Generator.cs" />
     <Compile Include="HScroll.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -178,12 +183,14 @@
     <Compile Include="OtoArgs.cs" />
     <Compile Include="PanelState.cs" />
     <Compile Include="PanpotChangedEventHandler.cs" />
+    <Compile Include="PassiveGenerator.cs" />
     <Compile Include="PictPianoRoll.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="PlatformEnum.cs" />
     <Compile Include="PointD.cs" />
     <Compile Include="QuantizeModeUtil.cs" />
+    <Compile Include="Receiver.cs" />
     <Compile Include="RenderedStatus.cs" />
     <Compile Include="RendererKind.cs" />
     <Compile Include="RendererKindUtil.cs" />
@@ -321,6 +328,9 @@
     <Compile Include="SelectedRegion.cs" />
     <Compile Include="SelectedTempoEntry.cs" />
     <Compile Include="SelectedTimesigEntry.cs" />
+    <EmbeddedResource Include="FormMain.resx">
+      <DependentUpon>FormMain.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

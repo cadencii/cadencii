@@ -129,7 +129,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void UpdateValue( int track ) {
+        public void updateValue( int track ) {
             m_track = track;
             m_items.clear();
 

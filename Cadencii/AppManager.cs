@@ -1512,7 +1512,7 @@ namespace org.kbinani.cadencii {
             }
             if ( !silent ) {
 #if ENABLE_PROPERTY
-                propertyPanel.UpdateValue( s_selected );
+                propertyPanel.updateValue( s_selected );
 #endif
             }
         }
@@ -1534,7 +1534,7 @@ namespace org.kbinani.cadencii {
                 s_selected_events.removeElementAt( i );
             }
 #if ENABLE_PROPERTY
-            propertyPanel.UpdateValue( s_selected );
+            propertyPanel.updateValue( s_selected );
 #endif
             checkSelectedItemExistence();
         }
@@ -1568,7 +1568,7 @@ namespace org.kbinani.cadencii {
                 }
             }
 #if ENABLE_PROPERTY
-            propertyPanel.UpdateValue( s_selected );
+            propertyPanel.updateValue( s_selected );
 #endif
             checkSelectedItemExistence();
         }
@@ -1614,7 +1614,7 @@ namespace org.kbinani.cadencii {
             }
             if ( !silent ) {
 #if ENABLE_PROPERTY
-                propertyPanel.UpdateValue( s_selected );
+                propertyPanel.updateValue( s_selected );
 #endif
             }
         }
@@ -1622,7 +1622,7 @@ namespace org.kbinani.cadencii {
         public static void clearSelectedEvent() {
             s_selected_events.clear();
 #if ENABLE_PROPERTY
-            propertyPanel.UpdateValue( s_selected );
+            propertyPanel.updateValue( s_selected );
 #endif
             checkSelectedItemExistence();
         }

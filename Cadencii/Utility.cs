@@ -1331,13 +1331,15 @@ namespace org.kbinani.cadencii{
                 try {
                     cr = provider.CompileAssemblyFromSource( parameters, code );
                     ret = cr.CompiledAssembly;
+                    compiled = true;
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "Utility#compileScript; ex=" + ex );
+                }
+                if ( !compiled ) {
                     int c = cr.Errors.Count;
                     for ( int i = 0; i < c; i++ ) {
                         errors.add( _( "line" ) + ":" + cr.Errors[i].Line + " " + cr.Errors[i].ErrorText );
                     }
-                    compiled = true;
-                } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "Utility#compileScript; ex=" + ex );
                 }
             }
 
@@ -1421,7 +1423,7 @@ namespace org.kbinani.cadencii{
                     ret.ErrorMessage = "failed compiling";
                 } else {
                     for ( int i = 0; i < errors.size(); i++ ) {
-                        ret.ErrorMessage += errors.get( i );
+                        ret.ErrorMessage += errors.get( i ) + "\r\n";
                     }
                 }
                 return ret;
@@ -1488,6 +1490,8 @@ namespace org.kbinani.cadencii{
                                 }
                             }
                         }
+                    } else {
+                        ret.ErrorMessage = _( "'Edit' Method not implemented" );
                     }
                 }
             }

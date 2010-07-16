@@ -108,6 +108,10 @@ namespace org.kbinani.java.util {
             base.Insert( index, obj );
         }
 
+        public bool remove( T o ) {
+            return base.Remove( o );
+        }
+
         public bool removeElement( T obj ) {
             return base.Remove( obj );
         }
