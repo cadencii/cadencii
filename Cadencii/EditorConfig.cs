@@ -466,7 +466,10 @@ namespace org.kbinani.cadencii {
             new ValuePairOfStringArrayOfKeys( "menuSettingShortcut", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuSettingSingerProperty", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuHelpAbout", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuHiddenFlipCurveOnPianorollMode", new BKeys[]{ BKeys.Tab } ) } ) );
+            new ValuePairOfStringArrayOfKeys( "menuHiddenFlipCurveOnPianorollMode", new BKeys[]{ BKeys.Tab } ),
+            new ValuePairOfStringArrayOfKeys( "menuVisualCircuitDiagram", new BKeys[]{} ),
+        } ) );
+
 #if JAVA
         private static XmlSerializer s_serializer = new XmlSerializer( EditorConfig.class );
 #else

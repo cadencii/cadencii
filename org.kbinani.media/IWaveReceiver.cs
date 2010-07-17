@@ -19,8 +19,9 @@ namespace org.kbinani.media {
 #endif
 
     public interface IWaveReceiver {
-        void append( double[] left, double[] right );
+        void append( double[] left, double[] right, int length );
         int getSampleRate();
+        void close();
     }
 
 #if !JAVA

@@ -27,7 +27,7 @@ namespace org.kbinani.media {
 #if JAVA
     public class WaveWriter{
 #else
-    public class WaveWriter : IDisposable{
+    public class WaveWriter : IDisposable, IWaveReceiver {
 #endif
         private int m_channel = 1;
         private int m_bit_per_sample;

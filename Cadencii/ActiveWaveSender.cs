@@ -1,5 +1,5 @@
 ﻿/*
- * Generator.cs
+ * ActiveWaveSender.cs
  * Copyright (C) 2010 kbinani
  *
  * This file is part of org.kbinani.cadencii.
@@ -22,9 +22,14 @@ namespace org.kbinani.cadencii {
 #endif
 
     /// <summary>
-    /// 音声波形を出力するジェネレータ．
+    /// 自力で波形を生成する能動的ジェネレータ
     /// </summary>
-    public interface Generator : ActiveGenerator, PassiveGenerator {
+    public interface ActiveWaveSender {
+        void addReceiver( WaveReceiver receiver );
+        void removeReceiver( WaveReceiver receiver );
+        void clearReceiver();
+        void begin( long samples );
+        void end();
     }
 
 #if !JAVA

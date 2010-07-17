@@ -45,16 +45,20 @@ namespace org.kbinani.media {
             invARate = 1.0 / (double)aRate;
         }
 
-        public void append( double[] left, double[] right ) {
+        public void close() {
+            receiver.close();
+        }
+
+        public void append( double[] left, double[] right, int length ) {
             if ( aRate == bRate ) {
-                receiver.append( left, right );
-                aCount += left.Length;
-                bCount += left.Length;
+                receiver.append( left, right, length );
+                aCount += length;
+                bCount += length;
                 return;
             }
 
             double secStart = bCount * invBRate;
-            double secEnd = (bCount + left.Length) * invBRate;
+            double secEnd = (bCount + length) * invBRate;
 
             // 送られてきたデータで、aStartからaEndまでのデータを作成できる
             long aStart = (long)(secStart * aRate);
@@ -63,7 +67,7 @@ namespace org.kbinani.media {
             double tx = (aEnd - 1) * invARate;
             long btRequired = (long)(tx * bRate);
             int tindx1 = (int)(btRequired - bCount) + 1;
-            if ( tindx1 >= left.Length ) {
+            if ( tindx1 >= length ) {
                 aEnd--;
             }
 
@@ -78,7 +82,7 @@ namespace org.kbinani.media {
                 int indx1 = indx0 + 1;
                 double y0 = 0.0;
                 if ( 0 <= indx0 ) {
-                    if ( indx0 < left.Length ) {
+                    if ( indx0 < length ) {
                         y0 = left[indx0];
                     }
                 } else {
@@ -89,7 +93,7 @@ namespace org.kbinani.media {
                 }
                 double y1 = 0.0;
                 if ( indx1 >= 0 ) {
-                    if ( indx1 < left.Length ) {
+                    if ( indx1 < length ) {
                         y1 = left[indx1];
                     }
                 } else {
@@ -104,7 +108,7 @@ namespace org.kbinani.media {
                 aLeft[(int)(a - aCount)] = y;
 
                 if ( indx0 >= 0 ) {
-                    if ( indx0 < right.Length ) {
+                    if ( indx0 < length ) {
                         y0 = right[indx0];
                     }
                 } else {
@@ -114,7 +118,7 @@ namespace org.kbinani.media {
                     }
                 }
                 if ( indx1 >= 0 ) {
-                    if ( indx1 < right.Length ) {
+                    if ( indx1 < length ) {
                         y1 = right[indx1];
                     }
                 } else {
@@ -128,14 +132,14 @@ namespace org.kbinani.media {
                 aRight[(int)(a - aCount)] = y;
             }
 
-            receiver.append( aLeft, aRight );
+            receiver.append( aLeft, aRight, aLeft.Length );
 
             // 次回に繰り越すデータを確保
-            // 次に送られてくるデータはbCount + left.Length + 1から
-            long aNext = (long)((bCount + left.Length + 1) * invBRate * aRate) + 1;
+            // 次に送られてくるデータはbCount + length + 1から
+            long aNext = (long)((bCount + length + 1) * invBRate * aRate) + 1;
             if ( aEnd + 1 < aNext ) {
                 bBufBase = (long)((aEnd + 1) * invARate * bRate) - 2; // aEnd + 1番目のデータを作成するのに必要なデータ点のインデクス
-                int num = (int)(bCount + left.Length - bBufBase);
+                int num = (int)(bCount + length - bBufBase);
                 if ( num > 0 ) {
                     if ( bBufLeft == null ) {
                         bBufLeft = new double[num];
@@ -162,7 +166,7 @@ namespace org.kbinani.media {
                 }
             }
 
-            bCount += left.Length;
+            bCount += length;
             aCount = aEnd;
         }
     }

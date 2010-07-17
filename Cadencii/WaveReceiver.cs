@@ -1,5 +1,5 @@
 ﻿/*
- * Receiver.cs
+ * WaveReceiver.cs
  * Copyright (C) 2010 kbinani
  *
  * This file is part of org.kbinani.cadencii.
@@ -17,10 +17,12 @@ package org.kbinani.cadencii;
 namespace org.kbinani.cadencii {
 #endif
 
-    public interface Receiver {
+    public interface WaveReceiver {
         void push( double[] left, double[] right, int length );
-        void addPassiveGenerator( PassiveGenerator generator );
-        void removePassiveGenerator( PassiveGenerator generator );
+        void addPassiveWaveSender( PassiveWaveSender sender );
+        void removePassiveWaveSender( PassiveWaveSender sender );
+        void clearPassiveWaveSender();
+        void end();
     }
 
 #if !JAVA

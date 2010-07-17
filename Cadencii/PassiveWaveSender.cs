@@ -1,5 +1,5 @@
 ﻿/*
- * PassiveGenerator.cs
+ * PassiveWaveSender.cs
  * Copyright (C) 2010 kbinani
  *
  * This file is part of org.kbinani.cadencii.
@@ -24,8 +24,9 @@ namespace org.kbinani.cadencii {
     /// <summary>
     /// pullされてはじめて波形を生成する，受動的ジェネレータ
     /// </summary>
-    public interface PassiveGenerator {
+    public interface PassiveWaveSender {
         void pull( double[] left, double[] right, int length );
+        void end();
     }
 
 #if !JAVA
