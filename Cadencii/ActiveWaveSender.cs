@@ -29,7 +29,6 @@ namespace org.kbinani.cadencii {
         void removeReceiver( WaveReceiver receiver );
         void clearReceiver();
         void begin( long samples );
-        void end();
     }
 
 #if !JAVA

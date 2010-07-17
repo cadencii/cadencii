@@ -101,6 +101,8 @@ namespace org.kbinani.media {
 #endif
 #endif
 
+        private static boolean _is_initialized = false;
+
         public static void setResolution( int value ) {
 #if JAVA
             //TODO: fixme PlaySound#setResolution
@@ -114,11 +116,16 @@ namespace org.kbinani.media {
         }
 
         public static void init() {
+            if ( _is_initialized ) {
+                return;
+            }
 #if JAVA
             m_buffer = new byte[UNIT_BUFFER * 4];
+            _is_initialized = true;
 #else
             try {
                 SoundInit();
+                _is_initialized = true;
             } catch ( Exception ex ) {
                 PortUtil.println( "PlaySound#init; ex=" + ex );
             }

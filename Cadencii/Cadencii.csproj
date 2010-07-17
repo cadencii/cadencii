@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A97A6445-5A48-4CEC-A7CE-05B10126CA2A}</ProjectGuid>
     <OutputType>WinExe</OutputType>
@@ -129,6 +129,8 @@
     <Compile Include="DefaultVibratoLengthEnum.cs" />
     <Compile Include="DefaultVibratoLengthUtil.cs" />
     <Compile Include="DrawObjectType.cs" />
+    <Compile Include="MonitorWaveReceiver.cs" />
+    <Compile Include="PassiveWaveSenderDriver.cs" />
     <Compile Include="DynaffComparisonContext.cs" />
     <Compile Include="EditedZone.cs" />
     <Compile Include="EditedZoneCommand.cs" />
@@ -329,9 +331,6 @@
     <Compile Include="SelectedRegion.cs" />
     <Compile Include="SelectedTempoEntry.cs" />
     <Compile Include="SelectedTimesigEntry.cs" />
-    <EmbeddedResource Include="FormMain.resx">
-      <DependentUpon>FormMain.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -583,7 +582,7 @@
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <ProductName>.NET Framework Client Profile</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">

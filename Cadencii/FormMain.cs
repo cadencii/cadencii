@@ -14168,6 +14168,29 @@ namespace org.kbinani.cadencii {
 #if DEBUG
             PortUtil.println( "FormMain#menuHelpDebug_Click" );
 
+            BFileChooser dlg_fin = new BFileChooser( PortUtil.getApplicationStartupPath() );
+            if ( dlg_fin.showOpenDialog( this ) == BFileChooser.APPROVE_OPTION ) {
+                String wavein = dlg_fin.getSelectedFile();
+                WaveReader wr = new WaveReader( wavein );
+                BFileChooser dlg_fout = new BFileChooser( PortUtil.getDirectoryName( wavein ) );
+                BFileChooser dlg_fout2 = new BFileChooser( PortUtil.getDirectoryName( wavein ) );
+                if ( dlg_fout.showSaveDialog( this ) == BFileChooser.APPROVE_OPTION &&
+                     dlg_fout2.showSaveDialog( this ) == BFileChooser.APPROVE_OPTION ) {
+                    String waveout = dlg_fout.getSelectedFile();
+                    String waveout2 = dlg_fout2.getSelectedFile();
+                    PassiveWaveSenderDriver driver = new PassiveWaveSenderDriver( new FileWaveSender( wr ) );
+                    AmpMixer amp_mixer = new AmpMixer();
+                    driver.addReceiver( amp_mixer );
+                    FileWaveReceiver wave_receiver = new FileWaveReceiver( new WaveWriter( waveout, 1, 8, 48000 ) );
+                    FileWaveReceiver wave_receiver2 = new FileWaveReceiver( new WaveWriter( waveout2, 2, 16, 48000 ) );
+                    MonitorWaveReceiver monitor = new MonitorWaveReceiver();
+                    amp_mixer.addReceiver( wave_receiver );
+                    amp_mixer.addReceiver( wave_receiver2 );
+                    amp_mixer.addReceiver( monitor );
+                    driver.begin( wr.getTotalSamples() );
+                }
+            }
+
             /*VsqFileEx vsq = AppManager.getVsqFile();
             int ms_presend = AppManager.editorConfig.PreSendTime;
             for ( int i = vsq.getPreMeasureClocks(); i < vsq.TotalClocks; i++ ) {
