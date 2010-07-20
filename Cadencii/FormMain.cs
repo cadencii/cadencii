@@ -10213,12 +10213,25 @@ namespace org.kbinani.cadencii {
 
             updateRendererMenu();
 
+            // ウィンドウの位置・サイズを再現
             if ( AppManager.editorConfig.WindowMaximized ) {
                 setExtendedState( BForm.MAXIMIZED_BOTH );
             } else {
                 setExtendedState( BForm.NORMAL );
             }
-            this.setBounds( AppManager.editorConfig.WindowRect );
+            Rectangle bounds = AppManager.editorConfig.WindowRect;
+            this.setBounds( bounds );
+            // ウィンドウ位置・サイズの設定値が、使えるディスプレイのどれにも被っていない場合
+            Rectangle rc2 = PortUtil.getScreenBounds( this );
+            if ( bounds.x < rc2.x ||
+                 rc2.x + rc2.width < bounds.x + bounds.width ||
+                 bounds.y < rc2.y ||
+                 rc2.y + rc2.height < bounds.y + bounds.height ) {
+                bounds.x = rc2.x;
+                bounds.y = rc2.y;
+                this.setBounds( bounds );
+                AppManager.editorConfig.WindowRect = bounds;
+            }
 
             // プロパティウィンドウの位置を復元
             Rectangle rc1 = PortUtil.getScreenBounds( this );
@@ -14168,27 +14181,15 @@ namespace org.kbinani.cadencii {
 #if DEBUG
             PortUtil.println( "FormMain#menuHelpDebug_Click" );
 
-            BFileChooser dlg_fin = new BFileChooser( PortUtil.getApplicationStartupPath() );
-            if ( dlg_fin.showOpenDialog( this ) == BFileChooser.APPROVE_OPTION ) {
-                String wavein = dlg_fin.getSelectedFile();
-                WaveReader wr = new WaveReader( wavein );
-                BFileChooser dlg_fout = new BFileChooser( PortUtil.getDirectoryName( wavein ) );
-                BFileChooser dlg_fout2 = new BFileChooser( PortUtil.getDirectoryName( wavein ) );
-                if ( dlg_fout.showSaveDialog( this ) == BFileChooser.APPROVE_OPTION &&
-                     dlg_fout2.showSaveDialog( this ) == BFileChooser.APPROVE_OPTION ) {
-                    String waveout = dlg_fout.getSelectedFile();
-                    String waveout2 = dlg_fout2.getSelectedFile();
-                    PassiveWaveSenderDriver driver = new PassiveWaveSenderDriver( new FileWaveSender( wr ) );
-                    AmpMixer amp_mixer = new AmpMixer();
-                    driver.addReceiver( amp_mixer );
-                    FileWaveReceiver wave_receiver = new FileWaveReceiver( new WaveWriter( waveout, 1, 8, 48000 ) );
-                    FileWaveReceiver wave_receiver2 = new FileWaveReceiver( new WaveWriter( waveout2, 2, 16, 48000 ) );
-                    MonitorWaveReceiver monitor = new MonitorWaveReceiver();
-                    amp_mixer.addReceiver( wave_receiver );
-                    amp_mixer.addReceiver( wave_receiver2 );
-                    amp_mixer.addReceiver( monitor );
-                    driver.begin( wr.getTotalSamples() );
-                }
+            BFileChooser dlg_fout = new BFileChooser( PortUtil.getApplicationStartupPath() );
+            if ( dlg_fout.showSaveDialog( this ) == BFileChooser.APPROVE_OPTION ) {
+                String waveout = dlg_fout.getSelectedFile();
+                VsqFileEx vsq = AppManager.getVsqFile();
+                VocaloidWaveSender synth = new VocaloidWaveSender( vsq, 1, 0, vsq.TotalClocks, AppManager.editorConfig.PreSendTime );
+                FileWaveReceiver r = new FileWaveReceiver( new WaveWriter( waveout, 2, 16, VSTiProxy.SAMPLE_RATE ) );
+                synth.addReceiver( r );
+                synth.addReceiver( MonitorWaveReceiver.getInstance() );
+                synth.begin( (long)(vsq.getSecFromClock( vsq.TotalClocks ) * VSTiProxy.SAMPLE_RATE) );
             }
 
             /*VsqFileEx vsq = AppManager.getVsqFile();

@@ -6,7 +6,7 @@
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A97A6445-5A48-4CEC-A7CE-05B10126CA2A}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>org.kbinani.cadencii</RootNamespace>
     <AssemblyName>Cadencii</AssemblyName>
@@ -129,6 +129,7 @@
     <Compile Include="DefaultVibratoLengthEnum.cs" />
     <Compile Include="DefaultVibratoLengthUtil.cs" />
     <Compile Include="DrawObjectType.cs" />
+    <Compile Include="Matrix2D.cs" />
     <Compile Include="MonitorWaveReceiver.cs" />
     <Compile Include="PassiveWaveSenderDriver.cs" />
     <Compile Include="DynaffComparisonContext.cs" />
@@ -357,6 +358,7 @@
     <Compile Include="VibratoVariationConverter.cs" />
     <Compile Include="VocaloidDriver.cs" />
     <Compile Include="VocaloidRenderingRunner.cs" />
+    <Compile Include="VocaloidWaveSender.cs" />
     <Compile Include="VolumeTracker.cs">
       <SubType>UserControl</SubType>
     </Compile>

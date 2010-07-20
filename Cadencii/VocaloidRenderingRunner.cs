@@ -22,7 +22,7 @@ using org.kbinani.vsq;
 namespace org.kbinani.cadencii {
     using boolean = Boolean;
 
-    public class VocaloidRenderingRunner : RenderingRunner {
+    public class VocaloidRenderingRunner : RenderingRunner, IWaveIncoming {
         public NrpnData[] nrpn;
         public TempoVector tempo;
         public boolean mode_infinite;

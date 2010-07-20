@@ -237,7 +237,7 @@ namespace org.kbinani.cadencii {
         /// <param name="sample_rate"></param>
         /// <param name="runner">このドライバを駆動しているRenderingRunnerのオブジェクト</param>
         /// <returns></returns>
-        public int startRendering( long total_samples, boolean mode_infinite, int sample_rate, VocaloidRenderingRunner runner ) {
+        public int startRendering( long total_samples, boolean mode_infinite, int sample_rate, IWaveIncoming runner ) {
 #if DEBUG
             PortUtil.println( "VocaloidDriver#startRendering; entry; total_samples=" + total_samples + "; sample_rate=" + sample_rate );
 #endif
@@ -264,7 +264,7 @@ namespace org.kbinani.cadencii {
                     out_buffer[1] = right_ch;
 
 #if TEST
-                org.kbinani.debug.push_log( "    calling initial dispatch..." );
+                    org.kbinani.debug.push_log( "    calling initial dispatch..." );
 #endif
                     aEffect.Dispatch( AEffectOpcodes.effSetSampleRate, 0, 0, IntPtr.Zero, (float)sampleRate );
                     aEffect.Dispatch( AEffectOpcodes.effMainsChanged, 0, 1, IntPtr.Zero, 0 );
@@ -277,7 +277,7 @@ namespace org.kbinani.cadencii {
                         aEffect.ProcessReplacing( IntPtr.Zero, new IntPtr( out_buffer ), sampleRate );
                     }
 #if TEST
-                org.kbinani.debug.push_log( "    ...done" );
+                    org.kbinani.debug.push_log( "    ...done" );
 #endif
 
                     int delay = 0;
@@ -294,7 +294,7 @@ namespace org.kbinani.cadencii {
                     int total_processed = 0;
                     int total_processed2 = 0;
 #if TEST
-                org.kbinani.debug.push_log( "    getting dwDelay..." );
+                    org.kbinani.debug.push_log( "    getting dwDelay..." );
 #endif
                     dwDelay = 0;
                     Vector<MidiEvent> list = s_track_events.get( 1 );
@@ -326,7 +326,7 @@ namespace org.kbinani.cadencii {
                         }
                     }
 #if TEST
-                org.kbinani.debug.push_log( "    ...done; dwDelay=" + dwDelay );
+                    org.kbinani.debug.push_log( "    ...done; dwDelay=" + dwDelay );
 #endif
 
                     while ( !g_cancelRequired ) {
@@ -334,7 +334,7 @@ namespace org.kbinani.cadencii {
                         int nEvents = 0;
 
 #if TEST
-                    org.kbinani.debug.push_log( "lpEvents.Count=" + lpEvents.size() );
+                        org.kbinani.debug.push_log( "lpEvents.Count=" + lpEvents.size() );
 #endif
                         if ( current_count < 0 ) {
                             current_count = 0;
@@ -423,21 +423,21 @@ namespace org.kbinani.cadencii {
                             //pProcessEvent = lpEvents[process_event_count];
                         }
 #if TEST
-                    org.kbinani.debug.push_log( "calling Dispatch with effProcessEvents..." );
+                        org.kbinani.debug.push_log( "calling Dispatch with effProcessEvents..." );
 #endif
                         aEffect.Dispatch( AEffectXOpcodes.effProcessEvents, 0, 0, new IntPtr( pVSTEvents ), 0 );
 #if TEST
-                    org.kbinani.debug.push_log( "...done" );
+                        org.kbinani.debug.push_log( "...done" );
 #endif
 
                         while ( dwDelta > 0 && !g_cancelRequired ) {
                             int dwFrames = dwDelta > sampleRate ? sampleRate : dwDelta;
 #if TEST
-                        org.kbinani.debug.push_log( "calling ProcessReplacing..." );
+                            org.kbinani.debug.push_log( "calling ProcessReplacing..." );
 #endif
                             aEffect.ProcessReplacing( IntPtr.Zero, new IntPtr( out_buffer ), dwFrames );
 #if TEST
-                        org.kbinani.debug.push_log( "...done" );
+                            org.kbinani.debug.push_log( "...done" );
 #endif
 
                             int iOffset = dwDelay - dwDeltaDelay;
@@ -474,11 +474,11 @@ namespace org.kbinani.cadencii {
                     while ( dwDelta > 0 && !g_cancelRequired ) {
                         int dwFrames = dwDelta > sampleRate ? sampleRate : dwDelta;
 #if TEST
-                    org.kbinani.debug.push_log( "calling ProcessReplacing..." );
+                        org.kbinani.debug.push_log( "calling ProcessReplacing..." );
 #endif
                         aEffect.ProcessReplacing( IntPtr.Zero, new IntPtr( out_buffer ), dwFrames );
 #if TEST
-                    org.kbinani.debug.push_log( "...done" );
+                        org.kbinani.debug.push_log( "...done" );
 #endif
 
                         double[] send_data_l = new double[dwFrames];
@@ -497,7 +497,7 @@ namespace org.kbinani.cadencii {
                     }
 
 #if TEST
-                PortUtil.println( "vstidrv::StartRendering; total_processed=" + total_processed );
+                    PortUtil.println( "vstidrv::StartRendering; total_processed=" + total_processed );
 #endif
 
                     if ( mode_infinite ) {

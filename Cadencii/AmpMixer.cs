@@ -34,6 +34,11 @@ namespace org.kbinani.cadencii{
         private double _amp_r = 1.0;
         private double[] _buffer2_l = new double[_BUFLEN];
         private double[] _buffer2_r = new double[_BUFLEN];
+        private long _position = 0;
+
+        public long getPosition() {
+            return _position;
+        }
 
         public void clearPassiveWaveSender() {
             _passive_wave_senders.clear();
@@ -174,6 +179,7 @@ namespace org.kbinani.cadencii{
                 }
 
                 remain -= amount;
+                _position += amount;
                 foreach ( WaveReceiver receiver in _receivers ) {
                     for ( int i = 0; i < amount; i++ ) {
                         _buffer_l[i] = _buffer2_l[i];

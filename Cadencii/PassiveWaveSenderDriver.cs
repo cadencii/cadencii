@@ -27,9 +27,14 @@ namespace org.kbinani.cadencii {
         private double[] _buffer_l = new double[_BUFLEN];
         private double[] _buffer_r = new double[_BUFLEN];
         private Vector<WaveReceiver> _wave_receivers = new Vector<WaveReceiver>();
+        private long _position = 0;
 
         public PassiveWaveSenderDriver( PassiveWaveSender wave_sender ) {
             _wave_sender = wave_sender;
+        }
+
+        public long getPosition() {
+            return _position;
         }
 
         public void addReceiver( WaveReceiver r ) {
@@ -63,6 +68,7 @@ namespace org.kbinani.cadencii {
                     r.push( _buffer_l, _buffer_r, amount );
                 }
                 remain -= amount;
+                _position += amount;
             }
             foreach ( WaveReceiver r in _wave_receivers ) {
                 r.end();
