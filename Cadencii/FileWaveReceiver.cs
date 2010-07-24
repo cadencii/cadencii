@@ -23,7 +23,11 @@ using org.kbinani.media;
 namespace org.kbinani.cadencii {
 #endif
 
+#if JAVA
+    public class FileWaveReceiver implements WaveReceiver {
+#else
     public class FileWaveReceiver : WaveReceiver {
+#endif
         private const int _BUFLEN = 1024;
         private Vector<PassiveWaveSender> _passive_wave_senders = new Vector<PassiveWaveSender>();
         private WaveRateConvertAdapter _adapter = null;

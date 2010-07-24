@@ -15,15 +15,21 @@
 package org.kbinani.cadencii;
 
 import java.util.*;
+import org.kbinani.*;
 import org.kbinani.media.*;
 #else
+using System;
 using org.kbinani.java.util;
 using org.kbinani.media;
 
 namespace org.kbinani.cadencii {
 #endif
 
+#if JAVA
+    public class FileWaveSender implements PassiveWaveSender {
+#else
     public class FileWaveSender : PassiveWaveSender {
+#endif
         private const int _BUFLEN = 1024;
         private double[] _buffer_l = new double[_BUFLEN];
         private double[] _buffer_r = new double[_BUFLEN];
@@ -35,12 +41,20 @@ namespace org.kbinani.cadencii {
         }
 
         public void pull( double[] l, double[] r, int length ) {
-            _converter.read( _position, length, l, r );
-            _position += length;
+            try {
+                _converter.read( _position, length, l, r );
+                _position += length;
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "FileWaveSender#pull; ex=" + ex );
+            }
         }
 
         public void end() {
-            _converter.close();
+            try {
+                _converter.close();
+            } catch ( Exception ex ) {
+                PortUtil.println( "FileWaveSender#end; ex=" + ex );
+            }
         }
     }
 

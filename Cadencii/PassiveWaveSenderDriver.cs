@@ -21,7 +21,11 @@ using org.kbinani.java.util;
 namespace org.kbinani.cadencii {
 #endif
 
+#if JAVA
+    public class PassiveWaveSenderDriver implements ActiveWaveSender {
+#else
     public class PassiveWaveSenderDriver : ActiveWaveSender {
+#endif
         private const int _BUFLEN = 1024;
         private PassiveWaveSender _wave_sender = null;
         private double[] _buffer_l = new double[_BUFLEN];

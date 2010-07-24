@@ -44,12 +44,12 @@ namespace org.kbinani.cadencii{
         // RenderingRunner
         private int m_trim_remain = 0;
 
-        public VocaloidWaveSender( VsqFileEx vsq, int track, int start_clock, int end_clock, int presend_milli_sec ) {
+        public VocaloidWaveSender( VsqFileEx vsq, int track, int start_clock, int end_clock, EditorConfig config ) {
             _vsq = vsq;
             _track = track;
             _start_clock = start_clock;
             _end_clock = end_clock;
-            _presend_milli_sec = presend_milli_sec;
+            _presend_milli_sec = config.PreSendTime;
         }
 
         public void waveIncomingImpl( double[] l, double[] r ) {

@@ -1,5 +1,5 @@
 ﻿/*
- * Generator.cs
+ * CircuitDiagram.cs
  * Copyright (C) 2010 kbinani
  *
  * This file is part of org.kbinani.cadencii.
@@ -30,7 +30,11 @@ namespace org.kbinani.cadencii {
     /// <summary>
     /// シンセサイザ等の接続を編集するためのコンポーネント
     /// </summary>
+#if JAVA
+    public class CircuitDiagram extends BPictureBox {
+#else
     public class CircuitDiagram : BPictureBox {
+#endif
         public void paint( Graphics g1 ) {
             Graphics2D g = (Graphics2D)g1;
 

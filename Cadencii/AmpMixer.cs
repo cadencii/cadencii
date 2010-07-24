@@ -24,7 +24,11 @@ namespace org.kbinani.cadencii{
     /// <summary>
     /// 増幅器＆ミキサーの実装
     /// </summary>
+#if JAVA
+    public class AmpMixer implements WaveSender, WaveReceiver {
+#else
     public class AmpMixer : WaveSender, WaveReceiver {
+#endif
         private const int _BUFLEN = 1024;
         private Vector<PassiveWaveSender> _passive_wave_senders = new Vector<PassiveWaveSender>();
         private Vector<WaveReceiver> _receivers = new Vector<WaveReceiver>();

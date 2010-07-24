@@ -14181,16 +14181,18 @@ namespace org.kbinani.cadencii {
 #if DEBUG
             PortUtil.println( "FormMain#menuHelpDebug_Click" );
 
+#if ENABLE_VOCALOID
             BFileChooser dlg_fout = new BFileChooser( PortUtil.getApplicationStartupPath() );
             if ( dlg_fout.showSaveDialog( this ) == BFileChooser.APPROVE_OPTION ) {
                 String waveout = dlg_fout.getSelectedFile();
                 VsqFileEx vsq = AppManager.getVsqFile();
-                VocaloidWaveSender synth = new VocaloidWaveSender( vsq, 1, 0, vsq.TotalClocks, AppManager.editorConfig.PreSendTime );
+                VocaloidWaveSender synth = new VocaloidWaveSender( vsq, 1, 0, vsq.TotalClocks, AppManager.editorConfig );
                 FileWaveReceiver r = new FileWaveReceiver( new WaveWriter( waveout, 2, 16, VSTiProxy.SAMPLE_RATE ) );
                 synth.addReceiver( r );
                 synth.addReceiver( MonitorWaveReceiver.getInstance() );
                 synth.begin( (long)(vsq.getSecFromClock( vsq.TotalClocks ) * VSTiProxy.SAMPLE_RATE) );
             }
+#endif
 
             /*VsqFileEx vsq = AppManager.getVsqFile();
             int ms_presend = AppManager.editorConfig.PreSendTime;

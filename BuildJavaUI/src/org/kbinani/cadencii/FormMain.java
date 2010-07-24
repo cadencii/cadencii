@@ -180,8 +180,6 @@ public class FormMain extends BForm {
     private BToggleButton stripBtnScroll = null;
     private BToggleButton stripBtnLoop = null;
     private BToolBar toolStripMeasure = null;
-    private BLabel toolStripLabel5 = null;
-    private BLabel stripLblMeasure = null;
     private BComboBox stripDDBtnLength = null;
     private BLabel BLabel = null;
     private BLabel jLabel1 = null;
@@ -195,12 +193,6 @@ public class FormMain extends BForm {
     private BToggleButton stripBtnEraser = null;
     private BToggleButton stripBtnGrid = null;
     private BToggleButton stripBtnCurve = null;
-    private BLabel toolStripLabel6 = null;
-    private BLabel stripLblCursor = null;
-    private BLabel toolStripLabel8 = null;
-    private BLabel stripLblTempo = null;
-    private BLabel jLabel2 = null;
-    private BLabel stripLblBeat = null;
     private BLabel jLabel3 = null;
     private BLabel stripLblGameCtrlMode = null;
     private BLabel jLabel4 = null;
@@ -343,6 +335,8 @@ public class FormMain extends BForm {
     private JLabel jLabel = null;
 	private BMenuItem menuHiddenPlayFromStartMarker = null;
     private BMenuItem menuHiddenFlipCurveOnPianorollMode = null;
+    private BMenuItem menuVisualCircuitDiagram = null;
+    private CircuitDiagram pictDiagram = null;  //  @jve:decl-index=0:visual-constraint="900,153"
     //SECTION-END-FIELD
     public FormMain( String vsq_file ) {
         super();
@@ -461,55 +455,45 @@ public class FormMain extends BForm {
         if (jPanel == null) {
             GridBagConstraints gridBagConstraints29 = new GridBagConstraints();
             gridBagConstraints29.weightx = 1.0D;
+            gridBagConstraints29.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints29.gridx = 6;
+            gridBagConstraints29.gridy = 0;
+            gridBagConstraints29.anchor = GridBagConstraints.WEST;
             jLabel = new JLabel();
             jLabel.setText(" ");
             GridBagConstraints gridBagConstraints28 = new GridBagConstraints();
-            gridBagConstraints28.gridx = 10;
+            gridBagConstraints28.gridx = 4;
+            gridBagConstraints28.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints28.anchor = GridBagConstraints.WEST;
             gridBagConstraints28.gridy = 0;
             GridBagConstraints gridBagConstraints27 = new GridBagConstraints();
-            gridBagConstraints27.gridx = 9;
+            gridBagConstraints27.gridx = 3;
+            gridBagConstraints27.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints27.anchor = GridBagConstraints.WEST;
             gridBagConstraints27.gridy = 0;
             GridBagConstraints gridBagConstraints26 = new GridBagConstraints();
-            gridBagConstraints26.gridx = 8;
+            gridBagConstraints26.gridx = 2;
+            gridBagConstraints26.anchor = GridBagConstraints.WEST;
+            gridBagConstraints26.fill = GridBagConstraints.HORIZONTAL;
             gridBagConstraints26.gridy = 0;
             GridBagConstraints gridBagConstraints25 = new GridBagConstraints();
-            gridBagConstraints25.gridx = 7;
+            gridBagConstraints25.gridx = 1;
+            gridBagConstraints25.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints25.anchor = GridBagConstraints.WEST;
             gridBagConstraints25.gridy = 0;
             GridBagConstraints gridBagConstraints24 = new GridBagConstraints();
-            gridBagConstraints24.gridx = 6;
+            gridBagConstraints24.gridx = 0;
+            gridBagConstraints24.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints24.anchor = GridBagConstraints.WEST;
             gridBagConstraints24.gridy = 0;
-            GridBagConstraints gridBagConstraints23 = new GridBagConstraints();
-            gridBagConstraints23.gridx = 5;
-            gridBagConstraints23.gridy = 0;
-            GridBagConstraints gridBagConstraints22 = new GridBagConstraints();
-            gridBagConstraints22.gridx = 4;
-            gridBagConstraints22.gridy = 0;
-            GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
-            gridBagConstraints21.gridx = 3;
-            gridBagConstraints21.gridy = 0;
-            GridBagConstraints gridBagConstraints20 = new GridBagConstraints();
-            gridBagConstraints20.gridx = 2;
-            gridBagConstraints20.gridy = 0;
-            GridBagConstraints gridBagConstraints19 = new GridBagConstraints();
-            gridBagConstraints19.gridy = 0;
-            gridBagConstraints19.gridx = 1;
-            GridBagConstraints gridBagConstraints18 = new GridBagConstraints();
-            gridBagConstraints18.gridx = 0;
-            gridBagConstraints18.gridy = 0;
             GridBagConstraints gridBagConstraints17 = new GridBagConstraints();
-            gridBagConstraints17.fill = GridBagConstraints.NONE;
-            gridBagConstraints17.gridx = 11;
+            gridBagConstraints17.fill = GridBagConstraints.VERTICAL;
+            gridBagConstraints17.gridx = 5;
             gridBagConstraints17.gridy = 0;
             gridBagConstraints17.anchor = GridBagConstraints.WEST;
             gridBagConstraints17.weightx = 0.0D;
             jPanel = new JPanel();
             jPanel.setLayout(new GridBagLayout());
-            jPanel.add(toolStripLabel6, gridBagConstraints18);
-            jPanel.add(stripLblCursor, gridBagConstraints19);
-            jPanel.add(toolStripLabel8, gridBagConstraints20);
-            jPanel.add(stripLblTempo, gridBagConstraints21);
-            jPanel.add(jLabel2, gridBagConstraints22);
-            jPanel.add(stripLblBeat, gridBagConstraints23);
             jPanel.add(jLabel3, gridBagConstraints24);
             jPanel.add(stripLblGameCtrlMode, gridBagConstraints25);
             jPanel.add(jLabel4, gridBagConstraints26);
@@ -545,6 +529,33 @@ public class FormMain extends BForm {
             menuHiddenFlipCurveOnPianorollMode.setText("Flip Curve on Pianoroll Mode");
         }
         return menuHiddenFlipCurveOnPianorollMode;
+    }
+
+    /**
+     * This method initializes menuVisualCircuitDiagram	
+     * 	
+     * @return org.kbinani.windows.forms.BMenuItem	
+     */
+    private BMenuItem getMenuVisualCircuitDiagram() {
+        if (menuVisualCircuitDiagram == null) {
+            menuVisualCircuitDiagram = new BMenuItem();
+            menuVisualCircuitDiagram.setText("Circuit Diagram");
+        }
+        return menuVisualCircuitDiagram;
+    }
+
+    /**
+     * This method initializes pictPianoRoll1	
+     * 	
+     * @return org.kbinani.cadencii.PictPianoRoll	
+     */
+    private CircuitDiagram getPictPianoRoll1() {
+        if (pictDiagram == null) {
+            pictDiagram = new CircuitDiagram();
+            pictDiagram.setLayout(new GridBagLayout());
+            pictDiagram.setSize(new Dimension(87, 85));
+        }
+        return pictDiagram;
     }
 
     public static void main( String[] args ){
@@ -1049,6 +1060,7 @@ public class FormMain extends BForm {
             menuVisual = new BMenu();
             menuVisual.setText("Visual");
             menuVisual.add(getBMenuItem16());
+            menuVisual.add(getMenuVisualCircuitDiagram());
             menuVisual.add(getBMenuItem17());
             menuVisual.add(getMenuVisualWaveform());
             menuVisual.add(getMenuVisualIconPalette());
@@ -2352,28 +2364,6 @@ public class FormMain extends BForm {
             jLabel3 = new BLabel();
             jLabel3.setText("Game Controler");
             jLabel3.setPreferredSize(new Dimension(85, 20));
-            stripLblBeat = new BLabel();
-            stripLblBeat.setText("4/4");
-            stripLblBeat.setFont(new Font("MS UI Gothic", Font.BOLD, 12));
-            stripLblBeat.setPreferredSize(new Dimension(45, 22));
-            jLabel2 = new BLabel();
-            jLabel2.setText("BEAT");
-            jLabel2.setPreferredSize(new Dimension(35, 22));
-            stripLblTempo = new BLabel();
-            stripLblTempo.setText("120.00");
-            stripLblTempo.setFont(new Font("MS UI Gothic", Font.BOLD, 12));
-            stripLblTempo.setPreferredSize(new Dimension(60, 22));
-            toolStripLabel8 = new BLabel();
-            toolStripLabel8.setText("TEMPO");
-            toolStripLabel8.setPreferredSize(new Dimension(43, 22));
-            stripLblCursor = new BLabel();
-            stripLblCursor.setText("0 : 0 : 000");
-            stripLblCursor.setFont(new Font("MS UI Gothic", Font.BOLD, 12));
-            stripLblCursor.setPreferredSize(new Dimension(90, 22));
-            toolStripLabel6 = new BLabel();
-            toolStripLabel6.setText("CURSOR");
-            toolStripLabel6.setVerticalAlignment(SwingConstants.CENTER);
-            toolStripLabel6.setPreferredSize(new Dimension(52, 22));
             toolStripBottom = new BToolBar();
             toolStripBottom.addSeparator();
             toolStripBottom.addSeparator();
@@ -2669,14 +2659,8 @@ public class FormMain extends BForm {
             jLabel1.setText("QUANTIZE");
             BLabel = new BLabel();
             BLabel.setText("LENGTH");
-            stripLblMeasure = new BLabel();
-            stripLblMeasure.setText("0 : 0 : 000");
-            toolStripLabel5 = new BLabel();
-            toolStripLabel5.setText("MEASURE");
             toolStripMeasure = new BToolBar();
             toolStripMeasure.setName("toolStripMeasure");
-            toolStripMeasure.add(toolStripLabel5);
-            toolStripMeasure.add(stripLblMeasure);
             toolStripMeasure.add(BLabel);
             toolStripMeasure.add(getStripDDBtnLength());
             toolStripMeasure.add(jLabel1);

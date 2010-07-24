@@ -148,6 +148,15 @@ namespace org.kbinani.java.util {
             base[index] = value;
         }
 
+        public void setSize( int size ) {
+            int c = base.Count;
+            if ( c < size ) {
+                for ( int i = c; i < size; i++ ) {
+                    base.Add( default( T ) );
+                }
+            }
+        }
+
         public Object[] toArray() {
             int c = size();
             Object[] ret = new Object[c];

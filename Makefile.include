@@ -91,7 +91,7 @@ jcorlib: pp_cs2java.exe $(SRC_JCORLIB) ./BuildJavaUI/src/org/kbinani/math.java .
 ########################################################################
 # post process for BuildJavaUI
 #
-jpostprocess: ./BuildJavaUI/src/org/kbinani/math.java ./BuildJavaUI/src/org/kbinani/PortUtil.java ./BuildJavaUI/src/org/kbinani/InternalStdErr.java ./BuildJavaUI/src/org/kbinani/InternalStdOut.java ./BuildJavaUI/src/org/kbinani/ByRef.java ./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java
+jpostprocess: ./BuildJavaUI/src/org/kbinani/math.java ./BuildJavaUI/src/org/kbinani/PortUtil.java ./BuildJavaUI/src/org/kbinani/InternalStdErr.java ./BuildJavaUI/src/org/kbinani/InternalStdOut.java ./BuildJavaUI/src/org/kbinani/ByRef.java ./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java ./BuildJavaUI/src/org/kbinani/cadencii/CircuitDiagram.java
 
 ./BuildJavaUI/src/org/kbinani/math.java: ./build/java/org/kbinani/math.java
 	$(RM) ./BuildJavaUI/src/org/kbinani/math.java
@@ -120,6 +120,10 @@ jpostprocess: ./BuildJavaUI/src/org/kbinani/math.java ./BuildJavaUI/src/org/kbin
 ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java: ./build/java/org/kbinani/cadencii/NumericUpDownEx.java
 	$(RM) ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java
 	$(CP) ./build/java/org/kbinani/cadencii/NumericUpDownEx.java ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java
+
+./BuildJavaUI/src/org/kbinani/cadencii/CircuitDiagram.java: ./build/java/org/kbinani/cadencii/CircuitDiagram.java
+	$(RM) ./BuildJavaUI/src/org/kbinani/cadencii/CircuitDiagram.java
+	$(CP) ./build/java/org/kbinani/cadencii/CircuitDiagram.java ./BuildJavaUI/src/org/kbinani/cadencii/CircuitDiagram.java
 
 ########################################################################
 # jcomponentmodel
