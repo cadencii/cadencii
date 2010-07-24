@@ -23,9 +23,6 @@ namespace org.kbinani.componentmodel {
         // root impl of DoWork is in BBackgroundWorker
         public BEvent<BDoWorkEventHandler> doWorkEvent = new BEvent<BDoWorkEventHandler>();
         protected override void OnDoWork( System.ComponentModel.DoWorkEventArgs e ) {
-#if DEBUG
-            PortUtil.println( "BBackgroundWorker#OnDoWork" );
-#endif
             base.OnDoWork( e );
             doWorkEvent.raise( this, e );
         }

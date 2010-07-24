@@ -42,7 +42,7 @@ namespace org.kbinani.cadencii{
         private double[] _buffer_r = new double[_BUFLEN];
 
         // RenderingRunner
-        private int m_trim_remain = 0;
+        private int _trim_remain = 0;
 
         public VocaloidWaveSender( VsqFileEx vsq, int track, int start_clock, int end_clock, EditorConfig config ) {
             _vsq = vsq;
@@ -55,13 +55,13 @@ namespace org.kbinani.cadencii{
         public void waveIncomingImpl( double[] l, double[] r ) {
             int length = l.Length;
             int offset = 0;
-            if ( m_trim_remain > 0 ) {
-                if ( length <= m_trim_remain ) {
-                    m_trim_remain -= length;
+            if ( _trim_remain > 0 ) {
+                if ( length <= _trim_remain ) {
+                    _trim_remain -= length;
                     return;
                 } else {
-                    m_trim_remain = 0;
-                    offset += length -= m_trim_remain;
+                    _trim_remain = 0;
+                    offset += length -= _trim_remain;
                 }
             }
             int remain = length - offset;
@@ -129,7 +129,7 @@ namespace org.kbinani.cadencii{
                 first_tempo = (float)(60e6 / (double)split.TempoTable.get( 0 ).Tempo);
             }
             int errorSamples = VSTiProxy.getErrorSamples( first_tempo );
-            m_trim_remain = errorSamples + (int)(trim_sec * VSTiProxy.SAMPLE_RATE);
+            _trim_remain = errorSamples + (int)(trim_sec * VSTiProxy.SAMPLE_RATE);
             _total_samples += errorSamples;
             #endregion
 
@@ -199,7 +199,7 @@ namespace org.kbinani.cadencii{
             driver.sendEvent( bodyEventsSrc, bodyClocksSrc, 1 );
 
             driver.startRendering( 
-                _total_samples + m_trim_remain + (int)(_presend_milli_sec / 1000.0 * VSTiProxy.SAMPLE_RATE),
+                _total_samples + _trim_remain + (int)(_presend_milli_sec / 1000.0 * VSTiProxy.SAMPLE_RATE),
                 false,
                 VSTiProxy.SAMPLE_RATE,
                 this );
