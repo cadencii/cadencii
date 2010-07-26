@@ -36,12 +36,12 @@ namespace org.kbinani.cadencii {
 
         private static MonitorWaveReceiver _singleton = null;
 
-        private Vector<PassiveWaveSender> _passive_wave_sender = new Vector<PassiveWaveSender>();
         private boolean _first_call = true;
         private double[] _buffer_l = new double[_BUFLEN];
         private double[] _buffer_r = new double[_BUFLEN];
         private double[] _buffer2_l = new double[_BUFLEN];
         private double[] _buffer2_r = new double[_BUFLEN];
+        private WaveReceiver _receiver = null;
 
         private MonitorWaveReceiver() {
         }
@@ -55,60 +55,25 @@ namespace org.kbinani.cadencii {
             return _singleton;
         }
 
+        public void setReceiver( WaveReceiver r ) {
+            if ( _receiver != null ) {
+                _receiver.end();
+            }
+            _receiver = r;
+        }
+
         public void push( double[] l, double[] r, int length ) {
             if ( _first_call ) {
                 PlaySound.init();
                 PlaySound.prepare( VSTiProxy.SAMPLE_RATE );
                 _first_call = false;
             }
-            int remain = length;
-            while( remain > 0 ){
-                int amount = (remain > _BUFLEN) ? _BUFLEN : remain;
-                for( int i = 0; i < amount; i++ ){
-                    _buffer2_l[i] = 0.0;
-                    _buffer2_r[i] = 0.0;
-                }
-                foreach( PassiveWaveSender s in _passive_wave_sender ){
-                    s.pull( _buffer_l, _buffer_r, amount );
-                    for ( int i = 0; i < amount; i++ ){
-                        _buffer2_l[i] += _buffer_l[i];
-                        _buffer2_r[i] += _buffer_r[i];
-                    }
-                }
-                int offset = length - remain;
-                for( int i = 0; i < amount; i++ ){
-                    _buffer2_l[i] += l[i + offset];
-                    _buffer2_r[i] += r[i + offset];
-                }
-                PlaySound.append( _buffer2_l, _buffer2_r, amount );
-                remain -= amount;
-            }
+            PlaySound.append( l, r, length );
+            _receiver.push( l, r, length );
         }
 
         public void end() {
             PlaySound.exit();
-        }
-
-        public void addPassiveWaveSender( PassiveWaveSender s ) {
-            if ( s == null ) {
-                return;
-            }
-            if ( !_passive_wave_sender.contains( s ) ) {
-                _passive_wave_sender.add( s );
-            }
-        }
-
-        public void removePassiveWaveSender( PassiveWaveSender s ) {
-            if ( s == null ) {
-                return;
-            }
-            if ( _passive_wave_sender.contains( s ) ) {
-                _passive_wave_sender.remove( s );
-            }
-        }
-
-        public void clearPassiveWaveSender() {
-            _passive_wave_sender.clear();
         }
     }
 

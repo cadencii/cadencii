@@ -19,9 +19,7 @@ namespace org.kbinani.cadencii {
 
     public interface WaveReceiver {
         void push( double[] left, double[] right, int length );
-        void addPassiveWaveSender( PassiveWaveSender sender );
-        void removePassiveWaveSender( PassiveWaveSender sender );
-        void clearPassiveWaveSender();
+        void setReceiver( WaveReceiver r );
         void end();
     }
 

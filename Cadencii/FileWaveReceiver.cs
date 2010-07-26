@@ -29,12 +29,12 @@ namespace org.kbinani.cadencii {
     public class FileWaveReceiver : WaveReceiver {
 #endif
         private const int _BUFLEN = 1024;
-        private Vector<PassiveWaveSender> _passive_wave_senders = new Vector<PassiveWaveSender>();
         private WaveRateConvertAdapter _adapter = null;
         private double[] _buffer_l = new double[_BUFLEN];
         private double[] _buffer_r = new double[_BUFLEN];
         private double[] _buffer2_l = new double[_BUFLEN];
         private double[] _buffer2_r = new double[_BUFLEN];
+        private WaveReceiver _receiver = null;
 
         public FileWaveReceiver( WaveWriter writer ) {
             _adapter = new WaveRateConvertAdapter( writer, VSTiProxy.SAMPLE_RATE );
@@ -44,51 +44,18 @@ namespace org.kbinani.cadencii {
             _adapter.close();
         }
 
-        public void clearPassiveWaveSender() {
-            _passive_wave_senders.clear();
-        }
-
-        public void addPassiveWaveSender( PassiveWaveSender g ) {
-            if ( g == null ) {
-                return;
-            }
-            if ( !_passive_wave_senders.contains( g ) ) {
-                _passive_wave_senders.add( g );
-            }
-        }
-
-        public void removePassiveWaveSender( PassiveWaveSender g ) {
-            if ( g == null ) {
-                return;
-            }
-            if ( _passive_wave_senders.contains( g ) ) {
-                _passive_wave_senders.remove( g );
-            }
-        }
-
         public void push( double[] l, double[] r, int length ) {
-            int remain = length;
-            while ( remain > 0 ) {
-                int amount = (remain > _BUFLEN) ? _BUFLEN : remain;
-                for ( int i = 0; i < amount; i++ ) {
-                    _buffer_l[i] = 0.0;
-                    _buffer_r[i] = 0.0;
-                }
-                foreach ( PassiveWaveSender g in _passive_wave_senders ) {
-                    g.pull( _buffer2_l, _buffer2_r, amount );
-                    for ( int i = 0; i < amount; i++ ) {
-                        _buffer_l[i] += _buffer2_l[i];
-                        _buffer_r[i] += _buffer2_r[i];
-                    }
-                }
-                int offset = length - remain;
-                for ( int i = 0; i < amount; i++ ) {
-                    _buffer2_l[i] = l[i + offset] + _buffer_l[i];
-                    _buffer2_r[i] = r[i + offset] + _buffer_r[i];
-                }
-                _adapter.append( _buffer2_l, _buffer2_r, amount );
-                remain -= amount;
+            _adapter.append( l, r, length );
+            if ( _receiver != null ) {
+                _receiver.push( l, r, length );
             }
+        }
+
+        public void setReceiver( WaveReceiver r ) {
+            if ( r != null ) {
+                r.end();
+            }
+            _receiver = r;
         }
     }
 

@@ -1,5 +1,5 @@
 ﻿/*
- * PassiveWaveSenderDriver.cs
+ * WaveSenderDriver.cs
  * Copyright (C) 2010 kbinani
  *
  * This file is part of org.kbinani.cadencii.
@@ -22,45 +22,30 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public class PassiveWaveSenderDriver implements ActiveWaveSender {
+    public class WaveSenderDriver implements WaveGenerator {
 #else
-    public class PassiveWaveSenderDriver : ActiveWaveSender {
+    public class WaveSenderDriver : WaveGenerator {
 #endif
         private const int _BUFLEN = 1024;
-        private PassiveWaveSender _wave_sender = null;
+        private WaveSender _wave_sender = null;
         private double[] _buffer_l = new double[_BUFLEN];
         private double[] _buffer_r = new double[_BUFLEN];
-        private Vector<WaveReceiver> _wave_receivers = new Vector<WaveReceiver>();
         private long _position = 0;
+        private WaveReceiver _receiver = null;
 
-        public PassiveWaveSenderDriver( PassiveWaveSender wave_sender ) {
+        public WaveSenderDriver( WaveSender wave_sender ) {
             _wave_sender = wave_sender;
+        }
+
+        public void setReceiver( WaveReceiver r ) {
+            if ( _receiver != null ) {
+                _receiver.end();
+            }
+            _receiver = r;
         }
 
         public long getPosition() {
             return _position;
-        }
-
-        public void addReceiver( WaveReceiver r ) {
-            if ( r == null ) {
-                return;
-            }
-            if ( !_wave_receivers.contains( r ) ) {
-                _wave_receivers.add( r );
-            }
-        }
-
-        public void removeReceiver( WaveReceiver r ) {
-            if ( r == null ) {
-                return;
-            }
-            if ( _wave_receivers.contains( r ) ) {
-                _wave_receivers.remove( r );
-            }
-        }
-
-        public void clearReceiver() {
-            _wave_receivers.clear();
         }
 
         public void begin( long length ) {
@@ -68,15 +53,11 @@ namespace org.kbinani.cadencii {
             while ( remain > 0 ) {
                 int amount = (remain > _BUFLEN) ? _BUFLEN : (int)remain;
                 _wave_sender.pull( _buffer_l, _buffer_r, amount );
-                foreach ( WaveReceiver r in _wave_receivers ) {
-                    r.push( _buffer_l, _buffer_r, amount );
-                }
+                _receiver.push( _buffer_l, _buffer_r, amount );
                 remain -= amount;
                 _position += amount;
             }
-            foreach ( WaveReceiver r in _wave_receivers ) {
-                r.end();
-            }
+            _receiver.end();
         }
     }
 

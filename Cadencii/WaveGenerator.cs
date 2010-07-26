@@ -1,5 +1,5 @@
 ﻿/*
- * ActiveWaveSender.cs
+ * WaveGenerator.cs
  * Copyright (C) 2010 kbinani
  *
  * This file is part of org.kbinani.cadencii.
@@ -13,23 +13,12 @@
  */
 #if JAVA
 package org.kbinani.cadencii;
-
-import java.util.*;
 #else
-using org.kbinani.java.util;
-
 namespace org.kbinani.cadencii {
 #endif
 
-    /// <summary>
-    /// 自力で波形を生成する能動的ジェネレータ
-    /// </summary>
-    public interface ActiveWaveSender {
-        void addReceiver( WaveReceiver receiver );
-        void removeReceiver( WaveReceiver receiver );
-        void clearReceiver();
-        void begin( long samples );
-        long getPosition();
+    public interface WaveGenerator {
+        void setReceiver( WaveReceiver r );
     }
 
 #if !JAVA

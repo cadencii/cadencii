@@ -1,5 +1,5 @@
 ﻿/*
- * AmpMixer.cs
+ * Amplifier.cs
  * Copyright (C) 2010 kbinani
  *
  * This file is part of org.kbinani.cadencii.
@@ -25,13 +25,11 @@ namespace org.kbinani.cadencii{
     /// 増幅器＆ミキサーの実装
     /// </summary>
 #if JAVA
-    public class AmpMixer implements WaveSender, WaveReceiver {
+    public class Amplifier implements WaveSender, WaveReceiver {
 #else
-    public class AmpMixer : WaveSender, WaveReceiver {
+    public class Amplifier : WaveSender, WaveReceiver {
 #endif
         private const int _BUFLEN = 1024;
-        private Vector<PassiveWaveSender> _passive_wave_senders = new Vector<PassiveWaveSender>();
-        private Vector<WaveReceiver> _receivers = new Vector<WaveReceiver>();
         private double[] _buffer_l = new double[_BUFLEN];
         private double[] _buffer_r = new double[_BUFLEN];
         private double _amp_l = 1.0;
@@ -39,30 +37,30 @@ namespace org.kbinani.cadencii{
         private double[] _buffer2_l = new double[_BUFLEN];
         private double[] _buffer2_r = new double[_BUFLEN];
         private long _position = 0;
+        private WaveReceiver _receiver = null;
+        private WaveSender _sender = null;
+
+        public void setReceiver( WaveReceiver r ) {
+            if ( _receiver != null ) {
+                _receiver.end();
+            }
+            _receiver = r;
+        }
+
+        public void setSender( WaveSender s ) {
+            if ( _sender != null ) {
+                _sender.end();
+            }
+            _sender = s;
+        }
 
         public long getPosition() {
             return _position;
         }
 
-        public void clearPassiveWaveSender() {
-            _passive_wave_senders.clear();
-        }
-
-        public void begin( long samples ) {
-            // do nothing
-        }
-
         public void end() {
-            foreach ( PassiveWaveSender s in _passive_wave_senders ) {
-                s.end();
-            }
-            foreach ( WaveReceiver r in _receivers ) {
-                r.end();
-            }
-        }
-
-        public void clearReceiver() {
-            _receivers.clear();
+            _receiver.end();
+            _sender.end();
         }
 
         public void setAmplify( double amp_left, double amp_right ) {
@@ -70,44 +68,9 @@ namespace org.kbinani.cadencii{
             _amp_r = amp_right;
         }
 
-        public void addPassiveWaveSender( PassiveWaveSender g ) {
-            if ( g == null ) {
-                return;
-            }
-            if ( !_passive_wave_senders.contains( g ) ) {
-                _passive_wave_senders.add( g );
-            }
-        }
-
-        public void removePassiveWaveSender( PassiveWaveSender g ) {
-            if ( g == null ) {
-                return;
-            }
-            if ( _passive_wave_senders.contains( g ) ) {
-                _passive_wave_senders.remove( g );
-            }
-        }
-
-        public void addReceiver( WaveReceiver r ) {
-            if ( r == null ) {
-                return;
-            }
-            if ( !_receivers.contains( r ) ) {
-                _receivers.add( r );
-            }
-        }
-
-        public void removeReceiver( WaveReceiver r ) {
-            if ( r == null ) {
-                return;
-            }
-            if ( _receivers.contains( r ) ) {
-                _receivers.remove( r );
-            }
-        }
-
         public void push( double[] l, double[] r, int length ) {
-            if ( _receivers.size() <= 0 ) {
+            if ( _receiver == null ) {
+                _position += length;
                 return;
             }
 
@@ -117,16 +80,6 @@ namespace org.kbinani.cadencii{
                 for ( int i = 0; i < amount; i++ ) {
                     _buffer_l[i] = 0.0;
                     _buffer_r[i] = 0.0;
-                }
-                if ( _amp_l != 0.0 || _amp_r != 0.0 ) {
-                    // 左右どちらかのチャンネルの増幅率が0でない場合にのみ、波形を取にいく
-                    foreach ( PassiveWaveSender sender in _passive_wave_senders ) {
-                        sender.pull( _buffer2_l, _buffer2_r, amount );
-                        for ( int i = 0; i < amount; i++ ) {
-                            _buffer_l[i] += _buffer2_l[i];
-                            _buffer_r[i] += _buffer2_r[i];
-                        }
-                    }
                 }
                 int offset = length - remain;
 
@@ -184,13 +137,7 @@ namespace org.kbinani.cadencii{
 
                 remain -= amount;
                 _position += amount;
-                foreach ( WaveReceiver receiver in _receivers ) {
-                    for ( int i = 0; i < amount; i++ ) {
-                        _buffer_l[i] = _buffer2_l[i];
-                        _buffer_r[i] = _buffer2_r[i];
-                    }
-                    receiver.push( _buffer_l, _buffer_r, amount );
-                }
+                _receiver.push( _buffer_l, _buffer_r, amount );
             }
         }
 
@@ -199,17 +146,15 @@ namespace org.kbinani.cadencii{
                 r[i] = 0.0;
                 l[i] = 0.0;
             }
-            if ( _passive_wave_senders.size() > 0 ) {
+            if ( _receiver != null ) {
                 int remain = length;
                 while ( remain > 0 ) {
                     int amount = (remain > _BUFLEN) ? _BUFLEN : remain;
                     int offset = length - remain;
-                    foreach ( PassiveWaveSender sender in _passive_wave_senders ) {
-                        sender.pull( _buffer_l, _buffer_r, amount );
-                        for ( int i = 0; i < amount; i++ ) {
-                            l[i + offset] += _buffer_l[i];
-                            r[i + offset] += _buffer_r[i];
-                        }
+                    _sender.pull( _buffer_l, _buffer_r, amount );
+                    for ( int i = 0; i < amount; i++ ) {
+                        l[i + offset] += _buffer_l[i];
+                        r[i + offset] += _buffer_r[i];
                     }
                     remain -= amount;
                 }

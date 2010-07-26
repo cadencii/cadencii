@@ -26,10 +26,9 @@ namespace org.kbinani.cadencii{
         void waveIncomingImpl( double[] l, double[] r );
     }
 
-    public class VocaloidWaveSender : ActiveWaveSender, IWaveIncoming {
+    public class VocaloidWaveSender : WaveGenerator, IWaveIncoming {
         private const int _BUFLEN = 1024;
         
-        private Vector<WaveReceiver> _receivers = new Vector<WaveReceiver>();
         private long _position = 0;
         private VsqFileEx _vsq = null;
         private int _track;
@@ -40,6 +39,7 @@ namespace org.kbinani.cadencii{
         private boolean _abort_required = false;
         private double[] _buffer_l = new double[_BUFLEN];
         private double[] _buffer_r = new double[_BUFLEN];
+        private WaveReceiver _receiver = null;
 
         // RenderingRunner
         private int _trim_remain = 0;
@@ -50,6 +50,13 @@ namespace org.kbinani.cadencii{
             _start_clock = start_clock;
             _end_clock = end_clock;
             _presend_milli_sec = config.PreSendTime;
+        }
+
+        public void setReceiver( WaveReceiver r ) {
+            if ( _receiver != null ) {
+                _receiver.end();
+            }
+            _receiver = r;
         }
 
         public void waveIncomingImpl( double[] l, double[] r ) {
@@ -71,9 +78,7 @@ namespace org.kbinani.cadencii{
                     _buffer_l[i] = l[i + offset];
                     _buffer_r[i] = r[i + offset];
                 }
-                foreach ( WaveReceiver rc in _receivers ) {
-                    rc.push( _buffer_l, _buffer_r, amount );
-                }
+                _receiver.push( _buffer_l, _buffer_r, amount );
                 remain -= amount;
                 offset += amount;
                 _position += amount;
@@ -204,36 +209,12 @@ namespace org.kbinani.cadencii{
                 VSTiProxy.SAMPLE_RATE,
                 this );
 
-            foreach ( WaveReceiver rc in _receivers ) {
-                rc.end();
-            }
+            _receiver.end();
             #endregion
         }
 
         public long getPosition() {
             return _position;
-        }
-
-        public void addReceiver( WaveReceiver r ) {
-            if ( r == null ) {
-                return;
-            }
-            if ( !_receivers.contains( r ) ) {
-                _receivers.add( r );
-            }
-        }
-
-        public void removeReceiver( WaveReceiver r ) {
-            if ( r == null ) {
-                return;
-            }
-            if ( _receivers.contains( r ) ) {
-                _receivers.remove( r );
-            }
-        }
-
-        public void clearReceiver() {
-            _receivers.clear();
         }
     }
 

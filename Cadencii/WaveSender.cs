@@ -25,10 +25,13 @@ namespace org.kbinani.cadencii {
     /// 音声波形を出力するジェネレータ．
     /// </summary>
 #if JAVA
-    public interface WaveSender extends ActiveWaveSender, PassiveWaveSender {
+    public interface WaveSender {
 #else
-    public interface WaveSender : ActiveWaveSender, PassiveWaveSender {
+    public interface WaveSender {
 #endif
+        void pull( double[] l, double[] r, int length );
+        void setSender( WaveSender s );
+        void end();
     }
 
 #if !JAVA

@@ -98,8 +98,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActiveWaveSender.cs" />
-    <Compile Include="AmpMixer.cs" />
+    <Compile Include="Amplifier.cs" />
     <Compile Include="AmplifyCoefficient.cs" />
     <Compile Include="AquesToneDriver.cs">
     </Compile>
@@ -131,7 +130,6 @@
     <Compile Include="DrawObjectType.cs" />
     <Compile Include="Matrix2D.cs" />
     <Compile Include="MonitorWaveReceiver.cs" />
-    <Compile Include="PassiveWaveSenderDriver.cs" />
     <Compile Include="DynaffComparisonContext.cs" />
     <Compile Include="EditedZone.cs" />
     <Compile Include="EditedZoneCommand.cs" />
@@ -188,7 +186,6 @@
     <Compile Include="OtoArgs.cs" />
     <Compile Include="PanelState.cs" />
     <Compile Include="PanpotChangedEventHandler.cs" />
-    <Compile Include="PassiveWaveSender.cs" />
     <Compile Include="PictPianoRoll.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -368,8 +365,10 @@
     <Compile Include="VSTiProxy.cs" />
     <Compile Include="VstSdk.cs" />
     <Compile Include="WaveDrawContext.cs" />
+    <Compile Include="WaveGenerator.cs" />
     <Compile Include="WaveReceiver.cs" />
     <Compile Include="WaveSender.cs" />
+    <Compile Include="WaveSenderDriver.cs" />
     <Compile Include="WaveView.cs">
       <SubType>UserControl</SubType>
     </Compile>
