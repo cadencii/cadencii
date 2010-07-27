@@ -1,7 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C++ Express 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "org.kbinani.cadencii.util", "org.kbinani.cadencii.util\org.kbinani.cadencii.util.vcxproj", "{D75DA4EB-238B-4E00-AF4E-0AE4D285FFDE}"
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual C++ Express 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "org.kbinani.cadencii.util", "org.kbinani.cadencii.util\org.kbinani.cadencii.util.vcproj", "{D75DA4EB-238B-4E00-AF4E-0AE4D285FFDE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
