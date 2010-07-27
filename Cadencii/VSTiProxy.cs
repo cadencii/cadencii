@@ -63,9 +63,9 @@ namespace org.kbinani.cadencii {
 #endif
 #if ENABLE_AQUESTONE
 #if FAKE_AQUES_TONE_DLL_AS_VOCALOID1
-        public static VocaloidDriver aquesToneDriver = null;
+        //public static VocaloidDriver aquesToneDriver = null;
 #else
-        public static AquesToneDriver aquesToneDriver = null;
+        //public static AquesToneDriver aquesToneDriver = null;
 #endif
 #endif
         /// <summary>
@@ -218,38 +218,7 @@ namespace org.kbinani.cadencii {
 
 #if ENABLE_AQUESTONE
         public static void reloadAquesTone() {
-            String aques_tone = AppManager.editorConfig.PathAquesTone;
-            if ( aquesToneDriver == null ) {
-#if FAKE_AQUES_TONE_DLL_AS_VOCALOID1
-                aquesToneDriver = new VocaloidDriver();
-#else
-                aquesToneDriver = new AquesToneDriver();
-#endif
-                aquesToneDriver.loaded = false;
-                aquesToneDriver.kind = RendererKind.AQUES_TONE;
-            }
-            if ( aquesToneDriver.loaded ) {
-                aquesToneDriver.close();
-                aquesToneDriver.loaded = false;
-            }
-            aquesToneDriver.path = aques_tone;
-            if ( !aques_tone.Equals( "" ) && PortUtil.isFileExists( aques_tone ) && !AppManager.editorConfig.DoNotUseAquesTone ) {
-                boolean loaded = false;
-                try {
-#if FAKE_AQUES_TONE_DLL_AS_VOCALOID1
-                    loaded = aquesToneDriver.open( aques_tone, SAMPLE_RATE, SAMPLE_RATE, false );
-#else
-                    loaded = aquesToneDriver.open( aques_tone, SAMPLE_RATE, SAMPLE_RATE, true );
-#endif
-                } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "VSTiProxy#realoadAquesTone; ex=" + ex );
-                    loaded = false;
-                }
-                aquesToneDriver.loaded = loaded;
-            }
-#if DEBUG
-            PortUtil.println( "VSTiProxy#initCor; aquesToneDriver.loaded=" + aquesToneDriver.loaded );
-#endif
+            AquesToneDriver.reload();
         }
 #endif
 
@@ -263,6 +232,7 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if ENABLE_AQUESTONE
+            AquesToneDriver aquesToneDriver = AquesToneDriver.getInstance();
             if ( renderer == RendererKind.AQUES_TONE && aquesToneDriver != null && aquesToneDriver.loaded ) {
                 return true;
             }
@@ -308,6 +278,7 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if ENABLE_AQUESTONE
+            AquesToneDriver aquesToneDriver = AquesToneDriver.getInstance();
             if ( aquesToneDriver != null ) {
                 try {
                     aquesToneDriver.close();
@@ -462,7 +433,7 @@ namespace org.kbinani.cadencii {
                                                                    SAMPLE_RATE,
                                                                    ms_presend );
 #else
-                s_rendering_context = new AquesToneRenderingRunner( aquesToneDriver,
+                s_rendering_context = new AquesToneRenderingRunner( AquesToneDriver.getInstance(),
                                                                     split,
                                                                     track,
                                                                     temp_dir,

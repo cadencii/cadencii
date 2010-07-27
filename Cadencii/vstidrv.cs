@@ -194,11 +194,11 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public unsafe void process( double[] left, double[] right ) {
+        public unsafe void process( double[] left, double[] right, int length ) {
             if ( left == null || right == null ){
                 return;
             }
-            int length = Math.Min( left.Length, right.Length );
+            //int length = Math.Min( left.Length, right.Length );
             try {
                 initBuffer();
                 int remain = length;

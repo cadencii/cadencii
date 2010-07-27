@@ -18,6 +18,7 @@ namespace org.kbinani.cadencii {
 #endif
 
     public interface WaveGenerator {
+        void begin( long samples );
         void setReceiver( WaveReceiver r );
     }
 

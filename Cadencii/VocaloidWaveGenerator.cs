@@ -1,6 +1,6 @@
 ﻿#if ENABLE_VOCALOID
 /*
- * VocaloidWaveSender.cs
+ * VocaloidWaveGenerator.cs
  * Copyright (C) 2010 kbinani
  *
  * This file is part of org.kbinani.cadencii.
@@ -26,7 +26,7 @@ namespace org.kbinani.cadencii{
         void waveIncomingImpl( double[] l, double[] r );
     }
 
-    public class VocaloidWaveSender : WaveGenerator, IWaveIncoming {
+    public class VocaloidWaveGenerator : WaveGenerator, IWaveIncoming {
         private const int _BUFLEN = 1024;
         
         private long _position = 0;
@@ -44,7 +44,7 @@ namespace org.kbinani.cadencii{
         // RenderingRunner
         private int _trim_remain = 0;
 
-        public VocaloidWaveSender( VsqFileEx vsq, int track, int start_clock, int end_clock, EditorConfig config ) {
+        public VocaloidWaveGenerator( VsqFileEx vsq, int track, int start_clock, int end_clock, EditorConfig config ) {
             _vsq = vsq;
             _track = track;
             _start_clock = start_clock;

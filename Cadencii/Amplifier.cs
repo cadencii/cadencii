@@ -34,8 +34,6 @@ namespace org.kbinani.cadencii{
         private double[] _buffer_r = new double[_BUFLEN];
         private double _amp_l = 1.0;
         private double _amp_r = 1.0;
-        private double[] _buffer2_l = new double[_BUFLEN];
-        private double[] _buffer2_r = new double[_BUFLEN];
         private long _position = 0;
         private WaveReceiver _receiver = null;
         private WaveSender _sender = null;
@@ -59,8 +57,12 @@ namespace org.kbinani.cadencii{
         }
 
         public void end() {
-            _receiver.end();
-            _sender.end();
+            if ( _receiver != null ) {
+                _receiver.end();
+            }
+            if ( _sender != null ) {
+                _sender.end();
+            }
         }
 
         public void setAmplify( double amp_left, double amp_right ) {
@@ -84,53 +86,43 @@ namespace org.kbinani.cadencii{
                 int offset = length - remain;
 
                 // 左チャンネル
-                if ( _amp_l == 0.0 ) {
-                    // 増幅率0の場合
-                    for ( int i = 0; i < amount; i++ ) {
-                        _buffer2_l[i] = 0.0;
-                    }
-                } else {
+                if ( _amp_l != 0.0 ) {
                     if ( _amp_l == 1.0 ) {
                         // 増幅率1の場合
                         for ( int i = 0; i < amount; i++ ) {
-                            _buffer2_l[i] = l[i + offset] + _buffer_l[i];
+                            _buffer_l[i] = l[i + offset];
                         }
                     } else {
                         for ( int i = 0; i < amount; i++ ) {
-                            _buffer2_l[i] = (l[i + offset] + _buffer_l[i]) * _amp_l;
+                            _buffer_l[i] = l[i + offset] * _amp_l;
                         }
                     }
                     for ( int i = 0; i < amount; i++ ) {
-                        if ( _buffer2_l[i] > 1.0 ) {
-                            _buffer2_l[i] = 1.0;
-                        } else if ( _buffer2_l[i] < -1.0 ) {
-                            _buffer2_l[i] = -1.0;
+                        if ( _buffer_l[i] > 1.0 ) {
+                            _buffer_l[i] = 1.0;
+                        } else if ( _buffer_l[i] < -1.0 ) {
+                            _buffer_l[i] = -1.0;
                         }
                     }
                 }
 
                 // 右チャンネル
-                if ( _amp_r == 0.0 ) {
-                    // 増幅率0の場合
-                    for ( int i = 0; i < amount; i++ ) {
-                        _buffer2_l[i] = 0.0;
-                    }
-                } else {
+                if ( _amp_r != 0.0 ) {
                     if ( _amp_r == 1.0 ) {
                         // 増幅率1の場合
                         for ( int i = 0; i < amount; i++ ) {
-                            _buffer2_r[i] = r[i + offset] + _buffer_r[i];
+                            _buffer_r[i] = r[i + offset];
                         }
                     } else {
                         for ( int i = 0; i < amount; i++ ) {
-                            _buffer2_r[i] = (r[i + offset] + _buffer_r[i]) * _amp_r;
+                            _buffer_r[i] = r[i + offset] * _amp_r;
                         }
                     }
                     for ( int i = 0; i < amount; i++ ) {
-                        if ( _buffer2_r[i] > 1.0 ) {
-                            _buffer2_r[i] = 1.0;
-                        } else if ( _buffer2_r[i] < -1.0 ) {
-                            _buffer2_r[i] = -1.0;
+                        if ( _buffer_r[i] > 1.0 ) {
+                            _buffer_r[i] = 1.0;
+                        } else if ( _buffer_r[i] < -1.0 ) {
+                            _buffer_r[i] = -1.0;
                         }
                     }
                 }
@@ -141,7 +133,7 @@ namespace org.kbinani.cadencii{
             }
         }
 
-        public void pull( double[] r, double[] l, int length ) {
+        public void pull( double[] l, double[] r, int length ) {
             for ( int i = 0; i < length; i++ ){
                 r[i] = 0.0;
                 l[i] = 0.0;

@@ -69,11 +69,16 @@ namespace org.kbinani.cadencii {
                 _first_call = false;
             }
             PlaySound.append( l, r, length );
-            _receiver.push( l, r, length );
+            if ( _receiver != null ) {
+                _receiver.push( l, r, length );
+            }
         }
 
         public void end() {
             PlaySound.exit();
+            if ( _receiver != null ) {
+                _receiver.end();
+            }
         }
     }
 

@@ -1,7 +1,7 @@
 ﻿#if ENABLE_AQUESTONE
 /*
- * AquesToneRenderingRunner.cs
- * Copyright (C) 2009-2010 kbinani
+ * AquesToneWaveGenerator.cs
+ * Copyright (C) 2010 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -24,14 +24,26 @@ namespace org.kbinani.cadencii {
     using Integer = System.Int32;
 
 #if JAVA
-    public class AquesToneRenderingRunner extends RenderingRunner {
+    public class AquesToneWaveGenerator implements WaveGenerator {
 #else
-    public class AquesToneRenderingRunner : RenderingRunner {
+    public class AquesToneWaveGenerator : WaveGenerator {
 #endif
         private AquesToneDriver driver = null;
-        private String tempDir;
-        private boolean modeInfinite;
         private VsqFileEx vsq = null;
+
+        private const int _BUFLEN = 1024;
+
+        private WaveReceiver _receiver = null;
+        private int renderingTrack;
+        private int _start_clock;
+        private int _end_clock;
+        private EditorConfig _config;
+        private boolean m_abort_required;
+        private long totalSamples;
+        private long m_total_append;
+        private int _trim_remain;
+        private double[] _buffer_l = new double[_BUFLEN];
+        private double[] _buffer_r = new double[_BUFLEN];
 
         /// <summary>
         /// ドライバのパラメータの変更要求
@@ -50,7 +62,36 @@ namespace org.kbinani.cadencii {
             public Vector<ParameterEvent> param;
         }
 
-        public AquesToneRenderingRunner(
+        public AquesToneWaveGenerator( VsqFileEx vsq, int track, int start_clock, int end_clock, EditorConfig config ) {
+            driver = AquesToneDriver.getInstance();
+            renderingTrack = track;
+            _start_clock = start_clock;
+            _end_clock = end_clock;
+            _config = config;
+
+            this.vsq = (VsqFileEx)vsq.clone();
+            this.vsq.updateTotalClocks();
+
+            if ( _end_clock < this.vsq.TotalClocks ) {
+                this.vsq.removePart( _end_clock, this.vsq.TotalClocks + 480 );
+            }
+
+            double end_sec = vsq.getSecFromClock( start_clock );
+            double start_sec = vsq.getSecFromClock( end_clock );
+
+            double trim_sec = 0.0; // レンダリング結果から省かなければならない秒数。
+            if ( _start_clock < this.vsq.getPreMeasureClocks() ) {
+                trim_sec = this.vsq.getSecFromClock( _start_clock );
+            } else {
+                this.vsq.removePart( vsq.getPreMeasureClocks(), _start_clock );
+                trim_sec = this.vsq.getSecFromClock( this.vsq.getPreMeasureClocks() );
+            }
+            this.vsq.updateTotalClocks();
+
+            _trim_remain = (int)(trim_sec * VSTiProxy.SAMPLE_RATE);
+        }
+
+        /*public AquesToneWaveSender(
             AquesToneDriver driver,
             VsqFileEx vsq,
             int track,
@@ -80,9 +121,16 @@ namespace org.kbinani.cadencii {
             this.driver = driver;
             tempDir = temp_dir;
             modeInfinite = mode_infinite;
+        }*/
+
+        public void setReceiver( WaveReceiver r ) {
+            if ( _receiver != null ) {
+                _receiver.end();
+            }
+            _receiver = r;
         }
 
-        public override void run() {
+        public void begin( long total_samples ) {
             if ( driver == null ) {
                 return;
             }
@@ -91,56 +139,17 @@ namespace org.kbinani.cadencii {
                 return;
             }
 
-            m_rendering = true;
+            //m_rendering = true;
             m_abort_required = false;
+            totalSamples = total_samples;
 
             VsqTrack track = vsq.Track.get( renderingTrack );
-            int BUFLEN = sampleRate / 10;
+            int BUFLEN = VSTiProxy.SAMPLE_RATE / 10;
             double[] left = new double[BUFLEN];
             double[] right = new double[BUFLEN];
             long saProcessed = 0; // これまでに合成したサンプル数
             int saRemain = 0;
             int lastClock = 0; // 最後に処理されたゲートタイム
-
-#if DEBUG
-            /* // この部分はテスト用
-            // ノートオンとpitを同時に送ってみる->NG
-            // noteonののち、pitを送ってみる->NG
-            // pitののち、noteonを送ってみる->NG
-            MidiEvent pit0 = new MidiEvent();
-            pit0.firstByte = 0xE0;
-            int value = (0x3fff & (0 + 0x2000));
-            byte msb = (byte)(value >> 7);
-            byte lsb = (byte)(value - (msb << 7));
-            pit0.data = new byte[] { lsb, msb };
-            MidiEvent noteon = new MidiEvent();
-            noteon.firstByte = 0x90;
-            noteon.data = new byte[] { 0x40, 0x7f };
-            driver.send( new MidiEvent[] { pit0, noteon } );
-            for ( int i = 0; i < 20; i++ ) {
-                driver.process( left, right );
-                waveIncoming( left, right );
-            }
-            MidiEvent pit = new MidiEvent();
-            pit.firstByte = 0xE0;
-            value = (0x3fff & (8191 + 0x2000));
-            msb = (byte)(value >> 7);
-            lsb = (byte)(value - (msb << 7));
-            pit.data = new byte[] { lsb, msb };
-            MidiEvent noteoff = new MidiEvent();
-            noteoff.firstByte = 0x80;
-            noteoff.data = new byte[] { 0x40, 0x7f };
-            driver.send( new MidiEvent[] { noteoff } );
-            driver.send( new MidiEvent[] { noteon } );
-            driver.send( new MidiEvent[] { pit } );
-            for ( int i = 0; i < 20; i++ ) {
-                driver.process( left, right );
-                waveIncoming( left, right );
-            }
-            m_rendering = false;
-            return;*/
-#endif
-
 
             // 最初にダミーの音を鳴らす
             // (最初に入るノイズを回避するためと、前回途中で再生停止した場合に無音から始まるようにするため)
@@ -160,37 +169,35 @@ namespace org.kbinani.cadencii {
             }
 
             // レンダリング開始位置での、パラメータの値をセットしておく
-
-
             for ( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ) {
                 VsqEvent item = itr.next();
-                long saNoteStart = (long)(vsq.getSecFromClock( item.Clock ) * sampleRate);
-                long saNoteEnd = (long)(vsq.getSecFromClock( item.Clock + item.ID.getLength() ) * sampleRate);
+                long saNoteStart = (long)(vsq.getSecFromClock( item.Clock ) * VSTiProxy.SAMPLE_RATE);
+                long saNoteEnd = (long)(vsq.getSecFromClock( item.Clock + item.ID.getLength() ) * VSTiProxy.SAMPLE_RATE);
 
                 TreeMap<Integer, MidiEventQueue> list = generateMidiEvent( vsq, renderingTrack, lastClock, item.Clock + item.ID.getLength() );
                 lastClock = item.Clock + item.ID.Length + 1;
                 for ( Iterator<Integer> itr2 = list.keySet().iterator(); itr2.hasNext(); ) {
                     // まず直前までの分を合成
                     Integer clock = itr2.next();
-                    long saStart = (long)(vsq.getSecFromClock( clock ) * sampleRate);
+                    long saStart = (long)(vsq.getSecFromClock( clock ) * VSTiProxy.SAMPLE_RATE);
                     saRemain = (int)(saStart - saProcessed);
                     while ( saRemain > 0 ) {
                         if ( m_abort_required ) {
-                            m_rendering = false;
+                            //m_rendering = false;
                             return;
                         }
                         int len = saRemain > BUFLEN ? BUFLEN : saRemain;
-                        double[] bufl = null;
-                        double[] bufr = null;
-                        if ( len == BUFLEN ) {
-                            bufl = left;
-                            bufr = right;
-                        } else {
-                            bufl = new double[len];
-                            bufr = new double[len];
-                        }
-                        driver.process( bufl, bufr, len );
-                        waveIncoming( bufl, bufr );
+                        //double[] bufl = null;
+                        //double[] bufr = null;
+                        //if ( len == BUFLEN ) {
+                        //    bufl = left;
+                        //    bufr = right;
+                        //} else {
+                        //    bufl = new double[len];
+                        //    bufr = new double[len];
+                        //}
+                        driver.process( left, right, len );
+                        waveIncoming( left, right, len );
                         saRemain -= len;
                         saProcessed += len;
                     }
@@ -236,42 +243,47 @@ namespace org.kbinani.cadencii {
 #endif
             while ( saRemain > 0 ) {
                 if ( m_abort_required ) {
-                    m_rendering = false;
+                    //m_rendering = false;
                     return;
                 }
                 int len = saRemain > BUFLEN ? BUFLEN : saRemain;
-                double[] bufl = null;
-                double[] bufr = null;
-                if ( len == BUFLEN ) {
-                    bufl = left;
-                    bufr = right;
-                } else {
-                    bufl = new double[len];
-                    bufr = new double[len];
-                }
-                driver.process( bufl, bufr, len );
-                waveIncoming( bufl, bufr );
+                driver.process( left, right, len );
+                waveIncoming( left, right, len );
                 saRemain -= len;
                 saProcessed += len;
             }
 
-            // modeInfiniteなら、中止要求が来るまで無音を追加
-#if DEBUG
-            PortUtil.println( "AquesToneRenderingRunner#run; modeInfinite=" + modeInfinite );
-#endif
-            if ( modeInfinite ) {
-                for ( int i = 0; i < BUFLEN; i++ ) {
-                    left[i] = 0.0;
-                    right[i] = 0.0;
-                }
-                while ( !m_abort_required ) {
-                    waveIncoming( left, right );
+            _receiver.end();
+        }
+
+        private void waveIncoming( double[] l, double[] r, int length ) {
+            //int length = l.Length;
+            int offset = 0;
+            if ( _trim_remain > 0 ) {
+                if ( length <= _trim_remain ) {
+                    _trim_remain -= length;
+                    return;
+                } else {
+                    _trim_remain = 0;
+                    offset += length -= _trim_remain;
                 }
             }
-            m_rendering = false;
-            if ( directPlay ) {
-                PlaySound.waitForExit();
+            int remain = length - offset;
+            while ( remain > 0 ) {
+                int amount = (remain > _BUFLEN) ? _BUFLEN : remain;
+                for ( int i = 0; i < amount; i++ ) {
+                    _buffer_l[i] = l[i + offset];
+                    _buffer_r[i] = r[i + offset];
+                }
+                _receiver.push( _buffer_l, _buffer_r, amount );
+                remain -= amount;
+                offset += amount;
+                m_total_append += amount;
             }
+        }
+
+        public long getPosition() {
+            return m_total_append;
         }
 
         /// <summary>
@@ -667,18 +679,6 @@ namespace org.kbinani.cadencii {
             pbs0.firstByte = 0xE0;
             pbs0.data = new int[] { lsb, msb };
             return pbs0;
-        }
-
-        public override double getElapsedSeconds() {
-            return 0.0;
-        }
-
-        public override double computeRemainingSeconds() {
-            return 0.0;
-        }
-
-        public override double getProgress() {
-            return 0.0;
         }
     }
 

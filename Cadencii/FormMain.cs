@@ -9873,7 +9873,7 @@ namespace org.kbinani.cadencii {
 
 #if ENABLE_AQUESTONE
             // AquesTone
-            AquesToneDriver drv = VSTiProxy.aquesToneDriver;
+            AquesToneDriver drv = AquesToneDriver.getInstance();
             boolean chk = true;
             if ( drv == null ) {
                 chk = false;
@@ -9952,7 +9952,7 @@ namespace org.kbinani.cadencii {
             menuVisualPluginUiAquesTone.setSelected( visible );
 
 #if ENABLE_AQUESTONE
-            AquesToneDriver drv = VSTiProxy.aquesToneDriver;
+            AquesToneDriver drv = AquesToneDriver.getInstance();
             boolean chk = true;
             if ( drv == null ) {
                 chk = false;
@@ -14184,13 +14184,28 @@ namespace org.kbinani.cadencii {
 #if ENABLE_VOCALOID
             BFileChooser dlg_fout = new BFileChooser( PortUtil.getApplicationStartupPath() );
             if ( dlg_fout.showSaveDialog( this ) == BFileChooser.APPROVE_OPTION ) {
-                String waveout = dlg_fout.getSelectedFile();
-                var vsq = AppManager.getVsqFile();
-                var synth = new VocaloidWaveSender( vsq, 1, 0, vsq.TotalClocks, AppManager.editorConfig );
-                var r = new FileWaveReceiver( new WaveWriter( waveout, 2, 16, VSTiProxy.SAMPLE_RATE ) );
-                synth.setReceiver( r );
-                //synth.addReceiver( MonitorWaveReceiver.getInstance() );
-                synth.begin( (long)(vsq.getSecFromClock( vsq.TotalClocks ) * VSTiProxy.SAMPLE_RATE) );
+                String fout = dlg_fout.getSelectedFile();
+                BFileChooser dlg_fin = new BFileChooser( PortUtil.getDirectoryName( fout ) );
+                if ( dlg_fin.showOpenDialog( this ) == BFileChooser.APPROVE_OPTION ) {
+                    String fin = dlg_fin.getSelectedFile();
+                    var vsq = AppManager.getVsqFile();
+                    var synth = new VocaloidWaveGenerator( vsq, 1, 0, vsq.TotalClocks, AppManager.editorConfig );
+                    var mixer = new Mixer();
+                    synth.setReceiver( mixer );
+                    var wavein = new FileWaveSender( new WaveReader( fin ) );
+                    var waveout = new FileWaveReceiver( new WaveWriter( fout, 2, 16, VSTiProxy.SAMPLE_RATE ) );
+                    Amplifier a1 = new Amplifier();
+                    mixer.addSender( a1 );
+                    a1.setSender( wavein );
+                    var separator = new Separator();
+                    mixer.setReceiver( separator );
+                    Amplifier a2 = new Amplifier();
+                    separator.addReceiver( waveout );
+                    separator.addReceiver( a2 );
+                    var monitor = MonitorWaveReceiver.getInstance();
+                    a2.setReceiver( monitor );
+                    synth.begin( (long)((vsq.getSecFromClock( vsq.TotalClocks ) - vsq.getSecFromClock( AppManager.getCurrentClock() )) * VSTiProxy.SAMPLE_RATE) );
+                }
             }
 #endif
 

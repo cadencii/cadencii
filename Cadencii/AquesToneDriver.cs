@@ -72,6 +72,8 @@ namespace org.kbinani.cadencii {
 
         public static readonly SingerConfig[] SINGERS = new SingerConfig[] { female_f1, auto_f1, male_hk, auto_hk };
 
+        private static AquesToneDriver _instance = null;
+
 #if ENABLE_AQUESTONE
 
         public int haskyParameterIndex = 0;
@@ -83,6 +85,51 @@ namespace org.kbinani.cadencii {
         public int vibFreqParameterIndex = 6;
         public int bendLblParameterIndex = 7;
         public int phontParameterIndex = 8;
+
+        private AquesToneDriver() {
+        }
+
+        public static AquesToneDriver getInstance() {
+            if ( _instance == null ) {
+                reload();
+            }
+            return _instance;
+        }
+
+        public static void reload() {
+            String aques_tone = AppManager.editorConfig.PathAquesTone;
+            if ( _instance == null ) {
+#if FAKE_AQUES_TONE_DLL_AS_VOCALOID1
+                _instance = new VocaloidDriver();
+#else
+                _instance = new AquesToneDriver();
+#endif
+                _instance.loaded = false;
+                _instance.kind = RendererKind.AQUES_TONE;
+            }
+            if ( _instance.loaded ) {
+                _instance.close();
+                _instance.loaded = false;
+            }
+            _instance.path = aques_tone;
+            if ( !aques_tone.Equals( "" ) && PortUtil.isFileExists( aques_tone ) && !AppManager.editorConfig.DoNotUseAquesTone ) {
+                boolean loaded = false;
+                try {
+#if FAKE_AQUES_TONE_DLL_AS_VOCALOID1
+                    loaded = _instance.open( aques_tone, SAMPLE_RATE, SAMPLE_RATE, false );
+#else
+                    loaded = _instance.open( aques_tone, VSTiProxy.SAMPLE_RATE, VSTiProxy.SAMPLE_RATE, true );
+#endif
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "VSTiProxy#realoadAquesTone; ex=" + ex );
+                    loaded = false;
+                }
+                _instance.loaded = loaded;
+            }
+#if DEBUG
+            PortUtil.println( "VSTiProxy#initCor; aquesToneDriver.loaded=" + _instance.loaded );
+#endif
+        }
 
         public override boolean open( string dll_path, int block_size, int sample_rate, boolean use_native_dll_loader ){
 #if DEBUG
