@@ -26,10 +26,10 @@ namespace org.kbinani.cadencii {
 #if JAVA
     public class AquesToneWaveGenerator implements WaveGenerator {
 #else
-    public class AquesToneWaveGenerator : WaveGenerator {
+    public class AquesToneWaveGenerator : WaveUnit, WaveGenerator {
 #endif
         private AquesToneDriver driver = null;
-        private VsqFileEx vsq = null;
+        private VsqFileEx _vsq = null;
 
         private const int _BUFLEN = 1024;
 
@@ -37,13 +37,14 @@ namespace org.kbinani.cadencii {
         private int renderingTrack;
         private int _start_clock;
         private int _end_clock;
-        private EditorConfig _config;
+        //private EditorConfig _config;
         private boolean m_abort_required;
         private long totalSamples;
         private long m_total_append;
         private int _trim_remain;
         private double[] _buffer_l = new double[_BUFLEN];
         private double[] _buffer_r = new double[_BUFLEN];
+        private int _version = 0;
 
         /// <summary>
         /// ドライバのパラメータの変更要求
@@ -62,66 +63,47 @@ namespace org.kbinani.cadencii {
             public Vector<ParameterEvent> param;
         }
 
-        public AquesToneWaveGenerator( VsqFileEx vsq, int track, int start_clock, int end_clock, EditorConfig config ) {
+        public override int getVersion() {
+            return _version;
+        }
+
+        public override void setConfig( string parameter ) {
+            // do nothing
+        }
+
+        /// <summary>
+        /// 初期化メソッド
+        /// 引数parameterは，次の書式であること．
+        /// "\n" + (int)track + "\n" + (int)start_clock + "\n" + (int)end_clock
+        /// </summary>
+        /// <param name="parameter"></param>
+        public void init( VsqFileEx vsq, int track, int start_clock, int end_clock ) {// String parameter ) {
             driver = AquesToneDriver.getInstance();
             renderingTrack = track;
             _start_clock = start_clock;
             _end_clock = end_clock;
-            _config = config;
 
-            this.vsq = (VsqFileEx)vsq.clone();
-            this.vsq.updateTotalClocks();
+            this._vsq = (VsqFileEx)vsq.clone();
+            this._vsq.updateTotalClocks();
 
-            if ( _end_clock < this.vsq.TotalClocks ) {
-                this.vsq.removePart( _end_clock, this.vsq.TotalClocks + 480 );
+            if ( _end_clock < this._vsq.TotalClocks ) {
+                this._vsq.removePart( _end_clock, this._vsq.TotalClocks + 480 );
             }
 
             double end_sec = vsq.getSecFromClock( start_clock );
             double start_sec = vsq.getSecFromClock( end_clock );
 
             double trim_sec = 0.0; // レンダリング結果から省かなければならない秒数。
-            if ( _start_clock < this.vsq.getPreMeasureClocks() ) {
-                trim_sec = this.vsq.getSecFromClock( _start_clock );
+            if ( _start_clock < this._vsq.getPreMeasureClocks() ) {
+                trim_sec = this._vsq.getSecFromClock( _start_clock );
             } else {
-                this.vsq.removePart( vsq.getPreMeasureClocks(), _start_clock );
-                trim_sec = this.vsq.getSecFromClock( this.vsq.getPreMeasureClocks() );
+                this._vsq.removePart( vsq.getPreMeasureClocks(), _start_clock );
+                trim_sec = this._vsq.getSecFromClock( this._vsq.getPreMeasureClocks() );
             }
-            this.vsq.updateTotalClocks();
+            this._vsq.updateTotalClocks();
 
             _trim_remain = (int)(trim_sec * VSTiProxy.SAMPLE_RATE);
         }
-
-        /*public AquesToneWaveSender(
-            AquesToneDriver driver,
-            VsqFileEx vsq,
-            int track,
-            String temp_dir,
-            int sample_rate,
-            int trim_msec,
-            long total_samples,
-            boolean mode_infinite,
-            WaveWriter wave_writer,
-            double wave_read_offset_seconds,
-            Vector<WaveReader> readers,
-            boolean direct_play,
-            boolean reflect_amp_to_wave 
-        )
-#if JAVA
-        {
-#else
-            :
-#endif
-            base( track, reflect_amp_to_wave, wave_writer, wave_read_offset_seconds, readers, direct_play, trim_msec, total_samples, sample_rate )
-#if JAVA
-            ;
-#else
-        {
-#endif
-            this.vsq = vsq;
-            this.driver = driver;
-            tempDir = temp_dir;
-            modeInfinite = mode_infinite;
-        }*/
 
         public void setReceiver( WaveReceiver r ) {
             if ( _receiver != null ) {
@@ -143,7 +125,7 @@ namespace org.kbinani.cadencii {
             m_abort_required = false;
             totalSamples = total_samples;
 
-            VsqTrack track = vsq.Track.get( renderingTrack );
+            VsqTrack track = _vsq.Track.get( renderingTrack );
             int BUFLEN = VSTiProxy.SAMPLE_RATE / 10;
             double[] left = new double[BUFLEN];
             double[] right = new double[BUFLEN];
@@ -171,15 +153,15 @@ namespace org.kbinani.cadencii {
             // レンダリング開始位置での、パラメータの値をセットしておく
             for ( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ) {
                 VsqEvent item = itr.next();
-                long saNoteStart = (long)(vsq.getSecFromClock( item.Clock ) * VSTiProxy.SAMPLE_RATE);
-                long saNoteEnd = (long)(vsq.getSecFromClock( item.Clock + item.ID.getLength() ) * VSTiProxy.SAMPLE_RATE);
+                long saNoteStart = (long)(_vsq.getSecFromClock( item.Clock ) * VSTiProxy.SAMPLE_RATE);
+                long saNoteEnd = (long)(_vsq.getSecFromClock( item.Clock + item.ID.getLength() ) * VSTiProxy.SAMPLE_RATE);
 
-                TreeMap<Integer, MidiEventQueue> list = generateMidiEvent( vsq, renderingTrack, lastClock, item.Clock + item.ID.getLength() );
+                TreeMap<Integer, MidiEventQueue> list = generateMidiEvent( _vsq, renderingTrack, lastClock, item.Clock + item.ID.getLength() );
                 lastClock = item.Clock + item.ID.Length + 1;
                 for ( Iterator<Integer> itr2 = list.keySet().iterator(); itr2.hasNext(); ) {
                     // まず直前までの分を合成
                     Integer clock = itr2.next();
-                    long saStart = (long)(vsq.getSecFromClock( clock ) * VSTiProxy.SAMPLE_RATE);
+                    long saStart = (long)(_vsq.getSecFromClock( clock ) * VSTiProxy.SAMPLE_RATE);
                     saRemain = (int)(saStart - saProcessed);
                     while ( saRemain > 0 ) {
                         if ( m_abort_required ) {

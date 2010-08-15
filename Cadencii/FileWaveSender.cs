@@ -35,9 +35,18 @@ namespace org.kbinani.cadencii {
         private double[] _buffer_r = new double[_BUFLEN];
         private WaveRateConverter _converter = null;
         private long _position = 0;
+        private int _version = 0;
 
         public FileWaveSender ( WaveReader reader ){
             _converter = new WaveRateConverter( reader, VSTiProxy.SAMPLE_RATE );
+        }
+
+        public int getVersion() {
+            return _version;
+        }
+
+        public void init( String parameter ) {
+            // do nothing
         }
 
         public void setSender( WaveSender s ) {

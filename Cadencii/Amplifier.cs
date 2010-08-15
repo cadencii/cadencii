@@ -16,6 +16,7 @@ package org.kbinani.cadencii;
 
 import java.util.*;
 #else
+using System;
 using org.kbinani.java.util;
 
 namespace org.kbinani.cadencii{
@@ -37,6 +38,15 @@ namespace org.kbinani.cadencii{
         private long _position = 0;
         private WaveReceiver _receiver = null;
         private WaveSender _sender = null;
+        private int _version = 0;
+
+        public int getVersion() {
+            return _version;
+        }
+
+        public void init( String parameter ) {
+            // do nothing
+        }
 
         public void setReceiver( WaveReceiver r ) {
             if ( _receiver != null ) {

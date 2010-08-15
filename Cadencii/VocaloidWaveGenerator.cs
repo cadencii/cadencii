@@ -26,7 +26,7 @@ namespace org.kbinani.cadencii{
         void waveIncomingImpl( double[] l, double[] r );
     }
 
-    public class VocaloidWaveGenerator : WaveGenerator, IWaveIncoming {
+    public class VocaloidWaveGenerator : WaveUnit, WaveGenerator, IWaveIncoming {
         private const int _BUFLEN = 1024;
         
         private long _position = 0;
@@ -40,16 +40,28 @@ namespace org.kbinani.cadencii{
         private double[] _buffer_l = new double[_BUFLEN];
         private double[] _buffer_r = new double[_BUFLEN];
         private WaveReceiver _receiver = null;
+        private int _version = 0;
 
         // RenderingRunner
         private int _trim_remain = 0;
 
-        public VocaloidWaveGenerator( VsqFileEx vsq, int track, int start_clock, int end_clock, EditorConfig config ) {
+        public override void setConfig( string parameter ) {
+            // do nothing
+        }
+
+        /// <summary>
+        /// 初期化メソッド．
+        /// </summary>
+        /// <param name="parameter"></param>
+        public void init( VsqFileEx vsq, int track, int start_clock, int end_clock ) {
             _vsq = vsq;
             _track = track;
             _start_clock = start_clock;
             _end_clock = end_clock;
-            _presend_milli_sec = config.PreSendTime;
+        }
+
+        public override int getVersion() {
+            return _version;
         }
 
         public void setReceiver( WaveReceiver r ) {

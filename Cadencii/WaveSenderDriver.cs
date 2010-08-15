@@ -21,6 +21,10 @@ using org.kbinani.java.util;
 namespace org.kbinani.cadencii {
 #endif
 
+    /// <summary>
+    /// WaveSenderをWaveGeneratorとして使うためのドライバー．
+    /// WaveSenderは受動的波形生成器なので，自分では波形を作らない．
+    /// </summary>
 #if JAVA
     public class WaveSenderDriver implements WaveGenerator {
 #else
@@ -33,7 +37,18 @@ namespace org.kbinani.cadencii {
         private long _position = 0;
         private WaveReceiver _receiver = null;
 
-        public WaveSenderDriver( WaveSender wave_sender ) {
+        /// <summary>
+        /// 初期化メソッド
+        /// </summary>
+        /// <param name="vsq"></param>
+        /// <param name="track"></param>
+        /// <param name="start_clock"></param>
+        /// <param name="end_clock"></param>
+        public void init( VsqFileEx vsq, int track, int start_clock, int end_clock ) {
+            // do nothing (!!)
+        }
+
+        public void setSender( WaveSender wave_sender ) {
             _wave_sender = wave_sender;
         }
 

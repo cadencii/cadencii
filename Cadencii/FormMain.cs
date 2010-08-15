@@ -14182,29 +14182,29 @@ namespace org.kbinani.cadencii {
             PortUtil.println( "FormMain#menuHelpDebug_Click" );
 
 #if ENABLE_VOCALOID
-            BFileChooser dlg_fout = new BFileChooser( PortUtil.getApplicationStartupPath() );
-            if ( dlg_fout.showSaveDialog( this ) == BFileChooser.APPROVE_OPTION ) {
-                String fout = dlg_fout.getSelectedFile();
-                BFileChooser dlg_fin = new BFileChooser( PortUtil.getDirectoryName( fout ) );
-                if ( dlg_fin.showOpenDialog( this ) == BFileChooser.APPROVE_OPTION ) {
-                    String fin = dlg_fin.getSelectedFile();
-                    var vsq = AppManager.getVsqFile();
-                    var synth = new VocaloidWaveGenerator( vsq, 1, 0, vsq.TotalClocks, AppManager.editorConfig );
-                    var mixer = new Mixer();
-                    synth.setReceiver( mixer );
-                    var wavein = new FileWaveSender( new WaveReader( fin ) );
-                    var waveout = new FileWaveReceiver( new WaveWriter( fout, 2, 16, VSTiProxy.SAMPLE_RATE ) );
-                    Amplifier a1 = new Amplifier();
-                    mixer.addSender( a1 );
-                    a1.setSender( wavein );
-                    var separator = new Separator();
-                    mixer.setReceiver( separator );
-                    Amplifier a2 = new Amplifier();
-                    separator.addReceiver( waveout );
-                    separator.addReceiver( a2 );
-                    var monitor = MonitorWaveReceiver.getInstance();
-                    a2.setReceiver( monitor );
-                    synth.begin( (long)((vsq.getSecFromClock( vsq.TotalClocks ) - vsq.getSecFromClock( AppManager.getCurrentClock() )) * VSTiProxy.SAMPLE_RATE) );
+            BFileChooser dlg_fin = new BFileChooser( "" );
+            if ( dlg_fin.showOpenDialog( this ) == BFileChooser.APPROVE_OPTION ) {
+                String fin = dlg_fin.getSelectedFile();
+                BFileChooser dlg_fout = new BFileChooser( PortUtil.getDirectoryName( fin ) );
+                if ( dlg_fout.showSaveDialog( this ) == BFileChooser.APPROVE_OPTION ) {
+                    String fout = dlg_fout.getSelectedFile();
+                    WaveReader wr = new WaveReader( fin );
+                    FileWaveSender fws = new FileWaveSender( wr );
+                    WaveSenderDriver wsd = new WaveSenderDriver();
+                    wsd.setSender( fws );
+
+                    Mixer m = new Mixer();
+                    wsd.setReceiver( m );
+
+                    Separator s = new Separator();
+                    m.setReceiver( s );
+
+                    FileWaveReceiver fwr = new FileWaveReceiver();
+                    fwr.init( "\n" + fout + "\n" + 2 + "\n" + 16 + "\n" + 44100 );
+                    s.addReceiver( fwr );
+                    s.addReceiver( MonitorWaveReceiver.getInstance() );
+
+                    wsd.begin( wr.getTotalSamples() );
                 }
             }
 #endif

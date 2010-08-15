@@ -16,7 +16,7 @@ package org.kbinani.cadencii;
 
 import java.util.*;
 #else
-
+using System;
 using org.kbinani.java.util;
 
 namespace org.kbinani.cadencii {
@@ -36,6 +36,15 @@ namespace org.kbinani.cadencii {
         private double[] _buffer_r = new double[_BUFLEN];
         private double[] _buffer2_l = new double[_BUFLEN];
         private double[] _buffer2_r = new double[_BUFLEN];
+        private int _version = 0;
+
+        public int getVersion() {
+            return _version;
+        }
+
+        public void init( String parameter ) {
+            // do nothing
+        }
 
         public void push( double[] l, double[] r, int length ) {
             int remain = length;

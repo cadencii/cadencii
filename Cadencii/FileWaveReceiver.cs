@@ -17,6 +17,7 @@ package org.kbinani.cadencii;
 import java.util.*;
 import org.kbinani.media.*;
 #else
+using System;
 using org.kbinani.java.util;
 using org.kbinani.media;
 
@@ -35,9 +36,33 @@ namespace org.kbinani.cadencii {
         private double[] _buffer2_l = new double[_BUFLEN];
         private double[] _buffer2_r = new double[_BUFLEN];
         private WaveReceiver _receiver = null;
+        private int _version = 0;
 
-        public FileWaveReceiver( WaveWriter writer ) {
-            _adapter = new WaveRateConvertAdapter( writer, VSTiProxy.SAMPLE_RATE );
+        /// <summary>
+        /// 初期化メソッド．
+        /// (デフォルトでは改行文字区切りで)String path, int channel, int bit_per_sample, int sample_rate
+        /// </summary>
+        /// <param name="parameter"></param>
+        public void init( String parameter ) {
+            if( parameter == null ){
+                return;
+            }
+            if ( parameter.Length < 2 ){
+                return;
+            }
+            char sep = parameter[0];
+            parameter = parameter.Substring( 1 );
+            String[] spl = PortUtil.splitString( parameter, sep );
+            String path = spl[0];
+            int channel = PortUtil.parseInt( spl[1] );
+            int bit_per_sample = PortUtil.parseInt( spl[2] );
+            int sample_rate = PortUtil.parseInt( spl[3] );
+            WaveWriter ww = new WaveWriter( path, channel, bit_per_sample, sample_rate );
+            _adapter = new WaveRateConvertAdapter( ww, VSTiProxy.SAMPLE_RATE );
+        }
+
+        public int getVersion() {
+            return _version;
         }
 
         public void end() {

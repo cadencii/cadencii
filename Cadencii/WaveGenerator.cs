@@ -14,12 +14,15 @@
 #if JAVA
 package org.kbinani.cadencii;
 #else
+using System;
+
 namespace org.kbinani.cadencii {
 #endif
 
     public interface WaveGenerator {
         void begin( long samples );
         void setReceiver( WaveReceiver r );
+        void init( VsqFileEx vsq, int track, int start_clock, int end_clock );
     }
 
 #if !JAVA

@@ -1193,6 +1193,20 @@ namespace org.kbinani {
         #endregion
 
         #region String Utility
+        /// <summary>
+        /// 文字列の指定した位置の文字を取得します
+        /// </summary>
+        /// <param name="s">文字列</param>
+        /// <param name="index">位置．先頭が0</param>
+        /// <returns></returns>
+        public static char charAt( String s, int index ) {
+#if JAVA
+            return s.charAt( index );
+#else
+            return s[index];
+#endif
+        }
+
 #if JAVA
         public static String[] splitString( String s, char... separator ) {
 #else

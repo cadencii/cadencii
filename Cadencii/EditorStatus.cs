@@ -40,6 +40,6 @@ namespace org.kbinani.cadencii {
         }
     }
 
-#if!JAVA
+#if !JAVA
 }
 #endif

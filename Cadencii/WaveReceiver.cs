@@ -14,6 +14,8 @@
 #if JAVA
 package org.kbinani.cadencii;
 #else
+using System;
+
 namespace org.kbinani.cadencii {
 #endif
 

@@ -17,6 +17,7 @@ package org.kbinani.cadencii;
 import java.util.*;
 import org.kbinani.media.*;
 #else
+using System;
 using org.kbinani.java.util;
 using org.kbinani.media;
 
@@ -42,6 +43,7 @@ namespace org.kbinani.cadencii {
         private double[] _buffer2_l = new double[_BUFLEN];
         private double[] _buffer2_r = new double[_BUFLEN];
         private WaveReceiver _receiver = null;
+        private int _version = 0;
 
         private MonitorWaveReceiver() {
         }
@@ -53,6 +55,14 @@ namespace org.kbinani.cadencii {
             _singleton.end();
             _singleton._first_call = true;
             return _singleton;
+        }
+
+        public void init( String parameter ) {
+            // do nothing
+        }
+
+        public int getVersion() {
+            return _version;
         }
 
         public void setReceiver( WaveReceiver r ) {
