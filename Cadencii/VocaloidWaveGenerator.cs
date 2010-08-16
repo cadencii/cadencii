@@ -45,14 +45,17 @@ namespace org.kbinani.cadencii{
         // RenderingRunner
         private int _trim_remain = 0;
 
-        public override void setConfig( string parameter ) {
+        public override void setConfig( String parameter ) {
             // do nothing
         }
 
         /// <summary>
         /// 初期化メソッド．
         /// </summary>
-        /// <param name="parameter"></param>
+        /// <param name="vsq"></param>
+        /// <param name="track"></param>
+        /// <param name="start_clock"></param>
+        /// <param name="end_clock"></param>
         public void init( VsqFileEx vsq, int track, int start_clock, int end_clock ) {
             _vsq = vsq;
             _track = track;

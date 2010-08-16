@@ -73,8 +73,6 @@ namespace org.kbinani.cadencii {
 
         /// <summary>
         /// 初期化メソッド
-        /// 引数parameterは，次の書式であること．
-        /// "\n" + (int)track + "\n" + (int)start_clock + "\n" + (int)end_clock
         /// </summary>
         /// <param name="parameter"></param>
         public void init( VsqFileEx vsq, int track, int start_clock, int end_clock ) {// String parameter ) {
