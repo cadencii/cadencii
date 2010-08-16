@@ -26,9 +26,9 @@ namespace org.kbinani.cadencii {
     /// WaveSenderは受動的波形生成器なので，自分では波形を作らない．
     /// </summary>
 #if JAVA
-    public class WaveSenderDriver implements WaveGenerator {
+    public class WaveSenderDriver extends WaveUnit implements WaveGenerator {
 #else
-    public class WaveSenderDriver : WaveGenerator {
+    public class WaveSenderDriver : WaveUnit, WaveGenerator {
 #endif
         private const int _BUFLEN = 1024;
         private WaveSender _wave_sender = null;
@@ -36,6 +36,15 @@ namespace org.kbinani.cadencii {
         private double[] _buffer_r = new double[_BUFLEN];
         private long _position = 0;
         private WaveReceiver _receiver = null;
+        private int _version = 0;
+
+        public override int getVersion() {
+            return _version;
+        }
+
+        public override void setConfig( string parameters ) {
+            // do nothing
+        }
 
         /// <summary>
         /// 初期化メソッド

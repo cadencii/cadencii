@@ -26,9 +26,9 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public class FileWaveSender implements WaveSender {
+    public class FileWaveSender extends WaveUnit implements WaveSender {
 #else
-    public class FileWaveSender : WaveSender {
+    public class FileWaveSender : WaveUnit, WaveSender {
 #endif
         private const int _BUFLEN = 1024;
         private double[] _buffer_l = new double[_BUFLEN];
@@ -41,11 +41,11 @@ namespace org.kbinani.cadencii {
             _converter = new WaveRateConverter( reader, VSTiProxy.SAMPLE_RATE );
         }
 
-        public int getVersion() {
+        public override int getVersion() {
             return _version;
         }
 
-        public void init( String parameter ) {
+        public override void setConfig( String parameter ) {
             // do nothing
         }
 

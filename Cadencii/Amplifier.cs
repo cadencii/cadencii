@@ -26,9 +26,9 @@ namespace org.kbinani.cadencii{
     /// 増幅器＆ミキサーの実装
     /// </summary>
 #if JAVA
-    public class Amplifier implements WaveSender, WaveReceiver {
+    public class Amplifier extends WaveUnit implements WaveSender, WaveReceiver {
 #else
-    public class Amplifier : WaveSender, WaveReceiver {
+    public class Amplifier : WaveUnit, WaveSender, WaveReceiver {
 #endif
         private const int _BUFLEN = 1024;
         private double[] _buffer_l = new double[_BUFLEN];
@@ -40,11 +40,11 @@ namespace org.kbinani.cadencii{
         private WaveSender _sender = null;
         private int _version = 0;
 
-        public int getVersion() {
+        public override int getVersion() {
             return _version;
         }
 
-        public void init( String parameter ) {
+        public override void setConfig( String parameter ) {
             // do nothing
         }
 

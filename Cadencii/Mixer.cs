@@ -23,9 +23,9 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public class Mixer implements WaveSender, WaveReceiver {
+    public class Mixer extends WaveUnit implements WaveSender, WaveReceiver {
 #else
-    public class Mixer : WaveSender, WaveReceiver {
+    public class Mixer : WaveUnit, WaveSender, WaveReceiver {
 #endif
         private const int _BUFLEN = 1024;
 
@@ -38,11 +38,11 @@ namespace org.kbinani.cadencii {
         private double[] _buffer2_r = new double[_BUFLEN];
         private int _version = 0;
 
-        public int getVersion() {
+        public override int getVersion() {
             return _version;
         }
 
-        public void init( String parameter ) {
+        public override void setConfig( String parameter ) {
             // do nothing
         }
 

@@ -29,9 +29,9 @@ namespace org.kbinani.cadencii {
     /// スピーカへの出力を行う波形受信器
     /// </summary>
 #if JAVA
-    public class MonitorWaveReceiver implements WaveReceiver {
+    public class MonitorWaveReceiver extends WaveUnit implements WaveReceiver {
 #else
-    public class MonitorWaveReceiver : WaveReceiver {
+    public class MonitorWaveReceiver : WaveUnit, WaveReceiver {
 #endif
         private const int _BUFLEN = 1024;
 
@@ -57,11 +57,11 @@ namespace org.kbinani.cadencii {
             return _singleton;
         }
 
-        public void init( String parameter ) {
+        public override void setConfig( String parameter ) {
             // do nothing
         }
 
-        public int getVersion() {
+        public override int getVersion() {
             return _version;
         }
 
