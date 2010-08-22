@@ -3034,6 +3034,8 @@ namespace org.kbinani.vsq {
             add.append( NRPN.CVM_NM_NOTE_DURATION, duration0, duration1, true ); // Note duration
             add.append( NRPN.CVM_NM_NOTE_LOCATION, note_loc, true ); // Note Location
 
+            // CVM_NMの直後にビブラートのCCを入れるかどうか。ビブラート長さが100%のときのみtrue
+            bool add_vib_cc_immediately = false;
             if ( ve.ID.VibratoHandle != null ) {
                 add.append( NRPN.CVM_NM_INDEX_OF_VIBRATO_DB, (byte)0x00, (byte)0x00, true );
                 String icon_id = ve.ID.VibratoHandle.IconID;
@@ -3045,6 +3047,8 @@ namespace org.kbinani.vsq {
                 byte bVibratoDelay = (byte)((byte)0x7f - bVibratoDuration);
                 add.append( NRPN.CVM_NM_VIBRATO_CONFIG, (byte)vibrato_type, bVibratoDuration, true );
                 add.append( NRPN.CVM_NM_VIBRATO_DELAY, bVibratoDelay, true );
+
+                add_vib_cc_immediately = (bVibratoDelay == 0);
             }
 
             String[] spl = ve.ID.LyricHandle.L0.getPhoneticSymbolList();
@@ -3170,6 +3174,13 @@ namespace org.kbinani.vsq {
                 }
             }
             add.append( NRPN.CVM_NM_NOTE_MESSAGE_CONTINUATION, (byte)0x7f, true );// (byte)0x7f(Note message continuation)
+
+            // ビブラートのコントロールチェンジを追加
+            if ( ve.ID.VibratoHandle != null && add_vib_cc_immediately ) {
+                add.append( NRPN.CC_VD_VIBRATO_DEPTH, (byte)ve.ID.VibratoHandle.getStartDepth(), false );
+                add.append( NRPN.CC_VR_VIBRATO_RATE, (byte)ve.ID.VibratoHandle.getStartRate(), false );
+            }
+            
             return add;
         }
 
@@ -3395,15 +3406,20 @@ namespace org.kbinani.vsq {
             Vector<VsqNrpn> ret = new Vector<VsqNrpn>();
             if ( ve.ID.VibratoHandle != null ) {
                 int vclock = ve.Clock + ve.ID.VibratoDelay;
-                ValuePair<Byte, Byte> del = getMsbAndLsb( msPreSend );
-                VsqNrpn add2 = new VsqNrpn( vclock - vsq.getPresendClockAt( vclock, msPreSend ),
-                                            NRPN.CC_VD_VERSION_AND_DEVICE,
-                                            (byte)0x00,
-                                            (byte)0x00 );
-                add2.append( NRPN.CC_VD_DELAY, del.getKey(), del.getValue(), true );
-                add2.append( NRPN.CC_VD_VIBRATO_DEPTH, (byte)ve.ID.VibratoHandle.getStartDepth(), true );
-                add2.append( NRPN.CC_VR_VIBRATO_RATE, (byte)ve.ID.VibratoHandle.getStartRate() );
-                ret.add( add2 );
+                if ( ve.ID.VibratoDelay > 0 ) {
+                    // ビブラート長さが100%未満のときのみ、Version&Device,Delay,DepthとRateを追加する。
+                    // 100%のときの処理は、generateNoteNRPNで行われているので。(めんどくさいお・・・)
+                    ValuePair<Byte, Byte> del = getMsbAndLsb( msPreSend );
+                    VsqNrpn add2 = new VsqNrpn( vclock - vsq.getPresendClockAt( vclock, msPreSend ),
+                                                NRPN.CC_VD_VERSION_AND_DEVICE,
+                                                (byte)0x00,
+                                                (byte)0x00 );
+                    add2.append( NRPN.CC_VD_DELAY, del.getKey(), del.getValue(), true );
+                    add2.append( NRPN.CC_VD_VIBRATO_DEPTH, (byte)ve.ID.VibratoHandle.getStartDepth(), true );
+                    add2.append( NRPN.CC_VR_VIBRATO_RATE, (byte)ve.ID.VibratoHandle.getStartRate() );
+                    ret.add( add2 );
+                }
+
                 int vlength = ve.ID.getLength() - ve.ID.VibratoDelay;
                 VibratoBPList rateBP = ve.ID.VibratoHandle.getRateBP();
                 int count = rateBP.getCount();
