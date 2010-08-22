@@ -369,7 +369,8 @@ namespace org.kbinani.vsq {
         public String toString( boolean add_quatation_mark ) {
             String quot = (add_quatation_mark ? "\"" : "");
             String result;
-            result = quot + this.Phrase + quot + ",";
+            String phrase = (this.Phrase == null) ? "" : this.Phrase.Replace( "\"", "\"\"" );
+            result = quot + phrase + quot + ",";
             String[] symbol = getPhoneticSymbolList();
             String strSymbol = getPhoneticSymbol();
             if( !add_quatation_mark ){
