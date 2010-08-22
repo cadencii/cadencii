@@ -38,7 +38,7 @@ namespace org.kbinani.vsq {
         /// </summary>
         public String Phrase;
         private String[] m_phonetic_symbol;
-        public float UnknownFloat;
+        public float UnknownFloat = 1.0f;
         private int[] m_consonant_adjustment;
         public boolean PhoneticSymbolProtected;
 
@@ -218,7 +218,7 @@ namespace org.kbinani.vsq {
         public Lyric( String phrase, String phonetic_symbol ) {
             Phrase = phrase;
             setPhoneticSymbol( phonetic_symbol );
-            UnknownFloat = 0.000000f;
+            UnknownFloat = 1.0f;
         }
 
         public Lyric() {
@@ -281,7 +281,7 @@ namespace org.kbinani.vsq {
             if ( len == 0 ) {
                 Phrase = "a";
                 setPhoneticSymbol( "a" );
-                UnknownFloat = 0.0f;
+                UnknownFloat = 1.0f;
                 PhoneticSymbolProtected = false;
                 setConsonantAdjustment( "0" );
                 return;
