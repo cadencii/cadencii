@@ -1629,6 +1629,7 @@ namespace org.kbinani.cadencii {
             System.Windows.Forms.ListViewGroup listViewGroup28 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup29 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup30 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup31 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             this.tabPreference = new System.Windows.Forms.TabControl();
             this.tabSequence = new System.Windows.Forms.TabPage();
             this.bLabel1 = new org.kbinani.windows.forms.BLabel();
@@ -2895,7 +2896,7 @@ namespace org.kbinani.cadencii {
             // lblMilliSecond
             // 
             this.lblMilliSecond.AutoSize = true;
-            this.lblMilliSecond.Location = new System.Drawing.Point( 302, 23 );
+            this.lblMilliSecond.Location = new System.Drawing.Point( 302, 50 );
             this.lblMilliSecond.Name = "lblMilliSecond";
             this.lblMilliSecond.Size = new System.Drawing.Size( 66, 12 );
             this.lblMilliSecond.TabIndex = 10;
@@ -3286,6 +3287,8 @@ namespace org.kbinani.cadencii {
             listViewGroup29.Name = null;
             listViewGroup30.Header = "ListViewGroup";
             listViewGroup30.Name = null;
+            listViewGroup31.Header = "ListViewGroup";
+            listViewGroup31.Name = null;
             this.listSingers.Groups.AddRange( new System.Windows.Forms.ListViewGroup[] {
             listViewGroup1,
             listViewGroup2,
@@ -3316,7 +3319,8 @@ namespace org.kbinani.cadencii {
             listViewGroup27,
             listViewGroup28,
             listViewGroup29,
-            listViewGroup30} );
+            listViewGroup30,
+            listViewGroup31} );
             this.listSingers.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.listSingers.Location = new System.Drawing.Point( 17, 23 );
             this.listSingers.MultiSelect = false;

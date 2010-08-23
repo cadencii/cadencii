@@ -337,9 +337,9 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public float[] m_performance = new float[_NUM_PCOUNTER];
         /// <summary>
-        /// 最後にpictureBox1_Paintが実行された時刻(秒単位)
+        /// 最後にメイン画面が更新された時刻(秒単位)
         /// </summary>
-        public double m_last_ignitted;
+        private double _last_screen_refreshed_sec;
         /// <summary>
         /// パフォーマンスカウンタから算出される画面の更新速度
         /// </summary>
@@ -3384,7 +3384,13 @@ namespace org.kbinani.cadencii {
             //trackSelector.repaint();
 #else
             if ( !bgWorkScreen.IsBusy ) {
-                bgWorkScreen.RunWorkerAsync();
+                double now = PortUtil.getCurrentTime();
+                double dt = now - _last_screen_refreshed_sec;
+                double mindt = 1.0 / AppManager.editorConfig.MaximumFrameRate;
+                if ( dt > mindt ) {
+                    _last_screen_refreshed_sec = now;
+                    bgWorkScreen.RunWorkerAsync();
+                }
             }
 #endif
         }
@@ -7265,7 +7271,7 @@ namespace org.kbinani.cadencii {
                 }
             }
 
-            m_last_ignitted = PortUtil.getCurrentTime();
+            double now = PortUtil.getCurrentTime();
             if ( AppManager.getEditMode() == EditMode.REALTIME ) {
                 menuJobRealTime.setText( _( "Stop Realtime Input" ) );
                 AppManager.rendererAvailable = false;
@@ -7278,14 +7284,14 @@ namespace org.kbinani.cadencii {
                 if ( m_midi_in != null ) {
                     m_midi_in.Start();
                 }
-                MidiPlayer.SetSpeed( AppManager.editorConfig.getRealtimeInputSpeed(), m_last_ignitted );
-                MidiPlayer.Start( vsq, clock, m_last_ignitted );
+                MidiPlayer.SetSpeed( AppManager.editorConfig.getRealtimeInputSpeed(), now );
+                MidiPlayer.Start( vsq, clock, now );
 #endif
             } else {
                 AppManager.rendererAvailable = VSTiProxy.isRendererAvailable( renderer );
             }
             AppManager.firstBufferWritten = true;
-            AppManager.previewStartedTime = m_last_ignitted;
+            AppManager.previewStartedTime = now;
 #if DEBUG
             AppManager.debugWriteLine( "    vsq.TotalClocks=" + vsq.TotalClocks );
             AppManager.debugWriteLine( "    total seconds=" + vsq.getSecFromClock( (int)vsq.TotalClocks ) );
