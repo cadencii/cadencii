@@ -262,6 +262,11 @@ namespace org.kbinani.vsq {
                         if ( index == 0 ) {
                             L0 = lyric;
                         } else {
+                            if ( Trailing.size() < index ) {
+                                for ( int i = Trailing.size(); i < index; i++ ) {
+                                    Trailing.add( new Lyric( "a", "a" ) );
+                                }
+                            }
                             Trailing.set( index - 1, lyric );
                         }
                     }
@@ -341,7 +346,7 @@ namespace org.kbinani.vsq {
                 result += "\n" + "L0=" + L0.toString( addQuotationMark );
                 int c = Trailing.size();
                 for( int i = 0; i < c; i++ ){
-                    result += "\n" + "L" + (i + 1) + Trailing.get( i ).toString( addQuotationMark );
+                    result += "\n" + "L" + (i + 1) + "=" + Trailing.get( i ).toString( addQuotationMark );
                 }
             } else if ( m_type == VsqHandleType.Vibrato ) {
                 result += "\n" + "IconID=" + IconID + "\n";
