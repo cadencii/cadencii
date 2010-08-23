@@ -2293,6 +2293,10 @@ namespace org.kbinani.cadencii {
                     if ( db2 != null ) {
                         utauVoiceDB.put( sc.VOICEIDSTR, db2 );
                     }
+                } else {
+#if DEBUG
+                    PortUtil.println( "ApManager#reloadUtauVoiceDB; directory not found; sc.VOICDIDSTR=" + sc.VOICEIDSTR );
+#endif
                 }
             }
         }

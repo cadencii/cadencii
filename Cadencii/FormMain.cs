@@ -5722,97 +5722,106 @@ namespace org.kbinani.cadencii {
                         // 音符イベント
                         for ( Iterator<VsqEvent> itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
                             VsqEvent ev = itr.next();
-                            int timesig = ev.Clock;
-                            if ( ev.ID.LyricHandle != null ) {
-                                int length = ev.ID.getLength();
-                                int note = ev.ID.Note;
-                                int x = (int)(timesig * scalex + xoffset);
-                                int y = -note * track_height + yoffset;
-                                int lyric_width = (int)(length * scalex);
-                                String lyric_jp = ev.ID.LyricHandle.L0.Phrase;
-                                String lyric_en = ev.ID.LyricHandle.L0.getPhoneticSymbol();
-                                String title = Utility.trimString( lyric_jp + " [" + lyric_en + "]", SMALL_FONT, lyric_width );
-                                int accent = ev.ID.DEMaccent;
-                                int px_vibrato_start = x + lyric_width;
-                                int px_vibrato_end = x;
-                                int px_vibrato_delay = lyric_width * 2;
-                                int vib_delay = length;
-                                if ( ev.ID.VibratoHandle != null ) {
-                                    vib_delay = ev.ID.VibratoDelay;
-                                    double rate = (double)vib_delay / (double)length;
-                                    px_vibrato_delay = _PX_ACCENT_HEADER + (int)((lyric_width - _PX_ACCENT_HEADER) * rate);
-                                }
-                                VibratoBPList rate_bp = null;
-                                VibratoBPList depth_bp = null;
-                                int rate_start = 0;
-                                int depth_start = 0;
-                                if ( ev.ID.VibratoHandle != null ) {
-                                    rate_bp = ev.ID.VibratoHandle.getRateBP();
-                                    depth_bp = ev.ID.VibratoHandle.getDepthBP();
-                                    rate_start = ev.ID.VibratoHandle.getStartRate();
-                                    depth_start = ev.ID.VibratoHandle.getStartDepth();
-                                }
-
-                                // analyzed/のSTFが引き当てられるかどうか
-                                boolean is_valid_for_straight = false;
-                                // UTAUのWAVが引き当てられるかどうか
-                                boolean is_valid_for_utau = false;
-                                VsqEvent singer_at_clock = vsq_track.getSingerEventAt( timesig );
-                                int program = singer_at_clock.ID.IconHandle.Program;
-                                if ( 0 <= program && program < AppManager.editorConfig.UtauSingers.size() ) {
-                                    SingerConfig sc = AppManager.editorConfig.UtauSingers.get( program );
-                                    // 通常のUTAU音源
-                                    if ( AppManager.utauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
-                                        UtauVoiceDB db = AppManager.utauVoiceDB.get( sc.VOICEIDSTR );
-                                        OtoArgs oa = db.attachFileNameFromLyric( lyric_jp );
-                                        if ( oa.fileName == null ||
-                                            (oa.fileName != null && oa.fileName.Equals( "" )) ) {
-                                            is_valid_for_utau = false;
-                                        } else {
-                                            is_valid_for_utau = PortUtil.isFileExists( PortUtil.combinePath( sc.VOICEIDSTR, oa.fileName ) );
-                                        }
-                                    }
-                                    // STRAIGHT用の解析音源
-                                    String analyzed = PortUtil.combinePath( sc.VOICEIDSTR, "analyzed" );
-#if DEBUG
-                                    PortUtil.println( "FormMain#updateDrawObjectList; analyzed=" + analyzed + "; AppManager.utauVoiceDB.containsKey(analyzed)=" + AppManager.utauVoiceDB.containsKey( analyzed ) );
-#endif
-                                    if ( AppManager.utauVoiceDB.containsKey( analyzed ) ) {
-                                        UtauVoiceDB db = AppManager.utauVoiceDB.get( analyzed );
-                                        OtoArgs oa = db.attachFileNameFromLyric( lyric_jp );
-#if DEBUG
-                                        PortUtil.println( "FormMain#updateDrawObjectList; oa.fileName=" + oa.fileName );
-#endif
-                                        if ( oa.fileName == null ||
-                                             (oa.fileName != null && oa.fileName.Equals( "" )) ) {
-                                            is_valid_for_straight = false;
-                                        } else {
-                                            is_valid_for_straight = PortUtil.isFileExists( PortUtil.combinePath( analyzed, oa.fileName ) );
-                                        }
-                                    }
-                                }
-
-                                //追加
-                                tmp.add( new DrawObject( DrawObjectType.Note,
-                                                         new Rectangle( x, y, lyric_width, track_height ),
-                                                         title,
-                                                         accent,
-                                                         ev.InternalID,
-                                                         px_vibrato_delay,
-                                                         false,
-                                                         ev.ID.LyricHandle.L0.PhoneticSymbolProtected,
-                                                         rate_bp,
-                                                         depth_bp,
-                                                         rate_start,
-                                                         depth_start,
-                                                         ev.ID.Note,
-                                                         ev.UstEvent.Envelope,
-                                                         length,
-                                                         timesig,
-                                                         is_valid_for_utau,
-                                                         is_valid_for_straight,
-                                                         vib_delay ) );
+                            if ( ev.ID.LyricHandle == null ) {
+                                continue;
                             }
+                            int timesig = ev.Clock;
+                            int length = ev.ID.getLength();
+                            int note = ev.ID.Note;
+                            int x = (int)(timesig * scalex + xoffset);
+                            int y = -note * track_height + yoffset;
+                            int lyric_width = (int)(length * scalex);
+                            String lyric_jp = ev.ID.LyricHandle.L0.Phrase;
+                            String lyric_en = ev.ID.LyricHandle.L0.getPhoneticSymbol();
+                            String title = Utility.trimString( lyric_jp + " [" + lyric_en + "]", SMALL_FONT, lyric_width );
+                            int accent = ev.ID.DEMaccent;
+                            int px_vibrato_start = x + lyric_width;
+                            int px_vibrato_end = x;
+                            int px_vibrato_delay = lyric_width * 2;
+                            int vib_delay = length;
+                            if ( ev.ID.VibratoHandle != null ) {
+                                vib_delay = ev.ID.VibratoDelay;
+                                double rate = (double)vib_delay / (double)length;
+                                px_vibrato_delay = _PX_ACCENT_HEADER + (int)((lyric_width - _PX_ACCENT_HEADER) * rate);
+                            }
+                            VibratoBPList rate_bp = null;
+                            VibratoBPList depth_bp = null;
+                            int rate_start = 0;
+                            int depth_start = 0;
+                            if ( ev.ID.VibratoHandle != null ) {
+                                rate_bp = ev.ID.VibratoHandle.getRateBP();
+                                depth_bp = ev.ID.VibratoHandle.getDepthBP();
+                                rate_start = ev.ID.VibratoHandle.getStartRate();
+                                depth_start = ev.ID.VibratoHandle.getStartDepth();
+                            }
+
+                            // analyzed/のSTFが引き当てられるかどうか
+                            boolean is_valid_for_straight = false;
+                            // UTAUのWAVが引き当てられるかどうか
+                            boolean is_valid_for_utau = false;
+                            VsqEvent singer_at_clock = vsq_track.getSingerEventAt( timesig );
+                            int program = singer_at_clock.ID.IconHandle.Program;
+                            if ( 0 <= program && program < AppManager.editorConfig.UtauSingers.size() ) {
+                                SingerConfig sc = AppManager.editorConfig.UtauSingers.get( program );
+                                // 通常のUTAU音源
+                                if ( AppManager.utauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
+                                    UtauVoiceDB db = AppManager.utauVoiceDB.get( sc.VOICEIDSTR );
+                                    OtoArgs oa = db.attachFileNameFromLyric( lyric_jp );
+                                    if ( oa.fileName == null ||
+                                        (oa.fileName != null && oa.fileName.Equals( "" )) ) {
+                                        is_valid_for_utau = false;
+                                    } else {
+                                        is_valid_for_utau = PortUtil.isFileExists( PortUtil.combinePath( sc.VOICEIDSTR, oa.fileName ) );
+                                    }
+                                }
+                                // STRAIGHT用の解析音源
+                                String analyzed = PortUtil.combinePath( sc.VOICEIDSTR, "analyzed" );
+#if DEBUG
+                                PortUtil.println( "FormMain#updateDrawObjectList; analyzed=" + analyzed + "; AppManager.utauVoiceDB.containsKey(analyzed)=" + AppManager.utauVoiceDB.containsKey( analyzed ) );
+#endif
+                                if ( AppManager.utauVoiceDB.containsKey( analyzed ) ) {
+                                    UtauVoiceDB db = AppManager.utauVoiceDB.get( analyzed );
+                                    OtoArgs oa = db.attachFileNameFromLyric( lyric_jp );
+#if DEBUG
+                                    PortUtil.println( "FormMain#updateDrawObjectList; oa.fileName=" + oa.fileName );
+#endif
+                                    if ( oa.fileName == null ||
+                                         (oa.fileName != null && oa.fileName.Equals( "" )) ) {
+                                        is_valid_for_straight = false;
+                                    } else {
+                                        is_valid_for_straight = PortUtil.isFileExists( PortUtil.combinePath( analyzed, oa.fileName ) );
+                                        if ( !is_valid_for_straight ) {
+                                            // wavファイルが無くても、stfがあればokとする。
+                                            is_valid_for_straight =
+                                                PortUtil.isFileExists(
+                                                    PortUtil.combinePath(
+                                                        analyzed,
+                                                        PortUtil.getFileNameWithoutExtension( oa.fileName ) + ".stf" ) );
+                                        }
+                                    }
+                                }
+                            }
+
+                            //追加
+                            tmp.add( new DrawObject( DrawObjectType.Note,
+                                                     new Rectangle( x, y, lyric_width, track_height ),
+                                                     title,
+                                                     accent,
+                                                     ev.InternalID,
+                                                     px_vibrato_delay,
+                                                     false,
+                                                     ev.ID.LyricHandle.L0.PhoneticSymbolProtected,
+                                                     rate_bp,
+                                                     depth_bp,
+                                                     rate_start,
+                                                     depth_start,
+                                                     ev.ID.Note,
+                                                     ev.UstEvent.Envelope,
+                                                     length,
+                                                     timesig,
+                                                     is_valid_for_utau,
+                                                     is_valid_for_straight,
+                                                     vib_delay ) );
                         }
 
                         // Dynaff, Crescendイベント
