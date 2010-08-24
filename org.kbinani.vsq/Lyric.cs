@@ -245,6 +245,15 @@ namespace org.kbinani.vsq {
             for ( int i = 0; i < m_phonetic_symbol.Length; i++ ) {
                 m_phonetic_symbol[i] = m_phonetic_symbol[i].Replace( "\\" + "\\", "\\" );
             }
+
+            // consonant adjustmentを更新
+            if( m_consonant_adjustment == null ||
+                (m_consonant_adjustment != null && m_consonant_adjustment.Length != m_phonetic_symbol.Length) ){
+                m_consonant_adjustment = new int[m_phonetic_symbol.Length];
+            }
+            for ( int i = 0; i < m_phonetic_symbol.Length; i++ ) {
+                m_consonant_adjustment[i] = VsqPhoneticSymbol.isConsonant( m_phonetic_symbol[i] ) ? 64 : 0;
+            }
         }
 
 #if !JAVA

@@ -15,6 +15,8 @@
 package org.kbinani.vsq;
 
 import java.io.*;
+#elif __cplusplus
+namespace org{ namespace kbinani{ namespace vsq{
 #else
 using System;
 
@@ -26,6 +28,8 @@ namespace org.kbinani.vsq {
     /// </summary>
 #if JAVA
     public class BPPair implements Comparable<BPPair>, Serializable{
+#elif __cplusplus
+    class BPPair{
 #else
     [Serializable]
     public class BPPair : IComparable<BPPair>{
@@ -46,9 +50,15 @@ namespace org.kbinani.vsq {
             } else {
                 return 0;
             }
+#if __cplusplus
+        };
+#else
         }
+#endif
 
-#if !JAVA
+#if JAVA
+#elif __cplusplus
+#else
         public int CompareTo( BPPair item ) {
             return compareTo( item );
         }
@@ -62,9 +72,16 @@ namespace org.kbinani.vsq {
         public BPPair( int clock_, int value_ ) {
             Clock = clock_;
             Value = value_;
+#if __cplusplus
+        };
+#else
         }
-    }
+#endif
+    };
 
-#if !JAVA
+#if JAVA
+#elif __cplusplus
+} } }
+#else
 }
 #endif
