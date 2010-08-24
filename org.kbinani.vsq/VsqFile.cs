@@ -2657,14 +2657,8 @@ namespace org.kbinani.vsq {
                 if ( sr.ready() ) {
 #if NEW_IMPL
                     Vector<Byte> buffer = new Vector<Byte>();
-                    boolean first = true;
                     while ( sr.ready() ) {
-                        if ( first ) {
-                            tmp = sr.readLine();
-                            first = false;
-                        } else {
-                            tmp = _NL + sr.readLine();
-                        }
+                        tmp = sr.readLine() + _NL;
                         Byte[] linebytes = PortUtil.convertByteArray( PortUtil.getEncodedByte( encoding, tmp ) );
                         buffer.addAll( Arrays.asList( linebytes ) );
                         while ( getLinePrefixBytes( line_count + 1 ).Length + buffer.size() >= 127 ) {
