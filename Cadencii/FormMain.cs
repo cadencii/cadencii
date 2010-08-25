@@ -14658,18 +14658,11 @@ namespace org.kbinani.cadencii {
                     if ( px_move / dt > AppManager.editorConfig.MouseDragMaximumRate ) {
                         px_move = (int)(dt * AppManager.editorConfig.MouseDragMaximumRate);
                     }
-                    double d_draft;
-                    float inv_scale_x = AppManager.getScaleXInv();
-                    if ( m_ext_dragx_trackselector == ExtDragXMode.RIGHT ) {
-                        int right_clock = AppManager.clockFromXCoord( parent_width + 5 );
-                        int dclock = (int)(px_move * inv_scale_x);
-                        d_draft = (73 - trackSelector.getWidth()) * inv_scale_x + right_clock + dclock;
-                    } else {
+                    px_move += 5;
+                    if ( m_ext_dragx_trackselector == ExtDragXMode.LEFT ) {
                         px_move *= -1;
-                        int left_clock = AppManager.clockFromXCoord( AppManager.keyWidth );
-                        int dclock = (int)(px_move * inv_scale_x);
-                        d_draft = (73 - AppManager.keyWidth) * inv_scale_x + left_clock + dclock;
                     }
+                    double d_draft = hScroll.getValue() + px_move * AppManager.getScaleXInv();
                     if ( d_draft < 0.0 ) {
                         d_draft = 0.0;
                     }
