@@ -241,6 +241,25 @@ namespace org.kbinani.vsq {
         /// </summary>
         public void setPhoneticSymbol( String value ) {
             String s = value.Replace( "  ", " " );
+
+            // 古い発音記号を保持しておく
+            String[] old_symbol = null;
+            if ( m_phonetic_symbol != null ) {
+                old_symbol = new String[m_phonetic_symbol.Length];
+                for ( int i = 0; i < m_phonetic_symbol.Length; i++ ) {
+                    old_symbol[i] = m_phonetic_symbol[i];
+                }
+            }
+
+            // 古いconsonant adjustmentを保持しておく
+            int[] old_adjustment = null;
+            if ( m_consonant_adjustment != null ) {
+                old_adjustment = new int[m_consonant_adjustment.Length];
+                for ( int i = 0; i < m_consonant_adjustment.Length; i++ ) {
+                    old_adjustment[i] = m_consonant_adjustment[i];
+                }
+            }
+
             m_phonetic_symbol = PortUtil.splitString( s, new char[] { ' ' }, 16, true );
             for ( int i = 0; i < m_phonetic_symbol.Length; i++ ) {
                 m_phonetic_symbol[i] = m_phonetic_symbol[i].Replace( "\\" + "\\", "\\" );
@@ -251,8 +270,17 @@ namespace org.kbinani.vsq {
                 (m_consonant_adjustment != null && m_consonant_adjustment.Length != m_phonetic_symbol.Length) ){
                 m_consonant_adjustment = new int[m_phonetic_symbol.Length];
             }
+
+            // 古い発音記号と同じなら、古い値を使う
             for ( int i = 0; i < m_phonetic_symbol.Length; i++ ) {
-                m_consonant_adjustment[i] = VsqPhoneticSymbol.isConsonant( m_phonetic_symbol[i] ) ? 64 : 0;
+                boolean use_old_value = (old_symbol != null && i < old_symbol.Length) &&
+                                        (m_phonetic_symbol[i].Equals( old_symbol[i])) &&
+                                        (old_adjustment != null && i < old_adjustment.Length);
+                if( use_old_value ){
+                    m_consonant_adjustment[i] = VsqPhoneticSymbol.isConsonant( m_phonetic_symbol[i] ) ? old_adjustment[i] : 0;
+                } else {
+                    m_consonant_adjustment[i] = VsqPhoneticSymbol.isConsonant( m_phonetic_symbol[i] ) ? 64 : 0;
+                }
             }
         }
 
