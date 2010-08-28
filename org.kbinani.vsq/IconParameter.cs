@@ -235,34 +235,57 @@ namespace org.kbinani.vsq{
                         strRateBPY = value;
                     }
                 }
-                if ( !strDynBPNum.Equals( "" ) ) {
-                    int num = 0;
-                    try {
-                        num = PortUtil.parseInt( strDynBPNum );
-                    } catch ( Exception ex ) {
-                        PortUtil.stderr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
-                        num = 0;
-                    }
-                    String[] strBPX = PortUtil.splitString( strDynBPX, ',' );
-                    String[] strBPY = PortUtil.splitString( strDynBPY, ',' );
-                    int actNum = Math.Min( num, Math.Min( strBPX.Length, strBPY.Length ) );
-                    if ( actNum > 0 ) {
-                        float[] x = new float[actNum];
-                        int[] y = new int[actNum];
-                        for ( int i = 0; i < actNum; i++ ) {
-                            try {
-                                x[i] = PortUtil.parseFloat( strBPX[i] );
-                                y[i] = PortUtil.parseInt( strBPY[i] );
-                            } catch ( Exception ex ) {
-                                PortUtil.stderr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
-                            }
-                        }
-                        dynBP = new VibratoBPList( x, y );
-                    }
-                }
+                dynBP = getBPListFromText( strDynBPNum, strDynBPX, strDynBPY );
+                rateBP = getBPListFromText( strRateBPNum, strRateBPX, strRateBPY );
+                depthBP = getBPListFromText( strDepthBPNum, strDepthBPX, strDepthBPY );
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
+            } finally {
+                if ( sr != null ) {
+                    try {
+                        sr.close();
+                    } catch ( Exception ex2 ) {
+                    }
+                }
             }
+        }
+
+        /// <summary>
+        /// テキストデータからVibratoBPListを構築する
+        /// </summary>
+        /// <param name="strNum"></param>
+        /// <param name="strBPX"></param>
+        /// <param name="strBPY"></param>
+        /// <returns></returns>
+        private static VibratoBPList getBPListFromText( String strNum, String strBPX, String strBPY ) {
+            VibratoBPList ret = null;
+            if ( strNum == null || (strNum != null && strNum.Equals( "" )) ) {
+                return ret;
+            }
+            int num = 0;
+            try {
+                num = PortUtil.parseInt( strNum );
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "org.kbinani.vsq.IconParameter.getBPListFromText; ex=" + ex );
+                num = 0;
+            }
+            String[] sx = PortUtil.splitString( strBPX, ',' );
+            String[] sy = PortUtil.splitString( strBPY, ',' );
+            int actNum = Math.Min( num, Math.Min( sx.Length, sy.Length ) );
+            if ( actNum > 0 ) {
+                float[] x = new float[actNum];
+                int[] y = new int[actNum];
+                for ( int i = 0; i < actNum; i++ ) {
+                    try {
+                        x[i] = PortUtil.parseFloat( sx[i] );
+                        y[i] = PortUtil.parseInt( sy[i] );
+                    } catch ( Exception ex ) {
+                        PortUtil.stderr.println( "org.kbinani.vsq.IconParameter.getBPListFromText; ex=" + ex );
+                    }
+                }
+                ret = new VibratoBPList( x, y );
+            }
+            return ret;
         }
 
         public String getButton() {
