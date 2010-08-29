@@ -1009,6 +1009,9 @@ namespace org.kbinani.cadencii {
         }
 
         public static void handleAutoBackupTimerTick( Object sender, BEventArgs e ) {
+#if DEBUG
+            PortUtil.println( "AppManager::handleAutoBackupTimerTick" );
+#endif
             if ( !s_file.Equals( "" ) && PortUtil.isFileExists( s_file ) ) {
                 String path = PortUtil.getDirectoryName( s_file );
                 String backup = PortUtil.combinePath( path, "~$" + PortUtil.getFileName( s_file ) );
@@ -1017,12 +1020,14 @@ namespace org.kbinani.cadencii {
                     try {
                         PortUtil.deleteFile( backup );
                     } catch ( Exception ex ) {
+                        PortUtil.stderr.println( "AppManager::handleAutoBackupTimerTick; ex=" + ex );
                     }
                 }
                 if ( PortUtil.isFileExists( file2 ) ) {
                     try {
                         PortUtil.deleteFile( file2 );
                     } catch ( Exception ex ) {
+                        PortUtil.stderr.println( "AppManager::handleAutoBackupTimerTick; ex=" + ex );
                     }
                 }
                 saveToCor( backup );
@@ -2251,11 +2256,7 @@ namespace org.kbinani.cadencii {
             reloadUtauVoiceDB();
 
             s_auto_backup_timer = new BTimer();
-#if JAVA
-            s_auto_backup_timer.tickEvent.add( new BEventHandler( AppManager.class, "handleAutoBackupTimerTick" ) );
-#else
-            s_auto_backup_timer.Tick += handleAutoBackupTimerTick;
-#endif
+            s_auto_backup_timer.tickEvent.add( new BEventHandler( typeof( AppManager ), "handleAutoBackupTimerTick" ) );
         }
 
         /// <summary>

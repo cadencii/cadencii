@@ -3062,9 +3062,6 @@ namespace org.kbinani.vsq {
                 for ( int k = 0; k < chars.Length; k++ ) {
                     count++;
                     if ( k == 0 ) {
-#if DEBUG
-                        PortUtil.println( "VsqFile#generateNoteNRPN; consonantAdjustment.Length=" + consonantAdjustment.Length + "; j=" + j );
-#endif
                         add.append( (0x50 << 8) | (0x13 + count), (byte)chars[k], (byte)consonantAdjustment[j], true ); // Phonetic symbol j
                     } else {
                         add.append( (0x50 << 8) | (0x13 + count), (byte)chars[k], true ); // Phonetic symbol j

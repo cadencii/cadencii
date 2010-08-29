@@ -4348,6 +4348,9 @@ namespace org.kbinani.cadencii {
                         new_ids[indx].LyricHandle.L0.Phrase = new_phrases.get( indx );
                         new_ids[indx].LyricHandle.L0.setPhoneticSymbol( new_symbols.get( indx ) );
                         ids[indx] = item.InternalID;
+                        if ( indx + 1 >= new_phrases.size() ) {
+                            break;
+                        }
                     }
                     CadenciiCommand run = new CadenciiCommand(
                         VsqCommand.generateCommandEventChangeIDContaintsRange( selected, ids, new_ids ) );
