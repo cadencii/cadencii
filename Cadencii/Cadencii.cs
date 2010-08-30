@@ -18,6 +18,7 @@ import org.kbinani.cadencii.*;
 using System;
 using System.Threading;
 using System.Windows.Forms;
+using org.kbinani;
 using org.kbinani.apputil;
 
 namespace org.kbinani.cadencii{
@@ -75,6 +76,12 @@ namespace org.kbinani.cadencii{
         public static void Main( String[] args ) {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault( false );
+            Logger.setEnabled( false );
+            Logger.setPath( PortUtil.combinePath( Utility.getApplicationDataPath(), "log.txt" ) );
+#if DEBUG
+            Logger.setEnabled( true );
+#endif
+
 #if !DEBUG
             try {
 #endif
@@ -93,7 +100,8 @@ namespace org.kbinani.cadencii{
                 ScriptServer.reload();
                 PaletteToolServer.init();
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "Program#Main; ex=" + ex );
+                PortUtil.stderr.println( "Cadencii::Main; ex=" + ex );
+                Logger.write( "Cadencii::Main; ex=" + ex + "\n" );
             }
 #endif
             AppManager.mainWindow = new FormMain( file );

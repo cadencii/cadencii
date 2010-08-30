@@ -85,6 +85,7 @@
     <Compile Include="Iterator.cs" />
     <Compile Include="lang.cs" />
     <Compile Include="ListIterator.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="math.cs" />
     <Compile Include="Misc.cs" />
     <Compile Include="PortUtil.cs" />

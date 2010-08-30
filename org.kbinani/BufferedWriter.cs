@@ -27,8 +27,15 @@ namespace org.kbinani.java.io {
     }
 
     public class FileOutputStream : FileStream, OutputStream {
-        public FileOutputStream( String fileName )
+        public FileOutputStream( String fileName, bool append )
             : base( fileName, FileMode.Create, FileAccess.Write ) {
+            if( append ){
+                base.Seek( base.Length, SeekOrigin.Begin );
+            }
+        }
+
+        public FileOutputStream( String fileName )
+            : this( fileName, false ) {
         }
 
         public void close() {
