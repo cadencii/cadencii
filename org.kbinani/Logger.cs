@@ -30,7 +30,7 @@ namespace org.kbinani {
         private static StreamWriter log = null;
 #endif
         private static String path = "";
-        private static boolean is_enabled = true;
+        private static boolean is_enabled = false;
 
         private Logger() {
         }
@@ -49,7 +49,10 @@ namespace org.kbinani {
             }
 
             if ( log == null ) {
-                path = PortUtil.createTempFile();
+                if ( path == null || (path != null && path.Equals( "" )) ) {
+                    path = PortUtil.createTempFile();
+                    //path = "C:\\log.txt";
+                }
                 try {
 #if JAVA
                     log = new BufferedWriter( new FileWriter( path ) );

@@ -46,8 +46,20 @@ namespace org.kbinani.cadencii {
             FileInfo[] files = new DirectoryInfo( path ).GetFiles( "*.txt" );
             foreach ( FileInfo file in files ) {
                 String code = "";
-                using ( StreamReader sr = new StreamReader( file.FullName ) ){
+                StreamReader sr = null;
+                try {
+                    sr = new StreamReader( file.FullName );
                     code += sr.ReadToEnd();
+                } catch ( Exception ex ) {
+                    Logger.write( typeof( PaletteToolServer ) + ".init; ex=" + ex + "\n" );
+                } finally {
+                    if ( sr != null ) {
+                        try {
+                            sr.Close();
+                        } catch ( Exception ex2 ) {
+                            Logger.write( typeof( PaletteToolServer ) + ".init; ex=" + ex2 + "\n" );
+                        }
+                    }
                 }
 
                 Assembly asm = null;

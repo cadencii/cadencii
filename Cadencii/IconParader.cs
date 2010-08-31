@@ -43,7 +43,9 @@ namespace org.kbinani.cadencii {
 
         public void setImage( Image img ) {
             Bitmap bmp = new Bitmap( ICON_WIDTH, ICON_HEIGHT );
-            using ( Graphics g = Graphics.FromImage( bmp ) ) {
+            Graphics g = null;
+            try {
+                g = Graphics.FromImage( bmp );
                 g.SmoothingMode = SmoothingMode.HighQuality;
                 if ( img != null ) {
                     double a = img.Height / (double)img.Width;
@@ -70,6 +72,12 @@ namespace org.kbinani.cadencii {
                 }
                 g.FillRegion( getBrush(), getInvRegion() );
                 g.DrawPath( Pens.DarkGray, getGraphicsPath() );
+            } catch ( Exception ex ) {
+                Logger.write( typeof( IconParader ) + ".setImage; ex=" + ex + "\n" );
+            } finally {
+                if ( g != null ) {
+                    g.Dispose();
+                }
             }
             base.Image = bmp;
         }

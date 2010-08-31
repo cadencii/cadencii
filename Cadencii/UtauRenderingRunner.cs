@@ -184,8 +184,8 @@ namespace org.kbinani.cadencii {
                         program_change = singer_event.ID.IconHandle.Program;
                     }
                     String singer = "";
-                    if ( 0 <= program_change && program_change < AppManager.editorConfig.UtauSingers.size() ) {
-                        singer = AppManager.editorConfig.UtauSingers.get( program_change ).VOICEIDSTR;
+                    if ( 0 <= program_change && program_change < AppManager.editorConfig.Utausingers.size() ) {
+                        singer = AppManager.editorConfig.Utausingers.get( program_change ).VOICEIDSTR;
                     }
 #if MAKEBAT_SP
                     log.Write( "; pc=" + program_change );
@@ -439,16 +439,24 @@ namespace org.kbinani.cadencii {
                         }
                         //process.waitFor();
 #else
-                        using ( Process process = new Process() ) {
+                        Process process = null;
+                        try {
+                            process = new Process();
                             process.StartInfo.FileName = (m_invoke_with_wine ? "wine \"" : "\"") + m_resampler + "\"";
                             process.StartInfo.Arguments = rq.getResamplerArgString();
                             process.StartInfo.WorkingDirectory = m_temp_dir;
                             process.StartInfo.CreateNoWindow = true;
                             process.StartInfo.UseShellExecute = false;
                             process.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
-                            
+
                             process.Start();
                             process.WaitForExit();
+                        } catch ( Exception ex ) {
+                            Logger.write( typeof( UtauRenderingRunner ) + ".run; ex=" + ex + "\n" );
+                        } finally {
+                            if ( process != null ) {
+                                process.Dispose();
+                            }
                         }
 #endif
                     }
@@ -847,7 +855,9 @@ namespace org.kbinani.cadencii {
             }catch( Exception ex ){
             }
 #else
-            using ( Process process = new Process() ) {
+            Process process = null;
+            try {
+                process = new Process();
                 process.StartInfo.FileName = (invoke_with_wine ? "wine \"" : "\"") + wavtool + "\"";
                 process.StartInfo.Arguments = arg;
                 process.StartInfo.WorkingDirectory = temp_dir;
@@ -858,6 +868,12 @@ namespace org.kbinani.cadencii {
 #endif
                 process.Start();
                 process.WaitForExit();
+            } catch ( Exception ex ) {
+                Logger.write( typeof( UtauRenderingRunner ) + ".processWavtool; ex=" + ex + "\n" );
+            } finally {
+                if ( process != null ) {
+                    process.Dispose();
+                }
             }
 #endif
         }

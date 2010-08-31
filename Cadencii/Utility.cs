@@ -559,7 +559,7 @@ namespace org.kbinani.cadencii{
         /// </summary>
         /// <param name="directory"></param>
         /// <returns></returns>
-        public static SingerConfig readUtauSingerConfig( String directory ) {
+        public static SingerConfig readUtausingerConfig( String directory ) {
             SingerConfig sc = new SingerConfig();
             sc.VOICEIDSTR = directory;
 
@@ -583,19 +583,21 @@ namespace org.kbinani.cadencii{
                             }
                         }
                     } catch ( Exception ex ) {
-                        PortUtil.stderr.println( "Utility#readUtauSingerConfig; ex=" + ex );
+                        PortUtil.stderr.println( "Utility#readUtausingerConfig; ex=" + ex );
+                        Logger.write( typeof( Utility ) + ".readUtausingerConfig; ex=" + ex + "\n" );
                     } finally {
                         if ( sr2 != null ) {
                             try {
                                 sr2.close();
                             } catch ( Exception ex2 ) {
-                                PortUtil.stderr.println( "Utility#readUtauSingerConfig; ex2=" + ex2 );
+                                PortUtil.stderr.println( "Utility#readUtausingerConfig; ex2=" + ex2 );
+                                Logger.write( typeof( Utility ) + ".readUtausingerConfig; ex= " + ex2 + "\n" );
                             }
                         }
                     }
                     if ( name != null ) {
 #if DEBUG
-                        PortUtil.println( "Utility#readUtauSingerConfig; name=" + name + "; encoding=" + encoding );
+                        PortUtil.println( "Utility#readUtausingerConfig; name=" + name + "; encoding=" + encoding );
 #endif
                         break;
                     }
@@ -1283,6 +1285,7 @@ namespace org.kbinani.cadencii{
                         PortUtil.deleteFile( full );
                     } catch ( Exception ex ) {
                         PortUtil.stderr.println( "Utility#cleanupUnusedAssemblyCache; ex=" + ex );
+                        Logger.write( typeof( Utility ) + ".cleanupUnusedAssemblyCache; ex=" + ex + "\n" );
                     }
                 }
             }
@@ -1334,6 +1337,7 @@ namespace org.kbinani.cadencii{
                     compiled = true;
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "Utility#compileScript; ex=" + ex );
+                    Logger.write( typeof( Utility ) + ".compileScript; ex=" + ex + "\n" );
                 }
                 if ( !compiled ) {
                     int c = cr.Errors.Count;
@@ -1352,12 +1356,14 @@ namespace org.kbinani.cadencii{
                         PortUtil.deleteFile( cached_asm_file );
                     } catch ( Exception ex ) {
                         PortUtil.stderr.println( "Utility#compileScript; ex=" + ex );
+                        Logger.write( typeof( Utility ) + ".compileScript; ex=" + ex + "\n" );
                     }
                 }
                 try {
                     PortUtil.copyFile( cr.PathToAssembly, cached_asm_file );
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "Utility#compileScript; ex=" + ex );
+                    Logger.write( typeof( Utility ) + ".compileScript; ex=" + ex + "\n" );
                 }
             }
             
@@ -1396,18 +1402,20 @@ namespace org.kbinani.cadencii{
                 }
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "Utility#loadScript; ex=" + ex );
+                Logger.write( typeof( Utility ) + ".loadScript; ex=" + ex + "\n" );
             } finally {
                 if ( sr != null ) {
                     try {
                         sr.close();
                     } catch ( Exception ex2 ) {
                         PortUtil.stderr.println( "Utility#loadScript; ex2=" + ex2 );
+                        Logger.write( typeof( Utility ) + ".loadScript; ex=" + ex2 + "\n" );
                     }
                 }
             }
 
             String code = "";
-            foreach ( String s in AppManager.USINGS ) {
+            foreach ( String s in AppManager.usingS ) {
                 code += s;
             }
             code += "namespace org.kbinani.cadenciiScript{";
@@ -1477,6 +1485,7 @@ namespace org.kbinani.cadencii{
                             ret.Serializer.deserialize( fs );
                         } catch ( Exception ex ) {
                             PortUtil.stderr.println( "Utility#loadScript; ex=" + ex );
+                            Logger.write( typeof( Utility ) + ".loadScript; ex=" + ex + "\n" );
                             delete_when_exit = true;
                         } finally {
                             if ( fs != null ) {
@@ -1487,6 +1496,7 @@ namespace org.kbinani.cadencii{
                                     }
                                 } catch ( Exception ex2 ) {
                                     PortUtil.stderr.println( "Utility#loadScript; ex2=" + ex2 );
+                                    Logger.write( typeof( Utility ) + ".loadScritp; ex=" + ex2 + "\n" );
                                 }
                             }
                         }

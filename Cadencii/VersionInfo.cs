@@ -243,9 +243,17 @@ namespace org.kbinani.cadencii {
         void btnSaveAuthorList_Click( Object sender, BEventArgs e ) {
 #if !JAVA
 #if DEBUG
-            using ( SaveFileDialog dlg = new SaveFileDialog() ) {
+            SaveFileDialog dlg = null;
+            try {
+                dlg = new SaveFileDialog();
                 if ( dlg.ShowDialog() == DialogResult.OK ) {
                     javax.imageio.ImageIO.write( m_scroll, "png", new java.io.File( dlg.FileName ) );
+                }
+            } catch ( Exception ex ) {
+                Logger.write( typeof( VersionInfo ) + ".btnSaveAuthorList_Click; ex=" + ex + "\n" );
+            } finally {
+                if ( dlg != null ) {
+                    dlg.Dispose();
                 }
             }
 #endif
@@ -336,14 +344,8 @@ namespace org.kbinani.cadencii {
                 }
                 int grad_height = 60;
                 Rectangle top = new Rectangle( 0, 0, getWidth(), grad_height );
-                /*using ( LinearGradientBrush lgb = new LinearGradientBrush( top, Color.White, Color.Transparent, LinearGradientMode.Vertical ) ) {
-                    g.FillRectangle( lgb, top );
-                }*/
                 Rectangle bottom = new Rectangle( 0, m_height - grad_height, getWidth(), grad_height );
                 g.clipRect( 0, m_height - grad_height + 1, getWidth(), grad_height - 1 );
-                /*using ( LinearGradientBrush lgb = new LinearGradientBrush( bottom, Color.Transparent, Color.White, LinearGradientMode.Vertical ) ) {
-                    g.FillRectangle( lgb, bottom );
-                }*/
                 g.setClip( null );
             } else {
                 g.setFont( new Font( "Century Gorhic", java.awt.Font.BOLD, 24 ) );

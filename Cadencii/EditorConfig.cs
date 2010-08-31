@@ -250,7 +250,7 @@ namespace org.kbinani.cadencii {
 
         public boolean ViewAtcualPitch = false;
         public boolean InvokeUtauCoreWithWine = false;
-        public Vector<SingerConfig> UtauSingers = new Vector<SingerConfig>();
+        public Vector<SingerConfig> Utausingers = new Vector<SingerConfig>();
         public String PathResampler = "";
         public String PathWavtool = "";
         /// <summary>
@@ -495,7 +495,7 @@ namespace org.kbinani.cadencii {
                     return "java.lang.String";
                 } else if ( name.Equals( "UserDictionaries" ) ) {
                     return "java.lang.String";
-                } else if ( name.Equals( "UtauSingers" ) ) {
+                } else if ( name.Equals( "Utausingers" ) ) {
                     return "org.kbinani.vsq.SingerConfig";
                 } else if ( name.Equals( "ShortcutKeys" ) ) {
                     return "org.kbinani.cadencii.ValuePairOfStringArrayOfKeys";

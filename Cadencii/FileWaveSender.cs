@@ -59,6 +59,7 @@ namespace org.kbinani.cadencii {
                 _position += length;
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "FileWaveSender#pull; ex=" + ex );
+                Logger.write( typeof( FileWaveSender ) + ".pull; ex=" + ex + "\n" );
             }
         }
 
@@ -67,6 +68,7 @@ namespace org.kbinani.cadencii {
                 _converter.close();
             } catch ( Exception ex ) {
                 PortUtil.println( "FileWaveSender#end; ex=" + ex );
+                Logger.write( typeof( FileWaveSender ) + ".end; ex=" + ex + "\n" );
             }
         }
     }

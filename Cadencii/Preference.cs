@@ -859,7 +859,7 @@ namespace org.kbinani.cadencii {
                     tabPane.setTitleAt( i, _( "Operation" ) );
                 }else if( p == tabPlatform ){
                     tabPane.setTitleAt( i, _( "Platform" ) );
-                }else if( p == tabUtauSingers ){
+                }else if( p == tabUtausingers ){
                     tabPane.setTitleAt( i, _( "UTAU Singers" ) );
                 }else if( p == tabFile ){
                     tabPane.setTitleAt( i, _( "File" ) );
@@ -871,7 +871,7 @@ namespace org.kbinani.cadencii {
             tabAppearance.Text = _( "Appearance" );
             tabOperation.Text = _( "Operation" );
             tabPlatform.Text = _( "Platform" );
-            tabUtauSingers.Text = _( "UTAU Singers" );
+            tabUtausingers.Text = _( "UTAU Singers" );
             tabFile.Text = _( "File" );
             tabSingingSynth.Text = _( "Synthesizer" );
 #endif
@@ -951,7 +951,7 @@ namespace org.kbinani.cadencii {
             chkInvokeWithWine.setText( _( "Invoke UTAU cores with Wine" ) );
             #endregion
 
-            #region tabUtauSingers
+            #region tabUtausingers
             listSingers.setColumnHeaders( new String[] { _( "Program Change" ), _( "Name" ), _( "Path" ) } );
             btnAdd.setText( _( "Add" ) );
             btnRemove.setText( _( "Remove" ) );
@@ -1281,16 +1281,16 @@ namespace org.kbinani.cadencii {
             txtAquesTone.setText( value );
         }
 
-        public Vector<SingerConfig> getUtauSingers() {
+        public Vector<SingerConfig> getUtausingers() {
             return m_utau_singers;
         }
 
-        public void setUtauSingers( Vector<SingerConfig> value ) {
+        public void setUtausingers( Vector<SingerConfig> value ) {
             m_utau_singers.clear();
             for ( int i = 0; i < value.size(); i++ ) {
                 m_utau_singers.add( (SingerConfig)value.get( i ).clone() );
             }
-            UpdateUtauSingerList();
+            UpdateUtausingerList();
         }
         #endregion
 
@@ -1438,14 +1438,14 @@ namespace org.kbinani.cadencii {
                     // そのファイルの存在するパスに修正
                     dir = PortUtil.getDirectoryName( dir );
                 }
-                SingerConfig sc = Utility.readUtauSingerConfig( dir );
+                SingerConfig sc = Utility.readUtausingerConfig( dir );
                 m_utau_singers.add( sc );
-                UpdateUtauSingerList();
+                UpdateUtausingerList();
             }
         }
 
         public void listSingers_SelectedIndexChanged( Object sender, BEventArgs e ) {
-            int index = getUtauSingersSelectedIndex();
+            int index = getUtausingersSelectedIndex();
             if ( index < 0 ) {
                 btnRemove.setEnabled( false );
                 btnUp.setEnabled( false );
@@ -1458,15 +1458,15 @@ namespace org.kbinani.cadencii {
         }
 
         public void btnRemove_Click( Object sender, BEventArgs e ) {
-            int index = getUtauSingersSelectedIndex();
+            int index = getUtausingersSelectedIndex();
             if ( 0 <= index && index < m_utau_singers.size() ) {
                 m_utau_singers.removeElementAt( index );
             }
-            UpdateUtauSingerList();
+            UpdateUtausingerList();
         }
 
         public void btnDown_Click( Object sender, BEventArgs e ) {
-            int index = getUtauSingersSelectedIndex();
+            int index = getUtausingersSelectedIndex();
 #if DEBUG
             AppManager.debugWriteLine( "Preference.btnDown_Click; index=" + index );
 #endif
@@ -1474,13 +1474,13 @@ namespace org.kbinani.cadencii {
                 SingerConfig buf = (SingerConfig)m_utau_singers.get( index ).clone();
                 m_utau_singers.set( index, (SingerConfig)m_utau_singers.get( index + 1 ).clone() );
                 m_utau_singers.set( index + 1, buf );
-                UpdateUtauSingerList();
+                UpdateUtausingerList();
                 listSingers.setItemSelectedAt( "", index + 1, true );
             }
         }
 
         public void btnUp_Click( Object sender, BEventArgs e ) {
-            int index = getUtauSingersSelectedIndex();
+            int index = getUtausingersSelectedIndex();
 #if DEBUG
             AppManager.debugWriteLine( "Preference.btnUp_Click; index=" + index );
 #endif
@@ -1488,7 +1488,7 @@ namespace org.kbinani.cadencii {
                 SingerConfig buf = (SingerConfig)m_utau_singers.get( index ).clone();
                 m_utau_singers.set( index, (SingerConfig)m_utau_singers.get( index - 1 ).clone() );
                 m_utau_singers.set( index - 1, buf );
-                UpdateUtauSingerList();
+                UpdateUtausingerList();
                 listSingers.setItemSelectedAt( "", index - 1, true );
             }
         }
@@ -1533,7 +1533,7 @@ namespace org.kbinani.cadencii {
             Util.applyFontRecurse( this, font );
         }
 
-        private void UpdateUtauSingerList() {
+        private void UpdateUtausingerList() {
             listSingers.clear();
             for ( int i = 0; i < m_utau_singers.size(); i++ ) {
                 m_utau_singers.get( i ).Program = i;
@@ -1543,7 +1543,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private int getUtauSingersSelectedIndex() {
+        private int getUtausingersSelectedIndex() {
             return listSingers.getSelectedIndex( "" );
         }
 
@@ -1747,7 +1747,7 @@ namespace org.kbinani.cadencii {
             this.comboPlatform = new org.kbinani.windows.forms.BComboBox();
             this.lblPlatform = new org.kbinani.windows.forms.BLabel();
             this.chkCommandKeyAsControl = new org.kbinani.windows.forms.BCheckBox();
-            this.tabUtauSingers = new System.Windows.Forms.TabPage();
+            this.tabUtausingers = new System.Windows.Forms.TabPage();
             this.btnRemove = new org.kbinani.windows.forms.BButton();
             this.btnAdd = new org.kbinani.windows.forms.BButton();
             this.btnUp = new org.kbinani.windows.forms.BButton();
@@ -1800,7 +1800,7 @@ namespace org.kbinani.cadencii {
             this.tabPlatform.SuspendLayout();
             this.groupUtauCores.SuspendLayout();
             this.groupPlatform.SuspendLayout();
-            this.tabUtauSingers.SuspendLayout();
+            this.tabUtausingers.SuspendLayout();
             this.tabFile.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numAutoBackupInterval)).BeginInit();
             this.tabSingingSynth.SuspendLayout();
@@ -1819,7 +1819,7 @@ namespace org.kbinani.cadencii {
             this.tabPreference.Controls.Add( this.tabAppearance );
             this.tabPreference.Controls.Add( this.tabOperation );
             this.tabPreference.Controls.Add( this.tabPlatform );
-            this.tabPreference.Controls.Add( this.tabUtauSingers );
+            this.tabPreference.Controls.Add( this.tabUtausingers );
             this.tabPreference.Controls.Add( this.tabFile );
             this.tabPreference.Controls.Add( this.tabSingingSynth );
             this.tabPreference.Location = new System.Drawing.Point( 7, 7 );
@@ -3166,21 +3166,21 @@ namespace org.kbinani.cadencii {
             this.chkCommandKeyAsControl.Text = "Use Command key as Control key";
             this.chkCommandKeyAsControl.UseVisualStyleBackColor = true;
             // 
-            // tabUtauSingers
+            // tabUtausingers
             // 
-            this.tabUtauSingers.AutoScroll = true;
-            this.tabUtauSingers.Controls.Add( this.btnRemove );
-            this.tabUtauSingers.Controls.Add( this.btnAdd );
-            this.tabUtauSingers.Controls.Add( this.btnUp );
-            this.tabUtauSingers.Controls.Add( this.btnDown );
-            this.tabUtauSingers.Controls.Add( this.listSingers );
-            this.tabUtauSingers.Location = new System.Drawing.Point( 4, 38 );
-            this.tabUtauSingers.Name = "tabUtauSingers";
-            this.tabUtauSingers.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabUtauSingers.Size = new System.Drawing.Size( 454, 410 );
-            this.tabUtauSingers.TabIndex = 6;
-            this.tabUtauSingers.Text = "UTAU Singers";
-            this.tabUtauSingers.UseVisualStyleBackColor = true;
+            this.tabUtausingers.AutoScroll = true;
+            this.tabUtausingers.Controls.Add( this.btnRemove );
+            this.tabUtausingers.Controls.Add( this.btnAdd );
+            this.tabUtausingers.Controls.Add( this.btnUp );
+            this.tabUtausingers.Controls.Add( this.btnDown );
+            this.tabUtausingers.Controls.Add( this.listSingers );
+            this.tabUtausingers.Location = new System.Drawing.Point( 4, 38 );
+            this.tabUtausingers.Name = "tabUtausingers";
+            this.tabUtausingers.Padding = new System.Windows.Forms.Padding( 3 );
+            this.tabUtausingers.Size = new System.Drawing.Size( 454, 410 );
+            this.tabUtausingers.TabIndex = 6;
+            this.tabUtausingers.Text = "UTAU Singers";
+            this.tabUtausingers.UseVisualStyleBackColor = true;
             // 
             // btnRemove
             // 
@@ -3662,7 +3662,7 @@ namespace org.kbinani.cadencii {
             this.groupUtauCores.PerformLayout();
             this.groupPlatform.ResumeLayout( false );
             this.groupPlatform.PerformLayout();
-            this.tabUtauSingers.ResumeLayout( false );
+            this.tabUtausingers.ResumeLayout( false );
             this.tabFile.ResumeLayout( false );
             this.tabFile.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numAutoBackupInterval)).EndInit();
@@ -3761,7 +3761,7 @@ namespace org.kbinani.cadencii {
         private BCheckBox chkReso1;
         private BCheckBox chkReso4;
         private BCheckBox chkReso3;
-        private System.Windows.Forms.TabPage tabUtauSingers;
+        private System.Windows.Forms.TabPage tabUtausingers;
         private BListView listSingers;
         private BGroupBox groupUtauCores;
         private BLabel lblResampler;

@@ -126,6 +126,7 @@ namespace org.kbinani.cadencii {
                     PortUtil.deleteFile( file );
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "UtauWaveGenerator#clearCache; ex=" + ex );
+                    Logger.write( "UtauWaveGenerator::clearCache; ex=" + ex + "\n" );
                 }
             }
             s_cache.clear();
@@ -197,8 +198,8 @@ namespace org.kbinani.cadencii {
                         program_change = singer_event.ID.IconHandle.Program;
                     }
                     String singer = "";
-                    if ( 0 <= program_change && program_change < _config.UtauSingers.size() ) {
-                        singer = _config.UtauSingers.get( program_change ).VOICEIDSTR;
+                    if ( 0 <= program_change && program_change < _config.Utausingers.size() ) {
+                        singer = _config.Utausingers.get( program_change ).VOICEIDSTR;
                     }
 #if MAKEBAT_SP
                     log.Write( "; pc=" + program_change );
@@ -378,6 +379,7 @@ namespace org.kbinani.cadencii {
                                 PortUtil.deleteFile( delfile );
                             } catch ( Exception ex ) {
                                 PortUtil.stderr.println( "UtauWaveGenerator#run; ex=" + ex );
+                                Logger.write( "UtauWaveGenerator::begin(long): ex=" + ex + "\n" );
                             }
                             s_cache.remove( delkey );
                         }
@@ -447,13 +449,16 @@ namespace org.kbinani.cadencii {
                             try{
                                 int ecode = process.exitValue();
                             }catch( Exception ex ){
+                                Logger.write( UtauWaveGenerator.class + ".begin; ex=" + ex + "\n" );
                                 continue;
                             }
                             break;
                         }
                         //process.waitFor();
 #else
-                        using ( Process process = new Process() ) {
+                        Process process = null;
+                        try {
+                            process = new Process();
                             process.StartInfo.FileName = (m_invoke_with_wine ? "wine \"" : "\"") + m_resampler + "\"";
                             process.StartInfo.Arguments = rq.getResamplerArgString();
                             process.StartInfo.WorkingDirectory = m_temp_dir;
@@ -463,6 +468,12 @@ namespace org.kbinani.cadencii {
 
                             process.Start();
                             process.WaitForExit();
+                        } catch ( Exception ex ) {
+                            Logger.write( typeof( UtauWaveGenerator ) + ".begin; ex=" + ex + "\n" );
+                        } finally {
+                            if ( process != null ) {
+                                process.Dispose();
+                            }
                         }
 #endif
                     }
@@ -569,12 +580,14 @@ namespace org.kbinani.cadencii {
                             #endregion
                         } catch ( Exception ex ) {
                             PortUtil.stderr.println( "UtauWaveGenerator#run; ex=" + ex );
+                            Logger.write( "UtauWaveGenerator::begin(long); ex=" + ex + "\n" );
                         } finally {
                             if ( whd != null ) {
                                 try {
                                     whd.close();
                                 } catch ( Exception ex2 ) {
                                     PortUtil.stderr.println( "UtauWaveGenerator#run; ex2=" + ex2 );
+                                    Logger.write( "UtauWaveGenerator::begin(long); ex=" + ex2 + "\n" );
                                 }
                             }
                         }
@@ -738,12 +751,14 @@ namespace org.kbinani.cadencii {
                             #endregion
                         } catch ( Exception ex ) {
                             PortUtil.stderr.println( "UtauWaveGenerator#run; ex=" + ex );
+                            Logger.write( "UtauWaveGenerator::begin(long); ex=" + ex + "\n" );
                         } finally {
                             if ( dat != null ) {
                                 try {
                                     dat.close();
                                 } catch ( Exception ex2 ) {
                                     PortUtil.stderr.println( "UtauWaveGenerator#run; ex2=" + ex2 );
+                                    Logger.write( typeof( UtauWaveGenerator ) + "::begin(long); ex=" + ex2 + "\n" );
                                 }
                                 dat = null;
                             }
@@ -795,7 +810,8 @@ namespace org.kbinani.cadencii {
 
                 _receiver.end();
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "UtauWaveGenerator#run; ex=" + ex );
+                PortUtil.stderr.println( "UtauWaveGenerator.begin; ex=" + ex );
+                Logger.write( typeof( UtauWaveGenerator ) + ".begin; ex=" + ex + "\n" );
 #if JAVA
                 ex.printStackTrace();
 #endif
@@ -825,9 +841,12 @@ namespace org.kbinani.cadencii {
                 Process process = pb.start();
                 process.waitFor();
             }catch( Exception ex ){
+                Logger.write( UtauWaveGenerator.class + ".processWavtool; ex=" + ex + "\n" );
             }
 #else
-            using ( Process process = new Process() ) {
+            Process process = null;
+            try {
+                process = new Process();
                 process.StartInfo.FileName = (invoke_with_wine ? "wine \"" : "\"") + wavtool + "\"";
                 process.StartInfo.Arguments = arg;
                 process.StartInfo.WorkingDirectory = temp_dir;
@@ -838,6 +857,12 @@ namespace org.kbinani.cadencii {
 #endif
                 process.Start();
                 process.WaitForExit();
+            } catch ( Exception ex ) {
+                Logger.write( typeof( UtauWaveGenerator ) + ".processWavtool; ex=" + ex + "\n" );
+            } finally {
+                if ( process != null ) {
+                    process.Dispose();
+                }
             }
 #endif
         }

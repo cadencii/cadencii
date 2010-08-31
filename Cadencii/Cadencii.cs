@@ -101,7 +101,7 @@ namespace org.kbinani.cadencii{
                 PaletteToolServer.init();
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "Cadencii::Main; ex=" + ex );
-                Logger.write( "Cadencii::Main; ex=" + ex + "\n" );
+                Logger.write( typeof( Cadencii ) + ".Main; ex=" + ex + "\n" );
             }
 #endif
             AppManager.mainWindow = new FormMain( file );
@@ -123,6 +123,7 @@ namespace org.kbinani.cadencii{
                         splash.Invoke( splash_close );
                     }
                 }
+                Logger.write( typeof( Cadencii ) + ".Main; ex=" + ex + "\n" );
             }
 #endif
         }

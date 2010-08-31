@@ -575,6 +575,7 @@ namespace org.kbinani.cadencii {
                                     list.set( j, new_chain );
                                 } catch ( Exception ex ) {
                                     PortUtil.stderr.println( "VsqFileEx#shift; ex=" + ex );
+                                    Logger.write( typeof( VsqFileEx ) + ".shift; ex=" + ex + "\n" );
                                 }
                             } else {
                                 remove_required_event.add( chain.id );
@@ -1248,12 +1249,14 @@ namespace org.kbinani.cadencii {
                 s_vsq_serializer.serialize( xw, this );
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "VsqFileEx#writeAsXml; ex=" + ex );
+                Logger.write( typeof( VsqFileEx ) + ".writeAsXml; ex=" + ex + "\n" );
             } finally {
                 if ( xw != null ) {
                     try {
                         xw.close();
                     } catch ( Exception ex2 ) {
                         PortUtil.stderr.println( "VsqFileEx#writeAsXml; ex2=" + ex2 );
+                        Logger.write( typeof( VsqFileEx ) + ".writeAsXml; ex=" + ex2 + "\n" );
                     }
                 }
             }
@@ -1267,6 +1270,7 @@ namespace org.kbinani.cadencii {
                 ret = (VsqFileEx)s_vsq_serializer.deserialize( fs );
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "VsqFileEx#readFromXml; ex=" + ex );
+                Logger.write( typeof( VsqFileEx ) + ".readFromXml; ex=" + ex + "\n" );
 #if JAVA
                 ex.printStackTrace();
 #endif
@@ -1276,6 +1280,7 @@ namespace org.kbinani.cadencii {
                         fs.close();
                     } catch ( Exception ex2 ) {
                         PortUtil.stderr.println( "VsqFileEx#readFromXml; ex2=" + ex2 );
+                        Logger.write( typeof( VsqFileEx ) + ".readFromXml; ex=" + ex2 + "\n" );
 #if JAVA
                         ex2.printStackTrace();
 #endif

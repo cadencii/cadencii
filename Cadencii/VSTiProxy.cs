@@ -241,16 +241,16 @@ namespace org.kbinani.cadencii {
             if ( renderer == RendererKind.UTAU ) {
                 if ( !AppManager.editorConfig.PathResampler.Equals( "" ) && PortUtil.isFileExists( AppManager.editorConfig.PathResampler ) &&
                      !AppManager.editorConfig.PathWavtool.Equals( "" ) && PortUtil.isFileExists( AppManager.editorConfig.PathWavtool ) ) {
-                    if ( AppManager.editorConfig.UtauSingers.size() > 0 ) {
+                    if ( AppManager.editorConfig.Utausingers.size() > 0 ) {
                         return true;
                     }
                 }
             }
             if ( renderer == RendererKind.STRAIGHT_UTAU ) {
                 if ( PortUtil.isFileExists( PortUtil.combinePath( PortUtil.getApplicationStartupPath(), StraightRenderingRunner.STRAIGHT_SYNTH ) ) ) {
-                    int count = AppManager.editorConfig.UtauSingers.size();
+                    int count = AppManager.editorConfig.Utausingers.size();
                     for ( int i = 0; i < count; i++ ) {
-                        String analyzed = PortUtil.combinePath( AppManager.editorConfig.UtauSingers.get( i ).VOICEIDSTR, "analyzed" );
+                        String analyzed = PortUtil.combinePath( AppManager.editorConfig.Utausingers.get( i ).VOICEIDSTR, "analyzed" );
                         if ( PortUtil.isDirectoryExists( analyzed ) ) {
                             String analyzed_oto_ini = PortUtil.combinePath( analyzed, "oto.ini" );
                             if ( PortUtil.isFileExists( analyzed_oto_ini ) ) {
@@ -385,7 +385,7 @@ namespace org.kbinani.cadencii {
             if ( s_working_renderer == RendererKind.UTAU ) {
                 s_rendering_context = new UtauRenderingRunner( split,
                                                                track,
-                                                               AppManager.editorConfig.UtauSingers,
+                                                               AppManager.editorConfig.Utausingers,
                                                                AppManager.editorConfig.PathResampler,
                                                                AppManager.editorConfig.PathWavtool,
                                                                AppManager.editorConfig.InvokeUtauCoreWithWine,
@@ -401,7 +401,7 @@ namespace org.kbinani.cadencii {
             } else if ( s_working_renderer == RendererKind.STRAIGHT_UTAU ){
                 s_rendering_context = new StraightRenderingRunner( split,
                                                                    track,
-                                                                   AppManager.editorConfig.UtauSingers,
+                                                                   AppManager.editorConfig.Utausingers,
                                                                    SAMPLE_RATE,
                                                                    trim_msec,
                                                                    total_samples,

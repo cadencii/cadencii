@@ -483,7 +483,9 @@ namespace org.kbinani.cadencii {
 #endif
                     }
 #else
-                    using ( Process process = new Process() ) {
+                    Process process = null;
+                    try {
+                        process = new Process();
                         process.StartInfo.FileName = straight_synth;
                         process.StartInfo.Arguments = "\"" + tmp_file + ".usq\" \"" + tmp_file + ".wav\"";
                         process.StartInfo.WorkingDirectory = PortUtil.getApplicationStartupPath();
@@ -492,6 +494,12 @@ namespace org.kbinani.cadencii {
                         process.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
                         process.Start();
                         process.WaitForExit();
+                    } catch ( Exception ex ) {
+                        Logger.write( typeof( StraightRenderingRunner ) + ".run; ex=" + ex + "\n" );
+                    } finally {
+                        if ( process != null ) {
+                            process.Dispose();
+                        }
                     }
 #endif
 

@@ -393,13 +393,21 @@ namespace org.kbinani.cadencii {
 #if !JAVA
         public void panel1_Paint( Object sender, PaintEventArgs e ) {
             int stdx = hScroll.getValue();
-            using ( Pen pen_102_102_102 = new Pen( System.Drawing.Color.FromArgb( 102, 102, 102 ) ) ) {
+            Pen pen_102_102_102 = null;
+            try {
+                pen_102_102_102 = new Pen( System.Drawing.Color.FromArgb( 102, 102, 102 ) );
                 for ( int i = 0; i < m_tracker.size(); i++ ) {
                     int x = -stdx + (i + 1) * (VolumeTracker.WIDTH + 1);
                     e.Graphics.DrawLine(
                         pen_102_102_102,
                         new System.Drawing.Point( x - 1, 0 ),
                         new System.Drawing.Point( x - 1, 261 + 4 ) );
+                }
+            } catch ( Exception ex ) {
+                Logger.write( typeof( FormMixer ) + ".panel1_Paint; ex=" + ex + "\n" );
+            } finally {
+                if ( pen_102_102_102 != null ) {
+                    pen_102_102_102.Dispose();
                 }
             }
         }

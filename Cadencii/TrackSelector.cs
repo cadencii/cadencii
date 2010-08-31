@@ -239,7 +239,7 @@ namespace org.kbinani.cadencii {
         private boolean _pencil_moved = false;
         private Thread _mouse_hover_thread = null;
         /// <summary>
-        /// cmenuSingerのメニューアイテムを初期化するのに使用したRenderer。
+        /// cmenusingerのメニューアイテムを初期化するのに使用したRenderer。
         /// </summary>
         private RendererKind _cmenu_singer_prepared = RendererKind.NULL;
         /// <summary>
@@ -255,7 +255,7 @@ namespace org.kbinani.cadencii {
         /// </summary>
         private int _singer_move_started_clock;
         /// <summary>
-        /// cmenuSinger用のツールチップの幅を記録しておく。
+        /// cmenusinger用のツールチップの幅を記録しておく。
         /// </summary>
         private int[] _cmenusinger_tooltip_width;
         /// <summary>
@@ -421,7 +421,7 @@ namespace org.kbinani.cadencii {
 #endif
             initialize();
             getCmenuCurve();
-            getCmenuSinger();        
+            getCmenusinger();        
 #else
             this.SetStyle( System.Windows.Forms.ControlStyles.DoubleBuffer, true );
             this.SetStyle( System.Windows.Forms.ControlStyles.UserPaint, true );
@@ -733,7 +733,7 @@ namespace org.kbinani.cadencii {
 
         public void applyFont( java.awt.Font font ) {
             Util.applyFontRecurse( this, font );
-            Util.applyContextMenuFontRecurse( cmenuSinger, font );
+            Util.applyContextMenuFontRecurse( cmenusinger, font );
             Util.applyContextMenuFontRecurse( cmenuCurve, font );
         }
 
@@ -5365,14 +5365,14 @@ namespace org.kbinani.cadencii {
                             if ( !_cmenu_singer_prepared.Equals( renderer ) ) {
                                 prepareSingerMenu( renderer );
                             }
-                            TagForCMenuSinger tag = new TagForCMenuSinger();
+                            TagForCMenusinger tag = new TagForCMenusinger();
                             tag.SingerChangeExists = true;
                             tag.InternalID = ve.InternalID;
-                            cmenuSinger.setTag( tag );//                        new KeyValuePair<boolean, int>( true, ve.InternalID );
-                            MenuElement[] sub_cmenu_singer = cmenuSinger.getSubElements();
+                            cmenusinger.setTag( tag );//                        new KeyValuePair<boolean, int>( true, ve.InternalID );
+                            MenuElement[] sub_cmenu_singer = cmenusinger.getSubElements();
                             for ( int i = 0; i < sub_cmenu_singer.Length; i++ ) {
                                 BMenuItem tsmi = (BMenuItem)sub_cmenu_singer[i];
-                                TagForCMenuSingerDropDown tag2 = (TagForCMenuSingerDropDown)tsmi.getTag();
+                                TagForCMenusingerDropDown tag2 = (TagForCMenusingerDropDown)tsmi.getTag();
                                 if ( tag2.Language == ve.ID.IconHandle.Language &&
                                      tag2.Program == ve.ID.IconHandle.Program ) {
                                     tsmi.setSelected( true );
@@ -5380,7 +5380,7 @@ namespace org.kbinani.cadencii {
                                     tsmi.setSelected( false );
                                 }
                             }
-                            cmenuSinger.show( this, e.X, e.Y );
+                            cmenusinger.show( this, e.X, e.Y );
                         } else {
                             // マウス位置に何もアイテムが無かった場合
                             if ( !_cmenu_singer_prepared.Equals( renderer ) ) {
@@ -5397,16 +5397,16 @@ namespace org.kbinani.cadencii {
                                 }
                                 last_clock = ve2.Clock;
                             }
-                            TagForCMenuSinger tag = new TagForCMenuSinger();
+                            TagForCMenusinger tag = new TagForCMenusinger();
                             tag.SingerChangeExists = false;
                             tag.Clock = clock;
-                            cmenuSinger.setTag( tag );//                        new KeyValuePair<boolean, int>( false, clock );
-                            MenuElement[] sub_cmenu_singer = cmenuSinger.getSubElements();
+                            cmenusinger.setTag( tag );//                        new KeyValuePair<boolean, int>( false, clock );
+                            MenuElement[] sub_cmenu_singer = cmenusinger.getSubElements();
                             for ( int i = 0; i < sub_cmenu_singer.Length; i++ ) {
                                 BMenuItem tsmi = (BMenuItem)sub_cmenu_singer[i];
                                 tsmi.setSelected( false );
                             }
-                            cmenuSinger.show( this, e.X, e.Y );
+                            cmenusinger.show( this, e.X, e.Y );
                         }
                     }
                     #endregion
@@ -5419,10 +5419,10 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="renderer"></param>
         public void prepareSingerMenu( RendererKind renderer ) {
-            cmenuSinger.removeAll();
+            cmenusinger.removeAll();
             Vector<SingerConfig> items = null;
             if ( renderer == RendererKind.UTAU || renderer == RendererKind.STRAIGHT_UTAU ) {
-                items = AppManager.editorConfig.UtauSingers;
+                items = AppManager.editorConfig.Utausingers;
             } else if ( renderer == RendererKind.VOCALOID1_100 || renderer == RendererKind.VOCALOID1_101 ) {
                 items = new Vector<SingerConfig>( Arrays.asList( VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID1 ) ) );
             } else if ( renderer == RendererKind.VOCALOID2 ) {
@@ -5477,29 +5477,29 @@ namespace org.kbinani.cadencii {
                 if ( sc != null ) {
                     BMenuItem tsmi = new BMenuItem();
                     tsmi.setText( sc.VOICENAME );
-                    TagForCMenuSingerDropDown tag = new TagForCMenuSingerDropDown();
+                    TagForCMenusingerDropDown tag = new TagForCMenusingerDropDown();
                     tag.ToolTipText = tip;
                     tag.ToolTipPxWidth = 0;
                     tag.Language = sc.Language;
                     tag.Program = sc.Program;
                     tsmi.setTag( tag );
-                    tsmi.clickEvent.add( new BEventHandler( this, "cmenuSinger_Click" ) );
+                    tsmi.clickEvent.add( new BEventHandler( this, "cmenusinger_Click" ) );
                     if ( AppManager.editorConfig.Platform == PlatformEnum.Windows ) {
-                        // TODO: cmenuSinger.ItemsのToolTip。monoで実行するとMouseHoverで落ちる
+                        // TODO: cmenusinger.ItemsのToolTip。monoで実行するとMouseHoverで落ちる
 #if JAVA
 #else
-                        tsmi.MouseHover += new EventHandler( cmenuSinger_MouseHover );
+                        tsmi.MouseHover += new EventHandler( cmenusinger_MouseHover );
 #endif
                     }
-                    cmenuSinger.add( tsmi );
+                    cmenusinger.add( tsmi );
                     //list.Add( i );
                     count++;
                 }
             }
 #if JAVA
-            cmenuSinger.visibleChangedEvent.add( new BEventHandler( this, "cmenuSinger_VisibleChanged" ) );
+            cmenusinger.visibleChangedEvent.add( new BEventHandler( this, "cmenusinger_VisibleChanged" ) );
 #else
-            cmenuSinger.VisibleChanged += new EventHandler( cmenuSinger_VisibleChanged );
+            cmenusinger.VisibleChanged += new EventHandler( cmenusinger_VisibleChanged );
 #endif
             _cmenusinger_tooltip_width = new int[count];
             //m_cmenusinger_map = list.ToArray();
@@ -5509,31 +5509,31 @@ namespace org.kbinani.cadencii {
             _cmenu_singer_prepared = renderer;
         }
 
-        public void cmenuSinger_VisibleChanged( Object sender, BEventArgs e ) {
+        public void cmenusinger_VisibleChanged( Object sender, BEventArgs e ) {
 #if JAVA
 #else
-            toolTip.Hide( cmenuSinger );
+            toolTip.Hide( cmenusinger );
 #endif
         }
 
-        public void cmenuSinger_MouseEnter( Object sender, BEventArgs e ) {
-            cmenuSinger_MouseHover( sender, e );
+        public void cmenusinger_MouseEnter( Object sender, BEventArgs e ) {
+            cmenusinger_MouseHover( sender, e );
         }
 
-        public void cmenuSinger_MouseHover( Object sender, BEventArgs e ) {
+        public void cmenusinger_MouseHover( Object sender, BEventArgs e ) {
 #if !JAVA
             try {
-                TagForCMenuSingerDropDown tag = (TagForCMenuSingerDropDown)((BMenuItem)sender).getTag();
+                TagForCMenusingerDropDown tag = (TagForCMenusingerDropDown)((BMenuItem)sender).getTag();
                 String tip = tag.ToolTipText;
                 int language = tag.Language;
                 int program = tag.Program;
 
                 // tooltipを表示するy座標を決める
                 int y = 0;
-                MenuElement[] sub = cmenuSinger.getSubElements();
+                MenuElement[] sub = cmenusinger.getSubElements();
                 for ( int i = 0; i < sub.Length; i++ ) {
                     BMenuItem item = (BMenuItem)sub[i];
-                    TagForCMenuSingerDropDown tag2 = (TagForCMenuSingerDropDown)item.getTag();
+                    TagForCMenusingerDropDown tag2 = (TagForCMenusingerDropDown)item.getTag();
                     if ( language == tag2.Language &&
                          program == tag2.Program ) {
                         break;
@@ -5542,18 +5542,18 @@ namespace org.kbinani.cadencii {
                 }
 
                 int tip_width = tag.ToolTipPxWidth;
-                Point ppts = cmenuSinger.pointToScreen( new Point( 0, 0 ) );
+                Point ppts = cmenusinger.pointToScreen( new Point( 0, 0 ) );
                 Point pts = new Point( ppts.x, ppts.y );
                 Rectangle rrc = PortUtil.getScreenBounds( this );
                 Rectangle rc = new Rectangle( rrc.x, rrc.y, rrc.width, rrc.height );
-                TagForCMenuSingerDropDown tag3 = new TagForCMenuSingerDropDown();
+                TagForCMenusingerDropDown tag3 = new TagForCMenusingerDropDown();
                 tag3.Program = program;
                 tag3.Language = language;
                 toolTip.Tag = tag3;
-                if ( pts.x + cmenuSinger.getWidth() + tip_width > rc.width ) {
-                    toolTip.Show( tip, cmenuSinger, new System.Drawing.Point( -tip_width, y ), 5000 );
+                if ( pts.x + cmenusinger.getWidth() + tip_width > rc.width ) {
+                    toolTip.Show( tip, cmenusinger, new System.Drawing.Point( -tip_width, y ), 5000 );
                 } else {
-                    toolTip.Show( tip, cmenuSinger, new System.Drawing.Point( cmenuSinger.Width, y ), 5000 );
+                    toolTip.Show( tip, cmenusinger, new System.Drawing.Point( cmenusinger.Width, y ), 5000 );
                 }
             } catch ( Exception ex ) {
                 PortUtil.println( "TarckSelectro.tsmi_MouseHover; ex=" + ex );
@@ -5562,23 +5562,23 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        private struct TagForCMenuSinger {
+        private struct TagForCMenusinger {
             public boolean SingerChangeExists;
             public int Clock;
             public int InternalID;
         }
 
-        private struct TagForCMenuSingerDropDown {
+        private struct TagForCMenusingerDropDown {
             public int ToolTipPxWidth;
             public String ToolTipText;
             public int Language;
             public int Program;
         }
 
-        public void cmenuSinger_Click( Object sender, BEventArgs e ) {
+        public void cmenusinger_Click( Object sender, BEventArgs e ) {
             if ( sender is BMenuItem ) {
-                TagForCMenuSinger tag = (TagForCMenuSinger)cmenuSinger.getTag();
-                TagForCMenuSingerDropDown tag_dditem = (TagForCMenuSingerDropDown)((BMenuItem)sender).getTag();
+                TagForCMenusinger tag = (TagForCMenusinger)cmenusinger.getTag();
+                TagForCMenusingerDropDown tag_dditem = (TagForCMenusingerDropDown)((BMenuItem)sender).getTag();
                 int language = tag_dditem.Language;
                 int program = tag_dditem.Program;
                 VsqID item = null;
@@ -5627,11 +5627,11 @@ namespace org.kbinani.cadencii {
             if ( tooltip.Tag == null ) {
                 return;
             }
-            if ( !(tooltip.Tag is TagForCMenuSingerDropDown) ) {
+            if ( !(tooltip.Tag is TagForCMenusingerDropDown) ) {
                 return;
             }
-            TagForCMenuSingerDropDown tag_tooltip = (TagForCMenuSingerDropDown)tooltip.Tag;
-            MenuElement[] sub_cmenu_singer = cmenuSinger.getSubElements();
+            TagForCMenusingerDropDown tag_tooltip = (TagForCMenusingerDropDown)tooltip.Tag;
+            MenuElement[] sub_cmenu_singer = cmenusinger.getSubElements();
             for ( int i = 0; i < sub_cmenu_singer.Length; i++ ) {
                 MenuElement tsi = sub_cmenu_singer[i];
                 if ( !(tsi is BMenuItem) ) {
@@ -5642,10 +5642,10 @@ namespace org.kbinani.cadencii {
                 if ( obj == null ) {
                     continue;
                 }
-                if ( !(obj is TagForCMenuSingerDropDown) ) {
+                if ( !(obj is TagForCMenusingerDropDown) ) {
                     continue;
                 }
-                TagForCMenuSingerDropDown tag = (TagForCMenuSingerDropDown)obj;
+                TagForCMenusingerDropDown tag = (TagForCMenusingerDropDown)obj;
                 if ( tag.Language == tag_tooltip.Language &&
                      tag.Program == tag_tooltip.Program ) {
                     tag.ToolTipPxWidth = rc.width;
@@ -5772,7 +5772,7 @@ namespace org.kbinani.cadencii {
         /// </summary>
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
-            this.cmenuSinger = new org.kbinani.windows.forms.BPopupMenu( this.components );
+            this.cmenusinger = new org.kbinani.windows.forms.BPopupMenu( this.components );
             this.toolTip = new System.Windows.Forms.ToolTip( this.components );
             this.cmenuCurve = new org.kbinani.windows.forms.BPopupMenu( this.components );
             this.cmenuCurveVelocity = new org.kbinani.windows.forms.BMenuItem();
@@ -5816,10 +5816,10 @@ namespace org.kbinani.cadencii {
             this.cmenuCurve.SuspendLayout();
             this.SuspendLayout();
             // 
-            // cmenuSinger
+            // cmenusinger
             // 
-            this.cmenuSinger.Name = "cmenuSinger";
-            this.cmenuSinger.Size = new System.Drawing.Size( 61, 4 );
+            this.cmenusinger.Name = "cmenusinger";
+            this.cmenusinger.Size = new System.Drawing.Size( 61, 4 );
             // 
             // toolTip
             // 
@@ -6114,7 +6114,7 @@ namespace org.kbinani.cadencii {
 
         #endregion
 
-        private BPopupMenu cmenuSinger;
+        private BPopupMenu cmenusinger;
         private System.Windows.Forms.ToolTip toolTip;
         private BPopupMenu cmenuCurve;
         private BMenuItem cmenuCurveVelocity;
