@@ -180,6 +180,7 @@ namespace org.kbinani.cadencii {
             } catch ( Exception ex ) {
                 AppManager.showMessageBox( _( "Integer format error" ), _( "Error" ), org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, org.kbinani.windows.forms.Utility.MSGBOX_ERROR_MESSAGE );
                 setDialogResult( BDialogResult.CANCEL );
+                Logger.write( typeof( FormBezierPointEdit ) + ".btnOK_Click; ex=" + ex + "\n" );
             }
         }
 

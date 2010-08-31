@@ -90,6 +90,7 @@ namespace org.kbinani.cadencii {
             try {
                 value = PortUtil.parseInt( txtDataPointValue.getText() );
             } catch ( Exception ex ) {
+                Logger.write( typeof( FormCurvePointEdit ) + ".applyValue; ex=" + ex + "\n" );
                 return;
             }
             if ( value < m_curve.getMinimum() ) {

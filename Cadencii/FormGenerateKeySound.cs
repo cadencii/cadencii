@@ -231,6 +231,7 @@ namespace org.kbinani.cadencii {
                                 wv.write( path );
                             } catch ( Exception ex0 ) {
                                 PortUtil.stderr.println( "FormGenerateKeySound#bgWork_DoWork; ex0=" + ex0 );
+                                Logger.write( typeof( FormGenerateKeySound ) + ".bgWork_DoWork; ex=" + ex0 + "\n" );
                             }
                         }
                     } catch ( Exception ex ) {
@@ -352,6 +353,7 @@ namespace org.kbinani.cadencii {
                                   false );
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "FormGenerateKeySound#GenerateSinglePhone; ex=" + ex );
+                Logger.write( typeof( FormGenerateKeySound ) + ".GenerateSinglePhone; ex=" + ex + "\n" );
             } finally {
                 if ( ww != null ) {
                     try {

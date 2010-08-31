@@ -15,10 +15,12 @@
 #if JAVA
 package org.kbinani.cadencii;
 
+import org.kbinani.*;
 import org.kbinani.vsq.*;
 #else
 using System;
 using System.Text;
+using org.kbinani;
 using org.kbinani.java.io;
 using org.kbinani.vsq;
 
@@ -123,6 +125,7 @@ namespace org.kbinani.cadencii {
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "VSTiProxy#realoadAquesTone; ex=" + ex );
                     loaded = false;
+                    Logger.write( typeof( AquesToneDriver ) + ".reload; ex=" + ex + "\n" );
                 }
                 _instance.loaded = loaded;
             }
@@ -152,6 +155,7 @@ namespace org.kbinani.cadencii {
             } catch ( Exception ex ) {
                 ret = false;
                 PortUtil.stderr.println( "AquesToneDriver#open; ex=" + ex );
+                Logger.write( typeof( AquesToneDriver ) + ".open; ex=" + ex + "\n" );
             }
 
             /*try {

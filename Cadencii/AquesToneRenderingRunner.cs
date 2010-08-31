@@ -379,6 +379,7 @@ namespace org.kbinani.cadencii {
                             release = PortUtil.parseInt( strRelease );
                         } catch ( Exception ex ) {
                             release = 64;
+                            Logger.write( typeof( AquesToneRenderingRunner ) + ".generateMidiEvent; ex=" + ex + "\n" );
                         }
                         ParameterEvent pe = new ParameterEvent();
                         pe.index = driver.releaseParameterIndex;

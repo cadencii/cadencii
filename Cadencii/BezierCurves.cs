@@ -176,6 +176,7 @@ namespace org.kbinani.cadencii {
                         try {
                             bc_edit = bc.extractPartialBezier( start, chain_start );
                         } catch ( Exception ex ) {
+                            Logger.write( typeof( BezierCurves ) + ".mergeBezierChain; ex=" + ex + "\n" );
                             continue;
                         }
                         bc_edit.id = bc.id;
@@ -214,6 +215,7 @@ namespace org.kbinani.cadencii {
                         try {
                             bc_edit = bc.extractPartialBezier( chain_end, end );
                         } catch ( Exception ex ) {
+                            Logger.write( typeof( BezierCurves ) + ".mergeBezierChain; ex=" + ex + "\n" );
                             continue;
                         }
                         bc_edit.id = bc.id;
@@ -253,6 +255,7 @@ namespace org.kbinani.cadencii {
                         try {
                             left = bc.extractPartialBezier( start, chain_start );
                         } catch ( Exception ex ) {
+                            Logger.write( typeof( BezierCurves ) + ".mergeBezierChain; ex=" + ex + "\n" );
                             continue;
                         }
                         BezierChain right = null;
@@ -356,6 +359,7 @@ namespace org.kbinani.cadencii {
                             tmp.add( chain );
                             edited = true;
                         } catch ( Exception ex ) {
+                            Logger.write( typeof( BezierCurves ) + ".deleteBeziers; ex=" + ex + "\n" );
                         }
                     } else if ( chain_start <= clock_start && clock_end <= chain_end ) {
                         // chain_start ~ startとend ~ chain_endを残す
@@ -368,6 +372,7 @@ namespace org.kbinani.cadencii {
                             tmp.add( chain2 );
                             edited = true;
                         } catch ( Exception ex ) {
+                            Logger.write( typeof( BezierCurves ) + ".deleteBeziers; ex=" + ex + "\n" );
                         }
                     } else if ( chain_start < clock_start && clock_start < chain_end && chain_end < clock_end ) {
                         // chain_start ~ startを残す
@@ -377,6 +382,7 @@ namespace org.kbinani.cadencii {
                             tmp.add( chain );
                             edited = true;
                         } catch ( Exception ex ) {
+                            Logger.write( typeof( BezierCurves ) + ".deleteBeiers; ex=" + ex + "\n" );
                         }
                     } else if ( clock_start <= chain_start && chain_end <= clock_end ) {
                         // 全体を削除

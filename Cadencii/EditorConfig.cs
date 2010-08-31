@@ -601,11 +601,13 @@ namespace org.kbinani.cadencii {
                 fs = new FileOutputStream( file );
                 s_serializer.serialize( fs, instance );
             } catch ( Exception ex ) {
+                Logger.write( typeof( EditorConfig ) + ".serialize; ex=" + ex + "\n" );
             } finally {
                 if ( fs != null ) {
                     try {
                         fs.close();
                     } catch ( Exception ex2 ) {
+                        Logger.write( typeof( EditorConfig ) + ".serialize; ex=" + ex2 + "\n" );
                     }
                 }
             }
@@ -622,6 +624,7 @@ namespace org.kbinani.cadencii {
                 PortUtil.stderr.println( "EditorConfig#deserialize; ex=" + ex );
                 ex.printStackTrace();
 #endif
+                Logger.write( typeof( EditorConfig ) + ".deserialize; ex=" + ex + "\n" );
             } finally {
                 if ( fs != null ) {
                     try {
@@ -728,6 +731,7 @@ namespace org.kbinani.cadencii {
                     quantizeModeChangedEvent.raise( typeof( EditorConfig ), new BEventArgs() );
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "EditorConfig#setPositionQuantizeTriplet; ex=" + ex );
+                    Logger.write( typeof( EditorConfig ) + ".setPositionQuantizeTriplet; ex=" + ex + "\n" );
                 }
             }
         }
@@ -755,6 +759,7 @@ namespace org.kbinani.cadencii {
                     quantizeModeChangedEvent.raise( typeof( EditorConfig ), new BEventArgs() );
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "EditorConfig#setLengthQuantize; ex=" + ex );
+                    Logger.write( typeof( EditorConfig ) + ".setLengthQuantize; ex=" + ex + "\n" );
                 }
             }
         }
@@ -781,6 +786,7 @@ namespace org.kbinani.cadencii {
                     quantizeModeChangedEvent.raise( typeof( EditorConfig ), new BEventArgs() );
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "EditorConfig#setLengthQuantizeTriplet; ex=" + ex );
+                    Logger.write( typeof( EditorConfig ) + ".setLengthQuantizeTriplet; ex=" + ex + "\n" );
                 }
             }
         }

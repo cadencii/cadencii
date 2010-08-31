@@ -752,6 +752,7 @@ namespace org.kbinani.cadencii {
                 renderingStatusSerializer.serialize( fs, lastRenderedStatus[track - 1] );
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
+                Logger.write( typeof( AppManager ) + ".serializeRenderingStauts; ex=" + ex + "\n" );
             } finally {
                 if ( fs != null ) {
                     try {
@@ -778,6 +779,7 @@ namespace org.kbinani.cadencii {
                     dialog.setVisible( true );
                     endShowDialog();
                 } catch ( Exception ex2 ) {
+                    Logger.write( typeof( AppManager ) + ".reportError; ex=" + ex + "\n" );
                 } finally {
                     if ( dialog != null ) {
                         try {
@@ -1021,6 +1023,7 @@ namespace org.kbinani.cadencii {
                         PortUtil.deleteFile( backup );
                     } catch ( Exception ex ) {
                         PortUtil.stderr.println( "AppManager::handleAutoBackupTimerTick; ex=" + ex );
+                        Logger.write( typeof( AppManager ) + ".handleAutoBackupTimerTick; ex=" + ex + "\n" );
                     }
                 }
                 if ( PortUtil.isFileExists( file2 ) ) {
@@ -1046,6 +1049,7 @@ namespace org.kbinani.cadencii {
                 _debugLog.newLine();
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "AppManager#debugWriteLine; ex=" + ex );
+                Logger.write( typeof( AppManager ) + ".debugWriteLine; ex=" + ex + "\n" );
             }
             PortUtil.println( message );
 #endif
@@ -1115,6 +1119,7 @@ namespace org.kbinani.cadencii {
                     selectedToolChangedEvent.raise( typeof( AppManager ), new BEventArgs() );
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "AppManager#setCurveMode; ex=" + ex );
+                    Logger.write( typeof( AppManager ) + ".setCurveMode; ex=" + ex + "\n" );
                 }
             }
         }
@@ -1298,6 +1303,7 @@ namespace org.kbinani.cadencii {
                     selectedToolChangedEvent.raise( typeof( AppManager ), new EventArgs() );
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "AppManager#setSelectedTool; ex=" + ex );
+                    Logger.write( typeof( AppManager ) + ".setSelectedTool; ex=" + ex + "\n" );
                 }
             }
         }
@@ -1612,6 +1618,7 @@ namespace org.kbinani.cadencii {
                             selectedEventChangedEvent.raise( typeof( AppManager ), false );
                         } catch ( Exception ex ) {
                             PortUtil.stderr.println( "AppManager#addSelectedEventCor; ex=" + ex );
+                            Logger.write( typeof( AppManager ) + ".addSelectedCurveCor; ex=" + ex + "\n" );
                         }
                     }
                     break;
@@ -1770,6 +1777,7 @@ namespace org.kbinani.cadencii {
                     gridVisibleChangedEvent.raise( typeof( AppManager ), new BEventArgs() );
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "AppManager#setGridVisible; ex=" + ex );
+                    Logger.write( typeof( AppManager ) + ".setGridVisible; ex=" + ex + "\n" );
                 }
             }
         }
@@ -1802,6 +1810,7 @@ namespace org.kbinani.cadencii {
                             previewStartedEvent.raise( typeof( AppManager ), new BEventArgs() );
                         } catch ( Exception ex ) {
                             PortUtil.stderr.println( "AppManager#setPlaying; ex=" + ex );
+                            Logger.write( typeof( AppManager ) + ".setPlaying; ex=" + ex + "\n" );
                         }
                     } else if ( !s_playing ) {
                         try {
@@ -1835,6 +1844,7 @@ namespace org.kbinani.cadencii {
                         System.IO.File.SetAttributes( file2, System.IO.FileAttributes.Hidden );
                     } catch ( Exception ex ) {
                         PortUtil.stderr.println( "AppManager#saveToCor; ex=" + ex );
+                        Logger.write( typeof( AppManager ) + ".saveToCor; ex=" + ex + "\n" );
                     }
                 }
 #endif
@@ -1858,6 +1868,7 @@ namespace org.kbinani.cadencii {
                                             _( "Info." ),
                                             PortUtil.OK_OPTION,
                                             org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+                            Logger.write( typeof( AppManager ) + ".saveTo; ex=" + ex + "\n" );
                             return;
                         }
                     }
@@ -2005,6 +2016,7 @@ namespace org.kbinani.cadencii {
 #if JAVA
                 ex.printStackTrace();
 #endif
+                Logger.write( typeof( AppManager ) + ".readVsq; ex=" + ex + "\n" );
                 return;
             }
             if ( newvsq == null ) {
@@ -2113,6 +2125,7 @@ namespace org.kbinani.cadencii {
                     }
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "AppManager#init; ex=" + ex );
+                    Logger.write( typeof( AppManager ) + ".init; ex=" + ex + "\n" );
                 } finally {
                     if ( br != null ) {
                         try {
@@ -2290,6 +2303,7 @@ namespace org.kbinani.cadencii {
                     } catch ( Exception ex ) {
                         PortUtil.stderr.println( "AppManager#reloadUtauVoiceDB; ex=" + ex );
                         db2 = null;
+                        Logger.write( typeof( AppManager ) + ".reloadUtauVoiceDB; ex=" + ex + "\n" );
                     }
                     if ( db2 != null ) {
                         utauVoiceDB.put( sc.VOICEIDSTR, db2 );
