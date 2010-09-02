@@ -80,6 +80,10 @@ namespace org.kbinani {
             }
         }
 
+        public static String getPath() {
+            return path;
+        }
+
         public static void setPath( String file ) {
             boolean append = false;
             if ( log != null && !path.Equals( file ) ) {

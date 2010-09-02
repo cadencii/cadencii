@@ -566,6 +566,9 @@ namespace org.kbinani.cadencii {
         /// デフォルトのストローク
         /// </summary>
         private BasicStroke _strokeDefault = null;
+        private org.kbinani.windows.forms.BMenuItem menuHelpLog;
+        private org.kbinani.windows.forms.BMenuItem menuHelpLogSwitch;
+        private org.kbinani.windows.forms.BMenuItem menuHelpLogOpen;
         /// <summary>
         /// 描画幅2pxのストローク
         /// </summary>
@@ -945,6 +948,7 @@ namespace org.kbinani.cadencii {
 #if !ENABLE_MIDI
             menuSettingMidi.setVisible( false );
 #endif
+            menuHelpLogSwitch.setSelected( Logger.isEnabled() );
             initResource();
             applyShortcut();
 
@@ -4078,6 +4082,12 @@ namespace org.kbinani.cadencii {
 
             menuHelp.setText( _( "Help" ) );
             menuHelp.setMnemonic( KeyEvent.VK_H );
+            menuHelpLog.setText( _( "Log" ) );
+            menuHelpLog.setMnemonic( KeyEvent.VK_L );
+            menuHelpLogSwitch.setText( Logger.isEnabled() ? _( "Enabled" ) : _( "Disabled" ) );
+            menuHelpLogSwitch.setMnemonic( KeyEvent.VK_L );
+            menuHelpLogOpen.setText( "Open" );
+            menuHelpLogOpen.setMnemonic( KeyEvent.VK_O );
             menuHelpAbout.setText( _( "About Cadencii" ) );
             menuHelpAbout.setMnemonic( KeyEvent.VK_A );
 
@@ -6444,122 +6454,122 @@ namespace org.kbinani.cadencii {
         public void registerEventHandlers() {
             loadEvent.add( new BEventHandler( this, "FormMain_Load" ) );
             menuStripMain.mouseDownEvent.add( new BMouseEventHandler( this, "menuStrip1_MouseDown" ) );
-            menuFileNew.mouseEnterEvent.add( new BEventHandler( this, "menuFileNew_MouseEnter" ) );
+            menuFileNew.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuFileNew.clickEvent.add( new BEventHandler( this, "commonFileNew_Click" ) );
-            menuFileOpen.mouseEnterEvent.add( new BEventHandler( this, "menuFileOpen_MouseEnter" ) );
+            menuFileOpen.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuFileOpen.clickEvent.add( new BEventHandler( this, "commonFileOpen_Click" ) );
-            menuFileSave.mouseEnterEvent.add( new BEventHandler( this, "menuFileSave_MouseEnter" ) );
+            menuFileSave.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuFileSave.clickEvent.add( new BEventHandler( this, "commonFileSave_Click" ) );
-            menuFileSaveNamed.mouseEnterEvent.add( new BEventHandler( this, "menuFileSaveNamed_MouseEnter" ) );
+            menuFileSaveNamed.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuFileSaveNamed.clickEvent.add( new BEventHandler( this, "menuFileSaveNamed_Click" ) );
-            menuFileOpenVsq.mouseEnterEvent.add( new BEventHandler( this, "menuFileOpenVsq_MouseEnter" ) );
+            menuFileOpenVsq.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuFileOpenVsq.clickEvent.add( new BEventHandler( this, "menuFileOpenVsq_Click" ) );
-            menuFileOpenUst.mouseEnterEvent.add( new BEventHandler( this, "menuFileOpenUst_MouseEnter" ) );
+            menuFileOpenUst.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuFileOpenUst.clickEvent.add( new BEventHandler( this, "menuFileOpenUst_Click" ) );
-            menuFileImport.mouseEnterEvent.add( new BEventHandler( this, "menuFileImport_MouseEnter" ) );
-            menuFileImportVsq.mouseEnterEvent.add( new BEventHandler( this, "menuFileImportVsq_MouseEnter" ) );
+            menuFileImport.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
+            menuFileImportVsq.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuFileImportVsq.clickEvent.add( new BEventHandler( this, "menuFileImportVsq_Click" ) );
-            menuFileImportMidi.mouseEnterEvent.add( new BEventHandler( this, "menuFileImportMidi_MouseEnter" ) );
+            menuFileImportMidi.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuFileImportMidi.clickEvent.add( new BEventHandler( this, "menuFileImportMidi_Click" ) );
             menuFileExport.dropDownOpeningEvent.add( new BEventHandler( this, "menuFileExport_DropDownOpening" ) );
-            menuFileExportWave.mouseEnterEvent.add( new BEventHandler( this, "menuFileExportWave_MouseEnter" ) );
+            menuFileExportWave.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuFileExportWave.clickEvent.add( new BEventHandler( this, "menuFileExportWave_Click" ) );
-            menuFileExportMidi.mouseEnterEvent.add( new BEventHandler( this, "menuFileExportMidi_MouseEnter" ) );
+            menuFileExportMidi.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuFileExportMidi.clickEvent.add( new BEventHandler( this, "menuFileExportMidi_Click" ) );
             menuFileExportMusicXml.clickEvent.add( new BEventHandler( this, "menuFileExportMusicXml_Click" ) );
-            menuFileRecent.mouseEnterEvent.add( new BEventHandler( this, "menuFileRecent_MouseEnter" ) );
-            menuFileQuit.mouseEnterEvent.add( new BEventHandler( this, "menuFileQuit_MouseEnter" ) );
+            menuFileRecent.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
+            menuFileQuit.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuFileQuit.clickEvent.add( new BEventHandler( this, "menuFileQuit_Click" ) );
             menuEdit.dropDownOpeningEvent.add( new BEventHandler( this, "menuEdit_DropDownOpening" ) );
-            menuEditUndo.mouseEnterEvent.add( new BEventHandler( this, "menuEditUndo_MouseEnter" ) );
+            menuEditUndo.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuEditUndo.clickEvent.add( new BEventHandler( this, "commonEditUndo_Click" ) );
-            menuEditRedo.mouseEnterEvent.add( new BEventHandler( this, "menuEditRedo_MouseEnter" ) );
+            menuEditRedo.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuEditRedo.clickEvent.add( new BEventHandler( this, "commonEditRedo_Click" ) );
-            menuEditCut.mouseEnterEvent.add( new BEventHandler( this, "menuEditCut_MouseEnter" ) );
+            menuEditCut.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuEditCut.clickEvent.add( new BEventHandler( this, "commonEditCut_Click" ) );
-            menuEditCopy.mouseEnterEvent.add( new BEventHandler( this, "menuEditCopy_MouseEnter" ) );
+            menuEditCopy.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuEditCopy.clickEvent.add( new BEventHandler( this, "commonEditCopy_Click" ) );
-            menuEditPaste.mouseEnterEvent.add( new BEventHandler( this, "menuEditPaste_MouseEnter" ) );
+            menuEditPaste.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuEditPaste.clickEvent.add( new BEventHandler( this, "commonEditPaste_Click" ) );
-            menuEditDelete.mouseEnterEvent.add( new BEventHandler( this, "menuEditDelete_MouseEnter" ) );
+            menuEditDelete.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuEditDelete.clickEvent.add( new BEventHandler( this, "menuEditDelete_Click" ) );
-            menuEditAutoNormalizeMode.mouseEnterEvent.add( new BEventHandler( this, "menuEditAutoNormalizeMode_MouseEnter" ) );
+            menuEditAutoNormalizeMode.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuEditAutoNormalizeMode.clickEvent.add( new BEventHandler( this, "menuEditAutoNormalizeMode_Click" ) );
-            menuEditSelectAll.mouseEnterEvent.add( new BEventHandler( this, "menuEditSelectAll_MouseEnter" ) );
+            menuEditSelectAll.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuEditSelectAll.clickEvent.add( new BEventHandler( this, "menuEditSelectAll_Click" ) );
-            menuEditSelectAllEvents.mouseEnterEvent.add( new BEventHandler( this, "menuEditSelectAllEvents_MouseEnter" ) );
+            menuEditSelectAllEvents.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuEditSelectAllEvents.clickEvent.add( new BEventHandler( this, "menuEditSelectAllEvents_Click" ) );
             menuVisualControlTrack.checkedChangedEvent.add( new BEventHandler( this, "menuVisualControlTrack_CheckedChanged" ) );
-            menuVisualControlTrack.mouseEnterEvent.add( new BEventHandler( this, "menuVisualControlTrack_MouseEnter" ) );
+            menuVisualControlTrack.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuVisualCircuitDiagram.checkedChangedEvent.add( new BEventHandler( this, "menuVisualCircuitDiagram_CheckedChanged" ) );
-            menuVisualMixer.mouseEnterEvent.add( new BEventHandler( this, "menuVisualMixer_MouseEnter" ) );
+            menuVisualMixer.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuVisualMixer.clickEvent.add( new BEventHandler( this, "menuVisualMixer_Click" ) );
             menuVisualWaveform.checkedChangedEvent.add( new BEventHandler( this, "menuVisualWaveform_CheckedChanged" ) );
-            menuVisualWaveform.mouseEnterEvent.add( new BEventHandler( this, "menuVisualWaveform_MouseEnter" ) );
-            menuVisualProperty.mouseEnterEvent.add( new BEventHandler( this, "menuVisualProperty_MouseEnter" ) );
+            menuVisualWaveform.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
+            menuVisualProperty.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuVisualProperty.clickEvent.add( new BEventHandler( this, "menuVisualProperty_Click" ) );
             menuVisualGridline.checkedChangedEvent.add( new BEventHandler( this, "menuVisualGridline_CheckedChanged" ) );
-            menuVisualGridline.mouseEnterEvent.add( new BEventHandler( this, "menuVisualGridline_MouseEnter" ) );
+            menuVisualGridline.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuVisualIconPalette.clickEvent.add( new BEventHandler( this, "menuVisualIconPalette_Click" ) );
-            menuVisualStartMarker.mouseEnterEvent.add( new BEventHandler( this, "menuVisualStartMarker_MouseEnter" ) );
+            menuVisualStartMarker.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuVisualStartMarker.clickEvent.add( new BEventHandler( this, "handleStartMarker_Click" ) );
-            menuVisualEndMarker.mouseEnterEvent.add( new BEventHandler( this, "menuVisualEndMarker_MouseEnter" ) );
+            menuVisualEndMarker.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuVisualEndMarker.clickEvent.add( new BEventHandler( this, "handleEndMarker_Click" ) );
             menuVisualLyrics.checkedChangedEvent.add( new BEventHandler( this, "menuVisualLyrics_CheckedChanged" ) );
-            menuVisualLyrics.mouseEnterEvent.add( new BEventHandler( this, "menuVisualLyrics_MouseEnter" ) );
+            menuVisualLyrics.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuVisualNoteProperty.checkedChangedEvent.add( new BEventHandler( this, "menuVisualNoteProperty_CheckedChanged" ) );
-            menuVisualNoteProperty.mouseEnterEvent.add( new BEventHandler( this, "menuVisualNoteProperty_MouseEnter" ) );
+            menuVisualNoteProperty.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuVisualPitchLine.checkedChangedEvent.add( new BEventHandler( this, "menuVisualPitchLine_CheckedChanged" ) );
-            menuVisualPitchLine.mouseEnterEvent.add( new BEventHandler( this, "menuVisualPitchLine_MouseEnter" ) );
+            menuVisualPitchLine.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuVisualPluginUi.dropDownOpeningEvent.add( new BEventHandler( this, "menuVisualPluginUi_DropDownOpening" ) );
             menuVisualPluginUiVocaloid100.clickEvent.add( new BEventHandler( this, "menuVisualPluginUiVocaloidCommon_Click" ) );
             menuVisualPluginUiVocaloid101.clickEvent.add( new BEventHandler( this, "menuVisualPluginUiVocaloidCommon_Click" ) );
             menuVisualPluginUiVocaloid2.clickEvent.add( new BEventHandler( this, "menuVisualPluginUiVocaloidCommon_Click" ) );
             menuVisualPluginUiAquesTone.clickEvent.add( new BEventHandler( this, "menuVisualPluginUiAquesTone_Click" ) );
             menuJob.dropDownOpeningEvent.add( new BEventHandler( this, "menuJob_DropDownOpening" ) );
-            menuJobNormalize.mouseEnterEvent.add( new BEventHandler( this, "menuJobNormalize_MouseEnter" ) );
+            menuJobNormalize.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuJobNormalize.clickEvent.add( new BEventHandler( this, "menuJobNormalize_Click" ) );
-            menuJobInsertBar.mouseEnterEvent.add( new BEventHandler( this, "menuJobInsertBar_MouseEnter" ) );
+            menuJobInsertBar.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuJobInsertBar.clickEvent.add( new BEventHandler( this, "menuJobInsertBar_Click" ) );
-            menuJobDeleteBar.mouseEnterEvent.add( new BEventHandler( this, "menuJobDeleteBar_MouseEnter" ) );
+            menuJobDeleteBar.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuJobDeleteBar.clickEvent.add( new BEventHandler( this, "menuJobDeleteBar_Click" ) );
-            menuJobRandomize.mouseEnterEvent.add( new BEventHandler( this, "menuJobRandomize_MouseEnter" ) );
+            menuJobRandomize.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuJobRandomize.clickEvent.add( new BEventHandler( this, "menuJobRandomize_Click" ) );
-            menuJobConnect.mouseEnterEvent.add( new BEventHandler( this, "menuJobConnect_MouseEnter" ) );
+            menuJobConnect.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuJobConnect.clickEvent.add( new BEventHandler( this, "menuJobConnect_Click" ) );
-            menuJobLyric.mouseEnterEvent.add( new BEventHandler( this, "menuJobLyric_MouseEnter" ) );
+            menuJobLyric.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuJobLyric.clickEvent.add( new BEventHandler( this, "menuJobLyric_Click" ) );
-            menuJobRewire.mouseEnterEvent.add( new BEventHandler( this, "menuJobRewire_MouseEnter" ) );
-            menuJobRealTime.mouseEnterEvent.add( new BEventHandler( this, "menuJobRealTime_MouseEnter" ) );
+            menuJobRewire.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
+            menuJobRealTime.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuJobRealTime.clickEvent.add( new BEventHandler( this, "menuJobRealTime_Click" ) );
-            menuJobReloadVsti.mouseEnterEvent.add( new BEventHandler( this, "menuJobReloadVsti_MouseEnter" ) );
+            menuJobReloadVsti.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuJobReloadVsti.clickEvent.add( new BEventHandler( this, "menuJobReloadVsti_Click" ) );
             menuTrack.dropDownOpeningEvent.add( new BEventHandler( this, "menuTrack_DropDownOpening" ) );
-            menuTrackOn.mouseEnterEvent.add( new BEventHandler( this, "menuTrackOn_MouseEnter" ) );
+            menuTrackOn.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuTrackOn.clickEvent.add( new BEventHandler( this, "commonTrackOn_Click" ) );
             menuTrackPlayAfterSynth.clickEvent.add( new BEventHandler( this, "commonPlayAfterSynth_Click" ) );
-            menuTrackAdd.mouseEnterEvent.add( new BEventHandler( this, "menuTrackAdd_MouseEnter" ) );
+            menuTrackAdd.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuTrackAdd.clickEvent.add( new BEventHandler( this, "menuTrackAdd_Click" ) );
-            menuTrackCopy.mouseEnterEvent.add( new BEventHandler( this, "menuTrackCopy_MouseEnter" ) );
+            menuTrackCopy.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuTrackCopy.clickEvent.add( new BEventHandler( this, "menuTrackCopy_Click" ) );
-            menuTrackChangeName.mouseEnterEvent.add( new BEventHandler( this, "menuTrackChangeName_MouseEnter" ) );
+            menuTrackChangeName.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuTrackChangeName.clickEvent.add( new BEventHandler( this, "menuTrackChangeName_Click" ) );
-            menuTrackDelete.mouseEnterEvent.add( new BEventHandler( this, "menuTrackDelete_MouseEnter" ) );
+            menuTrackDelete.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuTrackDelete.clickEvent.add( new BEventHandler( this, "menuTrackDelete_Click" ) );
-            menuTrackRenderCurrent.mouseEnterEvent.add( new BEventHandler( this, "menuTrackRenderCurrent_MouseEnter" ) );
+            menuTrackRenderCurrent.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuTrackRenderCurrent.clickEvent.add( new BEventHandler( this, "menuTrackRenderCurrent_Click" ) );
-            menuTrackRenderAll.mouseEnterEvent.add( new BEventHandler( this, "menuTrackRenderAll_MouseEnter" ) );
+            menuTrackRenderAll.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuTrackRenderAll.clickEvent.add( new BEventHandler( this, "commonTrackRenderAll_Click" ) );
-            menuTrackOverlay.mouseEnterEvent.add( new BEventHandler( this, "menuTrackOverlay_MouseEnter" ) );
+            menuTrackOverlay.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuTrackOverlay.clickEvent.add( new BEventHandler( this, "menuTrackOverlay_Click" ) );
-            menuTrackRenderer.mouseEnterEvent.add( new BEventHandler( this, "menuTrackRenderer_MouseEnter" ) );
+            menuTrackRenderer.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuTrackRenderer.dropDownOpeningEvent.add( new BEventHandler( this, "menuTrackRenderer_DropDownOpening" ) );
-            menuTrackRendererVOCALOID100.mouseEnterEvent.add( new BEventHandler( this, "menuTrackRendererVOCALOID1_MouseEnter" ) );
+            menuTrackRendererVOCALOID100.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuTrackRendererVOCALOID100.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
             menuTrackRendererVOCALOID101.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
-            menuTrackRendererVOCALOID2.mouseEnterEvent.add( new BEventHandler( this, "menuTrackRendererVOCALOID2_MouseEnter" ) );
+            menuTrackRendererVOCALOID2.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuTrackRendererVOCALOID2.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
-            menuTrackRendererUtau.mouseEnterEvent.add( new BEventHandler( this, "menuTrackRendererUtau_MouseEnter" ) );
+            menuTrackRendererUtau.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuTrackRendererUtau.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
             menuTrackRendererStraight.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
             menuTrackRendererAquesTone.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
@@ -6597,7 +6607,8 @@ namespace org.kbinani.cadencii {
             menuSettingLengthQuantizeOff.clickEvent.add( new BEventHandler( this, "h_lengthQuantizeOff" ) );
             menuSettingLengthQuantizeTriplet.clickEvent.add( new BEventHandler( this, "h_lengthQuantizeTriplet" ) );
             menuHelpAbout.clickEvent.add( new BEventHandler( this, "menuHelpAbout_Click" ) );
-            menuHelpLog.checkedChangedEvent.add( new BEventHandler( this, "menuHelpLog_CheckedChanged" ) );
+            menuHelpLogSwitch.checkedChangedEvent.add( new BEventHandler( this, "menuHelpLogSwitch_CheckedChanged" ) );
+            menuHelpLogOpen.clickEvent.add( new BEventHandler( this, "menuHelpLogOpen_Click" ) );
             menuHelpDebug.clickEvent.add( new BEventHandler( this, "menuHelpDebug_Click" ) );
             menuHiddenEditLyric.clickEvent.add( new BEventHandler( this, "menuHiddenEditLyric_Click" ) );
             menuHiddenEditFlipToolPointerPencil.clickEvent.add( new BEventHandler( this, "menuHiddenEditFlipToolPointerPencil_Click" ) );
@@ -9845,46 +9856,6 @@ namespace org.kbinani.cadencii {
             updateSplitContainer2Size();
         }
 
-        public void menuVisualControlTrack_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Show/Hide control curves." ) );
-        }
-
-        public void menuVisualMixer_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Show/Hide mixer window." ) );
-        }
-
-        public void menuVisualWaveform_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Show/Hide waveform." ) );
-        }
-
-        public void menuVisualProperty_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Show/Hide property window." ) );
-        }
-
-        public void menuVisualGridline_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Show/Hide grid line." ) );
-        }
-
-        public void menuVisualStartMarker_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Enable/Disable start marker." ) );
-        }
-
-        public void menuVisualEndMarker_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Enable/Disable end marker." ) );
-        }
-
-        public void menuVisualLyrics_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Show/Hide lyrics." ) );
-        }
-
-        public void menuVisualNoteProperty_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Show/Hide expression lines." ) );
-        }
-
-        public void menuVisualPitchLine_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Show/Hide pitch bend lines." ) );
-        }
-
         public void menuVisualPluginUi_DropDownOpening( Object sender, EventArgs e ) {
 #if ENABLE_VOCALOID
             // VOCALOID1, 2
@@ -11929,57 +11900,6 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
 
-        public void menuFileNew_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Create new project." ) );
-        }
-
-        public void menuFileOpen_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Open Cadencii project." ) );
-        }
-
-        public void menuFileSave_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Save current project." ) );
-        }
-
-        public void menuFileSaveNamed_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Save current project with new name." ) );
-        }
-
-        public void menuFileOpenVsq_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Open VSQ / VOCALOID MIDI and create new project." ) );
-        }
-
-        public void menuFileOpenUst_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Open UTAU project and create new project." ) );
-        }
-
-        public void menuFileImport_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Import." ) );
-        }
-
-        public void menuFileImportVsq_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Import VSQ / VOCALOID MIDI." ) );
-        }
-
-        public void menuFileImportMidi_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Import Standard MIDI." ) );
-        }
-
-        public void menuFileExportWave_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Export to WAVE file." ) );
-        }
-
-        public void menuFileExportMidi_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Export to Standard MIDI." ) );
-        }
-
-        public void menuFileRecent_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Recent projects." ) );
-        }
-
-        public void menuFileQuit_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Close this window." ) );
-        }
         #endregion
 
         #region menuSetting*
@@ -12598,42 +12518,6 @@ namespace org.kbinani.cadencii {
             AppManager.autoNormalize = !AppManager.autoNormalize;
             menuEditAutoNormalizeMode.setSelected( AppManager.autoNormalize );
         }
-
-        public void menuEditUndo_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Undo." ) );
-        }
-
-        public void menuEditRedo_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Redo." ) );
-        }
-
-        public void menuEditCut_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Cut selected items." ) );
-        }
-
-        public void menuEditCopy_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Copy selected items." ) );
-        }
-
-        public void menuEditPaste_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Paste copied items to current song position." ) );
-        }
-
-        public void menuEditDelete_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Delete selected items." ) );
-        }
-
-        public void menuEditAutoNormalizeMode_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Avoid automaticaly polyphonic editing." ) );
-        }
-
-        public void menuEditSelectAll_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Select all items and control curves of current track." ) );
-        }
-
-        public void menuEditSelectAllEvents_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Select all items of current track." ) );
-        }
         #endregion
 
         #region menuLyric*
@@ -13107,22 +12991,6 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void menuJobNormalize_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Correct overlapped item." ) );
-        }
-
-        public void menuJobInsertBar_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Insert bar." ) );
-        }
-
-        public void menuJobDeleteBar_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Delete bar." ) );
-        }
-
-        public void menuJobRandomize_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Randomize items." ) + _( "(not implemented)" ) );
-        }
-
         public void menuJobRandomize_Click( Object sender, EventArgs e ) {
             FormRandomize dlg = null;
             try {
@@ -13353,25 +13221,6 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void menuJobConnect_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Lengthen note end to neighboring note." ) );
-        }
-
-        public void menuJobLyric_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Import lyric." ) );
-        }
-
-        public void menuJobRewire_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Import tempo from ReWire host." ) + _( "(not implemented)" ) );
-        }
-
-        public void menuJobRealTime_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Start realtime input." ) );
-        }
-
-        public void menuJobReloadVsti_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Reload VSTi dll." ) + _( "(not implemented)" ) );
-        }
         #endregion
 
         #region menuScript
@@ -14255,13 +14104,33 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        public void menuHelpLog_CheckedChanged( Object sender, EventArgs e ) {
-            Logger.setEnabled( menuHelpLog.isSelected() );
-            if ( menuHelpLog.isSelected() ) {
-                menuHelpLog.setText( _( "Disable Log(&L)" ) );
+        public void menuHelpLogSwitch_CheckedChanged( Object sender, EventArgs e ) {
+            Logger.setEnabled( menuHelpLogSwitch.isSelected() );
+            if ( menuHelpLogSwitch.isSelected() ) {
+                menuHelpLogSwitch.setText( _( "Enabled" ) );
             }else{
-                menuHelpLog.setText( _( "Enable Log(&L)" ) );
+                menuHelpLogSwitch.setText( _( "Disabled" ) );
             }
+        }
+
+        public void menuHelpLogOpen_Click( Object sender, EventArgs e ) {
+            String file = Logger.getPath();
+            if ( file == null || (file != null && (!PortUtil.isFileExists( file ) )) ) {
+                // ログがまだできてないのでダイアログ出す
+                AppManager.showMessageBox(
+                    _( "Log file has not generated yet." ),
+                    _( "Info" ),
+                    PortUtil.OK_OPTION,
+                    org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+                return;
+            }
+
+            // ログファイルを開く
+#if JAVA
+            Runtime.getRuntime().exec( new String[] { file } );
+#else
+            System.Diagnostics.Process.Start( file );
+#endif
         }
         #endregion
 
@@ -14804,58 +14673,6 @@ namespace org.kbinani.cadencii {
 
         public void menuTrackRenderer_DropDownOpening( Object sender, EventArgs e ) {
             updateRendererMenu();
-        }
-
-        public void menuTrackOn_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Enable current track." ) );
-        }
-
-        public void menuTrackAdd_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Add new track." ) );
-        }
-
-        public void menuTrackCopy_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Copy current track." ) );
-        }
-
-        public void menuTrackChangeName_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Change track name." ) );
-        }
-
-        public void menuTrackDelete_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Delete current track." ) );
-        }
-
-        public void menuTrackRenderCurrent_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Render current track." ) );
-        }
-
-        public void menuTrackRenderAll_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Render all tracks." ) );
-        }
-
-        public void menuTrackOverlay_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Show background items." ) );
-        }
-
-        public void menuTrackRenderer_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Select voice synthesis engine." ) );
-        }
-
-        public void menuTrackRendererVOCALOID1_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "VOCALOID1" ) );
-        }
-
-        public void menuTrackRendererVOCALOID2_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "VOCALOID2" ) );
-        }
-
-        public void menuTrackRendererUtau_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "UTAU" ) );
-        }
-
-        public void menuTrackMasterTuning_MouseEnter( Object sender, EventArgs e ) {
-            statusLabel.setText( _( "Set global pitch shift." ) );
         }
         #endregion
 
@@ -15555,6 +15372,137 @@ namespace org.kbinani.cadencii {
             forward();
         }
         #endregion
+
+        /// <summary>
+        /// メニューの説明をステータスバーに表示するための共通のイベントハンドラ
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void handleMenuMouseEnter( Object sender, EventArgs e ) {
+            if ( sender == null ) {
+                return;
+            }
+
+            boolean notfound = false;
+            String text = "";
+            if ( sender == menuEditUndo ) {
+                text = _( "Undo." );
+            } else if ( sender == menuEditRedo ) {
+                text = _( "Redo." );
+            } else if ( sender == menuEditCut ) {
+                text = _( "Cut selected items." );
+            } else if ( sender == menuEditCopy ) {
+                text = _( "Copy selected items." );
+            } else if ( sender == menuEditPaste ) {
+                text = _( "Paste copied items to current song position." );
+            } else if ( sender == menuEditDelete ) {
+                text = _( "Delete selected items." );
+            } else if ( sender == menuEditAutoNormalizeMode ) {
+                text = _( "Avoid automaticaly polyphonic editing." );
+            } else if ( sender == menuEditSelectAll ) {
+                text = _( "Select all items and control curves of current track." );
+            } else if ( sender == menuEditSelectAllEvents ) {
+                text = _( "Select all items of current track." );
+            } else if ( sender == menuVisualControlTrack ) {
+                text = _( "Show/Hide control curves." );
+            } else if ( sender == menuVisualMixer ) {
+                text = _( "Show/Hide mixer window." );
+            } else if ( sender == menuVisualWaveform ) {
+                text = _( "Show/Hide waveform." );
+            } else if ( sender == menuVisualProperty ) {
+                text = _( "Show/Hide property window." );
+            } else if ( sender == menuVisualGridline ) {
+                text = _( "Show/Hide grid line." );
+            } else if ( sender == menuVisualStartMarker ) {
+                text = _( "Enable/Disable start marker." );
+            } else if ( sender == menuVisualEndMarker ) {
+                text = _( "Enable/Disable end marker." );
+            } else if ( sender == menuVisualLyrics ) {
+                text = _( "Show/Hide lyrics." );
+            } else if ( sender == menuVisualNoteProperty ) {
+                text = _( "Show/Hide expression lines." );
+            } else if ( sender == menuVisualPitchLine ) {
+                text = _( "Show/Hide pitch bend lines." );
+            } else if ( sender == menuFileNew ) {
+                text = _( "Create new project." );
+            } else if ( sender == menuFileOpen ) {
+                text = _( "Open Cadencii project." );
+            } else if ( sender == menuFileSave ) {
+                text = _( "Save current project." );
+            } else if ( sender == menuFileSaveNamed ) {
+                text = _( "Save current project with new name." );
+            } else if ( sender == menuFileOpenVsq ) {
+                text = _( "Open VSQ / VOCALOID MIDI and create new project." );
+            } else if ( sender == menuFileOpenUst ) {
+                text = _( "Open UTAU project and create new project." );
+            } else if ( sender == menuFileImport ) {
+                text = _( "Import." );
+            } else if ( sender == menuFileImportVsq ) {
+                text = _( "Import VSQ / VOCALOID MIDI." );
+            } else if ( sender == menuFileImportMidi ) {
+                text = _( "Import Standard MIDI." );
+            } else if ( sender == menuFileExportWave ) {
+                text = _( "Export to WAVE file." );
+            } else if ( sender == menuFileExportMidi ) {
+                text = _( "Export to Standard MIDI." );
+            } else if ( sender == menuFileRecent ) {
+                text = _( "Recent projects." );
+            } else if ( sender == menuFileQuit ) {
+                text = _( "Close this window." );
+            } else if ( sender == menuJobConnect ) {
+                text = _( "Lengthen note end to neighboring note." );
+            } else if ( sender == menuJobLyric ) {
+                text = _( "Import lyric." );
+            } else if ( sender == menuJobRewire ) {
+                text = _( "Import tempo from ReWire host." ) + _( "(not implemented)" );
+            } else if ( sender == menuJobRealTime ) {
+                text = _( "Start realtime input." );
+            } else if ( sender == menuJobReloadVsti ) {
+                text = _( "Reload VSTi dll." ) + _( "(not implemented)" );
+            } else if ( sender == menuJobNormalize ) {
+                text = _( "Correct overlapped item." );
+            } else if ( sender == menuJobInsertBar ) {
+                text = _( "Insert bar." );
+            } else if ( sender == menuJobDeleteBar ) {
+                text = _( "Delete bar." );
+            } else if ( sender == menuJobRandomize ) {
+                text = _( "Randomize items." ) + _( "(not implemented)" );
+            } else if ( sender == menuTrackOn ) {
+                text = _( "Enable current track." );
+            } else if ( sender == menuTrackAdd ) {
+                text = _( "Add new track." );
+            } else if ( sender == menuTrackCopy ) {
+                text = _( "Copy current track." );
+            } else if ( sender == menuTrackChangeName ) {
+                text = _( "Change track name." );
+            } else if ( sender == menuTrackDelete ) {
+                text = _( "Delete current track." );
+            } else if ( sender == menuTrackRenderCurrent ) {
+                text = _( "Render current track." );
+            } else if ( sender == menuTrackRenderAll ) {
+                text = _( "Render all tracks." );
+            } else if ( sender == menuTrackOverlay ) {
+                text = _( "Show background items." );
+            } else if ( sender == menuTrackRenderer ) {
+                text = _( "Select voice synthesis engine." );
+            } else if ( sender == menuTrackRendererVOCALOID100 || sender == menuTrackRendererVOCALOID101 ) {
+                text = _( "VOCALOID1" );
+            } else if ( sender == menuTrackRendererVOCALOID2 ) {
+                text = _( "VOCALOID2" );
+            } else if ( sender == menuTrackRendererUtau ) {
+                text = _( "UTAU" );
+            } else {
+                notfound = true;
+            }
+
+#if DEBUG
+            if ( notfound && sender is BMenuItem ) {
+                BMenuItem item = (BMenuItem)sender;
+                Logger.write( typeof( FormMain ) + ".handleMenuMouseEnter; cannot find message for " + item.getName() + "\n" );
+            }
+#endif
+            statusLabel.setText( text );
+        }
 
         public void commonCaptureSpaceKeyDown( Object sender, BKeyEventArgs e ) {
 #if JAVA
@@ -17036,6 +16984,8 @@ namespace org.kbinani.cadencii {
             this.menuHelp = new org.kbinani.windows.forms.BMenuItem();
             this.menuHelpAbout = new org.kbinani.windows.forms.BMenuItem();
             this.menuHelpLog = new org.kbinani.windows.forms.BMenuItem();
+            this.menuHelpLogSwitch = new org.kbinani.windows.forms.BMenuItem();
+            this.menuHelpLogOpen = new org.kbinani.windows.forms.BMenuItem();
             this.menuHelpDebug = new org.kbinani.windows.forms.BMenuItem();
             this.menuHidden = new org.kbinani.windows.forms.BMenuItem();
             this.menuHiddenEditLyric = new org.kbinani.windows.forms.BMenuItem();
@@ -17159,14 +17109,12 @@ namespace org.kbinani.cadencii {
             this.cMenuTrackSelectorSelectAll = new org.kbinani.windows.forms.BMenuItem();
             this.trackBar = new org.kbinani.windows.forms.BSlider();
             this.panel1 = new org.kbinani.windows.forms.BPanel();
-            this.hScroll = new org.kbinani.cadencii.HScroll();
             this.pictureBox3 = new org.kbinani.windows.forms.BPictureBox();
             this.pictKeyLengthSplitter = new org.kbinani.windows.forms.BPictureBox();
             this.pictureBox2 = new org.kbinani.windows.forms.BPictureBox();
             this.vScroll = new org.kbinani.windows.forms.BVScrollBar();
             this.panelOverview = new org.kbinani.windows.forms.BPictureBox();
             this.picturePositionIndicator = new org.kbinani.windows.forms.BPictureBox();
-            this.pictPianoRoll = new org.kbinani.cadencii.PictPianoRoll();
             this.toolStripTool = new org.kbinani.windows.forms.BToolBar();
             this.stripBtnPointer = new org.kbinani.windows.forms.BToolStripButton();
             this.stripBtnPencil = new org.kbinani.windows.forms.BToolStripButton();
@@ -17239,6 +17187,8 @@ namespace org.kbinani.cadencii {
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.stripBtnStartMarker = new org.kbinani.windows.forms.BToolStripButton();
             this.stripBtnEndMarker = new org.kbinani.windows.forms.BToolStripButton();
+            this.hScroll = new org.kbinani.cadencii.HScroll();
+            this.pictPianoRoll = new org.kbinani.cadencii.PictPianoRoll();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
@@ -17250,7 +17200,6 @@ namespace org.kbinani.cadencii {
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.panelOverview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picturePositionIndicator)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).BeginInit();
             this.toolStripTool.SuspendLayout();
             this.toolStripContainer.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
@@ -17261,6 +17210,7 @@ namespace org.kbinani.cadencii {
             this.toolStripFile.SuspendLayout();
             this.toolStripPosition.SuspendLayout();
             this.toolStripMeasure.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStripMain
@@ -18222,10 +18172,25 @@ namespace org.kbinani.cadencii {
             // 
             // menuHelpLog
             // 
-            this.menuHelpLog.CheckOnClick = true;
+            this.menuHelpLog.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
+            this.menuHelpLogSwitch,
+            this.menuHelpLogOpen} );
             this.menuHelpLog.Name = "menuHelpLog";
             this.menuHelpLog.Size = new System.Drawing.Size( 180, 22 );
-            this.menuHelpLog.Text = "Enable Log(&L)";
+            this.menuHelpLog.Text = "Log(&L)";
+            // 
+            // menuHelpLogSwitch
+            // 
+            this.menuHelpLogSwitch.CheckOnClick = true;
+            this.menuHelpLogSwitch.Name = "menuHelpLogSwitch";
+            this.menuHelpLogSwitch.Size = new System.Drawing.Size( 156, 22 );
+            this.menuHelpLogSwitch.Text = "Enable Log(&L)";
+            // 
+            // menuHelpLogOpen
+            // 
+            this.menuHelpLogOpen.Name = "menuHelpLogOpen";
+            this.menuHelpLogOpen.Size = new System.Drawing.Size( 156, 22 );
+            this.menuHelpLogOpen.Text = "Open(&O)";
             // 
             // menuHelpDebug
             // 
@@ -19106,15 +19071,6 @@ namespace org.kbinani.cadencii {
             this.panel1.Size = new System.Drawing.Size( 421, 282 );
             this.panel1.TabIndex = 16;
             // 
-            // hScroll
-            // 
-            this.hScroll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.hScroll.Location = new System.Drawing.Point( 66, 266 );
-            this.hScroll.Name = "hScroll";
-            this.hScroll.Size = new System.Drawing.Size( 256, 16 );
-            this.hScroll.TabIndex = 16;
-            // 
             // pictureBox3
             // 
             this.pictureBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -19182,19 +19138,6 @@ namespace org.kbinani.cadencii {
             this.picturePositionIndicator.Size = new System.Drawing.Size( 421, 48 );
             this.picturePositionIndicator.TabIndex = 10;
             this.picturePositionIndicator.TabStop = false;
-            // 
-            // pictPianoRoll
-            // 
-            this.pictPianoRoll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictPianoRoll.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))) );
-            this.pictPianoRoll.Location = new System.Drawing.Point( 0, 93 );
-            this.pictPianoRoll.Margin = new System.Windows.Forms.Padding( 0 );
-            this.pictPianoRoll.Name = "pictPianoRoll";
-            this.pictPianoRoll.Size = new System.Drawing.Size( 405, 173 );
-            this.pictPianoRoll.TabIndex = 12;
-            this.pictPianoRoll.TabStop = false;
             // 
             // toolStripTool
             // 
@@ -19912,6 +19855,28 @@ namespace org.kbinani.cadencii {
             this.stripBtnEndMarker.Size = new System.Drawing.Size( 23, 22 );
             this.stripBtnEndMarker.Text = "EndMarker";
             // 
+            // hScroll
+            // 
+            this.hScroll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.hScroll.Location = new System.Drawing.Point( 66, 266 );
+            this.hScroll.Name = "hScroll";
+            this.hScroll.Size = new System.Drawing.Size( 256, 16 );
+            this.hScroll.TabIndex = 16;
+            // 
+            // pictPianoRoll
+            // 
+            this.pictPianoRoll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictPianoRoll.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))) );
+            this.pictPianoRoll.Location = new System.Drawing.Point( 0, 93 );
+            this.pictPianoRoll.Margin = new System.Windows.Forms.Padding( 0 );
+            this.pictPianoRoll.Name = "pictPianoRoll";
+            this.pictPianoRoll.Size = new System.Drawing.Size( 405, 173 );
+            this.pictPianoRoll.TabIndex = 12;
+            this.pictPianoRoll.TabStop = false;
+            // 
             // FormMain
             // 
             this.AllowDrop = true;
@@ -19937,7 +19902,6 @@ namespace org.kbinani.cadencii {
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.panelOverview)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picturePositionIndicator)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).EndInit();
             this.toolStripTool.ResumeLayout( false );
             this.toolStripTool.PerformLayout();
             this.toolStripContainer.BottomToolStripPanel.ResumeLayout( false );
@@ -19957,6 +19921,7 @@ namespace org.kbinani.cadencii {
             this.toolStripPosition.PerformLayout();
             this.toolStripMeasure.ResumeLayout( false );
             this.toolStripMeasure.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).EndInit();
             this.ResumeLayout( false );
             this.PerformLayout();
 
@@ -20301,7 +20266,6 @@ namespace org.kbinani.cadencii {
         public BMenuItem menuHiddenFlipCurveOnPianorollMode;
         public CircuitDiagram pictDiagram;
         private BMenuItem menuVisualCircuitDiagram;
-        private BMenuItem menuHelpLog;
 
 #endif
         #endregion
