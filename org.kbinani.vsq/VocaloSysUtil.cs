@@ -79,10 +79,20 @@ namespace org.kbinani.vsq {
             return defaultDseVersion;
         }
 
+
+
         /// <summary>
         /// インストールされているVOCALOID / VOCALOID2についての情報を読み込み、初期化します。
         /// </summary>
         public static void init() {
+            init( null );
+        }
+
+        /// <summary>
+        /// インストールされているVOCALOID / VOCALOID2についての情報を読み込み、初期化します。
+        /// </summary>
+        /// <param name="sw"></param>
+        public static void init( BufferedWriter sw ) {
             if ( isInitialized ) {
                 return;
             }
@@ -94,27 +104,41 @@ namespace org.kbinani.vsq {
                 Vector<String> installed_singers1 = new Vector<String>();
                 String header1 = "HKLM\\SOFTWARE\\VOCALOID";
                 initPrint( "SOFTWARE\\VOCALOID", header1, dir1 );
+
+                // テキストファイルにレジストリの内容をプリントアウト
+                boolean close = false;
 #if DEBUG
-                BufferedWriter sw = null;
-                try {
-                    sw = new BufferedWriter( 
-                        new FileWriter( 
-                            PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "reg_keys_vocalo1.txt" ) ) );
-                    foreach ( String s in dir1 ) {
-                        sw.write( s );
+                if ( sw == null ) {
+                    close = true;
+                    sw = new BufferedWriter( new FileWriter( 
+                        PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "reg_keys_vocalo1.txt" ) ) );
+                }
+#endif
+                if ( sw != null ) {
+                    try {
+                        sw.write( new String( '#', 72 ) );
                         sw.newLine();
-                    }
-                } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "VocaloSysUtil#init; ex=" + ex );
-                } finally {
-                    if ( sw != null ) {
-                        try {
-                            sw.close();
-                        } catch ( Exception ex2 ) {
+                        foreach ( String s in dir1 ) {
+                            sw.write( s );
+                            sw.newLine();
+                        }
+                    } catch ( Exception ex ) {
+                        Logger.write( typeof( VocaloSysUtil ) + ".init; ex=" + ex + "\n" );
+                        PortUtil.stderr.println( "VocaloSysUtil#init; ex=" + ex );
+                    } finally {
+                        // ファイルは閉じない
+                        if ( close && sw != null ) {
+                            try {
+                                sw.close();
+                            } catch ( Exception ex2 ) {
+                                Logger.write( typeof( VocaloSysUtil ) + ".init; ex=" + ex2 + "\n" );
+                                PortUtil.stderr.println( typeof( VocaloSysUtil ) + ".init; ex2=" + ex2 );
+                            }
+                            sw = null;
                         }
                     }
                 }
-#endif
+
                 ByRef<String> path_vsti = new ByRef<String>( "" );
                 ByRef<String> path_editor = new ByRef<String>( "" );
                 initExtract( dir1,
@@ -202,28 +226,39 @@ namespace org.kbinani.vsq {
                 Vector<String> installed_singers2 = new Vector<String>();
                 String header2 = "HKLM\\SOFTWARE\\VOCALOID2";
                 initPrint( "SOFTWARE\\VOCALOID2", header2, dir2 );
+
+                // レジストリの中身をファイルに出力
+                boolean close = false;
 #if DEBUG
-                BufferedWriter sw = null;
-                try {
-                    sw = new BufferedWriter( 
-                        new FileWriter( 
-                            PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "reg_keys_vocalo2.txt" ) ) );
-                    foreach ( String s in dir2 ) {
-                        sw.write( s );
+                if ( sw == null ) {
+                    sw = new BufferedWriter( new FileWriter(
+                        PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "reg_keys_vocalo2.txt" ) ) );
+                    close = true;
+                }
+#endif
+                if ( sw != null ) {
+                    try {
+                        sw.write( new String( '#', 72 ) );
                         sw.newLine();
-                    }
-                } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "VocaloSysUtil#.cctor; ex=" + ex );
-                } finally {
-                    if ( sw != null ) {
-                        try {
-                            sw.close();
-                        } catch ( Exception ex2 ) {
-                            PortUtil.stderr.println( "VocaloSysUtil#.cctor; ex2=" + ex2 );
+                        foreach ( String s in dir2 ) {
+                            sw.write( s );
+                            sw.newLine();
+                        }
+                    } catch ( Exception ex ) {
+                        Logger.write( typeof( VocaloSysUtil ) + ".init; ex=" + ex + "\n" );
+                        PortUtil.stderr.println( "VocaloSysUtil#.cctor; ex=" + ex );
+                    } finally {
+                        if ( close && sw != null ) {
+                            try {
+                                sw.close();
+                            } catch ( Exception ex2 ) {
+                                Logger.write( typeof( VocaloSysUtil ) + ".init; ex=" + ex2 + "\n" );
+                                PortUtil.stderr.println( "VocaloSysUtil#.cctor; ex2=" + ex2 );
+                            }
                         }
                     }
                 }
-#endif
+
                 ByRef<String> path_vsti = new ByRef<String>( "" );
                 ByRef<String> path_editor = new ByRef<String>( "" );
                 initExtract( dir2,

@@ -51,6 +51,7 @@ namespace org.kbinani.vsq {
 #if DEBUG
                 PortUtil.println( "SingerConfigSys#.ctor; path_installed_singers[" + j + "]=" + path_installed_singers[j] );
 #endif
+                //TODO: ここでエラー起こる場合があるよ。SingerConfigSys::.ctor
                 String[] vvds = PortUtil.listFiles( ipath, "*.vvd" );
                 if ( vvds.Length > 0 ) {
                     SingerConfig installed = SingerConfig.fromVvd( vvds[0], 0, 0 );
