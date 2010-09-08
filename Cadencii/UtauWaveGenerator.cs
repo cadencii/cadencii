@@ -28,7 +28,7 @@ using org.kbinani;
 using org.kbinani.java.io;
 using org.kbinani.java.util;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii.draft {
     using boolean = System.Boolean;
     using Integer = System.Int32;
 #endif

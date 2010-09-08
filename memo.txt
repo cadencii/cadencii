@@ -134,6 +134,416 @@
 -STRAIGHT x UTAUのとき、analyzed\*.stfを引き当てられないとき音符の色を変える
 -プロパティの編集によって、V-Rate, V-Depthが元に戻ってしまう
 
+-ログ取り--------------------------------------------------------------
+/*Cadencii*/
+	Amplifier.cs
+	AmplifyCoefficient.cs
+	AppManager.cs
+	AquesToneDriver.cs
+	AquesToneRenderingRunner.cs
+	AquesToneWaveGenerator.cs
+	AttachedCurve.cs
+	AttackVariation.cs
+	AttackVariationConverter.cs
+	AutoVibratoMinLengthEnum.cs
+	AutoVibratoMinLengthUtil.cs
+	BAssemblyInfo.cs
+	BezierChain.cs
+	BezierControlType.cs
+	BezierCurves.cs
+	BezierPickedSide.cs
+	BezierPoint.cs
+	BgmFile.cs
+	BooleanEnum.cs
+	Cadencii.cs
+	CadenciiCommand.cs
+	CadenciiCommandType.cs
+	CircuitDiagram.cs
+	ClipboardEntry.cs
+	ClockResolution.cs
+	ClockResolutionUtility.cs
+	CommandTree.cs
+	CommandTreeUnit.cs
+	CurveType.cs
+	DefaultVibratoLengthEnum.cs
+	DefaultVibratoLengthUtil.cs
+	DrawObject.cs
+	DrawObjectType.cs
+	DynaffComparisonContext.cs
+	EditedZone.cs
+	EditedZoneCommand.cs
+	EditedZoneUnit.cs
+	EditMode.cs
+	EditorConfig.cs
+	EditorStatus.cs
+	EditTool.cs
+	EmptyRenderingRunner.cs
+	FederChangedEventHandler.cs
+	FileWaveReceiver.cs
+	FileWaveSender.cs
+	FormAskKeySoundGeneration.cs
+	FormBeatConfig.cs
+	FormBezierPointEdit.cs
+	FormCompileResult.cs
+	FormCurvePointEdit.cs
+	FormDeleteBar.cs
+	FormGameControlerConfig.cs
+	FormGenerateKeySound.cs
+	FormIconPalette.cs
+	FormImportLyric.cs
+	FormInsertBar.cs
+	FormMain.cs
+	FormMidiConfig.cs
+	FormMidiImExport.cs
+	FormMidiImExportConfig.cs
+	FormMixer.cs
+	FormNoteExpressionConfig.cs
+FormNoteProperty.cs
+FormPluginUi.cs
+FormRandomize.cs
+FormRealtimeConfig.cs
+FormShortcutKeys.cs
+FormSingerStyleConfig.cs
+FormSplash.cs
+FormSynthesize.cs
+FormTempoConfig.cs
+FormTrackProperty.cs
+FormVibratoConfig.cs
+FormWordDictionary.cs
+HScroll.cs
+ICommand.cs
+ICommandRunnable.cs
+IComparisonContext.cs
+IconParader.cs
+IPaletteTool.cs
+KanaDeRomanization.cs
+KeySoundPlayer.cs
+LyricTextBox.cs
+Matrix2D.cs
+MemoryManager.cs
+MidiDeviceImp.cs
+MidiPlayer.cs
+MidiPortConfig.cs
+MidiQueue.cs
+Mixer.cs
+MonitorWaveReceiver.cs
+MouseTracer.cs
+MuteChangedEventHandler.cs
+NoteNumberExpressionType.cs
+NoteNumberProperty.cs
+NoteNumberPropertyConverter.cs
+NumberTextBox.cs
+NumericUpDownEx.cs
+OtoArgs.cs
+PaletteToolServer.cs
+PanelState.cs
+PanpotChangedEventHandler.cs
+PencilMode.cs
+PencilModeEnum.cs
+PictPianoRoll.cs
+PlatformEnum.cs
+PlayPositionSpecifier.cs
+PointD.cs
+Preference.cs
+PropertyPanel.cs
+PropertyPanelContainer.cs
+PropertyPanelState.cs
+QuantizeMode.cs
+QuantizeModeUtil.cs
+RenderedStatus.cs
+RendererKind.cs
+RendererKindUtil.cs
+RenderingRunner.cs
+RenderQueue.cs
+RenderRequiredEventHandler.cs
+Resources.cs
+RgbColor.cs
+SandBox.cs
+ScreenStatus.cs
+ScriptInvoker.cs
+ScriptReturnStatus.cs
+ScriptServer.cs
+SelectedBezierPoint.cs
+SelectedCurveChangedEventHandler.cs
+SelectedEventChangedEventHandler.cs
+SelectedEventEntry.cs
+SelectedEventEntryPropertyDescriptor.cs
+SelectedEventEntryTypeConverter.cs
+SelectedRegion.cs
+SelectedTempoEntry.cs
+SelectedTimesigEntry.cs
+SelectedTrackChangedEventHandler.cs
+Separator.cs
+SingerEventComparisonContext.cs
+SoloChangedEventHandler.cs
+StateChangeRequiredEventHandler.cs
+StraightRenderingQueue.cs
+StraightRenderingRunner.cs
+ToolStripLocation.cs
+TopMostChangedEventHandler.cs
+TrackSelector.cs
+UpdateProgressEventHandler.cs
+UtauFreq.cs
+UtauRenderingRunner.cs
+UtauVoiceDB.cs
+UtauWaveGenerator.cs
+Utility.cs
+ValuePairOfStringArrayOfKeys.cs
+ValuePairOfStringBoolean.cs
+VersionInfo.cs
+VibratoLengthEditingRule.cs
+VibratoPointIteratorByClock.cs
+VibratoPointIteratorBySec.cs
+VibratoVariation.cs
+VibratoVariationConverter.cs
+VocaloidDriver.cs
+VocaloidRenderingRunner.cs
+VocaloidWaveGenerator.cs
+VolumeTracker.cs
+VsqBPListComparisonContext.cs
+VsqFileEx.cs
+vstidrv.cs
+VSTiProxy.cs
+VstSdk.cs
+WaveDrawContext.cs
+WaveGenerator.cs
+WaveReceiver.cs
+WaveSender.cs
+WaveSenderDriver.cs
+WaveUnit.cs
+WaveView.cs
+winmmhelp.cs
+XmlStaticMemberSerializerEx.cs
+/*org.kbinani*/
+Arrays.cs
+awt.cs
+awt.event.cs
+awt.geom.cs
+awt.image.cs
+BArray.cs
+Base64.cs
+BDelegate.cs
+BEvent.cs
+BEventArgs.cs
+BEventHandler.cs
+BufferedReader.cs
+BufferedWriter.cs
+ByRef.cs
+Collections.cs
+cp932.cs
+cp932reader.cs
+cp932writer.cs
+fft.cs
+File.cs
+Graphics.cs
+imageio.cs
+InternalStdErr.cs
+InternalStdOut.cs
+io.cs
+Iterator.cs
+lang.cs
+ListIterator.cs
+Logger.cs
+math.cs
+misc.cs
+PortUtil.cs
+RandomAccessFile.cs
+swing.cs
+util.cs
+ValuePair.cs
+Vector.cs
+windows.cs
+wingdi.cs
+winmm.cs
+/*org.kbinani.apputil*/
+AuthorListEntry.cs
+BHScrollBar.cs
+BHScrollBar.Designer.cs
+BitmapEx.cs
+BSplitContainer.cs
+BSplitterPanel.cs
+BTrackBar.cs
+BVScrollBar.cs
+BVScrollBar.Designer.cs
+ColorBar.cs
+CubicSpline.cs
+CursorUtil.cs
+DockPanelContainer.cs
+ISO639.cs
+MathEx.cs
+MessageBody.cs
+MessageBodyEntry.cs
+Messaging.cs
+PolylineDrawer.cs
+Util.cs
+VersionInfo.cs
+VersionInfo.Designer.cs
+/*org.kbinani.componentmodel*/
+BBackgroundWorker.cs
+BCancelEventArgs.cs
+BCancelEventHandler.cs
+BDoWorkEventArgs.cs
+BDoWorkEventHandler.cs
+BProgressChangedEventArgs.cs
+BProgressChangedEventHandler.cs
+BRunWorkerCompletedEventArgs.cs
+BRunWorkerCompletedEventHandler.cs
+/*org.kbinani.media*/
+AviReader.cs
+AviWriterVcm.cs
+AviWriterVfw.cs
+BSoundPlayer.cs
+IAviWriter.cs
+IWaveReceiver.cs
+MediaPlayer.cs
+MidiInDevice.cs
+MidiOutDevice.cs
+PipedAviWriter.cs
+PlaySound.cs
+RawAvi2Writer.cs
+Util.cs
+VCM.cs
+VFW.cs
+Wave.cs
+WavePlay.cs
+WaveRateConvertAdapter.cs
+WaveRateConverter.cs
+WaveReader.cs
+WaveWriter.cs
+/*org.kbinani.vsq*/
+BPPair.cs
+DynamicsMode.cs
+ExpressionConfigSys.cs
+IconDynamicsHandle.cs
+IconHandle.cs
+IconParameter.cs
+IndexIteratorKind.cs
+ITextWriter.cs
+Lyric.cs
+LyricHandle.cs
+MidiEvent.cs
+MidiFile.cs
+NoteHeadHandle.cs
+NRPN.cs
+NrpnData.cs
+NrpnIterator.cs
+PlayMode.cs
+SingerConfig.cs
+SingerConfigSys.cs
+SymbolTable.cs
+SymbolTableEntry.cs
+SynthesizerType.cs
+TempoTableEntry.cs
+TempoVector.cs
+TextStream.cs
+Timesig.cs
+TimeSigTableEntry.cs
+TransCodeUtil.cs
+UstEnvelope.cs
+UstEvent.cs
+UstFile.cs
+UstFileWriteOptions.cs
+UstPortamento.cs
+UstPortamentoPoint.cs
+UstPortamentoType.cs
+UstTrack.cs
+UstVibrato.cs
+VibratoBPList.cs
+VibratoBPPair.cs
+VibratoHandle.cs
+VocaloSysUtil.cs
+VsqBarLineType.cs
+VsqBPList.cs
+VsqBPPair.cs
+VsqBPPairSearchContext.cs
+VsqCommand.cs
+VsqCommandType.cs
+VsqCommon.cs
+VsqEvent.cs
+VsqEventList.cs
+VsqFile.cs
+VsqHandle.cs
+VsqHandleType.cs
+VsqID.cs
+VsqIDType.cs
+VsqMaster.cs
+VsqMetaText.cs
+VsqMixer.cs
+VsqMixerEntry.cs
+VsqNote.cs
+VsqNrpn.cs
+VsqPhoneticSymbol.cs
+VsqTrack.cs
+VsqVoiceLanguage.cs
+WrappedStreamWriter.cs
+/*org.kbinani.windows.forms*/
+BButton.cs
+BCheckBox.cs
+BComboBox.cs
+BDialog.cs
+BDialogResult.cs
+BFileChooser.cs
+BFolderBrowser.cs
+BFontChooser.cs
+BForm.cs
+BFormClosedEventArgs.cs
+BFormClosedEventHandler.cs
+BFormClosingEventArgs.cs
+BFormClosingEventHandler.cs
+BFormWindowState.cs
+BGroupBox.cs
+BHScrollBar.cs
+BKeyEventArgs.cs
+BKeyEventHandler.cs
+BKeyPressEventArgs.cs
+BKeyPressEventHandler.cs
+BKeys.cs
+BKeysUtility.cs
+BLabel.cs
+BListView.cs
+BListViewItem.cs
+BMenu.cs
+BMenuBar.cs
+BMenuItem.cs
+BMenuSeparator.cs
+BMouseButtons.cs
+BMouseEventArgs.cs
+BMouseEventHandler.cs
+BNumericUpDown.cs
+BPaintEventArgs.cs
+BPaintEventHandler.cs
+BPanel.cs
+BPictureBox.cs
+BPopupMenu.cs
+BPreviewKeyDownEventArgs.cs
+BPreviewKeyDownEventHandler.cs
+BProgressBar.cs
+BPropertyGrid.cs
+BRadioButton.cs
+BScrollBar.cs
+BSlider.cs
+BSplitPane.cs
+BStatusLabel.cs
+BTextArea.cs
+BTextBox.cs
+BTimer.cs
+BToggleButton.cs
+BToolBar.cs
+BToolStripButton.cs
+BToolStripDropDownButton.cs
+BToolStripLabel.cs
+BToolStripTextBox.cs
+BVScrollBar.cs
+InputBox.cs
+Utility.cs
+/*org.kbinani.xml*/
+XmlMember.cs
+XmlPoint.cs
+XmlRectangle.cs
+XmlSerializer.cs
+XmlSerializeWithDescription.cs
+XmlStaticMemberSerializer.cs
+
 -v3.0.23done-----------------------------------------------------------
 -プロパティの編集によって、V-Rate, V-Depthが元に戻ってしまう
 

@@ -57,7 +57,7 @@ namespace org.kbinani.cadencii {
         public boolean[] solo = new boolean[NUM_TRACK];
 
 #if DEBUG
-        public Matrix2D<Integer> _debug_int_matrix2d = new Matrix2D<Integer>( 10, 10 );
+        public Matrix2D<String> _debug_int_matrix2d = new Matrix2D<String>( 10, 10 );
 #endif
 
         public const String TAG_VSQEVENT_AQUESTONE_RELEASE = "org.kbinani.cadencii.AquesToneRelease";

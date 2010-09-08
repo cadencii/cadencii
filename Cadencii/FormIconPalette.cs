@@ -111,6 +111,7 @@ namespace org.kbinani.cadencii {
                     try{
                         img = ImageIO.read( new File( buttonIconPath ) );
                     }catch( Exception ex ){
+                        Logger.write( FormIconPalette.class + "; ex=" + ex + "\n" );
                         PortUtil.stderr.println( "FormIconPalette#init; ex=" + ex );
                     }
 #else

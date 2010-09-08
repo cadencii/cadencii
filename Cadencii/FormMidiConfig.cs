@@ -86,7 +86,8 @@ namespace org.kbinani.cadencii {
                     comboDeviceMetronome.addItem( i + ": " + caps.szPname );
                     comboDeviceGeneral.addItem( i + ": " + caps.szPname );
                 }
-            } catch {
+            } catch( Exception ex ) {
+                Logger.write( typeof( FormMidiConfig ) + ".ctor; ex=" + ex + "\n" );
             }
             if ( MidiPlayer.DeviceGeneral < comboDeviceGeneral.getItemCount() ) {
                 comboDeviceGeneral.setSelectedItem( comboDeviceGeneral.getItemAt( (int)MidiPlayer.DeviceGeneral ) );

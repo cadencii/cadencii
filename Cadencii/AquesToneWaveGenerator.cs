@@ -18,7 +18,7 @@ using org.kbinani.java.util;
 using org.kbinani.media;
 using org.kbinani.vsq;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii.draft {
     using boolean = System.Boolean;
     using Float = System.Single;
     using Integer = System.Int32;
@@ -370,8 +370,8 @@ namespace org.kbinani.cadencii {
                         try {
                             release = PortUtil.parseInt( strRelease );
                         } catch ( Exception ex ) {
-                            release = 64;
                             Logger.write( typeof( AquesToneWaveGenerator ) + ".generateMidiEvent; ex=" + ex + "\n" );
+                            release = 64;
                         }
                         ParameterEvent pe = new ParameterEvent();
                         pe.index = driver.releaseParameterIndex;

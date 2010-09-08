@@ -630,6 +630,7 @@ namespace org.kbinani.cadencii {
                     try {
                         fs.close();
                     } catch ( Exception ex2 ) {
+                        Logger.write( typeof( EditorConfig ) + ".deserialize; ex=" + ex2 + "\n" );
                     }
                 }
             }
@@ -703,6 +704,7 @@ namespace org.kbinani.cadencii {
                 try {
                     quantizeModeChangedEvent.raise( typeof( EditorConfig ), new BEventArgs() );
                 } catch ( Exception ex ) {
+                    Logger.write( typeof( EditorConfig ) + ".getPositionQuantize; ex=" + ex + "\n" );
                     PortUtil.stderr.println( "EditorConfig#setPositionQuantize; ex=" + ex );
                 }
             }

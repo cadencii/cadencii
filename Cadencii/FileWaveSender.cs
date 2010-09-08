@@ -22,7 +22,7 @@ using System;
 using org.kbinani.java.util;
 using org.kbinani.media;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii.draft {
 #endif
 
 #if JAVA

@@ -280,6 +280,7 @@ namespace org.kbinani.cadencii {
                     trackBendDepth.setValue( draft );
                 }
             } catch ( Exception ex ) {
+                Logger.write( typeof( FormNoteExpressionConfig ) + ".txtBendDepth_TextChanged; ex=" + ex + "\n" );
                 //txtBendDepth.Text = trackBendDepth.Value + "";
             }
         }
@@ -302,6 +303,7 @@ namespace org.kbinani.cadencii {
                     trackBendLength.setValue( draft );
                 }
             } catch ( Exception ex ) {
+                Logger.write( typeof( FormNoteExpressionConfig ) + ".txtBendLength_TextChanged; ex=" + ex + "\n" );
                 //txtBendLength.Text = trackBendLength.Value + "";
             }
         }
@@ -324,6 +326,7 @@ namespace org.kbinani.cadencii {
                     trackDecay.setValue( draft );
                 }
             } catch ( Exception ex ) {
+                Logger.write( typeof( FormNoteExpressionConfig ) + ".txtDecay_TextChanged; ex=" + ex + "\n" );
                 //txtDecay.Text = trackDecay.Value + "";
             }
         }
@@ -346,6 +349,7 @@ namespace org.kbinani.cadencii {
                     trackAccent.setValue( draft );
                 }
             } catch ( Exception ex ) {
+                Logger.write( typeof( FormNoteExpressionConfig ) + ".txtAccent_TextChanged; ex=" + ex + "\n" );
                 //txtAccent.Text = trackAccent.Value + "";
             }
         }
@@ -434,6 +438,7 @@ namespace org.kbinani.cadencii {
                     }
                 }
             } catch ( Exception ex ) {
+                Logger.write( typeof( FormNoteExpressionConfig ) + ".txtDuration_TextChanged; ex=" + ex + "\n" );
             }
         }
 
@@ -453,6 +458,7 @@ namespace org.kbinani.cadencii {
                     }
                 }
             } catch ( Exception ex ) {
+                Logger.write( typeof( FormNoteExpressionConfig ) + ".txtDepth_TextChanged; ex=" + ex + "\n" );
             }
         }
 

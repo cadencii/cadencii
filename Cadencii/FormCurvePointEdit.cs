@@ -103,6 +103,7 @@ namespace org.kbinani.cadencii {
             try {
                 clock = PortUtil.parseInt( txtDataPointClock.getText() );
             } catch ( Exception ex ) {
+                Logger.write( typeof( FormCurvePointEdit ) + ".applyValue; ex=" + ex + "\n" );
                 return;
             }
 

@@ -23,8 +23,6 @@ namespace org.kbinani.cadencii {
         public double right;
     }
     
-    
-
 #if !JAVA
 }
 #endif

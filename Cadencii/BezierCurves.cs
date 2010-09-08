@@ -262,6 +262,7 @@ namespace org.kbinani.cadencii {
                         try {
                             right = bc.extractPartialBezier( chain_end, end );
                         } catch ( Exception ex ) {
+                            Logger.write( typeof( BezierCurves ) + ".mergeBezierChain; ex=" + ex + "\n" );
                             continue;
                         }
                         left.id = bc.id;

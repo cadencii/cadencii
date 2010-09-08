@@ -340,6 +340,7 @@ namespace org.kbinani.cadencii {
             try{
                 panpotChangedEvent.raise( track, parent.getPanpot() );
             }catch( Exception ex ){
+                Logger.write( typeof( FormMixer ) + ".FormMixer_PanpotChanged; ex=" + ex + "\n" );
                 PortUtil.stderr.println( "FormMixer#FormMixer_PanpotChanged; ex=" + ex );
             }
         }
@@ -355,6 +356,7 @@ namespace org.kbinani.cadencii {
             try{
                 federChangedEvent.raise( track, parent.getFeder() );
             }catch( Exception ex ){
+                Logger.write( typeof( FormMixer ) + ".FormMixer_FederChanged; ex=" + ex + "\n" );
                 PortUtil.stderr.println( "FormMixer#FormMixer_FederChanged; ex=" + ex );
             }
         }
@@ -365,6 +367,7 @@ namespace org.kbinani.cadencii {
             try{
                 soloChangedEvent.raise( track, parent.isSolo() );
             }catch( Exception ex ){
+                Logger.write( typeof( FormMixer ) + ".FormMixer_SoloButtonClick; ex=" + ex + "\n" );
                 PortUtil.stderr.println( "FormMixer#FormMixer_IsSoloChanged; ex=" + ex );
             }
             updateSoloMute();
@@ -376,6 +379,7 @@ namespace org.kbinani.cadencii {
             try{
                 muteChangedEvent.raise( track, parent.isMuted() );
             }catch( Exception ex ){
+                Logger.write( typeof( FormMixer ) + ".FormMixer_MuteButtonClick; ex=" + ex + "\n" );
                 PortUtil.stderr.println( "FormMixer#FormMixer_IsMutedChanged; ex=" + ex );
             }
             updateSoloMute();
@@ -425,6 +429,7 @@ namespace org.kbinani.cadencii {
             try{
                 federChangedEvent.raise( 0, volumeMaster.getFeder() );
             }catch( Exception ex ){
+                Logger.write( typeof( FormMixer ) + ".volumeMaster_FederChanged; ex=" + ex + "\n" );
                 PortUtil.stderr.println( "FormMixer#volumeMaster_FederChanged; ex=" + ex );
             }
         }
@@ -433,6 +438,7 @@ namespace org.kbinani.cadencii {
             try{
                 panpotChangedEvent.raise( 0, volumeMaster.getPanpot() );
             }catch( Exception ex ){
+                Logger.write( typeof( FormMixer ) + ".volumeMaster_PanpotChanged; ex=" + ex + "\n" );
                 PortUtil.stderr.println( "FormMixer#volumeMaster_PanpotChanged; ex=" + ex );
             }
         }
@@ -441,6 +447,7 @@ namespace org.kbinani.cadencii {
             try{
                 muteChangedEvent.raise( 0, volumeMaster.isMuted() );
             }catch( Exception ex ){
+                Logger.write( typeof( FormMixer ) + ".volumeMaster_MuteButtonClick; ex=" + ex + "\n" );
                 PortUtil.stderr.println( "FormMixer#volumeMaster_IsMutedChanged; ex=" + ex );
             }
         }
@@ -449,6 +456,7 @@ namespace org.kbinani.cadencii {
             try{
                 topMostChangedEvent.raise( this, chkTopmost.isSelected() );
             }catch( Exception ex ){
+                Logger.write( typeof( FormMixer ) + ".chkTopmost_CheckedChanged; ex=" + ex + "\n" );
                 PortUtil.stderr.println( "FormMixer#chkTopmost_CheckedChanged; ex=" + ex );
             }
             setAlwaysOnTop( chkTopmost.isSelected() ); // ここはthis.ShowTopMostにしてはいけない

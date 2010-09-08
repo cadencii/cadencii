@@ -107,6 +107,7 @@ namespace org.kbinani.cadencii {
             try {
                 v = PortUtil.parseDouble( txtOffset.getText() );
             } catch ( Exception ex ) {
+                Logger.write( typeof( FormMidiImExport ) + ".getOffsetSeconds; ex=" + ex + "\n" );
                 PortUtil.stderr.println( "FormMidiImExport#getOffsetClocks; ex=" + ex );
             }
             return v;
@@ -117,6 +118,7 @@ namespace org.kbinani.cadencii {
             try {
                 v = PortUtil.parseInt( txtOffset.getText() );
             } catch ( Exception ex ) {
+                Logger.write( typeof( FormMidiImExport ) + ".getOffsetClocks; ex=" + ex + "\n" );
                 PortUtil.stderr.println( "FormMidiImExport#getOffsetClocks; ex=" + ex );
             }
             return v;

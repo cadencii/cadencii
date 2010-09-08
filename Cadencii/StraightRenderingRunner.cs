@@ -286,7 +286,19 @@ namespace org.kbinani.cadencii {
             m_queue.add( queue );
         }
 
-        private void prepareMetaText( BufferedWriter writer, VsqTrack vsq_track, String oto_ini, int end_clock ) 
+        public static void prepareMetaText( BufferedWriter writer, VsqTrack vsq_track, String oto_ini, int end_clock ) {
+            TreeMap<String, String> dict_singername_otoini = new TreeMap<String, String>();
+            dict_singername_otoini.put( "", oto_ini );
+        }
+
+        /// <summary>
+        /// 合成用のメタテキストを生成します
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="vsq_track"></param>
+        /// <param name="oto_ini"></param>
+        /// <param name="end_clock"></param>
+        private static void prepareMetaText( BufferedWriter writer, VsqTrack vsq_track, TreeMap<String, String> dict_singername_otoini, int end_clock, boolean world_mode ) 
 #if JAVA
             throws IOException
 #endif
@@ -306,8 +318,18 @@ namespace org.kbinani.cadencii {
             writer.newLine();
             writer.write( "[oto.ini]" );
             writer.newLine();
-            writer.write( oto_ini );
-            writer.newLine();
+            for ( Iterator<String> itr = dict_singername_otoini.keySet().iterator(); itr.hasNext(); ) {
+                String singername = itr.next();
+                String oto_ini = dict_singername_otoini.get( singername );
+                if ( world_mode ) {
+                    writer.write( singername + "\t" + oto_ini );
+                    writer.newLine();
+                } else {
+                    writer.write( oto_ini );
+                    writer.newLine();
+                    break;
+                }
+            }
             Vector<VsqHandle> handles = vsq_track.MetaText.writeEventList( writer, end_clock );
             Vector<String> print_targets = new Vector<String>( Arrays.asList(
                                                                new String[]{ "Length",

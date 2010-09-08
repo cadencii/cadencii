@@ -19,12 +19,14 @@ using org.kbinani.java.util;
 using org.kbinani.media;
 using org.kbinani.vsq;
 
-namespace org.kbinani.cadencii{
-    using boolean = System.Boolean;
-
+namespace org.kbinani.cadencii {
     public interface IWaveIncoming {
         void waveIncomingImpl( double[] l, double[] r );
     }
+}
+
+namespace org.kbinani.cadencii.draft {
+    using boolean = System.Boolean;
 
     public class VocaloidWaveGenerator : WaveUnit, WaveGenerator, IWaveIncoming {
         private const int _BUFLEN = 1024;

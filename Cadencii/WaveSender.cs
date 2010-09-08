@@ -19,7 +19,7 @@ import java.util.*;
 using System;
 using org.kbinani.java.util;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii.draft {
 #endif
 
     /// <summary>

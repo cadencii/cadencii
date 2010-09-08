@@ -102,6 +102,7 @@ namespace org.kbinani.cadencii {
                     int end = txtLyrics.getLineEndOffset( i );
                     tmp += txtLyrics.getText( start, end - start ) + " ";
                 } catch ( Exception ex ) {
+                    Logger.write( typeof( FormImportLyric ) + ".getLetters; ex=" + ex + "\n" );
                 }
             }
             String[] spl = PortUtil.splitString( tmp, new char[] { '\n', '\t', ' ', '　', '\r' }, true );

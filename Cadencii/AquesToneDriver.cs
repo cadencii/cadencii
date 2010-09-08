@@ -211,12 +211,14 @@ namespace org.kbinani.cadencii {
                     bw.write( s ); bw.newLine();
                 }
             } catch ( Exception ex ) {
+                Logger.write( typeof( AquesToneDriver ) + ".getKoeFilePath; ex=" + ex + "\n" );
                 PortUtil.stderr.println( "AquesToneDriver#getKoeFilePath; ex=" + ex );
             } finally {
                 if ( bw != null ) {
                     try {
                         bw.close();
                     } catch ( Exception ex2 ) {
+                        Logger.write( typeof( AquesToneDriver ) + ".getKoeFilePath; ex=" + ex2 + "\n" );
                         PortUtil.stderr.println( "AquesToneDriver#getKoeFilePath; ex=" + ex2 );
                     }
                 }

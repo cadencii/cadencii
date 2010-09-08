@@ -182,6 +182,7 @@ namespace org.kbinani.cadencii {
                     try{
                         Thread.sleep( 0 );
                     } catch ( InterruptedException ex ) {
+                        Logger.write( FormGenerateKeySound.class + ".btnCancel_Click; ex=" + ex + "\n" );
                         break;
                     }
 #else
@@ -235,6 +236,7 @@ namespace org.kbinani.cadencii {
                             }
                         }
                     } catch ( Exception ex ) {
+                        Logger.write( typeof( FormGenerateKeySound ) + ".bgWork_DoWork; ex=" + ex + "\n" );
                         PortUtil.stderr.println( "FormGenerateKeySound#bgWork_DoWork; ex=" + ex );
                     }
                 }
@@ -332,6 +334,7 @@ namespace org.kbinani.cadencii {
                 try {
                     PortUtil.createDirectory( tempdir );
                 } catch ( Exception ex ) {
+                    Logger.write( typeof( FormGenerateKeySound ) + ".GenerateSinglePhone; ex=" + ex + "\n" );
                     PortUtil.stderr.println( "Program#GenerateSinglePhone; ex=" + ex );
                     return;
                 }
@@ -359,6 +362,7 @@ namespace org.kbinani.cadencii {
                     try {
                         ww.close();
                     } catch ( Exception ex2 ) {
+                        Logger.write( typeof( FormGenerateKeySound ) + ".GenerateSinglePhone; ex=" + ex2 + "\n" );
                         PortUtil.stderr.println( "FormGenerateKeySound#GenerateSinglePhone; ex2=" + ex2 );
                     }
                 }
