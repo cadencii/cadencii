@@ -51,6 +51,10 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="org.kbinani.cadencii.util, Version=1.0.3860.20323, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Cadencii\bin\x86\Release\org.kbinani.cadencii.util.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -92,4 +96,9 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PostBuildEvent>@set PATH=$(DevEnvDir);%25PATH%25
+"$(DevEnvDir)..\..\VC\bin\editbin.exe" /NXCOMPAT:NO "$(TargetPath)"
+</PostBuildEvent>
+  </PropertyGroup>
 </Project>

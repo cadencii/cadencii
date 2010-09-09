@@ -72,7 +72,7 @@ namespace org.kbinani.cadencii {
     public class FormMain : BForm {
 #endif
         /// <summary>
-        /// 通常のショートカットを登録できないメニューアイテムと、ショートカットキーとの紐付けを保持するクラスです。
+        /// 特殊なキーの組み合わせのショートカットと、メニューアイテムとの紐付けを保持するクラスです。
         /// </summary>
         private class SpecialShortcutHolder {
             /// <summary>
@@ -702,8 +702,8 @@ namespace org.kbinani.cadencii {
             trackSelector.mouseUpEvent.add( new BMouseEventHandler( this, "trackSelector_MouseUp" ) );
             trackSelector.mouseDownEvent.add( new BMouseEventHandler( this, "trackSelector_MouseDown" ) );
             trackSelector.mouseMoveEvent.add( new BMouseEventHandler( this, "trackSelector_MouseMove" ) );
-            trackSelector.keyDownEvent.add( new BKeyEventHandler( this, "commonCaptureSpaceKeyDown" ) );
-            trackSelector.keyUpEvent.add( new BKeyEventHandler( this, "commonCaptureSpaceKeyUp" ) );
+            trackSelector.keyDownEvent.add( new BKeyEventHandler( this, "handleSpaceKeyDown" ) );
+            trackSelector.keyUpEvent.add( new BKeyEventHandler( this, "handleSpaceKeyUp" ) );
             trackSelector.previewKeyDownEvent.add( new BPreviewKeyDownEventHandler( this, "trackSelector_PreviewKeyDown" ) );
             trackSelector.selectedTrackChangedEvent.add( new SelectedTrackChangedEventHandler( this, "trackSelector_SelectedTrackChanged" ) );
             trackSelector.selectedCurveChangedEvent.add( new SelectedCurveChangedEventHandler( this, "trackSelector_SelectedCurveChanged" ) );
@@ -2101,9 +2101,9 @@ namespace org.kbinani.cadencii {
                 tsb.setTag( id );
                 tsb.setCheckOnClick( false );
 #if JAVA
-                tsb.clickEvent.add( new BEventHandler( this, "commonStripPaletteTool_Clicked" ) );
+                tsb.clickEvent.add( new BEventHandler( this, "handleStripPaletteTool_Click" ) );
 #else
-                tsb.Click += new EventHandler( commonStripPaletteTool_Clicked );
+                tsb.Click += new EventHandler( handleStripPaletteTool_Click );
                 tsb.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.ImageAndText;
 #endif
                 if ( first ) {
@@ -2119,9 +2119,9 @@ namespace org.kbinani.cadencii {
                 tsmi.setToolTipText( desc );
                 tsmi.setTag( id );
 #if JAVA
-                tsmi.clickEvent.add( new BEventHandler( this, "commonStripPaletteTool_Clicked" ) );
+                tsmi.clickEvent.add( new BEventHandler( this, "handleStripPaletteTool_Click" ) );
 #else
-                tsmi.Click += new EventHandler( commonStripPaletteTool_Clicked );
+                tsmi.Click += new EventHandler( handleStripPaletteTool_Click );
 #endif
                 cMenuTrackSelectorPaletteTool.add( tsmi );
 
@@ -2131,9 +2131,9 @@ namespace org.kbinani.cadencii {
                 tsmi2.setToolTipText( desc );
                 tsmi2.setTag( id );
 #if JAVA
-                tsmi2.clickEvent.add( new BEventHandler( this, "commonStripPaletteTool_Clicked" ) );
+                tsmi2.clickEvent.add( new BEventHandler( this, "handleStripPaletteTool_Click" ) );
 #else
-                tsmi2.Click += new EventHandler( commonStripPaletteTool_Clicked );
+                tsmi2.Click += new EventHandler( handleStripPaletteTool_Click );
 #endif
                 cMenuPianoPaletteTool.add( tsmi2 );
 
@@ -2143,9 +2143,9 @@ namespace org.kbinani.cadencii {
                     tsmi3.setText( name );
                     tsmi3.setTag( id );
 #if JAVA
-                    tsmi3.clickEvent.add( new BEventHandler( this, "commonSettingPaletteTool" ) );
+                    tsmi3.clickEvent.add( new BEventHandler( this, "handleSettingPaletteTool" ) );
 #else
-                    tsmi3.Click += new EventHandler( commonSettingPaletteTool );
+                    tsmi3.Click += new EventHandler( handleSettingPaletteTool );
 #endif
                     menuSettingPaletteTool.add( tsmi3 );
                     num_has_dialog++;
@@ -6486,11 +6486,11 @@ namespace org.kbinani.cadencii {
             loadEvent.add( new BEventHandler( this, "FormMain_Load" ) );
             menuStripMain.mouseDownEvent.add( new BMouseEventHandler( this, "menuStrip1_MouseDown" ) );
             menuFileNew.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuFileNew.clickEvent.add( new BEventHandler( this, "commonFileNew_Click" ) );
+            menuFileNew.clickEvent.add( new BEventHandler( this, "handleFileNew_Click" ) );
             menuFileOpen.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuFileOpen.clickEvent.add( new BEventHandler( this, "commonFileOpen_Click" ) );
+            menuFileOpen.clickEvent.add( new BEventHandler( this, "handleFileOpen_Click" ) );
             menuFileSave.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuFileSave.clickEvent.add( new BEventHandler( this, "commonFileSave_Click" ) );
+            menuFileSave.clickEvent.add( new BEventHandler( this, "handleFileSave_Click" ) );
             menuFileSaveNamed.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuFileSaveNamed.clickEvent.add( new BEventHandler( this, "menuFileSaveNamed_Click" ) );
             menuFileOpenVsq.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
@@ -6513,15 +6513,15 @@ namespace org.kbinani.cadencii {
             menuFileQuit.clickEvent.add( new BEventHandler( this, "menuFileQuit_Click" ) );
             menuEdit.dropDownOpeningEvent.add( new BEventHandler( this, "menuEdit_DropDownOpening" ) );
             menuEditUndo.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuEditUndo.clickEvent.add( new BEventHandler( this, "commonEditUndo_Click" ) );
+            menuEditUndo.clickEvent.add( new BEventHandler( this, "handleEditUndo_Click" ) );
             menuEditRedo.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuEditRedo.clickEvent.add( new BEventHandler( this, "commonEditRedo_Click" ) );
+            menuEditRedo.clickEvent.add( new BEventHandler( this, "handleEditRedo_Click" ) );
             menuEditCut.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuEditCut.clickEvent.add( new BEventHandler( this, "commonEditCut_Click" ) );
+            menuEditCut.clickEvent.add( new BEventHandler( this, "handleEditCut_Click" ) );
             menuEditCopy.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuEditCopy.clickEvent.add( new BEventHandler( this, "commonEditCopy_Click" ) );
+            menuEditCopy.clickEvent.add( new BEventHandler( this, "handleEditCopy_Click" ) );
             menuEditPaste.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuEditPaste.clickEvent.add( new BEventHandler( this, "commonEditPaste_Click" ) );
+            menuEditPaste.clickEvent.add( new BEventHandler( this, "handleEditPaste_Click" ) );
             menuEditDelete.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuEditDelete.clickEvent.add( new BEventHandler( this, "menuEditDelete_Click" ) );
             menuEditAutoNormalizeMode.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
@@ -6577,8 +6577,8 @@ namespace org.kbinani.cadencii {
             menuJobReloadVsti.clickEvent.add( new BEventHandler( this, "menuJobReloadVsti_Click" ) );
             menuTrack.dropDownOpeningEvent.add( new BEventHandler( this, "menuTrack_DropDownOpening" ) );
             menuTrackOn.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuTrackOn.clickEvent.add( new BEventHandler( this, "commonTrackOn_Click" ) );
-            menuTrackPlayAfterSynth.clickEvent.add( new BEventHandler( this, "commonPlayAfterSynth_Click" ) );
+            menuTrackOn.clickEvent.add( new BEventHandler( this, "handleTrackOn_Click" ) );
+            menuTrackPlayAfterSynth.clickEvent.add( new BEventHandler( this, "handlePlayAfterSynth_Click" ) );
             menuTrackAdd.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuTrackAdd.clickEvent.add( new BEventHandler( this, "menuTrackAdd_Click" ) );
             menuTrackCopy.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
@@ -6590,20 +6590,20 @@ namespace org.kbinani.cadencii {
             menuTrackRenderCurrent.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuTrackRenderCurrent.clickEvent.add( new BEventHandler( this, "menuTrackRenderCurrent_Click" ) );
             menuTrackRenderAll.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuTrackRenderAll.clickEvent.add( new BEventHandler( this, "commonTrackRenderAll_Click" ) );
+            menuTrackRenderAll.clickEvent.add( new BEventHandler( this, "handleTrackRenderAll_Click" ) );
             menuTrackOverlay.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuTrackOverlay.clickEvent.add( new BEventHandler( this, "menuTrackOverlay_Click" ) );
             menuTrackRenderer.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuTrackRenderer.dropDownOpeningEvent.add( new BEventHandler( this, "menuTrackRenderer_DropDownOpening" ) );
             menuTrackRendererVOCALOID100.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuTrackRendererVOCALOID100.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
-            menuTrackRendererVOCALOID101.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
+            menuTrackRendererVOCALOID100.clickEvent.add( new BEventHandler( this, "handleChangeRenderer" ) );
+            menuTrackRendererVOCALOID101.clickEvent.add( new BEventHandler( this, "handleChangeRenderer" ) );
             menuTrackRendererVOCALOID2.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuTrackRendererVOCALOID2.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
+            menuTrackRendererVOCALOID2.clickEvent.add( new BEventHandler( this, "handleChangeRenderer" ) );
             menuTrackRendererUtau.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuTrackRendererUtau.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
-            menuTrackRendererStraight.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
-            menuTrackRendererAquesTone.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
+            menuTrackRendererUtau.clickEvent.add( new BEventHandler( this, "handleChangeRenderer" ) );
+            menuTrackRendererStraight.clickEvent.add( new BEventHandler( this, "handleChangeRenderer" ) );
+            menuTrackRendererAquesTone.clickEvent.add( new BEventHandler( this, "handleChangeRenderer" ) );
             menuTrackManager.clickEvent.add( new BEventHandler( this, "menuTrackManager_Click" ) );
             menuLyricExpressionProperty.clickEvent.add( new BEventHandler( this, "menuLyricExpressionProperty_Click" ) );
             menuLyricVibratoProperty.clickEvent.add( new BEventHandler( this, "menuLyricVibratoProperty_Click" ) );
@@ -6628,15 +6628,15 @@ namespace org.kbinani.cadencii {
             menuSettingPositionQuantize64.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
             menuSettingPositionQuantize128.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
             menuSettingPositionQuantizeOff.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            menuSettingPositionQuantizeTriplet.clickEvent.add( new BEventHandler( this, "h_positionQuantizeTriplet" ) );
-            menuSettingLengthQuantize04.clickEvent.add( new BEventHandler( this, "h_lengthQuantize04" ) );
-            menuSettingLengthQuantize08.clickEvent.add( new BEventHandler( this, "h_lengthQuantize08" ) );
-            menuSettingLengthQuantize16.clickEvent.add( new BEventHandler( this, "h_lengthQuantize16" ) );
-            menuSettingLengthQuantize32.clickEvent.add( new BEventHandler( this, "h_lengthQuantize32" ) );
-            menuSettingLengthQuantize64.clickEvent.add( new BEventHandler( this, "h_lengthQuantize64" ) );
-            menuSettingLengthQuantize128.clickEvent.add( new BEventHandler( this, "h_lengthQuantize128" ) );
-            menuSettingLengthQuantizeOff.clickEvent.add( new BEventHandler( this, "h_lengthQuantizeOff" ) );
-            menuSettingLengthQuantizeTriplet.clickEvent.add( new BEventHandler( this, "h_lengthQuantizeTriplet" ) );
+            menuSettingPositionQuantizeTriplet.clickEvent.add( new BEventHandler( this, "handlePositionQuantizeTriplet_Click" ) );
+            menuSettingLengthQuantize04.clickEvent.add( new BEventHandler( this, "handleLengthQuantize04_Click" ) );
+            menuSettingLengthQuantize08.clickEvent.add( new BEventHandler( this, "handleLengthQuantize08_Click" ) );
+            menuSettingLengthQuantize16.clickEvent.add( new BEventHandler( this, "handleLengthQuantize16_Click" ) );
+            menuSettingLengthQuantize32.clickEvent.add( new BEventHandler( this, "handleLengthQuantize32_Click" ) );
+            menuSettingLengthQuantize64.clickEvent.add( new BEventHandler( this, "handleLengthQuantize64_Click" ) );
+            menuSettingLengthQuantize128.clickEvent.add( new BEventHandler( this, "handleLengthQuantize128_Click" ) );
+            menuSettingLengthQuantizeOff.clickEvent.add( new BEventHandler( this, "handleLengthQuantizeOff_Click" ) );
+            menuSettingLengthQuantizeTriplet.clickEvent.add( new BEventHandler( this, "handleLengthQuantizeTriplet_Click" ) );
             menuHelpAbout.clickEvent.add( new BEventHandler( this, "menuHelpAbout_Click" ) );
             menuHelpLogSwitch.checkedChangedEvent.add( new BEventHandler( this, "menuHelpLogSwitch_CheckedChanged" ) );
             menuHelpLogOpen.clickEvent.add( new BEventHandler( this, "menuHelpLogOpen_Click" ) );
@@ -6648,9 +6648,9 @@ namespace org.kbinani.cadencii {
             menuHiddenVisualBackwardParameter.clickEvent.add( new BEventHandler( this, "menuHiddenVisualBackwardParameter_Click" ) );
             menuHiddenTrackNext.clickEvent.add( new BEventHandler( this, "menuHiddenTrackNext_Click" ) );
             menuHiddenTrackBack.clickEvent.add( new BEventHandler( this, "menuHiddenTrackBack_Click" ) );
-            menuHiddenCopy.clickEvent.add( new BEventHandler( this, "commonEditCopy_Click" ) );
-            menuHiddenPaste.clickEvent.add( new BEventHandler( this, "commonEditPaste_Click" ) );
-            menuHiddenCut.clickEvent.add( new BEventHandler( this, "commonEditCut_Click" ) );
+            menuHiddenCopy.clickEvent.add( new BEventHandler( this, "handleEditCopy_Click" ) );
+            menuHiddenPaste.clickEvent.add( new BEventHandler( this, "handleEditPaste_Click" ) );
+            menuHiddenCut.clickEvent.add( new BEventHandler( this, "handleEditCut_Click" ) );
             menuHiddenSelectBackward.clickEvent.add( new BEventHandler( this, "menuHiddenSelectBackward_Click" ) );
             menuHiddenSelectForward.clickEvent.add( new BEventHandler( this, "menuHiddenSelectForward_Click" ) );
             menuHiddenMoveUp.clickEvent.add( new BEventHandler( this, "menuHiddenMoveUp_Click" ) );
@@ -6687,15 +6687,15 @@ namespace org.kbinani.cadencii {
             cMenuPianoQuantize64.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
             cMenuPianoQuantize128.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
             cMenuPianoQuantizeOff.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            cMenuPianoQuantizeTriplet.clickEvent.add( new BEventHandler( this, "h_positionQuantizeTriplet" ) );
-            cMenuPianoLength04.clickEvent.add( new BEventHandler( this, "h_lengthQuantize04" ) );
-            cMenuPianoLength08.clickEvent.add( new BEventHandler( this, "h_lengthQuantize08" ) );
-            cMenuPianoLength16.clickEvent.add( new BEventHandler( this, "h_lengthQuantize16" ) );
-            cMenuPianoLength32.clickEvent.add( new BEventHandler( this, "h_lengthQuantize32" ) );
-            cMenuPianoLength64.clickEvent.add( new BEventHandler( this, "h_lengthQuantize64" ) );
-            cMenuPianoLength128.clickEvent.add( new BEventHandler( this, "h_lengthQuantize128" ) );
-            cMenuPianoLengthOff.clickEvent.add( new BEventHandler( this, "h_lengthQuantizeOff" ) );
-            cMenuPianoLengthTriplet.clickEvent.add( new BEventHandler( this, "h_lengthQuantizeTriplet" ) );
+            cMenuPianoQuantizeTriplet.clickEvent.add( new BEventHandler( this, "handlePositionQuantizeTriplet_Click" ) );
+            cMenuPianoLength04.clickEvent.add( new BEventHandler( this, "handleLengthQuantize04_Click" ) );
+            cMenuPianoLength08.clickEvent.add( new BEventHandler( this, "handleLengthQuantize08_Click" ) );
+            cMenuPianoLength16.clickEvent.add( new BEventHandler( this, "handleLengthQuantize16_Click" ) );
+            cMenuPianoLength32.clickEvent.add( new BEventHandler( this, "handleLengthQuantize32_Click" ) );
+            cMenuPianoLength64.clickEvent.add( new BEventHandler( this, "handleLengthQuantize64_Click" ) );
+            cMenuPianoLength128.clickEvent.add( new BEventHandler( this, "handleLengthQuantize128_Click" ) );
+            cMenuPianoLengthOff.clickEvent.add( new BEventHandler( this, "handleLengthQuantizeOff_Click" ) );
+            cMenuPianoLengthTriplet.clickEvent.add( new BEventHandler( this, "handleLengthQuantizeTriplet_Click" ) );
             cMenuPianoGrid.clickEvent.add( new BEventHandler( this, "cMenuPianoGrid_Click" ) );
             cMenuPianoUndo.clickEvent.add( new BEventHandler( this, "cMenuPianoUndo_Click" ) );
             cMenuPianoRedo.clickEvent.add( new BEventHandler( this, "cMenuPianoRedo_Click" ) );
@@ -6709,22 +6709,22 @@ namespace org.kbinani.cadencii {
             cMenuPianoExpressionProperty.clickEvent.add( new BEventHandler( this, "cMenuPianoProperty_Click" ) );
             cMenuPianoVibratoProperty.clickEvent.add( new BEventHandler( this, "cMenuPianoVibratoProperty_Click" ) );
             cMenuTrackTab.openingEvent.add( new BCancelEventHandler( this, "cMenuTrackTab_Opening" ) );
-            cMenuTrackTabTrackOn.clickEvent.add( new BEventHandler( this, "commonTrackOn_Click" ) );
-            cMenuTrackTabPlayAfterSynth.clickEvent.add( new BEventHandler( this, "commonPlayAfterSynth_Click" ) );
+            cMenuTrackTabTrackOn.clickEvent.add( new BEventHandler( this, "handleTrackOn_Click" ) );
+            cMenuTrackTabPlayAfterSynth.clickEvent.add( new BEventHandler( this, "handlePlayAfterSynth_Click" ) );
             cMenuTrackTabAdd.clickEvent.add( new BEventHandler( this, "cMenuTrackTabAdd_Click" ) );
             cMenuTrackTabCopy.clickEvent.add( new BEventHandler( this, "cMenuTrackTabCopy_Click" ) );
             cMenuTrackTabChangeName.clickEvent.add( new BEventHandler( this, "cMenuTrackTabChangeName_Click" ) );
             cMenuTrackTabDelete.clickEvent.add( new BEventHandler( this, "cMenuTrackTabDelete_Click" ) );
             cMenuTrackTabRenderCurrent.clickEvent.add( new BEventHandler( this, "cMenuTrackTabRenderCurrent_Click" ) );
-            cMenuTrackTabRenderAll.clickEvent.add( new BEventHandler( this, "commonTrackRenderAll_Click" ) );
+            cMenuTrackTabRenderAll.clickEvent.add( new BEventHandler( this, "handleTrackRenderAll_Click" ) );
             cMenuTrackTabOverlay.clickEvent.add( new BEventHandler( this, "cMenuTrackTabOverlay_Click" ) );
             cMenuTrackTabRenderer.dropDownOpeningEvent.add( new BEventHandler( this, "cMenuTrackTabRenderer_DropDownOpening" ) );
-            cMenuTrackTabRendererVOCALOID100.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
-            cMenuTrackTabRendererVOCALOID101.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
-            cMenuTrackTabRendererVOCALOID2.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
-            cMenuTrackTabRendererUtau.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
-            cMenuTrackTabRendererStraight.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
-            cMenuTrackTabRendererAquesTone.clickEvent.add( new BEventHandler( this, "commonChangeRenderer" ) );
+            cMenuTrackTabRendererVOCALOID100.clickEvent.add( new BEventHandler( this, "handleChangeRenderer" ) );
+            cMenuTrackTabRendererVOCALOID101.clickEvent.add( new BEventHandler( this, "handleChangeRenderer" ) );
+            cMenuTrackTabRendererVOCALOID2.clickEvent.add( new BEventHandler( this, "handleChangeRenderer" ) );
+            cMenuTrackTabRendererUtau.clickEvent.add( new BEventHandler( this, "handleChangeRenderer" ) );
+            cMenuTrackTabRendererStraight.clickEvent.add( new BEventHandler( this, "handleChangeRenderer" ) );
+            cMenuTrackTabRendererAquesTone.clickEvent.add( new BEventHandler( this, "handleChangeRenderer" ) );
             cMenuTrackSelector.openingEvent.add( new BCancelEventHandler( this, "cMenuTrackSelector_Opening" ) );
             cMenuTrackSelectorPointer.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorPointer_Click" ) );
             cMenuTrackSelectorPencil.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorPencil_Click" ) );
@@ -6766,8 +6766,8 @@ namespace org.kbinani.cadencii {
             panelOverview.mouseDownEvent.add( new BMouseEventHandler( this, "pictOverview_MouseDown" ) );
             panelOverview.paintEvent.add( new BPaintEventHandler( this, "pictOverview_Paint" ) );
             panelOverview.mouseUpEvent.add( new BMouseEventHandler( this, "pictOverview_MouseUp" ) );
-            panelOverview.keyUpEvent.add( new BKeyEventHandler( this, "commonCaptureSpaceKeyUp" ) );
-            panelOverview.keyDownEvent.add( new BKeyEventHandler( this, "commonCaptureSpaceKeyDown" ) );
+            panelOverview.keyUpEvent.add( new BKeyEventHandler( this, "handleSpaceKeyUp" ) );
+            panelOverview.keyDownEvent.add( new BKeyEventHandler( this, "handleSpaceKeyDown" ) );
             vScroll.valueChangedEvent.add( new BEventHandler( this, "vScroll_ValueChanged" ) );
             vScroll.resizeEvent.add( new BEventHandler( this, "vScroll_Resize" ) );
             vScroll.enterEvent.add( new BEventHandler( this, "vScroll_Enter" ) );
@@ -6781,14 +6781,14 @@ namespace org.kbinani.cadencii {
             picturePositionIndicator.mouseUpEvent.add( new BMouseEventHandler( this, "picturePositionIndicator_MouseUp" ) );
             picturePositionIndicator.paintEvent.add( new BPaintEventHandler( this, "picturePositionIndicator_Paint" ) );
             pictPianoRoll.previewKeyDownEvent.add( new BPreviewKeyDownEventHandler( this, "pictPianoRoll_PreviewKeyDown" ) );
-            pictPianoRoll.keyUpEvent.add( new BKeyEventHandler( this, "commonCaptureSpaceKeyUp" ) );
+            pictPianoRoll.keyUpEvent.add( new BKeyEventHandler( this, "handleSpaceKeyUp" ) );
             pictPianoRoll.keyUpEvent.add( new BKeyEventHandler( this, "pictPianoRoll_KeyUp" ) );
             pictPianoRoll.mouseMoveEvent.add( new BMouseEventHandler( this, "pictPianoRoll_MouseMove" ) );
             pictPianoRoll.mouseDoubleClickEvent.add( new BMouseEventHandler( this, "pictPianoRoll_MouseDoubleClick" ) );
             pictPianoRoll.mouseClickEvent.add( new BMouseEventHandler( this, "pictPianoRoll_MouseClick" ) );
             pictPianoRoll.mouseDownEvent.add( new BMouseEventHandler( this, "pictPianoRoll_MouseDown" ) );
             pictPianoRoll.mouseUpEvent.add( new BMouseEventHandler( this, "pictPianoRoll_MouseUp" ) );
-            pictPianoRoll.keyDownEvent.add( new BKeyEventHandler( this, "commonCaptureSpaceKeyDown" ) );
+            pictPianoRoll.keyDownEvent.add( new BKeyEventHandler( this, "handleSpaceKeyDown" ) );
 #if !JAVA
             this.DragEnter += new System.Windows.Forms.DragEventHandler( FormMain_DragEnter );
             this.DragDrop += new System.Windows.Forms.DragEventHandler( FormMain_DragDrop );
@@ -6810,14 +6810,14 @@ namespace org.kbinani.cadencii {
             stripDDBtnSpeed033.clickEvent.add( new BEventHandler( this, "stripDDBtnSpeed033_Click" ) );
             stripDDBtnSpeed050.clickEvent.add( new BEventHandler( this, "stripDDBtnSpeed050_Click" ) );
             stripDDBtnSpeed100.clickEvent.add( new BEventHandler( this, "stripDDBtnSpeed100_Click" ) );
-            stripDDBtnLength04.clickEvent.add( new BEventHandler( this, "h_lengthQuantize04" ) );
-            stripDDBtnLength08.clickEvent.add( new BEventHandler( this, "h_lengthQuantize08" ) );
-            stripDDBtnLength16.clickEvent.add( new BEventHandler( this, "h_lengthQuantize16" ) );
-            stripDDBtnLength32.clickEvent.add( new BEventHandler( this, "h_lengthQuantize32" ) );
-            stripDDBtnLength64.clickEvent.add( new BEventHandler( this, "h_lengthQuantize64" ) );
-            stripDDBtnLength128.clickEvent.add( new BEventHandler( this, "h_lengthQuantize128" ) );
-            stripDDBtnLengthOff.clickEvent.add( new BEventHandler( this, "h_lengthQuantizeOff" ) );
-            stripDDBtnLengthTriplet.clickEvent.add( new BEventHandler( this, "h_lengthQuantizeTriplet" ) );
+            stripDDBtnLength04.clickEvent.add( new BEventHandler( this, "handleLengthQuantize04_Click" ) );
+            stripDDBtnLength08.clickEvent.add( new BEventHandler( this, "handleLengthQuantize08_Click" ) );
+            stripDDBtnLength16.clickEvent.add( new BEventHandler( this, "handleLengthQuantize16_Click" ) );
+            stripDDBtnLength32.clickEvent.add( new BEventHandler( this, "handleLengthQuantize32_Click" ) );
+            stripDDBtnLength64.clickEvent.add( new BEventHandler( this, "handleLengthQuantize64_Click" ) );
+            stripDDBtnLength128.clickEvent.add( new BEventHandler( this, "handleLengthQuantize128_Click" ) );
+            stripDDBtnLengthOff.clickEvent.add( new BEventHandler( this, "handleLengthQuantizeOff_Click" ) );
+            stripDDBtnLengthTriplet.clickEvent.add( new BEventHandler( this, "handleLengthQuantizeTriplet_Click" ) );
             stripDDBtnQuantize04.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
             stripDDBtnQuantize08.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
             stripDDBtnQuantize16.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
@@ -6825,16 +6825,16 @@ namespace org.kbinani.cadencii {
             stripDDBtnQuantize64.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
             stripDDBtnQuantize128.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
             stripDDBtnQuantizeOff.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            stripDDBtnQuantizeTriplet.clickEvent.add( new BEventHandler( this, "h_positionQuantizeTriplet" ) );
+            stripDDBtnQuantizeTriplet.clickEvent.add( new BEventHandler( this, "handlePositionQuantizeTriplet_Click" ) );
 #endif
-            stripBtnFileNew.clickEvent.add( new BEventHandler( this, "commonFileNew_Click" ) );
-            stripBtnFileOpen.clickEvent.add( new BEventHandler( this, "commonFileOpen_Click" ) );
-            stripBtnFileSave.clickEvent.add( new BEventHandler( this, "commonFileSave_Click" ) );
-            stripBtnCut.clickEvent.add( new BEventHandler( this, "commonEditCut_Click" ) );
-            stripBtnCopy.clickEvent.add( new BEventHandler( this, "commonEditCopy_Click" ) );
-            stripBtnPaste.clickEvent.add( new BEventHandler( this, "commonEditPaste_Click" ) );
-            stripBtnUndo.clickEvent.add( new BEventHandler( this, "commonEditUndo_Click" ) );
-            stripBtnRedo.clickEvent.add( new BEventHandler( this, "commonEditRedo_Click" ) );
+            stripBtnFileNew.clickEvent.add( new BEventHandler( this, "handleFileNew_Click" ) );
+            stripBtnFileOpen.clickEvent.add( new BEventHandler( this, "handleFileOpen_Click" ) );
+            stripBtnFileSave.clickEvent.add( new BEventHandler( this, "handleFileSave_Click" ) );
+            stripBtnCut.clickEvent.add( new BEventHandler( this, "handleEditCut_Click" ) );
+            stripBtnCopy.clickEvent.add( new BEventHandler( this, "handleEditCopy_Click" ) );
+            stripBtnPaste.clickEvent.add( new BEventHandler( this, "handleEditPaste_Click" ) );
+            stripBtnUndo.clickEvent.add( new BEventHandler( this, "handleEditUndo_Click" ) );
+            stripBtnRedo.clickEvent.add( new BEventHandler( this, "handleEditRedo_Click" ) );
             stripBtnMoveTop.clickEvent.add( new BEventHandler( this, "stripBtnMoveTop_Click" ) );
             stripBtnRewind.clickEvent.add( new BEventHandler( this, "stripBtnRewind_Click" ) );
             stripBtnForward.clickEvent.add( new BEventHandler( this, "stripBtnForward_Click" ) );
@@ -6903,7 +6903,7 @@ namespace org.kbinani.cadencii {
         }
 #endif
 
-        public void commonStripPaletteTool_Clicked( Object sender, EventArgs e ) {
+        public void handleStripPaletteTool_Click( Object sender, EventArgs e ) {
             String id = "";  //選択されたツールのID
 #if ENABLE_SCRIPT
             if ( sender is BToolStripButton ) {
@@ -10837,7 +10837,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void commonFileSave_Click( Object sender, EventArgs e ) {
+        public void handleFileSave_Click( Object sender, EventArgs e ) {
             for ( int track = 1; track < AppManager.getVsqFile().Track.size(); track++ ) {
                 if ( AppManager.getVsqFile().Track.get( track ).getEventCount() == 0 ) {
                     AppManager.showMessageBox(
@@ -11819,7 +11819,7 @@ namespace org.kbinani.cadencii {
             setEdited( true );
         }
 
-        public void commonFileOpen_Click( Object sender, EventArgs e ) {
+        public void handleFileOpen_Click( Object sender, EventArgs e ) {
             if ( !dirtyCheck() ) {
                 return;
             }
@@ -11852,8 +11852,8 @@ namespace org.kbinani.cadencii {
                                 try {
                                     PortUtil.createDirectory( estimatedCacheDir );
                                 } catch ( Exception ex ) {
-                                    Logger.write( typeof( FormMain ) + ".commonFileOpen_Click; ex=" + ex + "\n" );
-                                    PortUtil.stderr.println( "FormMain#commonFileOpen_Click; ex=" + ex );
+                                    Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex + "\n" );
+                                    PortUtil.stderr.println( "FormMain#handleFileOpen_Click; ex=" + ex );
                                     AppManager.showMessageBox( PortUtil.formatMessage( _( "cannot create cache directory: '{0}'" ), estimatedCacheDir ),
                                                                _( "Info." ),
                                                                PortUtil.OK_OPTION,
@@ -11873,7 +11873,7 @@ namespace org.kbinani.cadencii {
                                     try {
                                         PortUtil.moveFile( wavFrom, wavTo );
                                     } catch ( Exception ex ) {
-                                        Logger.write( typeof( FormMain ) + ".commonFileOpen_Click; ex=" + ex + "\n" );
+                                        Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex + "\n" );
                                         PortUtil.stderr.println( "FormMain#commonFileOpen; ex=" + ex );
                                     }
                                 }
@@ -11881,7 +11881,7 @@ namespace org.kbinani.cadencii {
                                     try {
                                         PortUtil.moveFile( xmlFrom, xmlTo );
                                     } catch ( Exception ex ) {
-                                        Logger.write( typeof( FormMain ) + ".commonFileOpen_Click; ex=" + ex + "\n" );
+                                        Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex + "\n" );
                                         PortUtil.stderr.println( "FormMain#commonFileOpen; ex=" + ex );
                                     }
                                 }
@@ -11896,8 +11896,8 @@ namespace org.kbinani.cadencii {
                         try {
                             PortUtil.createDirectory( cacheDir );
                         } catch ( Exception ex ) {
-                            Logger.write( typeof( FormMain ) + ".commonFileOpen_Click; ex=" + ex + "\n" );
-                            PortUtil.stderr.println( "FormMain#commonFileOpen_Click; ex=" + ex );
+                            Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex + "\n" );
+                            PortUtil.stderr.println( "FormMain#handleFileOpen_Click; ex=" + ex );
                             AppManager.showMessageBox( PortUtil.formatMessage( _( "cannot create cache directory: '{0}'" ), estimatedCacheDir ),
                                                        _( "Info." ),
                                                        PortUtil.OK_OPTION,
@@ -11921,16 +11921,16 @@ namespace org.kbinani.cadencii {
                                 status = (RenderedStatus)obj;
                             }
                         } catch ( Exception ex ) {
-                            Logger.write( typeof( FormMain ) + ".commonFileOpen_Click; ex=" + ex + "\n" );
+                            Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex + "\n" );
                             status = null;
-                            PortUtil.stderr.println( "FormMain#commonFileOpen_Click; ex=" + ex );
+                            PortUtil.stderr.println( "FormMain#handleFileOpen_Click; ex=" + ex );
                         } finally {
                             if ( fs != null ) {
                                 try {
                                     fs.close();
                                 } catch ( Exception ex2 ) {
-                                    Logger.write( typeof( FormMain ) + ".commonFileOpen_Click; ex=" + ex2 + "\n" );
-                                    PortUtil.stderr.println( "FormMain#commonFileOpen_Click; ex2=" + ex2 );
+                                    Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex2 + "\n" );
+                                    PortUtil.stderr.println( "FormMain#handleFileOpen_Click; ex2=" + ex2 );
                                 }
                             }
                         }
@@ -11960,7 +11960,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void commonFileNew_Click( Object sender, EventArgs e ) {
+        public void handleFileNew_Click( Object sender, EventArgs e ) {
             if ( !dirtyCheck() ) {
                 return;
             }
@@ -12569,18 +12569,18 @@ namespace org.kbinani.cadencii {
             deleteEvent();
         }
 
-        public void commonEditPaste_Click( Object sender, EventArgs e ) {
+        public void handleEditPaste_Click( Object sender, EventArgs e ) {
             pasteEvent();
         }
 
-        public void commonEditCopy_Click( Object sender, EventArgs e ) {
+        public void handleEditCopy_Click( Object sender, EventArgs e ) {
 #if DEBUG
-            AppManager.debugWriteLine( "commonEditCopy_Click" );
+            AppManager.debugWriteLine( "handleEditCopy_Click" );
 #endif
             copyEvent();
         }
 
-        public void commonEditCut_Click( Object sender, EventArgs e ) {
+        public void handleEditCut_Click( Object sender, EventArgs e ) {
             cutEvent();
         }
 
@@ -12588,7 +12588,7 @@ namespace org.kbinani.cadencii {
             updateCopyAndPasteButtonStatus();
         }
 
-        public void commonEditUndo_Click( Object sender, EventArgs e ) {
+        public void handleEditUndo_Click( Object sender, EventArgs e ) {
 #if DEBUG
             AppManager.debugWriteLine( "menuEditUndo_Click" );
 #endif
@@ -12597,7 +12597,7 @@ namespace org.kbinani.cadencii {
         }
 
 
-        public void commonEditRedo_Click( Object sender, EventArgs e ) {
+        public void handleEditRedo_Click( Object sender, EventArgs e ) {
 #if DEBUG
             AppManager.debugWriteLine( "menuEditRedo_Click" );
 #endif
@@ -14188,18 +14188,6 @@ namespace org.kbinani.cadencii {
 #if DEBUG
             PortUtil.println( "FormMain#menuHelpDebug_Click" );
 
-            CircuitConfig cfg = new CircuitConfig();
-            PortUtil.println( "-----------------------------------------" );
-            cfg.print();
-            cfg.addDevice( "ONE" );
-            cfg.addDevice( "TWO" );
-            cfg.set( 0, 0, "1" );
-            cfg.set( 0, 1, "2" );
-            cfg.set( 1, 0, "3" );
-            cfg.set( 1, 1, "4" );
-            cfg.addDevice( "THREE" );
-            PortUtil.println( "-----------------------------------------" );
-            cfg.print();
 #if ENABLE_VOCALOID
             BFileChooser dlg_fin = new BFileChooser( "" );
             if ( dlg_fin.showOpenDialog( this ) == BFileChooser.APPROVE_OPTION ) {
@@ -14606,40 +14594,40 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
 
-        public void h_positionQuantizeTriplet( Object sender, EventArgs e ) {
+        public void handlePositionQuantizeTriplet_Click( Object sender, EventArgs e ) {
             AppManager.editorConfig.setPositionQuantizeTriplet( !AppManager.editorConfig.isPositionQuantizeTriplet() );
             refreshScreen();
         }
 
-        public void h_lengthQuantize04( Object sender, EventArgs e ) {
+        public void handleLengthQuantize04_Click( Object sender, EventArgs e ) {
             AppManager.editorConfig.setLengthQuantize(QuantizeMode.p4 );
         }
 
-        public void h_lengthQuantize08( Object sender, EventArgs e ) {
+        public void handleLengthQuantize08_Click( Object sender, EventArgs e ) {
             AppManager.editorConfig.setLengthQuantize( QuantizeMode.p8 );
         }
 
-        public void h_lengthQuantize16( Object sender, EventArgs e ) {
+        public void handleLengthQuantize16_Click( Object sender, EventArgs e ) {
             AppManager.editorConfig.setLengthQuantize( QuantizeMode.p16 );
         }
 
-        public void h_lengthQuantize32( Object sender, EventArgs e ) {
+        public void handleLengthQuantize32_Click( Object sender, EventArgs e ) {
             AppManager.editorConfig.setLengthQuantize( QuantizeMode.p32 );
         }
 
-        public void h_lengthQuantize64( Object sender, EventArgs e ) {
+        public void handleLengthQuantize64_Click( Object sender, EventArgs e ) {
             AppManager.editorConfig.setLengthQuantize( QuantizeMode.p64 );
         }
 
-        public void h_lengthQuantize128( Object sender, EventArgs e ) {
+        public void handleLengthQuantize128_Click( Object sender, EventArgs e ) {
             AppManager.editorConfig.setLengthQuantize( QuantizeMode.p128 );
         }
 
-        public void h_lengthQuantizeOff( Object sender, EventArgs e ) {
+        public void handleLengthQuantizeOff_Click( Object sender, EventArgs e ) {
             AppManager.editorConfig.setLengthQuantize( QuantizeMode.off );
         }
 
-        public void h_lengthQuantizeTriplet( Object sender, EventArgs e ) {
+        public void handleLengthQuantizeTriplet_Click( Object sender, EventArgs e ) {
             AppManager.editorConfig.setLengthQuantizeTriplet( !AppManager.editorConfig.isLengthQuantizeTriplet() );
         }
 
@@ -14768,7 +14756,7 @@ namespace org.kbinani.cadencii {
             patchWorkToFreeze( new Integer[] { AppManager.getSelected() } );
         }
 
-        public void commonTrackOn_Click( Object sender, EventArgs e ) {
+        public void handleTrackOn_Click( Object sender, EventArgs e ) {
             boolean newStatus = (sender == cMenuTrackTabTrackOn) ? !cMenuTrackTabTrackOn.isSelected() : !menuTrackOn.isSelected();
             menuTrackOn.setSelected( newStatus );
             cMenuTrackTabTrackOn.setSelected( newStatus );
@@ -14784,7 +14772,7 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
 
-        public void commonTrackRenderAll_Click( Object sender, EventArgs e ) {
+        public void handleTrackRenderAll_Click( Object sender, EventArgs e ) {
             Vector<Integer> list = new Vector<Integer>();
             int c = AppManager.getVsqFile().Track.size();
             for ( int i = 1; i < c; i++ ) {
@@ -15631,7 +15619,7 @@ namespace org.kbinani.cadencii {
             statusLabel.setText( text );
         }
 
-        public void commonCaptureSpaceKeyDown( Object sender, BKeyEventArgs e ) {
+        public void handleSpaceKeyDown( Object sender, BKeyEventArgs e ) {
 #if JAVA
             if ( (e.KeyValue & KeyEvent.VK_SPACE) == KeyEvent.VK_SPACE ) {
 #else
@@ -15641,7 +15629,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void commonCaptureSpaceKeyUp( Object sender, BKeyEventArgs e ) {
+        public void handleSpaceKeyUp( Object sender, BKeyEventArgs e ) {
 #if JAVA
             if ( (e.KeyValue & KeyEvent.VK_SPACE) == KeyEvent.VK_SPACE ) {
 #else
@@ -15651,7 +15639,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void commonChangeRenderer( Object sender, EventArgs e ) {
+        public void handleChangeRenderer( Object sender, EventArgs e ) {
             RendererKind kind = RendererKind.NULL;
             if ( sender == cMenuTrackTabRendererAquesTone || sender == menuTrackRendererAquesTone ) {
                 kind = RendererKind.AQUES_TONE;
@@ -15702,7 +15690,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void commonPlayAfterSynth_Click( Object sender, EventArgs e ) {
+        public void handlePlayAfterSynth_Click( Object sender, EventArgs e ) {
             VsqFileEx vsq = AppManager.getVsqFile();
             if ( vsq == null ) return;
             int selected = AppManager.getSelected();
@@ -16446,7 +16434,7 @@ namespace org.kbinani.cadencii {
             updateBgmMenuState();
         }
 
-        public void commonSettingPaletteTool( Object sender, EventArgs e ) {
+        public void handleSettingPaletteTool( Object sender, EventArgs e ) {
 #if ENABLE_SCRIPT
             if ( sender is BMenuItem ) {
                 BMenuItem tsmi = (BMenuItem)sender;
@@ -16468,13 +16456,13 @@ namespace org.kbinani.cadencii {
                                 fs = new FileOutputStream( config );
                                 xsms.serialize( fs, null );
                             } catch ( Exception ex ) {
-                                Logger.write( typeof( FormMain ) + ".commonSettingPaletteTool; ex=" + ex + "\n" );
+                                Logger.write( typeof( FormMain ) + ".handleSettingPaletteTool; ex=" + ex + "\n" );
                             } finally {
                                 if ( fs != null ) {
                                     try {
                                         fs.close();
                                     } catch ( Exception ex2 ) {
-                                        Logger.write( typeof( FormMain ) + ".commonSettingPaletteTool; ex=" + ex2 + "\n" );
+                                        Logger.write( typeof( FormMain ) + ".handleSettingPaletteTool; ex=" + ex2 + "\n" );
                                     }
                                 }
                             }

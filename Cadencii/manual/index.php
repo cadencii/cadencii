@@ -181,7 +181,7 @@ function msg( $message ){
 
   <!-- section 3 -->
   <a name="how_to_install"></a>
-  <h3>3. <?php print msg( "How to install" ) ?></h3>
+  <h3>3. <?php print msg( "Install" ) ?></h3>
   <div class=indent>
     <h4>case A: Windows Vista, Windows 7</h4>
       <div class=indent>

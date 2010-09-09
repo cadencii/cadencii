@@ -52,11 +52,15 @@ namespace org.kbinani.vsq {
                 PortUtil.println( "SingerConfigSys#.ctor; path_installed_singers[" + j + "]=" + path_installed_singers[j] );
 #endif
                 //TODO: ここでエラー起こる場合があるよ。SingerConfigSys::.ctor
-                String[] vvds = PortUtil.listFiles( ipath, "*.vvd" );
-                if ( vvds.Length > 0 ) {
-                    SingerConfig installed = SingerConfig.fromVvd( vvds[0], 0, 0 );
-                    m_installed_singers.add( installed );
-                    break;
+                //      実際にディレクトリがある場合にのみ，ファイルのリストアップをするようにした．
+                //      これで治っているかどうか要確認
+                if ( PortUtil.isDirectoryExists( ipath ) ) {
+                    String[] vvds = PortUtil.listFiles( ipath, "*.vvd" );
+                    if ( vvds.Length > 0 ) {
+                        SingerConfig installed = SingerConfig.fromVvd( vvds[0], 0, 0 );
+                        m_installed_singers.add( installed );
+                        break;
+                    }
                 }
             }
             
