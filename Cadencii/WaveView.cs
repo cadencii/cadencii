@@ -39,7 +39,7 @@ namespace org.kbinani.cadencii {
 #else
     public class WaveView : BPanel {
 #endif
-        private WaveDrawContext[] drawer = new WaveDrawContext[16];
+        private WaveDrawContext[] mDrawer = new WaveDrawContext[16];
 
         public WaveView()
 #if JAVA
@@ -73,7 +73,7 @@ namespace org.kbinani.cadencii {
                 return;
             }
             int selected = AppManager.getSelected();
-            WaveDrawContext context = drawer[selected - 1];
+            WaveDrawContext context = mDrawer[selected - 1];
             if ( context == null ) {
                 return;
             }
@@ -87,8 +87,8 @@ namespace org.kbinani.cadencii {
         }
 
         public void unloadAll() {
-            for ( int i = 0; i < drawer.Length; i++ ) {
-                WaveDrawContext context = drawer[i];
+            for ( int i = 0; i < mDrawer.Length; i++ ) {
+                WaveDrawContext context = mDrawer[i];
                 if ( context == null ) {
                     continue;
                 }
@@ -97,25 +97,25 @@ namespace org.kbinani.cadencii {
         }
 
         public void reloadPartial( int index, String file, double sec_from, double sec_to ) {
-            if ( index < 0 || drawer.Length <= index ) {
+            if ( index < 0 || mDrawer.Length <= index ) {
                 return;
             }
-            if ( drawer[index] == null ) {
-                drawer[index] = new WaveDrawContext();
-                drawer[index].load( file );
+            if ( mDrawer[index] == null ) {
+                mDrawer[index] = new WaveDrawContext();
+                mDrawer[index].load( file );
             } else {
-                drawer[index].reloadPartial( file, sec_from, sec_to );
+                mDrawer[index].reloadPartial( file, sec_from, sec_to );
             }
         }
 
         public void load( int index, String wave_path ) {
-            if ( index < 0 || drawer.Length <= index ) {
+            if ( index < 0 || mDrawer.Length <= index ) {
                 return;
             }
-            if ( drawer[index] == null ) {
-                drawer[index] = new WaveDrawContext();
+            if ( mDrawer[index] == null ) {
+                mDrawer[index] = new WaveDrawContext();
             }
-            drawer[index].load( wave_path );
+            mDrawer[index].load( wave_path );
         }
 
 #if !JAVA

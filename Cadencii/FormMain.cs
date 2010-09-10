@@ -904,10 +904,10 @@ namespace org.kbinani.cadencii {
             panel1.Controls.Add( AppManager.inputTextBox );
 #endif
 
-            pictDiagram = new CircuitDiagram();
-            pictDiagram.setBackground( new Color( 106, 108, 108 ) );
+            pictCircuit = new CircuitView();
+            pictCircuit.setBackground( new Color( 106, 108, 108 ) );
 #if !JAVA
-            pictDiagram.Dock = System.Windows.Forms.DockStyle.Fill;
+            pictCircuit.Dock = System.Windows.Forms.DockStyle.Fill;
 #endif
 
             int fps = 1000 / AppManager.editorConfig.MaximumFrameRate;
@@ -9890,7 +9890,7 @@ namespace org.kbinani.cadencii {
 #if !JAVA
             if ( menuVisualCircuitDiagram.isSelected() ) {
                 splitContainerProperty.Panel2.Controls.Clear();
-                splitContainerProperty.Panel2.Controls.Add( pictDiagram );
+                splitContainerProperty.Panel2.Controls.Add( pictCircuit );
             } else {
                 splitContainerProperty.Panel2.Controls.Clear();
                 splitContainerProperty.Panel2.Controls.Add( splitContainer1 );
@@ -20379,7 +20379,7 @@ namespace org.kbinani.cadencii {
         private BMenuItem menuTrackPlayAfterSynth;
         public BMenuItem menuHiddenPlayFromStartMarker;
         public BMenuItem menuHiddenFlipCurveOnPianorollMode;
-        public CircuitDiagram pictDiagram;
+        public CircuitView pictCircuit;
         private BMenuItem menuVisualCircuitDiagram;
 
 #endif

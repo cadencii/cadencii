@@ -74,7 +74,7 @@ namespace org.kbinani.cadencii {
 
         public static readonly SingerConfig[] SINGERS = new SingerConfig[] { female_f1, auto_f1, male_hk, auto_hk };
 
-        private static AquesToneDriver _instance = null;
+        private static AquesToneDriver mInstance = null;
 
 #if ENABLE_AQUESTONE
 
@@ -92,45 +92,45 @@ namespace org.kbinani.cadencii {
         }
 
         public static AquesToneDriver getInstance() {
-            if ( _instance == null ) {
+            if ( mInstance == null ) {
                 reload();
             }
-            return _instance;
+            return mInstance;
         }
 
         public static void reload() {
             String aques_tone = AppManager.editorConfig.PathAquesTone;
-            if ( _instance == null ) {
+            if ( mInstance == null ) {
 #if FAKE_AQUES_TONE_DLL_AS_VOCALOID1
                 _instance = new VocaloidDriver();
 #else
-                _instance = new AquesToneDriver();
+                mInstance = new AquesToneDriver();
 #endif
-                _instance.loaded = false;
-                _instance.kind = RendererKind.AQUES_TONE;
+                mInstance.loaded = false;
+                mInstance.kind = RendererKind.AQUES_TONE;
             }
-            if ( _instance.loaded ) {
-                _instance.close();
-                _instance.loaded = false;
+            if ( mInstance.loaded ) {
+                mInstance.close();
+                mInstance.loaded = false;
             }
-            _instance.path = aques_tone;
+            mInstance.path = aques_tone;
             if ( !aques_tone.Equals( "" ) && PortUtil.isFileExists( aques_tone ) && !AppManager.editorConfig.DoNotUseAquesTone ) {
                 boolean loaded = false;
                 try {
 #if FAKE_AQUES_TONE_DLL_AS_VOCALOID1
-                    loaded = _instance.open( aques_tone, SAMPLE_RATE, SAMPLE_RATE, false );
+                    loaded = mInstance.open( aques_tone, SAMPLE_RATE, SAMPLE_RATE, false );
 #else
-                    loaded = _instance.open( aques_tone, VSTiProxy.SAMPLE_RATE, VSTiProxy.SAMPLE_RATE, true );
+                    loaded = mInstance.open( aques_tone, VSTiProxy.SAMPLE_RATE, VSTiProxy.SAMPLE_RATE, true );
 #endif
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "VSTiProxy#realoadAquesTone; ex=" + ex );
                     loaded = false;
                     Logger.write( typeof( AquesToneDriver ) + ".reload; ex=" + ex + "\n" );
                 }
-                _instance.loaded = loaded;
+                mInstance.loaded = loaded;
             }
 #if DEBUG
-            PortUtil.println( "VSTiProxy#initCor; aquesToneDriver.loaded=" + _instance.loaded );
+            PortUtil.println( "VSTiProxy#initCor; aquesToneDriver.loaded=" + mInstance.loaded );
 #endif
         }
 

@@ -31,17 +31,17 @@ namespace org.kbinani.cadencii.draft {
     public class Amplifier : WaveUnit, WaveSender, WaveReceiver {
 #endif
         private const int _BUFLEN = 1024;
-        private double[] _buffer_l = new double[_BUFLEN];
-        private double[] _buffer_r = new double[_BUFLEN];
-        private double _amp_l = 1.0;
-        private double _amp_r = 1.0;
-        private long _position = 0;
-        private WaveReceiver _receiver = null;
-        private WaveSender _sender = null;
-        private int _version = 0;
+        private double[] mBufferL = new double[_BUFLEN];
+        private double[] mBufferR = new double[_BUFLEN];
+        private double mAmpL = 1.0;
+        private double mAmpR = 1.0;
+        private long mPosition = 0;
+        private WaveReceiver mReceiver = null;
+        private WaveSender mSender = null;
+        private int mVersion = 0;
 
         public override int getVersion() {
-            return _version;
+            return mVersion;
         }
 
         public override void setConfig( String parameter ) {
@@ -49,40 +49,40 @@ namespace org.kbinani.cadencii.draft {
         }
 
         public void setReceiver( WaveReceiver r ) {
-            if ( _receiver != null ) {
-                _receiver.end();
+            if ( mReceiver != null ) {
+                mReceiver.end();
             }
-            _receiver = r;
+            mReceiver = r;
         }
 
         public void setSender( WaveSender s ) {
-            if ( _sender != null ) {
-                _sender.end();
+            if ( mSender != null ) {
+                mSender.end();
             }
-            _sender = s;
+            mSender = s;
         }
 
         public long getPosition() {
-            return _position;
+            return mPosition;
         }
 
         public void end() {
-            if ( _receiver != null ) {
-                _receiver.end();
+            if ( mReceiver != null ) {
+                mReceiver.end();
             }
-            if ( _sender != null ) {
-                _sender.end();
+            if ( mSender != null ) {
+                mSender.end();
             }
         }
 
         public void setAmplify( double amp_left, double amp_right ) {
-            _amp_l = amp_left;
-            _amp_r = amp_right;
+            mAmpL = amp_left;
+            mAmpR = amp_right;
         }
 
         public void push( double[] l, double[] r, int length ) {
-            if ( _receiver == null ) {
-                _position += length;
+            if ( mReceiver == null ) {
+                mPosition += length;
                 return;
             }
 
@@ -90,56 +90,56 @@ namespace org.kbinani.cadencii.draft {
             while ( remain > 0 ) {
                 int amount = (remain > _BUFLEN) ? _BUFLEN : remain;
                 for ( int i = 0; i < amount; i++ ) {
-                    _buffer_l[i] = 0.0;
-                    _buffer_r[i] = 0.0;
+                    mBufferL[i] = 0.0;
+                    mBufferR[i] = 0.0;
                 }
                 int offset = length - remain;
 
                 // 左チャンネル
-                if ( _amp_l != 0.0 ) {
-                    if ( _amp_l == 1.0 ) {
+                if ( mAmpL != 0.0 ) {
+                    if ( mAmpL == 1.0 ) {
                         // 増幅率1の場合
                         for ( int i = 0; i < amount; i++ ) {
-                            _buffer_l[i] = l[i + offset];
+                            mBufferL[i] = l[i + offset];
                         }
                     } else {
                         for ( int i = 0; i < amount; i++ ) {
-                            _buffer_l[i] = l[i + offset] * _amp_l;
+                            mBufferL[i] = l[i + offset] * mAmpL;
                         }
                     }
                     for ( int i = 0; i < amount; i++ ) {
-                        if ( _buffer_l[i] > 1.0 ) {
-                            _buffer_l[i] = 1.0;
-                        } else if ( _buffer_l[i] < -1.0 ) {
-                            _buffer_l[i] = -1.0;
+                        if ( mBufferL[i] > 1.0 ) {
+                            mBufferL[i] = 1.0;
+                        } else if ( mBufferL[i] < -1.0 ) {
+                            mBufferL[i] = -1.0;
                         }
                     }
                 }
 
                 // 右チャンネル
-                if ( _amp_r != 0.0 ) {
-                    if ( _amp_r == 1.0 ) {
+                if ( mAmpR != 0.0 ) {
+                    if ( mAmpR == 1.0 ) {
                         // 増幅率1の場合
                         for ( int i = 0; i < amount; i++ ) {
-                            _buffer_r[i] = r[i + offset];
+                            mBufferR[i] = r[i + offset];
                         }
                     } else {
                         for ( int i = 0; i < amount; i++ ) {
-                            _buffer_r[i] = r[i + offset] * _amp_r;
+                            mBufferR[i] = r[i + offset] * mAmpR;
                         }
                     }
                     for ( int i = 0; i < amount; i++ ) {
-                        if ( _buffer_r[i] > 1.0 ) {
-                            _buffer_r[i] = 1.0;
-                        } else if ( _buffer_r[i] < -1.0 ) {
-                            _buffer_r[i] = -1.0;
+                        if ( mBufferR[i] > 1.0 ) {
+                            mBufferR[i] = 1.0;
+                        } else if ( mBufferR[i] < -1.0 ) {
+                            mBufferR[i] = -1.0;
                         }
                     }
                 }
 
                 remain -= amount;
-                _position += amount;
-                _receiver.push( _buffer_l, _buffer_r, amount );
+                mPosition += amount;
+                mReceiver.push( mBufferL, mBufferR, amount );
             }
         }
 
@@ -148,27 +148,27 @@ namespace org.kbinani.cadencii.draft {
                 r[i] = 0.0;
                 l[i] = 0.0;
             }
-            if ( _receiver != null ) {
+            if ( mReceiver != null ) {
                 int remain = length;
                 while ( remain > 0 ) {
                     int amount = (remain > _BUFLEN) ? _BUFLEN : remain;
                     int offset = length - remain;
-                    _sender.pull( _buffer_l, _buffer_r, amount );
+                    mSender.pull( mBufferL, mBufferR, amount );
                     for ( int i = 0; i < amount; i++ ) {
-                        l[i + offset] += _buffer_l[i];
-                        r[i + offset] += _buffer_r[i];
+                        l[i + offset] += mBufferL[i];
+                        r[i + offset] += mBufferR[i];
                     }
                     remain -= amount;
                 }
             }
-            if ( _amp_l != 1.0 ) {
+            if ( mAmpL != 1.0 ) {
                 for ( int i = 0; i < length; i++ ) {
-                    l[i] *= _amp_l;
+                    l[i] *= mAmpL;
                 }
             }
-            if ( _amp_r != 1.0 ) {
+            if ( mAmpR != 1.0 ) {
                 for ( int i = 0; i < length; i++ ) {
-                    r[i] *= _amp_r;
+                    r[i] *= mAmpR;
                 }
             }
             for ( int i = 0; i < length; i++ ) {

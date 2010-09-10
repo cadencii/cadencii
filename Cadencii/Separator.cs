@@ -25,13 +25,13 @@ namespace org.kbinani.cadencii.draft {
     /// </summary>
     public class Separator : WaveReceiver {
         const int _BUFLEN = 1024;
-        private Vector<WaveReceiver> _receivers = new Vector<WaveReceiver>();
-        private double[] _buff_l = new double[_BUFLEN];
-        private double[] _buff_r = new double[_BUFLEN];
-        private int _version = 0;
+        private Vector<WaveReceiver> mReceivers = new Vector<WaveReceiver>();
+        private double[] mBufferL = new double[_BUFLEN];
+        private double[] mBufferR = new double[_BUFLEN];
+        private int mVersion = 0;
 
         public int getVersion() {
-            return _version;
+            return mVersion;
         }
 
         public void init( String parameter ) {
@@ -42,13 +42,13 @@ namespace org.kbinani.cadencii.draft {
             if ( receiver == null ) {
                 return;
             }
-            if ( !_receivers.contains( receiver ) ) {
-                _receivers.add( receiver );
+            if ( !mReceivers.contains( receiver ) ) {
+                mReceivers.add( receiver );
             }
         }
 
         public void end() {
-            foreach ( WaveReceiver r in _receivers ) {
+            foreach ( WaveReceiver r in mReceivers ) {
                 r.end();
             }
         }
@@ -57,13 +57,13 @@ namespace org.kbinani.cadencii.draft {
             if ( receiver == null ) {
                 return;
             }
-            if ( !_receivers.contains( receiver ) ) {
-                _receivers.add( receiver );
+            if ( !mReceivers.contains( receiver ) ) {
+                mReceivers.add( receiver );
             }
         }
 
         public void push( double[] l, double[] r, int length ) {
-            if ( _receivers.size() <= 0 ) {
+            if ( mReceivers.size() <= 0 ) {
                 return;
             }
 
@@ -72,11 +72,11 @@ namespace org.kbinani.cadencii.draft {
             while ( remain > 0 ) {
                 int amount = remain > _BUFLEN ? _BUFLEN : remain;
                 for ( int i = 0; i < amount; i++ ) {
-                    _buff_l[i] = l[i + offset];
-                    _buff_r[i] = r[i + offset];
+                    mBufferL[i] = l[i + offset];
+                    mBufferR[i] = r[i + offset];
                 }
-                foreach ( WaveReceiver rc in _receivers ) {
-                    rc.push( _buff_l, _buff_r, amount );
+                foreach ( WaveReceiver rc in mReceivers ) {
+                    rc.push( mBufferL, mBufferR, amount );
                 }
                 offset += amount;
                 remain -= amount;

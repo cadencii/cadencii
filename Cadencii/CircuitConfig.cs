@@ -19,25 +19,57 @@ import java.util.*;
 using System;
 using org.kbinani.java.util;
 
-namespace org.kbinani.cadencii{
+namespace org.kbinani.cadencii.draft {
 #endif
 
+    /// <summary>
+    /// シンセサイザ等の回路の接続を表現するクラス
+    /// </summary>
     public class CircuitConfig {
-        public Vector<String> Data;
-        public Vector<String> Devices;
+        public Vector<CircuitConfigEntry> Data;
+        /// <summary>
+        /// シンセサイザの型のフルネーム(ex. "org.kbinani.cadencii.VocaloidWaveGenerator")のリスト
+        /// </summary>
+        public Vector<String> Units;
+        /// <summary>
+        /// シンセサイザに渡す設定値を格納した文字列
+        /// </summary>
+        public Vector<String> Arguments;
 
         public CircuitConfig() {
-            this.Data = new Vector<String>();
-            this.Devices = new Vector<String>();
+            this.Data = new Vector<CircuitConfigEntry>();
+            this.Units = new Vector<String>();
+            this.Arguments = new Vector<String>();
         }
 
-        public String get( int row_index, int column_index ) {
-            int indx = row_index * this.Devices.size() + column_index;
+        /// <summary>
+        /// 指定したVSQの指定したトラックの歌声合成させるデフォルトの回路を生成するファクトリメソッド.
+        /// </summary>
+        /// <param name="vsq"></param>
+        /// <param name="track"></param>
+        /// <returns></returns>
+        public static CircuitConfig createDefault( VsqFileEx vsq, int track ) {
+            /*
+             * 
+             * *WaveGenerator--->Amplifier--->Mixer--->Separator--->MonitorWaveReceiver
+             *                                   |          |
+             * FileWaveSender<----Amplifier<-----|          -------->FileWaveReceiver
+             *                                   |
+             * FileWaveSender<----Amplifier<-----|
+             *        .               .          |
+             *        .               .          .
+             *        .               .          .
+             * 
+             */
+        }
+
+        public CircuitConfigEntry get( int row_index, int column_index ) {
+            int indx = row_index * this.Units.size() + column_index;
             return this.Data.get( indx );
         }
 
-        public void set( int row_index, int column_index, String value ) {
-            int indx = row_index * this.Devices.size() + column_index;
+        public void set( int row_index, int column_index, CircuitConfigEntry value ) {
+            int indx = row_index * this.Units.size() + column_index;
             this.Data.set( indx, value );
         }
 
@@ -45,34 +77,35 @@ namespace org.kbinani.cadencii{
         /// デバイスをひとつ追加する
         /// </summary>
         /// <param name="device_name"></param>
-        public void addDevice( String device_name ) {
+        public void addUnit( String device_name ) {
 #if DEBUG
-            //PortUtil.println( "CircuitConfig#addDevice; before;" );
+            //PortUtil.println( "CircuitConfig#addUnit; before;" );
             //printDataAsMatrix( Data, Devices.size() );
 #endif
             // バッファを持っておく
-            Vector<String> buf = new Vector<String>();
-            foreach ( String s in this.Data ) {
+            Vector<CircuitConfigEntry> buf = new Vector<CircuitConfigEntry>();
+            foreach ( CircuitConfigEntry s in this.Data ) {
                 buf.add( s );
             }
 
             // 元に戻す
             this.Data.clear();
-            int num = this.Devices.size();
+            int num = this.Units.size();
             int index = 0;
             for ( int row = 0; row < num; row++ ) {
                 for ( int col = 0; col < num; col++ ) {
                     this.Data.add( buf.get( index ) );
                     index++;
                 }
-                this.Data.add( "" );
+                this.Data.add( null );
             }
             for ( int newrow = 0; newrow < num + 1; newrow++ ) {
-                this.Data.add( "" );
+                this.Data.add( null );
             }
 
             // デバイス名の分を追加
-            this.Devices.add( device_name );
+            this.Units.add( device_name );
+            this.Arguments.add( "" );
 #if DEBUG
             //PortUtil.println( "CircuitConfig#addDevice; after;" );
             //printDataAsMatrix( Data, Devices.size() );
@@ -81,14 +114,14 @@ namespace org.kbinani.cadencii{
 
 #if DEBUG
         public void print() {
-            if ( this.Devices.size() > 0 ) {
+            if ( this.Units.size() > 0 ) {
                 String s = "|";
-                foreach ( String i in this.Devices ) {
+                foreach ( String i in this.Units ) {
                     s += i + "|";
                 }
                 PortUtil.println( s );
             }
-            printDataAsMatrix( this.Data, this.Devices.size() );
+            printDataAsMatrix( this.Data, this.Units.size() );
         }
 #endif
 
@@ -97,7 +130,7 @@ namespace org.kbinani.cadencii{
         /// </summary>
         /// <param name="array"></param>
         /// <param name="num"></param>
-        private static void printDataAsMatrix( Vector<String> array, int num ) {
+        private static void printDataAsMatrix( Vector<CircuitConfigEntry> array, int num ) {
             int index = 0;
             for ( int row = 0; row < num; row++ ) {
                 String s = "|";

@@ -79,10 +79,10 @@ namespace org.kbinani.cadencii.draft {
         /// <param name="parameter"></param>
         public void init( VsqFileEx vsq, int track, int start_clock, int end_clock ) {
             _track = track;
-            m_resampler = _config.PathResampler;
-            m_wavtool = _config.PathWavtool;
+            m_resampler = mConfig.PathResampler;
+            m_wavtool = mConfig.PathWavtool;
             m_temp_dir = PortUtil.combinePath( AppManager.getCadenciiTempDir(), AppManager.getID() );
-            m_invoke_with_wine = _config.InvokeUtauCoreWithWine;
+            m_invoke_with_wine = mConfig.InvokeUtauCoreWithWine;
 
             _vsq = (VsqFileEx)vsq.clone();
             _vsq.updateTotalClocks();
@@ -198,8 +198,8 @@ namespace org.kbinani.cadencii.draft {
                         program_change = singer_event.ID.IconHandle.Program;
                     }
                     String singer = "";
-                    if ( 0 <= program_change && program_change < _config.Utausingers.size() ) {
-                        singer = _config.Utausingers.get( program_change ).VOICEIDSTR;
+                    if ( 0 <= program_change && program_change < mConfig.Utausingers.size() ) {
+                        singer = mConfig.Utausingers.get( program_change ).VOICEIDSTR;
                     }
 #if MAKEBAT_SP
                     log.Write( "; pc=" + program_change );

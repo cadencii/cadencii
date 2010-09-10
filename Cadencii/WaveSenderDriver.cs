@@ -31,15 +31,15 @@ namespace org.kbinani.cadencii.draft {
     public class WaveSenderDriver : WaveUnit, WaveGenerator {
 #endif
         private const int _BUFLEN = 1024;
-        private WaveSender _wave_sender = null;
-        private double[] _buffer_l = new double[_BUFLEN];
-        private double[] _buffer_r = new double[_BUFLEN];
-        private long _position = 0;
-        private WaveReceiver _receiver = null;
-        private int _version = 0;
+        private WaveSender mWaveSender = null;
+        private double[] mBufferL = new double[_BUFLEN];
+        private double[] mBufferR = new double[_BUFLEN];
+        private long mPosition = 0;
+        private WaveReceiver mReceiver = null;
+        private int mVersion = 0;
 
         public override int getVersion() {
-            return _version;
+            return mVersion;
         }
 
         public override void setConfig( string parameters ) {
@@ -58,30 +58,30 @@ namespace org.kbinani.cadencii.draft {
         }
 
         public void setSender( WaveSender wave_sender ) {
-            _wave_sender = wave_sender;
+            mWaveSender = wave_sender;
         }
 
         public void setReceiver( WaveReceiver r ) {
-            if ( _receiver != null ) {
-                _receiver.end();
+            if ( mReceiver != null ) {
+                mReceiver.end();
             }
-            _receiver = r;
+            mReceiver = r;
         }
 
         public long getPosition() {
-            return _position;
+            return mPosition;
         }
 
         public void begin( long length ) {
             long remain = length;
             while ( remain > 0 ) {
                 int amount = (remain > _BUFLEN) ? _BUFLEN : (int)remain;
-                _wave_sender.pull( _buffer_l, _buffer_r, amount );
-                _receiver.push( _buffer_l, _buffer_r, amount );
+                mWaveSender.pull( mBufferL, mBufferR, amount );
+                mReceiver.push( mBufferL, mBufferR, amount );
                 remain -= amount;
-                _position += amount;
+                mPosition += amount;
             }
-            _receiver.end();
+            mReceiver.end();
         }
     }
 

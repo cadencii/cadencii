@@ -1,5 +1,5 @@
 ﻿/*
- * CircuitDiagram.cs
+ * CircuitView.cs
  * Copyright (C) 2010 kbinani
  *
  * This file is part of org.kbinani.cadencii.
@@ -24,20 +24,28 @@ using org.kbinani.java.awt;
 using org.kbinani.javax.swing;
 using org.kbinani.windows.forms;
 
+//TODO: draftが格上げになったら消すこと
+using org.kbinani.cadencii.draft;
+
 namespace org.kbinani.cadencii {
 #endif
 
     /// <summary>
-    /// シンセサイザ等の接続を編集するためのコンポーネント
+    /// シンセサイザ等の接続回路を編集するためのコンポーネント
     /// </summary>
 #if JAVA
-    public class CircuitDiagram extends BPictureBox {
+    public class CircuitView extends BPictureBox {
 #else
-    public class CircuitDiagram : BPictureBox {
+    public class CircuitView : BPictureBox {
+        private CircuitConfig mConfig = null;
 #endif
         public void paint( Graphics g1 ) {
             Graphics2D g = (Graphics2D)g1;
 
+        }
+
+        public void setConfig( CircuitConfig value ) {
+            mConfig = value;
         }
     }
 
