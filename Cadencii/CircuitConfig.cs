@@ -61,6 +61,7 @@ namespace org.kbinani.cadencii.draft {
              *        .               .          .
              * 
              */
+            throw new NotImplementedException();
         }
 
         public CircuitConfigEntry get( int row_index, int column_index ) {

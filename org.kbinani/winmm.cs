@@ -231,6 +231,13 @@ namespace org.kbinani {
         public const ushort JOY_RETURNALL = (JOY_RETURNX | JOY_RETURNY | JOY_RETURNZ |
                                  JOY_RETURNR | JOY_RETURNU | JOY_RETURNV |
                                  JOY_RETURNPOV | JOY_RETURNBUTTONS);
+        public const int JOYCAPS_HASZ = 0x0001;
+        public const int JOYCAPS_HASR = 0x0002;
+        public const int JOYCAPS_HASU = 0x0004;
+        public const int JOYCAPS_HASV = 0x0008;
+        public const int JOYCAPS_HASPOV = 0x0010;
+        public const int JOYCAPS_POV4DIR = 0x0020;
+        public const int JOYCAPS_POVCTS = 0x0040;
 
         public const ushort MM_MCINOTIFY = 0x3B9;          /* MCI */
 

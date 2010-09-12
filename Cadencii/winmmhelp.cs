@@ -23,69 +23,10 @@ namespace org.kbinani.cadencii {
     public unsafe static class winmmhelp {
         static uint s_num_joydev = 0;
         static boolean[] s_joy_attatched;
-        static int[] s_button_num;
         static boolean s_initialized = false;
         static int[] s_joy_available;
-
-        public static int JoyInit() {
-            if ( s_initialized ) {
-                JoyReset();
-            }
-            s_initialized = true;
-            int num_joydev = (int)win32.joyGetNumDevs();
-#if DEBUG
-            org.kbinani.debug.push_log( "winmmhelp.JoyInit" );
-            org.kbinani.debug.push_log( "    num_joydev=" + num_joydev );
-#endif
-            if ( num_joydev <= 0 ) {
-                num_joydev = 0;
-                return num_joydev;
-            }
-            s_joy_attatched = new boolean[num_joydev];
-            s_button_num = new int[num_joydev];
-            int count = 0;
-            for ( int k = 0; k < num_joydev; k++ ) {
-                JOYINFO ji = new JOYINFO();
-                if ( win32.joyGetPos( (uint)k, ref ji ) == win32.JOYERR_NOERROR ) {
-                    s_joy_attatched[k] = true;
-                    JOYCAPSW jc = new JOYCAPSW();
-                    win32.joyGetDevCapsW( (uint)k, ref jc, (uint)Marshal.SizeOf( jc ) );
-                    s_button_num[k] = (int)jc.wNumButtons;
-                    count++;
-                } else {
-                    s_joy_attatched[k] = false;
-                    s_button_num[k] = 0;
-                }
-            }
-            if ( count > 0 ) {
-                s_joy_available = new int[count];
-                int c = -1;
-                for ( int i = 0; i < num_joydev; i++ ) {
-                    if ( s_joy_attatched[i] ) {
-                        c++;
-                        if ( c >= count ) {
-                            break; //ここに来るのはエラー
-                        }
-                        s_joy_available[c] = i;
-                    }
-                }
-            }
-            s_num_joydev = (uint)count;
-            return (int)s_num_joydev;
-        }
-
-        public static boolean IsJoyAttatched( int index ) {
-            if ( !s_initialized ) {
-                JoyInit();
-            }
-            if ( s_num_joydev == 0 || index < 0 || (int)s_num_joydev <= index ) {
-                return false;
-            }
-            return s_joy_attatched[index];
-        }
-
-        public static boolean JoyGetStatus( int index_, out byte[] buttons, out int pov ) {
-            uint[] _BTN = new uint[32] { 0x0001,
+        static JOYCAPSW[] s_joycaps;
+        static readonly uint[] _BTN = new uint[32] { 0x0001,
                                0x0002,
                                0x0004,
                                0x0008,
@@ -117,6 +58,64 @@ namespace org.kbinani.cadencii {
                                0x20000000,
                                0x40000000,
                                0x80000000 };
+
+        public static int JoyInit() {
+            if ( s_initialized ) {
+                JoyReset();
+            }
+            s_initialized = true;
+            int num_joydev = (int)win32.joyGetNumDevs();
+#if DEBUG
+            org.kbinani.debug.push_log( "winmmhelp.JoyInit" );
+            org.kbinani.debug.push_log( "    num_joydev=" + num_joydev );
+#endif
+            if ( num_joydev <= 0 ) {
+                num_joydev = 0;
+                return num_joydev;
+            }
+            s_joy_attatched = new boolean[num_joydev];
+            s_joycaps = new JOYCAPSW[num_joydev];
+            int count = 0;
+            for ( int k = 0; k < num_joydev; k++ ) {
+                JOYINFO ji = new JOYINFO();
+                if ( win32.joyGetPos( (uint)k, ref ji ) == win32.JOYERR_NOERROR ) {
+                    s_joy_attatched[k] = true;
+                    JOYCAPSW jc = new JOYCAPSW();
+                    win32.joyGetDevCapsW( (uint)k, ref jc, (uint)Marshal.SizeOf( jc ) );
+                    s_joycaps[k] = jc;
+                    count++;
+                } else {
+                    s_joy_attatched[k] = false;
+                }
+            }
+            if ( count > 0 ) {
+                s_joy_available = new int[count];
+                int c = -1;
+                for ( int i = 0; i < num_joydev; i++ ) {
+                    if ( s_joy_attatched[i] ) {
+                        c++;
+                        if ( c >= count ) {
+                            break; //ここに来るのはエラー
+                        }
+                        s_joy_available[c] = i;
+                    }
+                }
+            }
+            s_num_joydev = (uint)count;
+            return (int)s_num_joydev;
+        }
+
+        public static boolean IsJoyAttatched( int index ) {
+            if ( !s_initialized ) {
+                JoyInit();
+            }
+            if ( s_num_joydev == 0 || index < 0 || (int)s_num_joydev <= index ) {
+                return false;
+            }
+            return s_joy_attatched[index];
+        }
+
+        public static boolean JoyGetStatus( int index_, out byte[] buttons, out int pov ) {
             if ( !s_initialized ) {
                 pov = -1;
                 buttons = new byte[0];
@@ -127,24 +126,48 @@ namespace org.kbinani.cadencii {
                 buttons = new byte[0];
                 return false;
             }
-            int len = s_button_num[index_];
+            int index = s_joy_available[index_];
+            int len = (int)s_joycaps[index].wNumButtons;
             buttons = new byte[len];
             pov = -1;
-            int index = s_joy_available[index_];
             JOYINFOEX ji_ex = new JOYINFOEX();
+            JOYCAPSW jcs = s_joycaps[index];
             ji_ex.dwSize = (ushort)Marshal.SizeOf( ji_ex );
-            ji_ex.dwFlags = win32.JOY_RETURNPOV | win32.JOY_RETURNBUTTONS;
+            if ( (jcs.wCaps & win32.JOYCAPS_HASPOV) == win32.JOYCAPS_HASPOV ) {
+                ji_ex.dwFlags = win32.JOY_RETURNPOV | win32.JOY_RETURNBUTTONS;
+            } else {
+                ji_ex.dwFlags = win32.JOY_RETURNBUTTONS | win32.JOY_RETURNX | win32.JOY_RETURNY;
+            }
 
             if ( s_joy_attatched[index] ) {
-                win32.joyGetPosEx( (uint)index, ref ji_ex );
-                pov = (int)ji_ex.dwPOV;
-                if ( (0xffff & ji_ex.dwPOV) == 0xffff ) {
-                    pov = -1;
+                if ( win32.joyGetPosEx( (uint)index, ref ji_ex ) != win32.JOYERR_NOERROR ) {
+                    if ( (jcs.wCaps & win32.JOYCAPS_HASPOV) == win32.JOYCAPS_HASPOV ) {
+                        pov = (int)ji_ex.dwPOV;
+                        if ( (0xffff & ji_ex.dwPOV) == 0xffff ) {
+                            pov = -1;
+                        }
+                    } else {
+                        int flag = 0;
+                        if ( ji_ex.dwXpos < jcs.wXmin + (jcs.wXmax - jcs.wXmin) / 3 ) flag = flag | 1;
+                        if ( ji_ex.dwYpos < jcs.wYmin + (jcs.wYmax - jcs.wYmin) / 3 ) flag = flag | 2;
+                        if ( ji_ex.dwXpos > jcs.wXmax - (jcs.wXmax - jcs.wXmin) / 3 ) flag = flag | 4;
+                        if ( ji_ex.dwYpos > jcs.wYmax - (jcs.wYmax - jcs.wYmin) / 3 ) flag = flag | 8;
+                        if ( flag == 1 ) pov = 27000;//左
+                        if ( flag == 2 ) pov = 0;//上
+                        if ( flag == 4 ) pov = 9000;//右
+                        if ( flag == 8 ) pov = 18000;//下
+                        if ( flag == 3 ) pov = 31500;//左上
+                        if ( flag == 6 ) pov = 4500;//右上
+                        if ( flag == 12 ) pov = 13500;//右下
+                        if ( flag == 9 ) pov = 22500;//左下
+                    }
+                    for ( int i = 0; i < len && i < jcs.wNumButtons; i++ ) {
+                        buttons[i] = (((uint)ji_ex.dwButtons & _BTN[i]) != 0x0) ? (byte)0x80 : (byte)0x00;
+                    }
+                    return true;
+                } else {
+                    return false;
                 }
-                for ( int i = 0; i < len && i < s_button_num[index]; i++ ) {
-                    buttons[i] = (((uint)ji_ex.dwButtons & _BTN[i]) != 0x0) ? (byte)0x80 : (byte)0x00;
-                }
-                return true;
             } else {
                 return false;
             }
@@ -157,7 +180,7 @@ namespace org.kbinani.cadencii {
             if ( s_num_joydev == 0 || index < 0 || (int)s_num_joydev <= index ) {
                 return 0;
             }
-            return s_button_num[s_joy_available[index]];
+            return (int)s_joycaps[s_joy_available[index]].wNumButtons;
         }
 
         public static void JoyReset() {
