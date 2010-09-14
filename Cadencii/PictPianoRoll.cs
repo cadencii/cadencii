@@ -219,6 +219,22 @@ namespace org.kbinani.cadencii {
 
         public void paint( Graphics g1 ) {
             Graphics2D g = (Graphics2D)g1;
+        
+            int width = getWidth();
+            int height = getHeight();
+
+            // 再生中に画面を描画しない設定なら飛ばす
+            if ( AppManager.editorConfig.SkipDrawWhilePlaying && AppManager.isPlaying() ) {
+                PortUtil.drawStringEx(
+                    g1, 
+                    "(hidden for performance)",
+                    AppManager.baseFont10, 
+                    new Rectangle( 0, 0, width, height ),
+                    PortUtil.STRING_ALIGN_CENTER, 
+                    PortUtil.STRING_ALIGN_CENTER );
+                return;
+            }
+
             try {
                 PolylineDrawer commonDrawer = getCommonPolylineDrawer( g );
                 VsqFileEx vsq = AppManager.getVsqFile();
@@ -232,8 +248,6 @@ namespace org.kbinani.cadencii {
                 int stdy = AppManager.getStartToDrawY();
                 int key_width = AppManager.keyWidth;
 
-                int width = getWidth();
-                int height = getHeight();
                 int track_height = AppManager.editorConfig.PxTrackHeight;
                 int half_track_height = track_height / 2;
                 // [screen_x] = 67 + [clock] * ScaleX - StartToDrawX + 6

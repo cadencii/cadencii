@@ -823,6 +823,10 @@ namespace org.kbinani {
         public const int STRING_ALIGN_FAR = 1;
         public const int STRING_ALIGN_NEAR = -1;
         public const int STRING_ALIGN_CENTER = 0;
+#if JAVA
+#else
+        private static System.Drawing.StringFormat mStringFormat = new System.Drawing.StringFormat();
+#endif
         public static void drawStringEx( Graphics g1, String s, Font font, Rectangle rect, int align, int valign ) {
 #if JAVA
             Graphics2D g = (Graphics2D)g1;
@@ -847,22 +851,21 @@ namespace org.kbinani {
             }
             g.drawString( s, x, y );
 #else
-            System.Drawing.StringFormat sf = new System.Drawing.StringFormat();
             if ( align > 0 ) {
-                sf.Alignment = System.Drawing.StringAlignment.Far;
+                mStringFormat.Alignment = System.Drawing.StringAlignment.Far;
             } else if ( align < 0 ) {
-                sf.Alignment = System.Drawing.StringAlignment.Near;
+                mStringFormat.Alignment = System.Drawing.StringAlignment.Near;
             } else {
-                sf.Alignment = System.Drawing.StringAlignment.Center;
+                mStringFormat.Alignment = System.Drawing.StringAlignment.Center;
             }
             if ( valign > 0 ) {
-                sf.LineAlignment = System.Drawing.StringAlignment.Far;
+                mStringFormat.LineAlignment = System.Drawing.StringAlignment.Far;
             } else if ( valign < 0 ) {
-                sf.LineAlignment = System.Drawing.StringAlignment.Near;
+                mStringFormat.LineAlignment = System.Drawing.StringAlignment.Near;
             } else {
-                sf.LineAlignment = System.Drawing.StringAlignment.Center;
+                mStringFormat.LineAlignment = System.Drawing.StringAlignment.Center;
             }
-            g1.nativeGraphics.DrawString( s, font.font, g1.brush, new System.Drawing.RectangleF( rect.x, rect.y, rect.width, rect.height ), sf );
+            g1.nativeGraphics.DrawString( s, font.font, g1.brush, new System.Drawing.RectangleF( rect.x, rect.y, rect.width, rect.height ), mStringFormat );
 #endif
         }
         #endregion

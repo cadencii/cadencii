@@ -184,8 +184,8 @@ namespace org.kbinani.cadencii {
                         program_change = singer_event.ID.IconHandle.Program;
                     }
                     String singer = "";
-                    if ( 0 <= program_change && program_change < AppManager.editorConfig.Utausingers.size() ) {
-                        singer = AppManager.editorConfig.Utausingers.get( program_change ).VOICEIDSTR;
+                    if ( 0 <= program_change && program_change < AppManager.editorConfig.UtauSingers.size() ) {
+                        singer = AppManager.editorConfig.UtauSingers.get( program_change ).VOICEIDSTR;
                     }
 #if MAKEBAT_SP
                     log.Write( "; pc=" + program_change );

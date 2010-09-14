@@ -198,8 +198,8 @@ namespace org.kbinani.cadencii.draft {
                         program_change = singer_event.ID.IconHandle.Program;
                     }
                     String singer = "";
-                    if ( 0 <= program_change && program_change < mConfig.Utausingers.size() ) {
-                        singer = mConfig.Utausingers.get( program_change ).VOICEIDSTR;
+                    if ( 0 <= program_change && program_change < mConfig.UtauSingers.size() ) {
+                        singer = mConfig.UtauSingers.get( program_change ).VOICEIDSTR;
                     }
 #if MAKEBAT_SP
                     log.Write( "; pc=" + program_change );

@@ -678,7 +678,7 @@ namespace org.kbinani.cadencii {
                 }
 #endif
             } else if ( kind == RendererKind.STRAIGHT_UTAU || kind == RendererKind.UTAU ) {
-                Vector<SingerConfig> list = editorConfig.Utausingers;
+                Vector<SingerConfig> list = editorConfig.UtauSingers;
                 singers = new Vector<VsqID>();
                 for ( Iterator<SingerConfig> itr = list.iterator(); itr.hasNext(); ) {
                     SingerConfig sc = itr.next();
@@ -2093,9 +2093,9 @@ namespace org.kbinani.cadencii {
             loadConfig();
 #if !JAVA
             // UTAU歌手のアイコンを読み込み、起動画面に表示を要求する
-            int c = editorConfig.Utausingers.size();
+            int c = editorConfig.UtauSingers.size();
             for ( int i = 0; i < c; i++ ) {
-                SingerConfig sc = editorConfig.Utausingers.get( i );
+                SingerConfig sc = editorConfig.UtauSingers.get( i );
                 if ( sc == null ) {
                     continue;
                 }
@@ -2292,7 +2292,7 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public static void reloadUtauVoiceDB() {
             utauVoiceDB.clear();
-            for ( Iterator<SingerConfig> itr = editorConfig.Utausingers.iterator(); itr.hasNext(); ) {
+            for ( Iterator<SingerConfig> itr = editorConfig.UtauSingers.iterator(); itr.hasNext(); ) {
                 SingerConfig config = itr.next();
 
                 // 通常のUTAU音源
@@ -2661,8 +2661,8 @@ namespace org.kbinani.cadencii {
             VsqID ret = new VsqID( 0 );
             ret.type = VsqIDType.Singer;
             int index = language << 7 | program;
-            if ( 0 <= index && index < editorConfig.Utausingers.size() ) {
-                SingerConfig sc = editorConfig.Utausingers.get( index );
+            if ( 0 <= index && index < editorConfig.UtauSingers.size() ) {
+                SingerConfig sc = editorConfig.UtauSingers.get( index );
                 ret.IconHandle = new IconHandle();
                 ret.IconHandle.IconID = "$0701" + PortUtil.toHexString( language, 2 ) + PortUtil.toHexString( program, 2 );
                 ret.IconHandle.IDS = sc.VOICENAME;
@@ -2686,8 +2686,8 @@ namespace org.kbinani.cadencii {
 
         public static SingerConfig getSingerInfoUtau( int language, int program ) {
             int index = language << 7 | program;
-            if ( 0 <= index && index < editorConfig.Utausingers.size() ) {
-                return editorConfig.Utausingers.get( index );
+            if ( 0 <= index && index < editorConfig.UtauSingers.size() ) {
+                return editorConfig.UtauSingers.get( index );
             } else {
                 return null;
             }

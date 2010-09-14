@@ -250,7 +250,7 @@ namespace org.kbinani.cadencii {
 
         public boolean ViewAtcualPitch = false;
         public boolean InvokeUtauCoreWithWine = false;
-        public Vector<SingerConfig> Utausingers = new Vector<SingerConfig>();
+        public Vector<SingerConfig> UtauSingers = new Vector<SingerConfig>();
         public String PathResampler = "";
         public String PathWavtool = "";
         /// <summary>
@@ -374,6 +374,11 @@ namespace org.kbinani.cadencii {
         /// 自動ビブラートを作成するとき，ユーザー定義タイプのビブラートを利用するかどうか．デフォルトではfalse
         /// </summary>
         public boolean UseUserDefinedAutoVibratoType = false;
+        /// <summary>
+        /// 再生中に画面を描画するかどうか。デフォルトはfalse
+        /// <version>3.4</version>
+        /// </summary>
+        public boolean SkipDrawWhilePlaying = false;
 
         /// <summary>
         /// バッファーサイズに設定できる最大値
@@ -381,6 +386,7 @@ namespace org.kbinani.cadencii {
         public const int MAX_BUFFER_MILLISEC = 1000;
         /// <summary>
         /// バッファーサイズに設定できる最小値
+        /// </summary>
         public const int MIN_BUFFER_MILLIXEC = 100;
 
         #region Static Fields

@@ -115,8 +115,8 @@ namespace org.kbinani.cadencii.draft {
             // StraightRenderingRunner.ctorの実装より
             m_locker = new Object();
             m_queue = new Vector<StraightRenderingQueue>();
-            if ( mConfig != null && mConfig.Utausingers != null ) {
-                m_singer_config_sys = mConfig.Utausingers;
+            if ( mConfig != null && mConfig.UtauSingers != null ) {
+                m_singer_config_sys = mConfig.UtauSingers;
             } else {
                 m_singer_config_sys = new Vector<SingerConfig>();
             }

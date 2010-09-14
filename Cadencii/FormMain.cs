@@ -5826,8 +5826,8 @@ namespace org.kbinani.cadencii {
                             boolean is_valid_for_utau = false;
                             VsqEvent singer_at_clock = vsq_track.getSingerEventAt( timesig );
                             int program = singer_at_clock.ID.IconHandle.Program;
-                            if ( 0 <= program && program < AppManager.editorConfig.Utausingers.size() ) {
-                                SingerConfig sc = AppManager.editorConfig.Utausingers.get( program );
+                            if ( 0 <= program && program < AppManager.editorConfig.UtauSingers.size() ) {
+                                SingerConfig sc = AppManager.editorConfig.UtauSingers.get( program );
                                 // 通常のUTAU音源
                                 if ( AppManager.utauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
                                     UtauVoiceDB db = AppManager.utauVoiceDB.get( sc.VOICEIDSTR );
@@ -12128,7 +12128,7 @@ namespace org.kbinani.cadencii {
                 m_preference_dlg.setInvokeWithWine( AppManager.editorConfig.InvokeUtauCoreWithWine );
                 m_preference_dlg.setPathResampler( AppManager.editorConfig.PathResampler );
                 m_preference_dlg.setPathWavtool( AppManager.editorConfig.PathWavtool );
-                m_preference_dlg.setUtausingers( AppManager.editorConfig.Utausingers );
+                m_preference_dlg.setUtausingers( AppManager.editorConfig.UtauSingers );
                 m_preference_dlg.setSelfDeRomantization( AppManager.editorConfig.SelfDeRomanization );
                 m_preference_dlg.setAutoBackupIntervalMinutes( AppManager.editorConfig.AutoBackupIntervalMinutes );
                 m_preference_dlg.setUseSpaceKeyAsMiddleButtonModifier( AppManager.editorConfig.UseSpaceKeyAsMiddleButtonModifier );
@@ -12260,10 +12260,10 @@ namespace org.kbinani.cadencii {
                     AppManager.editorConfig.PathResampler = m_preference_dlg.getPathResampler();
                     AppManager.editorConfig.PathWavtool = m_preference_dlg.getPathWavtool();
 
-                    AppManager.editorConfig.Utausingers.clear();
+                    AppManager.editorConfig.UtauSingers.clear();
                     for ( Iterator<SingerConfig> itr = m_preference_dlg.getUtausingers().iterator(); itr.hasNext(); ) {
                         SingerConfig sc = itr.next();
-                        AppManager.editorConfig.Utausingers.add( (SingerConfig)sc.clone() );
+                        AppManager.editorConfig.UtauSingers.add( (SingerConfig)sc.clone() );
                     }
                     AppManager.reloadUtauVoiceDB();
 

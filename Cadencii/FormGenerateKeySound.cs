@@ -84,7 +84,7 @@ namespace org.kbinani.cadencii {
             m_close_when_finished = close_when_finished;
             m_singer_config1 = VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID1 );
             m_singer_config2 = VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID2 );
-            m_singer_config_utau = AppManager.editorConfig.Utausingers.toArray( new SingerConfig[] { } );
+            m_singer_config_utau = AppManager.editorConfig.UtauSingers.toArray( new SingerConfig[] { } );
             if ( m_singer_config1.Length > 0 ) {
                 comboSingingSynthSystem.addItem( "VOCALOID1" );
             }
@@ -302,7 +302,7 @@ namespace org.kbinani.cadencii {
                 }
             }
 
-            for ( Iterator<SingerConfig> itr = AppManager.editorConfig.Utausingers.iterator(); itr.hasNext(); ) {
+            for ( Iterator<SingerConfig> itr = AppManager.editorConfig.UtauSingers.iterator(); itr.hasNext(); ) {
                 SingerConfig sc = itr.next();
                 if ( first_found_singer.Equals( "" ) ) {
                     first_found_singer = sc.VOICENAME;

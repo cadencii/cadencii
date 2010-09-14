@@ -5422,7 +5422,7 @@ namespace org.kbinani.cadencii {
             cmenusinger.removeAll();
             Vector<SingerConfig> items = null;
             if ( renderer == RendererKind.UTAU || renderer == RendererKind.STRAIGHT_UTAU ) {
-                items = AppManager.editorConfig.Utausingers;
+                items = AppManager.editorConfig.UtauSingers;
             } else if ( renderer == RendererKind.VOCALOID1_100 || renderer == RendererKind.VOCALOID1_101 ) {
                 items = new Vector<SingerConfig>( Arrays.asList( VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID1 ) ) );
             } else if ( renderer == RendererKind.VOCALOID2 ) {

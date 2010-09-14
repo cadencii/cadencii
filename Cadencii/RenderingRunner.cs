@@ -55,6 +55,12 @@ namespace org.kbinani.cadencii {
         protected int trimMillisec;
         protected int sampleRate;
 
+        private const int BUFLEN = 1024;
+        private double[] mBufferL = new double[BUFLEN];
+        private double[] mBufferR = new double[BUFLEN];
+        private double[] mBufferL2 = new double[BUFLEN];
+        private double[] mBufferR2 = new double[BUFLEN];
+
         public abstract void run();
         public abstract double getProgress();
         public abstract double getElapsedSeconds();
@@ -123,87 +129,94 @@ namespace org.kbinani.cadencii {
             readers.clear();
         }
 
-        protected void waveIncoming( double[] t_L, double[] t_R ) {
+        protected void waveIncoming( double[] left, double[] right ) {
             if ( !m_rendering ) {
                 return;
             }
-            lock ( m_locker ) {
-                boolean mixall = AppManager.editorConfig.WaveFileOutputFromMasterTrack;
 
-                double[] L = t_L;
-                double[] R = t_R;
+            if ( left == null || right == null ) {
+            }
+
+            int remain = Math.Min( left.Length, right.Length );
+            int offset = 0;
+
+            // トリムする分を省く
+            if ( m_trim_remain > 0 ) {
+                int amount = remain > m_trim_remain ? m_trim_remain : remain;
+                m_trim_remain -= amount;
+                offset += amount;
+                remain -= amount;
+
+                // トリム分を削りきれてない場合は終了
                 if ( m_trim_remain > 0 ) {
-                    if ( L.Length <= m_trim_remain ) {
-                        m_trim_remain -= L.Length;
-                        return;
-                    } else {
-                        L = new double[t_L.Length - m_trim_remain];
-                        R = new double[t_L.Length - m_trim_remain];
-                        for ( int i = m_trim_remain; i < t_L.Length; i++ ) {
-                            if ( m_abort_required ) return;
-                            L[i - m_trim_remain] = t_L[i];
-                            R[i - m_trim_remain] = t_R[i];
-                        }
-                        m_trim_remain = 0;
-                    }
+                    return;
                 }
-                int length = L.Length;
-                if ( length > totalSamples - m_total_append ) {
-                    length = (int)(totalSamples - m_total_append);
-                    if ( length <= 0 ) {
-                        return;
-                    }
-                    double[] br = R;
-                    double[] bl = L;
-                    L = new double[length];
-                    R = new double[length];
-                    for ( int i = 0; i < length; i++ ) {
-                        if ( m_abort_required ) return;
-                        L[i] = bl[i];
-                        R[i] = br[i];
-                    }
-                    br = null;
-                    bl = null;
-                }
+            }
 
+            // 
+            boolean mixall = AppManager.editorConfig.WaveFileOutputFromMasterTrack;
+
+            // BUFLEN単位で処理する
+            while ( remain > 0 && !m_abort_required ) {
+                // このループ内で処理するサンプル数を設定
+                int amount = remain > BUFLEN ? BUFLEN : remain;
+                
+                // amountサンプル分をバッファにコピーしてくる
+                for ( int i = 0; i < amount; i++ ) {
+                    mBufferL[i] = left[offset + i];
+                    mBufferR[i] = right[offset + i];
+                }
+                
+                // 最初の増幅係数を取得
                 AmplifyCoefficient amplify = AppManager.getAmplifyCoeffNormalTrack( renderingTrack );
+                
+                // 増幅係数を設定
                 if ( reflectAmp2Wave ) {
-                    for ( int i = 0; i < length; i++ ) {
+                    // WAVEファイルに増幅係数を反映させる場合
+                    // まず増幅係数をかける
+                    for ( int i = 0; i < amount; i++ ) {
                         if ( m_abort_required ) return;
                         if ( i % 100 == 0 ) {
                             amplify = AppManager.getAmplifyCoeffNormalTrack( renderingTrack );
                         }
-                        L[i] = L[i] * amplify.left;
-                        R[i] = R[i] * amplify.right;
+                        mBufferL[i] *= amplify.left;
+                        mBufferR[i] *= amplify.right;
                     }
+                    
+                    // 次にWAVEに書き込む
                     if ( !mixall && waveWriter != null ) {
                         try {
-                            waveWriter.append( L, R );
+                            waveWriter.append( mBufferL, mBufferR, amount );
                         } catch ( Exception ex ) {
                             PortUtil.stderr.println( "RenderingRunner#waveIncoming; ex=" + ex );
                         }
                     }
                 } else {
+                    // WAVEファイルに増幅係数を反映させない場合
+                    // まずWAVEに書き込む
                     if ( !mixall && waveWriter != null ) {
                         try {
-                            waveWriter.append( L, R );
+                            waveWriter.append( mBufferL, mBufferR, amount );
                         } catch ( Exception ex ) {
                             PortUtil.stderr.println( "RenderingRunner#waveIncoming; ex=" + ex );
                         }
                     }
-                    for ( int i = 0; i < length; i++ ) {
+                    
+                    // 次にWAVEに書き込む
+                    for ( int i = 0; i < amount; i++ ) {
                         if ( m_abort_required ) return;
                         if ( i % 100 == 0 ) {
                             amplify = AppManager.getAmplifyCoeffNormalTrack( renderingTrack );
                         }
-                        L[i] = L[i] * amplify.left;
-                        R[i] = R[i] * amplify.right;
+                        mBufferL[i] *= amplify.left;
+                        mBufferR[i] *= amplify.right;
                     }
                 }
+
+                // WAVEファイルからの読込み
                 long start = m_total_append + (long)(waveReadOffsetSeconds * VSTiProxy.SAMPLE_RATE);
                 int count = readers.size();
-                double[] reader_r = new double[length];
-                double[] reader_l = new double[length];
+                // 合計count個のWAVEファイルから読込みを行う
                 for ( int i = 0; i < count; i++ ) {
                     try {
                         WaveRateConverter wr = readers.get( i );
@@ -213,7 +226,7 @@ namespace org.kbinani.cadencii {
                         if ( tag == null ) {
                             continue;
                         }
-                        if ( !(tag is Integer) ){
+                        if ( !(tag is Integer) ) {
                             continue;
                         }
                         int track = (Integer)tag;
@@ -226,26 +239,29 @@ namespace org.kbinani.cadencii {
                         } else if ( 0 > track ) {
                             amplify = AppManager.getAmplifyCoeffBgm( -track - 1 );
                         }
-                        wr.read( start, length, reader_l, reader_r );
-                        for ( int j = 0; j < length; j++ ) {
+                        wr.read( start, amount, mBufferL2, mBufferR2 );
+                        for ( int j = 0; j < amount; j++ ) {
                             if ( m_abort_required ) return;
-                            L[j] += reader_l[j] * amplify.left;
-                            R[j] += reader_r[j] * amplify.right;
+                            mBufferL[j] += mBufferL2[j] * amplify.left;
+                            mBufferR[j] += mBufferR2[j] * amplify.right;
                         }
                     } catch ( Exception ex ) {
                         PortUtil.stderr.println( "RenderingRunner_DRAFT#waveIncoming; ex=" + ex );
                     }
                 }
 
-                if ( mixall && waveWriter != null ) {
-                    try {
-                        waveWriter.append( L, R );
-                    } catch ( Exception ex ) {
-                        PortUtil.stderr.println( "RenderingRunner#waveIncoming; ex=" + ex );
-                    }
-                }
-
+                // 全部ミックスする場合
                 if ( mixall ) {
+                    // まずWAVEに出力しておく
+                    if ( waveWriter != null ) {
+                        try {
+                            waveWriter.append( mBufferL, mBufferR, amount );
+                        } catch ( Exception ex ) {
+                            PortUtil.stderr.println( "RenderingRunner#waveIncoming; ex=" + ex );
+                        }
+                    }
+
+                    // WAVE読込み
                     for ( int i = 0; i < count; i++ ) {
                         try {
                             WaveRateConverter wr = readers.get( i );
@@ -262,11 +278,11 @@ namespace org.kbinani.cadencii {
                                 continue;
                             }
                             amplify = AppManager.getAmplifyCoeffBgm( -track - 1 );
-                            wr.read( start, length, reader_l, reader_r );
-                            for ( int j = 0; j < length; j++ ) {
+                            wr.read( start, amount, mBufferL2, mBufferR2 );
+                            for ( int j = 0; j < amount; j++ ) {
                                 if ( m_abort_required ) return;
-                                L[j] += reader_l[j] * amplify.left;
-                                R[j] += reader_r[j] * amplify.right;
+                                mBufferL[j] += mBufferL2[j] * amplify.left;
+                                mBufferR[j] += mBufferR2[j] * amplify.right;
                             }
                         } catch ( Exception ex ) {
                             PortUtil.stderr.println( "RenderingRunner#waveIncoming; ex=" + ex );
@@ -274,16 +290,15 @@ namespace org.kbinani.cadencii {
                     }
                 }
 
-                reader_l = null;
-                reader_r = null;
+                // すぐ再生する場合はプレーヤーに波形をプッシュ
                 if ( directPlay ) {
-                    PlaySound.append( L, R, L.Length );
+                    PlaySound.append( mBufferL, mBufferR, amount );
                 }
-                m_total_append += length;
-                for ( int i = 0; i < t_L.Length; i++ ) {
-                    t_L[i] = 0.0;
-                    t_R[i] = 0.0;
-                }
+                m_total_append += amount;
+
+                // 次のループに備える
+                remain -= amount;
+                offset += amount;
             }
         }
     }
