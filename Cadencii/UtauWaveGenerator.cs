@@ -14,6 +14,7 @@
 #if JAVA
 package org.kbinani.cadencii;
 
+import java.awt.*;
 import java.io.*;
 import java.util.*;
 import org.kbinani.*;
@@ -25,6 +26,7 @@ using System.Diagnostics;
 using org.kbinani.media;
 using org.kbinani.vsq;
 using org.kbinani;
+using org.kbinani.java.awt;
 using org.kbinani.java.io;
 using org.kbinani.java.util;
 
@@ -64,6 +66,19 @@ namespace org.kbinani.cadencii.draft {
         private int _trim_remain = 0;
         //private EditorConfig _config = null;
         private int _version = 0;
+
+        public override int getNumPortsIn() {
+            return 0;
+        }
+
+        public override int getNuMPortsOut() {
+            return 1;
+        }
+
+        public override Dimension paintTo( Graphics2D graphics, int x, int y ) {
+            //TODO:
+            return new Dimension();
+        }
 
         public override void setConfig( string parameter ) {
             // do nothing

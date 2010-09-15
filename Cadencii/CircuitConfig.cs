@@ -14,9 +14,11 @@
 #if JAVA
 package org.kbinani.cadencii;
 
+import java.awt.*;
 import java.util.*;
 #else
 using System;
+using org.kbinani.java.awt;
 using org.kbinani.java.util;
 
 namespace org.kbinani.cadencii.draft {
@@ -35,11 +37,16 @@ namespace org.kbinani.cadencii.draft {
         /// シンセサイザに渡す設定値を格納した文字列
         /// </summary>
         public Vector<String> Arguments;
+        /// <summary>
+        /// 画面にシンセサイザを描画するときの位置
+        /// </summary>
+        public Vector<Point> DrawPosition;
 
         public CircuitConfig() {
             this.Data = new Vector<CircuitConfigEntry>();
             this.Units = new Vector<String>();
             this.Arguments = new Vector<String>();
+            this.DrawPosition = new Vector<Point>();
         }
 
         /// <summary>
@@ -107,6 +114,7 @@ namespace org.kbinani.cadencii.draft {
             // デバイス名の分を追加
             this.Units.add( device_name );
             this.Arguments.add( "" );
+            this.DrawPosition.add( new Point() );
 #if DEBUG
             //PortUtil.println( "CircuitConfig#addDevice; after;" );
             //printDataAsMatrix( Data, Devices.size() );

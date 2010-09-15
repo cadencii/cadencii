@@ -14,10 +14,12 @@
 #if JAVA
 package org.kbinani.cadencii;
 
+import java.awt.*;
 import java.util.*;
 import org.kbinani.media.*;
 #else
 using System;
+using org.kbinani.java.awt;
 using org.kbinani.java.util;
 using org.kbinani.media;
 
@@ -46,6 +48,19 @@ namespace org.kbinani.cadencii.draft {
         private int _version = 0;
 
         private MonitorWaveReceiver() {
+        }
+
+        public override int getNumPortsIn() {
+            return 1;
+        }
+
+        public override int getNuMPortsOut() {
+            return 0;
+        }
+
+        public override Dimension paintTo( Graphics2D graphics, int x, int y ) {
+            //TODO:
+            return new Dimension();
         }
 
         public static MonitorWaveReceiver getInstance() {

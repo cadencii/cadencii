@@ -129,15 +129,16 @@ namespace org.kbinani.cadencii {
             readers.clear();
         }
 
-        protected void waveIncoming( double[] left, double[] right ) {
+        protected void waveIncoming( double[] left, double[] right, int length ) {
             if ( !m_rendering ) {
                 return;
             }
 
             if ( left == null || right == null ) {
+                return;
             }
 
-            int remain = Math.Min( left.Length, right.Length );
+            int remain = length;
             int offset = 0;
 
             // トリムする分を省く

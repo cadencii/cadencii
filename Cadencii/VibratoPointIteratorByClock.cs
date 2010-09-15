@@ -75,7 +75,7 @@ namespace org.kbinani.cadencii {
                     int r = rate.getValue( v, start_rate );
                     int d = depth.getValue( v, start_depth );
                     amplitude = d * 2.5f / 127.0f / 2.0f;
-                    period = (float)Math.Exp( 5.24 - 1.07e-2 * r ) * 2.0f / 1000.0f;
+                    period = VibratoPointIteratorBySec.getPeriodFromRate( r );
                     omega = (float)(2.0 * Math.PI / period);
                     sec = t_sec;
                     return ret;
@@ -119,7 +119,7 @@ namespace org.kbinani.cadencii {
             start_rate = rate.getValue( 0.0f, start_rate );
             start_depth = depth.getValue( 0.0f, start_depth );
             amplitude = start_depth * 2.5f / 127.0f / 2.0f; // ビブラートの振幅。
-            period = (float)Math.Exp( 5.24 - 1.07e-2 * start_rate ) * 2.0f / 1000.0f; //ビブラートの周期、秒
+            period = VibratoPointIteratorBySec.getPeriodFromRate( start_rate ); //ビブラートの周期、秒
             omega = (float)(2.0 * Math.PI / period); // 角速度(rad/sec)
             sec = sec0;
             fadewidth = (float)(sec1 - sec0) * 0.2f;

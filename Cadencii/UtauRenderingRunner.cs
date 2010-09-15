@@ -625,7 +625,7 @@ namespace org.kbinani.cadencii {
                                             m_right[pos] = v;
                                             pos++;
                                             if ( pos >= length ) {
-                                                waveIncoming( m_left, m_right );
+                                                waveIncoming( m_left, m_right, length );
                                                 pos = 0;
                                             }
                                         }
@@ -657,7 +657,7 @@ namespace org.kbinani.cadencii {
                                             c += 2;
                                             pos++;
                                             if ( pos >= length ) {
-                                                waveIncoming( m_left, m_right );
+                                                waveIncoming( m_left, m_right, length );
                                                 pos = 0;
                                             }
                                         }
@@ -690,7 +690,7 @@ namespace org.kbinani.cadencii {
                                             c += 2;
                                             pos++;
                                             if ( pos >= length ) {
-                                                waveIncoming( m_left, m_right );
+                                                waveIncoming( m_left, m_right, length );
                                                 pos = 0;
                                             }
                                         }
@@ -722,7 +722,7 @@ namespace org.kbinani.cadencii {
                                             c += 4;
                                             pos++;
                                             if ( pos >= length ) {
-                                                waveIncoming( m_left, m_right );
+                                                waveIncoming( m_left, m_right, length );
                                                 pos = 0;
                                             }
                                         }
@@ -758,7 +758,7 @@ namespace org.kbinani.cadencii {
                                 bufl[j] = m_left[j];
                                 bufr[j] = m_right[j];
                             }
-                            waveIncoming( bufl, bufr );
+                            waveIncoming( bufl, bufr, pos );
                             bufl = null;
                             bufr = null;
                         }
@@ -801,13 +801,13 @@ namespace org.kbinani.cadencii {
                         l = silence_l;
                         r = silence_r;
                     }
-                    waveIncoming( l, r );
+                    waveIncoming( l, r, tlength );
                     tremain -= tlength;
                 }
 
                 if ( m_mode_infinite ) {
                     while ( !m_abort_required ) {
-                        waveIncoming( silence_l, silence_r );
+                        waveIncoming( silence_l, silence_r, silence_l.Length );
                     }
                     silence_l = null;
                     silence_r = null;

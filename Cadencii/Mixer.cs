@@ -14,9 +14,11 @@
 #if JAVA
 package org.kbinani.cadencii;
 
+import java.awt.*;
 import java.util.*;
 #else
 using System;
+using org.kbinani.java.awt;
 using org.kbinani.java.util;
 
 namespace org.kbinani.cadencii.draft {
@@ -37,6 +39,28 @@ namespace org.kbinani.cadencii.draft {
         private double[] _buffer2_l = new double[_BUFLEN];
         private double[] _buffer2_r = new double[_BUFLEN];
         private int _version = 0;
+
+        public override int getNuMPortsOut() {
+            return 1;
+        }
+
+        public override int getNumPortsIn() {
+            int num = 0;
+            if ( _sender != null ) {
+                num++;
+            }
+            foreach ( WaveSender sender in _senders ) {
+                if ( sender != null ) {
+                    num++;
+                }
+            }
+            return num;
+        }
+
+        public override Dimension paintTo( Graphics2D graphics, int x, int y ) {
+            // TODO: 
+            return new Dimension();
+        }
 
         public override int getVersion() {
             return _version;

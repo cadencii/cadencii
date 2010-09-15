@@ -14,8 +14,10 @@
 #if JAVA
 package org.kbinani.cadencii;
 
+import java.awt.*;
 import java.util.*;
 #else
+using org.kbinani.java.awt;
 using org.kbinani.java.util;
 
 namespace org.kbinani.cadencii.draft {
@@ -37,6 +39,19 @@ namespace org.kbinani.cadencii.draft {
         private long mPosition = 0;
         private WaveReceiver mReceiver = null;
         private int mVersion = 0;
+
+        public override int getNumPortsIn() {
+            return 0;
+        }
+
+        public override int getNuMPortsOut() {
+            return 1;
+        }
+
+        public override Dimension paintTo( Graphics2D graphics, int x, int y ) {
+            //TODO:
+            return new Dimension();
+        }
 
         public override int getVersion() {
             return mVersion;

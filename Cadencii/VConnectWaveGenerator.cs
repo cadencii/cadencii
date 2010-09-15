@@ -14,13 +14,17 @@
 #if JAVA
 package org.kbinani.cadencii;
 
+import java.awt.*;
+import java.io.*;
+import java.util.*;
 #else
 using System;
 using System.Diagnostics;
-using org.kbinani.media;
-using org.kbinani.java.util;
-using org.kbinani.vsq;
+using org.kbinani.java.awt;
 using org.kbinani.java.io;
+using org.kbinani.java.util;
+using org.kbinani.media;
+using org.kbinani.vsq;
 
 namespace org.kbinani.cadencii.draft {
     using boolean = System.Boolean;
@@ -66,6 +70,19 @@ namespace org.kbinani.cadencii.draft {
         WaveReceiver mReceiver;
         int mVersion = 0;
         VsqFileEx _vsq;
+
+        public override int getNumPortsIn() {
+            return 0;
+        }
+
+        public override int getNuMPortsOut() {
+            return 1;
+        }
+
+        public override Dimension paintTo( Graphics2D graphics, int x, int y ) {
+            //TODO:
+            return new Dimension();
+        }
 
         public override int getVersion() {
             return mVersion;

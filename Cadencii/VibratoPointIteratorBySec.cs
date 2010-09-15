@@ -54,6 +54,31 @@ namespace org.kbinani.cadencii {
         int i;
         boolean first = true;
 
+        // Rate値から周期を高速に求めるためのキャッシュ
+        private static float[] mVibratoPeriod = null;
+
+        /// <summary>
+        /// VibratoRate値からビブラートの周期を求めます。単位は秒
+        /// </summary>
+        /// <param name="rate"></param>
+        /// <returns></returns>
+        public static float getPeriodFromRate( int rate ) {
+            if ( mVibratoPeriod == null ) {
+                // キャッシュが初期化されていない場合は初期化
+                mVibratoPeriod = new float[128];
+                for ( int r = 0; r < 128; r++ ) {
+                    mVibratoPeriod[r] = (float)Math.Exp( 5.24 - 1.07e-2 * r ) * 2.0f / 1000.0f;
+                }
+            }
+            if ( rate < 0 || 128 <= rate ) {
+                // 範囲外のRate値の場合はいちいち計算。ほんとはだめだけどー
+                return (float)Math.Exp( 5.24 - 1.07e-2 * rate ) * 2.0f / 1000.0f;
+            } else {
+                // 範囲内のRate値の場合はキャッシュの値を返すだけ
+                return mVibratoPeriod[rate];
+            }
+        }
+
         public PointD next() {
             if ( first ) {
                 i = 0;
@@ -76,7 +101,7 @@ namespace org.kbinani.cadencii {
                     int r = rate.getValue( v, start_rate );
                     int d = depth.getValue( v, start_depth );
                     amplitude = d * 2.5f / 127.0f / 2.0f;
-                    period = (float)Math.Exp( 5.24 - 1.07e-2 * r ) * 2.0f / 1000.0f;
+                    period = getPeriodFromRate( r );
                     omega = (float)(2.0 * Math.PI / period);
                     sec = t_sec;
                     return ret;
@@ -121,7 +146,7 @@ namespace org.kbinani.cadencii {
             start_rate = rate.getValue( 0.0f, start_rate );
             start_depth = depth.getValue( 0.0f, start_depth );
             amplitude = start_depth * 2.5f / 127.0f / 2.0f; // ビブラートの振幅。
-            period = (float)Math.Exp( 5.24 - 1.07e-2 * start_rate ) * 2.0f / 1000.0f; //ビブラートの周期、秒
+            period = getPeriodFromRate( start_rate ); //ビブラートの周期、秒
             omega = (float)(2.0 * Math.PI / period); // 角速度(rad/sec)
             sec = sec0;
             fadewidth = (float)(sec1 - sec0) * 0.2f;

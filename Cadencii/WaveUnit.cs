@@ -14,8 +14,10 @@
 #if JAVA
 package org.kbinani.cadencii;
 
+import java.awt.*;
 #else
 using System;
+using org.kbinani.java.awt;
 
 namespace org.kbinani.cadencii.draft {
 #endif
@@ -24,6 +26,21 @@ namespace org.kbinani.cadencii.draft {
     /// インターフェースWaveReceiver, WaveSender, WaveGeneratorを持つクラスの基底クラス．
     /// </summary>
     public abstract class WaveUnit {
+        /// <summary>
+        /// このユニットを画面に描くときの、基本となる描画幅。単位はピクセル
+        /// この値を使うかどうかは任意
+        /// </summary>
+        protected const int BASE_WIDTH = 150;
+
+        /// <summary>
+        /// このユニットを画面に描くときの、入出力ポート1個分の描画高さの標準値。単位はピクセル
+        /// この値を使うかどうかは任意
+        /// </summary>
+        protected const int BASE_HEIGHT_PER_PORTS = 40;
+
+        /// <summary>
+        /// エディターの設定値
+        /// </summary>
         protected EditorConfig mConfig;
 
         /// <summary>
@@ -43,11 +60,44 @@ namespace org.kbinani.cadencii.draft {
         public abstract void setConfig( String parameter );
 
         /// <summary>
+        /// このユニットを指定した位置に描画します。
+        /// </summary>
+        /// <param name="graphics">描画に使用するグラフィクス</param>
+        /// <param name="x">描画する位置のx座標</param>
+        /// <param name="y">描画する位置のy座標</param>
+        /// <returns>描画された装置図に外接する四角形のサイズ</returns>
+        public abstract Dimension paintTo( Graphics2D graphics, int x, int y );
+
+        /// <summary>
+        /// このユニットの入力ポートの個数を取得します
+        /// </summary>
+        /// <returns></returns>
+        public abstract int getNumPortsIn();
+
+        /// <summary>
+        /// このユニットの出力ポートの個数を取得します
+        /// </summary>
+        /// <returns></returns>
+        public abstract int getNuMPortsOut();
+
+        /// <summary>
         /// スコアエディタ全体の設定値を設定する．
         /// </summary>
         /// <param name="config"></param>
         public void setGlobalConfig( EditorConfig config ) {
             mConfig = config;
+        }
+
+        /// <summary>
+        /// このユニットを画面に描くときの基本となる描画サイズを取得します
+        /// </summary>
+        /// <returns></returns>
+        protected Dimension getBaseDimension() {
+            int ports_in = getNumPortsIn();
+            int ports_out = getNuMPortsOut();
+            int ports = (ports_in > ports_out) ? ports_in : ports_out;
+            ports++;
+            return new Dimension( BASE_WIDTH, ports * BASE_HEIGHT_PER_PORTS );
         }
     }
 

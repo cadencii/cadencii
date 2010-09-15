@@ -263,6 +263,9 @@ namespace org.kbinani.cadencii {
                     out_buffer[0] = left_ch;
                     out_buffer[1] = right_ch;
 
+                    double[] buffer_l = new double[sampleRate];
+                    double[] buffer_r = new double[sampleRate];
+
 #if TEST
                     org.kbinani.debug.push_log( "    calling initial dispatch..." );
 #endif
@@ -446,14 +449,12 @@ namespace org.kbinani.cadencii {
                             }
 
                             if ( iOffset == 0 ) {
-                                double[] send_data_l = new double[dwFrames];
-                                double[] send_data_r = new double[dwFrames];
                                 for ( int i = 0; i < (int)dwFrames; i++ ) {
-                                    send_data_l[i] = out_buffer[0][i];
-                                    send_data_r[i] = out_buffer[1][i];
+                                    buffer_l[i] = out_buffer[0][i];
+                                    buffer_r[i] = out_buffer[1][i];
                                 }
                                 total_processed2 += dwFrames;
-                                runner.waveIncomingImpl( send_data_l, send_data_r );
+                                runner.waveIncomingImpl( buffer_l, buffer_r, dwFrames );
                             } else {
                                 dwDeltaDelay += iOffset;
                             }
@@ -481,16 +482,12 @@ namespace org.kbinani.cadencii {
                         org.kbinani.debug.push_log( "...done" );
 #endif
 
-                        double[] send_data_l = new double[dwFrames];
-                        double[] send_data_r = new double[dwFrames];
                         for ( int i = 0; i < (int)dwFrames; i++ ) {
-                            send_data_l[i] = out_buffer[0][i];
-                            send_data_r[i] = out_buffer[1][i];
+                            buffer_l[i] = out_buffer[0][i];
+                            buffer_r[i] = out_buffer[1][i];
                         }
                         total_processed2 += dwFrames;
-                        runner.waveIncomingImpl( send_data_l, send_data_r );
-                        send_data_l = null;
-                        send_data_r = null;
+                        runner.waveIncomingImpl( buffer_l, buffer_r, dwFrames );
 
                         dwDelta -= dwFrames;
                         total_processed += dwFrames;
@@ -501,14 +498,14 @@ namespace org.kbinani.cadencii {
 #endif
 
                     if ( mode_infinite ) {
-                        double[] silence_l = new double[blockSize];
-                        double[] silence_r = new double[blockSize];
-                        while ( !g_cancelRequired ) {
-                            total_processed2 += blockSize;
-                            runner.waveIncomingImpl( silence_l, silence_r );
+                        for ( int i = 0; i < sampleRate; i++ ) {
+                            buffer_l[i] = 0.0;
+                            buffer_r[i] = 0.0;
                         }
-                        silence_l = null;
-                        silence_r = null;
+                        while ( !g_cancelRequired ) {
+                            total_processed2 += sampleRate;
+                            runner.waveIncomingImpl( buffer_l, buffer_r, sampleRate );
+                        }
                     }
 
                     aEffect.Dispatch( AEffectOpcodes.effMainsChanged, 0, 0, IntPtr.Zero, 0 );

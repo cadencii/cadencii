@@ -15,13 +15,14 @@
 using System;
 using System.Windows.Forms;
 using org.kbinani;
+using org.kbinani.java.awt;
 using org.kbinani.java.util;
 using org.kbinani.media;
 using org.kbinani.vsq;
 
 namespace org.kbinani.cadencii {
     public interface IWaveIncoming {
-        void waveIncomingImpl( double[] l, double[] r );
+        void waveIncomingImpl( double[] l, double[] r, int length );
     }
 }
 
@@ -46,6 +47,19 @@ namespace org.kbinani.cadencii.draft {
 
         // RenderingRunner
         private int _trim_remain = 0;
+
+        public override int getNumPortsIn() {
+            return 0;
+        }
+
+        public override int getNuMPortsOut() {
+            return 1;
+        }
+
+        public override Dimension paintTo( Graphics2D graphics, int x, int y ) {
+            //TODO: 
+            return new Dimension();
+        }
 
         public override void setConfig( String parameter ) {
             // do nothing
@@ -76,8 +90,7 @@ namespace org.kbinani.cadencii.draft {
             _receiver = r;
         }
 
-        public void waveIncomingImpl( double[] l, double[] r ) {
-            int length = l.Length;
+        public void waveIncomingImpl( double[] l, double[] r, int length ) {
             int offset = 0;
             if ( _trim_remain > 0 ) {
                 if ( length <= _trim_remain ) {

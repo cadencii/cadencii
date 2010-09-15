@@ -70,8 +70,8 @@ namespace org.kbinani.cadencii {
             long remain = totalSamples;
             while ( remain > 0 && !m_abort_required ) {
                 int delta = (remain > buflen) ? buflen : (int)remain;
-                waveIncoming( left, right );
-                for ( int i = 0; i < buflen; i++ ) {
+                waveIncoming( left, right, delta );
+                for ( int i = 0; i < delta; i++ ) {
                     left[i] = 0.0;
                     right[i] = 0.0;
                 }
@@ -80,7 +80,7 @@ namespace org.kbinani.cadencii {
 
             if ( modeInfinite ) {
                 while ( !m_abort_required ) {
-                    waveIncoming( left, right );
+                    waveIncoming( left, right, buflen );
                     for ( int i = 0; i < buflen; i++ ) {
                         left[i] = 0.0;
                         right[i] = 0.0;

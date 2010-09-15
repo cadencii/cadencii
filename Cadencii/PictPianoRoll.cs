@@ -658,7 +658,7 @@ namespace org.kbinani.cadencii {
                                                     int next_draw = vibrato_start;
                                                     if ( vibrato_start < vibrato_end ) {
                                                         drawVibratoLine( g,
-                                                                         new Point( vibrato_start, y + track_height + 1 ),
+                                                                         vibrato_start, y + track_height + 1,
                                                                          vibrato_end - vibrato_start );
                                                     }
                                                 }
@@ -1367,14 +1367,14 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        private void drawVibratoLine( Graphics g, Point origin, int vibrato_length ) {
-            int x0 = origin.x + 1;
-            int y0 = origin.y + 10;
-            int clipx = origin.x + 1;
+        private void drawVibratoLine( Graphics g, int origin_x, int origin_y, int vibrato_length ) {
+            int x0 = origin_x + 1;
+            int y0 = origin_y + 10;
+            int clipx = origin_x + 1;
             int clip_length = vibrato_length;
             if ( clipx < AppManager.keyWidth ) {
                 clipx = AppManager.keyWidth;
-                clip_length = origin.x + 1 + vibrato_length - AppManager.keyWidth;
+                clip_length = origin_x + 1 + vibrato_length - AppManager.keyWidth;
                 if ( clip_length <= 0 ) {
                     return;
                 }
@@ -1386,7 +1386,7 @@ namespace org.kbinani.cadencii {
             int[] _BASE_X = new int[] { x0 - _UWID, x0 + 2 - _UWID, x0 + 4 - _UWID, x0 + 7 - _UWID, x0 + 9 - _UWID, x0 + 10 - _UWID };
             int[] _BASE_Y = new int[] { y0 - 4, y0 - 7, y0 - 7, y0 - 1, y0 - 1, y0 - 4 };
             Shape old = g.getClip();
-            g.clipRect( clipx, origin.y + 10 - 8, clip_length, 10 );
+            g.clipRect( clipx, origin_y + 10 - 8, clip_length, 10 );
             g.setColor( Color.black );
             for ( int i = 0; i < count; i++ ) {
                 for ( int j = 0; j < _BASE_X.Length; j++ ) {

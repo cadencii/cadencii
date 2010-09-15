@@ -180,17 +180,8 @@ namespace org.kbinani.cadencii {
                             return;
                         }
                         int len = saRemain > BUFLEN ? BUFLEN : saRemain;
-                        double[] bufl = null;
-                        double[] bufr = null;
-                        if ( len == BUFLEN ) {
-                            bufl = left;
-                            bufr = right;
-                        } else {
-                            bufl = new double[len];
-                            bufr = new double[len];
-                        }
-                        driver.process( bufl, bufr, len );
-                        waveIncoming( bufl, bufr );
+                        driver.process( left, right, len );
+                        waveIncoming( left, right, len );
                         saRemain -= len;
                         saProcessed += len;
                     }
@@ -240,17 +231,8 @@ namespace org.kbinani.cadencii {
                     return;
                 }
                 int len = saRemain > BUFLEN ? BUFLEN : saRemain;
-                double[] bufl = null;
-                double[] bufr = null;
-                if ( len == BUFLEN ) {
-                    bufl = left;
-                    bufr = right;
-                } else {
-                    bufl = new double[len];
-                    bufr = new double[len];
-                }
-                driver.process( bufl, bufr, len );
-                waveIncoming( bufl, bufr );
+                driver.process( left, right, len );
+                waveIncoming( left, right, len );
                 saRemain -= len;
                 saProcessed += len;
             }
@@ -265,7 +247,7 @@ namespace org.kbinani.cadencii {
                     right[i] = 0.0;
                 }
                 while ( !m_abort_required ) {
-                    waveIncoming( left, right );
+                    waveIncoming( left, right, BUFLEN );
                 }
             }
             m_rendering = false;

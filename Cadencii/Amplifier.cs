@@ -14,10 +14,12 @@
 #if JAVA
 package org.kbinani.cadencii;
 
+import java.awt.*;
 import java.util.*;
 #else
 using System;
 using org.kbinani.java.util;
+using org.kbinani.java.awt;
 
 namespace org.kbinani.cadencii.draft {
 #endif
@@ -39,6 +41,50 @@ namespace org.kbinani.cadencii.draft {
         private WaveReceiver mReceiver = null;
         private WaveSender mSender = null;
         private int mVersion = 0;
+        private BasicStroke mStroke = null;
+
+        public override int getNumPortsIn() {
+            return 1;
+        }
+
+        public override int getNuMPortsOut() {
+            return 1;
+        }
+
+        public override Dimension paintTo( Graphics2D graphics, int x, int y ) {
+            // 現在の描画時のストローク、色を保存しておく
+            Stroke old_stroke = graphics.getStroke();
+            Color old_color = graphics.getColor();
+
+            // 描画用のストロークが初期化してなかったら初期化
+            if( mStroke == null ){
+                mStroke = new BasicStroke();
+            }
+
+            // 描画サイズ
+            Dimension size = getBaseDimension();
+
+            // 背景を塗りつぶし
+            graphics.setColor( PortUtil.Pink );
+            graphics.fillRect( x, y, size.width, size.height );
+
+            // 枠線を描く
+            graphics.setStroke( mStroke );
+            graphics.setColor( Color.black );
+            graphics.drawRect( x, y, size.width, size.height );
+
+            // デバイス名を書く
+            PortUtil.drawStringEx( 
+                (Graphics)graphics, "Amplifier", AppManager.baseFont10, 
+                new Rectangle( x, y, size.width, size.height ), 
+                PortUtil.STRING_ALIGN_CENTER, PortUtil.STRING_ALIGN_CENTER );
+
+            // 描画時のストローク、色を元に戻す
+            graphics.setStroke( old_stroke );
+            graphics.setColor( old_color );
+
+            return size;
+        }
 
         public override int getVersion() {
             return mVersion;

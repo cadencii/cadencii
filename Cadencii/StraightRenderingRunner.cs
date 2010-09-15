@@ -287,99 +287,6 @@ namespace org.kbinani.cadencii {
             m_queue.add( queue );
         }
 
-        /*public static void prepareMetaText( BufferedWriter writer, VsqTrack vsq_track, String oto_ini, int end_clock ) {
-            TreeMap<String, String> dict_singername_otoini = new TreeMap<String, String>();
-            dict_singername_otoini.put( "", oto_ini );
-        }
-
-        /// <summary>
-        /// 合成用のメタテキストを生成します
-        /// </summary>
-        /// <param name="writer"></param>
-        /// <param name="vsq_track"></param>
-        /// <param name="oto_ini"></param>
-        /// <param name="end_clock"></param>
-        private static void prepareMetaText( BufferedWriter writer, VsqTrack vsq_track, TreeMap<String, String> dict_singername_otoini, int end_clock, boolean world_mode ) 
-#if JAVA
-            throws IOException
-#endif
-        {
-            CurveType[] CURVE = new CurveType[]{
-                    CurveType.PIT,
-                    CurveType.PBS,
-                    CurveType.DYN,
-                    CurveType.BRE,
-                    CurveType.GEN,
-                    CurveType.CLE,
-                    CurveType.BRI, };
-            // メモリーストリームに出力
-            writer.write( "[Tempo]" );
-            writer.newLine();
-            writer.write( TEMPO + "" );
-            writer.newLine();
-            writer.write( "[oto.ini]" );
-            writer.newLine();
-            for ( Iterator<String> itr = dict_singername_otoini.keySet().iterator(); itr.hasNext(); ) {
-                String singername = itr.next();
-                String oto_ini = dict_singername_otoini.get( singername );
-                if ( world_mode ) {
-                    writer.write( singername + "\t" + oto_ini );
-                    writer.newLine();
-                } else {
-                    writer.write( oto_ini );
-                    writer.newLine();
-                    break;
-                }
-            }
-            Vector<VsqHandle> handles = vsq_track.MetaText.writeEventList( writer, end_clock );
-            Vector<String> print_targets = new Vector<String>( Arrays.asList(
-                                                               new String[]{ "Length",
-                                                                             "Note#",
-                                                                             "Dynamics",
-                                                                             "DEMdecGainRate",
-                                                                             "DEMaccent",
-                                                                             "PreUtterance",
-                                                                             "VoiceOverlap",
-                                                                             "PMBendDepth",
-                                                                             "PMBendLength",
-                                                                             "PMbPortamentoUse", } ) );
-            for ( Iterator<VsqEvent> itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
-                VsqEvent item = itr.next();
-                item.write( writer, print_targets );
-            }
-            int count = handles.size();
-            for ( int i = 0; i < count; i++ ) {
-                handles.get( i ).write( writer );
-            }
-            count = CURVE.Length;
-            for ( int i = 0; i < count; i++ ) {
-                CurveType curve = CURVE[i];
-                VsqBPList src = vsq_track.getCurve( curve.getName() );
-                if ( src == null ) {
-                    continue;
-                }
-                String name = "";
-                if ( curve.equals( CurveType.PIT ) ) {
-                    name = "[PitchBendBPList]";
-                } else if ( curve.equals( CurveType.PBS ) ) {
-                    name = "[PitchBendSensBPList]";
-                } else if ( curve.equals( CurveType.DYN ) ) {
-                    name = "[DynamicsBPList]";
-                } else if ( curve.equals( CurveType.BRE ) ) {
-                    name = "[EpRResidualBPList]";
-                } else if ( curve.equals( CurveType.GEN ) ) {
-                    name = "[GenderFactorBPList]";
-                } else if ( curve.equals( CurveType.BRI ) ) {
-                    name = "[EpRESlopeBPList]";
-                } else if ( curve.equals( CurveType.CLE ) ) {
-                    name = "[EpRESlopeDepthBPList]";
-                } else {
-                    continue;
-                }
-                src.print( writer, 0, name );
-            }
-        }*/
-
         public override double getElapsedSeconds() {
             return PortUtil.getCurrentTime() - m_started_date;
         }
@@ -387,6 +294,8 @@ namespace org.kbinani.cadencii {
         public override void run() {
             m_started_date = PortUtil.getCurrentTime();
             int BUF_LEN = 1024;
+            double[] buffer_l = new double[BUF_LEN];
+            double[] buffer_r = new double[BUF_LEN];
             m_rendering = true;
             m_abort_required = false;
             String straight_synth = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), STRAIGHT_SYNTH );
@@ -417,22 +326,14 @@ namespace org.kbinani.cadencii {
             if ( m_queue.size() > 0 ) {
                 StraightRenderingQueue queue = m_queue.get( 0 );
                 if ( queue.startFrame > 0 ) {
-                    double[] silence_l = new double[BUF_LEN];
-                    double[] silence_r = new double[BUF_LEN];
                     int remain = queue.startFrame;
                     while ( remain > 0 ) {
                         int len = (remain > BUF_LEN) ? BUF_LEN : remain;
-                        if ( len == BUF_LEN ) {
-                            for ( int i = 0; i < BUF_LEN; i++ ) {
-                                silence_l[i] = 0.0;
-                                silence_r[i] = 0.0;
-                            }
-                            waveIncoming( silence_l, silence_r );
-                        } else {
-                            double[] t_silence_l = new double[remain];
-                            double[] t_silence_r = new double[remain];
-                            waveIncoming( t_silence_l, t_silence_r );
+                        for ( int i = 0; i < len; i++ ) {
+                            buffer_l[i] = 0.0;
+                            buffer_r[i] = 0.0;
                         }
+                        waveIncoming( buffer_l, buffer_r, len );
                         remain -= len;
                     }
                 }
@@ -616,7 +517,7 @@ namespace org.kbinani.cadencii {
                             if ( wr != null ) {
                                 wr.read( pos, len, left, right );
                             }
-                            waveIncoming( left, right );
+                            waveIncoming( left, right, len );
                             pos += len;
                             remain -= len;
                         }
@@ -647,7 +548,7 @@ namespace org.kbinani.cadencii {
                             // キュー間の無音部分を0で埋める
                             int silence_samples = (int)(next_wave_start - (queue.startFrame + rendererd_length));
                             double[] silence = new double[silence_samples];
-                            waveIncoming( silence, silence );
+                            waveIncoming( silence, silence, silence_samples );
                         }
                     } else {
 #if DEBUG
@@ -695,7 +596,7 @@ namespace org.kbinani.cadencii {
                                         buf_l[j] = cached_data_l[j];
                                         buf_r[j] = cached_data_r[j];
                                     }
-                                    waveIncoming( buf_l, buf_r );
+                                    waveIncoming( buf_l, buf_r, append_len );
                                     buf_l = null;
                                     buf_r = null;
                                     buf_l = cached_data_l;
@@ -732,13 +633,13 @@ namespace org.kbinani.cadencii {
                                         cached_data_l[j] += left[j];
                                         cached_data_r[j] += right[j];
                                     }
-                                    waveIncoming( cached_data_l, cached_data_r );
+                                    waveIncoming( cached_data_l, cached_data_r, rendered_length );
                                     int silence_len = (int)(next_wave_start - (queue.startFrame + cached_data_l.Length));
                                     cached_data_l = null;
                                     cached_data_r = null;
                                     left = new double[silence_len];
                                     right = new double[silence_len];
-                                    waveIncoming( left, right );
+                                    waveIncoming( left, right, silence_len );
                                 } catch ( Exception ex ) {
                                     AppManager.debugWriteLine( "StraightRenderingRunner#run; (C); ex=" + ex );
                                 }
@@ -778,7 +679,7 @@ namespace org.kbinani.cadencii {
                                         buf_l[j] = cached_data_l[j];
                                         buf_r[j] = cached_data_r[j];
                                     }
-                                    waveIncoming( buf_l, buf_r );
+                                    waveIncoming( buf_l, buf_r, append_len );
                                     buf_l = cached_data_l;
                                     buf_r = cached_data_r;
                                     int new_cache_len = (int)((queue.startFrame + rendered_length) - next_wave_start);
@@ -821,14 +722,14 @@ namespace org.kbinani.cadencii {
                                         cached_data_l[j] += left[j];
                                         cached_data_r[j] += right[j];
                                     }
-                                    waveIncoming( cached_data_l, cached_data_r );
+                                    waveIncoming( cached_data_l, cached_data_r, cached_data_l.Length );
                                     int append_len = (int)(next_wave_start - (queue.startFrame + cached_data_l.Length));
                                     left = null;
                                     right = null;
                                     left = new double[append_len];
                                     right = new double[append_len];
                                     wr.read( cached_data_l.Length, append_len, left, right );
-                                    waveIncoming( left, right );
+                                    waveIncoming( left, right, append_len );
                                     int new_cache_len = (int)(queue.startFrame + rendered_length - next_wave_start);
                                     int old_cache_len = cached_data_l.Length;
                                     cached_data_l = null;
@@ -861,20 +762,20 @@ namespace org.kbinani.cadencii {
                                         cached_data_l[j] += left[j];
                                         cached_data_r[j] += right[j];
                                     }
-                                    waveIncoming( cached_data_l, cached_data_r );
+                                    waveIncoming( cached_data_l, cached_data_r, cached_data_l.Length );
                                     left = null;
                                     right = null;
                                     int tlen = rendered_length - cached_data_l.Length;
                                     left = new double[tlen];
                                     right = new double[tlen];
                                     wr.read( cached_data_l.Length, rendered_length - cached_data_l.Length, left, right );
-                                    waveIncoming( left, right );
+                                    waveIncoming( left, right, tlen );
                                     cached_data_l = null;
                                     cached_data_r = null;
                                     int silence_len = (int)(next_wave_start - (queue.startFrame + rendered_length));
                                     left = new double[silence_len];
                                     right = new double[silence_len];
-                                    waveIncoming( left, right );
+                                    waveIncoming( left, right, silence_len );
                                 } catch ( Exception ex ) {
                                     AppManager.debugWriteLine( "StraightRenderingRunner#run; (F); ex=" + ex );
                                 }
@@ -920,13 +821,13 @@ namespace org.kbinani.cadencii {
                     l = silence_l0;
                     r = silence_r0;
                 }
-                waveIncoming( l, r );
+                waveIncoming( l, r, tlength );
                 tremain -= tlength;
             }
 
             if ( m_mode_infinite ) {
                 while ( !m_abort_required ) {
-                    waveIncoming( silence_l0, silence_r0 );
+                    waveIncoming( silence_l0, silence_r0, silence_l0.Length );
                 }
                 silence_l0 = null;
                 silence_r0 = null;
