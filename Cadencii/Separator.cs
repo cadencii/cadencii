@@ -23,19 +23,19 @@ namespace org.kbinani.cadencii.draft {
     /// <summary>
     /// 信号を分岐する装置
     /// </summary>
-    public class Separator : WaveReceiver {
+    public class Separator : WaveUnit, WaveReceiver {
         const int _BUFLEN = 1024;
         private Vector<WaveReceiver> mReceivers = new Vector<WaveReceiver>();
         private double[] mBufferL = new double[_BUFLEN];
         private double[] mBufferR = new double[_BUFLEN];
         private int mVersion = 0;
 
-        public int getVersion() {
-            return mVersion;
+        public override void setConfig( String parameter ) {
+            // do nothing
         }
 
-        public void init( String parameter ) {
-            // do nothing
+        public override int getVersion() {
+            return mVersion;
         }
 
         public void setReceiver( WaveReceiver receiver ) {

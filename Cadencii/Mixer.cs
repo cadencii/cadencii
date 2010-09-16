@@ -32,35 +32,12 @@ namespace org.kbinani.cadencii.draft {
         private const int _BUFLEN = 1024;
 
         private WaveReceiver _receiver = null;
-        private WaveSender _sender = null;
         private Vector<WaveSender> _senders = new Vector<WaveSender>();
         private double[] _buffer_l = new double[_BUFLEN];
         private double[] _buffer_r = new double[_BUFLEN];
         private double[] _buffer2_l = new double[_BUFLEN];
         private double[] _buffer2_r = new double[_BUFLEN];
         private int _version = 0;
-
-        public override int getNuMPortsOut() {
-            return 1;
-        }
-
-        public override int getNumPortsIn() {
-            int num = 0;
-            if ( _sender != null ) {
-                num++;
-            }
-            foreach ( WaveSender sender in _senders ) {
-                if ( sender != null ) {
-                    num++;
-                }
-            }
-            return num;
-        }
-
-        public override Dimension paintTo( Graphics2D graphics, int x, int y ) {
-            // TODO: 
-            return new Dimension();
-        }
 
         public override int getVersion() {
             return _version;
@@ -96,13 +73,6 @@ namespace org.kbinani.cadencii.draft {
                     _buffer2_l[i] = 0.0;
                     _buffer2_r[i] = 0.0;
                 }
-                if ( _sender != null ) {
-                    _sender.pull( _buffer_l, _buffer_r, amount );
-                    for ( int i = 0; i < amount; i++ ) {
-                        _buffer2_l[i] += _buffer_l[i];
-                        _buffer2_r[i] += _buffer_r[i];
-                    }
-                }
                 foreach ( WaveSender s in _senders ) {
                     if ( s == null ) {
                         continue;
@@ -133,18 +103,12 @@ namespace org.kbinani.cadencii.draft {
         }
 
         public void setSender( WaveSender s ) {
-            if ( _sender != null ) {
-                _sender.end();
-            }
-            _sender = s;
+            addSender( s );
         }
 
         public void end() {
             if ( _receiver != null ) {
                 _receiver.end();
-            }
-            if ( _sender != null ) {
-                _sender.end();
             }
             foreach ( WaveSender s in _senders ) {
                 if ( s != null ) {
@@ -153,15 +117,12 @@ namespace org.kbinani.cadencii.draft {
             }
         }
 
-        public void addSender( WaveSender s ) {
+        private void addSender( WaveSender s ) {
             if ( s == null ) {
                 return;
             }
             if ( !_senders.contains( s ) ) {
-                if ( _sender == null ||
-                    (_sender != null && _sender != s) ) {
-                    _senders.add( s );
-                }
+                _senders.add( s );
             }
         }
     }

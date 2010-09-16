@@ -16,10 +16,12 @@ package org.kbinani.cadencii;
 
 import java.awt.*;
 import java.util.*;
+import org.kbinani.vsq.*;
 #else
 using System;
 using org.kbinani.java.awt;
 using org.kbinani.java.util;
+using org.kbinani.vsq;
 
 namespace org.kbinani.cadencii.draft {
 #endif
@@ -58,17 +60,78 @@ namespace org.kbinani.cadencii.draft {
         public static CircuitConfig createDefault( VsqFileEx vsq, int track ) {
             /*
              * 
-             * *WaveGenerator--->Amplifier--->Mixer--->Separator--->MonitorWaveReceiver
-             *                                   |          |
-             * FileWaveSender<----Amplifier<-----|          -------->FileWaveReceiver
+             * (0)*WaveGenerator--->(1)Amplifier--->(2)Mixer--->(3)Separator---->(4)MonitorWaveReceiver
+             *                                   |                           |
+             * FileWaveSender<-----Amplifier<----|                           --->FileWaveReceiver
              *                                   |
-             * FileWaveSender<----Amplifier<-----|
+             * FileWaveSender<-----Amplifier<----|
              *        .               .          |
              *        .               .          .
              *        .               .          .
              * 
              */
-            throw new NotImplementedException();
+            int x = 20;
+            int y = 20;
+            int i = 0;
+            int xadd = WaveUnit.BASE_WIDTH * 6 / 5;
+            CircuitConfig cfg = new CircuitConfig();
+
+            // 歌声合成ユニットを特定
+            VsqTrack vsq_track = vsq.Track.get( track );
+            RendererKind kind = VsqFileEx.getTrackRendererKind( vsq_track );
+            Type typeof_unit_generator = null;
+            if ( kind == RendererKind.AQUES_TONE ) {
+                typeof_unit_generator = typeof( AquesToneWaveGenerator );
+            } else if ( kind == RendererKind.STRAIGHT_UTAU ) {
+                typeof_unit_generator = typeof( VConnectWaveGenerator );
+            } else if ( kind == RendererKind.UTAU ) {
+                typeof_unit_generator = typeof( UtauWaveGenerator );
+            } else {
+                typeof_unit_generator = typeof( VocaloidWaveGenerator );
+            }
+            String unit_generator = typeof_unit_generator + "";
+            cfg.addUnit( unit_generator );
+            cfg.DrawPosition.set( i, new Point( x, y ) );
+            i++;
+            x += xadd;
+            
+            // 合成ユニットに付加する増幅器
+            cfg.addUnit( typeof( Amplifier ) + "" );
+            cfg.DrawPosition.set( i, new Point( x, y ) );
+            i++;
+            x += xadd;
+
+            // ミキサー
+            cfg.addUnit( typeof( Mixer ) + "" );
+            cfg.DrawPosition.set( i, new Point( x, y ) );
+            i++;
+            x += xadd;
+
+            // セパレータ
+            cfg.addUnit( typeof( Separator ) + "" );
+            cfg.DrawPosition.set( i, new Point( x, y ) );
+            i++;
+            x += xadd;
+
+            // モニター
+            cfg.addUnit( typeof( MonitorWaveReceiver ) + "" );
+            cfg.DrawPosition.set( i, new Point( x, y ) );
+            i++;
+            x += xadd;
+
+            // (0)Generatorに，(1)AmplifierをRECEIVERとして接続
+            cfg.set( 0, 1, new CircuitConfigEntry( CircuitConnectionKind.RECEIVER ) );
+
+            // (1)Amplifierに，(2)MixerをRECEIVERとして接続
+            cfg.set( 1, 2, new CircuitConfigEntry( CircuitConnectionKind.RECEIVER ) );
+
+            // (2)Mixerに，(3)SeparatorをRECEIVERとして接続
+            cfg.set( 2, 3, new CircuitConfigEntry( CircuitConnectionKind.RECEIVER ) );
+
+            // (3)Separatorに，(4)MonitorをRECEIVERとして接続
+            cfg.set( 3, 4, new CircuitConfigEntry( CircuitConnectionKind.RECEIVER ) );
+
+            return cfg;
         }
 
         public CircuitConfigEntry get( int row_index, int column_index ) {

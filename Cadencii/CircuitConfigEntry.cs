@@ -29,6 +29,13 @@ namespace org.kbinani.cadencii.draft {
         /// 接続の種類
         /// </summary>
         public CircuitConnectionKind ConnectionKind;
+
+        public CircuitConfigEntry() {
+        }
+
+        public CircuitConfigEntry( CircuitConnectionKind connection_kind ) {
+            ConnectionKind = connection_kind;
+        }
     }
 
 #if !JAVA

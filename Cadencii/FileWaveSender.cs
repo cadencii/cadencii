@@ -43,19 +43,6 @@ namespace org.kbinani.cadencii.draft {
             _converter = new WaveRateConverter( reader, VSTiProxy.SAMPLE_RATE );
         }
 
-        public override int getNumPortsIn() {
-            return 0;
-        }
-
-        public override int getNuMPortsOut() {
-            return 1;
-        }
-
-        public override Dimension paintTo( Graphics2D graphics, int x, int y ) {
-            //TODO:
-            return new Dimension();
-        }
-
         public override int getVersion() {
             return _version;
         }

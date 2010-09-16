@@ -50,19 +50,6 @@ namespace org.kbinani.cadencii.draft {
         private MonitorWaveReceiver() {
         }
 
-        public override int getNumPortsIn() {
-            return 1;
-        }
-
-        public override int getNuMPortsOut() {
-            return 0;
-        }
-
-        public override Dimension paintTo( Graphics2D graphics, int x, int y ) {
-            //TODO:
-            return new Dimension();
-        }
-
         public static MonitorWaveReceiver getInstance() {
             if ( _singleton == null ) {
                 _singleton = new MonitorWaveReceiver();

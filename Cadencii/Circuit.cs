@@ -21,6 +21,7 @@ using org.kbinani.java.util;
 
 namespace org.kbinani.cadencii.draft {
     using boolean = System.Boolean;
+    using Integer = System.Int32;
 #endif
 
     /// <summary>
@@ -31,7 +32,22 @@ namespace org.kbinani.cadencii.draft {
 #else
     public class Circuit : Runnable {
 #endif
-        private Vector<WaveUnit> mUnits;
+        /// <summary>
+        /// 回路を構成するユニットの一覧
+        /// </summary>
+        public Vector<WaveUnit> mUnits;
+        /// <summary>
+        /// 回路の設定
+        /// </summary>
+        public CircuitConfig mConfig;
+        /// <summary>
+        /// 各装置の入力ポートの使用数
+        /// </summary>
+        public Vector<Integer> mNumPortsIn;
+        /// <summary>
+        /// 各装置の出力ポートの使用数
+        /// </summary>
+        public Vector<Integer> mNumPortsOut;
         private WaveGenerator mGenerator;
         private long mSamples;
 
@@ -71,12 +87,20 @@ namespace org.kbinani.cadencii.draft {
         /// </summary>
         /// <param name="config"></param>
         public Circuit( CircuitConfig config, VsqFileEx vsq, EditorConfig editor_config ) {
+            mConfig = config;
+
             // ユニットを格納する配列を作成
             int num = 0;
-            if ( config != null && config.Units != null ) {
-                num = config.Units.size();
+            if ( mConfig != null && mConfig.Units != null ) {
+                num = mConfig.Units.size();
             }
-            mUnits = new Vector<WaveUnit>( num );
+            mUnits = new Vector<WaveUnit>();
+            mNumPortsIn = new Vector<Integer>();
+            mNumPortsOut = new Vector<Integer>();
+            for ( int i = 0; i < num; i++ ) {
+                mNumPortsIn.add( 0 );
+                mNumPortsOut.add( 0 );
+            }
 
             // 型名と型のマッピング
             TreeMap<String, Type> map = new TreeMap<String, Type>();
@@ -84,7 +108,7 @@ namespace org.kbinani.cadencii.draft {
             // ユニットのインスタンスを生成．
             for ( int i = 0; i < num; i++ ) {
                 // 型名
-                String classname = config.Units.get( i );
+                String classname = mConfig.Units.get( i );
                 // 型名から型を取得
                 Type unit_type = null;
                 if ( map.containsKey( classname ) ) {
@@ -93,12 +117,23 @@ namespace org.kbinani.cadencii.draft {
                     unit_type = Type.GetType( classname );
                     map.put( classname, unit_type );
                 }
+
                 // リフレクションによりインスタンスを生成
-                WaveUnit instance = (WaveUnit)unit_type.GetConstructor( System.Type.EmptyTypes ).Invoke( null );
+                WaveUnit instance = null;
+                System.Reflection.ConstructorInfo ctor = unit_type.GetConstructor( Type.EmptyTypes );
+                if ( ctor == null ) {
+                    if ( unit_type == typeof( MonitorWaveReceiver ) ) {
+                        instance = MonitorWaveReceiver.getInstance();
+                    } else {
+                        PortUtil.stderr.println( "Circuit#.ctor; cannot get default constructor for \"" + classname + "\"" );
+                    }
+                } else {
+                    instance = (WaveUnit)ctor.Invoke( null );
+                }
 
                 // 初期化
                 instance.setGlobalConfig( editor_config );
-                instance.setConfig( config.Arguments.get( i ) );
+                instance.setConfig( mConfig.Arguments.get( i ) );
 
                 // Generatorかどうか？
                 if ( instance is WaveGenerator ) {
@@ -106,7 +141,7 @@ namespace org.kbinani.cadencii.draft {
                 }
 
                 // 格納
-                mUnits.set( i, instance );
+                mUnits.add( instance );
             }
 
             // 接続設定に基づき，回路を組む
@@ -120,25 +155,52 @@ namespace org.kbinani.cadencii.draft {
 
                     //TODO: この辺がまだ
                     WaveUnit unit_col = mUnits.get( col );
+#if DEBUG
+                    String arrow = entry.ConnectionKind == CircuitConnectionKind.RECEIVER ? "->" : "<-";
+#endif
                     if ( entry.ConnectionKind == CircuitConnectionKind.RECEIVER ) {
                         // 相手をレシーバとして接続
                         if ( unit_col is WaveReceiver ) {
                             WaveReceiver receiver = (WaveReceiver)unit_col;
+                            boolean add_port = false;
                             if ( unit_row is WaveReceiver ) {
                                 WaveReceiver unit_row_as_receiver = (WaveReceiver)unit_row;
                                 unit_row_as_receiver.setReceiver( receiver );
+                                add_port = true;
+#if DEBUG
+                                PortUtil.println( "Circuit#.ctor; connection done; " + mConfig.Units.get( row ) + arrow + mConfig.Units.get( col ) );
+#endif
                             } else if ( unit_row is WaveGenerator ) {
                                 WaveGenerator unit_row_as_generator = (WaveGenerator)unit_row;
                                 unit_row_as_generator.setReceiver( receiver );
+                                add_port = true;
+#if DEBUG
+                                PortUtil.println( "Circuit#.ctor; connection done; " + mConfig.Units.get( row ) + arrow + mConfig.Units.get( col ) );
+#endif
+                            }
+
+                            if ( add_port ) {
+                                mNumPortsIn.set( col, mNumPortsIn.get( col ) + 1 );
+                                mNumPortsOut.set( row, mNumPortsOut.get( row ) + 1 );
                             }
                         }
                     } else if ( entry.ConnectionKind == CircuitConnectionKind.SENDER ) {
                         // 相手をセンダーとして接続
                         if ( unit_col is WaveSender ) {
                             WaveSender sender = (WaveSender)unit_col;
+                            boolean add_port = false;
                             if ( unit_row is WaveSender ) {
                                 WaveSender unit_row_as_sender = (WaveSender)unit_row;
                                 unit_row_as_sender.setSender( sender );
+                                add_port = true;
+#if DEBUG
+                                PortUtil.println( "Circuit#.ctor; connection done; " + mConfig.Units.get( row ) + arrow + mConfig.Units.get( col ) );
+#endif
+                            }
+
+                            if ( add_port ) {
+                                mNumPortsIn.set( row, mNumPortsIn.get( row ) + 1 );
+                                mNumPortsOut.set( col, mNumPortsOut.get( col ) + 1 );
                             }
                         }
                     }

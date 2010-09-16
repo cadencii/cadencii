@@ -71,19 +71,6 @@ namespace org.kbinani.cadencii.draft {
         int mVersion = 0;
         VsqFileEx _vsq;
 
-        public override int getNumPortsIn() {
-            return 0;
-        }
-
-        public override int getNuMPortsOut() {
-            return 1;
-        }
-
-        public override Dimension paintTo( Graphics2D graphics, int x, int y ) {
-            //TODO:
-            return new Dimension();
-        }
-
         public override int getVersion() {
             return mVersion;
         }

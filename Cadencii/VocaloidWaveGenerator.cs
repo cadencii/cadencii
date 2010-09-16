@@ -48,19 +48,6 @@ namespace org.kbinani.cadencii.draft {
         // RenderingRunner
         private int _trim_remain = 0;
 
-        public override int getNumPortsIn() {
-            return 0;
-        }
-
-        public override int getNuMPortsOut() {
-            return 1;
-        }
-
-        public override Dimension paintTo( Graphics2D graphics, int x, int y ) {
-            //TODO: 
-            return new Dimension();
-        }
-
         public override void setConfig( String parameter ) {
             // do nothing
         }

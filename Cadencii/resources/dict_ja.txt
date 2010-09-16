@@ -50,6 +50,7 @@
 ぅ		M
 ぇ		e
 ぉ		o
+っ		ts M
 が		g a
 ぎ		g' i
 ぐ		g M
@@ -199,6 +200,7 @@
 ゥ		M
 ェ		e
 ォ		o
+ッ		ts M
 ガ		g a
 ギ		g' i
 グ		g M

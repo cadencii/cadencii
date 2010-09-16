@@ -63,19 +63,6 @@ namespace org.kbinani.cadencii.draft {
             public Vector<ParameterEvent> param;
         }
 
-        public override int getNumPortsIn() {
-            return 0;
-        }
-
-        public override int getNuMPortsOut() {
-            return 1;
-        }
-
-        public override Dimension paintTo( Graphics2D graphics, int x, int y ) {
-            //TODO: 
-            return new Dimension();
-        }
-
         public override int getVersion() {
             return _version;
         }

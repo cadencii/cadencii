@@ -40,19 +40,6 @@ namespace org.kbinani.cadencii.draft {
         private WaveReceiver mReceiver = null;
         private int mVersion = 0;
 
-        public override int getNumPortsIn() {
-            return 0;
-        }
-
-        public override int getNuMPortsOut() {
-            return 1;
-        }
-
-        public override Dimension paintTo( Graphics2D graphics, int x, int y ) {
-            //TODO:
-            return new Dimension();
-        }
-
         public override int getVersion() {
             return mVersion;
         }

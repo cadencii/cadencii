@@ -67,19 +67,6 @@ namespace org.kbinani.cadencii.draft {
         //private EditorConfig _config = null;
         private int _version = 0;
 
-        public override int getNumPortsIn() {
-            return 0;
-        }
-
-        public override int getNuMPortsOut() {
-            return 1;
-        }
-
-        public override Dimension paintTo( Graphics2D graphics, int x, int y ) {
-            //TODO:
-            return new Dimension();
-        }
-
         public override void setConfig( string parameter ) {
             // do nothing
         }

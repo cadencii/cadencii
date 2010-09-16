@@ -46,6 +46,7 @@ using org.kbinani.media;
 using org.kbinani.vsq;
 using org.kbinani.windows.forms;
 using org.kbinani.xml;
+using org.kbinani.cadencii.draft;
 
 namespace org.kbinani.cadencii {
     using BCancelEventArgs = System.ComponentModel.CancelEventArgs;
@@ -9890,6 +9891,12 @@ namespace org.kbinani.cadencii {
 #if !JAVA
             if ( menuVisualCircuitDiagram.isSelected() ) {
                 splitContainerProperty.Panel2.Controls.Clear();
+#if DEBUG
+                VsqFileEx vsq = AppManager.getVsqFile();
+                CircuitConfig cfg = CircuitConfig.createDefault( vsq, AppManager.getSelected() );
+                Circuit circuit = new Circuit( cfg, vsq, AppManager.editorConfig );
+                pictCircuit.setCircuit( circuit );
+#endif
                 splitContainerProperty.Panel2.Controls.Add( pictCircuit );
             } else {
                 splitContainerProperty.Panel2.Controls.Clear();

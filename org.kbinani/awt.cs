@@ -132,7 +132,7 @@ namespace org.kbinani.java.awt {
         }
 
         public void fillOval( int x, int y, int width, int height ) {
-            nativeGraphics.FillRectangle( brush, x, y, width, height );
+            nativeGraphics.FillEllipse( brush, x, y, width, height );
         }
 
         public void setColor( Color c ) {
