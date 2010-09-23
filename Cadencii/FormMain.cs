@@ -542,27 +542,35 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// ミニチュアピアノロールの左側の第1ボタン上でマウスが下りている状態かどうか
         /// </summary>
-        private boolean _overviewButtonLeft1MouseDowned = false;
+        private boolean mOverviewButtonLeft1MouseDowned = false;
         /// <summary>
         /// ミニチュアピアノロールの左側の第2ボタン上でマウスが下りている状態かどうか
         /// </summary>
-        private boolean _overviewButtonLeft2MouseDowned = false;
+        private boolean mOverviewButtonLeft2MouseDowned = false;
         /// <summary>
         /// ミニチュアピアノロールの右側の第1ボタン上でマウスが下りている状態かどうか
         /// </summary>
-        private boolean _overviewButtonRight1MouseDowned = false;
+        private boolean mOverviewButtonRight1MouseDowned = false;
         /// <summary>
         /// ミニチュアピアノロールの右側の第2ボタン上でマウスが下りている状態かどうか
         /// </summary>
-        private boolean _overviewButtonRight2MouseDowned = false;
+        private boolean mOverviewButtonRight2MouseDowned = false;
         /// <summary>
         /// ミニチュアピアノロールの拡大ボタン上でマウスが下りている状態かどうか
         /// </summary>
-        private boolean _overviewButtonZoomMouseDowned = false;
+        private boolean mOverviewButtonZoomMouseDowned = false;
         /// <summary>
         /// ミニチュアピアノロールの縮小ボタン上でマウスが下りている状態かどうか
         /// </summary>
-        private boolean _overviewButtonMoozMouseDowned = false;
+        private boolean mOverviewButtonMoozMouseDowned = false;
+        /// <summary>
+        /// 波形ビューの拡大ボタン上でマウスが下りている状態かどうか
+        /// </summary>
+        private boolean mWaveViewButtonZoomMouseDowned = false;
+        /// <summary>
+        /// 波形ビューの縮小ボタン上でマウスが下りている状態かどうか
+        /// </summary>
+        private boolean mWaveViewButtonMoozMouseDowned = false;
         /// <summary>
         /// デフォルトのストローク
         /// </summary>
@@ -776,7 +784,7 @@ namespace org.kbinani.cadencii {
             splitContainer2.Panel1.Controls.Add( panel1 );
             panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             splitContainer2.Panel2.Controls.Add( panel2 );
-            splitContainer2.Panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            //splitContainer2.Panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             splitContainer2.Panel2.BorderColor = System.Drawing.Color.FromArgb( 112, 112, 112 );
             splitContainer1.Panel1.Controls.Add( splitContainer2 );
             panel2.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -6790,6 +6798,9 @@ namespace org.kbinani.cadencii {
             pictPianoRoll.mouseDownEvent.add( new BMouseEventHandler( this, "pictPianoRoll_MouseDown" ) );
             pictPianoRoll.mouseUpEvent.add( new BMouseEventHandler( this, "pictPianoRoll_MouseUp" ) );
             pictPianoRoll.keyDownEvent.add( new BKeyEventHandler( this, "handleSpaceKeyDown" ) );
+            panel2.paintEvent.add( new BPaintEventHandler( this, "panel2_Paint" ) );
+            panel2.mouseDownEvent.add( new BMouseEventHandler( this, "panel2_MouseDown" ) );
+            panel2.mouseUpEvent.add( new BMouseEventHandler( this, "panel2_MouseUp" ) );
 #if !JAVA
             this.DragEnter += new System.Windows.Forms.DragEventHandler( FormMain_DragEnter );
             this.DragDrop += new System.Windows.Forms.DragEventHandler( FormMain_DragDrop );
@@ -6972,6 +6983,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
+        //BOOKMARK: inputTextBox
         #region AppManager.inputTextBox
         public void m_input_textbox_KeyDown( Object sender, BKeyEventArgs e ) {
 #if DEBUG
@@ -7164,6 +7176,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
+        //BOOKMARK: AppManager
         #region AppManager
         public void AppManager_GridVisibleChanged( Object sender, EventArgs e ) {
             menuVisualGridline.setSelected( AppManager.isGridVisible() );
@@ -7923,6 +7936,7 @@ namespace org.kbinani.cadencii {
         }
         #endregion
 
+        //BOOKMARK: pictPianoRoll
         #region pictPianoRoll
         public void pictPianoRoll_KeyUp( Object sender, BKeyEventArgs e ) {
             processSpecialShortcutKey( e, false );
@@ -9817,7 +9831,27 @@ namespace org.kbinani.cadencii {
         }
         #endregion
 
+        //BOOKMARK: menuVisual
         #region menuVisual*
+        public void menuVisualProperty_Click( Object sender, EventArgs e ) {
+#if ENABLE_PROPERTY
+            if ( menuVisualProperty.isSelected() ) {
+                if ( AppManager.editorConfig.PropertyWindowStatus.WindowState == BFormWindowState.Minimized ) {
+                    updatePropertyPanelState( PanelState.Docked );
+                } else {
+                    updatePropertyPanelState( PanelState.Window );
+                }
+            } else {
+                updatePropertyPanelState( PanelState.Hidden );
+            }
+#endif
+        }
+
+        public void menuVisualOverview_CheckedChanged( Object sender, EventArgs e ) {
+            AppManager.editorConfig.OverviewEnabled = menuVisualOverview.isSelected();
+            updateLayout();
+        }
+
         public void menuVisualMixer_Click( Object sender, EventArgs e ) {
             menuVisualMixer.setSelected( !menuVisualMixer.isSelected() );
             AppManager.editorConfig.MixerVisible = menuVisualMixer.isSelected();
@@ -10049,6 +10083,7 @@ namespace org.kbinani.cadencii {
         }
         #endregion
 
+        //BOOKMARK: m_mixer_dlg
         #region m_mixer_dlg
         public void m_mixer_dlg_SoloChanged( int track, boolean solo ) {
 #if DEBUG
@@ -10116,7 +10151,114 @@ namespace org.kbinani.cadencii {
         }
         #endregion
 
+        //BOOKMARK: FormMain
         #region FormMain
+#if !JAVA
+        private void FormMain_DragLeave( object sender, EventArgs e ) {
+            AppManager.setEditMode( EditMode.NONE );
+            iconPaletteOnceDragEntered = false;
+        }
+#endif
+
+#if !JAVA
+        private void FormMain_DragOver( object sender, System.Windows.Forms.DragEventArgs e ) {
+            if ( AppManager.getEditMode() != EditMode.DRAG_DROP ) {
+                return;
+            }
+            Point pt = pictPianoRoll.getLocationOnScreen();
+            if ( !iconPaletteOnceDragEntered ) {
+                int keywidth = AppManager.keyWidth;
+                Rectangle rc = new Rectangle( pt.x + keywidth, pt.y, pictPianoRoll.getWidth() - keywidth, pictPianoRoll.getHeight() );
+                if ( isInRect( new Point( e.X, e.Y ), rc ) ) {
+                    iconPaletteOnceDragEntered = true;
+                } else {
+                    return;
+                }
+            }
+            BMouseEventArgs e0 = new BMouseEventArgs( BMouseButtons.Left,
+                                                      1,
+                                                      e.X - pt.x,
+                                                      e.Y - pt.y,
+                                                      0 );
+            pictPianoRoll_MouseMove( this, e0 );
+        }
+#endif
+
+#if !JAVA
+        private void FormMain_DragDrop( object sender, System.Windows.Forms.DragEventArgs e ) {
+            AppManager.setEditMode( EditMode.NONE );
+            iconPaletteOnceDragEntered = false;
+            m_mouse_downed = false;
+            if ( !e.Data.GetDataPresent( typeof( IconDynamicsHandle ) ) ) {
+                return;
+            }
+            Point locPianoroll = pictPianoRoll.getLocationOnScreen();
+            int keywidth = AppManager.keyWidth;
+            Rectangle rcPianoroll = new Rectangle( locPianoroll.x + keywidth,
+                                                   locPianoroll.y,
+                                                   pictPianoRoll.getWidth() - keywidth,
+                                                   pictPianoRoll.getHeight() );
+            if ( !isInRect( new Point( e.X, e.Y ), rcPianoroll ) ) {
+                return;
+            }
+
+            // dynaff, crescend, decrescend のどれがドロップされたのか検査
+            IconDynamicsHandle this_is_it = (IconDynamicsHandle)e.Data.GetData( typeof( IconDynamicsHandle ) );
+            if ( this_is_it == null ) {
+                return;
+            }
+
+            // ドロップ位置を特定して，アイテムを追加する
+            int x = e.X - locPianoroll.x;
+            int y = e.Y - locPianoroll.y;
+            int clock1 = AppManager.clockFromXCoord( x );
+
+            // クオンタイズの処理
+            int unit = AppManager.getPositionQuantizeClock();
+            int clock = doQuantize( clock1, unit );
+
+            int note = AppManager.noteFromYCoord( y );
+            VsqFileEx vsq = AppManager.getVsqFile();
+            int clockAtPremeasure = vsq.getPreMeasureClocks();
+            if ( clock < clockAtPremeasure ) {
+                return;
+            }
+            if ( note < 0 || 128 < note ) {
+                return;
+            }
+
+            int selected = AppManager.getSelected();
+            VsqTrack vsq_track = vsq.Track.get( selected );
+            VsqTrack work = (VsqTrack)vsq_track.clone();
+
+            if ( AppManager.addingEvent == null ) {
+                // ここは多分起こらない
+                return;
+            }
+            VsqEvent item = (VsqEvent)AppManager.addingEvent.clone();
+            item.Clock = clock;
+            item.ID.Note = note;
+            work.addEvent( item );
+            work.reflectDynamics();
+            CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( selected, work, vsq.AttachedCurves.get( selected - 1 ) );
+            AppManager.register( vsq.executeCommand( run ) );
+            setEdited( true );
+        }
+#endif
+
+#if !JAVA
+        private void FormMain_DragEnter( object sender, System.Windows.Forms.DragEventArgs e ) {
+            if ( e.Data.GetDataPresent( typeof( IconDynamicsHandle ) ) ) {
+                // ドロップ可能
+                e.Effect = System.Windows.Forms.DragDropEffects.All;
+                AppManager.setEditMode( EditMode.DRAG_DROP );
+                m_mouse_downed = true;
+            } else {
+                e.Effect = System.Windows.Forms.DragDropEffects.None;
+                AppManager.setEditMode( EditMode.NONE );
+            }
+        }
+#endif
         public void FormMain_FormClosed( Object sender, BFormClosedEventArgs e ) {
             clearTempWave();
             String tempdir = PortUtil.combinePath( AppManager.getCadenciiTempDir(), AppManager.getID() );
@@ -10820,6 +10962,7 @@ namespace org.kbinani.cadencii {
             applyQuantizeMode();
         }
 
+        //BOOKMARK: menuFile
         #region menuFile*
         public void menuFileSaveNamed_Click( Object sender, EventArgs e ) {
             for ( int track = 1; track < AppManager.getVsqFile().Track.size(); track++ ) {
@@ -11994,7 +12137,12 @@ namespace org.kbinani.cadencii {
 
         #endregion
 
+        //BOOKMARK: menuSetting
         #region menuSetting*
+        public void menuSetting_DropDownOpening( Object sender, EventArgs e ) {
+            menuSettingMidi.setEnabled( AppManager.getEditMode() != EditMode.REALTIME );
+        }
+
         public void menuSettingDefaultSingerStyle_Click( Object sender, EventArgs e ) {
             FormSingerStyleConfig dlg = null;
             try {
@@ -12048,6 +12196,50 @@ namespace org.kbinani.cadencii {
                         dlg.close();
                     } catch ( Exception ex2 ) {
                         Logger.write( typeof( FormMain ) + ".menuSettingDefaultSingerStyle_Click; ex=" + ex2 + "\n" );
+                    }
+                }
+            }
+        }
+
+        public void menuSettingGameControlerLoad_Click( Object sender, EventArgs e ) {
+            loadGameControler();
+        }
+
+        public void menuSettingGameControlerRemove_Click( Object sender, EventArgs e ) {
+            removeGameControler();
+        }
+
+        public void menuSettingGameControlerSetting_Click( Object sender, EventArgs e ) {
+            FormGameControlerConfig dlg = null;
+            try {
+                dlg = new FormGameControlerConfig();
+                dlg.setLocation( getFormPreferedLocation( dlg ) );
+                dlg.setModal( true );
+                dlg.setVisible( true );
+                if ( dlg.getDialogResult() == BDialogResult.OK ) {
+                    AppManager.editorConfig.GameControlerRectangle = dlg.getRectangle();
+                    AppManager.editorConfig.GameControlerTriangle = dlg.getTriangle();
+                    AppManager.editorConfig.GameControlerCircle = dlg.getCircle();
+                    AppManager.editorConfig.GameControlerCross = dlg.getCross();
+                    AppManager.editorConfig.GameControlL1 = dlg.getL1();
+                    AppManager.editorConfig.GameControlL2 = dlg.getL2();
+                    AppManager.editorConfig.GameControlR1 = dlg.getR1();
+                    AppManager.editorConfig.GameControlR2 = dlg.getR2();
+                    AppManager.editorConfig.GameControlSelect = dlg.getSelect();
+                    AppManager.editorConfig.GameControlStart = dlg.getStart();
+                    AppManager.editorConfig.GameControlPovDown = dlg.getPovDown();
+                    AppManager.editorConfig.GameControlPovLeft = dlg.getPovLeft();
+                    AppManager.editorConfig.GameControlPovUp = dlg.getPovUp();
+                    AppManager.editorConfig.GameControlPovRight = dlg.getPovRight();
+                }
+            } catch ( Exception ex ) {
+                Logger.write( typeof( FormMain ) + ".menuSettingGrameControlerSetting_Click; ex=" + ex + "\n" );
+            } finally {
+                if ( dlg != null ) {
+                    try {
+                        dlg.close();
+                    } catch ( Exception ex2 ) {
+                        Logger.write( typeof( FormMain ) + ".menuSettingGameControlerSetting_Click; ex=" + ex2 + "\n" );
                     }
                 }
             }
@@ -12526,51 +12718,32 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void menuSettingGameControlerLoad_Click( Object sender, EventArgs e ) {
-            loadGameControler();
-        }
-
-        public void menuSettingGameControlerRemove_Click( Object sender, EventArgs e ) {
-            removeGameControler();
-        }
-
-        public void menuSettingGameControlerSetting_Click( Object sender, EventArgs e ) {
-            FormGameControlerConfig dlg = null;
-            try {
-                dlg = new FormGameControlerConfig();
-                dlg.setLocation( getFormPreferedLocation( dlg ) );
-                dlg.setModal( true );
-                dlg.setVisible( true );
-                if ( dlg.getDialogResult() == BDialogResult.OK ) {
-                    AppManager.editorConfig.GameControlerRectangle = dlg.getRectangle();
-                    AppManager.editorConfig.GameControlerTriangle = dlg.getTriangle();
-                    AppManager.editorConfig.GameControlerCircle = dlg.getCircle();
-                    AppManager.editorConfig.GameControlerCross = dlg.getCross();
-                    AppManager.editorConfig.GameControlL1 = dlg.getL1();
-                    AppManager.editorConfig.GameControlL2 = dlg.getL2();
-                    AppManager.editorConfig.GameControlR1 = dlg.getR1();
-                    AppManager.editorConfig.GameControlR2 = dlg.getR2();
-                    AppManager.editorConfig.GameControlSelect = dlg.getSelect();
-                    AppManager.editorConfig.GameControlStart = dlg.getStart();
-                    AppManager.editorConfig.GameControlPovDown = dlg.getPovDown();
-                    AppManager.editorConfig.GameControlPovLeft = dlg.getPovLeft();
-                    AppManager.editorConfig.GameControlPovUp = dlg.getPovUp();
-                    AppManager.editorConfig.GameControlPovRight = dlg.getPovRight();
-                }
-            } catch ( Exception ex ) {
-                Logger.write( typeof( FormMain ) + ".menuSettingGrameControlerSetting_Click; ex=" + ex + "\n" );
-            } finally {
-                if ( dlg != null ) {
-                    try {
-                        dlg.close();
-                    } catch ( Exception ex2 ) {
-                        Logger.write( typeof( FormMain ) + ".menuSettingGameControlerSetting_Click; ex=" + ex2 + "\n" );
-                    }
-                }
+        public void menuSettingUtauVoiceDB_Click( Object sender, EventArgs e ) {
+            String edit_oto_ini = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "EditOtoIni.exe" );
+            if ( !PortUtil.isFileExists( edit_oto_ini ) ) {
+                return;
             }
+
+#if JAVA
+            Runtime r = Runtime.getRuntime();
+            try{
+                r.exec( "\"" + edit_oto_ini + "\"" );
+            }catch( Exception ex ){
+                Logger.write( FormMain.class + ".menuSettingUtauVoiceDB_Click; ex=" + ex + "\n" );
+            }
+#else
+            ProcessStartInfo psi = new ProcessStartInfo();
+            psi.FileName = Environment.GetEnvironmentVariable( "ComSpec" );
+            psi.Arguments = "/c \"" + edit_oto_ini + "\"";
+            psi.WindowStyle = ProcessWindowStyle.Hidden;
+            psi.CreateNoWindow = true;
+            psi.UseShellExecute = false;
+            Process.Start( psi );
+#endif
         }
         #endregion
 
+        //BOOKMARK: menuEdit
         #region menuEdit*
         public void menuEditDelete_Click( Object sender, EventArgs e ) {
             deleteEvent();
@@ -12626,6 +12799,7 @@ namespace org.kbinani.cadencii {
         }
         #endregion
 
+        //BOOKMARK: menuLyric
         #region menuLyric*
         public void menuLyricExpressionProperty_Click( Object sender, EventArgs e ) {
             editNoteExpressionProperty();
@@ -12704,6 +12878,7 @@ namespace org.kbinani.cadencii {
         }
         #endregion
 
+        //BOOKMARK: menuJob
         #region menuJob
         public void menuJobRealTime_Click( Object sender, EventArgs e ) {
             if ( !AppManager.isPlaying() ) {
@@ -13337,6 +13512,7 @@ namespace org.kbinani.cadencii {
 
         #endregion
 
+        //BOOKMARK: menuScript
         #region menuScript
         public void menuScriptUpdate_Click( Object sender, EventArgs e ) {
 #if ENABLE_SCRIPT
@@ -13346,6 +13522,7 @@ namespace org.kbinani.cadencii {
         }
         #endregion
 
+        //BOOKMARK: vScroll
         #region vScroll
         public void vScroll_Enter( Object sender, EventArgs e ) {
             pictPianoRoll.requestFocus();
@@ -13370,6 +13547,7 @@ namespace org.kbinani.cadencii {
         }
         #endregion
 
+        //BOOKMARK: hScroll
         #region hScroll
         public void hScroll_Enter( Object sender, EventArgs e ) {
             pictPianoRoll.requestFocus();
@@ -13403,6 +13581,7 @@ namespace org.kbinani.cadencii {
             return (int)(hScroll.getValue() * AppManager.getScaleX());
         }
 
+        //BOOKMARK: picturePositionIndicator
         #region picturePositionIndicator
         public void picturePositionIndicator_MouseWheel( Object sender, BMouseEventArgs e ) {
             hScroll.setValue( computeScrollValueFromWheelDelta( e.Delta ) );
@@ -14136,6 +14315,7 @@ namespace org.kbinani.cadencii {
         }
         #endregion
 
+        //BOOKMARK: trackBar
         #region trackBar
         public void trackBar_Enter( Object sender, EventArgs e ) {
             pictPianoRoll.requestFocus();
@@ -14160,6 +14340,7 @@ namespace org.kbinani.cadencii {
         }
         #endregion
 
+        //BOOKMARK: menuHelp
         #region menuHelp
         public void menuHelpAbout_Click( Object sender, EventArgs e ) {
 #if DEBUG
@@ -14256,6 +14437,7 @@ namespace org.kbinani.cadencii {
         }
         #endregion
 
+        //BOOKMARK: trackSelector
         #region trackSelector
         public void trackSelector_CommandExecuted( Object sender, EventArgs e ) {
             setEdited( true );
@@ -14471,6 +14653,7 @@ namespace org.kbinani.cadencii {
         }
         #endregion
 
+        //BOOKMARK: cMenuPiano
         #region cMenuPiano*
         public void cMenuPianoDelete_Click( Object sender, EventArgs e ) {
             deleteEvent();
@@ -14733,6 +14916,7 @@ namespace org.kbinani.cadencii {
         }
         #endregion
 
+        //BOOKMARK: menuTrack
         #region menuTrack*
         public void menuTrack_DropDownOpening( Object sender, EventArgs e ) {
             updateTrackMenuStatus();
@@ -14798,6 +14982,7 @@ namespace org.kbinani.cadencii {
         }
         #endregion
 
+        //BOOKMARK: menuHidden
         #region menuHidden*
         public void menuHiddenTrackNext_Click( Object sender, EventArgs e ) {
             if ( AppManager.getSelected() == AppManager.getVsqFile().Track.size() - 1 ) {
@@ -14952,6 +15137,7 @@ namespace org.kbinani.cadencii {
         }
         #endregion
 
+        //BOOKMARK: cMenuTrackTab
         #region cMenuTrackTab
         public void cMenuTrackTabCopy_Click( Object sender, EventArgs e ) {
             copyTrackCore();
@@ -15057,6 +15243,7 @@ namespace org.kbinani.cadencii {
         }
         #endregion
 
+        //BOOKMARK: m_txtbox_track_name
         #region m_txtbox_track_name
         public void m_txtbox_track_name_KeyUp( Object sender, BKeyEventArgs e ) {
 #if JAVA
@@ -15087,6 +15274,7 @@ namespace org.kbinani.cadencii {
         }
         #endregion
 
+        //BOOKMARK: cMenuTrackSelector
         #region cMenuTrackSelector
         public void cMenuTrackSelector_Opening( Object sender, BCancelEventArgs e ) {
             updateCopyAndPasteButtonStatus();
@@ -15203,6 +15391,101 @@ namespace org.kbinani.cadencii {
 #endif
             redo();
             refreshScreen();
+        }
+        #endregion
+
+        //BOOKMARK: panel2
+        #region panel2
+        public void panel2_MouseDown( Object sender, BMouseEventArgs e ) {
+            Point p = new Point( e.X, e.Y );
+            Rectangle rc = getButtonBoundsWaveViewZoom();
+            
+            mWaveViewButtonZoomMouseDowned = false;
+            mWaveViewButtonMoozMouseDowned = false;
+
+            if ( isInRect( p, rc ) ) {
+                mWaveViewButtonZoomMouseDowned = true;
+                panel2.repaint();
+                return;
+            }
+
+            rc = getButtonBoundsWaveViewMooz();
+            if ( isInRect( p, rc ) ) {
+                mWaveViewButtonMoozMouseDowned = true;
+                panel2.repaint();
+                return;
+            }
+
+            panel2.repaint();
+        }
+
+        public void panel2_MouseUp( Object sender, BMouseEventArgs e ) {
+            Point p = new Point( e.X, e.Y );
+            Rectangle rc = getButtonBoundsWaveViewZoom();
+            if ( isInRect( p, rc ) ) {
+                waveView.zoom();
+            } else {
+                rc = getButtonBoundsWaveViewMooz();
+                if ( isInRect( p, rc ) ) {
+                    waveView.mooz();
+                }
+            }
+            mWaveViewButtonZoomMouseDowned = false;
+            mWaveViewButtonMoozMouseDowned = false;
+            panel2.repaint();
+        }
+
+        public void panel2_Paint( Object sender, BPaintEventArgs e ) {
+#if DEBUG
+            PortUtil.println( "FormMain#panel2_Paint" );
+#endif
+#if JAVA
+            Graphics2D g = (Graphics2D)e.Graphics;
+#else
+            Graphics2D g = new org.kbinani.java.awt.Graphics2D( e.Graphics );
+#endif
+            int key_width = AppManager.keyWidth;
+            int width = key_width - 1;
+            int height = panel2.getHeight() - 1;
+            int space = 4;
+
+            // 背景を塗る
+            g.setColor( Color.darkGray );
+            g.fillRect( 0, 0, width, height );
+
+            // ボタン部と波形部の境界線
+            g.setColor( s_pen_105_105_105 );
+            g.drawLine( key_width, 0, key_width, height );
+
+            // 拡大ボタンを描く
+            Rectangle rc = getButtonBoundsWaveViewZoom();
+            g.setStroke( getStroke2px() );
+            g.setColor( mWaveViewButtonZoomMouseDowned ? Color.gray : Color.lightGray );
+            g.fillRect( rc.x, rc.y, rc.width, rc.height );
+            g.setStroke( getStrokeDefault() );
+            g.setColor( Color.gray );
+            g.drawRect( rc.x, rc.y, rc.width, rc.height );
+            // "+"マーク
+            int center_x = width / 2;
+            int center_y = height / 2 - rc.height / 2;
+            g.setStroke( getStroke2px() );
+            g.setColor( mWaveViewButtonZoomMouseDowned ? Color.lightGray : Color.gray );
+            g.drawLine( center_x - 4, center_y, center_x + 4, center_y );
+            g.drawLine( center_x, center_y - 4, center_x, center_y + 4 );
+
+            // 縮小ボタンを描く
+            rc = getButtonBoundsWaveViewMooz();
+            g.setStroke( getStroke2px() );
+            g.setColor( mWaveViewButtonMoozMouseDowned ? Color.gray : Color.lightGray );
+            g.fillRect( rc.x, rc.y, rc.width, rc.height );
+            g.setStroke( getStrokeDefault() );
+            g.setColor( Color.gray );
+            g.drawRect( rc.x, rc.y, rc.width, rc.height );
+            // "-"マーク
+            center_y = height - space - rc.height / 2;
+            g.setStroke( getStroke2px() );
+            g.setColor( mWaveViewButtonMoozMouseDowned ? Color.lightGray : Color.gray );
+            g.drawLine( center_x - 4, center_y, center_x + 4, center_y );
         }
         #endregion
 
@@ -15402,6 +15685,7 @@ namespace org.kbinani.cadencii {
         }
 #endif
 
+        //BOOKMARK: stripBtn
         #region stripBtn*
         public void stripBtnGrid_CheckedChanged( Object sender, EventArgs e ) {
             AppManager.setGridVisible( stripBtnGrid.isSelected() );
@@ -15738,6 +16022,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
+        //BOOKMARK: stripDDBtn
+        #region stripDDBtn*
 #if ENABLE_STRIP_DROPDOWN
         public void stripDDBtnSpeed_DropDownOpening( Object sender, EventArgs e ) {
             if ( AppManager.editorConfig.getRealtimeInputSpeed() == 1.0f ) {
@@ -15813,52 +16099,70 @@ namespace org.kbinani.cadencii {
             }
         }
 #endif
+        #endregion // stripDDBtn*
 
-        public void menuSetting_DropDownOpening( Object sender, EventArgs e ) {
-            menuSettingMidi.setEnabled( AppManager.getEditMode() != EditMode.REALTIME );
-        }
-
-        public void menuVisualProperty_Click( Object sender, EventArgs e ) {
-#if ENABLE_PROPERTY
-            if ( menuVisualProperty.isSelected() ) {
-                if ( AppManager.editorConfig.PropertyWindowStatus.WindowState == BFormWindowState.Minimized ) {
-                    updatePropertyPanelState( PanelState.Docked );
-                } else {
-                    updatePropertyPanelState( PanelState.Window );
+        //BOOKMARK: pictOverview
+        #region pictOverview
+        public void pictOverview_MouseDoubleClick( Object sender, BMouseEventArgs e ) {
+            if ( AppManager.keyWidth < e.X && e.X < panelOverview.getWidth() - 19 ) {
+                m_overview_mouse_down_mode = OverviewMouseDownMode.NONE;
+                int draft_stdx = getOverviewStartToDrawX( e.X - AppManager.keyWidth - AppManager.keyOffset );
+                int draft = (int)(draft_stdx * AppManager.getScaleXInv());
+                if ( draft < hScroll.getMinimum() ) {
+                    draft = hScroll.getMinimum();
+                } else if ( hScroll.getMaximum() < draft ) {
+                    draft = hScroll.getMaximum();
                 }
-            } else {
-                updatePropertyPanelState( PanelState.Hidden );
+                hScroll.setValue( draft );
+                refreshScreen();
             }
-#endif
         }
 
-        public void menuSettingUtauVoiceDB_Click( Object sender, EventArgs e ) {
-            String edit_oto_ini = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "EditOtoIni.exe" );
-            if ( !PortUtil.isFileExists( edit_oto_ini ) ) {
-                return;
+        public void pictOverview_MouseDown( Object sender, BMouseEventArgs e ) {
+            BMouseButtons btn = e.Button;
+            if ( AppManager.editorConfig.UseSpaceKeyAsMiddleButtonModifier && m_spacekey_downed && e.Button == BMouseButtons.Left ) {
+                btn = BMouseButtons.Middle;
             }
-
-#if JAVA
-            Runtime r = Runtime.getRuntime();
-            try{
-                r.exec( "\"" + edit_oto_ini + "\"" );
-            }catch( Exception ex ){
-                Logger.write( FormMain.class + ".menuSettingUtauVoiceDB_Click; ex=" + ex + "\n" );
+            if ( btn == BMouseButtons.Middle ) {
+                m_overview_mouse_down_mode = OverviewMouseDownMode.MIDDLE;
+                m_overview_mouse_downed_locationx = e.X;
+                m_overview_start_to_draw_clock_initial_value = m_overview_start_to_draw_clock;
+            } else if ( e.Button == BMouseButtons.Left ) {
+                if ( e.X <= AppManager.keyWidth || panelOverview.getWidth() - 19 <= e.X ) {
+                    Point mouse = new Point( e.X, e.Y );
+                    if ( isInRect( mouse, getButtonBoundsLeft1() ) ) {
+                        btnLeft_MouseDown( null, null );
+                        mOverviewButtonLeft1MouseDowned = true;
+                    } else if ( isInRect( mouse, getButtonBoundsRight1() ) ) {
+                        btnLeft_MouseDown( null, null );
+                        mOverviewButtonRight1MouseDowned = true;
+                    } else if ( isInRect( mouse, getButtonBoundsLeft2() ) ) {
+                        btnRight_MouseDown( null, null );
+                        mOverviewButtonLeft2MouseDowned = true;
+                    } else if ( isInRect( mouse, getButtonBoundsRight2() ) ) {
+                        btnRight_MouseDown( null, null );
+                        mOverviewButtonRight2MouseDowned = true;
+                    } else if ( isInRect( mouse, getButtonBoundsZoom() ) ) {
+                        btnZoom_Click( null, null );
+                        mOverviewButtonZoomMouseDowned = true;
+                    } else if ( isInRect( mouse, getButtonBoundsMooz() ) ) {
+                        btnMooz_Click( null, null );
+                        mOverviewButtonMoozMouseDowned = true;
+                    }
+                    panelOverview.invalidate();
+                } else {
+                    if ( e.Clicks == 1 ) {
+                        m_overview_mouse_down_mode = OverviewMouseDownMode.LEFT;
+                        int draft = getOverviewStartToDrawX( e.X - AppManager.keyWidth - AppManager.keyOffset );
+                        if ( draft < 0 ) {
+                            draft = 0;
+                        }
+                        AppManager.setStartToDrawX( draft );
+                        refreshScreen();
+                        return;
+                    }
+                }
             }
-#else
-            ProcessStartInfo psi = new ProcessStartInfo();
-            psi.FileName = Environment.GetEnvironmentVariable( "ComSpec" );
-            psi.Arguments = "/c \"" + edit_oto_ini + "\"";
-            psi.WindowStyle = ProcessWindowStyle.Hidden;
-            psi.CreateNoWindow = true;
-            psi.UseShellExecute = false;
-            Process.Start( psi );
-#endif
-        }
-
-        public void menuVisualOverview_CheckedChanged( Object sender, EventArgs e ) {
-            AppManager.editorConfig.OverviewEnabled = menuVisualOverview.isSelected();
-            updateLayout();
         }
 
         public void pictOverview_MouseMove( Object sender, BMouseEventArgs e ) {
@@ -15886,53 +16190,6 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void pictOverview_MouseDown( Object sender, BMouseEventArgs e ) {
-            BMouseButtons btn = e.Button;
-            if ( AppManager.editorConfig.UseSpaceKeyAsMiddleButtonModifier && m_spacekey_downed && e.Button == BMouseButtons.Left ) {
-                btn = BMouseButtons.Middle;
-            }
-            if ( btn == BMouseButtons.Middle ) {
-                m_overview_mouse_down_mode = OverviewMouseDownMode.MIDDLE;
-                m_overview_mouse_downed_locationx = e.X;
-                m_overview_start_to_draw_clock_initial_value = m_overview_start_to_draw_clock;
-            } else if ( e.Button == BMouseButtons.Left ) {
-                if ( e.X <= AppManager.keyWidth || panelOverview.getWidth() - 19 <= e.X ) {
-                    Point mouse = new Point( e.X, e.Y );
-                    if ( isInRect( mouse, getButtonBoundsLeft1() ) ) {
-                        btnLeft_MouseDown( null, null );
-                        _overviewButtonLeft1MouseDowned = true;
-                    } else if ( isInRect( mouse, getButtonBoundsRight1() ) ) {
-                        btnLeft_MouseDown( null, null );
-                        _overviewButtonRight1MouseDowned = true;
-                    } else if ( isInRect( mouse, getButtonBoundsLeft2() ) ) {
-                        btnRight_MouseDown( null, null );
-                        _overviewButtonLeft2MouseDowned = true;
-                    } else if ( isInRect( mouse, getButtonBoundsRight2() ) ) {
-                        btnRight_MouseDown( null, null );
-                        _overviewButtonRight2MouseDowned = true;
-                    } else if ( isInRect( mouse, getButtonBoundsZoom() ) ) {
-                        btnZoom_Click( null, null );
-                        _overviewButtonZoomMouseDowned = true;
-                    } else if ( isInRect( mouse, getButtonBoundsMooz() ) ) {
-                        btnMooz_Click( null, null );
-                        _overviewButtonMoozMouseDowned = true;
-                    }
-                    panelOverview.invalidate();
-                } else {
-                    if ( e.Clicks == 1 ) {
-                        m_overview_mouse_down_mode = OverviewMouseDownMode.LEFT;
-                        int draft = getOverviewStartToDrawX( e.X - AppManager.keyWidth - AppManager.keyOffset );
-                        if ( draft < 0 ) {
-                            draft = 0;
-                        }
-                        AppManager.setStartToDrawX( draft );
-                        refreshScreen();
-                        return;
-                    }
-                }
-            }
-        }
-
         public void pictOverview_MouseUp( Object sender, BMouseEventArgs e ) {
             Point mouse = new Point( e.X, e.Y );
             if ( isInRect( mouse, getButtonBoundsLeft1() ) ){
@@ -15944,12 +16201,12 @@ namespace org.kbinani.cadencii {
             } else if ( isInRect( mouse, getButtonBoundsRight2() ) ) {
                 btnRight_MouseUp( null, null );
             }
-            _overviewButtonLeft1MouseDowned = false;
-            _overviewButtonLeft2MouseDowned = false;
-            _overviewButtonRight1MouseDowned = false;
-            _overviewButtonRight2MouseDowned = false;
-            _overviewButtonZoomMouseDowned = false;
-            _overviewButtonMoozMouseDowned = false;
+            mOverviewButtonLeft1MouseDowned = false;
+            mOverviewButtonLeft2MouseDowned = false;
+            mOverviewButtonRight1MouseDowned = false;
+            mOverviewButtonRight2MouseDowned = false;
+            mOverviewButtonZoomMouseDowned = false;
+            mOverviewButtonMoozMouseDowned = false;
             if ( m_overview_mouse_down_mode == OverviewMouseDownMode.LEFT ) {
                 AppManager.setStartToDrawX( calculateStartToDrawX() );
             }
@@ -16075,48 +16332,48 @@ namespace org.kbinani.cadencii {
             g.setColor( AppManager.COLOR_BORDER );
             // zoomボタン
             rc = getButtonBoundsZoom();
-            g.setColor( _overviewButtonZoomMouseDowned ? Color.gray : Color.lightGray );
+            g.setColor( mOverviewButtonZoomMouseDowned ? Color.gray : Color.lightGray );
             g.fillRect( rc.x, rc.y, rc.width, rc.height );
             g.setColor( AppManager.COLOR_BORDER );
             g.drawRect( rc.x, rc.y, rc.width, rc.height );
             int centerx = rc.x + rc.width / 2 + 1;
             int centery = rc.y + rc.height / 2 + 1;
-            g.setColor( _overviewButtonZoomMouseDowned ? Color.lightGray : Color.gray );
+            g.setColor( mOverviewButtonZoomMouseDowned ? Color.lightGray : Color.gray );
             g.setStroke( getStroke2px() );
             g.drawLine( centerx - 4, centery, centerx + 4, centery );
             g.drawLine( centerx, centery - 4, centerx, centery + 4 );
             g.setStroke( getStrokeDefault() );
             // moozボタン
             rc = getButtonBoundsMooz();
-            g.setColor( _overviewButtonMoozMouseDowned ? Color.gray : Color.lightGray );
+            g.setColor( mOverviewButtonMoozMouseDowned ? Color.gray : Color.lightGray );
             g.fillRect( rc.x, rc.y, rc.width, rc.height );
             g.setColor( AppManager.COLOR_BORDER );
             g.drawRect( rc.x, rc.y, rc.width, rc.height );
             centerx = rc.x + rc.width / 2 + 1;
             centery = rc.y + rc.height / 2 + 1;
-            g.setColor( _overviewButtonMoozMouseDowned ? Color.lightGray : Color.gray );
+            g.setColor( mOverviewButtonMoozMouseDowned ? Color.lightGray : Color.gray );
             g.setStroke( getStroke2px() );
             g.drawLine( centerx - 4, centery, centerx + 4, centery );
             g.setStroke( getStrokeDefault() );
             // left1ボタン
             rc = getButtonBoundsLeft1();
-            g.setColor( _overviewButtonLeft1MouseDowned ? Color.gray : Color.lightGray );
+            g.setColor( mOverviewButtonLeft1MouseDowned ? Color.gray : Color.lightGray );
             g.fillRect( rc.x, rc.y, rc.width, rc.height );
             g.setColor( AppManager.COLOR_BORDER );
             g.drawRect( rc.x, rc.y, rc.width, rc.height );
             centerx = rc.x + rc.width / 2 + 1;
             centery = rc.y + rc.height / 2 + 1;
-            g.setColor( _overviewButtonLeft1MouseDowned ? Color.lightGray : Color.gray );
+            g.setColor( mOverviewButtonLeft1MouseDowned ? Color.lightGray : Color.gray );
             g.drawPolyline( new int[] { centerx + 4, centerx - 4, centerx + 4 }, new int[] { centery - 4, centery, centery + 4 }, 3 );
             // left2ボタン
             rc = getButtonBoundsLeft2();
-            g.setColor( _overviewButtonLeft2MouseDowned ? Color.gray : Color.lightGray );
+            g.setColor( mOverviewButtonLeft2MouseDowned ? Color.gray : Color.lightGray );
             g.fillRect( rc.x, rc.y, rc.width, rc.height );
             g.setColor( AppManager.COLOR_BORDER );
             g.drawRect( rc.x, rc.y, rc.width, rc.height );
             centerx = rc.x + rc.width / 2 + 1;
             centery = rc.y + rc.height / 2 + 1;
-            g.setColor( _overviewButtonLeft2MouseDowned ? Color.lightGray : Color.gray );
+            g.setColor( mOverviewButtonLeft2MouseDowned ? Color.lightGray : Color.gray );
             g.drawPolyline( new int[] { centerx - 4, centerx + 4, centerx - 4 }, new int[] { centery - 4, centery, centery + 4 }, 3 );
 
             // 右側のボタン類
@@ -16124,25 +16381,26 @@ namespace org.kbinani.cadencii {
             g.fillRect( panelOverview.getWidth() - btn_width - 3, 0, btn_width + 3, panelOverview.getHeight() );
             // right1ボタン
             rc = getButtonBoundsRight1();
-            g.setColor( _overviewButtonRight1MouseDowned ? Color.gray : Color.lightGray );
+            g.setColor( mOverviewButtonRight1MouseDowned ? Color.gray : Color.lightGray );
             g.fillRect( rc.x, rc.y, rc.width, rc.height );
             g.setColor( AppManager.COLOR_BORDER );
             g.drawRect( rc.x, rc.y, rc.width, rc.height );
             centerx = rc.x + rc.width / 2 + 1;
             centery = rc.y + rc.height / 2 + 1;
-            g.setColor( _overviewButtonRight1MouseDowned ? Color.lightGray : Color.gray );
+            g.setColor( mOverviewButtonRight1MouseDowned ? Color.lightGray : Color.gray );
             g.drawPolyline( new int[] { centerx + 4, centerx - 4, centerx + 4 }, new int[] { centery - 4, centery, centery + 4 }, 3 );
             // right2ボタン
             rc = getButtonBoundsRight2();
-            g.setColor( _overviewButtonRight2MouseDowned ? Color.gray : Color.lightGray );
+            g.setColor( mOverviewButtonRight2MouseDowned ? Color.gray : Color.lightGray );
             g.fillRect( rc.x, rc.y, rc.width, rc.height );
             g.setColor( AppManager.COLOR_BORDER );
             g.drawRect( rc.x, rc.y, rc.width, rc.height );
             centerx = rc.x + rc.width / 2 + 1;
             centery = rc.y + rc.height / 2 + 1;
-            g.setColor( _overviewButtonRight2MouseDowned ? Color.lightGray : Color.gray );
+            g.setColor( mOverviewButtonRight2MouseDowned ? Color.lightGray : Color.gray );
             g.drawPolyline( new int[] { centerx - 4, centerx + 4, centerx - 4 }, new int[] { centery - 4, centery, centery + 4 }, 3 );
         }
+        #endregion
 
         /// <summary>
         /// btnLeft1の描画位置を取得します
@@ -16192,19 +16450,36 @@ namespace org.kbinani.cadencii {
             return new Rectangle( AppManager.keyWidth - 16 - 2 - 48, 13, 22, 23 );
         }
 
-        public void pictOverview_MouseDoubleClick( Object sender, BMouseEventArgs e ) {
-            if ( AppManager.keyWidth < e.X && e.X < panelOverview.getWidth() - 19 ) {
-                m_overview_mouse_down_mode = OverviewMouseDownMode.NONE;
-                int draft_stdx = getOverviewStartToDrawX( e.X - AppManager.keyWidth - AppManager.keyOffset );
-                int draft = (int)(draft_stdx * AppManager.getScaleXInv());
-                if ( draft < hScroll.getMinimum() ) {
-                    draft = hScroll.getMinimum();
-                } else if ( hScroll.getMaximum() < draft ) {
-                    draft = hScroll.getMaximum();
-                }
-                hScroll.setValue( draft );
-                refreshScreen();
-            }
+        /// <summary>
+        /// 波形ビューの縦軸を拡大するボタンの座標を取得します
+        /// </summary>
+        /// <returns></returns>
+        private Rectangle getButtonBoundsWaveViewZoom() {
+            int width = AppManager.keyWidth;
+            int height = panel2.getHeight();
+            int space = 4;
+            int space_half = space / 2;
+            int button_width = width - 2 * space - 1;
+            int button_height = height / 2 - space * 3 / 2;
+
+            return new Rectangle( space, space, button_width, button_height );
+        }
+
+        /// <summary>
+        /// 波形ビューの縦軸を縮小するボタンの座標を取得します
+        /// </summary>
+        /// <returns></returns>
+        private Rectangle getButtonBoundsWaveViewMooz() {
+            int width = AppManager.keyWidth;
+            int height = panel2.getHeight();
+            int space = 4;
+            int space_half = space / 2;
+            int button_width = width - 2 * space - 1;
+            int button_height = height / 2 - space * 3 / 2;
+
+            Rectangle rc = new Rectangle( space, button_height + 2 * space, button_width, button_height );
+            rc.height = height - space - rc.y;
+            return rc;
         }
 
         public void btnLeft_MouseDown( Object sender, BMouseEventArgs e ) {
@@ -16728,113 +17003,6 @@ namespace org.kbinani.cadencii {
         public void menuTrackManager_Click( Object sender, EventArgs e ) {
 
         }
-
-#if !JAVA
-        private void FormMain_DragLeave( object sender, EventArgs e ) {
-            AppManager.setEditMode( EditMode.NONE );
-            iconPaletteOnceDragEntered = false;
-        }
-#endif
-
-#if !JAVA
-        private void FormMain_DragOver( object sender, System.Windows.Forms.DragEventArgs e ) {
-            if ( AppManager.getEditMode() != EditMode.DRAG_DROP ) {
-                return;
-            }
-            Point pt = pictPianoRoll.getLocationOnScreen();
-            if ( !iconPaletteOnceDragEntered ) {
-                int keywidth = AppManager.keyWidth;
-                Rectangle rc = new Rectangle( pt.x + keywidth, pt.y, pictPianoRoll.getWidth() - keywidth, pictPianoRoll.getHeight() );
-                if ( isInRect( new Point( e.X, e.Y ), rc ) ) {
-                    iconPaletteOnceDragEntered = true;
-                } else {
-                    return;
-                }
-            }
-            BMouseEventArgs e0 = new BMouseEventArgs( BMouseButtons.Left,
-                                                      1,
-                                                      e.X - pt.x,
-                                                      e.Y - pt.y,
-                                                      0 );
-            pictPianoRoll_MouseMove( this, e0 );
-        }
-#endif
-
-#if !JAVA
-        private void FormMain_DragDrop( object sender, System.Windows.Forms.DragEventArgs e ) {
-            AppManager.setEditMode( EditMode.NONE );
-            iconPaletteOnceDragEntered = false;
-            m_mouse_downed = false;
-            if ( !e.Data.GetDataPresent( typeof( IconDynamicsHandle ) ) ) {
-                return;
-            }
-            Point locPianoroll = pictPianoRoll.getLocationOnScreen();
-            int keywidth = AppManager.keyWidth;
-            Rectangle rcPianoroll = new Rectangle( locPianoroll.x + keywidth,
-                                                   locPianoroll.y,
-                                                   pictPianoRoll.getWidth() - keywidth,
-                                                   pictPianoRoll.getHeight() );
-            if ( !isInRect( new Point( e.X, e.Y ), rcPianoroll ) ) {
-                return;
-            }
-
-            // dynaff, crescend, decrescend のどれがドロップされたのか検査
-            IconDynamicsHandle this_is_it = (IconDynamicsHandle)e.Data.GetData( typeof( IconDynamicsHandle ) );
-            if ( this_is_it == null ) {
-                return;
-            }
-
-            // ドロップ位置を特定して，アイテムを追加する
-            int x = e.X - locPianoroll.x;
-            int y = e.Y - locPianoroll.y;
-            int clock1 = AppManager.clockFromXCoord( x );
-
-            // クオンタイズの処理
-            int unit = AppManager.getPositionQuantizeClock();
-            int clock = doQuantize( clock1, unit );
-
-            int note = AppManager.noteFromYCoord( y );
-            VsqFileEx vsq = AppManager.getVsqFile();
-            int clockAtPremeasure = vsq.getPreMeasureClocks();
-            if ( clock < clockAtPremeasure ) {
-                return;
-            }
-            if ( note < 0 || 128 < note ) {
-                return;
-            }
-
-            int selected = AppManager.getSelected();
-            VsqTrack vsq_track = vsq.Track.get( selected );
-            VsqTrack work = (VsqTrack)vsq_track.clone();
-
-            if ( AppManager.addingEvent == null ) {
-                // ここは多分起こらない
-                return;
-            }
-            VsqEvent item = (VsqEvent)AppManager.addingEvent.clone();
-            item.Clock = clock;
-            item.ID.Note = note;
-            work.addEvent( item );
-            work.reflectDynamics();
-            CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( selected, work, vsq.AttachedCurves.get( selected - 1 ) );
-            AppManager.register( vsq.executeCommand( run ) );
-            setEdited( true );
-        }
-#endif
-
-#if !JAVA
-        private void FormMain_DragEnter( object sender, System.Windows.Forms.DragEventArgs e ) {
-            if ( e.Data.GetDataPresent( typeof( IconDynamicsHandle ) ) ) {
-                // ドロップ可能
-                e.Effect = System.Windows.Forms.DragDropEffects.All;
-                AppManager.setEditMode( EditMode.DRAG_DROP );
-                m_mouse_downed = true;
-            } else {
-                e.Effect = System.Windows.Forms.DragDropEffects.None;
-                AppManager.setEditMode( EditMode.NONE );
-            }
-        }
-#endif
         #endregion
 
         #region public static methods

@@ -72,7 +72,7 @@ namespace org.kbinani.cadencii.draft {
         }
 
         public override void setConfig( String parameter ) {
-            // do nothing
+            // do nothing (| _ | )
         }
 
         public void setReceiver( WaveReceiver r ) {

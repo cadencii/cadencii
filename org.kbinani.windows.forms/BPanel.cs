@@ -17,6 +17,15 @@
 #else
 namespace org.kbinani.windows.forms {
     public class BPanel : System.Windows.Forms.UserControl {
+        #region event impl Paint
+        // root impl of Paint is in BButton
+        public BEvent<BPaintEventHandler> paintEvent = new BEvent<BPaintEventHandler>();
+        protected override void OnPaint( System.Windows.Forms.PaintEventArgs pevent ) {
+            base.OnPaint( pevent );
+            paintEvent.raise( this, pevent );
+        }
+        #endregion
+
         #region event impl Enter
         // root impl of Enter event is in BButton
         public BEvent<BEventHandler> enterEvent = new BEvent<BEventHandler>();

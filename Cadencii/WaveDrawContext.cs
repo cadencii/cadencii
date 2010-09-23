@@ -41,12 +41,13 @@ namespace org.kbinani.cadencii {
 #else
     public class WaveDrawContext : IDisposable {
 #endif
-        private byte[] m_wave;
-        private int m_sample_rate = 44100;
-        private String m_name;
+        private byte[] mWave;
+        private int mSampleRate = 44100;
+        private String mName;
         public UtauFreq Freq;
-        private float m_length;
-        private PolylineDrawer drawer = null;
+        private float mLength;
+        private PolylineDrawer mDrawer = null;
+        private float mMaxAmplitude = 0.0f;
 
         /// <summary>
         /// 読み込むWAVEファイルを指定したコンストラクタ。初期化と同時にWAVEファイルの読込みを行います。
@@ -54,25 +55,25 @@ namespace org.kbinani.cadencii {
         /// <param name="file">読み込むWAVEファイルのパス</param>
         public WaveDrawContext( String file ) {
             load( file );
-            drawer = new PolylineDrawer( null, 1024 );
+            mDrawer = new PolylineDrawer( null, 1024 );
         }
 
         /// <summary>
         /// デフォルトのコンストラクタ。
         /// </summary>
         public WaveDrawContext() {
-            m_wave = new byte[0];
-            m_length = 0.0f;
-            drawer = new PolylineDrawer( null, 1024 );
+            mWave = new byte[0];
+            mLength = 0.0f;
+            mDrawer = new PolylineDrawer( null, 1024 );
         }
 
         /// <summary>
         /// 保持しているWAVEデータを破棄します。
         /// </summary>
         public void unload() {
-            drawer.clear();
-            m_wave = new byte[0];
-            m_length = 0.0f;
+            mDrawer.clear();
+            mWave = new byte[0];
+            mLength = 0.0f;
         }
 
         public void reloadPartial( String file, double sec_from, double sec_to ) {
@@ -82,31 +83,66 @@ namespace org.kbinani.cadencii {
 
             WaveRateConverter wr = null;
             try {
-                wr = new WaveRateConverter( new WaveReader( file ), m_sample_rate );
-                int saFrom = (int)(sec_from * m_sample_rate);
-                int saTo = (int)(sec_to * m_sample_rate);
-                int oldLength = m_wave.Length;
+                wr = new WaveRateConverter( new WaveReader( file ), mSampleRate );
+                int saFrom = (int)(sec_from * mSampleRate);
+                int saTo = (int)(sec_to * mSampleRate);
+
+                // バッファを確保
+                int buflen = 1024;
+                double[] left = new double[buflen];
+                double[] right = new double[buflen];
+
+                // まず、読み込んだ区間の最大振幅を調べる
+                int remain = saTo - saFrom;
+                int pos = saFrom;
+                double max = 0.0;
+                while ( remain > 0 ) {
+                    int delta = remain > buflen ? buflen : remain;
+                    wr.read( pos, delta, left, right );
+                    for ( int i = 0; i < delta; i++ ) {
+                        double d = Math.Abs( (left[i] + right[i]) * 0.5 );
+                        max = d > max ? d : max;
+                    }
+                    remain -= delta;
+                }
+
+                // バッファが足りなければ確保
+                int oldLength = mWave.Length;
                 if ( oldLength < saTo ) {
 #if JAVA
                     m_wave = Arrays.copyOf( m_wave, saTo );
 #else
-                    Array.Resize( ref m_wave, saTo );
+                    Array.Resize( ref mWave, saTo );
 #endif
                     saFrom = oldLength;
                 }
-                int buflen = 1024;
-                double[] left = new double[buflen];
-                double[] right = new double[buflen];
-                int remain = saTo - saFrom;
-                int pos = saFrom;
+
+                // 既存の波形の最大振幅より、読み込み部分の最大波形が大きいようなら、
+                // 既存波形の縮小を行う
+                if ( mMaxAmplitude < max ) {
+                    double ampall = 1.0 / max;
+                    for ( int i = 0; i < mWave.Length; i++ ) {
+                        double vold = (mWave[i] - 127.0) / 127.0 * mMaxAmplitude;
+                        double vnew = vold * ampall;
+                        mWave[i] = (byte)(127 + vnew * 127);
+                    }
+                }
+
+                // 最大振幅の値を更新
+                mMaxAmplitude = (max > mMaxAmplitude) ? (float)max : mMaxAmplitude;
+
+                // 今度は波形を取得するために読み込む
+                double amp = (mMaxAmplitude > 0.0f) ? (1.0 / mMaxAmplitude) : 0.0;
+                remain = saTo - saFrom;
+                pos = saFrom;
                 while ( remain > 0 ) {
                     int delta = remain > buflen ? buflen : remain;
                     wr.read( pos, delta, left, right );
 
                     for ( int i = 0; i < delta; i++ ) {
-                        double d = (left[i] + right[i]) * 0.5;
-                        byte b = (byte)((d + 1.0) * 0.5 * 127);
-                        m_wave[pos + i] = b;
+                        double d = (left[i] + right[i]) * 0.5 * amp;
+                        byte b = (byte)(127 + d * 127);
+                        mWave[pos + i] = b;
                     }
 
                     pos += delta;
@@ -133,35 +169,60 @@ namespace org.kbinani.cadencii {
         /// <param name="file">読み込むWAVEファイルのパス</param>
         public void load( String file ) {
             if ( !PortUtil.isFileExists( file ) ) {
-                m_wave = new byte[0];
-                m_length = 0.0f;
+                mWave = new byte[0];
+                mLength = 0.0f;
                 return;
             }
 
+#if DEBUG
+            System.IO.StreamWriter sw = null;
+#endif
             Wave wr = null;
             try {
+#if DEBUG
+                sw = new System.IO.StreamWriter( "WaveDrawContext_load.txt" );
+#endif
                 wr = new Wave( file );
-                m_wave = new byte[(int)wr.getTotalSamples()];
-                m_sample_rate = (int)wr.getSampleRate();
-                m_length = wr.getTotalSamples() / (float)wr.getSampleRate();
+                mWave = new byte[(int)wr.getTotalSamples()];
+                mSampleRate = (int)wr.getSampleRate();
+                mLength = wr.getTotalSamples() / (float)wr.getSampleRate();
                 int count = (int)wr.getTotalSamples();
+
+                // 最大振幅を検出
+                double max = 0.0;
                 for ( int i = 0; i < count; i++ ) {
-                    double b = wr.getDouble( (int)i );
-                    m_wave[i] = (byte)((b + 1.0) * 0.5 * 127.0);
+                    double b = Math.Abs( wr.getDouble( i ) );
+                    max = b > max ? b : max;
+                }
+
+                // 最大振幅の値を更新
+                mMaxAmplitude = (float)max;
+
+                // 波形を読み込む
+                double amp = (max > 0.0) ? (1.0 / max) : 0.0;
+                for ( int i = 0; i < count; i++ ) {
+                    double b = wr.getDouble( i ) * amp;
+                    mWave[i] = (byte)(127 + 127 * b);
+#if DEBUG
+                    sw.WriteLine( b );
+#endif
                 }
             } catch ( Exception ex ) {
             } finally {
                 if ( wr != null ) {
                     try {
                         wr.dispose();
+#if DEBUG
+                        sw.Close();
+#endif
                     } catch ( Exception ex2 ) {
                     }
                 }
             }
-            if ( m_wave == null ) {
-                m_wave = new byte[0];
-                m_sample_rate = 44100;
-                m_length = 0.0f;
+            if ( mWave == null ) {
+                mWave = new byte[0];
+                mSampleRate = 44100;
+                mLength = 0.0f;
             }
         }
 
@@ -170,7 +231,7 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <returns>この描画コンテキストの名前</returns>
         public String getName() {
-            return m_name;
+            return mName;
         }
 
         /// <summary>
@@ -178,7 +239,7 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="value">この描画コンテキストの名前</param>
         public void setName( String value ) {
-            m_name = value;
+            mName = value;
         }
 
         /// <summary>
@@ -186,7 +247,7 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <returns>保持しているWAVEデータの長さ(秒)</returns>
         public float getLength() {
-            return m_length;
+            return mLength;
         }
 
 #if !JAVA
@@ -211,7 +272,7 @@ namespace org.kbinani.cadencii {
         /// このWAVE描画コンテキストが使用しているリソースを開放します。
         /// </summary>
         public void dispose() {
-            m_wave = null;
+            mWave = null;
 #if JAVA
             System.gc();
 #else
@@ -229,40 +290,42 @@ namespace org.kbinani.cadencii {
         /// <param name="clock_end">描画終了位置のゲートタイム</param>
         /// <param name="tempo_table">ゲートタイムから秒数を調べる際使用するテンポ・テーブル</param>
         /// <param name="pixel_per_clock">ゲートタイムあたりの秒数</param>
+        /// <param name="scale_y">Y軸方向の描画スケール。デフォルトは1.0</param>
         public void draw( Graphics2D g, 
                           Color pen,
                           Rectangle rect,
                           int clock_start,
                           int clock_end, 
                           TempoVector tempo_table, 
-                          float pixel_per_clock ) {
-            if ( m_wave.Length == 0 ) {
+                          float pixel_per_clock,
+                          float scale_y ) {
+            if ( mWave.Length == 0 ) {
                 return;
             }
 #if DEBUG
             double startedTime = PortUtil.getCurrentTime();
 #endif
-            drawer.setGraphics( g );
-            drawer.clear();
+            mDrawer.setGraphics( g );
+            mDrawer.clear();
             double secStart = tempo_table.getSecFromClock( clock_start );
             double secEnd = tempo_table.getSecFromClock( clock_end );
-            int sStart0 = (int)(secStart * m_sample_rate) - 1;
-            int sEnd0 = (int)(secEnd * m_sample_rate) + 1;
+            int sStart0 = (int)(secStart * mSampleRate) - 1;
+            int sEnd0 = (int)(secEnd * mSampleRate) + 1;
 
             int count = tempo_table.size();
             int sStart = 0;
             double cStart = 0.0;
-            float order_y = rect.height / 127.0f;
+            float order_y = rect.height / 127.0f * scale_y * mMaxAmplitude;
             int ox = rect.x;
-            int oy = rect.y + rect.height;
-            byte last = m_wave[0];
+            int oy = rect.height / 2;
+            int last = mWave[0] - 127;
             int lastx = ox;
             int lastYMax = oy - (int)(last * order_y);
             int lastYMin = lastYMax;
             int lasty = lastYMin;
             int lasty2 = lastYMin;
             boolean skipped = false;
-            drawer.append( ox, lasty );
+            mDrawer.append( ox, lasty );
             int xmax = rect.x + rect.width;
             int lastTempo = 500000;
             for ( int i = 0; i <= count; i++ ) {
@@ -279,7 +342,7 @@ namespace org.kbinani.cadencii {
                     tempo = tempo_table.get( i - 1 ).Tempo;
                     cEnd = clock_end;
                 }
-                int sEnd = (int)(time * m_sample_rate);
+                int sEnd = (int)(time * mSampleRate);
                 
                 // sStartサンプルからsThisEndサンプルまでを描画する(必要なら!)
                 if ( sEnd < sStart0 ) {
@@ -296,14 +359,14 @@ namespace org.kbinani.cadencii {
                 int xoffset = (int)(cStart * pixel_per_clock) - AppManager.getStartToDrawX() + AppManager.keyOffset;
                 double sec_per_clock = lastTempo * 1e-6 / 480.0;
                 lastTempo = tempo;
-                double pixel_per_sample = 1.0 / m_sample_rate / sec_per_clock * pixel_per_clock;
+                double pixel_per_sample = 1.0 / mSampleRate / sec_per_clock * pixel_per_clock;
                 int j0 = sStart;
                 if ( j0 < 0 ) {
                     j0 = 0;
                 }
                 int j1 = sEnd;
-                if ( m_wave.Length < j1 ) {
-                    j1 = m_wave.Length;
+                if ( mWave.Length < j1 ) {
+                    j1 = mWave.Length;
                 }
 
                 // 第j0サンプルのデータを画面に描画したときのx座標がいくらになるか？
@@ -319,7 +382,7 @@ namespace org.kbinani.cadencii {
 
                 boolean breakRequired = false;
                 for ( int j = j0; j < j1; j++ ) {
-                    byte v = m_wave[j];
+                    int v = mWave[j] - 127;
                     if ( v == last ) {
                         skipped = true;
                         continue;
@@ -340,20 +403,20 @@ namespace org.kbinani.cadencii {
                     }
 
                     if ( skipped ) {
-                        drawer.append( x - 1, lasty );
+                        mDrawer.append( x - 1, lasty );
                         lastx = x - 1;
                     }
                     if ( lastYMax == lastYMin ) {
-                        drawer.append( x, y );
+                        mDrawer.append( x, y );
                     } else {
                         if ( lasty2 != lastYMin ) {
-                            drawer.append( lastx, lastYMin );
+                            mDrawer.append( lastx, lastYMin );
                         }
-                        drawer.append( lastx, lastYMax );
+                        mDrawer.append( lastx, lastYMax );
                         if ( lastYMax != lasty ) {
-                            drawer.append( lastx, lasty );
+                            mDrawer.append( lastx, lasty );
                         }
-                        drawer.append( x, y );
+                        mDrawer.append( x, y );
                     }
                     lasty2 = lasty;
                     lastx = x;
@@ -370,10 +433,11 @@ namespace org.kbinani.cadencii {
                 }
             }
 
-            drawer.append( rect.x + rect.width, lasty );
-            drawer.flush();
+            mDrawer.append( rect.x + rect.width, lasty );
+            mDrawer.flush();
         }
 
+        /*
         /// <summary>
         /// このWAVE描画コンテキストが保持しているWAVEデータを、秒基準でグラフィクスに描画します。
         /// </summary>
@@ -383,35 +447,35 @@ namespace org.kbinani.cadencii {
         /// <param name="sec_start">描画開始位置の秒時</param>
         /// <param name="sec_end">描画終了位置の秒時</param>
         public void draw( Graphics2D g, Color pen, Rectangle rect, float sec_start, float sec_end ) {
-            int start0 = (int)(sec_start * m_sample_rate) - 1;
-            int end = (int)(sec_end * m_sample_rate) + 1;
+            int start0 = (int)(sec_start * mSampleRate) - 1;
+            int end = (int)(sec_end * mSampleRate) + 1;
 
             int width = rect.width;
             int height = rect.height;
             int ox = rect.x;
             int oy = rect.y + height;
             float order_y = rect.height / 127.0f;
-            float order_x = rect.width / (float)(sec_end - sec_start) / (float)m_sample_rate;
+            float order_x = rect.width / (float)(sec_end - sec_start) / (float)mSampleRate;
 
             int start = start0;
             if ( start < 0 ) {
                 start = 0;
             }
-            if ( m_wave.Length < end ) {
-                end = m_wave.Length - 1;
+            if ( mWave.Length < end ) {
+                end = mWave.Length - 1;
             }
 
             byte last = 0x0;
-            if ( m_wave == null || (m_wave != null && m_wave.Length <= 0) ) {
+            if ( mWave == null || (mWave != null && mWave.Length <= 0) ) {
                 return;
             }
-            last = m_wave[0];
+            last = mWave[0];
             int lastx = ox;
             int lasty = oy - (int)(last * order_y);
             boolean drawn = false;
             g.setColor( pen );
             for ( int i = start + 1; i <= end; i++ ) {
-                byte v = m_wave[i];
+                byte v = mWave[i];
                 if ( v != last ) {
                     drawn = true;
                     int x = ox + (int)((i - start0) * order_x);
@@ -426,7 +490,7 @@ namespace org.kbinani.cadencii {
             if ( !drawn ) {
                 g.drawLine( rect.x, lasty, rect.x + rect.width, lasty );
             }
-        }
+        }*/
     }
 
 #if !JAVA
