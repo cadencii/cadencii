@@ -48,6 +48,7 @@ namespace org.kbinani.cadencii {
         private float mLength;
         private PolylineDrawer mDrawer = null;
         private float mMaxAmplitude = 0.0f;
+        private float mActualMaxAmplitude = 0.0f;
 
         /// <summary>
         /// 読み込むWAVEファイルを指定したコンストラクタ。初期化と同時にWAVEファイルの読込みを行います。
@@ -76,6 +77,12 @@ namespace org.kbinani.cadencii {
             mLength = 0.0f;
         }
 
+        /// <summary>
+        /// 指定したファイルの指定した区間を追加で読み込みます
+        /// </summary>
+        /// <param name="file"></param>
+        /// <param name="sec_from"></param>
+        /// <param name="sec_to"></param>
         public void reloadPartial( String file, double sec_from, double sec_to ) {
             if ( !PortUtil.isFileExists( file ) ) {
                 return;
@@ -104,6 +111,7 @@ namespace org.kbinani.cadencii {
                         max = d > max ? d : max;
                     }
                     remain -= delta;
+                    pos += delta;
                 }
 
                 // バッファが足りなければ確保
@@ -117,15 +125,16 @@ namespace org.kbinani.cadencii {
                     saFrom = oldLength;
                 }
 
-                // 既存の波形の最大振幅より、読み込み部分の最大波形が大きいようなら、
-                // 既存波形の縮小を行う
                 if ( mMaxAmplitude < max ) {
+                    // 既存の波形の最大振幅より、読み込み部分の最大波形が大きいようなら、
+                    // 既存波形の縮小を行う
                     double ampall = 1.0 / max;
                     for ( int i = 0; i < mWave.Length; i++ ) {
                         double vold = (mWave[i] - 127.0) / 127.0 * mMaxAmplitude;
                         double vnew = vold * ampall;
                         mWave[i] = (byte)(127 + vnew * 127);
                     }
+
                 }
 
                 // 最大振幅の値を更新
@@ -150,6 +159,13 @@ namespace org.kbinani.cadencii {
                 }
                 left = null;
                 right = null;
+
+                // mActualMaxAmplitudeの値を更新
+                mActualMaxAmplitude = 0.0f;
+                for ( int i = 0; i < mWave.Length; i++ ) {
+                    double d = Math.Abs( (mWave[i] - 127) / 127.0 * mMaxAmplitude );
+                    mActualMaxAmplitude = (d > mActualMaxAmplitude) ? (float)d : mActualMaxAmplitude;
+                }
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "WaveDrawContext#reloadPartial; ex=" + ex );
             } finally {
@@ -197,6 +213,7 @@ namespace org.kbinani.cadencii {
 
                 // 最大振幅の値を更新
                 mMaxAmplitude = (float)max;
+                mActualMaxAmplitude = mMaxAmplitude;
 
                 // 波形を読み込む
                 double amp = (max > 0.0) ? (1.0 / max) : 0.0;
@@ -282,6 +299,7 @@ namespace org.kbinani.cadencii {
 
         /// <summary>
         /// このWAVE描画コンテキストが保持しているWAVEデータを、ゲートタイム基準でグラフィクスに描画します。
+        /// 縦軸の拡大率は引数<paramref name="scale_y"/>で指定します。
         /// </summary>
         /// <param name="g">描画に使用するグラフィクスオブジェクト</param>
         /// <param name="pen">描画に使用するペン</param>
@@ -291,14 +309,61 @@ namespace org.kbinani.cadencii {
         /// <param name="tempo_table">ゲートタイムから秒数を調べる際使用するテンポ・テーブル</param>
         /// <param name="pixel_per_clock">ゲートタイムあたりの秒数</param>
         /// <param name="scale_y">Y軸方向の描画スケール。デフォルトは1.0</param>
-        public void draw( Graphics2D g, 
+        public void draw(
+            Graphics2D g,
+            Color pen,
+            Rectangle rect,
+            int clock_start,
+            int clock_end,
+            TempoVector tempo_table,
+            float pixel_per_clock,
+            float scale_y ) {
+            drawCore( g, pen, rect, clock_start, clock_end, tempo_table, pixel_per_clock, scale_y, false );
+        }
+
+        /// <summary>
+        /// このWAVE描画コンテキストが保持しているWAVEデータを、ゲートタイム基準でグラフィクスに描画します。
+        /// 縦軸は最大振幅がちょうど描画範囲に収まるよう調節されます。
+        /// </summary>
+        /// <param name="g">描画に使用するグラフィクスオブジェクト</param>
+        /// <param name="pen">描画に使用するペン</param>
+        /// <param name="rect">描画範囲</param>
+        /// <param name="clock_start">描画開始位置のゲートタイム</param>
+        /// <param name="clock_end">描画終了位置のゲートタイム</param>
+        /// <param name="tempo_table">ゲートタイムから秒数を調べる際使用するテンポ・テーブル</param>
+        /// <param name="pixel_per_clock">ゲートタイムあたりの秒数</param>
+        public void draw(
+            Graphics2D g,
+            Color pen,
+            Rectangle rect,
+            int clock_start,
+            int clock_end,
+            TempoVector tempo_table,
+            float pixel_per_clock ) {
+            drawCore( g, pen, rect, clock_start, clock_end, tempo_table, pixel_per_clock, 1.0f, true );
+        }
+
+        /// <summary>
+        /// このWAVE描画コンテキストが保持しているWAVEデータを、ゲートタイム基準でグラフィクスに描画します。
+        /// </summary>
+        /// <param name="g">描画に使用するグラフィクスオブジェクト</param>
+        /// <param name="pen">描画に使用するペン</param>
+        /// <param name="rect">描画範囲</param>
+        /// <param name="clock_start">描画開始位置のゲートタイム</param>
+        /// <param name="clock_end">描画終了位置のゲートタイム</param>
+        /// <param name="tempo_table">ゲートタイムから秒数を調べる際使用するテンポ・テーブル</param>
+        /// <param name="pixel_per_clock">ゲートタイムあたりの秒数</param>
+        /// <param name="scale_y">Y軸方向の描画スケール。デフォルトは1.0</param>
+        /// <param name="auto_maximize">自動で最大化するかどうか</param>
+        private void drawCore( Graphics2D g, 
                           Color pen,
                           Rectangle rect,
                           int clock_start,
                           int clock_end, 
                           TempoVector tempo_table, 
                           float pixel_per_clock,
-                          float scale_y ) {
+                          float scale_y,
+                          boolean auto_maximize ) {
             if ( mWave.Length == 0 ) {
                 return;
             }
@@ -315,7 +380,12 @@ namespace org.kbinani.cadencii {
             int count = tempo_table.size();
             int sStart = 0;
             double cStart = 0.0;
-            float order_y = rect.height / 127.0f * scale_y * mMaxAmplitude;
+            float order_y = 1.0f;
+            if ( auto_maximize ) {
+                order_y = rect.height / 2.0f / 127.0f * mMaxAmplitude / mActualMaxAmplitude;
+            } else {
+                order_y = rect.height / 127.0f * scale_y * mMaxAmplitude;
+            }
             int ox = rect.x;
             int oy = rect.height / 2;
             int last = mWave[0] - 127;
@@ -436,61 +506,6 @@ namespace org.kbinani.cadencii {
             mDrawer.append( rect.x + rect.width, lasty );
             mDrawer.flush();
         }
-
-        /*
-        /// <summary>
-        /// このWAVE描画コンテキストが保持しているWAVEデータを、秒基準でグラフィクスに描画します。
-        /// </summary>
-        /// <param name="g">描画に使用するグラフィクスオブジェクト</param>
-        /// <param name="pen">描画に使用するペン</param>
-        /// <param name="rect">描画範囲</param>
-        /// <param name="sec_start">描画開始位置の秒時</param>
-        /// <param name="sec_end">描画終了位置の秒時</param>
-        public void draw( Graphics2D g, Color pen, Rectangle rect, float sec_start, float sec_end ) {
-            int start0 = (int)(sec_start * mSampleRate) - 1;
-            int end = (int)(sec_end * mSampleRate) + 1;
-
-            int width = rect.width;
-            int height = rect.height;
-            int ox = rect.x;
-            int oy = rect.y + height;
-            float order_y = rect.height / 127.0f;
-            float order_x = rect.width / (float)(sec_end - sec_start) / (float)mSampleRate;
-
-            int start = start0;
-            if ( start < 0 ) {
-                start = 0;
-            }
-            if ( mWave.Length < end ) {
-                end = mWave.Length - 1;
-            }
-
-            byte last = 0x0;
-            if ( mWave == null || (mWave != null && mWave.Length <= 0) ) {
-                return;
-            }
-            last = mWave[0];
-            int lastx = ox;
-            int lasty = oy - (int)(last * order_y);
-            boolean drawn = false;
-            g.setColor( pen );
-            for ( int i = start + 1; i <= end; i++ ) {
-                byte v = mWave[i];
-                if ( v != last ) {
-                    drawn = true;
-                    int x = ox + (int)((i - start0) * order_x);
-                    int y = oy - (int)(v * order_y);
-                    g.drawLine( lastx, lasty, x, lasty );
-                    g.drawLine( x, lasty, x, y );
-                    lastx = x;
-                    lasty = y;
-                    last = v;
-                }
-            }
-            if ( !drawn ) {
-                g.drawLine( rect.x, lasty, rect.x + rect.width, lasty );
-            }
-        }*/
     }
 
 #if !JAVA

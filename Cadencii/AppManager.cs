@@ -104,7 +104,10 @@ namespace org.kbinani.cadencii {
         public static Font baseFont10Bold = new Font( "Dialog", Font.BOLD, FONT_SIZE10 );
         public static Font baseFont50Bold = new Font( "Dialog", Font.BOLD, FONT_SIZE50 );
         /// <summary>
-        /// 歌詞を音符の（高さ方向の）真ん中に描画するためのオフセット
+        /// 歌詞を音符の（高さ方向の）真ん中に描画するためのオフセット。
+        /// たとえば，文字列の中心軸がy_centerを通るように描画したい場合は，
+        /// <code>g.drawString( ..., x, y_center - baseFont10OffsetHeight + 1 )</code>
+        /// とすればよい
         /// </summary>
         public static int baseFont10OffsetHeight = 0;
         public static int baseFont8OffsetHeight = 0;

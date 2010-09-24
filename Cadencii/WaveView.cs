@@ -29,6 +29,7 @@ using org.kbinani.media;
 using org.kbinani.windows.forms;
 
 namespace org.kbinani.cadencii {
+    using boolean = System.Boolean;
     using BEventArgs = System.EventArgs;
 #endif
 
@@ -51,9 +52,17 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 縦軸方向のスケール
         /// </summary>
-        private int mScale = MIN_SCALE;
-        private const int MAX_SCALE = 100;
-        private const int MIN_SCALE = 10;
+        private float mScale = MIN_SCALE;
+        private const float MAX_SCALE = 10.0f;
+        private const float MIN_SCALE = 1.0f;
+        /// <summary>
+        /// 左側のボタン部との境界線の色
+        /// </summary>
+        private Color mBorderColor = new Color( 105, 105, 105 );
+        /// <summary>
+        /// 縦軸のスケールを自動最大化するかどうか
+        /// </summary>
+        private boolean mAutoMaximize = false;
 
         /// <summary>
         /// コンストラクタ
@@ -77,6 +86,26 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
+        /// <summary>
+        /// 縦軸を自動最大化するかどうかを取得します
+        /// </summary>
+        /// <returns></returns>
+        public boolean isAutoMaximize() {
+            return mAutoMaximize;
+        }
+
+        /// <summary>
+        /// 縦軸を自動最大化するかどうかを設定します
+        /// </summary>
+        /// <param name="value"></param>
+        public void setAutoMaximize( boolean value ) {
+            mAutoMaximize = value;
+        }
+
+        /// <summary>
+        /// コンポーネントの描画関数です
+        /// </summary>
+        /// <param name="g"></param>
         private void paint( Graphics2D g ) {
             int width = getWidth();
             int height = getHeight();
@@ -85,13 +114,13 @@ namespace org.kbinani.cadencii {
             // 背景を塗りつぶす
             g.setColor( Color.gray );
             g.fillRect( rc.x, rc.y, rc.width, rc.height );
-
-            // スケール線を描く
-            int half_height = height / 2;
-            g.setColor( Color.black );
-            g.drawLine( 0, half_height, width, half_height );
             
             if ( AppManager.skipDrawingWaveformWhenPlaying && AppManager.isPlaying() ) {
+                // 左側のボタン部との境界線
+                g.setColor( mBorderColor );
+                g.drawLine( 0, 0, 0, height );
+
+                g.setColor( Color.black );
                 PortUtil.drawStringEx( g, 
                                        "(hidden for performance)", 
                                        AppManager.baseFont10,
@@ -100,19 +129,43 @@ namespace org.kbinani.cadencii {
                                        PortUtil.STRING_ALIGN_CENTER );
                 return;
             }
+            
+            // スケール線を描く
+            int half_height = height / 2;
+            g.setColor( Color.black );
+            g.drawLine( 0, half_height, width, half_height );
+
+            // 描画コンテキストを用いて波形を描画
             int selected = AppManager.getSelected();
             WaveDrawContext context = mDrawer[selected - 1];
             if ( context == null ) {
+                // 左側のボタン部との境界線
+                g.setColor( mBorderColor );
+                g.drawLine( 0, 0, 0, height );
                 return;
             }
-            context.draw( g,
-                          Color.black,
-                          rc,
-                          AppManager.clockFromXCoord( AppManager.keyWidth ),
-                          AppManager.clockFromXCoord( AppManager.keyWidth + width ),
-                          AppManager.getVsqFile().TempoTable,
-                          AppManager.getScaleX(),
-                          mScale / 10.0f );
+            if ( mAutoMaximize ) {
+                context.draw( g,
+                              Color.black,
+                              rc,
+                              AppManager.clockFromXCoord( AppManager.keyWidth ),
+                              AppManager.clockFromXCoord( AppManager.keyWidth + width ),
+                              AppManager.getVsqFile().TempoTable,
+                              AppManager.getScaleX() );
+            } else {
+                context.draw( g,
+                              Color.black,
+                              rc,
+                              AppManager.clockFromXCoord( AppManager.keyWidth ),
+                              AppManager.clockFromXCoord( AppManager.keyWidth + width ),
+                              AppManager.getVsqFile().TempoTable,
+                              AppManager.getScaleX(),
+                              mScale );
+            }
+
+            // 左側のボタン部との境界線
+            g.setColor( mBorderColor );
+            g.drawLine( 0, 0, 0, height );
         }
 
         /// <summary>
@@ -120,7 +173,7 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <seealso cref="getScale"/>
         /// <returns></returns>
-        public int scale() {
+        public float scale() {
             return mScale;
         }
 
@@ -128,7 +181,7 @@ namespace org.kbinani.cadencii {
         /// 縦方向の描画倍率を取得します。
         /// </summary>
         /// <returns></returns>
-        public int getScale() {
+        public float getScale() {
             return mScale;
         }
 
@@ -136,7 +189,7 @@ namespace org.kbinani.cadencii {
         /// 縦方向の描画倍率を設定します。
         /// </summary>
         /// <param name="value"></param>
-        public void setScale( int value ) {
+        public void setScale( float value ) {
             if ( value < MIN_SCALE ) {
                 mScale = MIN_SCALE;
             } else if ( MAX_SCALE < value ) {
@@ -144,20 +197,6 @@ namespace org.kbinani.cadencii {
             } else {
                 mScale = value;
             }
-        }
-
-        /// <summary>
-        /// 縦方向の拡大率を一段階上げます
-        /// </summary>
-        public void zoom() {
-            setScale( mScale + 1 );
-        }
-
-        /// <summary>
-        /// 縦方向の拡大率を一段階下げます
-        /// </summary>
-        public void mooz() {
-            setScale( mScale - 1 );
         }
 
         /// <summary>
@@ -207,6 +246,11 @@ namespace org.kbinani.cadencii {
             mDrawer[index].load( wave_path );
         }
 
+        /// <summary>
+        /// オーバーライドされます。
+        /// <seealso cref="M:System.Windows.Forms.Control.OnPaint"/>
+        /// </summary>
+        /// <param name="e"></param>
 #if !JAVA
         protected override void OnPaint( PaintEventArgs e ) {
             base.OnPaint( e );
