@@ -63,6 +63,14 @@ namespace org.kbinani.cadencii {
         /// 縦軸のスケールを自動最大化するかどうか
         /// </summary>
         private boolean mAutoMaximize = false;
+        /// <summary>
+        /// 幅2ピクセルのストローク
+        /// </summary>
+        private BasicStroke mStroke2px = null;
+        /// <summary>
+        /// デフォルトのストローク
+        /// </summary>
+        private BasicStroke mStrokeDefault = null;
 
         /// <summary>
         /// コンストラクタ
@@ -112,9 +120,10 @@ namespace org.kbinani.cadencii {
             Rectangle rc = new Rectangle( 0, 0, width, height );
 
             // 背景を塗りつぶす
+            g.setStroke( getStrokeDefault() );
             g.setColor( Color.gray );
             g.fillRect( rc.x, rc.y, rc.width, rc.height );
-            
+
             if ( AppManager.skipDrawingWaveformWhenPlaying && AppManager.isPlaying() ) {
                 // 左側のボタン部との境界線
                 g.setColor( mBorderColor );
@@ -138,34 +147,53 @@ namespace org.kbinani.cadencii {
             // 描画コンテキストを用いて波形を描画
             int selected = AppManager.getSelected();
             WaveDrawContext context = mDrawer[selected - 1];
-            if ( context == null ) {
-                // 左側のボタン部との境界線
-                g.setColor( mBorderColor );
-                g.drawLine( 0, 0, 0, height );
-                return;
-            }
-            if ( mAutoMaximize ) {
-                context.draw( g,
-                              Color.black,
-                              rc,
-                              AppManager.clockFromXCoord( AppManager.keyWidth ),
-                              AppManager.clockFromXCoord( AppManager.keyWidth + width ),
-                              AppManager.getVsqFile().TempoTable,
-                              AppManager.getScaleX() );
-            } else {
-                context.draw( g,
-                              Color.black,
-                              rc,
-                              AppManager.clockFromXCoord( AppManager.keyWidth ),
-                              AppManager.clockFromXCoord( AppManager.keyWidth + width ),
-                              AppManager.getVsqFile().TempoTable,
-                              AppManager.getScaleX(),
-                              mScale );
+
+            if ( context != null ) {
+                if ( mAutoMaximize ) {
+                    context.draw( g,
+                                  Color.black,
+                                  rc,
+                                  AppManager.clockFromXCoord( AppManager.keyWidth ),
+                                  AppManager.clockFromXCoord( AppManager.keyWidth + width ),
+                                  AppManager.getVsqFile().TempoTable,
+                                  AppManager.getScaleX() );
+                } else {
+                    context.draw( g,
+                                  Color.black,
+                                  rc,
+                                  AppManager.clockFromXCoord( AppManager.keyWidth ),
+                                  AppManager.clockFromXCoord( AppManager.keyWidth + width ),
+                                  AppManager.getVsqFile().TempoTable,
+                                  AppManager.getScaleX(),
+                                  mScale );
+                }
             }
 
             // 左側のボタン部との境界線
             g.setColor( mBorderColor );
             g.drawLine( 0, 0, 0, height );
+
+            // ソングポジション
+            int song_pos_x = AppManager.xCoordFromClocks( AppManager.getCurrentClock() ) - AppManager.keyWidth;
+            if ( 0 < song_pos_x ) {
+                g.setColor( Color.white );
+                g.setStroke( getStroke2px() );
+                g.drawLine( song_pos_x, 0, song_pos_x, height );
+            }
+        }
+
+        private BasicStroke getStrokeDefault() {
+            if ( mStrokeDefault == null ) {
+                mStrokeDefault = new BasicStroke();
+            }
+            return mStrokeDefault;
+        }
+
+        private BasicStroke getStroke2px() {
+            if ( mStroke2px == null ) {
+                mStroke2px = new BasicStroke( 2.0f );
+            }
+            return mStroke2px;
         }
 
         /// <summary>

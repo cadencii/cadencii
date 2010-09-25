@@ -1078,8 +1078,8 @@ namespace org.kbinani.cadencii {
                                 Color fill = new Color( 0, 0, 0, 32 );
                                 for ( int i = start; i < count; i++ ) {
                                     DrawObject obj = objs.get( i );
-                                    int x0 = obj.pxRectangle.x + key_width - stdx;
-                                    int w = obj.pxRectangle.width;
+                                    int x0 = obj.mRectangleInPixel.x + key_width - stdx;
+                                    int w = obj.mRectangleInPixel.width;
                                     int x1 = x0 + w;
                                     if ( width < x0 ) {
                                         break;

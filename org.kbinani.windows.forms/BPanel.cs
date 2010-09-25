@@ -80,6 +80,15 @@ namespace org.kbinani.windows.forms {
         }
         #endregion
 
+        #region event impl MouseLeave
+        // root impl of MouseLeave event is in BButton
+        public BEvent<BEventHandler> mouseLeaveEvent = new BEvent<BEventHandler>();
+        protected override void OnMouseLeave( System.EventArgs e ) {
+            base.OnMouseLeave( e );
+            mouseLeaveEvent.raise( this, e );
+        }
+        #endregion
+
         #region event impl PreviewKeyDown
         // root implf of PreviewKeyDown is in BButton
         public BEvent<BPreviewKeyDownEventHandler> previewKeyDownEvent = new BEvent<BPreviewKeyDownEventHandler>();

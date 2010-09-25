@@ -223,9 +223,7 @@ namespace org.kbinani.java.awt {
         }
 
         public void drawImage( org.kbinani.java.awt.image.BufferedImage img, int x, int y, object obs ) {
-            if ( img is org.kbinani.java.awt.image.BufferedImage ) {
-                nativeGraphics.DrawImage( ((org.kbinani.java.awt.image.BufferedImage)img).m_image, new System.Drawing.Point( x, y ) );
-            }
+            nativeGraphics.DrawImage( img.m_image, new System.Drawing.Point( x, y ) );
         }
 
         public void drawImage( org.kbinani.java.awt.Image img, int x, int y, object obs ) {
@@ -239,6 +237,14 @@ namespace org.kbinani.java.awt {
     public class Graphics2D : Graphics{
         public Graphics2D( System.Drawing.Graphics g )
             : base( g ) {
+        }
+
+        public void translate( int tx, int ty ) {
+            nativeGraphics.TranslateTransform( tx, ty );
+        }
+
+        public void translate( double tx, double ty ) {
+            nativeGraphics.TranslateTransform( (float)tx, (float)ty );
         }
 
         public void fill( Shape s ) {

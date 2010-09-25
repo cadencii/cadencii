@@ -33,47 +33,49 @@ namespace org.kbinani.cadencii {
 #else
     public class DrawObject : IComparable<DrawObject> {
 #endif
-        public Rectangle pxRectangle;
-        public String text;
-        public int accent;
-        public int internalID;
+        public Rectangle mRectangleInPixel;
+        public String mText;
+        public int mAccent;
+        public int mInternalID;
         /// <summary>
         /// 音符の先頭から，ビブラート開始位置までの長さ(単位：ピクセル)
         /// </summary>
-        public int pxVibratoDelay;
+        public int mVibratoDelayInPixel;
         /// <summary>
         /// このアイテムが他のアイテムと再生時にオーバーラップするかどうかを表すフラグ
         /// </summary>
-        public boolean isOverlapped;
-        public boolean isSymbolProtected;
-        public VibratoBPList vibRate;
-        public VibratoBPList vibDepth;
-        public int vibStartRate;
-        public int vibStartDepth;
-        public int note;
-        public UstEnvelope ustEnvelope;
+        public boolean mIsOverlapped;
+        public boolean mIsSymbolProtected;
+        public int mNote;
+        public UstEnvelope mUstEnvelope;
         /// <summary>
         /// 音符の長さ（クロック）
         /// </summary>
-        public int length;
+        public int mLength;
         /// <summary>
         /// アイテムの位置
         /// </summary>
-        public int clock;
-        public DrawObjectType type;
+        public int mClock;
+        public DrawObjectType mType;
         /// <summary>
         /// UTAUモードにて、歌詞から*.wavを引き当てられたかどうか。
         /// これがfalseのとき、ピアノロール上で警告色で描かれる
         /// </summary>
-        public boolean isValidForUtau = false;
+        public boolean mIsValidForUtau = false;
         /// <summary>
         /// Straight x UTAUモードにて、歌詞からanalyzed\*.stfを引き当てられたかどうか。
         /// これがfalseのとき、ピアノロール上で警告色で描かれる
         /// </summary>
-        public boolean isValidForStraight = false;
-        public int vibDelay = 0;
+        public boolean mIsValidForStraight = false;
+        public int mVibDelay = 0;
+        /// <summary>
+        /// ビブラートによるピッチカーブ。
+        /// 単位はノート、配列のインデックスがクロックに相当する。
+        /// </summary>
+        public float[] mVibratoPit = null;
 
         public DrawObject( DrawObjectType type,
+                           VsqFileEx vsq,
                            Rectangle rect, 
                            String text_,
                            int accent_,
@@ -92,30 +94,42 @@ namespace org.kbinani.cadencii {
                            boolean is_valid_for_utau,
                            boolean is_valid_for_straight,
                            int vib_delay ) {
-            this.type = type;
-            pxRectangle = rect;
-            text = text_;
-            accent = accent_;
-            internalID = internal_id;
-            pxVibratoDelay = vibrato_delay;
-            isOverlapped = overwrapped;
-            isSymbolProtected = symbol_protected;
-            vibRate = vib_rate;
-            vibDepth = vib_depth;
-            vibStartRate = vib_start_rate;
-            vibStartDepth = vib_start_depth;
+            this.mType = type;
+            mRectangleInPixel = rect;
+            mText = text_;
+            mAccent = accent_;
+            mInternalID = internal_id;
+            mVibratoDelayInPixel = vibrato_delay;
+            mIsOverlapped = overwrapped;
+            mIsSymbolProtected = symbol_protected;
 
-            note = note_;
-            ustEnvelope = ust_envelope;
-            this.length = length;
-            this.clock = clock;
-            this.isValidForUtau = is_valid_for_utau;
-            this.isValidForStraight = is_valid_for_straight;
-            this.vibDelay = vib_delay;
+            mNote = note_;
+            mUstEnvelope = ust_envelope;
+            this.mLength = length;
+            this.mClock = clock;
+            this.mIsValidForUtau = is_valid_for_utau;
+            this.mIsValidForStraight = is_valid_for_straight;
+            this.mVibDelay = vib_delay;
+
+            if ( vib_rate != null && vib_depth != null ) {
+                int viblength = length - vib_delay;
+                VibratoPointIteratorByClock itr =
+                    new VibratoPointIteratorByClock( vsq,
+                                                     vib_rate, vib_start_rate,
+                                                     vib_depth, vib_start_depth,
+                                                     clock + vib_delay, viblength );
+                mVibratoPit = new float[viblength];
+                for ( int i = 0; i < viblength; i++ ) {
+                    if ( !itr.hasNext() ) {
+                        break;
+                    }
+                    mVibratoPit[i] = (float)itr.next();
+                }
+            }
         }
 
         public int compareTo( DrawObject item ) {
-            return pxRectangle.x - item.pxRectangle.x;
+            return mRectangleInPixel.x - item.mRectangleInPixel.x;
         }
 
 #if !JAVA

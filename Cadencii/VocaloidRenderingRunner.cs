@@ -113,6 +113,9 @@ namespace org.kbinani.cadencii {
                     PortUtil.stderr.println( "VocaloidRenderingRunner#run; ex=" + ex );
                 }
                 while ( driver.isRendering() ) {
+#if DEBUG
+                    PortUtil.println( "VocaloidRenderingRunner#abortRendering; waiting driver.isRendering()" );
+#endif
                     System.Windows.Forms.Application.DoEvents();
                 }
             }
@@ -138,13 +141,13 @@ namespace org.kbinani.cadencii {
             m_abort_required = false;
             if ( driver == null ) {
 #if DEBUG
-                PortUtil.println( "VocaloRenderingRunner#run; error: driver is null" );
+                PortUtil.println( "VocaloidRenderingRunner#run; error: driver is null" );
 #endif
                 return;
             }
             if ( !driver.loaded ) {
 #if DEBUG
-                PortUtil.println( "VocaloRenderingRunner#run; error: driver not loaded" );
+                PortUtil.println( "VocaloidRenderingRunner#run; error: driver not loaded" );
 #endif
                 return;
             }
@@ -155,6 +158,9 @@ namespace org.kbinani.cadencii {
                     Thread.sleep( 0 );
 #else
                     System.Windows.Forms.Application.DoEvents();
+#endif
+#if DEBUG
+                    PortUtil.println( "VocaloidRenderingRunner#run; waiting driver.isRendering()" );
 #endif
                 }
             }

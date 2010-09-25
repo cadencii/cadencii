@@ -555,6 +555,25 @@ namespace org.kbinani.cadencii{
         }
 
         /// <summary>
+        /// pがrcの中にあるかどうかを判定します
+        /// </summary>
+        /// <param name="p"></param>
+        /// <param name="rc"></param>
+        /// <returns></returns>
+        public static boolean isInRect( Point p, Rectangle rc ) {
+            if ( rc.x <= p.x ) {
+                if ( p.x <= rc.x + rc.width ) {
+                    if ( rc.y <= p.y ) {
+                        if ( p.y <= rc.y + rc.height ) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// 指定したディレクトリをUTAU音源のディレクトリとみなし，音源名と音源の保存パスを保持したSingerConfigを返します
         /// </summary>
         /// <param name="directory"></param>

@@ -340,6 +340,9 @@ namespace org.kbinani.cadencii {
                         break;
                     }
 #else
+#if DEBUG
+                    //PortUtil.println( "FormSynthesize#FormSynthesize_FormClosing; bgWork.isBusy()=" + bgWork.isBusy() );
+#endif
                     Application.DoEvents();
 #endif
                 }

@@ -536,12 +536,12 @@ namespace org.kbinani.cadencii {
                                 int target_list_count = target_list.size();
                                 for ( int j = j_start; j < target_list_count; j++ ) {
                                     DrawObject dobj = target_list.get( j );
-                                    if ( dobj.type != DrawObjectType.Note ) {
+                                    if ( dobj.mType != DrawObjectType.Note ) {
                                         continue;
                                     }
-                                    int x = dobj.pxRectangle.x + key_width - stdx;
-                                    y = dobj.pxRectangle.y - stdy;
-                                    int lyric_width = dobj.pxRectangle.width;
+                                    int x = dobj.mRectangleInPixel.x + key_width - stdx;
+                                    y = dobj.mRectangleInPixel.y - stdy;
+                                    int lyric_width = dobj.mRectangleInPixel.width;
                                     if ( x + lyric_width < 0 ) {
                                         continue;
                                     } else if ( width < x ) {
@@ -581,13 +581,15 @@ namespace org.kbinani.cadencii {
                                 Vector<DrawObject> target_list = AppManager.drawObjects.get( selected - 1 );
                                 VsqBPList pit = vsq_track.MetaText.PIT;
                                 VsqBPList pbs = vsq_track.MetaText.PBS;
+                                ByRef<Integer> indx_pit = new ByRef<Integer>( 0 );
+                                ByRef<Integer> indx_pbs = new ByRef<Integer>( 0 );
 
                                 int c = target_list.size();
                                 for ( int j = j_start; j < c; j++ ) {
                                     DrawObject dobj = target_list.get( j );
-                                    int x = dobj.pxRectangle.x + key_width - stdx;
-                                    y = dobj.pxRectangle.y - stdy;
-                                    int lyric_width = dobj.pxRectangle.width;
+                                    int x = dobj.mRectangleInPixel.x + key_width - stdx;
+                                    y = dobj.mRectangleInPixel.y - stdy;
+                                    int lyric_width = dobj.mRectangleInPixel.width;
                                     if ( x + lyric_width < 0 ) {
                                         continue;
                                     } else if ( width < x ) {
@@ -601,50 +603,50 @@ namespace org.kbinani.cadencii {
                                         continue;
                                     }
 
-                                    if ( dobj.type == DrawObjectType.Note ) {
+                                    if ( dobj.mType == DrawObjectType.Note ) {
                                         #region Note
                                         Color id_fill = s_note_fill;
-                                        if ( (!dobj.isValidForUtau && renderer == RendererKind.UTAU) ||
-                                             (!dobj.isValidForStraight && renderer == RendererKind.STRAIGHT_UTAU) ) {
+                                        if ( (!dobj.mIsValidForUtau && renderer == RendererKind.UTAU) ||
+                                             (!dobj.mIsValidForStraight && renderer == RendererKind.STRAIGHT_UTAU) ) {
                                             id_fill = AppManager.getAlertColor();
                                         }
                                         if ( AppManager.getSelectedEventCount() > 0 ) {
-                                            boolean found = AppManager.isSelectedEventContains( selected, dobj.internalID );
+                                            boolean found = AppManager.isSelectedEventContains( selected, dobj.mInternalID );
                                             if ( found ) {
                                                 id_fill = AppManager.getHilightColor();
-                                                if ( (!dobj.isValidForUtau && renderer == RendererKind.UTAU) ||
-                                                     (!dobj.isValidForStraight && renderer == RendererKind.STRAIGHT_UTAU) ) {
+                                                if ( (!dobj.mIsValidForUtau && renderer == RendererKind.UTAU) ||
+                                                     (!dobj.mIsValidForStraight && renderer == RendererKind.STRAIGHT_UTAU) ) {
                                                     id_fill = AppManager.getAlertHilightColor();
                                                 }
                                             }
                                         }
                                         g.setColor( id_fill );
                                         g.fillRect( x, y + 1, lyric_width, track_height - 1 );
-                                        Font lyric_font = dobj.isSymbolProtected ? AppManager.baseFont10Bold : AppManager.baseFont10;
-                                        if ( dobj.isOverlapped ) {
+                                        Font lyric_font = dobj.mIsSymbolProtected ? AppManager.baseFont10Bold : AppManager.baseFont10;
+                                        if ( dobj.mIsOverlapped ) {
                                             g.setColor( s_pen_125_123_124 );
                                             g.drawRect( x, y + 1, lyric_width, track_height - 1 );
                                             if ( show_lyrics ) {
                                                 g.setFont( lyric_font );
-                                                if ( (!dobj.isValidForUtau && renderer == RendererKind.UTAU) ||
-                                                     (!dobj.isValidForStraight && renderer == RendererKind.STRAIGHT_UTAU) ) {
+                                                if ( (!dobj.mIsValidForUtau && renderer == RendererKind.UTAU) ||
+                                                     (!dobj.mIsValidForStraight && renderer == RendererKind.STRAIGHT_UTAU) ) {
                                                     g.setColor( Color.white );
                                                 } else {
                                                     g.setColor( s_brs_147_147_147 );
                                                 }
-                                                g.drawString( dobj.text, x + 1, y + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
+                                                g.drawString( dobj.mText, x + 1, y + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
                                             }
                                         } else {
                                             g.setColor( s_pen_125_123_124 );
                                             g.drawRect( x, y + 1, lyric_width, track_height - 1 );
                                             if ( show_exp_line && lyric_width > 21 ) {
                                                 #region 表情線
-                                                drawAccentLine( g, new Point( x, y + track_height + 1 ), dobj.accent );
+                                                drawAccentLine( g, new Point( x, y + track_height + 1 ), dobj.mAccent );
                                                 int vibrato_start = x + lyric_width;
                                                 int vibrato_end = x;
-                                                if ( dobj.pxVibratoDelay <= lyric_width ) {
-                                                    int vibrato_delay = dobj.pxVibratoDelay;
-                                                    int vibrato_width = dobj.pxRectangle.width - vibrato_delay;
+                                                if ( dobj.mVibratoDelayInPixel <= lyric_width ) {
+                                                    int vibrato_delay = dobj.mVibratoDelayInPixel;
+                                                    int vibrato_width = dobj.mRectangleInPixel.width - vibrato_delay;
                                                     vibrato_start = x + vibrato_delay;
                                                     vibrato_end = x + vibrato_delay + vibrato_width;
                                                     if ( vibrato_start - x < 21 ) {
@@ -654,7 +656,7 @@ namespace org.kbinani.cadencii {
                                                 g.setColor( s_pen_051_051_000 );
                                                 g.drawLine( x + 21, y + track_height + 7,
                                                             vibrato_start, y + track_height + 7 );
-                                                if ( dobj.pxVibratoDelay <= lyric_width ) {
+                                                if ( dobj.mVibratoDelayInPixel <= lyric_width ) {
                                                     int next_draw = vibrato_start;
                                                     if ( vibrato_start < vibrato_end ) {
                                                         drawVibratoLine( g,
@@ -664,30 +666,11 @@ namespace org.kbinani.cadencii {
                                                 }
                                                 #endregion
                                             }
-                                            // ビブラートがあれば
-                                            if ( AppManager.editorConfig.ViewAtcualPitch ) {
-                                                if ( dobj.vibRate != null ) {
-                                                    int vibrato_delay = dobj.pxVibratoDelay;
-                                                    int vibrato_width = dobj.pxRectangle.width - vibrato_delay;
-                                                    int vibrato_start = x + vibrato_delay;
-                                                    int vibrato_end = x + vibrato_delay + vibrato_width;
-                                                    int cl_sx = AppManager.clockFromXCoord( vibrato_start );
-                                                    int cl_ex = AppManager.clockFromXCoord( vibrato_end );
-                                                    drawVibratoPitchbend( commonDrawer,
-                                                                          dobj.vibRate,
-                                                                          dobj.vibStartRate,
-                                                                          dobj.vibDepth,
-                                                                          dobj.vibStartDepth,
-                                                                          dobj.note,
-                                                                          vibrato_start,
-                                                                          vibrato_width );
-                                                }
-                                            }
 
                                             #region ピッチベンド
                                             if ( AppManager.editorConfig.ViewAtcualPitch || AppManager.curveOnPianoroll ) {
-                                                int cl_start = dobj.clock;
-                                                int cl_end = cl_start + dobj.length;
+                                                int cl_start = dobj.mClock;
+                                                int cl_end = cl_start + dobj.mLength;
 
                                                 commonDrawer.clear();
 #if !JAVA
@@ -695,24 +678,28 @@ namespace org.kbinani.cadencii {
 #endif
                                                 Color color_normal_picthbend = PortUtil.DarkOrchid;
                                                 Color color_thin_pitchbend = new Color( color_normal_picthbend.getRed(), color_normal_picthbend.getGreen(), color_normal_picthbend.getBlue(), 128 );
-                                                ByRef<Integer> indx_pit = new ByRef<Integer>( 0 );
-                                                ByRef<Integer> indx_pbs = new ByRef<Integer>( 0 );
-                                                int viblength = dobj.length - dobj.vibDelay;
+                                                int viblength = dobj.mLength - dobj.mVibDelay;
                                                 int lasty = int.MinValue;
                                                 g.setStroke( getStroke2px() );
+
+                                                // cl_start位置での、pit, pbsの値検索開始位置を調べておく
+                                                pit.getValue( cl_start, indx_pit );
+                                                int indx_pit_at_start = indx_pit.value;
+                                                pbs.getValue( cl_start, indx_pbs );
+                                                int indx_pbs_at_start = indx_pbs.value;
 
                                                 // ビブラート部分の、ビブラートなしの場合のピッチベンドを描画
                                                 if ( viblength > 0 ) {
                                                     g.setColor( color_thin_pitchbend );
-                                                    indx_pit = new ByRef<Integer>( 0 );
-                                                    indx_pbs = new ByRef<Integer>( 0 );
-                                                    cl_start = dobj.clock + dobj.vibDelay;
+                                                    //indx_pit = new ByRef<Integer>( 0 );
+                                                    //indx_pbs = new ByRef<Integer>( 0 );
+                                                    cl_start = dobj.mClock + dobj.mVibDelay;
                                                     for ( int cl = cl_start; cl < cl_end; cl++ ) {
                                                         int vpit = pit.getValue( cl, indx_pit );
                                                         int vpbs = pbs.getValue( cl, indx_pbs );
 
                                                         float delta = vpit * (float)vpbs / 8192.0f;
-                                                        float note = dobj.note + delta;
+                                                        float note = dobj.mNote + delta;
 
                                                         int py = AppManager.yCoordFromNote( note ) + half_track_height;
                                                         if ( cl + 1 == cl_end ) {
@@ -735,34 +722,24 @@ namespace org.kbinani.cadencii {
                                                 
                                                 // この音符の範囲についてのみ，ピッチベンド曲線を描く
                                                 g.setColor( color_normal_picthbend );
-                                                cl_start = dobj.clock;
+                                                cl_start = dobj.mClock;
                                                 commonDrawer.clear();
                                                 lasty = int.MinValue;
-                                                indx_pit.value = 0;
-                                                indx_pbs.value = 0;
-                                                VibratoPointIteratorByClock vibitr = null;
-                                                if ( viblength > 0 ) {
-                                                    vibitr = new VibratoPointIteratorByClock( vsq,
-                                                        dobj.vibRate, dobj.vibStartRate,
-                                                        dobj.vibDepth, dobj.vibStartDepth,
-                                                        dobj.clock + dobj.vibDelay, viblength, 1 );
-                                                }
+                                                indx_pit.value = indx_pit_at_start;
+                                                indx_pbs.value = indx_pbs_at_start;
+                                                int i = -1;
                                                 for ( int cl = cl_start; cl < cl_end; cl++ ) {
                                                     int vpit = pit.getValue( cl, indx_pit );
                                                     int vpbs = pbs.getValue( cl, indx_pbs );
 
                                                     float delta = vpit * (float)vpbs / 8192.0f;
-                                                    if ( cl >= dobj.clock + dobj.vibDelay && vibitr != null && vibitr.hasNext() ) {
-                                                        /*delta += (float)VibratoHandle.calculatePitchbendCor( dobj.vibStartRate, dobj.vibRate,
-                                                                                                             dobj.vibStartDepth, dobj.vibDepth,
-                                                                                                             cl, dobj.clock + dobj.vibDelay, viblength, vsq );*/
-#if JAVA
-                                                        delta += vibitr.next().floatValue();
-#else
-                                                        delta += (float)vibitr.next();
-#endif
+                                                    if ( cl >= dobj.mClock + dobj.mVibDelay && dobj.mVibratoPit != null ){
+                                                        i++;
+                                                        if ( i < dobj.mVibratoPit.Length ) {
+                                                            delta += dobj.mVibratoPit[i];
+                                                        }
                                                     }
-                                                    float note = dobj.note + delta;
+                                                    float note = dobj.mNote + delta;
 
                                                     int py = AppManager.yCoordFromNote( note ) + half_track_height;
                                                     if ( cl + 1 == cl_end ) {
@@ -790,20 +767,20 @@ namespace org.kbinani.cadencii {
 
                                             if ( show_lyrics ) {
                                                 g.setFont( lyric_font );
-                                                if ( (!dobj.isValidForUtau && renderer == RendererKind.UTAU) ||
-                                                     (!dobj.isValidForStraight && renderer == RendererKind.STRAIGHT_UTAU) ) {
+                                                if ( (!dobj.mIsValidForUtau && renderer == RendererKind.UTAU) ||
+                                                     (!dobj.mIsValidForStraight && renderer == RendererKind.STRAIGHT_UTAU) ) {
                                                     g.setColor( Color.white );
                                                 } else {
                                                     g.setColor( Color.black );
                                                 }
-                                                g.drawString( dobj.text, x + 1, y + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
+                                                g.drawString( dobj.mText, x + 1, y + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
                                             }
                                         }
                                         #endregion
-                                    } else if ( dobj.type == DrawObjectType.Dynaff ) {
+                                    } else if ( dobj.mType == DrawObjectType.Dynaff ) {
                                         #region Dynaff
                                         Color fill = s_dynaff_fill;
-                                        if ( AppManager.isSelectedEventContains( selected, dobj.internalID ) ) {
+                                        if ( AppManager.isSelectedEventContains( selected, dobj.mInternalID ) ) {
                                             fill = s_dynaff_fill_highlight;
                                         }
                                         g.setColor( fill );
@@ -812,12 +789,12 @@ namespace org.kbinani.cadencii {
                                         g.drawRect( x, y, 40, track_height );
                                         g.setColor( Color.black );
                                         g.setFont( AppManager.baseFont10 );
-                                        if ( dobj.isOverlapped ) {
+                                        if ( dobj.mIsOverlapped ) {
                                             g.setColor( s_brs_147_147_147 );
                                         }
-                                        String str = dobj.text;
+                                        String str = dobj.mText;
 #if DEBUG
-                                        str += "(" + dobj.internalID + ")";
+                                        str += "(" + dobj.mInternalID + ")";
 #endif
                                         g.drawString( str, x + 1, y + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
                                         #endregion
@@ -825,32 +802,32 @@ namespace org.kbinani.cadencii {
                                         #region Crescend and Descrescend
                                         int xend = x + lyric_width;
                                         Color fill = s_dynaff_fill;
-                                        if ( AppManager.isSelectedEventContains( selected, dobj.internalID ) ) {
+                                        if ( AppManager.isSelectedEventContains( selected, dobj.mInternalID ) ) {
                                             fill = s_dynaff_fill_highlight;
                                         }
                                         g.setColor( fill );
                                         g.fillRect( x, y, xend - x, track_height );
                                         g.setColor( s_pen_125_123_124 );
                                         g.drawRect( x, y, xend - x, track_height );
-                                        if ( dobj.isOverlapped ) {
+                                        if ( dobj.mIsOverlapped ) {
                                             g.setColor( s_brs_147_147_147 );
                                         } else {
                                             g.setColor( Color.black );
                                         }
                                         g.setFont( AppManager.baseFont10 );
-                                        String str = dobj.text;
+                                        String str = dobj.mText;
 #if DEBUG
-                                        str += "(" + dobj.internalID + ")";
+                                        str += "(" + dobj.mInternalID + ")";
 #endif
                                         g.drawString( str, x + 1, y + track_height + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
 #if !JAVA
                                         System.Drawing.Drawing2D.SmoothingMode old = g.nativeGraphics.SmoothingMode;
                                         g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 #endif
-                                        if ( dobj.type == DrawObjectType.Crescend ) {
+                                        if ( dobj.mType == DrawObjectType.Crescend ) {
                                             g.drawLine( xend - 2, y + 4, x + 3, y + half_track_height );
                                             g.drawLine( x + 3, y + half_track_height, xend - 2, y + track_height - 3 );
-                                        } else if ( dobj.type == DrawObjectType.Decrescend ) {
+                                        } else if ( dobj.mType == DrawObjectType.Decrescend ) {
                                             g.drawLine( x + 3, y + 4, xend - 2, y + half_track_height );
                                             g.drawLine( xend - 2, y + half_track_height, x + 3, y + track_height - 3 );
                                         }
@@ -1196,7 +1173,7 @@ namespace org.kbinani.cadencii {
 
                         for ( int j = j_start; j < c; j++ ) {
                             DrawObject dobj = list.get( j );
-                            int clock = dobj.clock;
+                            int clock = dobj.mClock;
                             int x_at_clock = (int)(clock * scalex + xoffset);
                             last_x = x_at_clock;
 
@@ -1207,13 +1184,13 @@ namespace org.kbinani.cadencii {
                             if ( pbs_count <= 0 ) {
                                 // データ点が無い場合
                                 double delta_note = 8192.0 * last_pbs_value * a;
-                                int y_top = (int)(-(dobj.note + delta_note - 0.5) * track_height + yoffset);
-                                int y_bottom = (int)(-(dobj.note - delta_note - 0.5) * track_height + yoffset);
+                                int y_top = (int)(-(dobj.mNote + delta_note - 0.5) * track_height + yoffset);
+                                int y_bottom = (int)(-(dobj.mNote - delta_note - 0.5) * track_height + yoffset);
 
                                 if ( last_x < key_width ) {
                                     last_x = key_width;
                                 }
-                                int x = (int)((clock + dobj.length) * scalex + xoffset);
+                                int x = (int)((clock + dobj.mLength) * scalex + xoffset);
                                 fillarea.subtract( new Area( new Rectangle( last_x, y_top, x - last_x, y_bottom - y_top ) ) );
                                 last_x = x;
                             } else {
@@ -1223,19 +1200,19 @@ namespace org.kbinani.cadencii {
                                     int pbs_value;
                                     if ( 0 <= pbs_index.value + 1 && pbs_index.value + 1 < pbs_count ) {
                                         pbs_clock = pbs.getKeyClock( pbs_index.value + 1 );
-                                        if ( pbs_clock > clock + dobj.length ) {
-                                            pbs_clock = clock + dobj.length;
+                                        if ( pbs_clock > clock + dobj.mLength ) {
+                                            pbs_clock = clock + dobj.mLength;
                                         }
                                         pbs_value = pbs.getElement( pbs_index.value + 1 );
                                     } else {
-                                        pbs_clock = clock + dobj.length;
+                                        pbs_clock = clock + dobj.mLength;
                                         pbs_value = last_pbs_value;
                                     }
 
                                     double delta_note = 8192.0 * last_pbs_value * a;
 
-                                    int y_top = (int)(-(dobj.note + delta_note - 0.5) * track_height + yoffset);
-                                    int y_bottom = (int)(-(dobj.note - delta_note - 0.5) * track_height + yoffset);
+                                    int y_top = (int)(-(dobj.mNote + delta_note - 0.5) * track_height + yoffset);
+                                    int y_bottom = (int)(-(dobj.mNote - delta_note - 0.5) * track_height + yoffset);
                                     int x = (int)(pbs_clock * scalex + xoffset);
                                     if ( x < key_width ) {
                                         x = key_width;
@@ -1346,6 +1323,9 @@ namespace org.kbinani.cadencii {
                                                              (float)(tempo * 1e-6 / 480.0) );
             Graphics2D g = drawer.getGraphics();
             g.setColor( Color.blue );
+#if DEBUG
+            g.setColor( Color.red );
+#endif
 #if !JAVA
             System.Drawing.Drawing2D.SmoothingMode sm = g.nativeGraphics.SmoothingMode;
             g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;

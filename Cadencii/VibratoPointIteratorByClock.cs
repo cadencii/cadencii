@@ -33,51 +33,64 @@ namespace org.kbinani.cadencii {
 #else
     public class VibratoPointIteratorByClock : Iterator<Double> {
 #endif
-        VsqFileEx vsq;
-        VibratoBPList rate;
-        int start_rate;
-        VibratoBPList depth;
-        int start_depth;
-        int clock_start;
-        int clock_width;
-        int clock_resolution;
+        VsqFileEx mVsq;
+        VibratoBPList mRate;
+        int mStartRate;
+        VibratoBPList mDepth;
+        int mStartDepth;
+        int mClockStart;
+        int mClockWidth;
 
-        double sec0;
-        double sec1;
-        double phase = 0.0;
-        double amplitude;
-        float period;
-        float omega;
-        double sec;
-        float fadewidth;
-        int i;
-        boolean first = true;
+        double mSec0;
+        double mSec1;
+        double mPhase = 0.0;
+        double mAmplitude;
+        float mPeriod;
+        float mOmega;
+        double mSec;
+        float mFadeWidth;
+        int mIndex;
+        boolean mFirst = true;
+
+        public void rewind() {
+            mSec0 = mVsq.getSecFromClock( mClockStart );
+            mSec1 = mVsq.getSecFromClock( mClockStart + mClockWidth );
+            mFadeWidth = (float)(mSec1 - mSec0) * 0.2f;
+            mPhase = 0;
+            mStartRate = mRate.getValue( 0.0f, mStartRate );
+            mStartDepth = mDepth.getValue( 0.0f, mStartDepth );
+            mAmplitude = mStartDepth * 2.5f / 127.0f / 2.0f; // ビブラートの振幅。
+            mPeriod = VibratoPointIteratorBySec.getPeriodFromRate( mStartRate ); //ビブラートの周期、秒
+            mOmega = (float)(2.0 * Math.PI / mPeriod); // 角速度(rad/sec)
+            mSec = mSec0;
+            mIndex = 0;
+            mFirst = true;
+        }
 
         public Double next() {
-            if ( first ) {
-                i = 0;
-                first = false;
+            if ( mFirst ) {
+                mFirst = false;
                 return 0.0;
             } else {
-                i++;
-                if ( i < clock_width ) {
-                    int clock = clock_start + i;
-                    double t_sec = vsq.getSecFromClock( clock );
-                    if ( sec0 <= t_sec && t_sec <= sec0 + fadewidth ) {
-                        amplitude *= (t_sec - sec0) / fadewidth;
+                mIndex++;
+                if ( mIndex < mClockWidth ) {
+                    int clock = mClockStart + mIndex;
+                    double t_sec = mVsq.getSecFromClock( clock );
+                    if ( mSec0 <= t_sec && t_sec <= mSec0 + mFadeWidth ) {
+                        mAmplitude *= (t_sec - mSec0) / mFadeWidth;
                     }
-                    if ( sec1 - fadewidth <= t_sec && t_sec <= sec1 ) {
-                        amplitude *= (sec1 - t_sec) / fadewidth;
+                    if ( mSec1 - mFadeWidth <= t_sec && t_sec <= mSec1 ) {
+                        mAmplitude *= (mSec1 - t_sec) / mFadeWidth;
                     }
-                    phase += omega * (t_sec - sec);
-                    double ret = amplitude * Math.Sin( phase );
-                    float v = (float)(clock - clock_start) / (float)clock_width;
-                    int r = rate.getValue( v, start_rate );
-                    int d = depth.getValue( v, start_depth );
-                    amplitude = d * 2.5f / 127.0f / 2.0f;
-                    period = VibratoPointIteratorBySec.getPeriodFromRate( r );
-                    omega = (float)(2.0 * Math.PI / period);
-                    sec = t_sec;
+                    mPhase += mOmega * (t_sec - mSec);
+                    double ret = mAmplitude * Math.Sin( mPhase );
+                    float v = (float)(clock - mClockStart) / (float)mClockWidth;
+                    int r = mRate.getValue( v, mStartRate );
+                    int d = mDepth.getValue( v, mStartDepth );
+                    mAmplitude = d * 2.5f / 127.0f / 2.0f;
+                    mPeriod = VibratoPointIteratorBySec.getPeriodFromRate( r );
+                    mOmega = (float)(2.0 * Math.PI / mPeriod);
+                    mSec = t_sec;
                     return ret;
                 } else {
                     return 0.0;
@@ -86,10 +99,10 @@ namespace org.kbinani.cadencii {
         }
 
         public boolean hasNext() {
-            if ( first ) {
+            if ( mFirst ) {
                 return true;
             } else {
-                return (i < clock_width);
+                return (mIndex < mClockWidth);
             }
         }
 
@@ -102,27 +115,16 @@ namespace org.kbinani.cadencii {
                                       VibratoBPList depth,
                                       int start_depth,
                                       int clock_start,
-                                      int clock_width,
-                                      int clock_resolution ) {
-            this.vsq = vsq;
-            this.rate = rate;
-            this.start_rate = start_rate;
-            this.depth = depth;
-            this.start_depth = start_depth;
-            this.clock_start = clock_start;
-            this.clock_width = clock_width;
-            this.clock_resolution = clock_resolution;
+                                      int clock_width ) {
+            this.mVsq = vsq;
+            this.mRate = rate;
+            this.mStartRate = start_rate;
+            this.mDepth = depth;
+            this.mStartDepth = start_depth;
+            this.mClockStart = clock_start;
+            this.mClockWidth = clock_width;
 
-            sec0 = vsq.getSecFromClock( clock_start );
-            sec1 = vsq.getSecFromClock( clock_start + clock_width );
-            phase = 0;
-            start_rate = rate.getValue( 0.0f, start_rate );
-            start_depth = depth.getValue( 0.0f, start_depth );
-            amplitude = start_depth * 2.5f / 127.0f / 2.0f; // ビブラートの振幅。
-            period = VibratoPointIteratorBySec.getPeriodFromRate( start_rate ); //ビブラートの周期、秒
-            omega = (float)(2.0 * Math.PI / period); // 角速度(rad/sec)
-            sec = sec0;
-            fadewidth = (float)(sec1 - sec0) * 0.2f;
+            rewind();
         }
     }
 
