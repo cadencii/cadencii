@@ -1302,46 +1302,6 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region public methods
-        public int getHScrollValue() {
-#if JAVA
-            return hScroll.getValue();
-#else
-            if ( hScroll.InvokeRequired ) {
-                int ret = 0;
-                try {
-                    VoidDelegateReturnInt dlg = new VoidDelegateReturnInt( hScroll.getValue );
-                    ret = dlg.Invoke();
-                } catch ( Exception ex ) {
-                    Logger.write( typeof( FormMain ) + ".getHScrollValue; ex=" + ex );
-                    PortUtil.stderr.println( "FormMain#getHScrollValue; ex" + ex );
-                }
-                return ret;
-            } else {
-                return hScroll.getValue();
-            }
-#endif
-        }
-
-        public int getVScrollValue() {
-#if JAVA
-            return vScroll.getValue();
-#else
-            if ( vScroll.InvokeRequired ) {
-                int ret = 0;
-                try {
-                    VoidDelegateReturnInt dlg = new VoidDelegateReturnInt( vScroll.getValue );
-                    ret = dlg.Invoke();
-                } catch ( Exception ex ) {
-                    Logger.write( typeof( FormMain ) + ".getVScrollValue; ex=" + ex );
-                    PortUtil.stderr.println( "FormMain#getVScrollValue; ex=" + ex );
-                }
-                return ret;
-            } else {
-                return vScroll.getValue();
-            }
-#endif
-        }
-
         /// <summary>
         /// 現在選択されている音符よりも1個前方の音符を選択しなおします。
         /// </summary>
@@ -7294,7 +7254,7 @@ namespace org.kbinani.cadencii {
                 }
 
                 boolean mode_infinite = AppManager.getEditMode() == EditMode.REALTIME;
-                if ( vsq.Track.get( selected ).getPlayMode() == PlayMode.PlayWithSynth && count > 0 && !vsq.getActualMuted( selected ) ) {
+                /*if ( vsq.Track.get( selected ).getPlayMode() == PlayMode.PlayWithSynth && count > 0 && !vsq.getActualMuted( selected ) ) {
                     int ms_presend = AppManager.editorConfig.PreSendTime;
                     if ( renderer == RendererKind.UTAU ) {
                         ms_presend = 0;
@@ -7321,7 +7281,7 @@ namespace org.kbinani.cadencii {
                     }
                     //int clock_now = AppManager.getCurrentClock();
                     //double sec_now = vsq.getSecFromClock( clock_now );
-                } else {
+                } else {*/
                     VsqFileEx tvsq = new VsqFileEx( "Miku", vsq.getPreMeasure(), 4, 4, 500000 );
                     VsqFileEx.setTrackRendererKind( tvsq.Track.get( 1 ), RendererKind.NULL );
                     VSTiProxy.render( tvsq,
@@ -7336,7 +7296,7 @@ namespace org.kbinani.cadencii {
                                       mode_infinite,
                                       tmppath,
                                       false );
-                }
+                //}
             }
 
             double now = PortUtil.getCurrentTime();

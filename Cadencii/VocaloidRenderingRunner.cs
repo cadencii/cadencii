@@ -117,6 +117,7 @@ namespace org.kbinani.cadencii {
                     PortUtil.println( "VocaloidRenderingRunner#abortRendering; waiting driver.isRendering()" );
 #endif
                     System.Windows.Forms.Application.DoEvents();
+                    System.Threading.Thread.Sleep( 100 );
                 }
             }
             m_rendering = false;
