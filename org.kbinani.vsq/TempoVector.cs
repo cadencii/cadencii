@@ -33,9 +33,18 @@ namespace org.kbinani.vsq {
     [Serializable]
     public class TempoVector : Vector<TempoTableEntry> {
 #endif
+        /// <summary>
+        /// 4分音符1拍あたりのゲートタイム
+        /// </summary>
         protected const int gatetimePerQuater = 480;
+        /// <summary>
+        /// デフォルトのテンポ値(4分音符1拍あたりのマイクロ秒)
+        /// </summary>
         protected const int baseTempo = 500000; 
 
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
         public TempoVector()
 #if JAVA
         {
@@ -50,8 +59,12 @@ namespace org.kbinani.vsq {
 #endif
         }
 
+        /// <summary>
+        /// 指定した時刻におけるゲートタイムを取得します
+        /// </summary>
+        /// <param name="time">ゲートタイムを取得する時刻(秒)</param>
+        /// <returns>ゲートタイム</returns>
         public double getClockFromSec( double time ) {
-            // timeにおけるテンポを取得
             int tempo = baseTempo;
             double base_clock = 0;
             double base_time = 0f;
@@ -76,6 +89,10 @@ namespace org.kbinani.vsq {
             return base_clock + dt * gatetimePerQuater * 1000000.0 / (double)tempo;
         }
 
+        /// <summary>
+        /// このテーブルに登録されているテンポ変更イベントのうち、時刻に関する情報を再計算します。
+        /// 新しいテンポ変更イベントを登録したり、既存のイベントを変更した場合に、都度呼び出す必要があります
+        /// </summary>
         public void updateTempoInfo() {
             int c = size();
             if ( c == 0 ) {
@@ -101,6 +118,11 @@ namespace org.kbinani.vsq {
             }
         }
 
+        /// <summary>
+        /// 指定したゲートタイムにおける時刻を取得します
+        /// </summary>
+        /// <param name="clock">時刻を取得するゲートタイム</param>
+        /// <returns>時刻(秒)</returns>
         public double getSecFromClock( double clock ) {
             int c = size();
             for ( int i = c - 1; i >= 0; i-- ) {

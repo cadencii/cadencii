@@ -14,8 +14,10 @@
 #if JAVA
 package org.kbinani.cadencii;
 
-using java.util.*;
-using java.awt.*;
+import java.util.*;
+import java.awt.*;
+import org.kbinani.vsq.*;
+import org.kbinani.windows.forms.*; 
 #else
 using System;
 using System.Threading;

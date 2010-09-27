@@ -36,6 +36,8 @@ namespace org.kbinani.cadencii {
         public Rectangle mRectangleInPixel;
         public String mText;
         public int mAccent;
+        public int mDecay;
+        public int mVelocity;
         public int mInternalID;
         /// <summary>
         /// 音符の先頭から，ビブラート開始位置までの長さ(単位：ピクセル)
@@ -79,6 +81,8 @@ namespace org.kbinani.cadencii {
                            Rectangle rect, 
                            String text_,
                            int accent_,
+                           int decay,
+                           int velocity,
                            int internal_id,
                            int vibrato_delay,
                            boolean overwrapped, 
@@ -98,6 +102,8 @@ namespace org.kbinani.cadencii {
             mRectangleInPixel = rect;
             mText = text_;
             mAccent = accent_;
+            mDecay = decay;
+            mVelocity = velocity;
             mInternalID = internal_id;
             mVibratoDelayInPixel = vibrato_delay;
             mIsOverlapped = overwrapped;

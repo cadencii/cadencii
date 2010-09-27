@@ -1889,72 +1889,81 @@ namespace org.kbinani.cadencii {
         /// <param name="g"></param>
         /// <param name="track"></param>
         /// <param name="color"></param>
+        /// <param name="is_front"></param>
+        /// <param name="type"></param>
         public void drawVEL( Graphics2D g, VsqTrack track, Color color, boolean is_front, CurveType type ) {
-            Point pmouse = pointToClient( PortUtil.getMousePosition() );
-            Point mouse = new Point( pmouse.x, pmouse.y );
+            Point mouse = pointToClient( PortUtil.getMousePosition() );
 
             int HEADER = 8;
-            int height = getGraphHeight();
-            float order = (type.equals( CurveType.VEL )) ? height / 127f : height / 100f;
-            int oy = getHeight() - 42;
+            int graph_height = getGraphHeight();
+            float order = (type.equals( CurveType.VEL )) ? graph_height / 127f : graph_height / 100f;
+            int height = getHeight();
+            int width = getWidth();
+            int oy = height - 42;
             Shape last_clip = g.getClip();
-            int xoffset = AppManager.keyOffset + AppManager.keyWidth - AppManager.getStartToDrawX();
-            g.clipRect( AppManager.keyWidth, HEADER, getWidth() - AppManager.keyWidth, height );
+            int stdx = AppManager.getStartToDrawX();
+            int key_width = AppManager.keyWidth;
+            int xoffset = key_width - stdx;
+            g.clipRect( key_width, HEADER, width - key_width, graph_height );
             float scale = AppManager.getScaleX();
-            int count = track.getEventCount();
+            int selected = AppManager.getSelected();
 
             g.setFont( AppManager.baseFont10Bold );
             boolean cursor_should_be_hand = false;
-            for ( int i = 0; i < count; i++ ) {
-                VsqEvent ve = track.getEvent( i );
-                if ( ve.ID.type != VsqIDType.Anote ) {
-                    continue;
-                }
-                int clock = ve.Clock;
-                int x = (int)(clock * scale) + xoffset;
-                if ( x + VEL_BAR_WIDTH < 0 ) {
-                    continue;
-                } else if ( getWidth() < x ) {
-                    break;
-                } else {
-                    int value = 0;
-                    if ( type.equals( CurveType.VEL ) ) {
-                        value = ve.ID.Dynamics;
-                    } else if ( type.equals( CurveType.Accent ) ) {
-                        value = ve.ID.DEMaccent;
-                    } else if ( type.equals( CurveType.Decay ) ) {
-                        value = ve.ID.DEMdecGainRate;
+            lock ( AppManager.drawObjects ) {
+                Vector<DrawObject> target_list = AppManager.drawObjects.get( selected - 1 );
+                int count = target_list.size();
+                int i_start = AppManager.drawStartIndex[selected - 1];
+                for ( int i = i_start; i < count; i++ ) {
+                    DrawObject dobj = target_list.get( i );
+                    if ( dobj.mType != DrawObjectType.Note ) {
+                        continue;
                     }
-                    int y = oy - (int)(value * order);
-                    if ( is_front && AppManager.isSelectedEventContains( AppManager.getSelected(), ve.InternalID ) ) {
-                        g.setColor( s_brs_a127_008_166_172 );
-                        g.fillRect( x, y, VEL_BAR_WIDTH, oy - y );
-                        if ( _mouse_down_mode == MouseDownMode.VEL_EDIT ) {
-                            int editing = 0;
-                            if ( _veledit_selected.containsKey( ve.InternalID ) ) {
-                                if ( _selected_curve.equals( CurveType.VEL ) ) {
-                                    editing = _veledit_selected.get( ve.InternalID ).editing.ID.Dynamics;
-                                } else if ( _selected_curve.equals( CurveType.Accent ) ) {
-                                    editing = _veledit_selected.get( ve.InternalID ).editing.ID.DEMaccent;
-                                } else if ( _selected_curve.equals( CurveType.Decay ) ) {
-                                    editing = _veledit_selected.get( ve.InternalID ).editing.ID.DEMdecGainRate;
-                                }
-                                int edit_y = oy - (int)(editing * order);
-                                g.setColor( BRS_A244_255_023_012 );
-                                g.fillRect( x, edit_y, VEL_BAR_WIDTH, oy - edit_y );
-                                g.setColor( Color.white );
-                                g.drawString( editing + "", x + VEL_BAR_WIDTH, (edit_y > oy - 20) ? oy - 20 : edit_y );
-                            }
+                    int x = dobj.mRectangleInPixel.x + xoffset;
+                    if ( x + VEL_BAR_WIDTH < 0 ) {
+                        continue;
+                    } else if ( width < x ) {
+                        break;
+                    } else {
+                        int value = 0;
+                        if ( type.equals( CurveType.VEL ) ) {
+                            value = dobj.mVelocity;
+                        } else if ( type.equals( CurveType.Accent ) ) {
+                            value = dobj.mAccent;
+                        } else if ( type.equals( CurveType.Decay ) ) {
+                            value = dobj.mDecay;
                         }
-                    } else {
-                        g.setColor( color );
-                        g.fillRect( x, y, VEL_BAR_WIDTH, oy - y );
-                    }
-                    if ( _mouse_down_mode == MouseDownMode.VEL_EDIT ) {
-                        cursor_should_be_hand = true;
-                    } else {
-                        if ( AppManager.getSelectedTool() == EditTool.ARROW && is_front && isInRect( mouse.x, mouse.y, new Rectangle( x, y, VEL_BAR_WIDTH, oy - y ) ) ) {
+                        int y = oy - (int)(value * order);
+                        if ( is_front && AppManager.isSelectedEventContains( selected, dobj.mInternalID ) ) {
+                            g.setColor( s_brs_a127_008_166_172 );
+                            g.fillRect( x, y, VEL_BAR_WIDTH, oy - y );
+                            if ( _mouse_down_mode == MouseDownMode.VEL_EDIT ) {
+                                int editing = 0;
+                                if ( _veledit_selected.containsKey( dobj.mInternalID ) ) {
+                                    if ( _selected_curve.equals( CurveType.VEL ) ) {
+                                        editing = _veledit_selected.get( dobj.mInternalID ).editing.ID.Dynamics;
+                                    } else if ( _selected_curve.equals( CurveType.Accent ) ) {
+                                        editing = _veledit_selected.get( dobj.mInternalID ).editing.ID.DEMaccent;
+                                    } else if ( _selected_curve.equals( CurveType.Decay ) ) {
+                                        editing = _veledit_selected.get( dobj.mInternalID ).editing.ID.DEMdecGainRate;
+                                    }
+                                    int edit_y = oy - (int)(editing * order);
+                                    g.setColor( BRS_A244_255_023_012 );
+                                    g.fillRect( x, edit_y, VEL_BAR_WIDTH, oy - edit_y );
+                                    g.setColor( Color.white );
+                                    g.drawString( editing + "", x + VEL_BAR_WIDTH, (edit_y > oy - 20) ? oy - 20 : edit_y );
+                                }
+                            }
+                        } else {
+                            g.setColor( color );
+                            g.fillRect( x, y, VEL_BAR_WIDTH, oy - y );
+                        }
+                        if ( _mouse_down_mode == MouseDownMode.VEL_EDIT ) {
                             cursor_should_be_hand = true;
+                        } else {
+                            if ( AppManager.getSelectedTool() == EditTool.ARROW && is_front && isInRect( mouse.x, mouse.y, new Rectangle( x, y, VEL_BAR_WIDTH, oy - y ) ) ) {
+                                cursor_should_be_hand = true;
+                            }
                         }
                     }
                 }
@@ -2225,12 +2234,13 @@ namespace org.kbinani.cadencii {
         public void drawVsqBPList_impl( Graphics2D g, VsqBPList list, Color color, boolean is_front ) {
             int max = list.getMaximum();
             int min = list.getMinimum();
-            int height = getGraphHeight();
-            float order = height / (float)(max - min);
-            int oy = getHeight() - 42;
+            int graph_height = getGraphHeight();
+            float order = graph_height / (float)(max - min);
+            int height = getHeight();
+            int oy = height - 42;
             Shape last_clip = g.getClip();
             g.clipRect( AppManager.keyWidth, HEADER,
-                        getWidth() - AppManager.keyWidth, getHeight() - 2 * OFFSET_TRACK_TAB );
+                        getWidth() - AppManager.keyWidth, height - 2 * OFFSET_TRACK_TAB );
 
             // 選択範囲。この四角の中に入っていたら、選択されているとみなす
             Rectangle select_window = new Rectangle( Math.Min( AppManager.curveSelectingRectangle.x, AppManager.curveSelectingRectangle.x + AppManager.curveSelectingRectangle.width ),
@@ -2409,13 +2419,14 @@ namespace org.kbinani.cadencii {
         public void drawVsqBPList( Graphics2D g, VsqBPList list, Color color, boolean is_front ) {
             int max = list.getMaximum();
             int min = list.getMinimum();
-            int graphHeight = getGraphHeight();
+            int graph_height = getGraphHeight();
             int width = getWidth();
-            float order = graphHeight / (float)(max - min);
-            int oy = getHeight() - 42;
+            int height = getHeight();
+            float order = graph_height / (float)(max - min);
+            int oy = height - 42;
             Shape last_clip = g.getClip();
             g.clipRect( AppManager.keyWidth, HEADER,
-                        width - AppManager.keyWidth, getHeight() - 2 * OFFSET_TRACK_TAB );
+                        width - AppManager.keyWidth, height - 2 * OFFSET_TRACK_TAB );
 
             // 選択範囲。この四角の中に入っていたら、選択されているとみなす
             Rectangle select_window = new Rectangle( Math.Min( AppManager.curveSelectingRectangle.x, AppManager.curveSelectingRectangle.x + AppManager.curveSelectingRectangle.width ),
@@ -2437,7 +2448,7 @@ namespace org.kbinani.cadencii {
             Color brush = color;
 #if !JAVA
             // 点座標のバッファを全て無意味な座標で埋める
-            System.Drawing.Point nullp = new System.Drawing.Point( 2 * width, 2 * graphHeight );
+            System.Drawing.Point nullp = new System.Drawing.Point( 2 * width, 2 * graph_height );
             for ( int i = 0; i < _pointBuffer.Length; i++ ) {
                 _pointBuffer[i] = nullp;
             }
@@ -2630,7 +2641,7 @@ namespace org.kbinani.cadencii {
                         g.fillRect( px - DOT_WID, py - DOT_WID, w, w );
                     } else {
                         if ( draw_dot_near_mouse ) {
-                            if ( mouse.y < 0 || getHeight() < mouse.y ) {
+                            if ( mouse.y < 0 || height < mouse.y ) {
                                 continue;
                             }
                             double x = Math.Abs( px - mouse.x ) * inv_threshold_near_px;

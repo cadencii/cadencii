@@ -261,20 +261,38 @@ namespace org.kbinani.vsq {
             }
         }
 
+
+        /// <summary>
+        /// オーバーロードされます．このインスタンスの内容を，MusicXML形式のファイルに出力します
+        /// </summary>
+        /// <param name="file">出力するファイルのパス</param>
+        /// <param name="encoding">MusicXMLのテキストエンコーディング</param>
         public void printAsMusicXml( String file, String encoding ) {
             printAsMusicXmlCore( file, encoding, "", (int)(60e6 / getTempoAt( 0 )), false );
         }
 
+        /// <summary>
+        /// オーバーロードされます．このインスタンスの内容を，MusicXML形式のファイルに出力します
+        /// </summary>
+        /// <param name="file">出力するファイルのパス</param>
+        /// <param name="encoding">MusicXMLのテキストエンコーディング</param>
+        /// <param name="tempo">このインスタンスの中身を，このテンポ値の場合の再生秒時に合致するように音符などを移動する</param>
         public void printAsMusicXml( String file, String encoding, int tempo ) {
             printAsMusicXmlCore( file, encoding, "", tempo, true );
         }
 
+        /// <summary>
+        /// オーバーロードされます．このインスタンスの内容を，MusicXML形式のファイルに出力します
+        /// </summary>
+        /// <param name="file">出力するファイルのパス</param>
+        /// <param name="encoding">MusicXMLのテキストエンコーディング</param>
+        /// <param name="software">出力を行ったソフトウェアの名称</param>
         public void printAsMusicXml( String file, String encoding, String software ) {
             printAsMusicXmlCore( file, encoding, software, (int)(60e6 / getTempoAt( 0 )), false );
         }
 
         /// <summary>
-        /// このインスタンスの内容を，MusicXML形式のファイルに出力します
+        /// オーバーロードされます．このインスタンスの内容を，MusicXML形式のファイルに出力します
         /// </summary>
         /// <param name="file">出力するファイルのパス</param>
         /// <param name="encoding">MusicXMLのテキストエンコーディング</param>
@@ -432,8 +450,7 @@ namespace org.kbinani.vsq {
             }
         }
 
-        private void printAsMusicXmlCore( String file, String encoding, String software, int tempo, boolean change_tempo ) 
-        {
+        private void printAsMusicXmlCore( String file, String encoding, String software, int tempo, boolean change_tempo ) {
             BufferedWriter sw = null;
             VsqFile vsq = (VsqFile)clone();
             int intTempo = (int)(60e6 / tempo);
@@ -496,7 +513,7 @@ namespace org.kbinani.vsq {
                     for ( int n = 0; n < countTimesig; n++ ) {
                         TimeSigTableEntry timesigEntryThis = vsq.TimesigTable.get( n );
                         clockPerMeasure = timesigEntryThis.Numerator * 480 * 4 / timesigEntryThis.Denominator;
-                        
+
                         // この拍子が曲の終まで続くとしたら，あと何小節出力する必要があるのか？
                         int remainingMeasures = 0;
                         if ( n + 1 < countTimesig ) {
@@ -2817,7 +2834,7 @@ namespace org.kbinani.vsq {
 #if JAVA
             throws IOException
 #endif
- {
+        {
             //VsqTrack item = Tracks[track];
             String _NL = "" + (char)(byte)0x0a;
             //ヘッダ
@@ -2995,9 +3012,12 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// 音符イベントから，NRPNを作成します
         /// </summary>
+        /// <param name="vsq"></param>
+        /// <param name="track"></param>
         /// <param name="ve"></param>
         /// <param name="msPreSend"></param>
         /// <param name="note_loc"></param>
+        /// <param name="add_delay_sign"></param>
         /// <returns></returns>
         public static VsqNrpn generateNoteNRPN( VsqFile vsq, int track, VsqEvent ve, int msPreSend, byte note_loc, boolean add_delay_sign ) {
             int clock = ve.Clock;
@@ -3179,14 +3199,14 @@ namespace org.kbinani.vsq {
         }
 
         /// <summary>
-        /// 指定したトラックのデータから，NRPNを作成します
+        /// 指定したシーケンスのデータから、指定したゲートタイム区間のNRPNのリストを作成します
         /// </summary>
-        /// <param name="vsq"></param>
-        /// <param name="track"></param>
-        /// <param name="msPreSend"></param>
-        /// <param name="clock_start"></param>
-        /// <param name="clock_end"></param>
-        /// <returns></returns>
+        /// <param name="vsq">作成元のシーケンス</param>
+        /// <param name="track">トラック番号</param>
+        /// <param name="msPreSend">プリセンド値(ミリ秒)</param>
+        /// <param name="clock_start">リストの作成区間の開始ゲートタイム</param>
+        /// <param name="clock_end">リストの作成区間の終了ゲートタイム</param>
+        /// <returns>NRPNのリスト</returns>
         public static VsqNrpn[] generateNRPN( VsqFile vsq, int track, int msPreSend, int clock_start, int clock_end ) {
             VsqFile temp = (VsqFile)vsq.clone();
             temp.removePart( clock_end, vsq.TotalClocks );
@@ -3201,12 +3221,12 @@ namespace org.kbinani.vsq {
         }
 
         /// <summary>
-        /// 指定したトラックのデータから，NRPNを作成します
+        /// 指定したシーケンスのデータから、NRPNのリストを作成します
         /// </summary>
-        /// <param name="vsq"></param>
-        /// <param name="track"></param>
-        /// <param name="msPreSend"></param>
-        /// <returns></returns>
+        /// <param name="vsq">作成元のシーケンス</param>
+        /// <param name="track">トラック番号</param>
+        /// <param name="msPreSend">プリセンド値(ミリ秒)</param>
+        /// <returns>NRPNのリスト</returns>
         public static VsqNrpn[] generateNRPN( VsqFile vsq, int track, int msPreSend ) {
 #if DEBUG
             PortUtil.println( "GenerateNRPN(VsqTrack,int,int,int,int)" );
@@ -3339,10 +3359,10 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// 指定したトラックから、PitchBendのNRPNを作成します
         /// </summary>
-        /// <param name="vsq"></param>
-        /// <param name="track"></param>
-        /// <param name="msPreSend"></param>
-        /// <returns></returns>
+        /// <param name="vsq">作成元のシーケンス</param>
+        /// <param name="track">トラック番号</param>
+        /// <param name="msPreSend">プリセンド値(ミリ秒)</param>
+        /// <returns>NRPNのリスト</returns>
         public static VsqNrpn[] generatePitchBendNRPN( VsqFile vsq, int track, int msPreSend ) {
             Vector<VsqNrpn> ret = new Vector<VsqNrpn>();
             VsqBPList pit = vsq.Track.get( track ).getCurve( "PIT" );
@@ -3365,12 +3385,12 @@ namespace org.kbinani.vsq {
         }
 
         /// <summary>
-        /// 指定したトラックからPitchBendSensitivityのNRPNを作成します
+        /// 指定したトラックから、PitchBendSensitivityのNRPNを作成します
         /// </summary>
-        /// <param name="vsq"></param>
-        /// <param name="track"></param>
-        /// <param name="msPreSend"></param>
-        /// <returns></returns>
+        /// <param name="vsq">作成元のシーケンス</param>
+        /// <param name="track">トラック番号</param>
+        /// <param name="msPreSend">プリセンド値(ミリ秒)</param>
+        /// <returns>NRPNのリスト</returns>
         public static VsqNrpn[] generatePitchBendSensitivityNRPN( VsqFile vsq, int track, int msPreSend ) {
             Vector<VsqNrpn> ret = new Vector<VsqNrpn>();
             VsqBPList pbs = vsq.Track.get( track ).getCurve( "PBS" );
@@ -3390,12 +3410,12 @@ namespace org.kbinani.vsq {
         }
 
         /// <summary>
-        /// 指定した音符イベントから，ビブラート出力用のNRPNを作成します
+        /// 指定した音符イベントから、ビブラート出力用のNRPNのリストを作成します
         /// </summary>
-        /// <param name="vsq"></param>
-        /// <param name="ve"></param>
-        /// <param name="msPreSend"></param>
-        /// <returns></returns>
+        /// <param name="vsq">作成元のシーケンス</param>
+        /// <param name="ve">作成元の音符イベント</param>
+        /// <param name="msPreSend">プリセンド値(ミリ秒)</param>
+        /// <returns>NRPNのリスト</returns>
         public static VsqNrpn[] generateVibratoNRPN( VsqFile vsq, VsqEvent ve, int msPreSend ) {
             Vector<VsqNrpn> ret = new Vector<VsqNrpn>();
             if ( ve.ID.VibratoHandle != null ) {
@@ -3445,12 +3465,12 @@ namespace org.kbinani.vsq {
         }
 
         /// <summary>
-        /// 指定したトラックから、VoiceChangeParameterのNRPNのリストを作成します
+        /// 指定したシーケンスから、VoiceChangeParameterのNRPNのリストを作成します
         /// </summary>
-        /// <param name="vsq"></param>
-        /// <param name="track"></param>
-        /// <param name="msPreSend"></param>
-        /// <returns></returns>
+        /// <param name="vsq">作成元のシーケンス</param>
+        /// <param name="track">トラック番号</param>
+        /// <param name="msPreSend">プリセンド値(ミリ秒)</param>
+        /// <returns>NRPNのリスト</returns>
         public static VsqNrpn[] generateVoiceChangeParameterNRPN( VsqFile vsq, int track, int msPreSend ) {
             int premeasure_clock = vsq.getPreMeasureClocks();
             String renderer = vsq.Track.get( track ).getCommon().Version;
@@ -3491,6 +3511,11 @@ namespace org.kbinani.vsq {
             return res.toArray( new VsqNrpn[] { } );
         }
 
+        /// <summary>
+        /// 指定した整数のMSBとLSBを計算します
+        /// </summary>
+        /// <param name="value">整数値</param>
+        /// <returns>キーがMSB、値がLSBとなるペア値</returns>
         public static ValuePair<Byte, Byte> getMsbAndLsb( int value ) {
             ValuePair<Byte, Byte> ret = new ValuePair<Byte, Byte>();
             if ( 0x3fff < value ) {
@@ -3504,6 +3529,10 @@ namespace org.kbinani.vsq {
             return ret;
         }
 
+        /// <summary>
+        /// このシーケンスが保持している拍子変更を元に、MIDIイベントリストを作成します
+        /// </summary>
+        /// <returns>MIDIイベントのリスト</returns>
         public Vector<MidiEvent> generateTimeSig() {
             Vector<MidiEvent> events = new Vector<MidiEvent>();
             for ( Iterator<TimeSigTableEntry> itr = TimesigTable.iterator(); itr.hasNext(); ) {
@@ -3513,6 +3542,10 @@ namespace org.kbinani.vsq {
             return events;
         }
 
+        /// <summary>
+        /// このシーケンスが保持しているテンポ変更を元に、MIDIイベントリストを作成します
+        /// </summary>
+        /// <returns>MIDIイベントのリスト</returns>
         public Vector<MidiEvent> generateTempoChange() {
             Vector<MidiEvent> events = new Vector<MidiEvent>();
             for ( Iterator<TempoTableEntry> itr = TempoTable.iterator(); itr.hasNext(); ) {

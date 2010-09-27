@@ -11,19 +11,48 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.cadencii;
+
+import java.awt.*;
+import java.awt.image.*;
+import org.kbinani.*;
+#else
 using System;
 using org.kbinani;
 using org.kbinani.java.awt;
 using org.kbinani.java.awt.image;
 
 namespace org.kbinani.cadencii {
+#endif
 
+    /// <summary>
+    /// 高さが一定で，横方向に長く，横方向にスクロールして使用するタイプで，描画ループが重いコンポーネントを，比較的高速に描画します．
+    /// </summary>
     public class ImageCachedComponentDrawer {
+        /// <summary>
+        /// 1個の画像キャッシュの幅(単位はピクセル)
+        /// </summary>
         private const int WIDTH = 512;
+        /// <summary>
+        /// コンポーネントの総幅(単位はピクセル)
+        /// </summary>
         private int mWidth;
+        /// <summary>
+        /// コンポーネントの高さ(単位はピクセル)
+        /// </summary>
         private int mHeight;
+        /// <summary>
+        /// コンポーネント画像のキャッシュ
+        /// </summary>
         private BufferedImage[] mCache;
 
+        /// <summary>
+        /// コンストラクタ
+        /// 初期のコンポーネントサイズを指定します。ここで指定した高さは変更できません。幅は後から変更可能です。
+        /// </summary>
+        /// <param name="width">コンポーネントの幅(単位はピクセル)</param>
+        /// <param name="height">コンポーネントの高さ(単位はピクセル)</param>
         public ImageCachedComponentDrawer( int width, int height ) {
             mWidth = width;
             mHeight = height;
@@ -39,10 +68,18 @@ namespace org.kbinani.cadencii {
             }
         }
 
+        /// <summary>
+        /// コンポーネント画像の総横幅を取得します
+        /// </summary>
+        /// <returns>コンポーネント画像の総幅(単位はピクセル)</returns>
         public int getWidth() {
             return mWidth;
         }
 
+        /// <summary>
+        /// コンポーネント画像の総横幅を設定します
+        /// </summary>
+        /// <param name="width">新しく設定する横幅(単位はピクセル)</param>
         public void setWidth( int width ) {
             // 必要なバッファの個数を計算
             int num = width / WIDTH + 1;
@@ -93,6 +130,11 @@ namespace org.kbinani.cadencii {
             mWidth = width;
         }
 
+        /// <summary>
+        /// キャッシュされたコンポーネント画像を、指定したグラフィックスを使って描画します。
+        /// </summary>
+        /// <param name="x_offset">画像の左方向のシフト量(単位はピクセル)</param>
+        /// <param name="g">描画対象のグラフィックス</param>
         public void draw( int x_offset, Graphics g ) {
             if ( mCache == null ) {
                 return;
@@ -104,6 +146,10 @@ namespace org.kbinani.cadencii {
             }
         }
 
+        /// <summary>
+        /// コンポーネント画像のキャッシュを再描画します
+        /// </summary>
+        /// <param name="component">再描画に使用するコンポーネント</param>
         public void updateCache( IImageCachedComponentDrawer component ) {
             if( mCache == null ){
                 return;
@@ -117,4 +163,6 @@ namespace org.kbinani.cadencii {
         }
     }
 
+#if !JAVA
 }
+#endif
