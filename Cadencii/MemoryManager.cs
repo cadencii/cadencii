@@ -18,17 +18,32 @@ using org.kbinani.java.util;
 
 namespace org.kbinani.cadencii {
 
+    /// <summary>
+    /// アンマネージドなメモリーの確保・解放を行うマネージャです。
+    /// </summary>
     public class MemoryManager {
-        private Vector<IntPtr> list = new Vector<IntPtr>();
+        /// <summary>
+        /// 確保したメモリーへのポインターの一覧
+        /// </summary>
+        private Vector<IntPtr> mList = new Vector<IntPtr>();
 
+        /// <summary>
+        /// メモリを確保します
+        /// </summary>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
         public IntPtr malloc( int bytes ) {
             IntPtr ret = Marshal.AllocHGlobal( bytes );
-            list.add( ret );
+            mList.add( ret );
             return ret;
         }
 
+        /// <summary>
+        /// メモリを開放します
+        /// </summary>
+        /// <param name="p"></param>
         public void free( IntPtr p ) {
-            for ( Iterator<IntPtr> itr = list.iterator(); itr.hasNext(); ) {
+            for ( Iterator<IntPtr> itr = mList.iterator(); itr.hasNext(); ) {
                 IntPtr v = itr.next();
                 if ( v.Equals( p ) ) {
                     Marshal.FreeHGlobal( p );
@@ -38,8 +53,11 @@ namespace org.kbinani.cadencii {
             }
         }
 
+        /// <summary>
+        /// このマネージャを使って確保されたメモリーのうち、未解放のものを全て解放します
+        /// </summary>
         public void dispose() {
-            for ( Iterator<IntPtr> itr = list.iterator(); itr.hasNext(); ) {
+            for ( Iterator<IntPtr> itr = mList.iterator(); itr.hasNext(); ) {
                 IntPtr v = itr.next();
                 try {
                     Marshal.FreeHGlobal( v );
@@ -47,9 +65,12 @@ namespace org.kbinani.cadencii {
                     PortUtil.stderr.println( "MemoryManager#dispose; ex=" + ex );
                 }
             }
-            list.clear();
+            mList.clear();
         }
 
+        /// <summary>
+        /// デストラクタ。内部でdisposeメソッドを呼びます
+        /// </summary>
         ~MemoryManager() {
             dispose();
         }

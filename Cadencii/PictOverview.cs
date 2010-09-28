@@ -655,7 +655,7 @@ namespace org.kbinani.cadencii {
             int selected = AppManager.getSelected();
 
             int overview_dot_diam = 2;
-            Vector<DrawObject> objs = AppManager.drawObjects.get( selected - 1 );
+            Vector<DrawObject> objs = AppManager.mDrawObjects.get( selected - 1 );
 
             // 平均ノートナンバーを調べる
             double sum = 0.0;

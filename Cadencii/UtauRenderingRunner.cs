@@ -231,8 +231,8 @@ namespace org.kbinani.cadencii {
                     int millisec = (int)((sec_end_act - sec_start_act) * 1000) + 50;
 
                     OtoArgs oa = new OtoArgs();
-                    if ( AppManager.utauVoiceDB.containsKey( singer ) ) {
-                        UtauVoiceDB db = AppManager.utauVoiceDB.get( singer );
+                    if ( AppManager.mUtauVoiceDB.containsKey( singer ) ) {
+                        UtauVoiceDB db = AppManager.mUtauVoiceDB.get( singer );
                         oa = db.attachFileNameFromLyric( lyric );
                     }
 #if MAKEBAT_SP

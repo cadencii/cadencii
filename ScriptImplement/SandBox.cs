@@ -74,7 +74,7 @@ public class Search {
                     if ( item.ID.Length < 240 ) {
                         AppManager.addSelectedEvent( item.InternalID );
                         AppManager.setCurrentClock( item.Clock );
-                        AppManager.mainWindow.ensureCursorVisible();
+                        AppManager.mMainWindow.ensureCursorVisible();
                         break;
                     }
                 }

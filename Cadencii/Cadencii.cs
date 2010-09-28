@@ -104,11 +104,11 @@ namespace org.kbinani.cadencii{
                 Logger.write( typeof( Cadencii ) + ".Main; ex=" + ex + "\n" );
             }
 #endif
-            AppManager.mainWindow = new FormMain( file );
+            AppManager.mMainWindow = new FormMain( file );
 #if !MONO
-            AppManager.mainWindow.Load += mainWindow_Load;
+            AppManager.mMainWindow.Load += mainWindow_Load;
 #endif
-            Application.Run( AppManager.mainWindow );
+            Application.Run( AppManager.mMainWindow );
 #if !DEBUG
             } catch ( Exception ex ) {
                 String str_ex = getExceptionText( ex, 0 );
@@ -166,7 +166,7 @@ namespace org.kbinani.cadencii{
                 }
             }
             splash = null;
-            AppManager.mainWindow.Load -= mainWindow_Load;
+            AppManager.mMainWindow.Load -= mainWindow_Load;
         }
 #endif
     }

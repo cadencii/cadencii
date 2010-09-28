@@ -128,10 +128,10 @@ namespace org.kbinani.cadencii {
             txtDataPointClock.setText( clock + "" );
             txtDataPointValue.setText( value + "" );
 
-            if ( AppManager.mainWindow != null ) {
-                AppManager.mainWindow.setEdited( true );
-                AppManager.mainWindow.ensureVisible( clock );
-                AppManager.mainWindow.refreshScreen();
+            if ( AppManager.mMainWindow != null ) {
+                AppManager.mMainWindow.setEdited( true );
+                AppManager.mMainWindow.ensureVisible( clock );
+                AppManager.mMainWindow.refreshScreen();
             }
 
             if ( mode_clock ) {
@@ -230,9 +230,9 @@ namespace org.kbinani.cadencii {
 
             AppManager.clearSelectedPoint();
             AppManager.addSelectedPoint( m_curve, bp.id );
-            if ( AppManager.mainWindow != null ) {
-                AppManager.mainWindow.ensureVisible( clock );
-                AppManager.mainWindow.refreshScreen();
+            if ( AppManager.mMainWindow != null ) {
+                AppManager.mMainWindow.ensureVisible( clock );
+                AppManager.mMainWindow.refreshScreen();
             }
         }
 
@@ -275,9 +275,9 @@ namespace org.kbinani.cadencii {
                 AppManager.addSelectedPoint( m_curve, m_editing_id );
             }
 
-            if ( AppManager.mainWindow != null ) {
-                AppManager.mainWindow.updateDrawObjectList();
-                AppManager.mainWindow.refreshScreen();
+            if ( AppManager.mMainWindow != null ) {
+                AppManager.mMainWindow.updateDrawObjectList();
+                AppManager.mMainWindow.refreshScreen();
             }
             btnUndo.setEnabled( AppManager.isUndoAvailable() );
             btnRedo.setEnabled( AppManager.isRedoAvailable() );

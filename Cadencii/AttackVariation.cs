@@ -53,6 +53,17 @@ namespace org.kbinani.cadencii {
             return equals( obj );
         }
 #endif
+
+#if !JAVA
+        public override int GetHashCode() {
+            if ( description == null ) {
+                return "".GetHashCode();
+            } else {
+                return description.GetHashCode();
+            }
+        }
+#endif
+
     }
 
 #if !JAVA

@@ -241,8 +241,8 @@ namespace org.kbinani.cadencii {
                 return;
             }
             BButton btn = (BButton)sender;
-            if ( AppManager.mainWindow != null ) {
-                AppManager.mainWindow.toFront();
+            if ( AppManager.mMainWindow != null ) {
+                AppManager.mMainWindow.toFront();
             }
 
             IconDynamicsHandle handle = (IconDynamicsHandle)btn.getTag();
@@ -256,7 +256,7 @@ namespace org.kbinani.cadencii {
                 length = 1;
             }
             item.ID.setLength( length );
-            AppManager.addingEvent = item;
+            AppManager.mAddingEvent = item;
 
 #if JAVA
             //TODO: fixme FormIconPalette#handleCommonMouseDown

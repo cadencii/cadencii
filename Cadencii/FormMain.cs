@@ -30,6 +30,7 @@ import org.kbinani.windows.forms.*;
 import org.kbinani.xml.*;
 #else
 #define MONITOR_FPS
+//#define USE_BGWORK_SCREEN
 using System;
 using System.Diagnostics;
 using System.Media;
@@ -294,6 +295,10 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region static field
+        /// <summary>
+        /// refreshScreenが呼ばれている最中かどうか
+        /// </summary>
+        private static boolean mIsRefreshing = false;
         /// <summary>
         /// CTRLキー。MacOSXの場合はMenu
         /// </summary>
@@ -675,7 +680,7 @@ namespace org.kbinani.cadencii {
             splitContainer1.Panel2MinSize = trackSelector.getPreferredMinSize();
             this.setMinimumSize( getWindowMinimumSize() );
 #endif
-            stripBtnScroll.setSelected( AppManager.autoScroll );
+            stripBtnScroll.setSelected( AppManager.mAutoScroll );
 
             applySelectedTool();
             applyQuantizeMode();
@@ -851,17 +856,17 @@ namespace org.kbinani.cadencii {
             AppManager.inputTextBox.setEnabled( false );
             AppManager.inputTextBox.keyPressEvent.add( new BKeyPressEventHandler( this, "m_input_textbox_KeyPress" ) );
 #else
-            AppManager.inputTextBox = new LyricTextBox();
-            AppManager.inputTextBox.setVisible( false );
-            AppManager.inputTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            AppManager.inputTextBox.Width = 80;
-            AppManager.inputTextBox.AcceptsReturn = true;
-            AppManager.inputTextBox.setBackground( Color.white );
-            AppManager.inputTextBox.setFont( new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE9 ) );
-            AppManager.inputTextBox.setEnabled( false );
-            AppManager.inputTextBox.KeyPress += m_input_textbox_KeyPress;
-            AppManager.inputTextBox.Parent = pictPianoRoll;
-            panel1.Controls.Add( AppManager.inputTextBox );
+            AppManager.mInputTextBox = new LyricTextBox();
+            AppManager.mInputTextBox.setVisible( false );
+            AppManager.mInputTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            AppManager.mInputTextBox.Width = 80;
+            AppManager.mInputTextBox.AcceptsReturn = true;
+            AppManager.mInputTextBox.setBackground( Color.white );
+            AppManager.mInputTextBox.setFont( new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE9 ) );
+            AppManager.mInputTextBox.setEnabled( false );
+            AppManager.mInputTextBox.KeyPress += m_input_textbox_KeyPress;
+            AppManager.mInputTextBox.Parent = pictPianoRoll;
+            panel1.Controls.Add( AppManager.mInputTextBox );
 #endif
 
             pictCircuit = new CircuitView();
@@ -1187,8 +1192,8 @@ namespace org.kbinani.cadencii {
             if ( selected < 1 ) {
                 return null;
             }
-            lock ( AppManager.drawObjects ) {
-                Vector<DrawObject> dobj_list = AppManager.drawObjects.get( selected - 1 );
+            lock ( AppManager.mDrawObjects ) {
+                Vector<DrawObject> dobj_list = AppManager.mDrawObjects.get( selected - 1 );
                 int count = dobj_list.size();
                 int start_to_draw_x = AppManager.getStartToDrawX();
                 int start_to_draw_y = AppManager.getStartToDrawY();
@@ -1435,12 +1440,12 @@ namespace org.kbinani.cadencii {
         public void changeRealtimeInputSpeed( float newv ) {
             float old = AppManager.editorConfig.getRealtimeInputSpeed();
             double now = PortUtil.getCurrentTime();
-            float play_time = (float)(now - AppManager.previewStartedTime) * old / newv;
+            float play_time = (float)(now - AppManager.mPreviewStartedTime) * old / newv;
             int sec = (int)(Math.Floor( play_time ) + 0.1);
             int millisec = (int)((play_time - sec) * 1000);
-            AppManager.previewStartedTime = now - (sec + millisec / 1000.0);
+            AppManager.mPreviewStartedTime = now - (sec + millisec / 1000.0);
 #if ENABLE_MIDI
-            MidiPlayer.SetSpeed( newv, AppManager.previewStartedTime );
+            MidiPlayer.SetSpeed( newv, AppManager.mPreviewStartedTime );
 #endif
         }
 
@@ -2339,17 +2344,17 @@ namespace org.kbinani.cadencii {
 #if JAVA
             if ( !AppManager.inputTextBox.isVisible() ) {
 #else
-            if ( !AppManager.inputTextBox.Enabled ) {
+            if ( !AppManager.mInputTextBox.Enabled ) {
 #endif
                 return;
             }
 #if !JAVA
-            if ( AppManager.inputTextBox.IsDisposed ) {
+            if ( AppManager.mInputTextBox.IsDisposed ) {
                 return;
             }
 #endif
             SelectedEventEntry last_selected_event = AppManager.getLastSelectedEvent();
-            boolean phonetic_symbol_edit_mode = AppManager.inputTextBox.isPhoneticSymbolEditMode();
+            boolean phonetic_symbol_edit_mode = AppManager.mInputTextBox.isPhoneticSymbolEditMode();
 
             int selected = AppManager.getSelected();
             VsqFileEx vsq = AppManager.getVsqFile();
@@ -2410,7 +2415,7 @@ namespace org.kbinani.cadencii {
 #if DEBUG
             AppManager.debugWriteLine( "    original_phase,symbol=" + original_phrase + "," + original_symbol[0] );
             AppManager.debugWriteLine( "    phonetic_symbol_edit_mode=" + phonetic_symbol_edit_mode );
-            AppManager.debugWriteLine( "    AppManager.inputTextBox.setText(=" + AppManager.inputTextBox.getText() );
+            AppManager.debugWriteLine( "    AppManager.inputTextBox.setText(=" + AppManager.mInputTextBox.getText() );
 #endif
             String[] phrase = new String[count];
             String[] phonetic_symbol = new String[count];
@@ -2418,7 +2423,7 @@ namespace org.kbinani.cadencii {
                 phrase[i] = original_phrase[i];
                 phonetic_symbol[i] = original_symbol[i];
             }
-            String txt = AppManager.inputTextBox.getText();
+            String txt = AppManager.mInputTextBox.getText();
             int txtlen = PortUtil.getStringLength( txt );
             if ( txtlen > 0 ) {
                 // 1文字目は，UTAUの連続音入力のハイフンの可能性があるので，無駄に置換されるのを回避
@@ -2436,12 +2441,12 @@ namespace org.kbinani.cadencii {
             }
 
             // 発音記号または歌詞が変更された場合の処理
-            if ( (phonetic_symbol_edit_mode && !AppManager.inputTextBox.getText().Equals( original_symbol[0] )) ||
+            if ( (phonetic_symbol_edit_mode && !AppManager.mInputTextBox.getText().Equals( original_symbol[0] )) ||
                  (!phonetic_symbol_edit_mode && !phrase[0].Equals( original_phrase[0] )) ) {
                 if ( phonetic_symbol_edit_mode ) {
                     // 発音記号を編集するモード
-                    phrase[0] = AppManager.inputTextBox.getBufferText();
-                    phonetic_symbol[0] = AppManager.inputTextBox.getText();
+                    phrase[0] = AppManager.mInputTextBox.getBufferText();
+                    phonetic_symbol[0] = AppManager.mInputTextBox.getText();
 
                     // 入力された発音記号のうち、有効なものだけをピックアップ
                     String[] spl = PortUtil.splitString( phonetic_symbol[0], new char[] { ' ' }, true );
@@ -2510,8 +2515,8 @@ namespace org.kbinani.cadencii {
                         items[j].ID.LyricHandle.L0.setPhoneticSymbol( phonetic_symbol[j] );
                         VsqEvent singer = vsq_track.getSingerEventAt( items[j].Clock );
                         SingerConfig sc = AppManager.getSingerInfoUtau( singer.ID.IconHandle.Language, singer.ID.IconHandle.Program );
-                        if ( sc != null && AppManager.utauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
-                            UtauVoiceDB db = AppManager.utauVoiceDB.get( sc.VOICEIDSTR );
+                        if ( sc != null && AppManager.mUtauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
+                            UtauVoiceDB db = AppManager.mUtauVoiceDB.get( sc.VOICEIDSTR );
                             OtoArgs oa = db.attachFileNameFromLyric( phrase[j] );
                             items[j].UstEvent.PreUtterance = oa.msPreUtterance;
                             items[j].UstEvent.VoiceOverlap = oa.msOverlap;
@@ -2752,7 +2757,7 @@ namespace org.kbinani.cadencii {
                     draft = hScroll.getMaximum();
                 }
                 if ( hScroll.getValue() != draft ) {
-                    AppManager.drawStartIndex[AppManager.getSelected() - 1] = 0;
+                    AppManager.mDrawStartIndex[AppManager.getSelected() - 1] = 0;
                     hScroll.setValue( draft );
                 }
             }
@@ -2802,7 +2807,7 @@ namespace org.kbinani.cadencii {
 #if JAVA
             if ( !AppManager.inputTextBox.isVisible() ) {
 #else
-            if ( !AppManager.inputTextBox.Enabled ) {
+            if ( !AppManager.mInputTextBox.Enabled ) {
 #endif
 
 #if JAVA
@@ -2833,10 +2838,10 @@ namespace org.kbinani.cadencii {
                         if ( AppManager.isPlaying() ) {
                             AppManager.setPlaying( false );
                         } else {
-                            if ( !AppManager.startMarkerEnabled ) {
+                            if ( !AppManager.mStartMarkerEnabled ) {
                                 AppManager.setCurrentClock( 0 );
                             } else {
-                                AppManager.setCurrentClock( AppManager.startMarker );
+                                AppManager.setCurrentClock( AppManager.mStartMarker );
                             }
                             refreshScreen();
                         }
@@ -2879,7 +2884,7 @@ namespace org.kbinani.cadencii {
                 if ( !onPreviewKeyDown && flipPlaying ) {
                     if ( AppManager.isPlaying() ) {
                         double elapsed = PlaySound.getPosition();
-                        double threshold = AppManager.forbidFlipPlayingThresholdSeconds;
+                        double threshold = AppManager.mForbidFlipPlayingThresholdSeconds;
                         if ( threshold < 0 ) {
                             threshold = 0.0;
                         }
@@ -3295,6 +3300,7 @@ namespace org.kbinani.cadencii {
             this.repaint();
             //trackSelector.repaint();
 #else
+#if USE_BGWORK_SCREEN
             if ( !bgWorkScreen.IsBusy ) {
                 double now = PortUtil.getCurrentTime();
                 double dt = now - mLastScreenRefreshedSec;
@@ -3304,6 +3310,24 @@ namespace org.kbinani.cadencii {
                     bgWorkScreen.RunWorkerAsync();
                 }
             }
+#else
+            if ( mIsRefreshing ) {
+                return;
+            } else {
+                double now = PortUtil.getCurrentTime();
+                double dt = now - mLastScreenRefreshedSec;
+                double mindt = 1.0 / AppManager.editorConfig.MaximumFrameRate;
+                if ( dt > mindt ) {
+                    mIsRefreshing = true;
+
+                    mLastScreenRefreshedSec = now;
+                    refreshScreenCore( this, null );
+
+                    mIsRefreshing = false;
+                }
+
+            }
+#endif
 #endif
         }
 
@@ -3312,7 +3336,7 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="visible">表示状態にする場合true，そうでなければfalse</param>
         public void flipMixerDialogVisible( boolean visible ) {
-            AppManager.mixerWindow.setVisible( visible );
+            AppManager.mMixerWindow.setVisible( visible );
             AppManager.editorConfig.MixerVisible = visible;
             menuVisualMixer.setSelected( visible );
         }
@@ -3456,10 +3480,10 @@ namespace org.kbinani.cadencii {
                 }
 
                 // ミキサーウィンドウ
-                if ( AppManager.mixerWindow != null ) {
+                if ( AppManager.mMixerWindow != null ) {
                     if ( dict.containsKey( "menuVisualMixer" ) ) {
                         KeyStroke shortcut = BKeysUtility.getKeyStrokeFromBKeys( dict.get( "menuVisualMixer" ) );
-                        AppManager.mixerWindow.applyShortcut( shortcut );
+                        AppManager.mMixerWindow.applyShortcut( shortcut );
                     }
                 }
 
@@ -4523,8 +4547,8 @@ namespace org.kbinani.cadencii {
                 //int stdx = AppManager.startToDrawX;
                 //min = xCoordFromClocks( min ) + stdx;
                 //max = xCoordFromClocks( max ) + stdx;
-                AppManager.wholeSelectedInterval = new SelectedRegion( min );
-                AppManager.wholeSelectedInterval.setEnd( max );
+                AppManager.mWholeSelectedInterval = new SelectedRegion( min );
+                AppManager.mWholeSelectedInterval.setEnd( max );
                 AppManager.setWholeSelectedIntervalEnabled( true );
             }
         }
@@ -4555,10 +4579,10 @@ namespace org.kbinani.cadencii {
 #if DEBUG
             AppManager.debugWriteLine( 
                 "FormMain#deleteEvent(); AppManager.inputTextBox.isEnabled()=" + 
-                AppManager.inputTextBox.isEnabled() );
+                AppManager.mInputTextBox.isEnabled() );
 #endif
 
-            if ( AppManager.inputTextBox.isVisible() ) {
+            if ( AppManager.mInputTextBox.isVisible() ) {
                 return;
             }
 #if ENABLE_PROPERTY
@@ -4586,8 +4610,8 @@ namespace org.kbinani.cadencii {
                     VsqFileEx work = (VsqFileEx)vsq.clone();
                     work.executeCommand( run );
                     int stdx = AppManager.getStartToDrawX();
-                    int start_clock = AppManager.wholeSelectedInterval.getStart();
-                    int end_clock = AppManager.wholeSelectedInterval.getEnd();
+                    int start_clock = AppManager.mWholeSelectedInterval.getStart();
+                    int end_clock = AppManager.mWholeSelectedInterval.getEnd();
                     Vector<Vector<BPPair>> curves = new Vector<Vector<BPPair>>();
                     Vector<CurveType> types = new Vector<CurveType>();
                     VsqTrack work_vsq_track = work.Track.get( selected );
@@ -4969,8 +4993,8 @@ namespace org.kbinani.cadencii {
                 PortUtil.println( "FormMain#copyEvent; selected with CTRL key" );
 #endif
                 int stdx = AppManager.getStartToDrawX();
-                int start_clock = AppManager.wholeSelectedInterval.getStart();
-                int end_clock = AppManager.wholeSelectedInterval.getEnd();
+                int start_clock = AppManager.mWholeSelectedInterval.getStart();
+                int end_clock = AppManager.mWholeSelectedInterval.getEnd();
                 ClipboardEntry ce = new ClipboardEntry();
                 ce.copyStartedClock = start_clock;
                 ce.points = new TreeMap<CurveType, VsqBPList>();
@@ -5122,8 +5146,8 @@ namespace org.kbinani.cadencii {
                 int stdx = AppManager.getStartToDrawX();
                 int start_clock, end_clock;
                 if ( AppManager.isWholeSelectedIntervalEnabled() ) {
-                    start_clock = AppManager.wholeSelectedInterval.getStart();
-                    end_clock = AppManager.wholeSelectedInterval.getEnd();
+                    start_clock = AppManager.mWholeSelectedInterval.getStart();
+                    end_clock = AppManager.mWholeSelectedInterval.getEnd();
                 } else {
                     start_clock = trackSelector.getSelectedRegion().getKey();
                     end_clock = trackSelector.getSelectedRegion().getValue();
@@ -5304,7 +5328,7 @@ namespace org.kbinani.cadencii {
                                                                      vsq.AttachedCurves.get( selected - 1 ) ); ;
             AppManager.register( vsq.executeCommand( run ) );
             setEdited( true );
-            AppManager.mixerWindow.updateStatus();
+            AppManager.mMixerWindow.updateStatus();
             refreshScreen();
         }
 
@@ -5361,7 +5385,7 @@ namespace org.kbinani.cadencii {
                 AppManager.register( vsq.executeCommand( run ) );
                 updateDrawObjectList();
                 setEdited( true );
-                AppManager.mixerWindow.updateStatus();
+                AppManager.mMixerWindow.updateStatus();
                 refreshScreen();
             }
         }
@@ -5389,7 +5413,7 @@ namespace org.kbinani.cadencii {
             updateDrawObjectList();
             setEdited( true );
             AppManager.setSelected( i );
-            AppManager.mixerWindow.updateStatus();
+            AppManager.mMixerWindow.updateStatus();
             refreshScreen();
         }
         #endregion
@@ -5572,7 +5596,7 @@ namespace org.kbinani.cadencii {
 #if ENABLE_SCRIPT
                         if ( tool == EditTool.PALETTE_TOOL ) {
                             String id = (String)tag;
-                            tsb.setSelected( (AppManager.selectedPaletteTool.Equals( id )) );
+                            tsb.setSelected( (AppManager.mSelectedPaletteTool.Equals( id )) );
                         } else
 #endif
  {
@@ -5590,7 +5614,7 @@ namespace org.kbinani.cadencii {
 #if ENABLE_SCRIPT
                         if ( tool == EditTool.PALETTE_TOOL ) {
                             String id = (String)tsmi.getTag();
-                            tsmi.setSelected( (AppManager.selectedPaletteTool.Equals( id )) );
+                            tsmi.setSelected( (AppManager.mSelectedPaletteTool.Equals( id )) );
                         } else
 #endif
  {
@@ -5609,7 +5633,7 @@ namespace org.kbinani.cadencii {
 #if ENABLE_SCRIPT
                         if ( tool == EditTool.PALETTE_TOOL ) {
                             String id = (String)tsmi.getTag();
-                            tsmi.setSelected( (AppManager.selectedPaletteTool.Equals( id )) );
+                            tsmi.setSelected( (AppManager.mSelectedPaletteTool.Equals( id )) );
                         } else
 #endif
  {
@@ -5703,22 +5727,22 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public void updateDrawObjectList() {
             // AppManager.m_draw_objects
-            if ( AppManager.drawObjects == null ) {
-                AppManager.drawObjects = new Vector<Vector<DrawObject>>();
+            if ( AppManager.mDrawObjects == null ) {
+                AppManager.mDrawObjects = new Vector<Vector<DrawObject>>();
             }
-            lock ( AppManager.drawObjects ) {
+            lock ( AppManager.mDrawObjects ) {
                 if ( AppManager.getVsqFile() == null ) {
                     return;
                 }
-                for ( int i = 0; i < AppManager.drawStartIndex.Length; i++ ) {
-                    AppManager.drawStartIndex[i] = 0;
+                for ( int i = 0; i < AppManager.mDrawStartIndex.Length; i++ ) {
+                    AppManager.mDrawStartIndex[i] = 0;
                 }
-                if ( AppManager.drawObjects != null ) {
-                    for ( Iterator<Vector<DrawObject>> itr = AppManager.drawObjects.iterator(); itr.hasNext(); ) {
+                if ( AppManager.mDrawObjects != null ) {
+                    for ( Iterator<Vector<DrawObject>> itr = AppManager.mDrawObjects.iterator(); itr.hasNext(); ) {
                         Vector<DrawObject> list = itr.next();
                         list.clear();
                     }
-                    AppManager.drawObjects.clear();
+                    AppManager.mDrawObjects.clear();
                 }
 
                 int xoffset = 6;// 6 + AppManager.keyWidth;
@@ -5779,8 +5803,8 @@ namespace org.kbinani.cadencii {
                             if ( 0 <= program && program < AppManager.editorConfig.UtauSingers.size() ) {
                                 SingerConfig sc = AppManager.editorConfig.UtauSingers.get( program );
                                 // 通常のUTAU音源
-                                if ( AppManager.utauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
-                                    UtauVoiceDB db = AppManager.utauVoiceDB.get( sc.VOICEIDSTR );
+                                if ( AppManager.mUtauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
+                                    UtauVoiceDB db = AppManager.mUtauVoiceDB.get( sc.VOICEIDSTR );
                                     OtoArgs oa = db.attachFileNameFromLyric( lyric_jp );
                                     if ( oa.fileName == null ||
                                         (oa.fileName != null && oa.fileName.Equals( "" )) ) {
@@ -5792,10 +5816,10 @@ namespace org.kbinani.cadencii {
                                 // STRAIGHT用の解析音源
                                 String analyzed = PortUtil.combinePath( sc.VOICEIDSTR, "analyzed" );
 #if DEBUG
-                                PortUtil.println( "FormMain#updateDrawObjectList; analyzed=" + analyzed + "; AppManager.utauVoiceDB.containsKey(analyzed)=" + AppManager.utauVoiceDB.containsKey( analyzed ) );
+                                PortUtil.println( "FormMain#updateDrawObjectList; analyzed=" + analyzed + "; AppManager.utauVoiceDB.containsKey(analyzed)=" + AppManager.mUtauVoiceDB.containsKey( analyzed ) );
 #endif
-                                if ( AppManager.utauVoiceDB.containsKey( analyzed ) ) {
-                                    UtauVoiceDB db = AppManager.utauVoiceDB.get( analyzed );
+                                if ( AppManager.mUtauVoiceDB.containsKey( analyzed ) ) {
+                                    UtauVoiceDB db = AppManager.mUtauVoiceDB.get( analyzed );
                                     OtoArgs oa = db.attachFileNameFromLyric( lyric_jp );
 #if DEBUG
                                     PortUtil.println( "FormMain#updateDrawObjectList; oa.fileName=" + oa.fileName );
@@ -5964,7 +5988,7 @@ namespace org.kbinani.cadencii {
                             }
                         }
                         Collections.sort( tmp );
-                        AppManager.drawObjects.add( tmp );
+                        AppManager.mDrawObjects.add( tmp );
                     }
                 } catch ( Exception ex ) {
                     Logger.write( typeof( FormMain ) + ".updateDrawObjectList; ex=" + ex + "\n" );
@@ -6080,52 +6104,52 @@ namespace org.kbinani.cadencii {
 #endif
             hideInputTextBox();
             
-            AppManager.inputTextBox.keyUpEvent.add( new BKeyEventHandler( this, "m_input_textbox_KeyUp" ) );
-            AppManager.inputTextBox.keyDownEvent.add( new BKeyEventHandler( this, "m_input_textbox_KeyDown" ) );
+            AppManager.mInputTextBox.keyUpEvent.add( new BKeyEventHandler( this, "m_input_textbox_KeyUp" ) );
+            AppManager.mInputTextBox.keyDownEvent.add( new BKeyEventHandler( this, "m_input_textbox_KeyDown" ) );
 #if JAVA
             //TODO: FormMain#showInputTextBox
 #else
-            AppManager.inputTextBox.ImeModeChanged += m_input_textbox_ImeModeChanged;
+            AppManager.mInputTextBox.ImeModeChanged += m_input_textbox_ImeModeChanged;
 #endif
 
-            AppManager.inputTextBox.setImeModeOn( mLastIsImeModeOn );
+            AppManager.mInputTextBox.setImeModeOn( mLastIsImeModeOn );
             if ( phonetic_symbol_edit_mode ) {
-                AppManager.inputTextBox.setBufferText( phrase );
-                AppManager.inputTextBox.setPhoneticSymbolEditMode( true );
-                AppManager.inputTextBox.setText( phonetic_symbol );
-                AppManager.inputTextBox.setBackground( mColorTextboxBackcolor );
+                AppManager.mInputTextBox.setBufferText( phrase );
+                AppManager.mInputTextBox.setPhoneticSymbolEditMode( true );
+                AppManager.mInputTextBox.setText( phonetic_symbol );
+                AppManager.mInputTextBox.setBackground( mColorTextboxBackcolor );
             } else {
-                AppManager.inputTextBox.setBufferText( phonetic_symbol );
-                AppManager.inputTextBox.setPhoneticSymbolEditMode( false );
-                AppManager.inputTextBox.setText( phrase );
-                AppManager.inputTextBox.setBackground( Color.white );
+                AppManager.mInputTextBox.setBufferText( phonetic_symbol );
+                AppManager.mInputTextBox.setPhoneticSymbolEditMode( false );
+                AppManager.mInputTextBox.setText( phrase );
+                AppManager.mInputTextBox.setBackground( Color.white );
             }
-            AppManager.inputTextBox.setFont( new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE9 ) );
-            AppManager.inputTextBox.setLocation( position.x + 4, position.y + 2 );
+            AppManager.mInputTextBox.setFont( new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE9 ) );
+            AppManager.mInputTextBox.setLocation( position.x + 4, position.y + 2 );
 #if !JAVA
-            AppManager.inputTextBox.Parent = pictPianoRoll;
+            AppManager.mInputTextBox.Parent = pictPianoRoll;
 #endif
-            AppManager.inputTextBox.setEnabled( true );
-            AppManager.inputTextBox.setVisible( true );
-            AppManager.inputTextBox.requestFocusInWindow();
-            AppManager.inputTextBox.selectAll();
+            AppManager.mInputTextBox.setEnabled( true );
+            AppManager.mInputTextBox.setVisible( true );
+            AppManager.mInputTextBox.requestFocusInWindow();
+            AppManager.mInputTextBox.selectAll();
         }
 
         public void hideInputTextBox() {
-            AppManager.inputTextBox.keyUpEvent.remove( new BKeyEventHandler( this, "m_input_textbox_KeyUp" ) );
-            AppManager.inputTextBox.keyDownEvent.remove( new BKeyEventHandler( this, "m_input_textbox_KeyDown" ) );
+            AppManager.mInputTextBox.keyUpEvent.remove( new BKeyEventHandler( this, "m_input_textbox_KeyUp" ) );
+            AppManager.mInputTextBox.keyDownEvent.remove( new BKeyEventHandler( this, "m_input_textbox_KeyDown" ) );
 #if JAVA
             // TODO: FormMain#hideInputTextBox
             /*AppManager.inputTextBox.ImeModeChanged -= m_input_textbox_ImeModeChanged;*/
 #else
-            AppManager.inputTextBox.ImeModeChanged -= m_input_textbox_ImeModeChanged;
+            AppManager.mInputTextBox.ImeModeChanged -= m_input_textbox_ImeModeChanged;
 #endif
-            mLastSymbolEditMode = AppManager.inputTextBox.isPhoneticSymbolEditMode();
-            AppManager.inputTextBox.setVisible( false );
+            mLastSymbolEditMode = AppManager.mInputTextBox.isPhoneticSymbolEditMode();
+            AppManager.mInputTextBox.setVisible( false );
 #if !JAVA
-            AppManager.inputTextBox.Parent = null;
+            AppManager.mInputTextBox.Parent = null;
 #endif
-            AppManager.inputTextBox.setEnabled( false );
+            AppManager.mInputTextBox.setEnabled( false );
             pictPianoRoll.requestFocus();
             mNumEnterKeyAfterHideInputTextBox = 0;
         }
@@ -6134,15 +6158,15 @@ namespace org.kbinani.cadencii {
         /// 歌詞入力用テキストボックスのモード（歌詞/発音記号）を切り替えます
         /// </summary>
         public void flipInputTextBoxMode() {
-            String new_value = AppManager.inputTextBox.getText();
-            if ( !AppManager.inputTextBox.isPhoneticSymbolEditMode() ) {
-                AppManager.inputTextBox.setBackground( mColorTextboxBackcolor );
+            String new_value = AppManager.mInputTextBox.getText();
+            if ( !AppManager.mInputTextBox.isPhoneticSymbolEditMode() ) {
+                AppManager.mInputTextBox.setBackground( mColorTextboxBackcolor );
             } else {
-                AppManager.inputTextBox.setBackground( Color.white );
+                AppManager.mInputTextBox.setBackground( Color.white );
             }
-            AppManager.inputTextBox.setText( AppManager.inputTextBox.getBufferText() );
-            AppManager.inputTextBox.setBufferText( new_value );
-            AppManager.inputTextBox.setPhoneticSymbolEditMode( !AppManager.inputTextBox.isPhoneticSymbolEditMode() );
+            AppManager.mInputTextBox.setText( AppManager.mInputTextBox.getBufferText() );
+            AppManager.mInputTextBox.setBufferText( new_value );
+            AppManager.mInputTextBox.setPhoneticSymbolEditMode( !AppManager.mInputTextBox.isPhoneticSymbolEditMode() );
         }
 
         /// <summary>
@@ -6157,7 +6181,7 @@ namespace org.kbinani.cadencii {
                 cMenuPianoUndo.setEnabled( AppManager.isUndoAvailable() );
                 cMenuTrackSelectorRedo.setEnabled( AppManager.isRedoAvailable() );
                 cMenuTrackSelectorUndo.setEnabled( AppManager.isUndoAvailable() );
-                AppManager.mixerWindow.updateStatus();
+                AppManager.mMixerWindow.updateStatus();
                 setEdited( true );
                 updateDrawObjectList();
 
@@ -6181,7 +6205,7 @@ namespace org.kbinani.cadencii {
                 cMenuPianoUndo.setEnabled( AppManager.isUndoAvailable() );
                 cMenuTrackSelectorRedo.setEnabled( AppManager.isRedoAvailable() );
                 cMenuTrackSelectorUndo.setEnabled( AppManager.isUndoAvailable() );
-                AppManager.mixerWindow.updateStatus();
+                AppManager.mMixerWindow.updateStatus();
                 setEdited( true );
                 updateDrawObjectList();
 
@@ -6210,7 +6234,7 @@ namespace org.kbinani.cadencii {
             updateRecentFileMenu();
             setEdited( false );
             AppManager.clearCommandBuffer();
-            AppManager.mixerWindow.updateStatus();
+            AppManager.mMixerWindow.updateStatus();
         }
 
         public void updateMenuFonts() {
@@ -6221,8 +6245,8 @@ namespace org.kbinani.cadencii {
             Util.applyFontRecurse( this, font );
             Util.applyContextMenuFontRecurse( cMenuPiano, font );
             Util.applyContextMenuFontRecurse( cMenuTrackSelector, font );
-            if ( AppManager.mixerWindow != null ) {
-                Util.applyFontRecurse( AppManager.mixerWindow, font );
+            if ( AppManager.mMixerWindow != null ) {
+                Util.applyFontRecurse( AppManager.mMixerWindow, font );
             }
             Util.applyContextMenuFontRecurse( cMenuTrackTab, font );
             trackSelector.applyFont( font );
@@ -6380,13 +6404,13 @@ namespace org.kbinani.cadencii {
                     g.drawLine( marker_x, 0, marker_x, height );
                     g.setStroke( new BasicStroke() );
                 }
-                if ( AppManager.startMarkerEnabled ) {
-                    int x = AppManager.xCoordFromClocks( AppManager.startMarker );
+                if ( AppManager.mStartMarkerEnabled ) {
+                    int x = AppManager.xCoordFromClocks( AppManager.mStartMarker );
                     g.drawImage(
                         Resources.get_start_marker(), x, 3, this );
                 }
-                if ( AppManager.endMarkerEnabled ) {
-                    int x = AppManager.xCoordFromClocks( AppManager.endMarker ) - 6;
+                if ( AppManager.mEndMarkerEnabled ) {
+                    int x = AppManager.xCoordFromClocks( AppManager.mEndMarker ) - 6;
                     g.drawImage(
                         Resources.get_end_marker(), x, 3, this );
                 }
@@ -6857,7 +6881,7 @@ namespace org.kbinani.cadencii {
                 BToolStripButton tsb = (BToolStripButton)sender;
                 if ( tsb.getTag() != null && tsb.getTag() is String ) {
                     id = (String)tsb.getTag();
-                    AppManager.selectedPaletteTool = id;
+                    AppManager.mSelectedPaletteTool = id;
                     AppManager.setSelectedTool( EditTool.PALETTE_TOOL );
                     tsb.setSelected( true );
                 }
@@ -6865,7 +6889,7 @@ namespace org.kbinani.cadencii {
                 BMenuItem tsmi = (BMenuItem)sender;
                 if ( tsmi.getTag() != null && tsmi.getTag() is String ) {
                     id = (String)tsmi.getTag();
-                    AppManager.selectedPaletteTool = id;
+                    AppManager.mSelectedPaletteTool = id;
                     AppManager.setSelectedTool( EditTool.PALETTE_TOOL );
                     tsmi.setSelected( true );
                 }
@@ -6989,17 +7013,17 @@ namespace org.kbinani.cadencii {
                     AppManager.addSelectedEvent( item.InternalID );
                     int x = AppManager.xCoordFromClocks( item.Clock );
                     int y = AppManager.yCoordFromNote( item.ID.Note );
-                    boolean phonetic_symbol_edit_mode = AppManager.inputTextBox.isPhoneticSymbolEditMode();
+                    boolean phonetic_symbol_edit_mode = AppManager.mInputTextBox.isPhoneticSymbolEditMode();
                     showInputTextBox( 
                         item.ID.LyricHandle.L0.Phrase,
                         item.ID.LyricHandle.L0.getPhoneticSymbol(),
                         new Point( x, y ),
                         phonetic_symbol_edit_mode );
-                    int clWidth = (int)(AppManager.inputTextBox.getWidth() * AppManager.getScaleXInv());
+                    int clWidth = (int)(AppManager.mInputTextBox.getWidth() * AppManager.getScaleXInv());
 
                     // 画面上にAppManager.inputTextBoxが見えるように，移動
                     int SPACE = 20;
-                    if ( x < AppManager.keyWidth || pictPianoRoll.getWidth() < x + AppManager.inputTextBox.getWidth() ) {
+                    if ( x < AppManager.keyWidth || pictPianoRoll.getWidth() < x + AppManager.mInputTextBox.getWidth() ) {
                         int clock, clock_x;
                         if ( x < AppManager.keyWidth ) {
                             clock = item.Clock;
@@ -7044,7 +7068,7 @@ namespace org.kbinani.cadencii {
 #endif
 
             if ( flip ) {
-                if ( AppManager.inputTextBox.isVisible() ) {
+                if ( AppManager.mInputTextBox.isVisible() ) {
                     flipInputTextBoxMode();
                 }
             } else if ( hide ) {
@@ -7053,7 +7077,7 @@ namespace org.kbinani.cadencii {
         }
 
         public void m_input_textbox_ImeModeChanged( Object sender, EventArgs e ) {
-            mLastIsImeModeOn = AppManager.inputTextBox.isImeModeOn();
+            mLastIsImeModeOn = AppManager.mInputTextBox.isImeModeOn();
         }
 
         public void m_input_textbox_KeyPress( Object sender, BKeyPressEventArgs e ) {
@@ -7072,19 +7096,19 @@ namespace org.kbinani.cadencii {
         }
 
         public void m_toolbar_measure_EndMarkerClick( Object sender, EventArgs e ) {
-            AppManager.endMarkerEnabled = !AppManager.endMarkerEnabled;
+            AppManager.mEndMarkerEnabled = !AppManager.mEndMarkerEnabled;
 #if DEBUG
             AppManager.debugWriteLine( "m_toolbar_measure_EndMarkerClick" );
-            AppManager.debugWriteLine( "    m_config.EndMarkerEnabled=" + AppManager.endMarkerEnabled );
+            AppManager.debugWriteLine( "    m_config.EndMarkerEnabled=" + AppManager.mEndMarkerEnabled );
 #endif
             refreshScreen();
         }
 
         public void m_toolbar_measure_StartMarkerClick( Object sender, EventArgs e ) {
-            AppManager.startMarkerEnabled = !AppManager.startMarkerEnabled;
+            AppManager.mStartMarkerEnabled = !AppManager.mStartMarkerEnabled;
 #if DEBUG
             AppManager.debugWriteLine( "m_toolbar_measure_StartMarkerClick" );
-            AppManager.debugWriteLine( "    m_config.StartMarkerEnabled=" + AppManager.startMarkerEnabled );
+            AppManager.debugWriteLine( "    m_config.StartMarkerEnabled=" + AppManager.mStartMarkerEnabled );
 #endif
             refreshScreen();
         }
@@ -7136,7 +7160,7 @@ namespace org.kbinani.cadencii {
 #if DEBUG
             PortUtil.println( "  done" );
 #endif
-            AppManager.firstBufferWritten = false;
+            AppManager.mFirstBufferWritten = false;
 #if ENABLE_MIDI
             if ( mMidiIn != null ) {
                 mMidiIn.Stop();
@@ -7144,8 +7168,8 @@ namespace org.kbinani.cadencii {
 #endif
 
             PlaySound.exit();
-            for ( int i = 0; i < AppManager.drawStartIndex.Length; i++ ) {
-                AppManager.drawStartIndex[i] = 0;
+            for ( int i = 0; i < AppManager.mDrawStartIndex.Length; i++ ) {
+                AppManager.mDrawStartIndex[i] = 0;
             }
 #if ENABLE_MIDI
             MidiPlayer.Stop();
@@ -7218,7 +7242,7 @@ namespace org.kbinani.cadencii {
 
                 // リアルタイム再生用のデータを準備
                 int preview_ending_clock = vsq.TotalClocks;
-                if ( AppManager.endMarkerEnabled ) {
+                if ( AppManager.mEndMarkerEnabled ) {
                     //preview_ending_clock = Math.Max( preview_ending_clock, AppManager.endMarker + 480 );
                     //TODO: fixme FormMain#AppManager_PreviewStarted
                 }
@@ -7306,7 +7330,7 @@ namespace org.kbinani.cadencii {
             double now = PortUtil.getCurrentTime();
             if ( AppManager.getEditMode() == EditMode.REALTIME ) {
                 menuJobRealTime.setText( _( "Stop Realtime Input" ) );
-                AppManager.rendererAvailable = false;
+                AppManager.mRendererAvailable = false;
 #if ENABLE_MTC
                 if ( m_midi_in_mtc != null ) {
                     m_midi_in_mtc.Start();
@@ -7320,10 +7344,10 @@ namespace org.kbinani.cadencii {
                 MidiPlayer.Start( vsq, clock, now );
 #endif
             } else {
-                AppManager.rendererAvailable = VSTiProxy.isRendererAvailable( renderer );
+                AppManager.mRendererAvailable = VSTiProxy.isRendererAvailable( renderer );
             }
-            AppManager.firstBufferWritten = true;
-            AppManager.previewStartedTime = now;
+            AppManager.mFirstBufferWritten = true;
+            AppManager.mPreviewStartedTime = now;
 #if DEBUG
             AppManager.debugWriteLine( "    vsq.TotalClocks=" + vsq.TotalClocks );
             AppManager.debugWriteLine( "    total seconds=" + vsq.getSecFromClock( (int)vsq.TotalClocks ) );
@@ -7372,7 +7396,7 @@ namespace org.kbinani.cadencii {
                 int finished = dlg.getFinished();
                 for ( int i = 0; i < finished; i++ ) {
                     AppManager.setRenderRequired( tracks[i], false );
-                    AppManager.lastRenderedStatus[tracks[i] - 1] = new RenderedStatus( (VsqTrack)vsq.Track.get( tracks[i] ).clone(), vsq.TempoTable );
+                    AppManager.mLastRenderedStatus[tracks[i] - 1] = new RenderedStatus( (VsqTrack)vsq.Track.get( tracks[i] ).clone(), vsq.TempoTable );
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".render; ex=" + ex + "\n" );
@@ -7410,7 +7434,7 @@ namespace org.kbinani.cadencii {
                 VsqTrack vsq_track = vsq.Track.get( track );
                 String wavePath = PortUtil.combinePath( temppath, track + ".wav" );
 
-                if ( AppManager.lastRenderedStatus[track - 1] == null ) {
+                if ( AppManager.mLastRenderedStatus[track - 1] == null ) {
                     // この場合は全部レンダリングする必要がある
                     trackList.add( track );
                     startList.add( 0 );
@@ -7421,14 +7445,14 @@ namespace org.kbinani.cadencii {
 
                 // 部分レンダリング
                 EditedZoneUnit[] areas = 
-                    Utility.detectRenderedStatusDifference( AppManager.lastRenderedStatus[track - 1],
+                    Utility.detectRenderedStatusDifference( AppManager.mLastRenderedStatus[track - 1],
                                                             new RenderedStatus( (VsqTrack)vsq_track.clone(), vsq.TempoTable ) );
 
                 // areasとかぶっている音符がどれかを判定する
                 EditedZone zone = new EditedZone();
                 zone.add( areas );
                 checkSerializedEvents( zone, vsq_track, areas );
-                checkSerializedEvents( zone, AppManager.lastRenderedStatus[track - 1].track, areas );
+                checkSerializedEvents( zone, AppManager.mLastRenderedStatus[track - 1].track, areas );
 
                 // レンダリング済みのwaveがあれば、zoneに格納された編集範囲に隣接する前後が無音でない場合、
                 // 編集範囲を無音部分まで延長する。
@@ -7604,7 +7628,7 @@ namespace org.kbinani.cadencii {
 
                     if ( wavePath.Equals( files.get( startIndex[k] ) ) && startIndex[k] < finished ) {
                         // このとき，パッチワークを行う必要なし．
-                        AppManager.lastRenderedStatus[track - 1] = new RenderedStatus( (VsqTrack)vsq.Track.get( track ).clone(), vsq.TempoTable );
+                        AppManager.mLastRenderedStatus[track - 1] = new RenderedStatus( (VsqTrack)vsq.Track.get( track ).clone(), vsq.TempoTable );
                         AppManager.serializeRenderingStatus( temppath, track );
                         waveView.load( track - 1, wavePath );
                         continue;
@@ -7665,7 +7689,7 @@ namespace org.kbinani.cadencii {
                         VsqTrack vsq_track = vsq.Track.get( track );
                         if ( startIndex[k + 1] - 1 < finished ) {
                             // 途中で終了せず，このトラックの全てのパッチワークが完了した．
-                            AppManager.lastRenderedStatus[track - 1] = new RenderedStatus( (VsqTrack)vsq_track.clone(), vsq.TempoTable );
+                            AppManager.mLastRenderedStatus[track - 1] = new RenderedStatus( (VsqTrack)vsq_track.clone(), vsq.TempoTable );
                             AppManager.serializeRenderingStatus( temppath, track );
                             AppManager.setRenderRequired( track, false );
                         } else {
@@ -7722,7 +7746,7 @@ namespace org.kbinani.cadencii {
                                 copied.sortEvent();
                             }
 
-                            AppManager.lastRenderedStatus[track - 1] = new RenderedStatus( copied, vsq.TempoTable );
+                            AppManager.mLastRenderedStatus[track - 1] = new RenderedStatus( copied, vsq.TempoTable );
                             AppManager.serializeRenderingStatus( temppath, track );
                         }
                     } catch ( Exception ex ) {
@@ -7934,7 +7958,7 @@ namespace org.kbinani.cadencii {
                         if ( isMouseMiddleButtonDowned( btn ) ) {
                             btn = BMouseButtons.Middle;
                         }
-                        boolean result = PaletteToolServer.invokePaletteTool( AppManager.selectedPaletteTool,
+                        boolean result = PaletteToolServer.invokePaletteTool( AppManager.mSelectedPaletteTool,
                                                                               selected,
                                                                               internal_ids.toArray( new Integer[] { } ),
                                                                               btn );
@@ -7952,7 +7976,7 @@ namespace org.kbinani.cadencii {
                          edit_mode != EditMode.MOVE_ENTRY_WHOLE &&
                          edit_mode != EditMode.EDIT_LEFT_EDGE &&
                          edit_mode != EditMode.EDIT_RIGHT_EDGE ) {
-                        if ( !AppManager.isPointerDowned ) {
+                        if ( !AppManager.mIsPointerDowned ) {
                             AppManager.clearSelectedEvent();
                         }
                         hideInputTextBox();
@@ -7961,8 +7985,8 @@ namespace org.kbinani.cadencii {
                         // マウス位置にビブラートの波波があったら削除する
                         int stdx = AppManager.getStartToDrawX();
                         int stdy = AppManager.getStartToDrawY();
-                        for ( int i = 0; i < AppManager.drawObjects.get( selected - 1 ).size(); i++ ) {
-                            DrawObject dobj = AppManager.drawObjects.get( selected - 1 ).get( i );
+                        for ( int i = 0; i < AppManager.mDrawObjects.get( selected - 1 ).size(); i++ ) {
+                            DrawObject dobj = AppManager.mDrawObjects.get( selected - 1 ).get( i );
                             if ( dobj.mRectangleInPixel.x + AppManager.getStartToDrawX() + dobj.mRectangleInPixel.width - stdx < 0 ) {
                                 continue;
                             } else if ( pictPianoRoll.getWidth() < dobj.mRectangleInPixel.x + AppManager.keyWidth - stdx ) {
@@ -8068,7 +8092,7 @@ namespace org.kbinani.cadencii {
                             SelectedEventEntry see = itr.next();
                             internal_ids.add( see.original.InternalID );
                         }
-                        boolean result = PaletteToolServer.invokePaletteTool( AppManager.selectedPaletteTool,
+                        boolean result = PaletteToolServer.invokePaletteTool( AppManager.mSelectedPaletteTool,
                                                                            AppManager.getSelected(),
                                                                            internal_ids.toArray( new Integer[] { } ),
                                                                            e.Button );
@@ -8115,7 +8139,7 @@ namespace org.kbinani.cadencii {
                 if ( AppManager.editorConfig.ShowExpLine && AppManager.keyWidth <= e.X ) {
                     int stdx = AppManager.getStartToDrawX();
                     int stdy = AppManager.getStartToDrawY();
-                    for ( Iterator<DrawObject> itr = AppManager.drawObjects.get( selected - 1 ).iterator(); itr.hasNext(); ) {
+                    for ( Iterator<DrawObject> itr = AppManager.mDrawObjects.get( selected - 1 ).iterator(); itr.hasNext(); ) {
                         DrawObject dobj = itr.next();
                         // 表情コントロールプロパティを表示するかどうかを決める
                         rect = new Rectangle(
@@ -8336,7 +8360,7 @@ namespace org.kbinani.cadencii {
 
             int stdx = AppManager.getStartToDrawX();
             int stdy = AppManager.getStartToDrawY();
-            if ( e.Button == BMouseButtons.Left && AppManager.curveOnPianoroll && (selected_tool == EditTool.PENCIL || selected_tool == EditTool.LINE) ) {
+            if ( e.Button == BMouseButtons.Left && AppManager.mCurveOnPianoroll && (selected_tool == EditTool.PENCIL || selected_tool == EditTool.LINE) ) {
                 pictPianoRoll.mouseTracer.clear();
                 pictPianoRoll.mouseTracer.appendFirst( e.X + stdx, e.Y + stdy );
                 setCursor( new Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
@@ -8384,9 +8408,9 @@ namespace org.kbinani.cadencii {
                         int unit = AppManager.getPositionQuantizeClock();
                         startClock = doQuantize( startClock, unit );
                     }
-                    AppManager.wholeSelectedInterval = new SelectedRegion( startClock );
-                    AppManager.wholeSelectedInterval.setEnd( startClock );
-                    AppManager.isPointerDowned = true;
+                    AppManager.mWholeSelectedInterval = new SelectedRegion( startClock );
+                    AppManager.mWholeSelectedInterval.setEnd( startClock );
+                    AppManager.mIsPointerDowned = true;
                 } else {
                     boolean vibrato_found = false;
                     if ( selected_tool == EditTool.LINE || selected_tool == EditTool.PENCIL ) {
@@ -8394,7 +8418,7 @@ namespace org.kbinani.cadencii {
                         int px_vibrato_length = 0;
                         mVibratoEditingId = -1;
                         Rectangle pxFound = new Rectangle();
-                        Vector<DrawObject> target_list = AppManager.drawObjects.get( selected - 1 );
+                        Vector<DrawObject> target_list = AppManager.mDrawObjects.get( selected - 1 );
                         int count = target_list.size();
                         for ( int i = 0; i < count; i++ ) {
                             DrawObject dobj = target_list.get( i );
@@ -8423,12 +8447,12 @@ namespace org.kbinani.cadencii {
                             int clock = AppManager.clockFromXCoord( pxFound.x + pxFound.width - px_vibrato_length - stdx );
                             int note = AppManager.noteFromYCoord( pxFound.y + AppManager.editorConfig.PxTrackHeight - stdy );
                             int length = (int)(pxFound.width * AppManager.getScaleXInv());
-                            AppManager.addingEvent = new VsqEvent( clock, new VsqID( 0 ) );
-                            AppManager.addingEvent.ID.type = VsqIDType.Anote;
-                            AppManager.addingEvent.ID.Note = note;
-                            AppManager.addingEvent.ID.setLength( (int)(px_vibrato_length * AppManager.getScaleXInv()) );
-                            AppManager.addingEventLength = length;
-                            AppManager.addingEvent.ID.VibratoDelay = length - (int)(px_vibrato_length * AppManager.getScaleXInv());
+                            AppManager.mAddingEvent = new VsqEvent( clock, new VsqID( 0 ) );
+                            AppManager.mAddingEvent.ID.type = VsqIDType.Anote;
+                            AppManager.mAddingEvent.ID.Note = note;
+                            AppManager.mAddingEvent.ID.setLength( (int)(px_vibrato_length * AppManager.getScaleXInv()) );
+                            AppManager.mAddingEventLength = length;
+                            AppManager.mAddingEvent.ID.VibratoDelay = length - (int)(px_vibrato_length * AppManager.getScaleXInv());
                             AppManager.setEditMode( EditMode.EDIT_VIBRATO_DELAY );
                             start_mouse_hover_generator = false;
                         }
@@ -8447,25 +8471,25 @@ namespace org.kbinani.cadencii {
                                 AppManager.clearSelectedEvent();
                                 int unit = AppManager.getPositionQuantizeClock();
                                 int new_clock = doQuantize( clock, unit );
-                                AppManager.addingEvent = new VsqEvent( new_clock, new VsqID( 0 ) );
-                                AppManager.addingEvent.ID.PMBendDepth = AppManager.editorConfig.DefaultPMBendDepth;
-                                AppManager.addingEvent.ID.PMBendLength = AppManager.editorConfig.DefaultPMBendLength;
-                                AppManager.addingEvent.ID.PMbPortamentoUse = AppManager.editorConfig.DefaultPMbPortamentoUse;
-                                AppManager.addingEvent.ID.DEMdecGainRate = AppManager.editorConfig.DefaultDEMdecGainRate;
-                                AppManager.addingEvent.ID.DEMaccent = AppManager.editorConfig.DefaultDEMaccent;
+                                AppManager.mAddingEvent = new VsqEvent( new_clock, new VsqID( 0 ) );
+                                AppManager.mAddingEvent.ID.PMBendDepth = AppManager.editorConfig.DefaultPMBendDepth;
+                                AppManager.mAddingEvent.ID.PMBendLength = AppManager.editorConfig.DefaultPMBendLength;
+                                AppManager.mAddingEvent.ID.PMbPortamentoUse = AppManager.editorConfig.DefaultPMbPortamentoUse;
+                                AppManager.mAddingEvent.ID.DEMdecGainRate = AppManager.editorConfig.DefaultDEMdecGainRate;
+                                AppManager.mAddingEvent.ID.DEMaccent = AppManager.editorConfig.DefaultDEMaccent;
                                 if ( mPencilMode.getMode() == PencilModeEnum.Off ) {
                                     AppManager.setEditMode( EditMode.ADD_ENTRY );
                                     mButtonInitial = new Point( e.X, e.Y );
-                                    AppManager.addingEvent.ID.setLength( 0 );
-                                    AppManager.addingEvent.ID.Note = note;
+                                    AppManager.mAddingEvent.ID.setLength( 0 );
+                                    AppManager.mAddingEvent.ID.Note = note;
                                     setCursor( new Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
 #if DEBUG
                                     AppManager.debugWriteLine( "    EditMode=" + AppManager.getEditMode() );
 #endif
                                 } else {
                                     AppManager.setEditMode( EditMode.ADD_FIXED_LENGTH_ENTRY );
-                                    AppManager.addingEvent.ID.setLength( mPencilMode.getUnitLength() );
-                                    AppManager.addingEvent.ID.Note = note;
+                                    AppManager.mAddingEvent.ID.setLength( mPencilMode.getUnitLength() );
+                                    AppManager.mAddingEvent.ID.Note = note;
                                     setCursor( new Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
                                 }
                             } else {
@@ -8480,8 +8504,8 @@ namespace org.kbinani.cadencii {
 #endif
                             AppManager.setWholeSelectedIntervalEnabled( false );
                             AppManager.clearSelectedEvent();
-                            AppManager.mouseDownLocation = new Point( e.X + stdx, e.Y + stdy );
-                            AppManager.isPointerDowned = true;
+                            AppManager.mMouseDownLocation = new Point( e.X + stdx, e.Y + stdy );
+                            AppManager.mIsPointerDowned = true;
 #if DEBUG
                             AppManager.debugWriteLine( "    EditMode=" + AppManager.getEditMode() );
 #endif
@@ -8523,7 +8547,7 @@ namespace org.kbinani.cadencii {
                     if ( selected_tool != EditTool.ERASER && e.Button == BMouseButtons.Left ) {
 #endif
                         int min_width = 4 * _EDIT_HANDLE_WIDTH;
-                        for ( Iterator<DrawObject> itr = AppManager.drawObjects.get( selected - 1 ).iterator(); itr.hasNext(); ) {
+                        for ( Iterator<DrawObject> itr = AppManager.mDrawObjects.get( selected - 1 ).iterator(); itr.hasNext(); ) {
                             DrawObject dobj = itr.next();
 
                             int edit_handle_width = _EDIT_HANDLE_WIDTH;
@@ -8643,9 +8667,9 @@ namespace org.kbinani.cadencii {
 
                             // 範囲選択モードで、かつマウス位置の音符がその範囲に入っていた場合にのみ、MOVE_ENTRY_WHOLE_WAIT_MOVEに移行
                             if ( AppManager.isWholeSelectedIntervalEnabled() &&
-                                 AppManager.wholeSelectedInterval.getStart() <= item.Clock && item.Clock <= AppManager.wholeSelectedInterval.getEnd() ) {
+                                 AppManager.mWholeSelectedInterval.getStart() <= item.Clock && item.Clock <= AppManager.mWholeSelectedInterval.getEnd() ) {
                                 AppManager.setEditMode( EditMode.MOVE_ENTRY_WHOLE_WAIT_MOVE );
-                                AppManager.wholeSelectedIntervalStartForMoving = AppManager.wholeSelectedInterval.getStart();
+                                AppManager.mWholeSelectedIntervalStartForMoving = AppManager.mWholeSelectedInterval.getStart();
                             } else {
                                 AppManager.setWholeSelectedIntervalEnabled( false );
                                 AppManager.setEditMode( EditMode.MOVE_ENTRY_WAIT_MOVE );
@@ -8678,7 +8702,7 @@ namespace org.kbinani.cadencii {
 #if JAVA
                 if ( AppManager.inputTextBox != null && !AppManager.inputTextBox.isVisible() && !AppManager.propertyPanel.isEditing() ) {
 #else
-                if ( AppManager.inputTextBox != null && !AppManager.inputTextBox.IsDisposed && !AppManager.inputTextBox.isVisible() && !AppManager.propertyPanel.isEditing() ) {
+                if ( AppManager.mInputTextBox != null && !AppManager.mInputTextBox.IsDisposed && !AppManager.mInputTextBox.isVisible() && !AppManager.propertyPanel.isEditing() ) {
 #endif
 #else
 #if JAVA
@@ -8697,7 +8721,7 @@ namespace org.kbinani.cadencii {
             int selected = AppManager.getSelected();
             EditTool selected_tool = AppManager.getSelectedTool();
 
-            if ( edit_mode == EditMode.CURVE_ON_PIANOROLL && AppManager.curveOnPianoroll ) {
+            if ( edit_mode == EditMode.CURVE_ON_PIANOROLL && AppManager.mCurveOnPianoroll ) {
                 pictPianoRoll.mouseTracer.append( e.X + stdx, e.Y + stdy );
                 if ( !timer.isRunning() ) {
                     refreshScreen();
@@ -8834,18 +8858,18 @@ namespace org.kbinani.cadencii {
             }
 
             // 選択範囲にあるイベントを選択．
-            if ( AppManager.isPointerDowned ) {
+            if ( AppManager.mIsPointerDowned ) {
                 if ( AppManager.isWholeSelectedIntervalEnabled() ) {
                     int endClock = AppManager.clockFromXCoord( e.X );
                     if ( AppManager.editorConfig.CurveSelectingQuantized ) {
                         int unit = AppManager.getPositionQuantizeClock();
                         endClock = doQuantize( endClock, unit );
                     }
-                    AppManager.wholeSelectedInterval.setEnd( endClock );
+                    AppManager.mWholeSelectedInterval.setEnd( endClock );
                 } else {
                     Point mouse = new Point( e.X + stdx, e.Y + stdy );
                     int tx, ty, twidth, theight;
-                    int lx = AppManager.mouseDownLocation.x;
+                    int lx = AppManager.mMouseDownLocation.x;
                     if ( lx < mouse.x ) {
                         tx = lx;
                         twidth = mouse.x - lx;
@@ -8853,7 +8877,7 @@ namespace org.kbinani.cadencii {
                         tx = mouse.x;
                         twidth = lx - mouse.x;
                     }
-                    int ly = AppManager.mouseDownLocation.y;
+                    int ly = AppManager.mMouseDownLocation.y;
                     if ( ly < mouse.y ) {
                         ty = ly;
                         theight = mouse.y - ly;
@@ -8865,7 +8889,7 @@ namespace org.kbinani.cadencii {
                     Rectangle rect = new Rectangle( tx, ty, twidth, theight );
                     Vector<Integer> add_required = new Vector<Integer>();
                     int internal_id = -1;
-                    for ( Iterator<DrawObject> itr = AppManager.drawObjects.get( selected - 1 ).iterator(); itr.hasNext(); ) {
+                    for ( Iterator<DrawObject> itr = AppManager.mDrawObjects.get( selected - 1 ).iterator(); itr.hasNext(); ) {
                         DrawObject dobj = itr.next();
                         int x0 = dobj.mRectangleInPixel.x + AppManager.keyWidth;
                         int x1 = dobj.mRectangleInPixel.x + AppManager.keyWidth + dobj.mRectangleInPixel.width;
@@ -8942,13 +8966,13 @@ namespace org.kbinani.cadencii {
             } else if ( edit_mode == EditMode.ADD_ENTRY ) {
                 #region ADD_ENTRY
                 int unit = AppManager.getLengthQuantizeClock();
-                int length = clock - AppManager.addingEvent.Clock;
+                int length = clock - AppManager.mAddingEvent.Clock;
                 int odd = length % unit;
                 int new_length = length - odd;
 
                 if ( unit * AppManager.getScaleX() > 10 ) { //これをしないと、グリッド2個分増えることがある
                     int next_clock = AppManager.clockFromXCoord( e.X + 10 );
-                    int next_length = next_clock - AppManager.addingEvent.Clock;
+                    int next_length = next_clock - AppManager.mAddingEvent.Clock;
                     int next_new_length = next_length - (next_length % unit);
                     if ( next_new_length == new_length + unit ) {
                         new_length = next_new_length;
@@ -8958,7 +8982,7 @@ namespace org.kbinani.cadencii {
                 if ( new_length <= 0 ) {
                     new_length = 0;
                 }
-                AppManager.addingEvent.ID.setLength( new_length );
+                AppManager.mAddingEvent.ID.setLength( new_length );
                 #endregion
             } else if ( edit_mode == EditMode.MOVE_ENTRY || edit_mode == EditMode.MOVE_ENTRY_WHOLE ) {
                 #region MOVE_ENTRY, MOVE_ENTRY_WHOLE
@@ -8979,7 +9003,7 @@ namespace org.kbinani.cadencii {
                         dclock = new_clock - clock_init;
                     }
 
-                    AppManager.wholeSelectedIntervalStartForMoving = AppManager.wholeSelectedInterval.getStart() + dclock;
+                    AppManager.mWholeSelectedIntervalStartForMoving = AppManager.mWholeSelectedInterval.getStart() + dclock;
 
                     for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
                         SelectedEventEntry item = itr.next();
@@ -9041,15 +9065,15 @@ namespace org.kbinani.cadencii {
                 int note = AppManager.noteFromYCoord( e.Y );
                 int unit = AppManager.getPositionQuantizeClock();
                 int new_clock = doQuantize( AppManager.clockFromXCoord( e.X ), unit );
-                AppManager.addingEvent.ID.Note = note;
-                AppManager.addingEvent.Clock = new_clock;
+                AppManager.mAddingEvent.ID.Note = note;
+                AppManager.mAddingEvent.Clock = new_clock;
                 #endregion
             } else if ( edit_mode == EditMode.EDIT_VIBRATO_DELAY ) {
                 #region EditVibratoDelay
                 int new_vibrato_start = clock;
-                int old_vibrato_end = AppManager.addingEvent.Clock + AppManager.addingEvent.ID.getLength();
+                int old_vibrato_end = AppManager.mAddingEvent.Clock + AppManager.mAddingEvent.ID.getLength();
                 int new_vibrato_length = old_vibrato_end - new_vibrato_start;
-                int max_length = (int)(AppManager.addingEventLength - _PX_ACCENT_HEADER * AppManager.getScaleXInv());
+                int max_length = (int)(AppManager.mAddingEventLength - _PX_ACCENT_HEADER * AppManager.getScaleXInv());
                 if ( max_length < 0 ) {
                     max_length = 0;
                 }
@@ -9061,8 +9085,8 @@ namespace org.kbinani.cadencii {
                     new_vibrato_start = old_vibrato_end;
                     new_vibrato_length = 0;
                 }
-                AppManager.addingEvent.Clock = new_vibrato_start;
-                AppManager.addingEvent.ID.setLength( new_vibrato_length );
+                AppManager.mAddingEvent.Clock = new_vibrato_start;
+                AppManager.mAddingEvent.ID.setLength( new_vibrato_length );
                 if ( !timer.isRunning() ) {
                     refreshScreen();
                 }
@@ -9074,19 +9098,19 @@ namespace org.kbinani.cadencii {
                 int unit = AppManager.getPositionQuantizeClock();
                 int clock1 = doQuantize( clock, unit );
                 int note = AppManager.noteFromYCoord( e.Y );
-                AppManager.addingEvent.Clock = clock1;
-                AppManager.addingEvent.ID.Note = note;
+                AppManager.mAddingEvent.Clock = clock1;
+                AppManager.mAddingEvent.ID.Note = note;
                 #endregion
             }
 
             // カーソルの形を決める
             if ( !mMouseDowned && 
                  edit_mode != EditMode.CURVE_ON_PIANOROLL && 
-                 !(AppManager.curveOnPianoroll && (selected_tool == EditTool.PENCIL || selected_tool == EditTool.LINE)) ) {
+                 !(AppManager.mCurveOnPianoroll && (selected_tool == EditTool.PENCIL || selected_tool == EditTool.LINE)) ) {
                 boolean split_cursor = false;
                 boolean hand_cursor = false;
                 int min_width = 4 * _EDIT_HANDLE_WIDTH;
-                for ( Iterator<DrawObject> itr = AppManager.drawObjects.get( selected - 1 ).iterator(); itr.hasNext(); ) {
+                for ( Iterator<DrawObject> itr = AppManager.mDrawObjects.get( selected - 1 ).iterator(); itr.hasNext(); ) {
                     DrawObject dobj = itr.next();
                     Rectangle rc;
                     if ( dobj.mType != DrawObjectType.Dynaff ) {
@@ -9180,7 +9204,7 @@ namespace org.kbinani.cadencii {
             AppManager.debugWriteLine( "pictureBox1_MouseUp" );
             AppManager.debugWriteLine( "    m_config.EditMode=" + AppManager.getEditMode() );
 #endif
-            AppManager.isPointerDowned = false;
+            AppManager.mIsPointerDowned = false;
             mMouseDowned = false;
 
             int modefiers = PortUtil.getCurrentModifierKey();
@@ -9334,15 +9358,15 @@ namespace org.kbinani.cadencii {
                 #region AddEntry || AddFixedLengthEntry
                 if ( AppManager.getSelected() >= 0 ) {
                     if ( (edit_mode == EditMode.ADD_FIXED_LENGTH_ENTRY) ||
-                         (edit_mode == EditMode.ADD_ENTRY && (mButtonInitial.x != e.X || mButtonInitial.y != e.Y) && AppManager.addingEvent.ID.getLength() > 0) ) {
+                         (edit_mode == EditMode.ADD_ENTRY && (mButtonInitial.x != e.X || mButtonInitial.y != e.Y) && AppManager.mAddingEvent.ID.getLength() > 0) ) {
                         LyricHandle lyric = new LyricHandle( "あ", "a" );
                         VibratoHandle vibrato = null;
                         int vibrato_delay = 0;
                         if ( AppManager.editorConfig.EnableAutoVibrato ) {
-                            int note_length = AppManager.addingEvent.ID.getLength();
+                            int note_length = AppManager.mAddingEvent.ID.getLength();
                             // 音符位置での拍子を調べる
                             //int denom, numer;
-                            Timesig timesig = vsq.getTimesigAt( AppManager.addingEvent.Clock );
+                            Timesig timesig = vsq.getTimesigAt( AppManager.mAddingEvent.Clock );
 
                             // ビブラートを自動追加するかどうかを決める閾値
                             int autovib = AutoVibratoMinLengthUtil.getValue( AppManager.editorConfig.AutoVibratoMinimumLength );
@@ -9369,24 +9393,24 @@ namespace org.kbinani.cadencii {
                         }
 
                         // oto.iniの設定を反映
-                        VsqEvent item = vsq_track.getSingerEventAt( AppManager.addingEvent.Clock );
+                        VsqEvent item = vsq_track.getSingerEventAt( AppManager.mAddingEvent.Clock );
                         SingerConfig singerConfig = AppManager.getSingerInfoUtau( item.ID.IconHandle.Language, item.ID.IconHandle.Program );
 
-                        if ( singerConfig != null && AppManager.utauVoiceDB.containsKey( singerConfig.VOICEIDSTR ) ) {
-                            UtauVoiceDB utauVoiceDb = AppManager.utauVoiceDB.get( singerConfig.VOICEIDSTR );
+                        if ( singerConfig != null && AppManager.mUtauVoiceDB.containsKey( singerConfig.VOICEIDSTR ) ) {
+                            UtauVoiceDB utauVoiceDb = AppManager.mUtauVoiceDB.get( singerConfig.VOICEIDSTR );
                             OtoArgs otoArgs = utauVoiceDb.attachFileNameFromLyric( lyric.L0.Phrase );
-                            AppManager.addingEvent.UstEvent.PreUtterance = otoArgs.msPreUtterance;
-                            AppManager.addingEvent.UstEvent.VoiceOverlap = otoArgs.msOverlap;
+                            AppManager.mAddingEvent.UstEvent.PreUtterance = otoArgs.msPreUtterance;
+                            AppManager.mAddingEvent.UstEvent.VoiceOverlap = otoArgs.msOverlap;
                         }
 
                         // 自動ノーマライズのモードで、処理を分岐
-                        if ( AppManager.autoNormalize ) {
+                        if ( AppManager.mAutoNormalize ) {
                             VsqTrack work = (VsqTrack)vsq_track.clone();
-                            AppManager.addingEvent.ID.type = VsqIDType.Anote;
-                            AppManager.addingEvent.ID.Dynamics = 64;
-                            AppManager.addingEvent.ID.VibratoHandle = vibrato;
-                            AppManager.addingEvent.ID.LyricHandle = lyric;
-                            AppManager.addingEvent.ID.VibratoDelay = vibrato_delay;
+                            AppManager.mAddingEvent.ID.type = VsqIDType.Anote;
+                            AppManager.mAddingEvent.ID.Dynamics = 64;
+                            AppManager.mAddingEvent.ID.VibratoHandle = vibrato;
+                            AppManager.mAddingEvent.ID.LyricHandle = lyric;
+                            AppManager.mAddingEvent.ID.VibratoDelay = vibrato_delay;
 
                             boolean changed = true;
                             while ( changed ) {
@@ -9394,20 +9418,20 @@ namespace org.kbinani.cadencii {
                                 for ( int i = 0; i < work.getEventCount(); i++ ) {
                                     int start_clock = work.getEvent( i ).Clock;
                                     int end_clock = work.getEvent( i ).ID.getLength() + start_clock;
-                                    if ( start_clock < AppManager.addingEvent.Clock && AppManager.addingEvent.Clock < end_clock ) {
-                                        work.getEvent( i ).ID.setLength( AppManager.addingEvent.Clock - start_clock );
+                                    if ( start_clock < AppManager.mAddingEvent.Clock && AppManager.mAddingEvent.Clock < end_clock ) {
+                                        work.getEvent( i ).ID.setLength( AppManager.mAddingEvent.Clock - start_clock );
                                         changed = true;
-                                    } else if ( start_clock == AppManager.addingEvent.Clock ) {
+                                    } else if ( start_clock == AppManager.mAddingEvent.Clock ) {
                                         work.removeEvent( i );
                                         changed = true;
                                         break;
-                                    } else if ( AppManager.addingEvent.Clock < start_clock && start_clock < AppManager.addingEvent.Clock + AppManager.addingEvent.ID.getLength() ) {
-                                        AppManager.addingEvent.ID.setLength( start_clock - AppManager.addingEvent.Clock );
+                                    } else if ( AppManager.mAddingEvent.Clock < start_clock && start_clock < AppManager.mAddingEvent.Clock + AppManager.mAddingEvent.ID.getLength() ) {
+                                        AppManager.mAddingEvent.ID.setLength( start_clock - AppManager.mAddingEvent.Clock );
                                         changed = true;
                                     }
                                 }
                             }
-                            VsqEvent add = (VsqEvent)AppManager.addingEvent.clone();
+                            VsqEvent add = (VsqEvent)AppManager.mAddingEvent.clone();
                             work.addEvent( add );
                             CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( selected,
                                                                                          work,
@@ -9416,10 +9440,10 @@ namespace org.kbinani.cadencii {
                             setEdited( true );
                         } else {
                             VsqEvent[] items = new VsqEvent[1];
-                            AppManager.addingEvent.ID.type = VsqIDType.Anote;
-                            AppManager.addingEvent.ID.Dynamics = 64;
-                            items[0] = (VsqEvent)AppManager.addingEvent.clone();// new VsqEvent( 0, AppManager.addingEvent.ID );
-                            items[0].Clock = AppManager.addingEvent.Clock;
+                            AppManager.mAddingEvent.ID.type = VsqIDType.Anote;
+                            AppManager.mAddingEvent.ID.Dynamics = 64;
+                            items[0] = (VsqEvent)AppManager.mAddingEvent.clone();// new VsqEvent( 0, AppManager.addingEvent.ID );
+                            items[0].Clock = AppManager.mAddingEvent.Clock;
                             items[0].ID.LyricHandle = lyric;
                             items[0].ID.VibratoDelay = vibrato_delay;
                             items[0].ID.VibratoHandle = vibrato;
@@ -9495,8 +9519,8 @@ namespace org.kbinani.cadencii {
                             }
                         }*/
                     }
-                    lock ( AppManager.drawObjects ) {
-                        Collections.sort( AppManager.drawObjects.get( selected - 1 ) );
+                    lock ( AppManager.mDrawObjects ) {
+                        Collections.sort( AppManager.mDrawObjects.get( selected - 1 ) );
                     }
                 }
                 #endregion
@@ -9551,12 +9575,12 @@ namespace org.kbinani.cadencii {
             } else if ( edit_mode == EditMode.EDIT_VIBRATO_DELAY ) {
                 #region EditVibratoDelay
                 if ( mMouseMoved ) {
-                    double max_length = AppManager.addingEventLength - _PX_ACCENT_HEADER * AppManager.getScaleXInv();
-                    double rate = AppManager.addingEvent.ID.getLength() / max_length;
+                    double max_length = AppManager.mAddingEventLength - _PX_ACCENT_HEADER * AppManager.getScaleXInv();
+                    double rate = AppManager.mAddingEvent.ID.getLength() / max_length;
                     if ( rate > 0.99 ) {
                         rate = 1.0;
                     }
-                    int vibrato_length = (int)(AppManager.addingEventLength * rate);
+                    int vibrato_length = (int)(AppManager.mAddingEventLength * rate);
                     VsqEvent item = null;
                     for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
                         VsqEvent ve = itr.next();
@@ -9585,9 +9609,9 @@ namespace org.kbinani.cadencii {
                 PortUtil.println( "FormMain#pictPianoRoll_MouseUp; EditMode.MOVE_ENTRY_WHOLE" );
 #endif
                 #region MOVE_ENTRY_WHOLE
-                int src_clock_start = AppManager.wholeSelectedInterval.getStart();
-                int src_clock_end = AppManager.wholeSelectedInterval.getEnd();
-                int dst_clock_start = AppManager.wholeSelectedIntervalStartForMoving;
+                int src_clock_start = AppManager.mWholeSelectedInterval.getStart();
+                int src_clock_end = AppManager.mWholeSelectedInterval.getEnd();
+                int dst_clock_start = AppManager.mWholeSelectedIntervalStartForMoving;
                 int dst_clock_end = dst_clock_start + (src_clock_end - src_clock_start);
                 int dclock = dst_clock_start - src_clock_start;
 
@@ -9663,9 +9687,9 @@ namespace org.kbinani.cadencii {
                 AppManager.register( vsq.executeCommand( run ) );
 
                 // 選択範囲を更新
-                AppManager.wholeSelectedInterval = new SelectedRegion( dst_clock_start );
-                AppManager.wholeSelectedInterval.setEnd( dst_clock_end );
-                AppManager.wholeSelectedIntervalStartForMoving = dst_clock_start;
+                AppManager.mWholeSelectedInterval = new SelectedRegion( dst_clock_start );
+                AppManager.mWholeSelectedInterval.setEnd( dst_clock_end );
+                AppManager.mWholeSelectedIntervalStartForMoving = dst_clock_start;
 
                 // 音符の再選択
                 AppManager.clearSelectedEvent();
@@ -9679,8 +9703,8 @@ namespace org.kbinani.cadencii {
                 setEdited( true );
                 #endregion
             } else if ( AppManager.isWholeSelectedIntervalEnabled() ) {
-                int start = AppManager.wholeSelectedInterval.getStart();
-                int end = AppManager.wholeSelectedInterval.getEnd();
+                int start = AppManager.mWholeSelectedInterval.getStart();
+                int end = AppManager.mWholeSelectedInterval.getEnd();
 #if DEBUG
                 PortUtil.println( "FormMain#pictPianoRoll_MouseUp; WholeSelectedInterval; (start,end)=" + start + ", " + end );
 #endif
@@ -9792,7 +9816,7 @@ namespace org.kbinani.cadencii {
         public void menuVisualMixer_Click( Object sender, EventArgs e ) {
             menuVisualMixer.setSelected( !menuVisualMixer.isSelected() );
             AppManager.editorConfig.MixerVisible = menuVisualMixer.isSelected();
-            AppManager.mixerWindow.setVisible( AppManager.editorConfig.MixerVisible );
+            AppManager.mMixerWindow.setVisible( AppManager.editorConfig.MixerVisible );
             requestFocus();
         }
 
@@ -9837,10 +9861,10 @@ namespace org.kbinani.cadencii {
             if ( menuVisualControlTrack.isSelected() ) {
                 splitContainer1.setSplitterFixed( false );
                 splitContainer1.setDividerSize( _SPL_SPLITTER_WIDTH );
-                splitContainer1.setDividerLocation( splitContainer1.getHeight() - AppManager.lastTrackSelectorHeight - splitContainer1.getDividerSize() );
+                splitContainer1.setDividerLocation( splitContainer1.getHeight() - AppManager.mLastTrackSelectorHeight - splitContainer1.getDividerSize() );
                 splitContainer1.setPanel2MinSize( trackSelector.getPreferredMinSize() );
             } else {
-                AppManager.lastTrackSelectorHeight = splitContainer1.getHeight() - splitContainer1.getDividerLocation() - splitContainer1.getDividerSize();
+                AppManager.mLastTrackSelectorHeight = splitContainer1.getHeight() - splitContainer1.getDividerLocation() - splitContainer1.getDividerSize();
                 splitContainer1.setSplitterFixed( true );
                 splitContainer1.setDividerSize( 0 );
                 int panel2height = TrackSelector.OFFSET_TRACK_TAB * 2;
@@ -10025,8 +10049,8 @@ namespace org.kbinani.cadencii {
                 return;
             }
             vsq.setSolo( track, solo );
-            if ( AppManager.mixerWindow != null ) {
-                AppManager.mixerWindow.updateSoloMute();
+            if ( AppManager.mMixerWindow != null ) {
+                AppManager.mMixerWindow.updateSoloMute();
             }
         }
 
@@ -10045,8 +10069,8 @@ namespace org.kbinani.cadencii {
             } else {
                 vsq.setMute( track, mute );
             }
-            if ( AppManager.mixerWindow != null ) {
-                AppManager.mixerWindow.updateSoloMute();
+            if ( AppManager.mMixerWindow != null ) {
+                AppManager.mMixerWindow.updateSoloMute();
             }
         }
 
@@ -10214,11 +10238,11 @@ namespace org.kbinani.cadencii {
             VsqTrack vsq_track = vsq.Track.get( selected );
             VsqTrack work = (VsqTrack)vsq_track.clone();
 
-            if ( AppManager.addingEvent == null ) {
+            if ( AppManager.mAddingEvent == null ) {
                 // ここは多分起こらない
                 return;
             }
-            VsqEvent item = (VsqEvent)AppManager.addingEvent.clone();
+            VsqEvent item = (VsqEvent)AppManager.mAddingEvent.clone();
             item.Clock = clock;
             item.ID.Note = note;
             work.addEvent( item );
@@ -10380,19 +10404,19 @@ namespace org.kbinani.cadencii {
             menuVisualMixer.setSelected( AppManager.editorConfig.MixerVisible );
             menuVisualPitchLine.setSelected( AppManager.editorConfig.ViewAtcualPitch );
 
-            AppManager.mixerWindow = new FormMixer( this );
+            AppManager.mMixerWindow = new FormMixer( this );
 
             updateMenuFonts();
 
-            AppManager.mixerWindow.federChangedEvent.add( new FederChangedEventHandler( this, "mixerWindow_FederChanged" ) );
-            AppManager.mixerWindow.panpotChangedEvent.add( new PanpotChangedEventHandler( this, "mixerWindow_PanpotChanged" ) );
-            AppManager.mixerWindow.muteChangedEvent.add( new MuteChangedEventHandler( this, "mixerWindow_MuteChanged" ) );
-            AppManager.mixerWindow.soloChangedEvent.add( new SoloChangedEventHandler( this, "mixerWindow_SoloChanged" ) );
-            AppManager.mixerWindow.topMostChangedEvent.add( new TopMostChangedEventHandler( this, "mixerWindow_TopMostChanged" ) );
-            AppManager.mixerWindow.setShowTopMost( AppManager.editorConfig.MixerTopMost );
-            AppManager.mixerWindow.updateStatus();
+            AppManager.mMixerWindow.federChangedEvent.add( new FederChangedEventHandler( this, "mixerWindow_FederChanged" ) );
+            AppManager.mMixerWindow.panpotChangedEvent.add( new PanpotChangedEventHandler( this, "mixerWindow_PanpotChanged" ) );
+            AppManager.mMixerWindow.muteChangedEvent.add( new MuteChangedEventHandler( this, "mixerWindow_MuteChanged" ) );
+            AppManager.mMixerWindow.soloChangedEvent.add( new SoloChangedEventHandler( this, "mixerWindow_SoloChanged" ) );
+            AppManager.mMixerWindow.topMostChangedEvent.add( new TopMostChangedEventHandler( this, "mixerWindow_TopMostChanged" ) );
+            AppManager.mMixerWindow.setShowTopMost( AppManager.editorConfig.MixerTopMost );
+            AppManager.mMixerWindow.updateStatus();
             if ( AppManager.editorConfig.MixerVisible ) {
-                AppManager.mixerWindow.setVisible( true );
+                AppManager.mMixerWindow.setVisible( true );
             }
 
             trackSelector.commandExecutedEvent.add( new BEventHandler( this, "trackSelector_CommandExecuted" ) );
@@ -10605,7 +10629,7 @@ namespace org.kbinani.cadencii {
                 AppManager.propertyWindow.setExtendedState( BForm.NORMAL );
                 AppManager.propertyWindow.setVisible( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Window );
 #endif
-                AppManager.mixerWindow.setVisible( AppManager.editorConfig.MixerVisible );
+                AppManager.mMixerWindow.setVisible( AppManager.editorConfig.MixerVisible );
                 if ( AppManager.iconPalette != null && menuVisualIconPalette.isSelected() ) {
                     AppManager.iconPalette.setVisible( true );
                 }
@@ -10614,7 +10638,7 @@ namespace org.kbinani.cadencii {
 #if ENABLE_PROPERTY
                 AppManager.propertyWindow.setVisible( false );
 #endif
-                AppManager.mixerWindow.setVisible( false );
+                AppManager.mMixerWindow.setVisible( false );
                 if ( AppManager.iconPalette != null ) {
                     AppManager.iconPalette.setVisible( false );
                 }
@@ -10623,7 +10647,7 @@ namespace org.kbinani.cadencii {
                 AppManager.propertyWindow.setExtendedState( BForm.NORMAL );
                 AppManager.propertyWindow.setVisible( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Window );
 #endif
-                AppManager.mixerWindow.setVisible( AppManager.editorConfig.MixerVisible );
+                AppManager.mMixerWindow.setVisible( AppManager.editorConfig.MixerVisible );
                 if ( AppManager.iconPalette != null && menuVisualIconPalette.isSelected() ) {
                     AppManager.iconPalette.setVisible( true );
                 }
@@ -10775,7 +10799,7 @@ namespace org.kbinani.cadencii {
                                 frc.setModal( true );
                                 frc.setVisible( true );
                                 if ( frc.getDialogResult() == BDialogResult.OK ) {
-                                    AppManager.addingEvent = null;
+                                    AppManager.mAddingEvent = null;
                                     AppManager.setEditMode( EditMode.REALTIME );
                                     AppManager.editorConfig.setRealtimeInputSpeed( frc.getSpeed() );
                                     AppManager.setPlaying( true );
@@ -10848,22 +10872,22 @@ namespace org.kbinani.cadencii {
                         if ( AppManager.isPlaying() ) {
                             int clock = AppManager.getCurrentClock();
                             int selected = AppManager.getSelected();
-                            if ( AppManager.addingEvent != null ) {
-                                AppManager.addingEvent.ID.setLength( clock - AppManager.addingEvent.Clock );
+                            if ( AppManager.mAddingEvent != null ) {
+                                AppManager.mAddingEvent.ID.setLength( clock - AppManager.mAddingEvent.Clock );
                                 CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventAdd( selected,
-                                                                                                               AppManager.addingEvent ) );
+                                                                                                               AppManager.mAddingEvent ) );
                                 AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                                 if ( !isEdited() ) {
                                     setEdited( true );
                                 }
                                 updateDrawObjectList();
                             }
-                            AppManager.addingEvent = new VsqEvent( clock, new VsqID( 0 ) );
-                            AppManager.addingEvent.ID.type = VsqIDType.Anote;
-                            AppManager.addingEvent.ID.Dynamics = 64;
-                            AppManager.addingEvent.ID.VibratoHandle = null;
-                            AppManager.addingEvent.ID.LyricHandle = new LyricHandle( "a", "a" );
-                            AppManager.addingEvent.ID.Note = note;
+                            AppManager.mAddingEvent = new VsqEvent( clock, new VsqID( 0 ) );
+                            AppManager.mAddingEvent.ID.type = VsqIDType.Anote;
+                            AppManager.mAddingEvent.ID.Dynamics = 64;
+                            AppManager.mAddingEvent.ID.VibratoHandle = null;
+                            AppManager.mAddingEvent.ID.LyricHandle = new LyricHandle( "a", "a" );
+                            AppManager.mAddingEvent.ID.Note = note;
                         }
                         if ( AppManager.getEditMode() == EditMode.REALTIME ) {
 #if ENABLE_MIDI
@@ -10873,8 +10897,8 @@ namespace org.kbinani.cadencii {
                             KeySoundPlayer.play( note );
                         }
                     } else {
-                        if ( AppManager.isPlaying() && AppManager.addingEvent != null ) {
-                            AppManager.addingEvent.ID.setLength( AppManager.getCurrentClock() - AppManager.addingEvent.Clock );
+                        if ( AppManager.isPlaying() && AppManager.mAddingEvent != null ) {
+                            AppManager.mAddingEvent.ID.setLength( AppManager.getCurrentClock() - AppManager.mAddingEvent.Clock );
                         }
                     }
                 }
@@ -10888,7 +10912,7 @@ namespace org.kbinani.cadencii {
                 if ( AppManager.getEditMode() == EditMode.REALTIME ) {
                     AppManager.setPlaying( false );
                     AppManager.setEditMode( EditMode.NONE );
-                    AppManager.addingEvent = null;
+                    AppManager.mAddingEvent = null;
                 }
                 mTimer.stop();
             }
@@ -10987,8 +11011,8 @@ namespace org.kbinani.cadencii {
             FormSynthesize fs = null;
             try {
                 VsqFileEx vsq = AppManager.getVsqFile();
-                int clockStart = AppManager.startMarkerEnabled ? AppManager.startMarker : 0;
-                int clockEnd = AppManager.endMarkerEnabled ? AppManager.endMarker : vsq.TotalClocks + 240;
+                int clockStart = AppManager.mStartMarkerEnabled ? AppManager.mStartMarker : 0;
+                int clockEnd = AppManager.mEndMarkerEnabled ? AppManager.mEndMarker : vsq.TotalClocks + 240;
                 if ( clockStart > clockEnd ) {
                     AppManager.showMessageBox( _( "invalid rendering region; start>=end" ), _( "Error" ), PortUtil.OK_OPTION, org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
                     return;
@@ -11725,7 +11749,7 @@ namespace org.kbinani.cadencii {
             AppManager.setSelected( 1 );
             clearExistingData();
             setEdited( false );
-            AppManager.mixerWindow.updateStatus();
+            AppManager.mMixerWindow.updateStatus();
             clearTempWave();
             updateDrawObjectList();
             refreshScreen();
@@ -11747,7 +11771,7 @@ namespace org.kbinani.cadencii {
                 clearExistingData();
                 AppManager.setVsqFile( vsq );
                 setEdited( false );
-                AppManager.mixerWindow.updateStatus();
+                AppManager.mMixerWindow.updateStatus();
                 clearTempWave();
                 updateDrawObjectList();
                 refreshScreen();
@@ -12004,7 +12028,7 @@ namespace org.kbinani.cadencii {
                         RenderedStatus status = null;
                         try {
                             fs = new FileInputStream( xml );
-                            Object obj = AppManager.renderingStatusSerializer.deserialize( fs );
+                            Object obj = AppManager.mRenderingStatusSerializer.deserialize( fs );
                             if ( obj != null && obj is RenderedStatus ) {
                                 status = (RenderedStatus)obj;
                             }
@@ -12022,7 +12046,7 @@ namespace org.kbinani.cadencii {
                                 }
                             }
                         }
-                        AppManager.lastRenderedStatus[i - 1] = status;
+                        AppManager.mLastRenderedStatus[i - 1] = status;
                     }
 
                     // キャッシュ内のwavを、waveViewに読み込む
@@ -12041,7 +12065,7 @@ namespace org.kbinani.cadencii {
                 }
 
                 setEdited( false );
-                AppManager.mixerWindow.updateStatus();
+                AppManager.mMixerWindow.updateStatus();
                 clearTempWave();
                 updateDrawObjectList();
                 refreshScreen();
@@ -12063,7 +12087,7 @@ namespace org.kbinani.cadencii {
             AppManager.setVsqFile( vsq );
             clearExistingData();
             setEdited( false );
-            AppManager.mixerWindow.updateStatus();
+            AppManager.mMixerWindow.updateStatus();
             clearTempWave();
 
             // キャッシュディレクトリのパスを、デフォルトに戻す
@@ -12328,7 +12352,7 @@ namespace org.kbinani.cadencii {
                         Messaging.setLanguage( AppManager.editorConfig.Language );
                         applyLanguage();
                         mDialogPreference.applyLanguage();
-                        AppManager.mixerWindow.applyLanguage();
+                        AppManager.mMixerWindow.applyLanguage();
 #if JAVA
                     if ( m_versioninfo != null ) {
 #else
@@ -12732,8 +12756,8 @@ namespace org.kbinani.cadencii {
         }
 
         public void menuEditAutoNormalizeMode_Click( Object sender, EventArgs e ) {
-            AppManager.autoNormalize = !AppManager.autoNormalize;
-            menuEditAutoNormalizeMode.setSelected( AppManager.autoNormalize );
+            AppManager.mAutoNormalize = !AppManager.mAutoNormalize;
+            menuEditAutoNormalizeMode.setSelected( AppManager.mAutoNormalize );
         }
         #endregion
 
@@ -12820,7 +12844,7 @@ namespace org.kbinani.cadencii {
         #region menuJob
         public void menuJobRealTime_Click( Object sender, EventArgs e ) {
             if ( !AppManager.isPlaying() ) {
-                AppManager.addingEvent = null;
+                AppManager.mAddingEvent = null;
                 AppManager.setEditMode( EditMode.REALTIME );
                 AppManager.setPlaying( true );
                 //menuJobRealTime.setText( _( "Stop Realtime Input" );
@@ -13919,16 +13943,16 @@ namespace org.kbinani.cadencii {
             if ( e.Button == BMouseButtons.Left ) {
                 if ( 0 <= e.Y && e.Y <= 18 ) {
                     #region スタート/エンドマーク
-                    if ( AppManager.startMarkerEnabled ) {
-                        int startx = AppManager.xCoordFromClocks( AppManager.startMarker ) - AppManager.editorConfig.PxTolerance;
+                    if ( AppManager.mStartMarkerEnabled ) {
+                        int startx = AppManager.xCoordFromClocks( AppManager.mStartMarker ) - AppManager.editorConfig.PxTolerance;
                         int marker_width = Resources.get_start_marker().getWidth( this );
                         if ( startx <= e.X && e.X <= startx + AppManager.editorConfig.PxTolerance * 2 + marker_width ) {
                             mPositionIndicatorMouseDownMode = PositionIndicatorMouseDownMode.MARK_START;
                         }
                     }
-                    if ( AppManager.endMarkerEnabled && mPositionIndicatorMouseDownMode != PositionIndicatorMouseDownMode.MARK_START ) {
+                    if ( AppManager.mEndMarkerEnabled && mPositionIndicatorMouseDownMode != PositionIndicatorMouseDownMode.MARK_START ) {
                         int marker_width = Resources.get_end_marker().getWidth( this );
-                        int endx = AppManager.xCoordFromClocks( AppManager.endMarker ) - marker_width - AppManager.editorConfig.PxTolerance;
+                        int endx = AppManager.xCoordFromClocks( AppManager.mEndMarker ) - marker_width - AppManager.editorConfig.PxTolerance;
                         if ( endx <= e.X && e.X <= endx + AppManager.editorConfig.PxTolerance * 2 + marker_width ) {
                             mPositionIndicatorMouseDownMode = PositionIndicatorMouseDownMode.MARK_END;
                         }
@@ -14250,13 +14274,13 @@ namespace org.kbinani.cadencii {
                 if ( clock < 0 ) {
                     clock = 0;
                 }
-                int draft_start = Math.Min( clock, AppManager.endMarker );
-                int draft_end = Math.Max( clock, AppManager.endMarker );
-                if ( draft_start != AppManager.startMarker ) {
-                    AppManager.startMarker = draft_start;
+                int draft_start = Math.Min( clock, AppManager.mEndMarker );
+                int draft_end = Math.Max( clock, AppManager.mEndMarker );
+                if ( draft_start != AppManager.mStartMarker ) {
+                    AppManager.mStartMarker = draft_start;
                 }
-                if ( draft_end != AppManager.endMarker ) {
-                    AppManager.endMarker = draft_end;
+                if ( draft_end != AppManager.mEndMarker ) {
+                    AppManager.mEndMarker = draft_end;
                 }
                 refreshScreen();
             } else if ( mPositionIndicatorMouseDownMode == PositionIndicatorMouseDownMode.MARK_END ) {
@@ -14266,13 +14290,13 @@ namespace org.kbinani.cadencii {
                 if ( clock < 0 ) {
                     clock = 0;
                 }
-                int draft_start = Math.Min( clock, AppManager.startMarker );
-                int draft_end = Math.Max( clock, AppManager.startMarker );
-                if ( draft_start != AppManager.startMarker ) {
-                    AppManager.startMarker = draft_start;
+                int draft_start = Math.Min( clock, AppManager.mStartMarker );
+                int draft_end = Math.Max( clock, AppManager.mStartMarker );
+                if ( draft_start != AppManager.mStartMarker ) {
+                    AppManager.mStartMarker = draft_start;
                 }
-                if ( draft_end != AppManager.endMarker ) {
-                    AppManager.endMarker = draft_end;
+                if ( draft_end != AppManager.mEndMarker ) {
+                    AppManager.mEndMarker = draft_end;
                 }
                 refreshScreen();
             }
@@ -14482,7 +14506,7 @@ namespace org.kbinani.cadencii {
         public void trackSelector_MouseMove( Object sender, BMouseEventArgs e ) {
             if ( mFormActivated ) {
 #if ENABLE_PROPERTY
-                if ( AppManager.inputTextBox != null && !AppManager.inputTextBox.IsDisposed && !AppManager.inputTextBox.isVisible() && !AppManager.propertyPanel.isEditing() ) {
+                if ( AppManager.mInputTextBox != null && !AppManager.mInputTextBox.IsDisposed && !AppManager.mInputTextBox.isVisible() && !AppManager.propertyPanel.isEditing() ) {
 #else
 #if JAVA
                 if ( AppManager.inputTextBox != null && !AppManager.inputTextBox.isVisible() ) {
@@ -14988,7 +15012,7 @@ namespace org.kbinani.cadencii {
         }
 
         public void menuHiddenFlipCurveOnPianorollMode_Click( Object sender, EventArgs e ) {
-            AppManager.curveOnPianoroll = !AppManager.curveOnPianoroll;
+            AppManager.mCurveOnPianoroll = !AppManager.mCurveOnPianoroll;
             refreshScreen();
         }
 
@@ -14997,8 +15021,8 @@ namespace org.kbinani.cadencii {
                 return;
             }
 
-            if ( AppManager.endMarkerEnabled ) {
-                AppManager.setCurrentClock( AppManager.endMarker );
+            if ( AppManager.mEndMarkerEnabled ) {
+                AppManager.setCurrentClock( AppManager.mEndMarker );
                 ensureCursorVisible();
                 refreshScreen();
             }
@@ -15009,8 +15033,8 @@ namespace org.kbinani.cadencii {
                 return;
             }
 
-            if ( AppManager.startMarkerEnabled ) {
-                AppManager.setCurrentClock( AppManager.startMarker );
+            if ( AppManager.mStartMarkerEnabled ) {
+                AppManager.setCurrentClock( AppManager.mStartMarker );
                 ensureCursorVisible();
                 refreshScreen();
             }
@@ -15035,11 +15059,11 @@ namespace org.kbinani.cadencii {
             if ( AppManager.isPlaying() ) {
                 return;
             }
-            if ( !AppManager.startMarkerEnabled ) {
+            if ( !AppManager.mStartMarkerEnabled ) {
                 return;
             }
 
-            AppManager.setCurrentClock( AppManager.startMarker );
+            AppManager.setCurrentClock( AppManager.mStartMarker );
             AppManager.setPlaying( true );
         }
         
@@ -15090,7 +15114,7 @@ namespace org.kbinani.cadencii {
 #if JAVA
             boolean input_enabled = AppManager.inputTextBox.isVisible();
 #else
-            boolean input_enabled = AppManager.inputTextBox.Enabled;
+            boolean input_enabled = AppManager.mInputTextBox.Enabled;
 #endif
             if ( !input_enabled && AppManager.getSelectedEventCount() > 0 ) {
                 VsqEvent original = AppManager.getLastSelectedEvent().original;
@@ -15104,7 +15128,7 @@ namespace org.kbinani.cadencii {
                                   original.ID.LyricHandle.L0.getPhoneticSymbol(),
                                   pos, mLastSymbolEditMode );
             } else if ( input_enabled ) {
-                if ( AppManager.inputTextBox.isPhoneticSymbolEditMode() ) {
+                if ( AppManager.mInputTextBox.isPhoneticSymbolEditMode() ) {
                     flipInputTextBoxMode();
                 }
             }
@@ -15543,14 +15567,14 @@ namespace org.kbinani.cadencii {
             //PortUtil.println( "FormMain#timer_Tick; AppManager.firstBufferWritten=" + AppManager.firstBufferWritten );
 #endif
             float play_time = -1.0f;
-            if ( AppManager.rendererAvailable ) {
+            if ( AppManager.mRendererAvailable ) {
                 // レンダリング用VSTiが利用可能な状態でAppManager_PreviewStartedした場合
-                if ( !AppManager.firstBufferWritten ) {
+                if ( !AppManager.mFirstBufferWritten ) {
                     return;
                 }
                 play_time = VSTiProxy.getPlayTime();
             } else {
-                play_time = (float)(PortUtil.getCurrentTime() - AppManager.previewStartedTime);
+                play_time = (float)(PortUtil.getCurrentTime() - AppManager.mPreviewStartedTime);
             }
             if ( AppManager.getEditMode() == EditMode.REALTIME ) {
                 play_time = play_time * AppManager.editorConfig.getRealtimeInputSpeed();
@@ -15567,8 +15591,8 @@ namespace org.kbinani.cadencii {
 #endif
                 AppManager.setPlaying( false );
                 timer.stop();
-                if ( AppManager.startMarkerEnabled ) {
-                    AppManager.setCurrentClock( AppManager.startMarker );
+                if ( AppManager.mStartMarkerEnabled ) {
+                    AppManager.setCurrentClock( AppManager.mStartMarker );
                     ensureCursorVisible();
                 }
                 if ( AppManager.isRepeatMode() ) {
@@ -15590,7 +15614,7 @@ namespace org.kbinani.cadencii {
                         AppManager.setPlaying( false );
                     }
                 }
-            } else if ( AppManager.endMarkerEnabled && clock > (int)AppManager.endMarker && AppManager.getEditMode() != EditMode.REALTIME ) {
+            } else if ( AppManager.mEndMarkerEnabled && clock > (int)AppManager.mEndMarker && AppManager.getEditMode() != EditMode.REALTIME ) {
 #if DEBUG
                 PortUtil.println( "FormMain#timer_Tick; stop at C" );
 #endif
@@ -15598,16 +15622,16 @@ namespace org.kbinani.cadencii {
                 if ( AppManager.isRepeatMode() ) {
                     AppManager.setPlaying( false );
                     PlaySound.unprepare();
-                    AppManager.setCurrentClock( (AppManager.startMarkerEnabled) ? AppManager.startMarker : 0 );
+                    AppManager.setCurrentClock( (AppManager.mStartMarkerEnabled) ? AppManager.mStartMarker : 0 );
                     AppManager.setPlaying( true );
                 } else {
                     AppManager.setPlaying( false );
-                    AppManager.setCurrentClock( (AppManager.startMarkerEnabled) ? AppManager.startMarker : 0 );
+                    AppManager.setCurrentClock( (AppManager.mStartMarkerEnabled) ? AppManager.mStartMarker : 0 );
                     ensureCursorVisible();
                 }
             } else {
                 AppManager.setCurrentClock( (int)clock );
-                if ( AppManager.autoScroll ) {
+                if ( AppManager.mAutoScroll ) {
                     if ( AppManager.editorConfig.CursorFixed ) {
                         float f_draft = clock - (pictPianoRoll.getWidth() / 2 + 34 - 70) * AppManager.getScaleXInv();
                         if ( f_draft < 0f ) {
@@ -15736,7 +15760,7 @@ namespace org.kbinani.cadencii {
 
         public void stripBtnScroll_Click( Object sender, EventArgs e ) {
             stripBtnScroll.setSelected(  !stripBtnScroll.isSelected() );
-            AppManager.autoScroll = stripBtnScroll.isSelected();
+            AppManager.mAutoScroll = stripBtnScroll.isSelected();
             pictPianoRoll.requestFocus();
         }
 
@@ -15753,17 +15777,17 @@ namespace org.kbinani.cadencii {
         }
 
         public void handleStartMarker_Click( Object sender, EventArgs e ) {
-            AppManager.startMarkerEnabled = !AppManager.startMarkerEnabled;
-            stripBtnStartMarker.setSelected( AppManager.startMarkerEnabled );
-            menuVisualStartMarker.setSelected( AppManager.startMarkerEnabled );
+            AppManager.mStartMarkerEnabled = !AppManager.mStartMarkerEnabled;
+            stripBtnStartMarker.setSelected( AppManager.mStartMarkerEnabled );
+            menuVisualStartMarker.setSelected( AppManager.mStartMarkerEnabled );
             pictPianoRoll.requestFocus();
             refreshScreen();
         }
 
         public void handleEndMarker_Click( Object sender, EventArgs e ) {
-            AppManager.endMarkerEnabled = !AppManager.endMarkerEnabled;
-            stripBtnEndMarker.setSelected( AppManager.endMarkerEnabled );
-            menuVisualEndMarker.setSelected( AppManager.endMarkerEnabled );
+            AppManager.mEndMarkerEnabled = !AppManager.mEndMarkerEnabled;
+            stripBtnEndMarker.setSelected( AppManager.mEndMarkerEnabled );
+            menuVisualEndMarker.setSelected( AppManager.mEndMarkerEnabled );
             pictPianoRoll.requestFocus();
             refreshScreen();
         }
@@ -16389,15 +16413,15 @@ namespace org.kbinani.cadencii {
             }
 
             if ( code == 0x80 ) {
-                if ( AppManager.addingEvent != null ) {
-                    int len = clock - AppManager.addingEvent.Clock;
+                if ( AppManager.mAddingEvent != null ) {
+                    int len = clock - AppManager.mAddingEvent.Clock;
                     if ( len <= 0 ) {
                         len = unit;
                     }
-                    AppManager.addingEvent.ID.Length = len;
+                    AppManager.mAddingEvent.ID.Length = len;
                     int selected = AppManager.getSelected();
                     CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventAdd( selected,
-                                                                                                   AppManager.addingEvent ) );
+                                                                                                   AppManager.mAddingEvent ) );
                     AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                     if ( !isEdited() ) {
                         setEdited( true );
@@ -16405,12 +16429,12 @@ namespace org.kbinani.cadencii {
                     updateDrawObjectList();
                 }
             } else if ( code == 0x90 ) {
-                AppManager.addingEvent = new VsqEvent( clock, new VsqID( 0 ) );
-                AppManager.addingEvent.ID.type = VsqIDType.Anote;
-                AppManager.addingEvent.ID.Dynamics = 64;
-                AppManager.addingEvent.ID.VibratoHandle = null;
-                AppManager.addingEvent.ID.LyricHandle = new LyricHandle( "a", "a" );
-                AppManager.addingEvent.ID.Note = note;
+                AppManager.mAddingEvent = new VsqEvent( clock, new VsqID( 0 ) );
+                AppManager.mAddingEvent.ID.type = VsqIDType.Anote;
+                AppManager.mAddingEvent.ID.Dynamics = 64;
+                AppManager.mAddingEvent.ID.VibratoHandle = null;
+                AppManager.mAddingEvent.ID.LyricHandle = new LyricHandle( "a", "a" );
+                AppManager.mAddingEvent.ID.Note = note;
                 if ( AppManager.getEditMode() != EditMode.REALTIME ) {
                     KeySoundPlayer.play( note );
                 }

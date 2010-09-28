@@ -23,6 +23,10 @@ namespace org.kbinani.cadencii {
     public class NoteNumberProperty {
         public int noteNumber = 60;
 
+        public override int GetHashCode() {
+            return noteNumber.GetHashCode();
+        }
+
         public override boolean Equals( object obj ) {
             if ( obj is NoteNumberProperty ) {
                 if ( noteNumber == ((NoteNumberProperty)obj).noteNumber ) {

@@ -180,8 +180,8 @@ namespace org.kbinani.cadencii {
                         if ( i % 100 == 0 ) {
                             amplify = AppManager.getAmplifyCoeffNormalTrack( renderingTrack );
                         }
-                        mBufferL[i] *= amplify.left;
-                        mBufferR[i] *= amplify.right;
+                        mBufferL[i] *= amplify.mLeft;
+                        mBufferR[i] *= amplify.mRight;
                     }
                     
                     // 次にWAVEに書き込む
@@ -209,8 +209,8 @@ namespace org.kbinani.cadencii {
                         if ( i % 100 == 0 ) {
                             amplify = AppManager.getAmplifyCoeffNormalTrack( renderingTrack );
                         }
-                        mBufferL[i] *= amplify.left;
-                        mBufferR[i] *= amplify.right;
+                        mBufferL[i] *= amplify.mLeft;
+                        mBufferR[i] *= amplify.mRight;
                     }
                 }
 
@@ -221,8 +221,8 @@ namespace org.kbinani.cadencii {
                 for ( int i = 0; i < count; i++ ) {
                     try {
                         WaveRateConverter wr = readers.get( i );
-                        amplify.left = 1.0;
-                        amplify.right = 1.0;
+                        amplify.mLeft = 1.0;
+                        amplify.mRight = 1.0;
                         Object tag = wr.getTag();
                         if ( tag == null ) {
                             continue;
@@ -243,8 +243,8 @@ namespace org.kbinani.cadencii {
                         wr.read( start, amount, mBufferL2, mBufferR2 );
                         for ( int j = 0; j < amount; j++ ) {
                             if ( m_abort_required ) return;
-                            mBufferL[j] += mBufferL2[j] * amplify.left;
-                            mBufferR[j] += mBufferR2[j] * amplify.right;
+                            mBufferL[j] += mBufferL2[j] * amplify.mLeft;
+                            mBufferR[j] += mBufferR2[j] * amplify.mRight;
                         }
                     } catch ( Exception ex ) {
                         PortUtil.stderr.println( "RenderingRunner_DRAFT#waveIncoming; ex=" + ex );
@@ -282,8 +282,8 @@ namespace org.kbinani.cadencii {
                             wr.read( start, amount, mBufferL2, mBufferR2 );
                             for ( int j = 0; j < amount; j++ ) {
                                 if ( m_abort_required ) return;
-                                mBufferL[j] += mBufferL2[j] * amplify.left;
-                                mBufferR[j] += mBufferR2[j] * amplify.right;
+                                mBufferL[j] += mBufferL2[j] * amplify.mLeft;
+                                mBufferR[j] += mBufferR2[j] * amplify.mRight;
                             }
                         } catch ( Exception ex ) {
                             PortUtil.stderr.println( "RenderingRunner#waveIncoming; ex=" + ex );

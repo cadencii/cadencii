@@ -957,10 +957,10 @@ class UtauPluginManager : Form {
             }
         }
 
-        if ( AppManager.mainWindow != null ) {
-            VoidDelegate deleg = new VoidDelegate( AppManager.mainWindow.updateScriptShortcut );
+        if ( AppManager.mMainWindow != null ) {
+            VoidDelegate deleg = new VoidDelegate( AppManager.mMainWindow.updateScriptShortcut );
             if ( deleg != null ) {
-                AppManager.mainWindow.Invoke( deleg );
+                AppManager.mMainWindow.Invoke( deleg );
             }
         }
     }

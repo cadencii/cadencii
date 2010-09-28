@@ -264,15 +264,15 @@ namespace org.kbinani.cadencii {
                 float scalex = AppManager.getScaleX();
                 float inv_scalex = 1f / scalex;
 
-                if ( AppManager.getSelectedEventCount() > 0 && AppManager.inputTextBox.isVisible() ) {
+                if ( AppManager.getSelectedEventCount() > 0 && AppManager.mInputTextBox.isVisible() ) {
                     VsqEvent original = AppManager.getLastSelectedEvent().original;
                     int event_x = (int)(original.Clock * scalex + xoffset);
                     int event_y = -original.ID.Note * track_height + yoffset;
 #if JAVA
                     AppManager.inputTextBox.setLocation( pointToScreen( new Point( event_x + 4, event_y + 2 ) ) );
 #else
-                    AppManager.inputTextBox.Left = event_x + 4;
-                    AppManager.inputTextBox.Top = event_y + 2;
+                    AppManager.mInputTextBox.Left = event_x + 4;
+                    AppManager.mInputTextBox.Top = event_y + 2;
 #endif
                 }
 
@@ -429,7 +429,7 @@ namespace org.kbinani.cadencii {
                     g.drawLine( 0, y, key_width, y );
                     boolean hilighted = false;
                     if ( edit_mode == EditMode.ADD_ENTRY ) {
-                        if ( AppManager.addingEvent.ID.Note == i ) {
+                        if ( AppManager.mAddingEvent.ID.Note == i ) {
                             hilighted = true;
                             hilighted_note = i;
                         }
@@ -520,17 +520,17 @@ namespace org.kbinani.cadencii {
                 }
 
                 #region トラックのエントリを描画
-                if ( AppManager.drawObjects != null ) {
+                if ( AppManager.mDrawObjects != null ) {
                     if ( AppManager.isOverlay() ) {
                         // まず、選択されていないトラックの簡易表示を行う
-                        lock ( AppManager.drawObjects ) {
-                            int c = AppManager.drawObjects.size();
+                        lock ( AppManager.mDrawObjects ) {
+                            int c = AppManager.mDrawObjects.size();
                             for ( int i = 0; i < c; i++ ) {
                                 if ( i == selected - 1 ) {
                                     continue;
                                 }
-                                Vector<DrawObject> target_list = AppManager.drawObjects.get( i );
-                                int j_start = AppManager.drawStartIndex[i];
+                                Vector<DrawObject> target_list = AppManager.mDrawObjects.get( i );
+                                int j_start = AppManager.mDrawStartIndex[i];
                                 boolean first = true;
                                 int shift_center = half_track_height;
                                 int target_list_count = target_list.size();
@@ -548,7 +548,7 @@ namespace org.kbinani.cadencii {
                                         break;
                                     }
                                     if ( AppManager.isPlaying() && first ) {
-                                        AppManager.drawStartIndex[i] = j;
+                                        AppManager.mDrawStartIndex[i] = j;
                                         first = false;
                                     }
                                     if ( y + track_height < 0 || y > height ) {
@@ -573,12 +573,12 @@ namespace org.kbinani.cadencii {
                         Shape r = g.getClip();
                         g.clipRect( key_width, 0,
                                     width - key_width, height );
-                        int j_start = AppManager.drawStartIndex[selected - 1];
+                        int j_start = AppManager.mDrawStartIndex[selected - 1];
 
                         boolean first = true;
-                        lock ( AppManager.drawObjects ) { //ここでロックを取得しないと、描画中にUpdateDrawObjectのサイズが0になる可能性がある
-                            if ( selected - 1 < AppManager.drawObjects.size() ) {
-                                Vector<DrawObject> target_list = AppManager.drawObjects.get( selected - 1 );
+                        lock ( AppManager.mDrawObjects ) { //ここでロックを取得しないと、描画中にUpdateDrawObjectのサイズが0になる可能性がある
+                            if ( selected - 1 < AppManager.mDrawObjects.size() ) {
+                                Vector<DrawObject> target_list = AppManager.mDrawObjects.get( selected - 1 );
                                 VsqBPList pit = vsq_track.MetaText.PIT;
                                 VsqBPList pbs = vsq_track.MetaText.PBS;
                                 ByRef<Integer> indx_pit = new ByRef<Integer>( 0 );
@@ -596,7 +596,7 @@ namespace org.kbinani.cadencii {
                                         break;
                                     }
                                     if ( AppManager.isPlaying() && first ) {
-                                        AppManager.drawStartIndex[selected - 1] = j;
+                                        AppManager.mDrawStartIndex[selected - 1] = j;
                                         first = false;
                                     }
                                     if ( y + 2 * track_height < 0 || y > height ) {
@@ -668,7 +668,7 @@ namespace org.kbinani.cadencii {
                                             }
 
                                             #region ピッチベンド
-                                            if ( AppManager.editorConfig.ViewAtcualPitch || AppManager.curveOnPianoroll ) {
+                                            if ( AppManager.editorConfig.ViewAtcualPitch || AppManager.mCurveOnPianoroll ) {
                                                 int cl_start = dobj.mClock;
                                                 int cl_end = cl_start + dobj.mLength;
 
@@ -847,16 +847,16 @@ namespace org.kbinani.cadencii {
                          edit_mode == EditMode.ADD_FIXED_LENGTH_ENTRY ||
                          edit_mode == EditMode.REALTIME ||
                          edit_mode == EditMode.DRAG_DROP ) {
-                        if ( AppManager.addingEvent != null ) {
-                            int x = (int)(AppManager.addingEvent.Clock * scalex + xoffset);
-                            y = -AppManager.addingEvent.ID.Note * track_height + yoffset + 1;
-                            int length = (int)(AppManager.addingEvent.ID.getLength() * scalex);
-                            if ( AppManager.addingEvent.ID.type == VsqIDType.Aicon ) {
-                                if ( AppManager.addingEvent.ID.IconDynamicsHandle.isDynaffType() ) {
+                        if ( AppManager.mAddingEvent != null ) {
+                            int x = (int)(AppManager.mAddingEvent.Clock * scalex + xoffset);
+                            y = -AppManager.mAddingEvent.ID.Note * track_height + yoffset + 1;
+                            int length = (int)(AppManager.mAddingEvent.ID.getLength() * scalex);
+                            if ( AppManager.mAddingEvent.ID.type == VsqIDType.Aicon ) {
+                                if ( AppManager.mAddingEvent.ID.IconDynamicsHandle.isDynaffType() ) {
                                     length = AppManager.DYNAFF_ITEM_WIDTH;
                                 }
                             }
-                            if ( AppManager.addingEvent.ID.getLength() <= 0 ) {
+                            if ( AppManager.mAddingEvent.ID.getLength() <= 0 ) {
                                 g.setColor( new Color( 171, 171, 171 ) );
                                 g.drawRect( x, y, 10, track_height - 1 );
                             } else {
@@ -865,9 +865,9 @@ namespace org.kbinani.cadencii {
                             }
                         }
                     } else if ( edit_mode == EditMode.EDIT_VIBRATO_DELAY ) {
-                        int x = (int)(AppManager.addingEvent.Clock * scalex + xoffset);
-                        y = -AppManager.addingEvent.ID.Note * track_height + yoffset + 1;
-                        int length = (int)(AppManager.addingEvent.ID.getLength() * scalex);
+                        int x = (int)(AppManager.mAddingEvent.Clock * scalex + xoffset);
+                        y = -AppManager.mAddingEvent.ID.Note * track_height + yoffset + 1;
+                        int length = (int)(AppManager.mAddingEvent.ID.getLength() * scalex);
                         g.setColor( s_pen_a136_000_000_000 );
                         g.drawRect( x, y, length, track_height - 1 );
                     } else if ( (edit_mode == EditMode.MOVE_ENTRY ||
@@ -905,10 +905,10 @@ namespace org.kbinani.cadencii {
                         }
 
                         if ( edit_mode == EditMode.MOVE_ENTRY_WHOLE ) {
-                            int clock_start = AppManager.wholeSelectedInterval.getStart();
-                            int clock_end = AppManager.wholeSelectedInterval.getEnd();
-                            int x_start = AppManager.xCoordFromClocks( AppManager.wholeSelectedIntervalStartForMoving );
-                            int x_end = AppManager.xCoordFromClocks( AppManager.wholeSelectedIntervalStartForMoving + (clock_end - clock_start) );
+                            int clock_start = AppManager.mWholeSelectedInterval.getStart();
+                            int clock_end = AppManager.mWholeSelectedInterval.getEnd();
+                            int x_start = AppManager.xCoordFromClocks( AppManager.mWholeSelectedIntervalStartForMoving );
+                            int x_end = AppManager.xCoordFromClocks( AppManager.mWholeSelectedIntervalStartForMoving + (clock_end - clock_start) );
                             g.setColor( s_brs_a098_000_000_000 );
                             g.drawLine( x_start, 0, x_start, height );
                             g.drawLine( x_end, 0, x_end, height );
@@ -924,13 +924,13 @@ namespace org.kbinani.cadencii {
                 #region 音符編集時の補助線
                 if ( edit_mode == EditMode.ADD_ENTRY ) {
                     #region EditMode.AddEntry
-                    int x = (int)(AppManager.addingEvent.Clock * scalex + xoffset);
-                    y = -AppManager.addingEvent.ID.Note * track_height + yoffset + 1;
+                    int x = (int)(AppManager.mAddingEvent.Clock * scalex + xoffset);
+                    y = -AppManager.mAddingEvent.ID.Note * track_height + yoffset + 1;
                     int length;
-                    if ( AppManager.addingEvent.ID.getLength() == 0 ) {
+                    if ( AppManager.mAddingEvent.ID.getLength() == 0 ) {
                         length = 10;
                     } else {
-                        length = (int)(AppManager.addingEvent.ID.getLength() * scalex);
+                        length = (int)(AppManager.mAddingEvent.ID.getLength() * scalex);
                     }
                     x += length;
                     g.setColor( s_pen_LU );
@@ -977,12 +977,12 @@ namespace org.kbinani.cadencii {
                     #endregion
                 } else if ( edit_mode == EditMode.ADD_FIXED_LENGTH_ENTRY || edit_mode == EditMode.DRAG_DROP ) {
                     #region ADD_FIXED_LENGTH_ENTRY | DRAG_DROP
-                    int x = (int)(AppManager.addingEvent.Clock * scalex + xoffset);
-                    y = -AppManager.addingEvent.ID.Note * track_height + yoffset + 1;
-                    int length = (int)(AppManager.addingEvent.ID.getLength() * scalex);
+                    int x = (int)(AppManager.mAddingEvent.Clock * scalex + xoffset);
+                    y = -AppManager.mAddingEvent.ID.Note * track_height + yoffset + 1;
+                    int length = (int)(AppManager.mAddingEvent.ID.getLength() * scalex);
 
-                    if ( AppManager.addingEvent.ID.type == VsqIDType.Aicon ) {
-                        if ( AppManager.addingEvent.ID.IconDynamicsHandle.isDynaffType() ) {
+                    if ( AppManager.mAddingEvent.ID.type == VsqIDType.Aicon ) {
+                        if ( AppManager.mAddingEvent.ID.IconDynamicsHandle.isDynaffType() ) {
                             length = AppManager.DYNAFF_ITEM_WIDTH;
                         }
                     }
@@ -1034,23 +1034,23 @@ namespace org.kbinani.cadencii {
                     #endregion
                 } else if ( edit_mode == EditMode.EDIT_VIBRATO_DELAY ) {
                     #region EditVibratoDelay
-                    int x = (int)(AppManager.addingEvent.Clock * scalex + xoffset);
-                    y = -AppManager.addingEvent.ID.Note * track_height + yoffset + 1;
+                    int x = (int)(AppManager.mAddingEvent.Clock * scalex + xoffset);
+                    y = -AppManager.mAddingEvent.ID.Note * track_height + yoffset + 1;
                     g.setColor( s_pen_LU );
                     g.drawLine( x, 0, x, y - 1 );
                     g.drawLine( x, y + track_height, x, height );
                     g.setColor( s_pen_RD );
                     g.drawLine( x + 1, 0, x + 1, y - 1 );
                     g.drawLine( x + 1, y + track_height, x + 1, height );
-                    double max_length = AppManager.addingEventLength - _PX_ACCENT_HEADER / scalex;
-                    double drate = AppManager.addingEvent.ID.getLength() / max_length;
+                    double max_length = AppManager.mAddingEventLength - _PX_ACCENT_HEADER / scalex;
+                    double drate = AppManager.mAddingEvent.ID.getLength() / max_length;
                     if ( drate > 0.99 ) {
                         drate = 1.00;
                     }
                     int rate = (int)(drate * 100.0);
                     String percent = rate + "%";
                     Dimension size = Util.measureString( percent, s_F9PT );
-                    int delay_x = (int)((AppManager.addingEvent.Clock + AppManager.addingEvent.ID.getLength() - AppManager.addingEventLength + AppManager.addingEvent.ID.VibratoDelay) * scalex + xoffset);
+                    int delay_x = (int)((AppManager.mAddingEvent.Clock + AppManager.mAddingEvent.ID.getLength() - AppManager.mAddingEventLength + AppManager.mAddingEvent.ID.VibratoDelay) * scalex + xoffset);
                     Rectangle pxArea = new Rectangle( delay_x,
                                                       (int)(y + track_height * 2.5),
                                                       (int)(size.width * 1.2),
@@ -1083,20 +1083,20 @@ namespace org.kbinani.cadencii {
 
                 #region pictPianoRoll_Paintより
                 if ( AppManager.isWholeSelectedIntervalEnabled() ) {
-                    int start = (int)(AppManager.wholeSelectedInterval.getStart() * scalex) + xoffset;
+                    int start = (int)(AppManager.mWholeSelectedInterval.getStart() * scalex) + xoffset;
                     if ( start < key_width ) {
                         start = key_width;
                     }
-                    int end = (int)(AppManager.wholeSelectedInterval.getEnd() * scalex) + xoffset;
+                    int end = (int)(AppManager.mWholeSelectedInterval.getEnd() * scalex) + xoffset;
                     if ( start < end ) {
                         g.setColor( new Color( 0, 0, 0, 98 ) );
                         g.fillRect( start, 0, end - start, getHeight() );
                     }
-                } else if ( AppManager.isPointerDowned ) {
+                } else if ( AppManager.mIsPointerDowned ) {
                     Point pmouse = pointToClient( PortUtil.getMousePosition() );
                     Point mouse = new Point( pmouse.x, pmouse.y );
                     int tx, ty, twidth, theight;
-                    int lx = AppManager.mouseDownLocation.x - stdx;
+                    int lx = AppManager.mMouseDownLocation.x - stdx;
                     if ( lx < mouse.x ) {
                         tx = lx;
                         twidth = mouse.x - lx;
@@ -1104,7 +1104,7 @@ namespace org.kbinani.cadencii {
                         tx = mouse.x;
                         twidth = lx - mouse.x;
                     }
-                    int ly = AppManager.mouseDownLocation.y - stdy;
+                    int ly = AppManager.mMouseDownLocation.y - stdy;
                     if ( ly < mouse.y ) {
                         ty = ly;
                         theight = mouse.y - ly;
@@ -1142,7 +1142,7 @@ namespace org.kbinani.cadencii {
 #endif
 
                 #region コントロールカーブのオーバーレイ表示
-                if ( AppManager.curveOnPianoroll ) {
+                if ( AppManager.mCurveOnPianoroll ) {
                     g.setClip( null ); 
                    
                     Area fillarea = new Area( new Rectangle( key_width, 0, width - key_width, height ) ); // 塗りつぶす領域．最後に処理する
@@ -1159,9 +1159,9 @@ namespace org.kbinani.cadencii {
 
                     Color pitline = PortUtil.MidnightBlue;
                     g.setStroke( getStroke2px() );
-                    lock ( AppManager.drawObjects ) {
-                        Vector<DrawObject> list = AppManager.drawObjects.get( selected - 1 );
-                        int j_start = AppManager.drawStartIndex[selected - 1];
+                    lock ( AppManager.mDrawObjects ) {
+                        Vector<DrawObject> list = AppManager.mDrawObjects.get( selected - 1 );
+                        int j_start = AppManager.mDrawStartIndex[selected - 1];
                         int c = list.size();
                         int last_x = key_width;
                         

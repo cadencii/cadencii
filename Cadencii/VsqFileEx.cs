@@ -78,7 +78,11 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
+#if JAVA
         public static String getGenericTypeName( String name ) {
+#else
+        public new static String getGenericTypeName( String name ) {
+#endif
             if ( name != null ) {
                 if ( name.Equals( "BgmFiles" ) ) {
                     return "org.kbinani.cadencii.BgmFile";
@@ -600,12 +604,16 @@ namespace org.kbinani.cadencii {
         }
 
 #if !JAVA
-        public object Clone() {
+        public new object Clone() {
             return clone();
         }
 #endif
 
+#if JAVA
         public Object clone() {
+#else
+        public new Object clone() {
+#endif
             VsqFileEx ret = new VsqFileEx( "Miku", 1, 4, 4, 500000 );
             ret.Track = new Vector<VsqTrack>();
             int c = Track.size();

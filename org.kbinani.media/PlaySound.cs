@@ -276,6 +276,10 @@ namespace org.kbinani.media.impl {
     using UINT = System.UInt32;
     using WORD = System.UInt16;
 
+    /// <summary>
+    /// waveOutをC#から直接呼ぶことで実装したPlaySound。
+    /// org.kbinani.media.PlaySoundと互換性があるが、たぶんクラッシュしたと思うので使っちゃだめ。
+    /// </summary>
     public static unsafe class PlaySound {
         const int NUM_BUF = 3;
         static IntPtr wave_out = IntPtr.Zero;

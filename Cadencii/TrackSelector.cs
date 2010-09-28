@@ -780,8 +780,8 @@ namespace org.kbinani.cadencii {
         }
 
         public ValuePair<Integer, Integer> getSelectedRegion() {
-            int x0 = AppManager.curveSelectedInterval.getStart();
-            int x1 = AppManager.curveSelectedInterval.getEnd();
+            int x0 = AppManager.mCurveSelectedInterval.getStart();
+            int x1 = AppManager.mCurveSelectedInterval.getEnd();
             int min = Math.Min( x0, x1 );
             int max = Math.Max( x0, x1 );
             return new ValuePair<Integer, Integer>( min, max );
@@ -1059,20 +1059,20 @@ namespace org.kbinani.cadencii {
                                 key_width, size.height );
 
                     if ( AppManager.isCurveSelectedIntervalEnabled() ) {
-                        int x0 = AppManager.xCoordFromClocks( AppManager.curveSelectedInterval.getStart() );
-                        int x1 = AppManager.xCoordFromClocks( AppManager.curveSelectedInterval.getEnd() );
+                        int x0 = AppManager.xCoordFromClocks( AppManager.mCurveSelectedInterval.getStart() );
+                        int x1 = AppManager.xCoordFromClocks( AppManager.mCurveSelectedInterval.getEnd() );
                         g.setColor( s_brs_a072_255_255_255 );
                         g.fillRect( x0, HEADER, x1 - x0, getGraphHeight() );
                     }
 
                     #region 音符の境界
-                    if ( AppManager.drawObjects != null && selected - 1 < AppManager.drawObjects.size() ) {
+                    if ( AppManager.mDrawObjects != null && selected - 1 < AppManager.mDrawObjects.size() ) {
                         if ( AppManager.drawItemBorderInControlCurveView && 
                              !_selected_curve.equals( CurveType.VibratoDepth ) &&
                              !_selected_curve.equals( CurveType.VibratoRate ) ) {
-                            lock ( AppManager.drawObjects ) {
-                                Vector<DrawObject> objs = AppManager.drawObjects.get( selected - 1 );
-                                int start = AppManager.drawStartIndex[selected - 1];
+                            lock ( AppManager.mDrawObjects ) {
+                                Vector<DrawObject> objs = AppManager.mDrawObjects.get( selected - 1 );
+                                int start = AppManager.mDrawStartIndex[selected - 1];
                                 int count = objs.size();
                                 Color line = new Color( 0, 0, 0, 128 );
                                 Color fill = new Color( 0, 0, 0, 32 );
@@ -1247,8 +1247,8 @@ namespace org.kbinani.cadencii {
                     }
 
                     if ( AppManager.isWholeSelectedIntervalEnabled() ) {
-                        int start = AppManager.xCoordFromClocks( AppManager.wholeSelectedInterval.getStart() ) + 2;
-                        int end = AppManager.xCoordFromClocks( AppManager.wholeSelectedInterval.getEnd() ) + 2;
+                        int start = AppManager.xCoordFromClocks( AppManager.mWholeSelectedInterval.getStart() ) + 2;
+                        int end = AppManager.xCoordFromClocks( AppManager.mWholeSelectedInterval.getEnd() ) + 2;
                         g.setColor( s_brs_a098_000_000_000 );
                         g.fillRect( start, HEADER, end - start, getGraphHeight() );
                     }
@@ -1327,16 +1327,16 @@ namespace org.kbinani.cadencii {
                                                nPoints );
                             }
                         } else if ( tool == EditTool.ERASER || tool == EditTool.ARROW ) {
-                            if ( _mouse_down_mode == MouseDownMode.CURVE_EDIT && _mouse_moved && AppManager.curveSelectingRectangle.width != 0 ) {
-                                int xini = AppManager.xCoordFromClocks( AppManager.curveSelectingRectangle.x );
-                                int xend = AppManager.xCoordFromClocks( AppManager.curveSelectingRectangle.x + AppManager.curveSelectingRectangle.width );
+                            if ( _mouse_down_mode == MouseDownMode.CURVE_EDIT && _mouse_moved && AppManager.mCurveSelectingRectangle.width != 0 ) {
+                                int xini = AppManager.xCoordFromClocks( AppManager.mCurveSelectingRectangle.x );
+                                int xend = AppManager.xCoordFromClocks( AppManager.mCurveSelectingRectangle.x + AppManager.mCurveSelectingRectangle.width );
                                 int x_start = Math.Min( xini, xend );
                                 if ( x_start < key_width ) {
                                     x_start = key_width;
                                 }
                                 int x_end = Math.Max( xini, xend );
-                                int yini = yCoordFromValue( AppManager.curveSelectingRectangle.y );
-                                int yend = yCoordFromValue( AppManager.curveSelectingRectangle.y + AppManager.curveSelectingRectangle.height );
+                                int yini = yCoordFromValue( AppManager.mCurveSelectingRectangle.y );
+                                int yend = yCoordFromValue( AppManager.mCurveSelectingRectangle.y + AppManager.mCurveSelectingRectangle.height );
                                 int y_start = Math.Min( yini, yend );
                                 int y_end = Math.Max( yini, yend );
                                 if ( y_start < 8 ) y_start = 8;
@@ -1910,10 +1910,10 @@ namespace org.kbinani.cadencii {
 
             g.setFont( AppManager.baseFont10Bold );
             boolean cursor_should_be_hand = false;
-            lock ( AppManager.drawObjects ) {
-                Vector<DrawObject> target_list = AppManager.drawObjects.get( selected - 1 );
+            lock ( AppManager.mDrawObjects ) {
+                Vector<DrawObject> target_list = AppManager.mDrawObjects.get( selected - 1 );
                 int count = target_list.size();
-                int i_start = AppManager.drawStartIndex[selected - 1];
+                int i_start = AppManager.mDrawStartIndex[selected - 1];
                 for ( int i = i_start; i < count; i++ ) {
                     DrawObject dobj = target_list.get( i );
                     if ( dobj.mType != DrawObjectType.Note ) {
@@ -2243,10 +2243,10 @@ namespace org.kbinani.cadencii {
                         getWidth() - AppManager.keyWidth, height - 2 * OFFSET_TRACK_TAB );
 
             // 選択範囲。この四角の中に入っていたら、選択されているとみなす
-            Rectangle select_window = new Rectangle( Math.Min( AppManager.curveSelectingRectangle.x, AppManager.curveSelectingRectangle.x + AppManager.curveSelectingRectangle.width ),
-                                                     Math.Min( AppManager.curveSelectingRectangle.y, AppManager.curveSelectingRectangle.y + AppManager.curveSelectingRectangle.height ),
-                                                     Math.Abs( AppManager.curveSelectingRectangle.width ),
-                                                     Math.Abs( AppManager.curveSelectingRectangle.height ) );
+            Rectangle select_window = new Rectangle( Math.Min( AppManager.mCurveSelectingRectangle.x, AppManager.mCurveSelectingRectangle.x + AppManager.mCurveSelectingRectangle.width ),
+                                                     Math.Min( AppManager.mCurveSelectingRectangle.y, AppManager.mCurveSelectingRectangle.y + AppManager.mCurveSelectingRectangle.height ),
+                                                     Math.Abs( AppManager.mCurveSelectingRectangle.width ),
+                                                     Math.Abs( AppManager.mCurveSelectingRectangle.height ) );
             EditTool selected_tool = AppManager.getSelectedTool();
             boolean select_enabled = !_selected_curve.isScalar() && ((selected_tool == EditTool.ARROW) || (selected_tool == EditTool.ERASER)) && _mouse_downed;
 
@@ -2254,8 +2254,8 @@ namespace org.kbinani.cadencii {
             int start_clock = AppManager.clockFromXCoord( start );
             int end = getWidth();
             int end_clock = AppManager.clockFromXCoord( end );
-            int hilight_start = AppManager.curveSelectedInterval.getStart();
-            int hilight_end = AppManager.curveSelectedInterval.getEnd();
+            int hilight_start = AppManager.mCurveSelectedInterval.getStart();
+            int hilight_end = AppManager.mCurveSelectedInterval.getEnd();
             int hilight_start_x = AppManager.xCoordFromClocks( hilight_start );
             int hilight_end_x = AppManager.xCoordFromClocks( hilight_end );
 
@@ -2429,10 +2429,10 @@ namespace org.kbinani.cadencii {
                         width - AppManager.keyWidth, height - 2 * OFFSET_TRACK_TAB );
 
             // 選択範囲。この四角の中に入っていたら、選択されているとみなす
-            Rectangle select_window = new Rectangle( Math.Min( AppManager.curveSelectingRectangle.x, AppManager.curveSelectingRectangle.x + AppManager.curveSelectingRectangle.width ),
-                                                     Math.Min( AppManager.curveSelectingRectangle.y, AppManager.curveSelectingRectangle.y + AppManager.curveSelectingRectangle.height ),
-                                                     Math.Abs( AppManager.curveSelectingRectangle.width ),
-                                                     Math.Abs( AppManager.curveSelectingRectangle.height ) );
+            Rectangle select_window = new Rectangle( Math.Min( AppManager.mCurveSelectingRectangle.x, AppManager.mCurveSelectingRectangle.x + AppManager.mCurveSelectingRectangle.width ),
+                                                     Math.Min( AppManager.mCurveSelectingRectangle.y, AppManager.mCurveSelectingRectangle.y + AppManager.mCurveSelectingRectangle.height ),
+                                                     Math.Abs( AppManager.mCurveSelectingRectangle.width ),
+                                                     Math.Abs( AppManager.mCurveSelectingRectangle.height ) );
             EditTool selected_tool = AppManager.getSelectedTool();
             boolean select_enabled = !_selected_curve.isScalar() && ((selected_tool == EditTool.ARROW) || (selected_tool == EditTool.ERASER)) && _mouse_downed;
 
@@ -2440,8 +2440,8 @@ namespace org.kbinani.cadencii {
             int start_clock = AppManager.clockFromXCoord( start );
             int end = width;
             int end_clock = AppManager.clockFromXCoord( end );
-            int hilight_start = AppManager.curveSelectedInterval.getStart();
-            int hilight_end = AppManager.curveSelectedInterval.getEnd();
+            int hilight_start = AppManager.mCurveSelectedInterval.getStart();
+            int hilight_end = AppManager.mCurveSelectedInterval.getEnd();
             int hilight_start_x = AppManager.xCoordFromClocks( hilight_start );
             int hilight_end_x = AppManager.xCoordFromClocks( hilight_end );
 
@@ -3077,8 +3077,8 @@ namespace org.kbinani.cadencii {
                         }
                         draft_clock = nclock;
                     }
-                    AppManager.curveSelectingRectangle.width = draft_clock - AppManager.curveSelectingRectangle.x;
-                    AppManager.curveSelectingRectangle.height = value - AppManager.curveSelectingRectangle.y;
+                    AppManager.mCurveSelectingRectangle.width = draft_clock - AppManager.mCurveSelectingRectangle.x;
+                    AppManager.mCurveSelectingRectangle.height = value - AppManager.mCurveSelectingRectangle.y;
                 }
             } else if ( _mouse_down_mode == MouseDownMode.SINGER_LIST ) {
                 int dclock = clock - _singer_move_started_clock;
@@ -3291,9 +3291,9 @@ namespace org.kbinani.cadencii {
             }
 
             if ( AppManager.editorConfig.CurveSelectingQuantized ) {
-                AppManager.curveSelectingRectangle = new Rectangle( quantized_clock, value, 0, 0 );
+                AppManager.mCurveSelectingRectangle = new Rectangle( quantized_clock, value, 0, 0 );
             } else {
-                AppManager.curveSelectingRectangle = new Rectangle( clock, value, 0, 0 );
+                AppManager.mCurveSelectingRectangle = new Rectangle( clock, value, 0, 0 );
             }
         }
 
@@ -3736,9 +3736,9 @@ namespace org.kbinani.cadencii {
                                     AppManager.setCurveSelectedIntervalEnabled( false );
                                 }
                                 if ( AppManager.editorConfig.CurveSelectingQuantized ) {
-                                    AppManager.curveSelectingRectangle = new Rectangle( quantized_clock, value, 0, 0 );
+                                    AppManager.mCurveSelectingRectangle = new Rectangle( quantized_clock, value, 0, 0 );
                                 } else {
-                                    AppManager.curveSelectingRectangle = new Rectangle( clock, value, 0, 0 );
+                                    AppManager.mCurveSelectingRectangle = new Rectangle( clock, value, 0, 0 );
                                 }
                                 #endregion
                             }
@@ -3843,9 +3843,9 @@ namespace org.kbinani.cadencii {
                                     AppManager.clearSelectedPoint();
                                 }
                                 if ( AppManager.editorConfig.CurveSelectingQuantized ) {
-                                    AppManager.curveSelectingRectangle = new Rectangle( quantized_clock, value, 0, 0 );
+                                    AppManager.mCurveSelectingRectangle = new Rectangle( quantized_clock, value, 0, 0 );
                                 } else {
-                                    AppManager.curveSelectingRectangle = new Rectangle( clock, value, 0, 0 );
+                                    AppManager.mCurveSelectingRectangle = new Rectangle( clock, value, 0, 0 );
                                 }
                             }
                             #endregion
@@ -4264,25 +4264,25 @@ namespace org.kbinani.cadencii {
                         if ( _selected_curve.equals( CurveType.Env ) ) {
 
                         } else if ( !_selected_curve.equals( CurveType.VEL ) && !_selected_curve.equals( CurveType.Accent ) && !_selected_curve.equals( CurveType.Decay ) ) {
-                            if ( AppManager.curveSelectingRectangle.width == 0 ) {
+                            if ( AppManager.mCurveSelectingRectangle.width == 0 ) {
                                 AppManager.setCurveSelectedIntervalEnabled( false );
                             } else {
                                 if ( !AppManager.isCurveSelectedIntervalEnabled() ) {
-                                    int start = Math.Min( AppManager.curveSelectingRectangle.x, AppManager.curveSelectingRectangle.x + AppManager.curveSelectingRectangle.width );
-                                    int end = Math.Max( AppManager.curveSelectingRectangle.x, AppManager.curveSelectingRectangle.x + AppManager.curveSelectingRectangle.width );
-                                    AppManager.curveSelectedInterval = new SelectedRegion( start );
-                                    AppManager.curveSelectedInterval.setEnd( end );
+                                    int start = Math.Min( AppManager.mCurveSelectingRectangle.x, AppManager.mCurveSelectingRectangle.x + AppManager.mCurveSelectingRectangle.width );
+                                    int end = Math.Max( AppManager.mCurveSelectingRectangle.x, AppManager.mCurveSelectingRectangle.x + AppManager.mCurveSelectingRectangle.width );
+                                    AppManager.mCurveSelectedInterval = new SelectedRegion( start );
+                                    AppManager.mCurveSelectedInterval.setEnd( end );
 #if DEBUG
                                     AppManager.debugWriteLine( "TrackSelector#TrackSelector_MouseUp; selected_region is set to TRUE" );
 #endif
                                     AppManager.setCurveSelectedIntervalEnabled( true );
                                 } else {
-                                    int start = Math.Min( AppManager.curveSelectingRectangle.x, AppManager.curveSelectingRectangle.x + AppManager.curveSelectingRectangle.width );
-                                    int end = Math.Max( AppManager.curveSelectingRectangle.x, AppManager.curveSelectingRectangle.x + AppManager.curveSelectingRectangle.width );
-                                    int old_start = AppManager.curveSelectedInterval.getStart();
-                                    int old_end = AppManager.curveSelectedInterval.getEnd();
-                                    AppManager.curveSelectedInterval = new SelectedRegion( Math.Min( start, old_start ) );
-                                    AppManager.curveSelectedInterval.setEnd( Math.Max( end, old_end ) );
+                                    int start = Math.Min( AppManager.mCurveSelectingRectangle.x, AppManager.mCurveSelectingRectangle.x + AppManager.mCurveSelectingRectangle.width );
+                                    int end = Math.Max( AppManager.mCurveSelectingRectangle.x, AppManager.mCurveSelectingRectangle.x + AppManager.mCurveSelectingRectangle.width );
+                                    int old_start = AppManager.mCurveSelectedInterval.getStart();
+                                    int old_end = AppManager.mCurveSelectedInterval.getEnd();
+                                    AppManager.mCurveSelectedInterval = new SelectedRegion( Math.Min( start, old_start ) );
+                                    AppManager.mCurveSelectedInterval.setEnd( Math.Max( end, old_end ) );
                                 }
 
                                 if ( (_modifier_on_mouse_down & InputEvent.CTRL_MASK) != InputEvent.CTRL_MASK ) {
@@ -4299,10 +4299,10 @@ namespace org.kbinani.cadencii {
                                      !_selected_curve.equals( CurveType.VibratoRate ) ) {
                                     VsqBPList list = vsq_track.getCurve( _selected_curve.getName() );
                                     int count = list.size();
-                                    Rectangle rc = new Rectangle( Math.Min( AppManager.curveSelectingRectangle.x, AppManager.curveSelectingRectangle.x + AppManager.curveSelectingRectangle.width ),
-                                                                  Math.Min( AppManager.curveSelectingRectangle.y, AppManager.curveSelectingRectangle.y + AppManager.curveSelectingRectangle.height ),
-                                                                  Math.Abs( AppManager.curveSelectingRectangle.width ),
-                                                                  Math.Abs( AppManager.curveSelectingRectangle.height ) );
+                                    Rectangle rc = new Rectangle( Math.Min( AppManager.mCurveSelectingRectangle.x, AppManager.mCurveSelectingRectangle.x + AppManager.mCurveSelectingRectangle.width ),
+                                                                  Math.Min( AppManager.mCurveSelectingRectangle.y, AppManager.mCurveSelectingRectangle.y + AppManager.mCurveSelectingRectangle.height ),
+                                                                  Math.Abs( AppManager.mCurveSelectingRectangle.width ),
+                                                                  Math.Abs( AppManager.mCurveSelectingRectangle.height ) );
 #if DEBUG
                                     PortUtil.println( "TrackSelectro#TrackSelectro_MouseUp; rc={x=" + rc.x + ", y=" + rc.y + ", width=" + rc.width + ", height=" + rc.height + "}" );
 #endif
@@ -4325,9 +4325,9 @@ namespace org.kbinani.cadencii {
                         if ( AppManager.isCurveMode() ) {
                             Vector<BezierChain> list = vsq.AttachedCurves.get( selected - 1 ).get( _selected_curve );
                             if ( list != null ) {
-                                int x = Math.Min( AppManager.curveSelectingRectangle.x, AppManager.curveSelectingRectangle.x + AppManager.curveSelectingRectangle.width );
-                                int y = Math.Min( AppManager.curveSelectingRectangle.y, AppManager.curveSelectingRectangle.y + AppManager.curveSelectingRectangle.height );
-                                Rectangle rc = new Rectangle( x, y, Math.Abs( AppManager.curveSelectingRectangle.width ), Math.Abs( AppManager.curveSelectingRectangle.height ) );
+                                int x = Math.Min( AppManager.mCurveSelectingRectangle.x, AppManager.mCurveSelectingRectangle.x + AppManager.mCurveSelectingRectangle.width );
+                                int y = Math.Min( AppManager.mCurveSelectingRectangle.y, AppManager.mCurveSelectingRectangle.y + AppManager.mCurveSelectingRectangle.height );
+                                Rectangle rc = new Rectangle( x, y, Math.Abs( AppManager.mCurveSelectingRectangle.width ), Math.Abs( AppManager.mCurveSelectingRectangle.height ) );
 
                                 boolean changed = false; //1箇所でも削除が実行されたらtrue
 
@@ -4379,12 +4379,12 @@ namespace org.kbinani.cadencii {
                         } else {
                             if ( _selected_curve.equals( CurveType.VEL ) || _selected_curve.equals( CurveType.Accent ) || _selected_curve.equals( CurveType.Decay ) ) {
                                 #region VEL Accent Delay
-                                int start = Math.Min( AppManager.curveSelectingRectangle.x, AppManager.curveSelectingRectangle.x + AppManager.curveSelectingRectangle.width );
-                                int end = Math.Max( AppManager.curveSelectingRectangle.x, AppManager.curveSelectingRectangle.x + AppManager.curveSelectingRectangle.width );
-                                int old_start = AppManager.curveSelectedInterval.getStart();
-                                int old_end = AppManager.curveSelectedInterval.getEnd();
-                                AppManager.curveSelectedInterval = new SelectedRegion( Math.Min( start, old_start ) );
-                                AppManager.curveSelectedInterval.setEnd( Math.Max( end, old_end ) );
+                                int start = Math.Min( AppManager.mCurveSelectingRectangle.x, AppManager.mCurveSelectingRectangle.x + AppManager.mCurveSelectingRectangle.width );
+                                int end = Math.Max( AppManager.mCurveSelectingRectangle.x, AppManager.mCurveSelectingRectangle.x + AppManager.mCurveSelectingRectangle.width );
+                                int old_start = AppManager.mCurveSelectedInterval.getStart();
+                                int old_end = AppManager.mCurveSelectedInterval.getEnd();
+                                AppManager.mCurveSelectedInterval = new SelectedRegion( Math.Min( start, old_start ) );
+                                AppManager.mCurveSelectedInterval.setEnd( Math.Max( end, old_end ) );
                                 AppManager.clearSelectedEvent();
                                 Vector<Integer> deleting = new Vector<Integer>();
                                 for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
@@ -4401,8 +4401,8 @@ namespace org.kbinani.cadencii {
                                 #endregion
                             } else if ( _selected_curve.equals( CurveType.VibratoRate ) || _selected_curve.equals( CurveType.VibratoDepth ) ) {
                                 #region VibratoRate ViratoDepth
-                                int er_start = Math.Min( AppManager.curveSelectingRectangle.x, AppManager.curveSelectingRectangle.x + AppManager.curveSelectingRectangle.width );
-                                int er_end = Math.Max( AppManager.curveSelectingRectangle.x, AppManager.curveSelectingRectangle.x + AppManager.curveSelectingRectangle.width );
+                                int er_start = Math.Min( AppManager.mCurveSelectingRectangle.x, AppManager.mCurveSelectingRectangle.x + AppManager.mCurveSelectingRectangle.width );
+                                int er_end = Math.Max( AppManager.mCurveSelectingRectangle.x, AppManager.mCurveSelectingRectangle.x + AppManager.mCurveSelectingRectangle.width );
                                 Vector<Integer> internal_ids = new Vector<Integer>();
                                 Vector<VsqID> items = new Vector<VsqID>();
                                 for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
@@ -4506,9 +4506,9 @@ namespace org.kbinani.cadencii {
                                 VsqBPList work = vsq_track.getCurve( _selected_curve.getName() );
 
                                 // 削除するべきデータ点のリストを作成
-                                int x = Math.Min( AppManager.curveSelectingRectangle.x, AppManager.curveSelectingRectangle.x + AppManager.curveSelectingRectangle.width );
-                                int y = Math.Min( AppManager.curveSelectingRectangle.y, AppManager.curveSelectingRectangle.y + AppManager.curveSelectingRectangle.height );
-                                Rectangle rc = new Rectangle( x, y, Math.Abs( AppManager.curveSelectingRectangle.width ), Math.Abs( AppManager.curveSelectingRectangle.height ) );
+                                int x = Math.Min( AppManager.mCurveSelectingRectangle.x, AppManager.mCurveSelectingRectangle.x + AppManager.mCurveSelectingRectangle.width );
+                                int y = Math.Min( AppManager.mCurveSelectingRectangle.y, AppManager.mCurveSelectingRectangle.y + AppManager.mCurveSelectingRectangle.height );
+                                Rectangle rc = new Rectangle( x, y, Math.Abs( AppManager.mCurveSelectingRectangle.width ), Math.Abs( AppManager.mCurveSelectingRectangle.height ) );
                                 Vector<Long> delete = new Vector<Long>();
                                 int count = work.size();
                                 for ( int i = 0; i < count; i++ ) {

@@ -46,10 +46,10 @@ namespace org.kbinani.cadencii {
 #else
     public class FormShortcutKeys : BDialog {
 #endif
-        private TreeMap<String, ValuePair<String, BKeys[]>> m_dict;
-        private TreeMap<String, ValuePair<String, BKeys[]>> m_first_dict;
-        private static int columnWidthCommand = 240;
-        private static int columnWidthShortcutKey = 140;
+        private TreeMap<String, ValuePair<String, BKeys[]>> mDict;
+        private TreeMap<String, ValuePair<String, BKeys[]>> mFirstDict;
+        private static int mColumnWidthCommand = 240;
+        private static int mColumnWidthShortcutKey = 140;
 
         public FormShortcutKeys( TreeMap<String, ValuePair<String, BKeys[]>> dict ) {
 #if JAVA
@@ -71,17 +71,17 @@ namespace org.kbinani.cadencii {
             PortUtil.println( "FormShortcutKeys#.ctor; dict.size()=" + dict.size() );
 #endif
             list.setColumnHeaders( new String[] { "Command", "Shortcut Key" } );
-            list.setColumnWidth( 0, columnWidthCommand );
-            list.setColumnWidth( 1, columnWidthShortcutKey );
+            list.setColumnWidth( 0, mColumnWidthCommand );
+            list.setColumnWidth( 1, mColumnWidthShortcutKey );
 
             registerEventHandlers();
             setResources();
             applyLanguage();
 
-            m_dict = dict;
-            m_first_dict = new TreeMap<String, ValuePair<String, BKeys[]>>();
-            CopyDict( m_dict, m_first_dict );
-            UpdateList();
+            mDict = dict;
+            mFirstDict = new TreeMap<String, ValuePair<String, BKeys[]>>();
+            copyDict( mDict, mFirstDict );
+            updateList();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
@@ -130,7 +130,7 @@ namespace org.kbinani.cadencii {
 
         public TreeMap<String, ValuePair<String, BKeys[]>> getResult() {
             TreeMap<String, ValuePair<String, BKeys[]>> ret = new TreeMap<String, ValuePair<String, BKeys[]>>();
-            CopyDict( m_dict, ret );
+            copyDict( mDict, ret );
             return ret;
         }
         #endregion
@@ -140,7 +140,7 @@ namespace org.kbinani.cadencii {
             return Messaging.getMessage( id );
         }
 
-        private static void CopyDict( TreeMap<String, ValuePair<String, BKeys[]>> src, TreeMap<String, ValuePair<String, BKeys[]>> dest ) {
+        private static void copyDict( TreeMap<String, ValuePair<String, BKeys[]>> src, TreeMap<String, ValuePair<String, BKeys[]>> dest ) {
             dest.clear();
             for ( Iterator<String> itr = src.keySet().iterator(); itr.hasNext(); ) {
                 String name = itr.next();
@@ -154,17 +154,17 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void UpdateList() {
+        private void updateList() {
             list.clear();
-            for ( Iterator<String> itr = m_dict.keySet().iterator(); itr.hasNext(); ) {
+            for ( Iterator<String> itr = mDict.keySet().iterator(); itr.hasNext(); ) {
                 String display = itr.next();
                 Vector<BKeys> a = new Vector<BKeys>();
-                foreach ( BKeys key in m_dict.get( display ).getValue() ) {
+                foreach ( BKeys key in mDict.get( display ).getValue() ) {
                     a.add( key );
                 }
 
                 BListViewItem item = new BListViewItem( new String[] { display, Utility.getShortcutDisplayString( a.toArray( new BKeys[] { } ) ) } );
-                String name = m_dict.get( display ).getKey();
+                String name = mDict.get( display ).getKey();
                 item.setName( name );
                 String group = "";
 #if DEBUG
@@ -193,11 +193,11 @@ namespace org.kbinani.cadencii {
                 }
                 list.addItem( group, item );
             }
-            UpdateColor();
+            updateColor();
             applyLanguage();
         }
 
-        private void UpdateColor() {
+        private void updateColor() {
             int num_groups = list.getGroupCount();
             for ( int k = 0; k < num_groups; k++ ) {
                 String name = list.getGroupNameAt( k );
@@ -304,62 +304,44 @@ namespace org.kbinani.cadencii {
                 }
             }
 
-            // 指定されたキーの組み合わせが、ショートカットとして適切かどうか判定
-            try {
-#if JAVA
-                //m_dumy.setAccelerator( KeyStroke.getKeyStroke( capture.getValue(), modifier ) );
-#else
-                //m_dumy.setAccelerator( KeyStroke.getKeyStroke( (int)capture, modifier ) );
-#endif
-            } catch ( Exception ex ) {
-#if JAVA
-                System.err.println( "info; FormShortcutKeys#list_KeyDown; not implemented yet \"e.KeyCode & Keys.Up ... e.Handled = true\"" );
-#else
-                if ( ((e.KeyCode & Keys.Up) != Keys.Up) &&
-                     ((e.KeyCode & Keys.Down) != Keys.Down) ) {
-                    e.Handled = true;
-                }
-#endif
-                return;
-            }
             BListViewItem item = list.getItemAt( selected_group, index );
             item.setSubItemAt( 1, Utility.getShortcutDisplayString( capturelist.toArray( new BKeys[] { } ) ) );
             list.setItemAt( selected_group, index, item );
             String display = list.getItemAt( selected_group, index ).getSubItemAt( 0 );
-            if ( m_dict.containsKey( display ) ) {
-                m_dict.get( display ).setValue( capturelist.toArray( new BKeys[] { } ) );
+            if ( mDict.containsKey( display ) ) {
+                mDict.get( display ).setValue( capturelist.toArray( new BKeys[] { } ) );
             }
-            UpdateColor();
+            updateColor();
 #if !JAVA
             e.Handled = true;
 #endif
         }
 
         public void btnRevert_Click( Object sender, BEventArgs e ) {
-            CopyDict( m_first_dict, m_dict );
-            UpdateList();
+            copyDict( mFirstDict, mDict );
+            updateList();
         }
 
         public void btnLoadDefault_Click( Object sender, BEventArgs e ) {
             for ( int i = 0; i < EditorConfig.DEFAULT_SHORTCUT_KEYS.size(); i++ ) {
                 String name = EditorConfig.DEFAULT_SHORTCUT_KEYS.get( i ).Key;
                 BKeys[] keys = EditorConfig.DEFAULT_SHORTCUT_KEYS.get( i ).Value;
-                for ( Iterator<String> itr = m_dict.keySet().iterator(); itr.hasNext(); ) {
+                for ( Iterator<String> itr = mDict.keySet().iterator(); itr.hasNext(); ) {
                     String display = itr.next();
-                    if ( name.Equals( m_dict.get( display ).getKey() ) ) {
-                        m_dict.get( display ).setValue( keys );
+                    if ( name.Equals( mDict.get( display ).getKey() ) ) {
+                        mDict.get( display ).setValue( keys );
                         break;
                     }
                 }
             }
-            UpdateList();
+            updateList();
         }
 
         public void FormShortcutKeys_FormClosing( Object sender, BFormClosingEventArgs e ) {
-            columnWidthCommand = list.getColumnWidth( 0 );
-            columnWidthShortcutKey = list.getColumnWidth( 1 );
+            mColumnWidthCommand = list.getColumnWidth( 0 );
+            mColumnWidthShortcutKey = list.getColumnWidth( 1 );
 #if DEBUG
-            PortUtil.println( "FormShortCurKeys#FormShortcutKeys_FormClosing; columnWidthCommand,columnWidthShortcutKey=" + columnWidthCommand + "," + columnWidthShortcutKey );
+            PortUtil.println( "FormShortCurKeys#FormShortcutKeys_FormClosing; columnWidthCommand,columnWidthShortcutKey=" + mColumnWidthCommand + "," + mColumnWidthShortcutKey );
 #endif
         }
 

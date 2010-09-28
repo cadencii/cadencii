@@ -25,7 +25,7 @@ namespace org.kbinani.cadencii.draft {
 #endif
 
     /// <summary>
-    /// 増幅器＆ミキサーの実装
+    /// 増幅器の実装
     /// </summary>
 #if JAVA
     public class Amplifier extends WaveUnit implements WaveSender, WaveReceiver {
@@ -72,7 +72,7 @@ namespace org.kbinani.cadencii.draft {
         }
 
         public override void setConfig( String parameter ) {
-            // do nothing (| _ | )
+            // do nothing (ı _ ı )
         }
 
         public void setReceiver( WaveReceiver r ) {

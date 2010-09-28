@@ -46,6 +46,16 @@ namespace org.kbinani.cadencii {
         }
 #endif
 
+#if !JAVA
+        public override int GetHashCode() {
+            if ( description == null ) {
+                return "".GetHashCode();
+            } else {
+                return description.GetHashCode();
+            }
+        }
+#endif
+
         public Object clone() {
             return new VibratoVariation( this.description );
         }

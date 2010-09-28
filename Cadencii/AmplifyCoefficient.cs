@@ -19,8 +19,8 @@ namespace org.kbinani.cadencii {
 #endif
 
     public struct AmplifyCoefficient {
-        public double left;
-        public double right;
+        public double mLeft;
+        public double mRight;
     }
     
 #if !JAVA

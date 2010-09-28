@@ -282,11 +282,11 @@ namespace org.kbinani.cadencii {
 
         public FormPluginUi getUi() {
             if ( ui == null ) {
-                if ( AppManager.mainWindow != null ) {
+                if ( AppManager.mMainWindow != null ) {
                     VoidDelegate temp = new VoidDelegate( this.createPluginUi );
                     if ( temp != null ) {
                         // mainWindowのスレッドで、uiが作成されるようにする
-                        AppManager.mainWindow.Invoke( temp );
+                        AppManager.mMainWindow.Invoke( temp );
                     }
                 }
             }
