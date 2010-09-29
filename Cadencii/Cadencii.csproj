@@ -157,11 +157,13 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormCurvePointEdit.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormGenerateKeySound.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormIconPalette.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormMidiImExportConfig.cs" />
     <Compile Include="FormNoteExpressionConfig.cs">
@@ -354,6 +356,7 @@
     </Compile>
     <Compile Include="ToolStripLocation.cs" />
     <Compile Include="TrackSelector.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="UtauFreq.cs" />
     <Compile Include="ValuePairOfStringBoolean.cs" />
