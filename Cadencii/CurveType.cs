@@ -31,13 +31,13 @@ namespace org.kbinani.cadencii {
     [Serializable]
     public struct CurveType : IEquatable<CurveType>, IComparable<CurveType> {
 #endif
-        private String m_type;
-        private boolean m_is_scalar;
-        private int m_minimum;
-        private int m_maximum;
-        private int m_default;
-        private boolean m_is_attach_note;
-        private int m_index;
+        private String mType;
+        private boolean mIsScalar;
+        private int mMinimum;
+        private int mMaximum;
+        private int mDefault;
+        private boolean mIsAttachNote;
+        private int mIndex;
 
         /// <summary>
         /// ベロシティ(index=-1)
@@ -150,35 +150,35 @@ namespace org.kbinani.cadencii {
         public static readonly CurveType Empty = new CurveType( "Empty", false, false, 0, 0, 0, -1 );
 
         private CurveType( String type, boolean is_scalar, boolean is_attach_note, int min, int max, int defalt_value, int index ) {
-            m_type = type;
-            m_is_scalar = is_scalar;
-            m_minimum = min;
-            m_maximum = max;
-            m_default = defalt_value;
-            m_is_attach_note = is_attach_note;
-            m_index = index;
+            mType = type;
+            mIsScalar = is_scalar;
+            mMinimum = min;
+            mMaximum = max;
+            mDefault = defalt_value;
+            mIsAttachNote = is_attach_note;
+            mIndex = index;
         }
 
         public Object clone() {
-            return new CurveType( this.m_type, this.m_is_scalar, this.m_is_attach_note, this.m_minimum, this.m_maximum, this.m_default, this.m_index );
+            return new CurveType( this.mType, this.mIsScalar, this.mIsAttachNote, this.mMinimum, this.mMaximum, this.mDefault, this.mIndex );
         }
 
         public int compareTo( CurveType item ) {
-            if ( m_index == -1 ) {
-                if ( item.m_index == -1 ) {
+            if ( mIndex == -1 ) {
+                if ( item.mIndex == -1 ) {
 #if JAVA
                     return m_type.compareTo( item.m_type );
 #else
-                    return m_type.CompareTo( item.m_type );
+                    return mType.CompareTo( item.mType );
 #endif
                 } else {
                     return 1;
                 }
             } else {
-                if ( item.m_index == -1 ) {
+                if ( item.mIndex == -1 ) {
                     return -1;
                 } else {
-                    return m_index - item.m_index;
+                    return mIndex - item.mIndex;
                 }
             }
         }
@@ -196,39 +196,39 @@ namespace org.kbinani.cadencii {
 #endif
 
         public String toString() {
-            return m_type;
+            return mType;
         }
 
         public int getIndex() {
-            return m_index;
+            return mIndex;
         }
 
         public String getName() {
-            return m_type;
+            return mType;
         }
 
         public boolean isAttachNote() {
-            return m_is_attach_note;
+            return mIsAttachNote;
         }
 
         public boolean isScalar() {
-            return m_is_scalar;
+            return mIsScalar;
         }
 
         public int getMaximum() {
-            return m_maximum;
+            return mMaximum;
         }
 
         public int getMinimum() {
-            return m_minimum;
+            return mMinimum;
         }
 
         public int getDefault() {
-            return m_default;
+            return mDefault;
         }
 
         public boolean equals( CurveType other ) {
-            return (m_type.Equals( other.m_type ) && m_is_scalar == other.m_is_scalar);
+            return (mType.Equals( other.mType ) && mIsScalar == other.mIsScalar);
         }
 
 #if !JAVA

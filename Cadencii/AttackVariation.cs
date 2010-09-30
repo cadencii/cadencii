@@ -26,14 +26,14 @@ namespace org.kbinani.cadencii {
     [TypeConverter( typeof( AttackVariationConverter ) )]
 #endif
     public class AttackVariation {
-        public String description = "";
+        public String mDescription = "";
 
         public AttackVariation() {
-            description = "-";
+            mDescription = "-";
         }
 
         public AttackVariation( String description ) {
-            this.description = description;
+            this.mDescription = description;
         }
 
         public boolean equals( Object obj ) {
@@ -42,7 +42,7 @@ namespace org.kbinani.cadencii {
 #else
             if ( obj != null && obj is AttackVariation ) {
 #endif
-                return ((AttackVariation)obj).description.Equals( description );
+                return ((AttackVariation)obj).mDescription.Equals( mDescription );
             } else {
                 return base.Equals( obj );
             }
@@ -56,10 +56,10 @@ namespace org.kbinani.cadencii {
 
 #if !JAVA
         public override int GetHashCode() {
-            if ( description == null ) {
+            if ( mDescription == null ) {
                 return "".GetHashCode();
             } else {
-                return description.GetHashCode();
+                return mDescription.GetHashCode();
             }
         }
 #endif

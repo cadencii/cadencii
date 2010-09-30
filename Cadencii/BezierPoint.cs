@@ -32,7 +32,6 @@ namespace org.kbinani.cadencii {
     [Serializable]
     public class BezierPoint : IComparable<BezierPoint>, ICloneable {
 #endif
-        PointD center;
 #if !JAVA
         [XmlIgnore]
 #endif
@@ -41,12 +40,14 @@ namespace org.kbinani.cadencii {
         [XmlIgnore]
 #endif
         public PointD controlRight;
-        BezierControlType m_type_left;
-        BezierControlType m_type_right;
+
 #if !JAVA
         [NonSerialized]
 #endif
-        int m_id;
+        private int mID;
+        private PointD mCenter;
+        private BezierControlType mTypeLeft;
+        private BezierControlType mTypeRight;
 
         /// <summary>
         /// このクラスの指定した名前のプロパティを，XMLシリアライズ時に無視するかどうかを表す
@@ -68,11 +69,11 @@ namespace org.kbinani.cadencii {
         }
 
         public int getID() {
-            return m_id;
+            return mID;
         }
 
         public void setID( int value ) {
-            m_id = value;
+            mID = value;
         }
 
 #if !JAVA
@@ -82,11 +83,11 @@ namespace org.kbinani.cadencii {
 #endif
 
         public String toString() {
-            return "m_base=" + center.getX() + "," + center.getY() + "\n" +
+            return "m_base=" + mCenter.getX() + "," + mCenter.getY() + "\n" +
                 "m_control_left=" + controlLeft.getX() + "," + controlLeft.getY() + "\n" +
                 "m_control_right=" + controlRight.getX() + "," + controlRight.getY() + "\n" +
-                "m_type_left=" + m_type_left + "\n" +
-                "m_type_right=" + m_type_right + "\n";
+                "m_type_left=" + mTypeLeft + "\n" +
+                "m_type_right=" + mTypeRight + "\n";
         }
 
 #if JAVA
@@ -108,28 +109,28 @@ namespace org.kbinani.cadencii {
 
         public BezierPoint( double x, double y ) {
             PointD p = new PointD( x, y );
-            center = p;
+            mCenter = p;
             controlLeft = p;
             controlRight = p;
-            m_type_left = BezierControlType.None;
-            m_type_right = BezierControlType.None;
+            mTypeLeft = BezierControlType.None;
+            mTypeRight = BezierControlType.None;
         }
 
         public BezierPoint( PointD p1, PointD left, PointD right ) {
-            center = p1;
-            controlLeft = new PointD( left.getX() - center.getX(), left.getY() - center.getY() );
-            controlRight = new PointD( right.getX() - center.getX(), right.getY() - center.getY() );
-            m_type_left = BezierControlType.None;
-            m_type_right = BezierControlType.None;
+            mCenter = p1;
+            controlLeft = new PointD( left.getX() - mCenter.getX(), left.getY() - mCenter.getY() );
+            controlRight = new PointD( right.getX() - mCenter.getX(), right.getY() - mCenter.getY() );
+            mTypeLeft = BezierControlType.None;
+            mTypeRight = BezierControlType.None;
         }
 
         public Object clone() {
             BezierPoint result = new BezierPoint( this.getBase(), this.getControlLeft(), this.getControlRight() );
             result.controlLeft = this.controlLeft;
             result.controlRight = this.controlRight;
-            result.m_type_left = this.m_type_left;
-            result.m_type_right = this.m_type_right;
-            result.m_id = this.m_id;
+            result.mTypeLeft = this.mTypeLeft;
+            result.mTypeRight = this.mTypeRight;
+            result.mID = this.mID;
             return result;
         }
 
@@ -178,11 +179,11 @@ namespace org.kbinani.cadencii {
 #endif
 
         public PointD getBase() {
-            return center;
+            return mCenter;
         }
 
         public void setBase( PointD value ) {
-            center = value;
+            mCenter = value;
         }
 
         public void setPosition( BezierPickedSide picked_side, PointD new_position ) {
@@ -230,15 +231,15 @@ namespace org.kbinani.cadencii {
 #endif
 
         public PointD getControlLeft() {
-            if ( m_type_left != BezierControlType.None ) {
-                return new PointD( center.getX() + controlLeft.getX(), center.getY() + controlLeft.getY() );
+            if ( mTypeLeft != BezierControlType.None ) {
+                return new PointD( mCenter.getX() + controlLeft.getX(), mCenter.getY() + controlLeft.getY() );
             } else {
-                return center;
+                return mCenter;
             }
         }
 
         public void setControlLeft( PointD value ) {
-            controlLeft = new PointD( value.getX() - center.getX(), value.getY() - center.getY() );
+            controlLeft = new PointD( value.getX() - mCenter.getX(), value.getY() - mCenter.getY() );
         }
 
 #if !JAVA
@@ -256,15 +257,15 @@ namespace org.kbinani.cadencii {
 #endif
 
         public PointD getControlRight() {
-            if ( m_type_right != BezierControlType.None ) {
-                return new PointD( center.getX() + controlRight.getX(), center.getY() + controlRight.getY() );
+            if ( mTypeRight != BezierControlType.None ) {
+                return new PointD( mCenter.getX() + controlRight.getX(), mCenter.getY() + controlRight.getY() );
             } else {
-                return center;
+                return mCenter;
             }
         }
 
         public void setControlRight( PointD value ) {
-            controlRight = new PointD( value.getX() - center.getX(), value.getY() - center.getY() );
+            controlRight = new PointD( value.getX() - mCenter.getX(), value.getY() - mCenter.getY() );
         }
 
 #if !JAVA
@@ -282,13 +283,13 @@ namespace org.kbinani.cadencii {
 #endif
 
         public BezierControlType getControlLeftType() {
-            return m_type_left;
+            return mTypeLeft;
         }
 
         public void setControlLeftType( BezierControlType value ) {
-            m_type_left = value;
-            if ( m_type_left == BezierControlType.Master && m_type_right != BezierControlType.None ) {
-                m_type_right = BezierControlType.Master;
+            mTypeLeft = value;
+            if ( mTypeLeft == BezierControlType.Master && mTypeRight != BezierControlType.None ) {
+                mTypeRight = BezierControlType.Master;
             }
         }
 
@@ -307,13 +308,13 @@ namespace org.kbinani.cadencii {
 #endif
 
         public BezierControlType getControlRightType() {
-            return m_type_right;
+            return mTypeRight;
         }
 
         public void setControlRightType( BezierControlType value ) {
-            m_type_right = value;
-            if ( m_type_right == BezierControlType.Master && m_type_left != BezierControlType.None ) {
-                m_type_left = BezierControlType.Master;
+            mTypeRight = value;
+            if ( mTypeRight == BezierControlType.Master && mTypeLeft != BezierControlType.None ) {
+                mTypeLeft = BezierControlType.Master;
             }
         }
     }

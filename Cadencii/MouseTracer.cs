@@ -35,22 +35,22 @@ namespace org.kbinani.cadencii {
 #else
         class MouseTracerIterator : Iterator<Point> {
 #endif
-            private MouseTracer m_tracer;
-            private int m_index;
+            private MouseTracer mTracer;
+            private int mIndex;
 
             public MouseTracerIterator( MouseTracer tracer ) {
-                m_tracer = tracer;
-                m_index = -1;
+                mTracer = tracer;
+                mIndex = -1;
             }
 
             public boolean hasNext() {
-                return m_index + 1 < m_tracer.m_size;
+                return mIndex + 1 < mTracer.mSize;
             }
 
             public Point next() {
-                m_index++;
-                int x = m_index + m_tracer.m_x_at0;
-                int y = m_tracer.m_trace[m_index];
+                mIndex++;
+                int x = mIndex + mTracer.mXAt0;
+                int y = mTracer.mTrace[mIndex];
                 return new Point( x, y );
             }
 
@@ -62,23 +62,23 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// マウスのトレース。配列の添え字が1進むと、1ピクセル右側
         /// </summary>
-        private int[] m_trace = null;
+        private int[] mTrace = null;
         /// <summary>
         /// m_trace[0]が表してるx座標
         /// </summary>
-        private int m_x_at0;
+        private int mXAt0;
         /// <summary>
         /// m_trace[m_size - 1]までが有効だということを表す
         /// </summary>
-        private int m_size = 0;
+        private int mSize = 0;
         /// <summary>
         /// マウスのトレース時、前回リストに追加されたx座標の値
         /// </summary>
-        private int m_mouse_trace_last_x;
+        private int mMouseTraceLastX;
         /// <summary>
         /// マウスのトレース時、前回リストに追加されたy座標の値
         /// </summary>
-        private int m_mouse_trace_last_y;
+        private int mMouseTraceLastY;
 
         /// <summary>
         /// 軌跡の点を順に返す反復子を取得します．単純にデータ点を返すのではなく，x+1ごとの補間も含めた点が返される点に注意
@@ -94,41 +94,41 @@ namespace org.kbinani.cadencii {
         /// <param name="x"></param>
         /// <param name="y"></param>
         public void append( int x, int y ) {
-            if ( m_size <= 0 ) {
+            if ( mSize <= 0 ) {
                 appendFirst( x, y );
                 return;
             }
 
-            if( x == m_mouse_trace_last_x ){
-                m_trace[x - m_x_at0] = y;
-                m_mouse_trace_last_y = y;
+            if( x == mMouseTraceLastX ){
+                mTrace[x - mXAt0] = y;
+                mMouseTraceLastY = y;
                 return;
             }
 
-            if ( x < m_x_at0 ) {
+            if ( x < mXAt0 ) {
                 // 一番最初に登録されている座標よりさらに左側(x小)の登録が要求された場合
                 // 今もっているデータをdxずらす必要がある(必要な配列のサイズはdx増加する)
-                int dx = m_x_at0 - x;
-                ensureLength( m_size + dx );
-                m_size += dx;
+                int dx = mXAt0 - x;
+                ensureLength( mSize + dx );
+                mSize += dx;
                 // ずらすよ
-                for ( int i = m_size - 1; i >= dx; i-- ) {
-                    m_trace[i] = m_trace[i - dx];
+                for ( int i = mSize - 1; i >= dx; i-- ) {
+                    mTrace[i] = mTrace[i - dx];
                 }
-                m_x_at0 = x;
-            } else if ( m_x_at0 + m_size <= x ) {
-                m_size = x - m_x_at0 + 1;
-                ensureLength( m_size );
+                mXAt0 = x;
+            } else if ( mXAt0 + mSize <= x ) {
+                mSize = x - mXAt0 + 1;
+                ensureLength( mSize );
             }
 
-            int d = x - m_mouse_trace_last_x;
+            int d = x - mMouseTraceLastX;
             if ( d == 1 || d == -1 ) {
                 // 1個しかずれてないんだったら、傾きとか計算しなくても良いよ
-                m_trace[x - m_x_at0] = y;
+                mTrace[x - mXAt0] = y;
             } else {
                 // 点を登録する処理
-                int startx = m_mouse_trace_last_x;
-                int starty = m_mouse_trace_last_y;
+                int startx = mMouseTraceLastX;
+                int starty = mMouseTraceLastY;
                 int endx = x;
                 int endy = y;
                 if ( endx < startx ) {
@@ -143,22 +143,22 @@ namespace org.kbinani.cadencii {
                 if ( endy == starty ) {
                     // yが変化していないなら，傾きを計算しなくてもいい
                     for ( int px = startx; px <= endx; px++ ) {
-                        m_trace[px - m_x_at0] = starty;
+                        mTrace[px - mXAt0] = starty;
                     }
                 } else {
                     // 傾き
                     double a = (endy - starty) / (double)(endx - startx);
                     // 1pxづつ計算
                     for ( int px = startx; px <= endx; px++ ) {
-                        int i = px - m_x_at0;
+                        int i = px - mXAt0;
                         int v = (int)(starty + a * (px - startx));
-                        m_trace[i] = v;
+                        mTrace[i] = v;
                     }
                 }
             }
 
-            m_mouse_trace_last_x = x;
-            m_mouse_trace_last_y = y;
+            mMouseTraceLastX = x;
+            mMouseTraceLastY = y;
         }
 
         /// <summary>
@@ -166,14 +166,14 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <returns></returns>
         public int size() {
-            return m_size;
+            return mSize;
         }
 
         /// <summary>
         /// 現在保持されている軌跡を破棄します
         /// </summary>
         public void clear() {
-            m_size = 0;
+            mSize = 0;
         }
 
         /// <summary>
@@ -183,11 +183,11 @@ namespace org.kbinani.cadencii {
         /// <param name="y"></param>
         public void appendFirst( int x, int y ) {
             ensureLength( 1 );
-            m_size = 1;
-            m_trace[0] = y;
-            m_x_at0 = x;
-            m_mouse_trace_last_x = x;
-            m_mouse_trace_last_y = y;
+            mSize = 1;
+            mTrace[0] = y;
+            mXAt0 = x;
+            mMouseTraceLastX = x;
+            mMouseTraceLastY = y;
         }
 
         /// <summary>
@@ -195,7 +195,7 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <returns></returns>
         public int firstKey() {
-            return m_x_at0;
+            return mXAt0;
         }
 
         /// <summary>
@@ -203,7 +203,7 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <returns></returns>
         public int lastKey() {
-            return m_x_at0 + m_size - 1;
+            return mXAt0 + mSize - 1;
         }
 
         /// <summary>
@@ -214,17 +214,17 @@ namespace org.kbinani.cadencii {
             if ( new_length <= 0 ) {
                 return;
             }
-            if ( m_trace == null ) {
-                m_trace = new int[new_length];
+            if ( mTrace == null ) {
+                mTrace = new int[new_length];
             } else {
-                if ( m_trace.Length < new_length ) {
+                if ( mTrace.Length < new_length ) {
 #if JAVA
                     int[] newarray = new int[new_length];
                     System.arraycopy( m_trace, 0, newarray, 0, m_trace.length );
                     m_trace = null;
                     m_trace = newarray;
 #else
-                    Array.Resize( ref m_trace, new_length );
+                    Array.Resize( ref mTrace, new_length );
 #endif
                 }
             }

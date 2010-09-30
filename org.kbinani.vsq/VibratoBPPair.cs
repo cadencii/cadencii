@@ -25,13 +25,10 @@ namespace org.kbinani.vsq {
     public class VibratoBPPair implements Comparable<VibratoBPPair>, Serializable {
 #else
     [Serializable]
-    public class VibratoBPPair : IComparable<VibratoBPPair> {
+    public struct VibratoBPPair : IComparable<VibratoBPPair> {
 #endif
         public float X;
         public int Y;
-
-        public VibratoBPPair() {
-        }
 
         public VibratoBPPair( float x, int y ) {
             X = x;

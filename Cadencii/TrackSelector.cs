@@ -131,8 +131,6 @@ namespace org.kbinani.cadencii {
         private static readonly Color COLOR_A072R255G255B255 = new Color( 255, 255, 255, 72 );
         private static readonly Color COLOR_A127R008G166B172 = new Color( 8, 166, 172, 127 );
         private static readonly Color COLOR_A098R000G000B000 = new Color( 0, 0, 0, 98 );
-        private static readonly Color COLOR_R050G140B150 = new Color( 50, 140, 150 );
-        private static readonly Color COLOR_R128G128B128 = new Color( 128, 128, 128 );
         /// <summary>
         /// 歌手変更を表すボックスの枠線のハイライト色
         /// </summary>
@@ -141,6 +139,10 @@ namespace org.kbinani.cadencii {
         /// 歌手変更を表すボックスの枠線の色
         /// </summary>
         private static readonly Color COLOR_SINGERBOX_BORDER = new Color( 182, 182, 182 );
+        /// <summary>
+        /// ビブラートコントロールカーブの、ビブラート以外の部分を塗りつぶす時の色
+        /// </summary>
+        private static readonly Color COLOR_VIBRATO_SHADOW = new Color( 0, 0, 0, 127 );
         /// <summary>
         /// ベロシティを画面に描くときの，棒グラフの幅(pixel)
         /// </summary>
@@ -1995,8 +1997,8 @@ namespace org.kbinani.cadencii {
         private void drawAttachedCurve( Graphics2D g, Vector<BezierChain> chains ) {
 #if DEBUG
             try {
-                BezierCurves t;
 #endif
+                Color hilight = AppManager.getHilightColor();
                 int chains_count = chains.size();
                 for ( int i = 0; i < chains_count; i++ ) {
                     BezierChain target_chain = chains.get( i );
@@ -2049,7 +2051,7 @@ namespace org.kbinani.cadencii {
                                                           DOT_WID * 2 + 1,
                                                           DOT_WID * 2 + 1 );
                             if ( chain_id == mEditingChainID && current.getID() == mEditingPointID ) {
-                                g.setColor( AppManager.getHilightColor() );
+                                g.setColor( hilight );
                                 g.fillOval( rc.x, rc.y, rc.width, rc.height );
                             } else {
                                 g.setColor( COLOR_BEZIER_DOT_NORMAL );
@@ -2066,7 +2068,7 @@ namespace org.kbinani.cadencii {
                                                           DOT_WID * 2 + 1,
                                                           DOT_WID * 2 + 1 );
                             if ( chain_id == mEditingChainID && next.getID() == mEditingPointID ) {
-                                g.setColor( AppManager.getHilightColor() );
+                                g.setColor( hilight );
                                 g.fillOval( rc.x, rc.y, rc.width, rc.height );
                             } else {
                                 g.setColor( COLOR_BEZIER_DOT_NORMAL );
@@ -2082,7 +2084,7 @@ namespace org.kbinani.cadencii {
                                                         DOT_WID * 2 + 1,
                                                         DOT_WID * 2 + 1 );
                         if ( chain_id == mEditingChainID && current.getID() == mEditingPointID ) {
-                            g.setColor( AppManager.getHilightColor() );
+                            g.setColor( hilight );
                             g.fillRect( rc2.x, rc2.y, rc2.width, rc2.height );
                         } else {
                             g.setColor( COLOR_BEZIER_DOT_BASE );
@@ -2100,7 +2102,7 @@ namespace org.kbinani.cadencii {
                                                        DOT_WID * 2 + 1,
                                                        DOT_WID * 2 + 1 );
                     if ( chain_id == mEditingChainID && next.getID() == mEditingPointID ) {
-                        g.setColor( AppManager.getHilightColor() );
+                        g.setColor( hilight );
                         g.fillRect( rc_last.x, rc_last.y, rc_last.width, rc_last.height );
                     } else {
                         g.setColor( COLOR_BEZIER_DOT_BASE );
@@ -2121,121 +2123,121 @@ namespace org.kbinani.cadencii {
             return new Point( AppManager.xCoordFromClocks( (int)pt.getX() ), yCoordFromValue( (int)pt.getY() ) );
         }
 
-        // TODO: TrackSelector+DrawVibratoControlCurve; かきかけ
+        /// <summary>
+        /// ビブラートのRate, Depthカーブを描画します
+        /// </summary>
+        /// <param name="g">描画に使用するグラフィックス</param>
+        /// <param name="draw_target">描画対象のトラック</param>
+        /// <param name="type">描画するカーブの種類</param>
+        /// <param name="color">塗りつぶしに使う色</param>
+        /// <param name="is_front">最前面に表示するモードかどうか</param>
         public void drawVibratoControlCurve( Graphics2D g, VsqTrack draw_target, CurveType type, Color color, boolean is_front ) {
+            if ( !is_front ) {
+                return;
+            }
             Shape last_clip = g.getClip();
             int graph_height = getGraphHeight();
-            g.clipRect( AppManager.keyWidth, HEADER,
-                        getWidth() - AppManager.keyWidth, graph_height );
+            int key_width = AppManager.keyWidth;
+            int width = getWidth();
+            int height = getHeight();
+            g.clipRect( key_width, HEADER,
+                        width - key_width, graph_height );
 
-            //int track = AppManager.Selected;
-            int cl_start = AppManager.clockFromXCoord( AppManager.keyWidth );
-            int cl_end = AppManager.clockFromXCoord( getWidth() );
-            if ( is_front ) {
-                /* // draw shadow of non-note area
-                Shape last_clip2 = g.getClip();
-                for ( Iterator itr = draw_target.getNoteEventIterator(); itr.hasNext(); ) {
-                    VsqEvent ve = (VsqEvent)itr.next();
-                    int start = ve.Clock + ve.ID.VibratoDelay;
-                    int end = ve.Clock + ve.ID.Length;
-                    if ( end < cl_start ) {
-                        continue;
-                    }
-                    if ( cl_end < start ) {
-                        break;
-                    }
-                    if ( ve.ID.VibratoHandle == null ) {
-                        continue;
-                    }
-                    int x1 = xCoordFromClocks( start );
-                    int x2 = xCoordFromClocks( end );
-                    if ( x1 < AppManager.KEY_LENGTH ) {
-                        x1 = AppManager.KEY_LENGTH;
-                    }
-                    if ( this.Width - vScroll.Width < x2 ) {
-                        x2 = this.Width;
-                    }
-                    if ( x1 < x2 ) {
-                        //g.SetClip( new Rectangle( x1, HEADER, x2 - x1, graph_height ), CombineMode.Exclude );
-                        g.clipRect( x1, HEADER, x2 - x1, graph_height );
-                    }
+            int cl_start = AppManager.clockFromXCoord( key_width );
+            int cl_end = AppManager.clockFromXCoord( width );
+            int max = type.getMaximum();
+            int min = type.getMinimum();
+
+            int oy = height - 42;
+            float order = graph_height / (float)(max - min);
+
+            // カーブを描く
+            int last_shadow_x = key_width;
+            for ( Iterator<VsqEvent> itr = draw_target.getNoteEventIterator(); itr.hasNext(); ) {
+                VsqEvent ve = itr.next();
+                int start = ve.Clock + ve.ID.VibratoDelay;
+                int end = ve.Clock + ve.ID.getLength();
+                if ( end < cl_start ) {
+                    continue;
                 }
-                g.setColor( new Color( 0, 0, 0, 127 ) );
-                g.fillRect( AppManager.KEY_LENGTH, HEADER, this.Width - AppManager.KEY_LENGTH - vScroll.Width, graph_height );
-
-                g.setClip( last_clip );*/
-
-                // draw curve
-                Color shadow = new Color( 0, 0, 0, 127 );
-                int last_shadow_x = AppManager.keyWidth;
-                for ( Iterator<VsqEvent> itr = draw_target.getNoteEventIterator(); itr.hasNext(); ) {
-                    VsqEvent ve = itr.next();
-                    int start = ve.Clock + ve.ID.VibratoDelay;
-                    int end = ve.Clock + ve.ID.getLength();
-                    if ( end < cl_start ) {
-                        continue;
-                    }
-                    if ( cl_end < start ) {
-                        break;
-                    }
-                    if ( ve.ID.VibratoHandle == null ) {
-                        continue;
-                    }
-                    int x1 = AppManager.xCoordFromClocks( start );
-                    g.setColor( shadow );
-                    g.fillRect( last_shadow_x, HEADER, x1 - last_shadow_x, graph_height );
-                    int x2 = AppManager.xCoordFromClocks( end );
-                    last_shadow_x = x2;
-                    if ( x1 < x2 ) {
-                        //g.clipRect( x1, HEADER, x2 - x1, graph_height );
-                        Vector<Integer> polyx = new Vector<Integer>();
-                        Vector<Integer> polyy = new Vector<Integer>();
-                        int draw_width = x2 - x1;
-                        polyx.add( x1 ); polyy.add( yCoordFromValue( 0, type.getMaximum(), type.getMinimum() ) );
-                        if ( type.equals( CurveType.VibratoRate ) ) {
-                            int last_y = yCoordFromValue( ve.ID.VibratoHandle.getStartRate(), type.getMaximum(), type.getMinimum() );
-                            polyx.add( x1 ); polyy.add( last_y );
-                            VibratoBPList ratebp = ve.ID.VibratoHandle.getRateBP();
-                            int c = ratebp.getCount();
-                            for ( int i = 0; i < c; i++ ) {
-                                VibratoBPPair item = ratebp.getElement( i );
-                                int x = x1 + (int)(item.X * draw_width);
-                                int y = yCoordFromValue( item.Y, type.getMaximum(), type.getMinimum() );
-                                polyx.add( x ); polyy.add( last_y );
-                                polyx.add( x ); polyy.add( y );
-                                last_y = y;
-                            }
-                            polyx.add( x2 );
-                            polyy.add( last_y );
-                        } else {
-                            int last_y = yCoordFromValue( ve.ID.VibratoHandle.getStartDepth(), type.getMaximum(), type.getMinimum() );
-                            polyx.add( x1 );
-                            polyy.add( last_y );
-                            VibratoBPList depthbp = ve.ID.VibratoHandle.getDepthBP();
-                            int c = depthbp.getCount();
-                            for ( int i = 0; i < c; i++ ) {
-                                VibratoBPPair item = depthbp.getElement( i );
-                                int x = x1 + (int)(item.X * draw_width);
-                                int y = yCoordFromValue( item.Y, type.getMaximum(), type.getMinimum() );
-                                polyx.add( x ); polyy.add( last_y );
-                                polyx.add( x ); polyy.add( y );
-                                last_y = y;
-                            }
-                            polyx.add( x2 ); polyy.add( last_y );
-                        }
-                        polyx.add( x2 ); polyy.add( yCoordFromValue( 0, type.getMaximum(), type.getMinimum() ) );
-                        g.setColor( color );
-                        g.fillPolygon( PortUtil.convertIntArray( polyx.toArray( new Integer[] { } ) ),
-                                       PortUtil.convertIntArray( polyy.toArray( new Integer[] { } ) ),
-                                       polyx.size() );
-                    }
+                if ( cl_end < start ) {
+                    break;
                 }
-                g.setColor( shadow );
-                g.fillRect( last_shadow_x, HEADER, getWidth() - AppManager.keyWidth, graph_height );
+                if ( ve.ID.VibratoHandle == null ) {
+                    continue;
+                }
+                VibratoHandle handle = ve.ID.VibratoHandle;
+                if ( handle == null ) {
+                    continue;
+                }
+                int x1 = AppManager.xCoordFromClocks( start );
+
+                // 左側の影付にする部分を描画
+                g.setColor( COLOR_VIBRATO_SHADOW );
+                g.fillRect( last_shadow_x, HEADER, x1 - last_shadow_x, graph_height );
+                int x2 = AppManager.xCoordFromClocks( end );
+                last_shadow_x = x2;
+
+                if ( x1 < x2 ) {
+                    // 描画器を取得、初期化
+                    LineGraphDrawer d = getGraphDrawer();
+                    d.clear();
+                    d.setGraphics( g );
+                    d.setBaseLineY( oy );
+                    d.setFillColor( color );
+                    d.setFill( true );
+                    d.setDotMode( LineGraphDrawer.DOTMODE_NO );
+                    d.setDrawLine( false );
+                    d.setLineColor( Color.white );
+                    d.setDrawLine( true );
+
+                    int draw_width = x2 - x1;
+                    int start_value = 0;
+
+                    // typeに応じてカーブを取得
+                    VibratoBPList list = null;
+                    if ( type.equals( CurveType.VibratoRate ) ) {
+                        start_value = handle.getStartRate();
+                        list = handle.getRateBP();
+                    } else if ( type.equals( CurveType.VibratoDepth ) ) {
+                        start_value = handle.getStartDepth();
+                        list = handle.getDepthBP();
+                    }
+                    if ( list == null ) {
+                        continue;
+                    }
+
+                    // 描画
+                    int last_y = oy - (int)((start_value - min) * order);
+                    d.append( x1, last_y );
+                    int c = list.getCount();
+                    for ( int i = 0; i < c; i++ ) {
+                        VibratoBPPair item = list.getElement( i );
+                        int x = x1 + (int)(item.X * draw_width);
+                        int y = oy - (int)((item.Y - min) * order);
+                        d.append( x, y );
+                        last_y = y;
+                    }
+                    d.append( x2, last_y );
+
+                    d.flush();
+                }
             }
+
+            // 右側の影付にする部分を描画
+            g.setColor( COLOR_VIBRATO_SHADOW );
+            g.fillRect( last_shadow_x, HEADER, width - key_width, graph_height );
+
             g.setClip( last_clip );
         }
 
+        /// <summary>
+        /// BPList(コントロールカーブ)を指定したグラフィックスを用いて描画します
+        /// </summary>
+        /// <param name="g">描画に使用するグラフィックス</param>
+        /// <param name="list">描画するコントロールカーブ</param>
+        /// <param name="color">X軸とデータ線の間の塗りつぶしに使用する色</param>
+        /// <param name="is_front">最前面に表示するモードかどうか</param>
         public void drawVsqBPList( Graphics2D g, VsqBPList list, Color color, boolean is_front ) {
             Point pmouse = pointToClient( PortUtil.getMousePosition() );
             int max = list.getMaximum();

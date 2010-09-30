@@ -37,30 +37,30 @@ namespace org.kbinani.cadencii {
 #endif
         public CadenciiCommandType type;
         public VsqCommand vsqCommand;
-        private ICommand m_parent;
+        private ICommand mParent;
         public Object[] args;
-        private Vector<ICommand> m_child = new Vector<ICommand>();
+        private Vector<ICommand> mChild = new Vector<ICommand>();
 
         public CadenciiCommand( VsqCommand command ) {
             type = CadenciiCommandType.VSQ_COMMAND;
             vsqCommand = command;
-            m_child = new Vector<ICommand>();
+            mChild = new Vector<ICommand>();
         }
 
         public CadenciiCommand() {
-            m_child = new Vector<ICommand>();
+            mChild = new Vector<ICommand>();
         }
 
         public ICommand getParent() {
-            return m_parent;
+            return mParent;
         }
 
         public void setParent( ICommand value ) {
-            m_parent = value;
+            mParent = value;
         }
 
         public Vector<ICommand> getChild() {
-            return m_child;
+            return mChild;
         }
     }
 

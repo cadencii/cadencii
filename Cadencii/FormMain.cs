@@ -8361,8 +8361,8 @@ namespace org.kbinani.cadencii {
             int stdx = AppManager.getStartToDrawX();
             int stdy = AppManager.getStartToDrawY();
             if ( e.Button == BMouseButtons.Left && AppManager.mCurveOnPianoroll && (selected_tool == EditTool.PENCIL || selected_tool == EditTool.LINE) ) {
-                pictPianoRoll.mouseTracer.clear();
-                pictPianoRoll.mouseTracer.appendFirst( e.X + stdx, e.Y + stdy );
+                pictPianoRoll.mMouseTracer.clear();
+                pictPianoRoll.mMouseTracer.appendFirst( e.X + stdx, e.Y + stdy );
                 setCursor( new Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
                 AppManager.setEditMode( EditMode.CURVE_ON_PIANOROLL );
                 return;
@@ -8722,7 +8722,7 @@ namespace org.kbinani.cadencii {
             EditTool selected_tool = AppManager.getSelectedTool();
 
             if ( edit_mode == EditMode.CURVE_ON_PIANOROLL && AppManager.mCurveOnPianoroll ) {
-                pictPianoRoll.mouseTracer.append( e.X + stdx, e.Y + stdy );
+                pictPianoRoll.mMouseTracer.append( e.X + stdx, e.Y + stdy );
                 if ( !timer.isRunning() ) {
                     refreshScreen();
                 }
@@ -9221,10 +9221,10 @@ namespace org.kbinani.cadencii {
             int half_track_height = track_height / 2;
 
             if ( edit_mode == EditMode.CURVE_ON_PIANOROLL ) {
-                if ( pictPianoRoll.mouseTracer.size() > 1 ) {
+                if ( pictPianoRoll.mMouseTracer.size() > 1 ) {
                     // マウスの軌跡の左右端(px)
-                    int px_start = pictPianoRoll.mouseTracer.firstKey();
-                    int px_end = pictPianoRoll.mouseTracer.lastKey();
+                    int px_start = pictPianoRoll.mMouseTracer.firstKey();
+                    int px_end = pictPianoRoll.mMouseTracer.lastKey();
 
                     // マウスの軌跡の左右端(クロック)
                     int cl_start = AppManager.clockFromXCoord( px_start - stdx );
@@ -9276,7 +9276,7 @@ namespace org.kbinani.cadencii {
                         boolean cl_item_end_added = false;
                         boolean cl_item_start_added = false;
                         int last_px = 0, last_py = 0;
-                        for ( Iterator<Point> itr2 = pictPianoRoll.mouseTracer.iterator(); itr2.hasNext(); ) {
+                        for ( Iterator<Point> itr2 = pictPianoRoll.mMouseTracer.iterator(); itr2.hasNext(); ) {
                             Point p = itr2.next();
                             if ( p.x < px_item_start ) {
                                 last_px = p.x;
@@ -9347,7 +9347,7 @@ namespace org.kbinani.cadencii {
                         setEdited( true );
                     }
                 }
-                pictPianoRoll.mouseTracer.clear();
+                pictPianoRoll.mMouseTracer.clear();
                 AppManager.setEditMode( EditMode.NONE );
                 return;
             }

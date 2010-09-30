@@ -76,12 +76,25 @@ namespace org.kbinani.cadencii {
         private System.Drawing.Point[] mPoints;
 #endif
         /// <summary>
-        /// 
+        /// 自動flushを行う時のmIndexの値。
+        /// mIndex + 1 >= mMaxPointsの時、自動でflushが行われる
         /// </summary>
         private int mMaxPoints;
+        /// <summary>
+        /// グラフのタイプ。<see cref="TYPE_LINEAR"/>または<see cref="TYPE_CIRCLE"/>のどちらか
+        /// </summary>
         private int mGraphType;
+        /// <summary>
+        /// flushの後、一度もappendされていない時にtrue。
+        /// </summary>
         private boolean mFirst = true;
+        /// <summary>
+        /// flushの後、最初にappendされてきたデータ点のx座標の値
+        /// </summary>
         private int mFirstX;
+        /// <summary>
+        /// 描画に使用するグラフィックス
+        /// </summary>
 #if JAVA
         private Graphics2D mGraphics;
 #else
@@ -96,6 +109,9 @@ namespace org.kbinani.cadencii {
         /// </summary>
         private java.awt.Color mFillColor = new java.awt.Color( 255, 0, 0 );
 #if !JAVA
+        /// <summary>
+        /// グラフの線とX軸との間隙の塗りつぶしに使用するブラシ
+        /// </summary>
         private System.Drawing.SolidBrush mFillBrush = null;
 #endif
         /// <summary>
@@ -120,6 +136,9 @@ namespace org.kbinani.cadencii {
         /// </summary>
         private java.awt.Color mDotColor = new java.awt.Color( 0, 0, 0 );
 #if !JAVA
+        /// <summary>
+        /// データ点の塗りつぶしに使用するブラシ
+        /// </summary>
         private System.Drawing.SolidBrush mDotBrush = null;
 #endif
         /// <summary>
@@ -133,8 +152,17 @@ namespace org.kbinani.cadencii {
 #if !JAVA
         private System.Drawing.Pen mLinePen = null;
 #endif
+        /// <summary>
+        /// 次のappendでデータ点の座標を代入するmPointsのインデックス
+        /// </summary>
         private int mIndex;
+        /// <summary>
+        /// 前回appendされてきたデータ点のX座標
+        /// </summary>
         private int mLastX;
+        /// <summary>
+        /// 前回appendされてきたデータ点のY座標
+        /// </summary>
         private int mLastY;
         /// <summary>
         /// 現在のマウスのX座標
@@ -329,8 +357,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// データ点を追加します。必要があれば、flushメソッドが自動で呼ばれます
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
+        /// <param name="x">データ点のX座標</param>
+        /// <param name="y">データ点のY座標</param>
         public void append( int x, int y ) {
             if ( mGraphType == TYPE_LINEAR ) {
                 // 直線で結ぶ場合

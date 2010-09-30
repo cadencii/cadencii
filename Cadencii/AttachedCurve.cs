@@ -30,7 +30,7 @@ namespace org.kbinani.cadencii {
 #else
     public class AttachedCurve : ICloneable {
 #endif
-        private Vector<BezierCurves> m_curves = new Vector<BezierCurves>();
+        private Vector<BezierCurves> mCurves = new Vector<BezierCurves>();
 
 #if !JAVA
         /// <summary>
@@ -47,11 +47,11 @@ namespace org.kbinani.cadencii {
 #endif
 
         public Vector<BezierCurves> getCurves() {
-            return m_curves;
+            return mCurves;
         }
 
         public void setCurves( Vector<BezierCurves> value ) {
-            m_curves = value;
+            mCurves = value;
         }
 
         /// <summary>
@@ -70,31 +70,31 @@ namespace org.kbinani.cadencii {
         }
 
         public BezierCurves get( int index ) {
-            return m_curves.get( index );
+            return mCurves.get( index );
         }
 
         public void set( int index, BezierCurves value ) {
-            m_curves.set( index, value );
+            mCurves.set( index, value );
         }
 
         public void add( BezierCurves item ) {
-            m_curves.add( item );
+            mCurves.add( item );
         }
 
         public void removeElementAt( int index ) {
-            m_curves.removeElementAt( index );
+            mCurves.removeElementAt( index );
         }
 
         public void insertElementAt( int position, BezierCurves attached_curve ) {
-            m_curves.insertElementAt( attached_curve, position );
+            mCurves.insertElementAt( attached_curve, position );
         }
 
         public Object clone() {
             AttachedCurve ret = new AttachedCurve();
-            ret.m_curves.clear();
-            int c = m_curves.size();
+            ret.mCurves.clear();
+            int c = mCurves.size();
             for ( int i = 0; i < c; i++ ) {
-                ret.m_curves.add( (BezierCurves)m_curves.get( i ).clone() );
+                ret.mCurves.add( (BezierCurves)mCurves.get( i ).clone() );
             }
             return ret;
         }

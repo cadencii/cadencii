@@ -57,7 +57,7 @@ namespace org.kbinani.cadencii {
 
         public override object ConvertTo( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType ) {
             if ( destinationType == typeof( string ) && value is AttackVariation ) {
-                return ((AttackVariation)value).description;
+                return ((AttackVariation)value).mDescription;
             } else {
                 return base.ConvertTo( context, culture, value, destinationType );
             }
@@ -65,7 +65,7 @@ namespace org.kbinani.cadencii {
 
         public override object ConvertFrom( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value ) {
             if ( value is string ) {
-                if ( value.Equals( new AttackVariation().description ) ) {
+                if ( value.Equals( new AttackVariation().mDescription ) ) {
                     return new AttackVariation();
                 } else {
                     SynthesizerType type = SynthesizerType.VOCALOID2;

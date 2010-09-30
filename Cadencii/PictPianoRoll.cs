@@ -36,40 +36,29 @@ namespace org.kbinani.cadencii {
     using Integer = System.Int32;
 #endif
 
+    /// <summary>
+    /// ピアノロール用のコンポーネント
+    /// </summary>
 #if JAVA
     public class PictPianoRoll extends BPanel {
 #else
     public class PictPianoRoll : BPictureBox {
 #endif
-        private readonly Color s_brs_192_192_192 = new Color( 192, 192, 192 );
-        private readonly Color s_brs_a098_000_000_000 = new Color( 0, 0, 0, 98 );
-        private readonly Color s_brs_106_108_108 = new Color( 106, 108, 108 );
-        private readonly Color s_brs_180_180_180 = new Color( 180, 180, 180 );
-        private readonly Color s_brs_212_212_212 = new Color( 212, 212, 212 );
-        private readonly Color s_brs_125_123_124 = new Color( 125, 123, 124 );
-        private readonly Color s_brs_240_240_240 = new Color( 240, 240, 240 );
-        private readonly Color s_brs_011_233_244 = new Color( 11, 233, 244 );
-        private readonly Color s_brs_182_182_182 = new Color( 182, 182, 182 );
-        private readonly Color s_brs_072_077_098 = new Color( 72, 77, 98 );
-        private readonly Color s_brs_153_153_153 = new Color( 153, 153, 153 );
-        private readonly Color s_brs_147_147_147 = new Color( 147, 147, 147 );
-        private readonly Color s_brs_000_255_214 = new Color( 0, 255, 214 );
-        private readonly Color s_pen_112_112_112 = new Color( 112, 112, 112 );
-        private readonly Color s_pen_118_123_138 = new Color( 118, 123, 138 );
-        private readonly Color s_pen_LU = new Color( 106, 52, 255, 128 );
-        private readonly Color s_pen_RD = new Color( 40, 47, 255, 204 );
-        private readonly Color s_pen_161_157_136 = new Color( 161, 157, 136 );
-        private readonly Color s_pen_209_204_172 = new Color( 209, 204, 172 );
-        private readonly Color s_pen_160_160_160 = new Color( 160, 160, 160 );
-        private readonly Color s_pen_105_105_105 = new Color( 105, 105, 105 );
-        private readonly Color s_pen_106_108_108 = new Color( 106, 108, 108 );
-        private readonly Color s_pen_212_212_212 = new Color( 212, 212, 212 );
-        private readonly Color s_pen_051_051_000 = new Color( 51, 51, 0 );
-        private readonly Color s_pen_125_123_124 = new Color( 125, 123, 124 );
-        private readonly Color s_pen_187_187_255 = new Color( 187, 187, 255 );
-        private readonly Color s_pen_007_007_151 = new Color( 7, 7, 151 );
-        private readonly Color s_pen_a136_000_000_000 = new Color( 0, 0, 0, 136 );
-        public readonly Color[] s_HIDDEN = new Color[]{
+        private readonly Color COLOR_R192G192B192 = new Color( 192, 192, 192 );
+        private readonly Color COLOR_A098R000G000B000 = new Color( 0, 0, 0, 98 );
+        private readonly Color COLOR_R106G108B108 = new Color( 106, 108, 108 );
+        private readonly Color COLOR_R180G180B180 = new Color( 180, 180, 180 );
+        private readonly Color COLOR_R212G212B212 = new Color( 212, 212, 212 );
+        private readonly Color COLOR_R125G123B124 = new Color( 125, 123, 124 );
+        private readonly Color COLOR_R240G240B240 = new Color( 240, 240, 240 );
+        private readonly Color COLOR_R072G077B098 = new Color( 72, 77, 98 );
+        private readonly Color COLOR_R153G153B153 = new Color( 153, 153, 153 );
+        private readonly Color COLOR_R147G147B147 = new Color( 147, 147, 147 );
+        private readonly Color COLOR_LINE_LU = new Color( 106, 52, 255, 128 );
+        private readonly Color COLOR_LINE_RD = new Color( 40, 47, 255, 204 );
+        private readonly Color COLOR_R051G051B000 = new Color( 51, 51, 0 );
+        private readonly Color COLOR_A136R000G000B000 = new Color( 0, 0, 0, 136 );
+        public readonly Color[] COLORS_HIDDEN = new Color[]{
             new Color( 181, 162, 123 ),
             new Color( 179, 181, 123 ),
             new Color( 157, 181, 123 ),
@@ -86,40 +75,35 @@ namespace org.kbinani.cadencii {
             new Color( 181, 123, 127 ),
             new Color( 181, 140, 123 ),
             new Color( 181, 126, 123 ) };
-        private readonly Color s_note_fill = new Color( 181, 220, 86 );
-        private readonly Color s_dynaff_fill = PortUtil.Pink;
-        private readonly Color s_dynaff_fill_highlight = new Color( 66, 193, 169 );
-        private readonly BasicStroke s_pen_dashed_171_171_171 = new BasicStroke( 1.0f, 0, 0, 10.0f, new float[] { 3.0f }, 0.0f );
-        private readonly Font s_F9PT = new Font( "SansSerif", java.awt.Font.PLAIN, AppManager.FONT_SIZE9 );
-        /// <summary>
-        /// パフォーマンスカウンタ用バッファの容量
-        /// </summary>
-        private const int _NUM_PCOUNTER = 50;
+        private readonly Color COLOR_NOTE_FILL = new Color( 181, 220, 86 );
+        private readonly Color COLOR_DYNAFF_FILL = PortUtil.Pink;
+        private readonly Color COLOR_DYNAFF_FILL_HIGHLIGHT = new Color( 66, 193, 169 );
+        private readonly Font FONT_9PT = new Font( "SansSerif", java.awt.Font.PLAIN, AppManager.FONT_SIZE9 );
         /// <summary>
         /// 表情線の先頭部分のピクセル幅
         /// </summary>
-        private const int _PX_ACCENT_HEADER = 21;
+        private const int PX_ACCENT_HEADER = 21;
 
         /// <summary>
         /// ピアノ上のマウスのトレーサ
         /// </summary>
-        public MouseTracer mouseTracer = new MouseTracer();
+        public MouseTracer mMouseTracer = new MouseTracer();
         /// <summary>
         /// 幅が2ピクセルのストローク
         /// </summary>
-        private BasicStroke stroke2px = null;
+        private BasicStroke mStroke2px = null;
         /// <summary>
         /// デフォルトのストローク
         /// </summary>
-        private BasicStroke strokeDefault = null;
+        private BasicStroke mStrokeDefault = null;
         /// <summary>
         /// 破線を表すストローク
         /// </summary>
-        private BasicStroke strokeDashed = null;
+        private BasicStroke mStrokeDashed = null;
         /// <summary>
-        /// 共用の折れ線描画プラクシ
+        /// 共用の折れ線描画プラクシー
         /// </summary>
-        private PolylineDrawer commonPolylineDrawer = null;
+        private PolylineDrawer mCommonPolylineDrawer = null;
 
 #if !JAVA
         #region event impl PreviewKeyDown
@@ -183,10 +167,10 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <returns></returns>
         private BasicStroke getStroke2px() {
-            if ( stroke2px == null ) {
-                stroke2px = new BasicStroke( 2.0f );
+            if ( mStroke2px == null ) {
+                mStroke2px = new BasicStroke( 2.0f );
             }
-            return stroke2px;
+            return mStroke2px;
         }
 
         /// <summary>
@@ -194,29 +178,42 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <returns></returns>
         private BasicStroke getStrokeDefault() {
-            if ( strokeDefault == null ) {
-                strokeDefault = new BasicStroke();
+            if ( mStrokeDefault == null ) {
+                mStrokeDefault = new BasicStroke();
             }
-            return strokeDefault;
+            return mStrokeDefault;
         }
 
+        /// <summary>
+        /// 3ドット間隔の破線を表すストロークを取得します
+        /// </summary>
+        /// <returns></returns>
         private BasicStroke getStrokeDashed() {
-            if ( strokeDashed == null ) {
-                strokeDashed = new BasicStroke( 1.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f, new float[] { 3.0f, 3.0f }, 0.0f );
+            if ( mStrokeDashed == null ) {
+                mStrokeDashed = new BasicStroke( 1.0f, BasicStroke.CAP_SQUARE, BasicStroke.JOIN_MITER, 10.0f, new float[] { 3.0f, 3.0f }, 0.0f );
             }
-            return strokeDashed;
+            return mStrokeDashed;
         }
 
+        /// <summary>
+        /// 折れ線の描画装置を取得します
+        /// </summary>
+        /// <param name="g"></param>
+        /// <returns></returns>
         private PolylineDrawer getCommonPolylineDrawer( Graphics2D g ) {
-            if ( commonPolylineDrawer == null ) {
-                commonPolylineDrawer = new PolylineDrawer( g, 1024 );
+            if ( mCommonPolylineDrawer == null ) {
+                mCommonPolylineDrawer = new PolylineDrawer( g, 1024 );
             } else {
-                commonPolylineDrawer.clear();
-                commonPolylineDrawer.setGraphics( g );
+                mCommonPolylineDrawer.clear();
+                mCommonPolylineDrawer.setGraphics( g );
             }
-            return commonPolylineDrawer;
+            return mCommonPolylineDrawer;
         }
 
+        /// <summary>
+        /// 描画ルーチン
+        /// </summary>
+        /// <param name="g1"></param>
         public void paint( Graphics g1 ) {
             Graphics2D g = (Graphics2D)g1;
         
@@ -241,9 +238,7 @@ namespace org.kbinani.cadencii {
                 int selected = AppManager.getSelected();
                 VsqTrack vsq_track = vsq.Track.get( selected );
 
-                //Dimension window_size = new Dimension( getWidth(), getHeight() );
-                Point p = pointToClient( PortUtil.getMousePosition() );
-                Point mouse_position = new Point( p.x, p.y );
+                Point mouse_position = pointToClient( PortUtil.getMousePosition() );
                 int stdx = AppManager.getStartToDrawX();
                 int stdy = AppManager.getStartToDrawY();
                 int key_width = AppManager.keyWidth;
@@ -315,7 +310,7 @@ namespace org.kbinani.cadencii {
                 if ( height > 0 ) {
                     g.setColor( Color.white );
                     g.fillRect( 3, 0, width, height );
-                    g.setColor( s_brs_240_240_240 );
+                    g.setColor( COLOR_R240G240B240 );
                     g.fillRect( 3, 0, key_width, height );
                 }
                 #endregion
@@ -345,16 +340,16 @@ namespace org.kbinani.cadencii {
                         boolean paint_required = true;
                         if ( order == -2 || order == -1 || (6 <= order && order <= 8) ) {
                             if ( note_is_whitekey ) {
-                                b = s_brs_180_180_180;
+                                b = COLOR_R180G180B180;
                             } else {
-                                b = s_brs_106_108_108;
+                                b = COLOR_R106G108B108;
                             }
-                            border = s_brs_106_108_108;
+                            border = COLOR_R106G108B108;
                         } else if ( order == 5 || order == 0 ) {
                             if ( note_is_whitekey ) {
-                                b = s_brs_212_212_212;
+                                b = COLOR_R212G212B212;
                             } else {
-                                b = s_brs_180_180_180;
+                                b = COLOR_R180G180B180;
                             }
                             border = new Color( 150, 152, 150 );
                         } else {
@@ -385,16 +380,16 @@ namespace org.kbinani.cadencii {
                         int premeasure_end_x = (int)(vsq.getPreMeasureClocks() * scalex + xoffset);
                         if ( premeasure_end_x >= key_width ) {
                             if ( note_is_whitekey ) {
-                                g.setColor( s_brs_153_153_153 );
+                                g.setColor( COLOR_R153G153B153 );
                                 g.fillRect( premeasure_start_x, y,
                                             premeasure_end_x - premeasure_start_x, track_height + 1 );
                             } else {
-                                g.setColor( s_brs_106_108_108 );
+                                g.setColor( COLOR_R106G108B108 );
                                 g.fillRect( premeasure_start_x, y,
                                             premeasure_end_x - premeasure_start_x, track_height + 1 );
                             }
                             if ( odd == 0 || odd == 5 ) {
-                                g.setColor( s_pen_106_108_108 );
+                                g.setColor( COLOR_R106G108B108 );
                                 g.drawLine( premeasure_start_x, y + track_height,
                                             premeasure_end_x, y + track_height );
                             }
@@ -406,7 +401,7 @@ namespace org.kbinani.cadencii {
 
                 //ピアノロールと鍵盤部分の縦線
                 int hilighted_note = -1;
-                g.setColor( s_pen_212_212_212 );
+                g.setColor( COLOR_R212G212B212 );
                 g.drawLine( key_width, 0,
                             key_width, height );
                 int odd2 = -1;
@@ -425,7 +420,7 @@ namespace org.kbinani.cadencii {
                     }
 
                     #region 鍵盤部分
-                    g.setColor( s_pen_212_212_212 );
+                    g.setColor( COLOR_R212G212B212 );
                     g.drawLine( 0, y, key_width, y );
                     boolean hilighted = false;
                     if ( edit_mode == EditMode.ADD_ENTRY ) {
@@ -456,12 +451,12 @@ namespace org.kbinani.cadencii {
                         g.fillRect( 35, y, key_width - 35, track_height );
                     }
                     if ( odd2 == 0 || hilighted ) {
-                        g.setColor( s_brs_072_077_098 );
+                        g.setColor( COLOR_R072G077B098 );
                         g.setFont( AppManager.baseFont8 );
                         g.drawString( VsqNote.getNoteString( i ), 42, y + half_track_height - AppManager.baseFont8OffsetHeight + 1 );
                     }
                     if ( !VsqNote.isNoteWhiteKey( i ) ) {
-                        g.setColor( s_brs_125_123_124 );
+                        g.setColor( COLOR_R125G123B124 );
                         g.fillRect( 0, y, 34, track_height );
                     }
                     #endregion
@@ -557,7 +552,7 @@ namespace org.kbinani.cadencii {
                                     g.setColor( AppManager.HILIGHT[i] );
                                     g.drawLine( x + 1, y + shift_center,
                                                 x + lyric_width - 1, y + shift_center );
-                                    g.setColor( s_HIDDEN[i] );
+                                    g.setColor( COLORS_HIDDEN[i] );
                                     g.drawPolyline( new int[] { x, x + 1, x + lyric_width - 1, x + lyric_width, x + lyric_width - 1, x + 1, x },
                                                     new int[] { y + shift_center, y + shift_center - 1, y + shift_center - 1, y + shift_center, y + shift_center + 1, y + shift_center + 1, y + shift_center },
                                                     7 );
@@ -605,7 +600,7 @@ namespace org.kbinani.cadencii {
 
                                     if ( dobj.mType == DrawObjectType.Note ) {
                                         #region Note
-                                        Color id_fill = s_note_fill;
+                                        Color id_fill = COLOR_NOTE_FILL;
                                         if ( (!dobj.mIsValidForUtau && renderer == RendererKind.UTAU) ||
                                              (!dobj.mIsValidForStraight && renderer == RendererKind.STRAIGHT_UTAU) ) {
                                             id_fill = AppManager.getAlertColor();
@@ -624,7 +619,7 @@ namespace org.kbinani.cadencii {
                                         g.fillRect( x, y + 1, lyric_width, track_height - 1 );
                                         Font lyric_font = dobj.mIsSymbolProtected ? AppManager.baseFont10Bold : AppManager.baseFont10;
                                         if ( dobj.mIsOverlapped ) {
-                                            g.setColor( s_pen_125_123_124 );
+                                            g.setColor( COLOR_R125G123B124 );
                                             g.drawRect( x, y + 1, lyric_width, track_height - 1 );
                                             if ( show_lyrics ) {
                                                 g.setFont( lyric_font );
@@ -632,12 +627,12 @@ namespace org.kbinani.cadencii {
                                                      (!dobj.mIsValidForStraight && renderer == RendererKind.STRAIGHT_UTAU) ) {
                                                     g.setColor( Color.white );
                                                 } else {
-                                                    g.setColor( s_brs_147_147_147 );
+                                                    g.setColor( COLOR_R147G147B147 );
                                                 }
                                                 g.drawString( dobj.mText, x + 1, y + half_track_height - AppManager.baseFont10OffsetHeight + 1 );
                                             }
                                         } else {
-                                            g.setColor( s_pen_125_123_124 );
+                                            g.setColor( COLOR_R125G123B124 );
                                             g.drawRect( x, y + 1, lyric_width, track_height - 1 );
                                             if ( show_exp_line && lyric_width > 21 ) {
                                                 #region 表情線
@@ -653,7 +648,7 @@ namespace org.kbinani.cadencii {
                                                         vibrato_start = x + 21;
                                                     }
                                                 }
-                                                g.setColor( s_pen_051_051_000 );
+                                                g.setColor( COLOR_R051G051B000 );
                                                 g.drawLine( x + 21, y + track_height + 7,
                                                             vibrato_start, y + track_height + 7 );
                                                 if ( dobj.mVibratoDelayInPixel <= lyric_width ) {
@@ -779,18 +774,18 @@ namespace org.kbinani.cadencii {
                                         #endregion
                                     } else if ( dobj.mType == DrawObjectType.Dynaff ) {
                                         #region Dynaff
-                                        Color fill = s_dynaff_fill;
+                                        Color fill = COLOR_DYNAFF_FILL;
                                         if ( AppManager.isSelectedEventContains( selected, dobj.mInternalID ) ) {
-                                            fill = s_dynaff_fill_highlight;
+                                            fill = COLOR_DYNAFF_FILL_HIGHLIGHT;
                                         }
                                         g.setColor( fill );
                                         g.fillRect( x, y, 40, track_height );
-                                        g.setColor( s_pen_125_123_124 );
+                                        g.setColor( COLOR_R125G123B124 );
                                         g.drawRect( x, y, 40, track_height );
                                         g.setColor( Color.black );
                                         g.setFont( AppManager.baseFont10 );
                                         if ( dobj.mIsOverlapped ) {
-                                            g.setColor( s_brs_147_147_147 );
+                                            g.setColor( COLOR_R147G147B147 );
                                         }
                                         String str = dobj.mText;
 #if DEBUG
@@ -801,16 +796,16 @@ namespace org.kbinani.cadencii {
                                     } else {
                                         #region Crescend and Descrescend
                                         int xend = x + lyric_width;
-                                        Color fill = s_dynaff_fill;
+                                        Color fill = COLOR_DYNAFF_FILL;
                                         if ( AppManager.isSelectedEventContains( selected, dobj.mInternalID ) ) {
-                                            fill = s_dynaff_fill_highlight;
+                                            fill = COLOR_DYNAFF_FILL_HIGHLIGHT;
                                         }
                                         g.setColor( fill );
                                         g.fillRect( x, y, xend - x, track_height );
-                                        g.setColor( s_pen_125_123_124 );
+                                        g.setColor( COLOR_R125G123B124 );
                                         g.drawRect( x, y, xend - x, track_height );
                                         if ( dobj.mIsOverlapped ) {
-                                            g.setColor( s_brs_147_147_147 );
+                                            g.setColor( COLOR_R147G147B147 );
                                         } else {
                                             g.setColor( Color.black );
                                         }
@@ -860,7 +855,7 @@ namespace org.kbinani.cadencii {
                                 g.setColor( new Color( 171, 171, 171 ) );
                                 g.drawRect( x, y, 10, track_height - 1 );
                             } else {
-                                g.setColor( s_pen_a136_000_000_000 );
+                                g.setColor( COLOR_A136R000G000B000 );
                                 g.drawRect( x, y, length, track_height - 1 );
                             }
                         }
@@ -868,7 +863,7 @@ namespace org.kbinani.cadencii {
                         int x = (int)(AppManager.mAddingEvent.Clock * scalex + xoffset);
                         y = -AppManager.mAddingEvent.ID.Note * track_height + yoffset + 1;
                         int length = (int)(AppManager.mAddingEvent.ID.getLength() * scalex);
-                        g.setColor( s_pen_a136_000_000_000 );
+                        g.setColor( COLOR_A136R000G000B000 );
                         g.drawRect( x, y, length, track_height - 1 );
                     } else if ( (edit_mode == EditMode.MOVE_ENTRY ||
                                  edit_mode == EditMode.MOVE_ENTRY_WHOLE ||
@@ -888,17 +883,17 @@ namespace org.kbinani.cadencii {
                                 } else {
                                     length = (int)(ev.editing.ID.getLength() * scalex);
                                 }
-                                g.setColor( s_pen_a136_000_000_000 );
+                                g.setColor( COLOR_A136R000G000B000 );
                                 g.drawRect( x, y, length, track_height - 1 );
                             } else {
                                 if ( ev.editing.ID.getLength() == 0 ) {
                                     g.setColor( new Color( 171, 171, 171 ) );
-                                    g.setStroke( s_pen_dashed_171_171_171 );
+                                    g.setStroke( getStrokeDashed() );
                                     g.drawRect( x, y, 10, track_height - 1 );
                                     g.setStroke( getStrokeDefault() );
                                 } else {
                                     int length = (int)(ev.editing.ID.getLength() * scalex);
-                                    g.setColor( s_pen_a136_000_000_000 );
+                                    g.setColor( COLOR_A136R000G000B000 );
                                     g.drawRect( x, y, length, track_height - 1 );
                                 }
                             }
@@ -909,7 +904,7 @@ namespace org.kbinani.cadencii {
                             int clock_end = AppManager.mWholeSelectedInterval.getEnd();
                             int x_start = AppManager.xCoordFromClocks( AppManager.mWholeSelectedIntervalStartForMoving );
                             int x_end = AppManager.xCoordFromClocks( AppManager.mWholeSelectedIntervalStartForMoving + (clock_end - clock_start) );
-                            g.setColor( s_brs_a098_000_000_000 );
+                            g.setColor( COLOR_A098R000G000B000 );
                             g.drawLine( x_start, 0, x_start, height );
                             g.drawLine( x_end, 0, x_end, height );
                         }
@@ -933,10 +928,10 @@ namespace org.kbinani.cadencii {
                         length = (int)(AppManager.mAddingEvent.ID.getLength() * scalex);
                     }
                     x += length;
-                    g.setColor( s_pen_LU );
+                    g.setColor( COLOR_LINE_LU );
                     g.drawLine( x, 0, x, y - 1 );
                     g.drawLine( x, y + track_height, x, height );
-                    g.setColor( s_pen_RD );
+                    g.setColor( COLOR_LINE_RD );
                     g.drawLine( x + 1, 0, x + 1, y - 1 );
                     g.drawLine( x + 1, y + track_height, x + 1, height );
                     #endregion
@@ -955,7 +950,7 @@ namespace org.kbinani.cadencii {
                         }
 
                         // 縦線
-                        g.setColor( s_pen_LU );
+                        g.setColor( COLOR_LINE_LU );
                         g.drawLine( x, 0, x, y - 1 );
                         g.drawLine( x, y + track_height, x, height );
                         // 横線
@@ -964,7 +959,7 @@ namespace org.kbinani.cadencii {
                         g.drawLine( x + length + 1, y + half_track_height - 2,
                                     width, y + half_track_height - 2 );
                         // 縦線
-                        g.setColor( s_pen_RD );
+                        g.setColor( COLOR_LINE_RD );
                         g.drawLine( x + 1, 0, x + 1, y - 1 );
                         g.drawLine( x + 1, y + track_height,
                                     x + 1, height );
@@ -988,7 +983,7 @@ namespace org.kbinani.cadencii {
                     }
 
                     // 縦線
-                    g.setColor( s_pen_LU );
+                    g.setColor( COLOR_LINE_LU );
                     g.drawLine( x, 0, x, y - 1 );
                     g.drawLine( x, y + track_height, x, height );
                     // 横線
@@ -997,7 +992,7 @@ namespace org.kbinani.cadencii {
                     g.drawLine( x + length + 1, y + half_track_height - 2,
                                 width, y + half_track_height - 2 );
                     // 縦線
-                    g.setColor( s_pen_RD );
+                    g.setColor( COLOR_LINE_RD );
                     g.drawLine( x + 1, 0, x + 1, y - 1 );
                     g.drawLine( x + 1, y + track_height, x + 1, height );
                     // 横線
@@ -1011,10 +1006,10 @@ namespace org.kbinani.cadencii {
                     VsqEvent last = AppManager.getLastSelectedEvent().editing;
                     int x = (int)(last.Clock * scalex + xoffset);
                     y = -last.ID.Note * track_height + yoffset + 1;
-                    g.setColor( s_pen_LU );
+                    g.setColor( COLOR_LINE_LU );
                     g.drawLine( x, 0, x, y - 1 );
                     g.drawLine( x, y + track_height, x, height );
-                    g.setColor( s_pen_RD );
+                    g.setColor( COLOR_LINE_RD );
                     g.drawLine( x + 1, 0, x + 1, y - 1 );
                     g.drawLine( x + 1, y + track_height, x + 1, height );
                     #endregion
@@ -1025,10 +1020,10 @@ namespace org.kbinani.cadencii {
                     y = -last.ID.Note * track_height + yoffset + 1;
                     int length = (int)(last.ID.getLength() * scalex);
                     x += length;
-                    g.setColor( s_pen_LU );
+                    g.setColor( COLOR_LINE_LU );
                     g.drawLine( x, 0, x, y - 1 );
                     g.drawLine( x, y + track_height, x, height );
-                    g.setColor( s_pen_RD );
+                    g.setColor( COLOR_LINE_RD );
                     g.drawLine( x + 1, 0, x + 1, y - 1 );
                     g.drawLine( x + 1, y + track_height, x + 1, height );
                     #endregion
@@ -1036,33 +1031,33 @@ namespace org.kbinani.cadencii {
                     #region EditVibratoDelay
                     int x = (int)(AppManager.mAddingEvent.Clock * scalex + xoffset);
                     y = -AppManager.mAddingEvent.ID.Note * track_height + yoffset + 1;
-                    g.setColor( s_pen_LU );
+                    g.setColor( COLOR_LINE_LU );
                     g.drawLine( x, 0, x, y - 1 );
                     g.drawLine( x, y + track_height, x, height );
-                    g.setColor( s_pen_RD );
+                    g.setColor( COLOR_LINE_RD );
                     g.drawLine( x + 1, 0, x + 1, y - 1 );
                     g.drawLine( x + 1, y + track_height, x + 1, height );
-                    double max_length = AppManager.mAddingEventLength - _PX_ACCENT_HEADER / scalex;
+                    double max_length = AppManager.mAddingEventLength - PX_ACCENT_HEADER / scalex;
                     double drate = AppManager.mAddingEvent.ID.getLength() / max_length;
                     if ( drate > 0.99 ) {
                         drate = 1.00;
                     }
                     int rate = (int)(drate * 100.0);
                     String percent = rate + "%";
-                    Dimension size = Util.measureString( percent, s_F9PT );
+                    Dimension size = Util.measureString( percent, FONT_9PT );
                     int delay_x = (int)((AppManager.mAddingEvent.Clock + AppManager.mAddingEvent.ID.getLength() - AppManager.mAddingEventLength + AppManager.mAddingEvent.ID.VibratoDelay) * scalex + xoffset);
                     Rectangle pxArea = new Rectangle( delay_x,
                                                       (int)(y + track_height * 2.5),
                                                       (int)(size.width * 1.2),
                                                       (int)(size.height * 1.2) );
-                    g.setColor( s_brs_192_192_192 );
+                    g.setColor( COLOR_R192G192B192 );
                     g.fillRect( pxArea.x, pxArea.y, pxArea.width, pxArea.height );
                     g.setColor( Color.black );
                     g.drawRect( pxArea.x, pxArea.y, pxArea.width, pxArea.height );
                     // StringFormat sf = new StringFormat();
                     //sf.Alignment = StringAlignment.Center;
                     //sf.LineAlignment = StringAlignment.Center;
-                    g.setFont( s_F9PT );
+                    g.setFont( FONT_9PT );
                     g.drawString( percent, pxArea.x, pxArea.y );// , sf );
                     #endregion
                 }
@@ -1237,11 +1232,11 @@ namespace org.kbinani.cadencii {
                     g.setColor( fill );
                     g.fill( fillarea );
 
-                    if ( mouseTracer.size() > 1 ) {
+                    if ( mMouseTracer.size() > 1 ) {
                         commonDrawer.clear();
                         g.setColor( PortUtil.Orchid );
                         g.setStroke( getStroke2px() );
-                        for ( Iterator<Point> itr = mouseTracer.iterator(); itr.hasNext(); ) {
+                        for ( Iterator<Point> itr = mMouseTracer.iterator(); itr.hasNext(); ) {
                             Point pt = itr.next();
                             commonDrawer.append( pt.x - stdx, pt.y - stdy );
                         }

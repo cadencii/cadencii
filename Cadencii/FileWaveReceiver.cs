@@ -29,14 +29,14 @@ namespace org.kbinani.cadencii.draft {
 #else
     public class FileWaveReceiver : WaveReceiver {
 #endif
-        private const int _BUFLEN = 1024;
-        private WaveRateConvertAdapter _adapter = null;
-        private double[] _buffer_l = new double[_BUFLEN];
-        private double[] _buffer_r = new double[_BUFLEN];
-        private double[] _buffer2_l = new double[_BUFLEN];
-        private double[] _buffer2_r = new double[_BUFLEN];
-        private WaveReceiver _receiver = null;
-        private int _version = 0;
+        private const int BUFLEN = 1024;
+        private WaveRateConvertAdapter mAdapter = null;
+        private double[] mBufferL = new double[BUFLEN];
+        private double[] mBufferR = new double[BUFLEN];
+        private double[] mBuffer2L = new double[BUFLEN];
+        private double[] mBuffer2R = new double[BUFLEN];
+        private WaveReceiver mReceiver = null;
+        private int mVersion = 0;
 
         /// <summary>
         /// 初期化メソッド．
@@ -58,21 +58,21 @@ namespace org.kbinani.cadencii.draft {
             int bit_per_sample = PortUtil.parseInt( spl[2] );
             int sample_rate = PortUtil.parseInt( spl[3] );
             WaveWriter ww = new WaveWriter( path, channel, bit_per_sample, sample_rate );
-            _adapter = new WaveRateConvertAdapter( ww, VSTiProxy.SAMPLE_RATE );
+            mAdapter = new WaveRateConvertAdapter( ww, VSTiProxy.SAMPLE_RATE );
         }
 
         public int getVersion() {
-            return _version;
+            return mVersion;
         }
 
         public void end() {
-            _adapter.close();
+            mAdapter.close();
         }
 
         public void push( double[] l, double[] r, int length ) {
-            _adapter.append( l, r, length );
-            if ( _receiver != null ) {
-                _receiver.push( l, r, length );
+            mAdapter.append( l, r, length );
+            if ( mReceiver != null ) {
+                mReceiver.push( l, r, length );
             }
         }
 
@@ -80,7 +80,7 @@ namespace org.kbinani.cadencii.draft {
             if ( r != null ) {
                 r.end();
             }
-            _receiver = r;
+            mReceiver = r;
         }
     }
 

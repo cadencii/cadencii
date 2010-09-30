@@ -31,8 +31,8 @@ namespace org.kbinani.cadencii {
 #else
     public class EmptyRenderingRunner : RenderingRunner {
 #endif
-        private boolean modeInfinite;
-        private double startedDate;
+        private boolean mModeInfinite;
+        private double mStartedDate;
 
         public EmptyRenderingRunner( int track,
                                      boolean reflect_amp_to_wave,
@@ -49,21 +49,21 @@ namespace org.kbinani.cadencii {
 #else
             :
 #endif
- base( track, reflect_amp_to_wave, wave_writer, wave_read_offset_seconds, readers, direct_play, trim_msec, total_samples, sample_rate )
+            base( track, reflect_amp_to_wave, wave_writer, wave_read_offset_seconds, readers, direct_play, trim_msec, total_samples, sample_rate )
 #if JAVA
             ;
 #else
- {
+            {
 #endif
 #if DEBUG
-     PortUtil.println( "EmptyRenderingRunner#.ctor; readers.size()=" + readers.size() );
+            PortUtil.println( "EmptyRenderingRunner#.ctor; readers.size()=" + readers.size() );
 #endif
-            modeInfinite = mode_infinite;
+            mModeInfinite = mode_infinite;
         }
 
         public override void run() {
             m_rendering = true;
-            startedDate = PortUtil.getCurrentTime();
+            mStartedDate = PortUtil.getCurrentTime();
             int buflen = 1024;
             double[] left = new double[buflen];
             double[] right = new double[buflen];
@@ -78,7 +78,7 @@ namespace org.kbinani.cadencii {
                 remain -= delta;
             }
 
-            if ( modeInfinite ) {
+            if ( mModeInfinite ) {
                 while ( !m_abort_required ) {
                     waveIncoming( left, right, buflen );
                     for ( int i = 0; i < buflen; i++ ) {
@@ -105,7 +105,7 @@ namespace org.kbinani.cadencii {
 
         public override double getElapsedSeconds() {
             if ( m_rendering ) {
-                return PortUtil.getCurrentTime() - startedDate;
+                return PortUtil.getCurrentTime() - mStartedDate;
             } else {
                 return 0.0;
             }

@@ -732,10 +732,10 @@ namespace org.kbinani.cadencii {
                         type = SynthesizerType.VOCALOID1;
                     }
 
-                    if ( m_attack.description.Equals( new AttackVariation().description ) ) {
+                    if ( m_attack.mDescription.Equals( new AttackVariation().mDescription ) ) {
                         editing.ID.NoteHeadHandle = null;
                     } else {
-                        String description = m_attack.description;
+                        String description = m_attack.mDescription;
                         int last_depth = 0;
                         int last_duration = 0;
                         if ( editing.ID.NoteHeadHandle != null ) {

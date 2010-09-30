@@ -37,7 +37,7 @@ namespace org.kbinani.cadencii {
         public Vector<BezierPoint> points;
         public double Default;
         public int id;
-        private Color m_color;
+        private Color mColor;
         const double EPSILON = 1e-9;
 
         /// <summary>
@@ -158,7 +158,7 @@ namespace org.kbinani.cadencii {
 
             // t_start, t_endが既存のベジエデータ点位置を被っていないかどうか検査しながらコピー
             boolean t_start_added = false; // 最初の区間が追加された直後だけ立つフラグ
-            BezierChain edited = new BezierChain( m_color );
+            BezierChain edited = new BezierChain( mColor );
             int count = 0;
             for ( int i = 0; i < this.points.size() - 1; i++ ) {
                 if ( this.points.get( i ).getBase().getX() < t_start && t_start < this.points.get( i + 1 ).getBase().getX() ) {
@@ -387,7 +387,7 @@ namespace org.kbinani.cadencii {
         }
         
         public Object clone() {
-            BezierChain result = new BezierChain( this.m_color );
+            BezierChain result = new BezierChain( this.mColor );
             for ( Iterator<BezierPoint> itr = points.iterator(); itr.hasNext(); ){
                 BezierPoint bp = itr.next();
                 result.points.add( (BezierPoint)bp.clone() );
@@ -405,12 +405,12 @@ namespace org.kbinani.cadencii {
 
         public BezierChain( Color curve ) {
             points = new Vector<BezierPoint>();
-            m_color = curve;
+            mColor = curve;
         }
 
         public BezierChain() {
             points = new Vector<BezierPoint>();
-            m_color = Color.black;
+            mColor = Color.black;
         }
 
 #if !JAVA
@@ -425,17 +425,17 @@ namespace org.kbinani.cadencii {
 #endif
 
         public Color getColor() {
-            return m_color;
+            return mColor;
         }
 
         public void setColor( Color value ) {
-            m_color = value;
+            mColor = value;
         }
 
         public void add( BezierPoint bp ) {
             if ( points == null ) {
                 points = new Vector<BezierPoint>();
-                m_color = Color.black;
+                mColor = Color.black;
             }
             points.add( bp );
             Collections.sort( points );
