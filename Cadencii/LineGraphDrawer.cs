@@ -17,7 +17,7 @@ package org.kbinani.cadencii;
 import java.awt.*;
 #else
 using System;
-using org.kbinani.java.awt;
+using System.Drawing;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
@@ -43,8 +43,25 @@ namespace org.kbinani.cadencii {
         /// データ点を丸で描きます
         /// </summary>
         public const int DOT_CIRCLE = 1;
+        /// <summary>
+        /// データ点を描かないモード
+        /// </summary>
+        public const int DOTMODE_NO = 0;
+        /// <summary>
+        /// データ点を常に描くモード
+        /// </summary>
+        public const int DOTMODE_ALWAYS = 1;
+        /// <summary>
+        /// データ点がマウスと近い場合にのみ描くモード
+        /// </summary>
+        public const int DOTMODE_NEAR = 2;
 
-        private const int BUFLEN = 512;
+        private const int BUFLEN = 1024;
+        /// <summary>
+        /// マウスに「近い」と判定する距離（ピクセル単位）
+        /// </summary>
+        private const float NEAR_THRESHOLD = 200f;
+        private const float INV_NEAR_THRESHOLD = 1f / NEAR_THRESHOLD;
         
         /// <summary>
         /// X軸の描画位置
@@ -77,19 +94,23 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// グラフの線とX軸との間隙の塗りつぶしに使用する色
         /// </summary>
-        private Color mFillColor;
+        private java.awt.Color mFillColor = new java.awt.Color( 255, 0, 0 );
 #if !JAVA
         private System.Drawing.SolidBrush mFillBrush = null;
 #endif
         /// <summary>
         /// データ点を描画するかどうか
         /// </summary>
-        private boolean mDot = true;
+        private int mDot = 1;
         /// <summary>
         /// データ点の描画サイズ。
         /// mDotTypeがDOT_CIRCLEの場合は半径、DOT_RECTの場合は一辺の長さの半分の値を指定します
         /// </summary>
         private int mDotSize = 2;
+        /// <summary>
+        /// データ点の描画サイズ。mDotSizeに従属で、mDotSize変更時に自動的に計算される
+        /// </summary>
+        private int mDotWidth = 2 * 2 + 1;
         /// <summary>
         /// データ点の描画タイプ。
         /// </summary>
@@ -97,32 +118,36 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// データ点の描画色
         /// </summary>
-        private Color mDotColor;
+        private java.awt.Color mDotColor = new java.awt.Color( 0, 0, 0 );
 #if !JAVA
         private System.Drawing.SolidBrush mDotBrush = null;
 #endif
         /// <summary>
         /// 線の描画色
         /// </summary>
-        private Color mLineColor;
+        private java.awt.Color mLineColor = new java.awt.Color( 0, 0, 0 );
+        /// <summary>
+        /// 線を描画するかどうか
+        /// </summary>
+        private boolean mLine = true;
 #if !JAVA
         private System.Drawing.Pen mLinePen = null;
 #endif
         private int mIndex;
         private int mLastX;
         private int mLastY;
+        /// <summary>
+        /// 現在のマウスのX座標
+        /// </summary>
+        private int mMouseX;
 
         /// <summary>
         /// コンストラクタ。グラフのタイプを指定します
         /// </summary>
         /// <param name="graph_type">グラフのタイプを指定する整数値。<see cref="TYPE_LINEAR"/>または<see cref="TYPE_STEP"/>を指定する</param>
-        public LineGraphDrawer( int graph_type ) {
+        public LineGraphDrawer( int graph_type, int base_line_y ) {
             // データ点のバッファを確保
-#if JAVA
             mPoints = new Point[BUFLEN];
-#else
-            mPoints = new System.Drawing.Point[BUFLEN];
-#endif
 
             // グラフのタイプを特定
             if ( graph_type == TYPE_LINEAR ) {
@@ -135,20 +160,32 @@ namespace org.kbinani.cadencii {
 
             // 自動flushを起こすときのデータ点の個数を設定
             if ( mGraphType == TYPE_LINEAR ) {
-                mMaxPoints = BUFLEN - 2;
-            } else {
-                mMaxPoints = BUFLEN / 2 - 1;
+                mMaxPoints = BUFLEN - 1;
+            } else if ( mGraphType == TYPE_STEP ) {
+                mMaxPoints = BUFLEN;
             }
 
+#if DEBUG
+            PortUtil.println( "LineGraphDrawer#mMaxPoints=" + mMaxPoints );
+#endif
+            mBaseLineY = base_line_y;
             mFirst = true;
         }
 
         #region public methods
         /// <summary>
+        /// マウスのX座標を設定します
+        /// </summary>
+        /// <param name="value"></param>
+        public void setMouseX( int value ) {
+            mMouseX = value;
+        }
+
+        /// <summary>
         /// グラフの線の描画色を設定します
         /// </summary>
         /// <param name="value"></param>
-        public void setLineColor( Color value ) {
+        public void setLineColor( java.awt.Color value ) {
             mLineColor = value;
         }
 
@@ -156,15 +193,31 @@ namespace org.kbinani.cadencii {
         /// グラフの線の描画色を取得します
         /// </summary>
         /// <returns></returns>
-        public Color getLineColor() {
+        public java.awt.Color getLineColor() {
             return mLineColor;
+        }
+
+        /// <summary>
+        /// 線を描画するかどうかを設定します
+        /// </summary>
+        /// <param name="value"></param>
+        public void setDrawLine( boolean value ) {
+            mLine = value;
+        }
+
+        /// <summary>
+        /// 線を描画するかどうかを取得します
+        /// </summary>
+        /// <returns></returns>
+        public boolean isDrawLine() {
+            return mLine;
         }
 
         /// <summary>
         /// データ点の描画色を設定します
         /// </summary>
         /// <param name="value"></param>
-        public void setDotColor( Color value ) {
+        public void setDotColor( java.awt.Color value ) {
             mDotColor = value;
         }
 
@@ -172,7 +225,7 @@ namespace org.kbinani.cadencii {
         /// データ点の描画色を取得します
         /// </summary>
         /// <returns></returns>
-        public Color getDotColor() {
+        public java.awt.Color getDotColor() {
             return mDotColor;
         }
 
@@ -196,7 +249,7 @@ namespace org.kbinani.cadencii {
         /// グラフの線とX軸の間を塗りつぶす場合の色を設定します
         /// </summary>
         /// <param name="c"></param>
-        public void setFillColor( Color c ) {
+        public void setFillColor( java.awt.Color c ) {
             mFillColor = c;
         }
 
@@ -204,7 +257,7 @@ namespace org.kbinani.cadencii {
         /// グラフの線とX軸の間を塗りつぶす場合の色を取得します
         /// </summary>
         /// <returns></returns>
-        public Color getFillColor() {
+        public java.awt.Color getFillColor() {
             return mFillColor;
         }
 
@@ -215,9 +268,10 @@ namespace org.kbinani.cadencii {
         public void setDotSize( int value ) {
             mDotSize = value;
             if ( mDotSize <= 0 ) {
-                mDot = false;
+                mDot = DOTMODE_ALWAYS;
                 mDotSize = 0;
             }
+            mDotWidth = 2 * mDotSize + 1;
         }
 
         /// <summary>
@@ -251,18 +305,24 @@ namespace org.kbinani.cadencii {
         }
 
         /// <summary>
-        /// データ点を描画するかどうかを設定します
+        /// データ点の描画モードを設定します
         /// </summary>
         /// <param name="value"></param>
-        public void setDrawDot( boolean value ) {
-            mDot = value;
+        public void setDotMode( int value ) {
+            if ( value == DOTMODE_ALWAYS ) {
+                mDot = DOTMODE_ALWAYS;
+            } else if ( value == DOTMODE_NEAR ) {
+                mDot = DOTMODE_NEAR;
+            } else if ( value == DOTMODE_NO ) {
+                mDot = DOTMODE_NO;
+            }
         }
 
         /// <summary>
-        /// データ点を描画するかどうかを取得します
+        /// データ点の描画モードを取得します
         /// </summary>
         /// <returns></returns>
-        public boolean isDrawDot() {
+        public int getDotMode() {
             return mDot;
         }
 
@@ -276,23 +336,35 @@ namespace org.kbinani.cadencii {
                 // 直線で結ぶ場合
                 setPointData( mIndex, x, y );
                 mIndex++;
-                if ( mIndex >= mMaxPoints ) {
-                    flush();
-                }
             } else if ( mGraphType == TYPE_STEP ) {
                 // ステップ状に結ぶ場合
-                //TODO: ここがまだだだ
+                if ( mFirst ) {
+                    mFirst = false;
+                    mFirstX = x;
+                } else {
+                    setPointData( mIndex, x, mLastY );
+                    mIndex++;
+                }
+                setPointData( mIndex, x, y );
+                mIndex++;
             }
             mLastX = x;
             mLastY = y;
+            if ( mIndex + 1 >= mMaxPoints ) {
+                flush();
+            }
         }
 
         /// <summary>
         /// 現在のデータ点のバッファの描画を行います
         /// </summary>
         public void flush() {
+            if ( mIndex < 2 ) {
+                // データ点が少ないのでflushする意味なし
+                return;
+            }
             if ( mGraphType == TYPE_LINEAR ) {
-                setPointData( mIndex, x, mBaseLineY );
+                setPointData( mIndex, mLastX, mBaseLineY );
                 setPointData( mIndex + 1, mFirstX, mBaseLineY );
 
                 // 塗りつぶし
@@ -306,14 +378,16 @@ namespace org.kbinani.cadencii {
                 }
 
                 // 線を描く
-                setPointData( mIndex, x, y );
-                setPointData( mIndex + 1, x, y );
+                if ( mLine ) {
+                    setPointData( mIndex, mLastX, mLastY );
+                    setPointData( mIndex + 1, mLastX, mLastY );
 #if JAVA
-                mGraphics.setColor( mLineColor );
-                mGraphics.drawPolygone ...
+                    mGraphics.setColor( mLineColor );
+                    mGraphics.drawPolygone ...
 #else
-                mGraphics.DrawLines( getLinePen(), mPoints );
+                    mGraphics.DrawLines( getLinePen(), mPoints );
 #endif
+                }
 
                 // ドットを描く
                 // ここでは第mIndex - 1番目のドットまでを描いて、mIndex - 1番目のデータは第0番目にコピーし，次のflushで描く
@@ -328,15 +402,15 @@ namespace org.kbinani.cadencii {
 #endif
                     if ( mDotType == DOT_CIRCLE ) {
 #if JAVA
-                        mGraphics.fillEllipse( p.x - mDotSize, p.y - mDotSize, mDotSize * 2, mDotSize * 2 );
+                        mGraphics.fillEllipse( p.x - mDotSize, p.y - mDotSize, mDotWidth, mDotWidth );
 #else
-                        mGraphics.FillEllipse( getDotBrush(), p.X - mDotSize, p.Y - mDotSize, mDotSize * 2, mDotSize * 2 );
+                        mGraphics.FillEllipse( getDotBrush(), p.X - mDotSize, p.Y - mDotSize, mDotWidth, mDotWidth );
 #endif
                     } else if ( mDotType == DOT_RECT ) {
 #if JAVA
-                        mGraphics.fillRectangle( p.x - mDotSize, p.y - mDotSize, mDotSize * 2, mDotSize * 2 );
+                        mGraphics.fillRectangle( p.x - mDotSize, p.y - mDotSize, mDotWidth, mDotWidth );
 #else
-                        mGraphics.FillRectangle( getDotBrush(), p.X - mDotSize, p.Y - mDotSize, mDotSize * 2, mDotSize * 2 );
+                        mGraphics.FillRectangle( getDotBrush(), p.X - mDotSize, p.Y - mDotSize, mDotWidth, mDotWidth );
 #endif
                     }
                 }
@@ -346,7 +420,80 @@ namespace org.kbinani.cadencii {
                 mFirstX = mLastX;
                 mIndex = 1;
             } else if ( mGraphType == TYPE_STEP ) {
-                //TODO: この辺がまだ
+                if ( mFill ) {
+                    // 塗りつぶし用の枠を追加
+                    setPointData( mIndex - 1, mLastX, mBaseLineY );
+                    setPointData( mIndex, mFirstX, mBaseLineY );
+                    for ( int i = mIndex + 1; i < mPoints.Length; i++ ) {
+                        setPointData( i, mFirstX, mBaseLineY );
+                    }
+
+                    // 塗りつぶし
+#if JAVA
+                    mGraphics.setColor( mFillColor );
+                    WRRRRRYYYYYYYYYYYYYYYYY!!!!!!!!!!!!!!!
+#else
+                    mGraphics.FillPolygon( getFillBrush(), mPoints );
+#endif
+                }
+
+                if ( mLine ) {
+                    // 線を描く
+                    for ( int i = mIndex - 1; i < mPoints.Length; i++ ) {
+                        setPointData( i, mLastX, mLastY );
+                    }
+#if JAVA
+                    foo
+#else
+                    mGraphics.DrawLines( getLinePen(), mPoints );
+#endif
+                }
+
+                if ( mDot != DOTMODE_NO ) {
+                    // データ点を描く
+#if JAVA
+                    Color c = mDotColor;
+#else
+                    SolidBrush brs = getDotBrush();
+                    Color c = brs.Color;
+#endif
+                    for ( int i = 0; i < mIndex; i += 2 ) {
+                        Point p = mPoints[i];
+                        int alpha = getAlpha( p.X );
+                        if ( alpha <= 0 ) {
+                            continue;
+                        }
+#if JAVA
+                        c.a = alpha;
+                        mGraphics.setColor( c );
+#else
+                        brs.Color = Color.FromArgb( alpha, c );
+#endif
+                        if ( mDotType == DOT_CIRCLE ) {
+#if JAVA
+                            bar
+#else
+                            mGraphics.FillEllipse( brs, p.X - mDotSize, p.Y - mDotSize, mDotWidth, mDotWidth );
+#endif
+                        } else {
+#if JAVA
+                            baz
+#else
+                            mGraphics.FillRectangle( brs, p.X - mDotSize, p.Y - mDotSize, mDotWidth, mDotWidth );
+#endif
+                        }
+                    }
+#if JAVA
+                    mDotColor.a = 255;
+#else
+                    brs.Color = Color.FromArgb( 255, c );
+#endif
+                }
+
+                // 次の描画に備える
+                setPointData( 0, mLastX, mLastY );
+                mFirstX = mLastX;
+                mIndex = 1;
             }
         }
 
@@ -354,14 +501,15 @@ namespace org.kbinani.cadencii {
         /// データ点のバッファをクリアします
         /// </summary>
         public void clear() {
-            //TODO: ここもまだだ
+            mFirst = true;
+            mIndex = 0;
         }
 
         /// <summary>
         /// 描画に使用するグラフィックスを指定します
         /// </summary>
         /// <param name="g"></param>
-        public void setGraphics( Graphics2D g ){
+        public void setGraphics( java.awt.Graphics2D g ){
 #if JAVA
             mGraphics = g;
 #else
@@ -387,27 +535,45 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region private methods
+        private int getAlpha( int x ) {
+            double dx = Math.Abs( x - mMouseX ) * INV_NEAR_THRESHOLD;
+            if ( dx > NEAR_THRESHOLD ) {
+                return 0;
+            }
+            //double sigma = 0.3;
+            //int alpha = (int)(255.0 * Math.Exp( -(x * x) / (2.0 * sigma * sigma) ));
+            //↑の近似式
+            int ret = (int)((((-1293.6 * dx + 3022.5) * dx - 2020.4) * dx + 34.77) * dx + 255.0);
+            if ( ret < 0 ) {
+                ret = 0;
+            } else if ( 255 < ret ) {
+                ret = 255;
+            }
+            return ret;
+        }
+
 #if !JAVA
-        private System.Drawing.SolidBrush getFillBrush() {
+        private SolidBrush getFillBrush() {
             if ( mFillBrush == null ) {
-                mFillBrush = new System.Drawing.SolidBrush( mFillColor.color );
+                mFillBrush = new SolidBrush( mFillColor.color );
             }
             mFillBrush.Color = mFillColor.color;
             return mFillBrush;
         }
 
-        private System.Drawing.SolidBrush getDotBrush() {
+        private SolidBrush getDotBrush() {
             if ( mDotBrush == null ) {
-                mDotBrush = new System.Drawing.SolidBrush( mDotColor.color );
+                mDotBrush = new SolidBrush( mDotColor.color );
             }
             mDotBrush.Color = mDotColor.color;
             return mDotBrush;
         }
 
-        private System.Drawing.Pen getLinePen() {
+        private Pen getLinePen() {
             if ( mLinePen == null ) {
-                mLinePen = new System.Drawing.Pen( mLineColor.color );
+                mLinePen = new Pen( mLineColor.color );
             }
+            mLinePen.Color = mLineColor.color;
             return mLinePen;
         }
 #endif
@@ -417,12 +583,11 @@ namespace org.kbinani.cadencii {
             Point p = mPoints[index];
             p.x = x;
             p.y = y;
-#else
-            System.Drawing.Point p = mPoints[index];
-            p.X = x;
-            p.Y = y;
-#endif
             mPoints[index] = p;
+#else
+            mPoints[index].X = x;
+            mPoints[index].Y = y;
+#endif
         }
         #endregion
 

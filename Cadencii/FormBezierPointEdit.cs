@@ -308,7 +308,7 @@ namespace org.kbinani.cadencii {
                 m_point_id = target.points.get( index ).getID();
                 m_point = target.points.get( index );
                 UpdateStatus();
-                m_parent.EditingPointID = m_point_id;
+                m_parent.mEditingPointID = m_point_id;
                 m_parent.invalidate();
             }
         }
@@ -326,7 +326,7 @@ namespace org.kbinani.cadencii {
                 m_point_id = target.points.get( index ).getID();
                 m_point = target.points.get( index );
                 UpdateStatus();
-                m_parent.EditingPointID = m_point_id;
+                m_parent.mEditingPointID = m_point_id;
                 m_parent.invalidate();
             }
         }

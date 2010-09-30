@@ -14387,6 +14387,23 @@ namespace org.kbinani.cadencii {
 #if DEBUG
             PortUtil.println( "FormMain#menuHelpDebug_Click" );
 
+            LineGraphDrawer d = new LineGraphDrawer( LineGraphDrawer.TYPE_STEP, 190 );
+            java.awt.image.BufferedImage img = new java.awt.image.BufferedImage( 500, 200, java.awt.image.BufferedImage.TYPE_INT_RGB );
+            Graphics2D g = img.createGraphics();
+            g.setColor( Color.white );
+            g.fillRect( 0, 0, img.getWidth(), img.getHeight() );
+            d.setGraphics( g );
+            int x = 0;
+            int y = 0;
+            for ( int i = 0; i < 10; i++ ) {
+                x += 20;
+                y += 10;
+                d.append( x, y );
+                d.flush();
+            }
+            d.flush();
+            javax.imageio.ImageIO.write( img, "PNG", new File( "foo.png" ) );
+
 #if ENABLE_VOCALOID
             BFileChooser dlg_fin = new BFileChooser( "" );
             if ( dlg_fin.showOpenDialog( this ) == BFileChooser.APPROVE_OPTION ) {

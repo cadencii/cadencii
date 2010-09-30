@@ -45,11 +45,16 @@ namespace org.kbinani.javax.imageio {
             System.IO.FileStream fs = null;
             bool ret = false;
             try {
-                fs = new System.IO.FileStream( output.getPath(), System.IO.FileMode.Open, System.IO.FileAccess.Write );
+#if DEBUG
+                PortUtil.println( "ImageIO#write; output.getPath()=" + output.getPath() );
+#endif
+                fs = new System.IO.FileStream( output.getPath(), System.IO.FileMode.Create, System.IO.FileAccess.Write );
                 im.m_image.Save( fs, fmt );
                 ret = true;
-            } catch {
+            } catch ( System.Exception ex ) {
                 ret = false;
+                Logger.write( typeof( ImageIO ) + ".write; ex=" + ex );
+                PortUtil.println( typeof( ImageIO ) + "#write; ex=" + ex );
             } finally {
                 if ( fs != null ) {
                     try {

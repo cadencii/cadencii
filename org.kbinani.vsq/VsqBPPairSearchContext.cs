@@ -17,7 +17,7 @@ package org.kbinani.vsq;
 namespace org.kbinani.vsq {
 #endif
 
-    public class VsqBPPairSearchContext {
+    public struct VsqBPPairSearchContext {
         public int clock;
         public int index;
         public VsqBPPair point;
