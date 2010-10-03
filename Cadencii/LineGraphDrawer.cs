@@ -61,6 +61,9 @@ namespace org.kbinani.cadencii {
         /// マウスに「近い」と判定する距離（ピクセル単位）
         /// </summary>
         private const float NEAR_THRESHOLD = 200f;
+        /// <summary>
+        /// <see cref="NEAR_THRESHOLD"/>の逆数
+        /// </summary>
         private const float INV_NEAR_THRESHOLD = 1f / NEAR_THRESHOLD;
         
         /// <summary>
@@ -71,7 +74,7 @@ namespace org.kbinani.cadencii {
         /// データ点のバッファ
         /// </summary>
 #if JAVA
-        private Point[] mPoints;
+        private java.awt.Point[] mPoints;
 #else
         private System.Drawing.Point[] mPoints;
 #endif
@@ -150,6 +153,9 @@ namespace org.kbinani.cadencii {
         /// </summary>
         private boolean mLine = true;
 #if !JAVA
+        /// <summary>
+        /// 線の描画に使用するペン
+        /// </summary>
         private System.Drawing.Pen mLinePen = null;
 #endif
         /// <summary>
@@ -173,7 +179,7 @@ namespace org.kbinani.cadencii {
         /// コンストラクタ。グラフのタイプを指定します
         /// </summary>
         /// <param name="graph_type">グラフのタイプを指定する整数値。<see cref="TYPE_LINEAR"/>または<see cref="TYPE_STEP"/>を指定する</param>
-        public LineGraphDrawer( int graph_type, int base_line_y ) {
+        public LineGraphDrawer( int graph_type ) {
             // データ点のバッファを確保
             mPoints = new Point[BUFLEN];
 
@@ -196,7 +202,6 @@ namespace org.kbinani.cadencii {
 #if DEBUG
             PortUtil.println( "LineGraphDrawer#mMaxPoints=" + mMaxPoints );
 #endif
-            mBaseLineY = base_line_y;
             mFirst = true;
         }
 

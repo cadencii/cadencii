@@ -23,12 +23,12 @@ namespace org.kbinani.cadencii {
 #endif
 
     public class EditedZoneCommand {
-        public Vector<EditedZoneUnit> add;
-        public Vector<EditedZoneUnit> remove;
+        public Vector<EditedZoneUnit> mAdd;
+        public Vector<EditedZoneUnit> mRemove;
 
         public EditedZoneCommand( int addStart, int addEnd )
 #if JAVA
-         {
+        {
 #else
             :
 #endif
@@ -41,13 +41,13 @@ namespace org.kbinani.cadencii {
         }
 
         public EditedZoneCommand( EditedZoneUnit[] add, EditedZoneUnit[] remove ) {
-            this.add = new Vector<EditedZoneUnit>();
+            this.mAdd = new Vector<EditedZoneUnit>();
             for ( int i = 0; i < add.Length; i++ ) {
-                this.add.add( (EditedZoneUnit)add[i].clone() );
+                this.mAdd.add( (EditedZoneUnit)add[i].clone() );
             }
-            this.remove = new Vector<EditedZoneUnit>();
+            this.mRemove = new Vector<EditedZoneUnit>();
             for ( int i = 0; i < remove.Length; i++ ) {
-                this.remove.add( (EditedZoneUnit)remove[i].clone() );
+                this.mRemove.add( (EditedZoneUnit)remove[i].clone() );
             }
         }
 

@@ -28,25 +28,25 @@ namespace org.kbinani.cadencii {
 #else
     public class EditedZone : ICloneable {
 #endif
-        private Vector<EditedZoneUnit> series = new Vector<EditedZoneUnit>();
+        private Vector<EditedZoneUnit> mSeries = new Vector<EditedZoneUnit>();
 
         public EditedZone(){
         }
 
         public int size() {
-            return series.size();
+            return mSeries.size();
         }
 
         public Iterator<EditedZoneUnit> iterator() {
-            return series.iterator();
+            return mSeries.iterator();
         }
 
         public Object clone() {
             EditedZone ret = new EditedZone();
-            int count = series.size();
+            int count = mSeries.size();
             for ( int i = 0; i < count; i++ ) {
-                EditedZoneUnit p = series.get( i );
-                ret.series.add( (EditedZoneUnit)p.clone() );
+                EditedZoneUnit p = mSeries.get( i );
+                ret.mSeries.add( (EditedZoneUnit)p.clone() );
             }
             return ret;
         }
@@ -62,31 +62,31 @@ namespace org.kbinani.cadencii {
         }
 
         public EditedZoneCommand executeCommand( EditedZoneCommand run ) {
-            for ( Iterator<EditedZoneUnit> itr = run.remove.iterator(); itr.hasNext(); ) {
+            for ( Iterator<EditedZoneUnit> itr = run.mRemove.iterator(); itr.hasNext(); ) {
                 EditedZoneUnit item = itr.next();
-                int count = series.size();
+                int count = mSeries.size();
                 for ( int i = 0; i < count; i++ ) {
-                    EditedZoneUnit item2 = series.get( i );
-                    if ( item.start == item2.start && item.end == item2.end ) {
-                        series.removeElementAt( i );
+                    EditedZoneUnit item2 = mSeries.get( i );
+                    if ( item.mStart == item2.mStart && item.mEnd == item2.mEnd ) {
+                        mSeries.removeElementAt( i );
                         break;
                     }
                 }
             }
 
-            for ( Iterator<EditedZoneUnit> itr = run.add.iterator(); itr.hasNext(); ) {
+            for ( Iterator<EditedZoneUnit> itr = run.mAdd.iterator(); itr.hasNext(); ) {
                 EditedZoneUnit item = itr.next();
-                series.add( (EditedZoneUnit)item.clone() );
+                mSeries.add( (EditedZoneUnit)item.clone() );
             }
 
-            Collections.sort( series );
+            Collections.sort( mSeries );
 
-            return new EditedZoneCommand( run.remove, run.add );
+            return new EditedZoneCommand( run.mRemove, run.mAdd );
         }
 
         private EditedZoneCommand generateCommandClear() {
             Vector<EditedZoneUnit> remove = new Vector<EditedZoneUnit>();
-            for ( Iterator<EditedZoneUnit> itr = series.iterator(); itr.hasNext(); ) {
+            for ( Iterator<EditedZoneUnit> itr = mSeries.iterator(); itr.hasNext(); ) {
                 EditedZoneUnit item = itr.next();
                 remove.add( (EditedZoneUnit)item.clone() );
             }
@@ -101,7 +101,7 @@ namespace org.kbinani.cadencii {
                 if ( item == null ) {
                     continue;
                 }
-                work.series.add( new EditedZoneUnit( item.start, item.end ) );
+                work.mSeries.add( new EditedZoneUnit( item.mStart, item.mEnd ) );
             }
             work.normalize();
 
@@ -112,13 +112,13 @@ namespace org.kbinani.cadencii {
                 EditedZoneUnit itemThis = itrThis.next();
                 for ( Iterator<EditedZoneUnit> itrWork = work.iterator(); itrWork.hasNext(); ) {
                     EditedZoneUnit itemWork = itrWork.next();
-                    if ( itemThis.start == itemWork.start && itemThis.end == itemWork.end ) {
+                    if ( itemThis.mStart == itemWork.mStart && itemThis.mEnd == itemWork.mEnd ) {
                         found = true;
                         break;
                     }
                 }
                 if ( !found ) {
-                    remove.add( new EditedZoneUnit( itemThis.start, itemThis.end ) );
+                    remove.add( new EditedZoneUnit( itemThis.mStart, itemThis.mEnd ) );
                 }
             }
 
@@ -129,13 +129,13 @@ namespace org.kbinani.cadencii {
                 EditedZoneUnit itemWork = itrWork.next();
                 for ( Iterator<EditedZoneUnit> itrThis = iterator(); itrThis.hasNext(); ) {
                     EditedZoneUnit itemThis = itrThis.next();
-                    if ( itemThis.start == itemWork.start && itemThis.end == itemWork.end ) {
+                    if ( itemThis.mStart == itemWork.mStart && itemThis.mEnd == itemWork.mEnd ) {
                         found = true;
                         break;
                     }
                 }
                 if ( !found ) {
-                    add.add( new EditedZoneUnit( itemWork.start, itemWork.end ) );
+                    add.add( new EditedZoneUnit( itemWork.mStart, itemWork.mEnd ) );
                 }
             }
 
@@ -154,41 +154,41 @@ namespace org.kbinani.cadencii {
             boolean changed = true;
             while ( changed ) {
                 changed = false;
-                int count = series.size();
+                int count = mSeries.size();
                 for ( int i = 0; i < count - 1; i++ ) {
-                    EditedZoneUnit itemi = series.get( i );
-                    if ( itemi.end < itemi.start ) {
-                        int d = itemi.start;
-                        itemi.start = itemi.end;
-                        itemi.end = d;
+                    EditedZoneUnit itemi = mSeries.get( i );
+                    if ( itemi.mEnd < itemi.mStart ) {
+                        int d = itemi.mStart;
+                        itemi.mStart = itemi.mEnd;
+                        itemi.mEnd = d;
                     }
                     for ( int j = i + 1; j < count; j++ ) {
-                        EditedZoneUnit itemj = series.get( j );
-                        if ( itemj.end < itemj.start ) {
-                            int d = itemj.start;
-                            itemj.start = itemj.end;
-                            itemj.end = d;
+                        EditedZoneUnit itemj = mSeries.get( j );
+                        if ( itemj.mEnd < itemj.mStart ) {
+                            int d = itemj.mStart;
+                            itemj.mStart = itemj.mEnd;
+                            itemj.mEnd = d;
                         }
-                        if ( itemj.start == itemi.start && itemj.end == itemi.end ) {
-                            series.removeElementAt( j );
+                        if ( itemj.mStart == itemi.mStart && itemj.mEnd == itemi.mEnd ) {
+                            mSeries.removeElementAt( j );
                             changed = true;
                             break;
-                        } else if ( itemj.start <= itemi.start && itemi.end <= itemj.end ) {
-                            series.removeElementAt( i );
+                        } else if ( itemj.mStart <= itemi.mStart && itemi.mEnd <= itemj.mEnd ) {
+                            mSeries.removeElementAt( i );
                             changed = true;
                             break;
-                        } else if ( itemi.start <= itemj.start && itemj.end <= itemi.end ) {
-                            series.removeElementAt( j );
+                        } else if ( itemi.mStart <= itemj.mStart && itemj.mEnd <= itemi.mEnd ) {
+                            mSeries.removeElementAt( j );
                             changed = true;
                             break;
-                        } else if ( itemi.start <= itemj.end && itemj.end < itemi.end ) {
-                            itemj.end = itemi.end;
-                            series.removeElementAt( i );
+                        } else if ( itemi.mStart <= itemj.mEnd && itemj.mEnd < itemi.mEnd ) {
+                            itemj.mEnd = itemi.mEnd;
+                            mSeries.removeElementAt( i );
                             changed = true;
                             break;
-                        } else if ( itemi.start <= itemj.start && itemj.start <= itemi.end ) {
-                            itemi.end = itemj.end;
-                            series.removeElementAt( j );
+                        } else if ( itemi.mStart <= itemj.mStart && itemj.mStart <= itemi.mEnd ) {
+                            itemi.mEnd = itemj.mEnd;
+                            mSeries.removeElementAt( j );
                             changed = true;
                             break;
                         }
@@ -198,7 +198,7 @@ namespace org.kbinani.cadencii {
                     }
                 }
             }
-            Collections.sort( series );
+            Collections.sort( mSeries );
         }
 
 #if !JAVA

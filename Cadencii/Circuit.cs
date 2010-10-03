@@ -50,8 +50,24 @@ namespace org.kbinani.cadencii.draft {
         public Vector<Integer> mNumPortsOut;
         private WaveGenerator mGenerator;
         private long mSamples;
+        /// <summary>
+        /// 装置同士が接続されているかどうかを表すマッピング。
+        /// 行、列ともに大きさmUnits.size()の正方行列となっている。
+        /// 第i番目の装置の出力ポートが、第j番目の入力ポートにつながっている時、mConnectionMap[i, j] = true。
+        /// </summary>
+        private boolean[,] mConnectionMap;
 
         private Circuit() {
+        }
+
+        /// <summary>
+        /// 第i番目の装置と第j番目の装置が接続されているかどうかを取得します
+        /// </summary>
+        /// <param name="i"></param>
+        /// <param name="j"></param>
+        /// <returns></returns>
+        public boolean isConnected( int i, int j ) {
+            return mConnectionMap[i, j];
         }
 
         /// <summary>
@@ -100,6 +116,12 @@ namespace org.kbinani.cadencii.draft {
             for ( int i = 0; i < num; i++ ) {
                 mNumPortsIn.add( 0 );
                 mNumPortsOut.add( 0 );
+            }
+            mConnectionMap = new boolean[num, num];
+            for ( int i = 0; i < num; i++ ) {
+                for ( int j = 0; j < num; j++ ) {
+                    mConnectionMap[i, j] = false;
+                }
             }
 
             // 型名と型のマッピング
@@ -182,6 +204,7 @@ namespace org.kbinani.cadencii.draft {
                             if ( add_port ) {
                                 mNumPortsIn.set( col, mNumPortsIn.get( col ) + 1 );
                                 mNumPortsOut.set( row, mNumPortsOut.get( row ) + 1 );
+                                mConnectionMap[row, col] = true;
                             }
                         }
                     } else if ( entry.ConnectionKind == CircuitConnectionKind.SENDER ) {
@@ -201,6 +224,7 @@ namespace org.kbinani.cadencii.draft {
                             if ( add_port ) {
                                 mNumPortsIn.set( row, mNumPortsIn.get( row ) + 1 );
                                 mNumPortsOut.set( col, mNumPortsOut.get( col ) + 1 );
+                                mConnectionMap[col, row] = true;
                             }
                         }
                     }

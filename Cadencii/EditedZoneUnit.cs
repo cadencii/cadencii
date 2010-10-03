@@ -27,19 +27,19 @@ namespace org.kbinani.cadencii {
 #else
     public class EditedZoneUnit : ICloneable, IComparable<EditedZoneUnit> {
 #endif
-        public int start;
-        public int end;
+        public int mStart;
+        public int mEnd;
 
         private EditedZoneUnit(){
         }
 
         public EditedZoneUnit( int start, int end ){
-            this.start = start;
-            this.end = end;
+            this.mStart = start;
+            this.mEnd = end;
         }
 
         public int compareTo( EditedZoneUnit item ) {
-            return this.start - item.start;
+            return this.mStart - item.mStart;
         }
 
 #if !JAVA
@@ -49,7 +49,7 @@ namespace org.kbinani.cadencii {
 #endif
 
         public Object clone() {
-            return new EditedZoneUnit( start, end );
+            return new EditedZoneUnit( mStart, mEnd );
         }
 
 #if !JAVA

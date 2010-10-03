@@ -517,6 +517,9 @@ namespace org.kbinani.cadencii {
         }
 
         public void paint( Graphics g1 ) {
+            if ( mMainForm == null ) {
+                return;
+            }
 #if JAVA
             Graphics2D g = (Graphics2D)g1;
 #else

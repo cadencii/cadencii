@@ -30,24 +30,24 @@ import org.kbinani.windows.forms.*;
 //#define OLD_IMPL_MOUSE_TRACER
 using System;
 using System.Threading;
-using org.kbinani.apputil;
-using org.kbinani.vsq;
 using org.kbinani;
+using org.kbinani.apputil;
 using org.kbinani.java.awt;
 using org.kbinani.java.awt.event_;
 using org.kbinani.java.util;
+using org.kbinani.vsq;
 using org.kbinani.windows.forms;
 
 namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
     using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
+    using BMouseButtons = System.Windows.Forms.MouseButtons;
     using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
     using boolean = System.Boolean;
+    using Float = System.Single;
     using Graphics = org.kbinani.java.awt.Graphics2D;
     using Integer = System.Int32;
     using Long = System.Int64;
-    using BMouseButtons = System.Windows.Forms.MouseButtons;
-    using Float = System.Single;
 #endif
 
     /// <summary>
@@ -58,7 +58,7 @@ namespace org.kbinani.cadencii {
 #else
     public class TrackSelector : BPanel {
 #endif
-        #region Constants and internal enums
+        #region constants and internal enums
         private enum MouseDownMode {
             NONE,
             CURVE_EDIT,
@@ -144,6 +144,10 @@ namespace org.kbinani.cadencii {
         /// </summary>
         private static readonly Color COLOR_VIBRATO_SHADOW = new Color( 0, 0, 0, 127 );
         /// <summary>
+        /// マウスの軌跡を描くときの塗りつぶし色
+        /// </summary>
+        private static readonly Color COLOR_MOUSE_TRACER = new Color( 8, 166, 172, 127 );
+        /// <summary>
         /// ベロシティを画面に描くときの，棒グラフの幅(pixel)
         /// </summary>
         public const int VEL_BAR_WIDTH = 8;
@@ -156,6 +160,9 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public const int OFFSET_TRACK_TAB = 19;
         const int FOOTER = 7;
+        /// <summary>
+        /// コントロールの上端と、グラフのY軸最大値位置との距離
+        /// </summary>
         public const int HEADER = 8;
         const int BUF_LEN = 512;
         /// <summary>
@@ -202,8 +209,6 @@ namespace org.kbinani.cadencii {
         /// 現在のマウス位置におけるカーブの値
         /// </summary>
         private int mMouseValue;
-        private int[] mPointsX = new int[BUF_LEN];
-        private int[] mPointsY = new int[BUF_LEN];
         /// <summary>
         /// 編集しているBezierChainのID
         /// </summary>
@@ -406,9 +411,6 @@ namespace org.kbinani.cadencii {
         public TrackSelector() {
 #if JAVA
             super();
-#if DEBUG
-            PortUtil.println( "TrackSelector#.ctor()" );
-#endif
             initialize();
             getCmenuCurve();
             getCmenusinger();        
@@ -698,7 +700,7 @@ namespace org.kbinani.cadencii {
 
         private LineGraphDrawer getGraphDrawer() {
             if ( mGraphDrawer == null ) {
-                mGraphDrawer = new LineGraphDrawer( LineGraphDrawer.TYPE_STEP, 0 );
+                mGraphDrawer = new LineGraphDrawer( LineGraphDrawer.TYPE_STEP );
             }
             return mGraphDrawer;
         }
@@ -936,11 +938,13 @@ namespace org.kbinani.cadencii {
             super.paint( graphics );
 #endif
             int width = getWidth();
-            Dimension size = new Dimension( width + 2, getHeight() );
+            int height = getHeight();
+            int graph_height = getGraphHeight();
+            Dimension size = new Dimension( width + 2, height );
             Graphics2D g = (Graphics2D)graphics;
             Color brs_string = Color.black;
             Color rect_curve = new Color( 41, 46, 55 );
-            int centre = 8 + getGraphHeight() / 2;
+            int centre = HEADER + graph_height / 2;
             g.setColor( Color.darkGray );
             g.fillRect( 0, size.height - 2 * OFFSET_TRACK_TAB, size.width, 2 * OFFSET_TRACK_TAB );
             int numeric_view = mMouseValue;
@@ -950,7 +954,8 @@ namespace org.kbinani.cadencii {
             int selected = AppManager.getSelected();
             int key_width = AppManager.keyWidth;
             int stdx = AppManager.getStartToDrawX();
-            int graphHeight = getGraphHeight();
+            int graph_max_y = HEADER + graph_height;
+            int graph_min_y = HEADER;
 
             try {
                 #region SINGER
@@ -1065,8 +1070,8 @@ namespace org.kbinani.cadencii {
 
                     // カーブエディタの上の線
                     g.setColor( new Color( 46, 47, 50 ) );
-                    g.drawLine( key_width, 8,
-                                size.width - 3, 8 );
+                    g.drawLine( key_width, HEADER,
+                                size.width - 3, HEADER );
 
                     g.setColor( new Color( 125, 123, 124 ) );
                     g.drawLine( key_width, 0,
@@ -1076,7 +1081,7 @@ namespace org.kbinani.cadencii {
                         int x0 = AppManager.xCoordFromClocks( AppManager.mCurveSelectedInterval.getStart() );
                         int x1 = AppManager.xCoordFromClocks( AppManager.mCurveSelectedInterval.getEnd() );
                         g.setColor( COLOR_A072R255G255B255 );
-                        g.fillRect( x0, HEADER, x1 - x0, getGraphHeight() );
+                        g.fillRect( x0, HEADER, x1 - x0, graph_height );
                     }
 
                     #region 音符の境界
@@ -1099,10 +1104,10 @@ namespace org.kbinani.cadencii {
                                         break;
                                     }
                                     g.setColor( fill );
-                                    g.fillRect( x0, HEADER, w, graphHeight );
+                                    g.fillRect( x0, HEADER, w, graph_height );
                                     g.setColor( line );
-                                    g.drawLine( x0, HEADER, x0, HEADER + graphHeight );
-                                    g.drawLine( x1, HEADER, x1, HEADER + graphHeight );
+                                    g.drawLine( x0, HEADER, x0, HEADER + graph_height );
+                                    g.drawLine( x1, HEADER, x1, HEADER + graph_height );
                                 }
                             }
                         }
@@ -1114,7 +1119,7 @@ namespace org.kbinani.cadencii {
                         int dashed_line_step = AppManager.getPositionQuantizeClock();
                         g.clipRect( key_width, HEADER, size.width - key_width, size.height - 2 * OFFSET_TRACK_TAB );
                         Color white100 = new Color( 0, 0, 0, 100 );
-                        for ( Iterator<VsqBarLineType> itr = vsq.getBarLineIterator( AppManager.clockFromXCoord( getWidth() ) ); itr.hasNext(); ) {
+                        for ( Iterator<VsqBarLineType> itr = vsq.getBarLineIterator( AppManager.clockFromXCoord( width ) ); itr.hasNext(); ) {
                             VsqBarLineType blt = itr.next();
                             int x = AppManager.xCoordFromClocks( blt.clock() );
                             int local_clock_step = 480 * 4 / blt.getLocalDenominator();
@@ -1190,7 +1195,7 @@ namespace org.kbinani.cadencii {
                                 int c = pbs.size();
                                 int premeasure = vsq.getPreMeasureClocks();
                                 int clock_start = AppManager.clockFromXCoord( key_width );
-                                int clock_end = AppManager.clockFromXCoord( getWidth() );
+                                int clock_end = AppManager.clockFromXCoord( width );
                                 if ( clock_start < premeasure && premeasure < clock_end ) {
                                     clock_start = premeasure;
                                 }
@@ -1198,7 +1203,7 @@ namespace org.kbinani.cadencii {
                                 int last_clock = clock_start;
                                 int ycenter = yCoordFromValue( 0 );
                                 g.setColor( nrml );
-                                g.drawLine( key_width, ycenter, getWidth(), ycenter );
+                                g.drawLine( key_width, ycenter, width, ycenter );
                                 for ( int i = 0; i < c; i++ ) {
                                     int cl = pbs.getKeyClock( i );
                                     if ( cl < clock_start ) {
@@ -1264,7 +1269,7 @@ namespace org.kbinani.cadencii {
                         int start = AppManager.xCoordFromClocks( AppManager.mWholeSelectedInterval.getStart() ) + 2;
                         int end = AppManager.xCoordFromClocks( AppManager.mWholeSelectedInterval.getEnd() ) + 2;
                         g.setColor( COLOR_A098R000G000B000 );
-                        g.fillRect( start, HEADER, end - start, getGraphHeight() );
+                        g.fillRect( start, HEADER, end - start, graph_height );
                     }
 
                     if ( mMouseDowned ) {
@@ -1306,7 +1311,28 @@ namespace org.kbinani.cadencii {
 #endif
                         } else if ( tool == EditTool.PENCIL ) {
                             if ( mMouseTracer.size() > 0 && !AppManager.isCurveMode() ) {
-                                Vector<Integer> ptx = new Vector<Integer>();
+                                LineGraphDrawer d = getGraphDrawer();
+                                d.clear();
+                                d.setGraphics( g );
+                                d.setBaseLineY( graph_max_y );
+                                d.setFill( true );
+                                d.setDotMode( LineGraphDrawer.DOTMODE_NO );
+                                d.setDrawLine( false );
+                                d.setFillColor( COLOR_MOUSE_TRACER );
+                                for ( Iterator<Point> itr = mMouseTracer.iterator(); itr.hasNext(); ) {
+                                    Point pt = itr.next();
+                                    int x = pt.x - stdx;
+                                    int y = pt.y;
+                                    if ( y < graph_min_y ) {
+                                        y = graph_min_y;
+                                    } else if ( graph_max_y < y ) {
+                                        y = graph_max_y;
+                                    }
+                                    d.append( x, y );
+                                }
+                                d.flush();
+
+                                /*Vector<Integer> ptx = new Vector<Integer>();
                                 Vector<Integer> pty = new Vector<Integer>();
                                 int height = getHeight() - 42;
 
@@ -1338,7 +1364,7 @@ namespace org.kbinani.cadencii {
                                 int nPoints = ptx.size();
                                 g.fillPolygon( PortUtil.convertIntArray( ptx.toArray( new Integer[] { } ) ),
                                                PortUtil.convertIntArray( pty.toArray( new Integer[] { } ) ),
-                                               nPoints );
+                                               nPoints );*/
                             }
                         } else if ( tool == EditTool.ERASER || tool == EditTool.ARROW ) {
                             if ( mMouseDownMode == MouseDownMode.CURVE_EDIT && mMouseMoved && AppManager.mCurveSelectingRectangle.width != 0 ) {
@@ -1354,7 +1380,7 @@ namespace org.kbinani.cadencii {
                                 int y_start = Math.Min( yini, yend );
                                 int y_end = Math.Max( yini, yend );
                                 if ( y_start < 8 ) y_start = 8;
-                                if ( y_end > getHeight() - 42 - 8 ) y_end = getHeight() - 42;
+                                if ( y_end > height - 42 - 8 ) y_end = height - 42;
                                 if ( x_start < x_end ) {
                                     g.setColor( COLOR_A144R255G255B255 );
                                     g.fillRect( x_start, y_start, x_end - x_start, y_end - y_start );
@@ -1435,7 +1461,7 @@ namespace org.kbinani.cadencii {
                 #endregion
 
                 // マウス位置での値
-                if ( isInRect( mouse.x, mouse.y, new Rectangle( key_width, HEADER, getWidth(), this.getGraphHeight() ) ) &&
+                if ( isInRect( mouse.x, mouse.y, new Rectangle( key_width, HEADER, width, graph_height ) ) &&
                      mMouseDownMode != MouseDownMode.PRE_UTTERANCE_MOVE &&
                      mMouseDownMode != MouseDownMode.OVERLAP_MOVE &&
                      mMouseDownMode != MouseDownMode.VEL_EDIT ) {
@@ -1481,8 +1507,7 @@ namespace org.kbinani.cadencii {
             VsqFileEx vsq = AppManager.getVsqFile();
             VsqEvent last = null;
             Polygon highlight = null;
-            Point pmouse = pointToClient( PortUtil.getMousePosition() );
-            Point mouse = new Point( pmouse.x, pmouse.y );
+            Point mouse = pointToClient( PortUtil.getMousePosition() );
             int px_preutterance = int.MinValue;
             int px_overlap = int.MinValue;
             int drawn_id = -1;
@@ -1642,10 +1667,11 @@ namespace org.kbinani.cadencii {
         private void drawPreutteranceAndOverlap( Graphics2D g, int px_preutterance, int px_overlap, float preutterance, float overlap ) {
             int OFFSET_PRE = 15;
             int OFFSET_OVL = 40;
+            int graph_height = getGraphHeight();
             g.setColor( PortUtil.Orange );
-            g.drawLine( px_preutterance, HEADER + 1, px_preutterance, getGraphHeight() + HEADER );
+            g.drawLine( px_preutterance, HEADER + 1, px_preutterance, graph_height + HEADER );
             g.setColor( PortUtil.LawnGreen );
-            g.drawLine( px_overlap, HEADER + 1, px_overlap, getGraphHeight() + HEADER );
+            g.drawLine( px_overlap, HEADER + 1, px_overlap, graph_height + HEADER );
 
             String s_pre = "Pre Utterance: " + preutterance;
             java.awt.Dimension size = Util.measureString( s_pre, AppManager.baseFont10 );

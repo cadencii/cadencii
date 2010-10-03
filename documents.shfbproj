@@ -18,17 +18,24 @@
     <HtmlHelpName>Documentation</HtmlHelpName>
     <Language>ja-JP</Language>
     <FrameworkVersion>2.0.50727</FrameworkVersion>
-    <HelpFileFormat>HtmlHelp1, MSHelpViewer, Website</HelpFileFormat>
+    <HelpFileFormat>MSHelpViewer, Website</HelpFileFormat>
     <DocumentationSources>
       <DocumentationSource sourceFile="Cadencii\bin\x86\Release\Cadencii.exe" />
-      <DocumentationSource sourceFile="Cadencii\bin\x86\Release\Cadencii.xml" />
-      <DocumentationSource sourceFile="Cadencii\bin\x86\Release\org.kbinani.dll" />
-      <DocumentationSource sourceFile="Cadencii\bin\x86\Release\org.kbinani.media.dll" />
-      <DocumentationSource sourceFile="Cadencii\bin\x86\Release\org.kbinani.media.xml" />
-      <DocumentationSource sourceFile="Cadencii\bin\x86\Release\org.kbinani.vsq.dll" />
-      <DocumentationSource sourceFile="Cadencii\bin\x86\Release\org.kbinani.vsq.xml" />
-      <DocumentationSource sourceFile="Cadencii\bin\x86\Release\org.kbinani.xml" />
-    </DocumentationSources>
+<DocumentationSource sourceFile="Cadencii\bin\x86\Release\Cadencii.xml" />
+<DocumentationSource sourceFile="Cadencii\bin\x86\Release\org.kbinani.apputil.dll" />
+<DocumentationSource sourceFile="Cadencii\bin\x86\Release\org.kbinani.apputil.xml" />
+<DocumentationSource sourceFile="Cadencii\bin\x86\Release\org.kbinani.cadencii.util.dll" />
+<DocumentationSource sourceFile="Cadencii\bin\x86\Release\org.kbinani.cadencii.util.xml" />
+<DocumentationSource sourceFile="Cadencii\bin\x86\Release\org.kbinani.componentmodel.dll" />
+<DocumentationSource sourceFile="Cadencii\bin\x86\Release\org.kbinani.componentmodel.xml" />
+<DocumentationSource sourceFile="Cadencii\bin\x86\Release\org.kbinani.dll" />
+<DocumentationSource sourceFile="Cadencii\bin\x86\Release\org.kbinani.media.dll" />
+<DocumentationSource sourceFile="Cadencii\bin\x86\Release\org.kbinani.media.xml" />
+<DocumentationSource sourceFile="Cadencii\bin\x86\Release\org.kbinani.vsq.dll" />
+<DocumentationSource sourceFile="Cadencii\bin\x86\Release\org.kbinani.vsq.xml" />
+<DocumentationSource sourceFile="Cadencii\bin\x86\Release\org.kbinani.windows.forms.dll" />
+<DocumentationSource sourceFile="Cadencii\bin\x86\Release\org.kbinani.windows.forms.xml" />
+<DocumentationSource sourceFile="Cadencii\bin\x86\Release\org.kbinani.xml" /></DocumentationSources>
     <HelpTitle>Cadencii Scripting and API Documents</HelpTitle>
     <KeepLogFile>False</KeepLogFile>
     <MissingTags>AutoDocumentCtors, AutoDocumentDispose</MissingTags>
