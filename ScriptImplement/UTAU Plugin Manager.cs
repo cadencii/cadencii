@@ -252,6 +252,12 @@ class UtauPluginManager : Form {
         "        Vector<ValuePair<int, int>> map_id = new Vector<ValuePair<int, int>>(); // キーが[#   ]の番号、値がInternalID\n" +
         "        UstFile tust = new UstFile( conv, 1, map_id );\n" +
         "\n" +
+        "        Console.WriteLine( \"{0}#Edit;\" );\n" +
+        "        for ( int i = 0; i < map_id.size(); i++ ) {\n" +
+        "            ValuePair<int, int> itemi = map_id.get( i );\n" +
+        "            Console.WriteLine( \"[#\" + PortUtil.formatDecimal( \"0000\", itemi.getKey() ) + \"] => \" + itemi.getValue() );\n" +
+        "        }\n" +
+        "\n" +
         "        VsqEvent singer_event = vsq.Track.get( 1 ).getSingerEventAt( clock_begin );\n" +
         "        string voice_dir = \"\";\n" +
         "        SingerConfig sc = AppManager.getSingerInfoUtau( singer_event.ID.IconHandle.Language, singer_event.ID.IconHandle.Program );\n" +
@@ -310,7 +316,10 @@ class UtauPluginManager : Form {
         "                    } else if ( current_parse == \"[#DELETE]\" ) {\n" +
         "                        int internal_id = map_id.get( index ).getValue();\n" +
         "                        int i = vsq_track.findEventIndexFromID( internal_id );\n" +
-        "                        if ( i <= 0 && i < vsq_track.getEventCount() ) {\n" +
+        "\n" +
+        "                        Console.WriteLine( \"{0}#Edit; DELETE; internal_id=\" + internal_id + \"; index=\" + i );\n" +
+        "\n" +
+        "                        if ( 0 <= i  && i < vsq_track.getEventCount() ) {\n" +
         "                            vsq_track.removeEvent( i );\n" +
         "                        }\n" +
         "                    }\n" +
@@ -349,6 +358,7 @@ class UtauPluginManager : Form {
         "                        target = dustbox;\n" +
         "                    }\n" +
         "                    target.Clock = clock;\n" +
+        "                    tlength = target.ID.getLength();\n" +
         "                    if ( target.UstEvent == null ) {\n" +
         "                        target.UstEvent = new UstEvent();\n" +
         "                    }\n" +
@@ -611,7 +621,8 @@ class UtauPluginManager : Form {
         "    public static String GetDisplayName() {\n" +
         "        return s_display_name;\n" +
         "    }\n" +
-        "}\n";
+        "}\n" +
+        "";
     private ListView listPlugins;
     private ColumnHeader headerName;
     private ColumnHeader headerPath;

@@ -22,18 +22,25 @@ import org.kbinani.windows.forms.*;
 using System;
 using System.Threading;
 using System.Windows.Forms;
-using org.kbinani.java.util;
 using org.kbinani.java.awt;
-using org.kbinani.windows.forms;
+using org.kbinani.java.util;
 using org.kbinani.vsq;
+using org.kbinani.windows.forms;
 
 namespace org.kbinani.cadencii {
+    using BMouseButtons = System.Windows.Forms.MouseButtons;
     using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
     using boolean = System.Boolean;
-    using BMouseButtons = System.Windows.Forms.MouseButtons;
 #endif
 
+    /// <summary>
+    /// ナビゲーションバーを描画するコンポーネント
+    /// </summary>
+#if JAVA
+    public class PictOverview extends BPictureBox implements IImageCachedComponentDrawer {
+#else
     public class PictOverview : BPictureBox, IImageCachedComponentDrawer {
+#endif
         enum OverviewMouseDownMode {
             NONE,
             LEFT,
@@ -43,9 +50,9 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// btnLeft, btnRightを押した時の、スクロール速度(px/sec)。
         /// </summary>
-        const float _OVERVIEW_SCROLL_SPEED = 500.0f;
-        const int _OVERVIEW_SCALE_COUNT_MAX = 7;
-        const int _OVERVIEW_SCALE_COUNT_MIN = 3;
+        const float OVERVIEW_SCROLL_SPEED = 500.0f;
+        const int OVERVIEW_SCALE_COUNT_MAX = 7;
+        const int OVERVIEW_SCALE_COUNT_MIN = 3;
 
 #if !JAVA
         private Graphics mGraphics;
@@ -211,8 +218,8 @@ namespace org.kbinani.cadencii {
 
         public void btnMooz_Click( Object sender, EventArgs e ) {
             int draft = mOverviewScaleCount - 1;
-            if ( draft < _OVERVIEW_SCALE_COUNT_MIN ) {
-                draft = _OVERVIEW_SCALE_COUNT_MIN;
+            if ( draft < OVERVIEW_SCALE_COUNT_MIN ) {
+                draft = OVERVIEW_SCALE_COUNT_MIN;
             }
             mOverviewScaleCount = draft;
             mOverviewPixelPerClock = getOverviewScaleX( mOverviewScaleCount );
@@ -223,8 +230,8 @@ namespace org.kbinani.cadencii {
 
         public void btnZoom_Click( Object sender, EventArgs e ) {
             int draft = mOverviewScaleCount + 1;
-            if ( _OVERVIEW_SCALE_COUNT_MAX < draft ) {
-                draft = _OVERVIEW_SCALE_COUNT_MAX;
+            if ( OVERVIEW_SCALE_COUNT_MAX < draft ) {
+                draft = OVERVIEW_SCALE_COUNT_MAX;
             }
             mOverviewScaleCount = draft;
             mOverviewPixelPerClock = getOverviewScaleX( mOverviewScaleCount );
@@ -315,7 +322,7 @@ namespace org.kbinani.cadencii {
 #endif
                 int key_width = AppManager.keyWidth;
                 double dt = PortUtil.getCurrentTime() - mOverviewBtnDowned;
-                int draft = (int)(mOverviewStartToDrawClockInitialValue + mOverviewDirection * dt * _OVERVIEW_SCROLL_SPEED / mOverviewPixelPerClock);
+                int draft = (int)(mOverviewStartToDrawClockInitialValue + mOverviewDirection * dt * OVERVIEW_SCROLL_SPEED / mOverviewPixelPerClock);
                 int clock = getOverviewClockFromXCoord( getWidth() - key_width, draft );
                 if ( AppManager.getVsqFile().TotalClocks < clock ) {
                     draft = AppManager.getVsqFile().TotalClocks - (int)((getWidth() - key_width) / mOverviewPixelPerClock);
@@ -502,6 +509,10 @@ namespace org.kbinani.cadencii {
             }
         }
 
+        /// <summary>
+        /// 幅が2ピクセルのストロークを取得します
+        /// </summary>
+        /// <returns></returns>
         private BasicStroke getStroke2px() {
             if ( mStroke2px == null ) {
                 mStroke2px = new BasicStroke( 2.0f );
@@ -509,6 +520,10 @@ namespace org.kbinani.cadencii {
             return mStroke2px;
         }
 
+        /// <summary>
+        /// デフォルトのストロークを取得します
+        /// </summary>
+        /// <returns></returns>
         private BasicStroke getStrokeDefault() {
             if ( mStrokeDefault == null ) {
                 mStrokeDefault = new BasicStroke();

@@ -332,6 +332,7 @@ public class Utau_Plugin_Invoker : Form {
                         target = dustbox;
                     }
                     target.Clock = clock;
+                    tlength = target.ID.getLength();
                     if ( target.UstEvent == null ) {
                         target.UstEvent = new UstEvent();
                     }
