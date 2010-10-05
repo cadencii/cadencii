@@ -290,6 +290,12 @@ namespace org.kbinani.cadencii {
 
         public void updateCachedImage() {
             VsqFileEx vsq = AppManager.getVsqFile();
+            if ( vsq == null ) {
+                return;
+            }
+            if ( mMainForm == null ) {
+                return;
+            }
             int required_width = (int)(vsq.TotalClocks * mOverviewPixelPerClock) + mMainForm.pictPianoRoll.getWidth();
             mDrawer.setWidth( required_width );
             mDrawer.updateCache( this );

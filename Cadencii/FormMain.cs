@@ -105,6 +105,7 @@ namespace org.kbinani.cadencii {
         public readonly Color mColorR007G007B151 = new Color( 7, 7, 151 );
         public readonly Color mColorR065G065B065 = new Color( 65, 65, 65 );
         public readonly Color mColorTextboxBackcolor = new Color( 128, 128, 128 );
+        private readonly Color mColorR214G214B214 = new Color( 214, 214, 214 );
         public static readonly Color mColorNoteFill = new Color( 181, 220, 86 );
         private readonly AuthorListEntry[] _CREDIT = new AuthorListEntry[]{
             new AuthorListEntry( "is developped by:", 2 ),
@@ -524,6 +525,7 @@ namespace org.kbinani.cadencii {
         /// 波形表示部の拡大ボタン上でマウスが下りた瞬間の，波形表示部の縦軸拡大率．
         /// </summary>
         private float mWaveViewInitScale;
+        private Graphics2D mGraphicsPictureBox2 = null;
 #if MONITOR_FPS
         /// <summary>
         /// パフォーマンスカウンタ
@@ -1311,10 +1313,17 @@ namespace org.kbinani.cadencii {
         /// <param name="button"></param>
         /// <returns></returns>
         public boolean isMouseMiddleButtonDowned( BMouseButtons button ) {
-            if ( AppManager.editorConfig.UseSpaceKeyAsMiddleButtonModifier && mSpacekeyDowned && button == BMouseButtons.Left ) {
-                return true;
+            boolean ret = false;
+            if ( AppManager.editorConfig.UseSpaceKeyAsMiddleButtonModifier ) {
+                if ( mSpacekeyDowned && button == BMouseButtons.Left ) {
+                    ret = true;
+                }
+            } else {
+                if ( button == BMouseButtons.Middle ) {
+                    ret = true;
+                }
             }
-            return false;
+            return ret;
         }
         #endregion
 
@@ -1833,7 +1842,7 @@ namespace org.kbinani.cadencii {
             hScroll.Height = _SCROLL_WIDTH;
 
             vScroll.Width = _SCROLL_WIDTH;
-            vScroll.Height = height - _PICT_POSITION_INDICATOR_HEIGHT - _SCROLL_WIDTH - panelOverview.Height;
+            vScroll.Height = height - _PICT_POSITION_INDICATOR_HEIGHT - _SCROLL_WIDTH * 3 - panelOverview.Height;
 
             pictPianoRoll.Width = width - _SCROLL_WIDTH;
             pictPianoRoll.Height = height - _PICT_POSITION_INDICATOR_HEIGHT - _SCROLL_WIDTH - panelOverview.Height;
@@ -1841,7 +1850,7 @@ namespace org.kbinani.cadencii {
             pictureBox3.Width = key_width - _SCROLL_WIDTH;
             pictKeyLengthSplitter.Width = _SCROLL_WIDTH;
             pictureBox3.Height = _SCROLL_WIDTH;
-            pictureBox2.Height = _SCROLL_WIDTH;
+            pictureBox2.Height = _SCROLL_WIDTH * 3;
             trackBar.Height = _SCROLL_WIDTH;
 
             panelOverview.Top = 0;
@@ -1867,7 +1876,7 @@ namespace org.kbinani.cadencii {
             trackBar.Top = height - _SCROLL_WIDTH;
             trackBar.Left = width - _SCROLL_WIDTH - trackBar.Width;
 
-            pictureBox2.Top = height - _SCROLL_WIDTH;
+            pictureBox2.Top = height - _SCROLL_WIDTH * 3;
             pictureBox2.Left = width - _SCROLL_WIDTH;
 
             waveView.Top = 0;
@@ -6842,6 +6851,7 @@ namespace org.kbinani.cadencii {
 #endif
             pictureBox3.mouseDownEvent.add( new BMouseEventHandler( this, "pictureBox3_MouseDown" ) );
             pictureBox2.mouseDownEvent.add( new BMouseEventHandler( this, "pictureBox2_MouseDown" ) );
+            pictureBox2.paintEvent.add( new BPaintEventHandler( this, "pictureBox2_Paint" ) );
             stripBtnPointer.clickEvent.add( new BEventHandler( this, "stripBtnArrow_Click" ) );
             stripBtnPencil.clickEvent.add( new BEventHandler( this, "stripBtnPencil_Click" ) );
             stripBtnLine.clickEvent.add( new BEventHandler( this, "stripBtnLine_Click" ) );
@@ -13632,6 +13642,9 @@ namespace org.kbinani.cadencii {
         }
 
         public void waveView_MouseDown( Object sender, BMouseEventArgs e ) {
+#if DEBUG
+            PortUtil.println( "waveView_MouseDown; isMiddleButtonDowned=" + isMouseMiddleButtonDowned( e.Button ) );
+#endif
             if ( isMouseMiddleButtonDowned( e.Button ) ) {
                 mEditCurveMode = CurveEditMode.MIDDLE_DRAG;
                 mButtonInitial = new Point( e.X, e.Y );
@@ -15564,9 +15577,6 @@ namespace org.kbinani.cadencii {
         }
 
         public void panel2_Paint( Object sender, BPaintEventArgs e ) {
-#if DEBUG
-            PortUtil.println( "FormMain#panel2_Paint" );
-#endif
 #if JAVA
             Graphics g = e.Graphics;
 #else
@@ -15642,6 +15652,32 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region pictureBox2
+        public void pictureBox2_Paint( Object sender, BPaintEventArgs e ) {
+#if JAVA
+#else
+            if ( mGraphicsPictureBox2 == null ) {
+                mGraphicsPictureBox2 = new Graphics2D( null );
+            }
+            mGraphicsPictureBox2.nativeGraphics = e.Graphics;
+#endif
+            int width = pictureBox2.getWidth();
+            int height = pictureBox2.getHeight();
+            int unit_height = height / 3;
+            mGraphicsPictureBox2.setStroke( getStrokeDefault() );
+            mGraphicsPictureBox2.setColor( mColorR214G214B214 );
+            mGraphicsPictureBox2.fillRect( 0, 0, width, height );
+            mGraphicsPictureBox2.setColor( Color.gray );
+            mGraphicsPictureBox2.drawRect( 0, 0, width - 1, unit_height * 2 );
+            mGraphicsPictureBox2.drawLine( 0, unit_height, width, unit_height );
+            mGraphicsPictureBox2.setStroke( getStroke2px() );
+            int cx = width / 2;
+            int cy = unit_height / 2;
+            mGraphicsPictureBox2.drawLine( cx - 4, cy, cx + 4, cy );
+            mGraphicsPictureBox2.drawLine( cx, cy - 4, cx, cy + 4 );
+            cy += unit_height;
+            mGraphicsPictureBox2.drawLine( cx - 4, cy, cx + 4, cy );
+        }
+
         public void pictureBox2_MouseDown( Object sender, BMouseEventArgs e ) {
             if ( mTextBoxTrackName != null ) {
 #if !JAVA
@@ -17015,14 +17051,11 @@ namespace org.kbinani.cadencii {
             this.cMenuTrackSelectorSelectAll = new org.kbinani.windows.forms.BMenuItem();
             this.trackBar = new org.kbinani.windows.forms.BSlider();
             this.panel1 = new org.kbinani.windows.forms.BPanel();
-            this.hScroll = new org.kbinani.cadencii.HScroll();
             this.pictureBox3 = new org.kbinani.windows.forms.BPictureBox();
             this.pictKeyLengthSplitter = new org.kbinani.windows.forms.BPictureBox();
             this.pictureBox2 = new org.kbinani.windows.forms.BPictureBox();
             this.vScroll = new org.kbinani.windows.forms.BVScrollBar();
-            this.panelOverview = new org.kbinani.cadencii.PictOverview();
             this.picturePositionIndicator = new org.kbinani.windows.forms.BPictureBox();
-            this.pictPianoRoll = new org.kbinani.cadencii.PictPianoRoll();
             this.toolStripTool = new org.kbinani.windows.forms.BToolBar();
             this.stripBtnPointer = new org.kbinani.windows.forms.BToolStripButton();
             this.stripBtnPencil = new org.kbinani.windows.forms.BToolStripButton();
@@ -17095,6 +17128,9 @@ namespace org.kbinani.cadencii {
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this.stripBtnStartMarker = new org.kbinani.windows.forms.BToolStripButton();
             this.stripBtnEndMarker = new org.kbinani.windows.forms.BToolStripButton();
+            this.hScroll = new org.kbinani.cadencii.HScroll();
+            this.panelOverview = new org.kbinani.cadencii.PictOverview();
+            this.pictPianoRoll = new org.kbinani.cadencii.PictPianoRoll();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
@@ -17104,9 +17140,7 @@ namespace org.kbinani.cadencii {
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictKeyLengthSplitter)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.panelOverview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picturePositionIndicator)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).BeginInit();
             this.toolStripTool.SuspendLayout();
             this.toolStripContainer.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer.ContentPanel.SuspendLayout();
@@ -17117,6 +17151,8 @@ namespace org.kbinani.cadencii {
             this.toolStripFile.SuspendLayout();
             this.toolStripPosition.SuspendLayout();
             this.toolStripMeasure.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.panelOverview)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStripMain
@@ -18970,15 +19006,6 @@ namespace org.kbinani.cadencii {
             this.panel1.Size = new System.Drawing.Size( 421, 282 );
             this.panel1.TabIndex = 16;
             // 
-            // hScroll
-            // 
-            this.hScroll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.hScroll.Location = new System.Drawing.Point( 66, 266 );
-            this.hScroll.Name = "hScroll";
-            this.hScroll.Size = new System.Drawing.Size( 256, 16 );
-            this.hScroll.TabIndex = 16;
-            // 
             // pictureBox3
             // 
             this.pictureBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -19006,11 +19033,11 @@ namespace org.kbinani.cadencii {
             // pictureBox2
             // 
             this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictureBox2.BackColor = System.Drawing.SystemColors.Control;
-            this.pictureBox2.Location = new System.Drawing.Point( 405, 266 );
+            this.pictureBox2.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))) );
+            this.pictureBox2.Location = new System.Drawing.Point( 405, 234 );
             this.pictureBox2.Margin = new System.Windows.Forms.Padding( 0 );
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size( 16, 16 );
+            this.pictureBox2.Size = new System.Drawing.Size( 16, 48 );
             this.pictureBox2.TabIndex = 5;
             this.pictureBox2.TabStop = false;
             // 
@@ -19020,20 +19047,8 @@ namespace org.kbinani.cadencii {
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.vScroll.Location = new System.Drawing.Point( 405, 93 );
             this.vScroll.Name = "vScroll";
-            this.vScroll.Size = new System.Drawing.Size( 16, 173 );
+            this.vScroll.Size = new System.Drawing.Size( 16, 141 );
             this.vScroll.TabIndex = 17;
-            // 
-            // panelOverview
-            // 
-            this.panelOverview.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelOverview.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(106)))), ((int)(((byte)(108)))), ((int)(((byte)(108)))) );
-            this.panelOverview.Location = new System.Drawing.Point( 0, 0 );
-            this.panelOverview.Margin = new System.Windows.Forms.Padding( 0 );
-            this.panelOverview.Name = "panelOverview";
-            this.panelOverview.Size = new System.Drawing.Size( 421, 45 );
-            this.panelOverview.TabIndex = 19;
-            this.panelOverview.TabStop = false;
             // 
             // picturePositionIndicator
             // 
@@ -19046,19 +19061,6 @@ namespace org.kbinani.cadencii {
             this.picturePositionIndicator.Size = new System.Drawing.Size( 421, 48 );
             this.picturePositionIndicator.TabIndex = 10;
             this.picturePositionIndicator.TabStop = false;
-            // 
-            // pictPianoRoll
-            // 
-            this.pictPianoRoll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictPianoRoll.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))) );
-            this.pictPianoRoll.Location = new System.Drawing.Point( 0, 93 );
-            this.pictPianoRoll.Margin = new System.Windows.Forms.Padding( 0 );
-            this.pictPianoRoll.Name = "pictPianoRoll";
-            this.pictPianoRoll.Size = new System.Drawing.Size( 405, 173 );
-            this.pictPianoRoll.TabIndex = 12;
-            this.pictPianoRoll.TabStop = false;
             // 
             // toolStripTool
             // 
@@ -19776,6 +19778,40 @@ namespace org.kbinani.cadencii {
             this.stripBtnEndMarker.Size = new System.Drawing.Size( 23, 22 );
             this.stripBtnEndMarker.Text = "EndMarker";
             // 
+            // hScroll
+            // 
+            this.hScroll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.hScroll.Location = new System.Drawing.Point( 66, 266 );
+            this.hScroll.Name = "hScroll";
+            this.hScroll.Size = new System.Drawing.Size( 256, 16 );
+            this.hScroll.TabIndex = 16;
+            // 
+            // panelOverview
+            // 
+            this.panelOverview.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelOverview.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(106)))), ((int)(((byte)(108)))), ((int)(((byte)(108)))) );
+            this.panelOverview.Location = new System.Drawing.Point( 0, 0 );
+            this.panelOverview.Margin = new System.Windows.Forms.Padding( 0 );
+            this.panelOverview.Name = "panelOverview";
+            this.panelOverview.Size = new System.Drawing.Size( 421, 45 );
+            this.panelOverview.TabIndex = 19;
+            this.panelOverview.TabStop = false;
+            // 
+            // pictPianoRoll
+            // 
+            this.pictPianoRoll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictPianoRoll.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))) );
+            this.pictPianoRoll.Location = new System.Drawing.Point( 0, 93 );
+            this.pictPianoRoll.Margin = new System.Windows.Forms.Padding( 0 );
+            this.pictPianoRoll.Name = "pictPianoRoll";
+            this.pictPianoRoll.Size = new System.Drawing.Size( 405, 173 );
+            this.pictPianoRoll.TabIndex = 12;
+            this.pictPianoRoll.TabStop = false;
+            // 
             // FormMain
             // 
             this.AllowDrop = true;
@@ -19799,9 +19835,7 @@ namespace org.kbinani.cadencii {
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictKeyLengthSplitter)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.panelOverview)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picturePositionIndicator)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).EndInit();
             this.toolStripTool.ResumeLayout( false );
             this.toolStripTool.PerformLayout();
             this.toolStripContainer.BottomToolStripPanel.ResumeLayout( false );
@@ -19821,6 +19855,8 @@ namespace org.kbinani.cadencii {
             this.toolStripPosition.PerformLayout();
             this.toolStripMeasure.ResumeLayout( false );
             this.toolStripMeasure.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.panelOverview)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).EndInit();
             this.ResumeLayout( false );
             this.PerformLayout();
 
