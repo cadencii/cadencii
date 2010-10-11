@@ -29,7 +29,6 @@ import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*;
 import org.kbinani.xml.*;
 #else
-#define MONITOR_FPS
 //#define USE_BGWORK_SCREEN
 using System;
 using System.Diagnostics;
@@ -525,7 +524,19 @@ namespace org.kbinani.cadencii {
         /// 波形表示部の拡大ボタン上でマウスが下りた瞬間の，波形表示部の縦軸拡大率．
         /// </summary>
         private float mWaveViewInitScale;
+        /// <summary>
+        /// pictureBox2の描画ループで使うグラフィックス
+        /// </summary>
         private Graphics2D mGraphicsPictureBox2 = null;
+        /// <summary>
+        /// panel2の描画ループで使うグラフィックス
+        /// </summary>
+        private Graphics2D mGraphicsPanel2 = null;
+        /// <summary>
+        /// ピアノロールの縦方向の拡大率を変更するパネル上でのマウスの状態。
+        /// 0がデフォルト、&gt;0は+ボタンにマウスが降りた状態、&lt;0は-ボタンにマウスが降りた状態
+        /// </summary>
+        private int mPianoRollScaleYMouseStatus = 0;
 #if MONITOR_FPS
         /// <summary>
         /// パフォーマンスカウンタ
@@ -816,7 +827,7 @@ namespace org.kbinani.cadencii {
             hScroll.setMaximum( AppManager.getVsqFile().TotalClocks + 240 );
             hScroll.setVisibleAmount( 240 * 4 );
 
-            vScroll.setMaximum( AppManager.editorConfig.PxTrackHeight * 128 );
+            vScroll.setMaximum( AppManager.editorConfig.getActualNoteHeight() * 128 );
             vScroll.setVisibleAmount( 24 * 4 );
 #if !JAVA
             hScroll.SmallChange = 240;
@@ -993,6 +1004,499 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region helper methods
+        /// <summary>
+        /// 指定したトラックの、レンダリングが必要な部分を再レンダリングし、ツギハギすることでトラックのキャッシュをフリーズさせます。
+        /// </summary>
+        /// <param name="track"></param>
+        private void patchWorkToFreeze( Integer[] tracks ) {
+            VsqFileEx vsq = AppManager.getVsqFile();
+            vsq.updateTotalClocks();
+            String temppath = AppManager.getTempWaveDir();
+            int presend = AppManager.editorConfig.PreSendTime;
+            int totalClocks = vsq.TotalClocks;
+
+            Vector<Integer> startList = new Vector<Integer>();
+            Vector<Integer> endList = new Vector<Integer>();
+            Vector<Integer> trackList = new Vector<Integer>();
+            Vector<String> files = new Vector<String>();
+            int[] startIndex = new int[tracks.Length + 1]; // startList, endList, trackList, filesの内，第startIndex[j]からが，第tracks[j]トラックについてのレンダリング要求かを表す.
+
+            for ( int k = 0; k < tracks.Length; k++ ) {
+                startIndex[k] = trackList.size();
+                int track = tracks[k];
+                VsqTrack vsq_track = vsq.Track.get( track );
+                String wavePath = PortUtil.combinePath( temppath, track + ".wav" );
+
+                if ( AppManager.mLastRenderedStatus[track - 1] == null ) {
+                    // この場合は全部レンダリングする必要がある
+                    trackList.add( track );
+                    startList.add( 0 );
+                    endList.add( totalClocks + 240 );
+                    files.add( wavePath );
+                    continue;
+                }
+
+                // 部分レンダリング
+                EditedZoneUnit[] areas =
+                    Utility.detectRenderedStatusDifference( AppManager.mLastRenderedStatus[track - 1],
+                                                            new RenderedStatus( (VsqTrack)vsq_track.clone(), vsq.TempoTable ) );
+
+                // areasとかぶっている音符がどれかを判定する
+                EditedZone zone = new EditedZone();
+                zone.add( areas );
+                checkSerializedEvents( zone, vsq_track, areas );
+                checkSerializedEvents( zone, AppManager.mLastRenderedStatus[track - 1].track, areas );
+
+                // レンダリング済みのwaveがあれば、zoneに格納された編集範囲に隣接する前後が無音でない場合、
+                // 編集範囲を無音部分まで延長する。
+                if ( PortUtil.isFileExists( wavePath ) ) {
+                    WaveReader wr = null;
+                    try {
+                        wr = new WaveReader( wavePath );
+                        int sampleRate = wr.getSampleRate();
+                        int buflen = 1024;
+                        double[] left = new double[buflen];
+                        double[] right = new double[buflen];
+
+                        // まずzoneから編集範囲を抽出
+                        Vector<EditedZoneUnit> areasList = new Vector<EditedZoneUnit>();
+                        for ( Iterator<EditedZoneUnit> itr = zone.iterator(); itr.hasNext(); ) {
+                            EditedZoneUnit e = itr.next();
+                            areasList.add( (EditedZoneUnit)e.clone() );
+                        }
+
+                        for ( Iterator<EditedZoneUnit> itr = areasList.iterator(); itr.hasNext(); ) {
+                            EditedZoneUnit e = itr.next();
+                            int exStart = e.mStart;
+                            int exEnd = e.mEnd;
+
+                            // 前方に1クロックずつ検索する。
+                            int end = e.mStart;
+                            int start = end - 1;
+                            double secEnd = vsq.getSecFromClock( end );
+                            long saEnd = (long)(secEnd * sampleRate);
+                            double secStart = 0.0;
+                            long saStart = 0;
+                            while ( true ) {
+                                start = end - 1;
+                                if ( start < 0 ) {
+                                    start = 0;
+                                    break;
+                                }
+                                secStart = vsq.getSecFromClock( start );
+                                saStart = (long)(secStart * sampleRate);
+                                int samples = (int)(saEnd - saStart);
+                                long pos = saStart;
+                                boolean allzero = true;
+                                while ( samples > 0 ) {
+                                    int delta = samples > buflen ? buflen : samples;
+                                    wr.read( pos, delta, left, right );
+                                    for ( int i = 0; i < delta; i++ ) {
+                                        if ( left[i] != 0.0 || right[i] != 0.0 ) {
+                                            allzero = false;
+                                            break;
+                                        }
+                                    }
+                                    pos += delta;
+                                    samples -= delta;
+                                    if ( !allzero ) {
+                                        break;
+                                    }
+                                }
+                                if ( allzero ) {
+                                    break;
+                                }
+                                secEnd = secStart;
+                                end = start;
+                                saEnd = saStart;
+                            }
+                            // endクロックより先は無音であるようだ。
+                            exStart = end;
+
+                            // 後方に1クロックずつ検索する
+                            if ( e.mEnd < int.MaxValue ) {
+                                start = e.mEnd;
+                                secStart = vsq.getSecFromClock( start );
+                                while ( true ) {
+                                    end = start + 1;
+                                    secEnd = vsq.getSecFromClock( end );
+                                    saEnd = (long)(secEnd * sampleRate);
+                                    int samples = (int)(saEnd - saStart);
+                                    long pos = saStart;
+                                    boolean allzero = true;
+                                    while ( samples > 0 ) {
+                                        int delta = samples > buflen ? buflen : samples;
+                                        wr.read( pos, delta, left, right );
+                                        for ( int i = 0; i < delta; i++ ) {
+                                            if ( left[i] != 0.0 || right[i] != 0.0 ) {
+                                                allzero = false;
+                                                break;
+                                            }
+                                        }
+                                        pos += delta;
+                                        samples -= delta;
+                                        if ( !allzero ) {
+                                            break;
+                                        }
+                                    }
+                                    if ( allzero ) {
+                                        break;
+                                    }
+                                    secStart = secEnd;
+                                    start = end;
+                                    saStart = saEnd;
+                                }
+                                // startクロック以降は無音のようだ
+                                exEnd = start;
+                            }
+#if DEBUG
+                            if ( e.mStart != exStart ) {
+                                PortUtil.println( "FormMain#patchWorkToFreeze; start extended; " + e.mStart + " => " + exStart );
+                            }
+                            if ( e.mEnd != exEnd ) {
+                                PortUtil.println( "FormMain#patchWorkToFreeze; end extended; " + e.mEnd + " => " + exEnd );
+                            }
+#endif
+
+                            zone.add( exStart, exEnd );
+                        }
+                    } catch ( Exception ex ) {
+                        Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
+                        PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
+                    } finally {
+                        if ( wr != null ) {
+                            try {
+                                wr.close();
+                            } catch ( Exception ex2 ) {
+                                Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
+                                PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex2=" + ex2 );
+                            }
+                        }
+                    }
+                }
+
+                // zoneに、レンダリングが必要なアイテムの範囲が格納されているので。
+                int j = -1;
+                for ( Iterator<EditedZoneUnit> itr = zone.iterator(); itr.hasNext(); ) {
+                    EditedZoneUnit unit = itr.next();
+                    j++;
+                    trackList.add( track );
+                    startList.add( unit.mStart );
+                    endList.add( unit.mEnd );
+                    files.add( PortUtil.combinePath( temppath, track + "_" + j + ".wav" ) );
+                }
+            }
+            startIndex[tracks.Length] = trackList.size();
+
+#if DEBUG
+            for ( int i = 0; i < startList.size(); i++ ) {
+                PortUtil.println( "FormMain#patchWorkToFreeze; #" + i + "; start=" + startList.get( i ) + "; end=" + endList.get( i ) );
+            }
+#endif
+
+            if ( trackList.size() <= 0 ) {
+                // パッチワークする必要なし
+                for ( int i = 0; i < tracks.Length; i++ ) {
+                    AppManager.setRenderRequired( tracks[i], false );
+                }
+                return;
+            }
+
+            FormSynthesize dialog = null;
+            String tempWave = PortUtil.combinePath( temppath, "temp.wav" );
+            try {
+                dialog = new FormSynthesize( vsq,
+                                             presend,
+                                             trackList.toArray( new Integer[] { } ),
+                                             files.toArray( new String[] { } ),
+                                             startList.toArray( new Integer[] { } ),
+                                             endList.toArray( new Integer[] { } ),
+                                             false );
+                dialog.setModal( true );
+                dialog.setVisible( true );
+                int finished = dialog.getFinished();
+                for ( int k = 0; k < tracks.Length; k++ ) {
+                    int track = tracks[k];
+                    String wavePath = PortUtil.combinePath( temppath, track + ".wav" );
+
+                    if ( wavePath.Equals( files.get( startIndex[k] ) ) && startIndex[k] < finished ) {
+                        // このとき，パッチワークを行う必要なし．
+                        AppManager.mLastRenderedStatus[track - 1] = new RenderedStatus( (VsqTrack)vsq.Track.get( track ).clone(), vsq.TempoTable );
+                        AppManager.serializeRenderingStatus( temppath, track );
+                        waveView.load( track - 1, wavePath );
+                        continue;
+                    }
+
+                    WaveWriter writer = null;
+                    try {
+                        int sampleRate = VSTiProxy.SAMPLE_RATE;
+                        long totalLength = (long)((vsq.getSecFromClock( vsq.TotalClocks ) + 1.0) * sampleRate);
+                        writer = new WaveWriter( wavePath, AppManager.editorConfig.WaveFileOutputChannel, 16, sampleRate );
+                        int BUFLEN = 1024;
+                        double[] bufl = new double[BUFLEN];
+                        double[] bufr = new double[BUFLEN];
+                        for ( int i = startIndex[k]; i < startIndex[k + 1] && i < finished; i++ ) {
+                            double secStart = vsq.getSecFromClock( startList.get( i ) );
+                            int clockEnd = endList.get( i );
+                            if ( clockEnd == int.MaxValue ) {
+                                clockEnd = vsq.TotalClocks + 240;
+                            }
+                            double secEnd = vsq.getSecFromClock( clockEnd );
+                            long sampleStart = (long)(secStart * sampleRate);
+                            long sampleEnd = (long)(secEnd * sampleRate);
+
+                            WaveReader wr = null;
+                            try {
+                                wr = new WaveReader( files.get( i ) );
+                                long remain2 = sampleEnd - sampleStart;
+                                long proc = 0;
+                                while ( remain2 > 0 ) {
+                                    int delta = remain2 > BUFLEN ? BUFLEN : (int)remain2;
+                                    wr.read( proc, delta, bufl, bufr );
+                                    writer.replace( sampleStart + proc, delta, bufl, bufr );
+                                    proc += delta;
+                                    remain2 -= delta;
+                                }
+                            } catch ( Exception ex ) {
+                                Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
+                                PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
+                            } finally {
+                                if ( wr != null ) {
+                                    try {
+                                        wr.close();
+                                    } catch ( Exception ex2 ) {
+                                        Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
+                                        PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex2=" + ex2 );
+                                    }
+                                }
+                            }
+
+                            try {
+                                PortUtil.deleteFile( files.get( i ) );
+                            } catch ( Exception ex ) {
+                                Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
+                                PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
+                            }
+                        }
+
+                        VsqTrack vsq_track = vsq.Track.get( track );
+                        if ( startIndex[k + 1] - 1 < finished ) {
+                            // 途中で終了せず，このトラックの全てのパッチワークが完了した．
+                            AppManager.mLastRenderedStatus[track - 1] = new RenderedStatus( (VsqTrack)vsq_track.clone(), vsq.TempoTable );
+                            AppManager.serializeRenderingStatus( temppath, track );
+                            AppManager.setRenderRequired( track, false );
+                        } else {
+                            // パッチワークの作成途中で，キャンセルされた
+                            // キャンセルされたやつ以降の範囲に、プログラムチェンジ17の歌手変更イベントを挿入する。→AppManager#detectTrackDifferenceに必ず検出してもらえる。
+                            VsqTrack copied = (VsqTrack)vsq_track.clone();
+                            VsqEvent dumy = new VsqEvent();
+                            dumy.ID.type = VsqIDType.Singer;
+                            dumy.ID.IconHandle = new IconHandle();
+                            dumy.ID.IconHandle.Program = 17;
+                            for ( int i = startIndex[k]; i < startIndex[k + 1]; i++ ) {
+                                if ( i < finished ) {
+                                    continue;
+                                }
+                                int start = startList.get( i );
+                                int end = endList.get( i );
+                                VsqEvent singerAtEnd = vsq_track.getSingerEventAt( end );
+
+                                // startの位置に歌手変更が既に指定されていないかどうかを検査
+                                int foundStart = -1;
+                                int foundEnd = -1;
+                                for ( Iterator<Integer> itr = copied.indexIterator( IndexIteratorKind.SINGER ); itr.hasNext(); ) {
+                                    int j = itr.next();
+                                    VsqEvent ve = copied.getEvent( j );
+                                    if ( ve.Clock == start ) {
+                                        foundStart = j;
+                                    }
+                                    if ( ve.Clock == end ) {
+                                        foundEnd = j;
+                                    }
+                                    if ( end < ve.Clock ) {
+                                        break;
+                                    }
+                                }
+
+                                VsqEvent dumyStart = (VsqEvent)dumy.clone();
+                                dumyStart.Clock = start;
+                                if ( foundStart >= 0 ) {
+                                    copied.setEvent( foundStart, dumyStart );
+                                } else {
+                                    copied.addEvent( dumyStart );
+                                }
+
+                                if ( end != int.MaxValue ) {
+                                    VsqEvent dumyEnd = (VsqEvent)singerAtEnd.clone();
+                                    dumyEnd.Clock = end;
+                                    if ( foundEnd >= 0 ) {
+                                        copied.setEvent( foundEnd, dumyEnd );
+                                    } else {
+                                        copied.addEvent( dumyEnd );
+                                    }
+                                }
+
+                                copied.sortEvent();
+                            }
+
+                            AppManager.mLastRenderedStatus[track - 1] = new RenderedStatus( copied, vsq.TempoTable );
+                            AppManager.serializeRenderingStatus( temppath, track );
+                        }
+                    } catch ( Exception ex ) {
+                        Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
+                        PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
+                    } finally {
+                        if ( writer != null ) {
+                            try {
+                                writer.close();
+                            } catch ( Exception ex2 ) {
+                                Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
+                                PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex2=" + ex2 );
+                            }
+                        }
+                    }
+
+                    // 波形表示用のWaveDrawContextの内容を更新する。
+                    for ( int i = startIndex[k]; i < startIndex[k + 1] && i < finished; i++ ) {
+                        double secStart = vsq.getSecFromClock( startList.get( i ) );
+                        int clockEnd = endList.get( i );
+                        if ( clockEnd == int.MaxValue ) {
+                            clockEnd = vsq.TotalClocks + 240;
+                        }
+                        double secEnd = vsq.getSecFromClock( clockEnd );
+
+                        waveView.reloadPartial( tracks[k] - 1, wavePath, secStart, secEnd );
+                    }
+                }
+            } catch ( Exception ex ) {
+                Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
+                PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
+            } finally {
+                if ( dialog != null ) {
+                    try {
+                        dialog.close();
+                    } catch ( Exception ex2 ) {
+                        Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
+                        PortUtil.stderr.println( "FormMain#patchWorkToFreeez; ex2=" + ex2 );
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 指定されたトラックにあるイベントの内、配列areasで指定されたゲートタイム範囲とオーバーラップしているか、
+        /// または連続している音符を抽出し、その範囲をzoneに追加します。
+        /// </summary>
+        /// <param name="zone"></param>
+        /// <param name="vsq_track"></param>
+        /// <param name="areas"></param>
+        private static void checkSerializedEvents( EditedZone zone, VsqTrack vsq_track, EditedZoneUnit[] areas ) {
+            if ( vsq_track == null || zone == null || areas == null ) {
+                return;
+            }
+            if ( areas.Length == 0 ) {
+                return;
+            }
+            TreeMap<Integer, Integer> ids = new TreeMap<Integer, Integer>();
+            for ( Iterator<Integer> itr = vsq_track.indexIterator( IndexIteratorKind.NOTE ); itr.hasNext(); ) {
+                int indx = itr.next();
+                VsqEvent item = vsq_track.getEvent( indx );
+                int clockStart = item.Clock;
+                int clockEnd = clockStart + item.ID.getLength();
+                for ( int i = 0; i < areas.Length; i++ ) {
+                    EditedZoneUnit area = areas[i];
+                    if ( clockStart < area.mEnd && area.mEnd <= clockEnd ) {
+                        if ( !ids.containsKey( item.InternalID ) ) {
+                            ids.put( item.InternalID, indx );
+                            zone.add( clockStart, clockEnd );
+                        }
+                    } else if ( clockStart <= area.mStart && area.mStart < clockEnd ) {
+                        if ( !ids.containsKey( item.InternalID ) ) {
+                            ids.put( item.InternalID, indx );
+                            zone.add( clockStart, clockEnd );
+                        }
+                    } else if ( area.mStart <= clockStart && clockEnd < area.mEnd ) {
+                        if ( !ids.containsKey( item.InternalID ) ) {
+                            ids.put( item.InternalID, indx );
+                            zone.add( clockStart, clockEnd );
+                        }
+                    } else if ( clockStart <= area.mStart && area.mEnd < clockEnd ) {
+                        if ( !ids.containsKey( item.InternalID ) ) {
+                            ids.put( item.InternalID, indx );
+                            zone.add( clockStart, clockEnd );
+                        }
+                    }
+                }
+            }
+
+            // idsに登録された音符のうち、前後がつながっているものを列挙する。
+            boolean changed = true;
+            int numEvents = vsq_track.getEventCount();
+            while ( changed ) {
+                changed = false;
+                for ( Iterator<Integer> itr = ids.keySet().iterator(); itr.hasNext(); ) {
+                    int id = itr.next();
+                    int indx = ids.get( id ); // InternalIDがidのアイテムの禁書目録
+                    VsqEvent item = vsq_track.getEvent( indx );
+
+                    // アイテムを遡り、連続していれば追加する
+                    int clock = item.Clock;
+                    for ( int i = indx - 1; i >= 0; i-- ) {
+                        VsqEvent search = vsq_track.getEvent( i );
+                        if ( search.ID.type != VsqIDType.Anote ) {
+                            continue;
+                        }
+                        int searchClock = search.Clock;
+                        int searchLength = search.ID.getLength();
+                        if ( searchClock + searchLength == clock ) {
+                            if ( !ids.containsKey( search.InternalID ) ) {
+                                ids.put( search.InternalID, i );
+                                zone.add( searchClock, searchClock + searchLength );
+                                changed = true;
+                            }
+                            clock = searchClock;
+                        } else {
+                            break;
+                        }
+                    }
+
+                    // アイテムを辿り、連続していれば追加する
+                    clock = item.Clock + item.ID.getLength();
+                    for ( int i = indx + 1; i < numEvents; i++ ) {
+                        VsqEvent search = vsq_track.getEvent( i );
+                        if ( search.ID.type != VsqIDType.Anote ) {
+                            continue;
+                        }
+                        int searchClock = search.Clock;
+                        int searchLength = search.ID.getLength();
+                        if ( clock == searchClock ) {
+                            if ( !ids.containsKey( search.InternalID ) ) {
+                                ids.put( search.InternalID, i );
+                                zone.add( searchClock, searchClock + searchLength );
+                                changed = true;
+                            }
+                            clock = searchClock + searchLength;
+                        } else {
+                            break;
+                        }
+                    }
+
+                    if ( changed ) {
+                        break;
+                    }
+                }
+            }
+        }
+
+        private static int doQuantize( int clock, int unit ) {
+            int odd = clock % unit;
+            int new_clock = clock - odd;
+            if ( odd > unit / 2 ) {
+                new_clock += unit;
+            }
+            return new_clock;
+        }
+
         /// <summary>
         /// 波形表示部のズームボタンの形を取得します
         /// </summary>
@@ -1253,7 +1757,7 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="mouse_position"></param>
         /// <returns></returns>
-        VsqEvent getItemAtClickedPosition_old( Point mouse_position, ByRef<Rectangle> rect ) {
+        private VsqEvent getItemAtClickedPosition_old( Point mouse_position, ByRef<Rectangle> rect ) {
             rect.value = new Rectangle();
             if ( AppManager.keyWidth <= mouse_position.x && mouse_position.x <= pictPianoRoll.getWidth() ) {
                 if ( 0 <= mouse_position.y && mouse_position.y <= pictPianoRoll.getHeight() ) {
@@ -1261,7 +1765,7 @@ namespace org.kbinani.cadencii {
                     if ( selected >= 1 ) {
                         VsqFileEx vsq = AppManager.getVsqFile();
                         VsqTrack vsq_track = vsq.Track.get( selected );
-                        int track_height = AppManager.editorConfig.PxTrackHeight;
+                        int track_height = AppManager.editorConfig.getActualNoteHeight();
                         int count = vsq_track.getEventCount();
                         for ( int j = 0; j < count; j++ ) {
                             VsqEvent itemj = vsq_track.getEvent( j );
@@ -1307,6 +1811,54 @@ namespace org.kbinani.cadencii {
         }
 
         /// <summary>
+        /// 真ん中ボタンで画面を移動させるときの、vScrollの値を計算します。
+        /// 計算には、mButtonInitial, mMiddleButtonVScrollの値が使われます。
+        /// </summary>
+        /// <returns></returns>
+        private int computeVScrollValueForMiddleDrag( int mouse_y ) {
+            int dy = mouse_y - mButtonInitial.y;
+            int max = vScroll.getMaximum() - vScroll.getVisibleAmount();
+            int min = vScroll.getMinimum();
+            double new_vscroll_value = (double)mMiddleButtonVScroll - dy * max / (128.0 * AppManager.editorConfig.getActualNoteHeight() - (double)pictPianoRoll.getHeight());
+            int value = (int)new_vscroll_value;
+            if ( value < min ) {
+                value = min;
+            } else if ( max < value ) {
+                value = max;
+            }
+            return value;
+        }
+
+        /// <summary>
+        /// 真ん中ボタンで画面を移動させるときの、hScrollの値を計算します。
+        /// 計算には、mButtonInitial, mMiddleButtonHScrollの値が使われます。
+        /// </summary>
+        /// <returns></returns>
+        private int computeHScrollValueForMiddleDrag( int mouse_x ) {
+            int dx = mouse_x - mButtonInitial.x;
+            int max = hScroll.getMaximum();
+            int min = hScroll.getMinimum();
+            double new_hscroll_value = (double)mMiddleButtonHScroll - (double)dx * AppManager.getScaleXInv();
+            int value = (int)new_hscroll_value;
+            if ( value < min ) {
+                value = min;
+            } else if ( max < value ) {
+                value = max;
+            }
+            return value;
+        }
+
+        /// <summary>
+        /// 現在表示されているピアノロール画面の右上の、仮想スクリーン上座標で見たときのy座標(pixel)を取得します
+        /// </summary>
+        private int calculateStartToDrawY() {
+            //return (int)((128 * AppManager.editorConfig.getActualNoteHeight() - pictPianoRoll.getHeight()) * (float)vScroll.getValue() / ((float)vScroll.getMaximum()));
+            return vScroll.getValue();
+        }
+        #endregion
+
+        #region public methods
+        /// <summary>
         /// マウスの真ん中ボタンが押されたかどうかを調べます。
         /// スペースキー+左ボタンで真ん中ボタンとみなすかどうか、というオプションも考慮される。
         /// </summary>
@@ -1325,11 +1877,52 @@ namespace org.kbinani.cadencii {
             }
             return ret;
         }
-        #endregion
 
-        #region public methods
+        public void render( Integer[] tracks ) {
+            VsqFileEx vsq = AppManager.getVsqFile();
+
+            String tmppath = AppManager.getTempWaveDir();
+            if ( !PortUtil.isDirectoryExists( tmppath ) ) {
+                PortUtil.createDirectory( tmppath );
+            }
+            String[] files = new String[tracks.Length];
+            Integer[] ends = new Integer[tracks.Length];
+            Integer[] starts = new Integer[tracks.Length];
+            for ( int i = 0; i < tracks.Length; i++ ) {
+                files[i] = PortUtil.combinePath( tmppath, tracks[i] + ".wav" );
+                ends[i] = vsq.TotalClocks + 240;
+                starts[i] = 0;
+            }
+            FormSynthesize dlg = null;
+            try {
+                dlg = new FormSynthesize( vsq, AppManager.editorConfig.PreSendTime, tracks, files, starts, ends, false );
+                dlg.setModal( true );
+                dlg.setVisible( true );
+                int finished = dlg.getFinished();
+                for ( int i = 0; i < finished; i++ ) {
+                    AppManager.setRenderRequired( tracks[i], false );
+                    AppManager.mLastRenderedStatus[tracks[i] - 1] = new RenderedStatus( (VsqTrack)vsq.Track.get( tracks[i] ).clone(), vsq.TempoTable );
+                }
+            } catch ( Exception ex ) {
+                Logger.write( typeof( FormMain ) + ".render; ex=" + ex + "\n" );
+            } finally {
+                if ( dlg != null ) {
+                    try {
+                        dlg.close();
+                    } catch ( Exception ex2 ) {
+                        Logger.write( typeof( FormMain ) + ".render; ex=" + ex2 + "\n" );
+                    }
+                }
+            }
+        }
+
         /// <summary>
-        /// 画面をメインスレッドとは別のワーカースレッドを用いて再描画します。再描画間隔が設定値より短い場合再描画がスキップされます。
+#if USE_BGWORK_SCREEN
+        /// 画面をメインスレッドとは別のワーカースレッドを用いて再描画します。
+#else
+        /// 画面を再描画します。
+#endif
+        /// 再描画間隔が設定値より短い場合再描画がスキップされます。
         /// </summary>
         public void refreshScreen() {
 #if JAVA
@@ -1375,6 +1968,7 @@ namespace org.kbinani.cadencii {
             pictPianoRoll.repaint();
             picturePositionIndicator.repaint();
             trackSelector.repaint();
+            pictureBox2.repaint();
             if ( menuVisualWaveform.isSelected() ) {
                 waveView.repaint();
             }
@@ -1842,7 +2436,7 @@ namespace org.kbinani.cadencii {
             hScroll.Height = _SCROLL_WIDTH;
 
             vScroll.Width = _SCROLL_WIDTH;
-            vScroll.Height = height - _PICT_POSITION_INDICATOR_HEIGHT - _SCROLL_WIDTH * 3 - panelOverview.Height;
+            vScroll.Height = height - _PICT_POSITION_INDICATOR_HEIGHT - _SCROLL_WIDTH * 4 - panelOverview.Height;
 
             pictPianoRoll.Width = width - _SCROLL_WIDTH;
             pictPianoRoll.Height = height - _PICT_POSITION_INDICATOR_HEIGHT - _SCROLL_WIDTH - panelOverview.Height;
@@ -1850,7 +2444,7 @@ namespace org.kbinani.cadencii {
             pictureBox3.Width = key_width - _SCROLL_WIDTH;
             pictKeyLengthSplitter.Width = _SCROLL_WIDTH;
             pictureBox3.Height = _SCROLL_WIDTH;
-            pictureBox2.Height = _SCROLL_WIDTH * 3;
+            pictureBox2.Height = _SCROLL_WIDTH * 4;
             trackBar.Height = _SCROLL_WIDTH;
 
             panelOverview.Top = 0;
@@ -1876,7 +2470,7 @@ namespace org.kbinani.cadencii {
             trackBar.Top = height - _SCROLL_WIDTH;
             trackBar.Left = width - _SCROLL_WIDTH - trackBar.Width;
 
-            pictureBox2.Top = height - _SCROLL_WIDTH * 3;
+            pictureBox2.Top = height - _SCROLL_WIDTH * 4;
             pictureBox2.Left = width - _SCROLL_WIDTH;
 
             waveView.Top = 0;
@@ -1942,8 +2536,8 @@ namespace org.kbinani.cadencii {
             int y0 = AppManager.yCoordFromNote( note - 0.5f );
             int x0 = AppManager.xCoordFromClocks( clock_start );
             int px_width = AppManager.xCoordFromClocks( clock_start + clock_width ) - x0;
-            int boxheight = (int)(vibrato.Depth * 2 / 100.0f * AppManager.editorConfig.PxTrackHeight);
-            int px_shift = (int)(vibrato.Shift / 100.0 * vibrato.Depth / 100.0 * AppManager.editorConfig.PxTrackHeight);
+            int boxheight = (int)(vibrato.Depth * 2 / 100.0f * AppManager.editorConfig.getActualNoteHeight());
+            int px_shift = (int)(vibrato.Shift / 100.0 * vibrato.Depth / 100.0 * AppManager.editorConfig.getActualNoteHeight());
 
             // vibrato in
             int cl_vibin_end = clock_start + (int)(clock_width * vibrato.In / 100.0);
@@ -2001,7 +2595,7 @@ namespace org.kbinani.cadencii {
                 double phase = 2.0 * Math.PI * vibrato.Phase / 100.0;
                 double omega = 2.0 * Math.PI / vibrato.Period;   //角速度(rad/msec)
                 double msec = AppManager.getVsqFile().getSecFromClock( clock_start - 1 ) * 1000.0;
-                float px_track_height = AppManager.editorConfig.PxTrackHeight;
+                float px_track_height = AppManager.editorConfig.getActualNoteHeight();
                 phase -= (AppManager.getVsqFile().getSecFromClock( clock_start ) * 1000.0 - msec) * omega;
                 for ( int clock = clock_start; clock <= clock_start + clock_width; clock++ ) {
                     int i = clock - clock_start;
@@ -2833,10 +3427,16 @@ namespace org.kbinani.cadencii {
         /// <param name="note"></param>
         public void ensureVisibleY( int note ) {
             if ( note == 0 ) {
-                vScroll.setValue( vScroll.getMaximum() );
+                vScroll.setValue( vScroll.getMaximum() - vScroll.getVisibleAmount() );
+#if DEBUG
+                PortUtil.println( "vScroll.setValue at FormMain#ensureVisibleY; note == 0" );
+#endif
                 return;
             } else if ( note == 127 ) {
                 vScroll.setValue( vScroll.getMinimum() );
+#if DEBUG
+                PortUtil.println( "vScroll.setValue at FormMain#ensureVisibleY; note == 127" );
+#endif
                 return;
             }
             int height = vScroll.getHeight();
@@ -2844,17 +3444,23 @@ namespace org.kbinani.cadencii {
             int noteBottom = AppManager.noteFromYCoord( height ); // 画面下端でのノートナンバー
 
             int maximum = vScroll.getMaximum();
-            int track_height = AppManager.editorConfig.PxTrackHeight;
+            int track_height = AppManager.editorConfig.getActualNoteHeight();
             if ( note < noteBottom ) {
                 // noteBottomがnoteになるようにstartToDrawYを変える
                 int draft = (127 - note) * track_height - height;
                 int value = draft * maximum / (128 * track_height - height);
                 vScroll.setValue( value );
+#if DEBUG
+                PortUtil.println( "vScroll.setValue at FormMain#ensureVisibleY; note < noteBottom" );
+#endif
             } else if ( noteTop < note ) {
                 // noteTopがnoteになるようにstartToDrawYを変える
                 int draft = (127 - note) * track_height;
                 int value = draft * maximum / (128 * track_height - height);
                 vScroll.setValue( value );
+#if DEBUG
+                PortUtil.println( "vScroll.setValue at FormMain#ensureVisibleY; noteTop < note" );
+#endif
             }
         }
 
@@ -3383,7 +3989,7 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        public void setVScrollRange( int draft_length ) {
+        public void updateVScrollRange() {
 #if JAVA
             // 画面上で何ピクセルが見えてるか？
             int visible_amount = (int)pictPianoRoll.getHeight();
@@ -3398,18 +4004,33 @@ namespace org.kbinani.cadencii {
             vScroll.setUnitIncrement( unit_increment );
             vScroll.setBlockIncrement( visible_amount );*/
 #else
-            int _ARROWS = 40; // 両端の矢印の表示幅px（おおよその値）
-            if ( draft_length > vScroll.getMaximum() ) {
+/*            int _ARROWS = 40; // 両端の矢印の表示幅px（おおよその値）
+            //if ( draft_length > vScroll.getMaximum() ) {
                 vScroll.setMaximum( draft_length );
-            }
+            //}
             int large_change = (int)pictPianoRoll.getHeight();
             int box_width = (int)((vScroll.getHeight() - _ARROWS) * (float)large_change / (float)(vScroll.getMaximum() + large_change));
             if ( box_width < AppManager.editorConfig.MinimumScrollHandleWidth ) {
                 box_width = AppManager.editorConfig.MinimumScrollHandleWidth;
-                large_change = (int)((float)vScroll.getMaximum() * (float)box_width / (float)(vScroll.getWidth() - _ARROWS - box_width));
+                large_change = (int)((float)vScroll.getMaximum() * (float)box_width / (float)(vScroll.getHeight() - _ARROWS - box_width));
             }
             if ( large_change > 0 ) {
                 vScroll.setVisibleAmount( large_change );
+            }*/
+            //TODO: FormMain#updateVScrollValue; スクロールボックスの最小表示幅を考慮するのが未だ
+            int value = vScroll.getValue();
+            int old = value;
+            vScroll.setMaximum( 128 * AppManager.editorConfig.getActualNoteHeight() );
+            vScroll.setVisibleAmount( pictPianoRoll.getHeight() );
+            int min = vScroll.getMinimum();
+            int max = vScroll.getMaximum() - vScroll.getVisibleAmount();
+            if ( value < min ) {
+                value = min;
+            } else if ( max < value ) {
+                value = max;
+            }
+            if ( old != value ) {
+                vScroll.setValue( value );
             }
 #endif
         }
@@ -3838,15 +4459,6 @@ namespace org.kbinani.cadencii {
             KeySoundPlayer.play( note );
         }
 #endif
-
-        /// <summary>
-        /// 文字列を、現在の言語設定に従って翻訳します。
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public static String _( String id ) {
-            return Messaging.getMessage( id );
-        }
 
         /// <summary>
         /// このコンポーネントの表示言語を、現在の言語設定に従って更新します。
@@ -4544,44 +5156,6 @@ namespace org.kbinani.cadencii {
                 draft = hScroll.getMinimum();
             }
             return draft;
-        }
-
-        /// <summary>
-        /// 真ん中ボタンで画面を移動させるときの、vScrollの値を計算します。
-        /// 計算には、mButtonInitial, mMiddleButtonVScrollの値が使われます。
-        /// </summary>
-        /// <returns></returns>
-        private int computeVScrollValueForMiddleDrag( int mouse_y ) {
-            int dy = mouse_y - mButtonInitial.y;
-            int max = vScroll.getMaximum();
-            int min = vScroll.getMinimum();
-            double new_vscroll_value = (double)mMiddleButtonVScroll - dy * max / (128.0 * AppManager.editorConfig.PxTrackHeight - (double)vScroll.getHeight());
-            int value = (int)new_vscroll_value;
-            if ( value < min ) {
-                value = min;
-            } else if ( max < value ) {
-                value = max;
-            }
-            return value;
-        }
-
-        /// <summary>
-        /// 真ん中ボタンで画面を移動させるときの、hScrollの値を計算します。
-        /// 計算には、mButtonInitial, mMiddleButtonHScrollの値が使われます。
-        /// </summary>
-        /// <returns></returns>
-        private int computeHScrollValueForMiddleDrag( int mouse_x ) {
-            int dx = mouse_x - mButtonInitial.x;
-            int max = hScroll.getMaximum();
-            int min = hScroll.getMinimum();
-            double new_hscroll_value = (double)mMiddleButtonHScroll - (double)dx * AppManager.getScaleXInv();
-            int value = (int)new_hscroll_value;
-            if ( value < min ) {
-                value = min;
-            } else if ( max < value ) {
-                value = max;
-            }
-            return value;
         }
 
         #region 音符の編集関連
@@ -5830,12 +6404,12 @@ namespace org.kbinani.cadencii {
                 }
 
                 int xoffset = 6;// 6 + AppManager.keyWidth;
-                int yoffset = 127 * AppManager.editorConfig.PxTrackHeight;
+                int yoffset = 127 * AppManager.editorConfig.getActualNoteHeight();
                 float scalex = AppManager.getScaleX();
                 Font SMALL_FONT = null;
                 try {
                     SMALL_FONT = new Font( AppManager.editorConfig.ScreenFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE8 );
-                    int track_height = AppManager.editorConfig.PxTrackHeight;
+                    int track_height = AppManager.editorConfig.getActualNoteHeight();
                     VsqFileEx vsq = AppManager.getVsqFile();
                     int track_count = vsq.Track.size();
                     for ( int track = 1; track < track_count; track++ ) {
@@ -6006,7 +6580,7 @@ namespace org.kbinani.cadencii {
                             }
                             int note = item.ID.Note;
                             int x = (int)(clock * scalex + xoffset);
-                            int y = -note * AppManager.editorConfig.PxTrackHeight + yoffset;
+                            int y = -note * AppManager.editorConfig.getActualNoteHeight() + yoffset;
                             tmp.add( new DrawObject( type,
                                                      vsq,
                                                      new Rectangle( x, y, width, track_height ),
@@ -6299,13 +6873,6 @@ namespace org.kbinani.cadencii {
                 }
 #endif
             }
-        }
-
-        /// <summary>
-        /// 現在表示されているピアノロール画面の右上の、仮想スクリーン上座標で見たときのy座標(pixel)を取得します
-        /// </summary>
-        private int calculateStartToDrawY() {
-            return (int)((128 * AppManager.editorConfig.PxTrackHeight - vScroll.getHeight()) * (float)vScroll.getValue() / ((float)vScroll.getMaximum()));
         }
 
         public void openVsqCor( String file ) {
@@ -6851,6 +7418,7 @@ namespace org.kbinani.cadencii {
 #endif
             pictureBox3.mouseDownEvent.add( new BMouseEventHandler( this, "pictureBox3_MouseDown" ) );
             pictureBox2.mouseDownEvent.add( new BMouseEventHandler( this, "pictureBox2_MouseDown" ) );
+            pictureBox2.mouseUpEvent.add( new BMouseEventHandler( this, "pictureBox2_MouseUp" ) );
             pictureBox2.paintEvent.add( new BPaintEventHandler( this, "pictureBox2_Paint" ) );
             stripBtnPointer.clickEvent.add( new BEventHandler( this, "stripBtnArrow_Click" ) );
             stripBtnPencil.clickEvent.add( new BEventHandler( this, "stripBtnPencil_Click" ) );
@@ -6951,83 +7519,6 @@ namespace org.kbinani.cadencii {
             pictPianoRoll.requestFocus();
         }
         #endregion
-
-#if ENABLE_MIDI
-        public void mStripDDBtnMetronome_CheckedChanged( Object sender, EventArgs e ) {
-            AppManager.editorConfig.MetronomeEnabled = mStripDDBtnMetronome.isSelected();
-            if ( AppManager.editorConfig.MetronomeEnabled && AppManager.getEditMode() == EditMode.REALTIME ) {
-                MidiPlayer.RestartMetronome();
-            }
-        }
-#endif
-
-        public void handleStripPaletteTool_Click( Object sender, EventArgs e ) {
-            String id = "";  //選択されたツールのID
-#if ENABLE_SCRIPT
-            if ( sender is BToolStripButton ) {
-                BToolStripButton tsb = (BToolStripButton)sender;
-                if ( tsb.getTag() != null && tsb.getTag() is String ) {
-                    id = (String)tsb.getTag();
-                    AppManager.mSelectedPaletteTool = id;
-                    AppManager.setSelectedTool( EditTool.PALETTE_TOOL );
-                    tsb.setSelected( true );
-                }
-            } else if ( sender is BMenuItem ) {
-                BMenuItem tsmi = (BMenuItem)sender;
-                if ( tsmi.getTag() != null && tsmi.getTag() is String ) {
-                    id = (String)tsmi.getTag();
-                    AppManager.mSelectedPaletteTool = id;
-                    AppManager.setSelectedTool( EditTool.PALETTE_TOOL );
-                    tsmi.setSelected( true );
-                }
-            }
-#endif
-
-            int count = toolStripTool.getComponentCount();
-            for ( int i = 0; i < count; i++ ) {
-                Object item = toolStripTool.getComponentAtIndex( i );
-                if ( item is BToolStripButton ) {
-                    BToolStripButton button = (BToolStripButton)item;
-                    if ( button.getTag() != null && button.getTag() is String ) {
-                        if ( ((String)button.getTag()).Equals( id ) ) {
-                            button.setSelected( true );
-                        } else {
-                            button.setSelected( false );
-                        }
-                    }
-                }
-            }
-
-            MenuElement[] sub_cmenu_piano_palette_tool = cMenuPianoPaletteTool.getSubElements();
-            for ( int i = 0; i < sub_cmenu_piano_palette_tool.Length; i++ ) {
-                MenuElement item = sub_cmenu_piano_palette_tool[i];
-                if ( item is BMenuItem ) {
-                    BMenuItem menu = (BMenuItem)item;
-                    if ( menu.getTag() != null && menu.getTag() is String ) {
-                        if ( ((String)menu.getTag()).Equals( id ) ) {
-                            menu.setSelected( true );
-                        } else {
-                            menu.setSelected( false );
-                        }
-                    }
-                }
-            }
-
-            MenuElement[] sub_cmenu_track_selectro_palette_tool = cMenuTrackSelectorPaletteTool.getSubElements();
-            for ( int i = 0; i < sub_cmenu_track_selectro_palette_tool.Length; i++ ) {
-                MenuElement item = sub_cmenu_track_selectro_palette_tool[i];
-                if ( item is BMenuItem ) {
-                    BMenuItem menu = (BMenuItem)item;
-                    if ( menu.getTag() != null && menu.getTag() is String ) {
-                        if ( ((String)menu.getTag()).Equals( id ) ) {
-                            menu.setSelected( true );
-                        } else {
-                            menu.setSelected( false );
-                        }
-                    }
-                }
-            }
-        }
 
         //BOOKMARK: inputTextBox
         #region AppManager.inputTextBox
@@ -7177,28 +7668,6 @@ namespace org.kbinani.cadencii {
 #endif
         }
         #endregion
-
-        public void handleRecentFileMenuItem_Click( Object sender, EventArgs e ) {
-            if ( sender is BMenuItem ) {
-                BMenuItem item = (BMenuItem)sender;
-                if ( item.getTag() is String ) {
-                    String filename = (String)item.getTag();
-                    openVsqCor( filename );
-                    refreshScreen();
-                }
-            }
-        }
-
-        public void handleRecentFileMenuItem_MouseEnter( Object sender, EventArgs e ) {
-            if ( sender is BMenuItem ) {
-                BMenuItem item = (BMenuItem)sender;
-#if JAVA
-                statusLabel.setText( item.getToolTipText() );
-#else
-                statusLabel.setText( item.ToolTipText );
-#endif
-            }
-        }
 
         //BOOKMARK: AppManager
         #region AppManager
@@ -7437,528 +7906,6 @@ namespace org.kbinani.cadencii {
             stripBtnCut.setEnabled( !selected_event_is_null );
             stripBtnCopy.setEnabled( !selected_event_is_null );
         }
-
-        public void render( Integer[] tracks ) {
-            VsqFileEx vsq = AppManager.getVsqFile();
-
-            String tmppath = AppManager.getTempWaveDir();
-            if ( !PortUtil.isDirectoryExists( tmppath ) ) {
-                PortUtil.createDirectory( tmppath );
-            }
-            String[] files = new String[tracks.Length];
-            Integer[] ends = new Integer[tracks.Length];
-            Integer[] starts = new Integer[tracks.Length];
-            for ( int i = 0; i < tracks.Length; i++ ) {
-                files[i] = PortUtil.combinePath( tmppath, tracks[i] + ".wav" );
-                ends[i] = vsq.TotalClocks + 240;
-                starts[i] = 0;
-            }
-            FormSynthesize dlg = null;
-            try {
-                dlg = new FormSynthesize( vsq, AppManager.editorConfig.PreSendTime, tracks, files, starts, ends, false );
-                dlg.setModal( true );
-                dlg.setVisible( true );
-                int finished = dlg.getFinished();
-                for ( int i = 0; i < finished; i++ ) {
-                    AppManager.setRenderRequired( tracks[i], false );
-                    AppManager.mLastRenderedStatus[tracks[i] - 1] = new RenderedStatus( (VsqTrack)vsq.Track.get( tracks[i] ).clone(), vsq.TempoTable );
-                }
-            } catch ( Exception ex ) {
-                Logger.write( typeof( FormMain ) + ".render; ex=" + ex + "\n" );
-            } finally {
-                if ( dlg != null ) {
-                    try {
-                        dlg.close();
-                    } catch ( Exception ex2 ) {
-                        Logger.write( typeof( FormMain ) + ".render; ex=" + ex2 + "\n" );
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// 指定したトラックの、レンダリングが必要な部分を再レンダリングし、ツギハギすることでトラックのキャッシュをフリーズさせます。
-        /// </summary>
-        /// <param name="track"></param>
-        private void patchWorkToFreeze( Integer[] tracks ) {
-            VsqFileEx vsq = AppManager.getVsqFile();
-            vsq.updateTotalClocks();
-            String temppath = AppManager.getTempWaveDir();
-            int presend = AppManager.editorConfig.PreSendTime;
-            int totalClocks = vsq.TotalClocks;
-
-            Vector<Integer> startList = new Vector<Integer>();
-            Vector<Integer> endList = new Vector<Integer>();
-            Vector<Integer> trackList = new Vector<Integer>();
-            Vector<String> files = new Vector<String>();
-            int[] startIndex = new int[tracks.Length + 1]; // startList, endList, trackList, filesの内，第startIndex[j]からが，第tracks[j]トラックについてのレンダリング要求かを表す.
-
-            for ( int k = 0; k < tracks.Length; k++ ) {
-                startIndex[k] = trackList.size();
-                int track = tracks[k];
-                VsqTrack vsq_track = vsq.Track.get( track );
-                String wavePath = PortUtil.combinePath( temppath, track + ".wav" );
-
-                if ( AppManager.mLastRenderedStatus[track - 1] == null ) {
-                    // この場合は全部レンダリングする必要がある
-                    trackList.add( track );
-                    startList.add( 0 );
-                    endList.add( totalClocks + 240 );
-                    files.add( wavePath );
-                    continue;
-                }
-
-                // 部分レンダリング
-                EditedZoneUnit[] areas = 
-                    Utility.detectRenderedStatusDifference( AppManager.mLastRenderedStatus[track - 1],
-                                                            new RenderedStatus( (VsqTrack)vsq_track.clone(), vsq.TempoTable ) );
-
-                // areasとかぶっている音符がどれかを判定する
-                EditedZone zone = new EditedZone();
-                zone.add( areas );
-                checkSerializedEvents( zone, vsq_track, areas );
-                checkSerializedEvents( zone, AppManager.mLastRenderedStatus[track - 1].track, areas );
-
-                // レンダリング済みのwaveがあれば、zoneに格納された編集範囲に隣接する前後が無音でない場合、
-                // 編集範囲を無音部分まで延長する。
-                if ( PortUtil.isFileExists( wavePath ) ) {
-                    WaveReader wr = null;
-                    try {
-                        wr = new WaveReader( wavePath );
-                        int sampleRate = wr.getSampleRate();
-                        int buflen = 1024;
-                        double[] left = new double[buflen];
-                        double[] right = new double[buflen];
-
-                        // まずzoneから編集範囲を抽出
-                        Vector<EditedZoneUnit> areasList = new Vector<EditedZoneUnit>();
-                        for ( Iterator<EditedZoneUnit> itr = zone.iterator(); itr.hasNext(); ) {
-                            EditedZoneUnit e = itr.next();
-                            areasList.add( (EditedZoneUnit)e.clone() );
-                        }
-
-                        for ( Iterator<EditedZoneUnit> itr = areasList.iterator(); itr.hasNext(); ) {
-                            EditedZoneUnit e = itr.next();
-                            int exStart = e.mStart;
-                            int exEnd = e.mEnd;
-
-                            // 前方に1クロックずつ検索する。
-                            int end = e.mStart;
-                            int start = end - 1;
-                            double secEnd = vsq.getSecFromClock( end );
-                            long saEnd = (long)(secEnd * sampleRate);
-                            double secStart = 0.0;
-                            long saStart = 0;
-                            while ( true ) {
-                                start = end - 1;
-                                if ( start < 0 ) {
-                                    start = 0;
-                                    break;
-                                }
-                                secStart = vsq.getSecFromClock( start );
-                                saStart = (long)(secStart * sampleRate);
-                                int samples = (int)(saEnd - saStart);
-                                long pos = saStart;
-                                boolean allzero = true;
-                                while ( samples > 0 ) {
-                                    int delta = samples > buflen ? buflen : samples;
-                                    wr.read( pos, delta, left, right );
-                                    for ( int i = 0; i < delta; i++ ) {
-                                        if ( left[i] != 0.0 || right[i] != 0.0 ) {
-                                            allzero = false;
-                                            break;
-                                        }
-                                    }
-                                    pos += delta;
-                                    samples -= delta;
-                                    if ( !allzero ) {
-                                        break;
-                                    }
-                                }
-                                if ( allzero ) {
-                                    break;
-                                }
-                                secEnd = secStart;
-                                end = start;
-                                saEnd = saStart;
-                            }
-                            // endクロックより先は無音であるようだ。
-                            exStart = end;
-
-                            // 後方に1クロックずつ検索する
-                            if ( e.mEnd < int.MaxValue ) {
-                                start = e.mEnd;
-                                secStart = vsq.getSecFromClock( start );
-                                while ( true ) {
-                                    end = start + 1;
-                                    secEnd = vsq.getSecFromClock( end );
-                                    saEnd = (long)(secEnd * sampleRate);
-                                    int samples = (int)(saEnd - saStart);
-                                    long pos = saStart;
-                                    boolean allzero = true;
-                                    while ( samples > 0 ) {
-                                        int delta = samples > buflen ? buflen : samples;
-                                        wr.read( pos, delta, left, right );
-                                        for ( int i = 0; i < delta; i++ ) {
-                                            if ( left[i] != 0.0 || right[i] != 0.0 ) {
-                                                allzero = false;
-                                                break;
-                                            }
-                                        }
-                                        pos += delta;
-                                        samples -= delta;
-                                        if ( !allzero ) {
-                                            break;
-                                        }
-                                    }
-                                    if ( allzero ) {
-                                        break;
-                                    }
-                                    secStart = secEnd;
-                                    start = end;
-                                    saStart = saEnd;
-                                }
-                                // startクロック以降は無音のようだ
-                                exEnd = start;
-                            }
-#if DEBUG
-                            if ( e.mStart != exStart ) {
-                                PortUtil.println( "FormMain#patchWorkToFreeze; start extended; " + e.mStart + " => " + exStart );
-                            }
-                            if ( e.mEnd != exEnd ) {
-                                PortUtil.println( "FormMain#patchWorkToFreeze; end extended; " + e.mEnd + " => " + exEnd );
-                            }
-#endif
-
-                            zone.add( exStart, exEnd );
-                        }
-                    } catch ( Exception ex ) {
-                        Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
-                        PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
-                    } finally {
-                        if ( wr != null ) {
-                            try {
-                                wr.close();
-                            } catch ( Exception ex2 ) {
-                                Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
-                                PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex2=" + ex2 );
-                            }
-                        }
-                    }
-                }
-
-                // zoneに、レンダリングが必要なアイテムの範囲が格納されているので。
-                int j = -1;
-                for ( Iterator<EditedZoneUnit> itr = zone.iterator(); itr.hasNext(); ) {
-                    EditedZoneUnit unit = itr.next();
-                    j++;
-                    trackList.add( track );
-                    startList.add( unit.mStart );
-                    endList.add( unit.mEnd );
-                    files.add( PortUtil.combinePath( temppath, track + "_" + j + ".wav" ) );
-                }
-            }
-            startIndex[tracks.Length] = trackList.size();
-
-#if DEBUG
-            for ( int i = 0; i < startList.size(); i++ ) {
-                PortUtil.println( "FormMain#patchWorkToFreeze; #" + i + "; start=" + startList.get( i ) + "; end=" + endList.get( i ) );
-            }
-#endif
-
-            if ( trackList.size() <= 0 ) {
-                // パッチワークする必要なし
-                for ( int i = 0; i < tracks.Length; i++ ) {
-                    AppManager.setRenderRequired( tracks[i], false );
-                }
-                return;
-            }
-
-            FormSynthesize dialog = null;
-            String tempWave = PortUtil.combinePath( temppath, "temp.wav" );
-            try {
-                dialog = new FormSynthesize( vsq,
-                                             presend,
-                                             trackList.toArray( new Integer[] { } ),
-                                             files.toArray( new String[] { } ),
-                                             startList.toArray( new Integer[] { } ),
-                                             endList.toArray( new Integer[] { } ),
-                                             false );
-                dialog.setModal( true );
-                dialog.setVisible( true );
-                int finished = dialog.getFinished();
-                for ( int k = 0; k < tracks.Length; k++ ) {
-                    int track = tracks[k];
-                    String wavePath = PortUtil.combinePath( temppath, track + ".wav" );
-
-                    if ( wavePath.Equals( files.get( startIndex[k] ) ) && startIndex[k] < finished ) {
-                        // このとき，パッチワークを行う必要なし．
-                        AppManager.mLastRenderedStatus[track - 1] = new RenderedStatus( (VsqTrack)vsq.Track.get( track ).clone(), vsq.TempoTable );
-                        AppManager.serializeRenderingStatus( temppath, track );
-                        waveView.load( track - 1, wavePath );
-                        continue;
-                    }
-
-                    WaveWriter writer = null;
-                    try {
-                        int sampleRate = VSTiProxy.SAMPLE_RATE;
-                        long totalLength = (long)((vsq.getSecFromClock( vsq.TotalClocks ) + 1.0) * sampleRate);
-                        writer = new WaveWriter( wavePath, AppManager.editorConfig.WaveFileOutputChannel, 16, sampleRate );
-                        int BUFLEN = 1024;
-                        double[] bufl = new double[BUFLEN];
-                        double[] bufr = new double[BUFLEN];
-                        for ( int i = startIndex[k]; i < startIndex[k + 1] && i < finished; i++ ) {
-                            double secStart = vsq.getSecFromClock( startList.get( i ) );
-                            int clockEnd = endList.get( i );
-                            if ( clockEnd == int.MaxValue ) {
-                                clockEnd = vsq.TotalClocks + 240;
-                            }
-                            double secEnd = vsq.getSecFromClock( clockEnd );
-                            long sampleStart = (long)(secStart * sampleRate);
-                            long sampleEnd = (long)(secEnd * sampleRate);
-
-                            WaveReader wr = null;
-                            try {
-                                wr = new WaveReader( files.get( i ) );
-                                long remain2 = sampleEnd - sampleStart;
-                                long proc = 0;
-                                while ( remain2 > 0 ) {
-                                    int delta = remain2 > BUFLEN ? BUFLEN : (int)remain2;
-                                    wr.read( proc, delta, bufl, bufr );
-                                    writer.replace( sampleStart + proc, delta, bufl, bufr );
-                                    proc += delta;
-                                    remain2 -= delta;
-                                }
-                            } catch ( Exception ex ) {
-                                Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
-                                PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
-                            } finally {
-                                if ( wr != null ) {
-                                    try {
-                                        wr.close();
-                                    } catch ( Exception ex2 ) {
-                                        Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
-                                        PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex2=" + ex2 );
-                                    }
-                                }
-                            }
-
-                            try {
-                                PortUtil.deleteFile( files.get( i ) );
-                            } catch ( Exception ex ) {
-                                Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
-                                PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
-                            }
-                        }
-
-                        VsqTrack vsq_track = vsq.Track.get( track );
-                        if ( startIndex[k + 1] - 1 < finished ) {
-                            // 途中で終了せず，このトラックの全てのパッチワークが完了した．
-                            AppManager.mLastRenderedStatus[track - 1] = new RenderedStatus( (VsqTrack)vsq_track.clone(), vsq.TempoTable );
-                            AppManager.serializeRenderingStatus( temppath, track );
-                            AppManager.setRenderRequired( track, false );
-                        } else {
-                            // パッチワークの作成途中で，キャンセルされた
-                            // キャンセルされたやつ以降の範囲に、プログラムチェンジ17の歌手変更イベントを挿入する。→AppManager#detectTrackDifferenceに必ず検出してもらえる。
-                            VsqTrack copied = (VsqTrack)vsq_track.clone();
-                            VsqEvent dumy = new VsqEvent();
-                            dumy.ID.type = VsqIDType.Singer;
-                            dumy.ID.IconHandle = new IconHandle();
-                            dumy.ID.IconHandle.Program = 17;
-                            for ( int i = startIndex[k]; i < startIndex[k + 1]; i++ ) {
-                                if ( i < finished ) {
-                                    continue;
-                                }
-                                int start = startList.get( i );
-                                int end = endList.get( i );
-                                VsqEvent singerAtEnd = vsq_track.getSingerEventAt( end );
-                                
-                                // startの位置に歌手変更が既に指定されていないかどうかを検査
-                                int foundStart = -1;
-                                int foundEnd = -1;
-                                for ( Iterator<Integer> itr = copied.indexIterator( IndexIteratorKind.SINGER ); itr.hasNext(); ) {
-                                    int j = itr.next();
-                                    VsqEvent ve = copied.getEvent( j );
-                                    if ( ve.Clock == start ) {
-                                        foundStart = j;
-                                    }
-                                    if ( ve.Clock == end ) {
-                                        foundEnd = j;
-                                    }
-                                    if ( end < ve.Clock ) {
-                                        break;
-                                    }
-                                }
-
-                                VsqEvent dumyStart = (VsqEvent)dumy.clone();
-                                dumyStart.Clock = start;
-                                if ( foundStart >= 0 ) {
-                                    copied.setEvent( foundStart, dumyStart );
-                                } else {
-                                    copied.addEvent( dumyStart );
-                                }
-
-                                if ( end != int.MaxValue ) {
-                                    VsqEvent dumyEnd = (VsqEvent)singerAtEnd.clone();
-                                    dumyEnd.Clock = end;
-                                    if ( foundEnd >= 0 ) {
-                                        copied.setEvent( foundEnd, dumyEnd );
-                                    } else {
-                                        copied.addEvent( dumyEnd );
-                                    }
-                                }
-
-                                copied.sortEvent();
-                            }
-
-                            AppManager.mLastRenderedStatus[track - 1] = new RenderedStatus( copied, vsq.TempoTable );
-                            AppManager.serializeRenderingStatus( temppath, track );
-                        }
-                    } catch ( Exception ex ) {
-                        Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
-                        PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
-                    } finally {
-                        if ( writer != null ) {
-                            try {
-                                writer.close();
-                            } catch ( Exception ex2 ) {
-                                Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
-                                PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex2=" + ex2 );
-                            }
-                        }
-                    }
-
-                    // 波形表示用のWaveDrawContextの内容を更新する。
-                    for ( int i = startIndex[k]; i < startIndex[k + 1] && i < finished; i++ ) {
-                        double secStart = vsq.getSecFromClock( startList.get( i ) );
-                        int clockEnd = endList.get( i );
-                        if ( clockEnd == int.MaxValue ) {
-                            clockEnd = vsq.TotalClocks + 240;
-                        }
-                        double secEnd = vsq.getSecFromClock( clockEnd );
-
-                        waveView.reloadPartial( tracks[k] - 1, wavePath, secStart, secEnd );
-                    }
-                }
-            } catch ( Exception ex ) {
-                Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
-                PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
-            } finally {
-                if ( dialog != null ) {
-                    try {
-                        dialog.close();
-                    } catch ( Exception ex2 ) {
-                        Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
-                        PortUtil.stderr.println( "FormMain#patchWorkToFreeez; ex2=" + ex2 );
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// 指定されたトラックにあるイベントの内、配列areasで指定されたゲートタイム範囲とオーバーラップしているか、
-        /// または連続している音符を抽出し、その範囲をzoneに追加します。
-        /// </summary>
-        /// <param name="zone"></param>
-        /// <param name="vsq_track"></param>
-        /// <param name="areas"></param>
-        private static void checkSerializedEvents( EditedZone zone, VsqTrack vsq_track, EditedZoneUnit[] areas ) {
-            if ( vsq_track == null || zone == null || areas == null ) {
-                return;
-            }
-            if ( areas.Length == 0 ) {
-                return;
-            }
-            TreeMap<Integer, Integer> ids = new TreeMap<Integer, Integer>();
-            for ( Iterator<Integer> itr = vsq_track.indexIterator( IndexIteratorKind.NOTE ); itr.hasNext(); ) {
-                int indx = itr.next();
-                VsqEvent item = vsq_track.getEvent( indx );
-                int clockStart = item.Clock;
-                int clockEnd = clockStart + item.ID.getLength();
-                for ( int i = 0; i < areas.Length; i++ ) {
-                    EditedZoneUnit area = areas[i];
-                    if ( clockStart < area.mEnd && area.mEnd <= clockEnd ) {
-                        if ( !ids.containsKey( item.InternalID ) ) {
-                            ids.put( item.InternalID, indx );
-                            zone.add( clockStart, clockEnd );
-                        }
-                    } else if ( clockStart <= area.mStart && area.mStart < clockEnd ) {
-                        if ( !ids.containsKey( item.InternalID ) ) {
-                            ids.put( item.InternalID, indx );
-                            zone.add( clockStart, clockEnd );
-                        }
-                    } else if ( area.mStart <= clockStart && clockEnd < area.mEnd ) {
-                        if ( !ids.containsKey( item.InternalID ) ) {
-                            ids.put( item.InternalID, indx );
-                            zone.add( clockStart, clockEnd );
-                        }
-                    } else if ( clockStart <= area.mStart && area.mEnd < clockEnd ) {
-                        if ( !ids.containsKey( item.InternalID ) ) {
-                            ids.put( item.InternalID, indx );
-                            zone.add( clockStart, clockEnd );
-                        }
-                    }
-                }
-            }
-
-            // idsに登録された音符のうち、前後がつながっているものを列挙する。
-            boolean changed = true;
-            int numEvents = vsq_track.getEventCount();
-            while ( changed ) {
-                changed = false;
-                for ( Iterator<Integer> itr = ids.keySet().iterator(); itr.hasNext(); ) {
-                    int id = itr.next();
-                    int indx = ids.get( id ); // InternalIDがidのアイテムの禁書目録
-                    VsqEvent item = vsq_track.getEvent( indx );
-
-                    // アイテムを遡り、連続していれば追加する
-                    int clock = item.Clock;
-                    for ( int i = indx - 1; i >= 0; i-- ) {
-                        VsqEvent search = vsq_track.getEvent( i );
-                        if ( search.ID.type != VsqIDType.Anote ) {
-                            continue;
-                        }
-                        int searchClock = search.Clock;
-                        int searchLength = search.ID.getLength();
-                        if ( searchClock + searchLength == clock ) {
-                            if ( !ids.containsKey( search.InternalID ) ) {
-                                ids.put( search.InternalID, i );
-                                zone.add( searchClock, searchClock + searchLength );
-                                changed = true;
-                            }
-                            clock = searchClock;
-                        } else {
-                            break;
-                        }
-                    }
-
-                    // アイテムを辿り、連続していれば追加する
-                    clock = item.Clock + item.ID.getLength();
-                    for ( int i = indx + 1; i < numEvents; i++ ) {
-                        VsqEvent search = vsq_track.getEvent( i );
-                        if ( search.ID.type != VsqIDType.Anote ) {
-                            continue;
-                        }
-                        int searchClock = search.Clock;
-                        int searchLength = search.ID.getLength();
-                        if ( clock == searchClock ) {
-                            if ( !ids.containsKey( search.InternalID ) ) {
-                                ids.put( search.InternalID, i );
-                                zone.add( searchClock, searchClock + searchLength );
-                                changed = true;
-                            }
-                            clock = searchClock + searchLength;
-                        } else {
-                            break;
-                        }
-                    }
-
-                    if ( changed ) {
-                        break;
-                    }
-                }
-            }
-        }
         #endregion
 
         //BOOKMARK: pictPianoRoll
@@ -8058,9 +8005,9 @@ namespace org.kbinani.cadencii {
                                 break;
                             }
                             Rectangle rc = new Rectangle( dobj.mRectangleInPixel.x + AppManager.keyWidth + dobj.mVibratoDelayInPixel - stdx,
-                                                          dobj.mRectangleInPixel.y + AppManager.editorConfig.PxTrackHeight - stdy,
+                                                          dobj.mRectangleInPixel.y + AppManager.editorConfig.getActualNoteHeight() - stdy,
                                                           dobj.mRectangleInPixel.width - dobj.mVibratoDelayInPixel,
-                                                          AppManager.editorConfig.PxTrackHeight );
+                                                          AppManager.editorConfig.getActualNoteHeight() );
                             if ( Utility.isInRect( new Point( e.X, e.Y ), rc ) ) {
                                 //ビブラートの範囲なのでビブラートを消す
                                 VsqEvent item3 = null;
@@ -8209,9 +8156,9 @@ namespace org.kbinani.cadencii {
                         // 表情コントロールプロパティを表示するかどうかを決める
                         rect = new Rectangle(
                             dobj.mRectangleInPixel.x + AppManager.keyWidth - stdx,
-                            dobj.mRectangleInPixel.y - stdy + AppManager.editorConfig.PxTrackHeight,
+                            dobj.mRectangleInPixel.y - stdy + AppManager.editorConfig.getActualNoteHeight(),
                             21,
-                            AppManager.editorConfig.PxTrackHeight );
+                            AppManager.editorConfig.getActualNoteHeight() );
                         if ( Utility.isInRect( new Point( e.X, e.Y ), rect ) ) {
                             VsqEvent selectedEvent = null;
                             for ( Iterator<VsqEvent> itr2 = vsq.Track.get( selected ).getEventIterator(); itr2.hasNext(); ) {
@@ -8277,9 +8224,9 @@ namespace org.kbinani.cadencii {
 
                         // ビブラートプロパティダイアログを表示するかどうかを決める
                         rect = new Rectangle( dobj.mRectangleInPixel.x + AppManager.keyWidth - stdx + 21,
-                                              dobj.mRectangleInPixel.y - stdy + AppManager.editorConfig.PxTrackHeight,
+                                              dobj.mRectangleInPixel.y - stdy + AppManager.editorConfig.getActualNoteHeight(),
                                               dobj.mRectangleInPixel.width - 21,
-                                              AppManager.editorConfig.PxTrackHeight );
+                                              AppManager.editorConfig.getActualNoteHeight() );
                         if ( Utility.isInRect( new Point( e.X, e.Y ), rect ) ) {
                             VsqEvent selectedEvent = null;
                             for ( Iterator<VsqEvent> itr2 = vsq.Track.get( AppManager.getSelected() ).getEventIterator(); itr2.hasNext(); ) {
@@ -8496,9 +8443,9 @@ namespace org.kbinani.cadencii {
                                 break;
                             }
                             Rectangle rc = new Rectangle( dobj.mRectangleInPixel.x + key_width + dobj.mVibratoDelayInPixel - stdx - _EDIT_HANDLE_WIDTH / 2,
-                                                dobj.mRectangleInPixel.y + AppManager.editorConfig.PxTrackHeight - stdy,
+                                                dobj.mRectangleInPixel.y + AppManager.editorConfig.getActualNoteHeight() - stdy,
                                                 _EDIT_HANDLE_WIDTH,
-                                                AppManager.editorConfig.PxTrackHeight );
+                                                AppManager.editorConfig.getActualNoteHeight() );
                             if ( Utility.isInRect( new Point( e.X, e.Y ), rc ) ) {
                                 vibrato_found = true;
                                 mVibratoEditingId = dobj.mInternalID;
@@ -8510,7 +8457,7 @@ namespace org.kbinani.cadencii {
                         }
                         if ( vibrato_found ) {
                             int clock = AppManager.clockFromXCoord( pxFound.x + pxFound.width - px_vibrato_length - stdx );
-                            int note = AppManager.noteFromYCoord( pxFound.y + AppManager.editorConfig.PxTrackHeight - stdy );
+                            int note = AppManager.noteFromYCoord( pxFound.y + AppManager.editorConfig.getActualNoteHeight() - stdy );
                             int length = (int)(pxFound.width * AppManager.getScaleXInv());
                             AppManager.mAddingEvent = new VsqEvent( clock, new VsqID( 0 ) );
                             AppManager.mAddingEvent.ID.type = VsqIDType.Anote;
@@ -8752,15 +8699,6 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
 
-        private static int doQuantize( int clock, int unit ) {
-            int odd = clock % unit;
-            int new_clock = clock - odd;
-            if ( odd > unit / 2 ) {
-                new_clock += unit;
-            }
-            return new_clock;
-        }
-
         public void pictPianoRoll_MouseMove( Object sender, BMouseEventArgs e ) {
             if ( mFormActivated ) {
 #if ENABLE_PROPERTY
@@ -8860,6 +8798,11 @@ namespace org.kbinani.cadencii {
                 mExtDragY = ExtDragYMode.NONE;
             }
 
+            if ( edit_mode == EditMode.MIDDLE_DRAG ) {
+                mExtDragX = ExtDragXMode.NONE;
+                mExtDragY = ExtDragYMode.NONE;
+            }
+
             double now = 0, dt = 0;
             if ( mExtDragX != ExtDragXMode.NONE || mExtDragY != ExtDragYMode.NONE ) {
                 now = PortUtil.getCurrentTime();
@@ -8898,6 +8841,8 @@ namespace org.kbinani.cadencii {
                 hScroll.setValue( draft );
             }
             if ( mExtDragY == ExtDragYMode.UP || mExtDragY == ExtDragYMode.DOWN ) {
+                int min = vScroll.getMinimum();
+                int max = vScroll.getMaximum() - vScroll.getVisibleAmount();
                 int px_move = AppManager.editorConfig.MouseDragIncrement;
                 if ( px_move / dt > AppManager.editorConfig.MouseDragMaximumRate ) {
                     px_move = (int)(dt * AppManager.editorConfig.MouseDragMaximumRate);
@@ -8905,18 +8850,21 @@ namespace org.kbinani.cadencii {
                 if ( mExtDragY == ExtDragYMode.UP ) {
                     px_move *= -1;
                 }
-                int draft_stdy = stdy + px_move;
-                int draft = (int)((draft_stdy * (double)vScroll.getMaximum()) / (128.0 * AppManager.editorConfig.PxTrackHeight - vScroll.getHeight()));
+                int draft = stdy + px_move;
+                //int draft = (int)((draft_stdy * (double)vScroll.getMaximum()) / (128.0 * AppManager.editorConfig.getActualNoteHeight() - vScroll.getHeight()));
                 if ( draft < 0 ) {
                     draft = 0;
                 }
                 int df = (int)draft;
-                if ( df < vScroll.getMinimum() ) {
-                    df = vScroll.getMinimum();
-                } else if ( vScroll.getMaximum() < df ) {
-                    df = vScroll.getMaximum();
+                if ( df < min ) {
+                    df = min;
+                } else if ( max < df ) {
+                    df = max;
                 }
                 vScroll.setValue( df );
+#if DEBUG
+                PortUtil.println( "vScroll.setValue at FormMain#pictPianoRoll_MouseMove; mExtDragY == UP or DOWN" );
+#endif
             }
             if ( mExtDragX != ExtDragXMode.NONE || mExtDragY != ExtDragYMode.NONE ) {
                 mTimerDragLastIgnitted = now;
@@ -9022,6 +8970,9 @@ namespace org.kbinani.cadencii {
                 }
                 if ( draftv != vScroll.getValue() ) {
                     vScroll.setValue( draftv );
+#if DEBUG
+                    PortUtil.println( "vScroll.setValue at FormMain#pictPianoRoll_MouseMove; edit_mode == MIDDLE_DRAG" );
+#endif
                 }
                 if ( AppManager.isPlaying() ) {
                     return;
@@ -9189,7 +9140,7 @@ namespace org.kbinani.cadencii {
                                             dobj.mRectangleInPixel.x + AppManager.keyWidth - stdx,
                                             dobj.mRectangleInPixel.y - stdy,
                                             edit_handle_width,
-                                            AppManager.editorConfig.PxTrackHeight );
+                                            AppManager.editorConfig.getActualNoteHeight() );
                         if ( Utility.isInRect( new Point( e.X, e.Y ), rc ) ) {
                             split_cursor = true;
                             break;
@@ -9199,7 +9150,7 @@ namespace org.kbinani.cadencii {
                         rc = new Rectangle( dobj.mRectangleInPixel.x + AppManager.keyWidth + dobj.mRectangleInPixel.width - stdx - edit_handle_width,
                                             dobj.mRectangleInPixel.y - stdy,
                                             edit_handle_width,
-                                            AppManager.editorConfig.PxTrackHeight );
+                                            AppManager.editorConfig.getActualNoteHeight() );
                         if ( Utility.isInRect( new Point( e.X, e.Y ), rc ) ) {
                             split_cursor = true;
                             break;
@@ -9217,9 +9168,9 @@ namespace org.kbinani.cadencii {
                             if ( Utility.isInRect( new Point( e.X, e.Y ), rc ) ) {
                                 // ビブラートの開始位置
                                 rc = new Rectangle( dobj.mRectangleInPixel.x + AppManager.keyWidth + dobj.mVibratoDelayInPixel - stdx - _EDIT_HANDLE_WIDTH / 2,
-                                                    dobj.mRectangleInPixel.y + AppManager.editorConfig.PxTrackHeight - stdy,
+                                                    dobj.mRectangleInPixel.y + AppManager.editorConfig.getActualNoteHeight() - stdy,
                                                     _EDIT_HANDLE_WIDTH,
-                                                    AppManager.editorConfig.PxTrackHeight );
+                                                    AppManager.editorConfig.getActualNoteHeight() );
                                 if ( Utility.isInRect( new Point( e.X, e.Y ), rc ) ) {
                                     split_cursor = true;
                                     break;
@@ -9282,7 +9233,7 @@ namespace org.kbinani.cadencii {
             int stdx = AppManager.getStartToDrawX();
             int stdy = AppManager.getStartToDrawY();
             double d2_13 = 8192; // = 2^13
-            int track_height = AppManager.editorConfig.PxTrackHeight;
+            int track_height = AppManager.editorConfig.getActualNoteHeight();
             int half_track_height = track_height / 2;
 
             if ( edit_mode == EditMode.CURVE_ON_PIANOROLL ) {
@@ -9825,12 +9776,23 @@ namespace org.kbinani.cadencii {
                 hScroll.setValue( computeScrollValueFromWheelDelta( e.Delta ) );
             } else {
                 double new_val = (double)vScroll.getValue() - e.Delta;
-                if ( new_val > vScroll.getMaximum() ) {
-                    vScroll.setValue( vScroll.getMaximum() );
-                } else if ( new_val < vScroll.getMinimum() ) {
-                    vScroll.setValue( vScroll.getMinimum() );
+                int min = vScroll.getMinimum();
+                int max = vScroll.getMaximum() - vScroll.getVisibleAmount();
+                if ( new_val > max ) {
+                    vScroll.setValue( max );
+#if DEBUG
+                    PortUtil.println( "vScroll.setValue at FormMain#pictPianoRoll_MouseWheel; new_val > max" );
+#endif
+                } else if ( new_val < min ) {
+                    vScroll.setValue( min );
+#if DEBUG
+                    PortUtil.println( "vScroll.setValue at FormMain#pictPianoRoll_MouseWheel; new_val < min" );
+#endif
                 } else {
                     vScroll.setValue( (int)new_val );
+#if DEBUG
+                    PortUtil.println( "vScroll.setValue at FormMain#pictPianoRoll_MouseWheel; (normal)" );
+#endif
                 }
             }
             refreshScreen();
@@ -9955,14 +9917,6 @@ namespace org.kbinani.cadencii {
                 splitContainerProperty.Panel2.Controls.Add( splitContainer1 );
             }
 #endif
-        }
-
-        public void menuHiddenVisualForwardParameter_Click( Object sender, EventArgs e ) {
-            trackSelector.SelectNextCurve();
-        }
-
-        public void menuHiddenVisualBackwardParameter_Click( Object sender, EventArgs e ) {
-            trackSelector.SelectPreviousCurve();
         }
 
         public void menuVisualWaveform_CheckedChanged( Object sender, EventArgs e ) {
@@ -10444,10 +10398,13 @@ namespace org.kbinani.cadencii {
             updateRecentFileMenu();
 
             // C3が画面中央に来るように調整
-            int draft_start_to_draw_y = 68 * AppManager.editorConfig.PxTrackHeight - pictPianoRoll.getHeight() / 2;
-            int draft_vscroll_value = (int)((draft_start_to_draw_y * (double)vScroll.getMaximum()) / (128 * AppManager.editorConfig.PxTrackHeight - vScroll.getHeight()));
+            int draft_start_to_draw_y = 68 * AppManager.editorConfig.getActualNoteHeight() - pictPianoRoll.getHeight() / 2;
+            int draft_vscroll_value = (int)((draft_start_to_draw_y * (double)vScroll.getMaximum()) / (128 * AppManager.editorConfig.getActualNoteHeight() - vScroll.getHeight()));
             try {
                 vScroll.setValue( draft_vscroll_value );
+#if DEBUG
+                PortUtil.println( "vScroll.setValue at FormMain#FormMain_Load" );
+#endif
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".FormMain_Load; ex=" + ex + "\n" );
             }
@@ -10500,7 +10457,7 @@ namespace org.kbinani.cadencii {
 
             clearTempWave();
             setHScrollRange( AppManager.getVsqFile().TotalClocks );
-            setVScrollRange( vScroll.getMaximum() );
+            updateVScrollRange();
             mPencilMode.setMode( PencilModeEnum.Off );
             updateCMenuPianoFixed();
             loadGameControler();
@@ -10723,13 +10680,24 @@ namespace org.kbinani.cadencii {
             if ( (PortUtil.getCurrentModifierKey() & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
                 hScroll.setValue( computeScrollValueFromWheelDelta( e.Delta ) );
             } else {
+                int max = vScroll.getMaximum() - vScroll.getVisibleAmount();
+                int min = vScroll.getMinimum();
                 double new_val = (double)vScroll.getValue() - e.Delta;
-                if ( new_val > vScroll.getMaximum() ) {
-                    vScroll.setValue( vScroll.getMaximum() );
-                } else if ( new_val < vScroll.getMinimum() ) {
-                    vScroll.setValue( vScroll.getMinimum() );
+                if ( new_val > max ) {
+                    vScroll.setValue( max );
+#if DEBUG
+                    PortUtil.println( "vScroll.setValue at FormMain#ForMMain_MouseWheel; new_val > max" );
+#endif
+                } else if ( new_val < min ) {
+                    vScroll.setValue( min );
+#if DEBUG
+                    PortUtil.println( "vScroll.setValue at FormMain#FormMain_MouseWheel; new_val < min" );
+#endif
                 } else {
                     vScroll.setValue( (int)new_val );
+#if DEBUG
+                    PortUtil.println( "vScroll.setValue at FormMain#FormMain_MouseWheel; (normal)" );
+#endif
                 }
             }
             refreshScreen();
@@ -10814,22 +10782,28 @@ namespace org.kbinani.cadencii {
                     mLastPovL = pov_l;
 
                     if ( !event_processed && pov_u && dt_ms > AppManager.editorConfig.GameControlerMinimumEventInterval ) {
-                        int draft_vscroll = vScroll.getValue() - AppManager.editorConfig.PxTrackHeight * 3;
+                        int draft_vscroll = vScroll.getValue() - AppManager.editorConfig.getActualNoteHeight() * 3;
                         if ( draft_vscroll < vScroll.getMinimum() ) {
                             draft_vscroll = vScroll.getMinimum();
                         }
                         vScroll.setValue( draft_vscroll );
+#if DEBUG
+                        PortUtil.println( "vScroll.setValue at FormMain#mTimer_Tick; pov_u" );
+#endif
                         refreshScreen();
                         mLastEventProcessed = now;
                         event_processed = true;
                     }
 
                     if ( !event_processed && pov_d && dt_ms > AppManager.editorConfig.GameControlerMinimumEventInterval ) {
-                        int draft_vscroll = vScroll.getValue() + AppManager.editorConfig.PxTrackHeight * 3;
+                        int draft_vscroll = vScroll.getValue() + AppManager.editorConfig.getActualNoteHeight() * 3;
                         if ( draft_vscroll > vScroll.getMaximum() ) {
                             draft_vscroll = vScroll.getMaximum();
                         }
                         vScroll.setValue( draft_vscroll );
+#if DEBUG
+                        PortUtil.println( "vScroll.setValue at FormMain#mTimer_Tick; pov_d" );
+#endif
                         refreshScreen();
                         mLastEventProcessed = now;
                         event_processed = true;
@@ -10985,10 +10959,6 @@ namespace org.kbinani.cadencii {
 #endif
         #endregion
 
-        public void handleEditorConfig_QuantizeModeChanged( Object sender, EventArgs e ) {
-            applyQuantizeMode();
-        }
-
         //BOOKMARK: menuFile
         #region menuFile*
         public void menuFileSaveNamed_Click( Object sender, EventArgs e ) {
@@ -11008,33 +10978,6 @@ namespace org.kbinani.cadencii {
             int dr = saveXmlVsqDialog.showSaveDialog( this );
             if ( dr == BFileChooser.APPROVE_OPTION ) {
                 String file = saveXmlVsqDialog.getSelectedFile();
-                AppManager.saveTo( file );
-                updateRecentFileMenu();
-                setEdited( false );
-            }
-        }
-
-        public void handleFileSave_Click( Object sender, EventArgs e ) {
-            for ( int track = 1; track < AppManager.getVsqFile().Track.size(); track++ ) {
-                if ( AppManager.getVsqFile().Track.get( track ).getEventCount() == 0 ) {
-                    AppManager.showMessageBox(
-                        PortUtil.formatMessage(
-                            _( "Invalid note data.\nTrack {0} : {1}\n\n-> Piano roll : Blank sequence." ), track, AppManager.getVsqFile().Track.get( track ).getName()
-                        ),
-                        _APP_NAME,
-                        org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
-                        org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
-                    return;
-                }
-            }
-            String file = AppManager.getFileName();
-            if ( AppManager.getFileName().Equals( "" ) ) {
-                int dr = saveXmlVsqDialog.showSaveDialog( this );
-                if ( dr == BFileChooser.APPROVE_OPTION ) {
-                    file = saveXmlVsqDialog.getSelectedFile();
-                }
-            }
-            if ( file != "" ) {
                 AppManager.saveTo( file );
                 updateRecentFileMenu();
                 setEdited( false );
@@ -12048,172 +11991,6 @@ namespace org.kbinani.cadencii {
             setEdited( true );
         }
 
-        public void handleFileOpen_Click( Object sender, EventArgs e ) {
-            if ( !dirtyCheck() ) {
-                return;
-            }
-            int dialog_result = openXmlVsqDialog.showOpenDialog( this );
-            if ( dialog_result == BFileChooser.APPROVE_OPTION ) {
-                if ( AppManager.isPlaying() ) {
-                    AppManager.setPlaying( false );
-                }
-                String file = openXmlVsqDialog.getSelectedFile();
-                openVsqCor( file );
-                clearExistingData();
-
-                if ( AppManager.editorConfig.UseProjectCache ) {
-                    #region キャッシュディレクトリの処理
-                    VsqFileEx vsq = AppManager.getVsqFile();
-                    String cacheDir = vsq.cacheDir; // xvsqに保存されていたキャッシュのディレクトリ
-                    String dir = PortUtil.getDirectoryName( file );
-                    String name = PortUtil.getFileNameWithoutExtension( file );
-                    String estimatedCacheDir = PortUtil.combinePath( dir, name + ".cadencii" ); // ファイル名から推測されるキャッシュディレクトリ
-                    if ( cacheDir == null ) cacheDir = "";
-                    if ( !cacheDir.Equals( "" ) && PortUtil.isDirectoryExists( cacheDir ) ) {
-                        if ( !estimatedCacheDir.Equals( "" ) &&
-                             !cacheDir.Equals( estimatedCacheDir ) ) {
-                            // ファイル名から推測されるキャッシュディレクトリ名と
-                            // xvsqに指定されているキャッシュディレクトリと異なる場合
-                            // cacheDirの必要な部分をestimatedCacheDirに移す
-
-                            // estimatedCacheDirが存在しない場合、新しく作る
-                            if ( !PortUtil.isDirectoryExists( estimatedCacheDir ) ) {
-                                try {
-                                    PortUtil.createDirectory( estimatedCacheDir );
-                                } catch ( Exception ex ) {
-                                    Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex + "\n" );
-                                    PortUtil.stderr.println( "FormMain#handleFileOpen_Click; ex=" + ex );
-                                    AppManager.showMessageBox( PortUtil.formatMessage( _( "cannot create cache directory: '{0}'" ), estimatedCacheDir ),
-                                                               _( "Info." ),
-                                                               PortUtil.OK_OPTION,
-                                                               org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
-                                    return;
-                                }
-                            }
-
-                            // ファイルを移す
-                            for ( int i = 1; i < vsq.Track.size(); i++ ) {
-                                String wavFrom = PortUtil.combinePath( cacheDir, i + ".wav" );
-                                String xmlFrom = PortUtil.combinePath( cacheDir, i + ".xml" );
-
-                                String wavTo = PortUtil.combinePath( estimatedCacheDir, i + ".wav" );
-                                String xmlTo = PortUtil.combinePath( estimatedCacheDir, i + ".xml" );
-                                if ( PortUtil.isFileExists( wavFrom ) ) {
-                                    try {
-                                        PortUtil.moveFile( wavFrom, wavTo );
-                                    } catch ( Exception ex ) {
-                                        Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex + "\n" );
-                                        PortUtil.stderr.println( "FormMain#commonFileOpen; ex=" + ex );
-                                    }
-                                }
-                                if ( PortUtil.isFileExists( xmlFrom ) ) {
-                                    try {
-                                        PortUtil.moveFile( xmlFrom, xmlTo );
-                                    } catch ( Exception ex ) {
-                                        Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex + "\n" );
-                                        PortUtil.stderr.println( "FormMain#commonFileOpen; ex=" + ex );
-                                    }
-                                }
-                            }
-
-                        }
-                    }
-                    cacheDir = estimatedCacheDir;
-
-                    // キャッシュが無かったら作成
-                    if ( !PortUtil.isDirectoryExists( cacheDir ) ) {
-                        try {
-                            PortUtil.createDirectory( cacheDir );
-                        } catch ( Exception ex ) {
-                            Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex + "\n" );
-                            PortUtil.stderr.println( "FormMain#handleFileOpen_Click; ex=" + ex );
-                            AppManager.showMessageBox( PortUtil.formatMessage( _( "cannot create cache directory: '{0}'" ), estimatedCacheDir ),
-                                                       _( "Info." ),
-                                                       PortUtil.OK_OPTION,
-                                                       org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
-                            return;
-                        }
-                    }
-
-                    // RenderedStatusを読み込む
-                    for ( int i = 1; i < vsq.Track.size(); i++ ) {
-                        String xml = PortUtil.combinePath( cacheDir, i + ".xml" );
-                        if ( !PortUtil.isFileExists( xml ) ) {
-                            continue;
-                        }
-                        FileInputStream fs = null;
-                        RenderedStatus status = null;
-                        try {
-                            fs = new FileInputStream( xml );
-                            Object obj = AppManager.mRenderingStatusSerializer.deserialize( fs );
-                            if ( obj != null && obj is RenderedStatus ) {
-                                status = (RenderedStatus)obj;
-                            }
-                        } catch ( Exception ex ) {
-                            Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex + "\n" );
-                            status = null;
-                            PortUtil.stderr.println( "FormMain#handleFileOpen_Click; ex=" + ex );
-                        } finally {
-                            if ( fs != null ) {
-                                try {
-                                    fs.close();
-                                } catch ( Exception ex2 ) {
-                                    Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex2 + "\n" );
-                                    PortUtil.stderr.println( "FormMain#handleFileOpen_Click; ex2=" + ex2 );
-                                }
-                            }
-                        }
-                        AppManager.mLastRenderedStatus[i - 1] = status;
-                    }
-
-                    // キャッシュ内のwavを、waveViewに読み込む
-                    waveView.unloadAll();
-                    for ( int i = 1; i < vsq.Track.size(); i++ ) {
-                        String wav = PortUtil.combinePath( cacheDir, i + ".wav" );
-                        if ( !PortUtil.isFileExists( wav ) ) {
-                            continue;
-                        }
-                        waveView.load( i - 1, wav );
-                    }
-
-                    // 一時ディレクトリを、cachedirに変更
-                    AppManager.setTempWaveDir( cacheDir );
-                    #endregion
-                }
-
-                setEdited( false );
-                AppManager.mMixerWindow.updateStatus();
-                clearTempWave();
-                updateDrawObjectList();
-                refreshScreen();
-            }
-        }
-
-        public void handleFileNew_Click( Object sender, EventArgs e ) {
-            if ( !dirtyCheck() ) {
-                return;
-            }
-            AppManager.setSelected( 1 );
-            VsqFileEx vsq = new VsqFileEx( AppManager.editorConfig.DefaultSingerName, AppManager.editorConfig.DefaultPreMeasure, 4, 4, 500000 );
-
-            RendererKind kind = AppManager.editorConfig.DefaultSynthesizer;
-            String renderer = AppManager.getVersionStringFromRendererKind( kind );
-            Vector<VsqID> singers = AppManager.getSingerListFromRendererKind( kind );
-            vsq.Track.get( 1 ).changeRenderer( renderer, singers );
-
-            AppManager.setVsqFile( vsq );
-            clearExistingData();
-            setEdited( false );
-            AppManager.mMixerWindow.updateStatus();
-            clearTempWave();
-
-            // キャッシュディレクトリのパスを、デフォルトに戻す
-            AppManager.setTempWaveDir( PortUtil.combinePath( AppManager.getCadenciiTempDir(), AppManager.getID() ) );
-
-            updateDrawObjectList();
-            refreshScreen();
-        }
-
         #endregion
 
         //BOOKMARK: menuSetting
@@ -12826,21 +12603,6 @@ namespace org.kbinani.cadencii {
         #region menuEdit*
         public void menuEditDelete_Click( Object sender, EventArgs e ) {
             deleteEvent();
-        }
-
-        public void handleEditPaste_Click( Object sender, EventArgs e ) {
-            pasteEvent();
-        }
-
-        public void handleEditCopy_Click( Object sender, EventArgs e ) {
-#if DEBUG
-            AppManager.debugWriteLine( "handleEditCopy_Click" );
-#endif
-            copyEvent();
-        }
-
-        public void handleEditCut_Click( Object sender, EventArgs e ) {
-            cutEvent();
         }
 
         public void menuEdit_DropDownOpening( Object sender, EventArgs e ) {
@@ -13609,10 +13371,13 @@ namespace org.kbinani.cadencii {
 
         public void vScroll_Resize( Object sender, EventArgs e ) {
             AppManager.setStartToDrawY( calculateStartToDrawY() );
-            setVScrollRange( vScroll.getMaximum() );
+            updateVScrollRange();
         }
 
         public void vScroll_ValueChanged( Object sender, EventArgs e ) {
+#if DEBUG
+            PortUtil.println( "FormMain#vScroll_ValueChange; vScroll.getValue()=" + vScroll.getValue() );
+#endif
             AppManager.setStartToDrawY( calculateStartToDrawY() );
             if ( mTextBoxTrackName != null ) {
 #if !JAVA
@@ -14704,12 +14469,23 @@ namespace org.kbinani.cadencii {
         public void trackSelector_MouseWheel( Object sender, BMouseEventArgs e ) {
             if ( (PortUtil.getCurrentModifierKey() & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
                 double new_val = (double)vScroll.getValue() - e.Delta;
-                if ( new_val > vScroll.getMaximum() ) {
-                    vScroll.setValue( vScroll.getMaximum() );
-                } else if ( new_val < vScroll.getMinimum() ) {
-                    vScroll.setValue( vScroll.getMinimum() );
+                int max = vScroll.getMaximum() - vScroll.getMinimum();
+                int min = vScroll.getMinimum();
+                if ( new_val > max ) {
+                    vScroll.setValue( max );
+#if DEBUG
+                    PortUtil.println( "vScroll.setValue at FormMain#trackSelector_MouseWheel; new_val > max" );
+#endif
+                } else if ( new_val < min ) {
+                    vScroll.setValue( min );
+#if DEBUG
+                    PortUtil.println( "vScroll.setValue at FormMain#trackSelector_MouseWheel; new_val < min" );
+#endif
                 } else {
                     vScroll.setValue( (int)new_val );
+#if DEBUG
+                    PortUtil.println( "vScroll.setValue at FormMain#trackSelector_MouseWheel; (normal)" );
+#endif
                 }
             } else {
                 hScroll.setValue( computeScrollValueFromWheelDelta( e.Delta ) );
@@ -14849,92 +14625,6 @@ namespace org.kbinani.cadencii {
             AppManager.setSelectedTool( EditTool.ERASER );
         }
 
-        public void handlePositionQuantize( Object sender, EventArgs e ) {
-            QuantizeMode qm = AppManager.editorConfig.getPositionQuantize();
-            if ( sender == cMenuPianoQuantize04 ||
-#if ENABLE_STRIP_DROPDOWN
-                sender == stripDDBtnQuantize04 ||
-#endif
-                sender == menuSettingPositionQuantize04 ) {
-                qm = QuantizeMode.p4;
-            } else if ( sender == cMenuPianoQuantize08 ||
-#if ENABLE_STRIP_DROPDOWN
-                        sender == stripDDBtnQuantize08 ||
-#endif
-                        sender == menuSettingPositionQuantize08 ) {
-                qm = QuantizeMode.p8;
-            } else if ( sender == cMenuPianoQuantize16 ||
-#if ENABLE_STRIP_DROPDOWN
-                        sender == stripDDBtnQuantize16 ||
-#endif
-                        sender == menuSettingPositionQuantize16 ) {
-                qm = QuantizeMode.p16;
-            } else if ( sender == cMenuPianoQuantize32 ||
-#if ENABLE_STRIP_DROPDOWN
-                        sender == stripDDBtnQuantize32 ||
-#endif
-                        sender == menuSettingPositionQuantize32 ) {
-                qm = QuantizeMode.p32;
-            } else if ( sender == cMenuPianoQuantize64 ||
-#if ENABLE_STRIP_DROPDOWN
-                        sender == stripDDBtnQuantize64 ||
-#endif
-                        sender == menuSettingPositionQuantize64 ) {
-                qm = QuantizeMode.p64;
-            } else if ( sender == cMenuPianoQuantize128 ||
-#if ENABLE_STRIP_DROPDOWN
-                        sender == stripDDBtnQuantize128 ||
-#endif
-                        sender == menuSettingPositionQuantize128 ) {
-                qm = QuantizeMode.p128;
-            } else if ( sender == cMenuPianoQuantizeOff ||
-#if ENABLE_STRIP_DROPDOWN
-                        sender == stripDDBtnQuantizeOff ||
-#endif
-                        sender == menuSettingPositionQuantizeOff ) {
-                qm = QuantizeMode.off;
-            }
-            AppManager.editorConfig.setPositionQuantize( qm );
-            refreshScreen();
-        }
-
-        public void handlePositionQuantizeTriplet_Click( Object sender, EventArgs e ) {
-            AppManager.editorConfig.setPositionQuantizeTriplet( !AppManager.editorConfig.isPositionQuantizeTriplet() );
-            refreshScreen();
-        }
-
-        public void handleLengthQuantize04_Click( Object sender, EventArgs e ) {
-            AppManager.editorConfig.setLengthQuantize(QuantizeMode.p4 );
-        }
-
-        public void handleLengthQuantize08_Click( Object sender, EventArgs e ) {
-            AppManager.editorConfig.setLengthQuantize( QuantizeMode.p8 );
-        }
-
-        public void handleLengthQuantize16_Click( Object sender, EventArgs e ) {
-            AppManager.editorConfig.setLengthQuantize( QuantizeMode.p16 );
-        }
-
-        public void handleLengthQuantize32_Click( Object sender, EventArgs e ) {
-            AppManager.editorConfig.setLengthQuantize( QuantizeMode.p32 );
-        }
-
-        public void handleLengthQuantize64_Click( Object sender, EventArgs e ) {
-            AppManager.editorConfig.setLengthQuantize( QuantizeMode.p64 );
-        }
-
-        public void handleLengthQuantize128_Click( Object sender, EventArgs e ) {
-            AppManager.editorConfig.setLengthQuantize( QuantizeMode.p128 );
-        }
-
-        public void handleLengthQuantizeOff_Click( Object sender, EventArgs e ) {
-            AppManager.editorConfig.setLengthQuantize( QuantizeMode.off );
-        }
-
-        public void handleLengthQuantizeTriplet_Click( Object sender, EventArgs e ) {
-            AppManager.editorConfig.setLengthQuantizeTriplet( !AppManager.editorConfig.isLengthQuantizeTriplet() );
-        }
-
         public void cMenuPianoGrid_Click( Object sender, EventArgs e ) {
             cMenuPianoGrid.setSelected( !cMenuPianoGrid.isSelected() );
             AppManager.setGridVisible( cMenuPianoGrid.isSelected() );
@@ -15061,36 +14751,6 @@ namespace org.kbinani.cadencii {
             patchWorkToFreeze( new Integer[] { AppManager.getSelected() } );
         }
 
-        public void handleTrackOn_Click( Object sender, EventArgs e ) {
-            boolean newStatus = (sender == cMenuTrackTabTrackOn) ? !cMenuTrackTabTrackOn.isSelected() : !menuTrackOn.isSelected();
-            menuTrackOn.setSelected( newStatus );
-            cMenuTrackTabTrackOn.setSelected( newStatus );
-
-            int selected = AppManager.getSelected();
-            VsqTrack vsq_track = AppManager.getVsqFile().Track.get( selected );
-            int last_play_mode = vsq_track.getCommon().LastPlayMode;
-            CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandTrackChangePlayMode( selected,
-                                                                                                      newStatus ? last_play_mode : PlayMode.Off,
-                                                                                                      last_play_mode ) );
-            AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
-            setEdited( true );
-            refreshScreen();
-        }
-
-        public void handleTrackRenderAll_Click( Object sender, EventArgs e ) {
-            Vector<Integer> list = new Vector<Integer>();
-            int c = AppManager.getVsqFile().Track.size();
-            for ( int i = 1; i < c; i++ ) {
-                if ( AppManager.getRenderRequired( i ) ) {
-                    list.add( i );
-                }
-            }
-            if ( list.size() <= 0 ) {
-                return;
-            }
-            patchWorkToFreeze( list.toArray( new Integer[] { } ) );
-        }
-
         public void menuTrackRenderer_DropDownOpening( Object sender, EventArgs e ) {
             updateRendererMenu();
         }
@@ -15098,6 +14758,14 @@ namespace org.kbinani.cadencii {
 
         //BOOKMARK: menuHidden
         #region menuHidden*
+        public void menuHiddenVisualForwardParameter_Click( Object sender, EventArgs e ) {
+            trackSelector.SelectNextCurve();
+        }
+
+        public void menuHiddenVisualBackwardParameter_Click( Object sender, EventArgs e ) {
+            trackSelector.SelectPreviousCurve();
+        }
+
         public void menuHiddenTrackNext_Click( Object sender, EventArgs e ) {
             if ( AppManager.getSelected() == AppManager.getVsqFile().Track.size() - 1 ) {
                 AppManager.setSelected( 1 );
@@ -15547,9 +15215,8 @@ namespace org.kbinani.cadencii {
                 return;
             }
 
-            Point p = new Point( e.X, e.Y );
             int height = panel2.getHeight();
-            int delta = mWaveViewMouseDownedLocationY - p.y;
+            int delta = mWaveViewMouseDownedLocationY - e.X;
             float scale = mWaveViewInitScale + delta * 3.0f / height * mWaveViewInitScale;
             waveView.setScale( scale );
 
@@ -15557,14 +15224,11 @@ namespace org.kbinani.cadencii {
         }
 
         public void panel2_MouseUp( Object sender, BMouseEventArgs e ) {
-            Point p = new Point( e.X, e.Y );
-
             int width = AppManager.keyWidth - 1;
             int height = panel2.getHeight();
 
             // AutoMaximizeボタン
-            Rectangle rc = new Rectangle( SPACE, SPACE, width - SPACE - SPACE, 16 );
-            if ( Utility.isInRect( p, rc ) ) {
+            if ( Utility.isInRect( e.X, e.Y, SPACE, SPACE, width - SPACE - SPACE, 16 ) ) {
                 if ( mWaveViewButtonAutoMaximizeMouseDowned ) {
                     mWaveViewAutoMaximize = !mWaveViewAutoMaximize;
                     waveView.setAutoMaximize( mWaveViewAutoMaximize );
@@ -15580,7 +15244,11 @@ namespace org.kbinani.cadencii {
 #if JAVA
             Graphics g = e.Graphics;
 #else
-            Graphics g = new Graphics( e.Graphics );
+            if ( mGraphicsPanel2 == null ) {
+                mGraphicsPanel2 = new Graphics2D( null );
+            }
+            mGraphicsPanel2.nativeGraphics = e.Graphics;
+            Graphics g = mGraphicsPanel2;
 #endif
             int key_width = AppManager.keyWidth;
             int width = key_width - 1;
@@ -15618,23 +15286,6 @@ namespace org.kbinani.cadencii {
             PortUtil.drawStringEx(
                 g, (mWaveViewButtonZoomMouseDowned ? "↑Move Mouse↓" : "Zoom"), AppManager.baseFont9,
                 rc, PortUtil.STRING_ALIGN_CENTER, PortUtil.STRING_ALIGN_CENTER );
-
-            /* // 拡大ボタンを描く
-            Rectangle rc = getButtonBoundsWaveViewZoom();
-            g.setStroke( getStroke2px() );
-            g.setColor( mWaveViewButtonZoomMouseDowned ? Color.gray : Color.lightGray );
-            g.fillRect( rc.x, rc.y, rc.width, rc.height );
-            g.setStroke( getStrokeDefault() );
-            g.setColor( Color.gray );
-            g.drawRect( rc.x, rc.y, rc.width, rc.height );
-            // "+"マーク
-            int center_x = width / 2;
-            int center_y = height / 2 - rc.height / 2;
-            g.setStroke( getStroke2px() );
-            g.setColor( mWaveViewButtonZoomMouseDowned ? Color.lightGray : Color.gray );
-            g.drawLine( center_x - 4, center_y, center_x + 4, center_y );
-            g.drawLine( center_x, center_y - 4, center_x, center_y + 4 );*/
-
         }
         #endregion
 
@@ -15662,19 +15313,29 @@ namespace org.kbinani.cadencii {
 #endif
             int width = pictureBox2.getWidth();
             int height = pictureBox2.getHeight();
-            int unit_height = height / 3;
-            mGraphicsPictureBox2.setStroke( getStrokeDefault() );
+            int unit_height = height / 4;
             mGraphicsPictureBox2.setColor( mColorR214G214B214 );
             mGraphicsPictureBox2.fillRect( 0, 0, width, height );
+            if ( mPianoRollScaleYMouseStatus > 0 ) {
+                mGraphicsPictureBox2.setColor( Color.gray );
+                mGraphicsPictureBox2.fillRect( 0, 0, width, unit_height );
+            } else if ( mPianoRollScaleYMouseStatus < 0 ) {
+                mGraphicsPictureBox2.setColor( Color.gray );
+                mGraphicsPictureBox2.fillRect( 0, unit_height * 2, width, unit_height );
+            }
+            mGraphicsPictureBox2.setStroke( getStrokeDefault() );
             mGraphicsPictureBox2.setColor( Color.gray );
-            mGraphicsPictureBox2.drawRect( 0, 0, width - 1, unit_height * 2 );
+            //mGraphicsPictureBox2.drawRect( 0, 0, width - 1, unit_height * 2 );
             mGraphicsPictureBox2.drawLine( 0, unit_height, width, unit_height );
+            mGraphicsPictureBox2.drawLine( 0, unit_height * 2, width, unit_height * 2 );
             mGraphicsPictureBox2.setStroke( getStroke2px() );
             int cx = width / 2;
             int cy = unit_height / 2;
+            mGraphicsPictureBox2.setColor( (mPianoRollScaleYMouseStatus > 0) ? Color.lightGray : Color.gray );
             mGraphicsPictureBox2.drawLine( cx - 4, cy, cx + 4, cy );
             mGraphicsPictureBox2.drawLine( cx, cy - 4, cx, cy + 4 );
-            cy += unit_height;
+            cy += unit_height * 2;
+            mGraphicsPictureBox2.setColor( (mPianoRollScaleYMouseStatus < 0) ? Color.lightGray : Color.gray );
             mGraphicsPictureBox2.drawLine( cx - 4, cy, cx + 4, cy );
         }
 
@@ -15687,8 +15348,255 @@ namespace org.kbinani.cadencii {
 #endif
                 mTextBoxTrackName = null;
             }
+
+            // 拡大・縮小ボタンが押されたかどうか判定
+            int height = pictureBox2.getHeight();
+            int width = pictureBox2.getWidth();
+            int height4 = height / 4;
+            if ( 0 <= e.X && e.X < width ) {
+                int scaley = AppManager.editorConfig.PianoRollScaleY;
+                if ( 0 <= e.Y && e.Y < height4 ) {
+                    if ( scaley + 1 <= EditorConfig.MAX_PIANOROLL_SCALEY ) {
+                        mPianoRollScaleYMouseStatus = 1;
+                        AppManager.editorConfig.PianoRollScaleY = scaley + 1;
+                        vScroll.setMaximum( AppManager.editorConfig.getActualNoteHeight() * 128 );
+                        AppManager.setStartToDrawY( calculateStartToDrawY() );
+                        updateVScrollRange();
+                        updateDrawObjectList();
+                    } else {
+                        mPianoRollScaleYMouseStatus = 0;
+                    }
+                } else if ( height4 * 2 <= e.Y && e.Y < height4 * 3 ) {
+                    if ( scaley - 1 >= EditorConfig.MIN_PIANOROLL_SCALEY ) {
+                        mPianoRollScaleYMouseStatus = -1;
+                        AppManager.editorConfig.PianoRollScaleY = scaley - 1;
+                        vScroll.setMaximum( AppManager.editorConfig.getActualNoteHeight() * 128 );
+                        AppManager.setStartToDrawY( calculateStartToDrawY() );
+                        updateVScrollRange();
+                        updateDrawObjectList();
+                    } else {
+                        mPianoRollScaleYMouseStatus = 0;
+                    }
+                } else {
+                    mPianoRollScaleYMouseStatus = 0;
+                }
+            } else {
+                mPianoRollScaleYMouseStatus = 0;
+            }
+            refreshScreen();
+        }
+
+        public void pictureBox2_MouseUp( Object sender, BMouseEventArgs e ) {
+            mPianoRollScaleYMouseStatus = 0;
+            pictureBox2.invalidate();
         }
         #endregion
+
+        //BOOKMARK: stripBtn
+        #region stripBtn*
+        public void stripBtnGrid_CheckedChanged( Object sender, EventArgs e ) {
+            AppManager.setGridVisible( stripBtnGrid.isSelected() );
+        }
+
+        public void stripBtnArrow_Click( Object sender, EventArgs e ) {
+            AppManager.setSelectedTool( EditTool.ARROW );
+        }
+
+        public void stripBtnPencil_Click( Object sender, EventArgs e ) {
+            AppManager.setSelectedTool( EditTool.PENCIL );
+        }
+
+        public void stripBtnLine_Click( Object sender, EventArgs e ) {
+            AppManager.setSelectedTool( EditTool.LINE );
+        }
+
+        public void stripBtnEraser_Click( Object sender, EventArgs e ) {
+            AppManager.setSelectedTool( EditTool.ERASER );
+        }
+
+        public void stripBtnCurve_Click( Object sender, EventArgs e ) {
+            AppManager.setCurveMode( !AppManager.isCurveMode() );
+        }
+
+        public void stripBtnPlay_Click( Object sender, EventArgs e ) {
+            if ( !AppManager.isPlaying() ) {
+                AppManager.setPlaying( true );
+            }
+            pictPianoRoll.requestFocus();
+        }
+
+        public void stripBtnScroll_Click( Object sender, EventArgs e ) {
+            stripBtnScroll.setSelected(  !stripBtnScroll.isSelected() );
+            AppManager.mAutoScroll = stripBtnScroll.isSelected();
+            pictPianoRoll.requestFocus();
+        }
+
+        public void stripBtnLoop_Click( Object sender, EventArgs e ) {
+            stripBtnLoop.setSelected( !stripBtnLoop.isSelected() );
+            AppManager.setRepeatMode( stripBtnLoop.isSelected() );
+            pictPianoRoll.requestFocus();
+        }
+
+        public void stripBtnStop_Click( Object sender, EventArgs e ) {
+            AppManager.setPlaying( false );
+            timer.stop();
+            pictPianoRoll.requestFocus();
+        }
+
+        public void stripBtnMoveEnd_Click( Object sender, EventArgs e ) {
+            if ( AppManager.isPlaying() ) {
+                AppManager.setPlaying( false );
+            }
+            AppManager.setCurrentClock( AppManager.getVsqFile().TotalClocks );
+            ensureCursorVisible();
+            refreshScreen();
+        }
+
+        public void stripBtnMoveTop_Click( Object sender, EventArgs e ) {
+            if ( AppManager.isPlaying() ) {
+                AppManager.setPlaying( false );
+            }
+            AppManager.setCurrentClock( 0 );
+            ensureCursorVisible();
+            refreshScreen();
+        }
+
+        public void stripBtnRewind_Click( Object sender, EventArgs e ) {
+            rewind();
+        }
+
+        public void stripBtnForward_Click( Object sender, EventArgs e ) {
+            forward();
+        }
+        #endregion
+
+        //BOOKMARK: stripDDBtn
+        #region stripDDBtn*
+#if ENABLE_STRIP_DROPDOWN
+        public void stripDDBtnSpeed_DropDownOpening( Object sender, EventArgs e ) {
+            if ( AppManager.editorConfig.getRealtimeInputSpeed() == 1.0f ) {
+                stripDDBtnSpeed100.setSelected( true );
+                stripDDBtnSpeed050.setSelected( false );
+                stripDDBtnSpeed033.setSelected( false );
+                stripDDBtnSpeedTextbox.setText( "100" );
+            } else if ( AppManager.editorConfig.getRealtimeInputSpeed() == 0.5f ) {
+                stripDDBtnSpeed100.setSelected( false );
+                stripDDBtnSpeed050.setSelected( true );
+                stripDDBtnSpeed033.setSelected( false );
+                stripDDBtnSpeedTextbox.setText( "50" );
+            } else if ( AppManager.editorConfig.getRealtimeInputSpeed() == 1.0f / 3.0f ) {
+                stripDDBtnSpeed100.setSelected( false );
+                stripDDBtnSpeed050.setSelected( false );
+                stripDDBtnSpeed033.setSelected( true );
+                stripDDBtnSpeedTextbox.setText( "33.333" );
+            } else {
+                stripDDBtnSpeed100.setSelected( false );
+                stripDDBtnSpeed050.setSelected( false );
+                stripDDBtnSpeed033.setSelected( false );
+                stripDDBtnSpeedTextbox.setText( (AppManager.editorConfig.getRealtimeInputSpeed() * 100.0f).ToString() );
+            }
+        }
+#endif
+
+#if ENABLE_STRIP_DROPDOWN
+        public void stripDDBtnSpeed100_Click( Object sender, EventArgs e ) {
+            changeRealtimeInputSpeed( 1.0f );
+            AppManager.editorConfig.setRealtimeInputSpeed( 1.0f );
+            updateStripDDBtnSpeed();
+        }
+#endif
+
+#if ENABLE_STRIP_DROPDOWN
+        public void stripDDBtnSpeed050_Click( Object sender, EventArgs e ) {
+            changeRealtimeInputSpeed( 0.5f );
+            AppManager.editorConfig.setRealtimeInputSpeed( 0.5f );
+            updateStripDDBtnSpeed();
+        }
+#endif
+
+#if ENABLE_STRIP_DROPDOWN
+        public void stripDDBtnSpeed033_Click( Object sender, EventArgs e ) {
+            changeRealtimeInputSpeed( 1.0f / 3.0f );
+            AppManager.editorConfig.setRealtimeInputSpeed( 1.0f / 3.0f );
+            updateStripDDBtnSpeed();
+        }
+#endif
+
+#if ENABLE_STRIP_DROPDOWN
+        public void stripDDBtnSpeedTextbox_KeyDown( Object sender, BKeyEventArgs e ) {
+#if JAVA
+            if ( e.KeyValue == KeyEvent.VK_ENTER ) {
+#else
+            if ( e.KeyCode == System.Windows.Forms.Keys.Enter ) {
+#endif
+                float v;
+                try {
+                    v = PortUtil.parseFloat( stripDDBtnSpeedTextbox.getText() );
+                    changeRealtimeInputSpeed( v / 100.0f );
+                    AppManager.editorConfig.setRealtimeInputSpeed( v / 100.0f );
+#if JAVA
+                    //TODO: FormMain#stripDDBtnSpeedTextBox_KeyDown
+#else
+                    stripDDBtnSpeed.HideDropDown();
+#endif
+                    updateStripDDBtnSpeed();
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "FormMain#stripDDBtnSpeedTextBox_KeyDown; ex=" + ex );
+                    Logger.write( typeof( FormMain ) + ".stripDDBtnSpeedTextbox_KeyDown; ex=" + ex + "\n" );
+                }
+            }
+        }
+#endif
+        #endregion // stripDDBtn*
+
+        //BOOKMARK: pictKeyLengthSplitter
+        #region pictKeyLengthSplitter
+        public void pictKeyLengthSplitter_MouseDown( Object sender, BMouseEventArgs e ) {
+            mKeyLengthSplitterMouseDowned = true;
+            mKeyLengthSplitterInitialMouse = PortUtil.getMousePosition();
+            mKeyLengthInitValue = AppManager.keyWidth;
+            mKeyLengthTrackSelectorRowsPerColumn = trackSelector.getRowsPerColumn();
+            mKeyLengthSplitterDistance = splitContainer1.getDividerLocation();
+        }
+
+        public void pictKeyLengthSplitter_MouseMove( Object sender, BMouseEventArgs e ) {
+            if ( !mKeyLengthSplitterMouseDowned ) {
+                return;
+            }
+            int dx = PortUtil.getMousePosition().x - mKeyLengthSplitterInitialMouse.x;
+            int draft = mKeyLengthInitValue + dx;
+            if ( draft < AppManager.MIN_KEY_WIDTH ) {
+                draft = AppManager.MIN_KEY_WIDTH;
+            } else if ( AppManager.MAX_KEY_WIDTH < draft ) {
+                draft = AppManager.MAX_KEY_WIDTH;
+            }
+            AppManager.keyWidth = draft;
+            int current = trackSelector.getRowsPerColumn();
+            if ( current >= mKeyLengthTrackSelectorRowsPerColumn ) {
+                int max_divider_location = splitContainer1.getHeight() - splitContainer1.getDividerSize() - splitContainer1.getPanel2MinSize();
+                if ( max_divider_location < mKeyLengthSplitterDistance ) {
+                    splitContainer1.setDividerLocation( max_divider_location );
+                } else {
+                    splitContainer1.setDividerLocation( mKeyLengthSplitterDistance );
+                }
+            }
+            updateLayout();
+            refreshScreen();
+        }
+
+        public void pictKeyLengthSplitter_MouseUp( Object sender, BMouseEventArgs e ) {
+            mKeyLengthSplitterMouseDowned = false;
+        }
+        #endregion
+
+#if ENABLE_MIDI
+        public void mStripDDBtnMetronome_CheckedChanged( Object sender, EventArgs e ) {
+            AppManager.editorConfig.MetronomeEnabled = mStripDDBtnMetronome.isSelected();
+            if ( AppManager.editorConfig.MetronomeEnabled && AppManager.getEditMode() == EditMode.REALTIME ) {
+                MidiPlayer.RestartMetronome();
+            }
+        }
+#endif
 
         public void menuStrip1_MouseDown( Object sender, BMouseEventArgs e ) {
             if ( mTextBoxTrackName != null ) {
@@ -15702,9 +15610,6 @@ namespace org.kbinani.cadencii {
         }
 
         public void timer_Tick( Object sender, EventArgs e ) {
-#if DEBUG
-            //PortUtil.println( "FormMain#timer_Tick; AppManager.firstBufferWritten=" + AppManager.firstBufferWritten );
-#endif
             float play_time = -1.0f;
             if ( AppManager.mRendererAvailable ) {
                 // レンダリング用VSTiが利用可能な状態でAppManager_PreviewStartedした場合
@@ -15719,11 +15624,7 @@ namespace org.kbinani.cadencii {
                 play_time = play_time * AppManager.editorConfig.getRealtimeInputSpeed();
             }
             float now = (float)(play_time + mDirectPlayShift);
-#if DEBUG
-            //PortUtil.println( "FormMain#timer_Tick; play_time=" + play_time + "; m_preview_ending_time=" + m_preview_ending_time + "; now=" + now );
-            //PortUtil.println( "FormMain#timer_Tick; AppManager.isPlaying()=" + AppManager.isPlaying() );
-#endif
-            if ( (play_time < 0.0 || mPreviewEndingTime <= now) && 
+            if ( (play_time < 0.0 || mPreviewEndingTime <= now) &&
                  AppManager.getEditMode() != EditMode.REALTIME ) {
 #if DEBUG
                 PortUtil.println( "FormMain#timer_Tick; stop at A; play_time=" + play_time + "; m_preview_ending_time=" + mPreviewEndingTime + "; now=" + now );
@@ -15864,55 +15765,444 @@ namespace org.kbinani.cadencii {
         }
 #endif
 
-        //BOOKMARK: stripBtn
-        #region stripBtn*
-        public void stripBtnGrid_CheckedChanged( Object sender, EventArgs e ) {
-            AppManager.setGridVisible( stripBtnGrid.isSelected() );
-        }
-
-        public void stripBtnArrow_Click( Object sender, EventArgs e ) {
-            AppManager.setSelectedTool( EditTool.ARROW );
-        }
-
-        public void stripBtnPencil_Click( Object sender, EventArgs e ) {
-            AppManager.setSelectedTool( EditTool.PENCIL );
-        }
-
-        public void stripBtnLine_Click( Object sender, EventArgs e ) {
-            AppManager.setSelectedTool( EditTool.LINE );
-        }
-
-        public void stripBtnEraser_Click( Object sender, EventArgs e ) {
-            AppManager.setSelectedTool( EditTool.ERASER );
-        }
-
-        public void stripBtnCurve_Click( Object sender, EventArgs e ) {
-            AppManager.setCurveMode( !AppManager.isCurveMode() );
-        }
-
-        public void stripBtnPlay_Click( Object sender, EventArgs e ) {
-            if ( !AppManager.isPlaying() ) {
-                AppManager.setPlaying( true );
+        public void toolStripContainer_TopToolStripPanel_SizeChanged( Object sender, EventArgs e ) {
+            if ( getExtendedState() == BForm.ICONIFIED ) {
+                return;
             }
-            pictPianoRoll.requestFocus();
+            Dimension minsize = getWindowMinimumSize();
+            int wid = getWidth();
+            int hei = getHeight();
+            boolean change_size_required = false;
+            if ( minsize.width > wid ) {
+                wid = minsize.width;
+                change_size_required = true;
+            }
+            if ( minsize.height > hei ) {
+                hei = minsize.height;
+                change_size_required = true;
+            }
+            setMinimumSize( getWindowMinimumSize() );
+            if ( change_size_required ) {
+                setSize( wid, hei );
+            }
         }
 
-        public void stripBtnScroll_Click( Object sender, EventArgs e ) {
-            stripBtnScroll.setSelected(  !stripBtnScroll.isSelected() );
-            AppManager.mAutoScroll = stripBtnScroll.isSelected();
-            pictPianoRoll.requestFocus();
+        public void handleRecentFileMenuItem_Click( Object sender, EventArgs e ) {
+            if ( sender is BMenuItem ) {
+                BMenuItem item = (BMenuItem)sender;
+                if ( item.getTag() is String ) {
+                    String filename = (String)item.getTag();
+                    openVsqCor( filename );
+                    refreshScreen();
+                }
+            }
         }
 
-        public void stripBtnLoop_Click( Object sender, EventArgs e ) {
-            stripBtnLoop.setSelected( !stripBtnLoop.isSelected() );
-            AppManager.setRepeatMode( stripBtnLoop.isSelected() );
-            pictPianoRoll.requestFocus();
+        public void handleRecentFileMenuItem_MouseEnter( Object sender, EventArgs e ) {
+            if ( sender is BMenuItem ) {
+                BMenuItem item = (BMenuItem)sender;
+#if JAVA
+                statusLabel.setText( item.getToolTipText() );
+#else
+                statusLabel.setText( item.ToolTipText );
+#endif
+            }
         }
 
-        public void stripBtnStop_Click( Object sender, EventArgs e ) {
-            AppManager.setPlaying( false );
-            timer.stop();
-            pictPianoRoll.requestFocus();
+        public void handleStripPaletteTool_Click( Object sender, EventArgs e ) {
+            String id = "";  //選択されたツールのID
+#if ENABLE_SCRIPT
+            if ( sender is BToolStripButton ) {
+                BToolStripButton tsb = (BToolStripButton)sender;
+                if ( tsb.getTag() != null && tsb.getTag() is String ) {
+                    id = (String)tsb.getTag();
+                    AppManager.mSelectedPaletteTool = id;
+                    AppManager.setSelectedTool( EditTool.PALETTE_TOOL );
+                    tsb.setSelected( true );
+                }
+            } else if ( sender is BMenuItem ) {
+                BMenuItem tsmi = (BMenuItem)sender;
+                if ( tsmi.getTag() != null && tsmi.getTag() is String ) {
+                    id = (String)tsmi.getTag();
+                    AppManager.mSelectedPaletteTool = id;
+                    AppManager.setSelectedTool( EditTool.PALETTE_TOOL );
+                    tsmi.setSelected( true );
+                }
+            }
+#endif
+
+            int count = toolStripTool.getComponentCount();
+            for ( int i = 0; i < count; i++ ) {
+                Object item = toolStripTool.getComponentAtIndex( i );
+                if ( item is BToolStripButton ) {
+                    BToolStripButton button = (BToolStripButton)item;
+                    if ( button.getTag() != null && button.getTag() is String ) {
+                        if ( ((String)button.getTag()).Equals( id ) ) {
+                            button.setSelected( true );
+                        } else {
+                            button.setSelected( false );
+                        }
+                    }
+                }
+            }
+
+            MenuElement[] sub_cmenu_piano_palette_tool = cMenuPianoPaletteTool.getSubElements();
+            for ( int i = 0; i < sub_cmenu_piano_palette_tool.Length; i++ ) {
+                MenuElement item = sub_cmenu_piano_palette_tool[i];
+                if ( item is BMenuItem ) {
+                    BMenuItem menu = (BMenuItem)item;
+                    if ( menu.getTag() != null && menu.getTag() is String ) {
+                        if ( ((String)menu.getTag()).Equals( id ) ) {
+                            menu.setSelected( true );
+                        } else {
+                            menu.setSelected( false );
+                        }
+                    }
+                }
+            }
+
+            MenuElement[] sub_cmenu_track_selectro_palette_tool = cMenuTrackSelectorPaletteTool.getSubElements();
+            for ( int i = 0; i < sub_cmenu_track_selectro_palette_tool.Length; i++ ) {
+                MenuElement item = sub_cmenu_track_selectro_palette_tool[i];
+                if ( item is BMenuItem ) {
+                    BMenuItem menu = (BMenuItem)item;
+                    if ( menu.getTag() != null && menu.getTag() is String ) {
+                        if ( ((String)menu.getTag()).Equals( id ) ) {
+                            menu.setSelected( true );
+                        } else {
+                            menu.setSelected( false );
+                        }
+                    }
+                }
+            }
+        }
+
+        public void handleTrackOn_Click( Object sender, EventArgs e ) {
+            boolean newStatus = (sender == cMenuTrackTabTrackOn) ? !cMenuTrackTabTrackOn.isSelected() : !menuTrackOn.isSelected();
+            menuTrackOn.setSelected( newStatus );
+            cMenuTrackTabTrackOn.setSelected( newStatus );
+
+            int selected = AppManager.getSelected();
+            VsqTrack vsq_track = AppManager.getVsqFile().Track.get( selected );
+            int last_play_mode = vsq_track.getCommon().LastPlayMode;
+            CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandTrackChangePlayMode( selected,
+                                                                                                      newStatus ? last_play_mode : PlayMode.Off,
+                                                                                                      last_play_mode ) );
+            AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+            setEdited( true );
+            refreshScreen();
+        }
+
+        public void handleTrackRenderAll_Click( Object sender, EventArgs e ) {
+            Vector<Integer> list = new Vector<Integer>();
+            int c = AppManager.getVsqFile().Track.size();
+            for ( int i = 1; i < c; i++ ) {
+                if ( AppManager.getRenderRequired( i ) ) {
+                    list.add( i );
+                }
+            }
+            if ( list.size() <= 0 ) {
+                return;
+            }
+            patchWorkToFreeze( list.toArray( new Integer[] { } ) );
+        }
+
+        public void handleEditorConfig_QuantizeModeChanged( Object sender, EventArgs e ) {
+            applyQuantizeMode();
+        }
+
+        public void handleFileSave_Click( Object sender, EventArgs e ) {
+            for ( int track = 1; track < AppManager.getVsqFile().Track.size(); track++ ) {
+                if ( AppManager.getVsqFile().Track.get( track ).getEventCount() == 0 ) {
+                    AppManager.showMessageBox(
+                        PortUtil.formatMessage(
+                            _( "Invalid note data.\nTrack {0} : {1}\n\n-> Piano roll : Blank sequence." ), track, AppManager.getVsqFile().Track.get( track ).getName()
+                        ),
+                        _APP_NAME,
+                        org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
+                        org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
+                    return;
+                }
+            }
+            String file = AppManager.getFileName();
+            if ( AppManager.getFileName().Equals( "" ) ) {
+                int dr = saveXmlVsqDialog.showSaveDialog( this );
+                if ( dr == BFileChooser.APPROVE_OPTION ) {
+                    file = saveXmlVsqDialog.getSelectedFile();
+                }
+            }
+            if ( file != "" ) {
+                AppManager.saveTo( file );
+                updateRecentFileMenu();
+                setEdited( false );
+            }
+        }
+
+        public void handleFileOpen_Click( Object sender, EventArgs e ) {
+            if ( !dirtyCheck() ) {
+                return;
+            }
+            int dialog_result = openXmlVsqDialog.showOpenDialog( this );
+            if ( dialog_result == BFileChooser.APPROVE_OPTION ) {
+                if ( AppManager.isPlaying() ) {
+                    AppManager.setPlaying( false );
+                }
+                String file = openXmlVsqDialog.getSelectedFile();
+                openVsqCor( file );
+                clearExistingData();
+
+                if ( AppManager.editorConfig.UseProjectCache ) {
+                    #region キャッシュディレクトリの処理
+                    VsqFileEx vsq = AppManager.getVsqFile();
+                    String cacheDir = vsq.cacheDir; // xvsqに保存されていたキャッシュのディレクトリ
+                    String dir = PortUtil.getDirectoryName( file );
+                    String name = PortUtil.getFileNameWithoutExtension( file );
+                    String estimatedCacheDir = PortUtil.combinePath( dir, name + ".cadencii" ); // ファイル名から推測されるキャッシュディレクトリ
+                    if ( cacheDir == null ) cacheDir = "";
+                    if ( !cacheDir.Equals( "" ) && PortUtil.isDirectoryExists( cacheDir ) ) {
+                        if ( !estimatedCacheDir.Equals( "" ) &&
+                             !cacheDir.Equals( estimatedCacheDir ) ) {
+                            // ファイル名から推測されるキャッシュディレクトリ名と
+                            // xvsqに指定されているキャッシュディレクトリと異なる場合
+                            // cacheDirの必要な部分をestimatedCacheDirに移す
+
+                            // estimatedCacheDirが存在しない場合、新しく作る
+                            if ( !PortUtil.isDirectoryExists( estimatedCacheDir ) ) {
+                                try {
+                                    PortUtil.createDirectory( estimatedCacheDir );
+                                } catch ( Exception ex ) {
+                                    Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex + "\n" );
+                                    PortUtil.stderr.println( "FormMain#handleFileOpen_Click; ex=" + ex );
+                                    AppManager.showMessageBox( PortUtil.formatMessage( _( "cannot create cache directory: '{0}'" ), estimatedCacheDir ),
+                                                               _( "Info." ),
+                                                               PortUtil.OK_OPTION,
+                                                               org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+                                    return;
+                                }
+                            }
+
+                            // ファイルを移す
+                            for ( int i = 1; i < vsq.Track.size(); i++ ) {
+                                String wavFrom = PortUtil.combinePath( cacheDir, i + ".wav" );
+                                String xmlFrom = PortUtil.combinePath( cacheDir, i + ".xml" );
+
+                                String wavTo = PortUtil.combinePath( estimatedCacheDir, i + ".wav" );
+                                String xmlTo = PortUtil.combinePath( estimatedCacheDir, i + ".xml" );
+                                if ( PortUtil.isFileExists( wavFrom ) ) {
+                                    try {
+                                        PortUtil.moveFile( wavFrom, wavTo );
+                                    } catch ( Exception ex ) {
+                                        Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex + "\n" );
+                                        PortUtil.stderr.println( "FormMain#commonFileOpen; ex=" + ex );
+                                    }
+                                }
+                                if ( PortUtil.isFileExists( xmlFrom ) ) {
+                                    try {
+                                        PortUtil.moveFile( xmlFrom, xmlTo );
+                                    } catch ( Exception ex ) {
+                                        Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex + "\n" );
+                                        PortUtil.stderr.println( "FormMain#commonFileOpen; ex=" + ex );
+                                    }
+                                }
+                            }
+
+                        }
+                    }
+                    cacheDir = estimatedCacheDir;
+
+                    // キャッシュが無かったら作成
+                    if ( !PortUtil.isDirectoryExists( cacheDir ) ) {
+                        try {
+                            PortUtil.createDirectory( cacheDir );
+                        } catch ( Exception ex ) {
+                            Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex + "\n" );
+                            PortUtil.stderr.println( "FormMain#handleFileOpen_Click; ex=" + ex );
+                            AppManager.showMessageBox( PortUtil.formatMessage( _( "cannot create cache directory: '{0}'" ), estimatedCacheDir ),
+                                                       _( "Info." ),
+                                                       PortUtil.OK_OPTION,
+                                                       org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+                            return;
+                        }
+                    }
+
+                    // RenderedStatusを読み込む
+                    for ( int i = 1; i < vsq.Track.size(); i++ ) {
+                        String xml = PortUtil.combinePath( cacheDir, i + ".xml" );
+                        if ( !PortUtil.isFileExists( xml ) ) {
+                            continue;
+                        }
+                        FileInputStream fs = null;
+                        RenderedStatus status = null;
+                        try {
+                            fs = new FileInputStream( xml );
+                            Object obj = AppManager.mRenderingStatusSerializer.deserialize( fs );
+                            if ( obj != null && obj is RenderedStatus ) {
+                                status = (RenderedStatus)obj;
+                            }
+                        } catch ( Exception ex ) {
+                            Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex + "\n" );
+                            status = null;
+                            PortUtil.stderr.println( "FormMain#handleFileOpen_Click; ex=" + ex );
+                        } finally {
+                            if ( fs != null ) {
+                                try {
+                                    fs.close();
+                                } catch ( Exception ex2 ) {
+                                    Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex2 + "\n" );
+                                    PortUtil.stderr.println( "FormMain#handleFileOpen_Click; ex2=" + ex2 );
+                                }
+                            }
+                        }
+                        AppManager.mLastRenderedStatus[i - 1] = status;
+                    }
+
+                    // キャッシュ内のwavを、waveViewに読み込む
+                    waveView.unloadAll();
+                    for ( int i = 1; i < vsq.Track.size(); i++ ) {
+                        String wav = PortUtil.combinePath( cacheDir, i + ".wav" );
+                        if ( !PortUtil.isFileExists( wav ) ) {
+                            continue;
+                        }
+                        waveView.load( i - 1, wav );
+                    }
+
+                    // 一時ディレクトリを、cachedirに変更
+                    AppManager.setTempWaveDir( cacheDir );
+                    #endregion
+                }
+
+                setEdited( false );
+                AppManager.mMixerWindow.updateStatus();
+                clearTempWave();
+                updateDrawObjectList();
+                refreshScreen();
+            }
+        }
+
+        public void handleFileNew_Click( Object sender, EventArgs e ) {
+            if ( !dirtyCheck() ) {
+                return;
+            }
+            AppManager.setSelected( 1 );
+            VsqFileEx vsq = new VsqFileEx( AppManager.editorConfig.DefaultSingerName, AppManager.editorConfig.DefaultPreMeasure, 4, 4, 500000 );
+
+            RendererKind kind = AppManager.editorConfig.DefaultSynthesizer;
+            String renderer = AppManager.getVersionStringFromRendererKind( kind );
+            Vector<VsqID> singers = AppManager.getSingerListFromRendererKind( kind );
+            vsq.Track.get( 1 ).changeRenderer( renderer, singers );
+
+            AppManager.setVsqFile( vsq );
+            clearExistingData();
+            setEdited( false );
+            AppManager.mMixerWindow.updateStatus();
+            clearTempWave();
+
+            // キャッシュディレクトリのパスを、デフォルトに戻す
+            AppManager.setTempWaveDir( PortUtil.combinePath( AppManager.getCadenciiTempDir(), AppManager.getID() ) );
+
+            updateDrawObjectList();
+            refreshScreen();
+        }
+
+        public void handleEditPaste_Click( Object sender, EventArgs e ) {
+            pasteEvent();
+        }
+
+        public void handleEditCopy_Click( Object sender, EventArgs e ) {
+#if DEBUG
+            AppManager.debugWriteLine( "handleEditCopy_Click" );
+#endif
+            copyEvent();
+        }
+
+        public void handleEditCut_Click( Object sender, EventArgs e ) {
+            cutEvent();
+        }
+
+        public void handlePositionQuantize( Object sender, EventArgs e ) {
+            QuantizeMode qm = AppManager.editorConfig.getPositionQuantize();
+            if ( sender == cMenuPianoQuantize04 ||
+#if ENABLE_STRIP_DROPDOWN
+                 sender == stripDDBtnQuantize04 ||
+#endif
+                 sender == menuSettingPositionQuantize04 ) {
+                qm = QuantizeMode.p4;
+            } else if ( sender == cMenuPianoQuantize08 ||
+#if ENABLE_STRIP_DROPDOWN
+                        sender == stripDDBtnQuantize08 ||
+#endif
+                        sender == menuSettingPositionQuantize08 ) {
+                qm = QuantizeMode.p8;
+            } else if ( sender == cMenuPianoQuantize16 ||
+#if ENABLE_STRIP_DROPDOWN
+                        sender == stripDDBtnQuantize16 ||
+#endif
+                        sender == menuSettingPositionQuantize16 ) {
+                qm = QuantizeMode.p16;
+            } else if ( sender == cMenuPianoQuantize32 ||
+#if ENABLE_STRIP_DROPDOWN
+                        sender == stripDDBtnQuantize32 ||
+#endif
+                        sender == menuSettingPositionQuantize32 ) {
+                qm = QuantizeMode.p32;
+            } else if ( sender == cMenuPianoQuantize64 ||
+#if ENABLE_STRIP_DROPDOWN
+                        sender == stripDDBtnQuantize64 ||
+#endif
+                        sender == menuSettingPositionQuantize64 ) {
+                qm = QuantizeMode.p64;
+            } else if ( sender == cMenuPianoQuantize128 ||
+#if ENABLE_STRIP_DROPDOWN
+                        sender == stripDDBtnQuantize128 ||
+#endif
+                        sender == menuSettingPositionQuantize128 ) {
+                qm = QuantizeMode.p128;
+            } else if ( sender == cMenuPianoQuantizeOff ||
+#if ENABLE_STRIP_DROPDOWN
+                        sender == stripDDBtnQuantizeOff ||
+#endif
+                        sender == menuSettingPositionQuantizeOff ) {
+                qm = QuantizeMode.off;
+            }
+            AppManager.editorConfig.setPositionQuantize( qm );
+            refreshScreen();
+        }
+
+        public void handlePositionQuantizeTriplet_Click( Object sender, EventArgs e ) {
+            AppManager.editorConfig.setPositionQuantizeTriplet( !AppManager.editorConfig.isPositionQuantizeTriplet() );
+            refreshScreen();
+        }
+
+        public void handleLengthQuantize04_Click( Object sender, EventArgs e ) {
+            AppManager.editorConfig.setLengthQuantize( QuantizeMode.p4 );
+        }
+
+        public void handleLengthQuantize08_Click( Object sender, EventArgs e ) {
+            AppManager.editorConfig.setLengthQuantize( QuantizeMode.p8 );
+        }
+
+        public void handleLengthQuantize16_Click( Object sender, EventArgs e ) {
+            AppManager.editorConfig.setLengthQuantize( QuantizeMode.p16 );
+        }
+
+        public void handleLengthQuantize32_Click( Object sender, EventArgs e ) {
+            AppManager.editorConfig.setLengthQuantize( QuantizeMode.p32 );
+        }
+
+        public void handleLengthQuantize64_Click( Object sender, EventArgs e ) {
+            AppManager.editorConfig.setLengthQuantize( QuantizeMode.p64 );
+        }
+
+        public void handleLengthQuantize128_Click( Object sender, EventArgs e ) {
+            AppManager.editorConfig.setLengthQuantize( QuantizeMode.p128 );
+        }
+
+        public void handleLengthQuantizeOff_Click( Object sender, EventArgs e ) {
+            AppManager.editorConfig.setLengthQuantize( QuantizeMode.off );
+        }
+
+        public void handleLengthQuantizeTriplet_Click( Object sender, EventArgs e ) {
+            AppManager.editorConfig.setLengthQuantizeTriplet( !AppManager.editorConfig.isLengthQuantizeTriplet() );
         }
 
         public void handleStartMarker_Click( Object sender, EventArgs e ) {
@@ -15930,33 +16220,6 @@ namespace org.kbinani.cadencii {
             pictPianoRoll.requestFocus();
             refreshScreen();
         }
-
-        public void stripBtnMoveEnd_Click( Object sender, EventArgs e ) {
-            if ( AppManager.isPlaying() ) {
-                AppManager.setPlaying( false );
-            }
-            AppManager.setCurrentClock( AppManager.getVsqFile().TotalClocks );
-            ensureCursorVisible();
-            refreshScreen();
-        }
-
-        public void stripBtnMoveTop_Click( Object sender, EventArgs e ) {
-            if ( AppManager.isPlaying() ) {
-                AppManager.setPlaying( false );
-            }
-            AppManager.setCurrentClock( 0 );
-            ensureCursorVisible();
-            refreshScreen();
-        }
-
-        public void stripBtnRewind_Click( Object sender, EventArgs e ) {
-            rewind();
-        }
-
-        public void stripBtnForward_Click( Object sender, EventArgs e ) {
-            forward();
-        }
-        #endregion
 
         /// <summary>
         /// メニューの説明をステータスバーに表示するための共通のイベントハンドラ
@@ -16160,147 +16423,6 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void toolStripContainer_TopToolStripPanel_SizeChanged( Object sender, EventArgs e ) {
-            if ( getExtendedState() == BForm.ICONIFIED ) {
-                return;
-            }
-            Dimension minsize = getWindowMinimumSize();
-            int wid = getWidth();
-            int hei = getHeight();
-            boolean change_size_required = false;
-            if ( minsize.width > wid ) {
-                wid = minsize.width;
-                change_size_required = true;
-            }
-            if ( minsize.height > hei ) {
-                hei = minsize.height;
-                change_size_required = true;
-            }
-            setMinimumSize( getWindowMinimumSize() );
-            if ( change_size_required ) {
-                setSize( wid, hei );
-            }
-        }
-
-        //BOOKMARK: stripDDBtn
-        #region stripDDBtn*
-#if ENABLE_STRIP_DROPDOWN
-        public void stripDDBtnSpeed_DropDownOpening( Object sender, EventArgs e ) {
-            if ( AppManager.editorConfig.getRealtimeInputSpeed() == 1.0f ) {
-                stripDDBtnSpeed100.setSelected( true );
-                stripDDBtnSpeed050.setSelected( false );
-                stripDDBtnSpeed033.setSelected( false );
-                stripDDBtnSpeedTextbox.setText( "100" );
-            } else if ( AppManager.editorConfig.getRealtimeInputSpeed() == 0.5f ) {
-                stripDDBtnSpeed100.setSelected( false );
-                stripDDBtnSpeed050.setSelected( true );
-                stripDDBtnSpeed033.setSelected( false );
-                stripDDBtnSpeedTextbox.setText( "50" );
-            } else if ( AppManager.editorConfig.getRealtimeInputSpeed() == 1.0f / 3.0f ) {
-                stripDDBtnSpeed100.setSelected( false );
-                stripDDBtnSpeed050.setSelected( false );
-                stripDDBtnSpeed033.setSelected( true );
-                stripDDBtnSpeedTextbox.setText( "33.333" );
-            } else {
-                stripDDBtnSpeed100.setSelected( false );
-                stripDDBtnSpeed050.setSelected( false );
-                stripDDBtnSpeed033.setSelected( false );
-                stripDDBtnSpeedTextbox.setText( (AppManager.editorConfig.getRealtimeInputSpeed() * 100.0f).ToString() );
-            }
-        }
-#endif
-
-#if ENABLE_STRIP_DROPDOWN
-        public void stripDDBtnSpeed100_Click( Object sender, EventArgs e ) {
-            changeRealtimeInputSpeed( 1.0f );
-            AppManager.editorConfig.setRealtimeInputSpeed( 1.0f );
-            updateStripDDBtnSpeed();
-        }
-#endif
-
-#if ENABLE_STRIP_DROPDOWN
-        public void stripDDBtnSpeed050_Click( Object sender, EventArgs e ) {
-            changeRealtimeInputSpeed( 0.5f );
-            AppManager.editorConfig.setRealtimeInputSpeed( 0.5f );
-            updateStripDDBtnSpeed();
-        }
-#endif
-
-#if ENABLE_STRIP_DROPDOWN
-        public void stripDDBtnSpeed033_Click( Object sender, EventArgs e ) {
-            changeRealtimeInputSpeed( 1.0f / 3.0f );
-            AppManager.editorConfig.setRealtimeInputSpeed( 1.0f / 3.0f );
-            updateStripDDBtnSpeed();
-        }
-#endif
-
-#if ENABLE_STRIP_DROPDOWN
-        public void stripDDBtnSpeedTextbox_KeyDown( Object sender, BKeyEventArgs e ) {
-#if JAVA
-            if ( e.KeyValue == KeyEvent.VK_ENTER ) {
-#else
-            if ( e.KeyCode == System.Windows.Forms.Keys.Enter ) {
-#endif
-                float v;
-                try {
-                    v = PortUtil.parseFloat( stripDDBtnSpeedTextbox.getText() );
-                    changeRealtimeInputSpeed( v / 100.0f );
-                    AppManager.editorConfig.setRealtimeInputSpeed( v / 100.0f );
-#if JAVA
-                    //TODO: FormMain#stripDDBtnSpeedTextBox_KeyDown
-#else
-                    stripDDBtnSpeed.HideDropDown();
-#endif
-                    updateStripDDBtnSpeed();
-                } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "FormMain#stripDDBtnSpeedTextBox_KeyDown; ex=" + ex );
-                    Logger.write( typeof( FormMain ) + ".stripDDBtnSpeedTextbox_KeyDown; ex=" + ex + "\n" );
-                }
-            }
-        }
-#endif
-        #endregion // stripDDBtn*
-
-        //BOOKMARK: pictKeyLengthSplitter
-        #region pictKeyLengthSplitter
-        public void pictKeyLengthSplitter_MouseDown( Object sender, BMouseEventArgs e ) {
-            mKeyLengthSplitterMouseDowned = true;
-            mKeyLengthSplitterInitialMouse = PortUtil.getMousePosition();
-            mKeyLengthInitValue = AppManager.keyWidth;
-            mKeyLengthTrackSelectorRowsPerColumn = trackSelector.getRowsPerColumn();
-            mKeyLengthSplitterDistance = splitContainer1.getDividerLocation();
-        }
-
-        public void pictKeyLengthSplitter_MouseMove( Object sender, BMouseEventArgs e ) {
-            if ( !mKeyLengthSplitterMouseDowned ) {
-                return;
-            }
-            int dx = PortUtil.getMousePosition().x - mKeyLengthSplitterInitialMouse.x;
-            int draft = mKeyLengthInitValue + dx;
-            if ( draft < AppManager.MIN_KEY_WIDTH ) {
-                draft = AppManager.MIN_KEY_WIDTH;
-            } else if ( AppManager.MAX_KEY_WIDTH < draft ) {
-                draft = AppManager.MAX_KEY_WIDTH;
-            }
-            AppManager.keyWidth = draft;
-            int current = trackSelector.getRowsPerColumn();
-            if ( current >= mKeyLengthTrackSelectorRowsPerColumn ) {
-                int max_divider_location = splitContainer1.getHeight() - splitContainer1.getDividerSize() - splitContainer1.getPanel2MinSize();
-                if ( max_divider_location < mKeyLengthSplitterDistance ) {
-                    splitContainer1.setDividerLocation( max_divider_location );
-                } else {
-                    splitContainer1.setDividerLocation( mKeyLengthSplitterDistance );
-                }
-            }
-            updateLayout();
-            refreshScreen();
-        }
-
-        public void pictKeyLengthSplitter_MouseUp( Object sender, BMouseEventArgs e ) {
-            mKeyLengthSplitterMouseDowned = false;
-        }
-        #endregion
-
         public void handleBgmOffsetSeconds_Click( Object sender, EventArgs e ) {
             if ( !(sender is BMenuItem) ) {
                 return;
@@ -16482,6 +16604,49 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
+#if ENABLE_SCRIPT
+        public void handleScriptMenuItem_Click( Object sender, EventArgs e ) {
+
+            try {
+                String dir = Utility.getScriptPath();
+                String id = (String)((BMenuItem)sender).getTag();
+                String script_file = PortUtil.combinePath( dir, id );
+                if ( ScriptServer.getTimestamp( id ) != PortUtil.getFileLastModified( script_file ) ) {
+                    ScriptServer.reload( id );
+                }
+                if ( ScriptServer.isAvailable( id ) ) {
+                    if ( ScriptServer.invokeScript( id, AppManager.getVsqFile() ) ) {
+                        setEdited( true );
+                        updateDrawObjectList();
+                        refreshScreen();
+                    }
+                } else {
+                    FormCompileResult dlg = null;
+                    try {
+                        dlg = new FormCompileResult( _( "Failed loading script." ), ScriptServer.getCompileMessage( id ) );
+                        dlg.setModal( true );
+                        dlg.setVisible( true );
+                    } catch ( Exception ex ) {
+                        Logger.write( typeof( FormMain ) + ".handleScriptMenuItem_Click; ex=" + ex + "\n" );
+                    } finally {
+                        if ( dlg != null ) {
+                            try {
+                                dlg.close();
+                            } catch ( Exception ex2 ) {
+                                Logger.write( typeof( FormMain ) + ".handleScriptMenuItem_Click; ex=" + ex2 + "\n" );
+                            }
+                        }
+                    }
+                }
+            } catch ( Exception ex3 ) {
+                Logger.write( typeof( FormMain ) + ".handleScriptMenuItem_Click; ex=" + ex3 + "\n" );
+#if DEBUG
+                PortUtil.println( "AppManager#dd_run_Click; ex3=" + ex3 );
+#endif
+            }
+        }
+#endif
+
 #if ENABLE_MTC
         /// <summary>
         /// MTC用のMIDI-INデバイスからMIDIを受信します。
@@ -16610,55 +16775,21 @@ namespace org.kbinani.cadencii {
         }
 #endif
 
-#if ENABLE_SCRIPT
-        public void handleScriptMenuItem_Click( Object sender, EventArgs e ) {
-
-            try {
-                String dir = Utility.getScriptPath();
-                String id = (String)((BMenuItem)sender).getTag();
-                String script_file = PortUtil.combinePath( dir, id );
-                if ( ScriptServer.getTimestamp( id ) != PortUtil.getFileLastModified( script_file ) ) {
-                    ScriptServer.reload( id );
-                }
-                if ( ScriptServer.isAvailable( id ) ) {
-                    if ( ScriptServer.invokeScript( id, AppManager.getVsqFile() ) ) {
-                        setEdited( true );
-                        updateDrawObjectList();
-                        refreshScreen();
-                    }
-                } else {
-                    FormCompileResult dlg = null;
-                    try {
-                        dlg = new FormCompileResult( _( "Failed loading script." ), ScriptServer.getCompileMessage( id ) );
-                        dlg.setModal( true );
-                        dlg.setVisible( true );
-                    } catch ( Exception ex ) {
-                        Logger.write( typeof( FormMain ) + ".handleScriptMenuItem_Click; ex=" + ex + "\n" );
-                    } finally {
-                        if ( dlg != null ) {
-                            try {
-                                dlg.close();
-                            } catch ( Exception ex2 ) {
-                                Logger.write( typeof( FormMain ) + ".handleScriptMenuItem_Click; ex=" + ex2 + "\n" );
-                            }
-                        }
-                    }
-                }
-            } catch ( Exception ex3 ) {
-                Logger.write( typeof( FormMain ) + ".handleScriptMenuItem_Click; ex=" + ex3 + "\n" );
-#if DEBUG
-                PortUtil.println( "AppManager#dd_run_Click; ex3=" + ex3 );
-#endif
-            }
-        }
-#endif
-
         public void menuTrackManager_Click( Object sender, EventArgs e ) {
 
         }
         #endregion
 
         #region public static methods
+        /// <summary>
+        /// 文字列を、現在の言語設定に従って翻訳します。
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public static String _( String id ) {
+            return Messaging.getMessage( id );
+        }
+
         /// <summary>
         /// VsqEvent, VsqBPList, BezierCurvesの全てのクロックを、tempoに格納されているテンポテーブルに
         /// 合致するようにシフトします．ただし，このメソッド内ではtargetのテンポテーブルは変更せず，クロック値だけが変更される．

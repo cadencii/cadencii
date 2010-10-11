@@ -379,6 +379,11 @@ namespace org.kbinani.cadencii {
         /// <version>3.4</version>
         /// </summary>
         public boolean SkipDrawWhilePlaying = false;
+        /// <summary>
+        /// ピアノロール画面の縦方向のスケール.
+        /// <verssion>3.4</verssion>
+        /// </summary>
+        public int PianoRollScaleY = 0;
 
         /// <summary>
         /// バッファーサイズに設定できる最大値
@@ -388,6 +393,8 @@ namespace org.kbinani.cadencii {
         /// バッファーサイズに設定できる最小値
         /// </summary>
         public const int MIN_BUFFER_MILLIXEC = 100;
+        public const int MAX_PIANOROLL_SCALEY = 10;
+        public const int MIN_PIANOROLL_SCALEY = -4;
 
         #region Static Fields
         public static readonly Vector<ValuePairOfStringArrayOfKeys> DEFAULT_SHORTCUT_KEYS = new Vector<ValuePairOfStringArrayOfKeys>( Arrays.asList(
@@ -489,6 +496,73 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public static BEvent<BEventHandler> quantizeModeChangedEvent = new BEvent<BEventHandler>();
 
+        #region public static method
+        public static void serialize( EditorConfig instance, String file ) {
+            FileOutputStream fs = null;
+            try {
+                fs = new FileOutputStream( file );
+                s_serializer.serialize( fs, instance );
+            } catch ( Exception ex ) {
+                Logger.write( typeof( EditorConfig ) + ".serialize; ex=" + ex + "\n" );
+            } finally {
+                if ( fs != null ) {
+                    try {
+                        fs.close();
+                    } catch ( Exception ex2 ) {
+                        Logger.write( typeof( EditorConfig ) + ".serialize; ex=" + ex2 + "\n" );
+                    }
+                }
+            }
+        }
+
+        public static EditorConfig deserialize( String file ) {
+            EditorConfig ret = null;
+            FileInputStream fs = null;
+            try {
+                fs = new FileInputStream( file );
+                ret = (EditorConfig)s_serializer.deserialize( fs );
+            } catch ( Exception ex ) {
+#if JAVA
+                PortUtil.stderr.println( "EditorConfig#deserialize; ex=" + ex );
+                ex.printStackTrace();
+#endif
+                Logger.write( typeof( EditorConfig ) + ".deserialize; ex=" + ex + "\n" );
+            } finally {
+                if ( fs != null ) {
+                    try {
+                        fs.close();
+                    } catch ( Exception ex2 ) {
+                        Logger.write( typeof( EditorConfig ) + ".deserialize; ex=" + ex2 + "\n" );
+                    }
+                }
+            }
+
+            if ( ret == null ) {
+                return null;
+            }
+
+            for ( int j = 0; j < DEFAULT_SHORTCUT_KEYS.size(); j++ ) {
+                boolean found = false;
+                for ( int i = 0; i < ret.ShortcutKeys.size(); i++ ) {
+                    if ( DEFAULT_SHORTCUT_KEYS.get( j ).Key.Equals( ret.ShortcutKeys.get( i ).Key ) ) {
+                        found = true;
+                        break;
+                    }
+                }
+                if ( !found ) {
+                    ret.ShortcutKeys.add( DEFAULT_SHORTCUT_KEYS.get( j ) );
+                }
+            }
+
+            // バッファーサイズを正規化
+            if ( ret.BufferSizeMilliSeconds < MIN_BUFFER_MILLIXEC ) {
+                ret.BufferSizeMilliSeconds = MIN_BUFFER_MILLIXEC;
+            } else if ( MAX_BUFFER_MILLISEC < ret.BufferSizeMilliSeconds ) {
+                ret.BufferSizeMilliSeconds = MAX_BUFFER_MILLISEC;
+            }
+            return ret;
+        }
+
         /// <summary>
         /// このクラスの指定した名前のプロパティが総称型引数を用いる型である場合に，
         /// その型の限定名を返します．それ以外の場合は空文字を返します．
@@ -508,6 +582,23 @@ namespace org.kbinani.cadencii {
                 }
             }
             return "";
+        }
+        #endregion
+
+        #region public method
+        public int getActualNoteHeight() {
+            if ( PianoRollScaleY < MIN_PIANOROLL_SCALEY ) {
+                PianoRollScaleY = MIN_PIANOROLL_SCALEY;
+            } else if ( MAX_PIANOROLL_SCALEY < PianoRollScaleY ) {
+                PianoRollScaleY = MAX_PIANOROLL_SCALEY;
+            }
+            if ( PianoRollScaleY == 0 ) {
+                return PxTrackHeight;
+            } else if ( PianoRollScaleY > 0 ) {
+                return (2 * PianoRollScaleY + 5) * PxTrackHeight / 5;
+            } else {
+                return (PianoRollScaleY + 8) * PxTrackHeight / 8;
+            }
         }
 
         /// <summary>
@@ -597,72 +688,6 @@ namespace org.kbinani.cadencii {
                 if ( !ret.containsKey( item.Key ) ) {
                     ret.put( item.Key, item.Value );
                 }
-            }
-            return ret;
-        }
-
-        public static void serialize( EditorConfig instance, String file ) {
-            FileOutputStream fs = null;
-            try {
-                fs = new FileOutputStream( file );
-                s_serializer.serialize( fs, instance );
-            } catch ( Exception ex ) {
-                Logger.write( typeof( EditorConfig ) + ".serialize; ex=" + ex + "\n" );
-            } finally {
-                if ( fs != null ) {
-                    try {
-                        fs.close();
-                    } catch ( Exception ex2 ) {
-                        Logger.write( typeof( EditorConfig ) + ".serialize; ex=" + ex2 + "\n" );
-                    }
-                }
-            }
-        }
-
-        public static EditorConfig deserialize( String file ) {
-            EditorConfig ret = null;
-            FileInputStream fs = null;
-            try {
-                fs = new FileInputStream( file );
-                ret = (EditorConfig)s_serializer.deserialize( fs );
-            } catch ( Exception ex ) {
-#if JAVA
-                PortUtil.stderr.println( "EditorConfig#deserialize; ex=" + ex );
-                ex.printStackTrace();
-#endif
-                Logger.write( typeof( EditorConfig ) + ".deserialize; ex=" + ex + "\n" );
-            } finally {
-                if ( fs != null ) {
-                    try {
-                        fs.close();
-                    } catch ( Exception ex2 ) {
-                        Logger.write( typeof( EditorConfig ) + ".deserialize; ex=" + ex2 + "\n" );
-                    }
-                }
-            }
-
-            if ( ret == null ) {
-                return null;
-            }
-
-            for ( int j = 0; j < DEFAULT_SHORTCUT_KEYS.size(); j++ ) {
-                boolean found = false;
-                for ( int i = 0; i < ret.ShortcutKeys.size(); i++ ) {
-                    if ( DEFAULT_SHORTCUT_KEYS.get( j ).Key.Equals( ret.ShortcutKeys.get( i ).Key ) ) {
-                        found = true;
-                        break;
-                    }
-                }
-                if ( !found ) {
-                    ret.ShortcutKeys.add( DEFAULT_SHORTCUT_KEYS.get( j ) );
-                }
-            }
-
-            // バッファーサイズを正規化
-            if ( ret.BufferSizeMilliSeconds < MIN_BUFFER_MILLIXEC ) {
-                ret.BufferSizeMilliSeconds = MIN_BUFFER_MILLIXEC;
-            } else if ( MAX_BUFFER_MILLISEC < ret.BufferSizeMilliSeconds ) {
-                ret.BufferSizeMilliSeconds = MAX_BUFFER_MILLISEC;
             }
             return ret;
         }
@@ -867,6 +892,7 @@ namespace org.kbinani.cadencii {
             }
             RecentFiles.insertElementAt( new_file, 0 );
         }
+        #endregion
     }
 
 #if !JAVA

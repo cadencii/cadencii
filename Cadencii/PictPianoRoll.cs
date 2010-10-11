@@ -243,7 +243,7 @@ namespace org.kbinani.cadencii {
                 int stdy = AppManager.getStartToDrawY();
                 int key_width = AppManager.keyWidth;
 
-                int track_height = AppManager.editorConfig.PxTrackHeight;
+                int track_height = AppManager.editorConfig.getActualNoteHeight();
                 int half_track_height = track_height / 2;
                 // [screen_x] = 67 + [clock] * ScaleX - StartToDrawX + 6
                 // [screen_y] = -1 * ([note] - 127) * TRACK_HEIGHT - StartToDrawY
@@ -1123,13 +1123,6 @@ namespace org.kbinani.cadencii {
                     g.setColor( pen );
                     g.drawRect( rc.x, rc.y, rc.width, rc.height );
                 }
-#if MONITOR_FPS
-            e.Graphics.DrawString(
-                m_fps.ToString( "000.000" ),
-                new Font( "Verdana", 40, FontStyle.Bold ),
-                Brushes.Red,
-                new PointF( 0, 0 ) );
-#endif
                 #endregion
 
 #if !JAVA
@@ -1301,7 +1294,7 @@ namespace org.kbinani.cadencii {
                 return;
             }
             int y0 = AppManager.yCoordFromNote( note - 0.5f );
-            float px_track_height = AppManager.editorConfig.PxTrackHeight;
+            float px_track_height = AppManager.editorConfig.getActualNoteHeight();
             VsqFileEx vsq = AppManager.getVsqFile();
             int clock_start = AppManager.clockFromXCoord( x_start );
             int clock_end = AppManager.clockFromXCoord( x_start + px_width );

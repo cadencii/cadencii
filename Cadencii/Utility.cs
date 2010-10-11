@@ -561,10 +561,35 @@ namespace org.kbinani.cadencii{
         /// <param name="rc"></param>
         /// <returns></returns>
         public static boolean isInRect( Point p, Rectangle rc ) {
-            if ( rc.x <= p.x ) {
-                if ( p.x <= rc.x + rc.width ) {
-                    if ( rc.y <= p.y ) {
-                        if ( p.y <= rc.y + rc.height ) {
+            return isInRect( p.x, p.y, rc );
+        }
+
+        /// <summary>
+        /// 点がrcの中にあるかどうかを判定します
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="rc"></param>
+        /// <returns></returns>
+        public static boolean isInRect( int x, int y, Rectangle rc ) {
+            return isInRect( x, y, rc.x, rc.y, rc.width, rc.height );
+        }
+
+        /// <summary>
+        /// 点が四角形の中にあるかどうかを判定します
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="rc_x"></param>
+        /// <param name="rc_y"></param>
+        /// <param name="rc_width"></param>
+        /// <param name="rc_height"></param>
+        /// <returns></returns>
+        public static boolean isInRect( int x, int y, int rc_x, int rc_y, int rc_width, int rc_height ) {
+            if ( rc_x <= x ) {
+                if ( x <= rc_x + rc_width ) {
+                    if ( rc_y <= y ) {
+                        if ( y <= rc_y + rc_height ) {
                             return true;
                         }
                     }

@@ -217,20 +217,6 @@ namespace org.kbinani.cadencii {
         /// 編集しているBezierPointのID
         /// </summary>
         public int mEditingPointID = -1;
-#if MONITOR_FPS
-        /// <summary>
-        /// パフォーマンスカウンタ
-        /// </summary>
-        private float[] m_performance = new float[_NUM_PCOUNTER];
-        /// <summary>
-        /// 最後にpictureBox1_Paintが実行された時刻
-        /// </summary>
-        private DateTime m_last_ignitted;
-        /// <summary>
-        /// パフォーマンスカウンタから算出される画面の更新速度
-        /// </summary>
-        private float m_fps = 0f;
-#endif
         /// <summary>
         /// マウスがカーブ部分に下ろされている最中かどうかを表すフラグ
         /// </summary>
@@ -866,24 +852,6 @@ namespace org.kbinani.cadencii {
             Graphics2D g = getGraphics();
             g.nativeGraphics = e.Graphics;
             paint( g );
-#if MONITOR_FPS
-            DateTime dnow = DateTime.Now;
-            for ( int i = 0; i < _NUM_PCOUNTER - 1; i++ ) {
-                m_performance[i] = m_performance[i + 1];
-            }
-            m_performance[_NUM_PCOUNTER - 1] = (float)dnow.Subtract( m_last_ignitted ).TotalSeconds;
-            m_last_ignitted = dnow;
-            float sum = 0f;
-            for ( int i = 0; i < _NUM_PCOUNTER; i++ ) {
-                sum += m_performance[i];
-            }
-            m_fps = _NUM_PCOUNTER / sum;
-            e.Graphics.drawString(
-                m_fps.ToString( "000.000" ),
-                new Font( "Verdana", 40, FontStyle.Bold ),
-                Brushes.Red,
-                new PointF( 0, 0 ) );
-#endif
         }
 #endif
 

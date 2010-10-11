@@ -711,7 +711,7 @@ namespace org.kbinani.cadencii {
         }
 
         public static int yCoordFromNote( float note, int start_to_draw_y ) {
-            return (int)(-1 * (note - 127.0f) * editorConfig.PxTrackHeight) - start_to_draw_y;
+            return (int)(-1 * (note - 127.0f) * editorConfig.getActualNoteHeight()) - start_to_draw_y;
         }
 
         /// <summary>
@@ -728,7 +728,7 @@ namespace org.kbinani.cadencii {
         }
 
         private static double noteFromYCoordCore( int y ) {
-            return (double)(mStartToDrawY + y) / (double)editorConfig.PxTrackHeight;
+            return (double)(mStartToDrawY + y) / (double)editorConfig.getActualNoteHeight();
         }
 
         /// <summary>
