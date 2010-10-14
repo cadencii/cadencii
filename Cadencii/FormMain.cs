@@ -1852,8 +1852,15 @@ namespace org.kbinani.cadencii {
         /// 現在表示されているピアノロール画面の右上の、仮想スクリーン上座標で見たときのy座標(pixel)を取得します
         /// </summary>
         private int calculateStartToDrawY() {
-            //return (int)((128 * AppManager.editorConfig.getActualNoteHeight() - pictPianoRoll.getHeight()) * (float)vScroll.getValue() / ((float)vScroll.getMaximum()));
-            return vScroll.getValue();
+            int min = vScroll.getMinimum();
+            int max = vScroll.getMaximum() - vScroll.getVisibleAmount();
+            int value = vScroll.getValue();
+            if ( value < min ) {
+                value = min;
+            } else if ( max < value ) {
+                value = max;
+            }
+            return value;
         }
         #endregion
 
@@ -1876,44 +1883,6 @@ namespace org.kbinani.cadencii {
                 }
             }
             return ret;
-        }
-
-        public void render( Integer[] tracks ) {
-            VsqFileEx vsq = AppManager.getVsqFile();
-
-            String tmppath = AppManager.getTempWaveDir();
-            if ( !PortUtil.isDirectoryExists( tmppath ) ) {
-                PortUtil.createDirectory( tmppath );
-            }
-            String[] files = new String[tracks.Length];
-            Integer[] ends = new Integer[tracks.Length];
-            Integer[] starts = new Integer[tracks.Length];
-            for ( int i = 0; i < tracks.Length; i++ ) {
-                files[i] = PortUtil.combinePath( tmppath, tracks[i] + ".wav" );
-                ends[i] = vsq.TotalClocks + 240;
-                starts[i] = 0;
-            }
-            FormSynthesize dlg = null;
-            try {
-                dlg = new FormSynthesize( vsq, AppManager.editorConfig.PreSendTime, tracks, files, starts, ends, false );
-                dlg.setModal( true );
-                dlg.setVisible( true );
-                int finished = dlg.getFinished();
-                for ( int i = 0; i < finished; i++ ) {
-                    AppManager.setRenderRequired( tracks[i], false );
-                    AppManager.mLastRenderedStatus[tracks[i] - 1] = new RenderedStatus( (VsqTrack)vsq.Track.get( tracks[i] ).clone(), vsq.TempoTable );
-                }
-            } catch ( Exception ex ) {
-                Logger.write( typeof( FormMain ) + ".render; ex=" + ex + "\n" );
-            } finally {
-                if ( dlg != null ) {
-                    try {
-                        dlg.close();
-                    } catch ( Exception ex2 ) {
-                        Logger.write( typeof( FormMain ) + ".render; ex=" + ex2 + "\n" );
-                    }
-                }
-            }
         }
 
         /// <summary>
@@ -4018,19 +3987,37 @@ namespace org.kbinani.cadencii {
                 vScroll.setVisibleAmount( large_change );
             }*/
             //TODO: FormMain#updateVScrollValue; スクロールボックスの最小表示幅を考慮するのが未だ
+            int _ARROWS = 40;
             int value = vScroll.getValue();
             int old = value;
-            vScroll.setMaximum( 128 * AppManager.editorConfig.getActualNoteHeight() );
-            vScroll.setVisibleAmount( pictPianoRoll.getHeight() );
+            int maximum = 128 * AppManager.editorConfig.getActualNoteHeight();
+            int visible_amount = pictPianoRoll.getHeight();
+
+            int box_height = (vScroll.getHeight() - _ARROWS) * visible_amount / maximum;
+            if ( box_height < AppManager.editorConfig.MinimumScrollHandleWidth ) {
+                box_height = AppManager.editorConfig.MinimumScrollHandleWidth;
+                int act_max = maximum - visible_amount;
+                visible_amount = box_height * maximum / (vScroll.getHeight() - _ARROWS);
+                maximum = act_max + visible_amount;
+            }
+
+            vScroll.setMaximum( maximum );
+            vScroll.setVisibleAmount( visible_amount );
             int min = vScroll.getMinimum();
-            int max = vScroll.getMaximum() - vScroll.getVisibleAmount();
+            int max = maximum - vScroll.getVisibleAmount();
             if ( value < min ) {
                 value = min;
             } else if ( max < value ) {
                 value = max;
             }
             if ( old != value ) {
+#if DEBUG
+                PortUtil.println( "FormMain#updateVScrollRange; before; vScroll.setValue; value=" + value );
+#endif
                 vScroll.setValue( value );
+#if DEBUG
+                PortUtil.println( "FormMain#updateVScrollRange; after; vScroll.setValue; value=" + value );
+#endif
             }
 #endif
         }
@@ -15359,9 +15346,8 @@ namespace org.kbinani.cadencii {
                     if ( scaley + 1 <= EditorConfig.MAX_PIANOROLL_SCALEY ) {
                         mPianoRollScaleYMouseStatus = 1;
                         AppManager.editorConfig.PianoRollScaleY = scaley + 1;
-                        vScroll.setMaximum( AppManager.editorConfig.getActualNoteHeight() * 128 );
-                        AppManager.setStartToDrawY( calculateStartToDrawY() );
                         updateVScrollRange();
+                        AppManager.setStartToDrawY( calculateStartToDrawY() );
                         updateDrawObjectList();
                     } else {
                         mPianoRollScaleYMouseStatus = 0;
@@ -15370,9 +15356,8 @@ namespace org.kbinani.cadencii {
                     if ( scaley - 1 >= EditorConfig.MIN_PIANOROLL_SCALEY ) {
                         mPianoRollScaleYMouseStatus = -1;
                         AppManager.editorConfig.PianoRollScaleY = scaley - 1;
-                        vScroll.setMaximum( AppManager.editorConfig.getActualNoteHeight() * 128 );
-                        AppManager.setStartToDrawY( calculateStartToDrawY() );
                         updateVScrollRange();
+                        AppManager.setStartToDrawY( calculateStartToDrawY() );
                         updateDrawObjectList();
                     } else {
                         mPianoRollScaleYMouseStatus = 0;

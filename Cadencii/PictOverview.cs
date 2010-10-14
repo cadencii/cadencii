@@ -296,7 +296,10 @@ namespace org.kbinani.cadencii {
             if ( mMainForm == null ) {
                 return;
             }
-            int required_width = (int)(vsq.TotalClocks * mOverviewPixelPerClock) + mMainForm.pictPianoRoll.getWidth();
+            int max = AppManager.getCurrentClock();
+            int total_clocks = vsq.TotalClocks;
+            if ( max < total_clocks ) max = total_clocks;
+            int required_width = (int)(max * mOverviewPixelPerClock) + getWidth();
             mDrawer.setWidth( required_width );
             mDrawer.updateCache( this );
         }
@@ -393,7 +396,10 @@ namespace org.kbinani.cadencii {
 
         public void handleResize( Object sender, EventArgs e ) {
             VsqFileEx vsq = AppManager.getVsqFile();
-            int min_width = (int)(vsq.TotalClocks * mOverviewPixelPerClock) + getWidth();
+            int max = AppManager.getCurrentClock();
+            int total_clocks = vsq.TotalClocks;
+            if ( max < total_clocks ) max = total_clocks;
+            int min_width = (int)(max * mOverviewPixelPerClock) + getWidth();
             if ( mDrawer.getWidth() < min_width ) {
                 mDrawer.setWidth( min_width );
                 updateCachedImage();
