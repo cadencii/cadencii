@@ -4,6 +4,7 @@ var _MAX_FPS = 30.0;
 var _MIN_PAINT_INTERVAL = 1.0 / _MAX_FPS;
 var _SCROLL_WIDTH = 14;
 var _SCROLL_SPEED = 50;
+var _MENUBAR_HEIGHT = 25;
 
 MouseMode = {};
 MouseMode.NONE = 0;
@@ -18,6 +19,7 @@ var trackSelector, divTrackSelector;
 var hScroll = { value: 0, minimum: 0, maximum: 100, visibleAmount: 10, width: 100, height: _SCROLL_WIDTH, left: 68, top: 100, box_pos: _SCROLL_WIDTH, box_length: 1 };
 var vScroll = { value: 0, minimum: 0, maximum: 100, visibleAmount: 10, width: _SCROLL_WIDTH, height: 100, left: 100, top: _PICT_POSITION_INDICATOR_HEIGHT, box_pos: _SCROLL_WIDTH, box_length: 1 };
 var trackBar = { value: 0, minimum: 0, maximum: 100, width: 100, height: _SCROLL_WIDTH, left: 100, top: 100 };
+var divMenuHolder;
 
 var m_mouse_down_x, m_mouse_down_y;
 var m_stdx, m_stdy; //マウスが降りたときのstartToDraw(X|Y)の値
@@ -72,25 +74,31 @@ function updateLayout(){
     var width = window.innerWidth;
     var height = window.innerHeight;
     pictPianoRoll.setAttribute( "width", width );
-    pictPianoRoll.setAttribute( "height", height - trackselector_height );
+    pictPianoRoll.setAttribute( "height", height - trackselector_height - _MENUBAR_HEIGHT );
     var s = divPictPianoRoll.getAttribute( "style" );
     s = set_style_attribute( s, "width", width + "px" );
-    s = set_style_attribute( s, "height", (height - trackselector_height) + "px" );
+    s = set_style_attribute( s, "height", (height - trackselector_height - _MENUBAR_HEIGHT) + "px" );
+    s = set_style_attribute( s, "top", _MENUBAR_HEIGHT + "px" );
     divPictPianoRoll.setAttribute( "style", s );
+
+    s = divMenuHolder.getAttribute( "style" );
+    s = set_style_attribute( s, "width", width + "px" );
+    s = set_style_attribute( s, "height", _MENUBAR_HEIGHT + "px" );
+    divMenuHolder.setAttribute( "style", s );
 
     trackSelector.setAttribute( "width", width );
     trackSelector.setAttribute( "height", trackselector_height );
 
     var key_width = org.kbinani.cadencii.AppManager.keyWidth;
 
-    trackBar.top = height - trackselector_height - _SCROLL_WIDTH;
+    trackBar.top = height - trackselector_height - _SCROLL_WIDTH - _MENUBAR_HEIGHT;
     trackBar.left = width - _SCROLL_WIDTH - trackBar.width;
 
-    vScroll.top = _PICT_POSITION_INDICATOR_HEIGHT;
+    vScroll.top = _PICT_POSITION_INDICATOR_HEIGHT + _MENUBAR_HEIGHT;
     vScroll.left = width - _SCROLL_WIDTH;
     vScroll.height = height - trackselector_height - _PICT_POSITION_INDICATOR_HEIGHT - _SCROLL_WIDTH;
 
-    hScroll.top = height - trackselector_height - _SCROLL_WIDTH;
+    hScroll.top = height - trackselector_height - _SCROLL_WIDTH - _MENUBAR_HEIGHT;
     hScroll.left = key_width;
     hScroll.width = width - key_width - trackBar.width - _SCROLL_WIDTH;
 }
@@ -106,6 +114,7 @@ function init(){
     trackSelector = document.getElementById( "trackSelector" );
     divPictPianoRoll = document.getElementById( "divPictPianoRoll" );
     divTrackSelector = document.getElementById( "divTrackSelector" );
+    divMenuHolder = document.getElementById( "divMenuHolder" );
     pictPianoRoll.addEventListener( "mousemove", pictPianoRoll_mouseMove, true );
     pictPianoRoll.addEventListener( "mousedown", pictPianoRoll_mouseDown, true );
     pictPianoRoll.addEventListener( "mouseup", pictPianoRoll_mouseUp, true );
@@ -127,21 +136,23 @@ function window_mouseWheel( e ){
 
 function window_mouseMove( e ){
     mouseX = e.pageX;
-    mouseY = e.pageY;
+    mouseY = e.pageY - _MENUBAR_HEIGHT;
 }
 
 function pictPianoRoll_mouseDown( e ){
-    m_mouse_down_x = e.pageX;
-    m_mouse_down_y = e.pageY;
+    var x = e.pageX;
+    var y = e.pageY - _MENUBAR_HEIGHT;
+    m_mouse_down_x = x;
+    m_mouse_down_y = y;
 
     // 横スクロールのボックスに入ってないかどうか
-    if( hScroll.box_pos <= e.pageX && e.pageX <= hScroll.box_pos + hScroll.box_length &&
-        hScroll.top <= e.pageY && e.pageY <= hScroll.top + hScroll.height ){
+    if( hScroll.box_pos <= x && x <= hScroll.box_pos + hScroll.box_length &&
+        hScroll.top <= y && y <= hScroll.top + hScroll.height ){
         mouseMode = MouseMode.DOWN_ON_HSCROLL;
         m_hscroll_value = hScroll.value;
         return;
-    }else if( vScroll.left <= e.pageX && e.pageX <= vScroll.left + vScroll.width &&
-              vScroll.box_pos <= e.pageY && e.pageY <= vScroll.box_pos + vScroll.box_length ){
+    }else if( vScroll.left <= x && x <= vScroll.left + vScroll.width &&
+              vScroll.box_pos <= y && y <= vScroll.box_pos + vScroll.box_length ){
         mouseMode = MouseMode.DOWN_ON_VSCROLL;
         m_vscroll_value = vScroll.value;
         return;
@@ -158,17 +169,19 @@ function pictPianoRoll_mouseUp( e ){
 }
 
 function pictPianoRoll_mouseMove( e ){
+    var x = e.pageX;
+    var y = e.pageY - _MENUBAR_HEIGHT;
     var stdx = org.kbinani.cadencii.AppManager.getStartToDrawX();
     var stdy = org.kbinani.cadencii.AppManager.getStartToDrawY();
     if( mouseMode == MouseMode.DOWN_ON_PIANOROLL ){
-        updateScrollLocation( m_stdx - (e.pageX - m_mouse_down_x), m_stdy - (e.pageY - m_mouse_down_y) );
+        updateScrollLocation( m_stdx - (x - m_mouse_down_x), m_stdy - (y - m_mouse_down_y) );
     }else if( mouseMode == MouseMode.DOWN_ON_HSCROLL ){
-        var dx = e.pageX - m_mouse_down_x;
+        var dx = x - m_mouse_down_x;
         var hscroll_scale = hScroll.box_length / hScroll.visibleAmount;
         var scalex = org.kbinani.cadencii.AppManager.scaleX;
         updateScrollLocation( (m_hscroll_value + dx / hscroll_scale) * scalex, stdy );
     }else if( mouseMode == MouseMode.DOWN_ON_VSCROLL ){
-        var dy = e.pageY - m_mouse_down_y;
+        var dy = y - m_mouse_down_y;
         var vscroll_scale = vScroll.box_length / vScroll.visibleAmount; // pixel/[.valueの単位]
         updateScrollLocation( stdx, m_vscroll_value + dy / vscroll_scale );
     }

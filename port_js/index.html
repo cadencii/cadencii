@@ -28,7 +28,7 @@
 <script type="text/javascript" src="org/kbinani/vsq/IconParameter.js"></script>
 <script type="text/javascript" src="org/kbinani/vsq/NoteHeadHandle.js"></script>
 <script type="text/javascript" src="org/kbinani/vsq/VibratoHandle.js"></script>
-<script type="text/javascritp" src="org/kbinani/vsq/IconDynamicsHandle.js"></script>
+<script type="text/javascript" src="org/kbinani/vsq/IconDynamicsHandle.js"></script>
 <script type="text/javascript" src="org/kbinani/vsq/TextStream.js"></script>
 <script type="text/javascript" src="org/kbinani/printf.js"></script>
 <script type="text/javascript" src="org/kbinani/vsq/VsqHandle.js"></script>
@@ -62,9 +62,25 @@
 <script type="text/javascript" src="org/kbinani/cadencii/QuantizeModeUtil.js"></script>
 <script type="text/javascript" src="main.js"></script>
 <title>Untitled - Cadencii</title>
+<style type="text/css">
+.menu{
+    font-family: "Verdana";
+    font-size: 14px;
+    text-decoration: none;
+    color: black;
+    cursor: default;
+    position: relative;
+    margin-left: 3px;
+    margin-right: 3px;
+}
+</style>
 </head>
 <body>
 <div id="dropbox" style="top: 0px; left: 0px; width: 100%; height: 100%; background-color: gray; position: absolute; overflow: hidden; display: block;">
+<div id="divMenuHolder" style="top: 0px; left: 0px; width: 100%; background-color: lightgray;">
+<a class=menu style="visibility: visible; top: 3px; left: 6px;" href="javascript:void(0);">File</a>
+<a class=menu style="visibility: visible; top: 3px; left: 6px;" href="javascript:void(0);">Edit</a>
+</div>
 <div id="divPictPianoRoll" style="top: 0px; left: 0px; width: 100%; height: 100%;"><canvas id="pictPianoRoll" style="width: 100%; height: 100%;"></canvas></div>
 <div id="divTrackSelector" style="top: 0px; left: 0px; width: 100%; height: 100%;"><canvas id="trackSelector" style="width: 100%; height: 100%;"></canvas></div>
 </div>
