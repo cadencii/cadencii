@@ -1,16 +1,16 @@
 #include "org.kbinani.media.helper.h"
 
-HWAVEOUT wave_out = NULL;
-WAVEFORMATEX wave_format;
-WAVEHDR wave_header[NUM_BUF];
-DWORD *wave[NUM_BUF];
-bool wave_done[NUM_BUF];
-int buffer_index = 0; // 次のデータを書き込むバッファの番号
-int buffer_loc = 0; // 次のデータを書き込む位置
-CRITICAL_SECTION locker;
-bool abort_required;
-int block_size = 4410; // ブロックサイズ
-int block_size_used; // SoundPrepareで初期化されたブロックサイズ
+static HWAVEOUT wave_out = NULL;
+static WAVEFORMATEX wave_format;
+static WAVEHDR wave_header[NUM_BUF];
+static DWORD *wave[NUM_BUF];
+static bool wave_done[NUM_BUF];
+static int buffer_index = 0; // 次のデータを書き込むバッファの番号
+static int buffer_loc = 0; // 次のデータを書き込む位置
+static CRITICAL_SECTION locker;
+static bool abort_required;
+static int block_size = 4410; // ブロックサイズ
+static int block_size_used; // SoundPrepareで初期化されたブロックサイズ
 
 #ifdef __cplusplus
 extern "C" {
@@ -235,7 +235,7 @@ void SoundPrepare( int sample_rate ) {
     // バッファを準備
     block_size_used = block_size;
     for ( int i = 0; i < NUM_BUF; i++ ) {
-        wave[i] = (DWORD*)malloc( (int)(sizeof( DWORD ) * block_size_used) );
+        wave[i] = (DWORD *)malloc( (int)(sizeof( DWORD ) * block_size_used) );
         wave_header[i].lpData = (LPSTR)wave[i];
         wave_header[i].dwBufferLength = sizeof( DWORD ) * block_size_used;
         wave_header[i].dwFlags = WHDR_BEGINLOOP | WHDR_ENDLOOP;
