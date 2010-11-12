@@ -1,0 +1,160 @@
+\documentclass[a4j,12pt]{jarticle}
+\usepackage[dvips]{graphicx}
+\usepackage[abs]{overpic}
+\title{Cadenciiスタートアップガイド}
+\author{gondam, kbinani}
+\date{}
+\setlength{\topmargin}{9mm}
+\addtolength{\topmargin}{0mm}
+%\setlength{\headsep}{3mm}
+%\setlength{\headheight}{0mm}
+%\setlength{\topskip}{0mm}
+%\setlength{\baselineskip}{0mm}
+\setlength{\oddsidemargin}{20mm}
+\addtolength{\oddsidemargin}{-1in}
+\setlength{\evensidemargin}{15mm}
+\addtolength{\evensidemargin}{-1in}
+%\setlength{\columnsep}{4mm}
+%\setlength{\columnseprule}{0mm}
+%\setlength{\marginparsep}{0mm}
+%\setlength{\marginparpush}{0mm}
+%\setlength{\marginwidth}{0mm}
+\setlength{\textwidth}{160mm}
+\setlength{\textheight}{240mm}
+%\setlength{\footheight}{0mm}
+%\setlength{\footskip}{8mm}
+\setlength{\headsep}{0mm}
+\setlength{\headheight}{0mm}
+\setlength{\topskip}{0mm}
+
+\begin{document}
+\maketitle
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\section{Cadenciiを使用する前にすること}
+Cadenciiの全ての機能を使用するには、VOCALOIDおよびVOCALOID2システムがインストールされ、アクティベートが完了している必要があります。
+マルチプラットフォームかつオープンソースの実行環境「mono」で使用することができます。（ただし、この場合VOCALOID VSTiを使用する機能は動作しません）
+vConnectを使用する場合はVC++ランタイムが必要です。
+\begin{itemize}
+  \item .NET Framework version 2.0以降のランタイム  ダウンロード先:http://msdn.microsoft.com/ja-jp/netframework/aa569263.aspx
+  \item mono　ダウンロード先:http://www.go-mono.com/
+  \item VC++ランタイム　ダウンロード先:http://support.microsoft.com/default.aspx?scid=kb;EN-US;q259403
+\end{itemize}
+
+\subsection{.NET Frameworkのインストール方法}
+\begin{enumerate}
+  \item{
+    スタートメニューよりWindowsUpdateを起動する。\par
+    [スタート]ボタンをクリックし、[すべてのプログラム]をクリックし、次に[Windows Update]をクリックします。
+  }
+  \item{
+    WindowsUpdateのサイトが表示されたら、[カスタム]をクリックします。
+  }
+  \item{
+    しばらくするとカスタムインストールの画面になるので、左側にある[追加選択(ソフトウェア)]のリンクを
+    クリックします。
+  }
+  \item{
+    「追加選択できるソフトウェア更新プログラム」の一覧が表示されるので、その中から、
+    [Microsoft .NET Framework 2.0]のチェックボックスにチェック
+    を入れて、[更新プログラムの確認とインストール]をクリックします。
+  }
+  \item{
+    確認画面が出てきますので、[更新プログラムのインストール]のボタンをクリックします。
+  }
+  \item{
+    ダウンロードとインストールのダイアログが出ますのでしばらくインストールが終了するまで待ってください。
+  }
+  \item{
+    ダイアログに「お使いのコンピュータは正しく更新されました。」という表示されたら、
+    [閉じる]ボタンをクリックして、ダイアログを閉じてください。
+  }
+  \item{
+    そして、インストール結果がブラウザに表示されます。もし、Windowsの
+    再起動が必要な場合は、指示された通り再起動を行えば完了です。
+  }
+\end{enumerate}
+
+\subsection{monoのインストール方法}
+%　./configure
+%　make
+%　make install
+%
+%./configureを通すには
+%
+%pkg-config
+%libglib-2.0-dev
+%
+%の二つのパッケージをインストールします。
+
+\subsection{VC++ランタイムのインストール方法}
+\begin{enumerate}
+  \item{
+    下記のURLからMicrosoft Visual C++ ランタイムインストーラ(日本語版)をダウンロードします。
+    \par
+    http://download.microsoft.com/download/vc60pro/update/3/w9xnt4/en-us/VC6RedistSetup\_jpn.exe
+    \par
+    もしリンクが無効になっている場合は、
+    \par
+    http://support.microsoft.com/default.aspx?scid=kb;EN-US;q259403
+    \par
+    こちらのサイトから該当するリンクをクリックしてください。
+  }
+  \item{
+    ダウンロードしたファイルをダブルクリックすると、インストールが開始されます。
+    あとは、インストーラの指示に従ってください。
+  }
+\end{enumerate}
+
+\section{Cadenciiダウンロード～起動}
+\begin{enumerate}
+  \item{
+    下記サイトからCadenciiをダウンロードします
+    \par
+    http://www9.atwiki.jp/boare/pages/19.html
+  }
+  \item{
+    ダウンロードしたZIPファイルを解凍ソフトで解凍してください。
+    フォルダの中に[Cadencii]というアプリケーションが入っていますのでダブルクリックで起動できます。
+  }
+\end{enumerate}
+
+注意事項
+\begin{itemize}
+  \item{
+    ピアノロール左端の鍵盤を押すと音が鳴るようになっていますが、この音源のファイルを初回の起動前に作成する必要があります。
+    同梱のGenerateKeySound.exeをダブルクリック等により実行し、Cadencii.exeのあるディレクトリ直下の「cache」フォルダに、
+    "0.wav", "1.wav", ..., "126.wav"の合計127個のWAVEファイルが作成されているのを確かめてから、Cadenciiを起動してください。
+  }
+  \item{
+    Cadenciiでは、編集内容の保存のために独自形式のファイルフォーマット（拡張子*.xvsq）を使用しています。 
+    この独自形式のファイルの保存時に、名前が同じで拡張子だけ異なるVSQファイルを同時に出力する仕様となっています。 
+    同時出力するVSQファイルの上書きチェックは行われませんので、VSQファイルを誤って上書きしてしまわないよう、注意してください。 
+  }
+\end{itemize}
+
+\section{打ち込み、音声出力まで}
+
+起動したらCadenciiの操作画面が表示されます。
+\\
+\\
+※標準ではメニューなどのユーザーインターフェイスが英語で表示されますが、
+［Setting］メニューの［Preference］項目から設定画面を開き、［Appearance]タブの
+“UI Language”プルダウンメニューで“ja”を選択すれば日本語化できます。 
+\\
+\\
+VOCALOIDを使用する場合は別ですが、UTAUを使用する場合は次のことを行ってください。
+メニューバーの[設定]→[プリファレンス]→[UTAU音源]→[追加]でUTAU音源の入っているファイルを選択してください。
+選択して、UTAU音源がCadenciiに読み込み終わったら左下のTRACKのVoice1を右クリックして[音声合成エンジン]→[UTAU]を選択し、
+SINGERのところをダブルクリックして頂ければUTAU音源が表示されるので使いたい音源を選択してください。
+\\
+\\
+音声出力
+ピアノロールエディタ画面に好きな長さでクリックしながら伸ばしたりして離せば打ち込めます。
+再生は上部のツールバーで行えます
+
+\end{document}
