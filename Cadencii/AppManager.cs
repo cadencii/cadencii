@@ -1895,12 +1895,18 @@ namespace org.kbinani.cadencii {
         }
 
         public static void setPlaying( boolean value ) {
+#if DEBUG
+            PortUtil.println( "AppManager#setPlaying; value=" + value );
+#endif
             lock ( mPlayingPropertyLocker ) {
                 boolean previous = mPlaying;
                 mPlaying = value;
                 if ( previous != mPlaying ) {
                     if ( mPlaying ) {
                         try {
+#if DEBUG
+                            PortUtil.println( "AppManager#setPlaying; raise previewStartedEvent" );
+#endif
                             previewStartedEvent.raise( typeof( AppManager ), new BEventArgs() );
                         } catch ( Exception ex ) {
                             PortUtil.stderr.println( "AppManager#setPlaying; ex=" + ex );
@@ -1908,6 +1914,9 @@ namespace org.kbinani.cadencii {
                         }
                     } else if ( !mPlaying ) {
                         try {
+#if DEBUG
+                            PortUtil.println( "AppManager#setPlaying; raise previewAbortedEvent" );
+#endif
                             previewAbortedEvent.raise( typeof( AppManager ), new BEventArgs() );
                         } catch ( Exception ex ) {
                             PortUtil.stderr.println( "AppManager#setPlaying; ex=" + ex );
@@ -2324,12 +2333,14 @@ namespace org.kbinani.cadencii {
             Util.isApplyFontRecurseEnabled = false;
 #endif
 
-            #region Apply User Dictionary Configuration
+            // 辞書の設定を適用
             try {
+                // 現在辞書リストに読込済みの辞書を列挙
                 Vector<ValuePair<String, Boolean>> current = new Vector<ValuePair<String, Boolean>>();
                 for ( int i = 0; i < SymbolTable.getCount(); i++ ) {
                     current.add( new ValuePair<String, Boolean>( SymbolTable.getSymbolTable( i ).getName(), false ) );
                 }
+                // editorConfig.UserDictionariesの設定値をコピー
                 Vector<ValuePair<String, Boolean>> config_data = new Vector<ValuePair<String, Boolean>>();
                 int count = editorConfig.UserDictionaries.size();
                 for ( int i = 0; i < count; i++ ) {
@@ -2339,27 +2350,30 @@ namespace org.kbinani.cadencii {
                     AppManager.debugWriteLine( "    " + spl[0] + "," + spl[1] );
 #endif
                 }
+                // 辞書リストとeditorConfigの設定を比較する
+                // currentの方には、editorConfigと共通するものについてのみsetValue(true)とする
                 Vector<ValuePair<String, Boolean>> common = new Vector<ValuePair<String, Boolean>>();
                 for ( int i = 0; i < config_data.size(); i++ ) {
                     for ( int j = 0; j < current.size(); j++ ) {
                         if ( config_data.get( i ).getKey().Equals( current.get( j ).getKey() ) ) {
-                            current.get( j ).setValue( true ); //こっちのbooleanは、AppManager.EditorConfigのUserDictionariesにもKeyが含まれているかどうかを表すので注意
+                            // editorConfig.UserDictionariesにもKeyが含まれていたらtrue
+                            current.get( j ).setValue( true );
                             common.add( new ValuePair<String, Boolean>( config_data.get( i ).getKey(), config_data.get( i ).getValue() ) );
                             break;
                         }
                     }
                 }
+                // editorConfig.UserDictionariesに登録されていないが、辞書リストには読み込まれている場合。
+                // この場合は、デフォルトでENABLEとし、優先順位を最後尾とする。
                 for ( int i = 0; i < current.size(); i++ ) {
                     if ( !current.get( i ).getValue() ) {
-                        common.add( new ValuePair<String, Boolean>( current.get( i ).getKey(), false ) );
+                        common.add( new ValuePair<String, Boolean>( current.get( i ).getKey(), true ) );
                     }
                 }
                 SymbolTable.changeOrder( common );
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "AppManager#init; ex=" + ex );
-                Logger.write( typeof( AppManager ) + ".init; ex=" + ex + "\n" );
             }
-            #endregion
 
 #if !TREECOM
             mID = PortUtil.getMD5FromString( (long)PortUtil.getCurrentTime() + "" ).Replace( "_", "" );
