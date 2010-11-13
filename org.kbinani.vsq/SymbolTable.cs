@@ -100,7 +100,7 @@ namespace org.kbinani.vsq {
         /// <param name="dictionary_file"></param>
         /// <param name="name"></param>
         public static void loadDictionary( String dictionary_file, String name ) {
-            SymbolTable table = new SymbolTable( dictionary_file, false, true );
+            SymbolTable table = new SymbolTable( dictionary_file, false, true, "UTF-8" );
             table.m_name = name;
             int count = s_table.size();
             s_table.put( count, table );
@@ -128,7 +128,7 @@ namespace org.kbinani.vsq {
                     PortUtil.println( "    files[i]=" + files[i] );
 #endif
                     String dict = PortUtil.combinePath( path, files[i] );
-                    s_table.put( count, new SymbolTable( dict, true, false ) );
+                    s_table.put( count, new SymbolTable( dict, true, false, "Shift_JIS" ) );
                     count++;
                 }
             }
@@ -147,7 +147,7 @@ namespace org.kbinani.vsq {
                 for ( int i = 0; i < files2.Length; i++ ) {
                     files2[i] = PortUtil.getFileName( files2[i] );
                     String dict = PortUtil.combinePath( directory, files2[i] );
-                    s_table.put( count, new SymbolTable( dict, false, false ) );
+                    s_table.put( count, new SymbolTable( dict, true, false, "UTF-8" ) );
                     count++;
                 }
             }
@@ -283,7 +283,8 @@ namespace org.kbinani.vsq {
         /// <param name="path">読み込む辞書ファイルのパス</param>
         /// <param name="is_udc_mode">VOCALOID2仕様の辞書ファイルかどうか</param>
         /// <param name="enabled">辞書ファイルを有効とするかどうか</param>
-        public SymbolTable( String path, boolean is_udc_mode, boolean enabled ) {
+        /// <param name="encoding">辞書ファイルのテキストエンコーディング</param>
+        public SymbolTable( String path, boolean is_udc_mode, boolean enabled, String encoding ) {
             m_dict = new TreeMap<String, SymbolTableEntry>();
             m_enabled = enabled;
             if ( !PortUtil.isFileExists( path ) ) {
@@ -292,16 +293,9 @@ namespace org.kbinani.vsq {
             m_name = PortUtil.getFileName( path );
             BufferedReader sr = null;
             try {
-                if ( is_udc_mode ) {
-                    sr = new BufferedReader( new InputStreamReader( new FileInputStream( path ), "Shift_JIS" ) );
-                    if ( sr == null ) {
-                        return;
-                    }
-                } else {
-                    sr = new BufferedReader( new InputStreamReader( new FileInputStream( path ), "UTF-8" ) );
-                    if ( sr == null ) {
-                        return;
-                    }
+                sr = new BufferedReader( new InputStreamReader( new FileInputStream( path ), encoding ) );
+                if ( sr == null ) {
+                    return;
                 }
                 String line;
                 while ( sr.ready() ) {
