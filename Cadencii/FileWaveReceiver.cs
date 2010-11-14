@@ -66,6 +66,9 @@ namespace org.kbinani.cadencii.draft {
         }
 
         public void end() {
+#if DEBUG
+            PortUtil.println( "FileWaveReceiver#end" );
+#endif
             mAdapter.close();
         }
 

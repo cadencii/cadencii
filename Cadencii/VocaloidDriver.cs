@@ -454,7 +454,9 @@ namespace org.kbinani.cadencii {
                                     buffer_r[i] = out_buffer[1][i];
                                 }
                                 total_processed2 += dwFrames;
-                                runner.waveIncomingImpl( buffer_l, buffer_r, dwFrames );
+                                if ( runner.waveIncomingImpl( buffer_l, buffer_r, dwFrames ) ) {
+                                    g_cancelRequired = true;
+                                }
                             } else {
                                 dwDeltaDelay += iOffset;
                             }
@@ -487,7 +489,9 @@ namespace org.kbinani.cadencii {
                             buffer_r[i] = out_buffer[1][i];
                         }
                         total_processed2 += dwFrames;
-                        runner.waveIncomingImpl( buffer_l, buffer_r, dwFrames );
+                        if ( runner.waveIncomingImpl( buffer_l, buffer_r, dwFrames ) ) {
+                            g_cancelRequired = true;
+                        }
 
                         dwDelta -= dwFrames;
                         total_processed += dwFrames;
@@ -504,7 +508,9 @@ namespace org.kbinani.cadencii {
                         }
                         while ( !g_cancelRequired ) {
                             total_processed2 += sampleRate;
-                            runner.waveIncomingImpl( buffer_l, buffer_r, sampleRate );
+                            if ( runner.waveIncomingImpl( buffer_l, buffer_r, sampleRate ) ) {
+                                g_cancelRequired = true;
+                            }
                         }
                     }
 

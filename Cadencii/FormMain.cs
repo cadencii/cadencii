@@ -7668,6 +7668,9 @@ namespace org.kbinani.cadencii {
 #if DEBUG
             AppManager.debugWriteLine( "AppManager_PreviewAborted" );
 #endif
+#if USE_NEW_SYNTH_IMPL
+            //TODO: AppManager_PreviewAborted
+#else
             timer.stop();
 
             if ( AppManager.getEditMode() == EditMode.REALTIME ) {
@@ -7695,12 +7698,18 @@ namespace org.kbinani.cadencii {
 #if ENABLE_MIDI
             MidiPlayer.Stop();
 #endif
+#endif
         }
 
         public void AppManager_PreviewStarted( Object sender, EventArgs e ) {
 #if DEBUG
             AppManager.debugWriteLine( "m_config_PreviewStarted" );
 #endif
+
+#if USE_NEW_SYNTH_IMPL
+            //TODO: AppManager_PreviewStarted
+
+#else
             int ms_resolution = AppManager.editorConfig.BufferSizeMilliSeconds;
             if ( ms_resolution < MIN_WAVE_MSEC_RESOLUTION ) {
                 ms_resolution = MIN_WAVE_MSEC_RESOLUTION;
@@ -7736,11 +7745,6 @@ namespace org.kbinani.cadencii {
                     int playMode = vsq_track.getPlayMode();
                     if ( trackMuted ) {
                         continue;
-                    // 常にPlayAfterSynthとしたいのでここカットした
-                    /*} else if ( playMode == PlayMode.PlayWithSynth ) {
-                        if ( track == selected ) {
-                            continue;
-                        }*/
                     }
                     tracks.add( track );
                 }
@@ -7803,49 +7807,20 @@ namespace org.kbinani.cadencii {
                 }
 
                 boolean mode_infinite = AppManager.getEditMode() == EditMode.REALTIME;
-                /*if ( vsq.Track.get( selected ).getPlayMode() == PlayMode.PlayWithSynth && count > 0 && !vsq.getActualMuted( selected ) ) {
-                    int ms_presend = AppManager.editorConfig.PreSendTime;
-                    if ( renderer == RendererKind.UTAU ) {
-                        ms_presend = 0;
-                    }
-#if DEBUG
-                    AppManager.debugWriteLine( "FormMain#AppManager_PreviewStarted; m_preview_ending_time=" + mPreviewEndingTime );
-                    AppManager.debugWriteLine( "FormMain#AppManager_PreviewStarted; m_direct_play_shift=" + mDirectPlayShift );
-#endif
-                    VSTiProxy.render( vsq,
-                                      selected,
-                                      null,
-                                      mDirectPlayShift,
-                                      mPreviewEndingTime,
-                                      ms_presend,
-                                      true,
-                                      sounds.toArray( new WaveReader[] { } ),
-                                      mDirectPlayShift,
-                                      mode_infinite,
-                                      AppManager.getTempWaveDir(),
-                                      false );
-
-                    for ( int i = 0; i < AppManager.drawStartIndex.Length; i++ ) {
-                        AppManager.drawStartIndex[i] = 0;
-                    }
-                    //int clock_now = AppManager.getCurrentClock();
-                    //double sec_now = vsq.getSecFromClock( clock_now );
-                } else {*/
-                    VsqFileEx tvsq = new VsqFileEx( "Miku", vsq.getPreMeasure(), 4, 4, 500000 );
-                    VsqFileEx.setTrackRendererKind( tvsq.Track.get( 1 ), RendererKind.NULL );
-                    VSTiProxy.render( tvsq,
-                                      1,
-                                      null,
-                                      0,
-                                      mPreviewEndingTime,
-                                      AppManager.editorConfig.PreSendTime,
-                                      true,
-                                      sounds.toArray( new WaveReader[] { } ),
-                                      mDirectPlayShift,
-                                      mode_infinite,
-                                      tmppath,
-                                      false );
-                //}
+                VsqFileEx tvsq = new VsqFileEx( "Miku", vsq.getPreMeasure(), 4, 4, 500000 );
+                VsqFileEx.setTrackRendererKind( tvsq.Track.get( 1 ), RendererKind.NULL );
+                VSTiProxy.render( tvsq,
+                                  1,
+                                  null,
+                                  0,
+                                  mPreviewEndingTime,
+                                  AppManager.editorConfig.PreSendTime,
+                                  true,
+                                  sounds.toArray( new WaveReader[] { } ),
+                                  mDirectPlayShift,
+                                  mode_infinite,
+                                  tmppath,
+                                  false );
             }
 
             double now = PortUtil.getCurrentTime();
@@ -7874,6 +7849,7 @@ namespace org.kbinani.cadencii {
             AppManager.debugWriteLine( "    total seconds=" + vsq.getSecFromClock( (int)vsq.TotalClocks ) );
 #endif
             timer.start();
+#endif
         }
 
         public void AppManager_SelectedToolChanged( Object sender, EventArgs e ) {
@@ -14256,30 +14232,27 @@ namespace org.kbinani.cadencii {
             PortUtil.println( "FormMain#menuHelpDebug_Click" );
 
 #if ENABLE_VOCALOID
-            BFileChooser dlg_fin = new BFileChooser( "" );
-            if ( dlg_fin.showOpenDialog( this ) == BFileChooser.APPROVE_OPTION ) {
-                String fin = dlg_fin.getSelectedFile();
-                BFileChooser dlg_fout = new BFileChooser( PortUtil.getDirectoryName( fin ) );
-                if ( dlg_fout.showSaveDialog( this ) == BFileChooser.APPROVE_OPTION ) {
-                    String fout = dlg_fout.getSelectedFile();
-                    WaveReader wr = new WaveReader( fin );
-                    org.kbinani.cadencii.draft.FileWaveSender fws = new org.kbinani.cadencii.draft.FileWaveSender( wr );
-                    org.kbinani.cadencii.draft.WaveSenderDriver wsd = new org.kbinani.cadencii.draft.WaveSenderDriver();
-                    wsd.setSender( fws );
+            BFileChooser dlg_fout = new BFileChooser( "" );
+            if ( dlg_fout.showSaveDialog( this ) == BFileChooser.APPROVE_OPTION ) {
+                String fout = dlg_fout.getSelectedFile();
 
-                    org.kbinani.cadencii.draft.Mixer m = new org.kbinani.cadencii.draft.Mixer();
-                    wsd.setReceiver( m );
+                org.kbinani.cadencii.draft.VocaloidWaveGenerator vwg = new org.kbinani.cadencii.draft.VocaloidWaveGenerator();
+                org.kbinani.cadencii.draft.Mixer m = new org.kbinani.cadencii.draft.Mixer();
+                org.kbinani.cadencii.draft.Separator s = new org.kbinani.cadencii.draft.Separator();
+                org.kbinani.cadencii.draft.FileWaveReceiver fwr = new org.kbinani.cadencii.draft.FileWaveReceiver();
 
-                    org.kbinani.cadencii.draft.Separator s = new org.kbinani.cadencii.draft.Separator();
-                    m.setReceiver( s );
+                vwg.setGlobalConfig( AppManager.editorConfig );
+                m.setGlobalConfig( AppManager.editorConfig );
 
-                    org.kbinani.cadencii.draft.FileWaveReceiver fwr = new org.kbinani.cadencii.draft.FileWaveReceiver();
-                    fwr.init( "\n" + fout + "\n" + 2 + "\n" + 16 + "\n" + 44100 );
-                    s.addReceiver( fwr );
-                    s.addReceiver( org.kbinani.cadencii.draft.MonitorWaveReceiver.getInstance() );
+                vwg.setReceiver( m );
+                m.setReceiver( s );
+                s.addReceiver( fwr );
+                s.addReceiver( org.kbinani.cadencii.draft.MonitorWaveReceiver.getInstance() );
 
-                    wsd.begin( wr.getTotalSamples() );
-                }
+                VsqFileEx vsq = AppManager.getVsqFile();
+                vwg.init( vsq, AppManager.getSelected(), AppManager.getCurrentClock(), vsq.TotalClocks );
+                fwr.init( "\n" + fout + "\n" + 2 + "\n" + 16 + "\n" + 44100 );
+                vwg.begin( (long)(vsq.getSecFromClock( vsq.TotalClocks ) * 44100.0) );
             }
 #endif
 

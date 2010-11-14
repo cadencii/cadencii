@@ -67,6 +67,10 @@ namespace org.kbinani.cadencii.draft {
         //private EditorConfig _config = null;
         private int _version = 0;
 
+        public void stop() {
+            throw new NotImplementedException();
+        }
+
         public override void setConfig( string parameter ) {
             // do nothing
         }

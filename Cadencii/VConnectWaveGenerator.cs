@@ -20,6 +20,7 @@ import java.util.*;
 #else
 using System;
 using System.Diagnostics;
+using System.Threading;
 using org.kbinani.java.awt;
 using org.kbinani.java.io;
 using org.kbinani.java.util;
@@ -70,6 +71,19 @@ namespace org.kbinani.cadencii.draft {
         WaveReceiver mReceiver;
         int mVersion = 0;
         VsqFileEx _vsq;
+
+        public void stop() {
+            if ( m_rendering ) {
+                m_abort_required = true;
+                while ( m_rendering ) {
+#if JAVA
+                    Thread.sleep( 0 );
+#else
+                    Thread.Sleep( 0 );
+#endif
+                }
+            }
+        }
 
         public override int getVersion() {
             return mVersion;

@@ -21,6 +21,7 @@ using org.kbinani.java.awt;
 using org.kbinani.java.util;
 
 namespace org.kbinani.cadencii.draft {
+    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -39,6 +40,21 @@ namespace org.kbinani.cadencii.draft {
         private long mPosition = 0;
         private WaveReceiver mReceiver = null;
         private int mVersion = 0;
+        private boolean mAbortRequired = false;
+        private boolean mRunning = false;
+
+        public void stop() {
+            if ( mRunning ) {
+                mAbortRequired = true;
+                while ( mRunning ) {
+#if JAVA
+                    Threas.sleep( 0 );
+#else
+                    System.Threading.Thread.Sleep( 0 );
+#endif
+                }
+            }
+        }
 
         public override int getVersion() {
             return mVersion;
@@ -75,8 +91,9 @@ namespace org.kbinani.cadencii.draft {
         }
 
         public void begin( long length ) {
+            mRunning = true;
             long remain = length;
-            while ( remain > 0 ) {
+            while ( remain > 0 && !mAbortRequired ) {
                 int amount = (remain > _BUFLEN) ? _BUFLEN : (int)remain;
                 mWaveSender.pull( mBufferL, mBufferR, amount );
                 mReceiver.push( mBufferL, mBufferR, amount );
@@ -84,6 +101,7 @@ namespace org.kbinani.cadencii.draft {
                 mPosition += amount;
             }
             mReceiver.end();
+            mRunning = false;
         }
     }
 

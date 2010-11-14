@@ -77,8 +77,9 @@ namespace org.kbinani.cadencii {
             totalSamples = total_samples_ + errorSamples;
         }
 
-        public void waveIncomingImpl( double[] t_L, double[] t_R, int length ) {
+        public boolean waveIncomingImpl( double[] t_L, double[] t_R, int length ) {
             waveIncoming( t_L, t_R, length );
+            return false;
         }
 
         public override double getElapsedSeconds() {

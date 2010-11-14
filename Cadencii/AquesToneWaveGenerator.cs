@@ -62,6 +62,11 @@ namespace org.kbinani.cadencii.draft {
             public Vector<ParameterEvent> param;
         }
 
+        public void stop() {
+            mAbortRequired = true;
+            throw new NotImplementedException();
+        }
+
         public override int getVersion() {
             return mVersion;
         }

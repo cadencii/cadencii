@@ -22,6 +22,7 @@ namespace org.kbinani.cadencii.draft {
     /// <summary>
     /// 音声波形の生成器のためのインターフェース．
     /// このインターフェースを実装するクラスは，WaveUnitクラスを継承すること．
+    /// このインターフェースのメソッドは全て同期的とすること
     /// </summary>
     public interface WaveGenerator {
         /// <summary>
@@ -47,6 +48,11 @@ namespace org.kbinani.cadencii.draft {
         /// <param name="start_clock"></param>
         /// <param name="end_clock"></param>
         void init( VsqFileEx vsq, int track, int start_clock, int end_clock );
+
+        /// <summary>
+        /// 停止を要求します。
+        /// </summary>
+        void stop();
     }
 
 #if !JAVA
