@@ -55,6 +55,10 @@ namespace org.kbinani.cadencii {
         public BEvent<MuteChangedEventHandler> muteChangedEvent = new BEvent<MuteChangedEventHandler>();
         public BEvent<TopMostChangedEventHandler> topMostChangedEvent = new BEvent<TopMostChangedEventHandler>();
 
+        public FormMixer( Object foo ) {
+            // do nothing
+        }
+
         public FormMixer( FormMain parent ) {
 #if JAVA
             super();

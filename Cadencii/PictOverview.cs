@@ -125,6 +125,10 @@ namespace org.kbinani.cadencii {
             mMainForm = form;
         }
 
+        public void setMainForm( Object form ) {
+            // do nothing
+        }
+
         public void overviewStopThread() {
             if ( mOverviewUpdateThread != null ) {
                 try {

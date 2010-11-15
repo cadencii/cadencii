@@ -1,5 +1,5 @@
 ﻿/*
- * FormMain.cs
+ * __DRAFT__FormMain.cs
  * Copyright (C) 2008-2010 kbinani
  *
  * This file is part of org.kbinani.cadencii.
@@ -48,7 +48,7 @@ using org.kbinani.vsq;
 using org.kbinani.windows.forms;
 using org.kbinani.xml;
 
-namespace org.kbinani.cadencii.obsolute {
+namespace org.kbinani.cadencii {
     using BCancelEventArgs = System.ComponentModel.CancelEventArgs;
     using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;
     using BFormClosedEventArgs = System.Windows.Forms.FormClosedEventArgs;
@@ -434,7 +434,7 @@ namespace org.kbinani.cadencii.obsolute {
         public PropertyPanelContainer mPropertyPanelContainer;
 #endif
 #if ENABLE_SCRIPT
-        public Vector<BToolStripButton> mPaletteTools = new Vector<BToolStripButton>();
+        public Vector<System.Windows.Forms.ToolBarButton> mPaletteTools = new Vector<System.Windows.Forms.ToolBarButton>();
 #endif
 
         /// <summary>
@@ -553,6 +553,38 @@ namespace org.kbinani.cadencii.obsolute {
         /// </summary>
         private float mFps = 0f;
         private double[] mFpsDrawTime2 = new double[128];
+        private RebarDotNet.RebarWrapper rebarWrapper1;
+        private System.Windows.Forms.Panel panelForToolStripFile;
+        private System.Windows.Forms.Panel panelForToolStripPosition;
+        private System.Windows.Forms.Panel panelForToolStripMeasure;
+        private System.Windows.Forms.Panel panelForToolStripTool;
+        private RebarDotNet.BandWrapper bandWrapperForToolStripFile;
+        private RebarDotNet.BandWrapper bandWrapperForToolStripPosition;
+        private RebarDotNet.BandWrapper bandWrapperForToolStripMeasure;
+        private RebarDotNet.BandWrapper bandWrapperForToolStripTool;
+        public org.kbinani.apputil.BSplitContainer splitContainer2;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.ToolBar toolBarFile;
+        private System.Windows.Forms.ImageList imageListFile;
+        private System.Windows.Forms.ToolBarButton toolBarButton1;
+        private System.Windows.Forms.ToolBarButton toolBarButton2;
+        private System.Windows.Forms.ToolBar toolBarTool;
+        private System.Windows.Forms.ToolBarButton toolBarButton3;
+        private System.Windows.Forms.ImageList imageListTool;
+        private System.Windows.Forms.ToolBar toolBarPosition;
+        private System.Windows.Forms.ToolBarButton toolBarButton4;
+        private System.Windows.Forms.ImageList imageListPosition;
+        private System.Windows.Forms.ToolBar toolBarMeasure;
+        private System.Windows.Forms.ToolBarButton stripDDBtnLengthParent;
+        private System.Windows.Forms.ToolBarButton stripDDBtnQuantizeParent;
+        //private System.Windows.Forms.ToolBarButton toolBarButton5;
+        private System.Windows.Forms.MenuItem menuItem1;
+        private System.Windows.Forms.MenuItem menuItem2;
+        private System.Windows.Forms.ToolBarButton toolBarButton5;
+        private System.Windows.Forms.ImageList imageListMeasure;
+        private RebarDotNet.RebarWrapper rebarWrapper2;
+        private RebarDotNet.BandWrapper bandStatus;
+        private RebarDotNet.BandWrapper bandWrapper1;
         private float mFps2 = 0f;
 #endif
         #endregion
@@ -610,7 +642,8 @@ namespace org.kbinani.cadencii.obsolute {
             InitializeComponent();
             timer = new BTimer( this.components );
 #endif
-            panelOverview.setMainForm( this );
+            //TODO: fixme
+            panelOverview.setMainForm( (FormMain)(object)this );
             bgWorkScreen = new BBackgroundWorker();
             waveView = new WaveView();
 #if JAVA
@@ -698,7 +731,7 @@ namespace org.kbinani.cadencii.obsolute {
             splitContainer1.Panel2MinSize = trackSelector.getPreferredMinSize();
             this.setMinimumSize( getWindowMinimumSize() );
 #endif
-            stripBtnScroll.setSelected( AppManager.mAutoScroll );
+            stripBtnScroll.Pushed = AppManager.mAutoScroll;
 
             applySelectedTool();
             applyQuantizeMode();
@@ -710,10 +743,10 @@ namespace org.kbinani.cadencii.obsolute {
 
 
 #if !JAVA
-            // toolStipの位置を，前回終了時の位置に戻す
+            // TODO: toolStipの位置を，前回終了時の位置に戻す
             Vector<BToolBar> top = new Vector<BToolBar>();
             Vector<BToolBar> bottom = new Vector<BToolBar>();
-            if ( toolStripTool.getParent() != null ) {
+            /*if ( toolStripTool.getParent() != null ) {
                 if ( toolStripTool.getParent() == toolStripContainer.TopToolStripPanel ) {
                     toolStripContainer.TopToolStripPanel.Controls.Remove( toolStripTool );
                     top.add( toolStripTool );
@@ -748,7 +781,11 @@ namespace org.kbinani.cadencii.obsolute {
                     toolStripContainer.BottomToolStripPanel.Controls.Remove( toolStripFile );
                     bottom.add( toolStripFile );
                 }
-            }
+            }*/
+            //top.add( toolStripTool );
+            //top.add( toolStripMeasure );
+            //top.add( toolStripPosition );
+            //top.add( toolStripFile );
 #endif
 
 #if !JAVA
@@ -844,24 +881,24 @@ namespace org.kbinani.cadencii.obsolute {
 #if !JAVA
             // 左上のやつから順に登録
             XmlPoint p = AppManager.editorConfig.ToolEditTool.Location;
-            toolStripTool.Location = new System.Drawing.Point( p.x, p.y );
+            //toolStripTool.Location = new System.Drawing.Point( p.x, p.y );
             p = AppManager.editorConfig.ToolMeasureLocation.Location;
-            toolStripMeasure.Location = new System.Drawing.Point( p.x, p.y );
+            //toolStripMeasure.Location = new System.Drawing.Point( p.x, p.y );
             p = AppManager.editorConfig.ToolPositionLocation.Location;
-            toolStripPosition.Location = new System.Drawing.Point( p.x, p.y );
+            //toolStripPosition.Location = new System.Drawing.Point( p.x, p.y );
             p = AppManager.editorConfig.ToolFileLocation.Location;
-            toolStripFile.Location = new System.Drawing.Point( p.x, p.y );
-            addToolStripInPositionOrder( toolStripContainer.TopToolStripPanel, top );
-            addToolStripInPositionOrder( toolStripContainer.BottomToolStripPanel, bottom );
+            //toolStripFile.Location = new System.Drawing.Point( p.x, p.y );
+            //addToolStripInPositionOrder( toolStripContainer.TopToolStripPanel, top );
+            //addToolStripInPositionOrder( toolStripContainer.BottomToolStripPanel, bottom );
 
-            toolStripTool.ParentChanged += new System.EventHandler( this.toolStripEdit_ParentChanged );
-            toolStripTool.Move += new System.EventHandler( this.toolStripEdit_Move );
-            toolStripMeasure.ParentChanged += new System.EventHandler( this.toolStripMeasure_ParentChanged );
-            toolStripMeasure.Move += new System.EventHandler( this.toolStripMeasure_Move );
-            toolStripPosition.ParentChanged += new System.EventHandler( this.toolStripPosition_ParentChanged );
-            toolStripPosition.Move += new System.EventHandler( this.toolStripPosition_Move );
-            toolStripFile.ParentChanged += new EventHandler( toolStripFile_ParentChanged );
-            toolStripFile.Move += new EventHandler( toolStripFile_Move );
+            //TODO: toolStripTool.ParentChanged += new System.EventHandler( this.toolStripEdit_ParentChanged );
+            toolBarTool.Move += new System.EventHandler( this.toolStripEdit_Move );
+            //toolStripMeasure.ParentChanged += new System.EventHandler( this.toolStripMeasure_ParentChanged );
+            toolBarMeasure.Move += new System.EventHandler( this.toolStripMeasure_Move );
+            //toolStripPosition.ParentChanged += new System.EventHandler( this.toolStripPosition_ParentChanged );
+            toolBarPosition.Move += new System.EventHandler( this.toolStripPosition_Move );
+            //TODO: toolStripFile.ParentChanged += new EventHandler( toolStripFile_ParentChanged );
+            toolBarFile.Move += new EventHandler( toolStripFile_Move );
 #endif
 
             // inputTextBoxの初期化
@@ -2642,9 +2679,9 @@ namespace org.kbinani.cadencii.obsolute {
         public void updatePaletteTool() {
             int count = 0;
             int num_has_dialog = 0;
-            for ( Iterator<BToolStripButton> itr = mPaletteTools.iterator(); itr.hasNext(); ) {
-                BToolStripButton item = itr.next();
-                toolStripTool.add( item );
+            for ( Iterator<System.Windows.Forms.ToolBarButton> itr = mPaletteTools.iterator(); itr.hasNext(); ) {
+                System.Windows.Forms.ToolBarButton item = itr.next();
+                toolBarTool.Buttons.Add( item );
             }
             String lang = Messaging.getLanguage();
             boolean first = true;
@@ -2659,28 +2696,33 @@ namespace org.kbinani.cadencii.obsolute {
                 String desc = ipt.getDescription( lang );
 
                 // toolStripPaletteTools
-                BToolStripButton tsb = new BToolStripButton();
+                System.Windows.Forms.ToolBarButton tsb = new System.Windows.Forms.ToolBarButton();
+                tsb.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
 #if !JAVA
                 if ( icon != null ) {
-                    tsb.setIcon( new ImageIcon( icon ) );
+                    //tsb.setIcon( new ImageIcon( icon ) );
+                    imageListTool.Images.Add( name, icon );
+                    tsb.ImageKey = name;
                 }
 #endif
-                tsb.setText( name );
-                tsb.setToolTipText( desc );
-                tsb.setTag( id );
-                tsb.setCheckOnClick( false );
+                tsb.Text = name;
+                tsb.ToolTipText = desc;
+                tsb.Tag = id;
+                //tsb.setCheckOnClick( false );
 #if JAVA
                 tsb.clickEvent.add( new BEventHandler( this, "handleStripPaletteTool_Click" ) );
 #else
-                tsb.Click += new EventHandler( handleStripPaletteTool_Click );
-                tsb.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.ImageAndText;
+                //TODO: tsb.Click += new EventHandler( handleStripPaletteTool_Click );
+                //TODO: tsb.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.ImageAndText;
 #endif
                 if ( first ) {
-                    toolStripTool.addSeparator();
+                    var sep = new System.Windows.Forms.ToolBarButton();
+                    sep.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
+                    toolBarTool.Buttons.Add( sep );
                     first = false;
                 }
                 mPaletteTools.add( tsb );
-                toolStripTool.add( tsb );
+                toolBarTool.Buttons.Add( tsb );
 
                 // cMenuTrackSelector
                 BMenuItem tsmi = new BMenuItem();
@@ -3021,8 +3063,8 @@ namespace org.kbinani.cadencii.obsolute {
             return new Dimension( current_minsize.width,
                                   splitContainer1.getPanel2MinSize() +
                                   _SCROLL_WIDTH + _PICT_POSITION_INDICATOR_HEIGHT + pictPianoRoll.getMinimumSize().height +
-                                  toolStripContainer.TopToolStripPanel.Height +
-                                  menuStripMain.getHeight() + statusStrip1.Height +
+                                  rebarWrapper1.Height +
+                                  menuStripMain.getHeight() + bandStatus.Height +
                                   (current.height - client.height) +
                                   20 );
 #endif
@@ -4527,18 +4569,18 @@ namespace org.kbinani.cadencii.obsolute {
             this.Invoke( new EventHandler( updateGameControlerStatus ) );
 #endif
 
-            stripBtnPointer.setText( _( "Pointer" ) );
-            stripBtnPointer.setToolTipText( _( "Pointer" ) );
-            stripBtnPencil.setText( _( "Pencil" ) );
-            stripBtnPencil.setToolTipText( _( "Pencil" ) );
-            stripBtnLine.setText( _( "Line" ) );
-            stripBtnLine.setToolTipText( _( "Line" ) );
-            stripBtnEraser.setText( _( "Eraser" ) );
-            stripBtnEraser.setToolTipText( _( "Eraser" ) );
-            stripBtnCurve.setText( _( "Curve" ) );
-            stripBtnCurve.setToolTipText( _( "Curve" ) );
-            stripBtnGrid.setText( _( "Grid" ) );
-            stripBtnGrid.setToolTipText( _( "Grid" ) );
+            stripBtnPointer.Text = _( "Pointer" );
+            stripBtnPointer.ToolTipText = _( "Pointer" );
+            stripBtnPencil.Text = _( "Pencil" );
+            stripBtnPencil.ToolTipText = _( "Pencil" );
+            stripBtnLine.Text = _( "Line" );
+            stripBtnLine.ToolTipText = _( "Line" );
+            stripBtnEraser.Text = _( "Eraser" );
+            stripBtnEraser.ToolTipText = _( "Eraser" );
+            stripBtnCurve.Text = _( "Curve" );
+            stripBtnCurve.ToolTipText = _( "Curve" );
+            stripBtnGrid.Text = _( "Grid" );
+            stripBtnGrid.ToolTipText = _( "Grid" );
 
             #region main menu
             menuFile.setText( _( "File" ) );
@@ -4852,17 +4894,17 @@ namespace org.kbinani.cadencii.obsolute {
             AppManager.debugWriteLine( "FormMain#applyLanguage; Messaging.Language=" + Messaging.getLanguage() );
 #endif
 #if ENABLE_SCRIPT
-            int count = toolStripTool.getComponentCount();
+            int count = toolBarTool.Buttons.Count;// toolStripTool.getComponentCount();
             for ( int i = 0; i < count; i++ ) {
-                Object tsi = toolStripTool.getComponentAtIndex( i );
-                if ( tsi is BToolStripButton ) {
-                    BToolStripButton tsb = (BToolStripButton)tsi;
-                    if ( tsb.getTag() != null && tsb.getTag() is String ) {
-                        String id = (String)tsb.getTag();
+                Object tsi = toolBarTool.Buttons[i];// toolStripTool.getComponentAtIndex( i );
+                if ( tsi is System.Windows.Forms.ToolBarButton ) {
+                    System.Windows.Forms.ToolBarButton tsb = (System.Windows.Forms.ToolBarButton)tsi;
+                    if ( tsb.Style == System.Windows.Forms.ToolBarButtonStyle.ToggleButton && tsb.Tag != null && tsb.Tag is String ) {
+                        String id = (String)tsb.Tag;
                         if ( PaletteToolServer.loadedTools.containsKey( id ) ) {
                             IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
-                            tsb.setText( ipt.getName( Messaging.getLanguage() ) );
-                            tsb.setToolTipText( ipt.getDescription( Messaging.getLanguage() ) );
+                            tsb.Text = ipt.getName( Messaging.getLanguage() );
+                            tsb.ToolTipText = ipt.getDescription( Messaging.getLanguage() );
                         }
                     }
                 }
@@ -6082,13 +6124,13 @@ namespace org.kbinani.cadencii.obsolute {
             cMenuPianoQuantizeOff.setSelected( false );
 
 #if ENABLE_STRIP_DROPDOWN
-            stripDDBtnQuantize04.setSelected( false );
-            stripDDBtnQuantize08.setSelected( false );
-            stripDDBtnQuantize16.setSelected( false );
-            stripDDBtnQuantize32.setSelected( false );
-            stripDDBtnQuantize64.setSelected( false );
-            stripDDBtnQuantize128.setSelected( false );
-            stripDDBtnQuantizeOff.setSelected( false );
+            stripDDBtnQuantize04.Checked = false;
+            stripDDBtnQuantize08.Checked = false;
+            stripDDBtnQuantize16.Checked = false;
+            stripDDBtnQuantize32.Checked = false;
+            stripDDBtnQuantize64.Checked = false;
+            stripDDBtnQuantize128.Checked = false;
+            stripDDBtnQuantizeOff.Checked = false;
 #endif
 
             menuSettingPositionQuantize04.setSelected( false );
@@ -6100,54 +6142,54 @@ namespace org.kbinani.cadencii.obsolute {
             menuSettingPositionQuantizeOff.setSelected( false );
 
 #if !JAVA
-            stripDDBtnQuantize.setText( "QUANTIZE " + QuantizeModeUtil.getString( AppManager.editorConfig.getPositionQuantize() ) );
+            stripDDBtnQuantizeParent.Text = "QUANTIZE " + QuantizeModeUtil.getString( AppManager.editorConfig.getPositionQuantize() );
 #endif
             if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p4 ) {
                 cMenuPianoQuantize04.setSelected( true );
 #if ENABLE_STRIP_DROPDOWN
-                stripDDBtnQuantize04.setSelected( true );
+                stripDDBtnQuantize04.Checked = true;
 #endif
                 menuSettingPositionQuantize04.setSelected( true );
             } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p8 ) {
                 cMenuPianoQuantize08.setSelected( true );
 #if ENABLE_STRIP_DROPDOWN
-                stripDDBtnQuantize08.setSelected( true );
+                stripDDBtnQuantize08.Checked = true;
 #endif
                 menuSettingPositionQuantize08.setSelected( true );
             } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p16 ) {
                 cMenuPianoQuantize16.setSelected( true );
 #if ENABLE_STRIP_DROPDOWN
-                stripDDBtnQuantize16.setSelected( true );
+                stripDDBtnQuantize16.Checked = true;
 #endif
                 menuSettingPositionQuantize16.setSelected( true );
             } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p32 ) {
                 cMenuPianoQuantize32.setSelected( true );
 #if ENABLE_STRIP_DROPDOWN
-                stripDDBtnQuantize32.setSelected( true );
+                stripDDBtnQuantize32.Checked = true;
 #endif
                 menuSettingPositionQuantize32.setSelected( true );
             } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p64 ) {
                 cMenuPianoQuantize64.setSelected( true );
 #if ENABLE_STRIP_DROPDOWN
-                stripDDBtnQuantize64.setSelected( true );
+                stripDDBtnQuantize64.Checked = true;
 #endif
                 menuSettingPositionQuantize64.setSelected( true );
             } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p128 ) {
                 cMenuPianoQuantize128.setSelected( true );
 #if ENABLE_STRIP_DROPDOWN
-                stripDDBtnQuantize128.setSelected( true );
+                stripDDBtnQuantize128.Checked = true;
 #endif
                 menuSettingPositionQuantize128.setSelected( true );
             } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.off ) {
                 cMenuPianoQuantizeOff.setSelected( true );
 #if ENABLE_STRIP_DROPDOWN
-                stripDDBtnQuantizeOff.setSelected( true );
+                stripDDBtnQuantizeOff.Checked = true;
 #endif
                 menuSettingPositionQuantizeOff.setSelected( true );
             }
             cMenuPianoQuantizeTriplet.setSelected( AppManager.editorConfig.isPositionQuantizeTriplet() );
 #if ENABLE_STRIP_DROPDOWN
-            stripDDBtnQuantizeTriplet.setSelected( AppManager.editorConfig.isPositionQuantizeTriplet() );
+            stripDDBtnQuantizeTriplet.Checked = AppManager.editorConfig.isPositionQuantizeTriplet();
 #endif
             menuSettingPositionQuantizeTriplet.setSelected( AppManager.editorConfig.isPositionQuantizeTriplet() );
 
@@ -6160,13 +6202,13 @@ namespace org.kbinani.cadencii.obsolute {
             cMenuPianoLengthOff.setSelected( false );
 
 #if ENABLE_STRIP_DROPDOWN
-            stripDDBtnLength04.setSelected( false );
-            stripDDBtnLength08.setSelected( false );
-            stripDDBtnLength16.setSelected( false );
-            stripDDBtnLength32.setSelected( false );
-            stripDDBtnLength64.setSelected( false );
-            stripDDBtnLength128.setSelected( false );
-            stripDDBtnLengthOff.setSelected( false );
+            stripDDBtnLength04.Checked = false;
+            stripDDBtnLength08.Checked = false;
+            stripDDBtnLength16.Checked = false;
+            stripDDBtnLength32.Checked = false;
+            stripDDBtnLength64.Checked = false;
+            stripDDBtnLength128.Checked = false;
+            stripDDBtnLengthOff.Checked = false;
 #endif
 
             menuSettingLengthQuantize04.setSelected( false );
@@ -6178,54 +6220,54 @@ namespace org.kbinani.cadencii.obsolute {
             menuSettingLengthQuantizeOff.setSelected( false );
 
 #if !JAVA
-            stripDDBtnLength.setText( "LENGTH " + QuantizeModeUtil.getString( AppManager.editorConfig.getLengthQuantize() ) );
+            stripDDBtnLengthParent.Text = "LENGTH " + QuantizeModeUtil.getString( AppManager.editorConfig.getLengthQuantize() );
 #endif
             if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p4 ) {
                 cMenuPianoLength04.setSelected( true );
 #if ENABLE_STRIP_DROPDOWN
-                stripDDBtnLength04.setSelected( true );
+                stripDDBtnLength04.Checked = true;
 #endif
                 menuSettingLengthQuantize04.setSelected( true );
             } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p8 ) {
                 cMenuPianoLength08.setSelected( true );
 #if ENABLE_STRIP_DROPDOWN
-                stripDDBtnLength08.setSelected( true );
+                stripDDBtnLength08.Checked = true;
 #endif
                 menuSettingLengthQuantize08.setSelected( true );
             } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p16 ) {
                 cMenuPianoLength16.setSelected( true );
 #if ENABLE_STRIP_DROPDOWN
-                stripDDBtnLength16.setSelected( true );
+                stripDDBtnLength16.Checked = true;
 #endif
                 menuSettingLengthQuantize16.setSelected( true );
             } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p32 ) {
                 cMenuPianoLength32.setSelected( true );
 #if ENABLE_STRIP_DROPDOWN
-                stripDDBtnLength32.setSelected( true );
+                stripDDBtnLength32.Checked = true;
 #endif
                 menuSettingLengthQuantize32.setSelected( true );
             } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p64 ) {
                 cMenuPianoLength64.setSelected( true );
 #if ENABLE_STRIP_DROPDOWN
-                stripDDBtnLength64.setSelected( true );
+                stripDDBtnLength64.Checked = true;
 #endif
                 menuSettingLengthQuantize64.setSelected( true );
             } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p128 ) {
                 cMenuPianoLength128.setSelected( true );
 #if ENABLE_STRIP_DROPDOWN
-                stripDDBtnLength128.setSelected( true );
+                stripDDBtnLength128.Checked = true;
 #endif
                 menuSettingLengthQuantize128.setSelected( true );
             } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.off ) {
                 cMenuPianoLengthOff.setSelected( true );
 #if ENABLE_STRIP_DROPDOWN
-                stripDDBtnLengthOff.setSelected( true );
+                stripDDBtnLengthOff.Checked = true;
 #endif
                 menuSettingLengthQuantizeOff.setSelected( true );
             }
             cMenuPianoLengthTriplet.setSelected( AppManager.editorConfig.isLengthQuantizeTriplet() );
 #if ENABLE_STRIP_DROPDOWN
-            stripDDBtnLengthTriplet.setSelected( AppManager.editorConfig.isLengthQuantizeTriplet() );
+            stripDDBtnLengthTriplet.Checked = AppManager.editorConfig.isLengthQuantizeTriplet();
 #endif
             menuSettingLengthQuantizeTriplet.setSelected( AppManager.editorConfig.isLengthQuantizeTriplet() );
         }
@@ -6236,21 +6278,21 @@ namespace org.kbinani.cadencii.obsolute {
         public void applySelectedTool() {
             EditTool tool = AppManager.getSelectedTool();
 
-            int count = toolStripTool.getComponentCount();
+            int count = toolBarTool.Buttons.Count;// toolStripTool.getComponentCount();
             for ( int i = 0; i < count; i++ ) {
-                Object tsi = toolStripTool.getComponentAtIndex( i );
-                if ( tsi is BToolStripButton ) {
-                    BToolStripButton tsb = (BToolStripButton)tsi;
-                    Object tag = tsb.getTag();
-                    if ( tag != null && tag is String ) {
+                Object tsi = toolBarTool.Buttons[i];// toolStripTool.getComponentAtIndex( i );
+                if ( tsi is System.Windows.Forms.ToolBarButton ) {
+                    System.Windows.Forms.ToolBarButton tsb = (System.Windows.Forms.ToolBarButton)tsi;
+                    Object tag = tsb.Tag;
+                    if ( tsb.Style == System.Windows.Forms.ToolBarButtonStyle.ToggleButton && tag != null && tag is String ) {
 #if ENABLE_SCRIPT
                         if ( tool == EditTool.PALETTE_TOOL ) {
                             String id = (String)tag;
-                            tsb.setSelected( (AppManager.mSelectedPaletteTool.Equals( id )) );
+                            tsb.Pushed = (AppManager.mSelectedPaletteTool.Equals( id ));
                         } else
 #endif
  {
-                            tsb.setSelected( false );
+                            tsb.Pushed = false;
                         }
                     }
                 }
@@ -6304,10 +6346,10 @@ namespace org.kbinani.cadencii.obsolute {
                 cMenuTrackSelectorLine.setSelected( false );
                 cMenuTrackSelectorEraser.setSelected( false );
 
-                stripBtnPointer.setSelected( true );
-                stripBtnPencil.setSelected( false );
-                stripBtnLine.setSelected( false );
-                stripBtnEraser.setSelected( false );
+                stripBtnPointer.Pushed = true;
+                stripBtnPencil.Pushed = false;
+                stripBtnLine.Pushed = false;
+                stripBtnEraser.Pushed = false;
             } else if ( selected_tool == EditTool.PENCIL ) {
                 cMenuPianoPointer.setSelected( false );
                 cMenuPianoPencil.setSelected( true );
@@ -6318,10 +6360,10 @@ namespace org.kbinani.cadencii.obsolute {
                 cMenuTrackSelectorLine.setSelected( false );
                 cMenuTrackSelectorEraser.setSelected( false );
 
-                stripBtnPointer.setSelected( false );
-                stripBtnPencil.setSelected( true );
-                stripBtnLine.setSelected( false );
-                stripBtnEraser.setSelected( false );
+                stripBtnPointer.Pushed = false;
+                stripBtnPencil.Pushed = true;
+                stripBtnLine.Pushed = false;
+                stripBtnEraser.Pushed = false;
             } else if ( selected_tool == EditTool.ERASER ) {
                 cMenuPianoPointer.setSelected( false );
                 cMenuPianoPencil.setSelected( false );
@@ -6332,10 +6374,10 @@ namespace org.kbinani.cadencii.obsolute {
                 cMenuTrackSelectorLine.setSelected( false );
                 cMenuTrackSelectorEraser.setSelected( true );
 
-                stripBtnPointer.setSelected( false );
-                stripBtnPencil.setSelected( false );
-                stripBtnLine.setSelected( false );
-                stripBtnEraser.setSelected( true );
+                stripBtnPointer.Pushed = false;
+                stripBtnPencil.Pushed =  false;
+                stripBtnLine.Pushed = false;
+                stripBtnEraser.Pushed = true;
             } else if ( selected_tool == EditTool.LINE ) {
                 cMenuPianoPointer.setSelected( false );
                 cMenuPianoPencil.setSelected( false );
@@ -6346,10 +6388,10 @@ namespace org.kbinani.cadencii.obsolute {
                 cMenuTrackSelectorLine.setSelected( true );
                 cMenuTrackSelectorEraser.setSelected( false );
 
-                stripBtnPointer.setSelected( false );
-                stripBtnPencil.setSelected( false );
-                stripBtnLine.setSelected( true );
-                stripBtnEraser.setSelected( false );
+                stripBtnPointer.Pushed = false;
+                stripBtnPencil.Pushed = false;
+                stripBtnLine.Pushed = true;
+                stripBtnEraser.Pushed = false;
 #if ENABLE_SCRIPT
             } else if ( selected_tool == EditTool.PALETTE_TOOL ) {
                 cMenuPianoPointer.setSelected( false );
@@ -6361,15 +6403,15 @@ namespace org.kbinani.cadencii.obsolute {
                 cMenuTrackSelectorLine.setSelected( false );
                 cMenuTrackSelectorEraser.setSelected( false );
 
-                stripBtnPointer.setSelected( false );
-                stripBtnPencil.setSelected( false );
-                stripBtnLine.setSelected( false );
-                stripBtnEraser.setSelected( false );
+                stripBtnPointer.Pushed = false;
+                stripBtnPencil.Pushed =  false;
+                stripBtnLine.Pushed = false;
+                stripBtnEraser.Pushed = false;
 #endif
             }
             cMenuPianoCurve.setSelected( AppManager.isCurveMode() );
             cMenuTrackSelectorCurve.setSelected( AppManager.isCurveMode() );
-            stripBtnCurve.setSelected( AppManager.isCurveMode() );
+            stripBtnCurve.Pushed = AppManager.isCurveMode();
         }
 
         /// <summary>
@@ -6727,8 +6769,8 @@ namespace org.kbinani.cadencii.obsolute {
             cMenuPianoUndo.setEnabled( undo );
             cMenuTrackSelectorRedo.setEnabled( redo );
             cMenuTrackSelectorUndo.setEnabled( undo );
-            stripBtnUndo.setEnabled( undo );
-            stripBtnRedo.setEnabled( redo );
+            stripBtnUndo.Enabled = undo;
+            stripBtnRedo.Enabled = redo;
             //AppManager.setRenderRequired( AppManager.getSelected(), true );
             if ( AppManager.getVsqFile() != null ) {
                 int draft = AppManager.getVsqFile().TotalClocks;
@@ -6902,10 +6944,10 @@ namespace org.kbinani.cadencii.obsolute {
             Util.applyToolStripFontRecurse( menuScript, font );
             Util.applyToolStripFontRecurse( menuSetting, font );
             Util.applyToolStripFontRecurse( menuHelp, font );
-            Util.applyFontRecurse( toolStripFile, font );
-            Util.applyFontRecurse( toolStripMeasure, font );
-            Util.applyFontRecurse( toolStripPosition, font );
-            Util.applyFontRecurse( toolStripTool, font );
+            Util.applyFontRecurse( toolBarFile, font );
+            Util.applyFontRecurse( toolBarMeasure, font );
+            Util.applyFontRecurse( toolBarPosition, font );
+            Util.applyFontRecurse( toolBarTool, font );
             if ( mDialogPreference != null ) {
                 Util.applyFontRecurse( mDialogPreference, font );
             }
@@ -7412,54 +7454,34 @@ namespace org.kbinani.cadencii.obsolute {
             pictureBox2.mouseDownEvent.add( new BMouseEventHandler( this, "pictureBox2_MouseDown" ) );
             pictureBox2.mouseUpEvent.add( new BMouseEventHandler( this, "pictureBox2_MouseUp" ) );
             pictureBox2.paintEvent.add( new BPaintEventHandler( this, "pictureBox2_Paint" ) );
-            stripBtnPointer.clickEvent.add( new BEventHandler( this, "stripBtnArrow_Click" ) );
-            stripBtnPencil.clickEvent.add( new BEventHandler( this, "stripBtnPencil_Click" ) );
-            stripBtnLine.clickEvent.add( new BEventHandler( this, "stripBtnLine_Click" ) );
-            stripBtnEraser.clickEvent.add( new BEventHandler( this, "stripBtnEraser_Click" ) );
-            stripBtnGrid.checkedChangedEvent.add( new BEventHandler( this, "stripBtnGrid_CheckedChanged" ) );
-            stripBtnCurve.clickEvent.add( new BEventHandler( this, "stripBtnCurve_Click" ) );
+            toolBarTool.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler( toolBarTool_ButtonClick );
 #if !JAVA
-            toolStripContainer.TopToolStripPanel.SizeChanged += new EventHandler( toolStripContainer_TopToolStripPanel_SizeChanged );
+            rebarWrapper1.SizeChanged += new EventHandler( toolStripContainer_TopToolStripPanel_SizeChanged );// toolStripContainer.TopToolStripPanel.SizeChanged += new EventHandler( toolStripContainer_TopToolStripPanel_SizeChanged );
             stripDDBtnSpeed.dropDownOpeningEvent.add( new BEventHandler( this, "stripDDBtnSpeed_DropDownOpening" ) );
             stripDDBtnSpeedTextbox.keyDownEvent.add( new BKeyEventHandler( this, "stripDDBtnSpeedTextbox_KeyDown" ) );
             stripDDBtnSpeed033.clickEvent.add( new BEventHandler( this, "stripDDBtnSpeed033_Click" ) );
             stripDDBtnSpeed050.clickEvent.add( new BEventHandler( this, "stripDDBtnSpeed050_Click" ) );
             stripDDBtnSpeed100.clickEvent.add( new BEventHandler( this, "stripDDBtnSpeed100_Click" ) );
-            stripDDBtnLength04.clickEvent.add( new BEventHandler( this, "handleLengthQuantize04_Click" ) );
-            stripDDBtnLength08.clickEvent.add( new BEventHandler( this, "handleLengthQuantize08_Click" ) );
-            stripDDBtnLength16.clickEvent.add( new BEventHandler( this, "handleLengthQuantize16_Click" ) );
-            stripDDBtnLength32.clickEvent.add( new BEventHandler( this, "handleLengthQuantize32_Click" ) );
-            stripDDBtnLength64.clickEvent.add( new BEventHandler( this, "handleLengthQuantize64_Click" ) );
-            stripDDBtnLength128.clickEvent.add( new BEventHandler( this, "handleLengthQuantize128_Click" ) );
-            stripDDBtnLengthOff.clickEvent.add( new BEventHandler( this, "handleLengthQuantizeOff_Click" ) );
-            stripDDBtnLengthTriplet.clickEvent.add( new BEventHandler( this, "handleLengthQuantizeTriplet_Click" ) );
-            stripDDBtnQuantize04.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            stripDDBtnQuantize08.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            stripDDBtnQuantize16.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            stripDDBtnQuantize32.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            stripDDBtnQuantize64.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            stripDDBtnQuantize128.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            stripDDBtnQuantizeOff.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            stripDDBtnQuantizeTriplet.clickEvent.add( new BEventHandler( this, "handlePositionQuantizeTriplet_Click" ) );
+            stripDDBtnLength04.Click += handleLengthQuantize04_Click;
+            stripDDBtnLength08.Click += handleLengthQuantize08_Click;
+            stripDDBtnLength16.Click += handleLengthQuantize16_Click;
+            stripDDBtnLength32.Click += handleLengthQuantize32_Click;
+            stripDDBtnLength64.Click += handleLengthQuantize64_Click;
+            stripDDBtnLength128.Click += handleLengthQuantize128_Click;
+            stripDDBtnLengthOff.Click += handleLengthQuantizeOff_Click;
+            stripDDBtnLengthTriplet.Click += handleLengthQuantizeTriplet_Click;
+            stripDDBtnQuantize04.Click += handlePositionQuantize;
+            stripDDBtnQuantize08.Click += handlePositionQuantize;
+            stripDDBtnQuantize16.Click += handlePositionQuantize;
+            stripDDBtnQuantize32.Click += handlePositionQuantize;
+            stripDDBtnQuantize64.Click += handlePositionQuantize;
+            stripDDBtnQuantize128.Click += handlePositionQuantize;
+            stripDDBtnQuantizeOff.Click += handlePositionQuantize;
+            stripDDBtnQuantizeTriplet.Click += handlePositionQuantizeTriplet_Click;
 #endif
-            stripBtnFileNew.clickEvent.add( new BEventHandler( this, "handleFileNew_Click" ) );
-            stripBtnFileOpen.clickEvent.add( new BEventHandler( this, "handleFileOpen_Click" ) );
-            stripBtnFileSave.clickEvent.add( new BEventHandler( this, "handleFileSave_Click" ) );
-            stripBtnCut.clickEvent.add( new BEventHandler( this, "handleEditCut_Click" ) );
-            stripBtnCopy.clickEvent.add( new BEventHandler( this, "handleEditCopy_Click" ) );
-            stripBtnPaste.clickEvent.add( new BEventHandler( this, "handleEditPaste_Click" ) );
-            stripBtnUndo.clickEvent.add( new BEventHandler( this, "handleEditUndo_Click" ) );
-            stripBtnRedo.clickEvent.add( new BEventHandler( this, "handleEditRedo_Click" ) );
-            stripBtnMoveTop.clickEvent.add( new BEventHandler( this, "stripBtnMoveTop_Click" ) );
-            stripBtnRewind.clickEvent.add( new BEventHandler( this, "stripBtnRewind_Click" ) );
-            stripBtnForward.clickEvent.add( new BEventHandler( this, "stripBtnForward_Click" ) );
-            stripBtnMoveEnd.clickEvent.add( new BEventHandler( this, "stripBtnMoveEnd_Click" ) );
-            stripBtnPlay.clickEvent.add( new BEventHandler( this, "stripBtnPlay_Click" ) );
-            stripBtnStop.clickEvent.add( new BEventHandler( this, "stripBtnStop_Click" ) );
-            stripBtnScroll.clickEvent.add( new BEventHandler( this, "stripBtnScroll_Click" ) );
-            stripBtnLoop.clickEvent.add( new BEventHandler( this, "stripBtnLoop_Click" ) );
-            stripBtnStartMarker.clickEvent.add( new BEventHandler( this, "handleStartMarker_Click" ) );
-            stripBtnEndMarker.clickEvent.add( new BEventHandler( this, "handleEndMarker_Click" ) );
+            toolBarFile.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler( toolBarFile_ButtonClick );
+            toolBarPosition.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler( toolBarPosition_ButtonClick );
+            toolBarMeasure.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler( toolBarMeasure_ButtonClick );
             deactivateEvent.add( new BEventHandler( this, "FormMain_Deactivate" ) );
             activatedEvent.add( new BEventHandler( this, "FormMain_Activated" ) );
             formClosedEvent.add( new BFormClosedEventHandler( this, "FormMain_FormClosed" ) );
@@ -7468,34 +7490,108 @@ namespace org.kbinani.cadencii.obsolute {
             panelOverview.enterEvent.add( new BEventHandler( this, "panelOverview_Enter" ) );
         }
 
+        void toolBarTool_ButtonClick( object sender, System.Windows.Forms.ToolBarButtonClickEventArgs e ) {
+            if ( e.Button == stripBtnPointer ) {
+                stripBtnArrow_Click( sender, new EventArgs() );
+            } else if ( e.Button == stripBtnPencil ) {
+                stripBtnPencil_Click( sender, new EventArgs() );
+            } else if ( e.Button == stripBtnLine ) {
+                stripBtnLine_Click( sender, new EventArgs() );
+            } else if ( e.Button == stripBtnEraser ) {
+                stripBtnEraser_Click( sender, new EventArgs() );
+            } else if ( e.Button == stripBtnGrid ) {
+                stripBtnGrid_CheckedChanged( sender, new EventArgs() );
+            } else if ( e.Button == stripBtnCurve ) {
+                stripBtnCurve_Click( sender, new EventArgs() );
+            }
+        }
+
+        void toolBarMeasure_ButtonClick( object sender, System.Windows.Forms.ToolBarButtonClickEventArgs e ) {
+            if ( e.Button == stripBtnStartMarker ) {
+                handleStartMarker_Click( sender, new EventArgs() );
+            } else if ( e.Button == stripBtnEndMarker ) {
+                handleEndMarker_Click( sender, new EventArgs() );
+            } else if ( e.Button == stripDDBtnLengthParent ) {
+                System.Drawing.Rectangle rc = stripDDBtnLengthParent.Rectangle;
+                stripDDBtnLength.Show(
+                    toolBarMeasure,
+                    new System.Drawing.Point( rc.Left, rc.Bottom ) );
+            } else if ( e.Button == stripDDBtnQuantizeParent ) {
+                System.Drawing.Rectangle rc = stripDDBtnQuantizeParent.Rectangle;
+                stripDDBtnQuantize.Show(
+                    toolBarMeasure,
+                    new System.Drawing.Point( rc.Left, rc.Bottom ) );
+            }
+        }
+
+        void toolBarPosition_ButtonClick( object sender, System.Windows.Forms.ToolBarButtonClickEventArgs e ) {
+            if ( e.Button == stripBtnMoveTop ) {
+                stripBtnMoveTop_Click( sender, new EventArgs() );
+            } else if ( e.Button == stripBtnRewind ) {
+                stripBtnRewind_Click( sender, new EventArgs() );
+            } else if ( e.Button == stripBtnForward ) {
+                stripBtnForward_Click( sender, new EventArgs() );
+            } else if ( e.Button == stripBtnMoveEnd ) {
+                stripBtnMoveEnd_Click( sender, new EventArgs() );
+            } else if ( e.Button == stripBtnPlay ) {
+                stripBtnPlay_Click( sender, new EventArgs() );
+            } else if ( e.Button == stripBtnStop ) {
+                stripBtnStop_Click( sender, new EventArgs() );
+            } else if ( e.Button == stripBtnScroll ) {
+                stripBtnScroll_Click( sender, new EventArgs() );
+            } else if ( e.Button == stripBtnLoop ) {
+                stripBtnLoop_Click( sender, new EventArgs() );
+            }
+        }
+
+        void toolBarFile_ButtonClick( object sender, System.Windows.Forms.ToolBarButtonClickEventArgs e ) {
+            if ( e.Button == stripBtnFileNew ) {
+                handleFileNew_Click( sender, new EventArgs() );
+            } else if ( e.Button == stripBtnFileOpen ) {
+                handleFileOpen_Click( sender, new EventArgs() );
+            } else if ( e.Button == stripBtnFileSave ) {
+                handleFileSave_Click( sender, new EventArgs() );
+            } else if ( e.Button == stripBtnCut ) {
+                handleEditCut_Click( sender, new EventArgs() );
+            } else if ( e.Button == stripBtnCopy ) {
+                handleEditCopy_Click( sender, new EventArgs() );
+            } else if ( e.Button == stripBtnPaste ) {
+                handleEditPaste_Click( sender, new EventArgs() );
+            } else if ( e.Button == stripBtnUndo ) {
+                handleEditUndo_Click( sender, new EventArgs() );
+            } else if ( e.Button == stripBtnRedo ) {
+                handleEditRedo_Click( sender, new EventArgs() );
+            }
+        }
+
         public void setResources() {
             try {
-                this.stripBtnPointer.setIcon( new ImageIcon( Resources.get_arrow_135() ) );
-                this.stripBtnPencil.setIcon( new ImageIcon( Resources.get_pencil() ) );
-                this.stripBtnLine.setIcon( new ImageIcon( Resources.get_layer_shape_line() ) );
-                this.stripBtnEraser.setIcon( new ImageIcon( Resources.get_eraser() ) );
-                this.stripBtnGrid.setIcon( new ImageIcon( Resources.get_ruler_crop() ) );
-                this.stripBtnCurve.setIcon( new ImageIcon( Resources.get_layer_shape_curve() ) );
+                //this.stripBtnPointer.setIcon( new ImageIcon( Resources.get_arrow_135() ) );
+                //this.stripBtnPencil.setIcon( new ImageIcon( Resources.get_pencil() ) );
+                //this.stripBtnLine.setIcon( new ImageIcon( Resources.get_layer_shape_line() ) );
+                //this.stripBtnEraser.setIcon( new ImageIcon( Resources.get_eraser() ) );
+                //this.stripBtnGrid.setIcon( new ImageIcon( Resources.get_ruler_crop() ) );
+                //this.stripBtnCurve.setIcon( new ImageIcon( Resources.get_layer_shape_curve() ) );
                 this.stripLblGameCtrlMode.setIcon( new ImageIcon( Resources.get_slash() ) );
                 this.stripLblMidiIn.setIcon( new ImageIcon( Resources.get_slash() ) );
-                this.stripBtnFileNew.setIcon( new ImageIcon( Resources.get_disk__plus() ) );
-                this.stripBtnFileOpen.setIcon( new ImageIcon( Resources.get_folder_horizontal_open() ) );
-                this.stripBtnFileSave.setIcon( new ImageIcon( Resources.get_disk() ) );
-                this.stripBtnCut.setIcon( new ImageIcon( Resources.get_scissors() ) );
-                this.stripBtnCopy.setIcon( new ImageIcon( Resources.get_documents() ) );
-                this.stripBtnPaste.setIcon( new ImageIcon( Resources.get_clipboard_paste() ) );
-                this.stripBtnUndo.setIcon( new ImageIcon( Resources.get_arrow_skip_180() ) );
-                this.stripBtnRedo.setIcon( new ImageIcon( Resources.get_arrow_skip() ) );
-                this.stripBtnMoveTop.setIcon( new ImageIcon( Resources.get_control_stop_180() ) );
-                this.stripBtnRewind.setIcon( new ImageIcon( Resources.get_control_double_180() ) );
-                this.stripBtnForward.setIcon( new ImageIcon( Resources.get_control_double() ) );
-                this.stripBtnMoveEnd.setIcon( new ImageIcon( Resources.get_control_stop() ) );
-                this.stripBtnPlay.setIcon( new ImageIcon( Resources.get_control() ) );
-                this.stripBtnStop.setIcon( new ImageIcon( Resources.get_control_pause() ) );
-                this.stripBtnScroll.setIcon( new ImageIcon( Resources.get_arrow_circle_double() ) );
-                this.stripBtnLoop.setIcon( new ImageIcon( Resources.get_arrow_return() ) );
-                this.stripBtnStartMarker.setIcon( new ImageIcon( Resources.get_pin__arrow() ) );
-                this.stripBtnEndMarker.setIcon( new ImageIcon( Resources.get_pin__arrow_inv() ) );
+                //TODO:this.stripBtnFileNew.setIcon( new ImageIcon( Resources.get_disk__plus() ) );
+                //TODO:this.stripBtnFileOpen.setIcon( new ImageIcon( Resources.get_folder_horizontal_open() ) );
+                //TODO:this.stripBtnFileSave.setIcon( new ImageIcon( Resources.get_disk() ) );
+                //this.stripBtnCut.setIcon( new ImageIcon( Resources.get_scissors() ) );
+                //this.stripBtnCopy.setIcon( new ImageIcon( Resources.get_documents() ) );
+                //this.stripBtnPaste.setIcon( new ImageIcon( Resources.get_clipboard_paste() ) );
+                //this.stripBtnUndo.setIcon( new ImageIcon( Resources.get_arrow_skip_180() ) );
+                //this.stripBtnRedo.setIcon( new ImageIcon( Resources.get_arrow_skip() ) );
+                //this.stripBtnMoveTop.setIcon( new ImageIcon( Resources.get_control_stop_180() ) );
+                //this.stripBtnRewind.setIcon( new ImageIcon( Resources.get_control_double_180() ) );
+                //this.stripBtnForward.setIcon( new ImageIcon( Resources.get_control_double() ) );
+                //this.stripBtnMoveEnd.setIcon( new ImageIcon( Resources.get_control_stop() ) );
+                //this.stripBtnPlay.setIcon( new ImageIcon( Resources.get_control() ) );
+                //this.stripBtnStop.setIcon( new ImageIcon( Resources.get_control_pause() ) );
+                //this.stripBtnScroll.setIcon( new ImageIcon( Resources.get_arrow_circle_double() ) );
+                //this.stripBtnLoop.setIcon( new ImageIcon( Resources.get_arrow_return() ) );
+                //this.stripBtnStartMarker.setIcon( new ImageIcon( Resources.get_pin__arrow() ) );
+                //this.stripBtnEndMarker.setIcon( new ImageIcon( Resources.get_pin__arrow_inv() ) );
                 setIconImage( Resources.get_icon() );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".setResources; ex=" + ex + "\n" );
@@ -7665,7 +7761,7 @@ namespace org.kbinani.cadencii.obsolute {
         #region AppManager
         public void AppManager_GridVisibleChanged( Object sender, EventArgs e ) {
             menuVisualGridline.setSelected( AppManager.isGridVisible() );
-            stripBtnGrid.setSelected( AppManager.isGridVisible() );
+            stripBtnGrid.Pushed = AppManager.isGridVisible();
             cMenuPianoGrid.setSelected( AppManager.isGridVisible() );
         }
 
@@ -7871,8 +7967,8 @@ namespace org.kbinani.cadencii.obsolute {
             cMenuPianoExpressionProperty.setEnabled( !selected_event_is_null );
             menuLyricVibratoProperty.setEnabled( !selected_event_is_null );
             menuLyricExpressionProperty.setEnabled( !selected_event_is_null );
-            stripBtnCut.setEnabled( !selected_event_is_null );
-            stripBtnCopy.setEnabled( !selected_event_is_null );
+            stripBtnCut.Enabled = !selected_event_is_null;
+            stripBtnCopy.Enabled = !selected_event_is_null;
         }
         #endregion
 
@@ -10394,7 +10490,8 @@ namespace org.kbinani.cadencii.obsolute {
             menuVisualMixer.setSelected( AppManager.editorConfig.MixerVisible );
             menuVisualPitchLine.setSelected( AppManager.editorConfig.ViewAtcualPitch );
 
-            AppManager.mMixerWindow = new FormMixer( this );
+            //TODO: fixme
+            AppManager.mMixerWindow = new FormMixer( (FormMain)(object)this );
 
             updateMenuFonts();
 
@@ -15358,7 +15455,7 @@ namespace org.kbinani.cadencii.obsolute {
         //BOOKMARK: stripBtn
         #region stripBtn*
         public void stripBtnGrid_CheckedChanged( Object sender, EventArgs e ) {
-            AppManager.setGridVisible( stripBtnGrid.isSelected() );
+            AppManager.setGridVisible( stripBtnGrid.Pushed );
         }
 
         public void stripBtnArrow_Click( Object sender, EventArgs e ) {
@@ -15389,14 +15486,14 @@ namespace org.kbinani.cadencii.obsolute {
         }
 
         public void stripBtnScroll_Click( Object sender, EventArgs e ) {
-            stripBtnScroll.setSelected(  !stripBtnScroll.isSelected() );
-            AppManager.mAutoScroll = stripBtnScroll.isSelected();
+            stripBtnScroll.Pushed = !stripBtnScroll.Pushed;
+            AppManager.mAutoScroll = stripBtnScroll.Pushed;
             pictPianoRoll.requestFocus();
         }
 
         public void stripBtnLoop_Click( Object sender, EventArgs e ) {
-            stripBtnLoop.setSelected( !stripBtnLoop.isSelected() );
-            AppManager.setRepeatMode( stripBtnLoop.isSelected() );
+            stripBtnLoop.Pushed = !stripBtnLoop.Pushed;
+            AppManager.setRepeatMode( stripBtnLoop.Pushed );
             pictPianoRoll.requestFocus();
         }
 
@@ -15672,59 +15769,59 @@ namespace org.kbinani.cadencii.obsolute {
 
 #if !JAVA
         public void toolStripEdit_Move( Object sender, EventArgs e ) {
-            AppManager.editorConfig.ToolEditTool.Location = new XmlPoint( toolStripTool.getX(), toolStripTool.getY() );
+            AppManager.editorConfig.ToolEditTool.Location = new XmlPoint( toolBarTool.Left, toolBarTool.Top );
         }
 
         public void toolStripEdit_ParentChanged( Object sender, EventArgs e ) {
-            if ( toolStripTool.getParent() != null ) {
+            /*TODO: if ( toolStripTool.getParent() != null ) {
                 if ( toolStripTool.Parent.Equals( toolStripContainer.TopToolStripPanel ) ) {
                     AppManager.editorConfig.ToolEditTool.Parent = ToolStripLocation.ParentPanel.Top;
                 } else {
                     AppManager.editorConfig.ToolEditTool.Parent = ToolStripLocation.ParentPanel.Bottom;
                 }
-            }
+            }*/
         }
 
         public void toolStripPosition_Move( Object sender, EventArgs e ) {
-            AppManager.editorConfig.ToolPositionLocation.Location = new XmlPoint( toolStripPosition.getX(), toolStripPosition.getY() );
+            AppManager.editorConfig.ToolPositionLocation.Location = new XmlPoint( toolBarPosition.Left, toolBarPosition.Top );
         }
 
         public void toolStripPosition_ParentChanged( Object sender, EventArgs e ) {
-            if ( toolStripPosition.Parent != null ) {
+            /*TODO:if ( toolStripPosition.Parent != null ) {
                 if ( toolStripPosition.Parent.Equals( toolStripContainer.TopToolStripPanel ) ) {
                     AppManager.editorConfig.ToolPositionLocation.Parent = ToolStripLocation.ParentPanel.Top;
                 } else {
                     AppManager.editorConfig.ToolPositionLocation.Parent = ToolStripLocation.ParentPanel.Bottom;
                 }
-            }
+            }*/
         }
 
         public void toolStripMeasure_Move( Object sender, EventArgs e ) {
-            AppManager.editorConfig.ToolMeasureLocation.Location = new XmlPoint( toolStripMeasure.Location.X, toolStripMeasure.Location.Y );
+            AppManager.editorConfig.ToolMeasureLocation.Location = new XmlPoint( toolBarMeasure.Left, toolBarMeasure.Top );
         }
 
         public void toolStripMeasure_ParentChanged( Object sender, EventArgs e ) {
-            if ( toolStripMeasure.Parent != null ) {
+            /*TODO: if ( toolStripMeasure.Parent != null ) {
                 if ( toolStripMeasure.Parent.Equals( toolStripContainer.TopToolStripPanel ) ) {
                     AppManager.editorConfig.ToolMeasureLocation.Parent = ToolStripLocation.ParentPanel.Top;
                 } else {
                     AppManager.editorConfig.ToolMeasureLocation.Parent = ToolStripLocation.ParentPanel.Bottom;
                 }
-            }
+            }*/
         }
 
         void toolStripFile_Move( Object sender, EventArgs e ) {
-            AppManager.editorConfig.ToolFileLocation.Location = new XmlPoint( toolStripFile.getX(), toolStripFile.getY() );
+            AppManager.editorConfig.ToolFileLocation.Location = new XmlPoint( toolBarFile.Left, toolBarFile.Top );
         }
 
         void toolStripFile_ParentChanged( Object sender, EventArgs e ) {
-            if ( toolStripFile.Parent != null ) {
+            /*TODO: if ( toolStripFile.Parent != null ) {
                 if ( toolStripFile.Parent.Equals( toolStripContainer.TopToolStripPanel ) ) {
                     AppManager.editorConfig.ToolFileLocation.Parent = ToolStripLocation.ParentPanel.Top;
                 } else {
                     AppManager.editorConfig.ToolFileLocation.Parent = ToolStripLocation.ParentPanel.Bottom;
                 }
-            }
+            }*/
         }
 #endif
 
@@ -15794,16 +15891,16 @@ namespace org.kbinani.cadencii.obsolute {
             }
 #endif
 
-            int count = toolStripTool.getComponentCount();
+            int count = toolBarTool.Buttons.Count;// toolStripTool.getComponentCount();
             for ( int i = 0; i < count; i++ ) {
-                Object item = toolStripTool.getComponentAtIndex( i );
-                if ( item is BToolStripButton ) {
-                    BToolStripButton button = (BToolStripButton)item;
-                    if ( button.getTag() != null && button.getTag() is String ) {
-                        if ( ((String)button.getTag()).Equals( id ) ) {
-                            button.setSelected( true );
+                Object item = toolBarTool.Buttons[i];// toolStripTool.getComponentAtIndex( i );
+                if ( item is System.Windows.Forms.ToolBarButton ) {
+                    System.Windows.Forms.ToolBarButton button = (System.Windows.Forms.ToolBarButton)item;
+                    if ( button.Style == System.Windows.Forms.ToolBarButtonStyle.ToggleButton && button.Tag != null && button.Tag is String ) {
+                        if ( ((String)button.Tag).Equals( id ) ) {
+                            button.Pushed = true;
                         } else {
-                            button.setSelected( false );
+                            button.Pushed = false;
                         }
                     }
                 }
@@ -16170,7 +16267,6 @@ namespace org.kbinani.cadencii.obsolute {
 
         public void handleStartMarker_Click( Object sender, EventArgs e ) {
             AppManager.mStartMarkerEnabled = !AppManager.mStartMarkerEnabled;
-            stripBtnStartMarker.setSelected( AppManager.mStartMarkerEnabled );
             menuVisualStartMarker.setSelected( AppManager.mStartMarkerEnabled );
             pictPianoRoll.requestFocus();
             refreshScreen();
@@ -16178,7 +16274,7 @@ namespace org.kbinani.cadencii.obsolute {
 
         public void handleEndMarker_Click( Object sender, EventArgs e ) {
             AppManager.mEndMarkerEnabled = !AppManager.mEndMarkerEnabled;
-            stripBtnEndMarker.setSelected( AppManager.mEndMarkerEnabled );
+            stripBtnEndMarker.Pushed = AppManager.mEndMarkerEnabled;
             menuVisualEndMarker.setSelected( AppManager.mEndMarkerEnabled );
             pictPianoRoll.requestFocus();
             refreshScreen();
@@ -16882,12 +16978,21 @@ namespace org.kbinani.cadencii.obsolute {
             base.Dispose( disposing );
         }
 
+        void foo() {
+            System.Windows.Forms.ToolBarButton b = new System.Windows.Forms.ToolBarButton();
+            b.DropDownMenu.MenuItems.AddRange( new System.Windows.Forms.MenuItem[]{
+             this.stripDDBtnLength04,
+            } );// = this.stripDDBtnLength;//.MenuItems.Add
+            //stripDDBtnLength.
+        }
+
         /// <summary>
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
         /// コード エディタで変更しないでください。
         /// </summary>
         public void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager( typeof( FormMain ) );
             this.menuStripMain = new org.kbinani.windows.forms.BMenuBar();
             this.menuFile = new org.kbinani.windows.forms.BMenuItem();
             this.menuFileNew = new org.kbinani.windows.forms.BMenuItem();
@@ -17144,24 +17249,17 @@ namespace org.kbinani.cadencii.obsolute {
             this.toolStripMenuItem31 = new System.Windows.Forms.ToolStripSeparator();
             this.cMenuTrackSelectorSelectAll = new org.kbinani.windows.forms.BMenuItem();
             this.trackBar = new org.kbinani.windows.forms.BSlider();
-            this.panel1 = new org.kbinani.windows.forms.BPanel();
-            this.hScroll = new org.kbinani.cadencii.HScroll();
             this.pictureBox3 = new org.kbinani.windows.forms.BPictureBox();
             this.pictKeyLengthSplitter = new org.kbinani.windows.forms.BPictureBox();
             this.pictureBox2 = new org.kbinani.windows.forms.BPictureBox();
             this.vScroll = new org.kbinani.windows.forms.BVScrollBar();
-            this.panelOverview = new org.kbinani.cadencii.PictOverview();
             this.picturePositionIndicator = new org.kbinani.windows.forms.BPictureBox();
-            this.pictPianoRoll = new org.kbinani.cadencii.PictPianoRoll();
-            this.toolStripTool = new org.kbinani.windows.forms.BToolBar();
-            this.stripBtnPointer = new org.kbinani.windows.forms.BToolStripButton();
-            this.stripBtnPencil = new org.kbinani.windows.forms.BToolStripButton();
-            this.stripBtnLine = new org.kbinani.windows.forms.BToolStripButton();
-            this.stripBtnEraser = new org.kbinani.windows.forms.BToolStripButton();
-            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.stripBtnGrid = new org.kbinani.windows.forms.BToolStripButton();
-            this.stripBtnCurve = new org.kbinani.windows.forms.BToolStripButton();
-            this.toolStripContainer = new System.Windows.Forms.ToolStripContainer();
+            this.stripBtnPointer = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnPencil = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnLine = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnEraser = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnGrid = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnCurve = new System.Windows.Forms.ToolBarButton();
             this.toolStripBottom = new org.kbinani.windows.forms.BToolBar();
             this.toolStripStatusLabel1 = new org.kbinani.windows.forms.BStatusLabel();
             this.stripLblGameCtrlMode = new org.kbinani.windows.forms.BStatusLabel();
@@ -17174,79 +17272,97 @@ namespace org.kbinani.cadencii.obsolute {
             this.stripDDBtnSpeed033 = new org.kbinani.windows.forms.BMenuItem();
             this.stripDDBtnSpeed050 = new org.kbinani.windows.forms.BMenuItem();
             this.stripDDBtnSpeed100 = new org.kbinani.windows.forms.BMenuItem();
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.statusLabel = new org.kbinani.windows.forms.BStatusLabel();
+            this.statusLabel = new org.kbinani.windows.forms.BLabel();
             this.splitContainerProperty = new org.kbinani.apputil.BSplitContainer();
             this.panel2 = new org.kbinani.windows.forms.BPanel();
-            this.splitContainer2 = new org.kbinani.apputil.BSplitContainer();
             this.splitContainer1 = new org.kbinani.apputil.BSplitContainer();
-            this.toolStripFile = new org.kbinani.windows.forms.BToolBar();
-            this.stripBtnFileNew = new org.kbinani.windows.forms.BToolStripButton();
-            this.stripBtnFileOpen = new org.kbinani.windows.forms.BToolStripButton();
-            this.stripBtnFileSave = new org.kbinani.windows.forms.BToolStripButton();
-            this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
-            this.stripBtnCut = new org.kbinani.windows.forms.BToolStripButton();
-            this.stripBtnCopy = new org.kbinani.windows.forms.BToolStripButton();
-            this.stripBtnPaste = new org.kbinani.windows.forms.BToolStripButton();
-            this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
-            this.stripBtnUndo = new org.kbinani.windows.forms.BToolStripButton();
-            this.stripBtnRedo = new org.kbinani.windows.forms.BToolStripButton();
-            this.toolStripPosition = new org.kbinani.windows.forms.BToolBar();
-            this.stripBtnMoveTop = new org.kbinani.windows.forms.BToolStripButton();
-            this.stripBtnRewind = new org.kbinani.windows.forms.BToolStripButton();
-            this.stripBtnForward = new org.kbinani.windows.forms.BToolStripButton();
-            this.stripBtnMoveEnd = new org.kbinani.windows.forms.BToolStripButton();
-            this.stripBtnPlay = new org.kbinani.windows.forms.BToolStripButton();
-            this.stripBtnStop = new org.kbinani.windows.forms.BToolStripButton();
-            this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
-            this.stripBtnScroll = new org.kbinani.windows.forms.BToolStripButton();
-            this.stripBtnLoop = new org.kbinani.windows.forms.BToolStripButton();
-            this.toolStripMeasure = new org.kbinani.windows.forms.BToolBar();
-            this.stripDDBtnLength = new org.kbinani.windows.forms.BToolStripDropDownButton();
-            this.stripDDBtnLength04 = new org.kbinani.windows.forms.BMenuItem();
-            this.stripDDBtnLength08 = new org.kbinani.windows.forms.BMenuItem();
-            this.stripDDBtnLength16 = new org.kbinani.windows.forms.BMenuItem();
-            this.stripDDBtnLength32 = new org.kbinani.windows.forms.BMenuItem();
-            this.stripDDBtnLength64 = new org.kbinani.windows.forms.BMenuItem();
-            this.stripDDBtnLength128 = new org.kbinani.windows.forms.BMenuItem();
-            this.stripDDBtnLengthOff = new org.kbinani.windows.forms.BMenuItem();
+            this.stripBtnCut = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnCopy = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnPaste = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnUndo = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnRedo = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnFileNew = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnFileOpen = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnFileSave = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnMoveTop = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnRewind = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnForward = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnMoveEnd = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnPlay = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnStop = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnScroll = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnLoop = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnStartMarker = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnEndMarker = new System.Windows.Forms.ToolBarButton();
+            this.stripDDBtnLength = new System.Windows.Forms.ContextMenu();
+            this.stripDDBtnLength04 = new System.Windows.Forms.MenuItem();
+            this.stripDDBtnLength08 = new System.Windows.Forms.MenuItem();
+            this.stripDDBtnLength16 = new System.Windows.Forms.MenuItem();
+            this.stripDDBtnLength32 = new System.Windows.Forms.MenuItem();
+            this.stripDDBtnLength64 = new System.Windows.Forms.MenuItem();
+            this.stripDDBtnLength128 = new System.Windows.Forms.MenuItem();
+            this.stripDDBtnLengthOff = new System.Windows.Forms.MenuItem();
+            this.menuItem1 = new System.Windows.Forms.MenuItem();
+            this.stripDDBtnLengthTriplet = new System.Windows.Forms.MenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
-            this.stripDDBtnLengthTriplet = new org.kbinani.windows.forms.BMenuItem();
-            this.stripDDBtnQuantize = new org.kbinani.windows.forms.BToolStripDropDownButton();
-            this.stripDDBtnQuantize04 = new org.kbinani.windows.forms.BMenuItem();
-            this.stripDDBtnQuantize08 = new org.kbinani.windows.forms.BMenuItem();
-            this.stripDDBtnQuantize16 = new org.kbinani.windows.forms.BMenuItem();
-            this.stripDDBtnQuantize32 = new org.kbinani.windows.forms.BMenuItem();
-            this.stripDDBtnQuantize64 = new org.kbinani.windows.forms.BMenuItem();
-            this.stripDDBtnQuantize128 = new org.kbinani.windows.forms.BMenuItem();
-            this.stripDDBtnQuantizeOff = new org.kbinani.windows.forms.BMenuItem();
+            this.stripDDBtnQuantize = new System.Windows.Forms.ContextMenu();
+            this.stripDDBtnQuantize04 = new System.Windows.Forms.MenuItem();
+            this.stripDDBtnQuantize08 = new System.Windows.Forms.MenuItem();
+            this.stripDDBtnQuantize16 = new System.Windows.Forms.MenuItem();
+            this.stripDDBtnQuantize32 = new System.Windows.Forms.MenuItem();
+            this.stripDDBtnQuantize64 = new System.Windows.Forms.MenuItem();
+            this.stripDDBtnQuantize128 = new System.Windows.Forms.MenuItem();
+            this.stripDDBtnQuantizeOff = new System.Windows.Forms.MenuItem();
+            this.menuItem2 = new System.Windows.Forms.MenuItem();
+            this.stripDDBtnQuantizeTriplet = new System.Windows.Forms.MenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.stripDDBtnQuantizeTriplet = new org.kbinani.windows.forms.BMenuItem();
-            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
-            this.stripBtnStartMarker = new org.kbinani.windows.forms.BToolStripButton();
-            this.stripBtnEndMarker = new org.kbinani.windows.forms.BToolStripButton();
+            this.rebarWrapper1 = new RebarDotNet.RebarWrapper();
+            this.bandWrapperForToolStripFile = new RebarDotNet.BandWrapper();
+            this.toolBarFile = new System.Windows.Forms.ToolBar();
+            this.toolBarButton1 = new System.Windows.Forms.ToolBarButton();
+            this.toolBarButton2 = new System.Windows.Forms.ToolBarButton();
+            this.imageListFile = new System.Windows.Forms.ImageList( this.components );
+            this.bandWrapperForToolStripPosition = new RebarDotNet.BandWrapper();
+            this.toolBarPosition = new System.Windows.Forms.ToolBar();
+            this.toolBarButton4 = new System.Windows.Forms.ToolBarButton();
+            this.imageListPosition = new System.Windows.Forms.ImageList( this.components );
+            this.bandWrapperForToolStripMeasure = new RebarDotNet.BandWrapper();
+            this.toolBarMeasure = new System.Windows.Forms.ToolBar();
+            this.stripDDBtnLengthParent = new System.Windows.Forms.ToolBarButton();
+            this.stripDDBtnQuantizeParent = new System.Windows.Forms.ToolBarButton();
+            this.toolBarButton5 = new System.Windows.Forms.ToolBarButton();
+            this.imageListMeasure = new System.Windows.Forms.ImageList( this.components );
+            this.bandWrapperForToolStripTool = new RebarDotNet.BandWrapper();
+            this.toolBarTool = new System.Windows.Forms.ToolBar();
+            this.toolBarButton3 = new System.Windows.Forms.ToolBarButton();
+            this.imageListTool = new System.Windows.Forms.ImageList( this.components );
+            this.panelForToolStripMeasure = new System.Windows.Forms.Panel();
+            this.panelForToolStripPosition = new System.Windows.Forms.Panel();
+            this.panelForToolStripTool = new System.Windows.Forms.Panel();
+            this.panelForToolStripFile = new System.Windows.Forms.Panel();
+            this.splitContainer2 = new org.kbinani.apputil.BSplitContainer();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.rebarWrapper2 = new RebarDotNet.RebarWrapper();
+            this.bandStatus = new RebarDotNet.BandWrapper();
+            this.panelOverview = new org.kbinani.cadencii.PictOverview();
+            this.pictPianoRoll = new org.kbinani.cadencii.PictPianoRoll();
+            this.hScroll = new org.kbinani.cadencii.HScroll();
+            this.bandWrapper1 = new RebarDotNet.BandWrapper();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
             this.cMenuTrackSelector.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar)).BeginInit();
-            this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictKeyLengthSplitter)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.panelOverview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picturePositionIndicator)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).BeginInit();
-            this.toolStripTool.SuspendLayout();
-            this.toolStripContainer.BottomToolStripPanel.SuspendLayout();
-            this.toolStripContainer.ContentPanel.SuspendLayout();
-            this.toolStripContainer.TopToolStripPanel.SuspendLayout();
-            this.toolStripContainer.SuspendLayout();
             this.toolStripBottom.SuspendLayout();
-            this.statusStrip1.SuspendLayout();
-            this.toolStripFile.SuspendLayout();
-            this.toolStripPosition.SuspendLayout();
-            this.toolStripMeasure.SuspendLayout();
+            this.rebarWrapper1.SuspendLayout();
+            this.panel1.SuspendLayout();
+            this.rebarWrapper2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.panelOverview)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStripMain
@@ -17264,7 +17380,7 @@ namespace org.kbinani.cadencii.obsolute {
             this.menuHidden} );
             this.menuStripMain.Location = new System.Drawing.Point( 0, 0 );
             this.menuStripMain.Name = "menuStripMain";
-            this.menuStripMain.Size = new System.Drawing.Size( 960, 26 );
+            this.menuStripMain.Size = new System.Drawing.Size( 955, 26 );
             this.menuStripMain.TabIndex = 0;
             this.menuStripMain.Text = "menuStrip1";
             // 
@@ -19071,7 +19187,7 @@ namespace org.kbinani.cadencii.obsolute {
             // 
             this.trackBar.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.trackBar.AutoSize = false;
-            this.trackBar.Location = new System.Drawing.Point( 322, 266 );
+            this.trackBar.Location = new System.Drawing.Point( 322, 263 );
             this.trackBar.Margin = new System.Windows.Forms.Padding( 0 );
             this.trackBar.Maximum = 609;
             this.trackBar.Minimum = 17;
@@ -19083,37 +19199,11 @@ namespace org.kbinani.cadencii.obsolute {
             this.trackBar.TickStyle = System.Windows.Forms.TickStyle.None;
             this.trackBar.Value = 17;
             // 
-            // panel1
-            // 
-            this.panel1.Controls.Add( this.hScroll );
-            this.panel1.Controls.Add( this.pictureBox3 );
-            this.panel1.Controls.Add( this.pictKeyLengthSplitter );
-            this.panel1.Controls.Add( this.trackBar );
-            this.panel1.Controls.Add( this.pictureBox2 );
-            this.panel1.Controls.Add( this.vScroll );
-            this.panel1.Controls.Add( this.panelOverview );
-            this.panel1.Controls.Add( this.picturePositionIndicator );
-            this.panel1.Controls.Add( this.pictPianoRoll );
-            this.panel1.Location = new System.Drawing.Point( 0, 0 );
-            this.panel1.Margin = new System.Windows.Forms.Padding( 0 );
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size( 421, 282 );
-            this.panel1.TabIndex = 16;
-            // 
-            // hScroll
-            // 
-            this.hScroll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.hScroll.Location = new System.Drawing.Point( 66, 266 );
-            this.hScroll.Name = "hScroll";
-            this.hScroll.Size = new System.Drawing.Size( 256, 16 );
-            this.hScroll.TabIndex = 16;
-            // 
             // pictureBox3
             // 
             this.pictureBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.pictureBox3.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))) );
-            this.pictureBox3.Location = new System.Drawing.Point( 0, 266 );
+            this.pictureBox3.Location = new System.Drawing.Point( 0, 263 );
             this.pictureBox3.Margin = new System.Windows.Forms.Padding( 0 );
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size( 49, 16 );
@@ -19126,7 +19216,7 @@ namespace org.kbinani.cadencii.obsolute {
             this.pictKeyLengthSplitter.BackColor = System.Drawing.SystemColors.Control;
             this.pictKeyLengthSplitter.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.pictKeyLengthSplitter.Cursor = System.Windows.Forms.Cursors.NoMoveHoriz;
-            this.pictKeyLengthSplitter.Location = new System.Drawing.Point( 50, 266 );
+            this.pictKeyLengthSplitter.Location = new System.Drawing.Point( 49, 263 );
             this.pictKeyLengthSplitter.Margin = new System.Windows.Forms.Padding( 0 );
             this.pictKeyLengthSplitter.Name = "pictKeyLengthSplitter";
             this.pictKeyLengthSplitter.Size = new System.Drawing.Size( 16, 16 );
@@ -19137,7 +19227,7 @@ namespace org.kbinani.cadencii.obsolute {
             // 
             this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox2.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))) );
-            this.pictureBox2.Location = new System.Drawing.Point( 405, 234 );
+            this.pictureBox2.Location = new System.Drawing.Point( 405, 231 );
             this.pictureBox2.Margin = new System.Windows.Forms.Padding( 0 );
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size( 16, 48 );
@@ -19148,151 +19238,59 @@ namespace org.kbinani.cadencii.obsolute {
             // 
             this.vScroll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.vScroll.Location = new System.Drawing.Point( 405, 93 );
+            this.vScroll.Location = new System.Drawing.Point( 405, 94 );
             this.vScroll.Name = "vScroll";
-            this.vScroll.Size = new System.Drawing.Size( 16, 141 );
+            this.vScroll.Size = new System.Drawing.Size( 16, 137 );
             this.vScroll.TabIndex = 17;
-            // 
-            // panelOverview
-            // 
-            this.panelOverview.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelOverview.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(106)))), ((int)(((byte)(108)))), ((int)(((byte)(108)))) );
-            this.panelOverview.Location = new System.Drawing.Point( 0, 0 );
-            this.panelOverview.Margin = new System.Windows.Forms.Padding( 0 );
-            this.panelOverview.Name = "panelOverview";
-            this.panelOverview.Size = new System.Drawing.Size( 421, 45 );
-            this.panelOverview.TabIndex = 19;
-            this.panelOverview.TabStop = false;
             // 
             // picturePositionIndicator
             // 
             this.picturePositionIndicator.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.picturePositionIndicator.BackColor = System.Drawing.Color.DarkGray;
-            this.picturePositionIndicator.Location = new System.Drawing.Point( 0, 45 );
+            this.picturePositionIndicator.Location = new System.Drawing.Point( 0, 46 );
             this.picturePositionIndicator.Margin = new System.Windows.Forms.Padding( 0 );
             this.picturePositionIndicator.Name = "picturePositionIndicator";
-            this.picturePositionIndicator.Size = new System.Drawing.Size( 421, 48 );
+            this.picturePositionIndicator.Size = new System.Drawing.Size( 700, 48 );
             this.picturePositionIndicator.TabIndex = 10;
             this.picturePositionIndicator.TabStop = false;
             // 
-            // pictPianoRoll
-            // 
-            this.pictPianoRoll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictPianoRoll.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))) );
-            this.pictPianoRoll.Location = new System.Drawing.Point( 0, 93 );
-            this.pictPianoRoll.Margin = new System.Windows.Forms.Padding( 0 );
-            this.pictPianoRoll.Name = "pictPianoRoll";
-            this.pictPianoRoll.Size = new System.Drawing.Size( 405, 173 );
-            this.pictPianoRoll.TabIndex = 12;
-            this.pictPianoRoll.TabStop = false;
-            // 
-            // toolStripTool
-            // 
-            this.toolStripTool.Dock = System.Windows.Forms.DockStyle.None;
-            this.toolStripTool.Items.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            this.stripBtnPointer,
-            this.stripBtnPencil,
-            this.stripBtnLine,
-            this.stripBtnEraser,
-            this.toolStripSeparator5,
-            this.stripBtnGrid,
-            this.stripBtnCurve} );
-            this.toolStripTool.Location = new System.Drawing.Point( 3, 75 );
-            this.toolStripTool.Name = "toolStripTool";
-            this.toolStripTool.Size = new System.Drawing.Size( 283, 25 );
-            this.toolStripTool.TabIndex = 17;
-            this.toolStripTool.Text = "toolStrip1";
-            // 
             // stripBtnPointer
             // 
-            this.stripBtnPointer.Checked = true;
-            this.stripBtnPointer.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.stripBtnPointer.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
-            this.stripBtnPointer.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.stripBtnPointer.ImageIndex = 0;
             this.stripBtnPointer.Name = "stripBtnPointer";
-            this.stripBtnPointer.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never;
-            this.stripBtnPointer.Size = new System.Drawing.Size( 53, 22 );
+            this.stripBtnPointer.Pushed = true;
             this.stripBtnPointer.Text = "Pointer";
             // 
             // stripBtnPencil
             // 
-            this.stripBtnPencil.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.stripBtnPencil.ImageIndex = 1;
             this.stripBtnPencil.Name = "stripBtnPencil";
-            this.stripBtnPencil.Size = new System.Drawing.Size( 45, 22 );
             this.stripBtnPencil.Text = "Pencil";
             // 
             // stripBtnLine
             // 
-            this.stripBtnLine.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.stripBtnLine.ImageIndex = 2;
             this.stripBtnLine.Name = "stripBtnLine";
-            this.stripBtnLine.Size = new System.Drawing.Size( 36, 22 );
             this.stripBtnLine.Text = "Line";
             // 
             // stripBtnEraser
             // 
-            this.stripBtnEraser.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.stripBtnEraser.ImageIndex = 3;
             this.stripBtnEraser.Name = "stripBtnEraser";
-            this.stripBtnEraser.Size = new System.Drawing.Size( 49, 22 );
             this.stripBtnEraser.Text = "Eraser";
-            // 
-            // toolStripSeparator5
-            // 
-            this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size( 6, 25 );
             // 
             // stripBtnGrid
             // 
-            this.stripBtnGrid.CheckOnClick = true;
-            this.stripBtnGrid.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.stripBtnGrid.ImageIndex = 4;
             this.stripBtnGrid.Name = "stripBtnGrid";
-            this.stripBtnGrid.Size = new System.Drawing.Size( 36, 22 );
             this.stripBtnGrid.Text = "Grid";
             // 
             // stripBtnCurve
             // 
-            this.stripBtnCurve.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.stripBtnCurve.ImageIndex = 5;
             this.stripBtnCurve.Name = "stripBtnCurve";
-            this.stripBtnCurve.Size = new System.Drawing.Size( 46, 22 );
             this.stripBtnCurve.Text = "Curve";
-            // 
-            // toolStripContainer
-            // 
-            // 
-            // toolStripContainer.BottomToolStripPanel
-            // 
-            this.toolStripContainer.BottomToolStripPanel.Controls.Add( this.toolStripBottom );
-            this.toolStripContainer.BottomToolStripPanel.Controls.Add( this.statusStrip1 );
-            // 
-            // toolStripContainer.ContentPanel
-            // 
-            this.toolStripContainer.ContentPanel.AutoScroll = true;
-            this.toolStripContainer.ContentPanel.Controls.Add( this.splitContainerProperty );
-            this.toolStripContainer.ContentPanel.Controls.Add( this.panel2 );
-            this.toolStripContainer.ContentPanel.Controls.Add( this.splitContainer2 );
-            this.toolStripContainer.ContentPanel.Controls.Add( this.splitContainer1 );
-            this.toolStripContainer.ContentPanel.Controls.Add( this.panel1 );
-            this.toolStripContainer.ContentPanel.Margin = new System.Windows.Forms.Padding( 0 );
-            this.toolStripContainer.ContentPanel.Size = new System.Drawing.Size( 960, 516 );
-            this.toolStripContainer.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.toolStripContainer.LeftToolStripPanelVisible = false;
-            this.toolStripContainer.Location = new System.Drawing.Point( 0, 26 );
-            this.toolStripContainer.Name = "toolStripContainer";
-            this.toolStripContainer.RightToolStripPanelVisible = false;
-            this.toolStripContainer.Size = new System.Drawing.Size( 960, 663 );
-            this.toolStripContainer.TabIndex = 18;
-            this.toolStripContainer.Text = "toolStripContainer1";
-            // 
-            // toolStripContainer.TopToolStripPanel
-            // 
-            this.toolStripContainer.TopToolStripPanel.Controls.Add( this.toolStripFile );
-            this.toolStripContainer.TopToolStripPanel.Controls.Add( this.toolStripPosition );
-            this.toolStripContainer.TopToolStripPanel.Controls.Add( this.toolStripMeasure );
-            this.toolStripContainer.TopToolStripPanel.Controls.Add( this.toolStripTool );
-            this.toolStripContainer.TopToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             // 
             // toolStripBottom
             // 
@@ -19305,7 +19303,7 @@ namespace org.kbinani.cadencii.obsolute {
             this.stripLblMidiIn,
             this.toolStripSeparator11,
             this.stripDDBtnSpeed} );
-            this.toolStripBottom.Location = new System.Drawing.Point( 5, 0 );
+            this.toolStripBottom.Location = new System.Drawing.Point( 11, 506 );
             this.toolStripBottom.Name = "toolStripBottom";
             this.toolStripBottom.Size = new System.Drawing.Size( 378, 25 );
             this.toolStripBottom.TabIndex = 22;
@@ -19383,28 +19381,20 @@ namespace org.kbinani.cadencii.obsolute {
             this.stripDDBtnSpeed100.Size = new System.Drawing.Size( 160, 22 );
             this.stripDDBtnSpeed100.Text = "100%";
             // 
-            // statusStrip1
-            // 
-            this.statusStrip1.Dock = System.Windows.Forms.DockStyle.None;
-            this.statusStrip1.Items.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            this.statusLabel} );
-            this.statusStrip1.Location = new System.Drawing.Point( 0, 25 );
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.ManagerRenderMode;
-            this.statusStrip1.Size = new System.Drawing.Size( 960, 22 );
-            this.statusStrip1.TabIndex = 17;
-            this.statusStrip1.Text = "statusStrip1";
-            // 
             // statusLabel
             // 
+            this.statusLabel.Location = new System.Drawing.Point( 11, 2 );
+            this.statusLabel.MinimumSize = new System.Drawing.Size( 0, 22 );
             this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size( 0, 17 );
+            this.statusLabel.Size = new System.Drawing.Size( 944, 24 );
+            this.statusLabel.TabIndex = 0;
+            this.statusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // splitContainerProperty
             // 
             this.splitContainerProperty.FixedPanel = System.Windows.Forms.FixedPanel.None;
             this.splitContainerProperty.IsSplitterFixed = false;
-            this.splitContainerProperty.Location = new System.Drawing.Point( 714, 17 );
+            this.splitContainerProperty.Location = new System.Drawing.Point( 584, 147 );
             this.splitContainerProperty.Margin = new System.Windows.Forms.Padding( 0 );
             this.splitContainerProperty.Name = "splitContainerProperty";
             this.splitContainerProperty.Orientation = System.Windows.Forms.Orientation.Horizontal;
@@ -19418,7 +19408,7 @@ namespace org.kbinani.cadencii.obsolute {
             this.splitContainerProperty.Panel1.Location = new System.Drawing.Point( 0, 0 );
             this.splitContainerProperty.Panel1.Margin = new System.Windows.Forms.Padding( 0, 0, 0, 4 );
             this.splitContainerProperty.Panel1.Name = "m_panel1";
-            this.splitContainerProperty.Panel1.Size = new System.Drawing.Size( 220, 348 );
+            this.splitContainerProperty.Panel1.Size = new System.Drawing.Size( 42, 348 );
             this.splitContainerProperty.Panel1.TabIndex = 0;
             this.splitContainerProperty.Panel1MinSize = 25;
             // 
@@ -19428,14 +19418,14 @@ namespace org.kbinani.cadencii.obsolute {
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.splitContainerProperty.Panel2.BorderColor = System.Drawing.Color.Black;
-            this.splitContainerProperty.Panel2.Location = new System.Drawing.Point( 224, 0 );
+            this.splitContainerProperty.Panel2.Location = new System.Drawing.Point( 46, 0 );
             this.splitContainerProperty.Panel2.Margin = new System.Windows.Forms.Padding( 0 );
             this.splitContainerProperty.Panel2.Name = "m_panel2";
-            this.splitContainerProperty.Panel2.Size = new System.Drawing.Size( 217, 348 );
+            this.splitContainerProperty.Panel2.Size = new System.Drawing.Size( 66, 348 );
             this.splitContainerProperty.Panel2.TabIndex = 1;
             this.splitContainerProperty.Panel2MinSize = 25;
-            this.splitContainerProperty.Size = new System.Drawing.Size( 441, 348 );
-            this.splitContainerProperty.SplitterDistance = 220;
+            this.splitContainerProperty.Size = new System.Drawing.Size( 112, 348 );
+            this.splitContainerProperty.SplitterDistance = 42;
             this.splitContainerProperty.SplitterWidth = 4;
             this.splitContainerProperty.TabIndex = 20;
             this.splitContainerProperty.TabStop = false;
@@ -19444,57 +19434,17 @@ namespace org.kbinani.cadencii.obsolute {
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.DarkGray;
-            this.panel2.Location = new System.Drawing.Point( 3, 291 );
+            this.panel2.Location = new System.Drawing.Point( 9, 431 );
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size( 421, 59 );
             this.panel2.TabIndex = 19;
             this.panel2.TabStop = false;
             // 
-            // splitContainer2
-            // 
-            this.splitContainer2.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
-            this.splitContainer2.IsSplitterFixed = false;
-            this.splitContainer2.Location = new System.Drawing.Point( 593, 17 );
-            this.splitContainer2.Margin = new System.Windows.Forms.Padding( 0 );
-            this.splitContainer2.Name = "splitContainer2";
-            this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Vertical;
-            // 
-            // 
-            // 
-            this.splitContainer2.Panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.splitContainer2.Panel1.BorderColor = System.Drawing.Color.Black;
-            this.splitContainer2.Panel1.Location = new System.Drawing.Point( 0, 0 );
-            this.splitContainer2.Panel1.Margin = new System.Windows.Forms.Padding( 0 );
-            this.splitContainer2.Panel1.Name = "m_panel1";
-            this.splitContainer2.Panel1.Size = new System.Drawing.Size( 115, 53 );
-            this.splitContainer2.Panel1.TabIndex = 0;
-            this.splitContainer2.Panel1MinSize = 25;
-            // 
-            // 
-            // 
-            this.splitContainer2.Panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.splitContainer2.Panel2.BorderColor = System.Drawing.Color.Black;
-            this.splitContainer2.Panel2.Location = new System.Drawing.Point( 0, 57 );
-            this.splitContainer2.Panel2.Margin = new System.Windows.Forms.Padding( 0 );
-            this.splitContainer2.Panel2.Name = "m_panel2";
-            this.splitContainer2.Panel2.Size = new System.Drawing.Size( 115, 185 );
-            this.splitContainer2.Panel2.TabIndex = 1;
-            this.splitContainer2.Panel2MinSize = 25;
-            this.splitContainer2.Size = new System.Drawing.Size( 115, 242 );
-            this.splitContainer2.SplitterDistance = 53;
-            this.splitContainer2.SplitterWidth = 4;
-            this.splitContainer2.TabIndex = 18;
-            this.splitContainer2.TabStop = false;
-            this.splitContainer2.Text = "bSplitContainer1";
-            // 
             // splitContainer1
             // 
             this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
             this.splitContainer1.IsSplitterFixed = false;
-            this.splitContainer1.Location = new System.Drawing.Point( 440, 17 );
+            this.splitContainer1.Location = new System.Drawing.Point( 2, 2 );
             this.splitContainer1.Margin = new System.Windows.Forms.Padding( 0 );
             this.splitContainer1.MinimumSize = new System.Drawing.Size( 0, 54 );
             this.splitContainer1.Name = "splitContainer1";
@@ -19509,7 +19459,7 @@ namespace org.kbinani.cadencii.obsolute {
             this.splitContainer1.Panel1.Location = new System.Drawing.Point( 0, 0 );
             this.splitContainer1.Panel1.Margin = new System.Windows.Forms.Padding( 0 );
             this.splitContainer1.Panel1.Name = "m_panel1";
-            this.splitContainer1.Panel1.Size = new System.Drawing.Size( 138, 27 );
+            this.splitContainer1.Panel1.Size = new System.Drawing.Size( 953, 50 );
             this.splitContainer1.Panel1.TabIndex = 0;
             this.splitContainer1.Panel1MinSize = 25;
             // 
@@ -19518,232 +19468,128 @@ namespace org.kbinani.cadencii.obsolute {
             this.splitContainer1.Panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.splitContainer1.Panel2.BorderColor = System.Drawing.Color.Black;
-            this.splitContainer1.Panel2.Location = new System.Drawing.Point( 0, 31 );
+            this.splitContainer1.Panel2.Location = new System.Drawing.Point( 0, 54 );
             this.splitContainer1.Panel2.Margin = new System.Windows.Forms.Padding( 0 );
             this.splitContainer1.Panel2.Name = "m_panel2";
-            this.splitContainer1.Panel2.Size = new System.Drawing.Size( 138, 211 );
+            this.splitContainer1.Panel2.Size = new System.Drawing.Size( 953, 25 );
             this.splitContainer1.Panel2.TabIndex = 1;
             this.splitContainer1.Panel2MinSize = 25;
-            this.splitContainer1.Size = new System.Drawing.Size( 138, 242 );
-            this.splitContainer1.SplitterDistance = 27;
+            this.splitContainer1.Size = new System.Drawing.Size( 953, 54 );
+            this.splitContainer1.SplitterDistance = 50;
             this.splitContainer1.SplitterWidth = 4;
             this.splitContainer1.TabIndex = 4;
             this.splitContainer1.TabStop = false;
             this.splitContainer1.Text = "splitContainerEx1";
             // 
-            // toolStripFile
-            // 
-            this.toolStripFile.Dock = System.Windows.Forms.DockStyle.None;
-            this.toolStripFile.Items.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            this.stripBtnFileNew,
-            this.stripBtnFileOpen,
-            this.stripBtnFileSave,
-            this.toolStripSeparator12,
-            this.stripBtnCut,
-            this.stripBtnCopy,
-            this.stripBtnPaste,
-            this.toolStripSeparator13,
-            this.stripBtnUndo,
-            this.stripBtnRedo} );
-            this.toolStripFile.Location = new System.Drawing.Point( 3, 0 );
-            this.toolStripFile.Name = "toolStripFile";
-            this.toolStripFile.Size = new System.Drawing.Size( 208, 25 );
-            this.toolStripFile.TabIndex = 20;
-            // 
-            // stripBtnFileNew
-            // 
-            this.stripBtnFileNew.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnFileNew.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.stripBtnFileNew.Name = "stripBtnFileNew";
-            this.stripBtnFileNew.Size = new System.Drawing.Size( 23, 22 );
-            this.stripBtnFileNew.Text = "toolStripButton6";
-            this.stripBtnFileNew.ToolTipText = "New";
-            // 
-            // stripBtnFileOpen
-            // 
-            this.stripBtnFileOpen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnFileOpen.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.stripBtnFileOpen.Name = "stripBtnFileOpen";
-            this.stripBtnFileOpen.Size = new System.Drawing.Size( 23, 22 );
-            this.stripBtnFileOpen.Text = "toolStripButton3";
-            this.stripBtnFileOpen.ToolTipText = "Open";
-            // 
-            // stripBtnFileSave
-            // 
-            this.stripBtnFileSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnFileSave.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.stripBtnFileSave.Name = "stripBtnFileSave";
-            this.stripBtnFileSave.Size = new System.Drawing.Size( 23, 22 );
-            this.stripBtnFileSave.Text = "toolStripButton2";
-            this.stripBtnFileSave.ToolTipText = "Save";
-            // 
-            // toolStripSeparator12
-            // 
-            this.toolStripSeparator12.Name = "toolStripSeparator12";
-            this.toolStripSeparator12.Size = new System.Drawing.Size( 6, 25 );
-            // 
             // stripBtnCut
             // 
-            this.stripBtnCut.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnCut.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.stripBtnCut.ImageIndex = 3;
             this.stripBtnCut.Name = "stripBtnCut";
-            this.stripBtnCut.Size = new System.Drawing.Size( 23, 22 );
-            this.stripBtnCut.Text = "toolStripButton4";
             this.stripBtnCut.ToolTipText = "Cut";
             // 
             // stripBtnCopy
             // 
-            this.stripBtnCopy.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnCopy.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.stripBtnCopy.ImageIndex = 4;
             this.stripBtnCopy.Name = "stripBtnCopy";
-            this.stripBtnCopy.Size = new System.Drawing.Size( 23, 22 );
-            this.stripBtnCopy.Text = "toolStripButton5";
             this.stripBtnCopy.ToolTipText = "Copy";
             // 
             // stripBtnPaste
             // 
-            this.stripBtnPaste.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnPaste.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.stripBtnPaste.ImageIndex = 5;
             this.stripBtnPaste.Name = "stripBtnPaste";
-            this.stripBtnPaste.Size = new System.Drawing.Size( 23, 22 );
-            this.stripBtnPaste.Text = "toolStripLabel1";
             this.stripBtnPaste.ToolTipText = "Paste";
-            // 
-            // toolStripSeparator13
-            // 
-            this.toolStripSeparator13.Name = "toolStripSeparator13";
-            this.toolStripSeparator13.Size = new System.Drawing.Size( 6, 25 );
             // 
             // stripBtnUndo
             // 
-            this.stripBtnUndo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnUndo.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.stripBtnUndo.ImageIndex = 6;
             this.stripBtnUndo.Name = "stripBtnUndo";
-            this.stripBtnUndo.Size = new System.Drawing.Size( 23, 22 );
-            this.stripBtnUndo.Text = "toolStripButton7";
             this.stripBtnUndo.ToolTipText = "Undo";
             // 
             // stripBtnRedo
             // 
-            this.stripBtnRedo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnRedo.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.stripBtnRedo.ImageIndex = 7;
             this.stripBtnRedo.Name = "stripBtnRedo";
-            this.stripBtnRedo.Size = new System.Drawing.Size( 23, 22 );
-            this.stripBtnRedo.Text = "toolStripButton8";
             this.stripBtnRedo.ToolTipText = "Redo";
             // 
-            // toolStripPosition
+            // stripBtnFileNew
             // 
-            this.toolStripPosition.Dock = System.Windows.Forms.DockStyle.None;
-            this.toolStripPosition.Items.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            this.stripBtnMoveTop,
-            this.stripBtnRewind,
-            this.stripBtnForward,
-            this.stripBtnMoveEnd,
-            this.stripBtnPlay,
-            this.stripBtnStop,
-            this.toolStripSeparator7,
-            this.stripBtnScroll,
-            this.stripBtnLoop} );
-            this.toolStripPosition.Location = new System.Drawing.Point( 3, 25 );
-            this.toolStripPosition.Name = "toolStripPosition";
-            this.toolStripPosition.Size = new System.Drawing.Size( 202, 25 );
-            this.toolStripPosition.TabIndex = 18;
+            this.stripBtnFileNew.ImageIndex = 0;
+            this.stripBtnFileNew.Name = "stripBtnFileNew";
+            this.stripBtnFileNew.ToolTipText = "New";
+            // 
+            // stripBtnFileOpen
+            // 
+            this.stripBtnFileOpen.ImageIndex = 1;
+            this.stripBtnFileOpen.Name = "stripBtnFileOpen";
+            this.stripBtnFileOpen.ToolTipText = "Open";
+            // 
+            // stripBtnFileSave
+            // 
+            this.stripBtnFileSave.ImageIndex = 2;
+            this.stripBtnFileSave.Name = "stripBtnFileSave";
+            this.stripBtnFileSave.ToolTipText = "Save";
             // 
             // stripBtnMoveTop
             // 
-            this.stripBtnMoveTop.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnMoveTop.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.stripBtnMoveTop.ImageIndex = 0;
             this.stripBtnMoveTop.Name = "stripBtnMoveTop";
-            this.stripBtnMoveTop.Size = new System.Drawing.Size( 23, 22 );
-            this.stripBtnMoveTop.Text = "  <=|  ";
             this.stripBtnMoveTop.ToolTipText = "MoveTop";
             // 
             // stripBtnRewind
             // 
-            this.stripBtnRewind.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnRewind.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.stripBtnRewind.ImageIndex = 1;
             this.stripBtnRewind.Name = "stripBtnRewind";
-            this.stripBtnRewind.Size = new System.Drawing.Size( 23, 22 );
-            this.stripBtnRewind.Text = "  <<  ";
             this.stripBtnRewind.ToolTipText = "Rewind";
             // 
             // stripBtnForward
             // 
-            this.stripBtnForward.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnForward.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.stripBtnForward.ImageIndex = 2;
             this.stripBtnForward.Name = "stripBtnForward";
-            this.stripBtnForward.Size = new System.Drawing.Size( 23, 22 );
-            this.stripBtnForward.Text = "  >>  ";
             this.stripBtnForward.ToolTipText = "Forward";
             // 
             // stripBtnMoveEnd
             // 
-            this.stripBtnMoveEnd.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnMoveEnd.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.stripBtnMoveEnd.ImageIndex = 3;
             this.stripBtnMoveEnd.Name = "stripBtnMoveEnd";
-            this.stripBtnMoveEnd.Size = new System.Drawing.Size( 23, 22 );
-            this.stripBtnMoveEnd.Text = "  |=>  ";
             this.stripBtnMoveEnd.ToolTipText = "MoveEnd";
             // 
             // stripBtnPlay
             // 
-            this.stripBtnPlay.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnPlay.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.stripBtnPlay.ImageIndex = 4;
             this.stripBtnPlay.Name = "stripBtnPlay";
-            this.stripBtnPlay.Size = new System.Drawing.Size( 23, 22 );
-            this.stripBtnPlay.Text = "  =>  ";
             this.stripBtnPlay.ToolTipText = "Play";
             // 
             // stripBtnStop
             // 
-            this.stripBtnStop.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnStop.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.stripBtnStop.ImageIndex = 5;
             this.stripBtnStop.Name = "stripBtnStop";
-            this.stripBtnStop.Size = new System.Drawing.Size( 23, 22 );
-            this.stripBtnStop.Text = "   ||   ";
             this.stripBtnStop.ToolTipText = "Stop";
-            // 
-            // toolStripSeparator7
-            // 
-            this.toolStripSeparator7.Name = "toolStripSeparator7";
-            this.toolStripSeparator7.Size = new System.Drawing.Size( 6, 25 );
             // 
             // stripBtnScroll
             // 
-            this.stripBtnScroll.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnScroll.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.stripBtnScroll.ImageIndex = 6;
             this.stripBtnScroll.Name = "stripBtnScroll";
-            this.stripBtnScroll.Size = new System.Drawing.Size( 23, 22 );
-            this.stripBtnScroll.Text = "Scroll";
             // 
             // stripBtnLoop
             // 
-            this.stripBtnLoop.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnLoop.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.stripBtnLoop.ImageIndex = 7;
             this.stripBtnLoop.Name = "stripBtnLoop";
-            this.stripBtnLoop.Size = new System.Drawing.Size( 23, 22 );
-            this.stripBtnLoop.Text = "Loop";
             // 
-            // toolStripMeasure
+            // stripBtnStartMarker
             // 
-            this.toolStripMeasure.Dock = System.Windows.Forms.DockStyle.None;
-            this.toolStripMeasure.Items.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            this.stripDDBtnLength,
-            this.stripDDBtnQuantize,
-            this.toolStripSeparator6,
-            this.stripBtnStartMarker,
-            this.stripBtnEndMarker} );
-            this.toolStripMeasure.Location = new System.Drawing.Point( 3, 50 );
-            this.toolStripMeasure.Name = "toolStripMeasure";
-            this.toolStripMeasure.Size = new System.Drawing.Size( 269, 25 );
-            this.toolStripMeasure.TabIndex = 19;
+            this.stripBtnStartMarker.ImageIndex = 0;
+            this.stripBtnStartMarker.Name = "stripBtnStartMarker";
+            this.stripBtnStartMarker.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+            // 
+            // stripBtnEndMarker
+            // 
+            this.stripBtnEndMarker.ImageIndex = 1;
+            this.stripBtnEndMarker.Name = "stripBtnEndMarker";
+            this.stripBtnEndMarker.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
             // 
             // stripDDBtnLength
             // 
-            this.stripDDBtnLength.AutoSize = false;
-            this.stripDDBtnLength.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.stripDDBtnLength.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
+            this.stripDDBtnLength.MenuItems.AddRange( new System.Windows.Forms.MenuItem[] {
             this.stripDDBtnLength04,
             this.stripDDBtnLength08,
             this.stripDDBtnLength16,
@@ -19751,72 +19597,62 @@ namespace org.kbinani.cadencii.obsolute {
             this.stripDDBtnLength64,
             this.stripDDBtnLength128,
             this.stripDDBtnLengthOff,
-            this.toolStripSeparator2,
+            this.menuItem1,
             this.stripDDBtnLengthTriplet} );
-            this.stripDDBtnLength.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.stripDDBtnLength.Name = "stripDDBtnLength";
-            this.stripDDBtnLength.Size = new System.Drawing.Size( 95, 22 );
-            this.stripDDBtnLength.Text = "LENGTH  1/64";
-            this.stripDDBtnLength.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // stripDDBtnLength04
             // 
-            this.stripDDBtnLength04.Name = "stripDDBtnLength04";
-            this.stripDDBtnLength04.Size = new System.Drawing.Size( 113, 22 );
+            this.stripDDBtnLength04.Index = 0;
             this.stripDDBtnLength04.Text = "1/4";
             // 
             // stripDDBtnLength08
             // 
-            this.stripDDBtnLength08.Name = "stripDDBtnLength08";
-            this.stripDDBtnLength08.Size = new System.Drawing.Size( 113, 22 );
+            this.stripDDBtnLength08.Index = 1;
             this.stripDDBtnLength08.Text = "1/8";
             // 
             // stripDDBtnLength16
             // 
-            this.stripDDBtnLength16.Name = "stripDDBtnLength16";
-            this.stripDDBtnLength16.Size = new System.Drawing.Size( 113, 22 );
+            this.stripDDBtnLength16.Index = 2;
             this.stripDDBtnLength16.Text = "1/16";
             // 
             // stripDDBtnLength32
             // 
-            this.stripDDBtnLength32.Name = "stripDDBtnLength32";
-            this.stripDDBtnLength32.Size = new System.Drawing.Size( 113, 22 );
+            this.stripDDBtnLength32.Index = 3;
             this.stripDDBtnLength32.Text = "1/32";
             // 
             // stripDDBtnLength64
             // 
-            this.stripDDBtnLength64.Name = "stripDDBtnLength64";
-            this.stripDDBtnLength64.Size = new System.Drawing.Size( 113, 22 );
+            this.stripDDBtnLength64.Index = 4;
             this.stripDDBtnLength64.Text = "1/64";
             // 
             // stripDDBtnLength128
             // 
-            this.stripDDBtnLength128.Name = "stripDDBtnLength128";
-            this.stripDDBtnLength128.Size = new System.Drawing.Size( 113, 22 );
+            this.stripDDBtnLength128.Index = 5;
             this.stripDDBtnLength128.Text = "1/128";
             // 
             // stripDDBtnLengthOff
             // 
-            this.stripDDBtnLengthOff.Name = "stripDDBtnLengthOff";
-            this.stripDDBtnLengthOff.Size = new System.Drawing.Size( 113, 22 );
+            this.stripDDBtnLengthOff.Index = 6;
             this.stripDDBtnLengthOff.Text = "Off";
+            // 
+            // menuItem1
+            // 
+            this.menuItem1.Index = 7;
+            this.menuItem1.Text = "-";
+            // 
+            // stripDDBtnLengthTriplet
+            // 
+            this.stripDDBtnLengthTriplet.Index = 8;
+            this.stripDDBtnLengthTriplet.Text = "Triplet";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size( 110, 6 );
-            // 
-            // stripDDBtnLengthTriplet
-            // 
-            this.stripDDBtnLengthTriplet.Name = "stripDDBtnLengthTriplet";
-            this.stripDDBtnLengthTriplet.Size = new System.Drawing.Size( 113, 22 );
-            this.stripDDBtnLengthTriplet.Text = "Triplet";
+            this.toolStripSeparator2.Size = new System.Drawing.Size( 57, 6 );
             // 
             // stripDDBtnQuantize
             // 
-            this.stripDDBtnQuantize.AutoSize = false;
-            this.stripDDBtnQuantize.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.stripDDBtnQuantize.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
+            this.stripDDBtnQuantize.MenuItems.AddRange( new System.Windows.Forms.MenuItem[] {
             this.stripDDBtnQuantize04,
             this.stripDDBtnQuantize08,
             this.stripDDBtnQuantize16,
@@ -19824,87 +19660,420 @@ namespace org.kbinani.cadencii.obsolute {
             this.stripDDBtnQuantize64,
             this.stripDDBtnQuantize128,
             this.stripDDBtnQuantizeOff,
-            this.toolStripSeparator3,
+            this.menuItem2,
             this.stripDDBtnQuantizeTriplet} );
-            this.stripDDBtnQuantize.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.stripDDBtnQuantize.Name = "stripDDBtnQuantize";
-            this.stripDDBtnQuantize.Size = new System.Drawing.Size( 110, 22 );
-            this.stripDDBtnQuantize.Text = "QUANTIZE  1/64";
-            this.stripDDBtnQuantize.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // stripDDBtnQuantize04
             // 
-            this.stripDDBtnQuantize04.Name = "stripDDBtnQuantize04";
-            this.stripDDBtnQuantize04.Size = new System.Drawing.Size( 113, 22 );
+            this.stripDDBtnQuantize04.Index = 0;
             this.stripDDBtnQuantize04.Text = "1/4";
             // 
             // stripDDBtnQuantize08
             // 
-            this.stripDDBtnQuantize08.Name = "stripDDBtnQuantize08";
-            this.stripDDBtnQuantize08.Size = new System.Drawing.Size( 113, 22 );
+            this.stripDDBtnQuantize08.Index = 1;
             this.stripDDBtnQuantize08.Text = "1/8";
             // 
             // stripDDBtnQuantize16
             // 
-            this.stripDDBtnQuantize16.Name = "stripDDBtnQuantize16";
-            this.stripDDBtnQuantize16.Size = new System.Drawing.Size( 113, 22 );
+            this.stripDDBtnQuantize16.Index = 2;
             this.stripDDBtnQuantize16.Text = "1/16";
             // 
             // stripDDBtnQuantize32
             // 
-            this.stripDDBtnQuantize32.Name = "stripDDBtnQuantize32";
-            this.stripDDBtnQuantize32.Size = new System.Drawing.Size( 113, 22 );
+            this.stripDDBtnQuantize32.Index = 3;
             this.stripDDBtnQuantize32.Text = "1/32";
             // 
             // stripDDBtnQuantize64
             // 
-            this.stripDDBtnQuantize64.Name = "stripDDBtnQuantize64";
-            this.stripDDBtnQuantize64.Size = new System.Drawing.Size( 113, 22 );
+            this.stripDDBtnQuantize64.Index = 4;
             this.stripDDBtnQuantize64.Text = "1/64";
             // 
             // stripDDBtnQuantize128
             // 
-            this.stripDDBtnQuantize128.Name = "stripDDBtnQuantize128";
-            this.stripDDBtnQuantize128.Size = new System.Drawing.Size( 113, 22 );
+            this.stripDDBtnQuantize128.Index = 5;
             this.stripDDBtnQuantize128.Text = "1/128";
             // 
             // stripDDBtnQuantizeOff
             // 
-            this.stripDDBtnQuantizeOff.Name = "stripDDBtnQuantizeOff";
-            this.stripDDBtnQuantizeOff.Size = new System.Drawing.Size( 113, 22 );
+            this.stripDDBtnQuantizeOff.Index = 6;
             this.stripDDBtnQuantizeOff.Text = "Off";
+            // 
+            // menuItem2
+            // 
+            this.menuItem2.Index = 7;
+            this.menuItem2.Text = "-";
+            // 
+            // stripDDBtnQuantizeTriplet
+            // 
+            this.stripDDBtnQuantizeTriplet.Index = 8;
+            this.stripDDBtnQuantizeTriplet.Text = "Triplet";
             // 
             // toolStripSeparator3
             // 
             this.toolStripSeparator3.Name = "toolStripSeparator3";
-            this.toolStripSeparator3.Size = new System.Drawing.Size( 110, 6 );
+            this.toolStripSeparator3.Size = new System.Drawing.Size( 57, 6 );
             // 
-            // stripDDBtnQuantizeTriplet
+            // rebarWrapper1
             // 
-            this.stripDDBtnQuantizeTriplet.Name = "stripDDBtnQuantizeTriplet";
-            this.stripDDBtnQuantizeTriplet.Size = new System.Drawing.Size( 113, 22 );
-            this.stripDDBtnQuantizeTriplet.Text = "Triplet";
+            this.rebarWrapper1.Bands.Add( this.bandWrapperForToolStripFile );
+            this.rebarWrapper1.Bands.Add( this.bandWrapperForToolStripPosition );
+            this.rebarWrapper1.Bands.Add( this.bandWrapperForToolStripMeasure );
+            this.rebarWrapper1.Bands.Add( this.bandWrapperForToolStripTool );
+            this.rebarWrapper1.Controls.Add( this.toolBarFile );
+            this.rebarWrapper1.Controls.Add( this.toolBarTool );
+            this.rebarWrapper1.Controls.Add( this.toolBarPosition );
+            this.rebarWrapper1.Controls.Add( this.toolBarMeasure );
+            this.rebarWrapper1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.rebarWrapper1.Location = new System.Drawing.Point( 0, 26 );
+            this.rebarWrapper1.Name = "rebarWrapper1";
+            this.rebarWrapper1.Size = new System.Drawing.Size( 955, 118 );
+            this.rebarWrapper1.TabIndex = 19;
+            this.rebarWrapper1.Text = "rebarWrapper1";
             // 
-            // toolStripSeparator6
+            // bandWrapperForToolStripFile
             // 
-            this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size( 6, 25 );
+            this.bandWrapperForToolStripFile.AllowVertical = false;
+            this.bandWrapperForToolStripFile.Child = this.toolBarFile;
+            this.bandWrapperForToolStripFile.Header = -1;
+            this.bandWrapperForToolStripFile.Integral = 1;
+            this.bandWrapperForToolStripFile.MaxHeight = 0;
             // 
-            // stripBtnStartMarker
+            // toolBarFile
             // 
-            this.stripBtnStartMarker.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnStartMarker.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.stripBtnStartMarker.Name = "stripBtnStartMarker";
-            this.stripBtnStartMarker.Size = new System.Drawing.Size( 23, 22 );
-            this.stripBtnStartMarker.Text = "StartMarker";
+            this.toolBarFile.Appearance = System.Windows.Forms.ToolBarAppearance.Flat;
+            this.toolBarFile.Buttons.AddRange( new System.Windows.Forms.ToolBarButton[] {
+            this.stripBtnFileNew,
+            this.stripBtnFileOpen,
+            this.stripBtnFileSave,
+            this.toolBarButton1,
+            this.stripBtnCut,
+            this.stripBtnCopy,
+            this.stripBtnPaste,
+            this.toolBarButton2,
+            this.stripBtnUndo,
+            this.stripBtnRedo} );
+            this.toolBarFile.ButtonSize = new System.Drawing.Size( 23, 22 );
+            this.toolBarFile.Divider = false;
+            this.toolBarFile.Dock = System.Windows.Forms.DockStyle.None;
+            this.toolBarFile.DropDownArrows = true;
+            this.toolBarFile.ImageList = this.imageListFile;
+            this.toolBarFile.Location = new System.Drawing.Point( 11, 2 );
+            this.toolBarFile.Name = "toolBarFile";
+            this.toolBarFile.ShowToolTips = true;
+            this.toolBarFile.Size = new System.Drawing.Size( 944, 26 );
+            this.toolBarFile.TabIndex = 25;
+            this.toolBarFile.Wrappable = false;
             // 
-            // stripBtnEndMarker
+            // toolBarButton1
             // 
-            this.stripBtnEndMarker.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.stripBtnEndMarker.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.stripBtnEndMarker.Name = "stripBtnEndMarker";
-            this.stripBtnEndMarker.Size = new System.Drawing.Size( 23, 22 );
-            this.stripBtnEndMarker.Text = "EndMarker";
+            this.toolBarButton1.Name = "toolBarButton1";
+            this.toolBarButton1.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
+            // 
+            // toolBarButton2
+            // 
+            this.toolBarButton2.Name = "toolBarButton2";
+            this.toolBarButton2.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
+            // 
+            // imageListFile
+            // 
+            this.imageListFile.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject( "imageListFile.ImageStream" )));
+            this.imageListFile.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageListFile.Images.SetKeyName( 0, "disk__plus.png" );
+            this.imageListFile.Images.SetKeyName( 1, "folder_horizontal_open.png" );
+            this.imageListFile.Images.SetKeyName( 2, "disk.png" );
+            this.imageListFile.Images.SetKeyName( 3, "scissors.png" );
+            this.imageListFile.Images.SetKeyName( 4, "documents.png" );
+            this.imageListFile.Images.SetKeyName( 5, "clipboard_paste.png" );
+            this.imageListFile.Images.SetKeyName( 6, "arrow_skip_180.png" );
+            this.imageListFile.Images.SetKeyName( 7, "arrow_skip.png" );
+            // 
+            // bandWrapperForToolStripPosition
+            // 
+            this.bandWrapperForToolStripPosition.Child = this.toolBarPosition;
+            this.bandWrapperForToolStripPosition.Header = -1;
+            this.bandWrapperForToolStripPosition.Integral = 1;
+            this.bandWrapperForToolStripPosition.MaxHeight = 0;
+            // 
+            // toolBarPosition
+            // 
+            this.toolBarPosition.Appearance = System.Windows.Forms.ToolBarAppearance.Flat;
+            this.toolBarPosition.Buttons.AddRange( new System.Windows.Forms.ToolBarButton[] {
+            this.stripBtnMoveTop,
+            this.stripBtnRewind,
+            this.stripBtnForward,
+            this.stripBtnMoveEnd,
+            this.stripBtnPlay,
+            this.stripBtnStop,
+            this.toolBarButton4,
+            this.stripBtnScroll,
+            this.stripBtnLoop} );
+            this.toolBarPosition.Divider = false;
+            this.toolBarPosition.Dock = System.Windows.Forms.DockStyle.None;
+            this.toolBarPosition.DropDownArrows = true;
+            this.toolBarPosition.ImageList = this.imageListPosition;
+            this.toolBarPosition.Location = new System.Drawing.Point( 11, 32 );
+            this.toolBarPosition.Name = "toolBarPosition";
+            this.toolBarPosition.ShowToolTips = true;
+            this.toolBarPosition.Size = new System.Drawing.Size( 944, 26 );
+            this.toolBarPosition.TabIndex = 25;
+            this.toolBarPosition.TextAlign = System.Windows.Forms.ToolBarTextAlign.Right;
+            // 
+            // toolBarButton4
+            // 
+            this.toolBarButton4.Name = "toolBarButton4";
+            this.toolBarButton4.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
+            // 
+            // imageListPosition
+            // 
+            this.imageListPosition.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject( "imageListPosition.ImageStream" )));
+            this.imageListPosition.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageListPosition.Images.SetKeyName( 0, "control_stop_180.png" );
+            this.imageListPosition.Images.SetKeyName( 1, "control_double_180.png" );
+            this.imageListPosition.Images.SetKeyName( 2, "control_double.png" );
+            this.imageListPosition.Images.SetKeyName( 3, "control_stop.png" );
+            this.imageListPosition.Images.SetKeyName( 4, "control.png" );
+            this.imageListPosition.Images.SetKeyName( 5, "control_pause.png" );
+            this.imageListPosition.Images.SetKeyName( 6, "arrow_circle_double.png" );
+            this.imageListPosition.Images.SetKeyName( 7, "arrow_return.png" );
+            // 
+            // bandWrapperForToolStripMeasure
+            // 
+            this.bandWrapperForToolStripMeasure.Child = this.toolBarMeasure;
+            this.bandWrapperForToolStripMeasure.Header = -1;
+            this.bandWrapperForToolStripMeasure.Integral = 1;
+            this.bandWrapperForToolStripMeasure.MaxHeight = 0;
+            // 
+            // toolBarMeasure
+            // 
+            this.toolBarMeasure.Appearance = System.Windows.Forms.ToolBarAppearance.Flat;
+            this.toolBarMeasure.Buttons.AddRange( new System.Windows.Forms.ToolBarButton[] {
+            this.stripDDBtnLengthParent,
+            this.stripDDBtnQuantizeParent,
+            this.toolBarButton5,
+            this.stripBtnStartMarker,
+            this.stripBtnEndMarker} );
+            this.toolBarMeasure.Divider = false;
+            this.toolBarMeasure.Dock = System.Windows.Forms.DockStyle.None;
+            this.toolBarMeasure.DropDownArrows = true;
+            this.toolBarMeasure.ImageList = this.imageListMeasure;
+            this.toolBarMeasure.Location = new System.Drawing.Point( 11, 62 );
+            this.toolBarMeasure.Name = "toolBarMeasure";
+            this.toolBarMeasure.ShowToolTips = true;
+            this.toolBarMeasure.Size = new System.Drawing.Size( 944, 26 );
+            this.toolBarMeasure.TabIndex = 25;
+            this.toolBarMeasure.TextAlign = System.Windows.Forms.ToolBarTextAlign.Right;
+            // 
+            // stripDDBtnLengthParent
+            // 
+            this.stripDDBtnLengthParent.Name = "stripDDBtnLengthParent";
+            // 
+            // stripDDBtnQuantizeParent
+            // 
+            this.stripDDBtnQuantizeParent.Name = "stripDDBtnQuantizeParent";
+            // 
+            // toolBarButton5
+            // 
+            this.toolBarButton5.Name = "toolBarButton5";
+            this.toolBarButton5.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
+            // 
+            // imageListMeasure
+            // 
+            this.imageListMeasure.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject( "imageListMeasure.ImageStream" )));
+            this.imageListMeasure.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageListMeasure.Images.SetKeyName( 0, "pin__arrow.png" );
+            this.imageListMeasure.Images.SetKeyName( 1, "pin__arrow_inv.png" );
+            // 
+            // bandWrapperForToolStripTool
+            // 
+            this.bandWrapperForToolStripTool.Child = this.toolBarTool;
+            this.bandWrapperForToolStripTool.Header = -1;
+            this.bandWrapperForToolStripTool.Integral = 1;
+            this.bandWrapperForToolStripTool.MaxHeight = 0;
+            // 
+            // toolBarTool
+            // 
+            this.toolBarTool.Appearance = System.Windows.Forms.ToolBarAppearance.Flat;
+            this.toolBarTool.Buttons.AddRange( new System.Windows.Forms.ToolBarButton[] {
+            this.stripBtnPointer,
+            this.stripBtnPencil,
+            this.stripBtnLine,
+            this.stripBtnEraser,
+            this.toolBarButton3,
+            this.stripBtnGrid,
+            this.stripBtnCurve} );
+            this.toolBarTool.Divider = false;
+            this.toolBarTool.Dock = System.Windows.Forms.DockStyle.None;
+            this.toolBarTool.DropDownArrows = true;
+            this.toolBarTool.ImageList = this.imageListTool;
+            this.toolBarTool.Location = new System.Drawing.Point( 11, 92 );
+            this.toolBarTool.Name = "toolBarTool";
+            this.toolBarTool.ShowToolTips = true;
+            this.toolBarTool.Size = new System.Drawing.Size( 944, 26 );
+            this.toolBarTool.TabIndex = 25;
+            this.toolBarTool.TextAlign = System.Windows.Forms.ToolBarTextAlign.Right;
+            // 
+            // toolBarButton3
+            // 
+            this.toolBarButton3.Name = "toolBarButton3";
+            this.toolBarButton3.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
+            // 
+            // imageListTool
+            // 
+            this.imageListTool.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject( "imageListTool.ImageStream" )));
+            this.imageListTool.TransparentColor = System.Drawing.Color.Transparent;
+            this.imageListTool.Images.SetKeyName( 0, "arrow_135.png" );
+            this.imageListTool.Images.SetKeyName( 1, "pencil.png" );
+            this.imageListTool.Images.SetKeyName( 2, "layer_shape_line.png" );
+            this.imageListTool.Images.SetKeyName( 3, "eraser.png" );
+            this.imageListTool.Images.SetKeyName( 4, "ruler_crop.png" );
+            this.imageListTool.Images.SetKeyName( 5, "layer_shape_curve.png" );
+            // 
+            // panelForToolStripMeasure
+            // 
+            this.panelForToolStripMeasure.BackColor = System.Drawing.Color.Transparent;
+            this.panelForToolStripMeasure.Location = new System.Drawing.Point( 11, 62 );
+            this.panelForToolStripMeasure.Name = "panelForToolStripMeasure";
+            this.panelForToolStripMeasure.Size = new System.Drawing.Size( 944, 24 );
+            this.panelForToolStripMeasure.TabIndex = 22;
+            // 
+            // panelForToolStripPosition
+            // 
+            this.panelForToolStripPosition.BackColor = System.Drawing.Color.Transparent;
+            this.panelForToolStripPosition.Location = new System.Drawing.Point( 11, 32 );
+            this.panelForToolStripPosition.Name = "panelForToolStripPosition";
+            this.panelForToolStripPosition.Size = new System.Drawing.Size( 944, 24 );
+            this.panelForToolStripPosition.TabIndex = 21;
+            // 
+            // panelForToolStripTool
+            // 
+            this.panelForToolStripTool.BackColor = System.Drawing.Color.Transparent;
+            this.panelForToolStripTool.Location = new System.Drawing.Point( 11, 92 );
+            this.panelForToolStripTool.Name = "panelForToolStripTool";
+            this.panelForToolStripTool.Size = new System.Drawing.Size( 944, 24 );
+            this.panelForToolStripTool.TabIndex = 23;
+            // 
+            // panelForToolStripFile
+            // 
+            this.panelForToolStripFile.BackColor = System.Drawing.Color.Transparent;
+            this.panelForToolStripFile.Location = new System.Drawing.Point( 11, 2 );
+            this.panelForToolStripFile.Name = "panelForToolStripFile";
+            this.panelForToolStripFile.Size = new System.Drawing.Size( 949, 24 );
+            this.panelForToolStripFile.TabIndex = 20;
+            // 
+            // splitContainer2
+            // 
+            this.splitContainer2.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+            this.splitContainer2.IsSplitterFixed = false;
+            this.splitContainer2.Location = new System.Drawing.Point( 428, 493 );
+            this.splitContainer2.Margin = new System.Windows.Forms.Padding( 0 );
+            this.splitContainer2.Name = "splitContainer2";
+            this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Vertical;
+            // 
+            // 
+            // 
+            this.splitContainer2.Panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer2.Panel1.BorderColor = System.Drawing.Color.Black;
+            this.splitContainer2.Panel1.Location = new System.Drawing.Point( 0, 0 );
+            this.splitContainer2.Panel1.Margin = new System.Windows.Forms.Padding( 0 );
+            this.splitContainer2.Panel1.Name = "m_panel1";
+            this.splitContainer2.Panel1.Size = new System.Drawing.Size( 115, 25 );
+            this.splitContainer2.Panel1.TabIndex = 0;
+            this.splitContainer2.Panel1MinSize = 25;
+            // 
+            // 
+            // 
+            this.splitContainer2.Panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer2.Panel2.BorderColor = System.Drawing.Color.Black;
+            this.splitContainer2.Panel2.Location = new System.Drawing.Point( 0, 29 );
+            this.splitContainer2.Panel2.Margin = new System.Windows.Forms.Padding( 0 );
+            this.splitContainer2.Panel2.Name = "m_panel2";
+            this.splitContainer2.Panel2.Size = new System.Drawing.Size( 115, 105 );
+            this.splitContainer2.Panel2.TabIndex = 1;
+            this.splitContainer2.Panel2MinSize = 25;
+            this.splitContainer2.Size = new System.Drawing.Size( 115, 134 );
+            this.splitContainer2.SplitterDistance = 25;
+            this.splitContainer2.SplitterWidth = 4;
+            this.splitContainer2.TabIndex = 23;
+            this.splitContainer2.TabStop = false;
+            this.splitContainer2.Text = "bSplitContainer1";
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add( this.pictKeyLengthSplitter );
+            this.panel1.Controls.Add( this.panelOverview );
+            this.panel1.Controls.Add( this.picturePositionIndicator );
+            this.panel1.Controls.Add( this.pictPianoRoll );
+            this.panel1.Controls.Add( this.vScroll );
+            this.panel1.Controls.Add( this.pictureBox3 );
+            this.panel1.Controls.Add( this.pictureBox2 );
+            this.panel1.Controls.Add( this.hScroll );
+            this.panel1.Controls.Add( this.trackBar );
+            this.panel1.Location = new System.Drawing.Point( 9, 146 );
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size( 421, 279 );
+            this.panel1.TabIndex = 24;
+            // 
+            // rebarWrapper2
+            // 
+            this.rebarWrapper2.Bands.Add( this.bandStatus );
+            this.rebarWrapper2.Bands.Add( this.bandWrapper1 );
+            this.rebarWrapper2.Controls.Add( this.statusLabel );
+            this.rebarWrapper2.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.rebarWrapper2.Location = new System.Drawing.Point( 0, 655 );
+            this.rebarWrapper2.Name = "rebarWrapper2";
+            this.rebarWrapper2.Size = new System.Drawing.Size( 955, 34 );
+            this.rebarWrapper2.TabIndex = 25;
+            this.rebarWrapper2.Text = "rebarWrapper2";
+            // 
+            // bandStatus
+            // 
+            this.bandStatus.Child = this.statusLabel;
+            this.bandStatus.Header = -1;
+            this.bandStatus.Integral = 1;
+            this.bandStatus.MaxHeight = 0;
+            // 
+            // panelOverview
+            // 
+            this.panelOverview.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelOverview.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(106)))), ((int)(((byte)(108)))), ((int)(((byte)(108)))) );
+            this.panelOverview.Location = new System.Drawing.Point( 0, 1 );
+            this.panelOverview.Margin = new System.Windows.Forms.Padding( 0 );
+            this.panelOverview.Name = "panelOverview";
+            this.panelOverview.Size = new System.Drawing.Size( 700, 45 );
+            this.panelOverview.TabIndex = 19;
+            this.panelOverview.TabStop = false;
+            // 
+            // pictPianoRoll
+            // 
+            this.pictPianoRoll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictPianoRoll.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))) );
+            this.pictPianoRoll.Location = new System.Drawing.Point( 0, 94 );
+            this.pictPianoRoll.Margin = new System.Windows.Forms.Padding( 0 );
+            this.pictPianoRoll.Name = "pictPianoRoll";
+            this.pictPianoRoll.Size = new System.Drawing.Size( 405, 169 );
+            this.pictPianoRoll.TabIndex = 12;
+            this.pictPianoRoll.TabStop = false;
+            // 
+            // hScroll
+            // 
+            this.hScroll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.hScroll.Location = new System.Drawing.Point( 65, 263 );
+            this.hScroll.Name = "hScroll";
+            this.hScroll.Size = new System.Drawing.Size( 257, 16 );
+            this.hScroll.TabIndex = 16;
+            // 
+            // bandWrapper1
+            // 
+            this.bandWrapper1.Header = -1;
+            this.bandWrapper1.Integral = 1;
+            this.bandWrapper1.MaxHeight = 0;
             // 
             // FormMain
             // 
@@ -19912,9 +20081,20 @@ namespace org.kbinani.cadencii.obsolute {
             this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 12F );
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size( 960, 689 );
-            this.Controls.Add( this.toolStripContainer );
+            this.ClientSize = new System.Drawing.Size( 955, 689 );
+            this.Controls.Add( this.rebarWrapper1 );
+            this.Controls.Add( this.panel1 );
+            this.Controls.Add( this.rebarWrapper2 );
+            this.Controls.Add( this.splitContainerProperty );
+            this.Controls.Add( this.panel2 );
             this.Controls.Add( this.menuStripMain );
+            this.Controls.Add( this.splitContainer2 );
+            this.Controls.Add( this.panelForToolStripFile );
+            this.Controls.Add( this.panelForToolStripTool );
+            this.Controls.Add( this.panelForToolStripPosition );
+            this.Controls.Add( this.panelForToolStripMeasure );
+            this.Controls.Add( this.splitContainer1 );
+            this.Controls.Add( this.toolStripBottom );
             this.KeyPreview = true;
             this.MainMenuStrip = this.menuStripMain;
             this.Name = "FormMain";
@@ -19925,32 +20105,18 @@ namespace org.kbinani.cadencii.obsolute {
             this.cMenuTrackTab.ResumeLayout( false );
             this.cMenuTrackSelector.ResumeLayout( false );
             ((System.ComponentModel.ISupportInitialize)(this.trackBar)).EndInit();
-            this.panel1.ResumeLayout( false );
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictKeyLengthSplitter)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.panelOverview)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.picturePositionIndicator)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).EndInit();
-            this.toolStripTool.ResumeLayout( false );
-            this.toolStripTool.PerformLayout();
-            this.toolStripContainer.BottomToolStripPanel.ResumeLayout( false );
-            this.toolStripContainer.BottomToolStripPanel.PerformLayout();
-            this.toolStripContainer.ContentPanel.ResumeLayout( false );
-            this.toolStripContainer.TopToolStripPanel.ResumeLayout( false );
-            this.toolStripContainer.TopToolStripPanel.PerformLayout();
-            this.toolStripContainer.ResumeLayout( false );
-            this.toolStripContainer.PerformLayout();
             this.toolStripBottom.ResumeLayout( false );
             this.toolStripBottom.PerformLayout();
-            this.statusStrip1.ResumeLayout( false );
-            this.statusStrip1.PerformLayout();
-            this.toolStripFile.ResumeLayout( false );
-            this.toolStripFile.PerformLayout();
-            this.toolStripPosition.ResumeLayout( false );
-            this.toolStripPosition.PerformLayout();
-            this.toolStripMeasure.ResumeLayout( false );
-            this.toolStripMeasure.PerformLayout();
+            this.rebarWrapper1.ResumeLayout( false );
+            this.rebarWrapper1.PerformLayout();
+            this.panel1.ResumeLayout( false );
+            this.rebarWrapper2.ResumeLayout( false );
+            ((System.ComponentModel.ISupportInitialize)(this.panelOverview)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).EndInit();
             this.ResumeLayout( false );
             this.PerformLayout();
 
@@ -20143,53 +20309,44 @@ namespace org.kbinani.cadencii.obsolute {
         public BMenuItem cMenuPianoCurve;
         public BMenuItem cMenuTrackSelectorCurve;
         public BSlider trackBar;
-        public BPanel panel1;
-        public BToolBar toolStripTool;
-        public BToolStripButton stripBtnPointer;
-        public System.Windows.Forms.ToolStripContainer toolStripContainer;
-        public BToolStripButton stripBtnLine;
-        public BToolStripButton stripBtnPencil;
-        public BToolStripButton stripBtnEraser;
-        public BToolStripButton stripBtnGrid;
-        public BToolBar toolStripPosition;
-        public BToolStripButton stripBtnMoveTop;
-        public BToolStripButton stripBtnRewind;
-        public BToolStripButton stripBtnForward;
-        public BToolStripButton stripBtnMoveEnd;
-        public BToolStripButton stripBtnPlay;
-        public BToolStripButton stripBtnStop;
-        public BToolStripButton stripBtnScroll;
-        public BToolStripButton stripBtnLoop;
-        public BToolStripButton stripBtnCurve;
-        public BToolBar toolStripMeasure;
-        public BToolStripDropDownButton stripDDBtnLength;
-        public BMenuItem stripDDBtnLength04;
-        public BMenuItem stripDDBtnLength08;
-        public BMenuItem stripDDBtnLength16;
-        public BMenuItem stripDDBtnLength32;
-        public BMenuItem stripDDBtnLength64;
-        public BMenuItem stripDDBtnLengthOff;
+        public System.Windows.Forms.ToolBarButton stripBtnPointer;
+        public System.Windows.Forms.ToolBarButton stripBtnLine;
+        public System.Windows.Forms.ToolBarButton stripBtnPencil;
+        public System.Windows.Forms.ToolBarButton stripBtnEraser;
+        public System.Windows.Forms.ToolBarButton stripBtnGrid;
+        public System.Windows.Forms.ToolBarButton stripBtnMoveTop;
+        public System.Windows.Forms.ToolBarButton stripBtnRewind;
+        public System.Windows.Forms.ToolBarButton stripBtnForward;
+        public System.Windows.Forms.ToolBarButton stripBtnMoveEnd;
+        public System.Windows.Forms.ToolBarButton stripBtnPlay;
+        public System.Windows.Forms.ToolBarButton stripBtnStop;
+        public System.Windows.Forms.ToolBarButton stripBtnScroll;
+        public System.Windows.Forms.ToolBarButton stripBtnLoop;
+        public System.Windows.Forms.ToolBarButton stripBtnCurve;
+        public System.Windows.Forms.ContextMenu stripDDBtnLength;
+        public System.Windows.Forms.MenuItem stripDDBtnLength04;
+        public System.Windows.Forms.MenuItem stripDDBtnLength08;
+        public System.Windows.Forms.MenuItem stripDDBtnLength16;
+        public System.Windows.Forms.MenuItem stripDDBtnLength32;
+        public System.Windows.Forms.MenuItem stripDDBtnLength64;
+        public System.Windows.Forms.MenuItem stripDDBtnLengthOff;
         public System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        public BMenuItem stripDDBtnLengthTriplet;
-        public BToolStripDropDownButton stripDDBtnQuantize;
-        public BMenuItem stripDDBtnQuantize04;
-        public BMenuItem stripDDBtnQuantize08;
-        public BMenuItem stripDDBtnQuantize16;
-        public BMenuItem stripDDBtnQuantize32;
-        public BMenuItem stripDDBtnQuantize64;
-        public BMenuItem stripDDBtnQuantizeOff;
+        public System.Windows.Forms.MenuItem stripDDBtnLengthTriplet;
+        public System.Windows.Forms.ContextMenu stripDDBtnQuantize;
+        public System.Windows.Forms.MenuItem stripDDBtnQuantize04;
+        public System.Windows.Forms.MenuItem stripDDBtnQuantize08;
+        public System.Windows.Forms.MenuItem stripDDBtnQuantize16;
+        public System.Windows.Forms.MenuItem stripDDBtnQuantize32;
+        public System.Windows.Forms.MenuItem stripDDBtnQuantize64;
+        public System.Windows.Forms.MenuItem stripDDBtnQuantizeOff;
         public System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-        public BMenuItem stripDDBtnQuantizeTriplet;
-        public System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
-        public System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
-        public BToolStripButton stripBtnStartMarker;
-        public BToolStripButton stripBtnEndMarker;
+        public System.Windows.Forms.MenuItem stripDDBtnQuantizeTriplet;
+        public System.Windows.Forms.ToolBarButton stripBtnStartMarker;
+        public System.Windows.Forms.ToolBarButton stripBtnEndMarker;
         public HScroll hScroll;
         public BVScrollBar vScroll;
         public BMenuItem menuLyricVibratoProperty;
         public BMenuItem cMenuPianoVibratoProperty;
-        public System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
-        public System.Windows.Forms.StatusStrip statusStrip1;
         public BMenuItem menuScriptUpdate;
         public BMenuItem menuSettingGameControler;
         public BStatusLabel stripLblGameCtrlMode;
@@ -20197,15 +20354,14 @@ namespace org.kbinani.cadencii.obsolute {
         public BToolStripDropDownButton stripDDBtnSpeed;
         public BMenuItem menuSettingGameControlerSetting;
         public BMenuItem menuSettingGameControlerLoad;
-        public BMenuItem stripDDBtnLength128;
-        public BMenuItem stripDDBtnQuantize128;
+        public System.Windows.Forms.MenuItem stripDDBtnLength128;
+        public System.Windows.Forms.MenuItem stripDDBtnQuantize128;
         public BMenuItem menuSettingPositionQuantize128;
         public BMenuItem menuSettingLengthQuantize128;
         public BMenuItem cMenuPianoQuantize128;
         public BMenuItem cMenuPianoLength128;
         public BMenuItem cMenuPianoFixed128;
         public BMenuItem menuVisualWaveform;
-        public org.kbinani.apputil.BSplitContainer splitContainer2;
         public BPanel panel2;
         public BMenuItem cMenuTrackSelectorDeleteBezier;
         public BStatusLabel stripLblMidiIn;
@@ -20217,19 +20373,16 @@ namespace org.kbinani.cadencii.obsolute {
         public BMenuItem cMenuTrackTabRendererUtau;
         public BMenuItem menuVisualPitchLine;
         public BMenuItem menuFileImportMidi;
-        public BToolBar toolStripFile;
         public BStatusLabel toolStripStatusLabel1;
         public BStatusLabel toolStripStatusLabel2;
-        public BToolStripButton stripBtnFileSave;
-        public BToolStripButton stripBtnFileOpen;
-        public System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
-        public BToolStripButton stripBtnCut;
-        public BToolStripButton stripBtnCopy;
-        public BToolStripButton stripBtnPaste;
-        public BToolStripButton stripBtnFileNew;
-        public System.Windows.Forms.ToolStripSeparator toolStripSeparator13;
-        public BToolStripButton stripBtnUndo;
-        public BToolStripButton stripBtnRedo;
+        public System.Windows.Forms.ToolBarButton stripBtnFileSave;
+        public System.Windows.Forms.ToolBarButton stripBtnFileOpen;
+        public System.Windows.Forms.ToolBarButton stripBtnCut;
+        public System.Windows.Forms.ToolBarButton stripBtnCopy;
+        public System.Windows.Forms.ToolBarButton stripBtnPaste;
+        public System.Windows.Forms.ToolBarButton stripBtnFileNew;
+        public System.Windows.Forms.ToolBarButton stripBtnUndo;
+        public System.Windows.Forms.ToolBarButton stripBtnRedo;
         public BMenuItem cMenuTrackSelectorPaletteTool;
         public BMenuItem cMenuPianoPaletteTool;
         public System.Windows.Forms.ToolStripSeparator toolStripSeparator14;
@@ -20255,7 +20408,7 @@ namespace org.kbinani.cadencii.obsolute {
         public BMenuItem menuHiddenCut;
         public BMenuItem menuSettingUtauVoiceDB;
         public BToolBar toolStripBottom;
-        public BStatusLabel statusLabel;
+        public BLabel statusLabel;
         public org.kbinani.apputil.BSplitContainer splitContainerProperty;
         public BMenuItem menuVisualOverview;
         public PictOverview panelOverview;
