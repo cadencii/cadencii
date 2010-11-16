@@ -126,6 +126,7 @@
     <Compile Include="CircuitConfigEntry.cs" />
     <Compile Include="CircuitConnectionKind.cs" />
     <Compile Include="CircuitView.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="ClipboardEntry.cs" />
     <Compile Include="ClockResolution.cs" />
@@ -134,6 +135,7 @@
     <Compile Include="ImageCachedComponentDrawer.cs" />
     <Compile Include="LineGraphDrawer.cs" />
     <Compile Include="PictOverview.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="VConnectWaveGenerator.cs" />
     <Compile Include="WaveUnit.cs" />
@@ -153,41 +155,54 @@
     <Compile Include="FileWaveReceiver.cs" />
     <Compile Include="FileWaveSender.cs" />
     <Compile Include="FormAskKeySoundGeneration.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormCurvePointEdit.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormGenerateKeySound.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormIconPalette.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormMidiImExportConfig.cs" />
     <Compile Include="FormNoteExpressionConfig.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormPluginUi.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormRandomize.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormSplash.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormWordDictionary.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="HScroll.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="IComparisonContext.cs" />
     <Compile Include="IconParader.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="LyricTextBox.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="MemoryManager.cs" />
     <Compile Include="MouseTracer.cs" />
     <Compile Include="MuteChangedEventHandler.cs" />
     <Compile Include="NumberTextBox.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="OtoArgs.cs" />
     <Compile Include="PanelState.cs" />
     <Compile Include="PanpotChangedEventHandler.cs" />
     <Compile Include="PictPianoRoll.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="PlatformEnum.cs" />
     <Compile Include="PointD.cs" />
@@ -234,10 +249,13 @@
     <Compile Include="CommandTreeUnit.cs" />
     <Compile Include="CurveType.cs" />
     <Compile Include="FormNoteProperty.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormMidiConfig.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormShortcutKeys.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="KanaDeRomanization.cs" />
     <Compile Include="MidiDeviceImp.cs" />
@@ -254,50 +272,68 @@
     <Compile Include="EditorConfig.cs" />
     <Compile Include="EditTool.cs" />
     <Compile Include="FormBezierPointEdit.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormCompileResult.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormDeleteBar.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormGameControlerConfig.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormImportLyric.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormInsertBar.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormBeatConfig.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormMain.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormMidiImExport.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormMixer.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="AppManager.cs">
     </Compile>
     <Compile Include="FormTrackProperty.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormRealtimeConfig.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormSingerStyleConfig.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormSynthesize.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormTempoConfig.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormVibratoConfig.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="ICommand.cs" />
     <Compile Include="ICommandRunnable.cs" />
     <Compile Include="IPaletteTool.cs" />
     <Compile Include="KeySoundPlayer.cs" />
     <Compile Include="NumericUpDownEx.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="PaletteToolServer.cs" />
     <Compile Include="PencilMode.cs" />
     <Compile Include="PencilModeEnum.cs" />
     <Compile Include="PlayPositionSpecifier.cs" />
     <Compile Include="Preference.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="QuantizeMode.cs" />
     <Compile Include="RgbColor.cs" />
@@ -327,10 +363,12 @@
     </Compile>
     <Compile Include="ToolStripLocation.cs" />
     <Compile Include="TrackSelector.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="UtauFreq.cs" />
     <Compile Include="ValuePairOfStringBoolean.cs" />
     <Compile Include="VersionInfo.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="VibratoLengthEditingRule.cs" />
     <Compile Include="VibratoPointIteratorByClock.cs" />
@@ -354,6 +392,7 @@
     <Compile Include="WaveSender.cs" />
     <Compile Include="WaveSenderDriver.cs" />
     <Compile Include="WaveView.cs">
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="winmmhelp.cs" />
     <Compile Include="XmlStaticMemberSerializerEx.cs" />

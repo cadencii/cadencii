@@ -99,16 +99,27 @@ namespace org.kbinani.cadencii {
         public PlatformEnum Platform = PlatformEnum.Windows;
         /// <summary>
         /// toolStripToolの表示位置
+        /// <remarks>version 3.3より廃止</remarks>
         /// </summary>
+        [Obsolete]
         public ToolStripLocation ToolEditTool = new ToolStripLocation( new Point( 3, 0 ), ToolStripLocation.ParentPanel.Top );
         /// <summary>
         /// toolStripPositionの表示位置
+        /// <remarks>version 3.3より廃止</remarks>
         /// </summary>
+        [Obsolete]
         public ToolStripLocation ToolPositionLocation = new ToolStripLocation( new Point( 3, 25 ), ToolStripLocation.ParentPanel.Top );
         /// <summary>
         /// toolStripMeasureの表示位置
+        /// <remarks>version 3.3より廃止</remarks>
         /// </summary>
+        [Obsolete]
         public ToolStripLocation ToolMeasureLocation = new ToolStripLocation( new Point( 212, 25 ), ToolStripLocation.ParentPanel.Top );
+        /// <summary>
+        /// toolStripFileの表示位置
+        /// <remarks>version 3.3より廃止</remarks>
+        /// </summary>
+        [Obsolete]
         public ToolStripLocation ToolFileLocation = new ToolStripLocation( new Point( 461, 0 ), ToolStripLocation.ParentPanel.Top );
         public boolean WindowMaximized = false;
         public Rectangle WindowRect = new Rectangle( 0, 0, 970, 718 );
@@ -376,14 +387,74 @@ namespace org.kbinani.cadencii {
         public boolean UseUserDefinedAutoVibratoType = false;
         /// <summary>
         /// 再生中に画面を描画するかどうか。デフォルトはfalse
-        /// <version>3.4</version>
+        /// <version>3.3+</version>
         /// </summary>
         public boolean SkipDrawWhilePlaying = false;
         /// <summary>
         /// ピアノロール画面の縦方向のスケール.
-        /// <verssion>3.4</verssion>
+        /// <verssion>3.3+</verssion>
         /// </summary>
         public int PianoRollScaleY = 0;
+        /// <summary>
+        /// ファイル・ツールバーのサイズ
+        /// <version>3.3+</version>
+        /// </summary>
+        public int BandSizeFile = 0;
+        /// <summary>
+        /// ツール・ツールバーのサイズ
+        /// <version>3.3+</version>
+        /// </summary>
+        public int BandSizeTool = 0;
+        /// <summary>
+        /// メジャー・ツールバーのサイズ
+        /// <version>3.3+</version>
+        /// </summary>
+        public int BandSizeMeasure = 0;
+        /// <summary>
+        /// ポジション・ツールバーのサイズ
+        /// <version>3.3+</version>
+        /// </summary>
+        public int BandSizePosition = 0;
+        /// <summary>
+        /// ファイル・ツールバーを新しい行に追加するかどうか
+        /// <version>3.3+</version>
+        /// </summary>
+        public boolean BandNewRowFile = true;
+        /// <summary>
+        /// ツール・ツールバーを新しい行に追加するかどうか
+        /// <version>3.3+</version>
+        /// </summary>
+        public boolean BandNewRowTool = true;
+        /// <summary>
+        /// メジャー・ツールバーを新しい行に追加するかどうか
+        /// <version>3.3+</version>
+        /// </summary>
+        public boolean BandNewRowMeasure = true;
+        /// <summary>
+        /// ポジション・ツールバーを新しい行に追加するかどうか
+        /// <version>3.3+</version>
+        /// </summary>
+        public boolean BandNewRowPosition = true;
+        /// <summary>
+        /// ファイル・ツールバーの順番
+        /// <remarks>version 3.3+</remarks>
+        /// </summary>
+        public int BandOrderFile = 0;
+        /// <summary>
+        /// ツール・ツールバーの順番
+        /// <remarks>version 3.3+</remarks>
+        /// </summary>
+        public int BandOrderTool = 1;
+        /// <summary>
+        /// メジャー・ツールバーの順番
+        /// <remarks>version 3.3+</remarks>
+        /// </summary>
+        public int BandOrderMeasure = 2;
+        /// <summary>
+        /// ポジション・ツールバーの順番
+        /// <remarks>version 3.3+</remarks>
+        /// </summary>
+        public int BandOrderPosition = 3;
 
         /// <summary>
         /// バッファーサイズに設定できる最大値

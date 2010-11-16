@@ -33,6 +33,9 @@ namespace org.kbinani.cadencii {
         public static void reload( String id ) {
             String dir = Utility.getScriptPath();
             String file = PortUtil.combinePath( dir, id );
+#if DEBUG
+            PortUtil.println( "ScriptServer#reload; file=" + file + "; isFileExists(file)=" + PortUtil.isFileExists( file ) );
+#endif
             if ( !PortUtil.isFileExists( file ) ) {
                 return;
             }

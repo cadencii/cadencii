@@ -4,6 +4,16 @@ using System.Runtime.InteropServices;
 
 namespace WindowsUtilities
 {
+    [StructLayout( LayoutKind.Sequential )]
+    public struct NMREBARCHEVRON {
+        public NMHDR hdr;
+        public int uBand;
+        public int wID;
+        public int lParam;
+        public RECT rc;
+        public int lParamNM;
+    }
+
 	[StructLayout(LayoutKind.Sequential)]
 	public struct COLORREF
 	{

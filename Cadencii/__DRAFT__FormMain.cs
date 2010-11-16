@@ -136,6 +136,9 @@ namespace org.kbinani.cadencii {
             new AuthorListEntry( "developper of UTAU:", 2 ),
             new AuthorListEntry( "飴屋/菖蒲", "@ameyaP_" ),
             new AuthorListEntry(),
+            new AuthorListEntry( "developper of RebarDotNet:", 2 ),
+            new AuthorListEntry( "Anthony Baraff" ),
+            new AuthorListEntry(),
             new AuthorListEntry( "promoter:", 2 ),
             new AuthorListEntry( "zhuo", "@zhuop" ),
             new AuthorListEntry(),
@@ -743,49 +746,109 @@ namespace org.kbinani.cadencii {
 
 
 #if !JAVA
-            // TODO: toolStipの位置を，前回終了時の位置に戻す
-            Vector<BToolBar> top = new Vector<BToolBar>();
-            Vector<BToolBar> bottom = new Vector<BToolBar>();
-            /*if ( toolStripTool.getParent() != null ) {
-                if ( toolStripTool.getParent() == toolStripContainer.TopToolStripPanel ) {
-                    toolStripContainer.TopToolStripPanel.Controls.Remove( toolStripTool );
-                    top.add( toolStripTool );
-                } else if ( toolStripTool.getParent() == toolStripContainer.BottomToolStripPanel ) {
-                    toolStripContainer.BottomToolStripPanel.Controls.Remove( toolStripTool );
-                    bottom.add( toolStripTool );
+            // toolStipの位置を，前回終了時の位置に戻す
+            this.bandWrapperForToolStripFile = new RebarDotNet.BandWrapper();
+            this.bandWrapperForToolStripPosition = new RebarDotNet.BandWrapper();
+            this.bandWrapperForToolStripMeasure = new RebarDotNet.BandWrapper();
+            this.bandWrapperForToolStripTool = new RebarDotNet.BandWrapper();
+            this.rebarWrapper1.Controls.Add( this.toolBarFile );
+            this.rebarWrapper1.Controls.Add( this.toolBarTool );
+            this.rebarWrapper1.Controls.Add( this.toolBarPosition );
+            this.rebarWrapper1.Controls.Add( this.toolBarMeasure );
+            // bandWrapperForToolStripFile
+            this.bandWrapperForToolStripFile.AllowVertical = false;
+            this.bandWrapperForToolStripFile.Child = this.toolBarFile;
+            this.bandWrapperForToolStripFile.Header = -1;
+            this.bandWrapperForToolStripFile.Integral = 1;
+            this.bandWrapperForToolStripFile.MaxHeight = 0;
+            this.bandWrapperForToolStripFile.UseChevron = true;
+            if ( toolBarFile.Buttons.Count > 0 ) {
+                this.bandWrapperForToolStripFile.IdealWidth = 
+                    toolBarFile.Buttons[toolBarFile.Buttons.Count - 1].Rectangle.Right + 20;
+            }
+            this.bandWrapperForToolStripFile.BandSize = AppManager.editorConfig.BandSizeFile;
+            this.bandWrapperForToolStripFile.NewRow = AppManager.editorConfig.BandNewRowFile;
+            // bandWrapperForToolStripPosition
+            this.bandWrapperForToolStripPosition.AllowVertical = false;
+            this.bandWrapperForToolStripPosition.Child = this.toolBarPosition;
+            this.bandWrapperForToolStripPosition.Header = -1;
+            this.bandWrapperForToolStripPosition.Integral = 1;
+            this.bandWrapperForToolStripPosition.MaxHeight = 0;
+            this.bandWrapperForToolStripPosition.UseChevron = true;
+            if ( toolBarPosition.Buttons.Count > 0 ) {
+                this.bandWrapperForToolStripPosition.IdealWidth =
+                    toolBarPosition.Buttons[toolBarPosition.Buttons.Count - 1].Rectangle.Right + 20;
+            }
+            this.bandWrapperForToolStripPosition.BandSize = AppManager.editorConfig.BandSizePosition;
+            this.bandWrapperForToolStripPosition.NewRow = AppManager.editorConfig.BandNewRowPosition;
+            // bandWrapperForToolStripMeasure
+            this.bandWrapperForToolStripMeasure.AllowVertical = false;
+            this.bandWrapperForToolStripMeasure.Child = this.toolBarMeasure;
+            this.bandWrapperForToolStripMeasure.Header = -1;
+            this.bandWrapperForToolStripMeasure.Integral = 1;
+            this.bandWrapperForToolStripMeasure.MaxHeight = 0;
+            this.bandWrapperForToolStripMeasure.UseChevron = true;
+            if ( toolBarMeasure.Buttons.Count > 0 ) {
+                this.bandWrapperForToolStripMeasure.IdealWidth =
+                    toolBarMeasure.Buttons[toolBarMeasure.Buttons.Count - 1].Rectangle.Right + 20;
+            }
+            this.bandWrapperForToolStripMeasure.BandSize = AppManager.editorConfig.BandSizeMeasure;
+            this.bandWrapperForToolStripMeasure.NewRow = AppManager.editorConfig.BandNewRowMeasure;
+            // bandWrapperForToolStripTool
+            this.bandWrapperForToolStripTool.AllowVertical = false;
+            this.bandWrapperForToolStripTool.Child = this.toolBarTool;
+            this.bandWrapperForToolStripTool.Header = -1;
+            this.bandWrapperForToolStripTool.Integral = 1;
+            this.bandWrapperForToolStripTool.MaxHeight = 0;
+            this.bandWrapperForToolStripTool.UseChevron = true;
+            if ( toolBarTool.Buttons.Count > 0 ) {
+                this.bandWrapperForToolStripTool.IdealWidth =
+                    toolBarTool.Buttons[toolBarTool.Buttons.Count - 1].Rectangle.Right + 20;
+            }
+            this.bandWrapperForToolStripTool.BandSize = AppManager.editorConfig.BandSizeTool;
+            this.bandWrapperForToolStripTool.NewRow = AppManager.editorConfig.BandNewRowTool;
+            // 一度リストに入れてから追加する
+            var bands = new RebarDotNet.BandWrapper[]{ null, null, null, null };
+            // 番号がおかしくないか
+            if ( AppManager.editorConfig.BandOrderFile < 0 || bands.Length <= AppManager.editorConfig.BandOrderFile ) AppManager.editorConfig.BandOrderFile = 0;
+            if ( AppManager.editorConfig.BandOrderMeasure < 0 || bands.Length <= AppManager.editorConfig.BandOrderMeasure ) AppManager.editorConfig.BandOrderMeasure = 0;
+            if ( AppManager.editorConfig.BandOrderPosition < 0 || bands.Length <= AppManager.editorConfig.BandOrderPosition ) AppManager.editorConfig.BandOrderPosition = 0;
+            if ( AppManager.editorConfig.BandOrderTool < 0 || bands.Length <= AppManager.editorConfig.BandOrderTool ) AppManager.editorConfig.BandOrderTool = 0;
+            bands[AppManager.editorConfig.BandOrderFile] = bandWrapperForToolStripFile;
+            bands[AppManager.editorConfig.BandOrderMeasure] = bandWrapperForToolStripMeasure;
+            bands[AppManager.editorConfig.BandOrderPosition] = bandWrapperForToolStripPosition;
+            bands[AppManager.editorConfig.BandOrderTool] = bandWrapperForToolStripTool;
+            // nullチェック
+            boolean null_exists = false;
+            for ( var i = 0; i < bands.Length; i++ ) {
+                if ( bands[i] == null ) {
+                    null_exists = true;
+                    break;
                 }
             }
-            if ( toolStripMeasure.getParent() != null ) {
-                if ( toolStripMeasure.getParent() == toolStripContainer.TopToolStripPanel ) {
-                    toolStripContainer.TopToolStripPanel.Controls.Remove( toolStripMeasure );
-                    top.add( toolStripMeasure );
-                } else if ( toolStripMeasure.getParent() == toolStripContainer.BottomToolStripPanel ) {
-                    toolStripContainer.BottomToolStripPanel.Controls.Remove( toolStripMeasure );
-                    bottom.add( toolStripMeasure );
-                }
+            if ( null_exists ) {
+                // 番号に矛盾があれば，デフォルトの並び方で
+                bands[0] = bandWrapperForToolStripFile;
+                bands[1] = bandWrapperForToolStripMeasure;
+                bands[2] = bandWrapperForToolStripPosition;
+                bands[3] = bandWrapperForToolStripTool;
+                bandWrapperForToolStripFile.NewRow = true;
+                bandWrapperForToolStripMeasure.NewRow = true;
+                bandWrapperForToolStripPosition.NewRow = true;
+                bandWrapperForToolStripTool.NewRow = true;
             }
-            if ( toolStripPosition.getParent() != null ) {
-                if ( toolStripPosition.Parent.Equals( toolStripContainer.TopToolStripPanel ) ) {
-                    toolStripContainer.TopToolStripPanel.Controls.Remove( toolStripPosition );
-                    top.add( toolStripPosition );
-                } else if ( toolStripPosition.Parent.Equals( toolStripContainer.BottomToolStripPanel ) ) {
-                    toolStripContainer.BottomToolStripPanel.Controls.Remove( toolStripPosition );
-                    bottom.add( toolStripPosition );
-                }
+            // 追加
+            for ( var i = 0; i < bands.Length; i++ ) {
+                this.rebarWrapper1.Bands.Add( bands[i] );
             }
-            if ( toolStripFile.getParent() != null ) {
-                if ( toolStripFile.Parent.Equals( toolStripContainer.TopToolStripPanel ) ) {
-                    toolStripContainer.TopToolStripPanel.Controls.Remove( toolStripFile );
-                    top.add( toolStripFile );
-                } else if ( toolStripFile.Parent.Equals( toolStripContainer.BottomToolStripPanel ) ) {
-                    toolStripContainer.BottomToolStripPanel.Controls.Remove( toolStripFile );
-                    bottom.add( toolStripFile );
-                }
-            }*/
-            //top.add( toolStripTool );
-            //top.add( toolStripMeasure );
-            //top.add( toolStripPosition );
-            //top.add( toolStripFile );
+#if DEBUG
+            PortUtil.println( "FormMain#.ctor; this.Width=" + this.Width );
+#endif
+            toolBarTool.Move += new System.EventHandler( this.toolStripEdit_Move );
+            toolBarMeasure.Move += new System.EventHandler( this.toolStripMeasure_Move );
+            toolBarPosition.Move += new System.EventHandler( this.toolStripPosition_Move );
+            toolBarFile.Move += new EventHandler( toolStripFile_Move );
+
 #endif
 
 #if !JAVA
@@ -877,29 +940,6 @@ namespace org.kbinani.cadencii {
 #endif
 
             trackSelector.setCurveVisible( true );
-
-#if !JAVA
-            // 左上のやつから順に登録
-            XmlPoint p = AppManager.editorConfig.ToolEditTool.Location;
-            //toolStripTool.Location = new System.Drawing.Point( p.x, p.y );
-            p = AppManager.editorConfig.ToolMeasureLocation.Location;
-            //toolStripMeasure.Location = new System.Drawing.Point( p.x, p.y );
-            p = AppManager.editorConfig.ToolPositionLocation.Location;
-            //toolStripPosition.Location = new System.Drawing.Point( p.x, p.y );
-            p = AppManager.editorConfig.ToolFileLocation.Location;
-            //toolStripFile.Location = new System.Drawing.Point( p.x, p.y );
-            //addToolStripInPositionOrder( toolStripContainer.TopToolStripPanel, top );
-            //addToolStripInPositionOrder( toolStripContainer.BottomToolStripPanel, bottom );
-
-            //TODO: toolStripTool.ParentChanged += new System.EventHandler( this.toolStripEdit_ParentChanged );
-            toolBarTool.Move += new System.EventHandler( this.toolStripEdit_Move );
-            //toolStripMeasure.ParentChanged += new System.EventHandler( this.toolStripMeasure_ParentChanged );
-            toolBarMeasure.Move += new System.EventHandler( this.toolStripMeasure_Move );
-            //toolStripPosition.ParentChanged += new System.EventHandler( this.toolStripPosition_ParentChanged );
-            toolBarPosition.Move += new System.EventHandler( this.toolStripPosition_Move );
-            //TODO: toolStripFile.ParentChanged += new EventHandler( toolStripFile_ParentChanged );
-            toolBarFile.Move += new EventHandler( toolStripFile_Move );
-#endif
 
             // inputTextBoxの初期化
 #if JAVA
@@ -1046,6 +1086,89 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region helper methods
+        /// <summary>
+        /// 現在のツールバーの場所を保存します
+        /// </summary>
+        private void saveToolbarLocation() {
+            // どのツールバーが一番上かつ左にあるか？
+            var pfile = bandWrapperForToolStripFile.Location;
+            var pmeasure = bandWrapperForToolStripMeasure.Location;
+            var ptool = bandWrapperForToolStripTool.Location;
+            var pposition = bandWrapperForToolStripPosition.Location;
+            var list = new System.Collections.Generic.List<RebarDotNet.BandWrapper>();
+            list.AddRange( new RebarDotNet.BandWrapper[]{
+                bandWrapperForToolStripFile,
+                bandWrapperForToolStripMeasure,
+                bandWrapperForToolStripPosition,
+                bandWrapperForToolStripTool } );
+            // ソートする
+            boolean changed = true;
+            while ( changed ) {
+                changed = false;
+                for ( int i = 0; i < list.Count - 1; i++ ) {
+                    // y座標が大きいか，y座標が同じでもx座標が大きい場合に入れ替える
+                    boolean swap = 
+                        (list[i].Location.Y > list[i + 1].Location.Y) ||
+                        (list[i].Location.Y == list[i + 1].Location.Y  && list[i].Location.X > list[i + 1].Location.X);
+                    if ( swap ) {
+                        var a = list[i];
+                        list[i] = list[i + 1];
+                        list[i + 1] = a;
+                        changed = true;
+                    }
+                }
+            }
+            // 各ツールバー毎に，ツールバーの状態を検出して保存
+            saveToolbarLocationCore( 
+                list,
+                bandWrapperForToolStripFile,
+                out AppManager.editorConfig.BandSizeFile,
+                out AppManager.editorConfig.BandNewRowFile,
+                out AppManager.editorConfig.BandOrderFile );
+            saveToolbarLocationCore(
+                list,
+                bandWrapperForToolStripMeasure,
+                out AppManager.editorConfig.BandSizeMeasure,
+                out AppManager.editorConfig.BandNewRowMeasure,
+                out AppManager.editorConfig.BandOrderMeasure );
+            saveToolbarLocationCore(
+                list,
+                bandWrapperForToolStripPosition,
+                out AppManager.editorConfig.BandSizePosition,
+                out AppManager.editorConfig.BandNewRowPosition,
+                out AppManager.editorConfig.BandOrderPosition );
+            saveToolbarLocationCore(
+                list,
+                bandWrapperForToolStripTool,
+                out AppManager.editorConfig.BandSizeTool,
+                out AppManager.editorConfig.BandNewRowTool,
+                out AppManager.editorConfig.BandOrderTool );
+        }
+
+        /// <summary>
+        /// ツールバーの位置の順に並べ替えたリストの中の一つのツールバーに対して，その状態を検出して保存
+        /// </summary>
+        /// <param name="list"></param>
+        /// <param name="band"></param>
+        /// <param name="band_size"></param>
+        /// <param name="new_row"></param>
+        private void saveToolbarLocationCore(
+            System.Collections.Generic.List<RebarDotNet.BandWrapper> list,
+            RebarDotNet.BandWrapper band, 
+            out int band_size, 
+            out bool new_row,
+            out int band_order
+        ) {
+            band_size = 0;
+            new_row = true;
+            band_order = 0;
+            var indx = list.IndexOf( band );
+            if ( indx < 0 ) return;
+            new_row = (indx == 0) ? false : (list[indx - 1].Location.Y < list[indx].Location.Y);
+            band_size = band.BandSize;
+            band_order = indx;
+        }
+
         /// <summary>
         /// 指定したトラックの、レンダリングが必要な部分を再レンダリングし、ツギハギすることでトラックのキャッシュをフリーズさせます。
         /// </summary>
@@ -2634,43 +2757,6 @@ namespace org.kbinani.cadencii {
 #endif
             }
         }
-
-#if !JAVA
-        /// <summary>
-        /// listに登録されているToolStripを，座標の若い順にcontainerに追加します
-        /// </summary>
-        /// <param name="panel"></param>
-        /// <param name="list"></param>
-        public void addToolStripInPositionOrder( System.Windows.Forms.ToolStripPanel panel, Vector<BToolBar> list ) {
-            boolean[] reg = new boolean[list.size()];
-            for ( int i = 0; i < reg.Length; i++ ) {
-                reg[i] = false;
-            }
-            for ( int i = 0; i < list.size(); i++ ) {
-                Point p = new Point( int.MaxValue, int.MaxValue );
-                int index = -1;
-
-                // x座標の小さいやつを探す
-                for ( int j = 0; j < list.size(); j++ ) {
-                    if ( !reg[j] ) {
-                        BToolBar ts = list.get( j );
-                        if ( p.y > ts.Location.Y ) {
-                            index = j;
-                            p = new Point( ts.Location.X, ts.Location.Y );
-                        }
-                        if ( p.y >= ts.Location.Y && p.x > ts.Location.X ) {
-                            index = j;
-                            p = new Point( ts.Location.X, ts.Location.Y );
-                        }
-                    }
-                }
-
-                // コントロールを登録
-                panel.Join( list.get( index ), list.get( index ).Location );
-                reg[index] = true;
-            }
-        }
-#endif
 
 #if ENABLE_SCRIPT
         /// <summary>
@@ -7492,25 +7578,27 @@ namespace org.kbinani.cadencii {
 
         void toolBarTool_ButtonClick( object sender, System.Windows.Forms.ToolBarButtonClickEventArgs e ) {
             if ( e.Button == stripBtnPointer ) {
-                stripBtnArrow_Click( sender, new EventArgs() );
+                stripBtnArrow_Click( e.Button, new EventArgs() );
             } else if ( e.Button == stripBtnPencil ) {
-                stripBtnPencil_Click( sender, new EventArgs() );
+                stripBtnPencil_Click( e.Button, new EventArgs() );
             } else if ( e.Button == stripBtnLine ) {
-                stripBtnLine_Click( sender, new EventArgs() );
+                stripBtnLine_Click( e.Button, new EventArgs() );
             } else if ( e.Button == stripBtnEraser ) {
-                stripBtnEraser_Click( sender, new EventArgs() );
+                stripBtnEraser_Click( e.Button, new EventArgs() );
             } else if ( e.Button == stripBtnGrid ) {
-                stripBtnGrid_CheckedChanged( sender, new EventArgs() );
+                stripBtnGrid_CheckedChanged( e.Button, new EventArgs() );
             } else if ( e.Button == stripBtnCurve ) {
-                stripBtnCurve_Click( sender, new EventArgs() );
+                stripBtnCurve_Click( e.Button, new EventArgs() );
+            } else {
+                handleStripPaletteTool_Click( e.Button, new EventArgs() );
             }
         }
 
         void toolBarMeasure_ButtonClick( object sender, System.Windows.Forms.ToolBarButtonClickEventArgs e ) {
             if ( e.Button == stripBtnStartMarker ) {
-                handleStartMarker_Click( sender, new EventArgs() );
+                handleStartMarker_Click( e.Button, new EventArgs() );
             } else if ( e.Button == stripBtnEndMarker ) {
-                handleEndMarker_Click( sender, new EventArgs() );
+                handleEndMarker_Click( e.Button, new EventArgs() );
             } else if ( e.Button == stripDDBtnLengthParent ) {
                 System.Drawing.Rectangle rc = stripDDBtnLengthParent.Rectangle;
                 stripDDBtnLength.Show(
@@ -7526,19 +7614,19 @@ namespace org.kbinani.cadencii {
 
         void toolBarPosition_ButtonClick( object sender, System.Windows.Forms.ToolBarButtonClickEventArgs e ) {
             if ( e.Button == stripBtnMoveTop ) {
-                stripBtnMoveTop_Click( sender, new EventArgs() );
+                stripBtnMoveTop_Click( e.Button, new EventArgs() );
             } else if ( e.Button == stripBtnRewind ) {
-                stripBtnRewind_Click( sender, new EventArgs() );
+                stripBtnRewind_Click( e.Button, new EventArgs() );
             } else if ( e.Button == stripBtnForward ) {
-                stripBtnForward_Click( sender, new EventArgs() );
+                stripBtnForward_Click( e.Button, new EventArgs() );
             } else if ( e.Button == stripBtnMoveEnd ) {
-                stripBtnMoveEnd_Click( sender, new EventArgs() );
+                stripBtnMoveEnd_Click( e.Button, new EventArgs() );
             } else if ( e.Button == stripBtnPlay ) {
-                stripBtnPlay_Click( sender, new EventArgs() );
+                stripBtnPlay_Click( e.Button, new EventArgs() );
             } else if ( e.Button == stripBtnStop ) {
-                stripBtnStop_Click( sender, new EventArgs() );
+                stripBtnStop_Click( e.Button, new EventArgs() );
             } else if ( e.Button == stripBtnScroll ) {
-                stripBtnScroll_Click( sender, new EventArgs() );
+                stripBtnScroll_Click( e.Button, new EventArgs() );
             } else if ( e.Button == stripBtnLoop ) {
                 stripBtnLoop_Click( sender, new EventArgs() );
             }
@@ -7546,52 +7634,28 @@ namespace org.kbinani.cadencii {
 
         void toolBarFile_ButtonClick( object sender, System.Windows.Forms.ToolBarButtonClickEventArgs e ) {
             if ( e.Button == stripBtnFileNew ) {
-                handleFileNew_Click( sender, new EventArgs() );
+                handleFileNew_Click( e.Button, new EventArgs() );
             } else if ( e.Button == stripBtnFileOpen ) {
-                handleFileOpen_Click( sender, new EventArgs() );
+                handleFileOpen_Click( e.Button, new EventArgs() );
             } else if ( e.Button == stripBtnFileSave ) {
-                handleFileSave_Click( sender, new EventArgs() );
+                handleFileSave_Click( e.Button, new EventArgs() );
             } else if ( e.Button == stripBtnCut ) {
-                handleEditCut_Click( sender, new EventArgs() );
+                handleEditCut_Click( e.Button, new EventArgs() );
             } else if ( e.Button == stripBtnCopy ) {
-                handleEditCopy_Click( sender, new EventArgs() );
+                handleEditCopy_Click( e.Button, new EventArgs() );
             } else if ( e.Button == stripBtnPaste ) {
-                handleEditPaste_Click( sender, new EventArgs() );
+                handleEditPaste_Click( e.Button, new EventArgs() );
             } else if ( e.Button == stripBtnUndo ) {
-                handleEditUndo_Click( sender, new EventArgs() );
+                handleEditUndo_Click( e.Button, new EventArgs() );
             } else if ( e.Button == stripBtnRedo ) {
-                handleEditRedo_Click( sender, new EventArgs() );
+                handleEditRedo_Click( e.Button, new EventArgs() );
             }
         }
 
         public void setResources() {
             try {
-                //this.stripBtnPointer.setIcon( new ImageIcon( Resources.get_arrow_135() ) );
-                //this.stripBtnPencil.setIcon( new ImageIcon( Resources.get_pencil() ) );
-                //this.stripBtnLine.setIcon( new ImageIcon( Resources.get_layer_shape_line() ) );
-                //this.stripBtnEraser.setIcon( new ImageIcon( Resources.get_eraser() ) );
-                //this.stripBtnGrid.setIcon( new ImageIcon( Resources.get_ruler_crop() ) );
-                //this.stripBtnCurve.setIcon( new ImageIcon( Resources.get_layer_shape_curve() ) );
                 this.stripLblGameCtrlMode.setIcon( new ImageIcon( Resources.get_slash() ) );
                 this.stripLblMidiIn.setIcon( new ImageIcon( Resources.get_slash() ) );
-                //TODO:this.stripBtnFileNew.setIcon( new ImageIcon( Resources.get_disk__plus() ) );
-                //TODO:this.stripBtnFileOpen.setIcon( new ImageIcon( Resources.get_folder_horizontal_open() ) );
-                //TODO:this.stripBtnFileSave.setIcon( new ImageIcon( Resources.get_disk() ) );
-                //this.stripBtnCut.setIcon( new ImageIcon( Resources.get_scissors() ) );
-                //this.stripBtnCopy.setIcon( new ImageIcon( Resources.get_documents() ) );
-                //this.stripBtnPaste.setIcon( new ImageIcon( Resources.get_clipboard_paste() ) );
-                //this.stripBtnUndo.setIcon( new ImageIcon( Resources.get_arrow_skip_180() ) );
-                //this.stripBtnRedo.setIcon( new ImageIcon( Resources.get_arrow_skip() ) );
-                //this.stripBtnMoveTop.setIcon( new ImageIcon( Resources.get_control_stop_180() ) );
-                //this.stripBtnRewind.setIcon( new ImageIcon( Resources.get_control_double_180() ) );
-                //this.stripBtnForward.setIcon( new ImageIcon( Resources.get_control_double() ) );
-                //this.stripBtnMoveEnd.setIcon( new ImageIcon( Resources.get_control_stop() ) );
-                //this.stripBtnPlay.setIcon( new ImageIcon( Resources.get_control() ) );
-                //this.stripBtnStop.setIcon( new ImageIcon( Resources.get_control_pause() ) );
-                //this.stripBtnScroll.setIcon( new ImageIcon( Resources.get_arrow_circle_double() ) );
-                //this.stripBtnLoop.setIcon( new ImageIcon( Resources.get_arrow_return() ) );
-                //this.stripBtnStartMarker.setIcon( new ImageIcon( Resources.get_pin__arrow() ) );
-                //this.stripBtnEndMarker.setIcon( new ImageIcon( Resources.get_pin__arrow_inv() ) );
                 setIconImage( Resources.get_icon() );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".setResources; ex=" + ex + "\n" );
@@ -14334,7 +14398,7 @@ namespace org.kbinani.cadencii {
             PortUtil.println( "FormMain#menuHelpDebug_Click" );
 
 #if ENABLE_VOCALOID
-            BFileChooser dlg_fout = new BFileChooser( "" );
+            /*BFileChooser dlg_fout = new BFileChooser( "" );
             if ( dlg_fout.showSaveDialog( this ) == BFileChooser.APPROVE_OPTION ) {
                 String fout = dlg_fout.getSelectedFile();
 
@@ -14355,7 +14419,7 @@ namespace org.kbinani.cadencii {
                 vwg.init( vsq, AppManager.getSelected(), AppManager.getCurrentClock(), vsq.TotalClocks );
                 fwr.init( "\n" + fout + "\n" + 2 + "\n" + 16 + "\n" + 44100 );
                 vwg.begin( (long)(vsq.getSecFromClock( vsq.TotalClocks ) * 44100.0) );
-            }
+            }*/
 #endif
 
 #endif
@@ -15769,59 +15833,19 @@ namespace org.kbinani.cadencii {
 
 #if !JAVA
         public void toolStripEdit_Move( Object sender, EventArgs e ) {
-            AppManager.editorConfig.ToolEditTool.Location = new XmlPoint( toolBarTool.Left, toolBarTool.Top );
-        }
-
-        public void toolStripEdit_ParentChanged( Object sender, EventArgs e ) {
-            /*TODO: if ( toolStripTool.getParent() != null ) {
-                if ( toolStripTool.Parent.Equals( toolStripContainer.TopToolStripPanel ) ) {
-                    AppManager.editorConfig.ToolEditTool.Parent = ToolStripLocation.ParentPanel.Top;
-                } else {
-                    AppManager.editorConfig.ToolEditTool.Parent = ToolStripLocation.ParentPanel.Bottom;
-                }
-            }*/
+            saveToolbarLocation();
         }
 
         public void toolStripPosition_Move( Object sender, EventArgs e ) {
-            AppManager.editorConfig.ToolPositionLocation.Location = new XmlPoint( toolBarPosition.Left, toolBarPosition.Top );
-        }
-
-        public void toolStripPosition_ParentChanged( Object sender, EventArgs e ) {
-            /*TODO:if ( toolStripPosition.Parent != null ) {
-                if ( toolStripPosition.Parent.Equals( toolStripContainer.TopToolStripPanel ) ) {
-                    AppManager.editorConfig.ToolPositionLocation.Parent = ToolStripLocation.ParentPanel.Top;
-                } else {
-                    AppManager.editorConfig.ToolPositionLocation.Parent = ToolStripLocation.ParentPanel.Bottom;
-                }
-            }*/
+            saveToolbarLocation();
         }
 
         public void toolStripMeasure_Move( Object sender, EventArgs e ) {
-            AppManager.editorConfig.ToolMeasureLocation.Location = new XmlPoint( toolBarMeasure.Left, toolBarMeasure.Top );
-        }
-
-        public void toolStripMeasure_ParentChanged( Object sender, EventArgs e ) {
-            /*TODO: if ( toolStripMeasure.Parent != null ) {
-                if ( toolStripMeasure.Parent.Equals( toolStripContainer.TopToolStripPanel ) ) {
-                    AppManager.editorConfig.ToolMeasureLocation.Parent = ToolStripLocation.ParentPanel.Top;
-                } else {
-                    AppManager.editorConfig.ToolMeasureLocation.Parent = ToolStripLocation.ParentPanel.Bottom;
-                }
-            }*/
+            saveToolbarLocation();
         }
 
         void toolStripFile_Move( Object sender, EventArgs e ) {
-            AppManager.editorConfig.ToolFileLocation.Location = new XmlPoint( toolBarFile.Left, toolBarFile.Top );
-        }
-
-        void toolStripFile_ParentChanged( Object sender, EventArgs e ) {
-            /*TODO: if ( toolStripFile.Parent != null ) {
-                if ( toolStripFile.Parent.Equals( toolStripContainer.TopToolStripPanel ) ) {
-                    AppManager.editorConfig.ToolFileLocation.Parent = ToolStripLocation.ParentPanel.Top;
-                } else {
-                    AppManager.editorConfig.ToolFileLocation.Parent = ToolStripLocation.ParentPanel.Bottom;
-                }
-            }*/
+            saveToolbarLocation();
         }
 #endif
 
@@ -15872,13 +15896,13 @@ namespace org.kbinani.cadencii {
         public void handleStripPaletteTool_Click( Object sender, EventArgs e ) {
             String id = "";  //選択されたツールのID
 #if ENABLE_SCRIPT
-            if ( sender is BToolStripButton ) {
-                BToolStripButton tsb = (BToolStripButton)sender;
-                if ( tsb.getTag() != null && tsb.getTag() is String ) {
-                    id = (String)tsb.getTag();
+            if ( sender is System.Windows.Forms.ToolBarButton ) {
+                System.Windows.Forms.ToolBarButton tsb = (System.Windows.Forms.ToolBarButton)sender;
+                if ( tsb.Tag != null && tsb.Tag is String ) {
+                    id = (String)tsb.Tag;
                     AppManager.mSelectedPaletteTool = id;
                     AppManager.setSelectedTool( EditTool.PALETTE_TOOL );
-                    tsb.setSelected( true );
+                    tsb.Pushed = true;
                 }
             } else if ( sender is BMenuItem ) {
                 BMenuItem tsmi = (BMenuItem)sender;
@@ -16665,10 +16689,18 @@ namespace org.kbinani.cadencii {
 
 #if ENABLE_SCRIPT
         public void handleScriptMenuItem_Click( Object sender, EventArgs e ) {
-
+#if DEBUG
+            PortUtil.println( "FormMain#handleScriptMenuItem_Click; sender.GetType()=" + sender.GetType() );
+#endif
             try {
                 String dir = Utility.getScriptPath();
-                String id = (String)((BMenuItem)sender).getTag();
+                String id = "";
+                if ( sender is BMenuItem ) {
+                    id = (String)((BMenuItem)sender).getTag();
+                }
+#if DEBUG
+                PortUtil.println( "FormMain#handleScriptMenuItem_Click; id=" + id );
+#endif
                 String script_file = PortUtil.combinePath( dir, id );
                 if ( ScriptServer.getTimestamp( id ) != PortUtil.getFileLastModified( script_file ) ) {
                     ScriptServer.reload( id );
@@ -17254,12 +17286,6 @@ namespace org.kbinani.cadencii {
             this.pictureBox2 = new org.kbinani.windows.forms.BPictureBox();
             this.vScroll = new org.kbinani.windows.forms.BVScrollBar();
             this.picturePositionIndicator = new org.kbinani.windows.forms.BPictureBox();
-            this.stripBtnPointer = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnPencil = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnLine = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnEraser = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnGrid = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnCurve = new System.Windows.Forms.ToolBarButton();
             this.toolStripBottom = new org.kbinani.windows.forms.BToolBar();
             this.toolStripStatusLabel1 = new org.kbinani.windows.forms.BStatusLabel();
             this.stripLblGameCtrlMode = new org.kbinani.windows.forms.BStatusLabel();
@@ -17272,28 +17298,9 @@ namespace org.kbinani.cadencii {
             this.stripDDBtnSpeed033 = new org.kbinani.windows.forms.BMenuItem();
             this.stripDDBtnSpeed050 = new org.kbinani.windows.forms.BMenuItem();
             this.stripDDBtnSpeed100 = new org.kbinani.windows.forms.BMenuItem();
-            this.statusLabel = new org.kbinani.windows.forms.BLabel();
             this.splitContainerProperty = new org.kbinani.apputil.BSplitContainer();
             this.panel2 = new org.kbinani.windows.forms.BPanel();
             this.splitContainer1 = new org.kbinani.apputil.BSplitContainer();
-            this.stripBtnCut = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnCopy = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnPaste = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnUndo = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnRedo = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnFileNew = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnFileOpen = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnFileSave = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnMoveTop = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnRewind = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnForward = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnMoveEnd = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnPlay = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnStop = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnScroll = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnLoop = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnStartMarker = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnEndMarker = new System.Windows.Forms.ToolBarButton();
             this.stripDDBtnLength = new System.Windows.Forms.ContextMenu();
             this.stripDDBtnLength04 = new System.Windows.Forms.MenuItem();
             this.stripDDBtnLength08 = new System.Windows.Forms.MenuItem();
@@ -17316,25 +17323,9 @@ namespace org.kbinani.cadencii {
             this.menuItem2 = new System.Windows.Forms.MenuItem();
             this.stripDDBtnQuantizeTriplet = new System.Windows.Forms.MenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.rebarWrapper1 = new RebarDotNet.RebarWrapper();
-            this.bandWrapperForToolStripFile = new RebarDotNet.BandWrapper();
-            this.toolBarFile = new System.Windows.Forms.ToolBar();
-            this.toolBarButton1 = new System.Windows.Forms.ToolBarButton();
-            this.toolBarButton2 = new System.Windows.Forms.ToolBarButton();
             this.imageListFile = new System.Windows.Forms.ImageList( this.components );
-            this.bandWrapperForToolStripPosition = new RebarDotNet.BandWrapper();
-            this.toolBarPosition = new System.Windows.Forms.ToolBar();
-            this.toolBarButton4 = new System.Windows.Forms.ToolBarButton();
             this.imageListPosition = new System.Windows.Forms.ImageList( this.components );
-            this.bandWrapperForToolStripMeasure = new RebarDotNet.BandWrapper();
-            this.toolBarMeasure = new System.Windows.Forms.ToolBar();
-            this.stripDDBtnLengthParent = new System.Windows.Forms.ToolBarButton();
-            this.stripDDBtnQuantizeParent = new System.Windows.Forms.ToolBarButton();
-            this.toolBarButton5 = new System.Windows.Forms.ToolBarButton();
             this.imageListMeasure = new System.Windows.Forms.ImageList( this.components );
-            this.bandWrapperForToolStripTool = new RebarDotNet.BandWrapper();
-            this.toolBarTool = new System.Windows.Forms.ToolBar();
-            this.toolBarButton3 = new System.Windows.Forms.ToolBarButton();
             this.imageListTool = new System.Windows.Forms.ImageList( this.components );
             this.panelForToolStripMeasure = new System.Windows.Forms.Panel();
             this.panelForToolStripPosition = new System.Windows.Forms.Panel();
@@ -17342,11 +17333,48 @@ namespace org.kbinani.cadencii {
             this.panelForToolStripFile = new System.Windows.Forms.Panel();
             this.splitContainer2 = new org.kbinani.apputil.BSplitContainer();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.rebarWrapper2 = new RebarDotNet.RebarWrapper();
-            this.bandStatus = new RebarDotNet.BandWrapper();
             this.panelOverview = new org.kbinani.cadencii.PictOverview();
             this.pictPianoRoll = new org.kbinani.cadencii.PictPianoRoll();
             this.hScroll = new org.kbinani.cadencii.HScroll();
+            this.rebarWrapper1 = new RebarDotNet.RebarWrapper();
+            this.toolBarFile = new System.Windows.Forms.ToolBar();
+            this.stripBtnFileNew = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnFileOpen = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnFileSave = new System.Windows.Forms.ToolBarButton();
+            this.toolBarButton1 = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnCut = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnCopy = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnPaste = new System.Windows.Forms.ToolBarButton();
+            this.toolBarButton2 = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnUndo = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnRedo = new System.Windows.Forms.ToolBarButton();
+            this.toolBarPosition = new System.Windows.Forms.ToolBar();
+            this.stripBtnMoveTop = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnRewind = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnForward = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnMoveEnd = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnPlay = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnStop = new System.Windows.Forms.ToolBarButton();
+            this.toolBarButton4 = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnScroll = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnLoop = new System.Windows.Forms.ToolBarButton();
+            this.toolBarMeasure = new System.Windows.Forms.ToolBar();
+            this.stripDDBtnLengthParent = new System.Windows.Forms.ToolBarButton();
+            this.stripDDBtnQuantizeParent = new System.Windows.Forms.ToolBarButton();
+            this.toolBarButton5 = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnStartMarker = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnEndMarker = new System.Windows.Forms.ToolBarButton();
+            this.toolBarTool = new System.Windows.Forms.ToolBar();
+            this.stripBtnPointer = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnPencil = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnLine = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnEraser = new System.Windows.Forms.ToolBarButton();
+            this.toolBarButton3 = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnGrid = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnCurve = new System.Windows.Forms.ToolBarButton();
+            this.rebarWrapper2 = new RebarDotNet.RebarWrapper();
+            this.bandStatus = new RebarDotNet.BandWrapper();
+            this.statusLabel = new org.kbinani.windows.forms.BLabel();
             this.bandWrapper1 = new RebarDotNet.BandWrapper();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
@@ -17358,11 +17386,11 @@ namespace org.kbinani.cadencii {
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picturePositionIndicator)).BeginInit();
             this.toolStripBottom.SuspendLayout();
-            this.rebarWrapper1.SuspendLayout();
             this.panel1.SuspendLayout();
-            this.rebarWrapper2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.panelOverview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).BeginInit();
+            this.rebarWrapper1.SuspendLayout();
+            this.rebarWrapper2.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStripMain
@@ -19255,43 +19283,6 @@ namespace org.kbinani.cadencii {
             this.picturePositionIndicator.TabIndex = 10;
             this.picturePositionIndicator.TabStop = false;
             // 
-            // stripBtnPointer
-            // 
-            this.stripBtnPointer.ImageIndex = 0;
-            this.stripBtnPointer.Name = "stripBtnPointer";
-            this.stripBtnPointer.Pushed = true;
-            this.stripBtnPointer.Text = "Pointer";
-            // 
-            // stripBtnPencil
-            // 
-            this.stripBtnPencil.ImageIndex = 1;
-            this.stripBtnPencil.Name = "stripBtnPencil";
-            this.stripBtnPencil.Text = "Pencil";
-            // 
-            // stripBtnLine
-            // 
-            this.stripBtnLine.ImageIndex = 2;
-            this.stripBtnLine.Name = "stripBtnLine";
-            this.stripBtnLine.Text = "Line";
-            // 
-            // stripBtnEraser
-            // 
-            this.stripBtnEraser.ImageIndex = 3;
-            this.stripBtnEraser.Name = "stripBtnEraser";
-            this.stripBtnEraser.Text = "Eraser";
-            // 
-            // stripBtnGrid
-            // 
-            this.stripBtnGrid.ImageIndex = 4;
-            this.stripBtnGrid.Name = "stripBtnGrid";
-            this.stripBtnGrid.Text = "Grid";
-            // 
-            // stripBtnCurve
-            // 
-            this.stripBtnCurve.ImageIndex = 5;
-            this.stripBtnCurve.Name = "stripBtnCurve";
-            this.stripBtnCurve.Text = "Curve";
-            // 
             // toolStripBottom
             // 
             this.toolStripBottom.Dock = System.Windows.Forms.DockStyle.None;
@@ -19380,15 +19371,6 @@ namespace org.kbinani.cadencii {
             this.stripDDBtnSpeed100.Name = "stripDDBtnSpeed100";
             this.stripDDBtnSpeed100.Size = new System.Drawing.Size( 160, 22 );
             this.stripDDBtnSpeed100.Text = "100%";
-            // 
-            // statusLabel
-            // 
-            this.statusLabel.Location = new System.Drawing.Point( 11, 2 );
-            this.statusLabel.MinimumSize = new System.Drawing.Size( 0, 22 );
-            this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size( 944, 24 );
-            this.statusLabel.TabIndex = 0;
-            this.statusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // splitContainerProperty
             // 
@@ -19480,112 +19462,6 @@ namespace org.kbinani.cadencii {
             this.splitContainer1.TabIndex = 4;
             this.splitContainer1.TabStop = false;
             this.splitContainer1.Text = "splitContainerEx1";
-            // 
-            // stripBtnCut
-            // 
-            this.stripBtnCut.ImageIndex = 3;
-            this.stripBtnCut.Name = "stripBtnCut";
-            this.stripBtnCut.ToolTipText = "Cut";
-            // 
-            // stripBtnCopy
-            // 
-            this.stripBtnCopy.ImageIndex = 4;
-            this.stripBtnCopy.Name = "stripBtnCopy";
-            this.stripBtnCopy.ToolTipText = "Copy";
-            // 
-            // stripBtnPaste
-            // 
-            this.stripBtnPaste.ImageIndex = 5;
-            this.stripBtnPaste.Name = "stripBtnPaste";
-            this.stripBtnPaste.ToolTipText = "Paste";
-            // 
-            // stripBtnUndo
-            // 
-            this.stripBtnUndo.ImageIndex = 6;
-            this.stripBtnUndo.Name = "stripBtnUndo";
-            this.stripBtnUndo.ToolTipText = "Undo";
-            // 
-            // stripBtnRedo
-            // 
-            this.stripBtnRedo.ImageIndex = 7;
-            this.stripBtnRedo.Name = "stripBtnRedo";
-            this.stripBtnRedo.ToolTipText = "Redo";
-            // 
-            // stripBtnFileNew
-            // 
-            this.stripBtnFileNew.ImageIndex = 0;
-            this.stripBtnFileNew.Name = "stripBtnFileNew";
-            this.stripBtnFileNew.ToolTipText = "New";
-            // 
-            // stripBtnFileOpen
-            // 
-            this.stripBtnFileOpen.ImageIndex = 1;
-            this.stripBtnFileOpen.Name = "stripBtnFileOpen";
-            this.stripBtnFileOpen.ToolTipText = "Open";
-            // 
-            // stripBtnFileSave
-            // 
-            this.stripBtnFileSave.ImageIndex = 2;
-            this.stripBtnFileSave.Name = "stripBtnFileSave";
-            this.stripBtnFileSave.ToolTipText = "Save";
-            // 
-            // stripBtnMoveTop
-            // 
-            this.stripBtnMoveTop.ImageIndex = 0;
-            this.stripBtnMoveTop.Name = "stripBtnMoveTop";
-            this.stripBtnMoveTop.ToolTipText = "MoveTop";
-            // 
-            // stripBtnRewind
-            // 
-            this.stripBtnRewind.ImageIndex = 1;
-            this.stripBtnRewind.Name = "stripBtnRewind";
-            this.stripBtnRewind.ToolTipText = "Rewind";
-            // 
-            // stripBtnForward
-            // 
-            this.stripBtnForward.ImageIndex = 2;
-            this.stripBtnForward.Name = "stripBtnForward";
-            this.stripBtnForward.ToolTipText = "Forward";
-            // 
-            // stripBtnMoveEnd
-            // 
-            this.stripBtnMoveEnd.ImageIndex = 3;
-            this.stripBtnMoveEnd.Name = "stripBtnMoveEnd";
-            this.stripBtnMoveEnd.ToolTipText = "MoveEnd";
-            // 
-            // stripBtnPlay
-            // 
-            this.stripBtnPlay.ImageIndex = 4;
-            this.stripBtnPlay.Name = "stripBtnPlay";
-            this.stripBtnPlay.ToolTipText = "Play";
-            // 
-            // stripBtnStop
-            // 
-            this.stripBtnStop.ImageIndex = 5;
-            this.stripBtnStop.Name = "stripBtnStop";
-            this.stripBtnStop.ToolTipText = "Stop";
-            // 
-            // stripBtnScroll
-            // 
-            this.stripBtnScroll.ImageIndex = 6;
-            this.stripBtnScroll.Name = "stripBtnScroll";
-            // 
-            // stripBtnLoop
-            // 
-            this.stripBtnLoop.ImageIndex = 7;
-            this.stripBtnLoop.Name = "stripBtnLoop";
-            // 
-            // stripBtnStartMarker
-            // 
-            this.stripBtnStartMarker.ImageIndex = 0;
-            this.stripBtnStartMarker.Name = "stripBtnStartMarker";
-            this.stripBtnStartMarker.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-            // 
-            // stripBtnEndMarker
-            // 
-            this.stripBtnEndMarker.ImageIndex = 1;
-            this.stripBtnEndMarker.Name = "stripBtnEndMarker";
-            this.stripBtnEndMarker.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
             // 
             // stripDDBtnLength
             // 
@@ -19713,67 +19589,6 @@ namespace org.kbinani.cadencii {
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size( 57, 6 );
             // 
-            // rebarWrapper1
-            // 
-            this.rebarWrapper1.Bands.Add( this.bandWrapperForToolStripFile );
-            this.rebarWrapper1.Bands.Add( this.bandWrapperForToolStripPosition );
-            this.rebarWrapper1.Bands.Add( this.bandWrapperForToolStripMeasure );
-            this.rebarWrapper1.Bands.Add( this.bandWrapperForToolStripTool );
-            this.rebarWrapper1.Controls.Add( this.toolBarFile );
-            this.rebarWrapper1.Controls.Add( this.toolBarTool );
-            this.rebarWrapper1.Controls.Add( this.toolBarPosition );
-            this.rebarWrapper1.Controls.Add( this.toolBarMeasure );
-            this.rebarWrapper1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.rebarWrapper1.Location = new System.Drawing.Point( 0, 26 );
-            this.rebarWrapper1.Name = "rebarWrapper1";
-            this.rebarWrapper1.Size = new System.Drawing.Size( 955, 118 );
-            this.rebarWrapper1.TabIndex = 19;
-            this.rebarWrapper1.Text = "rebarWrapper1";
-            // 
-            // bandWrapperForToolStripFile
-            // 
-            this.bandWrapperForToolStripFile.AllowVertical = false;
-            this.bandWrapperForToolStripFile.Child = this.toolBarFile;
-            this.bandWrapperForToolStripFile.Header = -1;
-            this.bandWrapperForToolStripFile.Integral = 1;
-            this.bandWrapperForToolStripFile.MaxHeight = 0;
-            // 
-            // toolBarFile
-            // 
-            this.toolBarFile.Appearance = System.Windows.Forms.ToolBarAppearance.Flat;
-            this.toolBarFile.Buttons.AddRange( new System.Windows.Forms.ToolBarButton[] {
-            this.stripBtnFileNew,
-            this.stripBtnFileOpen,
-            this.stripBtnFileSave,
-            this.toolBarButton1,
-            this.stripBtnCut,
-            this.stripBtnCopy,
-            this.stripBtnPaste,
-            this.toolBarButton2,
-            this.stripBtnUndo,
-            this.stripBtnRedo} );
-            this.toolBarFile.ButtonSize = new System.Drawing.Size( 23, 22 );
-            this.toolBarFile.Divider = false;
-            this.toolBarFile.Dock = System.Windows.Forms.DockStyle.None;
-            this.toolBarFile.DropDownArrows = true;
-            this.toolBarFile.ImageList = this.imageListFile;
-            this.toolBarFile.Location = new System.Drawing.Point( 11, 2 );
-            this.toolBarFile.Name = "toolBarFile";
-            this.toolBarFile.ShowToolTips = true;
-            this.toolBarFile.Size = new System.Drawing.Size( 944, 26 );
-            this.toolBarFile.TabIndex = 25;
-            this.toolBarFile.Wrappable = false;
-            // 
-            // toolBarButton1
-            // 
-            this.toolBarButton1.Name = "toolBarButton1";
-            this.toolBarButton1.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
-            // 
-            // toolBarButton2
-            // 
-            this.toolBarButton2.Name = "toolBarButton2";
-            this.toolBarButton2.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
-            // 
             // imageListFile
             // 
             this.imageListFile.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject( "imageListFile.ImageStream" )));
@@ -19786,42 +19601,6 @@ namespace org.kbinani.cadencii {
             this.imageListFile.Images.SetKeyName( 5, "clipboard_paste.png" );
             this.imageListFile.Images.SetKeyName( 6, "arrow_skip_180.png" );
             this.imageListFile.Images.SetKeyName( 7, "arrow_skip.png" );
-            // 
-            // bandWrapperForToolStripPosition
-            // 
-            this.bandWrapperForToolStripPosition.Child = this.toolBarPosition;
-            this.bandWrapperForToolStripPosition.Header = -1;
-            this.bandWrapperForToolStripPosition.Integral = 1;
-            this.bandWrapperForToolStripPosition.MaxHeight = 0;
-            // 
-            // toolBarPosition
-            // 
-            this.toolBarPosition.Appearance = System.Windows.Forms.ToolBarAppearance.Flat;
-            this.toolBarPosition.Buttons.AddRange( new System.Windows.Forms.ToolBarButton[] {
-            this.stripBtnMoveTop,
-            this.stripBtnRewind,
-            this.stripBtnForward,
-            this.stripBtnMoveEnd,
-            this.stripBtnPlay,
-            this.stripBtnStop,
-            this.toolBarButton4,
-            this.stripBtnScroll,
-            this.stripBtnLoop} );
-            this.toolBarPosition.Divider = false;
-            this.toolBarPosition.Dock = System.Windows.Forms.DockStyle.None;
-            this.toolBarPosition.DropDownArrows = true;
-            this.toolBarPosition.ImageList = this.imageListPosition;
-            this.toolBarPosition.Location = new System.Drawing.Point( 11, 32 );
-            this.toolBarPosition.Name = "toolBarPosition";
-            this.toolBarPosition.ShowToolTips = true;
-            this.toolBarPosition.Size = new System.Drawing.Size( 944, 26 );
-            this.toolBarPosition.TabIndex = 25;
-            this.toolBarPosition.TextAlign = System.Windows.Forms.ToolBarTextAlign.Right;
-            // 
-            // toolBarButton4
-            // 
-            this.toolBarButton4.Name = "toolBarButton4";
-            this.toolBarButton4.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
             // 
             // imageListPosition
             // 
@@ -19836,86 +19615,12 @@ namespace org.kbinani.cadencii {
             this.imageListPosition.Images.SetKeyName( 6, "arrow_circle_double.png" );
             this.imageListPosition.Images.SetKeyName( 7, "arrow_return.png" );
             // 
-            // bandWrapperForToolStripMeasure
-            // 
-            this.bandWrapperForToolStripMeasure.Child = this.toolBarMeasure;
-            this.bandWrapperForToolStripMeasure.Header = -1;
-            this.bandWrapperForToolStripMeasure.Integral = 1;
-            this.bandWrapperForToolStripMeasure.MaxHeight = 0;
-            // 
-            // toolBarMeasure
-            // 
-            this.toolBarMeasure.Appearance = System.Windows.Forms.ToolBarAppearance.Flat;
-            this.toolBarMeasure.Buttons.AddRange( new System.Windows.Forms.ToolBarButton[] {
-            this.stripDDBtnLengthParent,
-            this.stripDDBtnQuantizeParent,
-            this.toolBarButton5,
-            this.stripBtnStartMarker,
-            this.stripBtnEndMarker} );
-            this.toolBarMeasure.Divider = false;
-            this.toolBarMeasure.Dock = System.Windows.Forms.DockStyle.None;
-            this.toolBarMeasure.DropDownArrows = true;
-            this.toolBarMeasure.ImageList = this.imageListMeasure;
-            this.toolBarMeasure.Location = new System.Drawing.Point( 11, 62 );
-            this.toolBarMeasure.Name = "toolBarMeasure";
-            this.toolBarMeasure.ShowToolTips = true;
-            this.toolBarMeasure.Size = new System.Drawing.Size( 944, 26 );
-            this.toolBarMeasure.TabIndex = 25;
-            this.toolBarMeasure.TextAlign = System.Windows.Forms.ToolBarTextAlign.Right;
-            // 
-            // stripDDBtnLengthParent
-            // 
-            this.stripDDBtnLengthParent.Name = "stripDDBtnLengthParent";
-            // 
-            // stripDDBtnQuantizeParent
-            // 
-            this.stripDDBtnQuantizeParent.Name = "stripDDBtnQuantizeParent";
-            // 
-            // toolBarButton5
-            // 
-            this.toolBarButton5.Name = "toolBarButton5";
-            this.toolBarButton5.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
-            // 
             // imageListMeasure
             // 
             this.imageListMeasure.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject( "imageListMeasure.ImageStream" )));
             this.imageListMeasure.TransparentColor = System.Drawing.Color.Transparent;
             this.imageListMeasure.Images.SetKeyName( 0, "pin__arrow.png" );
             this.imageListMeasure.Images.SetKeyName( 1, "pin__arrow_inv.png" );
-            // 
-            // bandWrapperForToolStripTool
-            // 
-            this.bandWrapperForToolStripTool.Child = this.toolBarTool;
-            this.bandWrapperForToolStripTool.Header = -1;
-            this.bandWrapperForToolStripTool.Integral = 1;
-            this.bandWrapperForToolStripTool.MaxHeight = 0;
-            // 
-            // toolBarTool
-            // 
-            this.toolBarTool.Appearance = System.Windows.Forms.ToolBarAppearance.Flat;
-            this.toolBarTool.Buttons.AddRange( new System.Windows.Forms.ToolBarButton[] {
-            this.stripBtnPointer,
-            this.stripBtnPencil,
-            this.stripBtnLine,
-            this.stripBtnEraser,
-            this.toolBarButton3,
-            this.stripBtnGrid,
-            this.stripBtnCurve} );
-            this.toolBarTool.Divider = false;
-            this.toolBarTool.Dock = System.Windows.Forms.DockStyle.None;
-            this.toolBarTool.DropDownArrows = true;
-            this.toolBarTool.ImageList = this.imageListTool;
-            this.toolBarTool.Location = new System.Drawing.Point( 11, 92 );
-            this.toolBarTool.Name = "toolBarTool";
-            this.toolBarTool.ShowToolTips = true;
-            this.toolBarTool.Size = new System.Drawing.Size( 944, 26 );
-            this.toolBarTool.TabIndex = 25;
-            this.toolBarTool.TextAlign = System.Windows.Forms.ToolBarTextAlign.Right;
-            // 
-            // toolBarButton3
-            // 
-            this.toolBarButton3.Name = "toolBarButton3";
-            this.toolBarButton3.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
             // 
             // imageListTool
             // 
@@ -20016,25 +19721,6 @@ namespace org.kbinani.cadencii {
             this.panel1.Size = new System.Drawing.Size( 421, 279 );
             this.panel1.TabIndex = 24;
             // 
-            // rebarWrapper2
-            // 
-            this.rebarWrapper2.Bands.Add( this.bandStatus );
-            this.rebarWrapper2.Bands.Add( this.bandWrapper1 );
-            this.rebarWrapper2.Controls.Add( this.statusLabel );
-            this.rebarWrapper2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.rebarWrapper2.Location = new System.Drawing.Point( 0, 655 );
-            this.rebarWrapper2.Name = "rebarWrapper2";
-            this.rebarWrapper2.Size = new System.Drawing.Size( 955, 34 );
-            this.rebarWrapper2.TabIndex = 25;
-            this.rebarWrapper2.Text = "rebarWrapper2";
-            // 
-            // bandStatus
-            // 
-            this.bandStatus.Child = this.statusLabel;
-            this.bandStatus.Header = -1;
-            this.bandStatus.Integral = 1;
-            this.bandStatus.MaxHeight = 0;
-            // 
             // panelOverview
             // 
             this.panelOverview.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
@@ -20068,6 +19754,314 @@ namespace org.kbinani.cadencii {
             this.hScroll.Name = "hScroll";
             this.hScroll.Size = new System.Drawing.Size( 257, 16 );
             this.hScroll.TabIndex = 16;
+            // 
+            // rebarWrapper1
+            // 
+            this.rebarWrapper1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.rebarWrapper1.Location = new System.Drawing.Point( 0, 26 );
+            this.rebarWrapper1.Name = "rebarWrapper1";
+            this.rebarWrapper1.Size = new System.Drawing.Size( 955, 118 );
+            this.rebarWrapper1.TabIndex = 19;
+            this.rebarWrapper1.Text = "rebarWrapper1";
+            // 
+            // toolBarFile
+            // 
+            this.toolBarFile.Appearance = System.Windows.Forms.ToolBarAppearance.Flat;
+            this.toolBarFile.Buttons.AddRange( new System.Windows.Forms.ToolBarButton[] {
+            this.stripBtnFileNew,
+            this.stripBtnFileOpen,
+            this.stripBtnFileSave,
+            this.toolBarButton1,
+            this.stripBtnCut,
+            this.stripBtnCopy,
+            this.stripBtnPaste,
+            this.toolBarButton2,
+            this.stripBtnUndo,
+            this.stripBtnRedo} );
+            this.toolBarFile.ButtonSize = new System.Drawing.Size( 23, 22 );
+            this.toolBarFile.Divider = false;
+            this.toolBarFile.Dock = System.Windows.Forms.DockStyle.None;
+            this.toolBarFile.DropDownArrows = true;
+            this.toolBarFile.ImageList = this.imageListFile;
+            this.toolBarFile.Location = new System.Drawing.Point( 11, 2 );
+            this.toolBarFile.Name = "toolBarFile";
+            this.toolBarFile.ShowToolTips = true;
+            this.toolBarFile.Size = new System.Drawing.Size( 944, 26 );
+            this.toolBarFile.TabIndex = 25;
+            this.toolBarFile.Wrappable = false;
+            // 
+            // stripBtnFileNew
+            // 
+            this.stripBtnFileNew.ImageIndex = 0;
+            this.stripBtnFileNew.Name = "stripBtnFileNew";
+            this.stripBtnFileNew.ToolTipText = "New";
+            // 
+            // stripBtnFileOpen
+            // 
+            this.stripBtnFileOpen.ImageIndex = 1;
+            this.stripBtnFileOpen.Name = "stripBtnFileOpen";
+            this.stripBtnFileOpen.ToolTipText = "Open";
+            // 
+            // stripBtnFileSave
+            // 
+            this.stripBtnFileSave.ImageIndex = 2;
+            this.stripBtnFileSave.Name = "stripBtnFileSave";
+            this.stripBtnFileSave.ToolTipText = "Save";
+            // 
+            // toolBarButton1
+            // 
+            this.toolBarButton1.Name = "toolBarButton1";
+            this.toolBarButton1.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
+            // 
+            // stripBtnCut
+            // 
+            this.stripBtnCut.ImageIndex = 3;
+            this.stripBtnCut.Name = "stripBtnCut";
+            this.stripBtnCut.ToolTipText = "Cut";
+            // 
+            // stripBtnCopy
+            // 
+            this.stripBtnCopy.ImageIndex = 4;
+            this.stripBtnCopy.Name = "stripBtnCopy";
+            this.stripBtnCopy.ToolTipText = "Copy";
+            // 
+            // stripBtnPaste
+            // 
+            this.stripBtnPaste.ImageIndex = 5;
+            this.stripBtnPaste.Name = "stripBtnPaste";
+            this.stripBtnPaste.ToolTipText = "Paste";
+            // 
+            // toolBarButton2
+            // 
+            this.toolBarButton2.Name = "toolBarButton2";
+            this.toolBarButton2.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
+            // 
+            // stripBtnUndo
+            // 
+            this.stripBtnUndo.ImageIndex = 6;
+            this.stripBtnUndo.Name = "stripBtnUndo";
+            this.stripBtnUndo.ToolTipText = "Undo";
+            // 
+            // stripBtnRedo
+            // 
+            this.stripBtnRedo.ImageIndex = 7;
+            this.stripBtnRedo.Name = "stripBtnRedo";
+            this.stripBtnRedo.ToolTipText = "Redo";
+            // 
+            // toolBarPosition
+            // 
+            this.toolBarPosition.Appearance = System.Windows.Forms.ToolBarAppearance.Flat;
+            this.toolBarPosition.Buttons.AddRange( new System.Windows.Forms.ToolBarButton[] {
+            this.stripBtnMoveTop,
+            this.stripBtnRewind,
+            this.stripBtnForward,
+            this.stripBtnMoveEnd,
+            this.stripBtnPlay,
+            this.stripBtnStop,
+            this.toolBarButton4,
+            this.stripBtnScroll,
+            this.stripBtnLoop} );
+            this.toolBarPosition.Divider = false;
+            this.toolBarPosition.Dock = System.Windows.Forms.DockStyle.None;
+            this.toolBarPosition.DropDownArrows = true;
+            this.toolBarPosition.ImageList = this.imageListPosition;
+            this.toolBarPosition.Location = new System.Drawing.Point( 11, 32 );
+            this.toolBarPosition.Name = "toolBarPosition";
+            this.toolBarPosition.ShowToolTips = true;
+            this.toolBarPosition.Size = new System.Drawing.Size( 944, 26 );
+            this.toolBarPosition.TabIndex = 25;
+            this.toolBarPosition.TextAlign = System.Windows.Forms.ToolBarTextAlign.Right;
+            this.toolBarPosition.Wrappable = false;
+            // 
+            // stripBtnMoveTop
+            // 
+            this.stripBtnMoveTop.ImageIndex = 0;
+            this.stripBtnMoveTop.Name = "stripBtnMoveTop";
+            this.stripBtnMoveTop.ToolTipText = "MoveTop";
+            // 
+            // stripBtnRewind
+            // 
+            this.stripBtnRewind.ImageIndex = 1;
+            this.stripBtnRewind.Name = "stripBtnRewind";
+            this.stripBtnRewind.ToolTipText = "Rewind";
+            // 
+            // stripBtnForward
+            // 
+            this.stripBtnForward.ImageIndex = 2;
+            this.stripBtnForward.Name = "stripBtnForward";
+            this.stripBtnForward.ToolTipText = "Forward";
+            // 
+            // stripBtnMoveEnd
+            // 
+            this.stripBtnMoveEnd.ImageIndex = 3;
+            this.stripBtnMoveEnd.Name = "stripBtnMoveEnd";
+            this.stripBtnMoveEnd.ToolTipText = "MoveEnd";
+            // 
+            // stripBtnPlay
+            // 
+            this.stripBtnPlay.ImageIndex = 4;
+            this.stripBtnPlay.Name = "stripBtnPlay";
+            this.stripBtnPlay.ToolTipText = "Play";
+            // 
+            // stripBtnStop
+            // 
+            this.stripBtnStop.ImageIndex = 5;
+            this.stripBtnStop.Name = "stripBtnStop";
+            this.stripBtnStop.ToolTipText = "Stop";
+            // 
+            // toolBarButton4
+            // 
+            this.toolBarButton4.Name = "toolBarButton4";
+            this.toolBarButton4.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
+            // 
+            // stripBtnScroll
+            // 
+            this.stripBtnScroll.ImageIndex = 6;
+            this.stripBtnScroll.Name = "stripBtnScroll";
+            // 
+            // stripBtnLoop
+            // 
+            this.stripBtnLoop.ImageIndex = 7;
+            this.stripBtnLoop.Name = "stripBtnLoop";
+            // 
+            // toolBarMeasure
+            // 
+            this.toolBarMeasure.Appearance = System.Windows.Forms.ToolBarAppearance.Flat;
+            this.toolBarMeasure.Buttons.AddRange( new System.Windows.Forms.ToolBarButton[] {
+            this.stripDDBtnLengthParent,
+            this.stripDDBtnQuantizeParent,
+            this.toolBarButton5,
+            this.stripBtnStartMarker,
+            this.stripBtnEndMarker} );
+            this.toolBarMeasure.Divider = false;
+            this.toolBarMeasure.Dock = System.Windows.Forms.DockStyle.None;
+            this.toolBarMeasure.DropDownArrows = true;
+            this.toolBarMeasure.ImageList = this.imageListMeasure;
+            this.toolBarMeasure.Location = new System.Drawing.Point( 11, 62 );
+            this.toolBarMeasure.Name = "toolBarMeasure";
+            this.toolBarMeasure.ShowToolTips = true;
+            this.toolBarMeasure.Size = new System.Drawing.Size( 944, 26 );
+            this.toolBarMeasure.TabIndex = 25;
+            this.toolBarMeasure.TextAlign = System.Windows.Forms.ToolBarTextAlign.Right;
+            this.toolBarMeasure.Wrappable = false;
+            // 
+            // stripDDBtnLengthParent
+            // 
+            this.stripDDBtnLengthParent.Name = "stripDDBtnLengthParent";
+            // 
+            // stripDDBtnQuantizeParent
+            // 
+            this.stripDDBtnQuantizeParent.Name = "stripDDBtnQuantizeParent";
+            // 
+            // toolBarButton5
+            // 
+            this.toolBarButton5.Name = "toolBarButton5";
+            this.toolBarButton5.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
+            // 
+            // stripBtnStartMarker
+            // 
+            this.stripBtnStartMarker.ImageIndex = 0;
+            this.stripBtnStartMarker.Name = "stripBtnStartMarker";
+            this.stripBtnStartMarker.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+            // 
+            // stripBtnEndMarker
+            // 
+            this.stripBtnEndMarker.ImageIndex = 1;
+            this.stripBtnEndMarker.Name = "stripBtnEndMarker";
+            this.stripBtnEndMarker.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+            // 
+            // toolBarTool
+            // 
+            this.toolBarTool.Appearance = System.Windows.Forms.ToolBarAppearance.Flat;
+            this.toolBarTool.Buttons.AddRange( new System.Windows.Forms.ToolBarButton[] {
+            this.stripBtnPointer,
+            this.stripBtnPencil,
+            this.stripBtnLine,
+            this.stripBtnEraser,
+            this.toolBarButton3,
+            this.stripBtnGrid,
+            this.stripBtnCurve} );
+            this.toolBarTool.Divider = false;
+            this.toolBarTool.Dock = System.Windows.Forms.DockStyle.None;
+            this.toolBarTool.DropDownArrows = true;
+            this.toolBarTool.ImageList = this.imageListTool;
+            this.toolBarTool.Location = new System.Drawing.Point( 11, 92 );
+            this.toolBarTool.Name = "toolBarTool";
+            this.toolBarTool.ShowToolTips = true;
+            this.toolBarTool.Size = new System.Drawing.Size( 944, 26 );
+            this.toolBarTool.TabIndex = 25;
+            this.toolBarTool.TextAlign = System.Windows.Forms.ToolBarTextAlign.Right;
+            this.toolBarTool.Wrappable = false;
+            // 
+            // stripBtnPointer
+            // 
+            this.stripBtnPointer.ImageIndex = 0;
+            this.stripBtnPointer.Name = "stripBtnPointer";
+            this.stripBtnPointer.Pushed = true;
+            this.stripBtnPointer.Text = "Pointer";
+            // 
+            // stripBtnPencil
+            // 
+            this.stripBtnPencil.ImageIndex = 1;
+            this.stripBtnPencil.Name = "stripBtnPencil";
+            this.stripBtnPencil.Text = "Pencil";
+            // 
+            // stripBtnLine
+            // 
+            this.stripBtnLine.ImageIndex = 2;
+            this.stripBtnLine.Name = "stripBtnLine";
+            this.stripBtnLine.Text = "Line";
+            // 
+            // stripBtnEraser
+            // 
+            this.stripBtnEraser.ImageIndex = 3;
+            this.stripBtnEraser.Name = "stripBtnEraser";
+            this.stripBtnEraser.Text = "Eraser";
+            // 
+            // toolBarButton3
+            // 
+            this.toolBarButton3.Name = "toolBarButton3";
+            this.toolBarButton3.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
+            // 
+            // stripBtnGrid
+            // 
+            this.stripBtnGrid.ImageIndex = 4;
+            this.stripBtnGrid.Name = "stripBtnGrid";
+            this.stripBtnGrid.Text = "Grid";
+            // 
+            // stripBtnCurve
+            // 
+            this.stripBtnCurve.ImageIndex = 5;
+            this.stripBtnCurve.Name = "stripBtnCurve";
+            this.stripBtnCurve.Text = "Curve";
+            // 
+            // rebarWrapper2
+            // 
+            this.rebarWrapper2.Bands.Add( this.bandStatus );
+            this.rebarWrapper2.Bands.Add( this.bandWrapper1 );
+            this.rebarWrapper2.Controls.Add( this.statusLabel );
+            this.rebarWrapper2.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.rebarWrapper2.Location = new System.Drawing.Point( 0, 655 );
+            this.rebarWrapper2.Name = "rebarWrapper2";
+            this.rebarWrapper2.Size = new System.Drawing.Size( 955, 34 );
+            this.rebarWrapper2.TabIndex = 25;
+            this.rebarWrapper2.Text = "rebarWrapper2";
+            // 
+            // bandStatus
+            // 
+            this.bandStatus.Child = this.statusLabel;
+            this.bandStatus.Header = -1;
+            this.bandStatus.Integral = 1;
+            this.bandStatus.MaxHeight = 0;
+            // 
+            // statusLabel
+            // 
+            this.statusLabel.Location = new System.Drawing.Point( 11, 2 );
+            this.statusLabel.MinimumSize = new System.Drawing.Size( 0, 22 );
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size( 944, 24 );
+            this.statusLabel.TabIndex = 0;
+            this.statusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // bandWrapper1
             // 
@@ -20111,12 +20105,12 @@ namespace org.kbinani.cadencii {
             ((System.ComponentModel.ISupportInitialize)(this.picturePositionIndicator)).EndInit();
             this.toolStripBottom.ResumeLayout( false );
             this.toolStripBottom.PerformLayout();
-            this.rebarWrapper1.ResumeLayout( false );
-            this.rebarWrapper1.PerformLayout();
             this.panel1.ResumeLayout( false );
-            this.rebarWrapper2.ResumeLayout( false );
             ((System.ComponentModel.ISupportInitialize)(this.panelOverview)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).EndInit();
+            this.rebarWrapper1.ResumeLayout( false );
+            this.rebarWrapper1.PerformLayout();
+            this.rebarWrapper2.ResumeLayout( false );
             this.ResumeLayout( false );
             this.PerformLayout();
 
