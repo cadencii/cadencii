@@ -585,9 +585,11 @@ namespace org.kbinani.cadencii {
         private System.Windows.Forms.MenuItem menuItem2;
         private System.Windows.Forms.ToolBarButton toolBarButton5;
         private System.Windows.Forms.ImageList imageListMeasure;
-        private Rebar rebarWrapper2;
         private RebarBand bandStatus;
         private RebarBand bandWrapper1;
+        private System.Windows.Forms.ToolStripContainer toolStripContainer1;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel statusLabel;
         private float mFps2 = 0f;
 #endif
         #endregion
@@ -5441,7 +5443,7 @@ namespace org.kbinani.cadencii {
                 for ( Iterator<ValuePair<Integer, SelectedTempoEntry>> itr = AppManager.getSelectedTempoIterator(); itr.hasNext(); ) {
                     ValuePair<Integer, SelectedTempoEntry> item = itr.next();
                     if ( item.getKey() <= 0 ) {
-                        statusLabel.setText( _( "Cannot remove first symbol of track!" ) );
+                        statusLabel.Text = _( "Cannot remove first symbol of track!" );
 #if !JAVA
                         SystemSounds.Asterisk.Play();
 #endif
@@ -5476,7 +5478,7 @@ namespace org.kbinani.cadencii {
                     count++;
                     barcounts[count] = key;
                     if ( key <= 0 ) {
-                        statusLabel.setText( _( "Cannot remove first symbol of track!" ) );
+                        statusLabel.Text = _( "Cannot remove first symbol of track!" );
 #if !JAVA
                         SystemSounds.Asterisk.Play();
 #endif
@@ -13631,7 +13633,7 @@ namespace org.kbinani.cadencii {
                             if ( AppManager.getSelectedTool() == EditTool.ERASER ) {
                                 #region ツールがEraser
                                 if ( vsq.TempoTable.get( index ).Clock == 0 ) {
-                                    statusLabel.setText( _( "Cannot remove first symbol of track!" ) );
+                                    statusLabel.Text = _( "Cannot remove first symbol of track!" );
 #if !JAVA
                                     SystemSounds.Asterisk.Play();
 #endif
@@ -13784,7 +13786,7 @@ namespace org.kbinani.cadencii {
                         if ( AppManager.getSelectedTool() == EditTool.ERASER ) {
                             #region ツールがEraser
                             if ( vsq.TimesigTable.get( index ).Clock == 0 ) {
-                                statusLabel.setText( _( "Cannot remove first symbol of track!" ) );
+                                statusLabel.Text = _( "Cannot remove first symbol of track!" );
 #if !JAVA
                                 SystemSounds.Asterisk.Play();
 #endif
@@ -14135,7 +14137,7 @@ namespace org.kbinani.cadencii {
                             if ( index >= 0 && AppManager.getSelectedTool() == EditTool.ERASER ) {
                                 #region ツールがEraser
                                 if ( vsq.TempoTable.get( index ).Clock == 0 ) {
-                                    statusLabel.setText( _( "Cannot remove first symbol of track!" ) );
+                                    statusLabel.Text = _( "Cannot remove first symbol of track!" );
 #if !JAVA
                                     SystemSounds.Asterisk.Play();
 #endif
@@ -14170,7 +14172,7 @@ namespace org.kbinani.cadencii {
                             if ( AppManager.getSelectedTool() == EditTool.ERASER ) {
                                 #region ツールがEraser
                                 if ( vsq.TimesigTable.get( index ).Clock == 0 ) {
-                                    statusLabel.setText( _( "Cannot remove first symbol of track!" ) );
+                                    statusLabel.Text = _( "Cannot remove first symbol of track!" );
 #if !JAVA
                                     SystemSounds.Asterisk.Play();
 #endif
@@ -15889,7 +15891,7 @@ namespace org.kbinani.cadencii {
 #if JAVA
                 statusLabel.setText( item.getToolTipText() );
 #else
-                statusLabel.setText( item.ToolTipText );
+                statusLabel.Text = item.ToolTipText;
 #endif
             }
         }
@@ -16433,7 +16435,7 @@ namespace org.kbinani.cadencii {
                 Logger.write( typeof( FormMain ) + ".handleMenuMouseEnter; cannot find message for " + item.getName() + "\n" );
             }
 #endif
-            statusLabel.setText( text );
+            statusLabel.Text = text;
         }
 
         public void handleSpaceKeyDown( Object sender, BKeyEventArgs e ) {
@@ -17300,6 +17302,7 @@ namespace org.kbinani.cadencii {
             this.stripDDBtnSpeed050 = new org.kbinani.windows.forms.BMenuItem();
             this.stripDDBtnSpeed100 = new org.kbinani.windows.forms.BMenuItem();
             this.splitContainerProperty = new org.kbinani.apputil.BSplitContainer();
+            this.splitContainer2 = new org.kbinani.apputil.BSplitContainer();
             this.panel2 = new org.kbinani.windows.forms.BPanel();
             this.splitContainer1 = new org.kbinani.apputil.BSplitContainer();
             this.stripDDBtnLength = new System.Windows.Forms.ContextMenu();
@@ -17332,7 +17335,6 @@ namespace org.kbinani.cadencii {
             this.panelForToolStripPosition = new System.Windows.Forms.Panel();
             this.panelForToolStripTool = new System.Windows.Forms.Panel();
             this.panelForToolStripFile = new System.Windows.Forms.Panel();
-            this.splitContainer2 = new org.kbinani.apputil.BSplitContainer();
             this.panel1 = new System.Windows.Forms.Panel();
             this.rebarWrapper1 = new org.kbinani.windows.forms.Rebar();
             this.toolBarFile = new System.Windows.Forms.ToolBar();
@@ -17370,10 +17372,11 @@ namespace org.kbinani.cadencii {
             this.toolBarButton3 = new System.Windows.Forms.ToolBarButton();
             this.stripBtnGrid = new System.Windows.Forms.ToolBarButton();
             this.stripBtnCurve = new System.Windows.Forms.ToolBarButton();
-            this.rebarWrapper2 = new org.kbinani.windows.forms.Rebar();
             this.bandStatus = new org.kbinani.windows.forms.RebarBand();
-            this.statusLabel = new org.kbinani.windows.forms.BLabel();
             this.bandWrapper1 = new org.kbinani.windows.forms.RebarBand();
+            this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.panelOverview = new org.kbinani.cadencii.PictOverview();
             this.pictPianoRoll = new org.kbinani.cadencii.PictPianoRoll();
             this.hScroll = new org.kbinani.cadencii.HScroll();
@@ -17387,8 +17390,12 @@ namespace org.kbinani.cadencii {
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.picturePositionIndicator)).BeginInit();
             this.toolStripBottom.SuspendLayout();
+            this.splitContainerProperty.SuspendLayout();
             this.panel1.SuspendLayout();
-            this.rebarWrapper2.SuspendLayout();
+            this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
+            this.toolStripContainer1.ContentPanel.SuspendLayout();
+            this.toolStripContainer1.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.panelOverview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).BeginInit();
             this.SuspendLayout();
@@ -17408,12 +17415,14 @@ namespace org.kbinani.cadencii {
             this.menuHidden} );
             this.menuStripMain.Location = new System.Drawing.Point( 0, 0 );
             this.menuStripMain.Name = "menuStripMain";
-            this.menuStripMain.Size = new System.Drawing.Size( 955, 26 );
+            this.menuStripMain.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+            this.menuStripMain.Size = new System.Drawing.Size( 955, 24 );
             this.menuStripMain.TabIndex = 0;
             this.menuStripMain.Text = "menuStrip1";
             // 
             // menuFile
             // 
+            this.menuFile.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuFile.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
             this.menuFileNew,
             this.menuFileOpen,
@@ -17430,127 +17439,147 @@ namespace org.kbinani.cadencii {
             this.menuFileQuit} );
             this.menuFile.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.menuFile.Name = "menuFile";
-            this.menuFile.Size = new System.Drawing.Size( 57, 22 );
+            this.menuFile.Size = new System.Drawing.Size( 51, 20 );
             this.menuFile.Text = "File(&F)";
             // 
             // menuFileNew
             // 
+            this.menuFileNew.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuFileNew.Name = "menuFileNew";
-            this.menuFileNew.Size = new System.Drawing.Size( 232, 22 );
+            this.menuFileNew.Size = new System.Drawing.Size( 214, 22 );
             this.menuFileNew.Text = "New(N)";
+            this.menuFileNew.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
             // 
             // menuFileOpen
             // 
+            this.menuFileOpen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuFileOpen.Name = "menuFileOpen";
-            this.menuFileOpen.Size = new System.Drawing.Size( 232, 22 );
+            this.menuFileOpen.Size = new System.Drawing.Size( 214, 22 );
             this.menuFileOpen.Text = "Open(&O)";
+            this.menuFileOpen.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
             // 
             // menuFileSave
             // 
+            this.menuFileSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuFileSave.Name = "menuFileSave";
-            this.menuFileSave.Size = new System.Drawing.Size( 232, 22 );
+            this.menuFileSave.Size = new System.Drawing.Size( 214, 22 );
             this.menuFileSave.Text = "Save(&S)";
+            this.menuFileSave.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
             // 
             // menuFileSaveNamed
             // 
+            this.menuFileSaveNamed.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuFileSaveNamed.Name = "menuFileSaveNamed";
-            this.menuFileSaveNamed.Size = new System.Drawing.Size( 232, 22 );
+            this.menuFileSaveNamed.Size = new System.Drawing.Size( 214, 22 );
             this.menuFileSaveNamed.Text = "Save As(&A)";
+            this.menuFileSaveNamed.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
             // 
             // toolStripMenuItem10
             // 
             this.toolStripMenuItem10.Name = "toolStripMenuItem10";
-            this.toolStripMenuItem10.Size = new System.Drawing.Size( 229, 6 );
+            this.toolStripMenuItem10.Size = new System.Drawing.Size( 211, 6 );
             // 
             // menuFileOpenVsq
             // 
+            this.menuFileOpenVsq.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuFileOpenVsq.Name = "menuFileOpenVsq";
-            this.menuFileOpenVsq.Size = new System.Drawing.Size( 232, 22 );
+            this.menuFileOpenVsq.Size = new System.Drawing.Size( 214, 22 );
             this.menuFileOpenVsq.Text = "Open VSQ/Vocaloid Midi(&V)";
+            this.menuFileOpenVsq.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
             // 
             // menuFileOpenUst
             // 
+            this.menuFileOpenUst.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuFileOpenUst.Name = "menuFileOpenUst";
-            this.menuFileOpenUst.Size = new System.Drawing.Size( 232, 22 );
+            this.menuFileOpenUst.Size = new System.Drawing.Size( 214, 22 );
             this.menuFileOpenUst.Text = "Open UTAU Project File(&U)";
+            this.menuFileOpenUst.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
             // 
             // menuFileImport
             // 
+            this.menuFileImport.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuFileImport.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
             this.menuFileImportVsq,
             this.menuFileImportMidi} );
             this.menuFileImport.Name = "menuFileImport";
-            this.menuFileImport.Size = new System.Drawing.Size( 232, 22 );
+            this.menuFileImport.Size = new System.Drawing.Size( 214, 22 );
             this.menuFileImport.Text = "Import(&I)";
+            this.menuFileImport.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
             // 
             // menuFileImportVsq
             // 
             this.menuFileImportVsq.Name = "menuFileImportVsq";
-            this.menuFileImportVsq.Size = new System.Drawing.Size( 162, 22 );
+            this.menuFileImportVsq.Size = new System.Drawing.Size( 142, 22 );
             this.menuFileImportVsq.Text = "VSQ File";
             // 
             // menuFileImportMidi
             // 
             this.menuFileImportMidi.Name = "menuFileImportMidi";
-            this.menuFileImportMidi.Size = new System.Drawing.Size( 162, 22 );
+            this.menuFileImportMidi.Size = new System.Drawing.Size( 142, 22 );
             this.menuFileImportMidi.Text = "Standard MIDI";
             // 
             // menuFileExport
             // 
+            this.menuFileExport.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuFileExport.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
             this.menuFileExportWave,
             this.menuFileExportMidi,
             this.menuFileExportMusicXml,
             this.menuFileExportUst} );
             this.menuFileExport.Name = "menuFileExport";
-            this.menuFileExport.Size = new System.Drawing.Size( 232, 22 );
+            this.menuFileExport.Size = new System.Drawing.Size( 214, 22 );
             this.menuFileExport.Text = "Export(&E)";
+            this.menuFileExport.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
             // 
             // menuFileExportWave
             // 
             this.menuFileExportWave.Name = "menuFileExportWave";
-            this.menuFileExportWave.Size = new System.Drawing.Size( 268, 22 );
+            this.menuFileExportWave.Size = new System.Drawing.Size( 242, 22 );
             this.menuFileExportWave.Text = "Wave";
             // 
             // menuFileExportMidi
             // 
             this.menuFileExportMidi.Name = "menuFileExportMidi";
-            this.menuFileExportMidi.Size = new System.Drawing.Size( 268, 22 );
+            this.menuFileExportMidi.Size = new System.Drawing.Size( 242, 22 );
             this.menuFileExportMidi.Text = "MIDI";
             // 
             // menuFileExportMusicXml
             // 
             this.menuFileExportMusicXml.Name = "menuFileExportMusicXml";
-            this.menuFileExportMusicXml.Size = new System.Drawing.Size( 268, 22 );
+            this.menuFileExportMusicXml.Size = new System.Drawing.Size( 242, 22 );
             this.menuFileExportMusicXml.Text = "MusicXML";
             // 
             // menuFileExportUst
             // 
             this.menuFileExportUst.Name = "menuFileExportUst";
-            this.menuFileExportUst.Size = new System.Drawing.Size( 268, 22 );
+            this.menuFileExportUst.Size = new System.Drawing.Size( 242, 22 );
             this.menuFileExportUst.Text = "UTAU Project File (current track)";
             // 
             // toolStripMenuItem11
             // 
             this.toolStripMenuItem11.Name = "toolStripMenuItem11";
-            this.toolStripMenuItem11.Size = new System.Drawing.Size( 229, 6 );
+            this.toolStripMenuItem11.Size = new System.Drawing.Size( 211, 6 );
             // 
             // menuFileRecent
             // 
+            this.menuFileRecent.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuFileRecent.Name = "menuFileRecent";
-            this.menuFileRecent.Size = new System.Drawing.Size( 232, 22 );
+            this.menuFileRecent.Size = new System.Drawing.Size( 214, 22 );
             this.menuFileRecent.Text = "Recent Files(&R)";
+            this.menuFileRecent.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
             // 
             // toolStripMenuItem12
             // 
             this.toolStripMenuItem12.Name = "toolStripMenuItem12";
-            this.toolStripMenuItem12.Size = new System.Drawing.Size( 229, 6 );
+            this.toolStripMenuItem12.Size = new System.Drawing.Size( 211, 6 );
             // 
             // menuFileQuit
             // 
+            this.menuFileQuit.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuFileQuit.Name = "menuFileQuit";
-            this.menuFileQuit.Size = new System.Drawing.Size( 232, 22 );
+            this.menuFileQuit.Size = new System.Drawing.Size( 214, 22 );
             this.menuFileQuit.Text = "Quit(&Q)";
+            this.menuFileQuit.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
             // 
             // menuEdit
             // 
@@ -17568,77 +17597,77 @@ namespace org.kbinani.cadencii {
             this.menuEditSelectAll,
             this.menuEditSelectAllEvents} );
             this.menuEdit.Name = "menuEdit";
-            this.menuEdit.Size = new System.Drawing.Size( 59, 22 );
+            this.menuEdit.Size = new System.Drawing.Size( 52, 20 );
             this.menuEdit.Text = "Edit(&E)";
             // 
             // menuEditUndo
             // 
             this.menuEditUndo.Name = "menuEditUndo";
-            this.menuEditUndo.Size = new System.Drawing.Size( 220, 22 );
+            this.menuEditUndo.Size = new System.Drawing.Size( 195, 22 );
             this.menuEditUndo.Text = "Undo(&U)";
             // 
             // menuEditRedo
             // 
             this.menuEditRedo.Name = "menuEditRedo";
-            this.menuEditRedo.Size = new System.Drawing.Size( 220, 22 );
+            this.menuEditRedo.Size = new System.Drawing.Size( 195, 22 );
             this.menuEditRedo.Text = "Redo(&R)";
             // 
             // toolStripMenuItem5
             // 
             this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-            this.toolStripMenuItem5.Size = new System.Drawing.Size( 217, 6 );
+            this.toolStripMenuItem5.Size = new System.Drawing.Size( 192, 6 );
             // 
             // menuEditCut
             // 
             this.menuEditCut.Name = "menuEditCut";
-            this.menuEditCut.Size = new System.Drawing.Size( 220, 22 );
+            this.menuEditCut.Size = new System.Drawing.Size( 195, 22 );
             this.menuEditCut.Text = "Cut(&T)";
             // 
             // menuEditCopy
             // 
             this.menuEditCopy.Name = "menuEditCopy";
-            this.menuEditCopy.Size = new System.Drawing.Size( 220, 22 );
+            this.menuEditCopy.Size = new System.Drawing.Size( 195, 22 );
             this.menuEditCopy.Text = "Copy(&C)";
             // 
             // menuEditPaste
             // 
             this.menuEditPaste.Name = "menuEditPaste";
             this.menuEditPaste.ShortcutKeyDisplayString = "";
-            this.menuEditPaste.Size = new System.Drawing.Size( 220, 22 );
+            this.menuEditPaste.Size = new System.Drawing.Size( 195, 22 );
             this.menuEditPaste.Text = "Paste(&P)";
             // 
             // menuEditDelete
             // 
             this.menuEditDelete.Name = "menuEditDelete";
-            this.menuEditDelete.Size = new System.Drawing.Size( 220, 22 );
+            this.menuEditDelete.Size = new System.Drawing.Size( 195, 22 );
             this.menuEditDelete.Text = "Delete(&D)";
             // 
             // toolStripMenuItem19
             // 
             this.toolStripMenuItem19.Name = "toolStripMenuItem19";
-            this.toolStripMenuItem19.Size = new System.Drawing.Size( 217, 6 );
+            this.toolStripMenuItem19.Size = new System.Drawing.Size( 192, 6 );
             // 
             // menuEditAutoNormalizeMode
             // 
             this.menuEditAutoNormalizeMode.Name = "menuEditAutoNormalizeMode";
-            this.menuEditAutoNormalizeMode.Size = new System.Drawing.Size( 220, 22 );
+            this.menuEditAutoNormalizeMode.Size = new System.Drawing.Size( 195, 22 );
             this.menuEditAutoNormalizeMode.Text = "Auto Normalize Mode(&N)";
             // 
             // toolStripMenuItem20
             // 
             this.toolStripMenuItem20.Name = "toolStripMenuItem20";
-            this.toolStripMenuItem20.Size = new System.Drawing.Size( 217, 6 );
+            this.toolStripMenuItem20.Size = new System.Drawing.Size( 192, 6 );
             // 
             // menuEditSelectAll
             // 
             this.menuEditSelectAll.Name = "menuEditSelectAll";
-            this.menuEditSelectAll.Size = new System.Drawing.Size( 220, 22 );
+            this.menuEditSelectAll.Size = new System.Drawing.Size( 195, 22 );
             this.menuEditSelectAll.Text = "Select All(&A)";
             // 
             // menuEditSelectAllEvents
             // 
             this.menuEditSelectAllEvents.Name = "menuEditSelectAllEvents";
-            this.menuEditSelectAllEvents.Size = new System.Drawing.Size( 220, 22 );
+            this.menuEditSelectAllEvents.Size = new System.Drawing.Size( 195, 22 );
             this.menuEditSelectAllEvents.Text = "Select All Events(&E)";
             // 
             // menuVisual
@@ -17663,7 +17692,7 @@ namespace org.kbinani.cadencii {
             this.menuVisualNoteProperty,
             this.menuVisualPitchLine} );
             this.menuVisual.Name = "menuVisual";
-            this.menuVisual.Size = new System.Drawing.Size( 66, 22 );
+            this.menuVisual.Size = new System.Drawing.Size( 58, 20 );
             this.menuVisual.Text = "View(&V)";
             // 
             // menuVisualControlTrack
@@ -17673,7 +17702,7 @@ namespace org.kbinani.cadencii {
             this.menuVisualControlTrack.CheckState = System.Windows.Forms.CheckState.Checked;
             this.menuVisualControlTrack.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuVisualControlTrack.Name = "menuVisualControlTrack";
-            this.menuVisualControlTrack.Size = new System.Drawing.Size( 237, 22 );
+            this.menuVisualControlTrack.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualControlTrack.Text = "Control Track(&C)";
             // 
             // menuVisualCircuitDiagram
@@ -17681,41 +17710,41 @@ namespace org.kbinani.cadencii {
             this.menuVisualCircuitDiagram.CheckOnClick = true;
             this.menuVisualCircuitDiagram.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuVisualCircuitDiagram.Name = "menuVisualCircuitDiagram";
-            this.menuVisualCircuitDiagram.Size = new System.Drawing.Size( 237, 22 );
+            this.menuVisualCircuitDiagram.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualCircuitDiagram.Text = "Circuit Diagram";
             // 
             // menuVisualMixer
             // 
             this.menuVisualMixer.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuVisualMixer.Name = "menuVisualMixer";
-            this.menuVisualMixer.Size = new System.Drawing.Size( 237, 22 );
+            this.menuVisualMixer.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualMixer.Text = "Mixer(&X)";
             // 
             // menuVisualWaveform
             // 
             this.menuVisualWaveform.CheckOnClick = true;
             this.menuVisualWaveform.Name = "menuVisualWaveform";
-            this.menuVisualWaveform.Size = new System.Drawing.Size( 237, 22 );
+            this.menuVisualWaveform.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualWaveform.Text = "Waveform(&W)";
             // 
             // menuVisualIconPalette
             // 
             this.menuVisualIconPalette.Name = "menuVisualIconPalette";
-            this.menuVisualIconPalette.Size = new System.Drawing.Size( 237, 22 );
+            this.menuVisualIconPalette.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualIconPalette.Text = "Icon Palette(&I)";
             // 
             // menuVisualProperty
             // 
             this.menuVisualProperty.CheckOnClick = true;
             this.menuVisualProperty.Name = "menuVisualProperty";
-            this.menuVisualProperty.Size = new System.Drawing.Size( 237, 22 );
+            this.menuVisualProperty.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualProperty.Text = "Property Window(&C)";
             // 
             // menuVisualOverview
             // 
             this.menuVisualOverview.CheckOnClick = true;
             this.menuVisualOverview.Name = "menuVisualOverview";
-            this.menuVisualOverview.Size = new System.Drawing.Size( 237, 22 );
+            this.menuVisualOverview.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualOverview.Text = "Overview(&O)";
             // 
             // menuVisualPluginUi
@@ -17726,69 +17755,69 @@ namespace org.kbinani.cadencii {
             this.menuVisualPluginUiVocaloid2,
             this.menuVisualPluginUiAquesTone} );
             this.menuVisualPluginUi.Name = "menuVisualPluginUi";
-            this.menuVisualPluginUi.Size = new System.Drawing.Size( 237, 22 );
+            this.menuVisualPluginUi.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualPluginUi.Text = "VSTi Plugin UI(&U)";
             // 
             // menuVisualPluginUiVocaloid100
             // 
             this.menuVisualPluginUiVocaloid100.Name = "menuVisualPluginUiVocaloid100";
-            this.menuVisualPluginUiVocaloid100.Size = new System.Drawing.Size( 178, 22 );
+            this.menuVisualPluginUiVocaloid100.Size = new System.Drawing.Size( 159, 22 );
             this.menuVisualPluginUiVocaloid100.Text = "VOCALOID1 [1.0]";
             // 
             // menuVisualPluginUiVocaloid101
             // 
             this.menuVisualPluginUiVocaloid101.Name = "menuVisualPluginUiVocaloid101";
-            this.menuVisualPluginUiVocaloid101.Size = new System.Drawing.Size( 178, 22 );
+            this.menuVisualPluginUiVocaloid101.Size = new System.Drawing.Size( 159, 22 );
             this.menuVisualPluginUiVocaloid101.Text = "VOCALOID1 [1.1]";
             // 
             // menuVisualPluginUiVocaloid2
             // 
             this.menuVisualPluginUiVocaloid2.Name = "menuVisualPluginUiVocaloid2";
-            this.menuVisualPluginUiVocaloid2.Size = new System.Drawing.Size( 178, 22 );
+            this.menuVisualPluginUiVocaloid2.Size = new System.Drawing.Size( 159, 22 );
             this.menuVisualPluginUiVocaloid2.Text = "VOCALOID2";
             // 
             // menuVisualPluginUiAquesTone
             // 
             this.menuVisualPluginUiAquesTone.Name = "menuVisualPluginUiAquesTone";
-            this.menuVisualPluginUiAquesTone.Size = new System.Drawing.Size( 178, 22 );
+            this.menuVisualPluginUiAquesTone.Size = new System.Drawing.Size( 159, 22 );
             this.menuVisualPluginUiAquesTone.Text = "AquesTone(&A)";
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size( 234, 6 );
+            this.toolStripMenuItem1.Size = new System.Drawing.Size( 210, 6 );
             // 
             // menuVisualGridline
             // 
             this.menuVisualGridline.CheckOnClick = true;
             this.menuVisualGridline.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuVisualGridline.Name = "menuVisualGridline";
-            this.menuVisualGridline.Size = new System.Drawing.Size( 237, 22 );
+            this.menuVisualGridline.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualGridline.Text = "Grid Line(&G)";
             // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size( 234, 6 );
+            this.toolStripMenuItem2.Size = new System.Drawing.Size( 210, 6 );
             // 
             // menuVisualStartMarker
             // 
             this.menuVisualStartMarker.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuVisualStartMarker.Name = "menuVisualStartMarker";
-            this.menuVisualStartMarker.Size = new System.Drawing.Size( 237, 22 );
+            this.menuVisualStartMarker.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualStartMarker.Text = "Start Marker(&S)";
             // 
             // menuVisualEndMarker
             // 
             this.menuVisualEndMarker.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuVisualEndMarker.Name = "menuVisualEndMarker";
-            this.menuVisualEndMarker.Size = new System.Drawing.Size( 237, 22 );
+            this.menuVisualEndMarker.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualEndMarker.Text = "End Marker(&E)";
             // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size( 234, 6 );
+            this.toolStripMenuItem3.Size = new System.Drawing.Size( 210, 6 );
             // 
             // menuVisualLyrics
             // 
@@ -17797,7 +17826,7 @@ namespace org.kbinani.cadencii {
             this.menuVisualLyrics.CheckState = System.Windows.Forms.CheckState.Checked;
             this.menuVisualLyrics.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuVisualLyrics.Name = "menuVisualLyrics";
-            this.menuVisualLyrics.Size = new System.Drawing.Size( 237, 22 );
+            this.menuVisualLyrics.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualLyrics.Text = "Lyric/Phoneme(&L)";
             // 
             // menuVisualNoteProperty
@@ -17807,14 +17836,14 @@ namespace org.kbinani.cadencii {
             this.menuVisualNoteProperty.CheckState = System.Windows.Forms.CheckState.Checked;
             this.menuVisualNoteProperty.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuVisualNoteProperty.Name = "menuVisualNoteProperty";
-            this.menuVisualNoteProperty.Size = new System.Drawing.Size( 237, 22 );
+            this.menuVisualNoteProperty.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualNoteProperty.Text = "Note Expression/Vibrato(&N)";
             // 
             // menuVisualPitchLine
             // 
             this.menuVisualPitchLine.CheckOnClick = true;
             this.menuVisualPitchLine.Name = "menuVisualPitchLine";
-            this.menuVisualPitchLine.Size = new System.Drawing.Size( 237, 22 );
+            this.menuVisualPitchLine.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualPitchLine.Text = "Pitch Line(&P)";
             // 
             // menuJob
@@ -17830,62 +17859,62 @@ namespace org.kbinani.cadencii {
             this.menuJobRealTime,
             this.menuJobReloadVsti} );
             this.menuJob.Name = "menuJob";
-            this.menuJob.Size = new System.Drawing.Size( 54, 22 );
+            this.menuJob.Size = new System.Drawing.Size( 51, 20 );
             this.menuJob.Text = "Job(&J)";
             // 
             // menuJobNormalize
             // 
             this.menuJobNormalize.Name = "menuJobNormalize";
-            this.menuJobNormalize.Size = new System.Drawing.Size( 256, 22 );
+            this.menuJobNormalize.Size = new System.Drawing.Size( 223, 22 );
             this.menuJobNormalize.Text = "Normalize Notes(&N)";
             // 
             // menuJobInsertBar
             // 
             this.menuJobInsertBar.Name = "menuJobInsertBar";
-            this.menuJobInsertBar.Size = new System.Drawing.Size( 256, 22 );
+            this.menuJobInsertBar.Size = new System.Drawing.Size( 223, 22 );
             this.menuJobInsertBar.Text = "Insert Bars(&I)";
             // 
             // menuJobDeleteBar
             // 
             this.menuJobDeleteBar.Name = "menuJobDeleteBar";
-            this.menuJobDeleteBar.Size = new System.Drawing.Size( 256, 22 );
+            this.menuJobDeleteBar.Size = new System.Drawing.Size( 223, 22 );
             this.menuJobDeleteBar.Text = "Delete Bars(&D)";
             // 
             // menuJobRandomize
             // 
             this.menuJobRandomize.Name = "menuJobRandomize";
-            this.menuJobRandomize.Size = new System.Drawing.Size( 256, 22 );
+            this.menuJobRandomize.Size = new System.Drawing.Size( 223, 22 );
             this.menuJobRandomize.Text = "Randomize(&R)";
             // 
             // menuJobConnect
             // 
             this.menuJobConnect.Name = "menuJobConnect";
-            this.menuJobConnect.Size = new System.Drawing.Size( 256, 22 );
+            this.menuJobConnect.Size = new System.Drawing.Size( 223, 22 );
             this.menuJobConnect.Text = "Connect Notes(&C)";
             // 
             // menuJobLyric
             // 
             this.menuJobLyric.Name = "menuJobLyric";
-            this.menuJobLyric.Size = new System.Drawing.Size( 256, 22 );
+            this.menuJobLyric.Size = new System.Drawing.Size( 223, 22 );
             this.menuJobLyric.Text = "Insert Lyrics(&L)";
             // 
             // menuJobRewire
             // 
             this.menuJobRewire.Enabled = false;
             this.menuJobRewire.Name = "menuJobRewire";
-            this.menuJobRewire.Size = new System.Drawing.Size( 256, 22 );
+            this.menuJobRewire.Size = new System.Drawing.Size( 223, 22 );
             this.menuJobRewire.Text = "Import ReWire Host Tempo(&T)";
             // 
             // menuJobRealTime
             // 
             this.menuJobRealTime.Name = "menuJobRealTime";
-            this.menuJobRealTime.Size = new System.Drawing.Size( 256, 22 );
+            this.menuJobRealTime.Size = new System.Drawing.Size( 223, 22 );
             this.menuJobRealTime.Text = "Start Realtime Input";
             // 
             // menuJobReloadVsti
             // 
             this.menuJobReloadVsti.Name = "menuJobReloadVsti";
-            this.menuJobReloadVsti.Size = new System.Drawing.Size( 256, 22 );
+            this.menuJobReloadVsti.Size = new System.Drawing.Size( 223, 22 );
             this.menuJobReloadVsti.Text = "Reload VSTi(&R)";
             this.menuJobReloadVsti.Visible = false;
             // 
@@ -17908,71 +17937,71 @@ namespace org.kbinani.cadencii {
             this.menuTrackBgm,
             this.menuTrackManager} );
             this.menuTrack.Name = "menuTrack";
-            this.menuTrack.Size = new System.Drawing.Size( 70, 22 );
+            this.menuTrack.Size = new System.Drawing.Size( 61, 20 );
             this.menuTrack.Text = "Track(&T)";
             // 
             // menuTrackOn
             // 
             this.menuTrackOn.Name = "menuTrackOn";
-            this.menuTrackOn.Size = new System.Drawing.Size( 219, 22 );
+            this.menuTrackOn.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackOn.Text = "Track On(&K)";
             // 
             // toolStripMenuItem21
             // 
             this.toolStripMenuItem21.Name = "toolStripMenuItem21";
-            this.toolStripMenuItem21.Size = new System.Drawing.Size( 216, 6 );
+            this.toolStripMenuItem21.Size = new System.Drawing.Size( 193, 6 );
             // 
             // menuTrackAdd
             // 
             this.menuTrackAdd.Name = "menuTrackAdd";
-            this.menuTrackAdd.Size = new System.Drawing.Size( 219, 22 );
+            this.menuTrackAdd.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackAdd.Text = "Add Track(&A)";
             // 
             // menuTrackCopy
             // 
             this.menuTrackCopy.Name = "menuTrackCopy";
-            this.menuTrackCopy.Size = new System.Drawing.Size( 219, 22 );
+            this.menuTrackCopy.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackCopy.Text = "Copy Track(&C)";
             // 
             // menuTrackChangeName
             // 
             this.menuTrackChangeName.Name = "menuTrackChangeName";
-            this.menuTrackChangeName.Size = new System.Drawing.Size( 219, 22 );
+            this.menuTrackChangeName.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackChangeName.Text = "Rename Track";
             // 
             // menuTrackDelete
             // 
             this.menuTrackDelete.Name = "menuTrackDelete";
-            this.menuTrackDelete.Size = new System.Drawing.Size( 219, 22 );
+            this.menuTrackDelete.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackDelete.Text = "Delete Track(&D)";
             // 
             // toolStripMenuItem22
             // 
             this.toolStripMenuItem22.Name = "toolStripMenuItem22";
-            this.toolStripMenuItem22.Size = new System.Drawing.Size( 216, 6 );
+            this.toolStripMenuItem22.Size = new System.Drawing.Size( 193, 6 );
             // 
             // menuTrackRenderCurrent
             // 
             this.menuTrackRenderCurrent.Name = "menuTrackRenderCurrent";
-            this.menuTrackRenderCurrent.Size = new System.Drawing.Size( 219, 22 );
+            this.menuTrackRenderCurrent.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackRenderCurrent.Text = "Render Current Track(&T)";
             // 
             // menuTrackRenderAll
             // 
             this.menuTrackRenderAll.Enabled = false;
             this.menuTrackRenderAll.Name = "menuTrackRenderAll";
-            this.menuTrackRenderAll.Size = new System.Drawing.Size( 219, 22 );
+            this.menuTrackRenderAll.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackRenderAll.Text = "Render All Tracks(&S)";
             // 
             // toolStripMenuItem23
             // 
             this.toolStripMenuItem23.Name = "toolStripMenuItem23";
-            this.toolStripMenuItem23.Size = new System.Drawing.Size( 216, 6 );
+            this.toolStripMenuItem23.Size = new System.Drawing.Size( 193, 6 );
             // 
             // menuTrackOverlay
             // 
             this.menuTrackOverlay.Name = "menuTrackOverlay";
-            this.menuTrackOverlay.Size = new System.Drawing.Size( 219, 22 );
+            this.menuTrackOverlay.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackOverlay.Text = "Overlay(&O)";
             // 
             // menuTrackRenderer
@@ -17985,60 +18014,60 @@ namespace org.kbinani.cadencii {
             this.menuTrackRendererStraight,
             this.menuTrackRendererAquesTone} );
             this.menuTrackRenderer.Name = "menuTrackRenderer";
-            this.menuTrackRenderer.Size = new System.Drawing.Size( 219, 22 );
+            this.menuTrackRenderer.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackRenderer.Text = "Renderer(&R)";
             // 
             // menuTrackRendererVOCALOID100
             // 
             this.menuTrackRendererVOCALOID100.Name = "menuTrackRendererVOCALOID100";
-            this.menuTrackRendererVOCALOID100.Size = new System.Drawing.Size( 199, 22 );
+            this.menuTrackRendererVOCALOID100.Size = new System.Drawing.Size( 177, 22 );
             this.menuTrackRendererVOCALOID100.Text = "VOCALOID1 [1.0] (&1)";
             // 
             // menuTrackRendererVOCALOID101
             // 
             this.menuTrackRendererVOCALOID101.Name = "menuTrackRendererVOCALOID101";
-            this.menuTrackRendererVOCALOID101.Size = new System.Drawing.Size( 199, 22 );
+            this.menuTrackRendererVOCALOID101.Size = new System.Drawing.Size( 177, 22 );
             this.menuTrackRendererVOCALOID101.Text = "VOCALOID1 [1.1] (&2)";
             // 
             // menuTrackRendererVOCALOID2
             // 
             this.menuTrackRendererVOCALOID2.Name = "menuTrackRendererVOCALOID2";
-            this.menuTrackRendererVOCALOID2.Size = new System.Drawing.Size( 199, 22 );
+            this.menuTrackRendererVOCALOID2.Size = new System.Drawing.Size( 177, 22 );
             this.menuTrackRendererVOCALOID2.Text = "VOCALOID2(&3)";
             // 
             // menuTrackRendererUtau
             // 
             this.menuTrackRendererUtau.Name = "menuTrackRendererUtau";
-            this.menuTrackRendererUtau.Size = new System.Drawing.Size( 199, 22 );
+            this.menuTrackRendererUtau.Size = new System.Drawing.Size( 177, 22 );
             this.menuTrackRendererUtau.Text = "UTAU(&4)";
             // 
             // menuTrackRendererStraight
             // 
             this.menuTrackRendererStraight.Name = "menuTrackRendererStraight";
-            this.menuTrackRendererStraight.Size = new System.Drawing.Size( 199, 22 );
+            this.menuTrackRendererStraight.Size = new System.Drawing.Size( 177, 22 );
             this.menuTrackRendererStraight.Text = "Straight X UTAU(&5)";
             // 
             // menuTrackRendererAquesTone
             // 
             this.menuTrackRendererAquesTone.Name = "menuTrackRendererAquesTone";
-            this.menuTrackRendererAquesTone.Size = new System.Drawing.Size( 199, 22 );
+            this.menuTrackRendererAquesTone.Size = new System.Drawing.Size( 177, 22 );
             this.menuTrackRendererAquesTone.Text = "AquesTone(&6)";
             // 
             // toolStripMenuItem4
             // 
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size( 216, 6 );
+            this.toolStripMenuItem4.Size = new System.Drawing.Size( 193, 6 );
             // 
             // menuTrackBgm
             // 
             this.menuTrackBgm.Name = "menuTrackBgm";
-            this.menuTrackBgm.Size = new System.Drawing.Size( 219, 22 );
+            this.menuTrackBgm.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackBgm.Text = "BGM(&B)";
             // 
             // menuTrackManager
             // 
             this.menuTrackManager.Name = "menuTrackManager";
-            this.menuTrackManager.Size = new System.Drawing.Size( 219, 22 );
+            this.menuTrackManager.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackManager.Text = "Track Manager(&M)";
             // 
             // menuLyric
@@ -18049,31 +18078,31 @@ namespace org.kbinani.cadencii {
             this.menuLyricPhonemeTransformation,
             this.menuLyricDictionary} );
             this.menuLyric.Name = "menuLyric";
-            this.menuLyric.Size = new System.Drawing.Size( 70, 22 );
+            this.menuLyric.Size = new System.Drawing.Size( 62, 20 );
             this.menuLyric.Text = "Lyrics(&L)";
             // 
             // menuLyricExpressionProperty
             // 
             this.menuLyricExpressionProperty.Name = "menuLyricExpressionProperty";
-            this.menuLyricExpressionProperty.Size = new System.Drawing.Size( 241, 22 );
+            this.menuLyricExpressionProperty.Size = new System.Drawing.Size( 216, 22 );
             this.menuLyricExpressionProperty.Text = "Note Expression Property(&E)";
             // 
             // menuLyricVibratoProperty
             // 
             this.menuLyricVibratoProperty.Name = "menuLyricVibratoProperty";
-            this.menuLyricVibratoProperty.Size = new System.Drawing.Size( 241, 22 );
+            this.menuLyricVibratoProperty.Size = new System.Drawing.Size( 216, 22 );
             this.menuLyricVibratoProperty.Text = "Note Vibrato Property(&V)";
             // 
             // menuLyricPhonemeTransformation
             // 
             this.menuLyricPhonemeTransformation.Name = "menuLyricPhonemeTransformation";
-            this.menuLyricPhonemeTransformation.Size = new System.Drawing.Size( 241, 22 );
+            this.menuLyricPhonemeTransformation.Size = new System.Drawing.Size( 216, 22 );
             this.menuLyricPhonemeTransformation.Text = "Phoneme Transformation(&T)";
             // 
             // menuLyricDictionary
             // 
             this.menuLyricDictionary.Name = "menuLyricDictionary";
-            this.menuLyricDictionary.Size = new System.Drawing.Size( 241, 22 );
+            this.menuLyricDictionary.Size = new System.Drawing.Size( 216, 22 );
             this.menuLyricDictionary.Text = "User Word Dictionary(&C)";
             // 
             // menuScript
@@ -18081,13 +18110,13 @@ namespace org.kbinani.cadencii {
             this.menuScript.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
             this.menuScriptUpdate} );
             this.menuScript.Name = "menuScript";
-            this.menuScript.Size = new System.Drawing.Size( 72, 22 );
+            this.menuScript.Size = new System.Drawing.Size( 63, 20 );
             this.menuScript.Text = "Script(&C)";
             // 
             // menuScriptUpdate
             // 
             this.menuScriptUpdate.Name = "menuScriptUpdate";
-            this.menuScriptUpdate.Size = new System.Drawing.Size( 200, 22 );
+            this.menuScriptUpdate.Size = new System.Drawing.Size( 179, 22 );
             this.menuScriptUpdate.Text = "Update Script List(&U)";
             // 
             // menuSetting
@@ -18107,13 +18136,13 @@ namespace org.kbinani.cadencii {
             this.toolStripMenuItem8,
             this.menuSettingSingerProperty} );
             this.menuSetting.Name = "menuSetting";
-            this.menuSetting.Size = new System.Drawing.Size( 80, 22 );
+            this.menuSetting.Size = new System.Drawing.Size( 68, 20 );
             this.menuSetting.Text = "Setting(&S)";
             // 
             // menuSettingPreference
             // 
             this.menuSettingPreference.Name = "menuSettingPreference";
-            this.menuSettingPreference.Size = new System.Drawing.Size( 223, 22 );
+            this.menuSettingPreference.Size = new System.Drawing.Size( 200, 22 );
             this.menuSettingPreference.Text = "Preference(&P)";
             // 
             // menuSettingGameControler
@@ -18123,66 +18152,66 @@ namespace org.kbinani.cadencii {
             this.menuSettingGameControlerLoad,
             this.menuSettingGameControlerRemove} );
             this.menuSettingGameControler.Name = "menuSettingGameControler";
-            this.menuSettingGameControler.Size = new System.Drawing.Size( 223, 22 );
+            this.menuSettingGameControler.Size = new System.Drawing.Size( 200, 22 );
             this.menuSettingGameControler.Text = "Game Controler(&G)";
             // 
             // menuSettingGameControlerSetting
             // 
             this.menuSettingGameControlerSetting.Name = "menuSettingGameControlerSetting";
-            this.menuSettingGameControlerSetting.Size = new System.Drawing.Size( 142, 22 );
+            this.menuSettingGameControlerSetting.Size = new System.Drawing.Size( 127, 22 );
             this.menuSettingGameControlerSetting.Text = "Setting(&S)";
             // 
             // menuSettingGameControlerLoad
             // 
             this.menuSettingGameControlerLoad.Name = "menuSettingGameControlerLoad";
-            this.menuSettingGameControlerLoad.Size = new System.Drawing.Size( 142, 22 );
+            this.menuSettingGameControlerLoad.Size = new System.Drawing.Size( 127, 22 );
             this.menuSettingGameControlerLoad.Text = "Load(&L)";
             // 
             // menuSettingGameControlerRemove
             // 
             this.menuSettingGameControlerRemove.Name = "menuSettingGameControlerRemove";
-            this.menuSettingGameControlerRemove.Size = new System.Drawing.Size( 142, 22 );
+            this.menuSettingGameControlerRemove.Size = new System.Drawing.Size( 127, 22 );
             this.menuSettingGameControlerRemove.Text = "Remove(&R)";
             // 
             // menuSettingPaletteTool
             // 
             this.menuSettingPaletteTool.Name = "menuSettingPaletteTool";
-            this.menuSettingPaletteTool.Size = new System.Drawing.Size( 223, 22 );
+            this.menuSettingPaletteTool.Size = new System.Drawing.Size( 200, 22 );
             this.menuSettingPaletteTool.Text = "Palette Tool(&T)";
             // 
             // menuSettingShortcut
             // 
             this.menuSettingShortcut.Name = "menuSettingShortcut";
-            this.menuSettingShortcut.Size = new System.Drawing.Size( 223, 22 );
+            this.menuSettingShortcut.Size = new System.Drawing.Size( 200, 22 );
             this.menuSettingShortcut.Text = "Shortcut Key(&S)";
             // 
             // menuSettingMidi
             // 
             this.menuSettingMidi.Name = "menuSettingMidi";
-            this.menuSettingMidi.Size = new System.Drawing.Size( 223, 22 );
+            this.menuSettingMidi.Size = new System.Drawing.Size( 200, 22 );
             this.menuSettingMidi.Text = "MIDI(&M)";
             // 
             // menuSettingUtauVoiceDB
             // 
             this.menuSettingUtauVoiceDB.Name = "menuSettingUtauVoiceDB";
-            this.menuSettingUtauVoiceDB.Size = new System.Drawing.Size( 223, 22 );
+            this.menuSettingUtauVoiceDB.Size = new System.Drawing.Size( 200, 22 );
             this.menuSettingUtauVoiceDB.Text = "UTAU Voice DB(&U)";
             // 
             // toolStripMenuItem6
             // 
             this.toolStripMenuItem6.Name = "toolStripMenuItem6";
-            this.toolStripMenuItem6.Size = new System.Drawing.Size( 220, 6 );
+            this.toolStripMenuItem6.Size = new System.Drawing.Size( 197, 6 );
             // 
             // menuSettingDefaultSingerStyle
             // 
             this.menuSettingDefaultSingerStyle.Name = "menuSettingDefaultSingerStyle";
-            this.menuSettingDefaultSingerStyle.Size = new System.Drawing.Size( 223, 22 );
+            this.menuSettingDefaultSingerStyle.Size = new System.Drawing.Size( 200, 22 );
             this.menuSettingDefaultSingerStyle.Text = "Singing Style Defaults(&D)";
             // 
             // toolStripMenuItem7
             // 
             this.toolStripMenuItem7.Name = "toolStripMenuItem7";
-            this.toolStripMenuItem7.Size = new System.Drawing.Size( 220, 6 );
+            this.toolStripMenuItem7.Size = new System.Drawing.Size( 197, 6 );
             // 
             // menuSettingPositionQuantize
             // 
@@ -18197,60 +18226,60 @@ namespace org.kbinani.cadencii {
             this.toolStripMenuItem9,
             this.menuSettingPositionQuantizeTriplet} );
             this.menuSettingPositionQuantize.Name = "menuSettingPositionQuantize";
-            this.menuSettingPositionQuantize.Size = new System.Drawing.Size( 223, 22 );
+            this.menuSettingPositionQuantize.Size = new System.Drawing.Size( 200, 22 );
             this.menuSettingPositionQuantize.Text = "Quantize(&Q)";
             // 
             // menuSettingPositionQuantize04
             // 
             this.menuSettingPositionQuantize04.Name = "menuSettingPositionQuantize04";
-            this.menuSettingPositionQuantize04.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingPositionQuantize04.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingPositionQuantize04.Text = "1/4";
             // 
             // menuSettingPositionQuantize08
             // 
             this.menuSettingPositionQuantize08.Name = "menuSettingPositionQuantize08";
-            this.menuSettingPositionQuantize08.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingPositionQuantize08.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingPositionQuantize08.Text = "1/8";
             // 
             // menuSettingPositionQuantize16
             // 
             this.menuSettingPositionQuantize16.Name = "menuSettingPositionQuantize16";
-            this.menuSettingPositionQuantize16.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingPositionQuantize16.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingPositionQuantize16.Text = "1/16";
             // 
             // menuSettingPositionQuantize32
             // 
             this.menuSettingPositionQuantize32.Name = "menuSettingPositionQuantize32";
-            this.menuSettingPositionQuantize32.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingPositionQuantize32.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingPositionQuantize32.Text = "1/32";
             // 
             // menuSettingPositionQuantize64
             // 
             this.menuSettingPositionQuantize64.Name = "menuSettingPositionQuantize64";
-            this.menuSettingPositionQuantize64.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingPositionQuantize64.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingPositionQuantize64.Text = "1/64";
             // 
             // menuSettingPositionQuantize128
             // 
             this.menuSettingPositionQuantize128.Name = "menuSettingPositionQuantize128";
-            this.menuSettingPositionQuantize128.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingPositionQuantize128.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingPositionQuantize128.Text = "1/128";
             // 
             // menuSettingPositionQuantizeOff
             // 
             this.menuSettingPositionQuantizeOff.Name = "menuSettingPositionQuantizeOff";
-            this.menuSettingPositionQuantizeOff.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingPositionQuantizeOff.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingPositionQuantizeOff.Text = "Off";
             // 
             // toolStripMenuItem9
             // 
             this.toolStripMenuItem9.Name = "toolStripMenuItem9";
-            this.toolStripMenuItem9.Size = new System.Drawing.Size( 110, 6 );
+            this.toolStripMenuItem9.Size = new System.Drawing.Size( 100, 6 );
             // 
             // menuSettingPositionQuantizeTriplet
             // 
             this.menuSettingPositionQuantizeTriplet.Name = "menuSettingPositionQuantizeTriplet";
-            this.menuSettingPositionQuantizeTriplet.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingPositionQuantizeTriplet.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingPositionQuantizeTriplet.Text = "Triplet";
             // 
             // menuSettingLengthQuantize
@@ -18266,72 +18295,72 @@ namespace org.kbinani.cadencii {
             this.toolStripSeparator1,
             this.menuSettingLengthQuantizeTriplet} );
             this.menuSettingLengthQuantize.Name = "menuSettingLengthQuantize";
-            this.menuSettingLengthQuantize.Size = new System.Drawing.Size( 223, 22 );
+            this.menuSettingLengthQuantize.Size = new System.Drawing.Size( 200, 22 );
             this.menuSettingLengthQuantize.Text = "Length(&L)";
             // 
             // menuSettingLengthQuantize04
             // 
             this.menuSettingLengthQuantize04.Name = "menuSettingLengthQuantize04";
-            this.menuSettingLengthQuantize04.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingLengthQuantize04.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingLengthQuantize04.Text = "1/4";
             // 
             // menuSettingLengthQuantize08
             // 
             this.menuSettingLengthQuantize08.Name = "menuSettingLengthQuantize08";
-            this.menuSettingLengthQuantize08.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingLengthQuantize08.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingLengthQuantize08.Text = "1/8";
             // 
             // menuSettingLengthQuantize16
             // 
             this.menuSettingLengthQuantize16.Name = "menuSettingLengthQuantize16";
-            this.menuSettingLengthQuantize16.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingLengthQuantize16.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingLengthQuantize16.Text = "1/16";
             // 
             // menuSettingLengthQuantize32
             // 
             this.menuSettingLengthQuantize32.Name = "menuSettingLengthQuantize32";
-            this.menuSettingLengthQuantize32.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingLengthQuantize32.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingLengthQuantize32.Text = "1/32";
             // 
             // menuSettingLengthQuantize64
             // 
             this.menuSettingLengthQuantize64.Name = "menuSettingLengthQuantize64";
-            this.menuSettingLengthQuantize64.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingLengthQuantize64.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingLengthQuantize64.Text = "1/64";
             // 
             // menuSettingLengthQuantize128
             // 
             this.menuSettingLengthQuantize128.Name = "menuSettingLengthQuantize128";
-            this.menuSettingLengthQuantize128.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingLengthQuantize128.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingLengthQuantize128.Text = "1/128";
             // 
             // menuSettingLengthQuantizeOff
             // 
             this.menuSettingLengthQuantizeOff.Name = "menuSettingLengthQuantizeOff";
-            this.menuSettingLengthQuantizeOff.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingLengthQuantizeOff.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingLengthQuantizeOff.Text = "Off";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size( 110, 6 );
+            this.toolStripSeparator1.Size = new System.Drawing.Size( 100, 6 );
             // 
             // menuSettingLengthQuantizeTriplet
             // 
             this.menuSettingLengthQuantizeTriplet.Name = "menuSettingLengthQuantizeTriplet";
-            this.menuSettingLengthQuantizeTriplet.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingLengthQuantizeTriplet.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingLengthQuantizeTriplet.Text = "Triplet";
             // 
             // toolStripMenuItem8
             // 
             this.toolStripMenuItem8.Name = "toolStripMenuItem8";
-            this.toolStripMenuItem8.Size = new System.Drawing.Size( 220, 6 );
+            this.toolStripMenuItem8.Size = new System.Drawing.Size( 197, 6 );
             // 
             // menuSettingSingerProperty
             // 
             this.menuSettingSingerProperty.Enabled = false;
             this.menuSettingSingerProperty.Name = "menuSettingSingerProperty";
-            this.menuSettingSingerProperty.Size = new System.Drawing.Size( 223, 22 );
+            this.menuSettingSingerProperty.Size = new System.Drawing.Size( 200, 22 );
             this.menuSettingSingerProperty.Text = "Singer Properties(&S)";
             // 
             // menuHelp
@@ -18341,13 +18370,13 @@ namespace org.kbinani.cadencii {
             this.menuHelpLog,
             this.menuHelpDebug} );
             this.menuHelp.Name = "menuHelp";
-            this.menuHelp.Size = new System.Drawing.Size( 65, 22 );
+            this.menuHelp.Size = new System.Drawing.Size( 56, 20 );
             this.menuHelp.Text = "Help(&H)";
             // 
             // menuHelpAbout
             // 
             this.menuHelpAbout.Name = "menuHelpAbout";
-            this.menuHelpAbout.Size = new System.Drawing.Size( 180, 22 );
+            this.menuHelpAbout.Size = new System.Drawing.Size( 164, 22 );
             this.menuHelpAbout.Text = "About Cadencii(&A)";
             // 
             // menuHelpLog
@@ -18356,26 +18385,26 @@ namespace org.kbinani.cadencii {
             this.menuHelpLogSwitch,
             this.menuHelpLogOpen} );
             this.menuHelpLog.Name = "menuHelpLog";
-            this.menuHelpLog.Size = new System.Drawing.Size( 180, 22 );
+            this.menuHelpLog.Size = new System.Drawing.Size( 164, 22 );
             this.menuHelpLog.Text = "Log(&L)";
             // 
             // menuHelpLogSwitch
             // 
             this.menuHelpLogSwitch.CheckOnClick = true;
             this.menuHelpLogSwitch.Name = "menuHelpLogSwitch";
-            this.menuHelpLogSwitch.Size = new System.Drawing.Size( 156, 22 );
+            this.menuHelpLogSwitch.Size = new System.Drawing.Size( 140, 22 );
             this.menuHelpLogSwitch.Text = "Enable Log(&L)";
             // 
             // menuHelpLogOpen
             // 
             this.menuHelpLogOpen.Name = "menuHelpLogOpen";
-            this.menuHelpLogOpen.Size = new System.Drawing.Size( 156, 22 );
+            this.menuHelpLogOpen.Size = new System.Drawing.Size( 140, 22 );
             this.menuHelpLogOpen.Text = "Open(&O)";
             // 
             // menuHelpDebug
             // 
             this.menuHelpDebug.Name = "menuHelpDebug";
-            this.menuHelpDebug.Size = new System.Drawing.Size( 180, 22 );
+            this.menuHelpDebug.Size = new System.Drawing.Size( 164, 22 );
             this.menuHelpDebug.Text = "Debug";
             this.menuHelpDebug.Visible = false;
             // 
@@ -18405,7 +18434,7 @@ namespace org.kbinani.cadencii {
             this.menuHiddenPlayFromStartMarker,
             this.menuHiddenFlipCurveOnPianorollMode} );
             this.menuHidden.Name = "menuHidden";
-            this.menuHidden.Size = new System.Drawing.Size( 91, 22 );
+            this.menuHidden.Size = new System.Drawing.Size( 79, 20 );
             this.menuHidden.Text = "MenuHidden";
             this.menuHidden.Visible = false;
             // 
@@ -18413,7 +18442,7 @@ namespace org.kbinani.cadencii {
             // 
             this.menuHiddenEditLyric.Name = "menuHiddenEditLyric";
             this.menuHiddenEditLyric.ShortcutKeys = System.Windows.Forms.Keys.F2;
-            this.menuHiddenEditLyric.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenEditLyric.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenEditLyric.Text = "Start Lyric Input";
             this.menuHiddenEditLyric.Visible = false;
             // 
@@ -18421,7 +18450,7 @@ namespace org.kbinani.cadencii {
             // 
             this.menuHiddenEditFlipToolPointerPencil.Name = "menuHiddenEditFlipToolPointerPencil";
             this.menuHiddenEditFlipToolPointerPencil.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
-            this.menuHiddenEditFlipToolPointerPencil.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenEditFlipToolPointerPencil.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenEditFlipToolPointerPencil.Text = "Change Tool Pointer / Pencil";
             this.menuHiddenEditFlipToolPointerPencil.Visible = false;
             // 
@@ -18429,7 +18458,7 @@ namespace org.kbinani.cadencii {
             // 
             this.menuHiddenEditFlipToolPointerEraser.Name = "menuHiddenEditFlipToolPointerEraser";
             this.menuHiddenEditFlipToolPointerEraser.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
-            this.menuHiddenEditFlipToolPointerEraser.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenEditFlipToolPointerEraser.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenEditFlipToolPointerEraser.Text = "Change Tool Pointer/ Eraser";
             this.menuHiddenEditFlipToolPointerEraser.Visible = false;
             // 
@@ -18438,7 +18467,7 @@ namespace org.kbinani.cadencii {
             this.menuHiddenVisualForwardParameter.Name = "menuHiddenVisualForwardParameter";
             this.menuHiddenVisualForwardParameter.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt)
                         | System.Windows.Forms.Keys.Next)));
-            this.menuHiddenVisualForwardParameter.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenVisualForwardParameter.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenVisualForwardParameter.Text = "Next Control Curve";
             this.menuHiddenVisualForwardParameter.Visible = false;
             // 
@@ -18447,7 +18476,7 @@ namespace org.kbinani.cadencii {
             this.menuHiddenVisualBackwardParameter.Name = "menuHiddenVisualBackwardParameter";
             this.menuHiddenVisualBackwardParameter.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt)
                         | System.Windows.Forms.Keys.PageUp)));
-            this.menuHiddenVisualBackwardParameter.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenVisualBackwardParameter.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenVisualBackwardParameter.Text = "Previous Control Curve";
             this.menuHiddenVisualBackwardParameter.Visible = false;
             // 
@@ -18455,7 +18484,7 @@ namespace org.kbinani.cadencii {
             // 
             this.menuHiddenTrackNext.Name = "menuHiddenTrackNext";
             this.menuHiddenTrackNext.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Next)));
-            this.menuHiddenTrackNext.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenTrackNext.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenTrackNext.Text = "Next Track";
             this.menuHiddenTrackNext.Visible = false;
             // 
@@ -18463,100 +18492,100 @@ namespace org.kbinani.cadencii {
             // 
             this.menuHiddenTrackBack.Name = "menuHiddenTrackBack";
             this.menuHiddenTrackBack.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.PageUp)));
-            this.menuHiddenTrackBack.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenTrackBack.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenTrackBack.Text = "Previous Track";
             this.menuHiddenTrackBack.Visible = false;
             // 
             // menuHiddenCopy
             // 
             this.menuHiddenCopy.Name = "menuHiddenCopy";
-            this.menuHiddenCopy.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenCopy.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenCopy.Text = "Copy";
             // 
             // menuHiddenPaste
             // 
             this.menuHiddenPaste.Name = "menuHiddenPaste";
-            this.menuHiddenPaste.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenPaste.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenPaste.Text = "Paste";
             // 
             // menuHiddenCut
             // 
             this.menuHiddenCut.Name = "menuHiddenCut";
-            this.menuHiddenCut.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenCut.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenCut.Text = "Cut";
             // 
             // menuHiddenSelectForward
             // 
             this.menuHiddenSelectForward.Name = "menuHiddenSelectForward";
             this.menuHiddenSelectForward.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.Right)));
-            this.menuHiddenSelectForward.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenSelectForward.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenSelectForward.Text = "Select Forward";
             // 
             // menuHiddenSelectBackward
             // 
             this.menuHiddenSelectBackward.Name = "menuHiddenSelectBackward";
             this.menuHiddenSelectBackward.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.Left)));
-            this.menuHiddenSelectBackward.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenSelectBackward.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenSelectBackward.Text = "Select Backward";
             // 
             // menuHiddenMoveUp
             // 
             this.menuHiddenMoveUp.Name = "menuHiddenMoveUp";
-            this.menuHiddenMoveUp.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenMoveUp.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenMoveUp.Text = "Move Up";
             // 
             // menuHiddenMoveDown
             // 
             this.menuHiddenMoveDown.Name = "menuHiddenMoveDown";
-            this.menuHiddenMoveDown.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenMoveDown.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenMoveDown.Text = "Move Down";
             // 
             // menuHiddenMoveLeft
             // 
             this.menuHiddenMoveLeft.Name = "menuHiddenMoveLeft";
-            this.menuHiddenMoveLeft.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenMoveLeft.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenMoveLeft.Text = "Move Left";
             // 
             // menuHiddenMoveRight
             // 
             this.menuHiddenMoveRight.Name = "menuHiddenMoveRight";
-            this.menuHiddenMoveRight.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenMoveRight.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenMoveRight.Text = "Move Right";
             // 
             // menuHiddenLengthen
             // 
             this.menuHiddenLengthen.Name = "menuHiddenLengthen";
-            this.menuHiddenLengthen.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenLengthen.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenLengthen.Text = "Lengthen";
             // 
             // menuHiddenShorten
             // 
             this.menuHiddenShorten.Name = "menuHiddenShorten";
-            this.menuHiddenShorten.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenShorten.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenShorten.Text = "Shorten";
             // 
             // menuHiddenGoToStartMarker
             // 
             this.menuHiddenGoToStartMarker.Name = "menuHiddenGoToStartMarker";
-            this.menuHiddenGoToStartMarker.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenGoToStartMarker.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenGoToStartMarker.Text = "GoTo Start Marker";
             // 
             // menuHiddenGoToEndMarker
             // 
             this.menuHiddenGoToEndMarker.Name = "menuHiddenGoToEndMarker";
-            this.menuHiddenGoToEndMarker.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenGoToEndMarker.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenGoToEndMarker.Text = "GoTo End Marker";
             // 
             // menuHiddenPlayFromStartMarker
             // 
             this.menuHiddenPlayFromStartMarker.Name = "menuHiddenPlayFromStartMarker";
-            this.menuHiddenPlayFromStartMarker.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenPlayFromStartMarker.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenPlayFromStartMarker.Text = "Play From Start Marker";
             // 
             // menuHiddenFlipCurveOnPianorollMode
             // 
             this.menuHiddenFlipCurveOnPianorollMode.Name = "menuHiddenFlipCurveOnPianorollMode";
-            this.menuHiddenFlipCurveOnPianorollMode.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenFlipCurveOnPianorollMode.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenFlipCurveOnPianorollMode.Text = "Flip Curve on Pianoroll Mode";
             // 
             // cMenuPiano
@@ -18591,47 +18620,47 @@ namespace org.kbinani.cadencii {
             this.cMenuPiano.Name = "cMenuPiano";
             this.cMenuPiano.ShowCheckMargin = true;
             this.cMenuPiano.ShowImageMargin = false;
-            this.cMenuPiano.Size = new System.Drawing.Size( 242, 480 );
+            this.cMenuPiano.Size = new System.Drawing.Size( 217, 480 );
             // 
             // cMenuPianoPointer
             // 
             this.cMenuPianoPointer.Name = "cMenuPianoPointer";
-            this.cMenuPianoPointer.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoPointer.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoPointer.Text = "Arrow(&A)";
             // 
             // cMenuPianoPencil
             // 
             this.cMenuPianoPencil.Name = "cMenuPianoPencil";
-            this.cMenuPianoPencil.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoPencil.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoPencil.Text = "Pencil(&W)";
             // 
             // cMenuPianoEraser
             // 
             this.cMenuPianoEraser.Name = "cMenuPianoEraser";
-            this.cMenuPianoEraser.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoEraser.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoEraser.Text = "Eraser(&E)";
             // 
             // cMenuPianoPaletteTool
             // 
             this.cMenuPianoPaletteTool.Name = "cMenuPianoPaletteTool";
-            this.cMenuPianoPaletteTool.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoPaletteTool.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoPaletteTool.Text = "Palette Tool";
             // 
             // toolStripSeparator15
             // 
             this.toolStripSeparator15.Name = "toolStripSeparator15";
-            this.toolStripSeparator15.Size = new System.Drawing.Size( 238, 6 );
+            this.toolStripSeparator15.Size = new System.Drawing.Size( 213, 6 );
             // 
             // cMenuPianoCurve
             // 
             this.cMenuPianoCurve.Name = "cMenuPianoCurve";
-            this.cMenuPianoCurve.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoCurve.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoCurve.Text = "Curve(&V)";
             // 
             // toolStripMenuItem13
             // 
             this.toolStripMenuItem13.Name = "toolStripMenuItem13";
-            this.toolStripMenuItem13.Size = new System.Drawing.Size( 238, 6 );
+            this.toolStripMenuItem13.Size = new System.Drawing.Size( 213, 6 );
             // 
             // cMenuPianoFixed
             // 
@@ -18649,78 +18678,78 @@ namespace org.kbinani.cadencii {
             this.cMenuPianoFixedTriplet,
             this.cMenuPianoFixedDotted} );
             this.cMenuPianoFixed.Name = "cMenuPianoFixed";
-            this.cMenuPianoFixed.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoFixed.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoFixed.Text = "Note Fixed Length(&N)";
             // 
             // cMenuPianoFixed01
             // 
             this.cMenuPianoFixed01.Name = "cMenuPianoFixed01";
-            this.cMenuPianoFixed01.Size = new System.Drawing.Size( 141, 22 );
+            this.cMenuPianoFixed01.Size = new System.Drawing.Size( 128, 22 );
             this.cMenuPianoFixed01.Text = "1/ 1 [1920]";
             // 
             // cMenuPianoFixed02
             // 
             this.cMenuPianoFixed02.Name = "cMenuPianoFixed02";
-            this.cMenuPianoFixed02.Size = new System.Drawing.Size( 141, 22 );
+            this.cMenuPianoFixed02.Size = new System.Drawing.Size( 128, 22 );
             this.cMenuPianoFixed02.Text = "1/ 2 [960]";
             // 
             // cMenuPianoFixed04
             // 
             this.cMenuPianoFixed04.Name = "cMenuPianoFixed04";
-            this.cMenuPianoFixed04.Size = new System.Drawing.Size( 141, 22 );
+            this.cMenuPianoFixed04.Size = new System.Drawing.Size( 128, 22 );
             this.cMenuPianoFixed04.Text = "1/ 4 [480]";
             // 
             // cMenuPianoFixed08
             // 
             this.cMenuPianoFixed08.Name = "cMenuPianoFixed08";
-            this.cMenuPianoFixed08.Size = new System.Drawing.Size( 141, 22 );
+            this.cMenuPianoFixed08.Size = new System.Drawing.Size( 128, 22 );
             this.cMenuPianoFixed08.Text = "1/ 8 [240]";
             // 
             // cMenuPianoFixed16
             // 
             this.cMenuPianoFixed16.Name = "cMenuPianoFixed16";
-            this.cMenuPianoFixed16.Size = new System.Drawing.Size( 141, 22 );
+            this.cMenuPianoFixed16.Size = new System.Drawing.Size( 128, 22 );
             this.cMenuPianoFixed16.Text = "1/16 [120]";
             // 
             // cMenuPianoFixed32
             // 
             this.cMenuPianoFixed32.Name = "cMenuPianoFixed32";
-            this.cMenuPianoFixed32.Size = new System.Drawing.Size( 141, 22 );
+            this.cMenuPianoFixed32.Size = new System.Drawing.Size( 128, 22 );
             this.cMenuPianoFixed32.Text = "1/32 [60]";
             // 
             // cMenuPianoFixed64
             // 
             this.cMenuPianoFixed64.Name = "cMenuPianoFixed64";
-            this.cMenuPianoFixed64.Size = new System.Drawing.Size( 141, 22 );
+            this.cMenuPianoFixed64.Size = new System.Drawing.Size( 128, 22 );
             this.cMenuPianoFixed64.Text = "1/64 [30]";
             // 
             // cMenuPianoFixed128
             // 
             this.cMenuPianoFixed128.Name = "cMenuPianoFixed128";
-            this.cMenuPianoFixed128.Size = new System.Drawing.Size( 141, 22 );
+            this.cMenuPianoFixed128.Size = new System.Drawing.Size( 128, 22 );
             this.cMenuPianoFixed128.Text = "1/128[15]";
             // 
             // cMenuPianoFixedOff
             // 
             this.cMenuPianoFixedOff.Name = "cMenuPianoFixedOff";
-            this.cMenuPianoFixedOff.Size = new System.Drawing.Size( 141, 22 );
+            this.cMenuPianoFixedOff.Size = new System.Drawing.Size( 128, 22 );
             this.cMenuPianoFixedOff.Text = "オフ";
             // 
             // toolStripMenuItem18
             // 
             this.toolStripMenuItem18.Name = "toolStripMenuItem18";
-            this.toolStripMenuItem18.Size = new System.Drawing.Size( 138, 6 );
+            this.toolStripMenuItem18.Size = new System.Drawing.Size( 125, 6 );
             // 
             // cMenuPianoFixedTriplet
             // 
             this.cMenuPianoFixedTriplet.Name = "cMenuPianoFixedTriplet";
-            this.cMenuPianoFixedTriplet.Size = new System.Drawing.Size( 141, 22 );
+            this.cMenuPianoFixedTriplet.Size = new System.Drawing.Size( 128, 22 );
             this.cMenuPianoFixedTriplet.Text = "3連符";
             // 
             // cMenuPianoFixedDotted
             // 
             this.cMenuPianoFixedDotted.Name = "cMenuPianoFixedDotted";
-            this.cMenuPianoFixedDotted.Size = new System.Drawing.Size( 141, 22 );
+            this.cMenuPianoFixedDotted.Size = new System.Drawing.Size( 128, 22 );
             this.cMenuPianoFixedDotted.Text = "付点";
             // 
             // cMenuPianoQuantize
@@ -18736,60 +18765,60 @@ namespace org.kbinani.cadencii {
             this.toolStripMenuItem26,
             this.cMenuPianoQuantizeTriplet} );
             this.cMenuPianoQuantize.Name = "cMenuPianoQuantize";
-            this.cMenuPianoQuantize.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoQuantize.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoQuantize.Text = "Quantize(&Q)";
             // 
             // cMenuPianoQuantize04
             // 
             this.cMenuPianoQuantize04.Name = "cMenuPianoQuantize04";
-            this.cMenuPianoQuantize04.Size = new System.Drawing.Size( 109, 22 );
+            this.cMenuPianoQuantize04.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoQuantize04.Text = "1/4";
             // 
             // cMenuPianoQuantize08
             // 
             this.cMenuPianoQuantize08.Name = "cMenuPianoQuantize08";
-            this.cMenuPianoQuantize08.Size = new System.Drawing.Size( 109, 22 );
+            this.cMenuPianoQuantize08.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoQuantize08.Text = "1/8";
             // 
             // cMenuPianoQuantize16
             // 
             this.cMenuPianoQuantize16.Name = "cMenuPianoQuantize16";
-            this.cMenuPianoQuantize16.Size = new System.Drawing.Size( 109, 22 );
+            this.cMenuPianoQuantize16.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoQuantize16.Text = "1/16";
             // 
             // cMenuPianoQuantize32
             // 
             this.cMenuPianoQuantize32.Name = "cMenuPianoQuantize32";
-            this.cMenuPianoQuantize32.Size = new System.Drawing.Size( 109, 22 );
+            this.cMenuPianoQuantize32.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoQuantize32.Text = "1/32";
             // 
             // cMenuPianoQuantize64
             // 
             this.cMenuPianoQuantize64.Name = "cMenuPianoQuantize64";
-            this.cMenuPianoQuantize64.Size = new System.Drawing.Size( 109, 22 );
+            this.cMenuPianoQuantize64.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoQuantize64.Text = "1/64";
             // 
             // cMenuPianoQuantize128
             // 
             this.cMenuPianoQuantize128.Name = "cMenuPianoQuantize128";
-            this.cMenuPianoQuantize128.Size = new System.Drawing.Size( 109, 22 );
+            this.cMenuPianoQuantize128.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoQuantize128.Text = "1/128";
             // 
             // cMenuPianoQuantizeOff
             // 
             this.cMenuPianoQuantizeOff.Name = "cMenuPianoQuantizeOff";
-            this.cMenuPianoQuantizeOff.Size = new System.Drawing.Size( 109, 22 );
+            this.cMenuPianoQuantizeOff.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoQuantizeOff.Text = "オフ";
             // 
             // toolStripMenuItem26
             // 
             this.toolStripMenuItem26.Name = "toolStripMenuItem26";
-            this.toolStripMenuItem26.Size = new System.Drawing.Size( 106, 6 );
+            this.toolStripMenuItem26.Size = new System.Drawing.Size( 97, 6 );
             // 
             // cMenuPianoQuantizeTriplet
             // 
             this.cMenuPianoQuantizeTriplet.Name = "cMenuPianoQuantizeTriplet";
-            this.cMenuPianoQuantizeTriplet.Size = new System.Drawing.Size( 109, 22 );
+            this.cMenuPianoQuantizeTriplet.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoQuantizeTriplet.Text = "3連符";
             // 
             // cMenuPianoLength
@@ -18805,152 +18834,152 @@ namespace org.kbinani.cadencii {
             this.toolStripMenuItem32,
             this.cMenuPianoLengthTriplet} );
             this.cMenuPianoLength.Name = "cMenuPianoLength";
-            this.cMenuPianoLength.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoLength.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoLength.Text = "Length(&L)";
             // 
             // cMenuPianoLength04
             // 
             this.cMenuPianoLength04.Name = "cMenuPianoLength04";
-            this.cMenuPianoLength04.Size = new System.Drawing.Size( 109, 22 );
+            this.cMenuPianoLength04.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoLength04.Text = "1/4";
             // 
             // cMenuPianoLength08
             // 
             this.cMenuPianoLength08.Name = "cMenuPianoLength08";
-            this.cMenuPianoLength08.Size = new System.Drawing.Size( 109, 22 );
+            this.cMenuPianoLength08.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoLength08.Text = "1/8";
             // 
             // cMenuPianoLength16
             // 
             this.cMenuPianoLength16.Name = "cMenuPianoLength16";
-            this.cMenuPianoLength16.Size = new System.Drawing.Size( 109, 22 );
+            this.cMenuPianoLength16.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoLength16.Text = "1/16";
             // 
             // cMenuPianoLength32
             // 
             this.cMenuPianoLength32.Name = "cMenuPianoLength32";
-            this.cMenuPianoLength32.Size = new System.Drawing.Size( 109, 22 );
+            this.cMenuPianoLength32.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoLength32.Text = "1/32";
             // 
             // cMenuPianoLength64
             // 
             this.cMenuPianoLength64.Name = "cMenuPianoLength64";
-            this.cMenuPianoLength64.Size = new System.Drawing.Size( 109, 22 );
+            this.cMenuPianoLength64.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoLength64.Text = "1/64";
             // 
             // cMenuPianoLength128
             // 
             this.cMenuPianoLength128.Name = "cMenuPianoLength128";
-            this.cMenuPianoLength128.Size = new System.Drawing.Size( 109, 22 );
+            this.cMenuPianoLength128.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoLength128.Text = "1/128";
             // 
             // cMenuPianoLengthOff
             // 
             this.cMenuPianoLengthOff.Name = "cMenuPianoLengthOff";
-            this.cMenuPianoLengthOff.Size = new System.Drawing.Size( 109, 22 );
+            this.cMenuPianoLengthOff.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoLengthOff.Text = "オフ";
             // 
             // toolStripMenuItem32
             // 
             this.toolStripMenuItem32.Name = "toolStripMenuItem32";
-            this.toolStripMenuItem32.Size = new System.Drawing.Size( 106, 6 );
+            this.toolStripMenuItem32.Size = new System.Drawing.Size( 97, 6 );
             // 
             // cMenuPianoLengthTriplet
             // 
             this.cMenuPianoLengthTriplet.Name = "cMenuPianoLengthTriplet";
-            this.cMenuPianoLengthTriplet.Size = new System.Drawing.Size( 109, 22 );
+            this.cMenuPianoLengthTriplet.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoLengthTriplet.Text = "3連符";
             // 
             // cMenuPianoGrid
             // 
             this.cMenuPianoGrid.Name = "cMenuPianoGrid";
-            this.cMenuPianoGrid.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoGrid.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoGrid.Text = "Show/Hide Grid Line(&S)";
             // 
             // toolStripMenuItem14
             // 
             this.toolStripMenuItem14.Name = "toolStripMenuItem14";
-            this.toolStripMenuItem14.Size = new System.Drawing.Size( 238, 6 );
+            this.toolStripMenuItem14.Size = new System.Drawing.Size( 213, 6 );
             // 
             // cMenuPianoUndo
             // 
             this.cMenuPianoUndo.Name = "cMenuPianoUndo";
-            this.cMenuPianoUndo.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoUndo.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoUndo.Text = "Undo(&U)";
             // 
             // cMenuPianoRedo
             // 
             this.cMenuPianoRedo.Name = "cMenuPianoRedo";
-            this.cMenuPianoRedo.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoRedo.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoRedo.Text = "Redo(&R)";
             // 
             // toolStripMenuItem15
             // 
             this.toolStripMenuItem15.Name = "toolStripMenuItem15";
-            this.toolStripMenuItem15.Size = new System.Drawing.Size( 238, 6 );
+            this.toolStripMenuItem15.Size = new System.Drawing.Size( 213, 6 );
             // 
             // cMenuPianoCut
             // 
             this.cMenuPianoCut.Name = "cMenuPianoCut";
-            this.cMenuPianoCut.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoCut.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoCut.Text = "Cut(&T)";
             // 
             // cMenuPianoCopy
             // 
             this.cMenuPianoCopy.Name = "cMenuPianoCopy";
-            this.cMenuPianoCopy.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoCopy.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoCopy.Text = "Copy(&C)";
             // 
             // cMenuPianoPaste
             // 
             this.cMenuPianoPaste.Name = "cMenuPianoPaste";
-            this.cMenuPianoPaste.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoPaste.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoPaste.Text = "Paste(&P)";
             // 
             // cMenuPianoDelete
             // 
             this.cMenuPianoDelete.Name = "cMenuPianoDelete";
-            this.cMenuPianoDelete.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoDelete.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoDelete.Text = "Delete(&D)";
             // 
             // toolStripMenuItem16
             // 
             this.toolStripMenuItem16.Name = "toolStripMenuItem16";
-            this.toolStripMenuItem16.Size = new System.Drawing.Size( 238, 6 );
+            this.toolStripMenuItem16.Size = new System.Drawing.Size( 213, 6 );
             // 
             // cMenuPianoSelectAll
             // 
             this.cMenuPianoSelectAll.Name = "cMenuPianoSelectAll";
-            this.cMenuPianoSelectAll.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoSelectAll.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoSelectAll.Text = "Select All(&A)";
             // 
             // cMenuPianoSelectAllEvents
             // 
             this.cMenuPianoSelectAllEvents.Name = "cMenuPianoSelectAllEvents";
-            this.cMenuPianoSelectAllEvents.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoSelectAllEvents.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoSelectAllEvents.Text = "Select All Events(&E)";
             // 
             // toolStripMenuItem17
             // 
             this.toolStripMenuItem17.Name = "toolStripMenuItem17";
-            this.toolStripMenuItem17.Size = new System.Drawing.Size( 238, 6 );
+            this.toolStripMenuItem17.Size = new System.Drawing.Size( 213, 6 );
             // 
             // cMenuPianoImportLyric
             // 
             this.cMenuPianoImportLyric.Name = "cMenuPianoImportLyric";
-            this.cMenuPianoImportLyric.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoImportLyric.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoImportLyric.Text = "Insert Lyrics(&L)";
             // 
             // cMenuPianoExpressionProperty
             // 
             this.cMenuPianoExpressionProperty.Name = "cMenuPianoExpressionProperty";
-            this.cMenuPianoExpressionProperty.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoExpressionProperty.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoExpressionProperty.Text = "Note Expression Property(&P)";
             // 
             // cMenuPianoVibratoProperty
             // 
             this.cMenuPianoVibratoProperty.Name = "cMenuPianoVibratoProperty";
-            this.cMenuPianoVibratoProperty.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoVibratoProperty.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoVibratoProperty.Text = "Note Vibrato Property";
             // 
             // cMenuTrackTab
@@ -18969,69 +18998,69 @@ namespace org.kbinani.cadencii {
             this.cMenuTrackTabOverlay,
             this.cMenuTrackTabRenderer} );
             this.cMenuTrackTab.Name = "cMenuTrackTab";
-            this.cMenuTrackTab.Size = new System.Drawing.Size( 220, 220 );
+            this.cMenuTrackTab.Size = new System.Drawing.Size( 197, 220 );
             // 
             // cMenuTrackTabTrackOn
             // 
             this.cMenuTrackTabTrackOn.Name = "cMenuTrackTabTrackOn";
-            this.cMenuTrackTabTrackOn.Size = new System.Drawing.Size( 219, 22 );
+            this.cMenuTrackTabTrackOn.Size = new System.Drawing.Size( 196, 22 );
             this.cMenuTrackTabTrackOn.Text = "Track On(&K)";
             // 
             // toolStripMenuItem24
             // 
             this.toolStripMenuItem24.Name = "toolStripMenuItem24";
-            this.toolStripMenuItem24.Size = new System.Drawing.Size( 216, 6 );
+            this.toolStripMenuItem24.Size = new System.Drawing.Size( 193, 6 );
             // 
             // cMenuTrackTabAdd
             // 
             this.cMenuTrackTabAdd.Name = "cMenuTrackTabAdd";
-            this.cMenuTrackTabAdd.Size = new System.Drawing.Size( 219, 22 );
+            this.cMenuTrackTabAdd.Size = new System.Drawing.Size( 196, 22 );
             this.cMenuTrackTabAdd.Text = "Add Track(&A)";
             // 
             // cMenuTrackTabCopy
             // 
             this.cMenuTrackTabCopy.Name = "cMenuTrackTabCopy";
-            this.cMenuTrackTabCopy.Size = new System.Drawing.Size( 219, 22 );
+            this.cMenuTrackTabCopy.Size = new System.Drawing.Size( 196, 22 );
             this.cMenuTrackTabCopy.Text = "Copy Track(&C)";
             // 
             // cMenuTrackTabChangeName
             // 
             this.cMenuTrackTabChangeName.Name = "cMenuTrackTabChangeName";
-            this.cMenuTrackTabChangeName.Size = new System.Drawing.Size( 219, 22 );
+            this.cMenuTrackTabChangeName.Size = new System.Drawing.Size( 196, 22 );
             this.cMenuTrackTabChangeName.Text = "Rename Track";
             // 
             // cMenuTrackTabDelete
             // 
             this.cMenuTrackTabDelete.Name = "cMenuTrackTabDelete";
-            this.cMenuTrackTabDelete.Size = new System.Drawing.Size( 219, 22 );
+            this.cMenuTrackTabDelete.Size = new System.Drawing.Size( 196, 22 );
             this.cMenuTrackTabDelete.Text = "Delete Track(&D)";
             // 
             // toolStripMenuItem25
             // 
             this.toolStripMenuItem25.Name = "toolStripMenuItem25";
-            this.toolStripMenuItem25.Size = new System.Drawing.Size( 216, 6 );
+            this.toolStripMenuItem25.Size = new System.Drawing.Size( 193, 6 );
             // 
             // cMenuTrackTabRenderCurrent
             // 
             this.cMenuTrackTabRenderCurrent.Name = "cMenuTrackTabRenderCurrent";
-            this.cMenuTrackTabRenderCurrent.Size = new System.Drawing.Size( 219, 22 );
+            this.cMenuTrackTabRenderCurrent.Size = new System.Drawing.Size( 196, 22 );
             this.cMenuTrackTabRenderCurrent.Text = "Render Current Track(&T)";
             // 
             // cMenuTrackTabRenderAll
             // 
             this.cMenuTrackTabRenderAll.Name = "cMenuTrackTabRenderAll";
-            this.cMenuTrackTabRenderAll.Size = new System.Drawing.Size( 219, 22 );
+            this.cMenuTrackTabRenderAll.Size = new System.Drawing.Size( 196, 22 );
             this.cMenuTrackTabRenderAll.Text = "Render All Tracks(&S)";
             // 
             // toolStripMenuItem27
             // 
             this.toolStripMenuItem27.Name = "toolStripMenuItem27";
-            this.toolStripMenuItem27.Size = new System.Drawing.Size( 216, 6 );
+            this.toolStripMenuItem27.Size = new System.Drawing.Size( 193, 6 );
             // 
             // cMenuTrackTabOverlay
             // 
             this.cMenuTrackTabOverlay.Name = "cMenuTrackTabOverlay";
-            this.cMenuTrackTabOverlay.Size = new System.Drawing.Size( 219, 22 );
+            this.cMenuTrackTabOverlay.Size = new System.Drawing.Size( 196, 22 );
             this.cMenuTrackTabOverlay.Text = "Overlay(&O)";
             // 
             // cMenuTrackTabRenderer
@@ -19044,43 +19073,43 @@ namespace org.kbinani.cadencii {
             this.cMenuTrackTabRendererStraight,
             this.cMenuTrackTabRendererAquesTone} );
             this.cMenuTrackTabRenderer.Name = "cMenuTrackTabRenderer";
-            this.cMenuTrackTabRenderer.Size = new System.Drawing.Size( 219, 22 );
+            this.cMenuTrackTabRenderer.Size = new System.Drawing.Size( 196, 22 );
             this.cMenuTrackTabRenderer.Text = "Renderer(&R)";
             // 
             // cMenuTrackTabRendererVOCALOID100
             // 
             this.cMenuTrackTabRendererVOCALOID100.Name = "cMenuTrackTabRendererVOCALOID100";
-            this.cMenuTrackTabRendererVOCALOID100.Size = new System.Drawing.Size( 199, 22 );
+            this.cMenuTrackTabRendererVOCALOID100.Size = new System.Drawing.Size( 177, 22 );
             this.cMenuTrackTabRendererVOCALOID100.Text = "VOCALOID1 [1.0] (&1)";
             // 
             // cMenuTrackTabRendererVOCALOID101
             // 
             this.cMenuTrackTabRendererVOCALOID101.Name = "cMenuTrackTabRendererVOCALOID101";
-            this.cMenuTrackTabRendererVOCALOID101.Size = new System.Drawing.Size( 199, 22 );
+            this.cMenuTrackTabRendererVOCALOID101.Size = new System.Drawing.Size( 177, 22 );
             this.cMenuTrackTabRendererVOCALOID101.Text = "VOCALOID1 [1.1] (&2)";
             // 
             // cMenuTrackTabRendererVOCALOID2
             // 
             this.cMenuTrackTabRendererVOCALOID2.Name = "cMenuTrackTabRendererVOCALOID2";
-            this.cMenuTrackTabRendererVOCALOID2.Size = new System.Drawing.Size( 199, 22 );
+            this.cMenuTrackTabRendererVOCALOID2.Size = new System.Drawing.Size( 177, 22 );
             this.cMenuTrackTabRendererVOCALOID2.Text = "VOCALOID2(&3)";
             // 
             // cMenuTrackTabRendererUtau
             // 
             this.cMenuTrackTabRendererUtau.Name = "cMenuTrackTabRendererUtau";
-            this.cMenuTrackTabRendererUtau.Size = new System.Drawing.Size( 199, 22 );
+            this.cMenuTrackTabRendererUtau.Size = new System.Drawing.Size( 177, 22 );
             this.cMenuTrackTabRendererUtau.Text = "UTAU(&4)";
             // 
             // cMenuTrackTabRendererStraight
             // 
             this.cMenuTrackTabRendererStraight.Name = "cMenuTrackTabRendererStraight";
-            this.cMenuTrackTabRendererStraight.Size = new System.Drawing.Size( 199, 22 );
+            this.cMenuTrackTabRendererStraight.Size = new System.Drawing.Size( 177, 22 );
             this.cMenuTrackTabRendererStraight.Text = "Straight X UTAU(&5) ";
             // 
             // cMenuTrackTabRendererAquesTone
             // 
             this.cMenuTrackTabRendererAquesTone.Name = "cMenuTrackTabRendererAquesTone";
-            this.cMenuTrackTabRendererAquesTone.Size = new System.Drawing.Size( 199, 22 );
+            this.cMenuTrackTabRendererAquesTone.Size = new System.Drawing.Size( 177, 22 );
             this.cMenuTrackTabRendererAquesTone.Text = "AquesTone(&6)";
             // 
             // cMenuTrackSelector
@@ -19105,110 +19134,110 @@ namespace org.kbinani.cadencii {
             this.toolStripMenuItem31,
             this.cMenuTrackSelectorSelectAll} );
             this.cMenuTrackSelector.Name = "cMenuTrackSelector";
-            this.cMenuTrackSelector.Size = new System.Drawing.Size( 206, 336 );
+            this.cMenuTrackSelector.Size = new System.Drawing.Size( 186, 336 );
             // 
             // cMenuTrackSelectorPointer
             // 
             this.cMenuTrackSelectorPointer.Name = "cMenuTrackSelectorPointer";
-            this.cMenuTrackSelectorPointer.Size = new System.Drawing.Size( 205, 22 );
+            this.cMenuTrackSelectorPointer.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorPointer.Text = "Arrow(&A)";
             // 
             // cMenuTrackSelectorPencil
             // 
             this.cMenuTrackSelectorPencil.Name = "cMenuTrackSelectorPencil";
-            this.cMenuTrackSelectorPencil.Size = new System.Drawing.Size( 205, 22 );
+            this.cMenuTrackSelectorPencil.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorPencil.Text = "Pencil(&W)";
             // 
             // cMenuTrackSelectorLine
             // 
             this.cMenuTrackSelectorLine.Name = "cMenuTrackSelectorLine";
-            this.cMenuTrackSelectorLine.Size = new System.Drawing.Size( 205, 22 );
+            this.cMenuTrackSelectorLine.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorLine.Text = "Line(&L)";
             // 
             // cMenuTrackSelectorEraser
             // 
             this.cMenuTrackSelectorEraser.Name = "cMenuTrackSelectorEraser";
-            this.cMenuTrackSelectorEraser.Size = new System.Drawing.Size( 205, 22 );
+            this.cMenuTrackSelectorEraser.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorEraser.Text = "Eraser(&E)";
             // 
             // cMenuTrackSelectorPaletteTool
             // 
             this.cMenuTrackSelectorPaletteTool.Name = "cMenuTrackSelectorPaletteTool";
-            this.cMenuTrackSelectorPaletteTool.Size = new System.Drawing.Size( 205, 22 );
+            this.cMenuTrackSelectorPaletteTool.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorPaletteTool.Text = "Palette Tool";
             // 
             // toolStripSeparator14
             // 
             this.toolStripSeparator14.Name = "toolStripSeparator14";
-            this.toolStripSeparator14.Size = new System.Drawing.Size( 202, 6 );
+            this.toolStripSeparator14.Size = new System.Drawing.Size( 182, 6 );
             // 
             // cMenuTrackSelectorCurve
             // 
             this.cMenuTrackSelectorCurve.Name = "cMenuTrackSelectorCurve";
-            this.cMenuTrackSelectorCurve.Size = new System.Drawing.Size( 205, 22 );
+            this.cMenuTrackSelectorCurve.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorCurve.Text = "Curve(&V)";
             // 
             // toolStripMenuItem28
             // 
             this.toolStripMenuItem28.Name = "toolStripMenuItem28";
-            this.toolStripMenuItem28.Size = new System.Drawing.Size( 202, 6 );
+            this.toolStripMenuItem28.Size = new System.Drawing.Size( 182, 6 );
             // 
             // cMenuTrackSelectorUndo
             // 
             this.cMenuTrackSelectorUndo.Name = "cMenuTrackSelectorUndo";
-            this.cMenuTrackSelectorUndo.Size = new System.Drawing.Size( 205, 22 );
+            this.cMenuTrackSelectorUndo.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorUndo.Text = "Undo(&U)";
             // 
             // cMenuTrackSelectorRedo
             // 
             this.cMenuTrackSelectorRedo.Name = "cMenuTrackSelectorRedo";
-            this.cMenuTrackSelectorRedo.Size = new System.Drawing.Size( 205, 22 );
+            this.cMenuTrackSelectorRedo.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorRedo.Text = "Redo(&R)";
             // 
             // toolStripMenuItem29
             // 
             this.toolStripMenuItem29.Name = "toolStripMenuItem29";
-            this.toolStripMenuItem29.Size = new System.Drawing.Size( 202, 6 );
+            this.toolStripMenuItem29.Size = new System.Drawing.Size( 182, 6 );
             // 
             // cMenuTrackSelectorCut
             // 
             this.cMenuTrackSelectorCut.Name = "cMenuTrackSelectorCut";
-            this.cMenuTrackSelectorCut.Size = new System.Drawing.Size( 205, 22 );
+            this.cMenuTrackSelectorCut.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorCut.Text = "Cut(&T)";
             // 
             // cMenuTrackSelectorCopy
             // 
             this.cMenuTrackSelectorCopy.Name = "cMenuTrackSelectorCopy";
-            this.cMenuTrackSelectorCopy.Size = new System.Drawing.Size( 205, 22 );
+            this.cMenuTrackSelectorCopy.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorCopy.Text = "Copy(&C)";
             // 
             // cMenuTrackSelectorPaste
             // 
             this.cMenuTrackSelectorPaste.Name = "cMenuTrackSelectorPaste";
-            this.cMenuTrackSelectorPaste.Size = new System.Drawing.Size( 205, 22 );
+            this.cMenuTrackSelectorPaste.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorPaste.Text = "Paste(&P)";
             // 
             // cMenuTrackSelectorDelete
             // 
             this.cMenuTrackSelectorDelete.Name = "cMenuTrackSelectorDelete";
-            this.cMenuTrackSelectorDelete.Size = new System.Drawing.Size( 205, 22 );
+            this.cMenuTrackSelectorDelete.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorDelete.Text = "Delete(&D)";
             // 
             // cMenuTrackSelectorDeleteBezier
             // 
             this.cMenuTrackSelectorDeleteBezier.Name = "cMenuTrackSelectorDeleteBezier";
-            this.cMenuTrackSelectorDeleteBezier.Size = new System.Drawing.Size( 205, 22 );
+            this.cMenuTrackSelectorDeleteBezier.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorDeleteBezier.Text = "Delete Bezier Point(&B)";
             // 
             // toolStripMenuItem31
             // 
             this.toolStripMenuItem31.Name = "toolStripMenuItem31";
-            this.toolStripMenuItem31.Size = new System.Drawing.Size( 202, 6 );
+            this.toolStripMenuItem31.Size = new System.Drawing.Size( 182, 6 );
             // 
             // cMenuTrackSelectorSelectAll
             // 
             this.cMenuTrackSelectorSelectAll.Name = "cMenuTrackSelectorSelectAll";
-            this.cMenuTrackSelectorSelectAll.Size = new System.Drawing.Size( 205, 22 );
+            this.cMenuTrackSelectorSelectAll.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorSelectAll.Text = "Select All Events(&E)";
             // 
             // trackBar
@@ -19294,21 +19323,22 @@ namespace org.kbinani.cadencii {
             this.stripLblMidiIn,
             this.toolStripSeparator11,
             this.stripDDBtnSpeed} );
-            this.toolStripBottom.Location = new System.Drawing.Point( 11, 506 );
+            this.toolStripBottom.Location = new System.Drawing.Point( 15, 0 );
             this.toolStripBottom.Name = "toolStripBottom";
-            this.toolStripBottom.Size = new System.Drawing.Size( 378, 25 );
+            this.toolStripBottom.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+            this.toolStripBottom.Size = new System.Drawing.Size( 321, 25 );
             this.toolStripBottom.TabIndex = 22;
             // 
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size( 101, 20 );
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size( 85, 20 );
             this.toolStripStatusLabel1.Text = "Game Controler";
             // 
             // stripLblGameCtrlMode
             // 
             this.stripLblGameCtrlMode.Name = "stripLblGameCtrlMode";
-            this.stripLblGameCtrlMode.Size = new System.Drawing.Size( 57, 20 );
+            this.stripLblGameCtrlMode.Size = new System.Drawing.Size( 49, 20 );
             this.stripLblGameCtrlMode.Text = "Disabled";
             this.stripLblGameCtrlMode.ToolTipText = "Game Controler";
             // 
@@ -19320,13 +19350,13 @@ namespace org.kbinani.cadencii {
             // toolStripStatusLabel2
             // 
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size( 53, 20 );
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size( 41, 20 );
             this.toolStripStatusLabel2.Text = "MIDI In";
             // 
             // stripLblMidiIn
             // 
             this.stripLblMidiIn.Name = "stripLblMidiIn";
-            this.stripLblMidiIn.Size = new System.Drawing.Size( 57, 20 );
+            this.stripLblMidiIn.Size = new System.Drawing.Size( 49, 20 );
             this.stripLblMidiIn.Text = "Disabled";
             this.stripLblMidiIn.ToolTipText = "Midi In Device";
             // 
@@ -19345,13 +19375,13 @@ namespace org.kbinani.cadencii {
             this.stripDDBtnSpeed100} );
             this.stripDDBtnSpeed.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.stripDDBtnSpeed.Name = "stripDDBtnSpeed";
-            this.stripDDBtnSpeed.Size = new System.Drawing.Size( 86, 22 );
+            this.stripDDBtnSpeed.Size = new System.Drawing.Size( 73, 22 );
             this.stripDDBtnSpeed.Text = "Speed 1.0x";
             // 
             // stripDDBtnSpeedTextbox
             // 
             this.stripDDBtnSpeedTextbox.Name = "stripDDBtnSpeedTextbox";
-            this.stripDDBtnSpeedTextbox.Size = new System.Drawing.Size( 100, 25 );
+            this.stripDDBtnSpeedTextbox.Size = new System.Drawing.Size( 100, 19 );
             this.stripDDBtnSpeedTextbox.Text = "100";
             // 
             // stripDDBtnSpeed033
@@ -19374,9 +19404,10 @@ namespace org.kbinani.cadencii {
             // 
             // splitContainerProperty
             // 
+            this.splitContainerProperty.Controls.Add( this.splitContainer2 );
             this.splitContainerProperty.FixedPanel = System.Windows.Forms.FixedPanel.None;
             this.splitContainerProperty.IsSplitterFixed = false;
-            this.splitContainerProperty.Location = new System.Drawing.Point( 584, 147 );
+            this.splitContainerProperty.Location = new System.Drawing.Point( 448, 14 );
             this.splitContainerProperty.Margin = new System.Windows.Forms.Padding( 0 );
             this.splitContainerProperty.Name = "splitContainerProperty";
             this.splitContainerProperty.Orientation = System.Windows.Forms.Orientation.Horizontal;
@@ -19413,10 +19444,50 @@ namespace org.kbinani.cadencii {
             this.splitContainerProperty.TabStop = false;
             this.splitContainerProperty.Text = "bSplitContainer1";
             // 
+            // splitContainer2
+            // 
+            this.splitContainer2.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
+            this.splitContainer2.IsSplitterFixed = false;
+            this.splitContainer2.Location = new System.Drawing.Point( 0, 345 );
+            this.splitContainer2.Margin = new System.Windows.Forms.Padding( 0 );
+            this.splitContainer2.Name = "splitContainer2";
+            this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Vertical;
+            // 
+            // 
+            // 
+            this.splitContainer2.Panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer2.Panel1.BorderColor = System.Drawing.Color.Black;
+            this.splitContainer2.Panel1.Location = new System.Drawing.Point( 0, 0 );
+            this.splitContainer2.Panel1.Margin = new System.Windows.Forms.Padding( 0 );
+            this.splitContainer2.Panel1.Name = "m_panel1";
+            this.splitContainer2.Panel1.Size = new System.Drawing.Size( 115, 25 );
+            this.splitContainer2.Panel1.TabIndex = 0;
+            this.splitContainer2.Panel1MinSize = 25;
+            // 
+            // 
+            // 
+            this.splitContainer2.Panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.splitContainer2.Panel2.BorderColor = System.Drawing.Color.Black;
+            this.splitContainer2.Panel2.Location = new System.Drawing.Point( 0, 29 );
+            this.splitContainer2.Panel2.Margin = new System.Windows.Forms.Padding( 0 );
+            this.splitContainer2.Panel2.Name = "m_panel2";
+            this.splitContainer2.Panel2.Size = new System.Drawing.Size( 115, 105 );
+            this.splitContainer2.Panel2.TabIndex = 1;
+            this.splitContainer2.Panel2MinSize = 25;
+            this.splitContainer2.Size = new System.Drawing.Size( 115, 134 );
+            this.splitContainer2.SplitterDistance = 25;
+            this.splitContainer2.SplitterWidth = 4;
+            this.splitContainer2.TabIndex = 23;
+            this.splitContainer2.TabStop = false;
+            this.splitContainer2.Text = "bSplitContainer1";
+            // 
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.DarkGray;
-            this.panel2.Location = new System.Drawing.Point( 9, 431 );
+            this.panel2.Location = new System.Drawing.Point( 15, 295 );
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size( 421, 59 );
             this.panel2.TabIndex = 19;
@@ -19665,46 +19736,6 @@ namespace org.kbinani.cadencii {
             this.panelForToolStripFile.Size = new System.Drawing.Size( 949, 24 );
             this.panelForToolStripFile.TabIndex = 20;
             // 
-            // splitContainer2
-            // 
-            this.splitContainer2.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
-            this.splitContainer2.IsSplitterFixed = false;
-            this.splitContainer2.Location = new System.Drawing.Point( 428, 493 );
-            this.splitContainer2.Margin = new System.Windows.Forms.Padding( 0 );
-            this.splitContainer2.Name = "splitContainer2";
-            this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Vertical;
-            // 
-            // 
-            // 
-            this.splitContainer2.Panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.splitContainer2.Panel1.BorderColor = System.Drawing.Color.Black;
-            this.splitContainer2.Panel1.Location = new System.Drawing.Point( 0, 0 );
-            this.splitContainer2.Panel1.Margin = new System.Windows.Forms.Padding( 0 );
-            this.splitContainer2.Panel1.Name = "m_panel1";
-            this.splitContainer2.Panel1.Size = new System.Drawing.Size( 115, 25 );
-            this.splitContainer2.Panel1.TabIndex = 0;
-            this.splitContainer2.Panel1MinSize = 25;
-            // 
-            // 
-            // 
-            this.splitContainer2.Panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.splitContainer2.Panel2.BorderColor = System.Drawing.Color.Black;
-            this.splitContainer2.Panel2.Location = new System.Drawing.Point( 0, 29 );
-            this.splitContainer2.Panel2.Margin = new System.Windows.Forms.Padding( 0 );
-            this.splitContainer2.Panel2.Name = "m_panel2";
-            this.splitContainer2.Panel2.Size = new System.Drawing.Size( 115, 105 );
-            this.splitContainer2.Panel2.TabIndex = 1;
-            this.splitContainer2.Panel2MinSize = 25;
-            this.splitContainer2.Size = new System.Drawing.Size( 115, 134 );
-            this.splitContainer2.SplitterDistance = 25;
-            this.splitContainer2.SplitterWidth = 4;
-            this.splitContainer2.TabIndex = 23;
-            this.splitContainer2.TabStop = false;
-            this.splitContainer2.Text = "bSplitContainer1";
-            // 
             // panel1
             // 
             this.panel1.Controls.Add( this.pictKeyLengthSplitter );
@@ -19716,7 +19747,7 @@ namespace org.kbinani.cadencii {
             this.panel1.Controls.Add( this.pictureBox2 );
             this.panel1.Controls.Add( this.hScroll );
             this.panel1.Controls.Add( this.trackBar );
-            this.panel1.Location = new System.Drawing.Point( 9, 146 );
+            this.panel1.Location = new System.Drawing.Point( 15, 13 );
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size( 421, 279 );
             this.panel1.TabIndex = 24;
@@ -19724,7 +19755,7 @@ namespace org.kbinani.cadencii {
             // rebarWrapper1
             // 
             this.rebarWrapper1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.rebarWrapper1.Location = new System.Drawing.Point( 0, 26 );
+            this.rebarWrapper1.Location = new System.Drawing.Point( 0, 24 );
             this.rebarWrapper1.Name = "rebarWrapper1";
             this.rebarWrapper1.Size = new System.Drawing.Size( 955, 118 );
             this.rebarWrapper1.TabIndex = 19;
@@ -20001,34 +20032,12 @@ namespace org.kbinani.cadencii {
             this.stripBtnCurve.Name = "stripBtnCurve";
             this.stripBtnCurve.Text = "Curve";
             // 
-            // rebarWrapper2
-            // 
-            this.rebarWrapper2.Bands.Add( this.bandStatus );
-            this.rebarWrapper2.Bands.Add( this.bandWrapper1 );
-            this.rebarWrapper2.Controls.Add( this.statusLabel );
-            this.rebarWrapper2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.rebarWrapper2.Location = new System.Drawing.Point( 0, 655 );
-            this.rebarWrapper2.Name = "rebarWrapper2";
-            this.rebarWrapper2.Size = new System.Drawing.Size( 955, 34 );
-            this.rebarWrapper2.TabIndex = 25;
-            this.rebarWrapper2.Text = "rebarWrapper2";
-            // 
             // bandStatus
             // 
-            this.bandStatus.Child = this.statusLabel;
             this.bandStatus.Header = -1;
             this.bandStatus.Integral = 1;
             this.bandStatus.MaxHeight = 0;
             this.bandStatus.UseChevron = true;
-            // 
-            // statusLabel
-            // 
-            this.statusLabel.Location = new System.Drawing.Point( 11, 2 );
-            this.statusLabel.MinimumSize = new System.Drawing.Size( 0, 22 );
-            this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size( 944, 24 );
-            this.statusLabel.TabIndex = 0;
-            this.statusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // bandWrapper1
             // 
@@ -20036,6 +20045,47 @@ namespace org.kbinani.cadencii {
             this.bandWrapper1.Integral = 1;
             this.bandWrapper1.MaxHeight = 0;
             this.bandWrapper1.UseChevron = true;
+            // 
+            // toolStripContainer1
+            // 
+            // 
+            // toolStripContainer1.BottomToolStripPanel
+            // 
+            this.toolStripContainer1.BottomToolStripPanel.Controls.Add( this.toolStripBottom );
+            this.toolStripContainer1.BottomToolStripPanel.Controls.Add( this.statusStrip1 );
+            this.toolStripContainer1.BottomToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+            // 
+            // toolStripContainer1.ContentPanel
+            // 
+            this.toolStripContainer1.ContentPanel.Controls.Add( this.panel1 );
+            this.toolStripContainer1.ContentPanel.Controls.Add( this.panel2 );
+            this.toolStripContainer1.ContentPanel.Controls.Add( this.splitContainerProperty );
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size( 955, 500 );
+            this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.toolStripContainer1.LeftToolStripPanelVisible = false;
+            this.toolStripContainer1.Location = new System.Drawing.Point( 0, 142 );
+            this.toolStripContainer1.Name = "toolStripContainer1";
+            this.toolStripContainer1.RightToolStripPanelVisible = false;
+            this.toolStripContainer1.Size = new System.Drawing.Size( 955, 547 );
+            this.toolStripContainer1.TabIndex = 26;
+            this.toolStripContainer1.Text = "toolStripContainer1";
+            this.toolStripContainer1.TopToolStripPanelVisible = false;
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Dock = System.Windows.Forms.DockStyle.None;
+            this.statusStrip1.Items.AddRange( new System.Windows.Forms.ToolStripItem[] {
+            this.statusLabel} );
+            this.statusStrip1.Location = new System.Drawing.Point( 0, 25 );
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size( 955, 22 );
+            this.statusStrip1.TabIndex = 25;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // statusLabel
+            // 
+            this.statusLabel.Name = "statusLabel";
+            this.statusLabel.Size = new System.Drawing.Size( 0, 17 );
             // 
             // panelOverview
             // 
@@ -20078,19 +20128,14 @@ namespace org.kbinani.cadencii {
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size( 955, 689 );
+            this.Controls.Add( this.toolStripContainer1 );
             this.Controls.Add( this.rebarWrapper1 );
-            this.Controls.Add( this.panel1 );
-            this.Controls.Add( this.rebarWrapper2 );
-            this.Controls.Add( this.splitContainerProperty );
-            this.Controls.Add( this.panel2 );
             this.Controls.Add( this.menuStripMain );
-            this.Controls.Add( this.splitContainer2 );
             this.Controls.Add( this.panelForToolStripFile );
             this.Controls.Add( this.panelForToolStripTool );
             this.Controls.Add( this.panelForToolStripPosition );
             this.Controls.Add( this.panelForToolStripMeasure );
             this.Controls.Add( this.splitContainer1 );
-            this.Controls.Add( this.toolStripBottom );
             this.KeyPreview = true;
             this.MainMenuStrip = this.menuStripMain;
             this.Name = "FormMain";
@@ -20107,8 +20152,15 @@ namespace org.kbinani.cadencii {
             ((System.ComponentModel.ISupportInitialize)(this.picturePositionIndicator)).EndInit();
             this.toolStripBottom.ResumeLayout( false );
             this.toolStripBottom.PerformLayout();
+            this.splitContainerProperty.ResumeLayout( false );
             this.panel1.ResumeLayout( false );
-            this.rebarWrapper2.ResumeLayout( false );
+            this.toolStripContainer1.BottomToolStripPanel.ResumeLayout( false );
+            this.toolStripContainer1.BottomToolStripPanel.PerformLayout();
+            this.toolStripContainer1.ContentPanel.ResumeLayout( false );
+            this.toolStripContainer1.ResumeLayout( false );
+            this.toolStripContainer1.PerformLayout();
+            this.statusStrip1.ResumeLayout( false );
+            this.statusStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.panelOverview)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).EndInit();
             this.ResumeLayout( false );
@@ -20402,7 +20454,6 @@ namespace org.kbinani.cadencii {
         public BMenuItem menuHiddenCut;
         public BMenuItem menuSettingUtauVoiceDB;
         public BToolBar toolStripBottom;
-        public BLabel statusLabel;
         public org.kbinani.apputil.BSplitContainer splitContainerProperty;
         public BMenuItem menuVisualOverview;
         public PictOverview panelOverview;
