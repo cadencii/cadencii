@@ -556,15 +556,15 @@ namespace org.kbinani.cadencii {
         /// </summary>
         private float mFps = 0f;
         private double[] mFpsDrawTime2 = new double[128];
-        private RebarDotNet.RebarWrapper rebarWrapper1;
+        private Rebar rebarWrapper1;
         private System.Windows.Forms.Panel panelForToolStripFile;
         private System.Windows.Forms.Panel panelForToolStripPosition;
         private System.Windows.Forms.Panel panelForToolStripMeasure;
         private System.Windows.Forms.Panel panelForToolStripTool;
-        private RebarDotNet.BandWrapper bandWrapperForToolStripFile;
-        private RebarDotNet.BandWrapper bandWrapperForToolStripPosition;
-        private RebarDotNet.BandWrapper bandWrapperForToolStripMeasure;
-        private RebarDotNet.BandWrapper bandWrapperForToolStripTool;
+        private RebarBand bandWrapperForToolStripFile;
+        private RebarBand bandWrapperForToolStripPosition;
+        private RebarBand bandWrapperForToolStripMeasure;
+        private RebarBand bandWrapperForToolStripTool;
         public org.kbinani.apputil.BSplitContainer splitContainer2;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.ToolBar toolBarFile;
@@ -585,9 +585,9 @@ namespace org.kbinani.cadencii {
         private System.Windows.Forms.MenuItem menuItem2;
         private System.Windows.Forms.ToolBarButton toolBarButton5;
         private System.Windows.Forms.ImageList imageListMeasure;
-        private RebarDotNet.RebarWrapper rebarWrapper2;
-        private RebarDotNet.BandWrapper bandStatus;
-        private RebarDotNet.BandWrapper bandWrapper1;
+        private Rebar rebarWrapper2;
+        private RebarBand bandStatus;
+        private RebarBand bandWrapper1;
         private float mFps2 = 0f;
 #endif
         #endregion
@@ -747,10 +747,11 @@ namespace org.kbinani.cadencii {
 
 #if !JAVA
             // toolStipの位置を，前回終了時の位置に戻す
-            this.bandWrapperForToolStripFile = new RebarDotNet.BandWrapper();
-            this.bandWrapperForToolStripPosition = new RebarDotNet.BandWrapper();
-            this.bandWrapperForToolStripMeasure = new RebarDotNet.BandWrapper();
-            this.bandWrapperForToolStripTool = new RebarDotNet.BandWrapper();
+            int chevron_width = AppManager.editorConfig.ChevronWidth;
+            this.bandWrapperForToolStripFile = new RebarBand();
+            this.bandWrapperForToolStripPosition = new RebarBand();
+            this.bandWrapperForToolStripMeasure = new RebarBand();
+            this.bandWrapperForToolStripTool = new RebarBand();
             this.rebarWrapper1.Controls.Add( this.toolBarFile );
             this.rebarWrapper1.Controls.Add( this.toolBarTool );
             this.rebarWrapper1.Controls.Add( this.toolBarPosition );
@@ -764,7 +765,7 @@ namespace org.kbinani.cadencii {
             this.bandWrapperForToolStripFile.UseChevron = true;
             if ( toolBarFile.Buttons.Count > 0 ) {
                 this.bandWrapperForToolStripFile.IdealWidth = 
-                    toolBarFile.Buttons[toolBarFile.Buttons.Count - 1].Rectangle.Right + 20;
+                    toolBarFile.Buttons[toolBarFile.Buttons.Count - 1].Rectangle.Right + chevron_width;
             }
             this.bandWrapperForToolStripFile.BandSize = AppManager.editorConfig.BandSizeFile;
             this.bandWrapperForToolStripFile.NewRow = AppManager.editorConfig.BandNewRowFile;
@@ -777,7 +778,7 @@ namespace org.kbinani.cadencii {
             this.bandWrapperForToolStripPosition.UseChevron = true;
             if ( toolBarPosition.Buttons.Count > 0 ) {
                 this.bandWrapperForToolStripPosition.IdealWidth =
-                    toolBarPosition.Buttons[toolBarPosition.Buttons.Count - 1].Rectangle.Right + 20;
+                    toolBarPosition.Buttons[toolBarPosition.Buttons.Count - 1].Rectangle.Right + chevron_width;
             }
             this.bandWrapperForToolStripPosition.BandSize = AppManager.editorConfig.BandSizePosition;
             this.bandWrapperForToolStripPosition.NewRow = AppManager.editorConfig.BandNewRowPosition;
@@ -790,7 +791,7 @@ namespace org.kbinani.cadencii {
             this.bandWrapperForToolStripMeasure.UseChevron = true;
             if ( toolBarMeasure.Buttons.Count > 0 ) {
                 this.bandWrapperForToolStripMeasure.IdealWidth =
-                    toolBarMeasure.Buttons[toolBarMeasure.Buttons.Count - 1].Rectangle.Right + 20;
+                    toolBarMeasure.Buttons[toolBarMeasure.Buttons.Count - 1].Rectangle.Right + chevron_width;
             }
             this.bandWrapperForToolStripMeasure.BandSize = AppManager.editorConfig.BandSizeMeasure;
             this.bandWrapperForToolStripMeasure.NewRow = AppManager.editorConfig.BandNewRowMeasure;
@@ -803,12 +804,12 @@ namespace org.kbinani.cadencii {
             this.bandWrapperForToolStripTool.UseChevron = true;
             if ( toolBarTool.Buttons.Count > 0 ) {
                 this.bandWrapperForToolStripTool.IdealWidth =
-                    toolBarTool.Buttons[toolBarTool.Buttons.Count - 1].Rectangle.Right + 20;
+                    toolBarTool.Buttons[toolBarTool.Buttons.Count - 1].Rectangle.Right + chevron_width;
             }
             this.bandWrapperForToolStripTool.BandSize = AppManager.editorConfig.BandSizeTool;
             this.bandWrapperForToolStripTool.NewRow = AppManager.editorConfig.BandNewRowTool;
             // 一度リストに入れてから追加する
-            var bands = new RebarDotNet.BandWrapper[]{ null, null, null, null };
+            var bands = new RebarBand[]{ null, null, null, null };
             // 番号がおかしくないか
             if ( AppManager.editorConfig.BandOrderFile < 0 || bands.Length <= AppManager.editorConfig.BandOrderFile ) AppManager.editorConfig.BandOrderFile = 0;
             if ( AppManager.editorConfig.BandOrderMeasure < 0 || bands.Length <= AppManager.editorConfig.BandOrderMeasure ) AppManager.editorConfig.BandOrderMeasure = 0;
@@ -1095,8 +1096,8 @@ namespace org.kbinani.cadencii {
             var pmeasure = bandWrapperForToolStripMeasure.Location;
             var ptool = bandWrapperForToolStripTool.Location;
             var pposition = bandWrapperForToolStripPosition.Location;
-            var list = new System.Collections.Generic.List<RebarDotNet.BandWrapper>();
-            list.AddRange( new RebarDotNet.BandWrapper[]{
+            var list = new System.Collections.Generic.List<RebarBand>();
+            list.AddRange( new RebarBand[]{
                 bandWrapperForToolStripFile,
                 bandWrapperForToolStripMeasure,
                 bandWrapperForToolStripPosition,
@@ -1153,8 +1154,8 @@ namespace org.kbinani.cadencii {
         /// <param name="band_size"></param>
         /// <param name="new_row"></param>
         private void saveToolbarLocationCore(
-            System.Collections.Generic.List<RebarDotNet.BandWrapper> list,
-            RebarDotNet.BandWrapper band, 
+            System.Collections.Generic.List<RebarBand> list,
+            RebarBand band, 
             out int band_size, 
             out bool new_row,
             out int band_order
@@ -17333,10 +17334,7 @@ namespace org.kbinani.cadencii {
             this.panelForToolStripFile = new System.Windows.Forms.Panel();
             this.splitContainer2 = new org.kbinani.apputil.BSplitContainer();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.panelOverview = new org.kbinani.cadencii.PictOverview();
-            this.pictPianoRoll = new org.kbinani.cadencii.PictPianoRoll();
-            this.hScroll = new org.kbinani.cadencii.HScroll();
-            this.rebarWrapper1 = new RebarDotNet.RebarWrapper();
+            this.rebarWrapper1 = new org.kbinani.windows.forms.Rebar();
             this.toolBarFile = new System.Windows.Forms.ToolBar();
             this.stripBtnFileNew = new System.Windows.Forms.ToolBarButton();
             this.stripBtnFileOpen = new System.Windows.Forms.ToolBarButton();
@@ -17372,10 +17370,13 @@ namespace org.kbinani.cadencii {
             this.toolBarButton3 = new System.Windows.Forms.ToolBarButton();
             this.stripBtnGrid = new System.Windows.Forms.ToolBarButton();
             this.stripBtnCurve = new System.Windows.Forms.ToolBarButton();
-            this.rebarWrapper2 = new RebarDotNet.RebarWrapper();
-            this.bandStatus = new RebarDotNet.BandWrapper();
+            this.rebarWrapper2 = new org.kbinani.windows.forms.Rebar();
+            this.bandStatus = new org.kbinani.windows.forms.RebarBand();
             this.statusLabel = new org.kbinani.windows.forms.BLabel();
-            this.bandWrapper1 = new RebarDotNet.BandWrapper();
+            this.bandWrapper1 = new org.kbinani.windows.forms.RebarBand();
+            this.panelOverview = new org.kbinani.cadencii.PictOverview();
+            this.pictPianoRoll = new org.kbinani.cadencii.PictPianoRoll();
+            this.hScroll = new org.kbinani.cadencii.HScroll();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
@@ -17387,10 +17388,9 @@ namespace org.kbinani.cadencii {
             ((System.ComponentModel.ISupportInitialize)(this.picturePositionIndicator)).BeginInit();
             this.toolStripBottom.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.rebarWrapper2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.panelOverview)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).BeginInit();
-            this.rebarWrapper1.SuspendLayout();
-            this.rebarWrapper2.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStripMain
@@ -19721,40 +19721,6 @@ namespace org.kbinani.cadencii {
             this.panel1.Size = new System.Drawing.Size( 421, 279 );
             this.panel1.TabIndex = 24;
             // 
-            // panelOverview
-            // 
-            this.panelOverview.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelOverview.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(106)))), ((int)(((byte)(108)))), ((int)(((byte)(108)))) );
-            this.panelOverview.Location = new System.Drawing.Point( 0, 1 );
-            this.panelOverview.Margin = new System.Windows.Forms.Padding( 0 );
-            this.panelOverview.Name = "panelOverview";
-            this.panelOverview.Size = new System.Drawing.Size( 700, 45 );
-            this.panelOverview.TabIndex = 19;
-            this.panelOverview.TabStop = false;
-            // 
-            // pictPianoRoll
-            // 
-            this.pictPianoRoll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictPianoRoll.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))) );
-            this.pictPianoRoll.Location = new System.Drawing.Point( 0, 94 );
-            this.pictPianoRoll.Margin = new System.Windows.Forms.Padding( 0 );
-            this.pictPianoRoll.Name = "pictPianoRoll";
-            this.pictPianoRoll.Size = new System.Drawing.Size( 405, 169 );
-            this.pictPianoRoll.TabIndex = 12;
-            this.pictPianoRoll.TabStop = false;
-            // 
-            // hScroll
-            // 
-            this.hScroll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.hScroll.Location = new System.Drawing.Point( 65, 263 );
-            this.hScroll.Name = "hScroll";
-            this.hScroll.Size = new System.Drawing.Size( 257, 16 );
-            this.hScroll.TabIndex = 16;
-            // 
             // rebarWrapper1
             // 
             this.rebarWrapper1.Dock = System.Windows.Forms.DockStyle.Top;
@@ -20053,6 +20019,7 @@ namespace org.kbinani.cadencii {
             this.bandStatus.Header = -1;
             this.bandStatus.Integral = 1;
             this.bandStatus.MaxHeight = 0;
+            this.bandStatus.UseChevron = true;
             // 
             // statusLabel
             // 
@@ -20068,6 +20035,41 @@ namespace org.kbinani.cadencii {
             this.bandWrapper1.Header = -1;
             this.bandWrapper1.Integral = 1;
             this.bandWrapper1.MaxHeight = 0;
+            this.bandWrapper1.UseChevron = true;
+            // 
+            // panelOverview
+            // 
+            this.panelOverview.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelOverview.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(106)))), ((int)(((byte)(108)))), ((int)(((byte)(108)))) );
+            this.panelOverview.Location = new System.Drawing.Point( 0, 1 );
+            this.panelOverview.Margin = new System.Windows.Forms.Padding( 0 );
+            this.panelOverview.Name = "panelOverview";
+            this.panelOverview.Size = new System.Drawing.Size( 700, 45 );
+            this.panelOverview.TabIndex = 19;
+            this.panelOverview.TabStop = false;
+            // 
+            // pictPianoRoll
+            // 
+            this.pictPianoRoll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictPianoRoll.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))) );
+            this.pictPianoRoll.Location = new System.Drawing.Point( 0, 94 );
+            this.pictPianoRoll.Margin = new System.Windows.Forms.Padding( 0 );
+            this.pictPianoRoll.Name = "pictPianoRoll";
+            this.pictPianoRoll.Size = new System.Drawing.Size( 405, 169 );
+            this.pictPianoRoll.TabIndex = 12;
+            this.pictPianoRoll.TabStop = false;
+            // 
+            // hScroll
+            // 
+            this.hScroll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.hScroll.Location = new System.Drawing.Point( 65, 263 );
+            this.hScroll.Name = "hScroll";
+            this.hScroll.Size = new System.Drawing.Size( 257, 16 );
+            this.hScroll.TabIndex = 16;
             // 
             // FormMain
             // 
@@ -20106,11 +20108,9 @@ namespace org.kbinani.cadencii {
             this.toolStripBottom.ResumeLayout( false );
             this.toolStripBottom.PerformLayout();
             this.panel1.ResumeLayout( false );
+            this.rebarWrapper2.ResumeLayout( false );
             ((System.ComponentModel.ISupportInitialize)(this.panelOverview)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).EndInit();
-            this.rebarWrapper1.ResumeLayout( false );
-            this.rebarWrapper1.PerformLayout();
-            this.rebarWrapper2.ResumeLayout( false );
             this.ResumeLayout( false );
             this.PerformLayout();
 

@@ -1,11 +1,25 @@
+/**
+ * RebarBand.cs
+ * Copyright (C) Anthony Baraff
+ * Copyright (C) 2010 kbinani
+ *
+ * This file is part of org.kbinani.windows.forms.
+ *
+ * org.kbinani.windows.forms is free software; you can redistribute it and/or
+ * modify it under the terms of the BSD License.
+ *
+ * org.kbinani.windows.forms is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
 using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
-using WindowsUtilities;
+using org.kbinani;
 
-namespace RebarDotNet {
+namespace org.kbinani.windows.forms {
     /// <summary>
     /// Summary description for BandWrapper.
     /// </summary>
@@ -16,9 +30,8 @@ namespace RebarDotNet {
     }
 
     [ToolboxItem( false )]
-    public class BandWrapper : Component, IDisposable {
-
-        private BandCollection _bands;
+    public class RebarBand : Component, IDisposable {
+        private RebarBandCollection _bands;
         private bool _allowVertical = true;
         private Color _backColor;
         private string _caption = "";
@@ -52,6 +65,8 @@ namespace RebarDotNet {
         private int _bandSize = 0;
         private bool _useChevron = true;
 
+        private const int SPACE_CHEVRON_MENU = 6;
+
         public event MouseEventHandler MouseDown; //Done
         public event MouseEventHandler MouseMove; //Done
         public event MouseEventHandler MouseUp; //Done
@@ -60,19 +75,173 @@ namespace RebarDotNet {
         public event EventHandler Resize; //Done
         public event EventHandler VisibleChanged; //Done
 
-        public BandWrapper() {
+        public RebarBand() {
             _foreColor = SystemColors.ControlText;
             _backColor = SystemColors.Control;
         }
 
-        ~BandWrapper() {
+        ~RebarBand() {
             Dispose( false );
         }
 
-        public void Show( Control control, Point point ) {
-            //TODO: BandWrapper#Show
-            control.Location = point;
-            control.Show();
+        public void Show( Control control, Point point, int chevron_width ) {
+            if ( !(control is Rebar) ) return;
+            Rebar parent = (Rebar)control;
+            // Bandの外形を調べる
+            RECT rc_band = new RECT();
+            if ( win32.SendMessage( parent.RebarHwnd, win32.RB_GETRECT, this.BandIndex, ref rc_band ) == 0 ) return;
+            // chevronの分の幅を引く
+            rc_band.right -= chevron_width;
+            if( this._child == null ) return;
+            // ツールバーのボタンの数を調べる
+            int num_buttons = (int)win32.SendMessage( this._child.Handle, (int)win32.TB_BUTTONCOUNT, 0, IntPtr.Zero );
+            if ( num_buttons <= 0 ) return;
+            // ツールバーの各ボタンについて処理
+            int hidden_start = num_buttons;
+            // ツールバー
+            if ( !(this._child is ToolBar) ) return;
+            ToolBar toolbar = (ToolBar)this._child;
+            for ( int i = 0; i < num_buttons; i++ ) {
+                // ボタンの外形を調べる
+                RECT rc_button = new RECT();
+                if ( win32.SendMessage( this._child.Handle, win32.TB_GETITEMRECT, i, ref rc_button ) == 0 ) return;
+                rc_button.left += rc_band.left;
+                rc_button.right += rc_band.left;
+                rc_button.top += rc_band.top;
+                rc_button.bottom += rc_band.top;
+                RECT rc_intersect = new RECT();
+                win32.IntersectRect( ref rc_intersect, ref rc_button, ref rc_band );
+                if ( win32.EqualRect( ref rc_intersect, ref rc_button ) ) {
+                    // ボタンは隠れていないので続ける
+                    continue;
+                }
+                hidden_start = i;
+                break;
+            }
+            // 隠れているボタンが一つもない場合は何もしない
+            if ( hidden_start >= num_buttons ) return;
+            // pop-upメニューを作成する
+            ContextMenu popup = new ContextMenu();
+            for ( int i = hidden_start; i < num_buttons; i++ ) {
+                uint id = (uint)i;
+                // ボタンの情報を調べながら，ポップアップに追加
+                ToolBarButton button = toolbar.Buttons[i];
+                if ( button.Style == ToolBarButtonStyle.PushButton ||
+                     button.Style == ToolBarButtonStyle.ToggleButton ) {
+                    MenuItem menu = new MenuItem();
+                    menu.Text = button.Text;
+                    menu.Tag = button;
+                    menu.DrawItem += drawChevronMenuItem;
+                    menu.MeasureItem += measureChevronMenuItem;
+                    menu.OwnerDraw = true;
+                    menu.Click += handleChevronMenuItemClick;
+                    popup.MenuItems.Add( menu );
+                }
+            }
+            // ポップアップメニューを表示
+            popup.Show( control, point );
+        }
+
+        private void handleChevronMenuItemClick( object sender, EventArgs e ) {
+            if ( sender == null ) return;
+            if ( !(sender is MenuItem) ) return;
+            MenuItem menu = (MenuItem)sender;
+            if ( menu.Tag == null ) return;
+            if ( !(menu.Tag is ToolBarButton) ) return;
+            ToolBarButton button = (ToolBarButton)menu.Tag;
+            ToolBar parent = button.Parent;
+            Rectangle rc = button.Rectangle;
+            uint lparam = (uint)win32.MAKELONG( rc.Left + rc.Width / 2, rc.Top + rc.Height / 2 );
+            win32.SendMessage(
+                parent.Handle,
+                win32.WM_LBUTTONDOWN,
+                win32.MK_LBUTTON,
+                lparam );
+            win32.SendMessage(
+                parent.Handle,
+                win32.WM_LBUTTONUP,
+                win32.MK_LBUTTON,
+                lparam );
+        }
+
+        void measureChevronMenuItem( object sender, MeasureItemEventArgs e ) {
+            if ( !(sender is MenuItem) ) return;
+            MenuItem menu = (MenuItem)sender;
+            if ( menu.Tag == null ) return;
+            if ( !(menu.Tag is ToolBarButton) ) return;
+            ToolBarButton button = (ToolBarButton)menu.Tag;
+            SizeF text_size = e.Graphics.MeasureString( menu.Text, SystemInformation.MenuFont );
+            int width = (int)text_size.Width;
+            int height = (int)text_size.Height;
+            height = Math.Max( height, button.Parent.Height );
+            if ( button.Parent != null && button.Parent.ImageList != null ) {
+                if ( 0 <= button.ImageIndex && button.ImageIndex < button.Parent.ImageList.Images.Count ) {
+                    Image img = button.Parent.ImageList.Images[button.ImageIndex];
+                    if ( img != null ) {
+                        width += img.Width;
+                        height = Math.Max( height, img.Height );
+                    }
+                }
+            }
+            e.ItemHeight = height;
+            e.ItemWidth = width;
+        }
+
+        private void drawChevronMenuItem( object sender, DrawItemEventArgs e ) {
+            Brush brush_back = ((e.State & DrawItemState.Selected) != 0) ?
+                    SystemBrushes.Highlight :  // 選択時の背景色
+                    SystemBrushes.Menu;       // 非選択時の背景色
+            e.Graphics.FillRectangle( brush_back, e.Bounds );
+            
+            if ( !(sender is MenuItem) ) return;
+            MenuItem menu = (MenuItem)sender;
+            if( menu.Tag == null ) return;
+            if( !(menu.Tag is ToolBarButton) ) return;
+            ToolBarButton button = (ToolBarButton)menu.Tag;
+            int x = 0;
+            if ( button.Parent != null && button.Parent.ImageList != null ) {
+                if ( 0 <= button.ImageIndex && button.ImageIndex < button.Parent.ImageList.Images.Count ) {
+                    Image img = button.Parent.ImageList.Images[button.ImageIndex];
+                    if( img != null ){
+                        int image_offset = (e.Bounds.Height - img.Height) / 2;
+                        if ( !button.Enabled ) {
+                            const float R = 0.298912f;
+                            const float G = 0.586611f;
+                            const float B = 0.114478f;
+
+                            System.Drawing.Imaging.ColorMatrix cm = new System.Drawing.Imaging.ColorMatrix(
+                                new float[][]{
+                                    new float[]{ R, R, R, 0, 0}, 
+                                    new float[]{ G, G, G, 0, 0}, 
+                                    new float[]{ B, B, B, 0, 0}, 
+                                    new float[]{ 0, 0, 0, 1, 0}, 
+                                    new float[]{ 0, 0, 0, 0, 1} } );
+                            System.Drawing.Imaging.ImageAttributes atr = new System.Drawing.Imaging.ImageAttributes();
+                            atr.SetColorMatrix( cm );
+                            e.Graphics.DrawImage( 
+                                img, 
+                                new Rectangle( 
+                                    e.Bounds.X + SPACE_CHEVRON_MENU,
+                                    e.Bounds.Y + image_offset,
+                                    img.Width,
+                                    img.Height ),
+                                0, 0, img.Width, img.Height,
+                                GraphicsUnit.Pixel,
+                                atr );
+                        } else {
+                            button.Parent.ImageList.Draw(
+                                e.Graphics,
+                                e.Bounds.X + SPACE_CHEVRON_MENU,
+                                e.Bounds.Y + image_offset,
+                                button.ImageIndex );
+                            x += button.Parent.ImageList.Images[button.ImageIndex].Width;
+                        }
+                    }
+                }
+            }
+            SizeF text_size = e.Graphics.MeasureString( menu.Text, e.Font );
+            int text_offset = (int)(e.Bounds.Height - text_size.Height) / 2;
+            e.Graphics.DrawString( menu.Text, e.Font, Brushes.Black, e.Bounds.X + x + SPACE_CHEVRON_MENU, e.Bounds.Y + text_offset );
         }
 
         public bool UseChevron {
@@ -94,11 +263,11 @@ namespace RebarDotNet {
             get {
                 if ( this.Created ) {
                     REBARBANDINFO info = new REBARBANDINFO();
-                    info.fMask = (uint)RebarBandInfoConstants.RBBIM_SIZE;
+                    info.fMask = (uint)win32.RBBIM_SIZE;
                     
-                    User32Dll.SendMessage(
+                    win32.SendMessage(
                         this._bands.Rebar.RebarHwnd,
-                        (int)WindowsMessages.RB_GETBANDINFO,
+                        (int)win32.RB_GETBANDINFO,
                         this.BandIndex,
                         ref info );
 
@@ -112,12 +281,12 @@ namespace RebarDotNet {
                 if ( this._bandSize < 0 ) this._bandSize = 0;
                 if ( this.Created ) {
                     REBARBANDINFO info = new REBARBANDINFO();
-                    info.fMask = (uint)RebarBandInfoConstants.RBBIM_SIZE;
+                    info.fMask = (uint)win32.RBBIM_SIZE;
                     info.cx = (uint)this._bandSize;
                     
-                    User32Dll.SendMessage(
+                    win32.SendMessage(
                         this._bands.Rebar.RebarHwnd,
-                        (int)WindowsMessages.RB_SETBANDINFOA,
+                        (int)win32.RB_SETBANDINFOA,
                         this.BandIndex,
                         ref info );
                 }
@@ -164,7 +333,9 @@ namespace RebarDotNet {
             }
             set {
                 if ( value != _backgroundImage ) {
-                    if ( _pictureHandle != IntPtr.Zero ) Gdi32Dll.DeleteObject( _pictureHandle );
+                    if ( _pictureHandle != IntPtr.Zero ) {
+                        win32.DeleteObject( _pictureHandle );
+                    }
                     _backgroundImage = value;
                     _pictureHandle = (value == null) ? IntPtr.Zero : _backgroundImage.GetHbitmap();
                     UpdatePicture();
@@ -178,7 +349,7 @@ namespace RebarDotNet {
         public int BandIndex {
             get {
                 if ( Created ) {
-                    return (int)User32Dll.SendMessage( _bands.Rebar.RebarHwnd, (int)WindowsMessages.RB_IDTOINDEX, (uint)_id, 0U );
+                    return (int)win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_IDTOINDEX, (uint)_id, 0U );
                 } else {
                     return -1;
                 }
@@ -188,7 +359,7 @@ namespace RebarDotNet {
         [Browsable( false ),
         System.ComponentModel.DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden ),
         EditorBrowsable( EditorBrowsableState.Always )]
-        public BandCollection Bands {
+        public RebarBandCollection Bands {
             get {
                 return _bands;
             }
@@ -211,7 +382,7 @@ namespace RebarDotNet {
             get {
                 if ( Created ) {
                     RECT rect = new RECT();
-                    User32Dll.SendMessage( _bands.Rebar.RebarHwnd, (int)WindowsMessages.RB_GETRECT, BandIndex, ref rect );
+                    win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_GETRECT, BandIndex, ref rect );
                     return new Rectangle( rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top );
                 } else {
                     return new Rectangle( 0, 0, 0, 0 );
@@ -274,7 +445,7 @@ namespace RebarDotNet {
             get {
                 if ( Created ) {
                     RECT rect = new RECT();
-                    User32Dll.SendMessage( _bands.Rebar.RebarHwnd, (int)WindowsMessages.RB_GETBANDBORDERS, BandIndex, ref rect );
+                    win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_GETBANDBORDERS, BandIndex, ref rect );
                     return new Rectangle( rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top );
                 } else {
                     return new Rectangle( 0, 0, 0, 0 );
@@ -283,28 +454,28 @@ namespace RebarDotNet {
         }
 
         internal void CreateBand() {
-            if ( !Created && _bands != null && _bands.Rebar.Rebar != null ) {
+            if ( !Created && _bands != null && _bands.Rebar.NativeRebar != null ) {
                 if ( _child != null ) _child.Parent = _bands.Rebar;
                 REBARBANDINFO rbBand = new REBARBANDINFO();
                 rbBand.cbSize = (uint)Marshal.SizeOf( rbBand );
-                rbBand.fMask = (uint)(RebarBandInfoConstants.RBBIM_STYLE
-                    | RebarBandInfoConstants.RBBIM_ID | RebarBandInfoConstants.RBBIM_TEXT
+                rbBand.fMask = (uint)(win32.RBBIM_STYLE
+                    | win32.RBBIM_ID | win32.RBBIM_TEXT
                     );//| RebarBandInfoConstants.RBBIM_HEADERSIZE);
                 if ( !_useCoolbarColors )
-                    rbBand.fMask |= (uint)RebarBandInfoConstants.RBBIM_COLORS;
+                    rbBand.fMask |= (uint)win32.RBBIM_COLORS;
                 if ( _child != null ) //Add ChildSize stuff at some point
 				{
-                    rbBand.fMask |= (uint)RebarBandInfoConstants.RBBIM_CHILD;
+                    rbBand.fMask |= (uint)win32.RBBIM_CHILD;
                 }
-                rbBand.fMask |= (uint)RebarBandInfoConstants.RBBIM_CHILDSIZE;
+                rbBand.fMask |= (uint)win32.RBBIM_CHILDSIZE;
                 if ( _image >= 0 )
-                    rbBand.fMask |= (uint)RebarBandInfoConstants.RBBIM_IMAGE;
+                    rbBand.fMask |= (uint)win32.RBBIM_IMAGE;
                 if ( _backgroundImage != null ) {
-                    rbBand.fMask |= (uint)RebarBandInfoConstants.RBBIM_BACKGROUND;
+                    rbBand.fMask |= (uint)win32.RBBIM_BACKGROUND;
                 }
                 rbBand.cx = (uint)_bandSize;
-                rbBand.fMask |= (uint)RebarBandInfoConstants.RBBIM_SIZE;
-                rbBand.fMask |= (uint)RebarBandInfoConstants.RBBIM_IDEALSIZE;
+                rbBand.fMask |= (uint)win32.RBBIM_SIZE;
+                rbBand.fMask |= (uint)win32.RBBIM_IDEALSIZE;
                 rbBand.clrFore = new COLORREF( ForeColor );
                 rbBand.clrBack = new COLORREF( BackColor );
                 rbBand.fStyle = (uint)Style;
@@ -327,7 +498,7 @@ namespace RebarDotNet {
                 rbBand.wID = (uint)_id;
                 rbBand.cxHeader = (uint)_header;
 
-                if ( User32Dll.SendMessage( _bands.Rebar.RebarHwnd, (int)WindowsMessages.RB_INSERTBANDA, -1, ref rbBand ) == 0 ) {
+                if ( win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_INSERTBANDA, -1, ref rbBand ) == 0 ) {
                     int LastErr = Marshal.GetHRForLastWin32Error();
                     try {
                         Marshal.ThrowExceptionForHR( LastErr );
@@ -353,7 +524,7 @@ namespace RebarDotNet {
 
         internal void DestroyBand() {
             if ( Created ) {
-                User32Dll.SendMessage( _bands.Rebar.RebarHwnd, (int)WindowsMessages.RB_DELETEBAND, (uint)BandIndex, 0U );
+                win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_DELETEBAND, (uint)BandIndex, 0U );
                 _bands = null;
                 _created = false;
             }
@@ -361,7 +532,7 @@ namespace RebarDotNet {
 
         protected override void Dispose( bool disposing ) {
             DestroyBand();
-            if ( _pictureHandle != IntPtr.Zero ) Gdi32Dll.DeleteObject( _pictureHandle );
+            if ( _pictureHandle != IntPtr.Zero ) win32.DeleteObject( _pictureHandle );
             if ( disposing ) {
 
             }
@@ -582,7 +753,7 @@ namespace RebarDotNet {
                 if ( Created ) {
                     if ( OSFeature.Feature.GetVersionPresent( OSFeature.Themes ) != null ) {
                         MARGINS margins = new MARGINS();
-                        User32Dll.SendMessage( _bands.Rebar.RebarHwnd, (int)WindowsMessages.RB_GETBANDMARGINS, 0, ref margins );
+                        win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_GETBANDMARGINS, 0, ref margins );
                         return margins;
                     }
                     return new MARGINS( 0, 0, 0, 0 );
@@ -594,7 +765,7 @@ namespace RebarDotNet {
 
         public void Maximize() {
             if ( Created ) {
-                User32Dll.SendMessage( _bands.Rebar.RebarHwnd, (int)WindowsMessages.RB_MAXIMIZEBAND, (uint)BandIndex, (uint)_idealWidth );
+                win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_MAXIMIZEBAND, (uint)BandIndex, (uint)_idealWidth );
             }
         }
 
@@ -616,7 +787,7 @@ namespace RebarDotNet {
 
         public void Minimize() {
             if ( Created ) {
-                User32Dll.SendMessage( _bands.Rebar.RebarHwnd, (int)WindowsMessages.RB_MINIMIZEBAND, (uint)BandIndex, (uint)_idealWidth );
+                win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_MINIMIZEBAND, (uint)BandIndex, (uint)_idealWidth );
             }
         }
 
@@ -789,49 +960,49 @@ namespace RebarDotNet {
             get {
                 int style = 0;
                 if ( !_allowVertical )
-                    style |= (int)RebarBandStyleConstants.RBBS_NOVERT;
+                    style |= (int)win32.RBBS_NOVERT;
                 if ( _embossPicture )
-                    style |= (int)RebarBandStyleConstants.RBBS_CHILDEDGE;
+                    style |= (int)win32.RBBS_CHILDEDGE;
                 if ( _fixedBackground )
-                    style |= (int)RebarBandStyleConstants.RBBS_FIXEDBMP;
+                    style |= (int)win32.RBBS_FIXEDBMP;
                 if ( _fixedSize )
-                    style |= (int)RebarBandStyleConstants.RBBS_FIXEDSIZE;
+                    style |= (int)win32.RBBS_FIXEDSIZE;
                 if ( _newRow )
-                    style |= (int)RebarBandStyleConstants.RBBS_BREAK;
+                    style |= (int)win32.RBBS_BREAK;
                 if ( !_showCaption )
-                    style |= (int)RebarBandStyleConstants.RBBS_HIDETITLE;
+                    style |= (int)win32.RBBS_HIDETITLE;
                 if ( !_visible )
-                    style |= (int)RebarBandStyleConstants.RBBS_HIDDEN;
+                    style |= (int)win32.RBBS_HIDDEN;
                 if ( _gripSettings == GripperSettings.Always )
-                    style |= (int)RebarBandStyleConstants.RBBS_GRIPPERALWAYS;
+                    style |= (int)win32.RBBS_GRIPPERALWAYS;
                 else if ( _gripSettings == GripperSettings.Never )
-                    style |= (int)RebarBandStyleConstants.RBBS_NOGRIPPER;
+                    style |= (int)win32.RBBS_NOGRIPPER;
                 if ( _useChevron )
-                    style |= (int)RebarBandStyleConstants.RBBS_USECHEVRON;
+                    style |= (int)win32.RBBS_USECHEVRON;
                 return style;
             }
             set {
-                _allowVertical = !((value & (int)RebarBandStyleConstants.RBBS_NOVERT)
-                    == (int)RebarBandStyleConstants.RBBS_NOVERT);
-                _embossPicture = (value & (int)RebarBandStyleConstants.RBBS_CHILDEDGE)
-                    == (int)RebarBandStyleConstants.RBBS_CHILDEDGE;
-                _fixedBackground = (value & (int)RebarBandStyleConstants.RBBS_FIXEDBMP)
-                    == (int)RebarBandStyleConstants.RBBS_FIXEDBMP;
-                _fixedSize = (value & (int)RebarBandStyleConstants.RBBS_FIXEDSIZE)
-                    == (int)RebarBandStyleConstants.RBBS_FIXEDSIZE;
-                _newRow = (value & (int)RebarBandStyleConstants.RBBS_BREAK)
-                    == (int)RebarBandStyleConstants.RBBS_BREAK;
-                _showCaption = !((value & (int)RebarBandStyleConstants.RBBS_HIDETITLE)
-                    == (int)RebarBandStyleConstants.RBBS_HIDETITLE);
-                _visible = !((value & (int)RebarBandStyleConstants.RBBS_HIDDEN)
-                    == (int)RebarBandStyleConstants.RBBS_HIDDEN);
-                _useChevron = !((value & (int)RebarBandStyleConstants.RBBS_USECHEVRON)
-                    == (int)RebarBandStyleConstants.RBBS_USECHEVRON);
-                if ( (value & (int)RebarBandStyleConstants.RBBS_GRIPPERALWAYS)
-                    == (int)RebarBandStyleConstants.RBBS_GRIPPERALWAYS )
+                _allowVertical = !((value & (int)win32.RBBS_NOVERT)
+                    == (int)win32.RBBS_NOVERT);
+                _embossPicture = (value & (int)win32.RBBS_CHILDEDGE)
+                    == (int)win32.RBBS_CHILDEDGE;
+                _fixedBackground = (value & (int)win32.RBBS_FIXEDBMP)
+                    == (int)win32.RBBS_FIXEDBMP;
+                _fixedSize = (value & (int)win32.RBBS_FIXEDSIZE)
+                    == (int)win32.RBBS_FIXEDSIZE;
+                _newRow = (value & (int)win32.RBBS_BREAK)
+                    == (int)win32.RBBS_BREAK;
+                _showCaption = !((value & (int)win32.RBBS_HIDETITLE)
+                    == (int)win32.RBBS_HIDETITLE);
+                _visible = !((value & (int)win32.RBBS_HIDDEN)
+                    == (int)win32.RBBS_HIDDEN);
+                _useChevron = !((value & (int)win32.RBBS_USECHEVRON)
+                    == (int)win32.RBBS_USECHEVRON);
+                if ( (value & (int)win32.RBBS_GRIPPERALWAYS)
+                    == (int)win32.RBBS_GRIPPERALWAYS )
                     _gripSettings = GripperSettings.Always;
-                else if ( (value & (int)RebarBandStyleConstants.RBBS_NOGRIPPER)
-                    == (int)RebarBandStyleConstants.RBBS_NOGRIPPER )
+                else if ( (value & (int)win32.RBBS_NOGRIPPER)
+                    == (int)win32.RBBS_NOGRIPPER )
                     _gripSettings = GripperSettings.Never;
                 else
                     _gripSettings = GripperSettings.Auto;
@@ -866,9 +1037,9 @@ namespace RebarDotNet {
             if ( Created ) {
                 REBARBANDINFO rbBand = new REBARBANDINFO();
                 rbBand.cbSize = (uint)Marshal.SizeOf( rbBand );
-                rbBand.fMask = (uint)RebarBandInfoConstants.RBBIM_TEXT;
+                rbBand.fMask = (uint)win32.RBBIM_TEXT;
                 rbBand.lpText = _caption;
-                if ( User32Dll.SendMessage( _bands.Rebar.RebarHwnd, (int)WindowsMessages.RB_SETBANDINFOA, BandIndex, ref rbBand ) == 0 ) {
+                if ( win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_SETBANDINFOA, BandIndex, ref rbBand ) == 0 ) {
                     int LastErr = Marshal.GetHRForLastWin32Error();
                     try {
                         Marshal.ThrowExceptionForHR( LastErr );
@@ -885,14 +1056,14 @@ namespace RebarDotNet {
             if ( Created ) {
                 REBARBANDINFO rbBand = new REBARBANDINFO();
                 rbBand.cbSize = (uint)Marshal.SizeOf( rbBand );
-                rbBand.fMask = (uint)RebarBandInfoConstants.RBBIM_CHILD;
+                rbBand.fMask = (uint)win32.RBBIM_CHILD;
                 if ( _child == null ) {
                     rbBand.hwndChild = IntPtr.Zero;
                 } else {
                     rbBand.hwndChild = _child.Handle;
                 }
 
-                if ( User32Dll.SendMessage( _bands.Rebar.RebarHwnd, (int)WindowsMessages.RB_SETBANDINFOA, BandIndex, ref rbBand ) == 0 ) {
+                if ( win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_SETBANDINFOA, BandIndex, ref rbBand ) == 0 ) {
                     int LastErr = Marshal.GetHRForLastWin32Error();
                     try {
                         Marshal.ThrowExceptionForHR( LastErr );
@@ -910,18 +1081,18 @@ namespace RebarDotNet {
             if ( Created ) {
                 REBARBANDINFO rbBand = new REBARBANDINFO();
                 rbBand.cbSize = (uint)Marshal.SizeOf( rbBand );
-                rbBand.fMask = (uint)RebarBandInfoConstants.RBBIM_COLORS;
+                rbBand.fMask = (uint)win32.RBBIM_COLORS;
                 if ( _useCoolbarColors ) {
                     rbBand.clrBack = new COLORREF();
-                    rbBand.clrBack._ColorDWORD = (uint)ColorConstants.CLR_DEFAULT;
+                    rbBand.clrBack._ColorDWORD = (uint)win32.CLR_DEFAULT;
                     rbBand.clrFore = new COLORREF();
-                    rbBand.clrFore._ColorDWORD = (uint)ColorConstants.CLR_DEFAULT;
+                    rbBand.clrFore._ColorDWORD = (uint)win32.CLR_DEFAULT;
                 } else {
                     rbBand.clrBack = new COLORREF( _backColor );
                     rbBand.clrFore = new COLORREF( _foreColor );
                 }
 
-                if ( User32Dll.SendMessage( _bands.Rebar.RebarHwnd, (int)WindowsMessages.RB_SETBANDINFOA, BandIndex, ref rbBand ) == 0 ) {
+                if ( win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_SETBANDINFOA, BandIndex, ref rbBand ) == 0 ) {
                     int LastErr = Marshal.GetHRForLastWin32Error();
                     try {
                         Marshal.ThrowExceptionForHR( LastErr );
@@ -938,14 +1109,14 @@ namespace RebarDotNet {
             if ( Created ) {
                 REBARBANDINFO rbBand = new REBARBANDINFO();
                 rbBand.cbSize = (uint)Marshal.SizeOf( rbBand );
-                rbBand.fMask = (uint)RebarBandInfoConstants.RBBIM_IMAGE;
+                rbBand.fMask = (uint)win32.RBBIM_IMAGE;
                 if ( _showIcon ) {
                     rbBand.iImage = _image;
                 } else {
                     rbBand.iImage = -1;
                 }
 
-                if ( User32Dll.SendMessage( _bands.Rebar.RebarHwnd, (int)WindowsMessages.RB_SETBANDINFOA, BandIndex, ref rbBand ) == 0 ) {
+                if ( win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_SETBANDINFOA, BandIndex, ref rbBand ) == 0 ) {
                     int LastErr = Marshal.GetHRForLastWin32Error();
                     try {
                         Marshal.ThrowExceptionForHR( LastErr );
@@ -962,8 +1133,8 @@ namespace RebarDotNet {
             if ( Created ) {
                 REBARBANDINFO rbBand = new REBARBANDINFO();
                 rbBand.cbSize = (uint)Marshal.SizeOf( rbBand );
-                rbBand.fMask = (uint)(RebarBandInfoConstants.RBBIM_CHILDSIZE);
-                if ( _header != -1 ) rbBand.fMask |= (uint)RebarBandInfoConstants.RBBIM_HEADERSIZE;
+                rbBand.fMask = (uint)(win32.RBBIM_CHILDSIZE);
+                if ( _header != -1 ) rbBand.fMask |= (uint)win32.RBBIM_HEADERSIZE;
                 rbBand.cxMinChild = (uint)_minWidth;
                 rbBand.cyMinChild = (uint)_minHeight;
                 rbBand.cyIntegral = (uint)_integral;//1;
@@ -971,7 +1142,7 @@ namespace RebarDotNet {
                 rbBand.cyMaxChild = 300;
                 rbBand.cxIdeal = (uint)_idealWidth;
                 rbBand.cxHeader = (uint)_header;
-                if ( User32Dll.SendMessage( _bands.Rebar.RebarHwnd, (int)WindowsMessages.RB_SETBANDINFOA, BandIndex, ref rbBand ) == 0 ) {
+                if ( win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_SETBANDINFOA, BandIndex, ref rbBand ) == 0 ) {
                     int LastErr = Marshal.GetHRForLastWin32Error();
                     try {
                         Marshal.ThrowExceptionForHR( LastErr );
@@ -989,10 +1160,10 @@ namespace RebarDotNet {
             if ( Created ) {
                 REBARBANDINFO rbBand = new REBARBANDINFO();
                 rbBand.cbSize = (uint)Marshal.SizeOf( rbBand );
-                rbBand.fMask = (uint)RebarBandInfoConstants.RBBIM_BACKGROUND;
+                rbBand.fMask = (uint)win32.RBBIM_BACKGROUND;
                 rbBand.hbmBack = _pictureHandle;
 
-                if ( User32Dll.SendMessage( _bands.Rebar.RebarHwnd, (int)WindowsMessages.RB_SETBANDINFOA, BandIndex, ref rbBand ) == 0 ) {
+                if ( win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_SETBANDINFOA, BandIndex, ref rbBand ) == 0 ) {
                     int LastErr = Marshal.GetHRForLastWin32Error();
                     try {
                         Marshal.ThrowExceptionForHR( LastErr );
@@ -1010,10 +1181,10 @@ namespace RebarDotNet {
             if ( Created ) {
                 REBARBANDINFO rbBand = new REBARBANDINFO();
                 rbBand.cbSize = (uint)Marshal.SizeOf( rbBand );
-                rbBand.fMask = (uint)RebarBandInfoConstants.RBBIM_STYLE;
+                rbBand.fMask = (uint)win32.RBBIM_STYLE;
                 rbBand.fStyle = (uint)Style;
 
-                if ( User32Dll.SendMessage( _bands.Rebar.RebarHwnd, (int)WindowsMessages.RB_SETBANDINFOA, BandIndex, ref rbBand ) == 0 ) {
+                if ( win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_SETBANDINFOA, BandIndex, ref rbBand ) == 0 ) {
                     int LastErr = Marshal.GetHRForLastWin32Error();
                     try {
                         Marshal.ThrowExceptionForHR( LastErr );
@@ -1069,7 +1240,7 @@ namespace RebarDotNet {
                     //Set band style
                     _visible = value;
                     if ( Created ) {
-                        User32Dll.SendMessage( _bands.Rebar.RebarHwnd, (int)WindowsMessages.RB_SHOWBAND, (uint)BandIndex, (_visible) ? 1U : 0U );
+                        win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_SHOWBAND, (uint)BandIndex, (_visible) ? 1U : 0U );
                         OnVisibleChanged( new System.EventArgs() );
                     }
                 }

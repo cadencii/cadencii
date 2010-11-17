@@ -455,6 +455,10 @@ namespace org.kbinani.cadencii {
         /// <remarks>version 3.3+</remarks>
         /// </summary>
         public int BandOrderPosition = 3;
+        /// <summary>
+        /// ツールバーのChevronの幅
+        /// </summary>
+        public int ChevronWidth = 10;
 
         /// <summary>
         /// バッファーサイズに設定できる最大値

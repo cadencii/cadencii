@@ -2664,6 +2664,12 @@ namespace org.kbinani.cadencii {
             }
             editorConfig.KeyWidth = keyWidth;
 
+            // chevronの幅を保存
+            if ( Rebar.CHEVRON_WIDTH > 0 ) {
+                editorConfig.ChevronWidth = Rebar.CHEVRON_WIDTH;
+            }
+
+            // シリアライズして保存
             String file = PortUtil.combinePath( Utility.getApplicationDataPath(), CONFIG_FILE_NAME );
             try {
                 EditorConfig.serialize( editorConfig, file );

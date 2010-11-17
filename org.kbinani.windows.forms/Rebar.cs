@@ -1,23 +1,36 @@
+/**
+ * Rebar.cs
+ * Copyright (C) Anthony Baraff
+ * Copyright (C) 2010 kbinani
+ *
+ * This file is part of org.kbinani.windows.forms.
+ *
+ * org.kbinani.windows.forms is free software; you can redistribute it and/or
+ * modify it under the terms of the BSD License.
+ *
+ * org.kbinani.windows.forms is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
 using System;
 using System.Collections;
 using System.ComponentModel;
 using System.IO;
 using System.Drawing;
-using System.Data;
 using System.Windows.Forms;
-using WindowsUtilities;
 using System.Runtime.InteropServices;
+using org.kbinani;
 
-namespace RebarDotNet {
+namespace org.kbinani.windows.forms {
     /// <summary>
     /// Summary description for UserControl1.
     /// </summary>
 
     [ToolboxItem( true ),
     DefaultProperty( "Bands" ),
-    Designer( typeof( RebarDotNet.RebarDesigner ) ),
+    Designer( typeof( org.kbinani.windows.forms.RebarDesigner ) ),
     DesignTimeVisible( true )]
-    public class RebarWrapper : System.Windows.Forms.Control {
+    public class Rebar : System.Windows.Forms.Control {
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -25,7 +38,7 @@ namespace RebarDotNet {
         private NativeRebar _rebar = null;
         private System.ComponentModel.Container components = null;
         private bool _autoSize = true;
-        private BandCollection _bands;
+        private RebarBandCollection _bands;
         private bool _bandBorders = true;
         private Color _embossHighlight;
         private bool _embossPicture = false;
@@ -40,7 +53,13 @@ namespace RebarDotNet {
                 public event RebarEventHandler AddBand;
                 public event RebarEventHandler RemoveBand;
         */
-        public RebarWrapper() {
+
+        /// <summary>
+        /// width of chevron. This value will be updated in NotifyChevronPushed method.
+        /// </summary>
+        public static int CHEVRON_WIDTH = 0;
+        
+        public Rebar() {
             SetStyle( ControlStyles.StandardClick, true );
             SetStyle( ControlStyles.StandardDoubleClick, true );
 
@@ -52,7 +71,7 @@ namespace RebarDotNet {
 
             _embossHighlight = SystemColors.ControlLightLight;
             _embossShadow = SystemColors.ControlDarkDark;
-            _bands = new BandCollection( this );
+            _bands = new RebarBandCollection( this );
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
 
@@ -95,7 +114,7 @@ namespace RebarDotNet {
             }
             set {
                 base.BackgroundImage = value;
-                foreach ( BandWrapper band in _bands ) {
+                foreach ( RebarBand band in _bands ) {
                     if ( band.UseCoolbarPicture & band.FixedBackground ) band.BackgroundImage = (Bitmap)base.BackgroundImage;
 
                 }
@@ -104,10 +123,10 @@ namespace RebarDotNet {
 
         [Category( "Behavior" ),
         DesignerSerializationVisibility( DesignerSerializationVisibility.Content ),
-        Editor( typeof( RebarDotNet.BandCollectionEditor ),
+        Editor( typeof( org.kbinani.windows.forms.BandCollectionEditor ),
         typeof( System.Drawing.Design.UITypeEditor ) ),
         NotifyParentProperty( true )]
-        public BandCollection Bands {
+        public RebarBandCollection Bands {
             get {
                 return _bands;
             }
@@ -128,8 +147,8 @@ namespace RebarDotNet {
             }
         }
 
-        public BandWrapper BandHitTest( Point pt ) {
-            foreach ( BandWrapper band in _bands ) {
+        public RebarBand BandHitTest( Point pt ) {
+            foreach ( RebarBand band in _bands ) {
                 if ( band.Bounds.Contains( pt ) )
                     return band;
             }
@@ -214,7 +233,7 @@ namespace RebarDotNet {
         [Browsable( false ),
         System.ComponentModel.DesignerSerializationVisibility( DesignerSerializationVisibility.Hidden ),
         EditorBrowsable( EditorBrowsableState.Never )]
-        public BandWrapper HitTest( Point pt ) {//RB_HITTEST
+        public RebarBand HitTest( Point pt ) {//RB_HITTEST
             return null;
         }
 
@@ -250,7 +269,7 @@ namespace RebarDotNet {
             }
         }
 
-        internal NativeRebar Rebar {
+        internal NativeRebar NativeRebar {
             get {
                 return _rebar;
             }
@@ -285,7 +304,7 @@ namespace RebarDotNet {
             set {
                 if ( value != _showBackgroundImage ) {
                     _showBackgroundImage = value;
-                    foreach ( BandWrapper band in _bands ) {
+                    foreach ( RebarBand band in _bands ) {
                         if ( band.UseCoolbarPicture & band.FixedBackground ) band.BackgroundImage = (_showBackgroundImage) ? BackgroundImage : null;
                     }
                 }
@@ -294,27 +313,31 @@ namespace RebarDotNet {
 
         protected int Style {
             get {
-                int style = (int)(WindowsStyleConstants.WS_BORDER |
-                    WindowsStyleConstants.WS_CHILD |
-                    WindowsStyleConstants.WS_CLIPCHILDREN |
-                    WindowsStyleConstants.WS_CLIPSIBLINGS |
-                    WindowsStyleConstants.CCS_NODIVIDER |
-                    WindowsStyleConstants.CCS_NOPARENTALIGN
+                int style = (int)(win32.WS_BORDER |
+                    win32.WS_CHILD |
+                    win32.WS_CLIPCHILDREN |
+                    win32.WS_CLIPSIBLINGS |
+                    win32.CCS_NODIVIDER |
+                    win32.CCS_NOPARENTALIGN
                     //|WindowsStyleConstants.CCS_NORESIZE
                     );
-                if ( _autoSize )
-                    style |= (int)WindowsStyleConstants.RBS_AUTOSIZE;
-                if ( _bandBorders )
-                    style |= (int)WindowsStyleConstants.RBS_BANDBORDERS;
-                if ( _orientation == Orientation.Vertical ) {
-                    style |= (int)WindowsStyleConstants.CCS_LEFT;
-                } else {
-                    style |= (int)WindowsStyleConstants.CCS_TOP;
+                if ( _autoSize ) {
+                    style |= (int)win32.RBS_AUTOSIZE;
                 }
-                if ( this._variantHeight )
-                    style |= (int)WindowsStyleConstants.RBS_VARHEIGHT;
-                if ( this.Visible )
-                    style |= (int)WindowsStyleConstants.WS_VISIBLE;
+                if ( _bandBorders ) {
+                    style |= (int)win32.RBS_BANDBORDERS;
+                }
+                if ( _orientation == Orientation.Vertical ) {
+                    style |= (int)win32.CCS_LEFT;
+                } else {
+                    style |= (int)win32.CCS_TOP;
+                }
+                if ( this._variantHeight ) {
+                    style |= (int)win32.RBS_VARHEIGHT;
+                }
+                if ( this.Visible ) {
+                    style |= (int)win32.WS_VISIBLE;
+                }
 
                 return style;
             }
@@ -346,18 +369,18 @@ namespace RebarDotNet {
                 CSInfo.dwSize = (uint)Marshal.SizeOf( CSInfo );
                 CSInfo.clrBtnHighlight = new COLORREF( _embossHighlight );
                 CSInfo.clrBtnShadow = new COLORREF( _embossShadow );
-                User32Dll.SendMessage( _rebar.Handle, (int)WindowsMessages.RB_SETCOLORSCHEME, 0, ref CSInfo );
+                win32.SendMessage( _rebar.Handle, (int)win32.RB_SETCOLORSCHEME, 0, ref CSInfo );
 
                 COLORREF color = new COLORREF( this.ForeColor );
-                User32Dll.SendMessage( _rebar.Handle, (int)WindowsMessages.RB_SETTEXTCOLOR, 0, color );
+                win32.SendMessage( _rebar.Handle, (int)win32.RB_SETTEXTCOLOR, 0, color );
                 color = new COLORREF( this.BackColor );
-                User32Dll.SendMessage( _rebar.Handle, (int)WindowsMessages.RB_SETBKCOLOR, 0, color );
+                win32.SendMessage( _rebar.Handle, (int)win32.RB_SETBKCOLOR, 0, color );
             }
         }
 
         protected void UpdateStyle() {
             if ( _rebar != null ) {
-                if ( User32Dll.SetWindowLongPtr( _rebar.Handle, (int)WindowLongConstants.GWL_STYLE, (IntPtr)Style ).ToInt32() == 0 ) {
+                if ( win32.SetWindowLongPtr( _rebar.Handle, (int)win32.GWL_STYLE, (IntPtr)Style ).ToInt32() == 0 ) {
                     int LastErr = Marshal.GetHRForLastWin32Error();
                     try {
                         Marshal.ThrowExceptionForHR( LastErr );
@@ -376,14 +399,14 @@ namespace RebarDotNet {
             if ( _rebar != null ) {
                 REBARINFO RBInfo = new REBARINFO();
                 RBInfo.cbSize = (uint)Marshal.SizeOf( RBInfo );
-                RBInfo.fMask = (uint)RebarImageListConstants.RBIM_IMAGELIST;
+                RBInfo.fMask = (uint)win32.RBIM_IMAGELIST;
                 if ( _imageList == null ) {
                     RBInfo.himl = IntPtr.Zero;
                 } else {
                     RBInfo.himl = _imageList.Handle;
                 }
-                if ( User32Dll.SendMessage( _rebar.Handle,
-                    (int)WindowsMessages.RB_SETBARINFO,
+                if ( win32.SendMessage( _rebar.Handle,
+                    (int)win32.RB_SETBARINFO,
                     0, ref RBInfo ) == 0 ) {
 
                     int LastErr = Marshal.GetHRForLastWin32Error();
@@ -458,13 +481,13 @@ namespace RebarDotNet {
         protected override void OnCreateControl() {
             base.OnCreateControl();
             INITCOMMONCONTROLSEX ComCtls = new INITCOMMONCONTROLSEX();
-            ComCtls.dwICC = (uint)InitWindowsCommonControlsConstants.ICC_COOL_CLASSES;
+            ComCtls.dwICC = (uint)win32.ICC_COOL_CLASSES;
             ComCtls.dwSize = (uint)Marshal.SizeOf( ComCtls );
-            bool Result = ComCtl32Dll.InitCommonControlsEx( ref ComCtls );
+            bool Result = win32.InitCommonControlsEx( ref ComCtls );
             if ( !Result ) MessageBox.Show( "There was a tragic error.  InitCommControlsEx Failed!" );
             else {
 
-                _rebar = new NativeRebar( User32Dll.CreateWindowEx(
+                _rebar = new NativeRebar( win32.CreateWindowEx(
                     0U,
                     "ReBarWindow32",
                     null,
@@ -475,12 +498,12 @@ namespace RebarDotNet {
                     IntPtr.Zero,
                     0
                     ) );
-                User32Dll.SetWindowLongPtr( _rebar.Handle, (int)WindowLongConstants.GWL_EXSTYLE, (IntPtr)0x80 );
+                win32.SetWindowLongPtr( _rebar.Handle, (int)win32.GWL_EXSTYLE, (IntPtr)0x80 );
                 _rebar.WindowPosChanging += new NativeRebarEventHandler( OnWindowPosChanging );
                 _rebar.WindowsMessageRecieved += new NativeRebarEventHandler( OnWindowsMessageRecieved );
                 UpdateImageList();
                 UpdateColors();
-                foreach ( BandWrapper band in _bands ) {
+                foreach ( RebarBand band in _bands ) {
                     band.CreateBand();
                 }
             }
@@ -506,7 +529,7 @@ namespace RebarDotNet {
 
         protected override void OnMouseDown( System.Windows.Forms.MouseEventArgs e ) {
             base.OnMouseDown( e );
-            BandWrapper band = BandHitTest( new Point( e.X, e.Y ) );
+            RebarBand band = BandHitTest( new Point( e.X, e.Y ) );
             if ( band != null ) {
                 band.OnMouseDown( e );
             }
@@ -526,7 +549,7 @@ namespace RebarDotNet {
 
         protected override void OnMouseMove( System.Windows.Forms.MouseEventArgs e ) {
             base.OnMouseMove( e );
-            BandWrapper band = BandHitTest( new Point( e.X, e.Y ) );
+            RebarBand band = BandHitTest( new Point( e.X, e.Y ) );
             if ( band != null ) {
                 band.OnMouseMove( e );
             }
@@ -534,7 +557,7 @@ namespace RebarDotNet {
 
         protected override void OnMouseUp( System.Windows.Forms.MouseEventArgs e ) {
             base.OnMouseUp( e );
-            BandWrapper band = BandHitTest( new Point( e.X, e.Y ) );
+            RebarBand band = BandHitTest( new Point( e.X, e.Y ) );
             if ( band != null ) {
                 band.OnMouseUp( e );
             }
@@ -542,7 +565,7 @@ namespace RebarDotNet {
 
         protected override void OnMouseWheel( System.Windows.Forms.MouseEventArgs e ) {
             base.OnMouseWheel( e );
-            BandWrapper band = BandHitTest( new Point( e.X, e.Y ) );
+            RebarBand band = BandHitTest( new Point( e.X, e.Y ) );
             if ( band != null ) {
                 band.OnMouseWheel( e );
             }
@@ -567,7 +590,7 @@ namespace RebarDotNet {
                         Height = height;
                     }
                     if ( Width != _rebar.BarWidth ) {
-                        if ( User32Dll.MoveWindow( _rebar.Handle, 0, 0, this.Width, height, true ) == 0 ) {
+                        if ( win32.MoveWindow( _rebar.Handle, 0, 0, this.Width, height, true ) == 0 ) {
                             System.Diagnostics.Debug.WriteLine( Marshal.GetLastWin32Error() );
                             try {
                                 Marshal.ThrowExceptionForHR( Marshal.GetLastWin32Error() );
@@ -585,7 +608,7 @@ namespace RebarDotNet {
                         Width = width;
                     }
                     if ( Height != _rebar.BarHeight ) {
-                        if ( User32Dll.MoveWindow( _rebar.Handle, 0, 0, width, this.Height, true ) == 0 ) {
+                        if ( win32.MoveWindow( _rebar.Handle, 0, 0, width, this.Height, true ) == 0 ) {
                             try {
                                 Marshal.ThrowExceptionForHR( Marshal.GetLastWin32Error() );
                             } catch ( Exception ex ) {
@@ -619,71 +642,70 @@ namespace RebarDotNet {
 
         internal void OnWindowsMessageRecieved( object sender, NativeRebarEventArgs e ) {
             //Send mouse messages to the parent window
-            if ( e.m.Msg == (int)WindowsMessages.WM_LBUTTONDBLCLK |
-                e.m.Msg == (int)WindowsMessages.WM_LBUTTONDOWN |
-                e.m.Msg == (int)WindowsMessages.WM_LBUTTONUP |
-                e.m.Msg == (int)WindowsMessages.WM_MBUTTONDBLCLK |
-                e.m.Msg == (int)WindowsMessages.WM_MBUTTONDOWN |
-                e.m.Msg == (int)WindowsMessages.WM_MBUTTONUP |
-                e.m.Msg == (int)WindowsMessages.WM_RBUTTONDBLCLK |
-                e.m.Msg == (int)WindowsMessages.WM_RBUTTONDOWN |
-                e.m.Msg == (int)WindowsMessages.WM_RBUTTONUP |
-                e.m.Msg == (int)WindowsMessages.WM_MOUSEHOVER |
-                e.m.Msg == (int)WindowsMessages.WM_MOUSEMOVE |
-                e.m.Msg == (int)WindowsMessages.WM_MOUSEWHEEL ) {
-                User32Dll.SendMessage( this.Handle, e.m.Msg, e.m.WParam, e.m.LParam );
+            if ( e.m.Msg == (int)win32.WM_LBUTTONDBLCLK |
+                e.m.Msg == (int)win32.WM_LBUTTONDOWN |
+                e.m.Msg == (int)win32.WM_LBUTTONUP |
+                e.m.Msg == (int)win32.WM_MBUTTONDBLCLK |
+                e.m.Msg == (int)win32.WM_MBUTTONDOWN |
+                e.m.Msg == (int)win32.WM_MBUTTONUP |
+                e.m.Msg == (int)win32.WM_RBUTTONDBLCLK |
+                e.m.Msg == (int)win32.WM_RBUTTONDOWN |
+                e.m.Msg == (int)win32.WM_RBUTTONUP |
+                e.m.Msg == (int)win32.WM_MOUSEHOVER |
+                e.m.Msg == (int)win32.WM_MOUSEMOVE |
+                e.m.Msg == (int)win32.WM_MOUSEWHEEL ) {
+                win32.SendMessage( this.Handle, e.m.Msg, e.m.WParam, e.m.LParam );
             }
         }
 
         protected override void WndProc( ref System.Windows.Forms.Message m ) {
-            if ( _rebar != null && m.Msg == (int)WindowsMessages.WM_NOTIFY ) {
+            if ( _rebar != null && m.Msg == (int)win32.WM_NOTIFY ) {
                 NMHDR Notify = (NMHDR)Marshal.PtrToStructure( m.LParam, typeof( NMHDR ) );
                 if ( Notify.idFrom == 1 ) {
-                    switch ( (int)Notify.code ) {
-                        case ((int)WindowsNotifyConstants.RBN_LAYOUTCHANGED): {
-                                //System.Diagnostics.Debug.WriteLine("Layout Changed");
-                                break;
-                            }
-                        case ((int)WindowsNotifyConstants.RBN_AUTOSIZE): {
-                                //System.Diagnostics.Debug.WriteLine("Autosized");
-                                break;
-                            }
-                        case ((int)WindowsNotifyConstants.RBN_BEGINDRAG): {
-                                //System.Diagnostics.Debug.WriteLine("Begin Drag");
-                                break;
-                            }
-                        case ((int)WindowsNotifyConstants.RBN_ENDDRAG): {
-                                //System.Diagnostics.Debug.WriteLine("End Drag");
-                                break;
-                            }
-                        case ((int)WindowsNotifyConstants.RBN_DELETEDBAND): {
-                                //System.Diagnostics.Debug.WriteLine("Delete band");
-                                break;
-                            }
-                        case ((int)WindowsNotifyConstants.RBN_DELETINGBAND): {
-                                //System.Diagnostics.Debug.WriteLine("Deleting Band");
-                                break;
-                            }
-                        case ((int)WindowsNotifyConstants.RBN_CHILDSIZE): {
-                                NMREBARCHILDSIZE ChildSize = (NMREBARCHILDSIZE)Marshal.PtrToStructure( m.LParam, typeof( NMREBARCHILDSIZE ) );
-                                foreach ( BandWrapper band in _bands ) {
-                                    if ( band.ID == ChildSize.wID ) {
-                                        band.OnResize( new EventArgs() );
-                                        continue;
-                                    }
+                    switch ( Notify.code ) {
+                        case win32.RBN_LAYOUTCHANGED: {
+                            //System.Diagnostics.Debug.WriteLine("Layout Changed");
+                            break;
+                        }
+                        case win32.RBN_AUTOSIZE: {
+                            //System.Diagnostics.Debug.WriteLine("Autosized");
+                            break;
+                        }
+                        case win32.RBN_BEGINDRAG: {
+                            //System.Diagnostics.Debug.WriteLine("Begin Drag");
+                            break;
+                        }
+                        case win32.RBN_ENDDRAG: {
+                            //System.Diagnostics.Debug.WriteLine("End Drag");
+                            break;
+                        }
+                        case win32.RBN_DELETEDBAND: {
+                            //System.Diagnostics.Debug.WriteLine("Delete band");
+                            break;
+                        }
+                        case win32.RBN_DELETINGBAND: {
+                            //System.Diagnostics.Debug.WriteLine("Deleting Band");
+                            break;
+                        }
+                        case win32.RBN_CHILDSIZE: {
+                            NMREBARCHILDSIZE ChildSize = (NMREBARCHILDSIZE)Marshal.PtrToStructure( m.LParam, typeof( NMREBARCHILDSIZE ) );
+                            foreach ( RebarBand band in _bands ) {
+                                if ( band.ID == ChildSize.wID ) {
+                                    band.OnResize( new EventArgs() );
+                                    continue;
                                 }
-                                //System.Diagnostics.Debug.WriteLine("Child Sized");
-                                break;
                             }
-                        case ((int)WindowsNotifyConstants.RBN_CHEVRONPUSHED): {
-                                this.NotifyChevronPushed( ref m );
-                                break;
-                            }
-
+                            //System.Diagnostics.Debug.WriteLine("Child Sized");
+                            break;
+                        }
+                        case win32.RBN_CHEVRONPUSHED: {
+                            this.NotifyChevronPushed( ref m );
+                            break;
+                        }
                         default: {
-                                //System.Diagnostics.Debug.WriteLine("Other Notify code recieved " + Notify.code);
-                                break;
-                            }
+                            //System.Diagnostics.Debug.WriteLine("Other Notify code recieved " + Notify.code);
+                            break;
+                        }
                     }
                 }
                 //System.Diagnostics.Debug.WriteLine("Control WndProc Notified");
@@ -692,67 +714,68 @@ namespace RebarDotNet {
         }
 
         private void NotifyChevronPushed( ref Message message ) {
-            System.Diagnostics.Debug.WriteLine( "RebarWrapper#NotifyChevronPushed" );
-            WindowsUtilities.NMREBARCHEVRON nrch =
-              (WindowsUtilities.NMREBARCHEVRON)message.GetLParam(
-                typeof( WindowsUtilities.NMREBARCHEVRON ) );
+            NMREBARCHEVRON nrch = (NMREBARCHEVRON)message.GetLParam(
+                typeof( NMREBARCHEVRON ) );
             int index = nrch.wID;
             if ( (index >= 0) && (index < this._bands.Count) &&
                 (this._bands[index] != null) ) {
                 Point point = new Point( nrch.rc.left, nrch.rc.bottom );
-                this._bands[index].Show( this, point );
+                int chevron_width = nrch.rc.right - nrch.rc.left;
+                if ( CHEVRON_WIDTH != chevron_width ) CHEVRON_WIDTH = chevron_width;
+                this._bands[index].Show( this, point, chevron_width );
             }
         }
         
-        internal class NativeRebar : NativeWindow {
-            public event NativeRebarEventHandler WindowPosChanging;
-            public event NativeRebarEventHandler WindowsMessageRecieved;
+    }
 
-            internal NativeRebar( IntPtr handle ) {
-                base.AssignHandle( handle );
+    internal class NativeRebar : NativeWindow {
+        public event NativeRebarEventHandler WindowPosChanging;
+        public event NativeRebarEventHandler WindowsMessageRecieved;
+
+        internal NativeRebar( IntPtr handle ) {
+            base.AssignHandle( handle );
+        }
+
+        internal int BarHeight {
+            get {
+                RECT rect = new RECT();
+                win32.GetWindowRect( Handle, ref rect );
+                return rect.bottom - rect.top;
+                //return (int)User32Dll.SendMessage(Handle,(int)WindowsMessages.RB_GETBARHEIGHT, 0U, 0U);
             }
+        }
 
-            internal int BarHeight {
-                get {
-                    RECT rect = new RECT();
-                    User32Dll.GetWindowRect( Handle, ref rect );
-                    return rect.bottom - rect.top;
-                    //return (int)User32Dll.SendMessage(Handle,(int)WindowsMessages.RB_GETBARHEIGHT, 0U, 0U);
-                }
+        internal int BarWidth {
+            get {
+                RECT rect = new RECT();
+                win32.GetWindowRect( Handle, ref rect );
+                return rect.right - rect.left;
             }
+        }
 
-            internal int BarWidth {
-                get {
-                    RECT rect = new RECT();
-                    User32Dll.GetWindowRect( Handle, ref rect );
-                    return rect.right - rect.left;
-                }
+        internal bool WidthHeightMatch( int Width, int Height ) {
+            return (Height == BarHeight && Width == BarWidth);
+        }
+
+        protected override void WndProc( ref System.Windows.Forms.Message m ) {
+            if ( m.Msg == (int)win32.WM_WINDOWPOSCHANGING ) {
+                OnWindowPosChanging( new NativeRebarEventArgs( m ) );
             }
+            //System.Diagnostics.Debug.WriteLine("Message: " + m.Msg);
+            OnWindowsMessageRecieved( new NativeRebarEventArgs( m ) );
+            this.DefWndProc( ref m );
 
-            internal bool WidthHeightMatch( int Width, int Height ) {
-                return (Height == BarHeight && Width == BarWidth);
+        }
+
+        protected virtual void OnWindowPosChanging( NativeRebarEventArgs e ) {
+            if ( WindowPosChanging != null ) {
+                WindowPosChanging( this, e );
             }
+        }
 
-            protected override void WndProc( ref System.Windows.Forms.Message m ) {
-                if ( m.Msg == (int)WindowsMessages.WM_WINDOWPOSCHANGING ) {
-                    OnWindowPosChanging( new NativeRebarEventArgs( m ) );
-                }
-                //System.Diagnostics.Debug.WriteLine("Message: " + m.Msg);
-                OnWindowsMessageRecieved( new NativeRebarEventArgs( m ) );
-                this.DefWndProc( ref m );
-
-            }
-
-            protected virtual void OnWindowPosChanging( NativeRebarEventArgs e ) {
-                if ( WindowPosChanging != null ) {
-                    WindowPosChanging( this, e );
-                }
-            }
-
-            protected virtual void OnWindowsMessageRecieved( NativeRebarEventArgs e ) {
-                if ( WindowsMessageRecieved != null ) {
-                    WindowsMessageRecieved( this, e );
-                }
+        protected virtual void OnWindowsMessageRecieved( NativeRebarEventArgs e ) {
+            if ( WindowsMessageRecieved != null ) {
+                WindowsMessageRecieved( this, e );
             }
         }
     }

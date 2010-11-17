@@ -651,14 +651,6 @@
       <Project>{C8AAE632-9C6C-4372-8175-811528A66742}</Project>
       <Name>org.kbinani</Name>
     </ProjectReference>
-    <ProjectReference Include="..\RebarDotNet\RebarDotNet.csproj">
-      <Project>{2323ABD0-509B-4180-BC31-7BD57053CE86}</Project>
-      <Name>RebarDotNet</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WindowsUtilities\WindowsUtilities.csproj">
-      <Project>{A1D7AF7F-6F76-4289-8142-282BCAC53BAC}</Project>
-      <Name>WindowsUtilities</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <PublishFile Include="Properties\alarm-clock.png">
