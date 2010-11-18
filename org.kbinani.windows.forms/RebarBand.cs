@@ -84,15 +84,16 @@ namespace org.kbinani.windows.forms {
             Dispose( false );
         }
 
-        public void Show( Control control, Point point, int chevron_width ) {
+        public void Show( Control control, Rectangle chevron_rect ) {
             if ( !(control is Rebar) ) return;
             Rebar parent = (Rebar)control;
             // Bandの外形を調べる
             RECT rc_band = new RECT();
             if ( win32.SendMessage( parent.RebarHwnd, win32.RB_GETRECT, this.BandIndex, ref rc_band ) == 0 ) return;
             // chevronの分の幅を引く
-            rc_band.right -= chevron_width;
+            rc_band.right -= chevron_rect.Width;
             if( this._child == null ) return;
+            //TODO: このへんmanagedな処理に書き換える
             // ツールバーのボタンの数を調べる
             int num_buttons = (int)win32.SendMessage( this._child.Handle, (int)win32.TB_BUTTONCOUNT, 0, IntPtr.Zero );
             if ( num_buttons <= 0 ) return;
@@ -146,7 +147,7 @@ namespace org.kbinani.windows.forms {
                 }
             }
             // ポップアップメニューを表示
-            popup.Show( control, point );
+            popup.Show( control, new Point( chevron_rect.Left, chevron_rect.Bottom ) );
         }
 
         /// <summary>

@@ -720,10 +720,12 @@ namespace org.kbinani.windows.forms {
             int index = nrch.wID;
             if ( (index >= 0) && (index < this._bands.Count) &&
                 (this._bands[index] != null) ) {
-                Point point = new Point( nrch.rc.left, nrch.rc.bottom );
-                int chevron_width = nrch.rc.right - nrch.rc.left;
+                Rectangle chevron_rc = new Rectangle(
+                    nrch.rc.left, nrch.rc.top,
+                    nrch.rc.right - nrch.rc.left, nrch.rc.bottom - nrch.rc.top );
+                int chevron_width = chevron_rc.Width;
                 if ( CHEVRON_WIDTH != chevron_width ) CHEVRON_WIDTH = chevron_width;
-                this._bands[index].Show( this, point, chevron_width );
+                this._bands[index].Show( this, chevron_rc );
             }
         }
         
