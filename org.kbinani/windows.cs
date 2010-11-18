@@ -683,6 +683,32 @@ namespace org.kbinani {
         public const int MK_MBUTTON = 16;
         public const int MK_XBUTTON1 = 32;
         public const int MK_XBUTTON2 = 64;
+        public const int WS_EX_ACCEPTFILES = 16;
+        public const int WS_EX_APPWINDOW = 0x40000;
+        public const int WS_EX_CLIENTEDGE = 512;
+        public const int WS_EX_COMPOSITED = 0x2000000; /* XP */
+        public const int WS_EX_CONTEXTHELP = 0x400;
+        public const int WS_EX_CONTROLPARENT = 0x10000;
+        public const int WS_EX_DLGMODALFRAME = 1;
+        public const int WS_EX_LAYERED = 0x80000;   /* w2k */
+        public const int WS_EX_LAYOUTRTL = 0x400000; /* w98, w2k */
+        public const int WS_EX_LEFT = 0;
+        public const int WS_EX_LEFTSCROLLBAR = 0x4000;
+        public const int WS_EX_LTRREADING = 0;
+        public const int WS_EX_MDICHILD = 64;
+        public const int WS_EX_NOACTIVATE = 0x8000000; /* w2k */
+        public const int WS_EX_NOINHERITLAYOUT = 0x100000; /* w2k */
+        public const int WS_EX_NOPARENTNOTIFY = 4;
+        public const int WS_EX_OVERLAPPEDWINDOW = 0x300;
+        public const int WS_EX_PALETTEWINDOW = 0x188;
+        public const int WS_EX_RIGHT = 0x1000;
+        public const int WS_EX_RIGHTSCROLLBAR = 0;
+        public const int WS_EX_RTLREADING = 0x2000;
+        public const int WS_EX_STATICEDGE = 0x20000;
+        public const int WS_EX_TOOLWINDOW = 128;
+        public const int WS_EX_TOPMOST = 8;
+        public const int WS_EX_TRANSPARENT = 32;
+        public const int WS_EX_WINDOWEDGE = 256;
         #endregion // winuser.h
 
         #region imm.h
@@ -1656,6 +1682,18 @@ namespace org.kbinani {
         /// <returns></returns>
         [DllImport( "user32.dll", CharSet = CharSet.Auto )]
         public static extern bool ClientToScreen( IntPtr hWnd, ref POINT lpPoint );
+
+        [DllImport( "user32.dll", CharSet = CharSet.Auto )]
+        public static extern IntPtr CreateMenu();
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="hWnd">ウィンドウのハンドル</param>
+        /// <param name="hMenu">メニューのハンドル</param>
+        /// <returns></returns>
+        [DllImport( "user32.dll", CharSet = CharSet.Auto )]
+        public static extern bool SetMenu( IntPtr hWnd, IntPtr hMenu );
         #endregion
 
         #region gdi32.dll

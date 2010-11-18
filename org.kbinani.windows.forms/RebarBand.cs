@@ -136,10 +136,32 @@ namespace org.kbinani.windows.forms {
                     menu.OwnerDraw = true;
                     menu.Click += handleChevronMenuItemClick;
                     popup.MenuItems.Add( menu );
+                } else if ( button.Style == ToolBarButtonStyle.DropDownButton ) {
+                    if ( button.DropDownMenu != null && button.DropDownMenu.MenuItems != null ) {
+                        MenuItem menu = new MenuItem();
+                        cloneMenuItemRecursive( menu.MenuItems, button.DropDownMenu.MenuItems );
+                        menu.Text = button.Text;
+                        popup.MenuItems.Add( menu );
+                    }
                 }
             }
             // ポップアップメニューを表示
             popup.Show( control, point );
+        }
+
+        /// <summary>
+        /// メニューアイテムの階層を再帰的にコピーします
+        /// </summary>
+        /// <param name="dest"></param>
+        /// <param name="src"></param>
+        private void cloneMenuItemRecursive( Menu.MenuItemCollection dest, Menu.MenuItemCollection src ) {
+            if ( src.Count > 0 ) {
+                foreach ( MenuItem item in src ) {
+                    MenuItem clone = item.CloneMenu();
+                    cloneMenuItemRecursive( clone.MenuItems, item.MenuItems );
+                    dest.Add( clone );
+                }
+            }
         }
 
         private void handleChevronMenuItemClick( object sender, EventArgs e ) {
@@ -1052,15 +1074,20 @@ namespace org.kbinani.windows.forms {
             }
         }
 
-        protected void UpdateChild() {
+#if DEBUG
+        public void setChildByHandle( IntPtr handle ) {
+        }
+#endif
+
+        private void UpdateChildByHandle( IntPtr handle ){
             if ( Created ) {
                 REBARBANDINFO rbBand = new REBARBANDINFO();
                 rbBand.cbSize = (uint)Marshal.SizeOf( rbBand );
                 rbBand.fMask = (uint)win32.RBBIM_CHILD;
-                if ( _child == null ) {
+                if ( handle.Equals( IntPtr.Zero ) ) {
                     rbBand.hwndChild = IntPtr.Zero;
                 } else {
-                    rbBand.hwndChild = _child.Handle;
+                    rbBand.hwndChild = handle;
                 }
 
                 if ( win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_SETBANDINFOA, BandIndex, ref rbBand ) == 0 ) {
@@ -1075,6 +1102,10 @@ namespace org.kbinani.windows.forms {
                 }
                 UpdateMinimums();
             }
+        }
+
+        protected void UpdateChild() {
+            UpdateChildByHandle( this._child == null ? IntPtr.Zero : this._child.Handle );
         }
 
         protected void UpdateColors() {

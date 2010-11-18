@@ -456,9 +456,10 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public int BandOrderPosition = 3;
         /// <summary>
-        /// ツールバーのChevronの幅
+        /// ツールバーのChevronの幅．
+        /// Winodws 7(Aero): 17px
         /// </summary>
-        public int ChevronWidth = 10;
+        public int ChevronWidth = 17;
 
         /// <summary>
         /// バッファーサイズに設定できる最大値

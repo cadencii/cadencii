@@ -484,8 +484,9 @@ namespace org.kbinani.windows.forms {
             ComCtls.dwICC = (uint)win32.ICC_COOL_CLASSES;
             ComCtls.dwSize = (uint)Marshal.SizeOf( ComCtls );
             bool Result = win32.InitCommonControlsEx( ref ComCtls );
-            if ( !Result ) MessageBox.Show( "There was a tragic error.  InitCommControlsEx Failed!" );
-            else {
+            if ( !Result ) {
+                MessageBox.Show( "There was a tragic error.  InitCommControlsEx Failed!" );
+            } else {
 
                 _rebar = new NativeRebar( win32.CreateWindowEx(
                     0U,
@@ -498,7 +499,7 @@ namespace org.kbinani.windows.forms {
                     IntPtr.Zero,
                     0
                     ) );
-                win32.SetWindowLongPtr( _rebar.Handle, (int)win32.GWL_EXSTYLE, (IntPtr)0x80 );
+                win32.SetWindowLongPtr( _rebar.Handle, (int)win32.GWL_EXSTYLE, (IntPtr)win32.WS_EX_TOOLWINDOW );
                 _rebar.WindowPosChanging += new NativeRebarEventHandler( OnWindowPosChanging );
                 _rebar.WindowsMessageRecieved += new NativeRebarEventHandler( OnWindowsMessageRecieved );
                 UpdateImageList();
