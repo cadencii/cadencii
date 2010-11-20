@@ -1,0 +1,89 @@
+\documentclass[a4j,12pt]{jarticle}
+\usepackage[dvips]{graphicx}
+\usepackage[abs]{overpic}
+\title{技術情報}
+\author{kbinani}
+\date{}
+\setlength{\topmargin}{9mm}
+\addtolength{\topmargin}{0mm}
+\setlength\unitlength{1mm}
+%\setlength{\headsep}{3mm}
+%\setlength{\headheight}{0mm}
+%\setlength{\topskip}{0mm}
+%\setlength{\baselineskip}{0mm}
+\setlength{\oddsidemargin}{20mm}
+\addtolength{\oddsidemargin}{-1in}
+\setlength{\evensidemargin}{15mm}
+\addtolength{\evensidemargin}{-1in}
+%\setlength{\columnsep}{4mm}
+%\setlength{\columnseprule}{0mm}
+%\setlength{\marginparsep}{0mm}
+%\setlength{\marginparpush}{0mm}
+%\setlength{\marginwidth}{0mm}
+\setlength{\textwidth}{160mm}
+\setlength{\textheight}{240mm}
+%\setlength{\footheight}{0mm}
+%\setlength{\footskip}{8mm}
+\setlength{\headsep}{0mm}
+\setlength{\headheight}{0mm}
+\setlength{\topskip}{0mm}
+
+\begin{document}
+\maketitle
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\section{ピアノロールのスクロール動作の計算}
+
+水平および垂直スクロールバー・コントロールの設定と，画面の描画状態との関係を
+決めるための計算方法を述べる．
+
+%\begin{figure}[h]
+%  \begin{center}
+%    \begin{overpic}[width=160mm,clip]{scroll.eps}
+%    \end{overpic}
+%  \end{center}
+%  \label{図：スクロール概略図}
+%\end{figure}
+
+上図のように，ビューポートのオフセットは${\rm startToDrawX}$と${\rm startToDrawX}$で定義される．
+また，水平スクロール・コントロール${\rm hScroll}$の${\rm Value}$プロパティーの単位はclock，
+垂直スクロール・コントロール${\rm vScroll}$の${\rm Value}$プロパティーの単位はpixelである．
+ピアノロールの画面上の表示倍率を${\rm scaleX [pixel/scale]}$とする．
+\par
+${\rm startToDrawX}$，${\rm startToDrawY}$は次で定義される：
+\begin{equation}
+  \left\{
+  \begin{array}{l}
+    {\rm startToDrawX} = {\rm hScroll.Value} \cdot {\rm scaleX},
+  \\
+    {\rm startToDrawY} = {\rm vScroll.Value}.
+  \end{array} \right.
+\end{equation}
+
+\subsection{水平スクロールバー}
+${\rm startToDrawX}$の最大値および最小値は次のように決める.
+\begin{equation}
+  \left\{
+  \begin{array}{l}
+    \max ({\rm startToDrawX}) = ({\rm vsq.TotalClocks} + 240) \cdot {\rm scaleX} - {\rm pictPianoRoll.Width},
+  \\
+    \min ({\rm startToDrawY}) = 0.
+  \end{array}
+  \right.
+\end{equation}
+
+水平スクロールバーが一番右にスクロールされたときに，hScroll.Valueが最大値をとらねばならないから，
+startToDrawXの最大値をscaleXで割ったものが，hScroll.Valueの最大値となるようにする．
+また，水平スクロールバーの動作の仕様からhScroll.Valueの最大値は
+${\rm hScroll.Maximum} - {\rm hScroll.LargeChange}$
+であるので，次の式が成り立つ．
+\begin{equation}
+  \frac{\max( {\rm startToDrawX} )}{ {\rm scaleX} } = {\rm hScroll.Maximum} - {\rm hScroll.LargeChange}
+\end{equation}
+
+\end{document}
+

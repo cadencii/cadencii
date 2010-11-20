@@ -2163,6 +2163,7 @@ namespace org.kbinani.cadencii {
         }
 
         public int calculateStartToDrawX() {
+            int i = System.Windows.Forms.SystemInformation.HorizontalScrollBarThumbWidth;
             return (int)(hScroll.getValue() * AppManager.getScaleX());
         }
 
@@ -4060,7 +4061,7 @@ namespace org.kbinani.cadencii {
             #endregion
         }
 
-        public void setHScrollRange( int draft_length ) {
+        public void updateScrollRangeHorizontal() {
 #if JAVA
             draft_length += 240;
             // 画面上で何クロックが見えてるか？
@@ -4076,27 +4077,27 @@ namespace org.kbinani.cadencii {
             hScroll.setUnitIncrement( unit_increment );
             hScroll.setBlockIncrement( visible_clocks );*/
 #else
-            int _ARROWS = 40; // 両端の矢印の表示幅px（おおよその値）
-            draft_length += 240;
-            if ( draft_length > hScroll.getMaximum() ) {
-                hScroll.setMaximum( draft_length );
-            }
+            var vsq = AppManager.getVsqFile();
+            if ( vsq == null ) return;
+            int maximum = vsq.TotalClocks + 240;
+            int _ARROWS = System.Windows.Forms.SystemInformation.HorizontalScrollBarThumbWidth * 2;
+            hScroll.setMaximum( maximum );
             if ( pictPianoRoll.getWidth() <= AppManager.keyWidth || hScroll.getWidth() <= _ARROWS ) {
                 return;
             }
             int large_change = (int)((pictPianoRoll.getWidth() - AppManager.keyWidth) * AppManager.getScaleXInv());
-            int box_width = (int)((hScroll.getWidth() - _ARROWS) * (float)large_change / (float)(hScroll.getMaximum() + large_change));
+            int box_width = (int)((hScroll.getWidth() - _ARROWS) * (float)large_change / (float)maximum);
+            if ( large_change <= 0 ) large_change = 1;
             if ( box_width < AppManager.editorConfig.MinimumScrollHandleWidth ) {
                 box_width = AppManager.editorConfig.MinimumScrollHandleWidth;
-                large_change = (int)((float)hScroll.getMaximum() * (float)box_width / (float)(hScroll.getWidth() - _ARROWS - box_width));
-            }
-            if ( large_change > 0 ) {
-                hScroll.setVisibleAmount( large_change );
+                large_change = (int)((float)maximum * (float)box_width / (float)(hScroll.getWidth() - _ARROWS - box_width));
+            } else {
+                hScroll.LargeChange = large_change;
             }
 #endif
         }
 
-        public void updateVScrollRange() {
+        public void updateScrollRangeVertical() {
 #if JAVA
             // 画面上で何ピクセルが見えてるか？
             int visible_amount = (int)pictPianoRoll.getHeight();
@@ -6863,13 +6864,7 @@ namespace org.kbinani.cadencii {
             stripBtnUndo.Enabled = undo;
             stripBtnRedo.Enabled = redo;
             //AppManager.setRenderRequired( AppManager.getSelected(), true );
-            if ( AppManager.getVsqFile() != null ) {
-                int draft = AppManager.getVsqFile().TotalClocks;
-#if DEBUG
-                PortUtil.println( "FormMain#setEdited; total_clocks=" + draft );
-#endif
-                setHScrollRange( draft );
-            }
+            updateScrollRangeHorizontal();
             updateDrawObjectList();
             panelOverview.updateCachedImage();
 
@@ -7004,7 +6999,7 @@ namespace org.kbinani.cadencii {
             AppManager.readVsq( file );
             if ( AppManager.getVsqFile().Track.size() >= 2 ) {
                 AppManager.setBaseTempo( AppManager.getVsqFile().getBaseTempo() );
-                setHScrollRange( AppManager.getVsqFile().TotalClocks );
+                updateScrollRangeHorizontal();
             }
             AppManager.editorConfig.pushRecentFiles( file );
             updateRecentFileMenu();
@@ -10590,8 +10585,8 @@ namespace org.kbinani.cadencii {
 #endif
 
             clearTempWave();
-            setHScrollRange( AppManager.getVsqFile().TotalClocks );
-            updateVScrollRange();
+            updateScrollRangeHorizontal();
+            updateScrollRangeVertical();
             mPencilMode.setMode( PencilModeEnum.Off );
             updateCMenuPianoFixed();
             loadGameControler();
@@ -13505,7 +13500,7 @@ namespace org.kbinani.cadencii {
 
         public void vScroll_Resize( Object sender, EventArgs e ) {
             AppManager.setStartToDrawY( calculateStartToDrawY() );
-            updateVScrollRange();
+            updateScrollRangeVertical();
         }
 
         public void vScroll_ValueChanged( Object sender, EventArgs e ) {
@@ -13579,11 +13574,7 @@ namespace org.kbinani.cadencii {
 
         public void hScroll_Resize( Object sender, EventArgs e ) {
             if ( getExtendedState() != BForm.ICONIFIED ) {
-                int length = AppManager.getVsqFile().TotalClocks;
-#if DEBUG
-                PortUtil.println( "FormMain#hScroll_Resize; total_clocks=" + length );
-#endif
-                setHScrollRange( length );
+                updateScrollRangeHorizontal();
             }
         }
 
@@ -15490,7 +15481,7 @@ namespace org.kbinani.cadencii {
                     if ( scaley + 1 <= EditorConfig.MAX_PIANOROLL_SCALEY ) {
                         mPianoRollScaleYMouseStatus = 1;
                         AppManager.editorConfig.PianoRollScaleY = scaley + 1;
-                        updateVScrollRange();
+                        updateScrollRangeVertical();
                         AppManager.setStartToDrawY( calculateStartToDrawY() );
                         updateDrawObjectList();
                     } else {
@@ -15500,7 +15491,7 @@ namespace org.kbinani.cadencii {
                     if ( scaley - 1 >= EditorConfig.MIN_PIANOROLL_SCALEY ) {
                         mPianoRollScaleYMouseStatus = -1;
                         AppManager.editorConfig.PianoRollScaleY = scaley - 1;
-                        updateVScrollRange();
+                        updateScrollRangeVertical();
                         AppManager.setStartToDrawY( calculateStartToDrawY() );
                         updateDrawObjectList();
                     } else {
