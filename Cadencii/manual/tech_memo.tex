@@ -1,6 +1,7 @@
 \documentclass[a4j,12pt]{jarticle}
 \usepackage[dvips]{graphicx}
 \usepackage[abs]{overpic}
+\usepackage{color}
 \title{技術情報}
 \author{kbinani}
 \date{}
@@ -41,13 +42,32 @@
 水平および垂直スクロールバー・コントロールの設定と，画面の描画状態との関係を
 決めるための計算方法を述べる．
 
-%\begin{figure}[h]
-%  \begin{center}
-%    \begin{overpic}[width=160mm,clip]{scroll.eps}
-%    \end{overpic}
-%  \end{center}
-%  \label{図：スクロール概略図}
-%\end{figure}
+\begin{figure}[h]
+  \begin{center}
+    \begin{overpic}[scale=1.0]{scroll.eps}
+      \put(68, 99){\scriptsize $({\rm vsq.TotalClocks} + 240) \cdot {\rm scaleX}$}
+      \put(24, 92){\scriptsize startToDrawX}
+      \put(69, 92){\scriptsize pictPianoRoll.Width}
+
+      \put(122, 71){\scriptsize 0}
+      \put(122, 49){\scriptsize vScroll.Value}
+      \put(122, 43){\scriptsize vScroll.Maximum -}
+      \put(129, 40){\scriptsize vScroll.LargeChange}
+
+      \put(14, 73){\rotatebox{90}{\scriptsize startToDrawY}}
+      \put(14, 36){\rotatebox{90}{\scriptsize pictPianoRoll.Height}}
+      \put(5, 29){\rotatebox{90}{\scriptsize $128 \cdot {\rm actualNoteHeight}$}}
+
+      \put(43, 19){\scriptsize \textcolor{red}{0}}
+      \put(59, 19){\scriptsize \textcolor{red}{hScroll.Value}}
+      \put(82, 19){\scriptsize \textcolor{red}{${\rm hScroll.Maximum} - {\rm hScroll.LargeChange}$}}
+
+      \put(45, 68){\color[rgb]{1.,0,0}{Viewport}}
+      \put(25, 80){\color[rgb]{0,0,1.}{仮想スクリーン}}
+    \end{overpic}
+  \end{center}
+  \label{図：スクロール概略図}
+\end{figure}
 
 上図のように，ビューポートのオフセットは${\rm startToDrawX}$と${\rm startToDrawX}$で定義される．
 また，水平スクロール・コントロール${\rm hScroll}$の${\rm Value}$プロパティーの単位はclock，
@@ -71,7 +91,7 @@ ${\rm startToDrawX}$の最大値および最小値は次のように決める.
   \begin{array}{l}
     \max ({\rm startToDrawX}) = ({\rm vsq.TotalClocks} + 240) \cdot {\rm scaleX} - {\rm pictPianoRoll.Width},
   \\
-    \min ({\rm startToDrawY}) = 0.
+    \min ({\rm startToDrawX}) = 0.
   \end{array}
   \right.
 \end{equation}
@@ -83,7 +103,72 @@ ${\rm hScroll.Maximum} - {\rm hScroll.LargeChange}$
 であるので，次の式が成り立つ．
 \begin{equation}
   \frac{\max( {\rm startToDrawX} )}{ {\rm scaleX} } = {\rm hScroll.Maximum} - {\rm hScroll.LargeChange}
+  \label{eq:hscroll_max_limitation}
 \end{equation}
 
-\end{document}
+さらに，外観上スクロールバーの可動範囲とスクロールボックスの幅の比が，仮想スクリーンとビューポートの幅の比と
+同一であると美観が良いので，次の式が成り立つようにする．
+\begin{equation}
+  \frac{{\rm pictPianoRoll.Width}}{({\rm vsq.TotalClocks} + 240) \cdot {\rm scaleX}} = \frac{{\rm hScroll.LargeChange}}{{\rm hScroll.Maximum}}
+  \label{eq:hscroll_viewport-ratio_limitation}
+\end{equation}
 
+式(\ref{eq:hscroll_max_limitation})と式(\ref{eq:hscroll_viewport-ratio_limitation})を連立させて解くと，hScroll.MaximumとhScroll.LargeChangeは次で定まる．
+
+\begin{eqnarray}
+   {\rm hScroll.Maximum}     &=& {\rm vsq.TotalClocks} + 240,\label{eq:hscroll_maximum}\\
+   {\rm hScroll.LargeChange} &=& \frac{{\rm pictPianoRoll.Width}}{{\rm scaleX}}.\label{eq:hscroll_largechange}
+\end{eqnarray}
+
+ここで，スクロールボックスの実際の表示幅がいくらになるかを調べる．
+水平スクロールバーの構造はだいたい下図のようになっている．
+
+\begin{figure}[h]
+  \begin{center}
+    \begin{overpic}[width=160mm]{scroll_abstract.eps}
+      \put(3, 6){\scriptsize thumbWidth}
+      \put(140, 6){\scriptsize thumbWidth}
+      \put(84, 6){\scriptsize boxWidth}
+      \put(70, 22){\scriptsize hScroll.Width}
+    \end{overpic}
+  \end{center}
+\end{figure}
+
+スクロールバーの動作の仕様から，次が成り立つ．
+
+\begin{equation}
+  \frac{\rm boxWidth}{{\rm hScroll.Width} - 2 \cdot {\rm thumbWidth}} = \frac{\rm hScroll.LargeChange}{\rm hScroll.Maximum}.
+\end{equation}
+
+従って，
+
+\begin{equation}
+  {\rm boxWidth} = \frac{\rm hScroll.LargeChange}{\rm hScroll.Maximum} ({\rm hScroll.Width} - 2 \cdot {\rm thumbWidth}).\label{eq:hscroll_boxwidth_limitation}
+\end{equation}
+
+このboxWidthは，式(\ref{eq:hscroll_maximum})と式(\ref{eq:hscroll_largechange})により決まるが，
+この大きさがある値以下になると非常に扱いづらくなると考えられる．
+そこで，このboxWidthの最小値を$\min({\rm boxWidth})$とし，式(\ref{eq:hscroll_maximum})と式(\ref{eq:hscroll_largechange})から
+求めた値がこの値より小さくなる場合は，以下の要領で計算することにする．
+
+\par
+
+boxWidthを値が$\min({\rm boxWidth})$の定数として扱う．
+すると，式(\ref{eq:hscroll_viewport-ratio_limitation})は成り立たなくなるが，これは仕方ない．
+見た目が悪いよりも，スクロールボックスが操作しにくいことの方が駄目だと思うからである．
+従って最初式(\ref{eq:hscroll_max_limitation})と式(\ref{eq:hscroll_viewport-ratio_limitation})を連立させて解いた代わりに，
+式(\ref{eq:hscroll_max_limitation})と式(\ref{eq:hscroll_boxwidth_limitation})を連立させて解く．
+解は，
+
+\begin{eqnarray}
+  {\rm hScroll.Maximum}     &=& \frac{({\rm hScroll.Width} - 2 \cdot {\rm thumbWidth})}{({\rm hScroll.Width} - 2 \cdot {\rm thumbWidth}) - \min( {\rm boxWidth} )} \times \nonumber\\
+                            & & \hspace{1em}\left\{({\rm vsq.TotalClocks} + 240) - \frac{\rm pictPianoRoll.Width}{\rm scaleX}\right\},\\
+  {\rm hScroll.LargeChange} &=& \frac{\min( {\rm boxWidth} )}{({\rm hScroll.Width} - 2 \cdot {\rm thumbWidth}) - \min( {\rm boxWidth} )} \times \nonumber\\
+                            & & \hspace{1em}\left\{({\rm vsq.TotalClocks} + 240) - \frac{\rm pictPianoRoll.Width}{\rm scaleX}\right\},
+\end{eqnarray}
+
+となる．
+
+\subsection{垂直スクロールバー}
+
+\end{document}

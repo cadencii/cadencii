@@ -19,6 +19,4 @@ cadencii.toc: cadencii.tex
 	platex cadencii.tex
 
 clean:
-	rm cadencii.pdf
-	rm cadencii.dvi
-	rm cadencii.toc
+	rm cadencii.pdf cadencii.dvi cadencii.toc tech_memo.pdf tech_memo.dvi tech_memo.toc
