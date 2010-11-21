@@ -215,6 +215,9 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="g1"></param>
         public void paint( Graphics g1 ) {
+#if DEBUG
+            PortUtil.println( "pictPianoRoll#paint" );
+#endif
             Graphics2D g = (Graphics2D)g1;
         
             int width = getWidth();
@@ -257,7 +260,7 @@ namespace org.kbinani.cadencii {
                 // [screen_y] = -[note] * TRACK_HEIGHT + yoffset
                 int y, dy;
                 float scalex = AppManager.getScaleX();
-                float inv_scalex = 1f / scalex;
+                float inv_scalex = AppManager.getScaleXInv();
 
                 if ( AppManager.getSelectedEventCount() > 0 && AppManager.mInputTextBox.isVisible() ) {
                     VsqEvent original = AppManager.getLastSelectedEvent().original;
@@ -1078,6 +1081,9 @@ namespace org.kbinani.cadencii {
 
                 #region pictPianoRoll_Paintより
                 if ( AppManager.isWholeSelectedIntervalEnabled() ) {
+#if DEBUG
+                    PortUtil.println( "pictPianoRoll#paint; AppManager.isWholeSelectedIntervalEnabled()=" + AppManager.isWholeSelectedIntervalEnabled() );
+#endif
                     int start = (int)(AppManager.mWholeSelectedInterval.getStart() * scalex) + xoffset;
                     if ( start < key_width ) {
                         start = key_width;
@@ -1088,6 +1094,9 @@ namespace org.kbinani.cadencii {
                         g.fillRect( start, 0, end - start, getHeight() );
                     }
                 } else if ( AppManager.mIsPointerDowned ) {
+#if DEBUG
+                    PortUtil.println( "pictPianoRoll#paint; AppManager.mIsPoinerDowned=" + AppManager.mIsPointerDowned );
+#endif
                     Point pmouse = pointToClient( PortUtil.getMousePosition() );
                     Point mouse = new Point( pmouse.x, pmouse.y );
                     int tx, ty, twidth, theight;

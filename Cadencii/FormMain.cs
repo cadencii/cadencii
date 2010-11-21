@@ -591,6 +591,7 @@ namespace org.kbinani.cadencii {
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem30;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem33;
         private System.Windows.Forms.ImageList imageListMenu;
+        private System.Windows.Forms.Timer mScreenTimer;
         private float mFps2 = 0f;
 #endif
         #endregion
@@ -1094,6 +1095,22 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region helper methods
+        /// <summary>
+        /// スクリーン行進用のタイマーを開始します
+        /// </summary>
+        private void registerScreenTimer() {
+            if ( mScreenTimer.Enabled ) return;
+            mScreenTimer.Start();
+        }
+
+        /// <summary>
+        /// スクリーン更新用のタイマーを停止します
+        /// </summary>
+        private void unregisterScreenTimer() {
+            if ( !mScreenTimer.Enabled ) return;
+            mScreenTimer.Stop();
+        }
+
         /// <summary>
         /// 現在のツールバーの場所を保存します
         /// </summary>
@@ -2035,6 +2052,51 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region public methods
+        public void refreshScreenCore( object sender, EventArgs e ) {
+#if DEBUG
+            PortUtil.println( "FormMain#refreshScreenCore" );
+#endif
+#if MONITOR_FPS
+            double t0 = PortUtil.getCurrentTime();
+#endif
+            pictPianoRoll.repaint();
+            picturePositionIndicator.repaint();
+            trackSelector.repaint();
+            pictureBox2.repaint();
+            if ( menuVisualWaveform.isSelected() ) {
+                waveView.repaint();
+            }
+            if ( AppManager.editorConfig.OverviewEnabled ) {
+                panelOverview.repaint();
+            }
+#if MONITOR_FPS
+            double t = PortUtil.getCurrentTime();
+            mFpsDrawTime[mFpsDrawTimeIndex] = t;
+            mFpsDrawTime2[mFpsDrawTimeIndex] = t - t0;
+
+            mFpsDrawTimeIndex++;
+            if ( mFpsDrawTimeIndex >= mFpsDrawTime.Length ) {
+                mFpsDrawTimeIndex = 0;
+            }
+            mFps = (float)(mFpsDrawTime.Length / (t - mFpsDrawTime[mFpsDrawTimeIndex]));
+
+            int cnt = 0;
+            double sum = 0.0;
+            for ( int i = 0; i < mFpsDrawTime2.Length; i++ ) {
+                double v = mFpsDrawTime2[i];
+                if ( v > 0.0f ) {
+                    cnt++;
+                }
+                sum += v;
+            }
+            mFps2 = (float)(cnt / sum);
+#endif
+        }
+
+        public void refreshScreen() {
+            // this is dumy
+        }
+
         /// <summary>
         /// マウスの真ん中ボタンが押されたかどうかを調べます。
         /// スペースキー+左ボタンで真ん中ボタンとみなすかどうか、というオプションも考慮される。
@@ -2055,7 +2117,7 @@ namespace org.kbinani.cadencii {
             return ret;
         }
 
-        /// <summary>
+        /* // <summary>
 #if USE_BGWORK_SCREEN
         /// 画面をメインスレッドとは別のワーカースレッドを用いて再描画します。
 #else
@@ -2098,45 +2160,7 @@ namespace org.kbinani.cadencii {
             }
 #endif
 #endif
-        }
-
-        public void refreshScreenCore( Object sender, EventArgs e ) {
-#if MONITOR_FPS
-            double t0 = PortUtil.getCurrentTime();
-#endif
-            pictPianoRoll.repaint();
-            picturePositionIndicator.repaint();
-            trackSelector.repaint();
-            pictureBox2.repaint();
-            if ( menuVisualWaveform.isSelected() ) {
-                waveView.repaint();
-            }
-            if ( AppManager.editorConfig.OverviewEnabled ) {
-                panelOverview.repaint();
-            }
-#if MONITOR_FPS
-            double t = PortUtil.getCurrentTime();
-            mFpsDrawTime[mFpsDrawTimeIndex] = t;
-            mFpsDrawTime2[mFpsDrawTimeIndex] = t - t0;
-
-            mFpsDrawTimeIndex++;
-            if ( mFpsDrawTimeIndex >= mFpsDrawTime.Length ) {
-                mFpsDrawTimeIndex = 0;
-            }
-            mFps = (float)(mFpsDrawTime.Length / (t - mFpsDrawTime[mFpsDrawTimeIndex]));
-
-            int cnt = 0;
-            double sum = 0.0;
-            for ( int i = 0; i < mFpsDrawTime2.Length; i++ ) {
-                double v = mFpsDrawTime2[i];
-                if ( v > 0.0f ) {
-                    cnt++;
-                }
-                sum += v;
-            }
-            mFps2 = (float)(cnt / sum);
-#endif
-        }
+        }*/
 
         /// <summary>
         /// 現在のゲームコントローラのモードに応じてstripLblGameCtrlModeの表示状態を更新します。
@@ -7585,6 +7609,7 @@ namespace org.kbinani.cadencii {
             formClosingEvent.add( new BFormClosingEventHandler( this, "FormMain_FormClosing" ) );
             previewKeyDownEvent.add( new BPreviewKeyDownEventHandler( this, "FormMain_PreviewKeyDown" ) );
             panelOverview.enterEvent.add( new BEventHandler( this, "panelOverview_Enter" ) );
+            mScreenTimer.Tick += mScreenTimer_Tick;
         }
 
         void toolBarTool_ButtonClick( object sender, System.Windows.Forms.ToolBarButtonClickEventArgs e ) {
@@ -8836,9 +8861,15 @@ namespace org.kbinani.cadencii {
                 #endregion
             }
             refreshScreen();
+#if DEBUG
+            PortUtil.println( "FormMain#pictPianoRoll_MouseDown; exit point" );
+#endif
         }
 
         public void pictPianoRoll_MouseMove( Object sender, BMouseEventArgs e ) {
+#if DEBUG
+            PortUtil.println( "FormMain#pictPianoRoll_MouseMove" );
+#endif
             if ( mFormActivated ) {
 #if ENABLE_PROPERTY
 #if JAVA
@@ -8881,6 +8912,8 @@ namespace org.kbinani.cadencii {
 
             if ( e.X != mButtonInitial.x || e.Y != mButtonInitial.y ) {
                 mMouseMoved = true;
+            } else {
+                return;
             }
             if ( !(edit_mode == EditMode.MIDDLE_DRAG) && AppManager.isPlaying() ) {
                 return;
@@ -10773,6 +10806,8 @@ namespace org.kbinani.cadencii {
                     PortUtil.stderr.println( "FormMain#FormMain_Load; ex=" + ex );
                 }
             }
+
+            registerScreenTimer();
         }
 
         public void FormGenerateKeySound_FormClosed( Object sender, BFormClosedEventArgs e ) {
@@ -10861,6 +10896,13 @@ namespace org.kbinani.cadencii {
 
         public void FormMain_Activated( Object sender, EventArgs e ) {
             mFormActivated = true;
+        }
+        #endregion
+
+        #region mScreenTimer
+        private void mScreenTimer_Tick( object sender, EventArgs e ) {
+            if ( bgWorkScreen.IsBusy ) return;
+            bgWorkScreen.RunWorkerAsync();
         }
         #endregion
 
@@ -17387,6 +17429,7 @@ namespace org.kbinani.cadencii {
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip( this.components );
             this.toolStripMenuItem30 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem33 = new System.Windows.Forms.ToolStripMenuItem();
+            this.mScreenTimer = new System.Windows.Forms.Timer( this.components );
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
@@ -20141,6 +20184,10 @@ namespace org.kbinani.cadencii {
             this.toolStripMenuItem33.Size = new System.Drawing.Size( 174, 22 );
             this.toolStripMenuItem33.Text = "toolStripMenuItem33";
             // 
+            // mScreenTimer
+            // 
+            this.mScreenTimer.Interval = 33;
+            // 
             // FormMain
             // 
             this.AllowDrop = true;
@@ -20410,8 +20457,8 @@ namespace org.kbinani.cadencii {
         public System.Windows.Forms.MenuItem stripDDBtnQuantizeTriplet;
         public System.Windows.Forms.ToolBarButton stripBtnStartMarker;
         public System.Windows.Forms.ToolBarButton stripBtnEndMarker;
-        public System.Windows.Forms.HScrollBar hScroll;
-        public System.Windows.Forms.VScrollBar vScroll;
+        public HScroll hScroll;
+        public BVScrollBar vScroll;
         public BMenuItem menuLyricVibratoProperty;
         public BMenuItem cMenuPianoVibratoProperty;
         public BMenuItem menuScriptUpdate;
