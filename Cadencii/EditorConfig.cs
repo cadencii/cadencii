@@ -662,21 +662,6 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region public method
-        public int getActualNoteHeight() {
-            if ( PianoRollScaleY < MIN_PIANOROLL_SCALEY ) {
-                PianoRollScaleY = MIN_PIANOROLL_SCALEY;
-            } else if ( MAX_PIANOROLL_SCALEY < PianoRollScaleY ) {
-                PianoRollScaleY = MAX_PIANOROLL_SCALEY;
-            }
-            if ( PianoRollScaleY == 0 ) {
-                return PxTrackHeight;
-            } else if ( PianoRollScaleY > 0 ) {
-                return (2 * PianoRollScaleY + 5) * PxTrackHeight / 5;
-            } else {
-                return (PianoRollScaleY + 8) * PxTrackHeight / 8;
-            }
-        }
-
         /// <summary>
         /// 自動ビブラートを作成します
         /// </summary>

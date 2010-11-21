@@ -419,12 +419,12 @@ namespace org.kbinani.cadencii {
                 mOverviewMouseDownMode = OverviewMouseDownMode.NONE;
                 int draft_stdx = getOverviewStartToDrawX( e.X - AppManager.keyWidth - AppManager.keyOffset );
                 int draft = (int)(draft_stdx * AppManager.getScaleXInv());
-                if ( draft < mMainForm.hScroll.getMinimum() ) {
-                    draft = mMainForm.hScroll.getMinimum();
-                } else if ( mMainForm.hScroll.getMaximum() < draft ) {
-                    draft = mMainForm.hScroll.getMaximum();
+                if ( draft < mMainForm.hScroll.Minimum ) {
+                    draft = mMainForm.hScroll.Minimum;
+                } else if ( mMainForm.hScroll.Maximum < draft ) {
+                    draft = mMainForm.hScroll.Maximum;
                 }
-                mMainForm.hScroll.setValue( draft );
+                mMainForm.hScroll.Value = draft;
                 mMainForm.refreshScreen();
             }
         }
@@ -570,7 +570,7 @@ namespace org.kbinani.cadencii {
 
             // 移動中している最中に，移動開始直前の部分を影付で表示する
             int stdx = AppManager.getStartToDrawX();
-            int act_start_to_draw_x = (int)(mMainForm.hScroll.getValue() * AppManager.getScaleX());
+            int act_start_to_draw_x = (int)(mMainForm.hScroll.Value * AppManager.getScaleX());
             if ( act_start_to_draw_x != stdx ) {
                 int act_start_clock = AppManager.clockFromXCoord( key_width - stdx + act_start_to_draw_x );
                 int act_end_clock = AppManager.clockFromXCoord( mMainForm.pictPianoRoll.getWidth() - stdx + act_start_to_draw_x );

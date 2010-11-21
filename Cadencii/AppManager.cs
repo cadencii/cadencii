@@ -611,7 +611,7 @@ namespace org.kbinani.cadencii {
         }
 
         /// <summary>
-        /// このコントロールに担当させるカーブを追加します
+        /// TrackSelectorに表示させるコントロール・カーブの種類を追加します
         /// </summary>
         /// <param name="curve"></param>
         public static void addViewingCurveRange( CurveType[] curve ) {
@@ -689,18 +689,53 @@ namespace org.kbinani.cadencii {
             mInvScaleX = 1.0f / mScaleX;
         }
 
+        /// <summary>
+        /// ピアノロールの，Y方向のスケールを取得します(pixel/cent)
+        /// </summary>
+        /// <returns></returns>
+        public static float getScaleY() {
+            if ( editorConfig.PianoRollScaleY < EditorConfig.MIN_PIANOROLL_SCALEY ) {
+                editorConfig.PianoRollScaleY = EditorConfig.MIN_PIANOROLL_SCALEY;
+            } else if ( EditorConfig.MAX_PIANOROLL_SCALEY < editorConfig.PianoRollScaleY ) {
+                editorConfig.PianoRollScaleY = EditorConfig.MAX_PIANOROLL_SCALEY;
+            }
+            if ( editorConfig.PianoRollScaleY == 0 ) {
+                return editorConfig.PxTrackHeight / 100.0f;
+            } else if ( editorConfig.PianoRollScaleY > 0 ) {
+                return (2 * editorConfig.PianoRollScaleY + 5) * editorConfig.PxTrackHeight / 5 / 100.0f;
+            } else {
+                return (editorConfig.PianoRollScaleY + 8) * editorConfig.PxTrackHeight / 8 / 100.0f;
+            }
+        }
+
+        /// <summary>
+        /// ピアノロール画面の，ビューポートと仮想スクリーンとの横方向のオフセットを取得します
+        /// </summary>
+        /// <returns></returns>
         public static int getStartToDrawX() {
             return mStartToDrawX;
         }
 
+        /// <summary>
+        /// ピアノロール画面の，ビューポートと仮想スクリーンとの横方向のオフセットを設定します
+        /// </summary>
+        /// <param name="value"></param>
         public static void setStartToDrawX( int value ) {
             mStartToDrawX = value;
         }
 
+        /// <summary>
+        /// ピアノロール画面の，ビューポートと仮想スクリーンとの縦方向のオフセットを取得します
+        /// </summary>
+        /// <returns></returns>
         public static int getStartToDrawY() {
             return mStartToDrawY;
         }
 
+        /// <summary>
+        /// ピアノロール画面の，ビューポートと仮想スクリーンとの縦方向のオフセットを設定します
+        /// </summary>
+        /// <param name="value"></param>
         public static void setStartToDrawY( int value ) {
             mStartToDrawY = value;
         }
@@ -715,7 +750,7 @@ namespace org.kbinani.cadencii {
         }
 
         public static int yCoordFromNote( float note, int start_to_draw_y ) {
-            return (int)(-1 * (note - 127.0f) * editorConfig.getActualNoteHeight()) - start_to_draw_y;
+            return (int)(-1 * (note - 127.0f) * (int)(getScaleY() * 100)) - start_to_draw_y;
         }
 
         /// <summary>
@@ -732,7 +767,7 @@ namespace org.kbinani.cadencii {
         }
 
         private static double noteFromYCoordCore( int y ) {
-            return (double)(mStartToDrawY + y) / (double)editorConfig.getActualNoteHeight();
+            return (double)(mStartToDrawY + y) / (double)((int)(getScaleY() * 100));
         }
 
         /// <summary>
