@@ -215,9 +215,6 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="g1"></param>
         public void paint( Graphics g1 ) {
-#if DEBUG
-            PortUtil.println( "pictPianoRoll#paint" );
-#endif
             Graphics2D g = (Graphics2D)g1;
         
             int width = getWidth();

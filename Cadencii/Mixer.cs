@@ -117,7 +117,7 @@ namespace org.kbinani.cadencii.draft {
             }
         }
 
-        private void addSender( WaveSender s ) {
+        public void addSender( WaveSender s ) {
             if ( s == null ) {
                 return;
             }

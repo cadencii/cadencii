@@ -38,27 +38,20 @@ namespace org.kbinani.cadencii.draft {
         private WaveReceiver mReceiver = null;
         private int mVersion = 0;
 
+        public FileWaveReceiver( string path, int channel, int bit_per_sample, int sample_rate ) {
+            WaveWriter ww = new WaveWriter( path, channel, bit_per_sample, sample_rate );
+            mAdapter = new WaveRateConvertAdapter( ww, VSTiProxy.SAMPLE_RATE );
+        }
+
+        public void setGlobalConfig( EditorConfig config ) {
+            // do nothing
+        }
+
         /// <summary>
         /// 初期化メソッド．
-        /// (デフォルトでは改行文字区切りで)String path, int channel, int bit_per_sample, int sample_rate
         /// </summary>
         /// <param name="parameter"></param>
         public void init( String parameter ) {
-            if( parameter == null ){
-                return;
-            }
-            if ( parameter.Length < 2 ){
-                return;
-            }
-            char sep = parameter[0];
-            parameter = parameter.Substring( 1 );
-            String[] spl = PortUtil.splitString( parameter, sep );
-            String path = spl[0];
-            int channel = PortUtil.parseInt( spl[1] );
-            int bit_per_sample = PortUtil.parseInt( spl[2] );
-            int sample_rate = PortUtil.parseInt( spl[3] );
-            WaveWriter ww = new WaveWriter( path, channel, bit_per_sample, sample_rate );
-            mAdapter = new WaveRateConvertAdapter( ww, VSTiProxy.SAMPLE_RATE );
         }
 
         public int getVersion() {

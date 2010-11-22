@@ -73,7 +73,7 @@ namespace org.kbinani.cadencii.draft {
         /// スコアエディタ全体の設定値を設定する．
         /// </summary>
         /// <param name="config"></param>
-        public void setGlobalConfig( EditorConfig config ) {
+        public virtual void setGlobalConfig( EditorConfig config ) {
             mConfig = config;
         }
 

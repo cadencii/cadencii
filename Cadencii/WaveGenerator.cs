@@ -50,9 +50,12 @@ namespace org.kbinani.cadencii.draft {
         void init( VsqFileEx vsq, int track, int start_clock, int end_clock );
 
         /// <summary>
-        /// 停止を要求します。
+        /// 停止を要求します．
+        /// 停止が完了するまで処理は戻りません
         /// </summary>
         void stop();
+
+        void setGlobalConfig( EditorConfig config );
     }
 
 #if !JAVA

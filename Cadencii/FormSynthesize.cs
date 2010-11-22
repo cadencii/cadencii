@@ -43,7 +43,8 @@ namespace org.kbinani.cadencii {
 #endif
 
     /// <summary>
-    /// レンダリングの進捗状況を表示しながら，バックグラウンドでレンダリングを行うフォーム．フォームのLoadと同時にレンダリングが始まる．
+    /// レンダリングの進捗状況を表示しながら，バックグラウンドでレンダリングを行うフォーム．
+    /// フォームのLoadと同時にレンダリングが始まる．
     /// </summary>
 #if JAVA
     public class FormSynthesize extends BDialog {
@@ -222,7 +223,15 @@ namespace org.kbinani.cadencii {
             Start();
         }
 
-        public void bgWork_DoWork( Object sender, BDoWorkEventArgs e ) {
+        public void bgWork_DoWork( object sender, BDoWorkEventArgs e ) {
+            if ( AppManager.__DRAFT__useNewSynthImplement ) {
+                __DRAFT__bgWork_DoWorkCore( sender, e );
+            } else {
+                bgWork_DoWorkCore( sender, e );
+            }
+        }
+
+        private void __DRAFT__bgWork_DoWorkCore( Object sender, BDoWorkEventArgs e ) {
             try {
                 int channel = AppManager.editorConfig.WaveFileOutputChannel == 1 ? 1 : 2;
                 double amp_master = VocaloSysUtil.getAmplifyCoeffFromFeder( m_vsq.Mixer.MasterFeder );
@@ -240,7 +249,115 @@ namespace org.kbinani.cadencii {
 #else
                     this.Invoke( new UpdateProgressEventHandler( this.UpdateProgress ), this, k );
 #endif
-                    Vector<VsqNrpn> nrpn = new Vector<VsqNrpn>( Arrays.asList( VsqFile.generateNRPN( m_vsq, track, m_presend ) ) );
+                    VsqTrack vsq_track = m_vsq.Track.get( track );
+                    int count = vsq_track.getEventCount();
+                    if ( count > 0 ) {
+#if DEBUG
+                        AppManager.debugWriteLine( "FormSynthesize#bgWork_DoWork" );
+                        AppManager.debugWriteLine( "    VsqUtil.VstiDllPath=" + VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID2 ) );
+#endif
+                        double amp_track = VocaloSysUtil.getAmplifyCoeffFromFeder( m_vsq.Mixer.Slave.get( track - 1 ).Feder );
+                        double pan_left_track = VocaloSysUtil.getAmplifyCoeffFromPanLeft( m_vsq.Mixer.Slave.get( track - 1 ).Panpot );
+                        double pan_right_track = VocaloSysUtil.getAmplifyCoeffFromPanRight( m_vsq.Mixer.Slave.get( track - 1 ).Panpot );
+                        double amp_left = amp_master * amp_track * pan_left_master * pan_left_track;
+                        double amp_right = amp_master * amp_track * pan_right_master * pan_right_track;
+                        int total_clocks = m_vsq.TotalClocks;
+                        double total_sec = m_vsq.getSecFromClock( total_clocks );
+
+                        draft.WaveGenerator generator = null;
+                        RendererKind kind = VsqFileEx.getTrackRendererKind( vsq_track );
+                        switch ( kind ) {
+                            case RendererKind.AQUES_TONE: {
+                                generator = new draft.AquesToneWaveGenerator();
+                                break;
+                            }
+                            case RendererKind.STRAIGHT_UTAU: {
+                                generator = new draft.VConnectWaveGenerator();
+                                break;
+                            }
+                            case RendererKind.UTAU: {
+                                generator = new draft.UtauWaveGenerator();
+                                break;
+                            }
+                            case RendererKind.VOCALOID1_100:
+                            case RendererKind.VOCALOID1_101:
+                            case RendererKind.VOCALOID2: {
+                                generator = new draft.VocaloidWaveGenerator();
+                                break;
+                            }
+                            default: {
+                                generator = new draft.EmptyWaveGenerator();
+                                break;
+                            }
+                        }
+
+                        draft.Amplifier amp = new org.kbinani.cadencii.draft.Amplifier();
+                        generator.setReceiver( amp );
+                        generator.setGlobalConfig( AppManager.editorConfig );
+
+                        draft.Mixer mixer = new draft.Mixer();
+                        mixer.setGlobalConfig( AppManager.editorConfig );
+                        amp.setReceiver( mixer );
+
+                        if ( isPartialMode && AppManager.editorConfig.WaveFileOutputFromMasterTrack ) {
+                            if ( numTrack > 2 ) {
+                                for ( int i = 1; i < numTrack; i++ ) {
+                                    if ( i == track ) continue;
+                                    String file = PortUtil.combinePath( tmppath, i + ".wav" );
+                                    WaveReader r = new WaveReader( file );
+                                    draft.FileWaveSender wave_sender = new org.kbinani.cadencii.draft.FileWaveSender( r );
+                                    wave_sender.setGlobalConfig( AppManager.editorConfig );
+                                    mixer.addSender( wave_sender );
+                                }
+                            }
+                        }
+
+                        PortUtil.deleteFile( m_files[k] );
+                        draft.FileWaveReceiver wave_receiver = new org.kbinani.cadencii.draft.FileWaveReceiver( m_files[k], 2, 16, VSTiProxy.SAMPLE_RATE );
+                        wave_receiver.setGlobalConfig( AppManager.editorConfig );
+                        mixer.setReceiver( wave_receiver );
+
+                        int end = m_clock_end[k];
+                        if( end == int.MaxValue ) end = m_vsq.TotalClocks + 240;
+                        generator.init( m_vsq, track, m_clock_start[k], end );
+
+                        double sec_start = m_vsq.getSecFromClock( m_clock_start[k] );
+                        double sec_end = m_vsq.getSecFromClock( end );
+                        long samples = (long)((sec_end - sec_start) * VSTiProxy.SAMPLE_RATE);
+                        generator.begin( samples );
+
+                        m_finished++;
+                        if ( isCancelRequired ) break;
+                    }
+                }
+#if JAVA
+                UpdateProgress( this, m_tracks.Length );
+#else
+                this.Invoke( new UpdateProgressEventHandler( this.UpdateProgress ), this, m_tracks.Length );
+#endif
+            } catch ( Exception ex ) {
+                PortUtil.stderr.println( "FormSynthesize#bgWork_DoWork; ex=" + ex );
+            }
+        }
+
+        private void bgWork_DoWorkCore( Object sender, BDoWorkEventArgs e ) {
+            try {
+                int channel = AppManager.editorConfig.WaveFileOutputChannel == 1 ? 1 : 2;
+                double amp_master = VocaloSysUtil.getAmplifyCoeffFromFeder( m_vsq.Mixer.MasterFeder );
+                double pan_left_master = VocaloSysUtil.getAmplifyCoeffFromPanLeft( m_vsq.Mixer.MasterPanpot );
+                double pan_right_master = VocaloSysUtil.getAmplifyCoeffFromPanRight( m_vsq.Mixer.MasterPanpot );
+
+                int numTrack = m_vsq.Track.size();
+                String tmppath = AppManager.getTempWaveDir();
+                m_finished = 0;
+
+                for ( int k = 0; k < m_tracks.Length; k++ ) {
+                    int track = m_tracks[k];
+#if JAVA
+                    UpdateProgress( this, 1 );
+#else
+                    this.Invoke( new UpdateProgressEventHandler( this.UpdateProgress ), this, k );
+#endif
                     int count = m_vsq.Track.get( track ).getEventCount();
                     if ( count > 0 ) {
 #if DEBUG

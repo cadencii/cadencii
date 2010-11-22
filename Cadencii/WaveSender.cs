@@ -51,6 +51,8 @@ namespace org.kbinani.cadencii.draft {
         /// 波形の生成を終了します．
         /// </summary>
         void end();
+
+        void setGlobalConfig( EditorConfig config );
     }
 
 #if !JAVA

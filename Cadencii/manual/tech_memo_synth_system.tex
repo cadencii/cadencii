@@ -1,0 +1,84 @@
+\section{波形合成システム}
+\subsection{概要}
+波形合成システムは，波形を処理する幾つかのクラスのインスタンスを，ブロック線図のように
+つなぎ合わせて実現される．
+ここでいう「波形を処理」とは，
+\begin{enumerate}
+  \item{生成}
+  \item{増幅}
+  \item{重ね合わせ}
+  \item{分割}
+\end{enumerate}
+等のことである．例えば，VOCALOID VSTiを駆動してその音声波形をスピーカーからモニターすると
+同時に，Waveファイルに記録する場合は，次のようなクラス間の接続が為されている．
+
+\begin{figure}[h]
+  \begin{center}
+    \begin{overpic}[width=160mm,clip]{tech_memo_synth_system_abstract.eps}
+      \put(8, 32){VSTi}
+      \put(7.5, 28){driver}
+
+      \put(49.5, 30){Amplifier}
+
+      \put(94, 30){Separator}
+
+      \put(140, 30){Monitor}
+
+      \put(136, 6){Wave Writer}
+    \end{overpic}
+  \end{center}
+\end{figure}
+
+上図では，波形を生成する生成器から，増幅器，分割器，音声モニター，およびWave出力器が接続されている．
+この節では，これらを実装するための基底クラスや，それぞれの機能ごとの実際のクラス簡易なリファレンスと，
+使用例を述べる．
+
+\subsection{基底クラス: WaveUnit}
+このクラスは，波形を処理するクラスの継承元となる基底クラスである．
+クラスの外観は以下のようになっている．
+
+\begin{quote}
+  {\footnotesize
+\verb@class WaveUnit{@\\
+\verb@    public abstract int @{\color[rgb]{0,0,1}{\verb@getVersion@}}\verb@();@\\
+\verb@    public abstract void @{\color[rgb]{0,0,1}{\verb@setConfig@}}\verb@( string parameter );@\\
+\verb@    public virtual void @{\color[rgb]{0,0,1}{\verb@setGlobalConfig@}}\verb@(@\\
+\verb@        org.kbinani.cadencii.EditorConfig config ){};@\\
+\verb@    public virtual void @{\color[rgb]{0,0,1}{\verb@paintTo@}}\verb@(@\\
+\verb@        System.Drawing.Graphics graphics,@\\
+\verb@        int x,@\\
+\verb@        int y,@\\
+\verb@        int width,@\\
+\verb@        int height ){};@\\
+\verb@}@
+  \begin{verbatim}\end{verbatim}
+  }
+\end{quote}
+
+\subsection{インターフェース}
+波形処理の種類には，波形を(activeに)生成する処理，波形を(passiveに)生成する処理，および波形を受け取る処理の
+3種類に大別できる．ここでいうactive，passiveな処理とは，それぞれ，自律して波形を生成し他の処理装置に波形を送り出す処理，および
+他からの波形の要求に応じて必要な量の波形を生成する処理のことをいう．
+\subsubsection{WaveReceiver}
+\subsubsection{WaveSender}
+\subsubsection{WaveGenerator}
+
+\subsection{WaveGenerator}
+\subsubsection{VOCALOID}
+\subsubsection{vConnect-STAND}
+\subsubsection{UTAU}
+\subsubsection{AquesTone}
+\subsubsection{無音}
+
+\subsection{WaveSender}
+\subsubsection{WAVEファイル読込}
+
+\subsection{WaveReceiver}
+\subsubsection{モニター}
+
+\subsection{WaveSenderかつWaveReceiver}
+\subsubsection{増幅器}
+\subsubsection{重ね合わせ}
+\subsubsection{分割器}
+
+

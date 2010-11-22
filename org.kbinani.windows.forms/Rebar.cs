@@ -590,7 +590,7 @@ namespace org.kbinani.windows.forms {
                     if ( Height != height ) {
                         Height = height;
                     }
-                    if ( Width != _rebar.BarWidth ) {
+                    if ( this.Width != _rebar.BarWidth ) {
                         if ( win32.MoveWindow( _rebar.Handle, 0, 0, this.Width, height, true ) == 0 ) {
                             System.Diagnostics.Debug.WriteLine( Marshal.GetLastWin32Error() );
                             try {
@@ -628,9 +628,7 @@ namespace org.kbinani.windows.forms {
         }
 
         internal void OnWindowPosChanging( object sender, NativeRebarEventArgs e ) {
-            if ( _resizing ) return;
             if ( _orientation == Orientation.Horizontal ) {
-                //System.Diagnostics.Debug.WriteLine(_rebar.BarHeight);
                 if ( Height != _rebar.BarHeight ) {
                     this.OnResize( new EventArgs() );
                 }
@@ -742,9 +740,10 @@ namespace org.kbinani.windows.forms {
         internal int BarHeight {
             get {
                 RECT rect = new RECT();
+                //NG: Ç±ÇÍÇæÇ∆ÅCç≈è¨âªÇµÇΩÇ∆Ç´Ç…ê≥ÇµÇ≠Ç»Ç¢ílÇ™ãAÇ¡ÇƒÇ≠ÇÈ
                 win32.GetWindowRect( Handle, ref rect );
                 return rect.bottom - rect.top;
-                //return (int)User32Dll.SendMessage(Handle,(int)WindowsMessages.RB_GETBARHEIGHT, 0U, 0U);
+                //return (int)win32.SendMessage( this.Handle, (int)win32.RB_GETBARHEIGHT, 0U, 0U );
             }
         }
 
