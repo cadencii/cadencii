@@ -56,6 +56,13 @@ namespace org.kbinani.cadencii.draft {
         void stop();
 
         void setGlobalConfig( EditorConfig config );
+
+        /// <summary>
+        /// 合成処理の進捗状況を取得します．
+        /// 戻り値は0から1までとなります
+        /// </summary>
+        /// <returns></returns>
+        double getProgress();
     }
 
 #if !JAVA

@@ -43,32 +43,40 @@ namespace org.kbinani.cadencii.draft {
     using boolean = System.Boolean;
 
     public class VocaloidWaveGenerator : WaveUnit, WaveGenerator, IWaveIncoming {
-        private const int _BUFLEN = 1024;
+        private const int BUFLEN = 1024;
+        private const int VERSION = 0;
         
-        private long _position = 0;
-        private VsqFileEx _vsq = null;
-        private int _track;
-        private int _start_clock;
-        private int _end_clock;
-        private long _total_samples;
-        private boolean _abort_required = false;
-        private double[] _buffer_l = new double[_BUFLEN];
-        private double[] _buffer_r = new double[_BUFLEN];
-        private WaveReceiver _receiver = null;
-        private int _version = 0;
-        private int _trim_remain = 0;
-        private boolean mRendering = false;
+        private long mTotalAppend = 0;
+        private VsqFileEx mVsq = null;
+        private int mTrack;
+        private int mStartClock;
+        private int mEndClock;
+        private long mTotalSamples;
+        private boolean mAbortRequired = false;
+        private double[] mBufferL = new double[BUFLEN];
+        private double[] mBufferR = new double[BUFLEN];
+        private WaveReceiver mReceiver = null;
+        private int mTrimRemain = 0;
+        private boolean mRunning = false;
         private VocaloidDriver mDriver = null;
 
+        public double getProgress() {
+            if ( mRunning ) {
+                return mTotalAppend / (double)mTotalSamples;
+            } else {
+                return 0.0;
+            }
+        }
+
         public void stop() {
-            if ( mRendering ) {
+            if ( mRunning ) {
                 mDriver.abortRendering();
-                _abort_required = true;
-                while ( mRendering ) {
+                mAbortRequired = true;
+                while ( mRunning ) {
 #if JAVA
-                    Thread.sleep( 0 );
+                    Thread.sleep( 100 );
 #else
-                    Thread.Sleep( 0 );
+                    Thread.Sleep( 100 );
 #endif
                 }
             }
@@ -86,21 +94,21 @@ namespace org.kbinani.cadencii.draft {
         /// <param name="start_clock"></param>
         /// <param name="end_clock"></param>
         public void init( VsqFileEx vsq, int track, int start_clock, int end_clock ) {
-            _vsq = vsq;
-            _track = track;
-            _start_clock = start_clock;
-            _end_clock = end_clock;
+            mVsq = vsq;
+            mTrack = track;
+            mStartClock = start_clock;
+            mEndClock = end_clock;
         }
 
         public override int getVersion() {
-            return _version;
+            return VERSION;
         }
 
         public void setReceiver( WaveReceiver r ) {
-            if ( _receiver != null ) {
-                _receiver.end();
+            if ( mReceiver != null ) {
+                mReceiver.end();
             }
-            _receiver = r;
+            mReceiver = r;
         }
 
         /// <summary>
@@ -111,51 +119,51 @@ namespace org.kbinani.cadencii.draft {
         /// <param name="length"></param>
         public boolean waveIncomingImpl( double[] l, double[] r, int length ) {
             int offset = 0;
-            if ( _trim_remain > 0 ) {
+            if ( mTrimRemain > 0 ) {
                 // トリムしなくちゃいけない分がまだ残っている場合。トリム処理を行う。
-                if ( length <= _trim_remain ) {
+                if ( length <= mTrimRemain ) {
                     // 受け取った波形の長さをもってしても、トリム分が0にならない場合
-                    _trim_remain -= length;
+                    mTrimRemain -= length;
                     return false;
                 } else {
                     // 受け取った波形の内の一部をトリムし、残りを波形レシーバに渡す
-                    offset = _trim_remain;
+                    offset = mTrimRemain;
                     // これにてトリム処理は終了なので。
-                    _trim_remain = 0;
+                    mTrimRemain = 0;
                 }
             }
             int remain = length - offset;
             while ( remain > 0 ) {
-                if ( _abort_required ) {
+                if ( mAbortRequired ) {
                     return true;
                 }
-                int amount = (remain > _BUFLEN) ? _BUFLEN : remain;
+                int amount = (remain > BUFLEN) ? BUFLEN : remain;
                 for ( int i = 0; i < amount; i++ ) {
-                    _buffer_l[i] = l[i + offset];
-                    _buffer_r[i] = r[i + offset];
+                    mBufferL[i] = l[i + offset];
+                    mBufferR[i] = r[i + offset];
                 }
-                _receiver.push( _buffer_l, _buffer_r, amount );
+                mReceiver.push( mBufferL, mBufferR, amount );
                 remain -= amount;
                 offset += amount;
-                _position += amount;
+                mTotalAppend += amount;
             }
             return false;
         }
 
         public void begin( long total_samples ) {
             // 渡されたVSQの、合成に不要な部分を削除する
-            VsqFileEx split = (VsqFileEx)_vsq.clone();
-            VsqTrack vsq_track = split.Track.get( _track );
+            VsqFileEx split = (VsqFileEx)mVsq.clone();
+            VsqTrack vsq_track = split.Track.get( mTrack );
             split.updateTotalClocks();
-            if ( _end_clock < _vsq.TotalClocks ) {
-                split.removePart( _end_clock, split.TotalClocks + 480 );
+            if ( mEndClock < mVsq.TotalClocks ) {
+                split.removePart( mEndClock, split.TotalClocks + 480 );
             }
 
             // 末尾に、ダミーの音符を加えておく
-            double end_sec = _vsq.getSecFromClock( _start_clock );
-            double start_sec = _vsq.getSecFromClock( _end_clock );
-            int extra_note_clock = (int)_vsq.getClockFromSec( end_sec + 10.0 );
-            int extra_note_clock_end = (int)_vsq.getClockFromSec( end_sec + 10.0 + 3.1 ); //ブロックサイズが1秒分で、バッファの個数が3だから +3.1f。0.1fは安全のため。
+            double start_sec = mVsq.getSecFromClock( mStartClock );
+            double end_sec = mVsq.getSecFromClock( mEndClock );
+            int extra_note_clock = (int)mVsq.getClockFromSec( end_sec + 10.0 );
+            int extra_note_clock_end = (int)mVsq.getClockFromSec( end_sec + 10.0 + 3.1 ); //ブロックサイズが1秒分で、バッファの個数が3だから +3.1f。0.1fは安全のため。
             VsqEvent extra_note = new VsqEvent( extra_note_clock, new VsqID( 0 ) );
             extra_note.ID.type = VsqIDType.Anote;
             extra_note.ID.Note = 60;
@@ -167,14 +175,14 @@ namespace org.kbinani.cadencii.draft {
             // VSTiが渡してくる波形のうち、先頭からtrim_sec秒分だけ省かないといけない
             // プリセンドタイムがあるので、無条件に合成開始位置以前のデータを削除すると駄目なので。
             double trim_sec = 0.0;
-            if ( _start_clock < split.getPreMeasureClocks() ) {
+            if ( mStartClock < split.getPreMeasureClocks() ) {
                 // 合成開始位置が、プリメジャーよりも早い位置にある場合。
                 // VSTiにはクロック0からのデータを渡し、クロック0から合成開始位置までをこのインスタンスでトリム処理する
-                trim_sec = split.getSecFromClock( _start_clock );
+                trim_sec = split.getSecFromClock( mStartClock );
             } else {
                 // 合成開始位置が、プリメジャー以降にある場合。
                 // プリメジャーの終了位置から合成開始位置までのデータを削除する
-                split.removePart( _vsq.getPreMeasureClocks(), _start_clock );
+                split.removePart( mVsq.getPreMeasureClocks(), mStartClock );
                 trim_sec = split.getSecFromClock( split.getPreMeasureClocks() );
             }
             split.updateTotalClocks();
@@ -196,7 +204,7 @@ namespace org.kbinani.cadencii.draft {
 
             // NRPNを作成
             int ms_present = mConfig.PreSendTime;
-            VsqNrpn[] vsq_nrpn = VsqFile.generateNRPN( split, _track, ms_present );
+            VsqNrpn[] vsq_nrpn = VsqFile.generateNRPN( split, mTrack, ms_present );
             NrpnData[] nrpn = VsqNrpn.convert( vsq_nrpn );
 
             // 最初のテンポ指定を検索
@@ -208,29 +216,32 @@ namespace org.kbinani.cadencii.draft {
             // ずれるサンプル数
             int errorSamples = VSTiProxy.getErrorSamples( first_tempo );
             // 今後トリムする予定のサンプル数と、
-            _trim_remain = errorSamples + (int)(trim_sec * VSTiProxy.SAMPLE_RATE);
+            mTrimRemain = errorSamples + (int)(trim_sec * VSTiProxy.SAMPLE_RATE);
             // 合計合成する予定のサンプル数を決める
-            _total_samples = (long)((end_sec - start_sec) * VSTiProxy.SAMPLE_RATE) + errorSamples;
+            mTotalSamples = (long)((end_sec - start_sec) * VSTiProxy.SAMPLE_RATE) + errorSamples;
+#if DEBUG
+            PortUtil.println( "VocaloidWaveGenerator#begin; mTotalSamples=" + mTotalSamples + "; start_sec,end_sec=" + start_sec + "," + end_sec + "; errorSamples=" + errorSamples );
+#endif
 
             // アボート要求フラグを初期化
-            _abort_required = false;
+            mAbortRequired = false;
             // 使いたいドライバーが使用中だった場合、ドライバーにアボート要求を送る。
             // アボートが終了するか、このインスタンス自身にアボート要求が来るまで待つ。
             if ( mDriver.isRendering() ) {
                 // ドライバーにアボート要求
                 mDriver.abortRendering();
-                while ( mDriver.isRendering() && !_abort_required ) {
+                while ( mDriver.isRendering() && !mAbortRequired ) {
                     // 待つ
 #if JAVA
-                    Thread.sleep( 0 );
+                    Thread.sleep( 100 );
 #else
-                    System.Windows.Forms.Application.DoEvents();
+                    Thread.Sleep( 100 );
 #endif
                 }
             }
 
             // ここにきて初めて再生中フラグが立つ
-            mRendering = true;
+            mRunning = true;
 
             // 古いイベントをクリア
             mDriver.clearSendEvents();
@@ -277,19 +288,19 @@ namespace org.kbinani.cadencii.draft {
             // 合成が終わるか、ドライバへのアボート要求が来るまでは制御は返らない
             // この
             mDriver.startRendering(
-                _total_samples + _trim_remain + (int)(ms_present / 1000.0 * VSTiProxy.SAMPLE_RATE),
+                mTotalSamples + mTrimRemain + (int)(ms_present / 1000.0 * VSTiProxy.SAMPLE_RATE),
                 false,
                 VSTiProxy.SAMPLE_RATE,
                 this );
 
             // ここに来るということは合成が終わったか、ドライバへのアボート要求が実行されたってこと。
             // このインスタンスが受け持っている波形レシーバに、処理終了を知らせる。
-            _receiver.end();
-            mRendering = false;
+            mReceiver.end();
+            mRunning = false;
         }
 
         public long getPosition() {
-            return _position;
+            return mTotalAppend;
         }
     }
 

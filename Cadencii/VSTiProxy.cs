@@ -56,7 +56,7 @@ namespace org.kbinani.cadencii {
         const float a1 = 86.7312112f;
         const float a2 = -0.237323499f;
 
-        public static String CurrentUser = "";
+        //public static String CurrentUser = "";
         private static RendererKind s_working_renderer = RendererKind.NULL;
 #if ENABLE_VOCALOID
         public static Vector<VocaloidDriver> vocaloidDriver = new Vector<VocaloidDriver>();

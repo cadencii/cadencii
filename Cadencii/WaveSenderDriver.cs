@@ -17,6 +17,7 @@ package org.kbinani.cadencii;
 import java.awt.*;
 import java.util.*;
 #else
+using System.Threading;
 using org.kbinani.java.awt;
 using org.kbinani.java.util;
 
@@ -37,20 +38,29 @@ namespace org.kbinani.cadencii.draft {
         private WaveSender mWaveSender = null;
         private double[] mBufferL = new double[_BUFLEN];
         private double[] mBufferR = new double[_BUFLEN];
-        private long mPosition = 0;
+        private long mTotalAppend = 0;
+        private long mTotalSamples = 1L;
         private WaveReceiver mReceiver = null;
         private int mVersion = 0;
         private boolean mAbortRequired = false;
         private boolean mRunning = false;
+
+        public double getProgress() {
+            if ( mRunning ) {
+                return mTotalAppend / (double)mTotalSamples;
+            } else {
+                return 0.0;
+            }
+        }
 
         public void stop() {
             if ( mRunning ) {
                 mAbortRequired = true;
                 while ( mRunning ) {
 #if JAVA
-                    Threas.sleep( 0 );
+                    Threas.sleep( 100 );
 #else
-                    System.Threading.Thread.Sleep( 0 );
+                    Thread.Sleep( 100 );
 #endif
                 }
             }
@@ -87,18 +97,19 @@ namespace org.kbinani.cadencii.draft {
         }
 
         public long getPosition() {
-            return mPosition;
+            return mTotalAppend;
         }
 
         public void begin( long length ) {
             mRunning = true;
+            mTotalSamples = length;
             long remain = length;
             while ( remain > 0 && !mAbortRequired ) {
                 int amount = (remain > _BUFLEN) ? _BUFLEN : (int)remain;
                 mWaveSender.pull( mBufferL, mBufferR, amount );
                 mReceiver.push( mBufferL, mBufferR, amount );
                 remain -= amount;
-                mPosition += amount;
+                mTotalAppend += amount;
             }
             mReceiver.end();
             mRunning = false;

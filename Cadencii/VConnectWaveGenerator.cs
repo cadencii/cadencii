@@ -35,16 +35,16 @@ namespace org.kbinani.cadencii.draft {
     public class VConnectWaveGenerator : WaveUnit, WaveGenerator {
         // RenderingRunnerの実装
         protected Object m_locker = null;
-        protected boolean m_rendering = false;
-        protected long totalSamples = 0;
+        protected boolean mRunning = false;
+        protected long mTotalSamples = 0;
         /// <summary>
         /// WaveIncomingで追加されたサンプル数
         /// </summary>
-        protected long m_total_append = 0;
-        protected int m_trim_remain = 0;
-        protected boolean m_abort_required = false;
+        protected long mTotalAppend = 0;
+        protected int mTrimRemain = 0;
+        protected boolean mAbortRequired = false;
 
-        protected int renderingTrack = 0;
+        protected int mTrack = 0;
         protected int trimMillisec;
         protected int sampleRate;
         // 以上RenderingRunnerの実装
@@ -72,14 +72,22 @@ namespace org.kbinani.cadencii.draft {
         int mVersion = 0;
         VsqFileEx _vsq;
 
+        public double getProgress() {
+            if ( mRunning ) {
+                return mTotalAppend / (double)mTotalSamples;
+            } else {
+                return 0.0;
+            }
+        }
+
         public void stop() {
-            if ( m_rendering ) {
-                m_abort_required = true;
-                while ( m_rendering ) {
+            if ( mRunning ) {
+                mAbortRequired = true;
+                while ( mRunning ) {
 #if JAVA
-                    Thread.sleep( 0 );
+                    Thread.sleep( 100 );
 #else
-                    Thread.Sleep( 0 );
+                    Thread.Sleep( 100 );
 #endif
                 }
             }
@@ -122,13 +130,13 @@ namespace org.kbinani.cadencii.draft {
             //以上VSTiProxyの実装
 
             // RenderingRunner.ctorの実装より
-            renderingTrack = track;
+            mTrack = track;
             sampleRate = VSTiProxy.SAMPLE_RATE;
 
             m_locker = new Object();
-            m_rendering = false;
-            m_total_append = 0;
-            m_trim_remain = (int)(trimMillisec / 1000.0 * sampleRate); //先頭から省かなければならないサンプル数の残り
+            mRunning = false;
+            mTotalAppend = 0;
+            mTrimRemain = (int)(trimMillisec / 1000.0 * sampleRate); //先頭から省かなければならないサンプル数の残り
 
             // StraightRenderingRunner.ctorの実装より
             m_locker = new Object();
@@ -177,17 +185,17 @@ namespace org.kbinani.cadencii.draft {
         }
 
         public void begin( long samples ) {
+            mTotalSamples = samples;
             m_started_date = PortUtil.getCurrentTime();
             int BUF_LEN = 1024;
-            m_rendering = true;
-            m_abort_required = false;
+            mRunning = true;
+            mAbortRequired = false;
             String straight_synth = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), STRAIGHT_SYNTH );
             if ( !PortUtil.isFileExists( straight_synth ) ) {
 #if DEBUG
                 PortUtil.println( "StraightRendeingRunner#run; \"" + straight_synth + "\" does not exists" );
 #endif
-                m_rendering = false;
-                return;
+                goto end_label;
             }
             int count = m_queue.size();
 
@@ -200,9 +208,9 @@ namespace org.kbinani.cadencii.draft {
             PortUtil.println( "StraightRenderingRunner#run; total_samples=" + total_samples );
 #endif
 
-            m_trim_remain = (int)(trimMillisec / 1000.0 * sampleRate); //先頭から省かなければならないサンプル数の残り
+            mTrimRemain = (int)(trimMillisec / 1000.0 * sampleRate); //先頭から省かなければならないサンプル数の残り
 #if DEBUG
-            PortUtil.println( "StraightRenderingRunner#run; m_trim_remain=" + m_trim_remain );
+            PortUtil.println( "StraightRenderingRunner#run; m_trim_remain=" + mTrimRemain );
 #endif
             long max_next_wave_start = m_vsq_length_samples;
 
@@ -213,6 +221,9 @@ namespace org.kbinani.cadencii.draft {
                     double[] silence_r = new double[BUF_LEN];
                     int remain = queue.startFrame;
                     while ( remain > 0 ) {
+                        if ( mAbortRequired ) {
+                            goto end_label;
+                        }
                         int len = (remain > BUF_LEN) ? BUF_LEN : remain;
                         if ( len == BUF_LEN ) {
                             for ( int i = 0; i < BUF_LEN; i++ ) {
@@ -234,10 +245,8 @@ namespace org.kbinani.cadencii.draft {
             double[] cached_data_r = null;
             double processed_samples = 0.0;
             for ( int i = 0; i < count; i++ ) {
-                if ( m_abort_required ) {
-                    m_rendering = false;
-                    m_abort_required = false;
-                    return;
+                if ( mAbortRequired ) {
+                    goto end_label;
                 }
                 StraightRenderingQueue queue = m_queue.get( i );
                 String tmp_dir = AppManager.getTempWaveDir();
@@ -389,9 +398,8 @@ namespace org.kbinani.cadencii.draft {
                         long pos = 0;
                         double[] left = null, right = null;
                         while ( remain > 0 ) {
-                            if ( m_abort_required ) {
-                                m_rendering = false;
-                                return;
+                            if ( mAbortRequired ) {
+                                goto end_label;
                             }
                             int len = (remain > BUF_LEN) ? BUF_LEN : remain;
                             if ( left == null || right == null ) {
@@ -694,11 +702,11 @@ namespace org.kbinani.cadencii.draft {
 
             double[] silence_l0 = new double[sampleRate];
             double[] silence_r0 = new double[sampleRate];
-            int tremain = (int)(totalSamples - m_total_append);
+            int tremain = (int)(mTotalSamples - mTotalAppend);
 #if DEBUG
             PortUtil.println( "UtauRenderingRunner#run; tremain=" + tremain );
 #endif
-            while ( tremain > 0 ) {
+            while ( tremain > 0 && !mAbortRequired ) {
                 int tlength = tremain > sampleRate ? sampleRate : tremain;
                 double[] l = null;
                 double[] r = null;
@@ -712,36 +720,37 @@ namespace org.kbinani.cadencii.draft {
                 waveIncoming( l, r );
                 tremain -= tlength;
             }
-
-            m_abort_required = false;
-            m_rendering = false;
+        end_label:
+            mAbortRequired = false;
+            mRunning = false;
+            mReceiver.end();
         }
 
         private void waveIncoming( double[] t_L, double[] t_R ) {
-            if ( !m_rendering ) {
+            if ( !mRunning ) {
                 return;
             }
             lock ( m_locker ) {
                 double[] L = t_L;
                 double[] R = t_R;
-                if ( m_trim_remain > 0 ) {
-                    if ( L.Length <= m_trim_remain ) {
-                        m_trim_remain -= L.Length;
+                if ( mTrimRemain > 0 ) {
+                    if ( L.Length <= mTrimRemain ) {
+                        mTrimRemain -= L.Length;
                         return;
                     } else {
-                        L = new double[t_L.Length - m_trim_remain];
-                        R = new double[t_L.Length - m_trim_remain];
-                        for ( int i = m_trim_remain; i < t_L.Length; i++ ) {
-                            if ( m_abort_required ) return;
-                            L[i - m_trim_remain] = t_L[i];
-                            R[i - m_trim_remain] = t_R[i];
+                        L = new double[t_L.Length - mTrimRemain];
+                        R = new double[t_L.Length - mTrimRemain];
+                        for ( int i = mTrimRemain; i < t_L.Length; i++ ) {
+                            if ( mAbortRequired ) return;
+                            L[i - mTrimRemain] = t_L[i];
+                            R[i - mTrimRemain] = t_R[i];
                         }
-                        m_trim_remain = 0;
+                        mTrimRemain = 0;
                     }
                 }
                 int length = L.Length;
-                if ( length > totalSamples - m_total_append ) {
-                    length = (int)(totalSamples - m_total_append);
+                if ( length > mTotalSamples - mTotalAppend ) {
+                    length = (int)(mTotalSamples - mTotalAppend);
                     if ( length <= 0 ) {
                         return;
                     }
@@ -750,7 +759,7 @@ namespace org.kbinani.cadencii.draft {
                     L = new double[length];
                     R = new double[length];
                     for ( int i = 0; i < length; i++ ) {
-                        if ( m_abort_required ) return;
+                        if ( mAbortRequired ) return;
                         L[i] = bl[i];
                         R[i] = br[i];
                     }
@@ -761,7 +770,7 @@ namespace org.kbinani.cadencii.draft {
                 if ( mReceiver != null ) {
                     mReceiver.push( L, R, L.Length );
                 }
-                m_total_append += length;
+                mTotalAppend += length;
                 for ( int i = 0; i < t_L.Length; i++ ) {
                     t_L[i] = 0.0;
                     t_R[i] = 0.0;

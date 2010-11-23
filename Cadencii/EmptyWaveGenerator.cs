@@ -11,6 +11,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+using System.Threading;
 namespace org.kbinani.cadencii.draft {
 
     /// <summary>
@@ -21,6 +22,13 @@ namespace org.kbinani.cadencii.draft {
         private const int BUFLEN = 1024;
         private WaveReceiver mReceiver = null;
         private bool mAbortRequested = false;
+        private bool mRunning = false;
+        private long mTotalAppend = 0L;
+        private long mTotalSamples = 1L;
+
+        public double getProgress() {
+            return mTotalAppend / (double)mTotalSamples;
+        }
 
         public override int getVersion() {
             return VERSION;
@@ -32,6 +40,8 @@ namespace org.kbinani.cadencii.draft {
 
         public void begin( long samples ) {
             if ( mReceiver == null ) return;
+            mRunning = true;
+            mTotalSamples = samples;
             double[] l = new double[BUFLEN];
             double[] r = new double[BUFLEN];
             for ( int i = 0; i < BUFLEN; i++ ) {
@@ -43,7 +53,10 @@ namespace org.kbinani.cadencii.draft {
                 int amount = (remain > BUFLEN) ? BUFLEN : (int)remain;
                 mReceiver.push( l, r, amount );
                 remain -= amount;
+                mTotalAppend += amount;
             }
+        end_label:
+            mRunning = false;
             mReceiver.end();
         }
 
@@ -55,7 +68,12 @@ namespace org.kbinani.cadencii.draft {
         }
 
         public void stop() {
-            mAbortRequested = true;
+            if ( mRunning ) {
+                mAbortRequested = true;
+                while ( mRunning ) {
+                    Thread.Sleep( 100 );
+                }
+            }
         }
     }
 

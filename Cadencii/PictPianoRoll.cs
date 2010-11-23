@@ -58,6 +58,32 @@ namespace org.kbinani.cadencii {
         private readonly Color COLOR_LINE_RD = new Color( 40, 47, 255, 204 );
         private readonly Color COLOR_R051G051B000 = new Color( 51, 51, 0 );
         private readonly Color COLOR_A136R000G000B000 = new Color( 0, 0, 0, 136 );
+        
+        private readonly Color COLOR_VOCALO2_BLACK = new Color( 212, 212, 212 );
+        private readonly Color COLOR_VOCALO2_WHITE = new Color( 240, 240, 240 );
+        private readonly Color COLOR_VOCALO2_BAR = new Color( 161, 157, 136 );
+        private readonly Color COLOR_VOCALO2_BEAT = new Color( 209, 204, 172 );
+
+        private readonly Color COLOR_VOCALO1_BLACK = new Color( 210, 205, 172 );
+        private readonly Color COLOR_VOCALO1_WHITE = new Color( 240, 235, 214 );
+        private readonly Color COLOR_VOCALO1_BAR = new Color( 161, 157, 136 );
+        private readonly Color COLOR_VOCALO1_BEAT = new Color( 209, 204, 172 );
+
+        private readonly Color COLOR_UTAU_BLACK = new Color( 212, 212, 212 );
+        private readonly Color COLOR_UTAU_WHITE = new Color( 240, 240, 240 );
+        private readonly Color COLOR_UTAU_BAR = new Color( 255, 64, 255 );
+        private readonly Color COLOR_UTAU_BEAT = new Color( 128, 128, 255 );
+
+        private readonly Color COLOR_VCNT_BLACK = new Color( 212, 212, 212 );
+        private readonly Color COLOR_VCNT_WHITE = new Color( 240, 240, 240 );
+        private readonly Color COLOR_VCNT_BAR = new Color( 255, 153, 0 );
+        private readonly Color COLOR_VCNT_BEAT = new Color( 128, 128, 255 );
+
+        private readonly Color COLOR_AQUESTONE_BLACK = new Color( 212, 212, 212 );
+        private readonly Color COLOR_AQUESTONE_WHITE = new Color( 240, 240, 240 );
+        private readonly Color COLOR_AQUESTONE_BAR = new Color( 7, 107, 175 );
+        private readonly Color COLOR_AQUESTONE_BEAT = new Color( 234, 190, 62 );
+
         public readonly Color[] COLORS_HIDDEN = new Color[]{
             new Color( 181, 162, 123 ),
             new Color( 179, 181, 123 ),
@@ -271,10 +297,10 @@ namespace org.kbinani.cadencii {
 #endif
                 }
 
-                Color black = AppManager.editorConfig.PianorollColorVocalo2Black.getColor();
-                Color white = AppManager.editorConfig.PianorollColorVocalo2White.getColor();
-                Color bar = AppManager.editorConfig.PianorollColorVocalo2Bar.getColor();
-                Color beat = AppManager.editorConfig.PianorollColorVocalo2Beat.getColor();
+                Color black = COLOR_VOCALO2_BLACK;
+                Color white = COLOR_VOCALO2_WHITE;
+                Color bar = COLOR_VOCALO2_BAR;
+                Color beat = COLOR_VOCALO2_BEAT;
                 RendererKind renderer = RendererKind.VOCALOID2;
 
                 EditMode edit_mode = AppManager.getEditMode();
@@ -284,25 +310,25 @@ namespace org.kbinani.cadencii {
                 }
 
                 if ( renderer == RendererKind.UTAU ) {
-                    black = AppManager.editorConfig.PianorollColorUtauBlack.getColor();
-                    white = AppManager.editorConfig.PianorollColorUtauWhite.getColor();
-                    bar = AppManager.editorConfig.PianorollColorUtauBar.getColor();
-                    beat = AppManager.editorConfig.PianorollColorUtauBeat.getColor();
+                    black = COLOR_UTAU_BLACK;
+                    white = COLOR_UTAU_WHITE;
+                    bar = COLOR_UTAU_BAR;
+                    beat = COLOR_UTAU_BEAT;
                 } else if ( renderer == RendererKind.VOCALOID1_100 || renderer == RendererKind.VOCALOID1_101 ) {
-                    black = AppManager.editorConfig.PianorollColorVocalo1Black.getColor();
-                    white = AppManager.editorConfig.PianorollColorVocalo1White.getColor();
-                    bar = AppManager.editorConfig.PianorollColorVocalo1Bar.getColor();
-                    beat = AppManager.editorConfig.PianorollColorVocalo1Beat.getColor();
+                    black = COLOR_VOCALO1_BLACK;
+                    white = COLOR_VOCALO1_WHITE;
+                    bar = COLOR_VOCALO1_BAR;
+                    beat = COLOR_VOCALO1_BEAT;
                 } else if ( renderer == RendererKind.STRAIGHT_UTAU ) {
-                    black = AppManager.editorConfig.PianorollColorStraightBlack.getColor();
-                    white = AppManager.editorConfig.PianorollColorStraightWhite.getColor();
-                    bar = AppManager.editorConfig.PianorollColorStraightBar.getColor();
-                    beat = AppManager.editorConfig.PianorollColorStraightBeat.getColor();
+                    black = COLOR_VCNT_BLACK;
+                    white = COLOR_VCNT_WHITE;
+                    bar = COLOR_VCNT_BAR;
+                    beat = COLOR_VCNT_BEAT;
                 } else if ( renderer == RendererKind.AQUES_TONE ) {
-                    black = AppManager.editorConfig.PianorollColorAquesToneBlack.getColor();
-                    white = AppManager.editorConfig.PianorollColorAquesToneWhite.getColor();
-                    bar = AppManager.editorConfig.PianorollColorAquesToneBar.getColor();
-                    beat = AppManager.editorConfig.PianorollColorAquesToneBeat.getColor();
+                    black = COLOR_AQUESTONE_BLACK;
+                    white = COLOR_AQUESTONE_WHITE;
+                    bar = COLOR_AQUESTONE_BAR;
+                    beat = COLOR_AQUESTONE_BEAT;
                 }
 
                 #region ピアノロール周りのスクロールバーなど

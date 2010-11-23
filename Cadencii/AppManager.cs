@@ -2367,7 +2367,7 @@ namespace org.kbinani.cadencii {
                 "DEFAULT_EN" );
             // 拡張辞書
             SymbolTable.loadAllDictionaries( PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "udic" ) );
-            VSTiProxy.CurrentUser = "";
+            //VSTiProxy.CurrentUser = "";
 #if JAVA
             Util.isApplyFontRecurseEnabled = false;
 #endif

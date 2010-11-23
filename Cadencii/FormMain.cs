@@ -11244,7 +11244,11 @@ namespace org.kbinani.cadencii {
         }
 
         public void menuFileExport_DropDownOpening( Object sender, EventArgs e ) {
-            menuFileExportWave.setEnabled( (AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getEventCount() > 0) && VSTiProxy.CurrentUser.Equals( "" ) );
+            //if ( AppManager.__DRAFT__useNewSynthImplement ){
+                menuFileExportWave.setEnabled( (AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getEventCount() > 0) );
+            //} else {
+                //menuFileExportWave.setEnabled( (AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getEventCount() > 0) && VSTiProxy.CurrentUser.Equals( "" ) );
+           // }
         }
 
         public void menuFileImportMidi_Click( Object sender, EventArgs e ) {

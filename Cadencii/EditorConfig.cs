@@ -234,7 +234,8 @@ namespace org.kbinani.cadencii {
         /// キーボードからの入力に使用するデバイス
         /// </summary>
         public MidiPortConfig MidiInPort = new MidiPortConfig();
-        public RgbColor PianorollColorVocalo2Black = new RgbColor( 212, 212, 212 );
+        
+        /*public RgbColor PianorollColorVocalo2Black = new RgbColor( 212, 212, 212 );
         public RgbColor PianorollColorVocalo2White = new RgbColor( 240, 240, 240 );
         public RgbColor PianorollColorVocalo1Black = new RgbColor( 210, 205, 172 );
         public RgbColor PianorollColorVocalo1White = new RgbColor( 240, 235, 214 );
@@ -257,7 +258,7 @@ namespace org.kbinani.cadencii {
         public RgbColor PianorollColorAquesToneBlack = new RgbColor( 212, 212, 212 );
         public RgbColor PianorollColorAquesToneWhite = new RgbColor( 240, 240, 240 );
         public RgbColor PianorollColorAquesToneBar = new RgbColor( 7, 107, 175 );
-        public RgbColor PianorollColorAquesToneBeat = new RgbColor( 234, 190, 62 );
+        public RgbColor PianorollColorAquesToneBeat = new RgbColor( 234, 190, 62 );*/
 
         public boolean ViewAtcualPitch = false;
         public boolean InvokeUtauCoreWithWine = false;

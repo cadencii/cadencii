@@ -13,6 +13,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System;
+using System.Threading;
 using org.kbinani.java.awt;
 using org.kbinani.java.util;
 using org.kbinani.media;
@@ -28,22 +29,26 @@ namespace org.kbinani.cadencii.draft {
 #else
     public class AquesToneWaveGenerator : WaveUnit, WaveGenerator {
 #endif
+        private const int VERSION = 0;
+        private const int BUFLEN = 1024;
+
         private AquesToneDriver mDriver = null;
         private VsqFileEx mVsq = null;
 
-        private const int BUFLEN = 1024;
-
         private WaveReceiver mReceiver = null;
-        private int mRenderingTrack;
+        private int mTrack;
         private int mStartClock;
         private int mEndClock;
+        private boolean mRunning = false;
         private boolean mAbortRequired;
         private long mTotalSamples;
+        /// <summary>
+        /// これまでに合成したサンプル数
+        /// </summary>
         private long mTotalAppend;
         private int mTrimRemain;
         private double[] mBufferL = new double[BUFLEN];
         private double[] mBufferR = new double[BUFLEN];
-        private int mVersion = 0;
 
         /// <summary>
         /// ドライバのパラメータの変更要求
@@ -62,13 +67,21 @@ namespace org.kbinani.cadencii.draft {
             public Vector<ParameterEvent> param;
         }
 
+        public double getProgress() {
+            return mTotalAppend / (double)mTotalSamples;
+        }
+
         public void stop() {
-            mAbortRequired = true;
-            throw new NotImplementedException();
+            if ( mRunning ) {
+                mAbortRequired = true;
+                while ( mRunning ) {
+                    Thread.Sleep( 100 );
+                }
+            }
         }
 
         public override int getVersion() {
-            return mVersion;
+            return VERSION;
         }
 
         public override void setConfig( string parameter ) {
@@ -79,9 +92,9 @@ namespace org.kbinani.cadencii.draft {
         /// 初期化メソッド
         /// </summary>
         /// <param name="parameter"></param>
-        public void init( VsqFileEx vsq, int track, int start_clock, int end_clock ) {// String parameter ) {
+        public void init( VsqFileEx vsq, int track, int start_clock, int end_clock ) {
             mDriver = AquesToneDriver.getInstance();
-            mRenderingTrack = track;
+            mTrack = track;
             mStartClock = start_clock;
             mEndClock = end_clock;
 
@@ -123,15 +136,15 @@ namespace org.kbinani.cadencii.draft {
                 return;
             }
 
-            //m_rendering = true;
+            mRunning = true;
             mAbortRequired = false;
             mTotalSamples = total_samples;
 
-            VsqTrack track = mVsq.Track.get( mRenderingTrack );
+            VsqTrack track = mVsq.Track.get( mTrack );
             int BUFLEN = VSTiProxy.SAMPLE_RATE / 10;
             double[] left = new double[BUFLEN];
             double[] right = new double[BUFLEN];
-            long saProcessed = 0; // これまでに合成したサンプル数
+            //long saProcessed = 0; // 
             int saRemain = 0;
             int lastClock = 0; // 最後に処理されたゲートタイム
 
@@ -158,32 +171,22 @@ namespace org.kbinani.cadencii.draft {
                 long saNoteStart = (long)(mVsq.getSecFromClock( item.Clock ) * VSTiProxy.SAMPLE_RATE);
                 long saNoteEnd = (long)(mVsq.getSecFromClock( item.Clock + item.ID.getLength() ) * VSTiProxy.SAMPLE_RATE);
 
-                TreeMap<Integer, MidiEventQueue> list = generateMidiEvent( mVsq, mRenderingTrack, lastClock, item.Clock + item.ID.getLength() );
+                TreeMap<Integer, MidiEventQueue> list = generateMidiEvent( mVsq, mTrack, lastClock, item.Clock + item.ID.getLength() );
                 lastClock = item.Clock + item.ID.Length + 1;
                 for ( Iterator<Integer> itr2 = list.keySet().iterator(); itr2.hasNext(); ) {
                     // まず直前までの分を合成
                     Integer clock = itr2.next();
                     long saStart = (long)(mVsq.getSecFromClock( clock ) * VSTiProxy.SAMPLE_RATE);
-                    saRemain = (int)(saStart - saProcessed);
+                    saRemain = (int)(saStart - mTotalAppend);
                     while ( saRemain > 0 ) {
                         if ( mAbortRequired ) {
-                            //m_rendering = false;
-                            return;
+                            goto end_label;
                         }
                         int len = saRemain > BUFLEN ? BUFLEN : saRemain;
-                        //double[] bufl = null;
-                        //double[] bufr = null;
-                        //if ( len == BUFLEN ) {
-                        //    bufl = left;
-                        //    bufr = right;
-                        //} else {
-                        //    bufl = new double[len];
-                        //    bufr = new double[len];
-                        //}
                         mDriver.process( left, right, len );
                         waveIncoming( left, right, len );
                         saRemain -= len;
-                        saProcessed += len;
+                        mTotalAppend += len;
                     }
 
                     // MIDiイベントを送信
@@ -223,20 +226,21 @@ namespace org.kbinani.cadencii.draft {
             // totalSamplesに足りなかったら、追加してレンダリング
             saRemain = (int)(mTotalSamples - mTotalAppend);
 #if DEBUG
-            PortUtil.println( "AquesToneRenderingRunner#run; totalSamples=" + mTotalSamples + "; saProcessed=" + saProcessed + "; saRemain=" + saRemain );
+            PortUtil.println( "AquesToneRenderingRunner#run; totalSamples=" + mTotalSamples + "; mTotalAppend=" + mTotalAppend + "; saRemain=" + saRemain );
 #endif
             while ( saRemain > 0 ) {
                 if ( mAbortRequired ) {
-                    //m_rendering = false;
-                    return;
+                    goto end_label;
                 }
                 int len = saRemain > BUFLEN ? BUFLEN : saRemain;
                 mDriver.process( left, right, len );
                 waveIncoming( left, right, len );
                 saRemain -= len;
-                saProcessed += len;
+                mTotalAppend += len;
             }
-
+        end_label:
+            mRunning = false;
+            mAbortRequired = false;
             mReceiver.end();
         }
 
@@ -467,14 +471,16 @@ namespace org.kbinani.cadencii.draft {
                         }
                         // ビブラート部分のピッチを取得
                         Vector<PointD> ret = new Vector<PointD>();
-                        for ( Iterator<PointD> itr2 = new VibratoPointIteratorBySec( vsq,
-                                                                               item.ID.VibratoHandle.getRateBP(),
-                                                                               item.ID.VibratoHandle.getStartRate(),
-                                                                               item.ID.VibratoHandle.getDepthBP(),
-                                                                               item.ID.VibratoHandle.getStartDepth(),
-                                                                               item.Clock + item.ID.VibratoDelay,
-                                                                               item.ID.getLength() - item.ID.VibratoDelay,
-                                                                               (float)delta_sec ); itr2.hasNext(); ) {
+                        Iterator<PointD> itr2 = new VibratoPointIteratorBySec(
+                            vsq,
+                            item.ID.VibratoHandle.getRateBP(),
+                            item.ID.VibratoHandle.getStartRate(),
+                            item.ID.VibratoHandle.getDepthBP(),
+                            item.ID.VibratoHandle.getStartDepth(),
+                            item.Clock + item.ID.VibratoDelay,
+                            item.ID.getLength() - item.ID.VibratoDelay,
+                            (float)delta_sec );
+                        for ( ; itr2.hasNext(); ) {
                             PointD p = itr2.next();
                             float gtime = (float)p.getX();
                             int clock = (int)vsq.getClockFromSec( gtime );
@@ -504,8 +510,8 @@ namespace org.kbinani.cadencii.draft {
                         queue.param.add( pe );
 
                         // PITを順次追加
-                        for ( Iterator<Integer> itr2 = pit_change.keySet().iterator(); itr2.hasNext(); ) {
-                            Integer clock = itr2.next();
+                        for ( Iterator<Integer> itr3 = pit_change.keySet().iterator(); itr3.hasNext(); ) {
+                            Integer clock = itr3.next();
                             if ( clock_start <= clock && clock <= clock_end ) {
                                 float pvalue = pit_change.get( clock );
                                 int pit_value = (int)(8192.0 / (double)required_pbs * pvalue / 100.0);
