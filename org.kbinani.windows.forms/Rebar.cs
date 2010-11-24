@@ -688,6 +688,11 @@ namespace org.kbinani.windows.forms {
                         }
                         case win32.RBN_CHILDSIZE: {
                             NMREBARCHILDSIZE ChildSize = (NMREBARCHILDSIZE)Marshal.PtrToStructure( m.LParam, typeof( NMREBARCHILDSIZE ) );
+                            Form form = this.FindForm();
+                            if ( form != null && !form.IsDisposed && form.WindowState == FormWindowState.Minimized ) {
+                                // 親フォームが最小化された状態の場合，Resizeを送信しない
+                                break;
+                            }
                             foreach ( RebarBand band in _bands ) {
                                 if ( band.ID == ChildSize.wID ) {
                                     band.OnResize( new EventArgs() );
@@ -740,7 +745,6 @@ namespace org.kbinani.windows.forms {
         internal int BarHeight {
             get {
                 RECT rect = new RECT();
-                //NG: これだと，最小化したときに正しくない値が帰ってくる
                 win32.GetWindowRect( Handle, ref rect );
                 return rect.bottom - rect.top;
                 //return (int)win32.SendMessage( this.Handle, (int)win32.RB_GETBARHEIGHT, 0U, 0U );

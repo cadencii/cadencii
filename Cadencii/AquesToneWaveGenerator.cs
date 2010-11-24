@@ -186,7 +186,7 @@ namespace org.kbinani.cadencii.draft {
                         mDriver.process( left, right, len );
                         waveIncoming( left, right, len );
                         saRemain -= len;
-                        mTotalAppend += len;
+                        //mTotalAppend += len; <- waveIncomingで計算されるので
                     }
 
                     // MIDiイベントを送信

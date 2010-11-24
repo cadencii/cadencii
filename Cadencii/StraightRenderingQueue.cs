@@ -26,7 +26,7 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// このキューのレンダリング結果のwavを、曲頭から何フレーム目にmixしたらよいかを表す
         /// </summary>
-        public int startFrame;
+        public long startSample;
         /// <summary>
         /// 音源のフォルダ
         /// </summary>
@@ -34,7 +34,7 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// このキューのレンダリング結果の、おおよその長さ。正確な長さはレンダリング結果が出るまでは不明。
         /// </summary>
-        public long abstractFrameLength;
+        public long abstractSamples;
         /// <summary>
         /// メタテキストの生成に必要なトラックデータ
         /// </summary>

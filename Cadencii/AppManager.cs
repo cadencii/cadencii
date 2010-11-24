@@ -171,10 +171,6 @@ namespace org.kbinani.cadencii {
         /// アイコンパレット・ウィンドウのインスタンス
         /// </summary>
         public static FormIconPalette iconPalette = null;
-        /// <summary>
-        /// 新・合成処理を使う場合にtrue
-        /// </summary>
-        public static boolean __DRAFT__useNewSynthImplement = true;
 
         #region Static Readonly Fields
         /// <summary>

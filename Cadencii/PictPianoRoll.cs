@@ -533,7 +533,11 @@ namespace org.kbinani.cadencii {
                     } else if ( renderer == RendererKind.VOCALOID1_101 ) {
                         str = "VOCALOID1 [1.1]";
                     } else if ( renderer == RendererKind.STRAIGHT_UTAU ) {
+#if USE_OLD_SYNTH_IMPL
                         str = "STRAIGHT X UTAU";
+#else
+                        str = "vConnect-STAND";
+#endif
                     } else if ( renderer == RendererKind.UTAU ) {
                         str = "UTAU";
                     }

@@ -247,7 +247,12 @@ namespace org.kbinani.cadencii {
                 }
             }
             if ( renderer == RendererKind.STRAIGHT_UTAU ) {
-                if ( PortUtil.isFileExists( PortUtil.combinePath( PortUtil.getApplicationStartupPath(), StraightRenderingRunner.STRAIGHT_SYNTH ) ) ) {
+#if USE_OLD_SYNTH_IMPL
+                string synth_path = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), StraightRenderingRunner.STRAIGHT_SYNTH );
+#else
+                string synth_path = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), draft.VConnectWaveGenerator.STRAIGHT_SYNTH );
+#endif
+                if ( PortUtil.isFileExists( synth_path ) ) {
                     int count = AppManager.editorConfig.UtauSingers.size();
                     for ( int i = 0; i < count; i++ ) {
                         String analyzed = PortUtil.combinePath( AppManager.editorConfig.UtauSingers.get( i ).VOICEIDSTR, "analyzed" );
@@ -289,6 +294,7 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
+#if USE_OLD_SYNTH_IMPL
         /// <summary>
         /// 
         /// </summary>
@@ -505,7 +511,9 @@ namespace org.kbinani.cadencii {
                 s_rendering_context = null;
             }
         }
+#endif
 
+#if USE_OLD_SYNTH_IMPL
 #if JAVA
         private class RenderWithDirectPlayProc extends Thread{
         public void run(){
@@ -542,6 +550,7 @@ namespace org.kbinani.cadencii {
         }
 #if JAVA
         }
+#endif
 #endif
 
         public static double computeRemainintSeconds() {

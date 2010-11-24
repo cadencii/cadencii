@@ -379,7 +379,11 @@ namespace org.kbinani.cadencii {
             aEffect = new AEffectWrapper();
             aEffect.aeffect = (AEffect)Marshal.PtrToStructure( aEffectPointer, typeof( AEffect ) );
             aEffect.Dispatch( AEffectOpcodes.effOpen, 0, 0, IntPtr.Zero, 0 );
-            aEffect.Dispatch( AEffectOpcodes.effSetSampleRate, 0, 0, IntPtr.Zero, (float)sampleRate );
+            int ret = aEffect.Dispatch( AEffectOpcodes.effSetSampleRate, 0, 0, IntPtr.Zero, (float)sampleRate );
+#if DEBUG
+            PortUtil.println( "vstidrv#open; dll_path=" + dll_path + "; ret for effSetSampleRate=" + ret );
+#endif
+
             aEffect.Dispatch( AEffectOpcodes.effSetBlockSize, 0, blockSize, IntPtr.Zero, 0 );
 
             // デフォルトのパラメータ値を取得
