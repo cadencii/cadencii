@@ -16,7 +16,7 @@ package org.kbinani.cadencii;
 #else
 using System;
 
-namespace org.kbinani.cadencii.draft {
+namespace org.kbinani.cadencii {
 #endif
 
     /// <summary>

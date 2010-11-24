@@ -4574,7 +4574,11 @@ namespace org.kbinani.cadencii {
                     }
                 }
             }
+#if USE_OLD_SYNTH_IMPL
             String whd = PortUtil.combinePath( tmppath, UtauRenderingRunner.FILEBASE + ".whd" );
+#else
+            String whd = PortUtil.combinePath( tmppath, UtauWaveGenerator.FILEBASE + ".whd" );
+#endif
             if ( PortUtil.isFileExists( whd ) ) {
                 try {
                     PortUtil.deleteFile( whd );
@@ -4582,7 +4586,11 @@ namespace org.kbinani.cadencii {
                     Logger.write( typeof( FormMain ) + ".clearTempWave; ex=" + ex + "\n" );
                 }
             }
+#if USE_OLD_SYNTH_IMPL
             String dat = PortUtil.combinePath( tmppath, UtauRenderingRunner.FILEBASE + ".dat" );
+#else
+            String dat = PortUtil.combinePath( tmppath, UtauWaveGenerator.FILEBASE + ".dat" );
+#endif
             if ( PortUtil.isFileExists( dat ) ) {
                 try {
                     PortUtil.deleteFile( dat );
@@ -10513,10 +10521,11 @@ namespace org.kbinani.cadencii {
                 AppManager.editorConfig.FormIconTopMost = AppManager.iconPalette.isAlwaysOnTop();
             }
             AppManager.saveConfig();
-            UtauRenderingRunner.clearCache();
 #if USE_OLD_SYNTH_IMPL
+            UtauRenderingRunner.clearCache();
             StraightRenderingRunner.clearCache();
 #else
+            UtauWaveGenerator.clearCache();
             VConnectWaveGenerator.clearCache();
 #endif
 

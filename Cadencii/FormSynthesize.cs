@@ -62,7 +62,9 @@ namespace org.kbinani.cadencii {
         private boolean mReflectAmpToWave = false;
         private boolean mIsPartialMode = false;
         private boolean mIsCancelRequired = false;
-        private draft.WaveGenerator __DRAFT__mWaveGenerator = null;
+#if !USE_OLD_SYNTH_IMPL
+        private WaveGenerator mWaveGenerator = null;
+#endif
 
         private BTimer timer;
         private BBackgroundWorker bgWork;
@@ -361,34 +363,34 @@ namespace org.kbinani.cadencii {
                         RendererKind kind = VsqFileEx.getTrackRendererKind( vsq_track );
                         switch ( kind ) {
                             case RendererKind.AQUES_TONE: {
-                                __DRAFT__mWaveGenerator = new draft.AquesToneWaveGenerator();
+                                mWaveGenerator = new AquesToneWaveGenerator();
                                 break;
                             }
                             case RendererKind.STRAIGHT_UTAU: {
-                                __DRAFT__mWaveGenerator = new draft.VConnectWaveGenerator();
+                                mWaveGenerator = new VConnectWaveGenerator();
                                 break;
                             }
                             case RendererKind.UTAU: {
-                                __DRAFT__mWaveGenerator = new draft.UtauWaveGenerator();
+                                mWaveGenerator = new UtauWaveGenerator();
                                 break;
                             }
                             case RendererKind.VOCALOID1_100:
                             case RendererKind.VOCALOID1_101:
                             case RendererKind.VOCALOID2: {
-                                __DRAFT__mWaveGenerator = new draft.VocaloidWaveGenerator();
+                                mWaveGenerator = new VocaloidWaveGenerator();
                                 break;
                             }
                             default: {
-                                __DRAFT__mWaveGenerator = new draft.EmptyWaveGenerator();
+                                mWaveGenerator = new EmptyWaveGenerator();
                                 break;
                             }
                         }
 
-                        draft.Amplifier amp = new org.kbinani.cadencii.draft.Amplifier();
-                        __DRAFT__mWaveGenerator.setReceiver( amp );
-                        __DRAFT__mWaveGenerator.setGlobalConfig( AppManager.editorConfig );
+                        Amplifier amp = new Amplifier();
+                        mWaveGenerator.setReceiver( amp );
+                        mWaveGenerator.setGlobalConfig( AppManager.editorConfig );
 
-                        draft.Mixer mixer = new draft.Mixer();
+                        Mixer mixer = new Mixer();
                         mixer.setGlobalConfig( AppManager.editorConfig );
                         amp.setReceiver( mixer );
 
@@ -398,7 +400,7 @@ namespace org.kbinani.cadencii {
                                     if ( i == track ) continue;
                                     String file = PortUtil.combinePath( tmppath, i + ".wav" );
                                     WaveReader r = new WaveReader( file );
-                                    draft.FileWaveSender wave_sender = new org.kbinani.cadencii.draft.FileWaveSender( r );
+                                    FileWaveSender wave_sender = new FileWaveSender( r );
                                     wave_sender.setGlobalConfig( AppManager.editorConfig );
                                     mixer.addSender( wave_sender );
                                 }
@@ -406,18 +408,18 @@ namespace org.kbinani.cadencii {
                         }
 
                         PortUtil.deleteFile( mFiles[k] );
-                        draft.FileWaveReceiver wave_receiver = new org.kbinani.cadencii.draft.FileWaveReceiver( mFiles[k], 2, 16, VSTiProxy.SAMPLE_RATE );
+                        FileWaveReceiver wave_receiver = new FileWaveReceiver( mFiles[k], 2, 16, VSTiProxy.SAMPLE_RATE );
                         wave_receiver.setGlobalConfig( AppManager.editorConfig );
                         mixer.setReceiver( wave_receiver );
 
                         int end = mClockEnd[k];
                         if( end == int.MaxValue ) end = mVsq.TotalClocks + 240;
-                        __DRAFT__mWaveGenerator.init( mVsq, track, mClockStart[k], end );
+                        mWaveGenerator.init( mVsq, track, mClockStart[k], end );
 
                         double sec_start = mVsq.getSecFromClock( mClockStart[k] );
                         double sec_end = mVsq.getSecFromClock( end );
                         long samples = (long)((sec_end - sec_start) * VSTiProxy.SAMPLE_RATE);
-                        __DRAFT__mWaveGenerator.begin( samples );
+                        mWaveGenerator.begin( samples );
 
                         mFinished++;
                         if ( mIsCancelRequired ) break;
@@ -459,8 +461,8 @@ namespace org.kbinani.cadencii {
             timer.stop();
             if ( bgWork.isBusy() ) {
                 mIsCancelRequired = true;
-                if ( __DRAFT__mWaveGenerator != null ) {
-                    __DRAFT__mWaveGenerator.stop();
+                if ( mWaveGenerator != null ) {
+                    mWaveGenerator.stop();
                 }
                 setDialogResult( BDialogResult.CANCEL );
             } else {
@@ -479,7 +481,7 @@ namespace org.kbinani.cadencii {
 #if USE_OLD_SYNTH_IMPL
             double progress = VSTiProxy.getProgress();
 #else // USE_OLD_SYNTH_IMPL
-            double progress = __DRAFT__mWaveGenerator.getProgress() * 100;
+            double progress = mWaveGenerator.getProgress() * 100;
 #endif // USE_OLD_SYNTH_IMPL
 
 #if DEBUG
@@ -497,7 +499,11 @@ namespace org.kbinani.cadencii {
 
         public void btnCancel_Click( Object sender, BEventArgs e ) {
             mIsCancelRequired = true;
+#if USE_OLD_SYNTH_IMPL
             VSTiProxy.abortRendering();
+#else
+            mWaveGenerator.stop();
+#endif
             setDialogResult( BDialogResult.CANCEL );
         }
         #endregion

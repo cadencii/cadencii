@@ -12,7 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 using System.Threading;
-namespace org.kbinani.cadencii.draft {
+namespace org.kbinani.cadencii {
 
     /// <summary>
     /// 無音の波形を送信するWaveGenerator

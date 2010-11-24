@@ -18,7 +18,11 @@ using org.kbinani.java.util;
 using org.kbinani.media;
 using org.kbinani.vsq;
 
+#if USE_OLD_SYNTH_IMPL
 namespace org.kbinani.cadencii {
+#else
+namespace org.kbinani.cadencii.obsolete{
+#endif
     using boolean = System.Boolean;
     using Float = System.Single;
     using Integer = System.Int32;

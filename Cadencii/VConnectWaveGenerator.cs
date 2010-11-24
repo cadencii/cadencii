@@ -27,7 +27,7 @@ using org.kbinani.java.util;
 using org.kbinani.media;
 using org.kbinani.vsq;
 
-namespace org.kbinani.cadencii.draft {
+namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
     using Integer = System.Int32;
 #endif

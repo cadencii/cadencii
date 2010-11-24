@@ -17,7 +17,7 @@ package org.kbinani.cadencii;
 using System;
 using org.kbinani.java.util;
 
-namespace org.kbinani.cadencii.draft {
+namespace org.kbinani.cadencii {
 #endif
 
     /// <summary>

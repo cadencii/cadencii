@@ -342,7 +342,7 @@ namespace org.kbinani.cadencii {
             WaveWriter ww = null;
             try {
                 ww = new WaveWriter( file );
-
+                
                 VSTiProxy.render( vsq,
                                   1,
                                   ww,

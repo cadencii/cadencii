@@ -21,7 +21,7 @@ using System;
 using org.kbinani.java.awt;
 using org.kbinani.java.util;
 
-namespace org.kbinani.cadencii.draft {
+namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA

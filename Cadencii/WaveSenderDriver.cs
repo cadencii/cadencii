@@ -21,7 +21,7 @@ using System.Threading;
 using org.kbinani.java.awt;
 using org.kbinani.java.util;
 
-namespace org.kbinani.cadencii.draft {
+namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 #endif
 

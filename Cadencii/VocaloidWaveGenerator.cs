@@ -39,7 +39,7 @@ namespace org.kbinani.cadencii {
     }
 }
 
-namespace org.kbinani.cadencii.draft {
+namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 
     public class VocaloidWaveGenerator : WaveUnit, WaveGenerator, IWaveIncoming {

@@ -77,7 +77,9 @@ namespace org.kbinani.cadencii {
         //delegate int PADDFUNC( int a, int b );
 #endif
 
+#if USE_OLD_SYNTH_IMPL
         private static RenderingRunner s_rendering_context;
+#endif
 
         public static void init() {
             initCor();
@@ -250,7 +252,7 @@ namespace org.kbinani.cadencii {
 #if USE_OLD_SYNTH_IMPL
                 string synth_path = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), StraightRenderingRunner.STRAIGHT_SYNTH );
 #else
-                string synth_path = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), draft.VConnectWaveGenerator.STRAIGHT_SYNTH );
+                string synth_path = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), VConnectWaveGenerator.STRAIGHT_SYNTH );
 #endif
                 if ( PortUtil.isFileExists( synth_path ) ) {
                     int count = AppManager.editorConfig.UtauSingers.size();
@@ -553,6 +555,7 @@ namespace org.kbinani.cadencii {
 #endif
 #endif
 
+#if USE_OLD_SYNTH_IMPL
         public static double computeRemainintSeconds() {
             if ( s_rendering_context != null ) {
                 return s_rendering_context.computeRemainingSeconds();
@@ -560,7 +563,9 @@ namespace org.kbinani.cadencii {
                 return 0.0;
             }
         }
+#endif
 
+#if USE_OLD_SYNTH_IMPL
         public static double getElapsedSeconds() {
             if ( s_rendering_context != null ) {
                 return s_rendering_context.getElapsedSeconds();
@@ -568,7 +573,9 @@ namespace org.kbinani.cadencii {
                 return 0.0;
             }
         }
+#endif
 
+#if USE_OLD_SYNTH_IMPL
         public static double getProgress() {
             if ( s_rendering_context == null ) {
                 return 0.0;
@@ -576,13 +583,16 @@ namespace org.kbinani.cadencii {
                 return s_rendering_context.getProgress();
             }
         }
+#endif
 
+#if USE_OLD_SYNTH_IMPL
         public static void abortRendering() {
             if ( s_rendering_context != null ){
                 s_rendering_context.abortRendering();
                 s_rendering_context = null;
             }
         }
+#endif
 
         public static int getErrorSamples( float tempo ) {
             if ( tempo <= 240 ) {

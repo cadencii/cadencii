@@ -23,7 +23,7 @@ using org.kbinani.java.awt;
 using org.kbinani.java.util;
 using org.kbinani.media;
 
-namespace org.kbinani.cadencii.draft {
+namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 #endif
 

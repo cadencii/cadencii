@@ -19,7 +19,7 @@ import java.awt.*;
 using System;
 using org.kbinani.java.awt;
 
-namespace org.kbinani.cadencii.draft {
+namespace org.kbinani.cadencii {
 #endif
 
     /// <summary>
