@@ -1,5 +1,5 @@
-﻿/*
- * StraightRenderingQueue.cs
+﻿/**
+ * VConnectRenderingQueue.cs
  * Copyright (C) 2009-2010 kbinani
  *
  * This file is part of org.kbinani.cadencii.
@@ -22,7 +22,7 @@ using org.kbinani.vsq;
 namespace org.kbinani.cadencii {
 #endif
 
-    public class StraightRenderingQueue {
+    public class VConnectRenderingQueue {
         /// <summary>
         /// このキューのレンダリング結果のwavを、曲頭から何フレーム目にmixしたらよいかを表す
         /// </summary>
@@ -42,8 +42,8 @@ namespace org.kbinani.cadencii {
         public int endClock;
 
 #if DEBUG
-        public string __DEBUG__toString() {
-            string phase = "";
+        public String __DEBUG__toString() {
+            String phase = "";
             for ( int i = 0; i < track.getEventCount(); i++ ) {
                 VsqEvent itemi = track.getEvent( i );
                 if ( itemi.ID.type == VsqIDType.Anote ) {

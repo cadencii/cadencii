@@ -138,6 +138,7 @@
     <Compile Include="PictOverview.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="VConnectRenderingQueue.cs" />
     <Compile Include="VConnectWaveGenerator.cs" />
     <Compile Include="WaveUnit.cs" />
     <Compile Include="DefaultVibratoLengthEnum.cs" />
@@ -233,7 +234,6 @@
     <Compile Include="SingerEventComparisonContext.cs" />
     <Compile Include="SoloChangedEventHandler.cs" />
     <Compile Include="StateChangeRequiredEventHandler.cs" />
-    <Compile Include="StraightRenderingQueue.cs" />
     <Compile Include="StraightRenderingRunner.cs">
       <SubType>Code</SubType>
     </Compile>

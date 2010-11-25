@@ -47,7 +47,7 @@ namespace org.kbinani.cadencii.obsolete {
         private static TreeMap<String, Double> s_cache = new TreeMap<String, Double>();
         const int TEMPO = 120;
 
-        Vector<StraightRenderingQueue> m_queue;
+        Vector<VConnectRenderingQueue> m_queue;
         Vector<SingerConfig> m_singer_config_sys;
         double m_progress_percent = 0.0;
         boolean m_mode_infinite;
@@ -84,7 +84,7 @@ namespace org.kbinani.cadencii.obsolete {
         {
 #endif
             m_locker = new Object();
-            m_queue = new Vector<StraightRenderingQueue>();
+            m_queue = new Vector<VConnectRenderingQueue>();
             m_singer_config_sys = singer_config_sys;
             m_mode_infinite = mode_infinite;
             int midi_tempo = 60000000 / TEMPO;
@@ -120,7 +120,7 @@ namespace org.kbinani.cadencii.obsolete {
                 appendQueue( work, track, events, current_singer_event, sample_rate );
             }
             if ( m_queue.size() > 0 ) {
-                StraightRenderingQueue q = m_queue.get( m_queue.size() - 1 );
+                VConnectRenderingQueue q = m_queue.get( m_queue.size() - 1 );
                 m_vsq_length_samples = q.startSample + q.abstractSamples;
             }
         }
@@ -280,7 +280,7 @@ namespace org.kbinani.cadencii.obsolete {
             }
             double abstract_sec = tlast_clock / (8.0 * TEMPO);
 
-            StraightRenderingQueue queue = new StraightRenderingQueue();
+            VConnectRenderingQueue queue = new VConnectRenderingQueue();
             // レンダリング結果の何秒後に音符が始まるか？
             queue.startSample = (int)((start_sec - OFFSET / (8.0 * TEMPO)) * sample_rate);
             queue.oto_ini = oto_ini;
@@ -327,7 +327,7 @@ namespace org.kbinani.cadencii.obsolete {
             long max_next_wave_start = m_vsq_length_samples;
 
             if ( m_queue.size() > 0 ) {
-                StraightRenderingQueue queue = m_queue.get( 0 );
+                VConnectRenderingQueue queue = m_queue.get( 0 );
                 if ( queue.startSample > 0 ) {
                     long remain = queue.startSample;
                     while ( remain > 0 ) {
@@ -351,7 +351,7 @@ namespace org.kbinani.cadencii.obsolete {
                     m_abort_required = false;
                     return;
                 }
-                StraightRenderingQueue queue = m_queue.get( i );
+                VConnectRenderingQueue queue = m_queue.get( i );
                 String tmp_dir = AppManager.getTempWaveDir();
 
                 String tmp_file = PortUtil.combinePath( tmp_dir, "tmp.usq" );
@@ -466,7 +466,7 @@ namespace org.kbinani.cadencii.obsolete {
 
                 long next_wave_start = max_next_wave_start;
                 if ( i + 1 < count ) {
-                    StraightRenderingQueue next_queue = m_queue.get( i + 1 );
+                    VConnectRenderingQueue next_queue = m_queue.get( i + 1 );
                     next_wave_start = next_queue.startSample;
                 }
 
