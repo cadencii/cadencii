@@ -38,7 +38,7 @@ namespace org.kbinani.cadencii {
         private double[] mBuffer2R = new double[BUFLEN];
 
         // RenderingRunnerの実装
-        protected Object m_locker = null;
+        protected Object mLocker = null;
         protected boolean mRunning = false;
         protected long mTotalSamples = 0;
         /// <summary>
@@ -59,22 +59,39 @@ namespace org.kbinani.cadencii {
         private static TreeMap<String, Double> s_cache = new TreeMap<String, Double>();
         const int TEMPO = 120;
 
-        Vector<StraightRenderingQueue> m_queue;
-        Vector<SingerConfig> m_singer_config_sys;
-        double m_progress_percent = 0.0;
+        private Vector<StraightRenderingQueue> mQueue;
+        private Vector<SingerConfig> m_singer_config_sys;
+        private double mProgressPercent = 0.0;
 
-        TreeMap<String, UtauVoiceDB> m_voicedb_configs = new TreeMap<String, UtauVoiceDB>();
-        long m_vsq_length_samples;
-        double m_started_date;
+        private TreeMap<String, UtauVoiceDB> m_voicedb_configs = new TreeMap<String, UtauVoiceDB>();
+        private long m_vsq_length_samples;
+        private double m_started_date;
         /// <summary>
         /// 現在の処理速度．progress%/sec
         /// </summary>
-        double m_running_rate;
+        private double mRunningRate;
         // 以上StraightRenderingRunnerの実装
 
-        WaveReceiver mReceiver;
-        int mVersion = 0;
-        VsqFileEx _vsq;
+        private WaveReceiver mReceiver;
+        private int mVersion = 0;
+        private VsqFileEx _vsq;
+
+        internal class SoundCache {
+            private IWaveIncoming mCallback = null;
+            private double[] mL;
+            private double[] mR;
+            private int mLength;
+
+            public SoundCache( IWaveIncoming callback ) {
+                mCallback = callback;
+                mL = new double[BUFLEN];
+                mR = new double[BUFLEN];
+                mLength = 0;
+            }
+
+            public void process( StraightRenderingQueue queue, string wave_file ) {
+            }
+        }
 
         public double getProgress() {
             if ( mRunning ) {
@@ -137,14 +154,14 @@ namespace org.kbinani.cadencii {
             mTrack = track;
             sampleRate = VSTiProxy.SAMPLE_RATE;
 
-            m_locker = new Object();
+            mLocker = new Object();
             mRunning = false;
             mTotalAppend = 0;
             mTrimRemain = (int)(trimMillisec / 1000.0 * sampleRate); //先頭から省かなければならないサンプル数の残り
 
             // StraightRenderingRunner.ctorの実装より
-            m_locker = new Object();
-            m_queue = new Vector<StraightRenderingQueue>();
+            mLocker = new Object();
+            mQueue = new Vector<StraightRenderingQueue>();
             if ( mConfig != null && mConfig.UtauSingers != null ) {
                 m_singer_config_sys = mConfig.UtauSingers;
             } else {
@@ -182,8 +199,8 @@ namespace org.kbinani.cadencii {
             if ( events.size() > 0 && current_singer_event != null ) {
                 appendQueue( work, track, events, current_singer_event, sampleRate );
             }
-            if ( m_queue.size() > 0 ) {
-                StraightRenderingQueue q = m_queue.get( m_queue.size() - 1 );
+            if ( mQueue.size() > 0 ) {
+                StraightRenderingQueue q = mQueue.get( mQueue.size() - 1 );
                 m_vsq_length_samples = q.startSample + q.abstractSamples;
             }
         }
@@ -191,7 +208,6 @@ namespace org.kbinani.cadencii {
         public void begin( long samples ) {
             mTotalSamples = samples;
             m_started_date = PortUtil.getCurrentTime();
-            //int BUF_LEN = 1024;
             mRunning = true;
             mAbortRequired = false;
             double[] bufL = new double[BUFLEN];
@@ -203,12 +219,12 @@ namespace org.kbinani.cadencii {
 #endif
                 goto end_label;
             }
-            int count = m_queue.size();
+            int count = mQueue.size();
 
             // 合計でレンダリングしなければならないサンプル数を計算しておく
             double total_samples = 0;
             for ( int i = 0; i < count; i++ ) {
-                total_samples += m_queue.get( i ).abstractSamples;
+                total_samples += mQueue.get( i ).abstractSamples;
             }
 #if DEBUG
             PortUtil.println( "StraightRenderingRunner#run; total_samples=" + total_samples );
@@ -220,8 +236,9 @@ namespace org.kbinani.cadencii {
 #endif
             long max_next_wave_start = m_vsq_length_samples;
 
-            if ( m_queue.size() > 0 ) {
-                StraightRenderingQueue queue = m_queue.get( 0 );
+            if ( mQueue.size() > 0 ) {
+                // 最初のキューが始まるまでの無音部分
+                StraightRenderingQueue queue = mQueue.get( 0 );
                 if ( queue.startSample > 0 ) {
                     for ( int i = 0; i < BUFLEN; i++ ) {
                         bufL[i] = 0.0;
@@ -239,15 +256,20 @@ namespace org.kbinani.cadencii {
                 }
             }
 
-            double[] cached_data_l = null;
-            double[] cached_data_r = null;
+            double[] cached_data_l = new double[BUFLEN];
+            double[] cached_data_r = new double[BUFLEN];
             int cached_data_length = 0;
             double processed_samples = 0.0;
+
+#if DEBUG
+            System.IO.StreamWriter log = new System.IO.StreamWriter(
+                PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "VConnectWaveGenerator.log" ) );
+#endif
             for ( int i = 0; i < count; i++ ) {
                 if ( mAbortRequired ) {
                     goto end_label;
                 }
-                StraightRenderingQueue queue = m_queue.get( i );
+                StraightRenderingQueue queue = mQueue.get( i );
                 String tmp_dir = AppManager.getTempWaveDir();
 
                 String tmp_file = PortUtil.combinePath( tmp_dir, "tmp.usq" );
@@ -365,7 +387,7 @@ namespace org.kbinani.cadencii {
 
                 long next_wave_start = max_next_wave_start;
                 if ( i + 1 < count ) {
-                    StraightRenderingQueue next_queue = m_queue.get( i + 1 );
+                    StraightRenderingQueue next_queue = mQueue.get( i + 1 );
                     next_wave_start = next_queue.startSample;
                 }
 
@@ -393,7 +415,8 @@ namespace org.kbinani.cadencii {
 
                     if ( cached_data_length == 0 ) {
 #if DEBUG
-                        PortUtil.println( "StraightRenderingRunner#run; cache is null" );
+                        PortUtil.println( "StraightRenderingRunner#run; cache is null; queue=" + queue.__DEBUG__toString() );
+                        log.WriteLine( "cache is null; " + queue.__DEBUG__toString() );
 #endif
                         // キャッシュが残っていない場合
                         int remain = wave_samples;
@@ -405,6 +428,11 @@ namespace org.kbinani.cadencii {
                             int len = (remain > BUFLEN) ? BUFLEN : remain;
                             if ( wr != null ) {
                                 wr.read( pos, len, bufL, bufR );
+                            } else {
+                                for ( int j = 0; j < BUFLEN; j++ ) {
+                                    bufL[j] = 0;
+                                    bufR[j] = 0;
+                                }
                             }
                             waveIncoming( bufL, bufR, len );
                             pos += len;
@@ -418,15 +446,14 @@ namespace org.kbinani.cadencii {
                         if ( wave_samples < rendererd_length ) {
                             // 次のキューのためにデータを残す
                             if ( wr != null ) {
-                                if ( cached_data_l == null ) {
-                                    cached_data_l = new double[overlapped];
-                                    cached_data_r = new double[overlapped];
-                                    cached_data_length = overlapped;
-                                } else if ( cached_data_l.Length < overlapped ) {
+                                // 必要ならキャッシュを追加
+                                if ( cached_data_l.Length < overlapped ) {
                                     Array.Resize( ref cached_data_l, overlapped );
                                     Array.Resize( ref cached_data_r, overlapped );
-                                    cached_data_length = overlapped;
                                 }
+                                // 長さが変わる
+                                cached_data_length = overlapped;
+                                // WAVEから読み込み
                                 wr.read( pos, overlapped, cached_data_l, cached_data_r );
                             }
                         } else if ( i + 1 < count ) {
@@ -449,11 +476,14 @@ namespace org.kbinani.cadencii {
 #endif
                         // キャッシュが残っている場合
                         int rendered_length = 0;
-                        if ( wr != null ) rendered_length = wr.getTotalSamples();
+                        if ( wr != null ) {
+                            rendered_length = wr.getTotalSamples();
+                        }
                         if ( rendered_length < cached_data_length ) {
-                            if ( next_wave_start < queue.startSample + rendered_length ) {
+                            if ( next_wave_start < queue.startSample + cached_data_length ) {
 #if DEBUG
-                                PortUtil.println( "StraightRenderingRunner#run; (i) or (ii)" );
+                                PortUtil.println( "StraightRenderingRunner#run; (i) or (ii);" + queue.__DEBUG__toString() );
+                                log.WriteLine( "(i) or (ii);" + queue.__DEBUG__toString() );
 #endif
                                 // PATTERN A
                                 //  ----[*****************************]----------------->  cache
@@ -491,19 +521,32 @@ namespace org.kbinani.cadencii {
                                     int append_len = (int)(next_wave_start - queue.startSample);
                                     waveIncoming( cached_data_l, cached_data_r, append_len );
 
-                                    // appendしなかったキャッシュをシフト
+                                    // 送信したキャッシュの部分をシフト
                                     // この場合，シフト後のキャッシュの長さは，元の長さより短くならないのでリサイズ不要
                                     for ( int j = append_len; j < cached_data_length; j++ ) {
                                         cached_data_l[j - append_len] = cached_data_l[j];
                                         cached_data_r[j - append_len] = cached_data_r[j];
                                     }
-                                    cached_data_length = (int)((queue.startSample + cached_data_length) - next_wave_start);
+                                    cached_data_length -= append_len;
+
+                                    /* // 隙間の部分を送信(PATTERN B)
+                                    int mid_samples = (int)(next_wave_start - (queue.startSample + rendered_length));
+                                    if ( mid_samples > 0 ) {
+                                        waveIncoming( cached_data_l, cached_data_r, mid_samples );
+                                        // 送信した分をシフト
+                                        for ( int j = mid_samples; j < cached_data_length; j++ ) {
+                                            cached_data_l[j - mid_samples] = cached_data_l[j];
+                                            cached_data_r[j - mid_samples] = cached_data_r[j];
+                                        }
+                                        cached_data_length -= mid_samples;
+                                    }*/
                                 } catch ( Exception ex ) {
                                     AppManager.debugWriteLine( "StraightRenderingRunner#run; (A),(B); ex=" + ex );
                                 }
                             } else {
 #if DEBUG
-                                PortUtil.println( "StraightRenderingRunner#run; (iii)" );
+                                PortUtil.println( "StraightRenderingRunner#run; (iii);" + queue.__DEBUG__toString() );
+                                log.WriteLine( "(iii);" + queue.__DEBUG__toString() );
 #endif
                                 // PATTERN C
                                 //  ----[*****************************]----------------->   cache
@@ -544,6 +587,9 @@ namespace org.kbinani.cadencii {
                                         waveIncoming( bufL, bufR, amount );
                                         remain -= amount;
                                     }
+
+                                    // キャッシュの長さは0になる
+                                    cached_data_length = 0;
                                 } catch ( Exception ex ) {
                                     AppManager.debugWriteLine( "StraightRenderingRunner#run; (C); ex=" + ex );
                                 }
@@ -551,7 +597,8 @@ namespace org.kbinani.cadencii {
                         } else {
                             if ( next_wave_start < queue.startSample + cached_data_length ) {
 #if DEBUG
-                                PortUtil.println( "StraightRenderingRunner#run; (iv)" );
+                                PortUtil.println( "StraightRenderingRunner#run; (iv);" + queue.__DEBUG__toString() );
+                                log.WriteLine( "(iv);" + queue.__DEBUG__toString() );
 #endif
                                 // PATTERN D
                                 //  ----[*************]--------------------------------->  cache
@@ -584,6 +631,11 @@ namespace org.kbinani.cadencii {
                                         cached_data_l[j - append_len] = cached_data_l[j];
                                         cached_data_r[j - append_len] = cached_data_r[j];
                                     }
+                                    // 0で埋める
+                                    for ( int j = cached_data_length - append_len; j < cached_data_l.Length; j++ ) {
+                                        cached_data_l[j] = 0;
+                                        cached_data_r[j] = 0;
+                                    }
 
                                     // キャッシュの長さを更新
                                     int old_cache_length = cached_data_length;
@@ -591,8 +643,8 @@ namespace org.kbinani.cadencii {
                                     if ( cached_data_l.Length < new_cache_len ) {
                                         Array.Resize( ref cached_data_l, new_cache_len );
                                         Array.Resize( ref cached_data_r, new_cache_len );
-                                        cached_data_length = new_cache_len;
                                     }
+                                    cached_data_length = new_cache_len;
 
                                     // 残りのレンダリング結果をMIX
                                     remain = rendered_length - append_len;
@@ -653,7 +705,8 @@ namespace org.kbinani.cadencii {
                                 }
                             } else if ( next_wave_start < queue.startSample + rendered_length ) {
 #if DEBUG
-                                PortUtil.println( "StraightRenderingRunner#run; (v)" );
+                                PortUtil.println( "StraightRenderingRunner#run; (v);" + queue.__DEBUG__toString() );
+                                log.WriteLine( "(v);" + queue.__DEBUG__toString() );
 #endif
                                 // PATTERN E
                                 //  ----[*************]--------------------------------->  cache
@@ -693,13 +746,13 @@ namespace org.kbinani.cadencii {
                                     }
 
                                     // レンダリング結果と，次のキューが重なっている部分をキャッシュに残す
-                                    remain = (int)(queue.startSample + cached_data_length - next_wave_start);
+                                    remain = (int)(queue.startSample + rendered_length - next_wave_start);
                                     // キャッシュが足りなければ更新
                                     if ( cached_data_l.Length < remain ) {
                                         Array.Resize( ref cached_data_l, remain );
                                         Array.Resize( ref cached_data_r, remain );
-                                        cached_data_length = remain;
                                     }
+                                    cached_data_length = remain;
                                     // レンダリング結果を読み込む
                                     wr.read( offset, remain, cached_data_l, cached_data_r );
                                 } catch ( Exception ex ) {
@@ -707,7 +760,8 @@ namespace org.kbinani.cadencii {
                                 }
                             } else {
 #if DEBUG
-                                PortUtil.println( "StraightRenderingRunner#run; (vi)" );
+                                PortUtil.println( "StraightRenderingRunner#run; (vi);" + queue.__DEBUG__toString() );
+                                log.WriteLine( "(vi);" + queue.__DEBUG__toString() );
 #endif
                                 // PATTERN F
                                 //  ----[*************]--------------------------------->  cache
@@ -779,29 +833,25 @@ namespace org.kbinani.cadencii {
                 }
 
                 processed_samples += queue.abstractSamples;
-                m_progress_percent = processed_samples / total_samples * 100.0;
+                mProgressPercent = processed_samples / total_samples * 100.0;
                 double elapsed = PortUtil.getCurrentTime() - m_started_date;
-                m_running_rate = m_progress_percent / elapsed;
+                mRunningRate = mProgressPercent / elapsed;
             }
+#if DEBUG
+            log.Close();
+#endif
 
-            double[] silence_l0 = new double[sampleRate];
-            double[] silence_r0 = new double[sampleRate];
+            for ( int i = 0; i < BUFLEN; i++ ) {
+                bufL[i] = 0;
+                bufR[i] = 0;
+            }
             int tremain = (int)(mTotalSamples - mTotalAppend);
 #if DEBUG
             PortUtil.println( "UtauRenderingRunner#run; tremain=" + tremain );
 #endif
             while ( tremain > 0 && !mAbortRequired ) {
-                int tlength = tremain > sampleRate ? sampleRate : tremain;
-                double[] l = null;
-                double[] r = null;
-                if ( tlength != sampleRate ) {
-                    l = new double[tlength];
-                    r = new double[tlength];
-                } else {
-                    l = silence_l0;
-                    r = silence_r0;
-                }
-                waveIncoming( l, r, l.Length );
+                int tlength = tremain > BUFLEN ? BUFLEN : tremain;
+                waveIncoming( bufL, bufR, tlength );
                 tremain -= tlength;
             }
         end_label:
@@ -814,7 +864,7 @@ namespace org.kbinani.cadencii {
             if ( !mRunning ) {
                 return;
             }
-            lock ( m_locker ) {
+            lock ( mLocker ) {
                 int offset = 0;
                 if ( mTrimRemain > 0 ) {
                     if ( length <= mTrimRemain ) {
@@ -1004,7 +1054,7 @@ namespace org.kbinani.cadencii {
             queue.abstractSamples = (long)(abstract_sec * sample_rate);
             queue.endClock = last_clock + clock_shift + 1920;
             queue.track = vsq_track;
-            m_queue.add( queue );
+            mQueue.add( queue );
         }
 
         public static void prepareMetaText( BufferedWriter writer, VsqTrack vsq_track, String oto_ini, int end_clock ) {

@@ -541,6 +541,12 @@ namespace org.kbinani.cadencii {
         /// TrackSelectorで表示させているカーブの一覧
         /// </summary>
         private static Vector<CurveType> mViewingCurves = new Vector<CurveType>();
+#if !USE_OLD_SYNTH_IMPL
+        /// <summary>
+        /// 現在稼働しているWaveGenerator．稼働していないときはnull
+        /// </summary>
+        public static WaveGenerator waveGenerator = null;
+#endif
 #if DEBUG
         /// <summary>
         /// ログ出力用

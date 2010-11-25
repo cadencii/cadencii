@@ -225,7 +225,7 @@ namespace org.kbinani.media {
             throws IOException
 #endif
         {
-            for ( int i = 0; i < left.Length; i++ ) {
+            for ( int i = 0; i < length; i++ ) {
                 left[i] = 0.0;
                 right[i] = 0.0;
             }

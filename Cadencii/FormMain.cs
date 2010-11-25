@@ -10466,7 +10466,13 @@ namespace org.kbinani.cadencii {
                 Logger.write( typeof( FormMain ) + ".FormMain_FormClosed; ex=" + ex + "\n" );
                 PortUtil.stderr.println( "FormMain#FormMain_FormClosed; ex=" + ex );
             }
+#if USE_OLD_SYNTH_IMPL
             VSTiProxy.abortRendering();
+#else
+            if ( AppManager.waveGenerator != null ) {
+                AppManager.waveGenerator.stop();
+            }
+#endif
             VSTiProxy.terminate();
 #if ENABLE_MIDI
             MidiPlayer.Stop();

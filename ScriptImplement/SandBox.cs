@@ -84,43 +84,6 @@ public class Search {
     }
 }
 
-class batch_vsq_gen {
-
-    public static void Main( string[] args ){
-        VSTiProxy.init();
-        using( StreamWriter bat = new StreamWriter( "bat.bat" ) ){
-            for ( int length = 0; length <= 100; length += 50 ) {
-                for ( int depth = 0; depth <= 100; depth += 50 ) {
-                    VsqFileEx vsq = new VsqFileEx( "Miku", 1, 4, 4, 500000 );
-                    VsqID id = new VsqID();
-                    id.DEMaccent = 50;
-                    id.DEMdecGainRate = 50;
-                    id.Dynamics = 64;
-                    id.Length = 1920;
-                    id.LyricHandle = new LyricHandle( "a", "a" );
-                    id.Note = 60;
-                    id.PMBendDepth = depth;
-                    id.PMBendLength = length;
-                    id.PMbPortamentoUse = 3;
-                    id.type = VsqIDType.Anote;
-                    vsq.Track.get( 1 ).addEvent( new VsqEvent( 1920, id ) );
-                    VsqID id2 = (VsqID)id.clone();
-                    id2.Note = 72;
-                    vsq.Track.get( 1 ).addEvent( new VsqEvent( 3840, id2 ) );
-                    vsq.updateTotalClocks();
-                    string file = "depth=" + depth + "_length=" + length;
-                    vsq.write( file + ".vsq" );
-                    using ( WaveWriter w = new WaveWriter( file + ".wav" ) ) {
-                        VSTiProxy.render( vsq, 1, w, 0.0, vsq.getTotalSec() + 1.0, 500, false, new WaveReader[] { }, 0.0, false, ".\\", false );
-                    }
-                    bat.WriteLine( "getf0 \"" + file + ".wav\" f" );
-                }
-            }
-        }
-    }
-
-}
-
 public static class AutoBRI {
     public static bool Edit( org.kbinani.vsq.VsqFile vsq ) {
         // 選択されているアイテム（のInternalID）をリストアップ

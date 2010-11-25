@@ -342,19 +342,14 @@ namespace org.kbinani.cadencii {
             WaveWriter ww = null;
             try {
                 ww = new WaveWriter( file );
-                
-                VSTiProxy.render( vsq,
-                                  1,
-                                  ww,
-                                  0.0,
-                                  vsq.getSecFromClock( vsq.TotalClocks ) + 1.0,
-                                  ms_presend,
-                                  false,
-                                  new WaveReader[] { },
-                                  0.0,
-                                  false,
-                                  tempdir,
-                                  false );
+                RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( 1 ) );
+                WaveGenerator generator = VSTiProxy.getWaveGenerator( kind );
+                FileWaveReceiver receiver = new FileWaveReceiver( file, 1, 16, 44100 );
+                generator.setReceiver( receiver );
+                generator.setGlobalConfig( AppManager.editorConfig );
+                generator.init( vsq, 1, 0, vsq.TotalClocks );
+                double total_sec = vsq.getSecFromClock( vsq.TotalClocks ) + 1.0;
+                generator.begin( (long)(total_sec * VSTiProxy.SAMPLE_RATE) );
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "FormGenerateKeySound#GenerateSinglePhone; ex=" + ex );
                 Logger.write( typeof( FormGenerateKeySound ) + ".GenerateSinglePhone; ex=" + ex + "\n" );

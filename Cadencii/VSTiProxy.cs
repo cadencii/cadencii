@@ -56,7 +56,6 @@ namespace org.kbinani.cadencii {
         const float a1 = 86.7312112f;
         const float a2 = -0.237323499f;
 
-        //public static String CurrentUser = "";
         private static RendererKind s_working_renderer = RendererKind.NULL;
 #if ENABLE_VOCALOID
         public static Vector<VocaloidDriver> vocaloidDriver = new Vector<VocaloidDriver>();
@@ -73,12 +72,32 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public static Thread directPlayThread = null;
 
-#if DEBUG
-        //delegate int PADDFUNC( int a, int b );
-#endif
-
 #if USE_OLD_SYNTH_IMPL
         private static RenderingRunner s_rendering_context;
+#endif
+
+#if !USE_OLD_SYNTH_IMPL
+        public static WaveGenerator getWaveGenerator( RendererKind kind ) {
+            switch ( kind ) {
+                case RendererKind.AQUES_TONE: {
+                    return new AquesToneWaveGenerator();
+                }
+                case RendererKind.STRAIGHT_UTAU: {
+                    return new VConnectWaveGenerator();
+                }
+                case RendererKind.UTAU: {
+                    return new UtauWaveGenerator();
+                }
+                case RendererKind.VOCALOID1_100:
+                case RendererKind.VOCALOID1_101:
+                case RendererKind.VOCALOID2: {
+                    return new VocaloidWaveGenerator();
+                }
+                default: {
+                    return new EmptyWaveGenerator();
+                }
+            }
+        }
 #endif
 
         public static void init() {

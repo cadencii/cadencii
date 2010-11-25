@@ -40,6 +40,19 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public VsqTrack track;
         public int endClock;
+
+#if DEBUG
+        public string __DEBUG__toString() {
+            string phase = "";
+            for ( int i = 0; i < track.getEventCount(); i++ ) {
+                VsqEvent itemi = track.getEvent( i );
+                if ( itemi.ID.type == VsqIDType.Anote ) {
+                    phase += itemi.ID.LyricHandle.L0.Phrase;
+                }
+            }
+            return phase;
+        }
+#endif
     }
 
 #if !JAVA

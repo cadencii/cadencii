@@ -354,12 +354,17 @@ namespace org.kbinani.cadencii {
 #if JAVA
                 repaint();
 #else
-                mMainForm.refreshScreen();// this.Invoke( new BEventHandler( invalidatePictOverview ) );
+                this.Invoke( new EventHandler( invalidatePictOverview ) );
+                //mMainForm.refreshScreen();// this.Invoke( new BEventHandler( invalidatePictOverview ) );
 #endif
             }
 #if JAVA
         }
 #endif
+        }
+
+        private void invalidatePictOverview( object sender, EventArgs e ) {
+            mMainForm.refreshScreen();
         }
 
         public float getOverviewScaleX( int scale_count ) {
