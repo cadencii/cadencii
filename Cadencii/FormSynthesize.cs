@@ -437,6 +437,7 @@ namespace org.kbinani.cadencii {
                 mIsCancelRequired = true;
                 if ( AppManager.waveGenerator != null ) {
                     AppManager.waveGenerator.stop();
+                    AppManager.waveGenerator = null;
                 }
                 setDialogResult( BDialogResult.CANCEL );
             } else {

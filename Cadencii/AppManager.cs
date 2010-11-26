@@ -30,6 +30,7 @@ import org.kbinani.media.*;
 using System;
 using System.CodeDom.Compiler;
 using System.Reflection;
+using System.Threading;
 using System.Windows.Forms;
 using Microsoft.CSharp;
 using org.kbinani.apputil;
@@ -603,6 +604,18 @@ namespace org.kbinani.cadencii {
         public static BEvent<BEventHandler> selectedToolChangedEvent = new BEvent<BEventHandler>();
 
         private const String TEMPDIR_NAME = "cadencii";
+
+        public static Thread runGenerator( long samples ) {
+            Thread thread = new Thread(
+                new ParameterizedThreadStart( runGeneratorCore ) );
+            thread.Start( samples );
+            return thread;
+        }
+
+        private static void runGeneratorCore( object argument ) {
+            long samples = (long)argument;
+            waveGenerator.begin( samples );
+        }
 
         public static int getViewingCurveCount() {
             return mViewingCurves.size();

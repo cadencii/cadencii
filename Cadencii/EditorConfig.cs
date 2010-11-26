@@ -131,10 +131,10 @@ namespace org.kbinani.cadencii {
         /// 発音記号入力モードを，維持するかどうか
         /// </summary>
         public boolean KeepLyricInputMode = false;
-        /// <summary>
+        /* /// <summary>
         /// 最後に使用したVSQファイルへのパス
         /// </summary>
-        public String LastVsqPath = "";
+        public String LastVsqPath = "";*/
         /// <summary>
         /// ピアノロールの何もないところをクリックした場合、右クリックでもプレビュー音を再生するかどうか
         /// </summary>
@@ -325,10 +325,10 @@ namespace org.kbinani.cadencii {
         /// アイコンパレット・ウィンドウを常に手前に表示するかどうか
         /// </summary>
         public boolean FormIconTopMost = true;
-        /// <summary>
+        /* /// <summary>
         /// 前回エクスポートしたMusicXmlのパス
         /// </summary>
-        public String LastMusicXmlPath = "";
+        public String LastMusicXmlPath = "";*/
         /// <summary>
         /// 最初に戻る、のショートカットキー
         /// </summary>
@@ -459,8 +459,23 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// ツールバーのChevronの幅．
         /// Winodws 7(Aero): 17px
+        /// <remarks>version 3.3+</remarks>
         /// </summary>
         public int ChevronWidth = 17;
+        /// <summary>
+        /// 最後に入力したファイルパスのリスト
+        /// リストに入る文字列は，拡張子+タブ文字+パスの形式にする
+        /// 拡張子はピリオドを含めない
+        /// <remarks>version 3.3+</remarks>
+        /// </summary>
+        public Vector<String> LastUsedPathIn = new Vector<String>();
+        /// <summary>
+        /// 最後に出力したファイルパスのリスト
+        /// リストに入る文字列は，拡張子+タブ文字+パスの形式にする
+        /// 拡張子はピリオドを含めない
+        /// <remarks>version 3.3+</remarks>
+        /// </summary>
+        public Vector<String> LastUsedPathOut = new Vector<String>();
 
         /// <summary>
         /// バッファーサイズに設定できる最大値
@@ -662,7 +677,94 @@ namespace org.kbinani.cadencii {
         }
         #endregion
 
+        #region private static method
+        private static String getLastUsedPathCore( Vector<String> list, String extension ) {
+            if ( extension == null ) return "";
+            if ( PortUtil.getStringLength( extension ) <= 0 ) return "";
+            if ( extension.Equals( "." ) ) return "";
+
+            if ( extension.StartsWith( "." ) ) {
+                extension = extension.Substring( 1 );
+            }
+
+            int c = list.size();
+            for ( int i = 0; i < c; i++ ) {
+                String s = list.get( i );
+                if ( s.StartsWith( extension ) ) {
+                    String[] spl = PortUtil.splitString( s, '\t' );
+                    if ( spl.Length >= 2 ) {
+                        return spl[1];
+                    }
+                    break;
+                }
+            }
+            return "";
+        }
+
+        private static void setLastUsedPathCore( Vector<String> list, String path ) {
+            String extension = PortUtil.getExtension( path );
+            if ( extension == null ) return;
+            if ( extension.Equals( "." ) ) return;
+            if ( extension.StartsWith( "." ) ) {
+                extension = extension.Substring( 1 );
+            }
+
+            int c = list.size();
+            String entry = extension + "\t" + path;
+            for ( int i = 0; i < c; i++ ) {
+                String s = list.get( i );
+                if ( s.StartsWith( extension ) ) {
+                    list.set( i, entry );
+                    return;
+                }
+            }
+            list.add( entry );
+        }
+        #endregion
+
         #region public method
+        /// <summary>
+        /// 最後に出力したファイルのパスのうち，拡張子が指定したものと同じであるものを取得します
+        /// </summary>
+        /// <param name="extension"></param>
+        /// <returns></returns>
+        public String getLastUsedPathIn( String extension ) {
+            String ret = getLastUsedPathCore( LastUsedPathIn, extension );
+            if ( ret.Equals( "" ) ) {
+                return getLastUsedPathCore( LastUsedPathOut, extension );
+            }
+            return ret;
+        }
+
+        /// <summary>
+        /// 最後に出力したファイルのパスを設定します
+        /// </summary>
+        /// <param name="path"></param>
+        public void setLastUsedPathIn( String path ) {
+            setLastUsedPathCore( LastUsedPathIn, path );
+        }
+
+        /// <summary>
+        /// 最後に入力したファイルのパスのうち，拡張子が指定したものと同じであるものを取得します．
+        /// </summary>
+        /// <param name="extension"></param>
+        /// <returns></returns>
+        public String getLastUsedPathOut( String extension ) {
+            String ret = getLastUsedPathCore( LastUsedPathOut, extension );
+            if ( ret.Equals( "" ) ) {
+                return getLastUsedPathCore( LastUsedPathIn, extension );
+            }
+            return ret;
+        }
+
+        /// <summary>
+        /// 最後に入力したファイルのパスを設定します
+        /// </summary>
+        /// <param name="path"></param>
+        public void setLastUsedPathOut( String path ) {
+            setLastUsedPathCore( LastUsedPathOut, path );
+        }
+
         /// <summary>
         /// 自動ビブラートを作成します
         /// </summary>

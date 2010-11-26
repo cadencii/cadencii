@@ -675,11 +675,11 @@ namespace org.kbinani.cadencii {
 
             openXmlVsqDialog = new BFileChooser( "" );
             openXmlVsqDialog.addFileFilter( "VSQ Format(*.vsq)|*.vsq" );
-            openXmlVsqDialog.addFileFilter( "Original Format(*.evsq)|*.evsq" );
+            openXmlVsqDialog.addFileFilter( "XML-VSQ Format(*.xvsq)|*.xvsq" );
 
             saveXmlVsqDialog = new BFileChooser( "" );
             saveXmlVsqDialog.addFileFilter( "VSQ Format(*.vsq)|*.vsq" );
-            saveXmlVsqDialog.addFileFilter( "Original Format(*.evsq)|*.evsq" );
+            saveXmlVsqDialog.addFileFilter( "XML-VSQ Format(*.xvsq)|*.xvsq" );
             saveXmlVsqDialog.addFileFilter( "All files(*.*)|*.*" );
 
             openUstDialog = new BFileChooser( "" );
@@ -7897,7 +7897,33 @@ namespace org.kbinani.cadencii {
             MidiPlayer.Stop();
 #endif // ENABLE_MIDI
 #else // USE_OLD_SYNTH_IMPL
-            //TODO: 
+            timer.stop();
+
+            if ( AppManager.getEditMode() == EditMode.REALTIME ) {
+                menuJobRealTime.setText( _( "Start Realtime Input" ) );
+                AppManager.setEditMode( EditMode.NONE );
+            }
+#if DEBUG
+            PortUtil.println( "  calling VSTiProxy.abortRendering..." );
+#endif
+            AppManager.waveGenerator.stop();
+            AppManager.waveGenerator = null;
+#if DEBUG
+            PortUtil.println( "  done" );
+#endif
+            AppManager.mFirstBufferWritten = false;
+#if ENABLE_MIDI
+            if ( mMidiIn != null ) {
+                mMidiIn.Stop();
+            }
+#endif
+
+            for ( int i = 0; i < AppManager.mDrawStartIndex.Length; i++ ) {
+                AppManager.mDrawStartIndex[i] = 0;
+            }
+#if ENABLE_MIDI
+            MidiPlayer.Stop();
+#endif // ENABLE_MIDI
 #endif // USE_OLD_SYNTH_IMPL
         }
 
@@ -8047,7 +8073,137 @@ namespace org.kbinani.cadencii {
 #endif
             timer.start();
 #else // USE_OLD_SYNTH_IMPL
-            //TODO: 
+            int selected = AppManager.getSelected();
+            VsqFileEx vsq = AppManager.getVsqFile();
+            RendererKind renderer = VsqFileEx.getTrackRendererKind( vsq.Track.get( selected ) );
+            int clock = AppManager.getCurrentClock();
+            mDirectPlayShift = (float)vsq.getSecFromClock( clock );
+            if ( AppManager.getEditMode() != EditMode.REALTIME ) {
+                String tmppath = AppManager.getTempWaveDir();
+
+                double amp_master = VocaloSysUtil.getAmplifyCoeffFromFeder( vsq.Mixer.MasterFeder );
+                double pan_left_master = VocaloSysUtil.getAmplifyCoeffFromPanLeft( vsq.Mixer.MasterPanpot );
+                double pan_right_master = VocaloSysUtil.getAmplifyCoeffFromPanRight( vsq.Mixer.MasterPanpot );
+
+                int track_count = vsq.Track.size();
+
+                Vector<Integer> tracks = new Vector<Integer>();
+                for ( int track = 1; track < track_count; track++ ) {
+                    VsqTrack vsq_track = vsq.Track.get( track );
+                    boolean trackMuted = vsq.getActualMuted( track );
+                    int playMode = vsq_track.getPlayMode();
+                    if ( trackMuted ) {
+                        continue;
+                    }
+                    tracks.add( track );
+                }
+
+                patchWorkToFreeze( tracks.toArray( new Integer[] { } ) );
+
+                Vector<FileWaveSender> waves = new Vector<FileWaveSender>();
+                for ( int i = 0; i < tracks.size(); i++ ) {
+                    int track = tracks.get( i );
+                    String file = PortUtil.combinePath( tmppath, track + ".wav" );
+                    WaveReader wr = null;
+                    try {
+                        wr = new WaveReader( file );
+                        wr.setOffsetSeconds( mDirectPlayShift );
+                        waves.add( new FileWaveSender( wr ) );
+                    } catch ( Exception ex ) {
+                        Logger.write( typeof( FormMain ) + ".AppManager_PreviewStarted; ex=" + ex + "\n" );
+                        PortUtil.stderr.println( "FormMain#AppManager_PreviewStarted; ex=" + ex );
+                    }
+                }
+
+                // リアルタイム再生用のデータを準備
+                int preview_ending_clock = vsq.TotalClocks;
+                mPreviewEndingTime = vsq.getSecFromClock( preview_ending_clock ) + 1.0;
+
+                // clock以降に音符があるかどうかを調べる
+                int count = 0;
+                for ( Iterator<VsqEvent> itr = vsq.Track.get( selected ).getNoteEventIterator(); itr.hasNext(); ) {
+                    VsqEvent ve = itr.next();
+                    if ( ve.Clock >= clock ) {
+                        count++;
+                        break;
+                    }
+                }
+#if DEBUG
+                PortUtil.println( "FormMain#AppManager_PreviewStarted; count=" + count );
+#endif
+
+                int bgm_count = AppManager.getBgmCount();
+                double pre_measure_sec = vsq.getSecFromClock( vsq.getPreMeasureClocks() );
+                for ( int i = 0; i < bgm_count; i++ ) {
+                    BgmFile bgm = AppManager.getBgm( i );
+                    WaveReader wr = null;
+                    try {
+                        wr = new WaveReader( bgm.file );
+                        double offset = bgm.readOffsetSeconds;
+                        if ( bgm.startAfterPremeasure ) {
+                            offset -= pre_measure_sec;
+                        }
+                        wr.setOffsetSeconds( offset );
+                        waves.add( new FileWaveSender( wr ) );
+                    } catch ( Exception ex ) {
+                        Logger.write( typeof( FormMain ) + ".AppManager_PreviewStarted; ex=" + ex + "\n" );
+                        PortUtil.stderr.println( "FormMain#AppManager_PreviewStarted; ex=" + ex );
+                    }
+                }
+
+                boolean mode_infinite = AppManager.getEditMode() == EditMode.REALTIME;
+
+                // 最初のsenderをドライバにする
+                WaveSenderDriver driver = new WaveSenderDriver();
+                driver.setSender( waves.get( 0 ) );
+                Mixer m = new Mixer();
+                driver.setReceiver( m );
+                AppManager.waveGenerator = driver;
+                m.setReceiver( MonitorWaveReceiver.getInstance() );
+                for ( int i = 1; i < waves.size(); i++ ) {
+                    m.addSender( waves.get( i ) );
+                }
+
+                double end_sec = vsq.getSecFromClock( vsq.TotalClocks );
+                long samples = (long)((end_sec - mDirectPlayShift) * VSTiProxy.SAMPLE_RATE);
+                if ( mode_infinite ) {
+                    samples = long.MaxValue;
+                }
+#if DEBUG
+                PortUtil.println( "FormMain#AppManager_PreviewStarted; calling AppManager.runGenerator..." );
+#endif
+                Thread thead = AppManager.runGenerator( samples );
+#if DEBUG
+                PortUtil.println( "FormMain#AppManager_PreviewStarted; calling AppManager.runGenerator... done" );
+#endif
+            }
+
+            double now = PortUtil.getCurrentTime();
+            if ( AppManager.getEditMode() == EditMode.REALTIME ) {
+                menuJobRealTime.setText( _( "Stop Realtime Input" ) );
+                AppManager.mRendererAvailable = false;
+#if ENABLE_MTC
+            if ( m_midi_in_mtc != null ) {
+                m_midi_in_mtc.Start();
+            }
+#endif
+#if ENABLE_MIDI
+                if ( mMidiIn != null ) {
+                    mMidiIn.Start();
+                }
+                MidiPlayer.SetSpeed( AppManager.editorConfig.getRealtimeInputSpeed(), now );
+                MidiPlayer.Start( vsq, clock, now );
+#endif
+            } else {
+                AppManager.mRendererAvailable = VSTiProxy.isRendererAvailable( renderer );
+            }
+            AppManager.mFirstBufferWritten = true;
+            AppManager.mPreviewStartedTime = now;
+#if DEBUG
+            AppManager.debugWriteLine( "    vsq.TotalClocks=" + vsq.TotalClocks );
+            AppManager.debugWriteLine( "    total seconds=" + vsq.getSecFromClock( (int)vsq.TotalClocks ) );
+#endif
+            timer.start();
 #endif // USE_OLD_SYNTH_IMPL
         }
 
@@ -11150,9 +11306,15 @@ namespace org.kbinani.cadencii {
                 }
             }
 
+            String last_file = AppManager.editorConfig.getLastUsedPathOut( "xvsq" );
+            if ( !last_file.Equals( "" ) ) {
+                String dir = PortUtil.getDirectoryName( last_file );
+                saveXmlVsqDialog.setInitialDirectory( dir );
+            }
             int dr = saveXmlVsqDialog.showSaveDialog( this );
             if ( dr == BFileChooser.APPROVE_OPTION ) {
                 String file = saveXmlVsqDialog.getSelectedFile();
+                AppManager.editorConfig.setLastUsedPathOut( file );
                 AppManager.saveTo( file );
                 updateRecentFileMenu();
                 setEdited( false );
@@ -11174,12 +11336,17 @@ namespace org.kbinani.cadencii {
             int dialog_result = BFileChooser.CANCEL_OPTION;
             String file_name = "";
             try {
-                dialog = new BFileChooser( "" );
+                String last_path = AppManager.editorConfig.getLastUsedPathOut( "ust" );
+                dialog = new BFileChooser( last_path );
                 dialog.setDialogTitle( _( "Export UTAU (*.ust)" ) );
                 dialog.addFileFilter( _( "UTAU Script Format(*.ust)|*.ust" ) );
                 dialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
                 dialog_result = dialog.showSaveDialog( this );
+                if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
+                    return;
+                }
                 file_name = dialog.getSelectedFile();
+                AppManager.editorConfig.setLastUsedPathOut( file_name );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileExportUst_Click; ex=" + ex + "\n" );
             } finally {
@@ -11192,9 +11359,6 @@ namespace org.kbinani.cadencii {
                         Logger.write( typeof( FormMain ) + ".menuFileExportUst_Click; ex=" + ex2 + "\n" );
                     }
                 }
-            }
-            if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
-                return;
             }
 
             // 出力処理
@@ -11220,12 +11384,17 @@ namespace org.kbinani.cadencii {
             String filename = "";
             BFileChooser sfd = null;
             try {
-                sfd = new BFileChooser( "" );
+                String last_path = AppManager.editorConfig.getLastUsedPathOut( "wav" );
+                sfd = new BFileChooser( last_path );
                 sfd.setDialogTitle( _( "Wave Export" ) );
                 sfd.addFileFilter( _( "Wave File(*.wav)|*.wav" ) );
                 sfd.addFileFilter( _( "All Files(*.*)|*.*" ) );
                 dialog_result = sfd.showSaveDialog( this );
+                if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
+                    return;
+                }
                 filename = sfd.getSelectedFile();
+                AppManager.editorConfig.getLastUsedPathOut( filename );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileExportWave_Click; ex=" + ex + "\n" );
             } finally {
@@ -11240,9 +11409,6 @@ namespace org.kbinani.cadencii {
                 }
             }
 
-            if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
-                return;
-            }
             FormSynthesize fs = null;
             try {
                 VsqFileEx vsq = AppManager.getVsqFile();
@@ -11290,6 +11456,11 @@ namespace org.kbinani.cadencii {
             mDialogMidiImportAndExport.listTrack.clear();
             mDialogMidiImportAndExport.setMode( FormMidiImExport.FormMidiMode.IMPORT );
 
+            String last_file = AppManager.editorConfig.getLastUsedPathIn( "mid" );
+            if ( !last_file.Equals( "" ) ) {
+                String dir = PortUtil.getDirectoryName( last_file );
+                openMidiDialog.setInitialDirectory( dir );
+            }
             int dialog_result = openMidiDialog.showOpenDialog( this );
 
             if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
@@ -11298,7 +11469,9 @@ namespace org.kbinani.cadencii {
             mDialogMidiImportAndExport.setLocation( getFormPreferedLocation( mDialogMidiImportAndExport ) );
             MidiFile mf = null;
             try {
-                mf = new MidiFile( openMidiDialog.getSelectedFile() );
+                String filename = openMidiDialog.getSelectedFile();
+                AppManager.editorConfig.getLastUsedPathIn( filename );
+                mf = new MidiFile( filename );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileImportMidi_Click; ex=" + ex + "\n" );
                 AppManager.showMessageBox( _( "Invalid MIDI file." ), _( "Error" ), org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
@@ -11692,12 +11865,19 @@ namespace org.kbinani.cadencii {
                     return;
                 }
 
+                String last_file = AppManager.editorConfig.getLastUsedPathOut( "mid" );
+                if ( !last_file.Equals( "" ) ) {
+                    String dir = PortUtil.getDirectoryName( last_file );
+                    saveMidiDialog.setInitialDirectory( last_file );
+                }
                 int dialog_result = saveMidiDialog.showSaveDialog( this );
 
                 if ( dialog_result == BFileChooser.APPROVE_OPTION ) {
                     RandomAccessFile fs = null;
+                    String filename = saveMidiDialog.getSelectedFile();
+                    AppManager.editorConfig.setLastUsedPathOut( filename );
                     try {
-                        fs = new RandomAccessFile( saveMidiDialog.getSelectedFile(), "rw" );
+                        fs = new RandomAccessFile( filename, "rw" );
                         // ヘッダー
                         fs.write( new byte[] { 0x4d, 0x54, 0x68, 0x64 }, 0, 4 );
                         //データ長
@@ -11912,10 +12092,9 @@ namespace org.kbinani.cadencii {
                     return;
                 }
                 String dir = "";
-                String lastFile = "";
-                if ( AppManager.editorConfig.LastMusicXmlPath != null && !AppManager.editorConfig.LastMusicXmlPath.Equals( "" ) ) {
-                    dir = PortUtil.getDirectoryName( AppManager.editorConfig.LastMusicXmlPath );
-                    lastFile = PortUtil.getFileName( AppManager.editorConfig.LastMusicXmlPath );
+                String lastFile = AppManager.editorConfig.getLastUsedPathOut( "xml" );
+                if ( lastFile.Equals( "" ) ) {
+                    dir = PortUtil.getDirectoryName( lastFile );
                 }
                 dialog = new BFileChooser( dir );
                 dialog.addFileFilter( _( "MusicXML(*.xml)|*.xml" ) );
@@ -11928,7 +12107,7 @@ namespace org.kbinani.cadencii {
                 String file = dialog.getSelectedFile();
                 String software = "Cadencii version " + BAssemblyInfo.fileVersion;
                 vsq.printAsMusicXml( file, "UTF-8", software );
-                AppManager.editorConfig.LastMusicXmlPath = file;
+                AppManager.editorConfig.setLastUsedPathOut( file );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileExportMusicXml_Click; ex=" + ex + "\n" );
                 PortUtil.stderr.println( "FormMain#menuFileExportMusicXml_Click; ex=" + ex );
@@ -11961,6 +12140,11 @@ namespace org.kbinani.cadencii {
             }
 
             openMidiDialog.setFileFilter( filter );
+            String last_file = AppManager.editorConfig.getLastUsedPathIn( filter );
+            if ( !last_file.Equals( "" ) ) {
+                String dir = PortUtil.getDirectoryName( last_file );
+                openMidiDialog.setInitialDirectory( dir );
+            }
             int dialog_result = openMidiDialog.showOpenDialog( this );
             if ( dialog_result == BFileChooser.APPROVE_OPTION ) {
 #if DEBUG
@@ -11975,7 +12159,9 @@ namespace org.kbinani.cadencii {
                 return;
             }
             try {
-                VsqFileEx vsq = new VsqFileEx( openMidiDialog.getSelectedFile(), "Shift_JIS" );
+                String filename = openMidiDialog.getSelectedFile();
+                VsqFileEx vsq = new VsqFileEx( filename, "Shift_JIS" );
+                AppManager.editorConfig.setLastUsedPathIn( filename );
                 AppManager.setVsqFile( vsq );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileOpenVsq_Click; ex=" + ex + "\n" );
@@ -11998,6 +12184,12 @@ namespace org.kbinani.cadencii {
             if ( !dirtyCheck() ) {
                 return;
             }
+
+            String last_file = AppManager.editorConfig.getLastUsedPathIn( "ust" );
+            if ( !last_file.Equals( "" ) ) {
+                String dir = PortUtil.getDirectoryName( last_file );
+                openUstDialog.setInitialDirectory( dir );
+            }
             int dialog_result = openUstDialog.showOpenDialog( this );
 
             if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
@@ -12005,7 +12197,9 @@ namespace org.kbinani.cadencii {
             }
 
             try {
-                UstFile ust = new UstFile( openUstDialog.getSelectedFile() );
+                String filename = openUstDialog.getSelectedFile();
+                AppManager.editorConfig.setLastUsedPathIn( filename );
+                UstFile ust = new UstFile( filename );
                 VsqFileEx vsq = new VsqFileEx( ust );
                 clearExistingData();
                 AppManager.setVsqFile( vsq );
@@ -12023,14 +12217,21 @@ namespace org.kbinani.cadencii {
         }
 
         public void menuFileImportVsq_Click( Object sender, EventArgs e ) {
+            String last_file = AppManager.editorConfig.getLastUsedPathIn( AppManager.editorConfig.LastUsedExtension );
+            if ( !last_file.Equals( "" ) ) {
+                String dir = PortUtil.getDirectoryName( last_file );
+                openMidiDialog.setInitialDirectory( dir );
+            }
             int dialog_result = openMidiDialog.showOpenDialog( this );
 
             if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
                 return;
             }
             VsqFileEx vsq = null;
+            String filename = openMidiDialog.getSelectedFile();
+            AppManager.editorConfig.setLastUsedPathIn( filename );
             try {
-                vsq = new VsqFileEx( openMidiDialog.getSelectedFile(), "Shift_JIS" );
+                vsq = new VsqFileEx( filename, "Shift_JIS" );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileImportVsq_Click; ex=" + ex + "\n" );
                 AppManager.showMessageBox( _( "Invalid VSQ/VOCALOID MIDI file" ), _( "Error" ), org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
@@ -16056,10 +16257,16 @@ namespace org.kbinani.cadencii {
                 }
             }
             String file = AppManager.getFileName();
-            if ( AppManager.getFileName().Equals( "" ) ) {
+            if ( file.Equals( "" ) ) {
+                String last_file = AppManager.editorConfig.getLastUsedPathOut( "xvsq" );
+                if ( !last_file.Equals( "" ) ) {
+                    String dir = PortUtil.getDirectoryName( last_file );
+                    saveXmlVsqDialog.setInitialDirectory( dir );
+                }
                 int dr = saveXmlVsqDialog.showSaveDialog( this );
                 if ( dr == BFileChooser.APPROVE_OPTION ) {
                     file = saveXmlVsqDialog.getSelectedFile();
+                    AppManager.editorConfig.setLastUsedPathOut( file );
                 }
             }
             if ( file != "" ) {
@@ -16073,12 +16280,18 @@ namespace org.kbinani.cadencii {
             if ( !dirtyCheck() ) {
                 return;
             }
+            String last_file = AppManager.editorConfig.getLastUsedPathIn( "xvsq" );
+            if ( !last_file.Equals( "" ) ) {
+                String dir = PortUtil.getDirectoryName( last_file );
+                openXmlVsqDialog.setInitialDirectory( dir );
+            }
             int dialog_result = openXmlVsqDialog.showOpenDialog( this );
             if ( dialog_result == BFileChooser.APPROVE_OPTION ) {
                 if ( AppManager.isPlaying() ) {
                     AppManager.setPlaying( false );
                 }
                 String file = openXmlVsqDialog.getSelectedFile();
+                AppManager.editorConfig.setLastUsedPathIn( file );
                 openVsqCor( file );
                 clearExistingData();
 
@@ -16641,11 +16854,17 @@ namespace org.kbinani.cadencii {
         }
 
         public void handleBgmAdd_Click( Object sender, EventArgs e ) {
+            String last_file = AppManager.editorConfig.getLastUsedPathIn( "wav" );
+            if ( !last_file.Equals( "" ) ) {
+                String dir = PortUtil.getDirectoryName( last_file );
+                openWaveDialog.setInitialDirectory( dir );
+            }
             if ( openWaveDialog.showOpenDialog( this ) != BFileChooser.APPROVE_OPTION ) {
                 return;
             }
 
             String file = openWaveDialog.getSelectedFile();
+            AppManager.editorConfig.setLastUsedPathIn( file );
 
             // 既に開かれていたらキャンセル
             int count = AppManager.getBgmCount();
