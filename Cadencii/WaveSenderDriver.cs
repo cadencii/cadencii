@@ -45,11 +45,19 @@ namespace org.kbinani.cadencii {
         private boolean mAbortRequired = false;
         private boolean mRunning = false;
 
+        public boolean isRunning() {
+            return mRunning;
+        }
+
+        public long getTotalSamples() {
+            return mTotalSamples;
+        }
+
         public double getProgress() {
-            if ( mRunning ) {
-                return mTotalAppend / (double)mTotalSamples;
-            } else {
+            if ( mTotalSamples <= 0 ) {
                 return 0.0;
+            } else {
+                return mTotalAppend / (double)mTotalSamples;
             }
         }
 
@@ -111,6 +119,7 @@ namespace org.kbinani.cadencii {
                 remain -= amount;
                 mTotalAppend += amount;
             }
+            mWaveSender.end();
             mReceiver.end();
             mRunning = false;
         }

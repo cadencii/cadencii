@@ -58,7 +58,7 @@ namespace org.kbinani.cadencii {
         String mTempDir;
         boolean mInvokeWithWine;
         private boolean mAbortRequired = false;
-        private bool mRunning = false;
+        private boolean mRunning = false;
 
         private long mTotalSamples;
         private WaveReceiver mReceiver = null;
@@ -68,11 +68,19 @@ namespace org.kbinani.cadencii {
         private double[] mBufferR = new double[_BUFLEN];
         private int mTrimRemain = 0;
 
+        public boolean isRunning() {
+            return mRunning;
+        }
+
+        public long getTotalSamples() {
+            return mTotalSamples;
+        }
+
         public double getProgress() {
-            if ( mRunning ) {
-                return mTotalAppend / (double)mTotalSamples;
-            } else {
+            if ( mTotalSamples <= 0 ) {
                 return 0.0;
+            }else{
+                return mTotalAppend / (double)mTotalSamples;
             }
         }
 

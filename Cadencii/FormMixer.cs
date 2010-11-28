@@ -83,6 +83,46 @@ namespace org.kbinani.cadencii {
         }
 
         #region public methods
+        /// <summary>
+        /// マスターボリュームのUIコントロールを取得します
+        /// </summary>
+        /// <returns></returns>
+        public VolumeTracker getVolumeTrackerMaster() {
+            return volumeMaster;
+        }
+
+        /// <summary>
+        /// 指定したトラックのボリュームのUIコントロールを取得します
+        /// </summary>
+        /// <param name="track"></param>
+        /// <returns></returns>
+        public VolumeTracker getVolumeTracker( int track ) {
+            VsqFileEx vsq = AppManager.getVsqFile();
+            if ( 1 <= track && track < vsq.Track.size() && 
+                 0 <= track - 1 && track - 1 < m_tracker.size() ) {
+                return m_tracker.get( track - 1 );
+            } else if ( track == 0 ) {
+                return volumeMaster;
+            } else {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 指定したBGMのボリュームのUIコントロールを取得します
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public VolumeTracker getVolumeTrackerBgm( int index ) {
+            VsqFileEx vsq = AppManager.getVsqFile();
+            int offset = vsq.Track.size() - 1;
+            if ( 0 <= index + offset && index + offset < m_tracker.size() ) {
+                return m_tracker.get( index + offset );
+            } else {
+                return null;
+            }
+        }
+
         public void updateSoloMute() {
 #if DEBUG
             PortUtil.println( "FormMixer#updateSoloMute" );

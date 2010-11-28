@@ -60,8 +60,16 @@ namespace org.kbinani.cadencii {
         private boolean mRunning = false;
         private VocaloidDriver mDriver = null;
 
+        public boolean isRunning() {
+            return mRunning;
+        }
+
+        public long getTotalSamples() {
+            return mTotalSamples;
+        }
+
         public double getProgress() {
-            if ( mRunning ) {
+            if ( mTotalSamples > 0 ) {
                 return mTotalAppend / (double)mTotalSamples;
             } else {
                 return 0.0;

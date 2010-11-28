@@ -50,6 +50,10 @@ namespace org.kbinani.cadencii {
         private double[] mBufferL = new double[BUFLEN];
         private double[] mBufferR = new double[BUFLEN];
 
+        public boolean isRunning() {
+            return mRunning;
+        }
+
         /// <summary>
         /// ドライバのパラメータの変更要求
         /// </summary>
@@ -67,8 +71,16 @@ namespace org.kbinani.cadencii {
             public Vector<ParameterEvent> param;
         }
 
+        public long getTotalSamples() {
+            return mTotalSamples;
+        }
+
         public double getProgress() {
-            return mTotalAppend / (double)mTotalSamples;
+            if ( mTotalSamples <= 0 ) {
+                return 0.0;
+            } else {
+                return mTotalAppend / (double)mTotalSamples;
+            }
         }
 
         public void stop() {

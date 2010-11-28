@@ -11,8 +11,13 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+#else
 using System.Threading;
 namespace org.kbinani.cadencii {
+    using boolean = System.Boolean;
+#endif
+
 
     /// <summary>
     /// 無音の波形を送信するWaveGenerator
@@ -21,13 +26,29 @@ namespace org.kbinani.cadencii {
         private const int VERSION = 0;
         private const int BUFLEN = 1024;
         private WaveReceiver mReceiver = null;
-        private bool mAbortRequested = false;
-        private bool mRunning = false;
+        private boolean mAbortRequested = false;
+        private boolean mRunning = false;
         private long mTotalAppend = 0L;
-        private long mTotalSamples = 1L;
+        private long mTotalSamples = 0L;
+
+        public boolean isRunning() {
+            return mRunning;
+        }
+
+        public long getPosition() {
+            return mTotalAppend;
+        }
+
+        public long getTotalSamples() {
+            return mTotalSamples;
+        }
 
         public double getProgress() {
-            return mTotalAppend / (double)mTotalSamples;
+            if ( mTotalSamples <= 0 ) {
+                return 0.0;
+            } else {
+                return mTotalAppend / (double)mTotalSamples;
+            }
         }
 
         public override int getVersion() {

@@ -78,8 +78,20 @@ namespace org.kbinani.cadencii {
         private WaveReceiver mReceiver;
         private VsqFileEx mVsq;
 
+        public boolean isRunning() {
+            return mRunning;
+        }
+
+        public long getPosition() {
+            return mTotalAppend;
+        }
+
+        public long getTotalSamples() {
+            return mTotalSamples;
+        }
+
         public double getProgress() {
-            if ( mRunning ) {
+            if ( mTotalSamples > 0 ) {
                 return mTotalAppend / (double)mTotalSamples;
             } else {
                 return 0.0;

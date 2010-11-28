@@ -56,6 +56,13 @@ namespace org.kbinani.cadencii {
                     _buffer_l[i] = l[i + offset];
                     _buffer_r[i] = r[i + offset];
                 }
+                foreach ( WaveSender s in _senders ) {
+                    s.pull( _buffer2_l, _buffer2_r, amount );
+                    for ( int i = 0; i < _BUFLEN; i++ ) {
+                        _buffer_l[i] += _buffer2_l[i];
+                        _buffer_r[i] += _buffer2_r[i];
+                    }
+                }
                 if ( _receiver != null ) {
                     _receiver.push( _buffer_l, _buffer_r, amount );
                 }
@@ -123,6 +130,13 @@ namespace org.kbinani.cadencii {
             }
             if ( !_senders.contains( s ) ) {
                 _senders.add( s );
+#if DEBUG
+                PortUtil.println( "Mixer#addSender; sender added" );
+#endif
+            } else {
+#if DEBUG
+                PortUtil.println( "Mixer#addSender; sender NOT added" );
+#endif
             }
         }
     }

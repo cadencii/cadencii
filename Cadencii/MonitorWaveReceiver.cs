@@ -87,7 +87,10 @@ namespace org.kbinani.cadencii {
         }
 
         public void end() {
-            PlaySound.exit();
+            //PlaySound.exitは，特殊扱い．
+            //pushが終了していても，たいていの場合再生されずにキャッシュが残っているので．
+            //PlaySound.exit();
+            PlaySound.waitForExit();
             if ( _receiver != null ) {
                 _receiver.end();
             }

@@ -25,6 +25,7 @@ using System.Windows.Forms;
 using org.kbinani;
 using org.kbinani.windows.forms;
 using org.kbinani.java.awt;
+using org.kbinani.vsq;
 
 namespace org.kbinani.cadencii {
     using BEventArgs = System.EventArgs;
@@ -35,12 +36,14 @@ namespace org.kbinani.cadencii {
 #if JAVA
     public class VolumeTracker extends JPanel {
 #else
-    class VolumeTracker : UserControl {
+    public class VolumeTracker : UserControl, IAmplifierView {
 #endif
         private int m_feder = 0;
         private String m_number = "0";
         private String m_title = "";
         private Object m_tag = null;
+        private boolean mMuted = false;
+        private int mPanpot = 0;
 
         #region Constants
         public const int WIDTH = 85;
@@ -157,6 +160,22 @@ namespace org.kbinani.cadencii {
 #endif
             setMuted( false );
             setSolo( false );
+        }
+
+        public double getAmplifyL() {
+            double ret = 0.0;
+            if ( !mMuted ) {
+                ret = VocaloSysUtil.getAmplifyCoeffFromFeder( m_feder ) * VocaloSysUtil.getAmplifyCoeffFromPanLeft( mPanpot );
+            }
+            return ret;
+        }
+
+        public double getAmplifyR() {
+            double ret = 0.0;
+            if ( !mMuted ) {
+                ret = VocaloSysUtil.getAmplifyCoeffFromFeder( m_feder ) * VocaloSysUtil.getAmplifyCoeffFromPanRight( mPanpot );
+            }
+            return ret;
         }
 
         public void setLocation( int x, int y ) {
@@ -342,7 +361,8 @@ namespace org.kbinani.cadencii {
         }
 
         public void trackPanpot_ValueChanged( Object sender, BEventArgs e ) {
-            txtPanpot.setText( trackPanpot.getValue() + "" );
+            mPanpot = trackPanpot.getValue();
+            txtPanpot.setText( mPanpot + "" );
             try{
                 panpotChangedEvent.raise( this, new BEventArgs() );
             }catch( Exception ex ){
@@ -413,6 +433,7 @@ namespace org.kbinani.cadencii {
         }
 
         public void chkMute_Click( Object sender, EventArgs e ) {
+            mMuted = chkMute.isSelected();
             try {
                 muteButtonClick.raise( this, e );
             } catch ( Exception ex ) {

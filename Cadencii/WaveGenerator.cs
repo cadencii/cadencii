@@ -17,6 +17,7 @@ package org.kbinani.cadencii;
 using System;
 
 namespace org.kbinani.cadencii {
+    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -63,6 +64,12 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <returns></returns>
         double getProgress();
+
+        long getPosition();
+
+        long getTotalSamples();
+
+        boolean isRunning();
     }
 
 #if !JAVA

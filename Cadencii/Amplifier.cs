@@ -42,6 +42,11 @@ namespace org.kbinani.cadencii {
         private WaveSender mSender = null;
         private int mVersion = 0;
         private BasicStroke mStroke = null;
+        private IAmplifierView mView = null;
+
+        public void setAmplifierView( IAmplifierView view ) {
+            mView = view;
+        }
 
         public override void paintTo( Graphics graphics, int x, int y, int width, int height ) {
             // 現在の描画時のストローク、色を保存しておく
@@ -121,6 +126,10 @@ namespace org.kbinani.cadencii {
                     mBufferR[i] = 0.0;
                 }
                 int offset = length - remain;
+                if ( mView != null ) {
+                    mAmpL = mView.getAmplifyL();
+                    mAmpR = mView.getAmplifyR();
+                }
 
                 // 左チャンネル
                 if ( mAmpL != 0.0 ) {
@@ -175,28 +184,20 @@ namespace org.kbinani.cadencii {
                 r[i] = 0.0;
                 l[i] = 0.0;
             }
-            if ( mReceiver != null ) {
-                int remain = length;
-                while ( remain > 0 ) {
-                    int amount = (remain > _BUFLEN) ? _BUFLEN : remain;
-                    int offset = length - remain;
-                    mSender.pull( mBufferL, mBufferR, amount );
-                    for ( int i = 0; i < amount; i++ ) {
-                        l[i + offset] += mBufferL[i];
-                        r[i + offset] += mBufferR[i];
-                    }
-                    remain -= amount;
+            int remain = length;
+            while ( remain > 0 ) {
+                int amount = (remain > _BUFLEN) ? _BUFLEN : remain;
+                int offset = length - remain;
+                mSender.pull( mBufferL, mBufferR, amount );
+                if ( mView != null ) {
+                    mAmpL = mView.getAmplifyL();
+                    mAmpR = mView.getAmplifyR();
                 }
-            }
-            if ( mAmpL != 1.0 ) {
-                for ( int i = 0; i < length; i++ ) {
-                    l[i] *= mAmpL;
+                for ( int i = 0; i < amount; i++ ) {
+                    l[i + offset] += mBufferL[i] * mAmpL;
+                    r[i + offset] += mBufferR[i] * mAmpR;
                 }
-            }
-            if ( mAmpR != 1.0 ) {
-                for ( int i = 0; i < length; i++ ) {
-                    r[i] *= mAmpR;
-                }
+                remain -= amount;
             }
             for ( int i = 0; i < length; i++ ) {
                 if ( l[i] > 1.0 ) {
