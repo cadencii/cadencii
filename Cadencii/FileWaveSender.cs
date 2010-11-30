@@ -32,6 +32,9 @@ namespace org.kbinani.cadencii {
 #else
     public class FileWaveSender : WaveUnit, WaveSender {
 #endif
+#if DEBUG
+        private static int mNumInstance = 0;
+#endif
         private const int _BUFLEN = 1024;
         private double[] _buffer_l = new double[_BUFLEN];
         private double[] _buffer_r = new double[_BUFLEN];
@@ -40,6 +43,9 @@ namespace org.kbinani.cadencii {
         private int _version = 0;
 
         public FileWaveSender ( WaveReader reader ){
+#if DEBUG
+            mNumInstance++;
+#endif
             _converter = new WaveRateConverter( reader, VSTiProxy.SAMPLE_RATE );
         }
 
@@ -66,6 +72,10 @@ namespace org.kbinani.cadencii {
         }
 
         public void end() {
+#if DEBUG
+            mNumInstance--;
+            PortUtil.println( "FileWaveSender#end; mNumInstance=" + mNumInstance );
+#endif
             try {
                 _converter.close();
             } catch ( Exception ex ) {

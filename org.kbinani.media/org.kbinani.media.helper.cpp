@@ -49,7 +49,9 @@ double SoundGetPosition() {
 
     MMTIME mmt;
     mmt.wType = TIME_MS;
+    EnterCriticalSection( &locker );
     waveOutGetPosition( wave_out, &mmt, sizeof( MMTIME ) );
+    LeaveCriticalSection( &locker );
     float ms = 0.0f;
     switch ( mmt.wType ) {
         case TIME_MS:

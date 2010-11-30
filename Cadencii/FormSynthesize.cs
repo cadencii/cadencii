@@ -62,6 +62,7 @@ namespace org.kbinani.cadencii {
         private boolean mReflectAmpToWave = false;
         private boolean mIsPartialMode = false;
         private boolean mIsCancelRequired = false;
+        private WaveGenerator mGenerator = null;
 
         private BTimer timer;
         private BBackgroundWorker bgWork;
@@ -358,11 +359,10 @@ namespace org.kbinani.cadencii {
                         double total_sec = mVsq.getSecFromClock( total_clocks );
 
                         RendererKind kind = VsqFileEx.getTrackRendererKind( vsq_track );
-                        AppManager.waveGenerator = VSTiProxy.getWaveGenerator( kind );
-
+                        mGenerator = VSTiProxy.getWaveGenerator( kind );
                         Amplifier amp = new Amplifier();
-                        AppManager.waveGenerator.setReceiver( amp );
-                        AppManager.waveGenerator.setGlobalConfig( AppManager.editorConfig );
+                        mGenerator.setReceiver( amp );
+                        mGenerator.setGlobalConfig( AppManager.editorConfig );
 
                         Mixer mixer = new Mixer();
                         mixer.setGlobalConfig( AppManager.editorConfig );
@@ -388,12 +388,12 @@ namespace org.kbinani.cadencii {
 
                         int end = mClockEnd[k];
                         if( end == int.MaxValue ) end = mVsq.TotalClocks + 240;
-                        AppManager.waveGenerator.init( mVsq, track, mClockStart[k], end );
+                        mGenerator.init( mVsq, track, mClockStart[k], end );
 
                         double sec_start = mVsq.getSecFromClock( mClockStart[k] );
                         double sec_end = mVsq.getSecFromClock( end );
                         long samples = (long)((sec_end - sec_start) * VSTiProxy.SAMPLE_RATE);
-                        AppManager.waveGenerator.begin( samples );
+                        mGenerator.begin( samples );
 
                         mFinished++;
                         if ( mIsCancelRequired ) break;
@@ -435,9 +435,9 @@ namespace org.kbinani.cadencii {
             timer.stop();
             if ( bgWork.isBusy() ) {
                 mIsCancelRequired = true;
-                if ( AppManager.waveGenerator != null ) {
-                    AppManager.waveGenerator.stop();
-                    AppManager.waveGenerator = null;
+                if( mGenerator != null ){
+                    mGenerator.stop();
+                    mGenerator = null;
                 }
                 setDialogResult( BDialogResult.CANCEL );
             } else {
@@ -456,7 +456,7 @@ namespace org.kbinani.cadencii {
 #if USE_OLD_SYNTH_IMPL
             double progress = VSTiProxy.getProgress();
 #else // USE_OLD_SYNTH_IMPL
-            double progress = AppManager.waveGenerator.getProgress() * 100;
+            double progress = mGenerator.getProgress() * 100;
 #endif // USE_OLD_SYNTH_IMPL
 
 #if DEBUG
@@ -477,7 +477,7 @@ namespace org.kbinani.cadencii {
 #if USE_OLD_SYNTH_IMPL
             VSTiProxy.abortRendering();
 #else
-            AppManager.waveGenerator.stop();
+            mGenerator.stop();
 #endif
             setDialogResult( BDialogResult.CANCEL );
         }

@@ -7024,7 +7024,6 @@ namespace org.kbinani.cadencii {
         public void openVsqCor( String file ) {
             AppManager.readVsq( file );
             if ( AppManager.getVsqFile().Track.size() >= 2 ) {
-                AppManager.setBaseTempo( AppManager.getVsqFile().getBaseTempo() );
                 updateScrollRangeHorizontal();
             }
             AppManager.editorConfig.pushRecentFiles( file );
@@ -7908,8 +7907,7 @@ namespace org.kbinani.cadencii {
 #if DEBUG
             PortUtil.println( "  calling VSTiProxy.abortRendering..." );
 #endif
-            AppManager.waveGenerator.stop();
-            AppManager.waveGenerator = null;
+            AppManager.stopGenerator();
 #if DEBUG
             PortUtil.println( "  done" );
 #endif
@@ -8163,11 +8161,8 @@ namespace org.kbinani.cadencii {
                 driver.setSender( waves.get( 0 ) );
                 Mixer m = new Mixer();
                 driver.setReceiver( m );
-                if ( AppManager.waveGenerator != null ) {
-                    AppManager.waveGenerator.stop();
-                    AppManager.waveGenerator = null;
-                }
-                AppManager.waveGenerator = driver;
+                AppManager.stopGenerator();
+                AppManager.setGenerator( driver );
                 Amplifier amp = new Amplifier();
                 amp.setAmplifierView( AppManager.mMixerWindow.getVolumeTrackerMaster() );
                 m.setReceiver( amp );
@@ -10622,9 +10617,7 @@ namespace org.kbinani.cadencii {
 #if USE_OLD_SYNTH_IMPL
             VSTiProxy.abortRendering();
 #else
-            if ( AppManager.waveGenerator != null ) {
-                AppManager.waveGenerator.stop();
-            }
+            AppManager.stopGenerator();
 #endif
             VSTiProxy.terminate();
 #if ENABLE_MIDI
@@ -16033,14 +16026,47 @@ namespace org.kbinani.cadencii {
             }
             refreshScreen();
 #else // USE_OLD_SYNTH_IMPL
-            if ( AppManager.waveGenerator.isRunning() ) {
+            if ( AppManager.isGeneratorRunning() ) {
                 double play_time = PlaySound.getPosition();
                 double now = play_time + mDirectPlayShift;
                 int clock = (int)AppManager.getVsqFile().getClockFromSec( now );
-                AppManager.setCurrentClock( clock );
-                ensureCursorVisible();
+                if ( AppManager.mEndMarkerEnabled ) {
+                    // エンドマーカーが指定されてる場合で，
+                    if ( AppManager.mEndMarker <= clock ) {
+                        // 現在のプレイカーソルがエンドマーカー以降だった場合
+                        // 再生を停止する
+                        AppManager.setPlaying( false );
+                        if ( AppManager.isRepeatMode() ) {
+                            // さらに，リピートモードだったらば，
+                            // 曲頭，もしくはスタートマーカー位置に戻って再生を再開する
+                            int dest_clock = 0;
+                            if ( AppManager.mStartMarkerEnabled ) {
+                                dest_clock = AppManager.mStartMarker;
+                            }
+                            AppManager.setCurrentClock( dest_clock );
+                            AppManager.setPlaying( true );
+                        }
+                    } else {
+                        // エンドマーカーに達していない場合はプレイカーソルを移動させるだけ
+                        AppManager.setCurrentClock( clock );
+                    }
+                } else {
+                    // エンドマーカーが指定されていない場合はプレイカーソルを移動させるだけ
+                    AppManager.setCurrentClock( clock );
+                }
+                if ( AppManager.mAutoScroll ) {
+                    ensureCursorVisible();
+                }
             } else {
                 AppManager.setPlaying( false );
+                if ( AppManager.isRepeatMode() ) {
+                    int dest_clock = 0;
+                    if ( AppManager.mStartMarkerEnabled ) {
+                        dest_clock = AppManager.mStartMarker;
+                    }
+                    AppManager.setCurrentClock( dest_clock );
+                    AppManager.setPlaying( true );
+                }
             }
             refreshScreen();
 #endif // USE_OLD_SYNTH_IMPL

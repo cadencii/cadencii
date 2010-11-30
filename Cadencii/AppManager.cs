@@ -328,11 +328,13 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region Private Static Fields
-        private static int s_base_tempo = 480000;
-        private static Color s_hilight_brush = PortUtil.CornflowerBlue;
-        private static Object s_locker;
-        private static BTimer s_auto_backup_timer;
-        #endregion
+        private static Color mHilightBrush = PortUtil.CornflowerBlue;
+        private static Object mLocker;
+        private static BTimer mAutoBackupTimer;
+        /// <summary>
+        /// 現在稼働しているWaveGenerator．稼働していないときはnull
+        /// </summary>
+        private static WaveGenerator mWaveGenerator = null;
 
 #if !TREECOM
         private static VsqFileEx mVsq;
@@ -389,6 +391,7 @@ namespace org.kbinani.cadencii {
         /// Playingプロパティにロックをかけるためのオブジェクト
         /// </summary>
         private static Object mPlayingPropertyLocker = new Object();
+        #endregion
 
         #region 選択範囲の管理
         /// <summary>
@@ -543,10 +546,6 @@ namespace org.kbinani.cadencii {
         /// </summary>
         private static Vector<CurveType> mViewingCurves = new Vector<CurveType>();
 #if !USE_OLD_SYNTH_IMPL
-        /// <summary>
-        /// 現在稼働しているWaveGenerator．稼働していないときはnull
-        /// </summary>
-        public static WaveGenerator waveGenerator = null;
 #endif
 #if DEBUG
         /// <summary>
@@ -605,16 +604,51 @@ namespace org.kbinani.cadencii {
 
         private const String TEMPDIR_NAME = "cadencii";
 
+        public static boolean isGeneratorRunning() {
+            boolean ret = false;
+            lock ( mLocker ) {
+                if ( mWaveGenerator != null ) {
+                    ret = mWaveGenerator.isRunning();
+                }
+            }
+            return ret;
+        }
+
+        public static void stopGenerator() {
+            lock ( mLocker ) {
+                if ( mWaveGenerator != null ) {
+                    mWaveGenerator.stop();
+                }
+                mWaveGenerator = null;
+            }
+        }
+
+        public static void setGenerator( WaveGenerator generator ) {
+            lock ( mLocker ) {
+                if ( mWaveGenerator != null ) {
+                    mWaveGenerator.stop();
+                    mWaveGenerator = null;
+                }
+                mWaveGenerator = generator;
+            }
+        }
+
         public static Thread runGenerator( long samples ) {
             Thread thread = new Thread(
                 new ParameterizedThreadStart( runGeneratorCore ) );
-            thread.Start( samples );
+            lock( mWaveGenerator ){
+                thread.Start( samples );
+            }
             return thread;
         }
 
         private static void runGeneratorCore( object argument ) {
             long samples = (long)argument;
-            waveGenerator.begin( samples );
+            try {
+                mWaveGenerator.begin( samples );
+            } catch ( Exception ex ) {
+                PortUtil.println( "AppManager#runGeneratorCore; ex=" + ex );
+            }
         }
 
         public static int getViewingCurveCount() {
@@ -1149,10 +1183,10 @@ namespace org.kbinani.cadencii {
                 if ( millisec > int.MaxValue ) {
                     draft = int.MaxValue;
                 }
-                s_auto_backup_timer.setDelay( draft );
-                s_auto_backup_timer.start();
+                mAutoBackupTimer.setDelay( draft );
+                mAutoBackupTimer.start();
             } else {
-                s_auto_backup_timer.stop();
+                mAutoBackupTimer.stop();
             }
         }
 
@@ -2094,14 +2128,14 @@ namespace org.kbinani.cadencii {
             if ( mVsq != null ) {
                 mFile = file;
                 editorConfig.pushRecentFiles( mFile );
-                if ( !s_auto_backup_timer.isRunning() && editorConfig.AutoBackupIntervalMinutes > 0 ) {
+                if ( !mAutoBackupTimer.isRunning() && editorConfig.AutoBackupIntervalMinutes > 0 ) {
                     double millisec = editorConfig.AutoBackupIntervalMinutes * 60.0 * 1000.0;
                     int draft = (int)millisec;
                     if ( millisec > int.MaxValue ) {
                         draft = int.MaxValue;
                     }
-                    s_auto_backup_timer.setDelay( draft );
-                    s_auto_backup_timer.start();
+                    mAutoBackupTimer.setDelay( draft );
+                    mAutoBackupTimer.start();
                 }
             }
         }
@@ -2236,7 +2270,7 @@ namespace org.kbinani.cadencii {
             mStartMarker = mVsq.getPreMeasureClocks();
             int bar = mVsq.getPreMeasure() + 1;
             mEndMarker = mVsq.getClockFromBarCount( bar );
-            s_auto_backup_timer.stop();
+            mAutoBackupTimer.stop();
             if ( mMainWindow != null ) {
                 mMainWindow.updateBgmMenuState();
             }
@@ -2369,7 +2403,7 @@ namespace org.kbinani.cadencii {
 #endif
 
             PlaySound.init();
-            s_locker = new Object();
+            mLocker = new Object();
             // VOCALOID2の辞書を読み込み
             SymbolTable.loadSystemDictionaries();
             // 日本語辞書
@@ -2440,8 +2474,8 @@ namespace org.kbinani.cadencii {
 
             reloadUtauVoiceDB();
 
-            s_auto_backup_timer = new BTimer();
-            s_auto_backup_timer.tickEvent.add( new BEventHandler( typeof( AppManager ), "handleAutoBackupTimerTick" ) );
+            mAutoBackupTimer = new BTimer();
+            mAutoBackupTimer.tickEvent.add( new BEventHandler( typeof( AppManager ), "handleAutoBackupTimerTick" ) );
         }
 
         /// <summary>
@@ -2908,11 +2942,11 @@ namespace org.kbinani.cadencii {
         }
 
         public static Color getHilightColor() {
-            return s_hilight_brush;
+            return mHilightBrush;
         }
 
         public static void setHilightColor( Color value ) {
-            s_hilight_brush = value;
+            mHilightBrush = value;
         }
 
         /// <summary>
@@ -2931,17 +2965,6 @@ namespace org.kbinani.cadencii {
         /// <returns></returns>
         public static Color getAlertHilightColor() {
             return PortUtil.DeepPink;
-        }
-
-        /// <summary>
-        /// ベースとなるテンポ。
-        /// </summary>
-        public static int getBaseTempo() {
-            return s_base_tempo;
-        }
-
-        public static void setBaseTempo( int value ) {
-            s_base_tempo = value;
         }
     }
 
