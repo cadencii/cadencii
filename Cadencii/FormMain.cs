@@ -394,14 +394,12 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public boolean mFormActivated = true;
         private GameControlMode mGameMode = GameControlMode.DISABLED;
-        /// <summary>
-        /// 直接再生モード時の、再生開始した位置の曲頭からの秒数
-        /// </summary>
-        public float mDirectPlayShift = 0.0f;
+#if USE_OLD_SYNTH_IMPL
         /// <summary>
         /// プレビュー再生の長さ
         /// </summary>
         public double mPreviewEndingTime;
+#endif
         public BTimer mTimer;
         public boolean mLastPovR = false;
         public boolean mLastPovL = false;
@@ -556,6 +554,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         private float mFps = 0f;
         private double[] mFpsDrawTime2 = new double[128];
+        private float mFps2 = 0f;
+#endif
         private Rebar rebar;
         private System.Windows.Forms.Panel panelForToolStripFile;
         private System.Windows.Forms.Panel panelForToolStripPosition;
@@ -591,8 +591,6 @@ namespace org.kbinani.cadencii {
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem30;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem33;
         private System.Windows.Forms.ImageList imageListMenu;
-        private float mFps2 = 0f;
-#endif
         #endregion
 
         #region constructor
@@ -1179,6 +1177,7 @@ namespace org.kbinani.cadencii {
             band_order = indx;
         }
 
+#if USE_OLD_SYNTH_IMPL
         /// <summary>
         /// 指定したトラックの、レンダリングが必要な部分を再レンダリングし、ツギハギすることでトラックのキャッシュをフリーズさせます。
         /// <param name="tracks"></param>
@@ -1558,7 +1557,9 @@ namespace org.kbinani.cadencii {
                 }
             }
         }
+#endif
 
+#if USE_OLD_SYNTH_IMPL
         /// <summary>
         /// 指定されたトラックにあるイベントの内、配列areasで指定されたゲートタイム範囲とオーバーラップしているか、
         /// または連続している音符を抽出し、その範囲をzoneに追加します。
@@ -1663,6 +1664,7 @@ namespace org.kbinani.cadencii {
                 }
             }
         }
+#endif
 
         private static int doQuantize( int clock, int unit ) {
             int odd = clock % unit;
@@ -8077,122 +8079,14 @@ namespace org.kbinani.cadencii {
             VsqFileEx vsq = AppManager.getVsqFile();
             RendererKind renderer = VsqFileEx.getTrackRendererKind( vsq.Track.get( selected ) );
             int clock = AppManager.getCurrentClock();
-            mDirectPlayShift = (float)vsq.getSecFromClock( clock );
-            if ( AppManager.getEditMode() != EditMode.REALTIME ) {
-                String tmppath = AppManager.getTempWaveDir();
-
-                double amp_master = VocaloSysUtil.getAmplifyCoeffFromFeder( vsq.Mixer.MasterFeder );
-                double pan_left_master = VocaloSysUtil.getAmplifyCoeffFromPanLeft( vsq.Mixer.MasterPanpot );
-                double pan_right_master = VocaloSysUtil.getAmplifyCoeffFromPanRight( vsq.Mixer.MasterPanpot );
-
-                int track_count = vsq.Track.size();
-
-                Vector<Integer> tracks = new Vector<Integer>();
-                for ( int track = 1; track < track_count; track++ ) {
-                    tracks.add( track );
-                }
-
-                patchWorkToFreeze( tracks.toArray( new Integer[] { } ) );
-
-                Vector<Amplifier> waves = new Vector<Amplifier>();
-                for ( int i = 0; i < tracks.size(); i++ ) {
-                    int track = tracks.get( i );
-                    String file = PortUtil.combinePath( tmppath, track + ".wav" );
-                    WaveReader wr = null;
-                    try {
-                        wr = new WaveReader( file );
-                        wr.setOffsetSeconds( mDirectPlayShift );
-                        Amplifier a = new Amplifier();
-                        FileWaveSender f = new FileWaveSender( wr );
-                        a.setSender( f );
-                        a.setAmplifierView( AppManager.mMixerWindow.getVolumeTracker( track ) );
-                        waves.add( a );
-                    } catch ( Exception ex ) {
-                        Logger.write( typeof( FormMain ) + ".AppManager_PreviewStarted; ex=" + ex + "\n" );
-                        PortUtil.stderr.println( "FormMain#AppManager_PreviewStarted; ex=" + ex );
-                    }
-                }
-
-                // リアルタイム再生用のデータを準備
-                int preview_ending_clock = vsq.TotalClocks;
-                mPreviewEndingTime = vsq.getSecFromClock( preview_ending_clock ) + 1.0;
-
-                // clock以降に音符があるかどうかを調べる
-                int count = 0;
-                for ( Iterator<VsqEvent> itr = vsq.Track.get( selected ).getNoteEventIterator(); itr.hasNext(); ) {
-                    VsqEvent ve = itr.next();
-                    if ( ve.Clock >= clock ) {
-                        count++;
-                        break;
-                    }
-                }
-
-                int bgm_count = AppManager.getBgmCount();
-                double pre_measure_sec = vsq.getSecFromClock( vsq.getPreMeasureClocks() );
-                for ( int i = 0; i < bgm_count; i++ ) {
-                    BgmFile bgm = AppManager.getBgm( i );
-                    WaveReader wr = null;
-                    try {
-                        wr = new WaveReader( bgm.file );
-                        double offset = bgm.readOffsetSeconds + mDirectPlayShift;
-                        if ( bgm.startAfterPremeasure ) {
-                            offset -= pre_measure_sec;
-                        }
-                        wr.setOffsetSeconds( offset );
-#if DEBUG
-                        PortUtil.println( "FormMain#AppManager_PreviewStarted; bgm.file=" + bgm.file + "; offset=" + offset );
-
-#endif
-                        Amplifier a = new Amplifier();
-                        FileWaveSender f = new FileWaveSender( wr );
-                        a.setSender( f );
-                        a.setAmplifierView( AppManager.mMixerWindow.getVolumeTrackerBgm( i ) );
-                        waves.add( a );
-                    } catch ( Exception ex ) {
-                        Logger.write( typeof( FormMain ) + ".AppManager_PreviewStarted; ex=" + ex + "\n" );
-                        PortUtil.stderr.println( "FormMain#AppManager_PreviewStarted; ex=" + ex );
-                    }
-                }
-
-                boolean mode_infinite = AppManager.getEditMode() == EditMode.REALTIME;
-
-                // 最初のsenderをドライバにする
-                WaveSenderDriver driver = new WaveSenderDriver();
-                driver.setSender( waves.get( 0 ) );
-                Mixer m = new Mixer();
-                driver.setReceiver( m );
-                AppManager.stopGenerator();
-                AppManager.setGenerator( driver );
-                Amplifier amp = new Amplifier();
-                amp.setAmplifierView( AppManager.mMixerWindow.getVolumeTrackerMaster() );
-                m.setReceiver( amp );
-                amp.setReceiver( MonitorWaveReceiver.getInstance() );
-                for ( int i = 1; i < waves.size(); i++ ) {
-                    m.addSender( waves.get( i ) );
-                }
-
-                double end_sec = vsq.getSecFromClock( vsq.TotalClocks );
-                long samples = (long)((end_sec - mDirectPlayShift) * VSTiProxy.SAMPLE_RATE);
-                if ( mode_infinite ) {
-                    samples = long.MaxValue;
-                }
-#if DEBUG
-                PortUtil.println( "FormMain#AppManager_PreviewStarted; calling AppManager.runGenerator..." );
-#endif
-                Thread thead = AppManager.runGenerator( samples );
-#if DEBUG
-                PortUtil.println( "FormMain#AppManager_PreviewStarted; calling AppManager.runGenerator... done" );
-#endif
-            }
-
             double now = PortUtil.getCurrentTime();
             if ( AppManager.getEditMode() == EditMode.REALTIME ) {
                 menuJobRealTime.setText( _( "Stop Realtime Input" ) );
                 AppManager.mRendererAvailable = false;
 #if ENABLE_MTC
-            if ( m_midi_in_mtc != null ) {
-                m_midi_in_mtc.Start();
-            }
+                if ( m_midi_in_mtc != null ) {
+                    m_midi_in_mtc.Start();
+                }
 #endif
 #if ENABLE_MIDI
                 if ( mMidiIn != null ) {
@@ -14845,7 +14739,7 @@ namespace org.kbinani.cadencii {
         }
 
         public void trackSelector_RenderRequired( Object sender, Integer[] tracks ) {
-            patchWorkToFreeze( tracks );
+            AppManager.patchWorkToFreeze( tracks );
             /*int selected = AppManager.getSelected();
             Vector<Integer> t = new Vector<Integer>( Arrays.asList( PortUtil.convertIntArray( tracks ) ) );
             if ( t.contains( selected) ) {
@@ -15081,7 +14975,7 @@ namespace org.kbinani.cadencii {
         }
 
         public void menuTrackRenderCurrent_Click( Object sender, EventArgs e ) {
-            patchWorkToFreeze( new Integer[] { AppManager.getSelected() } );
+            AppManager.patchWorkToFreeze( new Integer[] { AppManager.getSelected() } );
         }
 
         public void menuTrackRenderer_DropDownOpening( Object sender, EventArgs e ) {
@@ -15346,7 +15240,7 @@ namespace org.kbinani.cadencii {
         }
 
         public void cMenuTrackTabRenderCurrent_Click( Object sender, EventArgs e ) {
-            patchWorkToFreeze( new Integer[] { AppManager.getSelected() } );
+            AppManager.patchWorkToFreeze( new Integer[] { AppManager.getSelected() } );
         }
 
         public void cMenuTrackTabRenderer_DropDownOpening( Object sender, EventArgs e ) {
@@ -16028,7 +15922,7 @@ namespace org.kbinani.cadencii {
 #else // USE_OLD_SYNTH_IMPL
             if ( AppManager.isGeneratorRunning() ) {
                 double play_time = PlaySound.getPosition();
-                double now = play_time + mDirectPlayShift;
+                double now = play_time + AppManager.mDirectPlayShift;
                 int clock = (int)AppManager.getVsqFile().getClockFromSec( now );
                 if ( AppManager.mEndMarkerEnabled ) {
                     // エンドマーカーが指定されてる場合で，
@@ -16242,7 +16136,7 @@ namespace org.kbinani.cadencii {
             if ( list.size() <= 0 ) {
                 return;
             }
-            patchWorkToFreeze( list.toArray( new Integer[] { } ) );
+            AppManager.patchWorkToFreeze( list.toArray( new Integer[] { } ) );
         }
 
         public void handleEditorConfig_QuantizeModeChanged( Object sender, EventArgs e ) {
