@@ -120,7 +120,7 @@ namespace org.kbinani.cadencii {
 #if FAKE_AQUES_TONE_DLL_AS_VOCALOID1
                     loaded = mInstance.open( aques_tone, SAMPLE_RATE, SAMPLE_RATE, false );
 #else
-                    loaded = mInstance.open( aques_tone, VSTiProxy.SAMPLE_RATE, VSTiProxy.SAMPLE_RATE, true );
+                    loaded = mInstance.open( aques_tone, VSTiDllManager.SAMPLE_RATE, VSTiDllManager.SAMPLE_RATE, true );
 #endif
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "VSTiProxy#realoadAquesTone; ex=" + ex );

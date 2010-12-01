@@ -77,7 +77,7 @@ namespace org.kbinani.cadencii {
         public void push( double[] l, double[] r, int length ) {
             if ( _first_call ) {
                 PlaySound.init();
-                PlaySound.prepare( VSTiProxy.SAMPLE_RATE );
+                PlaySound.prepare( VSTiDllManager.SAMPLE_RATE );
                 _first_call = false;
             }
             PlaySound.append( l, r, length );

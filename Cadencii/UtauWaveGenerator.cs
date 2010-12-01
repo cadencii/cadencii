@@ -131,7 +131,7 @@ namespace org.kbinani.cadencii {
             }
             mVsq.updateTotalClocks();
 
-            mTrimRemain = (int)(trim_sec * VSTiProxy.SAMPLE_RATE);
+            mTrimRemain = (int)(trim_sec * VSTiDllManager.SAMPLE_RATE);
         }
 
         public void setReceiver( WaveReceiver r ) {
@@ -167,7 +167,7 @@ namespace org.kbinani.cadencii {
             StreamWriter log = null;
 #endif
             try {
-                double sample_length = mVsq.getSecFromClock( mVsq.TotalClocks ) * VSTiProxy.SAMPLE_RATE;
+                double sample_length = mVsq.getSecFromClock( mVsq.TotalClocks ) * VSTiDllManager.SAMPLE_RATE;
                 mAbortRequired = false;
                 mRunning = true;
                 //m_progress = 0.0;
@@ -531,7 +531,7 @@ namespace org.kbinani.cadencii {
                     processWavtool( arg_wavtool, file, mTempDir, mWavtool, mInvokeWithWine );
 
                     // できたwavを読み取ってWaveIncomingイベントを発生させる
-                    int sample_end = (int)(sec_fin * VSTiProxy.SAMPLE_RATE);
+                    int sample_end = (int)(sec_fin * VSTiDllManager.SAMPLE_RATE);
 #if DEBUG
                     AppManager.debugWriteLine( "UtauWaveGenerator#run; sample_end=" + sample_end );
 #endif
@@ -629,7 +629,7 @@ namespace org.kbinani.cadencii {
                     AppManager.debugWriteLine( "UtauWaveGenerator#run; sampleFrames=" + sampleFrames + "; channel=" + channel + "; byte_per_sample=" + byte_per_sample );
 #endif
                     if ( channel > 0 && byte_per_sample > 0 && sampleFrames > 0 ) {
-                        int length = (sampleFrames > VSTiProxy.SAMPLE_RATE ? VSTiProxy.SAMPLE_RATE : sampleFrames);
+                        int length = (sampleFrames > VSTiDllManager.SAMPLE_RATE ? VSTiDllManager.SAMPLE_RATE : sampleFrames);
                         int remain = sampleFrames;
                         mLeft = new double[length];
                         mRight = new double[length];
@@ -642,8 +642,8 @@ namespace org.kbinani.cadencii {
                         try {
                             dat = new RandomAccessFile( file_dat, "r" );
                             dat.seek( processed_sample * channel * byte_per_sample );
-                            double sec_start = processed_sample / (double)VSTiProxy.SAMPLE_RATE;
-                            double sec_per_sa = 1.0 / (double)VSTiProxy.SAMPLE_RATE;
+                            double sec_start = processed_sample / (double)VSTiDllManager.SAMPLE_RATE;
+                            double sec_per_sa = 1.0 / (double)VSTiDllManager.SAMPLE_RATE;
                             ByRef<Integer> index = new ByRef<Integer>( 0 );
                             #region チャンネル数／ビット深度ごとの読み取り操作
                             if ( byte_per_sample == 1 ) {

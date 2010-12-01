@@ -40,7 +40,7 @@ namespace org.kbinani.cadencii {
 
         public FileWaveReceiver( string path, int channel, int bit_per_sample, int sample_rate ) {
             WaveWriter ww = new WaveWriter( path, channel, bit_per_sample, sample_rate );
-            mAdapter = new WaveRateConvertAdapter( ww, VSTiProxy.SAMPLE_RATE );
+            mAdapter = new WaveRateConvertAdapter( ww, VSTiDllManager.SAMPLE_RATE );
         }
 
         public void setGlobalConfig( EditorConfig config ) {
@@ -62,11 +62,15 @@ namespace org.kbinani.cadencii {
 #if DEBUG
             PortUtil.println( "FileWaveReceiver#end" );
 #endif
-            mAdapter.close();
+            lock ( mAdapter ) {
+                mAdapter.close();
+            }
         }
 
         public void push( double[] l, double[] r, int length ) {
-            mAdapter.append( l, r, length );
+            lock ( mAdapter ) {
+                mAdapter.append( l, r, length );
+            }
             if ( mReceiver != null ) {
                 mReceiver.push( l, r, length );
             }

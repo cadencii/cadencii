@@ -675,7 +675,7 @@ namespace org.kbinani.vsq {
         /// <param name="feder"></param>
         /// <returns></returns>
         public static double getAmplifyCoeffFromFeder( int feder ) {
-            return Math.Exp( -1.26697245e-02 + 1.18448420e-01 * feder / 10.0 );
+            return Math.Exp( 1.18448420e-01 * feder / 10.0 );
         }
     }
 

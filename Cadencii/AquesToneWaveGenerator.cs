@@ -129,7 +129,7 @@ namespace org.kbinani.cadencii {
             }
             this.mVsq.updateTotalClocks();
 
-            mTrimRemain = (int)(trim_sec * VSTiProxy.SAMPLE_RATE);
+            mTrimRemain = (int)(trim_sec * VSTiDllManager.SAMPLE_RATE);
         }
 
         public void setReceiver( WaveReceiver r ) {
@@ -153,7 +153,7 @@ namespace org.kbinani.cadencii {
             mTotalSamples = total_samples;
 
             VsqTrack track = mVsq.Track.get( mTrack );
-            int BUFLEN = VSTiProxy.SAMPLE_RATE / 10;
+            int BUFLEN = VSTiDllManager.SAMPLE_RATE / 10;
             double[] left = new double[BUFLEN];
             double[] right = new double[BUFLEN];
             //long saProcessed = 0; // 
@@ -180,15 +180,15 @@ namespace org.kbinani.cadencii {
             // レンダリング開始位置での、パラメータの値をセットしておく
             for ( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ) {
                 VsqEvent item = itr.next();
-                long saNoteStart = (long)(mVsq.getSecFromClock( item.Clock ) * VSTiProxy.SAMPLE_RATE);
-                long saNoteEnd = (long)(mVsq.getSecFromClock( item.Clock + item.ID.getLength() ) * VSTiProxy.SAMPLE_RATE);
+                long saNoteStart = (long)(mVsq.getSecFromClock( item.Clock ) * VSTiDllManager.SAMPLE_RATE);
+                long saNoteEnd = (long)(mVsq.getSecFromClock( item.Clock + item.ID.getLength() ) * VSTiDllManager.SAMPLE_RATE);
 
                 TreeMap<Integer, MidiEventQueue> list = generateMidiEvent( mVsq, mTrack, lastClock, item.Clock + item.ID.getLength() );
                 lastClock = item.Clock + item.ID.Length + 1;
                 for ( Iterator<Integer> itr2 = list.keySet().iterator(); itr2.hasNext(); ) {
                     // まず直前までの分を合成
                     Integer clock = itr2.next();
-                    long saStart = (long)(mVsq.getSecFromClock( clock ) * VSTiProxy.SAMPLE_RATE);
+                    long saStart = (long)(mVsq.getSecFromClock( clock ) * VSTiDllManager.SAMPLE_RATE);
                     saRemain = (int)(saStart - mTotalAppend);
                     while ( saRemain > 0 ) {
                         if ( mAbortRequired ) {

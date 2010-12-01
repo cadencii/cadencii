@@ -51,6 +51,11 @@ namespace org.kbinani.cadencii {
 #endif
 
     public class AppManager {
+        internal class RunGeneratorQueue {
+            public WaveGenerator generator;
+            public long samples;
+        }
+
         public const int MIN_KEY_WIDTH = 68;
         public const int MAX_KEY_WIDTH = MIN_KEY_WIDTH * 5;
         private const String CONFIG_FILE_NAME = "config.xml";
@@ -335,6 +340,10 @@ namespace org.kbinani.cadencii {
         /// 現在稼働しているWaveGenerator．稼働していないときはnull
         /// </summary>
         private static WaveGenerator mWaveGenerator = null;
+        /// <summary>
+        /// mWaveGeneratorを動かしているスレッド
+        /// </summary>
+        private static Thread mPreviewThread;
 
 #if !TREECOM
         private static VsqFileEx mVsq;
@@ -390,7 +399,7 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// Playingプロパティにロックをかけるためのオブジェクト
         /// </summary>
-        private static Object mPlayingPropertyLocker = new Object();
+        private static Object mLockerPlayingProperty = new Object();
         #endregion
 
         #region 選択範囲の管理
@@ -503,6 +512,9 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public static LyricTextBox mInputTextBox = null;
         public static int mAddingEventLength;
+        /// <summary>
+        /// 音符の追加操作における，追加中の音符
+        /// </summary>
         public static VsqEvent mAddingEvent;
         /// <summary>
         /// AppManager.m_draw_objectsを描く際の，最初に検索されるインデクス．
@@ -611,26 +623,22 @@ namespace org.kbinani.cadencii {
         /// プレビュー再生を開始します
         /// </summary>
         private static void previewStart() {
-            int selected = AppManager.getSelected();
-            VsqFileEx vsq = AppManager.getVsqFile();
-            RendererKind renderer = VsqFileEx.getTrackRendererKind( vsq.Track.get( selected ) );
-            int clock = AppManager.getCurrentClock();
-            mDirectPlayShift = (float)vsq.getSecFromClock( clock );
-            if ( AppManager.getEditMode() != EditMode.REALTIME ) {
-                String tmppath = AppManager.getTempWaveDir();
+            int selected = mSelected;
+            RendererKind renderer = VsqFileEx.getTrackRendererKind( mVsq.Track.get( selected ) );
+            int clock = mCurrentClock;
+            mDirectPlayShift = (float)mVsq.getSecFromClock( clock );
+            if ( getEditMode() != EditMode.REALTIME ) {
+                // リアルタイム再生で無い場合
+                String tmppath = getTempWaveDir();
 
-                double amp_master = VocaloSysUtil.getAmplifyCoeffFromFeder( vsq.Mixer.MasterFeder );
-                double pan_left_master = VocaloSysUtil.getAmplifyCoeffFromPanLeft( vsq.Mixer.MasterPanpot );
-                double pan_right_master = VocaloSysUtil.getAmplifyCoeffFromPanRight( vsq.Mixer.MasterPanpot );
-
-                int track_count = vsq.Track.size();
+                int track_count = mVsq.Track.size();
 
                 Vector<Integer> tracks = new Vector<Integer>();
                 for ( int track = 1; track < track_count; track++ ) {
                     tracks.add( track );
                 }
 
-                patchWorkToFreeze( tracks.toArray( new Integer[] { } ) );
+                patchWorkToFreeze( tracks );
 
                 Vector<Amplifier> waves = new Vector<Amplifier>();
                 for ( int i = 0; i < tracks.size(); i++ ) {
@@ -643,21 +651,17 @@ namespace org.kbinani.cadencii {
                         Amplifier a = new Amplifier();
                         FileWaveSender f = new FileWaveSender( wr );
                         a.setSender( f );
-                        a.setAmplifierView( AppManager.mMixerWindow.getVolumeTracker( track ) );
+                        a.setAmplifierView( mMixerWindow.getVolumeTracker( track ) );
                         waves.add( a );
                     } catch ( Exception ex ) {
-                        Logger.write( typeof( FormMain ) + ".AppManager_PreviewStarted; ex=" + ex + "\n" );
-                        PortUtil.stderr.println( "FormMain#AppManager_PreviewStarted; ex=" + ex );
+                        Logger.write( typeof( AppManager ) + ".previewStart; ex=" + ex + "\n" );
+                        PortUtil.stderr.println( "AppManager.previewStart; ex=" + ex );
                     }
                 }
 
-                // リアルタイム再生用のデータを準備
-                int preview_ending_clock = vsq.TotalClocks;
-                //mPreviewEndingTime = vsq.getSecFromClock( preview_ending_clock ) + 1.0;
-
                 // clock以降に音符があるかどうかを調べる
                 int count = 0;
-                for ( Iterator<VsqEvent> itr = vsq.Track.get( selected ).getNoteEventIterator(); itr.hasNext(); ) {
+                for ( Iterator<VsqEvent> itr = mVsq.Track.get( selected ).getNoteEventIterator(); itr.hasNext(); ) {
                     VsqEvent ve = itr.next();
                     if ( ve.Clock >= clock ) {
                         count++;
@@ -665,10 +669,10 @@ namespace org.kbinani.cadencii {
                     }
                 }
 
-                int bgm_count = AppManager.getBgmCount();
-                double pre_measure_sec = vsq.getSecFromClock( vsq.getPreMeasureClocks() );
+                int bgm_count = getBgmCount();
+                double pre_measure_sec = mVsq.getSecFromClock( mVsq.getPreMeasureClocks() );
                 for ( int i = 0; i < bgm_count; i++ ) {
-                    BgmFile bgm = AppManager.getBgm( i );
+                    BgmFile bgm = getBgm( i );
                     WaveReader wr = null;
                     try {
                         wr = new WaveReader( bgm.file );
@@ -678,7 +682,7 @@ namespace org.kbinani.cadencii {
                         }
                         wr.setOffsetSeconds( offset );
 #if DEBUG
-                        PortUtil.println( "FormMain#AppManager_PreviewStarted; bgm.file=" + bgm.file + "; offset=" + offset );
+                        PortUtil.println( "AppManager.previewStart; bgm.file=" + bgm.file + "; offset=" + offset );
 
 #endif
                         Amplifier a = new Amplifier();
@@ -687,40 +691,47 @@ namespace org.kbinani.cadencii {
                         a.setAmplifierView( AppManager.mMixerWindow.getVolumeTrackerBgm( i ) );
                         waves.add( a );
                     } catch ( Exception ex ) {
-                        Logger.write( typeof( FormMain ) + ".AppManager_PreviewStarted; ex=" + ex + "\n" );
-                        PortUtil.stderr.println( "FormMain#AppManager_PreviewStarted; ex=" + ex );
+                        Logger.write( typeof( AppManager ) + ".previewStart; ex=" + ex + "\n" );
+                        PortUtil.stderr.println( "AppManager.previewStart; ex=" + ex );
                     }
                 }
 
-                boolean mode_infinite = AppManager.getEditMode() == EditMode.REALTIME;
+                boolean mode_infinite = getEditMode() == EditMode.REALTIME;
 
                 // 最初のsenderをドライバにする
                 WaveSenderDriver driver = new WaveSenderDriver();
                 driver.setSender( waves.get( 0 ) );
                 Mixer m = new Mixer();
                 driver.setReceiver( m );
-                AppManager.stopGenerator();
-                AppManager.setGenerator( driver );
+                stopGenerator();
+                setGenerator( driver );
                 Amplifier amp = new Amplifier();
-                amp.setAmplifierView( AppManager.mMixerWindow.getVolumeTrackerMaster() );
+                amp.setAmplifierView( mMixerWindow.getVolumeTrackerMaster() );
                 m.setReceiver( amp );
                 amp.setReceiver( MonitorWaveReceiver.getInstance() );
                 for ( int i = 1; i < waves.size(); i++ ) {
                     m.addSender( waves.get( i ) );
                 }
 
-                double end_sec = vsq.getSecFromClock( vsq.TotalClocks );
-                long samples = (long)((end_sec - mDirectPlayShift) * VSTiProxy.SAMPLE_RATE);
+                int end_clock = mVsq.TotalClocks;
+                if ( mEndMarkerEnabled ) {
+                    end_clock = mEndMarker;
+                }
+                double end_sec = mVsq.getSecFromClock( end_clock );
+                long samples = (long)((end_sec - mDirectPlayShift) * VSTiDllManager.SAMPLE_RATE);
                 if ( mode_infinite ) {
                     samples = long.MaxValue;
                 }
 #if DEBUG
-                PortUtil.println( "FormMain#AppManager_PreviewStarted; calling AppManager.runGenerator..." );
+                PortUtil.println( "AppManager.previewStart; calling runGenerator..." );
 #endif
-                Thread thead = AppManager.runGenerator( samples );
+                runGenerator( samples );
 #if DEBUG
-                PortUtil.println( "FormMain#AppManager_PreviewStarted; calling AppManager.runGenerator... done" );
+                PortUtil.println( "AppManager.previewStart; calling runGenerator... done" );
 #endif
+            } else {
+                // リアルタイム入力
+                mPreviewStartedTime = PortUtil.getCurrentTime();
             }
         }
 
@@ -728,17 +739,15 @@ namespace org.kbinani.cadencii {
         /// プレビュー再生を停止します
         /// </summary>
         private static void previewStop() {
-            //foo!!
-            //TODO: この辺が未だ
-            //FormMain#AppManager_previewStartedから移動させること！
-            throw new NotImplementedException();
+            stopGenerator();
+            mFirstBufferWritten = false;
         }
 
-        /// <summary>
+        /* /// <summary>
         /// 指定したトラックの、レンダリングが必要な部分を再レンダリングし、ツギハギすることでトラックのキャッシュをフリーズさせます。
         /// </summary>
         /// <param name="tracks"></param>
-        public static void patchWorkToFreeze( Integer[] tracks ) {
+        public static void __OBSOLETE__patchWorkToFreeze( Integer[] tracks ) {
             mVsq.updateTotalClocks();
             String temppath = getTempWaveDir();
             int presend = editorConfig.PreSendTime;
@@ -939,8 +948,7 @@ namespace org.kbinani.cadencii {
                                              trackList.toArray( new Integer[] { } ),
                                              files.toArray( new String[] { } ),
                                              startList.toArray( new Integer[] { } ),
-                                             endList.toArray( new Integer[] { } ),
-                                             false );
+                                             endList.toArray( new Integer[] { } ) );
                 dialog.setModal( true );
                 dialog.setVisible( true );
                 int finished = dialog.getFinished();
@@ -960,7 +968,7 @@ namespace org.kbinani.cadencii {
 
                     WaveWriter writer = null;
                     try {
-                        int sampleRate = VSTiProxy.SAMPLE_RATE;
+                        int sampleRate = VSTiDllManager.SAMPLE_RATE;
                         long totalLength = (long)((mVsq.getSecFromClock( mVsq.TotalClocks ) + 1.0) * sampleRate);
                         writer = new WaveWriter( wavePath, editorConfig.WaveFileOutputChannel, 16, sampleRate );
                         int BUFLEN = 1024;
@@ -1114,6 +1122,411 @@ namespace org.kbinani.cadencii {
                     }
                 }
             }
+        }*/
+
+        public static void patchWorkToFreeze( Vector<Integer> tracks ) {
+            mVsq.updateTotalClocks();
+            String temppath = getTempWaveDir();
+            int presend = editorConfig.PreSendTime;
+            int totalClocks = mVsq.TotalClocks;
+
+            Vector<PatchWorkQueue> queue = patchWorkCreateQueue( tracks );
+
+            FormSynthesize dialog = null;
+            String tempWave = PortUtil.combinePath( temppath, "temp.wav" );
+            try {
+                dialog = new FormSynthesize( mVsq,
+                                             presend,
+                                             queue );
+                dialog.setModal( true );
+                dialog.setVisible( true );
+                int finished = dialog.getFinished();
+                for ( int k = 0; k < tracks.size(); k++ ) {
+                    int track = tracks[k];
+                    String wavePath = PortUtil.combinePath( temppath, track + ".wav" );
+                    Vector<Integer> queueIndex = new Vector<Integer>();
+                    for ( int i = 0; i < queue.size(); i++ ) {
+                        if ( queue[i].track == track ) {
+                            queueIndex.add( i );
+                        }
+                    }
+
+                    if ( queueIndex.size() <= 0 ) {
+                        // 第trackトラックに対してパッチワークを行う必要無し
+                        continue;
+                    }
+
+                    if ( queueIndex.size() == 1 && wavePath.Equals( queue[queueIndex[0]].file ) ) {
+                        // 第trackトラック全体の合成を指示するキューだった場合．
+                        // このとき，パッチワークを行う必要なし．
+                        mLastRenderedStatus[track - 1] = 
+                            new RenderedStatus( (VsqTrack)mVsq.Track.get( track ).clone(), mVsq.TempoTable );
+                        serializeRenderingStatus( temppath, track );
+                        if ( mMainWindow != null && !mMainWindow.IsDisposed && mMainWindow.waveView != null ) {
+                            mMainWindow.waveView.load( track - 1, wavePath );
+                        }
+                        continue;
+                    }
+
+                    WaveWriter writer = null;
+                    try {
+                        int sampleRate = VSTiDllManager.SAMPLE_RATE;
+                        long totalLength = (long)((mVsq.getSecFromClock( mVsq.TotalClocks ) + 1.0) * sampleRate);
+                        writer = new WaveWriter( wavePath, editorConfig.WaveFileOutputChannel, 16, sampleRate );
+                        int BUFLEN = 1024;
+                        double[] bufl = new double[BUFLEN];
+                        double[] bufr = new double[BUFLEN];
+                        for ( int m = 0; m < queueIndex.size(); m++ ) {
+                            int i = queueIndex.get( m );
+                            if ( finished <= i ) {
+                                break;
+                            }
+                            double secStart = mVsq.getSecFromClock( queue[i].clockStart );
+                            int clockEnd = queue[i].clockEnd;
+                            if ( clockEnd == int.MaxValue ) {
+                                clockEnd = mVsq.TotalClocks + 240;
+                            }
+                            double secEnd = mVsq.getSecFromClock( clockEnd );
+                            long sampleStart = (long)(secStart * sampleRate);
+                            long sampleEnd = (long)(secEnd * sampleRate);
+
+                            WaveReader wr = null;
+                            try {
+                                wr = new WaveReader( queue[i].file );
+                                long remain2 = sampleEnd - sampleStart;
+                                long proc = 0;
+                                while ( remain2 > 0 ) {
+                                    int delta = remain2 > BUFLEN ? BUFLEN : (int)remain2;
+                                    wr.read( proc, delta, bufl, bufr );
+                                    writer.replace( sampleStart + proc, delta, bufl, bufr );
+                                    proc += delta;
+                                    remain2 -= delta;
+                                }
+                            } catch ( Exception ex ) {
+                                Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
+                                PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
+                            } finally {
+                                if ( wr != null ) {
+                                    try {
+                                        wr.close();
+                                    } catch ( Exception ex2 ) {
+                                        Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
+                                        PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex2=" + ex2 );
+                                    }
+                                }
+                            }
+
+                            try {
+                                PortUtil.deleteFile( queue[i].file );
+                            } catch ( Exception ex ) {
+                                Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
+                                PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
+                            }
+                        }
+
+                        VsqTrack vsq_track = mVsq.Track.get( track );
+                        if ( queueIndex.get( queueIndex.size() - 1 ) <= finished ) {
+                            // 途中で終了せず，このトラックの全てのパッチワークが完了した．
+                            mLastRenderedStatus[track - 1] = new RenderedStatus( (VsqTrack)vsq_track.clone(), mVsq.TempoTable );
+                            serializeRenderingStatus( temppath, track );
+                            setRenderRequired( track, false );
+                        } else {
+                            // パッチワークの作成途中で，キャンセルされた
+                            // キャンセルされたやつ以降の範囲に、プログラムチェンジ17の歌手変更イベントを挿入する。→AppManager#detectTrackDifferenceに必ず検出してもらえる。
+                            VsqTrack copied = (VsqTrack)vsq_track.clone();
+                            VsqEvent dumy = new VsqEvent();
+                            dumy.ID.type = VsqIDType.Singer;
+                            dumy.ID.IconHandle = new IconHandle();
+                            dumy.ID.IconHandle.Program = 17;
+                            for ( int m = 0; m < queueIndex.size(); m++ ) {
+                                int i = queueIndex.get( m );
+                                if ( i < finished ) {
+                                    continue;
+                                }
+                                int start = queue[i].clockStart;
+                                int end = queue[i].clockEnd;
+                                VsqEvent singerAtEnd = vsq_track.getSingerEventAt( end );
+
+                                // startの位置に歌手変更が既に指定されていないかどうかを検査
+                                int foundStart = -1;
+                                int foundEnd = -1;
+                                for ( Iterator<Integer> itr = copied.indexIterator( IndexIteratorKind.SINGER ); itr.hasNext(); ) {
+                                    int j = itr.next();
+                                    VsqEvent ve = copied.getEvent( j );
+                                    if ( ve.Clock == start ) {
+                                        foundStart = j;
+                                    }
+                                    if ( ve.Clock == end ) {
+                                        foundEnd = j;
+                                    }
+                                    if ( end < ve.Clock ) {
+                                        break;
+                                    }
+                                }
+
+                                VsqEvent dumyStart = (VsqEvent)dumy.clone();
+                                dumyStart.Clock = start;
+                                if ( foundStart >= 0 ) {
+                                    copied.setEvent( foundStart, dumyStart );
+                                } else {
+                                    copied.addEvent( dumyStart );
+                                }
+
+                                if ( end != int.MaxValue ) {
+                                    VsqEvent dumyEnd = (VsqEvent)singerAtEnd.clone();
+                                    dumyEnd.Clock = end;
+                                    if ( foundEnd >= 0 ) {
+                                        copied.setEvent( foundEnd, dumyEnd );
+                                    } else {
+                                        copied.addEvent( dumyEnd );
+                                    }
+                                }
+
+                                copied.sortEvent();
+                            }
+
+                            mLastRenderedStatus[track - 1] = new RenderedStatus( copied, mVsq.TempoTable );
+                            serializeRenderingStatus( temppath, track );
+                        }
+                    } catch ( Exception ex ) {
+                        Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
+                        PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
+                    } finally {
+                        if ( writer != null ) {
+                            try {
+                                writer.close();
+                            } catch ( Exception ex2 ) {
+                                Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
+                                PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex2=" + ex2 );
+                            }
+                        }
+                    }
+
+                    // 波形表示用のWaveDrawContextの内容を更新する。
+                    for( int j = 0; j < queueIndex.size(); j++ ){
+                        int i = queueIndex.get( j );
+                        if( i >= finished ){
+                            continue;
+                        }
+                        double secStart = mVsq.getSecFromClock( queue[i].clockStart );
+                        int clockEnd = queue[i].clockEnd;
+                        if ( clockEnd == int.MaxValue ) {
+                            clockEnd = mVsq.TotalClocks + 240;
+                        }
+                        double secEnd = mVsq.getSecFromClock( clockEnd );
+
+                        if ( mMainWindow != null && !mMainWindow.IsDisposed && mMainWindow.waveView != null ) {
+                            mMainWindow.waveView.reloadPartial( tracks[k] - 1, wavePath, secStart, secEnd );
+                        }
+                    }
+                }
+            } catch ( Exception ex ) {
+                Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
+                PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
+            } finally {
+                if ( dialog != null ) {
+                    try {
+                        dialog.close();
+                    } catch ( Exception ex2 ) {
+                        Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
+                        PortUtil.stderr.println( "FormMain#patchWorkToFreeez; ex2=" + ex2 );
+                    }
+                }
+            }
+        }
+
+        public static Vector<PatchWorkQueue> patchWorkCreateQueue( Vector<Integer> tracks ) {
+            mVsq.updateTotalClocks();
+            String temppath = getTempWaveDir();
+            int presend = editorConfig.PreSendTime;
+            int totalClocks = mVsq.TotalClocks;
+
+            //Vector<Integer> startList = new Vector<Integer>();
+            //Vector<Integer> endList = new Vector<Integer>();
+            //Vector<Integer> trackList = new Vector<Integer>();
+            //Vector<String> files = new Vector<String>();
+            Vector<PatchWorkQueue> queue = new Vector<PatchWorkQueue>();
+            int[] startIndex = new int[tracks.size() + 1]; // startList, endList, trackList, filesの内，第startIndex[j]からが，第tracks[j]トラックについてのレンダリング要求かを表す.
+
+            for ( int k = 0; k < tracks.size(); k++ ) {
+                startIndex[k] = queue.size();
+                int track = tracks[k];
+                VsqTrack vsq_track = mVsq.Track.get( track );
+                String wavePath = PortUtil.combinePath( temppath, track + ".wav" );
+
+                if ( mLastRenderedStatus[track - 1] == null ) {
+                    // この場合は全部レンダリングする必要がある
+                    PatchWorkQueue q = new PatchWorkQueue();
+                    q.track = track;
+                    q.clockStart = 0;
+                    q.clockEnd = totalClocks + 240;
+                    q.file = wavePath;
+                    queue.add( q );
+                    continue;
+                }
+
+                // 部分レンダリング
+                EditedZoneUnit[] areas =
+                    Utility.detectRenderedStatusDifference( mLastRenderedStatus[track - 1],
+                                                            new RenderedStatus( (VsqTrack)vsq_track.clone(), mVsq.TempoTable ) );
+
+                // areasとかぶっている音符がどれかを判定する
+                EditedZone zone = new EditedZone();
+                zone.add( areas );
+                checkSerializedEvents( zone, vsq_track, areas );
+                checkSerializedEvents( zone, mLastRenderedStatus[track - 1].track, areas );
+
+                // レンダリング済みのwaveがあれば、zoneに格納された編集範囲に隣接する前後が無音でない場合、
+                // 編集範囲を無音部分まで延長する。
+                if ( PortUtil.isFileExists( wavePath ) ) {
+                    WaveReader wr = null;
+                    try {
+                        wr = new WaveReader( wavePath );
+                        int sampleRate = wr.getSampleRate();
+                        int buflen = 1024;
+                        double[] left = new double[buflen];
+                        double[] right = new double[buflen];
+
+                        // まずzoneから編集範囲を抽出
+                        Vector<EditedZoneUnit> areasList = new Vector<EditedZoneUnit>();
+                        for ( Iterator<EditedZoneUnit> itr = zone.iterator(); itr.hasNext(); ) {
+                            EditedZoneUnit e = itr.next();
+                            areasList.add( (EditedZoneUnit)e.clone() );
+                        }
+
+                        for ( Iterator<EditedZoneUnit> itr = areasList.iterator(); itr.hasNext(); ) {
+                            EditedZoneUnit e = itr.next();
+                            int exStart = e.mStart;
+                            int exEnd = e.mEnd;
+
+                            // 前方に1クロックずつ検索する。
+                            int end = e.mStart;
+                            int start = end - 1;
+                            double secEnd = mVsq.getSecFromClock( end );
+                            long saEnd = (long)(secEnd * sampleRate);
+                            double secStart = 0.0;
+                            long saStart = 0;
+                            while ( true ) {
+                                start = end - 1;
+                                if ( start < 0 ) {
+                                    start = 0;
+                                    break;
+                                }
+                                secStart = mVsq.getSecFromClock( start );
+                                saStart = (long)(secStart * sampleRate);
+                                int samples = (int)(saEnd - saStart);
+                                long pos = saStart;
+                                boolean allzero = true;
+                                while ( samples > 0 ) {
+                                    int delta = samples > buflen ? buflen : samples;
+                                    wr.read( pos, delta, left, right );
+                                    for ( int i = 0; i < delta; i++ ) {
+                                        if ( left[i] != 0.0 || right[i] != 0.0 ) {
+                                            allzero = false;
+                                            break;
+                                        }
+                                    }
+                                    pos += delta;
+                                    samples -= delta;
+                                    if ( !allzero ) {
+                                        break;
+                                    }
+                                }
+                                if ( allzero ) {
+                                    break;
+                                }
+                                secEnd = secStart;
+                                end = start;
+                                saEnd = saStart;
+                            }
+                            // endクロックより先は無音であるようだ。
+                            exStart = end;
+
+                            // 後方に1クロックずつ検索する
+                            if ( e.mEnd < int.MaxValue ) {
+                                start = e.mEnd;
+                                secStart = mVsq.getSecFromClock( start );
+                                while ( true ) {
+                                    end = start + 1;
+                                    secEnd = mVsq.getSecFromClock( end );
+                                    saEnd = (long)(secEnd * sampleRate);
+                                    int samples = (int)(saEnd - saStart);
+                                    long pos = saStart;
+                                    boolean allzero = true;
+                                    while ( samples > 0 ) {
+                                        int delta = samples > buflen ? buflen : samples;
+                                        wr.read( pos, delta, left, right );
+                                        for ( int i = 0; i < delta; i++ ) {
+                                            if ( left[i] != 0.0 || right[i] != 0.0 ) {
+                                                allzero = false;
+                                                break;
+                                            }
+                                        }
+                                        pos += delta;
+                                        samples -= delta;
+                                        if ( !allzero ) {
+                                            break;
+                                        }
+                                    }
+                                    if ( allzero ) {
+                                        break;
+                                    }
+                                    secStart = secEnd;
+                                    start = end;
+                                    saStart = saEnd;
+                                }
+                                // startクロック以降は無音のようだ
+                                exEnd = start;
+                            }
+#if DEBUG
+                            if ( e.mStart != exStart ) {
+                                PortUtil.println( "FormMain#patchWorkToFreeze; start extended; " + e.mStart + " => " + exStart );
+                            }
+                            if ( e.mEnd != exEnd ) {
+                                PortUtil.println( "FormMain#patchWorkToFreeze; end extended; " + e.mEnd + " => " + exEnd );
+                            }
+#endif
+
+                            zone.add( exStart, exEnd );
+                        }
+                    } catch ( Exception ex ) {
+                        Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
+                        PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
+                    } finally {
+                        if ( wr != null ) {
+                            try {
+                                wr.close();
+                            } catch ( Exception ex2 ) {
+                                Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
+                                PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex2=" + ex2 );
+                            }
+                        }
+                    }
+                }
+
+                // zoneに、レンダリングが必要なアイテムの範囲が格納されているので。
+                int j = -1;
+                for ( Iterator<EditedZoneUnit> itr = zone.iterator(); itr.hasNext(); ) {
+                    EditedZoneUnit unit = itr.next();
+                    j++;
+                    PatchWorkQueue q = new PatchWorkQueue();
+                    q.track = track;
+                    q.clockStart = unit.mStart;
+                    q.clockEnd = unit.mEnd;
+                    q.file = PortUtil.combinePath( temppath, track + "_" + j + ".wav" );
+                    queue.add( q );
+                }
+            }
+            startIndex[tracks.size()] = queue.size();
+
+            if ( queue.size() <= 0 ) {
+                // パッチワークする必要なし
+                for ( int i = 0; i < tracks.size(); i++ ) {
+                    setRenderRequired( tracks[i], false );
+                }
+            }
+
+            return queue;
         }
 
         /// <summary>
@@ -1228,8 +1641,9 @@ namespace org.kbinani.cadencii {
         public static boolean isGeneratorRunning() {
             boolean ret = false;
             lock ( mLocker ) {
-                if ( mWaveGenerator != null ) {
-                    ret = mWaveGenerator.isRunning();
+                WaveGenerator g = mWaveGenerator;
+                if ( g != null ) {
+                    ret = g.isRunning();
                 }
             }
             return ret;
@@ -1240,8 +1654,9 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public static void stopGenerator() {
             lock ( mLocker ) {
-                if ( mWaveGenerator != null ) {
-                    mWaveGenerator.stop();
+                WaveGenerator g = mWaveGenerator;
+                if ( g != null ) {
+                    g.stop();
                 }
                 mWaveGenerator = null;
             }
@@ -1253,9 +1668,9 @@ namespace org.kbinani.cadencii {
         /// <param name="generator"></param>
         public static void setGenerator( WaveGenerator generator ) {
             lock ( mLocker ) {
-                if ( mWaveGenerator != null ) {
-                    mWaveGenerator.stop();
-                    mWaveGenerator = null;
+                WaveGenerator g = mWaveGenerator;
+                if ( g != null ) {
+                    g.stop();
                 }
                 mWaveGenerator = generator;
             }
@@ -1265,20 +1680,49 @@ namespace org.kbinani.cadencii {
         /// 波形生成器を別スレッドで実行します
         /// </summary>
         /// <param name="samples">合成するサンプル数．波形合成器のbeginメソッドに渡される</param>
-        /// <returns>波形合成器を実行しているスレッド</returns>
-        public static Thread runGenerator( long samples ) {
-            Thread thread = new Thread(
-                new ParameterizedThreadStart( runGeneratorCore ) );
-            lock( mWaveGenerator ){
-                thread.Start( samples );
+        public static void runGenerator( long samples ) {
+            lock( mLocker ){
+#if DEBUG
+                PortUtil.println( "AppManager#runGenerator; (mPreviewThread==null)=" + (mPreviewThread == null) );
+#endif
+                Thread t = mPreviewThread;
+                if ( t != null ) {
+                    ThreadState state = t.ThreadState;
+#if DEBUG
+                    PortUtil.println( "AppManager#runGenerator; mPreviewThread.ThreadState=" + state );
+#endif
+                    if ( state != ThreadState.Stopped ) {
+                        WaveGenerator g = mWaveGenerator;
+                        if ( g != null ) {
+                            g.stop();
+                        }
+#if DEBUG
+                        PortUtil.println( "AppManager#runGenerator; waiting stop..." );
+#endif
+                        while ( t.ThreadState != ThreadState.Stopped ) {
+                            Thread.Sleep( 100 );
+                        }
+#if DEBUG
+                        PortUtil.println( "AppManager#runGenerator; waiting stop... done" );
+#endif
+                    }
+                }
+
+                RunGeneratorQueue q = new RunGeneratorQueue();
+                q.generator = mWaveGenerator;
+                q.samples = samples;
+                mPreviewThread = new Thread(
+                    new ParameterizedThreadStart( runGeneratorCore ) );
+                mPreviewThread.Start( q );
             }
-            return thread;
         }
 
-        private static void runGeneratorCore( object argument ) {
-            long samples = (long)argument;
+        private static void runGeneratorCore( Object argument ) {
+            RunGeneratorQueue q = (RunGeneratorQueue)argument;
+            WaveGenerator g = q.generator;
+            long samples = q.samples;
             try {
-                mWaveGenerator.begin( samples );
+                g.begin( samples );
             } catch ( Exception ex ) {
                 Logger.write( typeof( AppManager ) + ".runGeneratorCore; ex=" + ex + "\n" );
                 PortUtil.println( "AppManager#runGeneratorCore; ex=" + ex );
@@ -2620,7 +3064,7 @@ namespace org.kbinani.cadencii {
 #if DEBUG
             PortUtil.println( "AppManager#setPlaying; value=" + value );
 #endif
-            lock ( mPlayingPropertyLocker ) {
+            lock ( mLockerPlayingProperty ) {
                 boolean previous = mPlaying;
                 mPlaying = value;
                 if ( previous != mPlaying ) {
@@ -2983,7 +3427,7 @@ namespace org.kbinani.cadencii {
             }
 #endif
 
-            VSTiProxy.init();
+            VSTiDllManager.init();
 #if !JAVA
             // アイコンパレード, VOCALOID1
             SingerConfigSys singer_config_sys1 = VocaloSysUtil.getSingerConfigSys( SynthesizerType.VOCALOID1 );

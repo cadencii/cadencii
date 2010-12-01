@@ -146,7 +146,7 @@ namespace org.kbinani.cadencii {
 
             // RenderingRunner.ctorの実装より
             mTrack = track;
-            mSampleRate = VSTiProxy.SAMPLE_RATE;
+            mSampleRate = VSTiDllManager.SAMPLE_RATE;
 
             mLocker = new Object();
             mRunning = false;

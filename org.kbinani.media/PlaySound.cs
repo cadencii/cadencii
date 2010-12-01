@@ -152,7 +152,7 @@ namespace org.kbinani.media {
                 return SoundGetPosition();
             } catch ( Exception ex ) {
                 PortUtil.println( "PlaySound#getPosition; ex=" + ex );
-                return -1.0;
+                return 0.0;
             }
 #endif
         }

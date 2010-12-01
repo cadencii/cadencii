@@ -260,7 +260,7 @@ namespace org.kbinani.cadencii {
         }
 
         public void Program_FormClosed( Object sender, FormClosedEventArgs e ) {
-            VSTiProxy.terminate();
+            VSTiDllManager.terminate();
         }
 
         public void bgWork_RunWorkerCompleted( Object sender, BRunWorkerCompletedEventArgs e ) {
@@ -281,10 +281,10 @@ namespace org.kbinani.cadencii {
             for ( int i = 0; i < c; i++ ) {
                 if ( first_found_singer.Equals( "" ) ) {
                     first_found_singer = singers1[i].VOICENAME;
-                    first_found_renderer = VSTiProxy.RENDERER_DSB2;
+                    first_found_renderer = VSTiDllManager.RENDERER_DSB2;
                 }
                 if ( singers1[i].VOICENAME.Equals( singer ) ) {
-                    renderer = VSTiProxy.RENDERER_DSB2;
+                    renderer = VSTiDllManager.RENDERER_DSB2;
                     break;
                 }
             }
@@ -294,10 +294,10 @@ namespace org.kbinani.cadencii {
             for ( int i = 0; i < c; i++ ) {
                 if ( first_found_singer.Equals( "" ) ) {
                     first_found_singer = singers2[i].VOICENAME;
-                    first_found_renderer = VSTiProxy.RENDERER_DSB3;
+                    first_found_renderer = VSTiDllManager.RENDERER_DSB3;
                 }
                 if ( singers2[i].VOICENAME.Equals( singer ) ) {
-                    renderer = VSTiProxy.RENDERER_DSB3;
+                    renderer = VSTiDllManager.RENDERER_DSB3;
                     break;
                 }
             }
@@ -306,10 +306,10 @@ namespace org.kbinani.cadencii {
                 SingerConfig sc = itr.next();
                 if ( first_found_singer.Equals( "" ) ) {
                     first_found_singer = sc.VOICENAME;
-                    first_found_renderer = VSTiProxy.RENDERER_UTU0;
+                    first_found_renderer = VSTiDllManager.RENDERER_UTU0;
                 }
                 if ( sc.VOICENAME.Equals( singer ) ) {
-                    renderer = VSTiProxy.RENDERER_UTU0;
+                    renderer = VSTiDllManager.RENDERER_UTU0;
                     break;
                 }
             }
@@ -343,13 +343,13 @@ namespace org.kbinani.cadencii {
             try {
                 ww = new WaveWriter( file );
                 RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( 1 ) );
-                WaveGenerator generator = VSTiProxy.getWaveGenerator( kind );
+                WaveGenerator generator = VSTiDllManager.getWaveGenerator( kind );
                 FileWaveReceiver receiver = new FileWaveReceiver( file, 1, 16, 44100 );
                 generator.setReceiver( receiver );
                 generator.setGlobalConfig( AppManager.editorConfig );
                 generator.init( vsq, 1, 0, vsq.TotalClocks );
                 double total_sec = vsq.getSecFromClock( vsq.TotalClocks ) + 1.0;
-                generator.begin( (long)(total_sec * VSTiProxy.SAMPLE_RATE) );
+                generator.begin( (long)(total_sec * VSTiDllManager.SAMPLE_RATE) );
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "FormGenerateKeySound#GenerateSinglePhone; ex=" + ex );
                 Logger.write( typeof( FormGenerateKeySound ) + ".GenerateSinglePhone; ex=" + ex + "\n" );

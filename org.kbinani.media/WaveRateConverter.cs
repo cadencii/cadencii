@@ -117,6 +117,9 @@ namespace org.kbinani.media {
             throws IOException
 #endif
         {
+            if ( reader == null ) {
+                return;
+            }
             if ( bRate == aRate ) {
                 reader.read( index, length, left, right );
             } else {

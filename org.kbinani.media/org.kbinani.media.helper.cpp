@@ -44,7 +44,7 @@ void SoundKill() {
 
 double SoundGetPosition() {
     if ( NULL == wave_out ) {
-        return -1.0;
+        return 0.0;
     }
 
     MMTIME mmt;
@@ -61,7 +61,7 @@ double SoundGetPosition() {
         case TIME_BYTES:
             return (double)mmt.u.cb / (double)wave_format.nAvgBytesPerSec;
         default:
-            return -1.0;
+            return 0.0;
     }
     return 0.0;
 }

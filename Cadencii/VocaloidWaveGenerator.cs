@@ -199,9 +199,9 @@ namespace org.kbinani.cadencii {
             // トラックの合成エンジンの種類
             RendererKind s_working_renderer = VsqFileEx.getTrackRendererKind( vsq_track );
             mDriver = null;
-            for ( int i = 0; i < VSTiProxy.vocaloidDriver.size(); i++ ) {
-                if ( VSTiProxy.vocaloidDriver.get( i ).kind == s_working_renderer ) {
-                    mDriver = VSTiProxy.vocaloidDriver.get( i );
+            for ( int i = 0; i < VSTiDllManager.vocaloidDriver.size(); i++ ) {
+                if ( VSTiDllManager.vocaloidDriver.get( i ).kind == s_working_renderer ) {
+                    mDriver = VSTiDllManager.vocaloidDriver.get( i );
                     break;
                 }
             }
@@ -222,11 +222,11 @@ namespace org.kbinani.cadencii {
                 first_tempo = (float)(60e6 / (double)split.TempoTable.get( 0 ).Tempo);
             }
             // ずれるサンプル数
-            int errorSamples = VSTiProxy.getErrorSamples( first_tempo );
+            int errorSamples = VSTiDllManager.getErrorSamples( first_tempo );
             // 今後トリムする予定のサンプル数と、
-            mTrimRemain = errorSamples + (int)(trim_sec * VSTiProxy.SAMPLE_RATE);
+            mTrimRemain = errorSamples + (int)(trim_sec * VSTiDllManager.SAMPLE_RATE);
             // 合計合成する予定のサンプル数を決める
-            mTotalSamples = (long)((end_sec - start_sec) * VSTiProxy.SAMPLE_RATE) + errorSamples;
+            mTotalSamples = (long)((end_sec - start_sec) * VSTiDllManager.SAMPLE_RATE) + errorSamples;
 #if DEBUG
             PortUtil.println( "VocaloidWaveGenerator#begin; mTotalSamples=" + mTotalSamples + "; start_sec,end_sec=" + start_sec + "," + end_sec + "; errorSamples=" + errorSamples );
 #endif
@@ -296,9 +296,9 @@ namespace org.kbinani.cadencii {
             // 合成が終わるか、ドライバへのアボート要求が来るまでは制御は返らない
             // この
             mDriver.startRendering(
-                mTotalSamples + mTrimRemain + (int)(ms_present / 1000.0 * VSTiProxy.SAMPLE_RATE),
+                mTotalSamples + mTrimRemain + (int)(ms_present / 1000.0 * VSTiDllManager.SAMPLE_RATE),
                 false,
-                VSTiProxy.SAMPLE_RATE,
+                VSTiDllManager.SAMPLE_RATE,
                 this );
 
             // ここに来るということは合成が終わったか、ドライバへのアボート要求が実行されたってこと。

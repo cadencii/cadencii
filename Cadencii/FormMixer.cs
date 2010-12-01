@@ -244,18 +244,13 @@ namespace org.kbinani.cadencii {
             }
             hScroll.setLocation( 0, VolumeTracker.HEIGHT );
 
-#if DEBUG
-            AppManager.debugWriteLine( "FormMixer#updateStatus;" );
-            AppManager.debugWriteLine( "    num_vtracker_on_panel=" + num_vtracker_on_panel );
-            AppManager.debugWriteLine( "    panel_capacity=" + panel_capacity );
-            AppManager.debugWriteLine( "    hScroll.Maximum=" + hScroll.getMaximum() );
-            AppManager.debugWriteLine( "    hScroll.LargeChange=" + hScroll.getVisibleAmount() );
-#endif
-
             int j = -1;
             for ( Iterator<VsqMixerEntry> itr = vsq.Mixer.Slave.iterator(); itr.hasNext(); ) {
                 VsqMixerEntry vme = itr.next();
                 j++;
+#if DEBUG
+                PortUtil.println( "FormMixer#updateStatus; #" + j + "; feder=" + vme.Feder + "; panpot=" + vme.Panpot );
+#endif
                 VolumeTracker tracker = m_tracker.get( j );
                 tracker.setFeder( vme.Feder );
                 tracker.setPanpot( vme.Panpot );

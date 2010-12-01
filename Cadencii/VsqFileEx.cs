@@ -56,10 +56,6 @@ namespace org.kbinani.cadencii {
         public boolean[] mute = new boolean[NUM_TRACK];
         public boolean[] solo = new boolean[NUM_TRACK];
 
-#if DEBUG
-        public Matrix2D<String> _debug_int_matrix2d = new Matrix2D<String>( 10, 10 );
-#endif
-
         public const String TAG_VSQEVENT_AQUESTONE_RELEASE = "org.kbinani.cadencii.AquesToneRelease";
         public const String TAG_VSQTRACK_RENDERER_KIND = "org.kbinani.cadencii.RendererKind";
 #if JAVA
@@ -91,6 +87,11 @@ namespace org.kbinani.cadencii {
             return VsqFile.getGenericTypeName( name );
         }
 
+        /// <summary>
+        /// 指定したトラックの音声合成器の種類を取得します
+        /// </summary>
+        /// <param name="vsq_track"></param>
+        /// <returns></returns>
         public static RendererKind getTrackRendererKind( VsqTrack vsq_track ) {
             String str_kind = getTagCor( vsq_track.Tag, TAG_VSQTRACK_RENDERER_KIND );
             if ( str_kind != null && !str_kind.Equals( "" ) ) {
@@ -117,15 +118,15 @@ namespace org.kbinani.cadencii {
                 // お手上げである。その２
                 return RendererKind.VOCALOID2;
             }
-            if ( version.StartsWith( VSTiProxy.RENDERER_AQT0 ) ) {
+            if ( version.StartsWith( VSTiDllManager.RENDERER_AQT0 ) ) {
                 return RendererKind.AQUES_TONE;
-            } else if ( version.StartsWith( VSTiProxy.RENDERER_DSB3 ) ) {
+            } else if ( version.StartsWith( VSTiDllManager.RENDERER_DSB3 ) ) {
                 return RendererKind.VOCALOID2;
-            } else if ( version.StartsWith( VSTiProxy.RENDERER_STR0 ) ) {
+            } else if ( version.StartsWith( VSTiDllManager.RENDERER_STR0 ) ) {
                 return RendererKind.STRAIGHT_UTAU;
-            } else if ( version.StartsWith( VSTiProxy.RENDERER_UTU0 ) ) {
+            } else if ( version.StartsWith( VSTiDllManager.RENDERER_UTU0 ) ) {
                 return RendererKind.UTAU;
-            } else if ( version.StartsWith( VSTiProxy.RENDERER_NULL ) ) {
+            } else if ( version.StartsWith( VSTiDllManager.RENDERER_NULL ) ) {
                 return RendererKind.NULL;
             } else {
                 // ここにくる場合は、VOCALOID1_100またはVOCALOID1_101のどちらか。
@@ -144,17 +145,17 @@ namespace org.kbinani.cadencii {
             VsqCommon vsq_common = vsq_track.getCommon();
             if ( vsq_common != null ) {
                 if ( renderer_kind == RendererKind.AQUES_TONE ) {
-                    vsq_common.Version = VSTiProxy.RENDERER_AQT0;
+                    vsq_common.Version = VSTiDllManager.RENDERER_AQT0;
                 } else if ( renderer_kind == RendererKind.STRAIGHT_UTAU ) {
-                    vsq_common.Version = VSTiProxy.RENDERER_STR0;
+                    vsq_common.Version = VSTiDllManager.RENDERER_STR0;
                 } else if ( renderer_kind == RendererKind.UTAU ) {
-                    vsq_common.Version = VSTiProxy.RENDERER_UTU0;
+                    vsq_common.Version = VSTiDllManager.RENDERER_UTU0;
                 } else if ( renderer_kind == RendererKind.VOCALOID1_100 || renderer_kind == RendererKind.VOCALOID1_101 ) {
-                    vsq_common.Version = VSTiProxy.RENDERER_DSB2;
+                    vsq_common.Version = VSTiDllManager.RENDERER_DSB2;
                 } else if ( renderer_kind == RendererKind.VOCALOID2 ) {
-                    vsq_common.Version = VSTiProxy.RENDERER_DSB3;
+                    vsq_common.Version = VSTiDllManager.RENDERER_DSB3;
                 } else if ( renderer_kind == RendererKind.NULL ) {
-                    vsq_common.Version = VSTiProxy.RENDERER_NULL;
+                    vsq_common.Version = VSTiDllManager.RENDERER_NULL;
                 }
             }
         }

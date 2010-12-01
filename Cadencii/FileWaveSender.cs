@@ -46,7 +46,7 @@ namespace org.kbinani.cadencii {
 #if DEBUG
             mNumInstance++;
 #endif
-            _converter = new WaveRateConverter( reader, VSTiProxy.SAMPLE_RATE );
+            _converter = new WaveRateConverter( reader, VSTiDllManager.SAMPLE_RATE );
         }
 
         public override int getVersion() {
@@ -63,7 +63,9 @@ namespace org.kbinani.cadencii {
 
         public void pull( double[] l, double[] r, int length ) {
             try {
-                _converter.read( _position, length, l, r );
+                lock ( _converter ) {
+                    _converter.read( _position, length, l, r );
+                }
                 _position += length;
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "FileWaveSender#pull; ex=" + ex );
@@ -77,7 +79,9 @@ namespace org.kbinani.cadencii {
             PortUtil.println( "FileWaveSender#end; mNumInstance=" + mNumInstance );
 #endif
             try {
-                _converter.close();
+                lock ( _converter ) {
+                    _converter.close();
+                }
             } catch ( Exception ex ) {
                 PortUtil.println( "FileWaveSender#end; ex=" + ex );
                 Logger.write( typeof( FileWaveSender ) + ".end; ex=" + ex + "\n" );
