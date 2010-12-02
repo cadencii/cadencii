@@ -97,30 +97,6 @@ namespace org.kbinani.cadencii {
         /// 実行環境
         /// </summary>
         public PlatformEnum Platform = PlatformEnum.Windows;
-        /// <summary>
-        /// toolStripToolの表示位置
-        /// <remarks>version 3.3より廃止</remarks>
-        /// </summary>
-        [Obsolete]
-        public ToolStripLocation ToolEditTool = new ToolStripLocation( new Point( 3, 0 ), ToolStripLocation.ParentPanel.Top );
-        /// <summary>
-        /// toolStripPositionの表示位置
-        /// <remarks>version 3.3より廃止</remarks>
-        /// </summary>
-        [Obsolete]
-        public ToolStripLocation ToolPositionLocation = new ToolStripLocation( new Point( 3, 25 ), ToolStripLocation.ParentPanel.Top );
-        /// <summary>
-        /// toolStripMeasureの表示位置
-        /// <remarks>version 3.3より廃止</remarks>
-        /// </summary>
-        [Obsolete]
-        public ToolStripLocation ToolMeasureLocation = new ToolStripLocation( new Point( 212, 25 ), ToolStripLocation.ParentPanel.Top );
-        /// <summary>
-        /// toolStripFileの表示位置
-        /// <remarks>version 3.3より廃止</remarks>
-        /// </summary>
-        [Obsolete]
-        public ToolStripLocation ToolFileLocation = new ToolStripLocation( new Point( 461, 0 ), ToolStripLocation.ParentPanel.Top );
         public boolean WindowMaximized = false;
         public Rectangle WindowRect = new Rectangle( 0, 0, 970, 718 );
         /// <summary>
@@ -131,10 +107,6 @@ namespace org.kbinani.cadencii {
         /// 発音記号入力モードを，維持するかどうか
         /// </summary>
         public boolean KeepLyricInputMode = false;
-        /* /// <summary>
-        /// 最後に使用したVSQファイルへのパス
-        /// </summary>
-        public String LastVsqPath = "";*/
         /// <summary>
         /// ピアノロールの何もないところをクリックした場合、右クリックでもプレビュー音を再生するかどうか
         /// </summary>
@@ -235,31 +207,6 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public MidiPortConfig MidiInPort = new MidiPortConfig();
         
-        /*public RgbColor PianorollColorVocalo2Black = new RgbColor( 212, 212, 212 );
-        public RgbColor PianorollColorVocalo2White = new RgbColor( 240, 240, 240 );
-        public RgbColor PianorollColorVocalo1Black = new RgbColor( 210, 205, 172 );
-        public RgbColor PianorollColorVocalo1White = new RgbColor( 240, 235, 214 );
-
-        public RgbColor PianorollColorVocalo1Bar = new RgbColor( 161, 157, 136 );
-        public RgbColor PianorollColorVocalo1Beat = new RgbColor( 209, 204, 172 );
-        public RgbColor PianorollColorVocalo2Bar = new RgbColor( 161, 157, 136 );
-        public RgbColor PianorollColorVocalo2Beat = new RgbColor( 209, 204, 172 );
-
-        public RgbColor PianorollColorUtauBlack = new RgbColor( 212, 212, 212 );
-        public RgbColor PianorollColorUtauWhite = new RgbColor( 240, 240, 240 );
-        public RgbColor PianorollColorUtauBar = new RgbColor( 255, 64, 255 );
-        public RgbColor PianorollColorUtauBeat = new RgbColor( 128, 128, 255 );
-
-        public RgbColor PianorollColorStraightBlack = new RgbColor( 212, 212, 212 );
-        public RgbColor PianorollColorStraightWhite = new RgbColor( 240, 240, 240 );
-        public RgbColor PianorollColorStraightBar = new RgbColor( 255, 153, 0 );
-        public RgbColor PianorollColorStraightBeat = new RgbColor( 128, 128, 255 );
-
-        public RgbColor PianorollColorAquesToneBlack = new RgbColor( 212, 212, 212 );
-        public RgbColor PianorollColorAquesToneWhite = new RgbColor( 240, 240, 240 );
-        public RgbColor PianorollColorAquesToneBar = new RgbColor( 7, 107, 175 );
-        public RgbColor PianorollColorAquesToneBeat = new RgbColor( 234, 190, 62 );*/
-
         public boolean ViewAtcualPitch = false;
         public boolean InvokeUtauCoreWithWine = false;
         public Vector<SingerConfig> UtauSingers = new Vector<SingerConfig>();
@@ -280,21 +227,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// ミキサーダイアログを常に手前に表示するかどうか
         /// </summary>
-        public boolean MixerTopMost = false;
+        public boolean MixerTopMost = true;
         public Vector<ValuePairOfStringArrayOfKeys> ShortcutKeys = new Vector<ValuePairOfStringArrayOfKeys>();
-        /// <summary>
-        /// リアルタイム再生時の再生速度
-        /// </summary>
-        private float m_realtime_input_speed = 1.0f;
-        public byte MidiProgramNormal = 115;
-        public byte MidiProgramBell = 9;
-        public byte MidiNoteNormal = 65;
-        public byte MidiNoteBell = 65;
-        public boolean MidiRingBell = true;
-        public int MidiPreUtterance = 0;
-        public MidiPortConfig MidiDeviceMetronome = new MidiPortConfig();
-        public MidiPortConfig MidiDeviceGeneral = new MidiPortConfig();
-        public boolean MetronomeEnabled = true;
         public PropertyPanelState PropertyWindowStatus = new PropertyPanelState();
         /// <summary>
         /// 概観ペインが表示されているかどうか
@@ -325,10 +259,6 @@ namespace org.kbinani.cadencii {
         /// アイコンパレット・ウィンドウを常に手前に表示するかどうか
         /// </summary>
         public boolean FormIconTopMost = true;
-        /* /// <summary>
-        /// 前回エクスポートしたMusicXmlのパス
-        /// </summary>
-        public String LastMusicXmlPath = "";*/
         /// <summary>
         /// 最初に戻る、のショートカットキー
         /// </summary>
@@ -812,35 +742,6 @@ namespace org.kbinani.cadencii {
             }
             return ret.toArray( new BKeys[] { } );
         }
-
-        public float getRealtimeInputSpeed() {
-            if ( m_realtime_input_speed <= 0.0f ) {
-                m_realtime_input_speed = 1.0f;
-            }
-            return m_realtime_input_speed;
-        }
-
-        public void setRealtimeInputSpeed( float value ) {
-            m_realtime_input_speed = value;
-            if ( m_realtime_input_speed <= 0.0f ) {
-                m_realtime_input_speed = 1.0f;
-            }
-        }
-
-#if !JAVA
-        // XMLシリアライズ用
-        /// <summary>
-        /// リアルタイム再生時の再生速度
-        /// </summary>
-        public float RealtimeInputSpeed {
-            get {
-                return getRealtimeInputSpeed();
-            }
-            set {
-                setRealtimeInputSpeed( value );
-            }
-        }
-#endif
 
         public TreeMap<String, BKeys[]> getShortcutKeysDictionary() {
             TreeMap<String, BKeys[]> ret = new TreeMap<String, BKeys[]>();

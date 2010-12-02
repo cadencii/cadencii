@@ -68,10 +68,6 @@ namespace org.kbinani.cadencii {
         /// </summary>
         EDIT_VIBRATO_DELAY,
         /// <summary>
-        /// リアルタイム音符入力
-        /// </summary>
-        REALTIME,
-        /// <summary>
         /// アイコンパレットのアイテムをドラッグ＆ドロップ中
         /// </summary>
         DRAG_DROP,

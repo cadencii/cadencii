@@ -466,14 +466,6 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public static boolean mAutoScroll = true;
         /// <summary>
-        /// 最初のバッファが書き込まれたかどうか
-        /// </summary>
-        public static boolean mFirstBufferWritten = false;
-        /// <summary>
-        /// リアルタイム再生で使用しようとしたVSTiが有効だったかどうか。
-        /// </summary>
-        public static boolean mRendererAvailable = false;
-        /// <summary>
         /// プレビュー再生が開始された時刻
         /// </summary>
         public static double mPreviewStartedTime;
@@ -627,112 +619,102 @@ namespace org.kbinani.cadencii {
             RendererKind renderer = VsqFileEx.getTrackRendererKind( mVsq.Track.get( selected ) );
             int clock = mCurrentClock;
             mDirectPlayShift = (float)mVsq.getSecFromClock( clock );
-            if ( getEditMode() != EditMode.REALTIME ) {
-                // リアルタイム再生で無い場合
-                String tmppath = getTempWaveDir();
+            // リアルタイム再生で無い場合
+            String tmppath = getTempWaveDir();
 
-                int track_count = mVsq.Track.size();
+            int track_count = mVsq.Track.size();
 
-                Vector<Integer> tracks = new Vector<Integer>();
-                for ( int track = 1; track < track_count; track++ ) {
-                    tracks.add( track );
-                }
-
-                patchWorkToFreeze( tracks );
-
-                Vector<Amplifier> waves = new Vector<Amplifier>();
-                for ( int i = 0; i < tracks.size(); i++ ) {
-                    int track = tracks.get( i );
-                    String file = PortUtil.combinePath( tmppath, track + ".wav" );
-                    WaveReader wr = null;
-                    try {
-                        wr = new WaveReader( file );
-                        wr.setOffsetSeconds( mDirectPlayShift );
-                        Amplifier a = new Amplifier();
-                        FileWaveSender f = new FileWaveSender( wr );
-                        a.setSender( f );
-                        a.setAmplifierView( mMixerWindow.getVolumeTracker( track ) );
-                        waves.add( a );
-                    } catch ( Exception ex ) {
-                        Logger.write( typeof( AppManager ) + ".previewStart; ex=" + ex + "\n" );
-                        PortUtil.stderr.println( "AppManager.previewStart; ex=" + ex );
-                    }
-                }
-
-                // clock以降に音符があるかどうかを調べる
-                int count = 0;
-                for ( Iterator<VsqEvent> itr = mVsq.Track.get( selected ).getNoteEventIterator(); itr.hasNext(); ) {
-                    VsqEvent ve = itr.next();
-                    if ( ve.Clock >= clock ) {
-                        count++;
-                        break;
-                    }
-                }
-
-                int bgm_count = getBgmCount();
-                double pre_measure_sec = mVsq.getSecFromClock( mVsq.getPreMeasureClocks() );
-                for ( int i = 0; i < bgm_count; i++ ) {
-                    BgmFile bgm = getBgm( i );
-                    WaveReader wr = null;
-                    try {
-                        wr = new WaveReader( bgm.file );
-                        double offset = bgm.readOffsetSeconds + mDirectPlayShift;
-                        if ( bgm.startAfterPremeasure ) {
-                            offset -= pre_measure_sec;
-                        }
-                        wr.setOffsetSeconds( offset );
-#if DEBUG
-                        PortUtil.println( "AppManager.previewStart; bgm.file=" + bgm.file + "; offset=" + offset );
-
-#endif
-                        Amplifier a = new Amplifier();
-                        FileWaveSender f = new FileWaveSender( wr );
-                        a.setSender( f );
-                        a.setAmplifierView( AppManager.mMixerWindow.getVolumeTrackerBgm( i ) );
-                        waves.add( a );
-                    } catch ( Exception ex ) {
-                        Logger.write( typeof( AppManager ) + ".previewStart; ex=" + ex + "\n" );
-                        PortUtil.stderr.println( "AppManager.previewStart; ex=" + ex );
-                    }
-                }
-
-                boolean mode_infinite = getEditMode() == EditMode.REALTIME;
-
-                // 最初のsenderをドライバにする
-                WaveSenderDriver driver = new WaveSenderDriver();
-                driver.setSender( waves.get( 0 ) );
-                Mixer m = new Mixer();
-                driver.setReceiver( m );
-                stopGenerator();
-                setGenerator( driver );
-                Amplifier amp = new Amplifier();
-                amp.setAmplifierView( mMixerWindow.getVolumeTrackerMaster() );
-                m.setReceiver( amp );
-                amp.setReceiver( MonitorWaveReceiver.getInstance() );
-                for ( int i = 1; i < waves.size(); i++ ) {
-                    m.addSender( waves.get( i ) );
-                }
-
-                int end_clock = mVsq.TotalClocks;
-                if ( mEndMarkerEnabled ) {
-                    end_clock = mEndMarker;
-                }
-                double end_sec = mVsq.getSecFromClock( end_clock );
-                long samples = (long)((end_sec - mDirectPlayShift) * VSTiDllManager.SAMPLE_RATE);
-                if ( mode_infinite ) {
-                    samples = long.MaxValue;
-                }
-#if DEBUG
-                PortUtil.println( "AppManager.previewStart; calling runGenerator..." );
-#endif
-                runGenerator( samples );
-#if DEBUG
-                PortUtil.println( "AppManager.previewStart; calling runGenerator... done" );
-#endif
-            } else {
-                // リアルタイム入力
-                mPreviewStartedTime = PortUtil.getCurrentTime();
+            Vector<Integer> tracks = new Vector<Integer>();
+            for ( int track = 1; track < track_count; track++ ) {
+                tracks.add( track );
             }
+
+            patchWorkToFreeze( tracks );
+
+            Vector<Amplifier> waves = new Vector<Amplifier>();
+            for ( int i = 0; i < tracks.size(); i++ ) {
+                int track = tracks.get( i );
+                String file = PortUtil.combinePath( tmppath, track + ".wav" );
+                WaveReader wr = null;
+                try {
+                    wr = new WaveReader( file );
+                    wr.setOffsetSeconds( mDirectPlayShift );
+                    Amplifier a = new Amplifier();
+                    FileWaveSender f = new FileWaveSender( wr );
+                    a.setSender( f );
+                    a.setAmplifierView( mMixerWindow.getVolumeTracker( track ) );
+                    waves.add( a );
+                } catch ( Exception ex ) {
+                    Logger.write( typeof( AppManager ) + ".previewStart; ex=" + ex + "\n" );
+                    PortUtil.stderr.println( "AppManager.previewStart; ex=" + ex );
+                }
+            }
+
+            // clock以降に音符があるかどうかを調べる
+            int count = 0;
+            for ( Iterator<VsqEvent> itr = mVsq.Track.get( selected ).getNoteEventIterator(); itr.hasNext(); ) {
+                VsqEvent ve = itr.next();
+                if ( ve.Clock >= clock ) {
+                    count++;
+                    break;
+                }
+            }
+
+            int bgm_count = getBgmCount();
+            double pre_measure_sec = mVsq.getSecFromClock( mVsq.getPreMeasureClocks() );
+            for ( int i = 0; i < bgm_count; i++ ) {
+                BgmFile bgm = getBgm( i );
+                WaveReader wr = null;
+                try {
+                    wr = new WaveReader( bgm.file );
+                    double offset = bgm.readOffsetSeconds + mDirectPlayShift;
+                    if ( bgm.startAfterPremeasure ) {
+                        offset -= pre_measure_sec;
+                    }
+                    wr.setOffsetSeconds( offset );
+#if DEBUG
+                    PortUtil.println( "AppManager.previewStart; bgm.file=" + bgm.file + "; offset=" + offset );
+
+#endif
+                    Amplifier a = new Amplifier();
+                    FileWaveSender f = new FileWaveSender( wr );
+                    a.setSender( f );
+                    a.setAmplifierView( AppManager.mMixerWindow.getVolumeTrackerBgm( i ) );
+                    waves.add( a );
+                } catch ( Exception ex ) {
+                    Logger.write( typeof( AppManager ) + ".previewStart; ex=" + ex + "\n" );
+                    PortUtil.stderr.println( "AppManager.previewStart; ex=" + ex );
+                }
+            }
+
+            // 最初のsenderをドライバにする
+            WaveSenderDriver driver = new WaveSenderDriver();
+            driver.setSender( waves.get( 0 ) );
+            Mixer m = new Mixer();
+            driver.setReceiver( m );
+            stopGenerator();
+            setGenerator( driver );
+            Amplifier amp = new Amplifier();
+            amp.setAmplifierView( mMixerWindow.getVolumeTrackerMaster() );
+            m.setReceiver( amp );
+            amp.setReceiver( MonitorWaveReceiver.getInstance() );
+            for ( int i = 1; i < waves.size(); i++ ) {
+                m.addSender( waves.get( i ) );
+            }
+
+            int end_clock = mVsq.TotalClocks;
+            if ( mEndMarkerEnabled ) {
+                end_clock = mEndMarker;
+            }
+            double end_sec = mVsq.getSecFromClock( end_clock );
+            long samples = (long)((end_sec - mDirectPlayShift) * VSTiDllManager.SAMPLE_RATE);
+#if DEBUG
+            PortUtil.println( "AppManager.previewStart; calling runGenerator..." );
+#endif
+            runGenerator( samples );
+#if DEBUG
+            PortUtil.println( "AppManager.previewStart; calling runGenerator... done" );
+#endif
         }
 
         /// <summary>
@@ -740,7 +722,6 @@ namespace org.kbinani.cadencii {
         /// </summary>
         private static void previewStop() {
             stopGenerator();
-            mFirstBufferWritten = false;
         }
 
         /// <summary>
@@ -1728,30 +1709,62 @@ namespace org.kbinani.cadencii {
             return showMessageBox( text, caption, optionType, org.kbinani.windows.forms.Utility.MSGBOX_PLAIN_MESSAGE );
         }
 
+        /// <summary>
+        /// モーダルなダイアログを出すために，プロパティウィンドウとミキサーウィンドウの「最前面に表示」設定を一時的にOFFにします
+        /// </summary>
         public static void beginShowDialog() {
 #if ENABLE_PROPERTY
-            boolean property = (propertyWindow != null) ? propertyWindow.isAlwaysOnTop() : false;
-            if ( property ) {
-                propertyWindow.setAlwaysOnTop( false );
+            if ( propertyWindow != null ) {
+                boolean previous = propertyWindow.isAlwaysOnTop();
+                propertyWindow.setTag( previous );
+                if ( previous ) {
+                    propertyWindow.setAlwaysOnTop( false );
+                }
             }
 #endif
-            boolean mixer = (mMixerWindow != null) ? mMixerWindow.isAlwaysOnTop() : false;
-            if ( mixer ) {
-                mMixerWindow.setAlwaysOnTop( false );
+            if ( mMixerWindow != null ) {
+                boolean previous = mMixerWindow.isAlwaysOnTop();
+                mMixerWindow.setTag( previous );
+                if ( previous ) {
+                    mMixerWindow.setAlwaysOnTop( false );
+                }
+            }
+
+            if ( iconPalette != null ) {
+                boolean previous = iconPalette.isAlwaysOnTop();
+                iconPalette.setTag( previous );
+                if ( previous ) {
+                    iconPalette.setAlwaysOnTop( false );
+                }
             }
         }
 
+        /// <summary>
+        /// beginShowDialogで一時的にOFFにした「最前面に表示」設定を元に戻します
+        /// </summary>
         public static void endShowDialog() {
 #if ENABLE_PROPERTY
-            boolean property = (propertyWindow != null) ? propertyWindow.isAlwaysOnTop() : false;
-            if ( property ) {
-                propertyWindow.setAlwaysOnTop( true );
+            if ( propertyWindow != null ) {
+                Object tag = propertyWindow.getTag();
+                if ( tag != null && tag is boolean ) {
+                    propertyWindow.setAlwaysOnTop( (boolean)tag );
+                }
             }
 #endif
-            boolean mixer = (mMixerWindow != null) ? mMixerWindow.isAlwaysOnTop() : false;
-            if ( mixer ) {
-                mMixerWindow.setAlwaysOnTop( true );
+            if ( mMixerWindow != null ) {
+                Object tag = mMixerWindow.getTag();
+                if ( tag != null && tag is boolean ) {
+                    mMixerWindow.setAlwaysOnTop( (boolean)tag );
+                }
             }
+
+            if ( iconPalette != null ) {
+                Object tag = iconPalette.getTag();
+                if ( tag != null && tag is boolean ) {
+                    iconPalette.setAlwaysOnTop( (boolean)tag );
+                }
+            }
+            
             if ( mMainWindow != null ) {
                 mMainWindow.requestFocus();
             }
@@ -3539,16 +3552,6 @@ namespace org.kbinani.cadencii {
                     editorConfig.UserDictionaries.add( st.getName() + "\tT" );
                 }
             }
-#if ENABLE_MIDI
-            MidiPlayer.DeviceGeneral = (uint)editorConfig.MidiDeviceGeneral.PortNumber;
-            MidiPlayer.DeviceMetronome = (uint)editorConfig.MidiDeviceMetronome.PortNumber;
-            MidiPlayer.NoteBell = editorConfig.MidiNoteBell;
-            MidiPlayer.NoteNormal = editorConfig.MidiNoteNormal;
-            MidiPlayer.PreUtterance = editorConfig.MidiPreUtterance;
-            MidiPlayer.ProgramBell = editorConfig.MidiProgramBell;
-            MidiPlayer.ProgramNormal = editorConfig.MidiProgramNormal;
-            MidiPlayer.RingBell = editorConfig.MidiRingBell;
-#endif
 
             int draft_key_width = editorConfig.KeyWidth;
             if ( draft_key_width < MIN_KEY_WIDTH ) {

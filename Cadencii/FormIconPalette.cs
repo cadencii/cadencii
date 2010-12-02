@@ -45,6 +45,8 @@ namespace org.kbinani.cadencii {
 #else
     public class FormIconPalette : BForm {
 #endif
+        public BEvent<BEventHandler> topMostChangedEvent = new BEvent<BEventHandler>();
+        
         private Vector<BButton> dynaffButtons = new Vector<BButton>();
         private Vector<BButton> crescendButtons = new Vector<BButton>();
         private Vector<BButton> decrescendButtons = new Vector<BButton>();
@@ -230,6 +232,10 @@ namespace org.kbinani.cadencii {
 
         public void chkTopMost_CheckedChanged( Object sender, EventArgs e ) {
             setAlwaysOnTop( chkTopMost.isSelected() );
+            try {
+                topMostChangedEvent.raise( this, e );
+            } catch ( Exception ex ) {
+            }
         }
 
         public void menuWindowHide_Click( Object sender, EventArgs e ) {

@@ -343,6 +343,14 @@ namespace org.kbinani.cadencii {
         }
 
         #region event handlers
+        private void txtPanpot_Enter( object sender, EventArgs e ) {
+            txtPanpot.selectAll();
+        }
+
+        private void txtFeder_Enter( object sender, EventArgs e ) {
+            txtFeder.selectAll();
+        }
+
         public void VolumeTracker_Resize( Object sender, BEventArgs e ) {
 #if !JAVA
             this.Width = WIDTH;
@@ -450,6 +458,10 @@ namespace org.kbinani.cadencii {
             //this.Resize += new System.EventHandler( this.VolumeTracker_Resize );
             chkSolo.clickEvent.add( new BEventHandler( this, "chkSolo_Click" ) );
             chkMute.clickEvent.add( new BEventHandler( this, "chkMute_Click" ) );
+#if !JAVA
+            txtFeder.Enter += new EventHandler( txtFeder_Enter );
+            txtPanpot.Enter += new EventHandler( txtPanpot_Enter );
+#endif
         }
 
         private void setResources() {

@@ -43,9 +43,9 @@ namespace org.kbinani.cadencii {
 #endif
         public const String FILEBASE = "temp.wav";
         private const int MAX_CACHE = 512;
-        private const int _BUFLEN = 1024;
+        private const int BUFLEN = 1024;
         private const int VERSION = 0;
-        private static TreeMap<String, ValuePair<String, Double>> s_cache = new TreeMap<String, ValuePair<String, Double>>();
+        private static TreeMap<String, ValuePair<String, Double>> mCache = new TreeMap<String, ValuePair<String, Double>>();
 
         private Vector<RenderQueue> mResamplerQueue = new Vector<RenderQueue>();
         private double[] mLeft;
@@ -64,8 +64,8 @@ namespace org.kbinani.cadencii {
         private WaveReceiver mReceiver = null;
         private long mTotalAppend = 0;
         private int mTrack;
-        private double[] mBufferL = new double[_BUFLEN];
-        private double[] mBufferR = new double[_BUFLEN];
+        private double[] mBufferL = new double[BUFLEN];
+        private double[] mBufferR = new double[BUFLEN];
         private int mTrimRemain = 0;
 
         public boolean isRunning() {
@@ -116,18 +116,42 @@ namespace org.kbinani.cadencii {
             mVsq.updateTotalClocks();
 
             if ( end_clock < vsq.TotalClocks ) {
+                // 末尾の部分は不要なので削除
                 mVsq.removePart( end_clock, mVsq.TotalClocks + 480 );
             }
 
-            double end_sec = vsq.getSecFromClock( start_clock );
-            double start_sec = vsq.getSecFromClock( end_clock );
+            double trim_sec = 0.0;
+            if ( start_clock > 0 ) {
+                // 途中からの合成が指示された場合
+                // 0clockからstart_clockまでを削除する
+                // もしstart_clock位置に音符があれば，その音符の先頭から合成し，trim_secを適切に設定する
 
-            double trim_sec = 0.0; // レンダリング結果から省かなければならない秒数。
-            if ( start_clock < mVsq.getPreMeasureClocks() ) {
-                trim_sec = mVsq.getSecFromClock( start_clock );
-            } else {
-                mVsq.removePart( vsq.getPreMeasureClocks(), start_clock );
-                trim_sec = mVsq.getSecFromClock( mVsq.getPreMeasureClocks() );
+                // まず，start_clockに音符があるかどうかを調べる
+                // 音符があれば，trim_endに適切な値を代入
+                VsqTrack vsq_track = mVsq.Track.get( track );
+                int c = vsq_track.getEventCount();
+                int trim_end = start_clock;
+                for ( int i = 0; i < c; i++ ) {
+                    VsqEvent itemi = vsq_track.getEvent( i );
+                    if ( itemi.ID.type != VsqIDType.Anote ) {
+                        continue;
+                    }
+                    if ( itemi.Clock <= start_clock && start_clock < itemi.Clock + itemi.ID.getLength() ) {
+                        trim_end = itemi.Clock;
+                        break;
+                    }
+                }
+
+                if ( trim_end == start_clock ) {
+                    trim_sec = 0.0;
+                } else {
+                    trim_sec = mVsq.getSecFromClock( start_clock ) - mVsq.getSecFromClock( trim_end );
+                }
+
+                // 必要ならトリムを実行
+                if ( 0 < trim_end ) {
+                    mVsq.removePart( 0, trim_end );
+                }
             }
             mVsq.updateTotalClocks();
 
@@ -146,9 +170,9 @@ namespace org.kbinani.cadencii {
         }
 
         public static void clearCache() {
-            for ( Iterator<String> itr = s_cache.keySet().iterator(); itr.hasNext(); ) {
+            for ( Iterator<String> itr = mCache.keySet().iterator(); itr.hasNext(); ) {
                 String key = itr.next();
-                ValuePair<String, Double> value = s_cache.get( key );
+                ValuePair<String, Double> value = mCache.get( key );
                 String file = value.getKey();
                 try {
                     PortUtil.deleteFile( file );
@@ -157,7 +181,7 @@ namespace org.kbinani.cadencii {
                     Logger.write( "UtauWaveGenerator::clearCache; ex=" + ex + "\n" );
                 }
             }
-            s_cache.clear();
+            mCache.clear();
         }
 
         public void begin( long total_samples ) {
@@ -170,7 +194,6 @@ namespace org.kbinani.cadencii {
                 double sample_length = mVsq.getSecFromClock( mVsq.TotalClocks ) * VSTiDllManager.SAMPLE_RATE;
                 mAbortRequired = false;
                 mRunning = true;
-                //m_progress = 0.0;
                 if ( !PortUtil.isDirectoryExists( mTempDir ) ) {
                     PortUtil.createDirectory( mTempDir );
                 }
@@ -204,6 +227,9 @@ namespace org.kbinani.cadencii {
                 double sec_end_old = 0;
                 int program_change = 0;
                 mResamplerQueue.clear();
+#if DEBUG
+                double error_sum = 0.0;
+#endif
 
                 // 前後の音符の先行発音やオーバーラップやらを取得したいので、一度リストに格納する
                 Vector<VsqEvent> events = new Vector<VsqEvent>();
@@ -234,7 +260,6 @@ namespace org.kbinani.cadencii {
                     log.Write( "; pc=" + program_change );
 #endif
                     if ( mAbortRequired ) {
-                        //m_rendering = false;
                         return;
                     }
                     count++;
@@ -248,19 +273,30 @@ namespace org.kbinani.cadencii {
                         item_next = events.get( k + 1 );
                     }
                     if ( item_next != null ) {
-                        double sec_start_act_next = mVsq.getSecFromClock( item_next.Clock ) - item_next.UstEvent.PreUtterance / 1000.0 + item_next.UstEvent.VoiceOverlap / 1000.0;
+                        double sec_start_act_next = 
+                            mVsq.getSecFromClock( item_next.Clock ) - item_next.UstEvent.PreUtterance / 1000.0
+                            + item_next.UstEvent.VoiceOverlap / 1000.0;
                         if ( sec_start_act_next < sec_end_act ) {
                             sec_end_act = sec_start_act_next;
                         }
                     }
                     float t_temp = (float)(item.ID.getLength() / (sec_end - sec_start) / 8.0);
                     if ( (count == 0 && sec_start > 0.0) || (sec_start > sec_end_old) ) {
+                        // 最初の音符，
                         double sec_start2 = sec_end_old;
                         double sec_end2 = sec_start;
-                        float t_temp2 = (float)(item.Clock / (sec_end2 - sec_start2) / 8.0);
+                        // t_temp2が120から大きく外れないように
+                        int draft_length = (int)((sec_end2 - sec_start2) * 8.0 * 120.0);
+                        float t_temp2 = (float)(draft_length / (sec_end2 - sec_start2) / 8.0);
+                        String str_t_temp2 = PortUtil.formatDecimal( "0.00", t_temp2 );
+                        double act_t_temp2 = PortUtil.parseDouble( str_t_temp2 );
+#if DEBUG
+                        error_sum += (draft_length / (act_t_temp2 * 8.0)) - (sec_end2 - sec_start2);
+#endif
                         RenderQueue rq = new RenderQueue();
-                        //rq.ResamplerArg = "";
-                        rq.WavtoolArgPrefix = "\"" + file + "\" \"" + PortUtil.combinePath( singer, "R.wav" ) + "\" 0 " + item.Clock + "@" + PortUtil.formatDecimal( "0.00", t_temp2 );
+                        rq.WavtoolArgPrefix = 
+                            "\"" + file + "\" \"" + PortUtil.combinePath( singer, "R.wav" ) + "\" 0 " + draft_length + "@"
+                            + str_t_temp2;
                         rq.WavtoolArgSuffix = " 0 0";
                         rq.Oto = new OtoArgs();
                         rq.FileName = "";
@@ -379,7 +415,8 @@ namespace org.kbinani.cadencii {
                     foreach ( String s in pitch ) {
                         md5_src += s + " ";
                     }
-                    String filename = PortUtil.combinePath( mTempDir, PortUtil.getMD5FromString( s_cache.size() + md5_src ) + ".wav" );
+                    String filename = 
+                        PortUtil.combinePath( mTempDir, PortUtil.getMD5FromString( mCache.size() + md5_src ) + ".wav" );
 
                     rq2.appendArgRange( resampler_arg_prefix );
                     rq2.appendArg( "\"" + filename + "\"" );
@@ -389,15 +426,15 @@ namespace org.kbinani.cadencii {
                     }
 
                     String search_key = md5_src;
-                    boolean exist_in_cache = s_cache.containsKey( search_key );
+                    boolean exist_in_cache = mCache.containsKey( search_key );
                     if ( !exist_in_cache ) {
-                        if ( s_cache.size() + 1 >= MAX_CACHE ) {
+                        if ( mCache.size() + 1 >= MAX_CACHE ) {
                             double old = PortUtil.getCurrentTime();
                             String delfile = "";
                             String delkey = "";
-                            for ( Iterator<String> itr = s_cache.keySet().iterator(); itr.hasNext(); ) {
+                            for ( Iterator<String> itr = mCache.keySet().iterator(); itr.hasNext(); ) {
                                 String key = itr.next();
-                                ValuePair<String, Double> value = s_cache.get( key );
+                                ValuePair<String, Double> value = mCache.get( key );
                                 if ( old < value.getValue() ) {
                                     old = value.getValue();
                                     delfile = value.getKey();
@@ -410,14 +447,22 @@ namespace org.kbinani.cadencii {
                                 PortUtil.stderr.println( "UtauWaveGenerator#run; ex=" + ex );
                                 Logger.write( "UtauWaveGenerator::begin(long): ex=" + ex + "\n" );
                             }
-                            s_cache.remove( delkey );
+                            mCache.remove( delkey );
                         }
-                        s_cache.put( search_key, new ValuePair<String, Double>( filename, PortUtil.getCurrentTime() ) );
+                        mCache.put( search_key, new ValuePair<String, Double>( filename, PortUtil.getCurrentTime() ) );
                     } else {
-                        filename = s_cache.get( search_key ).getKey();
+                        filename = mCache.get( search_key ).getKey();
                     }
 
-                    rq2.WavtoolArgPrefix = "\"" + file + "\" \"" + filename + "\" 0 " + item.ID.getLength() + "@" + PortUtil.formatDecimal( "0.00", t_temp );
+                    String str_t_temp = PortUtil.formatDecimal( "0.00", t_temp );
+#if DEBUG
+                    double act_t_temp = PortUtil.parseDouble( str_t_temp );
+                    error_sum += (item.ID.getLength() / (8.0 * act_t_temp)) - (sec_end - sec_start);
+                    Logger.write( "UtauWaveGenerator#begin; error_sum=" + error_sum + "\n" );
+#endif
+                    rq2.WavtoolArgPrefix = 
+                        "\"" + file + "\" \"" + filename + "\" 0 "
+                        + item.ID.getLength() + "@" + str_t_temp;
                     UstEnvelope env = item.UstEvent.Envelope;
                     if ( env == null ) {
                         env = new UstEnvelope();
@@ -794,7 +839,6 @@ namespace org.kbinani.cadencii {
                         }
 
                         if ( mAbortRequired ) {
-                            //m_rendering = false;
                             mAbortRequired = false;
                             return;
                         }
@@ -827,12 +871,12 @@ namespace org.kbinani.cadencii {
 #if DEBUG
                 PortUtil.println( "UtauWaveGenerator#run; tremain=" + tremain );
 #endif
-                for ( int i = 0; i < _BUFLEN; i++ ) {
+                for ( int i = 0; i < BUFLEN; i++ ) {
                     mBufferL[i] = 0.0;
                     mBufferR[i] = 0.0;
                 }
                 while ( tremain > 0 && !mAbortRequired ) {
-                    int amount = (tremain > _BUFLEN) ? _BUFLEN : tremain;
+                    int amount = (tremain > BUFLEN) ? BUFLEN : tremain;
                     waveIncoming( mBufferL, mBufferR, amount );
                     tremain -= amount;
                 }
@@ -906,7 +950,7 @@ namespace org.kbinani.cadencii {
             }
             int remain = length - offset;
             while ( remain > 0 ) {
-                int amount = (remain > _BUFLEN) ? _BUFLEN : remain;
+                int amount = (remain > BUFLEN) ? BUFLEN : remain;
                 for ( int i = 0; i < amount; i++ ) {
                     mBufferL[i] = l[i + offset];
                     mBufferR[i] = r[i + offset];

@@ -866,7 +866,6 @@ namespace org.kbinani.cadencii {
                     // 編集中のエントリを表示
                     if ( edit_mode == EditMode.ADD_ENTRY ||
                          edit_mode == EditMode.ADD_FIXED_LENGTH_ENTRY ||
-                         edit_mode == EditMode.REALTIME ||
                          edit_mode == EditMode.DRAG_DROP ) {
                         if ( AppManager.mAddingEvent != null ) {
                             int x = (int)(AppManager.mAddingEvent.Clock * scalex + xoffset);

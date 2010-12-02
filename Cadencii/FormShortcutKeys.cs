@@ -167,9 +167,6 @@ namespace org.kbinani.cadencii {
                 String name = mDict.get( display ).getKey();
                 item.setName( name );
                 String group = "";
-#if DEBUG
-                PortUtil.println( "FormShortcutKeys#UpdateList; name=" + name );
-#endif
                 if ( name.StartsWith( "menuFile" ) ) {
                     group = "listGroupFile";
                 } else if ( name.StartsWith( "menuEdit" ) ) {
@@ -191,6 +188,9 @@ namespace org.kbinani.cadencii {
                 } else {
                     group = "listGroupOther";
                 }
+#if DEBUG
+                PortUtil.println( "FormShortcutKeys#UpdateList; name=" + name + "; group=" + group );
+#endif
                 list.addItem( group, item );
             }
             updateColor();

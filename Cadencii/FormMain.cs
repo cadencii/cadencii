@@ -422,9 +422,6 @@ namespace org.kbinani.cadencii {
         public FormMidiImExport mDialogMidiImportAndExport = null;
         public TreeMap<EditTool, Cursor> mCursor = new TreeMap<EditTool, Cursor>();
         private Preference mDialogPreference;
-#if ENABLE_MIDI
-        public BToolStripButton mStripDDBtnMetronome;
-#endif
 #if ENABLE_PROPERTY
         public PropertyPanelContainer mPropertyPanelContainer;
 #endif
@@ -690,17 +687,6 @@ namespace org.kbinani.cadencii {
             menuSettingPaletteTool.setVisible( false );
             menuScript.setVisible( false );
 #endif
-
-#if ENABLE_MIDI
-            mStripDDBtnMetronome = new BToolStripButton();
-            mStripDDBtnMetronome.setText( "Metronome" );
-            mStripDDBtnMetronome.Name = "mStripDDBtnMetronome";
-            mStripDDBtnMetronome.CheckOnClick = true;
-            mStripDDBtnMetronome.setSelected( AppManager.editorConfig.MetronomeEnabled );
-            mStripDDBtnMetronome.CheckedChanged += new EventHandler( mStripDDBtnMetronome_CheckedChanged );
-            toolStripBottom.Items.Add( mStripDDBtnMetronome );
-#endif
-
             trackSelector = new TrackSelector();
             updateTrackSelectorVisibleCurve();
             trackSelector.setBackground( new Color( 108, 108, 108 ) );
@@ -1011,7 +997,6 @@ namespace org.kbinani.cadencii {
             menuSettingMidi.setVisible( false );
 #endif
             menuHelpLogSwitch.setSelected( Logger.isEnabled() );
-            initResource();
             applyShortcut();
 
             // ファイルを開く
@@ -1793,40 +1778,6 @@ namespace org.kbinani.cadencii {
             ensureVisible( clock );
         }
 
-        /// <summary>
-        /// 画像等のリソースを設定します。
-        /// </summary>
-        public void initResource() {
-#if ENABLE_MIDI
-            mStripDDBtnMetronome.setIcon( new ImageIcon( Resources.get_alarm_clock() ) );
-#endif
-        }
-
-        /// <summary>
-        /// リアルタイム入力の再生速度を変更します
-        /// </summary>
-        /// <param name="newv">再生速度の倍率。1が等倍を表す</param>
-        public void changeRealtimeInputSpeed( float newv ) {
-            float old = AppManager.editorConfig.getRealtimeInputSpeed();
-            double now = PortUtil.getCurrentTime();
-            float play_time = (float)(now - AppManager.mPreviewStartedTime) * old / newv;
-            int sec = (int)(Math.Floor( play_time ) + 0.1);
-            int millisec = (int)((play_time - sec) * 1000);
-            AppManager.mPreviewStartedTime = now - (sec + millisec / 1000.0);
-#if ENABLE_MIDI
-            MidiPlayer.SetSpeed( newv, AppManager.mPreviewStartedTime );
-#endif
-        }
-
-#if ENABLE_STRIP_DROPDOWN
-        /// <summary>
-        /// stripDDBtnSpeedの表示状態を更新します
-        /// </summary>
-        public void updateStripDDBtnSpeed() {
-            stripDDBtnSpeed.setText( _( "Speed" ) + " " + (AppManager.editorConfig.getRealtimeInputSpeed() * 100) + "%" );
-        }
-#endif
-
         public void invalidatePictOverview( Object sender, EventArgs e ) {
             panelOverview.invalidate();
         }
@@ -2493,7 +2444,9 @@ namespace org.kbinani.cadencii {
                                                               org.kbinani.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE );
                 if ( dr == BDialogResult.YES ) {
                     if ( AppManager.getFileName().Equals( "" ) ) {
+                        AppManager.beginShowDialog();
                         int dr2 = saveXmlVsqDialog.showSaveDialog( this );
+                        AppManager.endShowDialog();
                         if ( dr2 == BFileChooser.APPROVE_OPTION ) {
                             AppManager.saveTo( saveXmlVsqDialog.getSelectedFile() );
                             return true;
@@ -3019,12 +2972,15 @@ namespace org.kbinani.cadencii {
                     continue;
                 }
                 String display = ScriptServer.getDisplayName( id );
-                String name = id.Replace( '.', '_' );
+                // スクリプトのメニューに共通のヘッダー(menuScript)を付ける．
+                // こうしておくと，menuSettingShortcut_Clickで，スクリプトのメニューが
+                // menuScriptの子だと自動で認識される
+                String name = "menuScript" + id.Replace( '.', '_' );
                 BMenuItem item = new BMenuItem();
                 item.setText( display );
                 item.setName( name );
                 item.setTag( id );
-                item.Click += new EventHandler( handleScriptMenuItem_Click );
+                item.clickEvent.add( new BEventHandler( this, "handleScriptMenuItem_Click" ) );
                 menuScript.add( item );
                 count++;
             }
@@ -3123,6 +3079,9 @@ namespace org.kbinani.cadencii {
 #endif
 
                 foreach ( SpecialShortcutHolder holder in mSpecialShortcutHolders ) {
+#if DEBUG
+                    PortUtil.println( "FormMain#processSpecialshortcutKey; with shortcut, .getKeyCode()=" + holder.shortcut.getKeyCode() + ", .getModifiers()=" + holder.shortcut.getModifiers() );
+#endif
                     if ( holder.shortcut.getKeyCode() == keycode && holder.shortcut.getModifiers() == modifier ) {
                         try {
                             holder.menu.clickEvent.raise( holder.menu, new EventArgs() );
@@ -3918,6 +3877,9 @@ namespace org.kbinani.cadencii {
                                 // ショートカットの適用に失敗する→特殊な取り扱いが必要
                                 menu.ShortcutKeyDisplayString = Utility.getShortcutDisplayString( keys );
                                 menu.ShortcutKeys = System.Windows.Forms.Keys.None;
+#if DEBUG
+                                PortUtil.println( "FormMain#applyMenuItemShortcut; add to mSpecialShortcutHolders; menu.getName()=" + menu.getName() );
+#endif
                                 mSpecialShortcutHolders.add(
                                     new SpecialShortcutHolder( BKeysUtility.getKeyStrokeFromBKeys( keys ), menu ) );
                             }
@@ -4279,7 +4241,6 @@ namespace org.kbinani.cadencii {
             menuJobLyric.setMnemonic( KeyEvent.VK_L );
             menuJobRewire.setText( _( "Import ReWire Host Tempo" ) );
             menuJobRewire.setMnemonic( KeyEvent.VK_T );
-            menuJobRealTime.setText( _( "Start Realtime Input" ) );
             menuJobReloadVsti.setText( _( "Reload VSTi" ) );
             menuJobReloadVsti.setMnemonic( KeyEvent.VK_R );
 
@@ -4562,10 +4523,6 @@ namespace org.kbinani.cadencii {
                 IPaletteTool ipt = (IPaletteTool)PaletteToolServer.loadedTools.get( id );
                 ipt.applyLanguage( Messaging.getLanguage() );
             }
-#endif
-
-#if ENABLE_STRIP_DROPDOWN
-            updateStripDDBtnSpeed();
 #endif
         }
 
@@ -6793,8 +6750,6 @@ namespace org.kbinani.cadencii {
             menuJobLyric.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuJobLyric.clickEvent.add( new BEventHandler( this, "menuJobLyric_Click" ) );
             menuJobRewire.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuJobRealTime.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuJobRealTime.clickEvent.add( new BEventHandler( this, "menuJobRealTime_Click" ) );
             menuJobReloadVsti.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
             menuJobReloadVsti.clickEvent.add( new BEventHandler( this, "menuJobReloadVsti_Click" ) );
             menuTrack.dropDownOpeningEvent.add( new BEventHandler( this, "menuTrack_DropDownOpening" ) );
@@ -6831,15 +6786,11 @@ namespace org.kbinani.cadencii {
             menuLyricDictionary.clickEvent.add( new BEventHandler( this, "menuLyricDictionary_Click" ) );
             menuLyricPhonemeTransformation.clickEvent.add( new BEventHandler( this, "menuLyricPhonemeTransformation_Click" ) );
             menuScriptUpdate.clickEvent.add( new BEventHandler( this, "menuScriptUpdate_Click" ) );
-            menuSetting.dropDownOpeningEvent.add( new BEventHandler( this, "menuSetting_DropDownOpening" ) );
             menuSettingPreference.clickEvent.add( new BEventHandler( this, "menuSettingPreference_Click" ) );
             menuSettingGameControlerSetting.clickEvent.add( new BEventHandler( this, "menuSettingGameControlerSetting_Click" ) );
             menuSettingGameControlerLoad.clickEvent.add( new BEventHandler( this, "menuSettingGameControlerLoad_Click" ) );
             menuSettingGameControlerRemove.clickEvent.add( new BEventHandler( this, "menuSettingGameControlerRemove_Click" ) );
             menuSettingShortcut.clickEvent.add( new BEventHandler( this, "menuSettingShortcut_Click" ) );
-#if ENABLE_MIDI
-            menuSettingMidi.clickEvent.add( new BEventHandler( this, "menuSettingMidi_Click" ) );
-#endif
             menuSettingUtauVoiceDB.clickEvent.add( new BEventHandler( this, "menuSettingUtauVoiceDB_Click" ) );
             menuSettingDefaultSingerStyle.clickEvent.add( new BEventHandler( this, "menuSettingDefaultSingerStyle_Click" ) );
             menuSettingPositionQuantize04.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
@@ -7030,11 +6981,6 @@ namespace org.kbinani.cadencii {
             toolBarTool.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler( toolBarTool_ButtonClick );
 #if !JAVA
             rebar.SizeChanged += new EventHandler( toolStripContainer_TopToolStripPanel_SizeChanged );// toolStripContainer.TopToolStripPanel.SizeChanged += new EventHandler( toolStripContainer_TopToolStripPanel_SizeChanged );
-            stripDDBtnSpeed.dropDownOpeningEvent.add( new BEventHandler( this, "stripDDBtnSpeed_DropDownOpening" ) );
-            stripDDBtnSpeedTextbox.keyDownEvent.add( new BKeyEventHandler( this, "stripDDBtnSpeedTextbox_KeyDown" ) );
-            stripDDBtnSpeed033.clickEvent.add( new BEventHandler( this, "stripDDBtnSpeed033_Click" ) );
-            stripDDBtnSpeed050.clickEvent.add( new BEventHandler( this, "stripDDBtnSpeed050_Click" ) );
-            stripDDBtnSpeed100.clickEvent.add( new BEventHandler( this, "stripDDBtnSpeed100_Click" ) );
             stripDDBtnLength04.Click += handleLengthQuantize04_Click;
             stripDDBtnLength08.Click += handleLengthQuantize08_Click;
             stripDDBtnLength16.Click += handleLengthQuantize16_Click;
@@ -7332,10 +7278,6 @@ namespace org.kbinani.cadencii {
 #endif
             timer.stop();
 
-            if ( AppManager.getEditMode() == EditMode.REALTIME ) {
-                menuJobRealTime.setText( _( "Start Realtime Input" ) );
-                AppManager.setEditMode( EditMode.NONE );
-            }
 #if ENABLE_MIDI
             if ( mMidiIn != null ) {
                 mMidiIn.Stop();
@@ -7359,25 +7301,6 @@ namespace org.kbinani.cadencii {
             RendererKind renderer = VsqFileEx.getTrackRendererKind( vsq.Track.get( selected ) );
             int clock = AppManager.getCurrentClock();
             double now = PortUtil.getCurrentTime();
-            if ( AppManager.getEditMode() == EditMode.REALTIME ) {
-                menuJobRealTime.setText( _( "Stop Realtime Input" ) );
-                AppManager.mRendererAvailable = false;
-#if ENABLE_MTC
-                if ( m_midi_in_mtc != null ) {
-                    m_midi_in_mtc.Start();
-                }
-#endif
-#if ENABLE_MIDI
-                if ( mMidiIn != null ) {
-                    mMidiIn.Start();
-                }
-                MidiPlayer.SetSpeed( AppManager.editorConfig.getRealtimeInputSpeed(), now );
-                MidiPlayer.Start( vsq, clock, now );
-#endif
-            } else {
-                AppManager.mRendererAvailable = VSTiDllManager.isRendererAvailable( renderer );
-            }
-            AppManager.mFirstBufferWritten = true;
             AppManager.mPreviewStartedTime = now;
 #if DEBUG
             AppManager.debugWriteLine( "    vsq.TotalClocks=" + vsq.TotalClocks );
@@ -7813,10 +7736,6 @@ namespace org.kbinani.cadencii {
 #if DEBUG
             AppManager.debugWriteLine( "pictPianoRoll_MouseDown" );
 #endif
-            if ( AppManager.getEditMode() == EditMode.REALTIME ) {
-                return;
-            }
-
             BMouseButtons btn0 = e0.Button;
             if ( isMouseMiddleButtonDowned( btn0 ) ) {
                 btn0 = BMouseButtons.Middle;
@@ -9250,9 +9169,7 @@ namespace org.kbinani.cadencii {
                 }
             }
             refreshScreen();
-            if ( AppManager.getEditMode() != EditMode.REALTIME ) {
-                AppManager.setEditMode( EditMode.NONE );
-            }
+            AppManager.setEditMode( EditMode.NONE );
         }
 
         public void pictPianoRoll_MouseWheel( Object sender, BMouseEventArgs e ) {
@@ -9292,6 +9209,13 @@ namespace org.kbinani.cadencii {
 
         //BOOKMARK: iconPalette
         #region iconPalette
+        public void iconPalette_TopMostChanged( Object sender, EventArgs e ){
+            AppManager.editorConfig.FormIconTopMost = AppManager.iconPalette.isAlwaysOnTop();
+#if DEBUG
+            PortUtil.println( "FormMain#iconPalette_TopMostChanged; AppManager.editorConfig.FormIconTopMost=" + AppManager.editorConfig.FormIconTopMost );
+#endif
+        }
+
         public void iconPalette_LocationChanged( Object sender, EventArgs e ) {
             AppManager.editorConfig.FormIconPaletteLocation = new XmlPoint( AppManager.iconPalette.getLocation() );
         }
@@ -9346,6 +9270,7 @@ namespace org.kbinani.cadencii {
                 AppManager.iconPalette.setLocation( p );
                 AppManager.iconPalette.locationChangedEvent.add( new BEventHandler( this, "iconPalette_LocationChanged" ) );
                 AppManager.iconPalette.setTopMost( AppManager.editorConfig.FormIconTopMost );
+                AppManager.iconPalette.topMostChangedEvent.add( new BEventHandler( this, "iconPalette_TopMostChanged" ) );
             }
             boolean old = menuVisualIconPalette.isSelected();
             menuVisualIconPalette.setSelected( !old );
@@ -9820,7 +9745,9 @@ namespace org.kbinani.cadencii {
                                                                org.kbinani.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE );
                 if ( ret == BDialogResult.YES ) {
                     if ( AppManager.getFileName().Equals( "" ) ) {
+                        AppManager.beginShowDialog();
                         int dr = saveXmlVsqDialog.showSaveDialog( this );
+                        AppManager.endShowDialog();
                         if ( dr == BFileChooser.APPROVE_OPTION ) {
                             AppManager.saveTo( saveXmlVsqDialog.getSelectedFile() );
                         } else {
@@ -9837,9 +9764,6 @@ namespace org.kbinani.cadencii {
                 }
             }
             AppManager.editorConfig.WindowMaximized = (getExtendedState() == BForm.MAXIMIZED_BOTH);
-            if ( AppManager.iconPalette != null ) {
-                AppManager.editorConfig.FormIconTopMost = AppManager.iconPalette.isAlwaysOnTop();
-            }
             AppManager.saveConfig();
             UtauWaveGenerator.clearCache();
             VConnectWaveGenerator.clearCache();
@@ -10291,45 +10215,6 @@ namespace org.kbinani.cadencii {
                         return;
                     }
                     mLastBtnSelect = SELECT;
-                    if ( L1 && R1 && L2 && R2 && dt_ms > AppManager.editorConfig.GameControlerMinimumEventInterval ) {
-                        if ( AppManager.isPlaying() ) {
-                            AppManager.setEditMode( EditMode.NONE );
-                            AppManager.setPlaying( false );
-                            timer.stop();
-                        } else {
-                            mTimer.stop();
-                            FormRealtimeConfig frc = null;
-                            try {
-                                frc = new FormRealtimeConfig();
-                                frc.setModal( true );
-                                frc.setVisible( true );
-                                if ( frc.getDialogResult() == BDialogResult.OK ) {
-                                    AppManager.mAddingEvent = null;
-                                    AppManager.setEditMode( EditMode.REALTIME );
-                                    AppManager.editorConfig.setRealtimeInputSpeed( frc.getSpeed() );
-                                    AppManager.setPlaying( true );
-                                }
-                            } catch ( Exception ex ) {
-                                Logger.write( typeof( FormMain ) + ".mTimer_Tick; ex=" + ex + "\n" );
-                            } finally {
-                                try {
-                                    frc.close();
-                                } catch ( Exception ex2 ) {
-                                    Logger.write( typeof( FormMain ) + ".mTimer_Tick; ex=" + ex2 + "\n" );
-                                }
-                            }
-                            mTimer.start();
-                        }
-                        mLastBtnO = btn_o;
-                        mLastBtnX = btn_x;
-                        mLastBtnRe = btn_re;
-                        mLastBtnTr = btn_tr;
-                        mLastPovL = pov_l;
-                        mLastPovD = pov_d;
-                        mLastPovR = pov_r;
-                        mLastPovU = pov_u;
-                        return;
-                    }
 
                     int note = -1;
                     if ( pov_r && !mLastPovR ) {
@@ -10394,13 +10279,7 @@ namespace org.kbinani.cadencii {
                             AppManager.mAddingEvent.ID.LyricHandle = new LyricHandle( "a", "a" );
                             AppManager.mAddingEvent.ID.Note = note;
                         }
-                        if ( AppManager.getEditMode() == EditMode.REALTIME ) {
-#if ENABLE_MIDI
-                            MidiPlayer.PlayImmediate( (byte)note );
-#endif
-                        } else {
-                            KeySoundPlayer.play( note );
-                        }
+                        KeySoundPlayer.play( note );
                     } else {
                         if ( AppManager.isPlaying() && AppManager.mAddingEvent != null ) {
                             AppManager.mAddingEvent.ID.setLength( AppManager.getCurrentClock() - AppManager.mAddingEvent.Clock );
@@ -10414,11 +10293,6 @@ namespace org.kbinani.cadencii {
 #endif
                 mGameMode = GameControlMode.DISABLED;
                 updateGameControlerStatus( null, null );
-                if ( AppManager.getEditMode() == EditMode.REALTIME ) {
-                    AppManager.setPlaying( false );
-                    AppManager.setEditMode( EditMode.NONE );
-                    AppManager.mAddingEvent = null;
-                }
                 mTimer.stop();
             }
         }
@@ -10446,7 +10320,9 @@ namespace org.kbinani.cadencii {
                 String dir = PortUtil.getDirectoryName( last_file );
                 saveXmlVsqDialog.setInitialDirectory( dir );
             }
+            AppManager.beginShowDialog();
             int dr = saveXmlVsqDialog.showSaveDialog( this );
+            AppManager.endShowDialog();
             if ( dr == BFileChooser.APPROVE_OPTION ) {
                 String file = saveXmlVsqDialog.getSelectedFile();
                 AppManager.editorConfig.setLastUsedPathOut( file );
@@ -10476,7 +10352,9 @@ namespace org.kbinani.cadencii {
                 dialog.setDialogTitle( _( "Export UTAU (*.ust)" ) );
                 dialog.addFileFilter( _( "UTAU Script Format(*.ust)|*.ust" ) );
                 dialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
+                AppManager.beginShowDialog();
                 dialog_result = dialog.showSaveDialog( this );
+                AppManager.endShowDialog();
                 if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
                     return;
                 }
@@ -10524,7 +10402,9 @@ namespace org.kbinani.cadencii {
                 sfd.setDialogTitle( _( "Wave Export" ) );
                 sfd.addFileFilter( _( "Wave File(*.wav)|*.wav" ) );
                 sfd.addFileFilter( _( "All Files(*.*)|*.*" ) );
+                AppManager.beginShowDialog();
                 dialog_result = sfd.showSaveDialog( this );
+                AppManager.endShowDialog();
                 if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
                     return;
                 }
@@ -10609,7 +10489,9 @@ namespace org.kbinani.cadencii {
                 String dir = PortUtil.getDirectoryName( last_file );
                 openMidiDialog.setInitialDirectory( dir );
             }
+            AppManager.beginShowDialog();
             int dialog_result = openMidiDialog.showOpenDialog( this );
+            AppManager.endShowDialog();
 
             if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
                 return;
@@ -11018,7 +10900,9 @@ namespace org.kbinani.cadencii {
                     String dir = PortUtil.getDirectoryName( last_file );
                     saveMidiDialog.setInitialDirectory( last_file );
                 }
+                AppManager.beginShowDialog();
                 int dialog_result = saveMidiDialog.showSaveDialog( this );
+                AppManager.endShowDialog();
 
                 if ( dialog_result == BFileChooser.APPROVE_OPTION ) {
                     RandomAccessFile fs = null;
@@ -11241,14 +11125,16 @@ namespace org.kbinani.cadencii {
                 }
                 String dir = "";
                 String lastFile = AppManager.editorConfig.getLastUsedPathOut( "xml" );
-                if ( lastFile.Equals( "" ) ) {
+                if ( !lastFile.Equals( "" ) ) {
                     dir = PortUtil.getDirectoryName( lastFile );
                 }
                 dialog = new BFileChooser( dir );
                 dialog.addFileFilter( _( "MusicXML(*.xml)|*.xml" ) );
                 dialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
                 dialog.setSelectedFile( lastFile );
+                AppManager.beginShowDialog();
                 int result = dialog.showSaveDialog( this );
+                AppManager.endShowDialog();
                 if ( result != BFileChooser.APPROVE_OPTION ) {
                     return;
                 }
@@ -11293,7 +11179,9 @@ namespace org.kbinani.cadencii {
                 String dir = PortUtil.getDirectoryName( last_file );
                 openMidiDialog.setInitialDirectory( dir );
             }
+            AppManager.beginShowDialog();
             int dialog_result = openMidiDialog.showOpenDialog( this );
+            AppManager.endShowDialog();
             if ( dialog_result == BFileChooser.APPROVE_OPTION ) {
 #if DEBUG
                 AppManager.debugWriteLine( "openMidiDialog.getFileFilter()=" + openMidiDialog.getFileFilter() );
@@ -11338,7 +11226,9 @@ namespace org.kbinani.cadencii {
                 String dir = PortUtil.getDirectoryName( last_file );
                 openUstDialog.setInitialDirectory( dir );
             }
+            AppManager.beginShowDialog();
             int dialog_result = openUstDialog.showOpenDialog( this );
+            AppManager.endShowDialog();
 
             if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
                 return;
@@ -11370,7 +11260,9 @@ namespace org.kbinani.cadencii {
                 String dir = PortUtil.getDirectoryName( last_file );
                 openMidiDialog.setInitialDirectory( dir );
             }
+            AppManager.beginShowDialog();
             int dialog_result = openMidiDialog.showOpenDialog( this );
+            AppManager.endShowDialog();
 
             if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
                 return;
@@ -11523,10 +11415,6 @@ namespace org.kbinani.cadencii {
 
         //BOOKMARK: menuSetting
         #region menuSetting*
-        public void menuSetting_DropDownOpening( Object sender, EventArgs e ) {
-            menuSettingMidi.setEnabled( AppManager.getEditMode() != EditMode.REALTIME );
-        }
-
         public void menuSettingDefaultSingerStyle_Click( Object sender, EventArgs e ) {
             FormSingerStyleConfig dlg = null;
             try {
@@ -11628,31 +11516,6 @@ namespace org.kbinani.cadencii {
                 }
             }
         }
-
-#if ENABLE_MIDI
-        public void menuSettingMidi_Click( Object sender, EventArgs e ) {
-            FormMidiConfig form = null;
-            try {
-                form = new FormMidiConfig();
-                form.setLocation( getFormPreferedLocation( form ) );
-                form.setModal( true );
-                form.setVisible( true );
-                if ( form.getDialogResult() == BDialogResult.OK ) {
-
-                }
-            } catch ( Exception ex ) {
-                Logger.write( typeof( FormMain ) + ".menuSettingMidi_Click; ex=" + ex + "\n" );
-            } finally {
-                if ( form != null ) {
-                    try {
-                        form.close();
-                    } catch ( Exception ex2 ) {
-                        Logger.write( typeof( FormMain ) + ".menuSettingMidi_Click; ex=" + ex2 + "\n" );
-                    }
-                }
-            }
-        }
-#endif
 
         public void menuSettingPreference_Click( Object sender, EventArgs e ) {
             try {
@@ -11988,13 +11851,10 @@ namespace org.kbinani.cadencii {
                 MenuElement tsi = sub_menu_script[i];
                 if ( tsi is BMenuItem ) {
                     BMenuItem tsmi = (BMenuItem)tsi;
-                    MenuElement[] sub_tsmi = tsmi.getSubElements();
-                    if ( sub_tsmi.Length == 1 && sub_tsmi[0] is BMenuItem ) {
-                        BMenuItem item = (BMenuItem)sub_tsmi[0];
-                        script_shortcut.add( item.getName() );
-                        if ( !configured.containsKey( item.getName() ) ) {
-                            configured.put( item.getName(), new BKeys[] { } );
-                        }
+                    String name = tsmi.getName();
+                    script_shortcut.add( name );
+                    if ( !configured.containsKey( name ) ) {
+                        configured.put( name, new BKeys[] { } );
                     }
                 }
             }
@@ -12036,14 +11896,6 @@ namespace org.kbinani.cadencii {
                     int i1 = s1.IndexOf( "(&" );
                     if ( i1 > 0 ) {
                         s1 = s1.Substring( 0, i1 );
-                    }
-                    if ( script_shortcut.contains( name ) ) {
-                        String s2 = menuScript.getText();
-                        int i2 = s2.IndexOf( "(&" );
-                        if ( i2 > 0 ) {
-                            s2 = s2.Substring( 0, i2 );
-                        }
-                        parent = s2 + " -> " + parent;
                     }
                     dict.put( parent + s1, new ValuePair<String, BKeys[]>( name, configured.get( name ) ) );
                 }
@@ -12249,20 +12101,6 @@ namespace org.kbinani.cadencii {
 
         //BOOKMARK: menuJob
         #region menuJob
-        public void menuJobRealTime_Click( Object sender, EventArgs e ) {
-            if ( !AppManager.isPlaying() ) {
-                AppManager.mAddingEvent = null;
-                AppManager.setEditMode( EditMode.REALTIME );
-                AppManager.setPlaying( true );
-                //menuJobRealTime.setText( _( "Stop Realtime Input" );
-            } else {
-                timer.stop();
-                AppManager.setPlaying( false );
-                AppManager.setEditMode( EditMode.NONE );
-                //menuJobRealTime.setText( _( "Start Realtime Input" );
-            }
-        }
-
         public void menuJobReloadVsti_Click( Object sender, EventArgs e ) {
             //VSTiProxy.ReloadPlugin(); //todo: FormMain+menuJobReloadVsti_Click
         }
@@ -14982,85 +14820,6 @@ namespace org.kbinani.cadencii {
         }
         #endregion
 
-        //BOOKMARK: stripDDBtn
-        #region stripDDBtn*
-#if ENABLE_STRIP_DROPDOWN
-        public void stripDDBtnSpeed_DropDownOpening( Object sender, EventArgs e ) {
-            if ( AppManager.editorConfig.getRealtimeInputSpeed() == 1.0f ) {
-                stripDDBtnSpeed100.setSelected( true );
-                stripDDBtnSpeed050.setSelected( false );
-                stripDDBtnSpeed033.setSelected( false );
-                stripDDBtnSpeedTextbox.setText( "100" );
-            } else if ( AppManager.editorConfig.getRealtimeInputSpeed() == 0.5f ) {
-                stripDDBtnSpeed100.setSelected( false );
-                stripDDBtnSpeed050.setSelected( true );
-                stripDDBtnSpeed033.setSelected( false );
-                stripDDBtnSpeedTextbox.setText( "50" );
-            } else if ( AppManager.editorConfig.getRealtimeInputSpeed() == 1.0f / 3.0f ) {
-                stripDDBtnSpeed100.setSelected( false );
-                stripDDBtnSpeed050.setSelected( false );
-                stripDDBtnSpeed033.setSelected( true );
-                stripDDBtnSpeedTextbox.setText( "33.333" );
-            } else {
-                stripDDBtnSpeed100.setSelected( false );
-                stripDDBtnSpeed050.setSelected( false );
-                stripDDBtnSpeed033.setSelected( false );
-                stripDDBtnSpeedTextbox.setText( (AppManager.editorConfig.getRealtimeInputSpeed() * 100.0f).ToString() );
-            }
-        }
-#endif
-
-#if ENABLE_STRIP_DROPDOWN
-        public void stripDDBtnSpeed100_Click( Object sender, EventArgs e ) {
-            changeRealtimeInputSpeed( 1.0f );
-            AppManager.editorConfig.setRealtimeInputSpeed( 1.0f );
-            updateStripDDBtnSpeed();
-        }
-#endif
-
-#if ENABLE_STRIP_DROPDOWN
-        public void stripDDBtnSpeed050_Click( Object sender, EventArgs e ) {
-            changeRealtimeInputSpeed( 0.5f );
-            AppManager.editorConfig.setRealtimeInputSpeed( 0.5f );
-            updateStripDDBtnSpeed();
-        }
-#endif
-
-#if ENABLE_STRIP_DROPDOWN
-        public void stripDDBtnSpeed033_Click( Object sender, EventArgs e ) {
-            changeRealtimeInputSpeed( 1.0f / 3.0f );
-            AppManager.editorConfig.setRealtimeInputSpeed( 1.0f / 3.0f );
-            updateStripDDBtnSpeed();
-        }
-#endif
-
-#if ENABLE_STRIP_DROPDOWN
-        public void stripDDBtnSpeedTextbox_KeyDown( Object sender, BKeyEventArgs e ) {
-#if JAVA
-            if ( e.KeyValue == KeyEvent.VK_ENTER ) {
-#else
-            if ( e.KeyCode == System.Windows.Forms.Keys.Enter ) {
-#endif
-                float v;
-                try {
-                    v = PortUtil.parseFloat( stripDDBtnSpeedTextbox.getText() );
-                    changeRealtimeInputSpeed( v / 100.0f );
-                    AppManager.editorConfig.setRealtimeInputSpeed( v / 100.0f );
-#if JAVA
-                    //TODO: FormMain#stripDDBtnSpeedTextBox_KeyDown
-#else
-                    stripDDBtnSpeed.HideDropDown();
-#endif
-                    updateStripDDBtnSpeed();
-                } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "FormMain#stripDDBtnSpeedTextBox_KeyDown; ex=" + ex );
-                    Logger.write( typeof( FormMain ) + ".stripDDBtnSpeedTextbox_KeyDown; ex=" + ex + "\n" );
-                }
-            }
-        }
-#endif
-        #endregion // stripDDBtn*
-
         //BOOKMARK: pictKeyLengthSplitter
         #region pictKeyLengthSplitter
         public void pictKeyLengthSplitter_MouseDown( Object sender, BMouseEventArgs e ) {
@@ -15101,15 +14860,6 @@ namespace org.kbinani.cadencii {
         }
         #endregion
 
-#if ENABLE_MIDI
-        public void mStripDDBtnMetronome_CheckedChanged( Object sender, EventArgs e ) {
-            AppManager.editorConfig.MetronomeEnabled = mStripDDBtnMetronome.isSelected();
-            if ( AppManager.editorConfig.MetronomeEnabled && AppManager.getEditMode() == EditMode.REALTIME ) {
-                MidiPlayer.RestartMetronome();
-            }
-        }
-#endif
-
         public void menuStrip1_MouseDown( Object sender, BMouseEventArgs e ) {
             if ( mTextBoxTrackName != null ) {
 #if !JAVA
@@ -15122,38 +14872,23 @@ namespace org.kbinani.cadencii {
         }
 
         public void timer_Tick( Object sender, EventArgs e ) {
-            if ( AppManager.getEditMode() == EditMode.REALTIME ) {
-                double play_time = PortUtil.getCurrentTime() - AppManager.mPreviewStartedTime;
-                double now = play_time * AppManager.editorConfig.getRealtimeInputSpeed() + AppManager.mDirectPlayShift;
-                VsqFileEx vsq = AppManager.getVsqFile();
-                int clock = (int)vsq.getClockFromSec( now );
-                if ( vsq.TotalClocks < clock ) {
-                    vsq.TotalClocks = clock;
-                }
-                updateScrollRangeHorizontal();
+            if ( AppManager.isGeneratorRunning() ) {
+                double play_time = PlaySound.getPosition();
+                double now = play_time + AppManager.mDirectPlayShift;
+                int clock = (int)AppManager.getVsqFile().getClockFromSec( now );
                 AppManager.setCurrentClock( clock );
                 if ( AppManager.mAutoScroll ) {
                     ensureCursorVisible();
                 }
             } else {
-                if ( AppManager.isGeneratorRunning() ) {
-                    double play_time = PlaySound.getPosition();
-                    double now = play_time + AppManager.mDirectPlayShift;
-                    int clock = (int)AppManager.getVsqFile().getClockFromSec( now );
-                    AppManager.setCurrentClock( clock );
-                    if ( AppManager.mAutoScroll ) {
-                        ensureCursorVisible();
+                AppManager.setPlaying( false );
+                if ( AppManager.isRepeatMode() ) {
+                    int dest_clock = 0;
+                    if ( AppManager.mStartMarkerEnabled ) {
+                        dest_clock = AppManager.mStartMarker;
                     }
-                } else {
-                    AppManager.setPlaying( false );
-                    if ( AppManager.isRepeatMode() ) {
-                        int dest_clock = 0;
-                        if ( AppManager.mStartMarkerEnabled ) {
-                            dest_clock = AppManager.mStartMarker;
-                        }
-                        AppManager.setCurrentClock( dest_clock );
-                        AppManager.setPlaying( true );
-                    }
+                    AppManager.setCurrentClock( dest_clock );
+                    AppManager.setPlaying( true );
                 }
             }
             refreshScreen();
@@ -15356,7 +15091,9 @@ namespace org.kbinani.cadencii {
                     String dir = PortUtil.getDirectoryName( last_file );
                     saveXmlVsqDialog.setInitialDirectory( dir );
                 }
+                AppManager.beginShowDialog();
                 int dr = saveXmlVsqDialog.showSaveDialog( this );
+                AppManager.endShowDialog();
                 if ( dr == BFileChooser.APPROVE_OPTION ) {
                     file = saveXmlVsqDialog.getSelectedFile();
                     AppManager.editorConfig.setLastUsedPathOut( file );
@@ -15378,7 +15115,9 @@ namespace org.kbinani.cadencii {
                 String dir = PortUtil.getDirectoryName( last_file );
                 openXmlVsqDialog.setInitialDirectory( dir );
             }
+            AppManager.beginShowDialog();
             int dialog_result = openXmlVsqDialog.showOpenDialog( this );
+            AppManager.endShowDialog();
             if ( dialog_result == BFileChooser.APPROVE_OPTION ) {
                 if ( AppManager.isPlaying() ) {
                     AppManager.setPlaying( false );
@@ -15739,8 +15478,6 @@ namespace org.kbinani.cadencii {
                 text = _( "Import lyric." );
             } else if ( sender == menuJobRewire ) {
                 text = _( "Import tempo from ReWire host." ) + _( "(not implemented)" );
-            } else if ( sender == menuJobRealTime ) {
-                text = _( "Start realtime input." );
             } else if ( sender == menuJobReloadVsti ) {
                 text = _( "Reload VSTi dll." ) + _( "(not implemented)" );
             } else if ( sender == menuJobNormalize ) {
@@ -15952,7 +15689,10 @@ namespace org.kbinani.cadencii {
                 String dir = PortUtil.getDirectoryName( last_file );
                 openWaveDialog.setInitialDirectory( dir );
             }
-            if ( openWaveDialog.showOpenDialog( this ) != BFileChooser.APPROVE_OPTION ) {
+            AppManager.beginShowDialog();
+            int ret = openWaveDialog.showOpenDialog( this );
+            AppManager.endShowDialog();
+            if ( ret != BFileChooser.APPROVE_OPTION ) {
                 return;
             }
 
@@ -16184,9 +15924,6 @@ namespace org.kbinani.cadencii {
             }
 
             byte note = data[1];
-            if ( code == 0x90 && AppManager.getEditMode() == EditMode.REALTIME ) {
-                MidiPlayer.PlayImmediate( note );
-            }
 
             int clock = AppManager.getCurrentClock();
             int unit = AppManager.getPositionQuantizeClock();
@@ -16217,9 +15954,7 @@ namespace org.kbinani.cadencii {
                 AppManager.mAddingEvent.ID.VibratoHandle = null;
                 AppManager.mAddingEvent.ID.LyricHandle = new LyricHandle( "a", "a" );
                 AppManager.mAddingEvent.ID.Note = note;
-                if ( AppManager.getEditMode() != EditMode.REALTIME ) {
-                    KeySoundPlayer.play( note );
-                }
+                KeySoundPlayer.play( note );
             }
 #endif
         }
@@ -16448,7 +16183,6 @@ namespace org.kbinani.cadencii {
             this.menuJobConnect = new org.kbinani.windows.forms.BMenuItem();
             this.menuJobLyric = new org.kbinani.windows.forms.BMenuItem();
             this.menuJobRewire = new org.kbinani.windows.forms.BMenuItem();
-            this.menuJobRealTime = new org.kbinani.windows.forms.BMenuItem();
             this.menuJobReloadVsti = new org.kbinani.windows.forms.BMenuItem();
             this.menuTrack = new org.kbinani.windows.forms.BMenuItem();
             this.menuTrackOn = new org.kbinani.windows.forms.BMenuItem();
@@ -16487,7 +16221,6 @@ namespace org.kbinani.cadencii {
             this.menuSettingGameControlerRemove = new org.kbinani.windows.forms.BMenuItem();
             this.menuSettingPaletteTool = new org.kbinani.windows.forms.BMenuItem();
             this.menuSettingShortcut = new org.kbinani.windows.forms.BMenuItem();
-            this.menuSettingMidi = new org.kbinani.windows.forms.BMenuItem();
             this.menuSettingUtauVoiceDB = new org.kbinani.windows.forms.BMenuItem();
             this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripSeparator();
             this.menuSettingDefaultSingerStyle = new org.kbinani.windows.forms.BMenuItem();
@@ -16652,11 +16385,6 @@ namespace org.kbinani.cadencii {
             this.toolStripStatusLabel2 = new org.kbinani.windows.forms.BStatusLabel();
             this.stripLblMidiIn = new org.kbinani.windows.forms.BStatusLabel();
             this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
-            this.stripDDBtnSpeed = new org.kbinani.windows.forms.BToolStripDropDownButton();
-            this.stripDDBtnSpeedTextbox = new org.kbinani.windows.forms.BToolStripTextBox();
-            this.stripDDBtnSpeed033 = new org.kbinani.windows.forms.BMenuItem();
-            this.stripDDBtnSpeed050 = new org.kbinani.windows.forms.BMenuItem();
-            this.stripDDBtnSpeed100 = new org.kbinani.windows.forms.BMenuItem();
             this.splitContainerProperty = new org.kbinani.apputil.BSplitContainer();
             this.splitContainer2 = new org.kbinani.apputil.BSplitContainer();
             this.panel2 = new org.kbinani.windows.forms.BPanel();
@@ -17215,7 +16943,6 @@ namespace org.kbinani.cadencii {
             this.menuJobConnect,
             this.menuJobLyric,
             this.menuJobRewire,
-            this.menuJobRealTime,
             this.menuJobReloadVsti} );
             this.menuJob.Name = "menuJob";
             this.menuJob.Size = new System.Drawing.Size( 51, 20 );
@@ -17263,12 +16990,6 @@ namespace org.kbinani.cadencii {
             this.menuJobRewire.Name = "menuJobRewire";
             this.menuJobRewire.Size = new System.Drawing.Size( 223, 22 );
             this.menuJobRewire.Text = "Import ReWire Host Tempo(&T)";
-            // 
-            // menuJobRealTime
-            // 
-            this.menuJobRealTime.Name = "menuJobRealTime";
-            this.menuJobRealTime.Size = new System.Drawing.Size( 223, 22 );
-            this.menuJobRealTime.Text = "Start Realtime Input";
             // 
             // menuJobReloadVsti
             // 
@@ -17485,7 +17206,6 @@ namespace org.kbinani.cadencii {
             this.menuSettingGameControler,
             this.menuSettingPaletteTool,
             this.menuSettingShortcut,
-            this.menuSettingMidi,
             this.menuSettingUtauVoiceDB,
             this.toolStripMenuItem6,
             this.menuSettingDefaultSingerStyle,
@@ -17543,12 +17263,6 @@ namespace org.kbinani.cadencii {
             this.menuSettingShortcut.Name = "menuSettingShortcut";
             this.menuSettingShortcut.Size = new System.Drawing.Size( 200, 22 );
             this.menuSettingShortcut.Text = "Shortcut Key(&S)";
-            // 
-            // menuSettingMidi
-            // 
-            this.menuSettingMidi.Name = "menuSettingMidi";
-            this.menuSettingMidi.Size = new System.Drawing.Size( 200, 22 );
-            this.menuSettingMidi.Text = "MIDI(&M)";
             // 
             // menuSettingUtauVoiceDB
             // 
@@ -18680,8 +18394,7 @@ namespace org.kbinani.cadencii {
             this.toolStripSeparator10,
             this.toolStripStatusLabel2,
             this.stripLblMidiIn,
-            this.toolStripSeparator11,
-            this.stripDDBtnSpeed} );
+            this.toolStripSeparator11} );
             this.toolStripBottom.Location = new System.Drawing.Point( 15, 0 );
             this.toolStripBottom.Name = "toolStripBottom";
             this.toolStripBottom.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
@@ -18723,43 +18436,6 @@ namespace org.kbinani.cadencii {
             // 
             this.toolStripSeparator11.Name = "toolStripSeparator11";
             this.toolStripSeparator11.Size = new System.Drawing.Size( 6, 25 );
-            // 
-            // stripDDBtnSpeed
-            // 
-            this.stripDDBtnSpeed.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this.stripDDBtnSpeed.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            this.stripDDBtnSpeedTextbox,
-            this.stripDDBtnSpeed033,
-            this.stripDDBtnSpeed050,
-            this.stripDDBtnSpeed100} );
-            this.stripDDBtnSpeed.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.stripDDBtnSpeed.Name = "stripDDBtnSpeed";
-            this.stripDDBtnSpeed.Size = new System.Drawing.Size( 73, 22 );
-            this.stripDDBtnSpeed.Text = "Speed 1.0x";
-            // 
-            // stripDDBtnSpeedTextbox
-            // 
-            this.stripDDBtnSpeedTextbox.Name = "stripDDBtnSpeedTextbox";
-            this.stripDDBtnSpeedTextbox.Size = new System.Drawing.Size( 100, 19 );
-            this.stripDDBtnSpeedTextbox.Text = "100";
-            // 
-            // stripDDBtnSpeed033
-            // 
-            this.stripDDBtnSpeed033.Name = "stripDDBtnSpeed033";
-            this.stripDDBtnSpeed033.Size = new System.Drawing.Size( 160, 22 );
-            this.stripDDBtnSpeed033.Text = "33.3%";
-            // 
-            // stripDDBtnSpeed050
-            // 
-            this.stripDDBtnSpeed050.Name = "stripDDBtnSpeed050";
-            this.stripDDBtnSpeed050.Size = new System.Drawing.Size( 160, 22 );
-            this.stripDDBtnSpeed050.Text = "50%";
-            // 
-            // stripDDBtnSpeed100
-            // 
-            this.stripDDBtnSpeed100.Name = "stripDDBtnSpeed100";
-            this.stripDDBtnSpeed100.Size = new System.Drawing.Size( 160, 22 );
-            this.stripDDBtnSpeed100.Text = "100%";
             // 
             // splitContainerProperty
             // 
@@ -19770,7 +19446,6 @@ namespace org.kbinani.cadencii {
         public BMenuItem menuSettingGameControler;
         public BStatusLabel stripLblGameCtrlMode;
         public System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
-        public BToolStripDropDownButton stripDDBtnSpeed;
         public BMenuItem menuSettingGameControlerSetting;
         public BMenuItem menuSettingGameControlerLoad;
         public System.Windows.Forms.MenuItem stripDDBtnLength128;
@@ -19785,7 +19460,7 @@ namespace org.kbinani.cadencii {
         public BMenuItem cMenuTrackSelectorDeleteBezier;
         public BStatusLabel stripLblMidiIn;
         public System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
-        public BMenuItem menuJobRealTime;
+        //public BMenuItem menuJobRealTime;
         public BMenuItem cMenuTrackTabRenderer;
         public BMenuItem cMenuTrackTabRendererVOCALOID100;
         public BMenuItem cMenuTrackTabRendererVOCALOID2;
@@ -19813,11 +19488,6 @@ namespace org.kbinani.cadencii {
         public BMenuItem menuTrackRendererUtau;
         public BMenuItem menuFileImportVsq;
         public BMenuItem menuSettingShortcut;
-        public BToolStripTextBox stripDDBtnSpeedTextbox;
-        public BMenuItem stripDDBtnSpeed033;
-        public BMenuItem stripDDBtnSpeed050;
-        public BMenuItem stripDDBtnSpeed100;
-        public BMenuItem menuSettingMidi;
         public BMenuItem menuVisualProperty;
         public BMenuItem menuFileOpenVsq;
         public BMenuItem menuFileOpenUst;

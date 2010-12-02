@@ -202,32 +202,6 @@ namespace org.kbinani.cadencii {
             m_started_clock = start_clock;
             m_temp_exit = false;
 
-            if ( AppManager.editorConfig.MetronomeEnabled ) {
-                MidiQueue mq = new MidiQueue();
-                double tick_sec = m_vsq.getSecFromClock( next_clock );
-                ByRef<Integer> next_bar = new ByRef<Integer>();
-                timesig = m_vsq.getTimesigAt( next_clock, next_bar );
-                mq.Track = 0;
-                mq.Clock = next_clock;
-                mq.Channel = 14;
-                mq.Program = ProgramNormal;
-                mq.Note = NoteNormal;
-                mq.Velocity = 0x40;
-                mq.Done += new MidiQueueDoneEventHandler( ReGenerateMidiQueue );
-                s_queue.add( mq );
-
-                if ( s_ring_bell && next_bar.value != bar.value ) {
-                    MidiQueue mq_bell = new MidiQueue();
-                    mq_bell.Track = 0;
-                    mq_bell.Clock = next_clock;
-                    mq_bell.Channel = 15;
-                    mq_bell.Program = ProgramBell;
-                    mq_bell.Note = NoteBell;
-                    mq_bell.Velocity = 0x40;
-                    s_queue.add( mq_bell );
-                }
-            }
-
             for ( int track = 1; track < m_vsq.Track.size(); track++ ) {
 #if DEBUG
                 AppManager.debugWriteLine( "Metronome.Start; track=" + track );
@@ -259,38 +233,7 @@ namespace org.kbinani.cadencii {
 
         private static Vector<MidiQueue> ReGenerateMidiQueue( MidiQueue sender ) {
             Vector<MidiQueue> ret = new Vector<MidiQueue>();
-            if ( sender.Track == 0 ) {
-                if ( AppManager.editorConfig.MetronomeEnabled ) {
-                    ByRef<Integer> bar = new ByRef<Integer>();
-                    Timesig timesig = m_vsq.getTimesigAt( sender.Clock, bar );
-                    int clock_step = 480 * 4 / timesig.denominator;
-                    int next_clock = sender.Clock + clock_step;
-
-                    ByRef<Integer> next_bar = new ByRef<Integer>();
-                    timesig = m_vsq.getTimesigAt( next_clock, next_bar );
-
-                    MidiQueue mq = new MidiQueue();
-                    mq.Track = 0;
-                    mq.Clock = next_clock;
-                    mq.Channel = 14;
-                    mq.Program = ProgramNormal;
-                    mq.Note = NoteNormal;
-                    mq.Velocity = 0x40;
-                    mq.Done += new MidiQueueDoneEventHandler( ReGenerateMidiQueue );
-                    ret.add( mq );
-
-                    if ( s_ring_bell && next_bar.value != bar.value ) {
-                        MidiQueue mq_bell = new MidiQueue();
-                        mq_bell.Track = 0;
-                        mq_bell.Clock = next_clock;
-                        mq_bell.Channel = 15;
-                        mq_bell.Program = ProgramBell;
-                        mq_bell.Note = NoteBell;
-                        mq_bell.Velocity = 0x40;
-                        ret.add( mq_bell );
-                    }
-                }
-            } else {
+            if ( sender.Track != 0 ) {
                 int track = sender.Track;
                 int clock = sender.Clock;
 #if DEBUG

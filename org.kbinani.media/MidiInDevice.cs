@@ -32,7 +32,7 @@ namespace org.kbinani.media {
         delegate void MidiInProcDelegate( uint hMidiIn, uint wMsg, int dwInstance, int dwParam1, int dwParam2 );
 
         private volatile MidiInProcDelegate m_delegate;
-        private IntPtr m_delegate_pointer;
+        private volatile IntPtr m_delegate_pointer;
         private uint m_hmidiin = 0;
         private int m_port_number;
         private boolean receiveSystemCommonMessage = false;
@@ -131,11 +131,13 @@ namespace org.kbinani.media {
         public void MidiInProc( uint hMidiIn, uint wMsg, int dwInstance, int dwParam1, int dwParam2 ) {
             try {
                 switch ( wMsg ) {
-                    case win32.MM_MIM_OPEN:
+                    case win32.MM_MIM_OPEN: {
                         return;
-                    case win32.MM_MIM_CLOSE:
+                    }
+                    case win32.MM_MIM_CLOSE: {
                         return;
-                    case win32.MM_MIM_DATA:
+                    }
+                    case win32.MM_MIM_DATA: {
                         int receive = dwParam1;
                         double now = PortUtil.getCurrentTime();
                         switch ( receive & 0xF0 ) {
@@ -143,21 +145,23 @@ namespace org.kbinani.media {
                             case 0x90:
                             case 0xa0:
                             case 0xb0:
-                            case 0xe0:
+                            case 0xe0: {
                                 if ( MidiReceived != null ) {
                                     MidiReceived( now, new byte[] { (byte)(receive & 0xff),
                                                                     (byte)((receive & 0xffff) >> 8),
                                                                     (byte)((receive & ((2 << 24) - 1)) >> 16) } );
                                 }
                                 break;
+                            }
                             case 0xc0:
-                            case 0xd0:
+                            case 0xd0: {
                                 if ( MidiReceived != null ) {
                                     MidiReceived( now, new byte[] { (byte)( receive & 0xff ),
                                                                     (byte)((receive & 0xffff) >> 8) } );
                                 }
                                 break;
-                            case 0xf0:
+                            }
+                            case 0xf0: {
                                 if ( receiveSystemCommonMessage ) {
                                     byte b0 = (byte)(receive & 0xff);
                                     byte b1 = (byte)((receive >> 8) & 0xff);
@@ -166,7 +170,7 @@ namespace org.kbinani.media {
                                     if ( b0 == 0xf1 ) {
                                         // MTC quater frame message
                                         if ( MidiReceived != null ) {
-                                            MidiReceived( now, new byte[]{ b0, b1, b2 } );
+                                            MidiReceived( now, new byte[] { b0, b1, b2 } );
                                         }
                                     } else if ( b0 == 0xf2 ) {
                                         // song position pointer
@@ -187,14 +191,19 @@ namespace org.kbinani.media {
                                     }
                                 }
                                 break;
+                            }
                         }
                         return;
-                    case win32.MM_MIM_LONGDATA:
+                    }
+                    case win32.MM_MIM_LONGDATA: {
                         return;
-                    case win32.MM_MIM_ERROR:
+                    }
+                    case win32.MM_MIM_ERROR: {
                         return;
-                    case win32.MM_MIM_LONGERROR:
+                    }
+                    case win32.MM_MIM_LONGERROR: {
                         return;
+                    }
                 }
             } catch ( Exception ex ) {
                 debug.push_log( "MidiInDevice.MidiInProc" );

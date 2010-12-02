@@ -192,12 +192,21 @@ namespace org.kbinani.cadencii {
                     item.soloButtonClick.add( new BEventHandler( this, "FormMixer_SoloButtonClick" ) );
                     item.federChangedEvent.add( new BEventHandler( this, "FormMixer_FederChanged" ) );
                     item.panpotChangedEvent.add( new BEventHandler( this, "FormMixer_PanpotChanged" ) );
+#if !JAVA
+                    item.BorderStyle = BorderStyle.FixedSingle;
+                    item.Size = volumeMaster.Size;
+#endif
                     m_tracker.add( item );
                 }
             } else if ( m_tracker.size() > num ) {
                 int delete = m_tracker.size() - num;
                 for ( int i = 0; i < delete; i++ ) {
-                    m_tracker.removeElementAt( m_tracker.size() - 1 );
+                    int indx = m_tracker.size() - 1;
+                    VolumeTracker tr = m_tracker.get( indx );
+                    m_tracker.removeElementAt( indx );
+#if !JAVA
+                    tr.Dispose();
+#endif
                 }
             }
 #else
@@ -435,7 +444,7 @@ namespace org.kbinani.cadencii {
 
 #if !JAVA
         public void panel1_Paint( Object sender, PaintEventArgs e ) {
-            int stdx = hScroll.getValue();
+            /*int stdx = hScroll.getValue();
             Pen pen_102_102_102 = null;
             try {
                 pen_102_102_102 = new Pen( System.Drawing.Color.FromArgb( 102, 102, 102 ) );
@@ -452,7 +461,7 @@ namespace org.kbinani.cadencii {
                 if ( pen_102_102_102 != null ) {
                     pen_102_102_102.Dispose();
                 }
-            }
+            }*/
         }
 #endif
 

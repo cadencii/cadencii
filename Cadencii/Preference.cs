@@ -1370,7 +1370,9 @@ namespace org.kbinani.cadencii {
                 openUtauCore.setInitialDirectory( PortUtil.getDirectoryName( txtResampler.getText() ) );
             }
             openUtauCore.setSelectedFile( "resampler.exe" );
+            AppManager.beginShowDialog();
             int dr = openUtauCore.showOpenDialog( this );
+            AppManager.endShowDialog();
             if ( dr == BFileChooser.APPROVE_OPTION ) {
                 String path = openUtauCore.getSelectedFile();
                 txtResampler.setText( path );
@@ -1388,7 +1390,9 @@ namespace org.kbinani.cadencii {
                 openUtauCore.setInitialDirectory( PortUtil.getDirectoryName( txtWavtool.getText() ) );
             }
             openUtauCore.setSelectedFile( "wavtool.exe" );
+            AppManager.beginShowDialog();
             int dr = openUtauCore.showOpenDialog( this );
+            AppManager.endShowDialog();
             if ( dr == BFileChooser.APPROVE_OPTION ) {
                 String path = openUtauCore.getSelectedFile();
                 txtWavtool.setText( path );
@@ -1407,7 +1411,9 @@ namespace org.kbinani.cadencii {
                 dialog.setInitialDirectory( PortUtil.getDirectoryName( txtAquesTone.getText() ) );
             }
             dialog.setSelectedFile( "AquesTone.dll" );
+            AppManager.beginShowDialog();
             int dr = dialog.showOpenDialog( this );
+            AppManager.endShowDialog();
             if ( dr == BFileChooser.APPROVE_OPTION ) {
                 String path = dialog.getSelectedFile();
                 txtAquesTone.setText( path );
