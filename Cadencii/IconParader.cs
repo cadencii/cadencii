@@ -25,8 +25,8 @@ namespace org.kbinani.cadencii {
     public class IconParader : PictureBox {
         const int RADIUS = 6; // 角の丸み
         const int DIAMETER = 2 * RADIUS;
-        const int ICON_WIDTH = 48;
-        const int ICON_HEIGHT = 48;
+        public const int ICON_WIDTH = 48;
+        public const int ICON_HEIGHT = 48;
 
         private GraphicsPath graphicsPath = null;
         private Region region = null;

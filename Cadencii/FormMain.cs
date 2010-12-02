@@ -4551,7 +4551,9 @@ namespace org.kbinani.cadencii {
                 }
                 mDialogImportLyric.setLocation( getFormPreferedLocation( mDialogImportLyric ) );
                 mDialogImportLyric.setModal( true );
+                AppManager.beginShowDialog();
                 mDialogImportLyric.setVisible( true );
+                AppManager.endShowDialog();
                 if ( mDialogImportLyric.getDialogResult() == BDialogResult.OK ) {
                     String[] phrases = mDialogImportLyric.getLetters();
 #if DEBUG
@@ -4650,7 +4652,9 @@ namespace org.kbinani.cadencii {
                     type );
                 dlg.setLocation( getFormPreferedLocation( dlg ) );
                 dlg.setModal( true );
+                AppManager.beginShowDialog();
                 dlg.setVisible( true );
+                AppManager.endShowDialog();
                 if ( dlg.getDialogResult() == BDialogResult.OK ) {
                     VsqEvent edited = (VsqEvent)ev.clone();
                     if ( dlg.getVibratoHandle() != null ) {
@@ -4708,7 +4712,9 @@ namespace org.kbinani.cadencii {
 
                 dlg.setLocation( getFormPreferedLocation( dlg ) );
                 dlg.setModal( true );
+                AppManager.beginShowDialog();
                 dlg.setVisible( true );
+                AppManager.endShowDialog();
                 if ( dlg.getDialogResult() == BDialogResult.OK ) {
                     VsqEvent edited = (VsqEvent)ev.clone();
                     edited.ID.PMBendDepth = dlg.getPMBendDepth();
@@ -7609,7 +7615,9 @@ namespace org.kbinani.cadencii {
                                     dlg.setDEMaccent( selectedEvent.ID.DEMaccent );
                                     dlg.setLocation( getFormPreferedLocation( dlg ) );
                                     dlg.setModal( true );
+                                    AppManager.beginShowDialog();
                                     dlg.setVisible( true );
+                                    AppManager.endShowDialog();
                                     if ( dlg.getDialogResult() == BDialogResult.OK ) {
                                         VsqID id = (VsqID)selectedEvent.ID.clone();
                                         id.PMBendDepth = dlg.getPMBendDepth();
@@ -7675,7 +7683,9 @@ namespace org.kbinani.cadencii {
                                     dlg = new FormVibratoConfig( selectedEvent.ID.VibratoHandle, selectedEvent.ID.getLength(), AppManager.editorConfig.DefaultVibratoLength, type );
                                     dlg.setLocation( getFormPreferedLocation( dlg ) );
                                     dlg.setModal( true );
+                                    AppManager.beginShowDialog();
                                     dlg.setVisible( true );
+                                    AppManager.endShowDialog();
                                     if ( dlg.getDialogResult() == BDialogResult.OK ) {
                                         VsqID t = (VsqID)selectedEvent.ID.clone();
                                         t.VibratoHandle = dlg.getVibratoHandle();
@@ -9995,11 +10005,11 @@ namespace org.kbinani.cadencii {
                 try {
                     dialog = new FormAskKeySoundGeneration();
                     dialog.setAlwaysPerformThisCheck( always_check_this );
-                    AppManager.beginShowDialog();
                     dialog.setModal( true );
+                    AppManager.beginShowDialog();
                     dialog.setVisible( true );
-                    dialog_result = dialog.getDialogResult();
                     AppManager.endShowDialog();
+                    dialog_result = dialog.getDialogResult();
                     always_check_this = dialog.isAlwaysPerformThisCheck();
                 } catch ( Exception ex ) {
                     Logger.write( typeof( FormMain ) + ".FormMain_Load; ex=" + ex + "\n" );
@@ -10455,7 +10465,9 @@ namespace org.kbinani.cadencii {
                                          queue );
                 double started = PortUtil.getCurrentTime();
                 fs.setModal( true );
+                AppManager.beginShowDialog();
                 fs.setVisible( true );
+                AppManager.endShowDialog();
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileExportWave_Click; ex=" + ex + "\n" );
             } finally {
@@ -10544,7 +10556,9 @@ namespace org.kbinani.cadencii {
             }
 
             mDialogMidiImportAndExport.setModal( true );
+            AppManager.beginShowDialog();
             mDialogMidiImportAndExport.setVisible( true );
+            AppManager.endShowDialog();
             if ( mDialogMidiImportAndExport.getDialogResult() != BDialogResult.OK ) {
                 return;
             }
@@ -10880,7 +10894,9 @@ namespace org.kbinani.cadencii {
             mDialogMidiImportAndExport.setMode( FormMidiImExport.FormMidiMode.EXPORT );
             mDialogMidiImportAndExport.setLocation( getFormPreferedLocation( mDialogMidiImportAndExport ) );
             mDialogMidiImportAndExport.setModal( true );
+            AppManager.beginShowDialog();
             mDialogMidiImportAndExport.setVisible( true );
+            AppManager.endShowDialog();
             if ( mDialogMidiImportAndExport.getDialogResult() == BDialogResult.OK ) {
                 if ( !mDialogMidiImportAndExport.isPreMeasure() ) {
                     vsq.removePart( 0, vsq.getPreMeasureClocks() );
@@ -11292,7 +11308,9 @@ namespace org.kbinani.cadencii {
             mDialogMidiImportAndExport.setTimesig( false );
             mDialogMidiImportAndExport.setLocation( getFormPreferedLocation( mDialogMidiImportAndExport ) );
             mDialogMidiImportAndExport.setModal( true );
+            AppManager.beginShowDialog();
             mDialogMidiImportAndExport.setVisible( true );
+            AppManager.endShowDialog();
             if ( mDialogMidiImportAndExport.getDialogResult() != BDialogResult.OK ) {
                 return;
             }
@@ -11428,7 +11446,9 @@ namespace org.kbinani.cadencii {
                 int selected = AppManager.getSelected();
                 dlg.setLocation( getFormPreferedLocation( dlg ) );
                 dlg.setModal( true );
+                AppManager.beginShowDialog();
                 dlg.setVisible( true );
+                AppManager.endShowDialog();
                 if ( dlg.getDialogResult() == BDialogResult.OK ) {
                     if ( dlg.getApplyCurrentTrack() ) {
                         VsqFileEx vsq = AppManager.getVsqFile();
@@ -11487,7 +11507,9 @@ namespace org.kbinani.cadencii {
                 dlg = new FormGameControlerConfig();
                 dlg.setLocation( getFormPreferedLocation( dlg ) );
                 dlg.setModal( true );
+                AppManager.beginShowDialog();
                 dlg.setVisible( true );
+                AppManager.endShowDialog();
                 if ( dlg.getDialogResult() == BDialogResult.OK ) {
                     AppManager.editorConfig.GameControlerRectangle = dlg.getRectangle();
                     AppManager.editorConfig.GameControlerTriangle = dlg.getTriangle();
@@ -11596,7 +11618,9 @@ namespace org.kbinani.cadencii {
                 mDialogPreference.setLocation( getFormPreferedLocation( mDialogPreference ) );
 
                 mDialogPreference.setModal( true );
+                AppManager.beginShowDialog();
                 mDialogPreference.setVisible( true );
+                AppManager.endShowDialog();
                 if ( mDialogPreference.getDialogResult() == BDialogResult.OK ) {
                     String old_base_font_name = AppManager.editorConfig.BaseFontName;
                     float old_base_font_size = AppManager.editorConfig.BaseFontSize;
@@ -11913,7 +11937,9 @@ namespace org.kbinani.cadencii {
                 form = new FormShortcutKeys( dict );
                 form.setLocation( getFormPreferedLocation( form ) );
                 form.setModal( true );
+                AppManager.beginShowDialog();
                 form.setVisible( true );
+                AppManager.endShowDialog();
                 if ( form.getDialogResult() == BDialogResult.OK ) {
                     TreeMap<String, ValuePair<String, BKeys[]>> res = form.getResult();
                     for ( Iterator<String> itr = res.keySet().iterator(); itr.hasNext(); ) {
@@ -12075,7 +12101,9 @@ namespace org.kbinani.cadencii {
                 dlg = new FormWordDictionary();
                 dlg.setLocation( getFormPreferedLocation( dlg ) );
                 dlg.setModal( true );
+                AppManager.beginShowDialog();
                 dlg.setVisible( true );
+                AppManager.endShowDialog();
                 if ( dlg.getDialogResult() == BDialogResult.OK ) {
                     Vector<ValuePair<String, Boolean>> result = dlg.getResult();
                     SymbolTable.changeOrder( result );
@@ -12210,7 +12238,9 @@ namespace org.kbinani.cadencii {
 
                 dlg.setLocation( getFormPreferedLocation( dlg ) );
                 dlg.setModal( true );
+                AppManager.beginShowDialog();
                 dlg.setVisible( true );
+                AppManager.endShowDialog();
                 if ( dlg.getDialogResult() == BDialogResult.OK ) {
                     int pos = dlg.getPosition() + AppManager.getVsqFile().getPreMeasure() - 1;
                     int length = dlg.getLength();
@@ -12338,7 +12368,9 @@ namespace org.kbinani.cadencii {
 
                 dlg.setLocation( getFormPreferedLocation( dlg ) );
                 dlg.setModal( true );
+                AppManager.beginShowDialog();
                 dlg.setVisible( true );
+                AppManager.endShowDialog();
                 if ( dlg.getDialogResult() == BDialogResult.OK ) {
                     VsqFileEx temp = (VsqFileEx)AppManager.getVsqFile().clone();
                     int start = dlg.getStart() + AppManager.getVsqFile().getPreMeasure() - 1;
@@ -12491,7 +12523,9 @@ namespace org.kbinani.cadencii {
                 dlg = new FormRandomize();
                 dlg.setLocation( getFormPreferedLocation( dlg ) );
                 dlg.setModal( true );
+                AppManager.beginShowDialog();
                 dlg.setVisible( true );
+                AppManager.endShowDialog();
                 if ( dlg.getDialogResult() == BDialogResult.OK ) {
                     VsqFileEx vsq = AppManager.getVsqFile();
                     int preMeasure = vsq.getPreMeasure();
@@ -12891,7 +12925,9 @@ namespace org.kbinani.cadencii {
                                     dlg = new FormTempoConfig( bar_count, beat_in_bar, timesig.numerator, clocks_in_beat, clock_per_beat, (float)(6e7 / tte.Tempo), AppManager.getVsqFile().getPreMeasure() );
                                     dlg.setLocation( getFormPreferedLocation( dlg ) );
                                     dlg.setModal( true );
+                                    AppManager.beginShowDialog();
                                     dlg.setVisible( true );
+                                    AppManager.endShowDialog();
                                     if ( dlg.getDialogResult() == BDialogResult.OK ) {
                                         int new_beat = dlg.getBeatCount();
                                         int new_clocks_in_beat = dlg.getClock();
@@ -12963,7 +12999,9 @@ namespace org.kbinani.cadencii {
                                                            vsq.getPreMeasure() );
                                 dlg.setLocation( getFormPreferedLocation( dlg ) );
                                 dlg.setModal( true );
+                                AppManager.beginShowDialog();
                                 dlg.setVisible( true );
+                                AppManager.endShowDialog();
                                 if ( dlg.getDialogResult() == BDialogResult.OK ) {
                                     int new_beat = dlg.getBeatCount();
                                     int new_clocks_in_beat = dlg.getClock();
@@ -13037,7 +13075,9 @@ namespace org.kbinani.cadencii {
                                 dlg = new FormBeatConfig( bar_count - pre_measure + 1, timesig.numerator, timesig.denominator, num_enabled, pre_measure );
                                 dlg.setLocation( getFormPreferedLocation( dlg ) );
                                 dlg.setModal( true );
+                                AppManager.beginShowDialog();
                                 dlg.setVisible( true );
+                                AppManager.endShowDialog();
                                 if ( dlg.getDialogResult() == BDialogResult.OK ) {
                                     if ( dlg.isEndSpecified() ) {
                                         int[] new_barcounts = new int[2];
@@ -13111,7 +13151,9 @@ namespace org.kbinani.cadencii {
                                 dlg = new FormBeatConfig( bar_count - pre_measure + 1, timesig.numerator, timesig.denominator, true, pre_measure );
                                 dlg.setLocation( getFormPreferedLocation( dlg ) );
                                 dlg.setModal( true );
+                                AppManager.beginShowDialog();
                                 dlg.setVisible( true );
+                                AppManager.endShowDialog();
                                 if ( dlg.getDialogResult() == BDialogResult.OK ) {
                                     if ( dlg.isEndSpecified() ) {
                                         int[] new_barcounts = new int[2];
@@ -13932,7 +13974,9 @@ namespace org.kbinani.cadencii {
                     dlg.setDEMdecGainRate( original.ID.DEMdecGainRate );
                     dlg.setDEMaccent( original.ID.DEMaccent );
                     dlg.setModal( true );
+                    AppManager.beginShowDialog();
                     dlg.setVisible( true );
+                    AppManager.endShowDialog();
                     if ( dlg.getDialogResult() == BDialogResult.OK ) {
                         VsqID copy = (VsqID)original.ID.clone();
                         copy.PMBendDepth = dlg.getPMBendDepth();
@@ -15614,7 +15658,9 @@ namespace org.kbinani.cadencii {
                 ib.setLocation( getFormPreferedLocation( ib ) );
                 ib.setResult( AppManager.getBgm( index ).readOffsetSeconds + "" );
                 ib.setModal( true );
+                AppManager.beginShowDialog();
                 ib.setVisible( true );
+                AppManager.endShowDialog();
                 if ( ib.getDialogResult() != BDialogResult.OK ) {
                     return;
                 }
@@ -15815,7 +15861,9 @@ namespace org.kbinani.cadencii {
                     try {
                         dlg = new FormCompileResult( _( "Failed loading script." ), ScriptServer.getCompileMessage( id ) );
                         dlg.setModal( true );
+                        AppManager.beginShowDialog();
                         dlg.setVisible( true );
+                        AppManager.endShowDialog();
                     } catch ( Exception ex ) {
                         Logger.write( typeof( FormMain ) + ".handleScriptMenuItem_Click; ex=" + ex + "\n" );
                     } finally {

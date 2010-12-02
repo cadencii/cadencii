@@ -1349,11 +1349,11 @@ namespace org.kbinani.cadencii {
             return ret;
         }
 
-        public void write( String file ) {
+        public new void write( String file ) {
             base.write( file );
         }
 
-        public void write( String file, int msPreSend, String encoding ) {
+        public new void write( String file, int msPreSend, String encoding ) {
             base.write( file, msPreSend, encoding );
         }
     }

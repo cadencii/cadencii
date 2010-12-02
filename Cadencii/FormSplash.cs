@@ -110,7 +110,24 @@ namespace org.kbinani.cadencii {
                     }
                 }
             } else {
+                // 画像ファイルが無かった場合
+#if JAVA
                 p.setImage( null );
+#else
+                // 歌手名が描かれた画像をセットする
+                System.Drawing.Bitmap bmp = new System.Drawing.Bitmap( IconParader.ICON_WIDTH, IconParader.ICON_HEIGHT );
+                using ( System.Drawing.Graphics g = System.Drawing.Graphics.FromImage( bmp ) ) {
+                    g.Clear( System.Drawing.Color.White );
+                    System.Drawing.StringFormat sf = new System.Drawing.StringFormat();
+                    sf.Alignment = System.Drawing.StringAlignment.Near;
+                    sf.LineAlignment = System.Drawing.StringAlignment.Near;
+                    g.DrawString(
+                        singer_name, SystemInformation.MenuFont, System.Drawing.Brushes.Black,
+                        new System.Drawing.RectangleF( 1, 1, IconParader.ICON_WIDTH - 2, IconParader.ICON_HEIGHT - 2 ),
+                        sf );
+                }
+                p.setImage( bmp );
+#endif
             }
 
             panelIcon.BringToFront();

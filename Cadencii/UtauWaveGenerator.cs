@@ -153,6 +153,7 @@ namespace org.kbinani.cadencii {
                     mVsq.removePart( 0, trim_end );
                 }
             }
+            mVsq.adjustClockToMatchWith( 125.0 );
             mVsq.updateTotalClocks();
 
             mTrimRemain = (int)(trim_sec * VSTiDllManager.SAMPLE_RATE);
@@ -285,8 +286,8 @@ namespace org.kbinani.cadencii {
                         // 最初の音符，
                         double sec_start2 = sec_end_old;
                         double sec_end2 = sec_start;
-                        // t_temp2が120から大きく外れないように
-                        int draft_length = (int)((sec_end2 - sec_start2) * 8.0 * 120.0);
+                        // t_temp2が125から大きく外れないように
+                        int draft_length = (int)((sec_end2 - sec_start2) * 8.0 * 125.0);
                         float t_temp2 = (float)(draft_length / (sec_end2 - sec_start2) / 8.0);
                         String str_t_temp2 = PortUtil.formatDecimal( "0.00", t_temp2 );
                         double act_t_temp2 = PortUtil.parseDouble( str_t_temp2 );
@@ -350,7 +351,7 @@ namespace org.kbinani.cadencii {
                     Vector<String> pitch = new Vector<String>();
                     boolean allzero = true;
                     int delta_clock = 5;  //ピッチを取得するクロック間隔
-                    int tempo = 120;
+                    int tempo = 125;
                     double delta_sec = delta_clock / (8.0 * tempo); //ピッチを取得する時間間隔
                     if ( item.ID.VibratoHandle == null ) {
                         int pit_count = (int)((sec_end_act - sec_start_act) / delta_sec) + 1;

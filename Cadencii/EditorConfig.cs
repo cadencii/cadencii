@@ -40,7 +40,13 @@ namespace org.kbinani.cadencii {
     /// Cadenciiの環境設定
     /// </summary>
     public class EditorConfig {
+        /// <summary>
+        /// デフォルトのプリメジャー．単位は小節
+        /// </summary>
         public int DefaultPreMeasure = 4;
+        /// <summary>
+        /// デフォルトで使用する歌手の名前
+        /// </summary>
         public String DefaultSingerName = "Miku";
         public int DefaultXScale = 65;
         public String BaseFontName = "MS UI Gothic";

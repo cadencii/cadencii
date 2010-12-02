@@ -446,15 +446,6 @@ namespace org.kbinani.cadencii {
 
 #if !JAVA
         #region java.awt.Component
-        // root implementation of java.awt.Component is in BForm.cs
-        public void invalidate() {
-            base.Invalidate();
-        }
-
-        public void repaint() {
-            base.Refresh();
-        }
-
         public void setBounds( int x, int y, int width, int height ) {
             base.Bounds = new System.Drawing.Rectangle( x, y, width, height );
         }
@@ -503,14 +494,6 @@ namespace org.kbinani.cadencii {
 
         public void setCursor( org.kbinani.java.awt.Cursor value ) {
             base.Cursor = value.cursor;
-        }
-
-        public bool isVisible() {
-            return base.Visible;
-        }
-
-        public void setVisible( bool value ) {
-            base.Visible = value;
         }
 
 #if COMPONENT_ENABLE_TOOL_TIP_TEXT
