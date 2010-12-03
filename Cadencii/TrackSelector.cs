@@ -2408,7 +2408,7 @@ namespace org.kbinani.cadencii {
                             cmenuCurveEnvelope.setVisible( false );
 
                             cmenuCurveBreathiness.setText( "Noise" );
-                        } else if ( kind == RendererKind.UTAU || kind == RendererKind.STRAIGHT_UTAU ) {
+                        } else if ( kind == RendererKind.UTAU || kind == RendererKind.VCNT ) {
                             cmenuCurveVelocity.setVisible( false );
                             cmenuCurveAccent.setVisible( false );
                             cmenuCurveDecay.setVisible( false );
@@ -5070,7 +5070,7 @@ namespace org.kbinani.cadencii {
         public void prepareSingerMenu( RendererKind renderer ) {
             cmenusinger.removeAll();
             Vector<SingerConfig> items = null;
-            if ( renderer == RendererKind.UTAU || renderer == RendererKind.STRAIGHT_UTAU ) {
+            if ( renderer == RendererKind.UTAU || renderer == RendererKind.VCNT ) {
                 items = AppManager.editorConfig.UtauSingers;
             } else if ( renderer == RendererKind.VOCALOID1_100 || renderer == RendererKind.VOCALOID1_101 ) {
                 items = new Vector<SingerConfig>( Arrays.asList( VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID1 ) ) );
@@ -5091,7 +5091,7 @@ namespace org.kbinani.cadencii {
             for ( Iterator<SingerConfig> itr = items.iterator(); itr.hasNext(); ) {
                 SingerConfig sc = itr.next();
                 String tip = "";
-                if ( renderer == RendererKind.UTAU || renderer == RendererKind.STRAIGHT_UTAU ) {
+                if ( renderer == RendererKind.UTAU || renderer == RendererKind.VCNT ) {
                     if ( sc != null ) {
                         tip = "Name: " + sc.VOICENAME +
                               "\nDirectory: " + sc.VOICEIDSTR;
@@ -5235,7 +5235,7 @@ namespace org.kbinani.cadencii {
                     item = VocaloSysUtil.getSingerID( language, program, SynthesizerType.VOCALOID1 );
                 } else if ( mCMenuSingerPrepared == RendererKind.VOCALOID2 ) {
                     item = VocaloSysUtil.getSingerID( language, program, SynthesizerType.VOCALOID2 );
-                } else if ( mCMenuSingerPrepared == RendererKind.UTAU || mCMenuSingerPrepared == RendererKind.STRAIGHT_UTAU ) {
+                } else if ( mCMenuSingerPrepared == RendererKind.UTAU || mCMenuSingerPrepared == RendererKind.VCNT ) {
                     item = AppManager.getSingerIDUtau( language, program );
                 } else if ( mCMenuSingerPrepared == RendererKind.AQUES_TONE ) {
                     item = AppManager.getSingerIDAquesTone( program );

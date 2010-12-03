@@ -26,7 +26,6 @@ namespace org.kbinani.cadencii {
     using VstInt32 = Int32;
     using VstIntPtr = Int32;
 
-    public delegate void WaveIncomingEventHandler( double[] L, double[] R );
     delegate void VoidDelegate();
 
     public struct TempoInfo {

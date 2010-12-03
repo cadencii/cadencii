@@ -1510,7 +1510,7 @@ namespace org.kbinani.cadencii {
         public static String getVersionStringFromRendererKind( RendererKind kind ) {
             if ( kind == RendererKind.AQUES_TONE ) {
                 return "AQT000";
-            } else if ( kind == RendererKind.STRAIGHT_UTAU ) {
+            } else if ( kind == RendererKind.VCNT ) {
                 return "STR000";
             } else if ( kind == RendererKind.UTAU ) {
                 return "UTU000";
@@ -1538,7 +1538,7 @@ namespace org.kbinani.cadencii {
                     singers.add( getSingerIDAquesTone( sc.Program ) );
                 }
 #endif
-            } else if ( kind == RendererKind.STRAIGHT_UTAU || kind == RendererKind.UTAU ) {
+            } else if ( kind == RendererKind.VCNT || kind == RendererKind.UTAU ) {
                 Vector<SingerConfig> list = editorConfig.UtauSingers;
                 singers = new Vector<VsqID>();
                 for ( Iterator<SingerConfig> itr = list.iterator(); itr.hasNext(); ) {
@@ -1840,53 +1840,6 @@ namespace org.kbinani.cadencii {
             register( mVsq.executeCommand( run ) );
             mMainWindow.setEdited( true );
             mMixerWindow.updateStatus();
-        }
-        #endregion
-
-        #region 音量の取得
-        /// <summary>
-        /// 第track番目のトラックの，現在の音量を取得します
-        /// </summary>
-        /// <param name="track"></param>
-        /// <returns></returns>
-        public static AmplifyCoefficient getAmplifyCoeffNormalTrack( int track ) {
-            AmplifyCoefficient ret = new AmplifyCoefficient();
-            ret.mLeft = 1.0;
-            ret.mRight = 1.0;
-            if ( mVsq != null && 1 <= track && track < mVsq.Track.size() ) {
-                double amp_master = VocaloSysUtil.getAmplifyCoeffFromFeder( mVsq.Mixer.MasterFeder );
-                double pan_left_master = VocaloSysUtil.getAmplifyCoeffFromPanLeft( mVsq.Mixer.MasterPanpot );
-                double pan_right_master = VocaloSysUtil.getAmplifyCoeffFromPanRight( mVsq.Mixer.MasterPanpot );
-                double amp_track = VocaloSysUtil.getAmplifyCoeffFromFeder( mVsq.Mixer.Slave.get( track - 1 ).Feder );
-                double pan_left_track = VocaloSysUtil.getAmplifyCoeffFromPanLeft( mVsq.Mixer.Slave.get( track - 1 ).Panpot );
-                double pan_right_track = VocaloSysUtil.getAmplifyCoeffFromPanRight( mVsq.Mixer.Slave.get( track - 1 ).Panpot );
-                ret.mLeft = amp_master * amp_track * pan_left_master * pan_left_track;
-                ret.mRight = amp_master * amp_track * pan_right_master * pan_right_track;
-            }
-            return ret;
-        }
-
-        public static AmplifyCoefficient getAmplifyCoeffBgm( int index ) {
-            AmplifyCoefficient ret = new AmplifyCoefficient();
-            ret.mLeft = 1.0;
-            ret.mRight = 1.0;
-            if ( mVsq != null && 0 <= index && index < mVsq.BgmFiles.size() ) {
-                BgmFile item = mVsq.BgmFiles.get( index );
-                if ( item.mute == 1 ) {
-                    ret.mLeft = 0.0;
-                    ret.mRight = 0.0;
-                } else {
-                    double amp_master = VocaloSysUtil.getAmplifyCoeffFromFeder( mVsq.Mixer.MasterFeder );
-                    double pan_left_master = VocaloSysUtil.getAmplifyCoeffFromPanLeft( mVsq.Mixer.MasterPanpot );
-                    double pan_right_master = VocaloSysUtil.getAmplifyCoeffFromPanRight( mVsq.Mixer.MasterPanpot );
-                    double amp_track = VocaloSysUtil.getAmplifyCoeffFromFeder( item.feder );
-                    double pan_left_track = VocaloSysUtil.getAmplifyCoeffFromPanLeft( item.panpot );
-                    double pan_right_track = VocaloSysUtil.getAmplifyCoeffFromPanRight( item.panpot );
-                    ret.mLeft = amp_master * amp_track * pan_left_master * pan_left_track;
-                    ret.mRight = amp_master * amp_track * pan_right_master * pan_right_track;
-                }
-            }
-            return ret;
         }
         #endregion
 
@@ -3494,12 +3447,15 @@ namespace org.kbinani.cadencii {
                 editorConfig = new EditorConfig();
                 return;
             }
-            String config_file = PortUtil.combinePath( appdata, CONFIG_FILE_NAME );
+
+            // バージョン番号付きのファイル
+            String config_file = PortUtil.combinePath( Utility.getConfigPath(), CONFIG_FILE_NAME );
 #if DEBUG
             PortUtil.println( "AppManager#loadConfig; config_file=" + config_file + "; isFileExists(config_file)=" + PortUtil.isFileExists( config_file ) );
 #endif
             EditorConfig ret = null;
             if ( PortUtil.isFileExists( config_file ) ) {
+                // このバージョン用の設定ファイルがあればそれを利用
                 try {
                     ret = EditorConfig.deserialize( config_file );
                 } catch ( Exception ex ) {
@@ -3508,6 +3464,11 @@ namespace org.kbinani.cadencii {
                     Logger.write( typeof( AppManager ) + ".loadConfig; ex=" + ex + "\n" );
                 }
             } else {
+                // このバージョン用の設定ファイルがなかった場合
+                // まず，古いバージョン用の設定ファイルがないかどうか順に調べる
+                String[] dirs = PortUtil.listDirectories( appdata );
+                // TODO: このへんから
+
                 config_file = PortUtil.combinePath( appdata, CONFIG_FILE_NAME );
                 if ( PortUtil.isFileExists( config_file ) ) {
                     try {

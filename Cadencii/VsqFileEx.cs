@@ -39,9 +39,10 @@ namespace org.kbinani.cadencii {
     [Serializable]
     public class VsqFileEx : VsqFile, ICloneable, ICommandRunnable {
 #endif
-        public const int NUM_TRACK = 17;
+        private static XmlSerializer mVsqSerializer;
 
-        static XmlSerializer s_vsq_serializer;
+        public const String TAG_VSQEVENT_AQUESTONE_RELEASE = "org.kbinani.cadencii.AquesToneRelease";
+        public const String TAG_VSQTRACK_RENDERER_KIND = "org.kbinani.cadencii.RendererKind";
 
         public AttachedCurve AttachedCurves;
         public Vector<BgmFile> BgmFiles = new Vector<BgmFile>();
@@ -53,18 +54,14 @@ namespace org.kbinani.cadencii {
         [System.Xml.Serialization.XmlIgnore]
 #endif
         public EditorStatus editorStatus = new EditorStatus();
-        public boolean[] mute = new boolean[NUM_TRACK];
-        public boolean[] solo = new boolean[NUM_TRACK];
 
-        public const String TAG_VSQEVENT_AQUESTONE_RELEASE = "org.kbinani.cadencii.AquesToneRelease";
-        public const String TAG_VSQTRACK_RENDERER_KIND = "org.kbinani.cadencii.RendererKind";
 #if JAVA
         static {
-            s_vsq_serializer = new XmlSerializer( VsqFileEx.class );
+            sVsqSerializer = new XmlSerializer( VsqFileEx.class );
         }
 #else
         static VsqFileEx() {
-            s_vsq_serializer = new XmlSerializer( typeof( VsqFileEx ) );
+            mVsqSerializer = new XmlSerializer( typeof( VsqFileEx ) );
         }
 #endif
 
@@ -123,7 +120,7 @@ namespace org.kbinani.cadencii {
             } else if ( version.StartsWith( VSTiDllManager.RENDERER_DSB3 ) ) {
                 return RendererKind.VOCALOID2;
             } else if ( version.StartsWith( VSTiDllManager.RENDERER_STR0 ) ) {
-                return RendererKind.STRAIGHT_UTAU;
+                return RendererKind.VCNT;
             } else if ( version.StartsWith( VSTiDllManager.RENDERER_UTU0 ) ) {
                 return RendererKind.UTAU;
             } else if ( version.StartsWith( VSTiDllManager.RENDERER_NULL ) ) {
@@ -146,7 +143,7 @@ namespace org.kbinani.cadencii {
             if ( vsq_common != null ) {
                 if ( renderer_kind == RendererKind.AQUES_TONE ) {
                     vsq_common.Version = VSTiDllManager.RENDERER_AQT0;
-                } else if ( renderer_kind == RendererKind.STRAIGHT_UTAU ) {
+                } else if ( renderer_kind == RendererKind.VCNT ) {
                     vsq_common.Version = VSTiDllManager.RENDERER_STR0;
                 } else if ( renderer_kind == RendererKind.UTAU ) {
                     vsq_common.Version = VSTiDllManager.RENDERER_UTU0;
@@ -1255,7 +1252,7 @@ namespace org.kbinani.cadencii {
             FileOutputStream xw = null;
             try {
                 xw = new FileOutputStream( file );
-                s_vsq_serializer.serialize( xw, this );
+                mVsqSerializer.serialize( xw, this );
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "VsqFileEx#writeAsXml; ex=" + ex );
                 Logger.write( typeof( VsqFileEx ) + ".writeAsXml; ex=" + ex + "\n" );
@@ -1276,7 +1273,7 @@ namespace org.kbinani.cadencii {
             FileInputStream fs = null;
             try {
                 fs = new FileInputStream( file );
-                ret = (VsqFileEx)s_vsq_serializer.deserialize( fs );
+                ret = (VsqFileEx)mVsqSerializer.deserialize( fs );
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "VsqFileEx#readFromXml; ex=" + ex );
                 Logger.write( typeof( VsqFileEx ) + ".readFromXml; ex=" + ex + "\n" );

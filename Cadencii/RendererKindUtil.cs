@@ -38,7 +38,7 @@ namespace org.kbinani.cadencii {
                 return VOCALOID1_101;
             } else if ( value == RendererKind.VOCALOID2 ) {
                 return VOCALOID2;
-            } else if ( value == RendererKind.STRAIGHT_UTAU ) {
+            } else if ( value == RendererKind.VCNT ) {
                 return STRAIGHT_UTAU;
             } else if ( value == RendererKind.UTAU ) {
                 return UTAU;
@@ -60,7 +60,7 @@ namespace org.kbinani.cadencii {
             } else if ( value.Equals( VOCALOID2 ) ) {
                 return RendererKind.VOCALOID2;
             } else if ( value.Equals( STRAIGHT_UTAU ) ) {
-                return RendererKind.STRAIGHT_UTAU;
+                return RendererKind.VCNT;
             } else if ( value.Equals( UTAU ) ) {
                 return RendererKind.UTAU;
             } else if ( value.Equals( AQUES_TONE ) ) {

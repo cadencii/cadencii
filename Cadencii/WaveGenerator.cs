@@ -56,6 +56,10 @@ namespace org.kbinani.cadencii {
         /// </summary>
         void stop();
 
+        /// <summary>
+        /// エディターの設定値を指定します
+        /// </summary>
+        /// <param name="config"></param>
         void setGlobalConfig( EditorConfig config );
 
         /// <summary>
@@ -65,10 +69,23 @@ namespace org.kbinani.cadencii {
         /// <returns></returns>
         double getProgress();
 
+        /// <summary>
+        /// 合成処理の進捗状況を取得します．
+        /// 単位はサンプル数です
+        /// </summary>
+        /// <returns></returns>
         long getPosition();
 
+        /// <summary>
+        /// beginメソッドで指定された，合成処理を行う合計のサンプル数を取得します
+        /// </summary>
+        /// <returns></returns>
         long getTotalSamples();
 
+        /// <summary>
+        /// 合成処理が実行中かどうかを取得します
+        /// </summary>
+        /// <returns></returns>
         boolean isRunning();
     }
 

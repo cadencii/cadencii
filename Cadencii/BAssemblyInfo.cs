@@ -38,7 +38,9 @@ namespace org.kbinani.cadencii {
 
     public class BAssemblyInfo {
         public const String id = "$Id$";
-        public const String fileVersion = "3.4.0_DRAFT_14Jul2010";
+        public const String fileVersionMeasure = "3";
+        public const String fileVersionMinor = "3";
+        public const String fileVersion = fileVersionMeasure + "." + fileVersionMinor + ".0_DRAFT3Dec2010";
     }
 
 

@@ -44,7 +44,6 @@ namespace org.kbinani.cadencii {
         private byte[] mWave;
         private int mSampleRate = 44100;
         private String mName;
-        public UtauFreq Freq;
         private float mLength;
         private PolylineDrawer mDrawer = null;
         private float mMaxAmplitude = 0.0f;

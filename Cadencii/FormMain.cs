@@ -993,9 +993,6 @@ namespace org.kbinani.cadencii {
             }
 #endif
 
-#if !ENABLE_MIDI
-            menuSettingMidi.setVisible( false );
-#endif
             menuHelpLogSwitch.setSelected( Logger.isEnabled() );
             applyShortcut();
 
@@ -2115,7 +2112,7 @@ namespace org.kbinani.cadencii {
                 menuTrackRendererUtau.setIcon( null );
             }
 
-            if ( !VSTiDllManager.isRendererAvailable( RendererKind.STRAIGHT_UTAU ) ) {
+            if ( !VSTiDllManager.isRendererAvailable( RendererKind.VCNT ) ) {
                 cMenuTrackTabRendererStraight.setIcon( new ImageIcon( Resources.get_slash() ) );
                 menuTrackRendererVCNT.setIcon( new ImageIcon( Resources.get_slash() ) );
             } else {
@@ -14391,7 +14388,7 @@ namespace org.kbinani.cadencii {
             } else if ( kind == RendererKind.UTAU ) {
                 cMenuTrackTabRendererUtau.setSelected( true );
                 menuTrackRendererUtau.setSelected( true );
-            } else if ( kind == RendererKind.STRAIGHT_UTAU ) {
+            } else if ( kind == RendererKind.VCNT ) {
                 cMenuTrackTabRendererStraight.setSelected( true );
                 menuTrackRendererVCNT.setSelected( true );
             } else if ( kind == RendererKind.AQUES_TONE ) {
@@ -15596,7 +15593,7 @@ namespace org.kbinani.cadencii {
             } else if ( sender == cMenuTrackTabRendererUtau || sender == menuTrackRendererUtau ) {
                 kind = RendererKind.UTAU;
             } else if ( sender == cMenuTrackTabRendererStraight || sender == menuTrackRendererVCNT ) {
-                kind = RendererKind.STRAIGHT_UTAU;
+                kind = RendererKind.VCNT;
             } else if ( sender == cMenuTrackTabRendererVOCALOID100 || sender == menuTrackRendererVOCALOID100 ) {
                 kind = RendererKind.VOCALOID1_100;
             } else if ( sender == cMenuTrackTabRendererVOCALOID101 || sender == menuTrackRendererVOCALOID101 ) {
@@ -15629,12 +15626,12 @@ namespace org.kbinani.cadencii {
                 cMenuTrackTabRendererVOCALOID101.setSelected( kind == RendererKind.VOCALOID1_101 );
                 cMenuTrackTabRendererVOCALOID2.setSelected( kind == RendererKind.VOCALOID2 );
                 cMenuTrackTabRendererUtau.setSelected( kind == RendererKind.UTAU );
-                cMenuTrackTabRendererStraight.setSelected( kind == RendererKind.STRAIGHT_UTAU );
+                cMenuTrackTabRendererStraight.setSelected( kind == RendererKind.VCNT );
                 menuTrackRendererVOCALOID100.setSelected( kind == RendererKind.VOCALOID1_100 );
                 menuTrackRendererVOCALOID101.setSelected( kind == RendererKind.VOCALOID1_101 );
                 menuTrackRendererVOCALOID2.setSelected( kind == RendererKind.VOCALOID2 );
                 menuTrackRendererUtau.setSelected( kind == RendererKind.UTAU );
-                menuTrackRendererVCNT.setSelected( kind == RendererKind.STRAIGHT_UTAU );
+                menuTrackRendererVCNT.setSelected( kind == RendererKind.VCNT );
                 setEdited( true );
                 refreshScreen();
             }

@@ -1317,6 +1317,19 @@ namespace org.kbinani.cadencii{
         }
 
         /// <summary>
+        /// 設定ファイルを保存するディレクトリへのパスを取得します
+        /// </summary>
+        /// <returns></returns>
+        public static String getConfigPath() {
+            String dir2 = getApplicationDataPath();
+            String dir3 = PortUtil.combinePath( dir2, BAssemblyInfo.fileVersionMeasure + "." + BAssemblyInfo.fileVersionMinor );
+            if ( !PortUtil.isDirectoryExists( dir3 ) ) {
+                PortUtil.createDirectory( dir3 );
+            }
+            return dir3;
+        }
+
+        /// <summary>
         /// 使用されていないアセンブリのキャッシュを削除します
         /// </summary>
         public static void cleanupUnusedAssemblyCache() {

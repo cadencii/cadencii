@@ -36,6 +36,9 @@ namespace org.kbinani.cadencii {
     using Integer = System.Int32;
 #endif
 
+    /// <summary>
+    /// UTAUの合成器(または互換合成器)を用いて波形を合成する波形生成器
+    /// </summary>
 #if JAVA
     public class UtauWaveGenerator extends WaveUnit implements WaveGenerator {
 #else
@@ -51,12 +54,11 @@ namespace org.kbinani.cadencii {
         private double[] mLeft;
         private double[] mRight;
 
-        VsqFileEx mVsq;
-        Vector<SingerConfig> mSingerConfigSys;
-        String mResampler;
-        String mWavtool;
-        String mTempDir;
-        boolean mInvokeWithWine;
+        private VsqFileEx mVsq;
+        private String mResampler;
+        private String mWavtool;
+        private String mTempDir;
+        private boolean mInvokeWithWine;
         private boolean mAbortRequired = false;
         private boolean mRunning = false;
 
@@ -93,7 +95,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public override void setConfig( string parameter ) {
+        public override void setConfig( String parameter ) {
             // do nothing
         }
 
@@ -104,7 +106,10 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 初期化メソッド．
         /// </summary>
-        /// <param name="parameter"></param>
+        /// <param name="vsq"></param>
+        /// <param name="track"></param>
+        /// <param name="start_clock"></param>
+        /// <param name="end_clock"></param>
         public void init( VsqFileEx vsq, int track, int start_clock, int end_clock ) {
             mTrack = track;
             mResampler = mConfig.PathResampler;

@@ -24,8 +24,12 @@ namespace org.kbinani.cadencii {
         }
 
         protected override System.Reflection.Assembly Compile( string code ) {
+#if ENABLE_SCRIPT
             Vector<String> errors = new Vector<String>();
             return Utility.compileScript( code, errors );
+#else
+            return null;
+#endif
         }
 
         public void deserialize( System.IO.Stream stream ) {

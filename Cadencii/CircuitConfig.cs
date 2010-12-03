@@ -81,13 +81,17 @@ namespace org.kbinani.cadencii.draft {
             RendererKind kind = VsqFileEx.getTrackRendererKind( vsq_track );
             Type typeof_unit_generator = null;
             if ( kind == RendererKind.AQUES_TONE ) {
+#if ENABLE_AQUESTONE
                 typeof_unit_generator = typeof( AquesToneWaveGenerator );
-            } else if ( kind == RendererKind.STRAIGHT_UTAU ) {
+#endif
+            } else if ( kind == RendererKind.VCNT ) {
                 typeof_unit_generator = typeof( VConnectWaveGenerator );
             } else if ( kind == RendererKind.UTAU ) {
                 typeof_unit_generator = typeof( UtauWaveGenerator );
             } else {
+#if ENABLE_VOCALOID
                 typeof_unit_generator = typeof( VocaloidWaveGenerator );
+#endif
             }
             String unit_generator = typeof_unit_generator + "";
             cfg.addUnit( unit_generator );

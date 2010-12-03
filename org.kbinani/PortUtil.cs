@@ -955,6 +955,10 @@ namespace org.kbinani {
 #endif
         }
 
+        public static String[] listDirectories( String directory ) {
+            return System.IO.Directory.GetDirectories( directory );
+        }
+
         public static String[] listFiles( String directory, String extension ) {
 #if JAVA
             File f = new File( directory );

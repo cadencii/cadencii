@@ -85,7 +85,6 @@
     <Compile Include="FormGenerateStf.cs">
     </Compile>
     <Compile Include="FormUtauVoiceConfig.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="NumberTextBox.cs">
     </Compile>

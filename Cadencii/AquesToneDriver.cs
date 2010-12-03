@@ -101,11 +101,7 @@ namespace org.kbinani.cadencii {
         public static void reload() {
             String aques_tone = AppManager.editorConfig.PathAquesTone;
             if ( mInstance == null ) {
-#if FAKE_AQUES_TONE_DLL_AS_VOCALOID1
-                _instance = new VocaloidDriver();
-#else
                 mInstance = new AquesToneDriver();
-#endif
                 mInstance.loaded = false;
                 mInstance.kind = RendererKind.AQUES_TONE;
             }
@@ -117,11 +113,7 @@ namespace org.kbinani.cadencii {
             if ( !aques_tone.Equals( "" ) && PortUtil.isFileExists( aques_tone ) && !AppManager.editorConfig.DoNotUseAquesTone ) {
                 boolean loaded = false;
                 try {
-#if FAKE_AQUES_TONE_DLL_AS_VOCALOID1
-                    loaded = mInstance.open( aques_tone, SAMPLE_RATE, SAMPLE_RATE, false );
-#else
                     loaded = mInstance.open( aques_tone, VSTiDllManager.SAMPLE_RATE, VSTiDllManager.SAMPLE_RATE, true );
-#endif
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "VSTiProxy#realoadAquesTone; ex=" + ex );
                     loaded = false;
@@ -157,41 +149,6 @@ namespace org.kbinani.cadencii {
                 PortUtil.stderr.println( "AquesToneDriver#open; ex=" + ex );
                 Logger.write( typeof( AquesToneDriver ) + ".open; ex=" + ex + "\n" );
             }
-
-            /*try {
-                for ( int i = 0; i < aEffect.aeffect.numParams; i++ ) {
-                    //String name = getParameterName( i ).Trim().ToLower();
-                     ( name.StartsWith( "phont" ) ) {
-                        phontParameterIndex = i;
-                    }else if ( name.StartsWith( "bendlbl" ) ){
-                        bendLblParameterIndex = i;
-                    } else if ( name.StartsWith( "volume" ) ) {
-                        volumeParameterIndex = i;
-                    } else if ( name.StartsWith( "hasky" ) ) {
-                        haskyParameterIndex = i;
-                    } else if ( name.StartsWith( "resonanc" ) ) {
-                        resonancParameterIndex = i;
-                    } else if ( name.StartsWith( "portatime" ) ) {
-                        portaTimeParameterIndex = i;
-                    } else if ( name.StartsWith( "release" ) ) {
-                        releaseParameterIndex = i;
-                    }
-                    //AquesToneDriver#open; #0 Haskey
-                    //AquesToneDriver#open; #1 Resonanc
-                    //AquesToneDriver#open; #2 YomiLine
-                    //AquesToneDriver#open; #3 Volume
-                    //AquesToneDriver#open; #4 Release
-                    //AquesToneDriver#open; #5 PrtaTime
-                    //AquesToneDriver#open; #6 VibFreq
-                    //AquesToneDriver#open; #7 BendLbl
-                    //er#open; #8 Phont
-#if DEBUG
-                    PortUtil.stdout.println( "AquesToneDriver#open; #" + i + " " + getParameterName( i ) + "=" + getParameterDisplay( i ) + getParameterLabel( i ) + "; value=" + getParameter( i ) );
-#endif
-                }
-            } catch ( Exception ex ) {
-                PortUtil.stderr.println( "AquesToneDriver#open; ex=" + ex );
-            }*/
 
             if ( refresh_winini ) {
                 win32.WriteProfileString( "AquesTone", "FileKoe_00", koe_old );

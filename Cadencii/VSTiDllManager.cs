@@ -20,15 +20,6 @@ import org.kbinani.*;
 import org.kbinani.media.*;
 import org.kbinani.vsq.*;
 #else
-//#define TEST
-#if FAKE_AQUES_TONE_DLL_AS_VOCALOID1
-#if !DEBUG
-#error FAKE_AQUES_TONE_DLL_AS_VOCALOID1 is not valid definition for release build
-#endif
-#if !ENABLE_VOCALOID
-#error FAKE_AQUES_TONE_DLL_AS_VOCALOID1 is not valid definition for ifndef ENABLE_VOCALOID
-#endif
-#endif
 using System;
 using System.Threading;
 using org.kbinani;
@@ -41,7 +32,14 @@ namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 #endif
 
+    /// <summary>
+    /// VSTiのDLLを管理するクラス
+    /// </summary>
+#if JAVA
     public class VSTiDllManager {
+#else
+    public static class VSTiDllManager {
+#endif
         public const String RENDERER_DSB2 = "DSB2";
         public const String RENDERER_DSB3 = "DSB3";
         public const String RENDERER_UTU0 = "UTU0";
@@ -60,22 +58,31 @@ namespace org.kbinani.cadencii {
         public static Vector<VocaloidDriver> vocaloidDriver = new Vector<VocaloidDriver>();
 #endif
 
+        /// <summary>
+        /// 指定した合成器の種類に合致する合成器の新しいインスタンスを取得します
+        /// </summary>
+        /// <param name="kind">合成器の種類</param>
+        /// <returns>指定した種類の合成器の新しいインスタンス</returns>
         public static WaveGenerator getWaveGenerator( RendererKind kind ) {
             switch ( kind ) {
+#if ENABLE_AQUESTONE
                 case RendererKind.AQUES_TONE: {
                     return new AquesToneWaveGenerator();
                 }
-                case RendererKind.STRAIGHT_UTAU: {
+#endif
+                case RendererKind.VCNT: {
                     return new VConnectWaveGenerator();
                 }
                 case RendererKind.UTAU: {
                     return new UtauWaveGenerator();
                 }
+#if ENABLE_VOCALOID
                 case RendererKind.VOCALOID1_100:
                 case RendererKind.VOCALOID1_101:
                 case RendererKind.VOCALOID2: {
                     return new VocaloidWaveGenerator();
                 }
+#endif
                 default: {
                     return new EmptyWaveGenerator();
                 }
@@ -83,10 +90,6 @@ namespace org.kbinani.cadencii {
         }
 
         public static void init() {
-            initCor();
-        }
-
-        public static void initCor() {
 #if ENABLE_VOCALOID
             int default_dse_version = VocaloSysUtil.getDefaultDseVersion();
             String editor_dir = VocaloSysUtil.getEditorPath( SynthesizerType.VOCALOID1 );
@@ -108,7 +111,7 @@ namespace org.kbinani.cadencii {
             if ( vocalo1_dll_path != "" && PortUtil.isFileExists( vocalo1_dll_path ) ) {
                 // VOCALOID.iniを読み込んでデフォルトのDSEVersionを調べる
 #if DEBUG
-                PortUtil.println( "VSTiProxy#initCor; ini=" + ini );
+                PortUtil.println( "VSTiProxy#init; ini=" + ini );
 #endif
                 if ( !ini.Equals( "" ) && PortUtil.isFileExists( ini ) ) {
                     // デフォルトのDSEバージョンのVOCALOID1 VSTi DLL
@@ -249,7 +252,7 @@ namespace org.kbinani.cadencii {
                     }
                 }
             }
-            if ( renderer == RendererKind.STRAIGHT_UTAU ) {
+            if ( renderer == RendererKind.VCNT ) {
                 string synth_path = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), VConnectWaveGenerator.STRAIGHT_SYNTH );
                 if ( PortUtil.isFileExists( synth_path ) ) {
                     int count = AppManager.editorConfig.UtauSingers.size();

@@ -34,10 +34,11 @@ namespace org.kbinani.cadencii {
 #else
     public class WaveSenderDriver : WaveUnit, WaveGenerator {
 #endif
-        private const int _BUFLEN = 1024;
+        private const int BUFLEN = 1024;
+        
         private WaveSender mWaveSender = null;
-        private double[] mBufferL = new double[_BUFLEN];
-        private double[] mBufferR = new double[_BUFLEN];
+        private double[] mBufferL = new double[BUFLEN];
+        private double[] mBufferR = new double[BUFLEN];
         private long mTotalAppend = 0;
         private long mTotalSamples = 1L;
         private WaveReceiver mReceiver = null;
@@ -113,7 +114,7 @@ namespace org.kbinani.cadencii {
             mTotalSamples = length;
             long remain = length;
             while ( remain > 0 && !mAbortRequired ) {
-                int amount = (remain > _BUFLEN) ? _BUFLEN : (int)remain;
+                int amount = (remain > BUFLEN) ? BUFLEN : (int)remain;
                 mWaveSender.pull( mBufferL, mBufferR, amount );
                 mReceiver.push( mBufferL, mBufferR, amount );
                 remain -= amount;

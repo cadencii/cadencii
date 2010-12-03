@@ -319,7 +319,7 @@ namespace org.kbinani.cadencii {
                     white = COLOR_VOCALO1_WHITE;
                     bar = COLOR_VOCALO1_BAR;
                     beat = COLOR_VOCALO1_BEAT;
-                } else if ( renderer == RendererKind.STRAIGHT_UTAU ) {
+                } else if ( renderer == RendererKind.VCNT ) {
                     black = COLOR_VCNT_BLACK;
                     white = COLOR_VCNT_WHITE;
                     bar = COLOR_VCNT_BAR;
@@ -532,7 +532,7 @@ namespace org.kbinani.cadencii {
                         str = "VOCALOID1 [1.0]";
                     } else if ( renderer == RendererKind.VOCALOID1_101 ) {
                         str = "VOCALOID1 [1.1]";
-                    } else if ( renderer == RendererKind.STRAIGHT_UTAU ) {
+                    } else if ( renderer == RendererKind.VCNT ) {
                         str = "vConnect-STAND";
                     } else if ( renderer == RendererKind.UTAU ) {
                         str = "UTAU";
@@ -628,7 +628,7 @@ namespace org.kbinani.cadencii {
                                         #region Note
                                         Color id_fill = COLOR_NOTE_FILL;
                                         if ( (!dobj.mIsValidForUtau && renderer == RendererKind.UTAU) ||
-                                             (!dobj.mIsValidForStraight && renderer == RendererKind.STRAIGHT_UTAU) ) {
+                                             (!dobj.mIsValidForStraight && renderer == RendererKind.VCNT) ) {
                                             id_fill = AppManager.getAlertColor();
                                         }
                                         if ( AppManager.getSelectedEventCount() > 0 ) {
@@ -636,7 +636,7 @@ namespace org.kbinani.cadencii {
                                             if ( found ) {
                                                 id_fill = AppManager.getHilightColor();
                                                 if ( (!dobj.mIsValidForUtau && renderer == RendererKind.UTAU) ||
-                                                     (!dobj.mIsValidForStraight && renderer == RendererKind.STRAIGHT_UTAU) ) {
+                                                     (!dobj.mIsValidForStraight && renderer == RendererKind.VCNT) ) {
                                                     id_fill = AppManager.getAlertHilightColor();
                                                 }
                                             }
@@ -650,7 +650,7 @@ namespace org.kbinani.cadencii {
                                             if ( show_lyrics ) {
                                                 g.setFont( lyric_font );
                                                 if ( (!dobj.mIsValidForUtau && renderer == RendererKind.UTAU) ||
-                                                     (!dobj.mIsValidForStraight && renderer == RendererKind.STRAIGHT_UTAU) ) {
+                                                     (!dobj.mIsValidForStraight && renderer == RendererKind.VCNT) ) {
                                                     g.setColor( Color.white );
                                                 } else {
                                                     g.setColor( COLOR_R147G147B147 );
@@ -789,7 +789,7 @@ namespace org.kbinani.cadencii {
                                             if ( show_lyrics ) {
                                                 g.setFont( lyric_font );
                                                 if ( (!dobj.mIsValidForUtau && renderer == RendererKind.UTAU) ||
-                                                     (!dobj.mIsValidForStraight && renderer == RendererKind.STRAIGHT_UTAU) ) {
+                                                     (!dobj.mIsValidForStraight && renderer == RendererKind.VCNT) ) {
                                                     g.setColor( Color.white );
                                                 } else {
                                                     g.setColor( Color.black );

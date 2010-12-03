@@ -100,7 +100,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Amplifier.cs" />
-    <Compile Include="AmplifyCoefficient.cs" />
     <Compile Include="AquesToneDriver.cs">
     </Compile>
     <Compile Include="AquesToneWaveGenerator.cs" />
