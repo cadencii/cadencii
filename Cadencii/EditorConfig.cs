@@ -103,7 +103,14 @@ namespace org.kbinani.cadencii {
         /// 実行環境
         /// </summary>
         public PlatformEnum Platform = PlatformEnum.Windows;
+        /// <summary>
+        /// ウィンドウが最大化された状態かどうか
+        /// </summary>
         public boolean WindowMaximized = false;
+        /// <summary>
+        /// ウィンドウの位置とサイズ．
+        /// 最小化された状態での値は，この変数に代入されない(ことになっている)
+        /// </summary>
         public Rectangle WindowRect = new Rectangle( 0, 0, 970, 718 );
         /// <summary>
         /// hScrollのスクロールボックスの最小幅(px)
@@ -244,11 +251,14 @@ namespace org.kbinani.cadencii {
         public FormMidiImExportConfig MidiImExportConfigExport = new FormMidiImExportConfig();
         public FormMidiImExportConfig MidiImExportConfigImport = new FormMidiImExportConfig();
         public FormMidiImExportConfig MidiImExportConfigImportVsq = new FormMidiImExportConfig();
+        /// <summary>
+        /// 自動バックアップする間隔．単位は分
+        /// </summary>
         public int AutoBackupIntervalMinutes = 10;
         /// <summary>
         /// 鍵盤の表示幅、ピクセル,AppManager.keyWidthに代入。
         /// </summary>
-        public int KeyWidth = 68;
+        public int KeyWidth = 136;
         /// <summary>
         /// スペースキーを押しながら左クリックで、中ボタンクリックとみなす動作をさせるかどうか。
         /// </summary>
@@ -336,37 +346,37 @@ namespace org.kbinani.cadencii {
         /// ファイル・ツールバーのサイズ
         /// <version>3.3+</version>
         /// </summary>
-        public int BandSizeFile = 0;
+        public int BandSizeFile = 236;
         /// <summary>
         /// ツール・ツールバーのサイズ
         /// <version>3.3+</version>
         /// </summary>
-        public int BandSizeTool = 0;
+        public int BandSizeTool = 712;
         /// <summary>
         /// メジャー・ツールバーのサイズ
         /// <version>3.3+</version>
         /// </summary>
-        public int BandSizeMeasure = 0;
+        public int BandSizeMeasure = 714;
         /// <summary>
         /// ポジション・ツールバーのサイズ
         /// <version>3.3+</version>
         /// </summary>
-        public int BandSizePosition = 0;
+        public int BandSizePosition = 234;
         /// <summary>
         /// ファイル・ツールバーを新しい行に追加するかどうか
         /// <version>3.3+</version>
         /// </summary>
-        public boolean BandNewRowFile = true;
+        public boolean BandNewRowFile = false;
         /// <summary>
         /// ツール・ツールバーを新しい行に追加するかどうか
         /// <version>3.3+</version>
         /// </summary>
-        public boolean BandNewRowTool = true;
+        public boolean BandNewRowTool = false;
         /// <summary>
         /// メジャー・ツールバーを新しい行に追加するかどうか
         /// <version>3.3+</version>
         /// </summary>
-        public boolean BandNewRowMeasure = true;
+        public boolean BandNewRowMeasure = false;
         /// <summary>
         /// ポジション・ツールバーを新しい行に追加するかどうか
         /// <version>3.3+</version>
@@ -386,12 +396,12 @@ namespace org.kbinani.cadencii {
         /// メジャー・ツールバーの順番
         /// <remarks>version 3.3+</remarks>
         /// </summary>
-        public int BandOrderMeasure = 2;
+        public int BandOrderMeasure = 3;
         /// <summary>
         /// ポジション・ツールバーの順番
         /// <remarks>version 3.3+</remarks>
         /// </summary>
-        public int BandOrderPosition = 3;
+        public int BandOrderPosition = 2;
         /// <summary>
         /// ツールバーのChevronの幅．
         /// Winodws 7(Aero): 17px
@@ -424,7 +434,7 @@ namespace org.kbinani.cadencii {
         public const int MAX_PIANOROLL_SCALEY = 10;
         public const int MIN_PIANOROLL_SCALEY = -4;
 
-        #region Static Fields
+        #region static fields
         public static readonly Vector<ValuePairOfStringArrayOfKeys> DEFAULT_SHORTCUT_KEYS = new Vector<ValuePairOfStringArrayOfKeys>( Arrays.asList(
             new ValuePairOfStringArrayOfKeys[]{
             new ValuePairOfStringArrayOfKeys( "menuFileNew", new BKeys[]{ BKeys.Control, BKeys.N } ),
@@ -523,6 +533,31 @@ namespace org.kbinani.cadencii {
         /// 変更された時発生します
         /// </summary>
         public static BEvent<BEventHandler> quantizeModeChangedEvent = new BEvent<BEventHandler>();
+
+        /// <summary>
+        /// コンストラクタ．起動したOSによって動作を変える場合がある
+        /// </summary>
+        public EditorConfig() {
+#if !JAVA
+            // デフォルトのフォントを，システムのメニューフォントと同じにする
+            System.Drawing.Font f = System.Windows.Forms.SystemInformation.MenuFont;
+            if ( f != null ) {
+                this.BaseFontName = f.Name;
+                this.ScreenFontName = f.Name;
+            }
+
+            // 言語設定を，システムのデフォルトの言語を用いる
+            String name = System.Windows.Forms.Application.CurrentCulture.Name;
+            String lang = "";
+            if ( name.Equals( "ja" ) ||
+                 name.StartsWith( "ja-" ) ) {
+                lang = "ja";
+            } else {
+                lang = name;
+            }
+            this.Language = lang;
+#endif
+        }
 
         #region public static method
         public static void serialize( EditorConfig instance, String file ) {

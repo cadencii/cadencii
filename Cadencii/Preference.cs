@@ -424,15 +424,27 @@ namespace org.kbinani.cadencii {
             numBuffer.setValue( value );
         }
 
-        public boolean isLoadSecondaryVocaloid1Dll() {
+        /// <summary>
+        /// 2個目のVOCALOID1 DLLを読み込むかどうかを表すブール値を取得します
+        /// </summary>
+        /// <returns></returns>
+        public boolean isSecondaryVocaloid1DllRequired() {
             return chkLoadSecondaryVOCALOID1.isSelected();
         }
 
-        public void setLoadSecondaryVocaloid1Dll( boolean value ) {
+        /// <summary>
+        /// 2個目のVOCALOID1 DLLを読み込むかどうかを表すブール値を設定します
+        /// </summary>
+        /// <param name="value"></param>
+        public void setSecondaryVocaloid1DllRequired( boolean value ) {
             chkLoadSecondaryVOCALOID1.setSelected( value );
         }
 
-        public boolean isLoadVocaloid100() {
+        /// <summary>
+        /// VOCALOID1(バージョン1.00)DLLを読み込むかどうかを表すブール値を取得します
+        /// </summary>
+        /// <returns></returns>
+        public boolean isVocaloid100Required() {
             if ( chkLoadVocaloid100.isEnabled() ) {
                 return chkLoadVocaloid100.isSelected();
             } else {
@@ -440,13 +452,21 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void setLoadVocaloid100( boolean value ) {
+        /// <summary>
+        /// VOCALOID1(バージョン1.00)DLLを読み込むかどうかを表すブール値を設定します
+        /// </summary>
+        /// <param name="value"></param>
+        public void setVocaloid100Required( boolean value ) {
             if ( chkLoadVocaloid100.isEnabled() ) {
                 chkLoadVocaloid100.setSelected( value );
             }
         }
 
-        public boolean isLoadVocaloid101() {
+        /// <summary>
+        /// VOCALOID1(バージョン1.01)DLLを読み込むかどうかを表すブール値を設定します
+        /// </summary>
+        /// <returns></returns>
+        public boolean isVocaloid101Required() {
             if ( chkLoadVocaloid101.isEnabled() ) {
                 return chkLoadVocaloid101.isSelected();
             } else {
@@ -454,25 +474,45 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void setLoadVocaloid101( boolean value ) {
+        /// <summary>
+        /// VOCALOID1(バージョン1.00)DLLを読み込むかどうかを表すブール値を取得します
+        /// </summary>
+        /// <param name="value"></param>
+        public void setVocaloid101Required( boolean value ) {
             if ( chkLoadVocaloid101.isEnabled() ) {
                 chkLoadVocaloid101.setSelected( value );
             }
         }
 
-        public boolean isLoadVocaloid2() {
+        /// <summary>
+        /// VOCALOID2 DLLを読み込むかどうかを表すブール値を取得します
+        /// </summary>
+        /// <returns></returns>
+        public boolean isVocaloid2Required() {
             return chkLoadVocaloid2.isSelected();
         }
 
-        public void setLoadVocaloid2( boolean value ) {
+        /// <summary>
+        /// VOCALOID2 DLLを読み込むかどうかを表すブール値を設定します
+        /// </summary>
+        /// <param name="value"></param>
+        public void setVocaloid2Required( boolean value ) {
             chkLoadVocaloid2.setSelected( value );
         }
 
-        public boolean isLoadAquesTone() {
+        /// <summary>
+        /// AquesTone DLLを読み込むかどうかを表すブール値を取得します
+        /// </summary>
+        /// <returns></returns>
+        public boolean isAquesToneRequired() {
             return chkLoadAquesTone.isSelected();
         }
 
-        public void setLoadAquesTone( boolean value ) {
+        /// <summary>
+        /// AquesTone DLLを読み込むかどうかを表すブール値を設定します
+        /// </summary>
+        /// <param name="value"></param>
+        public void setAquesToneRequired( boolean value ) {
             chkLoadAquesTone.setSelected( value );
         }
 
@@ -1316,25 +1356,33 @@ namespace org.kbinani.cadencii {
             fontDialog.setSelectedFont( getBaseFont() );
             fontDialog.setVisible( true );
             if ( fontDialog.getDialogResult() == BDialogResult.OK ) {
-                m_base_font = fontDialog.getSelectedFont();
+                java.awt.Font f = fontDialog.getSelectedFont();
+                if ( f != null ) {
+                    m_base_font = f;
+                    labelMenuFontName.setText( f.getName() );
+                }
             }
         }
 
         public void btnOK_Click( Object sender, BEventArgs e ) {
             boolean was_modified = false;
-            if ( AppManager.editorConfig.DoNotUseVocaloid2 != !isLoadVocaloid2() ) {
+
+            if ( AppManager.editorConfig.LoadSecondaryVocaloid1Dll != isSecondaryVocaloid1DllRequired() ) {
                 was_modified = true;
             }
-            if ( AppManager.editorConfig.DoNotUseVocaloid101 != !isLoadVocaloid101() ) {
+            if ( AppManager.editorConfig.DoNotUseVocaloid2 != (!isVocaloid2Required()) ) {
                 was_modified = true;
             }
-            if ( AppManager.editorConfig.DoNotUseVocaloid100 != !isLoadVocaloid100() ) {
+            if ( AppManager.editorConfig.DoNotUseVocaloid101 != (!isVocaloid101Required()) ) {
+                was_modified = true;
+            }
+            if ( AppManager.editorConfig.DoNotUseVocaloid100 != (!isVocaloid100Required()) ) {
                 was_modified = true;
             }
             if ( was_modified ) {
-                AppManager.showMessageBox( _( "Restart Cadencii to complete your changes" ),
+                AppManager.showMessageBox( _( "Restart Cadencii to complete your changes\n(restart will NOT be automatically done)" ),
                                            "Cadencii",
-                                           PortUtil.OK_OPTION,
+                                           org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
                                            org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
             }
 
@@ -1345,7 +1393,11 @@ namespace org.kbinani.cadencii {
             fontDialog.setSelectedFont( m_screen_font );
             fontDialog.setVisible( true );
             if ( fontDialog.getDialogResult() == BDialogResult.OK ) {
-                m_screen_font = fontDialog.getSelectedFont();
+                java.awt.Font f = fontDialog.getSelectedFont();
+                if ( f != null ) {
+                    m_screen_font = f;
+                    labelScreenFontName.setText( f.getName() );
+                }
             }
         }
 

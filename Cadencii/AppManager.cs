@@ -56,6 +56,101 @@ namespace org.kbinani.cadencii {
             public long samples;
         }
 
+        /// <summary>
+        /// メジャー，マイナー，およびメンテナンス番号によるバージョン番号を表すクラス
+        /// </summary>
+        class VersionString : IComparable<VersionString> {
+            /// <summary>
+            /// メジャーバージョンを表す
+            /// </summary>
+            public int major;
+            /// <summary>
+            /// マイナーバージョンを表す
+            /// </summary>
+            public int minor;
+            /// <summary>
+            /// メンテナンス番号を表す
+            /// </summary>
+            public int build;
+            /// <summary>
+            /// コンストラクタに渡された文字列のキャッシュ
+            /// </summary>
+            private String mRawString = "0.0.0";
+
+            /// <summary>
+            /// 「メジャー.マイナー.メンテナンス」の記法に基づく文字列をパースし，新しいインスタンスを作成します
+            /// </summary>
+            /// <param name="str"></param>
+            public VersionString( String str ){
+                mRawString = str;
+                String[] spl = PortUtil.splitString( str, '.' );
+                if ( spl.Length >= 1 ) {
+                    try {
+                        major = PortUtil.parseInt( spl[0] );
+                    } catch ( Exception ex ) {
+                    }
+                }
+                if ( spl.Length >= 2 ) {
+                    try {
+                        minor = PortUtil.parseInt( spl[1] );
+                    } catch ( Exception ex ) {
+                    }
+                }
+                if ( spl.Length >= 3 ) {
+                    try {
+                        build = PortUtil.parseInt( spl[2] );
+                    } catch ( Exception ex ) {
+                    }
+                }
+            }
+
+            /// <summary>
+            /// このインスタンス生成時に渡された文字列を取得します
+            /// </summary>
+            /// <returns></returns>
+            public String getRawString() {
+                return mRawString;
+            }
+
+            /// <summary>
+            /// このインスタンスを文字列で表現したものを取得します
+            /// </summary>
+            /// <returns></returns>
+            public String toString(){
+                return major + "." + minor + "." + build;
+            }
+
+            /// <summary>
+            /// このインスタンスと，指定したバージョンを比較します
+            /// </summary>
+            /// <param name="item"></param>
+            /// <returns>このインスタンスの表すバージョンに対して，指定したバージョンが同じであれば0，新しければ正の値，それ以外は負の値を返します</returns>
+            public int compareTo( VersionString item ) {
+                if ( item == null ) {
+                    return -1;
+                }
+                if ( this.major == item.major ) {
+                    if ( this.minor == item.minor ) {
+                        return this.build - item.build;
+                    } else {
+                        return this.minor - item.minor;
+                    }
+                } else {
+                    return this.major - item.major;
+                }
+            }
+
+#if !JAVA
+            public override string  ToString(){
+ 	            return this.toString();
+            }
+
+            public int CompareTo( VersionString item ) {
+                return this.compareTo( item );
+            }
+#endif
+        }
+
         public const int MIN_KEY_WIDTH = 68;
         public const int MAX_KEY_WIDTH = MIN_KEY_WIDTH * 5;
         private const String CONFIG_FILE_NAME = "config.xml";
@@ -3424,7 +3519,7 @@ namespace org.kbinani.cadencii {
             }
 
             // シリアライズして保存
-            String file = PortUtil.combinePath( Utility.getApplicationDataPath(), CONFIG_FILE_NAME );
+            String file = PortUtil.combinePath( Utility.getConfigPath(), CONFIG_FILE_NAME );
             try {
                 EditorConfig.serialize( editorConfig, file );
             } catch ( Exception ex ) {
@@ -3440,9 +3535,6 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public static void loadConfig() {
             String appdata = Utility.getApplicationDataPath();
-#if DEBUG
-            PortUtil.println( "AppManager#loadConfig; appdata=" + appdata );
-#endif
             if ( appdata.Equals( "" ) ) {
                 editorConfig = new EditorConfig();
                 return;
@@ -3450,9 +3542,6 @@ namespace org.kbinani.cadencii {
 
             // バージョン番号付きのファイル
             String config_file = PortUtil.combinePath( Utility.getConfigPath(), CONFIG_FILE_NAME );
-#if DEBUG
-            PortUtil.println( "AppManager#loadConfig; config_file=" + config_file + "; isFileExists(config_file)=" + PortUtil.isFileExists( config_file ) );
-#endif
             EditorConfig ret = null;
             if ( PortUtil.isFileExists( config_file ) ) {
                 // このバージョン用の設定ファイルがあればそれを利用
@@ -3466,35 +3555,93 @@ namespace org.kbinani.cadencii {
             } else {
                 // このバージョン用の設定ファイルがなかった場合
                 // まず，古いバージョン用の設定ファイルがないかどうか順に調べる
-                String[] dirs = PortUtil.listDirectories( appdata );
-                // TODO: このへんから
+                String[] dirs0 = PortUtil.listDirectories( appdata );
+                // 数字と，2個以下のピリオドからなるディレクトリ名のみを抽出
+                Vector<VersionString> dirs = new Vector<VersionString>();
+                foreach ( String s0 in dirs0 ) {
+                    String s = PortUtil.getFileName( s0 );
+                    int length = PortUtil.getStringLength( s );
+                    boolean register = true;
+                    int num_period = 0;
+                    for ( int i = 0; i < length; i++ ) {
+                        char c = PortUtil.charAt( s, i );
+                        if ( c == '.' ) {
+                            num_period++;
+                        } else {
+                            if ( !char.IsNumber( c ) ) {
+                                register = false;
+                                break;
+                            }
+                        }
+                    }
+                    if ( register && num_period <= 2 ) {
+                        try {
+                            VersionString vs = new VersionString( s );
+                            dirs.add( vs );
+                        } catch ( Exception ex ) {
+                        }
+                    }
+                }
 
-                config_file = PortUtil.combinePath( appdata, CONFIG_FILE_NAME );
-                if ( PortUtil.isFileExists( config_file ) ) {
-                    try {
-                        ret = EditorConfig.deserialize( config_file );
-                    } catch ( Exception ex ) {
-                        PortUtil.stderr.println( "AppManager#locdConfig; ex=" + ex );
-                        ret = null;
-                        Logger.write( typeof( AppManager ) + ".loadConfig; ex=" + ex + "\n" );
+                // 並べ替える
+                boolean changed = true;
+                int size = dirs.size();
+                while ( changed ) {
+                    changed = false;
+                    for ( int i = 0; i < size - 1; i++ ) {
+                        VersionString item1 = dirs.get( i );
+                        VersionString item2 = dirs.get( i + 1 );
+                        if ( item1.compareTo( item2 ) > 0 ) {
+                            dirs.set( i, item2 );
+                            dirs.set( i + 1, item1 );
+                            changed = true;
+                        }
+                    }
+                }
+
+                // バージョン番号付きの設定ファイルを新しい順に読み込みを試みる
+                VersionString vs_this = new VersionString( BAssemblyInfo.fileVersionMeasure + "." + BAssemblyInfo.fileVersionMinor );
+                for ( int i = size - 1; i >= 0; i-- ) {
+                    VersionString vs = dirs.get( i );
+                    if ( vs_this.compareTo( vs ) < 0 ) {
+                        // 自分自身のバージョンより新しいものは
+                        // 読み込んではいけない
+                        continue;
+                    }
+                    config_file = PortUtil.combinePath( PortUtil.combinePath( appdata, vs.getRawString() ), CONFIG_FILE_NAME );
+                    if ( PortUtil.isFileExists( config_file ) ) {
+                        try {
+                            ret = EditorConfig.deserialize( config_file );
+                        } catch ( Exception ex ) {
+                            Logger.write( typeof( AppManager ) + ".loadConfig; ex=" + ex + "\n" );
+                            ret = null;
+                        }
+                        if ( ret != null ) {
+                            break;
+                        }
+                    }
+                }
+
+                // それでも読み込めなかった場合，旧来のデフォルトの位置にある
+                // 設定ファイルを読みに行く
+                if ( ret == null ) {
+                    config_file = PortUtil.combinePath( appdata, CONFIG_FILE_NAME );
+                    if ( PortUtil.isFileExists( config_file ) ) {
+                        try {
+                            ret = EditorConfig.deserialize( config_file );
+                        } catch ( Exception ex ) {
+                            PortUtil.stderr.println( "AppManager#locdConfig; ex=" + ex );
+                            ret = null;
+                            Logger.write( typeof( AppManager ) + ".loadConfig; ex=" + ex + "\n" );
+                        }
                     }
                 }
             }
+
+            // 設定ファイルの読み込みが悉く失敗した場合，
+            // デフォルトの設定とする．
             if ( ret == null ) {
                 ret = new EditorConfig();
-#if !JAVA
-                String name = Application.CurrentCulture.Name;
-                String lang = "";
-                if ( name.Equals( "ja" ) ||
-                     name.StartsWith( "ja-" ) ) {
-                    lang = "ja";
-                } else {
-                    lang = name;
-                }
-                ret.Language = lang;
-                Messaging.setLanguage( lang );
-                PortUtil.println( "AppManager#loadConfig; Application.CurrentCulture.Name=" + Application.CurrentCulture.Name );
-#endif
             }
             editorConfig = ret;
             int count = SymbolTable.getCount();

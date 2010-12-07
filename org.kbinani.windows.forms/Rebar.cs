@@ -1,4 +1,4 @@
-/**
+/*
  * Rebar.cs
  * Copyright (C) Anthony Baraff
  * Copyright (C) 2010 kbinani
@@ -49,6 +49,10 @@ namespace org.kbinani.windows.forms {
         private bool _resizing = false;
         private bool _throwExceptions = true;
         private bool _variantHeight = true;
+        /// <summary>
+        /// ダブルクリックでBANDの最大化・最小化を行う場合true
+        /// </summary>
+        private bool _toggleDoubleClick = false;
         /*
                 public event RebarEventHandler AddBand;
                 public event RebarEventHandler RemoveBand;
@@ -75,6 +79,21 @@ namespace org.kbinani.windows.forms {
             // This call is required by the Windows.Forms Form Designer.
             InitializeComponent();
 
+        }
+
+        [Category( "Behavior" ),
+        DefaultValue( false ),
+        NotifyParentProperty( true )]
+        public bool ToggleDoubleClick {
+            get {
+                return _toggleDoubleClick;
+            }
+            set {
+                if ( value != _toggleDoubleClick ) {
+                    _toggleDoubleClick = value;
+                    UpdateStyle();
+                }
+            }
         }
 
         [Category( "Behavior" ),
@@ -337,6 +356,9 @@ namespace org.kbinani.windows.forms {
                 }
                 if ( this.Visible ) {
                     style |= (int)win32.WS_VISIBLE;
+                }
+                if ( this._toggleDoubleClick ) {
+                    style |= (int)win32.RBS_DBLCLKTOGGLE;
                 }
 
                 return style;
