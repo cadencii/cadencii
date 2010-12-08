@@ -69,8 +69,8 @@ namespace org.kbinani.cadencii {
         }
 
         private void registerEventHandlers() {
-            btnYes.clickEvent.add( new BEventHandler( this, "btnYes_Click" ) );
-            btnNo.clickEvent.add( new BEventHandler( this, "btnNo_Click" ) );
+            btnYes.Click += new EventHandler( btnYes_Click );
+            btnNo.Click += new EventHandler( btnNo_Click );
         }
         #endregion
 

@@ -30,15 +30,7 @@ using System;
 
 namespace org.kbinani.cadencii {
 
-    public class SelectedCurveChangedEventHandler : BEventHandler {
-        public SelectedCurveChangedEventHandler( Object sender, String method_name )
-            : base( sender, method_name, typeof( void ), typeof( Object ), typeof( CurveType ) ) {
-        }
-
-        public SelectedCurveChangedEventHandler( Type sender, String method_name )
-            : base( sender, method_name, typeof( void ), typeof( Object ), typeof( CurveType ) ) {
-        }
-    }
+    public delegate void SelectedCurveChangedEventHandler( object sender, CurveType curve_type );
 
 }
 #endif

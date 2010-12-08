@@ -18,26 +18,6 @@ using org.kbinani;
 
 namespace org.kbinani.componentmodel {
     public class BBackgroundWorker : System.ComponentModel.BackgroundWorker {
-        // root impl of DoWork event
-        #region impl of DoWork
-        // root impl of DoWork is in BBackgroundWorker
-        public BEvent<BDoWorkEventHandler> doWorkEvent = new BEvent<BDoWorkEventHandler>();
-        protected override void OnDoWork( System.ComponentModel.DoWorkEventArgs e ) {
-            base.OnDoWork( e );
-            doWorkEvent.raise( this, e );
-        }
-        #endregion
-
-        // root impl of RunWorkerCompleted event
-        #region impl of RunWorkerCompleted
-        // root impl of RunWorkerCompleted is in BBackgroundWorker
-        public BEvent<BRunWorkerCompletedEventHandler> runWorkerCompletedEvent = new BEvent<BRunWorkerCompletedEventHandler>();
-        protected override void OnRunWorkerCompleted( System.ComponentModel.RunWorkerCompletedEventArgs e ) {
-            base.OnRunWorkerCompleted( e );
-            runWorkerCompletedEvent.raise( this, e );
-        }
-        #endregion
-
         public bool isWorkerReportsProgress() {
             return base.WorkerReportsProgress;
         }

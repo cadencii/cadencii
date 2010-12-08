@@ -30,15 +30,7 @@ using System;
 
 namespace org.kbinani.cadencii {
 
-    public class RenderRequiredEventHandler : BEventHandler {
-        public RenderRequiredEventHandler( Object sender, String method_name )
-            : base( sender, method_name, typeof( void ), typeof( Object ), typeof( int[] ) ) {
-        }
-
-        public RenderRequiredEventHandler( Type sender, String method_name )
-            : base( sender, method_name, typeof( void ), typeof( Object ), typeof( int[] ) ) {
-        }
-    }
+    public delegate void RenderRequiredEventHandler( object sender, int[] tracks );
 
 }
 #endif

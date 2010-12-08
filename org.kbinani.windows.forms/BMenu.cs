@@ -392,15 +392,6 @@ namespace org.kbinani.windows.forms {
         }
         #endregion
 
-        #region event impl MouseEnter
-        // root impl of MouseEnter event is in BButton
-        public BEvent<BEventHandler> mouseEnterEvent = new BEvent<BEventHandler>();
-        protected override void OnMouseEnter( System.EventArgs e ) {
-            base.OnMouseEnter( e );
-            mouseEnterEvent.raise( this, e );
-        }
-        #endregion
-
         public bool isCheckOnClick() {
             return base.CheckOnClick;
         }

@@ -77,9 +77,9 @@ namespace org.kbinani.cadencii {
         private BasicStroke mStroke2px = null;
 
         public CircuitView() {
-            mouseDownEvent.add( new BMouseEventHandler( this, "handleMouseDown" ) );
-            mouseUpEvent.add( new BMouseEventHandler( this, "handleMouseUp" ) );
-            mouseMoveEvent.add( new BMouseEventHandler( this, "handleMouseMove" ) );
+            MouseDown += new System.Windows.Forms.MouseEventHandler( handleMouseDown );
+            MouseUp += new System.Windows.Forms.MouseEventHandler( handleMouseUp );
+            MouseMove += new System.Windows.Forms.MouseEventHandler( handleMouseMove );
         }
 
         #region event handlers

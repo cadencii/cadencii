@@ -59,27 +59,31 @@ namespace org.kbinani.cadencii {
         //private boolean mIsPartialMode = false;
         private boolean mIsCancelRequired = false;
         private WaveGenerator mGenerator = null;
+        private FormMain mMainWindow = null;
 
         private BTimer timer;
         private BBackgroundWorker bgWork;
 
-        public FormSynthesize( VsqFileEx vsq,
+        public FormSynthesize( FormMain main_window,
+                               VsqFileEx vsq,
                                int presend,
                                PatchWorkQueue queue )
 #if JAVA
         {
             this( vsq, presend, new Integer[] { track }, new String[]{ file }, new Integer[]{ clock_start }, new Integer[]{ clock_end }, reflect_amp_to_wave );
 #else
-            : this( vsq, presend, Arrays.asList( new PatchWorkQueue[]{ queue } ) ) {
+            : this( main_window, vsq, presend, Arrays.asList( new PatchWorkQueue[]{ queue } ) ) {
 #endif
         }
 
-        public FormSynthesize( VsqFileEx vsq, 
+        public FormSynthesize( FormMain main_window,
+                               VsqFileEx vsq, 
                                int presend, 
                                Vector<PatchWorkQueue> queue ) {
 #if JAVA
             super();
 #endif
+            mMainWindow = main_window;
             mVsq = vsq;
             mPresend = presend;
             mQueue = queue;
@@ -179,12 +183,13 @@ namespace org.kbinani.cadencii {
         }
 
         private void registerEventHandlers() {
-            loadEvent.add( new BEventHandler( this, "FormSynthesize_Load" ) );
-            bgWork.doWorkEvent.add( new BDoWorkEventHandler( this, "bgWork_DoWork" ) );
-            bgWork.runWorkerCompletedEvent.add( new BRunWorkerCompletedEventHandler( this, "bgWork_RunWorkerCompleted" ) );
-            timer.tickEvent.add(  new BEventHandler( this, "timer_Tick" ) );
-            formClosingEvent.add( new BFormClosingEventHandler( this, "FormSynthesize_FormClosing" ) );
-            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
+            Load += new EventHandler( FormSynthesize_Load );
+            bgWork.DoWork += new System.ComponentModel.DoWorkEventHandler( bgWork_DoWork );
+            bgWork.RunWorkerCompleted += 
+                new System.ComponentModel.RunWorkerCompletedEventHandler( bgWork_RunWorkerCompleted );
+            timer.Tick += new EventHandler( timer_Tick );
+            FormClosing += new FormClosingEventHandler( FormSynthesize_FormClosing );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
         private void setResources() {
@@ -239,6 +244,7 @@ namespace org.kbinani.cadencii {
                         }
                         mGenerator.setReceiver( amp );
                         mGenerator.setGlobalConfig( AppManager.editorConfig );
+                        mGenerator.setMainWindow( mMainWindow );
 
                         Mixer mixer = new Mixer();
                         mixer.setGlobalConfig( AppManager.editorConfig );
@@ -272,6 +278,7 @@ namespace org.kbinani.cadencii {
                                     amp_i_unit.setAmplify( amp_left_i, amp_right_i );
                                     FileWaveSender wave_sender = new FileWaveSender( r );
                                     wave_sender.setGlobalConfig( AppManager.editorConfig );
+
                                     amp_i_unit.setSender( wave_sender );
                                     mixer.addSender( amp_i_unit );
                                 }

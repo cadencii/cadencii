@@ -87,6 +87,7 @@ class pp_cs2java {
         {" KeyPressEventArgs", " BKeyPressEventArgs"},
         {" Type ", " Class "},
     };
+    private static Regex reg_eventhandler = new Regex( @"(?<pre>.*?)(?<instance>\w*)[.]*(?<event>\w*)\s*(?<operator>[\+\-]\=)\s*new\s*(?<handler>\w*)EventHandler\s*\(\s*(?<method>.*)\s*\)" );
 
     static void printUsage() {
         Console.WriteLine( "pp_cs2java" );
@@ -484,6 +485,8 @@ return;*/
                         line = prefix + javaclass + " " + suffix;
                         index_typeof = line.IndexOf( "typeof" );
                     }
+                    
+                    // foreachの処理
                     int index_foreach = line.IndexOf( "foreach" );
                     if ( index_foreach >= 0 ) {
                         int index_in = line.IndexOf( " in " );
@@ -491,6 +494,24 @@ return;*/
                             line = line.Substring( 0, index_foreach ) + "for" + line.Substring( index_foreach + 7, index_in - (index_foreach + 7) ) + " : " + line.Substring( index_in + 4 );
                         }
                     }
+                    
+                    // イベントハンドラの処理
+                    Match m = reg_eventhandler.Match( line );
+                    if( m.Success ){
+                        string pre = m.Groups["pre"].Value;
+                        string instance = m.Groups["instance"].Value;
+                        string ev = m.Groups["event"].Value;
+                        string handler = m.Groups["handler"].Value;
+                        string method = m.Groups["method"].Value;
+                        string ope = m.Groups["operator"].Value;
+                        if( ope == "+=" ){
+                            ope = "add";
+                        }else{
+                            ope = "remove";
+                        }
+                        line = pre + instance + "." + ev.Substring( 0, 1 ).ToLower() + ev.Substring( 1 ) + "Event." + ope + "( new " + handler + "EventHandler( this, \"" + method + "\" ) );";
+                    }
+                    
                     if ( s_shift_indent < 0 ) {
                         string search = new string( ' ', -s_shift_indent );
                         if ( line.StartsWith( search ) ) {

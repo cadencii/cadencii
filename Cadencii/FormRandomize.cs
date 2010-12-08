@@ -156,14 +156,14 @@ namespace org.kbinani.cadencii {
         }
 
         private void registerEventHandlers() {
-            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
-            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
-            numStartBar.valueChangedEvent.add( new BEventHandler( this, "numCommon_ValueChanged" ) );
-            numStartBeat.valueChangedEvent.add( new BEventHandler( this, "numCommon_ValueChanged" ) );
-            numEndBar.valueChangedEvent.add( new BEventHandler( this, "numCommon_ValueChanged" ) );
-            numEndBeat.valueChangedEvent.add( new BEventHandler( this, "numCommon_ValueChanged" ) );
-            chkShift.checkedChangedEvent.add( new BEventHandler( this, "chkShift_CheckedChanged" ) );
-            chkPit.checkedChangedEvent.add( new BEventHandler( this, "chkPit_CheckedChanged" ) );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
+            numStartBar.ValueChanged += new EventHandler( numCommon_ValueChanged );
+            numStartBeat.ValueChanged += new EventHandler( numCommon_ValueChanged );
+            numEndBar.ValueChanged += new EventHandler( numCommon_ValueChanged );
+            numEndBeat.ValueChanged += new EventHandler( numCommon_ValueChanged );
+            chkShift.CheckedChanged += new EventHandler( chkShift_CheckedChanged );
+            chkPit.CheckedChanged += new EventHandler( chkPit_CheckedChanged );
         }
         #endregion
 

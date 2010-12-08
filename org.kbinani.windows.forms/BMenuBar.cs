@@ -24,33 +24,6 @@ namespace org.kbinani.windows.forms {
     }
 
     public class BMenuBar : System.Windows.Forms.MenuStrip, MenuElement {
-        #region event impl MouseMove
-        // root impl of MouseMove event is in BButton
-        public BEvent<BEventHandler> mouseMoveEvent = new BEvent<BEventHandler>();
-        protected override void OnMouseMove( System.Windows.Forms.MouseEventArgs mevent ) {
-            base.OnMouseMove( mevent );
-            mouseMoveEvent.raise( this, mevent );
-        }
-        #endregion
-
-        #region event impl MouseDown
-        // root impl of MouseDown event is in BButton
-        public BEvent<BEventHandler> mouseDownEvent = new BEvent<BEventHandler>();
-        protected override void OnMouseDown( System.Windows.Forms.MouseEventArgs mevent ) {
-            base.OnMouseDown( mevent );
-            mouseDownEvent.raise( this, mevent );
-        }
-        #endregion
-
-        #region event impl MouseUp
-        // root impl of MouseUp event is in BButton
-        public BEvent<BEventHandler> mouseUpEvent = new BEvent<BEventHandler>();
-        protected override void OnMouseUp( System.Windows.Forms.MouseEventArgs mevent ) {
-            base.OnMouseUp( mevent );
-            mouseUpEvent.raise( this, mevent );
-        }
-        #endregion
-        
         // root implementation of javax.swing.MenuElement
         #region javax.swing.MenuElement
         public MenuElement[] getSubElements() {

@@ -44,6 +44,7 @@ namespace org.kbinani.cadencii {
         private Object m_tag = null;
         private boolean mMuted = false;
         private int mPanpot = 0;
+        private int mTrack = 0;
 
         #region Constants
         public const int WIDTH = 85;
@@ -141,10 +142,37 @@ namespace org.kbinani.cadencii {
         };
         #endregion
 
+#if JAVA
         public BEvent<BEventHandler> federChangedEvent = new BEvent<BEventHandler>();
+#elif QT_VERSION
+        public signals: void federChanged( QObject sender, QObject e );
+#else
+        public event FederChangedEventHandler FederChanged;
+#endif
+      
+#if JAVA
         public BEvent<BEventHandler> panpotChangedEvent = new BEvent<BEventHandler>();
+#elif QT_VERSION
+        public signals: void panpotChanged( QObject sender, QObject e );
+#else
+        public event PanpotChangedEventHandler PanpotChanged;
+#endif
+
+#if JAVA
         public BEvent<BEventHandler> muteButtonClick = new BEvent<BEventHandler>();
+#elif QT_VERSION
+        public: signals: void muteButtonClick( QObject sender, QObject e );
+#else
+        public event EventHandler MuteButtonClick;
+#endif
+
+#if JAVA
         public BEvent<BEventHandler> soloButtonClick = new BEvent<BEventHandler>();
+#elif QT_VERSION
+        public: signals: void soloButtonClick( QObject sender, QObject e );
+#else
+        public event EventHandler SoloButtonClick;
+#endif
 
         public VolumeTracker() {
 #if JAVA
@@ -160,6 +188,14 @@ namespace org.kbinani.cadencii {
 #endif
             setMuted( false );
             setSolo( false );
+        }
+
+        public int getTrack() {
+            return mTrack;
+        }
+
+        public void setTrack( int value ) {
+            mTrack = value;
         }
 
         public double getAmplifyL() {
@@ -267,7 +303,15 @@ namespace org.kbinani.cadencii {
             m_feder = value;
             if ( old != m_feder ){
                 try{
-                    federChangedEvent.raise( this, new BEventArgs() );
+#if JAVA
+                    federChangedEvent.raise( mTrack, m_feder );
+#elif QT_VERSION
+                    federChanged( mTrack, m_feder );
+#else
+                    if ( FederChanged != null ) {
+                        FederChanged.Invoke( mTrack, m_feder );
+                    }
+#endif
                 }catch( Exception ex ){
                     PortUtil.stderr.println( "VolumeTracker#setFeder; ex=" + ex );
                 }
@@ -362,7 +406,15 @@ namespace org.kbinani.cadencii {
             m_feder = getFederFromYCoord( 151 - (trackFeder.getValue() - 26) );
             txtFeder.setText( (m_feder / 10.0) + "" );
             try{
-                federChangedEvent.raise( this, new BEventArgs() );
+#if JAVA
+                federChangedEvent.raise( mTrack, mFeder );
+#elif QT_VERSION
+                federChanged( mTrack, mFeder );
+#else
+                if ( FederChanged != null ) {
+                    FederChanged.Invoke( mTrack, m_feder );
+                }
+#endif
             }catch( Exception ex ){
                 PortUtil.stderr.println( "VolumeTracker#trackFeder_ValueChanged; ex=" + ex );
             }
@@ -372,7 +424,15 @@ namespace org.kbinani.cadencii {
             mPanpot = trackPanpot.getValue();
             txtPanpot.setText( mPanpot + "" );
             try{
-                panpotChangedEvent.raise( this, new BEventArgs() );
+#if JAVA
+                panpotChangedEvent.raise( mTrack, mPanpot );
+#elif QT_VERSION
+                panpotChanged( mTrack, mPanpot );
+#else
+                if ( PanpotChanged != null ) {
+                    PanpotChanged.Invoke( mTrack, mPanpot );
+                }
+#endif
             }catch( Exception ex ){
                 PortUtil.stderr.println( "VolumeTracker#trackPanpot_ValueChanged; ex=" + ex );
             }
@@ -434,7 +494,15 @@ namespace org.kbinani.cadencii {
 
         public void chkSolo_Click( Object sender, EventArgs e ) {
             try {
+#if JAVA
                 soloButtonClick.raise( this, e );
+#elif QT_VERSION
+                soloButtonClick( this, e );
+#else
+                if ( SoloButtonClick != null ) {
+                    SoloButtonClick.Invoke( this, e );
+                }
+#endif
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "VolumeTracker#chkSolo_Click; ex=" + ex );
             }
@@ -443,7 +511,15 @@ namespace org.kbinani.cadencii {
         public void chkMute_Click( Object sender, EventArgs e ) {
             mMuted = chkMute.isSelected();
             try {
+#if JAVA
                 muteButtonClick.raise( this, e );
+#elif QT_VERSION
+                muteButtonClick( this, e );
+#else
+                if ( MuteButtonClick != null ) {
+                    MuteButtonClick.Invoke( this, e );
+                }
+#endif
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "VolumeTracker#chkMute_Click; ex=" + ex );
             }
@@ -451,13 +527,13 @@ namespace org.kbinani.cadencii {
         #endregion
 
         private void registerEventHandlers() {
-            trackFeder.valueChangedEvent.add( new BEventHandler( this, "trackFeder_ValueChanged" ) );
-            trackPanpot.valueChangedEvent.add( new BEventHandler( this, "trackPanpot_ValueChanged" ) );
-            txtPanpot.keyDownEvent.add( new BKeyEventHandler( this, "txtPanpot_KeyDown" ) );
-            txtFeder.keyDownEvent.add( new BKeyEventHandler( this, "txtFeder_KeyDown" ) );
+            trackFeder.ValueChanged += new EventHandler( trackFeder_ValueChanged );
+            trackPanpot.ValueChanged += new EventHandler( trackPanpot_ValueChanged );
+            txtPanpot.KeyDown += new KeyEventHandler( txtPanpot_KeyDown );
+            txtFeder.KeyDown += new KeyEventHandler( txtFeder_KeyDown );
             //this.Resize += new System.EventHandler( this.VolumeTracker_Resize );
-            chkSolo.clickEvent.add( new BEventHandler( this, "chkSolo_Click" ) );
-            chkMute.clickEvent.add( new BEventHandler( this, "chkMute_Click" ) );
+            chkSolo.Click += new EventHandler( chkSolo_Click );
+            chkMute.Click += new EventHandler( chkMute_Click );
 #if !JAVA
             txtFeder.Enter += new EventHandler( txtFeder_Enter );
             txtPanpot.Enter += new EventHandler( txtPanpot_Enter );

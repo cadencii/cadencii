@@ -29,7 +29,6 @@ using org.kbinani.java.awt;
 using org.kbinani.windows.forms;
 
 namespace org.kbinani.cadencii {
-    using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
 
 #endif
@@ -149,18 +148,18 @@ namespace org.kbinani.cadencii {
         }
 
         private void registerEventHandlers() {
-            txtBendLength.textChangedEvent.add( new BEventHandler( this, "txtBendLength_TextChanged" ) );
-            txtBendDepth.textChangedEvent.add( new BEventHandler( this, "txtBendDepth_TextChanged" ) );
-            trackBendLength.valueChangedEvent.add( new BEventHandler( this, "trackBendLength_Scroll" ) );
-            trackBendDepth.valueChangedEvent.add( new BEventHandler( this, "trackBendDepth_Scroll" ) );
-            txtAccent.textChangedEvent.add( new BEventHandler( this, "txtAccent_TextChanged" ) );
-            txtDecay.textChangedEvent.add( new BEventHandler( this, "txtDecay_TextChanged" ) );
-            trackAccent.valueChangedEvent.add( new BEventHandler( this, "trackAccent_Scroll" ) );
-            trackDecay.valueChangedEvent.add( new BEventHandler( this, "trackDecay_Scroll" ) );
-            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
-            btnApply.clickEvent.add( new BEventHandler( this, "btnApply_Click" ) );
-            comboTemplate.selectedIndexChangedEvent.add( new BEventHandler( this, "comboBox1_SelectedIndexChanged" ) );
-            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
+            txtBendLength.TextChanged += new EventHandler( txtBendLength_TextChanged );
+            txtBendDepth.TextChanged += new EventHandler( txtBendDepth_TextChanged );
+            trackBendLength.ValueChanged += new EventHandler( trackBendLength_Scroll );
+            trackBendDepth.ValueChanged += new EventHandler( trackBendDepth_Scroll );
+            txtAccent.TextChanged += new EventHandler( txtAccent_TextChanged );
+            txtDecay.TextChanged += new EventHandler( txtDecay_TextChanged );
+            trackAccent.ValueChanged += new EventHandler( trackAccent_Scroll );
+            trackDecay.ValueChanged += new EventHandler( trackDecay_Scroll );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnApply.Click += new EventHandler( btnApply_Click );
+            comboTemplate.SelectedIndexChanged += new EventHandler( comboBox1_SelectedIndexChanged );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
         private void setResources() {
@@ -168,11 +167,11 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region event handlers
-        public void trackBendDepth_Scroll( Object sender, BEventArgs e ) {
+        public void trackBendDepth_Scroll( Object sender, EventArgs e ) {
             txtBendDepth.setText( trackBendDepth.getValue() + "" );
         }
 
-        public void txtBendDepth_TextChanged( Object sender, BEventArgs e ) {
+        public void txtBendDepth_TextChanged( Object sender, EventArgs e ) {
             try {
                 int draft = PortUtil.parseInt( txtBendDepth.getText() );
                 if ( draft != trackBendDepth.getValue() ) {
@@ -190,11 +189,11 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void trackBendLength_Scroll( Object sender, BEventArgs e ) {
+        public void trackBendLength_Scroll( Object sender, EventArgs e ) {
             txtBendLength.setText( trackBendLength.getValue() + "" );
         }
 
-        public void txtBendLength_TextChanged( Object sender, BEventArgs e ) {
+        public void txtBendLength_TextChanged( Object sender, EventArgs e ) {
             try {
                 int draft = PortUtil.parseInt( txtBendLength.getText() );
                 if ( draft != trackBendLength.getValue() ) {
@@ -212,11 +211,11 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void trackDecay_Scroll( Object sender, BEventArgs e ) {
+        public void trackDecay_Scroll( Object sender, EventArgs e ) {
             txtDecay.setText( trackDecay.getValue() + "" );
         }
 
-        public void txtDecay_TextChanged( Object sender, BEventArgs e ) {
+        public void txtDecay_TextChanged( Object sender, EventArgs e ) {
             try {
                 int draft = PortUtil.parseInt( txtDecay.getText() );
                 if ( draft != trackDecay.getValue() ) {
@@ -234,11 +233,11 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void trackAccent_Scroll( Object sender, BEventArgs e ) {
+        public void trackAccent_Scroll( Object sender, EventArgs e ) {
             txtAccent.setText( trackAccent.getValue() + "" );
         }
 
-        public void txtAccent_TextChanged( Object sender, BEventArgs e ) {
+        public void txtAccent_TextChanged( Object sender, EventArgs e ) {
             try {
                 int draft = PortUtil.parseInt( txtAccent.getText() );
                 if ( draft != trackAccent.getValue() ) {
@@ -256,11 +255,11 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void btnOK_Click( Object sender, BEventArgs e ) {
+        public void btnOK_Click( Object sender, EventArgs e ) {
             setDialogResult( BDialogResult.OK );
         }
 
-        public void comboBox1_SelectedIndexChanged( Object sender, BEventArgs e ) {
+        public void comboBox1_SelectedIndexChanged( Object sender, EventArgs e ) {
             switch ( comboTemplate.getSelectedIndex() ) {
                 case 1:
                     setPMBendDepth( 8 );
@@ -300,7 +299,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void btnApply_Click( Object sender, BEventArgs e ) {
+        public void btnApply_Click( Object sender, EventArgs e ) {
             if ( AppManager.showMessageBox( _( "Would you like to change singer style for all events?" ),
                                   FormMain._APP_NAME,
                                   org.kbinani.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
@@ -310,7 +309,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e ) {
+        public void btnCancel_Click( Object sender, EventArgs e ) {
             setDialogResult( BDialogResult.CANCEL );
         }
         #endregion

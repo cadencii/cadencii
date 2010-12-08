@@ -15,47 +15,19 @@
 package org.kbinani.windows.forms;
 
 import org.kbinani.BEventHandler;
-#else
-using System;
-using System.Windows.Forms;
 
-namespace org.kbinani.windows.forms {
-#endif
-
-#if JAVA
     public class BMouseEventHandler extends BEventHandler{
-#else
-    public class BMouseEventHandler : BEventHandler {
-#endif
         public BMouseEventHandler( Object sender, String method_name )
-#if JAVA
         {
-#else
-            :
-#endif
             base( sender, method_name, typeof( void ), typeof( Object ), typeof( MouseEventArgs ) )
-#if JAVA
             ;
-#else
-        {
-#endif
         }
 
         public BMouseEventHandler( Type sender, String method_name )
-#if JAVA
         {
-#else
-            :
-#endif
             base( sender, method_name, typeof( void ), typeof( Object ), typeof( MouseEventArgs ) )
-#if JAVA
             ;
-#else
-        {
-#endif
         }
     }
 
-#if !JAVA
-}
 #endif

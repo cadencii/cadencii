@@ -148,9 +148,9 @@ namespace org.kbinani.cadencii {
 #if JAVA
             PortUtil.stdout.println( "//TODO: fixme: FormSplash#registerEventHandlers" );
 #else
-            mouseDownEvent.add( new BMouseEventHandler( this, "FormSplash_MouseDown" ) );
-            mouseUpEvent.add( new BMouseEventHandler( this, "FormSplash_MouseUp" ) );
-            mouseMoveEvent.add( new BMouseEventHandler( this, "FormSplash_MouseMove" ) );
+            MouseDown += new System.Windows.Forms.MouseEventHandler( FormSplash_MouseDown );
+            MouseUp += new System.Windows.Forms.MouseEventHandler( FormSplash_MouseUp );
+            MouseMove += new System.Windows.Forms.MouseEventHandler( FormSplash_MouseMove );
 #endif
         }
         #endregion

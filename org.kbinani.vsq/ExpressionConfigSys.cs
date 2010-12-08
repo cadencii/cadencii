@@ -17,6 +17,8 @@ package org.kbinani.vsq;
 import java.util.*;
 import java.io.*;
 import org.kbinani.*;
+#elif __cplusplus
+namespace org { namespace kbinani { namespace vsq {
 #else
 using System;
 using org.kbinani.java.io;
@@ -1140,6 +1142,9 @@ namespace org.kbinani.vsq {
 
     }
 
-#if !JAVA
+#if JAVA
+#elif __cplusplus
+} } }
+#else
 }
 #endif

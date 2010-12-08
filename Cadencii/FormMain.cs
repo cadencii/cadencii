@@ -649,7 +649,7 @@ namespace org.kbinani.cadencii {
             menuSettingPaletteTool.setVisible( false );
             menuScript.setVisible( false );
 #endif
-            trackSelector = new TrackSelector();
+            trackSelector = new TrackSelector( this );
             updateTrackSelectorVisibleCurve();
             trackSelector.setBackground( new Color( 108, 108, 108 ) );
             trackSelector.setCurveVisible( true );
@@ -661,18 +661,18 @@ namespace org.kbinani.cadencii {
             trackSelector.setSize( 446, 250 );
             trackSelector.TabIndex = 0;
 #endif
-            trackSelector.mouseClickEvent.add( new BMouseEventHandler( this, "trackSelector_MouseClick" ) );
-            trackSelector.mouseUpEvent.add( new BMouseEventHandler( this, "trackSelector_MouseUp" ) );
-            trackSelector.mouseDownEvent.add( new BMouseEventHandler( this, "trackSelector_MouseDown" ) );
-            trackSelector.mouseMoveEvent.add( new BMouseEventHandler( this, "trackSelector_MouseMove" ) );
-            trackSelector.keyDownEvent.add( new BKeyEventHandler( this, "handleSpaceKeyDown" ) );
-            trackSelector.keyUpEvent.add( new BKeyEventHandler( this, "handleSpaceKeyUp" ) );
-            trackSelector.previewKeyDownEvent.add( new BPreviewKeyDownEventHandler( this, "trackSelector_PreviewKeyDown" ) );
-            trackSelector.selectedTrackChangedEvent.add( new SelectedTrackChangedEventHandler( this, "trackSelector_SelectedTrackChanged" ) );
-            trackSelector.selectedCurveChangedEvent.add( new SelectedCurveChangedEventHandler( this, "trackSelector_SelectedCurveChanged" ) );
-            trackSelector.renderRequiredEvent.add( new RenderRequiredEventHandler( this, "trackSelector_RenderRequired" ) );
-            trackSelector.preferredMinHeightChangedEvent.add( new BEventHandler( this, "trackSelector_PreferredMinHeightChanged" ) );
-            trackSelector.mouseDoubleClickEvent.add( new BMouseEventHandler( this, "trackSelector_MouseDoubleClick" ) );
+            trackSelector.MouseClick += new System.Windows.Forms.MouseEventHandler( trackSelector_MouseClick );
+            trackSelector.MouseUp += new System.Windows.Forms.MouseEventHandler( trackSelector_MouseUp );
+            trackSelector.MouseDown += new System.Windows.Forms.MouseEventHandler( trackSelector_MouseDown );
+            trackSelector.MouseMove += new System.Windows.Forms.MouseEventHandler( trackSelector_MouseMove );
+            trackSelector.KeyDown += new System.Windows.Forms.KeyEventHandler( handleSpaceKeyDown );
+            trackSelector.KeyUp += new System.Windows.Forms.KeyEventHandler( handleSpaceKeyUp );
+            trackSelector.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler( trackSelector_PreviewKeyDown );
+            trackSelector.SelectedTrackChanged += new SelectedTrackChangedEventHandler( trackSelector_SelectedTrackChanged );
+            trackSelector.SelectedCurveChanged += new SelectedCurveChangedEventHandler( trackSelector_SelectedCurveChanged );
+            trackSelector.RenderRequired += new RenderRequiredEventHandler( trackSelector_RenderRequired );
+            trackSelector.PreferredMinHeightChanged += new EventHandler( trackSelector_PreferredMinHeightChanged );
+            trackSelector.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler( trackSelector_MouseDoubleClick );
 
 #if !JAVA
             splitContainer1.Panel2MinSize = trackSelector.getPreferredMinSize();
@@ -1755,11 +1755,7 @@ namespace org.kbinani.cadencii {
                     menu_remove.setText( _( "Remove" ) );
                     menu_remove.setToolTipText( item.file );
                     menu_remove.setTag( (int)i );
-#if JAVA
-                    menu_remove.clickEvent.add( new BEventHandler( this, "handleBgmRemove_Click" ) );
-#else
                     menu_remove.Click += new EventHandler( handleBgmRemove_Click );
-#endif
                     menu.add( menu_remove );
 
                     BMenuItem menu_start_after_premeasure = new BMenuItem();
@@ -1768,22 +1764,14 @@ namespace org.kbinani.cadencii {
                     menu_start_after_premeasure.setTag( (int)i );
                     menu_start_after_premeasure.setCheckOnClick( true );
                     menu_start_after_premeasure.setSelected( item.startAfterPremeasure );
-#if JAVA
-                    menu_start_after_premeasure.checkedChangedEvent.add( new BEventHandler( this, "handleBgmStartAfterPremeasure_CheckedChanged" ) );
-#else
                     menu_start_after_premeasure.CheckedChanged += new EventHandler( handleBgmStartAfterPremeasure_CheckedChanged );
-#endif
                     menu.add( menu_start_after_premeasure );
 
                     BMenuItem menu_offset_second = new BMenuItem();
                     menu_offset_second.setText( _( "Set Offset Seconds" ) );
                     menu_offset_second.setTag( (int)i );
                     menu_offset_second.setToolTipText( item.readOffsetSeconds + " " + _( "seconds" ) );
-#if JAVA
-                    menu_offset_second.clickEvent.add( new BEventHandler( this, "handleBgmOffsetSeconds_Click" ) );
-#else
                     menu_offset_second.Click += new EventHandler( handleBgmOffsetSeconds_Click );
-#endif
                     menu.add( menu_offset_second );
 
                     menuTrackBgm.add( menu );
@@ -1792,11 +1780,7 @@ namespace org.kbinani.cadencii {
             }
             BMenuItem menu_add = new BMenuItem();
             menu_add.setText( _( "Add" ) );
-#if JAVA
-            menu_add.clickEvent.add( new BEventHandler( this, "handleBgmAdd_Click" ) );
-#else
             menu_add.Click += new EventHandler( handleBgmAdd_Click );
-#endif
             menuTrackBgm.add( menu_add );
         }
 
@@ -2214,7 +2198,6 @@ namespace org.kbinani.cadencii {
                 tsb.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
 #if !JAVA
                 if ( icon != null ) {
-                    //tsb.setIcon( new ImageIcon( icon ) );
                     imageListTool.Images.Add( icon );
                     tsb.ImageIndex = imageListTool.Images.Count - 1;
                 }
@@ -2222,12 +2205,8 @@ namespace org.kbinani.cadencii {
                 tsb.Text = name;
                 tsb.ToolTipText = desc;
                 tsb.Tag = id;
-                //tsb.setCheckOnClick( false );
 #if JAVA
                 tsb.clickEvent.add( new BEventHandler( this, "handleStripPaletteTool_Click" ) );
-#else
-                //TODO: tsb.Click += new EventHandler( handleStripPaletteTool_Click );
-                //TODO: tsb.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.ImageAndText;
 #endif
                 if ( first ) {
                     var sep = new System.Windows.Forms.ToolBarButton();
@@ -2243,11 +2222,7 @@ namespace org.kbinani.cadencii {
                 tsmi.setText( name );
                 tsmi.setToolTipText( desc );
                 tsmi.setTag( id );
-#if JAVA
-                tsmi.clickEvent.add( new BEventHandler( this, "handleStripPaletteTool_Click" ) );
-#else
                 tsmi.Click += new EventHandler( handleStripPaletteTool_Click );
-#endif
                 cMenuTrackSelectorPaletteTool.add( tsmi );
 
                 // cMenuPiano
@@ -2255,11 +2230,7 @@ namespace org.kbinani.cadencii {
                 tsmi2.setText( name );
                 tsmi2.setToolTipText( desc );
                 tsmi2.setTag( id );
-#if JAVA
-                tsmi2.clickEvent.add( new BEventHandler( this, "handleStripPaletteTool_Click" ) );
-#else
                 tsmi2.Click += new EventHandler( handleStripPaletteTool_Click );
-#endif
                 cMenuPianoPaletteTool.add( tsmi2 );
 
                 // menuSettingPaletteTool
@@ -2267,11 +2238,7 @@ namespace org.kbinani.cadencii {
                     BMenuItem tsmi3 = new BMenuItem();
                     tsmi3.setText( name );
                     tsmi3.setTag( id );
-#if JAVA
-                    tsmi3.clickEvent.add( new BEventHandler( this, "handleSettingPaletteTool" ) );
-#else
                     tsmi3.Click += new EventHandler( handleSettingPaletteTool );
-#endif
                     menuSettingPaletteTool.add( tsmi3 );
                     num_has_dialog++;
                 }
@@ -2939,7 +2906,7 @@ namespace org.kbinani.cadencii {
                 item.setText( display );
                 item.setName( name );
                 item.setTag( id );
-                item.clickEvent.add( new BEventHandler( this, "handleScriptMenuItem_Click" ) );
+                item.Click += new EventHandler( handleScriptMenuItem_Click );
                 menuScript.add( item );
                 count++;
             }
@@ -3033,17 +3000,14 @@ namespace org.kbinani.cadencii {
             if ( onPreviewKeyDown ) {
                 KeyStroke stroke = KeyStroke.getKeyStroke( e.KeyValue, modifier );
                 int keycode = stroke.getKeyCode();
-#if DEBUG
-                PortUtil.println( "FormMain#processSpecialShortcutKey; e.KeyCode=" + e.KeyCode + "; keycode=" + keycode + "; modifier=" + modifier );
-#endif
 
                 foreach ( SpecialShortcutHolder holder in mSpecialShortcutHolders ) {
-#if DEBUG
-                    PortUtil.println( "FormMain#processSpecialshortcutKey; with shortcut, .getKeyCode()=" + holder.shortcut.getKeyCode() + ", .getModifiers()=" + holder.shortcut.getModifiers() );
-#endif
                     if ( holder.shortcut.getKeyCode() == keycode && holder.shortcut.getModifiers() == modifier ) {
                         try {
-                            holder.menu.clickEvent.raise( holder.menu, new EventArgs() );
+#if DEBUG
+                            PortUtil.println( "FormMain#processSpecialShortcutKey; holder.menu.Name=" + holder.menu.Name );
+#endif
+                            holder.menu.PerformClick();
                         } catch ( Exception ex ) {
                             Logger.write( typeof( FormMain ) + ".processSpecialShortcutKey; ex=" + ex + "\n" );
                             PortUtil.stderr.println( "FormMain#processSpecialShortcutKey; ex=" + ex );
@@ -4724,6 +4688,7 @@ namespace org.kbinani.cadencii {
 
         #region 音符の編集関連
         public void selectAll() {
+            
             AppManager.clearSelectedEvent();
             AppManager.clearSelectedTempo();
             AppManager.clearSelectedTimesig();
@@ -6221,13 +6186,8 @@ namespace org.kbinani.cadencii {
                         itm.setToolTipText( itm.getToolTipText() + item );
                         itm.setTag( item );
                         itm.setEnabled( available );
-#if JAVA
-                        itm.clickEvent.add( new BEventHandler( this, "handleRecentFileMenuItem_Click" ) );
-                        itm.mouseEnterEvent.add( new BEventHandler( this, "handleRecentFileMenuItem_MouseEnter" ) );
-#else
                         itm.Click += new EventHandler( handleRecentFileMenuItem_Click );
                         itm.MouseEnter += new EventHandler( handleRecentFileMenuItem_MouseEnter );
-#endif
                         menuFileRecent.add( itm );
                         added++;
                     }
@@ -6293,8 +6253,8 @@ namespace org.kbinani.cadencii {
 #endif
             hideInputTextBox();
 
-            AppManager.mInputTextBox.keyUpEvent.add( new BKeyEventHandler( this, "mInputTextBox_KeyUp" ) );
-            AppManager.mInputTextBox.keyDownEvent.add( new BKeyEventHandler( this, "mInputTextBox_KeyDown" ) );
+            AppManager.mInputTextBox.KeyUp += new System.Windows.Forms.KeyEventHandler( mInputTextBox_KeyUp );
+            AppManager.mInputTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler( mInputTextBox_KeyDown );
 #if JAVA
             //TODO: FormMain#showInputTextBox
 #else
@@ -6325,8 +6285,8 @@ namespace org.kbinani.cadencii {
         }
 
         public void hideInputTextBox() {
-            AppManager.mInputTextBox.keyUpEvent.remove( new BKeyEventHandler( this, "mInputTextBox_KeyUp" ) );
-            AppManager.mInputTextBox.keyDownEvent.remove( new BKeyEventHandler( this, "mInputTextBox_KeyDown" ) );
+            AppManager.mInputTextBox.KeyUp -= new System.Windows.Forms.KeyEventHandler( mInputTextBox_KeyUp );
+            AppManager.mInputTextBox.KeyDown -= new System.Windows.Forms.KeyEventHandler( mInputTextBox_KeyDown );
 #if JAVA
             // TODO: FormMain#hideInputTextBox
             /*AppManager.inputTextBox.ImeModeChanged -= mInputTextBox_ImeModeChanged;*/
@@ -6627,323 +6587,323 @@ namespace org.kbinani.cadencii {
         /// イベントハンドラを登録します。
         /// </summary>
         public void registerEventHandlers() {
-            loadEvent.add( new BEventHandler( this, "FormMain_Load" ) );
-            menuStripMain.mouseDownEvent.add( new BMouseEventHandler( this, "menuStrip1_MouseDown" ) );
-            menuFileNew.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuFileNew.clickEvent.add( new BEventHandler( this, "handleFileNew_Click" ) );
-            menuFileOpen.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuFileOpen.clickEvent.add( new BEventHandler( this, "handleFileOpen_Click" ) );
-            menuFileSave.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuFileSave.clickEvent.add( new BEventHandler( this, "handleFileSave_Click" ) );
-            menuFileSaveNamed.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuFileSaveNamed.clickEvent.add( new BEventHandler( this, "menuFileSaveNamed_Click" ) );
-            menuFileOpenVsq.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuFileOpenVsq.clickEvent.add( new BEventHandler( this, "menuFileOpenVsq_Click" ) );
-            menuFileOpenUst.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuFileOpenUst.clickEvent.add( new BEventHandler( this, "menuFileOpenUst_Click" ) );
-            menuFileImport.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuFileImportVsq.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuFileImportVsq.clickEvent.add( new BEventHandler( this, "menuFileImportVsq_Click" ) );
-            menuFileImportMidi.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuFileImportMidi.clickEvent.add( new BEventHandler( this, "menuFileImportMidi_Click" ) );
-            menuFileExport.dropDownOpeningEvent.add( new BEventHandler( this, "menuFileExport_DropDownOpening" ) );
-            menuFileExportWave.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuFileExportWave.clickEvent.add( new BEventHandler( this, "menuFileExportWave_Click" ) );
-            menuFileExportMidi.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuFileExportMidi.clickEvent.add( new BEventHandler( this, "menuFileExportMidi_Click" ) );
-            menuFileExportMusicXml.clickEvent.add( new BEventHandler( this, "menuFileExportMusicXml_Click" ) );
-            menuFileExportUst.clickEvent.add( new BEventHandler( this, "menuFileExportUst_Click" ) );
-            menuFileRecent.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuFileQuit.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuFileQuit.clickEvent.add( new BEventHandler( this, "menuFileQuit_Click" ) );
-            menuEdit.dropDownOpeningEvent.add( new BEventHandler( this, "menuEdit_DropDownOpening" ) );
-            menuEditUndo.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuEditUndo.clickEvent.add( new BEventHandler( this, "handleEditUndo_Click" ) );
-            menuEditRedo.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuEditRedo.clickEvent.add( new BEventHandler( this, "handleEditRedo_Click" ) );
-            menuEditCut.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuEditCut.clickEvent.add( new BEventHandler( this, "handleEditCut_Click" ) );
-            menuEditCopy.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuEditCopy.clickEvent.add( new BEventHandler( this, "handleEditCopy_Click" ) );
-            menuEditPaste.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuEditPaste.clickEvent.add( new BEventHandler( this, "handleEditPaste_Click" ) );
-            menuEditDelete.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuEditDelete.clickEvent.add( new BEventHandler( this, "menuEditDelete_Click" ) );
-            menuEditAutoNormalizeMode.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuEditAutoNormalizeMode.clickEvent.add( new BEventHandler( this, "menuEditAutoNormalizeMode_Click" ) );
-            menuEditSelectAll.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuEditSelectAll.clickEvent.add( new BEventHandler( this, "menuEditSelectAll_Click" ) );
-            menuEditSelectAllEvents.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuEditSelectAllEvents.clickEvent.add( new BEventHandler( this, "menuEditSelectAllEvents_Click" ) );
-            menuVisualControlTrack.checkedChangedEvent.add( new BEventHandler( this, "menuVisualControlTrack_CheckedChanged" ) );
-            menuVisualControlTrack.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuVisualCircuitDiagram.checkedChangedEvent.add( new BEventHandler( this, "menuVisualCircuitDiagram_CheckedChanged" ) );
-            menuVisualMixer.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuVisualMixer.clickEvent.add( new BEventHandler( this, "menuVisualMixer_Click" ) );
-            menuVisualWaveform.checkedChangedEvent.add( new BEventHandler( this, "menuVisualWaveform_CheckedChanged" ) );
-            menuVisualWaveform.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuVisualProperty.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuVisualProperty.clickEvent.add( new BEventHandler( this, "menuVisualProperty_Click" ) );
-            menuVisualGridline.checkedChangedEvent.add( new BEventHandler( this, "menuVisualGridline_CheckedChanged" ) );
-            menuVisualGridline.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuVisualIconPalette.clickEvent.add( new BEventHandler( this, "menuVisualIconPalette_Click" ) );
-            menuVisualStartMarker.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuVisualStartMarker.clickEvent.add( new BEventHandler( this, "handleStartMarker_Click" ) );
-            menuVisualEndMarker.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuVisualEndMarker.clickEvent.add( new BEventHandler( this, "handleEndMarker_Click" ) );
-            menuVisualLyrics.checkedChangedEvent.add( new BEventHandler( this, "menuVisualLyrics_CheckedChanged" ) );
-            menuVisualLyrics.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuVisualNoteProperty.checkedChangedEvent.add( new BEventHandler( this, "menuVisualNoteProperty_CheckedChanged" ) );
-            menuVisualNoteProperty.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuVisualPitchLine.checkedChangedEvent.add( new BEventHandler( this, "menuVisualPitchLine_CheckedChanged" ) );
-            menuVisualPitchLine.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuVisualPluginUi.dropDownOpeningEvent.add( new BEventHandler( this, "menuVisualPluginUi_DropDownOpening" ) );
-            menuVisualPluginUiVocaloid100.clickEvent.add( new BEventHandler( this, "menuVisualPluginUiVocaloidCommon_Click" ) );
-            menuVisualPluginUiVocaloid101.clickEvent.add( new BEventHandler( this, "menuVisualPluginUiVocaloidCommon_Click" ) );
-            menuVisualPluginUiVocaloid2.clickEvent.add( new BEventHandler( this, "menuVisualPluginUiVocaloidCommon_Click" ) );
-            menuVisualPluginUiAquesTone.clickEvent.add( new BEventHandler( this, "menuVisualPluginUiAquesTone_Click" ) );
-            menuJob.dropDownOpeningEvent.add( new BEventHandler( this, "menuJob_DropDownOpening" ) );
-            menuJobNormalize.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuJobNormalize.clickEvent.add( new BEventHandler( this, "menuJobNormalize_Click" ) );
-            menuJobInsertBar.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuJobInsertBar.clickEvent.add( new BEventHandler( this, "menuJobInsertBar_Click" ) );
-            menuJobDeleteBar.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuJobDeleteBar.clickEvent.add( new BEventHandler( this, "menuJobDeleteBar_Click" ) );
-            menuJobRandomize.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuJobRandomize.clickEvent.add( new BEventHandler( this, "menuJobRandomize_Click" ) );
-            menuJobConnect.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuJobConnect.clickEvent.add( new BEventHandler( this, "menuJobConnect_Click" ) );
-            menuJobLyric.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuJobLyric.clickEvent.add( new BEventHandler( this, "menuJobLyric_Click" ) );
-            menuJobRewire.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuJobReloadVsti.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuJobReloadVsti.clickEvent.add( new BEventHandler( this, "menuJobReloadVsti_Click" ) );
-            menuTrack.dropDownOpeningEvent.add( new BEventHandler( this, "menuTrack_DropDownOpening" ) );
-            menuTrackOn.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuTrackOn.clickEvent.add( new BEventHandler( this, "handleTrackOn_Click" ) );
-            menuTrackAdd.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuTrackAdd.clickEvent.add( new BEventHandler( this, "menuTrackAdd_Click" ) );
-            menuTrackCopy.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuTrackCopy.clickEvent.add( new BEventHandler( this, "menuTrackCopy_Click" ) );
-            menuTrackChangeName.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuTrackChangeName.clickEvent.add( new BEventHandler( this, "menuTrackChangeName_Click" ) );
-            menuTrackDelete.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuTrackDelete.clickEvent.add( new BEventHandler( this, "menuTrackDelete_Click" ) );
-            menuTrackRenderCurrent.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuTrackRenderCurrent.clickEvent.add( new BEventHandler( this, "menuTrackRenderCurrent_Click" ) );
-            menuTrackRenderAll.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuTrackRenderAll.clickEvent.add( new BEventHandler( this, "handleTrackRenderAll_Click" ) );
-            menuTrackOverlay.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuTrackOverlay.clickEvent.add( new BEventHandler( this, "menuTrackOverlay_Click" ) );
-            menuTrackRenderer.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuTrackRenderer.dropDownOpeningEvent.add( new BEventHandler( this, "menuTrackRenderer_DropDownOpening" ) );
-            menuTrackRendererVOCALOID100.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuTrackRendererVOCALOID100.clickEvent.add( new BEventHandler( this, "handleChangeRenderer" ) );
-            menuTrackRendererVOCALOID101.clickEvent.add( new BEventHandler( this, "handleChangeRenderer" ) );
-            menuTrackRendererVOCALOID2.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuTrackRendererVOCALOID2.clickEvent.add( new BEventHandler( this, "handleChangeRenderer" ) );
-            menuTrackRendererUtau.mouseEnterEvent.add( new BEventHandler( this, "handleMenuMouseEnter" ) );
-            menuTrackRendererUtau.clickEvent.add( new BEventHandler( this, "handleChangeRenderer" ) );
-            menuTrackRendererVCNT.clickEvent.add( new BEventHandler( this, "handleChangeRenderer" ) );
-            menuTrackRendererAquesTone.clickEvent.add( new BEventHandler( this, "handleChangeRenderer" ) );
-            menuTrackManager.clickEvent.add( new BEventHandler( this, "menuTrackManager_Click" ) );
-            menuLyricExpressionProperty.clickEvent.add( new BEventHandler( this, "menuLyricExpressionProperty_Click" ) );
-            menuLyricVibratoProperty.clickEvent.add( new BEventHandler( this, "menuLyricVibratoProperty_Click" ) );
-            menuLyricDictionary.clickEvent.add( new BEventHandler( this, "menuLyricDictionary_Click" ) );
-            menuLyricPhonemeTransformation.clickEvent.add( new BEventHandler( this, "menuLyricPhonemeTransformation_Click" ) );
-            menuScriptUpdate.clickEvent.add( new BEventHandler( this, "menuScriptUpdate_Click" ) );
-            menuSettingPreference.clickEvent.add( new BEventHandler( this, "menuSettingPreference_Click" ) );
-            menuSettingGameControlerSetting.clickEvent.add( new BEventHandler( this, "menuSettingGameControlerSetting_Click" ) );
-            menuSettingGameControlerLoad.clickEvent.add( new BEventHandler( this, "menuSettingGameControlerLoad_Click" ) );
-            menuSettingGameControlerRemove.clickEvent.add( new BEventHandler( this, "menuSettingGameControlerRemove_Click" ) );
-            menuSettingShortcut.clickEvent.add( new BEventHandler( this, "menuSettingShortcut_Click" ) );
-            menuSettingUtauVoiceDB.clickEvent.add( new BEventHandler( this, "menuSettingUtauVoiceDB_Click" ) );
-            menuSettingDefaultSingerStyle.clickEvent.add( new BEventHandler( this, "menuSettingDefaultSingerStyle_Click" ) );
-            menuSettingPositionQuantize04.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            menuSettingPositionQuantize08.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            menuSettingPositionQuantize16.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            menuSettingPositionQuantize32.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            menuSettingPositionQuantize64.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            menuSettingPositionQuantize128.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            menuSettingPositionQuantizeOff.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            menuSettingPositionQuantizeTriplet.clickEvent.add( new BEventHandler( this, "handlePositionQuantizeTriplet_Click" ) );
-            menuSettingLengthQuantize04.clickEvent.add( new BEventHandler( this, "handleLengthQuantize04_Click" ) );
-            menuSettingLengthQuantize08.clickEvent.add( new BEventHandler( this, "handleLengthQuantize08_Click" ) );
-            menuSettingLengthQuantize16.clickEvent.add( new BEventHandler( this, "handleLengthQuantize16_Click" ) );
-            menuSettingLengthQuantize32.clickEvent.add( new BEventHandler( this, "handleLengthQuantize32_Click" ) );
-            menuSettingLengthQuantize64.clickEvent.add( new BEventHandler( this, "handleLengthQuantize64_Click" ) );
-            menuSettingLengthQuantize128.clickEvent.add( new BEventHandler( this, "handleLengthQuantize128_Click" ) );
-            menuSettingLengthQuantizeOff.clickEvent.add( new BEventHandler( this, "handleLengthQuantizeOff_Click" ) );
-            menuSettingLengthQuantizeTriplet.clickEvent.add( new BEventHandler( this, "handleLengthQuantizeTriplet_Click" ) );
-            menuHelpAbout.clickEvent.add( new BEventHandler( this, "menuHelpAbout_Click" ) );
-            menuHelpLogSwitch.checkedChangedEvent.add( new BEventHandler( this, "menuHelpLogSwitch_CheckedChanged" ) );
-            menuHelpLogOpen.clickEvent.add( new BEventHandler( this, "menuHelpLogOpen_Click" ) );
-            menuHelpDebug.clickEvent.add( new BEventHandler( this, "menuHelpDebug_Click" ) );
-            menuHiddenEditLyric.clickEvent.add( new BEventHandler( this, "menuHiddenEditLyric_Click" ) );
-            menuHiddenEditFlipToolPointerPencil.clickEvent.add( new BEventHandler( this, "menuHiddenEditFlipToolPointerPencil_Click" ) );
-            menuHiddenEditFlipToolPointerEraser.clickEvent.add( new BEventHandler( this, "menuHiddenEditFlipToolPointerEraser_Click" ) );
-            menuHiddenVisualForwardParameter.clickEvent.add( new BEventHandler( this, "menuHiddenVisualForwardParameter_Click" ) );
-            menuHiddenVisualBackwardParameter.clickEvent.add( new BEventHandler( this, "menuHiddenVisualBackwardParameter_Click" ) );
-            menuHiddenTrackNext.clickEvent.add( new BEventHandler( this, "menuHiddenTrackNext_Click" ) );
-            menuHiddenTrackBack.clickEvent.add( new BEventHandler( this, "menuHiddenTrackBack_Click" ) );
-            menuHiddenCopy.clickEvent.add( new BEventHandler( this, "handleEditCopy_Click" ) );
-            menuHiddenPaste.clickEvent.add( new BEventHandler( this, "handleEditPaste_Click" ) );
-            menuHiddenCut.clickEvent.add( new BEventHandler( this, "handleEditCut_Click" ) );
-            menuHiddenSelectBackward.clickEvent.add( new BEventHandler( this, "menuHiddenSelectBackward_Click" ) );
-            menuHiddenSelectForward.clickEvent.add( new BEventHandler( this, "menuHiddenSelectForward_Click" ) );
-            menuHiddenMoveUp.clickEvent.add( new BEventHandler( this, "menuHiddenMoveUp_Click" ) );
-            menuHiddenMoveDown.clickEvent.add( new BEventHandler( this, "menuHiddenMoveDown_Click" ) );
-            menuHiddenMoveLeft.clickEvent.add( new BEventHandler( this, "menuHiddenMoveLeft_Click" ) );
-            menuHiddenMoveRight.clickEvent.add( new BEventHandler( this, "menuHiddenMoveRight_Click" ) );
-            menuHiddenLengthen.clickEvent.add( new BEventHandler( this, "menuHiddenLengthen_Click" ) );
-            menuHiddenShorten.clickEvent.add( new BEventHandler( this, "menuHiddenShorten_Click" ) );
-            menuHiddenGoToEndMarker.clickEvent.add( new BEventHandler( this, "menuHiddenGoToEndMarker_Click" ) );
-            menuHiddenGoToStartMarker.clickEvent.add( new BEventHandler( this, "menuHiddenGoToStartMarker_Click" ) );
-            menuHiddenPlayFromStartMarker.clickEvent.add( new BEventHandler( this, "menuHiddenPlayFromStartMarker_Click" ) );
-            menuHiddenFlipCurveOnPianorollMode.clickEvent.add( new BEventHandler( this, "menuHiddenFlipCurveOnPianorollMode_Click" ) );
+            Load += new EventHandler( FormMain_Load );
+            menuStripMain.MouseDown += new System.Windows.Forms.MouseEventHandler( menuStrip1_MouseDown );
+            menuFileNew.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileNew.Click += new EventHandler( handleFileNew_Click );
+            menuFileOpen.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileOpen.Click += new EventHandler( handleFileOpen_Click );
+            menuFileSave.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileSave.Click += new EventHandler( handleFileSave_Click );
+            menuFileSaveNamed.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileSaveNamed.Click += new EventHandler( menuFileSaveNamed_Click );
+            menuFileOpenVsq.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileOpenVsq.Click += new EventHandler( menuFileOpenVsq_Click );
+            menuFileOpenUst.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileOpenUst.Click += new EventHandler( menuFileOpenUst_Click );
+            menuFileImport.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileImportVsq.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileImportVsq.Click += new EventHandler( menuFileImportVsq_Click );
+            menuFileImportMidi.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileImportMidi.Click += new EventHandler( menuFileImportMidi_Click );
+            menuFileExport.DropDownOpening += new EventHandler( menuFileExport_DropDownOpening );
+            menuFileExportWave.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileExportWave.Click += new EventHandler( menuFileExportWave_Click );
+            menuFileExportMidi.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileExportMidi.Click += new EventHandler( menuFileExportMidi_Click );
+            menuFileExportMusicXml.Click += new EventHandler( menuFileExportMusicXml_Click );
+            menuFileExportUst.Click += new EventHandler( menuFileExportUst_Click );
+            menuFileRecent.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileQuit.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileQuit.Click += new EventHandler( menuFileQuit_Click );
+            menuEdit.DropDownOpening += new EventHandler( menuEdit_DropDownOpening );
+            menuEditUndo.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuEditUndo.Click += new EventHandler( handleEditUndo_Click );
+            menuEditRedo.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuEditRedo.Click += new EventHandler( handleEditRedo_Click );
+            menuEditCut.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuEditCut.Click += new EventHandler( handleEditCut_Click );
+            menuEditCopy.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuEditCopy.Click += new EventHandler( handleEditCopy_Click );
+            menuEditPaste.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuEditPaste.Click += new EventHandler( handleEditPaste_Click );
+            menuEditDelete.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuEditDelete.Click += new EventHandler( menuEditDelete_Click );
+            menuEditAutoNormalizeMode.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuEditAutoNormalizeMode.Click += new EventHandler( menuEditAutoNormalizeMode_Click );
+            menuEditSelectAll.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuEditSelectAll.Click += new EventHandler( menuEditSelectAll_Click );
+            menuEditSelectAllEvents.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuEditSelectAllEvents.Click += new EventHandler( menuEditSelectAllEvents_Click );
+            menuVisualControlTrack.CheckedChanged += new EventHandler( menuVisualControlTrack_CheckedChanged );
+            menuVisualControlTrack.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuVisualCircuitDiagram.CheckedChanged += new EventHandler( menuVisualCircuitDiagram_CheckedChanged );
+            menuVisualMixer.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuVisualMixer.Click += new EventHandler( menuVisualMixer_Click );
+            menuVisualWaveform.CheckedChanged += new EventHandler( menuVisualWaveform_CheckedChanged );
+            menuVisualWaveform.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuVisualProperty.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuVisualProperty.Click += new EventHandler( menuVisualProperty_Click );
+            menuVisualGridline.CheckedChanged += new EventHandler( menuVisualGridline_CheckedChanged );
+            menuVisualGridline.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuVisualIconPalette.Click += new EventHandler( menuVisualIconPalette_Click );
+            menuVisualStartMarker.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuVisualStartMarker.Click += new EventHandler( handleStartMarker_Click );
+            menuVisualEndMarker.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuVisualEndMarker.Click += new EventHandler( handleEndMarker_Click );
+            menuVisualLyrics.CheckedChanged += new EventHandler( menuVisualLyrics_CheckedChanged );
+            menuVisualLyrics.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuVisualNoteProperty.CheckedChanged += new EventHandler( menuVisualNoteProperty_CheckedChanged );
+            menuVisualNoteProperty.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuVisualPitchLine.CheckedChanged += new EventHandler( menuVisualPitchLine_CheckedChanged );
+            menuVisualPitchLine.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuVisualPluginUi.DropDownOpening += new EventHandler( menuVisualPluginUi_DropDownOpening );
+            menuVisualPluginUiVocaloid100.Click += new EventHandler( menuVisualPluginUiVocaloidCommon_Click );
+            menuVisualPluginUiVocaloid101.Click += new EventHandler( menuVisualPluginUiVocaloidCommon_Click );
+            menuVisualPluginUiVocaloid2.Click += new EventHandler( menuVisualPluginUiVocaloidCommon_Click );
+            menuVisualPluginUiAquesTone.Click += new EventHandler( menuVisualPluginUiAquesTone_Click );
+            menuJob.DropDownOpening += new EventHandler( menuJob_DropDownOpening );
+            menuJobNormalize.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuJobNormalize.Click += new EventHandler( menuJobNormalize_Click );
+            menuJobInsertBar.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuJobInsertBar.Click += new EventHandler( menuJobInsertBar_Click );
+            menuJobDeleteBar.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuJobDeleteBar.Click += new EventHandler( menuJobDeleteBar_Click );
+            menuJobRandomize.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuJobRandomize.Click += new EventHandler( menuJobRandomize_Click );
+            menuJobConnect.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuJobConnect.Click += new EventHandler( menuJobConnect_Click );
+            menuJobLyric.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuJobLyric.Click += new EventHandler( menuJobLyric_Click );
+            menuJobRewire.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuJobReloadVsti.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuJobReloadVsti.Click += new EventHandler( menuJobReloadVsti_Click );
+            menuTrack.DropDownOpening += new EventHandler( menuTrack_DropDownOpening );
+            menuTrackOn.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuTrackOn.Click += new EventHandler( handleTrackOn_Click );
+            menuTrackAdd.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuTrackAdd.Click += new EventHandler( menuTrackAdd_Click );
+            menuTrackCopy.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuTrackCopy.Click += new EventHandler( menuTrackCopy_Click );
+            menuTrackChangeName.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuTrackChangeName.Click += new EventHandler( menuTrackChangeName_Click );
+            menuTrackDelete.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuTrackDelete.Click += new EventHandler( menuTrackDelete_Click );
+            menuTrackRenderCurrent.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuTrackRenderCurrent.Click += new EventHandler( menuTrackRenderCurrent_Click );
+            menuTrackRenderAll.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuTrackRenderAll.Click += new EventHandler( handleTrackRenderAll_Click );
+            menuTrackOverlay.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuTrackOverlay.Click += new EventHandler( menuTrackOverlay_Click );
+            menuTrackRenderer.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuTrackRenderer.DropDownOpening += new EventHandler( menuTrackRenderer_DropDownOpening );
+            menuTrackRendererVOCALOID100.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuTrackRendererVOCALOID100.Click += new EventHandler( handleChangeRenderer );
+            menuTrackRendererVOCALOID101.Click += new EventHandler( handleChangeRenderer );
+            menuTrackRendererVOCALOID2.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuTrackRendererVOCALOID2.Click += new EventHandler( handleChangeRenderer );
+            menuTrackRendererUtau.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuTrackRendererUtau.Click += new EventHandler( handleChangeRenderer );
+            menuTrackRendererVCNT.Click += new EventHandler( handleChangeRenderer );
+            menuTrackRendererAquesTone.Click += new EventHandler( handleChangeRenderer );
+            menuTrackManager.Click += new EventHandler( menuTrackManager_Click );
+            menuLyricExpressionProperty.Click += new EventHandler( menuLyricExpressionProperty_Click );
+            menuLyricVibratoProperty.Click += new EventHandler( menuLyricVibratoProperty_Click );
+            menuLyricDictionary.Click += new EventHandler( menuLyricDictionary_Click );
+            menuLyricPhonemeTransformation.Click += new EventHandler( menuLyricPhonemeTransformation_Click );
+            menuScriptUpdate.Click += new EventHandler( menuScriptUpdate_Click );
+            menuSettingPreference.Click += new EventHandler( menuSettingPreference_Click );
+            menuSettingGameControlerSetting.Click += new EventHandler( menuSettingGameControlerSetting_Click );
+            menuSettingGameControlerLoad.Click += new EventHandler( menuSettingGameControlerLoad_Click );
+            menuSettingGameControlerRemove.Click += new EventHandler( menuSettingGameControlerRemove_Click );
+            menuSettingShortcut.Click += new EventHandler( menuSettingShortcut_Click );
+            menuSettingUtauVoiceDB.Click += new EventHandler( menuSettingUtauVoiceDB_Click );
+            menuSettingDefaultSingerStyle.Click += new EventHandler( menuSettingDefaultSingerStyle_Click );
+            menuSettingPositionQuantize04.Click += new EventHandler( handlePositionQuantize );
+            menuSettingPositionQuantize08.Click += new EventHandler( handlePositionQuantize );
+            menuSettingPositionQuantize16.Click += new EventHandler( handlePositionQuantize );
+            menuSettingPositionQuantize32.Click += new EventHandler( handlePositionQuantize );
+            menuSettingPositionQuantize64.Click += new EventHandler( handlePositionQuantize );
+            menuSettingPositionQuantize128.Click += new EventHandler( handlePositionQuantize );
+            menuSettingPositionQuantizeOff.Click += new EventHandler( handlePositionQuantize );
+            menuSettingPositionQuantizeTriplet.Click += new EventHandler( handlePositionQuantizeTriplet_Click );
+            menuSettingLengthQuantize04.Click += new EventHandler( handleLengthQuantize04_Click );
+            menuSettingLengthQuantize08.Click += new EventHandler( handleLengthQuantize08_Click );
+            menuSettingLengthQuantize16.Click += new EventHandler( handleLengthQuantize16_Click );
+            menuSettingLengthQuantize32.Click += new EventHandler( handleLengthQuantize32_Click );
+            menuSettingLengthQuantize64.Click += new EventHandler( handleLengthQuantize64_Click );
+            menuSettingLengthQuantize128.Click += new EventHandler( handleLengthQuantize128_Click );
+            menuSettingLengthQuantizeOff.Click += new EventHandler( handleLengthQuantizeOff_Click );
+            menuSettingLengthQuantizeTriplet.Click += new EventHandler( handleLengthQuantizeTriplet_Click );
+            menuHelpAbout.Click += new EventHandler( menuHelpAbout_Click );
+            menuHelpLogSwitch.CheckedChanged += new EventHandler( menuHelpLogSwitch_CheckedChanged );
+            menuHelpLogOpen.Click += new EventHandler( menuHelpLogOpen_Click );
+            menuHelpDebug.Click += new EventHandler( menuHelpDebug_Click );
+            menuHiddenEditLyric.Click += new EventHandler( menuHiddenEditLyric_Click );
+            menuHiddenEditFlipToolPointerPencil.Click += new EventHandler( menuHiddenEditFlipToolPointerPencil_Click );
+            menuHiddenEditFlipToolPointerEraser.Click += new EventHandler( menuHiddenEditFlipToolPointerEraser_Click );
+            menuHiddenVisualForwardParameter.Click += new EventHandler( menuHiddenVisualForwardParameter_Click );
+            menuHiddenVisualBackwardParameter.Click += new EventHandler( menuHiddenVisualBackwardParameter_Click );
+            menuHiddenTrackNext.Click += new EventHandler( menuHiddenTrackNext_Click );
+            menuHiddenTrackBack.Click += new EventHandler( menuHiddenTrackBack_Click );
+            menuHiddenCopy.Click += new EventHandler( handleEditCopy_Click );
+            menuHiddenPaste.Click += new EventHandler( handleEditPaste_Click );
+            menuHiddenCut.Click += new EventHandler( handleEditCut_Click );
+            menuHiddenSelectBackward.Click += new EventHandler( menuHiddenSelectBackward_Click );
+            menuHiddenSelectForward.Click += new EventHandler( menuHiddenSelectForward_Click );
+            menuHiddenMoveUp.Click += new EventHandler( menuHiddenMoveUp_Click );
+            menuHiddenMoveDown.Click += new EventHandler( menuHiddenMoveDown_Click );
+            menuHiddenMoveLeft.Click += new EventHandler( menuHiddenMoveLeft_Click );
+            menuHiddenMoveRight.Click += new EventHandler( menuHiddenMoveRight_Click );
+            menuHiddenLengthen.Click += new EventHandler( menuHiddenLengthen_Click );
+            menuHiddenShorten.Click += new EventHandler( menuHiddenShorten_Click );
+            menuHiddenGoToEndMarker.Click += new EventHandler( menuHiddenGoToEndMarker_Click );
+            menuHiddenGoToStartMarker.Click += new EventHandler( menuHiddenGoToStartMarker_Click );
+            menuHiddenPlayFromStartMarker.Click += new EventHandler( menuHiddenPlayFromStartMarker_Click );
+            menuHiddenFlipCurveOnPianorollMode.Click += new EventHandler( menuHiddenFlipCurveOnPianorollMode_Click );
 
-            cMenuPiano.openingEvent.add( new BCancelEventHandler( this, "cMenuPiano_Opening" ) );
-            cMenuPianoPointer.clickEvent.add( new BEventHandler( this, "cMenuPianoPointer_Click" ) );
-            cMenuPianoPencil.clickEvent.add( new BEventHandler( this, "cMenuPianoPencil_Click" ) );
-            cMenuPianoEraser.clickEvent.add( new BEventHandler( this, "cMenuPianoEraser_Click" ) );
-            cMenuPianoCurve.clickEvent.add( new BEventHandler( this, "cMenuPianoCurve_Click" ) );
-            cMenuPianoFixed01.clickEvent.add( new BEventHandler( this, "cMenuPianoFixed01_Click" ) );
-            cMenuPianoFixed02.clickEvent.add( new BEventHandler( this, "cMenuPianoFixed02_Click" ) );
-            cMenuPianoFixed04.clickEvent.add( new BEventHandler( this, "cMenuPianoFixed04_Click" ) );
-            cMenuPianoFixed08.clickEvent.add( new BEventHandler( this, "cMenuPianoFixed08_Click" ) );
-            cMenuPianoFixed16.clickEvent.add( new BEventHandler( this, "cMenuPianoFixed16_Click" ) );
-            cMenuPianoFixed32.clickEvent.add( new BEventHandler( this, "cMenuPianoFixed32_Click" ) );
-            cMenuPianoFixed64.clickEvent.add( new BEventHandler( this, "cMenuPianoFixed64_Click" ) );
-            cMenuPianoFixed128.clickEvent.add( new BEventHandler( this, "cMenuPianoFixed128_Click" ) );
-            cMenuPianoFixedOff.clickEvent.add( new BEventHandler( this, "cMenuPianoFixedOff_Click" ) );
-            cMenuPianoFixedTriplet.clickEvent.add( new BEventHandler( this, "cMenuPianoFixedTriplet_Click" ) );
-            cMenuPianoFixedDotted.clickEvent.add( new BEventHandler( this, "cMenuPianoFixedDotted_Click" ) );
-            cMenuPianoQuantize04.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            cMenuPianoQuantize08.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            cMenuPianoQuantize16.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            cMenuPianoQuantize32.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            cMenuPianoQuantize64.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            cMenuPianoQuantize128.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            cMenuPianoQuantizeOff.clickEvent.add( new BEventHandler( this, "handlePositionQuantize" ) );
-            cMenuPianoQuantizeTriplet.clickEvent.add( new BEventHandler( this, "handlePositionQuantizeTriplet_Click" ) );
-            cMenuPianoLength04.clickEvent.add( new BEventHandler( this, "handleLengthQuantize04_Click" ) );
-            cMenuPianoLength08.clickEvent.add( new BEventHandler( this, "handleLengthQuantize08_Click" ) );
-            cMenuPianoLength16.clickEvent.add( new BEventHandler( this, "handleLengthQuantize16_Click" ) );
-            cMenuPianoLength32.clickEvent.add( new BEventHandler( this, "handleLengthQuantize32_Click" ) );
-            cMenuPianoLength64.clickEvent.add( new BEventHandler( this, "handleLengthQuantize64_Click" ) );
-            cMenuPianoLength128.clickEvent.add( new BEventHandler( this, "handleLengthQuantize128_Click" ) );
-            cMenuPianoLengthOff.clickEvent.add( new BEventHandler( this, "handleLengthQuantizeOff_Click" ) );
-            cMenuPianoLengthTriplet.clickEvent.add( new BEventHandler( this, "handleLengthQuantizeTriplet_Click" ) );
-            cMenuPianoGrid.clickEvent.add( new BEventHandler( this, "cMenuPianoGrid_Click" ) );
-            cMenuPianoUndo.clickEvent.add( new BEventHandler( this, "cMenuPianoUndo_Click" ) );
-            cMenuPianoRedo.clickEvent.add( new BEventHandler( this, "cMenuPianoRedo_Click" ) );
-            cMenuPianoCut.clickEvent.add( new BEventHandler( this, "cMenuPianoCut_Click" ) );
-            cMenuPianoCopy.clickEvent.add( new BEventHandler( this, "cMenuPianoCopy_Click" ) );
-            cMenuPianoPaste.clickEvent.add( new BEventHandler( this, "cMenuPianoPaste_Click" ) );
-            cMenuPianoDelete.clickEvent.add( new BEventHandler( this, "cMenuPianoDelete_Click" ) );
-            cMenuPianoSelectAll.clickEvent.add( new BEventHandler( this, "cMenuPianoSelectAll_Click" ) );
-            cMenuPianoSelectAllEvents.clickEvent.add( new BEventHandler( this, "cMenuPianoSelectAllEvents_Click" ) );
-            cMenuPianoImportLyric.clickEvent.add( new BEventHandler( this, "cMenuPianoImportLyric_Click" ) );
-            cMenuPianoExpressionProperty.clickEvent.add( new BEventHandler( this, "cMenuPianoProperty_Click" ) );
-            cMenuPianoVibratoProperty.clickEvent.add( new BEventHandler( this, "cMenuPianoVibratoProperty_Click" ) );
-            cMenuTrackTab.openingEvent.add( new BCancelEventHandler( this, "cMenuTrackTab_Opening" ) );
-            cMenuTrackTabTrackOn.clickEvent.add( new BEventHandler( this, "handleTrackOn_Click" ) );
-            cMenuTrackTabAdd.clickEvent.add( new BEventHandler( this, "cMenuTrackTabAdd_Click" ) );
-            cMenuTrackTabCopy.clickEvent.add( new BEventHandler( this, "cMenuTrackTabCopy_Click" ) );
-            cMenuTrackTabChangeName.clickEvent.add( new BEventHandler( this, "cMenuTrackTabChangeName_Click" ) );
-            cMenuTrackTabDelete.clickEvent.add( new BEventHandler( this, "cMenuTrackTabDelete_Click" ) );
-            cMenuTrackTabRenderCurrent.clickEvent.add( new BEventHandler( this, "cMenuTrackTabRenderCurrent_Click" ) );
-            cMenuTrackTabRenderAll.clickEvent.add( new BEventHandler( this, "handleTrackRenderAll_Click" ) );
-            cMenuTrackTabOverlay.clickEvent.add( new BEventHandler( this, "cMenuTrackTabOverlay_Click" ) );
-            cMenuTrackTabRenderer.dropDownOpeningEvent.add( new BEventHandler( this, "cMenuTrackTabRenderer_DropDownOpening" ) );
-            cMenuTrackTabRendererVOCALOID100.clickEvent.add( new BEventHandler( this, "handleChangeRenderer" ) );
-            cMenuTrackTabRendererVOCALOID101.clickEvent.add( new BEventHandler( this, "handleChangeRenderer" ) );
-            cMenuTrackTabRendererVOCALOID2.clickEvent.add( new BEventHandler( this, "handleChangeRenderer" ) );
-            cMenuTrackTabRendererUtau.clickEvent.add( new BEventHandler( this, "handleChangeRenderer" ) );
-            cMenuTrackTabRendererStraight.clickEvent.add( new BEventHandler( this, "handleChangeRenderer" ) );
-            cMenuTrackTabRendererAquesTone.clickEvent.add( new BEventHandler( this, "handleChangeRenderer" ) );
-            cMenuTrackSelector.openingEvent.add( new BCancelEventHandler( this, "cMenuTrackSelector_Opening" ) );
-            cMenuTrackSelectorPointer.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorPointer_Click" ) );
-            cMenuTrackSelectorPencil.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorPencil_Click" ) );
-            cMenuTrackSelectorLine.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorLine_Click" ) );
-            cMenuTrackSelectorEraser.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorEraser_Click" ) );
-            cMenuTrackSelectorCurve.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorCurve_Click" ) );
-            cMenuTrackSelectorUndo.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorUndo_Click" ) );
-            cMenuTrackSelectorRedo.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorRedo_Click" ) );
-            cMenuTrackSelectorCut.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorCut_Click" ) );
-            cMenuTrackSelectorCopy.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorCopy_Click" ) );
-            cMenuTrackSelectorPaste.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorPaste_Click" ) );
-            cMenuTrackSelectorDelete.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorDelete_Click" ) );
-            cMenuTrackSelectorDeleteBezier.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorDeleteBezier_Click" ) );
-            cMenuTrackSelectorSelectAll.clickEvent.add( new BEventHandler( this, "cMenuTrackSelectorSelectAll_Click" ) );
-            trackBar.valueChangedEvent.add( new BEventHandler( this, "trackBar_ValueChanged" ) );
-            trackBar.mouseDownEvent.add( new BMouseEventHandler( this, "trackBar_MouseDown" ) );
-            trackBar.enterEvent.add( new BEventHandler( this, "trackBar_Enter" ) );
-            bgWorkScreen.doWorkEvent.add( new BDoWorkEventHandler( this, "bgWorkScreen_DoWork" ) );
-            timer.tickEvent.add( new BEventHandler( this, "timer_Tick" ) );
-            pictKeyLengthSplitter.mouseMoveEvent.add( new BMouseEventHandler( this, "pictKeyLengthSplitter_MouseMove" ) );
-            pictKeyLengthSplitter.mouseDownEvent.add( new BMouseEventHandler( this, "pictKeyLengthSplitter_MouseDown" ) );
-            pictKeyLengthSplitter.mouseUpEvent.add( new BMouseEventHandler( this, "pictKeyLengthSplitter_MouseUp" ) );
-            /*btnRight1.mouseDownEvent.add( new BMouseEventHandler( this, "btnRight_MouseDown" ) );
-            btnRight1.mouseUpEvent.add( new BMouseEventHandler( this, "btnRight_MouseUp" ) );
-            btnRight1.mouseLeaveEvent.add( new BEventHandler( this, "overviewCommon_MouseLeave" ) );
-            btnLeft2.mouseDownEvent.add( new BMouseEventHandler( this, "btnLeft_MouseDown" ) );
-            btnLeft2.mouseUpEvent.add( new BMouseEventHandler( this, "btnLeft_MouseUp" ) );
-            btnLeft2.mouseLeaveEvent.add( new BEventHandler( this, "overviewCommon_MouseLeave" ) );
-            btnZoom.clickEvent.add( new BEventHandler( this, "btnZoom_Click" ) );
-            btnMooz.clickEvent.add( new BEventHandler( this, "btnMooz_Click" ) );
-            btnLeft1.mouseDownEvent.add( new BMouseEventHandler( this, "btnLeft_MouseDown" ) );
-            btnLeft1.mouseUpEvent.add( new BMouseEventHandler( this, "btnLeft_MouseUp" ) );
-            btnLeft1.mouseLeaveEvent.add( new BEventHandler( this, "overviewCommon_MouseLeave" ) );
-            btnRight2.mouseDownEvent.add( new BMouseEventHandler( this, "btnRight_MouseDown" ) );
-            btnRight2.mouseUpEvent.add( new BMouseEventHandler( this, "btnRight_MouseUp" ) );
-            btnRight2.mouseLeaveEvent.add( new BEventHandler( this, "overviewCommon_MouseLeave" ) );*/
-            //panelOverview.mouseMoveEvent.add( new BMouseEventHandler( this, "pictOverview_MouseMove" ) );
-            //panelOverview.mouseDoubleClickEvent.add( new BMouseEventHandler( this, "pictOverview_MouseDoubleClick" ) );
-            //panelOverview.mouseDownEvent.add( new BMouseEventHandler( this, "pictOverview_MouseDown" ) );
-            //panelOverview.paintEvent.add( new BPaintEventHandler( this, "pictOverview_Paint" ) );
-            //panelOverview.mouseUpEvent.add( new BMouseEventHandler( this, "pictOverview_MouseUp" ) );
-            panelOverview.keyUpEvent.add( new BKeyEventHandler( this, "handleSpaceKeyUp" ) );
-            panelOverview.keyDownEvent.add( new BKeyEventHandler( this, "handleSpaceKeyDown" ) );
+            cMenuPiano.Opening += new System.ComponentModel.CancelEventHandler( cMenuPiano_Opening );
+            cMenuPianoPointer.Click += new EventHandler( cMenuPianoPointer_Click );
+            cMenuPianoPencil.Click += new EventHandler( cMenuPianoPencil_Click );
+            cMenuPianoEraser.Click += new EventHandler( cMenuPianoEraser_Click );
+            cMenuPianoCurve.Click += new EventHandler( cMenuPianoCurve_Click );
+            cMenuPianoFixed01.Click += new EventHandler( cMenuPianoFixed01_Click );
+            cMenuPianoFixed02.Click += new EventHandler( cMenuPianoFixed02_Click );
+            cMenuPianoFixed04.Click += new EventHandler( cMenuPianoFixed04_Click );
+            cMenuPianoFixed08.Click += new EventHandler( cMenuPianoFixed08_Click );
+            cMenuPianoFixed16.Click += new EventHandler( cMenuPianoFixed16_Click );
+            cMenuPianoFixed32.Click += new EventHandler( cMenuPianoFixed32_Click );
+            cMenuPianoFixed64.Click += new EventHandler( cMenuPianoFixed64_Click );
+            cMenuPianoFixed128.Click += new EventHandler( cMenuPianoFixed128_Click );
+            cMenuPianoFixedOff.Click += new EventHandler( cMenuPianoFixedOff_Click );
+            cMenuPianoFixedTriplet.Click += new EventHandler( cMenuPianoFixedTriplet_Click );
+            cMenuPianoFixedDotted.Click += new EventHandler( cMenuPianoFixedDotted_Click );
+            cMenuPianoQuantize04.Click += new EventHandler( handlePositionQuantize );
+            cMenuPianoQuantize08.Click += new EventHandler( handlePositionQuantize );
+            cMenuPianoQuantize16.Click += new EventHandler( handlePositionQuantize );
+            cMenuPianoQuantize32.Click += new EventHandler( handlePositionQuantize );
+            cMenuPianoQuantize64.Click += new EventHandler( handlePositionQuantize );
+            cMenuPianoQuantize128.Click += new EventHandler( handlePositionQuantize );
+            cMenuPianoQuantizeOff.Click += new EventHandler( handlePositionQuantize );
+            cMenuPianoQuantizeTriplet.Click += new EventHandler( handlePositionQuantizeTriplet_Click );
+            cMenuPianoLength04.Click += new EventHandler( handleLengthQuantize04_Click );
+            cMenuPianoLength08.Click += new EventHandler( handleLengthQuantize08_Click );
+            cMenuPianoLength16.Click += new EventHandler( handleLengthQuantize16_Click );
+            cMenuPianoLength32.Click += new EventHandler( handleLengthQuantize32_Click );
+            cMenuPianoLength64.Click += new EventHandler( handleLengthQuantize64_Click );
+            cMenuPianoLength128.Click += new EventHandler( handleLengthQuantize128_Click );
+            cMenuPianoLengthOff.Click += new EventHandler( handleLengthQuantizeOff_Click );
+            cMenuPianoLengthTriplet.Click += new EventHandler( handleLengthQuantizeTriplet_Click );
+            cMenuPianoGrid.Click += new EventHandler( cMenuPianoGrid_Click );
+            cMenuPianoUndo.Click += new EventHandler( cMenuPianoUndo_Click );
+            cMenuPianoRedo.Click += new EventHandler( cMenuPianoRedo_Click );
+            cMenuPianoCut.Click += new EventHandler( cMenuPianoCut_Click );
+            cMenuPianoCopy.Click += new EventHandler( cMenuPianoCopy_Click );
+            cMenuPianoPaste.Click += new EventHandler( cMenuPianoPaste_Click );
+            cMenuPianoDelete.Click += new EventHandler( cMenuPianoDelete_Click );
+            cMenuPianoSelectAll.Click += new EventHandler( cMenuPianoSelectAll_Click );
+            cMenuPianoSelectAllEvents.Click += new EventHandler( cMenuPianoSelectAllEvents_Click );
+            cMenuPianoImportLyric.Click += new EventHandler( cMenuPianoImportLyric_Click );
+            cMenuPianoExpressionProperty.Click += new EventHandler( cMenuPianoProperty_Click );
+            cMenuPianoVibratoProperty.Click += new EventHandler( cMenuPianoVibratoProperty_Click );
+            cMenuTrackTab.Opening += new System.ComponentModel.CancelEventHandler( cMenuTrackTab_Opening );
+            cMenuTrackTabTrackOn.Click += new EventHandler( handleTrackOn_Click );
+            cMenuTrackTabAdd.Click += new EventHandler( cMenuTrackTabAdd_Click );
+            cMenuTrackTabCopy.Click += new EventHandler( cMenuTrackTabCopy_Click );
+            cMenuTrackTabChangeName.Click += new EventHandler( cMenuTrackTabChangeName_Click );
+            cMenuTrackTabDelete.Click += new EventHandler( cMenuTrackTabDelete_Click );
+            cMenuTrackTabRenderCurrent.Click += new EventHandler( cMenuTrackTabRenderCurrent_Click );
+            cMenuTrackTabRenderAll.Click += new EventHandler( handleTrackRenderAll_Click );
+            cMenuTrackTabOverlay.Click += new EventHandler( cMenuTrackTabOverlay_Click );
+            cMenuTrackTabRenderer.DropDownOpening += new EventHandler( cMenuTrackTabRenderer_DropDownOpening );
+            cMenuTrackTabRendererVOCALOID100.Click += new EventHandler( handleChangeRenderer );
+            cMenuTrackTabRendererVOCALOID101.Click += new EventHandler( handleChangeRenderer );
+            cMenuTrackTabRendererVOCALOID2.Click += new EventHandler( handleChangeRenderer );
+            cMenuTrackTabRendererUtau.Click += new EventHandler( handleChangeRenderer );
+            cMenuTrackTabRendererStraight.Click += new EventHandler( handleChangeRenderer );
+            cMenuTrackTabRendererAquesTone.Click += new EventHandler( handleChangeRenderer );
+            cMenuTrackSelector.Opening += new System.ComponentModel.CancelEventHandler( cMenuTrackSelector_Opening );
+            cMenuTrackSelectorPointer.Click += new EventHandler( cMenuTrackSelectorPointer_Click );
+            cMenuTrackSelectorPencil.Click += new EventHandler( cMenuTrackSelectorPencil_Click );
+            cMenuTrackSelectorLine.Click += new EventHandler( cMenuTrackSelectorLine_Click );
+            cMenuTrackSelectorEraser.Click += new EventHandler( cMenuTrackSelectorEraser_Click );
+            cMenuTrackSelectorCurve.Click += new EventHandler( cMenuTrackSelectorCurve_Click );
+            cMenuTrackSelectorUndo.Click += new EventHandler( cMenuTrackSelectorUndo_Click );
+            cMenuTrackSelectorRedo.Click += new EventHandler( cMenuTrackSelectorRedo_Click );
+            cMenuTrackSelectorCut.Click += new EventHandler( cMenuTrackSelectorCut_Click );
+            cMenuTrackSelectorCopy.Click += new EventHandler( cMenuTrackSelectorCopy_Click );
+            cMenuTrackSelectorPaste.Click += new EventHandler( cMenuTrackSelectorPaste_Click );
+            cMenuTrackSelectorDelete.Click += new EventHandler( cMenuTrackSelectorDelete_Click );
+            cMenuTrackSelectorDeleteBezier.Click += new EventHandler( cMenuTrackSelectorDeleteBezier_Click );
+            cMenuTrackSelectorSelectAll.Click += new EventHandler( cMenuTrackSelectorSelectAll_Click );
+            trackBar.ValueChanged += new EventHandler( trackBar_ValueChanged );
+            trackBar.MouseDown += new System.Windows.Forms.MouseEventHandler( trackBar_MouseDown );
+            trackBar.Enter += new EventHandler( trackBar_Enter );
+            bgWorkScreen.DoWork += new System.ComponentModel.DoWorkEventHandler( bgWorkScreen_DoWork );
+            timer.Tick += new EventHandler( timer_Tick );
+            pictKeyLengthSplitter.MouseMove += new System.Windows.Forms.MouseEventHandler( pictKeyLengthSplitter_MouseMove );
+            pictKeyLengthSplitter.MouseDown += new System.Windows.Forms.MouseEventHandler( pictKeyLengthSplitter_MouseDown );
+            pictKeyLengthSplitter.MouseUp += new System.Windows.Forms.MouseEventHandler( pictKeyLengthSplitter_MouseUp );
+            /*btnRight1.MouseDown += new BMouseEventHandler( btnRight_MouseDown);
+            btnRight1.MouseUp += new BMouseEventHandler( btnRight_MouseUp);
+            btnRight1.MouseLeave += new EventHandler( overviewCommon_MouseLeave);
+            btnLeft2.MouseDown += new BMouseEventHandler( btnLeft_MouseDown);
+            btnLeft2.MouseUp += new BMouseEventHandler( btnLeft_MouseUp);
+            btnLeft2.MouseLeave += new EventHandler( overviewCommon_MouseLeave);
+            btnZoom.Click += new EventHandler( btnZoom_Click);
+            btnMooz.Click += new EventHandler( btnMooz_Click);
+            btnLeft1.MouseDown += new BMouseEventHandler( btnLeft_MouseDown);
+            btnLeft1.MouseUp += new BMouseEventHandler( btnLeft_MouseUp);
+            btnLeft1.MouseLeave += new EventHandler( overviewCommon_MouseLeave);
+            btnRight2.MouseDown += new BMouseEventHandler( btnRight_MouseDown);
+            btnRight2.MouseUp += new BMouseEventHandler( btnRight_MouseUp);
+            btnRight2.MouseLeave += new EventHandler( overviewCommon_MouseLeave);*/
+            //panelOverview.MouseMove += new BMouseEventHandler( pictOverview_MouseMove);
+            //panelOverview.MouseDoubleClick += new BMouseEventHandler( pictOverview_MouseDoubleClick);
+            //panelOverview.MouseDown += new BMouseEventHandler( pictOverview_MouseDown);
+            //panelOverview.Paint += new BPaintEventHandler( pictOverview_Paint);
+            //panelOverview.MouseUp += new BMouseEventHandler( pictOverview_MouseUp);
+            panelOverview.KeyUp += new System.Windows.Forms.KeyEventHandler( handleSpaceKeyUp);
+            panelOverview.KeyDown += new System.Windows.Forms.KeyEventHandler( handleSpaceKeyDown);
             vScroll.ValueChanged += this.vScroll_ValueChanged;
             vScroll.Resize += this.vScroll_Resize;
             vScroll.Enter += this.vScroll_Enter;
             hScroll.ValueChanged += this.hScroll_ValueChanged;
             hScroll.Resize += this.hScroll_Resize;
             hScroll.Enter += this.hScroll_Enter;
-            picturePositionIndicator.previewKeyDownEvent.add( new BPreviewKeyDownEventHandler( this, "picturePositionIndicator_PreviewKeyDown" ) );
-            picturePositionIndicator.mouseMoveEvent.add( new BMouseEventHandler( this, "picturePositionIndicator_MouseMove" ) );
-            picturePositionIndicator.mouseDoubleClickEvent.add( new BMouseEventHandler( this, "picturePositionIndicator_MouseDoubleClick" ) );
-            picturePositionIndicator.mouseDownEvent.add( new BMouseEventHandler( this, "picturePositionIndicator_MouseDown" ) );
-            picturePositionIndicator.mouseUpEvent.add( new BMouseEventHandler( this, "picturePositionIndicator_MouseUp" ) );
-            picturePositionIndicator.paintEvent.add( new BPaintEventHandler( this, "picturePositionIndicator_Paint" ) );
-            pictPianoRoll.previewKeyDownEvent.add( new BPreviewKeyDownEventHandler( this, "pictPianoRoll_PreviewKeyDown" ) );
-            pictPianoRoll.keyUpEvent.add( new BKeyEventHandler( this, "handleSpaceKeyUp" ) );
-            pictPianoRoll.keyUpEvent.add( new BKeyEventHandler( this, "pictPianoRoll_KeyUp" ) );
-            pictPianoRoll.mouseMoveEvent.add( new BMouseEventHandler( this, "pictPianoRoll_MouseMove" ) );
-            pictPianoRoll.mouseDoubleClickEvent.add( new BMouseEventHandler( this, "pictPianoRoll_MouseDoubleClick" ) );
-            pictPianoRoll.mouseClickEvent.add( new BMouseEventHandler( this, "pictPianoRoll_MouseClick" ) );
-            pictPianoRoll.mouseDownEvent.add( new BMouseEventHandler( this, "pictPianoRoll_MouseDown" ) );
-            pictPianoRoll.mouseUpEvent.add( new BMouseEventHandler( this, "pictPianoRoll_MouseUp" ) );
-            pictPianoRoll.keyDownEvent.add( new BKeyEventHandler( this, "handleSpaceKeyDown" ) );
-            panel2.paintEvent.add( new BPaintEventHandler( this, "panel2_Paint" ) );
-            panel2.mouseDownEvent.add( new BMouseEventHandler( this, "panel2_MouseDown" ) );
-            panel2.mouseMoveEvent.add( new BMouseEventHandler( this, "panel2_MouseMove" ) );
-            panel2.mouseUpEvent.add( new BMouseEventHandler( this, "panel2_MouseUp" ) );
-            waveView.mouseDoubleClickEvent.add( new BMouseEventHandler( this, "waveView_MouseDoubleClick" ) );
-            waveView.mouseDownEvent.add( new BMouseEventHandler( this, "waveView_MouseDown" ) );
-            waveView.mouseUpEvent.add( new BMouseEventHandler( this, "waveView_MouseUp" ) );
-            waveView.mouseMoveEvent.add( new BMouseEventHandler( this, "waveView_MouseMove" ) );
+            picturePositionIndicator.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler( picturePositionIndicator_PreviewKeyDown);
+            picturePositionIndicator.MouseMove += new System.Windows.Forms.MouseEventHandler( picturePositionIndicator_MouseMove);
+            picturePositionIndicator.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler( picturePositionIndicator_MouseDoubleClick);
+            picturePositionIndicator.MouseDown += new System.Windows.Forms.MouseEventHandler( picturePositionIndicator_MouseDown);
+            picturePositionIndicator.MouseUp += new System.Windows.Forms.MouseEventHandler( picturePositionIndicator_MouseUp);
+            picturePositionIndicator.Paint += new System.Windows.Forms.PaintEventHandler( picturePositionIndicator_Paint);
+            pictPianoRoll.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler( pictPianoRoll_PreviewKeyDown);
+            pictPianoRoll.KeyUp += new System.Windows.Forms.KeyEventHandler( handleSpaceKeyUp);
+            pictPianoRoll.KeyUp += new System.Windows.Forms.KeyEventHandler( pictPianoRoll_KeyUp);
+            pictPianoRoll.MouseMove += new System.Windows.Forms.MouseEventHandler( pictPianoRoll_MouseMove);
+            pictPianoRoll.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler( pictPianoRoll_MouseDoubleClick);
+            pictPianoRoll.MouseClick += new System.Windows.Forms.MouseEventHandler( pictPianoRoll_MouseClick);
+            pictPianoRoll.MouseDown += new System.Windows.Forms.MouseEventHandler( pictPianoRoll_MouseDown);
+            pictPianoRoll.MouseUp += new System.Windows.Forms.MouseEventHandler( pictPianoRoll_MouseUp );
+            pictPianoRoll.KeyDown += new System.Windows.Forms.KeyEventHandler( handleSpaceKeyDown);
+            panel2.Paint += new System.Windows.Forms.PaintEventHandler( panel2_Paint);
+            panel2.MouseDown += new System.Windows.Forms.MouseEventHandler( panel2_MouseDown);
+            panel2.MouseMove += new System.Windows.Forms.MouseEventHandler( panel2_MouseMove);
+            panel2.MouseUp += new System.Windows.Forms.MouseEventHandler( panel2_MouseUp);
+            waveView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler( waveView_MouseDoubleClick);
+            waveView.MouseDown += new System.Windows.Forms.MouseEventHandler( waveView_MouseDown);
+            waveView.MouseUp += new System.Windows.Forms.MouseEventHandler( waveView_MouseUp);
+            waveView.MouseMove += new System.Windows.Forms.MouseEventHandler( waveView_MouseMove);
 #if !JAVA
             this.DragEnter += new System.Windows.Forms.DragEventHandler( FormMain_DragEnter );
             this.DragDrop += new System.Windows.Forms.DragEventHandler( FormMain_DragDrop );
             this.DragOver += new System.Windows.Forms.DragEventHandler( FormMain_DragOver );
             this.DragLeave += new EventHandler( FormMain_DragLeave );
 #endif
-            pictureBox3.mouseDownEvent.add( new BMouseEventHandler( this, "pictureBox3_MouseDown" ) );
-            pictureBox2.mouseDownEvent.add( new BMouseEventHandler( this, "pictureBox2_MouseDown" ) );
-            pictureBox2.mouseUpEvent.add( new BMouseEventHandler( this, "pictureBox2_MouseUp" ) );
-            pictureBox2.paintEvent.add( new BPaintEventHandler( this, "pictureBox2_Paint" ) );
+            pictureBox3.MouseDown += new System.Windows.Forms.MouseEventHandler( pictureBox3_MouseDown );
+            pictureBox2.MouseDown += new System.Windows.Forms.MouseEventHandler( pictureBox2_MouseDown);
+            pictureBox2.MouseUp += new System.Windows.Forms.MouseEventHandler( pictureBox2_MouseUp);
+            pictureBox2.Paint += new System.Windows.Forms.PaintEventHandler( pictureBox2_Paint);
             toolBarTool.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler( toolBarTool_ButtonClick );
 #if !JAVA
             rebar.SizeChanged += new EventHandler( toolStripContainer_TopToolStripPanel_SizeChanged );// toolStripContainer.TopToolStripPanel.SizeChanged += new EventHandler( toolStripContainer_TopToolStripPanel_SizeChanged );
@@ -6963,22 +6923,17 @@ namespace org.kbinani.cadencii {
             stripDDBtnQuantize128.Click += handlePositionQuantize;
             stripDDBtnQuantizeOff.Click += handlePositionQuantize;
             stripDDBtnQuantizeTriplet.Click += handlePositionQuantizeTriplet_Click;
-#endif
             toolBarFile.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler( toolBarFile_ButtonClick );
             toolBarPosition.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler( toolBarPosition_ButtonClick );
             toolBarMeasure.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler( toolBarMeasure_ButtonClick );
-#if DEBUG
             toolBarMeasure.MouseDown += new System.Windows.Forms.MouseEventHandler( toolBarMeasure_MouseDown );
 #endif
-            deactivateEvent.add( new BEventHandler( this, "FormMain_Deactivate" ) );
-            activatedEvent.add( new BEventHandler( this, "FormMain_Activated" ) );
-            formClosedEvent.add( new BFormClosedEventHandler( this, "FormMain_FormClosed" ) );
-            formClosingEvent.add( new BFormClosingEventHandler( this, "FormMain_FormClosing" ) );
-            previewKeyDownEvent.add( new BPreviewKeyDownEventHandler( this, "FormMain_PreviewKeyDown" ) );
-            panelOverview.enterEvent.add( new BEventHandler( this, "panelOverview_Enter" ) );
-#if DEBUG
-            this.MouseUp += new System.Windows.Forms.MouseEventHandler( FormMain_MouseUp );
-#endif
+            Deactivate += new EventHandler( FormMain_Deactivate );
+            Activated += new EventHandler( FormMain_Activated );
+            FormClosed += new System.Windows.Forms.FormClosedEventHandler( FormMain_FormClosed );
+            FormClosing += new System.Windows.Forms.FormClosingEventHandler( FormMain_FormClosing );
+            PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler( FormMain_PreviewKeyDown );
+            panelOverview.Enter += new EventHandler( panelOverview_Enter );
         }
 
         void toolBarMeasure_MouseDown( object sender, System.Windows.Forms.MouseEventArgs e ) {
@@ -7007,33 +6962,6 @@ namespace org.kbinani.cadencii {
                     new System.Drawing.Point( rc.Left, rc.Bottom ) );
             }
         }
-
-#if DEBUG
-        void toolBarMeasure_ButtonDropDown( object sender, System.Windows.Forms.ToolBarButtonClickEventArgs e ) {
-            if ( e.Button == stripBtnStartMarker ) {
-                //handleStartMarker_Click( e.Button, new EventArgs() );
-            } else if ( e.Button == stripBtnEndMarker ) {
-                //handleEndMarker_Click( e.Button, new EventArgs() );
-            } else if ( e.Button == stripDDBtnLengthParent ) {
-                System.Drawing.Rectangle rc = stripDDBtnLengthParent.Rectangle;
-                stripDDBtnLength.Show(
-                    toolBarMeasure,
-                    new System.Drawing.Point( rc.Left, rc.Bottom ) );
-            } else if ( e.Button == stripDDBtnQuantizeParent ) {
-                System.Drawing.Rectangle rc = stripDDBtnQuantizeParent.Rectangle;
-                stripDDBtnQuantize.Show(
-                    toolBarMeasure,
-                    new System.Drawing.Point( rc.Left, rc.Bottom ) );
-            }
-        }
-#endif
-
-#if DEBUG
-        void FormMain_MouseUp( object sender, System.Windows.Forms.MouseEventArgs e ) {
-            PortUtil.println( "FormMain#FormMain_MouseUp" );
-            refreshScreen( true );
-        }
-#endif
 
         void toolBarTool_ButtonClick( object sender, System.Windows.Forms.ToolBarButtonClickEventArgs e ) {
             if ( e.Button == stripBtnPointer ) {
@@ -7282,10 +7210,18 @@ namespace org.kbinani.cadencii {
 
         //BOOKMARK: AppManager
         #region AppManager
+        public void AppManager_EditedStateChanged( Object sender,  boolean edited ) {
+            setEdited( edited );
+        }
+
         public void AppManager_GridVisibleChanged( Object sender, EventArgs e ) {
             menuVisualGridline.setSelected( AppManager.isGridVisible() );
             stripBtnGrid.Pushed = AppManager.isGridVisible();
             cMenuPianoGrid.setSelected( AppManager.isGridVisible() );
+        }
+
+        public void AppManager_MainWindowFocusRequired( Object sender, EventArgs e ) {
+            this.requestFocus();
         }
 
         public void AppManager_PreviewAborted( Object sender, EventArgs e ) {
@@ -7341,6 +7277,18 @@ namespace org.kbinani.cadencii {
             menuLyricExpressionProperty.setEnabled( !selected_event_is_null );
             stripBtnCut.Enabled = !selected_event_is_null;
             stripBtnCopy.Enabled = !selected_event_is_null;
+        }
+
+        public void AppManager_UpdateBgmStatusRequired( Object sender, EventArgs e ) {
+            updateBgmMenuState();
+        }
+
+        public void AppManager_WaveViewRealoadRequired( Object sender, int track, String file, double sec_start, double sec_end ) {
+            if ( sec_start <= sec_end ) {
+                waveView.reloadPartial( track - 1, file, sec_start, sec_end );
+            } else {
+                waveView.load( track - 1, file );
+            }
         }
         #endregion
 
@@ -9280,17 +9228,19 @@ namespace org.kbinani.cadencii {
 
         public void menuVisualIconPalette_Click( Object sender, EventArgs e ) {
             if ( AppManager.iconPalette == null ) {
-                AppManager.iconPalette = new FormIconPalette();
-                AppManager.iconPalette.formClosingEvent.add( new BFormClosingEventHandler( this, "iconPalette_FormClosing" ) );
+                AppManager.iconPalette = new FormIconPalette( this );
+                AppManager.iconPalette.FormClosing += 
+                    new System.Windows.Forms.FormClosingEventHandler( iconPalette_FormClosing );
                 Point p = AppManager.editorConfig.FormIconPaletteLocation.toPoint();
                 if( !PortUtil.isPointInScreens( p ) ){
                     Rectangle workingArea = PortUtil.getWorkingArea( this );
                     p = new Point( workingArea.x, workingArea.y );
                 }
                 AppManager.iconPalette.setLocation( p );
-                AppManager.iconPalette.locationChangedEvent.add( new BEventHandler( this, "iconPalette_LocationChanged" ) );
+                AppManager.iconPalette.LocationChanged +=
+                    new EventHandler( iconPalette_LocationChanged );
                 AppManager.iconPalette.setTopMost( AppManager.editorConfig.FormIconTopMost );
-                AppManager.iconPalette.topMostChangedEvent.add( new BEventHandler( this, "iconPalette_TopMostChanged" ) );
+                AppManager.iconPalette.TopMostChanged += new EventHandler( iconPalette_TopMostChanged );
             }
             boolean old = menuVisualIconPalette.isSelected();
             menuVisualIconPalette.setSelected( !old );
@@ -9362,11 +9312,11 @@ namespace org.kbinani.cadencii {
                     chkv = false;
                 } else if ( !vd.loaded ){
                     chkv = false;
-                } else if ( vd.getUi() == null ){
+                } else if ( vd.getUi( this ) == null ){
                     chkv = false;
-                } else if ( vd.getUi().IsDisposed ){
+                } else if ( vd.getUi( this ).IsDisposed ){
                     chkv = false;
-                } else if ( !vd.getUi().isVisible() ){
+                } else if ( !vd.getUi( this ).isVisible() ){
                     chkv = false;
                 }
                 RendererKind kind = vd.kind;
@@ -9386,14 +9336,17 @@ namespace org.kbinani.cadencii {
             boolean chk = true;
             if ( drv == null ) {
                 chk = false;
-            } else if( !drv.loaded ){
+            } else if ( !drv.loaded ) {
                 chk = false;
-            } else if ( drv.getUi() == null ) {
-                chk = false;
-            } else if ( drv.getUi().IsDisposed ) {
-                chk = false;
-            } else if ( !drv.getUi().isVisible() ) {
-                chk = false;
+            } else {
+                FormPluginUi ui = drv.getUi( this );
+                if ( ui == null ) {
+                    chk = false;
+                } else if ( ui.IsDisposed ) {
+                    chk = false;
+                } else if ( !ui.isVisible() ) {
+                    chk = false;
+                }
             }
             menuVisualPluginUiAquesTone.setSelected( chk );
 #endif
@@ -9426,10 +9379,13 @@ namespace org.kbinani.cadencii {
                     chk = false;
                 } else if ( !vd.loaded ) {
                     chk = false;
-                } else if ( vd.getUi() == null ) {
-                    chk = false;
-                } else if ( vd.getUi().IsDisposed ) {
-                    chk = false;
+                } else {
+                    FormPluginUi ui = vd.getUi( this );
+                    if ( ui == null ) {
+                        chk = false;
+                    } else if ( ui.IsDisposed ) {
+                        chk = false;
+                    }
                 }
                 if ( !chk ) {
                     continue;
@@ -9440,15 +9396,15 @@ namespace org.kbinani.cadencii {
                     if ( search == RendererKind.VOCALOID1_100 ) {
                         v = !menuVisualPluginUiVocaloid100.isSelected();
                         menuVisualPluginUiVocaloid100.setSelected( v );
-                        vd.getUi().setVisible( v );
+                        vd.getUi( this ).setVisible( v );
                     } else if ( search == RendererKind.VOCALOID1_101 ) {
                         v = !menuVisualPluginUiVocaloid101.isSelected();
                         menuVisualPluginUiVocaloid101.setSelected( v );
-                        vd.getUi().setVisible( v );
+                        vd.getUi( this ).setVisible( v );
                     } else if ( search == RendererKind.VOCALOID2 ) {
                         v = !menuVisualPluginUiVocaloid2.isSelected();
                         menuVisualPluginUiVocaloid2.setSelected( v );
-                        vd.getUi().setVisible( v );
+                        vd.getUi( this ).setVisible( v );
                     }
                     break;
                 }
@@ -9463,21 +9419,26 @@ namespace org.kbinani.cadencii {
 #if ENABLE_AQUESTONE
             AquesToneDriver drv = AquesToneDriver.getInstance();
             boolean chk = true;
+            FormPluginUi ui = null;
             if ( drv == null ) {
                 chk = false;
             } else if ( !drv.loaded ) {
                 chk = false;
-            } else if ( drv.getUi() == null ) {
-                chk = false;
-
-            } else if ( drv.getUi().IsDisposed ) {
-                chk = false;
+            } else {
+                ui = drv.getUi( this );
+                if ( ui == null ) {
+                    chk = false;
+                } else if ( ui.IsDisposed ) {
+                    chk = false;
+                }
             }
             if ( !chk ) {
                 menuVisualPluginUiAquesTone.setSelected( false );
                 return;
             }
-            drv.getUi().setVisible( visible );
+            if ( ui != null && !ui.IsDisposed ) {
+                ui.setVisible( visible );
+            }
 #endif
         }
         #endregion
@@ -9811,12 +9772,16 @@ namespace org.kbinani.cadencii {
             AppManager.setCurrentClock( 0 );
             setEdited( false );
 
-            AppManager.previewStartedEvent.add( new BEventHandler( this, "AppManager_PreviewStarted" ) );
-            AppManager.previewAbortedEvent.add( new BEventHandler( this, "AppManager_PreviewAborted" ) );
-            AppManager.gridVisibleChangedEvent.add( new BEventHandler( this, "AppManager_GridVisibleChanged" ) );
-            AppManager.selectedEventChangedEvent.add( new SelectedEventChangedEventHandler( this, "AppManager_SelectedEventChanged" ) );
-            AppManager.selectedToolChangedEvent.add( new BEventHandler( this, "AppManager_SelectedToolChanged" ) );
-            EditorConfig.quantizeModeChangedEvent.add( new BEventHandler( this, "handleEditorConfig_QuantizeModeChanged" ) );
+            AppManager.PreviewStarted += new EventHandler( AppManager_PreviewStarted );
+            AppManager.PreviewAborted += new EventHandler( AppManager_PreviewAborted );
+            AppManager.GridVisibleChanged += new EventHandler( AppManager_GridVisibleChanged );
+            AppManager.SelectedEventChanged += new SelectedEventChangedEventHandler( AppManager_SelectedEventChanged );
+            AppManager.SelectedToolChanged += new EventHandler( AppManager_SelectedToolChanged );
+            AppManager.UpdateBgmStatusRequired += new EventHandler( AppManager_UpdateBgmStatusRequired );
+            AppManager.MainWindowFocusRequired += new EventHandler( AppManager_MainWindowFocusRequired );
+            AppManager.EditedStateChanged += new EditedStateChangedEventHandler( AppManager_EditedStateChanged );
+            AppManager.WaveViewReloadRequired += new WaveViewRealoadRequiredEventHandler( AppManager_WaveViewRealoadRequired );
+            EditorConfig.QuantizeModeChanged += new EventHandler( handleEditorConfig_QuantizeModeChanged );
 
 #if ENABLE_PROPERTY
             mPropertyPanelContainer.StateChangeRequired += new StateChangeRequiredEventHandler( mPropertyPanelContainer_StateChangeRequired );
@@ -9855,18 +9820,18 @@ namespace org.kbinani.cadencii {
 
             updateMenuFonts();
 
-            AppManager.mMixerWindow.federChangedEvent.add( new FederChangedEventHandler( this, "mixerWindow_FederChanged" ) );
-            AppManager.mMixerWindow.panpotChangedEvent.add( new PanpotChangedEventHandler( this, "mixerWindow_PanpotChanged" ) );
-            AppManager.mMixerWindow.muteChangedEvent.add( new MuteChangedEventHandler( this, "mixerWindow_MuteChanged" ) );
-            AppManager.mMixerWindow.soloChangedEvent.add( new SoloChangedEventHandler( this, "mixerWindow_SoloChanged" ) );
-            AppManager.mMixerWindow.topMostChangedEvent.add( new TopMostChangedEventHandler( this, "mixerWindow_TopMostChanged" ) );
+            AppManager.mMixerWindow.FederChanged += new FederChangedEventHandler( mixerWindow_FederChanged );
+            AppManager.mMixerWindow.PanpotChanged += new PanpotChangedEventHandler( mixerWindow_PanpotChanged );
+            AppManager.mMixerWindow.MuteChanged += new MuteChangedEventHandler( mixerWindow_MuteChanged );
+            AppManager.mMixerWindow.SoloChanged += new SoloChangedEventHandler( mixerWindow_SoloChanged );
+            AppManager.mMixerWindow.TopMostChanged += new TopMostChangedEventHandler( mixerWindow_TopMostChanged );
             AppManager.mMixerWindow.setShowTopMost( AppManager.editorConfig.MixerTopMost );
             AppManager.mMixerWindow.updateStatus();
             if ( AppManager.editorConfig.MixerVisible ) {
                 AppManager.mMixerWindow.setVisible( true );
             }
 
-            trackSelector.commandExecutedEvent.add( new BEventHandler( this, "trackSelector_CommandExecuted" ) );
+            trackSelector.CommandExecuted += new EventHandler( trackSelector_CommandExecuted );
 
 #if ENABLE_SCRIPT
             updateScriptShortcut();
@@ -9953,13 +9918,8 @@ namespace org.kbinani.cadencii {
 #endif
             updateBgmMenuState();
 
-#if JAVA
-            sizeChangedEvent.add( new BEventHandler( this, "FormMain_SizeChanged" ) );
-            locationChangedEvent.add( new BEventHandler( this, "FormMain_LocationChanged" ) );
-#else
             this.SizeChanged += new System.EventHandler( this.FormMain_SizeChanged );
             this.LocationChanged += new System.EventHandler( this.FormMain_LocationChanged );
-#endif
             repaint();
             updateLayout();
 #if DEBUG
@@ -10040,7 +10000,7 @@ namespace org.kbinani.cadencii {
                     FormGenerateKeySound form = null;
                     try {
                         form = new FormGenerateKeySound( true );
-                        form.formClosedEvent.add( new BFormClosedEventHandler( this, "FormGenerateKeySound_FormClosed" ) );
+                        form.FormClosed += new System.Windows.Forms.FormClosedEventHandler( FormGenerateKeySound_FormClosed );
                         form.setVisible( true );
                     } catch ( Exception ex ) {
                         Logger.write( typeof( FormMain ) + ".FormMain_Load; ex=" + ex + "\n" );
@@ -10470,7 +10430,8 @@ namespace org.kbinani.cadencii {
                 q.renderAll = true;
                 // 末尾に追加
                 queue.add( q );
-                fs = new FormSynthesize( vsq,
+                fs = new FormSynthesize( this,
+                                         vsq,
                                          AppManager.editorConfig.PreSendTime,
                                          queue );
                 double started = PortUtil.getCurrentTime();
@@ -13911,7 +13872,7 @@ namespace org.kbinani.cadencii {
         }
 
         public void trackSelector_RenderRequired( Object sender, Integer[] tracks ) {
-            AppManager.patchWorkToFreeze( Arrays.asList( tracks ) );
+            AppManager.patchWorkToFreeze( this, Arrays.asList( tracks ) );
             /*int selected = AppManager.getSelected();
             Vector<Integer> t = new Vector<Integer>( Arrays.asList( PortUtil.convertIntArray( tracks ) ) );
             if ( t.contains( selected) ) {
@@ -14151,7 +14112,7 @@ namespace org.kbinani.cadencii {
         public void menuTrackRenderCurrent_Click( Object sender, EventArgs e ) {
             Vector<Integer> tracks = new Vector<Integer>();
             tracks.add( AppManager.getSelected() );
-            AppManager.patchWorkToFreeze( tracks );
+            AppManager.patchWorkToFreeze( this, tracks );
         }
 
         public void menuTrackRenderer_DropDownOpening( Object sender, EventArgs e ) {
@@ -14418,7 +14379,7 @@ namespace org.kbinani.cadencii {
         public void cMenuTrackTabRenderCurrent_Click( Object sender, EventArgs e ) {
             Vector<Integer> tracks = new Vector<Integer>();
             tracks.add( AppManager.getSelected() );
-            AppManager.patchWorkToFreeze( tracks );
+            AppManager.patchWorkToFreeze( this, tracks );
         }
 
         public void cMenuTrackTabRenderer_DropDownOpening( Object sender, EventArgs e ) {
@@ -15118,7 +15079,7 @@ namespace org.kbinani.cadencii {
             if ( list.size() <= 0 ) {
                 return;
             }
-            AppManager.patchWorkToFreeze( list );
+            AppManager.patchWorkToFreeze( this, list );
         }
 
         public void handleEditorConfig_QuantizeModeChanged( Object sender, EventArgs e ) {
@@ -16474,9 +16435,6 @@ namespace org.kbinani.cadencii {
             this.imageListMeasure = new System.Windows.Forms.ImageList( this.components );
             this.imageListTool = new System.Windows.Forms.ImageList( this.components );
             this.panel1 = new System.Windows.Forms.Panel();
-            this.panelOverview = new org.kbinani.cadencii.PictOverview();
-            this.pictPianoRoll = new org.kbinani.cadencii.PictPianoRoll();
-            this.hScroll = new org.kbinani.cadencii.HScroll();
             this.rebar = new org.kbinani.windows.forms.Rebar();
             this.imageListMenu = new System.Windows.Forms.ImageList( this.components );
             this.toolBarFile = new System.Windows.Forms.ToolBar();
@@ -16517,9 +16475,9 @@ namespace org.kbinani.cadencii {
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip( this.components );
-            this.toolStripMenuItem30 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem33 = new System.Windows.Forms.ToolStripMenuItem();
+            this.panelOverview = new org.kbinani.cadencii.PictOverview();
+            this.pictPianoRoll = new org.kbinani.cadencii.PictPianoRoll();
+            this.hScroll = new org.kbinani.cadencii.HScroll();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
@@ -16532,13 +16490,12 @@ namespace org.kbinani.cadencii {
             this.toolStripBottom.SuspendLayout();
             this.splitContainerProperty.SuspendLayout();
             this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.panelOverview)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).BeginInit();
             this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();
             this.statusStrip.SuspendLayout();
-            this.contextMenuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.panelOverview)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStripMain
@@ -16557,7 +16514,7 @@ namespace org.kbinani.cadencii {
             this.menuStripMain.Location = new System.Drawing.Point( 0, 0 );
             this.menuStripMain.Name = "menuStripMain";
             this.menuStripMain.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.menuStripMain.Size = new System.Drawing.Size( 955, 26 );
+            this.menuStripMain.Size = new System.Drawing.Size( 955, 24 );
             this.menuStripMain.TabIndex = 0;
             this.menuStripMain.Text = "menuStrip1";
             // 
@@ -16580,14 +16537,14 @@ namespace org.kbinani.cadencii {
             this.menuFileQuit} );
             this.menuFile.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.menuFile.Name = "menuFile";
-            this.menuFile.Size = new System.Drawing.Size( 57, 22 );
+            this.menuFile.Size = new System.Drawing.Size( 51, 20 );
             this.menuFile.Text = "File(&F)";
             // 
             // menuFileNew
             // 
             this.menuFileNew.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuFileNew.Name = "menuFileNew";
-            this.menuFileNew.Size = new System.Drawing.Size( 232, 22 );
+            this.menuFileNew.Size = new System.Drawing.Size( 214, 22 );
             this.menuFileNew.Text = "New(N)";
             this.menuFileNew.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
             // 
@@ -16595,7 +16552,7 @@ namespace org.kbinani.cadencii {
             // 
             this.menuFileOpen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuFileOpen.Name = "menuFileOpen";
-            this.menuFileOpen.Size = new System.Drawing.Size( 232, 22 );
+            this.menuFileOpen.Size = new System.Drawing.Size( 214, 22 );
             this.menuFileOpen.Text = "Open(&O)";
             this.menuFileOpen.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
             // 
@@ -16603,7 +16560,7 @@ namespace org.kbinani.cadencii {
             // 
             this.menuFileSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuFileSave.Name = "menuFileSave";
-            this.menuFileSave.Size = new System.Drawing.Size( 232, 22 );
+            this.menuFileSave.Size = new System.Drawing.Size( 214, 22 );
             this.menuFileSave.Text = "Save(&S)";
             this.menuFileSave.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
             // 
@@ -16611,20 +16568,20 @@ namespace org.kbinani.cadencii {
             // 
             this.menuFileSaveNamed.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuFileSaveNamed.Name = "menuFileSaveNamed";
-            this.menuFileSaveNamed.Size = new System.Drawing.Size( 232, 22 );
+            this.menuFileSaveNamed.Size = new System.Drawing.Size( 214, 22 );
             this.menuFileSaveNamed.Text = "Save As(&A)";
             this.menuFileSaveNamed.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
             // 
             // toolStripMenuItem10
             // 
             this.toolStripMenuItem10.Name = "toolStripMenuItem10";
-            this.toolStripMenuItem10.Size = new System.Drawing.Size( 229, 6 );
+            this.toolStripMenuItem10.Size = new System.Drawing.Size( 211, 6 );
             // 
             // menuFileOpenVsq
             // 
             this.menuFileOpenVsq.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuFileOpenVsq.Name = "menuFileOpenVsq";
-            this.menuFileOpenVsq.Size = new System.Drawing.Size( 232, 22 );
+            this.menuFileOpenVsq.Size = new System.Drawing.Size( 214, 22 );
             this.menuFileOpenVsq.Text = "Open VSQ/Vocaloid Midi(&V)";
             this.menuFileOpenVsq.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
             // 
@@ -16632,7 +16589,7 @@ namespace org.kbinani.cadencii {
             // 
             this.menuFileOpenUst.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuFileOpenUst.Name = "menuFileOpenUst";
-            this.menuFileOpenUst.Size = new System.Drawing.Size( 232, 22 );
+            this.menuFileOpenUst.Size = new System.Drawing.Size( 214, 22 );
             this.menuFileOpenUst.Text = "Open UTAU Project File(&U)";
             this.menuFileOpenUst.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
             // 
@@ -16643,20 +16600,20 @@ namespace org.kbinani.cadencii {
             this.menuFileImportVsq,
             this.menuFileImportMidi} );
             this.menuFileImport.Name = "menuFileImport";
-            this.menuFileImport.Size = new System.Drawing.Size( 232, 22 );
+            this.menuFileImport.Size = new System.Drawing.Size( 214, 22 );
             this.menuFileImport.Text = "Import(&I)";
             this.menuFileImport.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
             // 
             // menuFileImportVsq
             // 
             this.menuFileImportVsq.Name = "menuFileImportVsq";
-            this.menuFileImportVsq.Size = new System.Drawing.Size( 162, 22 );
+            this.menuFileImportVsq.Size = new System.Drawing.Size( 142, 22 );
             this.menuFileImportVsq.Text = "VSQ File";
             // 
             // menuFileImportMidi
             // 
             this.menuFileImportMidi.Name = "menuFileImportMidi";
-            this.menuFileImportMidi.Size = new System.Drawing.Size( 162, 22 );
+            this.menuFileImportMidi.Size = new System.Drawing.Size( 142, 22 );
             this.menuFileImportMidi.Text = "Standard MIDI";
             // 
             // menuFileExport
@@ -16668,57 +16625,57 @@ namespace org.kbinani.cadencii {
             this.menuFileExportMusicXml,
             this.menuFileExportUst} );
             this.menuFileExport.Name = "menuFileExport";
-            this.menuFileExport.Size = new System.Drawing.Size( 232, 22 );
+            this.menuFileExport.Size = new System.Drawing.Size( 214, 22 );
             this.menuFileExport.Text = "Export(&E)";
             this.menuFileExport.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
             // 
             // menuFileExportWave
             // 
             this.menuFileExportWave.Name = "menuFileExportWave";
-            this.menuFileExportWave.Size = new System.Drawing.Size( 268, 22 );
+            this.menuFileExportWave.Size = new System.Drawing.Size( 242, 22 );
             this.menuFileExportWave.Text = "Wave";
             // 
             // menuFileExportMidi
             // 
             this.menuFileExportMidi.Name = "menuFileExportMidi";
-            this.menuFileExportMidi.Size = new System.Drawing.Size( 268, 22 );
+            this.menuFileExportMidi.Size = new System.Drawing.Size( 242, 22 );
             this.menuFileExportMidi.Text = "MIDI";
             // 
             // menuFileExportMusicXml
             // 
             this.menuFileExportMusicXml.Name = "menuFileExportMusicXml";
-            this.menuFileExportMusicXml.Size = new System.Drawing.Size( 268, 22 );
+            this.menuFileExportMusicXml.Size = new System.Drawing.Size( 242, 22 );
             this.menuFileExportMusicXml.Text = "MusicXML";
             // 
             // menuFileExportUst
             // 
             this.menuFileExportUst.Name = "menuFileExportUst";
-            this.menuFileExportUst.Size = new System.Drawing.Size( 268, 22 );
+            this.menuFileExportUst.Size = new System.Drawing.Size( 242, 22 );
             this.menuFileExportUst.Text = "UTAU Project File (current track)";
             // 
             // toolStripMenuItem11
             // 
             this.toolStripMenuItem11.Name = "toolStripMenuItem11";
-            this.toolStripMenuItem11.Size = new System.Drawing.Size( 229, 6 );
+            this.toolStripMenuItem11.Size = new System.Drawing.Size( 211, 6 );
             // 
             // menuFileRecent
             // 
             this.menuFileRecent.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuFileRecent.Name = "menuFileRecent";
-            this.menuFileRecent.Size = new System.Drawing.Size( 232, 22 );
+            this.menuFileRecent.Size = new System.Drawing.Size( 214, 22 );
             this.menuFileRecent.Text = "Recent Files(&R)";
             this.menuFileRecent.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
             // 
             // toolStripMenuItem12
             // 
             this.toolStripMenuItem12.Name = "toolStripMenuItem12";
-            this.toolStripMenuItem12.Size = new System.Drawing.Size( 229, 6 );
+            this.toolStripMenuItem12.Size = new System.Drawing.Size( 211, 6 );
             // 
             // menuFileQuit
             // 
             this.menuFileQuit.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuFileQuit.Name = "menuFileQuit";
-            this.menuFileQuit.Size = new System.Drawing.Size( 232, 22 );
+            this.menuFileQuit.Size = new System.Drawing.Size( 214, 22 );
             this.menuFileQuit.Text = "Quit(&Q)";
             this.menuFileQuit.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
             // 
@@ -16738,77 +16695,77 @@ namespace org.kbinani.cadencii {
             this.menuEditSelectAll,
             this.menuEditSelectAllEvents} );
             this.menuEdit.Name = "menuEdit";
-            this.menuEdit.Size = new System.Drawing.Size( 59, 22 );
+            this.menuEdit.Size = new System.Drawing.Size( 52, 20 );
             this.menuEdit.Text = "Edit(&E)";
             // 
             // menuEditUndo
             // 
             this.menuEditUndo.Name = "menuEditUndo";
-            this.menuEditUndo.Size = new System.Drawing.Size( 220, 22 );
+            this.menuEditUndo.Size = new System.Drawing.Size( 195, 22 );
             this.menuEditUndo.Text = "Undo(&U)";
             // 
             // menuEditRedo
             // 
             this.menuEditRedo.Name = "menuEditRedo";
-            this.menuEditRedo.Size = new System.Drawing.Size( 220, 22 );
+            this.menuEditRedo.Size = new System.Drawing.Size( 195, 22 );
             this.menuEditRedo.Text = "Redo(&R)";
             // 
             // toolStripMenuItem5
             // 
             this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-            this.toolStripMenuItem5.Size = new System.Drawing.Size( 217, 6 );
+            this.toolStripMenuItem5.Size = new System.Drawing.Size( 192, 6 );
             // 
             // menuEditCut
             // 
             this.menuEditCut.Name = "menuEditCut";
-            this.menuEditCut.Size = new System.Drawing.Size( 220, 22 );
+            this.menuEditCut.Size = new System.Drawing.Size( 195, 22 );
             this.menuEditCut.Text = "Cut(&T)";
             // 
             // menuEditCopy
             // 
             this.menuEditCopy.Name = "menuEditCopy";
-            this.menuEditCopy.Size = new System.Drawing.Size( 220, 22 );
+            this.menuEditCopy.Size = new System.Drawing.Size( 195, 22 );
             this.menuEditCopy.Text = "Copy(&C)";
             // 
             // menuEditPaste
             // 
             this.menuEditPaste.Name = "menuEditPaste";
             this.menuEditPaste.ShortcutKeyDisplayString = "";
-            this.menuEditPaste.Size = new System.Drawing.Size( 220, 22 );
+            this.menuEditPaste.Size = new System.Drawing.Size( 195, 22 );
             this.menuEditPaste.Text = "Paste(&P)";
             // 
             // menuEditDelete
             // 
             this.menuEditDelete.Name = "menuEditDelete";
-            this.menuEditDelete.Size = new System.Drawing.Size( 220, 22 );
+            this.menuEditDelete.Size = new System.Drawing.Size( 195, 22 );
             this.menuEditDelete.Text = "Delete(&D)";
             // 
             // toolStripMenuItem19
             // 
             this.toolStripMenuItem19.Name = "toolStripMenuItem19";
-            this.toolStripMenuItem19.Size = new System.Drawing.Size( 217, 6 );
+            this.toolStripMenuItem19.Size = new System.Drawing.Size( 192, 6 );
             // 
             // menuEditAutoNormalizeMode
             // 
             this.menuEditAutoNormalizeMode.Name = "menuEditAutoNormalizeMode";
-            this.menuEditAutoNormalizeMode.Size = new System.Drawing.Size( 220, 22 );
+            this.menuEditAutoNormalizeMode.Size = new System.Drawing.Size( 195, 22 );
             this.menuEditAutoNormalizeMode.Text = "Auto Normalize Mode(&N)";
             // 
             // toolStripMenuItem20
             // 
             this.toolStripMenuItem20.Name = "toolStripMenuItem20";
-            this.toolStripMenuItem20.Size = new System.Drawing.Size( 217, 6 );
+            this.toolStripMenuItem20.Size = new System.Drawing.Size( 192, 6 );
             // 
             // menuEditSelectAll
             // 
             this.menuEditSelectAll.Name = "menuEditSelectAll";
-            this.menuEditSelectAll.Size = new System.Drawing.Size( 220, 22 );
+            this.menuEditSelectAll.Size = new System.Drawing.Size( 195, 22 );
             this.menuEditSelectAll.Text = "Select All(&A)";
             // 
             // menuEditSelectAllEvents
             // 
             this.menuEditSelectAllEvents.Name = "menuEditSelectAllEvents";
-            this.menuEditSelectAllEvents.Size = new System.Drawing.Size( 220, 22 );
+            this.menuEditSelectAllEvents.Size = new System.Drawing.Size( 195, 22 );
             this.menuEditSelectAllEvents.Text = "Select All Events(&E)";
             // 
             // menuVisual
@@ -16833,7 +16790,7 @@ namespace org.kbinani.cadencii {
             this.menuVisualNoteProperty,
             this.menuVisualPitchLine} );
             this.menuVisual.Name = "menuVisual";
-            this.menuVisual.Size = new System.Drawing.Size( 66, 22 );
+            this.menuVisual.Size = new System.Drawing.Size( 58, 20 );
             this.menuVisual.Text = "View(&V)";
             // 
             // menuVisualControlTrack
@@ -16843,7 +16800,7 @@ namespace org.kbinani.cadencii {
             this.menuVisualControlTrack.CheckState = System.Windows.Forms.CheckState.Checked;
             this.menuVisualControlTrack.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuVisualControlTrack.Name = "menuVisualControlTrack";
-            this.menuVisualControlTrack.Size = new System.Drawing.Size( 237, 22 );
+            this.menuVisualControlTrack.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualControlTrack.Text = "Control Track(&C)";
             // 
             // menuVisualCircuitDiagram
@@ -16851,41 +16808,41 @@ namespace org.kbinani.cadencii {
             this.menuVisualCircuitDiagram.CheckOnClick = true;
             this.menuVisualCircuitDiagram.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuVisualCircuitDiagram.Name = "menuVisualCircuitDiagram";
-            this.menuVisualCircuitDiagram.Size = new System.Drawing.Size( 237, 22 );
+            this.menuVisualCircuitDiagram.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualCircuitDiagram.Text = "Circuit Diagram";
             // 
             // menuVisualMixer
             // 
             this.menuVisualMixer.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuVisualMixer.Name = "menuVisualMixer";
-            this.menuVisualMixer.Size = new System.Drawing.Size( 237, 22 );
+            this.menuVisualMixer.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualMixer.Text = "Mixer(&X)";
             // 
             // menuVisualWaveform
             // 
             this.menuVisualWaveform.CheckOnClick = true;
             this.menuVisualWaveform.Name = "menuVisualWaveform";
-            this.menuVisualWaveform.Size = new System.Drawing.Size( 237, 22 );
+            this.menuVisualWaveform.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualWaveform.Text = "Waveform(&W)";
             // 
             // menuVisualIconPalette
             // 
             this.menuVisualIconPalette.Name = "menuVisualIconPalette";
-            this.menuVisualIconPalette.Size = new System.Drawing.Size( 237, 22 );
+            this.menuVisualIconPalette.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualIconPalette.Text = "Icon Palette(&I)";
             // 
             // menuVisualProperty
             // 
             this.menuVisualProperty.CheckOnClick = true;
             this.menuVisualProperty.Name = "menuVisualProperty";
-            this.menuVisualProperty.Size = new System.Drawing.Size( 237, 22 );
+            this.menuVisualProperty.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualProperty.Text = "Property Window(&C)";
             // 
             // menuVisualOverview
             // 
             this.menuVisualOverview.CheckOnClick = true;
             this.menuVisualOverview.Name = "menuVisualOverview";
-            this.menuVisualOverview.Size = new System.Drawing.Size( 237, 22 );
+            this.menuVisualOverview.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualOverview.Text = "Overview(&O)";
             // 
             // menuVisualPluginUi
@@ -16896,69 +16853,69 @@ namespace org.kbinani.cadencii {
             this.menuVisualPluginUiVocaloid2,
             this.menuVisualPluginUiAquesTone} );
             this.menuVisualPluginUi.Name = "menuVisualPluginUi";
-            this.menuVisualPluginUi.Size = new System.Drawing.Size( 237, 22 );
+            this.menuVisualPluginUi.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualPluginUi.Text = "VSTi Plugin UI(&U)";
             // 
             // menuVisualPluginUiVocaloid100
             // 
             this.menuVisualPluginUiVocaloid100.Name = "menuVisualPluginUiVocaloid100";
-            this.menuVisualPluginUiVocaloid100.Size = new System.Drawing.Size( 178, 22 );
+            this.menuVisualPluginUiVocaloid100.Size = new System.Drawing.Size( 159, 22 );
             this.menuVisualPluginUiVocaloid100.Text = "VOCALOID1 [1.0]";
             // 
             // menuVisualPluginUiVocaloid101
             // 
             this.menuVisualPluginUiVocaloid101.Name = "menuVisualPluginUiVocaloid101";
-            this.menuVisualPluginUiVocaloid101.Size = new System.Drawing.Size( 178, 22 );
+            this.menuVisualPluginUiVocaloid101.Size = new System.Drawing.Size( 159, 22 );
             this.menuVisualPluginUiVocaloid101.Text = "VOCALOID1 [1.1]";
             // 
             // menuVisualPluginUiVocaloid2
             // 
             this.menuVisualPluginUiVocaloid2.Name = "menuVisualPluginUiVocaloid2";
-            this.menuVisualPluginUiVocaloid2.Size = new System.Drawing.Size( 178, 22 );
+            this.menuVisualPluginUiVocaloid2.Size = new System.Drawing.Size( 159, 22 );
             this.menuVisualPluginUiVocaloid2.Text = "VOCALOID2";
             // 
             // menuVisualPluginUiAquesTone
             // 
             this.menuVisualPluginUiAquesTone.Name = "menuVisualPluginUiAquesTone";
-            this.menuVisualPluginUiAquesTone.Size = new System.Drawing.Size( 178, 22 );
+            this.menuVisualPluginUiAquesTone.Size = new System.Drawing.Size( 159, 22 );
             this.menuVisualPluginUiAquesTone.Text = "AquesTone(&A)";
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size( 234, 6 );
+            this.toolStripMenuItem1.Size = new System.Drawing.Size( 210, 6 );
             // 
             // menuVisualGridline
             // 
             this.menuVisualGridline.CheckOnClick = true;
             this.menuVisualGridline.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuVisualGridline.Name = "menuVisualGridline";
-            this.menuVisualGridline.Size = new System.Drawing.Size( 237, 22 );
+            this.menuVisualGridline.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualGridline.Text = "Grid Line(&G)";
             // 
             // toolStripMenuItem2
             // 
             this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size( 234, 6 );
+            this.toolStripMenuItem2.Size = new System.Drawing.Size( 210, 6 );
             // 
             // menuVisualStartMarker
             // 
             this.menuVisualStartMarker.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuVisualStartMarker.Name = "menuVisualStartMarker";
-            this.menuVisualStartMarker.Size = new System.Drawing.Size( 237, 22 );
+            this.menuVisualStartMarker.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualStartMarker.Text = "Start Marker(&S)";
             // 
             // menuVisualEndMarker
             // 
             this.menuVisualEndMarker.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuVisualEndMarker.Name = "menuVisualEndMarker";
-            this.menuVisualEndMarker.Size = new System.Drawing.Size( 237, 22 );
+            this.menuVisualEndMarker.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualEndMarker.Text = "End Marker(&E)";
             // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size( 234, 6 );
+            this.toolStripMenuItem3.Size = new System.Drawing.Size( 210, 6 );
             // 
             // menuVisualLyrics
             // 
@@ -16967,7 +16924,7 @@ namespace org.kbinani.cadencii {
             this.menuVisualLyrics.CheckState = System.Windows.Forms.CheckState.Checked;
             this.menuVisualLyrics.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuVisualLyrics.Name = "menuVisualLyrics";
-            this.menuVisualLyrics.Size = new System.Drawing.Size( 237, 22 );
+            this.menuVisualLyrics.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualLyrics.Text = "Lyric/Phoneme(&L)";
             // 
             // menuVisualNoteProperty
@@ -16977,14 +16934,14 @@ namespace org.kbinani.cadencii {
             this.menuVisualNoteProperty.CheckState = System.Windows.Forms.CheckState.Checked;
             this.menuVisualNoteProperty.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuVisualNoteProperty.Name = "menuVisualNoteProperty";
-            this.menuVisualNoteProperty.Size = new System.Drawing.Size( 237, 22 );
+            this.menuVisualNoteProperty.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualNoteProperty.Text = "Note Expression/Vibrato(&N)";
             // 
             // menuVisualPitchLine
             // 
             this.menuVisualPitchLine.CheckOnClick = true;
             this.menuVisualPitchLine.Name = "menuVisualPitchLine";
-            this.menuVisualPitchLine.Size = new System.Drawing.Size( 237, 22 );
+            this.menuVisualPitchLine.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualPitchLine.Text = "Pitch Line(&P)";
             // 
             // menuJob
@@ -16999,56 +16956,56 @@ namespace org.kbinani.cadencii {
             this.menuJobRewire,
             this.menuJobReloadVsti} );
             this.menuJob.Name = "menuJob";
-            this.menuJob.Size = new System.Drawing.Size( 54, 22 );
+            this.menuJob.Size = new System.Drawing.Size( 51, 20 );
             this.menuJob.Text = "Job(&J)";
             // 
             // menuJobNormalize
             // 
             this.menuJobNormalize.Name = "menuJobNormalize";
-            this.menuJobNormalize.Size = new System.Drawing.Size( 256, 22 );
+            this.menuJobNormalize.Size = new System.Drawing.Size( 223, 22 );
             this.menuJobNormalize.Text = "Normalize Notes(&N)";
             // 
             // menuJobInsertBar
             // 
             this.menuJobInsertBar.Name = "menuJobInsertBar";
-            this.menuJobInsertBar.Size = new System.Drawing.Size( 256, 22 );
+            this.menuJobInsertBar.Size = new System.Drawing.Size( 223, 22 );
             this.menuJobInsertBar.Text = "Insert Bars(&I)";
             // 
             // menuJobDeleteBar
             // 
             this.menuJobDeleteBar.Name = "menuJobDeleteBar";
-            this.menuJobDeleteBar.Size = new System.Drawing.Size( 256, 22 );
+            this.menuJobDeleteBar.Size = new System.Drawing.Size( 223, 22 );
             this.menuJobDeleteBar.Text = "Delete Bars(&D)";
             // 
             // menuJobRandomize
             // 
             this.menuJobRandomize.Name = "menuJobRandomize";
-            this.menuJobRandomize.Size = new System.Drawing.Size( 256, 22 );
+            this.menuJobRandomize.Size = new System.Drawing.Size( 223, 22 );
             this.menuJobRandomize.Text = "Randomize(&R)";
             // 
             // menuJobConnect
             // 
             this.menuJobConnect.Name = "menuJobConnect";
-            this.menuJobConnect.Size = new System.Drawing.Size( 256, 22 );
+            this.menuJobConnect.Size = new System.Drawing.Size( 223, 22 );
             this.menuJobConnect.Text = "Connect Notes(&C)";
             // 
             // menuJobLyric
             // 
             this.menuJobLyric.Name = "menuJobLyric";
-            this.menuJobLyric.Size = new System.Drawing.Size( 256, 22 );
+            this.menuJobLyric.Size = new System.Drawing.Size( 223, 22 );
             this.menuJobLyric.Text = "Insert Lyrics(&L)";
             // 
             // menuJobRewire
             // 
             this.menuJobRewire.Enabled = false;
             this.menuJobRewire.Name = "menuJobRewire";
-            this.menuJobRewire.Size = new System.Drawing.Size( 256, 22 );
+            this.menuJobRewire.Size = new System.Drawing.Size( 223, 22 );
             this.menuJobRewire.Text = "Import ReWire Host Tempo(&T)";
             // 
             // menuJobReloadVsti
             // 
             this.menuJobReloadVsti.Name = "menuJobReloadVsti";
-            this.menuJobReloadVsti.Size = new System.Drawing.Size( 256, 22 );
+            this.menuJobReloadVsti.Size = new System.Drawing.Size( 223, 22 );
             this.menuJobReloadVsti.Text = "Reload VSTi(&R)";
             this.menuJobReloadVsti.Visible = false;
             // 
@@ -17071,71 +17028,71 @@ namespace org.kbinani.cadencii {
             this.menuTrackBgm,
             this.menuTrackManager} );
             this.menuTrack.Name = "menuTrack";
-            this.menuTrack.Size = new System.Drawing.Size( 70, 22 );
+            this.menuTrack.Size = new System.Drawing.Size( 61, 20 );
             this.menuTrack.Text = "Track(&T)";
             // 
             // menuTrackOn
             // 
             this.menuTrackOn.Name = "menuTrackOn";
-            this.menuTrackOn.Size = new System.Drawing.Size( 219, 22 );
+            this.menuTrackOn.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackOn.Text = "Track On(&K)";
             // 
             // toolStripMenuItem21
             // 
             this.toolStripMenuItem21.Name = "toolStripMenuItem21";
-            this.toolStripMenuItem21.Size = new System.Drawing.Size( 216, 6 );
+            this.toolStripMenuItem21.Size = new System.Drawing.Size( 193, 6 );
             // 
             // menuTrackAdd
             // 
             this.menuTrackAdd.Name = "menuTrackAdd";
-            this.menuTrackAdd.Size = new System.Drawing.Size( 219, 22 );
+            this.menuTrackAdd.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackAdd.Text = "Add Track(&A)";
             // 
             // menuTrackCopy
             // 
             this.menuTrackCopy.Name = "menuTrackCopy";
-            this.menuTrackCopy.Size = new System.Drawing.Size( 219, 22 );
+            this.menuTrackCopy.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackCopy.Text = "Copy Track(&C)";
             // 
             // menuTrackChangeName
             // 
             this.menuTrackChangeName.Name = "menuTrackChangeName";
-            this.menuTrackChangeName.Size = new System.Drawing.Size( 219, 22 );
+            this.menuTrackChangeName.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackChangeName.Text = "Rename Track";
             // 
             // menuTrackDelete
             // 
             this.menuTrackDelete.Name = "menuTrackDelete";
-            this.menuTrackDelete.Size = new System.Drawing.Size( 219, 22 );
+            this.menuTrackDelete.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackDelete.Text = "Delete Track(&D)";
             // 
             // toolStripMenuItem22
             // 
             this.toolStripMenuItem22.Name = "toolStripMenuItem22";
-            this.toolStripMenuItem22.Size = new System.Drawing.Size( 216, 6 );
+            this.toolStripMenuItem22.Size = new System.Drawing.Size( 193, 6 );
             // 
             // menuTrackRenderCurrent
             // 
             this.menuTrackRenderCurrent.Name = "menuTrackRenderCurrent";
-            this.menuTrackRenderCurrent.Size = new System.Drawing.Size( 219, 22 );
+            this.menuTrackRenderCurrent.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackRenderCurrent.Text = "Render Current Track(&T)";
             // 
             // menuTrackRenderAll
             // 
             this.menuTrackRenderAll.Enabled = false;
             this.menuTrackRenderAll.Name = "menuTrackRenderAll";
-            this.menuTrackRenderAll.Size = new System.Drawing.Size( 219, 22 );
+            this.menuTrackRenderAll.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackRenderAll.Text = "Render All Tracks(&S)";
             // 
             // toolStripMenuItem23
             // 
             this.toolStripMenuItem23.Name = "toolStripMenuItem23";
-            this.toolStripMenuItem23.Size = new System.Drawing.Size( 216, 6 );
+            this.toolStripMenuItem23.Size = new System.Drawing.Size( 193, 6 );
             // 
             // menuTrackOverlay
             // 
             this.menuTrackOverlay.Name = "menuTrackOverlay";
-            this.menuTrackOverlay.Size = new System.Drawing.Size( 219, 22 );
+            this.menuTrackOverlay.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackOverlay.Text = "Overlay(&O)";
             // 
             // menuTrackRenderer
@@ -17148,60 +17105,60 @@ namespace org.kbinani.cadencii {
             this.menuTrackRendererVCNT,
             this.menuTrackRendererAquesTone} );
             this.menuTrackRenderer.Name = "menuTrackRenderer";
-            this.menuTrackRenderer.Size = new System.Drawing.Size( 219, 22 );
+            this.menuTrackRenderer.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackRenderer.Text = "Renderer(&R)";
             // 
             // menuTrackRendererVOCALOID100
             // 
             this.menuTrackRendererVOCALOID100.Name = "menuTrackRendererVOCALOID100";
-            this.menuTrackRendererVOCALOID100.Size = new System.Drawing.Size( 199, 22 );
+            this.menuTrackRendererVOCALOID100.Size = new System.Drawing.Size( 177, 22 );
             this.menuTrackRendererVOCALOID100.Text = "VOCALOID1 [1.0] (&1)";
             // 
             // menuTrackRendererVOCALOID101
             // 
             this.menuTrackRendererVOCALOID101.Name = "menuTrackRendererVOCALOID101";
-            this.menuTrackRendererVOCALOID101.Size = new System.Drawing.Size( 199, 22 );
+            this.menuTrackRendererVOCALOID101.Size = new System.Drawing.Size( 177, 22 );
             this.menuTrackRendererVOCALOID101.Text = "VOCALOID1 [1.1] (&2)";
             // 
             // menuTrackRendererVOCALOID2
             // 
             this.menuTrackRendererVOCALOID2.Name = "menuTrackRendererVOCALOID2";
-            this.menuTrackRendererVOCALOID2.Size = new System.Drawing.Size( 199, 22 );
+            this.menuTrackRendererVOCALOID2.Size = new System.Drawing.Size( 177, 22 );
             this.menuTrackRendererVOCALOID2.Text = "VOCALOID2(&3)";
             // 
             // menuTrackRendererUtau
             // 
             this.menuTrackRendererUtau.Name = "menuTrackRendererUtau";
-            this.menuTrackRendererUtau.Size = new System.Drawing.Size( 199, 22 );
+            this.menuTrackRendererUtau.Size = new System.Drawing.Size( 177, 22 );
             this.menuTrackRendererUtau.Text = "UTAU(&4)";
             // 
             // menuTrackRendererVCNT
             // 
             this.menuTrackRendererVCNT.Name = "menuTrackRendererVCNT";
-            this.menuTrackRendererVCNT.Size = new System.Drawing.Size( 199, 22 );
+            this.menuTrackRendererVCNT.Size = new System.Drawing.Size( 177, 22 );
             this.menuTrackRendererVCNT.Text = "Straight X UTAU(&5)";
             // 
             // menuTrackRendererAquesTone
             // 
             this.menuTrackRendererAquesTone.Name = "menuTrackRendererAquesTone";
-            this.menuTrackRendererAquesTone.Size = new System.Drawing.Size( 199, 22 );
+            this.menuTrackRendererAquesTone.Size = new System.Drawing.Size( 177, 22 );
             this.menuTrackRendererAquesTone.Text = "AquesTone(&6)";
             // 
             // toolStripMenuItem4
             // 
             this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size( 216, 6 );
+            this.toolStripMenuItem4.Size = new System.Drawing.Size( 193, 6 );
             // 
             // menuTrackBgm
             // 
             this.menuTrackBgm.Name = "menuTrackBgm";
-            this.menuTrackBgm.Size = new System.Drawing.Size( 219, 22 );
+            this.menuTrackBgm.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackBgm.Text = "BGM(&B)";
             // 
             // menuTrackManager
             // 
             this.menuTrackManager.Name = "menuTrackManager";
-            this.menuTrackManager.Size = new System.Drawing.Size( 219, 22 );
+            this.menuTrackManager.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackManager.Text = "Track Manager(&M)";
             // 
             // menuLyric
@@ -17212,31 +17169,31 @@ namespace org.kbinani.cadencii {
             this.menuLyricPhonemeTransformation,
             this.menuLyricDictionary} );
             this.menuLyric.Name = "menuLyric";
-            this.menuLyric.Size = new System.Drawing.Size( 70, 22 );
+            this.menuLyric.Size = new System.Drawing.Size( 62, 20 );
             this.menuLyric.Text = "Lyrics(&L)";
             // 
             // menuLyricExpressionProperty
             // 
             this.menuLyricExpressionProperty.Name = "menuLyricExpressionProperty";
-            this.menuLyricExpressionProperty.Size = new System.Drawing.Size( 241, 22 );
+            this.menuLyricExpressionProperty.Size = new System.Drawing.Size( 216, 22 );
             this.menuLyricExpressionProperty.Text = "Note Expression Property(&E)";
             // 
             // menuLyricVibratoProperty
             // 
             this.menuLyricVibratoProperty.Name = "menuLyricVibratoProperty";
-            this.menuLyricVibratoProperty.Size = new System.Drawing.Size( 241, 22 );
+            this.menuLyricVibratoProperty.Size = new System.Drawing.Size( 216, 22 );
             this.menuLyricVibratoProperty.Text = "Note Vibrato Property(&V)";
             // 
             // menuLyricPhonemeTransformation
             // 
             this.menuLyricPhonemeTransformation.Name = "menuLyricPhonemeTransformation";
-            this.menuLyricPhonemeTransformation.Size = new System.Drawing.Size( 241, 22 );
+            this.menuLyricPhonemeTransformation.Size = new System.Drawing.Size( 216, 22 );
             this.menuLyricPhonemeTransformation.Text = "Phoneme Transformation(&T)";
             // 
             // menuLyricDictionary
             // 
             this.menuLyricDictionary.Name = "menuLyricDictionary";
-            this.menuLyricDictionary.Size = new System.Drawing.Size( 241, 22 );
+            this.menuLyricDictionary.Size = new System.Drawing.Size( 216, 22 );
             this.menuLyricDictionary.Text = "User Word Dictionary(&C)";
             // 
             // menuScript
@@ -17244,13 +17201,13 @@ namespace org.kbinani.cadencii {
             this.menuScript.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
             this.menuScriptUpdate} );
             this.menuScript.Name = "menuScript";
-            this.menuScript.Size = new System.Drawing.Size( 72, 22 );
+            this.menuScript.Size = new System.Drawing.Size( 63, 20 );
             this.menuScript.Text = "Script(&C)";
             // 
             // menuScriptUpdate
             // 
             this.menuScriptUpdate.Name = "menuScriptUpdate";
-            this.menuScriptUpdate.Size = new System.Drawing.Size( 200, 22 );
+            this.menuScriptUpdate.Size = new System.Drawing.Size( 179, 22 );
             this.menuScriptUpdate.Text = "Update Script List(&U)";
             // 
             // menuSetting
@@ -17269,13 +17226,13 @@ namespace org.kbinani.cadencii {
             this.toolStripMenuItem8,
             this.menuSettingSingerProperty} );
             this.menuSetting.Name = "menuSetting";
-            this.menuSetting.Size = new System.Drawing.Size( 80, 22 );
+            this.menuSetting.Size = new System.Drawing.Size( 68, 20 );
             this.menuSetting.Text = "Setting(&S)";
             // 
             // menuSettingPreference
             // 
             this.menuSettingPreference.Name = "menuSettingPreference";
-            this.menuSettingPreference.Size = new System.Drawing.Size( 223, 22 );
+            this.menuSettingPreference.Size = new System.Drawing.Size( 200, 22 );
             this.menuSettingPreference.Text = "Preference(&P)";
             // 
             // menuSettingGameControler
@@ -17285,60 +17242,60 @@ namespace org.kbinani.cadencii {
             this.menuSettingGameControlerLoad,
             this.menuSettingGameControlerRemove} );
             this.menuSettingGameControler.Name = "menuSettingGameControler";
-            this.menuSettingGameControler.Size = new System.Drawing.Size( 223, 22 );
+            this.menuSettingGameControler.Size = new System.Drawing.Size( 200, 22 );
             this.menuSettingGameControler.Text = "Game Controler(&G)";
             // 
             // menuSettingGameControlerSetting
             // 
             this.menuSettingGameControlerSetting.Name = "menuSettingGameControlerSetting";
-            this.menuSettingGameControlerSetting.Size = new System.Drawing.Size( 142, 22 );
+            this.menuSettingGameControlerSetting.Size = new System.Drawing.Size( 127, 22 );
             this.menuSettingGameControlerSetting.Text = "Setting(&S)";
             // 
             // menuSettingGameControlerLoad
             // 
             this.menuSettingGameControlerLoad.Name = "menuSettingGameControlerLoad";
-            this.menuSettingGameControlerLoad.Size = new System.Drawing.Size( 142, 22 );
+            this.menuSettingGameControlerLoad.Size = new System.Drawing.Size( 127, 22 );
             this.menuSettingGameControlerLoad.Text = "Load(&L)";
             // 
             // menuSettingGameControlerRemove
             // 
             this.menuSettingGameControlerRemove.Name = "menuSettingGameControlerRemove";
-            this.menuSettingGameControlerRemove.Size = new System.Drawing.Size( 142, 22 );
+            this.menuSettingGameControlerRemove.Size = new System.Drawing.Size( 127, 22 );
             this.menuSettingGameControlerRemove.Text = "Remove(&R)";
             // 
             // menuSettingPaletteTool
             // 
             this.menuSettingPaletteTool.Name = "menuSettingPaletteTool";
-            this.menuSettingPaletteTool.Size = new System.Drawing.Size( 223, 22 );
+            this.menuSettingPaletteTool.Size = new System.Drawing.Size( 200, 22 );
             this.menuSettingPaletteTool.Text = "Palette Tool(&T)";
             // 
             // menuSettingShortcut
             // 
             this.menuSettingShortcut.Name = "menuSettingShortcut";
-            this.menuSettingShortcut.Size = new System.Drawing.Size( 223, 22 );
+            this.menuSettingShortcut.Size = new System.Drawing.Size( 200, 22 );
             this.menuSettingShortcut.Text = "Shortcut Key(&S)";
             // 
             // menuSettingUtauVoiceDB
             // 
             this.menuSettingUtauVoiceDB.Name = "menuSettingUtauVoiceDB";
-            this.menuSettingUtauVoiceDB.Size = new System.Drawing.Size( 223, 22 );
+            this.menuSettingUtauVoiceDB.Size = new System.Drawing.Size( 200, 22 );
             this.menuSettingUtauVoiceDB.Text = "UTAU Voice DB(&U)";
             // 
             // toolStripMenuItem6
             // 
             this.toolStripMenuItem6.Name = "toolStripMenuItem6";
-            this.toolStripMenuItem6.Size = new System.Drawing.Size( 220, 6 );
+            this.toolStripMenuItem6.Size = new System.Drawing.Size( 197, 6 );
             // 
             // menuSettingDefaultSingerStyle
             // 
             this.menuSettingDefaultSingerStyle.Name = "menuSettingDefaultSingerStyle";
-            this.menuSettingDefaultSingerStyle.Size = new System.Drawing.Size( 223, 22 );
+            this.menuSettingDefaultSingerStyle.Size = new System.Drawing.Size( 200, 22 );
             this.menuSettingDefaultSingerStyle.Text = "Singing Style Defaults(&D)";
             // 
             // toolStripMenuItem7
             // 
             this.toolStripMenuItem7.Name = "toolStripMenuItem7";
-            this.toolStripMenuItem7.Size = new System.Drawing.Size( 220, 6 );
+            this.toolStripMenuItem7.Size = new System.Drawing.Size( 197, 6 );
             // 
             // menuSettingPositionQuantize
             // 
@@ -17353,60 +17310,60 @@ namespace org.kbinani.cadencii {
             this.toolStripMenuItem9,
             this.menuSettingPositionQuantizeTriplet} );
             this.menuSettingPositionQuantize.Name = "menuSettingPositionQuantize";
-            this.menuSettingPositionQuantize.Size = new System.Drawing.Size( 223, 22 );
+            this.menuSettingPositionQuantize.Size = new System.Drawing.Size( 200, 22 );
             this.menuSettingPositionQuantize.Text = "Quantize(&Q)";
             // 
             // menuSettingPositionQuantize04
             // 
             this.menuSettingPositionQuantize04.Name = "menuSettingPositionQuantize04";
-            this.menuSettingPositionQuantize04.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingPositionQuantize04.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingPositionQuantize04.Text = "1/4";
             // 
             // menuSettingPositionQuantize08
             // 
             this.menuSettingPositionQuantize08.Name = "menuSettingPositionQuantize08";
-            this.menuSettingPositionQuantize08.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingPositionQuantize08.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingPositionQuantize08.Text = "1/8";
             // 
             // menuSettingPositionQuantize16
             // 
             this.menuSettingPositionQuantize16.Name = "menuSettingPositionQuantize16";
-            this.menuSettingPositionQuantize16.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingPositionQuantize16.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingPositionQuantize16.Text = "1/16";
             // 
             // menuSettingPositionQuantize32
             // 
             this.menuSettingPositionQuantize32.Name = "menuSettingPositionQuantize32";
-            this.menuSettingPositionQuantize32.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingPositionQuantize32.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingPositionQuantize32.Text = "1/32";
             // 
             // menuSettingPositionQuantize64
             // 
             this.menuSettingPositionQuantize64.Name = "menuSettingPositionQuantize64";
-            this.menuSettingPositionQuantize64.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingPositionQuantize64.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingPositionQuantize64.Text = "1/64";
             // 
             // menuSettingPositionQuantize128
             // 
             this.menuSettingPositionQuantize128.Name = "menuSettingPositionQuantize128";
-            this.menuSettingPositionQuantize128.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingPositionQuantize128.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingPositionQuantize128.Text = "1/128";
             // 
             // menuSettingPositionQuantizeOff
             // 
             this.menuSettingPositionQuantizeOff.Name = "menuSettingPositionQuantizeOff";
-            this.menuSettingPositionQuantizeOff.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingPositionQuantizeOff.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingPositionQuantizeOff.Text = "Off";
             // 
             // toolStripMenuItem9
             // 
             this.toolStripMenuItem9.Name = "toolStripMenuItem9";
-            this.toolStripMenuItem9.Size = new System.Drawing.Size( 110, 6 );
+            this.toolStripMenuItem9.Size = new System.Drawing.Size( 100, 6 );
             // 
             // menuSettingPositionQuantizeTriplet
             // 
             this.menuSettingPositionQuantizeTriplet.Name = "menuSettingPositionQuantizeTriplet";
-            this.menuSettingPositionQuantizeTriplet.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingPositionQuantizeTriplet.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingPositionQuantizeTriplet.Text = "Triplet";
             // 
             // menuSettingLengthQuantize
@@ -17422,72 +17379,72 @@ namespace org.kbinani.cadencii {
             this.toolStripSeparator1,
             this.menuSettingLengthQuantizeTriplet} );
             this.menuSettingLengthQuantize.Name = "menuSettingLengthQuantize";
-            this.menuSettingLengthQuantize.Size = new System.Drawing.Size( 223, 22 );
+            this.menuSettingLengthQuantize.Size = new System.Drawing.Size( 200, 22 );
             this.menuSettingLengthQuantize.Text = "Length(&L)";
             // 
             // menuSettingLengthQuantize04
             // 
             this.menuSettingLengthQuantize04.Name = "menuSettingLengthQuantize04";
-            this.menuSettingLengthQuantize04.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingLengthQuantize04.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingLengthQuantize04.Text = "1/4";
             // 
             // menuSettingLengthQuantize08
             // 
             this.menuSettingLengthQuantize08.Name = "menuSettingLengthQuantize08";
-            this.menuSettingLengthQuantize08.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingLengthQuantize08.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingLengthQuantize08.Text = "1/8";
             // 
             // menuSettingLengthQuantize16
             // 
             this.menuSettingLengthQuantize16.Name = "menuSettingLengthQuantize16";
-            this.menuSettingLengthQuantize16.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingLengthQuantize16.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingLengthQuantize16.Text = "1/16";
             // 
             // menuSettingLengthQuantize32
             // 
             this.menuSettingLengthQuantize32.Name = "menuSettingLengthQuantize32";
-            this.menuSettingLengthQuantize32.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingLengthQuantize32.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingLengthQuantize32.Text = "1/32";
             // 
             // menuSettingLengthQuantize64
             // 
             this.menuSettingLengthQuantize64.Name = "menuSettingLengthQuantize64";
-            this.menuSettingLengthQuantize64.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingLengthQuantize64.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingLengthQuantize64.Text = "1/64";
             // 
             // menuSettingLengthQuantize128
             // 
             this.menuSettingLengthQuantize128.Name = "menuSettingLengthQuantize128";
-            this.menuSettingLengthQuantize128.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingLengthQuantize128.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingLengthQuantize128.Text = "1/128";
             // 
             // menuSettingLengthQuantizeOff
             // 
             this.menuSettingLengthQuantizeOff.Name = "menuSettingLengthQuantizeOff";
-            this.menuSettingLengthQuantizeOff.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingLengthQuantizeOff.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingLengthQuantizeOff.Text = "Off";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size( 110, 6 );
+            this.toolStripSeparator1.Size = new System.Drawing.Size( 100, 6 );
             // 
             // menuSettingLengthQuantizeTriplet
             // 
             this.menuSettingLengthQuantizeTriplet.Name = "menuSettingLengthQuantizeTriplet";
-            this.menuSettingLengthQuantizeTriplet.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingLengthQuantizeTriplet.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingLengthQuantizeTriplet.Text = "Triplet";
             // 
             // toolStripMenuItem8
             // 
             this.toolStripMenuItem8.Name = "toolStripMenuItem8";
-            this.toolStripMenuItem8.Size = new System.Drawing.Size( 220, 6 );
+            this.toolStripMenuItem8.Size = new System.Drawing.Size( 197, 6 );
             // 
             // menuSettingSingerProperty
             // 
             this.menuSettingSingerProperty.Enabled = false;
             this.menuSettingSingerProperty.Name = "menuSettingSingerProperty";
-            this.menuSettingSingerProperty.Size = new System.Drawing.Size( 223, 22 );
+            this.menuSettingSingerProperty.Size = new System.Drawing.Size( 200, 22 );
             this.menuSettingSingerProperty.Text = "Singer Properties(&S)";
             // 
             // menuHelp
@@ -17497,13 +17454,13 @@ namespace org.kbinani.cadencii {
             this.menuHelpLog,
             this.menuHelpDebug} );
             this.menuHelp.Name = "menuHelp";
-            this.menuHelp.Size = new System.Drawing.Size( 65, 22 );
+            this.menuHelp.Size = new System.Drawing.Size( 56, 20 );
             this.menuHelp.Text = "Help(&H)";
             // 
             // menuHelpAbout
             // 
             this.menuHelpAbout.Name = "menuHelpAbout";
-            this.menuHelpAbout.Size = new System.Drawing.Size( 180, 22 );
+            this.menuHelpAbout.Size = new System.Drawing.Size( 164, 22 );
             this.menuHelpAbout.Text = "About Cadencii(&A)";
             // 
             // menuHelpLog
@@ -17512,26 +17469,26 @@ namespace org.kbinani.cadencii {
             this.menuHelpLogSwitch,
             this.menuHelpLogOpen} );
             this.menuHelpLog.Name = "menuHelpLog";
-            this.menuHelpLog.Size = new System.Drawing.Size( 180, 22 );
+            this.menuHelpLog.Size = new System.Drawing.Size( 164, 22 );
             this.menuHelpLog.Text = "Log(&L)";
             // 
             // menuHelpLogSwitch
             // 
             this.menuHelpLogSwitch.CheckOnClick = true;
             this.menuHelpLogSwitch.Name = "menuHelpLogSwitch";
-            this.menuHelpLogSwitch.Size = new System.Drawing.Size( 156, 22 );
+            this.menuHelpLogSwitch.Size = new System.Drawing.Size( 140, 22 );
             this.menuHelpLogSwitch.Text = "Enable Log(&L)";
             // 
             // menuHelpLogOpen
             // 
             this.menuHelpLogOpen.Name = "menuHelpLogOpen";
-            this.menuHelpLogOpen.Size = new System.Drawing.Size( 156, 22 );
+            this.menuHelpLogOpen.Size = new System.Drawing.Size( 140, 22 );
             this.menuHelpLogOpen.Text = "Open(&O)";
             // 
             // menuHelpDebug
             // 
             this.menuHelpDebug.Name = "menuHelpDebug";
-            this.menuHelpDebug.Size = new System.Drawing.Size( 180, 22 );
+            this.menuHelpDebug.Size = new System.Drawing.Size( 164, 22 );
             this.menuHelpDebug.Text = "Debug";
             this.menuHelpDebug.Visible = false;
             // 
@@ -17561,7 +17518,7 @@ namespace org.kbinani.cadencii {
             this.menuHiddenPlayFromStartMarker,
             this.menuHiddenFlipCurveOnPianorollMode} );
             this.menuHidden.Name = "menuHidden";
-            this.menuHidden.Size = new System.Drawing.Size( 91, 22 );
+            this.menuHidden.Size = new System.Drawing.Size( 79, 20 );
             this.menuHidden.Text = "MenuHidden";
             this.menuHidden.Visible = false;
             // 
@@ -17569,7 +17526,7 @@ namespace org.kbinani.cadencii {
             // 
             this.menuHiddenEditLyric.Name = "menuHiddenEditLyric";
             this.menuHiddenEditLyric.ShortcutKeys = System.Windows.Forms.Keys.F2;
-            this.menuHiddenEditLyric.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenEditLyric.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenEditLyric.Text = "Start Lyric Input";
             this.menuHiddenEditLyric.Visible = false;
             // 
@@ -17577,7 +17534,7 @@ namespace org.kbinani.cadencii {
             // 
             this.menuHiddenEditFlipToolPointerPencil.Name = "menuHiddenEditFlipToolPointerPencil";
             this.menuHiddenEditFlipToolPointerPencil.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
-            this.menuHiddenEditFlipToolPointerPencil.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenEditFlipToolPointerPencil.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenEditFlipToolPointerPencil.Text = "Change Tool Pointer / Pencil";
             this.menuHiddenEditFlipToolPointerPencil.Visible = false;
             // 
@@ -17585,7 +17542,7 @@ namespace org.kbinani.cadencii {
             // 
             this.menuHiddenEditFlipToolPointerEraser.Name = "menuHiddenEditFlipToolPointerEraser";
             this.menuHiddenEditFlipToolPointerEraser.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
-            this.menuHiddenEditFlipToolPointerEraser.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenEditFlipToolPointerEraser.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenEditFlipToolPointerEraser.Text = "Change Tool Pointer/ Eraser";
             this.menuHiddenEditFlipToolPointerEraser.Visible = false;
             // 
@@ -17594,7 +17551,7 @@ namespace org.kbinani.cadencii {
             this.menuHiddenVisualForwardParameter.Name = "menuHiddenVisualForwardParameter";
             this.menuHiddenVisualForwardParameter.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt)
                         | System.Windows.Forms.Keys.Next)));
-            this.menuHiddenVisualForwardParameter.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenVisualForwardParameter.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenVisualForwardParameter.Text = "Next Control Curve";
             this.menuHiddenVisualForwardParameter.Visible = false;
             // 
@@ -17603,7 +17560,7 @@ namespace org.kbinani.cadencii {
             this.menuHiddenVisualBackwardParameter.Name = "menuHiddenVisualBackwardParameter";
             this.menuHiddenVisualBackwardParameter.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Alt)
                         | System.Windows.Forms.Keys.PageUp)));
-            this.menuHiddenVisualBackwardParameter.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenVisualBackwardParameter.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenVisualBackwardParameter.Text = "Previous Control Curve";
             this.menuHiddenVisualBackwardParameter.Visible = false;
             // 
@@ -17611,7 +17568,7 @@ namespace org.kbinani.cadencii {
             // 
             this.menuHiddenTrackNext.Name = "menuHiddenTrackNext";
             this.menuHiddenTrackNext.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Next)));
-            this.menuHiddenTrackNext.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenTrackNext.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenTrackNext.Text = "Next Track";
             this.menuHiddenTrackNext.Visible = false;
             // 
@@ -17619,100 +17576,100 @@ namespace org.kbinani.cadencii {
             // 
             this.menuHiddenTrackBack.Name = "menuHiddenTrackBack";
             this.menuHiddenTrackBack.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.PageUp)));
-            this.menuHiddenTrackBack.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenTrackBack.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenTrackBack.Text = "Previous Track";
             this.menuHiddenTrackBack.Visible = false;
             // 
             // menuHiddenCopy
             // 
             this.menuHiddenCopy.Name = "menuHiddenCopy";
-            this.menuHiddenCopy.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenCopy.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenCopy.Text = "Copy";
             // 
             // menuHiddenPaste
             // 
             this.menuHiddenPaste.Name = "menuHiddenPaste";
-            this.menuHiddenPaste.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenPaste.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenPaste.Text = "Paste";
             // 
             // menuHiddenCut
             // 
             this.menuHiddenCut.Name = "menuHiddenCut";
-            this.menuHiddenCut.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenCut.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenCut.Text = "Cut";
             // 
             // menuHiddenSelectForward
             // 
             this.menuHiddenSelectForward.Name = "menuHiddenSelectForward";
             this.menuHiddenSelectForward.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.Right)));
-            this.menuHiddenSelectForward.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenSelectForward.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenSelectForward.Text = "Select Forward";
             // 
             // menuHiddenSelectBackward
             // 
             this.menuHiddenSelectBackward.Name = "menuHiddenSelectBackward";
             this.menuHiddenSelectBackward.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.Left)));
-            this.menuHiddenSelectBackward.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenSelectBackward.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenSelectBackward.Text = "Select Backward";
             // 
             // menuHiddenMoveUp
             // 
             this.menuHiddenMoveUp.Name = "menuHiddenMoveUp";
-            this.menuHiddenMoveUp.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenMoveUp.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenMoveUp.Text = "Move Up";
             // 
             // menuHiddenMoveDown
             // 
             this.menuHiddenMoveDown.Name = "menuHiddenMoveDown";
-            this.menuHiddenMoveDown.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenMoveDown.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenMoveDown.Text = "Move Down";
             // 
             // menuHiddenMoveLeft
             // 
             this.menuHiddenMoveLeft.Name = "menuHiddenMoveLeft";
-            this.menuHiddenMoveLeft.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenMoveLeft.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenMoveLeft.Text = "Move Left";
             // 
             // menuHiddenMoveRight
             // 
             this.menuHiddenMoveRight.Name = "menuHiddenMoveRight";
-            this.menuHiddenMoveRight.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenMoveRight.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenMoveRight.Text = "Move Right";
             // 
             // menuHiddenLengthen
             // 
             this.menuHiddenLengthen.Name = "menuHiddenLengthen";
-            this.menuHiddenLengthen.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenLengthen.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenLengthen.Text = "Lengthen";
             // 
             // menuHiddenShorten
             // 
             this.menuHiddenShorten.Name = "menuHiddenShorten";
-            this.menuHiddenShorten.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenShorten.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenShorten.Text = "Shorten";
             // 
             // menuHiddenGoToStartMarker
             // 
             this.menuHiddenGoToStartMarker.Name = "menuHiddenGoToStartMarker";
-            this.menuHiddenGoToStartMarker.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenGoToStartMarker.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenGoToStartMarker.Text = "GoTo Start Marker";
             // 
             // menuHiddenGoToEndMarker
             // 
             this.menuHiddenGoToEndMarker.Name = "menuHiddenGoToEndMarker";
-            this.menuHiddenGoToEndMarker.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenGoToEndMarker.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenGoToEndMarker.Text = "GoTo End Marker";
             // 
             // menuHiddenPlayFromStartMarker
             // 
             this.menuHiddenPlayFromStartMarker.Name = "menuHiddenPlayFromStartMarker";
-            this.menuHiddenPlayFromStartMarker.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenPlayFromStartMarker.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenPlayFromStartMarker.Text = "Play From Start Marker";
             // 
             // menuHiddenFlipCurveOnPianorollMode
             // 
             this.menuHiddenFlipCurveOnPianorollMode.Name = "menuHiddenFlipCurveOnPianorollMode";
-            this.menuHiddenFlipCurveOnPianorollMode.Size = new System.Drawing.Size( 304, 22 );
+            this.menuHiddenFlipCurveOnPianorollMode.Size = new System.Drawing.Size( 267, 22 );
             this.menuHiddenFlipCurveOnPianorollMode.Text = "Change pitch drawing mode";
             // 
             // cMenuPiano
@@ -17745,49 +17702,50 @@ namespace org.kbinani.cadencii {
             this.cMenuPianoExpressionProperty,
             this.cMenuPianoVibratoProperty} );
             this.cMenuPiano.Name = "cMenuPiano";
+            this.cMenuPiano.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.cMenuPiano.ShowCheckMargin = true;
             this.cMenuPiano.ShowImageMargin = false;
-            this.cMenuPiano.Size = new System.Drawing.Size( 242, 480 );
+            this.cMenuPiano.Size = new System.Drawing.Size( 217, 480 );
             // 
             // cMenuPianoPointer
             // 
             this.cMenuPianoPointer.Name = "cMenuPianoPointer";
-            this.cMenuPianoPointer.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoPointer.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoPointer.Text = "Arrow(&A)";
             // 
             // cMenuPianoPencil
             // 
             this.cMenuPianoPencil.Name = "cMenuPianoPencil";
-            this.cMenuPianoPencil.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoPencil.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoPencil.Text = "Pencil(&W)";
             // 
             // cMenuPianoEraser
             // 
             this.cMenuPianoEraser.Name = "cMenuPianoEraser";
-            this.cMenuPianoEraser.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoEraser.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoEraser.Text = "Eraser(&E)";
             // 
             // cMenuPianoPaletteTool
             // 
             this.cMenuPianoPaletteTool.Name = "cMenuPianoPaletteTool";
-            this.cMenuPianoPaletteTool.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoPaletteTool.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoPaletteTool.Text = "Palette Tool";
             // 
             // toolStripSeparator15
             // 
             this.toolStripSeparator15.Name = "toolStripSeparator15";
-            this.toolStripSeparator15.Size = new System.Drawing.Size( 238, 6 );
+            this.toolStripSeparator15.Size = new System.Drawing.Size( 213, 6 );
             // 
             // cMenuPianoCurve
             // 
             this.cMenuPianoCurve.Name = "cMenuPianoCurve";
-            this.cMenuPianoCurve.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoCurve.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoCurve.Text = "Curve(&V)";
             // 
             // toolStripMenuItem13
             // 
             this.toolStripMenuItem13.Name = "toolStripMenuItem13";
-            this.toolStripMenuItem13.Size = new System.Drawing.Size( 238, 6 );
+            this.toolStripMenuItem13.Size = new System.Drawing.Size( 213, 6 );
             // 
             // cMenuPianoFixed
             // 
@@ -17805,78 +17763,78 @@ namespace org.kbinani.cadencii {
             this.cMenuPianoFixedTriplet,
             this.cMenuPianoFixedDotted} );
             this.cMenuPianoFixed.Name = "cMenuPianoFixed";
-            this.cMenuPianoFixed.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoFixed.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoFixed.Text = "Note Fixed Length(&N)";
             // 
             // cMenuPianoFixed01
             // 
             this.cMenuPianoFixed01.Name = "cMenuPianoFixed01";
-            this.cMenuPianoFixed01.Size = new System.Drawing.Size( 141, 22 );
+            this.cMenuPianoFixed01.Size = new System.Drawing.Size( 128, 22 );
             this.cMenuPianoFixed01.Text = "1/ 1 [1920]";
             // 
             // cMenuPianoFixed02
             // 
             this.cMenuPianoFixed02.Name = "cMenuPianoFixed02";
-            this.cMenuPianoFixed02.Size = new System.Drawing.Size( 141, 22 );
+            this.cMenuPianoFixed02.Size = new System.Drawing.Size( 128, 22 );
             this.cMenuPianoFixed02.Text = "1/ 2 [960]";
             // 
             // cMenuPianoFixed04
             // 
             this.cMenuPianoFixed04.Name = "cMenuPianoFixed04";
-            this.cMenuPianoFixed04.Size = new System.Drawing.Size( 141, 22 );
+            this.cMenuPianoFixed04.Size = new System.Drawing.Size( 128, 22 );
             this.cMenuPianoFixed04.Text = "1/ 4 [480]";
             // 
             // cMenuPianoFixed08
             // 
             this.cMenuPianoFixed08.Name = "cMenuPianoFixed08";
-            this.cMenuPianoFixed08.Size = new System.Drawing.Size( 141, 22 );
+            this.cMenuPianoFixed08.Size = new System.Drawing.Size( 128, 22 );
             this.cMenuPianoFixed08.Text = "1/ 8 [240]";
             // 
             // cMenuPianoFixed16
             // 
             this.cMenuPianoFixed16.Name = "cMenuPianoFixed16";
-            this.cMenuPianoFixed16.Size = new System.Drawing.Size( 141, 22 );
+            this.cMenuPianoFixed16.Size = new System.Drawing.Size( 128, 22 );
             this.cMenuPianoFixed16.Text = "1/16 [120]";
             // 
             // cMenuPianoFixed32
             // 
             this.cMenuPianoFixed32.Name = "cMenuPianoFixed32";
-            this.cMenuPianoFixed32.Size = new System.Drawing.Size( 141, 22 );
+            this.cMenuPianoFixed32.Size = new System.Drawing.Size( 128, 22 );
             this.cMenuPianoFixed32.Text = "1/32 [60]";
             // 
             // cMenuPianoFixed64
             // 
             this.cMenuPianoFixed64.Name = "cMenuPianoFixed64";
-            this.cMenuPianoFixed64.Size = new System.Drawing.Size( 141, 22 );
+            this.cMenuPianoFixed64.Size = new System.Drawing.Size( 128, 22 );
             this.cMenuPianoFixed64.Text = "1/64 [30]";
             // 
             // cMenuPianoFixed128
             // 
             this.cMenuPianoFixed128.Name = "cMenuPianoFixed128";
-            this.cMenuPianoFixed128.Size = new System.Drawing.Size( 141, 22 );
+            this.cMenuPianoFixed128.Size = new System.Drawing.Size( 128, 22 );
             this.cMenuPianoFixed128.Text = "1/128[15]";
             // 
             // cMenuPianoFixedOff
             // 
             this.cMenuPianoFixedOff.Name = "cMenuPianoFixedOff";
-            this.cMenuPianoFixedOff.Size = new System.Drawing.Size( 141, 22 );
+            this.cMenuPianoFixedOff.Size = new System.Drawing.Size( 128, 22 );
             this.cMenuPianoFixedOff.Text = "オフ";
             // 
             // toolStripMenuItem18
             // 
             this.toolStripMenuItem18.Name = "toolStripMenuItem18";
-            this.toolStripMenuItem18.Size = new System.Drawing.Size( 138, 6 );
+            this.toolStripMenuItem18.Size = new System.Drawing.Size( 125, 6 );
             // 
             // cMenuPianoFixedTriplet
             // 
             this.cMenuPianoFixedTriplet.Name = "cMenuPianoFixedTriplet";
-            this.cMenuPianoFixedTriplet.Size = new System.Drawing.Size( 141, 22 );
+            this.cMenuPianoFixedTriplet.Size = new System.Drawing.Size( 128, 22 );
             this.cMenuPianoFixedTriplet.Text = "3連符";
             // 
             // cMenuPianoFixedDotted
             // 
             this.cMenuPianoFixedDotted.Name = "cMenuPianoFixedDotted";
-            this.cMenuPianoFixedDotted.Size = new System.Drawing.Size( 141, 22 );
+            this.cMenuPianoFixedDotted.Size = new System.Drawing.Size( 128, 22 );
             this.cMenuPianoFixedDotted.Text = "付点";
             // 
             // cMenuPianoQuantize
@@ -17892,60 +17850,60 @@ namespace org.kbinani.cadencii {
             this.toolStripMenuItem26,
             this.cMenuPianoQuantizeTriplet} );
             this.cMenuPianoQuantize.Name = "cMenuPianoQuantize";
-            this.cMenuPianoQuantize.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoQuantize.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoQuantize.Text = "Quantize(&Q)";
             // 
             // cMenuPianoQuantize04
             // 
             this.cMenuPianoQuantize04.Name = "cMenuPianoQuantize04";
-            this.cMenuPianoQuantize04.Size = new System.Drawing.Size( 109, 22 );
+            this.cMenuPianoQuantize04.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoQuantize04.Text = "1/4";
             // 
             // cMenuPianoQuantize08
             // 
             this.cMenuPianoQuantize08.Name = "cMenuPianoQuantize08";
-            this.cMenuPianoQuantize08.Size = new System.Drawing.Size( 109, 22 );
+            this.cMenuPianoQuantize08.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoQuantize08.Text = "1/8";
             // 
             // cMenuPianoQuantize16
             // 
             this.cMenuPianoQuantize16.Name = "cMenuPianoQuantize16";
-            this.cMenuPianoQuantize16.Size = new System.Drawing.Size( 109, 22 );
+            this.cMenuPianoQuantize16.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoQuantize16.Text = "1/16";
             // 
             // cMenuPianoQuantize32
             // 
             this.cMenuPianoQuantize32.Name = "cMenuPianoQuantize32";
-            this.cMenuPianoQuantize32.Size = new System.Drawing.Size( 109, 22 );
+            this.cMenuPianoQuantize32.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoQuantize32.Text = "1/32";
             // 
             // cMenuPianoQuantize64
             // 
             this.cMenuPianoQuantize64.Name = "cMenuPianoQuantize64";
-            this.cMenuPianoQuantize64.Size = new System.Drawing.Size( 109, 22 );
+            this.cMenuPianoQuantize64.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoQuantize64.Text = "1/64";
             // 
             // cMenuPianoQuantize128
             // 
             this.cMenuPianoQuantize128.Name = "cMenuPianoQuantize128";
-            this.cMenuPianoQuantize128.Size = new System.Drawing.Size( 109, 22 );
+            this.cMenuPianoQuantize128.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoQuantize128.Text = "1/128";
             // 
             // cMenuPianoQuantizeOff
             // 
             this.cMenuPianoQuantizeOff.Name = "cMenuPianoQuantizeOff";
-            this.cMenuPianoQuantizeOff.Size = new System.Drawing.Size( 109, 22 );
+            this.cMenuPianoQuantizeOff.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoQuantizeOff.Text = "オフ";
             // 
             // toolStripMenuItem26
             // 
             this.toolStripMenuItem26.Name = "toolStripMenuItem26";
-            this.toolStripMenuItem26.Size = new System.Drawing.Size( 106, 6 );
+            this.toolStripMenuItem26.Size = new System.Drawing.Size( 97, 6 );
             // 
             // cMenuPianoQuantizeTriplet
             // 
             this.cMenuPianoQuantizeTriplet.Name = "cMenuPianoQuantizeTriplet";
-            this.cMenuPianoQuantizeTriplet.Size = new System.Drawing.Size( 109, 22 );
+            this.cMenuPianoQuantizeTriplet.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoQuantizeTriplet.Text = "3連符";
             // 
             // cMenuPianoLength
@@ -17961,152 +17919,152 @@ namespace org.kbinani.cadencii {
             this.toolStripMenuItem32,
             this.cMenuPianoLengthTriplet} );
             this.cMenuPianoLength.Name = "cMenuPianoLength";
-            this.cMenuPianoLength.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoLength.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoLength.Text = "Length(&L)";
             // 
             // cMenuPianoLength04
             // 
             this.cMenuPianoLength04.Name = "cMenuPianoLength04";
-            this.cMenuPianoLength04.Size = new System.Drawing.Size( 109, 22 );
+            this.cMenuPianoLength04.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoLength04.Text = "1/4";
             // 
             // cMenuPianoLength08
             // 
             this.cMenuPianoLength08.Name = "cMenuPianoLength08";
-            this.cMenuPianoLength08.Size = new System.Drawing.Size( 109, 22 );
+            this.cMenuPianoLength08.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoLength08.Text = "1/8";
             // 
             // cMenuPianoLength16
             // 
             this.cMenuPianoLength16.Name = "cMenuPianoLength16";
-            this.cMenuPianoLength16.Size = new System.Drawing.Size( 109, 22 );
+            this.cMenuPianoLength16.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoLength16.Text = "1/16";
             // 
             // cMenuPianoLength32
             // 
             this.cMenuPianoLength32.Name = "cMenuPianoLength32";
-            this.cMenuPianoLength32.Size = new System.Drawing.Size( 109, 22 );
+            this.cMenuPianoLength32.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoLength32.Text = "1/32";
             // 
             // cMenuPianoLength64
             // 
             this.cMenuPianoLength64.Name = "cMenuPianoLength64";
-            this.cMenuPianoLength64.Size = new System.Drawing.Size( 109, 22 );
+            this.cMenuPianoLength64.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoLength64.Text = "1/64";
             // 
             // cMenuPianoLength128
             // 
             this.cMenuPianoLength128.Name = "cMenuPianoLength128";
-            this.cMenuPianoLength128.Size = new System.Drawing.Size( 109, 22 );
+            this.cMenuPianoLength128.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoLength128.Text = "1/128";
             // 
             // cMenuPianoLengthOff
             // 
             this.cMenuPianoLengthOff.Name = "cMenuPianoLengthOff";
-            this.cMenuPianoLengthOff.Size = new System.Drawing.Size( 109, 22 );
+            this.cMenuPianoLengthOff.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoLengthOff.Text = "オフ";
             // 
             // toolStripMenuItem32
             // 
             this.toolStripMenuItem32.Name = "toolStripMenuItem32";
-            this.toolStripMenuItem32.Size = new System.Drawing.Size( 106, 6 );
+            this.toolStripMenuItem32.Size = new System.Drawing.Size( 97, 6 );
             // 
             // cMenuPianoLengthTriplet
             // 
             this.cMenuPianoLengthTriplet.Name = "cMenuPianoLengthTriplet";
-            this.cMenuPianoLengthTriplet.Size = new System.Drawing.Size( 109, 22 );
+            this.cMenuPianoLengthTriplet.Size = new System.Drawing.Size( 100, 22 );
             this.cMenuPianoLengthTriplet.Text = "3連符";
             // 
             // cMenuPianoGrid
             // 
             this.cMenuPianoGrid.Name = "cMenuPianoGrid";
-            this.cMenuPianoGrid.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoGrid.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoGrid.Text = "Show/Hide Grid Line(&S)";
             // 
             // toolStripMenuItem14
             // 
             this.toolStripMenuItem14.Name = "toolStripMenuItem14";
-            this.toolStripMenuItem14.Size = new System.Drawing.Size( 238, 6 );
+            this.toolStripMenuItem14.Size = new System.Drawing.Size( 213, 6 );
             // 
             // cMenuPianoUndo
             // 
             this.cMenuPianoUndo.Name = "cMenuPianoUndo";
-            this.cMenuPianoUndo.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoUndo.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoUndo.Text = "Undo(&U)";
             // 
             // cMenuPianoRedo
             // 
             this.cMenuPianoRedo.Name = "cMenuPianoRedo";
-            this.cMenuPianoRedo.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoRedo.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoRedo.Text = "Redo(&R)";
             // 
             // toolStripMenuItem15
             // 
             this.toolStripMenuItem15.Name = "toolStripMenuItem15";
-            this.toolStripMenuItem15.Size = new System.Drawing.Size( 238, 6 );
+            this.toolStripMenuItem15.Size = new System.Drawing.Size( 213, 6 );
             // 
             // cMenuPianoCut
             // 
             this.cMenuPianoCut.Name = "cMenuPianoCut";
-            this.cMenuPianoCut.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoCut.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoCut.Text = "Cut(&T)";
             // 
             // cMenuPianoCopy
             // 
             this.cMenuPianoCopy.Name = "cMenuPianoCopy";
-            this.cMenuPianoCopy.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoCopy.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoCopy.Text = "Copy(&C)";
             // 
             // cMenuPianoPaste
             // 
             this.cMenuPianoPaste.Name = "cMenuPianoPaste";
-            this.cMenuPianoPaste.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoPaste.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoPaste.Text = "Paste(&P)";
             // 
             // cMenuPianoDelete
             // 
             this.cMenuPianoDelete.Name = "cMenuPianoDelete";
-            this.cMenuPianoDelete.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoDelete.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoDelete.Text = "Delete(&D)";
             // 
             // toolStripMenuItem16
             // 
             this.toolStripMenuItem16.Name = "toolStripMenuItem16";
-            this.toolStripMenuItem16.Size = new System.Drawing.Size( 238, 6 );
+            this.toolStripMenuItem16.Size = new System.Drawing.Size( 213, 6 );
             // 
             // cMenuPianoSelectAll
             // 
             this.cMenuPianoSelectAll.Name = "cMenuPianoSelectAll";
-            this.cMenuPianoSelectAll.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoSelectAll.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoSelectAll.Text = "Select All(&A)";
             // 
             // cMenuPianoSelectAllEvents
             // 
             this.cMenuPianoSelectAllEvents.Name = "cMenuPianoSelectAllEvents";
-            this.cMenuPianoSelectAllEvents.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoSelectAllEvents.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoSelectAllEvents.Text = "Select All Events(&E)";
             // 
             // toolStripMenuItem17
             // 
             this.toolStripMenuItem17.Name = "toolStripMenuItem17";
-            this.toolStripMenuItem17.Size = new System.Drawing.Size( 238, 6 );
+            this.toolStripMenuItem17.Size = new System.Drawing.Size( 213, 6 );
             // 
             // cMenuPianoImportLyric
             // 
             this.cMenuPianoImportLyric.Name = "cMenuPianoImportLyric";
-            this.cMenuPianoImportLyric.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoImportLyric.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoImportLyric.Text = "Insert Lyrics(&L)";
             // 
             // cMenuPianoExpressionProperty
             // 
             this.cMenuPianoExpressionProperty.Name = "cMenuPianoExpressionProperty";
-            this.cMenuPianoExpressionProperty.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoExpressionProperty.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoExpressionProperty.Text = "Note Expression Property(&P)";
             // 
             // cMenuPianoVibratoProperty
             // 
             this.cMenuPianoVibratoProperty.Name = "cMenuPianoVibratoProperty";
-            this.cMenuPianoVibratoProperty.Size = new System.Drawing.Size( 241, 22 );
+            this.cMenuPianoVibratoProperty.Size = new System.Drawing.Size( 216, 22 );
             this.cMenuPianoVibratoProperty.Text = "Note Vibrato Property";
             // 
             // cMenuTrackTab
@@ -18125,69 +18083,72 @@ namespace org.kbinani.cadencii {
             this.cMenuTrackTabOverlay,
             this.cMenuTrackTabRenderer} );
             this.cMenuTrackTab.Name = "cMenuTrackTab";
-            this.cMenuTrackTab.Size = new System.Drawing.Size( 220, 220 );
+            this.cMenuTrackTab.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+            this.cMenuTrackTab.ShowCheckMargin = true;
+            this.cMenuTrackTab.ShowImageMargin = false;
+            this.cMenuTrackTab.Size = new System.Drawing.Size( 197, 220 );
             // 
             // cMenuTrackTabTrackOn
             // 
             this.cMenuTrackTabTrackOn.Name = "cMenuTrackTabTrackOn";
-            this.cMenuTrackTabTrackOn.Size = new System.Drawing.Size( 219, 22 );
+            this.cMenuTrackTabTrackOn.Size = new System.Drawing.Size( 196, 22 );
             this.cMenuTrackTabTrackOn.Text = "Track On(&K)";
             // 
             // toolStripMenuItem24
             // 
             this.toolStripMenuItem24.Name = "toolStripMenuItem24";
-            this.toolStripMenuItem24.Size = new System.Drawing.Size( 216, 6 );
+            this.toolStripMenuItem24.Size = new System.Drawing.Size( 193, 6 );
             // 
             // cMenuTrackTabAdd
             // 
             this.cMenuTrackTabAdd.Name = "cMenuTrackTabAdd";
-            this.cMenuTrackTabAdd.Size = new System.Drawing.Size( 219, 22 );
+            this.cMenuTrackTabAdd.Size = new System.Drawing.Size( 196, 22 );
             this.cMenuTrackTabAdd.Text = "Add Track(&A)";
             // 
             // cMenuTrackTabCopy
             // 
             this.cMenuTrackTabCopy.Name = "cMenuTrackTabCopy";
-            this.cMenuTrackTabCopy.Size = new System.Drawing.Size( 219, 22 );
+            this.cMenuTrackTabCopy.Size = new System.Drawing.Size( 196, 22 );
             this.cMenuTrackTabCopy.Text = "Copy Track(&C)";
             // 
             // cMenuTrackTabChangeName
             // 
             this.cMenuTrackTabChangeName.Name = "cMenuTrackTabChangeName";
-            this.cMenuTrackTabChangeName.Size = new System.Drawing.Size( 219, 22 );
+            this.cMenuTrackTabChangeName.Size = new System.Drawing.Size( 196, 22 );
             this.cMenuTrackTabChangeName.Text = "Rename Track";
             // 
             // cMenuTrackTabDelete
             // 
             this.cMenuTrackTabDelete.Name = "cMenuTrackTabDelete";
-            this.cMenuTrackTabDelete.Size = new System.Drawing.Size( 219, 22 );
+            this.cMenuTrackTabDelete.Size = new System.Drawing.Size( 196, 22 );
             this.cMenuTrackTabDelete.Text = "Delete Track(&D)";
             // 
             // toolStripMenuItem25
             // 
             this.toolStripMenuItem25.Name = "toolStripMenuItem25";
-            this.toolStripMenuItem25.Size = new System.Drawing.Size( 216, 6 );
+            this.toolStripMenuItem25.Size = new System.Drawing.Size( 193, 6 );
             // 
             // cMenuTrackTabRenderCurrent
             // 
             this.cMenuTrackTabRenderCurrent.Name = "cMenuTrackTabRenderCurrent";
-            this.cMenuTrackTabRenderCurrent.Size = new System.Drawing.Size( 219, 22 );
+            this.cMenuTrackTabRenderCurrent.Size = new System.Drawing.Size( 196, 22 );
             this.cMenuTrackTabRenderCurrent.Text = "Render Current Track(&T)";
             // 
             // cMenuTrackTabRenderAll
             // 
             this.cMenuTrackTabRenderAll.Name = "cMenuTrackTabRenderAll";
-            this.cMenuTrackTabRenderAll.Size = new System.Drawing.Size( 219, 22 );
+            this.cMenuTrackTabRenderAll.Size = new System.Drawing.Size( 196, 22 );
             this.cMenuTrackTabRenderAll.Text = "Render All Tracks(&S)";
             // 
             // toolStripMenuItem27
             // 
             this.toolStripMenuItem27.Name = "toolStripMenuItem27";
-            this.toolStripMenuItem27.Size = new System.Drawing.Size( 216, 6 );
+            this.toolStripMenuItem27.Size = new System.Drawing.Size( 193, 6 );
             // 
             // cMenuTrackTabOverlay
             // 
             this.cMenuTrackTabOverlay.Name = "cMenuTrackTabOverlay";
-            this.cMenuTrackTabOverlay.Size = new System.Drawing.Size( 219, 22 );
+            this.cMenuTrackTabOverlay.Size = new System.Drawing.Size( 196, 22 );
             this.cMenuTrackTabOverlay.Text = "Overlay(&O)";
             // 
             // cMenuTrackTabRenderer
@@ -18200,43 +18161,43 @@ namespace org.kbinani.cadencii {
             this.cMenuTrackTabRendererStraight,
             this.cMenuTrackTabRendererAquesTone} );
             this.cMenuTrackTabRenderer.Name = "cMenuTrackTabRenderer";
-            this.cMenuTrackTabRenderer.Size = new System.Drawing.Size( 219, 22 );
+            this.cMenuTrackTabRenderer.Size = new System.Drawing.Size( 196, 22 );
             this.cMenuTrackTabRenderer.Text = "Renderer(&R)";
             // 
             // cMenuTrackTabRendererVOCALOID100
             // 
             this.cMenuTrackTabRendererVOCALOID100.Name = "cMenuTrackTabRendererVOCALOID100";
-            this.cMenuTrackTabRendererVOCALOID100.Size = new System.Drawing.Size( 199, 22 );
+            this.cMenuTrackTabRendererVOCALOID100.Size = new System.Drawing.Size( 177, 22 );
             this.cMenuTrackTabRendererVOCALOID100.Text = "VOCALOID1 [1.0] (&1)";
             // 
             // cMenuTrackTabRendererVOCALOID101
             // 
             this.cMenuTrackTabRendererVOCALOID101.Name = "cMenuTrackTabRendererVOCALOID101";
-            this.cMenuTrackTabRendererVOCALOID101.Size = new System.Drawing.Size( 199, 22 );
+            this.cMenuTrackTabRendererVOCALOID101.Size = new System.Drawing.Size( 177, 22 );
             this.cMenuTrackTabRendererVOCALOID101.Text = "VOCALOID1 [1.1] (&2)";
             // 
             // cMenuTrackTabRendererVOCALOID2
             // 
             this.cMenuTrackTabRendererVOCALOID2.Name = "cMenuTrackTabRendererVOCALOID2";
-            this.cMenuTrackTabRendererVOCALOID2.Size = new System.Drawing.Size( 199, 22 );
+            this.cMenuTrackTabRendererVOCALOID2.Size = new System.Drawing.Size( 177, 22 );
             this.cMenuTrackTabRendererVOCALOID2.Text = "VOCALOID2(&3)";
             // 
             // cMenuTrackTabRendererUtau
             // 
             this.cMenuTrackTabRendererUtau.Name = "cMenuTrackTabRendererUtau";
-            this.cMenuTrackTabRendererUtau.Size = new System.Drawing.Size( 199, 22 );
+            this.cMenuTrackTabRendererUtau.Size = new System.Drawing.Size( 177, 22 );
             this.cMenuTrackTabRendererUtau.Text = "UTAU(&4)";
             // 
             // cMenuTrackTabRendererStraight
             // 
             this.cMenuTrackTabRendererStraight.Name = "cMenuTrackTabRendererStraight";
-            this.cMenuTrackTabRendererStraight.Size = new System.Drawing.Size( 199, 22 );
+            this.cMenuTrackTabRendererStraight.Size = new System.Drawing.Size( 177, 22 );
             this.cMenuTrackTabRendererStraight.Text = "Straight X UTAU(&5) ";
             // 
             // cMenuTrackTabRendererAquesTone
             // 
             this.cMenuTrackTabRendererAquesTone.Name = "cMenuTrackTabRendererAquesTone";
-            this.cMenuTrackTabRendererAquesTone.Size = new System.Drawing.Size( 199, 22 );
+            this.cMenuTrackTabRendererAquesTone.Size = new System.Drawing.Size( 177, 22 );
             this.cMenuTrackTabRendererAquesTone.Text = "AquesTone(&6)";
             // 
             // cMenuTrackSelector
@@ -18261,110 +18222,113 @@ namespace org.kbinani.cadencii {
             this.toolStripMenuItem31,
             this.cMenuTrackSelectorSelectAll} );
             this.cMenuTrackSelector.Name = "cMenuTrackSelector";
-            this.cMenuTrackSelector.Size = new System.Drawing.Size( 206, 336 );
+            this.cMenuTrackSelector.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+            this.cMenuTrackSelector.ShowCheckMargin = true;
+            this.cMenuTrackSelector.ShowImageMargin = false;
+            this.cMenuTrackSelector.Size = new System.Drawing.Size( 186, 358 );
             // 
             // cMenuTrackSelectorPointer
             // 
             this.cMenuTrackSelectorPointer.Name = "cMenuTrackSelectorPointer";
-            this.cMenuTrackSelectorPointer.Size = new System.Drawing.Size( 205, 22 );
+            this.cMenuTrackSelectorPointer.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorPointer.Text = "Arrow(&A)";
             // 
             // cMenuTrackSelectorPencil
             // 
             this.cMenuTrackSelectorPencil.Name = "cMenuTrackSelectorPencil";
-            this.cMenuTrackSelectorPencil.Size = new System.Drawing.Size( 205, 22 );
+            this.cMenuTrackSelectorPencil.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorPencil.Text = "Pencil(&W)";
             // 
             // cMenuTrackSelectorLine
             // 
             this.cMenuTrackSelectorLine.Name = "cMenuTrackSelectorLine";
-            this.cMenuTrackSelectorLine.Size = new System.Drawing.Size( 205, 22 );
+            this.cMenuTrackSelectorLine.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorLine.Text = "Line(&L)";
             // 
             // cMenuTrackSelectorEraser
             // 
             this.cMenuTrackSelectorEraser.Name = "cMenuTrackSelectorEraser";
-            this.cMenuTrackSelectorEraser.Size = new System.Drawing.Size( 205, 22 );
+            this.cMenuTrackSelectorEraser.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorEraser.Text = "Eraser(&E)";
             // 
             // cMenuTrackSelectorPaletteTool
             // 
             this.cMenuTrackSelectorPaletteTool.Name = "cMenuTrackSelectorPaletteTool";
-            this.cMenuTrackSelectorPaletteTool.Size = new System.Drawing.Size( 205, 22 );
+            this.cMenuTrackSelectorPaletteTool.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorPaletteTool.Text = "Palette Tool";
             // 
             // toolStripSeparator14
             // 
             this.toolStripSeparator14.Name = "toolStripSeparator14";
-            this.toolStripSeparator14.Size = new System.Drawing.Size( 202, 6 );
+            this.toolStripSeparator14.Size = new System.Drawing.Size( 182, 6 );
             // 
             // cMenuTrackSelectorCurve
             // 
             this.cMenuTrackSelectorCurve.Name = "cMenuTrackSelectorCurve";
-            this.cMenuTrackSelectorCurve.Size = new System.Drawing.Size( 205, 22 );
+            this.cMenuTrackSelectorCurve.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorCurve.Text = "Curve(&V)";
             // 
             // toolStripMenuItem28
             // 
             this.toolStripMenuItem28.Name = "toolStripMenuItem28";
-            this.toolStripMenuItem28.Size = new System.Drawing.Size( 202, 6 );
+            this.toolStripMenuItem28.Size = new System.Drawing.Size( 182, 6 );
             // 
             // cMenuTrackSelectorUndo
             // 
             this.cMenuTrackSelectorUndo.Name = "cMenuTrackSelectorUndo";
-            this.cMenuTrackSelectorUndo.Size = new System.Drawing.Size( 205, 22 );
+            this.cMenuTrackSelectorUndo.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorUndo.Text = "Undo(&U)";
             // 
             // cMenuTrackSelectorRedo
             // 
             this.cMenuTrackSelectorRedo.Name = "cMenuTrackSelectorRedo";
-            this.cMenuTrackSelectorRedo.Size = new System.Drawing.Size( 205, 22 );
+            this.cMenuTrackSelectorRedo.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorRedo.Text = "Redo(&R)";
             // 
             // toolStripMenuItem29
             // 
             this.toolStripMenuItem29.Name = "toolStripMenuItem29";
-            this.toolStripMenuItem29.Size = new System.Drawing.Size( 202, 6 );
+            this.toolStripMenuItem29.Size = new System.Drawing.Size( 182, 6 );
             // 
             // cMenuTrackSelectorCut
             // 
             this.cMenuTrackSelectorCut.Name = "cMenuTrackSelectorCut";
-            this.cMenuTrackSelectorCut.Size = new System.Drawing.Size( 205, 22 );
+            this.cMenuTrackSelectorCut.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorCut.Text = "Cut(&T)";
             // 
             // cMenuTrackSelectorCopy
             // 
             this.cMenuTrackSelectorCopy.Name = "cMenuTrackSelectorCopy";
-            this.cMenuTrackSelectorCopy.Size = new System.Drawing.Size( 205, 22 );
+            this.cMenuTrackSelectorCopy.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorCopy.Text = "Copy(&C)";
             // 
             // cMenuTrackSelectorPaste
             // 
             this.cMenuTrackSelectorPaste.Name = "cMenuTrackSelectorPaste";
-            this.cMenuTrackSelectorPaste.Size = new System.Drawing.Size( 205, 22 );
+            this.cMenuTrackSelectorPaste.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorPaste.Text = "Paste(&P)";
             // 
             // cMenuTrackSelectorDelete
             // 
             this.cMenuTrackSelectorDelete.Name = "cMenuTrackSelectorDelete";
-            this.cMenuTrackSelectorDelete.Size = new System.Drawing.Size( 205, 22 );
+            this.cMenuTrackSelectorDelete.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorDelete.Text = "Delete(&D)";
             // 
             // cMenuTrackSelectorDeleteBezier
             // 
             this.cMenuTrackSelectorDeleteBezier.Name = "cMenuTrackSelectorDeleteBezier";
-            this.cMenuTrackSelectorDeleteBezier.Size = new System.Drawing.Size( 205, 22 );
+            this.cMenuTrackSelectorDeleteBezier.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorDeleteBezier.Text = "Delete Bezier Point(&B)";
             // 
             // toolStripMenuItem31
             // 
             this.toolStripMenuItem31.Name = "toolStripMenuItem31";
-            this.toolStripMenuItem31.Size = new System.Drawing.Size( 202, 6 );
+            this.toolStripMenuItem31.Size = new System.Drawing.Size( 182, 6 );
             // 
             // cMenuTrackSelectorSelectAll
             // 
             this.cMenuTrackSelectorSelectAll.Name = "cMenuTrackSelectorSelectAll";
-            this.cMenuTrackSelectorSelectAll.Size = new System.Drawing.Size( 205, 22 );
+            this.cMenuTrackSelectorSelectAll.Size = new System.Drawing.Size( 185, 22 );
             this.cMenuTrackSelectorSelectAll.Text = "Select All Events(&E)";
             // 
             // trackBar
@@ -18452,19 +18416,19 @@ namespace org.kbinani.cadencii {
             this.toolStripBottom.Location = new System.Drawing.Point( 15, 0 );
             this.toolStripBottom.Name = "toolStripBottom";
             this.toolStripBottom.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.toolStripBottom.Size = new System.Drawing.Size( 292, 25 );
+            this.toolStripBottom.Size = new System.Drawing.Size( 248, 25 );
             this.toolStripBottom.TabIndex = 22;
             // 
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size( 101, 20 );
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size( 85, 20 );
             this.toolStripStatusLabel1.Text = "Game Controler";
             // 
             // stripLblGameCtrlMode
             // 
             this.stripLblGameCtrlMode.Name = "stripLblGameCtrlMode";
-            this.stripLblGameCtrlMode.Size = new System.Drawing.Size( 57, 20 );
+            this.stripLblGameCtrlMode.Size = new System.Drawing.Size( 49, 20 );
             this.stripLblGameCtrlMode.Text = "Disabled";
             this.stripLblGameCtrlMode.ToolTipText = "Game Controler";
             // 
@@ -18476,13 +18440,13 @@ namespace org.kbinani.cadencii {
             // toolStripStatusLabel2
             // 
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size( 53, 20 );
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size( 41, 20 );
             this.toolStripStatusLabel2.Text = "MIDI In";
             // 
             // stripLblMidiIn
             // 
             this.stripLblMidiIn.Name = "stripLblMidiIn";
-            this.stripLblMidiIn.Size = new System.Drawing.Size( 57, 20 );
+            this.stripLblMidiIn.Size = new System.Drawing.Size( 49, 20 );
             this.stripLblMidiIn.Text = "Disabled";
             this.stripLblMidiIn.ToolTipText = "Midi In Device";
             // 
@@ -18809,44 +18773,10 @@ namespace org.kbinani.cadencii {
             this.panel1.Size = new System.Drawing.Size( 421, 279 );
             this.panel1.TabIndex = 24;
             // 
-            // panelOverview
-            // 
-            this.panelOverview.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelOverview.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(106)))), ((int)(((byte)(108)))), ((int)(((byte)(108)))) );
-            this.panelOverview.Location = new System.Drawing.Point( 0, 1 );
-            this.panelOverview.Margin = new System.Windows.Forms.Padding( 0 );
-            this.panelOverview.Name = "panelOverview";
-            this.panelOverview.Size = new System.Drawing.Size( 700, 45 );
-            this.panelOverview.TabIndex = 19;
-            this.panelOverview.TabStop = false;
-            // 
-            // pictPianoRoll
-            // 
-            this.pictPianoRoll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictPianoRoll.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))) );
-            this.pictPianoRoll.Location = new System.Drawing.Point( 0, 94 );
-            this.pictPianoRoll.Margin = new System.Windows.Forms.Padding( 0 );
-            this.pictPianoRoll.Name = "pictPianoRoll";
-            this.pictPianoRoll.Size = new System.Drawing.Size( 405, 169 );
-            this.pictPianoRoll.TabIndex = 12;
-            this.pictPianoRoll.TabStop = false;
-            // 
-            // hScroll
-            // 
-            this.hScroll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.hScroll.Location = new System.Drawing.Point( 65, 263 );
-            this.hScroll.Name = "hScroll";
-            this.hScroll.Size = new System.Drawing.Size( 257, 16 );
-            this.hScroll.TabIndex = 16;
-            // 
             // rebar
             // 
             this.rebar.Dock = System.Windows.Forms.DockStyle.Top;
-            this.rebar.Location = new System.Drawing.Point( 0, 26 );
+            this.rebar.Location = new System.Drawing.Point( 0, 24 );
             this.rebar.Name = "rebar";
             this.rebar.Size = new System.Drawing.Size( 955, 28 );
             this.rebar.TabIndex = 19;
@@ -18963,7 +18893,7 @@ namespace org.kbinani.cadencii {
             this.toolBarPosition.Location = new System.Drawing.Point( 11, 32 );
             this.toolBarPosition.Name = "toolBarPosition";
             this.toolBarPosition.ShowToolTips = true;
-            this.toolBarPosition.Size = new System.Drawing.Size( 944, 40 );
+            this.toolBarPosition.Size = new System.Drawing.Size( 944, 26 );
             this.toolBarPosition.TabIndex = 25;
             this.toolBarPosition.TextAlign = System.Windows.Forms.ToolBarTextAlign.Right;
             this.toolBarPosition.Wrappable = false;
@@ -19035,7 +18965,7 @@ namespace org.kbinani.cadencii {
             this.toolBarMeasure.Location = new System.Drawing.Point( 11, 62 );
             this.toolBarMeasure.Name = "toolBarMeasure";
             this.toolBarMeasure.ShowToolTips = true;
-            this.toolBarMeasure.Size = new System.Drawing.Size( 944, 40 );
+            this.toolBarMeasure.Size = new System.Drawing.Size( 944, 26 );
             this.toolBarMeasure.TabIndex = 25;
             this.toolBarMeasure.TextAlign = System.Windows.Forms.ToolBarTextAlign.Right;
             this.toolBarMeasure.Wrappable = false;
@@ -19083,7 +19013,7 @@ namespace org.kbinani.cadencii {
             this.toolBarTool.Location = new System.Drawing.Point( 11, 92 );
             this.toolBarTool.Name = "toolBarTool";
             this.toolBarTool.ShowToolTips = true;
-            this.toolBarTool.Size = new System.Drawing.Size( 944, 40 );
+            this.toolBarTool.Size = new System.Drawing.Size( 944, 26 );
             this.toolBarTool.TabIndex = 25;
             this.toolBarTool.TextAlign = System.Windows.Forms.ToolBarTextAlign.Right;
             this.toolBarTool.Wrappable = false;
@@ -19144,13 +19074,13 @@ namespace org.kbinani.cadencii {
             this.toolStripContainer1.ContentPanel.Controls.Add( this.panel1 );
             this.toolStripContainer1.ContentPanel.Controls.Add( this.panel2 );
             this.toolStripContainer1.ContentPanel.Controls.Add( this.splitContainerProperty );
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size( 955, 588 );
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size( 955, 590 );
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer1.LeftToolStripPanelVisible = false;
-            this.toolStripContainer1.Location = new System.Drawing.Point( 0, 54 );
+            this.toolStripContainer1.Location = new System.Drawing.Point( 0, 52 );
             this.toolStripContainer1.Name = "toolStripContainer1";
             this.toolStripContainer1.RightToolStripPanelVisible = false;
-            this.toolStripContainer1.Size = new System.Drawing.Size( 955, 635 );
+            this.toolStripContainer1.Size = new System.Drawing.Size( 955, 637 );
             this.toolStripContainer1.TabIndex = 26;
             this.toolStripContainer1.Text = "toolStripContainer1";
             this.toolStripContainer1.TopToolStripPanelVisible = false;
@@ -19171,25 +19101,39 @@ namespace org.kbinani.cadencii {
             this.statusLabel.Name = "statusLabel";
             this.statusLabel.Size = new System.Drawing.Size( 0, 17 );
             // 
-            // contextMenuStrip1
+            // panelOverview
             // 
-            this.contextMenuStrip1.Items.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem30,
-            this.toolStripMenuItem33} );
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size( 201, 48 );
+            this.panelOverview.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelOverview.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(106)))), ((int)(((byte)(108)))), ((int)(((byte)(108)))) );
+            this.panelOverview.Location = new System.Drawing.Point( 0, 1 );
+            this.panelOverview.Margin = new System.Windows.Forms.Padding( 0 );
+            this.panelOverview.Name = "panelOverview";
+            this.panelOverview.Size = new System.Drawing.Size( 700, 45 );
+            this.panelOverview.TabIndex = 19;
+            this.panelOverview.TabStop = false;
             // 
-            // toolStripMenuItem30
+            // pictPianoRoll
             // 
-            this.toolStripMenuItem30.Name = "toolStripMenuItem30";
-            this.toolStripMenuItem30.Size = new System.Drawing.Size( 200, 22 );
-            this.toolStripMenuItem30.Text = "toolStripMenuItem30";
+            this.pictPianoRoll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictPianoRoll.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))) );
+            this.pictPianoRoll.Location = new System.Drawing.Point( 0, 94 );
+            this.pictPianoRoll.Margin = new System.Windows.Forms.Padding( 0 );
+            this.pictPianoRoll.Name = "pictPianoRoll";
+            this.pictPianoRoll.Size = new System.Drawing.Size( 405, 169 );
+            this.pictPianoRoll.TabIndex = 12;
+            this.pictPianoRoll.TabStop = false;
             // 
-            // toolStripMenuItem33
+            // hScroll
             // 
-            this.toolStripMenuItem33.Name = "toolStripMenuItem33";
-            this.toolStripMenuItem33.Size = new System.Drawing.Size( 200, 22 );
-            this.toolStripMenuItem33.Text = "toolStripMenuItem33";
+            this.hScroll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.hScroll.Location = new System.Drawing.Point( 65, 263 );
+            this.hScroll.Name = "hScroll";
+            this.hScroll.Size = new System.Drawing.Size( 257, 16 );
+            this.hScroll.TabIndex = 16;
             // 
             // FormMain
             // 
@@ -19221,8 +19165,6 @@ namespace org.kbinani.cadencii {
             this.toolStripBottom.PerformLayout();
             this.splitContainerProperty.ResumeLayout( false );
             this.panel1.ResumeLayout( false );
-            ((System.ComponentModel.ISupportInitialize)(this.panelOverview)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).EndInit();
             this.toolStripContainer1.BottomToolStripPanel.ResumeLayout( false );
             this.toolStripContainer1.BottomToolStripPanel.PerformLayout();
             this.toolStripContainer1.ContentPanel.ResumeLayout( false );
@@ -19230,7 +19172,8 @@ namespace org.kbinani.cadencii {
             this.toolStripContainer1.PerformLayout();
             this.statusStrip.ResumeLayout( false );
             this.statusStrip.PerformLayout();
-            this.contextMenuStrip1.ResumeLayout( false );
+            ((System.ComponentModel.ISupportInitialize)(this.panelOverview)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).EndInit();
             this.ResumeLayout( false );
             this.PerformLayout();
 
@@ -19584,9 +19527,6 @@ namespace org.kbinani.cadencii {
         private System.Windows.Forms.ToolStripContainer toolStripContainer1;
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.ToolStripStatusLabel statusLabel;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem30;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem33;
         private System.Windows.Forms.ImageList imageListMenu;
 
 #endif

@@ -68,7 +68,7 @@ namespace org.kbinani.cadencii {
         }
 
         private void registerEventHandlers() {
-            menuClose.clickEvent.add( new BEventHandler( this, "menuClose_Click" ) );
+            menuClose.Click += new EventHandler( menuClose_Click );
         }
 
         private void setResources() {

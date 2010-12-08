@@ -2,7 +2,7 @@ CP=@CP@
 RM=@RM@
 MKDIR=@MKDIR@
 TARGET=@TARGET@
-MCS_OPT=-warn:0 --stacktrace -v
+MCS_OPT=-warn:0
 PLAY_SOUND_DLL=@PLAY_SOUND_DLL@
 JROOT=./build/java/org/kbinani
 PPCS2JAVA_OPT=-DJAVA -DJAVA_1_5 -DDEBUG -DCLIPBOARD_AS_TEXT -encoding "UTF-8" -s -4 -c -e -l pp_cs2java.log
@@ -179,7 +179,7 @@ $(TARGET)/org.kbinani.vsq.dll: $(TARGET)/org.kbinani.dll ./org.kbinani.vsq/*.cs
 	gmcs -recurse:./org.kbinani.vsq/*.cs -target:library -define:MONO -out:$(TARGET)/org.kbinani.vsq.dll -r:System.Windows.Forms,System.Drawing,$(TARGET)/org.kbinani.dll  -codepage:utf8 $(MCS_OPT)
 
 $(TARGET)/org.kbinani.windows.forms.dll: $(TARGET)/org.kbinani.dll ./org.kbinani.windows.forms/*.cs
-	gmcs -recurse:./org.kbinani.windows.forms/*.cs -target:library -define:MONO -out:$(TARGET)/org.kbinani.windows.forms.dll -r:System.Windows.Forms,System.Drawing,$(TARGET)/org.kbinani.dll  -codepage:utf8 $(MCS_OPT)
+	gmcs -recurse:./org.kbinani.windows.forms/*.cs -target:library -define:MONO -out:$(TARGET)/org.kbinani.windows.forms.dll -r:System.Windows.Forms,System.Drawing,System,$(TARGET)/org.kbinani.dll  -codepage:utf8 $(MCS_OPT)
 
 $(TARGET)/org.kbinani.componentmodel.dll: $(TARGET)/org.kbinani.dll ./org.kbinani.componentmodel/*.cs
 	gmcs -recurse:./org.kbinani.componentmodel/*.cs -target:library -define:MONO -out:$(TARGET)/org.kbinani.componentmodel.dll -r:System.Windows.Forms,System.Drawing,$(TARGET)/org.kbinani.dll  -codepage:utf8 $(MCS_OPT)

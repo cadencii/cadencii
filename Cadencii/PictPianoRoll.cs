@@ -132,17 +132,6 @@ namespace org.kbinani.cadencii {
         private PolylineDrawer mCommonPolylineDrawer = null;
 
 #if !JAVA
-        #region event impl PreviewKeyDown
-        // root implf of PreviewKeyDown is in BButton
-        public BEvent<BPreviewKeyDownEventHandler> previewKeyDownEvent = new BEvent<BPreviewKeyDownEventHandler>();
-        protected override void OnPreviewKeyDown( System.Windows.Forms.PreviewKeyDownEventArgs e ) {
-            base.OnPreviewKeyDown( e );
-            previewKeyDownEvent.raise( this, e );
-        }
-        #endregion
-#endif
-
-#if !JAVA
         protected override void OnMouseDown( MouseEventArgs e ) {
             base.OnMouseDown( e );
             this.Focus();

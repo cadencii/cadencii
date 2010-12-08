@@ -13,7 +13,8 @@
 */
 #if JAVA
 package org.kbinani.vsq;
-
+#elif __cplusplus
+namespace org { namespace kbinani { namespace vsq {
 #else
 namespace org.kbinani.vsq{
 #endif
@@ -21,7 +22,7 @@ namespace org.kbinani.vsq{
     /// <summary>
     /// VOCALOID1における、ダイナミクスモードを表す定数を格納するためのクラスです。
     /// </summary>
-    public class DynamicsMode{
+    public class DynamicsMode {
         /// <summary>
         /// デフォルトのダイナミクスモードです。DYNカーブが非表示になるモードです。
         /// </summary>
@@ -33,8 +34,11 @@ namespace org.kbinani.vsq{
 
         private DynamicsMode() {
         }
-    }
+    };
 
-#if !JAVA
+#if JAVA
+#elif __cplusplus
+} } }
+#else
 }
 #endif

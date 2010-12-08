@@ -532,7 +532,13 @@ namespace org.kbinani.cadencii {
         /// PositionQuantize, PositionQuantizeTriplet, LengthQuantize, LengthQuantizeTripletの描くプロパティのいずれかが
         /// 変更された時発生します
         /// </summary>
+#if JAVA
         public static BEvent<BEventHandler> quantizeModeChangedEvent = new BEvent<BEventHandler>();
+#elif QT_VERSION
+        public: signals: void quantizeModeChanged( QObject sender, QObject e );
+#else
+        public static event EventHandler QuantizeModeChanged;
+#endif
 
         /// <summary>
         /// コンストラクタ．起動したOSによって動作を変える場合がある
@@ -839,7 +845,7 @@ namespace org.kbinani.cadencii {
             if ( m_position_quantize != value ) {
                 m_position_quantize = value;
                 try {
-                    quantizeModeChangedEvent.raise( typeof( EditorConfig ), new BEventArgs() );
+                    invokeQuantizeModeChangedEvent();
                 } catch ( Exception ex ) {
                     Logger.write( typeof( EditorConfig ) + ".getPositionQuantize; ex=" + ex + "\n" );
                     PortUtil.stderr.println( "EditorConfig#setPositionQuantize; ex=" + ex );
@@ -867,7 +873,7 @@ namespace org.kbinani.cadencii {
             if ( m_position_quantize_triplet != value ) {
                 m_position_quantize_triplet = value;
                 try {
-                    quantizeModeChangedEvent.raise( typeof( EditorConfig ), new BEventArgs() );
+                    invokeQuantizeModeChangedEvent();
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "EditorConfig#setPositionQuantizeTriplet; ex=" + ex );
                     Logger.write( typeof( EditorConfig ) + ".setPositionQuantizeTriplet; ex=" + ex + "\n" );
@@ -895,7 +901,7 @@ namespace org.kbinani.cadencii {
             if ( m_length_quantize != value ) {
                 m_length_quantize = value;
                 try {
-                    quantizeModeChangedEvent.raise( typeof( EditorConfig ), new BEventArgs() );
+                    invokeQuantizeModeChangedEvent();
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "EditorConfig#setLengthQuantize; ex=" + ex );
                     Logger.write( typeof( EditorConfig ) + ".setLengthQuantize; ex=" + ex + "\n" );
@@ -922,12 +928,27 @@ namespace org.kbinani.cadencii {
             if ( m_length_quantize_triplet != value ) {
                 m_length_quantize_triplet = value;
                 try {
-                    quantizeModeChangedEvent.raise( typeof( EditorConfig ), new BEventArgs() );
+                    invokeQuantizeModeChangedEvent();
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "EditorConfig#setLengthQuantizeTriplet; ex=" + ex );
                     Logger.write( typeof( EditorConfig ) + ".setLengthQuantizeTriplet; ex=" + ex + "\n" );
                 }
             }
+        }
+
+        /// <summary>
+        /// QuantizeModeChangedイベントを発行します
+        /// </summary>
+        private void invokeQuantizeModeChangedEvent() {
+#if JAVA
+            quantizeModeChangedEvent.raise( EditorConfig.class, new BEventArgs() );
+#elif QT_VERSION
+            quantizeModeChanged( null, null );
+#else
+            if ( QuantizeModeChanged != null ) {
+                QuantizeModeChanged.Invoke( typeof( EditorConfig ), new EventArgs() );
+            }
+#endif
         }
 
 #if !JAVA

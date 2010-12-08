@@ -17,61 +17,6 @@
 namespace org.kbinani.windows.forms {
 
     public class BSlider : System.Windows.Forms.TrackBar {
-        // root impl of ValueChanged event
-        #region event impl ValueChanged
-        // root impl of ValueChanged event is in BSlider
-        public BEvent<BEventHandler> valueChangedEvent = new BEvent<BEventHandler>();
-        protected override void OnValueChanged( System.EventArgs e ) {
-            base.OnValueChanged( e );
-            valueChangedEvent.raise( this, e );
-        }
-        #endregion
-
-        #region event impl MouseMove
-        // root impl of MouseMove event is in BButton
-        public BEvent<BEventHandler> mouseMoveEvent = new BEvent<BEventHandler>();
-        protected override void OnMouseMove( System.Windows.Forms.MouseEventArgs mevent ) {
-            base.OnMouseMove( mevent );
-            mouseMoveEvent.raise( this, mevent );
-        }
-        #endregion
-
-        #region event impl MouseDown
-        // root impl of MouseDown event is in BButton
-        public BEvent<BEventHandler> mouseDownEvent = new BEvent<BEventHandler>();
-        protected override void OnMouseDown( System.Windows.Forms.MouseEventArgs mevent ) {
-            base.OnMouseDown( mevent );
-            mouseDownEvent.raise( this, mevent );
-        }
-        #endregion
-
-        #region event impl MouseUp
-        // root impl of MouseUp event is in BButton
-        public BEvent<BEventHandler> mouseUpEvent = new BEvent<BEventHandler>();
-        protected override void OnMouseUp( System.Windows.Forms.MouseEventArgs mevent ) {
-            base.OnMouseUp( mevent );
-            mouseUpEvent.raise( this, mevent );
-        }
-        #endregion
-
-        #region event impl MouseEnter
-        // root impl of MouseEnter event is in BButton
-        public BEvent<BEventHandler> mouseEnterEvent = new BEvent<BEventHandler>();
-        protected override void OnMouseEnter( System.EventArgs e ) {
-            base.OnMouseEnter( e );
-            mouseEnterEvent.raise( this, e );
-        }
-        #endregion
-
-        #region event impl Enter
-        // root impl of Enter event is in BButton
-        public BEvent<BEventHandler> enterEvent = new BEvent<BEventHandler>();
-        protected override void OnEnter( System.EventArgs e ) {
-            base.OnEnter( e );
-            enterEvent.raise( this, e );
-        }
-        #endregion
-
         public int getValue() {
             return base.Value;
         }

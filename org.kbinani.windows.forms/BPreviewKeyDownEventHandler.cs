@@ -13,21 +13,4 @@
  */
 #if JAVA
 //INCLUDE ../BuildJavaUI/src/org/kbinani/windows/forms/BPreviewKeyDownEventHandler.java
-#else
-using System;
-using System.Windows.Forms;
-
-namespace org.kbinani.windows.forms {
-
-    public class BPreviewKeyDownEventHandler : BEventHandler {
-        public BPreviewKeyDownEventHandler( Object sender, String method_name )
-            : base( sender, method_name, typeof( void ), typeof( Object ), typeof( PreviewKeyDownEventArgs ) ) {
-        }
-
-        public BPreviewKeyDownEventHandler( Type sender, String method_name )
-            : base( sender, method_name, typeof( void ), typeof( Object ), typeof( PreviewKeyDownEventArgs ) ) {
-        }
-    }
-
-}
 #endif

@@ -23,16 +23,6 @@ using org.kbinani.javax.swing;
 namespace org.kbinani.windows.forms {
 
     public class BPopupMenu : System.Windows.Forms.ContextMenuStrip, MenuElement {
-        // root impl of Opening event
-        #region event impl Opening
-        // root impl of Opening event is in BPopupMenu
-        public BEvent<BEventHandler> openingEvent = new BEvent<BEventHandler>();
-        protected override void OnOpening( System.ComponentModel.CancelEventArgs e ) {
-            base.OnOpening( e );
-            openingEvent.raise( this, e );
-        }
-        #endregion
-
         public BPopupMenu( System.ComponentModel.IContainer container )
             : base( container ) {
         }

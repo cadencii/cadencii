@@ -213,21 +213,21 @@ namespace org.kbinani.cadencii {
         }
 
         private void registerEventHandlers() {
-            txtBendLength.textChangedEvent.add( new BEventHandler( this, "txtBendLength_TextChanged" ) );
-            txtBendDepth.textChangedEvent.add( new BEventHandler( this, "txtBendDepth_TextChanged" ) );
-            trackBendLength.valueChangedEvent.add( new BEventHandler( this, "trackBendLength_Scroll" ) );
-            trackBendDepth.valueChangedEvent.add( new BEventHandler( this, "trackBendDepth_Scroll" ) );
-            txtAccent.textChangedEvent.add( new BEventHandler( this, "txtAccent_TextChanged" ) );
-            txtDecay.textChangedEvent.add( new BEventHandler( this, "txtDecay_TextChanged" ) );
-            trackAccent.valueChangedEvent.add( new BEventHandler( this, "trackAccent_Scroll" ) );
-            trackDecay.valueChangedEvent.add( new BEventHandler( this, "trackDecay_Scroll" ) );
-            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
-            comboTemplate.selectedIndexChangedEvent.add( new BEventHandler( this, "comboBox1_SelectedIndexChanged" ) );
-            txtDepth.textChangedEvent.add( new BEventHandler( this, "txtDepth_TextChanged" ) );
-            txtDuration.textChangedEvent.add( new BEventHandler( this, "txtDuration_TextChanged" ) );
-            trackDepth.valueChangedEvent.add( new BEventHandler( this, "trackDepth_Scroll" ) );
-            trackDuration.valueChangedEvent.add( new BEventHandler( this, "trackDuration_Scroll" ) );
-            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
+            txtBendLength.TextChanged += new EventHandler( txtBendLength_TextChanged );
+            txtBendDepth.TextChanged += new EventHandler( txtBendDepth_TextChanged );
+            trackBendLength.ValueChanged += new EventHandler( trackBendLength_Scroll );
+            trackBendDepth.ValueChanged += new EventHandler( trackBendDepth_Scroll );
+            txtAccent.TextChanged += new EventHandler( txtAccent_TextChanged );
+            txtDecay.TextChanged += new EventHandler( txtDecay_TextChanged );
+            trackAccent.ValueChanged += new EventHandler( trackAccent_Scroll );
+            trackDecay.ValueChanged += new EventHandler( trackDecay_Scroll );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            comboTemplate.SelectedIndexChanged += new EventHandler( comboBox1_SelectedIndexChanged );
+            txtDepth.TextChanged += new EventHandler( txtDepth_TextChanged );
+            txtDuration.TextChanged += new EventHandler( txtDuration_TextChanged );
+            trackDepth.ValueChanged += new EventHandler( trackDepth_Scroll );
+            trackDuration.ValueChanged += new EventHandler( trackDuration_Scroll );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
         private void setResources() {

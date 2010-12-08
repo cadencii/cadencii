@@ -22,24 +22,6 @@ using System;
 namespace org.kbinani.windows.forms {
 
     public class BToolStripButton : System.Windows.Forms.ToolStripButton {
-        #region event impl Click
-        // root impl of Click event is in BButton
-        public BEvent<BEventHandler> clickEvent = new BEvent<BEventHandler>();
-        protected override void OnClick( System.EventArgs e ) {
-            base.OnClick( e );
-            clickEvent.raise( this, e );
-        }
-        #endregion
-
-        #region event impl CheckedChanged
-        // root impl of CheckedChanged event is in BCheckBox
-        public BEvent<BEventHandler> checkedChangedEvent = new BEvent<BEventHandler>();
-        protected override void OnCheckedChanged( System.EventArgs e ) {
-            base.OnCheckedChanged( e );
-            checkedChangedEvent.raise( this, e );
-        }
-        #endregion
-        
         private object tag = null;
 
         public object getTag() {

@@ -161,10 +161,10 @@ namespace org.kbinani.cadencii {
 
         #region helper methods
         private void registerEventHandlers() {
-            loadEvent.add( new BEventHandler( this, "FormRealtimeConfig_Load" ) );
-            timer.tickEvent.add( new BEventHandler( this, "timer_Tick" ) );
-            btnStart.clickEvent.add( new BEventHandler( this, "btnStart_Click" ) );
-            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
+            Load += new EventHandler( FormRealtimeConfig_Load );
+            timer.Tick += new EventHandler( timer_Tick );
+            btnStart.Click += new EventHandler( btnStart_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
         private void setResources() {

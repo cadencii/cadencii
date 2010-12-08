@@ -395,12 +395,12 @@ namespace org.kbinani.cadencii {
         }
 
         private void registerEventHandlers() {
-            mouseDownEvent.add( new BMouseEventHandler( this, "handleMouseDown" ) );
-            mouseUpEvent.add( new BMouseEventHandler( this, "handleMouseUp" ) );
-            mouseMoveEvent.add( new BMouseEventHandler( this, "handleMouseMove" ) );
-            mouseDoubleClickEvent.add( new BMouseEventHandler( this, "handleMouseDoubleClick" ) );
-            mouseLeaveEvent.add( new BEventHandler( this, "handleMouseLeave" ) );
-            resizeEvent.add( new BEventHandler( this, "handleResize" ) );
+            MouseDown += new System.Windows.Forms.MouseEventHandler( handleMouseDown );
+            MouseUp += new System.Windows.Forms.MouseEventHandler( handleMouseUp );
+            MouseMove += new System.Windows.Forms.MouseEventHandler( handleMouseMove );
+            MouseDoubleClick += new System.Windows.Forms.MouseEventHandler( handleMouseDoubleClick );
+            MouseLeave += new EventHandler( handleMouseLeave );
+            Resize += new EventHandler( handleResize );
         }
 
         public void handleResize( Object sender, EventArgs e ) {
@@ -680,6 +680,9 @@ namespace org.kbinani.cadencii {
 
         public void draw( Graphics2D g, int width, int height ) {
             if ( mMainForm == null ) {
+                return;
+            }
+            if ( AppManager.mDrawObjects == null ) {
                 return;
             }
 

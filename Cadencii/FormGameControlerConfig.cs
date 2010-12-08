@@ -168,11 +168,11 @@ namespace org.kbinani.cadencii {
         }
 
         private void registerEventHandlers() {
-            timer.tickEvent.add( new BEventHandler( this, "timer_Tick" ) );
-            btnSkip.clickEvent.add( new BEventHandler( this, "btnSkip_Click" ) );
-            btnReset.clickEvent.add( new BEventHandler( this, "btnReset_Click" ) );
-            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
-            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
+            timer.Tick += new EventHandler( timer_Tick );
+            btnSkip.Click += new EventHandler( btnSkip_Click );
+            btnReset.Click += new EventHandler( btnReset_Click );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
         private void setResources() {

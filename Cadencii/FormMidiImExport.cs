@@ -220,17 +220,17 @@ namespace org.kbinani.cadencii {
         }
 
         private void registerEventHandlers() {
-            btnCheckAll.clickEvent.add( new BEventHandler( this, "btnCheckAll_Click" ) );
-            btnUncheckAll.clickEvent.add( new BEventHandler( this, "btnUnckeckAll_Click" ) );
-            chkNote.checkedChangedEvent.add( new BEventHandler( this, "chkNote_CheckedChanged" ) );
-            chkMetaText.clickEvent.add( new BEventHandler( this, "chkMetaText_Click" ) );
-            chkExportVocaloidNrpn.checkedChangedEvent.add( new BEventHandler( this, "chkExportVocaloidNrpn_CheckedChanged" ) );
-            chkExportVocaloidNrpn.checkedChangedEvent.add( new BEventHandler( this, "chkExportVocaloidNrpn_CheckedChanged" ) );
-            formClosingEvent.add( new BFormClosingEventHandler( this, "FormMidiImExport_FormClosing" ) );
-            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
-            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
-            radioGateTime.checkedChangedEvent.add( new BEventHandler( this, "radioGateTime_CheckedChanged" ) );
-            radioPlayTime.checkedChangedEvent.add( new BEventHandler( this, "radioPlayTime_CheckedChanged" ) );
+            btnCheckAll.Click += new EventHandler( btnCheckAll_Click );
+            btnUncheckAll.Click += new EventHandler( btnUnckeckAll_Click );
+            chkNote.CheckedChanged += new EventHandler( chkNote_CheckedChanged );
+            chkMetaText.Click += new EventHandler( chkMetaText_Click );
+            chkExportVocaloidNrpn.CheckedChanged += new EventHandler( chkExportVocaloidNrpn_CheckedChanged );
+            chkExportVocaloidNrpn.CheckedChanged += new EventHandler( chkExportVocaloidNrpn_CheckedChanged );
+            FormClosing += new System.Windows.Forms.FormClosingEventHandler( FormMidiImExport_FormClosing );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
+            radioGateTime.CheckedChanged += new EventHandler( radioGateTime_CheckedChanged );
+            radioPlayTime.CheckedChanged += new EventHandler( radioPlayTime_CheckedChanged );
         }
 
         private void setResources() {

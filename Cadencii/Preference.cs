@@ -1606,23 +1606,23 @@ namespace org.kbinani.cadencii {
         }
 
         private void registerEventHandlers() {
-            btnChangeScreenFont.clickEvent.add( new BEventHandler( this, "btnChangeScreenFont_Click" ) );
-            btnChangeMenuFont.clickEvent.add( new BEventHandler( this, "btnChangeMenuFont_Click" ) );
-            btnWavtool.clickEvent.add( new BEventHandler( this, "btnWavtool_Click" ) );
-            btnResampler.clickEvent.add( new BEventHandler( this, "btnResampler_Click" ) );
-            btnAquesTone.clickEvent.add( new BEventHandler( this, "btnAquesTone_Click" ) );
-            comboPlatform.selectedIndexChangedEvent.add( new BEventHandler( this, "comboPlatform_SelectedIndexChanged" ) );
-            btnRemove.clickEvent.add( new BEventHandler( this, "btnRemove_Click" ) );
-            btnAdd.clickEvent.add( new BEventHandler( this, "btnAdd_Click" ) );
-            btnUp.clickEvent.add( new BEventHandler( this, "btnUp_Click" ) );
-            btnDown.clickEvent.add( new BEventHandler( this, "btnDown_Click" ) );
-            listSingers.selectedIndexChangedEvent.add( new BEventHandler( this, "listSingers_SelectedIndexChanged" ) );
-            chkAutoBackup.checkedChangedEvent.add( new BEventHandler( this, "chkAutoBackup_CheckedChanged" ) );
-            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
-            formClosingEvent.add( new BFormClosingEventHandler( this, "Preference_FormClosing" ) );
-            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
-            chkLoadSecondaryVOCALOID1.checkedChangedEvent.add( new BEventHandler( this, "chkLoadSecondaryVOCALOID1_CheckedChanged" ) );
-            radioVocaloidEditorCompatible.checkedChangedEvent.add( new BEventHandler( this, "commonChangeAutoVibratoType" ) );
+            btnChangeScreenFont.Click += new EventHandler( btnChangeScreenFont_Click );
+            btnChangeMenuFont.Click += new EventHandler( btnChangeMenuFont_Click );
+            btnWavtool.Click += new EventHandler( btnWavtool_Click );
+            btnResampler.Click += new EventHandler( btnResampler_Click );
+            btnAquesTone.Click += new EventHandler( btnAquesTone_Click );
+            comboPlatform.SelectedIndexChanged += new EventHandler( comboPlatform_SelectedIndexChanged );
+            btnRemove.Click += new EventHandler( btnRemove_Click );
+            btnAdd.Click += new EventHandler( btnAdd_Click );
+            btnUp.Click += new EventHandler( btnUp_Click );
+            btnDown.Click += new EventHandler( btnDown_Click );
+            listSingers.SelectedIndexChanged += new EventHandler( listSingers_SelectedIndexChanged );
+            chkAutoBackup.CheckedChanged += new EventHandler( chkAutoBackup_CheckedChanged );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            FormClosing += new System.Windows.Forms.FormClosingEventHandler( Preference_FormClosing );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
+            chkLoadSecondaryVOCALOID1.CheckedChanged += new EventHandler( chkLoadSecondaryVOCALOID1_CheckedChanged );
+            radioVocaloidEditorCompatible.CheckedChanged += new EventHandler( commonChangeAutoVibratoType );
         }
 
         private void setResources() {

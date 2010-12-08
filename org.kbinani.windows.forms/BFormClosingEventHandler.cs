@@ -15,47 +15,19 @@
 package org.kbinani.windows.forms;
 
 import org.kbinani.BEventHandler;
-#else
-using System;
-using System.Windows.Forms;
 
-namespace org.kbinani.windows.forms {
-#endif
-
-#if JAVA
     public class BFormClosingEventHandler extends BEventHandler{
-#else
-    public class BFormClosingEventHandler : BEventHandler {
-#endif
         public BFormClosingEventHandler( Object sender, String method_name )
-#if JAVA
         {
-#else
-            :
-#endif
  base( sender, method_name, typeof( void ), typeof( Object ), typeof( FormClosingEventArgs ) )
-#if JAVA
             ;
-#else
- {
-#endif
         }
 
         public BFormClosingEventHandler( Type sender, String method_name )
-#if JAVA
         {
-#else
-            :
-#endif
  base( sender, method_name, typeof( void ), typeof( Object ), typeof( FormClosingEventArgs ) )
-#if JAVA
             ;
-#else
- {
-#endif
         }
     }
 
-#if !JAVA
-}
 #endif

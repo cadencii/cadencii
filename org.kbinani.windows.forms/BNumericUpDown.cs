@@ -20,15 +20,6 @@
 namespace org.kbinani.windows.forms {
 
     public class BNumericUpDown : System.Windows.Forms.NumericUpDown {
-        #region event impl ValueChanged
-        // root impl of ValueChanged event is in BSlider
-        public BEvent<BEventHandler> valueChangedEvent = new BEvent<BEventHandler>();
-        protected override void OnValueChanged( System.EventArgs e ) {
-            base.OnValueChanged( e );
-            valueChangedEvent.raise( this, e );
-        }
-        #endregion
-
         decimal minimumStep = 1;
 
         public BNumericUpDown() {

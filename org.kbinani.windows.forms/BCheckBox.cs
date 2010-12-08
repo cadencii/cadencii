@@ -18,25 +18,6 @@
 #define COMPONENT_ENABLE_LOCATION
 namespace org.kbinani.windows.forms {
     public class BCheckBox : System.Windows.Forms.CheckBox{
-        // root impl of CheckedChanged event
-        #region event impl CheckedChanged
-        // root impl of CheckedChanged event is in BCheckBox
-        public BEvent<BEventHandler> checkedChangedEvent = new BEvent<BEventHandler>();
-        protected override void OnCheckedChanged( System.EventArgs e ) {
-            base.OnCheckedChanged( e );
-            checkedChangedEvent.raise( this, e );
-        }
-        #endregion
-
-        #region event impl Click
-        // root impl of Click event is in BCheckBox
-        public BEvent<BEventHandler> clickEvent = new BEvent<BEventHandler>();
-        protected override void OnClick( System.EventArgs e ) {
-            base.OnClick( e );
-            clickEvent.raise( this, e );
-        }
-        #endregion
-
         #region java.awt.Component
         // root implementation of java.awt.Component is in BForm.cs
         public java.awt.Dimension getMinimumSize() {

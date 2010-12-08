@@ -28,6 +28,7 @@ namespace org.kbinani.cadencii{
 #if !JAVA
         delegate void VoidDelegate();
         public static FormSplash splash = null;
+        private static FormMain form = null;
         static Thread splashThread = null;
 #endif
 
@@ -104,11 +105,11 @@ namespace org.kbinani.cadencii{
                 Logger.write( typeof( Cadencii ) + ".Main; ex=" + ex + "\n" );
             }
 #endif
-            AppManager.mMainWindow = new FormMain( file );
+            form = new FormMain( file );
 #if !MONO
-            AppManager.mMainWindow.Load += mainWindow_Load;
+            form.Load += mainWindow_Load;
 #endif
-            Application.Run( AppManager.mMainWindow );
+            Application.Run( form );
 #if !DEBUG
             } catch ( Exception ex ) {
                 String str_ex = getExceptionText( ex, 0 );
@@ -166,7 +167,7 @@ namespace org.kbinani.cadencii{
                 }
             }
             splash = null;
-            AppManager.mMainWindow.Load -= mainWindow_Load;
+            form.Load -= mainWindow_Load;
         }
 #endif
     }

@@ -279,13 +279,13 @@ namespace org.kbinani.cadencii {
             return result;
         }
 
-        public FormPluginUi getUi() {
+        public FormPluginUi getUi( org.kbinani.windows.forms.BForm main_window ) {
             if ( ui == null ) {
-                if ( AppManager.mMainWindow != null ) {
+                if ( main_window != null ) {
                     VoidDelegate temp = new VoidDelegate( this.createPluginUi );
                     if ( temp != null ) {
                         // mainWindowのスレッドで、uiが作成されるようにする
-                        AppManager.mMainWindow.Invoke( temp );
+                        main_window.Invoke( temp );
                     }
                 }
             }

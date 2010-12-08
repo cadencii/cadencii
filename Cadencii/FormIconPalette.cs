@@ -45,20 +45,28 @@ namespace org.kbinani.cadencii {
 #else
     public class FormIconPalette : BForm {
 #endif
+#if JAVA
         public BEvent<BEventHandler> topMostChangedEvent = new BEvent<BEventHandler>();
+#elif QT_VERSION
+        public: signals: void topMostChanged( QObject sender, QObject e );
+#else
+        public event EventHandler TopMostChanged;
+#endif
         
         private Vector<BButton> dynaffButtons = new Vector<BButton>();
         private Vector<BButton> crescendButtons = new Vector<BButton>();
         private Vector<BButton> decrescendButtons = new Vector<BButton>();
         private int buttonWidth = 40;
+        private FormMain mMainWindow = null;
 
-        public FormIconPalette() {
+        public FormIconPalette( FormMain main_window ) {
 #if JAVA
             super();
             initialize();
 #else
             InitializeComponent();
 #endif
+            mMainWindow = main_window;
             applyLanguage();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
             init();
@@ -92,9 +100,9 @@ namespace org.kbinani.cadencii {
         }
 
         private void registerEventHandlers() {
-            formClosingEvent.add( new BFormClosingEventHandler( this, "FormIconPalette_FormClosing" ) );
-            menuWindowHide.clickEvent.add( new BEventHandler( this, "menuWindowHide_Click" ) );
-            chkTopMost.checkedChangedEvent.add( new BEventHandler( this, "chkTopMost_CheckedChanged" ) );
+            FormClosing += new System.Windows.Forms.FormClosingEventHandler( FormIconPalette_FormClosing );
+            menuWindowHide.Click += new EventHandler( menuWindowHide_Click );
+            chkTopMost.CheckedChanged += new EventHandler( chkTopMost_CheckedChanged );
         }
 
         private void init() {
@@ -168,7 +176,7 @@ namespace org.kbinani.cadencii {
                         btn.setText( str );
                     }
                 }
-                btn.mouseDownEvent.add( new BMouseEventHandler( this, "handleCommonMouseDown" ) );
+                btn.MouseDown += new System.Windows.Forms.MouseEventHandler( handleCommonMouseDown );
                 btn.setPreferredSize( new Dimension( buttonWidth, buttonWidth ) );
                 int iw = 0;
                 int ih = 0;
@@ -233,7 +241,15 @@ namespace org.kbinani.cadencii {
         public void chkTopMost_CheckedChanged( Object sender, EventArgs e ) {
             setAlwaysOnTop( chkTopMost.isSelected() );
             try {
+#if JAVA
                 topMostChangedEvent.raise( this, e );
+#elif QT_VERSION
+                topMostChanged( this, e );
+#else
+                if ( TopMostChanged != null ) {
+                    TopMostChanged.Invoke( this, e );
+                }
+#endif
             } catch ( Exception ex ) {
             }
         }
@@ -247,8 +263,8 @@ namespace org.kbinani.cadencii {
                 return;
             }
             BButton btn = (BButton)sender;
-            if ( AppManager.mMainWindow != null ) {
-                AppManager.mMainWindow.toFront();
+            if ( mMainWindow != null ) {
+                mMainWindow.toFront();
             }
 
             IconDynamicsHandle handle = (IconDynamicsHandle)btn.getTag();

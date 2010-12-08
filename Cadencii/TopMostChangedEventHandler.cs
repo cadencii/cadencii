@@ -30,15 +30,7 @@ using System;
 
 namespace org.kbinani.cadencii {
 
-    public class TopMostChangedEventHandler : BEventHandler {
-        public TopMostChangedEventHandler( Object sender, String method_name )
-            : base( sender, method_name, typeof( void ), typeof( object ), typeof( bool ) ) {
-        }
-
-        public TopMostChangedEventHandler( Type sender, String method_name )
-            : base( sender, method_name, typeof( void ), typeof( object ), typeof( bool ) ) {
-        }
-    }
+    public delegate void TopMostChangedEventHandler( Object sender, bool top_most );
 
 }
 #endif

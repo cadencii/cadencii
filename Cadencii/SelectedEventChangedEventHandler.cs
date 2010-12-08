@@ -12,52 +12,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.cadencii;
-
-import org.kbinani.BEventHandler;
+//INCLUDE ../BuildJavaUI/src/org/kbinani/cadencii/SelectedEventChangedEventHandler.java
 #else
 using System;
 using org.kbinani;
 
 namespace org.kbinani.cadencii {
-    using boolean = System.Boolean;
-#endif
 
-#if JAVA
-    public class SelectedEventChangedEventHandler extends BEventHandler{
-#else
-    public class SelectedEventChangedEventHandler : BEventHandler {
-#endif
-        public SelectedEventChangedEventHandler( Object sender, String method_name )
-        //...きもちわるい
-#if JAVA
-        {
-#else
-            :
-#endif
-            base( sender, method_name, typeof( void ), typeof( Object ), typeof( boolean ) )
-#if JAVA
-            ;
-#else
-        {
-#endif
-        }
+    public delegate void SelectedEventChangedEventHandler( object sender, bool foo );
 
-        public SelectedEventChangedEventHandler( Type sender, String method_name )
-#if JAVA
-        {
-#else
-            :
-#endif
-            base( sender, method_name, typeof( void ), typeof( Object ), typeof( boolean ) )
-#if JAVA
-            ;
-#else
-        {
-#endif
-        }
-    }
-
-#if !JAVA
 }
 #endif

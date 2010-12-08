@@ -1,3 +1,4 @@
+#if !JAVA
 /*
  * Rebar.cs
  * Copyright (C) Anthony Baraff
@@ -22,14 +23,16 @@ using System.Runtime.InteropServices;
 using org.kbinani;
 
 namespace org.kbinani.windows.forms {
+
     /// <summary>
     /// Summary description for UserControl1.
     /// </summary>
-
+#if !MONO
     [ToolboxItem( true ),
     DefaultProperty( "Bands" ),
     Designer( typeof( org.kbinani.windows.forms.RebarDesigner ) ),
     DesignTimeVisible( true )]
+#endif
     public class Rebar : System.Windows.Forms.Control {
         /// <summary>
         /// Required designer variable.
@@ -140,11 +143,13 @@ namespace org.kbinani.windows.forms {
             }
         }
 
+#if !MONO
         [Category( "Behavior" ),
         DesignerSerializationVisibility( DesignerSerializationVisibility.Content ),
         Editor( typeof( org.kbinani.windows.forms.BandCollectionEditor ),
         typeof( System.Drawing.Design.UITypeEditor ) ),
         NotifyParentProperty( true )]
+#endif
         public RebarBandCollection Bands {
             get {
                 return _bands;
@@ -824,3 +829,5 @@ namespace org.kbinani.windows.forms {
 
     internal delegate void NativeRebarEventHandler( object sender, NativeRebarEventArgs e );
 }
+#endif
+

@@ -137,20 +137,20 @@ namespace org.kbinani.cadencii {
         }
 
         private void registerEventHandlers() {
-            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
-            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
-            chkEnableSmooth.checkedChangedEvent.add( new BEventHandler( this, "chkEnableSmooth_CheckedChanged" ) );
-            btnLeft.mouseMoveEvent.add( new BMouseEventHandler( this, "common_MouseMove" ) );
-            btnLeft.mouseDownEvent.add( new BMouseEventHandler( this, "btnLeft_MouseDown" ) );
-            btnLeft.mouseUpEvent.add( new BMouseEventHandler( this, "common_MouseUp" ) );
-            btnDataPoint.mouseMoveEvent.add( new BMouseEventHandler( this, "common_MouseMove" ) );
-            btnDataPoint.mouseDownEvent.add( new BMouseEventHandler( this, "btnDataPoint_MouseDown" ) );
-            btnDataPoint.mouseUpEvent.add( new BMouseEventHandler( this, "common_MouseUp" ) );
-            btnRight.mouseMoveEvent.add( new BMouseEventHandler( this, "common_MouseMove" ) );
-            btnRight.mouseDownEvent.add( new BMouseEventHandler( this, "btnRight_MouseDown" ) );
-            btnRight.mouseUpEvent.add( new BMouseEventHandler( this, "common_MouseUp" ) );
-            btnBackward.clickEvent.add( new BEventHandler( this, "btnBackward_Click" ) );
-            btnForward.clickEvent.add( new BEventHandler( this, "btnForward_Click" ) );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
+            chkEnableSmooth.CheckedChanged += new EventHandler( chkEnableSmooth_CheckedChanged );
+            btnLeft.MouseMove += new System.Windows.Forms.MouseEventHandler( common_MouseMove );
+            btnLeft.MouseDown += new System.Windows.Forms.MouseEventHandler( btnLeft_MouseDown );
+            btnLeft.MouseUp += new System.Windows.Forms.MouseEventHandler( common_MouseUp );
+            btnDataPoint.MouseMove += new System.Windows.Forms.MouseEventHandler( common_MouseMove );
+            btnDataPoint.MouseDown += new System.Windows.Forms.MouseEventHandler( btnDataPoint_MouseDown );
+            btnDataPoint.MouseUp += new System.Windows.Forms.MouseEventHandler( common_MouseUp );
+            btnRight.MouseMove += new System.Windows.Forms.MouseEventHandler( common_MouseMove );
+            btnRight.MouseDown += new System.Windows.Forms.MouseEventHandler( btnRight_MouseDown );
+            btnRight.MouseUp += new System.Windows.Forms.MouseEventHandler( common_MouseUp );
+            btnBackward.Click += new EventHandler( btnBackward_Click );
+            btnForward.Click += new EventHandler( btnForward_Click );
         }
 
         private void setResources() {

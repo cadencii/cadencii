@@ -104,8 +104,8 @@ namespace org.kbinani.cadencii {
                 txtVibratoLength.setText( s );
             }
 
-            comboVibratoType.selectedIndexChangedEvent.add( new BEventHandler( this, "comboVibratoType_SelectedIndexChanged" ) );
-            txtVibratoLength.textChangedEvent.add( new BEventHandler( this, "txtVibratoLength_TextChanged" ) );
+            comboVibratoType.SelectedIndexChanged += new EventHandler( comboVibratoType_SelectedIndexChanged );
+            txtVibratoLength.TextChanged += new EventHandler( txtVibratoLength_TextChanged );
 
             m_note_length = note_length;
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
@@ -134,8 +134,8 @@ namespace org.kbinani.cadencii {
         }
 
         private void registerEventHandlers() {
-            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
-            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
         private void setResources() {

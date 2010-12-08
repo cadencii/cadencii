@@ -238,11 +238,11 @@ namespace org.kbinani.cadencii {
             this.list.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler( this.list_PreviewKeyDown );
             this.list.KeyDown += new System.Windows.Forms.KeyEventHandler( this.list_KeyDown );
 #endif
-            btnLoadDefault.clickEvent.add( new BEventHandler( this, "btnLoadDefault_Click" ) );
-            btnRevert.clickEvent.add( new BEventHandler( this, "btnRevert_Click" ) );
-            formClosingEvent.add( new BFormClosingEventHandler( this, "FormShortcutKeys_FormClosing" ) );
-            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
-            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
+            btnLoadDefault.Click += new EventHandler( btnLoadDefault_Click );
+            btnRevert.Click += new EventHandler( btnRevert_Click );
+            FormClosing += new System.Windows.Forms.FormClosingEventHandler( FormShortcutKeys_FormClosing );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
         private void setResources() {

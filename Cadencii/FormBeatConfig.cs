@@ -147,9 +147,9 @@ namespace org.kbinani.cadencii {
         }
 
         private void registerEventHandlers() {
-            chkEnd.checkedChangedEvent.add( new BEventHandler( this, "chkEnd_CheckedChanged" ) );
-            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
-            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
+            chkEnd.CheckedChanged += new EventHandler( chkEnd_CheckedChanged );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
         private void setResources() {

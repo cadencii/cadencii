@@ -44,6 +44,11 @@ namespace org.kbinani.cadencii {
         protected EditorConfig mConfig;
 
         /// <summary>
+        /// メインウィンドウへの参照
+        /// </summary>
+        protected FormMain mMainWindow;
+
+        /// <summary>
         /// 描画用のストローク
         /// </summary>
         private BasicStroke mStroke;
@@ -75,6 +80,13 @@ namespace org.kbinani.cadencii {
         /// <param name="config"></param>
         public virtual void setGlobalConfig( EditorConfig config ) {
             mConfig = config;
+        }
+
+        /// <summary>
+        /// メインウィンドウへの参照を設定します
+        /// </summary>
+        public virtual void setMainWindow( FormMain main_window ) {
+            mMainWindow = main_window;
         }
 
         /// <summary>

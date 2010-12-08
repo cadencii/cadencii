@@ -20,16 +20,6 @@ using System.Windows.Forms;
 namespace org.kbinani.windows.forms{
 
     public class BComboBox : ComboBox {
-        // root impl of SelectedIndexChanged event
-        #region event impl SelectedIndexChanged
-        // root impl of SelectedIndexChanged event is in BComboBox
-        public BEvent<BEventHandler> selectedIndexChangedEvent = new BEvent<BEventHandler>();
-        protected override void OnSelectedIndexChanged( EventArgs e ) {
-            base.OnSelectedIndexChanged( e );
-            selectedIndexChangedEvent.raise( this, e );
-        }
-        #endregion
-
         public void addItem( object item ) {
             base.Items.Add( item );
         }

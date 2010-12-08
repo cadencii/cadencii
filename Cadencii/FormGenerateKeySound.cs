@@ -107,13 +107,10 @@ namespace org.kbinani.cadencii {
 
         #region helper methods
         private void registerEventHandlers() {
-            bgWork.doWorkEvent.add( new BDoWorkEventHandler( this, "bgWork_DoWork" ) );
-            bgWork.runWorkerCompletedEvent.add( new BRunWorkerCompletedEventHandler( this, "bgWork_RunWorkerCompleted" ) );
-#if JAVA
-            //TODO: fixme FormGenerateKeySound#registerEventHandlers; bgWork.progressChangedEvent
-#else
+            bgWork.DoWork += new System.ComponentModel.DoWorkEventHandler( bgWork_DoWork );
+            bgWork.RunWorkerCompleted += 
+                new System.ComponentModel.RunWorkerCompletedEventHandler( bgWork_RunWorkerCompleted );
             bgWork.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler( this.bgWork_ProgressChanged );
-#endif
         }
 
         private void updateSinger() {

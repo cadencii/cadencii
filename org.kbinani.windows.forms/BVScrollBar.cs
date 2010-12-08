@@ -17,33 +17,6 @@
 namespace org.kbinani.windows.forms {
 
     public class BVScrollBar : System.Windows.Forms.VScrollBar {
-        #region event impl ValueChanged
-        // root impl of ValueChanged event is in BSlider
-        public BEvent<BEventHandler> valueChangedEvent = new BEvent<BEventHandler>();
-        protected override void OnValueChanged( System.EventArgs e ) {
-            base.OnValueChanged( e );
-            valueChangedEvent.raise( this, e );
-        }
-        #endregion
-
-        #region event impl Enter
-        // root impl of Enter event is in BButton
-        public BEvent<BEventHandler> enterEvent = new BEvent<BEventHandler>();
-        protected override void OnEnter( System.EventArgs e ) {
-            base.OnEnter( e );
-            enterEvent.raise( this, e );
-        }
-        #endregion
-
-        #region event impl Resize
-        // root impl of Resize event is in BButton
-        public BEvent<BEventHandler> resizeEvent = new BEvent<BEventHandler>();
-        protected override void OnResize( System.EventArgs e ) {
-            base.OnResize( e );
-            resizeEvent.raise( this, e );
-        }
-        #endregion
-
         // root implementation of javax.swing.ScrollBar
         #region javax.swing.ScrollBar
         public void setMaximum( int value ) {

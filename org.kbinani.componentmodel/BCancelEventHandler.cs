@@ -15,48 +15,19 @@
 package org.kbinani.componentmodel;
 
 import org.kbinani.BEventHandler;
-#else
-using System;
-using System.ComponentModel;
-using System.Windows.Forms;
 
-namespace org.kbinani.componentmodel {
-#endif
-
-#if JAVA
     public class BCancelEventHandler extends BEventHandler{
-#else
-    public class BCancelEventHandler : BEventHandler {
-#endif
         public BCancelEventHandler( Object sender, String method_name )
-#if JAVA
         {
-#else
-            :
-#endif
             base( sender, method_name, typeof( void ), typeof( Object ), typeof( CancelEventArgs ) )
-#if JAVA
             ;
-#else
-        {
-#endif
         }
 
         public BCancelEventHandler( Type sender, String method_name )
-#if JAVA
         {
-#else
-            :
-#endif
             base( sender, method_name, typeof( void ), typeof( Object ), typeof( CancelEventArgs ) )
-#if JAVA
             ;
-#else
-        {
-#endif
         }
     }
 
-#if !JAVA
-}
 #endif

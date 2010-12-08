@@ -37,7 +37,7 @@ namespace org.kbinani.cadencii {
             this.SetStyle( System.Windows.Forms.ControlStyles.DoubleBuffer, true );
             this.SetStyle( System.Windows.Forms.ControlStyles.UserPaint, true );
             InitializeComponent();
-            this.formClosingEvent.add( new BFormClosingEventHandler( this, "FormPluginUi_FormClosing" ) );
+            this.FormClosing += new FormClosingEventHandler( FormPluginUi_FormClosing );
 #if !JAVA
             this.Icon = Resources.get_switch();
 #endif

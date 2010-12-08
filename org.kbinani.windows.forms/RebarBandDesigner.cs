@@ -1,4 +1,5 @@
-/**
+#if !JAVA
+/*
  * RebarBandDesigner.cs
  * Copyright (C) Anthony Baraff
  * Copyright (C) 2010 kbinani
@@ -30,3 +31,4 @@ namespace org.kbinani.windows.forms {
     }
 
 }
+#endif

@@ -129,17 +129,17 @@ namespace org.kbinani.editotoini {
             InitializeComponent();
 #endif
             bgWorkScreen = new BBackgroundWorker();
-            bgWorkScreen.doWorkEvent.add( new BDoWorkEventHandler( this, "bgWorkScreen_DoWork" ) );
+            bgWorkScreen.DoWork += new DoWorkEventHandler( bgWorkScreen_DoWork );
             
             bgWorkRead = new BBackgroundWorker();
-            bgWorkRead.doWorkEvent.add( new BDoWorkEventHandler( this, "bgWorkRead_DoWork" ) );
-            bgWorkRead.runWorkerCompletedEvent.add( new BRunWorkerCompletedEventHandler( this, "bgWorkRead_RunWorkerCompleted" ) );
+            bgWorkRead.DoWork += new DoWorkEventHandler( bgWorkRead_DoWork );
+            bgWorkRead.RunWorkerCompleted += new RunWorkerCompletedEventHandler( bgWorkRead_RunWorkerCompleted );
             
             openFileDialog = new BFileChooser( "" );
             saveFileDialog = new BFileChooser( "" );
             openFileDialog.setSelectedFile( "oto.ini" );
 
-            pictWave.mouseWheelEvent.add( new BMouseEventHandler( this, "pictWave_MouseWheel" ) );
+            pictWave.MouseWheel += new MouseEventHandler( pictWave_MouseWheel );
 #if !JAVA
             splitContainerIn.Panel1.BorderStyle = BorderStyle.None;
             splitContainerIn.Panel2.BorderStyle = BorderStyle.FixedSingle;

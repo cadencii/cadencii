@@ -82,11 +82,11 @@ namespace org.kbinani.cadencii {
         }
 
         private void registerEventHandlers() {
-            loadEvent.add( new BEventHandler( this, "FormWordDictionary_Load" ) );
-            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
-            btnUp.clickEvent.add( new BEventHandler( this, "btnUp_Click" ) );
-            btnDown.clickEvent.add( new BEventHandler( this, "btnDown_Click" ) );
-            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
+            Load += new EventHandler( FormWordDictionary_Load );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnUp.Click += new EventHandler( btnUp_Click );
+            btnDown.Click += new EventHandler( btnDown_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
         private void setResources() {

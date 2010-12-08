@@ -1,4 +1,5 @@
-/**
+#if !JAVA
+/*
  * RebarBandCollection.cs
  * Copyright (C) Anthony Baraff
  * Copyright (C) 2010 kbinani
@@ -23,8 +24,10 @@ namespace org.kbinani.windows.forms {
     /// <summary>
     /// Summary description for BandCollection.
     /// </summary>
+#if !MONO
     [Editor( typeof( org.kbinani.windows.forms.BandCollectionEditor ),
-         typeof( System.Drawing.Design.UITypeEditor ) )]
+        typeof( System.Drawing.Design.UITypeEditor ) )]
+#endif
     public class RebarBandCollection : CollectionBase, IEnumerable {
         private Rebar _rebar;
         private int _idCounter = 0;
@@ -138,3 +141,4 @@ namespace org.kbinani.windows.forms {
         }
     }
 }
+#endif

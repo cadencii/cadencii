@@ -32,7 +32,7 @@ namespace org.kbinani.vsq {
     class BPPair{
 #else
     [Serializable]
-    public class BPPair : IComparable<BPPair>{
+    public class BPPair : IComparable<BPPair> {
 #endif
         public int Clock;
         public int Value;

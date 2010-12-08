@@ -41,17 +41,19 @@ namespace org.kbinani.cadencii {
 #else
     public class FormCurvePointEdit : BDialog {
 #endif
-        long m_editing_id = -1;
-        CurveType m_curve;
-        boolean m_changed = false;
+        private long m_editing_id = -1;
+        private CurveType m_curve;
+        private boolean m_changed = false;
+        private FormMain mMainWindow = null;
 
-        public FormCurvePointEdit( long editing_id, CurveType curve ) {
+        public FormCurvePointEdit( FormMain main_window, long editing_id, CurveType curve ) {
 #if JAVA
             super();
             initialize();
 #else
             InitializeComponent();
 #endif
+            mMainWindow = main_window;
             registerEventHandlers();
             setResources();
             applyLanguage();
@@ -128,10 +130,10 @@ namespace org.kbinani.cadencii {
             txtDataPointClock.setText( clock + "" );
             txtDataPointValue.setText( value + "" );
 
-            if ( AppManager.mMainWindow != null ) {
-                AppManager.mMainWindow.setEdited( true );
-                AppManager.mMainWindow.ensureVisible( clock );
-                AppManager.mMainWindow.refreshScreen();
+            if ( mMainWindow != null ) {
+                mMainWindow.setEdited( true );
+                mMainWindow.ensureVisible( clock );
+                mMainWindow.refreshScreen();
             }
 
             if ( mode_clock ) {
@@ -150,20 +152,20 @@ namespace org.kbinani.cadencii {
         }
 
         private void registerEventHandlers() {
-            btnForward.clickEvent.add( new BEventHandler( this, "commonButton_Click" ) );
-            btnBackward.clickEvent.add( new BEventHandler( this, "commonButton_Click" ) );
-            btnBackward2.clickEvent.add( new BEventHandler( this, "commonButton_Click" ) );
-            btnForward2.clickEvent.add( new BEventHandler( this, "commonButton_Click" ) );
-            btnApply.clickEvent.add( new BEventHandler( this, "btnApply_Click" ) );
-            txtDataPointClock.textChangedEvent.add( new BEventHandler( this, "commonTextBox_TextChanged" ) );
-            txtDataPointClock.keyUpEvent.add( new BKeyEventHandler( this, "commonTextBox_KeyUp" ) );
-            txtDataPointValue.textChangedEvent.add( new BEventHandler( this, "commonTextBox_TextChanged" ) );
-            txtDataPointValue.keyUpEvent.add( new BKeyEventHandler( this, "commonTextBox_KeyUp" ) );
-            btnBackward3.clickEvent.add( new BEventHandler( this, "commonButton_Click" ) );
-            btnForward3.clickEvent.add( new BEventHandler( this, "commonButton_Click" ) );
-            btnUndo.clickEvent.add( new BEventHandler( this, "handleUndoRedo_Click" ) );
-            btnRedo.clickEvent.add( new BEventHandler( this, "handleUndoRedo_Click" ) );
-            btnExit.clickEvent.add( new BEventHandler( this, "btnExit_Click" ) );
+            btnForward.Click += new EventHandler( commonButton_Click );
+            btnBackward.Click += new EventHandler( commonButton_Click );
+            btnBackward2.Click += new EventHandler( commonButton_Click );
+            btnForward2.Click += new EventHandler( commonButton_Click );
+            btnApply.Click += new EventHandler( btnApply_Click );
+            txtDataPointClock.TextChanged += new EventHandler( commonTextBox_TextChanged );
+            txtDataPointClock.KeyUp += new System.Windows.Forms.KeyEventHandler( commonTextBox_KeyUp );
+            txtDataPointValue.TextChanged += new EventHandler( commonTextBox_TextChanged );
+            txtDataPointValue.KeyUp += new System.Windows.Forms.KeyEventHandler( commonTextBox_KeyUp );
+            btnBackward3.Click += new EventHandler( commonButton_Click );
+            btnForward3.Click += new EventHandler( commonButton_Click );
+            btnUndo.Click += new EventHandler( handleUndoRedo_Click );
+            btnRedo.Click += new EventHandler( handleUndoRedo_Click );
+            btnExit.Click += new EventHandler( btnExit_Click );
         }
         #endregion
 
@@ -230,9 +232,9 @@ namespace org.kbinani.cadencii {
 
             AppManager.clearSelectedPoint();
             AppManager.addSelectedPoint( m_curve, bp.id );
-            if ( AppManager.mMainWindow != null ) {
-                AppManager.mMainWindow.ensureVisible( clock );
-                AppManager.mMainWindow.refreshScreen();
+            if ( mMainWindow != null ) {
+                mMainWindow.ensureVisible( clock );
+                mMainWindow.refreshScreen();
             }
         }
 
@@ -275,9 +277,9 @@ namespace org.kbinani.cadencii {
                 AppManager.addSelectedPoint( m_curve, m_editing_id );
             }
 
-            if ( AppManager.mMainWindow != null ) {
-                AppManager.mMainWindow.updateDrawObjectList();
-                AppManager.mMainWindow.refreshScreen();
+            if ( mMainWindow != null ) {
+                mMainWindow.updateDrawObjectList();
+                mMainWindow.refreshScreen();
             }
             btnUndo.setEnabled( AppManager.isUndoAvailable() );
             btnRedo.setEnabled( AppManager.isRedoAvailable() );

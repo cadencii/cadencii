@@ -72,9 +72,9 @@ namespace org.kbinani.cadencii {
         }
 
         private void registerEventHandlers() {
-            txtMasterTuning.textChangedEvent.add( new BEventHandler( this, "txtMasterTuning_TextChanged" ) );
-            btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
-            btnCancel.clickEvent.add( new BEventHandler( this, "btnCancel_Click" ) );
+            txtMasterTuning.TextChanged += new EventHandler( txtMasterTuning_TextChanged );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
         private void setResources() {

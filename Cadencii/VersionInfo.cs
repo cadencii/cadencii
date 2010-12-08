@@ -391,10 +391,10 @@ namespace org.kbinani.cadencii {
             this.KeyDown += new System.Windows.Forms.KeyEventHandler( this.VersionInfo_KeyDown );
             this.FontChanged += new System.EventHandler( this.VersionInfo_FontChanged );
 #endif
-            this.timer.tickEvent.add( new BEventHandler( this, "timer_Tick" ) );
-            this.btnFlip.clickEvent.add( new BEventHandler( this, "btnFlip_Click" ) );
-            this.btnOK.clickEvent.add( new BEventHandler( this, "btnOK_Click" ) );
-            this.chkTwitterID.checkedChangedEvent.add( new BEventHandler( this, "chkTwitterID_CheckedChanged" ) );
+            this.timer.Tick += new EventHandler( timer_Tick );
+            this.btnFlip.Click += new EventHandler( btnFlip_Click );
+            this.btnOK.Click += new EventHandler( btnOK_Click );
+            this.chkTwitterID.CheckedChanged += new EventHandler( chkTwitterID_CheckedChanged );
         }
 
         private void setResources() {

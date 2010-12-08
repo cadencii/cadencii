@@ -19,15 +19,6 @@
 namespace org.kbinani.windows.forms{
 
     public class BRadioButton : System.Windows.Forms.RadioButton {
-        #region event impl CheckedChanged
-        // root impl of CheckedChanged event is in BCheckBox
-        public BEvent<BEventHandler> checkedChangedEvent = new BEvent<BEventHandler>();
-        protected override void OnCheckedChanged( System.EventArgs e ) {
-            base.OnCheckedChanged( e );
-            checkedChangedEvent.raise( this, e );
-        }
-        #endregion
-
         #region javax.swing.AbstractButton
         // root implementation of javax.swing.AbstractButton is in BMenuItem.cs
         public string getText() {

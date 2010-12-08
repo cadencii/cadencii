@@ -13,22 +13,4 @@
  */
 #if JAVA
 //INCLUDE ../BuildJavaUI/src/org/kbinani/componentmodel/BRunWorkerCompletedEventHandler.java
-#else
-using System;
-using System.ComponentModel;
-using System.Windows.Forms;
-
-namespace org.kbinani.componentmodel {
-
-    public class BRunWorkerCompletedEventHandler : BEventHandler {
-        public BRunWorkerCompletedEventHandler( Object sender, String method_name )
-            : base( sender, method_name, typeof( void ), typeof( Object ), typeof( RunWorkerCompletedEventArgs ) ) {
-        }
-
-        public BRunWorkerCompletedEventHandler( Type sender, String method_name )
-            : base( sender, method_name, typeof( void ), typeof( Object ), typeof( RunWorkerCompletedEventArgs ) ) {
-        }
-    }
-
-}
 #endif

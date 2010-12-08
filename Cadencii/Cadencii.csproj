@@ -129,6 +129,9 @@
     <Compile Include="ClipboardEntry.cs" />
     <Compile Include="ClockResolution.cs" />
     <Compile Include="ClockResolutionUtility.cs" />
+    <Compile Include="EditedStateChangedEventHandler.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="EmptyWaveGenerator.cs" />
     <Compile Include="IAmplifierView.cs" />
     <Compile Include="IImageCachedComponentDrawer.cs" />
@@ -185,20 +188,17 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="HScroll.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="IComparisonContext.cs" />
     <Compile Include="IconParader.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="LyricTextBox.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="MemoryManager.cs" />
     <Compile Include="MouseTracer.cs" />
     <Compile Include="MuteChangedEventHandler.cs" />
     <Compile Include="NumberTextBox.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="OtoArgs.cs" />
     <Compile Include="PanelState.cs" />
@@ -317,7 +317,6 @@
     <Compile Include="IPaletteTool.cs" />
     <Compile Include="KeySoundPlayer.cs" />
     <Compile Include="NumericUpDownEx.cs">
-      <SubType>Component</SubType>
     </Compile>
     <Compile Include="PaletteToolServer.cs" />
     <Compile Include="PencilMode.cs" />
@@ -378,8 +377,8 @@
     <Compile Include="WaveSender.cs" />
     <Compile Include="WaveSenderDriver.cs" />
     <Compile Include="WaveView.cs">
-      <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="WaveViewRealoadRequiredEventHandler.cs" />
     <Compile Include="winmmhelp.cs" />
     <Compile Include="XmlStaticMemberSerializerEx.cs" />
   </ItemGroup>

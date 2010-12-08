@@ -582,10 +582,10 @@ namespace org.kbinani.cadencii {
         /// このCadenciiのID。起動ごとにユニークな値が設定され、一時フォルダのフォルダ名等に使用する
         /// </summary>
         private static String mID = "";
-        /// <summary>
+        /* /// <summary>
         /// メインの編集画面のインスタンス
         /// </summary>
-        public static FormMain mMainWindow = null;
+        public static FormMain mMainWindow = null;*/
         /// <summary>
         /// ミキサーダイアログ
         /// </summary>
@@ -686,23 +686,103 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// メイン画面で、グリッド表示のOn/Offが切り替わった時発生するイベント
         /// </summary>
+#if JAVA
         public static BEvent<BEventHandler> gridVisibleChangedEvent = new BEvent<BEventHandler>();
+#elif QT_VERSION
+        public: signals: void gridVisibleChanged( QObject sender, QObject e );
+#else
+        public static event EventHandler GridVisibleChanged;
+#endif
+
         /// <summary>
         /// プレビュー再生が開始された時発生するイベント
         /// </summary>
+#if JAVA
         public static BEvent<BEventHandler> previewStartedEvent = new BEvent<BEventHandler>();
+#elif QT_VERSION
+        public: signals: void previewStartedEvent( QObject sender, QObject e );
+#else
+        public static event EventHandler PreviewStarted;
+#endif
+
         /// <summary>
         /// プレビュー再生が終了した時発生するイベント
         /// </summary>
+#if JAVA
         public static BEvent<BEventHandler> previewAbortedEvent = new BEvent<BEventHandler>();
+#elif QT_VERSION
+        public: signals: void previewAborted( QObject sender, QObject e );
+#else
+        public static event EventHandler PreviewAborted;
+#endif
+
         /// <summary>
         /// 選択状態のアイテムが変化した時発生するイベント
         /// </summary>
+#if JAVA
         public static BEvent<SelectedEventChangedEventHandler> selectedEventChangedEvent = new BEvent<SelectedEventChangedEventHandler>();
+#elif QT_VERSION
+        public: signals: void selectedEventChanged( QObject sender, bool foo );
+#else
+        public static event SelectedEventChangedEventHandler SelectedEventChanged;
+#endif
+
         /// <summary>
         /// 編集ツールが変化した時発生するイベント
         /// </summary>
+#if JAVA
         public static BEvent<BEventHandler> selectedToolChangedEvent = new BEvent<BEventHandler>();
+#elif QT_VERSION
+        public: signals: void selectedToolChanged( QObject sender, QObject e );
+#else
+        public static event EventHandler SelectedToolChanged;
+#endif
+
+        /// <summary>
+        /// BGMに何らかの変更があった時発生するイベント
+        /// </summary>
+#if JAVA
+        public static BEvent<BEventHandler> updateBgmStatusRequiredEvent = new BEvent<BEventHandler>();
+#elif QT_VERSION
+        public: signals: void updateBgmStatusRequired( QObject sender, QObject e );
+#else
+        public static event EventHandler UpdateBgmStatusRequired;
+#endif
+
+        /// <summary>
+        /// メインウィンドウにフォーカスを当てる要求があった時発生するイベント
+        /// </summary>
+#if JAVA
+        public static BEvent<BEventHandler> mainWindowFocusRequiredEvent = new BEvent<BEventHandler>();
+#elif QT_VERSION
+        public: signals: void mainWindowFocusRequired( QObject sender, QObject e );
+#else
+        public static event EventHandler MainWindowFocusRequired;
+#endif
+
+        /// <summary>
+        /// 編集されたかどうかを表す値に変更が要求されたときに発生するイベント
+        /// </summary>
+#if JAVA
+        public static BEvent<EditedStateChangedEventHandler> editedStateChangedEvent = new BEvent<EditedStateChangedEventHandler>();
+#elif QT_VERSION
+        public: signals: void editedStateChanged( QObject sender, bool edited );
+#else
+        public static event EditedStateChangedEventHandler EditedStateChanged;
+#endif
+
+        /// <summary>
+        /// 波形ビューのリロードが要求されたとき発生するイベント．
+        /// GeneralEventArgsの引数は，トラック番号,waveファイル名,開始時刻(秒),終了時刻(秒)が格納されたobject[]配列
+        /// 開始時刻＞終了時刻の場合は，partialではなく全体のリロード要求
+        /// </summary>
+#if JAVA
+        public static BEvent<WaveViewRealoadRequiredEventHandler> waveViewRealoadRequiredEvent = new BEvent<WaveViewRealoadRequiredEventHandler>();
+#elif QT_VERSION
+        public: signals: void waveViewReloadRequired( QObject sender, int track, QString path, double sec_start, double sec_end );
+#else
+        public static event WaveViewRealoadRequiredEventHandler WaveViewReloadRequired;
+#endif
 
         private const String TEMPDIR_NAME = "cadencii";
 
@@ -724,7 +804,7 @@ namespace org.kbinani.cadencii {
                 tracks.add( track );
             }
 
-            patchWorkToFreeze( tracks );
+            patchWorkToFreeze( null, tracks );
 
             Vector<Amplifier> waves = new Vector<Amplifier>();
             for ( int i = 0; i < tracks.size(); i++ ) {
@@ -823,7 +903,7 @@ namespace org.kbinani.cadencii {
         /// 指定したトラックのレンダリングが必要な部分を再レンダリングし，ツギハギすることでトラックのキャッシュを最新の状態にします
         /// </summary>
         /// <param name="tracks"></param>
-        public static void patchWorkToFreeze( Vector<Integer> tracks ) {
+        public static void patchWorkToFreeze( FormMain main_window, Vector<Integer> tracks ) {
             mVsq.updateTotalClocks();
             String temppath = getTempWaveDir();
             int presend = editorConfig.PreSendTime;
@@ -834,7 +914,8 @@ namespace org.kbinani.cadencii {
             FormSynthesize dialog = null;
             String tempWave = PortUtil.combinePath( temppath, "temp.wav" );
             try {
-                dialog = new FormSynthesize( mVsq,
+                dialog = new FormSynthesize( main_window,
+                                             mVsq,
                                              presend,
                                              queue );
                 dialog.setModal( true );
@@ -861,8 +942,19 @@ namespace org.kbinani.cadencii {
                         mLastRenderedStatus[track - 1] = 
                             new RenderedStatus( (VsqTrack)mVsq.Track.get( track ).clone(), mVsq.TempoTable );
                         serializeRenderingStatus( temppath, track );
-                        if ( mMainWindow != null && !mMainWindow.IsDisposed && mMainWindow.waveView != null ) {
-                            mMainWindow.waveView.load( track - 1, wavePath );
+                        try {
+#if JAVA
+                            waveViewReloadRequiredEvent.raise( typeof( AppManager ), track, wavePath, 1, -1 );
+#elif QT_VERSION
+                            waveViewReloadRequired( this, track, wavePath, 1, -1 );
+#else
+                            if ( WaveViewReloadRequired != null ) {
+                                WaveViewReloadRequired.Invoke( typeof( AppManager ), track, wavePath, 1, -1 );
+                            }
+#endif
+                        } catch ( Exception ex ) {
+                            Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
+                            PortUtil.println( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex );
                         }
                         continue;
                     }
@@ -1014,8 +1106,19 @@ namespace org.kbinani.cadencii {
                         }
                         double secEnd = mVsq.getSecFromClock( clockEnd );
 
-                        if ( mMainWindow != null && !mMainWindow.IsDisposed && mMainWindow.waveView != null ) {
-                            mMainWindow.waveView.reloadPartial( tracks[k] - 1, wavePath, secStart, secEnd );
+                        try {
+#if JAVA
+                            waveViewRealoadRequiredEvent.raise( typeof( AppManager ), tracks[k], wavePath, secStart, secEnd );
+#elif QT_VERSION
+                            waveViewReloadRequired( this, tracks[k], wavePath, secStart, secEnd );
+#else
+                            if ( WaveViewReloadRequired != null ) {
+                                WaveViewReloadRequired.Invoke( typeof( AppManager ), tracks[k], wavePath, secStart, secEnd );
+                            }
+#endif
+                        } catch ( Exception ex ) {
+                            Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
+                            PortUtil.println( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex );
                         }
                     }
                 }
@@ -1859,9 +1962,20 @@ namespace org.kbinani.cadencii {
                     iconPalette.setAlwaysOnTop( (boolean)tag );
                 }
             }
-            
-            if ( mMainWindow != null ) {
-                mMainWindow.requestFocus();
+
+            try {
+#if JAVA
+                mainWindowFocusRequiredEvent.raise( AppManager.class, new BEventArgs() );
+#elif QT_VERSION
+                mainWindowFocusRequired( this, null );
+#else
+                if ( MainWindowFocusRequired != null ) {
+                    MainWindowFocusRequired.Invoke( typeof( AppManager ), new EventArgs() );
+                }
+#endif
+            } catch ( Exception ex ) {
+                Logger.write( typeof( AppManager ) + ".endShowDialog; ex=" + ex + "\n" );
+                PortUtil.println( typeof( AppManager ) + ".endShowDialog; ex=" + ex );
             }
         }
         
@@ -1902,7 +2016,20 @@ namespace org.kbinani.cadencii {
             }
             CadenciiCommand run = VsqFileEx.generateCommandBgmUpdate( list );
             register( mVsq.executeCommand( run ) );
-            mMainWindow.setEdited( true );
+            try {
+#if JAVA
+                editedStateChangedEvent.raise( typeof( AppManager ), true );
+#elif QT_VERSION
+                editedStateChanged( this, true );
+#else
+                if ( EditedStateChanged != null ) {
+                    EditedStateChanged.Invoke( typeof( AppManager ), true );
+                }
+#endif
+            } catch ( Exception ex ) {
+                Logger.write( typeof( AppManager ) + ".removeBgm; ex=" + ex + "\n" );
+                PortUtil.stderr.println( typeof( AppManager ) + ".removeBgm; ex=" + ex );
+            }
             mMixerWindow.updateStatus();
         }
 
@@ -1913,7 +2040,20 @@ namespace org.kbinani.cadencii {
             Vector<BgmFile> list = new Vector<BgmFile>();
             CadenciiCommand run = VsqFileEx.generateCommandBgmUpdate( list );
             register( mVsq.executeCommand( run ) );
-            mMainWindow.setEdited( true );
+            try {
+#if JAVA
+                editedStateChangedEvent.raise( typeof( AppManager ), true );
+#elif QT_VERSION
+                editedStateChanged( this, true );
+#else
+                if ( EditedStateChanged != null ) {
+                    EditedStateChanged.Invoke( typeof( AppManager ), true );
+                }
+#endif
+            } catch ( Exception ex ) {
+                Logger.write( typeof( AppManager ) + ".removeBgm; ex=" + ex + "\n" );
+                PortUtil.stderr.println( typeof( AppManager ) + ".removeBgm; ex=" + ex );
+            }
             mMixerWindow.updateStatus();
         }
 
@@ -1933,7 +2073,20 @@ namespace org.kbinani.cadencii {
             list.add( item );
             CadenciiCommand run = VsqFileEx.generateCommandBgmUpdate( list );
             register( mVsq.executeCommand( run ) );
-            mMainWindow.setEdited( true );
+            try {
+#if JAVA
+                editedStateChangedEvent.raise( typeof( AppManager ), true );
+#elif QT_VERSION
+                editedStateChanged( this, true );
+#else
+                if ( EditedStateChanged != null ) {
+                    EditedStateChanged.Invoke( typeof( AppManager ), true );
+                }
+#endif
+            } catch ( Exception ex ) {
+                Logger.write( typeof( AppManager ) + ".removeBgm; ex=" + ex + "\n" );
+                PortUtil.stderr.println( typeof( AppManager ) + ".removeBgm; ex=" + ex );
+            }
             mMixerWindow.updateStatus();
         }
         #endregion
@@ -2060,7 +2213,15 @@ namespace org.kbinani.cadencii {
             mIsCurveMode = value;
             if ( old != mIsCurveMode ) {
                 try {
+#if JAVA
                     selectedToolChangedEvent.raise( typeof( AppManager ), new BEventArgs() );
+#elif QT_VERSION
+                    selectedToolChanged( this, null );
+#else
+                    if ( SelectedToolChanged != null ) {
+                        SelectedToolChanged.Invoke( typeof( AppManager ), new EventArgs() );
+                    }
+#endif
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "AppManager#setCurveMode; ex=" + ex );
                     Logger.write( typeof( AppManager ) + ".setCurveMode; ex=" + ex + "\n" );
@@ -2100,8 +2261,19 @@ namespace org.kbinani.cadencii {
                 }
                 ICommand inv = mVsq.executeCommand( run );
                 if ( run.type == CadenciiCommandType.BGM_UPDATE ) {
-                    if ( mMainWindow != null ) {
-                        mMainWindow.updateBgmMenuState();
+                    try {
+#if JAVA
+                        updateBgmStatusRequiredEvent.raise( typeof( AppManager ), new BEventArgs() );
+#elif QT_VERSION
+                        updateBgmStatusRequired( this, null );
+#else
+                        if ( UpdateBgmStatusRequired != null ) {
+                            UpdateBgmStatusRequired.Invoke( typeof( AppManager ), new EventArgs() );
+                        }
+#endif
+                    } catch ( Exception ex ) {
+                        Logger.write( typeof( AppManager ) + ".undo; ex=" + ex + "\n" );
+                        PortUtil.stderr.println( typeof( AppManager ) + ".undo; ex=" + ex );
                     }
                 }
                 mCommands.set( mCommandIndex, inv );
@@ -2135,8 +2307,19 @@ namespace org.kbinani.cadencii {
                 }
                 ICommand inv = mVsq.executeCommand( run );
                 if ( run.type == CadenciiCommandType.BGM_UPDATE ) {
-                    if ( mMainWindow != null ) {
-                        mMainWindow.updateBgmMenuState();
+                    try {
+#if JAVA
+                        updateBgmStatusRequiredEvent.raise( typeof( AppManager ), new EventArgs() );
+#elif QT_VERSION
+                        updateBgmStatusRequired( this, null );
+#else
+                        if ( UpdateBgmStatusRequired != null ) {
+                            UpdateBgmStatusRequired.Invoke( typeof( AppManager ), new EventArgs() );
+                        }
+#endif
+                    } catch ( Exception ex ) {
+                        Logger.write( typeof( AppManager ) + ".redo; ex=" + ex + "\n" );
+                        PortUtil.stderr.println( typeof( AppManager ) + ".redo; ex=" + ex );
                     }
                 }
                 mCommands.set( mCommandIndex + 1, inv );
@@ -2244,7 +2427,16 @@ namespace org.kbinani.cadencii {
             mSelectedTool = value;
             if ( old != mSelectedTool ) {
                 try {
+#if JAVA
                     selectedToolChangedEvent.raise( typeof( AppManager ), new EventArgs() );
+#elif QT_VERSION
+                    selectedToolChanged( this, null );
+#else
+                    if ( SelectedToolChanged != null ) {
+                        SelectedToolChanged.Invoke( typeof( AppManager ), new EventArgs() );
+                    }
+#endif
+                    
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "AppManager#setSelectedTool; ex=" + ex );
                     Logger.write( typeof( AppManager ) + ".setSelectedTool; ex=" + ex + "\n" );
@@ -2559,7 +2751,15 @@ namespace org.kbinani.cadencii {
                     mSelectedEvents.add( new SelectedEventEntry( mSelected, ev, (VsqEvent)ev.clone() ) );
                     if ( !silent ) {
                         try {
+#if JAVA
                             selectedEventChangedEvent.raise( typeof( AppManager ), false );
+#elif QT_VERSION
+                            selectedEventChanged( this, false );
+#else
+                            if ( SelectedEventChanged != null ) {
+                                SelectedEventChanged.Invoke( typeof( AppManager ), false );
+                            }
+#endif
                         } catch ( Exception ex ) {
                             PortUtil.stderr.println( "AppManager#addSelectedEventCor; ex=" + ex );
                             Logger.write( typeof( AppManager ) + ".addSelectedCurveCor; ex=" + ex + "\n" );
@@ -2668,7 +2868,15 @@ namespace org.kbinani.cadencii {
                           mSelectedTimesig.size() == 0 &&
                           mSelectedPointIDs.size() == 0;
             try {
+#if JAVA
                 selectedEventChangedEvent.raise( typeof( AppManager ), ret );
+#elif QT_VERSION
+                selectedEventChanged( this, ret );
+#else
+                if ( SelectedEventChanged != null ) {
+                    SelectedEventChanged.Invoke( typeof( AppManager ), ret );
+                }
+#endif
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "AppManager#checkSelectedItemExistence; ex=" + ex );
                 Logger.write( typeof( AppManager ) + ".checkSelectedItemExistence; ex=" + ex + "\n" );
@@ -2719,7 +2927,15 @@ namespace org.kbinani.cadencii {
             if ( value != mGridVisible ) {
                 mGridVisible = value;
                 try {
+#if JAVA
                     gridVisibleChangedEvent.raise( typeof( AppManager ), new BEventArgs() );
+#elif QT_VERSION
+                    gridVisibleChanged( this, null );
+#else
+                    if ( GridVisibleChanged != null ) {
+                        GridVisibleChanged.Invoke( typeof( AppManager ), new EventArgs() );
+                    }
+#endif
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "AppManager#setGridVisible; ex=" + ex );
                     Logger.write( typeof( AppManager ) + ".setGridVisible; ex=" + ex + "\n" );
@@ -2756,10 +2972,15 @@ namespace org.kbinani.cadencii {
                     if ( mPlaying ) {
                         try {
                             previewStart();
-#if DEBUG
-                            PortUtil.println( "AppManager#setPlaying; raise previewStartedEvent" );
-#endif
+#if JAVA
                             previewStartedEvent.raise( typeof( AppManager ), new BEventArgs() );
+#elif QT_VERSION
+                            previewStarted( this, null );
+#else
+                            if ( PreviewStarted != null ) {
+                                PreviewStarted.Invoke( typeof( AppManager ), new EventArgs() );
+                            }
+#endif
                         } catch ( Exception ex ) {
                             PortUtil.stderr.println( "AppManager#setPlaying; ex=" + ex );
                             Logger.write( typeof( AppManager ) + ".setPlaying; ex=" + ex + "\n" );
@@ -2770,7 +2991,15 @@ namespace org.kbinani.cadencii {
 #if DEBUG
                             PortUtil.println( "AppManager#setPlaying; raise previewAbortedEvent" );
 #endif
+#if JAVA
                             previewAbortedEvent.raise( typeof( AppManager ), new BEventArgs() );
+#elif QT_VERSION
+                            previewAbortedEvent( this, null );
+#else
+                            if ( PreviewAborted != null ) {
+                                PreviewAborted.Invoke( typeof( AppManager ), new EventArgs() );
+                            }
+#endif
                         } catch ( Exception ex ) {
                             PortUtil.stderr.println( "AppManager#setPlaying; ex=" + ex );
                             Logger.write( typeof( AppManager ) + ".setPlaying; ex=" + ex + "\n" );
@@ -2999,8 +3228,19 @@ namespace org.kbinani.cadencii {
             } else {
                 mSelected = -1;
             }
-            if ( mMainWindow != null ) {
-                mMainWindow.updateBgmMenuState();
+            try {
+#if JAVA
+                updateBgmStatusRequiredEvent.raise( typeof( AppManager ), new EventArgs() );
+#elif QT_VERSION
+                updateBgmStatusRequired( this, null );
+#else
+                if ( UpdateBgmStatusRequired != null ) {
+                    UpdateBgmStatusRequired.Invoke( typeof( AppManager ), new EventArgs() );
+                }
+#endif
+            } catch ( Exception ex ) {
+                Logger.write( typeof( AppManager ) + ".readVsq; ex=" + ex + "\n" );
+                PortUtil.stderr.println( typeof( AppManager ) + ".readVsq; ex=" + ex );
             }
         }
 
@@ -3036,8 +3276,19 @@ namespace org.kbinani.cadencii {
             int bar = mVsq.getPreMeasure() + 1;
             mEndMarker = mVsq.getClockFromBarCount( bar );
             mAutoBackupTimer.stop();
-            if ( mMainWindow != null ) {
-                mMainWindow.updateBgmMenuState();
+            try {
+#if JAVA
+                updateBgmStatusRequiredEvent.raise( typeof( AppManager ), new EventArgs() );
+#elif QT_VERSION
+                updateBgmStatusRequired( this, null );
+#else
+                if ( UpdateBgmStatusRequired != null ) {
+                    UpdateBgmStatusRequired.Invoke( typeof( AppManager ), new EventArgs() );
+                }
+#endif
+            } catch ( Exception ex ) {
+                Logger.write( typeof( AppManager ) + ".setVsqFile; ex=" + ex + "\n" );
+                PortUtil.stderr.println( typeof( AppManager ) + ".setVsqFile; ex=" + ex );
             }
         }
 
@@ -3240,7 +3491,7 @@ namespace org.kbinani.cadencii {
             reloadUtauVoiceDB();
 
             mAutoBackupTimer = new BTimer();
-            mAutoBackupTimer.tickEvent.add( new BEventHandler( typeof( AppManager ), "handleAutoBackupTimerTick" ) );
+            mAutoBackupTimer.Tick += new EventHandler( handleAutoBackupTimerTick );
         }
 
         /// <summary>

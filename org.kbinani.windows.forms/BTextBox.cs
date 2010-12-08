@@ -20,36 +20,6 @@
 namespace org.kbinani.windows.forms{
 
     public class BTextBox : System.Windows.Forms.TextBox {
-        // root impl of TextChanged event
-        #region event impl TextChanged
-        // root impl of TextChanged event is in BTextBox
-        public BEvent<BEventHandler> textChangedEvent = new BEvent<BEventHandler>();
-        protected override void OnTextChanged( System.EventArgs e ) {
-            base.OnTextChanged( e );
-            textChangedEvent.raise( this, e );
-        }
-        #endregion
-
-        // root impl of KeyUp event
-        #region event impl KeyUp
-        // root impl of KeyUp event is in BTextBox
-        public BEvent<BKeyEventHandler> keyUpEvent = new BEvent<BKeyEventHandler>();
-        protected override void OnKeyUp( System.Windows.Forms.KeyEventArgs e ) {
-            base.OnKeyUp( e );
-            keyUpEvent.raise( this, e );
-        }
-        #endregion
-
-        // root impl of KeyDown event
-        #region event impl KeyDown
-        // root impl of KeyDown event is in BTextBox
-        public BEvent<BKeyEventHandler> keyDownEvent = new BEvent<BKeyEventHandler>();
-        protected override void OnKeyDown( System.Windows.Forms.KeyEventArgs e ) {
-            base.OnKeyDown( e );
-            keyDownEvent.raise( this, e );
-        }
-        #endregion
-
         #region java.awt.Component
         // root implementation of java.awt.Component is in BForm.cs
         public java.awt.Dimension getMinimumSize() {
