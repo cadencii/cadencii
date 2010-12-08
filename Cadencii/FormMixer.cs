@@ -491,7 +491,7 @@ namespace org.kbinani.cadencii {
 
         public void FormMixer_SoloButtonClick( Object sender, BEventArgs e ) {
             VolumeTracker parent = (VolumeTracker)sender;
-            int track = (Integer)parent.getTag();
+            int track = parent.getTrack();
             try{
                 invokeSoloChangedEvent( track, parent.isSolo() );
             }catch( Exception ex ){
@@ -503,7 +503,7 @@ namespace org.kbinani.cadencii {
 
         public void FormMixer_MuteButtonClick( Object sender, BEventArgs e ) {
             VolumeTracker parent = (VolumeTracker)sender;
-            int track = (Integer)parent.getTag();
+            int track = parent.getTrack();
             try{
                 invokeMuteChangedEvent( track, parent.isMuted() );
             }catch( Exception ex ){

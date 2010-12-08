@@ -983,10 +983,29 @@ namespace org.kbinani.cadencii {
             mQueue.add( queue );
         }
 
+        /// <summary>
+        /// 合成用のメタテキストを生成します
+        /// </summary>
+        /// <param name="writer">テキストの出力先</param>
+        /// <param name="vsq_track">出力対象のトラック</param>
+        /// <param name="oto_ini">原音設定ファイルのパス</param>
+        /// <param name="end_clock"></param>
         public static void prepareMetaText( BufferedWriter writer, VsqTrack vsq_track, String oto_ini, int end_clock ) {
+            prepareMetaText( writer, vsq_track, oto_ini, end_clock, true );
+        }
+
+        /// <summary>
+        /// 合成用のメタテキストを生成します
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <param name="vsq_track"></param>
+        /// <param name="oto_ini"></param>
+        /// <param name="end_clock"></param>
+        /// <param name="world_mode"></param>
+        public static void prepareMetaText( BufferedWriter writer, VsqTrack vsq_track, String oto_ini, int end_clock, boolean world_mode ) {
             TreeMap<String, String> dict_singername_otoini = new TreeMap<String, String>();
             dict_singername_otoini.put( "", oto_ini );
-            prepareMetaText( writer, vsq_track, dict_singername_otoini, end_clock, true );
+            prepareMetaText( writer, vsq_track, dict_singername_otoini, end_clock, world_mode );
         }
 
         /// <summary>

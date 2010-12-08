@@ -80,7 +80,11 @@ namespace org.kbinani.java.io {
         public StreamWriter m_writer;
 
         public OutputStreamWriter( FileOutputStream stream, String charsetName ) {
-            m_writer = new StreamWriter( stream, Encoding.GetEncoding( charsetName ) );
+            Encoding enc = Encoding.GetEncoding( charsetName );
+            if ( charsetName.ToLower().Equals( "utf-8" ) ) {
+                enc = new System.Text.UTF8Encoding( false );
+            }
+            m_writer = new StreamWriter( stream, enc );
         }
     }
 

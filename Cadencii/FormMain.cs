@@ -542,6 +542,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         private float mFps = 0f;
         private double[] mFpsDrawTime2 = new double[128];
+        public BMenuItem menuFileExportVsq;
+        private BMenuItem menuFileExportVxt;
         private float mFps2 = 0f;
 #endif
         #endregion
@@ -6613,6 +6615,8 @@ namespace org.kbinani.cadencii {
             menuFileExportMidi.Click += new EventHandler( menuFileExportMidi_Click );
             menuFileExportMusicXml.Click += new EventHandler( menuFileExportMusicXml_Click );
             menuFileExportUst.Click += new EventHandler( menuFileExportUst_Click );
+            menuFileExportVsq.Click += new EventHandler( menuFileExportVsq_Click );
+            menuFileExportVxt.Click += new EventHandler( menuFileExportVxt_Click );
             menuFileRecent.MouseEnter += new EventHandler( handleMenuMouseEnter );
             menuFileQuit.MouseEnter += new EventHandler( handleMenuMouseEnter );
             menuFileQuit.Click += new EventHandler( menuFileQuit_Click );
@@ -10372,6 +10376,139 @@ namespace org.kbinani.cadencii {
             ust.write( file_name );
         }
 
+        public void menuFileExportVsq_Click( Object sender, EventArgs e ) {
+            VsqFileEx vsq = AppManager.getVsqFile();
+
+            // 出力先のファイル名を選ぶ
+            BFileChooser dialog = null;
+            int dialog_result = BFileChooser.CANCEL_OPTION;
+            String file_name = "";
+            try {
+                String last_path = AppManager.editorConfig.getLastUsedPathOut( "vsq" );
+                dialog = new BFileChooser( last_path );
+                dialog.setDialogTitle( _( "Export VSQ (*.vsq)" ) );
+                dialog.addFileFilter( _( "VSQ Format(*.vsq)|*.vsq" ) );
+                dialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
+                AppManager.beginShowDialog();
+                dialog_result = dialog.showSaveDialog( this );
+                AppManager.endShowDialog();
+                if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
+                    return;
+                }
+                file_name = dialog.getSelectedFile();
+                AppManager.editorConfig.setLastUsedPathOut( file_name );
+            } catch ( Exception ex ) {
+                Logger.write( typeof( FormMain ) + ".menuFileExportVsq_Click; ex=" + ex + "\n" );
+            } finally {
+                if ( dialog != null ) {
+                    try {
+#if !JAVA
+                        dialog.Dispose();
+#endif
+                    } catch ( Exception ex2 ) {
+                        Logger.write( typeof( FormMain ) + ".menuFileExportVsq_Click; ex=" + ex2 + "\n" );
+                    }
+                }
+            }
+
+            // 出力処理
+            VsqFile tvsq = (VsqFile)vsq;
+            tvsq.write( file_name, AppManager.editorConfig.PreSendTime, "Shift_JIS" );
+        }
+
+        public void menuFileExportVxt_Click( Object sender, EventArgs e ) {
+            // UTAUの歌手が登録されていない場合は警告を表示
+            if( AppManager.editorConfig.UtauSingers.size() <= 0 ){
+                BDialogResult dr = AppManager.showMessageBox(
+                    _( "UTAU singer not registered yet.\nContinue ?" ),
+                    _( "Info" ),
+                    org.kbinani.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
+                    org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+                if( dr != BDialogResult.YES ){
+                    return;
+                }
+            }
+
+            VsqFileEx vsq = AppManager.getVsqFile();
+
+            // 出力先のファイル名を選ぶ
+            BFileChooser dialog = null;
+            int dialog_result = BFileChooser.CANCEL_OPTION;
+            String file_name = "";
+            try {
+                String last_path = AppManager.editorConfig.getLastUsedPathOut( "txt" );
+                dialog = new BFileChooser( last_path );
+                dialog.setDialogTitle( _( "Metatext for vConnect" ) );
+                dialog.addFileFilter( _( "Text File(*.txt)|*.txt" ) );
+                dialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
+                AppManager.beginShowDialog();
+                dialog_result = dialog.showSaveDialog( this );
+                AppManager.endShowDialog();
+                if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
+                    return;
+                }
+                file_name = dialog.getSelectedFile();
+                AppManager.editorConfig.setLastUsedPathOut( file_name );
+            } catch ( Exception ex ) {
+                Logger.write( typeof( FormMain ) + ".menuFileExportVxt_Click; ex=" + ex + "\n" );
+            } finally {
+                if ( dialog != null ) {
+                    try {
+#if !JAVA
+                        dialog.Dispose();
+#endif
+                    } catch ( Exception ex2 ) {
+                        Logger.write( typeof( FormMain ) + ".menuFileExportVxt_Click; ex=" + ex2 + "\n" );
+                    }
+                }
+            }
+
+            // 出力処理
+            int selected = AppManager.getSelected();
+            VsqTrack vsq_track = vsq.Track.get( selected );
+            BufferedWriter bw = null;
+            try {
+                bw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( file_name ), "UTF-8" ) );
+                String oto_ini = AppManager.editorConfig.UtauSingers.get( 0 ).VOICEIDSTR;
+                // 先頭に登録されている歌手変更を検出
+                VsqEvent singer = null;
+                int c = vsq_track.getEventCount();
+                for ( int i = 0; i < c; i++ ) {
+                    VsqEvent itemi = vsq_track.getEvent( i );
+                    if ( itemi.ID.type == VsqIDType.Singer ) {
+                        singer = itemi;
+                        break;
+                    }
+                }
+                // 歌手のプログラムチェンジから，歌手の原音設定へのパスを取得する
+                if ( singer != null ) {
+                    int indx = singer.ID.IconHandle.Program;
+                    if ( 0 <= indx && indx < AppManager.editorConfig.UtauSingers.size() ) {
+                        oto_ini = AppManager.editorConfig.UtauSingers.get( indx ).VOICEIDSTR;
+                    }
+                }
+
+                // oto.iniで終わってる？
+                if ( !oto_ini.EndsWith( "oto.ini" ) ) {
+                    oto_ini = PortUtil.combinePath( oto_ini, "oto.ini" );
+                }
+
+                // 出力
+                VConnectWaveGenerator.prepareMetaText(
+                    bw, vsq_track, oto_ini, vsq.TotalClocks, false );
+            } catch ( Exception ex ) {
+                Logger.write( typeof( FormMain ) + ".menuFileExportVxt_Click; ex=" + ex + "\n" );
+                PortUtil.stderr.println( typeof( FormMain ) + ".menuFileExportVxt_Click; ex=" + ex );
+            } finally {
+                if ( bw != null ) {
+                    try {
+                        bw.close();
+                    } catch ( Exception ex2 ) {
+                    }
+                }
+            }
+        }
+
         public void menuFileExportWave_Click( Object sender, EventArgs e ) {
             int dialog_result = BFileChooser.CANCEL_OPTION;
             String filename = "";
@@ -10453,11 +10590,7 @@ namespace org.kbinani.cadencii {
         }
 
         public void menuFileExport_DropDownOpening( Object sender, EventArgs e ) {
-            //if ( AppManager.__DRAFT__useNewSynthImplement ){
-                menuFileExportWave.setEnabled( (AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getEventCount() > 0) );
-            //} else {
-                //menuFileExportWave.setEnabled( (AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getEventCount() > 0) && VSTiProxy.CurrentUser.Equals( "" ) );
-           // }
+            menuFileExportWave.setEnabled( (AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getEventCount() > 0) );
         }
 
         public void menuFileImportMidi_Click( Object sender, EventArgs e ) {
@@ -16155,6 +16288,7 @@ namespace org.kbinani.cadencii {
             this.menuFileExportMidi = new org.kbinani.windows.forms.BMenuItem();
             this.menuFileExportMusicXml = new org.kbinani.windows.forms.BMenuItem();
             this.menuFileExportUst = new org.kbinani.windows.forms.BMenuItem();
+            this.menuFileExportVsq = new org.kbinani.windows.forms.BMenuItem();
             this.toolStripMenuItem11 = new System.Windows.Forms.ToolStripSeparator();
             this.menuFileRecent = new org.kbinani.windows.forms.BMenu();
             this.toolStripMenuItem12 = new System.Windows.Forms.ToolStripSeparator();
@@ -16435,6 +16569,9 @@ namespace org.kbinani.cadencii {
             this.imageListMeasure = new System.Windows.Forms.ImageList( this.components );
             this.imageListTool = new System.Windows.Forms.ImageList( this.components );
             this.panel1 = new System.Windows.Forms.Panel();
+            this.panelOverview = new org.kbinani.cadencii.PictOverview();
+            this.pictPianoRoll = new org.kbinani.cadencii.PictPianoRoll();
+            this.hScroll = new org.kbinani.cadencii.HScroll();
             this.rebar = new org.kbinani.windows.forms.Rebar();
             this.imageListMenu = new System.Windows.Forms.ImageList( this.components );
             this.toolBarFile = new System.Windows.Forms.ToolBar();
@@ -16475,9 +16612,7 @@ namespace org.kbinani.cadencii {
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.panelOverview = new org.kbinani.cadencii.PictOverview();
-            this.pictPianoRoll = new org.kbinani.cadencii.PictPianoRoll();
-            this.hScroll = new org.kbinani.cadencii.HScroll();
+            this.menuFileExportVxt = new org.kbinani.windows.forms.BMenuItem();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
@@ -16490,12 +16625,12 @@ namespace org.kbinani.cadencii {
             this.toolStripBottom.SuspendLayout();
             this.splitContainerProperty.SuspendLayout();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.panelOverview)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).BeginInit();
             this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();
             this.statusStrip.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.panelOverview)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStripMain
@@ -16607,13 +16742,13 @@ namespace org.kbinani.cadencii {
             // menuFileImportVsq
             // 
             this.menuFileImportVsq.Name = "menuFileImportVsq";
-            this.menuFileImportVsq.Size = new System.Drawing.Size( 142, 22 );
+            this.menuFileImportVsq.Size = new System.Drawing.Size( 152, 22 );
             this.menuFileImportVsq.Text = "VSQ File";
             // 
             // menuFileImportMidi
             // 
             this.menuFileImportMidi.Name = "menuFileImportMidi";
-            this.menuFileImportMidi.Size = new System.Drawing.Size( 142, 22 );
+            this.menuFileImportMidi.Size = new System.Drawing.Size( 152, 22 );
             this.menuFileImportMidi.Text = "Standard MIDI";
             // 
             // menuFileExport
@@ -16621,9 +16756,11 @@ namespace org.kbinani.cadencii {
             this.menuFileExport.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuFileExport.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
             this.menuFileExportWave,
+            this.menuFileExportVsq,
             this.menuFileExportMidi,
             this.menuFileExportMusicXml,
-            this.menuFileExportUst} );
+            this.menuFileExportUst,
+            this.menuFileExportVxt} );
             this.menuFileExport.Name = "menuFileExport";
             this.menuFileExport.Size = new System.Drawing.Size( 214, 22 );
             this.menuFileExport.Text = "Export(&E)";
@@ -16652,6 +16789,12 @@ namespace org.kbinani.cadencii {
             this.menuFileExportUst.Name = "menuFileExportUst";
             this.menuFileExportUst.Size = new System.Drawing.Size( 242, 22 );
             this.menuFileExportUst.Text = "UTAU Project File (current track)";
+            // 
+            // menuFileExportVsq
+            // 
+            this.menuFileExportVsq.Name = "menuFileExportVsq";
+            this.menuFileExportVsq.Size = new System.Drawing.Size( 242, 22 );
+            this.menuFileExportVsq.Text = "VSQ File";
             // 
             // toolStripMenuItem11
             // 
@@ -18225,7 +18368,7 @@ namespace org.kbinani.cadencii {
             this.cMenuTrackSelector.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.cMenuTrackSelector.ShowCheckMargin = true;
             this.cMenuTrackSelector.ShowImageMargin = false;
-            this.cMenuTrackSelector.Size = new System.Drawing.Size( 186, 358 );
+            this.cMenuTrackSelector.Size = new System.Drawing.Size( 186, 336 );
             // 
             // cMenuTrackSelectorPointer
             // 
@@ -18773,6 +18916,40 @@ namespace org.kbinani.cadencii {
             this.panel1.Size = new System.Drawing.Size( 421, 279 );
             this.panel1.TabIndex = 24;
             // 
+            // panelOverview
+            // 
+            this.panelOverview.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelOverview.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(106)))), ((int)(((byte)(108)))), ((int)(((byte)(108)))) );
+            this.panelOverview.Location = new System.Drawing.Point( 0, 1 );
+            this.panelOverview.Margin = new System.Windows.Forms.Padding( 0 );
+            this.panelOverview.Name = "panelOverview";
+            this.panelOverview.Size = new System.Drawing.Size( 700, 45 );
+            this.panelOverview.TabIndex = 19;
+            this.panelOverview.TabStop = false;
+            // 
+            // pictPianoRoll
+            // 
+            this.pictPianoRoll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictPianoRoll.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))) );
+            this.pictPianoRoll.Location = new System.Drawing.Point( 0, 94 );
+            this.pictPianoRoll.Margin = new System.Windows.Forms.Padding( 0 );
+            this.pictPianoRoll.Name = "pictPianoRoll";
+            this.pictPianoRoll.Size = new System.Drawing.Size( 405, 169 );
+            this.pictPianoRoll.TabIndex = 12;
+            this.pictPianoRoll.TabStop = false;
+            // 
+            // hScroll
+            // 
+            this.hScroll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.hScroll.Location = new System.Drawing.Point( 65, 263 );
+            this.hScroll.Name = "hScroll";
+            this.hScroll.Size = new System.Drawing.Size( 257, 16 );
+            this.hScroll.TabIndex = 16;
+            // 
             // rebar
             // 
             this.rebar.Dock = System.Windows.Forms.DockStyle.Top;
@@ -18893,7 +19070,7 @@ namespace org.kbinani.cadencii {
             this.toolBarPosition.Location = new System.Drawing.Point( 11, 32 );
             this.toolBarPosition.Name = "toolBarPosition";
             this.toolBarPosition.ShowToolTips = true;
-            this.toolBarPosition.Size = new System.Drawing.Size( 944, 26 );
+            this.toolBarPosition.Size = new System.Drawing.Size( 944, 40 );
             this.toolBarPosition.TabIndex = 25;
             this.toolBarPosition.TextAlign = System.Windows.Forms.ToolBarTextAlign.Right;
             this.toolBarPosition.Wrappable = false;
@@ -18965,7 +19142,7 @@ namespace org.kbinani.cadencii {
             this.toolBarMeasure.Location = new System.Drawing.Point( 11, 62 );
             this.toolBarMeasure.Name = "toolBarMeasure";
             this.toolBarMeasure.ShowToolTips = true;
-            this.toolBarMeasure.Size = new System.Drawing.Size( 944, 26 );
+            this.toolBarMeasure.Size = new System.Drawing.Size( 944, 40 );
             this.toolBarMeasure.TabIndex = 25;
             this.toolBarMeasure.TextAlign = System.Windows.Forms.ToolBarTextAlign.Right;
             this.toolBarMeasure.Wrappable = false;
@@ -19013,7 +19190,7 @@ namespace org.kbinani.cadencii {
             this.toolBarTool.Location = new System.Drawing.Point( 11, 92 );
             this.toolBarTool.Name = "toolBarTool";
             this.toolBarTool.ShowToolTips = true;
-            this.toolBarTool.Size = new System.Drawing.Size( 944, 26 );
+            this.toolBarTool.Size = new System.Drawing.Size( 944, 40 );
             this.toolBarTool.TabIndex = 25;
             this.toolBarTool.TextAlign = System.Windows.Forms.ToolBarTextAlign.Right;
             this.toolBarTool.Wrappable = false;
@@ -19101,39 +19278,11 @@ namespace org.kbinani.cadencii {
             this.statusLabel.Name = "statusLabel";
             this.statusLabel.Size = new System.Drawing.Size( 0, 17 );
             // 
-            // panelOverview
+            // menuFileExportVxt
             // 
-            this.panelOverview.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.panelOverview.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(106)))), ((int)(((byte)(108)))), ((int)(((byte)(108)))) );
-            this.panelOverview.Location = new System.Drawing.Point( 0, 1 );
-            this.panelOverview.Margin = new System.Windows.Forms.Padding( 0 );
-            this.panelOverview.Name = "panelOverview";
-            this.panelOverview.Size = new System.Drawing.Size( 700, 45 );
-            this.panelOverview.TabIndex = 19;
-            this.panelOverview.TabStop = false;
-            // 
-            // pictPianoRoll
-            // 
-            this.pictPianoRoll.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.pictPianoRoll.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))) );
-            this.pictPianoRoll.Location = new System.Drawing.Point( 0, 94 );
-            this.pictPianoRoll.Margin = new System.Windows.Forms.Padding( 0 );
-            this.pictPianoRoll.Name = "pictPianoRoll";
-            this.pictPianoRoll.Size = new System.Drawing.Size( 405, 169 );
-            this.pictPianoRoll.TabIndex = 12;
-            this.pictPianoRoll.TabStop = false;
-            // 
-            // hScroll
-            // 
-            this.hScroll.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.hScroll.Location = new System.Drawing.Point( 65, 263 );
-            this.hScroll.Name = "hScroll";
-            this.hScroll.Size = new System.Drawing.Size( 257, 16 );
-            this.hScroll.TabIndex = 16;
+            this.menuFileExportVxt.Name = "menuFileExportVxt";
+            this.menuFileExportVxt.Size = new System.Drawing.Size( 242, 22 );
+            this.menuFileExportVxt.Text = "Metatext for vConnect";
             // 
             // FormMain
             // 
@@ -19165,6 +19314,8 @@ namespace org.kbinani.cadencii {
             this.toolStripBottom.PerformLayout();
             this.splitContainerProperty.ResumeLayout( false );
             this.panel1.ResumeLayout( false );
+            ((System.ComponentModel.ISupportInitialize)(this.panelOverview)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).EndInit();
             this.toolStripContainer1.BottomToolStripPanel.ResumeLayout( false );
             this.toolStripContainer1.BottomToolStripPanel.PerformLayout();
             this.toolStripContainer1.ContentPanel.ResumeLayout( false );
@@ -19172,8 +19323,6 @@ namespace org.kbinani.cadencii {
             this.toolStripContainer1.PerformLayout();
             this.statusStrip.ResumeLayout( false );
             this.statusStrip.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.panelOverview)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictPianoRoll)).EndInit();
             this.ResumeLayout( false );
             this.PerformLayout();
 

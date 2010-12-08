@@ -3020,14 +3020,14 @@ namespace org.kbinani.cadencii {
             boolean hide = false;
             if ( mVsq != null ) {
                 String path = PortUtil.getDirectoryName( file );
-                String file2 = PortUtil.combinePath( path, PortUtil.getFileNameWithoutExtension( file ) + ".vsq" );
+                //String file2 = PortUtil.combinePath( path, PortUtil.getFileNameWithoutExtension( file ) + ".vsq" );
                 mVsq.writeAsXml( file );
-                mVsq.write( file2 );
+                //mVsq.write( file2 );
 #if !JAVA
                 if ( hide ) {
                     try {
                         System.IO.File.SetAttributes( file, System.IO.FileAttributes.Hidden );
-                        System.IO.File.SetAttributes( file2, System.IO.FileAttributes.Hidden );
+                        //System.IO.File.SetAttributes( file2, System.IO.FileAttributes.Hidden );
                     } catch ( Exception ex ) {
                         PortUtil.stderr.println( "AppManager#saveToCor; ex=" + ex );
                         Logger.write( typeof( AppManager ) + ".saveToCor; ex=" + ex + "\n" );
