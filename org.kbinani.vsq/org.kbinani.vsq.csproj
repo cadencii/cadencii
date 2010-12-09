@@ -116,6 +116,7 @@
     <Compile Include="VsqNote.cs" />
     <Compile Include="VsqPhoneticSymbol.cs" />
     <Compile Include="VsqTrack.cs" />
+    <Compile Include="VsqUtility.cs" />
     <Compile Include="VsqVoiceLanguage.cs" />
     <Compile Include="WrappedStreamWriter.cs" />
   </ItemGroup>

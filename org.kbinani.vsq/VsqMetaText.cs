@@ -427,7 +427,7 @@ namespace org.kbinani.vsq {
                     if ( item.ID.IconHandle is IconHandle ) {
                         IconHandle ish = (IconHandle)item.ID.IconHandle;
                         current_handle++;
-                        VsqHandle handle_item = ish.castToVsqHandle();
+                        VsqHandle handle_item = VsqHandle.castFromIconHandle( ish );
                         handle_item.Index = current_handle;
                         handle.add( handle_item );
                         item.ID.IconHandle_index = current_handle;
@@ -443,7 +443,7 @@ namespace org.kbinani.vsq {
                 // LyricHandle
                 if ( item.ID.LyricHandle != null ) {
                     current_handle++;
-                    VsqHandle handle_item = item.ID.LyricHandle.castToVsqHandle();
+                    VsqHandle handle_item = VsqHandle.castFromLyricHandle( item.ID.LyricHandle );
                     handle_item.Index = current_handle;
                     handle_item.addQuotationMark = add_quotation_mark;
                     handle.add( handle_item );

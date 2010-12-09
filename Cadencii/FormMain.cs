@@ -35,6 +35,7 @@ using System.Diagnostics;
 using System.Media;
 using System.Text;
 using System.Threading;
+using System.Collections.Generic;
 using org.kbinani.apputil;
 using org.kbinani.cadencii.draft;
 using org.kbinani.componentmodel;
@@ -2738,10 +2739,10 @@ namespace org.kbinani.cadencii {
                         }
                     }
                     if ( !original_symbol[j].Equals( phonetic_symbol[j] ) ) {
-                        String[] spl = items[j].ID.LyricHandle.L0.getPhoneticSymbolList();
-                        int[] adjustment = new int[spl.Length];
-                        for ( int i = 0; i < adjustment.Length; i++ ) {
-                            adjustment[i] = VsqPhoneticSymbol.isConsonant( spl[i] ) ? 64 : 0;
+                        List<string> spl = items[j].ID.LyricHandle.L0.getPhoneticSymbolList();
+                        List<int> adjustment = new List<int>();
+                        for ( int i = 0; i < spl.Count; i++ ) {
+                            adjustment.Add( VsqPhoneticSymbol.isConsonant( spl[i] ) ? 64 : 0 );
                         }
                         items[j].ID.LyricHandle.L0.setConsonantAdjustmentList( adjustment );
                     }

@@ -26,9 +26,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.kbinani.componentmodel"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.kbinani.xml", "org.kbinani.xml\org.kbinani.xml.csproj", "{23C7549D-A0FD-402A-8470-95DB4BE6081C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{CF8C6024-0AA7-4A3C-B519-17F18AE57D38}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cadencii", "Cadencii\Cadencii.csproj", "{A97A6445-5A48-4CEC-A7CE-05B10126CA2A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pp_cs2java", "pp_cs2java\pp_cs2java.csproj", "{421EDC80-EED3-4CFC-8041-FD1243707B0A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -115,10 +115,6 @@ Global
 		{23C7549D-A0FD-402A-8470-95DB4BE6081C}.Release|x86.Build.0 = Release|x86
 		{23C7549D-A0FD-402A-8470-95DB4BE6081C}.ReleaseMinimal|x86.ActiveCfg = Release|x86
 		{23C7549D-A0FD-402A-8470-95DB4BE6081C}.ReleaseMinimal|x86.Build.0 = Release|x86
-		{CF8C6024-0AA7-4A3C-B519-17F18AE57D38}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{CF8C6024-0AA7-4A3C-B519-17F18AE57D38}.DebugMinimal|x86.ActiveCfg = Debug|Any CPU
-		{CF8C6024-0AA7-4A3C-B519-17F18AE57D38}.Release|x86.ActiveCfg = Release|Any CPU
-		{CF8C6024-0AA7-4A3C-B519-17F18AE57D38}.ReleaseMinimal|x86.ActiveCfg = Release|Any CPU
 		{A97A6445-5A48-4CEC-A7CE-05B10126CA2A}.Debug|x86.ActiveCfg = Debug|x86
 		{A97A6445-5A48-4CEC-A7CE-05B10126CA2A}.Debug|x86.Build.0 = Debug|x86
 		{A97A6445-5A48-4CEC-A7CE-05B10126CA2A}.DebugMinimal|x86.ActiveCfg = DebugMinimal|x86
@@ -127,6 +123,14 @@ Global
 		{A97A6445-5A48-4CEC-A7CE-05B10126CA2A}.Release|x86.Build.0 = Release|x86
 		{A97A6445-5A48-4CEC-A7CE-05B10126CA2A}.ReleaseMinimal|x86.ActiveCfg = ReleaseMinimal|x86
 		{A97A6445-5A48-4CEC-A7CE-05B10126CA2A}.ReleaseMinimal|x86.Build.0 = ReleaseMinimal|x86
+		{421EDC80-EED3-4CFC-8041-FD1243707B0A}.Debug|x86.ActiveCfg = Debug|x86
+		{421EDC80-EED3-4CFC-8041-FD1243707B0A}.Debug|x86.Build.0 = Debug|x86
+		{421EDC80-EED3-4CFC-8041-FD1243707B0A}.DebugMinimal|x86.ActiveCfg = Debug|x86
+		{421EDC80-EED3-4CFC-8041-FD1243707B0A}.DebugMinimal|x86.Build.0 = Debug|x86
+		{421EDC80-EED3-4CFC-8041-FD1243707B0A}.Release|x86.ActiveCfg = Release|x86
+		{421EDC80-EED3-4CFC-8041-FD1243707B0A}.Release|x86.Build.0 = Release|x86
+		{421EDC80-EED3-4CFC-8041-FD1243707B0A}.ReleaseMinimal|x86.ActiveCfg = Release|x86
+		{421EDC80-EED3-4CFC-8041-FD1243707B0A}.ReleaseMinimal|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

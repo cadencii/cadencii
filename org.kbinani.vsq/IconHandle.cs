@@ -14,7 +14,8 @@
 #if JAVA
 package org.kbinani.vsq;
 
-import java.io.*;
+#elif __cplusplus
+namespace org { namespace kbinani { namespace vsq {
 #else
 using System;
 
@@ -27,6 +28,8 @@ namespace org.kbinani.vsq {
     /// </summary>
 #if JAVA
     public class IconHandle implements Cloneable, Serializable{
+#elif __cplusplus
+    class IconHandle {
 #else
     [Serializable]
     public class IconHandle : ICloneable{
@@ -34,16 +37,16 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// キャプション。
         /// </summary>
-        public String Caption = "";
+        public string Caption;
         /// <summary>
         /// この歌手設定を一意に識別するためのIDです。
         /// </summary>
-        public String IconID = "";
+        public string IconID;
         /// <summary>
         /// ユーザ・フレンドリー名。
         /// このフィールドの値は、他の歌手設定のユーザ・フレンドリー名と重複する場合があります。
         /// </summary>
-        public String IDS = "";
+        public string IDS;
         public int Index;
         /// <summary>
         /// ゲートタイム長さ。
@@ -57,6 +60,9 @@ namespace org.kbinani.vsq {
         /// 新しい歌手設定のインスタンスを初期化します。
         /// </summary>
         public IconHandle() {
+            Caption = "";
+            IconID = "";
+            IDS = "";
         }
 
         /// <summary>
@@ -80,14 +86,19 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="item">比較対象の歌手変更。</param>
         /// <returns>このインスタンスと、比較対象の歌手変更が等しければtrue、そうでなければfalseを返します。</returns>
-        public boolean equals( IconHandle item ) {
+        public bool equals( IconHandle item ) {
+#if __cplusplus
+            return IconID == item.IconID;
+#else
             if ( item == null ) {
                 return false;
             } else {
                 return IconID.Equals( item.IconID );
             }
+#endif
         }
 
+#if !__cplusplus
         /// <summary>
         /// このインスタンスのコピーを作成します。
         /// </summary>
@@ -104,8 +115,11 @@ namespace org.kbinani.vsq {
             ret.Program = Program;
             return ret;
         }
+#endif
 
-#if !JAVA
+#if JAVA
+#elif __cplusplus
+#else
         /// <summary>
         /// このインスタンスのコピーを作成します。
         /// </summary>
@@ -115,24 +129,15 @@ namespace org.kbinani.vsq {
         }
 #endif
 
-        /// <summary>
-        /// この歌手設定のインスタンスを、VsqHandleに型キャストします。
-        /// </summary>
-        /// <returns></returns>
-        public VsqHandle castToVsqHandle() {
-            VsqHandle ret = new VsqHandle();
-            ret.m_type = VsqHandleType.Singer;
-            ret.Caption = Caption;
-            ret.IconID = IconID;
-            ret.IDS = IDS;
-            ret.Index = Index;
-            ret.Language = Language;
-            ret.setLength( Length );
-            ret.Program = Program;
-            return ret;
-        }
+#if __cplusplus
+    };
+#else
     }
+#endif
 
-#if !JAVA
+#if JAVA
+#elif __cplusplus
+} } }
+#else
 }
 #endif

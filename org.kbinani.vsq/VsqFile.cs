@@ -20,6 +20,7 @@ import java.io.*;
 import org.kbinani.*;
 #else
 using System;
+using System.Collections.Generic;
 using org.kbinani;
 using org.kbinani.java.util;
 using org.kbinani.java.io;
@@ -3065,9 +3066,9 @@ namespace org.kbinani.vsq {
                 add_vib_cc_immediately = (bVibratoDelay == 0);
             }
 
-            String[] spl = ve.ID.LyricHandle.L0.getPhoneticSymbolList();
+            List<String> spl = ve.ID.LyricHandle.L0.getPhoneticSymbolList();
             String s = "";
-            for ( int j = 0; j < spl.Length; j++ ) {
+            for ( int j = 0; j < spl.Count; j++ ) {
                 s += spl[j];
             }
             char[] symbols = s.ToCharArray();
@@ -3076,8 +3077,8 @@ namespace org.kbinani.vsq {
             }
             add.append( NRPN.CVM_NM_PHONETIC_SYMBOL_BYTES, (byte)symbols.Length, true );// (byte)0x12(Number of phonetic symbols in bytes)
             int count = -1;
-            int[] consonantAdjustment = ve.ID.LyricHandle.L0.getConsonantAdjustmentList();
-            for ( int j = 0; j < spl.Length; j++ ) {
+            List<int> consonantAdjustment = ve.ID.LyricHandle.L0.getConsonantAdjustmentList();
+            for ( int j = 0; j < spl.Count; j++ ) {
                 char[] chars = spl[j].ToCharArray();
                 for ( int k = 0; k < chars.Length; k++ ) {
                     count++;

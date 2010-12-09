@@ -136,6 +136,49 @@ namespace org.kbinani.vsq {
             return ret;
         }
 
+        public static VsqHandle castFromLyricHandle( LyricHandle handle ) {
+#if __cplusplus
+            VsqHandle ret;
+#else
+            VsqHandle ret = new VsqHandle();
+#endif
+#if __cplusplus
+            ret.m_type = org::kbinani::vsq::Lyric;
+            ret.L0 = handle.L0;
+#else
+            ret.m_type = VsqHandleType.Lyric;
+            ret.L0 = (Lyric)handle.L0.clone();
+#endif
+            ret.Trailing = handle.Trailing;
+            ret.Index = handle.Index;
+            return ret;
+        }
+
+        /// <summary>
+        /// 歌手設定のインスタンスを、VsqHandleに型キャストします。
+        /// </summary>
+        /// <returns></returns>
+        public static VsqHandle castFromIconHandle( IconHandle handle ) {
+#if __cplusplus
+            VsqHandle ret;
+#else
+            VsqHandle ret = new VsqHandle();
+#endif
+#if __cplusplus
+            ret.m_type = org::kbinani::vsq::Singer;
+#else
+            ret.m_type = VsqHandleType.Singer;
+#endif
+            ret.Caption = handle.Caption;
+            ret.IconID = handle.IconID;
+            ret.IDS = handle.IDS;
+            ret.Index = handle.Index;
+            ret.Language = handle.Language;
+            ret.setLength( handle.Length );
+            ret.Program = handle.Program;
+            return ret;
+        }
+
         /// <summary>
         /// インスタンスをストリームに書き込みます。
         /// encode=trueの場合、2バイト文字をエンコードして出力します。

@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Reflection;
 using org.kbinani;
-using org.kbinani.windows.forms;
 using org.kbinani.java.awt.event_;
 using org.kbinani.javax.swing;
 
@@ -19,7 +18,7 @@ class pp_cs2java {
     static String s_encoding = "UTF-8";
     static bool s_ignore_empty = true; // プリプロセッサを通すと中身が空になるファイルを無視する場合はtrue
     static bool s_ignore_unknown_package = false; // package句が見つからなかったファイルを無視する場合true
-    static Stack<string> s_current_dirctive = new Stack<string>(); // 現在のプリプロセッサディレクティブ．いれこになっている場合についても対応
+    static Stack<Directives> s_current_dirctive = new Stack<Directives>(); // 現在のプリプロセッサディレクティブ．いれこになっている場合についても対応
     static int s_shift_indent = 0; // インデント解除する桁数
     static bool s_parse_comment = false;
     static List<string> s_packages = new List<string>();
@@ -29,7 +28,10 @@ class pp_cs2java {
     static string s_logfile = ""; // ログファイルの名前
     static bool s_logfile_overwrite = false; // ログファイルを上書きするかどうか(trueなら上書きする、falseなら末尾に追加)
     static List<string> s_included = new List<string>(); // インクルードされたファイルのリスト
-    static readonly string[,] REPLACE = new string[,]{
+    static string[,] REPLACE = new string[0, 2];
+    static readonly string[,] REPLACE_JAVA = new string[,]{
+        {"string", "String"},
+        {"bool", "boolean"},
         {".Equals(", ".equals(" },
         {".ToString(", ".toString(" },
         {".StartsWith(", ".startsWith(" },
@@ -86,6 +88,16 @@ class pp_cs2java {
         {" PaintEventArgs", " BPaintEventArgs"},
         {" KeyPressEventArgs", " BKeyPressEventArgs"},
         {" Type ", " Class "},
+        {" List<", " Vector<"},
+        {".Count", ".size()"},
+        {".Clear()", ".clear()"},
+    };
+    static string[,] REPLACE_CPP = new string[,]{
+        {"public ", "public: "},
+        {"private ", "private: "},
+        {" List<", " vector<"},
+        {".Count", ".size()"},
+        {"VsqUtility.", "VsqUtility::"},
     };
     private static Regex reg_eventhandler = new Regex( @"(?<pre>.*?)(?<instance>\w*)[.]*(?<event>\w*)\s*(?<operator>[\+\-]\=)\s*new\s*(?<handler>\w*)EventHandler\s*\(\s*(?<method>.*)\s*\)" );
 
@@ -97,7 +109,7 @@ class pp_cs2java {
         Console.WriteLine( "    pp_cs2java -i [in file] -o [out file] {options}" );
         Console.WriteLine( "Options:" );
         Console.WriteLine( "    -r                     enable recursive search" );
-        Console.WriteLine( "    -e                     disable ignoring empty file" );
+        Console.WriteLine( "    -e                     do not ignore empty file" );
         Console.WriteLine( "    -c                     enable comment parse" );
         Console.WriteLine( "    -D[name]               define preprocessor directive" );
         Console.WriteLine( "    -t [path]              set search directory path" );
@@ -108,19 +120,21 @@ class pp_cs2java {
         Console.WriteLine( "                           (decrease if minus)" );
         Console.WriteLine( "    -encoding [enc. name]  set text file encoding" );
         Console.WriteLine( "    -m [path]              set path of source code for debug" );
-        Console.WriteLine( "    -u                     enable ignoring unknown package" );
+        Console.WriteLine( "    -u                     ignoring unknown package" );
         Console.WriteLine( "    -l [path]              set path of \"import\" log-file" );
         Console.WriteLine( "    -ly                    overwrite \"import\" log-file" );
         Console.WriteLine( "    -h,-help               print this help" );
+        Console.WriteLine( "    --replace-X            enable replace words list" );
+        Console.WriteLine( "                           X: java or cpp" );
     }
 
     static void Main( string[] args ) {
-//string _debug_line = "int second = s.IndexOf( '\"', first_end + 1 );";
-/*WordReplaceContext ct = new WordReplaceContext();
-string _debug_ret = replaceText( _debug_line, ct );
-Console.WriteLine( _debug_line );
-Console.WriteLine( _debug_ret );
-return;*/
+        //string _debug_line = "int second = s.IndexOf( '\"', first_end + 1 );";
+        /*WordReplaceContext ct = new WordReplaceContext();
+        string _debug_ret = replaceText( _debug_line, ct );
+        Console.WriteLine( _debug_line );
+        Console.WriteLine( _debug_ret );
+        return;*/
         String current_parse = "";
         bool print_usage = false;
         if ( args.Length <= 0 ) {
@@ -149,8 +163,15 @@ return;*/
                     current_parse = "";
                 } else if ( current_parse == "-h" || current_parse == "-help" ) {
                     print_usage = true;
-                } else if( current_parse == "-ly" ){
+                } else if ( current_parse == "-ly" ) {
                     s_logfile_overwrite = true;
+                } else if ( current_parse.StartsWith( "--replace-" ) ) {
+                    string type = current_parse.Substring( "--replace-".Length );
+                    if ( type == "java" ) {
+                        REPLACE = REPLACE_JAVA;
+                    } else if ( type == "cpp" ) {
+                        REPLACE = REPLACE_CPP;
+                    }
                 }
             } else {
                 if ( current_parse == "-t" ) {
@@ -171,17 +192,17 @@ return;*/
                 } else if ( current_parse == "-i" ) {
                     s_target_file = args[i];
                     current_parse = "";
-                } else if( current_parse == "-o" ) {
+                } else if ( current_parse == "-o" ) {
                     s_target_file_out = args[i];
                     current_parse = "";
-                } else if( current_parse == "-l" ){
+                } else if ( current_parse == "-l" ) {
                     s_logfile = args[i];
                     current_parse = "";
                 }
             }
         }
 
-        if( s_target_dir != "" && s_target_file != "" ){
+        if ( s_target_dir != "" && s_target_file != "" ) {
             Console.WriteLine( "error; confliction in command line arguments. -i and -t option can't co-exists" );
             return;
         }
@@ -231,27 +252,27 @@ return;*/
             }
         }
 
-        if( s_logfile != "" ){
+        if ( s_logfile != "" ) {
             StreamWriter sw = null;
-            try{
-                if( File.Exists( s_logfile ) ){
-                    if( s_logfile_overwrite ){
+            try {
+                if ( File.Exists( s_logfile ) ) {
+                    if ( s_logfile_overwrite ) {
                         sw = new StreamWriter( s_logfile );
-                    }else{
+                    } else {
                         sw = new StreamWriter( s_logfile, true );
                     }
-                }else{
+                } else {
                     sw = new StreamWriter( s_logfile );
                 }
-                foreach( string s in s_included ){
+                foreach ( string s in s_included ) {
                     sw.WriteLine( s );
                 }
-            }catch( Exception ex ){
-            }finally{
-                if( sw != null ){
-                    try{
+            } catch ( Exception ex ) {
+            } finally {
+                if ( sw != null ) {
+                    try {
                         sw.Close();
-                    }catch( Exception ex2 ){
+                    } catch ( Exception ex2 ) {
                     }
                 }
             }
@@ -297,7 +318,7 @@ return;*/
                 if ( linetrim.StartsWith( "//INCLUDE " ) ) {
                     string p = linetrim.Substring( 10 );
                     string include_path = Path.Combine( Path.GetDirectoryName( path ), p );
-                    if( !s_included.Contains( p ) ){
+                    if ( !s_included.Contains( p ) ) {
                         s_included.Add( p );
                     }
 #if DEBUG
@@ -312,20 +333,20 @@ return;*/
                             }
                         }
                     }
-                } else if( linetrim.StartsWith( "//INCLUDE-SECTION " ) ){
+                } else if ( linetrim.StartsWith( "//INCLUDE-SECTION " ) ) {
                     string s = linetrim.Substring( 18 );
                     string[] spl = s.Split( new char[] { ' ' } );
                     string section_name = spl[0];
 #if DEBUG
-                   // Console.WriteLine( "include-section; section_name=" + section_name );
+                    // Console.WriteLine( "include-section; section_name=" + section_name );
 #endif
                     string p = spl[1];
                     string include_path = Path.Combine( Path.GetDirectoryName( path ), p );
-                    if( !s_included.Contains( p ) ){
+                    if ( !s_included.Contains( p ) ) {
                         s_included.Add( p );
                     }
 #if DEBUG
-                   // Console.WriteLine( "include_path=" + include_path );
+                    // Console.WriteLine( "include_path=" + include_path );
                     //Console.WriteLine( "File.Exists(include_path)=" + File.Exists( include_path ) );
 #endif
                     if ( File.Exists( include_path ) ) {
@@ -381,23 +402,49 @@ return;*/
                 if ( line.StartsWith( "#" ) ) {
                     String trim = line.Replace( " ", "" );
                     if ( trim.StartsWith( "#if!" ) ) {
-                        s_current_dirctive.Push( trim );
+                        string name = trim.Substring( 4 );
+                        Directives ds = new Directives();
+                        DirectiveUnit d = new DirectiveUnit( name, true );
+                        ds.Push( d );
+                        s_current_dirctive.Push( ds );
                     } else if ( trim.StartsWith( "#if" ) ) {
-                        s_current_dirctive.Push( trim );
-                    } else if ( trim.StartsWith( "#else" ) ) {
+                        string name = trim.Substring( 3 );
+                        Directives ds = new Directives();
+                        DirectiveUnit d = new DirectiveUnit( name, false );
+                        ds.Push( d );
+                        s_current_dirctive.Push( ds );
+                    } else if ( trim.StartsWith( "#else" ) || trim.StartsWith( "#elif" ) ) {
                         if ( s_current_dirctive.Count > 0 ) {
-                            string current = s_current_dirctive.Pop();
-#if DEBUG
-                            //Console.Write( "  " + current + " -> " );
-#endif
-                            if ( current.StartsWith( "#if!" ) ) {
-                                current = "#if" + current.Substring( 4 );
-                            } else {
-                                current = "#if!" + current.Substring( 3 );
+                            // 現在設定されているディレクティブを取得
+                            Directives current = s_current_dirctive.Pop();
+
+                            // boolを反転する
+                            // まず現在のを配列に取り出して
+                            List<DirectiveUnit> cache = new List<DirectiveUnit>();
+                            int c = current.Count;
+                            for ( int i = 0; i < c; i++ ) {
+                                cache.Add( current.Pop() );
                             }
-#if DEBUG
-                            //Console.WriteLine( current );
-#endif
+                            // 否定して格納
+                            for ( int i = 0; i < c; i++ ) {
+                                DirectiveUnit d = cache[i];
+                                d.not = !d.not;
+                                current.Push( d );
+                            }
+
+                            // elifの場合，さらに追加を行う
+                            if ( trim.StartsWith( "#elif" ) ) {
+                                string name = trim.Substring( 5 );
+                                bool not = false;
+                                if ( trim.StartsWith( "#elif!" ) ) {
+                                    name = trim.Substring( 6 );
+                                    not = true;
+                                }
+                                DirectiveUnit d = new DirectiveUnit( name, not );
+                                current.Push( d );
+                            }
+
+                            // 格納
                             s_current_dirctive.Push( current );
                         }
                     } else if ( trim.StartsWith( "#endif" ) ) {
@@ -423,69 +470,88 @@ return;*/
                     }
                 }
 
-                bool print_this_line = s_current_dirctive.Count <= 0;
-                string dirs = "";
-                bool first = true;
-                foreach ( string c in s_current_dirctive ) {
-                    dirs += c + " ";
-                    if ( c.StartsWith( "#if!" ) ) {
-                        string search = c.Substring( 4 );
-                        if ( first ) {
-                            print_this_line = !s_defines.Contains( search ) && !local_defines.Contains( search );
-                            first = false;
-                        } else {
-                            print_this_line = print_this_line && (!s_defines.Contains( search ) && !local_defines.Contains( search ));
-                        }
-                    } else if ( c.StartsWith( "#if" ) ) {
-                        string search = c.Substring( 3 );
-                        if ( first ) {
-                            print_this_line = s_defines.Contains( search ) || local_defines.Contains( search );
-                            first = false;
-                        } else {
-                            print_this_line = print_this_line && (s_defines.Contains( search ) || local_defines.Contains( search ));
+                bool print_this_line = true;// s_current_dirctive.Count <= 0;
+#if DEBUG
+
+                Console.WriteLine( "------------------------------------------------------------------------" );
+                Console.WriteLine( "    {" );
+                foreach ( Directives ds in s_current_dirctive ) {
+                    Console.WriteLine( "        {" );
+                    foreach ( DirectiveUnit d in ds ) {
+                        Console.WriteLine( "            " + (d.not ? "!" : "") + d.name );
+                    }
+                    Console.WriteLine( "        }," );
+                }
+                Console.WriteLine( "    }" );
+#endif
+                //string dirs = "";
+                //bool first = true;
+
+                // ディレクティブの定義状態を調べる
+                // 現在のディレクティブを全て取り出す
+                List<DirectiveUnit> defs = new List<DirectiveUnit>();                 // 定義されているべきディレクティブ
+                List<DirectiveUnit> defs_not = new List<DirectiveUnit>();             // 定義されているとだめなディレクティブ
+                foreach ( Directives ds in s_current_dirctive ) {
+                    foreach ( DirectiveUnit d in ds ) {
+                        (d.not ? defs_not : defs).Add( d );
+                    }
+                }
+                // defsのアイテムについて，s_definesとlocal_definesに全て入ってるかどうかチェック
+                foreach ( DirectiveUnit d in defs ) {
+                    if ( (!s_defines.Contains( d.name )) && (!local_defines.Contains( d.name )) ) {
+                        print_this_line = false;
+                        break;
+                    }
+                }
+                // defs_notのアイテム全てについて，s_definesまたはlocal_definesに入っていないことをチェック
+                if ( print_this_line ) {
+                    foreach ( DirectiveUnit d in defs_not ) {
+                        if ( s_defines.Contains( d.name ) || local_defines.Contains( d.name ) ) {
+                            print_this_line = false;
+                            break;
                         }
                     }
                 }
 
 #if DEBUG
-                //Console.WriteLine( "dirs=" + dirs + "; line=" + line );
+                Console.WriteLine( line + ";" + (print_this_line ? "TRUE" : "FALSE") );
 #endif
 
                 if ( print_this_line ) {
                     line = replaceText( line, context );
                     int index_typeof = line.IndexOf( "typeof" );
-                    while( index_typeof >= 0 ){
+                    while ( index_typeof >= 0 ) {
                         int bra = line.IndexOf( "(", index_typeof );
                         int cket = line.IndexOf( ")", index_typeof );
                         string prefix = line.Substring( 0, index_typeof );
                         string suffix = line.Substring( cket + 1 );
                         string typename = line.Substring( bra + 1, cket - bra - 1 ).Trim();
                         string javaclass = typename + ".class";
-                        switch( typename ){
+                        switch ( typename ) {
                             case "int":
-                                javaclass = "Integer.TYPE";
-                                break;
+                            javaclass = "Integer.TYPE";
+                            break;
                             case "float":
-                                javaclass = "Float.TYPE";
-                                break;
+                            javaclass = "Float.TYPE";
+                            break;
                             case "double":
-                                javaclass = "Double.TYPE";
-                                break;
+                            javaclass = "Double.TYPE";
+                            break;
                             case "void":
-                                javaclass = "Void.TYPE";
-                                break;
+                            javaclass = "Void.TYPE";
+                            break;
                             case "bool":
                             case "boolean":
-                                javaclass = "Boolean.TYPE";
-                                break;
+                            javaclass = "Boolean.TYPE";
+                            break;
                             case "byte":
-                                javaclass = "Byte.TYPE";
-                                break;
+                            javaclass = "Byte.TYPE";
+                            break;
                         }
                         line = prefix + javaclass + " " + suffix;
                         index_typeof = line.IndexOf( "typeof" );
                     }
-                    
+
                     // foreachの処理
                     int index_foreach = line.IndexOf( "foreach" );
                     if ( index_foreach >= 0 ) {
@@ -494,24 +560,24 @@ return;*/
                             line = line.Substring( 0, index_foreach ) + "for" + line.Substring( index_foreach + 7, index_in - (index_foreach + 7) ) + " : " + line.Substring( index_in + 4 );
                         }
                     }
-                    
+
                     // イベントハンドラの処理
                     Match m = reg_eventhandler.Match( line );
-                    if( m.Success ){
+                    if ( m.Success ) {
                         string pre = m.Groups["pre"].Value;
                         string instance = m.Groups["instance"].Value;
                         string ev = m.Groups["event"].Value;
                         string handler = m.Groups["handler"].Value;
                         string method = m.Groups["method"].Value;
                         string ope = m.Groups["operator"].Value;
-                        if( ope == "+=" ){
+                        if ( ope == "+=" ) {
                             ope = "add";
-                        }else{
+                        } else {
                             ope = "remove";
                         }
                         line = pre + instance + "." + ev.Substring( 0, 1 ).ToLower() + ev.Substring( 1 ) + "Event." + ope + "( new " + handler + "EventHandler( this, \"" + method + "\" ) );";
                     }
-                    
+
                     if ( s_shift_indent < 0 ) {
                         string search = new string( ' ', -s_shift_indent );
                         if ( line.StartsWith( search ) ) {
@@ -578,10 +644,10 @@ return;*/
         }
 
 #if DEBUG
-		//Console.WriteLine( "pp_cs2java#preprocessCor; package=" + package );
+        //Console.WriteLine( "pp_cs2java#preprocessCor; package=" + package );
 #endif
         String out_path = "";
-        if( s_target_file_out == "" ){
+        if ( s_target_file_out == "" ) {
             if ( package == "" ) {
                 out_path = Path.Combine( s_base_dir, Path.GetFileNameWithoutExtension( path ) + ".java" );
             } else {
@@ -604,7 +670,7 @@ return;*/
                 }
                 out_path = Path.Combine( out_path, Path.GetFileNameWithoutExtension( path ) + ".java" );
             }
-        }else{
+        } else {
             out_path = s_target_file_out;
         }
 #if DEBUG
@@ -634,11 +700,11 @@ return;*/
     /// @param foo comment
     /// みたいに整形する
     /// </summary>
-    private static string parseParamComment( string line ){
+    private static string parseParamComment( string line ) {
         Regex r = new Regex( @"(?<header>\s*)<param name=""(?<name>.*)"">(?<text>.*)</param>(?<footer>\s*)" );
         Match m = r.Match( line );
         string ret = line;
-        if( m.Success ){
+        if ( m.Success ) {
             string header = m.Groups["header"].Value;
             string name = m.Groups["name"].Value;
             string text = m.Groups["text"].Value;
@@ -649,105 +715,105 @@ return;*/
         ValuePair<string, string>[] token = new ValuePair<string, string>[]{
             new ValuePair<string, string>( "returns", "return" ),
         };
-        foreach( ValuePair<string, string> t in token ){
+        foreach ( ValuePair<string, string> t in token ) {
             Regex r2 = new Regex( @"(?<header>\s*)<" + t.Key + ">(?<text>.*)</" + t.Key + @">(?<footer>\s*)" );
             Match m2 = r2.Match( ret );
-            if( m2.Success ){
+            if ( m2.Success ) {
                 string header2 = m2.Groups["header"].Value;
                 string text2 = m2.Groups["text"].Value;
                 string footer2 = m2.Groups["footer"].Value;
                 ret = header2 + "@" + t.Value + " " + text2 + footer2;
             }
         }
-        
+
         return ret;
     }
 
-    private static string replaceText_OLD( string line, WordReplaceContext context ){
+    private static string replaceText_OLD( string line, WordReplaceContext context ) {
         for ( int i = 0; i < REPLACE.GetLength( 0 ); i++ ) {
             line = line.Replace( REPLACE[i, 0], REPLACE[i, 1] );
         }
         return line;
     }
 
-    private static bool[] checkStringLiteralAndComment( string line, WordReplaceContext context ){
+    private static bool[] checkStringLiteralAndComment( string line, WordReplaceContext context ) {
         // 文字を無視するかどうかを表す
         bool[] status = new bool[line.Length];
-        for( int i = 0; i < status.Length; i++ ){
+        for ( int i = 0; i < status.Length; i++ ) {
             status[i] = false;
         }
 
         // /**/によるコメントアウトを検出
         bool line_comment_started = false; // //による行コメントが開始されているかどうか
-        for( int i = 0; i < line.Length; i++ ){
+        for ( int i = 0; i < line.Length; i++ ) {
             char c = line[i];
-            if( line_comment_started ){
+            if ( line_comment_started ) {
                 status[i] = true;
                 continue;
             }
-            if( c == '/' ){
-                if( context.isStringLiteralStarted ){
+            if ( c == '/' ) {
+                if ( context.isStringLiteralStarted ) {
                     status[i] = true;
-                }else{
-                    if( context.isCommentStarted ){
-                        if( i > 0 && line[i - 1] == '*' ){
+                } else {
+                    if ( context.isCommentStarted ) {
+                        if ( i > 0 && line[i - 1] == '*' ) {
                             status[i - 1] = true;
                             status[i] = true;
                             context.isCommentStarted = false;
                         }
-                    }else{
-                        if( i > 0 && line[i - 1] == '/' ){
+                    } else {
+                        if ( i > 0 && line[i - 1] == '/' ) {
                             status[i - 1] = true;
                             status[i] = true;
                             line_comment_started = true;
                         }
                     }
                 }
-            }else if( c == '*' ){
-                if( context.isStringLiteralStarted ){
+            } else if ( c == '*' ) {
+                if ( context.isStringLiteralStarted ) {
                     status[i] = true;
-                }else{
-                    if( !context.isCommentStarted ){
-                        if( i > 0 && line[i - 1] == '/' ){
+                } else {
+                    if ( !context.isCommentStarted ) {
+                        if ( i > 0 && line[i - 1] == '/' ) {
                             status[i - 1] = true;
                             status[i] = true;
                             context.isCommentStarted = true;
                         }
                     }
                 }
-            }else if( c == '"' ){
-                if( context.isStringLiteralStarted ){
-                    if( i > 0 && line[i - 1] == '\\' ){
+            } else if ( c == '"' ) {
+                if ( context.isStringLiteralStarted ) {
+                    if ( i > 0 && line[i - 1] == '\\' ) {
                         status[i] = true;
-                    }else{
+                    } else {
                         status[i] = true;
                         context.isStringLiteralStarted = false;
                     }
-                }else{
-                    if( context.isCommentStarted ){
+                } else {
+                    if ( context.isCommentStarted ) {
                         status[i] = true;
-                    }else{
+                    } else {
                         status[i] = true;
                         context.isStringLiteralStarted = true;
                     }
                 }
-            }else{
-                if( context.isStringLiteralStarted || 
-                    context.isCommentStarted ){
+            } else {
+                if ( context.isStringLiteralStarted ||
+                    context.isCommentStarted ) {
                     status[i] = true;
                 }
             }
         }
-/*string d = "";
-for( int i = 0; i < status.Length; i++ ){
-    d += (status[i] ? "T" : "F");
-}
-Console.WriteLine( line );
-Console.WriteLine( d );*/
+        /*string d = "";
+        for( int i = 0; i < status.Length; i++ ){
+            d += (status[i] ? "T" : "F");
+        }
+        Console.WriteLine( line );
+        Console.WriteLine( d );*/
         return status;
     }
 
-    private static string replaceText( string line, WordReplaceContext context ){
+    private static string replaceText( string line, WordReplaceContext context ) {
         // 置換する文字列を検索
         for ( int i = 0; i < REPLACE.GetLength( 0 ); i++ ) {
             string search = REPLACE[i, 0];
@@ -755,25 +821,25 @@ Console.WriteLine( d );*/
             bool changed = true;
             int start = 0;
             int indx = line.IndexOf( search, start );
-            while( changed || indx >= 0 ){
+            while ( changed || indx >= 0 ) {
                 changed = false;
                 WordReplaceContext ct = (WordReplaceContext)context.Clone();
                 bool[] status = checkStringLiteralAndComment( line, ct );
-//Console.WriteLine( "replaceText_DRAFT; search=" + search + "; indx=" + indx );
-                if( indx >= 0 ){
+                //Console.WriteLine( "replaceText_DRAFT; search=" + search + "; indx=" + indx );
+                if ( indx >= 0 ) {
                     bool replace_ok = true;
-                    for( int j = indx; j < indx + search.Length; j++ ){
-                        if( status[j] ){
+                    for ( int j = indx; j < indx + search.Length; j++ ) {
+                        if ( status[j] ) {
                             replace_ok = false;
                             break;
                         }
                     }
-//Console.WriteLine( "replaceText_DRAFT; replace_ok=" + replace_ok );
-                    if( replace_ok ){
+                    //Console.WriteLine( "replaceText_DRAFT; replace_ok=" + replace_ok );
+                    if ( replace_ok ) {
                         line = (indx > 0 ? line.Substring( 0, indx ) : "") + replace + line.Substring( indx + search.Length );
                         start = indx + 1;
                         changed = true;
-                    }else{
+                    } else {
                         start++;
                     }
                 }
@@ -786,16 +852,46 @@ Console.WriteLine( d );*/
     }
 }
 
-class WordReplaceContext{
+class WordReplaceContext {
     // "/*"によるコメントの途中かどうか
     public bool isCommentStarted = false;
     // 文字列が開始されたかどうか
     public bool isStringLiteralStarted = false;
 
-    public object Clone(){
+    public object Clone() {
         WordReplaceContext ret = new WordReplaceContext();
         ret.isCommentStarted = this.isCommentStarted;
         ret.isStringLiteralStarted = this.isStringLiteralStarted;
         return ret;
+    }
+}
+
+/// <summary>
+/// ifからendifまでの間における読み込みコンテキストで，設定されているプリプロセッサ・ディレクティブを表現します
+/// </summary>
+class Directives : Stack<DirectiveUnit> {
+}
+
+/// <summary>
+/// 1個のプリプロセッサ・ディレクティブを表現します
+/// </summary>
+class DirectiveUnit {
+    /// <summary>
+    /// ディレクティブの名前
+    /// </summary>
+    public string name;
+    /// <summary>
+    /// 否定かどうか
+    /// </summary>
+    public bool not;
+
+    /// <summary>
+    /// パラメータを指定したコンストラクタ
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="not"></param>
+    public DirectiveUnit( string name, bool not ) {
+        this.name = name;
+        this.not = not;
     }
 }

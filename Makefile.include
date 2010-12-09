@@ -5,7 +5,8 @@ TARGET=@TARGET@
 MCS_OPT=-warn:0
 PLAY_SOUND_DLL=@PLAY_SOUND_DLL@
 JROOT=./build/java/org/kbinani
-PPCS2JAVA_OPT=-DJAVA -DJAVA_1_5 -DDEBUG -DCLIPBOARD_AS_TEXT -encoding "UTF-8" -s -4 -c -e -l pp_cs2java.log
+PPCS2JAVA_OPT=--replace-java -DJAVA -DJAVA_1_5 -DDEBUG -DCLIPBOARD_AS_TEXT -encoding "UTF-8" -s -4 -c -e -l pp_cs2java.log
+PPCS2CPP_OPT=--replace-cpp -D__cplusplus
 
 SRC_JAPPUTIL=@SRC_JAPPUTIL@
 SRC_JCORLIB=@SRC_JCORLIB@
@@ -42,7 +43,19 @@ first:
 	$(MKDIR) build/java/org/kbinani/windows
 	$(MKDIR) build/java/org/kbinani/windows/forms
 	$(MKDIR) build/java/org/kbinani/xml
+	$(MKDIR) build/cpp
+	$(MKDIR) build/cpp/vsq
 #	$(RM) pp_cs2java.log
+
+########################################################################
+# cpp/vsq
+#
+cpp_vsq: pp_cs2java.exe
+	mono pp_cs2java.exe $(PPCS2CPP_OPT) -i ./org.kbinani.vsq/Lyric.cs -o ./build/cpp/vsq/Lyric.h
+	mono pp_cs2java.exe $(PPCS2CPP_OPT) -i ./org.kbinani.vsq/BPPair.cs -o ./build/cpp/vsq/BPPair.h
+	mono pp_cs2java.exe $(PPCS2CPP_OPT) -i ./org.kbinani.vsq/IconHandle.cs -o ./build/cpp/vsq/IconHandle.h
+	mono pp_cs2java.exe $(PPCS2CPP_OPT) -i ./org.kbinani.vsq/LyricHandle.cs -o ./build/cpp/vsq/LyricHandle.h
+	mono pp_cs2java.exe $(PPCS2CPP_OPT) -i ./org.kbinani.vsq/VsqHandleType.cs -o ./build/cpp/vsq/VsqHandleType.h
 
 ########################################################################
 # jcadencii
@@ -141,7 +154,7 @@ jxml: pp_cs2java.exe $(SRC_JXML)
 # preprocessor
 #
 pp_cs2java.exe: first $(TARGET)/org.kbinani.dll $(TARGET)/org.kbinani.windows.forms.dll ./pp_cs2java/Program.cs
-	gmcs ./pp_cs2java/Program.cs -out:./pp_cs2java.exe -r:$(TARGET)/org.kbinani.dll,$(TARGET)/org.kbinani.windows.forms.dll,System.Drawing $(MCS_OPT) -define:DEBUG
+	gmcs ./pp_cs2java/Program.cs -out:./pp_cs2java.exe -r:$(TARGET)/org.kbinani.dll,System.Drawing $(MCS_OPT)
 	$(RM) ./org.kbinani.dll
 	$(CP) $(TARGET)/org.kbinani.dll ./org.kbinani.dll
 

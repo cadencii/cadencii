@@ -31,11 +31,7 @@ namespace org.kbinani.vsq {
     /// VOCALOID1またはVOCALOID2の、表情ライブラリの設定値を表します。
     /// </summary>
     public class ExpressionConfigSys {
-#if JAVA
-        private final int MAX_VIBRATO = 0x400;
-#else
         private const int MAX_VIBRATO = 0x400;
-#endif
         private Vector<VibratoHandle> m_vibrato_configs;
         private Vector<NoteHeadHandle> m_attack_configs;
         private Vector<IconDynamicsHandle> m_dynamics_configs;
@@ -594,11 +590,19 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <returns></returns>
         public static ExpressionConfigSys getVocaloid2Default() {
+#if __cplusplus
+            ExpressionConfigSys ret;
+#else
             ExpressionConfigSys ret = new ExpressionConfigSys();
             ret.m_vibrato_configs = new Vector<VibratoHandle>();
             ret.m_attack_configs = new Vector<NoteHeadHandle>();
             ret.m_dynamics_configs = new Vector<IconDynamicsHandle>();
+#endif
+#if __cplusplus
+            VibratoHandle v1;
+#else
             VibratoHandle v1 = new VibratoHandle();
+#endif
             /*v1.author = "Standard";
             v1.file = "normal2_type1.aic";
             v1.number = 1;
@@ -615,7 +619,11 @@ namespace org.kbinani.vsq {
             v1.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
             ret.m_vibrato_configs.add( v1 );
 
+#if __cplusplus
+            VibratoHandle v2;
+#else
             VibratoHandle v2 = new VibratoHandle();
+#endif
             /*v2.author = "Standard";
             v2.file = "normal2_type2.aic";
             v2.number = 2;
@@ -632,7 +640,11 @@ namespace org.kbinani.vsq {
             v2.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
             ret.m_vibrato_configs.add( v2 );
 
+#if __cplusplus
+            VibratoHandle v3;
+#else
             VibratoHandle v3 = new VibratoHandle();
+#endif
             /*v3.author = "Standard";
             v3.file = "normal2_type3.aic";
             v3.number = 3;
@@ -649,7 +661,11 @@ namespace org.kbinani.vsq {
             v3.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
             ret.m_vibrato_configs.add( v3 );
 
+#if __cplusplus
+            VibratoHandle v4;
+#else
             VibratoHandle v4 = new VibratoHandle();
+#endif
             /*v4.author = "Standard";
             v4.file = "normal2_type4.aic";
             v4.number = 4;
@@ -666,7 +682,11 @@ namespace org.kbinani.vsq {
             v4.setRateBP( new VibratoBPList( new float[] { 0.6f, 0.6125f, 0.6167f, 0.6208f, 0.6292f, 0.6333f, 0.6375f, 0.6417f, 0.6542f, 0.6583f, 0.6625f, 0.6667f, 0.675f, 0.6833f, 0.6875f, 0.6917f, 0.7f, 0.7042f, 0.7083f, 0.7125f, 0.725f, 0.7292f, 0.7333f, 0.7375f, 0.7458f, 0.75f, 0.7583f, 0.7625f, 0.7708f, 0.775f, 0.7792f, 0.7833f, 0.7958f, 0.8f, 0.8042f, 0.8083f, 0.8167f, 0.8208f, 0.8292f, 0.8333f, 0.8417f, 0.8458f, 0.85f, 0.8542f, 0.8667f, 0.8708f, 0.875f, 0.8792f, 0.8875f, 0.8917f, 0.9f, 1f }, new int[] { 50, 49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0 } ) );
             ret.m_vibrato_configs.add( v4 );
 
+#if __cplusplus
+            VibratoHandle v5;
+#else
             VibratoHandle v5 = new VibratoHandle();
+#endif
             /*v5.author = "Standard";
             v5.file = "extreme2_type1.aic";
             v5.number = 5;
@@ -683,7 +703,11 @@ namespace org.kbinani.vsq {
             v5.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
             ret.m_vibrato_configs.add( v5 );
 
+#if __cplusplus
+            VibratoHandle v6;
+#else
             VibratoHandle v6 = new VibratoHandle();
+#endif
             /*v6.author = "Standard";
             v6.file = "extreme2_type2.aic";
             v6.number = 6;
@@ -700,7 +724,11 @@ namespace org.kbinani.vsq {
             v6.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
             ret.m_vibrato_configs.add( v6 );
 
+#if __cplusplus
+            VibratoHandle v7;
+#else
             VibratoHandle v7 = new VibratoHandle();
+#endif
             /*v7.author = "Standard";
             v7.file = "extreme2_type3.aic";
             v7.number = 7;
@@ -717,7 +745,11 @@ namespace org.kbinani.vsq {
             v7.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
             ret.m_vibrato_configs.add( v7 );
 
+#if __cplusplus
+            VibratoHandle v8;
+#else
             VibratoHandle v8 = new VibratoHandle();
+#endif
             /*v8.author = "Standard";
             v8.file = "extreme2_type4.aic";
             v8.number = 8;
@@ -734,7 +766,11 @@ namespace org.kbinani.vsq {
             v8.setRateBP( new VibratoBPList( new float[] { 0.6042f, 0.6125f, 0.6167f, 0.6208f, 0.625f, 0.6333f, 0.6375f, 0.6417f, 0.6458f, 0.6542f, 0.6583f, 0.6667f, 0.6708f, 0.675f, 0.6792f, 0.6833f, 0.6917f, 0.6958f, 0.7042f, 0.7083f, 0.7125f, 0.7167f, 0.7208f, 0.725f, 0.7292f, 0.7375f, 0.7458f, 0.75f, 0.7583f, 0.7625f, 0.7667f, 0.7708f, 0.775f, 0.7833f, 0.7917f, 0.7958f, 0.8f, 0.8042f, 0.8083f, 0.8125f, 0.8208f, 0.8292f, 0.8375f, 0.8417f, 0.8458f, 0.85f, 0.8542f, 0.8625f, 0.8667f, 0.875f, 0.8792f, 0.8833f, 0.8875f, 0.8917f, 0.8958f, 0.9f, 1f }, new int[] { 64, 63, 62, 61, 59, 58, 57, 56, 55, 54, 52, 51, 50, 49, 48, 47, 45, 44, 43, 42, 41, 40, 39, 38, 37, 35, 34, 32, 31, 30, 29, 28, 27, 25, 24, 23, 22, 21, 20, 19, 17, 15, 14, 13, 12, 11, 10, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0 } ) );
             ret.m_vibrato_configs.add( v8 );
 
+#if __cplusplus
+            VibratoHandle v9;
+#else
             VibratoHandle v9 = new VibratoHandle();
+#endif
             /*v9.author = "Standard";
             v9.file = "fast2_type1.aic";
             v9.number = 9;
@@ -751,7 +787,11 @@ namespace org.kbinani.vsq {
             v9.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
             ret.m_vibrato_configs.add( v9 );
 
+#if __cplusplus
+            VibratoHandle v10;
+#else
             VibratoHandle v10 = new VibratoHandle();
+#endif
             /*v10.author = "Standard";
             v10.file = "fast2_type2.aic";
             v10.number = 10;
@@ -768,7 +808,11 @@ namespace org.kbinani.vsq {
             v10.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
             ret.m_vibrato_configs.add( v10 );
 
+#if __cplusplus
+            VibratoHandle v11;
+#else
             VibratoHandle v11 = new VibratoHandle();
+#endif
             /*v11.author = "Standard";
             v11.file = "fast2_type3.aic";
             v11.number = 11;
@@ -901,7 +945,12 @@ namespace org.kbinani.vsq {
         /// 登録されているビブラート設定を順に返す反復子を取得します。
         /// </summary>
         /// <returns></returns>
-        public Iterator<VibratoHandle> vibratoConfigIterator() {
+#if __cplusplus
+        public: vector<VibratoHandle>::iterator vibratoConfigIterator()
+#else
+        public Iterator<VibratoHandle> vibratoConfigIterator() 
+#endif
+        {
             return m_vibrato_configs.iterator();
         }
 
@@ -909,7 +958,12 @@ namespace org.kbinani.vsq {
         /// 登録されているアタック設定を順に返す反復子を取得します。
         /// </summary>
         /// <returns></returns>
-        public Iterator<NoteHeadHandle> attackConfigIterator() {
+#if __cplusplus
+        public: vector<NoteHeadHandle>::iterator attackConfigIterator()
+#else
+        public Iterator<NoteHeadHandle> attackConfigIterator() 
+#endif
+        {
             return m_attack_configs.iterator();
         }
 
@@ -917,7 +971,12 @@ namespace org.kbinani.vsq {
         /// 登録されている強弱記号設定を順に返す反復子を返します。
         /// </summary>
         /// <returns></returns>
-        public Iterator<IconDynamicsHandle> dynamicsConfigIterator() {
+#if __cplusplus
+        public: vector<IconDynamicsHandle>::iterator dynamicsConfigIterator()
+#else
+        public Iterator<IconDynamicsHandle> dynamicsConfigIterator()
+#endif
+        {
             return m_dynamics_configs.iterator();
         }
 

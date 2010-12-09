@@ -13,18 +13,32 @@
 */
 #if JAVA
 package org.kbinani.vsq;
+#elif __cplusplus
+namespace org { namespace kbinani { namespace vsq {
 #else
 namespace org.kbinani.vsq {
 #endif
 
-    public enum VsqHandleType {
+#if __cplusplus
+    enum VsqHandleType
+#else
+    public enum VsqHandleType 
+#endif
+    {
         Lyric,
         Vibrato,
         Singer,
         NoteHeadHandle,
         DynamicsHandle,
+#if __cplusplus
+    };
+#else
     }
+#endif
 
-#if !JAVA
+#if JAVA
+#elif __cplusplus
+} } }
+#else
 }
 #endif

@@ -17,19 +17,15 @@ package org.kbinani.vsq;
 import java.io.*;
 import org.kbinani.*;
 #elif __cplusplus
-
 #else
 using System;
-using org.kbinani;
+using System.Collections.Generic;
 #endif
 
 #if !JAVA
 namespace org {
     namespace kbinani {
         namespace vsq {
-#if !__cplusplus
-            using boolean = System.Boolean;
-#endif
 #endif
 
             /// <summary>
@@ -46,11 +42,11 @@ namespace org {
                 /// <summary>
                 /// この歌詞のフレーズ
                 /// </summary>
-                public String Phrase;
-                private String[] m_phonetic_symbol;
+                public string Phrase;
+                private List<string> m_phonetic_symbol;
                 public float UnknownFloat = 1.0f;
-                private int[] m_consonant_adjustment;
-                public boolean PhoneticSymbolProtected;
+                private List<int> m_consonant_adjustment;
+                public bool PhoneticSymbolProtected;
 
                 /// <summary>
                 /// このクラスの指定した名前のプロパティをXMLシリアライズする際に使用する
@@ -58,7 +54,7 @@ namespace org {
                 /// </summary>
                 /// <param name="name"></param>
                 /// <returns></returns>
-                public static String getXmlElementName( String name ) {
+                public static string getXmlElementName( string name ) {
                     return name;
                 }
 
@@ -68,14 +64,8 @@ namespace org {
                 /// </summary>
                 /// <param name="name"></param>
                 /// <returns></returns>
-                public static boolean isXmlIgnored( String name ) {
-                    if ( name == null ) {
-                        return true;
-                    }
-                    if ( name.Equals( "ConsonantAdjustmentList" ) ) {
-                        return true;
-                    }
-                    return false;
+                public static bool isXmlIgnored( string name ) {
+                    return VsqUtility.compare( name, "ConsonantAdjustmentList" );
                 }
 
                 /// <summary>
@@ -84,7 +74,7 @@ namespace org {
                 /// </summary>
                 /// <param name="name"></param>
                 /// <returns></returns>
-                public static String getGenericTypeName( String name ) {
+                public static string getGenericTypeName( string name ) {
                     return "";
                 }
 
@@ -95,10 +85,10 @@ namespace org {
                 /// </summary>
                 /// <param name="item"></param>
                 /// <returns></returns>
-                public boolean equalsForSynth( Lyric item ) {
+                public bool equalsForSynth( Lyric item ) {
                     if ( this.PhoneticSymbolProtected != item.PhoneticSymbolProtected ) return false;
-                    if ( !this.getPhoneticSymbol().Equals( item.getPhoneticSymbol() ) ) return false;
-                    if ( !this.getConsonantAdjustment().Equals( item.getConsonantAdjustment() ) ) return false;
+                    if ( !VsqUtility.compare( this.getPhoneticSymbol(), item.getPhoneticSymbol() ) ) return false;
+                    if ( !VsqUtility.compare( this.getConsonantAdjustment(), item.getConsonantAdjustment() ) ) return false;
                     return true;
                 }
 
@@ -107,9 +97,9 @@ namespace org {
                 /// </summary>
                 /// <param name="item"></param>
                 /// <returns></returns>
-                public boolean equals( Lyric item ) {
+                public bool equals( Lyric item ) {
                     if ( !equalsForSynth( item ) ) return false;
-                    if ( !this.Phrase.Equals( item.Phrase ) ) return false;
+                    if ( !VsqUtility.compare( this.Phrase, item.Phrase ) ) return false;
                     if ( this.UnknownFloat != item.UnknownFloat ) return false;
                     return true;
                 }
@@ -118,11 +108,18 @@ namespace org {
                 /// Consonant Adjustmentの文字列形式を取得します。
                 /// </summary>
                 /// <returns></returns>
-                public String getConsonantAdjustment() {
-                    String ret = "";
-                    int[] arr = getConsonantAdjustmentList();
-                    for ( int i = 0; i < arr.Length; i++ ) {
-                        ret += (i == 0 ? "" : " ") + arr[i];
+                public string getConsonantAdjustment() {
+                    string ret = "";
+                    List<int> arr = getConsonantAdjustmentList();
+                    int size = arr.Count;
+
+                    for ( int i = 0; i < size; i++ ) {
+#if JAVA
+                        int v = arr.get( i );
+#else
+                        int v = arr[i];
+#endif
+                        ret += (i == 0 ? "" : " ") + v;
                     }
                     return ret;
                 }
@@ -131,9 +128,22 @@ namespace org {
                 /// Consonant Adjustmentを文字列形式で設定します。
                 /// </summary>
                 /// <param name="value"></param>
-                public void setConsonantAdjustment( String value ) {
-                    String[] spl = PortUtil.splitString( value, new char[] { ' ', ',' }, true );
-                    int[] arr = new int[spl.Length];
+                public void setConsonantAdjustment( string value ) {
+#if __cplusplus
+                    vector<string> tokenizer;
+                    tokenizer.push_back( " " );
+                    tokenizer.push_back( "," );
+                    vector<string> spl = PortUtil.splitString( value, tokenizer, true );
+                    int size = spl.size();
+#else
+                    string[] spl = PortUtil.splitString( value, new char[] { ' ', ',' }, true );
+#if JAVA
+                    int size = spl.length;
+#else
+                    int size = spl.Length;
+#endif
+#endif
+                    List<int> arr = new List<int>();
                     for ( int i = 0; i < spl.Length; i++ ) {
                         int v = 64;
                         try {
@@ -141,7 +151,7 @@ namespace org {
                         } catch ( Exception ex ) {
                             PortUtil.stderr.println( "Lyric#setCosonantAdjustment; ex=" + ex );
                         }
-                        arr[i] = v;
+                        arr.Add( v );
                     }
                     setConsonantAdjustmentList( arr );
                 }
@@ -164,16 +174,27 @@ namespace org {
                 /// Consonant Adjustmentを、整数配列で取得します。
                 /// </summary>
                 /// <returns></returns>
-                public int[] getConsonantAdjustmentList() {
-                    if ( m_consonant_adjustment == null ) {
-                        if ( m_phonetic_symbol == null ) {
-                            m_consonant_adjustment = new int[] { };
-                        } else {
-                            m_consonant_adjustment = new int[m_phonetic_symbol.Length];
-                            for ( int i = 0; i < m_phonetic_symbol.Length; i++ ) {
-                                m_consonant_adjustment[i] = VsqPhoneticSymbol.isConsonant( m_phonetic_symbol[i] ) ? 64 : 0;
-                            }
-                        }
+                public List<int> getConsonantAdjustmentList() {
+#if !__cplusplus
+                    if ( m_consonant_adjustment != null ) {
+                        return m_consonant_adjustment;
+                    }
+                    if ( m_phonetic_symbol == null ) {
+                        m_consonant_adjustment = new List<int>();
+                        return m_consonant_adjustment;
+                    }
+#endif
+
+                    m_consonant_adjustment.Clear();
+                    for ( int i = 0; i < m_phonetic_symbol.Count; i++ ) {
+                        int v = VsqPhoneticSymbol.isConsonant( m_phonetic_symbol[i] ) ? 64 : 0;
+#if JAVA
+                        m_consonant_adjustment.add( v );
+#elif __cplusplus
+                        m_consonant_adjustment.push_back( v );
+#else
+                        m_consonant_adjustment.Add( v );
+#endif
                     }
                     return m_consonant_adjustment;
                 }
@@ -182,16 +203,30 @@ namespace org {
                 /// Consonant Adjustmentを、整数配列形式で設定します。
                 /// </summary>
                 /// <param name="value"></param>
-                public void setConsonantAdjustmentList( int[] value ) {
+                public void setConsonantAdjustmentList( List<int> value ) {
+#if !__cplusplus
                     if ( value == null ) {
                         return;
                     }
-                    m_consonant_adjustment = new int[value.Length];
-                    for ( int i = 0; i < value.Length; i++ ) {
-                        m_consonant_adjustment[i] = value[i];
+#endif
+                    m_consonant_adjustment.Clear();
+                    for ( int i = 0; i < value.Count; i++ ) {
+#if JAVA
+                        int v = value.get( i );
+#else
+                        int v = value[i];
+#endif
+#if JAVA
+                        m_consonant_adjustment.add( v );
+#elif __cplusplus
+                        m_consonant_adjustment.push_back( v );
+#else
+                        m_consonant_adjustment.Add( v );
+#endif
                     }
                 }
 
+#if !__cplusplus
                 /// <summary>
                 /// このオブジェクトの簡易コピーを取得します。
                 /// </summary>
@@ -199,22 +234,25 @@ namespace org {
                 public Object clone() {
                     Lyric result = new Lyric();
                     result.Phrase = this.Phrase;
-                    result.m_phonetic_symbol = new String[m_phonetic_symbol.Length];
-                    for ( int i = 0; i < m_phonetic_symbol.Length; i++ ) {
-                        result.m_phonetic_symbol[i] = m_phonetic_symbol[i];
+                    result.m_phonetic_symbol = new List<string>();
+                    for ( int i = 0; i < m_phonetic_symbol.Count; i++ ) {
+                        result.m_phonetic_symbol.Add( m_phonetic_symbol[i] );
                     }
                     result.UnknownFloat = this.UnknownFloat;
                     if ( m_consonant_adjustment != null ) {
-                        result.m_consonant_adjustment = new int[m_consonant_adjustment.Length];
-                        for ( int i = 0; i < m_consonant_adjustment.Length; i++ ) {
-                            result.m_consonant_adjustment[i] = m_consonant_adjustment[i];
+                        result.m_consonant_adjustment = new List<int>();
+                        for ( int i = 0; i < m_consonant_adjustment.Count; i++ ) {
+                            result.m_consonant_adjustment.Add( m_consonant_adjustment[i] );
                         }
                     }
                     result.PhoneticSymbolProtected = PhoneticSymbolProtected;
                     return result;
                 }
+#endif
 
-#if !JAVA
+#if JAVA
+#elif __cplusplus
+#else
                 public Object Clone() {
                     return clone();
                 }
@@ -225,7 +263,7 @@ namespace org {
                 /// </summary>
                 /// <param name="phrase">歌詞</param>
                 /// <param name="phonetic_symbol">発音記号</param>
-                public Lyric( String phrase, String phonetic_symbol ) {
+                public Lyric( string phrase, string phonetic_symbol ) {
                     Phrase = phrase;
                     setPhoneticSymbol( phonetic_symbol );
                     UnknownFloat = 1.0f;
@@ -237,10 +275,10 @@ namespace org {
                 /// <summary>
                 /// この歌詞の発音記号を取得します。
                 /// </summary>
-                public String getPhoneticSymbol() {
-                    String[] symbol = getPhoneticSymbolList();
-                    String ret = "";
-                    for ( int i = 0; i < symbol.Length; i++ ) {
+                public string getPhoneticSymbol() {
+                    List<string> symbol = getPhoneticSymbolList();
+                    string ret = "";
+                    for ( int i = 0; i < symbol.Count; i++ ) {
                         ret += (i == 0 ? "" : " ") + symbol[i];
                     }
                     return ret;
@@ -255,8 +293,8 @@ namespace org {
                     // 古い発音記号を保持しておく
                     String[] old_symbol = null;
                     if ( m_phonetic_symbol != null ) {
-                        old_symbol = new String[m_phonetic_symbol.Length];
-                        for ( int i = 0; i < m_phonetic_symbol.Length; i++ ) {
+                        old_symbol = new String[m_phonetic_symbol.Count];
+                        for ( int i = 0; i < m_phonetic_symbol.Count; i++ ) {
                             old_symbol[i] = m_phonetic_symbol[i];
                         }
                     }
@@ -264,26 +302,42 @@ namespace org {
                     // 古いconsonant adjustmentを保持しておく
                     int[] old_adjustment = null;
                     if ( m_consonant_adjustment != null ) {
-                        old_adjustment = new int[m_consonant_adjustment.Length];
-                        for ( int i = 0; i < m_consonant_adjustment.Length; i++ ) {
+                        old_adjustment = new int[m_consonant_adjustment.Count];
+                        for ( int i = 0; i < m_consonant_adjustment.Count; i++ ) {
                             old_adjustment[i] = m_consonant_adjustment[i];
                         }
                     }
 
-                    m_phonetic_symbol = PortUtil.splitString( s, new char[] { ' ' }, 16, true );
-                    for ( int i = 0; i < m_phonetic_symbol.Length; i++ ) {
+#if __cplusplus
+                    vector<string> spl = PortUtil.splitString( s, new char[] { ' ' }, 16, true );
+                    int size = spl.size();
+#else
+                    String[] spl = PortUtil.splitString( s, new char[] { ' ' }, 16, true );
+                    if ( m_phonetic_symbol == null ) {
+                        m_phonetic_symbol = new List<string>();
+                    }
+                    int size = spl.Length;
+#endif
+                    m_phonetic_symbol.Clear();
+                    for ( int i = 0; i < size; i++ ) {
+                        m_phonetic_symbol.Add( spl[i] );
+                    }
+                    for ( int i = 0; i < m_phonetic_symbol.Count; i++ ) {
                         m_phonetic_symbol[i] = m_phonetic_symbol[i].Replace( "\\" + "\\", "\\" );
                     }
 
                     // consonant adjustmentを更新
                     if ( m_consonant_adjustment == null ||
-                        (m_consonant_adjustment != null && m_consonant_adjustment.Length != m_phonetic_symbol.Length) ) {
-                        m_consonant_adjustment = new int[m_phonetic_symbol.Length];
+                        (m_consonant_adjustment != null && m_consonant_adjustment.Count != m_phonetic_symbol.Count) ) {
+                        m_consonant_adjustment = new List<int>();
+                        for ( int i = 0; i < m_phonetic_symbol.Count; i++ ) {
+                            m_consonant_adjustment.Add( 0 );
+                        }
                     }
 
                     // 古い発音記号と同じなら、古い値を使う
-                    for ( int i = 0; i < m_phonetic_symbol.Length; i++ ) {
-                        boolean use_old_value = (old_symbol != null && i < old_symbol.Length) &&
+                    for ( int i = 0; i < m_phonetic_symbol.Count; i++ ) {
+                        bool use_old_value = (old_symbol != null && i < old_symbol.Length) &&
                                                 (m_phonetic_symbol[i].Equals( old_symbol[i] )) &&
                                                 (old_adjustment != null && i < old_adjustment.Length);
                         if ( use_old_value ) {
@@ -308,15 +362,13 @@ namespace org {
                 }
 #endif
 
-                public String[] getPhoneticSymbolList() {
-                    if ( this.m_phonetic_symbol == null ) {
-                        this.m_phonetic_symbol = new String[0];
+                public List<string> getPhoneticSymbolList() {
+#if !__cplusplus
+                    if ( m_phonetic_symbol == null ) {
+                        m_phonetic_symbol = new List<string>();
                     }
-                    String[] ret = new String[m_phonetic_symbol.Length];
-                    for ( int i = 0; i < m_phonetic_symbol.Length; i++ ) {
-                        ret[i] = m_phonetic_symbol[i];
-                    }
-                    return ret;
+#endif
+                    return m_phonetic_symbol;
                 }
 
                 /// <summary>
@@ -381,7 +433,7 @@ namespace org {
                                     UnknownFloat = PortUtil.parseFloat( work );
                                     work = "";
                                 } else {
-                                    if ( indx - 3 < m_phonetic_symbol.Length ) {
+                                    if ( indx - 3 < m_phonetic_symbol.Count ) {
                                         // consonant adjustment
                                         if ( indx - 3 == 0 ) {
                                             consonant_adjustment += work;
@@ -413,12 +465,12 @@ namespace org {
                 /// </summary>
                 /// <param name="add_quatation_mark">クォーテーションマークを付けるかどうか</param>
                 /// <returns>変換後の文字列</returns>
-                public String toString( boolean add_quatation_mark ) {
+                public String toString( bool add_quatation_mark ) {
                     String quot = (add_quatation_mark ? "\"" : "");
                     String result;
                     String phrase = (this.Phrase == null) ? "" : this.Phrase.Replace( "\"", "\"\"" );
                     result = quot + phrase + quot + ",";
-                    String[] symbol = getPhoneticSymbolList();
+                    List<string> symbol = getPhoneticSymbolList();
                     String strSymbol = getPhoneticSymbol();
                     if ( !add_quatation_mark ) {
                         if ( strSymbol == null || (strSymbol != null && strSymbol.Equals( "" )) ) {
@@ -428,12 +480,12 @@ namespace org {
                     result += quot + strSymbol + quot + "," + PortUtil.formatDecimal( "0.000000", UnknownFloat );
                     result = result.Replace( "\\" + "\\", "\\" );
                     if ( m_consonant_adjustment == null ) {
-                        m_consonant_adjustment = new int[symbol.Length];
-                        for ( int i = 0; i < symbol.Length; i++ ) {
-                            m_consonant_adjustment[i] = VsqPhoneticSymbol.isConsonant( symbol[i] ) ? 64 : 0;
+                        m_consonant_adjustment = new List<int>();
+                        for ( int i = 0; i < symbol.Count; i++ ) {
+                            m_consonant_adjustment.Add( VsqPhoneticSymbol.isConsonant( symbol[i] ) ? 64 : 0 );
                         }
                     }
-                    for ( int i = 0; i < m_consonant_adjustment.Length; i++ ) {
+                    for ( int i = 0; i < m_consonant_adjustment.Count; i++ ) {
                         result += "," + m_consonant_adjustment[i];
                     }
                     if ( PhoneticSymbolProtected ) {
