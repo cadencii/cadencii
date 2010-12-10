@@ -82,15 +82,20 @@ namespace org.kbinani.vsq {
 #endif
         }
 
-        public Iterator<UstEvent> getNoteEventIterator() {
-            return m_events.iterator();
+        public vecitr<UstEvent> getNoteEventIterator() {
+#if __cplusplus
+            vecitr<UstEvent> ret( m_events );
+            return ret;
+#else
+            return new vecitr<UstEvent>( m_events );
+#endif
         }
 
         public Object clone() {
             UstTrack ret = new UstTrack();
-            int c = m_events.size();
+            int c = vec.size( m_events );
             for ( int i = 0; i < c; i++ ) {
-                ret.m_events.set( i, (UstEvent)m_events.get( i ).clone() );
+                vec.set( ret.m_events, i, (UstEvent)vec.get( m_events, i ).clone() );
             }
             return ret;
         }

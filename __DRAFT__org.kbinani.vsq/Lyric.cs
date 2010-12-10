@@ -65,7 +65,7 @@ namespace org {
                 /// <param name="name"></param>
                 /// <returns></returns>
                 public static bool isXmlIgnored( string name ) {
-                    return VsqUtility.compare( name, "ConsonantAdjustmentList" );
+                    return util.compare( name, "ConsonantAdjustmentList" );
                 }
 
                 /// <summary>
@@ -87,8 +87,8 @@ namespace org {
                 /// <returns></returns>
                 public bool equalsForSynth( Lyric item ) {
                     if ( this.PhoneticSymbolProtected != item.PhoneticSymbolProtected ) return false;
-                    if ( !VsqUtility.compare( this.getPhoneticSymbol(), item.getPhoneticSymbol() ) ) return false;
-                    if ( !VsqUtility.compare( this.getConsonantAdjustment(), item.getConsonantAdjustment() ) ) return false;
+                    if ( !util.compare( this.getPhoneticSymbol(), item.getPhoneticSymbol() ) ) return false;
+                    if ( !util.compare( this.getConsonantAdjustment(), item.getConsonantAdjustment() ) ) return false;
                     return true;
                 }
 
@@ -99,7 +99,7 @@ namespace org {
                 /// <returns></returns>
                 public bool equals( Lyric item ) {
                     if ( !equalsForSynth( item ) ) return false;
-                    if ( !VsqUtility.compare( this.Phrase, item.Phrase ) ) return false;
+                    if ( !util.compare( this.Phrase, item.Phrase ) ) return false;
                     if ( this.UnknownFloat != item.UnknownFloat ) return false;
                     return true;
                 }

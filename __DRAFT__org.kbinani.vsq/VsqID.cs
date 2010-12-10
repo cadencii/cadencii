@@ -222,19 +222,19 @@ namespace org.kbinani.vsq {
                         type = VsqIDType.Unknown;
                     }
                 } else if ( search.Equals( "Length" ) ) {
-                    this.setLength( PortUtil.parseInt( spl[1] ) );
+                    this.setLength( str.toi( spl[1] ) );
                 } else if ( search.Equals( "Note#" ) ) {
-                    this.Note = PortUtil.parseInt( spl[1] );
+                    this.Note = str.toi( spl[1] );
                 } else if ( search.Equals( "Dynamics" ) ) {
-                    this.Dynamics = PortUtil.parseInt( spl[1] );
+                    this.Dynamics = str.toi( spl[1] );
                 } else if ( search.Equals( "PMBendDepth" ) ) {
-                    this.PMBendDepth = PortUtil.parseInt( spl[1] );
+                    this.PMBendDepth = str.toi( spl[1] );
                 } else if ( search.Equals( "PMBendLength" ) ) {
-                    this.PMBendLength = PortUtil.parseInt( spl[1] );
+                    this.PMBendLength = str.toi( spl[1] );
                 } else if ( search.Equals( "DEMdecGainRate" ) ) {
-                    this.DEMdecGainRate = PortUtil.parseInt( spl[1] );
+                    this.DEMdecGainRate = str.toi( spl[1] );
                 } else if ( search.Equals( "DEMaccent" ) ) {
-                    this.DEMaccent = PortUtil.parseInt( spl[1] );
+                    this.DEMaccent = str.toi( spl[1] );
                 } else if ( search.Equals( "LyricHandle" ) ) {
                     this.LyricHandle_index = VsqHandle.HandleIndexFromString( spl[1] );
                 } else if ( search.Equals( "IconHandle" ) ) {
@@ -242,9 +242,9 @@ namespace org.kbinani.vsq {
                 } else if ( search.Equals( "VibratoHandle" ) ) {
                     this.VibratoHandle_index = VsqHandle.HandleIndexFromString( spl[1] );
                 } else if ( search.Equals( "VibratoDelay" ) ) {
-                    this.VibratoDelay = PortUtil.parseInt( spl[1] );
+                    this.VibratoDelay = str.toi( spl[1] );
                 } else if ( search.Equals( "PMbPortamentoUse" ) ) {
-                    PMbPortamentoUse = PortUtil.parseInt( spl[1] );
+                    PMbPortamentoUse = str.toi( spl[1] );
                 } else if ( search.Equals( "NoteHeadHandle" ) ) {
                     NoteHeadHandle_index = VsqHandle.HandleIndexFromString( spl[1] );
                 }
@@ -267,14 +267,14 @@ namespace org.kbinani.vsq {
                 ret += ", DEMdecGainRate=" + DEMdecGainRate;
                 ret += ", DEMaccent=" + DEMaccent;
                 if ( LyricHandle != null ) {
-                    ret += ", LyricHandle=h#" + PortUtil.formatDecimal( "0000", LyricHandle_index );
+                    ret += ", LyricHandle=h#" + str.format( LyricHandle_index, 4 );
                 }
                 if ( VibratoHandle != null ) {
-                    ret += ", VibratoHandle=h#" + PortUtil.formatDecimal( "0000", VibratoHandle_index );
+                    ret += ", VibratoHandle=h#" + str.format( VibratoHandle_index, 4 );
                     ret += ", VibratoDelay=" + VibratoDelay;
                 }
             } else if ( type == VsqIDType.Singer ) {
-                ret += ", IconHandle=h#" + PortUtil.formatDecimal( "0000", IconHandle_index );
+                ret += ", IconHandle=h#" + str.format( IconHandle_index, 4 );
             }
             ret += "}";
             return ret;

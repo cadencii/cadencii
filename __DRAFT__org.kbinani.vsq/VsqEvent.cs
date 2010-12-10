@@ -62,11 +62,23 @@ namespace org.kbinani.vsq {
                 if ( this.ID.LyricHandle != null && item.ID.LyricHandle == null ) return false;
                 if ( this.ID.LyricHandle != null && item.ID.LyricHandle != null ) {
                     if ( !this.ID.LyricHandle.L0.equalsForSynth( item.ID.LyricHandle.L0 ) ) return false;
+#if JAVA
                     int count = this.ID.LyricHandle.Trailing.size();
                     if ( count != item.ID.LyricHandle.Trailing.size() ) return false;
+#elif __cplusplus
+                    int count = this.ID.LyricHandle.Trailing.size();
+                    if ( count != item.ID.LyricHandle.Trailing.size() ) return false;
+#else
+                    int count = this.ID.LyricHandle.Trailing.Count;
+                    if ( count != item.ID.LyricHandle.Trailing.Count ) return false;
+#endif
                     for ( int k = 0; k < count; k++ ) {
+#if JAVA
                         if ( !this.ID.LyricHandle.Trailing.get( k ).equalsForSynth( item.ID.LyricHandle.Trailing.get( k ) ) ) return false;
-                    }
+#else
+                        if ( !this.ID.LyricHandle.Trailing[k].equalsForSynth( item.ID.LyricHandle.Trailing[k] ) ) return false;
+#endif
+                        }
                 }
                 if ( this.ID.NoteHeadHandle == null && item.ID.NoteHeadHandle != null ) return false;
                 if ( this.ID.NoteHeadHandle != null && item.ID.NoteHeadHandle == null ) return false;
@@ -147,65 +159,86 @@ namespace org.kbinani.vsq {
             throws IOException
 #endif
         {
-            List<String> def = new List<String>( Arrays.asList( new String[]{ "Length",
-                                                                   "Note#",
-                                                                   "Dynamics",
-                                                                   "PMBendDepth",
-                                                                   "PMBendLength",
-                                                                   "PMbPortamentoUse",
-                                                                   "DEMdecGainRate",
-                                                                   "DEMaccent" } ) );
+#if JAVA
+            Vector<String> def = new Vector<String>();
+#elif __cplusplus
+            vector<string> def;
+#else
+            List<String> def = new List<String>();
+#endif
+            vec.add( def, "Length" );
+            vec.add( def, "Note#" );
+            vec.add( def, "Dynamics" );
+            vec.add( def, "PMBendDepth" );
+            vec.add( def, "PMBendLength" );
+            vec.add( def, "PMbPortamentoUse" );
+            vec.add( def, "DEMdecGainRate" );
+            vec.add( def, "DEMaccent" );
             write( sw, def );
         }
 
-        public void write( ITextWriter writer, List<String> print_targets )
 #if JAVA
-            throws IOException
+        public void write( ITextWriter writer, Vector<String> print_targets ) throws IOException
+#elif __cplusplus
+        public void write( ITextWriter writer, vector<string>& print_targets )
+#else
+        public void write( ITextWriter writer, List<String> print_targets )
 #endif
         {
             writeCor( writer, print_targets );
         }
 
-        public void write( BufferedWriter writer, List<String> print_targets )
 #if JAVA
-            throws IOException
+        public void write( BufferedWriter writer, Vector<String>& print_targets ) throws IOException
+#elif __cplusplus
+        public void write( BufferedWriter& writer, vector<string>& print_targets )
+#else
+        public void write( BufferedWriter writer, List<String> print_targets )
 #endif
         {
-            writeCor( new WrappedStreamWriter( writer ), print_targets );
+#if __cplusplus
+            WrappedStreamWriter ww( writer );
+#else
+            WrappedStreamWriter ww = new WrappedStreamWriter( writer );
+#endif
+            writeCor( ww, print_targets );
         }
 
-        private void writeCor( ITextWriter writer, List<String> print_targets )
 #if JAVA
-            throws IOException
+        private void writeCor( ITextWriter writer, Vector<String> print_targets ) throws IOException
+#elif __cplusplus
+        private void writeCor( ITextWriter& writer, vector<string>& print_targets )
+#else
+        private void writeCor( ITextWriter writer, List<string> print_targets )
 #endif
         {
-            writer.writeLine( "[ID#" + PortUtil.formatDecimal( "0000", ID.value ) + "]" );
+            writer.writeLine( "[ID#" + str.format( ID.value, 4 ) + "]" );
             writer.writeLine( "Type=" + ID.type );
             if ( ID.type == VsqIDType.Anote ) {
-                if ( print_targets.contains( "Length" ) ) writer.writeLine( "Length=" + ID.getLength() );
-                if ( print_targets.contains( "Note#" ) ) writer.writeLine( "Note#=" + ID.Note );
-                if ( print_targets.contains( "Dynamics" ) ) writer.writeLine( "Dynamics=" + ID.Dynamics );
-                if ( print_targets.contains( "PMBendDepth" ) ) writer.writeLine( "PMBendDepth=" + ID.PMBendDepth );
-                if ( print_targets.contains( "PMBendLength" ) ) writer.writeLine( "PMBendLength=" + ID.PMBendLength );
-                if ( print_targets.contains( "PMbPortamentoUse" ) ) writer.writeLine( "PMbPortamentoUse=" + ID.PMbPortamentoUse );
-                if ( print_targets.contains( "DEMdecGainRate" ) ) writer.writeLine( "DEMdecGainRate=" + ID.DEMdecGainRate );
-                if ( print_targets.contains( "DEMaccent" ) ) writer.writeLine( "DEMaccent=" + ID.DEMaccent );
-                if ( print_targets.contains( "PreUtterance" ) ) writer.writeLine( "PreUtterance=" + UstEvent.PreUtterance );
-                if ( print_targets.contains( "VoiceOverlap" ) ) writer.writeLine( "VoiceOverlap=" + UstEvent.VoiceOverlap );
+                if ( vec.contains( print_targets, "Length" ) ) writer.writeLine( "Length=" + ID.getLength() );
+                if ( vec.contains( print_targets, "Note#" ) ) writer.writeLine( "Note#=" + ID.Note );
+                if ( vec.contains( print_targets, "Dynamics" ) ) writer.writeLine( "Dynamics=" + ID.Dynamics );
+                if ( vec.contains( print_targets, "PMBendDepth" ) ) writer.writeLine( "PMBendDepth=" + ID.PMBendDepth );
+                if ( vec.contains( print_targets, "PMBendLength" ) ) writer.writeLine( "PMBendLength=" + ID.PMBendLength );
+                if ( vec.contains( print_targets, "PMbPortamentoUse" ) ) writer.writeLine( "PMbPortamentoUse=" + ID.PMbPortamentoUse );
+                if ( vec.contains( print_targets, "DEMdecGainRate" ) ) writer.writeLine( "DEMdecGainRate=" + ID.DEMdecGainRate );
+                if ( vec.contains( print_targets, "DEMaccent" ) ) writer.writeLine( "DEMaccent=" + ID.DEMaccent );
+                if ( vec.contains( print_targets, "PreUtterance" ) ) writer.writeLine( "PreUtterance=" + UstEvent.PreUtterance );
+                if ( vec.contains( print_targets, "VoiceOverlap" ) ) writer.writeLine( "VoiceOverlap=" + UstEvent.VoiceOverlap );
                 if ( ID.LyricHandle != null ) {
-                    writer.writeLine( "LyricHandle=h#" + PortUtil.formatDecimal( "0000", ID.LyricHandle_index ) );
+                    writer.writeLine( "LyricHandle=h#" + str.format( ID.LyricHandle_index, 4 ) );
                 }
                 if ( ID.VibratoHandle != null ) {
-                    writer.writeLine( "VibratoHandle=h#" + PortUtil.formatDecimal( "0000", ID.VibratoHandle_index ) );
+                    writer.writeLine( "VibratoHandle=h#" + str.format( ID.VibratoHandle_index, 4 ) );
                     writer.writeLine( "VibratoDelay=" + ID.VibratoDelay );
                 }
                 if ( ID.NoteHeadHandle != null ) {
-                    writer.writeLine( "NoteHeadHandle=h#" + PortUtil.formatDecimal( "0000", ID.NoteHeadHandle_index ) );
+                    writer.writeLine( "NoteHeadHandle=h#" + str.format( ID.NoteHeadHandle_index, 4 ) );
                 }
             } else if ( ID.type == VsqIDType.Singer ) {
-                writer.writeLine( "IconHandle=h#" + PortUtil.formatDecimal( "0000", ID.IconHandle_index ) );
+                writer.writeLine( "IconHandle=h#" + str.format( ID.IconHandle_index, 4 ) );
             } else if ( ID.type == VsqIDType.Aicon ) {
-                writer.writeLine( "IconHandle=h#" + PortUtil.formatDecimal( "0000", ID.IconHandle_index ) );
+                writer.writeLine( "IconHandle=h#" + str.format( ID.IconHandle_index, 4 ) );
                 writer.writeLine( "Note#=" + ID.Note );
             }
         }
@@ -255,8 +288,8 @@ namespace org.kbinani.vsq {
 
         public VsqEvent( String line ) {
             String[] spl = PortUtil.splitString( line, new char[] { '=' } );
-            Clock = PortUtil.parseInt( spl[0] );
-            if ( spl[1].Equals( "EOS" ) ) {
+            Clock = str.toi( spl[0] );
+            if ( str.compare( spl[1], "EOS" ) ) {
                 ID = VsqID.EOS;
             }
         }

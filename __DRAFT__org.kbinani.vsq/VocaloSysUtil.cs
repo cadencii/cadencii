@@ -50,8 +50,8 @@ namespace org.kbinani.vsq {
         }
 
         public static SingerConfigSys getSingerConfigSys( SynthesizerType type ) {
-            if ( s_singer_config_sys.containsKey( type ) ) {
-                return s_singer_config_sys.get( type );
+            if ( dic.containsKey( s_singer_config_sys, type ) ) {
+                return dic.get( s_singer_config_sys, type );
             } else {
                 return null;
             }
@@ -120,16 +120,16 @@ namespace org.kbinani.vsq {
                             sw.newLine();
                         }
                     } catch ( Exception ex ) {
-                        Logger.write( typeof( VocaloSysUtil ) + ".init; ex=" + ex + "\n" );
-                        PortUtil.stderr.println( "VocaloSysUtil#init; ex=" + ex );
+                        //Logger.write( typeof( VocaloSysUtil ) + ".init; ex=" + ex + "\n" );
+                        //PortUtil.stderr.println( "VocaloSysUtil#init; ex=" + ex );
                     } finally {
                         // ファイルは閉じない
                         if ( close && sw != null ) {
                             try {
                                 sw.close();
                             } catch ( Exception ex2 ) {
-                                Logger.write( typeof( VocaloSysUtil ) + ".init; ex=" + ex2 + "\n" );
-                                PortUtil.stderr.println( typeof( VocaloSysUtil ) + ".init; ex2=" + ex2 );
+                                //Logger.write( typeof( VocaloSysUtil ) + ".init; ex=" + ex2 + "\n" );
+                                //PortUtil.stderr.println( typeof( VocaloSysUtil ) + ".init; ex2=" + ex2 );
                             }
                             sw = null;
                         }
@@ -145,15 +145,15 @@ namespace org.kbinani.vsq {
                          path_expdb1,
                          path_editor,
                          installed_singers1 );
-                s_path_vsti.put( SynthesizerType.VOCALOID1, path_vsti.value );
-                s_path_editor.put( SynthesizerType.VOCALOID1, path_editor.value );
+                dic.put( s_path_vsti, SynthesizerType.VOCALOID1, path_vsti.value );
+                dic.put( s_path_editor, SynthesizerType.VOCALOID1, path_editor.value );
                 SingerConfigSys singer_config_sys = 
                     new SingerConfigSys( path_voicedb1.value, installed_singers1.toArray( new String[] { } ) );
                 String expression_map = PortUtil.combinePath( path_expdb1.value, "expression.map" );
                 if ( PortUtil.isFileExists( expression_map ) ) {
                     exp_config_sys1 = new ExpressionConfigSys( path_editor.value, path_expdb1.value );
                 }
-                s_singer_config_sys.put( SynthesizerType.VOCALOID1, singer_config_sys );
+                dic.put( s_singer_config_sys, SynthesizerType.VOCALOID1, singer_config_sys );
 
                 // DSE1_1.dllがあるかどうか？
                 if ( !path_vsti.value.Equals( "" ) ) {
@@ -182,7 +182,7 @@ namespace org.kbinani.vsq {
                                     if ( spl.Length >= 2 ) {
                                         String str_dse_version = spl[1];
                                         try {
-                                            defaultDseVersion = PortUtil.parseInt( str_dse_version );
+                                            defaultDseVersion = str.toi( str_dse_version );
                                         } catch ( Exception ex ) {
                                             PortUtil.stderr.println( "VocaloSysUtil#init; ex=" + ex );
                                             defaultDseVersion = 100;
@@ -208,12 +208,12 @@ namespace org.kbinani.vsq {
                 PortUtil.stderr.println( "VocaloSysUtil#init; ex=" + ex );
                 SingerConfigSys singer_config_sys = new SingerConfigSys( "", new String[] { } );
                 exp_config_sys1 = null;
-                s_singer_config_sys.put( SynthesizerType.VOCALOID1, singer_config_sys );
+                dic.put( s_singer_config_sys, SynthesizerType.VOCALOID1, singer_config_sys );
             }
             if ( exp_config_sys1 == null ) {
                 exp_config_sys1 = ExpressionConfigSys.getVocaloid1Default();
             }
-            s_exp_config_sys.put( SynthesizerType.VOCALOID1, exp_config_sys1 );
+            dic.put( s_exp_config_sys, SynthesizerType.VOCALOID1, exp_config_sys1 );
 
             ExpressionConfigSys exp_config_sys2 = null;
             try {
@@ -242,15 +242,15 @@ namespace org.kbinani.vsq {
                             sw.newLine();
                         }
                     } catch ( Exception ex ) {
-                        Logger.write( typeof( VocaloSysUtil ) + ".init; ex=" + ex + "\n" );
-                        PortUtil.stderr.println( "VocaloSysUtil#.cctor; ex=" + ex );
+                        //Logger.write( typeof( VocaloSysUtil ) + ".init; ex=" + ex + "\n" );
+                        //PortUtil.stderr.println( "VocaloSysUtil#.cctor; ex=" + ex );
                     } finally {
                         if ( close && sw != null ) {
                             try {
                                 sw.close();
                             } catch ( Exception ex2 ) {
-                                Logger.write( typeof( VocaloSysUtil ) + ".init; ex=" + ex2 + "\n" );
-                                PortUtil.stderr.println( "VocaloSysUtil#.cctor; ex2=" + ex2 );
+                                //Logger.write( typeof( VocaloSysUtil ) + ".init; ex=" + ex2 + "\n" );
+                                //PortUtil.stderr.println( "VocaloSysUtil#.cctor; ex2=" + ex2 );
                             }
                         }
                     }
@@ -265,18 +265,18 @@ namespace org.kbinani.vsq {
                          path_expdb2,
                          path_editor,
                          installed_singers2 );
-                s_path_vsti.put( SynthesizerType.VOCALOID2, path_vsti.value );
-                s_path_editor.put( SynthesizerType.VOCALOID2, path_editor.value );
+                dic.put( s_path_vsti, SynthesizerType.VOCALOID2, path_vsti.value );
+                dic.put( s_path_editor, SynthesizerType.VOCALOID2, path_editor.value );
                 SingerConfigSys singer_config_sys = new SingerConfigSys( path_voicedb2.value, installed_singers2.toArray( new String[] { } ) );
                 if ( PortUtil.isFileExists( PortUtil.combinePath( path_expdb2.value, "expression.map" ) ) ) {
                     exp_config_sys2 = new ExpressionConfigSys( path_editor.value, path_expdb2.value );
                 }
-                s_singer_config_sys.put( SynthesizerType.VOCALOID2, singer_config_sys );
+                dic.put( s_singer_config_sys, SynthesizerType.VOCALOID2, singer_config_sys );
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "VocaloSysUtil..cctor; ex=" + ex );
                 SingerConfigSys singer_config_sys = new SingerConfigSys( "", new String[] { } );
                 exp_config_sys2 = null;
-                s_singer_config_sys.put( SynthesizerType.VOCALOID2, singer_config_sys );
+                dic.put( s_singer_config_sys, SynthesizerType.VOCALOID2, singer_config_sys );
             }
             if ( exp_config_sys2 == null ) {
 #if DEBUG
@@ -284,7 +284,7 @@ namespace org.kbinani.vsq {
 #endif
                 exp_config_sys2 = ExpressionConfigSys.getVocaloid2Default();
             }
-            s_exp_config_sys.put( SynthesizerType.VOCALOID2, exp_config_sys2 );
+            dic.put( s_exp_config_sys, SynthesizerType.VOCALOID2, exp_config_sys2 );
 
             isInitialized = true;
         }
@@ -300,8 +300,8 @@ namespace org.kbinani.vsq {
             if ( !isInitialized ) {
                 init();
             }
-            if ( s_exp_config_sys.containsKey( type ) ) {
-                for ( Iterator<VibratoHandle> itr = s_exp_config_sys.get( type ).vibratoConfigIterator(); itr.hasNext(); ) {
+            if ( dic.containsKey( s_exp_config_sys, type ) ) {
+                for ( Iterator<VibratoHandle> itr = dic.get( s_exp_config_sys, type ).vibratoConfigIterator(); itr.hasNext(); ) {
                     VibratoHandle vconfig = itr.next();
                     if ( vconfig.IconID.Equals( icon_id ) ) {
                         VibratoHandle ret = (VibratoHandle)vconfig.clone();
@@ -329,20 +329,22 @@ namespace org.kbinani.vsq {
             path_expdb.value = "";
             path_voicedb.value = "";
             path_editor.value = "";
-            for ( Iterator<String> itr = dir.iterator(); itr.hasNext(); ) {
-                String s = itr.next();
+            int size = vec.size( dir );
+            for ( int i = 0; i < size; i++ ) {
+                String s = vec.get( dir, i );
                 if ( s.StartsWith( header + "\\APPLICATION" ) ) {
-                    application.add( s.Substring( PortUtil.getStringLength( header + "\\APPLICATION" ) ) );
+                    vec.add( application, s.Substring( str.length( header + "\\APPLICATION" ) ) );
                 } else if ( s.StartsWith( header + "\\DATABASE\\EXPRESSION" ) ) {
-                    expression.add( s.Substring( PortUtil.getStringLength( header + "\\DATABASE\\EXPRESSION" ) ) );
+                    vec.add( expression, s.Substring( str.length( header + "\\DATABASE\\EXPRESSION" ) ) );
                 } else if ( s.StartsWith( header + "\\DATABASE\\VOICE" ) ) {
-                    voice.add( s.Substring( PortUtil.getStringLength( header + "\\DATABASE\\VOICE\\" ) ) );
+                    vec.add( voice, s.Substring( str.length( header + "\\DATABASE\\VOICE\\" ) ) );
                 }
             }
 
             // path_vstiを取得
-            for ( Iterator<String> itr = application.iterator(); itr.hasNext(); ) {
-                String s = itr.next();
+            size = vec.size( application );
+            for ( int i = 0; i < size; i++ ) {
+                String s = vec.get( application, i );
                 String[] spl = PortUtil.splitString( s, '\t' );
                 if ( spl.Length >= 3 && spl[1].Equals( "PATH" ) ) {
                     if ( spl[2].ToLower().EndsWith( ".dll" ) ) {
@@ -355,8 +357,9 @@ namespace org.kbinani.vsq {
 
             // path_vicedbを取得
             Dictionary<String, String> install_dirs = new Dictionary<String, String>();
-            for ( Iterator<String> itr = voice.iterator(); itr.hasNext(); ) {
-                String s = itr.next();
+            size = vec.size( voice );
+            for ( int i = 0; i < size; i++ ) {
+                String s = vec.get( voice, i );
                 String[] spl = PortUtil.splitString( s, '\t' );
                 if ( spl.Length < 2 ) {
                     continue;
@@ -368,13 +371,13 @@ namespace org.kbinani.vsq {
                     String[] spl2 = PortUtil.splitString( spl[0], '\\' );
                     if ( spl2.Length == 1 ) {
                         String id = spl2[0]; // BHXXXXXXXXXXXXみたいなシリアル
-                        if ( !install_dirs.containsKey( id ) ) {
-                            install_dirs.put( id, "" );
+                        if ( !dic.containsKey( install_dirs, id ) ) {
+                            dic.put( install_dirs, id, "" );
                         }
                         if ( spl[1].Equals( "INSTALLDIR" ) ) {
                             // VOCALOID1の場合は、ここには到達しないはず
                             String installdir = spl[2];
-                            install_dirs.put( id, PortUtil.combinePath( installdir, id ) );
+                            dic.put( install_dirs, id, PortUtil.combinePath( installdir, id ) );
                         }
                     }
                 }
@@ -383,18 +386,19 @@ namespace org.kbinani.vsq {
             // installed_singersに追加
             for ( Iterator<String> itr = install_dirs.keySet().iterator(); itr.hasNext(); ) {
                 String id = itr.next();
-                String install = install_dirs.get( id );
+                String install = dic.get( install_dirs, id );
                 if ( install.Equals( "" ) ) {
                     install = PortUtil.combinePath( path_voicedb.value, id );
                 }
-                installed_singers.add( install );
+                vec.add( installed_singers, install );
             }
 
             // path_expdbを取得
             List<String> exp_ids = new List<String>();
             // 最初はpath_expdbの取得と、id（BHXXXXXXXXXXXXXXXX）のようなシリアルを取得
-            for ( Iterator<String> itr = expression.iterator(); itr.hasNext(); ) {
-                String s = itr.next();
+            size = vec.size( expression );
+            for ( int i = 0; i < size; i++ ) {
+                String s = vec.get( expression, i );
                 String[] spl = PortUtil.splitString( s, new char[] { '\t' }, true );
                 if ( spl.Length >= 3 ) {
                     if ( spl[1].Equals( "EXPRESSIONDIR" ) ) {
@@ -402,8 +406,8 @@ namespace org.kbinani.vsq {
                     } else if ( spl.Length >= 3 ) {
                         String[] spl2 = PortUtil.splitString( spl[0], '\\' );
                         if ( spl2.Length == 1 ) {
-                            if ( !exp_ids.contains( spl2[0] ) ) {
-                                exp_ids.add( spl2[0] );
+                            if ( !vec.contains( exp_ids, spl2[0] ) ) {
+                                vec.add( exp_ids, spl2[0] );
                             }
                         }
                     }
@@ -444,7 +448,7 @@ namespace org.kbinani.vsq {
                     RegistryValueKind kind = key.GetValueKind( s );
                     if ( kind == RegistryValueKind.String ) {
                         String str = parent_name + "\t" + s + "\t" + (String)key.GetValue( s, "" );
-                        list.add( str );
+                        vec.add( list, str );
                     }
                 }
                 key.Close();
@@ -463,8 +467,8 @@ namespace org.kbinani.vsq {
             if ( !isInitialized ) {
                 init();
             }
-            if ( s_exp_config_sys.containsKey( type ) ) {
-                return s_exp_config_sys.get( type ).attackConfigIterator();
+            if ( dic.containsKey( s_exp_config_sys, type ) ) {
+                return dic.get( s_exp_config_sys, type ).attackConfigIterator();
             } else {
                 return (new List<NoteHeadHandle>()).iterator();
             }
@@ -479,8 +483,8 @@ namespace org.kbinani.vsq {
             if ( !isInitialized ) {
                 init();
             }
-            if ( s_exp_config_sys.containsKey( type ) ) {
-                return s_exp_config_sys.get( type ).vibratoConfigIterator();
+            if ( dic.containsKey( s_exp_config_sys, type ) ) {
+                return dic.get( s_exp_config_sys, type ).vibratoConfigIterator();
             } else {
                 return (new List<VibratoHandle>()).iterator();
             }
@@ -495,8 +499,8 @@ namespace org.kbinani.vsq {
             if ( !isInitialized ) {
                 init();
             }
-            if ( s_exp_config_sys.containsKey( type ) ) {
-                return s_exp_config_sys.get( type ).dynamicsConfigIterator();
+            if ( dic.containsKey( s_exp_config_sys, type ) ) {
+                return dic.get( s_exp_config_sys, type ).dynamicsConfigIterator();
             } else {
                 return (new List<IconDynamicsHandle>()).iterator();
             }
@@ -514,10 +518,10 @@ namespace org.kbinani.vsq {
                 init();
             }
             String voiceidstr = "";
-            if ( !s_singer_config_sys.containsKey( type ) ) {
+            if ( !dic.containsKey( s_singer_config_sys, type ) ) {
                 return "";
             }
-            SingerConfigSys scs = s_singer_config_sys.get( type );
+            SingerConfigSys scs = dic.get( s_singer_config_sys, type );
             SingerConfig[] singer_configs = scs.getSingerConfigs();
             for ( int i = 0; i < singer_configs.Length; i++ ) {
                 if ( language == singer_configs[i].Language && program == singer_configs[i].Program ) {
@@ -548,10 +552,10 @@ namespace org.kbinani.vsq {
             if ( !isInitialized ) {
                 init();
             }
-            if ( !s_singer_config_sys.containsKey( type ) ) {
+            if ( !dic.containsKey( s_singer_config_sys, type ) ) {
                 return null;
             } else {
-                return s_singer_config_sys.get( type ).getSingerID( language, program );
+                return dic.get( s_singer_config_sys, type ).getSingerID( language, program );
             }
         }
 
@@ -564,7 +568,7 @@ namespace org.kbinani.vsq {
             if ( !isInitialized ) {
                 init();
             }
-            if ( !s_path_editor.containsKey( type ) ) {
+            if ( !dic.containsKey( s_path_editor, type ) ) {
                 return "";
             } else {
                 return s_path_editor.get( type );

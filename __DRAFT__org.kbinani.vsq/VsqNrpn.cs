@@ -56,90 +56,93 @@ namespace org.kbinani.vsq {
             m_list = new List<VsqNrpn>();
         }
 
-        public VsqNrpn[] expand() {
+        public List<VsqNrpn> expand() {
             List<VsqNrpn> ret = new List<VsqNrpn>();
             if ( DataLsbSpecified ) {
                 VsqNrpn v = new VsqNrpn( Clock, Nrpn, DataMsb, DataLsb );
                 v.msbOmitRequired = msbOmitRequired;
-                ret.add( v );
+                vec.add( ret, v );
             } else {
                 VsqNrpn v = new VsqNrpn( Clock, Nrpn, DataMsb );
                 v.msbOmitRequired = msbOmitRequired;
-                ret.add( v );
+                vec.add( ret, v );
             }
-            for ( int i = 0; i < m_list.size(); i++ ) {
-                ret.addAll( Arrays.asList( m_list.get( i ).expand() ) );
-            }
-            return ret.toArray( new VsqNrpn[] { } );
-        }
-
-        public static List<VsqNrpn> sort( List<VsqNrpn> list ) {
-            List<VsqNrpn> ret = new List<VsqNrpn>();
-            Collections.sort( list );
-            if ( list.size() >= 2 ) {
-                List<VsqNrpn> work = new List<VsqNrpn>(); //workには、clockが同じNRPNだけが入る
-                int last_clock = list.get( 0 ).Clock;
-                work.add( list.get( 0 ) );
-                for ( int i = 1; i < list.size(); i++ ) {
-                    if ( list.get( i ).Clock == last_clock ) {
-                        work.add( list.get( i ) );
-                    } else {
-                        // まずworkを並べ替え
-                        last_clock = list.get( i ).Clock;
-                        boolean changed = true;
-                        while ( changed ) {
-                            changed = false;
-                            for ( int j = 0; j < work.size() - 1; j++ ) {
-                                byte nrpn_msb0 = (byte)((work.get( j ).Nrpn >> 8) & 0xff);
-                                byte nrpn_msb1 = (byte)((work.get( j + 1 ).Nrpn >> 8) & 0xff);
-                                if ( nrpn_msb1 > nrpn_msb0 ) {
-                                    VsqNrpn buf = work.get( j );
-                                    work.set( j, work.get( j + 1 ) );
-                                    work.set( j + 1, buf );
-                                    changed = true;
-                                }
-                            }
-                        }
-                        for ( int j = 0; j < work.size(); j++ ) {
-                            ret.add( work.get( j ) );
-                        }
-                        work.clear();
-                        work.add( list.get( i ) );
-                    }
-                }
-                for ( int j = 0; j < work.size(); j++ ) {
-                    ret.add( work.get( j ) );
-                }
-            } else {
-                for ( int i = 0; i < list.size(); i++ ) {
-                    ret.add( list.get( i ) );
+            for ( int i = 0; i < vec.size( m_list ); i++ ) {
+                List<VsqNrpn> expanded = vec.get( m_list, i ).expand();
+                for ( int j = 0; j < vec.size( expanded ); j++ ) {
+                    vec.add( ret, vec.get( expanded, j ) );
                 }
             }
             return ret;
         }
 
-        public static VsqNrpn[] merge( VsqNrpn[] src1, VsqNrpn[] src2 ) {
+        public static List<VsqNrpn> sort( List<VsqNrpn> list ) {
             List<VsqNrpn> ret = new List<VsqNrpn>();
-            for ( int i = 0; i < src1.Length; i++ ) {
-                ret.add( src1[i] );
+            Collections.sort( list );
+            if ( vec.size( list ) >= 2 ) {
+                List<VsqNrpn> work = new List<VsqNrpn>(); //workには、clockが同じNRPNだけが入る
+                int last_clock = vec.get( list, 0 ).Clock;
+                vec.add( work, vec.get( list, 0 ) );
+                for ( int i = 1; i < vec.size( list ); i++ ) {
+                    if ( vec.get( list, i ).Clock == last_clock ) {
+                        vec.add( work, vec.get( list, i ) );
+                    } else {
+                        // まずworkを並べ替え
+                        last_clock = vec.get( list, i ).Clock;
+                        boolean changed = true;
+                        while ( changed ) {
+                            changed = false;
+                            for ( int j = 0; j < vec.size( work ) - 1; j++ ) {
+                                byte nrpn_msb0 = (byte)((vec.get( work, j ).Nrpn >> 8) & 0xff);
+                                byte nrpn_msb1 = (byte)((vec.get( work, j + 1 ).Nrpn >> 8) & 0xff);
+                                if ( nrpn_msb1 > nrpn_msb0 ) {
+                                    VsqNrpn buf = vec.get( work, j );
+                                    vec.set( work, j, vec.get( work, j + 1 ) );
+                                    vec.set( work, j + 1, buf );
+                                    changed = true;
+                                }
+                            }
+                        }
+                        for ( int j = 0; j < vec.size( work ); j++ ) {
+                            vec.add( ret, vec.get( work, j ) );
+                        }
+                        vec.clear( work );
+                        vec.add( work, vec.get( list, i ) );
+                    }
+                }
+                for ( int j = 0; j < vec.size( work ); j++ ) {
+                    vec.add( ret, vec.get( work, j ) );
+                }
+            } else {
+                for ( int i = 0; i < vec.size( list ); i++ ) {
+                    vec.add( ret, vec.get( list, i ) );
+                }
             }
-            for ( int i = 0; i < src2.Length; i++ ) {
-                ret.add( src2[i] );
-            }
-            Collections.sort( ret );
-            return ret.toArray( new VsqNrpn[] { } );
+            return ret;
         }
 
-        public static NrpnData[] convert( VsqNrpn[] source ) {
+        public static List<VsqNrpn> merge( VsqNrpn[] src1, VsqNrpn[] src2 ) {
+            List<VsqNrpn> ret = new List<VsqNrpn>();
+            for ( int i = 0; i < src1.Length; i++ ) {
+                vec.add( ret, src1[i] );
+            }
+            for ( int i = 0; i < src2.Length; i++ ) {
+                vec.add( ret, src2[i] );
+            }
+            Collections.sort( ret );
+            return ret;
+        }
+
+        public static List<NrpnData> convert( VsqNrpn[] source ) {
             int nrpn = source[0].Nrpn;
             byte msb = (byte)(nrpn >> 8);
             byte lsb = (byte)(nrpn - (nrpn << 8));
             List<NrpnData> ret = new List<NrpnData>();
-            ret.add( new NrpnData( source[0].Clock, (byte)0x63, msb ) );
-            ret.add( new NrpnData( source[0].Clock, (byte)0x62, lsb ) );
-            ret.add( new NrpnData( source[0].Clock, (byte)0x06, source[0].DataMsb ) );
+            vec.add( ret, new NrpnData( source[0].Clock, (byte)0x63, msb ) );
+            vec.add( ret, new NrpnData( source[0].Clock, (byte)0x62, lsb ) );
+            vec.add( ret, new NrpnData( source[0].Clock, (byte)0x06, source[0].DataMsb ) );
             if ( source[0].DataLsbSpecified ) {
-                ret.add( new NrpnData( source[0].Clock, (byte)0x26, source[0].DataLsb ) );
+                vec.add( ret, new NrpnData( source[0].Clock, (byte)0x26, source[0].DataLsb ) );
             }
             for ( int i = 1; i < source.Length; i++ ) {
                 VsqNrpn item = source[i];
@@ -147,21 +150,21 @@ namespace org.kbinani.vsq {
                 msb = (byte)(tnrpn >> 8);
                 lsb = (byte)(tnrpn - (tnrpn << 8));
                 if ( item.msbOmitRequired ) {
-                    ret.add( new NrpnData( item.Clock, (byte)0x62, lsb ) );
-                    ret.add( new NrpnData( item.Clock, (byte)0x06, item.DataMsb ) );
+                    vec.add( ret, new NrpnData( item.Clock, (byte)0x62, lsb ) );
+                    vec.add( ret, new NrpnData( item.Clock, (byte)0x06, item.DataMsb ) );
                     if ( item.DataLsbSpecified ) {
-                        ret.add( new NrpnData( item.Clock, (byte)0x26, item.DataLsb ) );
+                        vec.add( ret, new NrpnData( item.Clock, (byte)0x26, item.DataLsb ) );
                     }
                 } else {
-                    ret.add( new NrpnData( item.Clock, (byte)0x63, msb ) );
-                    ret.add( new NrpnData( item.Clock, (byte)0x62, lsb ) );
-                    ret.add( new NrpnData( item.Clock, (byte)0x06, item.DataMsb ) );
+                    vec.add( ret, new NrpnData( item.Clock, (byte)0x63, msb ) );
+                    vec.add( ret, new NrpnData( item.Clock, (byte)0x62, lsb ) );
+                    vec.add( ret, new NrpnData( item.Clock, (byte)0x06, item.DataMsb ) );
                     if ( item.DataLsbSpecified ) {
-                        ret.add( new NrpnData( item.Clock, (byte)0x26, item.DataLsb ) );
+                        vec.add( ret, new NrpnData( item.Clock, (byte)0x26, item.DataLsb ) );
                     }
                 }
             }
-            return ret.toArray( new NrpnData[] { } );
+            return ret;
         }
 
         public int compareTo( VsqNrpn item ) {
@@ -175,23 +178,23 @@ namespace org.kbinani.vsq {
 #endif
 
         public void append( int nrpn, byte data_msb ) {
-            m_list.add( new VsqNrpn( Clock, nrpn, data_msb ) );
+            vec.add( m_list, new VsqNrpn( Clock, nrpn, data_msb ) );
         }
 
         public void append( int nrpn, byte data_msb, byte data_lsb ) {
-            m_list.add( new VsqNrpn( Clock, nrpn, data_msb, data_lsb ) );
+            vec.add( m_list, new VsqNrpn( Clock, nrpn, data_msb, data_lsb ) );
         }
 
         public void append( int nrpn, byte data_msb, boolean msb_omit_required ) {
             VsqNrpn v = new VsqNrpn( Clock, nrpn, data_msb );
             v.msbOmitRequired = msb_omit_required;
-            m_list.add( v );
+            vec.add( m_list, v );
         }
 
         public void append( int nrpn, byte data_msb, byte data_lsb, boolean msb_omit_required ) {
             VsqNrpn v = new VsqNrpn( Clock, nrpn, data_msb, data_lsb );
             v.msbOmitRequired = msb_omit_required;
-            m_list.add( v );
+            vec.add( m_list, v );
         }
     }
 

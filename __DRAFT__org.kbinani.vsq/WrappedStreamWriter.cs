@@ -26,9 +26,19 @@ namespace org.kbinani.vsq {
 #else
     public class WrappedStreamWriter : ITextWriter {
 #endif
-        BufferedWriter m_writer;
 
-        public WrappedStreamWriter( BufferedWriter stream_writer ) {
+#if __cplusplus
+        BufferedWriter& m_writer;
+#else
+        BufferedWriter m_writer;
+#endif
+
+#if __cplusplus
+        public WrappedStreamWriter( BufferedWriter& stream_writer ) 
+#else
+        public WrappedStreamWriter( BufferedWriter stream_writer ) 
+#endif
+        {
             m_writer = stream_writer;
         }
 
