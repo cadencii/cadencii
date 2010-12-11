@@ -57,8 +57,8 @@ namespace org.kbinani.vsq {
             try {
                 sr = new BufferedReader( new InputStreamReader( new FileInputStream( path ), "Shift_JIS" ) );
 #if DEBUG
-                PortUtil.println( "UstFile#.ctor; path=" + path );
-                PortUtil.println( "UstFile#.ctor; (sr==null)=" + (sr == null) );
+                sout.println( "UstFile#.ctor; path=" + path );
+                sout.println( "UstFile#.ctor; (sr==null)=" + (sr == null) );
 #endif
                 String line = sr.readLine();
 
@@ -86,7 +86,7 @@ namespace org.kbinani.vsq {
                         }
                         String s = line.Replace( "[#", "" ).Replace( "]", "" ).Trim();
                         try {
-                            index = PortUtil.parseInt( s );
+                            index = (float)str.toi( s );
                         } catch ( Exception ex ) {
 #if DEBUG
                             PortUtil.println( "UstFile#.ctor; ex=" + ex );
@@ -111,7 +111,7 @@ namespace org.kbinani.vsq {
                                 m_tempo = 125f;
                                 float v = 125f;
                                 try {
-                                    v = PortUtil.parseFloat( spl[1] );
+                                    v = (float)str.tof( spl[1] );
                                     m_tempo = v;
                                 } catch ( Exception ex ) {
                                 }
@@ -137,7 +137,7 @@ namespace org.kbinani.vsq {
                                 ue.setLength( 0 );
                                 int v = 0;
                                 try {
-                                    v = PortUtil.parseInt( spl[1] );
+                                    v = (float)str.toi( spl[1] );
                                     ue.setLength( v );
                                 } catch ( Exception ex ) {
                                 }
@@ -147,7 +147,7 @@ namespace org.kbinani.vsq {
                                 ue.Note = 0;
                                 int v = 0;
                                 try {
-                                    v = PortUtil.parseInt( spl[1] );
+                                    v = (float)str.toi( spl[1] );
                                     ue.Note = v;
                                 } catch ( Exception ex ) {
                                 }
@@ -155,7 +155,7 @@ namespace org.kbinani.vsq {
                                 ue.Intensity = 64;
                                 int v = 64;
                                 try {
-                                    v = PortUtil.parseInt( spl[1] );
+                                    v = (float)str.toi( spl[1] );
                                     ue.Intensity = v;
                                 } catch ( Exception ex ) {
                                 }
@@ -163,7 +163,7 @@ namespace org.kbinani.vsq {
                                 ue.PBType = 5;
                                 int v = 5;
                                 try {
-                                    v = PortUtil.parseInt( spl[1] );
+                                    v = (float)str.toi( spl[1] );
                                     ue.PBType = v;
                                 } catch ( Exception ex ) {
                                 }
@@ -173,7 +173,7 @@ namespace org.kbinani.vsq {
                                 for ( int i = 0; i < spl2.Length; i++ ) {
                                     float v = 0;
                                     try {
-                                        v = PortUtil.parseFloat( spl2[i] );
+                                        v = (float)str.tof( spl2[i] );
                                         t[i] = v;
                                     } catch ( Exception ex ) {
                                     }
@@ -183,7 +183,7 @@ namespace org.kbinani.vsq {
                                 ue.Tempo = 125f;
                                 float v;
                                 try {
-                                    v = PortUtil.parseFloat( spl[1] );
+                                    v = (float)str.tof( spl[1] );
                                     ue.Tempo = v;
                                 } catch ( Exception ex ) {
                                 }
@@ -206,17 +206,17 @@ namespace org.kbinani.vsq {
                                 //VoiceOverlap=6
                             } else if ( spl[0].Equals( "VoiceOverlap" ) ) {
                                 if ( spl[1] != "" ) {
-                                    ue.VoiceOverlap = PortUtil.parseInt( spl[1] );
+                                    ue.VoiceOverlap = (float)str.toi( spl[1] );
                                 }
                             } else if ( spl[0].Equals( "PreUtterance" ) ) {
                                 if ( spl[1] != "" ) {
-                                    ue.PreUtterance = PortUtil.parseInt( spl[1] );
+                                    ue.PreUtterance = (float)str.toi( spl[1] );
                                 }
                             } else if ( spl[0].Equals( "Flags" ) ) {
                                 ue.Flags = line.Substring( 6 );
                             } else if ( spl[0].Equals( "StartPoint" ) ){
                                 try {
-                                    ue.StartPoint = PortUtil.parseInt( spl[1] );
+                                    ue.StartPoint = (float)str.toi( spl[1] );
                                 } catch ( Exception ex ) {
                                     ue.StartPoint = 0;
                                 }

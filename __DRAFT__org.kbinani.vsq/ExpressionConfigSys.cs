@@ -160,7 +160,7 @@ namespace org.kbinani.vsq {
             v1.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
             v1.setStartRate( 64 );
             v1.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v1 );
+            vec.add( ret.m_vibrato_configs, v1 );
 
             VibratoHandle v2 = new VibratoHandle();
             /*v2.author = "Taro";
@@ -177,7 +177,7 @@ namespace org.kbinani.vsq {
             v2.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
             v2.setStartRate( 56 );
             v2.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v2 );
+            vec.add( ret.m_vibrato_configs, v2 );
 
             VibratoHandle v3 = new VibratoHandle();
             /*v3.author = "Taro";
@@ -194,7 +194,7 @@ namespace org.kbinani.vsq {
             v3.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
             v3.setStartRate( 64 );
             v3.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v3 );
+            vec.add( ret.m_vibrato_configs, v3 );
 
             VibratoHandle v4 = new VibratoHandle();
             /*v4.author = "Taro";
@@ -211,7 +211,7 @@ namespace org.kbinani.vsq {
             v4.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
             v4.setStartRate( 64 );
             v4.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v4 );
+            vec.add( ret.m_vibrato_configs, v4 );
 
             VibratoHandle v5 = new VibratoHandle();
             /*v5.author = "Taro";
@@ -228,7 +228,7 @@ namespace org.kbinani.vsq {
             v5.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
             v5.setStartRate( 120 );
             v5.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v5 );
+            vec.add( ret.m_vibrato_configs, v5 );
 
             VibratoHandle v6 = new VibratoHandle();
             /*v6.author = "Taro";
@@ -245,7 +245,7 @@ namespace org.kbinani.vsq {
             v6.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
             v6.setStartRate( 64 );
             v6.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v6 );
+            vec.add( ret.m_vibrato_configs, v6 );
 
             NoteHeadHandle a1 = new NoteHeadHandle();
             /*a1.author = "Taro";
@@ -260,7 +260,7 @@ namespace org.kbinani.vsq {
             a1.setLength( 120 );
             a1.setDuration( 64 );
             a1.setDepth( 64 );
-            ret.m_attack_configs.add( a1 );
+            vec.add( ret.m_attack_configs, a1 );
 
             NoteHeadHandle a2 = new NoteHeadHandle();
             /*a2.author = "Taro";
@@ -275,7 +275,7 @@ namespace org.kbinani.vsq {
             a2.setLength( 120 );
             a2.setDuration( 64 );
             a2.setDepth( 64 );
-            ret.m_attack_configs.add( a2 );
+            vec.add( ret.m_attack_configs, a2 );
 
             NoteHeadHandle a3 = new NoteHeadHandle();
             /*a3.author = "Taro";
@@ -290,7 +290,7 @@ namespace org.kbinani.vsq {
             a3.setLength( 120 );
             a3.setDuration( 64 );
             a3.setDepth( 64 );
-            ret.m_attack_configs.add( a3 );
+            vec.add( ret.m_attack_configs, a3 );
 
             NoteHeadHandle a4 = new NoteHeadHandle();
             /*a4.author = "Taro";
@@ -305,7 +305,7 @@ namespace org.kbinani.vsq {
             a4.setLength( 120 );
             a4.setDuration( 64 );
             a4.setDepth( 64 );
-            ret.m_attack_configs.add( a4 );
+            vec.add( ret.m_attack_configs, a4 );
 
             NoteHeadHandle a5 = new NoteHeadHandle();
             /*a5.author = "Taro";
@@ -320,7 +320,7 @@ namespace org.kbinani.vsq {
             a5.setLength( 120 );
             a5.setDuration( 64 );
             a5.setDepth( 64 );
-            ret.m_attack_configs.add( a5 );
+            vec.add( ret.m_attack_configs, a5 );
 
             NoteHeadHandle a6 = new NoteHeadHandle();
             /*a6.author = "Taro";
@@ -335,7 +335,7 @@ namespace org.kbinani.vsq {
             a6.setLength( 120 );
             a6.setDuration( 64 );
             a6.setDepth( 64 );
-            ret.m_attack_configs.add( a6 );
+            vec.add( ret.m_attack_configs, a6 );
 
             NoteHeadHandle a7 = new NoteHeadHandle();
             /*a7.author = "Taro";
@@ -350,7 +350,7 @@ namespace org.kbinani.vsq {
             a7.setLength( 120 );
             a7.setDuration( 64 );
             a7.setDepth( 64 );
-            ret.m_attack_configs.add( a7 );
+            vec.add( ret.m_attack_configs, a7 );
 
             NoteHeadHandle a8 = new NoteHeadHandle();
             /*a8.author = "Taro";
@@ -365,7 +365,7 @@ namespace org.kbinani.vsq {
             a8.setLength( 120 );
             a8.setDuration( 64 );
             a8.setDepth( 64 );
-            ret.m_attack_configs.add( a8 );
+            vec.add( ret.m_attack_configs, a8 );
 
             NoteHeadHandle a9 = new NoteHeadHandle();
             /*a9.author = "Taro";
@@ -380,7 +380,7 @@ namespace org.kbinani.vsq {
             a9.setLength( 120 );
             a9.setDuration( 64 );
             a9.setDepth( 64 );
-            ret.m_attack_configs.add( a9 );
+            vec.add( ret.m_attack_configs, a9 );
 
             NoteHeadHandle a10 = new NoteHeadHandle();
             /*a10.author = "Taro";
@@ -395,7 +395,7 @@ namespace org.kbinani.vsq {
             a10.setLength( 120 );
             a10.setDuration( 64 );
             a10.setDepth( 64 );
-            ret.m_attack_configs.add( a10 );
+            vec.add( ret.m_attack_configs, a10 );
 
             IconDynamicsHandle d0 = new IconDynamicsHandle();
             d0.IDS = "Dynaff11";
@@ -405,7 +405,7 @@ namespace org.kbinani.vsq {
             d0.setStartDyn( 120 );
             d0.setEndDyn( 120 );
             d0.setLength( 0 );
-            ret.m_dynamics_configs.add( d0 );
+            vec.add( ret.m_dynamics_configs, d0 );
 
             IconDynamicsHandle d1 = new IconDynamicsHandle();
             d1.IDS = "Dynaff12";
@@ -415,7 +415,7 @@ namespace org.kbinani.vsq {
             d1.setStartDyn( 104 );
             d1.setEndDyn( 104 );
             d1.setLength( 0 );
-            ret.m_dynamics_configs.add( d1 );
+            vec.add( ret.m_dynamics_configs, d1 );
 
             IconDynamicsHandle d2 = new IconDynamicsHandle();
             d2.IDS = "Dynaff13";
@@ -425,7 +425,7 @@ namespace org.kbinani.vsq {
             d2.setStartDyn( 88 );
             d2.setEndDyn( 88 );
             d2.setLength( 0 );
-            ret.m_dynamics_configs.add( d2 );
+            vec.add( ret.m_dynamics_configs, d2 );
 
             IconDynamicsHandle d3 = new IconDynamicsHandle();
             d3.IDS = "Dynaff21";
@@ -435,7 +435,7 @@ namespace org.kbinani.vsq {
             d3.setStartDyn( 72 );
             d3.setEndDyn( 72 );
             d3.setLength( 0 );
-            ret.m_dynamics_configs.add( d3 );
+            vec.add( ret.m_dynamics_configs, d3 );
 
             IconDynamicsHandle d4 = new IconDynamicsHandle();
             d4.IDS = "Dynaff22";
@@ -445,7 +445,7 @@ namespace org.kbinani.vsq {
             d4.setStartDyn( 56 );
             d4.setEndDyn( 56 );
             d4.setLength( 0 );
-            ret.m_dynamics_configs.add( d4 );
+            vec.add( ret.m_dynamics_configs, d4 );
 
             IconDynamicsHandle d5 = new IconDynamicsHandle();
             d5.IDS = "Dynaff31";
@@ -455,7 +455,7 @@ namespace org.kbinani.vsq {
             d5.setStartDyn( 40 );
             d5.setEndDyn( 40 );
             d5.setLength( 0 );
-            ret.m_dynamics_configs.add( d5 );
+            vec.add( ret.m_dynamics_configs, d5 );
 
             IconDynamicsHandle d6 = new IconDynamicsHandle();
             d6.IDS = "Dynaff32";
@@ -465,7 +465,7 @@ namespace org.kbinani.vsq {
             d6.setStartDyn( 24 );
             d6.setEndDyn( 24 );
             d6.setLength( 0 );
-            ret.m_dynamics_configs.add( d6 );
+            vec.add( ret.m_dynamics_configs, d6 );
 
             IconDynamicsHandle d7 = new IconDynamicsHandle();
             d7.IDS = "Dynaff33";
@@ -475,7 +475,7 @@ namespace org.kbinani.vsq {
             d7.setStartDyn( 8 );
             d7.setEndDyn( 8 );
             d7.setLength( 0 );
-            ret.m_dynamics_configs.add( d7 );
+            vec.add( ret.m_dynamics_configs, d7 );
 
             IconDynamicsHandle d8 = new IconDynamicsHandle();
             d8.IDS = "cresc_1";
@@ -485,7 +485,7 @@ namespace org.kbinani.vsq {
             d8.setStartDyn( 0 );
             d8.setEndDyn( 38 );
             d8.setLength( 960 );
-            ret.m_dynamics_configs.add( d8 );
+            vec.add( ret.m_dynamics_configs, d8 );
 
             IconDynamicsHandle d9 = new IconDynamicsHandle();
             d9.IDS = "cresc_2";
@@ -495,7 +495,7 @@ namespace org.kbinani.vsq {
             d9.setStartDyn( 0 );
             d9.setEndDyn( 64 );
             d9.setLength( 960 );
-            ret.m_dynamics_configs.add( d9 );
+            vec.add( ret.m_dynamics_configs, d9 );
 
             IconDynamicsHandle d10 = new IconDynamicsHandle();
             d10.IDS = "cresc_3";
@@ -505,7 +505,7 @@ namespace org.kbinani.vsq {
             d10.setStartDyn( 0 );
             d10.setEndDyn( 127 );
             d10.setLength( 960 );
-            ret.m_dynamics_configs.add( d10 );
+            vec.add( ret.m_dynamics_configs, d10 );
 
             IconDynamicsHandle d11 = new IconDynamicsHandle();
             d11.IDS = "cresc_4";
@@ -516,7 +516,7 @@ namespace org.kbinani.vsq {
             d11.setEndDyn( 38 );
             d11.setLength( 960 );
             d11.setDynBP( new VibratoBPList( new float[] { 0.5f }, new int[] { 11 } ) );
-            ret.m_dynamics_configs.add( d11 );
+            vec.add( ret.m_dynamics_configs, d11 );
 
             IconDynamicsHandle d12 = new IconDynamicsHandle();
             d12.IDS = "cresc_5";
@@ -527,7 +527,7 @@ namespace org.kbinani.vsq {
             d12.setEndDyn( 102 );
             d12.setLength( 960 );
             d12.setDynBP( new VibratoBPList( new float[] { 0.5f }, new int[] { 40 } ) );
-            ret.m_dynamics_configs.add( d12 );
+            vec.add( ret.m_dynamics_configs, d12 );
 
             IconDynamicsHandle d13 = new IconDynamicsHandle();
             d13.IDS = "dim_1";
@@ -537,7 +537,7 @@ namespace org.kbinani.vsq {
             d13.setStartDyn( 0 );
             d13.setEndDyn( -38 );
             d13.setLength( 960 );
-            ret.m_dynamics_configs.add( d13 );
+            vec.add( ret.m_dynamics_configs, d13 );
 
             IconDynamicsHandle d14 = new IconDynamicsHandle();
             d14.IDS = "dim_2";
@@ -547,7 +547,7 @@ namespace org.kbinani.vsq {
             d14.setStartDyn( 0 );
             d14.setEndDyn( -64 );
             d14.setLength( 960 );
-            ret.m_dynamics_configs.add( d14 );
+            vec.add( ret.m_dynamics_configs, d14 );
 
             IconDynamicsHandle d15 = new IconDynamicsHandle();
             d15.IDS = "dim_3";
@@ -557,7 +557,7 @@ namespace org.kbinani.vsq {
             d15.setStartDyn( 0 );
             d15.setEndDyn( -127 );
             d15.setLength( 960 );
-            ret.m_dynamics_configs.add( d15 );
+            vec.add( ret.m_dynamics_configs, d15 );
 
             IconDynamicsHandle d16 = new IconDynamicsHandle();
             d16.IDS = "dim_4";
@@ -568,7 +568,7 @@ namespace org.kbinani.vsq {
             d16.setEndDyn( -38 );
             d16.setLength( 960 );
             d16.setDynBP( new VibratoBPList( new float[] { 0.5f }, new int[] { -11 } ) );
-            ret.m_dynamics_configs.add( d16 );
+            vec.add( ret.m_dynamics_configs, d16 );
 
             IconDynamicsHandle d17 = new IconDynamicsHandle();
             d17.IDS = "dim_5";
@@ -579,7 +579,7 @@ namespace org.kbinani.vsq {
             d17.setEndDyn( -102 );
             d17.setLength( 960 );
             d17.setDynBP( new VibratoBPList( new float[] { 0.5f }, new int[] { -40 } ) );
-            ret.m_dynamics_configs.add( d17 );
+            vec.add( ret.m_dynamics_configs, d17 );
 
             return ret;
         }
@@ -616,7 +616,7 @@ namespace org.kbinani.vsq {
             v1.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
             v1.setStartRate( 50 );
             v1.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v1 );
+            vec.add( ret.m_vibrato_configs, v1 );
 
 #if __cplusplus
             VibratoHandle v2;
@@ -637,7 +637,7 @@ namespace org.kbinani.vsq {
             v2.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
             v2.setStartRate( 50 );
             v2.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v2 );
+            vec.add( ret.m_vibrato_configs, v2 );
 
 #if __cplusplus
             VibratoHandle v3;
@@ -658,7 +658,7 @@ namespace org.kbinani.vsq {
             v3.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
             v3.setStartRate( 50 );
             v3.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v3 );
+            vec.add( ret.m_vibrato_configs, v3 );
 
 #if __cplusplus
             VibratoHandle v4;
@@ -679,7 +679,7 @@ namespace org.kbinani.vsq {
             v4.setDepthBP( new VibratoBPList( new float[] { 0.6042f, 0.6125f, 0.6167f, 0.6208f, 0.625f, 0.6333f, 0.6375f, 0.6417f, 0.6458f, 0.6542f, 0.6583f, 0.6667f, 0.6708f, 0.675f, 0.6792f, 0.6833f, 0.6917f, 0.6958f, 0.7042f, 0.7083f, 0.7125f, 0.7167f, 0.7208f, 0.725f, 0.7292f, 0.7375f, 0.7458f, 0.75f, 0.7583f, 0.7625f, 0.7667f, 0.7708f, 0.775f, 0.7833f, 0.7917f, 0.7958f, 0.8f, 0.8042f, 0.8083f, 0.8125f, 0.8208f, 0.8292f, 0.8375f, 0.8417f, 0.8458f, 0.85f, 0.8542f, 0.8625f, 0.8667f, 0.875f, 0.8792f, 0.8833f, 0.8875f, 0.8917f, 0.8958f, 0.9f, 1f }, new int[] { 64, 63, 62, 61, 59, 58, 57, 56, 55, 54, 52, 51, 50, 49, 48, 47, 45, 44, 43, 42, 41, 40, 39, 38, 37, 35, 34, 32, 31, 30, 29, 28, 27, 25, 24, 23, 22, 21, 20, 19, 17, 15, 14, 13, 12, 11, 10, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0 } ) );
             v4.setStartRate( 50 );
             v4.setRateBP( new VibratoBPList( new float[] { 0.6f, 0.6125f, 0.6167f, 0.6208f, 0.6292f, 0.6333f, 0.6375f, 0.6417f, 0.6542f, 0.6583f, 0.6625f, 0.6667f, 0.675f, 0.6833f, 0.6875f, 0.6917f, 0.7f, 0.7042f, 0.7083f, 0.7125f, 0.725f, 0.7292f, 0.7333f, 0.7375f, 0.7458f, 0.75f, 0.7583f, 0.7625f, 0.7708f, 0.775f, 0.7792f, 0.7833f, 0.7958f, 0.8f, 0.8042f, 0.8083f, 0.8167f, 0.8208f, 0.8292f, 0.8333f, 0.8417f, 0.8458f, 0.85f, 0.8542f, 0.8667f, 0.8708f, 0.875f, 0.8792f, 0.8875f, 0.8917f, 0.9f, 1f }, new int[] { 50, 49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0 } ) );
-            ret.m_vibrato_configs.add( v4 );
+            vec.add( ret.m_vibrato_configs, v4 );
 
 #if __cplusplus
             VibratoHandle v5;
@@ -700,7 +700,7 @@ namespace org.kbinani.vsq {
             v5.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
             v5.setStartRate( 64 );
             v5.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v5 );
+            vec.add( ret.m_vibrato_configs, v5 );
 
 #if __cplusplus
             VibratoHandle v6;
@@ -721,7 +721,7 @@ namespace org.kbinani.vsq {
             v6.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
             v6.setStartRate( 32 );
             v6.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v6 );
+            vec.add( ret.m_vibrato_configs, v6 );
 
 #if __cplusplus
             VibratoHandle v7;
@@ -742,7 +742,7 @@ namespace org.kbinani.vsq {
             v7.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
             v7.setStartRate( 50 );
             v7.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v7 );
+            vec.add( ret.m_vibrato_configs, v7 );
 
 #if __cplusplus
             VibratoHandle v8;
@@ -763,7 +763,7 @@ namespace org.kbinani.vsq {
             v8.setDepthBP( new VibratoBPList( new float[] { 0.6042f, 0.6125f, 0.6167f, 0.6208f, 0.625f, 0.6333f, 0.6375f, 0.6417f, 0.6458f, 0.6542f, 0.6583f, 0.6667f, 0.6708f, 0.675f, 0.6792f, 0.6833f, 0.6917f, 0.6958f, 0.7042f, 0.7083f, 0.7125f, 0.7167f, 0.7208f, 0.725f, 0.7292f, 0.7375f, 0.7458f, 0.75f, 0.7583f, 0.7625f, 0.7667f, 0.7708f, 0.775f, 0.7833f, 0.7917f, 0.7958f, 0.8f, 0.8042f, 0.8083f, 0.8125f, 0.8208f, 0.8292f, 0.8375f, 0.8417f, 0.8458f, 0.85f, 0.8542f, 0.8625f, 0.8667f, 0.875f, 0.8792f, 0.8833f, 0.8875f, 0.8917f, 0.8958f, 0.9f, 1f }, new int[] { 64, 63, 62, 61, 59, 58, 57, 56, 55, 54, 52, 51, 50, 49, 48, 47, 45, 44, 43, 42, 41, 40, 39, 38, 37, 35, 34, 32, 31, 30, 29, 28, 27, 25, 24, 23, 22, 21, 20, 19, 17, 15, 14, 13, 12, 11, 10, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0 } ) );
             v8.setStartRate( 64 );
             v8.setRateBP( new VibratoBPList( new float[] { 0.6042f, 0.6125f, 0.6167f, 0.6208f, 0.625f, 0.6333f, 0.6375f, 0.6417f, 0.6458f, 0.6542f, 0.6583f, 0.6667f, 0.6708f, 0.675f, 0.6792f, 0.6833f, 0.6917f, 0.6958f, 0.7042f, 0.7083f, 0.7125f, 0.7167f, 0.7208f, 0.725f, 0.7292f, 0.7375f, 0.7458f, 0.75f, 0.7583f, 0.7625f, 0.7667f, 0.7708f, 0.775f, 0.7833f, 0.7917f, 0.7958f, 0.8f, 0.8042f, 0.8083f, 0.8125f, 0.8208f, 0.8292f, 0.8375f, 0.8417f, 0.8458f, 0.85f, 0.8542f, 0.8625f, 0.8667f, 0.875f, 0.8792f, 0.8833f, 0.8875f, 0.8917f, 0.8958f, 0.9f, 1f }, new int[] { 64, 63, 62, 61, 59, 58, 57, 56, 55, 54, 52, 51, 50, 49, 48, 47, 45, 44, 43, 42, 41, 40, 39, 38, 37, 35, 34, 32, 31, 30, 29, 28, 27, 25, 24, 23, 22, 21, 20, 19, 17, 15, 14, 13, 12, 11, 10, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0 } ) );
-            ret.m_vibrato_configs.add( v8 );
+            vec.add( ret.m_vibrato_configs, v8 );
 
 #if __cplusplus
             VibratoHandle v9;
@@ -784,7 +784,7 @@ namespace org.kbinani.vsq {
             v9.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
             v9.setStartRate( 64 );
             v9.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v9 );
+            vec.add( ret.m_vibrato_configs, v9 );
 
 #if __cplusplus
             VibratoHandle v10;
@@ -805,7 +805,7 @@ namespace org.kbinani.vsq {
             v10.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
             v10.setStartRate( 50 );
             v10.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v10 );
+            vec.add( ret.m_vibrato_configs, v10 );
 
 #if __cplusplus
             VibratoHandle v11;
@@ -826,7 +826,7 @@ namespace org.kbinani.vsq {
             v11.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
             v11.setStartRate( 70 );
             v11.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v11 );
+            vec.add( ret.m_vibrato_configs, v11 );
 
             VibratoHandle v12 = new VibratoHandle();
             /*v12.author = "Standard";
@@ -843,7 +843,7 @@ namespace org.kbinani.vsq {
             v12.setDepthBP( new VibratoBPList( new float[] { 0.6042f, 0.6125f, 0.6167f, 0.6208f, 0.625f, 0.6333f, 0.6375f, 0.6417f, 0.6458f, 0.6542f, 0.6583f, 0.6667f, 0.6708f, 0.675f, 0.6792f, 0.6833f, 0.6917f, 0.6958f, 0.7042f, 0.7083f, 0.7125f, 0.7167f, 0.7208f, 0.725f, 0.7292f, 0.7375f, 0.7458f, 0.75f, 0.7583f, 0.7625f, 0.7667f, 0.7708f, 0.775f, 0.7833f, 0.7917f, 0.7958f, 0.8f, 0.8042f, 0.8083f, 0.8125f, 0.8208f, 0.8292f, 0.8375f, 0.8417f, 0.8458f, 0.85f, 0.8542f, 0.8625f, 0.8667f, 0.875f, 0.8792f, 0.8833f, 0.8875f, 0.8917f, 0.8958f, 0.9f, 1f }, new int[] { 64, 63, 62, 61, 59, 58, 57, 56, 55, 54, 52, 51, 50, 49, 48, 47, 45, 44, 43, 42, 41, 40, 39, 38, 37, 35, 34, 32, 31, 30, 29, 28, 27, 25, 24, 23, 22, 21, 20, 19, 17, 15, 14, 13, 12, 11, 10, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0 } ) );
             v12.setStartRate( 64 );
             v12.setRateBP( new VibratoBPList( new float[] { 0.6042f, 0.6125f, 0.6167f, 0.6208f, 0.625f, 0.6333f, 0.6375f, 0.6417f, 0.6458f, 0.6542f, 0.6583f, 0.6667f, 0.6708f, 0.675f, 0.6792f, 0.6833f, 0.6917f, 0.6958f, 0.7042f, 0.7083f, 0.7125f, 0.7167f, 0.7208f, 0.725f, 0.7292f, 0.7375f, 0.7458f, 0.75f, 0.7583f, 0.7625f, 0.7667f, 0.7708f, 0.775f, 0.7833f, 0.7917f, 0.7958f, 0.8f, 0.8042f, 0.8083f, 0.8125f, 0.8208f, 0.8292f, 0.8375f, 0.8417f, 0.8458f, 0.85f, 0.8542f, 0.8625f, 0.8667f, 0.875f, 0.8792f, 0.8833f, 0.8875f, 0.8917f, 0.8958f, 0.9f, 1f }, new int[] { 64, 63, 62, 61, 59, 58, 57, 56, 55, 54, 52, 51, 50, 49, 48, 47, 45, 44, 43, 42, 41, 40, 39, 38, 37, 35, 34, 32, 31, 30, 29, 28, 27, 25, 24, 23, 22, 21, 20, 19, 17, 15, 14, 13, 12, 11, 10, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0 } ) );
-            ret.m_vibrato_configs.add( v12 );
+            vec.add( ret.m_vibrato_configs, v12 );
 
             VibratoHandle v13 = new VibratoHandle();
             /*v13.author = "Standard";
@@ -860,7 +860,7 @@ namespace org.kbinani.vsq {
             v13.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
             v13.setStartRate( 64 );
             v13.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v13 );
+            vec.add( ret.m_vibrato_configs, v13 );
 
             VibratoHandle v14 = new VibratoHandle();
             /*v14.author = "Standard";
@@ -877,7 +877,7 @@ namespace org.kbinani.vsq {
             v14.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
             v14.setStartRate( 64 );
             v14.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v14 );
+            vec.add( ret.m_vibrato_configs, v14 );
 
             VibratoHandle v15 = new VibratoHandle();
             /*v15.author = "Standard";
@@ -894,7 +894,7 @@ namespace org.kbinani.vsq {
             v15.setDepthBP( new VibratoBPList( new float[] { }, new int[] { } ) );
             v15.setStartRate( 64 );
             v15.setRateBP( new VibratoBPList( new float[] { }, new int[] { } ) );
-            ret.m_vibrato_configs.add( v15 );
+            vec.add( ret.m_vibrato_configs, v15 );
 
             VibratoHandle v16 = new VibratoHandle();
             /*v16.author = "Standard";
@@ -911,7 +911,7 @@ namespace org.kbinani.vsq {
             v16.setDepthBP( new VibratoBPList( new float[] { 0.6042f, 0.6125f, 0.6167f, 0.6208f, 0.625f, 0.6333f, 0.6375f, 0.6417f, 0.6458f, 0.6542f, 0.6583f, 0.6667f, 0.6708f, 0.675f, 0.6792f, 0.6833f, 0.6917f, 0.6958f, 0.7042f, 0.7083f, 0.7125f, 0.7167f, 0.7208f, 0.725f, 0.7292f, 0.7375f, 0.7458f, 0.75f, 0.7583f, 0.7625f, 0.7667f, 0.7708f, 0.775f, 0.7833f, 0.7917f, 0.7958f, 0.8f, 0.8042f, 0.8083f, 0.8125f, 0.8208f, 0.8292f, 0.8375f, 0.8417f, 0.8458f, 0.85f, 0.8542f, 0.8625f, 0.8667f, 0.875f, 0.8792f, 0.8833f, 0.8875f, 0.8917f, 0.8958f, 0.9f, 1f }, new int[] { 64, 63, 62, 61, 59, 58, 57, 56, 55, 54, 52, 51, 50, 49, 48, 47, 45, 44, 43, 42, 41, 40, 39, 38, 37, 35, 34, 32, 31, 30, 29, 28, 27, 25, 24, 23, 22, 21, 20, 19, 17, 15, 14, 13, 12, 11, 10, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0 } ) );
             v16.setStartRate( 64 );
             v16.setRateBP( new VibratoBPList( new float[] { 0.6042f, 0.6125f, 0.6167f, 0.6208f, 0.625f, 0.6333f, 0.6375f, 0.6417f, 0.6458f, 0.6542f, 0.6583f, 0.6667f, 0.6708f, 0.675f, 0.6792f, 0.6833f, 0.6917f, 0.6958f, 0.7042f, 0.7083f, 0.7125f, 0.7167f, 0.7208f, 0.725f, 0.7292f, 0.7375f, 0.7458f, 0.75f, 0.7583f, 0.7625f, 0.7667f, 0.7708f, 0.775f, 0.7833f, 0.7917f, 0.7958f, 0.8f, 0.8042f, 0.8083f, 0.8125f, 0.8208f, 0.8292f, 0.8375f, 0.8417f, 0.8458f, 0.85f, 0.8542f, 0.8625f, 0.8667f, 0.875f, 0.8792f, 0.8833f, 0.8875f, 0.8917f, 0.8958f, 0.9f, 1f }, new int[] { 64, 63, 62, 61, 59, 58, 57, 56, 55, 54, 52, 51, 50, 49, 48, 47, 45, 44, 43, 42, 41, 40, 39, 38, 37, 35, 34, 32, 31, 30, 29, 28, 27, 25, 24, 23, 22, 21, 20, 19, 17, 15, 14, 13, 12, 11, 10, 8, 7, 6, 5, 4, 3, 2, 1, 0, 0 } ) );
-            ret.m_vibrato_configs.add( v16 );
+            vec.add( ret.m_vibrato_configs, v16 );
 
             return ret;
         }
@@ -921,7 +921,7 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <returns></returns>
         public int getVibratoConfigCount() {
-            return m_vibrato_configs.size();
+            return vec.size( m_vibrato_configs );
         }
 
         /// <summary>
@@ -929,7 +929,7 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <returns></returns>
         public int getAttackConfigCount() {
-            return m_attack_configs.size();
+            return vec.size( m_attack_configs );
         }
 
         /// <summary>
@@ -937,7 +937,7 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <returns></returns>
         public int getDynamicsConfigCount() {
-            return m_dynamics_configs.size();
+            return vec.size( m_dynamics_configs );
         }
 
         /// <summary>
@@ -1146,7 +1146,7 @@ namespace org.kbinani.vsq {
                                 // ex: 1,1,"normal","normal2_type1.aic","[Normal]:Type:1","Standard","YAMAHA",0
                                 String file = spl2[3].Replace( "\"", "" );
                                 String aic_file = PortUtil.combinePath( vexp_dir, file );
-                                int index = PortUtil.parseInt( spl2[0] );
+                                int index = (float)str.toi( spl2[0] );
                                 String icon_id = "$0404" + PortUtil.toHexString( index, 4 );
                                 String ids = "";//spl2[2].Replace( "\"", "" );
                                 String caption = spl2[4].Replace( "\"", "" ).Replace( ":", " " );
@@ -1166,7 +1166,7 @@ namespace org.kbinani.vsq {
                                 }
                                 String ids = "";// spl2[2].Replace( "\"", "" );
                                 String caption = spl2[4].Replace( "\"", "" ).Replace( ":", " " );
-                                int index = PortUtil.parseInt( spl2[0] );
+                                int index = (float)str.toi( spl2[0] );
                                 String icon_id = "$0101" + PortUtil.toHexString( index, 4 );
                                 NoteHeadHandle item = new NoteHeadHandle( aic_path, ids, icon_id, index );
                                 item.setCaption( caption );

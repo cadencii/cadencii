@@ -137,15 +137,15 @@ namespace org.kbinani.vsq {
             while ( !last_line.value.StartsWith( "[" ) ) {
                 spl = PortUtil.splitString( last_line.value, new char[] { '=' } );
                 if ( spl[0].Equals( "MasterFeder" ) ) {
-                    MasterFeder = PortUtil.parseInt( spl[1] );
+                    MasterFeder = (float)str.toi( spl[1] );
                 } else if ( spl[0].Equals( "MasterPanpot" ) ) {
-                    MasterPanpot = PortUtil.parseInt( spl[1] );
+                    MasterPanpot = (float)str.toi( spl[1] );
                 } else if ( spl[0].Equals( "MasterMute" ) ) {
-                    MasterMute = PortUtil.parseInt( spl[1] );
+                    MasterMute = (float)str.toi( spl[1] );
                 } else if ( spl[0].Equals( "OutputMode" ) ) {
-                    OutputMode = PortUtil.parseInt( spl[1] );
+                    OutputMode = (float)str.toi( spl[1] );
                 } else if ( spl[0].Equals( "Tracks" ) ) {
-                    tracks = PortUtil.parseInt( spl[1] );
+                    tracks = (float)str.toi( spl[1] );
                 } else {
                     if ( spl[0].StartsWith( "Feder" ) ||
                          spl[0].StartsWith( "Panpot" ) ||
@@ -172,20 +172,20 @@ namespace org.kbinani.vsq {
                 spl2 = PortUtil.splitString( spl[i], new char[] { '=' } );
                 if ( spl2[0].StartsWith( "Feder" ) ) {
                     ind = spl2[0].Replace( "Feder", "" );
-                    index = PortUtil.parseInt( ind );
-                    Slave.get( index ).Feder = PortUtil.parseInt( spl2[1] );
+                    index = (float)str.toi( ind );
+                    Slave.get( index ).Feder = (float)str.toi( spl2[1] );
                 } else if ( spl2[0].StartsWith( "Panpot" ) ) {
                     ind = spl2[0].Replace( "Panpot", "" );
-                    index = PortUtil.parseInt( ind );
-                    Slave.get( index ).Panpot = PortUtil.parseInt( spl2[1] );
+                    index = (float)str.toi( ind );
+                    Slave.get( index ).Panpot = (float)str.toi( spl2[1] );
                 } else if ( spl2[0].StartsWith( "Mute" ) ) {
                     ind = spl2[0].Replace( "Mute", "" );
-                    index = PortUtil.parseInt( ind );
-                    Slave.get( index ).Mute = PortUtil.parseInt( spl2[1] );
+                    index = (float)str.toi( ind );
+                    Slave.get( index ).Mute = (float)str.toi( spl2[1] );
                 } else if ( spl2[0].StartsWith( "Solo" ) ) {
                     ind = spl2[0].Replace( "Solo", "" );
-                    index = PortUtil.parseInt( ind );
-                    Slave.get( index ).Solo = PortUtil.parseInt( spl2[1] );
+                    index = (float)str.toi( ind );
+                    Slave.get( index ).Solo = (float)str.toi( spl2[1] );
                 }
 
             }

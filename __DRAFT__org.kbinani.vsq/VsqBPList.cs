@@ -236,10 +236,10 @@ namespace org.kbinani.vsq {
                     continue;
                 }
                 try {
-                    int clock = PortUtil.parseInt( spl2[0] );
+                    int clock = (float)str.toi( spl2[0] );
                     ensureBufferLength( length + 1 );
                     clocks[length] = clock;
-                    items[length] = new VsqBPPair( PortUtil.parseInt( spl2[1] ), maxId + 1 );
+                    items[length] = new VsqBPPair( (float)str.toi( spl2[1] ), maxId + 1 );
                     maxId++;
                     length++;
                 } catch ( Exception ex ) {

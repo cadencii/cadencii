@@ -95,9 +95,13 @@ class pp_cs2java {
     static string[,] REPLACE_CPP = new string[,]{
         {"public ", "public: "},
         {"private ", "private: "},
-        {" List<", " vector<"},
-        {".Count", ".size()"},
-        {"VsqUtility.", "VsqUtility::"},
+        {"vec.", "vec::"},
+        {"dic.", "dic::"},
+        {"sout.", "sout::"},
+        {"serr.", "serr::"},
+        {"conv.", "conv::"},
+        {"fsys.", "fsys::"},
+        {"str.", "str::"},
     };
     private static Regex reg_eventhandler = new Regex( @"(?<pre>.*?)(?<instance>\w*)[.]*(?<event>\w*)\s*(?<operator>[\+\-]\=)\s*new\s*(?<handler>\w*)EventHandler\s*\(\s*(?<method>.*)\s*\)" );
 

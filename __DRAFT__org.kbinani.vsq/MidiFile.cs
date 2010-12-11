@@ -40,28 +40,28 @@ namespace org.kbinani.vsq {
             RandomAccessFile stream = new RandomAccessFile( path, "r" );
             try {
                 // ヘッダ
-                byte[] byte4 = new byte[4];
+                List<byte> byte4 = new List<byte>();
                 stream.read( byte4, 0, 4 );
-                if ( PortUtil.make_uint32_be( byte4 ) != 0x4d546864 ) {
+                if ( conv.make_uint32_be( byte4 ) != 0x4d546864 ) {
                     throw new Exception( "header error: MThd" );
                 }
 
                 // データ長
                 stream.read( byte4, 0, 4 );
-                long length = PortUtil.make_uint32_be( byte4 );
+                long length = conv.make_uint32_be( byte4 );
 
                 // フォーマット
                 stream.read( byte4, 0, 2 );
-                m_format = PortUtil.make_uint16_be( byte4 );
+                m_format = conv.make_uint16_be( byte4 );
 
                 // トラック数
                 int tracks = 0;
                 stream.read( byte4, 0, 2 );
-                tracks = (int)PortUtil.make_uint16_be( byte4 );
+                tracks = (int)conv.make_uint16_be( byte4 );
 
                 // 時間分解能
                 stream.read( byte4, 0, 2 );
-                m_time_format = PortUtil.make_uint16_be( byte4 );
+                m_time_format = conv.make_uint16_be( byte4 );
 
                 // 各トラックを読込み
                 m_events = new List<List<MidiEvent>>();
@@ -69,13 +69,13 @@ namespace org.kbinani.vsq {
                     List<MidiEvent> track_events = new List<MidiEvent>();
                     // ヘッダー
                     stream.read( byte4, 0, 4 );
-                    if ( PortUtil.make_uint32_be( byte4 ) != 0x4d54726b ) {
+                    if ( conv.make_uint32_be( byte4 ) != 0x4d54726b ) {
                         throw new Exception( "header error; MTrk" );
                     }
 
                     // チャンクサイズ
                     stream.read( byte4, 0, 4 );
-                    long size = (long)PortUtil.make_uint32_be( byte4 );
+                    long size = (long)conv.make_uint32_be( byte4 );
                     long startpos = stream.getFilePointer();
 
                     // チャンクの終わりまで読込み
@@ -83,17 +83,17 @@ namespace org.kbinani.vsq {
                     ByRef<Integer> last_status_byte = new ByRef<Integer>( 0x00 );
                     while ( stream.getFilePointer() < startpos + size ) {
                         MidiEvent mi = MidiEvent.read( stream, clock, last_status_byte );
-                        track_events.add( mi );
+                        vec.add( track_events, mi );
                     }
                     if ( m_time_format != 480 ) {
-                        int count = track_events.size();
+                        int count = vec.size( track_events );
                         for ( int i = 0; i < count; i++ ) {
-                            MidiEvent mi = track_events.get( i );
+                            MidiEvent mi = vec.get( track_events, i );
                             mi.clock = mi.clock * 480 / m_time_format;
-                            track_events.set( i, mi );
+                            vec.set( track_events, i, mi );
                         }
                     }
-                    m_events.add( track_events );
+                    vec.add( m_events, track_events );
                 }
                 m_time_format = 480;
 #if DEBUG && MIDI_PRINT_TO_FILE
@@ -158,13 +158,13 @@ namespace org.kbinani.vsq {
                 }
 #endif
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "MidiFile#.ctor; ex=" + ex );
+                serr.println( "MidiFile#.ctor; ex=" + ex );
             } finally {
                 if ( stream != null ) {
                     try {
                         stream.close();
                     } catch ( Exception ex2 ) {
-                        PortUtil.stderr.println( "MidiFile#.ctor; ex2=" + ex2 );
+                        serr.println( "MidiFile#.ctor; ex2=" + ex2 );
                     }
                 }
             }
@@ -172,11 +172,11 @@ namespace org.kbinani.vsq {
 
         public List<MidiEvent> getMidiEventList( int track ) {
             if ( m_events == null ) {
-                return new List<MidiEvent>();
-            } else if ( 0 <= track && track < m_events.size() ) {
-                return m_events.get( track );
+                return null;
+            } else if ( 0 <= track && track < vec.size( m_events ) ) {
+                return vec.get( m_events, track );
             } else {
-                return new List<MidiEvent>();
+                return null;
             }
         }
 
@@ -184,17 +184,17 @@ namespace org.kbinani.vsq {
             if ( m_events == null ) {
                 return 0;
             } else {
-                return m_events.size();
+                return vec.size( m_events );
             }
         }
 
         public void close() {
             if ( m_events != null ) {
-                int c = m_events.size();
+                int c = vec.size( m_events );
                 for ( int i = 0; i < c; i++ ) {
-                    m_events.get( i ).clear();
+                    vec.clear( vec.get( m_events, i ) );
                 }
-                m_events.clear();
+                vec.clear( m_events );
             }
         }
     }

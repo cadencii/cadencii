@@ -50,12 +50,17 @@ first:
 ########################################################################
 # cpp/vsq
 #
+
+DRAFTMODE=__DRAFT__
+
 cpp_vsq: pp_cs2java.exe
-	mono pp_cs2java.exe $(PPCS2CPP_OPT) -i ./org.kbinani.vsq/Lyric.cs -o ./build/cpp/vsq/Lyric.h
-	mono pp_cs2java.exe $(PPCS2CPP_OPT) -i ./org.kbinani.vsq/BPPair.cs -o ./build/cpp/vsq/BPPair.h
-	mono pp_cs2java.exe $(PPCS2CPP_OPT) -i ./org.kbinani.vsq/IconHandle.cs -o ./build/cpp/vsq/IconHandle.h
-	mono pp_cs2java.exe $(PPCS2CPP_OPT) -i ./org.kbinani.vsq/LyricHandle.cs -o ./build/cpp/vsq/LyricHandle.h
-	mono pp_cs2java.exe $(PPCS2CPP_OPT) -i ./org.kbinani.vsq/VsqHandleType.cs -o ./build/cpp/vsq/VsqHandleType.h
+	mono pp_cs2java.exe $(PPCS2CPP_OPT) -i ./$(DRAFTMODE)org.kbinani.vsq/VsqUtility.cs -o ./build/cpp/vsq/VsqUtility.h
+	mono pp_cs2java.exe $(PPCS2CPP_OPT) -i ./$(DRAFTMODE)org.kbinani.vsq/RandomAccessFile.cs -o ./build/cpp/vsq/RandomAccessFile.h
+	mono pp_cs2java.exe $(PPCS2CPP_OPT) -i ./$(DRAFTMODE)org.kbinani.vsq/Lyric.cs -o ./build/cpp/vsq/Lyric.h
+	mono pp_cs2java.exe $(PPCS2CPP_OPT) -i ./$(DRAFTMODE)org.kbinani.vsq/BPPair.cs -o ./build/cpp/vsq/BPPair.h
+	mono pp_cs2java.exe $(PPCS2CPP_OPT) -i ./$(DRAFTMODE)org.kbinani.vsq/IconHandle.cs -o ./build/cpp/vsq/IconHandle.h
+	mono pp_cs2java.exe $(PPCS2CPP_OPT) -i ./$(DRAFTMODE)org.kbinani.vsq/LyricHandle.cs -o ./build/cpp/vsq/LyricHandle.h
+	mono pp_cs2java.exe $(PPCS2CPP_OPT) -i ./$(DRAFTMODE)org.kbinani.vsq/VsqHandleType.cs -o ./build/cpp/vsq/VsqHandleType.h
 
 ########################################################################
 # jcadencii

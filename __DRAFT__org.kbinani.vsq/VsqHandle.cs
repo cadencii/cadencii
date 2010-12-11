@@ -243,24 +243,24 @@ namespace org.kbinani.vsq {
                 String search = spl[0];
                 if ( search.Equals( "Language" ) ) {
                     m_type = VsqHandleType.Singer;
-                    Language = PortUtil.parseInt( spl[1] );
+                    Language = (float)str.toi( spl[1] );
                 } else if ( search.Equals( "Program" ) ) {
-                    Program = PortUtil.parseInt( spl[1] );
+                    Program = (float)str.toi( spl[1] );
                 } else if ( search.Equals( "IconID" ) ) {
                     IconID = spl[1];
                 } else if ( search.Equals( "IDS" ) ) {
                     IDS = spl[1];
                 } else if ( search.Equals( "Original" ) ) {
-                    Original = PortUtil.parseInt( spl[1] );
+                    Original = (float)str.toi( spl[1] );
                 } else if ( search.Equals( "Caption" ) ) {
                     Caption = spl[1];
                     for ( int i = 2; i < spl.Length; i++ ) {
                         Caption += "=" + spl[i];
                     }
                 } else if ( search.Equals( "Length" ) ) {
-                    Length = PortUtil.parseInt( spl[1] );
+                    Length = (float)str.toi( spl[1] );
                 } else if ( search.Equals( "StartDepth" ) ) {
-                    StartDepth = PortUtil.parseInt( spl[1] );
+                    StartDepth = (float)str.toi( spl[1] );
                 } else if ( search.Equals( "DepthBPNum" ) ) {
                     tmpDepthBPNum = spl[1];
                 } else if ( search.Equals( "DepthBPX" ) ) {
@@ -269,7 +269,7 @@ namespace org.kbinani.vsq {
                     tmpDepthBPY = spl[1];
                 } else if ( search.Equals( "StartRate" ) ) {
                     m_type = VsqHandleType.Vibrato;
-                    StartRate = PortUtil.parseInt( spl[1] );
+                    StartRate = (float)str.toi( spl[1] );
                 } else if ( search.Equals( "RateBPNum" ) ) {
                     tmpRateBPNum = spl[1];
                 } else if ( search.Equals( "RateBPX" ) ) {
@@ -278,15 +278,15 @@ namespace org.kbinani.vsq {
                     tmpRateBPY = spl[1];
                 } else if ( search.Equals( "Duration" ) ) {
                     m_type = VsqHandleType.NoteHeadHandle;
-                    Duration = PortUtil.parseInt( spl[1] );
+                    Duration = (float)str.toi( spl[1] );
                 } else if ( search.Equals( "Depth" ) ) {
-                    Depth = PortUtil.parseInt( spl[1] );
+                    Depth = (float)str.toi( spl[1] );
                 } else if ( search.Equals( "StartDyn" ) ) {
                     m_type = VsqHandleType.DynamicsHandle;
-                    StartDyn = PortUtil.parseInt( spl[1] );
+                    StartDyn = (float)str.toi( spl[1] );
                 } else if ( search.Equals( "EndDyn" ) ) {
                     m_type = VsqHandleType.DynamicsHandle;
-                    EndDyn = PortUtil.parseInt( spl[1] );
+                    EndDyn = (float)str.toi( spl[1] );
                 } else if ( search.Equals( "DynBPNum" ) ) {
                     tmpDynBPNum = spl[1];
                 } else if ( search.Equals( "DynBPX" ) ) {
@@ -351,7 +351,7 @@ namespace org.kbinani.vsq {
         /// <returns>ハンドル番号</returns>
         public static int HandleIndexFromString( String _string ) {
             String[] spl = PortUtil.splitString( _string, new char[] { '#' } );
-            return PortUtil.parseInt( spl[1] );
+            return (float)str.toi( spl[1] );
         }
 
         /// <summary>

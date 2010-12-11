@@ -18,6 +18,7 @@ import java.io.*;
 import org.kbinani.*;
 #else
 using System;
+using System.Collections.Generic;
 
 namespace org.kbinani.vsq {
 
@@ -56,11 +57,16 @@ namespace org.kbinani.vsq {
 #endif
 
         public Object clone() {
-            String[] spl = PortUtil.splitString( Color, new char[] { ',' }, 3 );
-            int r = PortUtil.parseInt( spl[0] );
-            int g = PortUtil.parseInt( spl[1] );
-            int b = PortUtil.parseInt( spl[2] );
+            List<string> spl = new List<string>();
+            str.split( Color, spl, ",", false );
+            int r = str.toi( vec.get( spl, 0 ) );
+            int g = str.toi( vec.get( spl, 1 ) );
+            int b = str.toi( vec.get( spl, 2 ) );
+#if __cplusplus
+            VsqCommon res( Name, r, g, b, DynamicsMode, PlayMode );
+#else
             VsqCommon res = new VsqCommon( Name, r, g, b, DynamicsMode, PlayMode );
+#endif
             res.Version = Version;
             res.LastPlayMode = LastPlayMode;
             return res;
@@ -113,9 +119,9 @@ namespace org.kbinani.vsq {
                 } else if ( search.Equals( "Color" ) ) {
                     this.Color = spl[1];
                 } else if ( search.Equals( "DynamicsMode" ) ) {
-                    this.DynamicsMode = PortUtil.parseInt( spl[1] );
+                    this.DynamicsMode = (float)str.toi( spl[1] );
                 } else if ( search.Equals( "PlayMode" ) ) {
-                    this.PlayMode = PortUtil.parseInt( spl[1] );
+                    this.PlayMode = (float)str.toi( spl[1] );
                 }
                 if ( !sr.ready() ) {
                     break;

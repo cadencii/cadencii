@@ -19,6 +19,7 @@ import java.util.*;
 import org.kbinani.*;
 #else
 using System;
+using System.Collections.Generic;
 
 namespace org.kbinani.vsq {
 #endif
@@ -117,7 +118,8 @@ namespace org.kbinani.vsq {
             try {
                 fs = new RandomAccessFile( file, "r" );
                 int length = (int)fs.length();
-                byte[] dat = new byte[length];
+                List<byte> dat = new List<byte>();
+                vec.ensureCapacity( dat, length );
                 fs.read( dat, 0, length );
                 TransCodeUtil.decodeBytes( dat );
                 int[] idat = new int[length];
@@ -146,7 +148,7 @@ namespace org.kbinani.vsq {
                     value = value.Replace( "\\" + "\"", "\"" );
                     int parsed_int = 64;
                     try {
-                        parsed_int = PortUtil.parseInt( value );
+                        parsed_int = (float)str.toi( value );
                     } catch ( Exception ex ) {
                     }
                     if ( id.Equals( "ID" ) ) {

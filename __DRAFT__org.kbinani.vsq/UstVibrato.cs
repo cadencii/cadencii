@@ -17,17 +17,24 @@ package org.kbinani.vsq;
 import java.io.*;
 import org.kbinani.*;
 #else
+
+#if !__cplusplus
 using System;
+using System.Collections.Generic;
+#endif
 
 namespace org.kbinani.vsq {
 #endif
 
 #if JAVA
-    public class UstVibrato implements Cloneable, Serializable {
+    public class UstVibrato implements Cloneable, Serializable
+#elif __cplusplus
+    class UstVibrato
 #else
     [Serializable]
-    public class UstVibrato : ICloneable {
+    public class UstVibrato : ICloneable
 #endif
+    {
         /// <summary>
         /// 音符の長さに対する、パーセントで表したビブラートの長さ。
         /// </summary>
@@ -60,18 +67,19 @@ namespace org.kbinani.vsq {
 
         public UstVibrato( String line ) {
             if ( line.ToLower().StartsWith( "vbr=" ) ) {
-                String[] spl = PortUtil.splitString( line, '=' );
-                spl = PortUtil.splitString( spl[1], ',' );
+                List<string> spl = new List<string>();
+                int size = str.split( line, spl, "=", false );
+                size = str.split( vec.get( spl, 1 ), spl, ",", false );
                 //VBR=65,180,70,20.0,17.6,82.8,49.8,100
-                if ( spl.Length >= 8 ) {
-                    Length = PortUtil.parseFloat( spl[0] );
-                    Period = PortUtil.parseFloat( spl[1] );
-                    Depth = PortUtil.parseFloat( spl[2] );
-                    In = PortUtil.parseFloat( spl[3] );
-                    Out = PortUtil.parseFloat( spl[4] );
-                    Phase = PortUtil.parseFloat( spl[5] );
-                    Shift = PortUtil.parseFloat( spl[6] );
-                    Unknown = PortUtil.parseFloat( spl[7] );
+                if ( size >= 8 ) {
+                    Length = str.tof( spl[0] );
+                    Period = (float)str.tof( spl[1] );
+                    Depth = (float)str.tof( spl[2] );
+                    In = (float)str.tof( spl[3] );
+                    Out = (float)str.tof( spl[4] );
+                    Phase = (float)str.tof( spl[5] );
+                    Shift = (float)str.tof( spl[6] );
+                    Unknown = (float)str.tof( spl[7] );
                 }
             }
         }

@@ -162,55 +162,55 @@ namespace org.kbinani.vsq{
                         caption = value;
                     } else if ( name.Equals( "Length" ) ) {
                         try {
-                            length = PortUtil.parseInt( value );
+                            length = (float)str.toi( value );
                         } catch ( Exception ex ) {
                             PortUtil.stderr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
                     } else if ( name.Equals( "StartDepth" ) ) {
                         try {
-                            startDepth = PortUtil.parseInt( value );
+                            startDepth = (float)str.toi( value );
                         } catch ( Exception ex ) {
                             PortUtil.stderr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
                     } else if ( name.Equals( "EndDepth" ) ) {
                         try {
-                            endDepth = PortUtil.parseInt( value );
+                            endDepth = (float)str.toi( value );
                         } catch ( Exception ex ) {
                             PortUtil.stderr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
                     } else if ( name.Equals( "StartRate" ) ) {
                         try {
-                            startRate = PortUtil.parseInt( value );
+                            startRate = (float)str.toi( value );
                         } catch ( Exception ex ) {
                             PortUtil.stderr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
                     } else if ( name.Equals( "EndRate" ) ) {
                         try {
-                            endRate = PortUtil.parseInt( value );
+                            endRate = (float)str.toi( value );
                         } catch ( Exception ex ) {
                             PortUtil.stderr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
                     } else if ( name.Equals( "StartDyn" ) ) {
                         try {
-                            startDyn = PortUtil.parseInt( value );
+                            startDyn = (float)str.toi( value );
                         } catch ( Exception ex ) {
                             PortUtil.stderr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
                     } else if ( name.Equals( "EndDyn" ) ) {
                         try {
-                            endDyn = PortUtil.parseInt( value );
+                            endDyn = (float)str.toi( value );
                         } catch ( Exception ex ) {
                             PortUtil.stderr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
                     } else if ( name.Equals( "Duration" ) ) {
                         try {
-                            duration = PortUtil.parseInt( value );
+                            duration = (float)str.toi( value );
                         } catch ( Exception ex ) {
                             PortUtil.stderr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
                     } else if ( name.Equals( "Depth" ) ) {
                         try {
-                            depth = PortUtil.parseInt( value );
+                            depth = (float)str.toi( value );
                         } catch ( Exception ex ) {
                             PortUtil.stderr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
@@ -263,7 +263,7 @@ namespace org.kbinani.vsq{
             }
             int num = 0;
             try {
-                num = PortUtil.parseInt( strNum );
+                num = (float)str.toi( strNum );
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "org.kbinani.vsq.IconParameter.getBPListFromText; ex=" + ex );
                 num = 0;
@@ -276,8 +276,8 @@ namespace org.kbinani.vsq{
                 int[] y = new int[actNum];
                 for ( int i = 0; i < actNum; i++ ) {
                     try {
-                        x[i] = PortUtil.parseFloat( sx[i] );
-                        y[i] = PortUtil.parseInt( sy[i] );
+                        x[i] = (float)str.tof( sx[i] );
+                        y[i] = (float)str.toi( sy[i] );
                     } catch ( Exception ex ) {
                         PortUtil.stderr.println( "org.kbinani.vsq.IconParameter.getBPListFromText; ex=" + ex );
                     }

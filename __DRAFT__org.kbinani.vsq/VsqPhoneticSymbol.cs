@@ -175,7 +175,7 @@ namespace org.kbinani.vsq {
                 String s = symbol.Substring( 2 );
                 try {
                     // br001とかをfalseにするためのチェック
-                    int num = PortUtil.parseInt( s );
+                    int num = (float)str.toi( s );
                     if ( s.Equals( "" + num ) ) {
                         return true;
                     }

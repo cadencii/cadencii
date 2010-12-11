@@ -147,7 +147,7 @@ namespace org {
                     for ( int i = 0; i < spl.Length; i++ ) {
                         int v = 64;
                         try {
-                            v = PortUtil.parseInt( spl[i] );
+                            v = (float)str.toi( spl[i] );
                         } catch ( Exception ex ) {
                             PortUtil.stderr.println( "Lyric#setCosonantAdjustment; ex=" + ex );
                         }
@@ -430,7 +430,7 @@ namespace org {
                                     work = "";
                                 } else if ( indx == 2 ) {
                                     // UnknownFloat
-                                    UnknownFloat = PortUtil.parseFloat( work );
+                                    UnknownFloat = (float)str.tof( work );
                                     work = "";
                                 } else {
                                     if ( indx - 3 < m_phonetic_symbol.Count ) {

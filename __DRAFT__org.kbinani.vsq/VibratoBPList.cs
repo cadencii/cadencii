@@ -39,34 +39,56 @@ namespace org.kbinani.vsq {
         public VibratoBPList( String strNum, String strBPX, String strBPY ) {
             int num = 0;
             try {
-                num = PortUtil.parseInt( strNum );
+                num = str.toi( strNum );
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "org.kbinani.vsq.VibratoBPList#.ctor; ex=" + ex );
+                serr.println( "org.kbinani.vsq.VibratoBPList#.ctor; ex=" + ex );
                 num = 0;
             }
-            String[] bpx = PortUtil.splitString( strBPX, ',' );
-            String[] bpy= PortUtil.splitString( strBPY, ',' );
-            int actNum = Math.Min( num, Math.Min( bpx.Length, bpy.Length ) );
+            List<string> bpx = new List<string>();
+            int bpx_size = str.split( strBPX, bpx, ",", false );
+            List<string> bpy = new List<string>();
+            int bpy_size = str.split( strBPY, bpy, ",", false );
+            int actNum = Math.Min( num, Math.Min( bpx_size, bpy_size ) );
             if ( actNum > 0 ) {
+#if __cplusplus
+                float *x = new float[actNum];
+                int *y = new int[actNum];
+#else
                 float[] x = new float[actNum];
                 int[] y = new int[actNum];
+#endif
                 for ( int i = 0; i < actNum; i++ ) {
                     try {
-                        x[i] = PortUtil.parseFloat( bpx[i] );
-                        y[i] = PortUtil.parseInt( bpy[i] );
+                        x[i] = (float)str.tof( vec.get( bpx, i ) );
+                        y[i] = str.toi( vec.get( bpy, i ) );
                     } catch ( Exception ex ) {
-                        PortUtil.stderr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
+                        serr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                     }
                 }
 
-                int len = Math.Min( x.Length, y.Length );
-                m_list = new List<VibratoBPPair>( len );
-                for ( int i = 0; i < len; i++ ) {
-                    m_list.add( new VibratoBPPair( x[i], y[i] ) );
-                }
-                Collections.sort( m_list );
-            } else {
+#if JAVA
+                m_list = new Vector<VibratoBPPair>();
+#elif __cplusplus
+#else
                 m_list = new List<VibratoBPPair>();
+#endif
+                for ( int i = 0; i < actNum; i++ ) {
+#if __cplusplus
+                    VibratoBPPair a( x[i], y[i] );
+                    vec.add( m_list, a );
+#else
+                    vec.add( m_list, new VibratoBPPair( x[i], y[i] ) );
+#endif
+                }
+#if __cplusplus
+                delete [] x;
+                delete [] y;
+#endif
+                vec.sort( m_list );
+            } else {
+#if !__cplusplus
+                m_list = new List<VibratoBPPair>();
+#endif
             }
         }
 
@@ -172,7 +194,7 @@ namespace org.kbinani.vsq {
                 if ( spl2.Length < 2 ) {
                     continue;
                 }
-                m_list.add( new VibratoBPPair( PortUtil.parseFloat( spl2[0] ), PortUtil.parseInt( spl2[1] ) ) );
+                m_list.add( new VibratoBPPair( (float)str.tof( spl2[0] ), (float)str.toi( spl2[1] ) ) );
             }
         }
     }
