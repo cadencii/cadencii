@@ -72,9 +72,24 @@ namespace org.kbinani.cadencii {
         public DefaultVibratoLengthEnum DefaultVibratoLength = DefaultVibratoLengthEnum.L66;
         public int DefaultVibratoRate = 64;
         public int DefaultVibratoDepth = 64;
-        public AutoVibratoMinLengthEnum AutoVibratoMinimumLength = AutoVibratoMinLengthEnum.L1;
+        /// <summary>
+        /// ビブラートの自動追加を行うかどうかを決める音符長さの閾値．単位はclock
+        /// <version>3.3+</version>
+        /// </summary>
+        public int AutoVibratoThresholdLength = 480;
+        /// <summary>
+        /// VOCALOID1用のデフォルトビブラート設定
+        /// </summary>
         public String AutoVibratoType1 = "$04040001";
+        /// <summary>
+        /// VOCALOID2用のデフォルトビブラート設定
+        /// </summary>
         public String AutoVibratoType2 = "$04040001";
+        /// <summary>
+        /// ユーザー定義のビブラート設定．
+        /// <version>3.3+</version>
+        /// </summary>
+        public VibratoHandle AutoVibratoCustom = new VibratoHandle();
         public boolean EnableAutoVibrato = true;
         public int PxTrackHeight = 14;
         public int MouseDragIncrement = 50;
@@ -750,7 +765,10 @@ namespace org.kbinani.cadencii {
         /// <returns></returns>
         public VibratoHandle createAutoVibrato( SynthesizerType type, int vibrato_clocks ) {
             if ( UseUserDefinedAutoVibratoType ) {
-                VibratoHandle ret = new VibratoHandle();
+                if ( AutoVibratoCustom == null ) {
+                    AutoVibratoCustom = new VibratoHandle();
+                }
+                VibratoHandle ret = (VibratoHandle)AutoVibratoCustom.clone();
                 ret.IconID = "$04040001";
                 ret.setStartDepth( DefaultVibratoDepth );
                 ret.setStartRate( DefaultVibratoRate );

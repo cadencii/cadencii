@@ -31,11 +31,11 @@ import org.kbinani.xml.*;
 #else
 //#define USE_BGWORK_SCREEN
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Media;
 using System.Text;
 using System.Threading;
-using System.Collections.Generic;
 using org.kbinani.apputil;
 using org.kbinani.cadencii.draft;
 using org.kbinani.componentmodel;
@@ -49,7 +49,8 @@ using org.kbinani.vsq;
 using org.kbinani.windows.forms;
 using org.kbinani.xml;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using BCancelEventArgs = System.ComponentModel.CancelEventArgs;
     using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;
     using BFormClosedEventArgs = System.Windows.Forms.FormClosedEventArgs;
@@ -71,12 +72,14 @@ namespace org.kbinani.cadencii {
 #if JAVA
     public class FormMain extends BForm {
 #else
-    public class FormMain : BForm {
+    public class FormMain : BForm
+    {
 #endif
         /// <summary>
         /// 特殊なキーの組み合わせのショートカットと、メニューアイテムとの紐付けを保持するクラスです。
         /// </summary>
-        private class SpecialShortcutHolder {
+        private class SpecialShortcutHolder
+        {
             /// <summary>
             /// ショートカットキーを表すKeyStrokeクラスのインスタンス
             /// </summary>
@@ -91,7 +94,8 @@ namespace org.kbinani.cadencii {
             /// </summary>
             /// <param name="shortcut">ショートカットキー</param>
             /// <param name="menu">ショートカットキーとの紐付けを行うメニューアイテム</param>
-            public SpecialShortcutHolder( KeyStroke shortcut, BMenuItem menu ) {
+            public SpecialShortcutHolder( KeyStroke shortcut, BMenuItem menu )
+            {
                 this.shortcut = shortcut;
                 this.menu = menu;
             }
@@ -198,7 +202,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// カーブエディタ画面の編集モード
         /// </summary>
-        enum CurveEditMode {
+        enum CurveEditMode
+        {
             /// <summary>
             /// 何もしていない
             /// </summary>
@@ -225,26 +230,30 @@ namespace org.kbinani.cadencii {
             MIDDLE_DRAG,
         }
 
-        enum ExtDragXMode {
+        enum ExtDragXMode
+        {
             RIGHT,
             LEFT,
             NONE,
         }
 
-        enum ExtDragYMode {
+        enum ExtDragYMode
+        {
             UP,
             DOWN,
             NONE,
         }
 
-        enum GameControlMode {
+        enum GameControlMode
+        {
             DISABLED,
             NORMAL,
             KEYBOARD,
             CURSOR,
         }
 
-        enum PositionIndicatorMouseDownMode {
+        enum PositionIndicatorMouseDownMode
+        {
             NONE,
             MARK_START,
             MARK_END,
@@ -545,12 +554,14 @@ namespace org.kbinani.cadencii {
         private double[] mFpsDrawTime2 = new double[128];
         public BMenuItem menuFileExportVsq;
         private BMenuItem menuFileExportVxt;
+        public BMenuItem menuLyricSetAutoVibrato;
         private float mFps2 = 0f;
 #endif
         #endregion
 
         #region constructor
-        public FormMain( String file ) {
+        public FormMain( String file )
+        {
 #if JAVA
 		    super();
 #endif
@@ -711,7 +722,7 @@ namespace org.kbinani.cadencii {
             this.bandFile.MaxHeight = 0;
             this.bandFile.UseChevron = true;
             if ( toolBarFile.Buttons.Count > 0 ) {
-                this.bandFile.IdealWidth = 
+                this.bandFile.IdealWidth =
                     toolBarFile.Buttons[toolBarFile.Buttons.Count - 1].Rectangle.Right + chevron_width;
             }
             this.bandFile.BandSize = AppManager.editorConfig.BandSizeFile;
@@ -756,7 +767,7 @@ namespace org.kbinani.cadencii {
             this.bandTool.BandSize = AppManager.editorConfig.BandSizeTool;
             this.bandTool.NewRow = AppManager.editorConfig.BandNewRowTool;
             // 一度リストに入れてから追加する
-            var bands = new RebarBand[]{ null, null, null, null };
+            var bands = new RebarBand[] { null, null, null, null };
             // 番号がおかしくないか
             if ( AppManager.editorConfig.BandOrderFile < 0 || bands.Length <= AppManager.editorConfig.BandOrderFile ) AppManager.editorConfig.BandOrderFile = 0;
             if ( AppManager.editorConfig.BandOrderMeasure < 0 || bands.Length <= AppManager.editorConfig.BandOrderMeasure ) AppManager.editorConfig.BandOrderMeasure = 0;
@@ -1037,7 +1048,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 現在のツールバーの場所を保存します
         /// </summary>
-        private void saveToolbarLocation() {
+        private void saveToolbarLocation()
+        {
             if ( this.WindowState == System.Windows.Forms.FormWindowState.Minimized ) return;
             // どのツールバーが一番上かつ左にあるか？
             var list = new System.Collections.Generic.List<RebarBand>();
@@ -1052,9 +1064,9 @@ namespace org.kbinani.cadencii {
                 changed = false;
                 for ( int i = 0; i < list.Count - 1; i++ ) {
                     // y座標が大きいか，y座標が同じでもx座標が大きい場合に入れ替える
-                    boolean swap = 
+                    boolean swap =
                         (list[i].Location.Y > list[i + 1].Location.Y) ||
-                        (list[i].Location.Y == list[i + 1].Location.Y  && list[i].Location.X > list[i + 1].Location.X);
+                        (list[i].Location.Y == list[i + 1].Location.Y && list[i].Location.X > list[i + 1].Location.X);
                     if ( swap ) {
                         var a = list[i];
                         list[i] = list[i + 1];
@@ -1064,7 +1076,7 @@ namespace org.kbinani.cadencii {
                 }
             }
             // 各ツールバー毎に，ツールバーの状態を検出して保存
-            saveToolbarLocationCore( 
+            saveToolbarLocationCore(
                 list,
                 bandFile,
                 out AppManager.editorConfig.BandSizeFile,
@@ -1099,11 +1111,12 @@ namespace org.kbinani.cadencii {
         /// <param name="new_row"></param>
         private void saveToolbarLocationCore(
             System.Collections.Generic.List<RebarBand> list,
-            RebarBand band, 
-            out int band_size, 
+            RebarBand band,
+            out int band_size,
             out bool new_row,
             out int band_order
-        ) {
+        )
+        {
             band_size = 0;
             new_row = true;
             band_order = 0;
@@ -1114,7 +1127,8 @@ namespace org.kbinani.cadencii {
             band_order = indx;
         }
 
-        private static int doQuantize( int clock, int unit ) {
+        private static int doQuantize( int clock, int unit )
+        {
             int odd = clock % unit;
             int new_clock = clock - odd;
             if ( odd > unit / 2 ) {
@@ -1127,7 +1141,8 @@ namespace org.kbinani.cadencii {
         /// 波形表示部のズームボタンの形を取得します
         /// </summary>
         /// <returns></returns>
-        private Rectangle getButtonBoundsWaveViewZoom() {
+        private Rectangle getButtonBoundsWaveViewZoom()
+        {
             int width = AppManager.keyWidth - 1;
             int height = panel2.getHeight() - 1;
 
@@ -1139,7 +1154,8 @@ namespace org.kbinani.cadencii {
         /// デフォルトのストロークを取得します
         /// </summary>
         /// <returns></returns>
-        private BasicStroke getStrokeDefault() {
+        private BasicStroke getStrokeDefault()
+        {
             if ( mStrokeDefault == null ) {
                 mStrokeDefault = new BasicStroke();
             }
@@ -1150,7 +1166,8 @@ namespace org.kbinani.cadencii {
         /// 描画幅が2pxのストロークを取得します
         /// </summary>
         /// <returns></returns>
-        private BasicStroke getStroke2px() {
+        private BasicStroke getStroke2px()
+        {
             if ( mStroke2px == null ) {
                 mStroke2px = new BasicStroke( 2.0f );
             }
@@ -1161,7 +1178,8 @@ namespace org.kbinani.cadencii {
         /// 選択された音符の長さを、指定したゲートタイム分長くします。
         /// </summary>
         /// <param name="delta_length"></param>
-        private void lengthenSelectedEvent( int delta_length ) {
+        private void lengthenSelectedEvent( int delta_length )
+        {
             if ( delta_length == 0 ) {
                 return;
             }
@@ -1176,7 +1194,7 @@ namespace org.kbinani.cadencii {
             Vector<VsqEvent> items = new Vector<VsqEvent>();
             for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
                 SelectedEventEntry item = itr.next();
-                if ( item.editing.ID.type != VsqIDType.Anote && 
+                if ( item.editing.ID.type != VsqIDType.Anote &&
                      item.editing.ID.type != VsqIDType.Aicon ) {
                     continue;
                 }
@@ -1236,7 +1254,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="delta_note"></param>
         /// <param name="delta_clock"></param>
-        private void moveUpDownLeftRight( int delta_note, int delta_clock ) {
+        private void moveUpDownLeftRight( int delta_note, int delta_clock )
+        {
             VsqFileEx vsq = AppManager.getVsqFile();
             if ( vsq == null ) {
                 return;
@@ -1324,7 +1343,8 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
 
-        private VsqEvent getItemAtClickedPosition( Point mouse_position, ByRef<Rectangle> rect ) {
+        private VsqEvent getItemAtClickedPosition( Point mouse_position, ByRef<Rectangle> rect )
+        {
             rect.value = new Rectangle();
             if ( mouse_position.x < AppManager.keyWidth || pictPianoRoll.getWidth() < mouse_position.x ) {
                 return null;
@@ -1383,7 +1403,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="mouse_position"></param>
         /// <returns></returns>
-        private VsqEvent getItemAtClickedPosition_old( Point mouse_position, ByRef<Rectangle> rect ) {
+        private VsqEvent getItemAtClickedPosition_old( Point mouse_position, ByRef<Rectangle> rect )
+        {
             rect.value = new Rectangle();
             if ( AppManager.keyWidth <= mouse_position.x && mouse_position.x <= pictPianoRoll.getWidth() ) {
                 if ( 0 <= mouse_position.y && mouse_position.y <= pictPianoRoll.getHeight() ) {
@@ -1441,7 +1462,8 @@ namespace org.kbinani.cadencii {
         /// 計算には、mButtonInitial, mMiddleButtonVScrollの値が使われます。
         /// </summary>
         /// <returns></returns>
-        private int computeVScrollValueForMiddleDrag( int mouse_y ) {
+        private int computeVScrollValueForMiddleDrag( int mouse_y )
+        {
             int dy = mouse_y - mButtonInitial.y;
             int max = vScroll.Maximum - vScroll.LargeChange;
             int min = vScroll.Minimum;
@@ -1460,7 +1482,8 @@ namespace org.kbinani.cadencii {
         /// 計算には、mButtonInitial, mMiddleButtonHScrollの値が使われます。
         /// </summary>
         /// <returns></returns>
-        private int computeHScrollValueForMiddleDrag( int mouse_x ) {
+        private int computeHScrollValueForMiddleDrag( int mouse_x )
+        {
             int dx = mouse_x - mButtonInitial.x;
             int max = hScroll.Maximum - hScroll.LargeChange;
             int min = hScroll.Minimum;
@@ -1477,7 +1500,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 現在表示されているピアノロール画面の右上の、仮想スクリーン上座標で見たときのy座標(pixel)を取得します
         /// </summary>
-        private int calculateStartToDrawY() {
+        private int calculateStartToDrawY()
+        {
             int min = vScroll.Minimum;
             int max = vScroll.Maximum - vScroll.LargeChange;
             int value = vScroll.Value;
@@ -1497,7 +1521,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="button"></param>
         /// <returns></returns>
-        public boolean isMouseMiddleButtonDowned( BMouseButtons button ) {
+        public boolean isMouseMiddleButtonDowned( BMouseButtons button )
+        {
             boolean ret = false;
             if ( AppManager.editorConfig.UseSpaceKeyAsMiddleButtonModifier ) {
                 if ( mSpacekeyDowned && button == BMouseButtons.Left ) {
@@ -1519,7 +1544,8 @@ namespace org.kbinani.cadencii {
 #endif
         /// 再描画間隔が設定値より短い場合再描画がスキップされます。
         /// </summary>
-        public void refreshScreen( boolean force ) {
+        public void refreshScreen( boolean force )
+        {
 #if JAVA
             //refreshScreenCore( this, null );
             this.repaint();
@@ -1555,11 +1581,13 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        public void refreshScreen() {
+        public void refreshScreen()
+        {
             refreshScreen( false );
         }
 
-        public void refreshScreenCore( Object sender, EventArgs e ) {
+        public void refreshScreenCore( Object sender, EventArgs e )
+        {
 #if MONITOR_FPS
             double t0 = PortUtil.getCurrentTime();
 #endif
@@ -1600,7 +1628,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 現在のゲームコントローラのモードに応じてstripLblGameCtrlModeの表示状態を更新します。
         /// </summary>
-        public void updateGameControlerStatus( Object sender, EventArgs e ) {
+        public void updateGameControlerStatus( Object sender, EventArgs e )
+        {
 #if !JAVA
             if ( mGameMode == GameControlMode.DISABLED ) {
                 stripLblGameCtrlMode.setText( _( "Disabled" ) );
@@ -1618,7 +1647,8 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        public int calculateStartToDrawX() {
+        public int calculateStartToDrawX()
+        {
             int i = System.Windows.Forms.SystemInformation.HorizontalScrollBarThumbWidth;
             return (int)(hScroll.Value * AppManager.getScaleX());
         }
@@ -1626,7 +1656,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 現在選択されている音符よりも1個前方の音符を選択しなおします。
         /// </summary>
-        public void selectBackward() {
+        public void selectBackward()
+        {
             int count = AppManager.getSelectedEventCount();
             if ( count <= 0 ) {
                 return;
@@ -1681,7 +1712,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 現在選択されている音符よりも1個後方の音符を選択しなおします。
         /// </summary>
-        public void selectForward() {
+        public void selectForward()
+        {
             int count = AppManager.getSelectedEventCount();
             if ( count <= 0 ) {
                 return;
@@ -1740,11 +1772,13 @@ namespace org.kbinani.cadencii {
             ensureVisible( clock );
         }
 
-        public void invalidatePictOverview( Object sender, EventArgs e ) {
+        public void invalidatePictOverview( Object sender, EventArgs e )
+        {
             panelOverview.invalidate();
         }
 
-        public void updateBgmMenuState() {
+        public void updateBgmMenuState()
+        {
             menuTrackBgm.removeAll();
             int count = AppManager.getBgmCount();
             if ( count > 0 ) {
@@ -1789,7 +1823,8 @@ namespace org.kbinani.cadencii {
 
 
 #if ENABLE_PROPERTY
-        public void updatePropertyPanelState( PanelState state ) {
+        public void updatePropertyPanelState( PanelState state )
+        {
             if ( state == PanelState.Docked ) {
                 mPropertyPanelContainer.Add( AppManager.propertyPanel );
                 AppManager.propertyWindow.setVisible( false );
@@ -1843,7 +1878,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public Object searchMenuItemFromName( String name ) {
+        public Object searchMenuItemFromName( String name )
+        {
             int count = menuStripMain.getMenuCount();
             for ( int i = 0; i < count; i++ ) {
                 Object tsi = menuStripMain.getMenu( i );
@@ -1861,7 +1897,8 @@ namespace org.kbinani.cadencii {
         /// <param name="name"></param>
         /// <param name="tree"></param>
         /// <returns></returns>
-        public Object searchMenuItemRecurse( String name, Object tree ) {
+        public Object searchMenuItemRecurse( String name, Object tree )
+        {
             String tree_name = "";
 #if JAVA
             JMenuItem menu = null;
@@ -1936,7 +1973,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="dlg"></param>
         /// <returns></returns>
-        public Point getFormPreferedLocation( BDialog dlg ) {
+        public Point getFormPreferedLocation( BDialog dlg )
+        {
             Point mouse = PortUtil.getMousePosition();
             Rectangle rcScreen = PortUtil.getWorkingArea( this );
             int top = mouse.y - dlg.getHeight() / 2;
@@ -1955,7 +1993,8 @@ namespace org.kbinani.cadencii {
             return new Point( left, top );
         }
 
-        public void updateLayout() {
+        public void updateLayout()
+        {
 #if JAVA
             int keywidth = AppManager.keyWidth;
             Dimension d2 = new Dimension( keywidth, pictureBox3.getHeight() );
@@ -2028,7 +2067,8 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        public void updateRendererMenu() {
+        public void updateRendererMenu()
+        {
             if ( !VSTiDllManager.isRendererAvailable( RendererKind.VOCALOID1_100 ) ) {
                 cMenuTrackTabRendererVOCALOID100.setIcon( new ImageIcon( Resources.get_slash() ) );
                 menuTrackRendererVOCALOID100.setIcon( new ImageIcon( Resources.get_slash() ) );
@@ -2078,7 +2118,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void drawUtauVibrato( Graphics2D g, UstVibrato vibrato, int note, int clock_start, int clock_width ) {
+        public void drawUtauVibrato( Graphics2D g, UstVibrato vibrato, int note, int clock_start, int clock_width )
+        {
             //SmoothingMode old = g.SmoothingMode;
             //g.SmoothingMode = SmoothingMode.AntiAlias;
             // 魚雷を描いてみる
@@ -2177,7 +2218,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// Palette Toolの表示を更新します
         /// </summary>
-        public void updatePaletteTool() {
+        public void updatePaletteTool()
+        {
             int count = 0;
             int num_has_dialog = 0;
             for ( Iterator<System.Windows.Forms.ToolBarButton> itr = mPaletteTools.iterator(); itr.hasNext(); ) {
@@ -2256,7 +2298,8 @@ namespace org.kbinani.cadencii {
         }
 #endif
 
-        public void updateCopyAndPasteButtonStatus() {
+        public void updateCopyAndPasteButtonStatus()
+        {
             // copy cut deleteの表示状態更新
             boolean selected_is_null = (AppManager.getSelectedEventCount() == 0) &&
                                        (AppManager.getSelectedTempoCount() == 0) &&
@@ -2343,7 +2386,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 現在の編集データを全て破棄する。DirtyCheckは行われない。
         /// </summary>
-        public void clearExistingData() {
+        public void clearExistingData()
+        {
             AppManager.clearCommandBuffer();
             AppManager.clearSelectedBezier();
             AppManager.clearSelectedEvent();
@@ -2359,7 +2403,8 @@ namespace org.kbinani.cadencii {
         /// 保存されていない編集内容があるかどうかチェックし、必要なら確認ダイアログを出す。
         /// </summary>
         /// <returns>保存されていない保存内容などない場合、または、保存する必要がある場合で（保存しなくてよいと指定された場合または保存が行われた場合）にtrueを返す</returns>
-        public boolean dirtyCheck() {
+        public boolean dirtyCheck()
+        {
             if ( mEdited ) {
                 String file = AppManager.getFileName();
                 if ( file.Equals( "" ) ) {
@@ -2416,7 +2461,8 @@ namespace org.kbinani.cadencii {
         }
 #endif
 
-        public void loadWave( Object arg ) {
+        public void loadWave( Object arg )
+        {
             Object[] argArr = (Object[])arg;
             String file = (String)argArr[0];
             int track = (Integer)argArr[1];
@@ -2426,7 +2472,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// menuVisualWaveform.isSelected()の値をもとに、splitterContainer2の表示状態を更新します
         /// </summary>
-        public void updateSplitContainer2Size() {
+        public void updateSplitContainer2Size()
+        {
             if ( menuVisualWaveform.isSelected() ) {
                 splitContainer2.setPanel2MinSize( _SPL2_PANEL2_MIN_HEIGHT );
                 splitContainer2.setSplitterFixed( false );
@@ -2448,7 +2495,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// trackSelectorに表示するコントロールのカーブの種類を、AppManager.EditorConfigの設定に応じて更新します
         /// </summary>
-        public void updateTrackSelectorVisibleCurve() {
+        public void updateTrackSelectorVisibleCurve()
+        {
 #if DEBUG
             PortUtil.println( "FormMain#updateTrackSelectorVisibleCurve; before; AppManager.getViewingCurveCount()" + AppManager.getViewingCurveCount() );
 #endif
@@ -2529,7 +2577,8 @@ namespace org.kbinani.cadencii {
         /// ウィンドウの表示内容に応じて、ウィンドウサイズの最小値を計算します
         /// </summary>
         /// <returns></returns>
-        public Dimension getWindowMinimumSize() {
+        public Dimension getWindowMinimumSize()
+        {
             Dimension current_minsize = new Dimension( getMinimumSize().width, getMinimumSize().height );
 #if JAVA
             Dimension client = getContentPane().getSize();
@@ -2556,7 +2605,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 現在のAppManager.inputTextBoxの状態を元に、歌詞の変更を反映させるコマンドを実行します
         /// </summary>
-        public void executeLyricChangeCommand() {
+        public void executeLyricChangeCommand()
+        {
 #if JAVA
             if ( !AppManager.inputTextBox.isVisible() ) {
 #else
@@ -2757,7 +2807,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 識別済みのゲームコントローラを取り外します
         /// </summary>
-        public void removeGameControler() {
+        public void removeGameControler()
+        {
 #if !JAVA
             if ( mTimer != null ) {
                 mTimer.stop();
@@ -2772,7 +2823,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// PCに接続されているゲームコントローラを識別・接続します
         /// </summary>
-        public void loadGameControler() {
+        public void loadGameControler()
+        {
 #if !JAVA
             try {
                 boolean init_success = false;
@@ -2809,7 +2861,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// MIDI入力句デバイスを再読込みします
         /// </summary>
-        public void reloadMidiIn() {
+        public void reloadMidiIn()
+        {
             if ( mMidiIn != null ) {
                 mMidiIn.MidiReceived -= mMidiIn_MidiReceived;
                 mMidiIn.Dispose();
@@ -2866,7 +2919,8 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if ENABLE_MIDI
-        public void updateMidiInStatus() {
+        public void updateMidiInStatus()
+        {
             int midiport = AppManager.editorConfig.MidiInPort.PortNumber;
             org.kbinani.MIDIINCAPS[] devices = MidiInDevice.GetMidiInDevices();
             if ( midiport < 0 || devices.Length <= 0 ) {
@@ -2887,7 +2941,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// スクリプトフォルダ中のスクリプトへのショートカットを作成する
         /// </summary>
-        public void updateScriptShortcut() {
+        public void updateScriptShortcut()
+        {
             // 既存のアイテムを削除
             menuScript.removeAll();
             // スクリプトをリロード
@@ -2927,7 +2982,8 @@ namespace org.kbinani.cadencii {
         /// 指定したノートナンバーが可視状態となるよう、縦スクロールバーを移動させます。
         /// </summary>
         /// <param name="note"></param>
-        public void ensureVisibleY( int note ) {
+        public void ensureVisibleY( int note )
+        {
             if ( note == 0 ) {
                 vScroll.Value = vScroll.Maximum - vScroll.LargeChange;
                 return;
@@ -2958,7 +3014,8 @@ namespace org.kbinani.cadencii {
         /// 指定したゲートタイムがピアノロール上で可視状態となるよう、横スクロールバーを移動させます。
         /// </summary>
         /// <param name="clock"></param>
-        public void ensureVisible( int clock ) {
+        public void ensureVisible( int clock )
+        {
             // カーソルが画面内にあるかどうか検査
             int clock_left = AppManager.clockFromXCoord( AppManager.keyWidth );
             int clock_right = AppManager.clockFromXCoord( pictPianoRoll.getWidth() );
@@ -2985,7 +3042,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// プレイカーソルが見えるようスクロールする
         /// </summary>
-        public void ensureCursorVisible() {
+        public void ensureCursorVisible()
+        {
             ensureVisible( AppManager.getCurrentClock() );
         }
 
@@ -2994,7 +3052,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="e"></param>
         /// <param name="onPreviewKeyDown">PreviewKeyDownイベントから送信されてきた場合、true（送る側が設定する）</param>
-        public void processSpecialShortcutKey( BKeyEventArgs e, boolean onPreviewKeyDown ) {
+        public void processSpecialShortcutKey( BKeyEventArgs e, boolean onPreviewKeyDown )
+        {
             boolean flipPlaying = false; // 再生/停止状態の切り替えが要求されたらtrue
 
             // 最初に、特殊な取り扱いが必要なショートカット、について、
@@ -3443,7 +3502,8 @@ namespace org.kbinani.cadencii {
             #endregion
         }
 
-        public void updateScrollRangeHorizontal() {
+        public void updateScrollRangeHorizontal()
+        {
 #if JAVA
             draft_length += 240;
             // 画面上で何クロックが見えてるか？
@@ -3490,7 +3550,8 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        public void updateScrollRangeVertical() {
+        public void updateScrollRangeVertical()
+        {
 #if JAVA
             // 画面上で何ピクセルが見えてるか？
             int visible_amount = (int)pictPianoRoll.getHeight();
@@ -3568,7 +3629,8 @@ namespace org.kbinani.cadencii {
         /// ミキサーダイアログの表示・非表示状態を更新します
         /// </summary>
         /// <param name="visible">表示状態にする場合true，そうでなければfalse</param>
-        public void flipMixerDialogVisible( boolean visible ) {
+        public void flipMixerDialogVisible( boolean visible )
+        {
             AppManager.mMixerWindow.setVisible( visible );
             AppManager.editorConfig.MixerVisible = visible;
             menuVisualMixer.setSelected( visible );
@@ -3577,7 +3639,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// メニューのショートカットキーを、AppManager.EditorConfig.ShorcutKeysの内容に応じて変更します
         /// </summary>
-        public void applyShortcut() {
+        public void applyShortcut()
+        {
             mSpecialShortcutHolders.clear();
 
             if ( AppManager.editorConfig.Platform == PlatformEnum.Macintosh ) {
@@ -3772,7 +3835,8 @@ namespace org.kbinani.cadencii {
         /// <param name="item"></param>
         /// <param name="item_name"></param>
         /// <param name="default_shortcut"></param>
-        public void applyMenuItemShortcut( TreeMap<String, BKeys[]> dict, Object item, String item_name ) {
+        public void applyMenuItemShortcut( TreeMap<String, BKeys[]> dict, Object item, String item_name )
+        {
             try {
                 if ( dict.containsKey( item_name ) ) {
 #if JAVA
@@ -3831,7 +3895,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// ソングポジションを1小節進めます
         /// </summary>
-        public void forward() {
+        public void forward()
+        {
             boolean playing = AppManager.isPlaying();
             if ( playing ) {
                 return;
@@ -3849,7 +3914,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// ソングポジションを1小節戻します
         /// </summary>
-        public void rewind() {
+        public void rewind()
+        {
             boolean playing = AppManager.isPlaying();
             if ( playing ) {
                 return;
@@ -3876,7 +3942,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// cMenuPianoの固定長音符入力の各メニューのチェック状態をm_pencil_modeを元に更新します
         /// </summary>
-        public void updateCMenuPianoFixed() {
+        public void updateCMenuPianoFixed()
+        {
             cMenuPianoFixed01.setSelected( false );
             cMenuPianoFixed02.setSelected( false );
             cMenuPianoFixed04.setSelected( false );
@@ -3912,7 +3979,8 @@ namespace org.kbinani.cadencii {
             cMenuPianoFixedDotted.setSelected( mPencilMode.isDot() );
         }
 
-        public void clearTempWave() {
+        public void clearTempWave()
+        {
             String tmppath = PortUtil.combinePath( AppManager.getCadenciiTempDir(), AppManager.getID() );
             if ( !PortUtil.isDirectoryExists( tmppath ) ) {
                 return;
@@ -3974,7 +4042,8 @@ namespace org.kbinani.cadencii {
         /// 鍵盤音キャッシュの中から指定したノートナンバーの音源を捜し、再生します。
         /// </summary>
         /// <param name="note">再生する音の高さを指定するノートナンバー</param>
-        public void playPreviewSound( int note ) {
+        public void playPreviewSound( int note )
+        {
             KeySoundPlayer.play( note );
         }
 
@@ -3991,7 +4060,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// このコンポーネントの表示言語を、現在の言語設定に従って更新します。
         /// </summary>
-        public void applyLanguage() {
+        public void applyLanguage()
+        {
             openXmlVsqDialog.clearChoosableFileFilter();
             try {
                 openXmlVsqDialog.addFileFilter( _( "XML-VSQ Format(*.xvsq)|*.xvsq" ) );
@@ -4200,6 +4270,8 @@ namespace org.kbinani.cadencii {
             menuLyricPhonemeTransformation.setMnemonic( KeyEvent.VK_T );
             menuLyricDictionary.setText( _( "User word dictionary" ) );
             menuLyricDictionary.setMnemonic( KeyEvent.VK_C );
+            menuLyricSetAutoVibrato.setText( _( "Set this vibrato as default" ) );
+            menuLyricSetAutoVibrato.setMnemonic( KeyEvent.VK_S );
 
             menuScript.setText( _( "Script" ) );
             menuScript.setMnemonic( KeyEvent.VK_C );
@@ -4456,7 +4528,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 歌詞の流し込みダイアログを開き，選択された音符を起点に歌詞を流し込みます
         /// </summary>
-        public void importLyric() {
+        public void importLyric()
+        {
             int start = 0;
             int selected = AppManager.getSelected();
             VsqFileEx vsq = AppManager.getVsqFile();
@@ -4556,7 +4629,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 選択されている音符のビブラートを編集するためのダイアログを起動し、編集を行います。
         /// </summary>
-        public void editNoteVibratoProperty() {
+        public void editNoteVibratoProperty()
+        {
             SelectedEventEntry item = AppManager.getLastSelectedEvent();
             if ( item == null ) {
                 return;
@@ -4572,9 +4646,9 @@ namespace org.kbinani.cadencii {
             }
             FormVibratoConfig dlg = null;
             try {
-                dlg = new FormVibratoConfig( 
-                    ev.ID.VibratoHandle, 
-                    ev.ID.getLength(), 
+                dlg = new FormVibratoConfig(
+                    ev.ID.VibratoHandle,
+                    ev.ID.getLength(),
                     AppManager.editorConfig.DefaultVibratoLength,
                     type );
                 dlg.setLocation( getFormPreferedLocation( dlg ) );
@@ -4614,7 +4688,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 選択されている音符の表情を編集するためのダイアログを起動し、編集を行います。
         /// </summary>
-        public void editNoteExpressionProperty() {
+        public void editNoteExpressionProperty()
+        {
             SelectedEventEntry item = AppManager.getLastSelectedEvent();
             if ( item == null ) {
                 return;
@@ -4674,7 +4749,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="delta"></param>
         /// <returns></returns>
-        public int computeScrollValueFromWheelDelta( int delta ) {
+        public int computeScrollValueFromWheelDelta( int delta )
+        {
             double new_val = (double)hScroll.Value - delta * AppManager.editorConfig.WheelOrder / (5.0 * AppManager.getScaleX());
             if ( new_val < 0.0 ) {
                 new_val = 0;
@@ -4690,8 +4766,9 @@ namespace org.kbinani.cadencii {
         }
 
         #region 音符の編集関連
-        public void selectAll() {
-            
+        public void selectAll()
+        {
+
             AppManager.clearSelectedEvent();
             AppManager.clearSelectedTempo();
             AppManager.clearSelectedTimesig();
@@ -4743,7 +4820,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void selectAllEvent() {
+        public void selectAllEvent()
+        {
             AppManager.clearSelectedTempo();
             AppManager.clearSelectedTimesig();
             AppManager.clearSelectedEvent();
@@ -4765,10 +4843,11 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
 
-        public void deleteEvent() {
+        public void deleteEvent()
+        {
 #if DEBUG
-            AppManager.debugWriteLine( 
-                "FormMain#deleteEvent(); AppManager.inputTextBox.isEnabled()=" + 
+            AppManager.debugWriteLine(
+                "FormMain#deleteEvent(); AppManager.inputTextBox.isEnabled()=" +
                 AppManager.mInputTextBox.isEnabled() );
 #endif
 
@@ -4864,9 +4943,9 @@ namespace org.kbinani.cadencii {
                 for ( int i = 0; i < dum.Length; i++ ) {
                     dum[i] = -1;
                 }
-                CadenciiCommand run = new CadenciiCommand( 
+                CadenciiCommand run = new CadenciiCommand(
                     VsqCommand.generateCommandUpdateTempoRange( PortUtil.convertIntArray( clocks.toArray( new Integer[] { } ) ),
-                                                                PortUtil.convertIntArray( clocks.toArray( new Integer[] { } ) ), 
+                                                                PortUtil.convertIntArray( clocks.toArray( new Integer[] { } ) ),
                                                                 dum ) );
                 AppManager.register( vsq.executeCommand( run ) );
                 setEdited( true );
@@ -4924,7 +5003,7 @@ namespace org.kbinani.cadencii {
                     for ( int i = 0; i < count; i++ ) {
                         list.remove( remove_clock_queue.get( i ) );
                     }
-                    CadenciiCommand run = new CadenciiCommand( 
+                    CadenciiCommand run = new CadenciiCommand(
                         VsqCommand.generateCommandTrackCurveReplace( selected,
                                                                      trackSelector.getSelectedCurve().getName(),
                                                                      list ) );
@@ -4938,7 +5017,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void pasteEvent() {
+        public void pasteEvent()
+        {
             int clock = AppManager.getCurrentClock();
             int unit = AppManager.getPositionQuantizeClock();
             clock = doQuantize( clock, unit );
@@ -4963,7 +5043,7 @@ namespace org.kbinani.cadencii {
                         item.Clock = copied_events.get( i ).Clock + dclock;
                         paste.add( item );
                     }
-                    add_event = VsqCommand.generateCommandEventAddRange( 
+                    add_event = VsqCommand.generateCommandEventAddRange(
                         AppManager.getSelected(), paste.toArray( new VsqEvent[] { } ) );
                 }
             }
@@ -4979,7 +5059,7 @@ namespace org.kbinani.cadencii {
                     clocks[i] = item.Clock + dclock;
                     tempos[i] = item.Tempo;
                 }
-                CadenciiCommand run = new CadenciiCommand( 
+                CadenciiCommand run = new CadenciiCommand(
                     VsqCommand.generateCommandUpdateTempoRange( clocks, clocks, tempos ) );
                 AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                 setEdited( true );
@@ -5007,7 +5087,7 @@ namespace org.kbinani.cadencii {
                     denominators[i] = item.Denominator;
                 }
                 CadenciiCommand run = new CadenciiCommand(
-                    VsqCommand.generateCommandUpdateTimesigRange( 
+                    VsqCommand.generateCommandUpdateTimesigRange(
                         barcounts, barcounts, numerators, denominators ) );
                 AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
                 setEdited( true );
@@ -5171,7 +5251,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// アイテムのコピーを行います
         /// </summary>
-        public void copyEvent() {
+        public void copyEvent()
+        {
 #if DEBUG
             AppManager.debugWriteLine( "FormMain#copyEvent" );
 #endif
@@ -5313,7 +5394,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void cutEvent() {
+        public void cutEvent()
+        {
             // まずコピー
             copyEvent();
 
@@ -5458,7 +5540,8 @@ namespace org.kbinani.cadencii {
             int start,
             int end,
             Vector<BezierChain> copied_chain
-        ) {
+        )
+        {
             for ( Iterator<BezierChain> itr = AppManager.getVsqFile().AttachedCurves.get( track - 1 ).get( curve_type ).iterator(); itr.hasNext(); ) {
                 BezierChain bc = itr.next();
                 int len = bc.points.size();
@@ -5507,7 +5590,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// トラック全体のコピーを行います。
         /// </summary>
-        public void copyTrackCore() {
+        public void copyTrackCore()
+        {
             VsqFileEx vsq = AppManager.getVsqFile();
             int selected = AppManager.getSelected();
             VsqTrack track = (VsqTrack)vsq.Track.get( selected ).clone();
@@ -5525,7 +5609,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// トラックの名前変更を行います。
         /// </summary>
-        public void changeTrackNameCore() {
+        public void changeTrackNameCore()
+        {
             if ( mTextBoxTrackName != null ) {
 #if !JAVA
                 if ( !mTextBoxTrackName.IsDisposed ) {
@@ -5560,7 +5645,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// トラックの削除を行います。
         /// </summary>
-        public void deleteTrackCore() {
+        public void deleteTrackCore()
+        {
             int selected = AppManager.getSelected();
             VsqFileEx vsq = AppManager.getVsqFile();
             if ( AppManager.showMessageBox(
@@ -5583,13 +5669,14 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// トラックの追加を行います。
         /// </summary>
-        public void addTrackCore() {
+        public void addTrackCore()
+        {
             VsqFileEx vsq = AppManager.getVsqFile();
             int i = vsq.Track.size();
             String name = "Voice" + i;
             String singer = AppManager.editorConfig.DefaultSingerName;
             VsqTrack vsq_track = new VsqTrack( name, singer );
-            
+
             RendererKind kind = AppManager.editorConfig.DefaultSynthesizer;
             String renderer = AppManager.getVersionStringFromRendererKind( kind );
             Vector<VsqID> singers = AppManager.getSingerListFromRendererKind( kind );
@@ -5612,7 +5699,8 @@ namespace org.kbinani.cadencii {
         /// length, positionの各Quantizeモードに応じて、
         /// 関連する全てのメニュー・コンテキストメニューの表示状態を更新します。
         /// </summary>
-        public void applyQuantizeMode() {
+        public void applyQuantizeMode()
+        {
             cMenuPianoQuantize04.setSelected( false );
             cMenuPianoQuantize08.setSelected( false );
             cMenuPianoQuantize16.setSelected( false );
@@ -5773,7 +5861,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 現在選択されている編集ツールに応じて、メニューのチェック状態を更新します
         /// </summary>
-        public void applySelectedTool() {
+        public void applySelectedTool()
+        {
             EditTool tool = AppManager.getSelectedTool();
 
             int count = toolBarTool.Buttons.Count;// toolStripTool.getComponentCount();
@@ -5873,7 +5962,7 @@ namespace org.kbinani.cadencii {
                 cMenuTrackSelectorEraser.setSelected( true );
 
                 stripBtnPointer.Pushed = false;
-                stripBtnPencil.Pushed =  false;
+                stripBtnPencil.Pushed = false;
                 stripBtnLine.Pushed = false;
                 stripBtnEraser.Pushed = true;
             } else if ( selected_tool == EditTool.LINE ) {
@@ -5902,7 +5991,7 @@ namespace org.kbinani.cadencii {
                 cMenuTrackSelectorEraser.setSelected( false );
 
                 stripBtnPointer.Pushed = false;
-                stripBtnPencil.Pushed =  false;
+                stripBtnPencil.Pushed = false;
                 stripBtnLine.Pushed = false;
                 stripBtnEraser.Pushed = false;
 #endif
@@ -5915,7 +6004,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 描画すべきオブジェクトのリスト，AppManager.drawObjectsを更新します
         /// </summary>
-        public void updateDrawObjectList() {
+        public void updateDrawObjectList()
+        {
             // AppManager.m_draw_objects
             if ( AppManager.mDrawObjects == null ) {
                 AppManager.mDrawObjects = new Vector<Vector<DrawObject>>();
@@ -6169,7 +6259,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// _editor_configのRecentFilesを元に，menuFileRecentのドロップダウンアイテムを更新します
         /// </summary>
-        public void updateRecentFileMenu() {
+        public void updateRecentFileMenu()
+        {
             int added = 0;
             menuFileRecent.removeAll();
             if ( AppManager.editorConfig.RecentFiles != null ) {
@@ -6208,11 +6299,13 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 最後に保存したときから変更されているかどうかを取得または設定します
         /// </summary>
-        public boolean isEdited() {
+        public boolean isEdited()
+        {
             return mEdited;
         }
 
-        public void setEdited( boolean value ) {
+        public void setEdited( boolean value )
+        {
             mEdited = value;
             String file = AppManager.getFileName();
             if ( file.Equals( "" ) ) {
@@ -6250,7 +6343,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 入力用のテキストボックスを初期化します
         /// </summary>
-        public void showInputTextBox( String phrase, String phonetic_symbol, Point position, boolean phonetic_symbol_edit_mode ) {
+        public void showInputTextBox( String phrase, String phonetic_symbol, Point position, boolean phonetic_symbol_edit_mode )
+        {
 #if DEBUG
             AppManager.debugWriteLine( "InitializeInputTextBox" );
 #endif
@@ -6287,7 +6381,8 @@ namespace org.kbinani.cadencii {
             AppManager.mInputTextBox.selectAll();
         }
 
-        public void hideInputTextBox() {
+        public void hideInputTextBox()
+        {
             AppManager.mInputTextBox.KeyUp -= new System.Windows.Forms.KeyEventHandler( mInputTextBox_KeyUp );
             AppManager.mInputTextBox.KeyDown -= new System.Windows.Forms.KeyEventHandler( mInputTextBox_KeyDown );
 #if JAVA
@@ -6309,7 +6404,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 歌詞入力用テキストボックスのモード（歌詞/発音記号）を切り替えます
         /// </summary>
-        public void flipInputTextBoxMode() {
+        public void flipInputTextBoxMode()
+        {
             String new_value = AppManager.mInputTextBox.getText();
             if ( !AppManager.mInputTextBox.isPhoneticSymbolEditMode() ) {
                 AppManager.mInputTextBox.setBackground( mColorTextboxBackcolor );
@@ -6324,7 +6420,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// アンドゥ処理を行います
         /// </summary>
-        public void undo() {
+        public void undo()
+        {
             if ( AppManager.isUndoAvailable() ) {
                 AppManager.undo();
                 menuEditRedo.setEnabled( AppManager.isRedoAvailable() );
@@ -6348,7 +6445,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// リドゥ処理を行います
         /// </summary>
-        public void redo() {
+        public void redo()
+        {
             if ( AppManager.isRedoAvailable() ) {
                 AppManager.redo();
                 menuEditRedo.setEnabled( AppManager.isRedoAvailable() );
@@ -6369,7 +6467,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void openVsqCor( String file ) {
+        public void openVsqCor( String file )
+        {
             AppManager.readVsq( file );
             if ( AppManager.getVsqFile().Track.size() >= 2 ) {
                 updateScrollRangeHorizontal();
@@ -6381,7 +6480,8 @@ namespace org.kbinani.cadencii {
             AppManager.mMixerWindow.updateStatus();
         }
 
-        public void updateMenuFonts() {
+        public void updateMenuFonts()
+        {
             if ( AppManager.editorConfig.BaseFontName.Equals( "" ) ) {
                 return;
             }
@@ -6426,7 +6526,8 @@ namespace org.kbinani.cadencii {
             AppManager.baseFont50Height = Util.measureString( Util.PANGRAM, AppManager.baseFont50Bold ).height;
         }
 
-        public void picturePositionIndicatorDrawTo( java.awt.Graphics g1 ) {
+        public void picturePositionIndicatorDrawTo( java.awt.Graphics g1 )
+        {
             Graphics2D g = (Graphics2D)g1;
             Font SMALL_FONT = AppManager.baseFont8;
             int small_font_offset = AppManager.baseFont8OffsetHeight;
@@ -6589,7 +6690,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// イベントハンドラを登録します。
         /// </summary>
-        public void registerEventHandlers() {
+        public void registerEventHandlers()
+        {
             Load += new EventHandler( FormMain_Load );
             menuStripMain.MouseDown += new System.Windows.Forms.MouseEventHandler( menuStrip1_MouseDown );
             menuFileNew.MouseEnter += new EventHandler( handleMenuMouseEnter );
@@ -6712,10 +6814,12 @@ namespace org.kbinani.cadencii {
             menuTrackRendererVCNT.Click += new EventHandler( handleChangeRenderer );
             menuTrackRendererAquesTone.Click += new EventHandler( handleChangeRenderer );
             menuTrackManager.Click += new EventHandler( menuTrackManager_Click );
+            menuLyric.DropDownOpening += new EventHandler( menuLyric_DropDownOpening );
             menuLyricExpressionProperty.Click += new EventHandler( menuLyricExpressionProperty_Click );
             menuLyricVibratoProperty.Click += new EventHandler( menuLyricVibratoProperty_Click );
             menuLyricDictionary.Click += new EventHandler( menuLyricDictionary_Click );
             menuLyricPhonemeTransformation.Click += new EventHandler( menuLyricPhonemeTransformation_Click );
+            menuLyricSetAutoVibrato.Click += new EventHandler( menuLyricSetAutoVibrato_Click );
             menuScriptUpdate.Click += new EventHandler( menuScriptUpdate_Click );
             menuSettingPreference.Click += new EventHandler( menuSettingPreference_Click );
             menuSettingGameControlerSetting.Click += new EventHandler( menuSettingGameControlerSetting_Click );
@@ -6868,37 +6972,37 @@ namespace org.kbinani.cadencii {
             //panelOverview.MouseDown += new BMouseEventHandler( pictOverview_MouseDown);
             //panelOverview.Paint += new BPaintEventHandler( pictOverview_Paint);
             //panelOverview.MouseUp += new BMouseEventHandler( pictOverview_MouseUp);
-            panelOverview.KeyUp += new System.Windows.Forms.KeyEventHandler( handleSpaceKeyUp);
-            panelOverview.KeyDown += new System.Windows.Forms.KeyEventHandler( handleSpaceKeyDown);
+            panelOverview.KeyUp += new System.Windows.Forms.KeyEventHandler( handleSpaceKeyUp );
+            panelOverview.KeyDown += new System.Windows.Forms.KeyEventHandler( handleSpaceKeyDown );
             vScroll.ValueChanged += this.vScroll_ValueChanged;
             vScroll.Resize += this.vScroll_Resize;
             vScroll.Enter += this.vScroll_Enter;
             hScroll.ValueChanged += this.hScroll_ValueChanged;
             hScroll.Resize += this.hScroll_Resize;
             hScroll.Enter += this.hScroll_Enter;
-            picturePositionIndicator.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler( picturePositionIndicator_PreviewKeyDown);
-            picturePositionIndicator.MouseMove += new System.Windows.Forms.MouseEventHandler( picturePositionIndicator_MouseMove);
-            picturePositionIndicator.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler( picturePositionIndicator_MouseDoubleClick);
-            picturePositionIndicator.MouseDown += new System.Windows.Forms.MouseEventHandler( picturePositionIndicator_MouseDown);
-            picturePositionIndicator.MouseUp += new System.Windows.Forms.MouseEventHandler( picturePositionIndicator_MouseUp);
-            picturePositionIndicator.Paint += new System.Windows.Forms.PaintEventHandler( picturePositionIndicator_Paint);
-            pictPianoRoll.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler( pictPianoRoll_PreviewKeyDown);
-            pictPianoRoll.KeyUp += new System.Windows.Forms.KeyEventHandler( handleSpaceKeyUp);
-            pictPianoRoll.KeyUp += new System.Windows.Forms.KeyEventHandler( pictPianoRoll_KeyUp);
-            pictPianoRoll.MouseMove += new System.Windows.Forms.MouseEventHandler( pictPianoRoll_MouseMove);
-            pictPianoRoll.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler( pictPianoRoll_MouseDoubleClick);
-            pictPianoRoll.MouseClick += new System.Windows.Forms.MouseEventHandler( pictPianoRoll_MouseClick);
-            pictPianoRoll.MouseDown += new System.Windows.Forms.MouseEventHandler( pictPianoRoll_MouseDown);
+            picturePositionIndicator.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler( picturePositionIndicator_PreviewKeyDown );
+            picturePositionIndicator.MouseMove += new System.Windows.Forms.MouseEventHandler( picturePositionIndicator_MouseMove );
+            picturePositionIndicator.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler( picturePositionIndicator_MouseDoubleClick );
+            picturePositionIndicator.MouseDown += new System.Windows.Forms.MouseEventHandler( picturePositionIndicator_MouseDown );
+            picturePositionIndicator.MouseUp += new System.Windows.Forms.MouseEventHandler( picturePositionIndicator_MouseUp );
+            picturePositionIndicator.Paint += new System.Windows.Forms.PaintEventHandler( picturePositionIndicator_Paint );
+            pictPianoRoll.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler( pictPianoRoll_PreviewKeyDown );
+            pictPianoRoll.KeyUp += new System.Windows.Forms.KeyEventHandler( handleSpaceKeyUp );
+            pictPianoRoll.KeyUp += new System.Windows.Forms.KeyEventHandler( pictPianoRoll_KeyUp );
+            pictPianoRoll.MouseMove += new System.Windows.Forms.MouseEventHandler( pictPianoRoll_MouseMove );
+            pictPianoRoll.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler( pictPianoRoll_MouseDoubleClick );
+            pictPianoRoll.MouseClick += new System.Windows.Forms.MouseEventHandler( pictPianoRoll_MouseClick );
+            pictPianoRoll.MouseDown += new System.Windows.Forms.MouseEventHandler( pictPianoRoll_MouseDown );
             pictPianoRoll.MouseUp += new System.Windows.Forms.MouseEventHandler( pictPianoRoll_MouseUp );
-            pictPianoRoll.KeyDown += new System.Windows.Forms.KeyEventHandler( handleSpaceKeyDown);
-            panel2.Paint += new System.Windows.Forms.PaintEventHandler( panel2_Paint);
-            panel2.MouseDown += new System.Windows.Forms.MouseEventHandler( panel2_MouseDown);
-            panel2.MouseMove += new System.Windows.Forms.MouseEventHandler( panel2_MouseMove);
-            panel2.MouseUp += new System.Windows.Forms.MouseEventHandler( panel2_MouseUp);
-            waveView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler( waveView_MouseDoubleClick);
-            waveView.MouseDown += new System.Windows.Forms.MouseEventHandler( waveView_MouseDown);
-            waveView.MouseUp += new System.Windows.Forms.MouseEventHandler( waveView_MouseUp);
-            waveView.MouseMove += new System.Windows.Forms.MouseEventHandler( waveView_MouseMove);
+            pictPianoRoll.KeyDown += new System.Windows.Forms.KeyEventHandler( handleSpaceKeyDown );
+            panel2.Paint += new System.Windows.Forms.PaintEventHandler( panel2_Paint );
+            panel2.MouseDown += new System.Windows.Forms.MouseEventHandler( panel2_MouseDown );
+            panel2.MouseMove += new System.Windows.Forms.MouseEventHandler( panel2_MouseMove );
+            panel2.MouseUp += new System.Windows.Forms.MouseEventHandler( panel2_MouseUp );
+            waveView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler( waveView_MouseDoubleClick );
+            waveView.MouseDown += new System.Windows.Forms.MouseEventHandler( waveView_MouseDown );
+            waveView.MouseUp += new System.Windows.Forms.MouseEventHandler( waveView_MouseUp );
+            waveView.MouseMove += new System.Windows.Forms.MouseEventHandler( waveView_MouseMove );
 #if !JAVA
             this.DragEnter += new System.Windows.Forms.DragEventHandler( FormMain_DragEnter );
             this.DragDrop += new System.Windows.Forms.DragEventHandler( FormMain_DragDrop );
@@ -6906,9 +7010,9 @@ namespace org.kbinani.cadencii {
             this.DragLeave += new EventHandler( FormMain_DragLeave );
 #endif
             pictureBox3.MouseDown += new System.Windows.Forms.MouseEventHandler( pictureBox3_MouseDown );
-            pictureBox2.MouseDown += new System.Windows.Forms.MouseEventHandler( pictureBox2_MouseDown);
-            pictureBox2.MouseUp += new System.Windows.Forms.MouseEventHandler( pictureBox2_MouseUp);
-            pictureBox2.Paint += new System.Windows.Forms.PaintEventHandler( pictureBox2_Paint);
+            pictureBox2.MouseDown += new System.Windows.Forms.MouseEventHandler( pictureBox2_MouseDown );
+            pictureBox2.MouseUp += new System.Windows.Forms.MouseEventHandler( pictureBox2_MouseUp );
+            pictureBox2.Paint += new System.Windows.Forms.PaintEventHandler( pictureBox2_Paint );
             toolBarTool.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler( toolBarTool_ButtonClick );
 #if !JAVA
             rebar.SizeChanged += new EventHandler( toolStripContainer_TopToolStripPanel_SizeChanged );// toolStripContainer.TopToolStripPanel.SizeChanged += new EventHandler( toolStripContainer_TopToolStripPanel_SizeChanged );
@@ -6941,7 +7045,8 @@ namespace org.kbinani.cadencii {
             panelOverview.Enter += new EventHandler( panelOverview_Enter );
         }
 
-        void toolBarMeasure_MouseDown( object sender, System.Windows.Forms.MouseEventArgs e ) {
+        void toolBarMeasure_MouseDown( object sender, System.Windows.Forms.MouseEventArgs e )
+        {
             // マウス位置にあるボタンを捜す
             System.Windows.Forms.ToolBarButton c = null;
             foreach ( System.Windows.Forms.ToolBarButton btn in toolBarMeasure.Buttons ) {
@@ -6968,7 +7073,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        void toolBarTool_ButtonClick( object sender, System.Windows.Forms.ToolBarButtonClickEventArgs e ) {
+        void toolBarTool_ButtonClick( object sender, System.Windows.Forms.ToolBarButtonClickEventArgs e )
+        {
             if ( e.Button == stripBtnPointer ) {
                 stripBtnArrow_Click( e.Button, new EventArgs() );
             } else if ( e.Button == stripBtnPencil ) {
@@ -6986,7 +7092,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        void toolBarMeasure_ButtonClick( object sender, System.Windows.Forms.ToolBarButtonClickEventArgs e ) {
+        void toolBarMeasure_ButtonClick( object sender, System.Windows.Forms.ToolBarButtonClickEventArgs e )
+        {
             if ( e.Button == stripBtnStartMarker ) {
                 handleStartMarker_Click( e.Button, new EventArgs() );
             } else if ( e.Button == stripBtnEndMarker ) {
@@ -7004,7 +7111,8 @@ namespace org.kbinani.cadencii {
             }*/
         }
 
-        void toolBarPosition_ButtonClick( object sender, System.Windows.Forms.ToolBarButtonClickEventArgs e ) {
+        void toolBarPosition_ButtonClick( object sender, System.Windows.Forms.ToolBarButtonClickEventArgs e )
+        {
             if ( e.Button == stripBtnMoveTop ) {
                 stripBtnMoveTop_Click( e.Button, new EventArgs() );
             } else if ( e.Button == stripBtnRewind ) {
@@ -7024,7 +7132,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        void toolBarFile_ButtonClick( object sender, System.Windows.Forms.ToolBarButtonClickEventArgs e ) {
+        void toolBarFile_ButtonClick( object sender, System.Windows.Forms.ToolBarButtonClickEventArgs e )
+        {
             if ( e.Button == stripBtnFileNew ) {
                 handleFileNew_Click( e.Button, new EventArgs() );
             } else if ( e.Button == stripBtnFileOpen ) {
@@ -7044,7 +7153,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void setResources() {
+        public void setResources()
+        {
             try {
                 this.stripLblGameCtrlMode.setIcon( new ImageIcon( Resources.get_slash() ) );
                 this.stripLblMidiIn.setIcon( new ImageIcon( Resources.get_slash() ) );
@@ -7059,14 +7169,16 @@ namespace org.kbinani.cadencii {
         #region event handlers
         //BOOKMARK: panelOverview
         #region panelOverview
-        public void panelOverview_Enter( Object sender, EventArgs e ) {
+        public void panelOverview_Enter( Object sender, EventArgs e )
+        {
             pictPianoRoll.requestFocus();
         }
         #endregion
 
         //BOOKMARK: inputTextBox
         #region AppManager.inputTextBox
-        public void mInputTextBox_KeyDown( Object sender, BKeyEventArgs e ) {
+        public void mInputTextBox_KeyDown( Object sender, BKeyEventArgs e )
+        {
 #if DEBUG
             PortUtil.println( "FormMain#mInputTextBox_KeyDown" );
 #endif
@@ -7076,7 +7188,7 @@ namespace org.kbinani.cadencii {
             if ( keycode == KeyEvent.VK_TAB || 
                  keycode == KeyEvent.VK_ENTER ) {
 #else
-            if ( e.KeyCode == System.Windows.Forms.Keys.Tab || 
+            if ( e.KeyCode == System.Windows.Forms.Keys.Tab ||
                  e.KeyCode == System.Windows.Forms.Keys.Return ) {
 #endif
                 executeLyricChangeCommand();
@@ -7136,7 +7248,7 @@ namespace org.kbinani.cadencii {
                     int x = AppManager.xCoordFromClocks( item.Clock );
                     int y = AppManager.yCoordFromNote( item.ID.Note );
                     boolean phonetic_symbol_edit_mode = AppManager.mInputTextBox.isPhoneticSymbolEditMode();
-                    showInputTextBox( 
+                    showInputTextBox(
                         item.ID.LyricHandle.L0.Phrase,
                         item.ID.LyricHandle.L0.getPhoneticSymbol(),
                         new Point( x, y ),
@@ -7177,7 +7289,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void mInputTextBox_KeyUp( Object sender, BKeyEventArgs e ) {
+        public void mInputTextBox_KeyUp( Object sender, BKeyEventArgs e )
+        {
 #if DEBUG
             PortUtil.println( "FormMain#mInputTextBox_KeyUp" );
 #endif
@@ -7198,11 +7311,13 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void mInputTextBox_ImeModeChanged( Object sender, EventArgs e ) {
+        public void mInputTextBox_ImeModeChanged( Object sender, EventArgs e )
+        {
             mLastIsImeModeOn = AppManager.mInputTextBox.isImeModeOn();
         }
 
-        public void mInputTextBox_KeyPress( Object sender, BKeyPressEventArgs e ) {
+        public void mInputTextBox_KeyPress( Object sender, BKeyPressEventArgs e )
+        {
 #if DEBUG
             PortUtil.println( "FormMain#mInputTextBox_KeyPress" );
 #endif
@@ -7215,21 +7330,25 @@ namespace org.kbinani.cadencii {
 
         //BOOKMARK: AppManager
         #region AppManager
-        public void AppManager_EditedStateChanged( Object sender,  boolean edited ) {
+        public void AppManager_EditedStateChanged( Object sender, boolean edited )
+        {
             setEdited( edited );
         }
 
-        public void AppManager_GridVisibleChanged( Object sender, EventArgs e ) {
+        public void AppManager_GridVisibleChanged( Object sender, EventArgs e )
+        {
             menuVisualGridline.setSelected( AppManager.isGridVisible() );
             stripBtnGrid.Pushed = AppManager.isGridVisible();
             cMenuPianoGrid.setSelected( AppManager.isGridVisible() );
         }
 
-        public void AppManager_MainWindowFocusRequired( Object sender, EventArgs e ) {
+        public void AppManager_MainWindowFocusRequired( Object sender, EventArgs e )
+        {
             this.requestFocus();
         }
 
-        public void AppManager_PreviewAborted( Object sender, EventArgs e ) {
+        public void AppManager_PreviewAborted( Object sender, EventArgs e )
+        {
 #if DEBUG
             AppManager.debugWriteLine( "AppManager_PreviewAborted" );
 #endif
@@ -7248,7 +7367,8 @@ namespace org.kbinani.cadencii {
 #endif // ENABLE_MIDI
         }
 
-        public void AppManager_PreviewStarted( Object sender, EventArgs e ) {
+        public void AppManager_PreviewStarted( Object sender, EventArgs e )
+        {
 #if DEBUG
             AppManager.debugWriteLine( "m_config_PreviewStarted" );
 #endif
@@ -7266,11 +7386,13 @@ namespace org.kbinani.cadencii {
             timer.start();
         }
 
-        public void AppManager_SelectedToolChanged( Object sender, EventArgs e ) {
+        public void AppManager_SelectedToolChanged( Object sender, EventArgs e )
+        {
             applySelectedTool();
         }
 
-        public void AppManager_SelectedEventChanged( Object sender, boolean selected_event_is_null ) {
+        public void AppManager_SelectedEventChanged( Object sender, boolean selected_event_is_null )
+        {
             menuEditCut.setEnabled( !selected_event_is_null );
             menuEditPaste.setEnabled( !selected_event_is_null );
             menuEditDelete.setEnabled( !selected_event_is_null );
@@ -7284,11 +7406,13 @@ namespace org.kbinani.cadencii {
             stripBtnCopy.Enabled = !selected_event_is_null;
         }
 
-        public void AppManager_UpdateBgmStatusRequired( Object sender, EventArgs e ) {
+        public void AppManager_UpdateBgmStatusRequired( Object sender, EventArgs e )
+        {
             updateBgmMenuState();
         }
 
-        public void AppManager_WaveViewRealoadRequired( Object sender, int track, String file, double sec_start, double sec_end ) {
+        public void AppManager_WaveViewRealoadRequired( Object sender, int track, String file, double sec_start, double sec_end )
+        {
             if ( sec_start <= sec_end ) {
                 waveView.reloadPartial( track - 1, file, sec_start, sec_end );
             } else {
@@ -7299,11 +7423,13 @@ namespace org.kbinani.cadencii {
 
         //BOOKMARK: pictPianoRoll
         #region pictPianoRoll
-        public void pictPianoRoll_KeyUp( Object sender, BKeyEventArgs e ) {
+        public void pictPianoRoll_KeyUp( Object sender, BKeyEventArgs e )
+        {
             processSpecialShortcutKey( e, false );
         }
 
-        public void pictPianoRoll_MouseClick( Object sender, BMouseEventArgs e ) {
+        public void pictPianoRoll_MouseClick( Object sender, BMouseEventArgs e )
+        {
 #if DEBUG
             AppManager.debugWriteLine( "pictPianoRoll_MouseClick" );
 #endif
@@ -7508,7 +7634,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void pictPianoRoll_MouseDoubleClick( Object sender, BMouseEventArgs e ) {
+        public void pictPianoRoll_MouseDoubleClick( Object sender, BMouseEventArgs e )
+        {
 #if DEBUG
             AppManager.debugWriteLine( "FormMain#pictPianoRoll_MouseDoubleClick" );
 #endif
@@ -7521,7 +7648,7 @@ namespace org.kbinani.cadencii {
 #if ENABLE_SCRIPT
                 if ( AppManager.getSelectedTool() != EditTool.PALETTE_TOOL )
 #endif
-                {
+ {
                     AppManager.clearSelectedEvent();
                     AppManager.addSelectedEvent( item.InternalID );
 #if ENABLE_MOUSEHOVER
@@ -7687,7 +7814,7 @@ namespace org.kbinani.cadencii {
                 }
             }
 
-            if ( e.Button == BMouseButtons.Left ){
+            if ( e.Button == BMouseButtons.Left ) {
                 // 必要な操作が何も無ければ，クリック位置にソングポジションを移動
                 if ( AppManager.keyWidth < e.X ) {
                     int clock = doQuantize( AppManager.clockFromXCoord( e.X ), AppManager.getPositionQuantizeClock() );
@@ -7705,7 +7832,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void pictPianoRoll_MouseDown( Object sender, BMouseEventArgs e0 ) {
+        public void pictPianoRoll_MouseDown( Object sender, BMouseEventArgs e0 )
+        {
 #if DEBUG
             AppManager.debugWriteLine( "pictPianoRoll_MouseDown" );
 #endif
@@ -7957,9 +8085,9 @@ namespace org.kbinani.cadencii {
                             }
 
                             // 左端の"のり代"にマウスがあるかどうか
-                            Rectangle rc = new Rectangle( dobj.mRectangleInPixel.x - stdx + key_width, 
+                            Rectangle rc = new Rectangle( dobj.mRectangleInPixel.x - stdx + key_width,
                                                           dobj.mRectangleInPixel.y - stdy,
-                                                          edit_handle_width, 
+                                                          edit_handle_width,
                                                           dobj.mRectangleInPixel.height );
                             if ( Utility.isInRect( new Point( e.X, e.Y ), rc ) ) {
                                 AppManager.setWholeSelectedIntervalEnabled( false );
@@ -8088,7 +8216,8 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
 
-        public void pictPianoRoll_MouseMove( Object sender, BMouseEventArgs e ) {
+        public void pictPianoRoll_MouseMove( Object sender, BMouseEventArgs e )
+        {
             if ( mFormActivated ) {
 #if ENABLE_PROPERTY
 #if JAVA
@@ -8215,8 +8344,8 @@ namespace org.kbinani.cadencii {
                 }
                 int draft = (int)d_draft;
                 if ( hScroll.Maximum < draft ) {
-                    if ( edit_mode == EditMode.ADD_ENTRY || 
-                         edit_mode == EditMode.MOVE_ENTRY || 
+                    if ( edit_mode == EditMode.ADD_ENTRY ||
+                         edit_mode == EditMode.MOVE_ENTRY ||
                          edit_mode == EditMode.ADD_FIXED_LENGTH_ENTRY ||
                          edit_mode == EditMode.DRAG_DROP ) {
                         hScroll.Maximum = draft;
@@ -8503,8 +8632,8 @@ namespace org.kbinani.cadencii {
             }
 
             // カーソルの形を決める
-            if ( !mMouseDowned && 
-                 edit_mode != EditMode.CURVE_ON_PIANOROLL && 
+            if ( !mMouseDowned &&
+                 edit_mode != EditMode.CURVE_ON_PIANOROLL &&
                  !(AppManager.mCurveOnPianoroll && (selected_tool == EditTool.PENCIL || selected_tool == EditTool.LINE)) ) {
                 boolean split_cursor = false;
                 boolean hand_cursor = false;
@@ -8598,7 +8727,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void pictPianoRoll_MouseUp( Object sender, BMouseEventArgs e ) {
+        public void pictPianoRoll_MouseUp( Object sender, BMouseEventArgs e )
+        {
 #if DEBUG
             AppManager.debugWriteLine( "pictureBox1_MouseUp" );
             AppManager.debugWriteLine( "    m_config.EditMode=" + AppManager.getEditMode() );
@@ -8649,7 +8779,7 @@ namespace org.kbinani.cadencii {
 
                         // ここに到達するってことは、pitに編集が加えられるってこと。
                         edited = true;
-                        
+
                         // マウス軌跡と被っている部分のPITを削除
                         int cl_remove_start = Math.Max( cl_item_start, cl_start );
                         int cl_remove_end = Math.Min( cl_item_end, cl_end );
@@ -8685,7 +8815,7 @@ namespace org.kbinani.cadencii {
                             if ( px_item_end < p.x ) {
                                 break;
                             }
-                            
+
                             int clock = AppManager.clockFromXCoord( p.x - stdx );
                             if ( clock < cl_item_start ) {
                                 last_px = p.x;
@@ -8732,7 +8862,7 @@ namespace org.kbinani.cadencii {
 
                         if ( !cl_item_end_added &&
                              cl_start <= cl_item_end && cl_item_end <= cl_end ) {
-                             pit.add( cl_item_end, lastv );
+                            pit.add( cl_item_end, lastv );
                         }
 
                         pit.add( cl_remove_end, value_at_remove_end );
@@ -8768,8 +8898,7 @@ namespace org.kbinani.cadencii {
                             Timesig timesig = vsq.getTimesigAt( AppManager.mAddingEvent.Clock );
 
                             // ビブラートを自動追加するかどうかを決める閾値
-                            int autovib = AutoVibratoMinLengthUtil.getValue( AppManager.editorConfig.AutoVibratoMinimumLength );
-                            int threshold = 480 * 4 / timesig.denominator * autovib;
+                            int threshold = AppManager.editorConfig.AutoVibratoThresholdLength;
                             if ( note_length >= threshold ) {
                                 int vibrato_clocks = 0;
                                 if ( AppManager.editorConfig.DefaultVibratoLength == DefaultVibratoLengthEnum.L100 ) {
@@ -8865,7 +8994,7 @@ namespace org.kbinani.cadencii {
                     PortUtil.println( "FormMain#pictPianoRoll_MouseUp; last_selected_event.original.InternalID=" + last_selected_event.original.InternalID );
 #endif
                     VsqEvent original = last_selected_event.original;
-                    if ( original.Clock != last_selected_event.editing.Clock || 
+                    if ( original.Clock != last_selected_event.editing.Clock ||
                          original.ID.Note != last_selected_event.editing.ID.Note ) {
                         boolean out_of_range = false; // プリメジャーにめり込んでないかどうか
                         boolean contains_dynamics = false; // Dynaff, Crescend, Desrecendが含まれているかどうか
@@ -8949,7 +9078,7 @@ namespace org.kbinani.cadencii {
                     CadenciiCommand run = null;
                     if ( contains_aicon ) {
                         VsqFileEx copied_vsq = (VsqFileEx)vsq.clone();
-                        VsqCommand vsq_command = 
+                        VsqCommand vsq_command =
                             VsqCommand.generateCommandEventChangeClockAndIDContaintsRange( selected,
                                                                                            ids,
                                                                                            clocks,
@@ -9145,7 +9274,8 @@ namespace org.kbinani.cadencii {
             AppManager.setEditMode( EditMode.NONE );
         }
 
-        public void pictPianoRoll_MouseWheel( Object sender, BMouseEventArgs e ) {
+        public void pictPianoRoll_MouseWheel( Object sender, BMouseEventArgs e )
+        {
             boolean horizontal = (PortUtil.getCurrentModifierKey() & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK;
             if ( AppManager.editorConfig.ScrollHorizontalOnWheel ) {
                 horizontal = !horizontal;
@@ -9170,7 +9300,8 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
 
-        public void pictPianoRoll_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e ) {
+        public void pictPianoRoll_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e )
+        {
 #if JAVA
             BKeyEventArgs e0 = new BKeyEventArgs( e.getRawEvent() );
 #else
@@ -9182,25 +9313,29 @@ namespace org.kbinani.cadencii {
 
         //BOOKMARK: iconPalette
         #region iconPalette
-        public void iconPalette_TopMostChanged( Object sender, EventArgs e ){
+        public void iconPalette_TopMostChanged( Object sender, EventArgs e )
+        {
             AppManager.editorConfig.FormIconTopMost = AppManager.iconPalette.isAlwaysOnTop();
 #if DEBUG
             PortUtil.println( "FormMain#iconPalette_TopMostChanged; AppManager.editorConfig.FormIconTopMost=" + AppManager.editorConfig.FormIconTopMost );
 #endif
         }
 
-        public void iconPalette_LocationChanged( Object sender, EventArgs e ) {
+        public void iconPalette_LocationChanged( Object sender, EventArgs e )
+        {
             AppManager.editorConfig.FormIconPaletteLocation = new XmlPoint( AppManager.iconPalette.getLocation() );
         }
 
-        public void iconPalette_FormClosing( Object sender, BFormClosingEventArgs e ) {
+        public void iconPalette_FormClosing( Object sender, BFormClosingEventArgs e )
+        {
             menuVisualIconPalette.setSelected( false );
         }
         #endregion
 
         //BOOKMARK: menuVisual
         #region menuVisual*
-        public void menuVisualProperty_Click( Object sender, EventArgs e ) {
+        public void menuVisualProperty_Click( Object sender, EventArgs e )
+        {
 #if ENABLE_PROPERTY
             if ( menuVisualProperty.isSelected() ) {
                 if ( AppManager.editorConfig.PropertyWindowStatus.WindowState == BFormWindowState.Minimized ) {
@@ -9214,30 +9349,34 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        public void menuVisualOverview_CheckedChanged( Object sender, EventArgs e ) {
+        public void menuVisualOverview_CheckedChanged( Object sender, EventArgs e )
+        {
             AppManager.editorConfig.OverviewEnabled = menuVisualOverview.isSelected();
             updateLayout();
         }
 
-        public void menuVisualMixer_Click( Object sender, EventArgs e ) {
+        public void menuVisualMixer_Click( Object sender, EventArgs e )
+        {
             menuVisualMixer.setSelected( !menuVisualMixer.isSelected() );
             AppManager.editorConfig.MixerVisible = menuVisualMixer.isSelected();
             AppManager.mMixerWindow.setVisible( AppManager.editorConfig.MixerVisible );
             requestFocus();
         }
 
-        public void menuVisualGridline_CheckedChanged( Object sender, EventArgs e ) {
+        public void menuVisualGridline_CheckedChanged( Object sender, EventArgs e )
+        {
             AppManager.setGridVisible( menuVisualGridline.isSelected() );
             refreshScreen();
         }
 
-        public void menuVisualIconPalette_Click( Object sender, EventArgs e ) {
+        public void menuVisualIconPalette_Click( Object sender, EventArgs e )
+        {
             if ( AppManager.iconPalette == null ) {
                 AppManager.iconPalette = new FormIconPalette( this );
-                AppManager.iconPalette.FormClosing += 
+                AppManager.iconPalette.FormClosing +=
                     new System.Windows.Forms.FormClosingEventHandler( iconPalette_FormClosing );
                 Point p = AppManager.editorConfig.FormIconPaletteLocation.toPoint();
-                if( !PortUtil.isPointInScreens( p ) ){
+                if ( !PortUtil.isPointInScreens( p ) ) {
                     Rectangle workingArea = PortUtil.getWorkingArea( this );
                     p = new Point( workingArea.x, workingArea.y );
                 }
@@ -9252,20 +9391,24 @@ namespace org.kbinani.cadencii {
             AppManager.iconPalette.setVisible( !old );
         }
 
-        public void menuVisualLyrics_CheckedChanged( Object sender, EventArgs e ) {
+        public void menuVisualLyrics_CheckedChanged( Object sender, EventArgs e )
+        {
             AppManager.editorConfig.ShowLyric = menuVisualLyrics.isSelected();
         }
 
-        public void menuVisualNoteProperty_CheckedChanged( Object sender, EventArgs e ) {
+        public void menuVisualNoteProperty_CheckedChanged( Object sender, EventArgs e )
+        {
             AppManager.editorConfig.ShowExpLine = menuVisualNoteProperty.isSelected();
             refreshScreen();
         }
 
-        public void menuVisualPitchLine_CheckedChanged( Object sender, EventArgs e ) {
+        public void menuVisualPitchLine_CheckedChanged( Object sender, EventArgs e )
+        {
             AppManager.editorConfig.ViewAtcualPitch = menuVisualPitchLine.isSelected();
         }
 
-        public void menuVisualControlTrack_CheckedChanged( Object sender, EventArgs e ) {
+        public void menuVisualControlTrack_CheckedChanged( Object sender, EventArgs e )
+        {
             trackSelector.setCurveVisible( menuVisualControlTrack.isSelected() );
             if ( menuVisualControlTrack.isSelected() ) {
                 splitContainer1.setSplitterFixed( false );
@@ -9283,7 +9426,8 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
 
-        public void menuVisualCircuitDiagram_CheckedChanged( Object sender, EventArgs e ) {
+        public void menuVisualCircuitDiagram_CheckedChanged( Object sender, EventArgs e )
+        {
 #if !JAVA
             if ( menuVisualCircuitDiagram.isSelected() ) {
                 splitContainerProperty.Panel2.Controls.Clear();
@@ -9301,27 +9445,29 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        public void menuVisualWaveform_CheckedChanged( Object sender, EventArgs e ) {
+        public void menuVisualWaveform_CheckedChanged( Object sender, EventArgs e )
+        {
             AppManager.editorConfig.ViewWaveform = menuVisualWaveform.isSelected();
             updateSplitContainer2Size();
         }
 
-        public void menuVisualPluginUi_DropDownOpening( Object sender, EventArgs e ) {
+        public void menuVisualPluginUi_DropDownOpening( Object sender, EventArgs e )
+        {
 #if ENABLE_VOCALOID
             // VOCALOID1, 2
             int c = VSTiDllManager.vocaloidDriver.size();
-            for( int i = 0; i < c; i++ ){
+            for ( int i = 0; i < c; i++ ) {
                 VocaloidDriver vd = VSTiDllManager.vocaloidDriver.get( i );
                 boolean chkv = true;
-                if ( vd == null ){
+                if ( vd == null ) {
                     chkv = false;
-                } else if ( !vd.loaded ){
+                } else if ( !vd.loaded ) {
                     chkv = false;
-                } else if ( vd.getUi( this ) == null ){
+                } else if ( vd.getUi( this ) == null ) {
                     chkv = false;
-                } else if ( vd.getUi( this ).IsDisposed ){
+                } else if ( vd.getUi( this ).IsDisposed ) {
                     chkv = false;
-                } else if ( !vd.getUi( this ).isVisible() ){
+                } else if ( !vd.getUi( this ).isVisible() ) {
                     chkv = false;
                 }
                 RendererKind kind = vd.kind;
@@ -9357,7 +9503,8 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        public void menuVisualPluginUiVocaloidCommon_Click( Object sender, EventArgs e ) {
+        public void menuVisualPluginUiVocaloidCommon_Click( Object sender, EventArgs e )
+        {
             RendererKind search = RendererKind.NULL;
             //int vocaloid = 0;
             if ( sender == menuVisualPluginUiVocaloid100 ) {
@@ -9417,7 +9564,8 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        public void menuVisualPluginUiAquesTone_Click( Object sender, EventArgs e ) {
+        public void menuVisualPluginUiAquesTone_Click( Object sender, EventArgs e )
+        {
             boolean visible = !menuVisualPluginUiAquesTone.isSelected();
             menuVisualPluginUiAquesTone.setSelected( visible );
 
@@ -9450,7 +9598,8 @@ namespace org.kbinani.cadencii {
 
         //BOOKMARK: mixerWindow
         #region mixerWindow
-        public void mixerWindow_SoloChanged( int track, boolean solo ) {
+        public void mixerWindow_SoloChanged( int track, boolean solo )
+        {
 #if DEBUG
             AppManager.debugWriteLine( "FormMain#mixerWindow_SoloChanged" );
             AppManager.debugWriteLine( "    track=" + track );
@@ -9466,7 +9615,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void mixerWindow_MuteChanged( int track, boolean mute ) {
+        public void mixerWindow_MuteChanged( int track, boolean mute )
+        {
 #if DEBUG
             AppManager.debugWriteLine( "FormMain#mixerWindow_MuteChanged" );
             AppManager.debugWriteLine( "    track=" + track );
@@ -9486,7 +9636,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void mixerWindow_PanpotChanged( int track, int panpot ) {
+        public void mixerWindow_PanpotChanged( int track, int panpot )
+        {
             if ( track == 0 ) {
                 // master
                 AppManager.getVsqFile().Mixer.MasterPanpot = panpot;
@@ -9498,7 +9649,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void mixerWindow_FederChanged( int track, int feder ) {
+        public void mixerWindow_FederChanged( int track, int feder )
+        {
 #if DEBUG
             PortUtil.println( "FormMain#mixerWindow_FederChanged; track=" + track + "; feder=" + feder );
 #endif
@@ -9511,14 +9663,16 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void mixerWindow_TopMostChanged( Object sender, boolean arg ) {
+        public void mixerWindow_TopMostChanged( Object sender, boolean arg )
+        {
             AppManager.editorConfig.MixerTopMost = arg;
         }
         #endregion
 
         #region mPropertyPanelContainer
 #if ENABLE_PROPERTY
-        public void mPropertyPanelContainer_StateChangeRequired( Object sender, PanelState arg ) {
+        public void mPropertyPanelContainer_StateChangeRequired( Object sender, PanelState arg )
+        {
             updatePropertyPanelState( arg );
         }
 #endif
@@ -9526,7 +9680,8 @@ namespace org.kbinani.cadencii {
 
         #region propertyPanel
 #if ENABLE_PROPERTY
-        public void propertyPanel_CommandExecuteRequired( CadenciiCommand command ) {
+        public void propertyPanel_CommandExecuteRequired( CadenciiCommand command )
+        {
 #if DEBUG
             AppManager.debugWriteLine( "m_note_property_dlg_CommandExecuteRequired" );
 #endif
@@ -9541,7 +9696,8 @@ namespace org.kbinani.cadencii {
         //BOOKMARK: propertyWindow
         #region propertyWindow
 #if ENABLE_PROPERTY
-        public void propertyWindow_FormClosing( Object sender, BFormClosingEventArgs e ) {
+        public void propertyWindow_FormClosing( Object sender, BFormClosingEventArgs e )
+        {
             if ( e.CloseReason == System.Windows.Forms.CloseReason.UserClosing ) {
                 e.Cancel = true;
                 updatePropertyPanelState( PanelState.Hidden );
@@ -9550,7 +9706,8 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if ENABLE_PROPERTY
-        public void propertyWindow_LocationOrSizeChanged( Object sender, EventArgs e ) {
+        public void propertyWindow_LocationOrSizeChanged( Object sender, EventArgs e )
+        {
 #if DEBUG
             PortUtil.println( "m_note_proeprty_dlg_LocationOrSizeChanged; WindowState=" + AppManager.propertyWindow.WindowState );
 #endif
@@ -9573,14 +9730,16 @@ namespace org.kbinani.cadencii {
         //BOOKMARK: FormMain
         #region FormMain
 #if !JAVA
-        private void FormMain_DragLeave( object sender, EventArgs e ) {
+        private void FormMain_DragLeave( object sender, EventArgs e )
+        {
             AppManager.setEditMode( EditMode.NONE );
             mIconPaletteOnceDragEntered = false;
         }
 #endif
 
 #if !JAVA
-        private void FormMain_DragOver( object sender, System.Windows.Forms.DragEventArgs e ) {
+        private void FormMain_DragOver( object sender, System.Windows.Forms.DragEventArgs e )
+        {
             if ( AppManager.getEditMode() != EditMode.DRAG_DROP ) {
                 return;
             }
@@ -9604,7 +9763,8 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if !JAVA
-        private void FormMain_DragDrop( object sender, System.Windows.Forms.DragEventArgs e ) {
+        private void FormMain_DragDrop( object sender, System.Windows.Forms.DragEventArgs e )
+        {
             AppManager.setEditMode( EditMode.NONE );
             mIconPaletteOnceDragEntered = false;
             mMouseDowned = false;
@@ -9666,7 +9826,8 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if !JAVA
-        private void FormMain_DragEnter( object sender, System.Windows.Forms.DragEventArgs e ) {
+        private void FormMain_DragEnter( object sender, System.Windows.Forms.DragEventArgs e )
+        {
             if ( e.Data.GetDataPresent( typeof( IconDynamicsHandle ) ) ) {
                 // ドロップ可能
                 e.Effect = System.Windows.Forms.DragDropEffects.All;
@@ -9678,7 +9839,8 @@ namespace org.kbinani.cadencii {
             }
         }
 #endif
-        public void FormMain_FormClosed( Object sender, BFormClosedEventArgs e ) {
+        public void FormMain_FormClosed( Object sender, BFormClosedEventArgs e )
+        {
             clearTempWave();
             String tempdir = PortUtil.combinePath( AppManager.getCadenciiTempDir(), AppManager.getID() );
             if ( !PortUtil.isDirectoryExists( tempdir ) ) {
@@ -9717,7 +9879,13 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        public void FormMain_FormClosing( Object sender, BFormClosingEventArgs e ) {
+        public void FormMain_FormClosing( Object sender, BFormClosingEventArgs e )
+        {
+#if !JAVA
+            if ( e.CloseReason == System.Windows.Forms.CloseReason.WindowsShutDown ) {
+                return;
+            }
+#endif
             if ( isEdited() ) {
                 String file = AppManager.getFileName();
                 if ( file.Equals( "" ) ) {
@@ -9765,13 +9933,15 @@ namespace org.kbinani.cadencii {
             e.Cancel = false;
         }
 
-        public void FormMain_LocationChanged( Object sender, EventArgs e ) {
+        public void FormMain_LocationChanged( Object sender, EventArgs e )
+        {
             if ( getExtendedState() == BForm.NORMAL ) {
                 AppManager.editorConfig.WindowRect = this.getBounds();
             }
         }
 
-        public void FormMain_Load( Object sender, EventArgs e ) {
+        public void FormMain_Load( Object sender, EventArgs e )
+        {
             applyLanguage();
             trackBar.setValue( AppManager.editorConfig.DefaultXScale );
             AppManager.setCurrentClock( 0 );
@@ -10025,7 +10195,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void FormGenerateKeySound_FormClosed( Object sender, BFormClosedEventArgs e ) {
+        public void FormGenerateKeySound_FormClosed( Object sender, BFormClosedEventArgs e )
+        {
             try {
                 KeySoundPlayer.init();
             } catch ( Exception ex ) {
@@ -10034,7 +10205,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void FormMain_SizeChanged( Object sender, EventArgs e ) {
+        public void FormMain_SizeChanged( Object sender, EventArgs e )
+        {
             if ( getExtendedState() == BForm.NORMAL ) {
                 AppManager.editorConfig.WindowRect = this.getBounds();
 #if ENABLE_PROPERTY
@@ -10066,7 +10238,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void FormMain_MouseWheel( Object sender, BMouseEventArgs e ) {
+        public void FormMain_MouseWheel( Object sender, BMouseEventArgs e )
+        {
             if ( (PortUtil.getCurrentModifierKey() & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
                 hScroll.Value = computeScrollValueFromWheelDelta( e.Delta );
             } else {
@@ -10084,7 +10257,8 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
 
-        public void FormMain_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e ) {
+        public void FormMain_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e )
+        {
 #if DEBUG
             PortUtil.println( "FormMain#FormMain_PreviewKeyDown" );
 #endif
@@ -10096,18 +10270,21 @@ namespace org.kbinani.cadencii {
             processSpecialShortcutKey( ex, true );
         }
 
-        public void FormMain_Deactivate( Object sender, EventArgs e ) {
+        public void FormMain_Deactivate( Object sender, EventArgs e )
+        {
             mFormActivated = false;
         }
 
-        public void FormMain_Activated( Object sender, EventArgs e ) {
+        public void FormMain_Activated( Object sender, EventArgs e )
+        {
             mFormActivated = true;
         }
         #endregion
 
         #region mTimer
 #if !JAVA
-        public void mTimer_Tick( Object sender, EventArgs e ) {
+        public void mTimer_Tick( Object sender, EventArgs e )
+        {
             if ( !mFormActivated ) {
                 return;
             }
@@ -10286,7 +10463,8 @@ namespace org.kbinani.cadencii {
 
         //BOOKMARK: menuFile
         #region menuFile*
-        public void menuFileSaveNamed_Click( Object sender, EventArgs e ) {
+        public void menuFileSaveNamed_Click( Object sender, EventArgs e )
+        {
             for ( int track = 1; track < AppManager.getVsqFile().Track.size(); track++ ) {
                 if ( AppManager.getVsqFile().Track.get( track ).getEventCount() == 0 ) {
                     AppManager.showMessageBox(
@@ -10317,11 +10495,13 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void menuFileQuit_Click( Object sender, EventArgs e ) {
+        public void menuFileQuit_Click( Object sender, EventArgs e )
+        {
             close();
         }
 
-        public void menuFileExportUst_Click( Object sender, EventArgs e ) {
+        public void menuFileExportUst_Click( Object sender, EventArgs e )
+        {
             VsqFileEx vsq = AppManager.getVsqFile();
 
             // どのトラックを出力するか決める
@@ -10377,7 +10557,8 @@ namespace org.kbinani.cadencii {
             ust.write( file_name );
         }
 
-        public void menuFileExportVsq_Click( Object sender, EventArgs e ) {
+        public void menuFileExportVsq_Click( Object sender, EventArgs e )
+        {
             VsqFileEx vsq = AppManager.getVsqFile();
 
             // 出力先のファイル名を選ぶ
@@ -10417,15 +10598,16 @@ namespace org.kbinani.cadencii {
             tvsq.write( file_name, AppManager.editorConfig.PreSendTime, "Shift_JIS" );
         }
 
-        public void menuFileExportVxt_Click( Object sender, EventArgs e ) {
+        public void menuFileExportVxt_Click( Object sender, EventArgs e )
+        {
             // UTAUの歌手が登録されていない場合は警告を表示
-            if( AppManager.editorConfig.UtauSingers.size() <= 0 ){
+            if ( AppManager.editorConfig.UtauSingers.size() <= 0 ) {
                 BDialogResult dr = AppManager.showMessageBox(
                     _( "UTAU singer not registered yet.\nContinue ?" ),
                     _( "Info" ),
                     org.kbinani.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
                     org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
-                if( dr != BDialogResult.YES ){
+                if ( dr != BDialogResult.YES ) {
                     return;
                 }
             }
@@ -10510,7 +10692,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void menuFileExportWave_Click( Object sender, EventArgs e ) {
+        public void menuFileExportWave_Click( Object sender, EventArgs e )
+        {
             int dialog_result = BFileChooser.CANCEL_OPTION;
             String filename = "";
             BFileChooser sfd = null;
@@ -10553,8 +10736,8 @@ namespace org.kbinani.cadencii {
                 }
                 Vector<Integer> other_tracks = new Vector<Integer>();
                 int selected = AppManager.getSelected();
-                for( int i = 1; i < vsq.Track.size(); i++ ){
-                    if( i != selected ){
+                for ( int i = 1; i < vsq.Track.size(); i++ ) {
+                    if ( i != selected ) {
                         other_tracks.add( i );
                     }
                 }
@@ -10590,11 +10773,13 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void menuFileExport_DropDownOpening( Object sender, EventArgs e ) {
+        public void menuFileExport_DropDownOpening( Object sender, EventArgs e )
+        {
             menuFileExportWave.setEnabled( (AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getEventCount() > 0) );
         }
 
-        public void menuFileImportMidi_Click( Object sender, EventArgs e ) {
+        public void menuFileImportMidi_Click( Object sender, EventArgs e )
+        {
             if ( mDialogMidiImportAndExport == null ) {
                 mDialogMidiImportAndExport = new FormMidiImExport();
             }
@@ -10930,8 +11115,7 @@ namespace org.kbinani.cadencii {
                                     Timesig timesig = work.getTimesigAt( add_clock_on );
 
                                     // ビブラートを自動追加するかどうかを決める閾値
-                                    int autovib = AutoVibratoMinLengthUtil.getValue( AppManager.editorConfig.AutoVibratoMinimumLength );
-                                    int threshold = 480 * 4 / timesig.denominator * autovib;
+                                    int threshold = AppManager.editorConfig.AutoVibratoThresholdLength;
                                     if ( note_length >= threshold ) {
                                         int vibrato_clocks = 0;
                                         DefaultVibratoLengthEnum vib_length = AppManager.editorConfig.DefaultVibratoLength;
@@ -10979,7 +11163,8 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
 
-        public void menuFileExportMidi_Click( Object sender, EventArgs e ) {
+        public void menuFileExportMidi_Click( Object sender, EventArgs e )
+        {
             if ( mDialogMidiImportAndExport == null ) {
                 mDialogMidiImportAndExport = new FormMidiImExport();
             }
@@ -11237,7 +11422,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void menuFileExportMusicXml_Click( Object sender, EventArgs e ) {
+        public void menuFileExportMusicXml_Click( Object sender, EventArgs e )
+        {
             BFileChooser dialog = null;
             try {
                 VsqFileEx vsq = AppManager.getVsqFile();
@@ -11280,7 +11466,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void menuFileOpenVsq_Click( Object sender, EventArgs e ) {
+        public void menuFileOpenVsq_Click( Object sender, EventArgs e )
+        {
             if ( !dirtyCheck() ) {
                 return;
             }
@@ -11337,7 +11524,8 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
 
-        public void menuFileOpenUst_Click( Object sender, EventArgs e ) {
+        public void menuFileOpenUst_Click( Object sender, EventArgs e )
+        {
             if ( !dirtyCheck() ) {
                 return;
             }
@@ -11375,7 +11563,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void menuFileImportVsq_Click( Object sender, EventArgs e ) {
+        public void menuFileImportVsq_Click( Object sender, EventArgs e )
+        {
             String last_file = AppManager.editorConfig.getLastUsedPathIn( AppManager.editorConfig.LastUsedExtension );
             if ( !last_file.Equals( "" ) ) {
                 String dir = PortUtil.getDirectoryName( last_file );
@@ -11538,7 +11727,8 @@ namespace org.kbinani.cadencii {
 
         //BOOKMARK: menuSetting
         #region menuSetting*
-        public void menuSettingDefaultSingerStyle_Click( Object sender, EventArgs e ) {
+        public void menuSettingDefaultSingerStyle_Click( Object sender, EventArgs e )
+        {
             FormSingerStyleConfig dlg = null;
             try {
                 dlg = new FormSingerStyleConfig();
@@ -11598,15 +11788,18 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void menuSettingGameControlerLoad_Click( Object sender, EventArgs e ) {
+        public void menuSettingGameControlerLoad_Click( Object sender, EventArgs e )
+        {
             loadGameControler();
         }
 
-        public void menuSettingGameControlerRemove_Click( Object sender, EventArgs e ) {
+        public void menuSettingGameControlerRemove_Click( Object sender, EventArgs e )
+        {
             removeGameControler();
         }
 
-        public void menuSettingGameControlerSetting_Click( Object sender, EventArgs e ) {
+        public void menuSettingGameControlerSetting_Click( Object sender, EventArgs e )
+        {
             FormGameControlerConfig dlg = null;
             try {
                 dlg = new FormGameControlerConfig();
@@ -11644,7 +11837,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void menuSettingPreference_Click( Object sender, EventArgs e ) {
+        public void menuSettingPreference_Click( Object sender, EventArgs e )
+        {
             try {
                 if ( mDialogPreference == null ) {
                     mDialogPreference = new Preference();
@@ -11654,7 +11848,7 @@ namespace org.kbinani.cadencii {
                 mDialogPreference.setWheelOrder( AppManager.editorConfig.WheelOrder );
                 mDialogPreference.setCursorFixed( AppManager.editorConfig.CursorFixed );
                 mDialogPreference.setDefaultVibratoLength( AppManager.editorConfig.DefaultVibratoLength );
-                mDialogPreference.setAutoVibratoMinimumLength( AppManager.editorConfig.AutoVibratoMinimumLength );
+                mDialogPreference.setAutoVibratoThresholdLength( AppManager.editorConfig.AutoVibratoThresholdLength );
                 mDialogPreference.setAutoVibratoType1( AppManager.editorConfig.AutoVibratoType1 );
                 mDialogPreference.setAutoVibratoType2( AppManager.editorConfig.AutoVibratoType2 );
                 mDialogPreference.setEnableAutoVibrato( AppManager.editorConfig.EnableAutoVibrato );
@@ -11731,13 +11925,13 @@ namespace org.kbinani.cadencii {
                     float old_base_font_size = AppManager.editorConfig.BaseFontSize;
                     Font new_base_font = mDialogPreference.getBaseFont();
 #if DEBUG
-                PortUtil.println( "FormMain#menuSettingPreference; old_base_font_name=" + old_base_font_name + "; new_base_font.getName()=" + new_base_font.getName() );
-                PortUtil.println( "FormMain#menuSettingPreference; old_base_font_size=" + old_base_font_size + "; new_base_font.getSize2D()=" + new_base_font.getSize2D() );
+                    PortUtil.println( "FormMain#menuSettingPreference; old_base_font_name=" + old_base_font_name + "; new_base_font.getName()=" + new_base_font.getName() );
+                    PortUtil.println( "FormMain#menuSettingPreference; old_base_font_size=" + old_base_font_size + "; new_base_font.getSize2D()=" + new_base_font.getSize2D() );
 #endif
                     if ( !old_base_font_name.Equals( new_base_font.getName() ) ||
                          old_base_font_size != new_base_font.getSize2D() ) {
 #if DEBUG
-                    PortUtil.println( "FormMain#menuSettingPreference; font changed" );
+                        PortUtil.println( "FormMain#menuSettingPreference; font changed" );
 #endif
                         AppManager.editorConfig.BaseFontName = mDialogPreference.getBaseFont().getName();
                         AppManager.editorConfig.BaseFontSize = mDialogPreference.getBaseFont().getSize2D();
@@ -11749,7 +11943,7 @@ namespace org.kbinani.cadencii {
                     AppManager.editorConfig.CursorFixed = mDialogPreference.isCursorFixed();
 
                     AppManager.editorConfig.DefaultVibratoLength = mDialogPreference.getDefaultVibratoLength();
-                    AppManager.editorConfig.AutoVibratoMinimumLength = mDialogPreference.getAutoVibratoMinimumLength();
+                    AppManager.editorConfig.AutoVibratoThresholdLength = mDialogPreference.getAutoVibratoThresholdLength();
                     AppManager.editorConfig.AutoVibratoType1 = mDialogPreference.getAutoVibratoType1();
                     AppManager.editorConfig.AutoVibratoType2 = mDialogPreference.getAutoVibratoType2();
 
@@ -11969,7 +12163,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void menuSettingShortcut_Click( Object sender, EventArgs e ) {
+        public void menuSettingShortcut_Click( Object sender, EventArgs e )
+        {
             TreeMap<String, ValuePair<String, BKeys[]>> dict = new TreeMap<String, ValuePair<String, BKeys[]>>();
             TreeMap<String, BKeys[]> configured = AppManager.editorConfig.getShortcutKeysDictionary();
 
@@ -12085,7 +12280,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void menuSettingUtauVoiceDB_Click( Object sender, EventArgs e ) {
+        public void menuSettingUtauVoiceDB_Click( Object sender, EventArgs e )
+        {
             String edit_oto_ini = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "EditOtoIni.exe" );
             if ( !PortUtil.isFileExists( edit_oto_ini ) ) {
                 return;
@@ -12112,15 +12308,18 @@ namespace org.kbinani.cadencii {
 
         //BOOKMARK: menuEdit
         #region menuEdit*
-        public void menuEditDelete_Click( Object sender, EventArgs e ) {
+        public void menuEditDelete_Click( Object sender, EventArgs e )
+        {
             deleteEvent();
         }
 
-        public void menuEdit_DropDownOpening( Object sender, EventArgs e ) {
+        public void menuEdit_DropDownOpening( Object sender, EventArgs e )
+        {
             updateCopyAndPasteButtonStatus();
         }
 
-        public void handleEditUndo_Click( Object sender, EventArgs e ) {
+        public void handleEditUndo_Click( Object sender, EventArgs e )
+        {
 #if DEBUG
             AppManager.debugWriteLine( "menuEditUndo_Click" );
 #endif
@@ -12129,7 +12328,8 @@ namespace org.kbinani.cadencii {
         }
 
 
-        public void handleEditRedo_Click( Object sender, EventArgs e ) {
+        public void handleEditRedo_Click( Object sender, EventArgs e )
+        {
 #if DEBUG
             AppManager.debugWriteLine( "menuEditRedo_Click" );
 #endif
@@ -12137,15 +12337,18 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
 
-        public void menuEditSelectAllEvents_Click( Object sender, EventArgs e ) {
+        public void menuEditSelectAllEvents_Click( Object sender, EventArgs e )
+        {
             selectAllEvent();
         }
 
-        public void menuEditSelectAll_Click( Object sender, EventArgs e ) {
+        public void menuEditSelectAll_Click( Object sender, EventArgs e )
+        {
             selectAll();
         }
 
-        public void menuEditAutoNormalizeMode_Click( Object sender, EventArgs e ) {
+        public void menuEditAutoNormalizeMode_Click( Object sender, EventArgs e )
+        {
             AppManager.mAutoNormalize = !AppManager.mAutoNormalize;
             menuEditAutoNormalizeMode.setSelected( AppManager.mAutoNormalize );
         }
@@ -12153,11 +12356,13 @@ namespace org.kbinani.cadencii {
 
         //BOOKMARK: menuLyric
         #region menuLyric*
-        public void menuLyricExpressionProperty_Click( Object sender, EventArgs e ) {
+        public void menuLyricExpressionProperty_Click( Object sender, EventArgs e )
+        {
             editNoteExpressionProperty();
         }
 
-        public void menuLyricPhonemeTransformation_Click( Object sender, EventArgs e ) {
+        public void menuLyricPhonemeTransformation_Click( Object sender, EventArgs e )
+        {
             Vector<Integer> internal_ids = new Vector<Integer>();
             Vector<VsqID> ids = new Vector<VsqID>();
             VsqFileEx vsq = AppManager.getVsqFile();
@@ -12200,7 +12405,29 @@ namespace org.kbinani.cadencii {
             setEdited( true );
         }
 
-        public void menuLyricDictionary_Click( Object sender, EventArgs e ) {
+        public void menuLyricSetAutoVibrato_Click( object sender, EventArgs e )
+        {
+            int size = AppManager.getSelectedEventCount();
+            if ( size != 1 ) {
+                return;
+            }
+
+            VsqEvent item = AppManager.getSelectedEventIterator().next().original;
+            if ( item.ID.VibratoHandle == null ) {
+                return;
+            }
+
+            AppManager.editorConfig.AutoVibratoCustom = (VibratoHandle)item.ID.VibratoHandle.clone();
+        }
+
+        public void menuLyric_DropDownOpening( object sender, EventArgs e )
+        {
+            int size = AppManager.getSelectedEventCount();
+            menuLyricSetAutoVibrato.setEnabled( (size == 1) );
+        }
+
+        public void menuLyricDictionary_Click( Object sender, EventArgs e )
+        {
             FormWordDictionary dlg = null;
             try {
                 dlg = new FormWordDictionary();
@@ -12227,18 +12454,21 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void menuLyricVibratoProperty_Click( Object sender, EventArgs e ) {
+        public void menuLyricVibratoProperty_Click( Object sender, EventArgs e )
+        {
             editNoteVibratoProperty();
         }
         #endregion
 
         //BOOKMARK: menuJob
         #region menuJob
-        public void menuJobReloadVsti_Click( Object sender, EventArgs e ) {
+        public void menuJobReloadVsti_Click( Object sender, EventArgs e )
+        {
             //VSTiProxy.ReloadPlugin(); //todo: FormMain+menuJobReloadVsti_Click
         }
 
-        public void menuJob_DropDownOpening( Object sender, EventArgs e ) {
+        public void menuJob_DropDownOpening( Object sender, EventArgs e )
+        {
             if ( AppManager.getSelectedEventCount() <= 1 ) {
                 menuJobConnect.setEnabled( false );
             } else {
@@ -12281,11 +12511,13 @@ namespace org.kbinani.cadencii {
             menuJobLyric.setEnabled( AppManager.getLastSelectedEvent() != null );
         }
 
-        public void menuJobLyric_Click( Object sender, EventArgs e ) {
+        public void menuJobLyric_Click( Object sender, EventArgs e )
+        {
             importLyric();
         }
 
-        public void menuJobConnect_Click( Object sender, EventArgs e ) {
+        public void menuJobConnect_Click( Object sender, EventArgs e )
+        {
             int count = AppManager.getSelectedEventCount();
             int[] clocks = new int[count];
             VsqID[] ids = new VsqID[count];
@@ -12327,7 +12559,8 @@ namespace org.kbinani.cadencii {
             repaint();
         }
 
-        public void menuJobInsertBar_Click( Object sender, EventArgs e ) {
+        public void menuJobInsertBar_Click( Object sender, EventArgs e )
+        {
             int total_clock = AppManager.getVsqFile().TotalClocks;
             int total_barcount = AppManager.getVsqFile().getBarCountFromClock( total_clock ) + 1;
             FormInsertBar dlg = null;
@@ -12456,7 +12689,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void menuJobDeleteBar_Click( Object sender, EventArgs e ) {
+        public void menuJobDeleteBar_Click( Object sender, EventArgs e )
+        {
             int total_clock = AppManager.getVsqFile().TotalClocks;
             int total_barcount = AppManager.getVsqFile().getBarCountFromClock( total_clock ) + 1;
             int clock = AppManager.getCurrentClock();
@@ -12567,7 +12801,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void menuJobNormalize_Click( Object sender, EventArgs e ) {
+        public void menuJobNormalize_Click( Object sender, EventArgs e )
+        {
             VsqFile work = (VsqFile)AppManager.getVsqFile().clone();
             int track = AppManager.getSelected();
             boolean changed = true;
@@ -12622,7 +12857,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void menuJobRandomize_Click( Object sender, EventArgs e ) {
+        public void menuJobRandomize_Click( Object sender, EventArgs e )
+        {
             FormRandomize dlg = null;
             try {
                 dlg = new FormRandomize();
@@ -12662,7 +12898,7 @@ namespace org.kbinani.cadencii {
                         int nextItemIndex = -1;  // 処理中の音符イベントの次の音符イベントのインデクス
                         double sqrt2 = Math.Sqrt( 2.0 );
                         int clockPreMeasure = vsq.getPreMeasureClocks(); // プリメジャーいちでのゲートタイム
-                        
+
                         while ( true ) {
                             // nextItemIndexを決定
                             if ( nextItemIndex != -2 ) {
@@ -12860,7 +13096,8 @@ namespace org.kbinani.cadencii {
 
         //BOOKMARK: menuScript
         #region menuScript
-        public void menuScriptUpdate_Click( Object sender, EventArgs e ) {
+        public void menuScriptUpdate_Click( Object sender, EventArgs e )
+        {
 #if ENABLE_SCRIPT
             updateScriptShortcut();
             applyShortcut();
@@ -12870,16 +13107,19 @@ namespace org.kbinani.cadencii {
 
         //BOOKMARK: vScroll
         #region vScroll
-        public void vScroll_Enter( Object sender, EventArgs e ) {
+        public void vScroll_Enter( Object sender, EventArgs e )
+        {
             pictPianoRoll.requestFocus();
         }
 
-        public void vScroll_Resize( Object sender, EventArgs e ) {
+        public void vScroll_Resize( Object sender, EventArgs e )
+        {
             AppManager.setStartToDrawY( calculateStartToDrawY() );
             updateScrollRangeVertical();
         }
 
-        public void vScroll_ValueChanged( Object sender, EventArgs e ) {
+        public void vScroll_ValueChanged( Object sender, EventArgs e )
+        {
             AppManager.setStartToDrawY( calculateStartToDrawY() );
             if ( mTextBoxTrackName != null ) {
 #if !JAVA
@@ -12895,7 +13135,8 @@ namespace org.kbinani.cadencii {
 
         //BOOKMARK: waveView
         #region waveView
-        public void waveView_MouseDoubleClick( Object sender, BMouseEventArgs e ) {
+        public void waveView_MouseDoubleClick( Object sender, BMouseEventArgs e )
+        {
             if ( e.Button == BMouseButtons.Middle ) {
                 // ツールをポインター <--> 鉛筆に切り替える
                 if ( e.Y < trackSelector.getHeight() - TrackSelector.OFFSET_TRACK_TAB * 2 ) {
@@ -12908,7 +13149,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void waveView_MouseDown( Object sender, BMouseEventArgs e ) {
+        public void waveView_MouseDown( Object sender, BMouseEventArgs e )
+        {
 #if DEBUG
             PortUtil.println( "waveView_MouseDown; isMiddleButtonDowned=" + isMouseMiddleButtonDowned( e.Button ) );
 #endif
@@ -12922,14 +13164,16 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void waveView_MouseUp( Object sender, BMouseEventArgs e ) {
+        public void waveView_MouseUp( Object sender, BMouseEventArgs e )
+        {
             if ( mEditCurveMode == CurveEditMode.MIDDLE_DRAG ) {
                 mEditCurveMode = CurveEditMode.NONE;
                 setCursor( new Cursor( java.awt.Cursor.DEFAULT_CURSOR ) );
             }
         }
 
-        public void waveView_MouseMove( Object sender, BMouseEventArgs e ) {
+        public void waveView_MouseMove( Object sender, BMouseEventArgs e )
+        {
             if ( mEditCurveMode == CurveEditMode.MIDDLE_DRAG ) {
                 int draft = computeHScrollValueForMiddleDrag( e.X );
                 if ( hScroll.Value != draft ) {
@@ -12941,17 +13185,20 @@ namespace org.kbinani.cadencii {
 
         //BOOKMARK: hScroll
         #region hScroll
-        public void hScroll_Enter( Object sender, EventArgs e ) {
+        public void hScroll_Enter( Object sender, EventArgs e )
+        {
             pictPianoRoll.requestFocus();
         }
 
-        public void hScroll_Resize( Object sender, EventArgs e ) {
+        public void hScroll_Resize( Object sender, EventArgs e )
+        {
             if ( getExtendedState() != BForm.ICONIFIED ) {
                 updateScrollRangeHorizontal();
             }
         }
 
-        public void hScroll_ValueChanged( Object sender, EventArgs e ) {
+        public void hScroll_ValueChanged( Object sender, EventArgs e )
+        {
             AppManager.setStartToDrawX( calculateStartToDrawX() );
             if ( mTextBoxTrackName != null ) {
 #if !JAVA
@@ -12967,11 +13214,13 @@ namespace org.kbinani.cadencii {
 
         //BOOKMARK: picturePositionIndicator
         #region picturePositionIndicator
-        public void picturePositionIndicator_MouseWheel( Object sender, BMouseEventArgs e ) {
+        public void picturePositionIndicator_MouseWheel( Object sender, BMouseEventArgs e )
+        {
             hScroll.Value = computeScrollValueFromWheelDelta( e.Delta );
         }
 
-        public void picturePositionIndicator_MouseDoubleClick( Object sender, BMouseEventArgs e ) {
+        public void picturePositionIndicator_MouseDoubleClick( Object sender, BMouseEventArgs e )
+        {
             if ( e.X < AppManager.keyWidth || getWidth() - 3 < e.X ) {
                 return;
             }
@@ -13208,7 +13457,7 @@ namespace org.kbinani.cadencii {
                                         PortUtil.println( "    dlg.Start+pre_measure-1=" + (dlg.getStart() + pre_measure - 1) );
 #endif
                                         CadenciiCommand run = new CadenciiCommand(
-                                            VsqCommand.generateCommandUpdateTimesig( bar_count, 
+                                            VsqCommand.generateCommandUpdateTimesig( bar_count,
                                                                                      dlg.getStart() + pre_measure - 1,
                                                                                      dlg.getNumerator(),
                                                                                      dlg.getDenominator() ) );
@@ -13311,7 +13560,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void picturePositionIndicator_MouseDown( Object sender, BMouseEventArgs e ) {
+        public void picturePositionIndicator_MouseDown( Object sender, BMouseEventArgs e )
+        {
             if ( mTextBoxTrackName != null ) {
 #if !JAVA
                 if ( !mTextBoxTrackName.IsDisposed ) {
@@ -13473,7 +13723,8 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
 
-        public void picturePositionIndicator_MouseUp( Object sender, BMouseEventArgs e ) {
+        public void picturePositionIndicator_MouseUp( Object sender, BMouseEventArgs e )
+        {
             int modifiers = PortUtil.getCurrentModifierKey();
 #if DEBUG
             AppManager.debugWriteLine( "picturePositionIndicator_MouseClick" );
@@ -13562,7 +13813,7 @@ namespace org.kbinani.cadencii {
                         }
                         #endregion
                     }
-                } else if( mPositionIndicatorMouseDownMode == PositionIndicatorMouseDownMode.TEMPO ){
+                } else if ( mPositionIndicatorMouseDownMode == PositionIndicatorMouseDownMode.TEMPO ) {
                     int count = AppManager.getSelectedTempoCount();
                     int[] clocks = new int[count];
                     int[] new_clocks = new int[count];
@@ -13630,7 +13881,8 @@ namespace org.kbinani.cadencii {
             picturePositionIndicator.repaint();
         }
 
-        public void picturePositionIndicator_MouseMove( Object sender, BMouseEventArgs e ) {
+        public void picturePositionIndicator_MouseMove( Object sender, BMouseEventArgs e )
+        {
             if ( mPositionIndicatorMouseDownMode == PositionIndicatorMouseDownMode.TEMPO ) {
                 int clock = AppManager.clockFromXCoord( e.X ) - mTempoDraggingDeltaClock;
                 int step = AppManager.getPositionQuantizeClock();
@@ -13689,7 +13941,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void picturePositionIndicator_Paint( Object sender, BPaintEventArgs e ) {
+        public void picturePositionIndicator_Paint( Object sender, BPaintEventArgs e )
+        {
 #if JAVA
             Graphics2D g = e.Graphics;
 #else
@@ -13699,11 +13952,12 @@ namespace org.kbinani.cadencii {
 #if MONITOR_FPS
             g.setColor( Color.red );
             g.setFont( AppManager.baseFont10Bold );
-            g.drawString( PortUtil.formatDecimal( "#.00",  mFps ) + " / " + PortUtil.formatDecimal( "#.00", mFps2 ), 5, 5 );
+            g.drawString( PortUtil.formatDecimal( "#.00", mFps ) + " / " + PortUtil.formatDecimal( "#.00", mFps2 ), 5, 5 );
 #endif
         }
 
-        public void picturePositionIndicator_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e ) {
+        public void picturePositionIndicator_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e )
+        {
 #if JAVA
             BKeyEventArgs e0 = new BKeyEventArgs( e.getRawEvent() );
 #else
@@ -13715,11 +13969,13 @@ namespace org.kbinani.cadencii {
 
         //BOOKMARK: trackBar
         #region trackBar
-        public void trackBar_Enter( Object sender, EventArgs e ) {
+        public void trackBar_Enter( Object sender, EventArgs e )
+        {
             pictPianoRoll.requestFocus();
         }
 
-        public void trackBar_MouseDown( Object sender, BMouseEventArgs e ) {
+        public void trackBar_MouseDown( Object sender, BMouseEventArgs e )
+        {
             if ( mTextBoxTrackName != null ) {
 #if !JAVA
                 if ( !mTextBoxTrackName.IsDisposed ) {
@@ -13730,7 +13986,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void trackBar_ValueChanged( Object sender, EventArgs e ) {
+        public void trackBar_ValueChanged( Object sender, EventArgs e )
+        {
             AppManager.setScaleX( trackBar.getValue() / 480f );
             AppManager.setStartToDrawX( calculateStartToDrawX() );
             updateDrawObjectList();
@@ -13740,7 +13997,8 @@ namespace org.kbinani.cadencii {
 
         //BOOKMARK: menuHelp
         #region menuHelp
-        public void menuHelpAbout_Click( Object sender, EventArgs e ) {
+        public void menuHelpAbout_Click( Object sender, EventArgs e )
+        {
 #if DEBUG
             PortUtil.println( "FormMain#menuHelpAbout_Click" );
 #endif
@@ -13760,9 +14018,9 @@ namespace org.kbinani.cadencii {
                 mVersionInfo.setVisible( true );
             } else {
 #if !JAVA
-                if ( mVersionInfo.IsDisposed ) 
+                if ( mVersionInfo.IsDisposed )
 #endif
-                {
+ {
                     mVersionInfo = new VersionInfo( _APP_NAME, version_str );
                     mVersionInfo.setAuthorList( _CREDIT );
                 }
@@ -13770,7 +14028,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void menuHelpDebug_Click( Object sender, EventArgs e ) {
+        public void menuHelpDebug_Click( Object sender, EventArgs e )
+        {
 #if DEBUG
             PortUtil.println( "FormMain#menuHelpDebug_Click" );
 
@@ -13802,18 +14061,20 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        public void menuHelpLogSwitch_CheckedChanged( Object sender, EventArgs e ) {
+        public void menuHelpLogSwitch_CheckedChanged( Object sender, EventArgs e )
+        {
             Logger.setEnabled( menuHelpLogSwitch.isSelected() );
             if ( menuHelpLogSwitch.isSelected() ) {
                 menuHelpLogSwitch.setText( _( "Enabled" ) );
-            }else{
+            } else {
                 menuHelpLogSwitch.setText( _( "Disabled" ) );
             }
         }
 
-        public void menuHelpLogOpen_Click( Object sender, EventArgs e ) {
+        public void menuHelpLogOpen_Click( Object sender, EventArgs e )
+        {
             String file = Logger.getPath();
-            if ( file == null || (file != null && (!PortUtil.isFileExists( file ) )) ) {
+            if ( file == null || (file != null && (!PortUtil.isFileExists( file ))) ) {
                 // ログがまだできてないのでダイアログ出す
                 AppManager.showMessageBox(
                     _( "Log file has not generated yet." ),
@@ -13834,12 +14095,14 @@ namespace org.kbinani.cadencii {
 
         //BOOKMARK: trackSelector
         #region trackSelector
-        public void trackSelector_CommandExecuted( Object sender, EventArgs e ) {
+        public void trackSelector_CommandExecuted( Object sender, EventArgs e )
+        {
             setEdited( true );
             refreshScreen();
         }
 
-        public void trackSelector_MouseClick( Object sender, BMouseEventArgs e ) {
+        public void trackSelector_MouseClick( Object sender, BMouseEventArgs e )
+        {
             if ( e.Button == BMouseButtons.Right ) {
                 if ( AppManager.keyWidth < e.X && e.X < trackSelector.getWidth() ) {
                     if ( trackSelector.getHeight() - TrackSelector.OFFSET_TRACK_TAB <= e.Y && e.Y <= trackSelector.getHeight() ) {
@@ -13859,7 +14122,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void trackSelector_MouseDoubleClick( Object sender, BMouseEventArgs e ) {
+        public void trackSelector_MouseDoubleClick( Object sender, BMouseEventArgs e )
+        {
             if ( e.Button == BMouseButtons.Middle ) {
                 // ツールをポインター <--> 鉛筆に切り替える
                 if ( AppManager.keyWidth < e.X &&
@@ -13873,7 +14137,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void trackSelector_MouseDown( Object sender, BMouseEventArgs e ) {
+        public void trackSelector_MouseDown( Object sender, BMouseEventArgs e )
+        {
             if ( AppManager.keyWidth < e.X ) {
                 mMouseDownedTrackSelector = true;
                 if ( isMouseMiddleButtonDowned( e.Button ) ) {
@@ -13887,7 +14152,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void trackSelector_MouseMove( Object sender, BMouseEventArgs e ) {
+        public void trackSelector_MouseMove( Object sender, BMouseEventArgs e )
+        {
             if ( mFormActivated ) {
 #if ENABLE_PROPERTY
                 if ( AppManager.mInputTextBox != null && !AppManager.mInputTextBox.IsDisposed && !AppManager.mInputTextBox.isVisible() && !AppManager.propertyPanel.isEditing() ) {
@@ -13961,7 +14227,8 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
 
-        public void trackSelector_MouseUp( Object sender, BMouseEventArgs e ) {
+        public void trackSelector_MouseUp( Object sender, BMouseEventArgs e )
+        {
             mMouseDownedTrackSelector = false;
             if ( mEditCurveMode == CurveEditMode.MIDDLE_DRAG ) {
                 mEditCurveMode = CurveEditMode.NONE;
@@ -13969,7 +14236,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void trackSelector_MouseWheel( Object sender, BMouseEventArgs e ) {
+        public void trackSelector_MouseWheel( Object sender, BMouseEventArgs e )
+        {
             if ( (PortUtil.getCurrentModifierKey() & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
                 double new_val = (double)vScroll.Value - e.Delta;
                 int max = vScroll.Maximum - vScroll.Minimum;
@@ -13987,7 +14255,8 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
 
-        public void trackSelector_PreferredMinHeightChanged( Object sender, EventArgs e ) {
+        public void trackSelector_PreferredMinHeightChanged( Object sender, EventArgs e )
+        {
             if ( menuVisualControlTrack.isSelected() ) {
                 splitContainer1.setPanel2MinSize( trackSelector.getPreferredMinSize() );
 #if DEBUG
@@ -13996,7 +14265,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void trackSelector_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e ) {
+        public void trackSelector_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e )
+        {
 #if JAVA
             BKeyEventArgs e0 = new BKeyEventArgs( e.getRawEvent() );
 #else
@@ -14005,7 +14275,8 @@ namespace org.kbinani.cadencii {
             processSpecialShortcutKey( e0, true );
         }
 
-        public void trackSelector_RenderRequired( Object sender, Integer[] tracks ) {
+        public void trackSelector_RenderRequired( Object sender, Integer[] tracks )
+        {
             AppManager.patchWorkToFreeze( this, Arrays.asList( tracks ) );
             /*int selected = AppManager.getSelected();
             Vector<Integer> t = new Vector<Integer>( Arrays.asList( PortUtil.convertIntArray( tracks ) ) );
@@ -14024,11 +14295,13 @@ namespace org.kbinani.cadencii {
             }*/
         }
 
-        public void trackSelector_SelectedCurveChanged( Object sender, CurveType type ) {
+        public void trackSelector_SelectedCurveChanged( Object sender, CurveType type )
+        {
             refreshScreen();
         }
 
-        public void trackSelector_SelectedTrackChanged( Object sender, int selected ) {
+        public void trackSelector_SelectedTrackChanged( Object sender, int selected )
+        {
             AppManager.clearSelectedBezier();
             AppManager.clearSelectedEvent();
             AppManager.clearSelectedPoint();
@@ -14039,27 +14312,33 @@ namespace org.kbinani.cadencii {
 
         //BOOKMARK: cMenuPiano
         #region cMenuPiano*
-        public void cMenuPianoDelete_Click( Object sender, EventArgs e ) {
+        public void cMenuPianoDelete_Click( Object sender, EventArgs e )
+        {
             deleteEvent();
         }
 
-        public void cMenuPianoVibratoProperty_Click( Object sender, EventArgs e ) {
+        public void cMenuPianoVibratoProperty_Click( Object sender, EventArgs e )
+        {
             editNoteVibratoProperty();
         }
 
-        public void cMenuPianoPaste_Click( Object sender, EventArgs e ) {
+        public void cMenuPianoPaste_Click( Object sender, EventArgs e )
+        {
             pasteEvent();
         }
 
-        public void cMenuPianoCopy_Click( Object sender, EventArgs e ) {
+        public void cMenuPianoCopy_Click( Object sender, EventArgs e )
+        {
             copyEvent();
         }
 
-        public void cMenuPianoCut_Click( Object sender, EventArgs e ) {
+        public void cMenuPianoCut_Click( Object sender, EventArgs e )
+        {
             cutEvent();
         }
 
-        public void cMenuPianoExpression_Click( Object sender, EventArgs e ) {
+        public void cMenuPianoExpression_Click( Object sender, EventArgs e )
+        {
             if ( AppManager.getSelectedEventCount() > 0 ) {
                 VsqFileEx vsq = AppManager.getVsqFile();
                 int selected = AppManager.getSelected();
@@ -14109,108 +14388,131 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void cMenuPianoPointer_Click( Object sender, EventArgs e ) {
+        public void cMenuPianoPointer_Click( Object sender, EventArgs e )
+        {
             AppManager.setSelectedTool( EditTool.ARROW );
         }
 
-        public void cMenuPianoPencil_Click( Object sender, EventArgs e ) {
+        public void cMenuPianoPencil_Click( Object sender, EventArgs e )
+        {
             AppManager.setSelectedTool( EditTool.PENCIL );
         }
 
-        public void cMenuPianoEraser_Click( Object sender, EventArgs e ) {
+        public void cMenuPianoEraser_Click( Object sender, EventArgs e )
+        {
             AppManager.setSelectedTool( EditTool.ERASER );
         }
 
-        public void cMenuPianoGrid_Click( Object sender, EventArgs e ) {
+        public void cMenuPianoGrid_Click( Object sender, EventArgs e )
+        {
             cMenuPianoGrid.setSelected( !cMenuPianoGrid.isSelected() );
             AppManager.setGridVisible( cMenuPianoGrid.isSelected() );
         }
 
-        public void cMenuPianoUndo_Click( Object sender, EventArgs e ) {
+        public void cMenuPianoUndo_Click( Object sender, EventArgs e )
+        {
             undo();
         }
 
-        public void cMenuPianoRedo_Click( Object sender, EventArgs e ) {
+        public void cMenuPianoRedo_Click( Object sender, EventArgs e )
+        {
             redo();
         }
 
-        public void cMenuPianoSelectAllEvents_Click( Object sender, EventArgs e ) {
+        public void cMenuPianoSelectAllEvents_Click( Object sender, EventArgs e )
+        {
             selectAllEvent();
         }
 
-        public void cMenuPianoProperty_Click( Object sender, EventArgs e ) {
+        public void cMenuPianoProperty_Click( Object sender, EventArgs e )
+        {
             editNoteExpressionProperty();
         }
 
-        public void cMenuPianoImportLyric_Click( Object sender, EventArgs e ) {
+        public void cMenuPianoImportLyric_Click( Object sender, EventArgs e )
+        {
             importLyric();
         }
 
-        public void cMenuPiano_Opening( Object sender, BCancelEventArgs e ) {
+        public void cMenuPiano_Opening( Object sender, BCancelEventArgs e )
+        {
             updateCopyAndPasteButtonStatus();
             cMenuPianoImportLyric.setEnabled( AppManager.getLastSelectedEvent() != null );
         }
 
-        public void cMenuPianoSelectAll_Click( Object sender, EventArgs e ) {
+        public void cMenuPianoSelectAll_Click( Object sender, EventArgs e )
+        {
             selectAll();
         }
 
-        public void cMenuPianoFixed01_Click( Object sender, EventArgs e ) {
+        public void cMenuPianoFixed01_Click( Object sender, EventArgs e )
+        {
             mPencilMode.setMode( PencilModeEnum.L1 );
             updateCMenuPianoFixed();
         }
 
-        public void cMenuPianoFixed02_Click( Object sender, EventArgs e ) {
+        public void cMenuPianoFixed02_Click( Object sender, EventArgs e )
+        {
             mPencilMode.setMode( PencilModeEnum.L2 );
             updateCMenuPianoFixed();
         }
 
-        public void cMenuPianoFixed04_Click( Object sender, EventArgs e ) {
+        public void cMenuPianoFixed04_Click( Object sender, EventArgs e )
+        {
             mPencilMode.setMode( PencilModeEnum.L4 );
             updateCMenuPianoFixed();
         }
 
-        public void cMenuPianoFixed08_Click( Object sender, EventArgs e ) {
+        public void cMenuPianoFixed08_Click( Object sender, EventArgs e )
+        {
             mPencilMode.setMode( PencilModeEnum.L8 );
             updateCMenuPianoFixed();
         }
 
-        public void cMenuPianoFixed16_Click( Object sender, EventArgs e ) {
+        public void cMenuPianoFixed16_Click( Object sender, EventArgs e )
+        {
             mPencilMode.setMode( PencilModeEnum.L16 );
             updateCMenuPianoFixed();
         }
 
-        public void cMenuPianoFixed32_Click( Object sender, EventArgs e ) {
+        public void cMenuPianoFixed32_Click( Object sender, EventArgs e )
+        {
             mPencilMode.setMode( PencilModeEnum.L32 );
             updateCMenuPianoFixed();
         }
 
-        public void cMenuPianoFixed64_Click( Object sender, EventArgs e ) {
+        public void cMenuPianoFixed64_Click( Object sender, EventArgs e )
+        {
             mPencilMode.setMode( PencilModeEnum.L64 );
             updateCMenuPianoFixed();
         }
 
-        public void cMenuPianoFixed128_Click( Object sender, EventArgs e ) {
+        public void cMenuPianoFixed128_Click( Object sender, EventArgs e )
+        {
             mPencilMode.setMode( PencilModeEnum.L128 );
             updateCMenuPianoFixed();
         }
 
-        public void cMenuPianoFixedOff_Click( Object sender, EventArgs e ) {
+        public void cMenuPianoFixedOff_Click( Object sender, EventArgs e )
+        {
             mPencilMode.setMode( PencilModeEnum.Off );
             updateCMenuPianoFixed();
         }
 
-        public void cMenuPianoFixedTriplet_Click( Object sender, EventArgs e ) {
+        public void cMenuPianoFixedTriplet_Click( Object sender, EventArgs e )
+        {
             mPencilMode.setTriplet( !mPencilMode.isTriplet() );
             updateCMenuPianoFixed();
         }
 
-        public void cMenuPianoFixedDotted_Click( Object sender, EventArgs e ) {
+        public void cMenuPianoFixedDotted_Click( Object sender, EventArgs e )
+        {
             mPencilMode.setDot( !mPencilMode.isDot() );
             updateCMenuPianoFixed();
         }
 
-        public void cMenuPianoCurve_Click( Object sender, EventArgs e ) {
+        public void cMenuPianoCurve_Click( Object sender, EventArgs e )
+        {
             AppManager.setCurveMode( !AppManager.isCurveMode() );
             applySelectedTool();
         }
@@ -14218,53 +14520,64 @@ namespace org.kbinani.cadencii {
 
         //BOOKMARK: menuTrack
         #region menuTrack*
-        public void menuTrack_DropDownOpening( Object sender, EventArgs e ) {
+        public void menuTrack_DropDownOpening( Object sender, EventArgs e )
+        {
             updateTrackMenuStatus();
         }
 
-        public void menuTrackCopy_Click( Object sender, EventArgs e ) {
+        public void menuTrackCopy_Click( Object sender, EventArgs e )
+        {
             copyTrackCore();
         }
 
-        public void menuTrackChangeName_Click( Object sender, EventArgs e ) {
+        public void menuTrackChangeName_Click( Object sender, EventArgs e )
+        {
             changeTrackNameCore();
         }
 
-        public void menuTrackDelete_Click( Object sender, EventArgs e ) {
+        public void menuTrackDelete_Click( Object sender, EventArgs e )
+        {
             deleteTrackCore();
         }
 
-        public void menuTrackAdd_Click( Object sender, EventArgs e ) {
+        public void menuTrackAdd_Click( Object sender, EventArgs e )
+        {
             addTrackCore();
         }
 
-        public void menuTrackOverlay_Click( Object sender, EventArgs e ) {
+        public void menuTrackOverlay_Click( Object sender, EventArgs e )
+        {
             AppManager.setOverlay( !AppManager.isOverlay() );
             refreshScreen();
         }
 
-        public void menuTrackRenderCurrent_Click( Object sender, EventArgs e ) {
+        public void menuTrackRenderCurrent_Click( Object sender, EventArgs e )
+        {
             Vector<Integer> tracks = new Vector<Integer>();
             tracks.add( AppManager.getSelected() );
             AppManager.patchWorkToFreeze( this, tracks );
         }
 
-        public void menuTrackRenderer_DropDownOpening( Object sender, EventArgs e ) {
+        public void menuTrackRenderer_DropDownOpening( Object sender, EventArgs e )
+        {
             updateRendererMenu();
         }
         #endregion
 
         //BOOKMARK: menuHidden
         #region menuHidden*
-        public void menuHiddenVisualForwardParameter_Click( Object sender, EventArgs e ) {
+        public void menuHiddenVisualForwardParameter_Click( Object sender, EventArgs e )
+        {
             trackSelector.SelectNextCurve();
         }
 
-        public void menuHiddenVisualBackwardParameter_Click( Object sender, EventArgs e ) {
+        public void menuHiddenVisualBackwardParameter_Click( Object sender, EventArgs e )
+        {
             trackSelector.SelectPreviousCurve();
         }
 
-        public void menuHiddenTrackNext_Click( Object sender, EventArgs e ) {
+        public void menuHiddenTrackNext_Click( Object sender, EventArgs e )
+        {
             if ( AppManager.getSelected() == AppManager.getVsqFile().Track.size() - 1 ) {
                 AppManager.setSelected( 1 );
             } else {
@@ -14273,14 +14586,16 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
 
-        public void menuHiddenShorten_Click( Object sender, EventArgs e ) {
+        public void menuHiddenShorten_Click( Object sender, EventArgs e )
+        {
             QuantizeMode qmode = AppManager.editorConfig.getLengthQuantize();
             boolean triplet = AppManager.editorConfig.isLengthQuantizeTriplet();
             int delta = -QuantizeModeUtil.getQuantizeClock( qmode, triplet );
             lengthenSelectedEvent( delta );
         }
 
-        public void menuHiddenTrackBack_Click( Object sender, EventArgs e ) {
+        public void menuHiddenTrackBack_Click( Object sender, EventArgs e )
+        {
             if ( AppManager.getSelected() == 1 ) {
                 AppManager.setSelected( AppManager.getVsqFile().Track.size() - 1 );
             } else {
@@ -14289,16 +14604,19 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
 
-        public void menuHiddenEditPaste_Click( Object sender, EventArgs e ) {
+        public void menuHiddenEditPaste_Click( Object sender, EventArgs e )
+        {
             pasteEvent();
         }
 
-        public void menuHiddenFlipCurveOnPianorollMode_Click( Object sender, EventArgs e ) {
+        public void menuHiddenFlipCurveOnPianorollMode_Click( Object sender, EventArgs e )
+        {
             AppManager.mCurveOnPianoroll = !AppManager.mCurveOnPianoroll;
             refreshScreen();
         }
 
-        public void menuHiddenGoToEndMarker_Click( Object sender, EventArgs e ) {
+        public void menuHiddenGoToEndMarker_Click( Object sender, EventArgs e )
+        {
             if ( AppManager.isPlaying() ) {
                 return;
             }
@@ -14310,7 +14628,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void menuHiddenGoToStartMarker_Click( Object sender, EventArgs e ) {
+        public void menuHiddenGoToStartMarker_Click( Object sender, EventArgs e )
+        {
             if ( AppManager.isPlaying() ) {
                 return;
             }
@@ -14322,22 +14641,26 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void menuHiddenLengthen_Click( Object sender, EventArgs e ) {
+        public void menuHiddenLengthen_Click( Object sender, EventArgs e )
+        {
             QuantizeMode qmode = AppManager.editorConfig.getLengthQuantize();
             boolean triplet = AppManager.editorConfig.isLengthQuantizeTriplet();
             int delta = QuantizeModeUtil.getQuantizeClock( qmode, triplet );
             lengthenSelectedEvent( delta );
         }
 
-        public void menuHiddenMoveDown_Click( Object sender, EventArgs e ) {
+        public void menuHiddenMoveDown_Click( Object sender, EventArgs e )
+        {
             moveUpDownLeftRight( -1, 0 );
         }
 
-        public void menuHiddenMoveUp_Click( Object sender, EventArgs e ) {
+        public void menuHiddenMoveUp_Click( Object sender, EventArgs e )
+        {
             moveUpDownLeftRight( 1, 0 );
         }
 
-        public void menuHiddenPlayFromStartMarker_Click( Object sender, EventArgs e ) {
+        public void menuHiddenPlayFromStartMarker_Click( Object sender, EventArgs e )
+        {
             if ( AppManager.isPlaying() ) {
                 return;
             }
@@ -14348,8 +14671,9 @@ namespace org.kbinani.cadencii {
             AppManager.setCurrentClock( AppManager.mStartMarker );
             AppManager.setPlaying( true );
         }
-        
-        public void menuHiddenMoveLeft_Click( Object sender, EventArgs e ) {
+
+        public void menuHiddenMoveLeft_Click( Object sender, EventArgs e )
+        {
             QuantizeMode mode = AppManager.editorConfig.getPositionQuantize();
             boolean triplet = AppManager.editorConfig.isPositionQuantizeTriplet();
             int delta = -QuantizeModeUtil.getQuantizeClock( mode, triplet );
@@ -14359,22 +14683,26 @@ namespace org.kbinani.cadencii {
             moveUpDownLeftRight( 0, delta );
         }
 
-        public void menuHiddenMoveRight_Click( Object sender, EventArgs e ) {
+        public void menuHiddenMoveRight_Click( Object sender, EventArgs e )
+        {
             QuantizeMode mode = AppManager.editorConfig.getPositionQuantize();
             boolean triplet = AppManager.editorConfig.isPositionQuantizeTriplet();
             int delta = QuantizeModeUtil.getQuantizeClock( mode, triplet );
             moveUpDownLeftRight( 0, delta );
         }
 
-        public void menuHiddenSelectBackward_Click( Object sender, EventArgs e ) {
+        public void menuHiddenSelectBackward_Click( Object sender, EventArgs e )
+        {
             selectBackward();
         }
 
-        public void menuHiddenSelectForward_Click( Object sender, EventArgs e ) {
+        public void menuHiddenSelectForward_Click( Object sender, EventArgs e )
+        {
             selectForward();
         }
 
-        public void menuHiddenEditFlipToolPointerPencil_Click( Object sender, EventArgs e ) {
+        public void menuHiddenEditFlipToolPointerPencil_Click( Object sender, EventArgs e )
+        {
             if ( AppManager.getSelectedTool() == EditTool.ARROW ) {
                 AppManager.setSelectedTool( EditTool.PENCIL );
             } else {
@@ -14383,7 +14711,8 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
 
-        public void menuHiddenEditFlipToolPointerEraser_Click( Object sender, EventArgs e ) {
+        public void menuHiddenEditFlipToolPointerEraser_Click( Object sender, EventArgs e )
+        {
             if ( AppManager.getSelectedTool() == EditTool.ARROW ) {
                 AppManager.setSelectedTool( EditTool.ERASER );
             } else {
@@ -14392,7 +14721,8 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
 
-        public void menuHiddenEditLyric_Click( Object sender, EventArgs e ) {
+        public void menuHiddenEditLyric_Click( Object sender, EventArgs e )
+        {
 #if JAVA
             boolean input_enabled = AppManager.inputTextBox.isVisible();
 #else
@@ -14419,27 +14749,33 @@ namespace org.kbinani.cadencii {
 
         //BOOKMARK: cMenuTrackTab
         #region cMenuTrackTab
-        public void cMenuTrackTabCopy_Click( Object sender, EventArgs e ) {
+        public void cMenuTrackTabCopy_Click( Object sender, EventArgs e )
+        {
             copyTrackCore();
         }
 
-        public void cMenuTrackTabChangeName_Click( Object sender, EventArgs e ) {
+        public void cMenuTrackTabChangeName_Click( Object sender, EventArgs e )
+        {
             changeTrackNameCore();
         }
 
-        public void cMenuTrackTabDelete_Click( Object sender, EventArgs e ) {
+        public void cMenuTrackTabDelete_Click( Object sender, EventArgs e )
+        {
             deleteTrackCore();
         }
 
-        public void cMenuTrackTabAdd_Click( Object sender, EventArgs e ) {
+        public void cMenuTrackTabAdd_Click( Object sender, EventArgs e )
+        {
             addTrackCore();
         }
 
-        public void cMenuTrackTab_Opening( Object sender, BCancelEventArgs e ) {
+        public void cMenuTrackTab_Opening( Object sender, BCancelEventArgs e )
+        {
             updateTrackMenuStatus();
         }
 
-        public void updateTrackMenuStatus() {
+        public void updateTrackMenuStatus()
+        {
             VsqFileEx vsq = AppManager.getVsqFile();
             int selected = AppManager.getSelected();
             VsqTrack vsq_track = vsq.Track.get( selected );
@@ -14505,25 +14841,29 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void cMenuTrackTabOverlay_Click( Object sender, EventArgs e ) {
+        public void cMenuTrackTabOverlay_Click( Object sender, EventArgs e )
+        {
             AppManager.setOverlay( !AppManager.isOverlay() );
             refreshScreen();
         }
 
-        public void cMenuTrackTabRenderCurrent_Click( Object sender, EventArgs e ) {
+        public void cMenuTrackTabRenderCurrent_Click( Object sender, EventArgs e )
+        {
             Vector<Integer> tracks = new Vector<Integer>();
             tracks.add( AppManager.getSelected() );
             AppManager.patchWorkToFreeze( this, tracks );
         }
 
-        public void cMenuTrackTabRenderer_DropDownOpening( Object sender, EventArgs e ) {
+        public void cMenuTrackTabRenderer_DropDownOpening( Object sender, EventArgs e )
+        {
             updateRendererMenu();
         }
         #endregion
 
         //BOOKMARK: mTextboxTrackName
         #region mTextboxTrackName
-        public void mTextBoxTrackName_KeyUp( Object sender, BKeyEventArgs e ) {
+        public void mTextBoxTrackName_KeyUp( Object sender, BKeyEventArgs e )
+        {
 #if JAVA
             if ( e.KeyValue == KeyEvent.VK_ENTER ){
 #else
@@ -14554,7 +14894,8 @@ namespace org.kbinani.cadencii {
 
         //BOOKMARK: cMenuTrackSelector
         #region cMenuTrackSelector
-        public void cMenuTrackSelector_Opening( Object sender, BCancelEventArgs e ) {
+        public void cMenuTrackSelector_Opening( Object sender, BCancelEventArgs e )
+        {
             updateCopyAndPasteButtonStatus();
 
             // 選択ツールの状態に合わせて表示を更新
@@ -14575,45 +14916,55 @@ namespace org.kbinani.cadencii {
             cMenuTrackSelectorCurve.setSelected( AppManager.isCurveMode() );
         }
 
-        public void cMenuTrackSelectorPointer_Click( Object sender, EventArgs e ) {
+        public void cMenuTrackSelectorPointer_Click( Object sender, EventArgs e )
+        {
             AppManager.setSelectedTool( EditTool.ARROW );
             refreshScreen();
         }
 
-        public void cMenuTrackSelectorPencil_Click( Object sender, EventArgs e ) {
+        public void cMenuTrackSelectorPencil_Click( Object sender, EventArgs e )
+        {
             AppManager.setSelectedTool( EditTool.PENCIL );
             refreshScreen();
         }
 
-        public void cMenuTrackSelectorLine_Click( Object sender, EventArgs e ) {
+        public void cMenuTrackSelectorLine_Click( Object sender, EventArgs e )
+        {
             AppManager.setSelectedTool( EditTool.LINE );
         }
 
-        public void cMenuTrackSelectorEraser_Click( Object sender, EventArgs e ) {
+        public void cMenuTrackSelectorEraser_Click( Object sender, EventArgs e )
+        {
             AppManager.setSelectedTool( EditTool.ERASER );
         }
 
-        public void cMenuTrackSelectorCurve_Click( Object sender, EventArgs e ) {
+        public void cMenuTrackSelectorCurve_Click( Object sender, EventArgs e )
+        {
             AppManager.setCurveMode( !AppManager.isCurveMode() );
         }
 
-        public void cMenuTrackSelectorSelectAll_Click( Object sender, EventArgs e ) {
+        public void cMenuTrackSelectorSelectAll_Click( Object sender, EventArgs e )
+        {
             selectAllEvent();
         }
 
-        public void cMenuTrackSelectorCut_Click( Object sender, EventArgs e ) {
+        public void cMenuTrackSelectorCut_Click( Object sender, EventArgs e )
+        {
             cutEvent();
         }
 
-        public void cMenuTrackSelectorCopy_Click( Object sender, EventArgs e ) {
+        public void cMenuTrackSelectorCopy_Click( Object sender, EventArgs e )
+        {
             copyEvent();
         }
 
-        public void cMenuTrackSelectorDelete_Click( Object sender, EventArgs e ) {
+        public void cMenuTrackSelectorDelete_Click( Object sender, EventArgs e )
+        {
             deleteEvent();
         }
 
-        public void cMenuTrackSelectorDeleteBezier_Click( Object sender, EventArgs e ) {
+        public void cMenuTrackSelectorDeleteBezier_Click( Object sender, EventArgs e )
+        {
             for ( Iterator<SelectedBezierPoint> itr = AppManager.getSelectedBezierIterator(); itr.hasNext(); ) {
                 SelectedBezierPoint sbp = itr.next();
                 int chain_id = sbp.chainID;
@@ -14651,11 +15002,13 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void cMenuTrackSelectorPaste_Click( Object sender, EventArgs e ) {
+        public void cMenuTrackSelectorPaste_Click( Object sender, EventArgs e )
+        {
             pasteEvent();
         }
 
-        public void cMenuTrackSelectorUndo_Click( Object sender, EventArgs e ) {
+        public void cMenuTrackSelectorUndo_Click( Object sender, EventArgs e )
+        {
 #if DEBUG
             AppManager.debugWriteLine( "cMenuTrackSelectorUndo_Click" );
 #endif
@@ -14663,7 +15016,8 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
 
-        public void cMenuTrackSelectorRedo_Click( Object sender, EventArgs e ) {
+        public void cMenuTrackSelectorRedo_Click( Object sender, EventArgs e )
+        {
 #if DEBUG
             AppManager.debugWriteLine( "cMenuTrackSelectorRedo_Click" );
 #endif
@@ -14674,7 +15028,8 @@ namespace org.kbinani.cadencii {
 
         //BOOKMARK: panel2
         #region panel2
-        public void panel2_MouseDown( Object sender, BMouseEventArgs e ) {
+        public void panel2_MouseDown( Object sender, BMouseEventArgs e )
+        {
             Point p = new Point( e.X, e.Y );
 
             int width = AppManager.keyWidth - 1;
@@ -14710,7 +15065,8 @@ namespace org.kbinani.cadencii {
             return;
         }
 
-        public void panel2_MouseMove( Object sender, BMouseEventArgs e ) {
+        public void panel2_MouseMove( Object sender, BMouseEventArgs e )
+        {
             if ( !mWaveViewButtonZoomMouseDowned ) {
                 return;
             }
@@ -14723,7 +15079,8 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
 
-        public void panel2_MouseUp( Object sender, BMouseEventArgs e ) {
+        public void panel2_MouseUp( Object sender, BMouseEventArgs e )
+        {
             int width = AppManager.keyWidth - 1;
             int height = panel2.getHeight();
 
@@ -14740,7 +15097,8 @@ namespace org.kbinani.cadencii {
             panel2.repaint();
         }
 
-        public void panel2_Paint( Object sender, BPaintEventArgs e ) {
+        public void panel2_Paint( Object sender, BPaintEventArgs e )
+        {
 #if JAVA
             Graphics g = e.Graphics;
 #else
@@ -14790,7 +15148,8 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region pictureBox3
-        public void pictureBox3_MouseDown( Object sender, BMouseEventArgs e ) {
+        public void pictureBox3_MouseDown( Object sender, BMouseEventArgs e )
+        {
             if ( mTextBoxTrackName != null ) {
 #if !JAVA
                 if ( !mTextBoxTrackName.IsDisposed ) {
@@ -14803,7 +15162,8 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region pictureBox2
-        public void pictureBox2_Paint( Object sender, BPaintEventArgs e ) {
+        public void pictureBox2_Paint( Object sender, BPaintEventArgs e )
+        {
 #if JAVA
 #else
             if ( mGraphicsPictureBox2 == null ) {
@@ -14839,7 +15199,8 @@ namespace org.kbinani.cadencii {
             mGraphicsPictureBox2.drawLine( cx - 4, cy, cx + 4, cy );
         }
 
-        public void pictureBox2_MouseDown( Object sender, BMouseEventArgs e ) {
+        public void pictureBox2_MouseDown( Object sender, BMouseEventArgs e )
+        {
             if ( mTextBoxTrackName != null ) {
 #if !JAVA
                 if ( !mTextBoxTrackName.IsDisposed ) {
@@ -14884,7 +15245,8 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
 
-        public void pictureBox2_MouseUp( Object sender, BMouseEventArgs e ) {
+        public void pictureBox2_MouseUp( Object sender, BMouseEventArgs e )
+        {
             mPianoRollScaleYMouseStatus = 0;
             pictureBox2.invalidate();
         }
@@ -14892,57 +15254,68 @@ namespace org.kbinani.cadencii {
 
         //BOOKMARK: stripBtn
         #region stripBtn*
-        public void stripBtnGrid_Click( Object sender, EventArgs e ) {
+        public void stripBtnGrid_Click( Object sender, EventArgs e )
+        {
             stripBtnGrid.Pushed = !stripBtnGrid.Pushed;
             AppManager.setGridVisible( stripBtnGrid.Pushed );
         }
 
-        public void stripBtnArrow_Click( Object sender, EventArgs e ) {
+        public void stripBtnArrow_Click( Object sender, EventArgs e )
+        {
             AppManager.setSelectedTool( EditTool.ARROW );
         }
 
-        public void stripBtnPencil_Click( Object sender, EventArgs e ) {
+        public void stripBtnPencil_Click( Object sender, EventArgs e )
+        {
             AppManager.setSelectedTool( EditTool.PENCIL );
         }
 
-        public void stripBtnLine_Click( Object sender, EventArgs e ) {
+        public void stripBtnLine_Click( Object sender, EventArgs e )
+        {
             AppManager.setSelectedTool( EditTool.LINE );
         }
 
-        public void stripBtnEraser_Click( Object sender, EventArgs e ) {
+        public void stripBtnEraser_Click( Object sender, EventArgs e )
+        {
             AppManager.setSelectedTool( EditTool.ERASER );
         }
 
-        public void stripBtnCurve_Click( Object sender, EventArgs e ) {
+        public void stripBtnCurve_Click( Object sender, EventArgs e )
+        {
             AppManager.setCurveMode( !AppManager.isCurveMode() );
         }
 
-        public void stripBtnPlay_Click( Object sender, EventArgs e ) {
+        public void stripBtnPlay_Click( Object sender, EventArgs e )
+        {
             if ( !AppManager.isPlaying() ) {
                 AppManager.setPlaying( true );
             }
             pictPianoRoll.requestFocus();
         }
 
-        public void stripBtnScroll_Click( Object sender, EventArgs e ) {
+        public void stripBtnScroll_Click( Object sender, EventArgs e )
+        {
             stripBtnScroll.Pushed = !stripBtnScroll.Pushed;
             AppManager.mAutoScroll = stripBtnScroll.Pushed;
             pictPianoRoll.requestFocus();
         }
 
-        public void stripBtnLoop_Click( Object sender, EventArgs e ) {
+        public void stripBtnLoop_Click( Object sender, EventArgs e )
+        {
             stripBtnLoop.Pushed = !stripBtnLoop.Pushed;
             AppManager.setRepeatMode( stripBtnLoop.Pushed );
             pictPianoRoll.requestFocus();
         }
 
-        public void stripBtnStop_Click( Object sender, EventArgs e ) {
+        public void stripBtnStop_Click( Object sender, EventArgs e )
+        {
             AppManager.setPlaying( false );
             timer.stop();
             pictPianoRoll.requestFocus();
         }
 
-        public void stripBtnMoveEnd_Click( Object sender, EventArgs e ) {
+        public void stripBtnMoveEnd_Click( Object sender, EventArgs e )
+        {
             if ( AppManager.isPlaying() ) {
                 AppManager.setPlaying( false );
             }
@@ -14951,7 +15324,8 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
 
-        public void stripBtnMoveTop_Click( Object sender, EventArgs e ) {
+        public void stripBtnMoveTop_Click( Object sender, EventArgs e )
+        {
             if ( AppManager.isPlaying() ) {
                 AppManager.setPlaying( false );
             }
@@ -14960,18 +15334,21 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
 
-        public void stripBtnRewind_Click( Object sender, EventArgs e ) {
+        public void stripBtnRewind_Click( Object sender, EventArgs e )
+        {
             rewind();
         }
 
-        public void stripBtnForward_Click( Object sender, EventArgs e ) {
+        public void stripBtnForward_Click( Object sender, EventArgs e )
+        {
             forward();
         }
         #endregion
 
         //BOOKMARK: pictKeyLengthSplitter
         #region pictKeyLengthSplitter
-        public void pictKeyLengthSplitter_MouseDown( Object sender, BMouseEventArgs e ) {
+        public void pictKeyLengthSplitter_MouseDown( Object sender, BMouseEventArgs e )
+        {
             mKeyLengthSplitterMouseDowned = true;
             mKeyLengthSplitterInitialMouse = PortUtil.getMousePosition();
             mKeyLengthInitValue = AppManager.keyWidth;
@@ -14979,7 +15356,8 @@ namespace org.kbinani.cadencii {
             mKeyLengthSplitterDistance = splitContainer1.getDividerLocation();
         }
 
-        public void pictKeyLengthSplitter_MouseMove( Object sender, BMouseEventArgs e ) {
+        public void pictKeyLengthSplitter_MouseMove( Object sender, BMouseEventArgs e )
+        {
             if ( !mKeyLengthSplitterMouseDowned ) {
                 return;
             }
@@ -15004,12 +15382,14 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
 
-        public void pictKeyLengthSplitter_MouseUp( Object sender, BMouseEventArgs e ) {
+        public void pictKeyLengthSplitter_MouseUp( Object sender, BMouseEventArgs e )
+        {
             mKeyLengthSplitterMouseDowned = false;
         }
         #endregion
 
-        public void menuStrip1_MouseDown( Object sender, BMouseEventArgs e ) {
+        public void menuStrip1_MouseDown( Object sender, BMouseEventArgs e )
+        {
             if ( mTextBoxTrackName != null ) {
 #if !JAVA
                 if ( !mTextBoxTrackName.IsDisposed ) {
@@ -15020,7 +15400,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void timer_Tick( Object sender, EventArgs e ) {
+        public void timer_Tick( Object sender, EventArgs e )
+        {
             if ( AppManager.isGeneratorRunning() ) {
                 double play_time = PlaySound.getPosition();
                 double now = play_time + AppManager.mDirectPlayShift;
@@ -15043,7 +15424,8 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
 
-        public void bgWorkScreen_DoWork( Object sender, BDoWorkEventArgs e ) {
+        public void bgWorkScreen_DoWork( Object sender, BDoWorkEventArgs e )
+        {
             try {
 #if JAVA
                 refreshScreenCore( this, new EventArgs() );
@@ -15057,24 +15439,29 @@ namespace org.kbinani.cadencii {
         }
 
 #if !JAVA
-        public void toolStripEdit_Resize( Object sender, EventArgs e ) {
+        public void toolStripEdit_Resize( Object sender, EventArgs e )
+        {
             saveToolbarLocation();
         }
 
-        public void toolStripPosition_Resize( Object sender, EventArgs e ) {
+        public void toolStripPosition_Resize( Object sender, EventArgs e )
+        {
             saveToolbarLocation();
         }
 
-        public void toolStripMeasure_Resize( Object sender, EventArgs e ) {
+        public void toolStripMeasure_Resize( Object sender, EventArgs e )
+        {
             saveToolbarLocation();
         }
 
-        void toolStripFile_Resize( Object sender, EventArgs e ) {
+        void toolStripFile_Resize( Object sender, EventArgs e )
+        {
             saveToolbarLocation();
         }
 #endif
 
-        public void toolStripContainer_TopToolStripPanel_SizeChanged( Object sender, EventArgs e ) {
+        public void toolStripContainer_TopToolStripPanel_SizeChanged( Object sender, EventArgs e )
+        {
             if ( getExtendedState() == BForm.ICONIFIED ) {
                 return;
             }
@@ -15096,7 +15483,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void handleRecentFileMenuItem_Click( Object sender, EventArgs e ) {
+        public void handleRecentFileMenuItem_Click( Object sender, EventArgs e )
+        {
             if ( sender is BMenuItem ) {
                 BMenuItem item = (BMenuItem)sender;
                 if ( item.getTag() is String ) {
@@ -15107,7 +15495,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void handleRecentFileMenuItem_MouseEnter( Object sender, EventArgs e ) {
+        public void handleRecentFileMenuItem_MouseEnter( Object sender, EventArgs e )
+        {
             if ( sender is BMenuItem ) {
                 BMenuItem item = (BMenuItem)sender;
 #if JAVA
@@ -15118,7 +15507,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void handleStripPaletteTool_Click( Object sender, EventArgs e ) {
+        public void handleStripPaletteTool_Click( Object sender, EventArgs e )
+        {
             String id = "";  //選択されたツールのID
 #if ENABLE_SCRIPT
             if ( sender is System.Windows.Forms.ToolBarButton ) {
@@ -15186,7 +15576,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void handleTrackOn_Click( Object sender, EventArgs e ) {
+        public void handleTrackOn_Click( Object sender, EventArgs e )
+        {
             boolean newStatus = (sender == cMenuTrackTabTrackOn) ? !cMenuTrackTabTrackOn.isSelected() : !menuTrackOn.isSelected();
             menuTrackOn.setSelected( newStatus );
             cMenuTrackTabTrackOn.setSelected( newStatus );
@@ -15202,7 +15593,8 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
 
-        public void handleTrackRenderAll_Click( Object sender, EventArgs e ) {
+        public void handleTrackRenderAll_Click( Object sender, EventArgs e )
+        {
             Vector<Integer> list = new Vector<Integer>();
             int c = AppManager.getVsqFile().Track.size();
             for ( int i = 1; i < c; i++ ) {
@@ -15216,11 +15608,13 @@ namespace org.kbinani.cadencii {
             AppManager.patchWorkToFreeze( this, list );
         }
 
-        public void handleEditorConfig_QuantizeModeChanged( Object sender, EventArgs e ) {
+        public void handleEditorConfig_QuantizeModeChanged( Object sender, EventArgs e )
+        {
             applyQuantizeMode();
         }
 
-        public void handleFileSave_Click( Object sender, EventArgs e ) {
+        public void handleFileSave_Click( Object sender, EventArgs e )
+        {
             for ( int track = 1; track < AppManager.getVsqFile().Track.size(); track++ ) {
                 if ( AppManager.getVsqFile().Track.get( track ).getEventCount() == 0 ) {
                     AppManager.showMessageBox(
@@ -15255,7 +15649,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void handleFileOpen_Click( Object sender, EventArgs e ) {
+        public void handleFileOpen_Click( Object sender, EventArgs e )
+        {
             if ( !dirtyCheck() ) {
                 return;
             }
@@ -15404,7 +15799,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void handleFileNew_Click( Object sender, EventArgs e ) {
+        public void handleFileNew_Click( Object sender, EventArgs e )
+        {
             if ( !dirtyCheck() ) {
                 return;
             }
@@ -15429,115 +15825,130 @@ namespace org.kbinani.cadencii {
             refreshScreen();
         }
 
-        public void handleEditPaste_Click( Object sender, EventArgs e ) {
+        public void handleEditPaste_Click( Object sender, EventArgs e )
+        {
             pasteEvent();
         }
 
-        public void handleEditCopy_Click( Object sender, EventArgs e ) {
+        public void handleEditCopy_Click( Object sender, EventArgs e )
+        {
 #if DEBUG
             AppManager.debugWriteLine( "handleEditCopy_Click" );
 #endif
             copyEvent();
         }
 
-        public void handleEditCut_Click( Object sender, EventArgs e ) {
+        public void handleEditCut_Click( Object sender, EventArgs e )
+        {
             cutEvent();
         }
 
-        public void handlePositionQuantize( Object sender, EventArgs e ) {
+        public void handlePositionQuantize( Object sender, EventArgs e )
+        {
             QuantizeMode qm = AppManager.editorConfig.getPositionQuantize();
             if ( sender == cMenuPianoQuantize04 ||
 #if ENABLE_STRIP_DROPDOWN
-                 sender == stripDDBtnQuantize04 ||
+ sender == stripDDBtnQuantize04 ||
 #endif
-                 sender == menuSettingPositionQuantize04 ) {
+ sender == menuSettingPositionQuantize04 ) {
                 qm = QuantizeMode.p4;
             } else if ( sender == cMenuPianoQuantize08 ||
 #if ENABLE_STRIP_DROPDOWN
-                        sender == stripDDBtnQuantize08 ||
+ sender == stripDDBtnQuantize08 ||
 #endif
-                        sender == menuSettingPositionQuantize08 ) {
+ sender == menuSettingPositionQuantize08 ) {
                 qm = QuantizeMode.p8;
             } else if ( sender == cMenuPianoQuantize16 ||
 #if ENABLE_STRIP_DROPDOWN
-                        sender == stripDDBtnQuantize16 ||
+ sender == stripDDBtnQuantize16 ||
 #endif
-                        sender == menuSettingPositionQuantize16 ) {
+ sender == menuSettingPositionQuantize16 ) {
                 qm = QuantizeMode.p16;
             } else if ( sender == cMenuPianoQuantize32 ||
 #if ENABLE_STRIP_DROPDOWN
-                        sender == stripDDBtnQuantize32 ||
+ sender == stripDDBtnQuantize32 ||
 #endif
-                        sender == menuSettingPositionQuantize32 ) {
+ sender == menuSettingPositionQuantize32 ) {
                 qm = QuantizeMode.p32;
             } else if ( sender == cMenuPianoQuantize64 ||
 #if ENABLE_STRIP_DROPDOWN
-                        sender == stripDDBtnQuantize64 ||
+ sender == stripDDBtnQuantize64 ||
 #endif
-                        sender == menuSettingPositionQuantize64 ) {
+ sender == menuSettingPositionQuantize64 ) {
                 qm = QuantizeMode.p64;
             } else if ( sender == cMenuPianoQuantize128 ||
 #if ENABLE_STRIP_DROPDOWN
-                        sender == stripDDBtnQuantize128 ||
+ sender == stripDDBtnQuantize128 ||
 #endif
-                        sender == menuSettingPositionQuantize128 ) {
+ sender == menuSettingPositionQuantize128 ) {
                 qm = QuantizeMode.p128;
             } else if ( sender == cMenuPianoQuantizeOff ||
 #if ENABLE_STRIP_DROPDOWN
-                        sender == stripDDBtnQuantizeOff ||
+ sender == stripDDBtnQuantizeOff ||
 #endif
-                        sender == menuSettingPositionQuantizeOff ) {
+ sender == menuSettingPositionQuantizeOff ) {
                 qm = QuantizeMode.off;
             }
             AppManager.editorConfig.setPositionQuantize( qm );
             refreshScreen();
         }
 
-        public void handlePositionQuantizeTriplet_Click( Object sender, EventArgs e ) {
+        public void handlePositionQuantizeTriplet_Click( Object sender, EventArgs e )
+        {
             AppManager.editorConfig.setPositionQuantizeTriplet( !AppManager.editorConfig.isPositionQuantizeTriplet() );
             refreshScreen();
         }
 
-        public void handleLengthQuantize04_Click( Object sender, EventArgs e ) {
+        public void handleLengthQuantize04_Click( Object sender, EventArgs e )
+        {
             AppManager.editorConfig.setLengthQuantize( QuantizeMode.p4 );
         }
 
-        public void handleLengthQuantize08_Click( Object sender, EventArgs e ) {
+        public void handleLengthQuantize08_Click( Object sender, EventArgs e )
+        {
             AppManager.editorConfig.setLengthQuantize( QuantizeMode.p8 );
         }
 
-        public void handleLengthQuantize16_Click( Object sender, EventArgs e ) {
+        public void handleLengthQuantize16_Click( Object sender, EventArgs e )
+        {
             AppManager.editorConfig.setLengthQuantize( QuantizeMode.p16 );
         }
 
-        public void handleLengthQuantize32_Click( Object sender, EventArgs e ) {
+        public void handleLengthQuantize32_Click( Object sender, EventArgs e )
+        {
             AppManager.editorConfig.setLengthQuantize( QuantizeMode.p32 );
         }
 
-        public void handleLengthQuantize64_Click( Object sender, EventArgs e ) {
+        public void handleLengthQuantize64_Click( Object sender, EventArgs e )
+        {
             AppManager.editorConfig.setLengthQuantize( QuantizeMode.p64 );
         }
 
-        public void handleLengthQuantize128_Click( Object sender, EventArgs e ) {
+        public void handleLengthQuantize128_Click( Object sender, EventArgs e )
+        {
             AppManager.editorConfig.setLengthQuantize( QuantizeMode.p128 );
         }
 
-        public void handleLengthQuantizeOff_Click( Object sender, EventArgs e ) {
+        public void handleLengthQuantizeOff_Click( Object sender, EventArgs e )
+        {
             AppManager.editorConfig.setLengthQuantize( QuantizeMode.off );
         }
 
-        public void handleLengthQuantizeTriplet_Click( Object sender, EventArgs e ) {
+        public void handleLengthQuantizeTriplet_Click( Object sender, EventArgs e )
+        {
             AppManager.editorConfig.setLengthQuantizeTriplet( !AppManager.editorConfig.isLengthQuantizeTriplet() );
         }
 
-        public void handleStartMarker_Click( Object sender, EventArgs e ) {
+        public void handleStartMarker_Click( Object sender, EventArgs e )
+        {
             AppManager.mStartMarkerEnabled = !AppManager.mStartMarkerEnabled;
             menuVisualStartMarker.setSelected( AppManager.mStartMarkerEnabled );
             pictPianoRoll.requestFocus();
             refreshScreen();
         }
 
-        public void handleEndMarker_Click( Object sender, EventArgs e ) {
+        public void handleEndMarker_Click( Object sender, EventArgs e )
+        {
             AppManager.mEndMarkerEnabled = !AppManager.mEndMarkerEnabled;
             stripBtnEndMarker.Pushed = AppManager.mEndMarkerEnabled;
             menuVisualEndMarker.setSelected( AppManager.mEndMarkerEnabled );
@@ -15550,7 +15961,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public void handleMenuMouseEnter( Object sender, EventArgs e ) {
+        public void handleMenuMouseEnter( Object sender, EventArgs e )
+        {
             if ( sender == null ) {
                 return;
             }
@@ -15674,7 +16086,8 @@ namespace org.kbinani.cadencii {
             statusLabel.Text = text;
         }
 
-        public void handleSpaceKeyDown( Object sender, BKeyEventArgs e ) {
+        public void handleSpaceKeyDown( Object sender, BKeyEventArgs e )
+        {
 #if JAVA
             if ( (e.KeyValue & KeyEvent.VK_SPACE) == KeyEvent.VK_SPACE ) {
 #else
@@ -15684,7 +16097,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void handleSpaceKeyUp( Object sender, BKeyEventArgs e ) {
+        public void handleSpaceKeyUp( Object sender, BKeyEventArgs e )
+        {
 #if JAVA
             if ( (e.KeyValue & KeyEvent.VK_SPACE) == KeyEvent.VK_SPACE ) {
 #else
@@ -15694,7 +16108,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void handleChangeRenderer( Object sender, EventArgs e ) {
+        public void handleChangeRenderer( Object sender, EventArgs e )
+        {
             RendererKind kind = RendererKind.NULL;
             if ( sender == cMenuTrackTabRendererAquesTone || sender == menuTrackRendererAquesTone ) {
                 kind = RendererKind.AQUES_TONE;
@@ -15745,7 +16160,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void handleBgmOffsetSeconds_Click( Object sender, EventArgs e ) {
+        public void handleBgmOffsetSeconds_Click( Object sender, EventArgs e )
+        {
             if ( !(sender is BMenuItem) ) {
                 return;
             }
@@ -15806,7 +16222,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void handleBgmStartAfterPremeasure_CheckedChanged( Object sender, EventArgs e ) {
+        public void handleBgmStartAfterPremeasure_CheckedChanged( Object sender, EventArgs e )
+        {
             if ( !(sender is BMenuItem) ) {
                 return;
             }
@@ -15834,7 +16251,8 @@ namespace org.kbinani.cadencii {
             setEdited( true );
         }
 
-        public void handleBgmAdd_Click( Object sender, EventArgs e ) {
+        public void handleBgmAdd_Click( Object sender, EventArgs e )
+        {
             String last_file = AppManager.editorConfig.getLastUsedPathIn( "wav" );
             if ( !last_file.Equals( "" ) ) {
                 String dir = PortUtil.getDirectoryName( last_file );
@@ -15874,7 +16292,8 @@ namespace org.kbinani.cadencii {
             updateBgmMenuState();
         }
 
-        public void handleBgmRemove_Click( Object sender, EventArgs e ) {
+        public void handleBgmRemove_Click( Object sender, EventArgs e )
+        {
             if ( !(sender is BMenuItem) ) {
                 return;
             }
@@ -15898,7 +16317,8 @@ namespace org.kbinani.cadencii {
             updateBgmMenuState();
         }
 
-        public void handleSettingPaletteTool( Object sender, EventArgs e ) {
+        public void handleSettingPaletteTool( Object sender, EventArgs e )
+        {
 #if ENABLE_SCRIPT
             if ( sender is BMenuItem ) {
                 BMenuItem tsmi = (BMenuItem)sender;
@@ -15938,7 +16358,8 @@ namespace org.kbinani.cadencii {
         }
 
 #if ENABLE_SCRIPT
-        public void handleScriptMenuItem_Click( Object sender, EventArgs e ) {
+        public void handleScriptMenuItem_Click( Object sender, EventArgs e )
+        {
 #if DEBUG
             PortUtil.println( "FormMain#handleScriptMenuItem_Click; sender.GetType()=" + sender.GetType() );
 #endif
@@ -16056,7 +16477,8 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if ENABLE_MIDI
-        public void mMidiIn_MidiReceived( double time, byte[] data ) {
+        public void mMidiIn_MidiReceived( double time, byte[] data )
+        {
 #if !JAVA
             if ( data.Length <= 2 ) {
                 return;
@@ -16113,7 +16535,8 @@ namespace org.kbinani.cadencii {
         }
 #endif
 
-        public void menuTrackManager_Click( Object sender, EventArgs e ) {
+        public void menuTrackManager_Click( Object sender, EventArgs e )
+        {
 
         }
         #endregion
@@ -16124,7 +16547,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static String _( String id ) {
+        public static String _( String id )
+        {
             return Messaging.getMessage( id );
         }
 
@@ -16134,7 +16558,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="work"></param>
         /// <param name="tempo"></param>
-        public static void shiftClockToMatchWith( VsqFileEx target, VsqFile tempo, double shift_seconds ) {
+        public static void shiftClockToMatchWith( VsqFileEx target, VsqFile tempo, double shift_seconds )
+        {
             // テンポをリプレースする場合。
             // まずクロック値を、リプレース後のモノに置き換え
             for ( int track = 1; track < target.Track.size(); track++ ) {
@@ -16212,7 +16637,8 @@ namespace org.kbinani.cadencii {
         /// フォームのタイトルバーが画面内に入るよう、Locationを正規化します
         /// </summary>
         /// <param name="form"></param>
-        public static void normalizeFormLocation( BForm dlg ) {
+        public static void normalizeFormLocation( BForm dlg )
+        {
             Rectangle rcScreen = PortUtil.getWorkingArea( dlg );
             int top = dlg.getY();
             if ( top + dlg.getHeight() > rcScreen.y + rcScreen.height ) {
@@ -16250,14 +16676,16 @@ namespace org.kbinani.cadencii {
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing ) {
+        protected override void Dispose( boolean disposing )
+        {
             if ( disposing && (components != null) ) {
                 components.Dispose();
             }
             base.Dispose( disposing );
         }
 
-        void foo() {
+        void foo()
+        {
             System.Windows.Forms.ToolBarButton b = new System.Windows.Forms.ToolBarButton();
             b.DropDownMenu.MenuItems.AddRange( new System.Windows.Forms.MenuItem[]{
              this.stripDDBtnLength04,
@@ -16269,7 +16697,8 @@ namespace org.kbinani.cadencii {
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
         /// コード エディタで変更しないでください。
         /// </summary>
-        public void InitializeComponent() {
+        public void InitializeComponent()
+        {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager( typeof( FormMain ) );
             this.menuStripMain = new org.kbinani.windows.forms.BMenuBar();
@@ -16286,10 +16715,11 @@ namespace org.kbinani.cadencii {
             this.menuFileImportMidi = new org.kbinani.windows.forms.BMenuItem();
             this.menuFileExport = new org.kbinani.windows.forms.BMenuItem();
             this.menuFileExportWave = new org.kbinani.windows.forms.BMenuItem();
+            this.menuFileExportVsq = new org.kbinani.windows.forms.BMenuItem();
             this.menuFileExportMidi = new org.kbinani.windows.forms.BMenuItem();
             this.menuFileExportMusicXml = new org.kbinani.windows.forms.BMenuItem();
             this.menuFileExportUst = new org.kbinani.windows.forms.BMenuItem();
-            this.menuFileExportVsq = new org.kbinani.windows.forms.BMenuItem();
+            this.menuFileExportVxt = new org.kbinani.windows.forms.BMenuItem();
             this.toolStripMenuItem11 = new System.Windows.Forms.ToolStripSeparator();
             this.menuFileRecent = new org.kbinani.windows.forms.BMenu();
             this.toolStripMenuItem12 = new System.Windows.Forms.ToolStripSeparator();
@@ -16613,7 +17043,7 @@ namespace org.kbinani.cadencii {
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.menuFileExportVxt = new org.kbinani.windows.forms.BMenuItem();
+            this.menuLyricSetAutoVibrato = new org.kbinani.windows.forms.BMenuItem();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
@@ -16743,13 +17173,13 @@ namespace org.kbinani.cadencii {
             // menuFileImportVsq
             // 
             this.menuFileImportVsq.Name = "menuFileImportVsq";
-            this.menuFileImportVsq.Size = new System.Drawing.Size( 152, 22 );
+            this.menuFileImportVsq.Size = new System.Drawing.Size( 142, 22 );
             this.menuFileImportVsq.Text = "VSQ File";
             // 
             // menuFileImportMidi
             // 
             this.menuFileImportMidi.Name = "menuFileImportMidi";
-            this.menuFileImportMidi.Size = new System.Drawing.Size( 152, 22 );
+            this.menuFileImportMidi.Size = new System.Drawing.Size( 142, 22 );
             this.menuFileImportMidi.Text = "Standard MIDI";
             // 
             // menuFileExport
@@ -16773,6 +17203,12 @@ namespace org.kbinani.cadencii {
             this.menuFileExportWave.Size = new System.Drawing.Size( 242, 22 );
             this.menuFileExportWave.Text = "Wave";
             // 
+            // menuFileExportVsq
+            // 
+            this.menuFileExportVsq.Name = "menuFileExportVsq";
+            this.menuFileExportVsq.Size = new System.Drawing.Size( 242, 22 );
+            this.menuFileExportVsq.Text = "VSQ File";
+            // 
             // menuFileExportMidi
             // 
             this.menuFileExportMidi.Name = "menuFileExportMidi";
@@ -16791,11 +17227,11 @@ namespace org.kbinani.cadencii {
             this.menuFileExportUst.Size = new System.Drawing.Size( 242, 22 );
             this.menuFileExportUst.Text = "UTAU Project File (current track)";
             // 
-            // menuFileExportVsq
+            // menuFileExportVxt
             // 
-            this.menuFileExportVsq.Name = "menuFileExportVsq";
-            this.menuFileExportVsq.Size = new System.Drawing.Size( 242, 22 );
-            this.menuFileExportVsq.Text = "VSQ File";
+            this.menuFileExportVxt.Name = "menuFileExportVxt";
+            this.menuFileExportVxt.Size = new System.Drawing.Size( 242, 22 );
+            this.menuFileExportVxt.Text = "Metatext for vConnect";
             // 
             // toolStripMenuItem11
             // 
@@ -17311,7 +17747,8 @@ namespace org.kbinani.cadencii {
             this.menuLyricExpressionProperty,
             this.menuLyricVibratoProperty,
             this.menuLyricPhonemeTransformation,
-            this.menuLyricDictionary} );
+            this.menuLyricDictionary,
+            this.menuLyricSetAutoVibrato} );
             this.menuLyric.Name = "menuLyric";
             this.menuLyric.Size = new System.Drawing.Size( 62, 20 );
             this.menuLyric.Text = "Lyrics(&L)";
@@ -19279,11 +19716,11 @@ namespace org.kbinani.cadencii {
             this.statusLabel.Name = "statusLabel";
             this.statusLabel.Size = new System.Drawing.Size( 0, 17 );
             // 
-            // menuFileExportVxt
+            // menuLyricSetAutoVibrato
             // 
-            this.menuFileExportVxt.Name = "menuFileExportVxt";
-            this.menuFileExportVxt.Size = new System.Drawing.Size( 242, 22 );
-            this.menuFileExportVxt.Text = "Metatext for vConnect";
+            this.menuLyricSetAutoVibrato.Name = "menuLyricSetAutoVibrato";
+            this.menuLyricSetAutoVibrato.Size = new System.Drawing.Size( 219, 22 );
+            this.menuLyricSetAutoVibrato.Text = "Set this vibrato as default(&S)";
             // 
             // FormMain
             // 

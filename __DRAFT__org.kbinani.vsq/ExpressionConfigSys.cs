@@ -1099,7 +1099,8 @@ namespace org.kbinani.vsq {
             RandomAccessFile fs = null;
             try {
                 fs = new RandomAccessFile( expression, "r" );
-                byte[] dat = new byte[8];
+                List<byte> dat = new List<byte>();
+                vec.ensureCapacity( dat, 8 );
                 fs.seek( 0x20 );
                 for ( int i = 0; i < MAX_VIBRATO; i++ ) {
                     fs.read( dat, 0, 8 );
@@ -1121,7 +1122,8 @@ namespace org.kbinani.vsq {
                     RandomAccessFile fs_ved = null;
                     try {
                         fs_ved = new RandomAccessFile( ved, "r" );
-                        byte[] byte_ved = new byte[(int)fs_ved.length()];
+                        List<byte> byte_ved = new List<byte>();
+                        vec.ensureCapacity( byte_ved, (int)fs_ved.length() );
                         fs_ved.read( byte_ved, 0, byte_ved.Length );
                         TransCodeUtil.decodeBytes( byte_ved );
                         int[] int_ved = new int[byte_ved.Length];

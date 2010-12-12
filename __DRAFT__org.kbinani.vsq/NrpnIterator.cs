@@ -54,7 +54,7 @@ namespace org.kbinani.vsq {
             Type t = typeof( NRPN );
             foreach ( FieldInfo fi in t.GetFields() ) {
                 if ( fi.FieldType.Equals( typeof( int ) ) ) {
-                    nrpns.add( new ValuePair<String, Integer>( fi.Name, (int)fi.GetValue( t ) ) );
+                    vec.add( nrpns, new ValuePair<String, Integer>( fi.Name, (int)fi.GetValue( t ) ) );
                 }
             }
 #endif

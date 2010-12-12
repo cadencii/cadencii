@@ -124,7 +124,8 @@ namespace org.kbinani.vsq {
                 me.clock = last_clock.value;
                 me.firstByte = first_byte;
                 me.data = new int[2];
-                byte[] d = new byte[2];
+                List<byte> d = new List<byte>();
+                vec.ensureCapacity( d, 2 );
                 stream.read( d, 0, 2 );
                 for ( int i = 0; i < 2; i++ ) {
                     me.data[i] = 0xff & d[i];
@@ -141,7 +142,8 @@ namespace org.kbinani.vsq {
                 me.clock = last_clock.value;
                 me.firstByte = first_byte;
                 me.data = new int[1];
-                byte[] d = new byte[1];
+                List<byte> d = new List<byte>();
+                vec.ensureCapacity( d, 1 );
                 stream.read( d, 0, 1 );
                 me.data[0] = 0xff & d[0];
                 return me;
@@ -169,7 +171,8 @@ namespace org.kbinani.vsq {
                 me.firstByte = first_byte;
                 me.data = new int[(int)meta_event_length + 1];
                 me.data[0] = meta_event_type;
-                byte[] d = new byte[(int)meta_event_length + 1];
+                List<byte> d = new List<byte>();
+                vec.ensureCapacity( d, (int)meta_event_length + 1 );
                 stream.read( d, 1, (int)meta_event_length );
                 for ( int i = 1; i < meta_event_length + 1; i++ ) {
 
@@ -183,7 +186,8 @@ namespace org.kbinani.vsq {
                 me.firstByte = first_byte;
                 long sysex_length = readDeltaClock( stream );
                 me.data = new int[(int)sysex_length + 1];
-                byte[] d = new byte[(int)sysex_length + 1];
+                List<byte> d = new List<byte>();
+                vec.ensureCapacity( d, (int)sysex_length + 1 );
                 stream.read( d, 0, (int)(sysex_length + 1) );
                 for ( int i = 0; i < sysex_length + 1; i++ ) {
                     me.data[i] = 0xff & d[i];
@@ -196,7 +200,8 @@ namespace org.kbinani.vsq {
                 me.firstByte = first_byte;
                 long sysex_length = readDeltaClock( stream );
                 me.data = new int[(int)sysex_length];
-                byte[] d = new byte[(int)sysex_length];
+                List<byte> d = new List<byte>();
+                vec.ensureCapacity( d, (int)sysex_length );
                 stream.read( d, 0, (int)sysex_length );
                 for ( int i = 0; i < sysex_length; i++ ) {
                     me.data[i] = 0xff & d[i];

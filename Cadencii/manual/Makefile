@@ -1,6 +1,6 @@
 all: cadencii.pdf tech_memo.pdf
 
-tech_memo.tex: tech_memo_scroll.tex tech_memo_synth_system.tex tech_memo_class-depend_vsq.tex
+tech_memo.tex: tech_memo_scroll.tex tech_memo_synth_system.tex tech_memo_class-depend_vsq.tex tech_memo_checklist.tex
 
 tech_memo.pdf: tech_memo.dvi
 	dvipdfmx tech_memo.dvi

@@ -45,7 +45,7 @@ namespace org.kbinani {
 #endif
 
 #if JAVA
-    public class PortUtil implements AWTEventListener{
+    public class PortUtil implements AWTEventListener {
 #else
     public class PortUtil {
 #endif

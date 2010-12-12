@@ -2838,12 +2838,15 @@ namespace org.kbinani.vsq {
             //ヘッダ
             fs.write( _MTRK, 0, 4 );
             //データ長。とりあえず0
-            fs.write( new byte[] { (byte)0x00, (byte)0x00, (byte)0x00, (byte)0x00 }, 0, 4 );
+            fs.writeByte( 0 );
+            fs.writeByte( 0 );
+            fs.writeByte( 0 );
+            fs.writeByte( 0 );
             long first_position = fs.getFilePointer();
             //トラック名
             writeFlexibleLengthUnsignedLong( fs, (byte)0x00 );//デルタタイム
-            fs.write( (byte)0xff );//ステータスタイプ
-            fs.write( (byte)0x03 );//イベントタイプSequence/Track Name
+            fs.writeByte( 0xff );//ステータスタイプ
+            fs.writeByte( 0x03 );//イベントタイプSequence/Track Name
             byte[] seq_name = PortUtil.getEncodedByte( encoding, vsq.Track.get( track ).getName() );
             writeFlexibleLengthUnsignedLong( fs, (long)seq_name.Length );//seq_nameの文字数
             fs.write( seq_name, 0, seq_name.Length );
