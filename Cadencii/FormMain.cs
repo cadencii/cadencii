@@ -552,11 +552,11 @@ namespace org.kbinani.cadencii
         /// </summary>
         private float mFps = 0f;
         private double[] mFpsDrawTime2 = new double[128];
+        private float mFps2 = 0f;
+#endif
         public BMenuItem menuFileExportVsq;
         private BMenuItem menuFileExportVxt;
         public BMenuItem menuLyricSetAutoVibrato;
-        private float mFps2 = 0f;
-#endif
         #endregion
 
         #region constructor

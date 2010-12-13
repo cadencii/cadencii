@@ -2,6 +2,9 @@
 \usepackage[dvips]{graphicx}
 \usepackage[abs]{overpic}
 \usepackage{color}
+\usepackage{colortbl}
+\usepackage{longtable}
+
 \title{‹Zpî•ñ}
 \author{kbinani}
 \date{}
@@ -28,6 +31,15 @@
 \setlength{\headsep}{0mm}
 \setlength{\headheight}{0mm}
 \setlength{\topskip}{0mm}
+
+\makeatletter
+\newcommand{\subsubsubsection}{\@startsection{paragraph}{4}{\z@}%
+  {1.0\Cvs \@plus.5\Cdp \@minus.2\Cdp}%
+  {.1\Cvs \@plus.3\Cdp}%
+  {\reset@font\sffamily\normalsize}
+}
+\makeatother
+\setcounter{secnumdepth}{4}
 
 \begin{document}
 \maketitle

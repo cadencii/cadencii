@@ -2,6 +2,7 @@
 \usepackage[dvips]{graphicx}
 \usepackage[abs]{overpic}
 \usepackage[dvipdfm,bookmarks=false,linkbordercolor={1 1 1},urlbordercolor={1 1 1},breaklinks=true]{hyperref}
+\usepackage{latexsym}
 \title{Cadenciiスタートアップガイド}
 \author{gondam, kbinani}
 \date{}
@@ -34,7 +35,146 @@
 
 \tableofcontents
 
+%***********************************************************************
 \newpage
+\section{ダウンロードとインストール}
+%-----------------------------------------------------------------------
+下記サイトからCadenciiをダウンロードします． \\
+\hspace{4em} \href{http://www9.atwiki.jp/boare/pages/19.html}{http://www9.atwiki.jp/boare/pages/19.html} \\
+ZIPファイルを解凍し，適当な場所にフォルダごとコピーすればひとまずインストールは完了です．
+
+%***********************************************************************
+\newpage
+\section{起動とトラブルシュート}
+%-----------------------------------------------------------------------
+解凍したフォルダにあるCadencii.exeをダブルクリックすると起動します．
+起動時に，下図のようなダイアログが出てうまく起動できないときは，.NET Frameworkがインストール
+されていないのが原因です．この場合，以下の手順に沿って.NET Frameworkをインストールしてください．
+
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[scale=.5]{cadencii_error_dotnet.eps}
+  \end{center}
+  \label{図：.NET Frameworkが無い時のエラー}
+\end{figure}
+
+\subsection{.NET Frameworkのインストール}
+
+\subsubsection{Windows 2000, Windows XPの場合}
+Windows 2000とWindows XPには，デフォルトで.NET Frameworkがインストールされていないため，
+自分でインストールしなくてはなりません．
+\par
+.NET Frameworkは以下のURLから入手できるので，ダウンロードとインストールを行ってください．\\
+\hspace{4em}\href{http://msdn.microsoft.com/ja-jp/netframework/aa569263.aspx}{http://msdn.microsoft.com/ja-jp/netframework/aa569263.aspx}
+
+\subsubsection{Windows Vista, Windows 7の場合}
+Windows VistaとWindows 7には，デフォルトで.NET Frameworkがインストールされています．
+しかし，.NET Frameworkを無効化していると上図のダイアログが出るなどして起動できない場合があります．
+\par
+以下の手順で.NET Frameworkを有効化してください．
+\begin{enumerate}
+  \item{スタートメニューから，「コントロールパネル」→「プログラム」→「Windows の機能の有効化または無効化」と辿ります}
+  \item{下図のようなダイアログが出るので，Microsoft .NET Frameworkの項目にチェックを入れ，「OK」ボタンを押します}
+\end{enumerate}
+
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[scale=.5]{cadencii_switch_dotnet.eps}
+  \end{center}
+  \label{図：.NET Frameworkの有効化}
+\end{figure}
+
+%***********************************************************************
+\clearpage
+\section{UTAUの音源を各個登録する}
+%-----------------------------------------------------------------------
+このステップはUTAUモード，またはvConnect-STANDモードの場合に必要です．
+VOCALOID1，VOCALOID2，またはAquesToneの各モードの場合はスキップして下さい．
+\par
+音源ワンセットを，以下の手順でひとつづつ登録します．
+使いたい音源はあらかじめダウンロードや解凍などを行って使える状態にしておきます．
+ただし，音源をUTAUのエディターに登録しただけではCadenciiで使えるようにはなりませんので注意して下さい．
+
+\begin{enumerate}
+  \item{まずCadenciiを起動します}
+  \item{「設定」→「プリファレンス」の順にメニューを辿ります}
+  \item{出てきたダイアログの「UTAU音源」タブを表示します(下図参照)}
+  \item{
+    左下の「追加」ボタンを押すと，ファイルダイアログが出ます．
+    登録したい音源の原音設定ファイル(oto.ini)を選択し，「OK」ボタンを押すと登録完了です
+  }
+\end{enumerate}
+
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[scale=.5]{cadencii_preference_utau-singer.eps}
+  \end{center}
+  \label{図：UTAU原音の登録}
+\end{figure}
+
+%***********************************************************************
+\clearpage
+\section{UTAU合成器(所謂resampler)の登録}
+%-----------------------------------------------------------------------
+このステップはUTAUモードの場合に必要です．
+他のモードの場合はスキップして下さい．
+
+\begin{enumerate}
+  \item{まずCadenciiを起動します}
+  \item{「設定」→「プリファレンス」の順にメニューを辿ります}
+  \item{出てきたダイアログの「実行環境」タブを表示します(下図参照)}
+  \item{中央の「resampler」欄の右端にある「...」ボタンを押します．}
+  \item{ファイル選択ダイアログが出るので，使用するUTAU合成器，またはUTAU合成器互換の合成器の実行ファイルを選択して「OK」を押します}
+  \item{同様に，wavtoolの実行ファイルも設定します}
+\end{enumerate}
+
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[scale=.5]{cadencii_preference_utau-resampler.eps}
+  \end{center}
+  \label{図：UTAU合成器の登録}
+\end{figure}
+
+
+%***********************************************************************
+\clearpage
+\section{歌わせる}
+%-----------------------------------------------------------------------
+まず，自分の使いたい歌声合成エンジンを，現在のトラックに適用します．
+\par
+「トラック」→「歌声合成エンジン」と辿り，使いたい歌声合成エンジンを選びます．(下図参照)
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[scale=.5]{cadencii_select-singer-synth-system.eps}
+  \end{center}
+  \label{図：歌声合成エンジンの選択}
+\end{figure}
+メニュー項目に禁止マークが表示されている歌声合成エンジンは，設定が正しく行われていません．
+以下のトラブルシュートを参考に設定を見なおして下さい．
+\par
+次に，音符を入力します．
+編集画面の「鉛筆」ツールボタンがあるのでこれを押して選択状態にします．
+この状態でピアノロール上をマウスをドラッグすると，音符が入力できます．
+\par
+さらに，音符の歌詞を入力します．
+デフォルトでは歌詞が「あ」になっていますが，適当に変更します．
+音符の部分をダブルクリックすると，画面上にテキストボックスが現れるので，歌詞を入力してEnterキーを押すと，変更が反映されます．
+入力が済むと以下のような表示になると思います．
+\begin{figure}[h]
+  \begin{center}
+    \includegraphics[scale=.5]{cadencii_sample_synth.eps}
+  \end{center}
+  \label{図：歌詞入力後のサンプル画面}
+\end{figure}
+\par
+最後に再生ボタンを押します．
+再生ボタンは，ツールバー上にある青色の三角形のボタンです．
+歌声合成が実行され，結果が再生されると思います．
+
+\subsection{トラブルシュート}
+
+\subsubsection{}
+
 
 \section{Cadenciiを使用する前にすること}
 Cadenciiの全ての機能を使用するには、VOCALOIDおよびVOCALOID2システムがインストールされ、アクティベートが完了している必要があります。
@@ -108,19 +248,6 @@ vConnectを使用する場合はVC++ランタイムが必要です。
   \item{
     ダウンロードしたファイルをダブルクリックすると、インストールが開始されます。
     あとは、インストーラの指示に従ってください。
-  }
-\end{enumerate}
-
-\section{Cadenciiダウンロード～起動}
-\begin{enumerate}
-  \item{
-    下記サイトからCadenciiをダウンロードします
-    \par
-    \href{http://www9.atwiki.jp/boare/pages/19.html}{http://www9.atwiki.jp/boare/pages/19.html}
-  }
-  \item{
-    ダウンロードしたZIPファイルを解凍ソフトで解凍してください。
-    フォルダの中に[Cadencii]というアプリケーションが入っていますのでダブルクリックで起動できます。
   }
 \end{enumerate}
 

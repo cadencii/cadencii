@@ -43,7 +43,7 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// デフォルトのプリメジャー．単位は小節
         /// </summary>
-        public int DefaultPreMeasure = 4;
+        public int DefaultPreMeasure = 1;
         /// <summary>
         /// デフォルトで使用する歌手の名前
         /// </summary>
