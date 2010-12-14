@@ -157,10 +157,12 @@ namespace org.kbinani.cadencii {
                 try {
                     edited = pal.edit( item, vsq_event_intrenal_ids, button );
                 } catch ( Exception ex ) {
-                    AppManager.reportError( ex,
-                                            PortUtil.formatMessage( _( "Palette tool '{0}' reported an error.\nPlease copy the exception text and report it to developper." ), id ),
-                                            -1 );
-                    Console.Error.WriteLine( "PaletteToolServer#InvokePaletteTool; ex=" + ex );
+                    AppManager.showMessageBox(
+                        PortUtil.formatMessage( _( "Palette tool '{0}' reported an error.\nPlease copy the exception text and report it to developper." ), id ),
+                        "Error",
+                        org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
+                        org.kbinani.windows.forms.Utility.MSGBOX_ERROR_MESSAGE );
+                    PortUtil.stderr.println( typeof( PaletteToolServer ) + ".invokePaletteTool; ex=" + ex );
                     edited = false;
                 }
                 if ( edited ) {

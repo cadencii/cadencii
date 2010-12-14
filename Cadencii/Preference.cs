@@ -236,14 +236,6 @@ namespace org.kbinani.cadencii {
             listSingers.setColumnWidth( 1, columnWidthHeaderName );
             listSingers.setColumnWidth( 2, columnWidthHeaderPath );
 
-            if ( VocaloSysUtil.getDefaultDseVersion() == 100 ) {
-                chkLoadVocaloid100.setText( "VOCALOID1 [1.0] (" + _( "primary" ) + ")" );
-                chkLoadVocaloid101.setText( "VOCALOID1 [1.1] (" + _( "secondary" ) + ")" );
-            } else {
-                chkLoadVocaloid100.setText( "VOCALOID1 [1.0] (" + _( "secondary" ) + ")" );
-                chkLoadVocaloid101.setText( "VOCALOID1 [1.1] (" + _( "primary" ) + ")" );
-            }
-
             if ( VocaloSysUtil.isDSEVersion101Available() ) {
                 chkLoadSecondaryVOCALOID1.setEnabled( true );
             } else {
@@ -867,6 +859,14 @@ namespace org.kbinani.cadencii {
 #endif
 #endif
 
+            if ( VocaloSysUtil.getDefaultDseVersion() == 100 ) {
+                chkLoadVocaloid100.setText( "VOCALOID1 [1.0] (" + _( "primary" ) + ")" );
+                chkLoadVocaloid101.setText( "VOCALOID1 [1.1] (" + _( "secondary" ) + ")" );
+            } else {
+                chkLoadVocaloid100.setText( "VOCALOID1 [1.0] (" + _( "secondary" ) + ")" );
+                chkLoadVocaloid101.setText( "VOCALOID1 [1.1] (" + _( "primary" ) + ")" );
+            }
+
             #region tabのタイトル
 #if JAVA
             int count = tabPane.getTabCount();
@@ -1392,9 +1392,7 @@ namespace org.kbinani.cadencii {
                 openUtauCore.setInitialDirectory( PortUtil.getDirectoryName( txtResampler.getText() ) );
             }
             openUtauCore.setSelectedFile( "resampler.exe" );
-            AppManager.beginShowDialog();
-            int dr = openUtauCore.showOpenDialog( this );
-            AppManager.endShowDialog();
+            int dr = AppManager.showModalDialog( openUtauCore, true, this );
             if ( dr == BFileChooser.APPROVE_OPTION ) {
                 String path = openUtauCore.getSelectedFile();
                 txtResampler.setText( path );
@@ -1412,9 +1410,7 @@ namespace org.kbinani.cadencii {
                 openUtauCore.setInitialDirectory( PortUtil.getDirectoryName( txtWavtool.getText() ) );
             }
             openUtauCore.setSelectedFile( "wavtool.exe" );
-            AppManager.beginShowDialog();
-            int dr = openUtauCore.showOpenDialog( this );
-            AppManager.endShowDialog();
+            int dr = AppManager.showModalDialog( openUtauCore, true, this );
             if ( dr == BFileChooser.APPROVE_OPTION ) {
                 String path = openUtauCore.getSelectedFile();
                 txtWavtool.setText( path );
@@ -1433,9 +1429,7 @@ namespace org.kbinani.cadencii {
                 dialog.setInitialDirectory( PortUtil.getDirectoryName( txtAquesTone.getText() ) );
             }
             dialog.setSelectedFile( "AquesTone.dll" );
-            AppManager.beginShowDialog();
-            int dr = dialog.showOpenDialog( this );
-            AppManager.endShowDialog();
+            int dr = AppManager.showModalDialog( dialog, true, this );
             if ( dr == BFileChooser.APPROVE_OPTION ) {
                 String path = dialog.getSelectedFile();
                 txtAquesTone.setText( path );
@@ -1663,9 +1657,9 @@ namespace org.kbinani.cadencii {
             System.Windows.Forms.ListViewGroup listViewGroup34 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup35 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup36 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup37 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             this.tabPreference = new System.Windows.Forms.TabControl();
             this.tabSequence = new System.Windows.Forms.TabPage();
-            this.txtAutoVibratoThresholdLength = new org.kbinani.cadencii.NumberTextBox();
             this.bLabel1 = new org.kbinani.windows.forms.BLabel();
             this.radioUserDefined = new org.kbinani.windows.forms.BRadioButton();
             this.lblAutoVibratoType = new org.kbinani.windows.forms.BLabel();
@@ -1673,9 +1667,7 @@ namespace org.kbinani.cadencii {
             this.groupUserDefined = new org.kbinani.windows.forms.BGroupBox();
             this.lblVibratoAttention = new org.kbinani.windows.forms.BLabel();
             this.lblVibratoRate = new org.kbinani.windows.forms.BLabel();
-            this.txtVibratoDepth = new org.kbinani.cadencii.NumberTextBox();
             this.lblVibratoDepth = new org.kbinani.windows.forms.BLabel();
-            this.txtVibratoRate = new org.kbinani.cadencii.NumberTextBox();
             this.label6 = new org.kbinani.windows.forms.BLabel();
             this.lblAutoVibratoThresholdLength = new org.kbinani.windows.forms.BLabel();
             this.label2 = new org.kbinani.windows.forms.BLabel();
@@ -1708,9 +1700,6 @@ namespace org.kbinani.cadencii {
             this.lblWait = new org.kbinani.windows.forms.BLabel();
             this.lblPreSendTime = new org.kbinani.windows.forms.BLabel();
             this.lblDefaultSinger = new org.kbinani.windows.forms.BLabel();
-            this.numBuffer = new org.kbinani.cadencii.NumericUpDownEx();
-            this.numWait = new org.kbinani.cadencii.NumericUpDownEx();
-            this.numPreSendTime = new org.kbinani.cadencii.NumericUpDownEx();
             this.tabAppearance = new System.Windows.Forms.TabPage();
             this.groupFont = new org.kbinani.windows.forms.BGroupBox();
             this.labelMenu = new org.kbinani.windows.forms.BLabel();
@@ -1744,22 +1733,18 @@ namespace org.kbinani.cadencii {
             this.lblTrackHeight = new org.kbinani.windows.forms.BLabel();
             this.comboLanguage = new org.kbinani.windows.forms.BComboBox();
             this.lblLanguage = new org.kbinani.windows.forms.BLabel();
-            this.numTrackHeight = new org.kbinani.cadencii.NumericUpDownEx();
             this.tabOperation = new System.Windows.Forms.TabPage();
             this.groupMisc = new org.kbinani.windows.forms.BGroupBox();
             this.comboMtcMidiInPortNumber = new org.kbinani.windows.forms.BComboBox();
             this.labelMtcMidiInPort = new org.kbinani.windows.forms.BLabel();
             this.lblMaximumFrameRate = new org.kbinani.windows.forms.BLabel();
             this.comboMidiInPortNumber = new org.kbinani.windows.forms.BComboBox();
-            this.numMaximumFrameRate = new org.kbinani.cadencii.NumericUpDownEx();
             this.lblMidiInPort = new org.kbinani.windows.forms.BLabel();
             this.lblMouseHoverTime = new org.kbinani.windows.forms.BLabel();
             this.lblMilliSecond = new org.kbinani.windows.forms.BLabel();
-            this.numMouseHoverTime = new org.kbinani.cadencii.NumericUpDownEx();
             this.groupPianoroll = new org.kbinani.windows.forms.BGroupBox();
             this.chkUseSpaceKeyAsMiddleButtonModifier = new org.kbinani.windows.forms.BCheckBox();
             this.labelWheelOrder = new org.kbinani.windows.forms.BLabel();
-            this.numericUpDownEx1 = new org.kbinani.cadencii.NumericUpDownEx();
             this.chkCursorFix = new org.kbinani.windows.forms.BCheckBox();
             this.chkCurveSelectingQuantized = new org.kbinani.windows.forms.BCheckBox();
             this.chkScrollHorizontal = new org.kbinani.windows.forms.BCheckBox();
@@ -1790,7 +1775,6 @@ namespace org.kbinani.cadencii {
             this.lblAutoBackupMinutes = new org.kbinani.windows.forms.BLabel();
             this.lblAutoBackupInterval = new org.kbinani.windows.forms.BLabel();
             this.chkAutoBackup = new org.kbinani.windows.forms.BCheckBox();
-            this.numAutoBackupInterval = new org.kbinani.cadencii.NumericUpDownEx();
             this.tabSingingSynth = new System.Windows.Forms.TabPage();
             this.groupDefaultSynthesizer = new org.kbinani.windows.forms.BGroupBox();
             this.comboDefaultSynthesizer = new org.kbinani.windows.forms.BComboBox();
@@ -1810,35 +1794,46 @@ namespace org.kbinani.cadencii {
             this.lblVOCALOID1 = new org.kbinani.windows.forms.BLabel();
             this.btnCancel = new org.kbinani.windows.forms.BButton();
             this.btnOK = new org.kbinani.windows.forms.BButton();
+            this.txtAutoVibratoThresholdLength = new org.kbinani.cadencii.NumberTextBox();
+            this.txtVibratoDepth = new org.kbinani.cadencii.NumberTextBox();
+            this.txtVibratoRate = new org.kbinani.cadencii.NumberTextBox();
+            this.numBuffer = new org.kbinani.cadencii.NumericUpDownEx();
+            this.numWait = new org.kbinani.cadencii.NumericUpDownEx();
+            this.numPreSendTime = new org.kbinani.cadencii.NumericUpDownEx();
+            this.numTrackHeight = new org.kbinani.cadencii.NumericUpDownEx();
+            this.numMaximumFrameRate = new org.kbinani.cadencii.NumericUpDownEx();
+            this.numMouseHoverTime = new org.kbinani.cadencii.NumericUpDownEx();
+            this.numericUpDownEx1 = new org.kbinani.cadencii.NumericUpDownEx();
+            this.numAutoBackupInterval = new org.kbinani.cadencii.NumericUpDownEx();
             this.tabPreference.SuspendLayout();
             this.tabSequence.SuspendLayout();
             this.groupUserDefined.SuspendLayout();
             this.groupVocaloidEditorCompatible.SuspendLayout();
             this.tabAnother.SuspendLayout();
             this.groupWaveFileOutput.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numBuffer)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numWait)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numPreSendTime)).BeginInit();
             this.tabAppearance.SuspendLayout();
             this.groupFont.SuspendLayout();
             this.groupVisibleCurve.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numTrackHeight)).BeginInit();
             this.tabOperation.SuspendLayout();
             this.groupMisc.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numMaximumFrameRate)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numMouseHoverTime)).BeginInit();
             this.groupPianoroll.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownEx1)).BeginInit();
             this.tabPlatform.SuspendLayout();
             this.groupUtauCores.SuspendLayout();
             this.groupPlatform.SuspendLayout();
             this.tabUtausingers.SuspendLayout();
             this.tabFile.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numAutoBackupInterval)).BeginInit();
             this.tabSingingSynth.SuspendLayout();
             this.groupDefaultSynthesizer.SuspendLayout();
             this.groupSynthesizerDll.SuspendLayout();
             this.groupVsti.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numBuffer)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numWait)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numPreSendTime)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numTrackHeight)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numMaximumFrameRate)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numMouseHoverTime)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownEx1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numAutoBackupInterval)).BeginInit();
             this.SuspendLayout();
             // 
             // tabPreference
@@ -1883,24 +1878,13 @@ namespace org.kbinani.cadencii {
             this.tabSequence.Controls.Add( this.label3 );
             this.tabSequence.Controls.Add( this.comboVibratoLength );
             this.tabSequence.Controls.Add( this.lblVibratoLength );
-            this.tabSequence.Location = new System.Drawing.Point( 4, 40 );
+            this.tabSequence.Location = new System.Drawing.Point( 4, 38 );
             this.tabSequence.Name = "tabSequence";
             this.tabSequence.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabSequence.Size = new System.Drawing.Size( 454, 439 );
+            this.tabSequence.Size = new System.Drawing.Size( 454, 441 );
             this.tabSequence.TabIndex = 0;
             this.tabSequence.Text = "Sequence";
             this.tabSequence.UseVisualStyleBackColor = true;
-            // 
-            // txtAutoVibratoThresholdLength
-            // 
-            this.txtAutoVibratoThresholdLength.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtAutoVibratoThresholdLength.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))) );
-            this.txtAutoVibratoThresholdLength.ForeColor = System.Drawing.Color.White;
-            this.txtAutoVibratoThresholdLength.Location = new System.Drawing.Point( 329, 122 );
-            this.txtAutoVibratoThresholdLength.Name = "txtAutoVibratoThresholdLength";
-            this.txtAutoVibratoThresholdLength.Size = new System.Drawing.Size( 55, 19 );
-            this.txtAutoVibratoThresholdLength.TabIndex = 6;
-            this.txtAutoVibratoThresholdLength.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // bLabel1
             // 
@@ -1975,16 +1959,6 @@ namespace org.kbinani.cadencii {
             this.lblVibratoRate.TabIndex = 16;
             this.lblVibratoRate.Text = "Default Vibrato Rate(&R)";
             // 
-            // txtVibratoDepth
-            // 
-            this.txtVibratoDepth.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))) );
-            this.txtVibratoDepth.ForeColor = System.Drawing.Color.White;
-            this.txtVibratoDepth.Location = new System.Drawing.Point( 190, 51 );
-            this.txtVibratoDepth.Name = "txtVibratoDepth";
-            this.txtVibratoDepth.Size = new System.Drawing.Size( 100, 19 );
-            this.txtVibratoDepth.TabIndex = 19;
-            this.txtVibratoDepth.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
-            // 
             // lblVibratoDepth
             // 
             this.lblVibratoDepth.AutoSize = true;
@@ -1993,16 +1967,6 @@ namespace org.kbinani.cadencii {
             this.lblVibratoDepth.Size = new System.Drawing.Size( 133, 12 );
             this.lblVibratoDepth.TabIndex = 18;
             this.lblVibratoDepth.Text = "Default Vibrato Depth(&D)";
-            // 
-            // txtVibratoRate
-            // 
-            this.txtVibratoRate.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))) );
-            this.txtVibratoRate.ForeColor = System.Drawing.Color.White;
-            this.txtVibratoRate.Location = new System.Drawing.Point( 190, 22 );
-            this.txtVibratoRate.Name = "txtVibratoRate";
-            this.txtVibratoRate.Size = new System.Drawing.Size( 100, 19 );
-            this.txtVibratoRate.TabIndex = 17;
-            this.txtVibratoRate.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // label6
             // 
@@ -2212,10 +2176,10 @@ namespace org.kbinani.cadencii {
             this.tabAnother.Controls.Add( this.numBuffer );
             this.tabAnother.Controls.Add( this.numWait );
             this.tabAnother.Controls.Add( this.numPreSendTime );
-            this.tabAnother.Location = new System.Drawing.Point( 4, 40 );
+            this.tabAnother.Location = new System.Drawing.Point( 4, 38 );
             this.tabAnother.Name = "tabAnother";
             this.tabAnother.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabAnother.Size = new System.Drawing.Size( 454, 439 );
+            this.tabAnother.Size = new System.Drawing.Size( 454, 441 );
             this.tabAnother.TabIndex = 2;
             this.tabAnother.Text = "Other Settings";
             this.tabAnother.UseVisualStyleBackColor = true;
@@ -2358,73 +2322,6 @@ namespace org.kbinani.cadencii {
             this.lblDefaultSinger.TabIndex = 0;
             this.lblDefaultSinger.Text = "Default Singer(&S)";
             // 
-            // numBuffer
-            // 
-            this.numBuffer.Location = new System.Drawing.Point( 216, 148 );
-            this.numBuffer.Maximum = new decimal( new int[] {
-            1000,
-            0,
-            0,
-            0} );
-            this.numBuffer.Minimum = new decimal( new int[] {
-            100,
-            0,
-            0,
-            0} );
-            this.numBuffer.Name = "numBuffer";
-            this.numBuffer.Size = new System.Drawing.Size( 68, 19 );
-            this.numBuffer.TabIndex = 31;
-            this.numBuffer.Value = new decimal( new int[] {
-            1000,
-            0,
-            0,
-            0} );
-            // 
-            // numWait
-            // 
-            this.numWait.Enabled = false;
-            this.numWait.Location = new System.Drawing.Point( 216, 87 );
-            this.numWait.Maximum = new decimal( new int[] {
-            2000,
-            0,
-            0,
-            0} );
-            this.numWait.Minimum = new decimal( new int[] {
-            200,
-            0,
-            0,
-            0} );
-            this.numWait.Name = "numWait";
-            this.numWait.Size = new System.Drawing.Size( 68, 19 );
-            this.numWait.TabIndex = 22;
-            this.numWait.Value = new decimal( new int[] {
-            300,
-            0,
-            0,
-            0} );
-            // 
-            // numPreSendTime
-            // 
-            this.numPreSendTime.Location = new System.Drawing.Point( 216, 56 );
-            this.numPreSendTime.Maximum = new decimal( new int[] {
-            5000,
-            0,
-            0,
-            0} );
-            this.numPreSendTime.Minimum = new decimal( new int[] {
-            500,
-            0,
-            0,
-            0} );
-            this.numPreSendTime.Name = "numPreSendTime";
-            this.numPreSendTime.Size = new System.Drawing.Size( 68, 19 );
-            this.numPreSendTime.TabIndex = 21;
-            this.numPreSendTime.Value = new decimal( new int[] {
-            500,
-            0,
-            0,
-            0} );
-            // 
             // tabAppearance
             // 
             this.tabAppearance.Controls.Add( this.groupFont );
@@ -2433,10 +2330,10 @@ namespace org.kbinani.cadencii {
             this.tabAppearance.Controls.Add( this.comboLanguage );
             this.tabAppearance.Controls.Add( this.lblLanguage );
             this.tabAppearance.Controls.Add( this.numTrackHeight );
-            this.tabAppearance.Location = new System.Drawing.Point( 4, 40 );
+            this.tabAppearance.Location = new System.Drawing.Point( 4, 38 );
             this.tabAppearance.Name = "tabAppearance";
             this.tabAppearance.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabAppearance.Size = new System.Drawing.Size( 454, 439 );
+            this.tabAppearance.Size = new System.Drawing.Size( 454, 441 );
             this.tabAppearance.TabIndex = 3;
             this.tabAppearance.Text = "Appearance";
             this.tabAppearance.UseVisualStyleBackColor = true;
@@ -2776,36 +2673,14 @@ namespace org.kbinani.cadencii {
             this.lblLanguage.TabIndex = 9;
             this.lblLanguage.Text = "UI Language";
             // 
-            // numTrackHeight
-            // 
-            this.numTrackHeight.Location = new System.Drawing.Point( 210, 139 );
-            this.numTrackHeight.Maximum = new decimal( new int[] {
-            50,
-            0,
-            0,
-            0} );
-            this.numTrackHeight.Minimum = new decimal( new int[] {
-            5,
-            0,
-            0,
-            0} );
-            this.numTrackHeight.Name = "numTrackHeight";
-            this.numTrackHeight.Size = new System.Drawing.Size( 120, 19 );
-            this.numTrackHeight.TabIndex = 45;
-            this.numTrackHeight.Value = new decimal( new int[] {
-            14,
-            0,
-            0,
-            0} );
-            // 
             // tabOperation
             // 
             this.tabOperation.Controls.Add( this.groupMisc );
             this.tabOperation.Controls.Add( this.groupPianoroll );
-            this.tabOperation.Location = new System.Drawing.Point( 4, 40 );
+            this.tabOperation.Location = new System.Drawing.Point( 4, 38 );
             this.tabOperation.Name = "tabOperation";
             this.tabOperation.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabOperation.Size = new System.Drawing.Size( 454, 439 );
+            this.tabOperation.Size = new System.Drawing.Size( 454, 441 );
             this.tabOperation.TabIndex = 5;
             this.tabOperation.Text = "Operation";
             this.tabOperation.UseVisualStyleBackColor = true;
@@ -2866,28 +2741,6 @@ namespace org.kbinani.cadencii {
             this.comboMidiInPortNumber.Size = new System.Drawing.Size( 225, 20 );
             this.comboMidiInPortNumber.TabIndex = 89;
             // 
-            // numMaximumFrameRate
-            // 
-            this.numMaximumFrameRate.Location = new System.Drawing.Point( 176, 21 );
-            this.numMaximumFrameRate.Maximum = new decimal( new int[] {
-            1000,
-            0,
-            0,
-            0} );
-            this.numMaximumFrameRate.Minimum = new decimal( new int[] {
-            5,
-            0,
-            0,
-            0} );
-            this.numMaximumFrameRate.Name = "numMaximumFrameRate";
-            this.numMaximumFrameRate.Size = new System.Drawing.Size( 120, 19 );
-            this.numMaximumFrameRate.TabIndex = 84;
-            this.numMaximumFrameRate.Value = new decimal( new int[] {
-            30,
-            0,
-            0,
-            0} );
-            // 
             // lblMidiInPort
             // 
             this.lblMidiInPort.AutoSize = true;
@@ -2914,23 +2767,6 @@ namespace org.kbinani.cadencii {
             this.lblMilliSecond.Size = new System.Drawing.Size( 66, 12 );
             this.lblMilliSecond.TabIndex = 10;
             this.lblMilliSecond.Text = "milli second";
-            // 
-            // numMouseHoverTime
-            // 
-            this.numMouseHoverTime.Location = new System.Drawing.Point( 176, 48 );
-            this.numMouseHoverTime.Maximum = new decimal( new int[] {
-            2000,
-            0,
-            0,
-            0} );
-            this.numMouseHoverTime.Name = "numMouseHoverTime";
-            this.numMouseHoverTime.Size = new System.Drawing.Size( 120, 19 );
-            this.numMouseHoverTime.TabIndex = 86;
-            this.numMouseHoverTime.Value = new decimal( new int[] {
-            500,
-            0,
-            0,
-            0} );
             // 
             // groupPianoroll
             // 
@@ -2967,28 +2803,6 @@ namespace org.kbinani.cadencii {
             this.labelWheelOrder.Size = new System.Drawing.Size( 99, 12 );
             this.labelWheelOrder.TabIndex = 1;
             this.labelWheelOrder.Text = "Mouse wheel Rate";
-            // 
-            // numericUpDownEx1
-            // 
-            this.numericUpDownEx1.Location = new System.Drawing.Point( 199, 21 );
-            this.numericUpDownEx1.Maximum = new decimal( new int[] {
-            50,
-            0,
-            0,
-            0} );
-            this.numericUpDownEx1.Minimum = new decimal( new int[] {
-            5,
-            0,
-            0,
-            0} );
-            this.numericUpDownEx1.Name = "numericUpDownEx1";
-            this.numericUpDownEx1.Size = new System.Drawing.Size( 120, 19 );
-            this.numericUpDownEx1.TabIndex = 80;
-            this.numericUpDownEx1.Value = new decimal( new int[] {
-            20,
-            0,
-            0,
-            0} );
             // 
             // chkCursorFix
             // 
@@ -3044,10 +2858,10 @@ namespace org.kbinani.cadencii {
             // 
             this.tabPlatform.Controls.Add( this.groupUtauCores );
             this.tabPlatform.Controls.Add( this.groupPlatform );
-            this.tabPlatform.Location = new System.Drawing.Point( 4, 40 );
+            this.tabPlatform.Location = new System.Drawing.Point( 4, 38 );
             this.tabPlatform.Name = "tabPlatform";
             this.tabPlatform.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabPlatform.Size = new System.Drawing.Size( 454, 439 );
+            this.tabPlatform.Size = new System.Drawing.Size( 454, 441 );
             this.tabPlatform.TabIndex = 4;
             this.tabPlatform.Text = "Platform";
             this.tabPlatform.UseVisualStyleBackColor = true;
@@ -3187,10 +3001,10 @@ namespace org.kbinani.cadencii {
             this.tabUtausingers.Controls.Add( this.btnUp );
             this.tabUtausingers.Controls.Add( this.btnDown );
             this.tabUtausingers.Controls.Add( this.listSingers );
-            this.tabUtausingers.Location = new System.Drawing.Point( 4, 40 );
+            this.tabUtausingers.Location = new System.Drawing.Point( 4, 38 );
             this.tabUtausingers.Name = "tabUtausingers";
             this.tabUtausingers.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabUtausingers.Size = new System.Drawing.Size( 454, 439 );
+            this.tabUtausingers.Size = new System.Drawing.Size( 454, 441 );
             this.tabUtausingers.TabIndex = 6;
             this.tabUtausingers.Text = "UTAU Singers";
             this.tabUtausingers.UseVisualStyleBackColor = true;
@@ -3198,7 +3012,7 @@ namespace org.kbinani.cadencii {
             // btnRemove
             // 
             this.btnRemove.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnRemove.Location = new System.Drawing.Point( 98, 371 );
+            this.btnRemove.Location = new System.Drawing.Point( 98, 388 );
             this.btnRemove.Name = "btnRemove";
             this.btnRemove.Size = new System.Drawing.Size( 75, 23 );
             this.btnRemove.TabIndex = 122;
@@ -3208,7 +3022,7 @@ namespace org.kbinani.cadencii {
             // btnAdd
             // 
             this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnAdd.Location = new System.Drawing.Point( 17, 371 );
+            this.btnAdd.Location = new System.Drawing.Point( 17, 388 );
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size( 75, 23 );
             this.btnAdd.TabIndex = 121;
@@ -3218,7 +3032,7 @@ namespace org.kbinani.cadencii {
             // btnUp
             // 
             this.btnUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnUp.Location = new System.Drawing.Point( 279, 371 );
+            this.btnUp.Location = new System.Drawing.Point( 279, 388 );
             this.btnUp.Name = "btnUp";
             this.btnUp.Size = new System.Drawing.Size( 75, 23 );
             this.btnUp.TabIndex = 123;
@@ -3228,7 +3042,7 @@ namespace org.kbinani.cadencii {
             // btnDown
             // 
             this.btnDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDown.Location = new System.Drawing.Point( 360, 371 );
+            this.btnDown.Location = new System.Drawing.Point( 360, 388 );
             this.btnDown.Name = "btnDown";
             this.btnDown.Size = new System.Drawing.Size( 75, 23 );
             this.btnDown.TabIndex = 124;
@@ -3242,6 +3056,7 @@ namespace org.kbinani.cadencii {
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.listSingers.FullRowSelect = true;
             listViewGroup1.Header = "ListViewGroup";
+            listViewGroup1.Name = null;
             listViewGroup2.Header = "ListViewGroup";
             listViewGroup2.Name = null;
             listViewGroup3.Header = "ListViewGroup";
@@ -3312,6 +3127,8 @@ namespace org.kbinani.cadencii {
             listViewGroup35.Name = null;
             listViewGroup36.Header = "ListViewGroup";
             listViewGroup36.Name = null;
+            listViewGroup37.Header = "ListViewGroup";
+            listViewGroup37.Name = null;
             this.listSingers.Groups.AddRange( new System.Windows.Forms.ListViewGroup[] {
             listViewGroup1,
             listViewGroup2,
@@ -3348,12 +3165,13 @@ namespace org.kbinani.cadencii {
             listViewGroup33,
             listViewGroup34,
             listViewGroup35,
-            listViewGroup36} );
+            listViewGroup36,
+            listViewGroup37} );
             this.listSingers.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.listSingers.Location = new System.Drawing.Point( 17, 23 );
             this.listSingers.MultiSelect = false;
             this.listSingers.Name = "listSingers";
-            this.listSingers.Size = new System.Drawing.Size( 418, 333 );
+            this.listSingers.Size = new System.Drawing.Size( 418, 350 );
             this.listSingers.TabIndex = 120;
             this.listSingers.UseCompatibleStateImageBehavior = false;
             this.listSingers.View = System.Windows.Forms.View.Details;
@@ -3365,10 +3183,10 @@ namespace org.kbinani.cadencii {
             this.tabFile.Controls.Add( this.lblAutoBackupInterval );
             this.tabFile.Controls.Add( this.chkAutoBackup );
             this.tabFile.Controls.Add( this.numAutoBackupInterval );
-            this.tabFile.Location = new System.Drawing.Point( 4, 40 );
+            this.tabFile.Location = new System.Drawing.Point( 4, 38 );
             this.tabFile.Name = "tabFile";
             this.tabFile.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabFile.Size = new System.Drawing.Size( 454, 439 );
+            this.tabFile.Size = new System.Drawing.Size( 454, 441 );
             this.tabFile.TabIndex = 7;
             this.tabFile.Text = "File";
             this.tabFile.UseVisualStyleBackColor = true;
@@ -3411,33 +3229,15 @@ namespace org.kbinani.cadencii {
             this.chkAutoBackup.Text = "Automatical Backup";
             this.chkAutoBackup.UseVisualStyleBackColor = true;
             // 
-            // numAutoBackupInterval
-            // 
-            this.numAutoBackupInterval.Location = new System.Drawing.Point( 256, 22 );
-            this.numAutoBackupInterval.Minimum = new decimal( new int[] {
-            1,
-            0,
-            0,
-            0} );
-            this.numAutoBackupInterval.Name = "numAutoBackupInterval";
-            this.numAutoBackupInterval.Size = new System.Drawing.Size( 69, 19 );
-            this.numAutoBackupInterval.TabIndex = 2;
-            this.numAutoBackupInterval.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.numAutoBackupInterval.Value = new decimal( new int[] {
-            10,
-            0,
-            0,
-            0} );
-            // 
             // tabSingingSynth
             // 
             this.tabSingingSynth.Controls.Add( this.groupDefaultSynthesizer );
             this.tabSingingSynth.Controls.Add( this.groupSynthesizerDll );
             this.tabSingingSynth.Controls.Add( this.groupVsti );
-            this.tabSingingSynth.Location = new System.Drawing.Point( 4, 40 );
+            this.tabSingingSynth.Location = new System.Drawing.Point( 4, 38 );
             this.tabSingingSynth.Name = "tabSingingSynth";
             this.tabSingingSynth.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabSingingSynth.Size = new System.Drawing.Size( 454, 439 );
+            this.tabSingingSynth.Size = new System.Drawing.Size( 454, 441 );
             this.tabSingingSynth.TabIndex = 8;
             this.tabSingingSynth.Text = "Synthesizer";
             this.tabSingingSynth.UseVisualStyleBackColor = true;
@@ -3638,6 +3438,205 @@ namespace org.kbinani.cadencii {
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             // 
+            // txtAutoVibratoThresholdLength
+            // 
+            this.txtAutoVibratoThresholdLength.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtAutoVibratoThresholdLength.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))) );
+            this.txtAutoVibratoThresholdLength.ForeColor = System.Drawing.Color.White;
+            this.txtAutoVibratoThresholdLength.Location = new System.Drawing.Point( 329, 122 );
+            this.txtAutoVibratoThresholdLength.Name = "txtAutoVibratoThresholdLength";
+            this.txtAutoVibratoThresholdLength.Size = new System.Drawing.Size( 55, 19 );
+            this.txtAutoVibratoThresholdLength.TabIndex = 6;
+            this.txtAutoVibratoThresholdLength.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
+            // 
+            // txtVibratoDepth
+            // 
+            this.txtVibratoDepth.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))) );
+            this.txtVibratoDepth.ForeColor = System.Drawing.Color.White;
+            this.txtVibratoDepth.Location = new System.Drawing.Point( 190, 51 );
+            this.txtVibratoDepth.Name = "txtVibratoDepth";
+            this.txtVibratoDepth.Size = new System.Drawing.Size( 100, 19 );
+            this.txtVibratoDepth.TabIndex = 19;
+            this.txtVibratoDepth.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
+            // 
+            // txtVibratoRate
+            // 
+            this.txtVibratoRate.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))) );
+            this.txtVibratoRate.ForeColor = System.Drawing.Color.White;
+            this.txtVibratoRate.Location = new System.Drawing.Point( 190, 22 );
+            this.txtVibratoRate.Name = "txtVibratoRate";
+            this.txtVibratoRate.Size = new System.Drawing.Size( 100, 19 );
+            this.txtVibratoRate.TabIndex = 17;
+            this.txtVibratoRate.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
+            // 
+            // numBuffer
+            // 
+            this.numBuffer.Location = new System.Drawing.Point( 216, 148 );
+            this.numBuffer.Maximum = new decimal( new int[] {
+            1000,
+            0,
+            0,
+            0} );
+            this.numBuffer.Minimum = new decimal( new int[] {
+            100,
+            0,
+            0,
+            0} );
+            this.numBuffer.Name = "numBuffer";
+            this.numBuffer.Size = new System.Drawing.Size( 68, 19 );
+            this.numBuffer.TabIndex = 31;
+            this.numBuffer.Value = new decimal( new int[] {
+            1000,
+            0,
+            0,
+            0} );
+            // 
+            // numWait
+            // 
+            this.numWait.Enabled = false;
+            this.numWait.Location = new System.Drawing.Point( 216, 87 );
+            this.numWait.Maximum = new decimal( new int[] {
+            2000,
+            0,
+            0,
+            0} );
+            this.numWait.Minimum = new decimal( new int[] {
+            200,
+            0,
+            0,
+            0} );
+            this.numWait.Name = "numWait";
+            this.numWait.Size = new System.Drawing.Size( 68, 19 );
+            this.numWait.TabIndex = 22;
+            this.numWait.Value = new decimal( new int[] {
+            300,
+            0,
+            0,
+            0} );
+            // 
+            // numPreSendTime
+            // 
+            this.numPreSendTime.Location = new System.Drawing.Point( 216, 56 );
+            this.numPreSendTime.Maximum = new decimal( new int[] {
+            5000,
+            0,
+            0,
+            0} );
+            this.numPreSendTime.Minimum = new decimal( new int[] {
+            500,
+            0,
+            0,
+            0} );
+            this.numPreSendTime.Name = "numPreSendTime";
+            this.numPreSendTime.Size = new System.Drawing.Size( 68, 19 );
+            this.numPreSendTime.TabIndex = 21;
+            this.numPreSendTime.Value = new decimal( new int[] {
+            500,
+            0,
+            0,
+            0} );
+            // 
+            // numTrackHeight
+            // 
+            this.numTrackHeight.Location = new System.Drawing.Point( 210, 139 );
+            this.numTrackHeight.Maximum = new decimal( new int[] {
+            50,
+            0,
+            0,
+            0} );
+            this.numTrackHeight.Minimum = new decimal( new int[] {
+            5,
+            0,
+            0,
+            0} );
+            this.numTrackHeight.Name = "numTrackHeight";
+            this.numTrackHeight.Size = new System.Drawing.Size( 120, 19 );
+            this.numTrackHeight.TabIndex = 45;
+            this.numTrackHeight.Value = new decimal( new int[] {
+            14,
+            0,
+            0,
+            0} );
+            // 
+            // numMaximumFrameRate
+            // 
+            this.numMaximumFrameRate.Location = new System.Drawing.Point( 176, 21 );
+            this.numMaximumFrameRate.Maximum = new decimal( new int[] {
+            1000,
+            0,
+            0,
+            0} );
+            this.numMaximumFrameRate.Minimum = new decimal( new int[] {
+            5,
+            0,
+            0,
+            0} );
+            this.numMaximumFrameRate.Name = "numMaximumFrameRate";
+            this.numMaximumFrameRate.Size = new System.Drawing.Size( 120, 19 );
+            this.numMaximumFrameRate.TabIndex = 84;
+            this.numMaximumFrameRate.Value = new decimal( new int[] {
+            30,
+            0,
+            0,
+            0} );
+            // 
+            // numMouseHoverTime
+            // 
+            this.numMouseHoverTime.Location = new System.Drawing.Point( 176, 48 );
+            this.numMouseHoverTime.Maximum = new decimal( new int[] {
+            2000,
+            0,
+            0,
+            0} );
+            this.numMouseHoverTime.Name = "numMouseHoverTime";
+            this.numMouseHoverTime.Size = new System.Drawing.Size( 120, 19 );
+            this.numMouseHoverTime.TabIndex = 86;
+            this.numMouseHoverTime.Value = new decimal( new int[] {
+            500,
+            0,
+            0,
+            0} );
+            // 
+            // numericUpDownEx1
+            // 
+            this.numericUpDownEx1.Location = new System.Drawing.Point( 199, 21 );
+            this.numericUpDownEx1.Maximum = new decimal( new int[] {
+            50,
+            0,
+            0,
+            0} );
+            this.numericUpDownEx1.Minimum = new decimal( new int[] {
+            5,
+            0,
+            0,
+            0} );
+            this.numericUpDownEx1.Name = "numericUpDownEx1";
+            this.numericUpDownEx1.Size = new System.Drawing.Size( 120, 19 );
+            this.numericUpDownEx1.TabIndex = 80;
+            this.numericUpDownEx1.Value = new decimal( new int[] {
+            20,
+            0,
+            0,
+            0} );
+            // 
+            // numAutoBackupInterval
+            // 
+            this.numAutoBackupInterval.Location = new System.Drawing.Point( 256, 22 );
+            this.numAutoBackupInterval.Minimum = new decimal( new int[] {
+            1,
+            0,
+            0,
+            0} );
+            this.numAutoBackupInterval.Name = "numAutoBackupInterval";
+            this.numAutoBackupInterval.Size = new System.Drawing.Size( 69, 19 );
+            this.numAutoBackupInterval.TabIndex = 2;
+            this.numAutoBackupInterval.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.numAutoBackupInterval.Value = new decimal( new int[] {
+            10,
+            0,
+            0,
+            0} );
+            // 
             // Preference
             // 
             this.AcceptButton = this.btnOK;
@@ -3667,24 +3666,17 @@ namespace org.kbinani.cadencii {
             this.tabAnother.PerformLayout();
             this.groupWaveFileOutput.ResumeLayout( false );
             this.groupWaveFileOutput.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numBuffer)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numWait)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numPreSendTime)).EndInit();
             this.tabAppearance.ResumeLayout( false );
             this.tabAppearance.PerformLayout();
             this.groupFont.ResumeLayout( false );
             this.groupFont.PerformLayout();
             this.groupVisibleCurve.ResumeLayout( false );
             this.groupVisibleCurve.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numTrackHeight)).EndInit();
             this.tabOperation.ResumeLayout( false );
             this.groupMisc.ResumeLayout( false );
             this.groupMisc.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numMaximumFrameRate)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numMouseHoverTime)).EndInit();
             this.groupPianoroll.ResumeLayout( false );
             this.groupPianoroll.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownEx1)).EndInit();
             this.tabPlatform.ResumeLayout( false );
             this.groupUtauCores.ResumeLayout( false );
             this.groupUtauCores.PerformLayout();
@@ -3693,13 +3685,20 @@ namespace org.kbinani.cadencii {
             this.tabUtausingers.ResumeLayout( false );
             this.tabFile.ResumeLayout( false );
             this.tabFile.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numAutoBackupInterval)).EndInit();
             this.tabSingingSynth.ResumeLayout( false );
             this.groupDefaultSynthesizer.ResumeLayout( false );
             this.groupSynthesizerDll.ResumeLayout( false );
             this.groupSynthesizerDll.PerformLayout();
             this.groupVsti.ResumeLayout( false );
             this.groupVsti.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numBuffer)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numWait)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numPreSendTime)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numTrackHeight)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numMaximumFrameRate)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numMouseHoverTime)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownEx1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numAutoBackupInterval)).EndInit();
             this.ResumeLayout( false );
 
         }

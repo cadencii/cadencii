@@ -71,13 +71,13 @@ namespace org.kbinani.windows.forms {
             return base.Visible;
         }
 
-        public bool isModal() {
+        /*public bool isModal() {
             return m_is_modal;
         }
 
         public void setModal( boolean value ) {
             m_is_modal = value;
-        }
+        }*/
 
         public void setDialogResult( BDialogResult value ) {
             switch ( value ) {
@@ -100,8 +100,8 @@ namespace org.kbinani.windows.forms {
             return m_result;
         }
 
-        public BDialogResult showDialog() {
-            System.Windows.Forms.DialogResult dr = base.ShowDialog();
+        public BDialogResult showDialog( System.Windows.Forms.Form parent ) {
+            System.Windows.Forms.DialogResult dr = base.ShowDialog( parent );
             if ( dr == System.Windows.Forms.DialogResult.OK ) {
                 m_result = BDialogResult.OK;
             } else if ( dr == System.Windows.Forms.DialogResult.Cancel ) {

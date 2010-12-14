@@ -926,8 +926,7 @@ namespace org.kbinani.cadencii {
                                              mVsq,
                                              presend,
                                              queue );
-                dialog.setModal( true );
-                dialog.setVisible( true );
+                dialog.showDialog( main_window );
                 int finished = dialog.getFinished();
                 for ( int k = 0; k < tracks.size(); k++ ) {
                     int track = tracks[k];
@@ -1832,34 +1831,6 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public static void reportError( Exception ex, String message, int level ) {
-            PortUtil.stderr.println( message + "; ex=" + ex );
-            if ( level < 0 ) {
-                FormCompileResult dialog = null;
-                try {
-#if JAVA
-                    dialog = new FormCompileResult( message, ex.toString() );
-#else
-                    dialog = new FormCompileResult( message, "Message:\r\n" + ex.Message + "\r\n\r\nStackTrace:\r\n" + ex.StackTrace );
-#endif
-                    beginShowDialog();
-                    dialog.setModal( true );
-                    dialog.setVisible( true );
-                    endShowDialog();
-                } catch ( Exception ex2 ) {
-                    Logger.write( typeof( AppManager ) + ".reportError; ex=" + ex + "\n" );
-                } finally {
-                    if ( dialog != null ) {
-                        try {
-                            dialog.close();
-                        } catch ( Exception ex3 ) {
-                            Logger.write( typeof( AppManager ) + ".reportError; ex=" + ex3 + "\n" );
-                        }
-                    }
-                }
-            }
-        }
-
         /// <summary>
         /// クロック数から、画面に描くべきx座標の値を取得します。
         /// </summary>
@@ -1916,9 +1887,42 @@ namespace org.kbinani.cadencii {
         }
 
         /// <summary>
+        /// ダイアログを，メインウィンドウに対してモーダルに表示し，ダイアログの結果を取得します
+        /// </summary>
+        /// <param name="dialog"></param>
+        /// <param name="main_form"></param>
+        /// <returns></returns>
+        public static BDialogResult showModalDialog( BDialog dialog, System.Windows.Forms.Form parent_form )
+        {
+            beginShowDialog();
+            BDialogResult ret = dialog.showDialog( parent_form );
+            endShowDialog();
+            return ret;
+        }
+
+        /// <summary>
+        /// ダイアログを，メインウィンドウに対してモーダルに表示し，ダイアログの結果を取得します
+        /// </summary>
+        /// <param name="dialog"></param>
+        /// <param name="main_form"></param>
+        /// <returns></returns>
+        public static int showModalDialog( BFileChooser dialog, boolean open_mode, System.Windows.Forms.Form main_form )
+        {
+            beginShowDialog();
+            int ret = 0;
+            if ( open_mode ) {
+                ret = dialog.showOpenDialog( main_form );
+            } else {
+                ret = dialog.showSaveDialog( main_form );
+            }
+            endShowDialog();
+            return ret;
+        }
+
+        /// <summary>
         /// モーダルなダイアログを出すために，プロパティウィンドウとミキサーウィンドウの「最前面に表示」設定を一時的にOFFにします
         /// </summary>
-        public static void beginShowDialog() {
+        private static void beginShowDialog() {
 #if ENABLE_PROPERTY
             if ( propertyWindow != null ) {
                 boolean previous = propertyWindow.isAlwaysOnTop();
@@ -1948,7 +1952,7 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// beginShowDialogで一時的にOFFにした「最前面に表示」設定を元に戻します
         /// </summary>
-        public static void endShowDialog() {
+        private static void endShowDialog() {
 #if ENABLE_PROPERTY
             if ( propertyWindow != null ) {
                 Object tag = propertyWindow.getTag();

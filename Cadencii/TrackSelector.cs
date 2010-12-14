@@ -4963,9 +4963,7 @@ namespace org.kbinani.cadencii {
                                                                     target_point.getID() );
                                     mEditingChainID = chain_id;
                                     mEditingPointID = target_point.getID();
-                                    fbpe.setModal( true );
-                                    fbpe.setVisible( true );
-                                    BDialogResult ret = fbpe.getDialogResult();
+                                    BDialogResult ret = AppManager.showModalDialog( fbpe, mMainWindow );
                                     mEditingChainID = -1;
                                     mEditingPointID = -1;
                                     BezierChain after = AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).getBezierChain( mSelectedCurve, chain_id );
@@ -5032,8 +5030,7 @@ namespace org.kbinani.cadencii {
                                     Point pt = pointToScreen( new Point( tx, 0 ) );
                                     invalidate();
                                     dialog.setLocation( new Point( pt.x - dialog.getWidth() / 2, pt.y - dialog.getHeight() ) );
-                                    dialog.setModal( true );
-                                    dialog.setVisible( true );
+                                    AppManager.showModalDialog( dialog, mMainWindow );
                                 }
                                 #endregion
                             }
