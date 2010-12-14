@@ -139,6 +139,9 @@
     <Compile Include="PictOverview.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Preference.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="VConnectRenderingQueue.cs" />
     <Compile Include="VConnectWaveGenerator.cs" />
     <Compile Include="VSTiDllManager.cs" />
@@ -158,32 +161,23 @@
     <Compile Include="FileWaveReceiver.cs" />
     <Compile Include="FileWaveSender.cs" />
     <Compile Include="FormAskKeySoundGeneration.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormCurvePointEdit.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormGenerateKeySound.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormIconPalette.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormMidiImExportConfig.cs" />
     <Compile Include="FormNoteExpressionConfig.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormPluginUi.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormRandomize.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormSplash.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormWordDictionary.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="HScroll.cs">
       <SubType>Component</SubType>
@@ -244,10 +238,8 @@
     <Compile Include="CommandTreeUnit.cs" />
     <Compile Include="CurveType.cs" />
     <Compile Include="FormNoteProperty.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormShortcutKeys.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="KanaDeRomanization.cs" />
     <Compile Include="MidiDeviceImp.cs" />
@@ -264,25 +256,19 @@
     <Compile Include="EditorConfig.cs" />
     <Compile Include="EditTool.cs" />
     <Compile Include="FormBezierPointEdit.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormCompileResult.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormDeleteBar.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormGameControlerConfig.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormImportLyric.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormInsertBar.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormBeatConfig.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormMain.cs">
       <SubType>Form</SubType>
@@ -291,27 +277,20 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormMixer.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="AppManager.cs">
     </Compile>
     <Compile Include="FormTrackProperty.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormRealtimeConfig.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormSingerStyleConfig.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormSynthesize.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormTempoConfig.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormVibratoConfig.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="ICommand.cs" />
     <Compile Include="ICommandRunnable.cs" />
@@ -324,9 +303,6 @@
     <Compile Include="PencilMode.cs" />
     <Compile Include="PencilModeEnum.cs" />
     <Compile Include="PlayPositionSpecifier.cs" />
-    <Compile Include="Preference.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="QuantizeMode.cs" />
     <Compile Include="RgbColor.cs" />
     <Compile Include="SandBox.cs">
@@ -339,6 +315,9 @@
     <Compile Include="SelectedTimesigEntry.cs" />
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Preference.resx">
+      <DependentUpon>Preference.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

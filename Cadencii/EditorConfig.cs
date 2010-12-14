@@ -41,10 +41,6 @@ namespace org.kbinani.cadencii {
     /// </summary>
     public class EditorConfig {
         /// <summary>
-        /// デフォルトのプリメジャー．単位は小節
-        /// </summary>
-        public int DefaultPreMeasure = 1;
-        /// <summary>
         /// デフォルトで使用する歌手の名前
         /// </summary>
         public String DefaultSingerName = "Miku";

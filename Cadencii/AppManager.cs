@@ -153,6 +153,14 @@ namespace org.kbinani.cadencii {
 
         public const int MIN_KEY_WIDTH = 68;
         public const int MAX_KEY_WIDTH = MIN_KEY_WIDTH * 5;
+        /// <summary>
+        /// プリメジャーの最小値
+        /// </summary>
+        public const int MIN_PRE_MEASURE = 1;
+        /// <summary>
+        /// プリメジャーの最大値
+        /// </summary>
+        public const int MAX_PRE_MEASURE = 8;
         private const String CONFIG_FILE_NAME = "config.xml";
 #if CLIPBOARD_AS_TEXT
         /// <summary>
