@@ -37,6 +37,7 @@
  & & \multicolumn{4}{p{125mm}|}{ダイアログの最初のディレクトリが，前回xvsqファイルを開いた，または保存した場所になっていること} & \\ \hline
  & & \multicolumn{4}{p{125mm}|}{Cancelボタンを押すとシーケンスの編集に復帰する} & \\ \hline
  & & \multicolumn{4}{p{125mm}|}{Openボタンを押すと以降に処理が続行される} & \\ \hline
+ & \multicolumn{5}{p{130mm}|}{無効なXVSQファイルだった場合，元のシーケンスの編集に復帰する} & \\ \hline
  & \multicolumn{5}{p{130mm}|}{指定したXVSQファイルの内容が読み込まれ，編集可能な状態になる} & \\ \hline
  & \multicolumn{5}{p{130mm}|}{AppManager.getSelectedEventCount()が0になる} & \\ \hline
  & \multicolumn{5}{p{130mm}|}{プロパティー・ビューがXVSQの内容に応じて更新される} & \\ \hline
@@ -87,28 +88,70 @@
 \end{longtable}
 
 \paragraph{Open VSQ/Vocaloid MIDI}
+\hspace{1em}\begin{longtable}{|p{5mm}p{5mm}p{5mm}p{5mm}p{5mm}p{110mm}p{5mm}|} \hline
+\multicolumn{7}{|p{140mm}|}{クリックしたとき，以下の動作が起こること} \\ \hline
+ & \multicolumn{5}{p{130mm}|}{再生中の場合，再生が停止する} & \\ \hline
+ & \multicolumn{5}{p{130mm}|}{シーケンスが編集中の場合，編集を取り消す旨のダイアログが出る} & \\ \hline
+ & & \multicolumn{4}{p{125mm}|}{Cancelボタンを押すとシーケンスの編集に復帰する} & \\ \hline
+ & & \multicolumn{4}{p{125mm}|}{OKボタンを押すと以降に処理が続行される} & \\ \hline
+ & \multicolumn{5}{p{130mm}|}{VSQ，またはMIDIを開くためのダイアログが出る} & \\ \hline
+ & & \multicolumn{4}{p{125mm}|}{ダイアログのデフォルトの拡張子が，前回このダイアログで読み込んだ拡張子になっていること} & \\ \hline
+ & & \multicolumn{4}{p{125mm}|}{ダイアログの最初のディレクトリが，前回このダイアログでファイルを開いた場所になっていること} & \\ \hline
+ & & \multicolumn{4}{p{125mm}|}{Cancelボタンを押すとシーケンスの編集に復帰する} & \\ \hline
+ & & \multicolumn{4}{p{125mm}|}{Openボタンを押すと以降に処理が続行される} & \\ \hline
+ & \multicolumn{5}{p{130mm}|}{無効なVSQファイル，またはVOCALOID MIDIファイルだった場合，元のシーケンスの編集に復帰する} & \\ \hline
+ & \multicolumn{5}{p{130mm}|}{指定したVSQファイルまたはVOCALOID MIDIファイルの内容が読み込まれ，編集可能な状態になる} & \\ \hline
+ & \multicolumn{5}{p{130mm}|}{AppManager.getSelectedEventCount()が0になる} & \\ \hline
+ & \multicolumn{5}{p{130mm}|}{プロパティー・ビューが読み込んだファイルの内容に応じて更新される} & \\ \hline
+ & \multicolumn{5}{p{130mm}|}{ミキサー・ダイアログが読み込んだファイルの内容に応じて更新される} & \\ \hline
+ & \multicolumn{5}{p{130mm}|}{Undo/Redo履歴がリセットされる} & \\ \hline
+ & \multicolumn{5}{p{130mm}|}{自動保存を行うためのタイマーが停止される} & \\ \hline
+\multicolumn{7}{|p{140mm}|}{マウス・オーバー時に以下の動作が起こること} \\ \hline
+ & \multicolumn{5}{p{130mm}|}{ステータスバーにこのメニューの概要が表示される} & \\ \hline
+\end{longtable}
 
 \paragraph{Open UTAU project file}
+\hspace{1em}\begin{longtable}{|p{5mm}p{5mm}p{5mm}p{5mm}p{5mm}p{110mm}p{5mm}|} \hline
+\multicolumn{7}{|p{140mm}|}{クリックしたとき，以下の動作が起こること} \\ \hline
+ & \multicolumn{5}{p{130mm}|}{再生中の場合，再生が停止する} & \\ \hline
+ & \multicolumn{5}{p{130mm}|}{シーケンスが編集中の場合，編集を取り消す旨のダイアログが出る} & \\ \hline
+ & & \multicolumn{4}{p{125mm}|}{Cancelボタンを押すとシーケンスの編集に復帰する} & \\ \hline
+ & & \multicolumn{4}{p{125mm}|}{OKボタンを押すと以降に処理が続行される} & \\ \hline
+ & \multicolumn{5}{p{130mm}|}{USTファイルを開くためのダイアログが出る} & \\ \hline
+ & & \multicolumn{4}{p{125mm}|}{ダイアログのデフォルトの拡張子が，*.ustになっていること} & \\ \hline
+ & & \multicolumn{4}{p{125mm}|}{ダイアログの最初のディレクトリが，前回このダイアログでファイルを開いた場所になっていること} & \\ \hline
+ & & \multicolumn{4}{p{125mm}|}{Cancelボタンを押すとシーケンスの編集に復帰する} & \\ \hline
+ & & \multicolumn{4}{p{125mm}|}{Openボタンを押すと以降に処理が続行される} & \\ \hline
+ & \multicolumn{5}{p{130mm}|}{無効なUSTファイルだった場合，元のシーケンスの編集に復帰する} & \\ \hline
+ & \multicolumn{5}{p{130mm}|}{指定したUSTファイルの内容が読み込まれ，編集可能な状態になる} & \\ \hline
+ & \multicolumn{5}{p{130mm}|}{AppManager.getSelectedEventCount()が0になる} & \\ \hline
+ & \multicolumn{5}{p{130mm}|}{プロパティー・ビューが読み込んだファイルの内容に応じて更新される} & \\ \hline
+ & \multicolumn{5}{p{130mm}|}{ミキサー・ダイアログが読み込んだファイルの内容に応じて更新される} & \\ \hline
+ & \multicolumn{5}{p{130mm}|}{Undo/Redo履歴がリセットされる} & \\ \hline
+ & \multicolumn{5}{p{130mm}|}{自動保存を行うためのタイマーが停止される} & \\ \hline
+\multicolumn{7}{|p{140mm}|}{マウス・オーバー時に以下の動作が起こること} \\ \hline
+ & \multicolumn{5}{p{130mm}|}{ステータスバーにこのメニューの概要が表示される} & \\ \hline
+\end{longtable}
 
 \paragraph{Import}
 
-\paragraph{VSQ/Vocaloid MIDI}
+\paragraph{Import→VSQ/Vocaloid MIDI}
 
-\paragraph{Standard MIDI}
+\paragraph{Import→Standard MIDI}
 
 \paragraph{Export}
 
-\paragraph{Wave}
+\paragraph{Export→Wave}
 
-\paragraph{VSQ file}
+\paragraph{Export→VSQ file}
 
-\paragraph{MIDI}
+\paragraph{Export→MIDI}
 
-\paragraph{MusicXML}
+\paragraph{Export→MusicXML}
 
-\paragraph{UTAU project file}
+\paragraph{Export→UTAU project file}
 
-\paragraph{Metatext for vConnect}
+\paragraph{Export→Metatext for vConnect}
 
 \paragraph{Recent files}
 
