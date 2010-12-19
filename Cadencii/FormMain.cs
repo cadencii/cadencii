@@ -541,6 +541,10 @@ namespace org.kbinani.cadencii
         /// 0がデフォルト、&gt;0は+ボタンにマウスが降りた状態、&lt;0は-ボタンにマウスが降りた状態
         /// </summary>
         private int mPianoRollScaleYMouseStatus = 0;
+        /// <summary>
+        /// ステップ入力中に，各ノート番号の鍵盤が下りている時にtrue
+        /// </summary>
+        private bool[] mMidiStepRecordStatus = new bool[128];
 #if MONITOR_FPS
         /// <summary>
         /// パフォーマンスカウンタ
@@ -557,6 +561,7 @@ namespace org.kbinani.cadencii
         public BMenuItem menuFileExportVsq;
         private BMenuItem menuFileExportVxt;
         public BMenuItem menuJobChangePreMeasure;
+        private System.Windows.Forms.ToolStripButton stripBtnStepSequencer;
         public BMenuItem menuLyricSetAutoVibrato;
         #endregion
 
@@ -7031,6 +7036,7 @@ namespace org.kbinani.cadencii
             toolBarMeasure.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler( toolBarMeasure_ButtonClick );
             toolBarMeasure.MouseDown += new System.Windows.Forms.MouseEventHandler( toolBarMeasure_MouseDown );
 #endif
+            stripBtnStepSequencer.CheckedChanged += new EventHandler( stripBtnStepSequencer_CheckedChanged );
             Deactivate += new EventHandler( FormMain_Deactivate );
             Activated += new EventHandler( FormMain_Activated );
             FormClosed += new System.Windows.Forms.FormClosedEventHandler( FormMain_FormClosed );
@@ -15252,6 +15258,11 @@ namespace org.kbinani.cadencii
             pictPianoRoll.requestFocus();
         }
 
+        public void stripBtnStepSequencer_CheckedChanged( object sender, EventArgs e )
+        {
+
+        }
+
         public void stripBtnStop_Click( Object sender, EventArgs e )
         {
             AppManager.setPlaying( false );
@@ -16699,6 +16710,7 @@ namespace org.kbinani.cadencii
             this.menuJobRandomize = new org.kbinani.windows.forms.BMenuItem();
             this.menuJobConnect = new org.kbinani.windows.forms.BMenuItem();
             this.menuJobLyric = new org.kbinani.windows.forms.BMenuItem();
+            this.menuJobChangePreMeasure = new org.kbinani.windows.forms.BMenuItem();
             this.menuJobRewire = new org.kbinani.windows.forms.BMenuItem();
             this.menuJobReloadVsti = new org.kbinani.windows.forms.BMenuItem();
             this.menuTrack = new org.kbinani.windows.forms.BMenuItem();
@@ -16977,7 +16989,7 @@ namespace org.kbinani.cadencii
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.menuJobChangePreMeasure = new org.kbinani.windows.forms.BMenuItem();
+            this.stripBtnStepSequencer = new System.Windows.Forms.ToolStripButton();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
@@ -17509,6 +17521,12 @@ namespace org.kbinani.cadencii
             this.menuJobLyric.Name = "menuJobLyric";
             this.menuJobLyric.Size = new System.Drawing.Size( 256, 22 );
             this.menuJobLyric.Text = "Insert Lyrics(&L)";
+            // 
+            // menuJobChangePreMeasure
+            // 
+            this.menuJobChangePreMeasure.Name = "menuJobChangePreMeasure";
+            this.menuJobChangePreMeasure.Size = new System.Drawing.Size( 256, 22 );
+            this.menuJobChangePreMeasure.Text = "Change pre-measure(&P)";
             // 
             // menuJobRewire
             // 
@@ -18934,11 +18952,12 @@ namespace org.kbinani.cadencii
             this.toolStripSeparator10,
             this.toolStripStatusLabel2,
             this.stripLblMidiIn,
-            this.toolStripSeparator11} );
+            this.toolStripSeparator11,
+            this.stripBtnStepSequencer} );
             this.toolStripBottom.Location = new System.Drawing.Point( 15, 0 );
             this.toolStripBottom.Name = "toolStripBottom";
             this.toolStripBottom.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.toolStripBottom.Size = new System.Drawing.Size( 292, 25 );
+            this.toolStripBottom.Size = new System.Drawing.Size( 436, 25 );
             this.toolStripBottom.TabIndex = 22;
             // 
             // toolStripStatusLabel1
@@ -19657,11 +19676,14 @@ namespace org.kbinani.cadencii
             this.statusLabel.Name = "statusLabel";
             this.statusLabel.Size = new System.Drawing.Size( 0, 17 );
             // 
-            // menuJobChangePreMeasure
+            // stripBtnStepSequencer
             // 
-            this.menuJobChangePreMeasure.Name = "menuJobChangePreMeasure";
-            this.menuJobChangePreMeasure.Size = new System.Drawing.Size( 256, 22 );
-            this.menuJobChangePreMeasure.Text = "Change pre-measure(&P)";
+            this.stripBtnStepSequencer.CheckOnClick = true;
+            this.stripBtnStepSequencer.Image = ((System.Drawing.Image)(resources.GetObject( "stripBtnStepSequencer.Image" )));
+            this.stripBtnStepSequencer.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.stripBtnStepSequencer.Name = "stripBtnStepSequencer";
+            this.stripBtnStepSequencer.Size = new System.Drawing.Size( 113, 22 );
+            this.stripBtnStepSequencer.Text = "Step recording";
             // 
             // FormMain
             // 
