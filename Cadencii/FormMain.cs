@@ -716,20 +716,31 @@ namespace org.kbinani.cadencii
             this.bandPosition = new RebarBand();
             this.bandMeasure = new RebarBand();
             this.bandTool = new RebarBand();
-            this.bandFile.VariantHeight = false;
-            this.bandPosition.VariantHeight = false;
-            this.bandMeasure.VariantHeight = false;
-            this.bandTool.VariantHeight = false;
+            this.bandFile.VariantHeight = true;
+            this.bandPosition.VariantHeight = true;
+            this.bandMeasure.VariantHeight = true;
+            this.bandTool.VariantHeight = true;
+#if DEBUG
+            const int MAX_TOOLBAR_HEIGHT = 26;
+            toolBarFile.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+
+            toolBarFile.MaximumSize = new System.Drawing.Size( int.MaxValue, MAX_TOOLBAR_HEIGHT );
+            toolBarPosition.MaximumSize = new System.Drawing.Size( int.MaxValue, MAX_TOOLBAR_HEIGHT );
+            toolBarMeasure.MaximumSize = new System.Drawing.Size( int.MaxValue, MAX_TOOLBAR_HEIGHT );
+            toolBarTool.MaximumSize = new System.Drawing.Size( int.MaxValue, MAX_TOOLBAR_HEIGHT );
+
+#endif
             this.rebar.Controls.Add( this.toolBarFile );
             this.rebar.Controls.Add( this.toolBarTool );
             this.rebar.Controls.Add( this.toolBarPosition );
             this.rebar.Controls.Add( this.toolBarMeasure );
+            const int MAX_BAND_HEIGHT = 26;
             // bandFile
             this.bandFile.AllowVertical = false;
             this.bandFile.Child = this.toolBarFile;
             this.bandFile.Header = -1;
             this.bandFile.Integral = 1;
-            this.bandFile.MaxHeight = 0;
+            this.bandFile.MaxHeight = MAX_BAND_HEIGHT;
             this.bandFile.UseChevron = true;
             if ( toolBarFile.Buttons.Count > 0 ) {
                 this.bandFile.IdealWidth =
@@ -742,7 +753,7 @@ namespace org.kbinani.cadencii
             this.bandPosition.Child = this.toolBarPosition;
             this.bandPosition.Header = -1;
             this.bandPosition.Integral = 1;
-            this.bandPosition.MaxHeight = 0;
+            this.bandPosition.MaxHeight = MAX_BAND_HEIGHT;
             this.bandPosition.UseChevron = true;
             if ( toolBarPosition.Buttons.Count > 0 ) {
                 this.bandPosition.IdealWidth =
@@ -755,7 +766,7 @@ namespace org.kbinani.cadencii
             this.bandMeasure.Child = this.toolBarMeasure;
             this.bandMeasure.Header = -1;
             this.bandMeasure.Integral = 1;
-            this.bandMeasure.MaxHeight = 0;
+            this.bandMeasure.MaxHeight = MAX_BAND_HEIGHT;
             this.bandMeasure.UseChevron = true;
             if ( toolBarMeasure.Buttons.Count > 0 ) {
                 this.bandMeasure.IdealWidth =
@@ -768,7 +779,7 @@ namespace org.kbinani.cadencii
             this.bandTool.Child = this.toolBarTool;
             this.bandTool.Header = -1;
             this.bandTool.Integral = 1;
-            this.bandTool.MaxHeight = 0;
+            this.bandTool.MaxHeight = MAX_BAND_HEIGHT;
             this.bandTool.UseChevron = true;
             if ( toolBarTool.Buttons.Count > 0 ) {
                 this.bandTool.IdealWidth =

@@ -50,7 +50,7 @@ namespace org.kbinani.windows.forms {
         private int _image = -1;
         private int _integral = 1;
         private string _key = "";
-        private int _maxHeight = 0;
+        private int _maxHeight = 40;
         private int _minHeight = 24;
         private int _minWidth = 24;
         private bool _newRow = true;
@@ -514,7 +514,7 @@ namespace org.kbinani.windows.forms {
                     rbBand.cyMinChild = (uint)_minHeight;
                     rbBand.cyIntegral = (uint)_integral;//0;
                     rbBand.cyChild = (uint)_minHeight;
-                    rbBand.cyMaxChild = 40;
+                    rbBand.cyMaxChild = (uint)_maxHeight;
                     rbBand.cxIdeal = (uint)_idealWidth;
                 }
                 if ( _showIcon ) {
@@ -1198,7 +1198,7 @@ namespace org.kbinani.windows.forms {
                 rbBand.cyMinChild = (uint)_minHeight;
                 rbBand.cyIntegral = (uint)_integral;//1;
                 rbBand.cyChild = (uint)_minHeight;
-                rbBand.cyMaxChild = 300;
+                rbBand.cyMaxChild = (uint)_maxHeight;
                 rbBand.cxIdeal = (uint)_idealWidth;
                 rbBand.cxHeader = (uint)_header;
                 if ( win32.SendMessage( _bands.Rebar.RebarHwnd, (int)win32.RB_SETBANDINFOA, BandIndex, ref rbBand ) == 0 ) {
