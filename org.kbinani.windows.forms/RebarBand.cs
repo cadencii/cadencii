@@ -65,6 +65,7 @@ namespace org.kbinani.windows.forms {
         private bool _visible = true;
         private int _bandSize = 0;
         private bool _useChevron = true;
+        private bool _variantHeight = false;
 
         private const int SPACE_CHEVRON_MENU = 6;
 
@@ -978,6 +979,26 @@ namespace org.kbinani.windows.forms {
             }
         }
 
+        [Category( "Appearance" ),
+        Browsable( true ),
+        DefaultValue( false ),
+        NotifyParentProperty( true )]
+        public bool VariantHeight
+        {
+            get
+            {
+                return _variantHeight;
+            }
+            set
+            {
+                if ( value != _variantHeight ) {
+                    //Code to set Style
+                    _variantHeight = value;
+                    UpdateStyles();
+                }
+            }
+        }
+
         [Browsable( false )]
         [EditorBrowsable( EditorBrowsableState.Always )]
         protected int Style {
@@ -1003,6 +1024,9 @@ namespace org.kbinani.windows.forms {
                     style |= (int)win32.RBBS_NOGRIPPER;
                 if ( _useChevron )
                     style |= (int)win32.RBBS_USECHEVRON;
+                if ( _variantHeight ) {
+                    style |= win32.RBBS_VARIABLEHEIGHT;
+                }
                 return style;
             }
             set {
@@ -1023,13 +1047,15 @@ namespace org.kbinani.windows.forms {
                 _useChevron = !((value & (int)win32.RBBS_USECHEVRON)
                     == (int)win32.RBBS_USECHEVRON);
                 if ( (value & (int)win32.RBBS_GRIPPERALWAYS)
-                    == (int)win32.RBBS_GRIPPERALWAYS )
+                    == (int)win32.RBBS_GRIPPERALWAYS ) {
                     _gripSettings = GripperSettings.Always;
-                else if ( (value & (int)win32.RBBS_NOGRIPPER)
-                    == (int)win32.RBBS_NOGRIPPER )
+                } else if ( (value & (int)win32.RBBS_NOGRIPPER)
+                    == (int)win32.RBBS_NOGRIPPER ) {
                     _gripSettings = GripperSettings.Never;
-                else
+                } else {
                     _gripSettings = GripperSettings.Auto;
+                }
+                _variantHeight = ((value & win32.RBBS_VARIABLEHEIGHT) == win32.RBBS_VARIABLEHEIGHT);
                 UpdateStyles();
             }
         }

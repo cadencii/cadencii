@@ -716,6 +716,10 @@ namespace org.kbinani.cadencii
             this.bandPosition = new RebarBand();
             this.bandMeasure = new RebarBand();
             this.bandTool = new RebarBand();
+            this.bandFile.VariantHeight = false;
+            this.bandPosition.VariantHeight = false;
+            this.bandMeasure.VariantHeight = false;
+            this.bandTool.VariantHeight = false;
             this.rebar.Controls.Add( this.toolBarFile );
             this.rebar.Controls.Add( this.toolBarTool );
             this.rebar.Controls.Add( this.toolBarPosition );
@@ -774,7 +778,7 @@ namespace org.kbinani.cadencii
             this.bandTool.NewRow = AppManager.editorConfig.BandNewRowTool;
             // 一度リストに入れてから追加する
             var bands = new RebarBand[] { null, null, null, null };
-            // 番号がおかしくないか
+            // 番号がおかしくないかチェック
             if ( AppManager.editorConfig.BandOrderFile < 0 || bands.Length <= AppManager.editorConfig.BandOrderFile ) AppManager.editorConfig.BandOrderFile = 0;
             if ( AppManager.editorConfig.BandOrderMeasure < 0 || bands.Length <= AppManager.editorConfig.BandOrderMeasure ) AppManager.editorConfig.BandOrderMeasure = 0;
             if ( AppManager.editorConfig.BandOrderPosition < 0 || bands.Length <= AppManager.editorConfig.BandOrderPosition ) AppManager.editorConfig.BandOrderPosition = 0;
@@ -3905,10 +3909,18 @@ namespace org.kbinani.cadencii
             if ( playing ) {
                 return;
             }
-            int current = AppManager.getVsqFile().getBarCountFromClock( AppManager.getCurrentClock() ) + 1;
-            int new_clock = AppManager.getVsqFile().getClockFromBarCount( current );
-            if ( new_clock <= hScroll.Maximum + (pictPianoRoll.getWidth() - AppManager.keyWidth) * AppManager.getScaleXInv() ) {
-                AppManager.setCurrentClock( new_clock );
+            VsqFileEx vsq = AppManager.getVsqFile();
+            if ( vsq == null ) {
+                return;
+            }
+            int cl_clock = AppManager.getCurrentClock();
+            int unit = QuantizeModeUtil.getQuantizeClock( 
+                AppManager.editorConfig.getPositionQuantize(), 
+                AppManager.editorConfig.isPositionQuantizeTriplet() );
+            int cl_new = doQuantize( cl_clock + unit, unit );
+            //int new_clock = AppManager.getVsqFile().getClockFromBarCount( current );
+            if ( cl_new <= hScroll.Maximum + (pictPianoRoll.getWidth() - AppManager.keyWidth) * AppManager.getScaleXInv() ) {
+                AppManager.setCurrentClock(cl_new );
                 ensureCursorVisible();
                 AppManager.setPlaying( playing );
                 refreshScreen();
@@ -3929,14 +3941,21 @@ namespace org.kbinani.cadencii
                 return;
             }
             int cl_clock = AppManager.getCurrentClock();
-            int b_current = vsq.getBarCountFromClock( cl_clock );
+            /*int b_current = vsq.getBarCountFromClock( cl_clock );
             if ( b_current > 0 ) {
                 int cl_b_current = vsq.getClockFromBarCount( b_current );
                 if ( cl_b_current >= cl_clock ) {
                     b_current--;
                 }
+            }*/
+            int unit = QuantizeModeUtil.getQuantizeClock( 
+                AppManager.editorConfig.getPositionQuantize(),
+                AppManager.editorConfig.isPositionQuantizeTriplet() );
+            int cl_new = doQuantize( cl_clock - unit, unit );
+            if ( cl_new < 0 ) {
+                cl_new = 0;
             }
-            int cl_new = vsq.getClockFromBarCount( b_current );
+            //int cl_new = vsq.getClockFromBarCount( b_current );
             AppManager.setCurrentClock( cl_new );
             ensureCursorVisible();
             AppManager.setPlaying( playing );
@@ -5725,12 +5744,19 @@ namespace org.kbinani.cadencii
             menuSettingPositionQuantizeOff.setSelected( false );
 
 #if !JAVA
-            stripDDBtnQuantizeParent.Text = "QUANTIZE " + QuantizeModeUtil.getString( AppManager.editorConfig.getPositionQuantize() );
+            QuantizeMode qm = AppManager.editorConfig.getPositionQuantize();
+            boolean triplet = AppManager.editorConfig.isPositionQuantizeTriplet();
+            stripDDBtnQuantizeParent.Text =
+                "QUANTIZE " + QuantizeModeUtil.getString( qm ) +
+                ((qm != QuantizeMode.off && triplet) ? " [3]" : "");
 #endif
             if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p4 ) {
                 cMenuPianoQuantize04.setSelected( true );
 #if ENABLE_STRIP_DROPDOWN
                 stripDDBtnQuantize04.Checked = true;
+#endif
+#if !JAVA
+                stripDDBtnQuantizeParent.ImageKey = "note004.png";
 #endif
                 menuSettingPositionQuantize04.setSelected( true );
             } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p8 ) {
@@ -5738,11 +5764,17 @@ namespace org.kbinani.cadencii
 #if ENABLE_STRIP_DROPDOWN
                 stripDDBtnQuantize08.Checked = true;
 #endif
+#if !JAVA
+                stripDDBtnQuantizeParent.ImageKey = "note008.png";
+#endif
                 menuSettingPositionQuantize08.setSelected( true );
             } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p16 ) {
                 cMenuPianoQuantize16.setSelected( true );
 #if ENABLE_STRIP_DROPDOWN
                 stripDDBtnQuantize16.Checked = true;
+#endif
+#if !JAVA
+                stripDDBtnQuantizeParent.ImageKey = "note016.png";
 #endif
                 menuSettingPositionQuantize16.setSelected( true );
             } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p32 ) {
@@ -5750,11 +5782,17 @@ namespace org.kbinani.cadencii
 #if ENABLE_STRIP_DROPDOWN
                 stripDDBtnQuantize32.Checked = true;
 #endif
+#if !JAVA
+                stripDDBtnQuantizeParent.ImageKey = "note032.png";
+#endif
                 menuSettingPositionQuantize32.setSelected( true );
             } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p64 ) {
                 cMenuPianoQuantize64.setSelected( true );
 #if ENABLE_STRIP_DROPDOWN
                 stripDDBtnQuantize64.Checked = true;
+#endif
+#if !JAVA
+                stripDDBtnQuantizeParent.ImageKey = "note064.png";
 #endif
                 menuSettingPositionQuantize64.setSelected( true );
             } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.p128 ) {
@@ -5762,11 +5800,17 @@ namespace org.kbinani.cadencii
 #if ENABLE_STRIP_DROPDOWN
                 stripDDBtnQuantize128.Checked = true;
 #endif
+#if !JAVA
+                stripDDBtnQuantizeParent.ImageKey = "note128.png";
+#endif
                 menuSettingPositionQuantize128.setSelected( true );
             } else if ( AppManager.editorConfig.getPositionQuantize() == QuantizeMode.off ) {
                 cMenuPianoQuantizeOff.setSelected( true );
 #if ENABLE_STRIP_DROPDOWN
                 stripDDBtnQuantizeOff.Checked = true;
+#endif
+#if !JAVA
+                stripDDBtnQuantizeParent.ImageKey = "notenull.png";
 #endif
                 menuSettingPositionQuantizeOff.setSelected( true );
             }
@@ -5803,12 +5847,19 @@ namespace org.kbinani.cadencii
             menuSettingLengthQuantizeOff.setSelected( false );
 
 #if !JAVA
-            stripDDBtnLengthParent.Text = "LENGTH " + QuantizeModeUtil.getString( AppManager.editorConfig.getLengthQuantize() );
+            qm = AppManager.editorConfig.getLengthQuantize();
+            triplet = AppManager.editorConfig.isLengthQuantizeTriplet();
+            stripDDBtnLengthParent.Text = 
+                "LENGTH " + QuantizeModeUtil.getString( qm ) +
+                ((qm != QuantizeMode.off && triplet) ? " [3]" : "");
 #endif
             if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p4 ) {
                 cMenuPianoLength04.setSelected( true );
 #if ENABLE_STRIP_DROPDOWN
                 stripDDBtnLength04.Checked = true;
+#endif
+#if !JAVA
+                stripDDBtnLengthParent.ImageKey = "note004.png";
 #endif
                 menuSettingLengthQuantize04.setSelected( true );
             } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p8 ) {
@@ -5816,11 +5867,17 @@ namespace org.kbinani.cadencii
 #if ENABLE_STRIP_DROPDOWN
                 stripDDBtnLength08.Checked = true;
 #endif
+#if !JAVA
+                stripDDBtnLengthParent.ImageKey = "note008.png";
+#endif
                 menuSettingLengthQuantize08.setSelected( true );
             } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p16 ) {
                 cMenuPianoLength16.setSelected( true );
 #if ENABLE_STRIP_DROPDOWN
                 stripDDBtnLength16.Checked = true;
+#endif
+#if !JAVA
+                stripDDBtnLengthParent.ImageKey = "note016.png";
 #endif
                 menuSettingLengthQuantize16.setSelected( true );
             } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p32 ) {
@@ -5828,11 +5885,17 @@ namespace org.kbinani.cadencii
 #if ENABLE_STRIP_DROPDOWN
                 stripDDBtnLength32.Checked = true;
 #endif
+#if !JAVA
+                stripDDBtnLengthParent.ImageKey = "note032.png";
+#endif
                 menuSettingLengthQuantize32.setSelected( true );
             } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p64 ) {
                 cMenuPianoLength64.setSelected( true );
 #if ENABLE_STRIP_DROPDOWN
                 stripDDBtnLength64.Checked = true;
+#endif
+#if !JAVA
+                stripDDBtnLengthParent.ImageKey = "note064.png";
 #endif
                 menuSettingLengthQuantize64.setSelected( true );
             } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p128 ) {
@@ -5840,11 +5903,17 @@ namespace org.kbinani.cadencii
 #if ENABLE_STRIP_DROPDOWN
                 stripDDBtnLength128.Checked = true;
 #endif
+#if !JAVA
+                stripDDBtnLengthParent.ImageKey = "note128.png";
+#endif
                 menuSettingLengthQuantize128.setSelected( true );
             } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.off ) {
                 cMenuPianoLengthOff.setSelected( true );
 #if ENABLE_STRIP_DROPDOWN
                 stripDDBtnLengthOff.Checked = true;
+#endif
+#if !JAVA
+                stripDDBtnLengthParent.ImageKey = "notenull.png";
 #endif
                 menuSettingLengthQuantizeOff.setSelected( true );
             }
@@ -16915,6 +16984,7 @@ namespace org.kbinani.cadencii
             this.toolStripStatusLabel2 = new org.kbinani.windows.forms.BStatusLabel();
             this.stripLblMidiIn = new org.kbinani.windows.forms.BStatusLabel();
             this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
+            this.stripBtnStepSequencer = new System.Windows.Forms.ToolStripButton();
             this.splitContainerProperty = new org.kbinani.apputil.BSplitContainer();
             this.splitContainer2 = new org.kbinani.apputil.BSplitContainer();
             this.panel2 = new org.kbinani.windows.forms.BPanel();
@@ -16989,7 +17059,6 @@ namespace org.kbinani.cadencii
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.stripBtnStepSequencer = new System.Windows.Forms.ToolStripButton();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
@@ -18957,7 +19026,7 @@ namespace org.kbinani.cadencii
             this.toolStripBottom.Location = new System.Drawing.Point( 15, 0 );
             this.toolStripBottom.Name = "toolStripBottom";
             this.toolStripBottom.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.toolStripBottom.Size = new System.Drawing.Size( 436, 25 );
+            this.toolStripBottom.Size = new System.Drawing.Size( 405, 25 );
             this.toolStripBottom.TabIndex = 22;
             // 
             // toolStripStatusLabel1
@@ -18995,6 +19064,15 @@ namespace org.kbinani.cadencii
             // 
             this.toolStripSeparator11.Name = "toolStripSeparator11";
             this.toolStripSeparator11.Size = new System.Drawing.Size( 6, 25 );
+            // 
+            // stripBtnStepSequencer
+            // 
+            this.stripBtnStepSequencer.CheckOnClick = true;
+            this.stripBtnStepSequencer.Image = ((System.Drawing.Image)(resources.GetObject( "stripBtnStepSequencer.Image" )));
+            this.stripBtnStepSequencer.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.stripBtnStepSequencer.Name = "stripBtnStepSequencer";
+            this.stripBtnStepSequencer.Size = new System.Drawing.Size( 113, 22 );
+            this.stripBtnStepSequencer.Text = "Step recording";
             // 
             // splitContainerProperty
             // 
@@ -19286,6 +19364,15 @@ namespace org.kbinani.cadencii
             this.imageListMeasure.TransparentColor = System.Drawing.Color.Transparent;
             this.imageListMeasure.Images.SetKeyName( 0, "pin__arrow.png" );
             this.imageListMeasure.Images.SetKeyName( 1, "pin__arrow_inv.png" );
+            this.imageListMeasure.Images.SetKeyName( 2, "note001.png" );
+            this.imageListMeasure.Images.SetKeyName( 3, "note002.png" );
+            this.imageListMeasure.Images.SetKeyName( 4, "note004.png" );
+            this.imageListMeasure.Images.SetKeyName( 5, "note008.png" );
+            this.imageListMeasure.Images.SetKeyName( 6, "note016.png" );
+            this.imageListMeasure.Images.SetKeyName( 7, "note032.png" );
+            this.imageListMeasure.Images.SetKeyName( 8, "note064.png" );
+            this.imageListMeasure.Images.SetKeyName( 9, "note128.png" );
+            this.imageListMeasure.Images.SetKeyName( 10, "notenull.png" );
             // 
             // imageListTool
             // 
@@ -19468,7 +19555,7 @@ namespace org.kbinani.cadencii
             this.toolBarPosition.Location = new System.Drawing.Point( 11, 32 );
             this.toolBarPosition.Name = "toolBarPosition";
             this.toolBarPosition.ShowToolTips = true;
-            this.toolBarPosition.Size = new System.Drawing.Size( 944, 40 );
+            this.toolBarPosition.Size = new System.Drawing.Size( 944, 26 );
             this.toolBarPosition.TabIndex = 25;
             this.toolBarPosition.TextAlign = System.Windows.Forms.ToolBarTextAlign.Right;
             this.toolBarPosition.Wrappable = false;
@@ -19540,7 +19627,7 @@ namespace org.kbinani.cadencii
             this.toolBarMeasure.Location = new System.Drawing.Point( 11, 62 );
             this.toolBarMeasure.Name = "toolBarMeasure";
             this.toolBarMeasure.ShowToolTips = true;
-            this.toolBarMeasure.Size = new System.Drawing.Size( 944, 40 );
+            this.toolBarMeasure.Size = new System.Drawing.Size( 944, 26 );
             this.toolBarMeasure.TabIndex = 25;
             this.toolBarMeasure.TextAlign = System.Windows.Forms.ToolBarTextAlign.Right;
             this.toolBarMeasure.Wrappable = false;
@@ -19588,7 +19675,7 @@ namespace org.kbinani.cadencii
             this.toolBarTool.Location = new System.Drawing.Point( 11, 92 );
             this.toolBarTool.Name = "toolBarTool";
             this.toolBarTool.ShowToolTips = true;
-            this.toolBarTool.Size = new System.Drawing.Size( 944, 40 );
+            this.toolBarTool.Size = new System.Drawing.Size( 944, 26 );
             this.toolBarTool.TabIndex = 25;
             this.toolBarTool.TextAlign = System.Windows.Forms.ToolBarTextAlign.Right;
             this.toolBarTool.Wrappable = false;
@@ -19675,15 +19762,6 @@ namespace org.kbinani.cadencii
             // 
             this.statusLabel.Name = "statusLabel";
             this.statusLabel.Size = new System.Drawing.Size( 0, 17 );
-            // 
-            // stripBtnStepSequencer
-            // 
-            this.stripBtnStepSequencer.CheckOnClick = true;
-            this.stripBtnStepSequencer.Image = ((System.Drawing.Image)(resources.GetObject( "stripBtnStepSequencer.Image" )));
-            this.stripBtnStepSequencer.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this.stripBtnStepSequencer.Name = "stripBtnStepSequencer";
-            this.stripBtnStepSequencer.Size = new System.Drawing.Size( 113, 22 );
-            this.stripBtnStepSequencer.Text = "Step recording";
             // 
             // FormMain
             // 
