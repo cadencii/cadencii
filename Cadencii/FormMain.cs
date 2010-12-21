@@ -716,25 +716,17 @@ namespace org.kbinani.cadencii
             this.bandPosition = new RebarBand();
             this.bandMeasure = new RebarBand();
             this.bandTool = new RebarBand();
-            this.bandFile.VariantHeight = true;
-            this.bandPosition.VariantHeight = true;
-            this.bandMeasure.VariantHeight = true;
-            this.bandTool.VariantHeight = true;
-#if DEBUG
-            const int MAX_TOOLBAR_HEIGHT = 26;
-            toolBarFile.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.bandFile.VariantHeight = false;
+            this.bandPosition.VariantHeight = false;
+            this.bandMeasure.VariantHeight = false;
+            this.bandTool.VariantHeight = false;
 
-            toolBarFile.MaximumSize = new System.Drawing.Size( int.MaxValue, MAX_TOOLBAR_HEIGHT );
-            toolBarPosition.MaximumSize = new System.Drawing.Size( int.MaxValue, MAX_TOOLBAR_HEIGHT );
-            toolBarMeasure.MaximumSize = new System.Drawing.Size( int.MaxValue, MAX_TOOLBAR_HEIGHT );
-            toolBarTool.MaximumSize = new System.Drawing.Size( int.MaxValue, MAX_TOOLBAR_HEIGHT );
+            const int MAX_BAND_HEIGHT = 26;
 
-#endif
             this.rebar.Controls.Add( this.toolBarFile );
             this.rebar.Controls.Add( this.toolBarTool );
             this.rebar.Controls.Add( this.toolBarPosition );
             this.rebar.Controls.Add( this.toolBarMeasure );
-            const int MAX_BAND_HEIGHT = 26;
             // bandFile
             this.bandFile.AllowVertical = false;
             this.bandFile.Child = this.toolBarFile;
@@ -4167,17 +4159,17 @@ namespace org.kbinani.cadencii
             this.Invoke( new EventHandler( updateGameControlerStatus ) );
 #endif
 
-            stripBtnPointer.Text = _( "Pointer" );
+            stripBtnPointer.Text = "";// _( "Pointer" );
             stripBtnPointer.ToolTipText = _( "Pointer" );
-            stripBtnPencil.Text = _( "Pencil" );
+            stripBtnPencil.Text = "";// _( "Pencil" );
             stripBtnPencil.ToolTipText = _( "Pencil" );
-            stripBtnLine.Text = _( "Line" );
+            stripBtnLine.Text = "";// _( "Line" );
             stripBtnLine.ToolTipText = _( "Line" );
-            stripBtnEraser.Text = _( "Eraser" );
+            stripBtnEraser.Text = "";// _( "Eraser" );
             stripBtnEraser.ToolTipText = _( "Eraser" );
-            stripBtnCurve.Text = _( "Curve" );
+            stripBtnCurve.Text = "";// _( "Curve" );
             stripBtnCurve.ToolTipText = _( "Curve" );
-            stripBtnGrid.Text = _( "Grid" );
+            stripBtnGrid.Text = "";// _( "Grid" );
             stripBtnGrid.ToolTipText = _( "Grid" );
 
             #region main menu
@@ -7203,8 +7195,8 @@ namespace org.kbinani.cadencii
                 stripBtnMoveEnd_Click( e.Button, new EventArgs() );
             } else if ( e.Button == stripBtnPlay ) {
                 stripBtnPlay_Click( e.Button, new EventArgs() );
-            } else if ( e.Button == stripBtnStop ) {
-                stripBtnStop_Click( e.Button, new EventArgs() );
+            //} else if ( e.Button == stripBtnStop ) {
+                //stripBtnStop_Click( e.Button, new EventArgs() );
             } else if ( e.Button == stripBtnScroll ) {
                 stripBtnScroll_Click( e.Button, new EventArgs() );
             } else if ( e.Button == stripBtnLoop ) {
@@ -8962,6 +8954,12 @@ namespace org.kbinani.cadencii
                 if ( AppManager.getSelected() >= 0 ) {
                     if ( (edit_mode == EditMode.ADD_FIXED_LENGTH_ENTRY) ||
                          (edit_mode == EditMode.ADD_ENTRY && (mButtonInitial.x != e.X || mButtonInitial.y != e.Y) && AppManager.mAddingEvent.ID.getLength() > 0) ) {
+                        if ( AppManager.mAddingEvent.Clock < vsq.getPreMeasureClocks() ) {
+#if !JAVA
+                            SystemSounds.Asterisk.Play();
+#endif
+                            goto heaven;
+                        }
                         LyricHandle lyric = new LyricHandle( "あ", "a" );
                         VibratoHandle vibrato = null;
                         int vibrato_delay = 0;
@@ -8996,7 +8994,10 @@ namespace org.kbinani.cadencii
 
                         // oto.iniの設定を反映
                         VsqEvent item = vsq_track.getSingerEventAt( AppManager.mAddingEvent.Clock );
-                        SingerConfig singerConfig = AppManager.getSingerInfoUtau( item.ID.IconHandle.Language, item.ID.IconHandle.Program );
+                        SingerConfig singerConfig = null;
+                        if ( item != null && item.ID != null && item.ID.IconHandle != null ) {
+                            singerConfig = AppManager.getSingerInfoUtau( item.ID.IconHandle.Language, item.ID.IconHandle.Program );
+                        }
 
                         if ( singerConfig != null && AppManager.mUtauVoiceDB.containsKey( singerConfig.VOICEIDSTR ) ) {
                             UtauVoiceDB utauVoiceDb = AppManager.mUtauVoiceDB.get( singerConfig.VOICEIDSTR );
@@ -9344,6 +9345,7 @@ namespace org.kbinani.cadencii
                                                     PortUtil.convertLongArray( add_required_point.toArray( new Long[] { } ) ) );
                 }
             }
+        heaven:
             refreshScreen();
             AppManager.setEditMode( EditMode.NONE );
         }
@@ -15318,8 +15320,11 @@ namespace org.kbinani.cadencii
 
         public void stripBtnPlay_Click( Object sender, EventArgs e )
         {
-            if ( !AppManager.isPlaying() ) {
-                AppManager.setPlaying( true );
+            AppManager.setPlaying( !AppManager.isPlaying() );
+            if ( AppManager.isPlaying() ) {
+                stripBtnPlay.ImageKey = "control_pause.png";
+            } else {
+                stripBtnPlay.ImageKey = "control.png";
             }
             pictPianoRoll.requestFocus();
         }
@@ -17049,7 +17054,6 @@ namespace org.kbinani.cadencii
             this.stripBtnForward = new System.Windows.Forms.ToolBarButton();
             this.stripBtnMoveEnd = new System.Windows.Forms.ToolBarButton();
             this.stripBtnPlay = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnStop = new System.Windows.Forms.ToolBarButton();
             this.toolBarButton4 = new System.Windows.Forms.ToolBarButton();
             this.stripBtnScroll = new System.Windows.Forms.ToolBarButton();
             this.stripBtnLoop = new System.Windows.Forms.ToolBarButton();
@@ -19555,7 +19559,6 @@ namespace org.kbinani.cadencii
             this.stripBtnForward,
             this.stripBtnMoveEnd,
             this.stripBtnPlay,
-            this.stripBtnStop,
             this.toolBarButton4,
             this.stripBtnScroll,
             this.stripBtnLoop} );
@@ -19566,7 +19569,7 @@ namespace org.kbinani.cadencii
             this.toolBarPosition.Location = new System.Drawing.Point( 11, 32 );
             this.toolBarPosition.Name = "toolBarPosition";
             this.toolBarPosition.ShowToolTips = true;
-            this.toolBarPosition.Size = new System.Drawing.Size( 944, 26 );
+            this.toolBarPosition.Size = new System.Drawing.Size( 944, 40 );
             this.toolBarPosition.TabIndex = 25;
             this.toolBarPosition.TextAlign = System.Windows.Forms.ToolBarTextAlign.Right;
             this.toolBarPosition.Wrappable = false;
@@ -19601,12 +19604,6 @@ namespace org.kbinani.cadencii
             this.stripBtnPlay.Name = "stripBtnPlay";
             this.stripBtnPlay.ToolTipText = "Play";
             // 
-            // stripBtnStop
-            // 
-            this.stripBtnStop.ImageIndex = 5;
-            this.stripBtnStop.Name = "stripBtnStop";
-            this.stripBtnStop.ToolTipText = "Stop";
-            // 
             // toolBarButton4
             // 
             this.toolBarButton4.Name = "toolBarButton4";
@@ -19638,7 +19635,7 @@ namespace org.kbinani.cadencii
             this.toolBarMeasure.Location = new System.Drawing.Point( 11, 62 );
             this.toolBarMeasure.Name = "toolBarMeasure";
             this.toolBarMeasure.ShowToolTips = true;
-            this.toolBarMeasure.Size = new System.Drawing.Size( 944, 26 );
+            this.toolBarMeasure.Size = new System.Drawing.Size( 944, 40 );
             this.toolBarMeasure.TabIndex = 25;
             this.toolBarMeasure.TextAlign = System.Windows.Forms.ToolBarTextAlign.Right;
             this.toolBarMeasure.Wrappable = false;
@@ -19696,25 +19693,25 @@ namespace org.kbinani.cadencii
             this.stripBtnPointer.ImageIndex = 0;
             this.stripBtnPointer.Name = "stripBtnPointer";
             this.stripBtnPointer.Pushed = true;
-            this.stripBtnPointer.Text = "Pointer";
+            this.stripBtnPointer.ToolTipText = "Pointer";
             // 
             // stripBtnPencil
             // 
             this.stripBtnPencil.ImageIndex = 1;
             this.stripBtnPencil.Name = "stripBtnPencil";
-            this.stripBtnPencil.Text = "Pencil";
+            this.stripBtnPencil.ToolTipText = "Pencil";
             // 
             // stripBtnLine
             // 
             this.stripBtnLine.ImageIndex = 2;
             this.stripBtnLine.Name = "stripBtnLine";
-            this.stripBtnLine.Text = "Line";
+            this.stripBtnLine.ToolTipText = "Line";
             // 
             // stripBtnEraser
             // 
             this.stripBtnEraser.ImageIndex = 3;
             this.stripBtnEraser.Name = "stripBtnEraser";
-            this.stripBtnEraser.Text = "Eraser";
+            this.stripBtnEraser.ToolTipText = "Eraser";
             // 
             // toolBarButton3
             // 
@@ -19725,13 +19722,13 @@ namespace org.kbinani.cadencii
             // 
             this.stripBtnGrid.ImageIndex = 4;
             this.stripBtnGrid.Name = "stripBtnGrid";
-            this.stripBtnGrid.Text = "Grid";
+            this.stripBtnGrid.ToolTipText = "Grid";
             // 
             // stripBtnCurve
             // 
             this.stripBtnCurve.ImageIndex = 5;
             this.stripBtnCurve.Name = "stripBtnCurve";
-            this.stripBtnCurve.Text = "Curve";
+            this.stripBtnCurve.ToolTipText = "Curve";
             // 
             // toolStripContainer1
             // 
@@ -20015,7 +20012,6 @@ namespace org.kbinani.cadencii
         public System.Windows.Forms.ToolBarButton stripBtnForward;
         public System.Windows.Forms.ToolBarButton stripBtnMoveEnd;
         public System.Windows.Forms.ToolBarButton stripBtnPlay;
-        public System.Windows.Forms.ToolBarButton stripBtnStop;
         public System.Windows.Forms.ToolBarButton stripBtnScroll;
         public System.Windows.Forms.ToolBarButton stripBtnLoop;
         public System.Windows.Forms.ToolBarButton stripBtnCurve;

@@ -38,7 +38,8 @@ using org.kbinani.java.util;
 using org.kbinani.vsq;
 using org.kbinani.windows.forms;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using BEventArgs = System.EventArgs;
     using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
     using BMouseButtons = System.Windows.Forms.MouseButtons;
@@ -54,12 +55,14 @@ namespace org.kbinani.cadencii {
     /// コントロールカーブ，トラックの一覧，歌手変更イベントなどを表示するコンポーネント．
     /// </summary>
 #if JAVA
-    public class TrackSelector extends BPanel {
+    public class TrackSelector extends BPanel
 #else
-    public class TrackSelector : BPanel {
+    public class TrackSelector : BPanel
 #endif
+    {
         #region constants and internal enums
-        private enum MouseDownMode {
+        private enum MouseDownMode
+        {
             NONE,
             CURVE_EDIT,
             TRACK_LIST,
@@ -119,9 +122,18 @@ namespace org.kbinani.cadencii {
         /// </summary>
         private static readonly Color COLOR_BEZIER_DOT_NORMAL = new Color( 237, 107, 158 );
         /// <summary>
+        /// ベジエ曲線の制御点の枠色
+        /// </summary>
+        private static readonly Color COLOR_BEZIER_DOT_NORMAL_DARK = new Color( 153, 19, 70 );
+        /// <summary>
         /// ベジエ曲線のデータ点の色
         /// </summary>
         private static readonly Color COLOR_BEZIER_DOT_BASE = new Color( 125, 198, 34 );
+        /// <summary>
+        /// ベジエ曲線のデータ点の枠色
+        /// </summary>
+        private static readonly Color COLOR_BEZIER_DOT_BASE_DARK = new Color( 62, 99, 17 );
+
         /// <summary>
         /// データ点のハイライト色
         /// </summary>
@@ -418,7 +430,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// コンストラクタ．
         /// </summary>
-        public TrackSelector( FormMain main_window ) {
+        public TrackSelector( FormMain main_window )
+        {
 #if JAVA
             super();
             initialize();
@@ -471,15 +484,18 @@ namespace org.kbinani.cadencii {
 
 #if !JAVA
         #region java.awt.Component
-        public void setBounds( int x, int y, int width, int height ) {
+        public void setBounds( int x, int y, int width, int height )
+        {
             base.Bounds = new System.Drawing.Rectangle( x, y, width, height );
         }
 
-        public void setBounds( org.kbinani.java.awt.Rectangle rc ) {
+        public void setBounds( org.kbinani.java.awt.Rectangle rc )
+        {
             base.Bounds = new System.Drawing.Rectangle( rc.x, rc.y, rc.width, rc.height );
         }
 
-        public org.kbinani.java.awt.Cursor getCursor() {
+        public org.kbinani.java.awt.Cursor getCursor()
+        {
             System.Windows.Forms.Cursor c = base.Cursor;
             org.kbinani.java.awt.Cursor ret = null;
             if ( c.Equals( System.Windows.Forms.Cursors.Arrow ) ) {
@@ -517,7 +533,8 @@ namespace org.kbinani.cadencii {
             return ret;
         }
 
-        public void setCursor( org.kbinani.java.awt.Cursor value ) {
+        public void setCursor( org.kbinani.java.awt.Cursor value )
+        {
             base.Cursor = value.cursor;
         }
 
@@ -538,40 +555,48 @@ namespace org.kbinani.cadencii {
             return base.OwnerItem;
         }
 #else
-        public object getParent() {
+        public object getParent()
+        {
             return base.Parent;
         }
 #endif
 
-        public string getName() {
+        public string getName()
+        {
             return base.Name;
         }
 
-        public void setName( string value ) {
+        public void setName( string value )
+        {
             base.Name = value;
         }
 
 #if COMPONENT_ENABLE_LOCATION
-        public org.kbinani.java.awt.Point getLocationOnScreen() {
+        public org.kbinani.java.awt.Point getLocationOnScreen()
+        {
             System.Drawing.Point p = base.PointToScreen( base.Location );
             return new org.kbinani.java.awt.Point( p.X, p.Y );
         }
 
-        public org.kbinani.java.awt.Point getLocation() {
+        public org.kbinani.java.awt.Point getLocation()
+        {
             System.Drawing.Point loc = this.Location;
             return new org.kbinani.java.awt.Point( loc.X, loc.Y );
         }
 
-        public void setLocation( int x, int y ) {
+        public void setLocation( int x, int y )
+        {
             base.Location = new System.Drawing.Point( x, y );
         }
 
-        public void setLocation( org.kbinani.java.awt.Point p ) {
+        public void setLocation( org.kbinani.java.awt.Point p )
+        {
             base.Location = new System.Drawing.Point( p.x, p.y );
         }
 #endif
 
-        public org.kbinani.java.awt.Rectangle getBounds() {
+        public org.kbinani.java.awt.Rectangle getBounds()
+        {
             System.Drawing.Rectangle r = base.Bounds;
             return new org.kbinani.java.awt.Rectangle( r.X, r.Y, r.Width, r.Height );
         }
@@ -588,67 +613,83 @@ namespace org.kbinani.cadencii {
         }
 #endif
 
-        public int getWidth() {
+        public int getWidth()
+        {
             return base.Width;
         }
 
-        public int getHeight() {
+        public int getHeight()
+        {
             return base.Height;
         }
 
-        public org.kbinani.java.awt.Dimension getSize() {
+        public org.kbinani.java.awt.Dimension getSize()
+        {
             return new org.kbinani.java.awt.Dimension( base.Size.Width, base.Size.Height );
         }
 
-        public void setSize( int width, int height ) {
+        public void setSize( int width, int height )
+        {
             base.Size = new System.Drawing.Size( width, height );
         }
 
-        public void setSize( org.kbinani.java.awt.Dimension d ) {
+        public void setSize( org.kbinani.java.awt.Dimension d )
+        {
             setSize( d.width, d.height );
         }
 
-        public void setBackground( org.kbinani.java.awt.Color color ) {
+        public void setBackground( org.kbinani.java.awt.Color color )
+        {
             base.BackColor = System.Drawing.Color.FromArgb( color.getRed(), color.getGreen(), color.getBlue() );
         }
 
-        public org.kbinani.java.awt.Color getBackground() {
+        public org.kbinani.java.awt.Color getBackground()
+        {
             return new org.kbinani.java.awt.Color( base.BackColor.R, base.BackColor.G, base.BackColor.B );
         }
 
-        public void setForeground( org.kbinani.java.awt.Color color ) {
+        public void setForeground( org.kbinani.java.awt.Color color )
+        {
             base.ForeColor = color.color;
         }
 
-        public org.kbinani.java.awt.Color getForeground() {
+        public org.kbinani.java.awt.Color getForeground()
+        {
             return new org.kbinani.java.awt.Color( base.ForeColor.R, base.ForeColor.G, base.ForeColor.B );
         }
 
-        public bool isEnabled() {
+        public bool isEnabled()
+        {
             return base.Enabled;
         }
 
-        public void setEnabled( bool value ) {
+        public void setEnabled( bool value )
+        {
             base.Enabled = value;
         }
 
-        public void requestFocus() {
+        public void requestFocus()
+        {
             base.Focus();
         }
 
-        public bool isFocusOwner() {
+        public bool isFocusOwner()
+        {
             return base.Focused;
         }
 
-        public void setPreferredSize( org.kbinani.java.awt.Dimension size ) {
+        public void setPreferredSize( org.kbinani.java.awt.Dimension size )
+        {
             base.Size = new System.Drawing.Size( size.width, size.height );
         }
 
-        public org.kbinani.java.awt.Font getFont() {
+        public org.kbinani.java.awt.Font getFont()
+        {
             return new org.kbinani.java.awt.Font( base.Font );
         }
 
-        public void setFont( org.kbinani.java.awt.Font font ) {
+        public void setFont( org.kbinani.java.awt.Font font )
+        {
             if ( font == null ) {
                 return;
             }
@@ -662,12 +703,14 @@ namespace org.kbinani.cadencii {
 
         #region common APIs of org.kbinani.*
         // root implementation is in BForm.cs
-        public java.awt.Point pointToScreen( java.awt.Point point_on_client ) {
+        public java.awt.Point pointToScreen( java.awt.Point point_on_client )
+        {
             java.awt.Point p = getLocationOnScreen();
             return new java.awt.Point( p.x + point_on_client.x, p.y + point_on_client.y );
         }
 
-        public java.awt.Point pointToClient( java.awt.Point point_on_screen ) {
+        public java.awt.Point pointToClient( java.awt.Point point_on_screen )
+        {
             java.awt.Point p = getLocationOnScreen();
             return new java.awt.Point( point_on_screen.x - p.x, point_on_screen.y - p.y );
         }
@@ -682,17 +725,20 @@ namespace org.kbinani.cadencii {
             tag = value;
         }
 #else
-        public Object getTag() {
+        public Object getTag()
+        {
             return base.Tag;
         }
 
-        public void setTag( Object value ) {
+        public void setTag( Object value )
+        {
             base.Tag = value;
         }
 #endif
         #endregion
 
-        private LineGraphDrawer getGraphDrawer() {
+        private LineGraphDrawer getGraphDrawer()
+        {
             if ( mGraphDrawer == null ) {
                 mGraphDrawer = new LineGraphDrawer( LineGraphDrawer.TYPE_STEP );
             }
@@ -703,7 +749,8 @@ namespace org.kbinani.cadencii {
         /// 描画幅が2ピクセルのストロークを取得します
         /// </summary>
         /// <returns></returns>
-        private BasicStroke getStroke2px() {
+        private BasicStroke getStroke2px()
+        {
             if ( mStroke2px == null ) {
                 mStroke2px = new BasicStroke( 2.0f );
             }
@@ -714,23 +761,27 @@ namespace org.kbinani.cadencii {
         /// デフォルトのストロークを取得します
         /// </summary>
         /// <returns></returns>
-        private BasicStroke getStrokeDefault() {
+        private BasicStroke getStrokeDefault()
+        {
             if ( mStrokeDefault == null ) {
                 mStrokeDefault = new BasicStroke();
             }
             return mStrokeDefault;
         }
 
-        public void applyLanguage() {
+        public void applyLanguage()
+        {
         }
 
-        public void applyFont( java.awt.Font font ) {
+        public void applyFont( java.awt.Font font )
+        {
             Util.applyFontRecurse( this, font );
             Util.applyContextMenuFontRecurse( cmenusinger, font );
             Util.applyContextMenuFontRecurse( cmenuCurve, font );
         }
 
-        private int getMaxColumns() {
+        private int getMaxColumns()
+        {
             int max_columns = AppManager.keyWidth / AppManager.MIN_KEY_WIDTH;
             if ( max_columns < 1 ) {
                 max_columns = 1;
@@ -738,7 +789,8 @@ namespace org.kbinani.cadencii {
             return max_columns;
         }
 
-        public int getRowsPerColumn() {
+        public int getRowsPerColumn()
+        {
             int max_columns = getMaxColumns();
             int row_per_column = AppManager.getViewingCurveCount() / max_columns;
             if ( row_per_column * max_columns < AppManager.getViewingCurveCount() ) {
@@ -750,8 +802,18 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// このコントロールの推奨最小表示高さを取得します
         /// </summary>
-        public int getPreferredMinSize() {
+        public int getPreferredMinSize()
+        {
             return HEIGHT_WITHOUT_CURVE + UNIT_HEIGHT_PER_CURVE * getRowsPerColumn();
+        }
+
+        /// <summary>
+        /// このコントロールの親ウィンドウを取得します
+        /// </summary>
+        /// <returns></returns>
+        public FormMain getMainForm()
+        {
+            return mMainWindow;
         }
 
         /// <summary>
@@ -759,13 +821,14 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="command"></param>
         /// <param name="register">Undo/Redo用バッファにExecuteの結果を格納するかどうかを指定するフラグ</param>
-        private void executeCommand( CadenciiCommand command, boolean register ) {
+        private void executeCommand( CadenciiCommand command, boolean register )
+        {
             if ( register ) {
                 AppManager.register( AppManager.getVsqFile().executeCommand( command ) );
             } else {
                 AppManager.getVsqFile().executeCommand( command );
             }
-            try{
+            try {
 #if JAVA
                 commandExecutedEvent.raise( this, new BEventArgs() );
 #elif QT_VERSION
@@ -775,12 +838,13 @@ namespace org.kbinani.cadencii {
                     CommandExecuted.Invoke( this, new BEventArgs() );
                 }
 #endif
-            }catch( Exception ex ){
+            } catch ( Exception ex ) {
                 PortUtil.stderr.println( "TrackSelector#executeCommand; ex=" + ex );
             }
         }
 
-        public ValuePair<Integer, Integer> getSelectedRegion() {
+        public ValuePair<Integer, Integer> getSelectedRegion()
+        {
             int x0 = AppManager.mCurveSelectedInterval.getStart();
             int x1 = AppManager.mCurveSelectedInterval.getEnd();
             int min = Math.Min( x0, x1 );
@@ -791,16 +855,18 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 現在最前面に表示され，編集可能となっているカーブの種類を取得または設定します
         /// </summary>
-        public CurveType getSelectedCurve() {
+        public CurveType getSelectedCurve()
+        {
             return mSelectedCurve;
         }
 
-        public void setSelectedCurve( CurveType value ) {
+        public void setSelectedCurve( CurveType value )
+        {
             CurveType old = mSelectedCurve;
             mSelectedCurve = value;
             if ( !old.equals( mSelectedCurve ) ) {
                 mLastSelectedCurve = old;
-                try{
+                try {
 #if JAVA
                     selectedCurveChangedEvent.raise( this, mSelectedCurve );
 #elif QT_VERSION
@@ -810,7 +876,7 @@ namespace org.kbinani.cadencii {
                         SelectedCurveChanged.Invoke( this, mSelectedCurve );
                     }
 #endif
-                }catch( Exception ex ){
+                } catch ( Exception ex ) {
                     PortUtil.stderr.println( "TrackSelector#setSelectedCurve; ex=" + ex );
                 }
             }
@@ -821,25 +887,29 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="y"></param>
         /// <returns></returns>
-        public int valueFromYCoord( int y ) {
+        public int valueFromYCoord( int y )
+        {
             int max = mSelectedCurve.getMaximum();
             int min = mSelectedCurve.getMinimum();
             return valueFromYCoord( y, max, min );
         }
 
-        public int valueFromYCoord( int y, int max, int min ) {
+        public int valueFromYCoord( int y, int max, int min )
+        {
             int oy = getHeight() - 42;
             float order = getGraphHeight() / (float)(max - min);
             return (int)((oy - y) / order) + min;
         }
 
-        public int yCoordFromValue( int value ) {
+        public int yCoordFromValue( int value )
+        {
             int max = mSelectedCurve.getMaximum();
             int min = mSelectedCurve.getMinimum();
             return yCoordFromValue( value, max, min );
         }
 
-        public int yCoordFromValue( int value, int max, int min ) {
+        public int yCoordFromValue( int value, int max, int min )
+        {
             int oy = getHeight() - 42;
             float order = getGraphHeight() / (float)(max - min);
             return oy - (int)((value - min) * order);
@@ -848,7 +918,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// カーブエディタを表示するかどうかを取得します
         /// </summary>
-        public boolean isCurveVisible() {
+        public boolean isCurveVisible()
+        {
             return mCurveVisible;
         }
 
@@ -856,12 +927,14 @@ namespace org.kbinani.cadencii {
         /// カーブエディタを表示するかどうかを設定します
         /// </summary>
         /// <param name="value"></param>
-        public void setCurveVisible( boolean value ) {
+        public void setCurveVisible( boolean value )
+        {
             mCurveVisible = value;
         }
 
 #if !JAVA
-        private Graphics2D getGraphics() {
+        private Graphics2D getGraphics()
+        {
             if ( mGraphics == null ) {
                 mGraphics = new Graphics2D( null );
             }
@@ -872,7 +945,8 @@ namespace org.kbinani.cadencii {
         /// オーバーライドされます
         /// </summary>
         /// <param name="e"></param>
-        protected override void OnPaint( System.Windows.Forms.PaintEventArgs e ) {
+        protected override void OnPaint( System.Windows.Forms.PaintEventArgs e )
+        {
             Graphics2D g = getGraphics();
             g.nativeGraphics = e.Graphics;
             paint( g );
@@ -882,7 +956,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// x軸方向の表示倍率。pixel/clock
         /// </summary>
-        public float getScaleY() {
+        public float getScaleY()
+        {
             int max = mSelectedCurve.getMaximum();
             int min = mSelectedCurve.getMinimum();
             int oy = getHeight() - 42;
@@ -894,7 +969,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="curve"></param>
         /// <returns></returns>
-        public Rectangle getRectFromCurveType( CurveType curve ) {
+        public Rectangle getRectFromCurveType( CurveType curve )
+        {
             int row_per_column = getRowsPerColumn();
 
             int centre = (getGraphHeight() + UNIT_HEIGHT_PER_CURVE) / 2 + 3;
@@ -910,12 +986,12 @@ namespace org.kbinani.cadencii {
             int x = 7 + ix * AppManager.MIN_KEY_WIDTH;
             int y = centre - row_per_column * UNIT_HEIGHT_PER_CURVE / 2 + 2 + UNIT_HEIGHT_PER_CURVE * iy;
             int min_size = getPreferredMinSize();
-            if ( mLastPreferredMinHeight != min_size ){
-                try{
+            if ( mLastPreferredMinHeight != min_size ) {
+                try {
                     if ( PreferredMinHeightChanged != null ) {
                         PreferredMinHeightChanged.Invoke( this, new BEventArgs() );
                     }
-                }catch( Exception ex ){
+                } catch ( Exception ex ) {
                     PortUtil.stderr.println( "TrackSelector#getRectFromCurveType; ex=" + ex );
                 }
                 mLastPreferredMinHeight = min_size;
@@ -927,7 +1003,8 @@ namespace org.kbinani.cadencii {
         /// コントロール画面を描画します
         /// </summary>
         /// <param name="graphics"></param>
-        public void paint( Graphics graphics ){
+        public void paint( Graphics graphics )
+        {
 #if JAVA
             super.paint( graphics );
 #endif
@@ -959,9 +1036,9 @@ namespace org.kbinani.cadencii {
                             size.width - 0, size.height - 2 * OFFSET_TRACK_TAB );
                 g.setFont( AppManager.baseFont8 );
                 g.setColor( brs_string );
-                g.drawString( 
+                g.drawString(
                     "SINGER",
-                    9, 
+                    9,
                     size.height - 2 * OFFSET_TRACK_TAB + OFFSET_TRACK_TAB / 2 - AppManager.baseFont8OffsetHeight );
                 g.clipRect( key_width, size.height - 2 * OFFSET_TRACK_TAB,
                             size.width - key_width, OFFSET_TRACK_TAB );
@@ -1003,12 +1080,12 @@ namespace org.kbinani.cadencii {
                         if ( x < x_at_left ) {
                             continue;
                         }
-                        Rectangle rc = 
-                            new Rectangle( x, ycoord, 
+                        Rectangle rc =
+                            new Rectangle( x, ycoord,
                                            SINGER_ITEM_WIDTH, OFFSET_TRACK_TAB - 2 );
                         if ( AppManager.isSelectedEventContains( selected, ve.InternalID ) ) {
                             g.setColor( AppManager.getHilightColor() );
-                        }else{
+                        } else {
                             g.setColor( Color.white );
                         }
                         g.fillRect( rc.x, rc.y, rc.width, rc.height );
@@ -1080,7 +1157,7 @@ namespace org.kbinani.cadencii {
 
                     #region 音符の境界
                     if ( AppManager.mDrawObjects != null && selected - 1 < AppManager.mDrawObjects.size() ) {
-                        if ( AppManager.drawItemBorderInControlCurveView && 
+                        if ( AppManager.drawItemBorderInControlCurveView &&
                              !mSelectedCurve.equals( CurveType.VibratoDepth ) &&
                              !mSelectedCurve.equals( CurveType.VibratoRate ) ) {
                             lock ( AppManager.mDrawObjects ) {
@@ -1394,7 +1471,7 @@ namespace org.kbinani.cadencii {
                                 SelectedEventEntry item = itr.next();
                                 int x = AppManager.xCoordFromClocks( item.editing.Clock );
                                 g.setColor( COLOR_SINGERBOX_BORDER_HILIGHT );
-                                g.drawRect( x, size.height - 2 * OFFSET_TRACK_TAB + 1, 
+                                g.drawRect( x, size.height - 2 * OFFSET_TRACK_TAB + 1,
                                            SINGER_ITEM_WIDTH, OFFSET_TRACK_TAB - 2 );
                             }
                         }
@@ -1487,14 +1564,15 @@ namespace org.kbinani.cadencii {
                     }
                 }
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "TrackSelector#paint; ex= "+ ex );
+                PortUtil.stderr.println( "TrackSelector#paint; ex= " + ex );
 #if JAVA
                 ex.printStackTrace();
 #endif
             }
         }
 
-        private void drawEnvelope( Graphics2D g, VsqTrack track, Color fill_color ) {
+        private void drawEnvelope( Graphics2D g, VsqTrack track, Color fill_color )
+        {
             int clock_start = AppManager.clockFromXCoord( AppManager.keyWidth );
             int clock_end = AppManager.clockFromXCoord( getWidth() );
 
@@ -1658,7 +1736,8 @@ namespace org.kbinani.cadencii {
             mPreUtteranceViewing = drawn_id;
         }
 
-        private void drawPreutteranceAndOverlap( Graphics2D g, int px_preutterance, int px_overlap, float preutterance, float overlap ) {
+        private void drawPreutteranceAndOverlap( Graphics2D g, int px_preutterance, int px_overlap, float preutterance, float overlap )
+        {
             int OFFSET_PRE = 15;
             int OFFSET_OVL = 40;
             int graph_height = getGraphHeight();
@@ -1697,7 +1776,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="location"></param>
         /// <returns></returns>
-        private long findDataPointAt( int locx, int locy ) {
+        private long findDataPointAt( int locx, int locy )
+        {
             if ( mSelectedCurve.equals( CurveType.Accent ) ||
                  mSelectedCurve.equals( CurveType.Decay ) ||
                  mSelectedCurve.equals( CurveType.Env ) ||
@@ -1738,7 +1818,8 @@ namespace org.kbinani.cadencii {
         /// <param name="internal_id">見つかったエンベロープ・ポイントを保持しているVsqEventのID</param>
         /// <param name="point_kind">見つかったエンベロープ・ポイントのタイプ。(p1,v1)なら1、(p2,v2)なら2，(p5,v5)なら3，(p3,v3)なら4，(p4,v4)なら5</param>
         /// <returns>見つかった場合は真を、そうでなければ偽を返します</returns>
-        private boolean findEnvelopePointAt( int locx, int locy, ByRef<Integer> internal_id, ByRef<Integer> point_kind ) {
+        private boolean findEnvelopePointAt( int locx, int locy, ByRef<Integer> internal_id, ByRef<Integer> point_kind )
+        {
             int clock_start = AppManager.clockFromXCoord( AppManager.keyWidth );
             int clock_end = AppManager.clockFromXCoord( getWidth() );
             VsqEvent last = null;
@@ -1787,13 +1868,15 @@ namespace org.kbinani.cadencii {
             return false;
         }
 
-        private Polygon getEnvelopePoints( VsqFileEx vsq, VsqEvent item, VsqEvent next_item ) {
+        private Polygon getEnvelopePoints( VsqFileEx vsq, VsqEvent item, VsqEvent next_item )
+        {
             ByRef<Integer> i = new ByRef<Integer>();
             ByRef<Integer> j = new ByRef<Integer>();
             return getEnvelopePoints( vsq, item, next_item, i, j );
         }
 
-        private Polygon getEnvelopePoints( VsqFileEx vsq, VsqEvent item, VsqEvent next_item, ByRef<Integer> px_pre_utteramce, ByRef<Integer> px_overlap ) {
+        private Polygon getEnvelopePoints( VsqFileEx vsq, VsqEvent item, VsqEvent next_item, ByRef<Integer> px_pre_utteramce, ByRef<Integer> px_overlap )
+        {
             double sec_start = vsq.getSecFromClock( item.Clock );
             double sec_end = vsq.getSecFromClock( item.Clock + item.ID.getLength() );
             UstEvent ust_event = item.UstEvent;
@@ -1842,7 +1925,8 @@ namespace org.kbinani.cadencii {
                                 7 );
         }
 
-        private void drawTrackTab( Graphics2D g, Rectangle destRect, String name, boolean selected, boolean enabled, boolean render_required, Color hilight, Color render_button_hilight ) {
+        private void drawTrackTab( Graphics2D g, Rectangle destRect, String name, boolean selected, boolean enabled, boolean render_required, Color hilight, Color render_button_hilight )
+        {
             int x = destRect.x;
             int panel_width = render_required ? destRect.width - 10 : destRect.width;
             Color panel_color = enabled ? hilight : new Color( 125, 123, 124 );
@@ -1902,7 +1986,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// トラック選択部分の、トラック1個分の幅を調べます。pixel
         /// </summary>
-        public int getSelectorWidth() {
+        public int getSelectorWidth()
+        {
             int draft = TRACK_SELECTOR_MAX_WIDTH;
             int maxTotalWidth = getWidth() - AppManager.keyWidth; // トラックの一覧を表示するのに利用できる最大の描画幅
             int numTrack = 1;
@@ -1925,7 +2010,8 @@ namespace org.kbinani.cadencii {
         /// <param name="color"></param>
         /// <param name="is_front"></param>
         /// <param name="type"></param>
-        public void drawVEL( Graphics2D g, VsqTrack track, Color color, boolean is_front, CurveType type ) {
+        public void drawVEL( Graphics2D g, VsqTrack track, Color color, boolean is_front, CurveType type )
+        {
             Point mouse = pointToClient( PortUtil.getMousePosition() );
 
             int HEADER = 8;
@@ -2003,7 +2089,7 @@ namespace org.kbinani.cadencii {
                 }
             }
             if ( cursor_should_be_hand ) {
-                if ( getCursor().getType() != java.awt.Cursor.HAND_CURSOR ){
+                if ( getCursor().getType() != java.awt.Cursor.HAND_CURSOR ) {
                     setCursor( new Cursor( java.awt.Cursor.HAND_CURSOR ) );
                 }
             } else {
@@ -2014,11 +2100,17 @@ namespace org.kbinani.cadencii {
             g.setClip( last_clip );
         }
 
-        private void drawAttachedCurve( Graphics2D g, Vector<BezierChain> chains ) {
+        /// <summary>
+        /// ベジエ曲線によるコントロールカーブを描画します
+        /// </summary>
+        /// <param name="g"></param>
+        /// <param name="chains"></param>
+        private void drawAttachedCurve( Graphics2D g, Vector<BezierChain> chains )
+        {
 #if DEBUG
             try {
 #endif
-                Color hilight = AppManager.getHilightColor();
+                Color hilight = Color.blue;// AppManager.getHilightColor();
                 int chains_count = chains.size();
                 for ( int i = 0; i < chains_count; i++ ) {
                     BezierChain target_chain = chains.get( i );
@@ -2064,7 +2156,7 @@ namespace org.kbinani.cadencii {
                         }
                         //g.SmoothingMode = SmoothingMode.Default;
 
-                        // コントロール点
+                        // 右コントロール点
                         if ( current.getControlRightType() == BezierControlType.Normal ) {
                             Rectangle rc = new Rectangle( pxControlCurrent.x - DOT_WID,
                                                           pxControlCurrent.y - DOT_WID,
@@ -2077,11 +2169,11 @@ namespace org.kbinani.cadencii {
                                 g.setColor( COLOR_BEZIER_DOT_NORMAL );
                                 g.fillOval( rc.x, rc.y, rc.width, rc.height );
                             }
-                            g.setColor( COLOR_BEZIER_DOT_NORMAL );
+                            g.setColor( COLOR_BEZIER_DOT_NORMAL_DARK );
                             g.drawOval( rc.x, rc.y, rc.width, rc.height );
                         }
 
-                        // コントロール点
+                        // 左コントロール点
                         if ( next.getControlLeftType() == BezierControlType.Normal ) {
                             Rectangle rc = new Rectangle( pxControlNext.x - DOT_WID,
                                                           pxControlNext.y - DOT_WID,
@@ -2094,7 +2186,7 @@ namespace org.kbinani.cadencii {
                                 g.setColor( COLOR_BEZIER_DOT_NORMAL );
                                 g.fillOval( rc.x, rc.y, rc.width, rc.height );
                             }
-                            g.setColor( COLOR_BEZIER_DOT_NORMAL );
+                            g.setColor( COLOR_BEZIER_DOT_NORMAL_DARK );
                             g.drawOval( rc.x, rc.y, rc.width, rc.height );
                         }
 
@@ -2110,7 +2202,7 @@ namespace org.kbinani.cadencii {
                             g.setColor( COLOR_BEZIER_DOT_BASE );
                             g.fillRect( rc2.x, rc2.y, rc2.width, rc2.height );
                         }
-                        g.setColor( COLOR_BEZIER_DOT_BASE );
+                        g.setColor( COLOR_BEZIER_DOT_BASE_DARK );
                         g.drawRect( rc2.x, rc2.y, rc2.width, rc2.height );
                         pxCurrent = pxNext;
                         current = next;
@@ -2128,7 +2220,7 @@ namespace org.kbinani.cadencii {
                         g.setColor( COLOR_BEZIER_DOT_BASE );
                         g.fillRect( rc_last.x, rc_last.y, rc_last.width, rc_last.height );
                     }
-                    g.setColor( COLOR_BEZIER_DOT_BASE );
+                    g.setColor( COLOR_BEZIER_DOT_BASE_DARK );
                     g.drawRect( rc_last.x, rc_last.y, rc_last.width, rc_last.height );
                 }
 #if DEBUG
@@ -2139,7 +2231,8 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        private Point getScreenCoord( PointD pt ) {
+        private Point getScreenCoord( PointD pt )
+        {
             return new Point( AppManager.xCoordFromClocks( (int)pt.getX() ), yCoordFromValue( (int)pt.getY() ) );
         }
 
@@ -2151,7 +2244,8 @@ namespace org.kbinani.cadencii {
         /// <param name="type">描画するカーブの種類</param>
         /// <param name="color">塗りつぶしに使う色</param>
         /// <param name="is_front">最前面に表示するモードかどうか</param>
-        public void drawVibratoControlCurve( Graphics2D g, VsqTrack draw_target, CurveType type, Color color, boolean is_front ) {
+        public void drawVibratoControlCurve( Graphics2D g, VsqTrack draw_target, CurveType type, Color color, boolean is_front )
+        {
             if ( !is_front ) {
                 return;
             }
@@ -2258,7 +2352,8 @@ namespace org.kbinani.cadencii {
         /// <param name="list">描画するコントロールカーブ</param>
         /// <param name="color">X軸とデータ線の間の塗りつぶしに使用する色</param>
         /// <param name="is_front">最前面に表示するモードかどうか</param>
-        public void drawVsqBPList( Graphics2D g, VsqBPList list, Color color, boolean is_front ) {
+        public void drawVsqBPList( Graphics2D g, VsqBPList list, Color color, boolean is_front )
+        {
             Point pmouse = pointToClient( PortUtil.getMousePosition() );
             int max = list.getMaximum();
             int min = list.getMinimum();
@@ -2273,7 +2368,7 @@ namespace org.kbinani.cadencii {
             int start_clock = AppManager.clockFromXCoord( start );
             int end = width;
             int end_clock = AppManager.clockFromXCoord( end );
-            
+
             // グラフ描画器の取得と設定
             LineGraphDrawer d = getGraphDrawer();
             d.clear();
@@ -2366,30 +2461,34 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// カーブエディタのグラフ部分の高さを取得します(pixel)
         /// </summary>
-        public int getGraphHeight() {
+        public int getGraphHeight()
+        {
             return getHeight() - 42 - 8;
         }
 
         /// <summary>
         /// カーブエディタのグラフ部分の幅を取得します。(pixel)
         /// </summary>
-        public int getGraphWidth() {
+        public int getGraphWidth()
+        {
             return getWidth() - AppManager.keyWidth;
         }
 
 #if !JAVA
-        public void TrackSelector_Load( Object sender, BEventArgs e ) {
+        public void TrackSelector_Load( Object sender, BEventArgs e )
+        {
             this.SetStyle( System.Windows.Forms.ControlStyles.DoubleBuffer, true );
             this.SetStyle( System.Windows.Forms.ControlStyles.UserPaint, true );
             this.SetStyle( System.Windows.Forms.ControlStyles.AllPaintingInWmPaint, true );
         }
 #endif
 
-        public void TrackSelector_MouseClick( Object sender, BMouseEventArgs e ) {
+        public void TrackSelector_MouseClick( Object sender, BMouseEventArgs e )
+        {
             if ( mCurveVisible ) {
                 if ( e.Button == BMouseButtons.Left ) {
                     // カーブの種類一覧上で発生したイベントかどうかを検査
-                    for( int i = 0; i < AppManager.getViewingCurveCount(); i++ ){
+                    for ( int i = 0; i < AppManager.getViewingCurveCount(); i++ ) {
                         CurveType curve = AppManager.getViewingCurveElement( i );
                         Rectangle r = getRectFromCurveType( curve );
                         if ( isInRect( e.X, e.Y, r ) ) {
@@ -2558,7 +2657,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void SelectNextCurve() {
+        public void SelectNextCurve()
+        {
             int index = 0;
             if ( AppManager.getViewingCurveCount() >= 2 ) {
                 for ( int i = 0; i < AppManager.getViewingCurveCount(); i++ ) {
@@ -2575,7 +2675,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void SelectPreviousCurve() {
+        public void SelectPreviousCurve()
+        {
             int index = 0;
             if ( AppManager.getViewingCurveCount() >= 2 ) {
                 for ( int i = 0; i < AppManager.getViewingCurveCount(); i++ ) {
@@ -2592,7 +2693,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public BezierPoint HandleMouseMoveForBezierMove( int clock, int value, int value_raw, BezierPickedSide picked ) {
+        public BezierPoint HandleMouseMoveForBezierMove( int clock, int value, int value_raw, BezierPickedSide picked )
+        {
             BezierChain target = AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).getBezierChain( mSelectedCurve, AppManager.getLastSelectedBezier().chainID );
             int point_id = AppManager.getLastSelectedBezier().pointID;
             int index = -1;
@@ -2608,65 +2710,97 @@ namespace org.kbinani.cadencii {
             if ( index >= 0 ) {
                 BezierPoint item = target.points.get( index );
                 if ( picked == BezierPickedSide.BASE ) {
+                    // データ点を動かす
                     Point old = target.points.get( index ).getBase().toPoint();
                     item.setBase( new PointD( clock, value ) );
                     if ( !BezierChain.isBezierImplicit( target ) ) {
-                        item.setBase( new PointD( old.x, old.y ) );
+                        // X軸について陰でなくなった場合
+                        // データ点のX座標だけ元に戻し，もう一度チェックを試みる
+                        item.setBase( new PointD( old.x, value ) );
+                        if ( !BezierChain.isBezierImplicit( target ) ) {
+                            // 駄目ならX, Y両方元に戻す
+                            item.setBase( new PointD( old.x, old.y ) );
+                        }
                     }
                     ret = (BezierPoint)target.points.get( index ).clone();
                 } else if ( picked == BezierPickedSide.LEFT ) {
-                    if ( item.getControlLeftType() != BezierControlType.Master ) {
-                        Point old1 = item.getControlLeft().toPoint();
-                        Point old2 = item.getControlRight().toPoint();
-                        Point b = item.getBase().toPoint();
+                    // 左制御点を動かす
+                    if ( item.getControlLeftType() == BezierControlType.Master ) {
+                        // 右制御点を同時に動かさない場合
+                        PointD old_left = new PointD( item.getControlLeft() );
                         item.setControlLeft( new PointD( clock, value_raw ) );
-                        double dx = (b.x - item.getControlLeft().getX()) * scale_x;
-                        double dy = (b.y - item.getControlLeft().getY()) * scale_y;
-                        BezierPoint original = AppManager.getLastSelectedBezier().original;
-                        double theta = Math.Atan2( dy, dx );
-                        double dx2 = (original.getControlRight().getX() - b.x) * scale_x;
-                        double dy2 = (original.getControlRight().getY() - b.y) * scale_y;
-                        double l = Math.Sqrt( dx2 * dx2 + dy2 * dy2 );
-                        dx2 = l * Math.Cos( theta ) / scale_x;
-                        dy2 = l * Math.Sin( theta ) / scale_y;
-                        item.setControlRight( new PointD( b.x + (int)dx2, b.y + (int)dy2 ) );
                         if ( !BezierChain.isBezierImplicit( target ) ) {
-                            item.setControlLeft( new PointD( old1.x, old1.y ) );
-                            item.setControlRight( new PointD( old2.x, old2.y ) );
+                            // X軸について陰でなくなった場合
+                            // X座標だけ元に戻し，もう一度チェックを試みる
+                            item.setControlLeft( new PointD( old_left.getX(), value_raw ) );
+                            if ( !BezierChain.isBezierImplicit( target ) ) {
+                                // 駄目ならX, Y両方戻す
+                                item.setControlLeft( old_left );
+                            }
                         }
                     } else {
-                        Point old = item.getControlLeft().toPoint();
-                        item.setControlLeft( new PointD( clock, value_raw ) );
+                        // 右制御点を同時に動かす場合(デフォルト)
+                        PointD old_left = new PointD( item.getControlLeft() );
+                        PointD old_right = new PointD( item.getControlRight() );
+                        PointD old_base = new PointD( item.getBase() );
+
+                        // 新しい座標値を計算，設定
+                        PointD new_left = new PointD( clock, value_raw );
+                        PointD new_right = getCounterPoint( old_base, old_right, new_left, scale_x, scale_y );
+                        item.setControlLeft( new_left );
+                        item.setControlRight( new_right );
+
+                        // X軸方向に陰かどうかチェック
                         if ( !BezierChain.isBezierImplicit( target ) ) {
-                            item.setControlLeft( new PointD( old.x, old.y ) );
+                            // 駄目なら，Xを元に戻す
+                            new_left.setX( old_left.getX() );
+                            new_right = getCounterPoint( old_base, old_right, new_left, scale_x, scale_y );
+                            item.setControlLeft( new_left );
+                            item.setControlRight( new_right );
+                            if ( !BezierChain.isBezierImplicit( target ) ) {
+                                // それでもだめなら両方戻す
+                                item.setControlLeft( old_left );
+                                item.setControlRight( old_right );
+                            }
                         }
                     }
                     ret = (BezierPoint)item.clone();
                 } else if ( picked == BezierPickedSide.RIGHT ) {
-                    if ( item.getControlRightType() != BezierControlType.Master ) {
-                        Point old1 = item.getControlLeft().toPoint();
-                        Point old2 = item.getControlRight().toPoint();
-                        Point b = item.getBase().toPoint();
-                        item.setControlRight( new PointD( clock, value_raw ) );
-                        double dx = (item.getControlRight().getX() - b.x) * scale_x;
-                        double dy = (item.getControlRight().getY() - b.y) * scale_y;
-                        BezierPoint original = AppManager.getLastSelectedBezier().original;
-                        double theta = Math.Atan2( dy, dx );
-                        double dx2 = (b.x - original.getControlLeft().getX()) * scale_x;
-                        double dy2 = (b.y - original.getControlLeft().getY()) * scale_y;
-                        double l = Math.Sqrt( dx2 * dx2 + dy2 * dy2 );
-                        dx2 = l * Math.Cos( theta ) / scale_x;
-                        dy2 = l * Math.Sin( theta ) / scale_y;
-                        item.setControlLeft( new PointD( b.x - (int)dx2, b.y - (int)dy2 ) );
-                        if ( !BezierChain.isBezierImplicit( target ) ) {
-                            item.setControlLeft( new PointD( old1.x, old1.y ) );
-                            item.setControlRight( new PointD( old2.x, old2.y ) );
-                        }
-                    } else {
-                        Point old = item.getControlRight().toPoint();
+                    // 右制御点を動かす
+                    if ( item.getControlRightType() == BezierControlType.Master ) {
+                        // 左制御点を同時に動かさない場合
+                        PointD old_right = item.getControlRight();
                         item.setControlRight( new PointD( clock, value ) );
                         if ( !BezierChain.isBezierImplicit( target ) ) {
-                            item.setControlRight( new PointD( old.x, old.y ) );
+                            // Xだけ元に戻す
+                            item.setControlRight( new PointD( old_right.getX(), value ) );
+                            if ( !BezierChain.isBezierImplicit( target ) ) {
+                                item.setControlRight( old_right );
+                            }
+                        }
+                    } else {
+                        // 左制御点を同時に動かす場合(デフォルト)
+                        PointD old_left = new PointD( item.getControlLeft() );
+                        PointD old_right = new PointD( item.getControlRight() );
+                        PointD old_base = new PointD( item.getBase() );
+
+                        // 新しい座標値を計算，設定
+                        PointD new_right = new PointD( clock, value_raw );
+                        PointD new_left = getCounterPoint( old_base, old_left, new_right, scale_x, scale_y );
+                        item.setControlRight( new_right );
+                        item.setControlLeft( new_left );
+
+                        // X軸方向に陰かどうかチェック
+                        if ( !BezierChain.isBezierImplicit( target ) ) {
+                            // 駄目ならXだけ元に戻す
+                            new_right.setX( old_right.getX() );
+                            new_left = getCounterPoint( old_base, old_left, new_right, scale_x, scale_y );
+                            item.setControlRight( new_right );
+                            item.setControlLeft( new_left );
+                            if ( !BezierChain.isBezierImplicit( target ) ) {
+                                item.setControlLeft( old_left );
+                                item.setControlRight( old_right );
+                            }
                         }
                     }
                     ret = (BezierPoint)item.clone();
@@ -2675,7 +2809,43 @@ namespace org.kbinani.cadencii {
             return ret;
         }
 
-        public BezierPoint HandleMouseMoveForBezierMove( BMouseEventArgs e, BezierPickedSide picked ) {
+        /// <summary>
+        /// slave_point_original, base_point, moving_pointがこの順で1直線に並んでいる時，
+        /// base_pointを回転軸としてmoving_pointを動かした場合に，
+        /// 回転に伴ってslave_point_originalが移動した先の座標を計算します．
+        /// ただし，上記の各点の座標値はscalex，scaleyを乗じた上で計算されます
+        /// </summary>
+        /// <param name="base_point"></param>
+        /// <param name="slave_point_original"></param>
+        /// <param name="moving_point"></param>
+        /// <param name="scalex"></param>
+        /// <param name="scaley"></param>
+        /// <returns></returns>
+        private static PointD getCounterPoint(
+            PointD base_point,
+            PointD slave_point_original,
+            PointD moving_point,
+            double scalex, double scaley )
+        {
+            // 移動後の点と回転軸との為す角を計算
+            double theta =
+                Math.Atan2(
+                    (moving_point.getY() - base_point.getY()) * scaley,
+                    (moving_point.getX() - base_point.getX()) * scalex );
+            // 直線なので，逆サイドの偏角は+180度
+            theta += Math.PI;
+            // 逆サイドの点と回転軸との距離を計算
+            double dx = (slave_point_original.getX() - base_point.getX()) * scalex;
+            double dy = (slave_point_original.getY() - base_point.getY()) * scaley;
+            double length = Math.Sqrt( dx * dx + dy * dy );
+            // 逆サイドの点の座標を計算
+            return new PointD(
+                length * Math.Cos( theta ) / scalex + base_point.getX(),
+                length * Math.Sin( theta ) / scaley + base_point.getY() );
+        }
+
+        public BezierPoint HandleMouseMoveForBezierMove( BMouseEventArgs e, BezierPickedSide picked )
+        {
             int clock = AppManager.clockFromXCoord( e.X );
             int value = valueFromYCoord( e.Y );
             int value_raw = value;
@@ -2693,7 +2863,8 @@ namespace org.kbinani.cadencii {
             return HandleMouseMoveForBezierMove( clock, value, value_raw, picked );
         }
 
-        public void TrackSelector_MouseMove( Object sender, BMouseEventArgs e ) {
+        public void TrackSelector_MouseMove( Object sender, BMouseEventArgs e )
+        {
             int value = valueFromYCoord( e.Y );
             int value_raw = value;
             int max = mSelectedCurve.getMaximum();
@@ -2739,11 +2910,11 @@ namespace org.kbinani.cadencii {
                  mMouseDownMode == MouseDownMode.CURVE_EDIT ) {
                 EditTool selected = AppManager.getSelectedTool();
                 if ( selected == EditTool.PENCIL ) {
-                    mPencilMoved = e.X + stdx != mMouseDownLocation.x || 
+                    mPencilMoved = e.X + stdx != mMouseDownLocation.x ||
                                      e.Y != mMouseDownLocation.y;
                     mMouseTracer.append( e.X + stdx, e.Y );
                 } else if ( selected == EditTool.LINE ) {
-                    mPencilMoved = e.X + stdx != mMouseDownLocation.x || 
+                    mPencilMoved = e.X + stdx != mMouseDownLocation.x ||
                                      e.Y != mMouseDownLocation.y;
                 } else if ( selected == EditTool.ARROW ||
                             selected == EditTool.ERASER ) {
@@ -2902,7 +3073,8 @@ namespace org.kbinani.cadencii {
                                         ByRef<BezierPoint> found_point,
                                         ByRef<BezierPickedSide> found_side,
                                         int dot_width,
-                                        int px_tolerance ) {
+                                        int px_tolerance )
+        {
             found_chain.value = null;
             found_point.value = null;
             found_side.value = BezierPickedSide.BASE;
@@ -2948,7 +3120,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void processMouseDownSelectRegion( BMouseEventArgs e ) {
+        private void processMouseDownSelectRegion( BMouseEventArgs e )
+        {
             if ( (PortUtil.getCurrentModifierKey() & InputEvent.CTRL_MASK) != InputEvent.CTRL_MASK ) {
                 AppManager.clearSelectedPoint();
             }
@@ -2978,7 +3151,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void TrackSelector_MouseDown( Object sender, BMouseEventArgs e ) {
+        public void TrackSelector_MouseDown( Object sender, BMouseEventArgs e )
+        {
 #if DEBUG
             AppManager.debugWriteLine( "TrackSelector_MouseDown" );
 #endif
@@ -3021,12 +3195,12 @@ namespace org.kbinani.cadencii {
                                     int new_selected = i + 1;
                                     if ( AppManager.getSelected() != new_selected ) {
                                         AppManager.setSelected( i + 1 );
-                                        try{
-//#if JAVA
+                                        try {
+                                            //#if JAVA
                                             if ( SelectedTrackChanged != null ) {
                                                 SelectedTrackChanged.Invoke( this, i + 1 );
                                             }
-                                        }catch( Exception ex ){
+                                        } catch ( Exception ex ) {
                                             PortUtil.stderr.println( "TrackSelector#TrackSelector_MouseDown; ex=" + ex );
                                         }
                                         invalidate();
@@ -3569,9 +3743,11 @@ namespace org.kbinani.cadencii {
             invalidate();
         }
 
-
-        private boolean processMouseDownBezier( BMouseEventArgs e ) {
-            //, int clock, int value, int px_shift, int px_width, Keys modifier ) {
+        private boolean processMouseDownBezier( BMouseEventArgs e )
+        {
+#if DEBUG
+            PortUtil.println( "TrackSelector::processMouseDownBezier" );
+#endif
             int clock = AppManager.clockFromXCoord( e.X );
             int max = mSelectedCurve.getMaximum();
             int min = mSelectedCurve.getMinimum();
@@ -3594,10 +3770,19 @@ namespace org.kbinani.cadencii {
             ByRef<BezierChain> found_chain = new ByRef<BezierChain>();
             ByRef<BezierPoint> found_point = new ByRef<BezierPoint>();
             ByRef<BezierPickedSide> found_side = new ByRef<BezierPickedSide>();
-            findBezierPointAt( e.X, e.Y, dict, found_chain, found_point, found_side, DOT_WID, AppManager.editorConfig.PxToleranceBezier );
+            findBezierPointAt(
+                e.X, e.Y,
+                dict, found_chain, found_point, found_side,
+                DOT_WID, AppManager.editorConfig.PxToleranceBezier );
+#if DEBUG
+            PortUtil.println( "TrackSelector::processMouseDownBezier; (found_chain.value==null)=" + (found_chain.value == null) );
+#endif
 
             if ( found_chain.value != null ) {
-                AppManager.addSelectedBezier( new SelectedBezierPoint( found_chain.value.id, found_point.value.getID(), found_side.value, found_point.value ) );
+                AppManager.addSelectedBezier(
+                    new SelectedBezierPoint(
+                        found_chain.value.id, found_point.value.getID(),
+                        found_side.value, found_point.value ) );
                 mEditingBezierOriginal = (BezierChain)found_chain.value.clone();
                 mMouseDownMode = MouseDownMode.BEZIER_MODE;
             } else {
@@ -3644,6 +3829,9 @@ namespace org.kbinani.cadencii {
 
 #if DEBUG
                     AppManager.debugWriteLine( "    (target_chain==null)=" + (target_chain == null) );
+                    if ( target_chain != null && found_point.value != null ) {
+                        PortUtil.println( "TrackSelector::procesMouseDownBezier; before:(" + found_point.value.getPosition( found_side.value ) + "," + found_point.value.getPosition( found_side.value ) + "); after:(" + clock + "," + value + ")" );
+                    }
 #endif
                     // fork whether target_chain is null or not
                     PointD pt = new PointD( clock, value );
@@ -3693,7 +3881,8 @@ namespace org.kbinani.cadencii {
             return true;
         }
 
-        private boolean processMouseDownPreutteranceAndOverlap( BMouseEventArgs e ) {
+        private boolean processMouseDownPreutteranceAndOverlap( BMouseEventArgs e )
+        {
             if ( mPreUtteranceViewing >= 0 && isInRect( e.X, e.Y, mPreUtteranceBounds ) ) {
                 mPreUtteranceMovingID = mPreUtteranceViewing;
                 mPreOverlapEditing = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).findEventFromID( mPreUtteranceMovingID );
@@ -3719,7 +3908,8 @@ namespace org.kbinani.cadencii {
             return false;
         }
 
-        private boolean processMouseDownEnvelope( BMouseEventArgs e ) {
+        private boolean processMouseDownEnvelope( BMouseEventArgs e )
+        {
             ByRef<Integer> internal_id = new ByRef<Integer>( -1 );
             ByRef<Integer> point_kind = new ByRef<Integer>( -1 );
             if ( !findEnvelopePointAt( e.X, e.Y, internal_id, point_kind ) ) {
@@ -3789,7 +3979,8 @@ namespace org.kbinani.cadencii {
             return true;
         }
 
-        private void changeCurve( CurveType curve ) {
+        private void changeCurve( CurveType curve )
+        {
 #if DEBUG
             PortUtil.println( "TrackSelector#changCurve; AppManager.getViewingCurveCount()=" + AppManager.getViewingCurveCount() );
 #endif
@@ -3812,7 +4003,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private static boolean isInRect( int x, int y, Rectangle rc ) {
+        private static boolean isInRect( int x, int y, Rectangle rc )
+        {
             if ( rc.x <= x && x <= rc.x + rc.width ) {
                 if ( rc.y <= y && y <= rc.y + rc.height ) {
                     return true;
@@ -3830,7 +4022,8 @@ namespace org.kbinani.cadencii {
         /// <param name="location"></param>
         /// <param name="position_x"></param>
         /// <returns></returns>
-        private VsqEvent findItemAt( int locx, int locy ) {
+        private VsqEvent findItemAt( int locx, int locy )
+        {
             if ( AppManager.getVsqFile() == null ) {
                 return null;
             }
@@ -3870,7 +4063,8 @@ namespace org.kbinani.cadencii {
             return null;
         }
 
-        public void TrackSelector_MouseUp( Object sender, BMouseEventArgs e ) {
+        public void TrackSelector_MouseUp( Object sender, BMouseEventArgs e )
+        {
 #if DEBUG
             AppManager.debugWriteLine( "TrackSelector_MouseUp" );
 #endif
@@ -4174,12 +4368,12 @@ namespace org.kbinani.cadencii {
                                         }
                                         if ( mSelectedCurve.equals( CurveType.VibratoDepth ) ) {
                                             item.VibratoHandle.setDepthBP(
-                                                new VibratoBPList( 
+                                                new VibratoBPList(
                                                     PortUtil.convertFloatArray( bpx.toArray( new Float[] { } ) ),
                                                     PortUtil.convertIntArray( bpy.toArray( new Integer[] { } ) ) ) );
                                         } else {
                                             item.VibratoHandle.setRateBP(
-                                                new VibratoBPList( 
+                                                new VibratoBPList(
                                                     PortUtil.convertFloatArray( bpx.toArray( new Float[] { } ) ),
                                                     PortUtil.convertIntArray( bpy.toArray( new Integer[] { } ) ) ) );
                                         }
@@ -4347,7 +4541,7 @@ namespace org.kbinani.cadencii {
                                             break;
                                         }
                                         int clock = AppManager.clockFromXCoord( p.x - stdx );
-                                        if( clock - lclock < step_clock ){
+                                        if ( clock - lclock < step_clock ) {
                                             continue;
                                         }
                                         int val = valueFromYCoord( p.y );
@@ -4357,12 +4551,12 @@ namespace org.kbinani.cadencii {
                                             val = max;
                                         }
                                         float x = (clock - cl_vib_start) / cl_vib_length;
-                                        ValuePair<Float, Integer> tmp = new ValuePair<Float,Integer>( x, val );
+                                        ValuePair<Float, Integer> tmp = new ValuePair<Float, Integer>( x, val );
                                         if ( 0.0f < x && x < 1.0f ) {
                                             edit.add( tmp );
                                         } else if ( x <= 0.0f ) {
                                             first = tmp;
-                                        }else if( 1.0f <= x && last != null ){
+                                        } else if ( 1.0f <= x && last != null ) {
                                             last = tmp;
                                         }
                                         lclock = clock;
@@ -4694,7 +4888,8 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        public void TrackSelector_MouseHover( Object sender, BEventArgs e ) {
+        public void TrackSelector_MouseHover( Object sender, BEventArgs e )
+        {
 #if DEBUG
             AppManager.debugWriteLine( "TrackSelector_MouseHover" );
             AppManager.debugWriteLine( "    m_mouse_downed=" + mMouseDowned );
@@ -4776,7 +4971,7 @@ namespace org.kbinani.cadencii {
                                         vals.add( value );
                                     }
                                     edited.VibratoHandle.setRateBP(
-                                        new VibratoBPList( 
+                                        new VibratoBPList(
                                             PortUtil.convertFloatArray( xs.toArray( new Float[] { } ) ),
                                             PortUtil.convertIntArray( vals.toArray( new Integer[] { } ) ) ) );
                                 }
@@ -4818,14 +5013,14 @@ namespace org.kbinani.cadencii {
                                         vals.add( value );
                                     }
                                     edited.VibratoHandle.setDepthBP(
-                                        new VibratoBPList( 
+                                        new VibratoBPList(
                                             PortUtil.convertFloatArray( xs.toArray( new Float[] { } ) ),
                                             PortUtil.convertIntArray( vals.toArray( new Integer[] { } ) ) ) );
                                 }
                             }
                         }
-                        CadenciiCommand run = new CadenciiCommand( 
-                            VsqCommand.generateCommandEventChangeIDContaints( 
+                        CadenciiCommand run = new CadenciiCommand(
+                            VsqCommand.generateCommandEventChangeIDContaints(
                                 AppManager.getSelected(),
                                 event_id,
                                 edited ) );
@@ -4880,13 +5075,15 @@ namespace org.kbinani.cadencii {
             }
         }
 #else
-        private void MouseHoverEventGenerator() {
+        private void MouseHoverEventGenerator()
+        {
             Thread.Sleep( (int)(System.Windows.Forms.SystemInformation.MouseHoverTime * 0.8) );
             Invoke( new EventHandler( TrackSelector_MouseHover ) );
         }
 #endif
 
-        public void TrackSelector_MouseDoubleClick( Object sender, BMouseEventArgs e ) {
+        public void TrackSelector_MouseDoubleClick( Object sender, BMouseEventArgs e )
+        {
 #if JAVA
             if( _mouse_hover_thread != null && _mouse_hover_thread.isAlive() ){
                 _mouse_hover_thread.stop();
@@ -5120,7 +5317,8 @@ namespace org.kbinani.cadencii {
         /// 指定した歌声合成システムの歌手のリストを作成し，コンテキストメニューを準備します．
         /// </summary>
         /// <param name="renderer"></param>
-        public void prepareSingerMenu( RendererKind renderer ) {
+        public void prepareSingerMenu( RendererKind renderer )
+        {
             cmenusinger.removeAll();
             Vector<SingerConfig> items = null;
             if ( renderer == RendererKind.UTAU || renderer == RendererKind.VCNT ) {
@@ -5130,10 +5328,10 @@ namespace org.kbinani.cadencii {
             } else if ( renderer == RendererKind.VOCALOID2 ) {
                 items = new Vector<SingerConfig>( Arrays.asList( VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID2 ) ) );
 #if ENABLE_AQUESTONE
-            } else if ( renderer == RendererKind.AQUES_TONE ){
+            } else if ( renderer == RendererKind.AQUES_TONE ) {
                 items = new Vector<SingerConfig>();
                 int c = AquesToneDriver.SINGERS.Length;
-                for( int i = 0; i < c; i++ ){
+                for ( int i = 0; i < c; i++ ) {
                     items.add( AppManager.getSingerInfoAquesTone( i ) );
                 }
 #endif
@@ -5211,18 +5409,21 @@ namespace org.kbinani.cadencii {
             mCMenuSingerPrepared = renderer;
         }
 
-        public void cmenusinger_VisibleChanged( Object sender, BEventArgs e ) {
+        public void cmenusinger_VisibleChanged( Object sender, BEventArgs e )
+        {
 #if JAVA
 #else
             toolTip.Hide( cmenusinger );
 #endif
         }
 
-        public void cmenusinger_MouseEnter( Object sender, BEventArgs e ) {
+        public void cmenusinger_MouseEnter( Object sender, BEventArgs e )
+        {
             cmenusinger_MouseHover( sender, e );
         }
 
-        public void cmenusinger_MouseHover( Object sender, BEventArgs e ) {
+        public void cmenusinger_MouseHover( Object sender, BEventArgs e )
+        {
 #if !JAVA
             try {
                 TagForCMenusingerDropDown tag = (TagForCMenusingerDropDown)((BMenuItem)sender).getTag();
@@ -5264,20 +5465,23 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        private struct TagForCMenusinger {
+        private struct TagForCMenusinger
+        {
             public boolean SingerChangeExists;
             public int Clock;
             public int InternalID;
         }
 
-        private struct TagForCMenusingerDropDown {
+        private struct TagForCMenusingerDropDown
+        {
             public int ToolTipPxWidth;
             public String ToolTipText;
             public int Language;
             public int Program;
         }
 
-        public void cmenusinger_Click( Object sender, BEventArgs e ) {
+        public void cmenusinger_Click( Object sender, BEventArgs e )
+        {
             if ( sender is BMenuItem ) {
                 TagForCMenusinger tag = (TagForCMenusinger)cmenusinger.getTag();
                 TagForCMenusingerDropDown tag_dditem = (TagForCMenusingerDropDown)((BMenuItem)sender).getTag();
@@ -5314,7 +5518,8 @@ namespace org.kbinani.cadencii {
         }
 
 #if !JAVA
-        private void toolTip_Draw( Object sender, System.Windows.Forms.DrawToolTipEventArgs e ) {
+        private void toolTip_Draw( Object sender, System.Windows.Forms.DrawToolTipEventArgs e )
+        {
             if ( !(sender is System.Windows.Forms.ToolTip) ) {
                 return;
             }
@@ -5361,29 +5566,32 @@ namespace org.kbinani.cadencii {
         }
 #endif
 
-        public void TrackSelector_KeyDown( Object sender, BKeyEventArgs e ) {
-#if JAVA
-            if( (e.KeyCode & KeyEvent.VK_SPACE) == KeyEvent.VK_SPACE )
-#else
-            if ( (e.KeyCode & System.Windows.Forms.Keys.Space) == System.Windows.Forms.Keys.Space ) 
-#endif
-            {
-                mSpaceKeyDowned = true;
-            }
-        }
-
-        public void TrackSelector_KeyUp( Object sender, BKeyEventArgs e ) {
+        public void TrackSelector_KeyDown( Object sender, BKeyEventArgs e )
+        {
 #if JAVA
             if( (e.KeyCode & KeyEvent.VK_SPACE) == KeyEvent.VK_SPACE )
 #else
             if ( (e.KeyCode & System.Windows.Forms.Keys.Space) == System.Windows.Forms.Keys.Space )
 #endif
-            {
+ {
+                mSpaceKeyDowned = true;
+            }
+        }
+
+        public void TrackSelector_KeyUp( Object sender, BKeyEventArgs e )
+        {
+#if JAVA
+            if( (e.KeyCode & KeyEvent.VK_SPACE) == KeyEvent.VK_SPACE )
+#else
+            if ( (e.KeyCode & System.Windows.Forms.Keys.Space) == System.Windows.Forms.Keys.Space )
+#endif
+ {
                 mSpaceKeyDowned = false;
             }
         }
 
-        public void cmenuCurveCommon_Click( Object sender, BEventArgs e ) {
+        public void cmenuCurveCommon_Click( Object sender, BEventArgs e )
+        {
             if ( sender is BMenuItem ) {
                 BMenuItem tsmi = (BMenuItem)sender;
                 if ( tsmi.getTag() is CurveType ) {
@@ -5393,7 +5601,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void registerEventHandlers() {
+        private void registerEventHandlers()
+        {
 #if JAVA
 #else
             this.toolTip.Draw += new System.Windows.Forms.DrawToolTipEventHandler( this.toolTip_Draw );
@@ -5440,7 +5649,8 @@ namespace org.kbinani.cadencii {
             this.KeyDown += new System.Windows.Forms.KeyEventHandler( TrackSelector_KeyDown );
         }
 
-        private void setResources() {
+        private void setResources()
+        {
         }
 
 #if JAVA
@@ -5459,7 +5669,8 @@ namespace org.kbinani.cadencii {
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing ) {
+        protected override void Dispose( boolean disposing )
+        {
             if ( disposing && (components != null) ) {
                 components.Dispose();
             }
@@ -5472,7 +5683,8 @@ namespace org.kbinani.cadencii {
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を 
         /// コード エディタで変更しないでください。
         /// </summary>
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             this.components = new System.ComponentModel.Container();
             this.cmenusinger = new org.kbinani.windows.forms.BPopupMenu( this.components );
             this.toolTip = new System.Windows.Forms.ToolTip( this.components );

@@ -271,14 +271,21 @@ namespace org.kbinani.cadencii {
         /// <param name="chain"></param>
         /// <returns></returns>
         public static boolean isBezierImplicit( BezierChain chain ) {
-            for ( int i = 0; i < chain.points.size() - 1; i++ ) {
-                double pt1 = chain.points.get( i ).getBase().getX();
-                double pt2 = (chain.points.get( i ).getControlRightType() == BezierControlType.None) ? pt1 : chain.points.get( i ).getControlRight().getX();
-                double pt4 = chain.points.get( i + 1 ).getBase().getX();
-                double pt3 = (chain.points.get( i + 1 ).getControlLeftType() == BezierControlType.None) ? pt4 : chain.points.get( i + 1 ).getControlLeft().getX();
+            int size = chain.points.size();
+            if( size < 2 ){
+                return true;
+            }
+            BezierPoint last_point = chain.points.get( 0 );
+            for ( int i = 1; i < size; i++ ) {
+                BezierPoint point = chain.points.get( i );
+                double pt1 = last_point.getBase().getX();
+                double pt2 = (last_point.getControlRightType() == BezierControlType.None) ? pt1 : last_point.getControlRight().getX();
+                double pt4 = point.getBase().getX();
+                double pt3 = (point.getControlLeftType() == BezierControlType.None) ? pt4 : point.getControlLeft().getX();
                 if ( !isUnitBezierImplicit( pt1, pt2, pt3, pt4 ) ) {
                     return false;
                 }
+                last_point = point;
             }
             return true;
         }
@@ -295,41 +302,41 @@ namespace org.kbinani.cadencii {
             double a = pt4 - 3.0 * pt3 + 3.0 * pt2 - pt1;
             double b = 2.0 * pt3 - 4.0 * pt2 + 2.0 * pt1;
             double c = pt2 - pt1;
-            if ( a == 0.0f ) {
-                if ( c >= 0.0f && b + c >= 0.0f ) {
+            if ( a == 0.0 ) {
+                if ( c >= 0.0 && b + c >= 0.0 ) {
                     return true;
                 } else {
                     return false;
                 }
-            } else if ( a > 0.0f ) {
-                if ( -b / (2.0f * a) <= 0.0f ) {
-                    if ( c >= 0.0f ) {
+            } else if ( a > 0.0 ) {
+                if ( -b / (2.0 * a) <= 0.0 ) {
+                    if ( c >= 0.0 ) {
                         return true;
                     } else {
                         return false;
                     }
-                } else if ( 1.0f <= -b / (2.0f * a) ) {
-                    if ( a + b + c >= 0.0f ) {
+                } else if ( 1.0 <= -b / (2.0 * a) ) {
+                    if ( a + b + c >= 0.0 ) {
                         return true;
                     } else {
                         return false;
                     }
                 } else {
-                    if ( c - b * b / (4.0f * a) >= 0.0f ) {
+                    if ( c - b * b / (4.0 * a) >= 0.0 ) {
                         return true;
                     } else {
                         return false;
                     }
                 }
             } else {
-                if ( -b / (2.0f * a) <= 0.5f ) {
-                    if ( a + b + c >= 0.0f ) {
+                if ( -b / (2.0 * a) <= 0.5 ) {
+                    if ( a + b + c >= 0.0 ) {
                         return true;
                     } else {
                         return false;
                     }
                 } else {
-                    if ( c >= 0.0f ) {
+                    if ( c >= 0.0 ) {
                         return true;
                     } else {
                         return false;

@@ -27,6 +27,12 @@ namespace org.kbinani.cadencii {
         private double m_x;
         private double m_y;
 
+        public PointD( PointD item )
+        {
+            m_x = item.getX();
+            m_y = item.getY();
+        }
+
         public PointD( double x, double y ) {
             m_x = x;
             m_y = y;
