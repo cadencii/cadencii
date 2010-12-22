@@ -716,12 +716,14 @@ namespace org.kbinani.cadencii
             this.bandPosition = new RebarBand();
             this.bandMeasure = new RebarBand();
             this.bandTool = new RebarBand();
-            this.bandFile.VariantHeight = false;
-            this.bandPosition.VariantHeight = false;
-            this.bandMeasure.VariantHeight = false;
-            this.bandTool.VariantHeight = false;
 
-            const int MAX_BAND_HEIGHT = 26;
+            bool variant_height = false;
+            this.bandFile.VariantHeight = variant_height;
+            this.bandPosition.VariantHeight = variant_height;
+            this.bandMeasure.VariantHeight = variant_height;
+            this.bandTool.VariantHeight = variant_height;
+
+            int MAX_BAND_HEIGHT = 26;// toolBarTool.Height;
 
             this.rebar.Controls.Add( this.toolBarFile );
             this.rebar.Controls.Add( this.toolBarTool );
@@ -4328,10 +4330,6 @@ namespace org.kbinani.cadencii
             menuSettingPositionQuantize.setMnemonic( KeyEvent.VK_Q );
             menuSettingPositionQuantizeOff.setText( _( "Off" ) );
             menuSettingPositionQuantizeTriplet.setText( _( "Triplet" ) );
-            menuSettingLengthQuantize.setText( _( "Length" ) );
-            menuSettingLengthQuantize.setMnemonic( KeyEvent.VK_L );
-            menuSettingLengthQuantizeOff.setText( _( "Off" ) );
-            menuSettingLengthQuantizeTriplet.setText( _( "Triplet" ) );
             menuSettingSingerProperty.setText( _( "Singer Properties" ) );
             menuSettingSingerProperty.setMnemonic( KeyEvent.VK_S );
             menuSettingPaletteTool.setText( _( "Palette Tool" ) );
@@ -4393,10 +4391,6 @@ namespace org.kbinani.cadencii
             cMenuPianoQuantize.setMnemonic( KeyEvent.VK_Q );
             cMenuPianoQuantizeTriplet.setText( _( "Triplet" ) );
             cMenuPianoQuantizeOff.setText( _( "Off" ) );
-            cMenuPianoLength.setText( _( "Length" ) );
-            cMenuPianoLength.setMnemonic( KeyEvent.VK_L );
-            cMenuPianoLengthTriplet.setText( _( "Triplet" ) );
-            cMenuPianoLengthOff.setText( _( "Off" ) );
             cMenuPianoGrid.setText( _( "Show/Hide Grid Line" ) );
             cMenuPianoGrid.setMnemonic( KeyEvent.VK_S );
 
@@ -5822,109 +5816,6 @@ namespace org.kbinani.cadencii
             stripDDBtnQuantizeTriplet.Checked = AppManager.editorConfig.isPositionQuantizeTriplet();
 #endif
             menuSettingPositionQuantizeTriplet.setSelected( AppManager.editorConfig.isPositionQuantizeTriplet() );
-
-            cMenuPianoLength04.setSelected( false );
-            cMenuPianoLength08.setSelected( false );
-            cMenuPianoLength16.setSelected( false );
-            cMenuPianoLength32.setSelected( false );
-            cMenuPianoLength64.setSelected( false );
-            cMenuPianoLength128.setSelected( false );
-            cMenuPianoLengthOff.setSelected( false );
-
-#if ENABLE_STRIP_DROPDOWN
-            stripDDBtnLength04.Checked = false;
-            stripDDBtnLength08.Checked = false;
-            stripDDBtnLength16.Checked = false;
-            stripDDBtnLength32.Checked = false;
-            stripDDBtnLength64.Checked = false;
-            stripDDBtnLength128.Checked = false;
-            stripDDBtnLengthOff.Checked = false;
-#endif
-
-            menuSettingLengthQuantize04.setSelected( false );
-            menuSettingLengthQuantize08.setSelected( false );
-            menuSettingLengthQuantize16.setSelected( false );
-            menuSettingLengthQuantize32.setSelected( false );
-            menuSettingLengthQuantize64.setSelected( false );
-            menuSettingLengthQuantize128.setSelected( false );
-            menuSettingLengthQuantizeOff.setSelected( false );
-
-#if !JAVA
-            qm = AppManager.editorConfig.getLengthQuantize();
-            triplet = AppManager.editorConfig.isLengthQuantizeTriplet();
-            stripDDBtnLengthParent.Text = 
-                "LENGTH " + QuantizeModeUtil.getString( qm ) +
-                ((qm != QuantizeMode.off && triplet) ? " [3]" : "");
-#endif
-            if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p4 ) {
-                cMenuPianoLength04.setSelected( true );
-#if ENABLE_STRIP_DROPDOWN
-                stripDDBtnLength04.Checked = true;
-#endif
-#if !JAVA
-                stripDDBtnLengthParent.ImageKey = "note004.png";
-#endif
-                menuSettingLengthQuantize04.setSelected( true );
-            } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p8 ) {
-                cMenuPianoLength08.setSelected( true );
-#if ENABLE_STRIP_DROPDOWN
-                stripDDBtnLength08.Checked = true;
-#endif
-#if !JAVA
-                stripDDBtnLengthParent.ImageKey = "note008.png";
-#endif
-                menuSettingLengthQuantize08.setSelected( true );
-            } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p16 ) {
-                cMenuPianoLength16.setSelected( true );
-#if ENABLE_STRIP_DROPDOWN
-                stripDDBtnLength16.Checked = true;
-#endif
-#if !JAVA
-                stripDDBtnLengthParent.ImageKey = "note016.png";
-#endif
-                menuSettingLengthQuantize16.setSelected( true );
-            } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p32 ) {
-                cMenuPianoLength32.setSelected( true );
-#if ENABLE_STRIP_DROPDOWN
-                stripDDBtnLength32.Checked = true;
-#endif
-#if !JAVA
-                stripDDBtnLengthParent.ImageKey = "note032.png";
-#endif
-                menuSettingLengthQuantize32.setSelected( true );
-            } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p64 ) {
-                cMenuPianoLength64.setSelected( true );
-#if ENABLE_STRIP_DROPDOWN
-                stripDDBtnLength64.Checked = true;
-#endif
-#if !JAVA
-                stripDDBtnLengthParent.ImageKey = "note064.png";
-#endif
-                menuSettingLengthQuantize64.setSelected( true );
-            } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.p128 ) {
-                cMenuPianoLength128.setSelected( true );
-#if ENABLE_STRIP_DROPDOWN
-                stripDDBtnLength128.Checked = true;
-#endif
-#if !JAVA
-                stripDDBtnLengthParent.ImageKey = "note128.png";
-#endif
-                menuSettingLengthQuantize128.setSelected( true );
-            } else if ( AppManager.editorConfig.getLengthQuantize() == QuantizeMode.off ) {
-                cMenuPianoLengthOff.setSelected( true );
-#if ENABLE_STRIP_DROPDOWN
-                stripDDBtnLengthOff.Checked = true;
-#endif
-#if !JAVA
-                stripDDBtnLengthParent.ImageKey = "notenull.png";
-#endif
-                menuSettingLengthQuantizeOff.setSelected( true );
-            }
-            cMenuPianoLengthTriplet.setSelected( AppManager.editorConfig.isLengthQuantizeTriplet() );
-#if ENABLE_STRIP_DROPDOWN
-            stripDDBtnLengthTriplet.Checked = AppManager.editorConfig.isLengthQuantizeTriplet();
-#endif
-            menuSettingLengthQuantizeTriplet.setSelected( AppManager.editorConfig.isLengthQuantizeTriplet() );
         }
 
         /// <summary>
@@ -6907,14 +6798,6 @@ namespace org.kbinani.cadencii
             menuSettingPositionQuantize128.Click += new EventHandler( handlePositionQuantize );
             menuSettingPositionQuantizeOff.Click += new EventHandler( handlePositionQuantize );
             menuSettingPositionQuantizeTriplet.Click += new EventHandler( handlePositionQuantizeTriplet_Click );
-            menuSettingLengthQuantize04.Click += new EventHandler( handleLengthQuantize04_Click );
-            menuSettingLengthQuantize08.Click += new EventHandler( handleLengthQuantize08_Click );
-            menuSettingLengthQuantize16.Click += new EventHandler( handleLengthQuantize16_Click );
-            menuSettingLengthQuantize32.Click += new EventHandler( handleLengthQuantize32_Click );
-            menuSettingLengthQuantize64.Click += new EventHandler( handleLengthQuantize64_Click );
-            menuSettingLengthQuantize128.Click += new EventHandler( handleLengthQuantize128_Click );
-            menuSettingLengthQuantizeOff.Click += new EventHandler( handleLengthQuantizeOff_Click );
-            menuSettingLengthQuantizeTriplet.Click += new EventHandler( handleLengthQuantizeTriplet_Click );
             menuHelpAbout.Click += new EventHandler( menuHelpAbout_Click );
             menuHelpLogSwitch.CheckedChanged += new EventHandler( menuHelpLogSwitch_CheckedChanged );
             menuHelpLogOpen.Click += new EventHandler( menuHelpLogOpen_Click );
@@ -6966,14 +6849,6 @@ namespace org.kbinani.cadencii
             cMenuPianoQuantize128.Click += new EventHandler( handlePositionQuantize );
             cMenuPianoQuantizeOff.Click += new EventHandler( handlePositionQuantize );
             cMenuPianoQuantizeTriplet.Click += new EventHandler( handlePositionQuantizeTriplet_Click );
-            cMenuPianoLength04.Click += new EventHandler( handleLengthQuantize04_Click );
-            cMenuPianoLength08.Click += new EventHandler( handleLengthQuantize08_Click );
-            cMenuPianoLength16.Click += new EventHandler( handleLengthQuantize16_Click );
-            cMenuPianoLength32.Click += new EventHandler( handleLengthQuantize32_Click );
-            cMenuPianoLength64.Click += new EventHandler( handleLengthQuantize64_Click );
-            cMenuPianoLength128.Click += new EventHandler( handleLengthQuantize128_Click );
-            cMenuPianoLengthOff.Click += new EventHandler( handleLengthQuantizeOff_Click );
-            cMenuPianoLengthTriplet.Click += new EventHandler( handleLengthQuantizeTriplet_Click );
             cMenuPianoGrid.Click += new EventHandler( cMenuPianoGrid_Click );
             cMenuPianoUndo.Click += new EventHandler( cMenuPianoUndo_Click );
             cMenuPianoRedo.Click += new EventHandler( cMenuPianoRedo_Click );
@@ -7087,14 +6962,6 @@ namespace org.kbinani.cadencii
             toolBarTool.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler( toolBarTool_ButtonClick );
 #if !JAVA
             rebar.SizeChanged += new EventHandler( toolStripContainer_TopToolStripPanel_SizeChanged );// toolStripContainer.TopToolStripPanel.SizeChanged += new EventHandler( toolStripContainer_TopToolStripPanel_SizeChanged );
-            stripDDBtnLength04.Click += handleLengthQuantize04_Click;
-            stripDDBtnLength08.Click += handleLengthQuantize08_Click;
-            stripDDBtnLength16.Click += handleLengthQuantize16_Click;
-            stripDDBtnLength32.Click += handleLengthQuantize32_Click;
-            stripDDBtnLength64.Click += handleLengthQuantize64_Click;
-            stripDDBtnLength128.Click += handleLengthQuantize128_Click;
-            stripDDBtnLengthOff.Click += handleLengthQuantizeOff_Click;
-            stripDDBtnLengthTriplet.Click += handleLengthQuantizeTriplet_Click;
             stripDDBtnQuantize04.Click += handlePositionQuantize;
             stripDDBtnQuantize08.Click += handlePositionQuantize;
             stripDDBtnQuantize16.Click += handlePositionQuantize;
@@ -7132,12 +6999,7 @@ namespace org.kbinani.cadencii
                 return;
             }
 
-            if ( c == stripDDBtnLengthParent ) {
-                System.Drawing.Rectangle rc = stripDDBtnLengthParent.Rectangle;
-                stripDDBtnLength.Show(
-                    toolBarMeasure,
-                    new System.Drawing.Point( rc.Left, rc.Bottom ) );
-            } else if ( c == stripDDBtnQuantizeParent ) {
+            if ( c == stripDDBtnQuantizeParent ) {
                 System.Drawing.Rectangle rc = stripDDBtnQuantizeParent.Rectangle;
                 stripDDBtnQuantize.Show(
                     toolBarMeasure,
@@ -7425,6 +7287,7 @@ namespace org.kbinani.cadencii
             PortUtil.println( "FormMain#AppManager_PreviewAborted" );
 #endif
             stripBtnPlay.ImageKey = "control.png";
+            stripBtnPlay.Text = _( "Play" );
             timer.stop();
 
 #if ENABLE_MIDI
@@ -7454,6 +7317,7 @@ namespace org.kbinani.cadencii
             AppManager.mPreviewStartedTime = now;
             timer.start();
             stripBtnPlay.ImageKey = "control_pause.png";
+            stripBtnPlay.Text = _( "Stop" );
         }
 
         public void AppManager_SelectedToolChanged( Object sender, EventArgs e )
@@ -15920,53 +15784,16 @@ namespace org.kbinani.cadencii
                 qm = QuantizeMode.off;
             }
             AppManager.editorConfig.setPositionQuantize( qm );
+            AppManager.editorConfig.setLengthQuantize( qm );
             refreshScreen();
         }
 
         public void handlePositionQuantizeTriplet_Click( Object sender, EventArgs e )
         {
-            AppManager.editorConfig.setPositionQuantizeTriplet( !AppManager.editorConfig.isPositionQuantizeTriplet() );
+            boolean triplet = !AppManager.editorConfig.isPositionQuantizeTriplet();
+            AppManager.editorConfig.setPositionQuantizeTriplet( triplet );
+            AppManager.editorConfig.setLengthQuantizeTriplet( triplet );
             refreshScreen();
-        }
-
-        public void handleLengthQuantize04_Click( Object sender, EventArgs e )
-        {
-            AppManager.editorConfig.setLengthQuantize( QuantizeMode.p4 );
-        }
-
-        public void handleLengthQuantize08_Click( Object sender, EventArgs e )
-        {
-            AppManager.editorConfig.setLengthQuantize( QuantizeMode.p8 );
-        }
-
-        public void handleLengthQuantize16_Click( Object sender, EventArgs e )
-        {
-            AppManager.editorConfig.setLengthQuantize( QuantizeMode.p16 );
-        }
-
-        public void handleLengthQuantize32_Click( Object sender, EventArgs e )
-        {
-            AppManager.editorConfig.setLengthQuantize( QuantizeMode.p32 );
-        }
-
-        public void handleLengthQuantize64_Click( Object sender, EventArgs e )
-        {
-            AppManager.editorConfig.setLengthQuantize( QuantizeMode.p64 );
-        }
-
-        public void handleLengthQuantize128_Click( Object sender, EventArgs e )
-        {
-            AppManager.editorConfig.setLengthQuantize( QuantizeMode.p128 );
-        }
-
-        public void handleLengthQuantizeOff_Click( Object sender, EventArgs e )
-        {
-            AppManager.editorConfig.setLengthQuantize( QuantizeMode.off );
-        }
-
-        public void handleLengthQuantizeTriplet_Click( Object sender, EventArgs e )
-        {
-            AppManager.editorConfig.setLengthQuantizeTriplet( !AppManager.editorConfig.isLengthQuantizeTriplet() );
         }
 
         public void handleStartMarker_Click( Object sender, EventArgs e )
@@ -16706,15 +16533,6 @@ namespace org.kbinani.cadencii
             base.Dispose( disposing );
         }
 
-        void foo()
-        {
-            System.Windows.Forms.ToolBarButton b = new System.Windows.Forms.ToolBarButton();
-            b.DropDownMenu.MenuItems.AddRange( new System.Windows.Forms.MenuItem[]{
-             this.stripDDBtnLength04,
-            } );// = this.stripDDBtnLength;//.MenuItems.Add
-            //stripDDBtnLength.
-        }
-
         /// <summary>
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
         /// コード エディタで変更しないでください。
@@ -16843,16 +16661,6 @@ namespace org.kbinani.cadencii
             this.menuSettingPositionQuantizeOff = new org.kbinani.windows.forms.BMenuItem();
             this.toolStripMenuItem9 = new System.Windows.Forms.ToolStripSeparator();
             this.menuSettingPositionQuantizeTriplet = new org.kbinani.windows.forms.BMenuItem();
-            this.menuSettingLengthQuantize = new org.kbinani.windows.forms.BMenuItem();
-            this.menuSettingLengthQuantize04 = new org.kbinani.windows.forms.BMenuItem();
-            this.menuSettingLengthQuantize08 = new org.kbinani.windows.forms.BMenuItem();
-            this.menuSettingLengthQuantize16 = new org.kbinani.windows.forms.BMenuItem();
-            this.menuSettingLengthQuantize32 = new org.kbinani.windows.forms.BMenuItem();
-            this.menuSettingLengthQuantize64 = new org.kbinani.windows.forms.BMenuItem();
-            this.menuSettingLengthQuantize128 = new org.kbinani.windows.forms.BMenuItem();
-            this.menuSettingLengthQuantizeOff = new org.kbinani.windows.forms.BMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.menuSettingLengthQuantizeTriplet = new org.kbinani.windows.forms.BMenuItem();
             this.toolStripMenuItem8 = new System.Windows.Forms.ToolStripSeparator();
             this.menuSettingSingerProperty = new org.kbinani.windows.forms.BMenuItem();
             this.menuHelp = new org.kbinani.windows.forms.BMenuItem();
@@ -16915,16 +16723,6 @@ namespace org.kbinani.cadencii
             this.cMenuPianoQuantizeOff = new org.kbinani.windows.forms.BMenuItem();
             this.toolStripMenuItem26 = new System.Windows.Forms.ToolStripSeparator();
             this.cMenuPianoQuantizeTriplet = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoLength = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoLength04 = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoLength08 = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoLength16 = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoLength32 = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoLength64 = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoLength128 = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuPianoLengthOff = new org.kbinani.windows.forms.BMenuItem();
-            this.toolStripMenuItem32 = new System.Windows.Forms.ToolStripSeparator();
-            this.cMenuPianoLengthTriplet = new org.kbinani.windows.forms.BMenuItem();
             this.cMenuPianoGrid = new org.kbinani.windows.forms.BMenuItem();
             this.toolStripMenuItem14 = new System.Windows.Forms.ToolStripSeparator();
             this.cMenuPianoUndo = new org.kbinani.windows.forms.BMenuItem();
@@ -16998,16 +16796,6 @@ namespace org.kbinani.cadencii
             this.splitContainer2 = new org.kbinani.apputil.BSplitContainer();
             this.panel2 = new org.kbinani.windows.forms.BPanel();
             this.splitContainer1 = new org.kbinani.apputil.BSplitContainer();
-            this.stripDDBtnLength = new System.Windows.Forms.ContextMenu();
-            this.stripDDBtnLength04 = new System.Windows.Forms.MenuItem();
-            this.stripDDBtnLength08 = new System.Windows.Forms.MenuItem();
-            this.stripDDBtnLength16 = new System.Windows.Forms.MenuItem();
-            this.stripDDBtnLength32 = new System.Windows.Forms.MenuItem();
-            this.stripDDBtnLength64 = new System.Windows.Forms.MenuItem();
-            this.stripDDBtnLength128 = new System.Windows.Forms.MenuItem();
-            this.stripDDBtnLengthOff = new System.Windows.Forms.MenuItem();
-            this.menuItem1 = new System.Windows.Forms.MenuItem();
-            this.stripDDBtnLengthTriplet = new System.Windows.Forms.MenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.stripDDBtnQuantize = new System.Windows.Forms.ContextMenu();
             this.stripDDBtnQuantize04 = new System.Windows.Forms.MenuItem();
@@ -17051,7 +16839,6 @@ namespace org.kbinani.cadencii
             this.stripBtnScroll = new System.Windows.Forms.ToolBarButton();
             this.stripBtnLoop = new System.Windows.Forms.ToolBarButton();
             this.toolBarMeasure = new System.Windows.Forms.ToolBar();
-            this.stripDDBtnLengthParent = new System.Windows.Forms.ToolBarButton();
             this.stripDDBtnQuantizeParent = new System.Windows.Forms.ToolBarButton();
             this.toolBarButton5 = new System.Windows.Forms.ToolBarButton();
             this.stripBtnStartMarker = new System.Windows.Forms.ToolBarButton();
@@ -17839,7 +17626,6 @@ namespace org.kbinani.cadencii
             this.menuSettingDefaultSingerStyle,
             this.toolStripMenuItem7,
             this.menuSettingPositionQuantize,
-            this.menuSettingLengthQuantize,
             this.toolStripMenuItem8,
             this.menuSettingSingerProperty} );
             this.menuSetting.Name = "menuSetting";
@@ -17982,75 +17768,6 @@ namespace org.kbinani.cadencii
             this.menuSettingPositionQuantizeTriplet.Name = "menuSettingPositionQuantizeTriplet";
             this.menuSettingPositionQuantizeTriplet.Size = new System.Drawing.Size( 113, 22 );
             this.menuSettingPositionQuantizeTriplet.Text = "Triplet";
-            // 
-            // menuSettingLengthQuantize
-            // 
-            this.menuSettingLengthQuantize.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            this.menuSettingLengthQuantize04,
-            this.menuSettingLengthQuantize08,
-            this.menuSettingLengthQuantize16,
-            this.menuSettingLengthQuantize32,
-            this.menuSettingLengthQuantize64,
-            this.menuSettingLengthQuantize128,
-            this.menuSettingLengthQuantizeOff,
-            this.toolStripSeparator1,
-            this.menuSettingLengthQuantizeTriplet} );
-            this.menuSettingLengthQuantize.Name = "menuSettingLengthQuantize";
-            this.menuSettingLengthQuantize.Size = new System.Drawing.Size( 223, 22 );
-            this.menuSettingLengthQuantize.Text = "Length(&L)";
-            // 
-            // menuSettingLengthQuantize04
-            // 
-            this.menuSettingLengthQuantize04.Name = "menuSettingLengthQuantize04";
-            this.menuSettingLengthQuantize04.Size = new System.Drawing.Size( 113, 22 );
-            this.menuSettingLengthQuantize04.Text = "1/4";
-            // 
-            // menuSettingLengthQuantize08
-            // 
-            this.menuSettingLengthQuantize08.Name = "menuSettingLengthQuantize08";
-            this.menuSettingLengthQuantize08.Size = new System.Drawing.Size( 113, 22 );
-            this.menuSettingLengthQuantize08.Text = "1/8";
-            // 
-            // menuSettingLengthQuantize16
-            // 
-            this.menuSettingLengthQuantize16.Name = "menuSettingLengthQuantize16";
-            this.menuSettingLengthQuantize16.Size = new System.Drawing.Size( 113, 22 );
-            this.menuSettingLengthQuantize16.Text = "1/16";
-            // 
-            // menuSettingLengthQuantize32
-            // 
-            this.menuSettingLengthQuantize32.Name = "menuSettingLengthQuantize32";
-            this.menuSettingLengthQuantize32.Size = new System.Drawing.Size( 113, 22 );
-            this.menuSettingLengthQuantize32.Text = "1/32";
-            // 
-            // menuSettingLengthQuantize64
-            // 
-            this.menuSettingLengthQuantize64.Name = "menuSettingLengthQuantize64";
-            this.menuSettingLengthQuantize64.Size = new System.Drawing.Size( 113, 22 );
-            this.menuSettingLengthQuantize64.Text = "1/64";
-            // 
-            // menuSettingLengthQuantize128
-            // 
-            this.menuSettingLengthQuantize128.Name = "menuSettingLengthQuantize128";
-            this.menuSettingLengthQuantize128.Size = new System.Drawing.Size( 113, 22 );
-            this.menuSettingLengthQuantize128.Text = "1/128";
-            // 
-            // menuSettingLengthQuantizeOff
-            // 
-            this.menuSettingLengthQuantizeOff.Name = "menuSettingLengthQuantizeOff";
-            this.menuSettingLengthQuantizeOff.Size = new System.Drawing.Size( 113, 22 );
-            this.menuSettingLengthQuantizeOff.Text = "Off";
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size( 110, 6 );
-            // 
-            // menuSettingLengthQuantizeTriplet
-            // 
-            this.menuSettingLengthQuantizeTriplet.Name = "menuSettingLengthQuantizeTriplet";
-            this.menuSettingLengthQuantizeTriplet.Size = new System.Drawing.Size( 113, 22 );
-            this.menuSettingLengthQuantizeTriplet.Text = "Triplet";
             // 
             // toolStripMenuItem8
             // 
@@ -18301,7 +18018,6 @@ namespace org.kbinani.cadencii
             this.toolStripMenuItem13,
             this.cMenuPianoFixed,
             this.cMenuPianoQuantize,
-            this.cMenuPianoLength,
             this.cMenuPianoGrid,
             this.toolStripMenuItem14,
             this.cMenuPianoUndo,
@@ -18322,7 +18038,7 @@ namespace org.kbinani.cadencii
             this.cMenuPiano.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             this.cMenuPiano.ShowCheckMargin = true;
             this.cMenuPiano.ShowImageMargin = false;
-            this.cMenuPiano.Size = new System.Drawing.Size( 242, 480 );
+            this.cMenuPiano.Size = new System.Drawing.Size( 242, 458 );
             // 
             // cMenuPianoPointer
             // 
@@ -18522,75 +18238,6 @@ namespace org.kbinani.cadencii
             this.cMenuPianoQuantizeTriplet.Name = "cMenuPianoQuantizeTriplet";
             this.cMenuPianoQuantizeTriplet.Size = new System.Drawing.Size( 109, 22 );
             this.cMenuPianoQuantizeTriplet.Text = "3連符";
-            // 
-            // cMenuPianoLength
-            // 
-            this.cMenuPianoLength.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            this.cMenuPianoLength04,
-            this.cMenuPianoLength08,
-            this.cMenuPianoLength16,
-            this.cMenuPianoLength32,
-            this.cMenuPianoLength64,
-            this.cMenuPianoLength128,
-            this.cMenuPianoLengthOff,
-            this.toolStripMenuItem32,
-            this.cMenuPianoLengthTriplet} );
-            this.cMenuPianoLength.Name = "cMenuPianoLength";
-            this.cMenuPianoLength.Size = new System.Drawing.Size( 241, 22 );
-            this.cMenuPianoLength.Text = "Length(&L)";
-            // 
-            // cMenuPianoLength04
-            // 
-            this.cMenuPianoLength04.Name = "cMenuPianoLength04";
-            this.cMenuPianoLength04.Size = new System.Drawing.Size( 109, 22 );
-            this.cMenuPianoLength04.Text = "1/4";
-            // 
-            // cMenuPianoLength08
-            // 
-            this.cMenuPianoLength08.Name = "cMenuPianoLength08";
-            this.cMenuPianoLength08.Size = new System.Drawing.Size( 109, 22 );
-            this.cMenuPianoLength08.Text = "1/8";
-            // 
-            // cMenuPianoLength16
-            // 
-            this.cMenuPianoLength16.Name = "cMenuPianoLength16";
-            this.cMenuPianoLength16.Size = new System.Drawing.Size( 109, 22 );
-            this.cMenuPianoLength16.Text = "1/16";
-            // 
-            // cMenuPianoLength32
-            // 
-            this.cMenuPianoLength32.Name = "cMenuPianoLength32";
-            this.cMenuPianoLength32.Size = new System.Drawing.Size( 109, 22 );
-            this.cMenuPianoLength32.Text = "1/32";
-            // 
-            // cMenuPianoLength64
-            // 
-            this.cMenuPianoLength64.Name = "cMenuPianoLength64";
-            this.cMenuPianoLength64.Size = new System.Drawing.Size( 109, 22 );
-            this.cMenuPianoLength64.Text = "1/64";
-            // 
-            // cMenuPianoLength128
-            // 
-            this.cMenuPianoLength128.Name = "cMenuPianoLength128";
-            this.cMenuPianoLength128.Size = new System.Drawing.Size( 109, 22 );
-            this.cMenuPianoLength128.Text = "1/128";
-            // 
-            // cMenuPianoLengthOff
-            // 
-            this.cMenuPianoLengthOff.Name = "cMenuPianoLengthOff";
-            this.cMenuPianoLengthOff.Size = new System.Drawing.Size( 109, 22 );
-            this.cMenuPianoLengthOff.Text = "オフ";
-            // 
-            // toolStripMenuItem32
-            // 
-            this.toolStripMenuItem32.Name = "toolStripMenuItem32";
-            this.toolStripMenuItem32.Size = new System.Drawing.Size( 106, 6 );
-            // 
-            // cMenuPianoLengthTriplet
-            // 
-            this.cMenuPianoLengthTriplet.Name = "cMenuPianoLengthTriplet";
-            this.cMenuPianoLengthTriplet.Size = new System.Drawing.Size( 109, 22 );
-            this.cMenuPianoLengthTriplet.Text = "3連符";
             // 
             // cMenuPianoGrid
             // 
@@ -19214,64 +18861,6 @@ namespace org.kbinani.cadencii
             this.splitContainer1.TabStop = false;
             this.splitContainer1.Text = "splitContainerEx1";
             // 
-            // stripDDBtnLength
-            // 
-            this.stripDDBtnLength.MenuItems.AddRange( new System.Windows.Forms.MenuItem[] {
-            this.stripDDBtnLength04,
-            this.stripDDBtnLength08,
-            this.stripDDBtnLength16,
-            this.stripDDBtnLength32,
-            this.stripDDBtnLength64,
-            this.stripDDBtnLength128,
-            this.stripDDBtnLengthOff,
-            this.menuItem1,
-            this.stripDDBtnLengthTriplet} );
-            // 
-            // stripDDBtnLength04
-            // 
-            this.stripDDBtnLength04.Index = 0;
-            this.stripDDBtnLength04.Text = "1/4";
-            // 
-            // stripDDBtnLength08
-            // 
-            this.stripDDBtnLength08.Index = 1;
-            this.stripDDBtnLength08.Text = "1/8";
-            // 
-            // stripDDBtnLength16
-            // 
-            this.stripDDBtnLength16.Index = 2;
-            this.stripDDBtnLength16.Text = "1/16";
-            // 
-            // stripDDBtnLength32
-            // 
-            this.stripDDBtnLength32.Index = 3;
-            this.stripDDBtnLength32.Text = "1/32";
-            // 
-            // stripDDBtnLength64
-            // 
-            this.stripDDBtnLength64.Index = 4;
-            this.stripDDBtnLength64.Text = "1/64";
-            // 
-            // stripDDBtnLength128
-            // 
-            this.stripDDBtnLength128.Index = 5;
-            this.stripDDBtnLength128.Text = "1/128";
-            // 
-            // stripDDBtnLengthOff
-            // 
-            this.stripDDBtnLengthOff.Index = 6;
-            this.stripDDBtnLengthOff.Text = "Off";
-            // 
-            // menuItem1
-            // 
-            this.menuItem1.Index = 7;
-            this.menuItem1.Text = "-";
-            // 
-            // stripDDBtnLengthTriplet
-            // 
-            this.stripDDBtnLengthTriplet.Index = 8;
-            this.stripDDBtnLengthTriplet.Text = "Triplet";
-            // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
@@ -19486,7 +19075,6 @@ namespace org.kbinani.cadencii
             // 
             // stripBtnFileNew
             // 
-            this.stripBtnFileNew.DropDownMenu = this.stripDDBtnLength;
             this.stripBtnFileNew.ImageIndex = 0;
             this.stripBtnFileNew.Name = "stripBtnFileNew";
             this.stripBtnFileNew.ToolTipText = "New";
@@ -19616,7 +19204,6 @@ namespace org.kbinani.cadencii
             // 
             this.toolBarMeasure.Appearance = System.Windows.Forms.ToolBarAppearance.Flat;
             this.toolBarMeasure.Buttons.AddRange( new System.Windows.Forms.ToolBarButton[] {
-            this.stripDDBtnLengthParent,
             this.stripDDBtnQuantizeParent,
             this.toolBarButton5,
             this.stripBtnStartMarker,
@@ -19632,10 +19219,6 @@ namespace org.kbinani.cadencii
             this.toolBarMeasure.TabIndex = 25;
             this.toolBarMeasure.TextAlign = System.Windows.Forms.ToolBarTextAlign.Right;
             this.toolBarMeasure.Wrappable = false;
-            // 
-            // stripDDBtnLengthParent
-            // 
-            this.stripDDBtnLengthParent.Name = "stripDDBtnLengthParent";
             // 
             // stripDDBtnQuantizeParent
             // 
@@ -19844,15 +19427,6 @@ namespace org.kbinani.cadencii
         public System.Windows.Forms.ToolStripSeparator toolStripMenuItem8;
         public BMenuItem menuSettingSingerProperty;
         public BMenuItem menuSettingPositionQuantizeTriplet;
-        public BMenuItem menuSettingLengthQuantize;
-        public BMenuItem menuSettingLengthQuantize04;
-        public BMenuItem menuSettingLengthQuantize08;
-        public BMenuItem menuSettingLengthQuantize16;
-        public BMenuItem menuSettingLengthQuantize32;
-        public BMenuItem menuSettingLengthQuantize64;
-        public BMenuItem menuSettingLengthQuantizeOff;
-        public System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        public BMenuItem menuSettingLengthQuantizeTriplet;
         public BMenuItem menuFileNew;
         public BMenuItem menuFileOpen;
         public BMenuItem menuFileSave;
@@ -19876,7 +19450,6 @@ namespace org.kbinani.cadencii
         public System.Windows.Forms.ToolStripSeparator toolStripMenuItem13;
         public BMenuItem cMenuPianoFixed;
         public BMenuItem cMenuPianoQuantize;
-        public BMenuItem cMenuPianoLength;
         public BMenuItem cMenuPianoGrid;
         public System.Windows.Forms.ToolStripSeparator toolStripMenuItem14;
         public BMenuItem cMenuPianoUndo;
@@ -19911,14 +19484,6 @@ namespace org.kbinani.cadencii
         public BMenuItem cMenuPianoQuantizeOff;
         public System.Windows.Forms.ToolStripSeparator toolStripMenuItem26;
         public BMenuItem cMenuPianoQuantizeTriplet;
-        public BMenuItem cMenuPianoLength04;
-        public BMenuItem cMenuPianoLength08;
-        public BMenuItem cMenuPianoLength16;
-        public BMenuItem cMenuPianoLength32;
-        public BMenuItem cMenuPianoLength64;
-        public BMenuItem cMenuPianoLengthOff;
-        public System.Windows.Forms.ToolStripSeparator toolStripMenuItem32;
-        public BMenuItem cMenuPianoLengthTriplet;
         public BMenu menuFileRecent;
         public System.Windows.Forms.ToolTip toolTip;
         public BMenuItem menuEditCut;
@@ -20008,15 +19573,7 @@ namespace org.kbinani.cadencii
         public System.Windows.Forms.ToolBarButton stripBtnScroll;
         public System.Windows.Forms.ToolBarButton stripBtnLoop;
         public System.Windows.Forms.ToolBarButton stripBtnCurve;
-        public System.Windows.Forms.ContextMenu stripDDBtnLength;
-        public System.Windows.Forms.MenuItem stripDDBtnLength04;
-        public System.Windows.Forms.MenuItem stripDDBtnLength08;
-        public System.Windows.Forms.MenuItem stripDDBtnLength16;
-        public System.Windows.Forms.MenuItem stripDDBtnLength32;
-        public System.Windows.Forms.MenuItem stripDDBtnLength64;
-        public System.Windows.Forms.MenuItem stripDDBtnLengthOff;
         public System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        public System.Windows.Forms.MenuItem stripDDBtnLengthTriplet;
         public System.Windows.Forms.ContextMenu stripDDBtnQuantize;
         public System.Windows.Forms.MenuItem stripDDBtnQuantize04;
         public System.Windows.Forms.MenuItem stripDDBtnQuantize08;
@@ -20038,12 +19595,9 @@ namespace org.kbinani.cadencii
         public System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
         public BMenuItem menuSettingGameControlerSetting;
         public BMenuItem menuSettingGameControlerLoad;
-        public System.Windows.Forms.MenuItem stripDDBtnLength128;
         public System.Windows.Forms.MenuItem stripDDBtnQuantize128;
         public BMenuItem menuSettingPositionQuantize128;
-        public BMenuItem menuSettingLengthQuantize128;
         public BMenuItem cMenuPianoQuantize128;
-        public BMenuItem cMenuPianoLength128;
         public BMenuItem cMenuPianoFixed128;
         public BMenuItem menuVisualWaveform;
         public BPanel panel2;
@@ -20146,9 +19700,7 @@ namespace org.kbinani.cadencii
         private System.Windows.Forms.ToolBarButton toolBarButton4;
         private System.Windows.Forms.ImageList imageListPosition;
         private System.Windows.Forms.ToolBar toolBarMeasure;
-        private System.Windows.Forms.ToolBarButton stripDDBtnLengthParent;
         private System.Windows.Forms.ToolBarButton stripDDBtnQuantizeParent;
-        private System.Windows.Forms.MenuItem menuItem1;
         private System.Windows.Forms.MenuItem menuItem2;
         private System.Windows.Forms.ToolBarButton toolBarButton5;
         private System.Windows.Forms.ImageList imageListMeasure;
