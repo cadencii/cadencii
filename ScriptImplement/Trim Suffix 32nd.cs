@@ -1,4 +1,4 @@
-﻿public static class Trim_Suffix_32nd {
+public static class Trim_Suffix_32nd {
     public static bool Edit( org.kbinani.vsq.VsqFile Vsq ) {
         for ( int i = 1; i < Vsq.Track.size(); i++ ) {
             for ( int j = 0; j < Vsq.Track.get( i ).getEventCount(); j++ ) {

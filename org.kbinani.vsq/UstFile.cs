@@ -1,6 +1,6 @@
-﻿/*
+/*
  * UstFile.cs
- * Copyright (C) 2009-2010 kbinani, PEX
+ * Copyright © 2009-2010 kbinani, PEX
  *
  * This file is part of org.kbinani.vsq.
  *

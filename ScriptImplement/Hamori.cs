@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using org.kbinani.cadencii;
 
 public class Hamori : System.Windows.Forms.Form {

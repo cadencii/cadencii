@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using org.kbinani.cadencii;
 
 namespace org.kbinani.cadencii {

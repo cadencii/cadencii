@@ -1,4 +1,4 @@
-﻿#if !JAVA
+#if !JAVA
 /*
  * MathEx.cs
  * Copyright (C) 2008-2010 kbinani

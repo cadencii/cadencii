@@ -1,7 +1,7 @@
-﻿#if !JAVA
+#if !JAVA
 /*
  * AssemblyInfo.cs
- * Copyright (C) 2008-2010 kbinani
+ * Copyright © 2008-2010 kbinani
  *
  * This file is part of org.kbinani.
  *

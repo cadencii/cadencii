@@ -1,4 +1,4 @@
-﻿using org.kbinani.cadencii;
+using org.kbinani.cadencii;
 
 public class RunOnce {
     private static int runCount = 0;

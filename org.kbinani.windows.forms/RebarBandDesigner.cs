@@ -1,8 +1,8 @@
 #if !JAVA
 /*
  * RebarBandDesigner.cs
- * Copyright (C) Anthony Baraff
- * Copyright (C) 2010 kbinani
+ * Copyright © Anthony Baraff
+ * Copyright © 2010 kbinani
  *
  * This file is part of org.kbinani.windows.forms.
  *

@@ -1,4 +1,4 @@
-﻿
+
 #if JAVA
 package org.kbinani.cadencii;
 #else

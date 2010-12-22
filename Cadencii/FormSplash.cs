@@ -1,7 +1,7 @@
-﻿#if !JAVA
+#if !JAVA
 /*
  * FormSplash.cs
- * Copyright (C) 2010 kbinani
+ * Copyright © 2010 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *

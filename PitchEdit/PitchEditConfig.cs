@@ -1,4 +1,4 @@
-﻿namespace org.PitchEdit {
+namespace org.PitchEdit {
 
     public class PitchEditConfig {
     }

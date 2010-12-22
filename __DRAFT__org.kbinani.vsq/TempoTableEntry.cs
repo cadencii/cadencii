@@ -1,4 +1,4 @@
-﻿/*
+/*
  * TempoTableEntry.cs
  * Copyright (C) 2008-2010 kbinani
  *

@@ -1,4 +1,4 @@
-﻿#if !JAVA
+#if !JAVA
 /*using System;
 using System.Collections.Generic;
 

@@ -1,4 +1,4 @@
-﻿public static class Print_Lyric {
+public static class Print_Lyric {
     public static bool Edit( org.kbinani.vsq.VsqFile Vsq ) {
         System.IO.StreamWriter sw = null;
         try {

@@ -1,4 +1,4 @@
-﻿/*
+/*
  * AssemblyInfo.cs
  * Copyright (C) 2007-2010 kbinani
  *

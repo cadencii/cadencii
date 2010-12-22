@@ -1,6 +1,6 @@
-﻿/*
+/*
  * FormMain.cs
- * Copyright (C) 2008-2010 kbinani
+ * Copyright © 2008-2010 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -4159,17 +4159,17 @@ namespace org.kbinani.cadencii
             this.Invoke( new EventHandler( updateGameControlerStatus ) );
 #endif
 
-            stripBtnPointer.Text = "";// _( "Pointer" );
+            stripBtnPointer.Text = _( "Pointer" );
             stripBtnPointer.ToolTipText = _( "Pointer" );
-            stripBtnPencil.Text = "";// _( "Pencil" );
+            stripBtnPencil.Text = _( "Pencil" );
             stripBtnPencil.ToolTipText = _( "Pencil" );
-            stripBtnLine.Text = "";// _( "Line" );
+            stripBtnLine.Text = _( "Line" );
             stripBtnLine.ToolTipText = _( "Line" );
-            stripBtnEraser.Text = "";// _( "Eraser" );
+            stripBtnEraser.Text = _( "Eraser" );
             stripBtnEraser.ToolTipText = _( "Eraser" );
-            stripBtnCurve.Text = "";// _( "Curve" );
+            stripBtnCurve.Text = _( "Curve" );
             stripBtnCurve.ToolTipText = _( "Curve" );
-            stripBtnGrid.Text = "";// _( "Grid" );
+            stripBtnGrid.Text = _( "Grid" );
             stripBtnGrid.ToolTipText = _( "Grid" );
 
             #region main menu
@@ -7422,8 +7422,9 @@ namespace org.kbinani.cadencii
         public void AppManager_PreviewAborted( Object sender, EventArgs e )
         {
 #if DEBUG
-            AppManager.debugWriteLine( "AppManager_PreviewAborted" );
+            PortUtil.println( "FormMain#AppManager_PreviewAborted" );
 #endif
+            stripBtnPlay.ImageKey = "control.png";
             timer.stop();
 
 #if ENABLE_MIDI
@@ -7442,7 +7443,7 @@ namespace org.kbinani.cadencii
         public void AppManager_PreviewStarted( Object sender, EventArgs e )
         {
 #if DEBUG
-            AppManager.debugWriteLine( "m_config_PreviewStarted" );
+            PortUtil.println( "FormMain#AppManager_PreviewStarted" );
 #endif
 
             int selected = AppManager.getSelected();
@@ -7451,11 +7452,8 @@ namespace org.kbinani.cadencii
             int clock = AppManager.getCurrentClock();
             double now = PortUtil.getCurrentTime();
             AppManager.mPreviewStartedTime = now;
-#if DEBUG
-            AppManager.debugWriteLine( "    vsq.TotalClocks=" + vsq.TotalClocks );
-            AppManager.debugWriteLine( "    total seconds=" + vsq.getSecFromClock( (int)vsq.TotalClocks ) );
-#endif
             timer.start();
+            stripBtnPlay.ImageKey = "control_pause.png";
         }
 
         public void AppManager_SelectedToolChanged( Object sender, EventArgs e )
@@ -15321,11 +15319,6 @@ namespace org.kbinani.cadencii
         public void stripBtnPlay_Click( Object sender, EventArgs e )
         {
             AppManager.setPlaying( !AppManager.isPlaying() );
-            if ( AppManager.isPlaying() ) {
-                stripBtnPlay.ImageKey = "control_pause.png";
-            } else {
-                stripBtnPlay.ImageKey = "control.png";
-            }
             pictPianoRoll.requestFocus();
         }
 

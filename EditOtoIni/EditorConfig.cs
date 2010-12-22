@@ -1,4 +1,4 @@
-﻿#if JAVA
+#if JAVA
 package org.kbinani.editotoini;
 
 #else

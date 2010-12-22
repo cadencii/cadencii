@@ -1,4 +1,4 @@
-﻿/*
+/*
  * TempoVector.cs
  * Copyright (C) 2010 kbinani
  *

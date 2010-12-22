@@ -1,8 +1,8 @@
 #if !JAVA
 /*
  * Rebar.cs
- * Copyright (C) Anthony Baraff
- * Copyright (C) 2010 kbinani
+ * Copyright Â© Anthony Baraff
+ * Copyright Â© 2010 kbinani
  *
  * This file is part of org.kbinani.windows.forms.
  *
@@ -53,7 +53,7 @@ namespace org.kbinani.windows.forms {
         private bool _throwExceptions = true;
         private bool _variantHeight = true;
         /// <summary>
-        /// ƒ_ƒuƒ‹ƒNƒŠƒbƒN‚ÅBAND‚ÌÅ‘å‰»EÅ¬‰»‚ğs‚¤ê‡true
+        /// ãƒ€ãƒ–ãƒ«ã‚¯ãƒªãƒƒã‚¯ã§BANDã®æœ€å¤§åŒ–ãƒ»æœ€å°åŒ–ã‚’è¡Œã†å ´åˆtrue
         /// </summary>
         private bool _toggleDoubleClick = false;
         /*
@@ -717,7 +717,7 @@ namespace org.kbinani.windows.forms {
                             NMREBARCHILDSIZE ChildSize = (NMREBARCHILDSIZE)Marshal.PtrToStructure( m.LParam, typeof( NMREBARCHILDSIZE ) );
                             Form form = this.FindForm();
                             if ( form != null && !form.IsDisposed && form.WindowState == FormWindowState.Minimized ) {
-                                // eƒtƒH[ƒ€‚ªÅ¬‰»‚³‚ê‚½ó‘Ô‚Ìê‡CResize‚ğ‘—M‚µ‚È‚¢
+                                // è¦ªãƒ•ã‚©ãƒ¼ãƒ ãŒæœ€å°åŒ–ã•ã‚ŒãŸçŠ¶æ…‹ã®å ´åˆï¼ŒResizeã‚’é€ä¿¡ã—ãªã„
                                 break;
                             }
                             foreach ( RebarBand band in _bands ) {

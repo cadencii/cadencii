@@ -1,4 +1,4 @@
-﻿#if JAVA
+#if JAVA
 package org.kbinani.cadencii;
 #else
 namespace org {

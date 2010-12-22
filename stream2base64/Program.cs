@@ -1,4 +1,4 @@
-﻿#define BINARYFILE_TO_BASE64
+#define BINARYFILE_TO_BASE64
 using System;
 using System.Collections.Generic;
 using System.Text;

@@ -1,4 +1,4 @@
-﻿// Render As UTAU.cs for Cadencii
+// Render As UTAU.cs for Cadencii
 // written by kbinani & 88
 using System;
 using System.Collections.Generic;

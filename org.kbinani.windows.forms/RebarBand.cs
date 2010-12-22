@@ -1,8 +1,8 @@
 #if !JAVA
 /*
  * RebarBand.cs
- * Copyright (C) Anthony Baraff
- * Copyright (C) 2010 kbinani
+ * Copyright Â© Anthony Baraff
+ * Copyright Â© 2010 kbinani
  *
  * This file is part of org.kbinani.windows.forms.
  *
@@ -89,23 +89,23 @@ namespace org.kbinani.windows.forms {
         public void Show( Control control, Rectangle chevron_rect ) {
             if ( !(control is Rebar) ) return;
             Rebar parent = (Rebar)control;
-            // Band‚ÌŠOŒ`‚ğ’²‚×‚é
+            // Bandã®å¤–å½¢ã‚’èª¿ã¹ã‚‹
             RECT rc_band = new RECT();
             if ( win32.SendMessage( parent.RebarHwnd, win32.RB_GETRECT, this.BandIndex, ref rc_band ) == 0 ) return;
-            // chevron‚Ì•ª‚Ì•‚ğˆø‚­
+            // chevronã®åˆ†ã®å¹…ã‚’å¼•ã
             rc_band.right -= chevron_rect.Width;
             if( this._child == null ) return;
-            //TODO: ‚±‚Ì‚Ö‚ñmanaged‚Èˆ—‚É‘‚«Š·‚¦‚é
-            // ƒc[ƒ‹ƒo[‚Ìƒ{ƒ^ƒ“‚Ì”‚ğ’²‚×‚é
+            //TODO: ã“ã®ã¸ã‚“managedãªå‡¦ç†ã«æ›¸ãæ›ãˆã‚‹
+            // ãƒ„ãƒ¼ãƒ«ãƒãƒ¼ã®ãƒœã‚¿ãƒ³ã®æ•°ã‚’èª¿ã¹ã‚‹
             int num_buttons = (int)win32.SendMessage( this._child.Handle, (int)win32.TB_BUTTONCOUNT, 0, IntPtr.Zero );
             if ( num_buttons <= 0 ) return;
-            // ƒc[ƒ‹ƒo[‚ÌŠeƒ{ƒ^ƒ“‚É‚Â‚¢‚Äˆ—
+            // ãƒ„ãƒ¼ãƒ«ãƒãƒ¼ã®å„ãƒœã‚¿ãƒ³ã«ã¤ã„ã¦å‡¦ç†
             int hidden_start = num_buttons;
-            // ƒc[ƒ‹ƒo[
+            // ãƒ„ãƒ¼ãƒ«ãƒãƒ¼
             if ( !(this._child is ToolBar) ) return;
             ToolBar toolbar = (ToolBar)this._child;
             for ( int i = 0; i < num_buttons; i++ ) {
-                // ƒ{ƒ^ƒ“‚ÌŠOŒ`‚ğ’²‚×‚é
+                // ãƒœã‚¿ãƒ³ã®å¤–å½¢ã‚’èª¿ã¹ã‚‹
                 RECT rc_button = new RECT();
                 if ( win32.SendMessage( this._child.Handle, win32.TB_GETITEMRECT, i, ref rc_button ) == 0 ) return;
                 rc_button.left += rc_band.left;
@@ -115,19 +115,19 @@ namespace org.kbinani.windows.forms {
                 RECT rc_intersect = new RECT();
                 win32.IntersectRect( ref rc_intersect, ref rc_button, ref rc_band );
                 if ( win32.EqualRect( ref rc_intersect, ref rc_button ) ) {
-                    // ƒ{ƒ^ƒ“‚Í‰B‚ê‚Ä‚¢‚È‚¢‚Ì‚Å‘±‚¯‚é
+                    // ãƒœã‚¿ãƒ³ã¯éš ã‚Œã¦ã„ãªã„ã®ã§ç¶šã‘ã‚‹
                     continue;
                 }
                 hidden_start = i;
                 break;
             }
-            // ‰B‚ê‚Ä‚¢‚éƒ{ƒ^ƒ“‚ªˆê‚Â‚à‚È‚¢ê‡‚Í‰½‚à‚µ‚È‚¢
+            // éš ã‚Œã¦ã„ã‚‹ãƒœã‚¿ãƒ³ãŒä¸€ã¤ã‚‚ãªã„å ´åˆã¯ä½•ã‚‚ã—ãªã„
             if ( hidden_start >= num_buttons ) return;
-            // pop-upƒƒjƒ…[‚ğì¬‚·‚é
+            // pop-upãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’ä½œæˆã™ã‚‹
             ContextMenu popup = new ContextMenu();
             for ( int i = hidden_start; i < num_buttons; i++ ) {
                 uint id = (uint)i;
-                // ƒ{ƒ^ƒ“‚Ìî•ñ‚ğ’²‚×‚È‚ª‚çCƒ|ƒbƒvƒAƒbƒv‚É’Ç‰Á
+                // ãƒœã‚¿ãƒ³ã®æƒ…å ±ã‚’èª¿ã¹ãªãŒã‚‰ï¼Œãƒãƒƒãƒ—ã‚¢ãƒƒãƒ—ã«è¿½åŠ 
                 ToolBarButton button = toolbar.Buttons[i];
                 if ( button.Style == ToolBarButtonStyle.PushButton ||
                      button.Style == ToolBarButtonStyle.ToggleButton ) {
@@ -148,12 +148,12 @@ namespace org.kbinani.windows.forms {
                     }
                 }
             }
-            // ƒ|ƒbƒvƒAƒbƒvƒƒjƒ…[‚ğ•\¦
+            // ãƒãƒƒãƒ—ã‚¢ãƒƒãƒ—ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚’è¡¨ç¤º
             popup.Show( control, new Point( chevron_rect.Left, chevron_rect.Bottom ) );
         }
 
         /// <summary>
-        /// ƒƒjƒ…[ƒAƒCƒeƒ€‚ÌŠK‘w‚ğÄ‹A“I‚ÉƒRƒs[‚µ‚Ü‚·
+        /// ãƒ¡ãƒ‹ãƒ¥ãƒ¼ã‚¢ã‚¤ãƒ†ãƒ ã®éšå±¤ã‚’å†å¸°çš„ã«ã‚³ãƒ”ãƒ¼ã—ã¾ã™
         /// </summary>
         /// <param name="dest"></param>
         /// <param name="src"></param>
@@ -214,8 +214,8 @@ namespace org.kbinani.windows.forms {
 
         private void drawChevronMenuItem( object sender, DrawItemEventArgs e ) {
             Brush brush_back = ((e.State & DrawItemState.Selected) != 0) ?
-                    SystemBrushes.Highlight :  // ‘I‘ğ‚Ì”wŒiF
-                    SystemBrushes.Menu;       // ”ñ‘I‘ğ‚Ì”wŒiF
+                    SystemBrushes.Highlight :  // é¸æŠæ™‚ã®èƒŒæ™¯è‰²
+                    SystemBrushes.Menu;       // éé¸æŠæ™‚ã®èƒŒæ™¯è‰²
             e.Graphics.FillRectangle( brush_back, e.Bounds );
             
             if ( !(sender is MenuItem) ) return;

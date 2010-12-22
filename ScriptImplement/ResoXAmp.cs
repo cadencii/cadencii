@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
 using org.kbinani.vsq;
 using org.kbinani.cadencii;

@@ -1,4 +1,4 @@
-﻿#if JAVA
+#if JAVA
 #else
 using System;
 using System.Collections.Generic;
