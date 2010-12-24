@@ -100,7 +100,7 @@ namespace org.kbinani.windows.forms {
             return m_result;
         }
 
-        public BDialogResult showDialog( System.Windows.Forms.Form parent ) {
+        public virtual BDialogResult showDialog( System.Windows.Forms.Form parent ) {
             System.Windows.Forms.DialogResult dr = base.ShowDialog( parent );
             if ( dr == System.Windows.Forms.DialogResult.OK ) {
                 m_result = BDialogResult.OK;

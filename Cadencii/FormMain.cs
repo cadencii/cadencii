@@ -101,7 +101,7 @@ namespace org.kbinani.cadencii
             }
         }
 
-        delegate int VoidDelegateReturnInt();
+        delegate void DelegateRefreshScreen( boolean value );
 
         #region static readonly field
         /// <summary>
@@ -488,10 +488,10 @@ namespace org.kbinani.cadencii
         /// MTCを最後に受信した時刻
         /// </summary>
         private double mMtcLastReceived = 0.0;
-        /// <summary>
+        /* /// <summary>
         /// AppManager.inputTextBoxがhideInputTextBoxによって隠された後、何回目のEnterキーの入力を受けたかを表すカウンター。
         /// </summary>
-        private int mNumEnterKeyAfterHideInputTextBox = 0;
+        private int mNumEnterKeyAfterHideInputTextBox = 0;*/
         /// <summary>
         /// 特殊な取り扱いが必要なショートカットのキー列と、対応するメニューアイテムを保存しておくリスト。
         /// </summary>
@@ -542,9 +542,9 @@ namespace org.kbinani.cadencii
         /// </summary>
         private int mPianoRollScaleYMouseStatus = 0;
         /// <summary>
-        /// ステップ入力中に，各ノート番号の鍵盤が下りている時にtrue
+        /// MIDIステップ入力モードがONかどうか
         /// </summary>
-        private bool[] mMidiStepRecordStatus = new bool[128];
+        private boolean mStepSequencerEnabled = false;
 #if MONITOR_FPS
         /// <summary>
         /// パフォーマンスカウンタ
@@ -562,7 +562,6 @@ namespace org.kbinani.cadencii
         private BMenuItem menuFileExportVxt;
         public BMenuItem menuJobChangePreMeasure;
         private System.Windows.Forms.ToolStripButton stripBtnStepSequencer;
-        public BMenuItem menuLyricSetAutoVibrato;
         #endregion
 
         #region constructor
@@ -622,6 +621,7 @@ namespace org.kbinani.cadencii
 
             menuTrackRendererVCNT.setText( "vConnect-STAND(5)" );
             panelOverview.setMainForm( this );
+            pictPianoRoll.setMainForm( this );
             bgWorkScreen = new BBackgroundWorker();
             waveView = new WaveView();
 #if JAVA
@@ -950,7 +950,6 @@ namespace org.kbinani.cadencii
 
             int fps = 1000 / AppManager.editorConfig.MaximumFrameRate;
             timer.setDelay( (fps <= 0) ? 1 : fps );
-            menuTrackManager.setVisible( false );
 #if DEBUG
             menuHelpDebug.setVisible( true );
 #endif
@@ -1060,6 +1059,146 @@ namespace org.kbinani.cadencii
         #endregion
 
         #region helper methods
+        /// <summary>
+        /// ユーザー定義のビブラートのプリセット関係のメニューの表示状態を更新します
+        /// </summary>
+        private void updateVibratoPresetMenu()
+        {
+
+        }
+
+        /// <summary>
+        /// MIDIステップ入力中に，ソングポジションが動いたときの処理を行います
+        /// AppManager.mAddingEventが非nullの時，音符の先頭は決まっているので，
+        /// ソングポジションと，音符の先頭との距離から音符の長さを算出し，更新する
+        /// AppManager.mAddingEventがnullの時は何もしない
+        /// </summary>
+        private void updateNoteLengthStepSequencer()
+        {
+            if ( !isStepSequencerEnabled() ) {
+                return;
+            }
+
+            VsqEvent item = AppManager.mAddingEvent;
+            if ( item == null ) {
+                return;
+            }
+
+            int song_position = AppManager.getCurrentClock();
+            int start = item.Clock;
+            int length = song_position - start;
+            if ( length < 0 ) length = 0;
+            Utility.editLengthOfVsqEvent(
+                item,
+                length,
+                AppManager.vibratoLengthEditingRule );
+        }
+
+        /// <summary>
+        /// 現在追加しようとしている音符の内容(AppManager.mAddingEvent)をfixします
+        /// </summary>
+        /// <returns></returns>
+        private void fixAddingEvent()
+        {
+            VsqFileEx vsq = AppManager.getVsqFile();
+            int selected = AppManager.getSelected();
+            VsqTrack vsq_track = vsq.Track.get( selected );
+            LyricHandle lyric = new LyricHandle( "あ", "a" );
+            VibratoHandle vibrato = null;
+            int vibrato_delay = 0;
+            if ( AppManager.editorConfig.EnableAutoVibrato ) {
+                int note_length = AppManager.mAddingEvent.ID.getLength();
+                // 音符位置での拍子を調べる
+                Timesig timesig = vsq.getTimesigAt( AppManager.mAddingEvent.Clock );
+
+                // ビブラートを自動追加するかどうかを決める閾値
+                int threshold = AppManager.editorConfig.AutoVibratoThresholdLength;
+                if ( note_length >= threshold ) {
+                    int vibrato_clocks = 0;
+                    if ( AppManager.editorConfig.DefaultVibratoLength == DefaultVibratoLengthEnum.L100 ) {
+                        vibrato_clocks = note_length;
+                    } else if ( AppManager.editorConfig.DefaultVibratoLength == DefaultVibratoLengthEnum.L50 ) {
+                        vibrato_clocks = note_length / 2;
+                    } else if ( AppManager.editorConfig.DefaultVibratoLength == DefaultVibratoLengthEnum.L66 ) {
+                        vibrato_clocks = note_length * 2 / 3;
+                    } else if ( AppManager.editorConfig.DefaultVibratoLength == DefaultVibratoLengthEnum.L75 ) {
+                        vibrato_clocks = note_length * 3 / 4;
+                    }
+                    SynthesizerType type = SynthesizerType.VOCALOID2;
+                    RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( selected ) );
+                    if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
+                        type = SynthesizerType.VOCALOID1;
+                    }
+                    vibrato = AppManager.editorConfig.createAutoVibrato( type, vibrato_clocks );
+                    vibrato_delay = note_length - vibrato_clocks;
+                }
+            }
+
+            // oto.iniの設定を反映
+            VsqEvent item = vsq_track.getSingerEventAt( AppManager.mAddingEvent.Clock );
+            SingerConfig singerConfig = null;
+            if ( item != null && item.ID != null && item.ID.IconHandle != null ) {
+                singerConfig = AppManager.getSingerInfoUtau( item.ID.IconHandle.Language, item.ID.IconHandle.Program );
+            }
+
+            if ( singerConfig != null && AppManager.mUtauVoiceDB.containsKey( singerConfig.VOICEIDSTR ) ) {
+                UtauVoiceDB utauVoiceDb = AppManager.mUtauVoiceDB.get( singerConfig.VOICEIDSTR );
+                OtoArgs otoArgs = utauVoiceDb.attachFileNameFromLyric( lyric.L0.Phrase );
+                AppManager.mAddingEvent.UstEvent.PreUtterance = otoArgs.msPreUtterance;
+                AppManager.mAddingEvent.UstEvent.VoiceOverlap = otoArgs.msOverlap;
+            }
+
+            // 自動ノーマライズのモードで、処理を分岐
+            if ( AppManager.mAutoNormalize ) {
+                VsqTrack work = (VsqTrack)vsq_track.clone();
+                AppManager.mAddingEvent.ID.type = VsqIDType.Anote;
+                AppManager.mAddingEvent.ID.Dynamics = 64;
+                AppManager.mAddingEvent.ID.VibratoHandle = vibrato;
+                AppManager.mAddingEvent.ID.LyricHandle = lyric;
+                AppManager.mAddingEvent.ID.VibratoDelay = vibrato_delay;
+
+                boolean changed = true;
+                while ( changed ) {
+                    changed = false;
+                    for ( int i = 0; i < work.getEventCount(); i++ ) {
+                        int start_clock = work.getEvent( i ).Clock;
+                        int end_clock = work.getEvent( i ).ID.getLength() + start_clock;
+                        if ( start_clock < AppManager.mAddingEvent.Clock && AppManager.mAddingEvent.Clock < end_clock ) {
+                            work.getEvent( i ).ID.setLength( AppManager.mAddingEvent.Clock - start_clock );
+                            changed = true;
+                        } else if ( start_clock == AppManager.mAddingEvent.Clock ) {
+                            work.removeEvent( i );
+                            changed = true;
+                            break;
+                        } else if ( AppManager.mAddingEvent.Clock < start_clock && start_clock < AppManager.mAddingEvent.Clock + AppManager.mAddingEvent.ID.getLength() ) {
+                            AppManager.mAddingEvent.ID.setLength( start_clock - AppManager.mAddingEvent.Clock );
+                            changed = true;
+                        }
+                    }
+                }
+                VsqEvent add = (VsqEvent)AppManager.mAddingEvent.clone();
+                work.addEvent( add );
+                CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( selected,
+                                                                             work,
+                                                                             AppManager.getVsqFile().AttachedCurves.get( selected - 1 ) );
+                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                setEdited( true );
+            } else {
+                VsqEvent[] items = new VsqEvent[1];
+                AppManager.mAddingEvent.ID.type = VsqIDType.Anote;
+                AppManager.mAddingEvent.ID.Dynamics = 64;
+                items[0] = (VsqEvent)AppManager.mAddingEvent.clone();// new VsqEvent( 0, AppManager.addingEvent.ID );
+                items[0].Clock = AppManager.mAddingEvent.Clock;
+                items[0].ID.LyricHandle = lyric;
+                items[0].ID.VibratoDelay = vibrato_delay;
+                items[0].ID.VibratoHandle = vibrato;
+
+                CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventAddRange( AppManager.getSelected(), items ) );
+                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                setEdited( true );
+            }
+        }
+
         /// <summary>
         /// 現在のツールバーの場所を保存します
         /// </summary>
@@ -1530,6 +1669,15 @@ namespace org.kbinani.cadencii
         #endregion
 
         #region public methods
+        /// <summary>
+        /// MIDIステップ入力モードがONかどうかを取得します
+        /// </summary>
+        /// <returns></returns>
+        public boolean isStepSequencerEnabled()
+        {
+            return mStepSequencerEnabled;
+        }
+
         /// <summary>
         /// マウスの真ん中ボタンが押されたかどうかを調べます。
         /// スペースキー+左ボタンで真ん中ボタンとみなすかどうか、というオプションも考慮される。
@@ -3095,6 +3243,9 @@ namespace org.kbinani.cadencii
             if ( modifier != KeyEvent.VK_UNDEFINED ) {
                 return;
             }
+
+            EditMode edit_mode = AppManager.getEditMode();
+
 #if JAVA
             if ( !AppManager.inputTextBox.isVisible() ) {
 #else
@@ -3106,10 +3257,13 @@ namespace org.kbinani.cadencii
 #else
                 if ( e.KeyCode == System.Windows.Forms.Keys.Return ) {
 #endif
-                    mNumEnterKeyAfterHideInputTextBox++;
-                    if ( mNumEnterKeyAfterHideInputTextBox >= 2 ) {
-                        // 2回目以降しか受け付けないことにする
-                        flipPlaying = true;
+                    // MIDIステップ入力のときの処理
+                    if ( isStepSequencerEnabled() ) {
+                        if ( AppManager.mAddingEvent != null ) {
+                            fixAddingEvent();
+                            AppManager.mAddingEvent = null;
+                            refreshScreen( true );
+                        }
                     }
 #if JAVA
                 } else if ( e.KeyValue == KeyEvent.VK_SPACE ) {
@@ -3152,6 +3306,22 @@ namespace org.kbinani.cadencii
 #endif
                     if ( onPreviewKeyDown ) {
                         rewind();
+                    }
+                } else if( e.KeyCode == System.Windows.Forms.Keys.Escape ) {
+                    // ステップ入力中の場合，入力中の音符をクリアする
+                    VsqEvent item = AppManager.mAddingEvent;
+                    if ( isStepSequencerEnabled() && item != null ) {
+                        // 入力中だった音符の長さを取得し，
+                        int length = item.ID.getLength();
+                        AppManager.mAddingEvent = null;
+                        int clock = AppManager.getCurrentClock();
+                        int clock_draft = clock - length;
+                        if ( clock_draft < 0 ) {
+                            clock_draft = 0;
+                        }
+                        // その分だけソングポジションを戻す．
+                        AppManager.setCurrentClock( clock_draft );
+                        refreshScreen( true );
                     }
                 } else {
                     if ( !AppManager.isPlaying() ) {
@@ -3923,9 +4093,14 @@ namespace org.kbinani.cadencii
                 AppManager.editorConfig.getPositionQuantize(), 
                 AppManager.editorConfig.isPositionQuantizeTriplet() );
             int cl_new = doQuantize( cl_clock + unit, unit );
-            //int new_clock = AppManager.getVsqFile().getClockFromBarCount( current );
+
             if ( cl_new <= hScroll.Maximum + (pictPianoRoll.getWidth() - AppManager.keyWidth) * AppManager.getScaleXInv() ) {
-                AppManager.setCurrentClock(cl_new );
+                // 表示の更新など
+                AppManager.setCurrentClock( cl_new );
+
+                // ステップ入力時の処理
+                updateNoteLengthStepSequencer();
+
                 ensureCursorVisible();
                 AppManager.setPlaying( playing );
                 refreshScreen();
@@ -3946,13 +4121,6 @@ namespace org.kbinani.cadencii
                 return;
             }
             int cl_clock = AppManager.getCurrentClock();
-            /*int b_current = vsq.getBarCountFromClock( cl_clock );
-            if ( b_current > 0 ) {
-                int cl_b_current = vsq.getClockFromBarCount( b_current );
-                if ( cl_b_current >= cl_clock ) {
-                    b_current--;
-                }
-            }*/
             int unit = QuantizeModeUtil.getQuantizeClock( 
                 AppManager.editorConfig.getPositionQuantize(),
                 AppManager.editorConfig.isPositionQuantizeTriplet() );
@@ -3960,8 +4128,12 @@ namespace org.kbinani.cadencii
             if ( cl_new < 0 ) {
                 cl_new = 0;
             }
-            //int cl_new = vsq.getClockFromBarCount( b_current );
+
             AppManager.setCurrentClock( cl_new );
+
+            // ステップ入力時の処理
+            updateNoteLengthStepSequencer();
+
             ensureCursorVisible();
             AppManager.setPlaying( playing );
             refreshScreen();
@@ -4300,9 +4472,7 @@ namespace org.kbinani.cadencii
             menuLyricPhonemeTransformation.setMnemonic( KeyEvent.VK_T );
             menuLyricDictionary.setText( _( "User word dictionary" ) );
             menuLyricDictionary.setMnemonic( KeyEvent.VK_C );
-            menuLyricSetAutoVibrato.setText( _( "Set this vibrato as default" ) );
-            menuLyricSetAutoVibrato.setMnemonic( KeyEvent.VK_S );
-
+            
             menuScript.setText( _( "Script" ) );
             menuScript.setMnemonic( KeyEvent.VK_C );
             menuScriptUpdate.setText( _( "Update script list" ) );
@@ -6358,7 +6528,6 @@ namespace org.kbinani.cadencii
 #endif
             AppManager.mInputTextBox.setEnabled( false );
             pictPianoRoll.requestFocus();
-            mNumEnterKeyAfterHideInputTextBox = 0;
         }
 
         /// <summary>
@@ -6775,13 +6944,10 @@ namespace org.kbinani.cadencii
             menuTrackRendererUtau.Click += new EventHandler( handleChangeRenderer );
             menuTrackRendererVCNT.Click += new EventHandler( handleChangeRenderer );
             menuTrackRendererAquesTone.Click += new EventHandler( handleChangeRenderer );
-            menuTrackManager.Click += new EventHandler( menuTrackManager_Click );
-            menuLyric.DropDownOpening += new EventHandler( menuLyric_DropDownOpening );
             menuLyricExpressionProperty.Click += new EventHandler( menuLyricExpressionProperty_Click );
             menuLyricVibratoProperty.Click += new EventHandler( menuLyricVibratoProperty_Click );
             menuLyricDictionary.Click += new EventHandler( menuLyricDictionary_Click );
             menuLyricPhonemeTransformation.Click += new EventHandler( menuLyricPhonemeTransformation_Click );
-            menuLyricSetAutoVibrato.Click += new EventHandler( menuLyricSetAutoVibrato_Click );
             menuScriptUpdate.Click += new EventHandler( menuScriptUpdate_Click );
             menuSettingPreference.Click += new EventHandler( menuSettingPreference_Click );
             menuSettingGameControlerSetting.Click += new EventHandler( menuSettingGameControlerSetting_Click );
@@ -7092,6 +7258,8 @@ namespace org.kbinani.cadencii
             try {
                 this.stripLblGameCtrlMode.setIcon( new ImageIcon( Resources.get_slash() ) );
                 this.stripLblMidiIn.setIcon( new ImageIcon( Resources.get_slash() ) );
+                this.stripBtnStepSequencer.Image = Resources.get_piano().image;
+                this.stripBtnStepSequencer.Image = Resources.get_piano().image;
                 setIconImage( Resources.get_icon() );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".setResources; ex=" + ex + "\n" );
@@ -7290,11 +7458,6 @@ namespace org.kbinani.cadencii
             stripBtnPlay.Text = _( "Play" );
             timer.stop();
 
-#if ENABLE_MIDI
-            if ( mMidiIn != null ) {
-                mMidiIn.Stop();
-            }
-#endif
             for ( int i = 0; i < AppManager.mDrawStartIndex.Length; i++ ) {
                 AppManager.mDrawStartIndex[i] = 0;
             }
@@ -7308,7 +7471,7 @@ namespace org.kbinani.cadencii
 #if DEBUG
             PortUtil.println( "FormMain#AppManager_PreviewStarted" );
 #endif
-
+            AppManager.mAddingEvent = null;
             int selected = AppManager.getSelected();
             VsqFileEx vsq = AppManager.getVsqFile();
             RendererKind renderer = VsqFileEx.getTrackRendererKind( vsq.Track.get( selected ) );
@@ -8822,101 +8985,7 @@ namespace org.kbinani.cadencii
 #endif
                             goto heaven;
                         }
-                        LyricHandle lyric = new LyricHandle( "あ", "a" );
-                        VibratoHandle vibrato = null;
-                        int vibrato_delay = 0;
-                        if ( AppManager.editorConfig.EnableAutoVibrato ) {
-                            int note_length = AppManager.mAddingEvent.ID.getLength();
-                            // 音符位置での拍子を調べる
-                            //int denom, numer;
-                            Timesig timesig = vsq.getTimesigAt( AppManager.mAddingEvent.Clock );
-
-                            // ビブラートを自動追加するかどうかを決める閾値
-                            int threshold = AppManager.editorConfig.AutoVibratoThresholdLength;
-                            if ( note_length >= threshold ) {
-                                int vibrato_clocks = 0;
-                                if ( AppManager.editorConfig.DefaultVibratoLength == DefaultVibratoLengthEnum.L100 ) {
-                                    vibrato_clocks = note_length;
-                                } else if ( AppManager.editorConfig.DefaultVibratoLength == DefaultVibratoLengthEnum.L50 ) {
-                                    vibrato_clocks = note_length / 2;
-                                } else if ( AppManager.editorConfig.DefaultVibratoLength == DefaultVibratoLengthEnum.L66 ) {
-                                    vibrato_clocks = note_length * 2 / 3;
-                                } else if ( AppManager.editorConfig.DefaultVibratoLength == DefaultVibratoLengthEnum.L75 ) {
-                                    vibrato_clocks = note_length * 3 / 4;
-                                }
-                                SynthesizerType type = SynthesizerType.VOCALOID2;
-                                RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( selected ) );
-                                if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
-                                    type = SynthesizerType.VOCALOID1;
-                                }
-                                vibrato = AppManager.editorConfig.createAutoVibrato( type, vibrato_clocks );
-                                vibrato_delay = note_length - vibrato_clocks;
-                            }
-                        }
-
-                        // oto.iniの設定を反映
-                        VsqEvent item = vsq_track.getSingerEventAt( AppManager.mAddingEvent.Clock );
-                        SingerConfig singerConfig = null;
-                        if ( item != null && item.ID != null && item.ID.IconHandle != null ) {
-                            singerConfig = AppManager.getSingerInfoUtau( item.ID.IconHandle.Language, item.ID.IconHandle.Program );
-                        }
-
-                        if ( singerConfig != null && AppManager.mUtauVoiceDB.containsKey( singerConfig.VOICEIDSTR ) ) {
-                            UtauVoiceDB utauVoiceDb = AppManager.mUtauVoiceDB.get( singerConfig.VOICEIDSTR );
-                            OtoArgs otoArgs = utauVoiceDb.attachFileNameFromLyric( lyric.L0.Phrase );
-                            AppManager.mAddingEvent.UstEvent.PreUtterance = otoArgs.msPreUtterance;
-                            AppManager.mAddingEvent.UstEvent.VoiceOverlap = otoArgs.msOverlap;
-                        }
-
-                        // 自動ノーマライズのモードで、処理を分岐
-                        if ( AppManager.mAutoNormalize ) {
-                            VsqTrack work = (VsqTrack)vsq_track.clone();
-                            AppManager.mAddingEvent.ID.type = VsqIDType.Anote;
-                            AppManager.mAddingEvent.ID.Dynamics = 64;
-                            AppManager.mAddingEvent.ID.VibratoHandle = vibrato;
-                            AppManager.mAddingEvent.ID.LyricHandle = lyric;
-                            AppManager.mAddingEvent.ID.VibratoDelay = vibrato_delay;
-
-                            boolean changed = true;
-                            while ( changed ) {
-                                changed = false;
-                                for ( int i = 0; i < work.getEventCount(); i++ ) {
-                                    int start_clock = work.getEvent( i ).Clock;
-                                    int end_clock = work.getEvent( i ).ID.getLength() + start_clock;
-                                    if ( start_clock < AppManager.mAddingEvent.Clock && AppManager.mAddingEvent.Clock < end_clock ) {
-                                        work.getEvent( i ).ID.setLength( AppManager.mAddingEvent.Clock - start_clock );
-                                        changed = true;
-                                    } else if ( start_clock == AppManager.mAddingEvent.Clock ) {
-                                        work.removeEvent( i );
-                                        changed = true;
-                                        break;
-                                    } else if ( AppManager.mAddingEvent.Clock < start_clock && start_clock < AppManager.mAddingEvent.Clock + AppManager.mAddingEvent.ID.getLength() ) {
-                                        AppManager.mAddingEvent.ID.setLength( start_clock - AppManager.mAddingEvent.Clock );
-                                        changed = true;
-                                    }
-                                }
-                            }
-                            VsqEvent add = (VsqEvent)AppManager.mAddingEvent.clone();
-                            work.addEvent( add );
-                            CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( selected,
-                                                                                         work,
-                                                                                         AppManager.getVsqFile().AttachedCurves.get( selected - 1 ) );
-                            AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
-                            setEdited( true );
-                        } else {
-                            VsqEvent[] items = new VsqEvent[1];
-                            AppManager.mAddingEvent.ID.type = VsqIDType.Anote;
-                            AppManager.mAddingEvent.ID.Dynamics = 64;
-                            items[0] = (VsqEvent)AppManager.mAddingEvent.clone();// new VsqEvent( 0, AppManager.addingEvent.ID );
-                            items[0].Clock = AppManager.mAddingEvent.Clock;
-                            items[0].ID.LyricHandle = lyric;
-                            items[0].ID.VibratoDelay = vibrato_delay;
-                            items[0].ID.VibratoHandle = vibrato;
-
-                            CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventAddRange( AppManager.getSelected(), items ) );
-                            AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
-                            setEdited( true );
-                        }
+                        fixAddingEvent();
                     }
                 }
                 #endregion
@@ -9208,8 +9277,8 @@ namespace org.kbinani.cadencii
                 }
             }
         heaven:
-            refreshScreen();
             AppManager.setEditMode( EditMode.NONE );
+            refreshScreen( true );
         }
 
         public void pictPianoRoll_MouseWheel( Object sender, BMouseEventArgs e )
@@ -11800,8 +11869,6 @@ namespace org.kbinani.cadencii
                 mDialogPreference.setVocaloid101Required( !AppManager.editorConfig.DoNotUseVocaloid101 );
                 mDialogPreference.setVocaloid2Required( !AppManager.editorConfig.DoNotUseVocaloid2 );
                 mDialogPreference.setBufferSize( AppManager.editorConfig.BufferSizeMilliSeconds );
-                mDialogPreference.setDefaultVibratoDepth( AppManager.editorConfig.DefaultVibratoDepth );
-                mDialogPreference.setDefaultVibratoRate( AppManager.editorConfig.DefaultVibratoRate );
                 mDialogPreference.setDefaultSynthesizer( AppManager.editorConfig.DefaultSynthesizer );
                 mDialogPreference.setUseUserDefinedAutoVibratoType( AppManager.editorConfig.UseUserDefinedAutoVibratoType );
 
@@ -12011,8 +12078,6 @@ namespace org.kbinani.cadencii
                     AppManager.editorConfig.DoNotUseVocaloid2 = !mDialogPreference.isVocaloid2Required();
                     AppManager.editorConfig.LoadSecondaryVocaloid1Dll = mDialogPreference.isSecondaryVocaloid1DllRequired();
                     AppManager.editorConfig.BufferSizeMilliSeconds = mDialogPreference.getBufferSize();
-                    AppManager.editorConfig.DefaultVibratoRate = mDialogPreference.getDefaultVibratoRate();
-                    AppManager.editorConfig.DefaultVibratoDepth = mDialogPreference.getDefaultVibratoDepth();
                     AppManager.editorConfig.DefaultSynthesizer = mDialogPreference.getDefaultSynthesizer();
                     AppManager.editorConfig.UseUserDefinedAutoVibratoType = mDialogPreference.isUseUserDefinedAutoVibratoType();
 
@@ -12282,27 +12347,6 @@ namespace org.kbinani.cadencii
                     ids.toArray( new VsqID[] { } ) ) );
             AppManager.register( vsq.executeCommand( run ) );
             setEdited( true );
-        }
-
-        public void menuLyricSetAutoVibrato_Click( object sender, EventArgs e )
-        {
-            int size = AppManager.getSelectedEventCount();
-            if ( size != 1 ) {
-                return;
-            }
-
-            VsqEvent item = AppManager.getSelectedEventIterator().next().original;
-            if ( item.ID.VibratoHandle == null ) {
-                return;
-            }
-
-            AppManager.editorConfig.AutoVibratoCustom = (VibratoHandle)item.ID.VibratoHandle.clone();
-        }
-
-        public void menuLyric_DropDownOpening( object sender, EventArgs e )
-        {
-            int size = AppManager.getSelectedEventCount();
-            menuLyricSetAutoVibrato.setEnabled( (size == 1) );
         }
 
         public void menuLyricDictionary_Click( Object sender, EventArgs e )
@@ -15202,7 +15246,17 @@ namespace org.kbinani.cadencii
 
         public void stripBtnStepSequencer_CheckedChanged( object sender, EventArgs e )
         {
+            // AppManager.mAddingEventがnullかどうかで処理が変わるのでnullにする
+            AppManager.mAddingEvent = null;
+            // モードを切り替える
+            mStepSequencerEnabled = stripBtnStepSequencer.Checked;
 
+            // MIDIの受信を開始
+            if ( mStepSequencerEnabled ) {
+                mMidiIn.Start();
+            } else {
+                mMidiIn.Stop();
+            }
         }
 
         public void stripBtnStop_Click( Object sender, EventArgs e )
@@ -16329,17 +16383,19 @@ namespace org.kbinani.cadencii
         public void mMidiIn_MidiReceived( double time, byte[] data )
         {
 #if !JAVA
+#if DEBUG
+            PortUtil.println( "FormMain#mMidiIn_MidiReceived; time=" + time );
+#endif
             if ( data.Length <= 2 ) {
                 return;
             }
-            if ( !AppManager.isPlaying() ) {
+            if ( AppManager.isPlaying() ) {
+                return;
+            }
+            if ( !isStepSequencerEnabled() ) {
                 return;
             }
             int code = data[0] & 0xf0;
-#if DEBUG
-            AppManager.debugWriteLine( "FormMain#mMidiIn_MidiReceived" );
-            AppManager.debugWriteLine( "    code=0x" + Convert.ToString( code, 16 ) );
-#endif
             if ( code != 0x80 && code != 0x90 ) {
                 return;
             }
@@ -16356,7 +16412,7 @@ namespace org.kbinani.cadencii
             }
 
             if ( code == 0x80 ) {
-                if ( AppManager.mAddingEvent != null ) {
+                /*if ( AppManager.mAddingEvent != null ) {
                     int len = clock - AppManager.mAddingEvent.Clock;
                     if ( len <= 0 ) {
                         len = unit;
@@ -16370,24 +16426,62 @@ namespace org.kbinani.cadencii
                         setEdited( true );
                     }
                     updateDrawObjectList();
-                }
+                }*/
             } else if ( code == 0x90 ) {
-                AppManager.mAddingEvent = new VsqEvent( clock, new VsqID( 0 ) );
+                if ( AppManager.mAddingEvent != null ) {
+                    // mAddingEventがnullでない場合は打ち込みの試行中(未確定の音符がある)
+                    // であるので，ノートだけが変わるようにする
+                    clock = AppManager.mAddingEvent.Clock;
+                } else {
+                    AppManager.mAddingEvent = new VsqEvent();
+                }
+                AppManager.mAddingEvent.Clock = clock;
+                if ( AppManager.mAddingEvent.ID == null ) {
+                    AppManager.mAddingEvent.ID = new VsqID();
+                }
                 AppManager.mAddingEvent.ID.type = VsqIDType.Anote;
                 AppManager.mAddingEvent.ID.Dynamics = 64;
                 AppManager.mAddingEvent.ID.VibratoHandle = null;
-                AppManager.mAddingEvent.ID.LyricHandle = new LyricHandle( "a", "a" );
+                if ( AppManager.mAddingEvent.ID.LyricHandle == null ) {
+                    AppManager.mAddingEvent.ID.LyricHandle = new LyricHandle( "a", "a" );
+                }
+                AppManager.mAddingEvent.ID.LyricHandle.L0.Phrase = "a";
+                AppManager.mAddingEvent.ID.LyricHandle.L0.setPhoneticSymbol( "a" );
                 AppManager.mAddingEvent.ID.Note = note;
+
+                // 音符の長さを計算
+                int length = QuantizeModeUtil.getQuantizeClock(
+                        AppManager.editorConfig.getLengthQuantize(),
+                        AppManager.editorConfig.isLengthQuantizeTriplet() );
+
+                // 音符の長さを設定
+                Utility.editLengthOfVsqEvent(
+                    AppManager.mAddingEvent,
+                    length,
+                    AppManager.vibratoLengthEditingRule );
+
+                // 現在位置は，音符の末尾になる
+                AppManager.setCurrentClock( clock + length );
+
+                // 画面を再描画
+                if ( this.InvokeRequired ) {
+                    DelegateRefreshScreen deleg = null;
+                    try {
+                        deleg = new DelegateRefreshScreen( refreshScreen );
+                    } catch ( Exception ex4 ) {
+                        deleg = null;
+                    }
+                    if ( deleg != null ) {
+                        this.Invoke( deleg, true );
+                    }
+                } else {
+                    refreshScreen( true );
+                }
                 KeySoundPlayer.play( note );
             }
 #endif
         }
 #endif
-
-        public void menuTrackManager_Click( Object sender, EventArgs e )
-        {
-
-        }
         #endregion
 
         #region public static methods
@@ -16630,13 +16724,11 @@ namespace org.kbinani.cadencii
             this.menuTrackRendererAquesTone = new org.kbinani.windows.forms.BMenuItem();
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
             this.menuTrackBgm = new org.kbinani.windows.forms.BMenu();
-            this.menuTrackManager = new org.kbinani.windows.forms.BMenuItem();
             this.menuLyric = new org.kbinani.windows.forms.BMenuItem();
             this.menuLyricExpressionProperty = new org.kbinani.windows.forms.BMenuItem();
             this.menuLyricVibratoProperty = new org.kbinani.windows.forms.BMenuItem();
             this.menuLyricPhonemeTransformation = new org.kbinani.windows.forms.BMenuItem();
             this.menuLyricDictionary = new org.kbinani.windows.forms.BMenuItem();
-            this.menuLyricSetAutoVibrato = new org.kbinani.windows.forms.BMenuItem();
             this.menuScript = new org.kbinani.windows.forms.BMenuItem();
             this.menuScriptUpdate = new org.kbinani.windows.forms.BMenuItem();
             this.menuSetting = new org.kbinani.windows.forms.BMenuItem();
@@ -16650,7 +16742,6 @@ namespace org.kbinani.cadencii
             this.menuSettingUtauVoiceDB = new org.kbinani.windows.forms.BMenuItem();
             this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripSeparator();
             this.menuSettingDefaultSingerStyle = new org.kbinani.windows.forms.BMenuItem();
-            this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripSeparator();
             this.menuSettingPositionQuantize = new org.kbinani.windows.forms.BMenuItem();
             this.menuSettingPositionQuantize04 = new org.kbinani.windows.forms.BMenuItem();
             this.menuSettingPositionQuantize08 = new org.kbinani.windows.forms.BMenuItem();
@@ -17422,8 +17513,7 @@ namespace org.kbinani.cadencii
             this.menuTrackOverlay,
             this.menuTrackRenderer,
             this.toolStripMenuItem4,
-            this.menuTrackBgm,
-            this.menuTrackManager} );
+            this.menuTrackBgm} );
             this.menuTrack.Name = "menuTrack";
             this.menuTrack.Size = new System.Drawing.Size( 70, 22 );
             this.menuTrack.Text = "Track(&T)";
@@ -17552,20 +17642,13 @@ namespace org.kbinani.cadencii
             this.menuTrackBgm.Size = new System.Drawing.Size( 219, 22 );
             this.menuTrackBgm.Text = "BGM(&B)";
             // 
-            // menuTrackManager
-            // 
-            this.menuTrackManager.Name = "menuTrackManager";
-            this.menuTrackManager.Size = new System.Drawing.Size( 219, 22 );
-            this.menuTrackManager.Text = "Track Manager(&M)";
-            // 
             // menuLyric
             // 
             this.menuLyric.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
             this.menuLyricExpressionProperty,
             this.menuLyricVibratoProperty,
             this.menuLyricPhonemeTransformation,
-            this.menuLyricDictionary,
-            this.menuLyricSetAutoVibrato} );
+            this.menuLyricDictionary} );
             this.menuLyric.Name = "menuLyric";
             this.menuLyric.Size = new System.Drawing.Size( 70, 22 );
             this.menuLyric.Text = "Lyrics(&L)";
@@ -17573,32 +17656,26 @@ namespace org.kbinani.cadencii
             // menuLyricExpressionProperty
             // 
             this.menuLyricExpressionProperty.Name = "menuLyricExpressionProperty";
-            this.menuLyricExpressionProperty.Size = new System.Drawing.Size( 245, 22 );
+            this.menuLyricExpressionProperty.Size = new System.Drawing.Size( 241, 22 );
             this.menuLyricExpressionProperty.Text = "Note Expression Property(&E)";
             // 
             // menuLyricVibratoProperty
             // 
             this.menuLyricVibratoProperty.Name = "menuLyricVibratoProperty";
-            this.menuLyricVibratoProperty.Size = new System.Drawing.Size( 245, 22 );
+            this.menuLyricVibratoProperty.Size = new System.Drawing.Size( 241, 22 );
             this.menuLyricVibratoProperty.Text = "Note Vibrato Property(&V)";
             // 
             // menuLyricPhonemeTransformation
             // 
             this.menuLyricPhonemeTransformation.Name = "menuLyricPhonemeTransformation";
-            this.menuLyricPhonemeTransformation.Size = new System.Drawing.Size( 245, 22 );
+            this.menuLyricPhonemeTransformation.Size = new System.Drawing.Size( 241, 22 );
             this.menuLyricPhonemeTransformation.Text = "Phoneme Transformation(&T)";
             // 
             // menuLyricDictionary
             // 
             this.menuLyricDictionary.Name = "menuLyricDictionary";
-            this.menuLyricDictionary.Size = new System.Drawing.Size( 245, 22 );
+            this.menuLyricDictionary.Size = new System.Drawing.Size( 241, 22 );
             this.menuLyricDictionary.Text = "User Word Dictionary(&C)";
-            // 
-            // menuLyricSetAutoVibrato
-            // 
-            this.menuLyricSetAutoVibrato.Name = "menuLyricSetAutoVibrato";
-            this.menuLyricSetAutoVibrato.Size = new System.Drawing.Size( 245, 22 );
-            this.menuLyricSetAutoVibrato.Text = "Set this vibrato as default(&S)";
             // 
             // menuScript
             // 
@@ -17618,15 +17695,14 @@ namespace org.kbinani.cadencii
             // 
             this.menuSetting.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
             this.menuSettingPreference,
+            this.menuSettingPositionQuantize,
+            this.toolStripMenuItem8,
             this.menuSettingGameControler,
             this.menuSettingPaletteTool,
             this.menuSettingShortcut,
             this.menuSettingUtauVoiceDB,
             this.toolStripMenuItem6,
             this.menuSettingDefaultSingerStyle,
-            this.toolStripMenuItem7,
-            this.menuSettingPositionQuantize,
-            this.toolStripMenuItem8,
             this.menuSettingSingerProperty} );
             this.menuSetting.Name = "menuSetting";
             this.menuSetting.Size = new System.Drawing.Size( 80, 22 );
@@ -17651,19 +17727,19 @@ namespace org.kbinani.cadencii
             // menuSettingGameControlerSetting
             // 
             this.menuSettingGameControlerSetting.Name = "menuSettingGameControlerSetting";
-            this.menuSettingGameControlerSetting.Size = new System.Drawing.Size( 142, 22 );
+            this.menuSettingGameControlerSetting.Size = new System.Drawing.Size( 152, 22 );
             this.menuSettingGameControlerSetting.Text = "Setting(&S)";
             // 
             // menuSettingGameControlerLoad
             // 
             this.menuSettingGameControlerLoad.Name = "menuSettingGameControlerLoad";
-            this.menuSettingGameControlerLoad.Size = new System.Drawing.Size( 142, 22 );
+            this.menuSettingGameControlerLoad.Size = new System.Drawing.Size( 152, 22 );
             this.menuSettingGameControlerLoad.Text = "Load(&L)";
             // 
             // menuSettingGameControlerRemove
             // 
             this.menuSettingGameControlerRemove.Name = "menuSettingGameControlerRemove";
-            this.menuSettingGameControlerRemove.Size = new System.Drawing.Size( 142, 22 );
+            this.menuSettingGameControlerRemove.Size = new System.Drawing.Size( 152, 22 );
             this.menuSettingGameControlerRemove.Text = "Remove(&R)";
             // 
             // menuSettingPaletteTool
@@ -17695,11 +17771,6 @@ namespace org.kbinani.cadencii
             this.menuSettingDefaultSingerStyle.Size = new System.Drawing.Size( 223, 22 );
             this.menuSettingDefaultSingerStyle.Text = "Singing Style Defaults(&D)";
             // 
-            // toolStripMenuItem7
-            // 
-            this.toolStripMenuItem7.Name = "toolStripMenuItem7";
-            this.toolStripMenuItem7.Size = new System.Drawing.Size( 220, 6 );
-            // 
             // menuSettingPositionQuantize
             // 
             this.menuSettingPositionQuantize.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
@@ -17719,54 +17790,54 @@ namespace org.kbinani.cadencii
             // menuSettingPositionQuantize04
             // 
             this.menuSettingPositionQuantize04.Name = "menuSettingPositionQuantize04";
-            this.menuSettingPositionQuantize04.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingPositionQuantize04.Size = new System.Drawing.Size( 152, 22 );
             this.menuSettingPositionQuantize04.Text = "1/4";
             // 
             // menuSettingPositionQuantize08
             // 
             this.menuSettingPositionQuantize08.Name = "menuSettingPositionQuantize08";
-            this.menuSettingPositionQuantize08.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingPositionQuantize08.Size = new System.Drawing.Size( 152, 22 );
             this.menuSettingPositionQuantize08.Text = "1/8";
             // 
             // menuSettingPositionQuantize16
             // 
             this.menuSettingPositionQuantize16.Name = "menuSettingPositionQuantize16";
-            this.menuSettingPositionQuantize16.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingPositionQuantize16.Size = new System.Drawing.Size( 152, 22 );
             this.menuSettingPositionQuantize16.Text = "1/16";
             // 
             // menuSettingPositionQuantize32
             // 
             this.menuSettingPositionQuantize32.Name = "menuSettingPositionQuantize32";
-            this.menuSettingPositionQuantize32.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingPositionQuantize32.Size = new System.Drawing.Size( 152, 22 );
             this.menuSettingPositionQuantize32.Text = "1/32";
             // 
             // menuSettingPositionQuantize64
             // 
             this.menuSettingPositionQuantize64.Name = "menuSettingPositionQuantize64";
-            this.menuSettingPositionQuantize64.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingPositionQuantize64.Size = new System.Drawing.Size( 152, 22 );
             this.menuSettingPositionQuantize64.Text = "1/64";
             // 
             // menuSettingPositionQuantize128
             // 
             this.menuSettingPositionQuantize128.Name = "menuSettingPositionQuantize128";
-            this.menuSettingPositionQuantize128.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingPositionQuantize128.Size = new System.Drawing.Size( 152, 22 );
             this.menuSettingPositionQuantize128.Text = "1/128";
             // 
             // menuSettingPositionQuantizeOff
             // 
             this.menuSettingPositionQuantizeOff.Name = "menuSettingPositionQuantizeOff";
-            this.menuSettingPositionQuantizeOff.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingPositionQuantizeOff.Size = new System.Drawing.Size( 152, 22 );
             this.menuSettingPositionQuantizeOff.Text = "Off";
             // 
             // toolStripMenuItem9
             // 
             this.toolStripMenuItem9.Name = "toolStripMenuItem9";
-            this.toolStripMenuItem9.Size = new System.Drawing.Size( 110, 6 );
+            this.toolStripMenuItem9.Size = new System.Drawing.Size( 149, 6 );
             // 
             // menuSettingPositionQuantizeTriplet
             // 
             this.menuSettingPositionQuantizeTriplet.Name = "menuSettingPositionQuantizeTriplet";
-            this.menuSettingPositionQuantizeTriplet.Size = new System.Drawing.Size( 113, 22 );
+            this.menuSettingPositionQuantizeTriplet.Size = new System.Drawing.Size( 152, 22 );
             this.menuSettingPositionQuantizeTriplet.Text = "Triplet";
             // 
             // toolStripMenuItem8
@@ -19259,7 +19330,7 @@ namespace org.kbinani.cadencii
             this.toolBarTool.Location = new System.Drawing.Point( 11, 92 );
             this.toolBarTool.Name = "toolBarTool";
             this.toolBarTool.ShowToolTips = true;
-            this.toolBarTool.Size = new System.Drawing.Size( 944, 26 );
+            this.toolBarTool.Size = new System.Drawing.Size( 944, 40 );
             this.toolBarTool.TabIndex = 25;
             this.toolBarTool.TextAlign = System.Windows.Forms.ToolBarTextAlign.Right;
             this.toolBarTool.Wrappable = false;
@@ -19415,7 +19486,6 @@ namespace org.kbinani.cadencii
         public BMenuItem menuSettingPreference;
         public System.Windows.Forms.ToolStripSeparator toolStripMenuItem6;
         public BMenuItem menuSettingDefaultSingerStyle;
-        public System.Windows.Forms.ToolStripSeparator toolStripMenuItem7;
         public BMenuItem menuSettingPositionQuantize;
         public BMenuItem menuSettingPositionQuantize04;
         public BMenuItem menuSettingPositionQuantize08;
@@ -19648,7 +19718,7 @@ namespace org.kbinani.cadencii
         public System.Windows.Forms.ToolStripSeparator toolStripMenuItem4;
         public BMenu menuTrackBgm;
         public BMenuItem menuTrackRendererVCNT;
-        public BMenuItem menuTrackManager;
+        //public BMenuItem menuTrackManager;
         public BMenuItem cMenuTrackTabRendererStraight;
         public PictPianoRoll pictPianoRoll;
         public TrackSelector trackSelector;

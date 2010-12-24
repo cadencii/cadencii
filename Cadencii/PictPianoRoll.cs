@@ -57,7 +57,8 @@ namespace org.kbinani.cadencii {
         private readonly Color COLOR_LINE_LU = new Color( 106, 52, 255, 128 );
         private readonly Color COLOR_LINE_RD = new Color( 40, 47, 255, 204 );
         private readonly Color COLOR_R051G051B000 = new Color( 51, 51, 0 );
-        private readonly Color COLOR_A136R000G000B000 = new Color( 0, 0, 0, 136 );
+        private readonly Color COLOR_ADDING_NOTE_BORDER = new Color( 0, 0, 0, 136 );
+        private readonly Color COLOR_ADDING_NOTE_FILL = new Color( 255, 0, 0, 136 );
         
         private readonly Color COLOR_VOCALO2_BLACK = new Color( 212, 212, 212 );
         private readonly Color COLOR_VOCALO2_WHITE = new Color( 240, 240, 240 );
@@ -130,9 +131,23 @@ namespace org.kbinani.cadencii {
         /// 共用の折れ線描画プラクシー
         /// </summary>
         private PolylineDrawer mCommonPolylineDrawer = null;
+        /// <summary>
+        /// メイン画面への参照
+        /// </summary>
+        private FormMain mMainForm = null;
+
+        /// <summary>
+        /// メイン画面への参照を設定します
+        /// </summary>
+        /// <param name="form"></param>
+        public void setMainForm( FormMain form )
+        {
+            mMainForm = form;
+        }
 
 #if !JAVA
-        protected override void OnMouseDown( MouseEventArgs e ) {
+        protected override void OnMouseDown( MouseEventArgs e )
+        {
             base.OnMouseDown( e );
             this.Focus();
         }
@@ -230,6 +245,10 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="g1"></param>
         public void paint( Graphics g1 ) {
+            if ( mMainForm == null ) {
+                return;
+            }
+
             Graphics2D g = (Graphics2D)g1;
         
             int width = getWidth();
@@ -444,10 +463,6 @@ namespace org.kbinani.cadencii {
                             hilighted_note = i;
                         }
                     } else if ( edit_mode == EditMode.EDIT_LEFT_EDGE || edit_mode == EditMode.EDIT_RIGHT_EDGE ) {
-#if DEBUG
-                        //org.kbinani.debug.push_log( "(AppManager.LastSelectedEvent==null)=" + (AppManager.LastSelectedEvent == null) );
-                        //org.kbinani.debug.push_log( "(AppManager.LastSelectedEvent.Original==null)=" + (AppManager.LastSelectedEvent.Original == null) );
-#endif
                         if ( AppManager.getLastSelectedEvent().original.ID.Note == i ) { //TODO: ここでNullpointer exception
                             hilighted = true;
                             hilighted_note = i;
@@ -855,7 +870,8 @@ namespace org.kbinani.cadencii {
                     // 編集中のエントリを表示
                     if ( edit_mode == EditMode.ADD_ENTRY ||
                          edit_mode == EditMode.ADD_FIXED_LENGTH_ENTRY ||
-                         edit_mode == EditMode.DRAG_DROP ) {
+                         edit_mode == EditMode.DRAG_DROP ||
+                         mMainForm.isStepSequencerEnabled() ) {
                         if ( AppManager.mAddingEvent != null ) {
                             int x = (int)(AppManager.mAddingEvent.Clock * scalex + xoffset);
                             y = -AppManager.mAddingEvent.ID.Note * track_height + yoffset + 1;
@@ -869,15 +885,17 @@ namespace org.kbinani.cadencii {
                                 g.setColor( new Color( 171, 171, 171 ) );
                                 g.drawRect( x, y, 10, track_height - 1 );
                             } else {
-                                g.setColor( COLOR_A136R000G000B000 );
+                                g.setColor( COLOR_ADDING_NOTE_BORDER );
                                 g.drawRect( x, y, length, track_height - 1 );
+                                g.setColor( COLOR_ADDING_NOTE_FILL );
+                                g.fillRect( x, y, length, track_height - 1 );
                             }
                         }
                     } else if ( edit_mode == EditMode.EDIT_VIBRATO_DELAY ) {
                         int x = (int)(AppManager.mAddingEvent.Clock * scalex + xoffset);
                         y = -AppManager.mAddingEvent.ID.Note * track_height + yoffset + 1;
                         int length = (int)(AppManager.mAddingEvent.ID.getLength() * scalex);
-                        g.setColor( COLOR_A136R000G000B000 );
+                        g.setColor( COLOR_ADDING_NOTE_BORDER );
                         g.drawRect( x, y, length, track_height - 1 );
                     } else if ( (edit_mode == EditMode.MOVE_ENTRY ||
                                  edit_mode == EditMode.MOVE_ENTRY_WHOLE ||
@@ -897,7 +915,7 @@ namespace org.kbinani.cadencii {
                                 } else {
                                     length = (int)(ev.editing.ID.getLength() * scalex);
                                 }
-                                g.setColor( COLOR_A136R000G000B000 );
+                                g.setColor( COLOR_ADDING_NOTE_BORDER );
                                 g.drawRect( x, y, length, track_height - 1 );
                             } else {
                                 if ( ev.editing.ID.getLength() == 0 ) {
@@ -907,7 +925,7 @@ namespace org.kbinani.cadencii {
                                     g.setStroke( getStrokeDefault() );
                                 } else {
                                     int length = (int)(ev.editing.ID.getLength() * scalex);
-                                    g.setColor( COLOR_A136R000G000B000 );
+                                    g.setColor( COLOR_ADDING_NOTE_BORDER );
                                     g.drawRect( x, y, length, track_height - 1 );
                                 }
                             }

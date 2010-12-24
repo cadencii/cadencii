@@ -63,11 +63,27 @@ namespace org.kbinani.cadencii {
         public int DefaultPMbPortamentoUse = 3;
         public int DefaultDEMdecGainRate = 50;
         public int DefaultDEMaccent = 50;
+        /// <summary>
+        /// ピアノロール上に歌詞を表示するかどうか
+        /// </summary>
         public boolean ShowLyric = true;
+        /// <summary>
+        /// ピアノロール上に，ビブラートとアタックの概略を表す波線を表示するかどうか
+        /// </summary>
         public boolean ShowExpLine = true;
         public DefaultVibratoLengthEnum DefaultVibratoLength = DefaultVibratoLengthEnum.L66;
-        public int DefaultVibratoRate = 64;
-        public int DefaultVibratoDepth = 64;
+        /// <summary>
+        /// デフォルトビブラートのRate
+        /// バージョン3.3で廃止
+        /// </summary>
+        [Obsolete]
+        private int __revoked__DefaultVibratoRate = 64;
+        /// <summary>
+        /// デフォルトビブラートのDepth
+        /// バージョン3.3で廃止
+        /// </summary>
+        [Obsolete]
+        private int __revoked__DefaultVibratoDepth = 64;
         /// <summary>
         /// ビブラートの自動追加を行うかどうかを決める音符長さの閾値．単位はclock
         /// <version>3.3+</version>
@@ -82,17 +98,30 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public String AutoVibratoType2 = "$04040001";
         /// <summary>
+        /// カスタムのデフォルトビブラート設定
+        /// </summary>
+        public int AutoVibratoTypeCustom = 0;
+        /// <summary>
         /// ユーザー定義のビブラート設定．
         /// <version>3.3+</version>
         /// </summary>
-        public VibratoHandle AutoVibratoCustom = new VibratoHandle();
+        public Vector<VibratoHandle> AutoVibratoCustom = new Vector<VibratoHandle>();
+        /// <summary>
+        /// ビブラートの自動追加を行うかどうか
+        /// </summary>
         public boolean EnableAutoVibrato = true;
+        /// <summary>
+        /// ピアノロール上での，音符の表示高さ(ピクセル)
+        /// </summary>
         public int PxTrackHeight = 14;
         public int MouseDragIncrement = 50;
         public int MouseDragMaximumRate = 600;
         public boolean MixerVisible = false;
         public int PreSendTime = 500;
         public ClockResolution ControlCurveResolution = ClockResolution.L30;
+        /// <summary>
+        /// 言語設定
+        /// </summary>
         public String Language = "";
         /// <summary>
         /// マウスの操作などの許容範囲。プリメジャーにPxToleranceピクセルめり込んだ入力を行っても、エラーにならない。(補正はされる)
@@ -762,12 +791,21 @@ namespace org.kbinani.cadencii {
         public VibratoHandle createAutoVibrato( SynthesizerType type, int vibrato_clocks ) {
             if ( UseUserDefinedAutoVibratoType ) {
                 if ( AutoVibratoCustom == null ) {
-                    AutoVibratoCustom = new VibratoHandle();
+                    AutoVibratoCustom = new Vector<VibratoHandle>();
                 }
-                VibratoHandle ret = (VibratoHandle)AutoVibratoCustom.clone();
-                ret.IconID = "$04040001";
-                ret.setStartDepth( DefaultVibratoDepth );
-                ret.setStartRate( DefaultVibratoRate );
+
+                int index = this.AutoVibratoTypeCustom;
+                VibratoHandle ret = null;
+                if ( 0 <= index && index < this.AutoVibratoCustom.size() ) {
+                    ret = this.AutoVibratoCustom.get( index );
+                    if ( ret != null ) {
+                        ret = (VibratoHandle)ret.clone();
+                    }
+                }
+                if ( ret == null ) {
+                    ret = new VibratoHandle();
+                }
+                ret.IconID = "$0404" + PortUtil.toHexString( index + 1, 4 );
                 ret.setLength( vibrato_clocks );
                 return ret;
             } else {

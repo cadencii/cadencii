@@ -189,9 +189,10 @@ namespace org.kbinani.cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
+            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewItem listViewItem2 = new System.Windows.Forms.ListViewItem( "DEFAULT_JP" );
+            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem( "DEFAULT_JP" );
             this.listDictionaries = new org.kbinani.windows.forms.BListView();
             this.lblAvailableDictionaries = new org.kbinani.windows.forms.BLabel();
             this.btnOK = new org.kbinani.windows.forms.BButton();
@@ -206,17 +207,20 @@ namespace org.kbinani.cadencii {
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.listDictionaries.CheckBoxes = true;
+            listViewGroup1.Header = "ListViewGroup";
+            listViewGroup2.Header = "ListViewGroup";
+            listViewGroup2.Name = null;
             listViewGroup3.Header = "ListViewGroup";
-            listViewGroup4.Header = "ListViewGroup";
-            listViewGroup4.Name = null;
+            listViewGroup3.Name = null;
             this.listDictionaries.Groups.AddRange( new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup3,
-            listViewGroup4} );
-            listViewItem2.Checked = true;
-            listViewItem2.Group = listViewGroup4;
-            listViewItem2.StateImageIndex = 1;
+            listViewGroup1,
+            listViewGroup2,
+            listViewGroup3} );
+            listViewItem1.Checked = true;
+            listViewItem1.Group = listViewGroup3;
+            listViewItem1.StateImageIndex = 1;
             this.listDictionaries.Items.AddRange( new System.Windows.Forms.ListViewItem[] {
-            listViewItem2} );
+            listViewItem1} );
             this.listDictionaries.Location = new System.Drawing.Point( 12, 33 );
             this.listDictionaries.Name = "listDictionaries";
             this.listDictionaries.Size = new System.Drawing.Size( 248, 186 );
