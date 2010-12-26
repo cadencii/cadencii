@@ -343,6 +343,9 @@
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormVibratoPreset.resx">
+      <DependentUpon>FormVibratoPreset.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Preference.resx">
       <DependentUpon>Preference.cs</DependentUpon>
     </EmbeddedResource>

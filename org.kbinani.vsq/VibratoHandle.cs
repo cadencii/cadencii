@@ -18,21 +18,24 @@ import java.io.*;
 #else
 using System;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
 #endif
 
 #if JAVA
     public class VibratoHandle extends IconParameter implements Cloneable, Serializable {
 #else
     [Serializable]
-    public class VibratoHandle : IconParameter, ICloneable {
+    public class VibratoHandle : IconParameter, ICloneable
+    {
 #endif
         public int Index;
         public String IconID = "";
         public String IDS = "";
         public int Original;
 
-        public VibratoHandle() {
+        public VibratoHandle()
+        {
             startRate = 64;
             startDepth = 64;
             rateBP = new VibratoBPList();
@@ -45,7 +48,7 @@ namespace org.kbinani.vsq {
 #else
             :
 #endif
-            base( aic_file )
+ base( aic_file )
 #if JAVA
             ;
 #else
@@ -64,15 +67,17 @@ namespace org.kbinani.vsq {
         /// <param name="clock_start"></param>
         /// <param name="vsq"></param>
         /// <returns></returns>
-        public double calculatePitchbend( int clock, int clock_start, int clock_length, VsqFile vsq ) {
-            return calculatePitchbendCor( this.startRate, this.rateBP, 
+        public double calculatePitchbend( int clock, int clock_start, int clock_length, VsqFile vsq )
+        {
+            return calculatePitchbendCor( this.startRate, this.rateBP,
                                           this.startDepth, this.depthBP,
                                           clock, clock_start, clock_length, vsq );
         }
 
         public static double calculatePitchbendCor( int start_rate, VibratoBPList rateBP,
                                                     int start_depth, VibratoBPList depthBP,
-                                                    int clock, int clock_start, int clock_length, VsqFile vsq ) {
+                                                    int clock, int clock_start, int clock_length, VsqFile vsq )
+        {
             if ( rateBP == null && depthBP == null ) {
                 return 0.0;
             }
@@ -119,7 +124,7 @@ namespace org.kbinani.vsq {
                         // 両方インクリメント
                         index_depth++;
                         index_rate++;
-                    }else if ( nextx_depth < nextx_rate ) {
+                    } else if ( nextx_depth < nextx_rate ) {
                         // depthだけの方をインクリメント
                         index_depth++;
                     } else {
@@ -163,29 +168,35 @@ namespace org.kbinani.vsq {
             return amp * Math.Sin( phase );
         }
 
-        public String toString() {
+        public String toString()
+        {
             return getDisplayString();
         }
 
 #if !JAVA
-        public override string ToString() {
+        public override string ToString()
+        {
             return toString();
         }
 #endif
 
-        public VibratoBPList getRateBP() {
+        public VibratoBPList getRateBP()
+        {
             return rateBP;
         }
 
-        public void setRateBP( VibratoBPList value ) {
+        public void setRateBP( VibratoBPList value )
+        {
             rateBP = value;
         }
 
-        public String getCaption() {
+        public String getCaption()
+        {
             return caption;
         }
 
-        public void setCaption( String value ) {
+        public void setCaption( String value )
+        {
             caption = value;
         }
 
@@ -193,11 +204,14 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
-        public String Caption{
-            get{
+        public String Caption
+        {
+            get
+            {
                 return getCaption();
             }
-            set{
+            set
+            {
                 setCaption( value );
             }
         }
@@ -207,21 +221,26 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
-        public VibratoBPList RateBP{
-            get{
+        public VibratoBPList RateBP
+        {
+            get
+            {
                 return getRateBP();
             }
-            set{
+            set
+            {
                 setRateBP( value );
             }
         }
 #endif
 
-        public int getStartRate() {
+        public int getStartRate()
+        {
             return startRate;
         }
 
-        public void setStartRate( int value ) {
+        public void setStartRate( int value )
+        {
             startRate = value;
         }
 
@@ -229,21 +248,26 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
-        public int StartRate{
-            get{
+        public int StartRate
+        {
+            get
+            {
                 return getStartRate();
             }
-            set{
+            set
+            {
                 setStartRate( value );
             }
         }
 #endif
 
-        public VibratoBPList getDepthBP() {
+        public VibratoBPList getDepthBP()
+        {
             return depthBP;
         }
 
-        public void setDepthBP( VibratoBPList value ) {
+        public void setDepthBP( VibratoBPList value )
+        {
             depthBP = value;
         }
 
@@ -251,21 +275,26 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
-        public VibratoBPList DepthBP{
-            get{
+        public VibratoBPList DepthBP
+        {
+            get
+            {
                 return getDepthBP();
             }
-            set{
+            set
+            {
                 setDepthBP( value );
             }
         }
 #endif
 
-        public int getStartDepth() {
+        public int getStartDepth()
+        {
             return startDepth;
         }
 
-        public void setStartDepth( int value ) {
+        public void setStartDepth( int value )
+        {
             startDepth = value;
         }
 
@@ -273,21 +302,26 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
-        public int StartDepth{
-            get{
+        public int StartDepth
+        {
+            get
+            {
                 return getStartDepth();
             }
-            set{
+            set
+            {
                 setStartDepth( value );
             }
         }
 #endif
 
-        public int getLength() {
+        public int getLength()
+        {
             return length;
         }
 
-        public void setLength( int value ) {
+        public void setLength( int value )
+        {
             length = value;
         }
 
@@ -295,27 +329,33 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
-        public int Length{
-            get{
+        public int Length
+        {
+            get
+            {
                 return getLength();
             }
-            set{
+            set
+            {
                 setLength( value );
             }
         }
 #endif
 
-        public String getDisplayString() {
+        public String getDisplayString()
+        {
             return caption;
         }
 
 #if !JAVA
-        public object Clone() {
+        public object Clone()
+        {
             return clone();
         }
 #endif
 
-        public Object clone() {
+        public Object clone()
+        {
             VibratoHandle result = new VibratoHandle();
             result.Index = Index;
             result.IconID = IconID;
@@ -334,7 +374,8 @@ namespace org.kbinani.vsq {
             return result;
         }
 
-        public VsqHandle castToVsqHandle() {
+        public VsqHandle castToVsqHandle()
+        {
             VsqHandle ret = new VsqHandle();
             ret.m_type = VsqHandleType.Vibrato;
             ret.Index = Index;

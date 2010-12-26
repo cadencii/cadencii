@@ -14,10 +14,12 @@
 #if JAVA
 package org.kbinani.vsq;
 #else
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
 #endif
 
-    public enum SynthesizerType {
+    public enum SynthesizerType
+    {
         VOCALOID1,
         VOCALOID2,
     }

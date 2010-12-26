@@ -29,7 +29,8 @@ using org.kbinani;
 using org.kbinani.java.util;
 using org.kbinani.windows.forms;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
 #endif
@@ -37,17 +38,27 @@ namespace org.kbinani.cadencii {
 #if JAVA
     public class FormVibratoConfig extends BDialog{
 #else
-    public class FormVibratoConfig : BDialog {
+    public class FormVibratoConfig : BDialog
+    {
 #endif
         private VibratoHandle m_vibrato;
         private int m_note_length;
         private SynthesizerType m_synthesizer_type;
+        /// <summary>
+        /// ユーザー定義のプリセットビブラートを使うかどうか
+        /// </summary>
+        private boolean mUseOriginal = false;
 
         /// <summary>
         /// コンストラクタ．引数vibrato_handleには，Cloneしたものを渡さなくてよい．
         /// </summary>
         /// <param name="vibrato_handle"></param>
-        public FormVibratoConfig( VibratoHandle vibrato_handle, int note_length, DefaultVibratoLengthEnum default_vibrato_length, SynthesizerType type ) {
+        /// <param name="note_length"></param>
+        /// <param name="default_vibrato_length"></param>
+        /// <param name="type"></param>
+        /// <param name="use_original"></param>
+        public FormVibratoConfig( VibratoHandle vibrato_handle, int note_length, DefaultVibratoLengthEnum default_vibrato_length, SynthesizerType type, boolean use_original )
+        {
 #if JAVA
             super();
             initialize();
@@ -61,6 +72,7 @@ namespace org.kbinani.cadencii {
             PortUtil.println( "    type=" + type );
 #endif
             m_synthesizer_type = type;
+            mUseOriginal = use_original;
             if ( vibrato_handle != null ) {
                 m_vibrato = (VibratoHandle)vibrato_handle.clone();
             }
@@ -75,14 +87,23 @@ namespace org.kbinani.cadencii {
             empty.IconID = "$04040000";
             comboVibratoType.addItem( empty );
             comboVibratoType.setSelectedItem( empty );
-            int count = 0;
-            for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( m_synthesizer_type ); itr.hasNext(); ) {
-                VibratoHandle vconfig = itr.next();
-                comboVibratoType.addItem( vconfig );
-                count++;
-                if ( vibrato_handle != null ) {
-                    if ( vibrato_handle.IconID.Equals( vconfig.IconID ) ) {
-                        comboVibratoType.setSelectedItem( vconfig );
+            if ( use_original ) {
+                int size = AppManager.editorConfig.AutoVibratoCustom.size();
+                for ( int i = 0; i < size; i++ ) {
+                    VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
+                    comboVibratoType.addItem( handle );
+                    if ( vibrato_handle.IconID.Equals( handle.IconID ) ) {
+                        comboVibratoType.setSelectedItem( handle );
+                    }
+                }
+            } else {
+                for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( m_synthesizer_type ); itr.hasNext(); ) {
+                    VibratoHandle vconfig = itr.next();
+                    comboVibratoType.addItem( vconfig );
+                    if ( vibrato_handle != null ) {
+                        if ( vibrato_handle.IconID.Equals( vconfig.IconID ) ) {
+                            comboVibratoType.setSelectedItem( vconfig );
+                        }
                     }
                 }
             }
@@ -112,7 +133,8 @@ namespace org.kbinani.cadencii {
         }
 
         #region public methods
-        public void applyLanguage() {
+        public void applyLanguage()
+        {
             setTitle( _( "Vibrato property" ) );
             lblVibratoLength.setText( _( "Vibrato length" ) + "(&L)" );
             lblVibratoType.setText( _( "Vibrato Type" ) + "(&T)" );
@@ -123,31 +145,37 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 編集済みのビブラート設定．既にCloneされているので，改めてCloneしなくて良い
         /// </summary>
-        public VibratoHandle getVibratoHandle() {
+        public VibratoHandle getVibratoHandle()
+        {
             return m_vibrato;
         }
         #endregion
 
         #region helper methods
-        private static String _( String id ) {
+        private static String _( String id )
+        {
             return Messaging.getMessage( id );
         }
 
-        private void registerEventHandlers() {
+        private void registerEventHandlers()
+        {
             btnOK.Click += new EventHandler( btnOK_Click );
             btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
-        private void setResources() {
+        private void setResources()
+        {
         }
         #endregion
 
         #region event handlers
-        public void btnOK_Click( Object sender, BEventArgs e ) {
+        public void btnOK_Click( Object sender, BEventArgs e )
+        {
             setDialogResult( BDialogResult.OK );
         }
 
-        public void comboVibratoType_SelectedIndexChanged( Object sender, BEventArgs e ) {
+        public void comboVibratoType_SelectedIndexChanged( Object sender, BEventArgs e )
+        {
             int index = comboVibratoType.getSelectedIndex();
             if ( index >= 0 ) {
                 String s = ((VibratoHandle)comboVibratoType.getItemAt( index )).IconID;
@@ -157,25 +185,42 @@ namespace org.kbinani.cadencii {
                     return;
                 } else {
                     txtVibratoLength.setEnabled( true );
-                    for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( m_synthesizer_type ); itr.hasNext(); ) {
-                        VibratoHandle vconfig = itr.next();
-                        if ( s.Equals( vconfig.IconID ) ) {
-                            int percent;
-                            try {
-                                percent = PortUtil.parseInt( txtVibratoLength.getText() );
-                            } catch ( Exception ex ) {
-                                return;
+                    VibratoHandle src = null;
+                    if ( mUseOriginal ) {
+                        int size = AppManager.editorConfig.AutoVibratoCustom.size();
+                        for ( int i = 0; i < size; i++ ) {
+                            VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
+                            if ( s.Equals( handle.IconID ) ) {
+                                src = handle;
+                                break;
                             }
-                            m_vibrato = (VibratoHandle)vconfig.clone();
-                            m_vibrato.setLength( (int)(m_note_length * percent / 100.0f) );
+                        }
+                    } else {
+                        for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( m_synthesizer_type ); itr.hasNext(); ) {
+                            VibratoHandle vconfig = itr.next();
+                            if ( s.Equals( vconfig.IconID ) ) {
+                                src = vconfig;
+                                break;
+                            }
+                        }
+                    }
+                    if ( src != null ) {
+                        int percent;
+                        try {
+                            percent = PortUtil.parseInt( txtVibratoLength.getText() );
+                        } catch ( Exception ex ) {
                             return;
                         }
+                        m_vibrato = (VibratoHandle)src.clone();
+                        m_vibrato.setLength( (int)(m_note_length * percent / 100.0f) );
+                        return;
                     }
                 }
             }
         }
 
-        public void txtVibratoLength_TextChanged( Object sender, BEventArgs e ) {
+        public void txtVibratoLength_TextChanged( Object sender, BEventArgs e )
+        {
 #if DEBUG
             AppManager.debugWriteLine( "txtVibratoLength_TextChanged" );
             AppManager.debugWriteLine( "    (m_vibrato==null)=" + (m_vibrato == null) );
@@ -202,7 +247,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e ) {
+        public void btnCancel_Click( Object sender, BEventArgs e )
+        {
             setDialogResult( BDialogResult.CANCEL );
         }
         #endregion
@@ -223,7 +269,8 @@ namespace org.kbinani.cadencii {
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing ) {
+        protected override void Dispose( boolean disposing )
+        {
             if ( disposing && (components != null) ) {
                 components.Dispose();
             }
@@ -236,7 +283,8 @@ namespace org.kbinani.cadencii {
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
         /// コード エディタで変更しないでください。
         /// </summary>
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             this.lblVibratoLength = new BLabel();
             this.lblVibratoType = new BLabel();
             this.txtVibratoLength = new org.kbinani.cadencii.NumberTextBox();

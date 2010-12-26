@@ -36,22 +36,66 @@ namespace org.kbinani.cadencii
 #endif
 
 #if JAVA
-    public class FormVibratoPreset extends BDialog{
+    public class FormVibratoPreset extends BDialog
 #else
     public class FormVibratoPreset : BDialog
-    {
 #endif
-        private BListView listDictionaries;
-        private org.kbinani.windows.forms.BButton btnRemove;
-        private org.kbinani.windows.forms.BButton btnAdd;
-        private org.kbinani.windows.forms.BButton btnUp;
-        private org.kbinani.windows.forms.BButton btnDown;
+    {
+        /// <summary>
+        /// プレビューの各グラフにおいて，上下に追加するマージンの高さ(ピクセル)
+        /// </summary>
+        private const int MARGIN = 3;
+
+        /// <summary>
+        /// AppManager.editorConfig.AutoVibratoCustomからコピーしてきた，
+        /// ビブラートハンドルのリスト
+        /// </summary>
+        private Vector<VibratoHandle> mHandles;
+        /// <summary>
+        /// 選択状態のビブラートハンドル
+        /// </summary>
+        private VibratoHandle mSelected = null;
+        /// <summary>
+        /// Rateカーブを描画するのに使う描画器
+        /// </summary>
+        private LineGraphDrawer mDrawerRate = null;
+        /// <summary>
+        /// Depthカーブを描画するのに使う描画器
+        /// </summary>
+        private LineGraphDrawer mDrawerDepth = null;
+        /// <summary>
+        /// 結果として得られるピッチベンドカーブを描画するのに使う描画器
+        /// </summary>
+        private LineGraphDrawer mDrawerResulting = null;
+
+        private org.kbinani.windows.forms.BButton buttonRemove;
+        private org.kbinani.windows.forms.BButton buttonAdd;
+        private org.kbinani.windows.forms.BButton buttonUp;
+        private org.kbinani.windows.forms.BLabel labelRate;
+        private org.kbinani.windows.forms.BLabel labelDepth;
+        private NumberTextBox textRate;
+        private NumberTextBox textDepth;
+        private BLabel labelPresets;
+        private BPictureBox pictureRate;
+        private BLabel labelRateCurve;
+        private BLabel labelDepthCurve;
+        private BPictureBox pictureDepth;
+        private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.SplitContainer splitContainer2;
+        private BLabel labelResulting;
+        private BPictureBox pictureResulting;
+        private BGroupBox groupEdit;
+        private BLabel labelName;
+        private BTextBox textName;
+        private BGroupBox groupPreview;
+        private System.Windows.Forms.ListBox listPresets;
+        private org.kbinani.windows.forms.BButton buttonDown;
 
         /// <summary>
         /// コンストラクタ．
         /// </summary>
-        /// <param name="vibrato_handle"></param>
-        public FormVibratoPreset()
+        /// <param name="handles"></param>
+        public FormVibratoPreset( Vector<VibratoHandle> handles )
         {
 #if JAVA
             super();
@@ -59,8 +103,429 @@ namespace org.kbinani.cadencii
 #else
             InitializeComponent();
 #endif
+            registerEventHandlers();
 
+            // ハンドルのリストをクローン
+            mHandles = new Vector<VibratoHandle>();
+            int size = handles.size();
+            for ( int i = 0; i < size; i++ ) {
+                mHandles.add( (VibratoHandle)handles.get( i ).clone() );
+            }
+
+            // 表示状態を更新
+            updateStatus();
+            if ( size > 0 ) {
+                listPresets.SelectedIndex = 0;
+            }
         }
+
+        #region public methods
+        /// <summary>
+        /// ダイアログによる設定結果を取得します
+        /// </summary>
+        /// <returns></returns>
+        public Vector<VibratoHandle> getResult()
+        {
+            // iconIDを整える
+            if ( mHandles == null ) {
+                mHandles = new Vector<VibratoHandle>();
+            }
+            int size = mHandles.size();
+            for ( int i = 0; i < size; i++ ) {
+                mHandles.get( i ).IconID = "$0404" + PortUtil.toHexString( i + 1, 4 );
+            }
+            return mHandles;
+        }
+        #endregion
+
+        #region event handlers
+        void listPresets_SelectedIndexChanged( object sender, EventArgs e )
+        {
+            // インデックスを取得
+            int index = listPresets.SelectedIndex;
+
+            // 範囲外ならbailout
+            if ( (index < 0) || (mHandles.size() <= index) ) {
+                mSelected = null;
+                return;
+            }
+
+            // イベントハンドラを一時的に取り除く
+            textDepth.TextChanged -= textDepth_TextChanged;
+            textRate.TextChanged -= textRate_TextChanged;
+            textName.TextChanged -= textName_TextChanged;
+
+            // テクストボックスに値を反映
+            mSelected = mHandles.get( index );
+            textDepth.setText( mSelected.getStartDepth() + "" );
+            textRate.setText( mSelected.getStartRate() + "" );
+            textName.setText( mSelected.getCaption() );
+
+            // イベントハンドラを再登録
+            textDepth.TextChanged += textDepth_TextChanged;
+            textRate.TextChanged += textRate_TextChanged;
+            textName.TextChanged += textName_TextChanged;
+
+            // 再描画
+            repaintPictures();
+        }
+
+        void textName_TextChanged( object sender, EventArgs e )
+        {
+            if ( mSelected == null ) {
+                return;
+            }
+
+            mSelected.setCaption( textName.getText() );
+            updateStatus();
+        }
+
+        void textRate_TextChanged( object sender, EventArgs e )
+        {
+            if ( mSelected == null ) {
+                return;
+            }
+
+            int old = mSelected.getStartRate();
+            int value = old;
+            try {
+                value = PortUtil.parseInt( textRate.getText() );
+            } catch ( Exception ex ) {
+                value = old;
+            }
+            if ( value < 0 ) {
+                value = 0;
+            }
+            if ( 127 < value ) {
+                value = 127;
+            }
+            mSelected.setStartRate( value );
+            textRate.setText( value + "" );
+
+            repaintPictures();
+        }
+
+        void textDepth_TextChanged( object sender, EventArgs e )
+        {
+            if ( mSelected == null ) {
+                return;
+            }
+
+            int old = mSelected.getStartDepth();
+            int value = old;
+            try {
+                value = PortUtil.parseInt( textDepth.getText() );
+            } catch ( Exception ex ) {
+                value = old;
+            }
+            if ( value < 0 ) {
+                value = 0;
+            }
+            if ( 127 < value ) {
+                value = 127;
+            }
+            mSelected.setStartDepth( value );
+            textDepth.setText( value + "" );
+
+            repaintPictures();
+        }
+
+        void buttonAdd_Click( object sender, EventArgs e )
+        {
+            // 追加し，
+            VibratoHandle handle = new VibratoHandle();
+            handle.setCaption( "No-Name" );
+            mHandles.add( handle );
+            listPresets.SelectedIndices.Clear();
+            // 表示反映させて
+            updateStatus();
+            // 追加したのを選択状態にする
+            listPresets.SelectedIndex = mHandles.size() - 1;
+        }
+
+        void buttonRemove_Click( object sender, EventArgs e )
+        {
+            int index = listPresets.SelectedIndex;
+            if ( index < 0 || listPresets.Items.Count <= index ) {
+                return;
+            }
+
+            mHandles.removeElementAt( index );
+            updateStatus();
+        }
+
+        void handleUpDownButtonClick( object sender, EventArgs e )
+        {
+            // 送信元のボタンによって，選択インデックスの増分を変える
+            int delta = 1;
+            if ( sender == buttonUp ) {
+                delta = -1;
+            }
+
+            // 移動後のインデックスは？
+            int index = listPresets.SelectedIndex;
+            int move_to = index + delta;
+
+            // 範囲内かどうか
+            if ( index < 0 ) {
+                return;
+            }
+            if ( move_to < 0 || mHandles.size() <= move_to ) {
+                // 範囲外なら何もしない
+                return;
+            }
+
+            // 入れ替える
+            VibratoHandle buff = mHandles.get( index );
+            mHandles.set( index, mHandles.get( move_to ) );
+            mHandles.set( move_to, buff );
+
+            // 選択状態を変える
+            listPresets.SelectedIndices.Clear();
+            updateStatus();
+            listPresets.SelectedIndex = move_to;
+        }
+
+        void pictureResulting_Paint( object sender, System.Windows.Forms.PaintEventArgs e )
+        {
+            // 背景を描画
+            int raw_width = pictureResulting.getWidth();
+            int raw_height = pictureResulting.getHeight();
+            System.Drawing.Graphics g = e.Graphics;
+            g.FillRectangle( System.Drawing.Brushes.LightGray, 0, 0, raw_width, raw_height );
+
+            // 選択中のハンドルを取得
+            VibratoHandle handle = mSelected;
+            if ( handle == null ) {
+                return;
+            }
+
+            // 描画の準備
+            LineGraphDrawer d = getDrawerResulting();
+            d.setGraphics( g );
+
+            // ビブラートのピッチベンドを取得するイテレータを取得
+            int width = raw_width;
+            VsqFileEx vsq = new VsqFileEx( "Miku", 1, 4, 4, 1000000 );
+            VibratoBPList list_rate = handle.getRateBP();
+            VibratoBPList list_depth = handle.getDepthBP();
+            if ( list_rate == null ) {
+                list_rate = new VibratoBPList();
+            }
+            if ( list_depth == null ) {
+                list_depth = new VibratoBPList();
+            }
+            VibratoPointIteratorByClock itr =
+                new VibratoPointIteratorByClock(
+                    vsq,
+                    list_rate, handle.getStartRate(),
+                    list_depth, handle.getStartDepth(),
+                    0, width );
+
+            // 描画
+            int height = raw_height - MARGIN * 2;
+            d.clear();
+            int x = 0;
+            for ( ; itr.hasNext(); x++ ) {
+                double pitch = itr.next();
+                int y = height - (int)((pitch + 1.25) / 2.5 * height) + MARGIN - 1;
+                d.append( x, y );
+            }
+            d.flush();
+        }
+
+        void pictureRate_Paint( object sender, System.Windows.Forms.PaintEventArgs e )
+        {
+            // 背景を描画
+            int width = pictureRate.getWidth();
+            int height = pictureRate.getHeight();
+            System.Drawing.Graphics g = e.Graphics;
+            g.FillRectangle( System.Drawing.Brushes.LightGray, 0, 0, width, height );
+
+            // 選択中のハンドルを取得
+            VibratoHandle handle = mSelected;
+            if( handle == null ) {
+                return;
+            }
+
+            // 描画の準備
+            LineGraphDrawer d = getDrawerRate();
+            d.clear();
+            d.setGraphics( g );
+            drawVibratoCurve( 
+                handle.getRateBP(), 
+                handle.getStartRate(),
+                d, 
+                width, height );
+        }
+
+        void pictureDepth_Paint( object sender, System.Windows.Forms.PaintEventArgs e )
+        {
+            // 背景を描画
+            int width = pictureDepth.getWidth();
+            int height = pictureDepth.getHeight();
+            System.Drawing.Graphics g = e.Graphics;
+            g.FillRectangle( System.Drawing.Brushes.LightGray, 0, 0, width, height );
+
+            // 選択中のハンドルを取得
+            VibratoHandle handle = mSelected;
+            if ( handle == null ) {
+                return;
+            }
+
+            // 描画の準備
+            LineGraphDrawer d = getDrawerDepth();
+            d.clear();
+            d.setGraphics( g );
+            drawVibratoCurve( 
+                handle.getDepthBP(),
+                handle.getStartDepth(), 
+                d, 
+                width, height );
+        }
+
+        #endregion
+
+        #region helper methods
+        /// <summary>
+        /// イベントハンドラを登録します
+        /// </summary>
+        private void registerEventHandlers()
+        {
+            listPresets.SelectedIndexChanged += new EventHandler( listPresets_SelectedIndexChanged );
+            textDepth.TextChanged += new EventHandler( textDepth_TextChanged );
+            textRate.TextChanged += new EventHandler( textRate_TextChanged );
+            textName.TextChanged += new EventHandler( textName_TextChanged );
+            buttonAdd.Click += new EventHandler( buttonAdd_Click );
+            buttonRemove.Click += new EventHandler( buttonRemove_Click );
+            buttonUp.Click += new EventHandler( handleUpDownButtonClick );
+            buttonDown.Click += new EventHandler( handleUpDownButtonClick );
+
+            pictureDepth.Paint += new System.Windows.Forms.PaintEventHandler( pictureDepth_Paint );
+            pictureRate.Paint += new System.Windows.Forms.PaintEventHandler( pictureRate_Paint );
+            pictureResulting.Paint += new System.Windows.Forms.PaintEventHandler( pictureResulting_Paint );
+        }
+
+        private void repaintPictures()
+        {
+            pictureDepth.repaint();
+            pictureRate.repaint();
+            pictureResulting.repaint();
+        }
+
+        /// <summary>
+        /// ビブラートのRateまたはDepthカーブを指定したサイズで描画します
+        /// </summary>
+        /// <param name="list">描画するカーブ</param>
+        /// <param name="start_value"></param>
+        /// <param name="drawer"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        private void drawVibratoCurve( VibratoBPList list, int start_value, LineGraphDrawer drawer, int width, int height )
+        {
+            int size = 0;
+            if ( list != null ) {
+                size = list.getCount();
+            }
+            drawer.clear();
+            drawer.setBaseLineY( height );
+            int iy0 = height - (int)(start_value / 127.0 * height);
+            drawer.append( 0, iy0 );
+            int lasty = iy0;
+            for ( int i = 0; i < size; i++ ) {
+                VibratoBPPair p = list.getElement( i );
+                int ix = (int)(p.X * width);
+                int iy = height - (int)(p.Y / 127.0 * height);
+                drawer.append( ix, iy );
+                lasty = iy;
+            }
+            drawer.append( width + drawer.getDotSize() * 2, lasty );
+            drawer.flush();
+        }
+
+        /// <summary>
+        /// Rateカーブを描画するのに使う描画器を取得します
+        /// </summary>
+        /// <returns></returns>
+        private LineGraphDrawer getDrawerRate()
+        {
+            if ( mDrawerRate == null ) {
+                mDrawerRate = new LineGraphDrawer( LineGraphDrawer.TYPE_STEP );
+                mDrawerRate.setDotMode( LineGraphDrawer.DOTMODE_ALWAYS );
+                mDrawerRate.setFillColor( PortUtil.CornflowerBlue );
+            }
+            return mDrawerRate;
+        }
+
+        /// <summary>
+        /// Depthカーブを描画するのに使う描画器を取得します
+        /// </summary>
+        /// <returns></returns>
+        private LineGraphDrawer getDrawerDepth()
+        {
+            if ( mDrawerDepth == null ) {
+                mDrawerDepth = new LineGraphDrawer( LineGraphDrawer.TYPE_STEP );
+                mDrawerDepth.setDotMode( LineGraphDrawer.DOTMODE_ALWAYS );
+                mDrawerDepth.setFillColor( PortUtil.CornflowerBlue );
+            }
+            return mDrawerDepth;
+        }
+
+        /// <summary>
+        /// 結果として得られるピッチベンドカーブを描画するのに使う描画器を取得します
+        /// </summary>
+        /// <returns></returns>
+        private LineGraphDrawer getDrawerResulting()
+        {
+            if ( mDrawerResulting == null ) {
+                mDrawerResulting = new LineGraphDrawer( LineGraphDrawer.TYPE_LINEAR );
+                mDrawerResulting.setDotMode( LineGraphDrawer.DOTMODE_NO );
+                mDrawerResulting.setFill( false );
+                mDrawerResulting.setLineWidth( 2 );
+                mDrawerResulting.setLineColor( PortUtil.ForestGreen );
+            }
+            return mDrawerResulting;
+        }
+
+        /// <summary>
+        /// 画面の表示状態を更新します
+        /// </summary>
+        private void updateStatus()
+        {
+            int old_select = listPresets.SelectedIndex;
+            listPresets.SelectedIndices.Clear();
+
+            // アイテムの個数に過不足があれば数を整える
+            int size = mHandles.size();
+            int delta = size - listPresets.Items.Count;
+#if DEBUG
+            PortUtil.println( "FormVibratoPreset#updateStatus; delta=" + delta );
+#endif
+            if ( delta > 0 ) {
+                for ( int i = 0; i < delta; i++ ) {
+                    listPresets.Items.Add( "" );
+                }
+            } else if ( delta < 0 ) {
+                for ( int i = 0; i < -delta; i++ ) {
+                    listPresets.Items.RemoveAt( 0 );
+                }
+            }
+
+            // アイテムを更新
+            for ( int i = 0; i < size; i++ ) {
+                VibratoHandle handle = mHandles.get( i );
+                listPresets.Items[i] = handle.getCaption();
+            }
+
+            // 選択状態を復帰
+            if ( size <= old_select ) {
+                old_select = size - 1;
+            }
+            if ( old_select >= 0 ) {
+                listPresets.SelectedIndex = old_select;
+            }
+        }
+        #endregion
 
 #if JAVA
         #region UI Impl for Java
@@ -94,124 +559,331 @@ namespace org.kbinani.cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup( "Name", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup( "Start rate", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup( "Start depth", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewItem listViewItem1 = new System.Windows.Forms.ListViewItem( "DEFAULT_JP" );
-            this.btnCancel = new org.kbinani.windows.forms.BButton();
-            this.btnOK = new org.kbinani.windows.forms.BButton();
-            this.listDictionaries = new org.kbinani.windows.forms.BListView();
-            this.btnRemove = new org.kbinani.windows.forms.BButton();
-            this.btnAdd = new org.kbinani.windows.forms.BButton();
-            this.btnUp = new org.kbinani.windows.forms.BButton();
-            this.btnDown = new org.kbinani.windows.forms.BButton();
+            this.buttonCancel = new org.kbinani.windows.forms.BButton();
+            this.buttonOk = new org.kbinani.windows.forms.BButton();
+            this.buttonRemove = new org.kbinani.windows.forms.BButton();
+            this.buttonAdd = new org.kbinani.windows.forms.BButton();
+            this.buttonUp = new org.kbinani.windows.forms.BButton();
+            this.buttonDown = new org.kbinani.windows.forms.BButton();
+            this.labelRate = new org.kbinani.windows.forms.BLabel();
+            this.labelDepth = new org.kbinani.windows.forms.BLabel();
+            this.labelPresets = new org.kbinani.windows.forms.BLabel();
+            this.pictureRate = new org.kbinani.windows.forms.BPictureBox();
+            this.labelRateCurve = new org.kbinani.windows.forms.BLabel();
+            this.labelDepthCurve = new org.kbinani.windows.forms.BLabel();
+            this.pictureDepth = new org.kbinani.windows.forms.BPictureBox();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.labelResulting = new org.kbinani.windows.forms.BLabel();
+            this.pictureResulting = new org.kbinani.windows.forms.BPictureBox();
+            this.groupEdit = new org.kbinani.windows.forms.BGroupBox();
+            this.textName = new org.kbinani.windows.forms.BTextBox();
+            this.labelName = new org.kbinani.windows.forms.BLabel();
+            this.groupPreview = new org.kbinani.windows.forms.BGroupBox();
+            this.listPresets = new System.Windows.Forms.ListBox();
+            this.textDepth = new org.kbinani.cadencii.NumberTextBox();
+            this.textRate = new org.kbinani.cadencii.NumberTextBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureRate)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureDepth)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
+            this.splitContainer2.Panel1.SuspendLayout();
+            this.splitContainer2.Panel2.SuspendLayout();
+            this.splitContainer2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureResulting)).BeginInit();
+            this.groupEdit.SuspendLayout();
+            this.groupPreview.SuspendLayout();
             this.SuspendLayout();
             // 
-            // btnCancel
+            // buttonCancel
             // 
-            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point( 260, 267 );
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size( 75, 23 );
-            this.btnCancel.TabIndex = 7;
-            this.btnCancel.Text = "Cancel";
-            this.btnCancel.UseVisualStyleBackColor = true;
+            this.buttonCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.buttonCancel.Location = new System.Drawing.Point( 424, 345 );
+            this.buttonCancel.Name = "buttonCancel";
+            this.buttonCancel.Size = new System.Drawing.Size( 75, 23 );
+            this.buttonCancel.TabIndex = 7;
+            this.buttonCancel.Text = "Cancel";
+            this.buttonCancel.UseVisualStyleBackColor = true;
             // 
-            // btnOK
+            // buttonOk
             // 
-            this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.Location = new System.Drawing.Point( 179, 267 );
-            this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size( 75, 23 );
-            this.btnOK.TabIndex = 6;
-            this.btnOK.Text = "OK";
-            this.btnOK.UseVisualStyleBackColor = true;
+            this.buttonOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonOk.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.buttonOk.Location = new System.Drawing.Point( 343, 345 );
+            this.buttonOk.Name = "buttonOk";
+            this.buttonOk.Size = new System.Drawing.Size( 75, 23 );
+            this.buttonOk.TabIndex = 6;
+            this.buttonOk.Text = "OK";
+            this.buttonOk.UseVisualStyleBackColor = true;
             // 
-            // listDictionaries
+            // buttonRemove
             // 
-            this.listDictionaries.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.buttonRemove.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonRemove.Location = new System.Drawing.Point( 12, 301 );
+            this.buttonRemove.Name = "buttonRemove";
+            this.buttonRemove.Size = new System.Drawing.Size( 75, 23 );
+            this.buttonRemove.TabIndex = 126;
+            this.buttonRemove.Text = "Remove";
+            this.buttonRemove.UseVisualStyleBackColor = true;
+            // 
+            // buttonAdd
+            // 
+            this.buttonAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonAdd.Location = new System.Drawing.Point( 12, 272 );
+            this.buttonAdd.Name = "buttonAdd";
+            this.buttonAdd.Size = new System.Drawing.Size( 75, 23 );
+            this.buttonAdd.TabIndex = 125;
+            this.buttonAdd.Text = "Add";
+            this.buttonAdd.UseVisualStyleBackColor = true;
+            // 
+            // buttonUp
+            // 
+            this.buttonUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonUp.Location = new System.Drawing.Point( 102, 272 );
+            this.buttonUp.Name = "buttonUp";
+            this.buttonUp.Size = new System.Drawing.Size( 75, 23 );
+            this.buttonUp.TabIndex = 127;
+            this.buttonUp.Text = "Up";
+            this.buttonUp.UseVisualStyleBackColor = true;
+            // 
+            // buttonDown
+            // 
+            this.buttonDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.buttonDown.Location = new System.Drawing.Point( 102, 301 );
+            this.buttonDown.Name = "buttonDown";
+            this.buttonDown.Size = new System.Drawing.Size( 75, 23 );
+            this.buttonDown.TabIndex = 128;
+            this.buttonDown.Text = "Down";
+            this.buttonDown.UseVisualStyleBackColor = true;
+            // 
+            // labelRate
+            // 
+            this.labelRate.AutoSize = true;
+            this.labelRate.Location = new System.Drawing.Point( 10, 15 );
+            this.labelRate.Name = "labelRate";
+            this.labelRate.Size = new System.Drawing.Size( 54, 12 );
+            this.labelRate.TabIndex = 129;
+            this.labelRate.Text = "Start rate";
+            // 
+            // labelDepth
+            // 
+            this.labelDepth.AutoSize = true;
+            this.labelDepth.Location = new System.Drawing.Point( 10, 40 );
+            this.labelDepth.Name = "labelDepth";
+            this.labelDepth.Size = new System.Drawing.Size( 62, 12 );
+            this.labelDepth.TabIndex = 130;
+            this.labelDepth.Text = "Start depth";
+            // 
+            // labelPresets
+            // 
+            this.labelPresets.AutoSize = true;
+            this.labelPresets.Location = new System.Drawing.Point( 12, 15 );
+            this.labelPresets.Name = "labelPresets";
+            this.labelPresets.Size = new System.Drawing.Size( 113, 12 );
+            this.labelPresets.TabIndex = 134;
+            this.labelPresets.Text = "List of preset vibrato";
+            // 
+            // pictureRate
+            // 
+            this.pictureRate.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.listDictionaries.CheckBoxes = true;
-            this.listDictionaries.FullRowSelect = true;
-            this.listDictionaries.GridLines = true;
-            listViewGroup1.Header = "Name";
-            listViewGroup1.Name = "listViewGroupName";
-            listViewGroup2.Header = "Start rate";
-            listViewGroup2.Name = "listViewGroupRate";
-            listViewGroup3.Header = "Start depth";
-            listViewGroup3.Name = "listViewGroupDepth";
-            this.listDictionaries.Groups.AddRange( new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup1,
-            listViewGroup2,
-            listViewGroup3} );
-            listViewItem1.Checked = true;
-            listViewItem1.StateImageIndex = 1;
-            this.listDictionaries.Items.AddRange( new System.Windows.Forms.ListViewItem[] {
-            listViewItem1} );
-            this.listDictionaries.Location = new System.Drawing.Point( 12, 12 );
-            this.listDictionaries.Name = "listDictionaries";
-            this.listDictionaries.Size = new System.Drawing.Size( 323, 204 );
-            this.listDictionaries.TabIndex = 8;
-            this.listDictionaries.UseCompatibleStateImageBehavior = false;
-            this.listDictionaries.View = System.Windows.Forms.View.Details;
+            this.pictureRate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pictureRate.Location = new System.Drawing.Point( 12, 25 );
+            this.pictureRate.Name = "pictureRate";
+            this.pictureRate.Size = new System.Drawing.Size( 133, 69 );
+            this.pictureRate.TabIndex = 135;
+            this.pictureRate.TabStop = false;
             // 
-            // btnRemove
+            // labelRateCurve
             // 
-            this.btnRemove.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnRemove.Location = new System.Drawing.Point( 93, 222 );
-            this.btnRemove.Name = "btnRemove";
-            this.btnRemove.Size = new System.Drawing.Size( 75, 23 );
-            this.btnRemove.TabIndex = 126;
-            this.btnRemove.Text = "Remove";
-            this.btnRemove.UseVisualStyleBackColor = true;
+            this.labelRateCurve.AutoSize = true;
+            this.labelRateCurve.Location = new System.Drawing.Point( 10, 10 );
+            this.labelRateCurve.Name = "labelRateCurve";
+            this.labelRateCurve.Size = new System.Drawing.Size( 61, 12 );
+            this.labelRateCurve.TabIndex = 136;
+            this.labelRateCurve.Text = "Rate curve";
             // 
-            // btnAdd
+            // labelDepthCurve
             // 
-            this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnAdd.Location = new System.Drawing.Point( 12, 222 );
-            this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size( 75, 23 );
-            this.btnAdd.TabIndex = 125;
-            this.btnAdd.Text = "Add";
-            this.btnAdd.UseVisualStyleBackColor = true;
+            this.labelDepthCurve.AutoSize = true;
+            this.labelDepthCurve.Location = new System.Drawing.Point( 10, 10 );
+            this.labelDepthCurve.Name = "labelDepthCurve";
+            this.labelDepthCurve.Size = new System.Drawing.Size( 67, 12 );
+            this.labelDepthCurve.TabIndex = 137;
+            this.labelDepthCurve.Text = "Depth curve";
             // 
-            // btnUp
+            // pictureDepth
             // 
-            this.btnUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnUp.Location = new System.Drawing.Point( 179, 222 );
-            this.btnUp.Name = "btnUp";
-            this.btnUp.Size = new System.Drawing.Size( 75, 23 );
-            this.btnUp.TabIndex = 127;
-            this.btnUp.Text = "Up";
-            this.btnUp.UseVisualStyleBackColor = true;
+            this.pictureDepth.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureDepth.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pictureDepth.Location = new System.Drawing.Point( 12, 25 );
+            this.pictureDepth.Name = "pictureDepth";
+            this.pictureDepth.Size = new System.Drawing.Size( 146, 68 );
+            this.pictureDepth.TabIndex = 138;
+            this.pictureDepth.TabStop = false;
             // 
-            // btnDown
+            // splitContainer1
             // 
-            this.btnDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDown.Location = new System.Drawing.Point( 260, 222 );
-            this.btnDown.Name = "btnDown";
-            this.btnDown.Size = new System.Drawing.Size( 75, 23 );
-            this.btnDown.TabIndex = 128;
-            this.btnDown.Text = "Down";
-            this.btnDown.UseVisualStyleBackColor = true;
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.IsSplitterFixed = true;
+            this.splitContainer1.Location = new System.Drawing.Point( 0, 0 );
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add( this.labelRateCurve );
+            this.splitContainer1.Panel1.Controls.Add( this.pictureRate );
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add( this.pictureDepth );
+            this.splitContainer1.Panel2.Controls.Add( this.labelDepthCurve );
+            this.splitContainer1.Size = new System.Drawing.Size( 310, 97 );
+            this.splitContainer1.SplitterDistance = 148;
+            this.splitContainer1.SplitterWidth = 1;
+            this.splitContainer1.TabIndex = 139;
+            // 
+            // splitContainer2
+            // 
+            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer2.IsSplitterFixed = true;
+            this.splitContainer2.Location = new System.Drawing.Point( 3, 15 );
+            this.splitContainer2.Name = "splitContainer2";
+            this.splitContainer2.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer2.Panel1
+            // 
+            this.splitContainer2.Panel1.Controls.Add( this.splitContainer1 );
+            // 
+            // splitContainer2.Panel2
+            // 
+            this.splitContainer2.Panel2.Controls.Add( this.labelResulting );
+            this.splitContainer2.Panel2.Controls.Add( this.pictureResulting );
+            this.splitContainer2.Size = new System.Drawing.Size( 310, 195 );
+            this.splitContainer2.SplitterDistance = 97;
+            this.splitContainer2.SplitterWidth = 1;
+            this.splitContainer2.TabIndex = 140;
+            // 
+            // labelResulting
+            // 
+            this.labelResulting.AutoSize = true;
+            this.labelResulting.Location = new System.Drawing.Point( 10, 10 );
+            this.labelResulting.Name = "labelResulting";
+            this.labelResulting.Size = new System.Drawing.Size( 110, 12 );
+            this.labelResulting.TabIndex = 137;
+            this.labelResulting.Text = "Resulting pitch bend";
+            // 
+            // pictureResulting
+            // 
+            this.pictureResulting.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureResulting.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pictureResulting.Location = new System.Drawing.Point( 12, 25 );
+            this.pictureResulting.Name = "pictureResulting";
+            this.pictureResulting.Size = new System.Drawing.Size( 295, 66 );
+            this.pictureResulting.TabIndex = 136;
+            this.pictureResulting.TabStop = false;
+            // 
+            // groupEdit
+            // 
+            this.groupEdit.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupEdit.Controls.Add( this.textName );
+            this.groupEdit.Controls.Add( this.labelName );
+            this.groupEdit.Controls.Add( this.labelDepth );
+            this.groupEdit.Controls.Add( this.textDepth );
+            this.groupEdit.Controls.Add( this.textRate );
+            this.groupEdit.Controls.Add( this.labelRate );
+            this.groupEdit.Location = new System.Drawing.Point( 183, 15 );
+            this.groupEdit.Name = "groupEdit";
+            this.groupEdit.Size = new System.Drawing.Size( 316, 90 );
+            this.groupEdit.TabIndex = 141;
+            this.groupEdit.TabStop = false;
+            this.groupEdit.Text = "Edit";
+            // 
+            // textName
+            // 
+            this.textName.Location = new System.Drawing.Point( 86, 62 );
+            this.textName.Name = "textName";
+            this.textName.Size = new System.Drawing.Size( 169, 19 );
+            this.textName.TabIndex = 134;
+            // 
+            // labelName
+            // 
+            this.labelName.AutoSize = true;
+            this.labelName.Location = new System.Drawing.Point( 10, 65 );
+            this.labelName.Name = "labelName";
+            this.labelName.Size = new System.Drawing.Size( 34, 12 );
+            this.labelName.TabIndex = 133;
+            this.labelName.Text = "Name";
+            // 
+            // groupPreview
+            // 
+            this.groupPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupPreview.Controls.Add( this.splitContainer2 );
+            this.groupPreview.Location = new System.Drawing.Point( 183, 111 );
+            this.groupPreview.Name = "groupPreview";
+            this.groupPreview.Size = new System.Drawing.Size( 316, 213 );
+            this.groupPreview.TabIndex = 142;
+            this.groupPreview.TabStop = false;
+            this.groupPreview.Text = "Preview";
+            // 
+            // listPresets
+            // 
+            this.listPresets.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)));
+            this.listPresets.FormattingEnabled = true;
+            this.listPresets.ItemHeight = 12;
+            this.listPresets.Location = new System.Drawing.Point( 12, 30 );
+            this.listPresets.Name = "listPresets";
+            this.listPresets.Size = new System.Drawing.Size( 165, 232 );
+            this.listPresets.TabIndex = 143;
+            // 
+            // textDepth
+            // 
+            this.textDepth.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))) );
+            this.textDepth.ForeColor = System.Drawing.Color.White;
+            this.textDepth.Location = new System.Drawing.Point( 86, 37 );
+            this.textDepth.Name = "textDepth";
+            this.textDepth.Size = new System.Drawing.Size( 72, 19 );
+            this.textDepth.TabIndex = 132;
+            this.textDepth.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
+            // 
+            // textRate
+            // 
+            this.textRate.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(240)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))) );
+            this.textRate.ForeColor = System.Drawing.Color.White;
+            this.textRate.Location = new System.Drawing.Point( 86, 12 );
+            this.textRate.Name = "textRate";
+            this.textRate.Size = new System.Drawing.Size( 72, 19 );
+            this.textRate.TabIndex = 131;
+            this.textRate.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // FormVibratoPreset
             // 
-            this.AcceptButton = this.btnOK;
+            this.AcceptButton = this.buttonOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 12F );
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size( 347, 302 );
-            this.Controls.Add( this.btnRemove );
-            this.Controls.Add( this.btnAdd );
-            this.Controls.Add( this.btnUp );
-            this.Controls.Add( this.btnDown );
-            this.Controls.Add( this.listDictionaries );
-            this.Controls.Add( this.btnOK );
-            this.Controls.Add( this.btnCancel );
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.CancelButton = this.buttonCancel;
+            this.ClientSize = new System.Drawing.Size( 511, 380 );
+            this.Controls.Add( this.listPresets );
+            this.Controls.Add( this.groupPreview );
+            this.Controls.Add( this.groupEdit );
+            this.Controls.Add( this.labelPresets );
+            this.Controls.Add( this.buttonRemove );
+            this.Controls.Add( this.buttonAdd );
+            this.Controls.Add( this.buttonUp );
+            this.Controls.Add( this.buttonDown );
+            this.Controls.Add( this.buttonOk );
+            this.Controls.Add( this.buttonCancel );
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "FormVibratoPreset";
@@ -219,13 +891,29 @@ namespace org.kbinani.cadencii
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Vibrato preset";
+            ((System.ComponentModel.ISupportInitialize)(this.pictureRate)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureDepth)).EndInit();
+            this.splitContainer1.Panel1.ResumeLayout( false );
+            this.splitContainer1.Panel1.PerformLayout();
+            this.splitContainer1.Panel2.ResumeLayout( false );
+            this.splitContainer1.Panel2.PerformLayout();
+            this.splitContainer1.ResumeLayout( false );
+            this.splitContainer2.Panel1.ResumeLayout( false );
+            this.splitContainer2.Panel2.ResumeLayout( false );
+            this.splitContainer2.Panel2.PerformLayout();
+            this.splitContainer2.ResumeLayout( false );
+            ((System.ComponentModel.ISupportInitialize)(this.pictureResulting)).EndInit();
+            this.groupEdit.ResumeLayout( false );
+            this.groupEdit.PerformLayout();
+            this.groupPreview.ResumeLayout( false );
             this.ResumeLayout( false );
+            this.PerformLayout();
 
         }
         #endregion
 
-        private BButton btnCancel;
-        private BButton btnOK;
+        private BButton buttonCancel;
+        private BButton buttonOk;
         #endregion
 #endif
     }

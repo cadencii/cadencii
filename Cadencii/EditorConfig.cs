@@ -99,8 +99,9 @@ namespace org.kbinani.cadencii {
         public String AutoVibratoType2 = "$04040001";
         /// <summary>
         /// カスタムのデフォルトビブラート設定
+        /// <version>3.3+</version>
         /// </summary>
-        public int AutoVibratoTypeCustom = 0;
+        public string AutoVibratoTypeCustom = "$04040001";
         /// <summary>
         /// ユーザー定義のビブラート設定．
         /// <version>3.3+</version>
@@ -794,7 +795,30 @@ namespace org.kbinani.cadencii {
                     AutoVibratoCustom = new Vector<VibratoHandle>();
                 }
 
-                int index = this.AutoVibratoTypeCustom;
+                // 下4桁からインデックスを取得
+                int index = 0;
+                if ( this.AutoVibratoTypeCustom == null ) {
+                    index = 0;
+                } else {
+                    int trimlen = 4;
+                    int len = this.AutoVibratoTypeCustom.Length;
+                    if ( len < 4 ) {
+                        trimlen = len;
+                    }
+                    if ( trimlen > 0 ) {
+                        string s = this.AutoVibratoTypeCustom.Substring( len - trimlen, trimlen );
+                        try {
+                            index = (int)PortUtil.fromHexString( s );
+                        } catch ( Exception ex ) {
+                            PortUtil.stderr.println( typeof( EditorConfig ) + ".createAutoVibrato; ex=" + ex + "; AutoVibratoTypeCustom=" + AutoVibratoTypeCustom + "; s=" + s );
+                            index = 0;
+                        }
+                    }
+                }
+
+#if DEBUG
+                PortUtil.println( "EditorConfig.createAutoVibrato; AutoVibratoTypeCustom=" + AutoVibratoTypeCustom + "; index=" + index );
+#endif
                 VibratoHandle ret = null;
                 if ( 0 <= index && index < this.AutoVibratoCustom.size() ) {
                     ret = this.AutoVibratoCustom.get( index );
@@ -805,7 +829,7 @@ namespace org.kbinani.cadencii {
                 if ( ret == null ) {
                     ret = new VibratoHandle();
                 }
-                ret.IconID = "$0404" + PortUtil.toHexString( index + 1, 4 );
+                ret.IconID = "$0404" + PortUtil.toHexString( index, 4 );
                 ret.setLength( vibrato_clocks );
                 return ret;
             } else {

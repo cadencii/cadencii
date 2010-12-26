@@ -79,6 +79,10 @@ namespace org.kbinani.cadencii {
         /// ピアノロール上でカーブを描くモード
         /// </summary>
         CURVE_ON_PIANOROLL,
+        /// <summary>
+        /// ステップ入力中
+        /// </summary>
+        STEP_SEQUENCER,
     }
 
 #if !JAVA

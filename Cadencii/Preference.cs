@@ -131,6 +131,8 @@ namespace org.kbinani.cadencii
                 comboAutoVibratoType2.setSelectedIndex( 0 );
             }
 
+            updateCustomVibrato();
+
             comboResolControlCurve.removeAllItems();
             for ( Iterator<ClockResolution> itr = ClockResolutionUtility.iterator(); itr.hasNext(); ) {
                 ClockResolution cr = itr.next();
@@ -251,6 +253,7 @@ namespace org.kbinani.cadencii
         public override BDialogResult showDialog( System.Windows.Forms.Form parent )
         {
             updateMidiDevice();
+            updateCustomVibrato();
             return base.showDialog( parent );
         }
 
@@ -1170,6 +1173,29 @@ namespace org.kbinani.cadencii
             }
         }
 
+        public String getAutoVibratoTypeCustom()
+        {
+            int count = -1;
+            int index = comboAutoVibratoTypeCustom.getSelectedIndex();
+            if ( 0 <= index ) {
+                VibratoHandle vconfig = (VibratoHandle)comboAutoVibratoTypeCustom.getSelectedItem();
+                return vconfig.IconID;
+            } else {
+                return "$04040001";
+            }
+        }
+
+        public void setAutoVibratoTypeCustom( string icon_id )
+        {
+            for ( int i = 0; i < comboAutoVibratoTypeCustom.getItemCount(); i++ ) {
+                VibratoHandle handle = (VibratoHandle)comboAutoVibratoTypeCustom.getItemAt( i );
+                if ( handle.IconID.Equals( icon_id ) ) {
+                    comboAutoVibratoTypeCustom.setSelectedIndex( i );
+                    return;
+                }
+            }
+        }
+
         public int getAutoVibratoThresholdLength()
         {
             try {
@@ -1603,6 +1629,19 @@ namespace org.kbinani.cadencii
         #endregion
 
         #region helper methods
+        /// <summary>
+        /// カスタムビブラートの選択肢の欄を更新します
+        /// </summary>
+        private void updateCustomVibrato()
+        {
+            int size = AppManager.editorConfig.AutoVibratoCustom.size();
+            comboAutoVibratoTypeCustom.removeAllItems();
+            for ( int i = 0; i < size; i++ ) {
+                VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
+                comboAutoVibratoTypeCustom.addItem( handle );
+            }
+        }
+
         /// <summary>
         /// MIDIデバイスの選択肢の欄を更新します
         /// </summary>
@@ -2074,23 +2113,6 @@ namespace org.kbinani.cadencii
             // comboAutoVibratoTypeCustom
             // 
             this.comboAutoVibratoTypeCustom.FormattingEnabled = true;
-            this.comboAutoVibratoTypeCustom.Items.AddRange( new object[] {
-            "[Normal] Type 1",
-            "[Normal] Type 2",
-            "[Normal] Type 3",
-            "[Normal] Type 4",
-            "[Extreme] Type 1",
-            "[Extreme] Type 2",
-            "[Extreme] Type 3",
-            "[Extreme] Type 4",
-            "[Fast] Type 1",
-            "[Fast] Type 2",
-            "[Fast] Type 3",
-            "[Fast] Type 4",
-            "[Slight] Type 1",
-            "[Slight] Type 2",
-            "[Slight] Type 3",
-            "[Slight] Type 4"} );
             this.comboAutoVibratoTypeCustom.Location = new System.Drawing.Point( 225, 22 );
             this.comboAutoVibratoTypeCustom.Name = "comboAutoVibratoTypeCustom";
             this.comboAutoVibratoTypeCustom.Size = new System.Drawing.Size( 131, 20 );
