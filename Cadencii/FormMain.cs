@@ -15469,7 +15469,7 @@ namespace org.kbinani.cadencii
             int size = AppManager.editorConfig.AutoVibratoCustom.size();
             for ( int i = 0; i < size; i++ ) {
                 VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
-                if ( text.Equals( handle.IDS ) ) {
+                if ( text.Equals( handle.getCaption() ) ) {
                     target = handle;
                     break;
                 }

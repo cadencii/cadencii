@@ -43,11 +43,10 @@ namespace org.kbinani.cadencii
 #endif
         private VibratoHandle m_vibrato;
         private int m_note_length;
-        private SynthesizerType m_synthesizer_type;
-        /// <summary>
-        /// ユーザー定義のプリセットビブラートを使うかどうか
-        /// </summary>
-        private boolean mUseOriginal = false;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.RadioButton radioVocaloid2;
+        private System.Windows.Forms.RadioButton radioVocaloid1;
+        private System.Windows.Forms.RadioButton radioUserDefined;
 
         /// <summary>
         /// コンストラクタ．引数vibrato_handleには，Cloneしたものを渡さなくてよい．
@@ -71,8 +70,15 @@ namespace org.kbinani.cadencii
             AppManager.debugWriteLine( "    (vibrato_handle==null)=" + (vibrato_handle == null) );
             PortUtil.println( "    type=" + type );
 #endif
-            m_synthesizer_type = type;
-            mUseOriginal = use_original;
+            if ( use_original ) {
+                radioUserDefined.Checked = true;
+            } else {
+                if ( type == SynthesizerType.VOCALOID1 ) {
+                    radioVocaloid1.Checked = true;
+                } else {
+                    radioVocaloid2.Checked = true;
+                }
+            }
             if ( vibrato_handle != null ) {
                 m_vibrato = (VibratoHandle)vibrato_handle.clone();
             }
@@ -81,32 +87,7 @@ namespace org.kbinani.cadencii
             setResources();
             applyLanguage();
 
-            comboVibratoType.removeAllItems();
-            VibratoHandle empty = new VibratoHandle();
-            empty.setCaption( "[Non Vibrato]" );
-            empty.IconID = "$04040000";
-            comboVibratoType.addItem( empty );
-            comboVibratoType.setSelectedItem( empty );
-            if ( use_original ) {
-                int size = AppManager.editorConfig.AutoVibratoCustom.size();
-                for ( int i = 0; i < size; i++ ) {
-                    VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
-                    comboVibratoType.addItem( handle );
-                    if ( vibrato_handle.IconID.Equals( handle.IconID ) ) {
-                        comboVibratoType.setSelectedItem( handle );
-                    }
-                }
-            } else {
-                for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( m_synthesizer_type ); itr.hasNext(); ) {
-                    VibratoHandle vconfig = itr.next();
-                    comboVibratoType.addItem( vconfig );
-                    if ( vibrato_handle != null ) {
-                        if ( vibrato_handle.IconID.Equals( vconfig.IconID ) ) {
-                            comboVibratoType.setSelectedItem( vconfig );
-                        }
-                    }
-                }
-            }
+            updateComboBoxStatus();
 
             txtVibratoLength.setEnabled( vibrato_handle != null );
             if ( vibrato_handle != null ) {
@@ -157,10 +138,63 @@ namespace org.kbinani.cadencii
             return Messaging.getMessage( id );
         }
 
+        /// <summary>
+        /// ビブラートの選択肢の状態を更新します
+        /// </summary>
+        private void updateComboBoxStatus()
+        {
+            // 選択位置
+            int old = comboVibratoType.SelectedIndex;
+
+            // 全部削除
+            comboVibratoType.removeAllItems();
+
+            // 「ビブラート無し」を表すアイテムを追加
+            VibratoHandle empty = new VibratoHandle();
+            empty.setCaption( "[Non Vibrato]" );
+            empty.IconID = "$04040000";
+            comboVibratoType.addItem( empty );
+
+            // 選択元を元に，選択肢を追加する
+            if ( radioUserDefined.Checked ) {
+                // ユーザー定義のを使う場合
+                int size = AppManager.editorConfig.AutoVibratoCustom.size();
+                for ( int i = 0; i < size; i++ ) {
+                    VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
+                    comboVibratoType.addItem( handle );
+                }
+            } else {
+                // VOCALOID1/VOCALOID2のシステム定義のを使う場合
+                SynthesizerType type = radioVocaloid1.Checked ? SynthesizerType.VOCALOID1 : SynthesizerType.VOCALOID2;
+                for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
+                    VibratoHandle vconfig = itr.next();
+                    comboVibratoType.addItem( vconfig );
+                }
+            }
+
+            // 選択位置を戻せるなら戻す
+            int index = old;
+            if ( index >= comboVibratoType.getItemCount() ) {
+                index = comboVibratoType.getItemCount() - 1;
+            }
+            if ( 0 <= index ) {
+                comboVibratoType.setSelectedIndex( index );
+            }
+        }
+
         private void registerEventHandlers()
         {
             btnOK.Click += new EventHandler( btnOK_Click );
             btnCancel.Click += new EventHandler( btnCancel_Click );
+            radioUserDefined.CheckedChanged += new EventHandler( handleRadioCheckedChanged );
+            comboVibratoType.SelectedIndexChanged += comboVibratoType_SelectedIndexChanged;
+        }
+
+        void handleRadioCheckedChanged( object sender, EventArgs e )
+        {
+            comboVibratoType.SelectedIndexChanged -= comboVibratoType_SelectedIndexChanged;
+            updateComboBoxStatus();
+            comboVibratoType.SelectedIndexChanged += comboVibratoType_SelectedIndexChanged;
         }
 
         private void setResources()
@@ -186,7 +220,7 @@ namespace org.kbinani.cadencii
                 } else {
                     txtVibratoLength.setEnabled( true );
                     VibratoHandle src = null;
-                    if ( mUseOriginal ) {
+                    if ( radioUserDefined.Checked ) {
                         int size = AppManager.editorConfig.AutoVibratoCustom.size();
                         for ( int i = 0; i < size; i++ ) {
                             VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
@@ -196,7 +230,8 @@ namespace org.kbinani.cadencii
                             }
                         }
                     } else {
-                        for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( m_synthesizer_type ); itr.hasNext(); ) {
+                        SynthesizerType type = radioVocaloid1.Checked ? SynthesizerType.VOCALOID1 : SynthesizerType.VOCALOID2;
+                        for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
                             VibratoHandle vconfig = itr.next();
                             if ( s.Equals( vconfig.IconID ) ) {
                                 src = vconfig;
@@ -285,13 +320,18 @@ namespace org.kbinani.cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            this.lblVibratoLength = new BLabel();
-            this.lblVibratoType = new BLabel();
+            this.lblVibratoLength = new org.kbinani.windows.forms.BLabel();
+            this.lblVibratoType = new org.kbinani.windows.forms.BLabel();
             this.txtVibratoLength = new org.kbinani.cadencii.NumberTextBox();
-            this.label3 = new BLabel();
-            this.comboVibratoType = new BComboBox();
-            this.btnCancel = new BButton();
-            this.btnOK = new BButton();
+            this.label3 = new org.kbinani.windows.forms.BLabel();
+            this.comboVibratoType = new org.kbinani.windows.forms.BComboBox();
+            this.btnCancel = new org.kbinani.windows.forms.BButton();
+            this.btnOK = new org.kbinani.windows.forms.BButton();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.radioVocaloid1 = new System.Windows.Forms.RadioButton();
+            this.radioVocaloid2 = new System.Windows.Forms.RadioButton();
+            this.radioUserDefined = new System.Windows.Forms.RadioButton();
+            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblVibratoLength
@@ -306,7 +346,7 @@ namespace org.kbinani.cadencii
             // lblVibratoType
             // 
             this.lblVibratoType.AutoSize = true;
-            this.lblVibratoType.Location = new System.Drawing.Point( 12, 38 );
+            this.lblVibratoType.Location = new System.Drawing.Point( 12, 39 );
             this.lblVibratoType.Name = "lblVibratoType";
             this.lblVibratoType.Size = new System.Drawing.Size( 86, 12 );
             this.lblVibratoType.TabIndex = 1;
@@ -332,8 +372,10 @@ namespace org.kbinani.cadencii
             // 
             // comboVibratoType
             // 
+            this.comboVibratoType.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.comboVibratoType.FormattingEnabled = true;
-            this.comboVibratoType.Location = new System.Drawing.Point( 143, 35 );
+            this.comboVibratoType.Location = new System.Drawing.Point( 143, 36 );
             this.comboVibratoType.Name = "comboVibratoType";
             this.comboVibratoType.Size = new System.Drawing.Size( 167, 20 );
             this.comboVibratoType.TabIndex = 4;
@@ -342,7 +384,7 @@ namespace org.kbinani.cadencii
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point( 240, 71 );
+            this.btnCancel.Location = new System.Drawing.Point( 240, 129 );
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size( 75, 23 );
             this.btnCancel.TabIndex = 7;
@@ -352,12 +394,61 @@ namespace org.kbinani.cadencii
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.Location = new System.Drawing.Point( 159, 71 );
+            this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnOK.Location = new System.Drawing.Point( 159, 129 );
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size( 75, 23 );
             this.btnOK.TabIndex = 6;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add( this.radioUserDefined );
+            this.groupBox1.Controls.Add( this.radioVocaloid2 );
+            this.groupBox1.Controls.Add( this.radioVocaloid1 );
+            this.groupBox1.Location = new System.Drawing.Point( 14, 61 );
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size( 301, 55 );
+            this.groupBox1.TabIndex = 9;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Select from";
+            // 
+            // radioVocaloid1
+            // 
+            this.radioVocaloid1.AutoSize = true;
+            this.radioVocaloid1.Location = new System.Drawing.Point( 14, 21 );
+            this.radioVocaloid1.Name = "radioVocaloid1";
+            this.radioVocaloid1.Size = new System.Drawing.Size( 86, 16 );
+            this.radioVocaloid1.TabIndex = 9;
+            this.radioVocaloid1.TabStop = true;
+            this.radioVocaloid1.Text = "VOCALOID1";
+            this.radioVocaloid1.UseVisualStyleBackColor = true;
+            // 
+            // radioVocaloid2
+            // 
+            this.radioVocaloid2.AutoSize = true;
+            this.radioVocaloid2.Checked = true;
+            this.radioVocaloid2.Location = new System.Drawing.Point( 106, 21 );
+            this.radioVocaloid2.Name = "radioVocaloid2";
+            this.radioVocaloid2.Size = new System.Drawing.Size( 86, 16 );
+            this.radioVocaloid2.TabIndex = 10;
+            this.radioVocaloid2.TabStop = true;
+            this.radioVocaloid2.Text = "VOCALOID2";
+            this.radioVocaloid2.UseVisualStyleBackColor = true;
+            // 
+            // radioUserDefined
+            // 
+            this.radioUserDefined.AutoSize = true;
+            this.radioUserDefined.Location = new System.Drawing.Point( 198, 21 );
+            this.radioUserDefined.Name = "radioUserDefined";
+            this.radioUserDefined.Size = new System.Drawing.Size( 88, 16 );
+            this.radioUserDefined.TabIndex = 11;
+            this.radioUserDefined.TabStop = true;
+            this.radioUserDefined.Text = "User defined";
+            this.radioUserDefined.UseVisualStyleBackColor = true;
             // 
             // FormVibratoConfig
             // 
@@ -365,7 +456,8 @@ namespace org.kbinani.cadencii
             this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 12F );
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size( 327, 106 );
+            this.ClientSize = new System.Drawing.Size( 327, 164 );
+            this.Controls.Add( this.groupBox1 );
             this.Controls.Add( this.btnOK );
             this.Controls.Add( this.btnCancel );
             this.Controls.Add( this.comboVibratoType );
@@ -381,6 +473,8 @@ namespace org.kbinani.cadencii
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Vibrato property";
+            this.groupBox1.ResumeLayout( false );
+            this.groupBox1.PerformLayout();
             this.ResumeLayout( false );
             this.PerformLayout();
 
