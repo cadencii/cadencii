@@ -45,6 +45,14 @@ namespace org.kbinani.cadencii
         /// プレビューの各グラフにおいて，上下に追加するマージンの高さ(ピクセル)
         /// </summary>
         private const int MARGIN = 3;
+        /// <summary>
+        /// 前回サイズ変更時の，フォームの幅
+        /// </summary>
+        private static int mPreviousWidth = 527;
+        /// <summary>
+        /// 前回サイズ変更時の，フォームの高さ
+        /// </summary>
+        private static int mPreviousHeight = 418;
 
         /// <summary>
         /// AppManager.editorConfig.AutoVibratoCustomからコピーしてきた，
@@ -103,6 +111,9 @@ namespace org.kbinani.cadencii
 #else
             InitializeComponent();
 #endif
+            applyLanguage();
+            Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
+            this.setSize( mPreviousWidth, mPreviousHeight );
             registerEventHandlers();
 
             // ハンドルのリストをクローン
@@ -188,8 +199,9 @@ namespace org.kbinani.cadencii
 
             int old = mSelected.getStartRate();
             int value = old;
+            string str = textRate.getText();
             try {
-                value = PortUtil.parseInt( textRate.getText() );
+                value = PortUtil.parseInt( str );
             } catch ( Exception ex ) {
                 value = old;
             }
@@ -200,7 +212,11 @@ namespace org.kbinani.cadencii
                 value = 127;
             }
             mSelected.setStartRate( value );
-            textRate.setText( value + "" );
+            string nstr = value + "";
+            if ( str != nstr ) {
+                textRate.setText( nstr );
+                textRate.SelectionStart = textRate.Text.Length;
+            }
 
             repaintPictures();
         }
@@ -213,8 +229,9 @@ namespace org.kbinani.cadencii
 
             int old = mSelected.getStartDepth();
             int value = old;
+            string str = textDepth.getText();
             try {
-                value = PortUtil.parseInt( textDepth.getText() );
+                value = PortUtil.parseInt( str );
             } catch ( Exception ex ) {
                 value = old;
             }
@@ -225,7 +242,11 @@ namespace org.kbinani.cadencii
                 value = 127;
             }
             mSelected.setStartDepth( value );
-            textDepth.setText( value + "" );
+            string nstr = value + "";
+            if ( str != nstr ) {
+                textDepth.setText( nstr );
+                textDepth.SelectionStart = textDepth.Text.Length;
+            }
 
             repaintPictures();
         }
@@ -292,6 +313,7 @@ namespace org.kbinani.cadencii
             int raw_width = pictureResulting.getWidth();
             int raw_height = pictureResulting.getHeight();
             System.Drawing.Graphics g = e.Graphics;
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
             g.FillRectangle( System.Drawing.Brushes.LightGray, 0, 0, raw_width, raw_height );
 
             // 選択中のハンドルを取得
@@ -306,31 +328,56 @@ namespace org.kbinani.cadencii
 
             // ビブラートのピッチベンドを取得するイテレータを取得
             int width = raw_width;
-            VsqFileEx vsq = new VsqFileEx( "Miku", 1, 4, 4, 1000000 );
+            int vib_length = 960;
+            int tempo = 500000;
+            double vib_seconds = tempo * 1e-6 / 480.0 * vib_length;
+            // 480クロックは0.5秒
+            VsqFileEx vsq = new VsqFileEx( "Miku", 1, 4, 4, tempo );
             VibratoBPList list_rate = handle.getRateBP();
             VibratoBPList list_depth = handle.getDepthBP();
+            int start_rate = handle.getStartRate();
+            int start_depth = handle.getStartDepth();
             if ( list_rate == null ) {
-                list_rate = new VibratoBPList();
+                list_rate = new VibratoBPList( new float[] { 0.0f }, new int[] { start_rate } );
             }
             if ( list_depth == null ) {
-                list_depth = new VibratoBPList();
+                list_depth = new VibratoBPList( new float[] { 0.0f }, new int[] { start_depth } );
             }
-            VibratoPointIteratorByClock itr =
-                new VibratoPointIteratorByClock(
+            // 解像度
+            float resol = (float)(vib_seconds / width);
+            if ( resol <= 0.0f ) {
+                return;
+            }
+            VibratoPointIteratorBySec itr =
+                new VibratoPointIteratorBySec(
                     vsq,
-                    list_rate, handle.getStartRate(),
-                    list_depth, handle.getStartDepth(),
-                    0, width );
+                    list_rate, start_rate,
+                    list_depth, start_depth,
+                    0, vib_length, resol );
 
             // 描画
             int height = raw_height - MARGIN * 2;
             d.clear();
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             int x = 0;
+            int lastx = 0;
+            int lasty = -10;
+            int tx = 0, ty = 0;
+            const int MIN_DELTA = 2;
             for ( ; itr.hasNext(); x++ ) {
-                double pitch = itr.next();
+                double pitch = itr.next().getY();
                 int y = height - (int)((pitch + 1.25) / 2.5 * height) + MARGIN - 1;
-                d.append( x, y );
+                int dx = x - lastx; // xは単調増加
+                int dy = Math.Abs( y - lasty );
+                tx = x;
+                ty = y;
+                if ( dx > MIN_DELTA || dy > MIN_DELTA ) {
+                    d.append( x, y );
+                    lastx = x;
+                    lasty = y;
+                }
             }
+            d.append( tx, ty );
             d.flush();
         }
 
@@ -384,6 +431,14 @@ namespace org.kbinani.cadencii
                 width, height );
         }
 
+        void FormVibratoPreset_Resize( object sender, EventArgs e )
+        {
+            if ( this.WindowState == System.Windows.Forms.FormWindowState.Normal ) {
+                mPreviousWidth = this.getWidth();
+                mPreviousHeight = this.getHeight();
+            }
+            repaintPictures();
+        }
         #endregion
 
         #region helper methods
@@ -404,8 +459,40 @@ namespace org.kbinani.cadencii
             pictureDepth.Paint += new System.Windows.Forms.PaintEventHandler( pictureDepth_Paint );
             pictureRate.Paint += new System.Windows.Forms.PaintEventHandler( pictureRate_Paint );
             pictureResulting.Paint += new System.Windows.Forms.PaintEventHandler( pictureResulting_Paint );
+
+            this.Resize += new EventHandler( FormVibratoPreset_Resize );
         }
 
+        private static string _( string id )
+        {
+            return Messaging.getMessage( id );
+        }
+
+        private void applyLanguage()
+        {
+            this.setTitle( _( "Vibrato preset" ) );
+
+            labelPresets.setText( _( "List of vibrato preset" ) );
+
+            groupEdit.setTitle( _( "Edit" ) );
+            labelName.setText( _( "Name" ) );
+
+            groupPreview.setTitle( _( "Preview" ) );
+            labelDepthCurve.setText( _( "Depth curve" ) );
+            labelRateCurve.setText( _( "Rate curve" ) );
+
+            buttonAdd.setText( _( "Add" ) );
+            buttonRemove.setText( _( "Remove" ) );
+            buttonUp.setText( _( "Up" ) );
+            buttonDown.setText( _( "Down" ) );
+
+            buttonOk.setText( _( "OK" ) );
+            buttonCancel.setText( _( "Cancel" ) );
+        }
+
+        /// <summary>
+        /// Rate, Depth, Resulting pitchの各グラフを強制描画します
+        /// </summary>
         private void repaintPictures()
         {
             pictureDepth.repaint();
@@ -603,7 +690,7 @@ namespace org.kbinani.cadencii
             this.buttonCancel.Location = new System.Drawing.Point( 424, 345 );
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size( 75, 23 );
-            this.buttonCancel.TabIndex = 7;
+            this.buttonCancel.TabIndex = 11;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
             // 
@@ -614,7 +701,7 @@ namespace org.kbinani.cadencii
             this.buttonOk.Location = new System.Drawing.Point( 343, 345 );
             this.buttonOk.Name = "buttonOk";
             this.buttonOk.Size = new System.Drawing.Size( 75, 23 );
-            this.buttonOk.TabIndex = 6;
+            this.buttonOk.TabIndex = 10;
             this.buttonOk.Text = "OK";
             this.buttonOk.UseVisualStyleBackColor = true;
             // 
@@ -624,7 +711,7 @@ namespace org.kbinani.cadencii
             this.buttonRemove.Location = new System.Drawing.Point( 12, 301 );
             this.buttonRemove.Name = "buttonRemove";
             this.buttonRemove.Size = new System.Drawing.Size( 75, 23 );
-            this.buttonRemove.TabIndex = 126;
+            this.buttonRemove.TabIndex = 3;
             this.buttonRemove.Text = "Remove";
             this.buttonRemove.UseVisualStyleBackColor = true;
             // 
@@ -634,7 +721,7 @@ namespace org.kbinani.cadencii
             this.buttonAdd.Location = new System.Drawing.Point( 12, 272 );
             this.buttonAdd.Name = "buttonAdd";
             this.buttonAdd.Size = new System.Drawing.Size( 75, 23 );
-            this.buttonAdd.TabIndex = 125;
+            this.buttonAdd.TabIndex = 2;
             this.buttonAdd.Text = "Add";
             this.buttonAdd.UseVisualStyleBackColor = true;
             // 
@@ -644,7 +731,7 @@ namespace org.kbinani.cadencii
             this.buttonUp.Location = new System.Drawing.Point( 102, 272 );
             this.buttonUp.Name = "buttonUp";
             this.buttonUp.Size = new System.Drawing.Size( 75, 23 );
-            this.buttonUp.TabIndex = 127;
+            this.buttonUp.TabIndex = 4;
             this.buttonUp.Text = "Up";
             this.buttonUp.UseVisualStyleBackColor = true;
             // 
@@ -654,7 +741,7 @@ namespace org.kbinani.cadencii
             this.buttonDown.Location = new System.Drawing.Point( 102, 301 );
             this.buttonDown.Name = "buttonDown";
             this.buttonDown.Size = new System.Drawing.Size( 75, 23 );
-            this.buttonDown.TabIndex = 128;
+            this.buttonDown.TabIndex = 5;
             this.buttonDown.Text = "Down";
             this.buttonDown.UseVisualStyleBackColor = true;
             // 
@@ -691,16 +778,16 @@ namespace org.kbinani.cadencii
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureRate.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureRate.Location = new System.Drawing.Point( 12, 25 );
+            this.pictureRate.Location = new System.Drawing.Point( 12, 20 );
             this.pictureRate.Name = "pictureRate";
-            this.pictureRate.Size = new System.Drawing.Size( 133, 69 );
+            this.pictureRate.Size = new System.Drawing.Size( 133, 74 );
             this.pictureRate.TabIndex = 135;
             this.pictureRate.TabStop = false;
             // 
             // labelRateCurve
             // 
             this.labelRateCurve.AutoSize = true;
-            this.labelRateCurve.Location = new System.Drawing.Point( 10, 10 );
+            this.labelRateCurve.Location = new System.Drawing.Point( 10, 5 );
             this.labelRateCurve.Name = "labelRateCurve";
             this.labelRateCurve.Size = new System.Drawing.Size( 61, 12 );
             this.labelRateCurve.TabIndex = 136;
@@ -709,7 +796,7 @@ namespace org.kbinani.cadencii
             // labelDepthCurve
             // 
             this.labelDepthCurve.AutoSize = true;
-            this.labelDepthCurve.Location = new System.Drawing.Point( 10, 10 );
+            this.labelDepthCurve.Location = new System.Drawing.Point( 10, 5 );
             this.labelDepthCurve.Name = "labelDepthCurve";
             this.labelDepthCurve.Size = new System.Drawing.Size( 67, 12 );
             this.labelDepthCurve.TabIndex = 137;
@@ -721,9 +808,9 @@ namespace org.kbinani.cadencii
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureDepth.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureDepth.Location = new System.Drawing.Point( 12, 25 );
+            this.pictureDepth.Location = new System.Drawing.Point( 12, 20 );
             this.pictureDepth.Name = "pictureDepth";
-            this.pictureDepth.Size = new System.Drawing.Size( 146, 68 );
+            this.pictureDepth.Size = new System.Drawing.Size( 146, 73 );
             this.pictureDepth.TabIndex = 138;
             this.pictureDepth.TabStop = false;
             // 
@@ -736,8 +823,8 @@ namespace org.kbinani.cadencii
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add( this.labelRateCurve );
             this.splitContainer1.Panel1.Controls.Add( this.pictureRate );
+            this.splitContainer1.Panel1.Controls.Add( this.labelRateCurve );
             // 
             // splitContainer1.Panel2
             // 
@@ -762,8 +849,8 @@ namespace org.kbinani.cadencii
             // 
             // splitContainer2.Panel2
             // 
-            this.splitContainer2.Panel2.Controls.Add( this.labelResulting );
             this.splitContainer2.Panel2.Controls.Add( this.pictureResulting );
+            this.splitContainer2.Panel2.Controls.Add( this.labelResulting );
             this.splitContainer2.Size = new System.Drawing.Size( 310, 195 );
             this.splitContainer2.SplitterDistance = 97;
             this.splitContainer2.SplitterWidth = 1;
@@ -772,7 +859,7 @@ namespace org.kbinani.cadencii
             // labelResulting
             // 
             this.labelResulting.AutoSize = true;
-            this.labelResulting.Location = new System.Drawing.Point( 10, 10 );
+            this.labelResulting.Location = new System.Drawing.Point( 10, 5 );
             this.labelResulting.Name = "labelResulting";
             this.labelResulting.Size = new System.Drawing.Size( 110, 12 );
             this.labelResulting.TabIndex = 137;
@@ -784,9 +871,9 @@ namespace org.kbinani.cadencii
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureResulting.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pictureResulting.Location = new System.Drawing.Point( 12, 25 );
+            this.pictureResulting.Location = new System.Drawing.Point( 12, 20 );
             this.pictureResulting.Name = "pictureResulting";
-            this.pictureResulting.Size = new System.Drawing.Size( 295, 66 );
+            this.pictureResulting.Size = new System.Drawing.Size( 295, 71 );
             this.pictureResulting.TabIndex = 136;
             this.pictureResulting.TabStop = false;
             // 
@@ -803,7 +890,7 @@ namespace org.kbinani.cadencii
             this.groupEdit.Location = new System.Drawing.Point( 183, 15 );
             this.groupEdit.Name = "groupEdit";
             this.groupEdit.Size = new System.Drawing.Size( 316, 90 );
-            this.groupEdit.TabIndex = 141;
+            this.groupEdit.TabIndex = 6;
             this.groupEdit.TabStop = false;
             this.groupEdit.Text = "Edit";
             // 
@@ -812,7 +899,7 @@ namespace org.kbinani.cadencii
             this.textName.Location = new System.Drawing.Point( 86, 62 );
             this.textName.Name = "textName";
             this.textName.Size = new System.Drawing.Size( 169, 19 );
-            this.textName.TabIndex = 134;
+            this.textName.TabIndex = 9;
             // 
             // labelName
             // 
@@ -845,7 +932,7 @@ namespace org.kbinani.cadencii
             this.listPresets.Location = new System.Drawing.Point( 12, 30 );
             this.listPresets.Name = "listPresets";
             this.listPresets.Size = new System.Drawing.Size( 165, 232 );
-            this.listPresets.TabIndex = 143;
+            this.listPresets.TabIndex = 1;
             // 
             // textDepth
             // 
@@ -854,7 +941,7 @@ namespace org.kbinani.cadencii
             this.textDepth.Location = new System.Drawing.Point( 86, 37 );
             this.textDepth.Name = "textDepth";
             this.textDepth.Size = new System.Drawing.Size( 72, 19 );
-            this.textDepth.TabIndex = 132;
+            this.textDepth.TabIndex = 8;
             this.textDepth.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // textRate
@@ -864,14 +951,14 @@ namespace org.kbinani.cadencii
             this.textRate.Location = new System.Drawing.Point( 86, 12 );
             this.textRate.Name = "textRate";
             this.textRate.Size = new System.Drawing.Size( 72, 19 );
-            this.textRate.TabIndex = 131;
+            this.textRate.TabIndex = 7;
             this.textRate.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
             // 
             // FormVibratoPreset
             // 
             this.AcceptButton = this.buttonOk;
-            this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 12F );
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF( 96F, 96F );
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.buttonCancel;
             this.ClientSize = new System.Drawing.Size( 511, 380 );
             this.Controls.Add( this.listPresets );

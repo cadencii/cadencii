@@ -817,19 +817,31 @@ namespace org.kbinani.cadencii {
                     }
 
                     if ( m_vibrato != null && value != null && !m_vibrato.equals( value ) ) {
-                        VsqFileEx vsq = AppManager.getVsqFile();
-                        if ( vsq != null ) {
-                            SynthesizerType type = SynthesizerType.VOCALOID2;
-                            RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
-                            if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
-                                type = SynthesizerType.VOCALOID1;
-                            }
-                            String description = value.description;
-                            for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
-                                VibratoHandle vconfig = itr.next();
-                                if ( description.Equals( vconfig.getDisplayString() ) ) {
-                                    editing.ID.VibratoHandle = (VibratoHandle)vconfig.clone();
+                        String description = value.description;
+                        if ( AppManager.editorConfig.UseUserDefinedAutoVibratoType ) {
+                            int size = AppManager.editorConfig.AutoVibratoCustom.size();
+                            for ( int i = 0; i < size; i++ ) {
+                                VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
+                                string display_string = handle.getDisplayString();
+                                if ( description == display_string ) {
+                                    editing.ID.VibratoHandle = (VibratoHandle)handle.clone();
                                     break;
+                                }
+                            }
+                        } else {
+                            VsqFileEx vsq = AppManager.getVsqFile();
+                            if ( vsq != null ) {
+                                SynthesizerType type = SynthesizerType.VOCALOID2;
+                                RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
+                                if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
+                                    type = SynthesizerType.VOCALOID1;
+                                }
+                                for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
+                                    VibratoHandle vconfig = itr.next();
+                                    if ( description.Equals( vconfig.getDisplayString() ) ) {
+                                        editing.ID.VibratoHandle = (VibratoHandle)vconfig.clone();
+                                        break;
+                                    }
                                 }
                             }
                         }

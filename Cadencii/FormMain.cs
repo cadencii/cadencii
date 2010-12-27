@@ -1091,7 +1091,7 @@ namespace org.kbinani.cadencii
                 VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
                 System.Windows.Forms.ToolStripMenuItem item = 
                     (System.Windows.Forms.ToolStripMenuItem)menuLyricCopyVibratoToPreset.DropDownItems[i];
-                item.Text = handle.IDS;
+                item.Text = handle.getCaption();
             }
         }
 

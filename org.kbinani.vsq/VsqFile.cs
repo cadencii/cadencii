@@ -2377,9 +2377,6 @@ namespace org.kbinani.vsq {
             Track.add( new VsqTrack( tempo, numerator, denominator ) );
             Track.add( new VsqTrack( "Voice1", singer ) );
             Master = new VsqMaster( pre_measure );
-#if DEBUG
-            PortUtil.println( "VsqFile.ctor()" );
-#endif
             Mixer = new VsqMixer( 0, 0, 0, 0 );
             Mixer.Slave.add( new VsqMixerEntry( 0, 0, 0, 0 ) );
             TimesigTable = new Vector<TimeSigTableEntry>();
