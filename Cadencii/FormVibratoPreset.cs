@@ -424,10 +424,10 @@ namespace org.kbinani.cadencii
             LineGraphDrawer d = getDrawerDepth();
             d.clear();
             d.setGraphics( g );
-            drawVibratoCurve( 
+            drawVibratoCurve(
                 handle.getDepthBP(),
-                handle.getStartDepth(), 
-                d, 
+                handle.getStartDepth(),
+                d,
                 width, height );
         }
 
@@ -480,6 +480,7 @@ namespace org.kbinani.cadencii
             groupPreview.setTitle( _( "Preview" ) );
             labelDepthCurve.setText( _( "Depth curve" ) );
             labelRateCurve.setText( _( "Rate curve" ) );
+            labelResulting.setText( _( "Resulting pitch bend" ) );
 
             buttonAdd.setText( _( "Add" ) );
             buttonRemove.setText( _( "Remove" ) );

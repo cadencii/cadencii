@@ -98,7 +98,35 @@ namespace org.kbinani.vsq {
             Collections.sort( m_list );
         }
 
-        public int getValue( float x, int default_value ) {
+        /// <summary>
+        /// このインスタンスと，指定したVibratoBPListのインスタンスが等しいかどうかを調べます
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public bool equals( VibratoBPList item )
+        {
+            if ( item == null ) {
+                return false;
+            }
+            int size = this.m_list.size();
+            if ( size != item.m_list.size() ) {
+                return false;
+            }
+            for ( int i = 0; i < size; i++ ) {
+                VibratoBPPair p0 = this.m_list.get( i );
+                VibratoBPPair p1 = item.m_list.get( i );
+                if ( p0.X != p1.X ) {
+                    return false;
+                }
+                if ( p0.Y != p1.Y ) {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public int getValue( float x, int default_value )
+        {
             if ( m_list.size() <= 0 ) {
                 return default_value;
             }

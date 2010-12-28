@@ -56,7 +56,12 @@ namespace org.kbinani.cadencii
         /// <param name="default_vibrato_length"></param>
         /// <param name="type"></param>
         /// <param name="use_original"></param>
-        public FormVibratoConfig( VibratoHandle vibrato_handle, int note_length, DefaultVibratoLengthEnum default_vibrato_length, SynthesizerType type, boolean use_original )
+        public FormVibratoConfig( 
+            VibratoHandle vibrato_handle, 
+            int note_length, 
+            DefaultVibratoLengthEnum default_vibrato_length, 
+            SynthesizerType type, 
+            boolean use_original )
         {
 #if JAVA
             super();
@@ -87,7 +92,16 @@ namespace org.kbinani.cadencii
             setResources();
             applyLanguage();
 
+            // 選択肢の状態を更新
             updateComboBoxStatus();
+            // どれを選ぶか？
+            for ( int i = 0; i < comboVibratoType.getItemCount(); i++ ) {
+                VibratoHandle handle = (VibratoHandle)comboVibratoType.getItemAt( i );
+                if ( vibrato_handle.equals( handle ) ) {
+                    comboVibratoType.setSelectedIndex( i );
+                    break;
+                }
+            }
 
             txtVibratoLength.setEnabled( vibrato_handle != null );
             if ( vibrato_handle != null ) {

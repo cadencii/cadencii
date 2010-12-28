@@ -4500,6 +4500,8 @@ namespace org.kbinani.cadencii
             menuLyricPhonemeTransformation.setMnemonic( KeyEvent.VK_T );
             menuLyricDictionary.setText( _( "User word dictionary" ) );
             menuLyricDictionary.setMnemonic( KeyEvent.VK_C );
+            menuLyricCopyVibratoToPreset.setText( _( "Copy vibrato config to preset" ) );
+            menuLyricCopyVibratoToPreset.setMnemonic( KeyEvent.VK_P );
             
             menuScript.setText( _( "Script" ) );
             menuScript.setMnemonic( KeyEvent.VK_C );
@@ -4532,6 +4534,8 @@ namespace org.kbinani.cadencii
             menuSettingSingerProperty.setMnemonic( KeyEvent.VK_S );
             menuSettingPaletteTool.setText( _( "Palette Tool" ) );
             menuSettingPaletteTool.setMnemonic( KeyEvent.VK_T );
+            menuSettingVibratoPreset.setText( _( "Vibrato preset" ) );
+            menuSettingVibratoPreset.setMnemonic( KeyEvent.VK_V );
 
             menuHelp.setText( _( "Help" ) );
             menuHelp.setMnemonic( KeyEvent.VK_H );
@@ -9962,6 +9966,7 @@ namespace org.kbinani.cadencii
             clearTempWave();
             updateScrollRangeHorizontal();
             updateScrollRangeVertical();
+            updateVibratoPresetMenu();
             mPencilMode.setMode( PencilModeEnum.Off );
             updateCMenuPianoFixed();
             loadGameControler();

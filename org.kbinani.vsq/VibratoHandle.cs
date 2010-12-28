@@ -22,6 +22,9 @@ namespace org.kbinani.vsq
 {
 #endif
 
+    /// <summary>
+    /// ビブラートハンドル
+    /// </summary>
 #if JAVA
     public class VibratoHandle extends IconParameter implements Cloneable, Serializable {
 #else
@@ -60,112 +63,42 @@ namespace org.kbinani.vsq
         }
 
         /// <summary>
-        /// このビブラートの、位置x(0&lt;=x&lt;=1)におけるピッチベンド(ノートナンバー単位)を計算します
+        /// このインスタンスと，指定したVibratoHandleのインスタンスが等しいかどうかを調べます
         /// </summary>
-        /// <param name="clock"></param>
-        /// <param name="clock_length"></param>
-        /// <param name="clock_start"></param>
-        /// <param name="vsq"></param>
+        /// <param name="item"></param>
         /// <returns></returns>
-        public double calculatePitchbend( int clock, int clock_start, int clock_length, VsqFile vsq )
+        public bool equals( VibratoHandle item )
         {
-            return calculatePitchbendCor( this.startRate, this.rateBP,
-                                          this.startDepth, this.depthBP,
-                                          clock, clock_start, clock_length, vsq );
-        }
-
-        public static double calculatePitchbendCor( int start_rate, VibratoBPList rateBP,
-                                                    int start_depth, VibratoBPList depthBP,
-                                                    int clock, int clock_start, int clock_length, VsqFile vsq )
-        {
-            if ( rateBP == null && depthBP == null ) {
-                return 0.0;
+            if ( item == null ) {
+                return false;
             }
-            if ( clock <= clock_start ) {
-                return 0.0;
+            if ( startRate != item.startRate ) {
+                return false;
             }
-            if ( clock_start + clock_length < clock ) {
-                return 0.0;
+            if ( startDepth != item.startDepth ) {
+                return false;
             }
-            int index_rate = -1;
-            int index_depth = -1;
-
-            double sec0 = vsq.getSecFromClock( clock_start );
-            double sec1 = vsq.getSecFromClock( clock_start + clock_length );
-            double fadewidth = (sec1 - sec0) * 0.2;
-
-            double x = (clock - clock_start) / (double)clock_length;
-            int rate = start_rate;
-            int depth = start_depth;
-            double phase = 0.0;
-            double lastx = 0.0;
-            double lastsec = sec0;
-            double lastclock = clock_start;
-
-            double amp = depth * 2.5 / 127.0 / 2.0;
-            double period = Math.Exp( 5.24 - 1.07e-2 * rate ) * 2.0 / 1000.0;
-            double omega = 2.0 * Math.PI / period;
-
-            while ( true ) {
-                double nextx_rate = 1.0;
-                if ( rateBP != null && index_rate + 1 < rateBP.getCount() ) {
-                    nextx_rate = rateBP.getElement( index_rate + 1 ).X;
-                }
-                double nextx_depth = 1.0;
-                if ( depthBP != null && index_depth + 1 < depthBP.getCount() ) {
-                    nextx_depth = depthBP.getElement( index_depth + 1 ).X;
-                }
-                // depth, rateの次のデータ点のうち、一番若いやつ
-                double nextx = Math.Min( nextx_rate, nextx_depth );
-                if ( nextx >= x ) {
-                    // 次のデータ点のどちらも、目的のxよりもでかいか等しい場合、indexをインクリメントしないよ
-                } else {
-                    if ( nextx_depth == nextx_rate ) {
-                        // 両方インクリメント
-                        index_depth++;
-                        index_rate++;
-                    } else if ( nextx_depth < nextx_rate ) {
-                        // depthだけの方をインクリメント
-                        index_depth++;
-                    } else {
-                        // rateの方をインクリメント
-                        index_rate++;
-                    }
-                }
-                if ( nextx > x ) {
-                    nextx = x;
-                }
-                double dx = nextx - lastx;
-                double nextclock = clock_start + nextx * clock_length;
-                double nextsec = vsq.getSecFromClock( nextclock );
-                double dsec = nextsec - lastsec;
-                phase += dsec * omega;
-
-                if ( rateBP != null && 0 <= index_rate && index_rate < rateBP.getCount() ) {
-                    rate = rateBP.getElement( index_rate ).Y;
-                }
-                if ( depthBP != null && 0 <= index_depth && index_depth < depthBP.getCount() ) {
-                    depth = depthBP.getElement( index_depth ).Y;
-                }
-                amp = depth * 2.5 / 127.0 / 2.0;
-                period = Math.Exp( 5.24 - 1.07e-2 * rate ) * 2.0 / 1000.0;
-                omega = 2.0 * Math.PI / period;
-                lastclock = nextclock;
-                lastsec = nextsec;
-                lastx = nextx;
-
-                if ( nextx >= x ) {
-                    break;
+            if ( IconID != item.IconID ) {
+                return false;
+            }
+            if ( (item.depthBP == null) != (this.depthBP == null) ) {
+                // どちらかがnullで，どちらかがnullでない場合，一致するのは考えられない
+                return false;
+            }
+            if ( (item.rateBP == null) != (this.rateBP == null) ) {
+                return false;
+            }
+            if ( this.depthBP != null ) {
+                if ( !this.depthBP.equals( item.depthBP ) ) {
+                    return false;
                 }
             }
-            double sec = vsq.getSecFromClock( clock );
-            if ( sec0 <= sec && sec <= sec0 + fadewidth ) {
-                amp *= (sec - sec0) / fadewidth;
+            if ( this.rateBP != null ) {
+                if ( !this.rateBP.equals( item.rateBP ) ) {
+                    return false;
+                }
             }
-            if ( sec1 - fadewidth <= sec && sec <= sec1 ) {
-                amp *= (sec1 - sec) / fadewidth;
-            }
-            return amp * Math.Sin( phase );
+            return true;
         }
 
         public String toString()

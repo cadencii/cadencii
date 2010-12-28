@@ -24,7 +24,8 @@ using org.kbinani;
 using org.kbinani.java.io;
 using org.kbinani.java.util;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
     using boolean = System.Boolean;
     using Integer = System.Int32;
 #endif
@@ -36,7 +37,8 @@ namespace org.kbinani.vsq {
     /// コントロールカーブのデータ点リスト
     /// </summary>
     [Serializable]
-    public class VsqBPList : ICloneable {
+    public class VsqBPList : ICloneable
+    {
 #endif
         private int[] clocks;
         private VsqBPPair[] items;
@@ -49,16 +51,19 @@ namespace org.kbinani.vsq {
 
         const int INIT_BUFLEN = 512;
 
-        class KeyClockIterator : Iterator<Integer> {
+        class KeyClockIterator : Iterator<Integer>
+        {
             private VsqBPList m_list;
             private int m_pos;
 
-            public KeyClockIterator( VsqBPList list ) {
+            public KeyClockIterator( VsqBPList list )
+            {
                 m_list = list;
                 m_pos = -1;
             }
 
-            public boolean hasNext() {
+            public boolean hasNext()
+            {
                 if ( m_pos + 1 < m_list.length ) {
                     return true;
                 } else {
@@ -66,12 +71,14 @@ namespace org.kbinani.vsq {
                 }
             }
 
-            public Integer next() {
+            public Integer next()
+            {
                 m_pos++;
                 return m_list.clocks[m_pos];
             }
 
-            public void remove() {
+            public void remove()
+            {
                 if ( 0 <= m_pos && m_pos < m_list.length ) {
                     int key = m_list.clocks[m_pos];
                     for ( int i = m_pos; i < m_list.length - 1; i++ ) {
@@ -93,7 +100,7 @@ namespace org.kbinani.vsq {
 #if JAVA
             ;
 #else
- {
+        {
 #endif
         }
 
@@ -101,7 +108,8 @@ namespace org.kbinani.vsq {
         /// コンストラクタ。デフォルト値はココで指定する。
         /// </summary>
         /// <param name="default_value"></param>
-        public VsqBPList( String name, int default_value, int minimum, int maximum ) {
+        public VsqBPList( String name, int default_value, int minimum, int maximum )
+        {
             this.name = name;
             defaultValue = default_value;
             maxValue = maximum;
@@ -109,7 +117,8 @@ namespace org.kbinani.vsq {
             maxId = 0;
         }
 
-        private void ensureBufferLength( int length ) {
+        private void ensureBufferLength( int length )
+        {
             if ( clocks == null ) {
                 clocks = new int[INIT_BUFLEN];
             }
@@ -138,24 +147,29 @@ namespace org.kbinani.vsq {
         }
 
 #if !JAVA
-        public int Default {
-            get {
+        public int Default
+        {
+            get
+            {
                 return getDefault();
             }
-            set {
+            set
+            {
                 setDefault( value );
             }
         }
 #endif
 
-        public String getName() {
+        public String getName()
+        {
             if ( name == null ) {
                 name = "";
             }
             return name;
         }
 
-        public void setName( String value ) {
+        public void setName( String value )
+        {
             if ( value == null ) {
                 name = "";
             } else {
@@ -164,28 +178,34 @@ namespace org.kbinani.vsq {
         }
 
 #if !JAVA
-        public String Name {
-            get {
+        public String Name
+        {
+            get
+            {
                 return getName();
             }
-            set {
+            set
+            {
                 setName( value );
             }
         }
 #endif
 
-        public long getMaxID() {
+        public long getMaxID()
+        {
             return maxId;
         }
 
         /// <summary>
         /// このBPListのデフォルト値を取得します
         /// </summary>
-        public int getDefault() {
+        public int getDefault()
+        {
             return defaultValue;
         }
 
-        public void setDefault( int value ) {
+        public void setDefault( int value )
+        {
             defaultValue = value;
         }
 
@@ -193,7 +213,8 @@ namespace org.kbinani.vsq {
         /// データ点のIDを一度クリアし，新たに番号付けを行います．
         /// IDは，Redo,Undo用コマンドが使用するため，このメソッドを呼ぶとRedo,Undo操作が破綻する．XMLからのデシリアライズ直後のみ使用するべき．
         /// </summary>
-        public void renumberIDs() {
+        public void renumberIDs()
+        {
             maxId = 0;
             for ( int i = 0; i < length; i++ ) {
                 maxId++;
@@ -207,17 +228,21 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
-        public String Data {
-            get {
+        public String Data
+        {
+            get
+            {
                 return getData();
             }
-            set {
+            set
+            {
                 setData( value );
             }
         }
 #endif
 
-        public String getData() {
+        public String getData()
+        {
             StringBuilder ret = new StringBuilder();
             for ( int i = 0; i < length; i++ ) {
 #if JAVA
@@ -229,7 +254,8 @@ namespace org.kbinani.vsq {
             return ret.ToString();
         }
 
-        public void setData( String value ) {
+        public void setData( String value )
+        {
             length = 0;
             maxId = 0;
             String[] spl = PortUtil.splitString( value, ',' );
@@ -258,7 +284,8 @@ namespace org.kbinani.vsq {
         /// このVsqBPListの同一コピーを作成します
         /// </summary>
         /// <returns></returns>
-        public Object clone() {
+        public Object clone()
+        {
             VsqBPList res = new VsqBPList( name, defaultValue, minValue, maxValue );
             res.ensureBufferLength( length );
             for ( int i = 0; i < length; i++ ) {
@@ -275,17 +302,21 @@ namespace org.kbinani.vsq {
         }
 
 #if !JAVA
-        public object Clone() {
+        public object Clone()
+        {
             return clone();
         }
 #endif
 
 #if !JAVA
-        public int Maximum {
-            get {
+        public int Maximum
+        {
+            get
+            {
                 return getMaximum();
             }
-            set {
+            set
+            {
                 setMaximum( value );
             }
         }
@@ -294,20 +325,25 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// このリストに設定された最大値を取得します。
         /// </summary>
-        public int getMaximum() {
+        public int getMaximum()
+        {
             return maxValue;
         }
 
-        public void setMaximum( int value ) {
+        public void setMaximum( int value )
+        {
             maxValue = value;
         }
 
 #if !JAVA
-        public int Minimum {
-            get {
+        public int Minimum
+        {
+            get
+            {
                 return getMinimum();
             }
-            set {
+            set
+            {
                 setMinimum( value );
             }
         }
@@ -316,21 +352,25 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// このリストに設定された最小値を取得します
         /// </summary>
-        public int getMinimum() {
+        public int getMinimum()
+        {
             return minValue;
         }
 
-        public void setMinimum( int value ) {
+        public void setMinimum( int value )
+        {
             minValue = value;
         }
 
-        public void remove( int clock ) {
+        public void remove( int clock )
+        {
             ensureBufferLength( length );
             int index = find( clock );
             removeElementAt( index );
         }
 
-        public void removeElementAt( int index ) {
+        public void removeElementAt( int index )
+        {
             if ( index >= 0 ) {
                 for ( int i = index; i < length - 1; i++ ) {
                     clocks[i] = clocks[i + 1];
@@ -340,7 +380,8 @@ namespace org.kbinani.vsq {
             }
         }
 
-        public boolean isContainsKey( int clock ) {
+        public boolean isContainsKey( int clock )
+        {
             ensureBufferLength( length );
             return (find( clock ) >= 0);
         }
@@ -352,7 +393,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="clock"></param>
         /// <param name="new_clock"></param>
-        public void move( int clock, int new_clock, int new_value ) {
+        public void move( int clock, int new_clock, int new_value )
+        {
             ensureBufferLength( length );
             int index = find( clock );
             if ( index < 0 ) {
@@ -387,27 +429,33 @@ namespace org.kbinani.vsq {
             }
         }
 
-        public void clear() {
+        public void clear()
+        {
             length = 0;
         }
 
-        public int getElement( int index ) {
+        public int getElement( int index )
+        {
             return getElementA( index );
         }
 
-        public int getElementA( int index ) {
+        public int getElementA( int index )
+        {
             return items[index].value;
         }
 
-        public VsqBPPair getElementB( int index ) {
+        public VsqBPPair getElementB( int index )
+        {
             return items[index];
         }
 
-        public int getKeyClock( int index ) {
+        public int getKeyClock( int index )
+        {
             return clocks[index];
         }
 
-        public int findValueFromID( long id ) {
+        public int findValueFromID( long id )
+        {
             for ( int i = 0; i < length; i++ ) {
                 VsqBPPair item = items[i];
                 if ( item.id == id ) {
@@ -422,7 +470,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public VsqBPPairSearchContext findElement( long id ) {
+        public VsqBPPairSearchContext findElement( long id )
+        {
             VsqBPPairSearchContext context = new VsqBPPairSearchContext();
             for ( int i = 0; i < length; i++ ) {
                 VsqBPPair item = items[i];
@@ -439,7 +488,8 @@ namespace org.kbinani.vsq {
             return context;
         }
 
-        public void setValueForID( long id, int value ) {
+        public void setValueForID( long id, int value )
+        {
             for ( int i = 0; i < length; i++ ) {
                 VsqBPPair item = items[i];
                 if ( item.id == id ) {
@@ -450,7 +500,8 @@ namespace org.kbinani.vsq {
             }
         }
 
-        public int getValue( int clock, ByRef<Integer> index ) {
+        public int getValue( int clock, ByRef<Integer> index )
+        {
             if ( length == 0 ) {
                 return defaultValue;
             } else {
@@ -511,7 +562,7 @@ namespace org.kbinani.vsq {
 #if JAVA
             throws IOException
 #endif
- {
+        {
             printCor( new WrappedStreamWriter( writer ), start, header );
         }
 
@@ -523,7 +574,7 @@ namespace org.kbinani.vsq {
 #if JAVA
             throws IOException
 #endif
- {
+        {
             printCor( writer, start, header );
         }
 
@@ -532,7 +583,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="reader"></param>
         /// <returns></returns>
-        public String appendFromText( TextStream reader ) {
+        public String appendFromText( TextStream reader )
+        {
 #if DEBUG
             PortUtil.println( "VsqBPList#appendFromText; start" );
             double started = PortUtil.getCurrentTime();
@@ -608,15 +660,18 @@ namespace org.kbinani.vsq {
             return reader.readLine();
         }
 
-        public int size() {
+        public int size()
+        {
             return length;
         }
 
-        public Iterator<Integer> keyClockIterator() {
+        public Iterator<Integer> keyClockIterator()
+        {
             return new KeyClockIterator( this );
         }
 
-        private int find( int value ) {
+        private int find( int value )
+        {
 #if JAVA
             // caution: length of array 'clocks' is equal to or larger than the value of 'length' field.
             // 配列clocksの長さは、フィールドlengthの値と等しいか、大きい。
@@ -642,7 +697,8 @@ namespace org.kbinani.vsq {
         /// <param name="clock"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        private void addWithoutSort( int clock, int value ) {
+        private void addWithoutSort( int clock, int value )
+        {
             ensureBufferLength( length + 1 );
             clocks[length] = clock;
             maxId++;
@@ -655,7 +711,8 @@ namespace org.kbinani.vsq {
             length++;
         }
 
-        public long add( int clock, int value ) {
+        public long add( int clock, int value )
+        {
             ensureBufferLength( length );
             int index = find( clock );
             if ( index >= 0 ) {
@@ -682,7 +739,8 @@ namespace org.kbinani.vsq {
             }
         }
 
-        public void addWithID( int clock, int value, long id ) {
+        public void addWithID( int clock, int value, long id )
+        {
             ensureBufferLength( length );
             int index = find( clock );
             if ( index >= 0 ) {
@@ -708,7 +766,8 @@ namespace org.kbinani.vsq {
             }
         }
 
-        public void removeWithID( long id ) {
+        public void removeWithID( long id )
+        {
             for ( int i = 0; i < length; i++ ) {
                 if ( items[i].id == id ) {
                     for ( int j = i; j < length - 1; j++ ) {
@@ -721,7 +780,8 @@ namespace org.kbinani.vsq {
             }
         }
 
-        public int getValue( int clock ) {
+        public int getValue( int clock )
+        {
             ensureBufferLength( length );
             int index = find( clock );
             if ( index >= 0 ) {

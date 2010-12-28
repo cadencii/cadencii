@@ -809,6 +809,7 @@ namespace org.kbinani.cadencii {
                         string s = this.AutoVibratoTypeCustom.Substring( len - trimlen, trimlen );
                         try {
                             index = (int)PortUtil.fromHexString( s );
+                            index--;
                         } catch ( Exception ex ) {
                             PortUtil.stderr.println( typeof( EditorConfig ) + ".createAutoVibrato; ex=" + ex + "; AutoVibratoTypeCustom=" + AutoVibratoTypeCustom + "; s=" + s );
                             index = 0;
@@ -829,7 +830,7 @@ namespace org.kbinani.cadencii {
                 if ( ret == null ) {
                     ret = new VibratoHandle();
                 }
-                ret.IconID = "$0404" + PortUtil.toHexString( index, 4 );
+                ret.IconID = "$0404" + PortUtil.toHexString( index + 1, 4 );
                 ret.setLength( vibrato_clocks );
                 return ret;
             } else {
