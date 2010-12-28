@@ -8175,32 +8175,35 @@ namespace org.kbinani.cadencii
                             int head_x = AppManager.xCoordFromClocks( item.Clock );
                             mMouseMoveOffset = e.X - head_x;
                             if ( (modefier & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
-                                // 範囲選択
-                                int last_id = AppManager.getLastSelectedEvent().original.InternalID;
-                                int last_clock = 0;
-                                int this_clock = 0;
-                                boolean this_found = false, last_found = false;
-                                for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track.get( selected ).getEventIterator(); itr.hasNext(); ) {
-                                    VsqEvent ev = itr.next();
-                                    if ( ev.InternalID == last_id ) {
-                                        last_clock = ev.Clock;
-                                        last_found = true;
-                                    } else if ( ev.InternalID == item.InternalID ) {
-                                        this_clock = ev.Clock;
-                                        this_found = true;
-                                    }
-                                    if ( last_found && this_found ) {
-                                        break;
-                                    }
-                                }
-                                int start = Math.Min( last_clock, this_clock );
-                                int end = Math.Max( last_clock, this_clock );
+                                // シフトキー同時押しによる範囲選択
+                                SelectedEventEntry sel = AppManager.getLastSelectedEvent();
                                 Vector<Integer> add_required = new Vector<Integer>();
-                                for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track.get( selected ).getEventIterator(); itr.hasNext(); ) {
-                                    VsqEvent ev = itr.next();
-                                    if ( start <= ev.Clock && ev.Clock <= end ) {
-                                        if ( !add_required.contains( ev.InternalID ) ) {
-                                            add_required.add( ev.InternalID );
+                                if ( sel != null ) {
+                                    int last_id = sel.original.InternalID;
+                                    int last_clock = 0;
+                                    int this_clock = 0;
+                                    boolean this_found = false, last_found = false;
+                                    for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track.get( selected ).getEventIterator(); itr.hasNext(); ) {
+                                        VsqEvent ev = itr.next();
+                                        if ( ev.InternalID == last_id ) {
+                                            last_clock = ev.Clock;
+                                            last_found = true;
+                                        } else if ( ev.InternalID == item.InternalID ) {
+                                            this_clock = ev.Clock;
+                                            this_found = true;
+                                        }
+                                        if ( last_found && this_found ) {
+                                            break;
+                                        }
+                                    }
+                                    int start = Math.Min( last_clock, this_clock );
+                                    int end = Math.Max( last_clock, this_clock );
+                                    for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track.get( selected ).getEventIterator(); itr.hasNext(); ) {
+                                        VsqEvent ev = itr.next();
+                                        if ( start <= ev.Clock && ev.Clock <= end ) {
+                                            if ( !add_required.contains( ev.InternalID ) ) {
+                                                add_required.add( ev.InternalID );
+                                            }
                                         }
                                     }
                                 }
