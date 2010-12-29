@@ -144,7 +144,6 @@ namespace org.kbinani.cadencii {
         }
 
         private void registerEventHandlers() {
-            PortUtil.stderr.println( "foo" );
 #if JAVA
             PortUtil.stdout.println( "//TODO: fixme: FormSplash#registerEventHandlers" );
 #else

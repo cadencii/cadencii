@@ -7531,7 +7531,8 @@ namespace org.kbinani.cadencii
                          edit_mode != EditMode.MOVE_ENTRY_WHOLE_WAIT_MOVE &&
                          edit_mode != EditMode.MOVE_ENTRY_WHOLE &&
                          edit_mode != EditMode.EDIT_LEFT_EDGE &&
-                         edit_mode != EditMode.EDIT_RIGHT_EDGE ) {
+                         edit_mode != EditMode.EDIT_RIGHT_EDGE &&
+                         edit_mode != EditMode.EDIT_VIBRATO_DELAY ) {
                         if ( !AppManager.mIsPointerDowned ) {
                             AppManager.clearSelectedEvent();
                         }
@@ -7940,6 +7941,8 @@ namespace org.kbinani.cadencii
 #endif
 
             int selected = AppManager.getSelected();
+            VsqFileEx vsq = AppManager.getVsqFile();
+            VsqTrack vsq_track = vsq.Track.get( selected );
             int key_width = AppManager.keyWidth;
 
             // マウス位置にある音符を検索
@@ -8176,14 +8179,19 @@ namespace org.kbinani.cadencii
                             mMouseMoveOffset = e.X - head_x;
                             if ( (modefier & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
                                 // シフトキー同時押しによる範囲選択
-                                SelectedEventEntry sel = AppManager.getLastSelectedEvent();
                                 Vector<Integer> add_required = new Vector<Integer>();
+                                add_required.add( item.InternalID );
+
+                                // 現在の選択アイテムがある場合，
+                                // 直前に選択したアイテムと，現在選択しようとしているアイテムとの間にあるアイテムを
+                                // 全部選択する
+                                SelectedEventEntry sel = AppManager.getLastSelectedEvent();
                                 if ( sel != null ) {
                                     int last_id = sel.original.InternalID;
                                     int last_clock = 0;
                                     int this_clock = 0;
                                     boolean this_found = false, last_found = false;
-                                    for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track.get( selected ).getEventIterator(); itr.hasNext(); ) {
+                                    for ( Iterator<VsqEvent> itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
                                         VsqEvent ev = itr.next();
                                         if ( ev.InternalID == last_id ) {
                                             last_clock = ev.Clock;
@@ -8198,7 +8206,7 @@ namespace org.kbinani.cadencii
                                     }
                                     int start = Math.Min( last_clock, this_clock );
                                     int end = Math.Max( last_clock, this_clock );
-                                    for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track.get( selected ).getEventIterator(); itr.hasNext(); ) {
+                                    for ( Iterator<VsqEvent> itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
                                         VsqEvent ev = itr.next();
                                         if ( start <= ev.Clock && ev.Clock <= end ) {
                                             if ( !add_required.contains( ev.InternalID ) ) {
@@ -8206,9 +8214,6 @@ namespace org.kbinani.cadencii
                                             }
                                         }
                                     }
-                                }
-                                if ( !add_required.contains( item.InternalID ) ) {
-                                    add_required.add( item.InternalID );
                                 }
                                 AppManager.addSelectedEventAll( add_required );
                             } else if ( (modefier & s_modifier_key) == s_modifier_key ) {
@@ -8228,7 +8233,8 @@ namespace org.kbinani.cadencii
 
                             // 範囲選択モードで、かつマウス位置の音符がその範囲に入っていた場合にのみ、MOVE_ENTRY_WHOLE_WAIT_MOVEに移行
                             if ( AppManager.isWholeSelectedIntervalEnabled() &&
-                                 AppManager.mWholeSelectedInterval.getStart() <= item.Clock && item.Clock <= AppManager.mWholeSelectedInterval.getEnd() ) {
+                                 AppManager.mWholeSelectedInterval.getStart() <= item.Clock && 
+                                 item.Clock <= AppManager.mWholeSelectedInterval.getEnd() ) {
                                 AppManager.setEditMode( EditMode.MOVE_ENTRY_WHOLE_WAIT_MOVE );
                                 AppManager.mWholeSelectedIntervalStartForMoving = AppManager.mWholeSelectedInterval.getStart();
                             } else {
