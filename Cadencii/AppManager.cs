@@ -1,6 +1,6 @@
 /*
  * AppManager.cs
- * Copyright © 2009-2010 kbinani
+ * Copyright © 2009-2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -890,7 +890,7 @@ namespace org.kbinani.cadencii {
                 end_clock = mEndMarker;
             }
             double end_sec = mVsq.getSecFromClock( end_clock );
-            long samples = (long)((end_sec - mDirectPlayShift) * VSTiDllManager.SAMPLE_RATE);
+            long samples = (long)((end_sec - mDirectPlayShift) * mVsq.config.SamplingRate);
 #if DEBUG
             PortUtil.println( "AppManager.previewStart; calling runGenerator..." );
 #endif
@@ -932,6 +932,7 @@ namespace org.kbinani.cadencii {
                     int track = tracks[k];
                     String wavePath = PortUtil.combinePath( temppath, track + ".wav" );
                     Vector<Integer> queueIndex = new Vector<Integer>();
+                    
                     for ( int i = 0; i < queue.size(); i++ ) {
                         if ( queue[i].track == track ) {
                             queueIndex.add( i );
@@ -968,7 +969,7 @@ namespace org.kbinani.cadencii {
 
                     WaveWriter writer = null;
                     try {
-                        int sampleRate = VSTiDllManager.SAMPLE_RATE;
+                        int sampleRate = mVsq.config.SamplingRate;
                         long totalLength = (long)((mVsq.getSecFromClock( mVsq.TotalClocks ) + 1.0) * sampleRate);
                         writer = new WaveWriter( wavePath, editorConfig.WaveFileOutputChannel, 16, sampleRate );
                         int BUFLEN = 1024;

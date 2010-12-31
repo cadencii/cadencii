@@ -1,6 +1,6 @@
 /*
  * FormSynthesize.cs
- * Copyright © 2008-2010 kbinani
+ * Copyright © 2008-2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -286,7 +286,7 @@ namespace org.kbinani.cadencii {
                         }
 
                         PortUtil.deleteFile( q.file );
-                        FileWaveReceiver wave_receiver = new FileWaveReceiver( q.file, 2, 16, VSTiDllManager.SAMPLE_RATE );
+                        FileWaveReceiver wave_receiver = new FileWaveReceiver( q.file, 2, 16 );
                         wave_receiver.setGlobalConfig( AppManager.editorConfig );
                         Amplifier amp_unit_master = new Amplifier();
                         if ( q.renderAll ) {
@@ -302,11 +302,12 @@ namespace org.kbinani.cadencii {
 
                         int end = q.clockEnd;
                         if( end == int.MaxValue ) end = mVsq.TotalClocks + 240;
-                        mGenerator.init( mVsq, track, q.clockStart, end );
+                        int sample_rate = mVsq.config.SamplingRate;
+                        mGenerator.init( mVsq, track, q.clockStart, end, sample_rate );
 
                         double sec_start = mVsq.getSecFromClock( q.clockStart );
                         double sec_end = mVsq.getSecFromClock( end );
-                        long samples = (long)((sec_end - sec_start) * VSTiDllManager.SAMPLE_RATE);
+                        long samples = (long)((sec_end - sec_start) * sample_rate);
                         mGenerator.begin( samples );
 
                         mFinished++;

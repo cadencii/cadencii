@@ -1,6 +1,6 @@
 /*
  * WaveSenderDriver.cs
- * Copyright © 2010 kbinani
+ * Copyright © 2010-2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -21,7 +21,8 @@ using System.Threading;
 using org.kbinani.java.awt;
 using org.kbinani.java.util;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using boolean = System.Boolean;
 #endif
 
@@ -32,10 +33,11 @@ namespace org.kbinani.cadencii {
 #if JAVA
     public class WaveSenderDriver extends WaveUnit implements WaveGenerator {
 #else
-    public class WaveSenderDriver : WaveUnit, WaveGenerator {
+    public class WaveSenderDriver : WaveUnit, WaveGenerator
+    {
 #endif
         private const int BUFLEN = 1024;
-        
+
         private WaveSender mWaveSender = null;
         private double[] mBufferL = new double[BUFLEN];
         private double[] mBufferR = new double[BUFLEN];
@@ -45,16 +47,25 @@ namespace org.kbinani.cadencii {
         private int mVersion = 0;
         private boolean mAbortRequired = false;
         private boolean mRunning = false;
+        private int mSampleRate;
 
-        public boolean isRunning() {
+        public int getSampleRate()
+        {
+            return mSampleRate;
+        }
+
+        public boolean isRunning()
+        {
             return mRunning;
         }
 
-        public long getTotalSamples() {
+        public long getTotalSamples()
+        {
             return mTotalSamples;
         }
 
-        public double getProgress() {
+        public double getProgress()
+        {
             if ( mTotalSamples <= 0 ) {
                 return 0.0;
             } else {
@@ -62,7 +73,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void stop() {
+        public void stop()
+        {
             if ( mRunning ) {
                 mAbortRequired = true;
                 while ( mRunning ) {
@@ -75,11 +87,13 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public override int getVersion() {
+        public override int getVersion()
+        {
             return mVersion;
         }
 
-        public override void setConfig( string parameters ) {
+        public override void setConfig( string parameters )
+        {
             // do nothing
         }
 
@@ -90,26 +104,31 @@ namespace org.kbinani.cadencii {
         /// <param name="track"></param>
         /// <param name="start_clock"></param>
         /// <param name="end_clock"></param>
-        public void init( VsqFileEx vsq, int track, int start_clock, int end_clock ) {
-            // do nothing (!!)
+        public void init( VsqFileEx vsq, int track, int start_clock, int end_clock, int sample_rate )
+        {
+            mSampleRate = sample_rate;
         }
 
-        public void setSender( WaveSender wave_sender ) {
+        public void setSender( WaveSender wave_sender )
+        {
             mWaveSender = wave_sender;
         }
 
-        public void setReceiver( WaveReceiver r ) {
+        public void setReceiver( WaveReceiver r )
+        {
             if ( mReceiver != null ) {
                 mReceiver.end();
             }
             mReceiver = r;
         }
 
-        public long getPosition() {
+        public long getPosition()
+        {
             return mTotalAppend;
         }
 
-        public void begin( long length ) {
+        public void begin( long length )
+        {
             mRunning = true;
             mTotalSamples = length;
             long remain = length;

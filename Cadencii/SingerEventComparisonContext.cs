@@ -1,6 +1,6 @@
 /*
  * SingerEventComparisonContext.cs
- * Copyright © 2010 kbinani
+ * Copyright © 2010-2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *

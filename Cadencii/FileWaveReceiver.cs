@@ -1,6 +1,6 @@
 /*
  * FileWaveReceiver.cs
- * Copyright © 2010 kbinani
+ * Copyright © 2010-2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -21,29 +21,44 @@ using System;
 using org.kbinani.java.util;
 using org.kbinani.media;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
 #endif
 
 #if JAVA
     public class FileWaveReceiver implements WaveReceiver {
 #else
-    public class FileWaveReceiver : WaveReceiver {
+    public class FileWaveReceiver : WaveUnit, WaveReceiver
+    {
 #endif
         private const int BUFLEN = 1024;
-        private WaveRateConvertAdapter mAdapter = null;
+        private WaveWriter mAdapter = null;
         private double[] mBufferL = new double[BUFLEN];
         private double[] mBufferR = new double[BUFLEN];
         private double[] mBuffer2L = new double[BUFLEN];
         private double[] mBuffer2R = new double[BUFLEN];
         private WaveReceiver mReceiver = null;
         private int mVersion = 0;
+        private string mPath;
+        private int mChannel;
+        private int mBitPerSample;
 
-        public FileWaveReceiver( string path, int channel, int bit_per_sample, int sample_rate ) {
-            WaveWriter ww = new WaveWriter( path, channel, bit_per_sample, sample_rate );
-            mAdapter = new WaveRateConvertAdapter( ww, VSTiDllManager.SAMPLE_RATE );
+        public FileWaveReceiver( string path, int channel, int bit_per_sample )
+        {
+            mPath = path;
+            mChannel = channel;
+            mBitPerSample = bit_per_sample;
+            //WaveWriter ww = new WaveWriter( path, channel, bit_per_sample, sample_rate );
+            //mAdapter = new WaveRateConvertAdapter( ww, VSTiDllManager.SAMPLE_RATE );
         }
 
-        public void setGlobalConfig( EditorConfig config ) {
+        public override void setGlobalConfig( EditorConfig config )
+        {
+            // do nothing
+        }
+
+        public override void setConfig( string parameter )
+        {
             // do nothing
         }
 
@@ -51,14 +66,17 @@ namespace org.kbinani.cadencii {
         /// 初期化メソッド．
         /// </summary>
         /// <param name="parameter"></param>
-        public void init( String parameter ) {
+        public void init( String parameter )
+        {
         }
 
-        public int getVersion() {
+        public override int getVersion()
+        {
             return mVersion;
         }
 
-        public void end() {
+        public void end()
+        {
 #if DEBUG
             PortUtil.println( "FileWaveReceiver#end" );
 #endif
@@ -67,7 +85,12 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void push( double[] l, double[] r, int length ) {
+        public void push( double[] l, double[] r, int length )
+        {
+            if ( mAdapter == null ) {
+                int sample_rate = mRoot.getSampleRate();
+                mAdapter = new WaveWriter( mPath, mChannel, mBitPerSample, sample_rate );
+            }
             lock ( mAdapter ) {
                 mAdapter.append( l, r, length );
             }
@@ -76,7 +99,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void setReceiver( WaveReceiver r ) {
+        public void setReceiver( WaveReceiver r )
+        {
             if ( r != null ) {
                 r.end();
             }

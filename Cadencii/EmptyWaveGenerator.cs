@@ -1,6 +1,6 @@
 /*
  * EmptyWaveGenerator.cs
- * Copyright © 2010 kbinani
+ * Copyright © 2010-2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -14,7 +14,8 @@
 #if JAVA
 #else
 using System.Threading;
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using boolean = System.Boolean;
 #endif
 
@@ -22,7 +23,8 @@ namespace org.kbinani.cadencii {
     /// <summary>
     /// 無音の波形を送信するWaveGenerator
     /// </summary>
-    public class EmptyWaveGenerator : WaveUnit, WaveGenerator {
+    public class EmptyWaveGenerator : WaveUnit, WaveGenerator
+    {
         private const int VERSION = 0;
         private const int BUFLEN = 1024;
         private WaveReceiver mReceiver = null;
@@ -30,20 +32,30 @@ namespace org.kbinani.cadencii {
         private boolean mRunning = false;
         private long mTotalAppend = 0L;
         private long mTotalSamples = 0L;
+        private int mSampleRate = 0;
 
-        public boolean isRunning() {
+        public int getSampleRate()
+        {
+            return mSampleRate;
+        }
+
+        public boolean isRunning()
+        {
             return mRunning;
         }
 
-        public long getPosition() {
+        public long getPosition()
+        {
             return mTotalAppend;
         }
 
-        public long getTotalSamples() {
+        public long getTotalSamples()
+        {
             return mTotalSamples;
         }
 
-        public double getProgress() {
+        public double getProgress()
+        {
             if ( mTotalSamples <= 0 ) {
                 return 0.0;
             } else {
@@ -51,15 +63,18 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public override int getVersion() {
+        public override int getVersion()
+        {
             return VERSION;
         }
 
-        public override void setConfig( string parameter ) {
+        public override void setConfig( string parameter )
+        {
             // do nothing
         }
 
-        public void begin( long samples ) {
+        public void begin( long samples )
+        {
             if ( mReceiver == null ) return;
             mRunning = true;
             mTotalSamples = samples;
@@ -81,14 +96,18 @@ namespace org.kbinani.cadencii {
             mReceiver.end();
         }
 
-        public void setReceiver( WaveReceiver receiver ) {
+        public void setReceiver( WaveReceiver receiver )
+        {
             mReceiver = receiver;
         }
 
-        public void init( VsqFileEx vsq, int track, int start_clock, int end_clock ) {
+        public void init( VsqFileEx vsq, int track, int start_clock, int end_clock, int sample_rate )
+        {
+            mSampleRate = sample_rate;
         }
 
-        public void stop() {
+        public void stop()
+        {
             if ( mRunning ) {
                 mAbortRequested = true;
                 while ( mRunning ) {

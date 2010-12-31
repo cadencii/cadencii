@@ -1,6 +1,6 @@
 /*
  * VConnectWaveGenerator.cs
- * Copyright © 2010 kbinani
+ * Copyright © 2010-2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -27,7 +27,8 @@ using org.kbinani.java.util;
 using org.kbinani.media;
 using org.kbinani.vsq;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using boolean = System.Boolean;
     using Integer = System.Int32;
 #endif
@@ -35,12 +36,13 @@ namespace org.kbinani.cadencii {
     /// <summary>
     /// vConnect-STANDを使って音声合成を行う波形生成器
     /// </summary>
-    public class VConnectWaveGenerator : WaveUnit, WaveGenerator {
+    public class VConnectWaveGenerator : WaveUnit, WaveGenerator
+    {
         /// <summary>
         /// シンセサイザの実行ファイル名
         /// </summary>
         public const String STRAIGHT_SYNTH = "vConnect-STAND.exe";
-        
+
         private const int BUFLEN = 1024;
         private const int VERSION = 0;
         private const int TEMPO = 120;
@@ -78,19 +80,28 @@ namespace org.kbinani.cadencii {
         private WaveReceiver mReceiver;
         private VsqFileEx mVsq;
 
-        public boolean isRunning() {
+        public int getSampleRate()
+        {
+            return mSampleRate;
+        }
+
+        public boolean isRunning()
+        {
             return mRunning;
         }
 
-        public long getPosition() {
+        public long getPosition()
+        {
             return mTotalAppend;
         }
 
-        public long getTotalSamples() {
+        public long getTotalSamples()
+        {
             return mTotalSamples;
         }
 
-        public double getProgress() {
+        public double getProgress()
+        {
             if ( mTotalSamples > 0 ) {
                 return mTotalAppend / (double)mTotalSamples;
             } else {
@@ -98,7 +109,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void stop() {
+        public void stop()
+        {
             if ( mRunning ) {
                 mAbortRequired = true;
                 while ( mRunning ) {
@@ -111,22 +123,27 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public override int getVersion() {
+        public override int getVersion()
+        {
             return VERSION;
         }
 
-        public void setReceiver( WaveReceiver receiver ) {
+        public void setReceiver( WaveReceiver receiver )
+        {
             mReceiver = receiver;
         }
 
-        public override void setConfig( String parameter ) {
+        public override void setConfig( String parameter )
+        {
             //TODO:
         }
 
-        public void init( VsqFileEx vsq, int track, int start_clock, int end_clock ) {
+        public void init( VsqFileEx vsq, int track, int start_clock, int end_clock, int sample_rate )
+        {
             // VSTiProxyの実装より
             mVsq = (VsqFileEx)vsq.clone();
             mVsq.updateTotalClocks();
+            mSampleRate = sample_rate;
 
             if ( end_clock < vsq.TotalClocks ) {
                 mVsq.removePart( end_clock, mVsq.TotalClocks + 480 );
@@ -146,7 +163,7 @@ namespace org.kbinani.cadencii {
 
             // RenderingRunner.ctorの実装より
             mTrack = track;
-            mSampleRate = VSTiDllManager.SAMPLE_RATE;
+            mSampleRate = sample_rate;
 
             mLocker = new Object();
             mRunning = false;
@@ -199,7 +216,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void begin( long samples ) {
+        public void begin( long samples )
+        {
             mTotalSamples = samples;
             mStartedDate = PortUtil.getCurrentTime();
             mRunning = true;
@@ -786,7 +804,8 @@ namespace org.kbinani.cadencii {
             mReceiver.end();
         }
 
-        private void waveIncoming( double[] L, double[] R, int length ) {
+        private void waveIncoming( double[] L, double[] R, int length )
+        {
             if ( !mRunning ) {
                 return;
             }
@@ -818,7 +837,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void appendQueue( VsqFileEx vsq, int track, Vector<VsqEvent> events, VsqEvent singer_event ) {
+        private void appendQueue( VsqFileEx vsq, int track, Vector<VsqEvent> events, VsqEvent singer_event )
+        {
             int count = events.size();
             if ( count <= 0 ) {
                 return;
@@ -910,7 +930,8 @@ namespace org.kbinani.cadencii {
         /// 連続した音符を元に，StraightRenderingQueueを作成
         /// </summary>
         /// <param name="list"></param>
-        private void appendQueueCor( VsqFileEx vsq, int track, Vector<VsqEvent> list, String oto_ini ) {
+        private void appendQueueCor( VsqFileEx vsq, int track, Vector<VsqEvent> list, String oto_ini )
+        {
             if ( list.size() <= 0 ) {
                 return;
             }
@@ -990,7 +1011,8 @@ namespace org.kbinani.cadencii {
         /// <param name="vsq_track">出力対象のトラック</param>
         /// <param name="oto_ini">原音設定ファイルのパス</param>
         /// <param name="end_clock"></param>
-        public static void prepareMetaText( BufferedWriter writer, VsqTrack vsq_track, String oto_ini, int end_clock ) {
+        public static void prepareMetaText( BufferedWriter writer, VsqTrack vsq_track, String oto_ini, int end_clock )
+        {
             prepareMetaText( writer, vsq_track, oto_ini, end_clock, true );
         }
 
@@ -1002,7 +1024,8 @@ namespace org.kbinani.cadencii {
         /// <param name="oto_ini"></param>
         /// <param name="end_clock"></param>
         /// <param name="world_mode"></param>
-        public static void prepareMetaText( BufferedWriter writer, VsqTrack vsq_track, String oto_ini, int end_clock, boolean world_mode ) {
+        public static void prepareMetaText( BufferedWriter writer, VsqTrack vsq_track, String oto_ini, int end_clock, boolean world_mode )
+        {
             TreeMap<String, String> dict_singername_otoini = new TreeMap<String, String>();
             dict_singername_otoini.put( "", oto_ini );
             prepareMetaText( writer, vsq_track, dict_singername_otoini, end_clock, world_mode );
@@ -1017,9 +1040,9 @@ namespace org.kbinani.cadencii {
         /// <param name="end_clock"></param>
         private static void prepareMetaText(
             BufferedWriter writer,
-            VsqTrack vsq_track, 
-            TreeMap<String, String> dict_singername_otoini, 
-            int end_clock, 
+            VsqTrack vsq_track,
+            TreeMap<String, String> dict_singername_otoini,
+            int end_clock,
             boolean world_mode )
 #if JAVA
             throws IOException
@@ -1102,7 +1125,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public static void clearCache() {
+        public static void clearCache()
+        {
             String tmp_dir = AppManager.getTempWaveDir();
             for ( Iterator<String> itr = mCache.keySet().iterator(); itr.hasNext(); ) {
                 String key = itr.next();

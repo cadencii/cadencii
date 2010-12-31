@@ -1,6 +1,6 @@
 /*
  * WaveGenerator.cs
- * Copyright © 2010 kbinani
+ * Copyright © 2010-2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -27,6 +27,12 @@ namespace org.kbinani.cadencii {
     /// </summary>
     public interface WaveGenerator {
         /// <summary>
+        /// この波形生成器を親とする回路の，各波形ラインに流れる波形データのサンプリングレートを取得します
+        /// </summary>
+        /// <returns></returns>
+        int getSampleRate();
+
+        /// <summary>
         /// 音声波形の合成を開始します．
         /// このメソッドの前には，setGlobalConfig, setConfig, initメソッドをこの順で呼び出して
         /// 必要なパラメータを全て渡すようにしてください．
@@ -48,7 +54,11 @@ namespace org.kbinani.cadencii {
         /// <param name="track"></param>
         /// <param name="start_clock"></param>
         /// <param name="end_clock"></param>
-        void init( VsqFileEx vsq, int track, int start_clock, int end_clock );
+        /// <param name="sample_rate">
+        /// この波形生成器を親とする回路の，各波形ラインに流れる波形データのサンプリングレート．
+        /// この波形生成器が生成するサンプリングレートを指定するのではないので注意
+        /// </param>
+        void init( VsqFileEx vsq, int track, int start_clock, int end_clock, int sample_rate );
 
         /// <summary>
         /// 停止を要求します．

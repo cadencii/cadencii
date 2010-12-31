@@ -1,6 +1,6 @@
 /*
  * FormGenerateKeySound.cs
- * Copyright © 2008-2010 kbinani
+ * Copyright © 2008-2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -341,12 +341,13 @@ namespace org.kbinani.cadencii {
                 ww = new WaveWriter( file );
                 RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( 1 ) );
                 WaveGenerator generator = VSTiDllManager.getWaveGenerator( kind );
-                FileWaveReceiver receiver = new FileWaveReceiver( file, 1, 16, 44100 );
+                FileWaveReceiver receiver = new FileWaveReceiver( file, 1, 16 );
                 generator.setReceiver( receiver );
                 generator.setGlobalConfig( AppManager.editorConfig );
-                generator.init( vsq, 1, 0, vsq.TotalClocks );
+                int sample_rate = vsq.config.SamplingRate;
+                generator.init( vsq, 1, 0, vsq.TotalClocks, sample_rate );
                 double total_sec = vsq.getSecFromClock( vsq.TotalClocks ) + 1.0;
-                generator.begin( (long)(total_sec * VSTiDllManager.SAMPLE_RATE) );
+                generator.begin( (long)(total_sec * sample_rate) );
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "FormGenerateKeySound#GenerateSinglePhone; ex=" + ex );
                 Logger.write( typeof( FormGenerateKeySound ) + ".GenerateSinglePhone; ex=" + ex + "\n" );

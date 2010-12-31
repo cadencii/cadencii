@@ -1,6 +1,6 @@
 /*
  * CircuitView.cs
- * Copyright © 2010 kbinani
+ * Copyright © 2010-2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -34,7 +34,7 @@ namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 #endif
 
-    /// <summary>
+    /* /// <summary>
     /// シンセサイザ等の接続回路を表示、編集するためのコンポーネント
     /// </summary>
 #if JAVA
@@ -262,7 +262,7 @@ namespace org.kbinani.cadencii {
         }
 #endif
 
-    }
+    }*/
 
 #if !JAVA
 }

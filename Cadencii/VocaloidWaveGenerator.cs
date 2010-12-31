@@ -1,7 +1,7 @@
 #if ENABLE_VOCALOID
 /*
  * VocaloidWaveGenerator.cs
- * Copyright © 2010 kbinani
+ * Copyright © 2010-2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -39,13 +39,15 @@ namespace org.kbinani.cadencii {
     }
 }
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using boolean = System.Boolean;
 
-    public class VocaloidWaveGenerator : WaveUnit, WaveGenerator, IWaveIncoming {
+    public class VocaloidWaveGenerator : WaveUnit, WaveGenerator, IWaveIncoming
+    {
         private const int BUFLEN = 1024;
         private const int VERSION = 0;
-        
+
         private long mTotalAppend = 0;
         private VsqFileEx mVsq = null;
         private int mTrack;
@@ -59,16 +61,25 @@ namespace org.kbinani.cadencii {
         private int mTrimRemain = 0;
         private boolean mRunning = false;
         private VocaloidDriver mDriver = null;
+        private int mSampleRate;
 
-        public boolean isRunning() {
+        public int getSampleRate()
+        {
+            return mSampleRate;
+        }
+
+        public boolean isRunning()
+        {
             return mRunning;
         }
 
-        public long getTotalSamples() {
+        public long getTotalSamples()
+        {
             return mTotalSamples;
         }
 
-        public double getProgress() {
+        public double getProgress()
+        {
             if ( mTotalSamples > 0 ) {
                 return mTotalAppend / (double)mTotalSamples;
             } else {
@@ -76,7 +87,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void stop() {
+        public void stop()
+        {
             if ( mRunning ) {
                 mDriver.abortRendering();
                 mAbortRequired = true;
@@ -90,7 +102,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public override void setConfig( String parameter ) {
+        public override void setConfig( String parameter )
+        {
             // do nothing
         }
 
@@ -101,18 +114,22 @@ namespace org.kbinani.cadencii {
         /// <param name="track"></param>
         /// <param name="start_clock"></param>
         /// <param name="end_clock"></param>
-        public void init( VsqFileEx vsq, int track, int start_clock, int end_clock ) {
+        public void init( VsqFileEx vsq, int track, int start_clock, int end_clock, int sample_rate )
+        {
             mVsq = vsq;
             mTrack = track;
             mStartClock = start_clock;
             mEndClock = end_clock;
+            mSampleRate = sample_rate;
         }
 
-        public override int getVersion() {
+        public override int getVersion()
+        {
             return VERSION;
         }
 
-        public void setReceiver( WaveReceiver r ) {
+        public void setReceiver( WaveReceiver r )
+        {
             if ( mReceiver != null ) {
                 mReceiver.end();
             }
@@ -125,7 +142,8 @@ namespace org.kbinani.cadencii {
         /// <param name="l"></param>
         /// <param name="r"></param>
         /// <param name="length"></param>
-        public boolean waveIncomingImpl( double[] l, double[] r, int length ) {
+        public boolean waveIncomingImpl( double[] l, double[] r, int length )
+        {
             int offset = 0;
             if ( mTrimRemain > 0 ) {
                 // トリムしなくちゃいけない分がまだ残っている場合。トリム処理を行う。
@@ -158,7 +176,8 @@ namespace org.kbinani.cadencii {
             return false;
         }
 
-        public void begin( long total_samples ) {
+        public void begin( long total_samples )
+        {
             // 渡されたVSQの、合成に不要な部分を削除する
             VsqFileEx split = (VsqFileEx)mVsq.clone();
             VsqTrack vsq_track = split.Track.get( mTrack );
@@ -210,6 +229,9 @@ namespace org.kbinani.cadencii {
             // ドライバーが読み込み完了していなかったらbail out
             if ( !mDriver.loaded ) return;
 
+            // サンプルレートを変える
+            mDriver.setSampleRate( mSampleRate );
+
             // NRPNを作成
             int ms_present = mConfig.PreSendTime;
             VsqNrpn[] vsq_nrpn = VsqFile.generateNRPN( split, mTrack, ms_present );
@@ -224,9 +246,9 @@ namespace org.kbinani.cadencii {
             // ずれるサンプル数
             int errorSamples = VSTiDllManager.getErrorSamples( first_tempo );
             // 今後トリムする予定のサンプル数と、
-            mTrimRemain = errorSamples + (int)(trim_sec * VSTiDllManager.SAMPLE_RATE);
+            mTrimRemain = errorSamples + (int)(trim_sec * mSampleRate);
             // 合計合成する予定のサンプル数を決める
-            mTotalSamples = (long)((end_sec - start_sec) * VSTiDllManager.SAMPLE_RATE) + errorSamples;
+            mTotalSamples = (long)((end_sec - start_sec) * mSampleRate) + errorSamples;
 #if DEBUG
             PortUtil.println( "VocaloidWaveGenerator#begin; mTotalSamples=" + mTotalSamples + "; start_sec,end_sec=" + start_sec + "," + end_sec + "; errorSamples=" + errorSamples );
 #endif
@@ -296,9 +318,9 @@ namespace org.kbinani.cadencii {
             // 合成が終わるか、ドライバへのアボート要求が来るまでは制御は返らない
             // この
             mDriver.startRendering(
-                mTotalSamples + mTrimRemain + (int)(ms_present / 1000.0 * VSTiDllManager.SAMPLE_RATE),
+                mTotalSamples + mTrimRemain + (int)(ms_present / 1000.0 * mSampleRate),
                 false,
-                VSTiDllManager.SAMPLE_RATE,
+                mSampleRate,
                 this );
 
             // ここに来るということは合成が終わったか、ドライバへのアボート要求が実行されたってこと。
@@ -307,7 +329,8 @@ namespace org.kbinani.cadencii {
             mRunning = false;
         }
 
-        public long getPosition() {
+        public long getPosition()
+        {
             return mTotalAppend;
         }
     }

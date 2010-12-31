@@ -1,7 +1,7 @@
 #if ENABLE_VOCALOID
 /*
  * vstidrv.cs
- * Copyright © 2008-2010 kbinani
+ * Copyright © 2008-2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -21,14 +21,16 @@ using org.kbinani.java.util;
 using org.kbinani.vsq;
 using VstSdk;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using boolean = System.Boolean;
     using VstInt32 = Int32;
     using VstIntPtr = Int32;
 
     delegate void VoidDelegate();
 
-    public struct TempoInfo {
+    public struct TempoInfo
+    {
         /// <summary>
         /// テンポが変更される時刻を表すクロック数
         /// </summary>
@@ -43,7 +45,8 @@ namespace org.kbinani.cadencii {
         public double TotalSec;
     }
 
-    public class vstidrv {
+    public class vstidrv
+    {
         protected delegate IntPtr PVSTMAIN( [MarshalAs( UnmanagedType.FunctionPtr )]audioMasterCallback audioMaster );
 
         public boolean loaded = false;
@@ -82,30 +85,36 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 左チャンネル用バッファ
         /// </summary>
-        IntPtr bufferLeft = IntPtr.Zero;
+        private IntPtr bufferLeft = IntPtr.Zero;
         /// <summary>
         /// 右チャンネル用バッファ
         /// </summary>
-        IntPtr bufferRight = IntPtr.Zero;
+        private IntPtr bufferRight = IntPtr.Zero;
         /// <summary>
         /// 左右チャンネルバッファの配列(buffers={bufferLeft, bufferRight})
         /// </summary>
-        IntPtr buffers = IntPtr.Zero;
+        private IntPtr buffers = IntPtr.Zero;
         /// <summary>
         /// パラメータの，ロード時のデフォルト値
         /// </summary>
-        float[] paramDefaults = null;
+        private float[] paramDefaults = null;
         /// <summary>
         /// UIウィンドウのサイズ
         /// </summary>
-        Dimension uiWindowRect = new Dimension( 373, 158 );
+        private Dimension uiWindowRect = new Dimension( 373, 158 );
         /// <summary>
         /// win32.LoadLibraryExを使うかどうか。trueならwin32.LoadLibraryExを使い、falseならutil.dllのLoadDllをつかう。既定ではtrue
         /// </summary>
-        boolean useNativeDllLoader = true;
+        private boolean useNativeDllLoader = true;
         protected MemoryManager memoryManager = new MemoryManager();
 
-        public void resetAllParameters() {
+        public int getSampleRate()
+        {
+            return sampleRate;
+        }
+
+        public void resetAllParameters()
+        {
             if ( paramDefaults == null ) {
                 return;
             }
@@ -114,7 +123,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public virtual float getParameter( int index ) {
+        public virtual float getParameter( int index )
+        {
             float ret = 0.0f;
             try {
                 ret = aEffect.GetParameter( index );
@@ -124,7 +134,8 @@ namespace org.kbinani.cadencii {
             return ret;
         }
 
-        public virtual void setParameter( int index, float value ) {
+        public virtual void setParameter( int index, float value )
+        {
             try {
                 aEffect.SetParameter( index, value );
             } catch ( Exception ex ) {
@@ -132,7 +143,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private String getStringCore( int opcode, int index, int str_capacity ) {
+        private String getStringCore( int opcode, int index, int str_capacity )
+        {
             byte[] arr = new byte[str_capacity + 1];
             for ( int i = 0; i < str_capacity; i++ ) {
                 arr[i] = 0;
@@ -152,19 +164,23 @@ namespace org.kbinani.cadencii {
             return ret;
         }
 
-        public String getParameterDisplay( int index ) {
+        public String getParameterDisplay( int index )
+        {
             return getStringCore( AEffectOpcodes.effGetParamDisplay, index, VstStringConstants.kVstMaxParamStrLen );
         }
 
-        public String getParameterLabel( int index ) {
+        public String getParameterLabel( int index )
+        {
             return getStringCore( AEffectOpcodes.effGetParamLabel, index, VstStringConstants.kVstMaxParamStrLen );
         }
 
-        public String getParameterName( int index ) {
+        public String getParameterName( int index )
+        {
             return getStringCore( AEffectOpcodes.effGetParamName, index, VstStringConstants.kVstMaxParamStrLen );
         }
 
-        private void initBuffer() {
+        private void initBuffer()
+        {
             if ( bufferLeft == IntPtr.Zero ) {
                 bufferLeft = Marshal.AllocHGlobal( sizeof( float ) * BUFLEN );
             }
@@ -178,7 +194,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void releaseBuffer() {
+        private void releaseBuffer()
+        {
             if ( bufferLeft != IntPtr.Zero ) {
                 Marshal.FreeHGlobal( bufferLeft );
                 bufferLeft = IntPtr.Zero;
@@ -193,8 +210,9 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public unsafe void process( double[] left, double[] right, int length ) {
-            if ( left == null || right == null ){
+        public unsafe void process( double[] left, double[] right, int length )
+        {
+            if ( left == null || right == null ) {
                 return;
             }
             //int length = Math.Min( left.Length, right.Length );
@@ -222,7 +240,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public virtual void send( MidiEvent[] events ) {
+        public virtual void send( MidiEvent[] events )
+        {
             unsafe {
                 MemoryManager mman = null;
                 try {
@@ -269,17 +288,19 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        protected virtual VstIntPtr AudioMaster( ref AEffect effect, VstInt32 opcode, VstInt32 index, VstIntPtr value, IntPtr ptr, float opt ) {
+        protected virtual VstIntPtr AudioMaster( ref AEffect effect, VstInt32 opcode, VstInt32 index, VstIntPtr value, IntPtr ptr, float opt )
+        {
             VstIntPtr result = 0;
             switch ( opcode ) {
                 case AudioMasterOpcodes.audioMasterVersion:
-                    result = Constants.kVstVersion;
-                    break;
+                result = Constants.kVstVersion;
+                break;
             }
             return result;
         }
 
-        public FormPluginUi getUi( org.kbinani.windows.forms.BForm main_window ) {
+        public FormPluginUi getUi( org.kbinani.windows.forms.BForm main_window )
+        {
             if ( ui == null ) {
                 if ( main_window != null ) {
                     VoidDelegate temp = new VoidDelegate( this.createPluginUi );
@@ -292,7 +313,8 @@ namespace org.kbinani.cadencii {
             return ui;
         }
 
-        private void createPluginUi() {
+        private void createPluginUi()
+        {
             boolean hasUi = (aEffect.aeffect.flags & VstAEffectFlags.effFlagsHasEditor) == VstAEffectFlags.effFlagsHasEditor;
             if ( !hasUi ) {
                 return;
@@ -325,16 +347,25 @@ namespace org.kbinani.cadencii {
             return;
         }
 
-        public virtual bool open( string dll_path, int block_size, int sample_rate, boolean use_native_dll_loader ) {
+        public virtual void setSampleRate( int sample_rate )
+        {
+            sampleRate = sample_rate;
+            aEffect.Dispatch( AEffectOpcodes.effSetSampleRate, 0, 0, IntPtr.Zero, (float)sampleRate );
+            aEffect.Dispatch( AEffectOpcodes.effSetBlockSize, 0, sampleRate, IntPtr.Zero, 0 );
+        }
+
+        public virtual bool open( int block_size, int sample_rate, boolean use_native_dll_loader )
+        {
             useNativeDllLoader = use_native_dll_loader;
+
             if ( useNativeDllLoader ) {
-                dllHandle = win32.LoadLibraryExW( dll_path, IntPtr.Zero, win32.LOAD_WITH_ALTERED_SEARCH_PATH );
+                dllHandle = win32.LoadLibraryExW( path, IntPtr.Zero, win32.LOAD_WITH_ALTERED_SEARCH_PATH );
             } else {
 #if !MONO
-                if ( !org.kbinani.cadencii.util.DllLoad.isInitialized() ){
+                if ( !org.kbinani.cadencii.util.DllLoad.isInitialized() ) {
                     org.kbinani.cadencii.util.DllLoad.initialize();
                 }
-                dllHandle = org.kbinani.cadencii.util.DllLoad.loadDll( dll_path );
+                dllHandle = org.kbinani.cadencii.util.DllLoad.loadDll( path );
 #endif
             }
             if ( dllHandle == IntPtr.Zero ) {
@@ -380,7 +411,7 @@ namespace org.kbinani.cadencii {
             aEffect.Dispatch( AEffectOpcodes.effOpen, 0, 0, IntPtr.Zero, 0 );
             int ret = aEffect.Dispatch( AEffectOpcodes.effSetSampleRate, 0, 0, IntPtr.Zero, (float)sampleRate );
 #if DEBUG
-            PortUtil.println( "vstidrv#open; dll_path=" + dll_path + "; ret for effSetSampleRate=" + ret );
+            PortUtil.println( "vstidrv#open; dll_path=" + path + "; ret for effSetSampleRate=" + ret );
 #endif
 
             aEffect.Dispatch( AEffectOpcodes.effSetBlockSize, 0, blockSize, IntPtr.Zero, 0 );
@@ -395,7 +426,8 @@ namespace org.kbinani.cadencii {
             return true;
         }
 
-        private void updatePluginUiRect() {
+        private void updatePluginUiRect()
+        {
             if ( ui != null ) {
                 try {
                     win32.EnumChildWindows( ui.Handle, enumChildProc, 0 );
@@ -405,7 +437,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private bool enumChildProc( IntPtr hwnd, int lParam ) {
+        private bool enumChildProc( IntPtr hwnd, int lParam )
+        {
             RECT rc = new RECT();
             try {
                 win32.GetWindowRect( hwnd, ref rc );
@@ -419,7 +452,8 @@ namespace org.kbinani.cadencii {
             return false; //最初のやつだけ検出できればおｋなので
         }
 
-        public virtual void close() {
+        public virtual void close()
+        {
             if ( ui != null && !ui.IsDisposed ) {
                 ui.close();
             }
@@ -436,7 +470,7 @@ namespace org.kbinani.cadencii {
 #endif
                     }
                 }
-            } catch( Exception ex ){
+            } catch ( Exception ex ) {
                 PortUtil.stderr.println( "vstidrv#close; ex=" + ex );
             }
             releaseBuffer();
@@ -446,7 +480,8 @@ namespace org.kbinani.cadencii {
             audioMaster = null;
         }
 
-        ~vstidrv() {
+        ~vstidrv()
+        {
             close();
         }
     }

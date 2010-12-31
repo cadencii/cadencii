@@ -1,6 +1,6 @@
 /**
  * VSTiDllManager.cs
- * Copyright © 2008-2010 kbinani
+ * Copyright © 2008-2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -49,7 +49,7 @@ namespace org.kbinani.cadencii {
         /// EmtryRenderingRunnerが使用される
         /// </summary>
         public const String RENDERER_NULL = "NUL0";
-        public static int SAMPLE_RATE = 44100;
+        //public static int SAMPLE_RATE = 44100;
         const float a0 = -17317.563f;
         const float a1 = 86.7312112f;
         const float a2 = -0.237323499f;
@@ -195,7 +195,7 @@ namespace org.kbinani.cadencii {
                         }
                         
                         // 読込み。
-                        loaded = vocaloidDriver.get( i ).open( dll_path, SAMPLE_RATE, SAMPLE_RATE, use_native_dll_loader );
+                        loaded = vocaloidDriver.get( i ).open( 44100, 44100, use_native_dll_loader );
 
                         // VOCALOID.iniをもとにもどす。
                         if ( !use_native_dll_loader ) {
@@ -285,14 +285,7 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if ENABLE_AQUESTONE
-            AquesToneDriver aquesToneDriver = AquesToneDriver.getInstance();
-            if ( aquesToneDriver != null ) {
-                try {
-                    aquesToneDriver.close();
-                } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "VSTiProxy#terminate; ex=" + ex );
-                }
-            }
+            AquesToneDriver.unload();
 #endif
         }
 

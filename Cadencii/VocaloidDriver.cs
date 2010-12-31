@@ -1,7 +1,7 @@
 #if ENABLE_VOCALOID
 /*
  * VocaloidDriver.cs
- * Copyright © 2009-2010 kbinani
+ * Copyright © 2009-2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -20,11 +20,13 @@ using org.kbinani.java.util;
 using org.kbinani.vsq;
 using VstSdk;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using boolean = System.Boolean;
     using VstIntPtr = System.Int32;
 
-    public unsafe class VocaloidDriver : vstidrv {
+    public unsafe class VocaloidDriver : vstidrv
+    {
         const int TRUE = 1;
         const int FALSE = 0;
 
@@ -57,7 +59,8 @@ namespace org.kbinani.cadencii {
         int dseVersion;
         private Object locker = new Object();
 
-        public void clearSendEvents() {
+        public void clearSendEvents()
+        {
             lock ( locker ) {
                 for ( int i = 0; i < s_track_events.size(); i++ ) {
                     s_track_events.get( i ).clear();
@@ -65,11 +68,13 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public int getDseVersion() {
+        public int getDseVersion()
+        {
             return dseVersion;
         }
 
-        public override void close() {
+        public override void close()
+        {
             if ( rendering ) {
                 g_cancelRequired = true;
                 while ( rendering ) {
@@ -86,7 +91,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 指定したタイムコードにおける，曲頭から測った時間を調べる
         /// </summary>
-        private double msec_from_clock( int timeCode ) {
+        private double msec_from_clock( int timeCode )
+        {
             double ret = 0.0;
             int index = -1;
             int c = g_tempoList.size();
@@ -105,12 +111,14 @@ namespace org.kbinani.cadencii {
             return ret;
         }
 
-        public VocaloidDriver( int dse_version ) {
+        public VocaloidDriver( int dse_version )
+        {
             dseVersion = dse_version;
         }
 
-        public override boolean open( string dll_path, int block_size, int sample_rate, boolean use_native_dll_loader ) {
-            boolean ret = base.open( dll_path, block_size, sample_rate, use_native_dll_loader );
+        public override boolean open( int block_size, int sample_rate, boolean use_native_dll_loader )
+        {
+            boolean ret = base.open( block_size, sample_rate, use_native_dll_loader );
 #if DEBUG
             PortUtil.println( "VocaloidDriver#open; dllHandle=0x" + PortUtil.toHexString( dllHandle.ToInt32() ).ToUpper() );
 #endif
@@ -131,7 +139,8 @@ namespace org.kbinani.cadencii {
             return ret;
         }
 
-        public int sendEvent( byte[] src, int[] deltaFrames/*, int numEvents*/, int targetTrack ) {
+        public int sendEvent( byte[] src, int[] deltaFrames/*, int numEvents*/, int targetTrack )
+        {
             lock ( locker ) {
                 int count;
                 int numEvents = deltaFrames.Length;
@@ -237,7 +246,8 @@ namespace org.kbinani.cadencii {
         /// <param name="sample_rate"></param>
         /// <param name="runner">このドライバを駆動しているRenderingRunnerのオブジェクト</param>
         /// <returns></returns>
-        public int startRendering( long total_samples, boolean mode_infinite, int sample_rate, IWaveIncoming runner ) {
+        public int startRendering( long total_samples, boolean mode_infinite, int sample_rate, IWaveIncoming runner )
+        {
 #if DEBUG
             PortUtil.println( "VocaloidDriver#startRendering; entry; total_samples=" + total_samples + "; sample_rate=" + sample_rate );
 #endif
@@ -307,21 +317,21 @@ namespace org.kbinani.cadencii {
                         if ( (work.firstByte & 0xf0) == 0xb0 ) {
                             switch ( work.data[0] ) {
                                 case 0x63:
-                                    addr_msb = work.data[1];
-                                    addr_lsb = 0;
-                                    break;
+                                addr_msb = work.data[1];
+                                addr_lsb = 0;
+                                break;
                                 case 0x62:
-                                    addr_lsb = work.data[1];
-                                    break;
+                                addr_lsb = work.data[1];
+                                break;
                                 case 0x06:
-                                    data_msb = work.data[1];
-                                    break;
+                                data_msb = work.data[1];
+                                break;
                                 case 0x26:
-                                    data_lsb = work.data[1];
-                                    if ( addr_msb == 0x50 && addr_lsb == 0x01 ) {
-                                        dwDelay = (data_msb & 0xff) << 7 | (data_lsb & 0x7f);
-                                    }
-                                    break;
+                                data_lsb = work.data[1];
+                                if ( addr_msb == 0x50 && addr_lsb == 0x01 ) {
+                                    dwDelay = (data_msb & 0xff) << 7 | (data_lsb & 0x7f);
+                                }
+                                break;
                             }
                         }
                         if ( dwDelay > 0 ) {
@@ -349,22 +359,22 @@ namespace org.kbinani.cadencii {
                             if ( (current.firstByte & 0xf0) == 0xb0 ) {
                                 switch ( current.data[0] ) {
                                     case 0x63:
-                                        addr_msb = current.data[1];
-                                        addr_lsb = 0;
-                                        break;
+                                    addr_msb = current.data[1];
+                                    addr_lsb = 0;
+                                    break;
                                     case 0x62:
-                                        addr_lsb = current.data[1];
-                                        break;
+                                    addr_lsb = current.data[1];
+                                    break;
                                     case 0x06:
-                                        data_msb = current.data[1];
-                                        break;
+                                    data_msb = current.data[1];
+                                    break;
                                     case 0x26:
-                                        data_lsb = current.data[1];
-                                        // Note Duration in millisec
-                                        if ( addr_msb == 0x50 && addr_lsb == 0x4 ) {
-                                            duration = data_msb << 7 | data_lsb;
-                                        }
-                                        break;
+                                    data_lsb = current.data[1];
+                                    // Note Duration in millisec
+                                    if ( addr_msb == 0x50 && addr_lsb == 0x4 ) {
+                                        duration = data_msb << 7 | data_lsb;
+                                    }
+                                    break;
                                 }
                             }
 
@@ -402,25 +412,25 @@ namespace org.kbinani.cadencii {
                                 case 0xf0:
                                 case 0xf7:
                                 case 0xff:
-                                    break;
+                                break;
                                 default:
-                                    pMidiEvent = (VstMidiEvent*)mman.malloc( (int)(sizeof( VstMidiEvent ) + (pProcessEvent.data.Length + 1) * sizeof( byte )) ).ToPointer();
-                                    pMidiEvent->byteSize = sizeof( VstMidiEvent );
-                                    pMidiEvent->deltaFrames = dwDelta;
-                                    pMidiEvent->detune = 0;
-                                    pMidiEvent->flags = 1;
-                                    pMidiEvent->noteLength = 0;
-                                    pMidiEvent->noteOffset = 0;
-                                    pMidiEvent->noteOffVelocity = 0;
-                                    pMidiEvent->reserved1 = 0;
-                                    pMidiEvent->reserved2 = 0;
-                                    pMidiEvent->type = VstEventTypes.kVstMidiType;
-                                    pMidiEvent->midiData[0] = (byte)(0xff & pProcessEvent.firstByte);
-                                    for ( int j = 0; j < pProcessEvent.data.Length; j++ ) {
-                                        pMidiEvent->midiData[j + 1] = (byte)(0xff & pProcessEvent.data[j]);
-                                    }
-                                    pVSTEvents->events[pVSTEvents->numEvents++] = (int)(VstEvent*)pMidiEvent;
-                                    break;
+                                pMidiEvent = (VstMidiEvent*)mman.malloc( (int)(sizeof( VstMidiEvent ) + (pProcessEvent.data.Length + 1) * sizeof( byte )) ).ToPointer();
+                                pMidiEvent->byteSize = sizeof( VstMidiEvent );
+                                pMidiEvent->deltaFrames = dwDelta;
+                                pMidiEvent->detune = 0;
+                                pMidiEvent->flags = 1;
+                                pMidiEvent->noteLength = 0;
+                                pMidiEvent->noteOffset = 0;
+                                pMidiEvent->noteOffVelocity = 0;
+                                pMidiEvent->reserved1 = 0;
+                                pMidiEvent->reserved2 = 0;
+                                pMidiEvent->type = VstEventTypes.kVstMidiType;
+                                pMidiEvent->midiData[0] = (byte)(0xff & pProcessEvent.firstByte);
+                                for ( int j = 0; j < pProcessEvent.data.Length; j++ ) {
+                                    pMidiEvent->midiData[j + 1] = (byte)(0xff & pProcessEvent.data[j]);
+                                }
+                                pVSTEvents->events[pVSTEvents->numEvents++] = (int)(VstEvent*)pMidiEvent;
+                                break;
                             }
                             process_event_count++;
                             //pProcessEvent = lpEvents[process_event_count];
@@ -541,19 +551,23 @@ namespace org.kbinani.cadencii {
             return 1;
         }
 
-        public boolean isRendering() {
+        public boolean isRendering()
+        {
             return rendering;
         }
 
-        public void abortRendering() {
+        public void abortRendering()
+        {
             g_cancelRequired = true;
         }
 
-        public double getProgress() {
+        public double getProgress()
+        {
             return g_progress;
         }
 
-        private Vector<MidiEvent> merge_events( Vector<MidiEvent> x0, Vector<MidiEvent> y0 ) {
+        private Vector<MidiEvent> merge_events( Vector<MidiEvent> x0, Vector<MidiEvent> y0 )
+        {
             Vector<MidiEvent> ret = new Vector<MidiEvent>();
             for ( int i = 0; i < x0.size(); i++ ) {
                 ret.add( x0.get( i ) );

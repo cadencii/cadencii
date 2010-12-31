@@ -1,7 +1,7 @@
 #if ENABLE_AQUESTONE
 /*
  * AquesToneWaveGenerator.cs
- * Copyright © 2010 kbinani
+ * Copyright © 2010-2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -19,16 +19,18 @@ using org.kbinani.java.util;
 using org.kbinani.media;
 using org.kbinani.vsq;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using boolean = System.Boolean;
     using Float = System.Single;
     using Integer = System.Int32;
 
 #if JAVA
-    public class AquesToneWaveGenerator implements WaveGenerator {
+    public class AquesToneWaveGenerator implements WaveGenerator
 #else
-    public class AquesToneWaveGenerator : WaveUnit, WaveGenerator {
+    public class AquesToneWaveGenerator : WaveUnit, WaveGenerator
 #endif
+    {
         private const int VERSION = 0;
         private const int BUFLEN = 1024;
 
@@ -42,6 +44,7 @@ namespace org.kbinani.cadencii {
         private boolean mRunning = false;
         private boolean mAbortRequired;
         private long mTotalSamples;
+        private int mSampleRate;
         /// <summary>
         /// これまでに合成したサンプル数
         /// </summary>
@@ -50,19 +53,27 @@ namespace org.kbinani.cadencii {
         private double[] mBufferL = new double[BUFLEN];
         private double[] mBufferR = new double[BUFLEN];
 
-        public boolean isRunning() {
+        public int getSampleRate()
+        {
+            return mSampleRate;
+        }
+
+        public boolean isRunning()
+        {
             return mRunning;
         }
 
         /// <summary>
         /// ドライバのパラメータの変更要求
         /// </summary>
-        private class ParameterEvent {
+        private class ParameterEvent
+        {
             public int index;
             public float value;
         }
 
-        private class MidiEventQueue {
+        private class MidiEventQueue
+        {
             public Vector<MidiEvent> noteoff;
             //public ParameterEvent singer;
             public Vector<MidiEvent> noteon;
@@ -71,11 +82,13 @@ namespace org.kbinani.cadencii {
             public Vector<ParameterEvent> param;
         }
 
-        public long getTotalSamples() {
+        public long getTotalSamples()
+        {
             return mTotalSamples;
         }
 
-        public double getProgress() {
+        public double getProgress()
+        {
             if ( mTotalSamples <= 0 ) {
                 return 0.0;
             } else {
@@ -83,7 +96,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void stop() {
+        public void stop()
+        {
             if ( mRunning ) {
                 mAbortRequired = true;
                 while ( mRunning ) {
@@ -92,11 +106,13 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public override int getVersion() {
+        public override int getVersion()
+        {
             return VERSION;
         }
 
-        public override void setConfig( string parameter ) {
+        public override void setConfig( string parameter )
+        {
             // do nothing
         }
 
@@ -104,11 +120,13 @@ namespace org.kbinani.cadencii {
         /// 初期化メソッド
         /// </summary>
         /// <param name="parameter"></param>
-        public void init( VsqFileEx vsq, int track, int start_clock, int end_clock ) {
-            mDriver = AquesToneDriver.getInstance();
+        public void init( VsqFileEx vsq, int track, int start_clock, int end_clock, int sample_rate )
+        {
+            mDriver = AquesToneDriver.getInstance( sample_rate );
             mTrack = track;
             mStartClock = start_clock;
             mEndClock = end_clock;
+            mSampleRate = sample_rate;
 
             this.mVsq = (VsqFileEx)vsq.clone();
             this.mVsq.updateTotalClocks();
@@ -129,17 +147,19 @@ namespace org.kbinani.cadencii {
             }
             this.mVsq.updateTotalClocks();
 
-            mTrimRemain = (int)(trim_sec * VSTiDllManager.SAMPLE_RATE);
+            mTrimRemain = (int)(trim_sec * mSampleRate);
         }
 
-        public void setReceiver( WaveReceiver r ) {
+        public void setReceiver( WaveReceiver r )
+        {
             if ( mReceiver != null ) {
                 mReceiver.end();
             }
             mReceiver = r;
         }
 
-        public void begin( long total_samples ) {
+        public void begin( long total_samples )
+        {
             if ( mDriver == null ) {
                 return;
             }
@@ -153,7 +173,7 @@ namespace org.kbinani.cadencii {
             mTotalSamples = total_samples;
 
             VsqTrack track = mVsq.Track.get( mTrack );
-            int BUFLEN = VSTiDllManager.SAMPLE_RATE / 10;
+            int BUFLEN = mSampleRate / 10;
             double[] left = new double[BUFLEN];
             double[] right = new double[BUFLEN];
             //long saProcessed = 0; // 
@@ -180,15 +200,15 @@ namespace org.kbinani.cadencii {
             // レンダリング開始位置での、パラメータの値をセットしておく
             for ( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ) {
                 VsqEvent item = itr.next();
-                long saNoteStart = (long)(mVsq.getSecFromClock( item.Clock ) * VSTiDllManager.SAMPLE_RATE);
-                long saNoteEnd = (long)(mVsq.getSecFromClock( item.Clock + item.ID.getLength() ) * VSTiDllManager.SAMPLE_RATE);
+                long saNoteStart = (long)(mVsq.getSecFromClock( item.Clock ) * mSampleRate);
+                long saNoteEnd = (long)(mVsq.getSecFromClock( item.Clock + item.ID.getLength() ) * mSampleRate);
 
                 TreeMap<Integer, MidiEventQueue> list = generateMidiEvent( mVsq, mTrack, lastClock, item.Clock + item.ID.getLength() );
                 lastClock = item.Clock + item.ID.Length + 1;
                 for ( Iterator<Integer> itr2 = list.keySet().iterator(); itr2.hasNext(); ) {
                     // まず直前までの分を合成
                     Integer clock = itr2.next();
-                    long saStart = (long)(mVsq.getSecFromClock( clock ) * VSTiDllManager.SAMPLE_RATE);
+                    long saStart = (long)(mVsq.getSecFromClock( clock ) * mSampleRate);
                     saRemain = (int)(saStart - mTotalAppend);
                     while ( saRemain > 0 ) {
                         if ( mAbortRequired ) {
@@ -256,7 +276,8 @@ namespace org.kbinani.cadencii {
             mReceiver.end();
         }
 
-        private void waveIncoming( double[] l, double[] r, int length ) {
+        private void waveIncoming( double[] l, double[] r, int length )
+        {
             //int length = l.Length;
             int offset = 0;
             if ( mTrimRemain > 0 ) {
@@ -282,7 +303,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public long getPosition() {
+        public long getPosition()
+        {
             return mTotalAppend;
         }
 
@@ -294,7 +316,8 @@ namespace org.kbinani.cadencii {
         /// <param name="clock_start"></param>
         /// <param name="clock_end"></param>
         /// <returns></returns>
-        private TreeMap<Integer, MidiEventQueue> generateMidiEvent( VsqFileEx vsq, int track, int clock_start, int clock_end ) {
+        private TreeMap<Integer, MidiEventQueue> generateMidiEvent( VsqFileEx vsq, int track, int clock_start, int clock_end )
+        {
             TreeMap<Integer, MidiEventQueue> list = new TreeMap<Integer, MidiEventQueue>();
             VsqTrack t = vsq.Track.get( track );
 
@@ -364,7 +387,7 @@ namespace org.kbinani.cadencii {
                             // index行目に移動するコマンドを贈る
                             MidiEvent moveline = new MidiEvent();
                             moveline.firstByte = 0xb0;
-                            moveline.data = new [] { 0x0a, index };
+                            moveline.data = new[] { 0x0a, index };
                             MidiEvent noteon = new MidiEvent();
                             noteon.firstByte = 0x90;
                             noteon.data = new int[] { item.ID.Note, item.ID.Dynamics };
@@ -466,7 +489,7 @@ namespace org.kbinani.cadencii {
                             st = clock_start;
                         }
                         int end = item.Clock + item.ID.getLength();
-                        if ( clock_end < end ){
+                        if ( clock_end < end ) {
                             end = clock_end;
                         }
                         pit_send.add( new Point( st, end ) );
@@ -506,7 +529,7 @@ namespace org.kbinani.cadencii {
 #if DEBUG
                         PortUtil.println( "AquesToneRenderingRunner#generateMidiEvent; required_pbs=" + required_pbs );
 #endif
-                        if ( required_pbs > 13 ){
+                        if ( required_pbs > 13 ) {
                             required_pbs = 13;
                         }
                         if ( !list.containsKey( item.Clock ) ) {
@@ -583,7 +606,7 @@ namespace org.kbinani.cadencii {
                         MidiEventQueue queue = null;
                         if ( list.containsKey( clock ) ) {
                             queue = list.get( clock );
-                        }else{
+                        } else {
                             queue = new MidiEventQueue();
                         }
                         if ( queue.param == null ) {
@@ -619,7 +642,7 @@ namespace org.kbinani.cadencii {
                         MidiEventQueue queue = null;
                         if ( list.containsKey( clock ) ) {
                             queue = list.get( clock );
-                        }else{
+                        } else {
                             queue = new MidiEventQueue();
                         }
                         if ( queue.pit == null ) {
@@ -643,7 +666,8 @@ namespace org.kbinani.cadencii {
             return list;
         }
 
-        private static void appendParameterEvents( TreeMap<Integer, MidiEventQueue> list, VsqBPList cle, int parameter_index, int clock_start, int clock_end ) {
+        private static void appendParameterEvents( TreeMap<Integer, MidiEventQueue> list, VsqBPList cle, int parameter_index, int clock_start, int clock_end )
+        {
             int max = cle.getMaximum();
             int min = cle.getMinimum();
             float order = 1.0f / (float)(max - min);
@@ -674,7 +698,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private static MidiEvent getPitMidiEvent( int pitch_bend ) {
+        private static MidiEvent getPitMidiEvent( int pitch_bend )
+        {
             int value = (0x3fff & (pitch_bend + 0x2000));
             int msb = 0xff & (value >> 7);
             int lsb = 0xff & (value - (msb << 7));

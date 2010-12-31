@@ -1,6 +1,6 @@
 /*
  * MonitorWaveReceiver.cs
- * Copyright © 2010 kbinani
+ * Copyright © 2010-2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -76,8 +76,9 @@ namespace org.kbinani.cadencii {
 
         public void push( double[] l, double[] r, int length ) {
             if ( _first_call ) {
+                int sample_rate = mRoot.getSampleRate();
                 PlaySound.init();
-                PlaySound.prepare( VSTiDllManager.SAMPLE_RATE );
+                PlaySound.prepare( sample_rate );
                 _first_call = false;
             }
             PlaySound.append( l, r, length );

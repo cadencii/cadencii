@@ -1,7 +1,7 @@
 #if ENABLE_AQUESTONE
 /*
  * AquesToneDriver.cs
- * Copyright © 2009-2010 kbinani
+ * Copyright © 2009-2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -24,14 +24,16 @@ using org.kbinani;
 using org.kbinani.java.io;
 using org.kbinani.vsq;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using boolean = System.Boolean;
 #endif
 
 #if JAVA
     public class AquesToneDriver{
 #else
-    public class AquesToneDriver : vstidrv {
+    public class AquesToneDriver : vstidrv
+    {
 #endif
         public static readonly String[] PHONES = new String[] { 
             "ア", "イ", "ウ", "エ", "オ",
@@ -88,17 +90,48 @@ namespace org.kbinani.cadencii {
         public int bendLblParameterIndex = 7;
         public int phontParameterIndex = 8;
 
-        private AquesToneDriver() {
+        private AquesToneDriver()
+        {
         }
 
-        public static AquesToneDriver getInstance() {
+        public static void unload()
+        {
+            if ( mInstance != null ) {
+                try {
+                    mInstance.close();
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "AquesToneDriver#unload; ex=" + ex );
+                }
+            }
+        }
+
+        public static AquesToneDriver getInstance()
+        {
             if ( mInstance == null ) {
                 reload();
             }
             return mInstance;
         }
 
-        public static void reload() {
+        public static AquesToneDriver getInstance( int sample_rate )
+        {
+            if ( mInstance == null ) {
+                reload( sample_rate );
+            } else {
+                if ( sample_rate != mInstance.getSampleRate() ) {
+                    reload( sample_rate );
+                }
+            }
+            return mInstance;
+        }
+
+        public static void reload()
+        {
+            reload( 44100 );
+        }
+
+        public static void reload( int sample_rate )
+        {
             String aques_tone = AppManager.editorConfig.PathAquesTone;
             if ( mInstance == null ) {
                 mInstance = new AquesToneDriver();
@@ -113,7 +146,7 @@ namespace org.kbinani.cadencii {
             if ( !aques_tone.Equals( "" ) && PortUtil.isFileExists( aques_tone ) && !AppManager.editorConfig.DoNotUseAquesTone ) {
                 boolean loaded = false;
                 try {
-                    loaded = mInstance.open( aques_tone, VSTiDllManager.SAMPLE_RATE, VSTiDllManager.SAMPLE_RATE, true );
+                    loaded = mInstance.open( sample_rate, sample_rate, true );
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "VSTiProxy#realoadAquesTone; ex=" + ex );
                     loaded = false;
@@ -126,7 +159,8 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        public override boolean open( string dll_path, int block_size, int sample_rate, boolean use_native_dll_loader ){
+        public override boolean open( int block_size, int sample_rate, boolean use_native_dll_loader )
+        {
 #if DEBUG
             PortUtil.println( "AquesToneDriver#open" );
 #endif
@@ -143,7 +177,7 @@ namespace org.kbinani.cadencii {
             win32.WriteProfileString( "AquesTone", "FileKoe_00", required );
             boolean ret = false;
             try {
-                ret = base.open( dll_path, block_size, sample_rate, true );
+                ret = base.open( block_size, sample_rate, true );
             } catch ( Exception ex ) {
                 ret = false;
                 PortUtil.stderr.println( "AquesToneDriver#open; ex=" + ex );
@@ -159,7 +193,8 @@ namespace org.kbinani.cadencii {
             return ret;
         }
 
-        private static String getKoeFilePath() {
+        private static String getKoeFilePath()
+        {
             String ret = PortUtil.combinePath( AppManager.getCadenciiTempDir(), "jphonefifty.txt" );
             BufferedWriter bw = null;
             try {

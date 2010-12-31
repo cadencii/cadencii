@@ -1,6 +1,6 @@
 /*
  * Circuit.cs
- * Copyright © 2010 kbinani
+ * Copyright © 2010-2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -24,7 +24,7 @@ namespace org.kbinani.cadencii.draft {
     using Integer = System.Int32;
 #endif
 
-    /// <summary>
+    /* /// <summary>
     /// シンセサイザ等の回路の接続と実行を行うクラス
     /// </summary>
 #if JAVA
@@ -231,7 +231,7 @@ namespace org.kbinani.cadencii.draft {
                 }
             }
         }
-    }
+    }*/
 
 #if !JAVA
 }

@@ -1,6 +1,6 @@
 /*
  * VsqFileEx.cs
- * Copyright © 2008-2010 kbinani
+ * Copyright © 2008-2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -54,6 +54,11 @@ namespace org.kbinani.cadencii {
         [System.Xml.Serialization.XmlIgnore]
 #endif
         public EditorStatus editorStatus = new EditorStatus();
+        /// <summary>
+        /// シーケンスの設定
+        /// <version>3.3+</version>
+        /// </summary>
+        public SequenceConfig config = new SequenceConfig();
 
 #if JAVA
         static {

@@ -1,6 +1,6 @@
 /*
  * UtauWaveGenerator.cs
- * Copyright © 2010 kbinani
+ * Copyright © 2010-2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -31,7 +31,8 @@ using org.kbinani.java.awt;
 using org.kbinani.java.io;
 using org.kbinani.java.util;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using boolean = System.Boolean;
     using Integer = System.Int32;
 #endif
@@ -42,7 +43,8 @@ namespace org.kbinani.cadencii {
 #if JAVA
     public class UtauWaveGenerator extends WaveUnit implements WaveGenerator {
 #else
-    public class UtauWaveGenerator : WaveUnit, WaveGenerator {
+    public class UtauWaveGenerator : WaveUnit, WaveGenerator
+    {
 #endif
         public const String FILEBASE = "temp.wav";
         private const int MAX_CACHE = 512;
@@ -69,24 +71,34 @@ namespace org.kbinani.cadencii {
         private double[] mBufferL = new double[BUFLEN];
         private double[] mBufferR = new double[BUFLEN];
         private int mTrimRemain = 0;
+        private int mSampleRate;
 
-        public boolean isRunning() {
+        public int getSampleRate()
+        {
+            return mSampleRate;
+        }
+
+        public boolean isRunning()
+        {
             return mRunning;
         }
 
-        public long getTotalSamples() {
+        public long getTotalSamples()
+        {
             return mTotalSamples;
         }
 
-        public double getProgress() {
+        public double getProgress()
+        {
             if ( mTotalSamples <= 0 ) {
                 return 0.0;
-            }else{
+            } else {
                 return mTotalAppend / (double)mTotalSamples;
             }
         }
 
-        public void stop() {
+        public void stop()
+        {
             if ( mRunning ) {
                 mAbortRequired = true;
                 while ( mRunning ) {
@@ -95,11 +107,13 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public override void setConfig( String parameter ) {
+        public override void setConfig( String parameter )
+        {
             // do nothing
         }
 
-        public override int getVersion() {
+        public override int getVersion()
+        {
             return VERSION;
         }
 
@@ -110,10 +124,12 @@ namespace org.kbinani.cadencii {
         /// <param name="track"></param>
         /// <param name="start_clock"></param>
         /// <param name="end_clock"></param>
-        public void init( VsqFileEx vsq, int track, int start_clock, int end_clock ) {
+        public void init( VsqFileEx vsq, int track, int start_clock, int end_clock, int sample_rate )
+        {
             mTrack = track;
             mResampler = mConfig.PathResampler;
             mWavtool = mConfig.PathWavtool;
+            mSampleRate = sample_rate;
             mTempDir = PortUtil.combinePath( AppManager.getCadenciiTempDir(), AppManager.getID() );
             mInvokeWithWine = mConfig.InvokeUtauCoreWithWine;
 
@@ -161,21 +177,24 @@ namespace org.kbinani.cadencii {
             mVsq.adjustClockToMatchWith( 125.0 );
             mVsq.updateTotalClocks();
 
-            mTrimRemain = (int)(trim_sec * VSTiDllManager.SAMPLE_RATE);
+            mTrimRemain = (int)(trim_sec * mSampleRate);
         }
 
-        public void setReceiver( WaveReceiver r ) {
+        public void setReceiver( WaveReceiver r )
+        {
             if ( mReceiver != null ) {
                 mReceiver.end();
             }
             mReceiver = r;
         }
 
-        public long getPosition() {
+        public long getPosition()
+        {
             return mTotalAppend;
         }
 
-        public static void clearCache() {
+        public static void clearCache()
+        {
             for ( Iterator<String> itr = mCache.keySet().iterator(); itr.hasNext(); ) {
                 String key = itr.next();
                 ValuePair<String, Double> value = mCache.get( key );
@@ -190,14 +209,15 @@ namespace org.kbinani.cadencii {
             mCache.clear();
         }
 
-        public void begin( long total_samples ) {
+        public void begin( long total_samples )
+        {
             mTotalSamples = total_samples;
 #if MAKEBAT_SP
             StreamWriter bat = null;
             StreamWriter log = null;
 #endif
             try {
-                double sample_length = mVsq.getSecFromClock( mVsq.TotalClocks ) * VSTiDllManager.SAMPLE_RATE;
+                double sample_length = mVsq.getSecFromClock( mVsq.TotalClocks ) * mSampleRate;
                 mAbortRequired = false;
                 mRunning = true;
                 if ( !PortUtil.isDirectoryExists( mTempDir ) ) {
@@ -279,7 +299,7 @@ namespace org.kbinani.cadencii {
                         item_next = events.get( k + 1 );
                     }
                     if ( item_next != null ) {
-                        double sec_start_act_next = 
+                        double sec_start_act_next =
                             mVsq.getSecFromClock( item_next.Clock ) - item_next.UstEvent.PreUtterance / 1000.0
                             + item_next.UstEvent.VoiceOverlap / 1000.0;
                         if ( sec_start_act_next < sec_end_act ) {
@@ -300,7 +320,7 @@ namespace org.kbinani.cadencii {
                         error_sum += (draft_length / (act_t_temp2 * 8.0)) - (sec_end2 - sec_start2);
 #endif
                         RenderQueue rq = new RenderQueue();
-                        rq.WavtoolArgPrefix = 
+                        rq.WavtoolArgPrefix =
                             "\"" + file + "\" \"" + PortUtil.combinePath( singer, "R.wav" ) + "\" 0 " + draft_length + "@"
                             + str_t_temp2;
                         rq.WavtoolArgSuffix = " 0 0";
@@ -387,7 +407,7 @@ namespace org.kbinani.cadencii {
                             }
                             totalcount++;
                         }
-                        Iterator<PointD> itr = new VibratoPointIteratorBySec( 
+                        Iterator<PointD> itr = new VibratoPointIteratorBySec(
                             mVsq,
                             item.ID.VibratoHandle.getRateBP(),
                             item.ID.VibratoHandle.getStartRate(),
@@ -421,7 +441,7 @@ namespace org.kbinani.cadencii {
                     foreach ( String s in pitch ) {
                         md5_src += s + " ";
                     }
-                    String filename = 
+                    String filename =
                         PortUtil.combinePath( mTempDir, PortUtil.getMD5FromString( mCache.size() + md5_src ) + ".wav" );
 
                     rq2.appendArgRange( resampler_arg_prefix );
@@ -466,7 +486,7 @@ namespace org.kbinani.cadencii {
                     error_sum += (item.ID.getLength() / (8.0 * act_t_temp)) - (sec_end - sec_start);
                     Logger.write( "UtauWaveGenerator#begin; error_sum=" + error_sum + "\n" );
 #endif
-                    rq2.WavtoolArgPrefix = 
+                    rq2.WavtoolArgPrefix =
                         "\"" + file + "\" \"" + filename + "\" 0 "
                         + item.ID.getLength() + "@" + str_t_temp;
                     UstEnvelope env = item.UstEvent.Envelope;
@@ -582,7 +602,7 @@ namespace org.kbinani.cadencii {
                     processWavtool( arg_wavtool, file, mTempDir, mWavtool, mInvokeWithWine );
 
                     // できたwavを読み取ってWaveIncomingイベントを発生させる
-                    int sample_end = (int)(sec_fin * VSTiDllManager.SAMPLE_RATE);
+                    int sample_end = (int)(sec_fin * mSampleRate);
 #if DEBUG
                     AppManager.debugWriteLine( "UtauWaveGenerator#run; sample_end=" + sample_end );
 #endif
@@ -680,7 +700,7 @@ namespace org.kbinani.cadencii {
                     AppManager.debugWriteLine( "UtauWaveGenerator#run; sampleFrames=" + sampleFrames + "; channel=" + channel + "; byte_per_sample=" + byte_per_sample );
 #endif
                     if ( channel > 0 && byte_per_sample > 0 && sampleFrames > 0 ) {
-                        int length = (sampleFrames > VSTiDllManager.SAMPLE_RATE ? VSTiDllManager.SAMPLE_RATE : sampleFrames);
+                        int length = (sampleFrames > mSampleRate ? mSampleRate : sampleFrames);
                         int remain = sampleFrames;
                         mLeft = new double[length];
                         mRight = new double[length];
@@ -693,8 +713,8 @@ namespace org.kbinani.cadencii {
                         try {
                             dat = new RandomAccessFile( file_dat, "r" );
                             dat.seek( processed_sample * channel * byte_per_sample );
-                            double sec_start = processed_sample / (double)VSTiDllManager.SAMPLE_RATE;
-                            double sec_per_sa = 1.0 / (double)VSTiDllManager.SAMPLE_RATE;
+                            double sec_start = processed_sample / (double)mSampleRate;
+                            double sec_per_sa = 1.0 / (double)mSampleRate;
                             ByRef<Integer> index = new ByRef<Integer>( 0 );
                             #region チャンネル数／ビット深度ごとの読み取り操作
                             if ( byte_per_sample == 1 ) {
@@ -909,7 +929,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private static void processWavtool( String arg, String filebase, String temp_dir, String wavtool, boolean invoke_with_wine ) {
+        private static void processWavtool( String arg, String filebase, String temp_dir, String wavtool, boolean invoke_with_wine )
+        {
 #if JAVA
             String[] args = new String[]{ (invoke_with_wine ? "wine \"" : "\"") + wavtool + "\"", arg };
             ProcessBuilder pb = new ProcessBuilder( args );
@@ -943,7 +964,8 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        private void waveIncoming( double[] l, double[] r, int length ) {
+        private void waveIncoming( double[] l, double[] r, int length )
+        {
             int offset = 0;
             if ( mTrimRemain > 0 ) {
                 if ( length <= mTrimRemain ) {
@@ -968,7 +990,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private static String NoteStringFromNoteNumber( int note_number ) {
+        private static String NoteStringFromNoteNumber( int note_number )
+        {
             int odd = note_number % 12;
             String head = (new String[] { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" })[odd];
             return head + (note_number / 12 - 1);

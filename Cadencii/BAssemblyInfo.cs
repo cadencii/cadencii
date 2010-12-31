@@ -1,6 +1,6 @@
 /*
  * BAssemblyInfo.cs
- * Copyright © 2008-2010 kbinani
+ * Copyright © 2008-2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -25,7 +25,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration( org.kbinani.cadencii.BAssemblyInfo.id )]
 [assembly: AssemblyCompany( "" )]
 [assembly: AssemblyProduct( "Cadencii" )]
-[assembly: AssemblyCopyright( "Copyright (C) 2008-2010 kbinani. All Rights Reserved." )]
+[assembly: AssemblyCopyright( "Copyright (C) 2008-2011 kbinani. All Rights Reserved." )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]
 [assembly: ComVisible( false )]

@@ -1,6 +1,6 @@
 /*
  * WaveUnit.cs
- * Copyright © 2010 kbinani
+ * Copyright © 2010-2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -19,13 +19,15 @@ import java.awt.*;
 using System;
 using org.kbinani.java.awt;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
 #endif
 
     /// <summary>
     /// インターフェースWaveReceiver, WaveSender, WaveGeneratorを持つクラスの基底クラス．
     /// </summary>
-    public abstract class WaveUnit {
+    public abstract class WaveUnit
+    {
         /// <summary>
         /// このユニットを画面に描くときの、基本となる描画幅。単位はピクセル
         /// この値を使うかどうかは任意
@@ -59,6 +61,11 @@ namespace org.kbinani.cadencii {
         private Font mFont;
 
         /// <summary>
+        /// この波形処理ユニットが属している回路のルートにある波形合成器への参照を保持する
+        /// </summary>
+        protected WaveGenerator mRoot = null;
+
+        /// <summary>
         /// バージョンを表す整数を返す．
         /// 実装上，setConfigに渡す文字列の書式が変わったとき，バージョンを増やすようにする．
         /// </summary>
@@ -74,18 +81,25 @@ namespace org.kbinani.cadencii {
         /// <param name="parameter"></param>
         public abstract void setConfig( String parameter );
 
+        public virtual void setRoot( WaveGenerator root )
+        {
+            mRoot = root;
+        }
+
         /// <summary>
         /// スコアエディタ全体の設定値を設定する．
         /// </summary>
         /// <param name="config"></param>
-        public virtual void setGlobalConfig( EditorConfig config ) {
+        public virtual void setGlobalConfig( EditorConfig config )
+        {
             mConfig = config;
         }
 
         /// <summary>
         /// メインウィンドウへの参照を設定します
         /// </summary>
-        public virtual void setMainWindow( FormMain main_window ) {
+        public virtual void setMainWindow( FormMain main_window )
+        {
             mMainWindow = main_window;
         }
 
@@ -96,7 +110,8 @@ namespace org.kbinani.cadencii {
         /// <param name="x">描画する位置のx座標</param>
         /// <param name="y">描画する位置のy座標</param>
         /// <returns>描画された装置図に外接する四角形のサイズ</returns>
-        public virtual void paintTo( Graphics graphics, int x, int y, int width, int height ) {
+        public virtual void paintTo( Graphics graphics, int x, int y, int width, int height )
+        {
             // 現在の描画時のストローク、色を保存しておく
             Stroke old_stroke = graphics.getStroke();
             Color old_color = graphics.getColor();
@@ -124,7 +139,8 @@ namespace org.kbinani.cadencii {
             graphics.setColor( old_color );
         }
 
-        protected void paintBackground( Graphics graphics, Stroke stroke, int x, int y, int width, int height, Color border, Color background ) {
+        protected void paintBackground( Graphics graphics, Stroke stroke, int x, int y, int width, int height, Color border, Color background )
+        {
             // 背景を塗りつぶし
             graphics.setColor( background );
             graphics.fillRect( x, y, width, height );
