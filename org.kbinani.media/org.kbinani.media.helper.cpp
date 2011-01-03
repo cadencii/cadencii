@@ -208,7 +208,7 @@ void SoundCallback(
 /// デバイスを初期化する
 /// </summary>
 /// <param name="sample_rate"></param>
-void SoundPrepare( int sample_rate ) {
+int SoundPrepare( int sample_rate ) {
     // デバイスを使用中の場合、使用を停止する
     if ( NULL != wave_out ) {
         SoundExit();
@@ -227,12 +227,14 @@ void SoundPrepare( int sample_rate ) {
         = wave_format.nSamplesPerSec * wave_format.nBlockAlign;
 
     // デバイスを開く
-    waveOutOpen( &wave_out,
-                 WAVE_MAPPER,
-                 &wave_format,
-                 (DWORD_PTR)SoundCallback,
-                 NULL,
-                 CALLBACK_FUNCTION );
+    MMRESULT ret = 
+		waveOutOpen( 
+			&wave_out,
+            WAVE_MAPPER,
+            &wave_format,
+            (DWORD_PTR)SoundCallback,
+            NULL,
+            CALLBACK_FUNCTION );
 
     // バッファを準備
     block_size_used = block_size;
@@ -252,6 +254,8 @@ void SoundPrepare( int sample_rate ) {
     abort_required = false;
 
     LeaveCriticalSection( &locker );
+
+	return (int)ret;
 }
 
 /// <summary>

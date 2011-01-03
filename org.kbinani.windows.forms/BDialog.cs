@@ -1,6 +1,6 @@
 /*
  * BDialog.cs
- * Copyright © 2010 kbinani
+ * Copyright © 2010-2011 kbinani
  *
  * This file is part of org.kbinani.windows.forms.
  *
@@ -25,39 +25,44 @@
 
 using System;
 
-namespace org.kbinani.windows.forms {
+namespace org.kbinani.windows.forms
+{
     using boolean = System.Boolean;
 
-    public class BDialog : System.Windows.Forms.Form {
+    public class BDialog : System.Windows.Forms.Form
+    {
         protected BDialogResult m_result = BDialogResult.CANCEL;
         private bool m_is_modal = false;
 
         public BDialog()
-            : this( false ) {
+            : this( false )
+        {
         }
 
         public BDialog( bool is_modal )
-            : base() {
+            : base()
+        {
             m_is_modal = is_modal;
         }
 
-        public virtual void setVisible( bool value ) {
+        public virtual void setVisible( bool value )
+        {
             if ( value ) {
                 if ( m_is_modal ) {
                     System.Windows.Forms.DialogResult ret = base.ShowDialog();
                     switch ( ret ) {
                         case System.Windows.Forms.DialogResult.Yes:
-                            m_result = BDialogResult.YES;
-                            break;
+                        m_result = BDialogResult.YES;
+                        break;
                         case System.Windows.Forms.DialogResult.No:
-                            m_result = BDialogResult.NO;
-                            break;
+                        m_result = BDialogResult.NO;
+                        break;
                         case System.Windows.Forms.DialogResult.OK:
-                            m_result = BDialogResult.OK;
-                            break;
+                        m_result = BDialogResult.OK;
+                        break;
                         case System.Windows.Forms.DialogResult.Cancel:
-                            m_result = BDialogResult.CANCEL;
-                            break;
+                        m_result = BDialogResult.CANCEL;
+                        break;
                     }
                 } else {
                     base.Show();
@@ -67,7 +72,8 @@ namespace org.kbinani.windows.forms {
             }
         }
 
-        public bool isVisible() {
+        public bool isVisible()
+        {
             return base.Visible;
         }
 
@@ -79,29 +85,31 @@ namespace org.kbinani.windows.forms {
             m_is_modal = value;
         }*/
 
-        public void setDialogResult( BDialogResult value ) {
+        public void setDialogResult( BDialogResult value )
+        {
             switch ( value ) {
                 case BDialogResult.YES:
-                    this.DialogResult = System.Windows.Forms.DialogResult.Yes;
-                    break;
+                this.DialogResult = System.Windows.Forms.DialogResult.Yes;
+                break;
                 case BDialogResult.NO:
-                    this.DialogResult = System.Windows.Forms.DialogResult.No;
-                    break;
+                this.DialogResult = System.Windows.Forms.DialogResult.No;
+                break;
                 case BDialogResult.OK:
-                    this.DialogResult = System.Windows.Forms.DialogResult.OK;
-                    break;
+                this.DialogResult = System.Windows.Forms.DialogResult.OK;
+                break;
                 case BDialogResult.CANCEL:
-                    this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-                    break;
+                this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+                break;
             }
         }
 
-        public BDialogResult getDialogResult() {
+        public BDialogResult getDialogResult()
+        {
             return m_result;
         }
 
-        public virtual BDialogResult showDialog( System.Windows.Forms.Form parent ) {
-            System.Windows.Forms.DialogResult dr = base.ShowDialog( parent );
+        private BDialogResult processDialogResult( System.Windows.Forms.DialogResult dr )
+        {
             if ( dr == System.Windows.Forms.DialogResult.OK ) {
                 m_result = BDialogResult.OK;
             } else if ( dr == System.Windows.Forms.DialogResult.Cancel ) {
@@ -114,11 +122,23 @@ namespace org.kbinani.windows.forms {
             return m_result;
         }
 
-        public void close() {
+        public virtual BDialogResult showDialog()
+        {
+            return processDialogResult( base.ShowDialog() );
+        }
+
+        public virtual BDialogResult showDialog( System.Windows.Forms.Form parent )
+        {
+            return processDialogResult( base.ShowDialog( parent ) );
+        }
+
+        public void close()
+        {
             base.Close();
         }
 
-        public org.kbinani.java.awt.Dimension getClientSize() {
+        public org.kbinani.java.awt.Dimension getClientSize()
+        {
             System.Drawing.Size s = base.Size;
             return new org.kbinani.java.awt.Dimension( s.Width, s.Height );
         }
@@ -126,12 +146,14 @@ namespace org.kbinani.windows.forms {
         // root implementation: common APIs of org.kbinani.*
         #region common APIs of org.kbinani.*
         // root implementation is in BForm.cs
-        public java.awt.Point pointToScreen( java.awt.Point point_on_client ) {
+        public java.awt.Point pointToScreen( java.awt.Point point_on_client )
+        {
             java.awt.Point p = getLocationOnScreen();
             return new java.awt.Point( p.x + point_on_client.x, p.y + point_on_client.y );
         }
 
-        public java.awt.Point pointToClient( java.awt.Point point_on_screen ) {
+        public java.awt.Point pointToClient( java.awt.Point point_on_screen )
+        {
             java.awt.Point p = getLocationOnScreen();
             return new java.awt.Point( point_on_screen.x - p.x, point_on_screen.y - p.y );
         }
@@ -146,11 +168,13 @@ namespace org.kbinani.windows.forms {
             tag = value;
         }
 #else
-        public Object getTag() {
+        public Object getTag()
+        {
             return base.Tag;
         }
 
-        public void setTag( Object value ) {
+        public void setTag( Object value )
+        {
             base.Tag = value;
         }
 #endif
@@ -159,7 +183,8 @@ namespace org.kbinani.windows.forms {
         // root implementation of java.awt.Component
         #region java.awt.Component
         // root implementation of java.awt.Component is in BForm.cs
-        public java.awt.Dimension getMinimumSize() {
+        public java.awt.Dimension getMinimumSize()
+        {
 #if COMPONENT_ENABLE_MINMAX_SIZE
             int w = base.MinimumSize.Width;
             int h = base.MinimumSize.Height;
@@ -170,13 +195,15 @@ namespace org.kbinani.windows.forms {
             return new org.kbinani.java.awt.Dimension( w, h );
         }
 
-        public void setMinimumSize( java.awt.Dimension value ) {
+        public void setMinimumSize( java.awt.Dimension value )
+        {
 #if COMPONENT_ENABLE_MINMAX_SIZE
             base.MinimumSize = new System.Drawing.Size( value.width, value.height );
 #endif
         }
 
-        public java.awt.Dimension getMaximumSize() {
+        public java.awt.Dimension getMaximumSize()
+        {
 #if COMPONENT_ENABLE_MINMAX_SIZE
             int w = base.MaximumSize.Width;
             int h = base.MaximumSize.Height;
@@ -187,24 +214,28 @@ namespace org.kbinani.windows.forms {
             return new org.kbinani.java.awt.Dimension( w, h );
         }
 
-        public void setMaximumSize( java.awt.Dimension value ) {
+        public void setMaximumSize( java.awt.Dimension value )
+        {
 #if COMPONENT_ENABLE_MINMAX_SIZE
             base.MaximumSize = new System.Drawing.Size( value.width, value.height );
 #endif
         }
 
-        public void invalidate() {
+        public void invalidate()
+        {
             base.Invalidate();
         }
 
 #if COMPONENT_ENABLE_REPAINT
-        public void repaint() {
+        public void repaint()
+        {
             base.Refresh();
         }
 #endif
 
 #if COMPONENT_ENABLE_CURSOR
-        public org.kbinani.java.awt.Cursor getCursor() {
+        public org.kbinani.java.awt.Cursor getCursor()
+        {
             System.Windows.Forms.Cursor c = base.Cursor;
             org.kbinani.java.awt.Cursor ret = null;
             if ( c.Equals( System.Windows.Forms.Cursors.Arrow ) ) {
@@ -242,7 +273,8 @@ namespace org.kbinani.windows.forms {
             return ret;
         }
 
-        public void setCursor( org.kbinani.java.awt.Cursor value ) {
+        public void setCursor( org.kbinani.java.awt.Cursor value )
+        {
             base.Cursor = value.cursor;
         }
 #endif
@@ -274,127 +306,155 @@ namespace org.kbinani.windows.forms {
             return base.OwnerItem;
         }
 #else
-        public object getParent() {
+        public object getParent()
+        {
             return base.Parent;
         }
 #endif
 
-        public string getName() {
+        public string getName()
+        {
             return base.Name;
         }
 
-        public void setName( string value ) {
+        public void setName( string value )
+        {
             base.Name = value;
         }
 
 #if COMPONENT_ENABLE_LOCATION
-        public void setBounds( int x, int y, int width, int height ) {
+        public void setBounds( int x, int y, int width, int height )
+        {
             base.Bounds = new System.Drawing.Rectangle( x, y, width, height );
         }
 
-        public void setBounds( org.kbinani.java.awt.Rectangle rc ) {
+        public void setBounds( org.kbinani.java.awt.Rectangle rc )
+        {
             base.Bounds = new System.Drawing.Rectangle( rc.x, rc.y, rc.width, rc.height );
         }
 
-        public org.kbinani.java.awt.Point getLocationOnScreen() {
+        public org.kbinani.java.awt.Point getLocationOnScreen()
+        {
             System.Drawing.Point p = base.PointToScreen( new System.Drawing.Point( 0, 0 ) );
             return new org.kbinani.java.awt.Point( p.X, p.Y );
         }
 
-        public org.kbinani.java.awt.Point getLocation() {
+        public org.kbinani.java.awt.Point getLocation()
+        {
             System.Drawing.Point loc = this.Location;
             return new org.kbinani.java.awt.Point( loc.X, loc.Y );
         }
 
-        public void setLocation( int x, int y ) {
+        public void setLocation( int x, int y )
+        {
             base.Location = new System.Drawing.Point( x, y );
         }
 
-        public void setLocation( org.kbinani.java.awt.Point p ) {
+        public void setLocation( org.kbinani.java.awt.Point p )
+        {
             base.Location = new System.Drawing.Point( p.x, p.y );
         }
 #endif
 
-        public org.kbinani.java.awt.Rectangle getBounds() {
+        public org.kbinani.java.awt.Rectangle getBounds()
+        {
             System.Drawing.Rectangle r = base.Bounds;
             return new org.kbinani.java.awt.Rectangle( r.X, r.Y, r.Width, r.Height );
         }
 
 #if COMPONENT_ENABLE_X
-        public int getX() {
+        public int getX()
+        {
             return base.Left;
         }
 #endif
 
 #if COMPONENT_ENABLE_Y
-        public int getY() {
+        public int getY()
+        {
             return base.Top;
         }
 #endif
 
-        public int getWidth() {
+        public int getWidth()
+        {
             return base.Width;
         }
 
-        public int getHeight() {
+        public int getHeight()
+        {
             return base.Height;
         }
 
-        public org.kbinani.java.awt.Dimension getSize() {
+        public org.kbinani.java.awt.Dimension getSize()
+        {
             return new org.kbinani.java.awt.Dimension( base.Size.Width, base.Size.Height );
         }
 
-        public void setSize( int width, int height ) {
+        public void setSize( int width, int height )
+        {
             base.Size = new System.Drawing.Size( width, height );
         }
 
-        public void setSize( org.kbinani.java.awt.Dimension d ) {
+        public void setSize( org.kbinani.java.awt.Dimension d )
+        {
             setSize( d.width, d.height );
         }
 
-        public void setBackground( org.kbinani.java.awt.Color color ) {
+        public void setBackground( org.kbinani.java.awt.Color color )
+        {
             base.BackColor = System.Drawing.Color.FromArgb( color.getRed(), color.getGreen(), color.getBlue() );
         }
 
-        public org.kbinani.java.awt.Color getBackground() {
+        public org.kbinani.java.awt.Color getBackground()
+        {
             return new org.kbinani.java.awt.Color( base.BackColor.R, base.BackColor.G, base.BackColor.B );
         }
 
-        public void setForeground( org.kbinani.java.awt.Color color ) {
+        public void setForeground( org.kbinani.java.awt.Color color )
+        {
             base.ForeColor = color.color;
         }
 
-        public org.kbinani.java.awt.Color getForeground() {
+        public org.kbinani.java.awt.Color getForeground()
+        {
             return new org.kbinani.java.awt.Color( base.ForeColor.R, base.ForeColor.G, base.ForeColor.B );
         }
 
-        public bool isEnabled() {
+        public bool isEnabled()
+        {
             return base.Enabled;
         }
 
-        public void setEnabled( bool value ) {
+        public void setEnabled( bool value )
+        {
             base.Enabled = value;
         }
 
 #if COMPONENT_ENABLE_FOCUS
-        public void requestFocus() {
+        public void requestFocus()
+        {
             base.Focus();
         }
 
-        public bool isFocusOwner() {
+        public bool isFocusOwner()
+        {
             return base.Focused;
         }
 #endif
 
-        public void setPreferredSize( org.kbinani.java.awt.Dimension size ) {
+        public void setPreferredSize( org.kbinani.java.awt.Dimension size )
+        {
             base.Size = new System.Drawing.Size( size.width, size.height );
         }
 
-        public org.kbinani.java.awt.Font getFont() {
+        public org.kbinani.java.awt.Font getFont()
+        {
             return new org.kbinani.java.awt.Font( base.Font );
         }
 
-        public void setFont( org.kbinani.java.awt.Font font ) {
+        public void setFont( org.kbinani.java.awt.Font font )
+        {
             if ( font == null ) {
                 return;
             }
@@ -408,15 +468,18 @@ namespace org.kbinani.windows.forms {
         // root implementation of java.awt.Window
         #region java.awt.Window
         // root implementation of java.awt.Window is in BForm.cs
-        public void toFront() {
+        public void toFront()
+        {
             base.BringToFront();
         }
 
-        public void setAlwaysOnTop( boolean alwaysOnTop ) {
+        public void setAlwaysOnTop( boolean alwaysOnTop )
+        {
             base.TopMost = alwaysOnTop;
         }
 
-        public boolean isAlwaysOnTop() {
+        public boolean isAlwaysOnTop()
+        {
             return base.TopMost;
         }
         #endregion
@@ -444,15 +507,18 @@ namespace org.kbinani.windows.forms {
         public const int W_RESIZE_CURSOR = 10;
         public const int WAIT_CURSOR = 3;
 
-        public void setIconImage( System.Drawing.Icon icon ) {
+        public void setIconImage( System.Drawing.Icon icon )
+        {
             base.Icon = icon;
         }
 
-        public System.Drawing.Icon getIconImage() {
+        public System.Drawing.Icon getIconImage()
+        {
             return base.Icon;
         }
 
-        public int getState() {
+        public int getState()
+        {
             if ( base.WindowState == System.Windows.Forms.FormWindowState.Minimized ) {
                 return ICONIFIED;
             } else {
@@ -460,7 +526,8 @@ namespace org.kbinani.windows.forms {
             }
         }
 
-        public void setState( int state ) {
+        public void setState( int state )
+        {
             if ( state == ICONIFIED ) {
                 if ( base.WindowState != System.Windows.Forms.FormWindowState.Minimized ) {
                     base.WindowState = System.Windows.Forms.FormWindowState.Minimized;
@@ -472,7 +539,8 @@ namespace org.kbinani.windows.forms {
             }
         }
 
-        public int getExtendedState() {
+        public int getExtendedState()
+        {
             if ( base.WindowState == System.Windows.Forms.FormWindowState.Maximized ) {
                 return MAXIMIZED_BOTH;
             } else if ( base.WindowState == System.Windows.Forms.FormWindowState.Minimized ) {
@@ -482,7 +550,8 @@ namespace org.kbinani.windows.forms {
             }
         }
 
-        public void setExtendedState( int value ) {
+        public void setExtendedState( int value )
+        {
             if ( value == ICONIFIED ) {
                 base.WindowState = System.Windows.Forms.FormWindowState.Minimized;
             } else if ( value == MAXIMIZED_BOTH ) {
@@ -492,11 +561,13 @@ namespace org.kbinani.windows.forms {
             }
         }
 
-        public string getTitle() {
+        public string getTitle()
+        {
             return base.Text;
         }
 
-        public void setTitle( string value ) {
+        public void setTitle( string value )
+        {
             base.Text = value;
         }
         #endregion
@@ -504,7 +575,8 @@ namespace org.kbinani.windows.forms {
         // root implementation of javax.swing.JComponent
         #region javax.swing.JComponent
         // root implementation of javax.swing.JComponent is in BForm.cs
-        public bool requestFocusInWindow() {
+        public bool requestFocusInWindow()
+        {
             return base.Focus();
         }
         #endregion

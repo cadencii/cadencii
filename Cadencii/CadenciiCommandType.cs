@@ -61,6 +61,10 @@ namespace org.kbinani.cadencii {
         /// BGMの編集
         /// </summary>
         BGM_UPDATE,
+        /// <summary>
+        /// 出力するWAVEのフォーマットを変えるコマンド
+        /// </summary>
+        CHANGE_WAVE_FMT,
     }
 
 #if !JAVA

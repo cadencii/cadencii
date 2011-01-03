@@ -1,7 +1,7 @@
 #if !JAVA
 /*
  * BufferedWriter.cs
- * Copyright © 2009-2010 kbinani
+ * Copyright © 2009-2011 kbinani
  *
  * This file is part of org.kbinani.
  *

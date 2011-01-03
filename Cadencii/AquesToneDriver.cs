@@ -119,7 +119,7 @@ namespace org.kbinani.cadencii
                 reload( sample_rate );
             } else {
                 if ( sample_rate != mInstance.getSampleRate() ) {
-                    reload( sample_rate );
+                    mInstance.setSampleRate( sample_rate );
                 }
             }
             return mInstance;
@@ -152,10 +152,14 @@ namespace org.kbinani.cadencii
                     loaded = false;
                     Logger.write( typeof( AquesToneDriver ) + ".reload; ex=" + ex + "\n" );
                 }
+#if DEBUG
+                PortUtil.println( "AquesToneDriver#reload(int); loaded=" + loaded + "; sample_rate=" + sample_rate );
+#endif
                 mInstance.loaded = loaded;
             }
+
 #if DEBUG
-            PortUtil.println( "VSTiProxy#initCor; aquesToneDriver.loaded=" + mInstance.loaded );
+            PortUtil.println( "AquesToneDriver#initCor; aquesToneDriver.loaded=" + mInstance.loaded );
 #endif
         }
 

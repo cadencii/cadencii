@@ -18,6 +18,7 @@ import java.util.*;
 import org.kbinani.media.*;
 #else
 using System;
+using org.kbinani;
 using org.kbinani.java.util;
 using org.kbinani.media;
 
@@ -42,6 +43,7 @@ namespace org.kbinani.cadencii
         private string mPath;
         private int mChannel;
         private int mBitPerSample;
+        private object mSyncRoot = new object();
 
         public FileWaveReceiver( string path, int channel, int bit_per_sample )
         {
@@ -77,32 +79,39 @@ namespace org.kbinani.cadencii
 
         public void end()
         {
+            lock ( mSyncRoot ) {
 #if DEBUG
-            PortUtil.println( "FileWaveReceiver#end" );
+                if ( mAdapter == null ) {
+                    PortUtil.println( "FileWaveReceiver#end; warning; 'end' when mAdapter is null" );
+                }
 #endif
-            lock ( mAdapter ) {
-                mAdapter.close();
+                if ( mAdapter != null ) {
+                    mAdapter.close();
+                }
             }
         }
 
         public void push( double[] l, double[] r, int length )
         {
-            if ( mAdapter == null ) {
-                int sample_rate = mRoot.getSampleRate();
-                mAdapter = new WaveWriter( mPath, mChannel, mBitPerSample, sample_rate );
-            }
-            lock ( mAdapter ) {
+            lock ( mSyncRoot ) {
+                if ( mAdapter == null ) {
+                    int sample_rate = mRoot.getSampleRate();
+#if DEBUG
+                    PortUtil.println( "FileWaveReceiver#push; sample_rate=" + sample_rate );
+#endif
+                    mAdapter = new WaveWriter( mPath, mChannel, mBitPerSample, sample_rate );
+                }
                 mAdapter.append( l, r, length );
-            }
-            if ( mReceiver != null ) {
-                mReceiver.push( l, r, length );
+                if ( mReceiver != null ) {
+                    mReceiver.push( l, r, length );
+                }
             }
         }
 
         public void setReceiver( WaveReceiver r )
         {
-            if ( r != null ) {
-                r.end();
+            if ( mReceiver != null ) {
+                mReceiver.end();
             }
             mReceiver = r;
         }

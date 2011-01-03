@@ -1,7 +1,7 @@
 #if !JAVA
 /*
  * fft.cs
- * Copyright © 2008-2010 kbinani
+ * Copyright © 2008-2011 kbinani
  * 
  * Part of this is derived from 
  * General Purpose FFT (Fast Fourier/Cosine/Sine Transform) Package

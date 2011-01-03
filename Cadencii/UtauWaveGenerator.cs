@@ -70,8 +70,15 @@ namespace org.kbinani.cadencii
         private int mTrack;
         private double[] mBufferL = new double[BUFLEN];
         private double[] mBufferR = new double[BUFLEN];
-        private int mTrimRemain = 0;
+//        private int mTrimRemain = 0;
+        private double mTrimRemainSeconds = 0.0;
         private int mSampleRate;
+        /// <summary>
+        /// whdから読み込んだサンプリングレート．
+        /// 波形処理ラインのサンプリングレートと違う可能性がある
+        /// </summary>
+        private int mThisSampleRate = 44100;
+        private RateConvertContext mContext = null;
 
         public int getSampleRate()
         {
@@ -177,7 +184,7 @@ namespace org.kbinani.cadencii
             mVsq.adjustClockToMatchWith( 125.0 );
             mVsq.updateTotalClocks();
 
-            mTrimRemain = (int)(trim_sec * mSampleRate);
+            mTrimRemainSeconds = trim_sec;
         }
 
         public void setReceiver( WaveReceiver r )
@@ -609,6 +616,8 @@ namespace org.kbinani.cadencii
                     // whdを読みに行く
                     if ( first ) {
                         RandomAccessFile whd = null;
+                        // このファイルのサンプリングレート．ヘッダで読み込むけど初期値はコレにしとく
+                        mThisSampleRate = 44100;
                         try {
                             whd = new RandomAccessFile( file_whd, "r" );
                             #region whdを読みに行く
@@ -655,7 +664,7 @@ namespace org.kbinani.cadencii
                             channel = buf[1] << 8 | buf[0];
                             // サンプリングレート
                             whd.read( buf, 0, 4 );
-                            int this_sample_rate = buf[0] | buf[1] << 8 | buf[2] << 16 | buf[3] << 24;
+                            mThisSampleRate = buf[0] | buf[1] << 8 | buf[2] << 16 | buf[3] << 24;
                             // データ速度
                             whd.read( buf, 0, 4 );
                             // ブロックサイズ
@@ -744,7 +753,7 @@ namespace org.kbinani.cadencii
                                             mRight[pos] = v;
                                             pos++;
                                             if ( pos >= length ) {
-                                                waveIncoming( mLeft, mRight, mLeft.Length );
+                                                waveIncoming( mLeft, mRight, mLeft.Length, mThisSampleRate );
                                                 pos = 0;
                                             }
                                         }
@@ -776,7 +785,7 @@ namespace org.kbinani.cadencii
                                             c += 2;
                                             pos++;
                                             if ( pos >= length ) {
-                                                waveIncoming( mLeft, mRight, mLeft.Length );
+                                                waveIncoming( mLeft, mRight, mLeft.Length, mThisSampleRate );
                                                 pos = 0;
                                             }
                                         }
@@ -809,7 +818,7 @@ namespace org.kbinani.cadencii
                                             c += 2;
                                             pos++;
                                             if ( pos >= length ) {
-                                                waveIncoming( mLeft, mRight, mLeft.Length );
+                                                waveIncoming( mLeft, mRight, mLeft.Length, mThisSampleRate );
                                                 pos = 0;
                                             }
                                         }
@@ -841,7 +850,7 @@ namespace org.kbinani.cadencii
                                             c += 4;
                                             pos++;
                                             if ( pos >= length ) {
-                                                waveIncoming( mLeft, mRight, mLeft.Length );
+                                                waveIncoming( mLeft, mRight, mLeft.Length, mThisSampleRate );
                                                 pos = 0;
                                             }
                                         }
@@ -872,7 +881,7 @@ namespace org.kbinani.cadencii
                         AppManager.debugWriteLine( "UtauWaveGenerator#run; calling WaveIncoming..." );
 #endif
                         if ( pos > 0 ) {
-                            waveIncoming( mLeft, mRight, pos );
+                            waveIncoming( mLeft, mRight, pos, mThisSampleRate );
                         }
                         mLeft = null;
                         mRight = null;
@@ -903,7 +912,7 @@ namespace org.kbinani.cadencii
                 }
                 while ( tremain > 0 && !mAbortRequired ) {
                     int amount = (tremain > BUFLEN) ? BUFLEN : tremain;
-                    waveIncoming( mBufferL, mBufferR, amount );
+                    waveIncoming( mBufferL, mBufferR, amount, mThisSampleRate );
                     tremain -= amount;
                 }
             } catch ( Exception ex ) {
@@ -964,16 +973,29 @@ namespace org.kbinani.cadencii
 #endif
         }
 
-        private void waveIncoming( double[] l, double[] r, int length )
+        private void waveIncoming( double[] l, double[] r, int length, int sample_rate )
         {
+            if ( mContext == null ) {
+                mContext = new RateConvertContext( sample_rate, mSampleRate );
+            } else {
+                if ( mContext.getSampleRateFrom() != sample_rate ||
+                     mContext.getSampleRateTo() != mSampleRate ) {
+                    mContext.dispose();
+                    mContext = null;
+                    mContext = new RateConvertContext( sample_rate, mSampleRate );
+                }
+            }
             int offset = 0;
+            int mTrimRemain = (int)(mTrimRemainSeconds * sample_rate);
             if ( mTrimRemain > 0 ) {
                 if ( length <= mTrimRemain ) {
-                    mTrimRemain -= length;
+                    mTrimRemainSeconds -= (length / sample_rate);
+                   // mTrimRemain -= length;
                     return;
                 } else {
-                    mTrimRemain = 0;
-                    offset += length -= mTrimRemain;
+                    mTrimRemainSeconds = 0.0;
+                    //mTrimRemain = 0;
+                    offset += length;// -= mTrimRemain;
                 }
             }
             int remain = length - offset;
@@ -983,10 +1005,12 @@ namespace org.kbinani.cadencii
                     mBufferL[i] = l[i + offset];
                     mBufferR[i] = r[i + offset];
                 }
-                mReceiver.push( mBufferL, mBufferR, amount );
+                while ( RateConvertContext.convert( mContext, mBufferL, mBufferR, amount ) ) {
+                    mReceiver.push( mContext.bufferLeft, mContext.bufferRight, mContext.length );
+                    mTotalAppend += mContext.length;
+                }
                 remain -= amount;
                 offset += amount;
-                mTotalAppend += amount;
             }
         }
 

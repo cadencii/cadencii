@@ -1,6 +1,6 @@
 /*
  * AviReader.cs
- * Copyright © 2007-2010 kbinani
+ * Copyright © 2007-2011 kbinani
  *
  * This file is part of org.kbinani.media.
  *

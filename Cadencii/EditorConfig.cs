@@ -322,12 +322,14 @@ namespace org.kbinani.cadencii {
         public BKeys[] SpecialShortcutGoToFirst = new BKeys[] { BKeys.Home };
         /// <summary>
         /// waveファイル出力時のチャンネル数（1または2）
+        /// 3.3で廃止
         /// </summary>
-        public int WaveFileOutputChannel = 2;
+        private int __revoked__WaveFileOutputChannel = 2;
         /// <summary>
         /// waveファイル出力時に、全トラックをmixして出力するかどうか
+        /// 3.3で廃止
         /// </summary>
-        public boolean WaveFileOutputFromMasterTrack = false;
+        private boolean __revoked__WaveFileOutputFromMasterTrack = false;
         /// <summary>
         /// MTCスレーブ動作を行う際使用するMIDI INポートの設定
         /// </summary>

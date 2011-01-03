@@ -1,6 +1,6 @@
 /*
  * PlaySound.cs
- * Copyright © 2009-2010 kbinani
+ * Copyright © 2009-2011 kbinani
  *
  * This file is part of org.kbinani.media.
  *
@@ -42,7 +42,7 @@ namespace org.kbinani.media {
         [DllImport( "org.kbinani.media.helper.dll" )]
         private static extern void SoundInit();
         [DllImport( "org.kbinani.media.helper.dll" )]
-        private static extern void SoundPrepare( int sample_rate );
+        private static extern int SoundPrepare( int sample_rate );
         [DllImport( "org.kbinani.media.helper.dll" )]
         private static extern void SoundAppend( IntPtr left, IntPtr right, int length );
         [DllImport( "org.kbinani.media.helper.dll" )]
@@ -223,7 +223,10 @@ namespace org.kbinani.media {
             }
 #else
             try {
-                SoundPrepare( sample_rate );
+                int ret = SoundPrepare( sample_rate );
+#if DEBUG
+                PortUtil.println( "PlaySound#prepare; ret=" + ret );
+#endif
             } catch ( Exception ex ) {
                 PortUtil.println( "PlaySound#prepare; ex=" + ex );
             }

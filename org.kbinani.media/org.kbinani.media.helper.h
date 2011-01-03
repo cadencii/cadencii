@@ -6,7 +6,7 @@ extern "C" {
 #endif
 
 void SoundInit();
-void SoundPrepare( int sample_rate );
+int SoundPrepare( int sample_rate );
 void SoundAppend( double *left, double *right, int length );
 void SoundExit();
 double SoundGetPosition();

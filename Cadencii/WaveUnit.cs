@@ -81,9 +81,22 @@ namespace org.kbinani.cadencii
         /// <param name="parameter"></param>
         public abstract void setConfig( String parameter );
 
+        /// <summary>
+        /// この波形処理ユニットが属している回路のルートにある波形合成器を設定します
+        /// </summary>
+        /// <param name="root"></param>
         public virtual void setRoot( WaveGenerator root )
         {
             mRoot = root;
+        }
+
+        /// <summary>
+        /// この波形処理ユニットが属している回路のルートにある波形合成器を取得します
+        /// </summary>
+        /// <returns></returns>
+        public virtual WaveGenerator getRoot()
+        {
+            return mRoot;
         }
 
         /// <summary>

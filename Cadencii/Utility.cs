@@ -973,6 +973,10 @@ namespace org.kbinani.cadencii{
             EditedZoneUnit[] areaTempo = detectTempotableDifference( status1.tempo, status2.tempo );
             EditedZoneUnit[] areaTrack = detectTrackDifference( status1.track, status2.track );
             EditedZone zone = new EditedZone();
+            if ( status1.config.SamplingRate != status2.config.SamplingRate ||
+                 status1.config.WaveFileOutputChannel != status2.config.WaveFileOutputChannel ) {
+                zone.add( 0, int.MaxValue );
+            }
             zone.add( areaTempo );
             zone.add( areaTrack );
             EditedZoneUnit[] ret = new EditedZoneUnit[zone.size()];

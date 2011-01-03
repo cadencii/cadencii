@@ -279,6 +279,9 @@ namespace org.kbinani.cadencii
 #if TEST
                     org.kbinani.debug.push_log( "    calling initial dispatch..." );
 #endif
+#if DEBUG
+                    PortUtil.println( "VocaloidDriver#startRendering; sampleRate=" + sampleRate );
+#endif
                     aEffect.Dispatch( AEffectOpcodes.effSetSampleRate, 0, 0, IntPtr.Zero, (float)sampleRate );
                     aEffect.Dispatch( AEffectOpcodes.effMainsChanged, 0, 1, IntPtr.Zero, 0 );
 

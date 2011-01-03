@@ -42,7 +42,8 @@ using org.kbinani.vsq;
 using org.kbinani.windows.forms;
 using org.kbinani.xml;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
     using Integer = System.Int32;
@@ -50,8 +51,10 @@ namespace org.kbinani.cadencii {
     using Float = System.Single;
 #endif
 
-    public class AppManager {
-        internal class RunGeneratorQueue {
+    public class AppManager
+    {
+        internal class RunGeneratorQueue
+        {
             public WaveGenerator generator;
             public long samples;
         }
@@ -59,7 +62,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// メジャー，マイナー，およびメンテナンス番号によるバージョン番号を表すクラス
         /// </summary>
-        class VersionString : IComparable<VersionString> {
+        class VersionString : IComparable<VersionString>
+        {
             /// <summary>
             /// メジャーバージョンを表す
             /// </summary>
@@ -81,7 +85,8 @@ namespace org.kbinani.cadencii {
             /// 「メジャー.マイナー.メンテナンス」の記法に基づく文字列をパースし，新しいインスタンスを作成します
             /// </summary>
             /// <param name="str"></param>
-            public VersionString( String str ){
+            public VersionString( String str )
+            {
                 mRawString = str;
                 String[] spl = PortUtil.splitString( str, '.' );
                 if ( spl.Length >= 1 ) {
@@ -108,7 +113,8 @@ namespace org.kbinani.cadencii {
             /// このインスタンス生成時に渡された文字列を取得します
             /// </summary>
             /// <returns></returns>
-            public String getRawString() {
+            public String getRawString()
+            {
                 return mRawString;
             }
 
@@ -116,7 +122,8 @@ namespace org.kbinani.cadencii {
             /// このインスタンスを文字列で表現したものを取得します
             /// </summary>
             /// <returns></returns>
-            public String toString(){
+            public String toString()
+            {
                 return major + "." + minor + "." + build;
             }
 
@@ -125,7 +132,8 @@ namespace org.kbinani.cadencii {
             /// </summary>
             /// <param name="item"></param>
             /// <returns>このインスタンスの表すバージョンに対して，指定したバージョンが同じであれば0，新しければ正の値，それ以外は負の値を返します</returns>
-            public int compareTo( VersionString item ) {
+            public int compareTo( VersionString item )
+            {
                 if ( item == null ) {
                     return -1;
                 }
@@ -141,11 +149,13 @@ namespace org.kbinani.cadencii {
             }
 
 #if !JAVA
-            public override string  ToString(){
- 	            return this.toString();
+            public override string ToString()
+            {
+                return this.toString();
             }
 
-            public int CompareTo( VersionString item ) {
+            public int CompareTo( VersionString item )
+            {
                 return this.compareTo( item );
             }
 #endif
@@ -656,6 +666,10 @@ namespace org.kbinani.cadencii {
         /// 直接再生モード時の、再生開始した位置の曲頭からの秒数
         /// </summary>
         public static float mDirectPlayShift = 0.0f;
+        /// <summary>
+        /// プレビュー終了位置のクロック
+        /// </summary>
+        public static int mPreviewEndingClock = 0;
 
 #if DEBUG
         /// <summary>
@@ -797,7 +811,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// プレビュー再生を開始します
         /// </summary>
-        private static void previewStart() {
+        private static void previewStart( FormMain form )
+        {
             int selected = mSelected;
             RendererKind renderer = VsqFileEx.getTrackRendererKind( mVsq.Track.get( selected ) );
             int clock = mCurrentClock;
@@ -812,8 +827,9 @@ namespace org.kbinani.cadencii {
                 tracks.add( track );
             }
 
-            patchWorkToFreeze( null, tracks );
+            patchWorkToFreeze( form, tracks );
 
+            WaveSenderDriver driver = new WaveSenderDriver();
             Vector<Amplifier> waves = new Vector<Amplifier>();
             for ( int i = 0; i < tracks.size(); i++ ) {
                 int track = tracks.get( i );
@@ -827,6 +843,8 @@ namespace org.kbinani.cadencii {
                     a.setSender( f );
                     a.setAmplifierView( mMixerWindow.getVolumeTracker( track ) );
                     waves.add( a );
+                    a.setRoot( driver );
+                    f.setRoot( driver );
                 } catch ( Exception ex ) {
                     Logger.write( typeof( AppManager ) + ".previewStart; ex=" + ex + "\n" );
                     PortUtil.stderr.println( "AppManager.previewStart; ex=" + ex );
@@ -864,6 +882,8 @@ namespace org.kbinani.cadencii {
                     a.setSender( f );
                     a.setAmplifierView( AppManager.mMixerWindow.getVolumeTrackerBgm( i ) );
                     waves.add( a );
+                    a.setRoot( driver );
+                    f.setRoot( driver );
                 } catch ( Exception ex ) {
                     Logger.write( typeof( AppManager ) + ".previewStart; ex=" + ex + "\n" );
                     PortUtil.stderr.println( "AppManager.previewStart; ex=" + ex );
@@ -871,16 +891,19 @@ namespace org.kbinani.cadencii {
             }
 
             // 最初のsenderをドライバにする
-            WaveSenderDriver driver = new WaveSenderDriver();
             driver.setSender( waves.get( 0 ) );
             Mixer m = new Mixer();
+            m.setRoot( driver );
             driver.setReceiver( m );
             stopGenerator();
             setGenerator( driver );
             Amplifier amp = new Amplifier();
+            amp.setRoot( driver );
             amp.setAmplifierView( mMixerWindow.getVolumeTrackerMaster() );
             m.setReceiver( amp );
-            amp.setReceiver( MonitorWaveReceiver.getInstance() );
+            MonitorWaveReceiver monitor = MonitorWaveReceiver.getInstance();
+            monitor.setRoot( driver );
+            amp.setReceiver( monitor );
             for ( int i = 1; i < waves.size(); i++ ) {
                 m.addSender( waves.get( i ) );
             }
@@ -889,8 +912,11 @@ namespace org.kbinani.cadencii {
             if ( mEndMarkerEnabled ) {
                 end_clock = mEndMarker;
             }
+            mPreviewEndingClock = end_clock;
             double end_sec = mVsq.getSecFromClock( end_clock );
-            long samples = (long)((end_sec - mDirectPlayShift) * mVsq.config.SamplingRate);
+            int sample_rate = mVsq.config.SamplingRate;
+            long samples = (long)((end_sec - mDirectPlayShift) * sample_rate);
+            driver.init( mVsq, mSelected, 0, end_clock, sample_rate );
 #if DEBUG
             PortUtil.println( "AppManager.previewStart; calling runGenerator..." );
 #endif
@@ -900,10 +926,16 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
+        public static int getPreviewEndingClock()
+        {
+            return mPreviewEndingClock;
+        }
+
         /// <summary>
         /// プレビュー再生を停止します
         /// </summary>
-        private static void previewStop() {
+        private static void previewStop()
+        {
             stopGenerator();
         }
 
@@ -911,7 +943,8 @@ namespace org.kbinani.cadencii {
         /// 指定したトラックのレンダリングが必要な部分を再レンダリングし，ツギハギすることでトラックのキャッシュを最新の状態にします
         /// </summary>
         /// <param name="tracks"></param>
-        public static void patchWorkToFreeze( FormMain main_window, Vector<Integer> tracks ) {
+        public static void patchWorkToFreeze( FormMain main_window, Vector<Integer> tracks )
+        {
             mVsq.updateTotalClocks();
             String temppath = getTempWaveDir();
             int presend = editorConfig.PreSendTime;
@@ -932,7 +965,7 @@ namespace org.kbinani.cadencii {
                     int track = tracks[k];
                     String wavePath = PortUtil.combinePath( temppath, track + ".wav" );
                     Vector<Integer> queueIndex = new Vector<Integer>();
-                    
+
                     for ( int i = 0; i < queue.size(); i++ ) {
                         if ( queue[i].track == track ) {
                             queueIndex.add( i );
@@ -947,8 +980,8 @@ namespace org.kbinani.cadencii {
                     if ( queueIndex.size() == 1 && wavePath.Equals( queue[queueIndex[0]].file ) ) {
                         // 第trackトラック全体の合成を指示するキューだった場合．
                         // このとき，パッチワークを行う必要なし．
-                        mLastRenderedStatus[track - 1] = 
-                            new RenderedStatus( (VsqTrack)mVsq.Track.get( track ).clone(), mVsq.TempoTable );
+                        mLastRenderedStatus[track - 1] =
+                            new RenderedStatus( (VsqTrack)mVsq.Track.get( track ).clone(), mVsq.TempoTable, (SequenceConfig)mVsq.config.clone() );
                         serializeRenderingStatus( temppath, track );
                         try {
 #if JAVA
@@ -971,7 +1004,7 @@ namespace org.kbinani.cadencii {
                     try {
                         int sampleRate = mVsq.config.SamplingRate;
                         long totalLength = (long)((mVsq.getSecFromClock( mVsq.TotalClocks ) + 1.0) * sampleRate);
-                        writer = new WaveWriter( wavePath, editorConfig.WaveFileOutputChannel, 16, sampleRate );
+                        writer = new WaveWriter( wavePath, mVsq.config.WaveFileOutputChannel, 16, sampleRate );
                         int BUFLEN = 1024;
                         double[] bufl = new double[BUFLEN];
                         double[] bufr = new double[BUFLEN];
@@ -1026,7 +1059,8 @@ namespace org.kbinani.cadencii {
                         VsqTrack vsq_track = mVsq.Track.get( track );
                         if ( queueIndex.get( queueIndex.size() - 1 ) <= finished ) {
                             // 途中で終了せず，このトラックの全てのパッチワークが完了した．
-                            mLastRenderedStatus[track - 1] = new RenderedStatus( (VsqTrack)vsq_track.clone(), mVsq.TempoTable );
+                            mLastRenderedStatus[track - 1] =
+                                new RenderedStatus( (VsqTrack)vsq_track.clone(), mVsq.TempoTable, (SequenceConfig)mVsq.config.clone() );
                             serializeRenderingStatus( temppath, track );
                             setRenderRequired( track, false );
                         } else {
@@ -1084,7 +1118,7 @@ namespace org.kbinani.cadencii {
                                 copied.sortEvent();
                             }
 
-                            mLastRenderedStatus[track - 1] = new RenderedStatus( copied, mVsq.TempoTable );
+                            mLastRenderedStatus[track - 1] = new RenderedStatus( copied, mVsq.TempoTable, (SequenceConfig)mVsq.config.clone() );
                             serializeRenderingStatus( temppath, track );
                         }
                     } catch ( Exception ex ) {
@@ -1102,9 +1136,9 @@ namespace org.kbinani.cadencii {
                     }
 
                     // 波形表示用のWaveDrawContextの内容を更新する。
-                    for( int j = 0; j < queueIndex.size(); j++ ){
+                    for ( int j = 0; j < queueIndex.size(); j++ ) {
                         int i = queueIndex.get( j );
-                        if( i >= finished ){
+                        if ( i >= finished ) {
                             continue;
                         }
                         double secStart = mVsq.getSecFromClock( queue[i].clockStart );
@@ -1150,7 +1184,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="tracks">リストを作成するトラック番号の一覧</param>
         /// <returns></returns>
-        public static Vector<PatchWorkQueue> patchWorkCreateQueue( Vector<Integer> tracks ) {
+        public static Vector<PatchWorkQueue> patchWorkCreateQueue( Vector<Integer> tracks )
+        {
             mVsq.updateTotalClocks();
             String temppath = getTempWaveDir();
             int presend = editorConfig.PreSendTime;
@@ -1179,7 +1214,10 @@ namespace org.kbinani.cadencii {
                 // 部分レンダリング
                 EditedZoneUnit[] areas =
                     Utility.detectRenderedStatusDifference( mLastRenderedStatus[track - 1],
-                                                            new RenderedStatus( (VsqTrack)vsq_track.clone(), mVsq.TempoTable ) );
+                                                            new RenderedStatus(
+                                                                (VsqTrack)vsq_track.clone(),
+                                                                mVsq.TempoTable,
+                                                                (SequenceConfig)mVsq.config.clone() ) );
 
                 // areasとかぶっている音符がどれかを判定する
                 EditedZone zone = new EditedZone();
@@ -1347,7 +1385,8 @@ namespace org.kbinani.cadencii {
         /// <param name="zone"></param>
         /// <param name="vsq_track"></param>
         /// <param name="areas"></param>
-        private static void checkSerializedEvents( EditedZone zone, VsqTrack vsq_track, EditedZoneUnit[] areas ) {
+        private static void checkSerializedEvents( EditedZone zone, VsqTrack vsq_track, EditedZoneUnit[] areas )
+        {
             if ( vsq_track == null || zone == null || areas == null ) {
                 return;
             }
@@ -1449,7 +1488,8 @@ namespace org.kbinani.cadencii {
         /// 波形生成器が実行中かどうかを取得します
         /// </summary>
         /// <returns></returns>
-        public static boolean isGeneratorRunning() {
+        public static boolean isGeneratorRunning()
+        {
             boolean ret = false;
             lock ( mLocker ) {
                 WaveGenerator g = mWaveGenerator;
@@ -1463,7 +1503,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 波形生成器を停止します
         /// </summary>
-        public static void stopGenerator() {
+        public static void stopGenerator()
+        {
             lock ( mLocker ) {
                 WaveGenerator g = mWaveGenerator;
                 if ( g != null ) {
@@ -1477,7 +1518,8 @@ namespace org.kbinani.cadencii {
         /// 波形生成器を設定します
         /// </summary>
         /// <param name="generator"></param>
-        public static void setGenerator( WaveGenerator generator ) {
+        public static void setGenerator( WaveGenerator generator )
+        {
             lock ( mLocker ) {
                 WaveGenerator g = mWaveGenerator;
                 if ( g != null ) {
@@ -1491,8 +1533,9 @@ namespace org.kbinani.cadencii {
         /// 波形生成器を別スレッドで実行します
         /// </summary>
         /// <param name="samples">合成するサンプル数．波形合成器のbeginメソッドに渡される</param>
-        public static void runGenerator( long samples ) {
-            lock( mLocker ){
+        public static void runGenerator( long samples )
+        {
+            lock ( mLocker ) {
 #if DEBUG
                 PortUtil.println( "AppManager#runGenerator; (mPreviewThread==null)=" + (mPreviewThread == null) );
 #endif
@@ -1528,7 +1571,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private static void runGeneratorCore( Object argument ) {
+        private static void runGeneratorCore( Object argument )
+        {
             RunGeneratorQueue q = (RunGeneratorQueue)argument;
             WaveGenerator g = q.generator;
             long samples = q.samples;
@@ -1540,11 +1584,13 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public static int getViewingCurveCount() {
+        public static int getViewingCurveCount()
+        {
             return mViewingCurves.size();
         }
 
-        public static CurveType getViewingCurveElement( int index ) {
+        public static CurveType getViewingCurveElement( int index )
+        {
             return mViewingCurves.get( index );
         }
 
@@ -1552,7 +1598,8 @@ namespace org.kbinani.cadencii {
         /// TrackSelectorに表示させるコントロール・カーブの種類を追加します
         /// </summary>
         /// <param name="curve"></param>
-        public static void addViewingCurveRange( CurveType[] curve ) {
+        public static void addViewingCurveRange( CurveType[] curve )
+        {
             for ( int j = 0; j < curve.Length; j++ ) {
                 boolean found = false;
                 for ( int i = 0; i < mViewingCurves.size(); i++ ) {
@@ -1581,11 +1628,13 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public static void addViewingCurve( CurveType curve ) {
+        public static void addViewingCurve( CurveType curve )
+        {
             addViewingCurveRange( new CurveType[] { curve } );
         }
 
-        public static void clearViewingCurve() {
+        public static void clearViewingCurve()
+        {
             mViewingCurves.clear();
         }
 
@@ -1593,7 +1642,8 @@ namespace org.kbinani.cadencii {
         /// このコントロールに担当させるカーブを削除します
         /// </summary>
         /// <param name="curve"></param>
-        public void removeViewingCurve( CurveType curve ) {
+        public void removeViewingCurve( CurveType curve )
+        {
             for ( int i = 0; i < mViewingCurves.size(); i++ ) {
                 if ( mViewingCurves.get( i ).equals( curve ) ) {
                     mViewingCurves.removeElementAt( i );
@@ -1606,7 +1656,8 @@ namespace org.kbinani.cadencii {
         /// ピアノロールの，X方向のスケールを取得します(pixel/clock)
         /// </summary>
         /// <returns></returns>
-        public static float getScaleX() {
+        public static float getScaleX()
+        {
             return mScaleX;
         }
 
@@ -1614,7 +1665,8 @@ namespace org.kbinani.cadencii {
         /// ピアノロールの，X方向のスケールの逆数を取得します(clock/pixel)
         /// </summary>
         /// <returns></returns>
-        public static float getScaleXInv() {
+        public static float getScaleXInv()
+        {
             return mInvScaleX;
         }
 
@@ -1622,7 +1674,8 @@ namespace org.kbinani.cadencii {
         /// ピアノロールの，X方向のスケールを設定します
         /// </summary>
         /// <param name="scale_x"></param>
-        public static void setScaleX( float scale_x ) {
+        public static void setScaleX( float scale_x )
+        {
             mScaleX = scale_x;
             mInvScaleX = 1.0f / mScaleX;
         }
@@ -1631,7 +1684,8 @@ namespace org.kbinani.cadencii {
         /// ピアノロールの，Y方向のスケールを取得します(pixel/cent)
         /// </summary>
         /// <returns></returns>
-        public static float getScaleY() {
+        public static float getScaleY()
+        {
             if ( editorConfig.PianoRollScaleY < EditorConfig.MIN_PIANOROLL_SCALEY ) {
                 editorConfig.PianoRollScaleY = EditorConfig.MIN_PIANOROLL_SCALEY;
             } else if ( EditorConfig.MAX_PIANOROLL_SCALEY < editorConfig.PianoRollScaleY ) {
@@ -1650,7 +1704,8 @@ namespace org.kbinani.cadencii {
         /// ピアノロール画面の，ビューポートと仮想スクリーンとの横方向のオフセットを取得します
         /// </summary>
         /// <returns></returns>
-        public static int getStartToDrawX() {
+        public static int getStartToDrawX()
+        {
             return mStartToDrawX;
         }
 
@@ -1658,7 +1713,8 @@ namespace org.kbinani.cadencii {
         /// ピアノロール画面の，ビューポートと仮想スクリーンとの横方向のオフセットを設定します
         /// </summary>
         /// <param name="value"></param>
-        public static void setStartToDrawX( int value ) {
+        public static void setStartToDrawX( int value )
+        {
             mStartToDrawX = value;
         }
 
@@ -1666,7 +1722,8 @@ namespace org.kbinani.cadencii {
         /// ピアノロール画面の，ビューポートと仮想スクリーンとの縦方向のオフセットを取得します
         /// </summary>
         /// <returns></returns>
-        public static int getStartToDrawY() {
+        public static int getStartToDrawY()
+        {
             return mStartToDrawY;
         }
 
@@ -1674,7 +1731,8 @@ namespace org.kbinani.cadencii {
         /// ピアノロール画面の，ビューポートと仮想スクリーンとの縦方向のオフセットを設定します
         /// </summary>
         /// <param name="value"></param>
-        public static void setStartToDrawY( int value ) {
+        public static void setStartToDrawY( int value )
+        {
             mStartToDrawY = value;
         }
 
@@ -1683,11 +1741,13 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="note"></param>
         /// <returns></returns>
-        public static int yCoordFromNote( float note ) {
+        public static int yCoordFromNote( float note )
+        {
             return yCoordFromNote( note, mStartToDrawY );
         }
 
-        public static int yCoordFromNote( float note, int start_to_draw_y ) {
+        public static int yCoordFromNote( float note, int start_to_draw_y )
+        {
             return (int)(-1 * (note - 127.0f) * (int)(getScaleY() * 100)) - start_to_draw_y;
         }
 
@@ -1696,15 +1756,18 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="y"></param>
         /// <returns></returns>
-        public static int noteFromYCoord( int y ) {
+        public static int noteFromYCoord( int y )
+        {
             return 127 - (int)noteFromYCoordCore( y );
         }
 
-        public static double noteFromYCoordDoublePrecision( int y ) {
+        public static double noteFromYCoordDoublePrecision( int y )
+        {
             return 127.0 - noteFromYCoordCore( y );
         }
 
-        private static double noteFromYCoordCore( int y ) {
+        private static double noteFromYCoordCore( int y )
+        {
             return (double)(mStartToDrawY + y) / (double)((int)(getScaleY() * 100));
         }
 
@@ -1713,7 +1776,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="kind">音声合成システムの種類</param>
         /// <returns>音声合成システムを識別する文字列(VOCALOID2=DSB301, VOCALOID1[1.0,1.1]=DSB202, AquesTone=AQT000, Straight x UTAU=STR000, UTAU=UTAU000)</returns>
-        public static String getVersionStringFromRendererKind( RendererKind kind ) {
+        public static String getVersionStringFromRendererKind( RendererKind kind )
+        {
             if ( kind == RendererKind.AQUES_TONE ) {
                 return "AQT000";
             } else if ( kind == RendererKind.VCNT ) {
@@ -1733,7 +1797,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="kind">音声合成システムの種類</param>
         /// <returns>歌手のリスト</returns>
-        public static Vector<VsqID> getSingerListFromRendererKind( RendererKind kind ) {
+        public static Vector<VsqID> getSingerListFromRendererKind( RendererKind kind )
+        {
             Vector<VsqID> singers = null;
             if ( kind == RendererKind.AQUES_TONE ) {
                 singers = new Vector<VsqID>();
@@ -1778,7 +1843,8 @@ namespace org.kbinani.cadencii {
         /// <param name="item"></param>
         /// <param name="clock"></param>
         /// <param name="new_phrase"></param>
-        public static void changePhrase( VsqFileEx vsq, int track, VsqEvent item, int clock, String new_phrase ) {
+        public static void changePhrase( VsqFileEx vsq, int track, VsqEvent item, int clock, String new_phrase )
+        {
             String phonetic_symbol = "";
             SymbolTableEntry entry = SymbolTable.attatch( new_phrase );
             if ( entry == null ) {
@@ -1803,7 +1869,7 @@ namespace org.kbinani.cadencii {
                 if ( sc != null && mUtauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
                     UtauVoiceDB db = mUtauVoiceDB.get( sc.VOICEIDSTR );
                     OtoArgs oa = db.attachFileNameFromLyric( new_phrase );
-                    if ( item.UstEvent == null ){
+                    if ( item.UstEvent == null ) {
                         item.UstEvent = new UstEvent();
                     }
                     item.UstEvent.VoiceOverlap = oa.msOverlap;
@@ -1812,7 +1878,39 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public static void serializeRenderingStatus( String temppath, int track ) {
+        public static void deserializeRenderingStatus( String temppath, int track )
+        {
+            String xml = PortUtil.combinePath( temppath, track + ".xml" );
+            if ( !PortUtil.isFileExists( xml ) ) {
+                return;
+            }
+            FileInputStream fs = null;
+            RenderedStatus status = null;
+            try {
+                fs = new FileInputStream( xml );
+                Object obj = mRenderingStatusSerializer.deserialize( fs );
+                if ( obj != null && obj is RenderedStatus ) {
+                    status = (RenderedStatus)obj;
+                }
+            } catch ( Exception ex ) {
+                Logger.write( typeof( AppManager ) + ".deserializeRederingStatus; ex=" + ex + "\n" );
+                status = null;
+                PortUtil.stderr.println( "AppManager#deserializeRederingStatus; ex=" + ex );
+            } finally {
+                if ( fs != null ) {
+                    try {
+                        fs.close();
+                    } catch ( Exception ex2 ) {
+                        Logger.write( typeof( AppManager ) + ".deserializeRederingStatus; ex=" + ex2 + "\n" );
+                        PortUtil.stderr.println( "AppManager#deserializeRederingStatus; ex2=" + ex2 );
+                    }
+                }
+            }
+            mLastRenderedStatus[track - 1] = status;
+        }
+
+        public static void serializeRenderingStatus( String temppath, int track )
+        {
             FileOutputStream fs = null;
             try {
                 fs = new FileOutputStream( PortUtil.combinePath( temppath, track + ".xml" ) );
@@ -1826,7 +1924,7 @@ namespace org.kbinani.cadencii {
                         fs.close();
                     } catch ( Exception ex2 ) {
                         PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex2=" + ex2 );
-                        Logger.write( typeof( AppManager ) + ".serializeRenderingStatus; ex=" + ex2 + "\n" ); 
+                        Logger.write( typeof( AppManager ) + ".serializeRenderingStatus; ex=" + ex2 + "\n" );
                     }
                 }
             }
@@ -1837,7 +1935,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="clocks"></param>
         /// <returns></returns>
-        public static int xCoordFromClocks( double clocks ) {
+        public static int xCoordFromClocks( double clocks )
+        {
             return (int)(keyWidth + clocks * mScaleX - mStartToDrawX) + keyOffset;
         }
 
@@ -1846,27 +1945,32 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="x"></param>
         /// <returns></returns>
-        public static int clockFromXCoord( int x ) {
+        public static int clockFromXCoord( int x )
+        {
             return (int)((x + mStartToDrawX - keyOffset - keyWidth) * mInvScaleX);
         }
 
         #region 選択範囲の管理
-        public static boolean isWholeSelectedIntervalEnabled() {
+        public static boolean isWholeSelectedIntervalEnabled()
+        {
             return mWholeSelectedIntervalEnabled;
         }
 
-        public static boolean isCurveSelectedIntervalEnabled() {
+        public static boolean isCurveSelectedIntervalEnabled()
+        {
             return mCurveSelectedIntervalEnabled;
         }
 
-        public static void setWholeSelectedIntervalEnabled( boolean value ) {
+        public static void setWholeSelectedIntervalEnabled( boolean value )
+        {
             mWholeSelectedIntervalEnabled = value;
             if ( value ) {
                 mCurveSelectedIntervalEnabled = false;
             }
         }
 
-        public static void setCurveSelectedIntervalEnabled( boolean value ) {
+        public static void setCurveSelectedIntervalEnabled( boolean value )
+        {
             mCurveSelectedIntervalEnabled = value;
             if ( value ) {
                 mWholeSelectedIntervalEnabled = false;
@@ -1875,15 +1979,18 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region MessageBoxのラッパー
-        public static BDialogResult showMessageBox( String text ) {
+        public static BDialogResult showMessageBox( String text )
+        {
             return showMessageBox( text, "", org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, org.kbinani.windows.forms.Utility.MSGBOX_PLAIN_MESSAGE );
         }
 
-        public static BDialogResult showMessageBox( String text, String caption ) {
+        public static BDialogResult showMessageBox( String text, String caption )
+        {
             return showMessageBox( text, caption, org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, org.kbinani.windows.forms.Utility.MSGBOX_PLAIN_MESSAGE );
         }
 
-        public static BDialogResult showMessageBox( String text, String caption, int optionType ) {
+        public static BDialogResult showMessageBox( String text, String caption, int optionType )
+        {
             return showMessageBox( text, caption, optionType, org.kbinani.windows.forms.Utility.MSGBOX_PLAIN_MESSAGE );
         }
 
@@ -1923,7 +2030,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// モーダルなダイアログを出すために，プロパティウィンドウとミキサーウィンドウの「最前面に表示」設定を一時的にOFFにします
         /// </summary>
-        private static void beginShowDialog() {
+        private static void beginShowDialog()
+        {
 #if ENABLE_PROPERTY
             if ( propertyWindow != null ) {
                 boolean previous = propertyWindow.isAlwaysOnTop();
@@ -1953,7 +2061,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// beginShowDialogで一時的にOFFにした「最前面に表示」設定を元に戻します
         /// </summary>
-        private static void endShowDialog() {
+        private static void endShowDialog()
+        {
 #if ENABLE_PROPERTY
             if ( propertyWindow != null ) {
                 Object tag = propertyWindow.getTag();
@@ -1991,8 +2100,9 @@ namespace org.kbinani.cadencii {
                 PortUtil.println( typeof( AppManager ) + ".endShowDialog; ex=" + ex );
             }
         }
-        
-        public static BDialogResult showMessageBox( String text, String caption, int optionType, int messageType ) {
+
+        public static BDialogResult showMessageBox( String text, String caption, int optionType, int messageType )
+        {
             beginShowDialog();
             BDialogResult ret = org.kbinani.windows.forms.Utility.showMessageBox( text, caption, optionType, messageType );
             endShowDialog();
@@ -2001,7 +2111,8 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region BGM 関連
-        public static int getBgmCount() {
+        public static int getBgmCount()
+        {
             if ( mVsq == null ) {
                 return 0;
             } else {
@@ -2009,14 +2120,16 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public static BgmFile getBgm( int index ) {
+        public static BgmFile getBgm( int index )
+        {
             if ( mVsq == null ) {
                 return null;
             }
             return mVsq.BgmFiles.get( index );
         }
 
-        public static void removeBgm( int index ) {
+        public static void removeBgm( int index )
+        {
             if ( mVsq == null ) {
                 return;
             }
@@ -2046,7 +2159,8 @@ namespace org.kbinani.cadencii {
             mMixerWindow.updateStatus();
         }
 
-        public static void clearBgm() {
+        public static void clearBgm()
+        {
             if ( mVsq == null ) {
                 return;
             }
@@ -2070,7 +2184,8 @@ namespace org.kbinani.cadencii {
             mMixerWindow.updateStatus();
         }
 
-        public static void addBgm( String file ) {
+        public static void addBgm( String file )
+        {
             if ( mVsq == null ) {
                 return;
             }
@@ -2105,7 +2220,8 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region 自動保存
-        public static void updateAutoBackupTimerStatus() {
+        public static void updateAutoBackupTimerStatus()
+        {
             if ( !mFile.Equals( "" ) && editorConfig.AutoBackupIntervalMinutes > 0 ) {
                 double millisec = editorConfig.AutoBackupIntervalMinutes * 60.0 * 1000.0;
                 int draft = (int)millisec;
@@ -2119,7 +2235,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public static void handleAutoBackupTimerTick( Object sender, BEventArgs e ) {
+        public static void handleAutoBackupTimerTick( Object sender, BEventArgs e )
+        {
 #if DEBUG
             PortUtil.println( "AppManager::handleAutoBackupTimerTick" );
 #endif
@@ -2148,7 +2265,8 @@ namespace org.kbinani.cadencii {
         }
         #endregion
 
-        public static void debugWriteLine( String message ) {
+        public static void debugWriteLine( String message )
+        {
 #if DEBUG
             try {
                 if ( mDebugLog == null ) {
@@ -2168,11 +2286,13 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// FormMainを識別するID
         /// </summary>
-        public static String getID() {
+        public static String getID()
+        {
             return mID;
         }
 
-        public static String _( String id ) {
+        public static String _( String id )
+        {
             return Messaging.getMessage( id );
         }
 
@@ -2181,7 +2301,8 @@ namespace org.kbinani.cadencii {
         /// このメソッドでは、キャッシュディレクトリの変更に伴う他の処理は実行されません。
         /// </summary>
         /// <param name="value"></param>
-        public static void setTempWaveDir( String value ) {
+        public static void setTempWaveDir( String value )
+        {
 #if DEBUG
             PortUtil.println( "AppManager#setTempWaveDir; before: \"" + mTempWaveDir + "\"" );
             PortUtil.println( "                           after:  \"" + value + "\"" );
@@ -2193,7 +2314,8 @@ namespace org.kbinani.cadencii {
         /// 音声ファイルのキャッシュディレクトリのパスを取得します。
         /// </summary>
         /// <returns></returns>
-        public static String getTempWaveDir() {
+        public static String getTempWaveDir()
+        {
             return mTempWaveDir;
         }
 
@@ -2201,7 +2323,8 @@ namespace org.kbinani.cadencii {
         /// Cadenciiが使用する一時ディレクトリのパスを取得します。
         /// </summary>
         /// <returns></returns>
-        public static String getCadenciiTempDir() {
+        public static String getCadenciiTempDir()
+        {
             String temp = PortUtil.combinePath( PortUtil.getTempPath(), TEMPDIR_NAME );
             if ( !PortUtil.isDirectoryExists( temp ) ) {
                 PortUtil.createDirectory( temp );
@@ -2213,7 +2336,8 @@ namespace org.kbinani.cadencii {
         /// ベジエ曲線を編集するモードかどうかを取得します。
         /// </summary>
         /// <returns></returns>
-        public static boolean isCurveMode() {
+        public static boolean isCurveMode()
+        {
             return mIsCurveMode;
         }
 
@@ -2221,7 +2345,8 @@ namespace org.kbinani.cadencii {
         /// ベジエ曲線を編集するモードかどうかを設定します。
         /// </summary>
         /// <param name="value"></param>
-        public static void setCurveMode( boolean value ) {
+        public static void setCurveMode( boolean value )
+        {
             boolean old = mIsCurveMode;
             mIsCurveMode = value;
             if ( old != mIsCurveMode ) {
@@ -2246,7 +2371,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// アンドゥ・リドゥ用のコマンド履歴を削除します。
         /// </summary>
-        public static void clearCommandBuffer() {
+        public static void clearCommandBuffer()
+        {
             mCommands.clear();
             mCommandIndex = -1;
         }
@@ -2254,7 +2380,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// アンドゥ処理を行います。
         /// </summary>
-        public static void undo() {
+        public static void undo()
+        {
             if ( isUndoAvailable() ) {
                 Vector<ValuePair<Integer, Integer>> before_ids = new Vector<ValuePair<Integer, Integer>>();
                 for ( Iterator<SelectedEventEntry> itr = getSelectedEventIterator(); itr.hasNext(); ) {
@@ -2300,7 +2427,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// リドゥ処理を行います。
         /// </summary>
-        public static void redo() {
+        public static void redo()
+        {
             if ( isRedoAvailable() ) {
                 Vector<ValuePair<Integer, Integer>> before_ids = new Vector<ValuePair<Integer, Integer>>();
                 for ( Iterator<SelectedEventEntry> itr = getSelectedEventIterator(); itr.hasNext(); ) {
@@ -2346,7 +2474,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 選択中のアイテムが編集された場合、編集にあわせてオブジェクトを更新する。
         /// </summary>
-        public static void updateSelectedEventInstance() {
+        public static void updateSelectedEventInstance()
+        {
             if ( mVsq == null ) {
                 return;
             }
@@ -2362,7 +2491,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 「選択されている」と登録されているオブジェクトのうち、Undo, Redoなどによって存在しなくなったものを登録解除する
         /// </summary>
-        public static void cleanupDeadSelection( Vector<ValuePair<Integer, Integer>> before_ids ) {
+        public static void cleanupDeadSelection( Vector<ValuePair<Integer, Integer>> before_ids )
+        {
             for ( Iterator<ValuePair<Integer, Integer>> itr = before_ids.iterator(); itr.hasNext(); ) {
                 ValuePair<Integer, Integer> specif = itr.next();
                 boolean found = false;
@@ -2383,7 +2513,8 @@ namespace org.kbinani.cadencii {
         /// アンドゥ・リドゥ用のコマンドバッファに、指定されたコマンドを登録します。
         /// </summary>
         /// <param name="command"></param>
-        public static void register( ICommand command ) {
+        public static void register( ICommand command )
+        {
             if ( mCommandIndex == mCommands.size() - 1 ) {
                 // 新しいコマンドバッファを追加する場合
                 mCommands.add( command );
@@ -2402,7 +2533,8 @@ namespace org.kbinani.cadencii {
         /// リドゥ操作が可能かどうかを取得します。
         /// </summary>
         /// <returns>リドゥ操作が可能ならtrue、そうでなければfalseを返します。</returns>
-        public static boolean isRedoAvailable() {
+        public static boolean isRedoAvailable()
+        {
             if ( mCommands.size() > 0 && 0 <= mCommandIndex + 1 && mCommandIndex + 1 < mCommands.size() ) {
                 return true;
             } else {
@@ -2414,7 +2546,8 @@ namespace org.kbinani.cadencii {
         /// アンドゥ操作が可能かどうかを取得します。
         /// </summary>
         /// <returns>アンドゥ操作が可能ならtrue、そうでなければfalseを返します。</returns>
-        public static boolean isUndoAvailable() {
+        public static boolean isUndoAvailable()
+        {
             if ( mCommands.size() > 0 && 0 <= mCommandIndex && mCommandIndex < mCommands.size() ) {
                 return true;
             } else {
@@ -2427,7 +2560,8 @@ namespace org.kbinani.cadencii {
         /// 現在選択されているツールを取得します。
         /// </summary>
         /// <returns></returns>
-        public static EditTool getSelectedTool() {
+        public static EditTool getSelectedTool()
+        {
             return mSelectedTool;
         }
 
@@ -2435,7 +2569,8 @@ namespace org.kbinani.cadencii {
         /// 現在選択されているツールを設定します。
         /// </summary>
         /// <param name="value"></param>
-        public static void setSelectedTool( EditTool value ) {
+        public static void setSelectedTool( EditTool value )
+        {
             EditTool old = mSelectedTool;
             mSelectedTool = value;
             if ( old != mSelectedTool ) {
@@ -2449,7 +2584,7 @@ namespace org.kbinani.cadencii {
                         SelectedToolChanged.Invoke( typeof( AppManager ), new EventArgs() );
                     }
 #endif
-                    
+
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "AppManager#setSelectedTool; ex=" + ex );
                     Logger.write( typeof( AppManager ) + ".setSelectedTool; ex=" + ex + "\n" );
@@ -2462,7 +2597,8 @@ namespace org.kbinani.cadencii {
         /// 選択されているベジエ曲線のデータ点を順に返す反復子を取得します。
         /// </summary>
         /// <returns></returns>
-        public static Iterator<SelectedBezierPoint> getSelectedBezierIterator() {
+        public static Iterator<SelectedBezierPoint> getSelectedBezierIterator()
+        {
             return mSelectedBezier.iterator();
         }
 
@@ -2470,7 +2606,8 @@ namespace org.kbinani.cadencii {
         /// 最後に選択状態となったベジエ曲線のデータ点を取得します。
         /// </summary>
         /// <returns>最後に選択状態となったベジエ曲線のデータ点を返します。選択状態となっているベジエ曲線がなければnullを返します。</returns>
-        public static SelectedBezierPoint getLastSelectedBezier() {
+        public static SelectedBezierPoint getLastSelectedBezier()
+        {
             if ( mLastSelectedBezier.chainID < 0 || mLastSelectedBezier.pointID < 0 ) {
                 return null;
             } else {
@@ -2482,7 +2619,8 @@ namespace org.kbinani.cadencii {
         /// 指定されたベジエ曲線のデータ点を選択状態にします。
         /// </summary>
         /// <param name="selected">選択状態にするデータ点。</param>
-        public static void addSelectedBezier( SelectedBezierPoint selected ) {
+        public static void addSelectedBezier( SelectedBezierPoint selected )
+        {
             mLastSelectedBezier = selected;
             int index = -1;
             for ( int i = 0; i < mSelectedBezier.size(); i++ ) {
@@ -2503,7 +2641,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// すべてのベジエ曲線のデータ点の選択状態を解除します。
         /// </summary>
-        public static void clearSelectedBezier() {
+        public static void clearSelectedBezier()
+        {
             mSelectedBezier.clear();
             mLastSelectedBezier.chainID = -1;
             mLastSelectedBezier.pointID = -1;
@@ -2516,7 +2655,8 @@ namespace org.kbinani.cadencii {
         /// 最後に選択状態となった拍子変更設定を取得します。
         /// </summary>
         /// <returns>最後に選択状態となった拍子変更設定を返します。選択状態となっている拍子変更設定が無ければnullを返します。</returns>
-        public static SelectedTimesigEntry getLastSelectedTimesig() {
+        public static SelectedTimesigEntry getLastSelectedTimesig()
+        {
             if ( mSelectedTimesig.containsKey( mLastSelectedTimesig ) ) {
                 return mSelectedTimesig.get( mLastSelectedTimesig );
             } else {
@@ -2524,11 +2664,13 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public static int getLastSelectedTimesigBarcount() {
+        public static int getLastSelectedTimesigBarcount()
+        {
             return mLastSelectedTimesig;
         }
 
-        public static void addSelectedTimesig( int barcount ) {
+        public static void addSelectedTimesig( int barcount )
+        {
             clearSelectedEvent(); //ここ注意！
             clearSelectedTempo();
             mLastSelectedTimesig = barcount;
@@ -2544,17 +2686,20 @@ namespace org.kbinani.cadencii {
             checkSelectedItemExistence();
         }
 
-        public static void clearSelectedTimesig() {
+        public static void clearSelectedTimesig()
+        {
             mSelectedTimesig.clear();
             mLastSelectedTimesig = -1;
             checkSelectedItemExistence();
         }
 
-        public static int getSelectedTimesigCount() {
+        public static int getSelectedTimesigCount()
+        {
             return mSelectedTimesig.size();
         }
 
-        public static Iterator<ValuePair<Integer, SelectedTimesigEntry>> getSelectedTimesigIterator() {
+        public static Iterator<ValuePair<Integer, SelectedTimesigEntry>> getSelectedTimesigIterator()
+        {
             Vector<ValuePair<Integer, SelectedTimesigEntry>> list = new Vector<ValuePair<Integer, SelectedTimesigEntry>>();
             for ( Iterator<Integer> itr = mSelectedTimesig.keySet().iterator(); itr.hasNext(); ) {
                 int clock = itr.next();
@@ -2563,11 +2708,13 @@ namespace org.kbinani.cadencii {
             return list.iterator();
         }
 
-        public static boolean isSelectedTimesigContains( int barcount ) {
+        public static boolean isSelectedTimesigContains( int barcount )
+        {
             return mSelectedTimesig.containsKey( barcount );
         }
 
-        public static SelectedTimesigEntry getSelectedTimesig( int barcount ) {
+        public static SelectedTimesigEntry getSelectedTimesig( int barcount )
+        {
             if ( mSelectedTimesig.containsKey( barcount ) ) {
                 return mSelectedTimesig.get( barcount );
             } else {
@@ -2575,7 +2722,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public static void removeSelectedTimesig( int barcount ) {
+        public static void removeSelectedTimesig( int barcount )
+        {
             if ( mSelectedTimesig.containsKey( barcount ) ) {
                 mSelectedTimesig.remove( barcount );
                 checkSelectedItemExistence();
@@ -2584,7 +2732,8 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region SelectedTempo
-        public static SelectedTempoEntry getLastSelectedTempo() {
+        public static SelectedTempoEntry getLastSelectedTempo()
+        {
             if ( mSelectedTempo.containsKey( mLastSelectedTempo ) ) {
                 return mSelectedTempo.get( mLastSelectedTempo );
             } else {
@@ -2592,11 +2741,13 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public static int getLastSelectedTempoClock() {
+        public static int getLastSelectedTempoClock()
+        {
             return mLastSelectedTempo;
         }
 
-        public static void addSelectedTempo( int clock ) {
+        public static void addSelectedTempo( int clock )
+        {
             clearSelectedEvent(); //ここ注意！
             clearSelectedTimesig();
             mLastSelectedTempo = clock;
@@ -2612,17 +2763,20 @@ namespace org.kbinani.cadencii {
             checkSelectedItemExistence();
         }
 
-        public static void clearSelectedTempo() {
+        public static void clearSelectedTempo()
+        {
             mSelectedTempo.clear();
             mLastSelectedTempo = -1;
             checkSelectedItemExistence();
         }
 
-        public static int getSelectedTempoCount() {
+        public static int getSelectedTempoCount()
+        {
             return mSelectedTempo.size();
         }
 
-        public static Iterator<ValuePair<Integer, SelectedTempoEntry>> getSelectedTempoIterator() {
+        public static Iterator<ValuePair<Integer, SelectedTempoEntry>> getSelectedTempoIterator()
+        {
             Vector<ValuePair<Integer, SelectedTempoEntry>> list = new Vector<ValuePair<Integer, SelectedTempoEntry>>();
             for ( Iterator<Integer> itr = mSelectedTempo.keySet().iterator(); itr.hasNext(); ) {
                 int clock = itr.next();
@@ -2631,11 +2785,13 @@ namespace org.kbinani.cadencii {
             return list.iterator();
         }
 
-        public static boolean isSelectedTempoContains( int clock ) {
+        public static boolean isSelectedTempoContains( int clock )
+        {
             return mSelectedTempo.containsKey( clock );
         }
 
-        public static SelectedTempoEntry getSelectedTempo( int clock ) {
+        public static SelectedTempoEntry getSelectedTempo( int clock )
+        {
             if ( mSelectedTempo.containsKey( clock ) ) {
                 return mSelectedTempo.get( clock );
             } else {
@@ -2643,7 +2799,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public static void removeSelectedTempo( int clock ) {
+        public static void removeSelectedTempo( int clock )
+        {
             if ( mSelectedTempo.containsKey( clock ) ) {
                 mSelectedTempo.remove( clock );
                 checkSelectedItemExistence();
@@ -2652,17 +2809,20 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region SelectedEvent
-        public static void removeSelectedEvent( int id ) {
+        public static void removeSelectedEvent( int id )
+        {
             removeSelectedEventCor( id, false );
             checkSelectedItemExistence();
         }
 
-        public static void removeSelectedEventSilent( int id ) {
+        public static void removeSelectedEventSilent( int id )
+        {
             removeSelectedEventCor( id, true );
             checkSelectedItemExistence();
         }
 
-        private static void removeSelectedEventCor( int id, boolean silent ) {
+        private static void removeSelectedEventCor( int id, boolean silent )
+        {
             int count = mSelectedEvents.size();
             for ( int i = 0; i < count; i++ ) {
                 if ( mSelectedEvents.get( i ).original.InternalID == id ) {
@@ -2677,7 +2837,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public static void removeSelectedEventRange( int[] ids ) {
+        public static void removeSelectedEventRange( int[] ids )
+        {
             Vector<Integer> v_ids = new Vector<Integer>( Arrays.asList( PortUtil.convertIntArray( ids ) ) );
             Vector<Integer> index = new Vector<Integer>();
             int count = mSelectedEvents.size();
@@ -2699,7 +2860,8 @@ namespace org.kbinani.cadencii {
             checkSelectedItemExistence();
         }
 
-        public static void addSelectedEventAll( Vector<Integer> list ) {
+        public static void addSelectedEventAll( Vector<Integer> list )
+        {
             clearSelectedTempo();
             clearSelectedTimesig();
             VsqEvent[] index = new VsqEvent[list.size()];
@@ -2733,17 +2895,20 @@ namespace org.kbinani.cadencii {
             checkSelectedItemExistence();
         }
 
-        public static void addSelectedEvent( int id ) {
+        public static void addSelectedEvent( int id )
+        {
             addSelectedEventCor( id, false );
             checkSelectedItemExistence();
         }
 
-        public static void addSelectedEventSilent( int id ) {
+        public static void addSelectedEventSilent( int id )
+        {
             addSelectedEventCor( id, true );
             checkSelectedItemExistence();
         }
 
-        private static void addSelectedEventCor( int id, boolean silent ) {
+        private static void addSelectedEventCor( int id, boolean silent )
+        {
             clearSelectedTempo();
             clearSelectedTimesig();
             for ( Iterator<VsqEvent> itr = mVsq.Track.get( mSelected ).getEventIterator(); itr.hasNext(); ) {
@@ -2788,7 +2953,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public static void clearSelectedEvent() {
+        public static void clearSelectedEvent()
+        {
             mSelectedEvents.clear();
 #if ENABLE_PROPERTY
             propertyPanel.updateValue( mSelected );
@@ -2796,7 +2962,8 @@ namespace org.kbinani.cadencii {
             checkSelectedItemExistence();
         }
 
-        public static boolean isSelectedEventContains( int track, int id ) {
+        public static boolean isSelectedEventContains( int track, int id )
+        {
             int count = mSelectedEvents.size();
             for ( int i = 0; i < count; i++ ) {
                 SelectedEventEntry item = mSelectedEvents.get( i );
@@ -2807,11 +2974,13 @@ namespace org.kbinani.cadencii {
             return false;
         }
 
-        public static Iterator<SelectedEventEntry> getSelectedEventIterator() {
+        public static Iterator<SelectedEventEntry> getSelectedEventIterator()
+        {
             return mSelectedEvents.iterator();
         }
 
-        public static SelectedEventEntry getLastSelectedEvent() {
+        public static SelectedEventEntry getLastSelectedEvent()
+        {
             if ( mSelectedEvents.size() <= 0 ) {
                 return null;
             } else {
@@ -2819,24 +2988,28 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public static int getSelectedEventCount() {
+        public static int getSelectedEventCount()
+        {
             return mSelectedEvents.size();
         }
         #endregion
 
         #region SelectedPoint
-        public static void clearSelectedPoint() {
+        public static void clearSelectedPoint()
+        {
             mSelectedPointIDs.clear();
             mSelectedPointCurveType = CurveType.Empty;
             checkSelectedItemExistence();
         }
 
-        public static void addSelectedPoint( CurveType curve, long id ) {
+        public static void addSelectedPoint( CurveType curve, long id )
+        {
             addSelectedPointAll( curve, new long[] { id } );
             checkSelectedItemExistence();
         }
 
-        public static void addSelectedPointAll( CurveType curve, long[] ids ) {
+        public static void addSelectedPointAll( CurveType curve, long[] ids )
+        {
             if ( !curve.equals( mSelectedPointCurveType ) ) {
                 mSelectedPointIDs.clear();
                 mSelectedPointCurveType = curve;
@@ -2849,23 +3022,28 @@ namespace org.kbinani.cadencii {
             checkSelectedItemExistence();
         }
 
-        public static boolean isSelectedPointContains( long id ) {
+        public static boolean isSelectedPointContains( long id )
+        {
             return mSelectedPointIDs.contains( id );
         }
 
-        public static CurveType getSelectedPointCurveType() {
+        public static CurveType getSelectedPointCurveType()
+        {
             return mSelectedPointCurveType;
         }
 
-        public static Iterator<Long> getSelectedPointIDIterator() {
+        public static Iterator<Long> getSelectedPointIDIterator()
+        {
             return mSelectedPointIDs.iterator();
         }
 
-        public static int getSelectedPointIDCount() {
+        public static int getSelectedPointIDCount()
+        {
             return mSelectedPointIDs.size();
         }
 
-        public static void removeSelectedPoint( long id ) {
+        public static void removeSelectedPoint( long id )
+        {
             mSelectedPointIDs.removeElement( id );
             checkSelectedItemExistence();
         }
@@ -2874,7 +3052,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 現在選択されたアイテムが存在するかどうかを調べ，必要であればSelectedEventChangedイベントを発生させます
         /// </summary>
-        private static void checkSelectedItemExistence() {
+        private static void checkSelectedItemExistence()
+        {
             boolean ret = mSelectedBezier.size() == 0 &&
                           mSelectedEvents.size() == 0 &&
                           mSelectedTempo.size() == 0 &&
@@ -2896,22 +3075,26 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public static boolean isOverlay() {
+        public static boolean isOverlay()
+        {
             return mOverlay;
         }
 
-        public static void setOverlay( boolean value ) {
+        public static void setOverlay( boolean value )
+        {
             mOverlay = value;
         }
 
-        public static boolean getRenderRequired( int track ) {
+        public static boolean getRenderRequired( int track )
+        {
             if ( mVsq == null ) {
                 return false;
             }
             return mVsq.editorStatus.renderRequired[track - 1];
         }
 
-        public static void setRenderRequired( int track, boolean value ) {
+        public static void setRenderRequired( int track, boolean value )
+        {
             if ( mVsq == null ) {
                 return;
             }
@@ -2921,22 +3104,26 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 現在の編集モード
         /// </summary>
-        public static EditMode getEditMode() {
+        public static EditMode getEditMode()
+        {
             return mEditMode;
         }
 
-        public static void setEditMode( EditMode value ) {
+        public static void setEditMode( EditMode value )
+        {
             mEditMode = value;
         }
 
         /// <summary>
         /// グリッドを表示するか否かを表すフラグを取得または設定します
         /// </summary>
-        public static boolean isGridVisible() {
+        public static boolean isGridVisible()
+        {
             return mGridVisible;
         }
 
-        public static void setGridVisible( boolean value ) {
+        public static void setGridVisible( boolean value )
+        {
             if ( value != mGridVisible ) {
                 mGridVisible = value;
                 try {
@@ -2959,22 +3146,26 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 現在のプレビューがリピートモードであるかどうかを表す値を取得または設定します
         /// </summary>
-        public static boolean isRepeatMode() {
+        public static boolean isRepeatMode()
+        {
             return mRepeatMode;
         }
 
-        public static void setRepeatMode( boolean value ) {
+        public static void setRepeatMode( boolean value )
+        {
             mRepeatMode = value;
         }
 
         /// <summary>
         /// 現在プレビュー中かどうかを示す値を取得または設定します
         /// </summary>
-        public static boolean isPlaying() {
+        public static boolean isPlaying()
+        {
             return mPlaying;
         }
 
-        public static void setPlaying( boolean value ) {
+        public static void setPlaying( boolean value, FormMain form )
+        {
 #if DEBUG
             PortUtil.println( "AppManager#setPlaying; value=" + value );
 #endif
@@ -2984,7 +3175,7 @@ namespace org.kbinani.cadencii {
                 if ( previous != mPlaying ) {
                     if ( mPlaying ) {
                         try {
-                            previewStart();
+                            previewStart( form );
 #if JAVA
                             previewStartedEvent.raise( typeof( AppManager ), new BEventArgs() );
 #elif QT_VERSION
@@ -3025,11 +3216,13 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// _vsq_fileにセットされたvsqファイルの名前を取得します。
         /// </summary>
-        public static String getFileName() {
+        public static String getFileName()
+        {
             return mFile;
         }
 
-        private static void saveToCor( String file ) {
+        private static void saveToCor( String file )
+        {
             boolean hide = false;
             if ( mVsq != null ) {
                 String path = PortUtil.getDirectoryName( file );
@@ -3050,7 +3243,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public static void saveTo( String file ) {
+        public static void saveTo( String file )
+        {
             if ( mVsq != null ) {
                 if ( editorConfig.UseProjectCache ) {
                     // キャッシュディレクトリの処理
@@ -3131,7 +3325,7 @@ namespace org.kbinani.cadencii {
             }
 
             saveToCor( file );
-            
+
             if ( mVsq != null ) {
                 mFile = file;
                 editorConfig.pushRecentFiles( mFile );
@@ -3150,14 +3344,16 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 現在の演奏マーカーの位置を取得します。
         /// </summary>
-        public static int getCurrentClock() {
+        public static int getCurrentClock()
+        {
             return mCurrentClock;
         }
 
         /// <summary>
         /// 現在の演奏マーカーの位置を設定します。
         /// </summary>
-        public static void setCurrentClock( int value ) {
+        public static void setCurrentClock( int value )
+        {
             int old = mCurrentClock;
             mCurrentClock = value;
             int barcount = mVsq.getBarCountFromClock( mCurrentClock );
@@ -3176,14 +3372,16 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 現在の演奏カーソルの位置(m_current_clockと意味は同じ。CurrentClockが変更されると、自動で更新される)
         /// </summary>
-        public static PlayPositionSpecifier getPlayPosition() {
+        public static PlayPositionSpecifier getPlayPosition()
+        {
             return mCurrentPlayPosition;
         }
 
         /// <summary>
         /// 現在選択されているトラックを取得または設定します
         /// </summary>
-        public static int getSelected() {
+        public static int getSelected()
+        {
             int tracks = mVsq.Track.size();
             if ( tracks <= mSelected ) {
                 mSelected = tracks - 1;
@@ -3191,14 +3389,17 @@ namespace org.kbinani.cadencii {
             return mSelected;
         }
 
-        public static void setSelected( int value ) {
+        public static void setSelected( int value )
+        {
             mSelected = value;
         }
 
 #if !JAVA
         [Obsolete]
-        public static int Selected {
-            get {
+        public static int Selected
+        {
+            get
+            {
                 return getSelected();
             }
         }
@@ -3208,7 +3409,8 @@ namespace org.kbinani.cadencii {
         /// vsqファイルを読込みます
         /// </summary>
         /// <param name="file"></param>
-        public static void readVsq( String file ) {
+        public static void readVsq( String file )
+        {
             mSelected = 1;
             mFile = file;
             VsqFileEx newvsq = null;
@@ -3261,21 +3463,25 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// vsqファイル。
         /// </summary>
-        public static VsqFileEx getVsqFile() {
+        public static VsqFileEx getVsqFile()
+        {
             return mVsq;
         }
 
 #if !JAVA
         [Obsolete]
-        public static VsqFileEx VsqFile {
-            get {
+        public static VsqFileEx VsqFile
+        {
+            get
+            {
                 return getVsqFile();
             }
         }
 #endif
 #endif
 
-        public static void setVsqFile( VsqFileEx vsq ) {
+        public static void setVsqFile( VsqFileEx vsq )
+        {
             mVsq = vsq;
             for ( int i = 0; i < mVsq.editorStatus.renderRequired.Length; i++ ) {
                 if ( i < mVsq.Track.size() - 1 ) {
@@ -3305,7 +3511,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public static void init() {
+        public static void init()
+        {
             loadConfig();
 #if !JAVA
             // UTAU歌手のアイコンを読み込み、起動画面に表示を要求する
@@ -3365,10 +3572,10 @@ namespace org.kbinani.cadencii {
 #if DEBUG
                 PortUtil.println( "AppManager#init; path_image=" + path_image );
 #endif
-                if ( Cadencii.splash != null ){
-                    try{
+                if ( Cadencii.splash != null ) {
+                    try {
                         Cadencii.splash.addIconThreadSafe( path_image, sc.VOICENAME );
-                    }catch( Exception ex ){
+                    } catch ( Exception ex ) {
                         PortUtil.stderr.println( "AppManager#init; ex=" + ex );
                         Logger.write( typeof( AppManager ) + ".init; ex=" + ex + "\n" );
                     }
@@ -3437,10 +3644,10 @@ namespace org.kbinani.cadencii {
             SymbolTable.loadSystemDictionaries();
             // 日本語辞書
             SymbolTable.loadDictionary(
-                PortUtil.combinePath( PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "resources" ), "dict_ja.txt" ), 
+                PortUtil.combinePath( PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "resources" ), "dict_ja.txt" ),
                 "DEFAULT_JP" );
             // 英語辞書
-            SymbolTable.loadDictionary( 
+            SymbolTable.loadDictionary(
                 PortUtil.combinePath( PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "resources" ), "dict_en.txt" ),
                 "DEFAULT_EN" );
             // 拡張辞書
@@ -3511,7 +3718,8 @@ namespace org.kbinani.cadencii {
         /// utauVoiceDBフィールドのリストを一度クリアし，
         /// editorConfig.Utausingersの情報を元に最新の情報に更新します
         /// </summary>
-        public static void reloadUtauVoiceDB() {
+        public static void reloadUtauVoiceDB()
+        {
             mUtauVoiceDB.clear();
             for ( Iterator<SingerConfig> itr = editorConfig.UtauSingers.iterator(); itr.hasNext(); ) {
                 SingerConfig config = itr.next();
@@ -3603,7 +3811,8 @@ namespace org.kbinani.cadencii {
         }
 #endif
 
-        public static void clearClipBoard() {
+        public static void clearClipBoard()
+        {
 #if CLIPBOARD_AS_TEXT
             if ( PortUtil.isClipboardContainsText() ) {
                 String clip = PortUtil.getClipboardText();
@@ -3618,7 +3827,8 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        public static void setClipboard( ClipboardEntry item ) {
+        public static void setClipboard( ClipboardEntry item )
+        {
 #if CLIPBOARD_AS_TEXT
             String clip = "";
             try {
@@ -3635,7 +3845,8 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        public static ClipboardEntry getCopiedItems() {
+        public static ClipboardEntry getCopiedItems()
+        {
             ClipboardEntry ce = null;
 #if CLIPBOARD_AS_TEXT
             if ( PortUtil.isClipboardContainsText() ) {
@@ -3693,7 +3904,8 @@ namespace org.kbinani.cadencii {
             Vector<TimeSigTableEntry> timesig,
             TreeMap<CurveType, VsqBPList> curve,
             TreeMap<CurveType, Vector<BezierChain>> bezier,
-            int copy_started_clock ) {
+            int copy_started_clock )
+        {
             ClipboardEntry ce = new ClipboardEntry();
             ce.events = events;
             ce.tempo = tempo;
@@ -3723,23 +3935,28 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        public static void setCopiedEvent( Vector<VsqEvent> item, int copy_started_clock ) {
+        public static void setCopiedEvent( Vector<VsqEvent> item, int copy_started_clock )
+        {
             setClipboard( item, null, null, null, null, copy_started_clock );
         }
 
-        public static void setCopiedTempo( Vector<TempoTableEntry> item, int copy_started_clock ) {
+        public static void setCopiedTempo( Vector<TempoTableEntry> item, int copy_started_clock )
+        {
             setClipboard( null, item, null, null, null, copy_started_clock );
         }
 
-        public static void setCopiedTimesig( Vector<TimeSigTableEntry> item, int copy_started_clock ) {
+        public static void setCopiedTimesig( Vector<TimeSigTableEntry> item, int copy_started_clock )
+        {
             setClipboard( null, null, item, null, null, copy_started_clock );
         }
 
-        public static void setCopiedCurve( TreeMap<CurveType, VsqBPList> item, int copy_started_clock ) {
+        public static void setCopiedCurve( TreeMap<CurveType, VsqBPList> item, int copy_started_clock )
+        {
             setClipboard( null, null, null, item, null, copy_started_clock );
         }
 
-        public static void setCopiedBezier( TreeMap<CurveType, Vector<BezierChain>> item, int copy_started_clock ) {
+        public static void setCopiedBezier( TreeMap<CurveType, Vector<BezierChain>> item, int copy_started_clock )
+        {
             setClipboard( null, null, null, null, item, copy_started_clock );
         }
         #endregion
@@ -3748,7 +3965,8 @@ namespace org.kbinani.cadencii {
         /// 位置クオンタイズ時の音符の最小単位を、クロック数に換算したものを取得します
         /// </summary>
         /// <returns></returns>
-        public static int getPositionQuantizeClock() {
+        public static int getPositionQuantizeClock()
+        {
             return QuantizeModeUtil.getQuantizeClock( editorConfig.getPositionQuantize(), editorConfig.isPositionQuantizeTriplet() );
         }
 
@@ -3756,14 +3974,16 @@ namespace org.kbinani.cadencii {
         /// 音符長さクオンタイズ時の音符の最小単位を、クロック数に換算したものを取得します
         /// </summary>
         /// <returns></returns>
-        public static int getLengthQuantizeClock() {
+        public static int getLengthQuantizeClock()
+        {
             return QuantizeModeUtil.getQuantizeClock( editorConfig.getLengthQuantize(), editorConfig.isLengthQuantizeTriplet() );
         }
 
         /// <summary>
         /// 現在の設定を設定ファイルに書き込みます。
         /// </summary>
-        public static void saveConfig() {
+        public static void saveConfig()
+        {
 #if JAVA
             //TODO: AppManager#saveConfig
             PortUtil.println( "AppManager#saveConfig; FIXME" );
@@ -3797,7 +4017,8 @@ namespace org.kbinani.cadencii {
         /// 設定ファイルを読み込みます。
         /// 設定ファイルが壊れていたり存在しない場合、デフォルトの設定が使われます。
         /// </summary>
-        public static void loadConfig() {
+        public static void loadConfig()
+        {
             String appdata = Utility.getApplicationDataPath();
             if ( appdata.Equals( "" ) ) {
                 editorConfig = new EditorConfig();
@@ -3934,7 +4155,8 @@ namespace org.kbinani.cadencii {
             keyWidth = draft_key_width;
         }
 
-        public static VsqID getSingerIDUtau( int language, int program ) {
+        public static VsqID getSingerIDUtau( int language, int program )
+        {
             VsqID ret = new VsqID( 0 );
             ret.type = VsqIDType.Singer;
             int index = language << 7 | program;
@@ -3961,7 +4183,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public static SingerConfig getSingerInfoUtau( int language, int program ) {
+        public static SingerConfig getSingerInfoUtau( int language, int program )
+        {
             int index = language << 7 | program;
             if ( 0 <= index && index < editorConfig.UtauSingers.size() ) {
                 return editorConfig.UtauSingers.get( index );
@@ -3970,7 +4193,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public static SingerConfig getSingerInfoAquesTone( int program_change ) {
+        public static SingerConfig getSingerInfoAquesTone( int program_change )
+        {
 #if ENABLE_AQUESTONE
             for ( int i = 0; i < AquesToneDriver.SINGERS.Length; i++ ) {
                 if ( program_change == AquesToneDriver.SINGERS[i].Program ) {
@@ -3981,7 +4205,8 @@ namespace org.kbinani.cadencii {
             return null;
         }
 
-        public static VsqID getSingerIDAquesTone( int program ) {
+        public static VsqID getSingerIDAquesTone( int program )
+        {
             VsqID ret = new VsqID( 0 );
             ret.type = VsqIDType.Singer;
             int index = -1;
@@ -4020,11 +4245,13 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        public static Color getHilightColor() {
+        public static Color getHilightColor()
+        {
             return mHilightBrush;
         }
 
-        public static void setHilightColor( Color value ) {
+        public static void setHilightColor( Color value )
+        {
             mHilightBrush = value;
         }
 
@@ -4033,7 +4260,8 @@ namespace org.kbinani.cadencii {
         /// 音抜けの可能性がある音符の背景色として利用されます
         /// </summary>
         /// <returns></returns>
-        public static Color getAlertColor() {
+        public static Color getAlertColor()
+        {
             return PortUtil.HotPink;
         }
 
@@ -4042,7 +4270,8 @@ namespace org.kbinani.cadencii {
         /// 音抜けの可能性のある音符であって，かつ現在選択されている音符の背景色として利用されます．
         /// </summary>
         /// <returns></returns>
-        public static Color getAlertHilightColor() {
+        public static Color getAlertHilightColor()
+        {
             return PortUtil.DeepPink;
         }
     }

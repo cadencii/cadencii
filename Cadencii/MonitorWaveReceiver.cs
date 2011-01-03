@@ -77,6 +77,11 @@ namespace org.kbinani.cadencii {
         public void push( double[] l, double[] r, int length ) {
             if ( _first_call ) {
                 int sample_rate = mRoot.getSampleRate();
+#if DEBUG
+                PortUtil.println( "MonitorWaveReceiver#push; sample_rate=" + sample_rate );
+                //PortUtil.println( "type eny key to exit..." );
+                //Console.Read();
+#endif
                 PlaySound.init();
                 PlaySound.prepare( sample_rate );
                 _first_call = false;

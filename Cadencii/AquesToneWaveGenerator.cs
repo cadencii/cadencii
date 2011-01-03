@@ -52,6 +52,7 @@ namespace org.kbinani.cadencii
         private int mTrimRemain;
         private double[] mBufferL = new double[BUFLEN];
         private double[] mBufferR = new double[BUFLEN];
+        System.IO.StreamWriter log = null;
 
         public int getSampleRate()
         {
@@ -135,19 +136,23 @@ namespace org.kbinani.cadencii
                 this.mVsq.removePart( mEndClock, this.mVsq.TotalClocks + 480 );
             }
 
-            double end_sec = vsq.getSecFromClock( start_clock );
-            double start_sec = vsq.getSecFromClock( end_clock );
+            double end_sec = mVsq.getSecFromClock( start_clock );
+            double start_sec = mVsq.getSecFromClock( end_clock );
 
             double trim_sec = 0.0; // レンダリング結果から省かなければならない秒数。
             if ( mStartClock < this.mVsq.getPreMeasureClocks() ) {
                 trim_sec = this.mVsq.getSecFromClock( mStartClock );
             } else {
-                this.mVsq.removePart( vsq.getPreMeasureClocks(), mStartClock );
+                this.mVsq.removePart( mVsq.getPreMeasureClocks(), mStartClock );
                 trim_sec = this.mVsq.getSecFromClock( this.mVsq.getPreMeasureClocks() );
             }
             this.mVsq.updateTotalClocks();
 
             mTrimRemain = (int)(trim_sec * mSampleRate);
+            //mTrimRemain = 0;
+#if DEBUG
+            PortUtil.println( "AeuqsToneWaveGenerator#init; mTrimRemain=" + mTrimRemain );
+#endif
         }
 
         public void setReceiver( WaveReceiver r )
@@ -160,23 +165,45 @@ namespace org.kbinani.cadencii
 
         public void begin( long total_samples )
         {
+#if DEBUG
+            PortUtil.println( "AquesToneRenderingRunner#begin; (mDriver==null)=" + (mDriver == null) );
+            string file = System.IO.Path.Combine( System.Windows.Forms.Application.StartupPath, "AquesToneWaveGenerator.txt" );
+            log = new System.IO.StreamWriter( file );
+            log.AutoFlush = true;
+#endif
             if ( mDriver == null ) {
+#if DEBUG
+                log.WriteLine( "mDriver==null" );
+                log.Close();
+#endif
                 return;
             }
 
+#if DEBUG
+            PortUtil.println( "AquesToneRenderingRunner#begin; mDriver.loaded=" + mDriver.loaded );
+#endif
             if ( !mDriver.loaded ) {
+#if DEBUG
+                log.WriteLine( "mDriver.loaded=" + mDriver.loaded );
+                log.Close();
+#endif
                 return;
             }
 
             mRunning = true;
             mAbortRequired = false;
             mTotalSamples = total_samples;
+#if DEBUG
+            PortUtil.println( "AquesToneWaveGenerator#begin; mTotalSamples=" + mTotalSamples );
+            log.WriteLine( "mTotalSamples=" + mTotalSamples );
+            log.WriteLine( "mTrimRemain=" + mTrimRemain );
+#endif
 
             VsqTrack track = mVsq.Track.get( mTrack );
             int BUFLEN = mSampleRate / 10;
             double[] left = new double[BUFLEN];
             double[] right = new double[BUFLEN];
-            //long saProcessed = 0; // 
+            long saProcessed = 0;
             int saRemain = 0;
             int lastClock = 0; // 最後に処理されたゲートタイム
 
@@ -187,6 +214,7 @@ namespace org.kbinani.cadencii
             MidiEvent f_noteon = new MidiEvent();
             f_noteon.firstByte = 0x90;
             f_noteon.data = new int[] { 0x40, 0x40 };
+            f_noteon.clock = 0;
             mDriver.send( new MidiEvent[] { f_noteon } );
             mDriver.process( left, right, BUFLEN );
             MidiEvent f_noteoff = new MidiEvent();
@@ -196,20 +224,45 @@ namespace org.kbinani.cadencii
             for ( int i = 0; i < 3; i++ ) {
                 mDriver.process( left, right, BUFLEN );
             }
+#if DEBUG
+            log.WriteLine( "pre-process done" );
+            log.WriteLine( "-----------------------------------------------------" );
+            VsqTrack vsq_track = mVsq.Track.get( mTrack );
+            for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
+                VsqEvent item = itr.next();
+                log.WriteLine( "c" + item.Clock + "; " + item.ID.LyricHandle.L0.Phrase );
+            }
+#endif
 
             // レンダリング開始位置での、パラメータの値をセットしておく
             for ( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ) {
                 VsqEvent item = itr.next();
+#if DEBUG
+                PortUtil.println( "AquesToneWaveGenerator#begin; item.Clock=" + item.Clock );
+                log.WriteLine( "*********************************************************" );
+                log.WriteLine( "item.Clock=" + item.Clock );
+#endif
                 long saNoteStart = (long)(mVsq.getSecFromClock( item.Clock ) * mSampleRate);
                 long saNoteEnd = (long)(mVsq.getSecFromClock( item.Clock + item.ID.getLength() ) * mSampleRate);
+#if DEBUG
+                log.WriteLine( "saNoteStart=" + saNoteStart + "; saNoteEnd=" + saNoteEnd );
+#endif
 
                 TreeMap<Integer, MidiEventQueue> list = generateMidiEvent( mVsq, mTrack, lastClock, item.Clock + item.ID.getLength() );
                 lastClock = item.Clock + item.ID.Length + 1;
                 for ( Iterator<Integer> itr2 = list.keySet().iterator(); itr2.hasNext(); ) {
                     // まず直前までの分を合成
                     Integer clock = itr2.next();
+#if DEBUG
+                    log.WriteLine( "-------------------------------------------------------" );
+                    PortUtil.println( "AquesToneWaveGenerator#begin;     clock=" + clock );
+#endif
                     long saStart = (long)(mVsq.getSecFromClock( clock ) * mSampleRate);
-                    saRemain = (int)(saStart - mTotalAppend);
+                    saRemain = (int)(saStart - saProcessed);
+#if DEBUG
+                    log.WriteLine( "saStart=" + saStart );
+                    log.WriteLine( "saRemain=" + saRemain );
+#endif
                     while ( saRemain > 0 ) {
                         if ( mAbortRequired ) {
                             goto end_label;
@@ -218,6 +271,7 @@ namespace org.kbinani.cadencii
                         mDriver.process( left, right, len );
                         waveIncoming( left, right, len );
                         saRemain -= len;
+                        saProcessed += len;
                         //mTotalAppend += len; <- waveIncomingで計算されるので
                     }
 
@@ -226,6 +280,17 @@ namespace org.kbinani.cadencii
                     // まずnoteoff
                     boolean noteoff_send = false;
                     if ( queue.noteoff != null ) {
+#if DEBUG
+                        for ( int i = 0; i < queue.noteoff.size(); i++ ) {
+                            string str = "";
+                            MidiEvent itemi = queue.noteoff.get( i );
+                            str += "0x" + PortUtil.toHexString( itemi.firstByte, 2 ) + " ";
+                            for ( int j = 0; j < itemi.data.Length; j++ ) {
+                                str += "0x" + PortUtil.toHexString( itemi.data[j], 2 ) + " ";
+                            }
+                            PortUtil.println( typeof( AquesToneWaveGenerator ) + "#begin;         noteoff; " + str );
+                        }
+#endif
                         mDriver.send( queue.noteoff.toArray( new MidiEvent[] { } ) );
                         noteoff_send = true;
                     }
@@ -233,6 +298,9 @@ namespace org.kbinani.cadencii
                     if ( queue.param != null ) {
                         for ( Iterator<ParameterEvent> itr3 = queue.param.iterator(); itr3.hasNext(); ) {
                             ParameterEvent pe = itr3.next();
+#if DEBUG
+                            PortUtil.println( typeof( AquesToneWaveGenerator ) + "#begin;         param;   index=" + pe.index + "; value=" + pe.value );
+#endif
                             mDriver.setParameter( pe.index, pe.value );
                         }
                     }
@@ -243,10 +311,32 @@ namespace org.kbinani.cadencii
                             queue.noteon.addAll( queue.pit );
                             queue.pit.clear();
                         }
+#if DEBUG
+                        for ( int i = 0; i < queue.noteon.size(); i++ ) {
+                            string str = "";
+                            MidiEvent itemi = queue.noteon.get( i );
+                            str += "0x" + PortUtil.toHexString( itemi.firstByte, 2 ) + " ";
+                            for ( int j = 0; j < itemi.data.Length; j++ ) {
+                                str += "0x" + PortUtil.toHexString( itemi.data[j], 2 ) + " ";
+                            }
+                            PortUtil.println( typeof( AquesToneWaveGenerator ) + "#begin;         noteon;  " + str );
+                        }
+#endif
                         mDriver.send( queue.noteon.toArray( new MidiEvent[] { } ) );
                     }
                     // PIT
                     if ( queue.pit != null && queue.pit.size() > 0 && !noteoff_send ) {
+#if DEBUG
+                        for ( int i = 0; i < queue.pit.size(); i++ ) {
+                            string str = "";
+                            MidiEvent itemi = queue.pit.get( i );
+                            str += "0x" + PortUtil.toHexString( itemi.firstByte, 2 ) + " ";
+                            for ( int j = 0; j < itemi.data.Length; j++ ) {
+                                str += "0x" + PortUtil.toHexString( itemi.data[j], 2 ) + " ";
+                            }
+                            PortUtil.println( typeof( AquesToneWaveGenerator ) + "#begin;         pit;     " + str );
+                        }
+#endif
                         mDriver.send( queue.pit.toArray( new MidiEvent[] { } ) );
                     }
                     if ( mDriver.getUi( mMainWindow ) != null ) {
@@ -268,9 +358,13 @@ namespace org.kbinani.cadencii
                 mDriver.process( left, right, len );
                 waveIncoming( left, right, len );
                 saRemain -= len;
-                mTotalAppend += len;
+                saProcessed += len;
+                //mTotalAppend += len;
             }
         end_label:
+#if DEBUG
+            log.Close();
+#endif
             mRunning = false;
             mAbortRequired = false;
             mReceiver.end();
@@ -285,8 +379,8 @@ namespace org.kbinani.cadencii
                     mTrimRemain -= length;
                     return;
                 } else {
+                    offset = mTrimRemain;
                     mTrimRemain = 0;
-                    offset += length -= mTrimRemain;
                 }
             }
             int remain = length - offset;
@@ -296,7 +390,13 @@ namespace org.kbinani.cadencii
                     mBufferL[i] = l[i + offset];
                     mBufferR[i] = r[i + offset];
                 }
+#if DEBUG
+                log.WriteLine( "waveIncoming; sending " + amount + " samples..." );
+#endif
                 mReceiver.push( mBufferL, mBufferR, amount );
+#if DEBUG
+                log.WriteLine( "waveIncoming; ...done." );
+#endif
                 remain -= amount;
                 offset += amount;
                 mTotalAppend += amount;

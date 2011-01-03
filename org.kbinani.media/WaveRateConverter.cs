@@ -1,6 +1,6 @@
 /*
  * WaveRateConverter.cs
- * Copyright © 2010 kbinani
+ * Copyright © 2010-2011 kbinani
  *
  * This file is part of org.kbinani.media.
  *
@@ -75,6 +75,11 @@ namespace org.kbinani.media {
             reader = wave_reader;
             aRate = rate;
             bRate = reader.getSampleRate();
+#if DEBUG
+            PortUtil.println( "WaveRateConverter#.ctor; aRate=" + aRate + "; bRate=" + bRate );
+            //PortUtil.println( "type eny key to exit..." );
+            //Console.Read();
+#endif
             int gcd = (int)math.gcd( aRate, bRate );
             bUnit = bRate / gcd;
             aUnit = aRate / gcd;
@@ -132,9 +137,6 @@ namespace org.kbinani.media {
                     int bIndexEnd = (int)((double)bRate * (double)(index + length) / (double)aRate) + 1;
                     int bRemain = bIndexEnd - bIndexStart;
                     bRemain = (bRemain > bBuflen) ? bBuflen : bRemain;
-#if DEBUG
-                    PortUtil.println( "WaveRateConverter#read; bIndexStart=" + bIndexStart + "; bRate=" + bRate + "; aRate=" + aRate );
-#endif
                     reader.read( bIndexStart, bRemain, bufLeft, bufRight );
                     // bufLeft[i]のとき bIndex = bIndexStart + bProcessed + i;
                     // left[aProcessed], right[aProcessed]から処理を開始

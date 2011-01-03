@@ -345,6 +345,9 @@ namespace org.kbinani.cadencii {
                 generator.setReceiver( receiver );
                 generator.setGlobalConfig( AppManager.editorConfig );
                 int sample_rate = vsq.config.SamplingRate;
+#if DEBUG
+                PortUtil.println( "FormGenerateKeySound#GenerateSinglePhone; sample_rate=" + sample_rate );
+#endif
                 generator.init( vsq, 1, 0, vsq.TotalClocks, sample_rate );
                 double total_sec = vsq.getSecFromClock( vsq.TotalClocks ) + 1.0;
                 generator.begin( (long)(total_sec * sample_rate) );

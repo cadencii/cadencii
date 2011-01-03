@@ -70,11 +70,11 @@ namespace org.kbinani.cadencii
     /// エディタのメイン画面クラス
     /// </summary>
 #if JAVA
-    public class FormMain extends BForm {
+    public class FormMain extends BForm
 #else
     public class FormMain : BForm
-    {
 #endif
+    {
         /// <summary>
         /// 特殊なキーの組み合わせのショートカットと、メニューアイテムとの紐付けを保持するクラスです。
         /// </summary>
@@ -545,6 +545,10 @@ namespace org.kbinani.cadencii
         /// MIDIステップ入力モードがONかどうか
         /// </summary>
         private boolean mStepSequencerEnabled = false;
+        /// <summary>
+        /// 再生中にソングポジションが前進だけしてほしいので，逆行を防ぐために前回のソングポジションを覚えておく
+        /// </summary>
+        private int mLastClock = 0;
 #if MONITOR_FPS
         /// <summary>
         /// パフォーマンスカウンタ
@@ -563,6 +567,7 @@ namespace org.kbinani.cadencii
         public BMenuItem menuJobChangePreMeasure;
         public BMenuItem menuLyricCopyVibratoToPreset;
         public BMenuItem menuSettingVibratoPreset;
+        public BMenuItem menuJobChangeWaveFormat;
         private System.Windows.Forms.ToolStripButton stripBtnStepSequencer;
         #endregion
 
@@ -982,12 +987,15 @@ namespace org.kbinani.cadencii
             menuHelpLogSwitch.setSelected( Logger.isEnabled() );
             applyShortcut();
 
+            AppManager.mMixerWindow = new FormMixer( this );
+
             // ファイルを開く
             if ( !file.Equals( "" ) ) {
                 if ( PortUtil.isFileExists( file ) ) {
                     String low_file = file.ToLower();
                     if ( low_file.EndsWith( ".xvsq" ) ) {
-                        AppManager.readVsq( file );
+                        openVsqCor( low_file );
+                        //AppManager.readVsq( file );
                     } else if ( low_file.EndsWith( ".vsq" ) ) {
                         VsqFileEx vsq = null;
                         try {
@@ -1083,7 +1091,7 @@ namespace org.kbinani.cadencii
             // 表示状態を更新
             for ( int i = 0; i < size; i++ ) {
                 VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
-                System.Windows.Forms.ToolStripMenuItem item = 
+                System.Windows.Forms.ToolStripMenuItem item =
                     (System.Windows.Forms.ToolStripMenuItem)menuLyricCopyVibratoToPreset.DropDownItems[i];
                 item.Text = handle.getCaption();
             }
@@ -2579,7 +2587,7 @@ namespace org.kbinani.cadencii
             AppManager.clearSelectedTempo();
             AppManager.clearSelectedTimesig();
             if ( AppManager.isPlaying() ) {
-                AppManager.setPlaying( false );
+                AppManager.setPlaying( false, this );
             }
             waveView.unloadAll();
         }
@@ -3303,7 +3311,7 @@ namespace org.kbinani.cadencii
                     if ( !onPreviewKeyDown ) {
 
                         if ( AppManager.isPlaying() ) {
-                            AppManager.setPlaying( false );
+                            AppManager.setPlaying( false, this );
                         } else {
                             if ( !AppManager.mStartMarkerEnabled ) {
                                 AppManager.setCurrentClock( 0 );
@@ -3329,7 +3337,7 @@ namespace org.kbinani.cadencii
                     if ( onPreviewKeyDown ) {
                         rewind();
                     }
-                } else if( e.KeyCode == System.Windows.Forms.Keys.Escape ) {
+                } else if ( e.KeyCode == System.Windows.Forms.Keys.Escape ) {
                     // ステップ入力中の場合，入力中の音符をクリアする
                     VsqEvent item = AppManager.mAddingEvent;
                     if ( isStepSequencerEnabled() && item != null ) {
@@ -3373,10 +3381,10 @@ namespace org.kbinani.cadencii
                         }
                         if ( elapsed > threshold ) {
                             timer.stop();
-                            AppManager.setPlaying( false );
+                            AppManager.setPlaying( false, this );
                         }
                     } else {
-                        AppManager.setPlaying( true );
+                        AppManager.setPlaying( true, this );
                     }
                 }
             }
@@ -3789,6 +3797,7 @@ namespace org.kbinani.cadencii
             if ( maximum <= 0 ) maximum = 1;
             vScroll.LargeChange = large_change;
             vScroll.Maximum = maximum;
+            vScroll.SmallChange = 100;
 
             int old_value = vScroll.Value;
             if ( old_value > maximum - large_change ) {
@@ -4111,8 +4120,8 @@ namespace org.kbinani.cadencii
                 return;
             }
             int cl_clock = AppManager.getCurrentClock();
-            int unit = QuantizeModeUtil.getQuantizeClock( 
-                AppManager.editorConfig.getPositionQuantize(), 
+            int unit = QuantizeModeUtil.getQuantizeClock(
+                AppManager.editorConfig.getPositionQuantize(),
                 AppManager.editorConfig.isPositionQuantizeTriplet() );
             int cl_new = doQuantize( cl_clock + unit, unit );
 
@@ -4124,7 +4133,7 @@ namespace org.kbinani.cadencii
                 updateNoteLengthStepSequencer();
 
                 ensureCursorVisible();
-                AppManager.setPlaying( playing );
+                AppManager.setPlaying( playing, this );
                 refreshScreen();
             }
         }
@@ -4143,7 +4152,7 @@ namespace org.kbinani.cadencii
                 return;
             }
             int cl_clock = AppManager.getCurrentClock();
-            int unit = QuantizeModeUtil.getQuantizeClock( 
+            int unit = QuantizeModeUtil.getQuantizeClock(
                 AppManager.editorConfig.getPositionQuantize(),
                 AppManager.editorConfig.isPositionQuantizeTriplet() );
             int cl_new = doQuantize( cl_clock - unit, unit );
@@ -4157,7 +4166,7 @@ namespace org.kbinani.cadencii
             updateNoteLengthStepSequencer();
 
             ensureCursorVisible();
-            AppManager.setPlaying( playing );
+            AppManager.setPlaying( playing, this );
             refreshScreen();
         }
 
@@ -4367,6 +4376,11 @@ namespace org.kbinani.cadencii
             stripBtnCurve.ToolTipText = _( "Curve" );
             stripBtnGrid.Text = _( "Grid" );
             stripBtnGrid.ToolTipText = _( "Grid" );
+            if ( AppManager.isPlaying() ) {
+                stripBtnPlay.Text = _( "Stop" );
+            } else {
+                stripBtnPlay.Text = _( "Play" );
+            }
 
             #region main menu
             menuFile.setText( _( "File" ) );
@@ -4457,6 +4471,8 @@ namespace org.kbinani.cadencii
             menuJobConnect.setMnemonic( KeyEvent.VK_C );
             menuJobChangePreMeasure.setText( _( "Change pre-measure" ) );
             menuJobChangePreMeasure.setMnemonic( KeyEvent.VK_P );
+            menuJobChangeWaveFormat.setText( _( "Change WAVE format" ) );
+            menuJobChangeWaveFormat.setMnemonic( KeyEvent.VK_W );
             menuJobLyric.setText( _( "Insert lyrics" ) );
             menuJobLyric.setMnemonic( KeyEvent.VK_L );
             menuJobRewire.setText( _( "Import ReWire host tempo" ) );
@@ -4496,7 +4512,7 @@ namespace org.kbinani.cadencii
             menuLyricDictionary.setMnemonic( KeyEvent.VK_C );
             menuLyricCopyVibratoToPreset.setText( _( "Copy vibrato config to preset" ) );
             menuLyricCopyVibratoToPreset.setMnemonic( KeyEvent.VK_P );
-            
+
             menuScript.setText( _( "Script" ) );
             menuScript.setMnemonic( KeyEvent.VK_C );
             menuScriptUpdate.setText( _( "Update script list" ) );
@@ -6634,6 +6650,101 @@ namespace org.kbinani.cadencii
             setEdited( false );
             AppManager.clearCommandBuffer();
             AppManager.mMixerWindow.updateStatus();
+
+            // キャッシュwaveなどの処理
+            if ( AppManager.editorConfig.UseProjectCache ) {
+                #region キャッシュディレクトリの処理
+                VsqFileEx vsq = AppManager.getVsqFile();
+                String cacheDir = vsq.cacheDir; // xvsqに保存されていたキャッシュのディレクトリ
+                String dir = PortUtil.getDirectoryName( file );
+                String name = PortUtil.getFileNameWithoutExtension( file );
+                String estimatedCacheDir = PortUtil.combinePath( dir, name + ".cadencii" ); // ファイル名から推測されるキャッシュディレクトリ
+                if ( cacheDir == null ) cacheDir = "";
+                if ( !cacheDir.Equals( "" ) && PortUtil.isDirectoryExists( cacheDir ) ) {
+                    if ( !estimatedCacheDir.Equals( "" ) &&
+                         !cacheDir.Equals( estimatedCacheDir ) ) {
+                        // ファイル名から推測されるキャッシュディレクトリ名と
+                        // xvsqに指定されているキャッシュディレクトリと異なる場合
+                        // cacheDirの必要な部分をestimatedCacheDirに移す
+
+                        // estimatedCacheDirが存在しない場合、新しく作る
+                        if ( !PortUtil.isDirectoryExists( estimatedCacheDir ) ) {
+                            try {
+                                PortUtil.createDirectory( estimatedCacheDir );
+                            } catch ( Exception ex ) {
+                                Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex + "\n" );
+                                PortUtil.stderr.println( "FormMain#handleFileOpen_Click; ex=" + ex );
+                                AppManager.showMessageBox( PortUtil.formatMessage( _( "cannot create cache directory: '{0}'" ), estimatedCacheDir ),
+                                                           _( "Info." ),
+                                                           PortUtil.OK_OPTION,
+                                                           org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+                                return;
+                            }
+                        }
+
+                        // ファイルを移す
+                        for ( int i = 1; i < vsq.Track.size(); i++ ) {
+                            String wavFrom = PortUtil.combinePath( cacheDir, i + ".wav" );
+                            String xmlFrom = PortUtil.combinePath( cacheDir, i + ".xml" );
+
+                            String wavTo = PortUtil.combinePath( estimatedCacheDir, i + ".wav" );
+                            String xmlTo = PortUtil.combinePath( estimatedCacheDir, i + ".xml" );
+                            if ( PortUtil.isFileExists( wavFrom ) ) {
+                                try {
+                                    PortUtil.moveFile( wavFrom, wavTo );
+                                } catch ( Exception ex ) {
+                                    Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex + "\n" );
+                                    PortUtil.stderr.println( "FormMain#commonFileOpen; ex=" + ex );
+                                }
+                            }
+                            if ( PortUtil.isFileExists( xmlFrom ) ) {
+                                try {
+                                    PortUtil.moveFile( xmlFrom, xmlTo );
+                                } catch ( Exception ex ) {
+                                    Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex + "\n" );
+                                    PortUtil.stderr.println( "FormMain#commonFileOpen; ex=" + ex );
+                                }
+                            }
+                        }
+
+                    }
+                }
+                cacheDir = estimatedCacheDir;
+
+                // キャッシュが無かったら作成
+                if ( !PortUtil.isDirectoryExists( cacheDir ) ) {
+                    try {
+                        PortUtil.createDirectory( cacheDir );
+                    } catch ( Exception ex ) {
+                        Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex + "\n" );
+                        PortUtil.stderr.println( "FormMain#handleFileOpen_Click; ex=" + ex );
+                        AppManager.showMessageBox( PortUtil.formatMessage( _( "cannot create cache directory: '{0}'" ), estimatedCacheDir ),
+                                                   _( "Info." ),
+                                                   PortUtil.OK_OPTION,
+                                                   org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+                        return;
+                    }
+                }
+
+                // RenderedStatusを読み込む
+                for ( int i = 1; i < vsq.Track.size(); i++ ) {
+                    AppManager.deserializeRenderingStatus( cacheDir, i );
+                }
+
+                // キャッシュ内のwavを、waveViewに読み込む
+                waveView.unloadAll();
+                for ( int i = 1; i < vsq.Track.size(); i++ ) {
+                    String wav = PortUtil.combinePath( cacheDir, i + ".wav" );
+                    if ( !PortUtil.isFileExists( wav ) ) {
+                        continue;
+                    }
+                    waveView.load( i - 1, wav );
+                }
+
+                // 一時ディレクトリを、cachedirに変更
+                AppManager.setTempWaveDir( cacheDir );
+                #endregion
+            }
         }
 
         public void updateMenuFonts()
@@ -6942,6 +7053,8 @@ namespace org.kbinani.cadencii
             menuJobRewire.MouseEnter += new EventHandler( handleMenuMouseEnter );
             menuJobReloadVsti.MouseEnter += new EventHandler( handleMenuMouseEnter );
             menuJobReloadVsti.Click += new EventHandler( menuJobReloadVsti_Click );
+            menuJobChangeWaveFormat.Click += new EventHandler( menuJobChangeWaveFormat_Click );
+            menuJobChangeWaveFormat.MouseEnter += new EventHandler( handleMenuMouseEnter );
             menuTrack.DropDownOpening += new EventHandler( menuTrack_DropDownOpening );
             menuTrackOn.MouseEnter += new EventHandler( handleMenuMouseEnter );
             menuTrackOn.Click += new EventHandler( handleTrackOn_Click );
@@ -7401,6 +7514,7 @@ namespace org.kbinani.cadencii
             VsqFileEx vsq = AppManager.getVsqFile();
             RendererKind renderer = VsqFileEx.getTrackRendererKind( vsq.Track.get( selected ) );
             int clock = AppManager.getCurrentClock();
+            mLastClock = clock;
             double now = PortUtil.getCurrentTime();
             AppManager.mPreviewStartedTime = now;
             timer.start();
@@ -7790,11 +7904,11 @@ namespace org.kbinani.cadencii
                                 }
                                 FormVibratoConfig dlg = null;
                                 try {
-                                    dlg = 
-                                        new FormVibratoConfig( 
-                                            selectedEvent.ID.VibratoHandle, 
-                                            selectedEvent.ID.getLength(), 
-                                            AppManager.editorConfig.DefaultVibratoLength, 
+                                    dlg =
+                                        new FormVibratoConfig(
+                                            selectedEvent.ID.VibratoHandle,
+                                            selectedEvent.ID.getLength(),
+                                            AppManager.editorConfig.DefaultVibratoLength,
                                             type,
                                             AppManager.editorConfig.UseUserDefinedAutoVibratoType );
                                     dlg.setLocation( getFormPreferedLocation( dlg ) );
@@ -8226,7 +8340,7 @@ namespace org.kbinani.cadencii
 
                             // 範囲選択モードで、かつマウス位置の音符がその範囲に入っていた場合にのみ、MOVE_ENTRY_WHOLE_WAIT_MOVEに移行
                             if ( AppManager.isWholeSelectedIntervalEnabled() &&
-                                 AppManager.mWholeSelectedInterval.getStart() <= item.Clock && 
+                                 AppManager.mWholeSelectedInterval.getStart() <= item.Clock &&
                                  item.Clock <= AppManager.mWholeSelectedInterval.getEnd() ) {
                                 AppManager.setEditMode( EditMode.MOVE_ENTRY_WHOLE_WAIT_MOVE );
                                 AppManager.mWholeSelectedIntervalStartForMoving = AppManager.mWholeSelectedInterval.getStart();
@@ -9539,7 +9653,7 @@ namespace org.kbinani.cadencii
             }
             vsq.setSolo( track, solo );
             if ( AppManager.mMixerWindow != null ) {
-                AppManager.mMixerWindow.updateSoloMute();
+                AppManager.mMixerWindow.updateStatus();
             }
         }
 
@@ -9560,7 +9674,7 @@ namespace org.kbinani.cadencii
                 vsq.setMute( track, mute );
             }
             if ( AppManager.mMixerWindow != null ) {
-                AppManager.mMixerWindow.updateSoloMute();
+                AppManager.mMixerWindow.updateStatus();
             }
         }
 
@@ -9916,9 +10030,6 @@ namespace org.kbinani.cadencii
             menuVisualMixer.setSelected( AppManager.editorConfig.MixerVisible );
             menuVisualPitchLine.setSelected( AppManager.editorConfig.ViewAtcualPitch );
 
-            //TODO: fixme
-            AppManager.mMixerWindow = new FormMixer( this );
-
             updateMenuFonts();
 
             AppManager.mMixerWindow.FederChanged += new FederChangedEventHandler( mixerWindow_FederChanged );
@@ -10242,7 +10353,7 @@ namespace org.kbinani.cadencii
                         if ( AppManager.isPlaying() ) {
                             timer.stop();
                         }
-                        AppManager.setPlaying( !AppManager.isPlaying() );
+                        AppManager.setPlaying( !AppManager.isPlaying(), this );
                         mLastEventProcessed = now;
                         event_processed = true;
                     }
@@ -11783,8 +11894,8 @@ namespace org.kbinani.cadencii
                 mDialogPreference.setAutoBackupIntervalMinutes( AppManager.editorConfig.AutoBackupIntervalMinutes );
                 mDialogPreference.setUseSpaceKeyAsMiddleButtonModifier( AppManager.editorConfig.UseSpaceKeyAsMiddleButtonModifier );
                 mDialogPreference.setPathAquesTone( AppManager.editorConfig.PathAquesTone );
-                mDialogPreference.setWaveFileOutputFromMasterTrack( AppManager.editorConfig.WaveFileOutputFromMasterTrack );
-                mDialogPreference.setWaveFileOutputChannel( AppManager.editorConfig.WaveFileOutputChannel );
+                //mDialogPreference.setWaveFileOutputFromMasterTrack( AppManager.editorConfig.WaveFileOutputFromMasterTrack );
+                //mDialogPreference.setWaveFileOutputChannel( AppManager.editorConfig.WaveFileOutputChannel );
                 mDialogPreference.setUseProjectCache( AppManager.editorConfig.UseProjectCache );
                 mDialogPreference.setAquesToneRequired( !AppManager.editorConfig.DoNotUseAquesTone );
                 mDialogPreference.setSecondaryVocaloid1DllRequired( AppManager.editorConfig.LoadSecondaryVocaloid1Dll );
@@ -11920,8 +12031,8 @@ namespace org.kbinani.cadencii
                         VSTiDllManager.reloadAquesTone();
                     }
 #endif
-                    AppManager.editorConfig.WaveFileOutputFromMasterTrack = mDialogPreference.isWaveFileOutputFromMasterTrack();
-                    AppManager.editorConfig.WaveFileOutputChannel = mDialogPreference.getWaveFileOutputChannel();
+                    //AppManager.editorConfig.__revoked__WaveFileOutputFromMasterTrack = mDialogPreference.isWaveFileOutputFromMasterTrack();
+                    //AppManager.editorConfig.__revoked__WaveFileOutputChannel = mDialogPreference.getWaveFileOutputChannel();
                     if ( AppManager.editorConfig.UseProjectCache && !mDialogPreference.isUseProjectCache() ) {
                         // プロジェクト用キャッシュを使用していたが，使用しないように変更された場合.
                         // プロジェクト用キャッシュが存在するなら，共用のキャッシュに移動する．
@@ -12626,6 +12737,37 @@ namespace org.kbinani.cadencii
                     }
                 }
             }
+        }
+
+        public void menuJobChangeWaveFormat_Click( object sender, EventArgs e )
+        {
+            VsqFileEx vsq = AppManager.getVsqFile();
+
+            FormSequenceConfig dialog = new FormSequenceConfig();
+            int old_channels = vsq.config.WaveFileOutputChannel;
+            boolean old_output_master = vsq.config.WaveFileOutputFromMasterTrack;
+            int old_sample_rate = vsq.config.SamplingRate;
+
+            dialog.setWaveFileOutputChannel( old_channels );
+            dialog.setWaveFileOutputFromMasterTrack( old_output_master );
+            dialog.setSampleRate( old_sample_rate );
+
+            dialog.setLocation( getFormPreferedLocation( dialog ) );
+            if ( AppManager.showModalDialog( dialog, this ) != BDialogResult.OK ) {
+                return;
+            }
+
+            int new_channels = dialog.getSampleRate();
+            boolean new_output_master = dialog.isWaveFileOutputFromMasterTrack();
+            int new_sample_rate = dialog.getSampleRate();
+
+            CadenciiCommand run =
+                VsqFileEx.generateCommandChangeSampleRate(
+                    new_sample_rate,
+                    new_channels,
+                    new_output_master );
+            AppManager.register( vsq.executeCommand( run ) );
+            setEdited( true );
         }
 
         public void menuJobDeleteBar_Click( Object sender, EventArgs e )
@@ -13954,7 +14096,14 @@ namespace org.kbinani.cadencii
 #if DEBUG
             PortUtil.println( "FormMain#menuHelpDebug_Click" );
 
-            TestSamplingFrequencyConverter.run();
+            InputBox ib = new InputBox( "input sampling rate [Hz]" );
+            if ( ib.ShowDialog( this ) == System.Windows.Forms.DialogResult.OK ) {
+                try {
+                    int rate = int.Parse( ib.getResult() );
+                    AppManager.getVsqFile().config.SamplingRate = rate;
+                } catch ( Exception ex ) {
+                }
+            }
 
 #if ENABLE_VOCALOID
             /*BFileChooser dlg_fout = new BFileChooser( "" );
@@ -14589,7 +14738,7 @@ namespace org.kbinani.cadencii
             }
 
             AppManager.setCurrentClock( AppManager.mStartMarker );
-            AppManager.setPlaying( true );
+            AppManager.setPlaying( true, this );
         }
 
         public void menuHiddenMoveLeft_Click( Object sender, EventArgs e )
@@ -15207,7 +15356,7 @@ namespace org.kbinani.cadencii
 
         public void stripBtnPlay_Click( Object sender, EventArgs e )
         {
-            AppManager.setPlaying( !AppManager.isPlaying() );
+            AppManager.setPlaying( !AppManager.isPlaying(), this );
             pictPianoRoll.requestFocus();
         }
 
@@ -15242,7 +15391,7 @@ namespace org.kbinani.cadencii
 
         public void stripBtnStop_Click( Object sender, EventArgs e )
         {
-            AppManager.setPlaying( false );
+            AppManager.setPlaying( false, this );
             timer.stop();
             pictPianoRoll.requestFocus();
         }
@@ -15250,7 +15399,7 @@ namespace org.kbinani.cadencii
         public void stripBtnMoveEnd_Click( Object sender, EventArgs e )
         {
             if ( AppManager.isPlaying() ) {
-                AppManager.setPlaying( false );
+                AppManager.setPlaying( false, this );
             }
             AppManager.setCurrentClock( AppManager.getVsqFile().TotalClocks );
             ensureCursorVisible();
@@ -15260,7 +15409,7 @@ namespace org.kbinani.cadencii
         public void stripBtnMoveTop_Click( Object sender, EventArgs e )
         {
             if ( AppManager.isPlaying() ) {
-                AppManager.setPlaying( false );
+                AppManager.setPlaying( false, this );
             }
             AppManager.setCurrentClock( 0 );
             ensureCursorVisible();
@@ -15482,9 +15631,9 @@ namespace org.kbinani.cadencii
             VibratoHandle h = ev.ID.VibratoHandle;
             target.setStartRate( h.getStartRate() );
             target.setStartDepth( h.getStartDepth() );
-            if ( h.getRateBP() == null ){
+            if ( h.getRateBP() == null ) {
                 target.setRateBP( null );
-            }else{
+            } else {
                 target.setRateBP( (VibratoBPList)h.getRateBP().clone() );
             }
             if ( h.getDepthBP() == null ) {
@@ -15500,19 +15649,31 @@ namespace org.kbinani.cadencii
                 double play_time = PlaySound.getPosition();
                 double now = play_time + AppManager.mDirectPlayShift;
                 int clock = (int)AppManager.getVsqFile().getClockFromSec( now );
-                AppManager.setCurrentClock( clock );
+                if ( mLastClock <= clock ) {
+                    mLastClock = clock;
+#if DEBUG
+                    PortUtil.println( "FormMain#timer_Tick; clock=" + clock );
+#endif
+                    AppManager.setCurrentClock( clock );
+                    if ( AppManager.mAutoScroll ) {
+                        ensureCursorVisible();
+                    }
+                }
+            } else {
+                AppManager.setPlaying( false, this );
+                int ending_clock = AppManager.getPreviewEndingClock();
+                AppManager.setCurrentClock( ending_clock );
                 if ( AppManager.mAutoScroll ) {
                     ensureCursorVisible();
                 }
-            } else {
-                AppManager.setPlaying( false );
+                refreshScreen( true );
                 if ( AppManager.isRepeatMode() ) {
                     int dest_clock = 0;
                     if ( AppManager.mStartMarkerEnabled ) {
                         dest_clock = AppManager.mStartMarker;
                     }
                     AppManager.setCurrentClock( dest_clock );
-                    AppManager.setPlaying( true );
+                    AppManager.setPlaying( true, this );
                 }
             }
             refreshScreen();
@@ -15754,132 +15915,12 @@ namespace org.kbinani.cadencii
             int dialog_result = AppManager.showModalDialog( openXmlVsqDialog, true, this );
             if ( dialog_result == BFileChooser.APPROVE_OPTION ) {
                 if ( AppManager.isPlaying() ) {
-                    AppManager.setPlaying( false );
+                    AppManager.setPlaying( false, this );
                 }
                 String file = openXmlVsqDialog.getSelectedFile();
                 AppManager.editorConfig.setLastUsedPathIn( file );
                 openVsqCor( file );
                 clearExistingData();
-
-                if ( AppManager.editorConfig.UseProjectCache ) {
-                    #region キャッシュディレクトリの処理
-                    VsqFileEx vsq = AppManager.getVsqFile();
-                    String cacheDir = vsq.cacheDir; // xvsqに保存されていたキャッシュのディレクトリ
-                    String dir = PortUtil.getDirectoryName( file );
-                    String name = PortUtil.getFileNameWithoutExtension( file );
-                    String estimatedCacheDir = PortUtil.combinePath( dir, name + ".cadencii" ); // ファイル名から推測されるキャッシュディレクトリ
-                    if ( cacheDir == null ) cacheDir = "";
-                    if ( !cacheDir.Equals( "" ) && PortUtil.isDirectoryExists( cacheDir ) ) {
-                        if ( !estimatedCacheDir.Equals( "" ) &&
-                             !cacheDir.Equals( estimatedCacheDir ) ) {
-                            // ファイル名から推測されるキャッシュディレクトリ名と
-                            // xvsqに指定されているキャッシュディレクトリと異なる場合
-                            // cacheDirの必要な部分をestimatedCacheDirに移す
-
-                            // estimatedCacheDirが存在しない場合、新しく作る
-                            if ( !PortUtil.isDirectoryExists( estimatedCacheDir ) ) {
-                                try {
-                                    PortUtil.createDirectory( estimatedCacheDir );
-                                } catch ( Exception ex ) {
-                                    Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex + "\n" );
-                                    PortUtil.stderr.println( "FormMain#handleFileOpen_Click; ex=" + ex );
-                                    AppManager.showMessageBox( PortUtil.formatMessage( _( "cannot create cache directory: '{0}'" ), estimatedCacheDir ),
-                                                               _( "Info." ),
-                                                               PortUtil.OK_OPTION,
-                                                               org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
-                                    return;
-                                }
-                            }
-
-                            // ファイルを移す
-                            for ( int i = 1; i < vsq.Track.size(); i++ ) {
-                                String wavFrom = PortUtil.combinePath( cacheDir, i + ".wav" );
-                                String xmlFrom = PortUtil.combinePath( cacheDir, i + ".xml" );
-
-                                String wavTo = PortUtil.combinePath( estimatedCacheDir, i + ".wav" );
-                                String xmlTo = PortUtil.combinePath( estimatedCacheDir, i + ".xml" );
-                                if ( PortUtil.isFileExists( wavFrom ) ) {
-                                    try {
-                                        PortUtil.moveFile( wavFrom, wavTo );
-                                    } catch ( Exception ex ) {
-                                        Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex + "\n" );
-                                        PortUtil.stderr.println( "FormMain#commonFileOpen; ex=" + ex );
-                                    }
-                                }
-                                if ( PortUtil.isFileExists( xmlFrom ) ) {
-                                    try {
-                                        PortUtil.moveFile( xmlFrom, xmlTo );
-                                    } catch ( Exception ex ) {
-                                        Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex + "\n" );
-                                        PortUtil.stderr.println( "FormMain#commonFileOpen; ex=" + ex );
-                                    }
-                                }
-                            }
-
-                        }
-                    }
-                    cacheDir = estimatedCacheDir;
-
-                    // キャッシュが無かったら作成
-                    if ( !PortUtil.isDirectoryExists( cacheDir ) ) {
-                        try {
-                            PortUtil.createDirectory( cacheDir );
-                        } catch ( Exception ex ) {
-                            Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex + "\n" );
-                            PortUtil.stderr.println( "FormMain#handleFileOpen_Click; ex=" + ex );
-                            AppManager.showMessageBox( PortUtil.formatMessage( _( "cannot create cache directory: '{0}'" ), estimatedCacheDir ),
-                                                       _( "Info." ),
-                                                       PortUtil.OK_OPTION,
-                                                       org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
-                            return;
-                        }
-                    }
-
-                    // RenderedStatusを読み込む
-                    for ( int i = 1; i < vsq.Track.size(); i++ ) {
-                        String xml = PortUtil.combinePath( cacheDir, i + ".xml" );
-                        if ( !PortUtil.isFileExists( xml ) ) {
-                            continue;
-                        }
-                        FileInputStream fs = null;
-                        RenderedStatus status = null;
-                        try {
-                            fs = new FileInputStream( xml );
-                            Object obj = AppManager.mRenderingStatusSerializer.deserialize( fs );
-                            if ( obj != null && obj is RenderedStatus ) {
-                                status = (RenderedStatus)obj;
-                            }
-                        } catch ( Exception ex ) {
-                            Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex + "\n" );
-                            status = null;
-                            PortUtil.stderr.println( "FormMain#handleFileOpen_Click; ex=" + ex );
-                        } finally {
-                            if ( fs != null ) {
-                                try {
-                                    fs.close();
-                                } catch ( Exception ex2 ) {
-                                    Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex2 + "\n" );
-                                    PortUtil.stderr.println( "FormMain#handleFileOpen_Click; ex2=" + ex2 );
-                                }
-                            }
-                        }
-                        AppManager.mLastRenderedStatus[i - 1] = status;
-                    }
-
-                    // キャッシュ内のwavを、waveViewに読み込む
-                    waveView.unloadAll();
-                    for ( int i = 1; i < vsq.Track.size(); i++ ) {
-                        String wav = PortUtil.combinePath( cacheDir, i + ".wav" );
-                        if ( !PortUtil.isFileExists( wav ) ) {
-                            continue;
-                        }
-                        waveView.load( i - 1, wav );
-                    }
-
-                    // 一時ディレクトリを、cachedirに変更
-                    AppManager.setTempWaveDir( cacheDir );
-                    #endregion
-                }
 
                 setEdited( false );
                 AppManager.mMixerWindow.updateStatus();
@@ -16842,6 +16883,7 @@ namespace org.kbinani.cadencii
             this.menuJobConnect = new org.kbinani.windows.forms.BMenuItem();
             this.menuJobLyric = new org.kbinani.windows.forms.BMenuItem();
             this.menuJobChangePreMeasure = new org.kbinani.windows.forms.BMenuItem();
+            this.menuJobChangeWaveFormat = new org.kbinani.windows.forms.BMenuItem();
             this.menuJobRewire = new org.kbinani.windows.forms.BMenuItem();
             this.menuJobReloadVsti = new org.kbinani.windows.forms.BMenuItem();
             this.menuTrack = new org.kbinani.windows.forms.BMenuItem();
@@ -17569,6 +17611,7 @@ namespace org.kbinani.cadencii
             this.menuJobConnect,
             this.menuJobLyric,
             this.menuJobChangePreMeasure,
+            this.menuJobChangeWaveFormat,
             this.menuJobRewire,
             this.menuJobReloadVsti} );
             this.menuJob.Name = "menuJob";
@@ -17616,6 +17659,12 @@ namespace org.kbinani.cadencii
             this.menuJobChangePreMeasure.Name = "menuJobChangePreMeasure";
             this.menuJobChangePreMeasure.Size = new System.Drawing.Size( 256, 22 );
             this.menuJobChangePreMeasure.Text = "Change pre-measure(&P)";
+            // 
+            // menuJobChangeWaveFormat
+            // 
+            this.menuJobChangeWaveFormat.Name = "menuJobChangeWaveFormat";
+            this.menuJobChangeWaveFormat.Size = new System.Drawing.Size( 256, 22 );
+            this.menuJobChangeWaveFormat.Text = "Change WAVE format(&W)";
             // 
             // menuJobRewire
             // 

@@ -157,7 +157,7 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void updateSoloMute() {
+        private void updateSoloMute() {
 #if DEBUG
             PortUtil.println( "FormMixer#updateSoloMute" );
 #endif
@@ -218,14 +218,17 @@ namespace org.kbinani.cadencii {
             if ( m_tracker == null ) {
                 m_tracker = new Vector<VolumeTracker>();
             }
+
+            unregisterEventHandlers();
+
             if ( m_tracker.size() < num ) {
                 int remain = num - m_tracker.size();
                 for ( int i = 0; i < remain; i++ ) {
                     VolumeTracker item = new VolumeTracker();
-                    item.MuteButtonClick += new EventHandler( FormMixer_MuteButtonClick );
-                    item.SoloButtonClick += new EventHandler( FormMixer_SoloButtonClick );
-                    item.FederChanged += new FederChangedEventHandler( FormMixer_FederChanged );
-                    item.PanpotChanged += new PanpotChangedEventHandler( FormMixer_PanpotChanged );
+                    //item.MuteButtonClick += new EventHandler( FormMixer_MuteButtonClick );
+                    //item.SoloButtonClick += new EventHandler( FormMixer_SoloButtonClick );
+                    //item.FederChanged += new FederChangedEventHandler( FormMixer_FederChanged );
+                    //item.PanpotChanged += new PanpotChangedEventHandler( FormMixer_PanpotChanged );
 #if !JAVA
                     item.BorderStyle = BorderStyle.FixedSingle;
                     item.Size = volumeMaster.Size;
@@ -324,10 +327,17 @@ namespace org.kbinani.cadencii {
                 tracker.setSoloButtonVisible( false );
                 addToPanel1( tracker, j );
             }
+#if DEBUG
+            PortUtil.println( "FormMixer#updateStatus; vsq.Mixer.MasterFeder=" + vsq.Mixer.MasterFeder );
+#endif
             volumeMaster.setFeder( vsq.Mixer.MasterFeder );
             volumeMaster.setPanpot( vsq.Mixer.MasterPanpot );
             volumeMaster.setSoloButtonVisible( false );
 
+            updateSoloMute();
+
+            // イベントハンドラを再登録
+            reregisterEventHandlers();
 #if JAVA
             this.setResizable( true );
             //panel1.setPreferredSize( new Dimension( (VolumeTracker.WIDTH + 1) * (screen_num - 1), VolumeTracker.HEIGHT ) );
@@ -390,6 +400,45 @@ namespace org.kbinani.cadencii {
             return Messaging.getMessage( id );
         }
 
+        private void unregisterEventHandlers()
+        {
+            int size = 0;
+            if ( m_tracker != null ) {
+                size = m_tracker.size();
+            }
+            for ( int i = 0; i < size; i++ ) {
+                VolumeTracker item = m_tracker.get( i );
+                item.PanpotChanged -= FormMixer_PanpotChanged;
+                item.FederChanged -= FormMixer_FederChanged;
+                item.MuteButtonClick -= FormMixer_MuteButtonClick;
+                item.SoloButtonClick -= FormMixer_SoloButtonClick;
+            }
+            volumeMaster.PanpotChanged -= volumeMaster_PanpotChanged;
+            volumeMaster.FederChanged -= volumeMaster_FederChanged;
+            volumeMaster.MuteButtonClick -= volumeMaster_MuteButtonClick;
+        }
+
+        /// <summary>
+        /// ボリューム用のイベントハンドラを再登録します
+        /// </summary>
+        private void reregisterEventHandlers()
+        {
+            int size = 0;
+            if ( m_tracker != null ) {
+                size = m_tracker.size();
+            }
+            for ( int i = 0; i < size; i++ ) {
+                VolumeTracker item = m_tracker.get( i );
+                item.PanpotChanged += FormMixer_PanpotChanged;
+                item.FederChanged += FormMixer_FederChanged;
+                item.MuteButtonClick += FormMixer_MuteButtonClick;
+                item.SoloButtonClick += FormMixer_SoloButtonClick;
+            }
+            volumeMaster.PanpotChanged += volumeMaster_PanpotChanged;
+            volumeMaster.FederChanged += volumeMaster_FederChanged;
+            volumeMaster.MuteButtonClick += volumeMaster_MuteButtonClick;
+        }
+
         private void registerEventHandlers() {
             menuVisualReturn.Click += new EventHandler( menuVisualReturn_Click );
 #if JAVA
@@ -398,11 +447,9 @@ namespace org.kbinani.cadencii {
             panel1.Paint += new System.Windows.Forms.PaintEventHandler( this.panel1_Paint );
 #endif
             hScroll.ValueChanged += new EventHandler( veScrollBar_ValueChanged );
-            volumeMaster.PanpotChanged += new PanpotChangedEventHandler( volumeMaster_PanpotChanged );
-            volumeMaster.FederChanged += new FederChangedEventHandler( volumeMaster_FederChanged );
             chkTopmost.CheckedChanged += new EventHandler( chkTopmost_CheckedChanged );
             FormClosing += new System.Windows.Forms.FormClosingEventHandler( FormMixer_FormClosing );
-            volumeMaster.MuteButtonClick += new EventHandler( volumeMaster_MuteButtonClick );
+            reregisterEventHandlers();
         }
 
         private void setResources() {

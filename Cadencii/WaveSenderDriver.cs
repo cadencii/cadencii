@@ -107,6 +107,9 @@ namespace org.kbinani.cadencii
         public void init( VsqFileEx vsq, int track, int start_clock, int end_clock, int sample_rate )
         {
             mSampleRate = sample_rate;
+#if DEBUG
+            PortUtil.println( "WaveSenderDriver#init; sample_rate=" + sample_rate );
+#endif
         }
 
         public void setSender( WaveSender wave_sender )

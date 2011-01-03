@@ -399,17 +399,18 @@ namespace org.kbinani.cadencii
                     next_wave_start = next_queue.startSample;
                 }
 
-                WaveReader wr = null;
+                //WaveReader wr = null;
+                WaveRateConverter wr = null;
                 try {
                     if ( PortUtil.isFileExists( tmp_file + ".wav" ) ) {
-                        wr = new WaveReader( tmp_file + ".wav" );
+                        wr = new WaveRateConverter( new WaveReader( tmp_file + ".wav" ), mSampleRate );
                     }
                 } catch ( Exception ex ) {
                     wr = null;
                 }
                 try {
                     int wave_samples = 0;
-                    if ( wr != null ) wave_samples = wr.getTotalSamples();
+                    if ( wr != null ) wave_samples = (int)wr.getTotalSamples();
                     int overlapped = 0;
                     if ( next_wave_start <= queue.startSample + wave_samples ) {
                         // 次のキューの開始位置が、このキューの終了位置よりも早い場合
@@ -445,7 +446,7 @@ namespace org.kbinani.cadencii
 
                         int rendererd_length = 0;
                         if ( wr != null ) {
-                            rendererd_length = wr.getTotalSamples();
+                            rendererd_length = (int)wr.getTotalSamples();
                         }
                         if ( wave_samples < rendererd_length ) {
                             // 次のキューのためにデータを残す
@@ -481,7 +482,7 @@ namespace org.kbinani.cadencii
                         // キャッシュが残っている場合
                         int rendered_length = 0;
                         if ( wr != null ) {
-                            rendered_length = wr.getTotalSamples();
+                            rendered_length = (int)wr.getTotalSamples();
                         }
                         if ( rendered_length < cached_data_length ) {
                             if ( next_wave_start < queue.startSample + cached_data_length ) {

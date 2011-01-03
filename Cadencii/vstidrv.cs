@@ -350,8 +350,11 @@ namespace org.kbinani.cadencii
         public virtual void setSampleRate( int sample_rate )
         {
             sampleRate = sample_rate;
-            aEffect.Dispatch( AEffectOpcodes.effSetSampleRate, 0, 0, IntPtr.Zero, (float)sampleRate );
-            aEffect.Dispatch( AEffectOpcodes.effSetBlockSize, 0, sampleRate, IntPtr.Zero, 0 );
+            int ret1 = aEffect.Dispatch( AEffectOpcodes.effSetSampleRate, 0, 0, IntPtr.Zero, (float)sampleRate );
+            int ret2 = aEffect.Dispatch( AEffectOpcodes.effSetBlockSize, 0, sampleRate, IntPtr.Zero, 0 );
+#if DEBUG
+            PortUtil.println( "vstidrv#setSampleRate; ret1=" + ret1 + "; ret2=" + ret2 );
+#endif
         }
 
         public virtual bool open( int block_size, int sample_rate, boolean use_native_dll_loader )

@@ -68,6 +68,7 @@
     <Compile Include="MidiOutDevice.cs" />
     <Compile Include="PlaySound.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RateConvertContext.cs" />
     <Compile Include="RawAvi2Writer.cs" />
     <Compile Include="PipedAviWriter.cs" />
     <Compile Include="Util.cs" />

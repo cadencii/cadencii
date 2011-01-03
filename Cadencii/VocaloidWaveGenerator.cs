@@ -61,7 +61,18 @@ namespace org.kbinani.cadencii
         private int mTrimRemain = 0;
         private boolean mRunning = false;
         private VocaloidDriver mDriver = null;
+        /// <summary>
+        /// 波形処理ラインのサンプリング周波数
+        /// </summary>
         private int mSampleRate;
+        /// <summary>
+        /// VOCALOID VSTiの実際のサンプリング周波数
+        /// </summary>
+        private int mDriverSampleRate;
+        /// <summary>
+        /// サンプリング周波数変換器
+        /// </summary>
+        private RateConvertContext mContext;
 
         public int getSampleRate()
         {
@@ -114,6 +125,7 @@ namespace org.kbinani.cadencii
         /// <param name="track"></param>
         /// <param name="start_clock"></param>
         /// <param name="end_clock"></param>
+        /// <param name="sample_rate">波形処理ラインのサンプリング周波数</param>
         public void init( VsqFileEx vsq, int track, int start_clock, int end_clock, int sample_rate )
         {
             mVsq = vsq;
@@ -121,6 +133,8 @@ namespace org.kbinani.cadencii
             mStartClock = start_clock;
             mEndClock = end_clock;
             mSampleRate = sample_rate;
+            mDriverSampleRate = 44100;
+            mContext = new RateConvertContext( mDriverSampleRate, mSampleRate );
         }
 
         public override int getVersion()
@@ -168,10 +182,14 @@ namespace org.kbinani.cadencii
                     mBufferL[i] = l[i + offset];
                     mBufferR[i] = r[i + offset];
                 }
-                mReceiver.push( mBufferL, mBufferR, amount );
+                while ( RateConvertContext.convert( mContext, mBufferL, mBufferR, amount ) ) {
+                    mReceiver.push( mContext.bufferLeft, mContext.bufferRight, mContext.length );
+                    mTotalAppend += mContext.length;
+                }
+                //mReceiver.push( mBufferL, mBufferR, amount );
                 remain -= amount;
                 offset += amount;
-                mTotalAppend += amount;
+                //mTotalAppend += amount;
             }
             return false;
         }
@@ -229,9 +247,6 @@ namespace org.kbinani.cadencii
             // ドライバーが読み込み完了していなかったらbail out
             if ( !mDriver.loaded ) return;
 
-            // サンプルレートを変える
-            mDriver.setSampleRate( mSampleRate );
-
             // NRPNを作成
             int ms_present = mConfig.PreSendTime;
             VsqNrpn[] vsq_nrpn = VsqFile.generateNRPN( split, mTrack, ms_present );
@@ -246,9 +261,9 @@ namespace org.kbinani.cadencii
             // ずれるサンプル数
             int errorSamples = VSTiDllManager.getErrorSamples( first_tempo );
             // 今後トリムする予定のサンプル数と、
-            mTrimRemain = errorSamples + (int)(trim_sec * mSampleRate);
+            mTrimRemain = errorSamples + (int)(trim_sec * mDriverSampleRate);
             // 合計合成する予定のサンプル数を決める
-            mTotalSamples = (long)((end_sec - start_sec) * mSampleRate) + errorSamples;
+            mTotalSamples = (long)((end_sec - start_sec) * mDriverSampleRate) + errorSamples;
 #if DEBUG
             PortUtil.println( "VocaloidWaveGenerator#begin; mTotalSamples=" + mTotalSamples + "; start_sec,end_sec=" + start_sec + "," + end_sec + "; errorSamples=" + errorSamples );
 #endif
@@ -318,9 +333,9 @@ namespace org.kbinani.cadencii
             // 合成が終わるか、ドライバへのアボート要求が来るまでは制御は返らない
             // この
             mDriver.startRendering(
-                mTotalSamples + mTrimRemain + (int)(ms_present / 1000.0 * mSampleRate),
+                mTotalSamples + mTrimRemain + (int)(ms_present / 1000.0 * mDriverSampleRate),
                 false,
-                mSampleRate,
+                mDriverSampleRate,
                 this );
 
             // ここに来るということは合成が終わったか、ドライバへのアボート要求が実行されたってこと。

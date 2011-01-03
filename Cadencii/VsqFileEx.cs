@@ -27,7 +27,8 @@ using org.kbinani.java.io;
 using org.kbinani.java.util;
 using org.kbinani.xml;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using boolean = System.Boolean;
     using Integer = System.Int32;
     using Long = System.Int64;
@@ -37,7 +38,8 @@ namespace org.kbinani.cadencii {
     public class VsqFileEx extends VsqFile implements Cloneable, ICommandRunnable, Serializable{
 #else
     [Serializable]
-    public class VsqFileEx : VsqFile, ICloneable, ICommandRunnable {
+    public class VsqFileEx : VsqFile, ICloneable, ICommandRunnable
+    {
 #endif
         private static XmlSerializer mVsqSerializer;
 
@@ -65,7 +67,8 @@ namespace org.kbinani.cadencii {
             sVsqSerializer = new XmlSerializer( VsqFileEx.class );
         }
 #else
-        static VsqFileEx() {
+        static VsqFileEx()
+        {
             mVsqSerializer = new XmlSerializer( typeof( VsqFileEx ) );
         }
 #endif
@@ -79,7 +82,8 @@ namespace org.kbinani.cadencii {
 #if JAVA
         public static String getGenericTypeName( String name ) {
 #else
-        public new static String getGenericTypeName( String name ) {
+        public new static String getGenericTypeName( String name )
+        {
 #endif
             if ( name != null ) {
                 if ( name.Equals( "BgmFiles" ) ) {
@@ -94,7 +98,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="vsq_track"></param>
         /// <returns></returns>
-        public static RendererKind getTrackRendererKind( VsqTrack vsq_track ) {
+        public static RendererKind getTrackRendererKind( VsqTrack vsq_track )
+        {
             String str_kind = getTagCor( vsq_track.Tag, TAG_VSQTRACK_RENDERER_KIND );
             if ( str_kind != null && !str_kind.Equals( "" ) ) {
 #if JAVA
@@ -142,7 +147,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public static void setTrackRendererKind( VsqTrack vsq_track, RendererKind renderer_kind ) {
+        public static void setTrackRendererKind( VsqTrack vsq_track, RendererKind renderer_kind )
+        {
             vsq_track.Tag = setTagCor( vsq_track.Tag, TAG_VSQTRACK_RENDERER_KIND, renderer_kind + "" );
             VsqCommon vsq_common = vsq_track.getCommon();
             if ( vsq_common != null ) {
@@ -162,7 +168,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private static String getTagCor( String tag, String tag_name ) {
+        private static String getTagCor( String tag, String tag_name )
+        {
             if ( tag_name == null ) return "";
             if ( tag_name.Equals( "" ) ) return "";
             if ( tag == null ) return "";
@@ -179,7 +186,8 @@ namespace org.kbinani.cadencii {
             return "";
         }
 
-        private static String setTagCor( String old_tag, String name, String value ) {
+        private static String setTagCor( String old_tag, String name, String value )
+        {
             if ( name == null ) return old_tag;
             if ( name.Equals( "" ) ) return old_tag;
             String v = value.Replace( ":", "" ).Replace( ";", "" );
@@ -209,11 +217,13 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public static String getEventTag( VsqEvent item, String name ) {
+        public static String getEventTag( VsqEvent item, String name )
+        {
             return getTagCor( item.Tag, name );
         }
 
-        public static void setEventTag( VsqEvent item, String name, String value ) {
+        public static void setEventTag( VsqEvent item, String name, String value )
+        {
             item.Tag = setTagCor( item.Tag, name, value );
         }
 
@@ -222,7 +232,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="track"></param>
         /// <returns></returns>
-        public boolean getActualMuted( int track ) {
+        public boolean getActualMuted( int track )
+        {
             if ( track < 1 || Track.size() <= track ) return true;
             if ( getMasterMute() ) return true;
             if ( getMute( track ) ) return true;
@@ -250,7 +261,8 @@ namespace org.kbinani.cadencii {
         /// このVSQシーケンスのマスタートラックをミュートするかどうかを取得します。
         /// </summary>
         /// <returns></returns>
-        public boolean getMasterMute() {
+        public boolean getMasterMute()
+        {
             if ( Mixer == null ) return false;
             return Mixer.MasterMute == 1;
         }
@@ -258,7 +270,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// このVSQシーケンスのマスタートラックをミュートするかどうかを設定します。
         /// </summary>
-        public void setMasterMute( boolean value ) {
+        public void setMasterMute( boolean value )
+        {
             if ( Mixer == null ) return;
             Mixer.MasterMute = value ? 1 : 0;
         }
@@ -268,7 +281,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="track"></param>
         /// <returns></returns>
-        public boolean getMute( int track ) {
+        public boolean getMute( int track )
+        {
             if ( Mixer == null ) return false;
             if ( Mixer.Slave == null ) return false;
             if ( track < 0 ) return false;
@@ -286,7 +300,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="track"></param>
         /// <param name="value"></param>
-        public void setMute( int track, boolean value ) {
+        public void setMute( int track, boolean value )
+        {
             if ( Mixer == null ) return;
             if ( Mixer.Slave == null ) return;
             if ( track < 0 ) {
@@ -303,7 +318,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="track"></param>
         /// <returns></returns>
-        public boolean getSolo( int track ) {
+        public boolean getSolo( int track )
+        {
             if ( Mixer == null ) return false;
             if ( Mixer.Slave == null ) return false;
             if ( track < 0 ) return false;
@@ -321,7 +337,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="track"></param>
         /// <param name="value"></param>
-        public void setSolo( int track, boolean value ) {
+        public void setSolo( int track, boolean value )
+        {
             if ( Mixer == null ) return;
             if ( Mixer.Slave == null ) return;
             if ( track < 0 ) {
@@ -346,7 +363,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="work"></param>
         /// <param name="tempo"></param>
-        public override void adjustClockToMatchWith( TempoVector tempo ) {
+        public override void adjustClockToMatchWith( TempoVector tempo )
+        {
             base.adjustClockToMatchWith( tempo );
             double premeasure_sec_target = getSecFromClock( getPreMeasureClocks() );
             double premeasure_sec_tempo = premeasure_sec_target;
@@ -392,7 +410,8 @@ namespace org.kbinani.cadencii {
         /// <param name="vsq">編集対象</param>
         /// <param name="sec">ずらす秒数．正の場合アイテムは後ろにずれる</param>
         /// <param name="first_tempo">ずらす秒数が正の場合に，最初のテンポをいくらにするか</param>
-        public static void shift( VsqFileEx vsq, double sec, int first_tempo ) {
+        public static void shift( VsqFileEx vsq, double sec, int first_tempo )
+        {
             boolean first = true; // 負になった最初のアイテムかどうか
 
             // 最初にテンポをずらす．
@@ -607,7 +626,8 @@ namespace org.kbinani.cadencii {
         }
 
 #if !JAVA
-        public new object Clone() {
+        public new object Clone()
+        {
             return clone();
         }
 #endif
@@ -615,7 +635,8 @@ namespace org.kbinani.cadencii {
 #if JAVA
         public Object clone() {
 #else
-        public new Object clone() {
+        public new Object clone()
+        {
 #endif
             VsqFileEx ret = new VsqFileEx( "Miku", 1, 4, 4, 500000 );
             ret.Track = new Vector<VsqTrack>();
@@ -642,6 +663,7 @@ namespace org.kbinani.cadencii {
                 ret.BgmFiles.add( (BgmFile)BgmFiles.get( i ).clone() );
             }
             ret.cacheDir = cacheDir;
+            ret.config = (SequenceConfig)this.config.clone();
             return ret;
         }
 
@@ -650,7 +672,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="list"></param>
         /// <returns></returns>
-        public static CadenciiCommand generateCommandBgmUpdate( Vector<BgmFile> list ) {
+        public static CadenciiCommand generateCommandBgmUpdate( Vector<BgmFile> list )
+        {
             CadenciiCommand command = new CadenciiCommand();
             command.type = CadenciiCommandType.BGM_UPDATE;
             command.args = new Object[1];
@@ -668,7 +691,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="track"></param>
         /// <returns></returns>
-        public static CadenciiCommand generateCommandDeleteTrack( int track ) {
+        public static CadenciiCommand generateCommandDeleteTrack( int track )
+        {
             CadenciiCommand command = new CadenciiCommand();
             command.type = CadenciiCommandType.TRACK_DELETE;
             command.args = new Object[1];
@@ -676,7 +700,8 @@ namespace org.kbinani.cadencii {
             return command;
         }
 
-        public static CadenciiCommand generateCommandTrackReplace( int track, VsqTrack item, BezierCurves attached_curve ) {
+        public static CadenciiCommand generateCommandTrackReplace( int track, VsqTrack item, BezierCurves attached_curve )
+        {
             CadenciiCommand command = new CadenciiCommand();
             command.type = CadenciiCommandType.TRACK_REPLACE;
             command.args = new Object[3];
@@ -691,7 +716,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="track"></param>
         /// <returns></returns>
-        public static CadenciiCommand generateCommandAddTrack( VsqTrack track, VsqMixerEntry mixer, int position, BezierCurves attached_curve ) {
+        public static CadenciiCommand generateCommandAddTrack( VsqTrack track, VsqMixerEntry mixer, int position, BezierCurves attached_curve )
+        {
             CadenciiCommand command = new CadenciiCommand();
             command.type = CadenciiCommandType.TRACK_ADD;
             command.args = new Object[4];
@@ -702,7 +728,8 @@ namespace org.kbinani.cadencii {
             return command;
         }
 
-        public static CadenciiCommand generateCommandAddBezierChain( int track, CurveType curve_type, int chain_id, int clock_resolution, BezierChain chain ) {
+        public static CadenciiCommand generateCommandAddBezierChain( int track, CurveType curve_type, int chain_id, int clock_resolution, BezierChain chain )
+        {
             CadenciiCommand ret = new CadenciiCommand();
             ret.type = CadenciiCommandType.BEZIER_CHAIN_ADD;
             ret.args = new Object[5];
@@ -714,7 +741,16 @@ namespace org.kbinani.cadencii {
             return ret;
         }
 
-        public static CadenciiCommand generateCommandDeleteBezierChain( int track, CurveType curve_type, int chain_id, int clock_resolution ) {
+        public static CadenciiCommand generateCommandChangeSampleRate( int sample_rate, int channels, boolean output_master )
+        {
+            CadenciiCommand ret = new CadenciiCommand();
+            ret.type = CadenciiCommandType.CHANGE_WAVE_FMT;
+            ret.args = new object[]{ sample_rate, channels, output_master };
+            return ret;
+        }
+
+        public static CadenciiCommand generateCommandDeleteBezierChain( int track, CurveType curve_type, int chain_id, int clock_resolution )
+        {
             CadenciiCommand ret = new CadenciiCommand();
             ret.type = CadenciiCommandType.BEZIER_CHAIN_DELETE;
             ret.args = new Object[4];
@@ -725,7 +761,8 @@ namespace org.kbinani.cadencii {
             return ret;
         }
 
-        public static CadenciiCommand generateCommandReplaceBezierChain( int track, CurveType curve_type, int chain_id, BezierChain chain, int clock_resolution ) {
+        public static CadenciiCommand generateCommandReplaceBezierChain( int track, CurveType curve_type, int chain_id, BezierChain chain, int clock_resolution )
+        {
             CadenciiCommand ret = new CadenciiCommand();
             ret.type = CadenciiCommandType.BEZIER_CHAIN_REPLACE;
             ret.args = new Object[5];
@@ -737,7 +774,8 @@ namespace org.kbinani.cadencii {
             return ret;
         }
 
-        public static CadenciiCommand generateCommandReplace( VsqFileEx vsq ) {
+        public static CadenciiCommand generateCommandReplace( VsqFileEx vsq )
+        {
             CadenciiCommand ret = new CadenciiCommand();
             ret.type = CadenciiCommandType.REPLACE;
             ret.args = new Object[1];
@@ -745,7 +783,8 @@ namespace org.kbinani.cadencii {
             return ret;
         }
 
-        public static CadenciiCommand generateCommandReplaceAttachedCurveRange( int track, TreeMap<CurveType, Vector<BezierChain>> attached_curves ) {
+        public static CadenciiCommand generateCommandReplaceAttachedCurveRange( int track, TreeMap<CurveType, Vector<BezierChain>> attached_curves )
+        {
             CadenciiCommand ret = new CadenciiCommand();
             ret.type = CadenciiCommandType.ATTACHED_CURVE_REPLACE_RANGE;
             ret.args = new Object[2];
@@ -764,7 +803,8 @@ namespace org.kbinani.cadencii {
             return ret;
         }
 
-        public ICommand executeCommand( ICommand com ) {
+        public ICommand executeCommand( ICommand com )
+        {
 #if DEBUG
             AppManager.debugWriteLine( "VsqFileEx.Execute" );
 #endif
@@ -1153,6 +1193,17 @@ namespace org.kbinani.cadencii {
                         BgmFiles.add( list.get( i ) );
                     }
                     #endregion
+                } else if ( command.type == CadenciiCommandType.CHANGE_WAVE_FMT ) {
+                    #region CHANGE_SAMPLE_RATE
+                    ret = VsqFileEx.generateCommandChangeSampleRate( 
+                        config.SamplingRate, config.WaveFileOutputChannel, config.WaveFileOutputFromMasterTrack );
+                    int sample_rate = (Integer)command.args[0];
+                    int channels = (Integer)command.args[1];
+                    boolean output_master = (Boolean)command.args[2];
+                    config.SamplingRate = sample_rate;
+                    config.WaveFileOutputChannel = channels;
+                    config.WaveFileOutputFromMasterTrack = output_master;
+                    #endregion
                 }
                 if ( command.vsqCommand != null && ret != null ) {
 #if DEBUG
@@ -1170,7 +1221,7 @@ namespace org.kbinani.cadencii {
 #else
             :
 #endif
-            this( "Miku", 1, 4, 4, 500000 )
+ this( "Miku", 1, 4, 4, 500000 )
 #if JAVA
             ;
 #else
@@ -1187,7 +1238,7 @@ namespace org.kbinani.cadencii {
 #else
             :
 #endif
-            base( singer, pre_measure, numerator, denominator, tempo )
+ base( singer, pre_measure, numerator, denominator, tempo )
 #if JAVA
             ;
 #else
@@ -1206,7 +1257,7 @@ namespace org.kbinani.cadencii {
 #else
             :
 #endif
-            base( ust )
+ base( ust )
 #if JAVA
             ;
 #else
@@ -1226,7 +1277,7 @@ namespace org.kbinani.cadencii {
 #else
             :
 #endif
-            base( _fpath, encoding )
+ base( _fpath, encoding )
 #if JAVA
             ;
 #else
@@ -1253,7 +1304,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void writeAsXml( String file ) {
+        public void writeAsXml( String file )
+        {
             FileOutputStream xw = null;
             try {
                 xw = new FileOutputStream( file );
@@ -1273,7 +1325,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public static VsqFileEx readFromXml( String file ) {
+        public static VsqFileEx readFromXml( String file )
+        {
             VsqFileEx ret = null;
             FileInputStream fs = null;
             try {
@@ -1351,11 +1404,13 @@ namespace org.kbinani.cadencii {
             return ret;
         }
 
-        public new void write( String file ) {
+        public new void write( String file )
+        {
             base.write( file );
         }
 
-        public new void write( String file, int msPreSend, String encoding ) {
+        public new void write( String file, int msPreSend, String encoding )
+        {
             base.write( file, msPreSend, encoding );
         }
     }

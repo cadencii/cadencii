@@ -21,32 +21,40 @@ using System;
 using org.kbinani.java.util;
 using org.kbinani.vsq;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
 #endif
 
-    public class RenderedStatus {
+    public class RenderedStatus
+    {
         public VsqTrack track;
         public TempoVector tempo;
+        public SequenceConfig config;
 
         /// <summary>
         /// コンストラクタ。trackはcloneされないが、tempoはcloneされる。
         /// </summary>
         /// <param name="track"></param>
         /// <param name="tempo"></param>
-        public RenderedStatus( VsqTrack track, TempoVector tempo ) {
+        public RenderedStatus( VsqTrack track, TempoVector tempo, SequenceConfig config )
+        {
             this.track = track;
             this.tempo = new TempoVector();
             for ( Iterator<TempoTableEntry> itr = tempo.iterator(); itr.hasNext(); ) {
                 this.tempo.add( itr.next() );
             }
+            this.config = config;
         }
 
-        public RenderedStatus() {
+        public RenderedStatus()
+        {
             track = new VsqTrack( 0, 0, 0 );
             tempo = new TempoVector();
+            config = new SequenceConfig();
         }
 
-        public String getGenericTypeName( String name ) {
+        public String getGenericTypeName( String name )
+        {
             if ( name != null ) {
                 if ( name.Equals( "tempo" ) ) {
                     return "org.kbinani.vsq.TempoTableEntry";

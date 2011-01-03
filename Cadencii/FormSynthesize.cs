@@ -204,7 +204,7 @@ namespace org.kbinani.cadencii {
 
         public void bgWork_DoWork( object sender, BDoWorkEventArgs e ) {
             try {
-                int channel = AppManager.editorConfig.WaveFileOutputChannel == 1 ? 1 : 2;
+                int channel = mVsq.config.WaveFileOutputChannel == 1 ? 1 : 2;
                 double amp_master = VocaloSysUtil.getAmplifyCoeffFromFeder( mVsq.Mixer.MasterFeder );
                 double pan_left_master = VocaloSysUtil.getAmplifyCoeffFromPanLeft( mVsq.Mixer.MasterPanpot );
                 double pan_right_master = VocaloSysUtil.getAmplifyCoeffFromPanRight( mVsq.Mixer.MasterPanpot );
@@ -224,10 +224,6 @@ namespace org.kbinani.cadencii {
                     VsqTrack vsq_track = mVsq.Track.get( track );
                     int count = vsq_track.getEventCount();
                     if ( count > 0 ) {
-#if DEBUG
-                        AppManager.debugWriteLine( "FormSynthesize#bgWork_DoWork" );
-                        AppManager.debugWriteLine( "    VsqUtil.VstiDllPath=" + VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID2 ) );
-#endif
                         double amp_track = VocaloSysUtil.getAmplifyCoeffFromFeder( mVsq.Mixer.Slave.get( track - 1 ).Feder );
                         double pan_left_track = VocaloSysUtil.getAmplifyCoeffFromPanLeft( mVsq.Mixer.Slave.get( track - 1 ).Panpot );
                         double pan_right_track = VocaloSysUtil.getAmplifyCoeffFromPanRight( mVsq.Mixer.Slave.get( track - 1 ).Panpot );
@@ -238,7 +234,11 @@ namespace org.kbinani.cadencii {
 
                         RendererKind kind = VsqFileEx.getTrackRendererKind( vsq_track );
                         mGenerator = VSTiDllManager.getWaveGenerator( kind );
+#if DEBUG
+                        PortUtil.println( "FormSynthesize#bgWork_DoWork; mGenerator.GetType()=" + mGenerator.GetType() );
+#endif
                         Amplifier amp = new Amplifier();
+                        amp.setRoot( mGenerator );
                         if ( q.renderAll ) {
                             amp.setAmplify( amp_left, amp_right );
                         }
@@ -247,13 +247,11 @@ namespace org.kbinani.cadencii {
                         mGenerator.setMainWindow( mMainWindow );
 
                         Mixer mixer = new Mixer();
+                        mixer.setRoot( mGenerator );
                         mixer.setGlobalConfig( AppManager.editorConfig );
                         amp.setReceiver( mixer );
 
-#if DEBUG
-                        PortUtil.println( "FormSynthesize#bgWork_DoWork; AppManager.editorConfig.WaveFileOutputFromMasterTrack=" + AppManager.editorConfig.WaveFileOutputFromMasterTrack );
-#endif
-                        if ( q.renderAll && AppManager.editorConfig.WaveFileOutputFromMasterTrack ) {
+                        if ( q.renderAll && mVsq.config.WaveFileOutputFromMasterTrack ) {
                             // トラック全体を合成するモードで，かつ，他トラックを合成して出力するよう指示された場合
                             if ( numTrack > 2 ) {
                                 for ( int i = 1; i < numTrack; i++ ) {
@@ -267,6 +265,7 @@ namespace org.kbinani.cadencii {
                                     double end_sec = mVsq.getSecFromClock( q.clockStart );
                                     r.setOffsetSeconds( end_sec );
                                     Amplifier amp_i_unit = new Amplifier();
+                                    amp_i_unit.setRoot( mGenerator );
                                     double amp_i = VocaloSysUtil.getAmplifyCoeffFromFeder( mVsq.Mixer.Slave.get( i - 1 ).Feder );
                                     double pan_left_i = VocaloSysUtil.getAmplifyCoeffFromPanLeft( mVsq.Mixer.Slave.get( i - 1 ).Panpot );
                                     double pan_right_i = VocaloSysUtil.getAmplifyCoeffFromPanRight( mVsq.Mixer.Slave.get( i - 1 ).Panpot );
@@ -277,6 +276,7 @@ namespace org.kbinani.cadencii {
 #endif
                                     amp_i_unit.setAmplify( amp_left_i, amp_right_i );
                                     FileWaveSender wave_sender = new FileWaveSender( r );
+                                    wave_sender.setRoot( mGenerator );
                                     wave_sender.setGlobalConfig( AppManager.editorConfig );
 
                                     amp_i_unit.setSender( wave_sender );
@@ -287,8 +287,10 @@ namespace org.kbinani.cadencii {
 
                         PortUtil.deleteFile( q.file );
                         FileWaveReceiver wave_receiver = new FileWaveReceiver( q.file, 2, 16 );
+                        wave_receiver.setRoot( mGenerator );
                         wave_receiver.setGlobalConfig( AppManager.editorConfig );
                         Amplifier amp_unit_master = new Amplifier();
+                        amp_unit_master.setRoot( mGenerator );
                         if ( q.renderAll ) {
                             double l = amp_master * pan_left_master;
                             double r = amp_master * pan_right_master;
@@ -303,11 +305,20 @@ namespace org.kbinani.cadencii {
                         int end = q.clockEnd;
                         if( end == int.MaxValue ) end = mVsq.TotalClocks + 240;
                         int sample_rate = mVsq.config.SamplingRate;
+#if DEBUG
+                        PortUtil.println( "FormSynthesize#bgWork_DoWork; sample_rate=" + sample_rate );
+#endif
                         mGenerator.init( mVsq, track, q.clockStart, end, sample_rate );
+#if DEBUG
+                        PortUtil.println( "FormSynthesize#bgWork_DoWork; mGenerator.getSampleRate()=" + mGenerator.getSampleRate() );
+#endif
 
                         double sec_start = mVsq.getSecFromClock( q.clockStart );
                         double sec_end = mVsq.getSecFromClock( end );
                         long samples = (long)((sec_end - sec_start) * sample_rate);
+#if DEBUG
+                        PortUtil.println( "FormSynthesize#bgWork_DoWork; samples=" + samples + "; sec_start=" + sec_start + "; sec_end=" + sec_end );
+#endif
                         mGenerator.begin( samples );
 
                         mFinished++;
