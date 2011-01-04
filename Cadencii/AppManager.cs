@@ -1355,6 +1355,9 @@ namespace org.kbinani.cadencii
 
                 // zoneに、レンダリングが必要なアイテムの範囲が格納されているので。
                 int j = -1;
+#if DEBUG
+                PortUtil.println( "AppManager#patchWorkCreateQueue; track#" + track );
+#endif
                 for ( Iterator<EditedZoneUnit> itr = zone.iterator(); itr.hasNext(); ) {
                     EditedZoneUnit unit = itr.next();
                     j++;
@@ -1362,6 +1365,9 @@ namespace org.kbinani.cadencii
                     q.track = track;
                     q.clockStart = unit.mStart;
                     q.clockEnd = unit.mEnd;
+#if DEBUG
+                    PortUtil.println( "    start=" + unit.mStart + "; end=" + unit.mEnd );
+#endif
                     q.file = PortUtil.combinePath( temppath, track + "_" + j + ".wav" );
                     queue.add( q );
                 }

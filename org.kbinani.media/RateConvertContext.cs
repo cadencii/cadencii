@@ -307,9 +307,6 @@ namespace org.kbinani.media
                     // 事後処理
                     i++;
                     if ( i >= BUFLEN ) {
-#if DEBUG
-                        PortUtil.println( typeof( RateConvertContext ) + ".convert; NORMAL=>CONTINUE; context.a=" + context.a );
-#endif
                         // バッファがいっぱいだったら送信
                         context.length = BUFLEN;
                         context.mStatus = Status.CONTINUE;

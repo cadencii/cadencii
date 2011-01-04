@@ -294,9 +294,6 @@ namespace org.kbinani.cadencii {
                         if ( q.renderAll ) {
                             double l = amp_master * pan_left_master;
                             double r = amp_master * pan_right_master;
-#if DEBUG
-                            PortUtil.println( "FormSynthesize#bgWork_DoWork; amp_master_l=" + l + "; amp_master_r=" + r );
-#endif
                             amp_unit_master.setAmplify( l, r );
                         }
                         mixer.setReceiver( amp_unit_master );
@@ -305,20 +302,11 @@ namespace org.kbinani.cadencii {
                         int end = q.clockEnd;
                         if( end == int.MaxValue ) end = mVsq.TotalClocks + 240;
                         int sample_rate = mVsq.config.SamplingRate;
-#if DEBUG
-                        PortUtil.println( "FormSynthesize#bgWork_DoWork; sample_rate=" + sample_rate );
-#endif
                         mGenerator.init( mVsq, track, q.clockStart, end, sample_rate );
-#if DEBUG
-                        PortUtil.println( "FormSynthesize#bgWork_DoWork; mGenerator.getSampleRate()=" + mGenerator.getSampleRate() );
-#endif
 
                         double sec_start = mVsq.getSecFromClock( q.clockStart );
                         double sec_end = mVsq.getSecFromClock( end );
                         long samples = (long)((sec_end - sec_start) * sample_rate);
-#if DEBUG
-                        PortUtil.println( "FormSynthesize#bgWork_DoWork; samples=" + samples + "; sec_start=" + sec_start + "; sec_end=" + sec_end );
-#endif
                         mGenerator.begin( samples );
 
                         mFinished++;

@@ -78,7 +78,7 @@ namespace org.kbinani.cadencii
         #region public methods
         public void applyLanguage()
         {
-            setTitle( _( "WAVE format" ) );
+            setTitle( _( "Sequence config" ) );
             btnCancel.setText( _( "Cancel" ) );
             btnOK.setText( _( "OK" ) );
 
