@@ -33,7 +33,7 @@ public class GenerateVLF{
                     VsqEvent ve = vsq.Track.get( track ).getEvent( i );
                     if ( ve.ID.type == VsqIDType.Anote ) {
                         string symbol = "";
-                        for ( int j = 0; j < ve.ID.LyricHandle.L0.getPhoneticSymbolList().Length; j++ ) {
+                        for ( int j = 0; j < ve.ID.LyricHandle.L0.getPhoneticSymbolList().Count; j++ ) {
                             symbol += (" " + ve.ID.LyricHandle.L0.getPhoneticSymbolList()[j]);
                         }
                         symbol = symbol.Trim();

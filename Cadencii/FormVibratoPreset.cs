@@ -313,7 +313,7 @@ namespace org.kbinani.cadencii
             int raw_width = pictureResulting.getWidth();
             int raw_height = pictureResulting.getHeight();
             System.Drawing.Graphics g = e.Graphics;
-            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
+            //g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
             g.FillRectangle( System.Drawing.Brushes.LightGray, 0, 0, raw_width, raw_height );
 
             // ‘I‘ð’†‚Ìƒnƒ“ƒhƒ‹‚ðŽæ“¾
@@ -358,7 +358,7 @@ namespace org.kbinani.cadencii
             // •`‰æ
             int height = raw_height - MARGIN * 2;
             d.clear();
-            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            //g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             int x = 0;
             int lastx = 0;
             int lasty = -10;
@@ -371,11 +371,11 @@ namespace org.kbinani.cadencii
                 int dy = Math.Abs( y - lasty );
                 tx = x;
                 ty = y;
-                if ( dx > MIN_DELTA || dy > MIN_DELTA ) {
+                //if ( dx > MIN_DELTA || dy > MIN_DELTA ) {
                     d.append( x, y );
                     lastx = x;
                     lasty = y;
-                }
+                //}
             }
             d.append( tx, ty );
             d.flush();

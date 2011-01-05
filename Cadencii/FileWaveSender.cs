@@ -29,20 +29,20 @@ namespace org.kbinani.cadencii
 #endif
 
 #if JAVA
-    public class FileWaveSender extends WaveUnit implements WaveSender {
+    public class FileWaveSender extends WaveUnit implements WaveSender
 #else
     public class FileWaveSender : WaveUnit, WaveSender
-    {
 #endif
+    {
 #if DEBUG
         private static int mNumInstance = 0;
 #endif
-        private const int _BUFLEN = 1024;
-        private double[] _buffer_l = new double[_BUFLEN];
-        private double[] _buffer_r = new double[_BUFLEN];
-        private WaveRateConverter _converter = null;
-        private long _position = 0;
-        private int _version = 0;
+        private const int BUFLEN = 1024;
+        private double[] mBufferL = new double[BUFLEN];
+        private double[] mBufferR = new double[BUFLEN];
+        private WaveRateConverter mConverter = null;
+        private long mPosition = 0;
+        private int mVersion = 0;
         private WaveReader mReader = null;
         private object mSyncRoot = new object();
 
@@ -56,7 +56,7 @@ namespace org.kbinani.cadencii
 
         public override int getVersion()
         {
-            return _version;
+            return mVersion;
         }
 
         public override void setConfig( String parameter )
@@ -72,17 +72,17 @@ namespace org.kbinani.cadencii
         public void pull( double[] l, double[] r, int length )
         {
             lock ( mSyncRoot ) {
-                if ( _converter == null ) {
+                if ( mConverter == null ) {
                     int rate = mRoot.getSampleRate();
 #if DEBUG
                     PortUtil.println( "FileWaveSender#pull; mRoot.GetType()=" + mRoot.GetType() );
                     PortUtil.println( "FileWaveSender#pull; rate=" + rate );
 #endif
-                    _converter = new WaveRateConverter( mReader, rate );
+                    mConverter = new WaveRateConverter( mReader, rate );
                 }
                 try {
-                    _converter.read( _position, length, l, r );
-                    _position += length;
+                    mConverter.read( mPosition, length, l, r );
+                    mPosition += length;
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "FileWaveSender#pull; ex=" + ex );
                     Logger.write( typeof( FileWaveSender ) + ".pull; ex=" + ex + "\n" );
@@ -98,7 +98,7 @@ namespace org.kbinani.cadencii
 #endif
             lock ( mSyncRoot ) {
                 try {
-                    _converter.close();
+                    mConverter.close();
                 } catch ( Exception ex ) {
                     PortUtil.println( "FileWaveSender#end; ex=" + ex );
                     Logger.write( typeof( FileWaveSender ) + ".end; ex=" + ex + "\n" );

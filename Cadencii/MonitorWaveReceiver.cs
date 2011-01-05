@@ -23,7 +23,8 @@ using org.kbinani.java.awt;
 using org.kbinani.java.util;
 using org.kbinani.media;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using boolean = System.Boolean;
 #endif
 
@@ -33,72 +34,89 @@ namespace org.kbinani.cadencii {
 #if JAVA
     public class MonitorWaveReceiver extends WaveUnit implements WaveReceiver {
 #else
-    public class MonitorWaveReceiver : WaveUnit, WaveReceiver {
+    public class MonitorWaveReceiver : WaveUnit, WaveReceiver
+    {
 #endif
-        private const int _BUFLEN = 1024;
+        private const int BUFLEN = 1024;
 
-        private static MonitorWaveReceiver _singleton = null;
+        private static MonitorWaveReceiver mSingleton = null;
 
-        private boolean _first_call = true;
-        private double[] _buffer_l = new double[_BUFLEN];
-        private double[] _buffer_r = new double[_BUFLEN];
-        private double[] _buffer2_l = new double[_BUFLEN];
-        private double[] _buffer2_r = new double[_BUFLEN];
-        private WaveReceiver _receiver = null;
-        private int _version = 0;
+        private boolean mFirstCall = true;
+        private double[] mBufferL = new double[BUFLEN];
+        private double[] mBufferR = new double[BUFLEN];
+        private double[] mBuffer2L = new double[BUFLEN];
+        private double[] mBuffer2R = new double[BUFLEN];
+        private WaveReceiver mReceiver = null;
+        private int mVersion = 0;
+        private int mSampleRate = 44100;
+        private long mPosition = 0L;
 
-        private MonitorWaveReceiver() {
+        private MonitorWaveReceiver()
+        {
         }
 
-        public static MonitorWaveReceiver getInstance() {
-            if ( _singleton == null ) {
-                _singleton = new MonitorWaveReceiver();
+        public double getPlayTime()
+        {
+            return (double)mPosition / (double)mSampleRate;
+        }
+
+        public static MonitorWaveReceiver getInstance()
+        {
+            return mSingleton;
+        }
+
+        public static MonitorWaveReceiver prepareInstance()
+        {
+            if ( mSingleton == null ) {
+                mSingleton = new MonitorWaveReceiver();
             }
-            _singleton.end();
-            _singleton._first_call = true;
-            return _singleton;
+            mSingleton.end();
+            mSingleton.mFirstCall = true;
+            mSingleton.mPosition = 0;
+            return mSingleton;
         }
 
-        public override void setConfig( String parameter ) {
+        public override void setConfig( String parameter )
+        {
             // do nothing
         }
 
-        public override int getVersion() {
-            return _version;
+        public override int getVersion()
+        {
+            return mVersion;
         }
 
-        public void setReceiver( WaveReceiver r ) {
-            if ( _receiver != null ) {
-                _receiver.end();
+        public void setReceiver( WaveReceiver r )
+        {
+            if ( mReceiver != null ) {
+                mReceiver.end();
             }
-            _receiver = r;
+            mReceiver = r;
         }
 
-        public void push( double[] l, double[] r, int length ) {
-            if ( _first_call ) {
-                int sample_rate = mRoot.getSampleRate();
-#if DEBUG
-                PortUtil.println( "MonitorWaveReceiver#push; sample_rate=" + sample_rate );
-                //PortUtil.println( "type eny key to exit..." );
-                //Console.Read();
-#endif
+        public void push( double[] l, double[] r, int length )
+        {
+            if ( mFirstCall ) {
+                mSampleRate = mRoot.getSampleRate();
                 PlaySound.init();
-                PlaySound.prepare( sample_rate );
-                _first_call = false;
+                PlaySound.prepare( mSampleRate );
+                mFirstCall = false;
             }
             PlaySound.append( l, r, length );
-            if ( _receiver != null ) {
-                _receiver.push( l, r, length );
+            mPosition += length;
+            if ( mReceiver != null ) {
+                mReceiver.push( l, r, length );
             }
         }
 
-        public void end() {
+        public void end()
+        {
             //PlaySound.exitは，特殊扱い．
             //pushが終了していても，たいていの場合再生されずにキャッシュが残っているので．
             //PlaySound.exit();
             PlaySound.waitForExit();
-            if ( _receiver != null ) {
-                _receiver.end();
+            if ( mReceiver != null ) {
+                mReceiver.end();
             }
         }
     }

@@ -286,7 +286,7 @@ namespace org.kbinani.cadencii {
                         }
 
                         PortUtil.deleteFile( q.file );
-                        FileWaveReceiver wave_receiver = new FileWaveReceiver( q.file, 2, 16 );
+                        FileWaveReceiver wave_receiver = new FileWaveReceiver( q.file, channel, 16 );
                         wave_receiver.setRoot( mGenerator );
                         wave_receiver.setGlobalConfig( AppManager.editorConfig );
                         Amplifier amp_unit_master = new Amplifier();

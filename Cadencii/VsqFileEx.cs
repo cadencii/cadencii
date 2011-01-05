@@ -741,11 +741,11 @@ namespace org.kbinani.cadencii
             return ret;
         }
 
-        public static CadenciiCommand generateCommandChangeSampleRate( int sample_rate, int channels, boolean output_master )
+        public static CadenciiCommand generateCommandChangeSequenceConfig( int sample_rate, int channels, boolean output_master, int pre_measure )
         {
             CadenciiCommand ret = new CadenciiCommand();
-            ret.type = CadenciiCommandType.CHANGE_WAVE_FMT;
-            ret.args = new object[]{ sample_rate, channels, output_master };
+            ret.type = CadenciiCommandType.CHANGE_SEQUENCE_CONFIG;
+            ret.args = new object[]{ sample_rate, channels, output_master, pre_measure };
             return ret;
         }
 
@@ -1193,16 +1193,22 @@ namespace org.kbinani.cadencii
                         BgmFiles.add( list.get( i ) );
                     }
                     #endregion
-                } else if ( command.type == CadenciiCommandType.CHANGE_WAVE_FMT ) {
-                    #region CHANGE_SAMPLE_RATE
-                    ret = VsqFileEx.generateCommandChangeSampleRate( 
-                        config.SamplingRate, config.WaveFileOutputChannel, config.WaveFileOutputFromMasterTrack );
+                } else if ( command.type == CadenciiCommandType.CHANGE_SEQUENCE_CONFIG ) {
+                    #region CHANGE_SEQUENCE_CONFIG
+                    int old_pre_measure = Master.PreMeasure;
+                    ret = VsqFileEx.generateCommandChangeSequenceConfig( 
+                        config.SamplingRate, config.WaveFileOutputChannel, config.WaveFileOutputFromMasterTrack, old_pre_measure );
                     int sample_rate = (Integer)command.args[0];
                     int channels = (Integer)command.args[1];
                     boolean output_master = (Boolean)command.args[2];
+                    int pre_measure = (Integer)command.args[3];
                     config.SamplingRate = sample_rate;
                     config.WaveFileOutputChannel = channels;
                     config.WaveFileOutputFromMasterTrack = output_master;
+                    Master.PreMeasure = pre_measure;
+                    if ( pre_measure != old_pre_measure ) {
+                        updateTimesigInfo();
+                    }
                     #endregion
                 }
                 if ( command.vsqCommand != null && ret != null ) {

@@ -189,14 +189,8 @@ namespace org.kbinani.cadencii {
                 return;
             }
 
-#if DEBUG
-            System.IO.StreamWriter sw = null;
-#endif
             Wave wr = null;
             try {
-#if DEBUG
-                sw = new System.IO.StreamWriter( "WaveDrawContext_load.txt" );
-#endif
                 wr = new Wave( file );
                 mWave = new byte[(int)wr.getTotalSamples()];
                 mSampleRate = (int)wr.getSampleRate();
@@ -219,18 +213,12 @@ namespace org.kbinani.cadencii {
                 for ( int i = 0; i < count; i++ ) {
                     double b = wr.getDouble( i ) * amp;
                     mWave[i] = (byte)(127 + 127 * b);
-#if DEBUG
-                    sw.WriteLine( b );
-#endif
                 }
             } catch ( Exception ex ) {
             } finally {
                 if ( wr != null ) {
                     try {
                         wr.dispose();
-#if DEBUG
-                        sw.Close();
-#endif
                     } catch ( Exception ex2 ) {
                     }
                 }

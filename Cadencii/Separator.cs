@@ -30,7 +30,8 @@ namespace org.kbinani.cadencii {
         private double[] mBufferR = new double[_BUFLEN];
         private int mVersion = 0;
 
-        public override void setConfig( String parameter ) {
+        public override void setConfig( String parameter )
+        {
             // do nothing
         }
 

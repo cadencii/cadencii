@@ -30,6 +30,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cadencii", "Cadencii\Cadenc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pp_cs2java", "pp_cs2java\pp_cs2java.csproj", "{421EDC80-EED3-4CFC-8041-FD1243707B0A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptImplement", "ScriptImplement\ScriptImplement.csproj", "{A0B35F11-5790-4473-A508-5868FFA67D70}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -131,6 +133,14 @@ Global
 		{421EDC80-EED3-4CFC-8041-FD1243707B0A}.Release|x86.Build.0 = Release|x86
 		{421EDC80-EED3-4CFC-8041-FD1243707B0A}.ReleaseMinimal|x86.ActiveCfg = Release|x86
 		{421EDC80-EED3-4CFC-8041-FD1243707B0A}.ReleaseMinimal|x86.Build.0 = Release|x86
+		{A0B35F11-5790-4473-A508-5868FFA67D70}.Debug|x86.ActiveCfg = Debug|x86
+		{A0B35F11-5790-4473-A508-5868FFA67D70}.Debug|x86.Build.0 = Debug|x86
+		{A0B35F11-5790-4473-A508-5868FFA67D70}.DebugMinimal|x86.ActiveCfg = DebugMinimal|x86
+		{A0B35F11-5790-4473-A508-5868FFA67D70}.DebugMinimal|x86.Build.0 = DebugMinimal|x86
+		{A0B35F11-5790-4473-A508-5868FFA67D70}.Release|x86.ActiveCfg = Release|x86
+		{A0B35F11-5790-4473-A508-5868FFA67D70}.Release|x86.Build.0 = Release|x86
+		{A0B35F11-5790-4473-A508-5868FFA67D70}.ReleaseMinimal|x86.ActiveCfg = ReleaseMinimal|x86
+		{A0B35F11-5790-4473-A508-5868FFA67D70}.ReleaseMinimal|x86.Build.0 = ReleaseMinimal|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

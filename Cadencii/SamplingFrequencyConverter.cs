@@ -25,7 +25,7 @@ using org.kbinani.java.awt;
 namespace org.kbinani.cadencii
 {
 #endif
-
+    /*
     /// <summary>
     /// サンプリング周波数変換器
     /// </summary>
@@ -384,7 +384,7 @@ namespace org.kbinani.cadencii
         }
     }
 #endif
-
+    */
 #if !JAVA
 }
 #endif

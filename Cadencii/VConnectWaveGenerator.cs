@@ -229,7 +229,7 @@ namespace org.kbinani.cadencii
 #if DEBUG
                 PortUtil.println( "StraightRendeingRunner#run; \"" + straight_synth + "\" does not exists" );
 #endif
-                goto end_label;
+                goto heaven;
             }
             int count = mQueue.size();
 
@@ -259,7 +259,7 @@ namespace org.kbinani.cadencii
                     long remain = queue.startSample;
                     while ( remain > 0 ) {
                         if ( mAbortRequired ) {
-                            goto end_label;
+                            goto heaven;
                         }
                         int len = (remain > BUFLEN) ? BUFLEN : (int)remain;
                         waveIncoming( bufL, bufR, len );
@@ -275,7 +275,7 @@ namespace org.kbinani.cadencii
 
             for ( int i = 0; i < count; i++ ) {
                 if ( mAbortRequired ) {
-                    goto end_label;
+                    goto heaven;
                 }
                 VConnectRenderingQueue queue = mQueue.get( i );
                 String tmp_dir = AppManager.getTempWaveDir();
@@ -428,7 +428,7 @@ namespace org.kbinani.cadencii
                         long pos = 0;
                         while ( remain > 0 ) {
                             if ( mAbortRequired ) {
-                                goto end_label;
+                                goto heaven;
                             }
                             int len = (remain > BUFLEN) ? BUFLEN : remain;
                             if ( wr != null ) {
@@ -799,7 +799,7 @@ namespace org.kbinani.cadencii
                 waveIncoming( bufL, bufR, tlength );
                 tremain -= tlength;
             }
-        end_label:
+        heaven:
             mAbortRequired = false;
             mRunning = false;
             mReceiver.end();

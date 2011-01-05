@@ -600,10 +600,10 @@ namespace org.kbinani.cadencii
         /// このCadenciiのID。起動ごとにユニークな値が設定され、一時フォルダのフォルダ名等に使用する
         /// </summary>
         private static String mID = "";
-        /* /// <summary>
+        /// <summary>
         /// メインの編集画面のインスタンス
         /// </summary>
-        public static FormMain mMainWindow = null;*/
+        public static FormMain mMainWindow = null;
         /// <summary>
         /// ミキサーダイアログ
         /// </summary>
@@ -901,7 +901,7 @@ namespace org.kbinani.cadencii
             amp.setRoot( driver );
             amp.setAmplifierView( mMixerWindow.getVolumeTrackerMaster() );
             m.setReceiver( amp );
-            MonitorWaveReceiver monitor = MonitorWaveReceiver.getInstance();
+            MonitorWaveReceiver monitor = MonitorWaveReceiver.prepareInstance();
             monitor.setRoot( driver );
             amp.setReceiver( monitor );
             for ( int i = 1; i < waves.size(); i++ ) {
@@ -951,6 +951,9 @@ namespace org.kbinani.cadencii
             int totalClocks = mVsq.TotalClocks;
 
             Vector<PatchWorkQueue> queue = patchWorkCreateQueue( tracks );
+            if ( queue.size() <= 0 ) {
+                return;
+            }
 
             FormSynthesize dialog = null;
             String tempWave = PortUtil.combinePath( temppath, "temp.wav" );
@@ -1943,7 +1946,17 @@ namespace org.kbinani.cadencii
         /// <returns></returns>
         public static int xCoordFromClocks( double clocks )
         {
-            return (int)(keyWidth + clocks * mScaleX - mStartToDrawX) + keyOffset;
+            return xCoordFromClocks( clocks, mScaleX, mStartToDrawX );
+        }
+
+        /// <summary>
+        /// クロック数から、画面に描くべきx座標の値を取得します。
+        /// </summary>
+        /// <param name="clocks"></param>
+        /// <returns></returns>
+        public static int xCoordFromClocks( double clocks, float scalex, int start_to_draw_x )
+        {
+            return (int)(keyWidth + clocks * scalex - start_to_draw_x) + keyOffset;
         }
 
         /// <summary>

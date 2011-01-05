@@ -265,7 +265,7 @@ namespace org.kbinani.cadencii
 #endif
                     while ( saRemain > 0 ) {
                         if ( mAbortRequired ) {
-                            goto end_label;
+                            goto heaven;
                         }
                         int len = saRemain > BUFLEN ? BUFLEN : saRemain;
                         mDriver.process( left, right, len );
@@ -352,7 +352,7 @@ namespace org.kbinani.cadencii
 #endif
             while ( saRemain > 0 ) {
                 if ( mAbortRequired ) {
-                    goto end_label;
+                    goto heaven;
                 }
                 int len = saRemain > BUFLEN ? BUFLEN : saRemain;
                 mDriver.process( left, right, len );
@@ -361,7 +361,7 @@ namespace org.kbinani.cadencii
                 saProcessed += len;
                 //mTotalAppend += len;
             }
-        end_label:
+        heaven:
 #if DEBUG
             log.Close();
 #endif

@@ -48,6 +48,9 @@ namespace org.kbinani.cadencii
 #endif
     {
         private org.kbinani.windows.forms.BLabel labelSampleRate;
+        private org.kbinani.windows.forms.BGroupBox groupSequence;
+        private org.kbinani.windows.forms.BLabel labelPreMeasure;
+        private org.kbinani.windows.forms.BComboBox comboPreMeasure;
         private org.kbinani.windows.forms.BComboBox comboSampleRate;
 
         public FormSequenceConfig()
@@ -71,6 +74,12 @@ namespace org.kbinani.cadencii
             comboSampleRate.addItem( "96000" );
             comboSampleRate.setSelectedIndex( 0 );
 
+            // pre-measure
+            comboPreMeasure.removeAllItems();
+            for ( int i = AppManager.MIN_PRE_MEASURE; i <= AppManager.MAX_PRE_MEASURE; i++ ) {
+                comboPreMeasure.addItem( i );
+            }
+
             registerEventHandlers();
             setResources();
         }
@@ -93,8 +102,58 @@ namespace org.kbinani.cadencii
             comboChannel.addItem( _( "Monoral" ) );
             comboChannel.addItem( _( "Stereo" ) );
             comboChannel.setSelectedIndex( current_index );
+
+            groupSequence.setTitle( _( "Sequence" ) );
+            labelPreMeasure.setText( _( "Pre-measure" ) );
         }
 
+        /// <summary>
+        /// プリメジャーの設定値を取得します
+        /// </summary>
+        /// <returns></returns>
+        public int getPreMeasure()
+        {
+            int indx = comboPreMeasure.getSelectedIndex();
+            int ret = 1;
+            if ( indx >= 0 ) {
+                ret = AppManager.MIN_PRE_MEASURE + indx;
+            } else {
+                string str = comboPreMeasure.Text;
+                try {
+                    ret = PortUtil.parseInt( str );
+                } catch ( Exception ex ) {
+                    ret = AppManager.MIN_PRE_MEASURE;
+                }
+            }
+            if ( ret < AppManager.MIN_PRE_MEASURE ) {
+                ret = AppManager.MIN_PRE_MEASURE;
+            }
+            if ( AppManager.MAX_PRE_MEASURE < ret ) {
+                ret = AppManager.MAX_PRE_MEASURE;
+            }
+            return ret;
+        }
+
+        /// <summary>
+        /// プリメジャーの設定値を設定します
+        /// </summary>
+        /// <param name="value"></param>
+        public void setPreMeasure( int value )
+        {
+            int indx = value - AppManager.MIN_PRE_MEASURE;
+            if ( indx < 0 ) {
+                indx = 0;
+            }
+            if ( comboPreMeasure.getItemCount() <= indx ) {
+                indx = comboPreMeasure.getItemCount() - 1;
+            }
+            comboPreMeasure.setSelectedIndex( indx );
+        }
+
+        /// <summary>
+        /// サンプリングレートの設定値を取得します
+        /// </summary>
+        /// <returns></returns>
         public int getSampleRate()
         {
             int index = comboSampleRate.getSelectedIndex();
@@ -113,6 +172,10 @@ namespace org.kbinani.cadencii
             return ret;
         }
 
+        /// <summary>
+        /// サンプリングレートの設定値を設定します
+        /// </summary>
+        /// <param name="value"></param>
         public void setSampleRate( int value )
         {
             comboSampleRate.setSelectedIndex( 0 );
@@ -229,7 +292,11 @@ namespace org.kbinani.cadencii
             this.comboChannel = new org.kbinani.windows.forms.BComboBox();
             this.btnCancel = new org.kbinani.windows.forms.BButton();
             this.btnOK = new org.kbinani.windows.forms.BButton();
+            this.groupSequence = new org.kbinani.windows.forms.BGroupBox();
+            this.labelPreMeasure = new org.kbinani.windows.forms.BLabel();
+            this.comboPreMeasure = new org.kbinani.windows.forms.BComboBox();
             this.groupWaveFileOutput.SuspendLayout();
+            this.groupSequence.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupWaveFileOutput
@@ -314,7 +381,7 @@ namespace org.kbinani.cadencii
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point( 240, 136 );
+            this.btnCancel.Location = new System.Drawing.Point( 240, 207 );
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size( 88, 23 );
             this.btnCancel.TabIndex = 201;
@@ -324,12 +391,45 @@ namespace org.kbinani.cadencii
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOK.Location = new System.Drawing.Point( 146, 136 );
+            this.btnOK.Location = new System.Drawing.Point( 146, 207 );
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size( 88, 23 );
             this.btnOK.TabIndex = 200;
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
+            // 
+            // groupSequence
+            // 
+            this.groupSequence.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupSequence.Controls.Add( this.labelPreMeasure );
+            this.groupSequence.Controls.Add( this.comboPreMeasure );
+            this.groupSequence.Location = new System.Drawing.Point( 12, 125 );
+            this.groupSequence.Name = "groupSequence";
+            this.groupSequence.Size = new System.Drawing.Size( 316, 62 );
+            this.groupSequence.TabIndex = 202;
+            this.groupSequence.TabStop = false;
+            this.groupSequence.Text = "Sequence";
+            // 
+            // labelPreMeasure
+            // 
+            this.labelPreMeasure.AutoSize = true;
+            this.labelPreMeasure.Location = new System.Drawing.Point( 22, 27 );
+            this.labelPreMeasure.Name = "labelPreMeasure";
+            this.labelPreMeasure.Size = new System.Drawing.Size( 71, 12 );
+            this.labelPreMeasure.TabIndex = 25;
+            this.labelPreMeasure.Text = "Pre-measure";
+            // 
+            // comboPreMeasure
+            // 
+            this.comboPreMeasure.FormattingEnabled = true;
+            this.comboPreMeasure.Items.AddRange( new object[] {
+            "Mono",
+            "Stereo"} );
+            this.comboPreMeasure.Location = new System.Drawing.Point( 135, 24 );
+            this.comboPreMeasure.Name = "comboPreMeasure";
+            this.comboPreMeasure.Size = new System.Drawing.Size( 97, 20 );
+            this.comboPreMeasure.TabIndex = 27;
             // 
             // FormSequenceConfig
             // 
@@ -337,7 +437,8 @@ namespace org.kbinani.cadencii
             this.AutoScaleDimensions = new System.Drawing.SizeF( 96F, 96F );
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size( 341, 175 );
+            this.ClientSize = new System.Drawing.Size( 341, 246 );
+            this.Controls.Add( this.groupSequence );
             this.Controls.Add( this.groupWaveFileOutput );
             this.Controls.Add( this.btnOK );
             this.Controls.Add( this.btnCancel );
@@ -348,9 +449,11 @@ namespace org.kbinani.cadencii
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Text = "WAVE format";
+            this.Text = "Sequence config";
             this.groupWaveFileOutput.ResumeLayout( false );
             this.groupWaveFileOutput.PerformLayout();
+            this.groupSequence.ResumeLayout( false );
+            this.groupSequence.PerformLayout();
             this.ResumeLayout( false );
 
         }

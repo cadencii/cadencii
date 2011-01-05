@@ -124,8 +124,8 @@ namespace org.kbinani.cadencii {
                                 Console.WriteLine( "before; clock=" + ve.Clock + "; length=" + ve.ID.Length );
                                 VsqEvent add = (VsqEvent)ve.clone();
                                 int length = ve.ID.Length;
-                                string[] symbol = ve.ID.LyricHandle.L0.getPhoneticSymbolList();
-                                for ( int i = 0; i < symbol.Length; i++ ) {
+                                List<string> symbol = ve.ID.LyricHandle.L0.getPhoneticSymbolList();
+                                for ( int i = 0; i < symbol.Count; i++ ) {
                                     Console.WriteLine( "symbol[" + i + "]=" + symbol[i] );
                                 }
                                 ve.ID.Length = divide_threshold;
@@ -141,14 +141,14 @@ namespace org.kbinani.cadencii {
                                         ve.ID.VibratoHandle = null;
                                     }
                                 }
-                                if ( symbol.Length >= 2 ) {
+                                if ( symbol.Count >= 2 ) {
                                     if ( middle_mode && !VsqPhoneticSymbol.isConsonant( symbol[1] ) ) {
                                         ve.ID.LyricHandle.L0.setPhoneticSymbol( symbol[0] + " " + symbol[1] );
                                     } else {
                                         ve.ID.LyricHandle.L0.setPhoneticSymbol( symbol[0] );
                                     }
                                     string symbol2 = "";
-                                    for ( int i = 1; i < symbol.Length; i++ ) {
+                                    for ( int i = 1; i < symbol.Count; i++ ) {
                                         symbol2 += ((i == 1) ? "" : " ") + symbol[i];
                                     }
                                     Console.WriteLine( "symbol2=" + symbol2 );

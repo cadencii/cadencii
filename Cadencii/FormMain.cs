@@ -564,7 +564,6 @@ namespace org.kbinani.cadencii
 #endif
         public BMenuItem menuFileExportVsq;
         private BMenuItem menuFileExportVxt;
-        public BMenuItem menuJobChangePreMeasure;
         public BMenuItem menuLyricCopyVibratoToPreset;
         public BMenuItem menuSettingVibratoPreset;
         public BMenuItem menuSettingSequence;
@@ -1063,6 +1062,38 @@ namespace org.kbinani.cadencii
         #endregion
 
         #region helper methods
+        /// <summary>
+        /// ピアノロールの縦軸の拡大率をdelta段階上げます
+        /// </summary>
+        /// <param name="delta"></param>
+        private void zoomY( int delta )
+        {
+            int scaley = AppManager.editorConfig.PianoRollScaleY;
+            int draft = scaley + delta;
+            if ( draft < EditorConfig.MIN_PIANOROLL_SCALEY ) {
+                draft = EditorConfig.MIN_PIANOROLL_SCALEY;
+            }
+            if ( EditorConfig.MAX_PIANOROLL_SCALEY < draft ) {
+                draft = EditorConfig.MAX_PIANOROLL_SCALEY;
+            }
+            if ( scaley != draft ) {
+                AppManager.editorConfig.PianoRollScaleY = draft;
+                updateScrollRangeVertical();
+                AppManager.setStartToDrawY( calculateStartToDrawY() );
+                updateDrawObjectList();
+            }
+        }
+
+        /// <summary>
+        /// ズームスライダの現在の値から，横方向の拡大率を計算します
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        private float getScaleXFromTrackBarValue( int value )
+        {
+            return value / 480.0f;
+        }
+
         /// <summary>
         /// ユーザー定義のビブラートのプリセット関係のメニューの表示状態を更新します
         /// </summary>
@@ -1842,8 +1873,7 @@ namespace org.kbinani.cadencii
 
         public int calculateStartToDrawX()
         {
-            int i = System.Windows.Forms.SystemInformation.HorizontalScrollBarThumbWidth;
-            return (int)(hScroll.Value * AppManager.getScaleX());
+            return (int)(hScroll.getValue() * AppManager.getScaleX());
         }
 
         /// <summary>
@@ -3265,6 +3295,9 @@ namespace org.kbinani.cadencii
                             Logger.write( typeof( FormMain ) + ".processSpecialShortcutKey; ex=" + ex + "\n" );
                             PortUtil.stderr.println( "FormMain#processSpecialShortcutKey; ex=" + ex );
                         }
+                        if ( e.KeyCode == System.Windows.Forms.Keys.Tab ) {
+                            pictPianoRoll.requestFocus();
+                        }
                         return;
                     }
                 }
@@ -3387,6 +3420,9 @@ namespace org.kbinani.cadencii
                         AppManager.setPlaying( true, this );
                     }
                 }
+            }
+            if ( e.KeyCode == System.Windows.Forms.Keys.Tab ) {
+                pictPianoRoll.requestFocus();
             }
             return;
             #region OLD CODES DO NOT REMOVE
@@ -4469,8 +4505,6 @@ namespace org.kbinani.cadencii
             menuJobRandomize.setMnemonic( KeyEvent.VK_R );
             menuJobConnect.setText( _( "Connect notes" ) );
             menuJobConnect.setMnemonic( KeyEvent.VK_C );
-            menuJobChangePreMeasure.setText( _( "Change pre-measure" ) );
-            menuJobChangePreMeasure.setMnemonic( KeyEvent.VK_P );
             menuJobLyric.setText( _( "Insert lyrics" ) );
             menuJobLyric.setMnemonic( KeyEvent.VK_L );
             menuJobRewire.setText( _( "Import ReWire host tempo" ) );
@@ -7040,8 +7074,6 @@ namespace org.kbinani.cadencii
             menuJobNormalize.Click += new EventHandler( menuJobNormalize_Click );
             menuJobInsertBar.MouseEnter += new EventHandler( handleMenuMouseEnter );
             menuJobInsertBar.Click += new EventHandler( menuJobInsertBar_Click );
-            menuJobChangePreMeasure.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuJobChangePreMeasure.Click += new EventHandler( menuJobChangePreMeasure_Click );
             menuJobDeleteBar.MouseEnter += new EventHandler( handleMenuMouseEnter );
             menuJobDeleteBar.Click += new EventHandler( menuJobDeleteBar_Click );
             menuJobRandomize.MouseEnter += new EventHandler( handleMenuMouseEnter );
@@ -9337,25 +9369,77 @@ namespace org.kbinani.cadencii
 
         public void pictPianoRoll_MouseWheel( Object sender, BMouseEventArgs e )
         {
-            boolean horizontal = (PortUtil.getCurrentModifierKey() & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK;
+            int modifier = PortUtil.getCurrentModifierKey();
+            boolean horizontal = (modifier & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK;
             if ( AppManager.editorConfig.ScrollHorizontalOnWheel ) {
                 horizontal = !horizontal;
             }
-            if ( e.X <= AppManager.keyWidth || pictPianoRoll.getWidth() < e.X ) {
-                horizontal = false;
-            }
-            if ( horizontal ) {
-                hScroll.Value = computeScrollValueFromWheelDelta( e.Delta );
-            } else {
-                double new_val = (double)vScroll.Value - e.Delta;
-                int min = vScroll.Minimum;
-                int max = vScroll.Maximum - vScroll.LargeChange;
-                if ( new_val > max ) {
-                    vScroll.Value = max;
-                } else if ( new_val < min ) {
-                    vScroll.Value = min;
+            if ( (modifier & InputEvent.CTRL_MASK) == InputEvent.CTRL_MASK ) {
+                // ピアノロール拡大率を変更
+                if ( horizontal ) {
+                    int max = trackBar.getMaximum();
+                    int min = trackBar.getMinimum();
+                    int width = max - min;
+                    int delta = (width / 10) * (e.Delta > 0 ? 1 : -1);
+                    int old_tbv = trackBar.getValue();
+                    int draft = old_tbv + delta;
+                    if ( draft < min ) {
+                        draft = min;
+                    }
+                    if ( max < draft ) {
+                        draft = max;
+                    }
+                    if ( old_tbv != draft ) {
+
+                        // マウス位置を中心に拡大されるようにしたいので．
+                        // マウスのスクリーン座標
+                        Point screen_p_at_mouse = PortUtil.getMousePosition();
+                        // ピアノロール上でのマウスのx座標
+                        int x_at_mouse = pictPianoRoll.pointToClient( screen_p_at_mouse ).x;
+                        // マウス位置でのクロック -> こいつが保存される
+                        int clock_at_mouse = AppManager.clockFromXCoord( x_at_mouse );
+                        // 古い拡大率
+                        float scale0 = AppManager.getScaleX();
+                        // 新しい拡大率
+                        float scale1 = getScaleXFromTrackBarValue( draft );
+                        // 古いstdx
+                        int stdx0 = AppManager.getStartToDrawX();
+                        int stdx1 = (int)(clock_at_mouse * (scale1 - scale0) + stdx0);
+                        // 新しいhScroll.Value
+                        int hscroll_value = (int)(stdx1 / scale1);
+                        if ( hscroll_value < hScroll.Minimum ) {
+                            hscroll_value = hScroll.Minimum;
+                        }
+                        if ( hScroll.Maximum < hscroll_value ) {
+                            hscroll_value = hScroll.Maximum;
+                        }
+
+                        AppManager.setScaleX( scale1 );
+                        AppManager.setStartToDrawX( stdx1 );
+                        hScroll.setValue( hscroll_value );
+                        trackBar.setValue( draft );
+                    }
                 } else {
-                    vScroll.Value = (int)new_val;
+                    zoomY( e.Delta > 0 ? 1 : -1 );
+                }
+            } else {
+                // スクロール操作
+                if ( e.X <= AppManager.keyWidth || pictPianoRoll.getWidth() < e.X ) {
+                    horizontal = false;
+                }
+                if ( horizontal ) {
+                    hScroll.Value = computeScrollValueFromWheelDelta( e.Delta );
+                } else {
+                    double new_val = (double)vScroll.Value - e.Delta;
+                    int min = vScroll.Minimum;
+                    int max = vScroll.Maximum - vScroll.LargeChange;
+                    if ( new_val > max ) {
+                        vScroll.Value = max;
+                    } else if ( new_val < min ) {
+                        vScroll.Value = min;
+                    } else {
+                        vScroll.Value = (int)new_val;
+                    }
                 }
             }
             refreshScreen();
@@ -10274,6 +10358,9 @@ namespace org.kbinani.cadencii
 
         public void FormMain_MouseWheel( Object sender, BMouseEventArgs e )
         {
+#if DEBUG
+            PortUtil.println( "FormMain#FormMain_MouseWheel" );
+#endif
             if ( (PortUtil.getCurrentModifierKey() & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
                 hScroll.Value = computeScrollValueFromWheelDelta( e.Delta );
             } else {
@@ -10755,7 +10842,11 @@ namespace org.kbinani.cadencii
                 int clockStart = AppManager.mStartMarkerEnabled ? AppManager.mStartMarker : 0;
                 int clockEnd = AppManager.mEndMarkerEnabled ? AppManager.mEndMarker : vsq.TotalClocks + 240;
                 if ( clockStart > clockEnd ) {
-                    AppManager.showMessageBox( _( "invalid rendering region; start>=end" ), _( "Error" ), PortUtil.OK_OPTION, org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+                    AppManager.showMessageBox( 
+                        _( "invalid rendering region; start>=end" ), 
+                        _( "Error" ), 
+                        PortUtil.OK_OPTION, 
+                        org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
                     return;
                 }
                 Vector<Integer> other_tracks = new Vector<Integer>();
@@ -12747,10 +12838,12 @@ namespace org.kbinani.cadencii
             int old_channels = vsq.config.WaveFileOutputChannel;
             boolean old_output_master = vsq.config.WaveFileOutputFromMasterTrack;
             int old_sample_rate = vsq.config.SamplingRate;
+            int old_pre_measure = vsq.getPreMeasure();
 
             dialog.setWaveFileOutputChannel( old_channels );
             dialog.setWaveFileOutputFromMasterTrack( old_output_master );
             dialog.setSampleRate( old_sample_rate );
+            dialog.setPreMeasure( old_pre_measure );
 
             dialog.setLocation( getFormPreferedLocation( dialog ) );
             if ( AppManager.showModalDialog( dialog, this ) != BDialogResult.OK ) {
@@ -12760,12 +12853,14 @@ namespace org.kbinani.cadencii
             int new_channels = dialog.getWaveFileOutputChannel();
             boolean new_output_master = dialog.isWaveFileOutputFromMasterTrack();
             int new_sample_rate = dialog.getSampleRate();
+            int new_pre_measure = dialog.getPreMeasure();
 
             CadenciiCommand run =
-                VsqFileEx.generateCommandChangeSampleRate(
+                VsqFileEx.generateCommandChangeSequenceConfig(
                     new_sample_rate,
                     new_channels,
-                    new_output_master );
+                    new_output_master,
+                    new_pre_measure );
             AppManager.register( vsq.executeCommand( run ) );
             setEdited( true );
         }
@@ -13274,7 +13369,8 @@ namespace org.kbinani.cadencii
 
         public void hScroll_ValueChanged( Object sender, EventArgs e )
         {
-            AppManager.setStartToDrawX( calculateStartToDrawX() );
+            int stdx = calculateStartToDrawX();
+            AppManager.setStartToDrawX( stdx );
             if ( mTextBoxTrackName != null ) {
 #if !JAVA
                 if ( !mTextBoxTrackName.IsDisposed ) {
@@ -13291,6 +13387,9 @@ namespace org.kbinani.cadencii
         #region picturePositionIndicator
         public void picturePositionIndicator_MouseWheel( Object sender, BMouseEventArgs e )
         {
+#if DEBUG
+            PortUtil.println( "FormMain#picturePositionIndicator_MouseWheel" );
+#endif
             hScroll.Value = computeScrollValueFromWheelDelta( e.Delta );
         }
 
@@ -13802,7 +13901,13 @@ namespace org.kbinani.cadencii
                             int unit = AppManager.getPositionQuantizeClock();
                             clock = doQuantize( clock, unit );
                         }
-                        AppManager.setCurrentClock( clock );
+                        if ( AppManager.isPlaying() ) {
+                            AppManager.setPlaying( false, this );
+                            AppManager.setCurrentClock( clock );
+                            AppManager.setPlaying( true, this );
+                        } else {
+                            AppManager.setCurrentClock( clock );
+                        }
                         refreshScreen();
                         #endregion
                     } else if ( 18 < e.Y && e.Y <= 32 ) {
@@ -14051,7 +14156,7 @@ namespace org.kbinani.cadencii
 
         public void trackBar_ValueChanged( Object sender, EventArgs e )
         {
-            AppManager.setScaleX( trackBar.getValue() / 480f );
+            AppManager.setScaleX( getScaleXFromTrackBarValue( trackBar.getValue() ) );
             AppManager.setStartToDrawX( calculateStartToDrawX() );
             updateDrawObjectList();
             repaint();
@@ -14096,14 +14201,9 @@ namespace org.kbinani.cadencii
 #if DEBUG
             PortUtil.println( "FormMain#menuHelpDebug_Click" );
 
-            InputBox ib = new InputBox( "input sampling rate [Hz]" );
-            if ( ib.ShowDialog( this ) == System.Windows.Forms.DialogResult.OK ) {
-                try {
-                    int rate = int.Parse( ib.getResult() );
-                    AppManager.getVsqFile().config.SamplingRate = rate;
-                } catch ( Exception ex ) {
-                }
-            }
+            Amplifier a = new Amplifier();
+            WaveReceiver r = a;
+            PortUtil.println( "FormMain#menuHelpDebug_Click; (r is WaveUnit)=" + (r is WaveUnit) );
 
 #if ENABLE_VOCALOID
             /*BFileChooser dlg_fout = new BFileChooser( "" );
@@ -14310,6 +14410,9 @@ namespace org.kbinani.cadencii
 
         public void trackSelector_MouseWheel( Object sender, BMouseEventArgs e )
         {
+#if DEBUG
+            PortUtil.println( "FormMain#trackSelector_MouseWheel" );
+#endif
             if ( (PortUtil.getCurrentModifierKey() & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
                 double new_val = (double)vScroll.Value - e.Delta;
                 int max = vScroll.Maximum - vScroll.Minimum;
@@ -15287,21 +15390,15 @@ namespace org.kbinani.cadencii
                 int scaley = AppManager.editorConfig.PianoRollScaleY;
                 if ( 0 <= e.Y && e.Y < height4 ) {
                     if ( scaley + 1 <= EditorConfig.MAX_PIANOROLL_SCALEY ) {
+                        zoomY( 1 );
                         mPianoRollScaleYMouseStatus = 1;
-                        AppManager.editorConfig.PianoRollScaleY = scaley + 1;
-                        updateScrollRangeVertical();
-                        AppManager.setStartToDrawY( calculateStartToDrawY() );
-                        updateDrawObjectList();
                     } else {
                         mPianoRollScaleYMouseStatus = 0;
                     }
                 } else if ( height4 * 2 <= e.Y && e.Y < height4 * 3 ) {
                     if ( scaley - 1 >= EditorConfig.MIN_PIANOROLL_SCALEY ) {
+                        zoomY( -1 );
                         mPianoRollScaleYMouseStatus = -1;
-                        AppManager.editorConfig.PianoRollScaleY = scaley - 1;
-                        updateScrollRangeVertical();
-                        AppManager.setStartToDrawY( calculateStartToDrawY() );
-                        updateDrawObjectList();
                     } else {
                         mPianoRollScaleYMouseStatus = 0;
                     }
@@ -15646,7 +15743,14 @@ namespace org.kbinani.cadencii
         public void timer_Tick( Object sender, EventArgs e )
         {
             if ( AppManager.isGeneratorRunning() ) {
-                double play_time = PlaySound.getPosition();
+                MonitorWaveReceiver monitor = MonitorWaveReceiver.getInstance();
+                double play_time = 0.0;
+                if ( monitor != null ) {
+                    play_time = monitor.getPlayTime();
+                }
+#if DEBUG
+                PortUtil.println( "FormMain#timer_Tick; play_time=" + play_time );
+#endif
                 double now = play_time + AppManager.mDirectPlayShift;
                 int clock = (int)AppManager.getVsqFile().getClockFromSec( now );
                 if ( mLastClock <= clock ) {
@@ -16879,7 +16983,6 @@ namespace org.kbinani.cadencii
             this.menuJobRandomize = new org.kbinani.windows.forms.BMenuItem();
             this.menuJobConnect = new org.kbinani.windows.forms.BMenuItem();
             this.menuJobLyric = new org.kbinani.windows.forms.BMenuItem();
-            this.menuJobChangePreMeasure = new org.kbinani.windows.forms.BMenuItem();
             this.menuJobRewire = new org.kbinani.windows.forms.BMenuItem();
             this.menuJobReloadVsti = new org.kbinani.windows.forms.BMenuItem();
             this.menuTrack = new org.kbinani.windows.forms.BMenuItem();
@@ -16912,6 +17015,7 @@ namespace org.kbinani.cadencii
             this.menuScript = new org.kbinani.windows.forms.BMenuItem();
             this.menuScriptUpdate = new org.kbinani.windows.forms.BMenuItem();
             this.menuSetting = new org.kbinani.windows.forms.BMenuItem();
+            this.menuSettingSequence = new org.kbinani.windows.forms.BMenuItem();
             this.menuSettingPreference = new org.kbinani.windows.forms.BMenuItem();
             this.menuSettingPositionQuantize = new org.kbinani.windows.forms.BMenuItem();
             this.menuSettingPositionQuantize04 = new org.kbinani.windows.forms.BMenuItem();
@@ -17126,7 +17230,6 @@ namespace org.kbinani.cadencii
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.menuSettingSequence = new org.kbinani.windows.forms.BMenuItem();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
@@ -17607,7 +17710,6 @@ namespace org.kbinani.cadencii
             this.menuJobRandomize,
             this.menuJobConnect,
             this.menuJobLyric,
-            this.menuJobChangePreMeasure,
             this.menuJobRewire,
             this.menuJobReloadVsti} );
             this.menuJob.Name = "menuJob";
@@ -17649,12 +17751,6 @@ namespace org.kbinani.cadencii
             this.menuJobLyric.Name = "menuJobLyric";
             this.menuJobLyric.Size = new System.Drawing.Size( 223, 22 );
             this.menuJobLyric.Text = "Insert Lyrics(&L)";
-            // 
-            // menuJobChangePreMeasure
-            // 
-            this.menuJobChangePreMeasure.Name = "menuJobChangePreMeasure";
-            this.menuJobChangePreMeasure.Size = new System.Drawing.Size( 223, 22 );
-            this.menuJobChangePreMeasure.Text = "Change pre-measure(&P)";
             // 
             // menuJobRewire
             // 
@@ -17890,6 +17986,12 @@ namespace org.kbinani.cadencii
             this.menuSetting.Size = new System.Drawing.Size( 68, 20 );
             this.menuSetting.Text = "Setting(&S)";
             // 
+            // menuSettingSequence
+            // 
+            this.menuSettingSequence.Name = "menuSettingSequence";
+            this.menuSettingSequence.Size = new System.Drawing.Size( 200, 22 );
+            this.menuSettingSequence.Text = "Sequence config(&S)";
+            // 
             // menuSettingPreference
             // 
             this.menuSettingPreference.Name = "menuSettingPreference";
@@ -17915,54 +18017,54 @@ namespace org.kbinani.cadencii
             // menuSettingPositionQuantize04
             // 
             this.menuSettingPositionQuantize04.Name = "menuSettingPositionQuantize04";
-            this.menuSettingPositionQuantize04.Size = new System.Drawing.Size( 152, 22 );
+            this.menuSettingPositionQuantize04.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingPositionQuantize04.Text = "1/4";
             // 
             // menuSettingPositionQuantize08
             // 
             this.menuSettingPositionQuantize08.Name = "menuSettingPositionQuantize08";
-            this.menuSettingPositionQuantize08.Size = new System.Drawing.Size( 152, 22 );
+            this.menuSettingPositionQuantize08.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingPositionQuantize08.Text = "1/8";
             // 
             // menuSettingPositionQuantize16
             // 
             this.menuSettingPositionQuantize16.Name = "menuSettingPositionQuantize16";
-            this.menuSettingPositionQuantize16.Size = new System.Drawing.Size( 152, 22 );
+            this.menuSettingPositionQuantize16.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingPositionQuantize16.Text = "1/16";
             // 
             // menuSettingPositionQuantize32
             // 
             this.menuSettingPositionQuantize32.Name = "menuSettingPositionQuantize32";
-            this.menuSettingPositionQuantize32.Size = new System.Drawing.Size( 152, 22 );
+            this.menuSettingPositionQuantize32.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingPositionQuantize32.Text = "1/32";
             // 
             // menuSettingPositionQuantize64
             // 
             this.menuSettingPositionQuantize64.Name = "menuSettingPositionQuantize64";
-            this.menuSettingPositionQuantize64.Size = new System.Drawing.Size( 152, 22 );
+            this.menuSettingPositionQuantize64.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingPositionQuantize64.Text = "1/64";
             // 
             // menuSettingPositionQuantize128
             // 
             this.menuSettingPositionQuantize128.Name = "menuSettingPositionQuantize128";
-            this.menuSettingPositionQuantize128.Size = new System.Drawing.Size( 152, 22 );
+            this.menuSettingPositionQuantize128.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingPositionQuantize128.Text = "1/128";
             // 
             // menuSettingPositionQuantizeOff
             // 
             this.menuSettingPositionQuantizeOff.Name = "menuSettingPositionQuantizeOff";
-            this.menuSettingPositionQuantizeOff.Size = new System.Drawing.Size( 152, 22 );
+            this.menuSettingPositionQuantizeOff.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingPositionQuantizeOff.Text = "Off";
             // 
             // toolStripMenuItem9
             // 
             this.toolStripMenuItem9.Name = "toolStripMenuItem9";
-            this.toolStripMenuItem9.Size = new System.Drawing.Size( 149, 6 );
+            this.toolStripMenuItem9.Size = new System.Drawing.Size( 100, 6 );
             // 
             // menuSettingPositionQuantizeTriplet
             // 
             this.menuSettingPositionQuantizeTriplet.Name = "menuSettingPositionQuantizeTriplet";
-            this.menuSettingPositionQuantizeTriplet.Size = new System.Drawing.Size( 152, 22 );
+            this.menuSettingPositionQuantizeTriplet.Size = new System.Drawing.Size( 103, 22 );
             this.menuSettingPositionQuantizeTriplet.Text = "Triplet";
             // 
             // toolStripMenuItem8
@@ -17983,19 +18085,19 @@ namespace org.kbinani.cadencii
             // menuSettingGameControlerSetting
             // 
             this.menuSettingGameControlerSetting.Name = "menuSettingGameControlerSetting";
-            this.menuSettingGameControlerSetting.Size = new System.Drawing.Size( 152, 22 );
+            this.menuSettingGameControlerSetting.Size = new System.Drawing.Size( 127, 22 );
             this.menuSettingGameControlerSetting.Text = "Setting(&S)";
             // 
             // menuSettingGameControlerLoad
             // 
             this.menuSettingGameControlerLoad.Name = "menuSettingGameControlerLoad";
-            this.menuSettingGameControlerLoad.Size = new System.Drawing.Size( 152, 22 );
+            this.menuSettingGameControlerLoad.Size = new System.Drawing.Size( 127, 22 );
             this.menuSettingGameControlerLoad.Text = "Load(&L)";
             // 
             // menuSettingGameControlerRemove
             // 
             this.menuSettingGameControlerRemove.Name = "menuSettingGameControlerRemove";
-            this.menuSettingGameControlerRemove.Size = new System.Drawing.Size( 152, 22 );
+            this.menuSettingGameControlerRemove.Size = new System.Drawing.Size( 127, 22 );
             this.menuSettingGameControlerRemove.Text = "Remove(&R)";
             // 
             // menuSettingPaletteTool
@@ -19605,12 +19707,6 @@ namespace org.kbinani.cadencii
             // 
             this.statusLabel.Name = "statusLabel";
             this.statusLabel.Size = new System.Drawing.Size( 0, 17 );
-            // 
-            // menuSettingSequence
-            // 
-            this.menuSettingSequence.Name = "menuSettingSequence";
-            this.menuSettingSequence.Size = new System.Drawing.Size( 200, 22 );
-            this.menuSettingSequence.Text = "Sequence config(&S)";
             // 
             // FormMain
             // 
