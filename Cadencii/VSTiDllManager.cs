@@ -256,14 +256,8 @@ namespace org.kbinani.cadencii {
                 string synth_path = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), VConnectWaveGenerator.STRAIGHT_SYNTH );
                 if ( PortUtil.isFileExists( synth_path ) ) {
                     int count = AppManager.editorConfig.UtauSingers.size();
-                    for ( int i = 0; i < count; i++ ) {
-                        String analyzed = PortUtil.combinePath( AppManager.editorConfig.UtauSingers.get( i ).VOICEIDSTR, "analyzed" );
-                        if ( PortUtil.isDirectoryExists( analyzed ) ) {
-                            String analyzed_oto_ini = PortUtil.combinePath( analyzed, "oto.ini" );
-                            if ( PortUtil.isFileExists( analyzed_oto_ini ) ) {
-                                return true;
-                            }
-                        }
+                    if ( count > 0 ) {
+                        return true;
                     }
                 }
             }

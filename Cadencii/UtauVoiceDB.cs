@@ -55,13 +55,6 @@ namespace org.kbinani.cadencii {
                 return;
             }
 
-            // STRAIGHT用のoto.iniかどうかを判定
-            boolean straight_mode = false;
-            String check_word = PortUtil.combinePath( "analyzed", "oto.ini" );
-            if ( oto_ini.EndsWith( check_word ) ) {
-                straight_mode = true;
-            }
-
             // oto.ini読込み
             String dir = PortUtil.getDirectoryName( oto_ini );
             foreach ( String encoding in AppManager.TEXT_ENCODINGS_IN_UTAU ) {
@@ -86,15 +79,7 @@ namespace org.kbinani.cadencii {
                         // ファイルがちゃんとあるかどうか？
                         String fullpath = PortUtil.combinePath( dir, file_name );
                         if ( !PortUtil.isFileExists( fullpath ) ) {
-                            if ( straight_mode ) {
-                                // STRAIGHTモードなら、wavが無くてもstfがあればOKとする。
-                                fullpath = PortUtil.combinePath( dir, PortUtil.getFileNameWithoutExtension( file_name ) + ".stf" );
-                                if ( !PortUtil.isFileExists( fullpath ) ) {
-                                    continue;
-                                }
-                            } else {
-                                continue;
-                            }
+                            continue;
                         }
 
                         OtoArgs oa = new OtoArgs();

@@ -3668,27 +3668,6 @@ namespace org.kbinani.cadencii
                 if ( db != null ) {
                     mUtauVoiceDB.put( config.VOICEIDSTR, db );
                 }
-
-                // Straight用に解析されたUTAU音源
-                SingerConfig sc = (SingerConfig)config.clone();
-                sc.VOICEIDSTR = PortUtil.combinePath( sc.VOICEIDSTR, "analyzed" );
-                if ( PortUtil.isDirectoryExists( sc.VOICEIDSTR ) ) {
-                    UtauVoiceDB db2 = null;
-                    try {
-                        db2 = new UtauVoiceDB( sc );
-                    } catch ( Exception ex ) {
-                        PortUtil.stderr.println( "AppManager#reloadUtauVoiceDB; ex=" + ex );
-                        db2 = null;
-                        Logger.write( typeof( AppManager ) + ".reloadUtauVoiceDB; ex=" + ex + "\n" );
-                    }
-                    if ( db2 != null ) {
-                        mUtauVoiceDB.put( sc.VOICEIDSTR, db2 );
-                    }
-                } else {
-#if DEBUG
-                    PortUtil.println( "ApManager#reloadUtauVoiceDB; directory not found; sc.VOICDIDSTR=" + sc.VOICEIDSTR );
-#endif
-                }
             }
         }
 

@@ -861,7 +861,7 @@ namespace org.kbinani.cadencii
             if ( singer_path.Equals( "" ) ) {
                 return;
             }
-            String oto_ini = PortUtil.combinePath( PortUtil.combinePath( singer_path, "analyzed" ), "oto.ini" );
+            String oto_ini = PortUtil.combinePath( singer_path, "oto.ini" );
             if ( !PortUtil.isFileExists( oto_ini ) ) {
                 // STRAIGHT合成用のoto.iniが存在しないので離脱
                 return;
