@@ -40,10 +40,14 @@
 0275	bbf1be0e6de17c7391adc1b1cd6ff91a *resampler.exe
 0276	03230de6583d22a8daf90ea325d4a023 *resampler.exe
 
+vstidrv#close; ex=System.AccessViolationException: 保護されているメモリに読み取りまたは書き込み操作を行おうとしました。他のメモリが壊れていることが考えられます。
+   場所 org.kbinani.cadencii.util.DllLoad.RunDllMain(Void* pImageBase, UInt32 dwImageSize, Int32 bDetach) 場所 c:\users\kbinani\documents\svn\cadencii\cadencii\trunk\org.kbinani.cadencii.util\org.kbinani.cadencii.util.cpp:行 432
+   場所 org.kbinani.cadencii.util.DllLoad.freeDll(IntPtr hLibModule) 場所 c:\users\kbinani\documents\svn\cadencii\cadencii\trunk\org.kbinani.cadencii.util\org.kbinani.cadencii.util.cpp:行 229
+   場所 org.kbinani.cadencii.vstidrv.close() 場所 C:\Users\kbinani\Documents\svn\cadencii\Cadencii\trunk\Cadencii\vstidrv.cs:行 472
+
+
 -general todo----------------------------------------------------------
--FormMainのhandleMouseEnterの所のメッセージ文
--Metatext for vConnectのところの翻訳文
--トラックを連番で出力する機能
+-org.kbinani.cadencii.utilでConsole::writeLineのままになってるところがある
 -MIDI-INの装置設定は，ポート番号ではなく装置名でやったほうがいいんじゃないか？
 -マイナーバージョンの番号が奇数だった場合に，テスト版であることの通知ダイアログを出すようにする
 -音声処理のリファクタリング

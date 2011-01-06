@@ -1486,7 +1486,7 @@ namespace org.kbinani.cadencii
             if ( folderBrowserSingers.showOpenDialog( this ) == BFileChooser.APPROVE_OPTION ) {
                 String dir = folderBrowserSingers.getSelectedFile();
 #else
-            folderBrowserSingers.setVisible( true );
+            folderBrowserSingers.setVisible( true, this );
             if ( folderBrowserSingers.getDialogResult() == BDialogResult.OK ) {
                 String dir = folderBrowserSingers.getSelectedPath();
 #endif

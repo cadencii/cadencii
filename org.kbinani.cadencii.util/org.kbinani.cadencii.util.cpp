@@ -222,7 +222,7 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
         // DLLのデタッチ
         if( !(dwFlags & (LOAD_LIBRARY_AS_DATAFILE | DONT_RESOLVE_DLL_REFERENCES)) ){
             // カウンタが0（dllaction=1）ならばDLLをデタッチして終了
-            if( dllaction ){
+            if( dllaction == 1 ){
                 RunDllMain( hLibModule.ToPointer(), poh->SizeOfImage, DLL_DETACH );
                 return UnmapViewOfFile( hLibModule.ToPointer() );
             }
@@ -425,10 +425,16 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
 		Console::WriteLine( "DllLoad#RunDllMain; pMain=0x" + String::Format( "{0:X}", (int)pMain ) );
 #endif
         // デタッチ時orアタッチ時
-        if( bDetach ){
-            return pMain( (HMODULE)pImageBase, DLL_PROCESS_DETACH, NULL );
-        }else{
-            return pMain( (HMODULE)pImageBase, DLL_PROCESS_ATTACH, NULL );
+        try{
+            if( bDetach ){
+                //うおお・・
+                //return pMain( (HMODULE)pImageBase, DLL_PROCESS_DETACH, NULL );
+                return TRUE;
+            }else{
+                return pMain( (HMODULE)pImageBase, DLL_PROCESS_ATTACH, NULL );
+            }
+        }catch( Exception ^ex ){
+            Console::WriteLine( "DllLoad#RunDllMain; ex=" + ex );
         }
     }
 

@@ -71,6 +71,7 @@ namespace org.kbinani.cadencii {
             numEndBar.setValue( lastEndBar );
             numEndBeat.setValue( lastEndBeat );
             lockRequired = false;
+            Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
         #region helper methods
@@ -603,10 +604,14 @@ namespace org.kbinani.cadencii {
             // FormRandomize
             // 
             this.AcceptButton = this.btnOK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 12F );
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF( 96F, 96F );
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size( 347, 286 );
+            this.Controls.Add( this.numEndBeat );
+            this.Controls.Add( this.numEndBar );
+            this.Controls.Add( this.numStartBeat );
+            this.Controls.Add( this.numStartBar );
             this.Controls.Add( this.btnCancel );
             this.Controls.Add( this.btnOK );
             this.Controls.Add( this.numResolution );
@@ -620,16 +625,12 @@ namespace org.kbinani.cadencii {
             this.Controls.Add( this.lblShiftValue );
             this.Controls.Add( this.chkShift );
             this.Controls.Add( this.lblEndBeat );
-            this.Controls.Add( this.numEndBeat );
             this.Controls.Add( this.lblEndBar );
             this.Controls.Add( this.lblEnd );
-            this.Controls.Add( this.numEndBar );
             this.Controls.Add( this.bLabel1 );
             this.Controls.Add( this.lblStartBeat );
-            this.Controls.Add( this.numStartBeat );
             this.Controls.Add( this.lblStartBar );
             this.Controls.Add( this.lblStart );
-            this.Controls.Add( this.numStartBar );
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;

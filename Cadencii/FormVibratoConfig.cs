@@ -95,9 +95,15 @@ namespace org.kbinani.cadencii
             // 選択肢の状態を更新
             updateComboBoxStatus();
             // どれを選ぶか？
+#if DEBUG
+            PortUtil.println( "FormVibratoConfig#.ctor; vibrato_handle.IconID=" + vibrato_handle.IconID );
+#endif
             for ( int i = 0; i < comboVibratoType.getItemCount(); i++ ) {
                 VibratoHandle handle = (VibratoHandle)comboVibratoType.getItemAt( i );
-                if ( vibrato_handle.equals( handle ) ) {
+#if DEBUG
+                PortUtil.println( "FormVibratoConfig#.ctor; handle.IconID=" + handle.IconID );
+#endif
+                if ( vibrato_handle.IconID.Equals( handle.IconID ) ) {
                     comboVibratoType.setSelectedIndex( i );
                     break;
                 }

@@ -36,7 +36,7 @@ public class SmartHtml {
     }
 }
 
-public class Search {
+/*public class Search {
     public static bool Edit( VsqFile vsq ) {
         int selectedid = -1;
         Form f;
@@ -82,7 +82,7 @@ public class Search {
         }
         return true;
     }
-}
+}*/
 
 public static class AutoBRI {
     public static bool Edit( org.kbinani.vsq.VsqFile vsq ) {

@@ -125,14 +125,14 @@ namespace org.kbinani.cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.btnOK = new BButton();
-            this.btnCancel = new BButton();
-            this.label4 = new BLabel();
-            this.label3 = new BLabel();
-            this.lblEnd = new BLabel();
-            this.lblStart = new BLabel();
-            this.numEnd = new NumericUpDownEx();
-            this.numStart = new NumericUpDownEx();
+            this.btnOK = new org.kbinani.windows.forms.BButton();
+            this.btnCancel = new org.kbinani.windows.forms.BButton();
+            this.label4 = new org.kbinani.windows.forms.BLabel();
+            this.label3 = new org.kbinani.windows.forms.BLabel();
+            this.lblEnd = new org.kbinani.windows.forms.BLabel();
+            this.lblStart = new org.kbinani.windows.forms.BLabel();
+            this.numEnd = new org.kbinani.cadencii.NumericUpDownEx();
+            this.numStart = new org.kbinani.cadencii.NumericUpDownEx();
             ((System.ComponentModel.ISupportInitialize)(this.numEnd)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numStart)).BeginInit();
             this.SuspendLayout();
@@ -176,18 +176,18 @@ namespace org.kbinani.cadencii {
             // 
             // lblEnd
             // 
-            this.lblEnd.Location = new System.Drawing.Point( 12, 38 );
+            this.lblEnd.Location = new System.Drawing.Point( 12, 35 );
             this.lblEnd.Name = "lblEnd";
-            this.lblEnd.Size = new System.Drawing.Size( 49, 12 );
+            this.lblEnd.Size = new System.Drawing.Size( 49, 18 );
             this.lblEnd.TabIndex = 11;
             this.lblEnd.Text = "End";
             this.lblEnd.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lblStart
             // 
-            this.lblStart.Location = new System.Drawing.Point( 12, 13 );
+            this.lblStart.Location = new System.Drawing.Point( 12, 10 );
             this.lblStart.Name = "lblStart";
-            this.lblStart.Size = new System.Drawing.Size( 49, 12 );
+            this.lblStart.Size = new System.Drawing.Size( 49, 18 );
             this.lblStart.TabIndex = 10;
             this.lblStart.Text = "Start";
             this.lblStart.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -234,8 +234,8 @@ namespace org.kbinani.cadencii {
             // FormDeleteBar
             // 
             this.AcceptButton = this.btnOK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 12F );
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF( 96F, 96F );
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size( 204, 100 );
             this.Controls.Add( this.btnOK );

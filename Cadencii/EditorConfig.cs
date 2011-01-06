@@ -772,7 +772,10 @@ namespace org.kbinani.cadencii {
         public String getLastUsedPathOut( String extension ) {
             String ret = getLastUsedPathCore( LastUsedPathOut, extension );
             if ( ret.Equals( "" ) ) {
-                return getLastUsedPathCore( LastUsedPathIn, extension );
+                ret = getLastUsedPathCore( LastUsedPathIn, extension );
+            }
+            if ( !ret.Equals( "" ) ) {
+                ret = PortUtil.getDirectoryName( ret );
             }
             return ret;
         }

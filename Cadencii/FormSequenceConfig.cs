@@ -82,6 +82,7 @@ namespace org.kbinani.cadencii
 
             registerEventHandlers();
             setResources();
+            Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
         #region public methods

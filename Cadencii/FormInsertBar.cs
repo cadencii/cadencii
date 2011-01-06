@@ -141,47 +141,18 @@ namespace org.kbinani.cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.numPosition = new NumericUpDownEx();
-            this.numLength = new NumericUpDownEx();
-            this.lblPosition = new BLabel();
-            this.lblLength = new BLabel();
-            this.lblThBar = new BLabel();
-            this.lblBar = new BLabel();
-            this.btnCancel = new BButton();
-            this.btnOK = new BButton();
-            this.lblPositionPrefix = new BLabel();
-            ((System.ComponentModel.ISupportInitialize)(this.numPosition)).BeginInit();
+            this.lblPosition = new org.kbinani.windows.forms.BLabel();
+            this.lblLength = new org.kbinani.windows.forms.BLabel();
+            this.lblThBar = new org.kbinani.windows.forms.BLabel();
+            this.lblBar = new org.kbinani.windows.forms.BLabel();
+            this.btnCancel = new org.kbinani.windows.forms.BButton();
+            this.btnOK = new org.kbinani.windows.forms.BButton();
+            this.lblPositionPrefix = new org.kbinani.windows.forms.BLabel();
+            this.numLength = new org.kbinani.cadencii.NumericUpDownEx();
+            this.numPosition = new org.kbinani.cadencii.NumericUpDownEx();
             ((System.ComponentModel.ISupportInitialize)(this.numLength)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numPosition)).BeginInit();
             this.SuspendLayout();
-            // 
-            // numPosition
-            // 
-            this.numPosition.Location = new System.Drawing.Point( 78, 12 );
-            this.numPosition.Name = "numPosition";
-            this.numPosition.Size = new System.Drawing.Size( 52, 19 );
-            this.numPosition.TabIndex = 0;
-            // 
-            // numLength
-            // 
-            this.numLength.Location = new System.Drawing.Point( 78, 37 );
-            this.numLength.Maximum = new decimal( new int[] {
-            32,
-            0,
-            0,
-            0} );
-            this.numLength.Minimum = new decimal( new int[] {
-            1,
-            0,
-            0,
-            0} );
-            this.numLength.Name = "numLength";
-            this.numLength.Size = new System.Drawing.Size( 52, 19 );
-            this.numLength.TabIndex = 1;
-            this.numLength.Value = new decimal( new int[] {
-            1,
-            0,
-            0,
-            0} );
             // 
             // lblPosition
             // 
@@ -250,13 +221,44 @@ namespace org.kbinani.cadencii {
             this.lblPositionPrefix.TabIndex = 8;
             this.lblPositionPrefix.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
+            // numLength
+            // 
+            this.numLength.Location = new System.Drawing.Point( 78, 37 );
+            this.numLength.Maximum = new decimal( new int[] {
+            32,
+            0,
+            0,
+            0} );
+            this.numLength.Minimum = new decimal( new int[] {
+            1,
+            0,
+            0,
+            0} );
+            this.numLength.Name = "numLength";
+            this.numLength.Size = new System.Drawing.Size( 52, 19 );
+            this.numLength.TabIndex = 1;
+            this.numLength.Value = new decimal( new int[] {
+            1,
+            0,
+            0,
+            0} );
+            // 
+            // numPosition
+            // 
+            this.numPosition.Location = new System.Drawing.Point( 78, 12 );
+            this.numPosition.Name = "numPosition";
+            this.numPosition.Size = new System.Drawing.Size( 52, 19 );
+            this.numPosition.TabIndex = 0;
+            // 
             // FormInsertBar
             // 
             this.AcceptButton = this.btnOK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 12F );
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF( 96F, 96F );
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size( 221, 102 );
+            this.Controls.Add( this.numLength );
+            this.Controls.Add( this.numPosition );
             this.Controls.Add( this.lblPositionPrefix );
             this.Controls.Add( this.btnOK );
             this.Controls.Add( this.btnCancel );
@@ -264,8 +266,6 @@ namespace org.kbinani.cadencii {
             this.Controls.Add( this.lblThBar );
             this.Controls.Add( this.lblLength );
             this.Controls.Add( this.lblPosition );
-            this.Controls.Add( this.numLength );
-            this.Controls.Add( this.numPosition );
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -274,8 +274,8 @@ namespace org.kbinani.cadencii {
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Insert bar";
-            ((System.ComponentModel.ISupportInitialize)(this.numPosition)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numLength)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numPosition)).EndInit();
             this.ResumeLayout( false );
             this.PerformLayout();
 

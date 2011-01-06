@@ -2033,6 +2033,21 @@ namespace org.kbinani.cadencii
         /// <param name="dialog"></param>
         /// <param name="main_form"></param>
         /// <returns></returns>
+        public static BDialogResult showModalDialog( BFolderBrowser dialog, System.Windows.Forms.Form main_form )
+        {
+            beginShowDialog();
+            dialog.setVisible( true, main_form );
+            BDialogResult ret = dialog.getDialogResult();
+            endShowDialog();
+            return ret;
+        }
+
+        /// <summary>
+        /// ダイアログを，メインウィンドウに対してモーダルに表示し，ダイアログの結果を取得します
+        /// </summary>
+        /// <param name="dialog"></param>
+        /// <param name="main_form"></param>
+        /// <returns></returns>
         public static int showModalDialog( BFileChooser dialog, boolean open_mode, System.Windows.Forms.Form main_form )
         {
             beginShowDialog();

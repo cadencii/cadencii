@@ -519,7 +519,7 @@ namespace org.kbinani.cadencii {
 #endif
                     for ( int i = 0; i < mIndex; i += 2 ) {
                         Point p = mPoints[i];
-                        int alpha = (mDotType == DOTMODE_NEAR) ? getAlpha( p.X ) : 255;
+                        int alpha = (mDot == DOTMODE_NEAR) ? getAlpha( p.X ) : 255;
                         if ( alpha <= 0 ) {
                             continue;
                         }

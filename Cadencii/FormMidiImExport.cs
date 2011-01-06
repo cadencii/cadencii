@@ -337,9 +337,10 @@ namespace org.kbinani.cadencii {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup9 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             this.btnCancel = new org.kbinani.windows.forms.BButton();
             this.btnOK = new org.kbinani.windows.forms.BButton();
             this.listTrack = new org.kbinani.windows.forms.BListView();
@@ -354,11 +355,11 @@ namespace org.kbinani.cadencii {
             this.chkPreMeasure = new org.kbinani.windows.forms.BCheckBox();
             this.chkExportVocaloidNrpn = new org.kbinani.windows.forms.BCheckBox();
             this.groupMode = new org.kbinani.windows.forms.BGroupBox();
+            this.lblOffsetUnit = new org.kbinani.windows.forms.BLabel();
+            this.txtOffset = new org.kbinani.cadencii.NumberTextBox();
+            this.lblOffset = new org.kbinani.windows.forms.BLabel();
             this.radioPlayTime = new org.kbinani.windows.forms.BRadioButton();
             this.radioGateTime = new org.kbinani.windows.forms.BRadioButton();
-            this.lblOffset = new org.kbinani.windows.forms.BLabel();
-            this.txtOffset = new org.kbinani.cadencii.NumberTextBox();
-            this.lblOffsetUnit = new org.kbinani.windows.forms.BLabel();
             this.groupCommonOption.SuspendLayout();
             this.groupMode.SuspendLayout();
             this.SuspendLayout();
@@ -392,15 +393,18 @@ namespace org.kbinani.cadencii {
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.listTrack.CheckBoxes = true;
             this.listTrack.FullRowSelect = true;
-            listViewGroup7.Header = "ListViewGroup";
-            listViewGroup8.Header = "ListViewGroup";
-            listViewGroup8.Name = null;
-            listViewGroup9.Header = "ListViewGroup";
-            listViewGroup9.Name = null;
+            listViewGroup1.Header = "ListViewGroup";
+            listViewGroup2.Header = "ListViewGroup";
+            listViewGroup2.Name = null;
+            listViewGroup3.Header = "ListViewGroup";
+            listViewGroup3.Name = null;
+            listViewGroup4.Header = "ListViewGroup";
+            listViewGroup4.Name = null;
             this.listTrack.Groups.AddRange( new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup7,
-            listViewGroup8,
-            listViewGroup9} );
+            listViewGroup1,
+            listViewGroup2,
+            listViewGroup3,
+            listViewGroup4} );
             this.listTrack.Location = new System.Drawing.Point( 12, 41 );
             this.listTrack.Name = "listTrack";
             this.listTrack.Size = new System.Drawing.Size( 324, 216 );
@@ -553,6 +557,36 @@ namespace org.kbinani.cadencii {
             this.groupMode.TabStop = false;
             this.groupMode.Text = "Import Basis";
             // 
+            // lblOffsetUnit
+            // 
+            this.lblOffsetUnit.AutoSize = true;
+            this.lblOffsetUnit.Location = new System.Drawing.Point( 187, 45 );
+            this.lblOffsetUnit.Name = "lblOffsetUnit";
+            this.lblOffsetUnit.Size = new System.Drawing.Size( 38, 12 );
+            this.lblOffsetUnit.TabIndex = 4;
+            this.lblOffsetUnit.Text = "clocks";
+            // 
+            // txtOffset
+            // 
+            this.txtOffset.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))) );
+            this.txtOffset.ForeColor = System.Drawing.Color.Black;
+            this.txtOffset.Location = new System.Drawing.Point( 81, 42 );
+            this.txtOffset.Name = "txtOffset";
+            this.txtOffset.Size = new System.Drawing.Size( 100, 19 );
+            this.txtOffset.TabIndex = 3;
+            this.txtOffset.Text = "0";
+            this.txtOffset.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtOffset.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
+            // 
+            // lblOffset
+            // 
+            this.lblOffset.AutoSize = true;
+            this.lblOffset.Location = new System.Drawing.Point( 14, 45 );
+            this.lblOffset.Name = "lblOffset";
+            this.lblOffset.Size = new System.Drawing.Size( 35, 12 );
+            this.lblOffset.TabIndex = 2;
+            this.lblOffset.Text = "offset";
+            // 
             // radioPlayTime
             // 
             this.radioPlayTime.AutoSize = true;
@@ -576,41 +610,11 @@ namespace org.kbinani.cadencii {
             this.radioGateTime.Text = "gate-time";
             this.radioGateTime.UseVisualStyleBackColor = true;
             // 
-            // lblOffset
-            // 
-            this.lblOffset.AutoSize = true;
-            this.lblOffset.Location = new System.Drawing.Point( 14, 45 );
-            this.lblOffset.Name = "lblOffset";
-            this.lblOffset.Size = new System.Drawing.Size( 35, 12 );
-            this.lblOffset.TabIndex = 2;
-            this.lblOffset.Text = "offset";
-            // 
-            // txtOffset
-            // 
-            this.txtOffset.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))) );
-            this.txtOffset.ForeColor = System.Drawing.Color.Black;
-            this.txtOffset.Location = new System.Drawing.Point( 81, 42 );
-            this.txtOffset.Name = "txtOffset";
-            this.txtOffset.Size = new System.Drawing.Size( 100, 19 );
-            this.txtOffset.TabIndex = 3;
-            this.txtOffset.Text = "0";
-            this.txtOffset.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.txtOffset.Type = org.kbinani.cadencii.NumberTextBox.ValueType.Integer;
-            // 
-            // lblOffsetUnit
-            // 
-            this.lblOffsetUnit.AutoSize = true;
-            this.lblOffsetUnit.Location = new System.Drawing.Point( 187, 45 );
-            this.lblOffsetUnit.Name = "lblOffsetUnit";
-            this.lblOffsetUnit.Size = new System.Drawing.Size( 38, 12 );
-            this.lblOffsetUnit.TabIndex = 4;
-            this.lblOffsetUnit.Text = "clocks";
-            // 
             // FormMidiImExport
             // 
             this.AcceptButton = this.btnOK;
-            this.AutoScaleDimensions = new System.Drawing.SizeF( 6F, 12F );
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF( 96F, 96F );
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size( 348, 470 );
             this.Controls.Add( this.groupMode );

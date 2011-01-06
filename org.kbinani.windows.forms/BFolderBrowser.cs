@@ -28,6 +28,13 @@ namespace org.kbinani.windows.forms {
             dialog.RootFolder = Environment.SpecialFolder.Desktop;
         }
 
+        public void close()
+        {
+            if ( dialog != null ) {
+                dialog.Dispose();
+            }
+        }
+
         public bool isNewFolderButtonVisible() {
             return dialog.ShowNewFolderButton;
         }
@@ -52,9 +59,9 @@ namespace org.kbinani.windows.forms {
             dialog.SelectedPath = value;
         }
 
-        public void setVisible( bool value ) {
+        public void setVisible( bool value, System.Windows.Forms.Form main_form ) {
             if ( value ) {
-                DialogResult ret = dialog.ShowDialog();
+                DialogResult ret = dialog.ShowDialog( main_form );
                 if ( ret == DialogResult.OK ) {
                     m_result = BDialogResult.OK;
                 } else {
