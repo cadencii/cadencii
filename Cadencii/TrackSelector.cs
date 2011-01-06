@@ -5733,7 +5733,10 @@ namespace org.kbinani.cadencii
             // cmenusinger
             // 
             this.cmenusinger.Name = "cmenusinger";
-            this.cmenusinger.Size = new System.Drawing.Size( 61, 4 );
+            this.cmenusinger.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+            this.cmenusinger.ShowCheckMargin = true;
+            this.cmenusinger.ShowImageMargin = false;
+            this.cmenusinger.Size = new System.Drawing.Size( 153, 26 );
             // 
             // toolTip
             // 
@@ -5772,53 +5775,55 @@ namespace org.kbinani.cadencii
             this.cmenuCurveEffect2Depth,
             this.cmenuCurveEnvelope} );
             this.cmenuCurve.Name = "cmenuCurve";
-            this.cmenuCurve.Size = new System.Drawing.Size( 185, 496 );
+            this.cmenuCurve.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+            this.cmenuCurve.ShowImageMargin = false;
+            this.cmenuCurve.Size = new System.Drawing.Size( 160, 496 );
             // 
             // cmenuCurveVelocity
             // 
             this.cmenuCurveVelocity.Name = "cmenuCurveVelocity";
-            this.cmenuCurveVelocity.Size = new System.Drawing.Size( 184, 22 );
+            this.cmenuCurveVelocity.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveVelocity.Text = "Velocity(&V)";
             // 
             // cmenuCurveAccent
             // 
             this.cmenuCurveAccent.Name = "cmenuCurveAccent";
-            this.cmenuCurveAccent.Size = new System.Drawing.Size( 184, 22 );
+            this.cmenuCurveAccent.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveAccent.Text = "Accent";
             // 
             // cmenuCurveDecay
             // 
             this.cmenuCurveDecay.Name = "cmenuCurveDecay";
-            this.cmenuCurveDecay.Size = new System.Drawing.Size( 184, 22 );
+            this.cmenuCurveDecay.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveDecay.Text = "Decay";
             // 
             // cmenuCurveSeparator1
             // 
             this.cmenuCurveSeparator1.Name = "cmenuCurveSeparator1";
-            this.cmenuCurveSeparator1.Size = new System.Drawing.Size( 181, 6 );
+            this.cmenuCurveSeparator1.Size = new System.Drawing.Size( 156, 6 );
             // 
             // cmenuCurveDynamics
             // 
             this.cmenuCurveDynamics.Name = "cmenuCurveDynamics";
-            this.cmenuCurveDynamics.Size = new System.Drawing.Size( 184, 22 );
+            this.cmenuCurveDynamics.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveDynamics.Text = "Dynamics";
             // 
             // cmenuCurveVibratoRate
             // 
             this.cmenuCurveVibratoRate.Name = "cmenuCurveVibratoRate";
-            this.cmenuCurveVibratoRate.Size = new System.Drawing.Size( 184, 22 );
+            this.cmenuCurveVibratoRate.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveVibratoRate.Text = "Vibrato Rate";
             // 
             // cmenuCurveVibratoDepth
             // 
             this.cmenuCurveVibratoDepth.Name = "cmenuCurveVibratoDepth";
-            this.cmenuCurveVibratoDepth.Size = new System.Drawing.Size( 184, 22 );
+            this.cmenuCurveVibratoDepth.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveVibratoDepth.Text = "Vibrato Depth";
             // 
             // cmenuCurveSeparator2
             // 
             this.cmenuCurveSeparator2.Name = "cmenuCurveSeparator2";
-            this.cmenuCurveSeparator2.Size = new System.Drawing.Size( 181, 6 );
+            this.cmenuCurveSeparator2.Size = new System.Drawing.Size( 156, 6 );
             // 
             // cmenuCurveReso1
             // 
@@ -5827,25 +5832,25 @@ namespace org.kbinani.cadencii
             this.cmenuCurveReso1BW,
             this.cmenuCurveReso1Amp} );
             this.cmenuCurveReso1.Name = "cmenuCurveReso1";
-            this.cmenuCurveReso1.Size = new System.Drawing.Size( 184, 22 );
+            this.cmenuCurveReso1.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveReso1.Text = "Resonance 1";
             // 
             // cmenuCurveReso1Freq
             // 
             this.cmenuCurveReso1Freq.Name = "cmenuCurveReso1Freq";
-            this.cmenuCurveReso1Freq.Size = new System.Drawing.Size( 143, 22 );
+            this.cmenuCurveReso1Freq.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso1Freq.Text = "Frequency";
             // 
             // cmenuCurveReso1BW
             // 
             this.cmenuCurveReso1BW.Name = "cmenuCurveReso1BW";
-            this.cmenuCurveReso1BW.Size = new System.Drawing.Size( 143, 22 );
+            this.cmenuCurveReso1BW.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso1BW.Text = "Band Width";
             // 
             // cmenuCurveReso1Amp
             // 
             this.cmenuCurveReso1Amp.Name = "cmenuCurveReso1Amp";
-            this.cmenuCurveReso1Amp.Size = new System.Drawing.Size( 143, 22 );
+            this.cmenuCurveReso1Amp.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso1Amp.Text = "Amplitude";
             // 
             // cmenuCurveReso2
@@ -5855,25 +5860,25 @@ namespace org.kbinani.cadencii
             this.cmenuCurveReso2BW,
             this.cmenuCurveReso2Amp} );
             this.cmenuCurveReso2.Name = "cmenuCurveReso2";
-            this.cmenuCurveReso2.Size = new System.Drawing.Size( 184, 22 );
+            this.cmenuCurveReso2.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveReso2.Text = "Resonance 2";
             // 
             // cmenuCurveReso2Freq
             // 
             this.cmenuCurveReso2Freq.Name = "cmenuCurveReso2Freq";
-            this.cmenuCurveReso2Freq.Size = new System.Drawing.Size( 143, 22 );
+            this.cmenuCurveReso2Freq.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso2Freq.Text = "Frequency";
             // 
             // cmenuCurveReso2BW
             // 
             this.cmenuCurveReso2BW.Name = "cmenuCurveReso2BW";
-            this.cmenuCurveReso2BW.Size = new System.Drawing.Size( 143, 22 );
+            this.cmenuCurveReso2BW.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso2BW.Text = "Band Width";
             // 
             // cmenuCurveReso2Amp
             // 
             this.cmenuCurveReso2Amp.Name = "cmenuCurveReso2Amp";
-            this.cmenuCurveReso2Amp.Size = new System.Drawing.Size( 143, 22 );
+            this.cmenuCurveReso2Amp.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso2Amp.Text = "Amplitude";
             // 
             // cmenuCurveReso3
@@ -5883,25 +5888,25 @@ namespace org.kbinani.cadencii
             this.cmenuCurveReso3BW,
             this.cmenuCurveReso3Amp} );
             this.cmenuCurveReso3.Name = "cmenuCurveReso3";
-            this.cmenuCurveReso3.Size = new System.Drawing.Size( 184, 22 );
+            this.cmenuCurveReso3.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveReso3.Text = "Resonance 3";
             // 
             // cmenuCurveReso3Freq
             // 
             this.cmenuCurveReso3Freq.Name = "cmenuCurveReso3Freq";
-            this.cmenuCurveReso3Freq.Size = new System.Drawing.Size( 143, 22 );
+            this.cmenuCurveReso3Freq.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso3Freq.Text = "Frequency";
             // 
             // cmenuCurveReso3BW
             // 
             this.cmenuCurveReso3BW.Name = "cmenuCurveReso3BW";
-            this.cmenuCurveReso3BW.Size = new System.Drawing.Size( 143, 22 );
+            this.cmenuCurveReso3BW.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso3BW.Text = "Band Width";
             // 
             // cmenuCurveReso3Amp
             // 
             this.cmenuCurveReso3Amp.Name = "cmenuCurveReso3Amp";
-            this.cmenuCurveReso3Amp.Size = new System.Drawing.Size( 143, 22 );
+            this.cmenuCurveReso3Amp.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso3Amp.Text = "Amplitude";
             // 
             // cmenuCurveReso4
@@ -5911,106 +5916,106 @@ namespace org.kbinani.cadencii
             this.cmenuCurveReso4BW,
             this.cmenuCurveReso4Amp} );
             this.cmenuCurveReso4.Name = "cmenuCurveReso4";
-            this.cmenuCurveReso4.Size = new System.Drawing.Size( 184, 22 );
+            this.cmenuCurveReso4.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveReso4.Text = "Resonance 4";
             // 
             // cmenuCurveReso4Freq
             // 
             this.cmenuCurveReso4Freq.Name = "cmenuCurveReso4Freq";
-            this.cmenuCurveReso4Freq.Size = new System.Drawing.Size( 143, 22 );
+            this.cmenuCurveReso4Freq.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso4Freq.Text = "Frequency";
             // 
             // cmenuCurveReso4BW
             // 
             this.cmenuCurveReso4BW.Name = "cmenuCurveReso4BW";
-            this.cmenuCurveReso4BW.Size = new System.Drawing.Size( 143, 22 );
+            this.cmenuCurveReso4BW.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso4BW.Text = "Band Width";
             // 
             // cmenuCurveReso4Amp
             // 
             this.cmenuCurveReso4Amp.Name = "cmenuCurveReso4Amp";
-            this.cmenuCurveReso4Amp.Size = new System.Drawing.Size( 143, 22 );
+            this.cmenuCurveReso4Amp.Size = new System.Drawing.Size( 128, 22 );
             this.cmenuCurveReso4Amp.Text = "Amplitude";
             // 
             // cmenuCurveSeparator3
             // 
             this.cmenuCurveSeparator3.Name = "cmenuCurveSeparator3";
-            this.cmenuCurveSeparator3.Size = new System.Drawing.Size( 181, 6 );
+            this.cmenuCurveSeparator3.Size = new System.Drawing.Size( 156, 6 );
             // 
             // cmenuCurveHarmonics
             // 
             this.cmenuCurveHarmonics.Name = "cmenuCurveHarmonics";
-            this.cmenuCurveHarmonics.Size = new System.Drawing.Size( 184, 22 );
+            this.cmenuCurveHarmonics.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveHarmonics.Text = "Harmonics";
             // 
             // cmenuCurveBreathiness
             // 
             this.cmenuCurveBreathiness.Name = "cmenuCurveBreathiness";
-            this.cmenuCurveBreathiness.Size = new System.Drawing.Size( 184, 22 );
+            this.cmenuCurveBreathiness.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveBreathiness.Text = "Noise";
             // 
             // cmenuCurveBrightness
             // 
             this.cmenuCurveBrightness.Name = "cmenuCurveBrightness";
-            this.cmenuCurveBrightness.Size = new System.Drawing.Size( 184, 22 );
+            this.cmenuCurveBrightness.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveBrightness.Text = "Brightness";
             // 
             // cmenuCurveClearness
             // 
             this.cmenuCurveClearness.Name = "cmenuCurveClearness";
-            this.cmenuCurveClearness.Size = new System.Drawing.Size( 184, 22 );
+            this.cmenuCurveClearness.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveClearness.Text = "Clearness";
             // 
             // cmenuCurveOpening
             // 
             this.cmenuCurveOpening.Name = "cmenuCurveOpening";
-            this.cmenuCurveOpening.Size = new System.Drawing.Size( 184, 22 );
+            this.cmenuCurveOpening.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveOpening.Text = "Opening";
             // 
             // cmenuCurveGenderFactor
             // 
             this.cmenuCurveGenderFactor.Name = "cmenuCurveGenderFactor";
-            this.cmenuCurveGenderFactor.Size = new System.Drawing.Size( 184, 22 );
+            this.cmenuCurveGenderFactor.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveGenderFactor.Text = "Gender Factor";
             // 
             // cmenuCurveSeparator4
             // 
             this.cmenuCurveSeparator4.Name = "cmenuCurveSeparator4";
-            this.cmenuCurveSeparator4.Size = new System.Drawing.Size( 181, 6 );
+            this.cmenuCurveSeparator4.Size = new System.Drawing.Size( 156, 6 );
             // 
             // cmenuCurvePortamentoTiming
             // 
             this.cmenuCurvePortamentoTiming.Name = "cmenuCurvePortamentoTiming";
-            this.cmenuCurvePortamentoTiming.Size = new System.Drawing.Size( 184, 22 );
+            this.cmenuCurvePortamentoTiming.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurvePortamentoTiming.Text = "Portamento Timing";
             // 
             // cmenuCurvePitchBend
             // 
             this.cmenuCurvePitchBend.Name = "cmenuCurvePitchBend";
-            this.cmenuCurvePitchBend.Size = new System.Drawing.Size( 184, 22 );
+            this.cmenuCurvePitchBend.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurvePitchBend.Text = "Pitch Bend";
             // 
             // cmenuCurvePitchBendSensitivity
             // 
             this.cmenuCurvePitchBendSensitivity.Name = "cmenuCurvePitchBendSensitivity";
-            this.cmenuCurvePitchBendSensitivity.Size = new System.Drawing.Size( 184, 22 );
+            this.cmenuCurvePitchBendSensitivity.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurvePitchBendSensitivity.Text = "Pitch Bend Sensitivity";
             // 
             // cmenuCurveSeparator5
             // 
             this.cmenuCurveSeparator5.Name = "cmenuCurveSeparator5";
-            this.cmenuCurveSeparator5.Size = new System.Drawing.Size( 181, 6 );
+            this.cmenuCurveSeparator5.Size = new System.Drawing.Size( 156, 6 );
             // 
             // cmenuCurveEffect2Depth
             // 
             this.cmenuCurveEffect2Depth.Name = "cmenuCurveEffect2Depth";
-            this.cmenuCurveEffect2Depth.Size = new System.Drawing.Size( 184, 22 );
+            this.cmenuCurveEffect2Depth.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveEffect2Depth.Text = "Effect2 Depth";
             // 
             // cmenuCurveEnvelope
             // 
             this.cmenuCurveEnvelope.Name = "cmenuCurveEnvelope";
-            this.cmenuCurveEnvelope.Size = new System.Drawing.Size( 184, 22 );
+            this.cmenuCurveEnvelope.Size = new System.Drawing.Size( 159, 22 );
             this.cmenuCurveEnvelope.Text = "Envelope";
             // 
             // TrackSelector

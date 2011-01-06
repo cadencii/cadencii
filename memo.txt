@@ -47,7 +47,6 @@ vstidrv#close; ex=System.AccessViolationException: 保護されているメモ�
 
 
 -general todo----------------------------------------------------------
--org.kbinani.cadencii.utilでConsole::writeLineのままになってるところがある
 -MIDI-INの装置設定は，ポート番号ではなく装置名でやったほうがいいんじゃないか？
 -マイナーバージョンの番号が奇数だった場合に，テスト版であることの通知ダイアログを出すようにする
 -音声処理のリファクタリング

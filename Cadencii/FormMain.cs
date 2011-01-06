@@ -8938,7 +8938,7 @@ namespace org.kbinani.cadencii
                 }
             }
             if ( !timer.isRunning() ) {
-                refreshScreen();
+                refreshScreen( true );
             }
         }
 
@@ -10265,6 +10265,23 @@ namespace org.kbinani.cadencii
 #if DEBUG
             menuHidden.setVisible( true );
 #endif
+
+            // 開発版の場合の警告ダイアログ
+            string str_minor = BAssemblyInfo.fileVersionMinor;
+            int minor = 0;
+            try {
+                minor = PortUtil.parseInt( str_minor );
+            } catch ( Exception ex ) {
+            }
+            if ( (minor % 2) != 0 ) {
+                AppManager.showMessageBox(
+                    PortUtil.formatMessage(
+                        _( "Info: This is test version of Cadencii version {0}" ),
+                        BAssemblyInfo.fileVersionMeasure + "." + (minor + 1) ),
+                    "Cadencii",
+                    org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
+                    org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+            }
 
             // 鍵盤用のキャッシュが古い位置に保存されている場合。
             String cache_new = Utility.getKeySoundPath();
@@ -15413,7 +15430,7 @@ namespace org.kbinani.cadencii
             }
 
             int height = panel2.getHeight();
-            int delta = mWaveViewMouseDownedLocationY - e.X;
+            int delta = mWaveViewMouseDownedLocationY - e.Y;
             float scale = mWaveViewInitScale + delta * 3.0f / height * mWaveViewInitScale;
             waveView.setScale( scale );
 
