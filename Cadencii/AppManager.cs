@@ -2411,12 +2411,18 @@ namespace org.kbinani.cadencii
             if ( mVsq == null ) {
                 return;
             }
-            VsqTrack vsq_track = mVsq.Track.get( mSelected );
+            int selected = getSelected();
+            VsqTrack vsq_track = mVsq.Track.get( selected );
 
-            for ( Iterator<SelectedEventEntry> itr = getSelectedEventIterator(); itr.hasNext(); ) {
-                SelectedEventEntry item = itr.next();
-                int internal_id = item.original.InternalID;
-                item.original = vsq_track.findEventFromID( internal_id );
+            for ( int i = 0; i < mSelectedEvents.size(); i++ ) {
+                SelectedEventEntry item = mSelectedEvents.get( i );
+                if ( item.track == selected ) {
+                    int internal_id = item.original.InternalID;
+                    item.original = vsq_track.findEventFromID( internal_id );
+                } else {
+                    mSelectedEvents.removeElementAt( i );
+                    i--;
+                }
             }
         }
 
@@ -2425,18 +2431,23 @@ namespace org.kbinani.cadencii
         /// </summary>
         public static void cleanupDeadSelection( Vector<ValuePair<Integer, Integer>> before_ids )
         {
+            int size = mVsq.Track.size();
             for ( Iterator<ValuePair<Integer, Integer>> itr = before_ids.iterator(); itr.hasNext(); ) {
                 ValuePair<Integer, Integer> specif = itr.next();
                 boolean found = false;
-                for ( Iterator<VsqEvent> itr2 = mVsq.Track.get( specif.getKey() ).getNoteEventIterator(); itr2.hasNext(); ) {
-                    VsqEvent item = itr2.next();
-                    if ( item.InternalID == specif.getValue() ) {
-                        found = true;
-                        break;
+                int track = specif.getKey();
+                int internal_id = specif.getValue();
+                if ( 1 <= track && track < size ) {
+                    for ( Iterator<VsqEvent> itr2 = mVsq.Track.get( track ).getNoteEventIterator(); itr2.hasNext(); ) {
+                        VsqEvent item = itr2.next();
+                        if ( item.InternalID == internal_id ) {
+                            found = true;
+                            break;
+                        }
                     }
                 }
                 if ( !found ) {
-                    AppManager.removeSelectedEvent( specif.getValue() );
+                    AppManager.removeSelectedEvent( internal_id );
                 }
             }
         }
@@ -2799,7 +2810,8 @@ namespace org.kbinani.cadencii
             VsqEvent[] index = new VsqEvent[list.size()];
             int count = 0;
             int c = list.size();
-            for ( Iterator<VsqEvent> itr = mVsq.Track.get( mSelected ).getEventIterator(); itr.hasNext(); ) {
+            int selected = getSelected();
+            for ( Iterator<VsqEvent> itr = mVsq.Track.get( selected ).getEventIterator(); itr.hasNext(); ) {
                 VsqEvent ev = itr.next();
                 int find = -1;
                 for ( int i = 0; i < c; i++ ) {
@@ -2843,10 +2855,11 @@ namespace org.kbinani.cadencii
         {
             clearSelectedTempo();
             clearSelectedTimesig();
-            for ( Iterator<VsqEvent> itr = mVsq.Track.get( mSelected ).getEventIterator(); itr.hasNext(); ) {
+            int selected = getSelected();
+            for ( Iterator<VsqEvent> itr = mVsq.Track.get( selected ).getEventIterator(); itr.hasNext(); ) {
                 VsqEvent ev = itr.next();
                 if ( ev.InternalID == id ) {
-                    if ( isSelectedEventContains( mSelected, id ) ) {
+                    if ( isSelectedEventContains( selected, id ) ) {
                         // すでに選択されていた場合
                         int count = mSelectedEvents.size();
                         for ( int i = 0; i < count; i++ ) {
@@ -2858,7 +2871,7 @@ namespace org.kbinani.cadencii
                         }
                     }
 
-                    mSelectedEvents.add( new SelectedEventEntry( mSelected, ev, (VsqEvent)ev.clone() ) );
+                    mSelectedEvents.add( new SelectedEventEntry( selected, ev, (VsqEvent)ev.clone() ) );
                     if ( !silent ) {
                         try {
 #if JAVA
@@ -2880,7 +2893,7 @@ namespace org.kbinani.cadencii
             }
             if ( !silent ) {
 #if ENABLE_PROPERTY
-                propertyPanel.updateValue( mSelected );
+                propertyPanel.updateValue( selected );
 #endif
             }
         }
