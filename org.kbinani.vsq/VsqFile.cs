@@ -109,6 +109,14 @@ namespace org.kbinani.vsq {
             updateTotalClocks();
             updateTimesigInfo();
             reflectPitch( this, 1, pitch );
+#if DEBUG
+            PortUtil.println( "VsqFile#.ctor(UstFile)" );
+            VsqTrack vsq_track = Track.get( 1 );
+            for ( int i = 0; i < vsq_track.getEventCount(); i++ ) {
+                VsqEvent item = vsq_track.getEvent( i );
+                PortUtil.println( "    #" + i + "; type=" + item.ID.type + "; clock=" + item.Clock + "; length=" + item.ID.getLength() );
+            }
+#endif
         }
 
         /// <summary>
@@ -117,7 +125,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static String getGenericTypeName( String name ) {
+        public static String getGenericTypeName( String name )
+        {
             if ( name != null ) {
                 if ( name.Equals( "Track" ) ) {
                     return "org.kbinani.vsq.VsqTrack";

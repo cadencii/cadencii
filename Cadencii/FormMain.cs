@@ -11756,7 +11756,7 @@ namespace org.kbinani.cadencii
                 return;
             }
 
-            String last_file = AppManager.editorConfig.getLastUsedPathIn( "ust" );
+            String  last_file = AppManager.editorConfig.getLastUsedPathIn( "ust" );
             if ( !last_file.Equals( "" ) ) {
                 String dir = PortUtil.getDirectoryName( last_file );
                 openUstDialog.setInitialDirectory( dir );

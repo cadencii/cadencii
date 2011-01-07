@@ -81,6 +81,8 @@ namespace org.kbinani.vsq {
                         index = NEXT_INDEX;
                     } else if ( line.ToUpper().Equals( "[#PREV]" ) ) {
                         index = PREV_INDEX;
+                    } else if ( line.ToUpper().Equals( "[#SETTING]" ) ) {
+                        type = 0;
                     } else {
                         if ( type != 1 ) {
                             ue = new UstEvent();
@@ -221,6 +223,12 @@ namespace org.kbinani.vsq {
                                     ue.StartPoint = PortUtil.parseInt( spl[1] );
                                 } catch ( Exception ex ) {
                                     ue.StartPoint = 0;
+                                }
+                            } else if ( spl[0].Equals( "Moduration" ) ) {
+                                try {
+                                    ue.Moduration = PortUtil.parseInt( spl[1] );
+                                } catch ( Exception ex ) {
+                                    ue.Moduration = 0;
                                 }
                             } else {
 #if DEBUG
