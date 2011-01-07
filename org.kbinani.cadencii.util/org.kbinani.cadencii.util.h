@@ -167,7 +167,7 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
         // 引数　：DLLファイル名
         // 戻り値：見つかればそのDLLのハンドル、見つからなければNULL
         // -------------------------------------------------------------
-        static IntPtr^ GetDllHandle( PTCHAR svName );
+        static IntPtr GetDllHandle( PTCHAR svName );
 
         // -------------------------------------------------------------
         // パラメータテーブルからDLLを検索してそのファイル名を返す

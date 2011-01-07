@@ -26,6 +26,7 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
     // -------------------------------------------------------------
 	void DllLoad::terminate(){
         if( !g_initialized ) return;
+        EnterCriticalSection( &g_DLLCrit );
         PIMAGE_PARAMETERS cur = g_pImageParamHead;
 
         while( cur != NULL ){
@@ -33,6 +34,7 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
             delete [] cur;
             cur = next;
         }
+        LeaveCriticalSection( &g_DLLCrit );
 
         DeleteCriticalSection( &g_DLLCrit );
     }
@@ -268,10 +270,12 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
         }
          
         // 新しいDLLの生成
-        if( NULL == (cur = (PIMAGE_PARAMETERS)new IMAGE_PARAMETERS[1]) ){
+        PIMAGE_PARAMETERS ptr = new IMAGE_PARAMETERS[1];
+        if( NULL == ptr ){
             LeaveCriticalSection( &g_DLLCrit );
             return -1;
         }
+        cur = ptr;
         cur->pImageBase = pImageBase;
         cur->nLockCount = 1;
         cur->dwFlags    = dwFlags;
@@ -340,7 +344,7 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
     // 引数　：DLLファイル名
     // 戻り値：見つかればそのDLLのハンドル、見つからなければNULL
     // -------------------------------------------------------------
-	IntPtr^ DllLoad::GetDllHandle( PTCHAR svName ){
+	IntPtr DllLoad::GetDllHandle( PTCHAR svName ){
         if( NULL == svName ) return IntPtr::Zero;
 
         EnterCriticalSection( &g_DLLCrit );
@@ -355,7 +359,8 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
             }else{
                 // 見つかったらハンドルを返す
                 LeaveCriticalSection( &g_DLLCrit );
-                return gcnew IntPtr( cur->pImageBase );
+                IntPtr ret( cur->pImageBase );
+                return ret;
             }
         }
 
@@ -676,7 +681,7 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
         PVOID pImageBase;
         HANDLE hmapping = NULL;
         // DLLハンドルが見つからなければ新しく生成
-        if( (pImageBase = GetDllHandle( szMappingName )->ToPointer() ) == NULL ){
+        if( (pImageBase = GetDllHandle( szMappingName ).ToPointer() ) == NULL ){
             BOOL bCreated = FALSE;
             // すでにマッピングされているかどうか
             hmapping = OpenFileMapping( FILE_MAP_WRITE, TRUE, szMappingName );

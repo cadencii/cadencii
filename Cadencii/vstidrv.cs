@@ -12,6 +12,8 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#define TEST
+
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -107,6 +109,7 @@ namespace org.kbinani.cadencii
         /// </summary>
         private boolean useNativeDllLoader = true;
         protected MemoryManager memoryManager = new MemoryManager();
+        private object mSyncRoot = new object();
 
         public int getSampleRate()
         {
@@ -292,9 +295,10 @@ namespace org.kbinani.cadencii
         {
             VstIntPtr result = 0;
             switch ( opcode ) {
-                case AudioMasterOpcodes.audioMasterVersion:
-                result = Constants.kVstVersion;
-                break;
+                case AudioMasterOpcodes.audioMasterVersion: {
+                    result = Constants.kVstVersion;
+                    break;
+                }
             }
             return result;
         }
@@ -457,35 +461,45 @@ namespace org.kbinani.cadencii
 
         public virtual void close()
         {
-            if ( ui != null && !ui.IsDisposed ) {
-                ui.close();
-            }
-            try {
-                if ( aEffect != null ) {
-                    aEffect.Dispatch( AEffectOpcodes.effClose, 0, 0, IntPtr.Zero, 0.0f );
-                }
-                if ( dllHandle != IntPtr.Zero ) {
-                    if ( useNativeDllLoader ) {
-                        win32.FreeLibrary( dllHandle );
-                    } else {
-#if !MONO
-                        org.kbinani.cadencii.util.DllLoad.freeDll( dllHandle );
+            lock ( mSyncRoot ) {
+#if TEST
+                PortUtil.println( "vstidrv#close" );
 #endif
-                    }
+                if ( ui != null && !ui.IsDisposed ) {
+                    ui.close();
                 }
-            } catch ( Exception ex ) {
-                PortUtil.stderr.println( "vstidrv#close; ex=" + ex );
+                try {
+                    PortUtil.println( "vstidrv#close; (aEffect==null)=" + (aEffect == null) );
+                    if ( aEffect != null ) {
+                        aEffect.Dispatch( AEffectOpcodes.effClose, 0, 0, IntPtr.Zero, 0.0f );
+                    }
+                    PortUtil.println( "vstidrv#close; dllHandle=" + dllHandle );
+                    if ( dllHandle != IntPtr.Zero ) {
+                        PortUtil.println( "vstidrv#close; useNativeDllLoader=" + useNativeDllLoader );
+                        if ( useNativeDllLoader ) {
+                            win32.FreeLibrary( dllHandle );
+                        } else {
+#if !MONO
+                            org.kbinani.cadencii.util.DllLoad.freeDll( dllHandle );
+#endif
+                        }
+                    }
+                    aEffect = null;
+                    dllHandle = IntPtr.Zero;
+                    mainDelegate = null;
+                    audioMaster = null;
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "vstidrv#close; ex=" + ex );
+                }
+                releaseBuffer();
             }
-            releaseBuffer();
-            aEffect = null;
-            dllHandle = IntPtr.Zero;
-            mainDelegate = null;
-            audioMaster = null;
         }
 
         ~vstidrv()
         {
-            close();
+            lock ( mSyncRoot ) {
+                close();
+            }
         }
     }
 
