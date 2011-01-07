@@ -14,10 +14,14 @@
 #if JAVA
 package org.kbinani.vsq;
 #else
+using System;
+
 namespace org.kbinani.vsq {
 #endif
 
-    public struct UstPortamentoPoint {
+    [Serializable]
+    public struct UstPortamentoPoint
+    {
         public int Step;
         public float Value;
         public UstPortamentoType Type;

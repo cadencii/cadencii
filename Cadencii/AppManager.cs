@@ -3837,6 +3837,20 @@ namespace org.kbinani.cadencii
             ce.points = curve;
             ce.beziers = bezier;
             ce.copyStartedClock = copy_started_clock;
+#if DEBUG
+            // ClipboardEntryがシリアライズ可能かどうかを試すため，
+            // この部分のコードは残しておくこと
+            System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf = null;
+            System.IO.MemoryStream ms = null;
+            try {
+                bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                ms = new System.IO.MemoryStream();
+                bf.Serialize( ms, ce );
+            } catch ( Exception ex ) {
+                PortUtil.println( "AppManager#setClipboard; ex=" + ex );
+            }
+#endif
+
 #if CLIPBOARD_AS_TEXT
             String clip = "";
             try {
