@@ -274,6 +274,7 @@ namespace org.kbinani.cadencii {
             vocaloidDriver.clear();
 #if !MONO
             if ( org.kbinani.cadencii.util.DllLoad.isInitialized() ) {
+                //うおお・・・
                 org.kbinani.cadencii.util.DllLoad.terminate();
             }
 #endif

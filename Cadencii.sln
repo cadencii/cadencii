@@ -32,6 +32,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pp_cs2java", "pp_cs2java\pp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptImplement", "ScriptImplement\ScriptImplement.csproj", "{A0B35F11-5790-4473-A508-5868FFA67D70}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenerateKeySound", "GenerateKeySound\GenerateKeySound.csproj", "{AF5EB52F-11D8-4939-ADCD-90F432A71ECC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -141,6 +143,14 @@ Global
 		{A0B35F11-5790-4473-A508-5868FFA67D70}.Release|x86.Build.0 = Release|x86
 		{A0B35F11-5790-4473-A508-5868FFA67D70}.ReleaseMinimal|x86.ActiveCfg = ReleaseMinimal|x86
 		{A0B35F11-5790-4473-A508-5868FFA67D70}.ReleaseMinimal|x86.Build.0 = ReleaseMinimal|x86
+		{AF5EB52F-11D8-4939-ADCD-90F432A71ECC}.Debug|x86.ActiveCfg = Debug|x86
+		{AF5EB52F-11D8-4939-ADCD-90F432A71ECC}.Debug|x86.Build.0 = Debug|x86
+		{AF5EB52F-11D8-4939-ADCD-90F432A71ECC}.DebugMinimal|x86.ActiveCfg = DebugMinimal|x86
+		{AF5EB52F-11D8-4939-ADCD-90F432A71ECC}.DebugMinimal|x86.Build.0 = DebugMinimal|x86
+		{AF5EB52F-11D8-4939-ADCD-90F432A71ECC}.Release|x86.ActiveCfg = Release|x86
+		{AF5EB52F-11D8-4939-ADCD-90F432A71ECC}.Release|x86.Build.0 = Release|x86
+		{AF5EB52F-11D8-4939-ADCD-90F432A71ECC}.ReleaseMinimal|x86.ActiveCfg = ReleaseMinimal|x86
+		{AF5EB52F-11D8-4939-ADCD-90F432A71ECC}.ReleaseMinimal|x86.Build.0 = ReleaseMinimal|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

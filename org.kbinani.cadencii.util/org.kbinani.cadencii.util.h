@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <vcclr.h>
 #include <stdlib.h>
+#include <vector>
 
 // DllMain時のアタッチ、デタッチ判定
 #define DLL_ATTACH    0
@@ -21,6 +22,9 @@
 #define SIZE_OF_NT_SIGNATURE       (sizeof(DWORD))
 #define SIZE_OF_PARAMETER_BLOCK    4096
 #define IMAGE_PARAMETER_MAGIC      0xCDC31337
+
+// DLLの一覧にvectorを使うかどうか
+#define USE_VEC
 
 #define RVATOVA(base, offset) ( \
     (LPVOID)((DWORD)(base) + (DWORD)(offset)))
@@ -70,7 +74,9 @@ typedef struct __imageparameters{
     TCHAR svName[MAX_PATH];
     DWORD dwFlags;
     int nLockCount;
+#ifndef USE_VEC
     struct __imageparameters *next;
+#endif
 } IMAGE_PARAMETERS, *PIMAGE_PARAMETERS;
 
 #pragma pack(pop)
@@ -87,7 +93,9 @@ typedef struct{
 } MY_IMAGE_THUNK_DATA, *PMY_IMAGE_THUNK_DATA;
 
 // DLLデータベースのトップ
+#ifndef USE_VEC
 PIMAGE_PARAMETERS g_pImageParamHead;
+#endif
 // クリティカルセクション変数
 CRITICAL_SECTION g_DLLCrit;
 bool g_initialized = false;
@@ -96,6 +104,10 @@ using namespace System;
 using namespace System::Runtime::InteropServices;
 
 namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
+
+#ifdef USE_VEC
+    std::vector<PIMAGE_PARAMETERS> mDllList;
+#endif
 
 	public ref class DllLoad{
 	public:
@@ -218,6 +230,6 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
         static HMODULE LoadDllFromImage( LPVOID pDLLFileImage, 
                                   PTCHAR szMappingName,
                                   DWORD dwFlags );
-	};
+    };
 
 } } } }

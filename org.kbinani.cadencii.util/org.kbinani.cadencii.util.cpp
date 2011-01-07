@@ -13,7 +13,10 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
             return;
         }
         InitializeCriticalSection( &g_DLLCrit );
+#ifdef USE_VEC
+#else
         g_pImageParamHead = NULL;
+#endif
         g_initialized = true;
     }
 
@@ -27,6 +30,13 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
 	void DllLoad::terminate(){
         if( !g_initialized ) return;
         EnterCriticalSection( &g_DLLCrit );
+#ifdef USE_VEC
+        for( int i = 0; i < mDllList.size(); i++ ){
+            PIMAGE_PARAMETERS cur = mDllList[i];
+            delete [] cur;
+        }
+        mDllList.clear();
+#else
         PIMAGE_PARAMETERS cur = g_pImageParamHead;
 
         while( cur != NULL ){
@@ -34,6 +44,7 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
             delete [] cur;
             cur = next;
         }
+#endif
         LeaveCriticalSection( &g_DLLCrit );
 
         DeleteCriticalSection( &g_DLLCrit );
@@ -256,6 +267,16 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
 
         EnterCriticalSection( &g_DLLCrit );
 
+#ifdef USE_VEC
+        for( int i = 0; i < mDllList.size(); i++ ){
+            PIMAGE_PARAMETERS p = mDllList[i];
+            if( p->pImageBase == pImageBase ){
+                p->nLockCount++;
+                LeaveCriticalSection( &g_DLLCrit );
+                return 0;
+            }
+        }
+#else
         PIMAGE_PARAMETERS cur = g_pImageParamHead;
         
         // DLLを検索
@@ -268,6 +289,7 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
                 return 0;
             }
         }
+#endif
          
         // 新しいDLLの生成
         PIMAGE_PARAMETERS ptr = new IMAGE_PARAMETERS[1];
@@ -275,14 +297,19 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
             LeaveCriticalSection( &g_DLLCrit );
             return -1;
         }
-        cur = ptr;
-        cur->pImageBase = pImageBase;
-        cur->nLockCount = 1;
-        cur->dwFlags    = dwFlags;
-        cur->next       = g_pImageParamHead;
-        lstrcpyn( cur->svName, szName, MAX_PATH );
+        ptr->pImageBase = pImageBase;
+        ptr->nLockCount = 1;
+        ptr->dwFlags    = dwFlags;
+#ifndef USE_VEC
+        ptr->next       = g_pImageParamHead;
+#endif
+        lstrcpyn( ptr->svName, szName, MAX_PATH );
 
+#ifdef USE_VEC
+        mDllList.push_back( ptr );
+#else
         g_pImageParamHead = cur;
+#endif
 
         LeaveCriticalSection( &g_DLLCrit );
         return 1;
@@ -298,10 +325,20 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
                             PTCHAR svName,
                             PDWORD pdwFlags ){
         EnterCriticalSection( &g_DLLCrit );
-
-        PIMAGE_PARAMETERS prev, cur = g_pImageParamHead;
-
+        
         // DLLを検索
+#ifdef USE_VEC
+        int indx = -1;
+        PIMAGE_PARAMETERS cur = NULL;
+        for( int i = 0; i < mDllList.size(); i++ ){
+            cur = mDllList[i];
+            if( cur->pImageBase == pImageBase ){
+                indx = i;
+                break;
+            }
+        }
+#else
+        PIMAGE_PARAMETERS prev, cur = g_pImageParamHead;
         while( cur != NULL ){
             if( cur->pImageBase == pImageBase ){
                 break;
@@ -309,6 +346,7 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
             prev = cur;
             cur = cur->next;
         }
+#endif
 
         // 発見できなかったらエラー
         if( NULL == cur ){
@@ -326,12 +364,20 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
             return 0;
         }
 
+#ifdef USE_VEC
+        if( indx >= 0 ){
+            std::vector<PIMAGE_PARAMETERS>::iterator itr = mDllList.begin();
+            std::advance( itr, indx );
+            mDllList.erase( itr );
+        }
+#else
         // 連結を更新
         if( NULL == prev ){
             g_pImageParamHead = g_pImageParamHead->next;
         }else{
             prev->next = cur->next;
         }
+#endif
 
         delete [] cur;
         LeaveCriticalSection( &g_DLLCrit );
@@ -349,6 +395,16 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
 
         EnterCriticalSection( &g_DLLCrit );
 
+#ifdef USE_VEC
+        for( int i = 0; i < mDllList.size(); i++ ){
+            PIMAGE_PARAMETERS cur = mDllList[i];
+            if( lstrcmpi( cur->svName, svName ) == 0 ){
+                IntPtr ret( cur->pImageBase );
+                LeaveCriticalSection( &g_DLLCrit );
+                return ret;
+            }
+        }
+#else
         // パラーメータテーブルのトップを取得
         PIMAGE_PARAMETERS cur = g_pImageParamHead;
         
@@ -358,11 +414,12 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
                 cur = cur->next;
             }else{
                 // 見つかったらハンドルを返す
-                LeaveCriticalSection( &g_DLLCrit );
                 IntPtr ret( cur->pImageBase );
+                LeaveCriticalSection( &g_DLLCrit );
                 return ret;
             }
         }
+#endif
 
         // 見つからなければ終了
         LeaveCriticalSection( &g_DLLCrit );
@@ -390,6 +447,16 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
 
         EnterCriticalSection( &g_DLLCrit );
 
+#ifdef USE_VEC
+        for( int i = 0; i < mDllList.size(); i++ ){
+            PIMAGE_PARAMETERS cur = mDllList[i];
+            if( cur->pImageBase == hModule ){
+                lstrcpyn( lpFileName, cur->svName, dwSize );
+                LeaveCriticalSection( &g_DLLCrit );
+                return lstrlen( lpFileName );
+            }
+        }
+#else
         PIMAGE_PARAMETERS cur = g_pImageParamHead;
         
         // DLLを検索
@@ -403,6 +470,7 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
                 return lstrlen( lpFileName );
             }
         } 
+#endif
 
         LeaveCriticalSection( &g_DLLCrit );
         return 0;
@@ -432,9 +500,7 @@ namespace org{ namespace kbinani{ namespace cadencii{ namespace util {
         // デタッチ時orアタッチ時
         try{
             if( bDetach ){
-                //うおお・・
-                //return pMain( (HMODULE)pImageBase, DLL_PROCESS_DETACH, NULL );
-                return TRUE;
+                return pMain( (HMODULE)pImageBase, DLL_PROCESS_DETACH, NULL );
             }else{
                 return pMain( (HMODULE)pImageBase, DLL_PROCESS_ATTACH, NULL );
             }
