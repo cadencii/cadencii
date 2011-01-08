@@ -1031,7 +1031,9 @@ namespace org.kbinani.cadencii{
             int numEvent2 = track2.getEventCount();
 
             #region track1にあってtrack2に無い音符イベント、クレッシェンドイベントを検出
-            for ( Iterator<Integer> itr1 = track1.indexIterator( IndexIteratorKind.NOTE | IndexIteratorKind.CRESCEND | IndexIteratorKind.DECRESCEND ); itr1.hasNext(); ) {
+            RendererKind kind = VsqFileEx.getTrackRendererKind(track1);
+            for (Iterator<Integer> itr1 = track1.indexIterator(IndexIteratorKind.NOTE | IndexIteratorKind.CRESCEND | IndexIteratorKind.DECRESCEND); itr1.hasNext(); )
+            {
                 int i = itr1.next();
                 VsqEvent item1 = track1.getEvent( i );
                 boolean found = false;
@@ -1040,8 +1042,18 @@ namespace org.kbinani.cadencii{
                     VsqEvent item2 = track2.getEvent( j );
                     // item1とitem2が同じかどうか判定する
                     if ( item1.equals( item2 ) ) {
-                        found = true;
-                        break;
+                        // UTAU 音源を使用する際はUstEvent内も比較しないといけない．
+                        if (kind == org.kbinani.cadencii.RendererKind.VCNT || kind == org.kbinani.cadencii.RendererKind.UTAU || kind == org.kbinani.cadencii.RendererKind.STRAIGHT_UTAU) {
+                            // 歌詞は UstEvent からは判断できないので
+                            if (item1.UstEvent.EqualsForSynth(item2.UstEvent) && item1.ID.LyricHandle.L0.Phrase == item2.ID.LyricHandle.L0.Phrase)
+                            {
+                                found = true;
+                                break;
+                            }
+                        } else { // vsq 使用の場合はこちらのみで大丈夫．
+                            found = true;
+                            break;
+                        }
                     }
                 }
                 if ( !found ) {
@@ -1051,17 +1063,37 @@ namespace org.kbinani.cadencii{
             #endregion
 
             #region track2にあってtrack1に無い音符イベント、クレッシェンドイベントを検出
-            for ( Iterator<Integer> itr2 = track2.indexIterator( IndexIteratorKind.NOTE | IndexIteratorKind.CRESCEND | IndexIteratorKind.DECRESCEND ); itr2.hasNext(); ) {
+            kind = VsqFileEx.getTrackRendererKind(track2);
+            for (Iterator<Integer> itr2 = track2.indexIterator(IndexIteratorKind.NOTE | IndexIteratorKind.CRESCEND | IndexIteratorKind.DECRESCEND); itr2.hasNext(); )
+            {
                 int i = itr2.next();
                 VsqEvent item2 = track2.getEvent( i );
                 boolean found = false;
                 for ( Iterator<Integer> itr1 = track1.indexIterator( IndexIteratorKind.NOTE | IndexIteratorKind.CRESCEND | IndexIteratorKind.DECRESCEND ); itr1.hasNext(); ) {
                     int j = itr1.next();
                     VsqEvent item1 = track1.getEvent( j );
-                    // item1とitem2が同じかどうか判定する
+                    // UTAU 音源を使用する際はUstEvent内も比較しないといけない．
+                    if (kind == org.kbinani.cadencii.RendererKind.VCNT || kind == org.kbinani.cadencii.RendererKind.UTAU || kind == org.kbinani.cadencii.RendererKind.STRAIGHT_UTAU)
+                    {
+                        if (!item1.UstEvent.EqualsForSynth(item2.UstEvent))
+                        {
+                            found = true;
+                            break;
+                        }
+                    }                    // item1とitem2が同じかどうか判定する
                     if ( item2.equals( item1 ) ) {
-                        found = true;
-                        break;
+                        // UTAU 音源を使用する際はUstEvent内も比較しないといけない．
+                        if (kind == org.kbinani.cadencii.RendererKind.VCNT || kind == org.kbinani.cadencii.RendererKind.UTAU || kind == org.kbinani.cadencii.RendererKind.STRAIGHT_UTAU) {
+                            // 歌詞は UstEvent からは判断できないので
+                            if (item1.UstEvent.EqualsForSynth(item2.UstEvent) && item1.ID.LyricHandle.L0.Phrase == item2.ID.LyricHandle.L0.Phrase)
+                            {
+                                found = true;
+                                break;
+                            }
+                        } else { // vsq 使用の場合はこちらのみで大丈夫．
+                            found = true;
+                            break;
+                        }
                     }
                 }
                 if ( !found ) {

@@ -172,6 +172,19 @@ namespace org.kbinani.vsq {
             }
         }
 
+        // 合成に必要なフィールドのみチェックを行う．
+        public Boolean EqualsForSynth( UstEvent item )
+        {
+            Boolean ret = true;
+            // モジュレーション・先行発声・スタート位置・オーバーラップのみチェック．
+            // ほかに有効な値でかつ VsqEvent で比較できないものは何かあったか
+            if (this.Moduration != item.Moduration) ret = false;
+            else if (this.PreUtterance != item.PreUtterance) ret = false;
+            else if (this.StartPoint != item.StartPoint) ret = false;
+            else if (this.VoiceOverlap != item.VoiceOverlap) ret = false;
+            return ret;
+        }
+
         /*public VsqEvent convertToVsqEvent( int clock, int internal_id ) {
             VsqEvent ret = new VsqEvent();
             ret.Clock = clock;
