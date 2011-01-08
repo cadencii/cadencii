@@ -1072,20 +1072,12 @@ namespace org.kbinani.cadencii{
                 for ( Iterator<Integer> itr1 = track1.indexIterator( IndexIteratorKind.NOTE | IndexIteratorKind.CRESCEND | IndexIteratorKind.DECRESCEND ); itr1.hasNext(); ) {
                     int j = itr1.next();
                     VsqEvent item1 = track1.getEvent( j );
-                    // UTAU 音源を使用する際はUstEvent内も比較しないといけない．
-                    if (kind == org.kbinani.cadencii.RendererKind.VCNT || kind == org.kbinani.cadencii.RendererKind.UTAU || kind == org.kbinani.cadencii.RendererKind.STRAIGHT_UTAU)
-                    {
-                        if (!item1.UstEvent.EqualsForSynth(item2.UstEvent))
-                        {
-                            found = true;
-                            break;
-                        }
-                    }                    // item1とitem2が同じかどうか判定する
+                    // item1とitem2が同じかどうか判定する
                     if ( item2.equals( item1 ) ) {
                         // UTAU 音源を使用する際はUstEvent内も比較しないといけない．
                         if (kind == org.kbinani.cadencii.RendererKind.VCNT || kind == org.kbinani.cadencii.RendererKind.UTAU || kind == org.kbinani.cadencii.RendererKind.STRAIGHT_UTAU) {
                             // 歌詞は UstEvent からは判断できないので
-                            if (item1.UstEvent.EqualsForSynth(item2.UstEvent) && item1.ID.LyricHandle.L0.Phrase == item2.ID.LyricHandle.L0.Phrase)
+                            if (item2.UstEvent.EqualsForSynth(item1.UstEvent) && item2.ID.LyricHandle.L0.Phrase == item1.ID.LyricHandle.L0.Phrase)
                             {
                                 found = true;
                                 break;
