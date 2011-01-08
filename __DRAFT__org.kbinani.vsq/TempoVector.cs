@@ -68,7 +68,7 @@ namespace org.kbinani.vsq {
             int tempo = baseTempo;
             double base_clock = 0;
             double base_time = 0f;
-            int c = size();
+            int c = vec.size( this );
             if ( c == 0 ) {
                 tempo = baseTempo;
                 base_clock = 0;

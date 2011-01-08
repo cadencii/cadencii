@@ -66,7 +66,7 @@ namespace org.kbinani.vsq {
                 int type = 0; //0 => reading "SETTING" section
                 while ( true ) {
 #if DEBUG
-                    PortUtil.println( "UstFile#.ctor; line=" + line );
+                    sout.println( "UstFile#.ctor; line=" + line );
 #endif
                     UstEvent ue = null;
                     if ( type == 1 ) {

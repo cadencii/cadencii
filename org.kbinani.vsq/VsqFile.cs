@@ -64,6 +64,10 @@ namespace org.kbinani.vsq {
         static readonly byte[] _MTHD = new byte[] { (byte)0x4d, (byte)0x54, (byte)0x68, (byte)0x64 };
         static readonly byte[] _MASTER_TRACK = new byte[] { (byte)0x4D, (byte)0x61, (byte)0x73, (byte)0x74, (byte)0x65, (byte)0x72, (byte)0x20, (byte)0x54, (byte)0x72, (byte)0x61, (byte)0x63, (byte)0x6B, };
         static readonly String[] _CURVES = new String[] { "VEL", "DYN", "BRE", "BRI", "CLE", "OPE", "GEN", "POR", "PIT", "PBS" };
+        /// <summary>
+        /// マスタートラックを除いた，トラック総数の最大値
+        /// </summary>
+        public const int MAX_TRACKS = 16;
 
 #if JAVA
         public VsqFile( UstFile ust ){

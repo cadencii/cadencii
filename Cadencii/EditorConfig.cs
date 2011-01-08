@@ -474,7 +474,13 @@ namespace org.kbinani.cadencii {
         /// バッファーサイズに設定できる最小値
         /// </summary>
         public const int MIN_BUFFER_MILLIXEC = 100;
+        /// <summary>
+        /// ピアノロールの縦軸の拡大率を表す整数値の最大値
+        /// </summary>
         public const int MAX_PIANOROLL_SCALEY = 10;
+        /// <summary>
+        /// ピアノロールの縦軸の拡大率を表す整数値の最小値
+        /// </summary>
         public const int MIN_PIANOROLL_SCALEY = -4;
 
         #region static fields
@@ -752,6 +758,9 @@ namespace org.kbinani.cadencii {
             String ret = getLastUsedPathCore( LastUsedPathIn, extension );
             if ( ret.Equals( "" ) ) {
                 return getLastUsedPathCore( LastUsedPathOut, extension );
+            }
+            if ( !ret.Equals( "" ) ) {
+                ret = PortUtil.getDirectoryName( ret );
             }
             return ret;
         }

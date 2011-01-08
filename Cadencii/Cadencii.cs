@@ -86,13 +86,43 @@ namespace org.kbinani.cadencii{
             try {
 #endif
 
+            // 言語設定を読み込み
+            try {
+                Messaging.loadMessages();
+                // システムのデフォルトの言語を調べる．
+                // EditorConfigのコンストラクタは，この判定を自動でやるのでそれを利用
+                EditorConfig ec = new EditorConfig();
+                Messaging.setLanguage( ec.Language );
+            } catch ( Exception ex ) {
+                Logger.write( typeof( FormMain ) + ".ctor; ex=" + ex + "\n" );
+                PortUtil.stderr.println( "FormMain#.ctor; ex=" + ex );
+            }
+
+            // 開発版の場合の警告ダイアログ
+            string str_minor = BAssemblyInfo.fileVersionMinor;
+            int minor = 0;
+            try {
+                minor = PortUtil.parseInt( str_minor );
+            } catch ( Exception ex ) {
+            }
+            if ( (minor % 2) != 0 ) {
+                AppManager.showMessageBox(
+                    PortUtil.formatMessage(
+                        _( "Info: This is test version of Cadencii version {0}" ),
+                        BAssemblyInfo.fileVersionMeasure + "." + (minor + 1) ),
+                    "Cadencii",
+                    org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
+                    org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+            }
+
+            // スプラッシュを表示するスレッドを開始
 #if !MONO
             splashThread = new Thread( new ThreadStart( showSplash ) );
             splashThread.TrySetApartmentState( ApartmentState.STA );
             splashThread.Start();
 #endif
 
-            String file = parseArguments( args );
+            // AppManagerの初期化
             AppManager.init();
 
 #if ENABLE_SCRIPT
@@ -104,6 +134,7 @@ namespace org.kbinani.cadencii{
                 Logger.write( typeof( Cadencii ) + ".Main; ex=" + ex + "\n" );
             }
 #endif
+            String file = parseArguments( args );
             AppManager.mMainWindow = new FormMain( file );
 #if !MONO
             AppManager.mMainWindow.Load += mainWindow_Load;

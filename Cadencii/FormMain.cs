@@ -569,6 +569,7 @@ namespace org.kbinani.cadencii
         public BMenuItem menuSettingSequence;
         public BMenuItem menuHiddenPrintPoToCSV;
         public BMenuItem menuFileExportParaWave;
+        public BMenuItem menuFileImportUst;
         private System.Windows.Forms.ToolStripButton stripBtnStepSequencer;
         #endregion
 
@@ -583,13 +584,8 @@ namespace org.kbinani.cadencii
 		    super();
 #endif
 
-            try {
-                Messaging.loadMessages();
-                Messaging.setLanguage( AppManager.editorConfig.Language );
-            } catch ( Exception ex ) {
-                Logger.write( typeof( FormMain ) + ".ctor; ex=" + ex + "\n" );
-                PortUtil.stderr.println( "FormMain#.ctor; ex=" + ex );
-            }
+            // 言語設定を反映させる
+            Messaging.setLanguage( AppManager.editorConfig.Language );
 
 #if ENABLE_PROPERTY
             AppManager.propertyPanel = new PropertyPanel();
@@ -7017,10 +7013,12 @@ namespace org.kbinani.cadencii
             menuFileOpenUst.MouseEnter += new EventHandler( handleMenuMouseEnter );
             menuFileOpenUst.Click += new EventHandler( menuFileOpenUst_Click );
             menuFileImport.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuFileImportVsq.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuFileImportVsq.Click += new EventHandler( menuFileImportVsq_Click );
             menuFileImportMidi.MouseEnter += new EventHandler( handleMenuMouseEnter );
             menuFileImportMidi.Click += new EventHandler( menuFileImportMidi_Click );
+            menuFileImportUst.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileImportUst.Click += new EventHandler( menuFileImportUst_Click );
+            menuFileImportVsq.MouseEnter += new EventHandler( handleMenuMouseEnter );
+            menuFileImportVsq.Click += new EventHandler( menuFileImportVsq_Click );
             menuFileExport.MouseEnter += new EventHandler( handleMenuMouseEnter );
             menuFileExport.DropDownOpening += new EventHandler( menuFileExport_DropDownOpening );
             menuFileExportWave.MouseEnter += new EventHandler( handleMenuMouseEnter );
@@ -10262,23 +10260,6 @@ namespace org.kbinani.cadencii
             menuHidden.setVisible( true );
 #endif
 
-            // 開発版の場合の警告ダイアログ
-            string str_minor = BAssemblyInfo.fileVersionMinor;
-            int minor = 0;
-            try {
-                minor = PortUtil.parseInt( str_minor );
-            } catch ( Exception ex ) {
-            }
-            if ( (minor % 2) != 0 ) {
-                AppManager.showMessageBox(
-                    PortUtil.formatMessage(
-                        _( "Info: This is test version of Cadencii version {0}" ),
-                        BAssemblyInfo.fileVersionMeasure + "." + (minor + 1) ),
-                    "Cadencii",
-                    org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
-                    org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
-            }
-
             // 鍵盤用のキャッシュが古い位置に保存されている場合。
             String cache_new = Utility.getKeySoundPath();
             String cache_old = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "cache" );
@@ -10672,6 +10653,378 @@ namespace org.kbinani.cadencii
             close();
         }
 
+        public void menuFileExport_DropDownOpening( Object sender, EventArgs e )
+        {
+            menuFileExportWave.setEnabled( (AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getEventCount() > 0) );
+        }
+
+        public void menuFileExportMidi_Click( Object sender, EventArgs e )
+        {
+            if ( mDialogMidiImportAndExport == null ) {
+                mDialogMidiImportAndExport = new FormMidiImExport();
+            }
+            mDialogMidiImportAndExport.listTrack.clear();
+            VsqFileEx vsq = (VsqFileEx)AppManager.getVsqFile().clone();
+
+            for ( int i = 0; i < vsq.Track.size(); i++ ) {
+                VsqTrack track = vsq.Track.get( i );
+                int notes = 0;
+                for ( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ) {
+                    VsqEvent obj = itr.next();
+                    notes++;
+                }
+                mDialogMidiImportAndExport.listTrack.addItem( "", new BListViewItem( new String[] { i + "", track.getName(), notes + "" } ) );
+                mDialogMidiImportAndExport.listTrack.setItemCheckedAt( "", i, true );
+            }
+            mDialogMidiImportAndExport.setMode( FormMidiImExport.FormMidiMode.EXPORT );
+            mDialogMidiImportAndExport.setLocation( getFormPreferedLocation( mDialogMidiImportAndExport ) );
+            BDialogResult dr = AppManager.showModalDialog( mDialogMidiImportAndExport, this );
+            if ( dr == BDialogResult.OK ) {
+                if ( !mDialogMidiImportAndExport.isPreMeasure() ) {
+                    vsq.removePart( 0, vsq.getPreMeasureClocks() );
+                }
+                int track_count = 0;
+                for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.getItemCount( "" ); i++ ) {
+                    if ( mDialogMidiImportAndExport.listTrack.isItemCheckedAt( "", i ) ) {
+                        track_count++;
+                    }
+                }
+                if ( track_count == 0 ) {
+                    return;
+                }
+
+                String dir = AppManager.editorConfig.getLastUsedPathOut( "mid" );
+                saveMidiDialog.setInitialDirectory( dir );
+                int dialog_result = AppManager.showModalDialog( saveMidiDialog, false, this );
+
+                if ( dialog_result == BFileChooser.APPROVE_OPTION ) {
+                    RandomAccessFile fs = null;
+                    String filename = saveMidiDialog.getSelectedFile();
+                    AppManager.editorConfig.setLastUsedPathOut( filename );
+                    try {
+                        fs = new RandomAccessFile( filename, "rw" );
+                        // ヘッダー
+                        fs.write( new byte[] { 0x4d, 0x54, 0x68, 0x64 }, 0, 4 );
+                        //データ長
+                        fs.write( (byte)0x00 );
+                        fs.write( (byte)0x00 );
+                        fs.write( (byte)0x00 );
+                        fs.write( (byte)0x06 );
+                        //フォーマット
+                        fs.write( (byte)0x00 );
+                        fs.write( (byte)0x01 );
+                        //トラック数
+                        VsqFile.writeUnsignedShort( fs, track_count );
+                        //時間単位
+                        fs.write( (byte)0x01 );
+                        fs.write( (byte)0xe0 );
+                        int count = -1;
+                        for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.getItemCount( "" ); i++ ) {
+                            if ( !mDialogMidiImportAndExport.listTrack.isItemCheckedAt( "", i ) ) {
+                                continue;
+                            }
+                            VsqTrack track = vsq.Track.get( i );
+                            count++;
+                            fs.write( new byte[] { 0x4d, 0x54, 0x72, 0x6b }, 0, 4 );
+                            //データ長。とりあえず0を入れておく
+                            fs.write( new byte[] { 0x00, 0x00, 0x00, 0x00 }, 0, 4 );
+                            long first_position = fs.getFilePointer();
+                            //トラック名
+                            VsqFile.writeFlexibleLengthUnsignedLong( fs, 0 );//デルタタイム
+                            fs.write( (byte)0xff );//ステータスタイプ
+                            fs.write( (byte)0x03 );//イベントタイプSequence/Track Name
+                            byte[] track_name = PortUtil.getEncodedByte( "Shift_JIS", track.getName() );
+                            fs.write( (byte)track_name.Length );
+                            fs.write( track_name, 0, track_name.Length );
+
+                            Vector<MidiEvent> events = new Vector<MidiEvent>();
+
+                            // tempo
+                            boolean print_tempo = mDialogMidiImportAndExport.isTempo();
+                            if ( print_tempo && count == 0 ) {
+                                Vector<MidiEvent> tempo_events = vsq.generateTempoChange();
+                                for ( int j = 0; j < tempo_events.size(); j++ ) {
+                                    events.add( tempo_events.get( j ) );
+                                }
+                            }
+
+                            // timesig
+                            if ( mDialogMidiImportAndExport.isTimesig() && count == 0 ) {
+                                Vector<MidiEvent> timesig_events = vsq.generateTimeSig();
+                                for ( int j = 0; j < timesig_events.size(); j++ ) {
+                                    events.add( timesig_events.get( j ) );
+                                }
+                            }
+
+                            // Notes
+                            if ( mDialogMidiImportAndExport.isNotes() ) {
+                                for ( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ) {
+                                    VsqEvent ve = itr.next();
+                                    int clock_on = ve.Clock;
+                                    int clock_off = ve.Clock + ve.ID.getLength();
+                                    if ( !print_tempo ) {
+                                        // テンポを出力しない場合、テンポを500000（120）と見なしてクロックを再計算
+                                        double time_on = vsq.getSecFromClock( clock_on );
+                                        double time_off = vsq.getSecFromClock( clock_off );
+                                        clock_on = (int)(960.0 * time_on);
+                                        clock_off = (int)(960.0 * time_off);
+                                    }
+                                    MidiEvent noteon = new MidiEvent();
+                                    noteon.clock = clock_on;
+                                    noteon.firstByte = 0x90;
+                                    noteon.data = new int[2];
+                                    noteon.data[0] = ve.ID.Note;
+                                    noteon.data[1] = ve.ID.Dynamics;
+                                    events.add( noteon );
+                                    MidiEvent noteoff = new MidiEvent();
+                                    noteoff.clock = clock_off;
+                                    noteoff.firstByte = 0x80;
+                                    noteoff.data = new int[2];
+                                    noteoff.data[0] = ve.ID.Note;
+                                    noteoff.data[1] = 0x7f;
+                                    events.add( noteoff );
+                                }
+                            }
+
+                            // lyric
+                            if ( mDialogMidiImportAndExport.isLyric() ) {
+                                for ( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ) {
+                                    VsqEvent ve = itr.next();
+                                    int clock_on = ve.Clock;
+                                    if ( !print_tempo ) {
+                                        double time_on = vsq.getSecFromClock( clock_on );
+                                        clock_on = (int)(960.0 * time_on);
+                                    }
+                                    MidiEvent add = new MidiEvent();
+                                    add.clock = clock_on;
+                                    add.firstByte = 0xff;
+                                    byte[] lyric = PortUtil.getEncodedByte( "Shift_JIS", ve.ID.LyricHandle.L0.Phrase );
+                                    add.data = new int[lyric.Length + 1];
+                                    add.data[0] = 0x05;
+                                    for ( int j = 0; j < lyric.Length; j++ ) {
+                                        add.data[j + 1] = lyric[j];
+                                    }
+                                    events.add( add );
+                                }
+                            }
+
+                            // vocaloid metatext
+                            Vector<MidiEvent> meta;
+                            if ( mDialogMidiImportAndExport.isVocaloidMetatext() && i > 0 ) {
+                                meta = vsq.generateMetaTextEvent( i, "Shift_JIS" );
+                            } else {
+                                meta = new Vector<MidiEvent>();
+                            }
+
+                            // vocaloid nrpn
+                            Vector<MidiEvent> vocaloid_nrpn_midievent;
+                            if ( mDialogMidiImportAndExport.isVocaloidNrpn() && i > 0 ) {
+                                VsqNrpn[] vsqnrpn = VsqFileEx.generateNRPN( (VsqFile)vsq, i, AppManager.editorConfig.PreSendTime );
+                                NrpnData[] nrpn = VsqNrpn.convert( vsqnrpn );
+
+                                vocaloid_nrpn_midievent = new Vector<MidiEvent>();
+                                for ( int j = 0; j < nrpn.Length; j++ ) {
+                                    MidiEvent me = new MidiEvent();
+                                    me.clock = nrpn[j].getClock();
+                                    me.firstByte = 0xb0;
+                                    me.data = new int[2];
+                                    me.data[0] = nrpn[j].getParameter();
+                                    me.data[1] = nrpn[j].Value;
+                                    vocaloid_nrpn_midievent.add( me );
+                                }
+                            } else {
+                                vocaloid_nrpn_midievent = new Vector<MidiEvent>();
+                            }
+#if DEBUG
+                            PortUtil.println( "menuFileExportMidi_Click" );
+                            PortUtil.println( "    vocaloid_nrpn_midievent.size()=" + vocaloid_nrpn_midievent.size() );
+#endif
+
+                            // midi eventを出力
+                            Collections.sort( events );
+                            long last_clock = 0;
+                            int events_count = events.size();
+                            if ( events_count > 0 ) {
+                                for ( int j = 0; j < events_count; j++ ) {
+                                    if ( events.get( j ).clock > 0 && meta.size() > 0 ) {
+                                        for ( int k = 0; k < meta.size(); k++ ) {
+                                            VsqFile.writeFlexibleLengthUnsignedLong( fs, 0 );
+                                            meta.get( k ).writeData( fs );
+                                        }
+                                        meta.clear();
+                                        last_clock = 0;
+                                    }
+                                    long clock = events.get( j ).clock;
+                                    while ( vocaloid_nrpn_midievent.size() > 0 && vocaloid_nrpn_midievent.get( 0 ).clock < clock ) {
+                                        VsqFile.writeFlexibleLengthUnsignedLong( fs, (long)(vocaloid_nrpn_midievent.get( 0 ).clock - last_clock) );
+                                        last_clock = vocaloid_nrpn_midievent.get( 0 ).clock;
+                                        vocaloid_nrpn_midievent.get( 0 ).writeData( fs );
+                                        vocaloid_nrpn_midievent.removeElementAt( 0 );
+                                    }
+                                    VsqFile.writeFlexibleLengthUnsignedLong( fs, (long)(events.get( j ).clock - last_clock) );
+                                    events.get( j ).writeData( fs );
+                                    last_clock = events.get( j ).clock;
+                                }
+                            } else {
+                                int c = vocaloid_nrpn_midievent.size();
+                                for ( int k = 0; k < meta.size(); k++ ) {
+                                    VsqFile.writeFlexibleLengthUnsignedLong( fs, 0 );
+                                    meta.get( k ).writeData( fs );
+                                }
+                                meta.clear();
+                                last_clock = 0;
+                                for ( int j = 0; j < c; j++ ) {
+                                    MidiEvent item = vocaloid_nrpn_midievent.get( j );
+                                    long clock = item.clock;
+                                    VsqFile.writeFlexibleLengthUnsignedLong( fs, (long)(clock - last_clock) );
+                                    item.writeData( fs );
+                                    last_clock = clock;
+                                }
+                            }
+
+                            // トラックエンドを記入し、
+                            VsqFile.writeFlexibleLengthUnsignedLong( fs, (long)0 );
+                            fs.write( (byte)0xff );
+                            fs.write( (byte)0x2f );
+                            fs.write( (byte)0x00 );
+                            // チャンクの先頭に戻ってチャンクのサイズを記入
+                            long pos = fs.getFilePointer();
+                            fs.seek( first_position - 4 );
+                            VsqFile.writeUnsignedInt( fs, pos - first_position );
+                            // ファイルを元の位置にseek
+                            fs.seek( pos );
+                        }
+                    } catch ( Exception ex ) {
+                        Logger.write( typeof( FormMain ) + ".menuFileExportMidi_Click; ex=" + ex + "\n" );
+                    } finally {
+                        if ( fs != null ) {
+                            try {
+                                fs.close();
+                            } catch ( Exception ex2 ) {
+                                Logger.write( typeof( FormMain ) + ".menuFileExportMidi_Click; ex=" + ex2 + "\n" );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public void menuFileExportMusicXml_Click( Object sender, EventArgs e )
+        {
+            BFileChooser dialog = null;
+            try {
+                VsqFileEx vsq = AppManager.getVsqFile();
+                if ( vsq == null ) {
+                    return;
+                }
+                String dir = AppManager.editorConfig.getLastUsedPathOut( "xml" );
+                dialog = new BFileChooser( dir );
+                dialog.addFileFilter( _( "MusicXML(*.xml)|*.xml" ) );
+                dialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
+                dialog.setInitialDirectory( dir );
+                int result = AppManager.showModalDialog( dialog, false, this );
+                if ( result != BFileChooser.APPROVE_OPTION ) {
+                    return;
+                }
+                String file = dialog.getSelectedFile();
+                String software = "Cadencii version " + BAssemblyInfo.fileVersion;
+                vsq.printAsMusicXml( file, "UTF-8", software );
+                AppManager.editorConfig.setLastUsedPathOut( file );
+            } catch ( Exception ex ) {
+                Logger.write( typeof( FormMain ) + ".menuFileExportMusicXml_Click; ex=" + ex + "\n" );
+                PortUtil.stderr.println( "FormMain#menuFileExportMusicXml_Click; ex=" + ex );
+            } finally {
+                if ( dialog != null ) {
+                    try {
+#if !JAVA
+                        dialog.Dispose();
+#endif
+                    } catch ( Exception ex2 ) {
+                        Logger.write( typeof( FormMain ) + ".menuFileExportMusicXml_Click; ex=" + ex2 + "\n" );
+                        PortUtil.stderr.println( "FormMain#menuFileExportMusicXml_Click; ex2=" + ex2 );
+                    }
+                }
+            }
+        }
+
+        public void menuFileExportParaWave_Click( object sender, EventArgs e )
+        {
+            // 出力するディレクトリを選択
+            string dir = "";
+            BFolderBrowser file_dialog = null;
+            try {
+                file_dialog = new BFolderBrowser();
+                string initial_dir = AppManager.editorConfig.getLastUsedPathOut( "wav" );
+                file_dialog.setDescription( _( "Choose destination directory" ) );
+                file_dialog.setSelectedPath( initial_dir );
+                BDialogResult ret = AppManager.showModalDialog( file_dialog, this );
+                if ( ret != BDialogResult.OK ) {
+                    return;
+                }
+                dir = file_dialog.getSelectedPath();
+                // 1.wavはダミー
+                initial_dir = PortUtil.combinePath( dir, "1.wav" );
+                AppManager.editorConfig.setLastUsedPathOut( initial_dir );
+            } catch ( Exception ex ) {
+            } finally {
+                if ( file_dialog != null ) {
+                    try {
+                        file_dialog.close();
+                    } catch ( Exception ex2 ) {
+                    }
+                }
+            }
+
+            // 全部レンダリング済みの状態にするためのキュー
+            VsqFileEx vsq = AppManager.getVsqFile();
+            Vector<Integer> tracks = new Vector<Integer>();
+            int size = vsq.Track.size();
+            for ( int i = 1; i < size; i++ ) {
+                tracks.add( i );
+            }
+            Vector<PatchWorkQueue> queue = AppManager.patchWorkCreateQueue( tracks );
+
+            // 全トラックをファイルに出力するためのキュー
+            int clockStart = AppManager.mStartMarkerEnabled ? AppManager.mStartMarker : 0;
+            int clockEnd = AppManager.mEndMarkerEnabled ? AppManager.mEndMarker : vsq.TotalClocks + 240;
+            if ( clockStart > clockEnd ) {
+                AppManager.showMessageBox(
+                    _( "invalid rendering region; start>=end" ),
+                    _( "Error" ),
+                    PortUtil.OK_OPTION,
+                    org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+                return;
+            }
+            for ( int i = 1; i < size; i++ ) {
+                PatchWorkQueue q = new PatchWorkQueue();
+                q.track = i;
+                q.clockStart = clockStart;
+                q.clockEnd = clockEnd;
+                q.file = PortUtil.combinePath( dir, i + ".wav" );
+                q.renderAll = true;
+                queue.add( q );
+            }
+
+            // 合成ダイアログを出す
+            FormSynthesize fs = null;
+            try {
+                fs = new FormSynthesize( this, vsq, AppManager.editorConfig.PreSendTime, queue );
+                fs.setLocation( getFormPreferedLocation( fs ) );
+                BDialogResult ret = AppManager.showModalDialog( fs, this );
+                if ( ret != BDialogResult.OK ) {
+                    return;
+                }
+            } catch ( Exception ex ) {
+            } finally {
+                if ( fs != null ) {
+                    try {
+                        fs.close();
+                    } catch ( Exception ex2 ) {
+                    }
+                }
+            }
+        }
+
         public void menuFileExportUst_Click( Object sender, EventArgs e )
         {
             VsqFileEx vsq = AppManager.getVsqFile();
@@ -10942,89 +11295,6 @@ namespace org.kbinani.cadencii
             }
         }
 
-        void menuFileExportParaWave_Click( object sender, EventArgs e )
-        {
-            // 出力するディレクトリを選択
-            string dir = "";
-            BFolderBrowser file_dialog = null;
-            try {
-                file_dialog = new BFolderBrowser();
-                string initial_dir = AppManager.editorConfig.getLastUsedPathOut( "wav" );
-                file_dialog.setDescription( _( "Choose destination directory" ) );
-                file_dialog.setSelectedPath( initial_dir );
-                BDialogResult ret = AppManager.showModalDialog( file_dialog, this );
-                if ( ret != BDialogResult.OK ) {
-                    return;
-                }
-                dir = file_dialog.getSelectedPath();
-                // 1.wavはダミー
-                initial_dir = PortUtil.combinePath( dir, "1.wav" );
-                AppManager.editorConfig.setLastUsedPathOut( initial_dir );
-            } catch ( Exception ex ) {
-            } finally {
-                if ( file_dialog != null ) {
-                    try {
-                        file_dialog.close();
-                    } catch ( Exception ex2 ) {
-                    }
-                }
-            }
-
-            // 全部レンダリング済みの状態にするためのキュー
-            VsqFileEx vsq = AppManager.getVsqFile();
-            Vector<Integer> tracks = new Vector<Integer>();
-            int size = vsq.Track.size();
-            for ( int i = 1; i < size; i++ ){
-                tracks.add( i );
-            }
-            Vector<PatchWorkQueue> queue = AppManager.patchWorkCreateQueue( tracks );
-            
-            // 全トラックをファイルに出力するためのキュー
-            int clockStart = AppManager.mStartMarkerEnabled ? AppManager.mStartMarker : 0;
-            int clockEnd = AppManager.mEndMarkerEnabled ? AppManager.mEndMarker : vsq.TotalClocks + 240;
-            if ( clockStart > clockEnd ) {
-                AppManager.showMessageBox( 
-                    _( "invalid rendering region; start>=end" ), 
-                    _( "Error" ), 
-                    PortUtil.OK_OPTION, 
-                    org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
-                return;
-            }
-            for ( int i = 1; i < size; i++ ) {
-                PatchWorkQueue q = new PatchWorkQueue();
-                q.track = i;
-                q.clockStart = clockStart;
-                q.clockEnd = clockEnd;
-                q.file = PortUtil.combinePath( dir, i + ".wav" );
-                q.renderAll = true;
-                queue.add( q );
-            }
-
-            // 合成ダイアログを出す
-            FormSynthesize fs = null;
-            try {
-                fs = new FormSynthesize( this, vsq, AppManager.editorConfig.PreSendTime, queue );
-                fs.setLocation( getFormPreferedLocation( fs ) );
-                BDialogResult ret = AppManager.showModalDialog( fs, this );
-                if ( ret != BDialogResult.OK ) {
-                    return;
-                }
-            } catch ( Exception ex ) {
-            } finally {
-                if ( fs != null ) {
-                    try {
-                        fs.close();
-                    } catch ( Exception ex2 ) {
-                    }
-                }
-            }
-        }
-
-        public void menuFileExport_DropDownOpening( Object sender, EventArgs e )
-        {
-            menuFileExportWave.setEnabled( (AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getEventCount() > 0) );
-        }
-
         public void menuFileImportMidi_Click( Object sender, EventArgs e )
         {
             if ( mDialogMidiImportAndExport == null ) {
@@ -11033,11 +11303,8 @@ namespace org.kbinani.cadencii
             mDialogMidiImportAndExport.listTrack.clear();
             mDialogMidiImportAndExport.setMode( FormMidiImExport.FormMidiMode.IMPORT );
 
-            String last_file = AppManager.editorConfig.getLastUsedPathIn( "mid" );
-            if ( !last_file.Equals( "" ) ) {
-                String dir = PortUtil.getDirectoryName( last_file );
-                openMidiDialog.setInitialDirectory( dir );
-            }
+            String dir = AppManager.editorConfig.getLastUsedPathIn( "mid" );
+            openMidiDialog.setInitialDirectory( dir );
             int dialog_result = AppManager.showModalDialog( openMidiDialog, true, this );
 
             if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
@@ -11047,7 +11314,7 @@ namespace org.kbinani.cadencii
             MidiFile mf = null;
             try {
                 String filename = openMidiDialog.getSelectedFile();
-                AppManager.editorConfig.getLastUsedPathIn( filename );
+                AppManager.editorConfig.setLastUsedPathIn( filename );
                 mf = new MidiFile( filename );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileImportMidi_Click; ex=" + ex + "\n" );
@@ -11405,395 +11672,64 @@ namespace org.kbinani.cadencii
             refreshScreen();
         }
 
-        public void menuFileExportMidi_Click( Object sender, EventArgs e )
-        {
-            if ( mDialogMidiImportAndExport == null ) {
-                mDialogMidiImportAndExport = new FormMidiImExport();
-            }
-            mDialogMidiImportAndExport.listTrack.clear();
-            VsqFileEx vsq = (VsqFileEx)AppManager.getVsqFile().clone();
-
-            for ( int i = 0; i < vsq.Track.size(); i++ ) {
-                VsqTrack track = vsq.Track.get( i );
-                int notes = 0;
-                for ( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ) {
-                    VsqEvent obj = itr.next();
-                    notes++;
-                }
-                mDialogMidiImportAndExport.listTrack.addItem( "", new BListViewItem( new String[] { i + "", track.getName(), notes + "" } ) );
-                mDialogMidiImportAndExport.listTrack.setItemCheckedAt( "", i, true );
-            }
-            mDialogMidiImportAndExport.setMode( FormMidiImExport.FormMidiMode.EXPORT );
-            mDialogMidiImportAndExport.setLocation( getFormPreferedLocation( mDialogMidiImportAndExport ) );
-            BDialogResult dr = AppManager.showModalDialog( mDialogMidiImportAndExport, this );
-            if ( dr == BDialogResult.OK ) {
-                if ( !mDialogMidiImportAndExport.isPreMeasure() ) {
-                    vsq.removePart( 0, vsq.getPreMeasureClocks() );
-                }
-                int track_count = 0;
-                for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.getItemCount( "" ); i++ ) {
-                    if ( mDialogMidiImportAndExport.listTrack.isItemCheckedAt( "", i ) ) {
-                        track_count++;
-                    }
-                }
-                if ( track_count == 0 ) {
-                    return;
-                }
-
-                String dir = AppManager.editorConfig.getLastUsedPathOut( "mid" );
-                saveMidiDialog.setInitialDirectory( dir );
-                int dialog_result = AppManager.showModalDialog( saveMidiDialog, false, this );
-
-                if ( dialog_result == BFileChooser.APPROVE_OPTION ) {
-                    RandomAccessFile fs = null;
-                    String filename = saveMidiDialog.getSelectedFile();
-                    AppManager.editorConfig.setLastUsedPathOut( filename );
-                    try {
-                        fs = new RandomAccessFile( filename, "rw" );
-                        // ヘッダー
-                        fs.write( new byte[] { 0x4d, 0x54, 0x68, 0x64 }, 0, 4 );
-                        //データ長
-                        fs.write( (byte)0x00 );
-                        fs.write( (byte)0x00 );
-                        fs.write( (byte)0x00 );
-                        fs.write( (byte)0x06 );
-                        //フォーマット
-                        fs.write( (byte)0x00 );
-                        fs.write( (byte)0x01 );
-                        //トラック数
-                        VsqFile.writeUnsignedShort( fs, track_count );
-                        //時間単位
-                        fs.write( (byte)0x01 );
-                        fs.write( (byte)0xe0 );
-                        int count = -1;
-                        for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.getItemCount( "" ); i++ ) {
-                            if ( !mDialogMidiImportAndExport.listTrack.isItemCheckedAt( "", i ) ) {
-                                continue;
-                            }
-                            VsqTrack track = vsq.Track.get( i );
-                            count++;
-                            fs.write( new byte[] { 0x4d, 0x54, 0x72, 0x6b }, 0, 4 );
-                            //データ長。とりあえず0を入れておく
-                            fs.write( new byte[] { 0x00, 0x00, 0x00, 0x00 }, 0, 4 );
-                            long first_position = fs.getFilePointer();
-                            //トラック名
-                            VsqFile.writeFlexibleLengthUnsignedLong( fs, 0 );//デルタタイム
-                            fs.write( (byte)0xff );//ステータスタイプ
-                            fs.write( (byte)0x03 );//イベントタイプSequence/Track Name
-                            byte[] track_name = PortUtil.getEncodedByte( "Shift_JIS", track.getName() );
-                            fs.write( (byte)track_name.Length );
-                            fs.write( track_name, 0, track_name.Length );
-
-                            Vector<MidiEvent> events = new Vector<MidiEvent>();
-
-                            // tempo
-                            boolean print_tempo = mDialogMidiImportAndExport.isTempo();
-                            if ( print_tempo && count == 0 ) {
-                                Vector<MidiEvent> tempo_events = vsq.generateTempoChange();
-                                for ( int j = 0; j < tempo_events.size(); j++ ) {
-                                    events.add( tempo_events.get( j ) );
-                                }
-                            }
-
-                            // timesig
-                            if ( mDialogMidiImportAndExport.isTimesig() && count == 0 ) {
-                                Vector<MidiEvent> timesig_events = vsq.generateTimeSig();
-                                for ( int j = 0; j < timesig_events.size(); j++ ) {
-                                    events.add( timesig_events.get( j ) );
-                                }
-                            }
-
-                            // Notes
-                            if ( mDialogMidiImportAndExport.isNotes() ) {
-                                for ( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ) {
-                                    VsqEvent ve = itr.next();
-                                    int clock_on = ve.Clock;
-                                    int clock_off = ve.Clock + ve.ID.getLength();
-                                    if ( !print_tempo ) {
-                                        // テンポを出力しない場合、テンポを500000（120）と見なしてクロックを再計算
-                                        double time_on = vsq.getSecFromClock( clock_on );
-                                        double time_off = vsq.getSecFromClock( clock_off );
-                                        clock_on = (int)(960.0 * time_on);
-                                        clock_off = (int)(960.0 * time_off);
-                                    }
-                                    MidiEvent noteon = new MidiEvent();
-                                    noteon.clock = clock_on;
-                                    noteon.firstByte = 0x90;
-                                    noteon.data = new int[2];
-                                    noteon.data[0] = ve.ID.Note;
-                                    noteon.data[1] = ve.ID.Dynamics;
-                                    events.add( noteon );
-                                    MidiEvent noteoff = new MidiEvent();
-                                    noteoff.clock = clock_off;
-                                    noteoff.firstByte = 0x80;
-                                    noteoff.data = new int[2];
-                                    noteoff.data[0] = ve.ID.Note;
-                                    noteoff.data[1] = 0x7f;
-                                    events.add( noteoff );
-                                }
-                            }
-
-                            // lyric
-                            if ( mDialogMidiImportAndExport.isLyric() ) {
-                                for ( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ) {
-                                    VsqEvent ve = itr.next();
-                                    int clock_on = ve.Clock;
-                                    if ( !print_tempo ) {
-                                        double time_on = vsq.getSecFromClock( clock_on );
-                                        clock_on = (int)(960.0 * time_on);
-                                    }
-                                    MidiEvent add = new MidiEvent();
-                                    add.clock = clock_on;
-                                    add.firstByte = 0xff;
-                                    byte[] lyric = PortUtil.getEncodedByte( "Shift_JIS", ve.ID.LyricHandle.L0.Phrase );
-                                    add.data = new int[lyric.Length + 1];
-                                    add.data[0] = 0x05;
-                                    for ( int j = 0; j < lyric.Length; j++ ) {
-                                        add.data[j + 1] = lyric[j];
-                                    }
-                                    events.add( add );
-                                }
-                            }
-
-                            // vocaloid metatext
-                            Vector<MidiEvent> meta;
-                            if ( mDialogMidiImportAndExport.isVocaloidMetatext() && i > 0 ) {
-                                meta = vsq.generateMetaTextEvent( i, "Shift_JIS" );
-                            } else {
-                                meta = new Vector<MidiEvent>();
-                            }
-
-                            // vocaloid nrpn
-                            Vector<MidiEvent> vocaloid_nrpn_midievent;
-                            if ( mDialogMidiImportAndExport.isVocaloidNrpn() && i > 0 ) {
-                                VsqNrpn[] vsqnrpn = VsqFileEx.generateNRPN( (VsqFile)vsq, i, AppManager.editorConfig.PreSendTime );
-                                NrpnData[] nrpn = VsqNrpn.convert( vsqnrpn );
-
-                                vocaloid_nrpn_midievent = new Vector<MidiEvent>();
-                                for ( int j = 0; j < nrpn.Length; j++ ) {
-                                    MidiEvent me = new MidiEvent();
-                                    me.clock = nrpn[j].getClock();
-                                    me.firstByte = 0xb0;
-                                    me.data = new int[2];
-                                    me.data[0] = nrpn[j].getParameter();
-                                    me.data[1] = nrpn[j].Value;
-                                    vocaloid_nrpn_midievent.add( me );
-                                }
-                            } else {
-                                vocaloid_nrpn_midievent = new Vector<MidiEvent>();
-                            }
-#if DEBUG
-                            PortUtil.println( "menuFileExportMidi_Click" );
-                            PortUtil.println( "    vocaloid_nrpn_midievent.size()=" + vocaloid_nrpn_midievent.size() );
-#endif
-
-                            // midi eventを出力
-                            Collections.sort( events );
-                            long last_clock = 0;
-                            int events_count = events.size();
-                            if ( events_count > 0 ) {
-                                for ( int j = 0; j < events_count; j++ ) {
-                                    if ( events.get( j ).clock > 0 && meta.size() > 0 ) {
-                                        for ( int k = 0; k < meta.size(); k++ ) {
-                                            VsqFile.writeFlexibleLengthUnsignedLong( fs, 0 );
-                                            meta.get( k ).writeData( fs );
-                                        }
-                                        meta.clear();
-                                        last_clock = 0;
-                                    }
-                                    long clock = events.get( j ).clock;
-                                    while ( vocaloid_nrpn_midievent.size() > 0 && vocaloid_nrpn_midievent.get( 0 ).clock < clock ) {
-                                        VsqFile.writeFlexibleLengthUnsignedLong( fs, (long)(vocaloid_nrpn_midievent.get( 0 ).clock - last_clock) );
-                                        last_clock = vocaloid_nrpn_midievent.get( 0 ).clock;
-                                        vocaloid_nrpn_midievent.get( 0 ).writeData( fs );
-                                        vocaloid_nrpn_midievent.removeElementAt( 0 );
-                                    }
-                                    VsqFile.writeFlexibleLengthUnsignedLong( fs, (long)(events.get( j ).clock - last_clock) );
-                                    events.get( j ).writeData( fs );
-                                    last_clock = events.get( j ).clock;
-                                }
-                            } else {
-                                int c = vocaloid_nrpn_midievent.size();
-                                for ( int k = 0; k < meta.size(); k++ ) {
-                                    VsqFile.writeFlexibleLengthUnsignedLong( fs, 0 );
-                                    meta.get( k ).writeData( fs );
-                                }
-                                meta.clear();
-                                last_clock = 0;
-                                for ( int j = 0; j < c; j++ ) {
-                                    MidiEvent item = vocaloid_nrpn_midievent.get( j );
-                                    long clock = item.clock;
-                                    VsqFile.writeFlexibleLengthUnsignedLong( fs, (long)(clock - last_clock) );
-                                    item.writeData( fs );
-                                    last_clock = clock;
-                                }
-                            }
-
-                            // トラックエンドを記入し、
-                            VsqFile.writeFlexibleLengthUnsignedLong( fs, (long)0 );
-                            fs.write( (byte)0xff );
-                            fs.write( (byte)0x2f );
-                            fs.write( (byte)0x00 );
-                            // チャンクの先頭に戻ってチャンクのサイズを記入
-                            long pos = fs.getFilePointer();
-                            fs.seek( first_position - 4 );
-                            VsqFile.writeUnsignedInt( fs, pos - first_position );
-                            // ファイルを元の位置にseek
-                            fs.seek( pos );
-                        }
-                    } catch ( Exception ex ) {
-                        Logger.write( typeof( FormMain ) + ".menuFileExportMidi_Click; ex=" + ex + "\n" );
-                    } finally {
-                        if ( fs != null ) {
-                            try {
-                                fs.close();
-                            } catch ( Exception ex2 ) {
-                                Logger.write( typeof( FormMain ) + ".menuFileExportMidi_Click; ex=" + ex2 + "\n" );
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        public void menuFileExportMusicXml_Click( Object sender, EventArgs e )
+        public void menuFileImportUst_Click( object sender, EventArgs e )
         {
             BFileChooser dialog = null;
             try {
-                VsqFileEx vsq = AppManager.getVsqFile();
-                if ( vsq == null ) {
-                    return;
-                }
-                String dir = AppManager.editorConfig.getLastUsedPathOut( "xml" );
+                // 読み込むファイルを選ぶ
+                string dir = AppManager.editorConfig.getLastUsedPathIn( "ust" );
                 dialog = new BFileChooser( dir );
-                dialog.addFileFilter( _( "MusicXML(*.xml)|*.xml" ) );
-                dialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
-                dialog.setInitialDirectory( dir );
-                int result = AppManager.showModalDialog( dialog, false, this );
-                if ( result != BFileChooser.APPROVE_OPTION ) {
+                int dialog_result = AppManager.showModalDialog( dialog, true, this );
+                if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
                     return;
                 }
-                String file = dialog.getSelectedFile();
-                String software = "Cadencii version " + BAssemblyInfo.fileVersion;
-                vsq.printAsMusicXml( file, "UTF-8", software );
-                AppManager.editorConfig.setLastUsedPathOut( file );
+                string file = dialog.getSelectedFile();
+                AppManager.editorConfig.setLastUsedPathIn( file );
+
+                // ustを読み込む
+                UstFile ust = new UstFile( file );
+
+                // vsqに変換
+                VsqFile vsq = new VsqFile( ust );
+
+                // 読込先のvsqと，インポートするvsqではテンポテーブルがずれているので，
+                // 読み込んだ方のvsqの内容を，現在のvsqと合致するように編集する
+                VsqFileEx dst = (VsqFileEx)AppManager.getVsqFile().clone();
+                vsq.adjustClockToMatchWith( dst.TempoTable );
+
+                // トラック数の上限になるまで挿入を実行
+                int size = vsq.Track.size();
+                for ( int i = 1; i < size; i++ ) {
+                    if ( dst.Track.size() + 1 >= VsqFile.MAX_TRACKS + 1 ) {
+                        // トラック数の上限
+                        break;
+                    }
+                    dst.Track.add( vsq.Track.get( i ) );
+                    dst.AttachedCurves.add( new BezierCurves() );
+                    dst.Mixer.Slave.add( new VsqMixerEntry() );
+                }
+
+                // コマンドを発行して実行
+                CadenciiCommand run = VsqFileEx.generateCommandReplace( dst );
+                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+                AppManager.mMixerWindow.updateStatus();
+                setEdited( true );
+                refreshScreen( true );
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMain ) + ".menuFileExportMusicXml_Click; ex=" + ex + "\n" );
-                PortUtil.stderr.println( "FormMain#menuFileExportMusicXml_Click; ex=" + ex );
             } finally {
                 if ( dialog != null ) {
                     try {
-#if !JAVA
                         dialog.Dispose();
-#endif
-                    } catch ( Exception ex2 ) {
-                        Logger.write( typeof( FormMain ) + ".menuFileExportMusicXml_Click; ex=" + ex2 + "\n" );
-                        PortUtil.stderr.println( "FormMain#menuFileExportMusicXml_Click; ex2=" + ex2 );
+                    } catch ( Exception ex ) {
                     }
                 }
-            }
-        }
-
-        public void menuFileOpenVsq_Click( Object sender, EventArgs e )
-        {
-            if ( !dirtyCheck() ) {
-                return;
-            }
-
-            String[] filters = openMidiDialog.getChoosableFileFilter();
-            String filter = "";
-            foreach ( String f in filters ) {
-                if ( f.EndsWith( AppManager.editorConfig.LastUsedExtension ) ) {
-                    filter = f;
-                    break;
-                }
-            }
-
-            openMidiDialog.setFileFilter( filter );
-            String last_file = AppManager.editorConfig.getLastUsedPathIn( filter );
-            if ( !last_file.Equals( "" ) ) {
-                String dir = PortUtil.getDirectoryName( last_file );
-                openMidiDialog.setInitialDirectory( dir );
-            }
-            int dialog_result = AppManager.showModalDialog( openMidiDialog, true, this );
-            if ( dialog_result == BFileChooser.APPROVE_OPTION ) {
-#if DEBUG
-                AppManager.debugWriteLine( "openMidiDialog.getFileFilter()=" + openMidiDialog.getFileFilter() );
-#endif
-                if ( openMidiDialog.getFileFilter().EndsWith( ".mid" ) ) {
-                    AppManager.editorConfig.LastUsedExtension = ".mid";
-                } else if ( openMidiDialog.getFileFilter().EndsWith( ".vsq" ) ) {
-                    AppManager.editorConfig.LastUsedExtension = ".vsq";
-                }
-            } else {
-                return;
-            }
-            try {
-                String filename = openMidiDialog.getSelectedFile();
-                VsqFileEx vsq = new VsqFileEx( filename, "Shift_JIS" );
-                AppManager.editorConfig.setLastUsedPathIn( filename );
-                AppManager.setVsqFile( vsq );
-            } catch ( Exception ex ) {
-                Logger.write( typeof( FormMain ) + ".menuFileOpenVsq_Click; ex=" + ex + "\n" );
-#if DEBUG
-                PortUtil.println( "FormMain#menuFileOpenVsq_Click; ex=" + ex );
-#endif
-                AppManager.showMessageBox( _( "Invalid VSQ/VOCALOID MIDI file" ), _( "Error" ), org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
-                return;
-            }
-            AppManager.setSelected( 1 );
-            clearExistingData();
-            setEdited( false );
-            AppManager.mMixerWindow.updateStatus();
-            clearTempWave();
-            updateDrawObjectList();
-            refreshScreen();
-        }
-
-        public void menuFileOpenUst_Click( Object sender, EventArgs e )
-        {
-            if ( !dirtyCheck() ) {
-                return;
-            }
-
-            String  last_file = AppManager.editorConfig.getLastUsedPathIn( "ust" );
-            if ( !last_file.Equals( "" ) ) {
-                String dir = PortUtil.getDirectoryName( last_file );
-                openUstDialog.setInitialDirectory( dir );
-            }
-            int dialog_result = AppManager.showModalDialog( openUstDialog, true, this );
-
-            if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
-                return;
-            }
-
-            try {
-                String filename = openUstDialog.getSelectedFile();
-                AppManager.editorConfig.setLastUsedPathIn( filename );
-                UstFile ust = new UstFile( filename );
-                VsqFileEx vsq = new VsqFileEx( ust );
-                clearExistingData();
-                AppManager.setVsqFile( vsq );
-                setEdited( false );
-                AppManager.mMixerWindow.updateStatus();
-                clearTempWave();
-                updateDrawObjectList();
-                refreshScreen();
-            } catch ( Exception ex ) {
-                Logger.write( typeof( FormMain ) + ".menuFileOpenUst_Click; ex=" + ex + "\n" );
-#if DEBUG
-                PortUtil.println( "FormMain#menuFileOpenUst_Click; ex=" + ex );
-#endif
             }
         }
 
         public void menuFileImportVsq_Click( Object sender, EventArgs e )
         {
-            String last_file = AppManager.editorConfig.getLastUsedPathIn( AppManager.editorConfig.LastUsedExtension );
-            if ( !last_file.Equals( "" ) ) {
-                String dir = PortUtil.getDirectoryName( last_file );
-                openMidiDialog.setInitialDirectory( dir );
-            }
+            String dir = AppManager.editorConfig.getLastUsedPathIn( AppManager.editorConfig.LastUsedExtension );
+            openMidiDialog.setInitialDirectory( dir );
             int dialog_result = AppManager.showModalDialog( openMidiDialog, true, this );
 
             if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
@@ -11942,6 +11878,92 @@ namespace org.kbinani.cadencii
             setEdited( true );
         }
 
+        public void menuFileOpenUst_Click( Object sender, EventArgs e )
+        {
+            if ( !dirtyCheck() ) {
+                return;
+            }
+
+            String dir = AppManager.editorConfig.getLastUsedPathIn( "ust" );
+            openUstDialog.setInitialDirectory( dir );
+            int dialog_result = AppManager.showModalDialog( openUstDialog, true, this );
+
+            if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
+                return;
+            }
+
+            try {
+                String filename = openUstDialog.getSelectedFile();
+                AppManager.editorConfig.setLastUsedPathIn( filename );
+                UstFile ust = new UstFile( filename );
+                VsqFileEx vsq = new VsqFileEx( ust );
+                clearExistingData();
+                AppManager.setVsqFile( vsq );
+                setEdited( false );
+                AppManager.mMixerWindow.updateStatus();
+                clearTempWave();
+                updateDrawObjectList();
+                refreshScreen();
+            } catch ( Exception ex ) {
+                Logger.write( typeof( FormMain ) + ".menuFileOpenUst_Click; ex=" + ex + "\n" );
+#if DEBUG
+                PortUtil.println( "FormMain#menuFileOpenUst_Click; ex=" + ex );
+#endif
+            }
+        }
+
+        public void menuFileOpenVsq_Click( Object sender, EventArgs e )
+        {
+            if ( !dirtyCheck() ) {
+                return;
+            }
+
+            String[] filters = openMidiDialog.getChoosableFileFilter();
+            String filter = "";
+            foreach ( String f in filters ) {
+                if ( f.EndsWith( AppManager.editorConfig.LastUsedExtension ) ) {
+                    filter = f;
+                    break;
+                }
+            }
+
+            openMidiDialog.setFileFilter( filter );
+            String dir = AppManager.editorConfig.getLastUsedPathIn( filter );
+            openMidiDialog.setInitialDirectory( dir );
+            int dialog_result = AppManager.showModalDialog( openMidiDialog, true, this );
+            if ( dialog_result == BFileChooser.APPROVE_OPTION ) {
+#if DEBUG
+                AppManager.debugWriteLine( "openMidiDialog.getFileFilter()=" + openMidiDialog.getFileFilter() );
+#endif
+                if ( openMidiDialog.getFileFilter().EndsWith( ".mid" ) ) {
+                    AppManager.editorConfig.LastUsedExtension = ".mid";
+                } else if ( openMidiDialog.getFileFilter().EndsWith( ".vsq" ) ) {
+                    AppManager.editorConfig.LastUsedExtension = ".vsq";
+                }
+            } else {
+                return;
+            }
+            try {
+                String filename = openMidiDialog.getSelectedFile();
+                VsqFileEx vsq = new VsqFileEx( filename, "Shift_JIS" );
+                AppManager.editorConfig.setLastUsedPathIn( filename );
+                AppManager.setVsqFile( vsq );
+            } catch ( Exception ex ) {
+                Logger.write( typeof( FormMain ) + ".menuFileOpenVsq_Click; ex=" + ex + "\n" );
+#if DEBUG
+                PortUtil.println( "FormMain#menuFileOpenVsq_Click; ex=" + ex );
+#endif
+                AppManager.showMessageBox( _( "Invalid VSQ/VOCALOID MIDI file" ), _( "Error" ), org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
+                return;
+            }
+            AppManager.setSelected( 1 );
+            clearExistingData();
+            setEdited( false );
+            AppManager.mMixerWindow.updateStatus();
+            clearTempWave();
+            updateDrawObjectList();
+            refreshScreen();
+        }
         #endregion
 
         //BOOKMARK: menuSetting
@@ -16376,10 +16398,12 @@ namespace org.kbinani.cadencii
                 text = _( "Open UTAU project and create new project." );
             } else if ( sender == menuFileImport ) {
                 text = _( "Import." );
-            } else if ( sender == menuFileImportVsq ) {
-                text = _( "Import VSQ / VOCALOID MIDI." );
             } else if ( sender == menuFileImportMidi ) {
                 text = _( "Import Standard MIDI." );
+            } else if ( sender == menuFileImportUst ) {
+                text = _( "Import UTAU project" );
+            } else if ( sender == menuFileImportVsq ) {
+                text = _( "Import VSQ / VOCALOID MIDI." );
             } else if ( sender == menuFileExport ) {
                 text = _( "Export." );
             } else if ( sender == menuFileExportParaWave ) {
@@ -16653,11 +16677,8 @@ namespace org.kbinani.cadencii
 
         public void handleBgmAdd_Click( Object sender, EventArgs e )
         {
-            String last_file = AppManager.editorConfig.getLastUsedPathIn( "wav" );
-            if ( !last_file.Equals( "" ) ) {
-                String dir = PortUtil.getDirectoryName( last_file );
-                openWaveDialog.setInitialDirectory( dir );
-            }
+            String dir = AppManager.editorConfig.getLastUsedPathIn( "wav" );
+            openWaveDialog.setInitialDirectory( dir );
             int ret = AppManager.showModalDialog( openWaveDialog, true, this );
             if ( ret != BFileChooser.APPROVE_OPTION ) {
                 return;
@@ -17439,6 +17460,7 @@ namespace org.kbinani.cadencii
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.menuFileImportUst = new org.kbinani.windows.forms.BMenuItem();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
@@ -17559,7 +17581,8 @@ namespace org.kbinani.cadencii
             this.menuFileImport.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.menuFileImport.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
             this.menuFileImportVsq,
-            this.menuFileImportMidi} );
+            this.menuFileImportMidi,
+            this.menuFileImportUst} );
             this.menuFileImport.Name = "menuFileImport";
             this.menuFileImport.Size = new System.Drawing.Size( 214, 22 );
             this.menuFileImport.Text = "Import(&I)";
@@ -17568,13 +17591,13 @@ namespace org.kbinani.cadencii
             // menuFileImportVsq
             // 
             this.menuFileImportVsq.Name = "menuFileImportVsq";
-            this.menuFileImportVsq.Size = new System.Drawing.Size( 142, 22 );
+            this.menuFileImportVsq.Size = new System.Drawing.Size( 160, 22 );
             this.menuFileImportVsq.Text = "VSQ File";
             // 
             // menuFileImportMidi
             // 
             this.menuFileImportMidi.Name = "menuFileImportMidi";
-            this.menuFileImportMidi.Size = new System.Drawing.Size( 142, 22 );
+            this.menuFileImportMidi.Size = new System.Drawing.Size( 160, 22 );
             this.menuFileImportMidi.Text = "Standard MIDI";
             // 
             // menuFileExport
@@ -19923,6 +19946,12 @@ namespace org.kbinani.cadencii
             // 
             this.statusLabel.Name = "statusLabel";
             this.statusLabel.Size = new System.Drawing.Size( 0, 17 );
+            // 
+            // menuFileImportUst
+            // 
+            this.menuFileImportUst.Name = "menuFileImportUst";
+            this.menuFileImportUst.Size = new System.Drawing.Size( 160, 22 );
+            this.menuFileImportUst.Text = "UTAU project file";
             // 
             // FormMain
             // 

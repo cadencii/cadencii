@@ -61,7 +61,7 @@ namespace org.kbinani.vsq {
         }
 
         public boolean hasNext() {
-            if ( 0 <= m_pos + 1 && m_pos + 1 < nrpns.size() ) {
+            if ( 0 <= m_pos + 1 && m_pos + 1 < vec.size( nrpns ) ) {
                 return true;
             } else {
                 return false;

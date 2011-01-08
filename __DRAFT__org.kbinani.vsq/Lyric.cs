@@ -65,7 +65,7 @@ namespace org {
                 /// <param name="name"></param>
                 /// <returns></returns>
                 public static bool isXmlIgnored( string name ) {
-                    return util.compare( name, "ConsonantAdjustmentList" );
+                    return str.compare( name, "ConsonantAdjustmentList" );
                 }
 
                 /// <summary>
