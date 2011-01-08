@@ -943,7 +943,10 @@ namespace org.kbinani.cadencii
                     CurveType.PBS,
                     CurveType.DYN,
                     CurveType.BRE,
-                    CurveType.GEN, };
+                    CurveType.GEN,
+                    CurveType.CLE,
+                    CurveType.BRI,
+            };
 
             VsqTrack vsq_track = (VsqTrack)vsq.Track.get( track ).clone();
             VsqEvent ve0 = list.get( 0 );
