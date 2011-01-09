@@ -71,15 +71,15 @@ namespace org
                     m_installed_singers = new List<SingerConfig>();
                     m_singer_configs = new List<SingerConfig>();
                     String map = fsys.combine( path_voicedb, "voice.map" );
-                    if ( !PortUtil.isFileExists( map ) ) {
+                    if ( !fsys.isFileExists( map ) ) {
                         return;
                     }
 
                     // インストールされている歌手の情報を読み取る。miku.vvd等から。
-                    for ( int j = 0; j < path_installed_singers.Length; j++ ) {
+                    for ( int j = 0; j < vec.size( path_installed_singers ); j++ ) {
                         String ipath = path_installed_singers[j];
 #if DEBUG
-                        PortUtil.println( "SingerConfigSys#.ctor; path_installed_singers[" + j + "]=" + path_installed_singers[j] );
+                        sout.println( "SingerConfigSys#.ctor; path_installed_singers[" + j + "]=" + path_installed_singers[j] );
 #endif
                         //TODO: ここでエラー起こる場合があるよ。SingerConfigSys::.ctor
                         //      実際にディレクトリがある場合にのみ，ファイルのリストアップをするようにした．
@@ -88,7 +88,7 @@ namespace org
                             String[] vvds = PortUtil.listFiles( ipath, "*.vvd" );
                             if ( vvds.Length > 0 ) {
                                 SingerConfig installed = SingerConfig.fromVvd( vvds[0], 0, 0 );
-                                m_installed_singers.add( installed );
+                                vec.add( m_installed_singers, installed );
                                 break;
                             }
                         }

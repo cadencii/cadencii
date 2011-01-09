@@ -41,18 +41,11 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public class FormIconPalette extends BForm {
+    public class FormIconPalette extends BForm
 #else
-    public class FormIconPalette : BForm {
+    public class FormIconPalette : BForm
 #endif
-#if JAVA
-        public BEvent<BEventHandler> topMostChangedEvent = new BEvent<BEventHandler>();
-#elif QT_VERSION
-        public: signals: void topMostChanged( QObject sender, QObject e );
-#else
-        public event EventHandler TopMostChanged;
-#endif
-        
+    {        
         private Vector<BButton> dynaffButtons = new Vector<BButton>();
         private Vector<BButton> crescendButtons = new Vector<BButton>();
         private Vector<BButton> decrescendButtons = new Vector<BButton>();
@@ -77,20 +70,16 @@ namespace org.kbinani.cadencii {
                 KeyStroke shortcut = BKeysUtility.getKeyStrokeFromBKeys( keys );
                 menuWindowHide.setAccelerator( shortcut );
             }
+            setAlwaysOnTop( true );
         }
 
         #region public methods
         public void applyLanguage() {
             setTitle( _( "Icon Palette" ) );
-            chkTopMost.setText( _( "Top Most" ) );
         }
 
         public void applyShortcut( KeyStroke shortcut ) {
             menuWindowHide.setAccelerator( shortcut );
-        }
-
-        public void setTopMost( boolean value ) {
-            chkTopMost.setSelected( value );
         }
         #endregion
 
@@ -102,7 +91,6 @@ namespace org.kbinani.cadencii {
         private void registerEventHandlers() {
             FormClosing += new System.Windows.Forms.FormClosingEventHandler( FormIconPalette_FormClosing );
             menuWindowHide.Click += new EventHandler( menuWindowHide_Click );
-            chkTopMost.CheckedChanged += new EventHandler( chkTopMost_CheckedChanged );
         }
 
         private void init() {
@@ -205,7 +193,6 @@ namespace org.kbinani.cadencii {
                 btn.BringToFront();
 #endif
             }
-            chkTopMost.setLocation( new Point( 0, 3 * buttonWidth ) );
 
             // ウィンドウのサイズを固定化する
             int height = 0;
@@ -213,7 +200,6 @@ namespace org.kbinani.cadencii {
             if ( dynaffButtons.size() > 0 ) {
                 height += buttonWidth;
             }
-            height += chkTopMost.getHeight();
             width = Math.Max( width, buttonWidth * dynaffButtons.size() );
             if ( crescendButtons.size() > 0 ) {
                 height += buttonWidth;
@@ -236,22 +222,6 @@ namespace org.kbinani.cadencii {
         public void FormIconPalette_FormClosing( Object sender, BFormClosingEventArgs e ) {
             e.Cancel = true;
             setVisible( false );
-        }
-
-        public void chkTopMost_CheckedChanged( Object sender, EventArgs e ) {
-            setAlwaysOnTop( chkTopMost.isSelected() );
-            try {
-#if JAVA
-                topMostChangedEvent.raise( this, e );
-#elif QT_VERSION
-                topMostChanged( this, e );
-#else
-                if ( TopMostChanged != null ) {
-                    TopMostChanged.Invoke( this, e );
-                }
-#endif
-            } catch ( Exception ex ) {
-            }
         }
 
         public void menuWindowHide_Click( Object sender, EventArgs e ) {
@@ -297,7 +267,6 @@ namespace org.kbinani.cadencii {
             this.menuBar = new org.kbinani.windows.forms.BMenuBar();
             this.menuWindow = new org.kbinani.windows.forms.BMenuItem();
             this.menuWindowHide = new org.kbinani.windows.forms.BMenuItem();
-            this.chkTopMost = new org.kbinani.windows.forms.BCheckBox();
             this.menuBar.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -307,7 +276,7 @@ namespace org.kbinani.cadencii {
             this.menuWindow} );
             this.menuBar.Location = new System.Drawing.Point( 0, 0 );
             this.menuBar.Name = "menuBar";
-            this.menuBar.Size = new System.Drawing.Size( 458, 26 );
+            this.menuBar.Size = new System.Drawing.Size( 458, 24 );
             this.menuBar.TabIndex = 0;
             this.menuBar.Text = "bMenuBar1";
             // 
@@ -316,29 +285,18 @@ namespace org.kbinani.cadencii {
             this.menuWindow.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
             this.menuWindowHide} );
             this.menuWindow.Name = "menuWindow";
-            this.menuWindow.Size = new System.Drawing.Size( 66, 22 );
+            this.menuWindow.Size = new System.Drawing.Size( 55, 20 );
             this.menuWindow.Text = "Window";
             // 
             // menuWindowHide
             // 
             this.menuWindowHide.Name = "menuWindowHide";
-            this.menuWindowHide.Size = new System.Drawing.Size( 102, 22 );
+            this.menuWindowHide.Size = new System.Drawing.Size( 93, 22 );
             this.menuWindowHide.Text = "Hide";
-            // 
-            // chkTopMost
-            // 
-            this.chkTopMost.AutoSize = true;
-            this.chkTopMost.Location = new System.Drawing.Point( 0, 29 );
-            this.chkTopMost.Name = "chkTopMost";
-            this.chkTopMost.Size = new System.Drawing.Size( 72, 16 );
-            this.chkTopMost.TabIndex = 1;
-            this.chkTopMost.Text = "Top Most";
-            this.chkTopMost.UseVisualStyleBackColor = true;
             // 
             // FormIconPalette
             // 
             this.ClientSize = new System.Drawing.Size( 458, 342 );
-            this.Controls.Add( this.chkTopMost );
             this.Controls.Add( this.menuBar );
             this.MainMenuStrip = this.menuBar;
             this.MaximizeBox = false;
@@ -358,7 +316,6 @@ namespace org.kbinani.cadencii {
         private BMenuBar menuBar;
         private BMenuItem menuWindow;
         private BMenuItem menuWindowHide;
-        private BCheckBox chkTopMost;
 
 #endif
         #endregion

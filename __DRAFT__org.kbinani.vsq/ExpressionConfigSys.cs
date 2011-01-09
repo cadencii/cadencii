@@ -944,13 +944,9 @@ namespace org.kbinani.vsq {
         /// 登録されているビブラート設定を順に返す反復子を取得します。
         /// </summary>
         /// <returns></returns>
-#if __cplusplus
-        public: vector<VibratoHandle>::iterator vibratoConfigIterator()
-#else
-        public Iterator<VibratoHandle> vibratoConfigIterator() 
-#endif
+        public vecitr<VibratoHandle> vibratoConfigIterator() 
         {
-            return m_vibrato_configs.iterator();
+            return new vecitr<VibratoHandle>( m_vibrato_configs );
         }
 
         /// <summary>

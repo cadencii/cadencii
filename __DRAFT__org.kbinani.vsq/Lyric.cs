@@ -87,8 +87,8 @@ namespace org {
                 /// <returns></returns>
                 public bool equalsForSynth( Lyric item ) {
                     if ( this.PhoneticSymbolProtected != item.PhoneticSymbolProtected ) return false;
-                    if ( !util.compare( this.getPhoneticSymbol(), item.getPhoneticSymbol() ) ) return false;
-                    if ( !util.compare( this.getConsonantAdjustment(), item.getConsonantAdjustment() ) ) return false;
+                    if ( !str.compare( this.getPhoneticSymbol(), item.getPhoneticSymbol() ) ) return false;
+                    if ( !str.compare( this.getConsonantAdjustment(), item.getConsonantAdjustment() ) ) return false;
                     return true;
                 }
 
@@ -99,7 +99,7 @@ namespace org {
                 /// <returns></returns>
                 public bool equals( Lyric item ) {
                     if ( !equalsForSynth( item ) ) return false;
-                    if ( !util.compare( this.Phrase, item.Phrase ) ) return false;
+                    if ( !str.compare( this.Phrase, item.Phrase ) ) return false;
                     if ( this.UnknownFloat != item.UnknownFloat ) return false;
                     return true;
                 }

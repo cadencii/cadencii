@@ -1,6 +1,6 @@
 /*
  * UstEvent.cs
- * Copyright © 2009-2011 kbinani
+ * Copyright © 2009-2011 kbinani, HAL
  *
  * This file is part of org.kbinani.vsq.
  *
@@ -21,14 +21,16 @@ using System;
 using org.kbinani;
 using org.kbinani.java.io;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
 #endif
 
 #if JAVA
     public class UstEvent implements Cloneable, Serializable {
 #else
     [Serializable]
-    public class UstEvent : ICloneable {
+    public class UstEvent : ICloneable
+    {
 #endif
         public String Tag;
         public int Length = 0;
@@ -48,18 +50,22 @@ namespace org.kbinani.vsq {
         public int Index;
         public int StartPoint;
 
-        public UstEvent() {
+        public UstEvent()
+        {
         }
 
-        public int getLength() {
+        public int getLength()
+        {
             return Length;
         }
 
-        public void setLength( int value ) {
+        public void setLength( int value )
+        {
             Length = value;
         }
 
-        public Object clone() {
+        public Object clone()
+        {
             UstEvent ret = new UstEvent();
             ret.setLength( Length );
             ret.Lyric = Lyric;
@@ -92,7 +98,8 @@ namespace org.kbinani.vsq {
         }
 
 #if !JAVA
-        public object Clone() {
+        public object Clone()
+        {
             return clone();
         }
 #endif
@@ -172,16 +179,23 @@ namespace org.kbinani.vsq {
             }
         }
 
-        // 合成に必要なフィールドのみチェックを行う．
-        public Boolean EqualsForSynth( UstEvent item )
+        /// <summary>
+        /// このインスタンスと指定したアイテムが，歌声合成の観点から等しいかどうかを調べます
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        public bool equalsForSynth( UstEvent item )
         {
-            Boolean ret = true;
+            if ( item == null ) {
+                return false;
+            }
+            bool ret = true;
             // モジュレーション・先行発声・スタート位置・オーバーラップのみチェック．
             // ほかに有効な値でかつ VsqEvent で比較できないものは何かあったか
-            if (this.Moduration != item.Moduration) ret = false;
-            else if (this.PreUtterance != item.PreUtterance) ret = false;
-            else if (this.StartPoint != item.StartPoint) ret = false;
-            else if (this.VoiceOverlap != item.VoiceOverlap) ret = false;
+            if ( this.Moduration != item.Moduration ) ret = false;
+            else if ( this.PreUtterance != item.PreUtterance ) ret = false;
+            else if ( this.StartPoint != item.StartPoint ) ret = false;
+            else if ( this.VoiceOverlap != item.VoiceOverlap ) ret = false;
             return ret;
         }
 

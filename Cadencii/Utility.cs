@@ -1,6 +1,6 @@
 /*
  * Utility.cs
- * Copyright © 2010-2011 kbinani
+ * Copyright © 2010-2011 kbinani, HAL
  *
  * This file is part of org.kbinani.cadencii.
  *
@@ -1030,69 +1030,11 @@ namespace org.kbinani.cadencii{
             int numEvent1 = track1.getEventCount();
             int numEvent2 = track2.getEventCount();
 
-            #region track1にあってtrack2に無い音符イベント、クレッシェンドイベントを検出
-            RendererKind kind = VsqFileEx.getTrackRendererKind(track1);
-            for (Iterator<Integer> itr1 = track1.indexIterator(IndexIteratorKind.NOTE | IndexIteratorKind.CRESCEND | IndexIteratorKind.DECRESCEND); itr1.hasNext(); )
-            {
-                int i = itr1.next();
-                VsqEvent item1 = track1.getEvent( i );
-                boolean found = false;
-                for ( Iterator<Integer> itr2 = track2.indexIterator( IndexIteratorKind.NOTE | IndexIteratorKind.CRESCEND | IndexIteratorKind.DECRESCEND ); itr2.hasNext(); ) {
-                    int j = itr2.next();
-                    VsqEvent item2 = track2.getEvent( j );
-                    // item1とitem2が同じかどうか判定する
-                    if ( item1.equals( item2 ) ) {
-                        // UTAU 音源を使用する際はUstEvent内も比較しないといけない．
-                        if (kind == org.kbinani.cadencii.RendererKind.VCNT || kind == org.kbinani.cadencii.RendererKind.UTAU || kind == org.kbinani.cadencii.RendererKind.STRAIGHT_UTAU) {
-                            // 歌詞は UstEvent からは判断できないので
-                            if (item1.UstEvent.EqualsForSynth(item2.UstEvent) && item1.ID.LyricHandle.L0.Phrase == item2.ID.LyricHandle.L0.Phrase)
-                            {
-                                found = true;
-                                break;
-                            }
-                        } else { // vsq 使用の場合はこちらのみで大丈夫．
-                            found = true;
-                            break;
-                        }
-                    }
-                }
-                if ( !found ) {
-                    ret.add( item1.Clock, item1.Clock + item1.ID.getLength() );
-                }
-            }
-            #endregion
+            // track1にあってtrack2に無い音符イベント、クレッシェンドイベントを検出
+            compareEvent( track1, track2, ret );
 
-            #region track2にあってtrack1に無い音符イベント、クレッシェンドイベントを検出
-            kind = VsqFileEx.getTrackRendererKind(track2);
-            for (Iterator<Integer> itr2 = track2.indexIterator(IndexIteratorKind.NOTE | IndexIteratorKind.CRESCEND | IndexIteratorKind.DECRESCEND); itr2.hasNext(); )
-            {
-                int i = itr2.next();
-                VsqEvent item2 = track2.getEvent( i );
-                boolean found = false;
-                for ( Iterator<Integer> itr1 = track1.indexIterator( IndexIteratorKind.NOTE | IndexIteratorKind.CRESCEND | IndexIteratorKind.DECRESCEND ); itr1.hasNext(); ) {
-                    int j = itr1.next();
-                    VsqEvent item1 = track1.getEvent( j );
-                    // item1とitem2が同じかどうか判定する
-                    if ( item2.equals( item1 ) ) {
-                        // UTAU 音源を使用する際はUstEvent内も比較しないといけない．
-                        if (kind == org.kbinani.cadencii.RendererKind.VCNT || kind == org.kbinani.cadencii.RendererKind.UTAU || kind == org.kbinani.cadencii.RendererKind.STRAIGHT_UTAU) {
-                            // 歌詞は UstEvent からは判断できないので
-                            if (item2.UstEvent.EqualsForSynth(item1.UstEvent) && item2.ID.LyricHandle.L0.Phrase == item1.ID.LyricHandle.L0.Phrase)
-                            {
-                                found = true;
-                                break;
-                            }
-                        } else { // vsq 使用の場合はこちらのみで大丈夫．
-                            found = true;
-                            break;
-                        }
-                    }
-                }
-                if ( !found ) {
-                    ret.add( item2.Clock, item2.Clock + item2.ID.getLength() );
-                }
-            }
-            #endregion
+            // track2にあってtrack1に無い音符イベント、クレッシェンドイベントを検出
+            compareEvent( track2, track1, ret );
 
             // 歌手変更の違いを検出
             compareList( ret, new SingerEventComparisonContext( track1, track2 ) );
@@ -1118,6 +1060,45 @@ namespace org.kbinani.cadencii{
                 vec.add( itr.next() );
             }
             return vec.toArray( new EditedZoneUnit[] { } );
+        }
+
+        /// <summary>
+        /// track1にあってtrack2に無い音符イベント，クレッシェンドイベントを検出し，引数retに記録します
+        /// </summary>
+        /// <param name="track1"></param>
+        /// <param name="track2"></param>
+        /// <param name="ret"></param>
+        private static void compareEvent( VsqTrack track1, VsqTrack track2, EditedZone ret )
+        {
+            RendererKind kind = VsqFileEx.getTrackRendererKind( track1 );
+            int iterator_kind = IndexIteratorKind.NOTE | IndexIteratorKind.CRESCEND | IndexIteratorKind.DECRESCEND;
+            for ( Iterator<Integer> itr1 = track1.indexIterator( iterator_kind ); itr1.hasNext(); ) {
+                int i = itr1.next();
+                VsqEvent item1 = track1.getEvent( i );
+                boolean found = false;
+                for ( Iterator<Integer> itr2 = track2.indexIterator( iterator_kind ); itr2.hasNext(); ) {
+                    int j = itr2.next();
+                    VsqEvent item2 = track2.getEvent( j );
+                    // item1とitem2が同じかどうか判定する
+                    if ( item1.equals( item2 ) ) {
+                        // UTAU 音源を使用する際はUstEvent内も比較しないといけない．
+                        if ( kind == RendererKind.VCNT || kind == RendererKind.UTAU || kind == RendererKind.STRAIGHT_UTAU ) {
+                            // 歌詞は UstEvent からは判断できないので
+                            if ( item1.UstEvent.equalsForSynth( item2.UstEvent ) && item1.ID.LyricHandle.L0.Phrase == item2.ID.LyricHandle.L0.Phrase ) {
+                                found = true;
+                                break;
+                            }
+                        } else { 
+                            // vsq 使用の場合はこちらのみで大丈夫．
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                if ( !found ) {
+                    ret.add( item1.Clock, item1.Clock + item1.ID.getLength() );
+                }
+            }
         }
 
         /// <summary>

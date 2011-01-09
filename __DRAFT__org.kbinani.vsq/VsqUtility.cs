@@ -1274,6 +1274,32 @@ namespace org
                 }
             };
 
+            public class dicitr<K, V>
+            {
+                Dictionary<K, V> mDict;
+                Dictionary<K, V>.KeyCollection.Enumerator itr;
+                bool mHasNext = false;
+
+                public dicitr( Dictionary<K, V> dict )
+                {
+                    mDict = dict;
+                    itr = mDict.Keys.GetEnumerator();
+                    mHasNext = itr.MoveNext();
+                }
+
+                public bool hasNext()
+                {
+                    return mHasNext;
+                }
+
+                public K next()
+                {
+                    K ret = itr.Current;
+                    mHasNext = itr.MoveNext();
+                    return ret;
+                }
+            };
+
 #if __cplusplus
             template<typename T>
             class vecitr
@@ -1284,7 +1310,6 @@ namespace org
 #if JAVA
                 Vector<T> list;
 #elif __cplusplus
-                vector<T> *list;
 #else
                 List<T> list;
 #endif
@@ -1367,10 +1392,28 @@ namespace org
 #endif
 
 #if JAVA
+                public static int count<K, V>( TreeMap<K, V> dict )
+#elif __cplusplus
+                template<typename K, typename V>
+                static int count( map<K, V> &dict )
+#else
+                public static int count<K, V>( Dictionary<K, V> dict )
+#endif
+                {
+#if JAVA
+                    reutrn dict.size();
+#elif __cplusplus
+                    reutrn dict.count();
+#else
+                    return dict.Count;
+#endif
+                }
+
+#if JAVA
                 public static bool containsKey<K, V>( TreeMap<K, V> dict, K key )
 #elif __cplusplus
                 template<typename K, typename V>
-                static bool containsKey( map<K, V> dict, K key )
+                static bool containsKey( map<K, V> &dict, K key )
 #else
                 public static bool containsKey<K, V>( Dictionary<K, V> dict, K key )
 #endif
@@ -1388,7 +1431,7 @@ namespace org
                 public static void put<K, V>( TreeMap<K, V> dict, K key, V value )
 #elif __cplusplus
                 template<typename K, typename V>
-                static void put( map<K, V> dict, K key, V value )
+                static void put( map<K, V> &dict, K key, V value )
 #else
                 public static void put<K, V>( Dictionary<K, V> dict, K key, V value )
 #endif
@@ -1404,7 +1447,7 @@ namespace org
                 public static V get<K, V>( TreeMap<K, V> dict, K key )
 #elif __cplusplus
                 template<typename K, typename V>
-                static V get( map<K, V> dict, K key )
+                static V get( map<K, V> &dict, K key )
 #else
                 public static V get<K, V>( Dictionary<K, V> dict, K key )
 #endif

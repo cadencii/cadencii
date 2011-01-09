@@ -9495,14 +9495,6 @@ namespace org.kbinani.cadencii
 
         //BOOKMARK: iconPalette
         #region iconPalette
-        public void iconPalette_TopMostChanged( Object sender, EventArgs e )
-        {
-            AppManager.editorConfig.FormIconTopMost = AppManager.iconPalette.isAlwaysOnTop();
-#if DEBUG
-            PortUtil.println( "FormMain#iconPalette_TopMostChanged; AppManager.editorConfig.FormIconTopMost=" + AppManager.editorConfig.FormIconTopMost );
-#endif
-        }
-
         public void iconPalette_LocationChanged( Object sender, EventArgs e )
         {
             AppManager.editorConfig.FormIconPaletteLocation = new XmlPoint( AppManager.iconPalette.getLocation() );
@@ -9565,8 +9557,6 @@ namespace org.kbinani.cadencii
                 AppManager.iconPalette.setLocation( p );
                 AppManager.iconPalette.LocationChanged +=
                     new EventHandler( iconPalette_LocationChanged );
-                AppManager.iconPalette.setTopMost( AppManager.editorConfig.FormIconTopMost );
-                AppManager.iconPalette.TopMostChanged += new EventHandler( iconPalette_TopMostChanged );
             }
             boolean old = menuVisualIconPalette.isSelected();
             menuVisualIconPalette.setSelected( !old );
@@ -9824,11 +9814,6 @@ namespace org.kbinani.cadencii
             } else {
                 AppManager.getBgm( -track - 1 ).feder = feder;
             }
-        }
-
-        public void mixerWindow_TopMostChanged( Object sender, boolean arg )
-        {
-            AppManager.editorConfig.MixerTopMost = arg;
         }
         #endregion
 
@@ -10157,8 +10142,6 @@ namespace org.kbinani.cadencii
             AppManager.mMixerWindow.PanpotChanged += new PanpotChangedEventHandler( mixerWindow_PanpotChanged );
             AppManager.mMixerWindow.MuteChanged += new MuteChangedEventHandler( mixerWindow_MuteChanged );
             AppManager.mMixerWindow.SoloChanged += new SoloChangedEventHandler( mixerWindow_SoloChanged );
-            AppManager.mMixerWindow.TopMostChanged += new TopMostChangedEventHandler( mixerWindow_TopMostChanged );
-            AppManager.mMixerWindow.setShowTopMost( AppManager.editorConfig.MixerTopMost );
             AppManager.mMixerWindow.updateStatus();
             if ( AppManager.editorConfig.MixerVisible ) {
                 AppManager.mMixerWindow.setVisible( true );
@@ -14325,10 +14308,6 @@ namespace org.kbinani.cadencii
         {
 #if DEBUG
             PortUtil.println( "FormMain#menuHelpDebug_Click" );
-
-            Amplifier a = new Amplifier();
-            WaveReceiver r = a;
-            PortUtil.println( "FormMain#menuHelpDebug_Click; (r is WaveUnit)=" + (r is WaveUnit) );
 
 #if ENABLE_VOCALOID
             /*BFileChooser dlg_fout = new BFileChooser( "" );

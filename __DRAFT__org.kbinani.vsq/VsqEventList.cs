@@ -81,9 +81,9 @@ namespace org.kbinani.vsq {
         }
 
         public int findIndexFromID( int internal_id ) {
-            int c = Events.size();
+            int c = vec.size( Events );
             for ( int i = 0; i < c; i++ ) {
-                VsqEvent item = Events.get( i );
+                VsqEvent item = vec.get( Events, i );
                 if ( item.InternalID == internal_id ) {
                     return i;
                 }
@@ -93,8 +93,8 @@ namespace org.kbinani.vsq {
 
         public VsqEvent findFromID( int internal_id ) {
             int index = findIndexFromID( internal_id );
-            if ( 0 <= index && index < Events.size() ) {
-                return Events.get( index );
+            if ( 0 <= index && index < vec.size( Events ) ) {
+                return vec.get( Events, index );
             } else {
                 return null;
             }

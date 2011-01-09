@@ -18,6 +18,7 @@ import java.io.*;
 import org.kbinani.*;
 #else
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace org.kbinani.vsq {
@@ -70,12 +71,18 @@ namespace org.kbinani.vsq {
         /// <param name="last_line">最後に読み込んだ行が返されます</param>
         public VsqMaster( TextStream sr, ByRef<String> last_line ) {
             PreMeasure = 0;
-            String[] spl;
             last_line.value = sr.readLine();
             while ( !last_line.value.StartsWith( "[" ) ) {
-                spl = PortUtil.splitString( last_line.value, new char[] { '=' } );
-                if ( spl[0].Equals( "PreMeasure" ) ) {
-                    this.PreMeasure = (float)str.toi( spl[1] );
+#if JAVA
+                Vector<String> spl = new Vector<String>();
+#elif __cplusplus
+                vector<string> spl;
+#else
+                List<string> spl = new List<string>();
+#endif
+                str.split( last_line.value, spl, "=", false );
+                if ( str.compare( vec.get( spl, 0 ), "PreMeasure" ) ) {
+                    this.PreMeasure = str.toi( vec.get( spl, 1 ) );
                 }
                 if ( !sr.ready() ) {
                     break;

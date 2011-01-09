@@ -74,12 +74,12 @@ namespace org.kbinani.vsq {
                 base_clock = 0;
                 base_time = 0f;
             } else if ( c == 1 ) {
-                tempo = get( 0 ).Tempo;
-                base_clock = get( 0 ).Clock;
-                base_time = get( 0 ).Time;
+                tempo = vec.get( this,0 ).Tempo;
+                base_clock = vec.get( this, 0 ).Clock;
+                base_time = vec.get( this, 0 ).Time;
             } else {
                 for ( int i = c - 1; i >= 0; i-- ) {
-                    TempoTableEntry item = get( i );
+                    TempoTableEntry item = vec.get( this, i );
                     if ( item.Time < time ) {
                         return item.Clock + (time - item.Time) * gatetimePerQuater * 1000000.0 / item.Tempo;
                     }
@@ -94,12 +94,12 @@ namespace org.kbinani.vsq {
         /// 新しいテンポ変更イベントを登録したり、既存のイベントを変更した場合に、都度呼び出す必要があります
         /// </summary>
         public void updateTempoInfo() {
-            int c = size();
+            int c = vec.size( this );
             if ( c == 0 ) {
-                add( new TempoTableEntry( 0, baseTempo, 0.0 ) );
+                vec.add( this, new TempoTableEntry( 0, baseTempo, 0.0 ) );
             }
             Collections.sort( this );
-            TempoTableEntry item0 = get( 0 );
+            TempoTableEntry item0 = vec.get( this, 0 );
             if ( item0.Clock != 0 ) {
                 item0.Time = (double)baseTempo * (double)item0.Clock / (gatetimePerQuater * 1000000.0);
             } else {

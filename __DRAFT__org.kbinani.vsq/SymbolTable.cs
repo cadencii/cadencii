@@ -30,10 +30,11 @@ namespace org.kbinani.vsq {
     /// 歌詞から発音記号列を引き当てるための辞書を表現するクラス
     /// </summary>
 #if JAVA
-    public class SymbolTable implements Cloneable {
+    public class SymbolTable implements Cloneable
 #else
-    public class SymbolTable : ICloneable {
+    public class SymbolTable : ICloneable
 #endif
+    {
         /// <summary>
         /// 辞書本体
         /// </summary>
@@ -69,9 +70,10 @@ namespace org.kbinani.vsq {
         /// <returns></returns>
         public static int getMaxDivisions() {
             int max = 1;
-            for ( Iterator<Integer> itr = s_table.keySet().iterator(); itr.hasNext(); ) {
+            dicitr<int, SymbolTable> itr = new dicitr<int, SymbolTable>( s_table );
+            for ( ; itr.hasNext(); ) {
                 int key = itr.next();
-                SymbolTable table = s_table.get( key );
+                SymbolTable table = dic.get( s_table, key );
                 max = Math.Max( max, table.m_max_divisions );
             }
             return max;
@@ -86,8 +88,8 @@ namespace org.kbinani.vsq {
             if ( !s_initialized ) {
                 loadSystemDictionaries();
             }
-            if ( 0 <= index && index < s_table.size() ) {
-                return s_table.get( index );
+            if ( 0 <= index && index < dic.count( s_table ) ) {
+                return dic.get( s_table, index );
             } else {
                 return null;
             }

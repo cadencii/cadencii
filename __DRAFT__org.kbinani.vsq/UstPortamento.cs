@@ -77,13 +77,13 @@ namespace org.kbinani.vsq {
             String pbw = "";
             String pby = "";
             String pbm = "";
-            int count = Points.size();
+            int count = vec.size( Points );
             for ( int i = 0; i < count; i++ ) {
                 String comma = (i == 0 ? "" : ",");
-                pbw += comma + Points.get( i ).Step;
-                pby += comma + Points.get( i ).Value;
+                pbw += comma + vec.get( Points, i ).Step;
+                pby += comma + vec.get( Points, i ).Value;
                 String type = "";
-                UstPortamentoType ut = Points.get( i ).Type;
+                UstPortamentoType ut = vec.get( Points, i ).Type;
                 if ( ut == UstPortamentoType.S ) {
                     type = "";
                 } else if ( ut == UstPortamentoType.Linear ) {
@@ -107,9 +107,9 @@ namespace org.kbinani.vsq {
 
         public Object clone() {
             UstPortamento ret = new UstPortamento();
-            int count = Points.size();
+            int count = vec.size( Points );
             for ( int i = 0; i < count; i++ ) {
-                ret.Points.add( Points.get( i ) );
+                vec.add( ret.Points, vec.get( Points, i ) );
             }
             ret.Start = Start;
             return ret;
@@ -129,13 +129,21 @@ namespace org.kbinani.vsq {
         */
         public void ParseLine( String line ) {
             line = line.ToLower();
-            String[] spl = PortUtil.splitString( line, '=' );
-            if ( spl.Length == 0 ) {
+#if JAVA
+            Vector<String> spl = new Vector<String>();
+#elif __cplusplus
+            vector<string> spl;
+#else
+            List<string> spl = new List<string>();
+#endif
+            int len = str.split( line, spl, "=", false );
+            if ( len == 0 ) {
                 return;
             }
-            String[] values = PortUtil.splitString( spl[1], ',' );
-            if ( line.StartsWith( "pbs=" ) ) {
-                Start = (float)str.toi( values[0] );
+            List<string> values = new List<string>();
+            str.split( vec.get( spl, 1 ), values, ",", false );// PortUtil.splitString( spl[1], ',' );
+            if ( str.startsWith( line, "pbs=" ) ) {
+                Start = str.toi( values[0] );
             } else if ( line.StartsWith( "pbw=" ) ) {
                 for ( int i = 0; i < values.Length; i++ ) {
                     if ( i >= Points.size() ) {

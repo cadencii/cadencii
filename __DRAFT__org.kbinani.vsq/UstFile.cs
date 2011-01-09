@@ -86,15 +86,15 @@ namespace org.kbinani.vsq {
                         }
                         String s = line.Replace( "[#", "" ).Replace( "]", "" ).Trim();
                         try {
-                            index = (float)str.toi( s );
+                            index = str.toi( s );
                         } catch ( Exception ex ) {
 #if DEBUG
-                            PortUtil.println( "UstFile#.ctor; ex=" + ex );
+                            sout.println( "UstFile#.ctor; ex=" + ex );
 #endif
                         }
                     }
 #if DEBUG
-                    PortUtil.println( "UstFile#.ctor; index=" + index );
+                    sout.println( "UstFile#.ctor; index=" + index );
 #endif
                     line = sr.readLine(); // "[#" 直下の行
                     if ( line == null ) {

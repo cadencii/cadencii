@@ -42,17 +42,18 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public class FormMixer extends BForm {
+    public class FormMixer extends BForm
 #else
-    public class FormMixer : BForm {
+    public class FormMixer : BForm
 #endif
+    {
         private FormMain m_parent;
         private Vector<VolumeTracker> m_tracker = null;
 
 #if JAVA
         public BEvent<FederChangedEventHandler> federChangedEvent = new BEvent<FederChangedEventHandler>();
 #elif __cplusplus
-        public signals: void federChanged( int track, int feder );
+        public: signals: void federChanged( int track, int feder );
 #else
         public event FederChangedEventHandler FederChanged;
 #endif
@@ -60,7 +61,7 @@ namespace org.kbinani.cadencii {
 #if JAVA
         public BEvent<PanpotChangedEventHandler> panpotChangedEvent = new BEvent<PanpotChangedEventHandler>();
 #elif __cplusplus
-        public signals: void panpotChanged( int track, int panpot );
+        public: signals: void panpotChanged( int track, int panpot );
 #else
         public event PanpotChangedEventHandler PanpotChanged;
 #endif
@@ -81,18 +82,6 @@ namespace org.kbinani.cadencii {
         public event MuteChangedEventHandler MuteChanged;
 #endif
 
-#if JAVA
-        public BEvent<TopMostChangedEventHandler> topMostChangedEvent = new BEvent<TopMostChangedEventHandler>();
-#elif __cplusplus
-        public signals: void topMostChanged( QObject sender, bool top_most );
-#else
-        public event TopMostChangedEventHandler TopMostChanged;
-#endif
-
-        public FormMixer( Object foo ) {
-            // do nothing
-        }
-
         public FormMixer( FormMain parent ) {
 #if JAVA
             super();
@@ -111,6 +100,7 @@ namespace org.kbinani.cadencii {
             volumeMaster.setTitle( "" );
             applyLanguage();
             m_parent = parent;
+            setAlwaysOnTop( true );
 #if !JAVA
             this.SetStyle( ControlStyles.DoubleBuffer, true );
 #endif
@@ -205,7 +195,6 @@ namespace org.kbinani.cadencii {
 
         public void applyLanguage() {
             setTitle( _( "Mixer" ) );
-            chkTopmost.setText( _( "Top Most" ) );
         }
 
         public void updateStatus() {
@@ -225,10 +214,6 @@ namespace org.kbinani.cadencii {
                 int remain = num - m_tracker.size();
                 for ( int i = 0; i < remain; i++ ) {
                     VolumeTracker item = new VolumeTracker();
-                    //item.MuteButtonClick += new EventHandler( FormMixer_MuteButtonClick );
-                    //item.SoloButtonClick += new EventHandler( FormMixer_SoloButtonClick );
-                    //item.FederChanged += new FederChangedEventHandler( FormMixer_FederChanged );
-                    //item.PanpotChanged += new PanpotChangedEventHandler( FormMixer_PanpotChanged );
 #if !JAVA
                     item.BorderStyle = BorderStyle.FixedSingle;
                     item.Size = volumeMaster.Size;
@@ -363,7 +348,6 @@ namespace org.kbinani.cadencii {
 #else
             panel1.Width = (VolumeTracker.WIDTH + 1) * (screen_num - 1);
             volumeMaster.Location = new System.Drawing.Point( (screen_num - 1) * (VolumeTracker.WIDTH + 1) + 3, 0 );
-            chkTopmost.Left = panel1.Width;
             this.MaximumSize = Size.Empty;
             this.MinimumSize = Size.Empty;
             this.ClientSize = new Size( screen_num * (VolumeTracker.WIDTH + 1) + 3, VolumeTracker.HEIGHT + hScroll.Height );
@@ -372,11 +356,6 @@ namespace org.kbinani.cadencii {
             this.Invalidate();
             m_parent.requestFocusInWindow();
 #endif
-        }
-
-        public void setShowTopMost( boolean value ) {
-            setAlwaysOnTop( value );
-            chkTopmost.setSelected( value );
         }
         #endregion
 
@@ -447,7 +426,6 @@ namespace org.kbinani.cadencii {
             panel1.Paint += new System.Windows.Forms.PaintEventHandler( this.panel1_Paint );
 #endif
             hScroll.ValueChanged += new EventHandler( veScrollBar_ValueChanged );
-            chkTopmost.CheckedChanged += new EventHandler( chkTopmost_CheckedChanged );
             FormClosing += new System.Windows.Forms.FormClosingEventHandler( FormMixer_FormClosing );
             reregisterEventHandlers();
         }
@@ -500,18 +478,6 @@ namespace org.kbinani.cadencii {
 #else
             if ( MuteChanged != null ) {
                 MuteChanged.Invoke( track, mute );
-            }
-#endif
-        }
-
-        private void invokeTopMostChangedEvent( Object sender, boolean top_most ) {
-#if JAVA
-            topMostChangedEvent.raise( sender, top_most );
-#elif QT_VERSION
-            topMostChanged( sender, top_most );
-#else
-            if ( TopMostChanged != null ) {
-                TopMostChanged.Invoke( sender, top_most );
             }
 #endif
         }
@@ -626,20 +592,6 @@ namespace org.kbinani.cadencii {
                 PortUtil.stderr.println( "FormMixer#volumeMaster_IsMutedChanged; ex=" + ex );
             }
         }
-
-        public void chkTopmost_CheckedChanged( Object sender, BEventArgs e ) {
-            try{
-                invokeTopMostChangedEvent( this, chkTopmost.isSelected() );
-            }catch( Exception ex ){
-                Logger.write( typeof( FormMixer ) + ".chkTopmost_CheckedChanged; ex=" + ex + "\n" );
-                PortUtil.stderr.println( "FormMixer#chkTopmost_CheckedChanged; ex=" + ex );
-            }
-            setAlwaysOnTop( chkTopmost.isSelected() ); // ここはthis.ShowTopMostにしてはいけない
-        }
-
-        public boolean isShowTopMost() {
-            return isAlwaysOnTop();
-        }
         #endregion
 
         #region UI implementation
@@ -677,8 +629,7 @@ namespace org.kbinani.cadencii {
             this.menuVisual = new org.kbinani.windows.forms.BMenuItem();
             this.menuVisualReturn = new org.kbinani.windows.forms.BMenuItem();
             this.panel1 = new org.kbinani.windows.forms.BPanel();
-            this.hScroll = new BHScrollBar();
-            this.chkTopmost = new org.kbinani.windows.forms.BCheckBox();
+            this.hScroll = new org.kbinani.windows.forms.BHScrollBar();
             this.volumeMaster = new org.kbinani.cadencii.VolumeTracker();
             this.menuMain.SuspendLayout();
             this.SuspendLayout();
@@ -699,14 +650,14 @@ namespace org.kbinani.cadencii {
             this.menuVisual.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
             this.menuVisualReturn} );
             this.menuVisual.Name = "menuVisual";
-            this.menuVisual.Size = new System.Drawing.Size( 62, 22 );
+            this.menuVisual.Size = new System.Drawing.Size( 57, 22 );
             this.menuVisual.Text = "表示(&V)";
             // 
             // menuVisualReturn
             // 
             this.menuVisualReturn.Name = "menuVisualReturn";
             this.menuVisualReturn.ShortcutKeys = System.Windows.Forms.Keys.F3;
-            this.menuVisualReturn.Size = new System.Drawing.Size( 206, 22 );
+            this.menuVisualReturn.Size = new System.Drawing.Size( 177, 22 );
             this.menuVisualReturn.Text = "エディタ画面へ戻る";
             // 
             // panel1
@@ -726,16 +677,6 @@ namespace org.kbinani.cadencii {
             this.hScroll.Size = new System.Drawing.Size( 85, 19 );
             this.hScroll.TabIndex = 0;
             // 
-            // chkTopmost
-            // 
-            this.chkTopmost.Location = new System.Drawing.Point( 85, 284 );
-            this.chkTopmost.Margin = new System.Windows.Forms.Padding( 0 );
-            this.chkTopmost.Name = "chkTopmost";
-            this.chkTopmost.Size = new System.Drawing.Size( 85, 19 );
-            this.chkTopmost.TabIndex = 7;
-            this.chkTopmost.Text = "Top Most";
-            this.chkTopmost.UseVisualStyleBackColor = true;
-            // 
             // volumeMaster
             // 
             this.volumeMaster.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))) );
@@ -753,7 +694,6 @@ namespace org.kbinani.cadencii {
             this.ClientSize = new System.Drawing.Size( 170, 304 );
             this.Controls.Add( this.hScroll );
             this.Controls.Add( this.panel1 );
-            this.Controls.Add( this.chkTopmost );
             this.Controls.Add( this.volumeMaster );
             this.Controls.Add( this.menuMain );
             this.DoubleBuffered = true;
@@ -778,7 +718,6 @@ namespace org.kbinani.cadencii {
         private VolumeTracker volumeMaster;
         private BPanel panel1;
         private BHScrollBar hScroll;
-        private BCheckBox chkTopmost;
         #endregion
 #endif
         #endregion

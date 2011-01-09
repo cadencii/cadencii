@@ -95,16 +95,16 @@ namespace org.kbinani.vsq {
             }
         }
 
-        public void write( String str ) {
-            int len = PortUtil.getStringLength( str );
+        public void write( String s ) {
+            int len = str.length( s );
             int newSize = length + len;
             int offset = length;
             ensureCapacity( newSize );
             for ( int i = 0; i < len; i++ ) {
 #if JAVA
-                array[offset + i] = str.charAt( i );
+                array[offset + i] = s.charAt( i );
 #else
-                array[offset + i] = str[i];
+                array[offset + i] = s[i];
 #endif
             }
             length = newSize;

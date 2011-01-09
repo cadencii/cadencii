@@ -280,8 +280,9 @@ namespace org.kbinani.cadencii {
         public String LastUsedExtension = ".vsq";
         /// <summary>
         /// ミキサーダイアログを常に手前に表示するかどうか
+        /// 3.3で廃止
         /// </summary>
-        public boolean MixerTopMost = true;
+        private boolean __revoked__MixerTopMost = true;
         public Vector<ValuePairOfStringArrayOfKeys> ShortcutKeys = new Vector<ValuePairOfStringArrayOfKeys>();
         public PropertyPanelState PropertyWindowStatus = new PropertyPanelState();
         /// <summary>
@@ -314,8 +315,9 @@ namespace org.kbinani.cadencii {
         public XmlPoint FormIconPaletteLocation = new XmlPoint( 0, 0 );
         /// <summary>
         /// アイコンパレット・ウィンドウを常に手前に表示するかどうか
+        /// 3.3で廃止
         /// </summary>
-        public boolean FormIconTopMost = true;
+        private boolean __revoked__FormIconTopMost = true;
         /// <summary>
         /// 最初に戻る、のショートカットキー
         /// </summary>

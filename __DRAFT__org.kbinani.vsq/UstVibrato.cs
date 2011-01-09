@@ -72,7 +72,7 @@ namespace org.kbinani.vsq {
                 size = str.split( vec.get( spl, 1 ), spl, ",", false );
                 //VBR=65,180,70,20.0,17.6,82.8,49.8,100
                 if ( size >= 8 ) {
-                    Length = str.tof( spl[0] );
+                    Length = (float)str.tof( spl[0] );
                     Period = (float)str.tof( spl[1] );
                     Depth = (float)str.tof( spl[2] );
                     In = (float)str.tof( spl[3] );

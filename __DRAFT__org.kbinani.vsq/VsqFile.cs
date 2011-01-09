@@ -71,7 +71,7 @@ namespace org.kbinani.vsq {
 #endif
             int clock_count = 480 * 4; //pre measure = 1、4分の4拍子としたので
             VsqBPList pitch = new VsqBPList( "", 0, -2400, 2400 ); // ノートナンバー×100
-            for ( Iterator<UstEvent> itr = ust.getTrack( 0 ).getNoteEventIterator(); itr.hasNext(); ) {
+            for ( vecitr<UstEvent> itr = ust.getTrack( 0 ).getNoteEventIterator(); itr.hasNext(); ) {
                 UstEvent ue = itr.next();
                 if ( ue.Lyric != "R" ) {
                     VsqID id = new VsqID( 0 );
@@ -86,7 +86,7 @@ namespace org.kbinani.vsq {
                     id.type = VsqIDType.Anote;
                     VsqEvent ve = new VsqEvent( clock_count, id );
                     ve.UstEvent = (UstEvent)ue.clone();
-                    Track.get( 1 ).addEvent( ve );
+                    vec.get( Track, 1 ).addEvent( ve );
 
                     if ( ue.Pitches != null ) {
                         // PBTypeクロックごとにデータポイントがある
@@ -98,7 +98,7 @@ namespace org.kbinani.vsq {
                     }
                 }
                 if ( ue.Tempo > 0.0f ) {
-                    TempoTable.add( new TempoTableEntry( clock_count, (int)(60e6 / ue.Tempo), 0.0 ) );
+                    vec.add( TempoTable, new TempoTableEntry( clock_count, (int)(60e6 / ue.Tempo), 0.0 ) );
                 }
                 clock_count += ue.getLength();
             }
