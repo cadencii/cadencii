@@ -1,0 +1,51 @@
+body{
+	font-family: 'Verdana';
+	font-size: 15px;
+	background-color: lightgray;
+}
+p{
+	margin-left: 20px;
+	margin-right: 20px;
+	text-indent: 1em;
+}
+div{
+    margin-left: 20px;
+    margin-right: 5px;
+}
+div.paragraph{
+    background-color: #EEEEEE;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    -o-border-radius: 6px;
+    -ms-border-radius: 6px;
+    border-radius: 6px;
+    padding: 5px 5px 5px 5px;
+    margin-top: 5px;
+    margin-left: 20px;
+    margin-bottom: 5px;
+    margin-right: 5px;
+}
+table.with_border{
+    border-right: solid 1px;
+    border-top: solid 1px;
+}
+table.with_border td{
+    border-left: solid 1px;
+    border-bottom: solid 1px;
+    text-align: center;
+}
+table.with_border td.header{
+    background-color: lightsteelblue;
+}
+table.with_border td.ok{
+	color: green;
+	border-color: black;
+	font-weight: bold;
+	font-size: 18px;
+}
+table.with_border td.ng{
+	color: red;
+	border-color: black;
+	font-weight: bold;
+	font-size: 18px;
+}
