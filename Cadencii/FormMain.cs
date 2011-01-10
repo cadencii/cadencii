@@ -3429,7 +3429,7 @@ namespace org.kbinani.cadencii
                 pictPianoRoll.requestFocus();
             }
             return;
-            #region OLD CODES DO NOT REMOVE
+            #region OLD CODES DO NOT REMOVE <- なんで？
             /*if ( AppManager.EditorConfig.Platform == Platform.Macintosh ) {
                 if ( AppManager.EditorConfig.CommandKeyAsControl ) {
                     #region menuStripMain
@@ -3772,22 +3772,29 @@ namespace org.kbinani.cadencii
             hScroll.setUnitIncrement( unit_increment );
             hScroll.setBlockIncrement( visible_clocks );*/
 #else
+            // コンポーネントの高さが0の場合，スクロールの設定が出来ないので．
+            int pwidth = pictPianoRoll.Width;
+            int hwidth = hScroll.Width;
+            if ( pwidth <= 0 || hwidth <= 0 ) {
+                return;
+            }
+
             var vsq = AppManager.getVsqFile();
             if ( vsq == null ) return;
             int l = vsq.TotalClocks;
             float scalex = AppManager.getScaleX();
             int key_width = AppManager.keyWidth;
-            int pict_piano_roll_width = pictPianoRoll.Width - key_width;
+            int pict_piano_roll_width = pwidth - key_width;
             int large_change = (int)(pict_piano_roll_width / scalex);
             int maximum = (int)(l + large_change);
 
             int thumb_width = System.Windows.Forms.SystemInformation.HorizontalScrollBarThumbWidth;
-            int box_width = (int)(large_change / (float)maximum * (hScroll.Width - 2 * thumb_width));
+            int box_width = (int)(large_change / (float)maximum * (hwidth - 2 * thumb_width));
             if ( box_width < AppManager.editorConfig.MinimumScrollHandleWidth ) {
                 box_width = AppManager.editorConfig.MinimumScrollHandleWidth;
-                if ( hScroll.Width - 2 * thumb_width > box_width ) {
-                    maximum = l * (hScroll.Width - 2 * thumb_width) / (hScroll.Width - 2 * thumb_width - box_width);
-                    large_change = l * box_width / (hScroll.Width - 2 * thumb_width - box_width);
+                if ( hwidth - 2 * thumb_width > box_width ) {
+                    maximum = l * (hwidth - 2 * thumb_width) / (hwidth - 2 * thumb_width - box_width);
+                    large_change = l * box_width / (hwidth - 2 * thumb_width - box_width);
                 }
             }
 
@@ -3819,6 +3826,12 @@ namespace org.kbinani.cadencii
             vScroll.setUnitIncrement( unit_increment );
             vScroll.setBlockIncrement( visible_amount );*/
 #else
+            // コンポーネントの高さが0の場合，スクロールの設定が出来ないので．
+            int pheight = pictPianoRoll.Height;
+            int vheight = vScroll.Height;
+            if ( pheight <= 0 || vheight <= 0 ) {
+                return;
+            }
 
             float scaley = AppManager.getScaleY();
 
@@ -3826,11 +3839,11 @@ namespace org.kbinani.cadencii
             int large_change = (int)(pictPianoRoll.Height / scaley);
 
             int thumb_height = System.Windows.Forms.SystemInformation.VerticalScrollBarThumbHeight;
-            int box_height = (int)(large_change / (float)maximum * (vScroll.Height - 2 * thumb_height));
+            int box_height = (int)(large_change / (float)maximum * (vheight - 2 * thumb_height));
             if ( box_height < AppManager.editorConfig.MinimumScrollHandleWidth ) {
                 box_height = AppManager.editorConfig.MinimumScrollHandleWidth;
-                maximum = (int)(((128.0 * (int)(100 * scaley) - pictPianoRoll.Height) / scaley) * (vScroll.Height - 2 * thumb_height) / (vScroll.Height - 2 * thumb_height - box_height));
-                large_change = (int)(((128.0 * (int)(100 * scaley) - pictPianoRoll.Height) / scaley) * box_height / (vScroll.Height - 2 * thumb_height - box_height));
+                maximum = (int)(((128.0 * (int)(100 * scaley) - pheight) / scaley) * (vheight - 2 * thumb_height) / (vheight - 2 * thumb_height - box_height));
+                large_change = (int)(((128.0 * (int)(100 * scaley) - pheight) / scaley) * box_height / (vheight - 2 * thumb_height - box_height));
             }
 
             if ( large_change <= 0 ) large_change = 1;
@@ -3843,39 +3856,6 @@ namespace org.kbinani.cadencii
             if ( old_value > maximum - large_change ) {
                 vScroll.Value = maximum - large_change;
             }
-
-            /*int _ARROWS = 40;
-            int value = vScroll.getValue();
-            int old = value;
-            int maximum = (int)(128 * 100 * AppManager.getScaleY());
-            int visible_amount = pictPianoRoll.getHeight();
-
-            int box_height = (vScroll.getHeight() - _ARROWS) * visible_amount / maximum;
-            if ( box_height < AppManager.editorConfig.MinimumScrollHandleWidth ) {
-                box_height = AppManager.editorConfig.MinimumScrollHandleWidth;
-                int act_max = maximum - visible_amount;
-                visible_amount = box_height * maximum / (vScroll.getHeight() - _ARROWS);
-                maximum = act_max + visible_amount;
-            }
-
-            vScroll.setMaximum( maximum );
-            vScroll.setVisibleAmount( visible_amount );
-            int min = vScroll.getMinimum();
-            int max = maximum - vScroll.getVisibleAmount();
-            if ( value < min ) {
-                value = min;
-            } else if ( max < value ) {
-                value = max;
-            }
-            if ( old != value ) {
-#if DEBUG
-                PortUtil.println( "FormMain#updateVScrollRange; before; vScroll.setValue; value=" + value );
-#endif
-                vScroll.setValue( value );
-#if DEBUG
-                PortUtil.println( "FormMain#updateVScrollRange; after; vScroll.setValue; value=" + value );
-#endif
-            }*/
 #endif
         }
 
@@ -4122,7 +4102,7 @@ namespace org.kbinani.cadencii
                                 menu.ShortcutKeyDisplayString = Utility.getShortcutDisplayString( keys );
                                 menu.ShortcutKeys = System.Windows.Forms.Keys.None;
 #if DEBUG
-                                PortUtil.println( "FormMain#applyMenuItemShortcut; add to mSpecialShortcutHolders; menu.getName()=" + menu.getName() );
+                                //Logger.write( "FormMain#applyMenuItemShortcut; add to mSpecialShortcutHolders; menu.getName()=" + menu.getName() + "; ex=" + ex + "\n" );
 #endif
                                 mSpecialShortcutHolders.add(
                                     new SpecialShortcutHolder( BKeysUtility.getKeyStrokeFromBKeys( keys ), menu ) );
@@ -13392,8 +13372,10 @@ namespace org.kbinani.cadencii
 
         public void vScroll_Resize( Object sender, EventArgs e )
         {
-            AppManager.setStartToDrawY( calculateStartToDrawY() );
-            updateScrollRangeVertical();
+            if ( getExtendedState() != BForm.ICONIFIED ) {
+                AppManager.setStartToDrawY( calculateStartToDrawY() );
+                updateScrollRangeVertical();
+            }
         }
 
         public void vScroll_ValueChanged( Object sender, EventArgs e )
@@ -14308,6 +14290,12 @@ namespace org.kbinani.cadencii
         {
 #if DEBUG
             PortUtil.println( "FormMain#menuHelpDebug_Click" );
+
+            int[] test = new int[] { 9, 65576, 65573, 65575, 65574 };
+            for ( int i = 0; i < test.Length; i++ ) {
+                System.Windows.Forms.Keys ks = (System.Windows.Forms.Keys)(test[i]);
+                PortUtil.println( "FormMain#menuHelpDebug_Click; ks=" + ks );
+            }
 
 #if ENABLE_VOCALOID
             /*BFileChooser dlg_fout = new BFileChooser( "" );
