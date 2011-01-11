@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A0B35F11-5790-4473-A508-5868FFA67D70}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -47,6 +47,14 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'ReleaseMinimal|x86' ">
     <OutputPath>bin\x86\ReleaseMinimal\</OutputPath>
+    <DefineConstants>TRACE;ENABLE_SCRIPT</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'MonoRelease|x86' ">
+    <OutputPath>bin\x86\MonoRelease\</OutputPath>
     <DefineConstants>TRACE;ENABLE_SCRIPT</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>

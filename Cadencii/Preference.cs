@@ -62,6 +62,11 @@ namespace org.kbinani.cadencii
         private NumberTextBox txtAutoVibratoThresholdLength;
         private BComboBox comboAutoVibratoTypeCustom;
         private BLabel lblAutoVibratoTypeCustom;
+        private System.Windows.Forms.ListBox listResampler;
+        private BButton buttonResamplerRemove;
+        private BButton buttonResamplerAdd;
+        private BButton buttonResamplerUp;
+        private BButton buttonResamplerDown;
 #if JAVA
         private BFileChooser folderBrowserSingers;
 #else
@@ -1291,14 +1296,24 @@ namespace org.kbinani.cadencii
             chkCommandKeyAsControl.setSelected( value );
         }
 
-        public String getPathResampler()
+        public Vector<String> getPathResamplers()
         {
-            return txtResampler.getText();
+            Vector<String> ret = new Vector<String>();
+            for ( int i = 0; i < listResampler.Items.Count; i++ ) {
+                ret.add( (String)listResampler.Items[i] );
+            }
+            return ret;
         }
 
-        public void setPathResampler( String value )
+        public void setPathResamplers( Vector<String> value )
         {
-            txtResampler.setText( value );
+            listResampler.Items.Clear();
+            if ( value == null ) {
+                return;
+            }
+            for ( int i = 0; i < value.Count; i++ ) {
+                listResampler.Items.Add( value.get( i ) );
+            }
         }
 
         public String getPathWavtool()
@@ -1424,23 +1439,53 @@ namespace org.kbinani.cadencii
             }
         }
 
-        public void btnResampler_Click( Object sender, BEventArgs e )
+        public void buttonResamplerAdd_Click( Object sender, BEventArgs e )
         {
-            if ( !txtResampler.getText().Equals( "" ) && PortUtil.isDirectoryExists( PortUtil.getDirectoryName( txtResampler.getText() ) ) ) {
-                openUtauCore.setInitialDirectory( PortUtil.getDirectoryName( txtResampler.getText() ) );
-            }
             openUtauCore.setSelectedFile( "resampler.exe" );
             int dr = AppManager.showModalDialog( openUtauCore, true, this );
             if ( dr == BFileChooser.APPROVE_OPTION ) {
                 String path = openUtauCore.getSelectedFile();
-                txtResampler.setText( path );
+                listResampler.Items.Add( path );
                 if ( txtWavtool.getText().Equals( "" ) ) {
+                    // wavtoolの欄が空欄だった場合のみ，
+                    // wavtoolの候補を登録する(wavtoolがあれば)
                     String wavtool = PortUtil.combinePath( PortUtil.getDirectoryName( path ), "wavtool.exe" );
                     if ( PortUtil.isFileExists( wavtool ) ) {
                         txtWavtool.setText( wavtool );
                     }
                 }
             }
+        }
+
+        void buttonResamplerUpDown_Click( object sender, EventArgs e )
+        {
+            int delta = 1;
+            if ( sender == buttonResamplerUp ) {
+                delta = -1;
+            }
+            int index = listResampler.SelectedIndex;
+            int count = listResampler.Items.Count;
+            if ( index < 0 || count <= index ) {
+                return;
+            }
+            if ( index + delta < 0 || count <= index + delta ) {
+                return;
+            }
+
+            string sel = (string)listResampler.Items[index];
+            listResampler.Items[index] = listResampler.Items[index + delta];
+            listResampler.Items[index + delta] = sel;
+            listResampler.SelectedIndex = index + delta;
+        }
+
+        void buttonResamplerRemove_Click( object sender, EventArgs e )
+        {
+            int index = listResampler.SelectedIndex;
+            int count = listResampler.Items.Count;
+            if ( index < 0 || count <= index ) {
+                return;
+            }
+            listResampler.Items.RemoveAt( index );
         }
 
         public void btnWavtool_Click( Object sender, BEventArgs e )
@@ -1453,10 +1498,10 @@ namespace org.kbinani.cadencii
             if ( dr == BFileChooser.APPROVE_OPTION ) {
                 String path = openUtauCore.getSelectedFile();
                 txtWavtool.setText( path );
-                if ( txtResampler.getText().Equals( "" ) ) {
+                if ( listResampler.Items.Count == 0 ) {
                     String resampler = PortUtil.combinePath( PortUtil.getDirectoryName( path ), "resampler.exe" );
                     if ( PortUtil.isFileExists( resampler ) ) {
-                        txtResampler.setText( resampler );
+                        listResampler.Items.Add( resampler );
                     }
                 }
             }
@@ -1688,7 +1733,10 @@ namespace org.kbinani.cadencii
             btnChangeScreenFont.Click += new EventHandler( btnChangeScreenFont_Click );
             btnChangeMenuFont.Click += new EventHandler( btnChangeMenuFont_Click );
             btnWavtool.Click += new EventHandler( btnWavtool_Click );
-            btnResampler.Click += new EventHandler( btnResampler_Click );
+            buttonResamplerAdd.Click += new EventHandler( buttonResamplerAdd_Click );
+            buttonResamplerRemove.Click += new EventHandler( buttonResamplerRemove_Click );
+            buttonResamplerUp.Click += new EventHandler( buttonResamplerUpDown_Click );
+            buttonResamplerDown.Click += new EventHandler( buttonResamplerUpDown_Click );
             btnAquesTone.Click += new EventHandler( btnAquesTone_Click );
             comboPlatform.SelectedIndexChanged += new EventHandler( comboPlatform_SelectedIndexChanged );
             btnRemove.Click += new EventHandler( btnRemove_Click );
@@ -1779,6 +1827,9 @@ namespace org.kbinani.cadencii
             System.Windows.Forms.ListViewGroup listViewGroup38 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup39 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup40 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup41 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup42 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup43 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             this.tabPreference = new System.Windows.Forms.TabControl();
             this.tabSequence = new System.Windows.Forms.TabPage();
             this.txtAutoVibratoThresholdLength = new org.kbinani.cadencii.NumberTextBox();
@@ -1875,12 +1926,15 @@ namespace org.kbinani.cadencii
             this.chkKeepLyricInputMode = new org.kbinani.windows.forms.BCheckBox();
             this.tabPlatform = new System.Windows.Forms.TabPage();
             this.groupUtauCores = new org.kbinani.windows.forms.BGroupBox();
+            this.buttonResamplerUp = new org.kbinani.windows.forms.BButton();
+            this.buttonResamplerDown = new org.kbinani.windows.forms.BButton();
+            this.buttonResamplerRemove = new org.kbinani.windows.forms.BButton();
+            this.buttonResamplerAdd = new org.kbinani.windows.forms.BButton();
+            this.listResampler = new System.Windows.Forms.ListBox();
             this.lblResampler = new org.kbinani.windows.forms.BLabel();
             this.chkInvokeWithWine = new org.kbinani.windows.forms.BCheckBox();
             this.btnWavtool = new org.kbinani.windows.forms.BButton();
-            this.txtResampler = new org.kbinani.windows.forms.BTextBox();
             this.lblWavtool = new org.kbinani.windows.forms.BLabel();
-            this.btnResampler = new org.kbinani.windows.forms.BButton();
             this.txtWavtool = new org.kbinani.windows.forms.BTextBox();
             this.groupPlatform = new org.kbinani.windows.forms.BGroupBox();
             this.chkTranslateRoman = new org.kbinani.windows.forms.BCheckBox();
@@ -1990,10 +2044,10 @@ namespace org.kbinani.cadencii
             this.tabSequence.Controls.Add( this.label3 );
             this.tabSequence.Controls.Add( this.comboVibratoLength );
             this.tabSequence.Controls.Add( this.lblVibratoLength );
-            this.tabSequence.Location = new System.Drawing.Point( 4, 40 );
+            this.tabSequence.Location = new System.Drawing.Point( 4, 38 );
             this.tabSequence.Name = "tabSequence";
             this.tabSequence.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabSequence.Size = new System.Drawing.Size( 454, 439 );
+            this.tabSequence.Size = new System.Drawing.Size( 454, 441 );
             this.tabSequence.TabIndex = 0;
             this.tabSequence.Text = "Sequence";
             this.tabSequence.UseVisualStyleBackColor = true;
@@ -2285,10 +2339,10 @@ namespace org.kbinani.cadencii
             this.tabAnother.Controls.Add( this.numBuffer );
             this.tabAnother.Controls.Add( this.numWait );
             this.tabAnother.Controls.Add( this.numPreSendTime );
-            this.tabAnother.Location = new System.Drawing.Point( 4, 40 );
+            this.tabAnother.Location = new System.Drawing.Point( 4, 38 );
             this.tabAnother.Name = "tabAnother";
             this.tabAnother.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabAnother.Size = new System.Drawing.Size( 454, 439 );
+            this.tabAnother.Size = new System.Drawing.Size( 454, 441 );
             this.tabAnother.TabIndex = 2;
             this.tabAnother.Text = "Other Settings";
             this.tabAnother.UseVisualStyleBackColor = true;
@@ -2451,10 +2505,10 @@ namespace org.kbinani.cadencii
             this.tabAppearance.Controls.Add( this.comboLanguage );
             this.tabAppearance.Controls.Add( this.lblLanguage );
             this.tabAppearance.Controls.Add( this.numTrackHeight );
-            this.tabAppearance.Location = new System.Drawing.Point( 4, 40 );
+            this.tabAppearance.Location = new System.Drawing.Point( 4, 38 );
             this.tabAppearance.Name = "tabAppearance";
             this.tabAppearance.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabAppearance.Size = new System.Drawing.Size( 454, 439 );
+            this.tabAppearance.Size = new System.Drawing.Size( 454, 441 );
             this.tabAppearance.TabIndex = 3;
             this.tabAppearance.Text = "Appearance";
             this.tabAppearance.UseVisualStyleBackColor = true;
@@ -2820,10 +2874,10 @@ namespace org.kbinani.cadencii
             // 
             this.tabOperation.Controls.Add( this.groupMisc );
             this.tabOperation.Controls.Add( this.groupPianoroll );
-            this.tabOperation.Location = new System.Drawing.Point( 4, 40 );
+            this.tabOperation.Location = new System.Drawing.Point( 4, 38 );
             this.tabOperation.Name = "tabOperation";
             this.tabOperation.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabOperation.Size = new System.Drawing.Size( 454, 439 );
+            this.tabOperation.Size = new System.Drawing.Size( 454, 441 );
             this.tabOperation.TabIndex = 5;
             this.tabOperation.Text = "Operation";
             this.tabOperation.UseVisualStyleBackColor = true;
@@ -3062,34 +3116,91 @@ namespace org.kbinani.cadencii
             // 
             this.tabPlatform.Controls.Add( this.groupUtauCores );
             this.tabPlatform.Controls.Add( this.groupPlatform );
-            this.tabPlatform.Location = new System.Drawing.Point( 4, 40 );
+            this.tabPlatform.Location = new System.Drawing.Point( 4, 38 );
             this.tabPlatform.Name = "tabPlatform";
             this.tabPlatform.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabPlatform.Size = new System.Drawing.Size( 454, 439 );
+            this.tabPlatform.Size = new System.Drawing.Size( 454, 441 );
             this.tabPlatform.TabIndex = 4;
             this.tabPlatform.Text = "Platform";
             this.tabPlatform.UseVisualStyleBackColor = true;
             // 
             // groupUtauCores
             // 
+            this.groupUtauCores.Controls.Add( this.buttonResamplerUp );
+            this.groupUtauCores.Controls.Add( this.buttonResamplerDown );
+            this.groupUtauCores.Controls.Add( this.buttonResamplerRemove );
+            this.groupUtauCores.Controls.Add( this.buttonResamplerAdd );
+            this.groupUtauCores.Controls.Add( this.listResampler );
             this.groupUtauCores.Controls.Add( this.lblResampler );
             this.groupUtauCores.Controls.Add( this.chkInvokeWithWine );
             this.groupUtauCores.Controls.Add( this.btnWavtool );
-            this.groupUtauCores.Controls.Add( this.txtResampler );
             this.groupUtauCores.Controls.Add( this.lblWavtool );
-            this.groupUtauCores.Controls.Add( this.btnResampler );
             this.groupUtauCores.Controls.Add( this.txtWavtool );
             this.groupUtauCores.Location = new System.Drawing.Point( 23, 123 );
             this.groupUtauCores.Name = "groupUtauCores";
-            this.groupUtauCores.Size = new System.Drawing.Size( 407, 105 );
+            this.groupUtauCores.Size = new System.Drawing.Size( 407, 234 );
             this.groupUtauCores.TabIndex = 108;
             this.groupUtauCores.TabStop = false;
             this.groupUtauCores.Text = "UTAU Cores";
             // 
+            // buttonResamplerUp
+            // 
+            this.buttonResamplerUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonResamplerUp.Location = new System.Drawing.Point( 340, 134 );
+            this.buttonResamplerUp.Name = "buttonResamplerUp";
+            this.buttonResamplerUp.Size = new System.Drawing.Size( 61, 23 );
+            this.buttonResamplerUp.TabIndex = 119;
+            this.buttonResamplerUp.Text = "Up";
+            this.buttonResamplerUp.UseVisualStyleBackColor = true;
+            // 
+            // buttonResamplerDown
+            // 
+            this.buttonResamplerDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonResamplerDown.Location = new System.Drawing.Point( 340, 163 );
+            this.buttonResamplerDown.Name = "buttonResamplerDown";
+            this.buttonResamplerDown.Size = new System.Drawing.Size( 61, 23 );
+            this.buttonResamplerDown.TabIndex = 118;
+            this.buttonResamplerDown.Text = "Down";
+            this.buttonResamplerDown.UseVisualStyleBackColor = true;
+            // 
+            // buttonResamplerRemove
+            // 
+            this.buttonResamplerRemove.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonResamplerRemove.Location = new System.Drawing.Point( 340, 78 );
+            this.buttonResamplerRemove.Name = "buttonResamplerRemove";
+            this.buttonResamplerRemove.Size = new System.Drawing.Size( 61, 23 );
+            this.buttonResamplerRemove.TabIndex = 117;
+            this.buttonResamplerRemove.Text = "Remove";
+            this.buttonResamplerRemove.UseVisualStyleBackColor = true;
+            // 
+            // buttonResamplerAdd
+            // 
+            this.buttonResamplerAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonResamplerAdd.Location = new System.Drawing.Point( 340, 49 );
+            this.buttonResamplerAdd.Name = "buttonResamplerAdd";
+            this.buttonResamplerAdd.Size = new System.Drawing.Size( 61, 23 );
+            this.buttonResamplerAdd.TabIndex = 116;
+            this.buttonResamplerAdd.Text = "Add";
+            this.buttonResamplerAdd.UseVisualStyleBackColor = true;
+            // 
+            // listResampler
+            // 
+            this.listResampler.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.listResampler.FormattingEnabled = true;
+            this.listResampler.HorizontalScrollbar = true;
+            this.listResampler.ItemHeight = 12;
+            this.listResampler.Location = new System.Drawing.Point( 100, 49 );
+            this.listResampler.Name = "listResampler";
+            this.listResampler.ScrollAlwaysVisible = true;
+            this.listResampler.Size = new System.Drawing.Size( 234, 136 );
+            this.listResampler.TabIndex = 115;
+            // 
             // lblResampler
             // 
             this.lblResampler.AutoSize = true;
-            this.lblResampler.Location = new System.Drawing.Point( 17, 25 );
+            this.lblResampler.Location = new System.Drawing.Point( 17, 52 );
             this.lblResampler.Name = "lblResampler";
             this.lblResampler.Size = new System.Drawing.Size( 55, 12 );
             this.lblResampler.TabIndex = 111;
@@ -3097,8 +3208,9 @@ namespace org.kbinani.cadencii
             // 
             // chkInvokeWithWine
             // 
+            this.chkInvokeWithWine.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.chkInvokeWithWine.AutoSize = true;
-            this.chkInvokeWithWine.Location = new System.Drawing.Point( 19, 79 );
+            this.chkInvokeWithWine.Location = new System.Drawing.Point( 19, 198 );
             this.chkInvokeWithWine.Name = "chkInvokeWithWine";
             this.chkInvokeWithWine.Size = new System.Drawing.Size( 177, 16 );
             this.chkInvokeWithWine.TabIndex = 113;
@@ -3107,43 +3219,30 @@ namespace org.kbinani.cadencii
             // 
             // btnWavtool
             // 
-            this.btnWavtool.Location = new System.Drawing.Point( 360, 47 );
+            this.btnWavtool.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnWavtool.Location = new System.Drawing.Point( 340, 20 );
             this.btnWavtool.Name = "btnWavtool";
-            this.btnWavtool.Size = new System.Drawing.Size( 41, 23 );
+            this.btnWavtool.Size = new System.Drawing.Size( 61, 23 );
             this.btnWavtool.TabIndex = 112;
-            this.btnWavtool.Text = "...";
+            this.btnWavtool.Text = "Browse";
             this.btnWavtool.UseVisualStyleBackColor = true;
-            // 
-            // txtResampler
-            // 
-            this.txtResampler.Location = new System.Drawing.Point( 100, 22 );
-            this.txtResampler.Name = "txtResampler";
-            this.txtResampler.Size = new System.Drawing.Size( 254, 19 );
-            this.txtResampler.TabIndex = 109;
             // 
             // lblWavtool
             // 
             this.lblWavtool.AutoSize = true;
-            this.lblWavtool.Location = new System.Drawing.Point( 17, 52 );
+            this.lblWavtool.Location = new System.Drawing.Point( 17, 25 );
             this.lblWavtool.Name = "lblWavtool";
             this.lblWavtool.Size = new System.Drawing.Size( 44, 12 );
             this.lblWavtool.TabIndex = 114;
             this.lblWavtool.Text = "wavtool";
             // 
-            // btnResampler
-            // 
-            this.btnResampler.Location = new System.Drawing.Point( 360, 20 );
-            this.btnResampler.Name = "btnResampler";
-            this.btnResampler.Size = new System.Drawing.Size( 41, 23 );
-            this.btnResampler.TabIndex = 110;
-            this.btnResampler.Text = "...";
-            this.btnResampler.UseVisualStyleBackColor = true;
-            // 
             // txtWavtool
             // 
-            this.txtWavtool.Location = new System.Drawing.Point( 100, 49 );
+            this.txtWavtool.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtWavtool.Location = new System.Drawing.Point( 100, 22 );
             this.txtWavtool.Name = "txtWavtool";
-            this.txtWavtool.Size = new System.Drawing.Size( 254, 19 );
+            this.txtWavtool.Size = new System.Drawing.Size( 234, 19 );
             this.txtWavtool.TabIndex = 111;
             // 
             // groupPlatform
@@ -3205,10 +3304,10 @@ namespace org.kbinani.cadencii
             this.tabUtausingers.Controls.Add( this.btnUp );
             this.tabUtausingers.Controls.Add( this.btnDown );
             this.tabUtausingers.Controls.Add( this.listSingers );
-            this.tabUtausingers.Location = new System.Drawing.Point( 4, 40 );
+            this.tabUtausingers.Location = new System.Drawing.Point( 4, 38 );
             this.tabUtausingers.Name = "tabUtausingers";
             this.tabUtausingers.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabUtausingers.Size = new System.Drawing.Size( 454, 439 );
+            this.tabUtausingers.Size = new System.Drawing.Size( 454, 441 );
             this.tabUtausingers.TabIndex = 6;
             this.tabUtausingers.Text = "UTAU Singers";
             this.tabUtausingers.UseVisualStyleBackColor = true;
@@ -3338,6 +3437,12 @@ namespace org.kbinani.cadencii
             listViewGroup39.Name = null;
             listViewGroup40.Header = "ListViewGroup";
             listViewGroup40.Name = null;
+            listViewGroup41.Header = "ListViewGroup";
+            listViewGroup41.Name = null;
+            listViewGroup42.Header = "ListViewGroup";
+            listViewGroup42.Name = null;
+            listViewGroup43.Header = "ListViewGroup";
+            listViewGroup43.Name = null;
             this.listSingers.Groups.AddRange( new System.Windows.Forms.ListViewGroup[] {
             listViewGroup1,
             listViewGroup2,
@@ -3378,7 +3483,10 @@ namespace org.kbinani.cadencii
             listViewGroup37,
             listViewGroup38,
             listViewGroup39,
-            listViewGroup40} );
+            listViewGroup40,
+            listViewGroup41,
+            listViewGroup42,
+            listViewGroup43} );
             this.listSingers.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.listSingers.Location = new System.Drawing.Point( 17, 23 );
             this.listSingers.MultiSelect = false;
@@ -3395,10 +3503,10 @@ namespace org.kbinani.cadencii
             this.tabFile.Controls.Add( this.lblAutoBackupInterval );
             this.tabFile.Controls.Add( this.chkAutoBackup );
             this.tabFile.Controls.Add( this.numAutoBackupInterval );
-            this.tabFile.Location = new System.Drawing.Point( 4, 40 );
+            this.tabFile.Location = new System.Drawing.Point( 4, 38 );
             this.tabFile.Name = "tabFile";
             this.tabFile.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabFile.Size = new System.Drawing.Size( 454, 439 );
+            this.tabFile.Size = new System.Drawing.Size( 454, 441 );
             this.tabFile.TabIndex = 7;
             this.tabFile.Text = "File";
             this.tabFile.UseVisualStyleBackColor = true;
@@ -3464,10 +3572,10 @@ namespace org.kbinani.cadencii
             this.tabSingingSynth.Controls.Add( this.groupDefaultSynthesizer );
             this.tabSingingSynth.Controls.Add( this.groupSynthesizerDll );
             this.tabSingingSynth.Controls.Add( this.groupVsti );
-            this.tabSingingSynth.Location = new System.Drawing.Point( 4, 40 );
+            this.tabSingingSynth.Location = new System.Drawing.Point( 4, 38 );
             this.tabSingingSynth.Name = "tabSingingSynth";
             this.tabSingingSynth.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabSingingSynth.Size = new System.Drawing.Size( 454, 439 );
+            this.tabSingingSynth.Size = new System.Drawing.Size( 454, 441 );
             this.tabSingingSynth.TabIndex = 8;
             this.tabSingingSynth.Text = "Synthesizer";
             this.tabSingingSynth.UseVisualStyleBackColor = true;
@@ -3820,9 +3928,7 @@ namespace org.kbinani.cadencii
         private BLabel lblResampler;
         private BCheckBox chkInvokeWithWine;
         private BButton btnWavtool;
-        private BTextBox txtResampler;
         private BLabel lblWavtool;
-        private BButton btnResampler;
         private BTextBox txtWavtool;
         private BButton btnUp;
         private BButton btnDown;

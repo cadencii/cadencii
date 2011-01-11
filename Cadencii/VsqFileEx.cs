@@ -45,6 +45,10 @@ namespace org.kbinani.cadencii
 
         public const String TAG_VSQEVENT_AQUESTONE_RELEASE = "org.kbinani.cadencii.AquesToneRelease";
         public const String TAG_VSQTRACK_RENDERER_KIND = "org.kbinani.cadencii.RendererKind";
+        /// <summary>
+        /// トラックをUTAUモードで合成するとき，何番目の互換合成器で合成するかどうかを指定する
+        /// </summary>
+        public const String TAG_VSQTRACK_RESAMPLER_USED = "org.kbinani.cadencii.ResamplerUsed";
 
         public AttachedCurve AttachedCurves;
         public Vector<BgmFile> BgmFiles = new Vector<BgmFile>();
@@ -91,6 +95,33 @@ namespace org.kbinani.cadencii
                 }
             }
             return VsqFile.getGenericTypeName( name );
+        }
+
+        /// <summary>
+        /// 指定したトラックに対して使用する，UTAU互換合成器の番号を取得します
+        /// </summary>
+        /// <param name="vsq_track"></param>
+        /// <returns></returns>
+        public static int getTrackResamplerUsed( VsqTrack vsq_track )
+        {
+            String str_indx = getTagCor( vsq_track.Tag, TAG_VSQTRACK_RESAMPLER_USED );
+            int ret = 0;
+            try {
+                ret = PortUtil.parseInt( str_indx );
+            } catch ( Exception ex ) {
+                ret = 0;
+            }
+            return ret;
+        }
+
+        /// <summary>
+        /// 指定したトラックに対して使用するUTAU互換合成器の番号を設定します
+        /// </summary>
+        /// <param name="vsq_track"></param>
+        /// <param name="index"></param>
+        public static void setTrackResamplerUsed( VsqTrack vsq_track, int index )
+        {
+            vsq_track.Tag = setTagCor( vsq_track.Tag, TAG_VSQTRACK_RESAMPLER_USED, index + "" );
         }
 
         /// <summary>
@@ -197,21 +228,25 @@ namespace org.kbinani.cadencii
                 String newtag = "";
                 String[] spl = PortUtil.splitString( old_tag, ';' );
                 boolean is_first = true;
+                boolean added = false;
                 foreach ( String s in spl ) {
                     String[] spl2 = PortUtil.splitString( s, ':' );
                     if ( spl2.Length == 2 ) {
                         String add = "";
                         if ( name.Equals( spl2[0] ) ) {
                             add = name + ":" + v;
+                            added = true;
                         } else {
                             add = spl2[0] + ":" + spl2[1];
                         }
-                        newtag += add + (is_first ? "" : ";");
+                        newtag += (is_first ? "" : ";") + add;
                         is_first = false;
                     }
                 }
                 if ( is_first ) {
-                    newtag = name + ":" + value;
+                    newtag = name + ":" + v;
+                } else if( !added ) {
+                    newtag += ";" + name + ":" + v;
                 }
                 return newtag;
             }

@@ -2343,6 +2343,32 @@ namespace org.kbinani.cadencii
                 cMenuTrackTabRendererAquesTone.setIcon( null );
                 menuTrackRendererAquesTone.setIcon( null );
             }
+
+            // UTAU用のサブアイテムを更新
+            int count = AppManager.editorConfig.getResamplerCount();
+            int delta = count - menuTrackRendererUtau.DropDownItems.Count;
+            if ( delta > 0 ) {
+                // 増やす
+                for ( int i = 0; i < delta; i++ ) {
+                    cMenuTrackTabRendererUtau.DropDownItems.Add( "", null, new EventHandler( handleChangeRenderer ) );
+                    menuTrackRendererUtau.DropDownItems.Add( "", null, new EventHandler( handleChangeRenderer ) );
+                }
+            } else if ( delta < 0 ) {
+                // 減らす
+                for ( int i = 0; i < -delta; i++ ) {
+                    cMenuTrackTabRendererUtau.DropDownItems.RemoveAt( 0 );
+                    menuTrackRendererUtau.DropDownItems.RemoveAt( 0 );
+                }
+            }
+            for ( int i = 0; i < count; i++ ) {
+                String path = AppManager.editorConfig.getResamplerAt( i );
+                string name = PortUtil.getFileNameWithoutExtension( path );
+                menuTrackRendererUtau.DropDownItems[i].Text = name;
+                cMenuTrackTabRendererUtau.DropDownItems[i].Text = name;
+
+                menuTrackRendererUtau.DropDownItems[i].ToolTipText = path;
+                cMenuTrackTabRendererUtau.DropDownItems[i].ToolTipText = path;
+            }
         }
 
         public void drawUtauVibrato( Graphics2D g, UstVibrato vibrato, int note, int clock_start, int clock_width )
@@ -12091,7 +12117,12 @@ namespace org.kbinani.cadencii
 
 #endif
                 mDialogPreference.setInvokeWithWine( AppManager.editorConfig.InvokeUtauCoreWithWine );
-                mDialogPreference.setPathResampler( AppManager.editorConfig.PathResampler );
+                Vector<String> resamplers = new Vector<String>();
+                int size = AppManager.editorConfig.getResamplerCount();
+                for ( int i = 0; i < size; i++ ) {
+                    resamplers.add( AppManager.editorConfig.getResamplerAt( i ) );
+                }
+                mDialogPreference.setPathResamplers( resamplers );
                 mDialogPreference.setPathWavtool( AppManager.editorConfig.PathWavtool );
                 mDialogPreference.setUtausingers( AppManager.editorConfig.UtauSingers );
                 mDialogPreference.setSelfDeRomantization( AppManager.editorConfig.SelfDeRomanization );
@@ -12206,7 +12237,7 @@ namespace org.kbinani.cadencii
                     AppManager.editorConfig.MidiInPort.PortNumber = mDialogPreference.getMidiInPort();
 #endif
 #if ENABLE_MTC
-                AppManager.editorConfig.MidiInPortMtc.PortNumber = m_preference_dlg.getMtcMidiInPort();
+                    AppManager.editorConfig.MidiInPortMtc.PortNumber = m_preference_dlg.getMtcMidiInPort();
 #endif
 #if ENABLE_MIDI || ENABLE_MTC
                     updateMidiInStatus();
@@ -12214,7 +12245,11 @@ namespace org.kbinani.cadencii
 #endif
 
                     AppManager.editorConfig.InvokeUtauCoreWithWine = mDialogPreference.isInvokeWithWine();
-                    AppManager.editorConfig.PathResampler = mDialogPreference.getPathResampler();
+                    Vector<String> new_resamplers = mDialogPreference.getPathResamplers();
+                    AppManager.editorConfig.clearResampler();
+                    for ( int i = 0; i < new_resamplers.size(); i++ ) {
+                        AppManager.editorConfig.addResampler( new_resamplers.get( i ) );
+                    }
                     AppManager.editorConfig.PathWavtool = mDialogPreference.getPathWavtool();
 
                     AppManager.editorConfig.UtauSingers.clear();
@@ -15625,11 +15660,13 @@ namespace org.kbinani.cadencii
             mStepSequencerEnabled = stripBtnStepSequencer.Checked;
 
             // MIDIの受信を開始
+#if ENABLE_MIDI
             if ( mStepSequencerEnabled ) {
                 mMidiIn.Start();
             } else {
                 mMidiIn.Stop();
             }
+#endif
         }
 
         public void stripBtnStop_Click( Object sender, EventArgs e )
@@ -16505,10 +16542,9 @@ namespace org.kbinani.cadencii
         public void handleChangeRenderer( Object sender, EventArgs e )
         {
             RendererKind kind = RendererKind.NULL;
+            int resampler_index = -1;
             if ( sender == cMenuTrackTabRendererAquesTone || sender == menuTrackRendererAquesTone ) {
                 kind = RendererKind.AQUES_TONE;
-            } else if ( sender == cMenuTrackTabRendererUtau || sender == menuTrackRendererUtau ) {
-                kind = RendererKind.UTAU;
             } else if ( sender == cMenuTrackTabRendererStraight || sender == menuTrackRendererVCNT ) {
                 kind = RendererKind.VCNT;
             } else if ( sender == cMenuTrackTabRendererVOCALOID100 || sender == menuTrackRendererVOCALOID100 ) {
@@ -16518,13 +16554,42 @@ namespace org.kbinani.cadencii
             } else if ( sender == cMenuTrackTabRendererVOCALOID2 || sender == menuTrackRendererVOCALOID2 ) {
                 kind = RendererKind.VOCALOID2;
             } else {
-                return;
+                // イベント送信元のアイテムが，cMenuTrackTabRendererUtauまたは
+                // menuTrackRendererUTAUのサブアイテムかどうかをチェック
+                if( sender is System.Windows.Forms.ToolStripMenuItem ){
+                    System.Windows.Forms.ToolStripMenuItem item = (System.Windows.Forms.ToolStripMenuItem)sender;
+                    resampler_index = cMenuTrackTabRendererUtau.DropDownItems.IndexOf( item );
+                    if ( resampler_index < 0 ) {
+                        resampler_index = menuTrackRendererUtau.DropDownItems.IndexOf( item );
+                    }
+                }
+                if ( resampler_index < 0 ) {
+                    // 検出できないのでbailout
+                    return;
+                }
+
+#if DEBUG
+                PortUtil.println( "FormMain#handleChangeRenderer; resampler_index=" + resampler_index );
+#endif
+                // 検出できた
+                // このばあいは確実にUTAU
+                kind = RendererKind.UTAU;
             }
             VsqFileEx vsq = AppManager.getVsqFile();
             int selected = AppManager.getSelected();
             VsqTrack vsq_track = vsq.Track.get( selected );
             RendererKind old = VsqFileEx.getTrackRendererKind( vsq_track );
-            if ( old != kind ) {
+            int old_resampler_index = VsqFileEx.getTrackResamplerUsed( vsq_track );
+            boolean changed = (old != kind);
+            if ( !changed && kind == RendererKind.UTAU ) {
+                changed = (old_resampler_index != resampler_index);
+            }
+#if DEBUG
+            PortUtil.println( "FormMain#handleChangeRenderer; old=" + old + "; kind=" + kind );
+            PortUtil.println( "FormMain#handleChangeRenderer; old_resampler_index=" + old_resampler_index + "; resampler_index=" + resampler_index );
+            PortUtil.println( "FormMaiN#handleChangeRenderer; changed=" + changed );
+#endif
+            if ( changed ) {
                 VsqTrack item = (VsqTrack)vsq_track.clone();
                 Vector<VsqID> singers = AppManager.getSingerListFromRendererKind( kind );
                 String renderer = AppManager.getVersionStringFromRendererKind( kind );
@@ -16535,10 +16600,22 @@ namespace org.kbinani.cadencii
 
                 item.changeRenderer( renderer, singers );
                 VsqFileEx.setTrackRendererKind( item, kind );
+                if ( kind == RendererKind.UTAU ) {
+#if DEBUG
+                    PortUtil.println( "FormMain#handleChangeRenderer; before; item.Tag=" + item.Tag );
+#endif
+                    VsqFileEx.setTrackResamplerUsed( item, resampler_index );
+#if DEBUG
+                    PortUtil.println( "FormMain#handleChangeRenderer; after; item.Tag=" + item.Tag );
+#endif
+                }
                 CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( selected,
                                                                              item,
                                                                              vsq.AttachedCurves.get( selected - 1 ) );
                 AppManager.register( vsq.executeCommand( run ) );
+#if DEBUG
+                PortUtil.println( "FormMain#handleChangeRenderer; after executing command; resamplerUsed=" + VsqFileEx.getTrackResamplerUsed( vsq.Track.get( selected ) ) );
+#endif
                 cMenuTrackTabRendererVOCALOID100.setSelected( kind == RendererKind.VOCALOID1_100 );
                 cMenuTrackTabRendererVOCALOID101.setSelected( kind == RendererKind.VOCALOID1_101 );
                 cMenuTrackTabRendererVOCALOID2.setSelected( kind == RendererKind.VOCALOID2 );
@@ -16549,6 +16626,12 @@ namespace org.kbinani.cadencii
                 menuTrackRendererVOCALOID2.setSelected( kind == RendererKind.VOCALOID2 );
                 menuTrackRendererUtau.setSelected( kind == RendererKind.UTAU );
                 menuTrackRendererVCNT.setSelected( kind == RendererKind.VCNT );
+                for ( int i = 0; i < cMenuTrackTabRendererUtau.DropDownItems.Count; i++ ) {
+                    ((System.Windows.Forms.ToolStripMenuItem)cMenuTrackTabRendererUtau.DropDownItems[i]).Checked = (i == resampler_index);
+                }
+                for ( int i = 0; i < menuTrackRendererUtau.DropDownItems.Count; i++ ) {
+                    ((System.Windows.Forms.ToolStripMenuItem)menuTrackRendererUtau.DropDownItems[i]).Checked = (i == resampler_index);
+                }
                 setEdited( true );
                 refreshScreen();
             }

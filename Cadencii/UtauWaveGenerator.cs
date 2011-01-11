@@ -134,7 +134,15 @@ namespace org.kbinani.cadencii
         public void init( VsqFileEx vsq, int track, int start_clock, int end_clock, int sample_rate )
         {
             mTrack = track;
-            mResampler = mConfig.PathResampler;
+            int resampler_index = VsqFileEx.getTrackResamplerUsed( vsq.Track.get( track ) );
+            int resampler_count = mConfig.getResamplerCount();
+            if ( resampler_count <= resampler_index ) {
+                resampler_index = resampler_count - 1;
+            }
+            if ( resampler_index < 0 ) {
+                resampler_index = 0;
+            }
+            mResampler = mConfig.getResamplerAt( resampler_index );
             mWavtool = mConfig.PathWavtool;
             mSampleRate = sample_rate;
             mTempDir = PortUtil.combinePath( AppManager.getCadenciiTempDir(), AppManager.getID() );

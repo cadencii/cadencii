@@ -1027,6 +1027,13 @@ namespace org.kbinani.cadencii{
                 return new EditedZoneUnit[] { new EditedZoneUnit( 0, int.MaxValue ) };
             }
 
+            // resamplerの利用状況を比較
+            int index1 = VsqFileEx.getTrackResamplerUsed( track1 );
+            int index2 = VsqFileEx.getTrackResamplerUsed( track2 );
+            if ( index1 != index2 ) {
+                return new EditedZoneUnit[] { new EditedZoneUnit( 0, int.MaxValue ) };
+            }
+
             int numEvent1 = track1.getEventCount();
             int numEvent2 = track2.getEventCount();
 

@@ -26,8 +26,10 @@ namespace org.kbinani.cadencii {
 
     /// <summary>
     /// AtatchedCurveをXMLシリアライズするためのクラス
+    /// であると同時に，各トラックに付随する情報を格納するためのクラス←New!
     /// </summary>
-    public class BezierCurves : ICloneable {
+    public class BezierCurves : ICloneable
+    {
         public Vector<BezierChain> Dynamics;
         public Vector<BezierChain> Brethiness;
         public Vector<BezierChain> Brightness;
@@ -53,8 +55,9 @@ namespace org.kbinani.cadencii {
         public Vector<BezierChain> Reso4Amp;
         public Vector<BezierChain> PitchBend;
         public Vector<BezierChain> PitchBendSensitivity;
-       
-        public BezierCurves() {
+
+        public BezierCurves()
+        {
             Dynamics = new Vector<BezierChain>();
             Brethiness = new Vector<BezierChain>();
             Brightness = new Vector<BezierChain>();
@@ -88,7 +91,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static String getGenericTypeName( String name ) {
+        public static String getGenericTypeName( String name )
+        {
             if ( name != null ) {
                 // 手抜き実装
                 return "org.kbinani.cadencii.BezierChain";
@@ -96,7 +100,8 @@ namespace org.kbinani.cadencii {
             return "";
         }
 
-        public BezierChain getBezierChain( CurveType curve_type, int chain_id ) {
+        public BezierChain getBezierChain( CurveType curve_type, int chain_id )
+        {
             Vector<BezierChain> list = this.get( curve_type );
             int count = list.size();
             for ( int i = 0; i < count; i++ ) {
@@ -107,7 +112,8 @@ namespace org.kbinani.cadencii {
             return null;
         }
 
-        public void setBezierChain( CurveType curve_type, int chain_id, BezierChain item ) {
+        public void setBezierChain( CurveType curve_type, int chain_id, BezierChain item )
+        {
             Vector<BezierChain> list = this.get( curve_type );
             int count = list.size();
             for ( int i = 0; i < count; i++ ) {
@@ -125,7 +131,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="curve"></param>
         /// <param name="chain"></param>
-        public void mergeBezierChain( CurveType curve, BezierChain chain ) {
+        public void mergeBezierChain( CurveType curve, BezierChain chain )
+        {
             if ( chain.points.size() <= 1 ) {
                 return;
             }
@@ -150,7 +157,7 @@ namespace org.kbinani.cadencii {
             }
 
             // 削除を実行
-            for ( Iterator<Integer> itr = delete_list.iterator(); itr.hasNext(); ){
+            for ( Iterator<Integer> itr = delete_list.iterator(); itr.hasNext(); ) {
                 int id = itr.next();
                 remove( curve, id );
                 //this[curve].Remove( id );
@@ -331,15 +338,16 @@ namespace org.kbinani.cadencii {
             Vector<CurveType> target_curve,
             int clock_start,
             int clock_end
-        ) {
+        )
+        {
             boolean edited = false;
-            for ( Iterator<CurveType> itr1 = target_curve.iterator(); itr1.hasNext(); ){
+            for ( Iterator<CurveType> itr1 = target_curve.iterator(); itr1.hasNext(); ) {
                 CurveType curve = itr1.next();
                 if ( curve.isScalar() || curve.isAttachNote() ) {
                     continue;
                 }
                 Vector<BezierChain> tmp = new Vector<BezierChain>();
-                for ( Iterator<BezierChain> itr = this.get( curve ).iterator(); itr.hasNext(); ){
+                for ( Iterator<BezierChain> itr = this.get( curve ).iterator(); itr.hasNext(); ) {
                     BezierChain bc = itr.next();
                     int len = bc.points.size();
                     if ( len < 1 ) {
@@ -394,13 +402,13 @@ namespace org.kbinani.cadencii {
                     }
                 }
                 this.get( curve ).clear();
-                for ( Iterator<BezierChain> itr = tmp.iterator(); itr.hasNext(); ){
+                for ( Iterator<BezierChain> itr = tmp.iterator(); itr.hasNext(); ) {
                     BezierChain bc = itr.next();
                     if ( bc.id >= 0 ) {
                         addBezierChain( curve, bc, bc.id );
                     }
                 }
-                for ( Iterator<BezierChain> itr = tmp.iterator(); itr.hasNext(); ){
+                for ( Iterator<BezierChain> itr = tmp.iterator(); itr.hasNext(); ) {
                     BezierChain bc = itr.next();
                     if ( bc.id < 0 ) {
                         bc.id = this.getNextId( curve );
@@ -411,7 +419,8 @@ namespace org.kbinani.cadencii {
             return edited;
         }
 
-        public void remove( CurveType curve_type, int chain_id ) {
+        public void remove( CurveType curve_type, int chain_id )
+        {
             Vector<BezierChain> list = this.get( curve_type );
             for ( int i = 0; i < list.size(); i++ ) {
                 if ( list.get( i ).id == chain_id ) {
@@ -426,16 +435,18 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="curve_type"></param>
         /// <param name="chain"></param>
-        public void addBezierChain( CurveType curve_type, BezierChain chain, int chain_id ) {
+        public void addBezierChain( CurveType curve_type, BezierChain chain, int chain_id )
+        {
             int index = curve_type.getIndex();
             BezierChain add = (BezierChain)chain.clone();
             add.id = chain_id;
             this.get( curve_type ).add( add );
         }
 
-        public Object clone() {
+        public Object clone()
+        {
             BezierCurves ret = new BezierCurves();
-            for( int j = 0; j < Utility.CURVE_USAGE.Length; j++ ){
+            for ( int j = 0; j < Utility.CURVE_USAGE.Length; j++ ) {
                 CurveType ct = Utility.CURVE_USAGE[j];
                 Vector<BezierChain> src = this.get( ct );
                 ret.set( ct, new Vector<BezierChain>() );
@@ -448,12 +459,14 @@ namespace org.kbinani.cadencii {
         }
 
 #if !JAVA
-        public object Clone() {
+        public object Clone()
+        {
             return clone();
         }
 #endif
 
-        public int getNextId( CurveType curve_type ) {
+        public int getNextId( CurveType curve_type )
+        {
             int index = curve_type.getIndex();
             Vector<BezierChain> bc = this.get( curve_type );
             int ret = bc.size();// m_curves[index].Count;
@@ -474,7 +487,8 @@ namespace org.kbinani.cadencii {
             return ret;
         }
 
-        public Vector<BezierChain> get( CurveType curve ) {
+        public Vector<BezierChain> get( CurveType curve )
+        {
             if ( curve.equals( CurveType.BRE ) ) {
                 return Brethiness;
             } else if ( curve.equals( CurveType.BRI ) ) {
@@ -530,7 +544,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void set( CurveType curve, Vector<BezierChain> value ) {
+        public void set( CurveType curve, Vector<BezierChain> value )
+        {
             if ( curve.equals( CurveType.BRE ) ) {
                 Brethiness = value;
             } else if ( curve.equals( CurveType.BRI ) ) {

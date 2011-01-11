@@ -31,7 +31,8 @@ using org.kbinani.windows.forms;
 using org.kbinani.xml;
 using org.kbinani.vsq;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
 #endif
@@ -39,7 +40,8 @@ namespace org.kbinani.cadencii {
     /// <summary>
     /// Cadenciiの環境設定
     /// </summary>
-    public class EditorConfig {
+    public class EditorConfig
+    {
         /// <summary>
         /// デフォルトで使用する歌手の名前
         /// </summary>
@@ -260,11 +262,21 @@ namespace org.kbinani.cadencii {
         /// キーボードからの入力に使用するデバイス
         /// </summary>
         public MidiPortConfig MidiInPort = new MidiPortConfig();
-        
+
         public boolean ViewAtcualPitch = false;
         public boolean InvokeUtauCoreWithWine = false;
         public Vector<SingerConfig> UtauSingers = new Vector<SingerConfig>();
+        /// <summary>
+        /// UTAU互換の合成器のパス(1個目)
+        /// </summary>
         public String PathResampler = "";
+        /// <summary>
+        /// UTAU互換の合成器のパス(2個目以降)
+        /// </summary>
+        public Vector<String> PathResamplers = new Vector<String>();
+        /// <summary>
+        /// UTAU用のwave切り貼りツール
+        /// </summary>
         public String PathWavtool = "";
         /// <summary>
         /// ベジエ制御点を掴む時の，掴んだと判定する際の誤差．制御点の外輪からPxToleranceBezierピクセルずれていても，掴んだと判定する．
@@ -594,7 +606,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// コンストラクタ．起動したOSによって動作を変える場合がある
         /// </summary>
-        public EditorConfig() {
+        public EditorConfig()
+        {
 #if !JAVA
             // デフォルトのフォントを，システムのメニューフォントと同じにする
             System.Drawing.Font f = System.Windows.Forms.SystemInformation.MenuFont;
@@ -617,7 +630,8 @@ namespace org.kbinani.cadencii {
         }
 
         #region public static method
-        public static void serialize( EditorConfig instance, String file ) {
+        public static void serialize( EditorConfig instance, String file )
+        {
             FileOutputStream fs = null;
             try {
                 fs = new FileOutputStream( file );
@@ -635,7 +649,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public static EditorConfig deserialize( String file ) {
+        public static EditorConfig deserialize( String file )
+        {
             EditorConfig ret = null;
             FileInputStream fs = null;
             try {
@@ -689,7 +704,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static String getGenericTypeName( String name ) {
+        public static String getGenericTypeName( String name )
+        {
             if ( name != null ) {
                 if ( name.Equals( "RecentFiles" ) ) {
                     return "java.lang.String";
@@ -706,7 +722,8 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region private static method
-        private static String getLastUsedPathCore( Vector<String> list, String extension ) {
+        private static String getLastUsedPathCore( Vector<String> list, String extension )
+        {
             if ( extension == null ) return "";
             if ( PortUtil.getStringLength( extension ) <= 0 ) return "";
             if ( extension.Equals( "." ) ) return "";
@@ -729,7 +746,8 @@ namespace org.kbinani.cadencii {
             return "";
         }
 
-        private static void setLastUsedPathCore( Vector<String> list, String path ) {
+        private static void setLastUsedPathCore( Vector<String> list, String path )
+        {
             String extension = PortUtil.getExtension( path );
             if ( extension == null ) return;
             if ( extension.Equals( "." ) ) return;
@@ -752,11 +770,117 @@ namespace org.kbinani.cadencii {
 
         #region public method
         /// <summary>
+        /// 登録されているUTAU互換合成器の個数を調べます
+        /// </summary>
+        /// <returns></returns>
+        public int getResamplerCount()
+        {
+            int ret = PathResamplers.size();
+            if ( !PathResampler.Equals( "" ) ) {
+                ret++;
+            }
+            return ret;
+        }
+
+        /// <summary>
+        /// 登録されているUTAU互換合成器の登録を全て解除します
+        /// </summary>
+        public void clearResampler()
+        {
+            PathResamplers.clear();
+            PathResampler = "";
+        }
+
+        /// <summary>
+        /// 第index番目に登録されているUTAU互換合成器のパスを取得します
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public String getResamplerAt( int index )
+        {
+            if ( index == 0 ) {
+                return PathResampler;
+            } else {
+                index--;
+                if ( 0 <= index && index < PathResamplers.size() ) {
+                    return PathResamplers.get( index );
+                }
+            }
+            return "";
+        }
+
+        /// <summary>
+        /// 第index番目のUTAU互換合成器のパスを設定します
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="path"></param>
+        public void setResamplerAt( int index, String path )
+        {
+            if ( path == null ) {
+                return;
+            }
+            if ( path.Equals( "" ) ) {
+                return;
+            }
+            if ( index == 0 ) {
+                PathResampler = path;
+            } else {
+                index--;
+                if ( 0 <= index && index < PathResamplers.size() ) {
+                    PathResamplers.set( index, path );
+                }
+            }
+        }
+
+        /// <summary>
+        /// 第index番目のUTAU互換合成器を登録解除します
+        /// </summary>
+        /// <param name="index"></param>
+        public void removeResamplerAt( int index )
+        {
+            int size = PathResamplers.size();
+            if ( index == 0 ) {
+                if ( size > 0 ) {
+                    PathResampler = PathResamplers.get( 0 );
+                    for ( int i = 0; i < size - 1; i++ ) {
+                        PathResamplers.set( i, PathResamplers.get( i + 1 ) );
+                    }
+                    PathResamplers.removeElementAt( size - 1 );
+                } else {
+                    PathResampler = "";
+                }
+            } else {
+                index--;
+                if ( 0 <= index && index < size ) {
+                    for ( int i = 0; i < size - 1; i++ ) {
+                        PathResamplers.set( i, PathResamplers.get( i + 1 ) );
+                    }
+                    PathResamplers.removeElementAt( size - 1 );
+                }
+            }
+        }
+
+        /// <summary>
+        /// 新しいUTAU互換合成器のパスを登録します
+        /// </summary>
+        /// <param name="path"></param>
+        public void addResampler( String path )
+        {
+            int count = getResamplerCount();
+            if ( count == 0 ) {
+                PathResampler = path;
+            } else {
+                PathResamplers.add( path );
+            }
+        }
+
+        /// <summary>
         /// 最後に出力したファイルのパスのうち，拡張子が指定したものと同じであるものを取得します
         /// </summary>
         /// <param name="extension"></param>
         /// <returns></returns>
-        public String getLastUsedPathIn( String extension ) {
+        public String getLastUsedPathIn( String extension )
+        {
             String ret = getLastUsedPathCore( LastUsedPathIn, extension );
             if ( ret.Equals( "" ) ) {
                 return getLastUsedPathCore( LastUsedPathOut, extension );
@@ -771,7 +895,8 @@ namespace org.kbinani.cadencii {
         /// 最後に出力したファイルのパスを設定します
         /// </summary>
         /// <param name="path"></param>
-        public void setLastUsedPathIn( String path ) {
+        public void setLastUsedPathIn( String path )
+        {
             setLastUsedPathCore( LastUsedPathIn, path );
         }
 
@@ -780,7 +905,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="extension"></param>
         /// <returns></returns>
-        public String getLastUsedPathOut( String extension ) {
+        public String getLastUsedPathOut( String extension )
+        {
             String ret = getLastUsedPathCore( LastUsedPathOut, extension );
             if ( ret.Equals( "" ) ) {
                 ret = getLastUsedPathCore( LastUsedPathIn, extension );
@@ -795,7 +921,8 @@ namespace org.kbinani.cadencii {
         /// 最後に入力したファイルのパスを設定します
         /// </summary>
         /// <param name="path"></param>
-        public void setLastUsedPathOut( String path ) {
+        public void setLastUsedPathOut( String path )
+        {
             setLastUsedPathCore( LastUsedPathOut, path );
         }
 
@@ -805,7 +932,8 @@ namespace org.kbinani.cadencii {
         /// <param name="type"></param>
         /// <param name="vibrato_clocks"></param>
         /// <returns></returns>
-        public VibratoHandle createAutoVibrato( SynthesizerType type, int vibrato_clocks ) {
+        public VibratoHandle createAutoVibrato( SynthesizerType type, int vibrato_clocks )
+        {
             if ( UseUserDefinedAutoVibratoType ) {
                 if ( AutoVibratoCustom == null ) {
                     AutoVibratoCustom = new Vector<VibratoHandle>();
@@ -863,11 +991,13 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public int getControlCurveResolutionValue() {
+        public int getControlCurveResolutionValue()
+        {
             return ClockResolutionUtility.getValue( ControlCurveResolution );
         }
 
-        public BKeys[] getShortcutKeyFor( BMenuItem menu_item ) {
+        public BKeys[] getShortcutKeyFor( BMenuItem menu_item )
+        {
             String name = menu_item.getName();
             Vector<BKeys> ret = new Vector<BKeys>();
             for ( Iterator<ValuePairOfStringArrayOfKeys> itr = ShortcutKeys.iterator(); itr.hasNext(); ) {
@@ -883,7 +1013,8 @@ namespace org.kbinani.cadencii {
             return ret.toArray( new BKeys[] { } );
         }
 
-        public TreeMap<String, BKeys[]> getShortcutKeysDictionary() {
+        public TreeMap<String, BKeys[]> getShortcutKeysDictionary()
+        {
             TreeMap<String, BKeys[]> ret = new TreeMap<String, BKeys[]>();
             for ( int i = 0; i < ShortcutKeys.size(); i++ ) {
                 ret.put( ShortcutKeys.get( i ).Key, ShortcutKeys.get( i ).Value );
@@ -897,15 +1028,18 @@ namespace org.kbinani.cadencii {
             return ret;
         }
 
-        public Font getBaseFont() {
+        public Font getBaseFont()
+        {
             return new Font( BaseFontName, Font.PLAIN, (int)BaseFontSize );
         }
 
-        public int getMouseHoverTime() {
+        public int getMouseHoverTime()
+        {
             return m_mouse_hover_time;
         }
 
-        public void setMouseHoverTime( int value ) {
+        public void setMouseHoverTime( int value )
+        {
             if ( value < 0 ) {
                 m_mouse_hover_time = 0;
             } else if ( 2000 < m_mouse_hover_time ) {
@@ -920,21 +1054,26 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// ピアノロール上でマウスホバーイベントが発生するまでの時間(millisec)
         /// </summary>
-        public int MouseHoverTime {
-            get {
+        public int MouseHoverTime
+        {
+            get
+            {
                 return getMouseHoverTime();
             }
-            set {
+            set
+            {
                 setMouseHoverTime( value );
             }
         }
 #endif
 
-        public QuantizeMode getPositionQuantize() {
+        public QuantizeMode getPositionQuantize()
+        {
             return m_position_quantize;
         }
 
-        public void setPositionQuantize( QuantizeMode value ) {
+        public void setPositionQuantize( QuantizeMode value )
+        {
             if ( m_position_quantize != value ) {
                 m_position_quantize = value;
                 try {
@@ -948,21 +1087,26 @@ namespace org.kbinani.cadencii {
 
 #if !JAVA
         // XMLシリアライズ用
-        public QuantizeMode PositionQuantize {
-            get {
+        public QuantizeMode PositionQuantize
+        {
+            get
+            {
                 return getPositionQuantize();
             }
-            set {
+            set
+            {
                 setPositionQuantize( value );
             }
         }
 #endif
 
-        public boolean isPositionQuantizeTriplet() {
+        public boolean isPositionQuantizeTriplet()
+        {
             return m_position_quantize_triplet;
         }
 
-        public void setPositionQuantizeTriplet( boolean value ) {
+        public void setPositionQuantizeTriplet( boolean value )
+        {
             if ( m_position_quantize_triplet != value ) {
                 m_position_quantize_triplet = value;
                 try {
@@ -976,21 +1120,26 @@ namespace org.kbinani.cadencii {
 
 #if !JAVA
         // XMLシリアライズ用
-        public boolean PositionQuantizeTriplet {
-            get {
+        public boolean PositionQuantizeTriplet
+        {
+            get
+            {
                 return isPositionQuantizeTriplet();
             }
-            set {
+            set
+            {
                 setPositionQuantizeTriplet( value );
             }
         }
 #endif
 
-        public QuantizeMode getLengthQuantize() {
+        public QuantizeMode getLengthQuantize()
+        {
             return m_length_quantize;
         }
 
-        public void setLengthQuantize( QuantizeMode value ) {
+        public void setLengthQuantize( QuantizeMode value )
+        {
             if ( m_length_quantize != value ) {
                 m_length_quantize = value;
                 try {
@@ -1003,21 +1152,26 @@ namespace org.kbinani.cadencii {
         }
 
 #if !JAVA
-        public QuantizeMode LengthQuantize {
-            get {
+        public QuantizeMode LengthQuantize
+        {
+            get
+            {
                 return getLengthQuantize();
             }
-            set {
+            set
+            {
                 setLengthQuantize( value );
             }
         }
 #endif
 
-        public boolean isLengthQuantizeTriplet() {
+        public boolean isLengthQuantizeTriplet()
+        {
             return m_length_quantize_triplet;
         }
 
-        public void setLengthQuantizeTriplet( boolean value ) {
+        public void setLengthQuantizeTriplet( boolean value )
+        {
             if ( m_length_quantize_triplet != value ) {
                 m_length_quantize_triplet = value;
                 try {
@@ -1032,7 +1186,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// QuantizeModeChangedイベントを発行します
         /// </summary>
-        private void invokeQuantizeModeChangedEvent() {
+        private void invokeQuantizeModeChangedEvent()
+        {
 #if JAVA
             quantizeModeChangedEvent.raise( EditorConfig.class, new BEventArgs() );
 #elif QT_VERSION
@@ -1046,11 +1201,14 @@ namespace org.kbinani.cadencii {
 
 #if !JAVA
         // XMLシリアライズ用
-        public boolean LengthQuantizeTriplet {
-            get {
+        public boolean LengthQuantizeTriplet
+        {
+            get
+            {
                 return isLengthQuantizeTriplet();
             }
-            set {
+            set
+            {
                 setLengthQuantizeTriplet( value );
             }
         }
@@ -1060,7 +1218,8 @@ namespace org.kbinani.cadencii {
         /// 「最近使用したファイル」のリストに、アイテムを追加します
         /// </summary>
         /// <param name="new_file"></param>
-        public void pushRecentFiles( String new_file ) {
+        public void pushRecentFiles( String new_file )
+        {
             // NumRecentFilesは0以下かも知れない
             if ( NumRecentFiles <= 0 ) {
                 NumRecentFiles = 5;

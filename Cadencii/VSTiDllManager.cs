@@ -245,7 +245,17 @@ namespace org.kbinani.cadencii {
 #endif
 
             if ( renderer == RendererKind.UTAU ) {
-                if ( !AppManager.editorConfig.PathResampler.Equals( "" ) && PortUtil.isFileExists( AppManager.editorConfig.PathResampler ) &&
+                // ここでは，resamplerの内どれかひとつでも使用可能であればOKの判定にする
+                boolean resampler_exists = false;
+                int size = AppManager.editorConfig.getResamplerCount();
+                for ( int i = 0; i < size; i++ ) {
+                    String path = AppManager.editorConfig.getResamplerAt( i );
+                    if ( PortUtil.isFileExists( path ) ) {
+                        resampler_exists = true;
+                        break;
+                    }
+                }
+                if ( resampler_exists &&
                      !AppManager.editorConfig.PathWavtool.Equals( "" ) && PortUtil.isFileExists( AppManager.editorConfig.PathWavtool ) ) {
                     if ( AppManager.editorConfig.UtauSingers.size() > 0 ) {
                         return true;

@@ -86,6 +86,15 @@
     <PlatformTarget>x86</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'MonoRelease|x86' ">
+    <OutputPath>bin\x86\MonoRelease\</OutputPath>
+    <DefineConstants>MONO, ENABLE_PROPERTY, ENABLE_SCRIPT, ENABLE_MOUSEHOVER, ENABLE_STRIP_DROPDOWN</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>bin\x86\Release\Cadencii.XML</DocumentationFile>
+    <Optimize>true</Optimize>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="org.kbinani.cadencii.util">
       <HintPath>bin\x86\Release\org.kbinani.cadencii.util.dll</HintPath>

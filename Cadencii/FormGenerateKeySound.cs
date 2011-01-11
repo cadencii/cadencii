@@ -91,9 +91,12 @@ namespace org.kbinani.cadencii {
             if ( m_singer_config2.Length > 0 ) {
                 comboSingingSynthSystem.addItem( "VOCALOID2" );
             }
+
+            // 取りあえず最初に登録されているresamplerを使うってことで
+            String resampler = AppManager.editorConfig.getResamplerAt( 0 );
             if ( m_singer_config_utau.Length > 0 &&
                  AppManager.editorConfig.PathWavtool != null && PortUtil.isFileExists( AppManager.editorConfig.PathWavtool ) &&
-                 AppManager.editorConfig.PathResampler != null && PortUtil.isFileExists( AppManager.editorConfig.PathResampler ) ) {
+                 resampler != null && PortUtil.isFileExists( resampler ) ) {
                 comboSingingSynthSystem.addItem( "UTAU" );
             }
             if ( comboSingingSynthSystem.getItemCount() > 0 ) {
