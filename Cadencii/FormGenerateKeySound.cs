@@ -37,6 +37,7 @@ namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
     using BRunWorkerCompletedEventArgs = System.ComponentModel.RunWorkerCompletedEventArgs;
     using BProgressChangedEventArgs = System.ComponentModel.ProgressChangedEventArgs;
+    using BEventHandler = System.EventHandler;
 #endif
 
 #if JAVA
@@ -397,7 +398,7 @@ namespace org.kbinani.cadencii {
             this.btnExecute.TabIndex = 0;
             this.btnExecute.Text = "Execute";
             this.btnExecute.UseVisualStyleBackColor = true;
-            this.btnExecute.Click += new System.EventHandler( this.btnExecute_Click );
+            this.btnExecute.Click += new BEventHandler( this.btnExecute_Click );
             // 
             // btnCancel
             // 
@@ -408,7 +409,7 @@ namespace org.kbinani.cadencii {
             this.btnCancel.TabIndex = 1;
             this.btnCancel.Text = "Close";
             this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler( this.btnCancel_Click );
+            this.btnCancel.Click += new BEventHandler( this.btnCancel_Click );
             // 
             // comboSingingSynthSystem
             // 
@@ -417,7 +418,7 @@ namespace org.kbinani.cadencii {
             this.comboSingingSynthSystem.Name = "comboSingingSynthSystem";
             this.comboSingingSynthSystem.Size = new System.Drawing.Size( 121, 20 );
             this.comboSingingSynthSystem.TabIndex = 2;
-            this.comboSingingSynthSystem.SelectedIndexChanged += new System.EventHandler( this.comboSingingSynthSystem_SelectedIndexChanged );
+            this.comboSingingSynthSystem.SelectedIndexChanged += new BEventHandler( this.comboSingingSynthSystem_SelectedIndexChanged );
             // 
             // lblSingingSynthSystem
             // 
@@ -472,7 +473,7 @@ namespace org.kbinani.cadencii {
             this.btnBrowse.TabIndex = 8;
             this.btnBrowse.Text = "...";
             this.btnBrowse.UseVisualStyleBackColor = true;
-            this.btnBrowse.Click += new System.EventHandler( this.btnBrowse_Click );
+            this.btnBrowse.Click += new BEventHandler( this.btnBrowse_Click );
             // 
             // lblDir
             // 

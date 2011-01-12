@@ -26,14 +26,17 @@ using org.kbinani.vsq;
 using org.kbinani.apputil;
 using org.kbinani.windows.forms;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
+    using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
 #endif
 
 #if JAVA
     public class FormRandomize extends BDialog {
 #else
-    public class FormRandomize : BDialog {
+    public class FormRandomize : BDialog
+    {
 #endif
         private static boolean lastPositionRandomizeEnabled = true;
         private static int lastPositionRandomizeValue = 3;
@@ -49,8 +52,9 @@ namespace org.kbinani.cadencii {
         /// trueなら、numStartBar, numStartBeat, numEndBar, numEndBeatの値が変更されたときに、イベントハンドラを起動しない
         /// </summary>
         private boolean lockRequired = false;
-        
-        public FormRandomize() {
+
+        public FormRandomize()
+        {
 #if JAVA
             super();
             initialize();
@@ -78,7 +82,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// numStartBar, numStartBeat, numEndBar, numEndBeatの値の範囲の妥当性をチェックする
         /// </summary>
-        private void validateNumRange() {
+        private void validateNumRange()
+        {
             int startBar = getStartBar();
             int startBeat = getStartBeat();
             int endBar = getEndBar();
@@ -93,7 +98,7 @@ namespace org.kbinani.cadencii {
             endBar += (preMeasure - 1);
             startBeat--;
             endBeat--;
-            
+
             int startBarClock = vsq.getClockFromBarCount( startBar ); // startBar小節開始位置のゲートタイム
             Timesig startTimesig = vsq.getTimesigAt( startBarClock );    // startBar小節開始位置の拍子
             int startClock = startBarClock + startBeat * 480 * 4 / startTimesig.denominator;  // 第startBar小節の第startBeat拍開始位置のゲートタイム
@@ -152,47 +157,54 @@ namespace org.kbinani.cadencii {
             lockRequired = false;
         }
 
-        private static String _( String id ) {
+        private static String _( String id )
+        {
             return Messaging.getMessage( id );
         }
 
-        private void registerEventHandlers() {
-            btnOK.Click += new EventHandler( btnOK_Click );
-            btnCancel.Click += new EventHandler( btnCancel_Click );
-            numStartBar.ValueChanged += new EventHandler( numCommon_ValueChanged );
-            numStartBeat.ValueChanged += new EventHandler( numCommon_ValueChanged );
-            numEndBar.ValueChanged += new EventHandler( numCommon_ValueChanged );
-            numEndBeat.ValueChanged += new EventHandler( numCommon_ValueChanged );
-            chkShift.CheckedChanged += new EventHandler( chkShift_CheckedChanged );
-            chkPit.CheckedChanged += new EventHandler( chkPit_CheckedChanged );
+        private void registerEventHandlers()
+        {
+            btnOK.Click += new BEventHandler( btnOK_Click );
+            btnCancel.Click += new BEventHandler( btnCancel_Click );
+            numStartBar.ValueChanged += new BEventHandler( numCommon_ValueChanged );
+            numStartBeat.ValueChanged += new BEventHandler( numCommon_ValueChanged );
+            numEndBar.ValueChanged += new BEventHandler( numCommon_ValueChanged );
+            numEndBeat.ValueChanged += new BEventHandler( numCommon_ValueChanged );
+            chkShift.CheckedChanged += new BEventHandler( chkShift_CheckedChanged );
+            chkPit.CheckedChanged += new BEventHandler( chkPit_CheckedChanged );
         }
         #endregion
 
         #region event handlers
-        public void chkShift_CheckedChanged( Object sender, EventArgs e ) {
+        public void chkShift_CheckedChanged( Object sender, EventArgs e )
+        {
             boolean v = chkShift.isSelected();
             comboShiftValue.setEnabled( v );
         }
 
-        public void chkPit_CheckedChanged( Object sender, EventArgs e ) {
+        public void chkPit_CheckedChanged( Object sender, EventArgs e )
+        {
             boolean v = chkPit.isSelected();
             numResolution.setEnabled( v );
             comboPitPattern.setEnabled( v );
             comboPitValue.setEnabled( v );
         }
 
-        public void numCommon_ValueChanged( Object sender, EventArgs e ) {
+        public void numCommon_ValueChanged( Object sender, EventArgs e )
+        {
             if ( lockRequired ) {
                 return;
             }
             validateNumRange();
         }
 
-        public void btnCancel_Click( Object sender, EventArgs e ) {
+        public void btnCancel_Click( Object sender, EventArgs e )
+        {
             setDialogResult( BDialogResult.CANCEL );
         }
 
-        public void btnOK_Click( Object sender, EventArgs e ) {
+        public void btnOK_Click( Object sender, EventArgs e )
+        {
             lastPositionRandomizeEnabled = isPositionRandomizeEnabled();
             lastPositionRandomizeValue = getPositionRandomizeValue();
             lastPitRandomizeEnabled = isPitRandomizeEnabled();
@@ -208,31 +220,38 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region public methods
-        public int getResolution() {
+        public int getResolution()
+        {
             return (int)numResolution.getValue();
         }
 
-        public int getStartBar() {
+        public int getStartBar()
+        {
             return (int)numStartBar.getValue();
         }
 
-        public int getStartBeat() {
+        public int getStartBeat()
+        {
             return (int)numStartBeat.getValue();
         }
 
-        public int getEndBar() {
+        public int getEndBar()
+        {
             return (int)numEndBar.getValue();
         }
 
-        public int getEndBeat() {
+        public int getEndBeat()
+        {
             return (int)numEndBeat.getValue();
         }
 
-        public boolean isPositionRandomizeEnabled() {
+        public boolean isPositionRandomizeEnabled()
+        {
             return chkShift.isSelected();
         }
 
-        public int getPositionRandomizeValue() {
+        public int getPositionRandomizeValue()
+        {
             int draft = comboShiftValue.getSelectedIndex() + 1;
             if ( draft <= 0 ) {
                 draft = 1;
@@ -240,11 +259,13 @@ namespace org.kbinani.cadencii {
             return draft;
         }
 
-        public boolean isPitRandomizeEnabled() {
+        public boolean isPitRandomizeEnabled()
+        {
             return chkPit.isSelected();
         }
 
-        public int getPitRandomizeValue() {
+        public int getPitRandomizeValue()
+        {
             int draft = comboPitValue.getSelectedIndex() + 1;
             if ( draft <= 0 ) {
                 draft = 1;
@@ -252,7 +273,8 @@ namespace org.kbinani.cadencii {
             return draft;
         }
 
-        public int getPitRandomizePattern() {
+        public int getPitRandomizePattern()
+        {
             int draft = comboPitPattern.getSelectedIndex() + 1;
             if ( draft <= 0 ) {
                 draft = 1;
@@ -260,7 +282,8 @@ namespace org.kbinani.cadencii {
             return draft;
         }
 
-        public void applyLanguage() {
+        public void applyLanguage()
+        {
             lblStart.setText( _( "Start" ) );
             lblStartBar.setText( _( "bar" ) );
             lblStartBeat.setText( _( "beat" ) );
@@ -298,7 +321,8 @@ namespace org.kbinani.cadencii {
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( bool disposing ) {
+        protected override void Dispose( bool disposing )
+        {
             if ( disposing && (components != null) ) {
                 components.Dispose();
             }
@@ -311,7 +335,8 @@ namespace org.kbinani.cadencii {
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
         /// コード エディタで変更しないでください。
         /// </summary>
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             this.lblStart = new org.kbinani.windows.forms.BLabel();
             this.lblStartBar = new org.kbinani.windows.forms.BLabel();
             this.lblStartBeat = new org.kbinani.windows.forms.BLabel();

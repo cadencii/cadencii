@@ -25,21 +25,25 @@ using org.kbinani;
 using org.kbinani.windows.forms;
 using org.kbinani.apputil;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using BEventArgs = System.EventArgs;
+    using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
 #endif
 
 #if JAVA
     public class FormRealtimeConfig extends BDialog {
 #else
-    public class FormRealtimeConfig : BDialog {
+    public class FormRealtimeConfig : BDialog
+    {
 #endif
         private boolean m_game_ctrl_enabled = false;
         private double m_last_event_processed;
         private BTimer timer;
 
-        public FormRealtimeConfig() {
+        public FormRealtimeConfig()
+        {
 #if JAVA
             super();
             initialize();
@@ -55,13 +59,15 @@ namespace org.kbinani.cadencii {
         }
 
         #region public methods
-        public float getSpeed() {
+        public float getSpeed()
+        {
             return (float)numSpeed.getValue();
         }
         #endregion
 
         #region event handlers
-        public void FormRealtimeConfig_Load( Object sender, BEventArgs e ) {
+        public void FormRealtimeConfig_Load( Object sender, BEventArgs e )
+        {
 #if JAVA
             System.err.println( "info; FormRealtimeConfig#FormRealtimeConfig_Load; not implemented yet; \"int num_joydev = 0\"" );
             int num_joydev = 0;
@@ -74,7 +80,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void timer_Tick( Object sender, BEventArgs e ) {
+        public void timer_Tick( Object sender, BEventArgs e )
+        {
 #if !JAVA
             try {
                 double now = PortUtil.getCurrentTime();
@@ -149,25 +156,29 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        public void btnStart_Click( Object sender, BEventArgs e ) {
+        public void btnStart_Click( Object sender, BEventArgs e )
+        {
             setDialogResult( BDialogResult.OK );
             close();
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e ) {
+        public void btnCancel_Click( Object sender, BEventArgs e )
+        {
             setDialogResult( BDialogResult.CANCEL );
         }
         #endregion
 
         #region helper methods
-        private void registerEventHandlers() {
-            this.Load += new EventHandler( FormRealtimeConfig_Load );
-            timer.Tick += new EventHandler( timer_Tick );
-            btnStart.Click += new EventHandler( btnStart_Click );
-            btnCancel.Click += new EventHandler( btnCancel_Click );
+        private void registerEventHandlers()
+        {
+            this.Load += new BEventHandler( FormRealtimeConfig_Load );
+            timer.Tick += new BEventHandler( timer_Tick );
+            btnStart.Click += new BEventHandler( btnStart_Click );
+            btnCancel.Click += new BEventHandler( btnCancel_Click );
         }
 
-        private void setResources() {
+        private void setResources()
+        {
         }
         #endregion
 
@@ -188,7 +199,8 @@ namespace org.kbinani.cadencii {
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing ) {
+        protected override void Dispose( boolean disposing )
+        {
             if ( disposing && (components != null) ) {
                 components.Dispose();
             }
@@ -201,7 +213,8 @@ namespace org.kbinani.cadencii {
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
         /// コード エディタで変更しないでください。
         /// </summary>
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             this.components = new System.ComponentModel.Container();
             this.btnStart = new BButton();
             this.btnCancel = new BButton();

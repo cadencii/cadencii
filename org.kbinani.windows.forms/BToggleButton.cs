@@ -14,9 +14,20 @@
 #if JAVA
 //INCLUDE ../BuildJavaUI/src/org/kbinani/windows/forms/BToggleButton.java
 #else
-namespace org.kbinani.windows.forms {
+namespace org.kbinani.windows.forms
+{
 
-    public class BToggleButton : System.Windows.Forms.ToolStripButton {
+    public class BToggleButton : System.Windows.Forms.ToolStripButton
+    {
+        public bool isSelected()
+        {
+            return base.Checked;
+        }
+
+        public void setSelected( bool value )
+        {
+            base.Checked = value;
+        }
     }
 
 }

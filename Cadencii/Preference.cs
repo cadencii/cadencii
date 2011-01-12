@@ -38,6 +38,7 @@ namespace org.kbinani.cadencii
 {
     using BEventArgs = System.EventArgs;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
+    using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
 #endif
 
@@ -1728,26 +1729,26 @@ namespace org.kbinani.cadencii
 
         private void registerEventHandlers()
         {
-            btnChangeScreenFont.Click += new EventHandler( btnChangeScreenFont_Click );
-            btnChangeMenuFont.Click += new EventHandler( btnChangeMenuFont_Click );
-            btnWavtool.Click += new EventHandler( btnWavtool_Click );
-            buttonResamplerAdd.Click += new EventHandler( buttonResamplerAdd_Click );
-            buttonResamplerRemove.Click += new EventHandler( buttonResamplerRemove_Click );
-            buttonResamplerUp.Click += new EventHandler( buttonResamplerUpDown_Click );
-            buttonResamplerDown.Click += new EventHandler( buttonResamplerUpDown_Click );
-            btnAquesTone.Click += new EventHandler( btnAquesTone_Click );
-            comboPlatform.SelectedIndexChanged += new EventHandler( comboPlatform_SelectedIndexChanged );
-            btnRemove.Click += new EventHandler( btnRemove_Click );
-            btnAdd.Click += new EventHandler( btnAdd_Click );
-            btnUp.Click += new EventHandler( btnUp_Click );
-            btnDown.Click += new EventHandler( btnDown_Click );
-            listSingers.SelectedIndexChanged += new EventHandler( listSingers_SelectedIndexChanged );
-            chkAutoBackup.CheckedChanged += new EventHandler( chkAutoBackup_CheckedChanged );
-            btnOK.Click += new EventHandler( btnOK_Click );
+            btnChangeScreenFont.Click += new BEventHandler( btnChangeScreenFont_Click );
+            btnChangeMenuFont.Click += new BEventHandler( btnChangeMenuFont_Click );
+            btnWavtool.Click += new BEventHandler( btnWavtool_Click );
+            buttonResamplerAdd.Click += new BEventHandler( buttonResamplerAdd_Click );
+            buttonResamplerRemove.Click += new BEventHandler( buttonResamplerRemove_Click );
+            buttonResamplerUp.Click += new BEventHandler( buttonResamplerUpDown_Click );
+            buttonResamplerDown.Click += new BEventHandler( buttonResamplerUpDown_Click );
+            btnAquesTone.Click += new BEventHandler( btnAquesTone_Click );
+            comboPlatform.SelectedIndexChanged += new BEventHandler( comboPlatform_SelectedIndexChanged );
+            btnRemove.Click += new BEventHandler( btnRemove_Click );
+            btnAdd.Click += new BEventHandler( btnAdd_Click );
+            btnUp.Click += new BEventHandler( btnUp_Click );
+            btnDown.Click += new BEventHandler( btnDown_Click );
+            listSingers.SelectedIndexChanged += new BEventHandler( listSingers_SelectedIndexChanged );
+            chkAutoBackup.CheckedChanged += new BEventHandler( chkAutoBackup_CheckedChanged );
+            btnOK.Click += new BEventHandler( btnOK_Click );
             FormClosing += new System.Windows.Forms.FormClosingEventHandler( Preference_FormClosing );
-            btnCancel.Click += new EventHandler( btnCancel_Click );
-            chkLoadSecondaryVOCALOID1.CheckedChanged += new EventHandler( chkLoadSecondaryVOCALOID1_CheckedChanged );
-            radioVocaloidEditorCompatible.CheckedChanged += new EventHandler( commonChangeAutoVibratoType );
+            btnCancel.Click += new BEventHandler( btnCancel_Click );
+            chkLoadSecondaryVOCALOID1.CheckedChanged += new BEventHandler( chkLoadSecondaryVOCALOID1_CheckedChanged );
+            radioVocaloidEditorCompatible.CheckedChanged += new BEventHandler( commonChangeAutoVibratoType );
         }
 
         private void setResources()

@@ -32,10 +32,12 @@ using org.kbinani.java.util;
 using org.kbinani.javax.swing;
 using org.kbinani.windows.forms;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using BEventArgs = System.EventArgs;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
     using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
+    using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
     using BPreviewKeyDownEventArgs = System.Windows.Forms.PreviewKeyDownEventArgs;
     using java = org.kbinani.java;
@@ -44,14 +46,16 @@ namespace org.kbinani.cadencii {
 #if JAVA
     public class FormShortcutKeys extends BDialog {
 #else
-    public class FormShortcutKeys : BDialog {
+    public class FormShortcutKeys : BDialog
+    {
 #endif
         private TreeMap<String, ValuePair<String, BKeys[]>> mDict;
         private TreeMap<String, ValuePair<String, BKeys[]>> mFirstDict;
         private static int mColumnWidthCommand = 240;
         private static int mColumnWidthShortcutKey = 140;
 
-        public FormShortcutKeys( TreeMap<String, ValuePair<String, BKeys[]>> dict ) {
+        public FormShortcutKeys( TreeMap<String, ValuePair<String, BKeys[]>> dict )
+        {
 #if JAVA
             super();
 #endif
@@ -86,7 +90,8 @@ namespace org.kbinani.cadencii {
         }
 
         #region public methods
-        public void applyLanguage() {
+        public void applyLanguage()
+        {
             setTitle( _( "Shortcut Config" ) );
 
             btnOK.setText( _( "OK" ) );
@@ -128,7 +133,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public TreeMap<String, ValuePair<String, BKeys[]>> getResult() {
+        public TreeMap<String, ValuePair<String, BKeys[]>> getResult()
+        {
             TreeMap<String, ValuePair<String, BKeys[]>> ret = new TreeMap<String, ValuePair<String, BKeys[]>>();
             copyDict( mDict, ret );
             return ret;
@@ -136,11 +142,13 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region helper methods
-        private static String _( String id ) {
+        private static String _( String id )
+        {
             return Messaging.getMessage( id );
         }
 
-        private static void copyDict( TreeMap<String, ValuePair<String, BKeys[]>> src, TreeMap<String, ValuePair<String, BKeys[]>> dest ) {
+        private static void copyDict( TreeMap<String, ValuePair<String, BKeys[]>> src, TreeMap<String, ValuePair<String, BKeys[]>> dest )
+        {
             dest.clear();
             for ( Iterator<String> itr = src.keySet().iterator(); itr.hasNext(); ) {
                 String name = itr.next();
@@ -154,7 +162,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void updateList() {
+        private void updateList()
+        {
             list.clear();
             for ( Iterator<String> itr = mDict.keySet().iterator(); itr.hasNext(); ) {
                 String display = itr.next();
@@ -197,7 +206,8 @@ namespace org.kbinani.cadencii {
             applyLanguage();
         }
 
-        private void updateColor() {
+        private void updateColor()
+        {
             int num_groups = list.getGroupCount();
             for ( int k = 0; k < num_groups; k++ ) {
                 String name = list.getGroupNameAt( k );
@@ -232,28 +242,32 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void registerEventHandlers() {
+        private void registerEventHandlers()
+        {
 #if JAVA
 #else
             this.list.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler( this.list_PreviewKeyDown );
             this.list.KeyDown += new System.Windows.Forms.KeyEventHandler( this.list_KeyDown );
 #endif
-            btnLoadDefault.Click += new EventHandler( btnLoadDefault_Click );
-            btnRevert.Click += new EventHandler( btnRevert_Click );
+            btnLoadDefault.Click += new BEventHandler( btnLoadDefault_Click );
+            btnRevert.Click += new BEventHandler( btnRevert_Click );
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( FormShortcutKeys_FormClosing );
-            btnOK.Click += new EventHandler( btnOK_Click );
-            btnCancel.Click += new EventHandler( btnCancel_Click );
+            btnOK.Click += new BEventHandler( btnOK_Click );
+            btnCancel.Click += new BEventHandler( btnCancel_Click );
         }
 
-        private void setResources() {
+        private void setResources()
+        {
         }
         #endregion
 
         #region event handlers
-        public void list_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e ) {
+        public void list_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e )
+        {
         }
 
-        public void list_KeyDown( Object sender, BKeyEventArgs e ) {
+        public void list_KeyDown( Object sender, BKeyEventArgs e )
+        {
             String selected_group = "";
             int selected_index = -1;
             int num_groups = list.getGroupCount();
@@ -317,12 +331,14 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        public void btnRevert_Click( Object sender, BEventArgs e ) {
+        public void btnRevert_Click( Object sender, BEventArgs e )
+        {
             copyDict( mFirstDict, mDict );
             updateList();
         }
 
-        public void btnLoadDefault_Click( Object sender, BEventArgs e ) {
+        public void btnLoadDefault_Click( Object sender, BEventArgs e )
+        {
             for ( int i = 0; i < EditorConfig.DEFAULT_SHORTCUT_KEYS.size(); i++ ) {
                 String name = EditorConfig.DEFAULT_SHORTCUT_KEYS.get( i ).Key;
                 BKeys[] keys = EditorConfig.DEFAULT_SHORTCUT_KEYS.get( i ).Value;
@@ -337,7 +353,8 @@ namespace org.kbinani.cadencii {
             updateList();
         }
 
-        public void FormShortcutKeys_FormClosing( Object sender, BFormClosingEventArgs e ) {
+        public void FormShortcutKeys_FormClosing( Object sender, BFormClosingEventArgs e )
+        {
             mColumnWidthCommand = list.getColumnWidth( 0 );
             mColumnWidthShortcutKey = list.getColumnWidth( 1 );
 #if DEBUG
@@ -345,11 +362,13 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e ) {
+        public void btnCancel_Click( Object sender, BEventArgs e )
+        {
             setDialogResult( BDialogResult.CANCEL );
         }
 
-        public void btnOK_Click( Object sender, BEventArgs e ) {
+        public void btnOK_Click( Object sender, BEventArgs e )
+        {
             setDialogResult( BDialogResult.OK );
         }
         #endregion
@@ -371,7 +390,8 @@ namespace org.kbinani.cadencii {
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing ) {
+        protected override void Dispose( boolean disposing )
+        {
             if ( disposing && (components != null) ) {
                 components.Dispose();
             }
@@ -384,7 +404,8 @@ namespace org.kbinani.cadencii {
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
         /// コード エディタで変更しないでください。
         /// </summary>
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             this.components = new System.ComponentModel.Container();
             this.btnCancel = new org.kbinani.windows.forms.BButton();
             this.btnOK = new org.kbinani.windows.forms.BButton();

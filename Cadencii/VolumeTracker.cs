@@ -31,6 +31,9 @@ namespace org.kbinani.cadencii
 {
     using BEventArgs = System.EventArgs;
     using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
+
+    using BEventHandler = System.EventHandler;
+    
     using boolean = System.Boolean;
 #endif
 
@@ -165,7 +168,7 @@ namespace org.kbinani.cadencii
 #elif QT_VERSION
         public: signals: void muteButtonClick( QObject sender, QObject e );
 #else
-        public event EventHandler MuteButtonClick;
+        public event BEventHandler MuteButtonClick;
 #endif
 
 #if JAVA
@@ -173,7 +176,7 @@ namespace org.kbinani.cadencii
 #elif QT_VERSION
         public: signals: void soloButtonClick( QObject sender, QObject e );
 #else
-        public event EventHandler SoloButtonClick;
+        public event BEventHandler SoloButtonClick;
 #endif
 
         public VolumeTracker()
@@ -565,15 +568,15 @@ namespace org.kbinani.cadencii
 
         private void registerEventHandlers()
         {
-            trackFeder.ValueChanged += new EventHandler( trackFeder_ValueChanged );
-            trackPanpot.ValueChanged += new EventHandler( trackPanpot_ValueChanged );
+            trackFeder.ValueChanged += new BEventHandler( trackFeder_ValueChanged );
+            trackPanpot.ValueChanged += new BEventHandler( trackPanpot_ValueChanged );
             txtPanpot.KeyDown += new KeyEventHandler( txtPanpot_KeyDown );
             txtFeder.KeyDown += new KeyEventHandler( txtFeder_KeyDown );
-            chkSolo.Click += new EventHandler( chkSolo_Click );
-            chkMute.Click += new EventHandler( chkMute_Click );
+            chkSolo.Click += new BEventHandler( chkSolo_Click );
+            chkMute.Click += new BEventHandler( chkMute_Click );
 #if !JAVA
-            txtFeder.Enter += new EventHandler( txtFeder_Enter );
-            txtPanpot.Enter += new EventHandler( txtPanpot_Enter );
+            txtFeder.Enter += new BEventHandler( txtFeder_Enter );
+            txtPanpot.Enter += new BEventHandler( txtPanpot_Enter );
 #endif
         }
 

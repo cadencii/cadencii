@@ -33,6 +33,7 @@ namespace org.kbinani.cadencii
 {
     using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
+    using BEventHandler = System.EventHandler;
 #endif
 
 #if JAVA
@@ -122,8 +123,8 @@ namespace org.kbinani.cadencii
                 txtVibratoLength.setText( s );
             }
 
-            comboVibratoType.SelectedIndexChanged += new EventHandler( comboVibratoType_SelectedIndexChanged );
-            txtVibratoLength.TextChanged += new EventHandler( txtVibratoLength_TextChanged );
+            comboVibratoType.SelectedIndexChanged += new BEventHandler( comboVibratoType_SelectedIndexChanged );
+            txtVibratoLength.TextChanged += new BEventHandler( txtVibratoLength_TextChanged );
 
             m_note_length = note_length;
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
@@ -201,9 +202,9 @@ namespace org.kbinani.cadencii
 
         private void registerEventHandlers()
         {
-            btnOK.Click += new EventHandler( btnOK_Click );
-            btnCancel.Click += new EventHandler( btnCancel_Click );
-            radioUserDefined.CheckedChanged += new EventHandler( handleRadioCheckedChanged );
+            btnOK.Click += new BEventHandler( btnOK_Click );
+            btnCancel.Click += new BEventHandler( btnCancel_Click );
+            radioUserDefined.CheckedChanged += new BEventHandler( handleRadioCheckedChanged );
             comboVibratoType.SelectedIndexChanged += comboVibratoType_SelectedIndexChanged;
         }
 

@@ -62,6 +62,7 @@ namespace org.kbinani.cadencii
     using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
     using BPreviewKeyDownEventArgs = System.Windows.Forms.PreviewKeyDownEventArgs;
 
+    using BEventHandler = System.EventHandler;
     using BMouseEventHandler = System.Windows.Forms.MouseEventHandler;
     using BKeyEventHandler = System.Windows.Forms.KeyEventHandler;
     using BPreviewKeyDownEventHandler = System.Windows.Forms.PreviewKeyDownEventHandler;
@@ -69,6 +70,7 @@ namespace org.kbinani.cadencii
     using BPaintEventHandler = System.Windows.Forms.PaintEventHandler;
     using BFormClosedEventHandler = System.Windows.Forms.FormClosedEventHandler;
     using BFormClosingEventHandler = System.Windows.Forms.FormClosingEventHandler;
+    using BCancelEventHandler = System.ComponentModel.CancelEventHandler;
     
     using Integer = System.Int32;
     using Long = System.Int64;
@@ -702,7 +704,7 @@ namespace org.kbinani.cadencii
             trackSelector.SelectedTrackChanged += new SelectedTrackChangedEventHandler( trackSelector_SelectedTrackChanged );
             trackSelector.SelectedCurveChanged += new SelectedCurveChangedEventHandler( trackSelector_SelectedCurveChanged );
             trackSelector.RenderRequired += new RenderRequiredEventHandler( trackSelector_RenderRequired );
-            trackSelector.PreferredMinHeightChanged += new EventHandler( trackSelector_PreferredMinHeightChanged );
+            trackSelector.PreferredMinHeightChanged += new BEventHandler( trackSelector_PreferredMinHeightChanged );
             trackSelector.MouseDoubleClick += new BMouseEventHandler( trackSelector_MouseDoubleClick );
 
 #if !JAVA
@@ -710,7 +712,7 @@ namespace org.kbinani.cadencii
             this.setMinimumSize( getWindowMinimumSize() );
 #endif
 #if JAVA
-            stripBtnScroll.setSelectd( AppManager.mAutoScroll );
+            stripBtnScroll.setSelected( AppManager.mAutoScroll );
 #else
             stripBtnScroll.Pushed = AppManager.mAutoScroll;
 #endif
@@ -919,7 +921,7 @@ namespace org.kbinani.cadencii
             pictPianoRoll.MouseWheel += new BMouseEventHandler( pictPianoRoll_MouseWheel );
             trackSelector.MouseWheel += new BMouseEventHandler( trackSelector_MouseWheel );
             picturePositionIndicator.MouseWheel += new BMouseEventHandler( picturePositionIndicator_MouseWheel );
-            menuVisualOverview.CheckedChanged += new EventHandler( menuVisualOverview_CheckedChanged );
+            menuVisualOverview.CheckedChanged += new BEventHandler( menuVisualOverview_CheckedChanged );
 #endif
 
             hScroll.setMaximum( AppManager.getVsqFile().TotalClocks + 240 );
@@ -1110,30 +1112,49 @@ namespace org.kbinani.cadencii
         {
             // 現在の項目数に過不足があれば調節する
             int size = AppManager.editorConfig.AutoVibratoCustom.size();
+#if JAVA
+            int delta = size - menuLyricCopyVibratoToPreset.getSubElements().length;
+#else
             int delta = size - menuLyricCopyVibratoToPreset.DropDownItems.Count;
+#endif
             if ( delta > 0 ) {
                 // 項目を増やさないといけない
                 for ( int i = 0; i < delta; i++ ) {
+#if JAVA
+                    BMenuItem item = new BMenuItem();
+                    item.clickEvent.add( new BEventHandler( this, "handleVibratoPresetSubelementClick" ) );
+                    menuLyricCopyVibratoToPreset.add( item );
+#else
                     System.Windows.Forms.ToolStripMenuItem item =
                         new System.Windows.Forms.ToolStripMenuItem(
-                            "", null, new EventHandler( handleVibratoPresetSubelementClick ) );
+                            "", null, new BEventHandler( handleVibratoPresetSubelementClick ) );
                     menuLyricCopyVibratoToPreset.DropDownItems.Add( item );
+#endif
                 }
             } else if ( delta < 0 ) {
                 // 項目を減らさないといけない
                 for ( int i = 0; i < -delta; i++ ) {
+#if JAVA
+                    menuLyricCopyVibratoToPreset.remove( 0 );
+#else
                     System.Windows.Forms.ToolStripItem item = menuLyricCopyVibratoToPreset.DropDownItems[0];
                     menuLyricCopyVibratoToPreset.DropDownItems.RemoveAt( 0 );
                     item.Dispose();
+#endif
                 }
             }
 
             // 表示状態を更新
+#if JAVA
+            MenuElement[] sub = menuLyricCopyVibratoToPreset.getSubElements();
+#endif
             for ( int i = 0; i < size; i++ ) {
                 VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
-                System.Windows.Forms.ToolStripMenuItem item =
-                    (System.Windows.Forms.ToolStripMenuItem)menuLyricCopyVibratoToPreset.DropDownItems[i];
-                item.Text = handle.getCaption();
+#if JAVA
+                ((BMenuItem)sub[i]).setText( handle.getCaption() );
+#else
+                menuLyricCopyVibratoToPreset.DropDownItems[i].Text = handle.getCaption();
+#endif
             }
         }
 
@@ -2029,7 +2050,7 @@ namespace org.kbinani.cadencii
                     menu_remove.setText( _( "Remove" ) );
                     menu_remove.setToolTipText( item.file );
                     menu_remove.setTag( (int)i );
-                    menu_remove.Click += new EventHandler( handleBgmRemove_Click );
+                    menu_remove.Click += new BEventHandler( handleBgmRemove_Click );
                     menu.add( menu_remove );
 
                     BMenuItem menu_start_after_premeasure = new BMenuItem();
@@ -2038,14 +2059,14 @@ namespace org.kbinani.cadencii
                     menu_start_after_premeasure.setTag( (int)i );
                     menu_start_after_premeasure.setCheckOnClick( true );
                     menu_start_after_premeasure.setSelected( item.startAfterPremeasure );
-                    menu_start_after_premeasure.CheckedChanged += new EventHandler( handleBgmStartAfterPremeasure_CheckedChanged );
+                    menu_start_after_premeasure.CheckedChanged += new BEventHandler( handleBgmStartAfterPremeasure_CheckedChanged );
                     menu.add( menu_start_after_premeasure );
 
                     BMenuItem menu_offset_second = new BMenuItem();
                     menu_offset_second.setText( _( "Set Offset Seconds" ) );
                     menu_offset_second.setTag( (int)i );
                     menu_offset_second.setToolTipText( item.readOffsetSeconds + " " + _( "seconds" ) );
-                    menu_offset_second.Click += new EventHandler( handleBgmOffsetSeconds_Click );
+                    menu_offset_second.Click += new BEventHandler( handleBgmOffsetSeconds_Click );
                     menu.add( menu_offset_second );
 
                     menuTrackBgm.add( menu );
@@ -2054,7 +2075,7 @@ namespace org.kbinani.cadencii
             }
             BMenuItem menu_add = new BMenuItem();
             menu_add.setText( _( "Add" ) );
-            menu_add.Click += new EventHandler( handleBgmAdd_Click );
+            menu_add.Click += new BEventHandler( handleBgmAdd_Click );
             menuTrackBgm.add( menu_add );
         }
 
@@ -2356,28 +2377,57 @@ namespace org.kbinani.cadencii
 
             // UTAU用のサブアイテムを更新
             int count = AppManager.editorConfig.getResamplerCount();
+#if JAVA
+            int delta = count - menuTrackRendererUtau.getSubElements().length;
+#else
             int delta = count - menuTrackRendererUtau.DropDownItems.Count;
+#endif
             if ( delta > 0 ) {
                 // 増やす
                 for ( int i = 0; i < delta; i++ ) {
-                    cMenuTrackTabRendererUtau.DropDownItems.Add( "", null, new EventHandler( handleChangeRenderer ) );
-                    menuTrackRendererUtau.DropDownItems.Add( "", null, new EventHandler( handleChangeRenderer ) );
+#if JAVA
+                    BMenuItem item0 = new BMenuItem();
+                    item0.clickEvent.add( new BEventHandler( this, "handleChangeRenderer" ) );
+                    cMenuTrackTabRendererUtau.add( item0 );
+                    BMenuItem item1 = new BMenuItem();
+                    item1.clickEvent.add( new BEventHandler( this, "handleChangeRenderer" ) );
+                    menuTrackRendererUtau.add( item1 );
+#else
+                    cMenuTrackTabRendererUtau.DropDownItems.Add( "", null, new BEventHandler( handleChangeRenderer ) );
+                    menuTrackRendererUtau.DropDownItems.Add( "", null, new BEventHandler( handleChangeRenderer ) );
+#endif
                 }
             } else if ( delta < 0 ) {
                 // 減らす
                 for ( int i = 0; i < -delta; i++ ) {
+#if JAVA
+                    cMenuTrackTabRendererUtau.remove( 0 );
+                    menuTrackRendererUtau.remove( 0 );
+#else
                     cMenuTrackTabRendererUtau.DropDownItems.RemoveAt( 0 );
                     menuTrackRendererUtau.DropDownItems.RemoveAt( 0 );
+#endif
                 }
             }
+#if JAVA
+            MenuElement[] sub0 = cMenuTrackTabRendererUtau.getSubElements();
+            MenuElement[] sub1 = menuTrackRendererUtau.getSubElements();
+#endif
             for ( int i = 0; i < count; i++ ) {
                 String path = AppManager.editorConfig.getResamplerAt( i );
                 String name = PortUtil.getFileNameWithoutExtension( path );
+#if JAVA
+                ((BMenuItem)sub0[i]).setText( name );
+                ((BMenuItem)sub1[i]).setText( name );
+                ((BMenuItem)sub0[i]).setToolTipText( path );
+                ((BMenuItem)sub1[i]).setToolTipText( path );
+#else
                 menuTrackRendererUtau.DropDownItems[i].Text = name;
                 cMenuTrackTabRendererUtau.DropDownItems[i].Text = name;
 
                 menuTrackRendererUtau.DropDownItems[i].ToolTipText = path;
                 cMenuTrackTabRendererUtau.DropDownItems[i].ToolTipText = path;
+#endif
             }
         }
 
@@ -2530,7 +2580,7 @@ namespace org.kbinani.cadencii
                 tsmi.setText( name );
                 tsmi.setToolTipText( desc );
                 tsmi.setTag( id );
-                tsmi.Click += new EventHandler( handleStripPaletteTool_Click );
+                tsmi.Click += new BEventHandler( handleStripPaletteTool_Click );
                 cMenuTrackSelectorPaletteTool.add( tsmi );
 
                 // cMenuPiano
@@ -2538,7 +2588,7 @@ namespace org.kbinani.cadencii
                 tsmi2.setText( name );
                 tsmi2.setToolTipText( desc );
                 tsmi2.setTag( id );
-                tsmi2.Click += new EventHandler( handleStripPaletteTool_Click );
+                tsmi2.Click += new BEventHandler( handleStripPaletteTool_Click );
                 cMenuPianoPaletteTool.add( tsmi2 );
 
                 // menuSettingPaletteTool
@@ -2546,7 +2596,7 @@ namespace org.kbinani.cadencii
                     BMenuItem tsmi3 = new BMenuItem();
                     tsmi3.setText( name );
                     tsmi3.setTag( id );
-                    tsmi3.Click += new EventHandler( handleSettingPaletteTool );
+                    tsmi3.Click += new BEventHandler( handleSettingPaletteTool );
                     menuSettingPaletteTool.add( tsmi3 );
                     num_has_dialog++;
                 }
@@ -3050,10 +3100,19 @@ namespace org.kbinani.cadencii
                         }
                     }
                     if ( !original_symbol[j].Equals( phonetic_symbol[j] ) ) {
+#if JAVA
+                        Vector<String> spl = items[j].ID.LyricHandle.L0.getPhoneticSymbolList();
+#else
                         List<String> spl = items[j].ID.LyricHandle.L0.getPhoneticSymbolList();
-                        List<int> adjustment = new List<int>();
+#endif
+                        Vector<Integer> adjustment = new Vector<Integer>();
                         for ( int i = 0; i < spl.Count; i++ ) {
-                            adjustment.Add( VsqPhoneticSymbol.isConsonant( spl[i] ) ? 64 : 0 );
+#if JAVA
+                            String s = spl.get( i );
+#else
+                            String s = spl[i];
+#endif
+                            adjustment.add( VsqPhoneticSymbol.isConsonant( s ) ? 64 : 0 );
                         }
                         items[j].ID.LyricHandle.L0.setConsonantAdjustmentList( adjustment );
                     }
@@ -3101,7 +3160,7 @@ namespace org.kbinani.cadencii
                     stripLblGameCtrlMode.setText( mGameMode.ToString() );
                     mTimer = new BTimer();
                     mTimer.setDelay( 10 );
-                    mTimer.Tick += new EventHandler( mTimer_Tick );
+                    mTimer.Tick += new BEventHandler( mTimer_Tick );
                     mTimer.start();
                 } else {
                     mGameMode = GameControlMode.DISABLED;
@@ -3225,7 +3284,7 @@ namespace org.kbinani.cadencii
                 item.setText( display );
                 item.setName( name );
                 item.setTag( id );
-                item.Click += new EventHandler( handleScriptMenuItem_Click );
+                item.Click += new BEventHandler( handleScriptMenuItem_Click );
                 menuScript.add( item );
                 count++;
             }
@@ -3328,14 +3387,22 @@ namespace org.kbinani.cadencii
                     if ( holder.shortcut.getKeyCode() == keycode && holder.shortcut.getModifiers() == modifier ) {
                         try {
 #if DEBUG
-                            PortUtil.println( "FormMain#processSpecialShortcutKey; holder.menu.Name=" + holder.menu.Name );
+                            PortUtil.println( "FormMain#processSpecialShortcutKey; holder.menu.Name=" + holder.menu.getName() );
 #endif
+#if JAVA
+                            holder.menu.clickEvent.raise( holder.menu, new BEventArgs() );
+#else
                             holder.menu.PerformClick();
+#endif
                         } catch ( Exception ex ) {
                             Logger.write( typeof( FormMain ) + ".processSpecialShortcutKey; ex=" + ex + "\n" );
                             PortUtil.stderr.println( "FormMain#processSpecialShortcutKey; ex=" + ex );
                         }
+#if JAVA
+                        if ( e.KeyValue == KeyEvent.VK_TAB ) {
+#else
                         if ( e.KeyCode == System.Windows.Forms.Keys.Tab ) {
+#endif
                             pictPianoRoll.requestFocus();
                         }
                         return;
@@ -3410,7 +3477,11 @@ namespace org.kbinani.cadencii
                     if ( onPreviewKeyDown ) {
                         rewind();
                     }
+#if JAVA
+                } else if ( e.KeyValue == KeyEvent.VK_ESCAPE ) {
+#else
                 } else if ( e.KeyCode == System.Windows.Forms.Keys.Escape ) {
+#endif
                     // ステップ入力中の場合，入力中の音符をクリアする
                     VsqEvent item = AppManager.mAddingEvent;
                     if ( isStepSequencerEnabled() && item != null ) {
@@ -3461,7 +3532,11 @@ namespace org.kbinani.cadencii
                     }
                 }
             }
+#if JAVA
+            if ( e.KeyValue == KeyEvent.VK_TAB ) {
+#else
             if ( e.KeyCode == System.Windows.Forms.Keys.Tab ) {
+#endif
                 pictPianoRoll.requestFocus();
             }
             return;
@@ -3793,29 +3868,14 @@ namespace org.kbinani.cadencii
 
         public void updateScrollRangeHorizontal()
         {
-#if JAVA
-            draft_length += 240;
-            // 画面上で何クロックが見えてるか？
-            int visible_clocks = (int)((pictPianoRoll.getWidth() - AppManager.keyWidth) * AppManager.getScaleXInv());
-            if( draft_length + visible_clocks > hScroll.getMaximum() ){
-                hScroll.setMaximum( draft_length + visible_clocks );
-            }
-            hScroll.setVisibleAmount( visible_clocks );
-            /*int unit_increment = visible_clocks / 10;
-            if( unit_increment <= 0 ){
-                unit_increment = 1;
-            }
-            hScroll.setUnitIncrement( unit_increment );
-            hScroll.setBlockIncrement( visible_clocks );*/
-#else
             // コンポーネントの高さが0の場合，スクロールの設定が出来ないので．
-            int pwidth = pictPianoRoll.Width;
+            int pwidth = pictPianoRoll.getWidth();
             int hwidth = hScroll.getWidth();
             if ( pwidth <= 0 || hwidth <= 0 ) {
                 return;
             }
 
-            var vsq = AppManager.getVsqFile();
+            VsqFileEx vsq = AppManager.getVsqFile();
             if ( vsq == null ) return;
             int l = vsq.TotalClocks;
             float scalex = AppManager.getScaleX();
@@ -3824,7 +3884,11 @@ namespace org.kbinani.cadencii
             int large_change = (int)(pict_piano_roll_width / scalex);
             int maximum = (int)(l + large_change);
 
+#if JAVA
+            int thumb_width = 40;
+#else
             int thumb_width = System.Windows.Forms.SystemInformation.HorizontalScrollBarThumbWidth;
+#endif
             int box_width = (int)(large_change / (float)maximum * (hwidth - 2 * thumb_width));
             if ( box_width < AppManager.editorConfig.MinimumScrollHandleWidth ) {
                 box_width = AppManager.editorConfig.MinimumScrollHandleWidth;
@@ -3838,33 +3902,26 @@ namespace org.kbinani.cadencii
             if ( maximum <= 0 ) maximum = 1;
             hScroll.setVisibleAmount( large_change );
             hScroll.setMaximum( maximum );
+#if JAVA
+            int unit_increment = large_change / 10;
+            if( unit_increment <= 0 ){
+                unit_increment = 1;
+            }
+            hScroll.setUnitIncrement( unit_increment );
+            hScroll.setBlockIncrement( large_change );
+#endif
 
             int old_value = hScroll.getValue();
             if ( old_value > maximum - large_change ) {
                 hScroll.setValue( maximum - large_change );
             }
-#endif
         }
 
         public void updateScrollRangeVertical()
         {
-#if JAVA
-            // 画面上で何ピクセルが見えてるか？
-            int visible_amount = (int)pictPianoRoll.getHeight();
-            if( draft_length + visible_amount > vScroll.getMaximum() ){
-                vScroll.setMaximum( draft_length );
-            }
-            vScroll.setVisibleAmount( visible_amount );
-            /*int unit_increment = visible_amount / 10;
-            if( unit_increment <= 0 ){
-                unit_increment = 1;
-            }
-            vScroll.setUnitIncrement( unit_increment );
-            vScroll.setBlockIncrement( visible_amount );*/
-#else
             // コンポーネントの高さが0の場合，スクロールの設定が出来ないので．
-            int pheight = pictPianoRoll.Height;
-            int vheight = vScroll.Height;
+            int pheight = pictPianoRoll.getHeight();
+            int vheight = vScroll.getHeight();
             if ( pheight <= 0 || vheight <= 0 ) {
                 return;
             }
@@ -3872,9 +3929,13 @@ namespace org.kbinani.cadencii
             float scaley = AppManager.getScaleY();
 
             int maximum = (int)(128 * (int)(100 * scaley) / scaley);
-            int large_change = (int)(pictPianoRoll.Height / scaley);
+            int large_change = (int)(pictPianoRoll.getHeight() / scaley);
 
+#if JAVA
+            int thumb_height = 40;
+#else
             int thumb_height = System.Windows.Forms.SystemInformation.VerticalScrollBarThumbHeight;
+#endif
             int box_height = (int)(large_change / (float)maximum * (vheight - 2 * thumb_height));
             if ( box_height < AppManager.editorConfig.MinimumScrollHandleWidth ) {
                 box_height = AppManager.editorConfig.MinimumScrollHandleWidth;
@@ -3887,12 +3948,19 @@ namespace org.kbinani.cadencii
             vScroll.setVisibleAmount( large_change );
             vScroll.setMaximum( maximum );
             vScroll.setVisibleAmount( 100 );
+#if JAVA
+            int unit_increment = large_change / 10;
+            if( unit_increment <= 0 ){
+                unit_increment = 1;
+            }
+            vScroll.setUnitIncrement( unit_increment );
+            vScroll.setBlockIncrement( large_change );
+#endif
 
             int old_value = vScroll.getValue();
             if ( old_value > maximum - large_change ) {
                 vScroll.setValue( maximum - large_change );
             }
-#endif
         }
 
         /// <summary>
@@ -4417,9 +4485,28 @@ namespace org.kbinani.cadencii
 #if JAVA
             updateGameControlerStatus( this, new EventArgs() );
 #else
-            this.Invoke( new EventHandler( updateGameControlerStatus ) );
+            this.Invoke( new BEventHandler( updateGameControlerStatus ) );
 #endif
 
+#if JAVA
+            stripBtnPointer.setText( _( "Pointer" ) );
+            stripBtnPointer.setToolTipText( _( "Pointer" ) );
+            stripBtnPencil.setText( _( "Pencil" ) );
+            stripBtnPencil.setToolTipText( _( "Pencil" ) );
+            stripBtnLine.setText( _( "Line" ) );
+            stripBtnLine.setToolTipText( _( "Line" ) );
+            stripBtnEraser.setText( _( "Eraser" ) );
+            stripBtnEraser.setToolTipText( _( "Eraser" ) );
+            stripBtnCurve.setText( _( "Curve" ) );
+            stripBtnCurve.setToolTipText( _( "Curve" ) );
+            stripBtnGrid.setText( _( "Grid" ) );
+            stripBtnGrid.setToolTipText( _( "Grid" ) );
+            if ( AppManager.isPlaying() ) {
+                stripBtnPlay.setText( _( "Stop" ) );
+            } else {
+                stripBtnPlay.setText( _( "Play" ) );
+            }
+#else
             stripBtnPointer.Text = _( "Pointer" );
             stripBtnPointer.ToolTipText = _( "Pointer" );
             stripBtnPencil.Text = _( "Pencil" );
@@ -4437,6 +4524,7 @@ namespace org.kbinani.cadencii
             } else {
                 stripBtnPlay.Text = _( "Play" );
             }
+#endif
 
 #if !JAVA
             stripBtnMoveTop.ToolTipText = _( "Move to beginning measure" );
@@ -5221,7 +5309,12 @@ namespace org.kbinani.cadencii
                 for ( Iterator<ValuePair<Integer, SelectedTempoEntry>> itr = AppManager.getSelectedTempoIterator(); itr.hasNext(); ) {
                     ValuePair<Integer, SelectedTempoEntry> item = itr.next();
                     if ( item.getKey() <= 0 ) {
-                        statusLabel.Text = _( "Cannot remove first symbol of track!" );
+                        String msg = "Cannot remove first symbol of track!";
+#if JAVA
+                        statusLabel.setText( _( msg ) );
+#else
+                        statusLabel.Text = _( msg );
+#endif
 #if !JAVA
                         SystemSounds.Asterisk.Play();
 #endif
@@ -5256,7 +5349,12 @@ namespace org.kbinani.cadencii
                     count++;
                     barcounts[count] = key;
                     if ( key <= 0 ) {
-                        statusLabel.Text = _( "Cannot remove first symbol of track!" );
+                        String msg = "Cannot remove first symbol of track!";
+#if JAVA
+                        statusLabel.setText( _( msg ) );
+#else
+                        statusLabel.Text = _( msg );
+#endif
 #if !JAVA
                         SystemSounds.Asterisk.Play();
 #endif
@@ -5910,7 +6008,7 @@ namespace org.kbinani.cadencii
                 mTextBoxTrackName = null;
             }
 #if JAVA
-            m_txtbox_track_name = new LyricTextBox( this );
+            mTextBoxTrackName = new LyricTextBox( this );
 #else
             mTextBoxTrackName = new LyricTextBox();
 #endif
@@ -5920,7 +6018,7 @@ namespace org.kbinani.cadencii
             mTextBoxTrackName.setLocation( x, trackSelector.getHeight() - TrackSelector.OFFSET_TRACK_TAB + 1 );
             mTextBoxTrackName.setText( AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getName() );
 #if JAVA
-            m_txtbox_track_name.keyUpEvent.add( new BKeyEventHandler( this, "mTextBoxTrackName_KeyUp" ) );
+            mTextBoxTrackName.keyUpEvent.add( new BKeyEventHandler( this, "mTextBoxTrackName_KeyUp" ) );
 #else
             mTextBoxTrackName.BorderStyle = System.Windows.Forms.BorderStyle.None;
             mTextBoxTrackName.KeyUp += new System.Windows.Forms.KeyEventHandler( mTextBoxTrackName_KeyUp );
@@ -6102,9 +6200,36 @@ namespace org.kbinani.cadencii
         {
             EditTool tool = AppManager.getSelectedTool();
 
-            int count = toolBarTool.Buttons.Count;// toolStripTool.getComponentCount();
+#if JAVA
+            int count = toolStripTool.getComponentCount();
+#else
+            int count = toolBarTool.Buttons.Count;
+#endif
             for ( int i = 0; i < count; i++ ) {
-                Object tsi = toolBarTool.Buttons[i];// toolStripTool.getComponentAtIndex( i );
+#if JAVA
+                Object tsi = toolStripTool.getComponentAtIndex( i );
+#else
+                Object tsi = toolBarTool.Buttons[i];
+#endif
+#if JAVA
+                if( tsi instanceof BToggleButton ){
+                    BToggleButton tsb = (BToggleButton)tsi;
+                    Object tag = tsb.getTag();
+                    if( tag != null && tag instanceof String ){
+#if ENABLE_SCRIPT
+                        if( tool == EditTool.PALETTE_TOOL )
+                        {
+                            String id = (String)tag;
+                            tsb.setSelected( (AppManager.mSelectedPaletteTool.Equals( id )) );
+                        }
+                        else
+#endif // ENABLE_SCRIPT
+                        {
+                            tsb.setSelected( false );
+                        }
+                    }
+                }
+#else // JAVA
                 if ( tsi is System.Windows.Forms.ToolBarButton ) {
                     System.Windows.Forms.ToolBarButton tsb = (System.Windows.Forms.ToolBarButton)tsi;
                     Object tag = tsb.Tag;
@@ -6114,12 +6239,13 @@ namespace org.kbinani.cadencii
                             String id = (String)tag;
                             tsb.Pushed = (AppManager.mSelectedPaletteTool.Equals( id ));
                         } else
-#endif
+#endif // ENABLE_SCRIPT
  {
                             tsb.Pushed = false;
                         }
                     }
                 }
+#endif // JAVA
             }
             MenuElement[] items = cMenuTrackSelectorPaletteTool.getSubElements();
             foreach ( MenuElement tsi in items ) {
@@ -6160,82 +6286,35 @@ namespace org.kbinani.cadencii
             }
 
             EditTool selected_tool = AppManager.getSelectedTool();
-            if ( selected_tool == EditTool.ARROW ) {
-                cMenuPianoPointer.setSelected( true );
-                cMenuPianoPencil.setSelected( false );
-                cMenuPianoEraser.setSelected( false );
+            cMenuPianoPointer.setSelected( (selected_tool == EditTool.ARROW) );
+            cMenuPianoPencil.setSelected( (selected_tool == EditTool.PENCIL) );
+            cMenuPianoEraser.setSelected( (selected_tool == EditTool.ERASER) );
 
-                cMenuTrackSelectorPointer.setSelected( true );
-                cMenuTrackSelectorPencil.setSelected( false );
-                cMenuTrackSelectorLine.setSelected( false );
-                cMenuTrackSelectorEraser.setSelected( false );
+            cMenuTrackSelectorPointer.setSelected( (selected_tool == EditTool.ARROW) );
+            cMenuTrackSelectorPencil.setSelected( (selected_tool == EditTool.PENCIL) );
+            cMenuTrackSelectorLine.setSelected( (selected_tool == EditTool.LINE) );
+            cMenuTrackSelectorEraser.setSelected( (selected_tool == EditTool.ERASER) );
 
-                stripBtnPointer.Pushed = true;
-                stripBtnPencil.Pushed = false;
-                stripBtnLine.Pushed = false;
-                stripBtnEraser.Pushed = false;
-            } else if ( selected_tool == EditTool.PENCIL ) {
-                cMenuPianoPointer.setSelected( false );
-                cMenuPianoPencil.setSelected( true );
-                cMenuPianoEraser.setSelected( false );
-
-                cMenuTrackSelectorPointer.setSelected( false );
-                cMenuTrackSelectorPencil.setSelected( true );
-                cMenuTrackSelectorLine.setSelected( false );
-                cMenuTrackSelectorEraser.setSelected( false );
-
-                stripBtnPointer.Pushed = false;
-                stripBtnPencil.Pushed = true;
-                stripBtnLine.Pushed = false;
-                stripBtnEraser.Pushed = false;
-            } else if ( selected_tool == EditTool.ERASER ) {
-                cMenuPianoPointer.setSelected( false );
-                cMenuPianoPencil.setSelected( false );
-                cMenuPianoEraser.setSelected( true );
-
-                cMenuTrackSelectorPointer.setSelected( false );
-                cMenuTrackSelectorPencil.setSelected( false );
-                cMenuTrackSelectorLine.setSelected( false );
-                cMenuTrackSelectorEraser.setSelected( true );
-
-                stripBtnPointer.Pushed = false;
-                stripBtnPencil.Pushed = false;
-                stripBtnLine.Pushed = false;
-                stripBtnEraser.Pushed = true;
-            } else if ( selected_tool == EditTool.LINE ) {
-                cMenuPianoPointer.setSelected( false );
-                cMenuPianoPencil.setSelected( false );
-                cMenuPianoEraser.setSelected( false );
-
-                cMenuTrackSelectorPointer.setSelected( false );
-                cMenuTrackSelectorPencil.setSelected( false );
-                cMenuTrackSelectorLine.setSelected( true );
-                cMenuTrackSelectorEraser.setSelected( false );
-
-                stripBtnPointer.Pushed = false;
-                stripBtnPencil.Pushed = false;
-                stripBtnLine.Pushed = true;
-                stripBtnEraser.Pushed = false;
-#if ENABLE_SCRIPT
-            } else if ( selected_tool == EditTool.PALETTE_TOOL ) {
-                cMenuPianoPointer.setSelected( false );
-                cMenuPianoPencil.setSelected( false );
-                cMenuPianoEraser.setSelected( false );
-
-                cMenuTrackSelectorPointer.setSelected( false );
-                cMenuTrackSelectorPencil.setSelected( false );
-                cMenuTrackSelectorLine.setSelected( false );
-                cMenuTrackSelectorEraser.setSelected( false );
-
-                stripBtnPointer.Pushed = false;
-                stripBtnPencil.Pushed = false;
-                stripBtnLine.Pushed = false;
-                stripBtnEraser.Pushed = false;
+#if JAVA
+            stripBtnPointer.setSelected( (selected_tool == EditTool.ARROW) );
+            stripBtnPencil.setSelected( (selected_tool == EditTool.PENCIL) );
+            stripBtnLine.setSelected( (selected_tool == EditTool.LINE) );
+            stripBtnEraser.setSelected( (selected_tool == EditTool.ERASER) );
+#else
+            stripBtnPointer.Pushed = (selected_tool == EditTool.ARROW);
+            stripBtnPencil.Pushed = (selected_tool == EditTool.PENCIL);
+            stripBtnLine.Pushed = (selected_tool == EditTool.LINE);
+            stripBtnEraser.Pushed = (selected_tool == EditTool.ERASER);
 #endif
-            }
+
+
             cMenuPianoCurve.setSelected( AppManager.isCurveMode() );
             cMenuTrackSelectorCurve.setSelected( AppManager.isCurveMode() );
+#if JAVA
+            stripBtnCurve.setSelected( AppManager.isCurveMode() );
+#else
             stripBtnCurve.Pushed = AppManager.isCurveMode();
+#endif
         }
 
         /// <summary>
@@ -6517,8 +6596,8 @@ namespace org.kbinani.cadencii
                         itm.setToolTipText( itm.getToolTipText() + item );
                         itm.setTag( item );
                         itm.setEnabled( available );
-                        itm.Click += new EventHandler( handleRecentFileMenuItem_Click );
-                        itm.MouseEnter += new EventHandler( handleRecentFileMenuItem_MouseEnter );
+                        itm.Click += new BEventHandler( handleRecentFileMenuItem_Click );
+                        itm.MouseEnter += new BEventHandler( handleRecentFileMenuItem_MouseEnter );
                         menuFileRecent.add( itm );
                         added++;
                     }
@@ -6565,8 +6644,13 @@ namespace org.kbinani.cadencii
             cMenuPianoUndo.setEnabled( undo );
             cMenuTrackSelectorRedo.setEnabled( redo );
             cMenuTrackSelectorUndo.setEnabled( undo );
+#if JAVA
+            stripBtnUndo.setEnabled( undo );
+            stripBtnRedo.setEnabled( redo );
+#else
             stripBtnUndo.Enabled = undo;
             stripBtnRedo.Enabled = redo;
+#endif
             //AppManager.setRenderRequired( AppManager.getSelected(), true );
             updateScrollRangeHorizontal();
             updateDrawObjectList();
@@ -6587,11 +6671,13 @@ namespace org.kbinani.cadencii
 #endif
             hideInputTextBox();
 
-            AppManager.mInputTextBox.KeyUp += new System.Windows.Forms.KeyEventHandler( mInputTextBox_KeyUp );
-            AppManager.mInputTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler( mInputTextBox_KeyDown );
 #if JAVA
-            //TODO: FormMain#showInputTextBox
+            AppManager.mInputTextBox.keyUpEvent.add( new BKeyEventHandler( this, "mInputTextBox_KeyUp" ) );
+            AppManager.mInputTextBox.keyDownEvent.add( new BKeyEventHandler( this, "mInputTextBox_KeyDown" ) );
+            //TODO: JAVA: AppManager.mInputTextBox.ImeModeChanged += mInputTextBox_ImeModeChanged;
 #else
+            AppManager.mInputTextBox.KeyUp += new BKeyEventHandler( mInputTextBox_KeyUp );
+            AppManager.mInputTextBox.KeyDown += new BKeyEventHandler( mInputTextBox_KeyDown );
             AppManager.mInputTextBox.ImeModeChanged += mInputTextBox_ImeModeChanged;
 #endif
 
@@ -6620,12 +6706,13 @@ namespace org.kbinani.cadencii
 
         public void hideInputTextBox()
         {
+#if JAVA
+            AppManager.mInputTextBox.keyUpEvent.remove( new BKeyEventHandler( this, "mInputTextBox_KeyUp" ) );
+            AppManager.mInputTextBox.keyDownEvent.remove( new BKeyEventHandler( this, "mInputTextBox_KeyDown" ) );
+            // TODO: JAVA: AppManager.mInputTextBox.ImeModeChanged -= mInputTextBox_ImeModeChanged;
+#else
             AppManager.mInputTextBox.KeyUp -= new System.Windows.Forms.KeyEventHandler( mInputTextBox_KeyUp );
             AppManager.mInputTextBox.KeyDown -= new System.Windows.Forms.KeyEventHandler( mInputTextBox_KeyDown );
-#if JAVA
-            // TODO: FormMain#hideInputTextBox
-            /*AppManager.mInputTextBox.ImeModeChanged -= mInputTextBox_ImeModeChanged;*/
-#else
             AppManager.mInputTextBox.ImeModeChanged -= mInputTextBox_ImeModeChanged;
 #endif
             mLastSymbolEditMode = AppManager.mInputTextBox.isPhoneticSymbolEditMode();
@@ -6834,10 +6921,12 @@ namespace org.kbinani.cadencii
             Util.applyToolStripFontRecurse( menuScript, font );
             Util.applyToolStripFontRecurse( menuSetting, font );
             Util.applyToolStripFontRecurse( menuHelp, font );
+#if !JAVA
             Util.applyFontRecurse( toolBarFile, font );
             Util.applyFontRecurse( toolBarMeasure, font );
             Util.applyFontRecurse( toolBarPosition, font );
             Util.applyFontRecurse( toolBarTool, font );
+#endif
             if ( mDialogPreference != null ) {
                 Util.applyFontRecurse( mDialogPreference, font );
             }
@@ -7023,288 +7112,288 @@ namespace org.kbinani.cadencii
         /// </summary>
         public void registerEventHandlers()
         {
-            this.Load += new EventHandler( FormMain_Load );
+            this.Load += new BEventHandler( FormMain_Load );
             menuStripMain.MouseDown += new BMouseEventHandler( menuStrip1_MouseDown );
-            menuFileNew.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuFileNew.Click += new EventHandler( handleFileNew_Click );
-            menuFileOpen.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuFileOpen.Click += new EventHandler( handleFileOpen_Click );
-            menuFileSave.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuFileSave.Click += new EventHandler( handleFileSave_Click );
-            menuFileSaveNamed.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuFileSaveNamed.Click += new EventHandler( menuFileSaveNamed_Click );
-            menuFileOpenVsq.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuFileOpenVsq.Click += new EventHandler( menuFileOpenVsq_Click );
-            menuFileOpenUst.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuFileOpenUst.Click += new EventHandler( menuFileOpenUst_Click );
-            menuFileImport.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuFileImportMidi.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuFileImportMidi.Click += new EventHandler( menuFileImportMidi_Click );
-            menuFileImportUst.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuFileImportUst.Click += new EventHandler( menuFileImportUst_Click );
-            menuFileImportVsq.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuFileImportVsq.Click += new EventHandler( menuFileImportVsq_Click );
-            menuFileExport.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuFileExport.DropDownOpening += new EventHandler( menuFileExport_DropDownOpening );
-            menuFileExportWave.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuFileExportWave.Click += new EventHandler( menuFileExportWave_Click );
-            menuFileExportParaWave.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuFileExportParaWave.Click += new EventHandler( menuFileExportParaWave_Click );
-            menuFileExportMidi.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuFileExportMidi.Click += new EventHandler( menuFileExportMidi_Click );
-            menuFileExportMusicXml.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuFileExportMusicXml.Click += new EventHandler( menuFileExportMusicXml_Click );
-            menuFileExportUst.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuFileExportUst.Click += new EventHandler( menuFileExportUst_Click );
-            menuFileExportVsq.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuFileExportVsq.Click += new EventHandler( menuFileExportVsq_Click );
-            menuFileExportVxt.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuFileExportVxt.Click += new EventHandler( menuFileExportVxt_Click );
-            menuFileRecent.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuFileQuit.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuFileQuit.Click += new EventHandler( menuFileQuit_Click );
-            menuEdit.DropDownOpening += new EventHandler( menuEdit_DropDownOpening );
-            menuEditUndo.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuEditUndo.Click += new EventHandler( handleEditUndo_Click );
-            menuEditRedo.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuEditRedo.Click += new EventHandler( handleEditRedo_Click );
-            menuEditCut.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuEditCut.Click += new EventHandler( handleEditCut_Click );
-            menuEditCopy.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuEditCopy.Click += new EventHandler( handleEditCopy_Click );
-            menuEditPaste.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuEditPaste.Click += new EventHandler( handleEditPaste_Click );
-            menuEditDelete.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuEditDelete.Click += new EventHandler( menuEditDelete_Click );
-            menuEditAutoNormalizeMode.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuEditAutoNormalizeMode.Click += new EventHandler( menuEditAutoNormalizeMode_Click );
-            menuEditSelectAll.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuEditSelectAll.Click += new EventHandler( menuEditSelectAll_Click );
-            menuEditSelectAllEvents.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuEditSelectAllEvents.Click += new EventHandler( menuEditSelectAllEvents_Click );
-            menuVisualOverview.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuVisualControlTrack.CheckedChanged += new EventHandler( menuVisualControlTrack_CheckedChanged );
-            menuVisualControlTrack.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuVisualMixer.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuVisualMixer.Click += new EventHandler( menuVisualMixer_Click );
-            menuVisualWaveform.CheckedChanged += new EventHandler( menuVisualWaveform_CheckedChanged );
-            menuVisualWaveform.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuVisualProperty.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuVisualProperty.Click += new EventHandler( menuVisualProperty_Click );
-            menuVisualGridline.CheckedChanged += new EventHandler( menuVisualGridline_CheckedChanged );
-            menuVisualGridline.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuVisualIconPalette.Click += new EventHandler( menuVisualIconPalette_Click );
-            menuVisualIconPalette.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuVisualStartMarker.Click += new EventHandler( handleStartMarker_Click );
-            menuVisualStartMarker.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuVisualEndMarker.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuVisualEndMarker.Click += new EventHandler( handleEndMarker_Click );
-            menuVisualLyrics.CheckedChanged += new EventHandler( menuVisualLyrics_CheckedChanged );
-            menuVisualLyrics.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuVisualNoteProperty.CheckedChanged += new EventHandler( menuVisualNoteProperty_CheckedChanged );
-            menuVisualNoteProperty.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuVisualPitchLine.CheckedChanged += new EventHandler( menuVisualPitchLine_CheckedChanged );
-            menuVisualPitchLine.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuVisualPluginUi.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuVisualPluginUi.DropDownOpening += new EventHandler( menuVisualPluginUi_DropDownOpening );
-            menuVisualPluginUiVocaloid100.Click += new EventHandler( menuVisualPluginUiVocaloidCommon_Click );
-            menuVisualPluginUiVocaloid101.Click += new EventHandler( menuVisualPluginUiVocaloidCommon_Click );
-            menuVisualPluginUiVocaloid2.Click += new EventHandler( menuVisualPluginUiVocaloidCommon_Click );
-            menuVisualPluginUiAquesTone.Click += new EventHandler( menuVisualPluginUiAquesTone_Click );
-            menuJob.DropDownOpening += new EventHandler( menuJob_DropDownOpening );
-            menuJobNormalize.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuJobNormalize.Click += new EventHandler( menuJobNormalize_Click );
-            menuJobInsertBar.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuJobInsertBar.Click += new EventHandler( menuJobInsertBar_Click );
-            menuJobDeleteBar.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuJobDeleteBar.Click += new EventHandler( menuJobDeleteBar_Click );
-            menuJobRandomize.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuJobRandomize.Click += new EventHandler( menuJobRandomize_Click );
-            menuJobConnect.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuJobConnect.Click += new EventHandler( menuJobConnect_Click );
-            menuJobLyric.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuJobLyric.Click += new EventHandler( menuJobLyric_Click );
-            menuJobRewire.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuJobReloadVsti.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuJobReloadVsti.Click += new EventHandler( menuJobReloadVsti_Click );
-            menuTrack.DropDownOpening += new EventHandler( menuTrack_DropDownOpening );
-            menuTrackOn.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuTrackBgm.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuTrackOn.Click += new EventHandler( handleTrackOn_Click );
-            menuTrackAdd.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuTrackAdd.Click += new EventHandler( menuTrackAdd_Click );
-            menuTrackCopy.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuTrackCopy.Click += new EventHandler( menuTrackCopy_Click );
-            menuTrackChangeName.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuTrackChangeName.Click += new EventHandler( menuTrackChangeName_Click );
-            menuTrackDelete.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuTrackDelete.Click += new EventHandler( menuTrackDelete_Click );
-            menuTrackRenderCurrent.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuTrackRenderCurrent.Click += new EventHandler( menuTrackRenderCurrent_Click );
-            menuTrackRenderAll.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuTrackRenderAll.Click += new EventHandler( handleTrackRenderAll_Click );
-            menuTrackOverlay.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuTrackOverlay.Click += new EventHandler( menuTrackOverlay_Click );
-            menuTrackRenderer.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuTrackRenderer.DropDownOpening += new EventHandler( menuTrackRenderer_DropDownOpening );
-            menuTrackRendererVOCALOID100.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuTrackRendererVOCALOID100.Click += new EventHandler( handleChangeRenderer );
-            menuTrackRendererVOCALOID101.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuTrackRendererVOCALOID101.Click += new EventHandler( handleChangeRenderer );
-            menuTrackRendererVOCALOID2.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuTrackRendererVOCALOID2.Click += new EventHandler( handleChangeRenderer );
-            menuTrackRendererUtau.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuTrackRendererUtau.Click += new EventHandler( handleChangeRenderer );
-            menuTrackRendererVCNT.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuTrackRendererVCNT.Click += new EventHandler( handleChangeRenderer );
-            menuTrackRendererAquesTone.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuTrackRendererAquesTone.Click += new EventHandler( handleChangeRenderer );
-            menuLyric.DropDownOpening += new EventHandler( menuLyric_DropDownOpening );
-            menuLyricCopyVibratoToPreset.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuLyricExpressionProperty.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuLyricExpressionProperty.Click += new EventHandler( menuLyricExpressionProperty_Click );
-            menuLyricVibratoProperty.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuLyricVibratoProperty.Click += new EventHandler( menuLyricVibratoProperty_Click );
-            menuLyricPhonemeTransformation.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuLyricDictionary.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuLyricDictionary.Click += new EventHandler( menuLyricDictionary_Click );
-            menuLyricPhonemeTransformation.Click += new EventHandler( menuLyricPhonemeTransformation_Click );
-            menuScriptUpdate.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuScriptUpdate.Click += new EventHandler( menuScriptUpdate_Click );
-            menuSettingPreference.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuSettingPreference.Click += new EventHandler( menuSettingPreference_Click );
-            menuSettingGameControler.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuSettingGameControlerSetting.Click += new EventHandler( menuSettingGameControlerSetting_Click );
-            menuSettingGameControlerLoad.Click += new EventHandler( menuSettingGameControlerLoad_Click );
-            menuSettingGameControlerRemove.Click += new EventHandler( menuSettingGameControlerRemove_Click );
-            menuSettingSequence.Click += new EventHandler( menuSettingSequence_Click );
-            menuSettingSequence.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuSettingShortcut.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuSettingShortcut.Click += new EventHandler( menuSettingShortcut_Click );
-            menuSettingVibratoPreset.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuSettingVibratoPreset.Click += new EventHandler( menuSettingVibratoPreset_Click );
-            menuSettingDefaultSingerStyle.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuSettingDefaultSingerStyle.Click += new EventHandler( menuSettingDefaultSingerStyle_Click );
-            menuSettingPaletteTool.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuSettingPositionQuantize.MouseEnter += new EventHandler( handleMenuMouseEnter );
-            menuSettingPositionQuantize04.Click += new EventHandler( handlePositionQuantize );
-            menuSettingPositionQuantize08.Click += new EventHandler( handlePositionQuantize );
-            menuSettingPositionQuantize16.Click += new EventHandler( handlePositionQuantize );
-            menuSettingPositionQuantize32.Click += new EventHandler( handlePositionQuantize );
-            menuSettingPositionQuantize64.Click += new EventHandler( handlePositionQuantize );
-            menuSettingPositionQuantize128.Click += new EventHandler( handlePositionQuantize );
-            menuSettingPositionQuantizeOff.Click += new EventHandler( handlePositionQuantize );
-            menuSettingPositionQuantizeTriplet.Click += new EventHandler( handlePositionQuantizeTriplet_Click );
-            menuHelpAbout.Click += new EventHandler( menuHelpAbout_Click );
-            menuHelpLogSwitch.CheckedChanged += new EventHandler( menuHelpLogSwitch_CheckedChanged );
-            menuHelpLogOpen.Click += new EventHandler( menuHelpLogOpen_Click );
-            menuHelpDebug.Click += new EventHandler( menuHelpDebug_Click );
-            menuHiddenEditLyric.Click += new EventHandler( menuHiddenEditLyric_Click );
-            menuHiddenEditFlipToolPointerPencil.Click += new EventHandler( menuHiddenEditFlipToolPointerPencil_Click );
-            menuHiddenEditFlipToolPointerEraser.Click += new EventHandler( menuHiddenEditFlipToolPointerEraser_Click );
-            menuHiddenVisualForwardParameter.Click += new EventHandler( menuHiddenVisualForwardParameter_Click );
-            menuHiddenVisualBackwardParameter.Click += new EventHandler( menuHiddenVisualBackwardParameter_Click );
-            menuHiddenTrackNext.Click += new EventHandler( menuHiddenTrackNext_Click );
-            menuHiddenTrackBack.Click += new EventHandler( menuHiddenTrackBack_Click );
-            menuHiddenCopy.Click += new EventHandler( handleEditCopy_Click );
-            menuHiddenPaste.Click += new EventHandler( handleEditPaste_Click );
-            menuHiddenCut.Click += new EventHandler( handleEditCut_Click );
-            menuHiddenSelectBackward.Click += new EventHandler( menuHiddenSelectBackward_Click );
-            menuHiddenSelectForward.Click += new EventHandler( menuHiddenSelectForward_Click );
-            menuHiddenMoveUp.Click += new EventHandler( menuHiddenMoveUp_Click );
-            menuHiddenMoveDown.Click += new EventHandler( menuHiddenMoveDown_Click );
-            menuHiddenMoveLeft.Click += new EventHandler( menuHiddenMoveLeft_Click );
-            menuHiddenMoveRight.Click += new EventHandler( menuHiddenMoveRight_Click );
-            menuHiddenLengthen.Click += new EventHandler( menuHiddenLengthen_Click );
-            menuHiddenShorten.Click += new EventHandler( menuHiddenShorten_Click );
-            menuHiddenGoToEndMarker.Click += new EventHandler( menuHiddenGoToEndMarker_Click );
-            menuHiddenGoToStartMarker.Click += new EventHandler( menuHiddenGoToStartMarker_Click );
-            menuHiddenPlayFromStartMarker.Click += new EventHandler( menuHiddenPlayFromStartMarker_Click );
-            menuHiddenPrintPoToCSV.Click += new EventHandler( menuHiddenPrintPoToCSV_Click );
-            menuHiddenFlipCurveOnPianorollMode.Click += new EventHandler( menuHiddenFlipCurveOnPianorollMode_Click );
+            menuFileNew.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuFileNew.Click += new BEventHandler( handleFileNew_Click );
+            menuFileOpen.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuFileOpen.Click += new BEventHandler( handleFileOpen_Click );
+            menuFileSave.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuFileSave.Click += new BEventHandler( handleFileSave_Click );
+            menuFileSaveNamed.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuFileSaveNamed.Click += new BEventHandler( menuFileSaveNamed_Click );
+            menuFileOpenVsq.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuFileOpenVsq.Click += new BEventHandler( menuFileOpenVsq_Click );
+            menuFileOpenUst.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuFileOpenUst.Click += new BEventHandler( menuFileOpenUst_Click );
+            menuFileImport.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuFileImportMidi.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuFileImportMidi.Click += new BEventHandler( menuFileImportMidi_Click );
+            menuFileImportUst.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuFileImportUst.Click += new BEventHandler( menuFileImportUst_Click );
+            menuFileImportVsq.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuFileImportVsq.Click += new BEventHandler( menuFileImportVsq_Click );
+            menuFileExport.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuFileExport.DropDownOpening += new BEventHandler( menuFileExport_DropDownOpening );
+            menuFileExportWave.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuFileExportWave.Click += new BEventHandler( menuFileExportWave_Click );
+            menuFileExportParaWave.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuFileExportParaWave.Click += new BEventHandler( menuFileExportParaWave_Click );
+            menuFileExportMidi.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuFileExportMidi.Click += new BEventHandler( menuFileExportMidi_Click );
+            menuFileExportMusicXml.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuFileExportMusicXml.Click += new BEventHandler( menuFileExportMusicXml_Click );
+            menuFileExportUst.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuFileExportUst.Click += new BEventHandler( menuFileExportUst_Click );
+            menuFileExportVsq.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuFileExportVsq.Click += new BEventHandler( menuFileExportVsq_Click );
+            menuFileExportVxt.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuFileExportVxt.Click += new BEventHandler( menuFileExportVxt_Click );
+            menuFileRecent.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuFileQuit.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuFileQuit.Click += new BEventHandler( menuFileQuit_Click );
+            menuEdit.DropDownOpening += new BEventHandler( menuEdit_DropDownOpening );
+            menuEditUndo.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuEditUndo.Click += new BEventHandler( handleEditUndo_Click );
+            menuEditRedo.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuEditRedo.Click += new BEventHandler( handleEditRedo_Click );
+            menuEditCut.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuEditCut.Click += new BEventHandler( handleEditCut_Click );
+            menuEditCopy.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuEditCopy.Click += new BEventHandler( handleEditCopy_Click );
+            menuEditPaste.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuEditPaste.Click += new BEventHandler( handleEditPaste_Click );
+            menuEditDelete.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuEditDelete.Click += new BEventHandler( menuEditDelete_Click );
+            menuEditAutoNormalizeMode.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuEditAutoNormalizeMode.Click += new BEventHandler( menuEditAutoNormalizeMode_Click );
+            menuEditSelectAll.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuEditSelectAll.Click += new BEventHandler( menuEditSelectAll_Click );
+            menuEditSelectAllEvents.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuEditSelectAllEvents.Click += new BEventHandler( menuEditSelectAllEvents_Click );
+            menuVisualOverview.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuVisualControlTrack.CheckedChanged += new BEventHandler( menuVisualControlTrack_CheckedChanged );
+            menuVisualControlTrack.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuVisualMixer.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuVisualMixer.Click += new BEventHandler( menuVisualMixer_Click );
+            menuVisualWaveform.CheckedChanged += new BEventHandler( menuVisualWaveform_CheckedChanged );
+            menuVisualWaveform.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuVisualProperty.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuVisualProperty.Click += new BEventHandler( menuVisualProperty_Click );
+            menuVisualGridline.CheckedChanged += new BEventHandler( menuVisualGridline_CheckedChanged );
+            menuVisualGridline.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuVisualIconPalette.Click += new BEventHandler( menuVisualIconPalette_Click );
+            menuVisualIconPalette.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuVisualStartMarker.Click += new BEventHandler( handleStartMarker_Click );
+            menuVisualStartMarker.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuVisualEndMarker.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuVisualEndMarker.Click += new BEventHandler( handleEndMarker_Click );
+            menuVisualLyrics.CheckedChanged += new BEventHandler( menuVisualLyrics_CheckedChanged );
+            menuVisualLyrics.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuVisualNoteProperty.CheckedChanged += new BEventHandler( menuVisualNoteProperty_CheckedChanged );
+            menuVisualNoteProperty.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuVisualPitchLine.CheckedChanged += new BEventHandler( menuVisualPitchLine_CheckedChanged );
+            menuVisualPitchLine.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuVisualPluginUi.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuVisualPluginUi.DropDownOpening += new BEventHandler( menuVisualPluginUi_DropDownOpening );
+            menuVisualPluginUiVocaloid100.Click += new BEventHandler( menuVisualPluginUiVocaloidCommon_Click );
+            menuVisualPluginUiVocaloid101.Click += new BEventHandler( menuVisualPluginUiVocaloidCommon_Click );
+            menuVisualPluginUiVocaloid2.Click += new BEventHandler( menuVisualPluginUiVocaloidCommon_Click );
+            menuVisualPluginUiAquesTone.Click += new BEventHandler( menuVisualPluginUiAquesTone_Click );
+            menuJob.DropDownOpening += new BEventHandler( menuJob_DropDownOpening );
+            menuJobNormalize.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuJobNormalize.Click += new BEventHandler( menuJobNormalize_Click );
+            menuJobInsertBar.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuJobInsertBar.Click += new BEventHandler( menuJobInsertBar_Click );
+            menuJobDeleteBar.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuJobDeleteBar.Click += new BEventHandler( menuJobDeleteBar_Click );
+            menuJobRandomize.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuJobRandomize.Click += new BEventHandler( menuJobRandomize_Click );
+            menuJobConnect.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuJobConnect.Click += new BEventHandler( menuJobConnect_Click );
+            menuJobLyric.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuJobLyric.Click += new BEventHandler( menuJobLyric_Click );
+            menuJobRewire.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuJobReloadVsti.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuJobReloadVsti.Click += new BEventHandler( menuJobReloadVsti_Click );
+            menuTrack.DropDownOpening += new BEventHandler( menuTrack_DropDownOpening );
+            menuTrackOn.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuTrackBgm.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuTrackOn.Click += new BEventHandler( handleTrackOn_Click );
+            menuTrackAdd.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuTrackAdd.Click += new BEventHandler( menuTrackAdd_Click );
+            menuTrackCopy.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuTrackCopy.Click += new BEventHandler( menuTrackCopy_Click );
+            menuTrackChangeName.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuTrackChangeName.Click += new BEventHandler( menuTrackChangeName_Click );
+            menuTrackDelete.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuTrackDelete.Click += new BEventHandler( menuTrackDelete_Click );
+            menuTrackRenderCurrent.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuTrackRenderCurrent.Click += new BEventHandler( menuTrackRenderCurrent_Click );
+            menuTrackRenderAll.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuTrackRenderAll.Click += new BEventHandler( handleTrackRenderAll_Click );
+            menuTrackOverlay.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuTrackOverlay.Click += new BEventHandler( menuTrackOverlay_Click );
+            menuTrackRenderer.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuTrackRenderer.DropDownOpening += new BEventHandler( menuTrackRenderer_DropDownOpening );
+            menuTrackRendererVOCALOID100.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuTrackRendererVOCALOID100.Click += new BEventHandler( handleChangeRenderer );
+            menuTrackRendererVOCALOID101.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuTrackRendererVOCALOID101.Click += new BEventHandler( handleChangeRenderer );
+            menuTrackRendererVOCALOID2.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuTrackRendererVOCALOID2.Click += new BEventHandler( handleChangeRenderer );
+            menuTrackRendererUtau.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuTrackRendererUtau.Click += new BEventHandler( handleChangeRenderer );
+            menuTrackRendererVCNT.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuTrackRendererVCNT.Click += new BEventHandler( handleChangeRenderer );
+            menuTrackRendererAquesTone.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuTrackRendererAquesTone.Click += new BEventHandler( handleChangeRenderer );
+            menuLyric.DropDownOpening += new BEventHandler( menuLyric_DropDownOpening );
+            menuLyricCopyVibratoToPreset.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuLyricExpressionProperty.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuLyricExpressionProperty.Click += new BEventHandler( menuLyricExpressionProperty_Click );
+            menuLyricVibratoProperty.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuLyricVibratoProperty.Click += new BEventHandler( menuLyricVibratoProperty_Click );
+            menuLyricPhonemeTransformation.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuLyricDictionary.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuLyricDictionary.Click += new BEventHandler( menuLyricDictionary_Click );
+            menuLyricPhonemeTransformation.Click += new BEventHandler( menuLyricPhonemeTransformation_Click );
+            menuScriptUpdate.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuScriptUpdate.Click += new BEventHandler( menuScriptUpdate_Click );
+            menuSettingPreference.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuSettingPreference.Click += new BEventHandler( menuSettingPreference_Click );
+            menuSettingGameControler.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuSettingGameControlerSetting.Click += new BEventHandler( menuSettingGameControlerSetting_Click );
+            menuSettingGameControlerLoad.Click += new BEventHandler( menuSettingGameControlerLoad_Click );
+            menuSettingGameControlerRemove.Click += new BEventHandler( menuSettingGameControlerRemove_Click );
+            menuSettingSequence.Click += new BEventHandler( menuSettingSequence_Click );
+            menuSettingSequence.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuSettingShortcut.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuSettingShortcut.Click += new BEventHandler( menuSettingShortcut_Click );
+            menuSettingVibratoPreset.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuSettingVibratoPreset.Click += new BEventHandler( menuSettingVibratoPreset_Click );
+            menuSettingDefaultSingerStyle.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuSettingDefaultSingerStyle.Click += new BEventHandler( menuSettingDefaultSingerStyle_Click );
+            menuSettingPaletteTool.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuSettingPositionQuantize.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuSettingPositionQuantize04.Click += new BEventHandler( handlePositionQuantize );
+            menuSettingPositionQuantize08.Click += new BEventHandler( handlePositionQuantize );
+            menuSettingPositionQuantize16.Click += new BEventHandler( handlePositionQuantize );
+            menuSettingPositionQuantize32.Click += new BEventHandler( handlePositionQuantize );
+            menuSettingPositionQuantize64.Click += new BEventHandler( handlePositionQuantize );
+            menuSettingPositionQuantize128.Click += new BEventHandler( handlePositionQuantize );
+            menuSettingPositionQuantizeOff.Click += new BEventHandler( handlePositionQuantize );
+            menuSettingPositionQuantizeTriplet.Click += new BEventHandler( handlePositionQuantizeTriplet_Click );
+            menuHelpAbout.Click += new BEventHandler( menuHelpAbout_Click );
+            menuHelpLogSwitch.CheckedChanged += new BEventHandler( menuHelpLogSwitch_CheckedChanged );
+            menuHelpLogOpen.Click += new BEventHandler( menuHelpLogOpen_Click );
+            menuHelpDebug.Click += new BEventHandler( menuHelpDebug_Click );
+            menuHiddenEditLyric.Click += new BEventHandler( menuHiddenEditLyric_Click );
+            menuHiddenEditFlipToolPointerPencil.Click += new BEventHandler( menuHiddenEditFlipToolPointerPencil_Click );
+            menuHiddenEditFlipToolPointerEraser.Click += new BEventHandler( menuHiddenEditFlipToolPointerEraser_Click );
+            menuHiddenVisualForwardParameter.Click += new BEventHandler( menuHiddenVisualForwardParameter_Click );
+            menuHiddenVisualBackwardParameter.Click += new BEventHandler( menuHiddenVisualBackwardParameter_Click );
+            menuHiddenTrackNext.Click += new BEventHandler( menuHiddenTrackNext_Click );
+            menuHiddenTrackBack.Click += new BEventHandler( menuHiddenTrackBack_Click );
+            menuHiddenCopy.Click += new BEventHandler( handleEditCopy_Click );
+            menuHiddenPaste.Click += new BEventHandler( handleEditPaste_Click );
+            menuHiddenCut.Click += new BEventHandler( handleEditCut_Click );
+            menuHiddenSelectBackward.Click += new BEventHandler( menuHiddenSelectBackward_Click );
+            menuHiddenSelectForward.Click += new BEventHandler( menuHiddenSelectForward_Click );
+            menuHiddenMoveUp.Click += new BEventHandler( menuHiddenMoveUp_Click );
+            menuHiddenMoveDown.Click += new BEventHandler( menuHiddenMoveDown_Click );
+            menuHiddenMoveLeft.Click += new BEventHandler( menuHiddenMoveLeft_Click );
+            menuHiddenMoveRight.Click += new BEventHandler( menuHiddenMoveRight_Click );
+            menuHiddenLengthen.Click += new BEventHandler( menuHiddenLengthen_Click );
+            menuHiddenShorten.Click += new BEventHandler( menuHiddenShorten_Click );
+            menuHiddenGoToEndMarker.Click += new BEventHandler( menuHiddenGoToEndMarker_Click );
+            menuHiddenGoToStartMarker.Click += new BEventHandler( menuHiddenGoToStartMarker_Click );
+            menuHiddenPlayFromStartMarker.Click += new BEventHandler( menuHiddenPlayFromStartMarker_Click );
+            menuHiddenPrintPoToCSV.Click += new BEventHandler( menuHiddenPrintPoToCSV_Click );
+            menuHiddenFlipCurveOnPianorollMode.Click += new BEventHandler( menuHiddenFlipCurveOnPianorollMode_Click );
 
-            cMenuPiano.Opening += new System.ComponentModel.CancelEventHandler( cMenuPiano_Opening );
-            cMenuPianoPointer.Click += new EventHandler( cMenuPianoPointer_Click );
-            cMenuPianoPencil.Click += new EventHandler( cMenuPianoPencil_Click );
-            cMenuPianoEraser.Click += new EventHandler( cMenuPianoEraser_Click );
-            cMenuPianoCurve.Click += new EventHandler( cMenuPianoCurve_Click );
-            cMenuPianoFixed01.Click += new EventHandler( cMenuPianoFixed01_Click );
-            cMenuPianoFixed02.Click += new EventHandler( cMenuPianoFixed02_Click );
-            cMenuPianoFixed04.Click += new EventHandler( cMenuPianoFixed04_Click );
-            cMenuPianoFixed08.Click += new EventHandler( cMenuPianoFixed08_Click );
-            cMenuPianoFixed16.Click += new EventHandler( cMenuPianoFixed16_Click );
-            cMenuPianoFixed32.Click += new EventHandler( cMenuPianoFixed32_Click );
-            cMenuPianoFixed64.Click += new EventHandler( cMenuPianoFixed64_Click );
-            cMenuPianoFixed128.Click += new EventHandler( cMenuPianoFixed128_Click );
-            cMenuPianoFixedOff.Click += new EventHandler( cMenuPianoFixedOff_Click );
-            cMenuPianoFixedTriplet.Click += new EventHandler( cMenuPianoFixedTriplet_Click );
-            cMenuPianoFixedDotted.Click += new EventHandler( cMenuPianoFixedDotted_Click );
-            cMenuPianoQuantize04.Click += new EventHandler( handlePositionQuantize );
-            cMenuPianoQuantize08.Click += new EventHandler( handlePositionQuantize );
-            cMenuPianoQuantize16.Click += new EventHandler( handlePositionQuantize );
-            cMenuPianoQuantize32.Click += new EventHandler( handlePositionQuantize );
-            cMenuPianoQuantize64.Click += new EventHandler( handlePositionQuantize );
-            cMenuPianoQuantize128.Click += new EventHandler( handlePositionQuantize );
-            cMenuPianoQuantizeOff.Click += new EventHandler( handlePositionQuantize );
-            cMenuPianoQuantizeTriplet.Click += new EventHandler( handlePositionQuantizeTriplet_Click );
-            cMenuPianoGrid.Click += new EventHandler( cMenuPianoGrid_Click );
-            cMenuPianoUndo.Click += new EventHandler( cMenuPianoUndo_Click );
-            cMenuPianoRedo.Click += new EventHandler( cMenuPianoRedo_Click );
-            cMenuPianoCut.Click += new EventHandler( cMenuPianoCut_Click );
-            cMenuPianoCopy.Click += new EventHandler( cMenuPianoCopy_Click );
-            cMenuPianoPaste.Click += new EventHandler( cMenuPianoPaste_Click );
-            cMenuPianoDelete.Click += new EventHandler( cMenuPianoDelete_Click );
-            cMenuPianoSelectAll.Click += new EventHandler( cMenuPianoSelectAll_Click );
-            cMenuPianoSelectAllEvents.Click += new EventHandler( cMenuPianoSelectAllEvents_Click );
-            cMenuPianoImportLyric.Click += new EventHandler( cMenuPianoImportLyric_Click );
-            cMenuPianoExpressionProperty.Click += new EventHandler( cMenuPianoProperty_Click );
-            cMenuPianoVibratoProperty.Click += new EventHandler( cMenuPianoVibratoProperty_Click );
-            cMenuTrackTab.Opening += new System.ComponentModel.CancelEventHandler( cMenuTrackTab_Opening );
-            cMenuTrackTabTrackOn.Click += new EventHandler( handleTrackOn_Click );
-            cMenuTrackTabAdd.Click += new EventHandler( cMenuTrackTabAdd_Click );
-            cMenuTrackTabCopy.Click += new EventHandler( cMenuTrackTabCopy_Click );
-            cMenuTrackTabChangeName.Click += new EventHandler( cMenuTrackTabChangeName_Click );
-            cMenuTrackTabDelete.Click += new EventHandler( cMenuTrackTabDelete_Click );
-            cMenuTrackTabRenderCurrent.Click += new EventHandler( cMenuTrackTabRenderCurrent_Click );
-            cMenuTrackTabRenderAll.Click += new EventHandler( handleTrackRenderAll_Click );
-            cMenuTrackTabOverlay.Click += new EventHandler( cMenuTrackTabOverlay_Click );
-            cMenuTrackTabRenderer.DropDownOpening += new EventHandler( cMenuTrackTabRenderer_DropDownOpening );
-            cMenuTrackTabRendererVOCALOID100.Click += new EventHandler( handleChangeRenderer );
-            cMenuTrackTabRendererVOCALOID101.Click += new EventHandler( handleChangeRenderer );
-            cMenuTrackTabRendererVOCALOID2.Click += new EventHandler( handleChangeRenderer );
-            cMenuTrackTabRendererUtau.Click += new EventHandler( handleChangeRenderer );
-            cMenuTrackTabRendererStraight.Click += new EventHandler( handleChangeRenderer );
-            cMenuTrackTabRendererAquesTone.Click += new EventHandler( handleChangeRenderer );
-            cMenuTrackSelector.Opening += new System.ComponentModel.CancelEventHandler( cMenuTrackSelector_Opening );
-            cMenuTrackSelectorPointer.Click += new EventHandler( cMenuTrackSelectorPointer_Click );
-            cMenuTrackSelectorPencil.Click += new EventHandler( cMenuTrackSelectorPencil_Click );
-            cMenuTrackSelectorLine.Click += new EventHandler( cMenuTrackSelectorLine_Click );
-            cMenuTrackSelectorEraser.Click += new EventHandler( cMenuTrackSelectorEraser_Click );
-            cMenuTrackSelectorCurve.Click += new EventHandler( cMenuTrackSelectorCurve_Click );
-            cMenuTrackSelectorUndo.Click += new EventHandler( cMenuTrackSelectorUndo_Click );
-            cMenuTrackSelectorRedo.Click += new EventHandler( cMenuTrackSelectorRedo_Click );
-            cMenuTrackSelectorCut.Click += new EventHandler( cMenuTrackSelectorCut_Click );
-            cMenuTrackSelectorCopy.Click += new EventHandler( cMenuTrackSelectorCopy_Click );
-            cMenuTrackSelectorPaste.Click += new EventHandler( cMenuTrackSelectorPaste_Click );
-            cMenuTrackSelectorDelete.Click += new EventHandler( cMenuTrackSelectorDelete_Click );
-            cMenuTrackSelectorDeleteBezier.Click += new EventHandler( cMenuTrackSelectorDeleteBezier_Click );
-            cMenuTrackSelectorSelectAll.Click += new EventHandler( cMenuTrackSelectorSelectAll_Click );
-            trackBar.ValueChanged += new EventHandler( trackBar_ValueChanged );
+            cMenuPiano.Opening += new BCancelEventHandler( cMenuPiano_Opening );
+            cMenuPianoPointer.Click += new BEventHandler( cMenuPianoPointer_Click );
+            cMenuPianoPencil.Click += new BEventHandler( cMenuPianoPencil_Click );
+            cMenuPianoEraser.Click += new BEventHandler( cMenuPianoEraser_Click );
+            cMenuPianoCurve.Click += new BEventHandler( cMenuPianoCurve_Click );
+            cMenuPianoFixed01.Click += new BEventHandler( cMenuPianoFixed01_Click );
+            cMenuPianoFixed02.Click += new BEventHandler( cMenuPianoFixed02_Click );
+            cMenuPianoFixed04.Click += new BEventHandler( cMenuPianoFixed04_Click );
+            cMenuPianoFixed08.Click += new BEventHandler( cMenuPianoFixed08_Click );
+            cMenuPianoFixed16.Click += new BEventHandler( cMenuPianoFixed16_Click );
+            cMenuPianoFixed32.Click += new BEventHandler( cMenuPianoFixed32_Click );
+            cMenuPianoFixed64.Click += new BEventHandler( cMenuPianoFixed64_Click );
+            cMenuPianoFixed128.Click += new BEventHandler( cMenuPianoFixed128_Click );
+            cMenuPianoFixedOff.Click += new BEventHandler( cMenuPianoFixedOff_Click );
+            cMenuPianoFixedTriplet.Click += new BEventHandler( cMenuPianoFixedTriplet_Click );
+            cMenuPianoFixedDotted.Click += new BEventHandler( cMenuPianoFixedDotted_Click );
+            cMenuPianoQuantize04.Click += new BEventHandler( handlePositionQuantize );
+            cMenuPianoQuantize08.Click += new BEventHandler( handlePositionQuantize );
+            cMenuPianoQuantize16.Click += new BEventHandler( handlePositionQuantize );
+            cMenuPianoQuantize32.Click += new BEventHandler( handlePositionQuantize );
+            cMenuPianoQuantize64.Click += new BEventHandler( handlePositionQuantize );
+            cMenuPianoQuantize128.Click += new BEventHandler( handlePositionQuantize );
+            cMenuPianoQuantizeOff.Click += new BEventHandler( handlePositionQuantize );
+            cMenuPianoQuantizeTriplet.Click += new BEventHandler( handlePositionQuantizeTriplet_Click );
+            cMenuPianoGrid.Click += new BEventHandler( cMenuPianoGrid_Click );
+            cMenuPianoUndo.Click += new BEventHandler( cMenuPianoUndo_Click );
+            cMenuPianoRedo.Click += new BEventHandler( cMenuPianoRedo_Click );
+            cMenuPianoCut.Click += new BEventHandler( cMenuPianoCut_Click );
+            cMenuPianoCopy.Click += new BEventHandler( cMenuPianoCopy_Click );
+            cMenuPianoPaste.Click += new BEventHandler( cMenuPianoPaste_Click );
+            cMenuPianoDelete.Click += new BEventHandler( cMenuPianoDelete_Click );
+            cMenuPianoSelectAll.Click += new BEventHandler( cMenuPianoSelectAll_Click );
+            cMenuPianoSelectAllEvents.Click += new BEventHandler( cMenuPianoSelectAllEvents_Click );
+            cMenuPianoImportLyric.Click += new BEventHandler( cMenuPianoImportLyric_Click );
+            cMenuPianoExpressionProperty.Click += new BEventHandler( cMenuPianoProperty_Click );
+            cMenuPianoVibratoProperty.Click += new BEventHandler( cMenuPianoVibratoProperty_Click );
+            cMenuTrackTab.Opening += new BCancelEventHandler( cMenuTrackTab_Opening );
+            cMenuTrackTabTrackOn.Click += new BEventHandler( handleTrackOn_Click );
+            cMenuTrackTabAdd.Click += new BEventHandler( cMenuTrackTabAdd_Click );
+            cMenuTrackTabCopy.Click += new BEventHandler( cMenuTrackTabCopy_Click );
+            cMenuTrackTabChangeName.Click += new BEventHandler( cMenuTrackTabChangeName_Click );
+            cMenuTrackTabDelete.Click += new BEventHandler( cMenuTrackTabDelete_Click );
+            cMenuTrackTabRenderCurrent.Click += new BEventHandler( cMenuTrackTabRenderCurrent_Click );
+            cMenuTrackTabRenderAll.Click += new BEventHandler( handleTrackRenderAll_Click );
+            cMenuTrackTabOverlay.Click += new BEventHandler( cMenuTrackTabOverlay_Click );
+            cMenuTrackTabRenderer.DropDownOpening += new BEventHandler( cMenuTrackTabRenderer_DropDownOpening );
+            cMenuTrackTabRendererVOCALOID100.Click += new BEventHandler( handleChangeRenderer );
+            cMenuTrackTabRendererVOCALOID101.Click += new BEventHandler( handleChangeRenderer );
+            cMenuTrackTabRendererVOCALOID2.Click += new BEventHandler( handleChangeRenderer );
+            cMenuTrackTabRendererUtau.Click += new BEventHandler( handleChangeRenderer );
+            cMenuTrackTabRendererStraight.Click += new BEventHandler( handleChangeRenderer );
+            cMenuTrackTabRendererAquesTone.Click += new BEventHandler( handleChangeRenderer );
+            cMenuTrackSelector.Opening += new BCancelEventHandler( cMenuTrackSelector_Opening );
+            cMenuTrackSelectorPointer.Click += new BEventHandler( cMenuTrackSelectorPointer_Click );
+            cMenuTrackSelectorPencil.Click += new BEventHandler( cMenuTrackSelectorPencil_Click );
+            cMenuTrackSelectorLine.Click += new BEventHandler( cMenuTrackSelectorLine_Click );
+            cMenuTrackSelectorEraser.Click += new BEventHandler( cMenuTrackSelectorEraser_Click );
+            cMenuTrackSelectorCurve.Click += new BEventHandler( cMenuTrackSelectorCurve_Click );
+            cMenuTrackSelectorUndo.Click += new BEventHandler( cMenuTrackSelectorUndo_Click );
+            cMenuTrackSelectorRedo.Click += new BEventHandler( cMenuTrackSelectorRedo_Click );
+            cMenuTrackSelectorCut.Click += new BEventHandler( cMenuTrackSelectorCut_Click );
+            cMenuTrackSelectorCopy.Click += new BEventHandler( cMenuTrackSelectorCopy_Click );
+            cMenuTrackSelectorPaste.Click += new BEventHandler( cMenuTrackSelectorPaste_Click );
+            cMenuTrackSelectorDelete.Click += new BEventHandler( cMenuTrackSelectorDelete_Click );
+            cMenuTrackSelectorDeleteBezier.Click += new BEventHandler( cMenuTrackSelectorDeleteBezier_Click );
+            cMenuTrackSelectorSelectAll.Click += new BEventHandler( cMenuTrackSelectorSelectAll_Click );
+            trackBar.ValueChanged += new BEventHandler( trackBar_ValueChanged );
             trackBar.MouseDown += new BMouseEventHandler( trackBar_MouseDown );
-            trackBar.Enter += new EventHandler( trackBar_Enter );
+            trackBar.Enter += new BEventHandler( trackBar_Enter );
             bgWorkScreen.DoWork += new BDoWorkEventHandler( bgWorkScreen_DoWork );
-            timer.Tick += new EventHandler( timer_Tick );
+            timer.Tick += new BEventHandler( timer_Tick );
             pictKeyLengthSplitter.MouseMove += new BMouseEventHandler( pictKeyLengthSplitter_MouseMove );
             pictKeyLengthSplitter.MouseDown += new BMouseEventHandler( pictKeyLengthSplitter_MouseDown );
             pictKeyLengthSplitter.MouseUp += new BMouseEventHandler( pictKeyLengthSplitter_MouseUp );
             panelOverview.KeyUp += new BKeyEventHandler( handleSpaceKeyUp );
             panelOverview.KeyDown += new BKeyEventHandler( handleSpaceKeyDown );
-            vScroll.ValueChanged += this.vScroll_ValueChanged;
-            vScroll.Resize += this.vScroll_Resize;
-            vScroll.Enter += this.vScroll_Enter;
-            hScroll.ValueChanged += this.hScroll_ValueChanged;
-            hScroll.Resize += this.hScroll_Resize;
-            hScroll.Enter += this.hScroll_Enter;
+            vScroll.ValueChanged += new EventHandler( vScroll_ValueChanged );
+            vScroll.Resize += new EventHandler( vScroll_Resize );
+            vScroll.Enter += new EventHandler( vScroll_Enter );
+            hScroll.ValueChanged += new EventHandler( hScroll_ValueChanged );
+            hScroll.Resize += new EventHandler( hScroll_Resize );
+            hScroll.Enter += new EventHandler( hScroll_Enter );
             picturePositionIndicator.PreviewKeyDown += new BPreviewKeyDownEventHandler( picturePositionIndicator_PreviewKeyDown );
             picturePositionIndicator.MouseMove += new BMouseEventHandler( picturePositionIndicator_MouseMove );
             picturePositionIndicator.MouseDoubleClick += new BMouseEventHandler( picturePositionIndicator_MouseDoubleClick );
@@ -7332,7 +7421,7 @@ namespace org.kbinani.cadencii
             this.DragEnter += new System.Windows.Forms.DragEventHandler( FormMain_DragEnter );
             this.DragDrop += new System.Windows.Forms.DragEventHandler( FormMain_DragDrop );
             this.DragOver += new System.Windows.Forms.DragEventHandler( FormMain_DragOver );
-            this.DragLeave += new EventHandler( FormMain_DragLeave );
+            this.DragLeave += new BEventHandler( FormMain_DragLeave );
 #endif
             pictureBox3.MouseDown += new BMouseEventHandler( pictureBox3_MouseDown );
             pictureBox2.MouseDown += new BMouseEventHandler( pictureBox2_MouseDown );
@@ -7340,7 +7429,7 @@ namespace org.kbinani.cadencii
             pictureBox2.Paint += new BPaintEventHandler( pictureBox2_Paint );
 #if !JAVA
             toolBarTool.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler( toolBarTool_ButtonClick );
-            rebar.SizeChanged += new EventHandler( toolStripContainer_TopToolStripPanel_SizeChanged );// toolStripContainer.TopToolStripPanel.SizeChanged += new EventHandler( toolStripContainer_TopToolStripPanel_SizeChanged );
+            rebar.SizeChanged += new BEventHandler( toolStripContainer_TopToolStripPanel_SizeChanged );// toolStripContainer.TopToolStripPanel.SizeChanged += new BEventHandler( toolStripContainer_TopToolStripPanel_SizeChanged );
             stripDDBtnQuantize04.Click += handlePositionQuantize;
             stripDDBtnQuantize08.Click += handlePositionQuantize;
             stripDDBtnQuantize16.Click += handlePositionQuantize;
@@ -7354,13 +7443,13 @@ namespace org.kbinani.cadencii
             toolBarMeasure.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler( toolBarMeasure_ButtonClick );
             toolBarMeasure.MouseDown += new BMouseEventHandler( toolBarMeasure_MouseDown );
 #endif
-            stripBtnStepSequencer.CheckedChanged += new EventHandler( stripBtnStepSequencer_CheckedChanged );
-            this.Deactivate += new EventHandler( FormMain_Deactivate );
-            this.Activated += new EventHandler( FormMain_Activated );
+            stripBtnStepSequencer.CheckedChanged += new BEventHandler( stripBtnStepSequencer_CheckedChanged );
+            this.Deactivate += new BEventHandler( FormMain_Deactivate );
+            this.Activated += new BEventHandler( FormMain_Activated );
             this.FormClosed += new BFormClosedEventHandler( FormMain_FormClosed );
             this.FormClosing += new BFormClosingEventHandler( FormMain_FormClosing );
             this.PreviewKeyDown += new BPreviewKeyDownEventHandler( FormMain_PreviewKeyDown );
-            panelOverview.Enter += new EventHandler( panelOverview_Enter );
+            panelOverview.Enter += new BEventHandler( panelOverview_Enter );
         }
 
         public void setResources()
@@ -7368,8 +7457,11 @@ namespace org.kbinani.cadencii
             try {
                 this.stripLblGameCtrlMode.setIcon( new ImageIcon( Resources.get_slash() ) );
                 this.stripLblMidiIn.setIcon( new ImageIcon( Resources.get_slash() ) );
+#if JAVA
+                stripBtnStepSequencer.setIcon( new ImageIcon( Resources.get_piano() ) );
+#else
                 this.stripBtnStepSequencer.Image = Resources.get_piano().image;
-                this.stripBtnStepSequencer.Image = Resources.get_piano().image;
+#endif
                 setIconImage( Resources.get_icon() );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".setResources; ex=" + ex + "\n" );
@@ -7550,7 +7642,11 @@ namespace org.kbinani.cadencii
         public void AppManager_GridVisibleChanged( Object sender, EventArgs e )
         {
             menuVisualGridline.setSelected( AppManager.isGridVisible() );
+#if JAVA
+            stripBtnGrid.setSelected( AppManager.isGridVisible() );
+#else
             stripBtnGrid.Pushed = AppManager.isGridVisible();
+#endif
             cMenuPianoGrid.setSelected( AppManager.isGridVisible() );
         }
 
@@ -7564,8 +7660,13 @@ namespace org.kbinani.cadencii
 #if DEBUG
             PortUtil.println( "FormMain#AppManager_PreviewAborted" );
 #endif
+#if JAVA
+            stripBtnPlay.setIcon( new ImageIcon( Resources.get_control() ) );
+            stripBtnPlay.setText( _( "Play" ) );
+#else
             stripBtnPlay.ImageKey = "control.png";
             stripBtnPlay.Text = _( "Play" );
+#endif
             timer.stop();
 
             for ( int i = 0; i < AppManager.mDrawStartIndex.Length; i++ ) {
@@ -7590,8 +7691,13 @@ namespace org.kbinani.cadencii
             double now = PortUtil.getCurrentTime();
             AppManager.mPreviewStartedTime = now;
             timer.start();
+#if JAVA
+            stripBtnPlay.setIcon( new ImageIcon( Resources.get_control_pause() ) );
+            stripBtnPlay.setText( _( "Stop" ) );
+#else
             stripBtnPlay.ImageKey = "control_pause.png";
             stripBtnPlay.Text = _( "Stop" );
+#endif
         }
 
         public void AppManager_SelectedToolChanged( Object sender, EventArgs e )
@@ -7610,8 +7716,13 @@ namespace org.kbinani.cadencii
             cMenuPianoExpressionProperty.setEnabled( !selected_event_is_null );
             menuLyricVibratoProperty.setEnabled( !selected_event_is_null );
             menuLyricExpressionProperty.setEnabled( !selected_event_is_null );
+#if JAVA
+            stripBtnCut.setEnabled( !selected_event_is_null );
+            stripBtnCopy.setEnabled( !selected_event_is_null );
+#else
             stripBtnCut.Enabled = !selected_event_is_null;
             stripBtnCopy.Enabled = !selected_event_is_null;
+#endif
         }
 
         public void AppManager_UpdateBgmStatusRequired( Object sender, EventArgs e )
@@ -8082,7 +8193,7 @@ namespace org.kbinani.cadencii
             int modefier = PortUtil.getCurrentModifierKey();
             if ( mTextBoxTrackName != null ) {
 #if JAVA
-                m_txtbox_track_name.setVisible( false );
+                mTextBoxTrackName.setVisible( false );
 #else
                 if ( !mTextBoxTrackName.IsDisposed ) {
                     mTextBoxTrackName.Dispose();
@@ -9557,16 +9668,24 @@ namespace org.kbinani.cadencii
         {
             if ( AppManager.iconPalette == null ) {
                 AppManager.iconPalette = new FormIconPalette( this );
+#if JAVA
+                AppManager.iconPalette.formClosingEvent.add( new BFormClosingEventHandler( this, "iconPalette_FormClosing" ) );
+#else
                 AppManager.iconPalette.FormClosing +=
                     new System.Windows.Forms.FormClosingEventHandler( iconPalette_FormClosing );
+#endif
                 Point p = AppManager.editorConfig.FormIconPaletteLocation.toPoint();
                 if ( !PortUtil.isPointInScreens( p ) ) {
                     Rectangle workingArea = PortUtil.getWorkingArea( this );
                     p = new Point( workingArea.x, workingArea.y );
                 }
                 AppManager.iconPalette.setLocation( p );
+#if JAVA
+                AppManager.iconPalette.locationChangedEvent.add( new BEventHandler( this, "iconPalette_LocationChanged" ) );
+#else
                 AppManager.iconPalette.LocationChanged +=
-                    new EventHandler( iconPalette_LocationChanged );
+                    new BEventHandler( iconPalette_LocationChanged );
+#endif
             }
             boolean old = menuVisualIconPalette.isSelected();
             menuVisualIconPalette.setSelected( !old );
@@ -10103,16 +10222,16 @@ namespace org.kbinani.cadencii
             AppManager.setCurrentClock( 0 );
             setEdited( false );
 
-            AppManager.PreviewStarted += new EventHandler( AppManager_PreviewStarted );
-            AppManager.PreviewAborted += new EventHandler( AppManager_PreviewAborted );
-            AppManager.GridVisibleChanged += new EventHandler( AppManager_GridVisibleChanged );
+            AppManager.PreviewStarted += new BEventHandler( AppManager_PreviewStarted );
+            AppManager.PreviewAborted += new BEventHandler( AppManager_PreviewAborted );
+            AppManager.GridVisibleChanged += new BEventHandler( AppManager_GridVisibleChanged );
             AppManager.SelectedEventChanged += new SelectedEventChangedEventHandler( AppManager_SelectedEventChanged );
-            AppManager.SelectedToolChanged += new EventHandler( AppManager_SelectedToolChanged );
-            AppManager.UpdateBgmStatusRequired += new EventHandler( AppManager_UpdateBgmStatusRequired );
-            AppManager.MainWindowFocusRequired += new EventHandler( AppManager_MainWindowFocusRequired );
+            AppManager.SelectedToolChanged += new BEventHandler( AppManager_SelectedToolChanged );
+            AppManager.UpdateBgmStatusRequired += new BEventHandler( AppManager_UpdateBgmStatusRequired );
+            AppManager.MainWindowFocusRequired += new BEventHandler( AppManager_MainWindowFocusRequired );
             AppManager.EditedStateChanged += new EditedStateChangedEventHandler( AppManager_EditedStateChanged );
             AppManager.WaveViewReloadRequired += new WaveViewRealoadRequiredEventHandler( AppManager_WaveViewRealoadRequired );
-            EditorConfig.QuantizeModeChanged += new EventHandler( handleEditorConfig_QuantizeModeChanged );
+            EditorConfig.QuantizeModeChanged += new BEventHandler( handleEditorConfig_QuantizeModeChanged );
 
 #if ENABLE_PROPERTY
             mPropertyPanelContainer.StateChangeRequired += new StateChangeRequiredEventHandler( mPropertyPanelContainer_StateChangeRequired );
@@ -10157,7 +10276,7 @@ namespace org.kbinani.cadencii
                 AppManager.mMixerWindow.setVisible( true );
             }
 
-            trackSelector.CommandExecuted += new EventHandler( trackSelector_CommandExecuted );
+            trackSelector.CommandExecuted += new BEventHandler( trackSelector_CommandExecuted );
 
 #if ENABLE_SCRIPT
             updateScriptShortcut();
@@ -10236,8 +10355,8 @@ namespace org.kbinani.cadencii
 
 #if ENABLE_PROPERTY
             AppManager.propertyWindow.setBounds( a.x, a.y, rc.width, rc.height );
-            AppManager.propertyWindow.LocationChanged += new EventHandler( propertyWindow_LocationOrSizeChanged );
-            AppManager.propertyWindow.SizeChanged += new EventHandler( propertyWindow_LocationOrSizeChanged );
+            AppManager.propertyWindow.LocationChanged += new BEventHandler( propertyWindow_LocationOrSizeChanged );
+            AppManager.propertyWindow.SizeChanged += new BEventHandler( propertyWindow_LocationOrSizeChanged );
             AppManager.propertyWindow.FormClosing += new System.Windows.Forms.FormClosingEventHandler( propertyWindow_FormClosing );
             AppManager.propertyPanel.CommandExecuteRequired += new CommandExecuteRequiredEventHandler( propertyPanel_CommandExecuteRequired );
             AppManager.propertyWindow.setFormCloseShortcutKey( AppManager.editorConfig.getShortcutKeyFor( menuVisualProperty ) );
@@ -10245,8 +10364,8 @@ namespace org.kbinani.cadencii
 #endif
             updateBgmMenuState();
 
-            this.SizeChanged += new System.EventHandler( this.FormMain_SizeChanged );
-            this.LocationChanged += new System.EventHandler( this.FormMain_LocationChanged );
+            this.SizeChanged += new BEventHandler( this.FormMain_SizeChanged );
+            this.LocationChanged += new BEventHandler( this.FormMain_LocationChanged );
             repaint();
             updateLayout();
 #if DEBUG
@@ -15989,7 +16108,7 @@ namespace org.kbinani.cadencii
 #if JAVA
                 refreshScreenCore( this, new EventArgs() );
 #else
-                this.Invoke( new EventHandler( this.refreshScreenCore ) );
+                this.Invoke( new BEventHandler( this.refreshScreenCore ) );
 #endif
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "FormMain#bgWorkScreen_DoWork; ex=" + ex );
@@ -16946,7 +17065,7 @@ namespace org.kbinani.cadencii
                 /*if ( !AppManager.isPlaying() ) {
                     AppManager.setEditMode( EditMode.REALTIME_MTC );
                     AppManager.setPlaying( true );
-                    EventHandler handler = new EventHandler( AppManager_PreviewStarted );
+                    BEventHandler handler = new BEventHandler( AppManager_PreviewStarted );
                     if ( handler != null ) {
                         this.Invoke( handler );
                         while ( VSTiProxy.getPlayTime() <= 0.0 ) {

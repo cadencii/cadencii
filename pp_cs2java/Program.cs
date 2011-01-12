@@ -313,7 +313,7 @@ class pp_cs2java {
         if ( -s_shift_indent > 0 ) {
             indent = new string( ' ', -s_shift_indent );
         }
-        DateTime lastwritetime = File.GetLastWriteTime( path );
+        //DateTime lastwritetime = File.GetLastWriteTime( path );
         using ( StreamWriter sw = new StreamWriter( tmp2, false, Encoding.GetEncoding( s_encoding ) ) )
         using ( StreamReader sr = new StreamReader( path, Encoding.GetEncoding( s_encoding ) ) ) {
             string line = "";
@@ -582,23 +582,26 @@ class pp_cs2java {
                     }
 
                     // イベントハンドラの処理
-                    Match m = reg_eventhandler.Match( line );
-                    if ( m.Success ) {
-                        string pre = m.Groups["pre"].Value;
-                        string instance = m.Groups["instance"].Value;
-                        string ev = m.Groups["event"].Value;
-                        string handler = m.Groups["handler"].Value;
-                        string method = m.Groups["method"].Value;
-                        string ope = m.Groups["operator"].Value;
-                        if ( ope == "+=" ) {
-                            ope = "add";
-                        } else {
-                            ope = "remove";
-                        }
-                        if ( ev == "" ) {
-                            Console.Error.WriteLine( "error; ev is null; path=" + path + "+ line:" + line );
-                        } else {
-                            line = pre + instance + (instance == "" ? "" : ".") + ev.Substring( 0, 1 ).ToLower() + ev.Substring( 1 ) + "Event." + ope + "( new " + handler + "EventHandler( this, \"" + method + "\" ) );";
+                    if( line.IndexOf( "EventHandler" ) > 0 ){
+                        Match m = reg_eventhandler.Match( line );
+                        if ( m.Success ) {
+                            string pre = m.Groups["pre"].Value;
+                            string instance = m.Groups["instance"].Value;
+                            string ev = m.Groups["event"].Value;
+                            string handler = m.Groups["handler"].Value;
+                            string method = m.Groups["method"].Value;
+                            string ope = m.Groups["operator"].Value;
+                            if ( ope == "+=" ) {
+                                ope = "add";
+                            } else {
+                                ope = "remove";
+                            }
+                            if ( ev == "" ) {
+                                Console.Error.WriteLine( "error; ev is null; path=" + path + "+ line:" + line );
+                            } else {
+                                method = method.Trim();
+                                line = pre + instance + (instance == "" ? "" : ".") + ev.Substring( 0, 1 ).ToLower() + ev.Substring( 1 ) + "Event." + ope + "( new " + handler + "EventHandler( this, \"" + method + "\" ) );";
+                            }
                         }
                     }
 
@@ -712,7 +715,7 @@ class pp_cs2java {
 #endif
                 s_classes.Add( class_name );
                 File.Copy( tmp, out_path );
-                File.SetLastWriteTime( out_path, lastwritetime );
+                //File.SetLastWriteTime( out_path, lastwritetime );
             }
         }
         File.Delete( tmp );

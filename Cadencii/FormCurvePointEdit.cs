@@ -30,23 +30,27 @@ using org.kbinani;
 using org.kbinani.windows.forms;
 using org.kbinani.java.util;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using BEventArgs = System.EventArgs;
     using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
     using boolean = System.Boolean;
+    using BEventHandler = System.EventHandler;
 #endif
 
 #if JAVA
     public class FormCurvePointEdit extends BDialog {
 #else
-    public class FormCurvePointEdit : BDialog {
+    public class FormCurvePointEdit : BDialog
+    {
 #endif
         private long m_editing_id = -1;
         private CurveType m_curve;
         private boolean m_changed = false;
         private FormMain mMainWindow = null;
 
-        public FormCurvePointEdit( FormMain main_window, long editing_id, CurveType curve ) {
+        public FormCurvePointEdit( FormMain main_window, long editing_id, CurveType curve )
+        {
 #if JAVA
             super();
             initialize();
@@ -70,7 +74,8 @@ namespace org.kbinani.cadencii {
         }
 
         #region public methods
-        public void applyLanguage() {
+        public void applyLanguage()
+        {
             setTitle( _( "Edit Value" ) );
             lblDataPointClock.setText( _( "Clock" ) );
             lblDataPointValue.setText( _( "Value" ) );
@@ -80,11 +85,13 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region helper methods
-        private String _( String id ) {
+        private String _( String id )
+        {
             return Messaging.getMessage( id );
         }
 
-        private void applyValue( boolean mode_clock ) {
+        private void applyValue( boolean mode_clock )
+        {
             if ( !m_changed ) {
                 return;
             }
@@ -122,7 +129,7 @@ namespace org.kbinani.cadencii {
             EditedZone zone = new EditedZone();
             Utility.compareList( zone, new VsqBPListComparisonContext( list, src ) );
             Vector<EditedZoneUnit> zoneUnits = new Vector<EditedZoneUnit>();
-            for ( Iterator<EditedZoneUnit> itr = zone.iterator(); itr.hasNext(); ){
+            for ( Iterator<EditedZoneUnit> itr = zone.iterator(); itr.hasNext(); ) {
                 zoneUnits.add( itr.next() );
             }
             AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
@@ -148,29 +155,32 @@ namespace org.kbinani.cadencii {
         }
 
 
-        private void setResources() {
+        private void setResources()
+        {
         }
 
-        private void registerEventHandlers() {
-            btnForward.Click += new EventHandler( commonButton_Click );
-            btnBackward.Click += new EventHandler( commonButton_Click );
-            btnBackward2.Click += new EventHandler( commonButton_Click );
-            btnForward2.Click += new EventHandler( commonButton_Click );
-            btnApply.Click += new EventHandler( btnApply_Click );
-            txtDataPointClock.TextChanged += new EventHandler( commonTextBox_TextChanged );
+        private void registerEventHandlers()
+        {
+            btnForward.Click += new BEventHandler( commonButton_Click );
+            btnBackward.Click += new BEventHandler( commonButton_Click );
+            btnBackward2.Click += new BEventHandler( commonButton_Click );
+            btnForward2.Click += new BEventHandler( commonButton_Click );
+            btnApply.Click += new BEventHandler( btnApply_Click );
+            txtDataPointClock.TextChanged += new BEventHandler( commonTextBox_TextChanged );
             txtDataPointClock.KeyUp += new System.Windows.Forms.KeyEventHandler( commonTextBox_KeyUp );
-            txtDataPointValue.TextChanged += new EventHandler( commonTextBox_TextChanged );
+            txtDataPointValue.TextChanged += new BEventHandler( commonTextBox_TextChanged );
             txtDataPointValue.KeyUp += new System.Windows.Forms.KeyEventHandler( commonTextBox_KeyUp );
-            btnBackward3.Click += new EventHandler( commonButton_Click );
-            btnForward3.Click += new EventHandler( commonButton_Click );
-            btnUndo.Click += new EventHandler( handleUndoRedo_Click );
-            btnRedo.Click += new EventHandler( handleUndoRedo_Click );
-            btnExit.Click += new EventHandler( btnExit_Click );
+            btnBackward3.Click += new BEventHandler( commonButton_Click );
+            btnForward3.Click += new BEventHandler( commonButton_Click );
+            btnUndo.Click += new BEventHandler( handleUndoRedo_Click );
+            btnRedo.Click += new BEventHandler( handleUndoRedo_Click );
+            btnExit.Click += new BEventHandler( btnExit_Click );
         }
         #endregion
 
         #region event handlers
-        public void commonTextBox_KeyUp( Object sender, BKeyEventArgs e ) {
+        public void commonTextBox_KeyUp( Object sender, BKeyEventArgs e )
+        {
 #if JAVA
             if ( (e.KeyValue & KeyEvent.VK_ENTER) != KeyEvent.VK_ENTER ) {
 #else
@@ -181,7 +191,8 @@ namespace org.kbinani.cadencii {
             applyValue( (sender == txtDataPointClock) );
         }
 
-        public void commonButton_Click( Object sender, BEventArgs e ) {
+        public void commonButton_Click( Object sender, BEventArgs e )
+        {
             VsqBPList list = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( m_curve.getName() );
             VsqBPPairSearchContext search = list.findElement( m_editing_id );
             int index = search.index;
@@ -238,15 +249,18 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void btnApply_Click( Object sender, BEventArgs e ) {
+        public void btnApply_Click( Object sender, BEventArgs e )
+        {
             applyValue( true );
         }
 
-        public void commonTextBox_TextChanged( Object sender, BEventArgs e ) {
+        public void commonTextBox_TextChanged( Object sender, BEventArgs e )
+        {
             m_changed = true;
         }
 
-        public void handleUndoRedo_Click( Object sender, BEventArgs e ) {
+        public void handleUndoRedo_Click( Object sender, BEventArgs e )
+        {
             if ( sender == btnUndo ) {
                 AppManager.undo();
             } else if ( sender == btnRedo ) {
@@ -285,7 +299,8 @@ namespace org.kbinani.cadencii {
             btnRedo.setEnabled( AppManager.isRedoAvailable() );
         }
 
-        public void btnExit_Click( Object sender, BEventArgs e ) {
+        public void btnExit_Click( Object sender, BEventArgs e )
+        {
             setDialogResult( BDialogResult.CANCEL );
         }
         #endregion
@@ -304,7 +319,8 @@ namespace org.kbinani.cadencii {
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( bool disposing ) {
+        protected override void Dispose( bool disposing )
+        {
             if ( disposing && (components != null) ) {
                 components.Dispose();
             }
@@ -315,7 +331,8 @@ namespace org.kbinani.cadencii {
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
         /// コード エディタで変更しないでください。
         /// </summary>
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             this.btnForward = new org.kbinani.windows.forms.BButton();
             this.btnBackward = new org.kbinani.windows.forms.BButton();
             this.lblDataPointValue = new org.kbinani.windows.forms.BLabel();

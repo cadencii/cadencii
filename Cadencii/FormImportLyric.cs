@@ -27,8 +27,10 @@ using org.kbinani;
 using org.kbinani.java.util;
 using org.kbinani.windows.forms;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using BEventArgs = System.EventArgs;
+    using BEventHandler = System.EventHandler;
     using Character = System.Char;
     using boolean = System.Boolean;
 #endif
@@ -36,11 +38,13 @@ namespace org.kbinani.cadencii {
 #if JAVA
     public class FormImportLyric extends BDialog {
 #else
-    class FormImportLyric : BDialog {
+    class FormImportLyric : BDialog
+    {
 #endif
         private int m_max_notes = 1;
 
-        public FormImportLyric( int max_notes ) {
+        public FormImportLyric( int max_notes )
+        {
 #if JAVA
             super();
             initialize();
@@ -59,7 +63,8 @@ namespace org.kbinani.cadencii {
         public void setVisible( boolean value ){
             super.setVisible( value );
 #else
-        public override void setVisible( boolean value ) {
+        public override void setVisible( boolean value )
+        {
             base.setVisible( value );
 #endif
 #if JAVA
@@ -71,7 +76,8 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        public void applyLanguage() {
+        public void applyLanguage()
+        {
             setTitle( _( "Import lyrics" ) );
             btnCancel.setText( _( "Cancel" ) );
             btnOK.setText( _( "OK" ) );
@@ -81,13 +87,15 @@ namespace org.kbinani.cadencii {
         /// このダイアログに入力できる最大の文字数を設定します．
         /// </summary>
         /// <param name="max_notes"></param>
-        public void setMaxNotes( int max_notes ) {
+        public void setMaxNotes( int max_notes )
+        {
             String notes = (max_notes > 1) ? " [notes]" : " [note]";
             this.lblNotes.setText( "Max : " + max_notes + notes );
             this.m_max_notes = max_notes;
         }
 
-        public String[] getLetters() {
+        public String[] getLetters()
+        {
             Vector<Character> _SMALL = new Vector<Character>( Arrays.asList( new Character[] { 'ぁ', 'ぃ', 'ぅ', 'ぇ', 'ぉ',
                                                                                                'ゃ', 'ゅ', 'ょ',
                                                                                                'ァ', 'ィ', 'ゥ', 'ェ', 'ォ',
@@ -143,25 +151,30 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region helper methods
-        private static String _( String id ) {
+        private static String _( String id )
+        {
             return Messaging.getMessage( id );
         }
 
-        private void registerEventHandlers() {
-            btnOK.Click += new EventHandler( btnOK_Click );
-            btnCancel.Click += new EventHandler( btnCancel_Click );
+        private void registerEventHandlers()
+        {
+            btnOK.Click += new BEventHandler( btnOK_Click );
+            btnCancel.Click += new BEventHandler( btnCancel_Click );
         }
 
-        private void setResources() {
+        private void setResources()
+        {
         }
         #endregion
 
         #region event handlers
-        public void btnOK_Click( Object sender, BEventArgs e ) {
+        public void btnOK_Click( Object sender, BEventArgs e )
+        {
             setDialogResult( BDialogResult.OK );
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e ) {
+        public void btnCancel_Click( Object sender, BEventArgs e )
+        {
             setDialogResult( BDialogResult.CANCEL );
         }
         #endregion
@@ -180,7 +193,8 @@ namespace org.kbinani.cadencii {
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( bool disposing ) {
+        protected override void Dispose( bool disposing )
+        {
             if ( disposing && (components != null) ) {
                 components.Dispose();
             }
@@ -191,7 +205,8 @@ namespace org.kbinani.cadencii {
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
         /// コード エディタで変更しないでください。
         /// </summary>
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             this.txtLyrics = new org.kbinani.windows.forms.BTextArea();
             this.btnCancel = new org.kbinani.windows.forms.BButton();
             this.btnOK = new org.kbinani.windows.forms.BButton();

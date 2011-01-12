@@ -26,19 +26,23 @@ using org.kbinani.apputil;
 using org.kbinani;
 using org.kbinani.windows.forms;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using boolean = System.Boolean;
     using BEventArgs = System.EventArgs;
+    using BEventHandler = System.EventHandler;
 #endif
 
 #if JAVA
     public class FormTrackProperty extends BDialog {
 #else
-    public class FormTrackProperty : BDialog {
+    public class FormTrackProperty : BDialog
+    {
 #endif
         private int m_master_tuning;
 
-        public FormTrackProperty( int master_tuning_in_cent ) {
+        public FormTrackProperty( int master_tuning_in_cent )
+        {
 #if JAVA
             super();
             initialize();
@@ -54,35 +58,41 @@ namespace org.kbinani.cadencii {
         }
 
         #region public methods
-        public void applyLanguage() {
+        public void applyLanguage()
+        {
             lblMasterTuning.setText( _( "Master Tuning in Cent" ) );
             setTitle( _( "Track Property" ) );
             btnOK.setText( _( "OK" ) );
             btnCancel.setText( _( "Cancel" ) );
         }
 
-        public int getMasterTuningInCent() {
+        public int getMasterTuningInCent()
+        {
             return m_master_tuning;
         }
         #endregion
 
         #region helper methods
-        private String _( String id ) {
+        private String _( String id )
+        {
             return Messaging.getMessage( id );
         }
 
-        private void registerEventHandlers() {
-            txtMasterTuning.TextChanged += new EventHandler( txtMasterTuning_TextChanged );
-            btnOK.Click += new EventHandler( btnOK_Click );
-            btnCancel.Click += new EventHandler( btnCancel_Click );
+        private void registerEventHandlers()
+        {
+            txtMasterTuning.TextChanged += new BEventHandler( txtMasterTuning_TextChanged );
+            btnOK.Click += new BEventHandler( btnOK_Click );
+            btnCancel.Click += new BEventHandler( btnCancel_Click );
         }
 
-        private void setResources() {
+        private void setResources()
+        {
         }
         #endregion
 
         #region event handlers
-        public void txtMasterTuning_TextChanged( Object sender, BEventArgs e ) {
+        public void txtMasterTuning_TextChanged( Object sender, BEventArgs e )
+        {
             int v = m_master_tuning;
             try {
                 v = PortUtil.parseInt( txtMasterTuning.getText() );
@@ -91,11 +101,13 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e ) {
+        public void btnCancel_Click( Object sender, BEventArgs e )
+        {
             setDialogResult( BDialogResult.CANCEL );
         }
 
-        public void btnOK_Click( Object sender, BEventArgs e ) {
+        public void btnOK_Click( Object sender, BEventArgs e )
+        {
             setDialogResult( BDialogResult.OK );
         }
         #endregion
@@ -117,7 +129,8 @@ namespace org.kbinani.cadencii {
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing ) {
+        protected override void Dispose( boolean disposing )
+        {
             if ( disposing && (components != null) ) {
                 components.Dispose();
             }
@@ -130,7 +143,8 @@ namespace org.kbinani.cadencii {
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
         /// コード エディタで変更しないでください。
         /// </summary>
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             this.btnOK = new BButton();
             this.btnCancel = new BButton();
             this.lblMasterTuning = new BLabel();

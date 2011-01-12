@@ -27,8 +27,10 @@ using org.kbinani;
 using org.kbinani.java.util;
 using org.kbinani.windows.forms;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using BEventArgs = EventArgs;
+    using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
     using Integer = System.Int32;
 #endif
@@ -36,14 +38,16 @@ namespace org.kbinani.cadencii {
 #if JAVA
     public class FormGameControlerConfig extends BDialog {
 #else
-    public class FormGameControlerConfig : BDialog {
+    public class FormGameControlerConfig : BDialog
+    {
 #endif
         private Vector<Integer> m_list = new Vector<Integer>();
         private Vector<Integer> m_povs = new Vector<Integer>();
         private int index;
         private BTimer timer;
 
-        public FormGameControlerConfig() {
+        public FormGameControlerConfig()
+        {
 #if JAVA
             super();
             initialize();
@@ -87,7 +91,8 @@ namespace org.kbinani.cadencii {
         }
 
         #region public methods
-        public void applyLanguage() {
+        public void applyLanguage()
+        {
 #if JAVA
             int num_dev = 0;
 #else
@@ -105,82 +110,100 @@ namespace org.kbinani.cadencii {
             btnSkip.setText( _( "Skip" ) );
         }
 
-        public int getRectangle() {
+        public int getRectangle()
+        {
             return m_list.get( 0 );
         }
 
-        public int getTriangle() {
+        public int getTriangle()
+        {
             return m_list.get( 1 );
         }
 
-        public int getCircle() {
+        public int getCircle()
+        {
             return m_list.get( 2 );
         }
 
-        public int getCross() {
+        public int getCross()
+        {
             return m_list.get( 3 );
         }
 
-        public int getL1() {
+        public int getL1()
+        {
             return m_list.get( 4 );
         }
 
-        public int getL2() {
+        public int getL2()
+        {
             return m_list.get( 5 );
         }
 
-        public int getR1() {
+        public int getR1()
+        {
             return m_list.get( 6 );
         }
 
-        public int getR2() {
+        public int getR2()
+        {
             return m_list.get( 7 );
         }
 
-        public int getSelect() {
+        public int getSelect()
+        {
             return m_list.get( 8 );
         }
 
-        public int getStart() {
+        public int getStart()
+        {
             return m_list.get( 9 );
         }
 
-        public int getPovDown() {
+        public int getPovDown()
+        {
             return m_povs.get( 0 );
         }
 
-        public int getPovLeft() {
+        public int getPovLeft()
+        {
             return m_povs.get( 1 );
         }
 
-        public int getPovUp() {
+        public int getPovUp()
+        {
             return m_povs.get( 2 );
         }
 
-        public int getPovRight() {
+        public int getPovRight()
+        {
             return m_povs.get( 3 );
         }
         #endregion
 
         #region helper methods
-        private static String _( String id ) {
+        private static String _( String id )
+        {
             return Messaging.getMessage( id );
         }
 
-        private void registerEventHandlers() {
-            timer.Tick += new EventHandler( timer_Tick );
-            btnSkip.Click += new EventHandler( btnSkip_Click );
-            btnReset.Click += new EventHandler( btnReset_Click );
-            btnOK.Click += new EventHandler( btnOK_Click );
-            btnCancel.Click += new EventHandler( btnCancel_Click );
+        private void registerEventHandlers()
+        {
+            timer.Tick += new BEventHandler( timer_Tick );
+            btnSkip.Click += new BEventHandler( btnSkip_Click );
+            btnReset.Click += new BEventHandler( btnReset_Click );
+            btnOK.Click += new BEventHandler( btnOK_Click );
+            btnCancel.Click += new BEventHandler( btnCancel_Click );
         }
 
-        private void setResources() {
+        private void setResources()
+        {
         }
         #endregion
 
         #region event handlers
-        public void timer_Tick( Object sender, BEventArgs e ) {
+        public void timer_Tick( Object sender, BEventArgs e )
+        {
             //int num_btn = vstidrv.JoyGetNumButtons( 0 );
             byte[] btn;
             int pov;
@@ -237,7 +260,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void btnSkip_Click( Object sender, BEventArgs e ) {
+        public void btnSkip_Click( Object sender, BEventArgs e )
+        {
             if ( index <= 4 ) {
                 m_povs.set( index - 1, int.MinValue );
             } else {
@@ -268,7 +292,8 @@ namespace org.kbinani.cadencii {
             index++;
         }
 
-        public void btnReset_Click( Object sender, BEventArgs e ) {
+        public void btnReset_Click( Object sender, BEventArgs e )
+        {
             m_list.set( 0, 3 ); // □
             m_list.set( 1, 0 ); // △
             m_list.set( 2, 1 ); // ○
@@ -286,11 +311,13 @@ namespace org.kbinani.cadencii {
             setDialogResult( BDialogResult.OK );
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e ) {
+        public void btnCancel_Click( Object sender, BEventArgs e )
+        {
             setDialogResult( BDialogResult.CANCEL );
         }
 
-        public void btnOK_Click( Object sender, BEventArgs e ) {
+        public void btnOK_Click( Object sender, BEventArgs e )
+        {
             setDialogResult( BDialogResult.OK );
         }
         #endregion
@@ -309,7 +336,8 @@ namespace org.kbinani.cadencii {
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing ) {
+        protected override void Dispose( boolean disposing )
+        {
             if ( disposing && (components != null) ) {
                 components.Dispose();
             }
@@ -320,7 +348,8 @@ namespace org.kbinani.cadencii {
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
         /// コード エディタで変更しないでください。
         /// </summary>
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             this.components = new System.ComponentModel.Container();
             this.lblMessage = new BLabel();
             this.pictButton = new BPictureBox();

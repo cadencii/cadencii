@@ -33,12 +33,14 @@ using org.kbinani.media;
 using org.kbinani.vsq;
 using org.kbinani.windows.forms;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using BDoWorkEventArgs = System.ComponentModel.DoWorkEventArgs;
     using BEventArgs = System.EventArgs;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
     using boolean = System.Boolean;
     using BRunWorkerCompletedEventArgs = System.ComponentModel.RunWorkerCompletedEventArgs;
+    using BEventHandler = System.EventHandler;
     using Integer = System.Int32;
 #endif
 
@@ -49,7 +51,8 @@ namespace org.kbinani.cadencii {
 #if JAVA
     public class FormSynthesize extends BDialog {
 #else
-    public class FormSynthesize : BDialog {
+    public class FormSynthesize : BDialog
+    {
 #endif
         private VsqFileEx mVsq;
         private int mPresend = 500;
@@ -72,14 +75,16 @@ namespace org.kbinani.cadencii {
         {
             this( vsq, presend, new Integer[] { track }, new String[]{ file }, new Integer[]{ clock_start }, new Integer[]{ clock_end }, reflect_amp_to_wave );
 #else
-            : this( main_window, vsq, presend, Arrays.asList( new PatchWorkQueue[]{ queue } ) ) {
+            : this( main_window, vsq, presend, Arrays.asList( new PatchWorkQueue[] { queue } ) )
+        {
 #endif
         }
 
         public FormSynthesize( FormMain main_window,
-                               VsqFileEx vsq, 
-                               int presend, 
-                               Vector<PatchWorkQueue> queue ) {
+                               VsqFileEx vsq,
+                               int presend,
+                               Vector<PatchWorkQueue> queue )
+        {
 #if JAVA
             super();
 #endif
@@ -118,7 +123,8 @@ namespace org.kbinani.cadencii {
         }
 
         #region public methods
-        public void applyLanguage() {
+        public void applyLanguage()
+        {
             setTitle( _( "Synthesize" ) );
             lblSynthesizing.setText( _( "now synthesizing..." ) );
             btnCancel.setText( _( "Cancel" ) );
@@ -127,22 +133,26 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// レンダリングが完了したトラックの個数を取得します
         /// </summary>
-        public int getFinished() {
+        public int getFinished()
+        {
             return mFinished;
         }
         #endregion
 
         #region helper methods
-        private static String _( String id ) {
+        private static String _( String id )
+        {
             return Messaging.getMessage( id );
         }
 
-        private void startSynthesize() {
+        private void startSynthesize()
+        {
             timer.start();
             bgWork.runWorkerAsync();
         }
 
-        private void updateProgress( Object sender, int value ) {
+        private void updateProgress( Object sender, int value )
+        {
             int totalClocks = 0;
             for ( int i = 0; i < value; i++ ) {
                 int end = mQueue[i].clockEnd;
@@ -155,7 +165,8 @@ namespace org.kbinani.cadencii {
             lblProgress.setText( value + "/" + mQueue.size() );
         }
 
-        private static String getTimeSpanString( long span ) {
+        private static String getTimeSpanString( long span )
+        {
             int sec_per_day = 24 * 60 * 60;
             int sec_per_hour = 60 * 60;
             int sec_per_min = 60;
@@ -182,27 +193,31 @@ namespace org.kbinani.cadencii {
             return ret + PortUtil.formatDecimal( added ? "00" : "0", span ) + _( "sec" );
         }
 
-        private void registerEventHandlers() {
-            this.Load += new EventHandler( FormSynthesize_Load );
+        private void registerEventHandlers()
+        {
+            this.Load += new BEventHandler( FormSynthesize_Load );
             bgWork.DoWork += new System.ComponentModel.DoWorkEventHandler( bgWork_DoWork );
-            bgWork.RunWorkerCompleted += 
+            bgWork.RunWorkerCompleted +=
                 new System.ComponentModel.RunWorkerCompletedEventHandler( bgWork_RunWorkerCompleted );
-            timer.Tick += new EventHandler( timer_Tick );
+            timer.Tick += new BEventHandler( timer_Tick );
             this.FormClosing += new FormClosingEventHandler( FormSynthesize_FormClosing );
-            btnCancel.Click += new EventHandler( btnCancel_Click );
+            btnCancel.Click += new BEventHandler( btnCancel_Click );
         }
 
-        private void setResources() {
+        private void setResources()
+        {
         }
         #endregion
 
         #region event handlers
-        public void FormSynthesize_Load( Object sender, BEventArgs e ) {
+        public void FormSynthesize_Load( Object sender, BEventArgs e )
+        {
             lblTime.setText( "" );
             startSynthesize();
         }
 
-        public void bgWork_DoWork( Object sender, BDoWorkEventArgs e ) {
+        public void bgWork_DoWork( Object sender, BDoWorkEventArgs e )
+        {
             try {
                 int channel = mVsq.config.WaveFileOutputChannel == 1 ? 1 : 2;
                 double amp_master = VocaloSysUtil.getAmplifyCoeffFromFeder( mVsq.Mixer.MasterFeder );
@@ -300,7 +315,7 @@ namespace org.kbinani.cadencii {
                         amp_unit_master.setReceiver( wave_receiver );
 
                         int end = q.clockEnd;
-                        if( end == int.MaxValue ) end = mVsq.TotalClocks + 240;
+                        if ( end == int.MaxValue ) end = mVsq.TotalClocks + 240;
                         int sample_rate = mVsq.config.SamplingRate;
                         mGenerator.init( mVsq, track, q.clockStart, end, sample_rate );
 
@@ -323,11 +338,12 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void FormSynthesize_FormClosing( Object sender, BFormClosingEventArgs e ) {
+        public void FormSynthesize_FormClosing( Object sender, BFormClosingEventArgs e )
+        {
             timer.stop();
             if ( bgWork.isBusy() ) {
                 mIsCancelRequired = true;
-                if( mGenerator != null ){
+                if ( mGenerator != null ) {
                     mGenerator.stop();
                     mGenerator = null;
                 }
@@ -337,13 +353,15 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void bgWork_RunWorkerCompleted( Object sender, BRunWorkerCompletedEventArgs e ) {
+        public void bgWork_RunWorkerCompleted( Object sender, BRunWorkerCompletedEventArgs e )
+        {
             timer.stop();
             setDialogResult( BDialogResult.OK );
             close();
         }
 
-        public void timer_Tick( Object sender, BEventArgs e ) {
+        public void timer_Tick( Object sender, BEventArgs e )
+        {
             double progress = mGenerator.getProgress() * 100;
 
 #if DEBUG
@@ -359,7 +377,8 @@ namespace org.kbinani.cadencii {
             progressOne.setValue( (int)progress > 100 ? 100 : (int)progress );
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e ) {
+        public void btnCancel_Click( Object sender, BEventArgs e )
+        {
             mIsCancelRequired = true;
             mGenerator.stop();
             setDialogResult( BDialogResult.CANCEL );
@@ -383,7 +402,8 @@ namespace org.kbinani.cadencii {
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing ) {
+        protected override void Dispose( boolean disposing )
+        {
             if ( disposing && (components != null) ) {
                 components.Dispose();
             }
@@ -396,7 +416,8 @@ namespace org.kbinani.cadencii {
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
         /// コード エディタで変更しないでください。
         /// </summary>
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             this.components = new System.ComponentModel.Container();
             this.progressWhole = new BProgressBar();
             this.lblSynthesizing = new BLabel();

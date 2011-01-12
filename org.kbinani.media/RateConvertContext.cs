@@ -19,6 +19,7 @@ using System;
 
 namespace org.kbinani.media
 {
+    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -209,7 +210,7 @@ namespace org.kbinani.media
         /// <param name="left"></param>
         /// <param name="right"></param>
         /// <param name="length"></param>
-        public static bool convert( RateConvertContext context, double[] left, double[] right, int length )
+        public static boolean convert( RateConvertContext context, double[] left, double[] right, int length )
         {
             if ( context.mStatus == Status.COMPLETE ) {
                 context.length = 0;

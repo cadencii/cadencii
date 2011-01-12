@@ -27,17 +27,21 @@ using org.kbinani.apputil;
 using org.kbinani;
 using org.kbinani.windows.forms;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using boolean = System.Boolean;
     using BEventArgs = System.EventArgs;
+    using BEventHandler = System.EventHandler;
 #endif
 
 #if JAVA
     public class FormBeatConfig extends BDialog {
 #else
-    public class FormBeatConfig : BDialog {
+    public class FormBeatConfig : BDialog
+    {
 #endif
-        public FormBeatConfig( int bar_count, int numerator, int denominator, boolean num_enabled, int pre_measure ) {
+        public FormBeatConfig( int bar_count, int numerator, int denominator, boolean num_enabled, int pre_measure )
+        {
 #if JAVA
             super();
             initialize();
@@ -102,7 +106,8 @@ namespace org.kbinani.cadencii {
         }
 
         #region public methods
-        public void applyLanguage() {
+        public void applyLanguage()
+        {
             setTitle( _( "Beat Change" ) );
             groupPosition.setTitle( _( "Position" ) );
             groupBeat.setTitle( _( "Beat" ) );
@@ -116,23 +121,28 @@ namespace org.kbinani.cadencii {
             lblBar2.setText( _( "Measure" ) );
         }
 
-        public int getStart() {
+        public int getStart()
+        {
             return (int)numStart.getValue();
         }
 
-        public boolean isEndSpecified() {
+        public boolean isEndSpecified()
+        {
             return chkEnd.isSelected();
         }
 
-        public int getEnd() {
+        public int getEnd()
+        {
             return (int)numEnd.getValue();
         }
 
-        public int getNumerator() {
+        public int getNumerator()
+        {
             return (int)numNumerator.getValue();
         }
 
-        public int getDenominator() {
+        public int getDenominator()
+        {
             int ret = 1;
             for ( int i = 0; i < comboDenominator.getSelectedIndex(); i++ ) {
                 ret *= 2;
@@ -142,30 +152,36 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region helper methods
-        private static String _( String id ) {
+        private static String _( String id )
+        {
             return Messaging.getMessage( id );
         }
 
-        private void registerEventHandlers() {
-            chkEnd.CheckedChanged += new EventHandler( chkEnd_CheckedChanged );
-            btnOK.Click += new EventHandler( btnOK_Click );
-            btnCancel.Click += new EventHandler( btnCancel_Click );
+        private void registerEventHandlers()
+        {
+            chkEnd.CheckedChanged += new BEventHandler( chkEnd_CheckedChanged );
+            btnOK.Click += new BEventHandler( btnOK_Click );
+            btnCancel.Click += new BEventHandler( btnCancel_Click );
         }
 
-        private void setResources() {
+        private void setResources()
+        {
         }
         #endregion
 
         #region event handlers
-        public void chkEnd_CheckedChanged( Object sender, BEventArgs e ) {
+        public void chkEnd_CheckedChanged( Object sender, BEventArgs e )
+        {
             numEnd.setEnabled( chkEnd.isSelected() );
         }
 
-        public void btnOK_Click( Object sender, BEventArgs e ) {
+        public void btnOK_Click( Object sender, BEventArgs e )
+        {
             setDialogResult( BDialogResult.OK );
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e ) {
+        public void btnCancel_Click( Object sender, BEventArgs e )
+        {
             setDialogResult( BDialogResult.CANCEL );
         }
         #endregion
@@ -184,7 +200,8 @@ namespace org.kbinani.cadencii {
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing ) {
+        protected override void Dispose( boolean disposing )
+        {
             if ( disposing && (components != null) ) {
                 components.Dispose();
             }
@@ -195,7 +212,8 @@ namespace org.kbinani.cadencii {
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
         /// コード エディタで変更しないでください。
         /// </summary>
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             this.groupPosition = new org.kbinani.windows.forms.BGroupBox();
             this.lblBar2 = new org.kbinani.windows.forms.BLabel();
             this.lblBar1 = new org.kbinani.windows.forms.BLabel();

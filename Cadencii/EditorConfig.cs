@@ -34,6 +34,7 @@ using org.kbinani.vsq;
 namespace org.kbinani.cadencii
 {
     using BEventArgs = System.EventArgs;
+    using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
 #endif
 
@@ -604,7 +605,7 @@ namespace org.kbinani.cadencii
 #elif QT_VERSION
         public: signals: void quantizeModeChanged( QObject sender, QObject e );
 #else
-        public static event EventHandler QuantizeModeChanged;
+        public static event BEventHandler QuantizeModeChanged;
 #endif
 
         /// <summary>
@@ -1191,6 +1192,9 @@ namespace org.kbinani.cadencii
         /// QuantizeModeChangedイベントを発行します
         /// </summary>
         private void invokeQuantizeModeChangedEvent()
+#if JAVA
+            throws java.lang.IllegalAccessException
+#endif
         {
 #if JAVA
             quantizeModeChangedEvent.raise( EditorConfig.class, new BEventArgs() );

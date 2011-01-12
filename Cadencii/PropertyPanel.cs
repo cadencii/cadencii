@@ -21,9 +21,11 @@ using org.kbinani.vsq;
 using org.kbinani;
 using org.kbinani.java.util;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using boolean = System.Boolean;
     using Integer = System.Int32;
+    using BEventHandler = System.EventHandler;
 
     public delegate void CommandExecuteRequiredEventHandler( CadenciiCommand command );
 #endif
@@ -31,14 +33,16 @@ namespace org.kbinani.cadencii {
 #if JAVA
     public class PropertyPanel : BPanel {
 #else
-    public class PropertyPanel : UserControl {
+    public class PropertyPanel : UserControl
+    {
 #endif
         public event CommandExecuteRequiredEventHandler CommandExecuteRequired;
         private Vector<SelectedEventEntry> m_items;
         private int m_track;
         private boolean m_editing;
 
-        public PropertyPanel() {
+        public PropertyPanel()
+        {
 #if JAVA
             super();
             initialize();
@@ -51,15 +55,18 @@ namespace org.kbinani.cadencii {
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
-        public boolean isEditing() {
+        public boolean isEditing()
+        {
             return m_editing;
         }
 
-        public void setEditing( boolean value ) {
+        public void setEditing( boolean value )
+        {
             m_editing = value;
         }
 
-        private void popGridItemExpandStatus() {
+        private void popGridItemExpandStatus()
+        {
             if ( propertyGrid.SelectedGridItem == null ) {
                 return;
             }
@@ -72,7 +79,8 @@ namespace org.kbinani.cadencii {
             popGridItemExpandStatusCore( root );
         }
 
-        private void popGridItemExpandStatusCore( GridItem item ) {
+        private void popGridItemExpandStatusCore( GridItem item )
+        {
             if ( item.Expandable ) {
                 String s = getGridItemIdentifier( item );
                 for ( Iterator<ValuePairOfStringBoolean> itr = AppManager.editorConfig.PropertyWindowStatus.ExpandStatus.iterator(); itr.hasNext(); ) {
@@ -92,7 +100,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void pushGridItemExpandStatus() {
+        private void pushGridItemExpandStatus()
+        {
             if ( propertyGrid.SelectedGridItem == null ) {
                 return;
             }
@@ -105,7 +114,8 @@ namespace org.kbinani.cadencii {
             pushGridItemExpandStatusCore( root );
         }
 
-        private void pushGridItemExpandStatusCore( GridItem item ) {
+        private void pushGridItemExpandStatusCore( GridItem item )
+        {
             if ( item.Expandable ) {
                 String s = getGridItemIdentifier( item );
                 boolean found = false;
@@ -129,7 +139,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void updateValue( int track ) {
+        public void updateValue( int track )
+        {
             m_track = track;
             m_items.clear();
 
@@ -149,7 +160,8 @@ namespace org.kbinani.cadencii {
             setEditing( false );
         }
 
-        private void propertyGrid_PropertyValueChanged( Object s, PropertyValueChangedEventArgs e ) {
+        private void propertyGrid_PropertyValueChanged( Object s, PropertyValueChangedEventArgs e )
+        {
             int len = propertyGrid.SelectedObjects.Length;
             VsqEvent[] items = new VsqEvent[len];
             for ( int i = 0; i < len; i++ ) {
@@ -172,7 +184,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        private GridItem findRootGridItem( GridItem item ) {
+        private GridItem findRootGridItem( GridItem item )
+        {
             if ( item.Parent == null ) {
                 return item;
             } else {
@@ -185,7 +198,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        private String getGridItemIdentifier( GridItem item ) {
+        private String getGridItemIdentifier( GridItem item )
+        {
             if ( item.Parent == null ) {
                 if ( item.PropertyDescriptor != null ) {
                     return item.PropertyDescriptor.Name;
@@ -201,26 +215,31 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void propertyGrid_SelectedGridItemChanged( Object sender, SelectedGridItemChangedEventArgs e ) {
+        private void propertyGrid_SelectedGridItemChanged( Object sender, SelectedGridItemChangedEventArgs e )
+        {
             setEditing( true );
         }
 
-        private void propertyGrid_Enter( Object sender, EventArgs e ) {
+        private void propertyGrid_Enter( Object sender, EventArgs e )
+        {
             setEditing( true );
         }
 
-        private void propertyGrid_Leave( Object sender, EventArgs e ) {
+        private void propertyGrid_Leave( Object sender, EventArgs e )
+        {
             setEditing( false );
         }
 
-        private void registerEventHandlers() {
+        private void registerEventHandlers()
+        {
             this.propertyGrid.SelectedGridItemChanged += new System.Windows.Forms.SelectedGridItemChangedEventHandler( this.propertyGrid_SelectedGridItemChanged );
-            this.propertyGrid.Leave += new System.EventHandler( this.propertyGrid_Leave );
-            this.propertyGrid.Enter += new System.EventHandler( this.propertyGrid_Enter );
+            this.propertyGrid.Leave += new BEventHandler( this.propertyGrid_Leave );
+            this.propertyGrid.Enter += new BEventHandler( this.propertyGrid_Enter );
             this.propertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler( this.propertyGrid_PropertyValueChanged );
         }
 
-        private void setResources() {
+        private void setResources()
+        {
         }
 
 #if JAVA
@@ -243,7 +262,8 @@ namespace org.kbinani.cadencii {
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing ) {
+        protected override void Dispose( boolean disposing )
+        {
             if ( disposing && (components != null) ) {
                 components.Dispose();
             }
@@ -256,7 +276,8 @@ namespace org.kbinani.cadencii {
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を 
         /// コード エディタで変更しないでください。
         /// </summary>
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             this.propertyGrid = new System.Windows.Forms.PropertyGrid();
             this.SuspendLayout();
             // 

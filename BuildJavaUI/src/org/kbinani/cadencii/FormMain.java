@@ -328,6 +328,7 @@ public class FormMain extends BForm {
     private BMenuItem menuHelpLogSwitch = null;
     private BMenuItem menuHelpLogOpen = null;
     private BMenuItem menuHiddenPrintPoToCSV = null;
+    private BToggleButton stripBtnStepSequencer = null;
     
     //SECTION-END-FIELD
     public FormMain( String vsq_file ) {
@@ -432,10 +433,13 @@ public class FormMain extends BForm {
      */
     private JPanel getJPanel4() {
         if (jPanel == null) {
+            GridBagConstraints gridBagConstraints = new GridBagConstraints();
+            gridBagConstraints.gridx = 6;
+            gridBagConstraints.gridy = 0;
             GridBagConstraints gridBagConstraints29 = new GridBagConstraints();
             gridBagConstraints29.weightx = 1.0D;
             gridBagConstraints29.fill = GridBagConstraints.HORIZONTAL;
-            gridBagConstraints29.gridx = 6;
+            gridBagConstraints29.gridx = 7;
             gridBagConstraints29.gridy = 0;
             gridBagConstraints29.anchor = GridBagConstraints.WEST;
             jLabel = new JLabel();
@@ -480,6 +484,7 @@ public class FormMain extends BForm {
             jPanel.add(jLabel5, gridBagConstraints28);
             jPanel.add(getStripDDBtnSpeed(), gridBagConstraints17);
             jPanel.add(jLabel, gridBagConstraints29);
+            jPanel.add(getStripBtnStepSequencer(), gridBagConstraints);
         }
         return jPanel;
     }
@@ -653,6 +658,19 @@ public class FormMain extends BForm {
             menuHiddenPrintPoToCSV.setText("Print language configs to CSV");
         }
         return menuHiddenPrintPoToCSV;
+    }
+
+    /**
+     * This method initializes stripBtnStepSequencer	
+     * 	
+     * @return org.kbinani.windows.forms.BToggleButton	
+     */
+    private BToggleButton getStripBtnStepSequencer() {
+        if (stripBtnStepSequencer == null) {
+            stripBtnStepSequencer = new BToggleButton();
+            stripBtnStepSequencer.setText("Step sequencer");
+        }
+        return stripBtnStepSequencer;
     }
 
     public static void main( String[] args ){

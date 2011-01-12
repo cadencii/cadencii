@@ -14,11 +14,20 @@ public class BToggleButton extends JToggleButton
                                       ItemListener
 {
     private static final long serialVersionUID = 6912088646788737458L;
+    private Object mTag = null;
 
     public BToggleButton(){
         super();
         addActionListener( this );
         addItemListener( this );
+    }
+    
+    public Object getTag(){
+        return mTag;
+    }
+    
+    public void setTag( Object value ){
+        mTag = value;
     }
     
     // root impl of ItemListener is in BCheckBox
@@ -40,4 +49,5 @@ public class BToggleButton extends JToggleButton
             System.err.println( "BButton#actionPerformed; ex=" + ex );
         }
     }
+    
 }

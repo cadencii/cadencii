@@ -24,17 +24,21 @@ using System;
 using org.kbinani.apputil;
 using org.kbinani.windows.forms;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
+    using BEventHandler = System.EventHandler;
 #endif
 
 #if JAVA
     public class FormInsertBar extends BDialog {
 #else
-    public class FormInsertBar : BDialog {
+    public class FormInsertBar : BDialog
+    {
 #endif
-        public FormInsertBar( int max_position ) {
+        public FormInsertBar( int max_position )
+        {
 #if JAVA
             super();
             initialize();
@@ -49,7 +53,8 @@ namespace org.kbinani.cadencii {
         }
 
         #region public methods
-        public void applyLanguage() {
+        public void applyLanguage()
+        {
             setTitle( _( "Insert Bars" ) );
             String th_prefix = _( "_PREFIX_TH_" );
             if ( th_prefix.Equals( "_PREFIX_TH_" ) ) {
@@ -68,43 +73,52 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        public int getLength() {
+        public int getLength()
+        {
             return (int)numLength.getValue();
         }
 
-        public void setLength( int value ) {
+        public void setLength( int value )
+        {
             numLength.setValue( value );
         }
 
-        public int getPosition() {
+        public int getPosition()
+        {
             return (int)numPosition.getValue();
         }
 
-        public void setPosition( int value ) {
+        public void setPosition( int value )
+        {
             numPosition.setValue( value );
         }
         #endregion
 
         #region helper methods
-        private static String _( String id ) {
+        private static String _( String id )
+        {
             return Messaging.getMessage( id );
         }
 
-        private void registerEventHandlers() {
-            btnOK.Click += new EventHandler( btnOK_Click );
-            btnCancel.Click += new EventHandler( btnCancel_Click );
+        private void registerEventHandlers()
+        {
+            btnOK.Click += new BEventHandler( btnOK_Click );
+            btnCancel.Click += new BEventHandler( btnCancel_Click );
         }
 
-        private void setResources() {
+        private void setResources()
+        {
         }
         #endregion
 
         #region event handlers
-        public void btnOK_Click( Object sender, BEventArgs e ) {
+        public void btnOK_Click( Object sender, BEventArgs e )
+        {
             setDialogResult( BDialogResult.OK );
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e ) {
+        public void btnCancel_Click( Object sender, BEventArgs e )
+        {
             setDialogResult( BDialogResult.CANCEL );
         }
         #endregion
@@ -129,7 +143,8 @@ namespace org.kbinani.cadencii {
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing ) {
+        protected override void Dispose( boolean disposing )
+        {
             if ( disposing && (components != null) ) {
                 components.Dispose();
             }
@@ -140,7 +155,8 @@ namespace org.kbinani.cadencii {
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
         /// コード エディタで変更しないでください。
         /// </summary>
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             this.lblPosition = new org.kbinani.windows.forms.BLabel();
             this.lblLength = new org.kbinani.windows.forms.BLabel();
             this.lblThBar = new org.kbinani.windows.forms.BLabel();

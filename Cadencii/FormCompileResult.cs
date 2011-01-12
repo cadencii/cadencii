@@ -25,16 +25,20 @@ using org.kbinani.apputil;
 using org.kbinani;
 using org.kbinani.windows.forms;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using BEventArgs = System.EventArgs;
+    using BEventHandler = System.EventHandler;
 #endif
 
 #if JAVA
     public class FormCompileResult extends BDialog {
 #else
-    public class FormCompileResult : BDialog {
+    public class FormCompileResult : BDialog
+    {
 #endif
-        public FormCompileResult( String message, String errors ) {
+        public FormCompileResult( String message, String errors )
+        {
 #if JAVA
             super();
             initialize();
@@ -50,26 +54,31 @@ namespace org.kbinani.cadencii {
         }
 
         #region public methods
-        public void applyLanguage() {
+        public void applyLanguage()
+        {
             textBox1.setText( _( "Script Compilation Result" ) );
         }
         #endregion
 
         #region helper methods
-        private static String _( String id ) {
+        private static String _( String id )
+        {
             return Messaging.getMessage( id );
         }
 
-        private void setResources() {
+        private void setResources()
+        {
         }
 
-        private void registerEventHandlers() {
-            btnOK.Click += new EventHandler( btnOK_Click );
+        private void registerEventHandlers()
+        {
+            btnOK.Click += new BEventHandler( btnOK_Click );
         }
         #endregion
 
         #region event handlers
-        public void btnOK_Click( Object sender, BEventArgs e ) {
+        public void btnOK_Click( Object sender, BEventArgs e )
+        {
             setDialogResult( BDialogResult.OK );
         }
         #endregion
@@ -88,7 +97,8 @@ namespace org.kbinani.cadencii {
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( bool disposing ) {
+        protected override void Dispose( bool disposing )
+        {
             if ( disposing && (components != null) ) {
                 components.Dispose();
             }
@@ -99,7 +109,8 @@ namespace org.kbinani.cadencii {
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
         /// コード エディタで変更しないでください。
         /// </summary>
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             this.label1 = new org.kbinani.windows.forms.BLabel();
             this.textBox1 = new org.kbinani.windows.forms.BTextBox();
             this.btnOK = new org.kbinani.windows.forms.BButton();

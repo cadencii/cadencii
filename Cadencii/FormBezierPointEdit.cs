@@ -33,6 +33,7 @@ namespace org.kbinani.cadencii
 {
     using BEventArgs = System.EventArgs;
     using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
+    using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
     using BMouseButtons = System.Windows.Forms.MouseButtons;
 #endif
@@ -157,9 +158,9 @@ namespace org.kbinani.cadencii
 
         private void registerEventHandlers()
         {
-            btnOK.Click += new EventHandler( btnOK_Click );
-            btnCancel.Click += new EventHandler( btnCancel_Click );
-            chkEnableSmooth.CheckedChanged += new EventHandler( chkEnableSmooth_CheckedChanged );
+            btnOK.Click += new BEventHandler( btnOK_Click );
+            btnCancel.Click += new BEventHandler( btnCancel_Click );
+            chkEnableSmooth.CheckedChanged += new BEventHandler( chkEnableSmooth_CheckedChanged );
             btnLeft.MouseMove += new System.Windows.Forms.MouseEventHandler( common_MouseMove );
             btnLeft.MouseDown += new System.Windows.Forms.MouseEventHandler( handleOperationButtonMouseDown );
             btnLeft.MouseUp += new System.Windows.Forms.MouseEventHandler( common_MouseUp );
@@ -169,8 +170,8 @@ namespace org.kbinani.cadencii
             btnRight.MouseMove += new System.Windows.Forms.MouseEventHandler( common_MouseMove );
             btnRight.MouseDown += new System.Windows.Forms.MouseEventHandler( handleOperationButtonMouseDown );
             btnRight.MouseUp += new System.Windows.Forms.MouseEventHandler( common_MouseUp );
-            btnBackward.Click += new EventHandler( handleMoveButtonClick );
-            btnForward.Click += new EventHandler( handleMoveButtonClick );
+            btnBackward.Click += new BEventHandler( handleMoveButtonClick );
+            btnForward.Click += new BEventHandler( handleMoveButtonClick );
         }
 
         private void setResources()

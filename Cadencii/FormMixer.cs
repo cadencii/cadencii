@@ -34,9 +34,11 @@ using org.kbinani.javax.swing;
 using org.kbinani.vsq;
 using org.kbinani.windows.forms;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using BEventArgs = System.EventArgs;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
+    using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
     using Integer = System.Int32;
 #endif
@@ -82,7 +84,8 @@ namespace org.kbinani.cadencii {
         public event MuteChangedEventHandler MuteChanged;
 #endif
 
-        public FormMixer( FormMain parent ) {
+        public FormMixer( FormMain parent )
+        {
 #if JAVA
             super();
             initialize();
@@ -111,7 +114,8 @@ namespace org.kbinani.cadencii {
         /// マスターボリュームのUIコントロールを取得します
         /// </summary>
         /// <returns></returns>
-        public VolumeTracker getVolumeTrackerMaster() {
+        public VolumeTracker getVolumeTrackerMaster()
+        {
             return volumeMaster;
         }
 
@@ -120,9 +124,10 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="track"></param>
         /// <returns></returns>
-        public VolumeTracker getVolumeTracker( int track ) {
+        public VolumeTracker getVolumeTracker( int track )
+        {
             VsqFileEx vsq = AppManager.getVsqFile();
-            if ( 1 <= track && track < vsq.Track.size() && 
+            if ( 1 <= track && track < vsq.Track.size() &&
                  0 <= track - 1 && track - 1 < m_tracker.size() ) {
                 return m_tracker.get( track - 1 );
             } else if ( track == 0 ) {
@@ -137,7 +142,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public VolumeTracker getVolumeTrackerBgm( int index ) {
+        public VolumeTracker getVolumeTrackerBgm( int index )
+        {
             VsqFileEx vsq = AppManager.getVsqFile();
             int offset = vsq.Track.size() - 1;
             if ( 0 <= index + offset && index + offset < m_tracker.size() ) {
@@ -147,7 +153,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void updateSoloMute() {
+        private void updateSoloMute()
+        {
 #if DEBUG
             PortUtil.println( "FormMixer#updateSoloMute" );
 #endif
@@ -167,7 +174,7 @@ namespace org.kbinani.cadencii {
                     break;
                 }
             }
-            for( int track = 1; track < vsq.Track.size(); track++ ){
+            for ( int track = 1; track < vsq.Track.size(); track++ ) {
                 if ( soloSpecificationExists ) {
                     if ( vsq.getSolo( track ) ) {
                         m_tracker.get( track - 1 ).setSolo( true );
@@ -189,15 +196,18 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void applyShortcut( KeyStroke shortcut ) {
+        public void applyShortcut( KeyStroke shortcut )
+        {
             menuVisualReturn.setAccelerator( shortcut );
         }
 
-        public void applyLanguage() {
+        public void applyLanguage()
+        {
             setTitle( _( "Mixer" ) );
         }
 
-        public void updateStatus() {
+        public void updateStatus()
+        {
             VsqFileEx vsq = AppManager.getVsqFile();
             int num = vsq.Mixer.Slave.size() + AppManager.getBgmCount();
 #if DEBUG
@@ -360,7 +370,8 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region helper methods
-        private void addToPanel1( VolumeTracker item, int ix ) {
+        private void addToPanel1( VolumeTracker item, int ix )
+        {
 #if JAVA
             GridBagConstraints gbc = new GridBagConstraints();
             gbc.gridx = ix;
@@ -375,7 +386,8 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        private static String _( String id ) {
+        private static String _( String id )
+        {
             return Messaging.getMessage( id );
         }
 
@@ -418,23 +430,26 @@ namespace org.kbinani.cadencii {
             volumeMaster.MuteButtonClick += volumeMaster_MuteButtonClick;
         }
 
-        private void registerEventHandlers() {
-            menuVisualReturn.Click += new EventHandler( menuVisualReturn_Click );
+        private void registerEventHandlers()
+        {
+            menuVisualReturn.Click += new BEventHandler( menuVisualReturn_Click );
 #if JAVA
             //TODO: fixme: FormMixer#registerEventHandlers; paint event handler for panel1
 #else
             panel1.Paint += new System.Windows.Forms.PaintEventHandler( this.panel1_Paint );
 #endif
-            hScroll.ValueChanged += new EventHandler( veScrollBar_ValueChanged );
+            hScroll.ValueChanged += new BEventHandler( veScrollBar_ValueChanged );
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( FormMixer_FormClosing );
             reregisterEventHandlers();
         }
 
-        private void setResources() {
+        private void setResources()
+        {
             setIconImage( Resources.get_icon() );
         }
 
-        private void invokePanpotChangedEvent( int track, int panpot ) {
+        private void invokePanpotChangedEvent( int track, int panpot )
+        {
 #if JAVA
             panpotChangedEvent.raise( track, panpot );
 #elif QT_VERSION
@@ -446,7 +461,8 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        private void invokeFederChangedEvent( int track, int feder ) {
+        private void invokeFederChangedEvent( int track, int feder )
+        {
 #if JAVA
             federChangedEvent.raise( track, feder );
 #elif QT_VERSION
@@ -458,7 +474,8 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        private void invokeSoloChangedEvent( int track, bool solo ) {
+        private void invokeSoloChangedEvent( int track, boolean solo )
+        {
 #if JAVA
             soloChangedEvent.raise( track, solo );
 #elif QT_VERSION
@@ -470,7 +487,8 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        private void invokeMuteChangedEvent( int track, bool mute ) {
+        private void invokeMuteChangedEvent( int track, boolean mute )
+        {
 #if JAVA
             muteChangedEvent.raise( track, mute );
 #elif QT_VERSION
@@ -484,59 +502,66 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region event handlers
-        public void FormMixer_PanpotChanged( int track, int panpot ) {
-            try{
+        public void FormMixer_PanpotChanged( int track, int panpot )
+        {
+            try {
                 invokePanpotChangedEvent( track, panpot );
-            }catch( Exception ex ){
+            } catch ( Exception ex ) {
                 Logger.write( typeof( FormMixer ) + ".FormMixer_PanpotChanged; ex=" + ex + "\n" );
                 PortUtil.stderr.println( "FormMixer#FormMixer_PanpotChanged; ex=" + ex );
             }
         }
 
-        public void FormMixer_FederChanged( int track, int feder ) {
-            try{
+        public void FormMixer_FederChanged( int track, int feder )
+        {
+            try {
                 invokeFederChangedEvent( track, feder );
-            }catch( Exception ex ){
+            } catch ( Exception ex ) {
                 Logger.write( typeof( FormMixer ) + ".FormMixer_FederChanged; ex=" + ex + "\n" );
                 PortUtil.stderr.println( "FormMixer#FormMixer_FederChanged; ex=" + ex );
             }
         }
 
-        public void FormMixer_SoloButtonClick( Object sender, BEventArgs e ) {
+        public void FormMixer_SoloButtonClick( Object sender, BEventArgs e )
+        {
             VolumeTracker parent = (VolumeTracker)sender;
             int track = parent.getTrack();
-            try{
+            try {
                 invokeSoloChangedEvent( track, parent.isSolo() );
-            }catch( Exception ex ){
+            } catch ( Exception ex ) {
                 Logger.write( typeof( FormMixer ) + ".FormMixer_SoloButtonClick; ex=" + ex + "\n" );
                 PortUtil.stderr.println( "FormMixer#FormMixer_IsSoloChanged; ex=" + ex );
             }
             updateSoloMute();
         }
 
-        public void FormMixer_MuteButtonClick( Object sender, BEventArgs e ) {
+        public void FormMixer_MuteButtonClick( Object sender, BEventArgs e )
+        {
             VolumeTracker parent = (VolumeTracker)sender;
             int track = parent.getTrack();
-            try{
+            try {
                 invokeMuteChangedEvent( track, parent.isMuted() );
-            }catch( Exception ex ){
+            } catch ( Exception ex ) {
                 Logger.write( typeof( FormMixer ) + ".FormMixer_MuteButtonClick; ex=" + ex + "\n" );
                 PortUtil.stderr.println( "FormMixer#FormMixer_IsMutedChanged; ex=" + ex );
             }
             updateSoloMute();
         }
 
-        public void menuVisualReturn_Click( Object sender, BEventArgs e ) {
+        public void menuVisualReturn_Click( Object sender, BEventArgs e )
+        {
             m_parent.flipMixerDialogVisible( false );
         }
 
-        public void FormMixer_FormClosing( Object sender, BFormClosingEventArgs e ) {
+        public void FormMixer_FormClosing( Object sender, BFormClosingEventArgs e )
+        {
             m_parent.flipMixerDialogVisible( false );
             e.Cancel = true;
         }
 
 #if !JAVA
-        public void panel1_Paint( Object sender, PaintEventArgs e ) {
+        public void panel1_Paint( Object sender, PaintEventArgs e )
+        {
             /*int stdx = hScroll.getValue();
             Pen pen_102_102_102 = null;
             try {
@@ -558,7 +583,8 @@ namespace org.kbinani.cadencii {
         }
 #endif
 
-        public void veScrollBar_ValueChanged( Object sender, BEventArgs e ) {
+        public void veScrollBar_ValueChanged( Object sender, BEventArgs e )
+        {
             int stdx = hScroll.getValue();
             for ( int i = 0; i < m_tracker.size(); i++ ) {
                 m_tracker.get( i ).setLocation( -stdx + (VolumeTracker.WIDTH + 1) * i, 0 );
@@ -566,28 +592,31 @@ namespace org.kbinani.cadencii {
             this.invalidate();
         }
 
-        public void volumeMaster_FederChanged( int track, int feder ) {
-            try{
+        public void volumeMaster_FederChanged( int track, int feder )
+        {
+            try {
                 invokeFederChangedEvent( 0, feder );
-            }catch( Exception ex ){
+            } catch ( Exception ex ) {
                 Logger.write( typeof( FormMixer ) + ".volumeMaster_FederChanged; ex=" + ex + "\n" );
                 PortUtil.stderr.println( "FormMixer#volumeMaster_FederChanged; ex=" + ex );
             }
         }
 
-        public void volumeMaster_PanpotChanged( int track, int panpot ) {
-            try{
+        public void volumeMaster_PanpotChanged( int track, int panpot )
+        {
+            try {
                 invokePanpotChangedEvent( 0, panpot );
-            }catch( Exception ex ){
+            } catch ( Exception ex ) {
                 Logger.write( typeof( FormMixer ) + ".volumeMaster_PanpotChanged; ex=" + ex + "\n" );
                 PortUtil.stderr.println( "FormMixer#volumeMaster_PanpotChanged; ex=" + ex );
             }
         }
 
-        public void volumeMaster_MuteButtonClick( Object sender, BEventArgs e ) {
-            try{
+        public void volumeMaster_MuteButtonClick( Object sender, BEventArgs e )
+        {
+            try {
                 invokeMuteChangedEvent( 0, volumeMaster.isMuted() );
-            }catch( Exception ex ){
+            } catch ( Exception ex ) {
                 Logger.write( typeof( FormMixer ) + ".volumeMaster_MuteButtonClick; ex=" + ex + "\n" );
                 PortUtil.stderr.println( "FormMixer#volumeMaster_IsMutedChanged; ex=" + ex );
             }
@@ -611,7 +640,8 @@ namespace org.kbinani.cadencii {
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing ) {
+        protected override void Dispose( boolean disposing )
+        {
             if ( disposing && (components != null) ) {
                 components.Dispose();
             }
@@ -624,7 +654,8 @@ namespace org.kbinani.cadencii {
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
         /// コード エディタで変更しないでください。
         /// </summary>
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             this.menuMain = new org.kbinani.windows.forms.BMenuBar();
             this.menuVisual = new org.kbinani.windows.forms.BMenuItem();
             this.menuVisualReturn = new org.kbinani.windows.forms.BMenuItem();

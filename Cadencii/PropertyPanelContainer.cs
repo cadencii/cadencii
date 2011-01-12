@@ -15,43 +15,52 @@
 using System;
 using System.Windows.Forms;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
+    using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
 
-    public class PropertyPanelContainer : UserControl {
+    public class PropertyPanelContainer : UserControl
+    {
         public const int _TITLE_HEIGHT = 29;
         public event StateChangeRequiredEventHandler StateChangeRequired;
 
-        public PropertyPanelContainer() {
+        public PropertyPanelContainer()
+        {
             InitializeComponent();
             registerEventHandlers();
             setResources();
         }
 
-        public void Add( Control c ) {
+        public void Add( Control c )
+        {
             panelMain.Controls.Add( c );
             c.Dock = DockStyle.Fill;
         }
 
-        private void panelTitle_MouseDoubleClick( Object sender, MouseEventArgs e ) {
+        private void panelTitle_MouseDoubleClick( Object sender, MouseEventArgs e )
+        {
             if ( StateChangeRequired != null ) {
                 StateChangeRequired( this, PanelState.Window );
             }
         }
 
-        private void btnClose_Click( Object sender, EventArgs e ) {
+        private void btnClose_Click( Object sender, EventArgs e )
+        {
             if ( StateChangeRequired != null ) {
                 StateChangeRequired( this, PanelState.Hidden );
             }
         }
 
-        private void btnWindow_Click( Object sender, EventArgs e ) {
+        private void btnWindow_Click( Object sender, EventArgs e )
+        {
             if ( StateChangeRequired != null ) {
                 StateChangeRequired( this, PanelState.Window );
             }
         }
 
-        private void panelMain_SizeChanged( Object sender, EventArgs e ) {
+        private void panelMain_SizeChanged( Object sender, EventArgs e )
+        {
             panelTitle.Left = 0;
             panelTitle.Top = 0;
             panelTitle.Height = _TITLE_HEIGHT;
@@ -63,14 +72,16 @@ namespace org.kbinani.cadencii {
             panelMain.Height = this.Height - _TITLE_HEIGHT;
         }
 
-        private void registerEventHandlers() {
-            this.panelMain.SizeChanged += new System.EventHandler( this.panelMain_SizeChanged );
-            this.btnClose.Click += new System.EventHandler( this.btnClose_Click );
-            this.btnWindow.Click += new System.EventHandler( this.btnWindow_Click );
+        private void registerEventHandlers()
+        {
+            this.panelMain.SizeChanged += new BEventHandler( this.panelMain_SizeChanged );
+            this.btnClose.Click += new BEventHandler( this.btnClose_Click );
+            this.btnWindow.Click += new BEventHandler( this.btnWindow_Click );
             this.panelTitle.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler( this.panelTitle_MouseDoubleClick );
         }
 
-        private void setResources() {
+        private void setResources()
+        {
             this.btnClose.Image = Resources.get_cross_small().image;
             this.btnWindow.Image = Resources.get_chevron_small_collapse().image;
         }
@@ -87,7 +98,8 @@ namespace org.kbinani.cadencii {
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing ) {
+        protected override void Dispose( boolean disposing )
+        {
             if ( disposing && (components != null) ) {
                 components.Dispose();
             }
@@ -100,7 +112,8 @@ namespace org.kbinani.cadencii {
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を 
         /// コード エディタで変更しないでください。
         /// </summary>
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             this.panelMain = new System.Windows.Forms.Panel();
             this.btnClose = new System.Windows.Forms.Button();
             this.btnWindow = new System.Windows.Forms.Button();

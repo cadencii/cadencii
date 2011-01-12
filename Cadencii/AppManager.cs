@@ -45,6 +45,7 @@ using org.kbinani.xml;
 namespace org.kbinani.cadencii
 {
     using BEventArgs = System.EventArgs;
+    using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
     using Integer = System.Int32;
     using Long = System.Int64;
@@ -611,7 +612,7 @@ namespace org.kbinani.cadencii
 #elif QT_VERSION
         public: signals: void gridVisibleChanged( QObject sender, QObject e );
 #else
-        public static event EventHandler GridVisibleChanged;
+        public static event BEventHandler GridVisibleChanged;
 #endif
 
         /// <summary>
@@ -622,7 +623,7 @@ namespace org.kbinani.cadencii
 #elif QT_VERSION
         public: signals: void previewStartedEvent( QObject sender, QObject e );
 #else
-        public static event EventHandler PreviewStarted;
+        public static event BEventHandler PreviewStarted;
 #endif
 
         /// <summary>
@@ -633,7 +634,7 @@ namespace org.kbinani.cadencii
 #elif QT_VERSION
         public: signals: void previewAborted( QObject sender, QObject e );
 #else
-        public static event EventHandler PreviewAborted;
+        public static event BEventHandler PreviewAborted;
 #endif
 
         /// <summary>
@@ -655,7 +656,7 @@ namespace org.kbinani.cadencii
 #elif QT_VERSION
         public: signals: void selectedToolChanged( QObject sender, QObject e );
 #else
-        public static event EventHandler SelectedToolChanged;
+        public static event BEventHandler SelectedToolChanged;
 #endif
 
         /// <summary>
@@ -666,7 +667,7 @@ namespace org.kbinani.cadencii
 #elif QT_VERSION
         public: signals: void updateBgmStatusRequired( QObject sender, QObject e );
 #else
-        public static event EventHandler UpdateBgmStatusRequired;
+        public static event BEventHandler UpdateBgmStatusRequired;
 #endif
 
         /// <summary>
@@ -677,7 +678,7 @@ namespace org.kbinani.cadencii
 #elif QT_VERSION
         public: signals: void mainWindowFocusRequired( QObject sender, QObject e );
 #else
-        public static event EventHandler MainWindowFocusRequired;
+        public static event BEventHandler MainWindowFocusRequired;
 #endif
 
         /// <summary>
@@ -3678,7 +3679,7 @@ namespace org.kbinani.cadencii
             reloadUtauVoiceDB();
 
             mAutoBackupTimer = new BTimer();
-            mAutoBackupTimer.Tick += new EventHandler( handleAutoBackupTimerTick );
+            mAutoBackupTimer.Tick += new BEventHandler( handleAutoBackupTimerTick );
         }
 
         /// <summary>

@@ -34,9 +34,11 @@ using org.kbinani.javax.swing;
 using org.kbinani.vsq;
 using org.kbinani.windows.forms;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
     using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
+    using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
 #endif
 
@@ -45,14 +47,15 @@ namespace org.kbinani.cadencii {
 #else
     public class FormIconPalette : BForm
 #endif
-    {        
+    {
         private Vector<BButton> dynaffButtons = new Vector<BButton>();
         private Vector<BButton> crescendButtons = new Vector<BButton>();
         private Vector<BButton> decrescendButtons = new Vector<BButton>();
         private int buttonWidth = 40;
         private FormMain mMainWindow = null;
 
-        public FormIconPalette( FormMain main_window ) {
+        public FormIconPalette( FormMain main_window )
+        {
 #if JAVA
             super();
             initialize();
@@ -74,26 +77,31 @@ namespace org.kbinani.cadencii {
         }
 
         #region public methods
-        public void applyLanguage() {
+        public void applyLanguage()
+        {
             setTitle( _( "Icon Palette" ) );
         }
 
-        public void applyShortcut( KeyStroke shortcut ) {
+        public void applyShortcut( KeyStroke shortcut )
+        {
             menuWindowHide.setAccelerator( shortcut );
         }
         #endregion
 
         #region helper methods
-        private static String _( String id ) {
+        private static String _( String id )
+        {
             return Messaging.getMessage( id );
         }
 
-        private void registerEventHandlers() {
+        private void registerEventHandlers()
+        {
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( FormIconPalette_FormClosing );
-            menuWindowHide.Click += new EventHandler( menuWindowHide_Click );
+            menuWindowHide.Click += new BEventHandler( menuWindowHide_Click );
         }
 
-        private void init() {
+        private void init()
+        {
             for ( Iterator<IconDynamicsHandle> itr = VocaloSysUtil.dynamicsConfigIterator( SynthesizerType.VOCALOID1 ); itr.hasNext(); ) {
                 IconDynamicsHandle handle = itr.next();
                 String icon_id = handle.IconID;
@@ -219,16 +227,19 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region event handlers
-        public void FormIconPalette_FormClosing( Object sender, BFormClosingEventArgs e ) {
+        public void FormIconPalette_FormClosing( Object sender, BFormClosingEventArgs e )
+        {
             e.Cancel = true;
             setVisible( false );
         }
 
-        public void menuWindowHide_Click( Object sender, EventArgs e ) {
+        public void menuWindowHide_Click( Object sender, EventArgs e )
+        {
             close();
         }
 
-        public void handleCommonMouseDown( Object sender, BMouseEventArgs e ) {
+        public void handleCommonMouseDown( Object sender, BMouseEventArgs e )
+        {
             if ( AppManager.getEditMode() != EditMode.NONE ) {
                 return;
             }
@@ -263,7 +274,8 @@ namespace org.kbinani.cadencii {
         //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/Cadencii/FormIconPalette.java
         //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/Cadencii/FormIconPalette.java
 #else
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             this.menuBar = new org.kbinani.windows.forms.BMenuBar();
             this.menuWindow = new org.kbinani.windows.forms.BMenuItem();
             this.menuWindowHide = new org.kbinani.windows.forms.BMenuItem();

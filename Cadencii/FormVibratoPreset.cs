@@ -33,6 +33,7 @@ namespace org.kbinani.cadencii
 {
     using BEventArgs = System.EventArgs;
     using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
+    using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
 #endif
 
@@ -144,9 +145,9 @@ namespace org.kbinani.cadencii
             }
 
             // イベントハンドラを一時的に取り除く
-            textDepth.TextChanged -= new EventHandler( textDepth_TextChanged );
-            textRate.TextChanged -= new EventHandler( textRate_TextChanged );
-            textName.TextChanged -= new EventHandler( textName_TextChanged );
+            textDepth.TextChanged -= new BEventHandler( textDepth_TextChanged );
+            textRate.TextChanged -= new BEventHandler( textRate_TextChanged );
+            textName.TextChanged -= new BEventHandler( textName_TextChanged );
 
             // テクストボックスに値を反映
             mSelected = mHandles.get( index );
@@ -155,9 +156,9 @@ namespace org.kbinani.cadencii
             textName.setText( mSelected.getCaption() );
 
             // イベントハンドラを再登録
-            textDepth.TextChanged += new EventHandler( textDepth_TextChanged );
-            textRate.TextChanged += new EventHandler( textRate_TextChanged );
-            textName.TextChanged += new EventHandler( textName_TextChanged );
+            textDepth.TextChanged += new BEventHandler( textDepth_TextChanged );
+            textRate.TextChanged += new BEventHandler( textRate_TextChanged );
+            textName.TextChanged += new BEventHandler( textName_TextChanged );
 
             // 再描画
             repaintPictures();
@@ -445,20 +446,20 @@ namespace org.kbinani.cadencii
         /// </summary>
         private void registerEventHandlers()
         {
-            listPresets.SelectedIndexChanged += new EventHandler( listPresets_SelectedIndexChanged );
-            textDepth.TextChanged += new EventHandler( textDepth_TextChanged );
-            textRate.TextChanged += new EventHandler( textRate_TextChanged );
-            textName.TextChanged += new EventHandler( textName_TextChanged );
-            buttonAdd.Click += new EventHandler( buttonAdd_Click );
-            buttonRemove.Click += new EventHandler( buttonRemove_Click );
-            buttonUp.Click += new EventHandler( handleUpDownButtonClick );
-            buttonDown.Click += new EventHandler( handleUpDownButtonClick );
+            listPresets.SelectedIndexChanged += new BEventHandler( listPresets_SelectedIndexChanged );
+            textDepth.TextChanged += new BEventHandler( textDepth_TextChanged );
+            textRate.TextChanged += new BEventHandler( textRate_TextChanged );
+            textName.TextChanged += new BEventHandler( textName_TextChanged );
+            buttonAdd.Click += new BEventHandler( buttonAdd_Click );
+            buttonRemove.Click += new BEventHandler( buttonRemove_Click );
+            buttonUp.Click += new BEventHandler( handleUpDownButtonClick );
+            buttonDown.Click += new BEventHandler( handleUpDownButtonClick );
 
             pictureDepth.Paint += new System.Windows.Forms.PaintEventHandler( pictureDepth_Paint );
             pictureRate.Paint += new System.Windows.Forms.PaintEventHandler( pictureRate_Paint );
             pictureResulting.Paint += new System.Windows.Forms.PaintEventHandler( pictureResulting_Paint );
 
-            this.Resize += new EventHandler( FormVibratoPreset_Resize );
+            this.Resize += new BEventHandler( FormVibratoPreset_Resize );
         }
 
         private static String _( String id )

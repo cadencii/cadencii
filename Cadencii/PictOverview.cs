@@ -28,9 +28,11 @@ using org.kbinani.java.util;
 using org.kbinani.vsq;
 using org.kbinani.windows.forms;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using BMouseButtons = System.Windows.Forms.MouseButtons;
     using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
+    using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
 #endif
 
@@ -40,9 +42,11 @@ namespace org.kbinani.cadencii {
 #if JAVA
     public class PictOverview extends BPictureBox implements IImageCachedComponentDrawer {
 #else
-    public class PictOverview : BPictureBox, IImageCachedComponentDrawer {
+    public class PictOverview : BPictureBox, IImageCachedComponentDrawer
+    {
 #endif
-        enum OverviewMouseDownMode {
+        enum OverviewMouseDownMode
+        {
             NONE,
             LEFT,
             MIDDLE,
@@ -113,7 +117,8 @@ namespace org.kbinani.cadencii {
         private FormMain mMainForm = null;
         private Color mBackgroundColor = new Color( 106, 108, 108 );
 
-        public PictOverview() {
+        public PictOverview()
+        {
 #if !JAVA
             this.SetStyle( System.Windows.Forms.ControlStyles.DoubleBuffer, true );
             this.SetStyle( System.Windows.Forms.ControlStyles.UserPaint, true );
@@ -122,15 +127,18 @@ namespace org.kbinani.cadencii {
             registerEventHandlers();
         }
 
-        public void setMainForm( FormMain form ) {
+        public void setMainForm( FormMain form )
+        {
             mMainForm = form;
         }
 
-        public void setMainForm( Object form ) {
+        public void setMainForm( Object form )
+        {
             // do nothing
         }
 
-        public void overviewStopThread() {
+        public void overviewStopThread()
+        {
             if ( mOverviewUpdateThread != null ) {
                 try {
 #if JAVA
@@ -151,7 +159,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void btnLeft_MouseDown( Object sender, BMouseEventArgs e ) {
+        public void btnLeft_MouseDown( Object sender, BMouseEventArgs e )
+        {
             mOverviewBtnDowned = PortUtil.getCurrentTime();
             mOverviewStartToDrawClockInitialValue = mOverviewStartToDrawClock;
             if ( mOverviewUpdateThread != null ) {
@@ -183,11 +192,13 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        public void btnLeft_MouseUp( Object sender, BMouseEventArgs e ) {
+        public void btnLeft_MouseUp( Object sender, BMouseEventArgs e )
+        {
             overviewStopThread();
         }
 
-        public void btnRight_MouseDown( Object sender, BMouseEventArgs e ) {
+        public void btnRight_MouseDown( Object sender, BMouseEventArgs e )
+        {
             mOverviewBtnDowned = PortUtil.getCurrentTime();
             mOverviewStartToDrawClockInitialValue = mOverviewStartToDrawClock;
             if ( mOverviewUpdateThread != null ) {
@@ -217,11 +228,13 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        public void btnRight_MouseUp( Object sender, BMouseEventArgs e ) {
+        public void btnRight_MouseUp( Object sender, BMouseEventArgs e )
+        {
             overviewStopThread();
         }
 
-        public void btnMooz_Click( Object sender, EventArgs e ) {
+        public void btnMooz_Click( Object sender, EventArgs e )
+        {
             int draft = mOverviewScaleCount - 1;
             if ( draft < OVERVIEW_SCALE_COUNT_MIN ) {
                 draft = OVERVIEW_SCALE_COUNT_MIN;
@@ -233,7 +246,8 @@ namespace org.kbinani.cadencii {
             mMainForm.refreshScreen();
         }
 
-        public void btnZoom_Click( Object sender, EventArgs e ) {
+        public void btnZoom_Click( Object sender, EventArgs e )
+        {
             int draft = mOverviewScaleCount + 1;
             if ( OVERVIEW_SCALE_COUNT_MAX < draft ) {
                 draft = OVERVIEW_SCALE_COUNT_MAX;
@@ -249,7 +263,8 @@ namespace org.kbinani.cadencii {
         /// btnLeft1の描画位置を取得します
         /// </summary>
         /// <returns></returns>
-        private Rectangle getButtonBoundsLeft1() {
+        private Rectangle getButtonBoundsLeft1()
+        {
             return new Rectangle( AppManager.keyWidth - 16 - 2, 1, 16, 26 );
         }
 
@@ -257,7 +272,8 @@ namespace org.kbinani.cadencii {
         /// btnLeft2の描画位置を取得します
         /// </summary>
         /// <returns></returns>
-        private Rectangle getButtonBoundsLeft2() {
+        private Rectangle getButtonBoundsLeft2()
+        {
             return new Rectangle( AppManager.keyWidth - 16 - 2, 26 + 3, 16, 19 );
         }
 
@@ -265,7 +281,8 @@ namespace org.kbinani.cadencii {
         /// btnRight1の描画位置を取得します
         /// </summary>
         /// <returns></returns>
-        private Rectangle getButtonBoundsRight1() {
+        private Rectangle getButtonBoundsRight1()
+        {
             return new Rectangle( getWidth() - 16 - 2, 1, 16, 19 );
         }
 
@@ -273,7 +290,8 @@ namespace org.kbinani.cadencii {
         /// btnRight2の描画位置を取得します
         /// </summary>
         /// <returns></returns>
-        private Rectangle getButtonBoundsRight2() {
+        private Rectangle getButtonBoundsRight2()
+        {
             return new Rectangle( getWidth() - 16 - 2, 19 + 3, 16, 26 );
         }
 
@@ -281,7 +299,8 @@ namespace org.kbinani.cadencii {
         /// Zoomボタンの描画位置を取得します
         /// </summary>
         /// <returns></returns>
-        private Rectangle getButtonBoundsZoom() {
+        private Rectangle getButtonBoundsZoom()
+        {
             return new Rectangle( AppManager.keyWidth - 16 - 2 - 24, 13, 22, 23 );
         }
 
@@ -289,11 +308,13 @@ namespace org.kbinani.cadencii {
         /// Moozボタンの描画位置を取得します
         /// </summary>
         /// <returns></returns>
-        private Rectangle getButtonBoundsMooz() {
+        private Rectangle getButtonBoundsMooz()
+        {
             return new Rectangle( AppManager.keyWidth - 16 - 2 - 48, 13, 22, 23 );
         }
 
-        public void updateCachedImage() {
+        public void updateCachedImage()
+        {
             VsqFileEx vsq = AppManager.getVsqFile();
             if ( vsq == null ) {
                 return;
@@ -313,7 +334,8 @@ namespace org.kbinani.cadencii {
         public class UpdateOverviewProc extends Thread{
         public void run(){
 #else
-        public void updateOverview() {
+        public void updateOverview()
+        {
 #endif
             boolean д = true;
 #if DEBUG
@@ -355,7 +377,7 @@ namespace org.kbinani.cadencii {
 #if JAVA
                 repaint();
 #else
-                this.Invoke( new EventHandler( invalidatePictOverview ) );
+                this.Invoke( new BEventHandler( invalidatePictOverview ) );
                 //mMainForm.refreshScreen();// this.Invoke( new BEventHandler( invalidatePictOverview ) );
 #endif
             }
@@ -364,11 +386,13 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        private void invalidatePictOverview( Object sender, EventArgs e ) {
+        private void invalidatePictOverview( Object sender, EventArgs e )
+        {
             mMainForm.refreshScreen();
         }
 
-        public float getOverviewScaleX( int scale_count ) {
+        public float getOverviewScaleX( int scale_count )
+        {
             return (float)Math.Pow( 10.0, 0.2 * scale_count - 3.0 );
         }
 
@@ -377,34 +401,40 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="mouse_x"></param>
         /// <returns></returns>
-        public int getOverviewStartToDrawX( int mouse_x ) {
+        public int getOverviewStartToDrawX( int mouse_x )
+        {
             float clock = mouse_x / mOverviewPixelPerClock + mOverviewStartToDrawClock;
             int clock_at_left = (int)(clock - (mMainForm.pictPianoRoll.getWidth() - AppManager.keyWidth) * AppManager.getScaleXInv() / 2);
             return (int)(clock_at_left * AppManager.getScaleX());
         }
 
-        public int getOverviewXCoordFromClock( int clock ) {
+        public int getOverviewXCoordFromClock( int clock )
+        {
             return (int)((clock - mOverviewStartToDrawClock) * mOverviewPixelPerClock);
         }
 
-        public int getOverviewClockFromXCoord( int x, int start_to_draw_clock ) {
+        public int getOverviewClockFromXCoord( int x, int start_to_draw_clock )
+        {
             return (int)(x / mOverviewPixelPerClock) + start_to_draw_clock;
         }
 
-        public int getOverviewClockFromXCoord( int x ) {
+        public int getOverviewClockFromXCoord( int x )
+        {
             return getOverviewClockFromXCoord( x, mOverviewStartToDrawClock );
         }
 
-        private void registerEventHandlers() {
+        private void registerEventHandlers()
+        {
             MouseDown += new System.Windows.Forms.MouseEventHandler( handleMouseDown );
             MouseUp += new System.Windows.Forms.MouseEventHandler( handleMouseUp );
             MouseMove += new System.Windows.Forms.MouseEventHandler( handleMouseMove );
             MouseDoubleClick += new System.Windows.Forms.MouseEventHandler( handleMouseDoubleClick );
-            MouseLeave += new EventHandler( handleMouseLeave );
-            Resize += new EventHandler( handleResize );
+            MouseLeave += new BEventHandler( handleMouseLeave );
+            Resize += new BEventHandler( handleResize );
         }
 
-        public void handleResize( Object sender, EventArgs e ) {
+        public void handleResize( Object sender, EventArgs e )
+        {
             VsqFileEx vsq = AppManager.getVsqFile();
             int max = AppManager.getCurrentClock();
             int total_clocks = vsq.TotalClocks;
@@ -416,11 +446,13 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void handleMouseLeave( Object sender, EventArgs e ) {
+        public void handleMouseLeave( Object sender, EventArgs e )
+        {
             overviewStopThread();
         }
 
-        public void handleMouseDoubleClick( Object sender, BMouseEventArgs e ) {
+        public void handleMouseDoubleClick( Object sender, BMouseEventArgs e )
+        {
             if ( AppManager.keyWidth < e.X && e.X < getWidth() - 19 ) {
                 mOverviewMouseDownMode = OverviewMouseDownMode.NONE;
                 int draft_stdx = getOverviewStartToDrawX( e.X - AppManager.keyWidth - AppManager.keyOffset );
@@ -435,7 +467,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void handleMouseDown( Object sender, BMouseEventArgs e ) {
+        public void handleMouseDown( Object sender, BMouseEventArgs e )
+        {
             BMouseButtons btn = e.Button;
             if ( mMainForm.isMouseMiddleButtonDowned( e.Button ) ) {
                 btn = BMouseButtons.Middle;
@@ -482,7 +515,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void handleMouseUp( Object sender, BMouseEventArgs e ) {
+        public void handleMouseUp( Object sender, BMouseEventArgs e )
+        {
             Point mouse = new Point( e.X, e.Y );
             if ( Utility.isInRect( mouse, getButtonBoundsLeft1() ) ) {
                 btnLeft_MouseUp( null, null );
@@ -506,7 +540,8 @@ namespace org.kbinani.cadencii {
             mMainForm.refreshScreen();
         }
 
-        public void handleMouseMove( Object sender, BMouseEventArgs e ) {
+        public void handleMouseMove( Object sender, BMouseEventArgs e )
+        {
             int xoffset = AppManager.keyWidth + AppManager.keyOffset;
             if ( mOverviewMouseDownMode == OverviewMouseDownMode.LEFT ) {
                 int draft = getOverviewStartToDrawX( e.X - xoffset );
@@ -535,7 +570,8 @@ namespace org.kbinani.cadencii {
         /// 幅が2ピクセルのストロークを取得します
         /// </summary>
         /// <returns></returns>
-        private BasicStroke getStroke2px() {
+        private BasicStroke getStroke2px()
+        {
             if ( mStroke2px == null ) {
                 mStroke2px = new BasicStroke( 2.0f );
             }
@@ -546,14 +582,16 @@ namespace org.kbinani.cadencii {
         /// デフォルトのストロークを取得します
         /// </summary>
         /// <returns></returns>
-        private BasicStroke getStrokeDefault() {
+        private BasicStroke getStrokeDefault()
+        {
             if ( mStrokeDefault == null ) {
                 mStrokeDefault = new BasicStroke();
             }
             return mStrokeDefault;
         }
 
-        public void paint( Graphics g1 ) {
+        public void paint( Graphics g1 )
+        {
             if ( mMainForm == null ) {
                 return;
             }
@@ -679,7 +717,8 @@ namespace org.kbinani.cadencii {
             g.drawPolyline( new int[] { centerx - 4, centerx + 4, centerx - 4 }, new int[] { centery - 4, centery, centery + 4 }, 3 );
         }
 
-        public void draw( Graphics2D g, int width, int height ) {
+        public void draw( Graphics2D g, int width, int height )
+        {
             if ( mMainForm == null ) {
                 return;
             }
@@ -776,12 +815,14 @@ namespace org.kbinani.cadencii {
 
         }
 
-        public void setOffsetX( int value ) {
+        public void setOffsetX( int value )
+        {
             mOffsetX = value;
         }
 
 #if !JAVA
-        protected override void OnPaint( PaintEventArgs pevent ) {
+        protected override void OnPaint( PaintEventArgs pevent )
+        {
             base.OnPaint( pevent );
             if ( mGraphics == null ) {
                 mGraphics = new Graphics( null );

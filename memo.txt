@@ -40,6 +40,505 @@
 0275	bbf1be0e6de17c7391adc1b1cd6ff91a *resampler.exe
 0276	03230de6583d22a8daf90ea325d4a023 *resampler.exe
 
+-----------------------------------------------------------------------
+error; ev is null; path=./Cadencii/PictOverview.cs+ line:            MouseLeave += new BEventHandler( handleMouseLeave );
+error; ev is null; path=./Cadencii/PictOverview.cs+ line:            Resize += new BEventHandler( handleResize );
+.\build\java\org\kbinani\cadencii\EditorConfig.java:1076: 例外 java.lang.reflect.InvocationTargetException は報告されません。スローするにはキャッチまたは、スロー宣言をしなければなりません。
+        quantizeModeChangedEvent.raise( EditorConfig.class, new BEventArgs() );
+                                      ^
+.\build\java\org\kbinani\cadencii\FormMain.java:5816: シンボルを見つけられません。
+シンボル: クラス EventHandler
+場所    : org.kbinani.cadencii.FormMain の クラス
+        vScroll.valueChangedEvent.add( new EventHandler( this, "vScroll_ValueChanged" ) );
+                                           ^
+.\build\java\org\kbinani\cadencii\FormMain.java:5817: シンボルを見つけられません。
+シンボル: クラス EventHandler
+場所    : org.kbinani.cadencii.FormMain の クラス
+        vScroll.resizeEvent.add( new EventHandler( this, "vScroll_Resize" ) );
+                                     ^
+.\build\java\org\kbinani\cadencii\FormMain.java:5818: シンボルを見つけられません。
+シンボル: クラス EventHandler
+場所    : org.kbinani.cadencii.FormMain の クラス
+        vScroll.enterEvent.add( new EventHandler( this, "vScroll_Enter" ) );
+                                    ^
+.\build\java\org\kbinani\cadencii\FormMain.java:5819: シンボルを見つけられません。
+シンボル: クラス EventHandler
+場所    : org.kbinani.cadencii.FormMain の クラス
+        hScroll.valueChangedEvent.add( new EventHandler( this, "hScroll_ValueChanged" ) );
+                                           ^
+.\build\java\org\kbinani\cadencii\FormMain.java:5820: シンボルを見つけられません。
+シンボル: クラス EventHandler
+場所    : org.kbinani.cadencii.FormMain の クラス
+        hScroll.resizeEvent.add( new EventHandler( this, "hScroll_Resize" ) );
+                                     ^
+.\build\java\org\kbinani\cadencii\FormMain.java:5821: シンボルを見つけられません。
+シンボル: クラス EventHandler
+場所    : org.kbinani.cadencii.FormMain の クラス
+        hScroll.enterEvent.add( new EventHandler( this, "hScroll_Enter" ) );
+                                    ^
+.\build\java\org\kbinani\cadencii\FormMain.java:7989: シンボルを見つけられません。
+シンボル: 変数 waveViewReloadRequiredEvent
+場所    : org.kbinani.cadencii.AppManager の クラス
+        AppManager.waveViewReloadRequiredEvent.add( new WaveViewRealoadRequiredEventHandler( this, "AppManager_WaveViewRealoadRequired" ) );
+                  ^
+.\build\java\org\kbinani\cadencii\FormMain.java:8171: シンボルを見つけられません。
+シンボル: 変数 FormClosed
+場所    : org.kbinani.cadencii.FormGenerateKeySound の クラス
+                    form.FormClosed += new System.Windows.Forms.FormClosedEventHandler( FormGenerateKeySound_FormClosed );
+                        ^
+.\build\java\org\kbinani\cadencii\FormMain.java:8171: シンボルを見つけられません。
+シンボル: クラス Windows
+場所    : java.lang.System の クラス
+                    form.FormClosed += new System.Windows.Forms.FormClosedEventHandler( FormGenerateKeySound_FormClosed );
+                                                 ^
+.\build\java\org\kbinani\cadencii\FormMain.java:8171: シンボルを見つけられません。
+シンボル: 変数 FormGenerateKeySound_FormClosed
+場所    : org.kbinani.cadencii.FormMain の クラス
+                    form.FormClosed += new System.Windows.Forms.FormClosedEventHandler( FormGenerateKeySound_FormClosed );
+                                                                                        ^
+.\build\java\org\kbinani\cadencii\FormMain.java:9335: シンボルを見つけられません。
+シンボル: メソッド Dispose()
+場所    : org.kbinani.windows.forms.BFileChooser の クラス
+                    dialog.Dispose();
+                          ^
+.\build\java\org\kbinani\cadencii\FormMain.java:9788: シンボルを見つけられません。
+シンボル: 変数 m_versioninfo
+場所    : org.kbinani.cadencii.FormMain の クラス
+                if ( m_versioninfo != null ) {
+                     ^
+.\build\java\org\kbinani\cadencii\FormMain.java:10101: シンボルを見つけられません。
+シンボル: メソッド Dispose()
+場所    : org.kbinani.cadencii.FormVibratoPreset の クラス
+                    dialog.Dispose();
+                          ^
+.\build\java\org\kbinani\cadencii\FormMain.java:11049: シンボルを見つけられません。
+シンボル: 変数 Text
+場所    : org.kbinani.windows.forms.BLabel の クラス
+                                statusLabel.Text = _( "Cannot remove first symbol of track!" );
+                                           ^
+.\build\java\org\kbinani\cadencii\FormMain.java:11185: シンボルを見つけられません。
+シンボル: 変数 Text
+場所    : org.kbinani.windows.forms.BLabel の クラス
+                            statusLabel.Text = _( "Cannot remove first symbol of track!" );
+                                       ^
+.\build\java\org\kbinani\cadencii\FormMain.java:11508: シンボルを見つけられません。
+シンボル: 変数 Text
+場所    : org.kbinani.windows.forms.BLabel の クラス
+                                statusLabel.Text = _( "Cannot remove first symbol of track!" );
+                                           ^
+.\build\java\org\kbinani\cadencii\FormMain.java:11534: シンボルを見つけられません。
+シンボル: 変数 Text
+場所    : org.kbinani.windows.forms.BLabel の クラス
+                                statusLabel.Text = _( "Cannot remove first symbol of track!" );
+                                           ^
+.\build\java\org\kbinani\cadencii\FormMain.java:11668: 互換性のない型
+検出値  : java.awt.Graphics
+期待値  : java.awt.Graphics2D
+        Graphics2D g = e.Graphics;
+                        ^
+.\build\java\org\kbinani\cadencii\FormMain.java:11724: シンボルを見つけられません。
+シンボル: クラス Windows
+場所    : java.lang.System の クラス
+            System.Windows.Forms.Keys ks = (System.Windows.Forms.Keys)(test[i]);
+                  ^
+.\build\java\org\kbinani\cadencii\FormMain.java:11724: シンボルを見つけられません。
+シンボル: クラス Windows
+場所    : java.lang.System の クラス
+            System.Windows.Forms.Keys ks = (System.Windows.Forms.Keys)(test[i]);
+                                                  ^
+.\build\java\org\kbinani\cadencii\FormMain.java:11920: patchWorkToFreeze(org.kbinani.cadencii.FormMain,java.util.Vector<java.lang.Integer>) (org.kbinani.cadencii.AppManager 内) を (org.kbinani.cadencii.FormMain,java.util.List<java.lang.Integer>) に適用できません
+        AppManager.patchWorkToFreeze( this, Arrays.asList( tracks ) );
+                  ^
+.\build\java\org\kbinani\cadencii\FormMain.java:12865: シンボルを見つけられません。
+シンボル: 変数 Pushed
+場所    : org.kbinani.windows.forms.BToggleButton の クラス
+        stripBtnGrid.Pushed = !stripBtnGrid.Pushed;
+                    ^
+.\build\java\org\kbinani\cadencii\FormMain.java:12865: シンボルを見つけられません。
+シンボル: 変数 Pushed
+場所    : org.kbinani.windows.forms.BToggleButton の クラス
+        stripBtnGrid.Pushed = !stripBtnGrid.Pushed;
+                                           ^
+.\build\java\org\kbinani\cadencii\FormMain.java:12866: シンボルを見つけられません。
+シンボル: 変数 Pushed
+場所    : org.kbinani.windows.forms.BToggleButton の クラス
+        AppManager.setGridVisible( stripBtnGrid.Pushed );
+                                               ^
+.\build\java\org\kbinani\cadencii\FormMain.java:12910: シンボルを見つけられません。
+シンボル: 変数 Pushed
+場所    : org.kbinani.windows.forms.BToggleButton の クラス
+        stripBtnLoop.Pushed = !stripBtnLoop.Pushed;
+                    ^
+.\build\java\org\kbinani\cadencii\FormMain.java:12910: シンボルを見つけられません。
+シンボル: 変数 Pushed
+場所    : org.kbinani.windows.forms.BToggleButton の クラス
+        stripBtnLoop.Pushed = !stripBtnLoop.Pushed;
+                                           ^
+.\build\java\org\kbinani\cadencii\FormMain.java:12911: シンボルを見つけられません。
+シンボル: 変数 Pushed
+場所    : org.kbinani.windows.forms.BToggleButton の クラス
+        AppManager.setRepeatMode( stripBtnLoop.Pushed );
+                                              ^
+.\build\java\org\kbinani\cadencii\FormMain.java:12920: シンボルを見つけられません。
+シンボル: 変数 Checked
+場所    : org.kbinani.windows.forms.BToggleButton の クラス
+        mStepSequencerEnabled = stripBtnStepSequencer.Checked;
+                                                     ^
+.\build\java\org\kbinani\cadencii\FormMain.java:13020: シンボルを見つけられません。
+シンボル: クラス Windows
+場所    : java.lang.System の クラス
+        if ( !(sender instanceof System.Windows.Forms.ToolStripMenuItem) ) {
+                                       ^
+.\build\java\org\kbinani\cadencii\FormMain.java:13025: シンボルを見つけられません。
+シンボル: クラス Windows
+場所    : java.lang.System の クラス
+        System.Windows.Forms.ToolStripMenuItem item = (System.Windows.Forms.ToolStripMenuItem)sender;
+              ^
+.\build\java\org\kbinani\cadencii\FormMain.java:13025: シンボルを見つけられません。
+シンボル: クラス Windows
+場所    : java.lang.System の クラス
+        System.Windows.Forms.ToolStripMenuItem item = (System.Windows.Forms.ToolStripMenuItem)sender;
+                                                             ^
+.\build\java\org\kbinani\cadencii\FormMain.java:13167: パッケージ toolBarTool は存在しません。
+        int count = toolBarTool.Buttons.size();// toolStripTool.getComponentCount();
+                               ^
+.\build\java\org\kbinani\cadencii\FormMain.java:13169: シンボルを見つけられません。
+シンボル: 変数 toolBarTool
+場所    : org.kbinani.cadencii.FormMain の クラス
+            Object item = toolBarTool.Buttons[i];// toolStripTool.getComponentAtIndex( i );
+                          ^
+.\build\java\org\kbinani\cadencii\FormMain.java:13170: シンボルを見つけられません。
+シンボル: クラス Windows
+場所    : java.lang.System の クラス
+            if ( item instanceof System.Windows.Forms.ToolBarButton ) {
+                                       ^
+.\build\java\org\kbinani\cadencii\FormMain.java:13171: シンボルを見つけられません。
+シンボル: クラス Windows
+場所    : java.lang.System の クラス
+                System.Windows.Forms.ToolBarButton button = (System.Windows.Forms.ToolBarButton)item;
+                      ^
+.\build\java\org\kbinani\cadencii\FormMain.java:13171: シンボルを見つけられません。
+シンボル: クラス Windows
+場所    : java.lang.System の クラス
+                System.Windows.Forms.ToolBarButton button = (System.Windows.Forms.ToolBarButton)item;
+                                                                   ^
+.\build\java\org\kbinani\cadencii\FormMain.java:13172: シンボルを見つけられません。
+シンボル: 変数 Windows
+場所    : java.lang.System の クラス
+                if ( button.Style == System.Windows.Forms.ToolBarButtonStyle.ToggleButton && button.Tag != null && button.Tag instanceof String ) {
+                                           ^
+.\build\java\org\kbinani\cadencii\FormMain.java:13400: シンボルを見つけられません。
+シンボル: 変数 Pushed
+場所    : org.kbinani.windows.forms.BToggleButton の クラス
+        stripBtnEndMarker.Pushed = AppManager.mEndMarkerEnabled;
+                         ^
+.\build\java\org\kbinani\cadencii\FormMain.java:13587: シンボルを見つけられません。
+シンボル: 変数 Text
+場所    : org.kbinani.windows.forms.BLabel の クラス
+        statusLabel.Text = text;
+                   ^
+.\build\java\org\kbinani\cadencii\FormMain.java:13621: シンボルを見つけられません。
+シンボル: クラス Windows
+場所    : java.lang.System の クラス
+            if( sender instanceof System.Windows.Forms.ToolStripMenuItem ){
+                                        ^
+.\build\java\org\kbinani\cadencii\FormMain.java:13622: シンボルを見つけられません。
+シンボル: クラス Windows
+場所    : java.lang.System の クラス
+                System.Windows.Forms.ToolStripMenuItem item = (System.Windows.Forms.ToolStripMenuItem)sender;
+                      ^
+.\build\java\org\kbinani\cadencii\FormMain.java:13622: シンボルを見つけられません。
+シンボル: クラス Windows
+場所    : java.lang.System の クラス
+                System.Windows.Forms.ToolStripMenuItem item = (System.Windows.Forms.ToolStripMenuItem)sender;
+                                                                     ^
+.\build\java\org\kbinani\cadencii\FormMain.java:13623: シンボルを見つけられません。
+シンボル: 変数 DropDownItems
+場所    : org.kbinani.windows.forms.BMenuItem の クラス
+                resampler_index = cMenuTrackTabRendererUtau.DropDownItems.indexOf( item );
+                                                           ^
+.\build\java\org\kbinani\cadencii\FormMain.java:13625: シンボルを見つけられません。
+シンボル: 変数 DropDownItems
+場所    : org.kbinani.windows.forms.BMenuItem の クラス
+                    resampler_index = menuTrackRendererUtau.DropDownItems.indexOf( item );
+                                                           ^
+.\build\java\org\kbinani\cadencii\FormMain.java:13681: シンボルを見つけられません。
+シンボル: 変数 DropDownItems
+場所    : org.kbinani.windows.forms.BMenuItem の クラス
+            for ( int i = 0; i < cMenuTrackTabRendererUtau.DropDownItems.size(); i++ ) {
+                                                          ^
+.\build\java\org\kbinani\cadencii\FormMain.java:13682: シンボルを見つけられません。
+シンボル: クラス Windows
+場所    : java.lang.System の クラス
+                ((System.Windows.Forms.ToolStripMenuItem)cMenuTrackTabRendererUtau.DropDownItems[i]).Checked = (i == resampler_index);
+                        ^
+.\build\java\org\kbinani\cadencii\FormMain.java:13682: シンボルを見つけられません。
+シンボル: 変数 DropDownItems
+場所    : org.kbinani.windows.forms.BMenuItem の クラス
+                ((System.Windows.Forms.ToolStripMenuItem)cMenuTrackTabRendererUtau.DropDownItems[i]).Checked = (i == resampler_index);
+                                                                                  ^
+.\build\java\org\kbinani\cadencii\FormMain.java:13684: シンボルを見つけられません。
+シンボル: 変数 DropDownItems
+場所    : org.kbinani.windows.forms.BMenuItem の クラス
+            for ( int i = 0; i < menuTrackRendererUtau.DropDownItems.size(); i++ ) {
+                                                      ^
+.\build\java\org\kbinani\cadencii\FormMain.java:13685: シンボルを見つけられません。
+シンボル: クラス Windows
+場所    : java.lang.System の クラス
+                ((System.Windows.Forms.ToolStripMenuItem)menuTrackRendererUtau.DropDownItems[i]).Checked = (i == resampler_index);
+                        ^
+.\build\java\org\kbinani\cadencii\FormMain.java:13685: シンボルを見つけられません。
+シンボル: 変数 DropDownItems
+場所    : org.kbinani.windows.forms.BMenuItem の クラス
+                ((System.Windows.Forms.ToolStripMenuItem)menuTrackRendererUtau.DropDownItems[i]).Checked = (i == resampler_index);
+                                                                              ^
+.\build\java\org\kbinani\cadencii\FormMain.java:16158: シンボルを見つけられません。
+シンボル: コンストラクタ TrackSelector()
+場所    : org.kbinani.cadencii.TrackSelector の クラス
+            trackSelector = new TrackSelector();
+                            ^
+.\build\java\org\kbinani\cadencii\FormMidiImExport.java:243: シンボルを見つけられません。
+シンボル: 変数 FormClosing
+場所    : org.kbinani.cadencii.FormMidiImExport の クラス
+        this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( FormMidiImExport_FormClosing );
+            ^
+.\build\java\org\kbinani\cadencii\FormMidiImExport.java:243: シンボルを見つけられません。
+シンボル: クラス Windows
+場所    : java.lang.System の クラス
+        this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( FormMidiImExport_FormClosing );
+                                      ^
+.\build\java\org\kbinani\cadencii\FormMidiImExport.java:243: シンボルを見つけられません。
+シンボル: 変数 FormMidiImExport_FormClosing
+場所    : org.kbinani.cadencii.FormMidiImExport の クラス
+        this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( FormMidiImExport_FormClosing );
+                                                                              ^
+.\build\java\org\kbinani\cadencii\Preference.java:101: シンボルを見つけられません。
+シンボル: 変数 txtAutoVibratoThresholdLength
+場所    : org.kbinani.cadencii.Preference の クラス
+        txtAutoVibratoThresholdLength.setText( "480" );
+        ^
+.\build\java\org\kbinani\cadencii\Preference.java:201: シンボルを見つけられません。
+シンボル: メソッド showDialog(java.awt.Component)
+場所    : org.kbinani.windows.forms.BDialog の クラス
+        return super.showDialog( parent );
+                    ^
+.\build\java\org\kbinani\cadencii\Preference.java:785: シンボルを見つけられません。
+シンボル: 変数 tabUtausingers
+場所    : org.kbinani.cadencii.Preference の クラス
+            }else if( p == tabUtausingers ){
+                           ^
+.\build\java\org\kbinani\cadencii\Preference.java:797: シンボルを見つけられません。
+シンボル: 変数 lblAutoVibratoThresholdLength
+場所    : org.kbinani.cadencii.Preference の クラス
+        lblAutoVibratoThresholdLength.setText( _( "Minimum note length for Automatic Vibrato" ) + "(&M)" );
+        ^
+.\build\java\org\kbinani\cadencii\Preference.java:1015: シンボルを見つけられません。
+シンボル: 変数 txtAutoVibratoThresholdLength
+場所    : org.kbinani.cadencii.Preference の クラス
+            int ret = PortUtil.parseInt( txtAutoVibratoThresholdLength.getText() );
+                                         ^
+.\build\java\org\kbinani\cadencii\Preference.java:1030: シンボルを見つけられません。
+シンボル: 変数 txtAutoVibratoThresholdLength
+場所    : org.kbinani.cadencii.Preference の クラス
+        txtAutoVibratoThresholdLength.setText( value + "" );
+        ^
+.\build\java\org\kbinani\cadencii\Preference.java:1146: シンボルを見つけられません。
+シンボル: メソッド getItemCount()
+場所    : javax.swing.JList の クラス
+        for ( int i = 0; i < listResampler.getItemCount(); i++ ) {
+                                          ^
+.\build\java\org\kbinani\cadencii\Preference.java:1147: シンボルを見つけられません。
+シンボル: メソッド getItemAt(int)
+場所    : javax.swing.JList の クラス
+            ret.add( (String)listResampler.getItemAt( i ) );
+                                          ^
+.\build\java\org\kbinani\cadencii\Preference.java:1154: シンボルを見つけられません。
+シンボル: メソッド getItemCount()
+場所    : javax.swing.JList の クラス
+        for ( int i = 0; i < listResampler.getItemCount(); i++ ) {
+                                          ^
+.\build\java\org\kbinani\cadencii\Preference.java:1155: シンボルを見つけられません。
+シンボル: メソッド removeItemAt(int)
+場所    : javax.swing.JList の クラス
+            listResampler.removeItemAt( 0 );
+                         ^
+.\build\java\org\kbinani\cadencii\Preference.java:1161: シンボルを見つけられません。
+シンボル: メソッド addItem(java.lang.String)
+場所    : javax.swing.JList の クラス
+            listResampler.addItem( value.get( i ) );
+                         ^
+.\build\java\org\kbinani\cadencii\Preference.java:1288: シンボルを見つけられません。
+シンボル: メソッド addItem(java.lang.String)
+場所    : javax.swing.JList の クラス
+            listResampler.addItem( path );
+                         ^
+.\build\java\org\kbinani\cadencii\Preference.java:1307: シンボルを見つけられません。
+シンボル: メソッド getItemCount()
+場所    : javax.swing.JList の クラス
+        int count = listResampler.getItemCount();
+                                 ^
+.\build\java\org\kbinani\cadencii\Preference.java:1315: シンボルを見つけられません。
+シンボル: メソッド getItemAt(int)
+場所    : javax.swing.JList の クラス
+        String sel = (String)listResampler.getItemAt( index );
+                                          ^
+.\build\java\org\kbinani\cadencii\Preference.java:1316: シンボルを見つけられません。
+シンボル: メソッド getItemAt(int)
+場所    : javax.swing.JList の クラス
+        listResampler.setItemAt( index, listResampler.getItemAt( index + delta ) );
+                                                     ^
+.\build\java\org\kbinani\cadencii\Preference.java:1317: シンボルを見つけられません。
+シンボル: メソッド setItemAt(int,java.lang.String)
+場所    : javax.swing.JList の クラス
+        listResampler.setItemAt( index + delta, sel );
+                     ^
+.\build\java\org\kbinani\cadencii\Preference.java:1324: シンボルを見つけられません。
+シンボル: メソッド getItemCount()
+場所    : javax.swing.JList の クラス
+        int count = listResampler.getItemCount();
+                                 ^
+.\build\java\org\kbinani\cadencii\Preference.java:1328: シンボルを見つけられません。
+シンボル: メソッド removeItemAt(int)
+場所    : javax.swing.JList の クラス
+        listResampler.removeItemAt( index );
+                     ^
+.\build\java\org\kbinani\cadencii\Preference.java:1341: シンボルを見つけられません。
+シンボル: メソッド getItemCount()
+場所    : javax.swing.JList の クラス
+            if ( listResampler.getItemCount() == 0 ) {
+                              ^
+.\build\java\org\kbinani\cadencii\Preference.java:1344: シンボルを見つけられません。
+シンボル: メソッド addItem(java.lang.String)
+場所    : javax.swing.JList の クラス
+                    listResampler.addItem( resampler );
+                                 ^
+.\build\java\org\kbinani\cadencii\Preference.java:1551: シンボルを見つけられません。
+シンボル: 変数 FormClosing
+場所    : org.kbinani.cadencii.Preference の クラス
+        FormClosing += new System.Windows.Forms.FormClosingEventHandler( Preference_FormClosing );
+        ^
+.\build\java\org\kbinani\cadencii\Preference.java:1551: シンボルを見つけられません。
+シンボル: クラス Windows
+場所    : java.lang.System の クラス
+        FormClosing += new System.Windows.Forms.FormClosingEventHandler( Preference_FormClosing );
+                                 ^
+.\build\java\org\kbinani\cadencii\Preference.java:1551: シンボルを見つけられません。
+シンボル: 変数 Preference_FormClosing
+場所    : org.kbinani.cadencii.Preference の クラス
+        FormClosing += new System.Windows.Forms.FormClosingEventHandler( Preference_FormClosing );
+                                                                         ^
+.\build\java\org\kbinani\cadencii\CurveType.java:157: シンボルを見つけられません。
+シンボル: 変数 m_type
+場所    : org.kbinani.cadencii.CurveType の クラス
+                return m_type.compareTo( item.m_type );
+                                             ^
+.\build\java\org\kbinani\cadencii\CurveType.java:157: シンボルを見つけられません。
+シンボル: 変数 m_type
+場所    : org.kbinani.cadencii.CurveType の クラス
+                return m_type.compareTo( item.m_type );
+                       ^
+.\build\java\org\kbinani\vsq\VsqFile.java:2934: 配列が要求されましたが、java.util.Vector<java.lang.String> が見つかりました。
+            s += spl[j];
+                    ^
+.\build\java\org\kbinani\vsq\VsqFile.java:2942: 予期しない型
+検出値  : int
+期待値  : 参照
+        Vector<int> consonantAdjustment = ve.ID.LyricHandle.L0.getConsonantAdjustmentList();
+               ^
+.\build\java\org\kbinani\vsq\VsqFile.java:2944: 配列が要求されましたが、java.util.Vector<java.lang.String> が見つかりました。
+            char[] chars = spl[j].toCharArray();
+                              ^
+.\build\java\org\kbinani\vsq\VsqFile.java:2948: 配列が要求されましたが、java.util.Vector<<any>> が見つかりました。
+                    add.append( (0x50 << 8) | (0x13 + count), (byte)chars[k], (byte)consonantAdjustment[j], true ); // Phonetic symbol j
+                                                                                                       ^
+.\build\java\org\kbinani\cadencii\VsqFileEx.java:46: シンボルを見つけられません。
+シンボル: 変数 sVsqSerializer
+場所    : org.kbinani.cadencii.VsqFileEx の クラス
+        sVsqSerializer = new XmlSerializer( VsqFileEx.class );
+        ^
+.\build\java\org\kbinani\cadencii\TrackSelector.java:396: シンボルを見つけられません。
+シンボル: メソッド getCmenusinger()
+場所    : org.kbinani.cadencii.TrackSelector の クラス
+        getCmenusinger();        
+        ^
+.\build\java\org\kbinani\cadencii\TrackSelector.java:499: シンボルを見つけられません。
+シンボル: 変数 cmenusinger
+場所    : org.kbinani.cadencii.TrackSelector の クラス
+        Util.applyContextMenuFontRecurse( cmenusinger, font );
+                                          ^
+.\build\java\org\kbinani\cadencii\TrackSelector.java:675: シンボルを見つけられません。
+シンボル: 変数 PreferredMinHeightChanged
+場所    : org.kbinani.cadencii.TrackSelector の クラス
+                if ( PreferredMinHeightChanged != null ) {
+                     ^
+.\build\java\org\kbinani\cadencii\TrackSelector.java:676: シンボルを見つけられません。
+シンボル: 変数 PreferredMinHeightChanged
+場所    : org.kbinani.cadencii.TrackSelector の クラス
+                    PreferredMinHeightChanged.Invoke( this, new BEventArgs() );
+                    ^
+.\build\java\org\kbinani\cadencii\TrackSelector.java:2510: シンボルを見つけられません。
+シンボル: 変数 _mouse_hover_thread
+場所    : org.kbinani.cadencii.TrackSelector の クラス
+            if( _mouse_hover_thread != null && _mouse_hover_thread.isAlive() ){
+                ^
+.\build\java\org\kbinani\cadencii\TrackSelector.java:2510: シンボルを見つけられません。
+シンボル: 変数 _mouse_hover_thread
+場所    : org.kbinani.cadencii.TrackSelector の クラス
+            if( _mouse_hover_thread != null && _mouse_hover_thread.isAlive() ){
+                                               ^
+.\build\java\org\kbinani\cadencii\TrackSelector.java:2511: シンボルを見つけられません。
+シンボル: 変数 _mouse_hover_thread
+場所    : org.kbinani.cadencii.TrackSelector の クラス
+                _mouse_hover_thread.stop();
+                ^
+.\build\java\org\kbinani\cadencii\TrackSelector.java:2812: シンボルを見つけられません。
+シンボル: 変数 SelectedTrackChanged
+場所    : org.kbinani.cadencii.TrackSelector の クラス
+                                        if ( SelectedTrackChanged != null ) {
+                                             ^
+.\build\java\org\kbinani\cadencii\TrackSelector.java:2813: シンボルを見つけられません。
+シンボル: 変数 SelectedTrackChanged
+場所    : org.kbinani.cadencii.TrackSelector の クラス
+                                            SelectedTrackChanged.Invoke( this, i + 1 );
+                                            ^
+.\build\java\org\kbinani\cadencii\TrackSelector.java:2823: シンボルを見つけられません。
+シンボル: 変数 RenderRequired
+場所    : org.kbinani.cadencii.TrackSelector の クラス
+                                            if ( RenderRequired != null ) {
+                                                 ^
+.\build\java\org\kbinani\cadencii\TrackSelector.java:2824: シンボルを見つけられません。
+シンボル: 変数 RenderRequired
+場所    : org.kbinani.cadencii.TrackSelector の クラス
+                                                RenderRequired.Invoke( this, new int[] { AppManager.getSelected() } );
+                                                ^
+.\build\java\org\kbinani\cadencii\TrackSelector.java:2998: シンボルを見つけられません。
+シンボル: 変数 _mouse_hover_thread
+場所    : org.kbinani.cadencii.TrackSelector の クラス
+                            _mouse_hover_thread = new MouseHoverEventGeneratorProc();
+                            ^
+.\build\java\org\kbinani\cadencii\TrackSelector.java:2999: シンボルを見つけられません。
+シンボル: 変数 _mouse_hover_thread
+場所    : org.kbinani.cadencii.TrackSelector の クラス
+                            _mouse_hover_thread.start();
+                            ^
+.\build\java\org\kbinani\cadencii\TrackSelector.java:3133: シンボルを見つけられません。
+シンボル: 変数 _mouse_hover_thread
+場所    : org.kbinani.cadencii.TrackSelector の クラス
+                                _mouse_hover_thread = new MouseHoverEventGeneratorProc();
+                                ^
+.\build\java\org\kbinani\cadencii\TrackSelector.java:3134: シンボルを見つけられません。
+シンボル: 変数 _mouse_hover_thread
+場所    : org.kbinani.cadencii.TrackSelector の クラス
+                                _mouse_hover_thread.start();
+                                ^
+注:.\build\java\org\kbinani\windows\forms\InputBox.java は推奨されない API を使用またはオーバーライドしています。
+注:詳細については、-Xlint:deprecation オプションを指定して再コンパイルしてください。
+注:入力ファイルの操作のうち、未チェックまたは安全ではないものがあります。
+注:詳細については、-Xlint:unchecked オプションを指定して再コンパイルしてください。
+エラー 100 個
+mingw32-make: *** [jcadencii] Error 1
+-----------------------------------------------------------------------
+
 -general todo----------------------------------------------------------
 -splashウィンドウで，アイコンの部分などをdragしてもウィンドウが動くようにしたい
 -ゲームコントローラが使えない

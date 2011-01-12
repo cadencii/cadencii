@@ -28,7 +28,9 @@ using org.kbinani;
 using org.kbinani.java.awt;
 using org.kbinani.windows.forms;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
+    using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
 
 #endif
@@ -36,11 +38,13 @@ namespace org.kbinani.cadencii {
 #if JAVA
     public class FormSingerStyleConfig extends BDialog {
 #else
-    class FormSingerStyleConfig : BDialog {
+    class FormSingerStyleConfig : BDialog
+    {
 #endif
         boolean m_apply_current_track = false;
 
-        public FormSingerStyleConfig() {
+        public FormSingerStyleConfig()
+        {
 #if JAVA
             super();
             initialize();
@@ -55,7 +59,8 @@ namespace org.kbinani.cadencii {
         }
 
         #region public methods
-        public void applyLanguage() {
+        public void applyLanguage()
+        {
             lblTemplate.setText( _( "Template" ) + "(&T)" );
             groupPitchControl.setTitle( _( "Pitch Control" ) );
             lblBendDepth.setText( _( "Bend Depth" ) + "(&B)" );
@@ -76,26 +81,31 @@ namespace org.kbinani.cadencii {
 #endif
             setTitle( _( "Default Singer Style" ) );
         }
-        
-        public int getPMBendDepth() {
+
+        public int getPMBendDepth()
+        {
             return trackBendDepth.getValue();
         }
 
-        public void setPMBendDepth( int value ) {
+        public void setPMBendDepth( int value )
+        {
             trackBendDepth.setValue( value );
             txtBendDepth.setText( value + "" );
         }
 
-        public int getPMBendLength() {
+        public int getPMBendLength()
+        {
             return trackBendLength.getValue();
         }
 
-        public void setPMBendLength( int value ) {
+        public void setPMBendLength( int value )
+        {
             trackBendLength.setValue( value );
             txtBendLength.setText( value + "" );
         }
 
-        public int getPMbPortamentoUse() {
+        public int getPMbPortamentoUse()
+        {
             int ret = 0;
             if ( chkUpPortamento.isSelected() ) {
                 ret += 1;
@@ -106,7 +116,8 @@ namespace org.kbinani.cadencii {
             return ret;
         }
 
-        public void setPMbPortamentoUse( int value ) {
+        public void setPMbPortamentoUse( int value )
+        {
             if ( value % 2 == 1 ) {
                 chkUpPortamento.setSelected( true );
             } else {
@@ -119,59 +130,69 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public int getDEMdecGainRate() {
+        public int getDEMdecGainRate()
+        {
             return trackDecay.getValue();
         }
 
-        public void setDEMdecGainRate( int value ) {
+        public void setDEMdecGainRate( int value )
+        {
             trackDecay.setValue( value );
             txtDecay.setText( value + "" );
         }
 
-        public int getDEMaccent() {
+        public int getDEMaccent()
+        {
             return trackAccent.getValue();
         }
 
-        public void setDEMaccent( int value ) {
+        public void setDEMaccent( int value )
+        {
             trackAccent.setValue( value );
             txtAccent.setText( value + "" );
         }
 
-        public boolean getApplyCurrentTrack() {
+        public boolean getApplyCurrentTrack()
+        {
             return m_apply_current_track;
         }
         #endregion
 
         #region helper methods
-        private static String _( String id ) {
+        private static String _( String id )
+        {
             return Messaging.getMessage( id );
         }
 
-        private void registerEventHandlers() {
-            txtBendLength.TextChanged += new EventHandler( txtBendLength_TextChanged );
-            txtBendDepth.TextChanged += new EventHandler( txtBendDepth_TextChanged );
-            trackBendLength.ValueChanged += new EventHandler( trackBendLength_Scroll );
-            trackBendDepth.ValueChanged += new EventHandler( trackBendDepth_Scroll );
-            txtAccent.TextChanged += new EventHandler( txtAccent_TextChanged );
-            txtDecay.TextChanged += new EventHandler( txtDecay_TextChanged );
-            trackAccent.ValueChanged += new EventHandler( trackAccent_Scroll );
-            trackDecay.ValueChanged += new EventHandler( trackDecay_Scroll );
-            btnOK.Click += new EventHandler( btnOK_Click );
-            btnApply.Click += new EventHandler( btnApply_Click );
-            comboTemplate.SelectedIndexChanged += new EventHandler( comboBox1_SelectedIndexChanged );
-            btnCancel.Click += new EventHandler( btnCancel_Click );
+        private void registerEventHandlers()
+        {
+            txtBendLength.TextChanged += new BEventHandler( txtBendLength_TextChanged );
+            txtBendDepth.TextChanged += new BEventHandler( txtBendDepth_TextChanged );
+            trackBendLength.ValueChanged += new BEventHandler( trackBendLength_Scroll );
+            trackBendDepth.ValueChanged += new BEventHandler( trackBendDepth_Scroll );
+            txtAccent.TextChanged += new BEventHandler( txtAccent_TextChanged );
+            txtDecay.TextChanged += new BEventHandler( txtDecay_TextChanged );
+            trackAccent.ValueChanged += new BEventHandler( trackAccent_Scroll );
+            trackDecay.ValueChanged += new BEventHandler( trackDecay_Scroll );
+            btnOK.Click += new BEventHandler( btnOK_Click );
+            btnApply.Click += new BEventHandler( btnApply_Click );
+            comboTemplate.SelectedIndexChanged += new BEventHandler( comboBox1_SelectedIndexChanged );
+            btnCancel.Click += new BEventHandler( btnCancel_Click );
         }
 
-        private void setResources() {
+        private void setResources()
+        {
         }
         #endregion
 
         #region event handlers
-        public void trackBendDepth_Scroll( Object sender, EventArgs e ) {
+        public void trackBendDepth_Scroll( Object sender, EventArgs e )
+        {
             txtBendDepth.setText( trackBendDepth.getValue() + "" );
         }
 
-        public void txtBendDepth_TextChanged( Object sender, EventArgs e ) {
+        public void txtBendDepth_TextChanged( Object sender, EventArgs e )
+        {
             try {
                 int draft = PortUtil.parseInt( txtBendDepth.getText() );
                 if ( draft != trackBendDepth.getValue() ) {
@@ -189,11 +210,13 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void trackBendLength_Scroll( Object sender, EventArgs e ) {
+        public void trackBendLength_Scroll( Object sender, EventArgs e )
+        {
             txtBendLength.setText( trackBendLength.getValue() + "" );
         }
 
-        public void txtBendLength_TextChanged( Object sender, EventArgs e ) {
+        public void txtBendLength_TextChanged( Object sender, EventArgs e )
+        {
             try {
                 int draft = PortUtil.parseInt( txtBendLength.getText() );
                 if ( draft != trackBendLength.getValue() ) {
@@ -211,11 +234,13 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void trackDecay_Scroll( Object sender, EventArgs e ) {
+        public void trackDecay_Scroll( Object sender, EventArgs e )
+        {
             txtDecay.setText( trackDecay.getValue() + "" );
         }
 
-        public void txtDecay_TextChanged( Object sender, EventArgs e ) {
+        public void txtDecay_TextChanged( Object sender, EventArgs e )
+        {
             try {
                 int draft = PortUtil.parseInt( txtDecay.getText() );
                 if ( draft != trackDecay.getValue() ) {
@@ -233,11 +258,13 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void trackAccent_Scroll( Object sender, EventArgs e ) {
+        public void trackAccent_Scroll( Object sender, EventArgs e )
+        {
             txtAccent.setText( trackAccent.getValue() + "" );
         }
 
-        public void txtAccent_TextChanged( Object sender, EventArgs e ) {
+        public void txtAccent_TextChanged( Object sender, EventArgs e )
+        {
             try {
                 int draft = PortUtil.parseInt( txtAccent.getText() );
                 if ( draft != trackAccent.getValue() ) {
@@ -250,56 +277,59 @@ namespace org.kbinani.cadencii {
                     }
                     trackAccent.setValue( draft );
                 }
-            } catch ( Exception ex ){
+            } catch ( Exception ex ) {
                 //txtAccent.Text = trackAccent.Value + "";
             }
         }
 
-        public void btnOK_Click( Object sender, EventArgs e ) {
+        public void btnOK_Click( Object sender, EventArgs e )
+        {
             setDialogResult( BDialogResult.OK );
         }
 
-        public void comboBox1_SelectedIndexChanged( Object sender, EventArgs e ) {
+        public void comboBox1_SelectedIndexChanged( Object sender, EventArgs e )
+        {
             switch ( comboTemplate.getSelectedIndex() ) {
                 case 1:
-                    setPMBendDepth( 8 );
-                    setPMBendLength( 0 );
-                    setPMbPortamentoUse( 0 );
-                    setDEMdecGainRate( 50 );
-                    setDEMaccent( 50 );
-                    break;
+                setPMBendDepth( 8 );
+                setPMBendLength( 0 );
+                setPMbPortamentoUse( 0 );
+                setDEMdecGainRate( 50 );
+                setDEMaccent( 50 );
+                break;
                 case 2:
-                    setPMBendDepth( 8 );
-                    setPMBendLength( 0 );
-                    setPMbPortamentoUse( 0 );
-                    setDEMdecGainRate( 50 );
-                    setDEMaccent( 68 );
-                    break;
+                setPMBendDepth( 8 );
+                setPMBendLength( 0 );
+                setPMbPortamentoUse( 0 );
+                setDEMdecGainRate( 50 );
+                setDEMaccent( 68 );
+                break;
                 case 3:
-                    setPMBendDepth( 8 );
-                    setPMBendLength( 0 );
-                    setPMbPortamentoUse( 0 );
-                    setDEMdecGainRate( 70 );
-                    setDEMaccent( 80 );
-                    break;
+                setPMBendDepth( 8 );
+                setPMBendLength( 0 );
+                setPMbPortamentoUse( 0 );
+                setDEMdecGainRate( 70 );
+                setDEMaccent( 80 );
+                break;
                 case 4:
-                    setPMBendDepth( 20 );
-                    setPMBendLength( 0 );
-                    setPMbPortamentoUse( 3 );
-                    setDEMdecGainRate( 50 );
-                    setDEMaccent( 42 );
-                    break;
+                setPMBendDepth( 20 );
+                setPMBendLength( 0 );
+                setPMbPortamentoUse( 3 );
+                setDEMdecGainRate( 50 );
+                setDEMaccent( 42 );
+                break;
                 case 5:
-                    setPMBendDepth( 20 );
-                    setPMBendLength( 0 );
-                    setPMbPortamentoUse( 3 );
-                    setDEMdecGainRate( 50 );
-                    setDEMaccent( 25 );
-                    break;
+                setPMBendDepth( 20 );
+                setPMBendLength( 0 );
+                setPMbPortamentoUse( 3 );
+                setDEMdecGainRate( 50 );
+                setDEMaccent( 25 );
+                break;
             }
         }
 
-        public void btnApply_Click( Object sender, EventArgs e ) {
+        public void btnApply_Click( Object sender, EventArgs e )
+        {
             if ( AppManager.showMessageBox( _( "Would you like to change singer style for all events?" ),
                                   FormMain._APP_NAME,
                                   org.kbinani.windows.forms.Utility.MSGBOX_YES_NO_OPTION,
@@ -309,7 +339,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void btnCancel_Click( Object sender, EventArgs e ) {
+        public void btnCancel_Click( Object sender, EventArgs e )
+        {
             setDialogResult( BDialogResult.CANCEL );
         }
         #endregion
@@ -331,7 +362,8 @@ namespace org.kbinani.cadencii {
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing ) {
+        protected override void Dispose( boolean disposing )
+        {
             if ( disposing && (components != null) ) {
                 components.Dispose();
             }
@@ -344,7 +376,8 @@ namespace org.kbinani.cadencii {
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
         /// コード エディタで変更しないでください。
         /// </summary>
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             this.groupPitchControl = new BGroupBox();
             this.label5 = new BLabel();
             this.label4 = new BLabel();

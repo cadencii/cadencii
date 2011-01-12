@@ -25,17 +25,21 @@ using org.kbinani.apputil;
 using org.kbinani;
 using org.kbinani.windows.forms;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using boolean = System.Boolean;
     using BEventArgs = System.EventArgs;
+    using BEventHandler = System.EventHandler;
 #endif
 
 #if JAVA
     public class FormNoteProperty extends BForm{
 #else
-    public class FormNoteProperty : BForm {
+    public class FormNoteProperty : BForm
+    {
 #endif
-        public FormNoteProperty() {
+        public FormNoteProperty()
+        {
 #if JAVA
             super();
             initialize();
@@ -49,34 +53,41 @@ namespace org.kbinani.cadencii {
         }
 
         #region public methods
-        public void applyLanguage() {
+        public void applyLanguage()
+        {
             setTitle( _( "Note Property" ) );
         }
 
-        public BKeys[] getFormCloseShortcutKey() {
+        public BKeys[] getFormCloseShortcutKey()
+        {
             return BKeysUtility.getBKeysFromKeyStroke( menuClose.getAccelerator() );
         }
 
-        public void setFormCloseShortcutKey( BKeys[] value ) {
+        public void setFormCloseShortcutKey( BKeys[] value )
+        {
             menuClose.setAccelerator( BKeysUtility.getKeyStrokeFromBKeys( value ) );
         }
         #endregion
 
         #region helper methods
-        private static String _( String id ) {
+        private static String _( String id )
+        {
             return Messaging.getMessage( id );
         }
 
-        private void registerEventHandlers() {
-            menuClose.Click += new EventHandler( menuClose_Click );
+        private void registerEventHandlers()
+        {
+            menuClose.Click += new BEventHandler( menuClose_Click );
         }
 
-        private void setResources() {
+        private void setResources()
+        {
         }
         #endregion
 
         #region event handlers
-        public void menuClose_Click( Object sender, BEventArgs e ) {
+        public void menuClose_Click( Object sender, BEventArgs e )
+        {
             close();
         }
         #endregion
@@ -98,7 +109,8 @@ namespace org.kbinani.cadencii {
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing ) {
+        protected override void Dispose( boolean disposing )
+        {
             if ( disposing && (components != null) ) {
                 components.Dispose();
             }
@@ -111,7 +123,8 @@ namespace org.kbinani.cadencii {
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
         /// コード エディタで変更しないでください。
         /// </summary>
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             this.menuStrip = new BMenuBar();
             this.menuWindow = new BMenuItem();
             this.menuClose = new BMenuItem();

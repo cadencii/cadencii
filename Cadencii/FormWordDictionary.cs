@@ -29,17 +29,21 @@ using org.kbinani;
 using org.kbinani.java.util;
 using org.kbinani.windows.forms;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
+    using BEventHandler = System.EventHandler;
 #endif
 
 #if JAVA
     public class FormWordDictionary extends BDialog {
 #else
-    class FormWordDictionary : BDialog {
+    class FormWordDictionary : BDialog
+    {
 #endif
-        public FormWordDictionary() {
+        public FormWordDictionary()
+        {
 #if JAVA
             super();
             initialize();
@@ -53,7 +57,8 @@ namespace org.kbinani.cadencii {
         }
 
         #region public methods
-        public void applyLanguage() {
+        public void applyLanguage()
+        {
             setTitle( _( "User Dictionary Configuration" ) );
             lblAvailableDictionaries.setText( _( "Available Dictionaries" ) );
             btnOK.setText( _( "OK" ) );
@@ -62,7 +67,8 @@ namespace org.kbinani.cadencii {
             btnDown.setText( _( "Down" ) );
         }
 
-        public Vector<ValuePair<String, Boolean>> getResult() {
+        public Vector<ValuePair<String, Boolean>> getResult()
+        {
             Vector<ValuePair<String, Boolean>> ret = new Vector<ValuePair<String, Boolean>>();
             int count = listDictionaries.getItemCount( "" );
 #if DEBUG
@@ -77,24 +83,28 @@ namespace org.kbinani.cadencii {
         #endregion
 
         #region helper methods
-        private static String _( String id ) {
+        private static String _( String id )
+        {
             return Messaging.getMessage( id );
         }
 
-        private void registerEventHandlers() {
-            this.Load += new EventHandler( FormWordDictionary_Load );
-            btnOK.Click += new EventHandler( btnOK_Click );
-            btnUp.Click += new EventHandler( btnUp_Click );
-            btnDown.Click += new EventHandler( btnDown_Click );
-            btnCancel.Click += new EventHandler( btnCancel_Click );
+        private void registerEventHandlers()
+        {
+            this.Load += new BEventHandler( FormWordDictionary_Load );
+            btnOK.Click += new BEventHandler( btnOK_Click );
+            btnUp.Click += new BEventHandler( btnUp_Click );
+            btnDown.Click += new BEventHandler( btnDown_Click );
+            btnCancel.Click += new BEventHandler( btnCancel_Click );
         }
 
-        private void setResources() {
+        private void setResources()
+        {
         }
         #endregion
 
         #region event handlers
-        public void FormWordDictionary_Load( Object sender, BEventArgs e ) {
+        public void FormWordDictionary_Load( Object sender, BEventArgs e )
+        {
             listDictionaries.clear();
             for ( int i = 0; i < SymbolTable.getCount(); i++ ) {
                 String name = SymbolTable.getSymbolTable( i ).getName();
@@ -105,11 +115,13 @@ namespace org.kbinani.cadencii {
             listDictionaries.setColumnWidth( 0, listDictionaries.getWidth() );
         }
 
-        public void btnOK_Click( Object sender, BEventArgs e ) {
+        public void btnOK_Click( Object sender, BEventArgs e )
+        {
             setDialogResult( BDialogResult.OK );
         }
 
-        public void btnUp_Click( Object sender, BEventArgs e ) {
+        public void btnUp_Click( Object sender, BEventArgs e )
+        {
             int index = listDictionaries.getSelectedIndex( "" );
             if ( index >= 1 ) {
                 try {
@@ -131,7 +143,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void btnDown_Click( Object sender, BEventArgs e ) {
+        public void btnDown_Click( Object sender, BEventArgs e )
+        {
             int index = listDictionaries.getSelectedIndex( "" );
             if ( 0 <= index && index + 1 < listDictionaries.getItemCount( "" ) ) {
                 try {
@@ -153,7 +166,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e ) {
+        public void btnCancel_Click( Object sender, BEventArgs e )
+        {
             setDialogResult( BDialogResult.CANCEL );
         }
         #endregion
@@ -175,7 +189,8 @@ namespace org.kbinani.cadencii {
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing ) {
+        protected override void Dispose( boolean disposing )
+        {
             if ( disposing && (components != null) ) {
                 components.Dispose();
             }
@@ -188,7 +203,8 @@ namespace org.kbinani.cadencii {
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
         /// コード エディタで変更しないでください。
         /// </summary>
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );

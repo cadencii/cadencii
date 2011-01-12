@@ -24,17 +24,21 @@ using System;
 using org.kbinani.apputil;
 using org.kbinani.windows.forms;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using boolean = System.Boolean;
     using BEventArgs = System.EventArgs;
+    using BEventHandler = System.EventHandler;
 #endif
 
 #if JAVA
     public class FormTempoConfig extends BDialog {
 #else
-    class FormTempoConfig : BDialog {
+    class FormTempoConfig : BDialog
+    {
 #endif
-        public FormTempoConfig( int bar_count, int beat, int beat_max, int clock, int clock_max, float tempo, int pre_measure ) {
+        public FormTempoConfig( int bar_count, int beat, int beat_max, int clock, int clock_max, float tempo, int pre_measure )
+        {
 #if JAVA
             super();
             initialize();
@@ -59,7 +63,8 @@ namespace org.kbinani.cadencii {
         }
 
         #region public methods
-        public void applyLanguage() {
+        public void applyLanguage()
+        {
             setTitle( _( "Global Tempo" ) );
             groupPosition.setTitle( _( "Position" ) );
             lblBar.setText( _( "Measure" ) + "(&M)" );
@@ -70,40 +75,48 @@ namespace org.kbinani.cadencii {
             btnCancel.setText( _( "Cancel" ) );
         }
 
-        public int getBeatCount() {
+        public int getBeatCount()
+        {
             return (int)numBeat.getValue();
         }
 
-        public int getClock() {
+        public int getClock()
+        {
             return (int)numClock.getValue();
         }
 
-        public float getTempo() {
+        public float getTempo()
+        {
             return numTempo.getValue();
         }
         #endregion
 
         #region event handlers
-        public void btnOK_Click( Object sender, BEventArgs e ) {
+        public void btnOK_Click( Object sender, BEventArgs e )
+        {
             setDialogResult( BDialogResult.OK );
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e ) {
+        public void btnCancel_Click( Object sender, BEventArgs e )
+        {
             setDialogResult( BDialogResult.CANCEL );
         }
         #endregion
 
         #region helper methods
-        private static String _( String id ) {
+        private static String _( String id )
+        {
             return Messaging.getMessage( id );
         }
 
-        private void registerEventHandlers() {
-            btnOK.Click += new EventHandler( btnOK_Click );
-            btnCancel.Click += new EventHandler( btnCancel_Click );
+        private void registerEventHandlers()
+        {
+            btnOK.Click += new BEventHandler( btnOK_Click );
+            btnCancel.Click += new BEventHandler( btnCancel_Click );
         }
 
-        private void setResources() {
+        private void setResources()
+        {
         }
         #endregion
 
@@ -121,7 +134,8 @@ namespace org.kbinani.cadencii {
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing ) {
+        protected override void Dispose( boolean disposing )
+        {
             if ( disposing && (components != null) ) {
                 components.Dispose();
             }
@@ -134,7 +148,8 @@ namespace org.kbinani.cadencii {
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
         /// コード エディタで変更しないでください。
         /// </summary>
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             this.groupPosition = new BGroupBox();
             this.numClock = new org.kbinani.cadencii.NumericUpDownEx();
             this.numBeat = new org.kbinani.cadencii.NumericUpDownEx();

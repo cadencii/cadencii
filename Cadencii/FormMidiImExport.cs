@@ -26,18 +26,22 @@ using org.kbinani.apputil;
 using org.kbinani.java.awt;
 using org.kbinani.windows.forms;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using BEventArgs = System.EventArgs;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
+    using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
 #endif
 
 #if JAVA
     public class FormMidiImExport extends BDialog {
 #else
-    public class FormMidiImExport : BDialog {
+    public class FormMidiImExport : BDialog
+    {
 #endif
-        public enum FormMidiMode {
+        public enum FormMidiMode
+        {
             IMPORT,
             EXPORT,
             IMPORT_VSQ,
@@ -49,7 +53,8 @@ namespace org.kbinani.cadencii {
         private static int columnWidthName = 122;
         private static int columnWidthNotes = 126;
 
-        public FormMidiImExport() {
+        public FormMidiImExport()
+        {
 #if JAVA
             super();
             initialize();
@@ -72,7 +77,8 @@ namespace org.kbinani.cadencii {
         }
 
         #region public methods
-        public void applyLanguage() {
+        public void applyLanguage()
+        {
             if ( m_mode == FormMidiMode.EXPORT ) {
                 setTitle( _( "Midi Export" ) );
             } else if ( m_mode == FormMidiMode.IMPORT ) {
@@ -102,7 +108,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public double getOffsetSeconds() {
+        public double getOffsetSeconds()
+        {
             double v = 0.0;
             try {
                 v = PortUtil.parseDouble( txtOffset.getText() );
@@ -113,7 +120,8 @@ namespace org.kbinani.cadencii {
             return v;
         }
 
-        public int getOffsetClocks() {
+        public int getOffsetClocks()
+        {
             int v = 0;
             try {
                 v = PortUtil.parseInt( txtOffset.getText() );
@@ -124,15 +132,18 @@ namespace org.kbinani.cadencii {
             return v;
         }
 
-        public boolean isSecondBasis() {
+        public boolean isSecondBasis()
+        {
             return radioPlayTime.isSelected();
         }
 
-        public FormMidiMode getMode() {
+        public FormMidiMode getMode()
+        {
             return m_mode;
         }
 
-        public void setMode( FormMidiMode value ) {
+        public void setMode( FormMidiMode value )
+        {
             m_mode = value;
             chkExportVocaloidNrpn.setEnabled( (m_mode == FormMidiMode.EXPORT) );
             chkLyric.setEnabled( (m_mode != FormMidiMode.IMPORT_VSQ) );
@@ -173,7 +184,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public boolean isVocaloidMetatext() {
+        public boolean isVocaloidMetatext()
+        {
             if ( chkNote.isSelected() ) {
                 return false;
             } else {
@@ -181,76 +193,90 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public boolean isVocaloidNrpn() {
+        public boolean isVocaloidNrpn()
+        {
             return chkExportVocaloidNrpn.isSelected();
         }
 
-        public boolean isTempo() {
+        public boolean isTempo()
+        {
             return chkTempo.isSelected();
         }
 
-        public void setTempo( boolean value ) {
+        public void setTempo( boolean value )
+        {
             chkTempo.setSelected( value );
         }
 
-        public boolean isTimesig() {
+        public boolean isTimesig()
+        {
             return chkBeat.isSelected();
         }
 
-        public void setTimesig( boolean value ) {
+        public void setTimesig( boolean value )
+        {
             chkBeat.setSelected( value );
         }
 
-        public boolean isNotes() {
+        public boolean isNotes()
+        {
             return chkNote.isSelected();
         }
 
-        public boolean isLyric() {
+        public boolean isLyric()
+        {
             return chkLyric.isSelected();
         }
 
-        public boolean isPreMeasure() {
+        public boolean isPreMeasure()
+        {
             return chkPreMeasure.isSelected();
         }
         #endregion
 
         #region helper methods
-        private static String _( String id ) {
+        private static String _( String id )
+        {
             return Messaging.getMessage( id );
         }
 
-        private void registerEventHandlers() {
-            btnCheckAll.Click += new EventHandler( btnCheckAll_Click );
-            btnUncheckAll.Click += new EventHandler( btnUnckeckAll_Click );
-            chkNote.CheckedChanged += new EventHandler( chkNote_CheckedChanged );
-            chkMetaText.Click += new EventHandler( chkMetaText_Click );
-            chkExportVocaloidNrpn.CheckedChanged += new EventHandler( chkExportVocaloidNrpn_CheckedChanged );
-            chkExportVocaloidNrpn.CheckedChanged += new EventHandler( chkExportVocaloidNrpn_CheckedChanged );
+        private void registerEventHandlers()
+        {
+            btnCheckAll.Click += new BEventHandler( btnCheckAll_Click );
+            btnUncheckAll.Click += new BEventHandler( btnUnckeckAll_Click );
+            chkNote.CheckedChanged += new BEventHandler( chkNote_CheckedChanged );
+            chkMetaText.Click += new BEventHandler( chkMetaText_Click );
+            chkExportVocaloidNrpn.CheckedChanged += new BEventHandler( chkExportVocaloidNrpn_CheckedChanged );
+            chkExportVocaloidNrpn.CheckedChanged += new BEventHandler( chkExportVocaloidNrpn_CheckedChanged );
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( FormMidiImExport_FormClosing );
-            btnOK.Click += new EventHandler( btnOK_Click );
-            btnCancel.Click += new EventHandler( btnCancel_Click );
-            radioGateTime.CheckedChanged += new EventHandler( radioGateTime_CheckedChanged );
-            radioPlayTime.CheckedChanged += new EventHandler( radioPlayTime_CheckedChanged );
+            btnOK.Click += new BEventHandler( btnOK_Click );
+            btnCancel.Click += new BEventHandler( btnCancel_Click );
+            radioGateTime.CheckedChanged += new BEventHandler( radioGateTime_CheckedChanged );
+            radioPlayTime.CheckedChanged += new BEventHandler( radioPlayTime_CheckedChanged );
         }
 
-        private void setResources() {
+        private void setResources()
+        {
         }
         #endregion
 
         #region event handlers
-        public void btnCheckAll_Click( Object sender, BEventArgs e ) {
+        public void btnCheckAll_Click( Object sender, BEventArgs e )
+        {
             for ( int i = 0; i < listTrack.getItemCount( "" ); i++ ) {
                 listTrack.setItemCheckedAt( "", i, true );
             }
         }
 
-        public void btnUnckeckAll_Click( Object sender, BEventArgs e ) {
+        public void btnUnckeckAll_Click( Object sender, BEventArgs e )
+        {
             for ( int i = 0; i < listTrack.getItemCount( "" ); i++ ) {
                 listTrack.setItemCheckedAt( "", i, false );
             }
         }
 
-        public void chkExportVocaloidNrpn_CheckedChanged( Object sender, BEventArgs e ) {
+        public void chkExportVocaloidNrpn_CheckedChanged( Object sender, BEventArgs e )
+        {
             if ( m_mode == FormMidiMode.EXPORT ) {
                 if ( chkExportVocaloidNrpn.isSelected() ) {
                     chkPreMeasure.setEnabled( false );
@@ -263,7 +289,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void chkNote_CheckedChanged( Object sender, BEventArgs e ) {
+        public void chkNote_CheckedChanged( Object sender, BEventArgs e )
+        {
             if ( m_mode == FormMidiMode.EXPORT ) {
                 if ( chkNote.isSelected() ) {
                     chkMetaText.setEnabled( false );
@@ -276,34 +303,40 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void chkMetaText_Click( Object sender, BEventArgs e ) {
+        public void chkMetaText_Click( Object sender, BEventArgs e )
+        {
             if ( m_mode == FormMidiMode.EXPORT ) {
                 AppManager.editorConfig.MidiImExportConfigExport.LastMetatextCheckStatus = chkMetaText.isSelected();
             }
         }
 
-        public void FormMidiImExport_FormClosing( Object sender, BFormClosingEventArgs e ) {
+        public void FormMidiImExport_FormClosing( Object sender, BFormClosingEventArgs e )
+        {
             columnWidthTrack = listTrack.getColumnWidth( 0 );
             columnWidthName = listTrack.getColumnWidth( 1 );
             columnWidthNotes = listTrack.getColumnWidth( 2 );
         }
 
-        public void btnCancel_Click( Object sender, BEventArgs e ) {
+        public void btnCancel_Click( Object sender, BEventArgs e )
+        {
             setDialogResult( BDialogResult.CANCEL );
         }
 
-        public void btnOK_Click( Object sender, BEventArgs e ) {
+        public void btnOK_Click( Object sender, BEventArgs e )
+        {
             setDialogResult( BDialogResult.OK );
         }
 
-        public void radioGateTime_CheckedChanged( Object sender, EventArgs e ) {
+        public void radioGateTime_CheckedChanged( Object sender, EventArgs e )
+        {
             if ( radioGateTime.isSelected() ) {
                 lblOffsetUnit.setText( _( "clocks" ) );
                 txtOffset.setType( NumberTextBox.ValueType.Integer );
             }
         }
 
-        public void radioPlayTime_CheckedChanged( Object sender, EventArgs e ) {
+        public void radioPlayTime_CheckedChanged( Object sender, EventArgs e )
+        {
             if ( radioPlayTime.isSelected() ) {
                 lblOffsetUnit.setText( _( "seconds" ) );
                 txtOffset.setType( NumberTextBox.ValueType.Double );
@@ -325,7 +358,8 @@ namespace org.kbinani.cadencii {
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing ) {
+        protected override void Dispose( boolean disposing )
+        {
             if ( disposing && (components != null) ) {
                 components.Dispose();
             }
@@ -336,7 +370,8 @@ namespace org.kbinani.cadencii {
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
         /// コード エディタで変更しないでください。
         /// </summary>
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );

@@ -31,18 +31,21 @@ using org.kbinani.java.awt;
 using org.kbinani.java.awt.image;
 using org.kbinani.windows.forms;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using BEventArgs = System.EventArgs;
     using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
     using boolean = System.Boolean;
     using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
+    using BEventHandler = System.EventHandler;
     using Graphics = org.kbinani.java.awt.Graphics2D;
 #endif
 
 #if JAVA
     public class VersionInfo extends BDialog {
 #else
-    public class VersionInfo : BDialog {
+    public class VersionInfo : BDialog
+    {
 #endif
         const float m_speed = 35f;
         const int m_height = 380;
@@ -67,7 +70,8 @@ namespace org.kbinani.cadencii {
         private BTimer timer;
         private boolean m_show_twitter_id = false;
 
-        public VersionInfo( String app_name, String version ) {
+        public VersionInfo( String app_name, String version )
+        {
 #if JAVA
             super();
             initialize();
@@ -103,15 +107,18 @@ namespace org.kbinani.cadencii {
             chkTwitterID.setVisible( false );
         }
 
-        public boolean isShowTwitterID() {
+        public boolean isShowTwitterID()
+        {
             return m_show_twitter_id;
         }
 
-        public void setShowTwitterID( boolean value ) {
+        public void setShowTwitterID( boolean value )
+        {
             m_show_twitter_id = value;
         }
 
-        public void applyLanguage() {
+        public void applyLanguage()
+        {
             String about = PortUtil.formatMessage( _( "About {0}" ), m_app_name );
             String credit = _( "Credit" );
             Dimension size1 = Util.measureString( about, btnFlip.getFont() );
@@ -132,18 +139,21 @@ namespace org.kbinani.cadencii {
             setTitle( about );
         }
 
-        public static String _( String s ) {
+        public static String _( String s )
+        {
             return Messaging.getMessage( s );
         }
 
         /// <summary>
         /// バージョン番号表示の文字色を取得または設定します
         /// </summary>
-        public Color getVersionColor() {
+        public Color getVersionColor()
+        {
             return m_version_color;
         }
 
-        public void setVersionColor( Color value ) {
+        public void setVersionColor( Color value )
+        {
             m_version_color = value;
             lblVstLogo.setForeground( value );
             lblStraightAcknowledgement.setForeground( value );
@@ -152,35 +162,42 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// アプリケーション名表示の文字色を取得または設定します
         /// </summary>
-        public Color getAppNameColor() {
+        public Color getAppNameColor()
+        {
             return m_app_name_color;
         }
 
-        public void setAppNameColor( Color value ) {
+        public void setAppNameColor( Color value )
+        {
             m_app_name_color = value;
         }
 
 #if !JAVA
-        public void setCredit( BufferedImage value ) {
+        public void setCredit( BufferedImage value )
+        {
             m_scroll = value;
         }
 #endif
 
-        public String getAppName() {
+        public String getAppName()
+        {
             return m_app_name;
         }
 
-        public void setAppName( String value ) {
+        public void setAppName( String value )
+        {
             m_app_name = value;
         }
 
-        public void setAuthorList( AuthorListEntry[] value ) {
+        public void setAuthorList( AuthorListEntry[] value )
+        {
             m_credit = value;
             m_scroll = generateAuthorListB( false );
             m_scroll_with_id = generateAuthorListB( true );
         }
 
-        private BufferedImage generateAuthorListB( boolean show_twitter_id ) {
+        private BufferedImage generateAuthorListB( boolean show_twitter_id )
+        {
             int shadow_shift = 2;
             String font_name = "Arial";
             int font_size = 10;
@@ -240,7 +257,8 @@ namespace org.kbinani.cadencii {
             return ret;
         }
 
-        void btnSaveAuthorList_Click( Object sender, BEventArgs e ) {
+        void btnSaveAuthorList_Click( Object sender, BEventArgs e )
+        {
 #if !JAVA
 #if DEBUG
             SaveFileDialog dlg = null;
@@ -260,13 +278,15 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        public void btnOK_Click( Object sender, BEventArgs e ) {
+        public void btnOK_Click( Object sender, BEventArgs e )
+        {
             setDialogResult( BDialogResult.OK );
             timer.stop();
             close();
         }
 
-        public void btnFlip_Click( Object sender, BEventArgs e ) {
+        public void btnFlip_Click( Object sender, BEventArgs e )
+        {
             m_credit_mode = !m_credit_mode;
             if ( m_credit_mode ) {
                 btnFlip.setPreferredSize( new Dimension( m_button_width_about, btnFlip.getHeight() ) );
@@ -296,7 +316,8 @@ namespace org.kbinani.cadencii {
             invalidate();
         }
 
-        public void timer_Tick( Object sender, BEventArgs e ) {
+        public void timer_Tick( Object sender, BEventArgs e )
+        {
 #if DEBUG
             PortUtil.println( "VersionInfo#timer_Tick" );
 #endif
@@ -307,7 +328,8 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        public void VersionInfo_Paint( Object sender, BPaintEventArgs e ) {
+        public void VersionInfo_Paint( Object sender, BPaintEventArgs e )
+        {
             try {
 #if JAVA
                 e.Graphics.setColor( Color.white );
@@ -323,7 +345,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void paintCor( Graphics g1 ) {
+        private void paintCor( Graphics g1 )
+        {
             Graphics2D g = (Graphics2D)g1;
             g.clipRect( 0, 0, getWidth(), m_height );
             g.clearRect( 0, 0, getWidth(), getHeight() );
@@ -356,19 +379,21 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void VersionInfo_KeyDown( Object sender, BKeyEventArgs e ) {
+        private void VersionInfo_KeyDown( Object sender, BKeyEventArgs e )
+        {
 #if JAVA
             if( (e.getKeyCode() & KeyEvent.VK_ESCAPE) == KeyEvent.VK_ESCAPE )
 #else
-            if ( (e.KeyCode & Keys.Escape) == Keys.Escape ) 
+            if ( (e.KeyCode & Keys.Escape) == Keys.Escape )
 #endif
-            {
+ {
                 setDialogResult( BDialogResult.CANCEL );
                 close();
             }
         }
 
-        private void VersionInfo_FontChanged( Object sender, BEventArgs e ) {
+        private void VersionInfo_FontChanged( Object sender, BEventArgs e )
+        {
 #if JAVA
             Util.applyFontRecurse( this, getFont() );
 #else
@@ -378,26 +403,29 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        public void chkTwitterID_CheckedChanged( Object sender, BEventArgs e ) {
+        public void chkTwitterID_CheckedChanged( Object sender, BEventArgs e )
+        {
             m_show_twitter_id = chkTwitterID.isSelected();
             repaint();
         }
 
-        private void registerEventHandlers() {
+        private void registerEventHandlers()
+        {
 #if JAVA
             this.panelCredit.paintEvent.add( new BPaintEventHandler( this, "VersionInfo_Paint" ) );
 #else
             this.Paint += new System.Windows.Forms.PaintEventHandler( this.VersionInfo_Paint );
             this.KeyDown += new System.Windows.Forms.KeyEventHandler( this.VersionInfo_KeyDown );
-            this.FontChanged += new System.EventHandler( this.VersionInfo_FontChanged );
+            this.FontChanged += new BEventHandler( this.VersionInfo_FontChanged );
 #endif
-            this.timer.Tick += new EventHandler( timer_Tick );
-            this.btnFlip.Click += new EventHandler( btnFlip_Click );
-            this.btnOK.Click += new EventHandler( btnOK_Click );
-            this.chkTwitterID.CheckedChanged += new EventHandler( chkTwitterID_CheckedChanged );
+            this.timer.Tick += new BEventHandler( timer_Tick );
+            this.btnFlip.Click += new BEventHandler( btnFlip_Click );
+            this.btnOK.Click += new BEventHandler( btnOK_Click );
+            this.chkTwitterID.CheckedChanged += new BEventHandler( chkTwitterID_CheckedChanged );
         }
 
-        private void setResources() {
+        private void setResources()
+        {
             pictVstLogo.setImage( Resources.get_VSTonWht() );
         }
 
@@ -415,7 +443,8 @@ namespace org.kbinani.cadencii {
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
         /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-        protected override void Dispose( boolean disposing ) {
+        protected override void Dispose( boolean disposing )
+        {
             if ( disposing && (components != null) ) {
                 components.Dispose();
             }
@@ -428,7 +457,8 @@ namespace org.kbinani.cadencii {
         /// デザイナ サポートに必要なメソッドです。このメソッドの内容を
         /// コード エディタで変更しないでください。
         /// </summary>
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             this.btnFlip = new org.kbinani.windows.forms.BButton();
             this.btnOK = new org.kbinani.windows.forms.BButton();
             this.lblVstLogo = new org.kbinani.windows.forms.BLabel();

@@ -24,17 +24,21 @@ using System;
 using org.kbinani.windows.forms;
 using org.kbinani.apputil;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using boolean = System.Boolean;
     using BEventArgs = System.EventArgs;
+    using BEventHandler = System.EventHandler;
 #endif
 
 #if JAVA
     public class FormAskKeySoundGeneration extends BDialog {
 #else
-    public class FormAskKeySoundGeneration : BDialog {
+    public class FormAskKeySoundGeneration : BDialog
+    {
 #endif
-        public FormAskKeySoundGeneration() {
+        public FormAskKeySoundGeneration()
+        {
 #if JAVA
             super();
             initialize();
@@ -47,39 +51,46 @@ namespace org.kbinani.cadencii {
         }
 
         #region public methods
-        public void applyLanguage() {
+        public void applyLanguage()
+        {
             lblMessage.setText( _( "It seems some key-board sounds are missing. Do you want to re-generate them now?" ) );
             chkAlwaysPerformThisCheck.setText( _( "Always perform this check when starting Cadencii." ) );
             btnYes.setText( _( "Yes" ) );
             btnNo.setText( _( "No" ) );
         }
 
-        public void setAlwaysPerformThisCheck( boolean value ) {
+        public void setAlwaysPerformThisCheck( boolean value )
+        {
             chkAlwaysPerformThisCheck.setSelected( value );
         }
 
-        public boolean isAlwaysPerformThisCheck() {
+        public boolean isAlwaysPerformThisCheck()
+        {
             return chkAlwaysPerformThisCheck.isSelected();
         }
         #endregion
 
         #region helper methods
-        private static String _( String id ) {
+        private static String _( String id )
+        {
             return Messaging.getMessage( id );
         }
 
-        private void registerEventHandlers() {
-            btnYes.Click += new EventHandler( btnYes_Click );
-            btnNo.Click += new EventHandler( btnNo_Click );
+        private void registerEventHandlers()
+        {
+            btnYes.Click += new BEventHandler( btnYes_Click );
+            btnNo.Click += new BEventHandler( btnNo_Click );
         }
         #endregion
 
         #region event handlers
-        public void btnYes_Click( Object sender, BEventArgs e ) {
+        public void btnYes_Click( Object sender, BEventArgs e )
+        {
             setDialogResult( BDialogResult.YES );
         }
 
-        public void btnNo_Click( Object sender, BEventArgs e ) {
+        public void btnNo_Click( Object sender, BEventArgs e )
+        {
             setDialogResult( BDialogResult.NO );
         }
         #endregion
@@ -89,7 +100,8 @@ namespace org.kbinani.cadencii {
         //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/cadencii/FormAskKeySoundGeneration.java
         //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/cadencii/FormAskKeySoundGeneration.java
 #else
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             this.btnNo = new org.kbinani.windows.forms.BButton();
             this.btnYes = new org.kbinani.windows.forms.BButton();
             this.chkAlwaysPerformThisCheck = new org.kbinani.windows.forms.BCheckBox();
