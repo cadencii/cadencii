@@ -30,7 +30,7 @@ using System;
 
 namespace org.kbinani.cadencii {
 
-    public delegate void SelectedCurveChangedEventHandler( object sender, CurveType curve_type );
+    public delegate void SelectedCurveChangedEventHandler( Object sender, CurveType curve_type );
 
 }
 #endif

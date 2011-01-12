@@ -57,7 +57,7 @@ namespace org.kbinani.cadencii {
             // 既存のスクリプトに無いまたは新しいやつはロード。
             Vector<String> added = new Vector<String>(); //追加または更新が行われたスクリプトのID
             foreach ( String file in files ) {
-                string id = PortUtil.getFileName( file );
+                String id = PortUtil.getFileName( file );
                 double time = PortUtil.getFileLastModified( file );
                 added.add( id );
 

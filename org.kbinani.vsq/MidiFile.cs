@@ -23,13 +23,15 @@ using org.kbinani;
 using org.kbinani.java.util;
 using org.kbinani.java.io;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
     using boolean = System.Boolean;
     using Long = System.Int64;
     using Integer = System.Int32;
 #endif
 
-    public class MidiFile {
+    public class MidiFile
+    {
         private Vector<Vector<MidiEvent>> m_events;
         private int m_format;
         private int m_time_format;
@@ -172,7 +174,8 @@ namespace org.kbinani.vsq {
             }
         }
 
-        public Vector<MidiEvent> getMidiEventList( int track ) {
+        public Vector<MidiEvent> getMidiEventList( int track )
+        {
             if ( m_events == null ) {
                 return new Vector<MidiEvent>();
             } else if ( 0 <= track && track < m_events.size() ) {
@@ -182,7 +185,8 @@ namespace org.kbinani.vsq {
             }
         }
 
-        public int getTrackCount() {
+        public int getTrackCount()
+        {
             if ( m_events == null ) {
                 return 0;
             } else {
@@ -190,7 +194,8 @@ namespace org.kbinani.vsq {
             }
         }
 
-        public void close() {
+        public void close()
+        {
             if ( m_events != null ) {
                 int c = m_events.size();
                 for ( int i = 0; i < c; i++ ) {

@@ -183,12 +183,12 @@ namespace org.kbinani.cadencii {
         }
 
         private void registerEventHandlers() {
-            Load += new EventHandler( FormSynthesize_Load );
+            this.Load += new EventHandler( FormSynthesize_Load );
             bgWork.DoWork += new System.ComponentModel.DoWorkEventHandler( bgWork_DoWork );
             bgWork.RunWorkerCompleted += 
                 new System.ComponentModel.RunWorkerCompletedEventHandler( bgWork_RunWorkerCompleted );
             timer.Tick += new EventHandler( timer_Tick );
-            FormClosing += new FormClosingEventHandler( FormSynthesize_FormClosing );
+            this.FormClosing += new FormClosingEventHandler( FormSynthesize_FormClosing );
             btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
@@ -202,7 +202,7 @@ namespace org.kbinani.cadencii {
             startSynthesize();
         }
 
-        public void bgWork_DoWork( object sender, BDoWorkEventArgs e ) {
+        public void bgWork_DoWork( Object sender, BDoWorkEventArgs e ) {
             try {
                 int channel = mVsq.config.WaveFileOutputChannel == 1 ? 1 : 2;
                 double amp_master = VocaloSysUtil.getAmplifyCoeffFromFeder( mVsq.Mixer.MasterFeder );

@@ -1,3 +1,4 @@
+#if !JAVA
 #if !MONO
 /*
  * RebarDesigner.cs
@@ -138,4 +139,5 @@ namespace org.kbinani.windows.forms {
 
     }
 }
+#endif
 #endif

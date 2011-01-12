@@ -20,17 +20,20 @@ using System;
 using org.kbinani;
 using org.kbinani.java.io;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
 #endif
 
 #if JAVA
     public class WrappedStreamWriter implements ITextWriter {
 #else
-    public class WrappedStreamWriter : ITextWriter {
+    public class WrappedStreamWriter : ITextWriter
+    {
 #endif
         BufferedWriter m_writer;
 
-        public WrappedStreamWriter( BufferedWriter stream_writer ) {
+        public WrappedStreamWriter( BufferedWriter stream_writer )
+        {
             m_writer = stream_writer;
         }
 

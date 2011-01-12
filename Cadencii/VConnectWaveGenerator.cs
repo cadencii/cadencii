@@ -17,6 +17,7 @@ package org.kbinani.cadencii;
 import java.awt.*;
 import java.io.*;
 import java.util.*;
+import org.kbinani.vsq.*;
 #else
 using System;
 using System.Diagnostics;
@@ -36,7 +37,11 @@ namespace org.kbinani.cadencii
     /// <summary>
     /// vConnect-STANDを使って音声合成を行う波形生成器
     /// </summary>
+#if JAVA
+    public class VConnectWaveGenerator extends WaveUnit implements WaveGenerator
+#else
     public class VConnectWaveGenerator : WaveUnit, WaveGenerator
+#endif
     {
         /// <summary>
         /// シンセサイザの実行ファイル名
@@ -229,7 +234,8 @@ namespace org.kbinani.cadencii
 #if DEBUG
                 PortUtil.println( "StraightRendeingRunner#run; \"" + straight_synth + "\" does not exists" );
 #endif
-                goto heaven;
+                postProcess();
+                return;
             }
             int count = mQueue.size();
 
@@ -259,7 +265,8 @@ namespace org.kbinani.cadencii
                     long remain = queue.startSample;
                     while ( remain > 0 ) {
                         if ( mAbortRequired ) {
-                            goto heaven;
+                            postProcess();
+                            return;
                         }
                         int len = (remain > BUFLEN) ? BUFLEN : (int)remain;
                         waveIncoming( bufL, bufR, len );
@@ -275,7 +282,8 @@ namespace org.kbinani.cadencii
 
             for ( int i = 0; i < count; i++ ) {
                 if ( mAbortRequired ) {
-                    goto heaven;
+                    postProcess();
+                    return;
                 }
                 VConnectRenderingQueue queue = mQueue.get( i );
                 String tmp_dir = AppManager.getTempWaveDir();
@@ -428,7 +436,8 @@ namespace org.kbinani.cadencii
                         long pos = 0;
                         while ( remain > 0 ) {
                             if ( mAbortRequired ) {
-                                goto heaven;
+                                postProcess();
+                                return;
                             }
                             int len = (remain > BUFLEN) ? BUFLEN : remain;
                             if ( wr != null ) {
@@ -453,8 +462,13 @@ namespace org.kbinani.cadencii
                             if ( wr != null ) {
                                 // 必要ならキャッシュを追加
                                 if ( cached_data_l.Length < overlapped ) {
+#if JAVA
+                                    cached_data_l = new double[overlapped];
+                                    cached_data_r = new double[overlapped];
+#else
                                     Array.Resize( ref cached_data_l, overlapped );
                                     Array.Resize( ref cached_data_r, overlapped );
+#endif
                                 }
                                 // 長さが変わる
                                 cached_data_length = overlapped;
@@ -631,8 +645,13 @@ namespace org.kbinani.cadencii
                                     int old_cache_length = cached_data_length;
                                     int new_cache_len = (int)((queue.startSample + rendered_length) - next_wave_start);
                                     if ( cached_data_l.Length < new_cache_len ) {
+#if JAVA
+                                        cached_data_l = new double[new_cache_len];
+                                        cached_data_r = new double[new_cache_len];
+#else
                                         Array.Resize( ref cached_data_l, new_cache_len );
                                         Array.Resize( ref cached_data_r, new_cache_len );
+#endif
                                     }
                                     cached_data_length = new_cache_len;
 
@@ -697,8 +716,13 @@ namespace org.kbinani.cadencii
                                     remain = (int)(queue.startSample + rendered_length - next_wave_start);
                                     // キャッシュが足りなければ更新
                                     if ( cached_data_l.Length < remain ) {
+#if JAVA
+                                        cached_data_l = new double[remain];
+                                        cached_data_r = new double[remain];
+#else
                                         Array.Resize( ref cached_data_l, remain );
                                         Array.Resize( ref cached_data_r, remain );
+#endif
                                     }
                                     cached_data_length = remain;
                                     // レンダリング結果を読み込む
@@ -799,7 +823,15 @@ namespace org.kbinani.cadencii
                 waveIncoming( bufL, bufR, tlength );
                 tremain -= tlength;
             }
-        heaven:
+
+            postProcess();
+        }
+
+        /// <summary>
+        /// beginメソッドから抜ける直前に行う処理
+        /// </summary>
+        private void postProcess()
+        {
             mAbortRequired = false;
             mRunning = false;
             mReceiver.end();

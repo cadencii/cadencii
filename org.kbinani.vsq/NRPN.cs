@@ -23,12 +23,14 @@ using System.Reflection;
 using org.kbinani;
 using org.kbinani.java.util;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
     using boolean = System.Boolean;
     using Integer = System.Int32;
 #endif
 
-    public class NRPN {
+    public class NRPN
+    {
         /// <summary>
         /// (0x5000) Version number(MSB) &amp;, Device number(LSB)
         /// </summary>
@@ -566,14 +568,17 @@ namespace org.kbinani.vsq {
         /// </summary>
         public const int VCP_VOICE_CHANGE_PARAMETER = 0x5503;
 
-        private NRPN() {
+        private NRPN()
+        {
         }
 
-        public static Iterator<ValuePair<String, Integer>> iterator() {
+        public static Iterator<ValuePair<String, Integer>> iterator()
+        {
             return new NrpnIterator();
         }
 
-        public static String getName( int nrpn ) {
+        public static String getName( int nrpn )
+        {
             for ( Iterator<ValuePair<String, Integer>> itr = iterator(); itr.hasNext(); ) {
                 ValuePair<String, Integer> v = itr.next();
                 if ( v.getValue() == nrpn ) {
@@ -588,7 +593,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="curve_name"></param>
         /// <returns></returns>
-        public static byte getVoiceChangeParameterID( String curve_name ) {
+        public static byte getVoiceChangeParameterID( String curve_name )
+        {
             byte lsb = 0x31;
             curve_name = curve_name.ToLower();
             if ( curve_name.Equals( "harmonics" ) ) {
@@ -633,7 +639,8 @@ namespace org.kbinani.vsq {
             return lsb;
         }
 
-        public static boolean is_require_data_lsb( int nrpn ) {
+        public static boolean is_require_data_lsb( int nrpn )
+        {
             switch ( nrpn ) {
                 case CVM_NM_VERSION_AND_DEVICE:
                 case CVM_NM_DELAY:
@@ -668,7 +675,7 @@ namespace org.kbinani.vsq {
                 case VCP_DELAY:
                 case CVM_EXNM_ENV_DATA1:
                 case CVM_EXNM_ENV_DATA2:
-                    return true;
+                return true;
                 case CVM_NM_NOTE_NUMBER:
                 case CVM_NM_VELOCITY:
                 case CVM_NM_NOTE_LOCATION:
@@ -699,7 +706,7 @@ namespace org.kbinani.vsq {
                 case VCP_VOICE_CHANGE_PARAMETER:
                 case CVM_EXNM_ENV_DATA3:
                 case CVM_EXNM_ENV_DATA_CONTINUATION:
-                    return false;
+                return false;
             }
             return false;
         }

@@ -23,7 +23,8 @@ using System.Collections.Generic;
 using org.kbinani;
 using org.kbinani.java.util;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
     using boolean = System.Boolean;
     using Integer = System.Int32;
     using Long = System.Int64;
@@ -36,7 +37,8 @@ namespace org.kbinani.vsq {
     public class VsqCommand implements Serializable {
 #else
     [Serializable]
-    public class VsqCommand {
+    public class VsqCommand
+    {
 #endif
         public VsqCommandType Type;
         /// <summary>
@@ -55,17 +57,20 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// VsqCommandはgenerateCommand*からコンストラクトしなければならない。
         /// </summary>
-        public VsqCommand() {
+        public VsqCommand()
+        {
         }
 
-        public static VsqCommand generateCommandRoot() {
+        public static VsqCommand generateCommandRoot()
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.ROOT;
             command.Args = null;
             return command;
         }
 
-        public static VsqCommand generateCommandReplace( VsqFile vsq ) {
+        public static VsqCommand generateCommandReplace( VsqFile vsq )
+        {
             VsqCommand command = new VsqCommand();
             command.Args = new Object[1];
             command.Type = VsqCommandType.REPLACE;
@@ -73,7 +78,8 @@ namespace org.kbinani.vsq {
             return command;
         }
 
-        public static VsqCommand generateCommandTrackReplace( int track, VsqTrack item ) {
+        public static VsqCommand generateCommandTrackReplace( int track, VsqTrack item )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.TRACK_REPLACE;
             command.Args = new Object[2];
@@ -82,7 +88,8 @@ namespace org.kbinani.vsq {
             return command;
         }
 
-        public static VsqCommand generateCommandUpdateTimesig( int bar_count, int new_barcount, int numerator, int denominator ) {
+        public static VsqCommand generateCommandUpdateTimesig( int bar_count, int new_barcount, int numerator, int denominator )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.UPDATE_TIMESIG;
             command.Args = new Object[4];
@@ -93,7 +100,8 @@ namespace org.kbinani.vsq {
             return command;
         }
 
-        public static VsqCommand generateCommandUpdateTimesigRange( int[] bar_counts, int[] new_barcounts, int[] numerators, int[] denominators ) {
+        public static VsqCommand generateCommandUpdateTimesigRange( int[] bar_counts, int[] new_barcounts, int[] numerators, int[] denominators )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.UPDATE_TIMESIG_RANGE;
             command.Args = new Object[4];
@@ -104,7 +112,8 @@ namespace org.kbinani.vsq {
             return command;
         }
 
-        public static VsqCommand generateCommandUpdateTempoRange( int[] clocks, int[] new_clocks, int[] tempos ) {
+        public static VsqCommand generateCommandUpdateTempoRange( int[] clocks, int[] new_clocks, int[] tempos )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.UPDATE_TEMPO_RANGE;
             command.Args = new Object[3];
@@ -114,7 +123,8 @@ namespace org.kbinani.vsq {
             return command;
         }
 
-        public static VsqCommand generateCommandUpdateTempo( int clock, int new_clock, int tempo ) {
+        public static VsqCommand generateCommandUpdateTempo( int clock, int new_clock, int tempo )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.UPDATE_TEMPO;
             command.Args = new Object[3];
@@ -124,7 +134,8 @@ namespace org.kbinani.vsq {
             return command;
         }
 
-        public static VsqCommand generateCommandChangePreMeasure( int pre_measure ) {
+        public static VsqCommand generateCommandChangePreMeasure( int pre_measure )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.CHANGE_PRE_MEASURE;
             command.Args = new Object[1];
@@ -132,7 +143,8 @@ namespace org.kbinani.vsq {
             return command;
         }
 
-        public static VsqCommand generateCommandDeleteTrack( int track ) {
+        public static VsqCommand generateCommandDeleteTrack( int track )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.TRACK_DELETE;
             command.Args = new Object[1];
@@ -145,7 +157,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="track"></param>
         /// <returns></returns>
-        public static VsqCommand generateCommandAddTrack( VsqTrack track, VsqMixerEntry mixer, int position ) {
+        public static VsqCommand generateCommandAddTrack( VsqTrack track, VsqMixerEntry mixer, int position )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.TRACK_ADD;
             command.Args = new Object[3];
@@ -161,7 +174,8 @@ namespace org.kbinani.vsq {
         /// <param name="track"></param>
         /// <param name="new_name"></param>
         /// <returns></returns>
-        public static VsqCommand generateCommandTrackChangeName( int track, String new_name ) {
+        public static VsqCommand generateCommandTrackChangeName( int track, String new_name )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.TRACK_CHANGE_NAME;
             command.Args = new Object[2];
@@ -170,7 +184,8 @@ namespace org.kbinani.vsq {
             return command;
         }
 
-        public static VsqCommand generateCommandTrackChangePlayMode( int track, int play_mode, int last_play_mode ) {
+        public static VsqCommand generateCommandTrackChangePlayMode( int track, int play_mode, int last_play_mode )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.TRACK_CHANGE_PLAY_MODE;
             command.Args = new Object[3];
@@ -188,7 +203,8 @@ namespace org.kbinani.vsq {
         /// <param name="clocks"></param>
         /// <param name="values"></param>
         /// <returns></returns>
-        public static VsqCommand generateCommandEventChangeClockAndIDContaintsRange( int track, int[] internal_ids, int[] clocks, VsqID[] values ) {
+        public static VsqCommand generateCommandEventChangeClockAndIDContaintsRange( int track, int[] internal_ids, int[] clocks, VsqID[] values )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.EVENT_CHANGE_CLOCK_AND_ID_CONTAINTS_RANGE;
             int count = internal_ids.Length;
@@ -212,7 +228,8 @@ namespace org.kbinani.vsq {
         /// <param name="clock"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static VsqCommand generateCommandEventChangeClockAndIDContaints( int track, int internal_id, int clock, VsqID value ) {
+        public static VsqCommand generateCommandEventChangeClockAndIDContaints( int track, int internal_id, int clock, VsqID value )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.EVENT_CHANGE_CLOCK_AND_ID_CONTAINTS;
             command.Args = new Object[4];
@@ -230,7 +247,8 @@ namespace org.kbinani.vsq {
         /// <param name="internal_ids"></param>
         /// <param name="values"></param>
         /// <returns></returns>
-        public static VsqCommand generateCommandEventChangeIDContaintsRange( int track, int[] internal_ids, VsqID[] values ) {
+        public static VsqCommand generateCommandEventChangeIDContaintsRange( int track, int[] internal_ids, VsqID[] values )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.EVENT_CHANGE_ID_CONTAINTS_RANGE;
             command.Args = new Object[3];
@@ -251,7 +269,8 @@ namespace org.kbinani.vsq {
         /// <param name="internal_id"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static VsqCommand generateCommandEventChangeIDContaints( int track, int internal_id, VsqID value ) {
+        public static VsqCommand generateCommandEventChangeIDContaints( int track, int internal_id, VsqID value )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.EVENT_CHANGE_ID_CONTAINTS;
             command.Args = new Object[3];
@@ -269,7 +288,8 @@ namespace org.kbinani.vsq {
         /// <param name="new_clock"></param>
         /// <param name="new_length"></param>
         /// <returns></returns>
-        public static VsqCommand generateCommandEventChangeClockAndLength( int track, int internal_id, int new_clock, int new_length ) {
+        public static VsqCommand generateCommandEventChangeClockAndLength( int track, int internal_id, int new_clock, int new_length )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.EVENT_CHANGE_CLOCK_AND_LENGTH;
             command.Args = new Object[4];
@@ -287,7 +307,8 @@ namespace org.kbinani.vsq {
         /// <param name="internal_id"></param>
         /// <param name="new_length"></param>
         /// <returns></returns>
-        public static VsqCommand generateCommandEventChangeLength( int track, int internal_id, int new_length ) {
+        public static VsqCommand generateCommandEventChangeLength( int track, int internal_id, int new_length )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.EVENT_CHANGE_LENGTH;
             command.Args = new Object[3];
@@ -304,7 +325,8 @@ namespace org.kbinani.vsq {
         /// <param name="track"></param>
         /// <param name="velocity"></param>
         /// <returns></returns>
-        public static VsqCommand generateCommandEventChangeVelocity( int track, Vector<ValuePair<Integer, Integer>> velocity ) {
+        public static VsqCommand generateCommandEventChangeVelocity( int track, Vector<ValuePair<Integer, Integer>> velocity )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.EVENT_CHANGE_VELOCITY;
             command.Args = new Object[2];
@@ -318,7 +340,8 @@ namespace org.kbinani.vsq {
             return command;
         }
 
-        public static VsqCommand generateCommandEventReplace( int track, VsqEvent item ) {
+        public static VsqCommand generateCommandEventReplace( int track, VsqEvent item )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.EVENT_REPLACE;
             command.Args = new Object[2];
@@ -327,7 +350,8 @@ namespace org.kbinani.vsq {
             return command;
         }
 
-        public static VsqCommand generateCommandEventReplaceRange( int track, VsqEvent[] items ) {
+        public static VsqCommand generateCommandEventReplaceRange( int track, VsqEvent[] items )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.EVENT_REPLACE_RANGE;
             command.Args = new Object[2];
@@ -347,7 +371,8 @@ namespace org.kbinani.vsq {
         /// <param name="track"></param>
         /// <param name="accent_list"></param>
         /// <returns></returns>
-        public static VsqCommand generateCommandEventChangeAccent( int track, Vector<ValuePair<Integer, Integer>> accent_list ) {
+        public static VsqCommand generateCommandEventChangeAccent( int track, Vector<ValuePair<Integer, Integer>> accent_list )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.EVENT_CHANGE_ACCENT;
             command.Args = new Object[2];
@@ -368,7 +393,8 @@ namespace org.kbinani.vsq {
         /// <param name="track"></param>
         /// <param name="decay_list"></param>
         /// <returns></returns>
-        public static VsqCommand generateCommandEventChangeDecay( int track, Vector<ValuePair<Integer, Integer>> decay_list ) {
+        public static VsqCommand generateCommandEventChangeDecay( int track, Vector<ValuePair<Integer, Integer>> decay_list )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.EVENT_CHANGE_DECAY;
             command.Args = new Object[2];
@@ -382,7 +408,8 @@ namespace org.kbinani.vsq {
             return command;
         }
 
-        public static VsqCommand generateCommandTrackCurveReplaceRange( int track, String[] target_curve, VsqBPList[] bplist ) {
+        public static VsqCommand generateCommandTrackCurveReplaceRange( int track, String[] target_curve, VsqBPList[] bplist )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.TRACK_CURVE_REPLACE_RANGE;
             command.Args = new Object[3];
@@ -400,7 +427,8 @@ namespace org.kbinani.vsq {
             return command;
         }
 
-        public static VsqCommand generateCommandTrackCurveReplace( int track, String target_curve, VsqBPList bplist ) {
+        public static VsqCommand generateCommandTrackCurveReplace( int track, String target_curve, VsqBPList bplist )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.TRACK_CURVE_REPLACE;
             command.Args = new Object[3];
@@ -434,7 +462,8 @@ namespace org.kbinani.vsq {
         /// <param name="target"></param>
         /// <param name="edit"></param>
         /// <returns></returns>
-        public static VsqCommand generateCommandTrackCurveEdit( int track, String target, Vector<BPPair> edit ) {
+        public static VsqCommand generateCommandTrackCurveEdit( int track, String target, Vector<BPPair> edit )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.TRACK_CURVE_EDIT;
             command.Args = new Object[3];
@@ -457,7 +486,8 @@ namespace org.kbinani.vsq {
         /// <param name="delete">削除を行うデータ点のリスト</param>
         /// <param name="add_or_move">追加または移動を行うデータ点のリスト</param>
         /// <returns></returns>
-        public static VsqCommand generateCommandTrackCurveEdit2( int track, String target, Vector<Long> delete, TreeMap<Integer, VsqBPPair> add ) {
+        public static VsqCommand generateCommandTrackCurveEdit2( int track, String target, Vector<Long> delete, TreeMap<Integer, VsqBPPair> add )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.TRACK_CURVE_EDIT2;
             command.Args = new Object[4];
@@ -480,7 +510,8 @@ namespace org.kbinani.vsq {
             return command;
         }
 
-        public static VsqCommand generateCommandTrackCurveEditRange( int track, Vector<String> targets, Vector<Vector<BPPair>> edits ) {
+        public static VsqCommand generateCommandTrackCurveEditRange( int track, Vector<String> targets, Vector<Vector<BPPair>> edits )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.TRACK_CURVE_EDIT_RANGE;
             command.Args = new Object[3];
@@ -513,7 +544,8 @@ namespace org.kbinani.vsq {
         /// <param name="delete">削除を行うデータ点のリスト</param>
         /// <param name="add_or_move">追加または移動を行うデータ点のリスト</param>
         /// <returns></returns>
-        public static VsqCommand generateCommandTrackCurveEdit2All( int track, Vector<String> target, Vector<Vector<Long>> delete, Vector<TreeMap<Integer, VsqBPPair>> add ) {
+        public static VsqCommand generateCommandTrackCurveEdit2All( int track, Vector<String> target, Vector<Vector<Long>> delete, Vector<TreeMap<Integer, VsqBPPair>> add )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.TRACK_CURVE_EDIT2_ALL;
             command.Args = new Object[4];
@@ -561,7 +593,8 @@ namespace org.kbinani.vsq {
         /// <param name="phrase"></param>
         /// <param name="phonetic_symbol"></param>
         /// <returns></returns>
-        public static VsqCommand generateCommandEventChangeLyric( int track, int internal_id, String phrase, String phonetic_symbol, boolean protect_symbol ) {
+        public static VsqCommand generateCommandEventChangeLyric( int track, int internal_id, String phrase, String phonetic_symbol, boolean protect_symbol )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.EVENT_CHANGE_LYRIC;
             command.Args = new Object[5];
@@ -580,7 +613,8 @@ namespace org.kbinani.vsq {
         /// <param name="internal_id"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static VsqCommand generateCommandEventChangeClock( int track, int internal_id, int value ) {
+        public static VsqCommand generateCommandEventChangeClock( int track, int internal_id, int value )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.EVENT_CHANGE_CLOCK;
             command.Args = new Object[3];
@@ -590,7 +624,8 @@ namespace org.kbinani.vsq {
             return command;
         }
 
-        public static VsqCommand generateCommandEventDeleteRange( int track, Vector<Integer> internal_ids ) {
+        public static VsqCommand generateCommandEventDeleteRange( int track, Vector<Integer> internal_ids )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.EVENT_DELETE_RANGE;
             command.Args = new Object[2];
@@ -604,7 +639,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="clock"></param>
         /// <returns></returns>
-        public static VsqCommand generateCommandEventDelete( int track, int internal_id ) {
+        public static VsqCommand generateCommandEventDelete( int track, int internal_id )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.EVENT_DELETE;
             command.Args = new Object[2];
@@ -613,7 +649,8 @@ namespace org.kbinani.vsq {
             return command;
         }
 
-        public static VsqCommand generateCommandEventAddRange( int track, VsqEvent[] items ) {
+        public static VsqCommand generateCommandEventAddRange( int track, VsqEvent[] items )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.EVENT_ADD_RANGE;
             command.Args = new Object[2];
@@ -632,7 +669,8 @@ namespace org.kbinani.vsq {
         /// <param name="track"></param>
         /// <param name="item"></param>
         /// <returns></returns>
-        public static VsqCommand generateCommandEventAdd( int track, VsqEvent item ) {
+        public static VsqCommand generateCommandEventAdd( int track, VsqEvent item )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.EVENT_ADD;
             command.Args = new Object[2];
@@ -648,7 +686,8 @@ namespace org.kbinani.vsq {
         /// <param name="internal_id"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static VsqCommand generateCommandEventChangeNote( int track, int internal_id, int note ) {
+        public static VsqCommand generateCommandEventChangeNote( int track, int internal_id, int note )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.EVENT_CHANGE_NOTE;
             command.Args = new Object[3];
@@ -665,7 +704,8 @@ namespace org.kbinani.vsq {
         /// <param name="internal_id"></param>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static VsqCommand generateCommandEventChangeClockAndNote( int track, int internal_id, int clock, int note ) {
+        public static VsqCommand generateCommandEventChangeClockAndNote( int track, int internal_id, int clock, int note )
+        {
             VsqCommand command = new VsqCommand();
             command.Type = VsqCommandType.EVENT_CHANGE_CLOCK_AND_NOTE;
             command.Args = new Object[4];
@@ -676,7 +716,8 @@ namespace org.kbinani.vsq {
             return command;
         }
 
-        private static int[] copyIntArray( int[] value ) {
+        private static int[] copyIntArray( int[] value )
+        {
             int[] ret = new int[value.Length];
             for ( int i = 0; i < value.Length; i++ ) {
                 ret[i] = value[i];
@@ -684,7 +725,8 @@ namespace org.kbinani.vsq {
             return ret;
         }
 
-        private static Vector<Integer> copyIntVector( Vector<Integer> value ) {
+        private static Vector<Integer> copyIntVector( Vector<Integer> value )
+        {
             Vector<Integer> ret = new Vector<Integer>();
             int count = value.size();
             for ( int i = 0; i < count; i++ ) {

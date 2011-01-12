@@ -119,7 +119,7 @@ namespace org.kbinani.cadencii
             if ( indx >= 0 ) {
                 ret = AppManager.MIN_PRE_MEASURE + indx;
             } else {
-                string str = comboPreMeasure.Text;
+                String str = comboPreMeasure.Text;
                 try {
                     ret = PortUtil.parseInt( str );
                 } catch ( Exception ex ) {
@@ -158,11 +158,11 @@ namespace org.kbinani.cadencii
         public int getSampleRate()
         {
             int index = comboSampleRate.getSelectedIndex();
-            string str = "44100";
+            String str = "44100";
             if ( index < 0 ) {
                 str = comboSampleRate.Text;
             } else {
-                str = (string)comboSampleRate.getItemAt( index );
+                str = (String)comboSampleRate.getItemAt( index );
             }
             int ret = 44100;
             try {
@@ -181,7 +181,7 @@ namespace org.kbinani.cadencii
         {
             comboSampleRate.setSelectedIndex( 0 );
             for ( int i = 0; i < comboSampleRate.getItemCount(); i++ ) {
-                string str = (string)comboSampleRate.getItemAt( i );
+                String str = (String)comboSampleRate.getItemAt( i );
                 int rate = 0;
                 try {
                     rate = PortUtil.parseInt( str );
@@ -319,7 +319,7 @@ namespace org.kbinani.cadencii
             // 
             // comboSampleRate
             // 
-            this.comboSampleRate.Items.AddRange( new object[] {
+            this.comboSampleRate.Items.AddRange( new Object[] {
             "Mono",
             "Stereo"} );
             this.comboSampleRate.Location = new System.Drawing.Point( 135, 48 );
@@ -370,7 +370,7 @@ namespace org.kbinani.cadencii
             // comboChannel
             // 
             this.comboChannel.FormattingEnabled = true;
-            this.comboChannel.Items.AddRange( new object[] {
+            this.comboChannel.Items.AddRange( new Object[] {
             "Mono",
             "Stereo"} );
             this.comboChannel.Location = new System.Drawing.Point( 135, 24 );
@@ -424,7 +424,7 @@ namespace org.kbinani.cadencii
             // comboPreMeasure
             // 
             this.comboPreMeasure.FormattingEnabled = true;
-            this.comboPreMeasure.Items.AddRange( new object[] {
+            this.comboPreMeasure.Items.AddRange( new Object[] {
             "Mono",
             "Stereo"} );
             this.comboPreMeasure.Location = new System.Drawing.Point( 135, 24 );

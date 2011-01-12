@@ -20,7 +20,8 @@ import org.kbinani.*;
 using System;
 using org.kbinani.java.io;
 
-namespace org.kbinani.vsq{
+namespace org.kbinani.vsq
+{
 #endif
 
     /// <summary>
@@ -34,12 +35,14 @@ namespace org.kbinani.vsq{
     public class IconParameter implements Serializable {
 #else
     [Serializable]
-    public class IconParameter {
+    public class IconParameter
+    {
 #endif
         /// <summary>
         /// アイコン設定の種類を表します。
         /// </summary>
-        public enum ArticulationType {
+        public enum ArticulationType
+        {
             /// <summary>
             /// ビブラート
             /// </summary>
@@ -105,10 +108,12 @@ namespace org.kbinani.vsq{
 
         protected String buttonImageFullPath = "";
 
-        protected IconParameter() {
+        protected IconParameter()
+        {
         }
 
-        protected IconParameter( String file ) {
+        protected IconParameter( String file )
+        {
             if ( file == null ) {
                 return;
             }
@@ -139,7 +144,7 @@ namespace org.kbinani.vsq{
                         continue;
                     }
                     // イコールが含まれているかどうか
-                    String[] spl = PortUtil.splitString( line, new char[]{ '=' }, 2 );
+                    String[] spl = PortUtil.splitString( line, new char[] { '=' }, 2 );
                     if ( spl.Length != 2 ) {
                         continue;
                     }
@@ -257,7 +262,8 @@ namespace org.kbinani.vsq{
         /// <param name="strBPX"></param>
         /// <param name="strBPY"></param>
         /// <returns></returns>
-        private static VibratoBPList getBPListFromText( String strNum, String strBPX, String strBPY ) {
+        private static VibratoBPList getBPListFromText( String strNum, String strBPX, String strBPY )
+        {
             VibratoBPList ret = null;
             if ( strNum == null || (strNum != null && strNum.Equals( "" )) ) {
                 return ret;
@@ -288,15 +294,18 @@ namespace org.kbinani.vsq{
             return ret;
         }
 
-        public String getButton() {
+        public String getButton()
+        {
             return button;
         }
-        
-        public String getButtonImageFullPath() {
+
+        public String getButtonImageFullPath()
+        {
             return buttonImageFullPath;
         }
 
-        public void setButtonImageFullPath( String value ) {
+        public void setButtonImageFullPath( String value )
+        {
             buttonImageFullPath = value;
         }
     }

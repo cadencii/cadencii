@@ -1,3 +1,4 @@
+#if !JAVA
 #if !MONO
 /*
  * RebarBandCollectionEditor.cs
@@ -39,4 +40,5 @@ namespace org.kbinani.windows.forms {
 
     }
 }
+#endif
 #endif

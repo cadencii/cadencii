@@ -240,7 +240,7 @@ namespace org.kbinani.cadencii {
 #endif
             btnLoadDefault.Click += new EventHandler( btnLoadDefault_Click );
             btnRevert.Click += new EventHandler( btnRevert_Click );
-            FormClosing += new System.Windows.Forms.FormClosingEventHandler( FormShortcutKeys_FormClosing );
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( FormShortcutKeys_FormClosing );
             btnOK.Click += new EventHandler( btnOK_Click );
             btnCancel.Click += new EventHandler( btnCancel_Click );
         }

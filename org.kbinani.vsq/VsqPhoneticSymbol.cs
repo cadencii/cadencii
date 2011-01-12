@@ -19,14 +19,16 @@ import org.kbinani.*;
 using System;
 using org.kbinani;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
     using boolean = System.Boolean;
 #endif
 
     /// <summary>
     /// VSQで使用される発音記号の種類や有効性を判定するユーティリティ群です。
     /// </summary>
-    public class VsqPhoneticSymbol {
+    public class VsqPhoneticSymbol
+    {
         private static String[] _SYMBOL_VOWEL_JP = new String[]{
             "a",
             "i",
@@ -135,7 +137,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="symbol"></param>
         /// <returns></returns>
-        public static boolean isConsonant( String symbol ) {
+        public static boolean isConsonant( String symbol )
+        {
             for ( int i = 0; i < _SYMBOL_CONSONANT_JP.Length; i++ ) {
                 String s = _SYMBOL_CONSONANT_JP[i];
                 if ( s.Equals( symbol ) ) {
@@ -150,7 +153,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="symbol"></param>
         /// <returns></returns>
-        public static boolean isValidSymbol( String symbol ) {
+        public static boolean isValidSymbol( String symbol )
+        {
             for ( int i = 0; i < _SYMBOL_VOWEL_JP.Length; i++ ) {
                 String s = _SYMBOL_VOWEL_JP[i];
                 if ( s.Equals( symbol ) ) {

@@ -17,14 +17,16 @@ package org.kbinani.vsq;
 #else
 using System;
 
-namespace org.kbinani.vsq{
+namespace org.kbinani.vsq
+{
     using boolean = System.Boolean;
 #endif
 
     /// <summary>
     /// UstFileクラスのwriteメソッドで出力する際の詳細オプションを表します
     /// </summary>
-    public class UstFileWriteOptions {
+    public class UstFileWriteOptions
+    {
         /// <summary>
         /// [#TRACKEND]セクションを出力するかどうか
         /// </summary>

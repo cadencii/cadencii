@@ -13,17 +13,25 @@
  */
 #if JAVA
 package org.kbinani.cadencii;
+
+import java.util.*;
 #else
 using System;
 using org.kbinani.java.util;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
 #endif
 
     /// <summary>
     /// 信号を分岐する装置
     /// </summary>
-    public class Separator : WaveUnit, WaveReceiver {
+#if JAVA
+    public class Separator extends WaveUnit implements WaveReceiver
+#else
+    public class Separator : WaveUnit, WaveReceiver
+#endif
+    {
         const int _BUFLEN = 1024;
         private Vector<WaveReceiver> mReceivers = new Vector<WaveReceiver>();
         private double[] mBufferL = new double[_BUFLEN];
@@ -35,11 +43,13 @@ namespace org.kbinani.cadencii {
             // do nothing
         }
 
-        public override int getVersion() {
+        public override int getVersion()
+        {
             return mVersion;
         }
 
-        public void setReceiver( WaveReceiver receiver ) {
+        public void setReceiver( WaveReceiver receiver )
+        {
             if ( receiver == null ) {
                 return;
             }
@@ -48,13 +58,15 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void end() {
+        public void end()
+        {
             foreach ( WaveReceiver r in mReceivers ) {
                 r.end();
             }
         }
 
-        public void addReceiver( WaveReceiver receiver ) {
+        public void addReceiver( WaveReceiver receiver )
+        {
             if ( receiver == null ) {
                 return;
             }
@@ -63,7 +75,8 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public void push( double[] l, double[] r, int length ) {
+        public void push( double[] l, double[] r, int length )
+        {
             if ( mReceivers.size() <= 0 ) {
                 return;
             }

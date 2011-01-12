@@ -20,46 +20,56 @@ using System;
 using org.kbinani;
 using org.kbinani.java.util;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
 #endif
 
 #if JAVA
     public class UstTrack implements Cloneable {
 #else
-    public class UstTrack : ICloneable {
+    public class UstTrack : ICloneable
+    {
 #endif
         public Object Tag;
         private Vector<UstEvent> m_events;
 
-        public UstTrack() {
+        public UstTrack()
+        {
             m_events = new Vector<UstEvent>();
         }
 
-        public UstEvent getEvent( int index ) {
+        public UstEvent getEvent( int index )
+        {
             return m_events.get( index );
         }
 
-        public void setEvent( int index, UstEvent item ) {
+        public void setEvent( int index, UstEvent item )
+        {
             m_events.set( index, item );
         }
 
-        public void addEvent( UstEvent item ) {
+        public void addEvent( UstEvent item )
+        {
             m_events.add( item );
         }
 
-        public void removeEventAt( int index ) {
+        public void removeEventAt( int index )
+        {
             m_events.removeElementAt( index );
         }
 
-        public int getEventCount() {
+        public int getEventCount()
+        {
             return m_events.size();
         }
 
-        public Iterator<UstEvent> getNoteEventIterator() {
+        public Iterator<UstEvent> getNoteEventIterator()
+        {
             return m_events.iterator();
         }
 
-        public Object clone() {
+        public Object clone()
+        {
             UstTrack ret = new UstTrack();
             int c = m_events.size();
             for ( int i = 0; i < c; i++ ) {
@@ -69,7 +79,8 @@ namespace org.kbinani.vsq {
         }
 
 #if !JAVA
-        public object Clone() {
+        public object Clone()
+        {
             return clone();
         }
 #endif

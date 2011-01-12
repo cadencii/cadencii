@@ -84,7 +84,7 @@ namespace org.kbinani.cadencii {
 #if DEBUG
                             AppManager.debugWriteLine( "t.FullName=" + t.FullName );
 #endif
-                            object instance = asm.CreateInstance( t.FullName );
+                            Object instance = asm.CreateInstance( t.FullName );
                             String dir = Path.Combine( Utility.getApplicationDataPath(), "tool" );
                             String cfg = Path.GetFileNameWithoutExtension( file.FullName ) + ".config";
                             String config = Path.Combine( dir, cfg );
@@ -145,7 +145,7 @@ namespace org.kbinani.cadencii {
             if ( loadedTools.containsKey( id ) ) {
                 VsqFileEx vsq = AppManager.getVsqFile();
                 VsqTrack item = (VsqTrack)vsq.Track.get( track ).clone();
-                object objPal = loadedTools.get( id );
+                Object objPal = loadedTools.get( id );
                 if ( objPal == null ) {
                     return false;
                 }

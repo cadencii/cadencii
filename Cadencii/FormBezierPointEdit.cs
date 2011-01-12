@@ -237,7 +237,7 @@ namespace org.kbinani.cadencii
             m_parent.invalidate();
         }
 
-        public void handleOperationButtonMouseDown( object sender, BMouseEventArgs e )
+        public void handleOperationButtonMouseDown( Object sender, BMouseEventArgs e )
         {
 #if DEBUG
             PortUtil.println( "FormBezierPointEdit::handleOperationButtonMouseDown" );
@@ -321,7 +321,7 @@ namespace org.kbinani.cadencii
             }
         }
 
-        public void handleMoveButtonClick( object sender, BEventArgs e )
+        public void handleMoveButtonClick( Object sender, BEventArgs e )
         {
             // イベントの送り主によって動作を変える
             int delta = 1;

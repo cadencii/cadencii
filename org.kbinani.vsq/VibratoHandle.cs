@@ -20,6 +20,7 @@ using System;
 
 namespace org.kbinani.vsq
 {
+    using boolean = System.Boolean;
 #endif
 
     /// <summary>
@@ -67,7 +68,7 @@ namespace org.kbinani.vsq
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        public bool equals( VibratoHandle item )
+        public boolean equals( VibratoHandle item )
         {
             if ( item == null ) {
                 return false;
@@ -107,7 +108,7 @@ namespace org.kbinani.vsq
         }
 
 #if !JAVA
-        public override string ToString()
+        public override String ToString()
         {
             return toString();
         }

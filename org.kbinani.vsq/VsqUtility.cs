@@ -1,13 +1,21 @@
 #if JAVA
 package org.kbinani.cadencii;
 #else
-namespace org {
-    namespace kbinani {
-        namespace vsq {
+using System;
+
+namespace org
+{
+    namespace kbinani
+    {
+        namespace vsq
+        {
+            using boolean = System.Boolean;
 #endif
 
-            public class VsqUtility {
-                public static bool compare( string a, string b ) {
+            public class VsqUtility
+            {
+                public static boolean compare( String a, String b )
+                {
 #if JAVA
                     if ( a == null || b == null ) {
                         return false;

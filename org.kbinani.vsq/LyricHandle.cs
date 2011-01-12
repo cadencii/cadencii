@@ -22,7 +22,8 @@ namespace org { namespace kbinani { namespace vsq {
 using System;
 using org.kbinani.java.util;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
     using boolean = System.Boolean;
 #endif
 
@@ -32,7 +33,8 @@ namespace org.kbinani.vsq {
     class LyricHandle {
 #else
     [Serializable]
-    public class LyricHandle : ICloneable {
+    public class LyricHandle : ICloneable
+    {
 #endif
         public Lyric L0;
         public int Index;
@@ -42,7 +44,8 @@ namespace org.kbinani.vsq {
         public Vector<Lyric> Trailing = new Vector<Lyric>();
 #endif
 
-        public LyricHandle() {
+        public LyricHandle()
+        {
 #if !__cplusplus
             L0 = new Lyric();
 #endif
@@ -54,19 +57,20 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static string getGenericTypeName( string name ) {
+        public static String getGenericTypeName( String name )
+        {
 #if !__cplusplus
             if ( name == null ) {
                 return "";
             }
 #endif
-            string compare = "Trailing";
+            String compare = "Trailing";
 #if __cplusplus
             if( name == compare )
 #else
-            if ( name.Equals( compare ) ) 
+            if ( name.Equals( compare ) )
 #endif
-            {
+ {
                 return "org.kbinani.vsq.Lyric";
             }
             return "";
@@ -78,7 +82,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static bool isXmlIgnored( string name ) {
+        public static boolean isXmlIgnored( String name )
+        {
             return false;
         }
 
@@ -88,14 +93,16 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static string getXmlElementName( string name ) {
+        public static String getXmlElementName( String name )
+        {
             return name;
         }
 
-        public Lyric getLyricAt( int index ){
-            if( index == 0 ){
+        public Lyric getLyricAt( int index )
+        {
+            if ( index == 0 ) {
                 return L0;
-            }else{
+            } else {
 #if JAVA
                 return Trailing.get( index - 1 );
 #else
@@ -104,10 +111,11 @@ namespace org.kbinani.vsq {
             }
         }
 
-        public void setLyricAt( int index, Lyric value ){
-            if( index == 0 ){
+        public void setLyricAt( int index, Lyric value )
+        {
+            if ( index == 0 ) {
                 L0 = value;
-            }else{
+            } else {
 #if JAVA
                 Trailing.set( index - 1, value );
 #else
@@ -116,7 +124,8 @@ namespace org.kbinani.vsq {
             }
         }
 
-        public int getCount(){
+        public int getCount()
+        {
             return Trailing.size() + 1;
         }
 
@@ -125,17 +134,19 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="phrase">歌詞</param>
         /// <param name="phonetic_symbol">発音記号</param>
-        public LyricHandle( string phrase, string phonetic_symbol ) {
+        public LyricHandle( String phrase, String phonetic_symbol )
+        {
             L0 = new Lyric( phrase, phonetic_symbol );
         }
 
 #if !__cplusplus
-        public Object clone() {
+        public Object clone()
+        {
             LyricHandle ret = new LyricHandle();
             ret.Index = Index;
             ret.L0 = (Lyric)L0.clone();
             int c = Trailing.size();
-            for( int i = 0; i < c; i++ ){
+            for ( int i = 0; i < c; i++ ) {
                 Lyric buf = (Lyric)Trailing.get( i ).clone();
                 ret.Trailing.add( buf );
             }
@@ -146,7 +157,8 @@ namespace org.kbinani.vsq {
 #if JAVA
 #elif __cplusplus
 #else
-        public object Clone() {
+        public object Clone()
+        {
             return clone();
         }
 #endif

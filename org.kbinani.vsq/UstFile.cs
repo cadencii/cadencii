@@ -23,7 +23,8 @@ using org.kbinani;
 using org.kbinani.java.util;
 using org.kbinani.java.io;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
     using Float = System.Single;
     using boolean = System.Boolean;
     using Integer = System.Int32;
@@ -32,7 +33,8 @@ namespace org.kbinani.vsq {
 #if JAVA
     public class UstFile implements Cloneable {
 #else
-    public class UstFile : ICloneable {
+    public class UstFile : ICloneable
+    {
 #endif
         /// <summary>
         /// [#PREV]が指定されているUstEventのIndex
@@ -54,7 +56,8 @@ namespace org.kbinani.vsq {
         private Vector<UstTrack> m_tracks = new Vector<UstTrack>();
         private Vector<TempoTableEntry> m_tempo_table;
 
-        public UstFile( String path ) {
+        public UstFile( String path )
+        {
             BufferedReader sr = null;
             try {
                 sr = new BufferedReader( new InputStreamReader( new FileInputStream( path ), "Shift_JIS" ) );
@@ -218,7 +221,7 @@ namespace org.kbinani.vsq {
                                 }
                             } else if ( spl[0].Equals( "Flags" ) ) {
                                 ue.Flags = line.Substring( 6 );
-                            } else if ( spl[0].Equals( "StartPoint" ) ){
+                            } else if ( spl[0].Equals( "StartPoint" ) ) {
                                 try {
                                     ue.StartPoint = PortUtil.parseInt( spl[1] );
                                 } catch ( Exception ex ) {
@@ -270,7 +273,7 @@ namespace org.kbinani.vsq {
 #else
             :
 #endif
-            this( vsq, track_index, new Vector<ValuePair<Integer, Integer>>() )
+ this( vsq, track_index, new Vector<ValuePair<Integer, Integer>>() )
 #if JAVA
             ;
 #else
@@ -284,13 +287,14 @@ namespace org.kbinani.vsq {
         /// <param name="vsq"></param>
         /// <param name="track_index"></param>
         /// <param name="id_map">UstEventのIndexフィールドと、元になったVsqEventのInternalIDを対応付けるマップ。キーがIndex、値がInternalIDを表す</param>
-        public UstFile( VsqFile vsq, int track_index, Vector<ValuePair<Integer, Integer>> id_map ) {
+        public UstFile( VsqFile vsq, int track_index, Vector<ValuePair<Integer, Integer>> id_map )
+        {
             VsqTrack track = vsq.Track.get( track_index );
-            
+
             // デフォルトのテンポ
-            if( vsq.TempoTable.size() <= 0 ){
+            if ( vsq.TempoTable.size() <= 0 ) {
                 m_tempo = 120.0f;
-            }else{
+            } else {
                 m_tempo = (float)(60e6 / (double)vsq.TempoTable.get( 0 ).Tempo);
             }
             updateTempoInfo();
@@ -309,9 +313,9 @@ namespace org.kbinani.vsq {
             UstTrack track_add = new UstTrack();
             int last_clock = 0;
             int index = 0;
-            for( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ){
+            for ( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ) {
                 VsqEvent item = itr.next();
-                if( last_clock < item.Clock ){
+                if ( last_clock < item.Clock ) {
                     // ゲートタイム差あり，Rを追加
                     UstEvent itemust = (UstEvent)template.clone();
                     itemust.setLength( item.Clock - last_clock );
@@ -366,31 +370,37 @@ namespace org.kbinani.vsq {
 
             // 再生秒時を考慮して，適時テンポを追加
             //TODO: このへん
-           // throw new NotImplementedException();
+            // throw new NotImplementedException();
 
             m_tracks.add( track_add );
         }
 
-        private UstFile() {
+        private UstFile()
+        {
         }
 
-        public void setVoiceDir( String value ) {
+        public void setVoiceDir( String value )
+        {
             m_voice_dir = value;
         }
 
-        public String getVoiceDir() {
+        public String getVoiceDir()
+        {
             return m_voice_dir;
         }
 
-        public String getProjectName() {
+        public String getProjectName()
+        {
             return m_project_name;
         }
 
-        public int getBaseTempo() {
+        public int getBaseTempo()
+        {
             return (int)(6e7 / m_tempo);
         }
 
-        public double getTotalSec() {
+        public double getTotalSec()
+        {
             int max = 0;
             for ( int track = 0; track < m_tracks.size(); track++ ) {
                 int count = 0;
@@ -402,15 +412,18 @@ namespace org.kbinani.vsq {
             return getSecFromClock( max );
         }
 
-        public Vector<TempoTableEntry> getTempoList() {
+        public Vector<TempoTableEntry> getTempoList()
+        {
             return m_tempo_table;
         }
 
-        public UstTrack getTrack( int track ) {
+        public UstTrack getTrack( int track )
+        {
             return m_tracks.get( track );
         }
 
-        public int getTrackCount() {
+        public int getTrackCount()
+        {
             return m_tracks.size();
         }
 
@@ -418,7 +431,8 @@ namespace org.kbinani.vsq {
         /// TempoTableの[*].Timeの部分を更新します
         /// </summary>
         /// <returns></returns>
-        public void updateTempoInfo() {
+        public void updateTempoInfo()
+        {
             m_tempo_table = new Vector<TempoTableEntry>();
             if ( m_tracks.size() <= 0 ) {
                 return;
@@ -446,7 +460,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="clock"></param>
         /// <returns></returns>
-        public double getSecFromClock( int clock ) {
+        public double getSecFromClock( int clock )
+        {
             int c = m_tempo_table.size();
             for ( int i = c - 1; i >= 0; i-- ) {
                 TempoTableEntry item = m_tempo_table.get( i );
@@ -461,7 +476,8 @@ namespace org.kbinani.vsq {
             return clock * sec_per_clock;
         }
 
-        public void write( String file ) {
+        public void write( String file )
+        {
             UstFileWriteOptions opt = new UstFileWriteOptions();
             opt.settingCacheDir = true;
             opt.settingOutFile = true;
@@ -475,7 +491,8 @@ namespace org.kbinani.vsq {
             write( file, opt );
         }
 
-        public void write( String file, boolean print_track_end ) {
+        public void write( String file, boolean print_track_end )
+        {
             UstFileWriteOptions opt = new UstFileWriteOptions();
             opt.settingCacheDir = true;
             opt.settingOutFile = true;
@@ -489,7 +506,8 @@ namespace org.kbinani.vsq {
             write( file, opt );
         }
 
-        public void write( String file, UstFileWriteOptions options ) {
+        public void write( String file, UstFileWriteOptions options )
+        {
             BufferedWriter sw = null;
             try {
                 sw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( file ), "Shift_JIS" ) );
@@ -540,7 +558,8 @@ namespace org.kbinani.vsq {
             }
         }
 
-        public Object clone() {
+        public Object clone()
+        {
             UstFile ret = new UstFile();
             ret.m_tempo = m_tempo;
             ret.m_project_name = m_project_name;
@@ -560,7 +579,8 @@ namespace org.kbinani.vsq {
         }
 
 #if !JAVA
-        public object Clone() {
+        public object Clone()
+        {
             return clone();
         }
 #endif

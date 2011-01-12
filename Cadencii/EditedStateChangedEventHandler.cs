@@ -11,9 +11,15 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+//INCLUDE ../BuildJavaUI/src/org/kbinani/cadencii/EditedStateChangedEventHandler.java
+#else
+using System;
+
 namespace org.kbinani.cadencii
 {
 
-    public delegate void EditedStateChangedEventHandler( object sender, bool edited );
+    public delegate void EditedStateChangedEventHandler( Object sender, bool edited );
 
 }
+#endif

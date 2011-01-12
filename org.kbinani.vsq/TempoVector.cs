@@ -20,7 +20,8 @@ import java.util.*;
 using System;
 using org.kbinani.java.util;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
     using boolean = System.Boolean;
 #endif
 
@@ -31,7 +32,8 @@ namespace org.kbinani.vsq {
     public class TempoVector extends Vector<TempoTableEntry> implements Serializable {
 #else
     [Serializable]
-    public class TempoVector : Vector<TempoTableEntry> {
+    public class TempoVector : Vector<TempoTableEntry>
+    {
 #endif
         /// <summary>
         /// 4分音符1拍あたりのゲートタイム
@@ -40,7 +42,7 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// デフォルトのテンポ値(4分音符1拍あたりのマイクロ秒)
         /// </summary>
-        protected const int baseTempo = 500000; 
+        protected const int baseTempo = 500000;
 
         /// <summary>
         /// コンストラクタ
@@ -51,7 +53,7 @@ namespace org.kbinani.vsq {
 #else
             :
 #endif
-            base()
+ base()
 #if JAVA
             ;
 #else
@@ -64,7 +66,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="time">ゲートタイムを取得する時刻(秒)</param>
         /// <returns>ゲートタイム</returns>
-        public double getClockFromSec( double time ) {
+        public double getClockFromSec( double time )
+        {
             int tempo = baseTempo;
             double base_clock = 0;
             double base_time = 0f;
@@ -93,7 +96,8 @@ namespace org.kbinani.vsq {
         /// このテーブルに登録されているテンポ変更イベントのうち、時刻に関する情報を再計算します。
         /// 新しいテンポ変更イベントを登録したり、既存のイベントを変更した場合に、都度呼び出す必要があります
         /// </summary>
-        public void updateTempoInfo() {
+        public void updateTempoInfo()
+        {
             int c = size();
             if ( c == 0 ) {
                 add( new TempoTableEntry( 0, baseTempo, 0.0 ) );
@@ -123,7 +127,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="clock">時刻を取得するゲートタイム</param>
         /// <returns>時刻(秒)</returns>
-        public double getSecFromClock( double clock ) {
+        public double getSecFromClock( double clock )
+        {
             int c = size();
             for ( int i = c - 1; i >= 0; i-- ) {
                 TempoTableEntry item = get( i );

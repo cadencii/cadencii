@@ -23,7 +23,8 @@ using org.kbinani;
 using org.kbinani.java.util;
 using org.kbinani.java.io;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
     using boolean = System.Boolean;
     using Integer = System.Int32;
 #endif
@@ -35,7 +36,8 @@ namespace org.kbinani.vsq {
     public class VsqTrack implements Cloneable, Serializable {
 #else
     [Serializable]
-    public class VsqTrack : ICloneable {
+    public class VsqTrack : ICloneable
+    {
 #endif
         public String Tag;
         public VsqMetaText MetaText;
@@ -43,7 +45,8 @@ namespace org.kbinani.vsq {
 #if JAVA
         private class IndexIterator implements Iterator<Integer> {
 #else
-        private class IndexIterator : Iterator<Integer> {
+        private class IndexIterator : Iterator<Integer>
+        {
 #endif
             VsqEventList list;
             int pos;
@@ -53,7 +56,8 @@ namespace org.kbinani.vsq {
             boolean kindDecrescend = false;
             boolean kindDynaff = false;
 
-            public IndexIterator( VsqEventList list, int iterator_kind ) {
+            public IndexIterator( VsqEventList list, int iterator_kind )
+            {
                 this.list = list;
                 pos = -1;
                 kindSinger = (iterator_kind & IndexIteratorKind.SINGER) == IndexIteratorKind.SINGER;
@@ -63,11 +67,12 @@ namespace org.kbinani.vsq {
                 kindDynaff = (iterator_kind & IndexIteratorKind.DYNAFF) == IndexIteratorKind.DYNAFF;
             }
 
-            public boolean hasNext() {
+            public boolean hasNext()
+            {
                 int count = list.getCount();
                 for ( int i = pos + 1; i < count; i++ ) {
                     VsqEvent item = list.getElement( i );
-                    if ( kindSinger ){
+                    if ( kindSinger ) {
                         if ( item.ID.type == VsqIDType.Singer ) {
                             return true;
                         }
@@ -99,7 +104,8 @@ namespace org.kbinani.vsq {
                 return false;
             }
 
-            public Integer next() {
+            public Integer next()
+            {
                 int count = list.getCount();
                 for ( int i = pos + 1; i < count; i++ ) {
                     VsqEvent item = list.getElement( i );
@@ -142,7 +148,8 @@ namespace org.kbinani.vsq {
                 return -1;
             }
 
-            public void remove() {
+            public void remove()
+            {
                 if ( 0 <= pos && pos < list.getCount() ) {
                     list.removeAt( pos );
                 }
@@ -152,17 +159,20 @@ namespace org.kbinani.vsq {
 #if JAVA
         private class SingerEventIterator implements Iterator{
 #else
-        private class SingerEventIterator : Iterator<VsqEvent> {
+        private class SingerEventIterator : Iterator<VsqEvent>
+        {
 #endif
             VsqEventList m_list;
             int m_pos;
 
-            public SingerEventIterator( VsqEventList list ) {
+            public SingerEventIterator( VsqEventList list )
+            {
                 m_list = list;
                 m_pos = -1;
             }
 
-            public boolean hasNext() {
+            public boolean hasNext()
+            {
                 int num = m_list.getCount();
                 for ( int i = m_pos + 1; i < num; i++ ) {
                     if ( m_list.getElement( i ).ID.type == VsqIDType.Singer ) {
@@ -172,7 +182,8 @@ namespace org.kbinani.vsq {
                 return false;
             }
 
-            public VsqEvent next() {
+            public VsqEvent next()
+            {
                 int num = m_list.getCount();
                 for ( int i = m_pos + 1; i < num; i++ ) {
                     VsqEvent item = m_list.getElement( i );
@@ -184,7 +195,8 @@ namespace org.kbinani.vsq {
                 return null;
             }
 
-            public void remove() {
+            public void remove()
+            {
                 if ( 0 <= m_pos && m_pos < m_list.getCount() ) {
                     m_list.removeAt( m_pos );
                 }
@@ -194,17 +206,20 @@ namespace org.kbinani.vsq {
 #if JAVA
         private class NoteEventIterator implements Iterator{
 #else
-        private class NoteEventIterator : Iterator<VsqEvent> {
+        private class NoteEventIterator : Iterator<VsqEvent>
+        {
 #endif
             VsqEventList m_list;
             int m_pos;
 
-            public NoteEventIterator( VsqEventList list ) {
+            public NoteEventIterator( VsqEventList list )
+            {
                 m_list = list;
                 m_pos = -1;
             }
 
-            public boolean hasNext() {
+            public boolean hasNext()
+            {
                 int count = m_list.getCount();
                 for ( int i = m_pos + 1; i < count; i++ ) {
                     if ( m_list.getElement( i ).ID.type == VsqIDType.Anote ) {
@@ -214,7 +229,8 @@ namespace org.kbinani.vsq {
                 return false;
             }
 
-            public VsqEvent next() {
+            public VsqEvent next()
+            {
                 int count = m_list.getCount();
                 for ( int i = m_pos + 1; i < count; i++ ) {
                     VsqEvent item = m_list.getElement( i );
@@ -226,7 +242,8 @@ namespace org.kbinani.vsq {
                 return null;
             }
 
-            public void remove() {
+            public void remove()
+            {
                 if ( 0 <= m_pos && m_pos < m_list.getCount() ) {
                     m_list.removeAt( m_pos );
                 }
@@ -236,17 +253,20 @@ namespace org.kbinani.vsq {
 #if JAVA
         private class DynamicsEventIterator implements Iterator{
 #else
-        private class DynamicsEventIterator : Iterator<VsqEvent> {
+        private class DynamicsEventIterator : Iterator<VsqEvent>
+        {
 #endif
             VsqEventList m_list;
             int m_pos;
 
-            public DynamicsEventIterator( VsqEventList list ) {
+            public DynamicsEventIterator( VsqEventList list )
+            {
                 m_list = list;
                 m_pos = -1;
             }
 
-            public boolean hasNext() {
+            public boolean hasNext()
+            {
                 int c = m_list.getCount();
                 for ( int i = m_pos + 1; i < c; i++ ) {
                     if ( m_list.getElement( i ).ID.type == VsqIDType.Aicon ) {
@@ -256,7 +276,8 @@ namespace org.kbinani.vsq {
                 return false;
             }
 
-            public VsqEvent next() {
+            public VsqEvent next()
+            {
                 int c = m_list.getCount();
                 for ( int i = m_pos + 1; i < c; i++ ) {
                     VsqEvent item = m_list.getElement( i );
@@ -268,7 +289,8 @@ namespace org.kbinani.vsq {
                 return null;
             }
 
-            public void remove() {
+            public void remove()
+            {
                 if ( 0 <= m_pos && m_pos < m_list.getCount() ) {
                     m_list.removeAt( m_pos );
                 }
@@ -278,29 +300,34 @@ namespace org.kbinani.vsq {
 #if JAVA
         private class EventIterator implements Iterator{
 #else
-        private class EventIterator : Iterator<VsqEvent> {
+        private class EventIterator : Iterator<VsqEvent>
+        {
 #endif
             private VsqEventList m_list;
             private int m_pos;
 
-            public EventIterator( VsqEventList list ) {
+            public EventIterator( VsqEventList list )
+            {
                 m_list = list;
                 m_pos = -1;
             }
 
-            public boolean hasNext() {
+            public boolean hasNext()
+            {
                 if ( 0 <= m_pos + 1 && m_pos + 1 < m_list.getCount() ) {
                     return true;
                 }
                 return false;
             }
 
-            public VsqEvent next() {
+            public VsqEvent next()
+            {
                 m_pos++;
                 return m_list.getElement( m_pos );
             }
 
-            public void remove() {
+            public void remove()
+            {
                 if ( 0 <= m_pos && m_pos < m_list.getCount() ) {
                     m_list.removeAt( m_pos );
                 }
@@ -312,7 +339,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="iterator_kind"></param>
         /// <returns></returns>
-        public Iterator<Integer> indexIterator( int iterator_kind ) {
+        public Iterator<Integer> indexIterator( int iterator_kind )
+        {
             if ( MetaText == null ) {
                 return new IndexIterator( new VsqEventList(), iterator_kind );
             } else {
@@ -324,11 +352,12 @@ namespace org.kbinani.vsq {
         /// このトラックの再生モードを取得します．
         /// </summary>
         /// <returns>PlayMode.PlayAfterSynthまたはPlayMode.PlayWithSynth</returns>
-        public int getPlayMode() {
-            if ( MetaText == null ){
+        public int getPlayMode()
+        {
+            if ( MetaText == null ) {
                 return PlayMode.PlayWithSynth;
             }
-            if ( MetaText.Common == null ){
+            if ( MetaText.Common == null ) {
                 return PlayMode.PlayWithSynth;
             }
             if ( MetaText.Common.LastPlayMode != PlayMode.PlayAfterSynth && MetaText.Common.LastPlayMode != PlayMode.PlayWithSynth ) {
@@ -341,7 +370,8 @@ namespace org.kbinani.vsq {
         /// このトラックの再生モードを設定します．
         /// </summary>
         /// <param name="value">PlayMode.PlayAfterSynth, PlayMode.PlayWithSynth, またはPlayMode.Offのいずれかを指定します</param>
-        public void setPlayMode( int value ) {
+        public void setPlayMode( int value )
+        {
             if ( MetaText == null ) return;
             if ( MetaText.Common == null ) {
                 MetaText.Common = new VsqCommon( "Miku", 128, 128, 128, DynamicsMode.Expert, value );
@@ -361,7 +391,8 @@ namespace org.kbinani.vsq {
         /// このトラックがレンダリングされるかどうかを取得します．
         /// </summary>
         /// <returns></returns>
-        public boolean isTrackOn() {
+        public boolean isTrackOn()
+        {
             if ( MetaText == null ) return true;
             if ( MetaText.Common == null ) return true;
             return MetaText.Common.PlayMode != PlayMode.Off;
@@ -371,7 +402,8 @@ namespace org.kbinani.vsq {
         /// このトラックがレンダリングされるかどうかを設定します，
         /// </summary>
         /// <param name="value"></param>
-        public void setTrackOn( boolean value ) {
+        public void setTrackOn( boolean value )
+        {
             if ( MetaText == null ) return;
             if ( MetaText.Common == null ) {
                 MetaText.Common = new VsqCommon( "Miku", 128, 128, 128, DynamicsMode.Expert, value ? PlayMode.PlayWithSynth : PlayMode.Off );
@@ -395,7 +427,8 @@ namespace org.kbinani.vsq {
         /// このトラックの名前を取得します．
         /// </summary>
         /// <returns></returns>
-        public String getName() {
+        public String getName()
+        {
             if ( MetaText == null || (MetaText != null && MetaText.Common == null) ) {
                 return "Master Track";
             } else {
@@ -407,7 +440,8 @@ namespace org.kbinani.vsq {
         /// このトラックの名前を設定します．
         /// </summary>
         /// <param name="value"></param>
-        public void setName( String value ) {
+        public void setName( String value )
+        {
             if ( MetaText != null ) {
                 if ( MetaText.Common == null ) {
                     MetaText.Common = new VsqCommon();
@@ -421,11 +455,14 @@ namespace org.kbinani.vsq {
         /// XMLシリアライズ用．このトラックの名前を設定します．
         /// </summary>
         [Obsolete]
-        public String Name {
-            get {
+        public String Name
+        {
+            get
+            {
                 return getName();
             }
-            set {
+            set
+            {
                 setName( value );
             }
         }
@@ -436,7 +473,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="clock">ピッチベンドを取得するゲートタイム</param>
         /// <returns></returns>
-        public double getPitchAt( int clock ) {
+        public double getPitchAt( int clock )
+        {
             double inv2_13 = 1.0 / 8192.0;
             int pit = MetaText.PIT.getValue( clock );
             int pbs = MetaText.PBS.getValue( clock );
@@ -447,7 +485,8 @@ namespace org.kbinani.vsq {
         /// クレッシェンド，デクレッシェンド，および強弱記号をダイナミクスカーブに反映させます．
         /// この操作によって，ダイナミクスカーブに設定されたデータは全て削除されます．
         /// </summary>
-        public void reflectDynamics() {
+        public void reflectDynamics()
+        {
             VsqBPList dyn = getCurve( "dyn" );
             dyn.clear();
             for ( Iterator<VsqEvent> itr = getDynamicsEventIterator(); itr.hasNext(); ) {
@@ -556,7 +595,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="clock"></param>
         /// <returns></returns>
-        public VsqEvent getSingerEventAt( int clock ) {
+        public VsqEvent getSingerEventAt( int clock )
+        {
             VsqEvent last = null;
             for ( Iterator<VsqEvent> itr = getSingerEventIterator(); itr.hasNext(); ) {
                 VsqEvent item = itr.next();
@@ -571,7 +611,8 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// このトラックに設定されているイベントを，ゲートタイム順に並べ替えます．
         /// </summary>
-        public void sortEvent() {
+        public void sortEvent()
+        {
             MetaText.Events.sort();
         }
 
@@ -579,7 +620,8 @@ namespace org.kbinani.vsq {
         /// 歌手変更イベントを，曲の先頭から順に返すIteratorを取得します．
         /// </summary>
         /// <returns></returns>
-        public Iterator<VsqEvent> getSingerEventIterator() {
+        public Iterator<VsqEvent> getSingerEventIterator()
+        {
             return new SingerEventIterator( MetaText.getEventList() );
         }
 
@@ -587,7 +629,8 @@ namespace org.kbinani.vsq {
         /// 音符イベントを，曲の先頭から順に返すIteratorを取得します．
         /// </summary>
         /// <returns></returns>
-        public Iterator<VsqEvent> getNoteEventIterator() {
+        public Iterator<VsqEvent> getNoteEventIterator()
+        {
             if ( MetaText == null ) {
                 return new NoteEventIterator( new VsqEventList() );
             } else {
@@ -599,7 +642,8 @@ namespace org.kbinani.vsq {
         /// クレッシェンド，デクレッシェンド，および強弱記号を表すイベントを，曲の先頭から順に返すIteratorを取得します．
         /// </summary>
         /// <returns></returns>
-        public Iterator<VsqEvent> getDynamicsEventIterator() {
+        public Iterator<VsqEvent> getDynamicsEventIterator()
+        {
             if ( MetaText == null ) {
                 return new DynamicsEventIterator( new VsqEventList() );
             } else {
@@ -618,7 +662,7 @@ namespace org.kbinani.vsq {
 #if JAVA
             throws IOException
 #endif
- {
+        {
             MetaText.print( sw, eos, start );
         }
 
@@ -660,7 +704,8 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// このトラックのMasterを取得します．
         /// </summary>
-        public VsqMaster getMaster() {
+        public VsqMaster getMaster()
+        {
             return MetaText.master;
         }
 
@@ -668,14 +713,16 @@ namespace org.kbinani.vsq {
         /// このトラックのMasterを設定します．
         /// </summary>
         /// <param name="value"></param>
-        public void setMaster( VsqMaster value ) {
+        public void setMaster( VsqMaster value )
+        {
             MetaText.master = value;
         }
 
         /// <summary>
         /// このトラックのMixerを取得します．
         /// </summary>
-        public VsqMixer getMixer() {
+        public VsqMixer getMixer()
+        {
             return MetaText.mixer;
         }
 
@@ -683,7 +730,8 @@ namespace org.kbinani.vsq {
         /// このトラックのMixerを設定します．
         /// </summary>
         /// <param name="value"></param>
-        public void setMixer( VsqMixer value ) {
+        public void setMixer( VsqMixer value )
+        {
             MetaText.mixer = value;
         }
 
@@ -691,7 +739,8 @@ namespace org.kbinani.vsq {
         /// Commonを取得します
         /// </summary>
         /// <returns></returns>
-        public VsqCommon getCommon() {
+        public VsqCommon getCommon()
+        {
             return MetaText.Common;
         }
 
@@ -701,7 +750,8 @@ namespace org.kbinani.vsq {
         /// <param name="track"></param>
         /// <param name="new_renderer"></param>
         /// <param name="singers"></param>
-        public void changeRenderer( String new_renderer, Vector<VsqID> singers ) {
+        public void changeRenderer( String new_renderer, Vector<VsqID> singers )
+        {
             VsqID default_id = null;
             int singers_size = singers.size();
             if ( singers_size <= 0 ) {
@@ -748,47 +798,58 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="curve"></param>
         /// <returns></returns>
-        public VsqBPList getCurve( String curve ) {
+        public VsqBPList getCurve( String curve )
+        {
             return MetaText.getElement( curve );
         }
 
-        public void setCurve( String curve, VsqBPList value ) {
+        public void setCurve( String curve, VsqBPList value )
+        {
             MetaText.setElement( curve, value );
         }
 
-        public int getEventCount() {
+        public int getEventCount()
+        {
             return MetaText.getEventList().getCount();
         }
 
-        public VsqEvent getEvent( int index ) {
+        public VsqEvent getEvent( int index )
+        {
             return MetaText.getEventList().getElement( index );
         }
 
-        public VsqEvent findEventFromID( int internal_id ) {
+        public VsqEvent findEventFromID( int internal_id )
+        {
             return MetaText.getEventList().findFromID( internal_id );
         }
 
-        public int findEventIndexFromID( int internal_id ) {
+        public int findEventIndexFromID( int internal_id )
+        {
             return MetaText.getEventList().findIndexFromID( internal_id );
         }
 
-        public void setEvent( int index, VsqEvent item ) {
+        public void setEvent( int index, VsqEvent item )
+        {
             MetaText.getEventList().setElement( index, item );
         }
 
-        public int addEvent( VsqEvent item ) {
+        public int addEvent( VsqEvent item )
+        {
             return MetaText.getEventList().add( item );
         }
 
-        public void addEvent( VsqEvent item, int internal_id ) {
+        public void addEvent( VsqEvent item, int internal_id )
+        {
             MetaText.Events.add( item, internal_id );
         }
 
-        public Iterator<VsqEvent> getEventIterator() {
+        public Iterator<VsqEvent> getEventIterator()
+        {
             return new EventIterator( MetaText.getEventList() );
         }
 
-        public void removeEvent( int index ) {
+        public void removeEvent( int index )
+        {
             MetaText.getEventList().removeAt( index );
         }
 
@@ -796,7 +857,8 @@ namespace org.kbinani.vsq {
         /// このインスタンスのコピーを作成します
         /// </summary>
         /// <returns></returns>
-        public Object clone() {
+        public Object clone()
+        {
             VsqTrack res = new VsqTrack();
             res.setName( getName() );
             if ( MetaText != null ) {
@@ -807,7 +869,8 @@ namespace org.kbinani.vsq {
         }
 
 #if !JAVA
-        public object Clone() {
+        public object Clone()
+        {
             return clone();
         }
 #endif
@@ -818,7 +881,8 @@ namespace org.kbinani.vsq {
         /// <param name="tempo"></param>
         /// <param name="numerator"></param>
         /// <param name="denominator"></param>
-        public VsqTrack( int tempo, int numerator, int denominator ) {
+        public VsqTrack( int tempo, int numerator, int denominator )
+        {
             //this.Name = "Master Track";
             // metatextがnullのとき，トラック名はMaster Track
             this.MetaText = null;
@@ -829,7 +893,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="name"></param>
         /// <param name="singer"></param>
-        public VsqTrack( String name, String singer ) {
+        public VsqTrack( String name, String singer )
+        {
             MetaText = new VsqMetaText( name, singer );
         }
 
@@ -838,7 +903,8 @@ namespace org.kbinani.vsq {
             this( "Voice1", "Miku" );
 #else
         public VsqTrack()
-            : this( "Voice1", "Miku" ) {
+            : this( "Voice1", "Miku" )
+        {
 #endif
         }
 
@@ -846,7 +912,8 @@ namespace org.kbinani.vsq {
         /// 歌詞の文字数を調べます
         /// </summary>
         /// <returns></returns>
-        public int getLyricLength() {
+        public int getLyricLength()
+        {
             int counter = 0;
             for ( int i = 0; i < MetaText.getEventList().getCount(); i++ ) {
                 if ( MetaText.getEventList().getElement( i ).ID.type == VsqIDType.Anote ) {
@@ -856,7 +923,8 @@ namespace org.kbinani.vsq {
             return counter;
         }
 
-        public VsqTrack( Vector<MidiEvent> midi_event, String encoding ) {
+        public VsqTrack( Vector<MidiEvent> midi_event, String encoding )
+        {
             String track_name = "";
 
             TextStream sw = null;

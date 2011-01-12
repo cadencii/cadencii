@@ -18,7 +18,8 @@ import java.io.*;
 #else
 using System;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
     using boolean = System.Boolean;
 #endif
 
@@ -29,13 +30,14 @@ namespace org.kbinani.vsq {
     public class VsqNote implements Serializable {
 #else
     [Serializable]
-    public class VsqNote {
+    public class VsqNote
+    {
 #endif
         /// <summary>
         /// このインスタンスが表す音階のノート値
         /// </summary>
         public int Value;
-        private static readonly int[] ALTER = new int[]{ 0, 1, 0, -1, 0, 0, 1, 0, 1, 0, -1, 0, 0 };
+        private static readonly int[] ALTER = new int[] { 0, 1, 0, -1, 0, 0, 1, 0, 1, 0, -1, 0, 0 };
         private static readonly boolean[] _KEY_TYPE = new boolean[] { 
             true,
             false,
@@ -171,14 +173,16 @@ namespace org.kbinani.vsq {
         /// 音階のノート値からのコンストラクタ。
         /// </summary>
         /// <param name="note">この音階を初期化するためのノート値</param>
-        public VsqNote( int note ) {
+        public VsqNote( int note )
+        {
             Value = note;
         }
 
         /// <summary>
         /// このインスタンスが表す音階が、ピアノの白鍵かどうかを返します
         /// </summary>
-        public boolean isWhiteKey() {
+        public boolean isWhiteKey()
+        {
             return isNoteWhiteKey( Value );
         }
 
@@ -187,7 +191,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="note"></param>
         /// <returns></returns>
-        public static boolean isNoteWhiteKey( int note ) {
+        public static boolean isNoteWhiteKey( int note )
+        {
             if ( 0 <= note && note <= 127 ) {
                 return _KEY_TYPE[note];
             } else {
@@ -198,9 +203,9 @@ namespace org.kbinani.vsq {
                     case 6:
                     case 8:
                     case 10:
-                        return false;
+                    return false;
                     default:
-                        return true;
+                    return true;
                 }
             }
         }
@@ -210,7 +215,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="note"></param>
         /// <returns></returns>
-        public static int getNoteAlter( int note ) {
+        public static int getNoteAlter( int note )
+        {
             return ALTER[note % 12];
         }
 
@@ -220,7 +226,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="note"></param>
         /// <returns></returns>
-        public static int getNoteOctave( int note ) {
+        public static int getNoteOctave( int note )
+        {
             int odd = note % 12;
             return (note - odd) / 12 - 2;
         }
@@ -231,73 +238,77 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="note"></param>
         /// <returns></returns>
-        public static String getNoteStringBase( int note ) {
+        public static String getNoteStringBase( int note )
+        {
             int odd = note % 12;
             switch ( odd ) {
                 case 0:
                 case 1:
-                    return "C";
+                return "C";
                 case 2:
-                    return "D";
+                return "D";
                 case 3:
                 case 4:
-                    return "E";
+                return "E";
                 case 5:
                 case 6:
-                    return "F";
+                return "F";
                 case 7:
                 case 8:
-                    return "G";
+                return "G";
                 case 9:
-                    return "A";
+                return "A";
                 case 10:
                 case 11:
-                    return "B";
+                return "B";
                 default:
-                    return "";
+                return "";
             }
         }
 
-        public static String getNoteString( int note ) {
+        public static String getNoteString( int note )
+        {
             int odd = note % 12;
             int order = (note - odd) / 12 - 2;
             switch ( odd ) {
                 case 0:
-                    return "C" + order;
+                return "C" + order;
                 case 1:
-                    return "C#" + order;
+                return "C#" + order;
                 case 2:
-                    return "D" + order;
+                return "D" + order;
                 case 3:
-                    return "Eb" + order;
+                return "Eb" + order;
                 case 4:
-                    return "E" + order;
+                return "E" + order;
                 case 5:
-                    return "F" + order;
+                return "F" + order;
                 case 6:
-                    return "F#" + order;
+                return "F#" + order;
                 case 7:
-                    return "G" + order;
+                return "G" + order;
                 case 8:
-                    return "G#" + order;
+                return "G#" + order;
                 case 9:
-                    return "A" + order;
+                return "A" + order;
                 case 10:
-                    return "Bb" + order;
+                return "Bb" + order;
                 case 11:
-                    return "B" + order;
+                return "B" + order;
                 default:
-                    return "";
+                return "";
             }
         }
 
 #if !JAVA
-        public override string ToString() {
+        public override String ToString()
+        {
             return toString();
         }
 #endif
 
-        public String toString() {
+        public String toString()
+        {
             return getNoteString( Value );
         }
     }

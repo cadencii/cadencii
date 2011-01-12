@@ -11,7 +11,12 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.cadencii;
+
+#else
 namespace org.kbinani.cadencii {
+#endif
 
     public interface IAmplifierView {
         double getAmplifyL();
@@ -19,4 +24,6 @@ namespace org.kbinani.cadencii {
         double getAmplifyR();
     }
 
+#if !JAVA
 }
+#endif

@@ -989,7 +989,7 @@ namespace VstSdk {
         /// </summary>
         public VstInt16 right;
 
-        public override string ToString() {
+        public override String ToString() {
             return "{top=" + top + ", left=" + left + ", bottom=" + bottom + ", right=" + right + "}";
         }
     }

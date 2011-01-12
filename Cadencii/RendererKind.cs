@@ -14,16 +14,51 @@
 #if JAVA
 package org.kbinani.cadencii;
 
+    /// <summary>
+    /// 歌声合成システムの種類
+    /// </summary>
+    public enum RendererKind
+    {
+        /// <summary>
+        /// Synthesize Engine 1.0のVOCALOID1
+        /// </summary>
+        VOCALOID1_100,
+        /// <summary>
+        /// Synthesize Engine 1.1のVOCALOID1
+        /// </summary>
+        VOCALOID1_101,
+        /// <summary>
+        /// VOCALOID2
+        /// </summary>
+        VOCALOID2,
+        /// <summary>
+        /// AquesTone
+        /// </summary>
+        AQUES_TONE,
+        /// <summary>
+        /// UTAU
+        /// </summary>
+        UTAU,
+        /// <summary>
+        /// vConnect-STAND
+        /// </summary>
+        VCNT,
+        /// <summary>
+        /// 何もしない歌声合成システム(EmptyRenderingRunner)
+        /// </summary>
+        NULL,
+    }
+
 #else
 using System;
 
 namespace org.kbinani.cadencii{
-#endif
 
     /// <summary>
     /// 歌声合成システムの種類
     /// </summary>
-    public enum RendererKind : int {
+    public enum RendererKind : int
+    {
         /// <summary>
         /// Synthesize Engine 1.0のVOCALOID1
         /// </summary>
@@ -58,6 +93,5 @@ namespace org.kbinani.cadencii{
         NULL = -1,
     }
 
-#if !JAVA
 }
 #endif

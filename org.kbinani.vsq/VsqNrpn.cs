@@ -20,14 +20,16 @@ using System;
 using org.kbinani;
 using org.kbinani.java.util;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
     using boolean = System.Boolean;
 #endif
 
 #if JAVA
     public class VsqNrpn implements Comparable<VsqNrpn> {
 #else
-    public class VsqNrpn : IComparable<VsqNrpn> {
+    public class VsqNrpn : IComparable<VsqNrpn>
+    {
 #endif
         public int Clock;
         public int Nrpn;
@@ -37,7 +39,8 @@ namespace org.kbinani.vsq {
         public boolean msbOmitRequired;
         private Vector<VsqNrpn> m_list;
 
-        public VsqNrpn( int clock, int nrpn, byte data_msb ) {
+        public VsqNrpn( int clock, int nrpn, byte data_msb )
+        {
             Clock = clock;
             Nrpn = nrpn;
             DataMsb = data_msb;
@@ -47,7 +50,8 @@ namespace org.kbinani.vsq {
             m_list = new Vector<VsqNrpn>();
         }
 
-        public VsqNrpn( int clock, int nrpn, byte data_msb, byte data_lsb ) {
+        public VsqNrpn( int clock, int nrpn, byte data_msb, byte data_lsb )
+        {
             Clock = clock;
             Nrpn = nrpn;
             DataMsb = data_msb;
@@ -57,7 +61,8 @@ namespace org.kbinani.vsq {
             m_list = new Vector<VsqNrpn>();
         }
 
-        public VsqNrpn[] expand() {
+        public VsqNrpn[] expand()
+        {
             Vector<VsqNrpn> ret = new Vector<VsqNrpn>();
             if ( DataLsbSpecified ) {
                 VsqNrpn v = new VsqNrpn( Clock, Nrpn, DataMsb, DataLsb );
@@ -74,7 +79,8 @@ namespace org.kbinani.vsq {
             return ret.toArray( new VsqNrpn[] { } );
         }
 
-        public static Vector<VsqNrpn> sort( Vector<VsqNrpn> list ) {
+        public static Vector<VsqNrpn> sort( Vector<VsqNrpn> list )
+        {
             Vector<VsqNrpn> ret = new Vector<VsqNrpn>();
             Collections.sort( list );
             if ( list.size() >= 2 ) {
@@ -119,7 +125,8 @@ namespace org.kbinani.vsq {
             return ret;
         }
 
-        public static VsqNrpn[] merge( VsqNrpn[] src1, VsqNrpn[] src2 ) {
+        public static VsqNrpn[] merge( VsqNrpn[] src1, VsqNrpn[] src2 )
+        {
             Vector<VsqNrpn> ret = new Vector<VsqNrpn>();
             for ( int i = 0; i < src1.Length; i++ ) {
                 ret.add( src1[i] );
@@ -131,7 +138,8 @@ namespace org.kbinani.vsq {
             return ret.toArray( new VsqNrpn[] { } );
         }
 
-        public static NrpnData[] convert( VsqNrpn[] source ) {
+        public static NrpnData[] convert( VsqNrpn[] source )
+        {
             int nrpn = source[0].Nrpn;
             byte msb = (byte)(nrpn >> 8);
             byte lsb = (byte)(nrpn - (nrpn << 8));
@@ -165,31 +173,37 @@ namespace org.kbinani.vsq {
             return ret.toArray( new NrpnData[] { } );
         }
 
-        public int compareTo( VsqNrpn item ) {
+        public int compareTo( VsqNrpn item )
+        {
             return Clock - item.Clock;
         }
 
 #if !JAVA
-        public int CompareTo( VsqNrpn item ) {
+        public int CompareTo( VsqNrpn item )
+        {
             return compareTo( item );
         }
 #endif
 
-        public void append( int nrpn, byte data_msb ) {
+        public void append( int nrpn, byte data_msb )
+        {
             m_list.add( new VsqNrpn( Clock, nrpn, data_msb ) );
         }
 
-        public void append( int nrpn, byte data_msb, byte data_lsb ) {
+        public void append( int nrpn, byte data_msb, byte data_lsb )
+        {
             m_list.add( new VsqNrpn( Clock, nrpn, data_msb, data_lsb ) );
         }
 
-        public void append( int nrpn, byte data_msb, boolean msb_omit_required ) {
+        public void append( int nrpn, byte data_msb, boolean msb_omit_required )
+        {
             VsqNrpn v = new VsqNrpn( Clock, nrpn, data_msb );
             v.msbOmitRequired = msb_omit_required;
             m_list.add( v );
         }
 
-        public void append( int nrpn, byte data_msb, byte data_lsb, boolean msb_omit_required ) {
+        public void append( int nrpn, byte data_msb, byte data_lsb, boolean msb_omit_required )
+        {
             VsqNrpn v = new VsqNrpn( Clock, nrpn, data_msb, data_lsb );
             v.msbOmitRequired = msb_omit_required;
             m_list.add( v );

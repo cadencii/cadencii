@@ -15,17 +15,20 @@
 package org.kbinani.vsq;
 
 #else
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
 #endif
 
-    public class IndexIteratorKind {
+    public class IndexIteratorKind
+    {
         public const int SINGER = 1 << 0;
         public const int NOTE = 1 << 1;
         public const int CRESCEND = 1 << 2;
         public const int DECRESCEND = 1 << 3;
         public const int DYNAFF = 1 << 4;
 
-        private IndexIteratorKind() {
+        private IndexIteratorKind()
+        {
         }
     }
 

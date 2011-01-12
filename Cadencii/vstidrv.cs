@@ -109,7 +109,7 @@ namespace org.kbinani.cadencii
         /// </summary>
         private boolean useNativeDllLoader = true;
         protected MemoryManager memoryManager = new MemoryManager();
-        private object mSyncRoot = new object();
+        private Object mSyncRoot = new Object();
 
         public int getSampleRate()
         {

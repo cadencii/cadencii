@@ -23,7 +23,8 @@ using org.kbinani;
 using org.kbinani.java.util;
 using org.kbinani.java.io;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
     using boolean = System.Boolean;
 #endif
 
@@ -31,7 +32,8 @@ namespace org.kbinani.vsq {
     public class UstPortamento implements Cloneable, Serializable {
 #else
     [Serializable]
-    public class UstPortamento : ICloneable {
+    public class UstPortamento : ICloneable
+    {
 #endif
         public Vector<UstPortamentoPoint> Points = new Vector<UstPortamentoPoint>();
         public int Start;
@@ -42,7 +44,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static String getGenericTypeName( String name ) {
+        public static String getGenericTypeName( String name )
+        {
             if ( name != null ) {
                 if ( name.Equals( "Points" ) ) {
                     return "org.kbinani.vsq.UstPortamentoPoint";
@@ -57,7 +60,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static boolean isXmlIgnored( String name ) {
+        public static boolean isXmlIgnored( String name )
+        {
             return false;
         }
 
@@ -67,7 +71,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static String getXmlElementName( String name ) {
+        public static String getXmlElementName( String name )
+        {
             return name;
         }
 
@@ -107,7 +112,8 @@ namespace org.kbinani.vsq {
             sw.newLine();
         }
 
-        public Object clone() {
+        public Object clone()
+        {
             UstPortamento ret = new UstPortamento();
             int count = Points.size();
             for ( int i = 0; i < count; i++ ) {
@@ -118,7 +124,8 @@ namespace org.kbinani.vsq {
         }
 
 #if !JAVA
-        public object Clone() {
+        public object Clone()
+        {
             return clone();
         }
 #endif
@@ -129,7 +136,8 @@ namespace org.kbinani.vsq {
         PBY=-15.9,-20,-31.5,-26.6
         PBM=,s,r,j,s,s,s,s,s
         */
-        public void ParseLine( String line ) {
+        public void ParseLine( String line )
+        {
             line = line.ToLower();
             String[] spl = PortUtil.splitString( line, '=' );
             if ( spl.Length == 0 ) {

@@ -62,23 +62,23 @@ namespace org.kbinani.cadencii {
         }
 
         public override bool CanConvertTo( ITypeDescriptorContext context, Type destinationType ) {
-            if ( destinationType == typeof( string ) ) {
+            if ( destinationType == typeof( String ) ) {
                 return true;
             } else {
                 return base.CanConvertTo( context, destinationType );
             }
         }
 
-        public override object ConvertTo( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType ) {
-            if ( destinationType == typeof( string ) && value is VibratoVariation ) {
+        public override Object ConvertTo( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, Object value, Type destinationType ) {
+            if ( destinationType == typeof( String ) && value is VibratoVariation ) {
                 return ((VibratoVariation)value).description;
             } else {
                 return base.ConvertTo( context, culture, value, destinationType );
             }
         }
 
-        public override object ConvertFrom( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value ) {
-            if ( value is string ) {
+        public override Object ConvertFrom( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, Object value ) {
+            if ( value is String ) {
                 if ( value.Equals( VibratoVariation.empty.description ) ) {
                     return new VibratoVariation( VibratoVariation.empty.description );
                 } else {
@@ -86,7 +86,7 @@ namespace org.kbinani.cadencii {
                     if ( AppManager.editorConfig.UseUserDefinedAutoVibratoType ) {
                         int size = AppManager.editorConfig.AutoVibratoCustom.size();
                         for ( int i = 0; i < size; i++ ) {
-                            string display_string = AppManager.editorConfig.AutoVibratoCustom.get( i ).getDisplayString();
+                            String display_string = AppManager.editorConfig.AutoVibratoCustom.get( i ).getDisplayString();
                             if ( svalue.Equals( display_string ) ) {
                                 return new VibratoVariation( display_string );
                             }
@@ -116,7 +116,7 @@ namespace org.kbinani.cadencii {
         }
 
         public override bool CanConvertFrom( ITypeDescriptorContext context, Type sourceType ) {
-            if ( sourceType == typeof( string ) ) {
+            if ( sourceType == typeof( String ) ) {
                 return true;
             } else {
                 return base.CanConvertFrom( context, sourceType );

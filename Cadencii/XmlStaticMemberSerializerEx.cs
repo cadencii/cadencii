@@ -23,7 +23,7 @@ namespace org.kbinani.cadencii {
             : base( item ) {
         }
 
-        protected override System.Reflection.Assembly Compile( string code ) {
+        protected override System.Reflection.Assembly Compile( String code ) {
 #if ENABLE_SCRIPT
             Vector<String> errors = new Vector<String>();
             return Utility.compileScript( code, errors );

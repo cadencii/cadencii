@@ -14,7 +14,10 @@ import org.kbinani.windows.forms.BComboBox;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BPanel;
+import org.kbinani.windows.forms.BRadioButton;
 import org.kbinani.windows.forms.BTextBox;
+import org.kbinani.windows.forms.BGroupBox;
+import javax.swing.SwingConstants;
 
 //SECTION-END-IMPORT
 public class FormVibratoConfig extends BForm {
@@ -30,8 +33,11 @@ public class FormVibratoConfig extends BForm {
 	private BLabel jLabel1 = null;
 	private BLabel lblVibratoType = null;
 	private BComboBox comboVibratoType = null;
-
-	//SECTION-END-FIELD
+    private BGroupBox groupSelect = null;
+    private BRadioButton radioVocaloid1 = null;
+    private BRadioButton radioVocaloid2 = null;
+    private BRadioButton radioUserDefined = null;
+    //SECTION-END-FIELD
 	/**
 	 * This is the default constructor
 	 */
@@ -47,7 +53,7 @@ public class FormVibratoConfig extends BForm {
 	 * @return void
 	 */
 	private void initialize() {
-		this.setSize(339, 157);
+		this.setSize(354, 225);
 		this.setContentPane(getJContentPane());
 		this.setTitle("JFrame");
 	}
@@ -59,12 +65,20 @@ public class FormVibratoConfig extends BForm {
 	 */
 	private JPanel getJContentPane() {
 		if (jContentPane == null) {
+			GridBagConstraints gridBagConstraints31 = new GridBagConstraints();
+			gridBagConstraints31.gridx = 0;
+			gridBagConstraints31.insets = new Insets(6, 12, 0, 12);
+			gridBagConstraints31.gridwidth = 3;
+			gridBagConstraints31.fill = GridBagConstraints.BOTH;
+			gridBagConstraints31.weighty = 1.0D;
+			gridBagConstraints31.gridy = 2;
 			GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
 			gridBagConstraints5.gridx = 0;
 			gridBagConstraints5.gridwidth = 3;
-			gridBagConstraints5.weighty = 1.0D;
+			gridBagConstraints5.weighty = 0.0D;
 			gridBagConstraints5.anchor = GridBagConstraints.EAST;
-			gridBagConstraints5.gridy = 2;
+			gridBagConstraints5.insets = new Insets(16, 0, 16, 12);
+			gridBagConstraints5.gridy = 3;
 			GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
 			gridBagConstraints4.fill = GridBagConstraints.NONE;
 			gridBagConstraints4.gridy = 1;
@@ -75,7 +89,7 @@ public class FormVibratoConfig extends BForm {
 			gridBagConstraints4.gridx = 1;
 			GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
 			gridBagConstraints3.gridx = 0;
-			gridBagConstraints3.anchor = GridBagConstraints.SOUTHWEST;
+			gridBagConstraints3.anchor = GridBagConstraints.WEST;
 			gridBagConstraints3.insets = new Insets(3, 12, 3, 0);
 			gridBagConstraints3.gridy = 1;
 			lblVibratoType = new BLabel();
@@ -110,6 +124,7 @@ public class FormVibratoConfig extends BForm {
 			jContentPane.add(lblVibratoType, gridBagConstraints3);
 			jContentPane.add(getComboVibratoType(), gridBagConstraints4);
 			jContentPane.add(getJPanel2(), gridBagConstraints5);
+			jContentPane.add(getGroupSelect(), gridBagConstraints31);
 		}
 		return jContentPane;
 	}
@@ -148,6 +163,7 @@ public class FormVibratoConfig extends BForm {
 		if (btnOK == null) {
 			btnOK = new BButton();
 			btnOK.setText("OK");
+			btnOK.setPreferredSize(new Dimension(75, 23));
 		}
 		return btnOK;
 	}
@@ -161,6 +177,7 @@ public class FormVibratoConfig extends BForm {
 		if (btnCancel == null) {
 			btnCancel = new BButton();
 			btnCancel.setText("Cancel");
+			btnCancel.setPreferredSize(new Dimension(75, 23));
 		}
 		return btnCancel;
 	}
@@ -190,6 +207,81 @@ public class FormVibratoConfig extends BForm {
 		}
 		return comboVibratoType;
 	}
+
+    /**
+     * This method initializes groupSelect	
+     * 	
+     * @return org.kbinani.windows.forms.BGroupBox	
+     */
+    private BGroupBox getGroupSelect() {
+        if (groupSelect == null) {
+            GridBagConstraints gridBagConstraints8 = new GridBagConstraints();
+            gridBagConstraints8.gridx = 2;
+            gridBagConstraints8.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints8.weightx = 1.0D;
+            gridBagConstraints8.gridy = 0;
+            GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
+            gridBagConstraints7.gridx = 1;
+            gridBagConstraints7.weightx = 1.0D;
+            gridBagConstraints7.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints7.gridy = 0;
+            GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
+            gridBagConstraints6.gridx = 0;
+            gridBagConstraints6.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints6.weightx = 1.0D;
+            gridBagConstraints6.gridy = 0;
+            groupSelect = new BGroupBox();
+            groupSelect.setLayout(new GridBagLayout());
+            groupSelect.setTitle("Select from");
+            groupSelect.add(getRadioVocaloid1(), gridBagConstraints6);
+            groupSelect.add(getRadioVocaloid2(), gridBagConstraints7);
+            groupSelect.add(getRadioUserDefined(), gridBagConstraints8);
+        }
+        return groupSelect;
+    }
+
+    /**
+     * This method initializes radioVocaloid1	
+     * 	
+     * @return javax.swing.JRadioButton	
+     */
+    private BRadioButton getRadioVocaloid1() {
+        if (radioVocaloid1 == null) {
+            radioVocaloid1 = new BRadioButton();
+            radioVocaloid1.setText("VOCALOID1");
+            radioVocaloid1.setHorizontalAlignment(SwingConstants.CENTER);
+        }
+        return radioVocaloid1;
+    }
+
+    /**
+     * This method initializes radioVocaloid2	
+     * 	
+     * @return javax.swing.JRadioButton	
+     */
+    private BRadioButton getRadioVocaloid2() {
+        if (radioVocaloid2 == null) {
+            radioVocaloid2 = new BRadioButton();
+            radioVocaloid2.setText("VOCALOID2");
+            radioVocaloid2.setSelected(true);
+            radioVocaloid2.setHorizontalAlignment(SwingConstants.CENTER);
+        }
+        return radioVocaloid2;
+    }
+
+    /**
+     * This method initializes radioUserDefined	
+     * 	
+     * @return javax.swing.JRadioButton	
+     */
+    private BRadioButton getRadioUserDefined() {
+        if (radioUserDefined == null) {
+            radioUserDefined = new BRadioButton();
+            radioUserDefined.setText("User defined");
+            radioUserDefined.setHorizontalAlignment(SwingConstants.CENTER);
+        }
+        return radioUserDefined;
+    }
 
 	//SECTION-END-METHOD
 }  //  @jve:decl-index=0:visual-constraint="10,10"

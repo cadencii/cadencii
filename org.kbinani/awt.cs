@@ -185,18 +185,6 @@ namespace org.kbinani.java.awt {
             nativeGraphics.FillPolygon( brush, points );
         }
 
-        public void setStroke( Stroke stroke ) {
-            if ( stroke is BasicStroke ) {
-                BasicStroke bstroke = (BasicStroke)stroke;
-                this.stroke.pen = bstroke.pen;
-                this.stroke.pen.Color = color.color;
-            }
-        }
-
-        public Stroke getStroke() {
-            return stroke;
-        }
-
         public Shape getClip() {
             Area ret = new Area();
             ret.region = nativeGraphics.Clip;
@@ -237,6 +225,20 @@ namespace org.kbinani.java.awt {
     public class Graphics2D : Graphics{
         public Graphics2D( System.Drawing.Graphics g )
             : base( g ) {
+        }
+
+        public void setStroke( Stroke stroke )
+        {
+            if ( stroke is BasicStroke ) {
+                BasicStroke bstroke = (BasicStroke)stroke;
+                this.stroke.pen = bstroke.pen;
+                this.stroke.pen.Color = color.color;
+            }
+        }
+
+        public Stroke getStroke()
+        {
+            return stroke;
         }
 
         public void translate( int tx, int ty ) {
@@ -588,16 +590,20 @@ namespace org.kbinani.java.awt {
 
 }
 
-namespace org.kbinani.java.awt.geom {
-    public class Area : Shape {
+namespace org.kbinani.java.awt.geom
+{
+    public class Area : Shape
+    {
         public System.Drawing.Region region;
 
-        public Area() {
+        public Area()
+        {
             region = new System.Drawing.Region();
             region.MakeEmpty();
         }
 
-        public Area( Shape s ) {
+        public Area( Shape s )
+        {
             if ( s == null ) {
                 region = new System.Drawing.Region();
             } else if ( s is Area ) {
@@ -618,7 +624,8 @@ namespace org.kbinani.java.awt.geom {
             }
         }
 
-        public void add( Area rhs ) {
+        public void add( Area rhs )
+        {
             if ( rhs == null ) {
                 return;
             }
@@ -631,7 +638,8 @@ namespace org.kbinani.java.awt.geom {
             region.Union( rhs.region );
         }
 
-        public void subtract( Area rhs ) {
+        public void subtract( Area rhs )
+        {
             if ( rhs == null ) {
                 return;
             }
@@ -644,7 +652,8 @@ namespace org.kbinani.java.awt.geom {
             region.Exclude( rhs.region );
         }
 
-        public Object clone() {
+        public Object clone()
+        {
             Area ret = new Area();
             if ( region == null ) {
                 ret.region = new System.Drawing.Region();

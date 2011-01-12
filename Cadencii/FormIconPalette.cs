@@ -89,7 +89,7 @@ namespace org.kbinani.cadencii {
         }
 
         private void registerEventHandlers() {
-            FormClosing += new System.Windows.Forms.FormClosingEventHandler( FormIconPalette_FormClosing );
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( FormIconPalette_FormClosing );
             menuWindowHide.Click += new EventHandler( menuWindowHide_Click );
         }
 

@@ -14,10 +14,12 @@
 #if JAVA
 package org.kbinani.vsq;
 #else
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
 #endif
 
-    public enum VsqCommandType {
+    public enum VsqCommandType
+    {
         ROOT,
         CHANGE_PRE_MEASURE,
         EVENT_ADD,

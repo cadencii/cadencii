@@ -16,6 +16,7 @@ package org.kbinani.cadencii;
 
 import java.awt.*;
 import java.util.*;
+import org.kbinani.*;
 #else
 using System;
 using org.kbinani.java.util;
@@ -48,7 +49,7 @@ namespace org.kbinani.cadencii {
             mView = view;
         }
 
-        public override void paintTo( Graphics graphics, int x, int y, int width, int height ) {
+        public override void paintTo( Graphics2D graphics, int x, int y, int width, int height ) {
             // 現在の描画時のストローク、色を保存しておく
             Stroke old_stroke = graphics.getStroke();
             Color old_color = graphics.getColor();

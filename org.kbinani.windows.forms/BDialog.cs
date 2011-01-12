@@ -88,18 +88,22 @@ namespace org.kbinani.windows.forms
         public void setDialogResult( BDialogResult value )
         {
             switch ( value ) {
-                case BDialogResult.YES:
-                this.DialogResult = System.Windows.Forms.DialogResult.Yes;
-                break;
-                case BDialogResult.NO:
-                this.DialogResult = System.Windows.Forms.DialogResult.No;
-                break;
-                case BDialogResult.OK:
-                this.DialogResult = System.Windows.Forms.DialogResult.OK;
-                break;
-                case BDialogResult.CANCEL:
-                this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-                break;
+                case BDialogResult.YES: {
+                    this.DialogResult = System.Windows.Forms.DialogResult.Yes;
+                    break;
+                }
+                case BDialogResult.NO: {
+                    this.DialogResult = System.Windows.Forms.DialogResult.No;
+                    break;
+                }
+                case BDialogResult.OK: {
+                    this.DialogResult = System.Windows.Forms.DialogResult.OK;
+                    break;
+                }
+                case BDialogResult.CANCEL: {
+                    this.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+                    break;
+                }
             }
         }
 
@@ -127,7 +131,11 @@ namespace org.kbinani.windows.forms
             return processDialogResult( base.ShowDialog() );
         }
 
+#if JAVA
+        public virtual BDialogResult showDialog( Component parent )
+#else
         public virtual BDialogResult showDialog( System.Windows.Forms.Form parent )
+#endif
         {
             return processDialogResult( base.ShowDialog( parent ) );
         }

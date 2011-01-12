@@ -31,7 +31,7 @@ namespace org.kbinani.cadencii {
             return base.CanConvertTo( context, destinationType );
         }
 
-        public override object ConvertTo( ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType ) {
+        public override Object ConvertTo( ITypeDescriptorContext context, CultureInfo culture, Object value, Type destinationType ) {
             if ( destinationType == typeof( String ) && value is NoteNumberProperty ) {
                 NoteNumberProperty obj = (NoteNumberProperty)value;
                 String ret = getNoteString( obj.noteNumber );
@@ -47,7 +47,7 @@ namespace org.kbinani.cadencii {
             return base.CanConvertFrom( context, sourceType );
         }
 
-        public override object ConvertFrom( ITypeDescriptorContext context, CultureInfo culture, object value ) {
+        public override Object ConvertFrom( ITypeDescriptorContext context, CultureInfo culture, Object value ) {
             if ( value is String ) {
                 NoteNumberProperty obj = new NoteNumberProperty();
                 obj.noteNumber = NoteNumberPropertyConverter.parse( (String)value );

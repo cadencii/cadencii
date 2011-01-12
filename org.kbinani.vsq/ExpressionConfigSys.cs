@@ -24,13 +24,15 @@ using System;
 using org.kbinani.java.io;
 using org.kbinani.java.util;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
 #endif
 
     /// <summary>
     /// VOCALOID1またはVOCALOID2の、表情ライブラリの設定値を表します。
     /// </summary>
-    public class ExpressionConfigSys {
+    public class ExpressionConfigSys
+    {
         private const int MAX_VIBRATO = 0x400;
         private Vector<VibratoHandle> m_vibrato_configs;
         private Vector<NoteHeadHandle> m_attack_configs;
@@ -141,7 +143,8 @@ namespace org.kbinani.vsq {
         /// VOCALOID1システムのデフォルトの表情ライブラリの設定値を取得します。
         /// </summary>
         /// <returns></returns>
-        public static ExpressionConfigSys getVocaloid1Default() {
+        public static ExpressionConfigSys getVocaloid1Default()
+        {
             ExpressionConfigSys ret = new ExpressionConfigSys();
             ret.m_vibrato_configs = new Vector<VibratoHandle>();
             ret.m_attack_configs = new Vector<NoteHeadHandle>();
@@ -589,7 +592,8 @@ namespace org.kbinani.vsq {
         /// VOCALOID2システムのデフォルトの表情ライブラリの設定値を取得します。
         /// </summary>
         /// <returns></returns>
-        public static ExpressionConfigSys getVocaloid2Default() {
+        public static ExpressionConfigSys getVocaloid2Default()
+        {
 #if __cplusplus
             ExpressionConfigSys ret;
 #else
@@ -921,7 +925,8 @@ namespace org.kbinani.vsq {
         /// 登録されているビブラート設定の個数を取得します。
         /// </summary>
         /// <returns></returns>
-        public int getVibratoConfigCount() {
+        public int getVibratoConfigCount()
+        {
             return m_vibrato_configs.size();
         }
 
@@ -929,7 +934,8 @@ namespace org.kbinani.vsq {
         /// 登録されているアタック設定の個数を取得します。
         /// </summary>
         /// <returns></returns>
-        public int getAttackConfigCount() {
+        public int getAttackConfigCount()
+        {
             return m_attack_configs.size();
         }
 
@@ -937,7 +943,8 @@ namespace org.kbinani.vsq {
         /// 登録されている強弱記号設定の個数を取得します。
         /// </summary>
         /// <returns></returns>
-        public int getDynamicsConfigCount() {
+        public int getDynamicsConfigCount()
+        {
             return m_dynamics_configs.size();
         }
 
@@ -948,7 +955,7 @@ namespace org.kbinani.vsq {
 #if __cplusplus
         public: vector<VibratoHandle>::iterator vibratoConfigIterator()
 #else
-        public Iterator<VibratoHandle> vibratoConfigIterator() 
+        public Iterator<VibratoHandle> vibratoConfigIterator()
 #endif
         {
             return m_vibrato_configs.iterator();
@@ -961,7 +968,7 @@ namespace org.kbinani.vsq {
 #if __cplusplus
         public: vector<NoteHeadHandle>::iterator attackConfigIterator()
 #else
-        public Iterator<NoteHeadHandle> attackConfigIterator() 
+        public Iterator<NoteHeadHandle> attackConfigIterator()
 #endif
         {
             return m_attack_configs.iterator();
@@ -980,7 +987,8 @@ namespace org.kbinani.vsq {
             return m_dynamics_configs.iterator();
         }
 
-        private ExpressionConfigSys() {
+        private ExpressionConfigSys()
+        {
         }
 
         /// <summary>
@@ -988,7 +996,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="path_editor"></param>
         /// <param name="path_expdb"></param>
-        public ExpressionConfigSys( String path_editor, String path_expdb ) {
+        public ExpressionConfigSys( String path_editor, String path_expdb )
+        {
             m_vibrato_configs = new Vector<VibratoHandle>();
             m_attack_configs = new Vector<NoteHeadHandle>();
             m_dynamics_configs = new Vector<IconDynamicsHandle>();
@@ -1080,7 +1089,7 @@ namespace org.kbinani.vsq {
                                         String aic_path = PortUtil.combinePath( section_path, aic_name );
                                         String ids = spl2[i];
                                         String icon_id = preset + PortUtil.formatDecimal( "0000", i );
-                                        if ( PortUtil.isFileExists( aic_path ) ){
+                                        if ( PortUtil.isFileExists( aic_path ) ) {
                                             IconDynamicsHandle handle = new IconDynamicsHandle( aic_path, ids, icon_id, i );
                                             handle.setButtonImageFullPath( PortUtil.combinePath( section_path, handle.getButton() ) );
                                             m_dynamics_configs.add( handle );

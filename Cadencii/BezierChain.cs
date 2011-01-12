@@ -405,7 +405,7 @@ namespace org.kbinani.cadencii {
         }
 
 #if !JAVA
-        public object Clone() {
+        public Object Clone() {
             return clone();
         }
 #endif

@@ -18,7 +18,8 @@ import java.io.*;
 #else
 using System;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
 #endif
 
     /// <summary>
@@ -28,20 +29,23 @@ namespace org.kbinani.vsq {
     public class VsqMixerEntry implements Cloneable, Serializable {
 #else
     [Serializable]
-    public class VsqMixerEntry : ICloneable {
+    public class VsqMixerEntry : ICloneable
+    {
 #endif
         public int Feder;
         public int Panpot;
         public int Mute;
         public int Solo;
 
-        public Object clone() {
+        public Object clone()
+        {
             VsqMixerEntry res = new VsqMixerEntry( Feder, Panpot, Mute, Solo );
             return res;
         }
 
 #if !JAVA
-        public object Clone() {
+        public object Clone()
+        {
             return clone();
         }
 #endif
@@ -53,7 +57,8 @@ namespace org.kbinani.vsq {
         /// <param name="panpot">Panpot値</param>
         /// <param name="mute">Mute値</param>
         /// <param name="solo">Solo値</param>
-        public VsqMixerEntry( int feder, int panpot, int mute, int solo ) {
+        public VsqMixerEntry( int feder, int panpot, int mute, int solo )
+        {
             this.Feder = feder;
             this.Panpot = panpot;
             this.Mute = mute;
@@ -65,7 +70,8 @@ namespace org.kbinani.vsq {
             this( 0, 0, 0, 0 );
 #else
         public VsqMixerEntry()
-            : this( 0, 0, 0, 0 ) {
+            : this( 0, 0, 0, 0 )
+        {
 #endif
         }
     }

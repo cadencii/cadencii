@@ -49,7 +49,7 @@ namespace org.kbinani.cadencii {
         }
 
 #if !JAVA
-        public override bool Equals( object obj ) {
+        public override bool Equals( Object obj ) {
             return equals( obj );
         }
 #endif

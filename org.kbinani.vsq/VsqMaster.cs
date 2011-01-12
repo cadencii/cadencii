@@ -22,7 +22,8 @@ using System.Text;
 using org.kbinani;
 using org.kbinani.java.io;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
     using boolean = System.Boolean;
 #endif
 
@@ -33,17 +34,20 @@ namespace org.kbinani.vsq {
     public class VsqMaster implements Cloneable, Serializable {
 #else
     [Serializable]
-    public class VsqMaster : ICloneable {
+    public class VsqMaster : ICloneable
+    {
 #endif
         public int PreMeasure;
 
-        public Object clone() {
+        public Object clone()
+        {
             VsqMaster res = new VsqMaster( PreMeasure );
             return res;
         }
 
 #if !JAVA
-        public object Clone() {
+        public object Clone()
+        {
             return clone();
         }
 #endif
@@ -53,7 +57,8 @@ namespace org.kbinani.vsq {
             this( 1 );
 #else
         public VsqMaster()
-            : this( 1 ) {
+            : this( 1 )
+        {
 #endif
         }
 
@@ -61,7 +66,8 @@ namespace org.kbinani.vsq {
         /// プリメジャー値を指定したコンストラクタ
         /// </summary>
         /// <param name="pre_measure"></param>
-        public VsqMaster( int pre_measure ) {
+        public VsqMaster( int pre_measure )
+        {
             this.PreMeasure = pre_measure;
         }
 
@@ -70,7 +76,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="sr">読み込み元</param>
         /// <param name="last_line">最後に読み込んだ行が返されます</param>
-        public VsqMaster( TextStream sr, ByRef<String> last_line ) {
+        public VsqMaster( TextStream sr, ByRef<String> last_line )
+        {
             PreMeasure = 0;
             String[] spl;
             last_line.value = sr.readLine();

@@ -18,19 +18,22 @@ import java.io.*;
 #else
 using System;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
 #endif
 
 #if JAVA
     public class VsqBPPair implements Cloneable, Serializable {
 #else
     [Serializable]
-    public struct VsqBPPair {
+    public struct VsqBPPair
+    {
 #endif
         public int value;
         public long id;
 
-        public VsqBPPair( int value_, long id_ ) {
+        public VsqBPPair( int value_, long id_ )
+        {
             value = value_;
             id = id_;
         }

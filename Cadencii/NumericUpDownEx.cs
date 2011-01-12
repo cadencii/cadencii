@@ -40,7 +40,7 @@ namespace org.kbinani.cadencii {
         }
 
 #if !JAVA
-        private void NumericUpDownEx_GotFocus( object sender, EventArgs e ) {
+        private void NumericUpDownEx_GotFocus( Object sender, EventArgs e ) {
             this.Select( 0, 10 );
         }
 #endif

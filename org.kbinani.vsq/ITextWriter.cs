@@ -18,10 +18,12 @@ import java.io.*;
 #else
 using System;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
 #endif
 
-    public interface ITextWriter {
+    public interface ITextWriter
+    {
 #if JAVA
         void write( String value ) throws IOException;
         void writeLine( String value ) throws IOException;

@@ -16,13 +16,15 @@ package org.kbinani.vsq;
 #elif __cplusplus
 namespace org { namespace kbinani { namespace vsq {
 #else
-namespace org.kbinani.vsq{
+namespace org.kbinani.vsq
+{
 #endif
 
     /// <summary>
     /// VOCALOID1における、ダイナミクスモードを表す定数を格納するためのクラスです。
     /// </summary>
-    public class DynamicsMode {
+    public class DynamicsMode
+    {
         /// <summary>
         /// デフォルトのダイナミクスモードです。DYNカーブが非表示になるモードです。
         /// </summary>
@@ -32,7 +34,8 @@ namespace org.kbinani.vsq{
         /// </summary>
         public const int Expert = 1;
 
-        private DynamicsMode() {
+        private DynamicsMode()
+        {
         }
     };
 

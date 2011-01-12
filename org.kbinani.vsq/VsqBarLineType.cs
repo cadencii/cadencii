@@ -17,34 +17,41 @@ package org.kbinani.vsq;
 #else
 using System;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
     using boolean = System.Boolean;
 #endif
 
-    public struct VsqBarLineType {
+    public struct VsqBarLineType
+    {
         private int m_clock;
         private boolean m_is_separator;
         private int m_denominator;
         private int m_numerator;
         private int m_bar_count;
 
-        public int getBarCount() {
+        public int getBarCount()
+        {
             return m_bar_count;
         }
 
-        public int getLocalDenominator() {
+        public int getLocalDenominator()
+        {
             return m_denominator;
         }
 
-        public int getLocalNumerator() {
+        public int getLocalNumerator()
+        {
             return m_numerator;
         }
 
-        public int clock() {
+        public int clock()
+        {
             return m_clock;
         }
 
-        public boolean isSeparator() {
+        public boolean isSeparator()
+        {
             return m_is_separator;
         }
 
@@ -53,7 +60,8 @@ namespace org.kbinani.vsq {
         }
 #endif
 
-        public VsqBarLineType( int clock, boolean is_separator, int denominator, int numerator, int bar_count ) {
+        public VsqBarLineType( int clock, boolean is_separator, int denominator, int numerator, int bar_count )
+        {
             m_clock = clock;
             m_is_separator = is_separator;
             m_denominator = denominator;

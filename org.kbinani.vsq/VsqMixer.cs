@@ -22,7 +22,8 @@ using System;
 using org.kbinani;
 using org.kbinani.java.util;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
     using boolean = System.Boolean;
 #endif
 
@@ -33,7 +34,8 @@ namespace org.kbinani.vsq {
     public class VsqMixer implements Cloneable, Serializable {
 #else
     [Serializable]
-    public class VsqMixer : ICloneable {
+    public class VsqMixer : ICloneable
+    {
 #endif
         public int MasterFeder;
         public int MasterPanpot;
@@ -51,7 +53,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static String getGenericTypeName( String name ) {
+        public static String getGenericTypeName( String name )
+        {
             if ( name != null ) {
                 if ( name.Equals( "Slave" ) ) {
                     return "org.kbinani.vsq.VsqMixerEntry";
@@ -66,7 +69,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static boolean isXmlIgnored( String name ) {
+        public static boolean isXmlIgnored( String name )
+        {
             return false;
         }
 
@@ -76,11 +80,13 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static String getXmlElementName( String name ) {
+        public static String getXmlElementName( String name )
+        {
             return name;
         }
 
-        public Object clone() {
+        public Object clone()
+        {
             VsqMixer res = new VsqMixer( MasterFeder, MasterPanpot, MasterMute, OutputMode );
             res.Slave = new Vector<VsqMixerEntry>();
             for ( Iterator<VsqMixerEntry> itr = Slave.iterator(); itr.hasNext(); ) {
@@ -91,7 +97,8 @@ namespace org.kbinani.vsq {
         }
 
 #if !JAVA
-        public object Clone() {
+        public object Clone()
+        {
             return clone();
         }
 #endif
@@ -103,7 +110,8 @@ namespace org.kbinani.vsq {
         /// <param name="master_panpot">MasterPanpot値</param>
         /// <param name="master_mute">MasterMute値</param>
         /// <param name="output_mode">OutputMode値</param>
-        public VsqMixer( int master_fader, int master_panpot, int master_mute, int output_mode ) {
+        public VsqMixer( int master_fader, int master_panpot, int master_mute, int output_mode )
+        {
             this.MasterFeder = master_fader;
             this.MasterMute = master_mute;
             this.MasterPanpot = master_panpot;
@@ -116,7 +124,8 @@ namespace org.kbinani.vsq {
             this( 0, 0, 0, 0 );
 #else
         public VsqMixer()
-            : this( 0, 0, 0, 0 ) {
+            : this( 0, 0, 0, 0 )
+        {
 #endif
         }
 
@@ -125,7 +134,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="sr">読み込み対象</param>
         /// <param name="last_line">最後に読み込んだ行が返されます</param>
-        public VsqMixer( TextStream sr, ByRef<String> last_line ) {
+        public VsqMixer( TextStream sr, ByRef<String> last_line )
+        {
             MasterFeder = 0;
             MasterPanpot = 0;
             MasterMute = 0;
@@ -196,7 +206,7 @@ namespace org.kbinani.vsq {
         /// このインスタンスをテキストファイルに出力します
         /// </summary>
         /// <param name="sw">出力対象</param>
-        public void write( ITextWriter sw ) 
+        public void write( ITextWriter sw )
 #if JAVA
             throws java.io.IOException
 #endif

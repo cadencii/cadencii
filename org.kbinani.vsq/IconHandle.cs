@@ -14,14 +14,17 @@
 #if JAVA
 package org.kbinani.vsq;
 
+import java.io.Serializable;
 #elif __cplusplus
 namespace org { namespace kbinani { namespace vsq {
 #else
 using System;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
     using boolean = System.Boolean;
 #endif
+
 
     /// <summary>
     /// 歌手設定を表します。
@@ -32,21 +35,22 @@ namespace org.kbinani.vsq {
     class IconHandle {
 #else
     [Serializable]
-    public class IconHandle : ICloneable{
+    public class IconHandle : ICloneable
+    {
 #endif
         /// <summary>
         /// キャプション。
         /// </summary>
-        public string Caption;
+        public String Caption;
         /// <summary>
         /// この歌手設定を一意に識別するためのIDです。
         /// </summary>
-        public string IconID;
+        public String IconID;
         /// <summary>
         /// ユーザ・フレンドリー名。
         /// このフィールドの値は、他の歌手設定のユーザ・フレンドリー名と重複する場合があります。
         /// </summary>
-        public string IDS;
+        public String IDS;
         public int Index;
         /// <summary>
         /// ゲートタイム長さ。
@@ -59,7 +63,8 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// 新しい歌手設定のインスタンスを初期化します。
         /// </summary>
-        public IconHandle() {
+        public IconHandle()
+        {
             Caption = "";
             IconID = "";
             IDS = "";
@@ -69,7 +74,8 @@ namespace org.kbinani.vsq {
         /// ゲートタイム長さを取得します。
         /// </summary>
         /// <returns></returns>
-        public int getLength() {
+        public int getLength()
+        {
             return Length;
         }
 
@@ -77,7 +83,8 @@ namespace org.kbinani.vsq {
         /// ゲートタイム長さを設定します。
         /// </summary>
         /// <param name="value"></param>
-        public void setLength( int value ) {
+        public void setLength( int value )
+        {
             Length = value;
         }
 
@@ -86,7 +93,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="item">比較対象の歌手変更。</param>
         /// <returns>このインスタンスと、比較対象の歌手変更が等しければtrue、そうでなければfalseを返します。</returns>
-        public bool equals( IconHandle item ) {
+        public boolean equals( IconHandle item )
+        {
 #if __cplusplus
             return IconID == item.IconID;
 #else
@@ -103,7 +111,8 @@ namespace org.kbinani.vsq {
         /// このインスタンスのコピーを作成します。
         /// </summary>
         /// <returns></returns>
-        public Object clone() {
+        public Object clone()
+        {
             IconHandle ret = new IconHandle();
             ret.Caption = Caption;
             ret.IconID = IconID;
@@ -124,7 +133,8 @@ namespace org.kbinani.vsq {
         /// このインスタンスのコピーを作成します。
         /// </summary>
         /// <returns></returns>
-        public object Clone() {
+        public object Clone()
+        {
             return clone();
         }
 #endif

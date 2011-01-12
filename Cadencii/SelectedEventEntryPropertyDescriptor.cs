@@ -28,27 +28,27 @@ namespace org.kbinani.cadencii {
             m_type = typeof( SelectedEventEntry );
         }
 
-        public override boolean ShouldSerializeValue( object component ) {
+        public override boolean ShouldSerializeValue( Object component ) {
             return true;
         }
 
-        public override void ResetValue( object component ) {
+        public override void ResetValue( Object component ) {
         }
 
-        public override void SetValue( object component, object value ) {
+        public override void SetValue( Object component, Object value ) {
             PropertyInfo pi = m_type.GetProperty( this.Name );
-            pi.SetValue( component, value, new object[] { } );
+            pi.SetValue( component, value, new Object[] { } );
         }
 
-        public override object GetValue( object component ) {
+        public override Object GetValue( Object component ) {
             if ( component == null ) {
                 return null;
             }
             PropertyInfo pi = m_type.GetProperty( base.Name );
-            return pi.GetValue( component, new object[] { } );
+            return pi.GetValue( component, new Object[] { } );
         }
 
-        public override boolean CanResetValue( object component ) {
+        public override boolean CanResetValue( Object component ) {
             return false;
         }
 

@@ -99,8 +99,8 @@ namespace org.kbinani.cadencii {
         }
 
         private void registerEventHandlers() {
-            this.btnOK.Click += new EventHandler( btnOK_Click );
-            this.btnCancel.Click += new EventHandler( btnCancel_Click );
+            btnOK.Click += new EventHandler( btnOK_Click );
+            btnCancel.Click += new EventHandler( btnCancel_Click );
         }
 
         private void setResources() {

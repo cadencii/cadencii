@@ -18,24 +18,28 @@ import java.io.*;
 #else
 using System;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
 #endif
 
 #if JAVA
     public class VibratoBPPair implements Comparable<VibratoBPPair>, Serializable {
 #else
     [Serializable]
-    public struct VibratoBPPair : IComparable<VibratoBPPair> {
+    public struct VibratoBPPair : IComparable<VibratoBPPair>
+    {
 #endif
         public float X;
         public int Y;
 
-        public VibratoBPPair( float x, int y ) {
+        public VibratoBPPair( float x, int y )
+        {
             X = x;
             Y = y;
         }
 
-        public int compareTo( VibratoBPPair item ) {
+        public int compareTo( VibratoBPPair item )
+        {
             float v = X - item.X;
             if ( v > 0.0f ) {
                 return 1;
@@ -46,7 +50,8 @@ namespace org.kbinani.vsq {
         }
 
 #if !JAVA
-        public int CompareTo( VibratoBPPair item ) {
+        public int CompareTo( VibratoBPPair item )
+        {
             return compareTo( item );
         }
 #endif

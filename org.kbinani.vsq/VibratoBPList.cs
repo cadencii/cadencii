@@ -22,22 +22,27 @@ using System;
 using org.kbinani;
 using org.kbinani.java.util;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
+    using boolean = System.Boolean;
 #endif
 
 #if JAVA
     public class VibratoBPList implements Cloneable, Serializable {
 #else
     [Serializable]
-    public class VibratoBPList : ICloneable {
+    public class VibratoBPList : ICloneable
+    {
 #endif
         private Vector<VibratoBPPair> m_list;
 
-        public VibratoBPList() {
+        public VibratoBPList()
+        {
             m_list = new Vector<VibratoBPPair>();
         }
 
-        public VibratoBPList( String strNum, String strBPX, String strBPY ) {
+        public VibratoBPList( String strNum, String strBPX, String strBPY )
+        {
             int num = 0;
             try {
                 num = PortUtil.parseInt( strNum );
@@ -46,7 +51,7 @@ namespace org.kbinani.vsq {
                 num = 0;
             }
             String[] bpx = PortUtil.splitString( strBPX, ',' );
-            String[] bpy= PortUtil.splitString( strBPY, ',' );
+            String[] bpy = PortUtil.splitString( strBPY, ',' );
             int actNum = Math.Min( num, Math.Min( bpx.Length, bpy.Length ) );
             if ( actNum > 0 ) {
                 float[] x = new float[actNum];
@@ -103,7 +108,7 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        public bool equals( VibratoBPList item )
+        public boolean equals( VibratoBPList item )
         {
             if ( item == null ) {
                 return false;
@@ -145,7 +150,8 @@ namespace org.kbinani.vsq {
             }
         }
 
-        public Object clone() {
+        public Object clone()
+        {
             VibratoBPList ret = new VibratoBPList();
             for ( int i = 0; i < m_list.size(); i++ ) {
                 ret.m_list.add( new VibratoBPPair( m_list.get( i ).X, m_list.get( i ).Y ) );
@@ -154,20 +160,24 @@ namespace org.kbinani.vsq {
         }
 
 #if !JAVA
-        public object Clone() {
+        public object Clone()
+        {
             return clone();
         }
 #endif
 
-        public int getCount() {
+        public int getCount()
+        {
             return m_list.size();
         }
 
-        public VibratoBPPair getElement( int index ) {
+        public VibratoBPPair getElement( int index )
+        {
             return m_list.get( index );
         }
 
-        public void setElement( int index, VibratoBPPair value ) {
+        public void setElement( int index, VibratoBPPair value )
+        {
             m_list.set( index, value );
         }
 
@@ -175,17 +185,21 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// XMLシリアライズ用
         /// </summary>
-        public String Data {
-            get {
+        public String Data
+        {
+            get
+            {
                 return getData();
             }
-            set {
+            set
+            {
                 setData( value );
             }
         }
 #endif
 
-        public String getData() {
+        public String getData()
+        {
             String ret = "";
             for ( int i = 0; i < m_list.size(); i++ ) {
                 ret += (i == 0 ? "" : ",") + m_list.get( i ).X + "=" + m_list.get( i ).Y;
@@ -193,7 +207,8 @@ namespace org.kbinani.vsq {
             return ret;
         }
 
-        public void setData( String value ) {
+        public void setData( String value )
+        {
             m_list.clear();
             String[] spl = PortUtil.splitString( value, ',' );
             for ( int i = 0; i < spl.Length; i++ ) {

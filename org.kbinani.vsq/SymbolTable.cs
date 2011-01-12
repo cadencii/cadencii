@@ -29,6 +29,7 @@ namespace org
     {
         namespace vsq
         {
+            using boolean = System.Boolean;
 #endif
 
             /// <summary>
@@ -51,7 +52,7 @@ namespace org
                 /// <summary>
                 /// 辞書を有効とするかどうか
                 /// </summary>
-                private bool mEnabled;
+                private boolean mEnabled;
                 /// <summary>
                 /// 英単語の分節分割などにより，この辞書を使うことによって最大いくつの発音記号列に分割されるか
                 /// </summary>
@@ -65,7 +66,7 @@ namespace org
                 /// <summary>
                 /// VOCALOID2のシステム辞書を読み込んだかどうか
                 /// </summary>
-                private static bool mInitialized = false;
+                private static boolean mInitialized = false;
                 #endregion
 
                 #region Static Method and Property
@@ -267,7 +268,7 @@ namespace org
                 /// 辞書が有効かどうかを取得します
                 /// </summary>
                 /// <returns></returns>
-                public bool isEnabled()
+                public boolean isEnabled()
                 {
                     return mEnabled;
                 }
@@ -276,7 +277,7 @@ namespace org
                 /// 辞書が有効かどうかを設定します
                 /// </summary>
                 /// <param name="value"></param>
-                public void setEnabled( bool value )
+                public void setEnabled( boolean value )
                 {
                     mEnabled = value;
                 }
@@ -288,7 +289,7 @@ namespace org
                 /// <param name="is_udc_mode">VOCALOID2仕様の辞書ファイルかどうか</param>
                 /// <param name="enabled">辞書ファイルを有効とするかどうか</param>
                 /// <param name="encoding">辞書ファイルのテキストエンコーディング</param>
-                public SymbolTable( String path, bool is_udc_mode, bool enabled, String encoding )
+                public SymbolTable( String path, boolean is_udc_mode, boolean enabled, String encoding )
                 {
                     mDict = new TreeMap<String, SymbolTableEntry>();
                     mEnabled = enabled;

@@ -40,12 +40,12 @@ namespace org.kbinani.cadencii
         private double[] mBuffer2R = new double[BUFLEN];
         private WaveReceiver mReceiver = null;
         private int mVersion = 0;
-        private string mPath;
+        private String mPath;
         private int mChannel;
         private int mBitPerSample;
-        private object mSyncRoot = new object();
+        private Object mSyncRoot = new Object();
 
-        public FileWaveReceiver( string path, int channel, int bit_per_sample )
+        public FileWaveReceiver( String path, int channel, int bit_per_sample )
         {
             mPath = path;
             mChannel = channel;
@@ -59,7 +59,7 @@ namespace org.kbinani.cadencii
             // do nothing
         }
 
-        public override void setConfig( string parameter )
+        public override void setConfig( String parameter )
         {
             // do nothing
         }

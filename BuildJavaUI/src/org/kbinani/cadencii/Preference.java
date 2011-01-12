@@ -23,13 +23,14 @@ import org.kbinani.windows.forms.BNumericUpDown;
 import org.kbinani.windows.forms.BPanel;
 import org.kbinani.windows.forms.BRadioButton;
 import org.kbinani.windows.forms.BTextBox;
+import javax.swing.JList;
 
 //SECTION-END-IMPORT
 public class Preference extends JFrame {
     //SECTION-BEGIN-FIELD
 
     private static final long serialVersionUID = 1L;
-	private BPanel tabSequence = null;  //  @jve:decl-index=0:visual-constraint="-105,793"
+	private BPanel tabSequence = null;  //  @jve:decl-index=0:visual-constraint="-91,1001"
 	private BLabel lblResolution = null;
 	private BPanel BPanel = null;
 	private BLabel lblResolControlCurve = null;
@@ -58,8 +59,6 @@ public class Preference extends JFrame {
 	private BLabel lblWait = null;
 	private BNumericUpDown numWait = null;
 	private BLabel jLabel81 = null;
-	private BLabel lblDefaultPremeasure = null;
-	private BComboBox comboDefaultPremeasure = null;
 	private BLabel jLabel9 = null;
 	private BPanel tabAppearance = null;
 	private BGroupBox groupFont = null;
@@ -115,7 +114,7 @@ public class Preference extends JFrame {
 	private BNumericUpDown numMouseHoverTime = null;
 	private BLabel lblMidiInPort = null;
 	private BComboBox comboMidiInPortNumber = null;
-	private BPanel tabPlatform = null;  //  @jve:decl-index=0:visual-constraint="-37,518"
+	private BPanel tabPlatform = null;  //  @jve:decl-index=0:visual-constraint="-94,516"
 	private BGroupBox groupPlatform = null;
 	private BLabel lblPlatform = null;
 	private BComboBox comboPlatform = null;
@@ -128,8 +127,6 @@ public class Preference extends JFrame {
 	private BTextBox txtVOCALOID2 = null;
 	private BGroupBox groupUtauCores = null;
 	private BLabel lblResampler = null;
-	private BTextBox txtResampler = null;
-	private BButton btnResampler = null;
 	private BLabel lblWavtool = null;
 	private BTextBox txtWavtool = null;
 	private BButton btnWavtool = null;
@@ -161,13 +158,6 @@ public class Preference extends JFrame {
     private BLabel lblBuffer = null;
     private BNumericUpDown numBuffer = null;
     private BLabel lblBufferSize = null;
-    private BGroupBox groupWaveFileOutput = null;
-    private BLabel lblChannel = null;
-    private BComboBox comboChannel = null;
-    private BRadioButton radioMasterTrack = null;
-    private BRadioButton radioCurrentTrack = null;
-    private JPanel jPanel = null;
-    private JPanel jPanel2 = null;
     private BLabel labelMtcMidiInPort = null;
     private BComboBox comboMtcMidiInPortNumber = null;
     private BPanel tabSingingSynth = null;  //  @jve:decl-index=0:visual-constraint="378,555"
@@ -184,15 +174,21 @@ public class Preference extends JFrame {
     private BGroupBox groupVocaloidEditorCompatible = null;
     private BPanel jPanel31 = null;
     private BPanel jPanel41 = null;
-    private BLabel lblVibratoRate = null;
-    private BLabel lblVibratoDepth = null;
-    private NumberTextBox txtVibratoRate = null;
-    private NumberTextBox txtVibratoDepth = null;
+    private BLabel lblAutoVibratoTypeCustom = null;
     private JPanel jPanel21 = null;
     private BRadioButton radioVocaloidEditorCompatible = null;
     private BRadioButton radioUserDefined = null;
     private BGroupBox groupDefaultSynthesizer = null;
     private BComboBox comboDefaultSynthesizer = null;
+    private BComboBox comboAutoVibratoTypeCustom = null;
+    private JPanel jPanel = null;
+    private JList listResampler = null;
+    private BButton buttonResamplerAdd = null;
+    private BButton buttonResamplerRemove = null;
+    private BButton buttonResamplerUp = null;
+    private BButton buttonResamplerDown = null;
+    private BLabel jLabel91 = null;
+    private BLabel jLabel911 = null;
     //SECTION-END-FIELD
 	/**
 	 * This is the default constructor
@@ -548,29 +544,23 @@ public class Preference extends JFrame {
 	 */
 	private BPanel getTabAnother() {
 		if (tabAnother == null) {
-			GridBagConstraints gridBagConstraints125 = new GridBagConstraints();
-			gridBagConstraints125.gridx = 0;
-			gridBagConstraints125.gridwidth = 3;
-			gridBagConstraints125.fill = GridBagConstraints.BOTH;
-			gridBagConstraints125.insets = new Insets(0, 16, 0, 16);
-			gridBagConstraints125.gridy = 6;
 			GridBagConstraints gridBagConstraints124 = new GridBagConstraints();
 			gridBagConstraints124.gridx = 2;
 			gridBagConstraints124.anchor = GridBagConstraints.WEST;
 			gridBagConstraints124.insets = new Insets(3, 12, 3, 0);
-			gridBagConstraints124.gridy = 5;
+			gridBagConstraints124.gridy = 4;
 			lblBufferSize = new BLabel();
 			lblBufferSize.setText("msec(100-1000)");
 			GridBagConstraints gridBagConstraints123 = new GridBagConstraints();
 			gridBagConstraints123.gridx = 1;
 			gridBagConstraints123.anchor = GridBagConstraints.WEST;
 			gridBagConstraints123.insets = new Insets(3, 12, 3, 0);
-			gridBagConstraints123.gridy = 5;
+			gridBagConstraints123.gridy = 4;
 			GridBagConstraints gridBagConstraints122 = new GridBagConstraints();
 			gridBagConstraints122.gridx = 0;
 			gridBagConstraints122.anchor = GridBagConstraints.WEST;
 			gridBagConstraints122.insets = new Insets(3, 24, 3, 0);
-			gridBagConstraints122.gridy = 5;
+			gridBagConstraints122.gridy = 4;
 			lblBuffer = new BLabel();
 			lblBuffer.setText("Buffer Size");
 			GridBagConstraints gridBagConstraints90 = new GridBagConstraints();
@@ -578,28 +568,13 @@ public class Preference extends JFrame {
 			gridBagConstraints90.anchor = GridBagConstraints.WEST;
 			gridBagConstraints90.insets = new Insets(0, 24, 0, 0);
 			gridBagConstraints90.gridwidth = 3;
-			gridBagConstraints90.gridy = 4;
+			gridBagConstraints90.gridy = 3;
 			GridBagConstraints gridBagConstraints35 = new GridBagConstraints();
 			gridBagConstraints35.gridx = 0;
 			gridBagConstraints35.weighty = 1.0D;
 			gridBagConstraints35.gridy = 9;
 			jLabel9 = new BLabel();
 			jLabel9.setText("   ");
-			GridBagConstraints gridBagConstraints34 = new GridBagConstraints();
-			gridBagConstraints34.fill = GridBagConstraints.NONE;
-			gridBagConstraints34.gridy = 3;
-			gridBagConstraints34.weightx = 1.0;
-			gridBagConstraints34.gridwidth = 2;
-			gridBagConstraints34.anchor = GridBagConstraints.WEST;
-			gridBagConstraints34.insets = new Insets(3, 12, 3, 0);
-			gridBagConstraints34.gridx = 1;
-			GridBagConstraints gridBagConstraints33 = new GridBagConstraints();
-			gridBagConstraints33.gridx = 0;
-			gridBagConstraints33.anchor = GridBagConstraints.WEST;
-			gridBagConstraints33.insets = new Insets(3, 24, 3, 0);
-			gridBagConstraints33.gridy = 3;
-			lblDefaultPremeasure = new BLabel();
-			lblDefaultPremeasure.setText("Default Pre-measure");
 			GridBagConstraints gridBagConstraints30 = new GridBagConstraints();
 			gridBagConstraints30.gridx = 2;
 			gridBagConstraints30.anchor = GridBagConstraints.WEST;
@@ -670,14 +645,11 @@ public class Preference extends JFrame {
 			tabAnother.add(lblWait, gridBagConstraints28);
 			tabAnother.add(getNumWait(), gridBagConstraints29);
 			tabAnother.add(jLabel81, gridBagConstraints30);
-			tabAnother.add(lblDefaultPremeasure, gridBagConstraints33);
-			tabAnother.add(getComboDefaultPremeasure(), gridBagConstraints34);
 			tabAnother.add(jLabel9, gridBagConstraints35);
 			tabAnother.add(getChkChasePastEvent(), gridBagConstraints90);
 			tabAnother.add(lblBuffer, gridBagConstraints122);
 			tabAnother.add(getNumBuffer(), gridBagConstraints123);
 			tabAnother.add(lblBufferSize, gridBagConstraints124);
-			tabAnother.add(getGroupWaveFileOutput(), gridBagConstraints125);
 		}
 		return tabAnother;
 	}
@@ -719,19 +691,6 @@ public class Preference extends JFrame {
 			numWait.setPreferredSize(new Dimension(68, 20));
 		}
 		return numWait;
-	}
-
-	/**
-	 * This method initializes comboDefaultPremeasure	
-	 * 	
-	 * @return javax.swing.BComboBox	
-	 */
-	private BComboBox getComboDefaultPremeasure() {
-		if (comboDefaultPremeasure == null) {
-			comboDefaultPremeasure = new BComboBox();
-			comboDefaultPremeasure.setPreferredSize(new Dimension(68, 20));
-		}
-		return comboDefaultPremeasure;
 	}
 
 	/**
@@ -1387,7 +1346,7 @@ public class Preference extends JFrame {
 			gridBagConstraints78.gridy = 0;
 			tabOperation = new BPanel();
 			tabOperation.setLayout(new GridBagLayout());
-			tabOperation.setSize(new Dimension(441, 358));
+			tabOperation.setSize(new Dimension(443, 404));
 			tabOperation.add(getGroupPianoroll(), gridBagConstraints78);
 			tabOperation.add(getGroupMisc(), gridBagConstraints87);
 		}
@@ -1693,10 +1652,17 @@ public class Preference extends JFrame {
 	 */
 	private BPanel getTabPlatform() {
 		if (tabPlatform == null) {
+			GridBagConstraints gridBagConstraints125 = new GridBagConstraints();
+			gridBagConstraints125.gridx = 0;
+			gridBagConstraints125.fill = GridBagConstraints.NONE;
+			gridBagConstraints125.weighty = 1.0D;
+			gridBagConstraints125.gridy = 3;
+			jLabel91 = new BLabel();
+			jLabel91.setText("   ");
 			GridBagConstraints gridBagConstraints106 = new GridBagConstraints();
 			gridBagConstraints106.gridx = 0;
 			gridBagConstraints106.anchor = GridBagConstraints.NORTH;
-			gridBagConstraints106.fill = GridBagConstraints.HORIZONTAL;
+			gridBagConstraints106.fill = GridBagConstraints.BOTH;
 			gridBagConstraints106.weighty = 1.0D;
 			gridBagConstraints106.insets = new Insets(3, 12, 3, 12);
 			gridBagConstraints106.gridy = 2;
@@ -1709,9 +1675,10 @@ public class Preference extends JFrame {
 			gridBagConstraints93.gridy = 0;
 			tabPlatform = new BPanel();
 			tabPlatform.setLayout(new GridBagLayout());
-			tabPlatform.setSize(new Dimension(394, 267));
+			tabPlatform.setSize(new Dimension(412, 462));
 			tabPlatform.add(getGroupPlatform(), gridBagConstraints93);
 			tabPlatform.add(getGroupUtauCores(), gridBagConstraints106);
+			tabPlatform.add(jLabel91, gridBagConstraints125);
 		}
 		return tabPlatform;
 	}
@@ -1899,6 +1866,18 @@ public class Preference extends JFrame {
 	 */
 	private BGroupBox getGroupUtauCores() {
 		if (groupUtauCores == null) {
+			GridBagConstraints gridBagConstraints101 = new GridBagConstraints();
+			gridBagConstraints101.gridx = 3;
+			gridBagConstraints101.fill = GridBagConstraints.VERTICAL;
+			gridBagConstraints101.insets = new Insets(3, 0, 3, 0);
+			gridBagConstraints101.gridy = 1;
+			GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
+			gridBagConstraints12.fill = GridBagConstraints.BOTH;
+			gridBagConstraints12.gridy = 1;
+			gridBagConstraints12.weightx = 1.0;
+			gridBagConstraints12.weighty = 1.0;
+			gridBagConstraints12.insets = new Insets(3, 12, 3, 12);
+			gridBagConstraints12.gridx = 1;
 			GridBagConstraints gridBagConstraints105 = new GridBagConstraints();
 			gridBagConstraints105.gridx = 0;
 			gridBagConstraints105.gridwidth = 3;
@@ -1908,74 +1887,37 @@ public class Preference extends JFrame {
 			GridBagConstraints gridBagConstraints104 = new GridBagConstraints();
 			gridBagConstraints104.gridx = 3;
 			gridBagConstraints104.insets = new Insets(3, 3, 3, 3);
-			gridBagConstraints104.gridy = 1;
+			gridBagConstraints104.gridy = 0;
 			GridBagConstraints gridBagConstraints103 = new GridBagConstraints();
 			gridBagConstraints103.fill = GridBagConstraints.HORIZONTAL;
-			gridBagConstraints103.gridy = 1;
+			gridBagConstraints103.gridy = 0;
 			gridBagConstraints103.weightx = 1.0;
 			gridBagConstraints103.insets = new Insets(3, 12, 3, 12);
 			gridBagConstraints103.gridx = 1;
 			GridBagConstraints gridBagConstraints102 = new GridBagConstraints();
 			gridBagConstraints102.gridx = 0;
-			gridBagConstraints102.gridy = 1;
+			gridBagConstraints102.gridy = 0;
 			lblWavtool = new BLabel();
 			lblWavtool.setText("wavtool");
-			GridBagConstraints gridBagConstraints101 = new GridBagConstraints();
-			gridBagConstraints101.gridx = 3;
-			gridBagConstraints101.insets = new Insets(3, 3, 3, 3);
-			gridBagConstraints101.gridy = 0;
-			GridBagConstraints gridBagConstraints100 = new GridBagConstraints();
-			gridBagConstraints100.fill = GridBagConstraints.HORIZONTAL;
-			gridBagConstraints100.gridy = 0;
-			gridBagConstraints100.weightx = 1.0;
-			gridBagConstraints100.insets = new Insets(3, 12, 3, 12);
-			gridBagConstraints100.anchor = GridBagConstraints.WEST;
-			gridBagConstraints100.gridx = 1;
 			GridBagConstraints gridBagConstraints99 = new GridBagConstraints();
 			gridBagConstraints99.gridx = 0;
-			gridBagConstraints99.anchor = GridBagConstraints.WEST;
-			gridBagConstraints99.insets = new Insets(0, 12, 0, 0);
-			gridBagConstraints99.gridy = 0;
+			gridBagConstraints99.anchor = GridBagConstraints.NORTHWEST;
+			gridBagConstraints99.insets = new Insets(3, 12, 0, 0);
+			gridBagConstraints99.gridy = 1;
 			lblResampler = new BLabel();
 			lblResampler.setText("resampler");
 			groupUtauCores = new BGroupBox();
 			groupUtauCores.setLayout(new GridBagLayout());
 			groupUtauCores.setBorder(BorderFactory.createTitledBorder(null, "UTAU Cores", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
 			groupUtauCores.add(lblResampler, gridBagConstraints99);
-			groupUtauCores.add(getTxtResampler(), gridBagConstraints100);
-			groupUtauCores.add(getBtnResampler(), gridBagConstraints101);
 			groupUtauCores.add(lblWavtool, gridBagConstraints102);
 			groupUtauCores.add(getTxtWavtool(), gridBagConstraints103);
 			groupUtauCores.add(getBtnWavtool(), gridBagConstraints104);
 			groupUtauCores.add(getChkInvokeWithWine(), gridBagConstraints105);
+			groupUtauCores.add(getListResampler(), gridBagConstraints12);
+			groupUtauCores.add(getJPanel2(), gridBagConstraints101);
 		}
 		return groupUtauCores;
-	}
-
-	/**
-	 * This method initializes txtResampler	
-	 * 	
-	 * @return javax.swing.BTextBox	
-	 */
-	private BTextBox getTxtResampler() {
-		if (txtResampler == null) {
-			txtResampler = new BTextBox();
-		}
-		return txtResampler;
-	}
-
-	/**
-	 * This method initializes btnResampler	
-	 * 	
-	 * @return javax.swing.BButton	
-	 */
-	private BButton getBtnResampler() {
-		if (btnResampler == null) {
-			btnResampler = new BButton();
-			btnResampler.setText("...");
-			btnResampler.setPreferredSize(new Dimension(41, 23));
-		}
-		return btnResampler;
 	}
 
 	/**
@@ -1998,8 +1940,8 @@ public class Preference extends JFrame {
 	private BButton getBtnWavtool() {
 		if (btnWavtool == null) {
 			btnWavtool = new BButton();
-			btnWavtool.setPreferredSize(new Dimension(41, 23));
-			btnWavtool.setText("...");
+			btnWavtool.setPreferredSize(new Dimension(61, 23));
+			btnWavtool.setText("Browse");
 		}
 		return btnWavtool;
 	}
@@ -2428,127 +2370,6 @@ public class Preference extends JFrame {
     }
 
     /**
-     * This method initializes groupWaveFileOutput	
-     * 	
-     * @return org.kbinani.windows.forms.BGroupBox	
-     */
-    private BGroupBox getGroupWaveFileOutput() {
-        if (groupWaveFileOutput == null) {
-            GridBagConstraints gridBagConstraints134 = new GridBagConstraints();
-            gridBagConstraints134.gridx = 0;
-            gridBagConstraints134.fill = GridBagConstraints.HORIZONTAL;
-            gridBagConstraints134.anchor = GridBagConstraints.WEST;
-            gridBagConstraints134.weightx = 1.0D;
-            gridBagConstraints134.gridy = 1;
-            GridBagConstraints gridBagConstraints130 = new GridBagConstraints();
-            gridBagConstraints130.gridx = 0;
-            gridBagConstraints130.fill = GridBagConstraints.HORIZONTAL;
-            gridBagConstraints130.weightx = 1.0D;
-            gridBagConstraints130.gridy = 0;
-            lblChannel = new BLabel();
-            lblChannel.setText("Channel");
-            groupWaveFileOutput = new BGroupBox();
-            groupWaveFileOutput.setLayout(new GridBagLayout());
-            groupWaveFileOutput.setTitle("Wave File Output");
-            groupWaveFileOutput.add(getJPanel2(), gridBagConstraints130);
-            groupWaveFileOutput.add(getJPanel22(), gridBagConstraints134);
-        }
-        return groupWaveFileOutput;
-    }
-
-    /**
-     * This method initializes comboChannel	
-     * 	
-     * @return org.kbinani.windows.forms.BComboBox	
-     */
-    private BComboBox getComboChannel() {
-        if (comboChannel == null) {
-            comboChannel = new BComboBox();
-            comboChannel.setPreferredSize(new Dimension(97, 20));
-        }
-        return comboChannel;
-    }
-
-    /**
-     * This method initializes jRadioButton	
-     * 	
-     * @return javax.swing.JRadioButton	
-     */
-    private BRadioButton getJRadioButton() {
-        if (radioMasterTrack == null) {
-            radioMasterTrack = new BRadioButton();
-            radioMasterTrack.setText("Master Track");
-        }
-        return radioMasterTrack;
-    }
-
-    /**
-     * This method initializes radioCurrentTrack	
-     * 	
-     * @return org.kbinani.windows.forms.BRadioButton	
-     */
-    private BRadioButton getRadioCurrentTrack() {
-        if (radioCurrentTrack == null) {
-            radioCurrentTrack = new BRadioButton();
-            radioCurrentTrack.setText("Current");
-        }
-        return radioCurrentTrack;
-    }
-
-    /**
-     * This method initializes jPanel	
-     * 	
-     * @return javax.swing.JPanel	
-     */
-    private JPanel getJPanel2() {
-        if (jPanel == null) {
-            GridBagConstraints gridBagConstraints126 = new GridBagConstraints();
-            gridBagConstraints126.anchor = GridBagConstraints.WEST;
-            gridBagConstraints126.insets = new Insets(3, 12, 3, 0);
-            gridBagConstraints126.gridx = 1;
-            gridBagConstraints126.gridy = 0;
-            gridBagConstraints126.weightx = 1.0;
-            gridBagConstraints126.fill = GridBagConstraints.NONE;
-            GridBagConstraints gridBagConstraints127 = new GridBagConstraints();
-            gridBagConstraints127.anchor = GridBagConstraints.WEST;
-            gridBagConstraints127.gridx = 0;
-            gridBagConstraints127.gridy = 0;
-            gridBagConstraints127.insets = new Insets(3, 12, 3, 0);
-            jPanel = new JPanel();
-            jPanel.setLayout(new GridBagLayout());
-            jPanel.add(lblChannel, gridBagConstraints127);
-            jPanel.add(getComboChannel(), gridBagConstraints126);
-        }
-        return jPanel;
-    }
-
-    /**
-     * This method initializes jPanel2	
-     * 	
-     * @return javax.swing.JPanel	
-     */
-    private JPanel getJPanel22() {
-        if (jPanel2 == null) {
-            GridBagConstraints gridBagConstraints129 = new GridBagConstraints();
-            gridBagConstraints129.anchor = GridBagConstraints.WEST;
-            gridBagConstraints129.gridx = 1;
-            gridBagConstraints129.gridy = 0;
-            gridBagConstraints129.weightx = 1.0D;
-            gridBagConstraints129.insets = new Insets(3, 12, 3, 0);
-            GridBagConstraints gridBagConstraints128 = new GridBagConstraints();
-            gridBagConstraints128.anchor = GridBagConstraints.WEST;
-            gridBagConstraints128.gridx = 0;
-            gridBagConstraints128.gridy = 0;
-            gridBagConstraints128.insets = new Insets(3, 12, 3, 0);
-            jPanel2 = new JPanel();
-            jPanel2.setLayout(new GridBagLayout());
-            jPanel2.add(getJRadioButton(), gridBagConstraints128);
-            jPanel2.add(getRadioCurrentTrack(), gridBagConstraints129);
-        }
-        return jPanel2;
-    }
-
-    /**
      * This method initializes comboMtcMidiInPortNumber	
      * 	
      * @return org.kbinani.windows.forms.BComboBox	
@@ -2817,66 +2638,25 @@ public class Preference extends JFrame {
      */
     private BPanel getJPanel41() {
         if (jPanel41 == null) {
-            GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
-            gridBagConstraints12.fill = GridBagConstraints.NONE;
-            gridBagConstraints12.gridy = 1;
-            gridBagConstraints12.weightx = 1.0;
-            gridBagConstraints12.anchor = GridBagConstraints.WEST;
-            gridBagConstraints12.insets = new Insets(3, 12, 3, 12);
-            gridBagConstraints12.gridx = 1;
             GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
             gridBagConstraints11.fill = GridBagConstraints.NONE;
             gridBagConstraints11.gridy = 0;
-            gridBagConstraints11.weightx = 1.0D;
-            gridBagConstraints11.insets = new Insets(3, 12, 3, 12);
+            gridBagConstraints11.weightx = 1.0;
             gridBagConstraints11.anchor = GridBagConstraints.WEST;
+            gridBagConstraints11.insets = new Insets(3, 12, 3, 0);
             gridBagConstraints11.gridx = 1;
-            GridBagConstraints gridBagConstraints171 = new GridBagConstraints();
-            gridBagConstraints171.gridx = 0;
-            gridBagConstraints171.insets = new Insets(0, 12, 0, 0);
-            gridBagConstraints171.gridy = 1;
-            lblVibratoDepth = new BLabel();
-            lblVibratoDepth.setText("Default Vibrto Depth");
             GridBagConstraints gridBagConstraints151 = new GridBagConstraints();
             gridBagConstraints151.gridx = 0;
             gridBagConstraints151.insets = new Insets(0, 12, 0, 0);
             gridBagConstraints151.gridy = 0;
-            lblVibratoRate = new BLabel();
-            lblVibratoRate.setText("Default Vibrato Rate");
+            lblAutoVibratoTypeCustom = new BLabel();
+            lblAutoVibratoTypeCustom.setText("Vibrato Type: Custom");
             jPanel41 = new BPanel();
             jPanel41.setLayout(new GridBagLayout());
-            jPanel41.add(lblVibratoRate, gridBagConstraints151);
-            jPanel41.add(lblVibratoDepth, gridBagConstraints171);
-            jPanel41.add(getTxtVibratoRate(), gridBagConstraints11);
-            jPanel41.add(getTxtVibratoDepth(), gridBagConstraints12);
+            jPanel41.add(lblAutoVibratoTypeCustom, gridBagConstraints151);
+            jPanel41.add(getComboAutoVibratoTypeCustom(), gridBagConstraints11);
         }
         return jPanel41;
-    }
-
-    /**
-     * This method initializes txtVibratoRate	
-     * 	
-     * @return org.kbinani.windows.forms.BTextBox	
-     */
-    private NumberTextBox getTxtVibratoRate() {
-        if (txtVibratoRate == null) {
-            txtVibratoRate = new NumberTextBox();
-            txtVibratoRate.setPreferredSize(new Dimension(101, 20));
-        }
-        return txtVibratoRate;
-    }
-
-    /**
-     * This method initializes txtVibratoDepth	
-     * 	
-     * @return org.kbinani.cadencii.NumberTextBox	
-     */
-    private NumberTextBox getTxtVibratoDepth() {
-        if (txtVibratoDepth == null) {
-            txtVibratoDepth = new NumberTextBox();
-            txtVibratoDepth.setPreferredSize(new Dimension(101, 20));
-        }
-        return txtVibratoDepth;
     }
 
     /**
@@ -2965,6 +2745,127 @@ public class Preference extends JFrame {
             comboDefaultSynthesizer.setPreferredSize(new Dimension(222, 20));
         }
         return comboDefaultSynthesizer;
+    }
+
+    /**
+     * This method initializes comboAutoVibratoTypeCustom	
+     * 	
+     * @return org.kbinani.windows.forms.BComboBox	
+     */
+    private BComboBox getComboAutoVibratoTypeCustom() {
+        if (comboAutoVibratoTypeCustom == null) {
+            comboAutoVibratoTypeCustom = new BComboBox();
+            comboAutoVibratoTypeCustom.setPreferredSize(new Dimension(101, 20));
+        }
+        return comboAutoVibratoTypeCustom;
+    }
+
+    /**
+     * This method initializes jPanel	
+     * 	
+     * @return javax.swing.JPanel	
+     */
+    private JPanel getJPanel2() {
+        if (jPanel == null) {
+            GridBagConstraints gridBagConstraints126 = new GridBagConstraints();
+            gridBagConstraints126.gridx = 0;
+            gridBagConstraints126.weighty = 1.0D;
+            gridBagConstraints126.gridy = 2;
+            jLabel911 = new BLabel();
+            jLabel911.setText("   ");
+            GridBagConstraints gridBagConstraints100 = new GridBagConstraints();
+            gridBagConstraints100.gridx = 0;
+            gridBagConstraints100.insets = new Insets(3, 3, 3, 3);
+            gridBagConstraints100.gridy = 4;
+            GridBagConstraints gridBagConstraints34 = new GridBagConstraints();
+            gridBagConstraints34.gridx = 0;
+            gridBagConstraints34.insets = new Insets(3, 3, 3, 3);
+            gridBagConstraints34.gridy = 3;
+            GridBagConstraints gridBagConstraints33 = new GridBagConstraints();
+            gridBagConstraints33.gridx = 0;
+            gridBagConstraints33.insets = new Insets(3, 3, 3, 3);
+            gridBagConstraints33.gridy = 1;
+            GridBagConstraints gridBagConstraints20 = new GridBagConstraints();
+            gridBagConstraints20.gridx = 0;
+            gridBagConstraints20.insets = new Insets(3, 3, 3, 3);
+            gridBagConstraints20.gridy = 0;
+            jPanel = new JPanel();
+            jPanel.setLayout(new GridBagLayout());
+            jPanel.add(getButtonResamplerAdd(), gridBagConstraints20);
+            jPanel.add(getButtonResamplerRemove(), gridBagConstraints33);
+            jPanel.add(getButtonResamplerUp(), gridBagConstraints34);
+            jPanel.add(getButtonResamplerDown(), gridBagConstraints100);
+            jPanel.add(jLabel911, gridBagConstraints126);
+        }
+        return jPanel;
+    }
+
+    /**
+     * This method initializes listResampler	
+     * 	
+     * @return javax.swing.JList	
+     */
+    private JList getListResampler() {
+        if (listResampler == null) {
+            listResampler = new JList();
+        }
+        return listResampler;
+    }
+
+    /**
+     * This method initializes buttonResamplerAdd	
+     * 	
+     * @return org.kbinani.windows.forms.BButton	
+     */
+    private BButton getButtonResamplerAdd() {
+        if (buttonResamplerAdd == null) {
+            buttonResamplerAdd = new BButton();
+            buttonResamplerAdd.setPreferredSize(new Dimension(61, 23));
+            buttonResamplerAdd.setText("Add");
+        }
+        return buttonResamplerAdd;
+    }
+
+    /**
+     * This method initializes buttonResamplerRemove	
+     * 	
+     * @return org.kbinani.windows.forms.BButton	
+     */
+    private BButton getButtonResamplerRemove() {
+        if (buttonResamplerRemove == null) {
+            buttonResamplerRemove = new BButton();
+            buttonResamplerRemove.setPreferredSize(new Dimension(61, 23));
+            buttonResamplerRemove.setText("Remove");
+        }
+        return buttonResamplerRemove;
+    }
+
+    /**
+     * This method initializes buttonResamplerUp	
+     * 	
+     * @return org.kbinani.windows.forms.BButton	
+     */
+    private BButton getButtonResamplerUp() {
+        if (buttonResamplerUp == null) {
+            buttonResamplerUp = new BButton();
+            buttonResamplerUp.setPreferredSize(new Dimension(61, 23));
+            buttonResamplerUp.setText("Up");
+        }
+        return buttonResamplerUp;
+    }
+
+    /**
+     * This method initializes buttonResamplerDown	
+     * 	
+     * @return org.kbinani.windows.forms.BButton	
+     */
+    private BButton getButtonResamplerDown() {
+        if (buttonResamplerDown == null) {
+            buttonResamplerDown = new BButton();
+            buttonResamplerDown.setPreferredSize(new Dimension(61, 23));
+            buttonResamplerDown.setText("Down");
+        }
+        return buttonResamplerDown;
     }
 
 	//SECTION-END-METHOD

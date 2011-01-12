@@ -18,7 +18,8 @@ import java.io.*;
 #else
 using System;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
 #endif
 
     /// <summary>
@@ -27,7 +28,8 @@ namespace org.kbinani.vsq {
 #if JAVA
     public class SymbolTableEntry implements Cloneable {
 #else
-    public class SymbolTableEntry : ICloneable {
+    public class SymbolTableEntry : ICloneable
+    {
 #endif
         /// <summary>
         /// 単語（英語の場合、分節位置にハイフンが入る）
@@ -42,7 +44,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         private String m_symbol = "";
 
-        public SymbolTableEntry( String word, String symbol ) {
+        public SymbolTableEntry( String word, String symbol )
+        {
             Word = word;
             if ( Word == null ) {
                 Word = "";
@@ -60,7 +63,8 @@ namespace org.kbinani.vsq {
         /// タブ記号の位置を調べてください．
         /// </summary>
         /// <returns></returns>
-        public String getSymbol() {
+        public String getSymbol()
+        {
             return m_symbol;
         }
 
@@ -70,7 +74,8 @@ namespace org.kbinani.vsq {
         /// 空白による区切りは分節中に複数の発音記号がある場合の区切りを表します．
         /// </summary>
         /// <returns></returns>
-        public String getRawSymbol() {
+        public String getRawSymbol()
+        {
             return m_raw_symbol;
         }
 
@@ -82,8 +87,10 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <returns></returns>
         [Obsolete]
-        public String Symbol {
-            get {
+        public String Symbol
+        {
+            get
+            {
                 return getSymbol();
             }
         }
@@ -96,7 +103,8 @@ namespace org.kbinani.vsq {
 #if !JAVA
         [Obsolete]
 #endif
-        public String getParsedSymbol() {
+        public String getParsedSymbol()
+        {
             return getSymbol();
         }
 
@@ -104,7 +112,8 @@ namespace org.kbinani.vsq {
         /// このオブジェクトのディープ・コピーを取得します
         /// </summary>
         /// <returns></returns>
-        public Object clone() {
+        public Object clone()
+        {
             return new SymbolTableEntry( Word, m_raw_symbol );
         }
 
@@ -113,7 +122,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <returns></returns>
 #if !JAVA
-        public Object Clone() {
+        public Object Clone()
+        {
             return clone();
         }
 #endif

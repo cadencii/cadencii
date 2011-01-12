@@ -19,7 +19,7 @@ using org.kbinani;
 
 namespace org.kbinani.cadencii {
 
-    public delegate void SelectedEventChangedEventHandler( object sender, bool foo );
+    public delegate void SelectedEventChangedEventHandler( Object sender, bool foo );
 
 }
 #endif

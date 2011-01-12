@@ -22,13 +22,13 @@ namespace org.kbinani.cadencii {
     public class VibratoVariation {
         public static readonly VibratoVariation empty = new VibratoVariation();
 
-        public string description = "";
+        public String description = "";
 
         private VibratoVariation() {
             description = "-";
         }
 
-        public VibratoVariation( string description ) {
+        public VibratoVariation( String description ) {
             this.description = description;
         }
 
@@ -41,7 +41,7 @@ namespace org.kbinani.cadencii {
         }
 
 #if !JAVA
-        public override bool Equals( object obj ) {
+        public override bool Equals( Object obj ) {
             return equals( obj );
         }
 #endif
@@ -61,7 +61,7 @@ namespace org.kbinani.cadencii {
         }
 
 #if !JAVA
-        public object Clone() {
+        public Object Clone() {
             return clone();
         }
 #endif

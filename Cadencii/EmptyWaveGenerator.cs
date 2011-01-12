@@ -12,8 +12,12 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
+package org.kbinani.cadencii;
+
 #else
+using System;
 using System.Threading;
+
 namespace org.kbinani.cadencii
 {
     using boolean = System.Boolean;
@@ -23,7 +27,11 @@ namespace org.kbinani.cadencii
     /// <summary>
     /// 無音の波形を送信するWaveGenerator
     /// </summary>
+#if JAVA
+    public class EmptyWaveGenerator extends WaveUnit implements WaveGenerator
+#else
     public class EmptyWaveGenerator : WaveUnit, WaveGenerator
+#endif
     {
         private const int VERSION = 0;
         private const int BUFLEN = 1024;
@@ -68,7 +76,7 @@ namespace org.kbinani.cadencii
             return VERSION;
         }
 
-        public override void setConfig( string parameter )
+        public override void setConfig( String parameter )
         {
             // do nothing
         }
@@ -91,7 +99,6 @@ namespace org.kbinani.cadencii
                 remain -= amount;
                 mTotalAppend += amount;
             }
-        end_label:
             mRunning = false;
             mReceiver.end();
         }
@@ -117,4 +124,6 @@ namespace org.kbinani.cadencii
         }
     }
 
+#if !JAVA
 }
+#endif

@@ -20,7 +20,8 @@ namespace org{ namespace kbinani{ namespace vsq{
 #else
 using System;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
 #endif
 
     /// <summary>
@@ -32,7 +33,8 @@ namespace org.kbinani.vsq {
     class BPPair{
 #else
     [Serializable]
-    public class BPPair : IComparable<BPPair> {
+    public class BPPair : IComparable<BPPair>
+    {
 #endif
         public int Clock;
         public int Value;
@@ -42,7 +44,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        public int compareTo( BPPair item ) {
+        public int compareTo( BPPair item )
+        {
             if ( Clock > item.Clock ) {
                 return 1;
             } else if ( Clock < item.Clock ) {
@@ -59,7 +62,8 @@ namespace org.kbinani.vsq {
 #if JAVA
 #elif __cplusplus
 #else
-        public int CompareTo( BPPair item ) {
+        public int CompareTo( BPPair item )
+        {
             return compareTo( item );
         }
 #endif
@@ -69,7 +73,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="clock_"></param>
         /// <param name="value_"></param>
-        public BPPair( int clock_, int value_ ) {
+        public BPPair( int clock_, int value_ )
+        {
             Clock = clock_;
             Value = value_;
 #if __cplusplus

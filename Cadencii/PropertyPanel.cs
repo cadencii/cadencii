@@ -136,7 +136,7 @@ namespace org.kbinani.cadencii {
             // 現在のGridItemの展開状態を取得
             pushGridItemExpandStatus();
 
-            object[] objs = new object[AppManager.getSelectedEventCount()];
+            Object[] objs = new Object[AppManager.getSelectedEventCount()];
             int i = -1;
             for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
                 SelectedEventEntry item = itr.next();
@@ -149,7 +149,7 @@ namespace org.kbinani.cadencii {
             setEditing( false );
         }
 
-        private void propertyGrid_PropertyValueChanged( object s, PropertyValueChangedEventArgs e ) {
+        private void propertyGrid_PropertyValueChanged( Object s, PropertyValueChangedEventArgs e ) {
             int len = propertyGrid.SelectedObjects.Length;
             VsqEvent[] items = new VsqEvent[len];
             for ( int i = 0; i < len; i++ ) {
@@ -201,15 +201,15 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        private void propertyGrid_SelectedGridItemChanged( object sender, SelectedGridItemChangedEventArgs e ) {
+        private void propertyGrid_SelectedGridItemChanged( Object sender, SelectedGridItemChangedEventArgs e ) {
             setEditing( true );
         }
 
-        private void propertyGrid_Enter( object sender, EventArgs e ) {
+        private void propertyGrid_Enter( Object sender, EventArgs e ) {
             setEditing( true );
         }
 
-        private void propertyGrid_Leave( object sender, EventArgs e ) {
+        private void propertyGrid_Leave( Object sender, EventArgs e ) {
             setEditing( false );
         }
 

@@ -20,14 +20,16 @@ import org.kbinani.*;
 using System;
 using org.kbinani;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
 #endif
 
 #if JAVA
     public class UstVibrato implements Cloneable, Serializable {
 #else
     [Serializable]
-    public class UstVibrato : ICloneable {
+    public class UstVibrato : ICloneable
+    {
 #endif
         /// <summary>
         /// 音符の長さに対する、パーセントで表したビブラートの長さ。
@@ -59,7 +61,8 @@ namespace org.kbinani.vsq {
         public float Shift;
         public float Unknown = 100;
 
-        public UstVibrato( String line ) {
+        public UstVibrato( String line )
+        {
             if ( line.ToLower().StartsWith( "vbr=" ) ) {
                 String[] spl = PortUtil.splitString( line, '=' );
                 spl = PortUtil.splitString( spl[1], ',' );
@@ -77,28 +80,34 @@ namespace org.kbinani.vsq {
             }
         }
 
-        public UstVibrato() {
+        public UstVibrato()
+        {
         }
 
-        public float getLength() {
+        public float getLength()
+        {
             return Length;
         }
 
-        public void setLength( float value ) {
+        public void setLength( float value )
+        {
             Length = value;
         }
 
 #if !JAVA
-        public override string ToString() {
+        public override String ToString()
+        {
             return toString();
         }
 #endif
 
-        public String toString() {
+        public String toString()
+        {
             return "VBR=" + Length + "," + Period + "," + Depth + "," + In + "," + Out + "," + Phase + "," + Shift + "," + Unknown;
         }
 
-        public Object clone() {
+        public Object clone()
+        {
             UstVibrato ret = new UstVibrato();
             ret.setLength( Length );
             ret.Period = Period;
@@ -112,7 +121,8 @@ namespace org.kbinani.vsq {
         }
 
 #if !JAVA
-        public object Clone() {
+        public object Clone()
+        {
             return clone();
         }
 #endif

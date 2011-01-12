@@ -23,6 +23,7 @@ using org.kbinani.java.io;
 
 namespace org.kbinani.vsq
 {
+    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -184,12 +185,12 @@ namespace org.kbinani.vsq
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        public bool equalsForSynth( UstEvent item )
+        public boolean equalsForSynth( UstEvent item )
         {
             if ( item == null ) {
                 return false;
             }
-            bool ret = true;
+            boolean ret = true;
             // モジュレーション・先行発声・スタート位置・オーバーラップのみチェック．
             // ほかに有効な値でかつ VsqEvent で比較できないものは何かあったか
             if ( this.Moduration != item.Moduration ) ret = false;

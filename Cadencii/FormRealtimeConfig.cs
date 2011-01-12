@@ -161,7 +161,7 @@ namespace org.kbinani.cadencii {
 
         #region helper methods
         private void registerEventHandlers() {
-            Load += new EventHandler( FormRealtimeConfig_Load );
+            this.Load += new EventHandler( FormRealtimeConfig_Load );
             timer.Tick += new EventHandler( timer_Tick );
             btnStart.Click += new EventHandler( btnStart_Click );
             btnCancel.Click += new EventHandler( btnCancel_Click );

@@ -21,7 +21,8 @@ using System;
 using org.kbinani;
 using org.kbinani.java.io;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
     using boolean = System.Boolean;
     using Long = System.Int64;
     using Integer = System.Int32;
@@ -33,7 +34,8 @@ namespace org.kbinani.vsq {
 #if JAVA
     public class MidiEvent implements Comparable<MidiEvent> {
 #else
-    public struct MidiEvent : IComparable<MidiEvent> {
+    public struct MidiEvent : IComparable<MidiEvent>
+    {
 #endif
         public long clock;
         public int firstByte;
@@ -228,7 +230,8 @@ namespace org.kbinani.vsq {
             }
         }
 
-        public int compareTo( MidiEvent item ) {
+        public int compareTo( MidiEvent item )
+        {
             if ( clock != item.clock ) {
                 return (int)(clock - item.clock);
             } else {
@@ -269,12 +272,14 @@ namespace org.kbinani.vsq {
         }
 
 #if !JAVA
-        public int CompareTo( MidiEvent item ) {
+        public int CompareTo( MidiEvent item )
+        {
             return compareTo( item );
         }
 #endif
 
-        public static MidiEvent generateTimeSigEvent( int clock, int numerator, int denominator ) {
+        public static MidiEvent generateTimeSigEvent( int clock, int numerator, int denominator )
+        {
             MidiEvent ret = new MidiEvent();
             ret.clock = clock;
             ret.firstByte = 0xff;
@@ -286,7 +291,8 @@ namespace org.kbinani.vsq {
             return ret;
         }
 
-        public static MidiEvent generateTempoChangeEvent( int clock, int tempo ) {
+        public static MidiEvent generateTempoChangeEvent( int clock, int tempo )
+        {
             MidiEvent ret = new MidiEvent();
             ret.clock = clock;
             ret.firstByte = 0xff;

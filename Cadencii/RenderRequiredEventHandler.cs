@@ -30,7 +30,7 @@ using System;
 
 namespace org.kbinani.cadencii {
 
-    public delegate void RenderRequiredEventHandler( object sender, int[] tracks );
+    public delegate void RenderRequiredEventHandler( Object sender, int[] tracks );
 
 }
 #endif

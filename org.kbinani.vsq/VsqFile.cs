@@ -25,7 +25,8 @@ using org.kbinani;
 using org.kbinani.java.util;
 using org.kbinani.java.io;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
     using boolean = System.Boolean;
     using Integer = System.Int32;
     using Long = System.Int64;
@@ -38,7 +39,8 @@ namespace org.kbinani.vsq {
     public class VsqFile implements Cloneable, Serializable {
 #else
     [Serializable]
-    public class VsqFile : ICloneable {
+    public class VsqFile : ICloneable
+    {
 #endif
         /// <summary>
         /// トラックのリスト．最初のトラックはMasterTrackであり，通常の音符が格納されるトラックはインデックス1以降となる
@@ -54,7 +56,7 @@ namespace org.kbinani.vsq {
         /// 曲の長さを取得します。(クロック(4分音符は480クロック))
         /// </summary>
         public int TotalClocks = 0;
-        protected const int baseTempo = 500000; 
+        protected const int baseTempo = 500000;
         public VsqMaster Master;  // VsqMaster, VsqMixerは通常，最初の非Master Trackに記述されるが，可搬性のため，
         public VsqMixer Mixer;    // ここではVsqFileに直属するものとして取り扱う．
         private BarLineIterator barLineIterator = null;
@@ -74,7 +76,8 @@ namespace org.kbinani.vsq {
             this( "Miku", 1, 4, 4, ust.getBaseTempo() );
 #else
         public VsqFile( UstFile ust )
-            : this( "Miku", 1, 4, 4, ust.getBaseTempo() ) {
+            : this( "Miku", 1, 4, 4, ust.getBaseTempo() )
+        {
 #endif
             int clock_count = 480 * 4; //pre measure = 1、4分の4拍子としたので
             VsqBPList pitch = new VsqBPList( "", 0, -2400, 2400 ); // ノートナンバー×100
@@ -85,7 +88,7 @@ namespace org.kbinani.vsq {
                     id.setLength( ue.getLength() );
                     String psymbol = "a";
                     SymbolTableEntry entry = SymbolTable.attatch( ue.Lyric );
-                    if( entry != null ){
+                    if ( entry != null ) {
                         psymbol = entry.getSymbol();
                     }
                     id.LyricHandle = new LyricHandle( ue.Lyric, psymbol );
@@ -149,7 +152,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static boolean isXmlIgnored( String name ) {
+        public static boolean isXmlIgnored( String name )
+        {
             return false;
         }
 
@@ -159,11 +163,13 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static String getXmlElementName( String name ) {
+        public static String getXmlElementName( String name )
+        {
             return name;
         }
 
-        public virtual void adjustClockToMatchWith( double tempo ) {
+        public virtual void adjustClockToMatchWith( double tempo )
+        {
             int numTrack = Track.size();
             for ( int track = 1; track < numTrack; track++ ) {
                 VsqTrack vsq_track = Track.get( track );
@@ -223,7 +229,8 @@ namespace org.kbinani.vsq {
         /// 合致するようにシフトします
         /// </summary>
         /// <param name="tempo"></param>
-        public virtual void adjustClockToMatchWith( TempoVector tempo ) {
+        public virtual void adjustClockToMatchWith( TempoVector tempo )
+        {
             double premeasure_sec_tempo = 0;
 
             // テンポをリプレースする場合。
@@ -281,7 +288,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="file">出力するファイルのパス</param>
         /// <param name="encoding">MusicXMLのテキストエンコーディング</param>
-        public void printAsMusicXml( String file, String encoding ) {
+        public void printAsMusicXml( String file, String encoding )
+        {
             printAsMusicXmlCore( file, encoding, "", (int)(60e6 / getTempoAt( 0 )), false );
         }
 
@@ -291,7 +299,8 @@ namespace org.kbinani.vsq {
         /// <param name="file">出力するファイルのパス</param>
         /// <param name="encoding">MusicXMLのテキストエンコーディング</param>
         /// <param name="tempo">このインスタンスの中身を，このテンポ値の場合の再生秒時に合致するように音符などを移動する</param>
-        public void printAsMusicXml( String file, String encoding, int tempo ) {
+        public void printAsMusicXml( String file, String encoding, int tempo )
+        {
             printAsMusicXmlCore( file, encoding, "", tempo, true );
         }
 
@@ -301,7 +310,8 @@ namespace org.kbinani.vsq {
         /// <param name="file">出力するファイルのパス</param>
         /// <param name="encoding">MusicXMLのテキストエンコーディング</param>
         /// <param name="software">出力を行ったソフトウェアの名称</param>
-        public void printAsMusicXml( String file, String encoding, String software ) {
+        public void printAsMusicXml( String file, String encoding, String software )
+        {
             printAsMusicXmlCore( file, encoding, software, (int)(60e6 / getTempoAt( 0 )), false );
         }
 
@@ -312,7 +322,8 @@ namespace org.kbinani.vsq {
         /// <param name="encoding">MusicXMLのテキストエンコーディング</param>
         /// <param name="software">出力を行ったソフトウェアの名称</param>
         /// <param name="tempo">このインスタンスの中身を，このテンポ値の場合の再生秒時に合致するように音符などを移動する</param>
-        public void printAsMusicXml( String file, String encoding, String software, int tempo ) {
+        public void printAsMusicXml( String file, String encoding, String software, int tempo )
+        {
             printAsMusicXmlCore( file, encoding, software, tempo, true );
         }
 
@@ -324,7 +335,7 @@ namespace org.kbinani.vsq {
             TreeMap<String, Boolean> altered_context,
             boolean tie_start_required,
             boolean tie_stop_required,
-            String type ) 
+            String type )
 #if JAVA
             throws java.io.IOException
 #endif
@@ -391,15 +402,15 @@ namespace org.kbinani.vsq {
             writer.write( "      </note>" ); writer.newLine();
         }
 
-        private static void printStyledNote( 
-            BufferedWriter writer, 
+        private static void printStyledNote(
+            BufferedWriter writer,
             int clock_start,
             int clock_length,
             int note,
             Vector<TempoTableEntry> tempoInsert,
             String lyric,
             TreeMap<String, Boolean> altered_context,
-            boolean tie_start_required, 
+            boolean tie_start_required,
             boolean tie_stop_required )
 #if JAVA
             throws java.io.IOException
@@ -464,7 +475,8 @@ namespace org.kbinani.vsq {
             }
         }
 
-        private void printAsMusicXmlCore( String file, String encoding, String software, int tempo, boolean change_tempo ) {
+        private void printAsMusicXmlCore( String file, String encoding, String software, int tempo, boolean change_tempo )
+        {
             BufferedWriter sw = null;
             VsqFile vsq = (VsqFile)clone();
             int intTempo = (int)(60e6 / tempo);
@@ -685,7 +697,8 @@ namespace org.kbinani.vsq {
         /// このインスタンスの内容を，MusicXML形式のファイルに出力します
         /// </summary>
         /// <param name="file"></param>
-        public void printAsMusicXml_OLD( String file ) {
+        public void printAsMusicXml_OLD( String file )
+        {
             BufferedWriter sw = null;
             try {
                 sw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( file ), "UTF-8" ) );
@@ -779,18 +792,18 @@ namespace org.kbinani.vsq {
                                 sw.write( "        <duration>" + actualLength + "</duration>" ); sw.newLine();
                                 sw.write( "        <voice>1</voice>" ); sw.newLine();
                                 //if ( !(tieStartRequired && tieStopRequired) ) {
-                                    if ( tieStartRequired ) {
-                                        sw.write( "        <tie type=\"start\"/>" ); sw.newLine();
-                                        sw.write( "        <notations>" ); sw.newLine();
-                                        sw.write( "          <tied type=\"start\"/>" ); sw.newLine();
-                                        sw.write( "        </notations>" ); sw.newLine();
-                                    }
-                                    if ( tieStopRequired ) {
-                                        sw.write( "        <tie type=\"stop\"/>" ); sw.newLine();
-                                        sw.write( "        <notations>" ); sw.newLine();
-                                        sw.write( "          <tied type=\"stop\"/>" ); sw.newLine();
-                                        sw.write( "        </notations>" ); sw.newLine();
-                                    }
+                                if ( tieStartRequired ) {
+                                    sw.write( "        <tie type=\"start\"/>" ); sw.newLine();
+                                    sw.write( "        <notations>" ); sw.newLine();
+                                    sw.write( "          <tied type=\"start\"/>" ); sw.newLine();
+                                    sw.write( "        </notations>" ); sw.newLine();
+                                }
+                                if ( tieStopRequired ) {
+                                    sw.write( "        <tie type=\"stop\"/>" ); sw.newLine();
+                                    sw.write( "        <notations>" ); sw.newLine();
+                                    sw.write( "          <tied type=\"stop\"/>" ); sw.newLine();
+                                    sw.write( "        </notations>" ); sw.newLine();
+                                }
                                 //}
                                 sw.write( "        <lyric>" ); sw.newLine();
                                 sw.write( "          <text>" + itemk.ID.LyricHandle.L0.Phrase + "</text>" ); sw.newLine();
@@ -835,7 +848,8 @@ namespace org.kbinani.vsq {
         /// master==MasterPitchControl.Pitchの場合、m_pitchからPITとPBSを再構成。
         /// master==MasterPitchControl.PITandPBSの場合、PITとPBSからm_pitchを再構成
         /// </summary>
-        private static void reflectPitch( VsqFile vsq, int track, VsqBPList pitch ) {
+        private static void reflectPitch( VsqFile vsq, int track, VsqBPList pitch )
+        {
             //double offset = AttachedCurves[track - 1].MasterTuningInCent * 100;
             //Vector<Integer> keyclocks = new Vector<Integer>( pitch.getKeys() );
             int keyclock_size = pitch.size();
@@ -923,7 +937,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="ms_pre_send_time"></param>
         /// <returns></returns>
-        public boolean checkPreSendTimeValidity( int ms_pre_send_time ) {
+        public boolean checkPreSendTimeValidity( int ms_pre_send_time )
+        {
             int track_count = Track.size();
             for ( int i = 1; i < track_count; i++ ) {
                 VsqTrack track = Track.get( i );
@@ -943,7 +958,8 @@ namespace org.kbinani.vsq {
         /// テンポ値を一律order倍します。
         /// </summary>
         /// <param name="order"></param>
-        public void speedingUp( double order ) {
+        public void speedingUp( double order )
+        {
             lock ( TempoTable ) {
                 int c = TempoTable.size();
                 for ( int i = 0; i < c; i++ ) {
@@ -958,7 +974,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="command">実行するコマンド</param>
         /// <returns>編集結果を元に戻すためのコマンドを返します</returns>
-        public VsqCommand executeCommand( VsqCommand command ) {
+        public VsqCommand executeCommand( VsqCommand command )
+        {
 #if DEBUG
             PortUtil.stdout.println( "VsqFile#executeCommand(VsqCommand); type=" + command.Type );
 #endif
@@ -1848,12 +1865,13 @@ namespace org.kbinani.vsq {
             return null;
         }
 
-        private void processTrackCurveEdit( int track, 
-                                            String curve, 
+        private void processTrackCurveEdit( int track,
+                                            String curve,
                                             Vector<Long> delete,
                                             TreeMap<Integer, VsqBPPair> add,
                                             Vector<Long> inv_delete,
-                                            TreeMap<Integer, VsqBPPair> inv_add ){
+                                            TreeMap<Integer, VsqBPPair> inv_add )
+        {
             VsqBPList list = Track.get( track ).getCurve( curve );
 
             // 逆コマンド発行用
@@ -1886,7 +1904,8 @@ namespace org.kbinani.vsq {
         /// <param name="vsq">編集対象のVsqFileインスタンス</param>
         /// <param name="clock_start">削除を行う範囲の開始クロック</param>
         /// <param name="clock_end">削除を行う範囲の終了クロック</param>
-        public void removePart( int clock_start, int clock_end ) {
+        public void removePart( int clock_start, int clock_end )
+        {
 #if DEBUG
             PortUtil.println( "VsqFile#removePart; before:" );
             for ( int i = 0; i < TempoTable.size(); i++ ) {
@@ -1898,7 +1917,7 @@ namespace org.kbinani.vsq {
             // テンポ情報の削除、シフト
             int tempoAtClockEnd = getTempoAt( clock_end );
             boolean changed = true;
-            for( int i = 0; i < TempoTable.size() ; ){
+            for ( int i = 0; i < TempoTable.size(); ) {
                 TempoTableEntry itemi = TempoTable.get( i );
                 if ( clock_start <= itemi.Clock && itemi.Clock < clock_end ) {
                     TempoTable.removeElementAt( i );
@@ -1975,7 +1994,7 @@ namespace org.kbinani.vsq {
                 for ( int i = 0; i < _CURVES.Length; i++ ) {
                     String curve = _CURVES[i];
                     VsqBPList bplist = vsqTrack.getCurve( curve );
-                    if ( bplist == null ){
+                    if ( bplist == null ) {
                         continue;
                     }
                     VsqBPList buf_bplist = (VsqBPList)bplist.clone();
@@ -2012,7 +2031,8 @@ namespace org.kbinani.vsq {
         /// この操作を行うことで，TimesigTableの情報は破綻します（仕様です）．
         /// </summary>
         /// <param name="delta_clock"></param>
-        public static void shift( VsqFile vsq, int delta_clock ) {
+        public static void shift( VsqFile vsq, int delta_clock )
+        {
             if ( delta_clock == 0 ) {
                 return;
             }
@@ -2055,7 +2075,8 @@ namespace org.kbinani.vsq {
         /// このインスタンスのコピーを作成します
         /// </summary>
         /// <returns>このインスタンスのコピー</returns>
-        public Object clone() {
+        public Object clone()
+        {
             VsqFile ret = new VsqFile();
             ret.Track = new Vector<VsqTrack>();
             for ( int i = 0; i < Track.size(); i++ ) {
@@ -2081,18 +2102,21 @@ namespace org.kbinani.vsq {
         }
 
 #if !JAVA
-        public object Clone() {
+        public object Clone()
+        {
             return clone();
         }
 #endif
 
-        private VsqFile() {
+        private VsqFile()
+        {
         }
 
 #if JAVA
         private class BarLineIterator implements Iterator{
 #else
-        private class BarLineIterator : Iterator<VsqBarLineType> {
+        private class BarLineIterator : Iterator<VsqBarLineType>
+        {
 #endif
             private Vector<TimeSigTableEntry> m_list;
             private int m_end_clock;
@@ -2105,7 +2129,8 @@ namespace org.kbinani.vsq {
             int local_clock;
             int bar_counter;
 
-            public BarLineIterator( Vector<TimeSigTableEntry> list, int end_clock ) {
+            public BarLineIterator( Vector<TimeSigTableEntry> list, int end_clock )
+            {
                 m_list = list;
                 m_end_clock = end_clock;
                 i = 0;
@@ -2113,7 +2138,8 @@ namespace org.kbinani.vsq {
                 clock = 0;
             }
 
-            public void reset( int end_clock ) {
+            public void reset( int end_clock )
+            {
                 this.m_end_clock = end_clock;
                 this.i = 0;
                 this.t_end = -1;
@@ -2125,7 +2151,8 @@ namespace org.kbinani.vsq {
                 this.bar_counter = 0;
             }
 
-            public VsqBarLineType next() {
+            public VsqBarLineType next()
+            {
                 int mod = clock_step * local_numerator;
                 if ( clock < t_end ) {
                     if ( (clock - local_clock) % mod == 0 ) {
@@ -2170,11 +2197,13 @@ namespace org.kbinani.vsq {
                 return new VsqBarLineType();
             }
 
-            public void remove() {
+            public void remove()
+            {
                 //throw new Exception( "com.boare.vsq.VsqFile.BarLineIterator#remove; not implemented" );
             }
 
-            public boolean hasNext() {
+            public boolean hasNext()
+            {
                 if ( clock < m_end_clock ) {
                     return true;
                 } else {
@@ -2187,7 +2216,8 @@ namespace org.kbinani.vsq {
         /// 小節の区切りを順次返すIterator。
         /// </summary>
         /// <returns></returns>
-        public Iterator<VsqBarLineType> getBarLineIterator( int end_clock ) {
+        public Iterator<VsqBarLineType> getBarLineIterator( int end_clock )
+        {
             if ( this.barLineIterator == null ) {
                 this.barLineIterator = new BarLineIterator( this.TimesigTable, end_clock );
             } else {
@@ -2199,28 +2229,32 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// 基本テンポ値を取得します
         /// </summary>
-        public int getBaseTempo() {
+        public int getBaseTempo()
+        {
             return baseTempo;
         }
 
         /// <summary>
         /// プリメジャー値を取得します
         /// </summary>
-        public int getPreMeasure() {
+        public int getPreMeasure()
+        {
             return Master.PreMeasure;
         }
 
         /// <summary>
         /// プリメジャー部分の長さをクロックに変換した値を取得します．
         /// </summary>
-        public int getPreMeasureClocks() {
+        public int getPreMeasureClocks()
+        {
             return calculatePreMeasureInClock();
         }
 
         /// <summary>
         /// プリメジャーの長さ(クロック)を計算します。
         /// </summary>
-        private int calculatePreMeasureInClock() {
+        private int calculatePreMeasureInClock()
+        {
             int pre_measure = Master.PreMeasure;
             TimeSigTableEntry item0 = this.TimesigTable.get( 0 );
             int last_bar_count = item0.BarCount;
@@ -2249,7 +2283,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="clock"></param>
         /// <returns></returns>
-        public double getSecFromClock( double clock ) {
+        public double getSecFromClock( double clock )
+        {
             return TempoTable.getSecFromClock( clock );
         }
 
@@ -2258,7 +2293,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="time"></param>
         /// <returns></returns>
-        public double getClockFromSec( double time ) {
+        public double getClockFromSec( double time )
+        {
             return TempoTable.getClockFromSec( time );
         }
 
@@ -2266,7 +2302,8 @@ namespace org.kbinani.vsq {
         /// 指定したクロックにおける拍子を取得します
         /// </summary>
         /// <param name="clock"></param>
-        public Timesig getTimesigAt( int clock ) {
+        public Timesig getTimesigAt( int clock )
+        {
             Timesig ret = new Timesig();
             ret.numerator = 4;
             ret.denominator = 4;
@@ -2283,7 +2320,8 @@ namespace org.kbinani.vsq {
             return ret;
         }
 
-        public Timesig getTimesigAt( int clock, ByRef<Integer> bar_count ) {
+        public Timesig getTimesigAt( int clock, ByRef<Integer> bar_count )
+        {
             int index = 0;
             int c = TimesigTable.size();
             for ( int i = c - 1; i >= 0; i-- ) {
@@ -2307,7 +2345,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="clock"></param>
         /// <returns></returns>
-        public int getTempoAt( int clock ) {
+        public int getTempoAt( int clock )
+        {
             int index = 0;
             int c = TempoTable.size();
             for ( int i = c - 1; i >= 0; i-- ) {
@@ -2324,7 +2363,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="bar_count"></param>
         /// <returns></returns>
-        public int getClockFromBarCount( int bar_count ) {
+        public int getClockFromBarCount( int bar_count )
+        {
             int index = 0;
             int c = TimesigTable.size();
             for ( int i = c - 1; i >= 0; i-- ) {
@@ -2347,7 +2387,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="clock"></param>
         /// <returns></returns>
-        public int getBarCountFromClock( int clock ) {
+        public int getBarCountFromClock( int clock )
+        {
             int index = 0;
             int c = TimesigTable.size();
             for ( int i = c - 1; i >= 0; i-- ) {
@@ -2371,7 +2412,8 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// 4分の1拍子1音あたりのクロック数を取得します
         /// </summary>
-        public int getTickPerQuarter() {
+        public int getTickPerQuarter()
+        {
             return m_tpq;
         }
 
@@ -2382,7 +2424,8 @@ namespace org.kbinani.vsq {
         /// <param name="numerator"></param>
         /// <param name="denominator"></param>
         /// <param name="tempo"></param>
-        public VsqFile( String singer, int pre_measure, int numerator, int denominator, int tempo ) {
+        public VsqFile( String singer, int pre_measure, int numerator, int denominator, int tempo )
+        {
             TotalClocks = pre_measure * 480 * 4 / denominator * numerator;
             //m_tpq = 480;
 
@@ -2540,7 +2583,8 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// TimeSigTableの[*].Clockの部分を更新します
         /// </summary>
-        public void updateTimesigInfo() {
+        public void updateTimesigInfo()
+        {
 #if DEBUG
             PortUtil.println( "VsqFile#updateTimesigInfo; before:" );
             for ( int i = 0; i < TimesigTable.size(); i++ ) {
@@ -2574,14 +2618,16 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// TempoTableの[*].Timeの部分を更新します
         /// </summary>
-        public void updateTempoInfo() {
+        public void updateTempoInfo()
+        {
             TempoTable.updateTempoInfo();
         }
 
         /// <summary>
         /// VsqFile.Executeの実行直後などに、m_total_clocksの値を更新する
         /// </summary>
-        public void updateTotalClocks() {
+        public void updateTotalClocks()
+        {
             int max = getPreMeasureClocks();
             for ( int i = 1; i < Track.size(); i++ ) {
                 VsqTrack track = Track.get( i );
@@ -2609,7 +2655,8 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// 曲の長さを取得する。(sec)
         /// </summary>
-        public double getTotalSec() {
+        public double getTotalSec()
+        {
             return getSecFromClock( (int)TotalClocks );
         }
 
@@ -2618,7 +2665,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="track"></param>
         /// <param name="fpath"></param>
-        public void printLyricTable( int track, String fpath ) {
+        public void printLyricTable( int track, String fpath )
+        {
             BufferedWriter sw = null;
             try {
                 sw = new BufferedWriter( new FileWriter( fpath ) );
@@ -2668,11 +2716,13 @@ namespace org.kbinani.vsq {
             }
         }
 
-        public Vector<MidiEvent> generateMetaTextEvent( int track, String encoding ) {
+        public Vector<MidiEvent> generateMetaTextEvent( int track, String encoding )
+        {
             return generateMetaTextEvent( track, encoding, calculatePreMeasureInClock() );
         }
 
-        public Vector<MidiEvent> generateMetaTextEvent( int track, String encoding, int start_clock ) {
+        public Vector<MidiEvent> generateMetaTextEvent( int track, String encoding, int start_clock )
+        {
             String _NL = "" + (char)(byte)0x0a;
             Vector<MidiEvent> ret = new Vector<MidiEvent>();
             TextStream sr = null;
@@ -2822,7 +2872,8 @@ namespace org.kbinani.vsq {
         /// <param name="s"></param>
         /// <param name="encoding"></param>
         /// <returns></returns>
-        private static String substring127Bytes( String s, String encoding ) {
+        private static String substring127Bytes( String s, String encoding )
+        {
             int count = Math.Min( 127, PortUtil.getStringLength( s ) );
             int c = PortUtil.getEncodedByteCount( encoding, s.Substring( 0, count ) );
             if ( c == 127 ) {
@@ -2900,7 +2951,8 @@ namespace org.kbinani.vsq {
         /// <param name="clock"></param>
         /// <param name="msPreSend"></param>
         /// <returns></returns>
-        public int getPresendClockAt( int clock, int msPreSend ) {
+        public int getPresendClockAt( int clock, int msPreSend )
+        {
             double clock_msec = getSecFromClock( clock ) * 1000.0;
             float draft_clock_sec = (float)(clock_msec - msPreSend) / 1000.0f;
             int draft_clock = (int)Math.Floor( getClockFromSec( draft_clock_sec ) );
@@ -2912,7 +2964,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="clock"></param>
         /// <returns></returns>
-        public int getMaximumNoteLengthAt( int clock ) {
+        public int getMaximumNoteLengthAt( int clock )
+        {
             double secAtStart = getSecFromClock( clock );
             double secAtEnd = secAtStart + VsqID.MAX_NOTE_MILLISEC_LENGTH / 1000.0;
             int clockAtEnd = (int)getClockFromSec( secAtEnd ) - 1;
@@ -2931,7 +2984,8 @@ namespace org.kbinani.vsq {
         /// <param name="track"></param>
         /// <param name="msPreSend"></param>
         /// <returns></returns>
-        public static VsqNrpn[] generateExpressionNRPN( VsqFile vsq, int track, int msPreSend ) {
+        public static VsqNrpn[] generateExpressionNRPN( VsqFile vsq, int track, int msPreSend )
+        {
             Vector<VsqNrpn> ret = new Vector<VsqNrpn>();
             VsqBPList dyn = vsq.Track.get( track ).getCurve( "DYN" );
             int count = dyn.size();
@@ -2948,7 +3002,8 @@ namespace org.kbinani.vsq {
             return ret.toArray( new VsqNrpn[] { } );
         }
 
-        public static VsqNrpn[] generateFx2DepthNRPN( VsqFile vsq, int track, int msPreSend ) {
+        public static VsqNrpn[] generateFx2DepthNRPN( VsqFile vsq, int track, int msPreSend )
+        {
             Vector<VsqNrpn> ret = new Vector<VsqNrpn>();
             VsqBPList fx2depth = vsq.Track.get( track ).getCurve( "fx2depth" );
             int count = fx2depth.size();
@@ -2969,7 +3024,8 @@ namespace org.kbinani.vsq {
         /// 先頭に記録されるNRPNを作成します
         /// </summary>
         /// <returns></returns>
-        public static VsqNrpn generateHeaderNRPN() {
+        public static VsqNrpn generateHeaderNRPN()
+        {
             VsqNrpn ret = new VsqNrpn( 0, NRPN.CC_BS_VERSION_AND_DEVICE, (byte)0x00, (byte)0x00 );
             ret.append( NRPN.CC_BS_DELAY, (byte)0x00, (byte)0x00 );
             ret.append( NRPN.CC_BS_LANGUAGE_TYPE, (byte)0x00 );
@@ -2983,7 +3039,8 @@ namespace org.kbinani.vsq {
         /// <param name="ve"></param>
         /// <param name="msPreSend"></param>
         /// <returns></returns>
-        public static VsqNrpn[] generateSingerNRPN( VsqFile vsq, VsqEvent ve, int msPreSend ) {
+        public static VsqNrpn[] generateSingerNRPN( VsqFile vsq, VsqEvent ve, int msPreSend )
+        {
             int clock = ve.Clock;
             IconHandle singer_handle = null;
             if ( ve.ID.IconHandle != null && ve.ID.IconHandle is IconHandle ) {
@@ -3030,7 +3087,8 @@ namespace org.kbinani.vsq {
         /// <param name="note_loc"></param>
         /// <param name="add_delay_sign"></param>
         /// <returns></returns>
-        public static VsqNrpn generateNoteNRPN( VsqFile vsq, int track, VsqEvent ve, int msPreSend, byte note_loc, boolean add_delay_sign ) {
+        public static VsqNrpn generateNoteNRPN( VsqFile vsq, int track, VsqEvent ve, int msPreSend, byte note_loc, boolean add_delay_sign )
+        {
             int clock = ve.Clock;
             String renderer = vsq.Track.get( track ).getCommon().Version;
 
@@ -3060,7 +3118,7 @@ namespace org.kbinani.vsq {
             add.append( NRPN.CVM_NM_NOTE_LOCATION, note_loc, true ); // Note Location
 
             // CVM_NMの直後にビブラートのCCを入れるかどうか。ビブラート長さが100%のときのみtrue
-            bool add_vib_cc_immediately = false;
+            boolean add_vib_cc_immediately = false;
             if ( ve.ID.VibratoHandle != null ) {
                 add.append( NRPN.CVM_NM_INDEX_OF_VIBRATO_DB, (byte)0x00, (byte)0x00, true );
                 String icon_id = ve.ID.VibratoHandle.IconID;
@@ -3205,7 +3263,7 @@ namespace org.kbinani.vsq {
                 add.append( NRPN.CC_VD_VIBRATO_DEPTH, (byte)ve.ID.VibratoHandle.getStartDepth(), false );
                 add.append( NRPN.CC_VR_VIBRATO_RATE, (byte)ve.ID.VibratoHandle.getStartRate(), false );
             }
-            
+
             return add;
         }
 
@@ -3218,7 +3276,8 @@ namespace org.kbinani.vsq {
         /// <param name="clock_start">リストの作成区間の開始ゲートタイム</param>
         /// <param name="clock_end">リストの作成区間の終了ゲートタイム</param>
         /// <returns>NRPNのリスト</returns>
-        public static VsqNrpn[] generateNRPN( VsqFile vsq, int track, int msPreSend, int clock_start, int clock_end ) {
+        public static VsqNrpn[] generateNRPN( VsqFile vsq, int track, int msPreSend, int clock_start, int clock_end )
+        {
             VsqFile temp = (VsqFile)vsq.clone();
             temp.removePart( clock_end, vsq.TotalClocks );
             if ( 0 < clock_start ) {
@@ -3238,7 +3297,8 @@ namespace org.kbinani.vsq {
         /// <param name="track">トラック番号</param>
         /// <param name="msPreSend">プリセンド値(ミリ秒)</param>
         /// <returns>NRPNのリスト</returns>
-        public static VsqNrpn[] generateNRPN( VsqFile vsq, int track, int msPreSend ) {
+        public static VsqNrpn[] generateNRPN( VsqFile vsq, int track, int msPreSend )
+        {
 #if DEBUG
             PortUtil.println( "GenerateNRPN(VsqTrack,int,int,int,int)" );
 #endif
@@ -3374,7 +3434,8 @@ namespace org.kbinani.vsq {
         /// <param name="track">トラック番号</param>
         /// <param name="msPreSend">プリセンド値(ミリ秒)</param>
         /// <returns>NRPNのリスト</returns>
-        public static VsqNrpn[] generatePitchBendNRPN( VsqFile vsq, int track, int msPreSend ) {
+        public static VsqNrpn[] generatePitchBendNRPN( VsqFile vsq, int track, int msPreSend )
+        {
             Vector<VsqNrpn> ret = new Vector<VsqNrpn>();
             VsqBPList pit = vsq.Track.get( track ).getCurve( "PIT" );
             int count = pit.size();
@@ -3402,7 +3463,8 @@ namespace org.kbinani.vsq {
         /// <param name="track">トラック番号</param>
         /// <param name="msPreSend">プリセンド値(ミリ秒)</param>
         /// <returns>NRPNのリスト</returns>
-        public static VsqNrpn[] generatePitchBendSensitivityNRPN( VsqFile vsq, int track, int msPreSend ) {
+        public static VsqNrpn[] generatePitchBendSensitivityNRPN( VsqFile vsq, int track, int msPreSend )
+        {
             Vector<VsqNrpn> ret = new Vector<VsqNrpn>();
             VsqBPList pbs = vsq.Track.get( track ).getCurve( "PBS" );
             int count = pbs.size();
@@ -3427,7 +3489,8 @@ namespace org.kbinani.vsq {
         /// <param name="ve">作成元の音符イベント</param>
         /// <param name="msPreSend">プリセンド値(ミリ秒)</param>
         /// <returns>NRPNのリスト</returns>
-        public static VsqNrpn[] generateVibratoNRPN( VsqFile vsq, VsqEvent ve, int msPreSend ) {
+        public static VsqNrpn[] generateVibratoNRPN( VsqFile vsq, VsqEvent ve, int msPreSend )
+        {
             Vector<VsqNrpn> ret = new Vector<VsqNrpn>();
             if ( ve.ID.VibratoHandle != null ) {
                 int vclock = ve.Clock + ve.ID.VibratoDelay;
@@ -3482,7 +3545,8 @@ namespace org.kbinani.vsq {
         /// <param name="track">トラック番号</param>
         /// <param name="msPreSend">プリセンド値(ミリ秒)</param>
         /// <returns>NRPNのリスト</returns>
-        public static VsqNrpn[] generateVoiceChangeParameterNRPN( VsqFile vsq, int track, int msPreSend ) {
+        public static VsqNrpn[] generateVoiceChangeParameterNRPN( VsqFile vsq, int track, int msPreSend )
+        {
             int premeasure_clock = vsq.getPreMeasureClocks();
             String renderer = vsq.Track.get( track ).getCommon().Version;
             Vector<VsqNrpn> res = new Vector<VsqNrpn>();
@@ -3527,7 +3591,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="value">整数値</param>
         /// <returns>キーがMSB、値がLSBとなるペア値</returns>
-        public static ValuePair<Byte, Byte> getMsbAndLsb( int value ) {
+        public static ValuePair<Byte, Byte> getMsbAndLsb( int value )
+        {
             ValuePair<Byte, Byte> ret = new ValuePair<Byte, Byte>();
             if ( 0x3fff < value ) {
                 ret.setKey( (byte)0x7f );
@@ -3544,7 +3609,8 @@ namespace org.kbinani.vsq {
         /// このシーケンスが保持している拍子変更を元に、MIDIイベントリストを作成します
         /// </summary>
         /// <returns>MIDIイベントのリスト</returns>
-        public Vector<MidiEvent> generateTimeSig() {
+        public Vector<MidiEvent> generateTimeSig()
+        {
             Vector<MidiEvent> events = new Vector<MidiEvent>();
             for ( Iterator<TimeSigTableEntry> itr = TimesigTable.iterator(); itr.hasNext(); ) {
                 TimeSigTableEntry entry = itr.next();
@@ -3557,7 +3623,8 @@ namespace org.kbinani.vsq {
         /// このシーケンスが保持しているテンポ変更を元に、MIDIイベントリストを作成します
         /// </summary>
         /// <returns>MIDIイベントのリスト</returns>
-        public Vector<MidiEvent> generateTempoChange() {
+        public Vector<MidiEvent> generateTempoChange()
+        {
             Vector<MidiEvent> events = new Vector<MidiEvent>();
             for ( Iterator<TempoTableEntry> itr = TempoTable.iterator(); itr.hasNext(); ) {
                 TempoTableEntry entry = itr.next();
@@ -3571,7 +3638,8 @@ namespace org.kbinani.vsq {
         /// このインスタンスをファイルに出力します
         /// </summary>
         /// <param name="file"></param>
-        public void write( String file ) {
+        public void write( String file )
+        {
             write( file, 500, "Shift_JIS" );
         }
 
@@ -3580,7 +3648,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="file"></param>
         /// <param name="msPreSend">プリセンドタイム(msec)</param>
-        public void write( String file, int msPreSend, String encoding ) {
+        public void write( String file, int msPreSend, String encoding )
+        {
 #if DEBUG
             PortUtil.println( "VsqFile.Write(String)" );
 #endif
@@ -3700,7 +3769,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="count"></param>
         /// <returns></returns>
-        public static String getLinePrefix( int count ) {
+        public static String getLinePrefix( int count )
+        {
             int digits = getHowManyDigits( count );
             int c = (digits - 1) / 4 + 1;
             String format = "";
@@ -3710,7 +3780,8 @@ namespace org.kbinani.vsq {
             return "DM:" + PortUtil.formatDecimal( format, count ) + ":";
         }
 
-        public static byte[] getLinePrefixBytes( int count ) {
+        public static byte[] getLinePrefixBytes( int count )
+        {
             int digits = getHowManyDigits( count );
             int c = (digits - 1) / 4 + 1;
             String format = "";
@@ -3727,7 +3798,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="number"></param>
         /// <returns></returns>
-        private static int getHowManyDigits( int number ) {
+        private static int getHowManyDigits( int number )
+        {
             int val;
             if ( number > 0 ) {
                 val = number;
@@ -3790,7 +3862,8 @@ namespace org.kbinani.vsq {
         /// SMFの可変長数値表現を使って、ulongをbyte[]に変換します
         /// </summary>
         /// <param name="number"></param>
-        public static byte[] getBytesFlexibleLengthUnsignedLong( long number ) {
+        public static byte[] getBytesFlexibleLengthUnsignedLong( long number )
+        {
             boolean[] bits = new boolean[64];
             long val = (byte)0x1;
             bits[0] = (number & val) == val;

@@ -44,7 +44,7 @@ namespace org.kbinani.cadencii
         private long mPosition = 0;
         private int mVersion = 0;
         private WaveReader mReader = null;
-        private object mSyncRoot = new object();
+        private Object mSyncRoot = new Object();
 
         public FileWaveSender( WaveReader reader )
         {

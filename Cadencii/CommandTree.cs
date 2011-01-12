@@ -58,7 +58,7 @@ namespace org.kbinani.cadencii {
         public boolean IsUndoAvailable {
             get {
                 if ( s_current != null ) {
-                    if ( object.ReferenceEquals( s_root, s_current ) ) {
+                    if ( Object.ReferenceEquals( s_root, s_current ) ) {
                         return false;
                     } else {
                         return true;
@@ -103,7 +103,7 @@ namespace org.kbinani.cadencii {
             }
             rev.Parent = s_current.Parent;
             for ( int i = 0; i < s_current.Parent.Child.Count; i++ ) {
-                if ( object.ReferenceEquals( s_current, s_current.Parent.Child[i] ) ) {
+                if ( Object.ReferenceEquals( s_current, s_current.Parent.Child[i] ) ) {
                     s_current.Parent.Child[i] = rev;
                     break;
                 }

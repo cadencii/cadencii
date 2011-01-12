@@ -639,7 +639,7 @@ namespace org.kbinani.cadencii {
             // comboTemplate
             // 
             this.comboTemplate.FormattingEnabled = true;
-            this.comboTemplate.Items.AddRange( new object[] {
+            this.comboTemplate.Items.AddRange( new Object[] {
             "[Select a template]",
             "normal",
             "accent",

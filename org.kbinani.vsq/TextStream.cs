@@ -24,14 +24,16 @@ using org.kbinani;
 using org.kbinani.java.util;
 using org.kbinani.java.io;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
     using boolean = System.Boolean;
 #endif
 
 #if JAVA
     public class TextStream implements ITextWriter {
 #else
-    public class TextStream : ITextWriter, IDisposable {
+    public class TextStream : ITextWriter, IDisposable
+    {
 #endif
         const int INIT_BUFLEN = 512;
 
@@ -39,20 +41,24 @@ namespace org.kbinani.vsq {
         private int length = 0;
         private int position = -1;
 
-        public int getPointer() {
+        public int getPointer()
+        {
             return position;
         }
 
-        public void setPointer( int value ) {
+        public void setPointer( int value )
+        {
             position = value;
         }
 
-        public char get() {
+        public char get()
+        {
             position++;
             return array[position];
         }
 
-        public String readLine() {
+        public String readLine()
+        {
             StringBuilder sb = new StringBuilder();
             // '\n'が来るまで読み込み
             position++;
@@ -70,7 +76,8 @@ namespace org.kbinani.vsq {
             return sb.ToString();
         }
 
-        public boolean ready() {
+        public boolean ready()
+        {
             if ( 0 <= position + 1 && position + 1 < length ) {
                 return true;
             } else {
@@ -78,7 +85,8 @@ namespace org.kbinani.vsq {
             }
         }
 
-        private void ensureCapacity( int length ) {
+        private void ensureCapacity( int length )
+        {
             if ( length > array.Length ) {
                 int newLength = length;
                 if ( this.length <= 0 ) {
@@ -98,7 +106,8 @@ namespace org.kbinani.vsq {
             }
         }
 
-        public void write( String str ) {
+        public void write( String str )
+        {
             int len = PortUtil.getStringLength( str );
             int newSize = length + len;
             int offset = length;
@@ -113,7 +122,8 @@ namespace org.kbinani.vsq {
             length = newSize;
         }
 
-        public void writeLine( String str ) {
+        public void writeLine( String str )
+        {
             int len = PortUtil.getStringLength( str );
             int newSize = length + len + 1;
             int offset = length;
@@ -129,13 +139,15 @@ namespace org.kbinani.vsq {
             length = newSize;
         }
 
-        public void close() {
+        public void close()
+        {
             array = null;
             length = 0;
         }
 
 #if !JAVA
-        public void Dispose() {
+        public void Dispose()
+        {
             close();
         }
 #endif

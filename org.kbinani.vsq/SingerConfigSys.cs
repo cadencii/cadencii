@@ -23,10 +23,12 @@ using org.kbinani;
 using org.kbinani.java.util;
 using org.kbinani.java.io;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
 #endif
 
-    public class SingerConfigSys {
+    public class SingerConfigSys
+    {
         public const int MAX_SINGERS = 0x4000;
 
         private Vector<SingerConfig> m_installed_singers = new Vector<SingerConfig>();
@@ -37,7 +39,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="path_voicedb">音源のデータディレクトリ(ex:"C:\Program Files\VOCALOID2\voicedbdir")</param>
         /// <param name="path_installed_singers">音源のインストールディレクトリ(ex:new String[]{ "C:\Program Files\VOCALOID2\voicedbdir\BXXXXXXXXXXXXXXX", "D:\singers\BNXXXXXXXXXX" })</param>
-        public SingerConfigSys( String path_voicedb, String[] path_installed_singers ) {
+        public SingerConfigSys( String path_voicedb, String[] path_installed_singers )
+        {
             m_installed_singers = new Vector<SingerConfig>();
             m_singer_configs = new Vector<SingerConfig>();
             String map = PortUtil.combinePath( path_voicedb, "voice.map" );
@@ -63,7 +66,7 @@ namespace org.kbinani.vsq {
                     }
                 }
             }
-            
+
             // voice.mapから、プログラムチェンジ、バンクセレクトと音源との紐付け情報を読み出す。
             RandomAccessFile fs = null;
             try {
@@ -107,7 +110,8 @@ namespace org.kbinani.vsq {
             }
         }
 
-        public SingerConfig[] getInstalledSingers() {
+        public SingerConfig[] getInstalledSingers()
+        {
             return m_installed_singers.toArray( new SingerConfig[] { } );
         }
 
@@ -116,7 +120,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="program_change"></param>
         /// <returns></returns>        
-        public VsqID getSingerID( int language, int program ) {
+        public VsqID getSingerID( int language, int program )
+        {
             VsqID ret = new VsqID( 0 );
             ret.type = VsqIDType.Singer;
             SingerConfig sc = null;
@@ -147,7 +152,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="program_change"></param>
         /// <returns></returns>
-        public SingerConfig getSingerInfo( int language, int program ) {
+        public SingerConfig getSingerInfo( int language, int program )
+        {
             for ( Iterator<SingerConfig> itr = m_installed_singers.iterator(); itr.hasNext(); ) {
                 SingerConfig item = itr.next();
                 if ( item.Language == language && item.Program == program ) {
@@ -161,7 +167,8 @@ namespace org.kbinani.vsq {
         /// Gets the list of singer configs.
         /// </summary>
         /// <returns></returns>
-        public SingerConfig[] getSingerConfigs() {
+        public SingerConfig[] getSingerConfigs()
+        {
             return m_singer_configs.toArray( new SingerConfig[] { } );
         }
     }

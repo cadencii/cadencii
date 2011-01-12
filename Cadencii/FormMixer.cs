@@ -426,7 +426,7 @@ namespace org.kbinani.cadencii {
             panel1.Paint += new System.Windows.Forms.PaintEventHandler( this.panel1_Paint );
 #endif
             hScroll.ValueChanged += new EventHandler( veScrollBar_ValueChanged );
-            FormClosing += new System.Windows.Forms.FormClosingEventHandler( FormMixer_FormClosing );
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( FormMixer_FormClosing );
             reregisterEventHandlers();
         }
 

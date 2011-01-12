@@ -21,7 +21,8 @@ using System;
 using org.kbinani;
 using org.kbinani.java.io;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
     using boolean = System.Boolean;
 #endif
 
@@ -32,7 +33,8 @@ namespace org.kbinani.vsq {
     public class VsqID implements Cloneable, Serializable {
 #else
     [Serializable]
-    public class VsqID : ICloneable {
+    public class VsqID : ICloneable
+    {
 #endif
         /// <summary>
         /// ミリ秒で表した、音符の最大長さ
@@ -73,20 +75,25 @@ namespace org.kbinani.vsq {
 
         public static VsqID EOS = new VsqID( -1 );
 
-        public int getLength() {
+        public int getLength()
+        {
             return length;
         }
 
-        public void setLength( int value ) {
+        public void setLength( int value )
+        {
             length = value;
         }
 
 #if !JAVA
-        public int Length {
-            get {
+        public int Length
+        {
+            get
+            {
                 return getLength();
             }
-            set {
+            set
+            {
                 setLength( value );
             }
         }
@@ -98,16 +105,17 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static boolean isXmlIgnored( String name ){
-            if( name.Equals( "IconHandle_index" ) ){
+        public static boolean isXmlIgnored( String name )
+        {
+            if ( name.Equals( "IconHandle_index" ) ) {
                 return true;
-            }else if( name.Equals( "value" ) ){
+            } else if ( name.Equals( "value" ) ) {
                 return true;
-            }else if( name.Equals( "LyricHandle_index" ) ){
+            } else if ( name.Equals( "LyricHandle_index" ) ) {
                 return true;
-            }else if( name.Equals( "NoteHeadHandle_index" ) ){
+            } else if ( name.Equals( "NoteHeadHandle_index" ) ) {
                 return true;
-            }else if( name.Equals( "VibratoHandle_index" ) ){
+            } else if ( name.Equals( "VibratoHandle_index" ) ) {
                 return true;
             }
             return false;
@@ -119,7 +127,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public static String getXmlElementName( String name ){
+        public static String getXmlElementName( String name )
+        {
             return name;
         }
 
@@ -127,7 +136,8 @@ namespace org.kbinani.vsq {
         /// このインスタンスの簡易コピーを取得します。
         /// </summary>
         /// <returns>このインスタンスの簡易コピー</returns>
-        public Object clone() {
+        public Object clone()
+        {
             VsqID result = new VsqID( this.value );
             result.type = this.type;
             if ( this.IconHandle != null ) {
@@ -162,7 +172,8 @@ namespace org.kbinani.vsq {
         }
 
 #if !JAVA
-        public object Clone() {
+        public object Clone()
+        {
             return clone();
         }
 #endif
@@ -171,7 +182,8 @@ namespace org.kbinani.vsq {
         /// IDの番号（ID#****の****）を指定したコンストラクタ。
         /// </summary>
         /// <param name="a_value">IDの番号</param>
-        public VsqID( int a_value ) {
+        public VsqID( int a_value )
+        {
             value = a_value;
         }
 
@@ -180,7 +192,8 @@ namespace org.kbinani.vsq {
             this( 0 );
 #else
         public VsqID()
-            : this( 0 ) {
+            : this( 0 )
+        {
 #endif
         }
 
@@ -190,7 +203,8 @@ namespace org.kbinani.vsq {
         /// <param name="sr">読み込み対象</param>
         /// <param name="value"></param>
         /// <param name="last_line">読み込んだ最後の行が返されます</param>
-        public VsqID( TextStream sr, int value, ByRef<String> last_line ) {
+        public VsqID( TextStream sr, int value, ByRef<String> last_line )
+        {
             String[] spl;
             this.value = value;
             this.type = VsqIDType.Unknown;
@@ -257,7 +271,8 @@ namespace org.kbinani.vsq {
             }
         }
 
-        public String toString() {
+        public String toString()
+        {
             String ret = "{Type=" + type;
             if ( type == VsqIDType.Anote ) {
                 ret += ", Length=" + getLength();
@@ -283,7 +298,8 @@ namespace org.kbinani.vsq {
         }
 
 #if !JAVA
-        public override string ToString() {
+        public override String ToString()
+        {
             return toString();
         }
 #endif

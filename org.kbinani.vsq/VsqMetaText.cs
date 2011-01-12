@@ -23,7 +23,8 @@ using org.kbinani;
 using org.kbinani.java.util;
 using org.kbinani.java.io;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
     using boolean = System.Boolean;
     using Integer = System.Int32;
 #endif
@@ -35,7 +36,8 @@ namespace org.kbinani.vsq {
     public class VsqMetaText implements Cloneable, Serializable {
 #else
     [Serializable]
-    public class VsqMetaText : ICloneable {
+    public class VsqMetaText : ICloneable
+    {
 #endif
         public VsqCommon Common;
         public VsqMaster master;
@@ -98,7 +100,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         public VsqBPList OPE;
 
-        public Object clone() {
+        public Object clone()
+        {
             VsqMetaText res = new VsqMetaText();
             if ( Common != null ) {
                 res.Common = (VsqCommon)Common.clone();
@@ -189,16 +192,19 @@ namespace org.kbinani.vsq {
         }
 
 #if !JAVA
-        public object Clone() {
+        public object Clone()
+        {
             return clone();
         }
 #endif
 
-        public VsqEventList getEventList() {
+        public VsqEventList getEventList()
+        {
             return Events;
         }
 
-        public VsqBPList getElement( String curve ) {
+        public VsqBPList getElement( String curve )
+        {
             String search = curve.Trim().ToLower();
             if ( search.Equals( "bre" ) ) {
                 return this.BRE;
@@ -251,7 +257,8 @@ namespace org.kbinani.vsq {
             }
         }
 
-        public void setElement( String curve, VsqBPList value ) {
+        public void setElement( String curve, VsqBPList value )
+        {
             String search = curve.Trim().ToLower();
             if ( search.Equals( "bre" ) ) {
                 this.BRE = value;
@@ -311,28 +318,29 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public VsqBPList getCurve( int index ) {
+        public VsqBPList getCurve( int index )
+        {
             switch ( index ) {
                 case 1:
-                    return DYN;
+                return DYN;
                 case 2:
-                    return BRE;
+                return BRE;
                 case 3:
-                    return BRI;
+                return BRI;
                 case 4:
-                    return CLE;
+                return CLE;
                 case 5:
-                    return OPE;
+                return OPE;
                 case 6:
-                    return GEN;
+                return GEN;
                 case 7:
-                    return POR;
+                return POR;
                 case 8:
-                    return PIT;
+                return PIT;
                 case 9:
-                    return PBS;
+                return PBS;
                 default:
-                    return null;
+                return null;
             }
         }
 
@@ -342,37 +350,39 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="index"></param>
         /// <returns></returns>
-        public static String getCurveName( int index ) {
+        public static String getCurveName( int index )
+        {
             switch ( index ) {
                 case 0:
-                    return "VEL";
+                return "VEL";
                 case 1:
-                    return "DYN";
+                return "DYN";
                 case 2:
-                    return "BRE";
+                return "BRE";
                 case 3:
-                    return "BRI";
+                return "BRI";
                 case 4:
-                    return "CLE";
+                return "CLE";
                 case 5:
-                    return "OPE";
+                return "OPE";
                 case 6:
-                    return "GEN";
+                return "GEN";
                 case 7:
-                    return "POR";
+                return "POR";
                 case 8:
-                    return "PIT";
+                return "PIT";
                 case 9:
-                    return "PBS";
+                return "PBS";
                 default:
-                    return "";
+                return "";
             }
         }
 
         /// <summary>
         /// Singerプロパティに指定されている
         /// </summary>
-        public String getSinger() {
+        public String getSinger()
+        {
             for ( Iterator<VsqEvent> itr = Events.iterator(); itr.hasNext(); ) {
                 VsqEvent item = itr.next();
                 if ( item.ID.type == VsqIDType.Singer ) {
@@ -382,7 +392,8 @@ namespace org.kbinani.vsq {
             return "";
         }
 
-        public void setSinger( String value ) {
+        public void setSinger( String value )
+        {
             for ( Iterator<VsqEvent> itr = Events.iterator(); itr.hasNext(); ) {
                 VsqEvent item = itr.next();
                 if ( item.ID.type == VsqIDType.Singer ) {
@@ -396,7 +407,8 @@ namespace org.kbinani.vsq {
         /// EOSイベントが記録されているクロックを取得します。
         /// </summary>
         /// <returns></returns>
-        public int getIndexOfEOS() {
+        public int getIndexOfEOS()
+        {
             int result;
             if ( Events.getCount() > 0 ) {
                 int ilast = Events.getCount() - 1;
@@ -411,7 +423,8 @@ namespace org.kbinani.vsq {
         /// このインスタンスから、Handleのリストを作成すると同時に、Eventsに登録されているVsqEventのvalue値および各ハンドルのvalue値を更新します
         /// </summary>
         /// <returns></returns>
-        private Vector<VsqHandle> buildHandleList() {
+        private Vector<VsqHandle> buildHandleList()
+        {
             Vector<VsqHandle> handle = new Vector<VsqHandle>();
             int current_id = -1;
             int current_handle = -1;
@@ -634,7 +647,8 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// 何も無いVsqMetaTextを構築する。これは、Master Track用のMetaTextとしてのみ使用されるべき
         /// </summary>
-        public VsqMetaText() {
+        public VsqMetaText()
+        {
         }
 
         /// <summary>
@@ -646,7 +660,7 @@ namespace org.kbinani.vsq {
 #else
             :
 #endif
-            this( name, 0, singer, false )
+ this( name, 0, singer, false )
 #if JAVA
             ;
 #else
@@ -664,7 +678,7 @@ namespace org.kbinani.vsq {
 #else
             :
 #endif
-            this( name, pre_measure, singer, true )
+ this( name, pre_measure, singer, true )
 #if JAVA
             ;
 #else
@@ -672,7 +686,8 @@ namespace org.kbinani.vsq {
 #endif
         }
 
-        private VsqMetaText( String name, int pre_measure, String singer, boolean is_first_track ) {
+        private VsqMetaText( String name, int pre_measure, String singer, boolean is_first_track )
+        {
             Common = new VsqCommon( name, 179, 181, 123, 1, 1 );
             PIT = new VsqBPList( "pit", 0, -8192, 8191 );
             PBS = new VsqBPList( "pbs", 2, 0, 24 );
@@ -889,7 +904,8 @@ namespace org.kbinani.vsq {
             }
         } */
 
-        public VsqMetaText( TextStream sr ) {
+        public VsqMetaText( TextStream sr )
+        {
             Vector<ValuePair<Integer, Integer>> t_event_list = new Vector<ValuePair<Integer, Integer>>();
             TreeMap<Integer, VsqID> __id = new TreeMap<Integer, VsqID>();
             TreeMap<Integer, VsqHandle> __handle = new TreeMap<Integer, VsqHandle>();

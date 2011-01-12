@@ -11,15 +11,22 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.cadencii;
+
+#else
 using System;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using boolean = System.Boolean;
+#endif
 
     /// <summary>
     /// 合成の範囲やトラック番号を指示するためのクラス
     /// </summary>
-    public class PatchWorkQueue {
+    public class PatchWorkQueue
+    {
         /// <summary>
         /// 合成対象のトラック番号
         /// </summary>
@@ -42,4 +49,6 @@ namespace org.kbinani.cadencii {
         public boolean renderAll;
     }
 
+#if !JAVA
 }
+#endif

@@ -16,6 +16,7 @@ package org.kbinani.cadencii;
 
 import java.util.*;
 import java.awt.*;
+import org.kbinani.*;
 import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*; 
 #else
@@ -363,7 +364,7 @@ namespace org.kbinani.cadencii {
 #endif
         }
 
-        private void invalidatePictOverview( object sender, EventArgs e ) {
+        private void invalidatePictOverview( Object sender, EventArgs e ) {
             mMainForm.refreshScreen();
         }
 
@@ -424,12 +425,12 @@ namespace org.kbinani.cadencii {
                 mOverviewMouseDownMode = OverviewMouseDownMode.NONE;
                 int draft_stdx = getOverviewStartToDrawX( e.X - AppManager.keyWidth - AppManager.keyOffset );
                 int draft = (int)(draft_stdx * AppManager.getScaleXInv());
-                if ( draft < mMainForm.hScroll.Minimum ) {
-                    draft = mMainForm.hScroll.Minimum;
-                } else if ( mMainForm.hScroll.Maximum < draft ) {
-                    draft = mMainForm.hScroll.Maximum;
+                if ( draft < mMainForm.hScroll.getMinimum() ) {
+                    draft = mMainForm.hScroll.getMinimum();
+                } else if ( mMainForm.hScroll.getMaximum() < draft ) {
+                    draft = mMainForm.hScroll.getMaximum();
                 }
-                mMainForm.hScroll.Value = draft;
+                mMainForm.hScroll.setValue( draft );
                 mMainForm.refreshScreen();
             }
         }
@@ -575,7 +576,7 @@ namespace org.kbinani.cadencii {
 
             // 移動中している最中に，移動開始直前の部分を影付で表示する
             int stdx = AppManager.getStartToDrawX();
-            int act_start_to_draw_x = (int)(mMainForm.hScroll.Value * AppManager.getScaleX());
+            int act_start_to_draw_x = (int)(mMainForm.hScroll.getValue() * AppManager.getScaleX());
             if ( act_start_to_draw_x != stdx ) {
                 int act_start_clock = AppManager.clockFromXCoord( key_width - stdx + act_start_to_draw_x );
                 int act_end_clock = AppManager.clockFromXCoord( mMainForm.pictPianoRoll.getWidth() - stdx + act_start_to_draw_x );

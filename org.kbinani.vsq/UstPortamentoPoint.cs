@@ -16,7 +16,8 @@ package org.kbinani.vsq;
 #else
 using System;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
 #endif
 
     [Serializable]

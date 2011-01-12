@@ -48,23 +48,23 @@ namespace org.kbinani.cadencii {
         }
 
         public override bool CanConvertTo( ITypeDescriptorContext context, Type destinationType ) {
-            if ( destinationType == typeof( string ) ) {
+            if ( destinationType == typeof( String ) ) {
                 return true;
             } else {
                 return base.CanConvertTo( context, destinationType );
             }
         }
 
-        public override object ConvertTo( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType ) {
-            if ( destinationType == typeof( string ) && value is AttackVariation ) {
+        public override Object ConvertTo( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, Object value, Type destinationType ) {
+            if ( destinationType == typeof( String ) && value is AttackVariation ) {
                 return ((AttackVariation)value).mDescription;
             } else {
                 return base.ConvertTo( context, culture, value, destinationType );
             }
         }
 
-        public override object ConvertFrom( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value ) {
-            if ( value is string ) {
+        public override Object ConvertFrom( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, Object value ) {
+            if ( value is String ) {
                 if ( value.Equals( new AttackVariation().mDescription ) ) {
                     return new AttackVariation();
                 } else {
@@ -92,7 +92,7 @@ namespace org.kbinani.cadencii {
         }
 
         public override bool CanConvertFrom( ITypeDescriptorContext context, Type sourceType ) {
-            if ( sourceType == typeof( string ) ) {
+            if ( sourceType == typeof( String ) ) {
                 return true;
             } else {
                 return base.CanConvertFrom( context, sourceType );

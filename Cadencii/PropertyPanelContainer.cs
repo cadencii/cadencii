@@ -33,25 +33,25 @@ namespace org.kbinani.cadencii {
             c.Dock = DockStyle.Fill;
         }
 
-        private void panelTitle_MouseDoubleClick( object sender, MouseEventArgs e ) {
+        private void panelTitle_MouseDoubleClick( Object sender, MouseEventArgs e ) {
             if ( StateChangeRequired != null ) {
                 StateChangeRequired( this, PanelState.Window );
             }
         }
 
-        private void btnClose_Click( object sender, EventArgs e ) {
+        private void btnClose_Click( Object sender, EventArgs e ) {
             if ( StateChangeRequired != null ) {
                 StateChangeRequired( this, PanelState.Hidden );
             }
         }
 
-        private void btnWindow_Click( object sender, EventArgs e ) {
+        private void btnWindow_Click( Object sender, EventArgs e ) {
             if ( StateChangeRequired != null ) {
                 StateChangeRequired( this, PanelState.Window );
             }
         }
 
-        private void panelMain_SizeChanged( object sender, EventArgs e ) {
+        private void panelMain_SizeChanged( Object sender, EventArgs e ) {
             panelTitle.Left = 0;
             panelTitle.Top = 0;
             panelTitle.Height = _TITLE_HEIGHT;

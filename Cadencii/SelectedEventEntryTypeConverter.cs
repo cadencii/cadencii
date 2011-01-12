@@ -22,7 +22,7 @@ namespace org.kbinani.cadencii {
         public SelectedEventEntryTypeConverter() {
         }
 
-        public override PropertyDescriptorCollection GetProperties( ITypeDescriptorContext context, object value, Attribute[] attributes ) {
+        public override PropertyDescriptorCollection GetProperties( ITypeDescriptorContext context, Object value, Attribute[] attributes ) {
             PropertyDescriptorCollection buffClassProps;
             PropertyDescriptorCollection buffProps = TypeDescriptor.GetProperties( value, attributes, true );
             buffClassProps = new PropertyDescriptorCollection( null );

@@ -14,13 +14,15 @@
 #if JAVA
 package org.kbinani.vsq;
 #else
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
 #endif
 
     /// <summary>
     /// Represents the voice language of singer.
     /// </summary>
-    public enum VsqVoiceLanguage {
+    public enum VsqVoiceLanguage
+    {
         /// <summary>
         /// Japanese
         /// </summary>

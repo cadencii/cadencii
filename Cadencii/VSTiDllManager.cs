@@ -263,7 +263,7 @@ namespace org.kbinani.cadencii {
                 }
             }
             if ( renderer == RendererKind.VCNT ) {
-                string synth_path = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), VConnectWaveGenerator.STRAIGHT_SYNTH );
+                String synth_path = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), VConnectWaveGenerator.STRAIGHT_SYNTH );
                 if ( PortUtil.isFileExists( synth_path ) ) {
                     int count = AppManager.editorConfig.UtauSingers.size();
                     if ( count > 0 ) {

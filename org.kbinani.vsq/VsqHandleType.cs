@@ -16,13 +16,14 @@ package org.kbinani.vsq;
 #elif __cplusplus
 namespace org { namespace kbinani { namespace vsq {
 #else
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
 #endif
 
 #if __cplusplus
     enum VsqHandleType
 #else
-    public enum VsqHandleType 
+    public enum VsqHandleType
 #endif
     {
         Lyric,

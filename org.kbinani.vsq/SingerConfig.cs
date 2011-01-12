@@ -23,13 +23,15 @@ using org.kbinani;
 using org.kbinani.java.util;
 using org.kbinani.java.io;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
 #endif
 
 #if JAVA
     public class SingerConfig implements Cloneable {
 #else
-    public class SingerConfig : ICloneable {
+    public class SingerConfig : ICloneable
+    {
 #endif
         public String ID = "";
         public String FORMAT = "";
@@ -57,16 +59,19 @@ namespace org.kbinani.vsq {
         public String VvdPath = "";
         public int Language;
 
-        public SingerConfig() {
+        public SingerConfig()
+        {
         }
 
-        public SingerConfig( String voiceName, int language, int program ) {
+        public SingerConfig( String voiceName, int language, int program )
+        {
             VOICENAME = voiceName;
             Language = language;
             Program = program;
         }
 
-        public Object clone() {
+        public Object clone()
+        {
             SingerConfig ret = new SingerConfig();
             ret.ID = ID;
             ret.FORMAT = FORMAT;
@@ -97,12 +102,14 @@ namespace org.kbinani.vsq {
         }
 
 #if !JAVA
-        public object Clone() {
+        public object Clone()
+        {
             return clone();
         }
 #endif
 
-        public static SingerConfig fromVvd( String file, int language, int program ) {
+        public static SingerConfig fromVvd( String file, int language, int program )
+        {
             SingerConfig sc = new SingerConfig();
             sc.ID = "VOCALOID:VIRTUAL:VOICE";
             sc.FORMAT = "2.0.0.0";
@@ -217,7 +224,8 @@ namespace org.kbinani.vsq {
         /// <param name="s"></param>
         /// <param name="position"></param>
         /// <returns></returns>
-        static int get_quated_string( String s, int position ) {
+        static int get_quated_string( String s, int position )
+        {
             if ( position < 0 ) {
                 return -1;
             }
@@ -238,7 +246,8 @@ namespace org.kbinani.vsq {
             return end;
         }
 
-        public String[] ToStringArray() {
+        public String[] ToStringArray()
+        {
             Vector<String> ret = new Vector<String>();
             ret.add( "\"ID\":=:\"" + ID + "\"" );
             ret.add( "\"FORMAT\":=:\"" + FORMAT + "\"" );
@@ -253,12 +262,14 @@ namespace org.kbinani.vsq {
         }
 
 #if !JAVA
-        public override string ToString() {
+        public override String ToString()
+        {
             return toString();
         }
 #endif
 
-        public String toString() {
+        public String toString()
+        {
             String[] r = ToStringArray();
             String ret = "";
             int count = r.Length;

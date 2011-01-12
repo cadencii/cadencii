@@ -74,7 +74,8 @@ namespace org.kbinani.cadencii {
         /// データ点のバッファ
         /// </summary>
 #if JAVA
-        private java.awt.Point[] mPoints;
+        private int[] mPointsX;
+        private int[] mPointsY;
 #else
         private System.Drawing.Point[] mPoints;
 #endif
@@ -185,7 +186,12 @@ namespace org.kbinani.cadencii {
         /// <param name="graph_type">グラフのタイプを指定する整数値。<see cref="TYPE_LINEAR"/>または<see cref="TYPE_STEP"/>を指定する</param>
         public LineGraphDrawer( int graph_type ) {
             // データ点のバッファを確保
+#if JAVA
+            mPointsX = new int[BUFLEN];
+            mPointsY = new int[BUFLEN];
+#else
             mPoints = new Point[BUFLEN];
+#endif
 
             // グラフのタイプを特定
             if ( graph_type == TYPE_LINEAR ) {
@@ -428,7 +434,7 @@ namespace org.kbinani.cadencii {
 
 #if JAVA
                     mGraphics.setColor( mFillColor );
-                    mGraphics.fillPolygone FOOOOOOOOOOOOOOOOOO!!!!!!!!!!!!!!!
+                    mGraphics.fillPolygon( mPointsX, mPointsY, BUFLEN );
 #else
                     mGraphics.FillPolygon( getFillBrush(), mPoints );
 #endif
@@ -441,7 +447,7 @@ namespace org.kbinani.cadencii {
                     }
 #if JAVA
                     mGraphics.setColor( mLineColor );
-                    mGraphics.drawPolygone ...
+                    mGraphics.drawPolyline( mPointsX, mPointsY, BUFLEN );
 #else
                     mGraphics.DrawLines( getLinePen(), mPoints );
 #endif
@@ -452,10 +458,12 @@ namespace org.kbinani.cadencii {
                     // ここでは第mIndex - 1番目のドットまでを描いて、mIndex - 1番目のデータは第0番目にコピーし，次のflushで描く
 #if JAVA
                     mGraphics.setColor( mDotColor );
+                    Point p = new Point( 0, 0 );
 #endif
                     for ( int i = 0; i < mIndex - 1; i++ ) {
 #if JAVA
-                    Point p = mPoints[i];
+                        p.x = mPointsX[i];
+                        p.y = mPointsY[i];
 #else
                         System.Drawing.Point p = mPoints[i];
 #endif
@@ -491,7 +499,7 @@ namespace org.kbinani.cadencii {
                     // 塗りつぶし
 #if JAVA
                     mGraphics.setColor( mFillColor );
-                    WRRRRRYYYYYYYYYYYYYYYYY!!!!!!!!!!!!!!!
+                    mGraphics.fillPolygon( mPointsX, mPointsY, BUFLEN );
 #else
                     mGraphics.FillPolygon( getFillBrush(), mPoints );
 #endif
@@ -503,7 +511,8 @@ namespace org.kbinani.cadencii {
                         setPointData( i, mLastX, mLastY );
                     }
 #if JAVA
-                    foo
+                    mGraphics.setColor( mLineColor );
+                    mGraphics.drawPolyline( mPointsX, mPointsY, BUFLEN );
 #else
                     mGraphics.DrawLines( getLinePen(), mPoints );
 #endif
@@ -531,13 +540,13 @@ namespace org.kbinani.cadencii {
 #endif
                         if ( mDotType == DOT_CIRCLE ) {
 #if JAVA
-                            bar
+                            mGraphics.fillOval( p.x - mDotSize, p.y - mDotSize, mDotWidth, mDotWidth );
 #else
                             mGraphics.FillEllipse( brs, p.X - mDotSize, p.Y - mDotSize, mDotWidth, mDotWidth );
 #endif
                         } else {
 #if JAVA
-                            baz
+                            mGraphics.fillOval( p.x - mDotSize, p.y - mDotSize, mDotWidth, mDotWidth );
 #else
                             mGraphics.FillRectangle( brs, p.X - mDotSize, p.Y - mDotSize, mDotWidth, mDotWidth );
 #endif
@@ -648,10 +657,8 @@ namespace org.kbinani.cadencii {
 
         private void setPointData( int index, int x, int y ) {
 #if JAVA
-            Point p = mPoints[index];
-            p.x = x;
-            p.y = y;
-            mPoints[index] = p;
+            mPointsX[index] = x;
+            mPointsY[index] = y;
 #else
             mPoints[index].X = x;
             mPoints[index].Y = y;

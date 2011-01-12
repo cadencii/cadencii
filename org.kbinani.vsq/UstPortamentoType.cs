@@ -14,10 +14,12 @@
 #if JAVA
 package org.kbinani.vsq;
 #else
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
 #endif
 
-    public enum UstPortamentoType {
+    public enum UstPortamentoType
+    {
         /// <summary>
         /// S型．表記は''(空文字)
         /// </summary>

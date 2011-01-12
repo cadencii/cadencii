@@ -112,7 +112,7 @@ namespace org.kbinani.cadencii
             return VERSION;
         }
 
-        public override void setConfig( string parameter )
+        public override void setConfig( String parameter )
         {
             // do nothing
         }
@@ -167,7 +167,7 @@ namespace org.kbinani.cadencii
         {
 #if DEBUG
             PortUtil.println( "AquesToneRenderingRunner#begin; (mDriver==null)=" + (mDriver == null) );
-            string file = System.IO.Path.Combine( System.Windows.Forms.Application.StartupPath, "AquesToneWaveGenerator.txt" );
+            String file = System.IO.Path.Combine( System.Windows.Forms.Application.StartupPath, "AquesToneWaveGenerator.txt" );
             log = new System.IO.StreamWriter( file );
             log.AutoFlush = true;
 #endif
@@ -282,7 +282,7 @@ namespace org.kbinani.cadencii
                     if ( queue.noteoff != null ) {
 #if DEBUG
                         for ( int i = 0; i < queue.noteoff.size(); i++ ) {
-                            string str = "";
+                            String str = "";
                             MidiEvent itemi = queue.noteoff.get( i );
                             str += "0x" + PortUtil.toHexString( itemi.firstByte, 2 ) + " ";
                             for ( int j = 0; j < itemi.data.Length; j++ ) {
@@ -313,7 +313,7 @@ namespace org.kbinani.cadencii
                         }
 #if DEBUG
                         for ( int i = 0; i < queue.noteon.size(); i++ ) {
-                            string str = "";
+                            String str = "";
                             MidiEvent itemi = queue.noteon.get( i );
                             str += "0x" + PortUtil.toHexString( itemi.firstByte, 2 ) + " ";
                             for ( int j = 0; j < itemi.data.Length; j++ ) {
@@ -328,7 +328,7 @@ namespace org.kbinani.cadencii
                     if ( queue.pit != null && queue.pit.size() > 0 && !noteoff_send ) {
 #if DEBUG
                         for ( int i = 0; i < queue.pit.size(); i++ ) {
-                            string str = "";
+                            String str = "";
                             MidiEvent itemi = queue.pit.get( i );
                             str += "0x" + PortUtil.toHexString( itemi.firstByte, 2 ) + " ";
                             for ( int j = 0; j < itemi.data.Length; j++ ) {

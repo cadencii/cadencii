@@ -14,10 +14,12 @@
 #if JAVA
 package org.kbinani.vsq;
 #else
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
 #endif
 
-    public struct Timesig {
+    public struct Timesig
+    {
         public int numerator;
         public int denominator;
 
@@ -26,7 +28,8 @@ namespace org.kbinani.vsq {
         }
 #endif
 
-        public Timesig( int numerator, int denominator ) {
+        public Timesig( int numerator, int denominator )
+        {
             this.numerator = numerator;
             this.denominator = denominator;
         }

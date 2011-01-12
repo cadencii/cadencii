@@ -200,7 +200,7 @@ namespace org.kbinani.cadencii {
             int draft = old_value;
             if ( received_string.StartsWith( "+" ) || received_string.StartsWith( "-" ) || received_string.StartsWith( "*" ) || received_string.StartsWith( "/" ) ) {
                 try {
-                    string eq = "x" + received_string;
+                    String eq = "x" + received_string;
 
                     // 「+ 480)*1.1」みたいな書式を許容したいので。「+ 480)*1.1」=>「(x+ 480)*1.1」
                     int num_bla = 0; // "("の個数
@@ -822,7 +822,7 @@ namespace org.kbinani.cadencii {
                             int size = AppManager.editorConfig.AutoVibratoCustom.size();
                             for ( int i = 0; i < size; i++ ) {
                                 VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
-                                string display_string = handle.getDisplayString();
+                                String display_string = handle.getDisplayString();
                                 if ( description == display_string ) {
                                     editing.ID.VibratoHandle = (VibratoHandle)handle.clone();
                                     break;
@@ -951,17 +951,17 @@ namespace org.kbinani.cadencii {
 #if DEBUG
     public class DEBUG_GatetimePropertyConverter : ExpandableObjectConverter {
         public override bool CanConvertFrom( ITypeDescriptorContext context, Type sourceType ) {
-            if ( sourceType == typeof( string ) ) {
+            if ( sourceType == typeof( String ) ) {
                 return true;
             }
             return base.CanConvertFrom( context, sourceType );
         }
 
-        // string -> DEBUG_GatetimeProperty
-        public override object ConvertFrom( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value ) {
-            if ( value is string ) {
-                string s = (string)value;
-                string[] spl = s.Split( ',' );
+        // String -> DEBUG_GatetimeProperty
+        public override Object ConvertFrom( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, Object value ) {
+            if ( value is String ) {
+                String s = (String)value;
+                String[] spl = s.Split( ',' );
                 if ( spl.Length >= 3 ) {
                     try {
                         int measure = int.Parse( spl[0].Trim() );
@@ -986,9 +986,9 @@ namespace org.kbinani.cadencii {
             return base.CanConvertTo( context, destinationType );
         }
 
-        // DEBUG_GatetimeProperty -> string
-        public override object ConvertTo( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value, Type destinationType ) {
-            if ( value is DEBUG_GatetimeProperty && destinationType == typeof( string ) ) {
+        // DEBUG_GatetimeProperty -> String
+        public override Object ConvertTo( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, Object value, Type destinationType ) {
+            if ( value is DEBUG_GatetimeProperty && destinationType == typeof( String ) ) {
                 DEBUG_GatetimeProperty gp = (DEBUG_GatetimeProperty)value;
                 return gp.Measure + ", " + gp.Beat + ", " + gp.Gate;
             }
@@ -998,12 +998,12 @@ namespace org.kbinani.cadencii {
 
     [TypeConverter( typeof( DEBUG_GatetimePropertyConverter) )]
     public class DEBUG_GatetimeProperty {
-        string m = "1";
-        string b = "2";
-        string g = "3";
+        String m = "1";
+        String b = "2";
+        String g = "3";
 
         [NotifyParentProperty(true), RefreshProperties(RefreshProperties.All)]
-        public string Measure {
+        public String Measure {
             get {
                 return m;
             }
@@ -1013,7 +1013,7 @@ namespace org.kbinani.cadencii {
         }
 
         [NotifyParentProperty( true ), RefreshProperties( RefreshProperties.All )]
-        public string Beat {
+        public String Beat {
             get {
                 return b;
             }
@@ -1023,7 +1023,7 @@ namespace org.kbinani.cadencii {
         }
 
         [NotifyParentProperty( true ), RefreshProperties( RefreshProperties.All )]
-        public string Gate {
+        public String Gate {
             get {
                 return g;
             }

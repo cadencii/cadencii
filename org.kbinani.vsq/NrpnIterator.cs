@@ -23,7 +23,8 @@ using System.Reflection;
 using org.kbinani;
 using org.kbinani.java.util;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
     using boolean = System.Boolean;
     using Integer = System.Int32;
 #endif
@@ -31,12 +32,14 @@ namespace org.kbinani.vsq {
 #if JAVA
     public class NrpnIterator implements Iterator {
 #else
-    public class NrpnIterator : Iterator<ValuePair<String, Integer>> {
+    public class NrpnIterator : Iterator<ValuePair<String, Integer>>
+    {
 #endif
         private Vector<ValuePair<String, Integer>> nrpns = new Vector<ValuePair<String, Integer>>();
         private int m_pos = -1;
 
-        public NrpnIterator() {
+        public NrpnIterator()
+        {
 #if JAVA
             try{
                 Field[] fields = NRPN.class.getFields();
@@ -61,7 +64,8 @@ namespace org.kbinani.vsq {
 #endif
         }
 
-        public boolean hasNext() {
+        public boolean hasNext()
+        {
             if ( 0 <= m_pos + 1 && m_pos + 1 < nrpns.size() ) {
                 return true;
             } else {
@@ -69,12 +73,14 @@ namespace org.kbinani.vsq {
             }
         }
 
-        public ValuePair<String, Integer> next() {
+        public ValuePair<String, Integer> next()
+        {
             m_pos++;
             return nrpns.get( m_pos );
         }
 
-        public void remove() {
+        public void remove()
+        {
         }
     }
 

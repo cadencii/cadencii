@@ -11,9 +11,16 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.cadencii;
+
+#else
+using System;
+
 namespace org.kbinani.cadencii
 {
     using boolean = System.Boolean;
+#endif
 
     public class SequenceConfig
     {
@@ -46,7 +53,7 @@ namespace org.kbinani.cadencii
             return true;
         }
 
-        public object clone()
+        public Object clone()
         {
             SequenceConfig config = new SequenceConfig();
             config.SamplingRate = this.SamplingRate;
@@ -56,4 +63,6 @@ namespace org.kbinani.cadencii
         }
     }
 
+#if !JAVA
 }
+#endif

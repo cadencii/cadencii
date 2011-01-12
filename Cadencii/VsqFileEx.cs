@@ -245,7 +245,7 @@ namespace org.kbinani.cadencii
                 }
                 if ( is_first ) {
                     newtag = name + ":" + v;
-                } else if( !added ) {
+                } else if ( !added ) {
                     newtag += ";" + name + ":" + v;
                 }
                 return newtag;
@@ -661,7 +661,7 @@ namespace org.kbinani.cadencii
         }
 
 #if !JAVA
-        public new object Clone()
+        public new Object Clone()
         {
             return clone();
         }
@@ -780,7 +780,7 @@ namespace org.kbinani.cadencii
         {
             CadenciiCommand ret = new CadenciiCommand();
             ret.type = CadenciiCommandType.CHANGE_SEQUENCE_CONFIG;
-            ret.args = new object[]{ sample_rate, channels, output_master, pre_measure };
+            ret.args = new Object[] { sample_rate, channels, output_master, pre_measure };
             return ret;
         }
 
@@ -1231,7 +1231,7 @@ namespace org.kbinani.cadencii
                 } else if ( command.type == CadenciiCommandType.CHANGE_SEQUENCE_CONFIG ) {
                     #region CHANGE_SEQUENCE_CONFIG
                     int old_pre_measure = Master.PreMeasure;
-                    ret = VsqFileEx.generateCommandChangeSequenceConfig( 
+                    ret = VsqFileEx.generateCommandChangeSequenceConfig(
                         config.SamplingRate, config.WaveFileOutputChannel, config.WaveFileOutputFromMasterTrack, old_pre_measure );
                     int sample_rate = (Integer)command.args[0];
                     int channels = (Integer)command.args[1];
@@ -1443,16 +1443,6 @@ namespace org.kbinani.cadencii
                 }
             }
             return ret;
-        }
-
-        public new void write( String file )
-        {
-            base.write( file );
-        }
-
-        public new void write( String file, int msPreSend, String encoding )
-        {
-            base.write( file, msPreSend, encoding );
         }
     }
 

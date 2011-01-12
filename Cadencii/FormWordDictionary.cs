@@ -82,7 +82,7 @@ namespace org.kbinani.cadencii {
         }
 
         private void registerEventHandlers() {
-            Load += new EventHandler( FormWordDictionary_Load );
+            this.Load += new EventHandler( FormWordDictionary_Load );
             btnOK.Click += new EventHandler( btnOK_Click );
             btnUp.Click += new EventHandler( btnUp_Click );
             btnDown.Click += new EventHandler( btnDown_Click );

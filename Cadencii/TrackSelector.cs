@@ -539,7 +539,7 @@ namespace org.kbinani.cadencii
         }
 
 #if COMPONENT_ENABLE_TOOL_TIP_TEXT
-        public void setToolTipText( string value )
+        public void setToolTipText( String value )
         {
             base.ToolTipText = value;
         }
@@ -555,18 +555,18 @@ namespace org.kbinani.cadencii
             return base.OwnerItem;
         }
 #else
-        public object getParent()
+        public Object getParent()
         {
             return base.Parent;
         }
 #endif
 
-        public string getName()
+        public String getName()
         {
             return base.Name;
         }
 
-        public void setName( string value )
+        public void setName( String value )
         {
             base.Name = value;
         }

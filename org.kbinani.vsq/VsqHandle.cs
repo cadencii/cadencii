@@ -23,7 +23,8 @@ using org.kbinani;
 using org.kbinani.java.io;
 using org.kbinani.java.util;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
     using boolean = System.Boolean;
     using Integer = System.Int32;
 #endif
@@ -35,7 +36,8 @@ namespace org.kbinani.vsq {
     public class VsqHandle implements Serializable {
 #else
     [Serializable]
-    public class VsqHandle {
+    public class VsqHandle
+    {
 #endif
         public VsqHandleType m_type;
         public int Index;
@@ -62,18 +64,22 @@ namespace org.kbinani.vsq {
         /// </summary>
         public boolean addQuotationMark = true;
 
-        public VsqHandle() {
+        public VsqHandle()
+        {
         }
 
-        public int getLength() {
+        public int getLength()
+        {
             return Length;
         }
 
-        public void setLength( int value ) {
+        public void setLength( int value )
+        {
             Length = value;
         }
 
-        public LyricHandle castToLyricHandle() {
+        public LyricHandle castToLyricHandle()
+        {
             LyricHandle ret = new LyricHandle();
             ret.L0 = L0;
             ret.Index = Index;
@@ -81,7 +87,8 @@ namespace org.kbinani.vsq {
             return ret;
         }
 
-        public VibratoHandle castToVibratoHandle() {
+        public VibratoHandle castToVibratoHandle()
+        {
             VibratoHandle ret = new VibratoHandle();
             ret.Index = Index;
             ret.setCaption( Caption );
@@ -97,7 +104,8 @@ namespace org.kbinani.vsq {
             return ret;
         }
 
-        public IconHandle castToIconHandle() {
+        public IconHandle castToIconHandle()
+        {
             IconHandle ret = new IconHandle();
             ret.Index = Index;
             ret.Caption = Caption;
@@ -111,7 +119,8 @@ namespace org.kbinani.vsq {
             return ret;
         }
 
-        public NoteHeadHandle castToNoteHeadHandle() {
+        public NoteHeadHandle castToNoteHeadHandle()
+        {
             NoteHeadHandle ret = new NoteHeadHandle();
             ret.setCaption( Caption );
             ret.setDepth( Depth );
@@ -123,7 +132,8 @@ namespace org.kbinani.vsq {
             return ret;
         }
 
-        public IconDynamicsHandle castToIconDynamicsHandle() {
+        public IconDynamicsHandle castToIconDynamicsHandle()
+        {
             IconDynamicsHandle ret = new IconDynamicsHandle();
             ret.IDS = IDS;
             ret.IconID = IconID;
@@ -136,7 +146,8 @@ namespace org.kbinani.vsq {
             return ret;
         }
 
-        public static VsqHandle castFromLyricHandle( LyricHandle handle ) {
+        public static VsqHandle castFromLyricHandle( LyricHandle handle )
+        {
 #if __cplusplus
             VsqHandle ret;
 #else
@@ -158,7 +169,8 @@ namespace org.kbinani.vsq {
         /// 歌手設定のインスタンスを、VsqHandleに型キャストします。
         /// </summary>
         /// <returns></returns>
-        public static VsqHandle castFromIconHandle( IconHandle handle ) {
+        public static VsqHandle castFromIconHandle( IconHandle handle )
+        {
 #if __cplusplus
             VsqHandle ret;
 #else
@@ -204,7 +216,8 @@ namespace org.kbinani.vsq {
         /// FileStreamから読み込みながらコンストラクト
         /// </summary>
         /// <param name="sr">読み込み対象</param>
-        public VsqHandle( TextStream sr, int value, ByRef<String> last_line ) {
+        public VsqHandle( TextStream sr, int value, ByRef<String> last_line )
+        {
             this.Index = value;
             String[] spl;
             String[] spl2;
@@ -351,7 +364,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="_string">ハンドル指定子</param>
         /// <returns>ハンドル番号</returns>
-        public static int HandleIndexFromString( String _string ) {
+        public static int HandleIndexFromString( String _string )
+        {
             String[] spl = PortUtil.splitString( _string, new char[] { '#' } );
             return PortUtil.parseInt( spl[1] );
         }
@@ -373,7 +387,8 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// インスタンスをコンソール画面に出力します
         /// </summary>
-        private void print() {
+        private void print()
+        {
             String result = toString();
             PortUtil.println( result );
         }
@@ -382,13 +397,14 @@ namespace org.kbinani.vsq {
         /// インスタンスを文字列に変換します
         /// </summary>
         /// <returns>インスタンスを変換した文字列</returns>
-        public String toString() {
+        public String toString()
+        {
             String result = "";
             result += "[h#" + PortUtil.formatDecimal( "0000", Index ) + "]";
             if ( m_type == VsqHandleType.Lyric ) {
                 result += "\n" + "L0=" + L0.toString( addQuotationMark );
                 int c = Trailing.size();
-                for( int i = 0; i < c; i++ ){
+                for ( int i = 0; i < c; i++ ) {
                     result += "\n" + "L" + (i + 1) + "=" + Trailing.get( i ).toString( addQuotationMark );
                 }
             } else if ( m_type == VsqHandleType.Vibrato ) {
@@ -439,7 +455,7 @@ namespace org.kbinani.vsq {
                 result += "Duration=" + Duration + "\n";
                 result += "Depth=" + Depth;
             } else if ( m_type == VsqHandleType.DynamicsHandle ) {
-                result += "\n" + "IconID=" + IconID +"\n";
+                result += "\n" + "IconID=" + IconID + "\n";
                 result += "IDS=" + IDS + "\n";
                 result += "Original=" + Original + "\n";
                 result += "Caption=" + Caption + "\n";
@@ -468,7 +484,8 @@ namespace org.kbinani.vsq {
         }
 
 #if !JAVA
-        public override string ToString() {
+        public override String ToString()
+        {
             return toString();
         }
 #endif

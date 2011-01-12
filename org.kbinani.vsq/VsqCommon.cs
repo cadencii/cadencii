@@ -21,7 +21,8 @@ using System;
 using org.kbinani;
 using org.kbinani.java.io;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
 
     using boolean = System.Boolean;
 #endif
@@ -33,7 +34,8 @@ namespace org.kbinani.vsq {
     public class VsqCommon implements Cloneable, Serializable {
 #else
     [Serializable]
-    public class VsqCommon : ICloneable {
+    public class VsqCommon : ICloneable
+    {
 #endif
         public String Version;
         public String Name;
@@ -52,12 +54,14 @@ namespace org.kbinani.vsq {
         public int LastPlayMode = org.kbinani.vsq.PlayMode.PlayWithSynth;
 
 #if !JAVA
-        public object Clone() {
+        public object Clone()
+        {
             return clone();
         }
 #endif
 
-        public Object clone() {
+        public Object clone()
+        {
             String[] spl = PortUtil.splitString( Color, new char[] { ',' }, 3 );
             int r = PortUtil.parseInt( spl[0] );
             int g = PortUtil.parseInt( spl[1] );
@@ -75,7 +79,8 @@ namespace org.kbinani.vsq {
         /// <param name="color">Color値（意味は不明）</param>
         /// <param name="dynamics_mode">DynamicsMode（デフォルトは1）</param>
         /// <param name="play_mode">PlayMode（デフォルトは1）</param>
-        public VsqCommon( String name, int red, int green, int blue, int dynamics_mode, int play_mode ) {
+        public VsqCommon( String name, int red, int green, int blue, int dynamics_mode, int play_mode )
+        {
             this.Version = "DSB301";
             this.Name = name;
             this.Color = red + "," + green + "," + blue;
@@ -88,7 +93,8 @@ namespace org.kbinani.vsq {
             this(  "Miku", 179, 181, 123, 1, 1 );
 #else
         public VsqCommon()
-            : this( "Miku", 179, 181, 123, 1, 1 ) {
+            : this( "Miku", 179, 181, 123, 1, 1 )
+        {
 #endif
         }
 
@@ -97,7 +103,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="sr">読み込むテキストファイル</param>
         /// <param name="last_line">読み込んだ最後の行が返される</param>
-        public VsqCommon( TextStream sr, ByRef<String> last_line ) {
+        public VsqCommon( TextStream sr, ByRef<String> last_line )
+        {
             Version = "";
             Name = "";
             Color = "0,0,0";
@@ -130,7 +137,7 @@ namespace org.kbinani.vsq {
         /// インスタンスの内容をテキストファイルに出力します
         /// </summary>
         /// <param name="sw">出力先</param>
-        public void write( ITextWriter sw ) 
+        public void write( ITextWriter sw )
 #if JAVA
             throws java.io.IOException
 #endif

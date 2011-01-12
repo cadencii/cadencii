@@ -77,7 +77,7 @@ namespace org.kbinani.cadencii {
         }
 
 #if !JAVA
-        public override string ToString() {
+        public override String ToString() {
             return toString();
         }
 #endif
@@ -135,7 +135,7 @@ namespace org.kbinani.cadencii {
         }
 
 #if !JAVA
-        public object Clone() {
+        public Object Clone() {
             return clone();
         }
 #endif

@@ -30,7 +30,7 @@ using System;
 
 namespace org.kbinani.cadencii {
 
-    public delegate void SelectedTrackChangedEventHandler( object sender, int track );
+    public delegate void SelectedTrackChangedEventHandler( Object sender, int track );
 
 }
 #endif

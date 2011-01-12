@@ -43,10 +43,6 @@ namespace org.kbinani.cadencii
 #endif
         private VibratoHandle m_vibrato;
         private int m_note_length;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.RadioButton radioVocaloid2;
-        private System.Windows.Forms.RadioButton radioVocaloid1;
-        private System.Windows.Forms.RadioButton radioUserDefined;
 
         /// <summary>
         /// コンストラクタ．引数vibrato_handleには，Cloneしたものを渡さなくてよい．
@@ -141,6 +137,7 @@ namespace org.kbinani.cadencii
             lblVibratoType.setText( _( "Vibrato Type" ) + "(&T)" );
             btnOK.setText( _( "OK" ) );
             btnCancel.setText( _( "Cancel" ) );
+            groupSelect.setTitle( _( "Select from" ) );
         }
 
         /// <summary>
@@ -210,7 +207,7 @@ namespace org.kbinani.cadencii
             comboVibratoType.SelectedIndexChanged += comboVibratoType_SelectedIndexChanged;
         }
 
-        void handleRadioCheckedChanged( object sender, EventArgs e )
+        void handleRadioCheckedChanged( Object sender, EventArgs e )
         {
             comboVibratoType.SelectedIndexChanged -= comboVibratoType_SelectedIndexChanged;
             updateComboBoxStatus();
@@ -347,11 +344,11 @@ namespace org.kbinani.cadencii
             this.comboVibratoType = new org.kbinani.windows.forms.BComboBox();
             this.btnCancel = new org.kbinani.windows.forms.BButton();
             this.btnOK = new org.kbinani.windows.forms.BButton();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.radioVocaloid1 = new System.Windows.Forms.RadioButton();
-            this.radioVocaloid2 = new System.Windows.Forms.RadioButton();
-            this.radioUserDefined = new System.Windows.Forms.RadioButton();
-            this.groupBox1.SuspendLayout();
+            this.groupSelect = new BGroupBox();
+            this.radioUserDefined = new BRadioButton();
+            this.radioVocaloid2 = new BRadioButton();
+            this.radioVocaloid1 = new BRadioButton();
+            this.groupSelect.SuspendLayout();
             this.SuspendLayout();
             // 
             // lblVibratoLength
@@ -422,30 +419,30 @@ namespace org.kbinani.cadencii
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             // 
-            // groupBox1
+            // groupSelect
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.groupSelect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox1.Controls.Add( this.radioUserDefined );
-            this.groupBox1.Controls.Add( this.radioVocaloid2 );
-            this.groupBox1.Controls.Add( this.radioVocaloid1 );
-            this.groupBox1.Location = new System.Drawing.Point( 14, 61 );
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size( 301, 55 );
-            this.groupBox1.TabIndex = 9;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Select from";
+            this.groupSelect.Controls.Add( this.radioUserDefined );
+            this.groupSelect.Controls.Add( this.radioVocaloid2 );
+            this.groupSelect.Controls.Add( this.radioVocaloid1 );
+            this.groupSelect.Location = new System.Drawing.Point( 14, 61 );
+            this.groupSelect.Name = "groupSelect";
+            this.groupSelect.Size = new System.Drawing.Size( 301, 55 );
+            this.groupSelect.TabIndex = 9;
+            this.groupSelect.TabStop = false;
+            this.groupSelect.Text = "Select from";
             // 
-            // radioVocaloid1
+            // radioUserDefined
             // 
-            this.radioVocaloid1.AutoSize = true;
-            this.radioVocaloid1.Location = new System.Drawing.Point( 14, 21 );
-            this.radioVocaloid1.Name = "radioVocaloid1";
-            this.radioVocaloid1.Size = new System.Drawing.Size( 86, 16 );
-            this.radioVocaloid1.TabIndex = 9;
-            this.radioVocaloid1.TabStop = true;
-            this.radioVocaloid1.Text = "VOCALOID1";
-            this.radioVocaloid1.UseVisualStyleBackColor = true;
+            this.radioUserDefined.AutoSize = true;
+            this.radioUserDefined.Location = new System.Drawing.Point( 198, 21 );
+            this.radioUserDefined.Name = "radioUserDefined";
+            this.radioUserDefined.Size = new System.Drawing.Size( 88, 16 );
+            this.radioUserDefined.TabIndex = 11;
+            this.radioUserDefined.TabStop = true;
+            this.radioUserDefined.Text = "User defined";
+            this.radioUserDefined.UseVisualStyleBackColor = true;
             // 
             // radioVocaloid2
             // 
@@ -459,16 +456,16 @@ namespace org.kbinani.cadencii
             this.radioVocaloid2.Text = "VOCALOID2";
             this.radioVocaloid2.UseVisualStyleBackColor = true;
             // 
-            // radioUserDefined
+            // radioVocaloid1
             // 
-            this.radioUserDefined.AutoSize = true;
-            this.radioUserDefined.Location = new System.Drawing.Point( 198, 21 );
-            this.radioUserDefined.Name = "radioUserDefined";
-            this.radioUserDefined.Size = new System.Drawing.Size( 88, 16 );
-            this.radioUserDefined.TabIndex = 11;
-            this.radioUserDefined.TabStop = true;
-            this.radioUserDefined.Text = "User defined";
-            this.radioUserDefined.UseVisualStyleBackColor = true;
+            this.radioVocaloid1.AutoSize = true;
+            this.radioVocaloid1.Location = new System.Drawing.Point( 14, 21 );
+            this.radioVocaloid1.Name = "radioVocaloid1";
+            this.radioVocaloid1.Size = new System.Drawing.Size( 86, 16 );
+            this.radioVocaloid1.TabIndex = 9;
+            this.radioVocaloid1.TabStop = true;
+            this.radioVocaloid1.Text = "VOCALOID1";
+            this.radioVocaloid1.UseVisualStyleBackColor = true;
             // 
             // FormVibratoConfig
             // 
@@ -477,7 +474,7 @@ namespace org.kbinani.cadencii
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size( 327, 164 );
-            this.Controls.Add( this.groupBox1 );
+            this.Controls.Add( this.groupSelect );
             this.Controls.Add( this.btnOK );
             this.Controls.Add( this.btnCancel );
             this.Controls.Add( this.comboVibratoType );
@@ -493,8 +490,8 @@ namespace org.kbinani.cadencii
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Vibrato property";
-            this.groupBox1.ResumeLayout( false );
-            this.groupBox1.PerformLayout();
+            this.groupSelect.ResumeLayout( false );
+            this.groupSelect.PerformLayout();
             this.ResumeLayout( false );
             this.PerformLayout();
 
@@ -508,6 +505,10 @@ namespace org.kbinani.cadencii
         private BComboBox comboVibratoType;
         private BButton btnCancel;
         private BButton btnOK;
+        private BGroupBox groupSelect;
+        private BRadioButton radioVocaloid2;
+        private BRadioButton radioVocaloid1;
+        private BRadioButton radioUserDefined;
         #endregion
 #endif
     }

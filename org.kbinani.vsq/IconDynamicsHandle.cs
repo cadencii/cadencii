@@ -18,7 +18,8 @@ import java.io.*;
 #else
 using System;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
     using boolean = System.Boolean;
 #endif
 
@@ -29,7 +30,8 @@ namespace org.kbinani.vsq {
     public class IconDynamicsHandle extends IconParameter implements Cloneable, Serializable {
 #else
     [Serializable]
-    public class IconDynamicsHandle : IconParameter, ICloneable {
+    public class IconDynamicsHandle : IconParameter, ICloneable
+    {
 #endif
         /// <summary>
         /// 強弱記号の場合の、IconIDの最初の5文字。
@@ -67,7 +69,7 @@ namespace org.kbinani.vsq {
 #else
             :
 #endif
-            base()
+ base()
 #if JAVA
             ;
 #else
@@ -88,7 +90,7 @@ namespace org.kbinani.vsq {
 #else
             :
 #endif
-            base( aic_file )
+ base( aic_file )
 #if JAVA
             ;
 #else
@@ -103,7 +105,8 @@ namespace org.kbinani.vsq {
         /// このハンドルが強弱記号を表すものかどうかを表すブール値を取得します。
         /// </summary>
         /// <returns></returns>
-        public boolean isDynaffType() {
+        public boolean isDynaffType()
+        {
             if ( IconID != null ) {
                 return IconID.StartsWith( ICONID_HEAD_DYNAFF );
             } else {
@@ -115,7 +118,8 @@ namespace org.kbinani.vsq {
         /// このハンドルがクレッシェンドを表すものかどうかを表すブール値を取得します。
         /// </summary>
         /// <returns></returns>
-        public boolean isCrescendType() {
+        public boolean isCrescendType()
+        {
             if ( IconID != null ) {
                 return IconID.StartsWith( ICONID_HEAD_CRESCEND );
             } else {
@@ -127,7 +131,8 @@ namespace org.kbinani.vsq {
         /// このハンドルがデクレッシェンドを表すものかどうかを表すブール値を取得します。
         /// </summary>
         /// <returns></returns>
-        public boolean isDecrescendType() {
+        public boolean isDecrescendType()
+        {
             if ( IconID != null ) {
                 return IconID.StartsWith( ICONID_HEAD_DECRESCEND );
             } else {
@@ -140,7 +145,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <returns></returns>
 #if !JAVA
-        public Object Clone() {
+        public Object Clone()
+        {
             return clone();
         }
 #endif
@@ -149,7 +155,8 @@ namespace org.kbinani.vsq {
         /// このインスタンスのコピーを作成します。
         /// </summary>
         /// <returns></returns>
-        public Object clone() {
+        public Object clone()
+        {
             IconDynamicsHandle ret = new IconDynamicsHandle();
             ret.IconID = IconID;
             ret.IDS = IDS;
@@ -157,7 +164,7 @@ namespace org.kbinani.vsq {
             ret.setCaption( getCaption() );
             ret.setStartDyn( getStartDyn() );
             ret.setEndDyn( getEndDyn() );
-            if ( dynBP != null ){
+            if ( dynBP != null ) {
                 ret.setDynBP( (VibratoBPList)dynBP.clone() );
             }
             ret.setLength( getLength() );
@@ -168,7 +175,8 @@ namespace org.kbinani.vsq {
         /// この強弱記号設定のインスタンスを、VsqHandleに型キャストします。
         /// </summary>
         /// <returns></returns>
-        public VsqHandle castToVsqHandle() {
+        public VsqHandle castToVsqHandle()
+        {
             VsqHandle ret = new VsqHandle();
             ret.m_type = VsqHandleType.DynamicsHandle;
             ret.IconID = IconID;
@@ -186,7 +194,8 @@ namespace org.kbinani.vsq {
         /// キャプションを取得します。
         /// </summary>
         /// <returns></returns>
-        public String getCaption() {
+        public String getCaption()
+        {
             return caption;
         }
 
@@ -194,7 +203,8 @@ namespace org.kbinani.vsq {
         /// キャプションを設定します。
         /// </summary>
         /// <param name="value"></param>
-        public void setCaption( String value ) {
+        public void setCaption( String value )
+        {
             caption = value;
         }
 
@@ -202,11 +212,14 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// XMLシリアライズ用、キャプションです。
         /// </summary>
-        public String Caption {
-            get {
+        public String Caption
+        {
+            get
+            {
                 return getCaption();
             }
-            set {
+            set
+            {
                 setCaption( value );
             }
         }
@@ -216,7 +229,8 @@ namespace org.kbinani.vsq {
         /// ゲートタイム長さを取得します。
         /// </summary>
         /// <returns></returns>
-        public int getLength() {
+        public int getLength()
+        {
             return length;
         }
 
@@ -224,7 +238,8 @@ namespace org.kbinani.vsq {
         /// ゲートタイム長さを設定します。
         /// </summary>
         /// <param name="value"></param>
-        public void setLength( int value ) {
+        public void setLength( int value )
+        {
             length = value;
         }
 
@@ -232,11 +247,14 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// XMLシリアライズ用、ゲートタイム長さです。
         /// </summary>
-        public int Length {
-            get {
+        public int Length
+        {
+            get
+            {
                 return getLength();
             }
-            set {
+            set
+            {
                 setLength( value );
             }
         }
@@ -246,7 +264,8 @@ namespace org.kbinani.vsq {
         /// DYNの開始値を取得します。
         /// </summary>
         /// <returns></returns>
-        public int getStartDyn() {
+        public int getStartDyn()
+        {
             return startDyn;
         }
 
@@ -254,7 +273,8 @@ namespace org.kbinani.vsq {
         /// DYNの開始値を設定します。
         /// </summary>
         /// <param name="value"></param>
-        public void setStartDyn( int value ) {
+        public void setStartDyn( int value )
+        {
             startDyn = value;
         }
 
@@ -262,11 +282,14 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// XMLシリアライズ用、DYNの開始値です。
         /// </summary>
-        public int StartDyn {
-            get {
+        public int StartDyn
+        {
+            get
+            {
                 return getStartDyn();
             }
-            set {
+            set
+            {
                 setStartDyn( value );
             }
         }
@@ -276,7 +299,8 @@ namespace org.kbinani.vsq {
         /// DYNの終了値を取得します。
         /// </summary>
         /// <returns></returns>
-        public int getEndDyn() {
+        public int getEndDyn()
+        {
             return endDyn;
         }
 
@@ -284,7 +308,8 @@ namespace org.kbinani.vsq {
         /// DYNの終了値を設定します。
         /// </summary>
         /// <param name="value"></param>
-        public void setEndDyn( int value ) {
+        public void setEndDyn( int value )
+        {
             endDyn = value;
         }
 
@@ -292,11 +317,14 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// XMLシリアライズ用、DYNの終了値です。
         /// </summary>
-        public int EndDyn {
-            get {
+        public int EndDyn
+        {
+            get
+            {
                 return getEndDyn();
             }
-            set {
+            set
+            {
                 setEndDyn( value );
             }
         }
@@ -306,7 +334,8 @@ namespace org.kbinani.vsq {
         /// DYNカーブを表すリストを取得します。
         /// </summary>
         /// <returns></returns>
-        public VibratoBPList getDynBP() {
+        public VibratoBPList getDynBP()
+        {
             return dynBP;
         }
 
@@ -314,7 +343,8 @@ namespace org.kbinani.vsq {
         /// DYNカーブを表すリストを設定します。
         /// </summary>
         /// <param name="value"></param>
-        public void setDynBP( VibratoBPList value ) {
+        public void setDynBP( VibratoBPList value )
+        {
             dynBP = value;
         }
 
@@ -322,11 +352,14 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// XMLシリアライズ用、DYNカーブを表すリストです。
         /// </summary>
-        public VibratoBPList DynBP {
-            get {
+        public VibratoBPList DynBP
+        {
+            get
+            {
                 return getDynBP();
             }
-            set {
+            set
+            {
                 setDynBP( value );
             }
         }

@@ -12,14 +12,17 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-namespace org.kbinani.cadencii {
+using System;
+
+namespace org.kbinani.cadencii
+{
 
     /// <summary>
     /// 進捗状況の報告を行うためのイベントハンドラ．
     /// </summary>
     /// <param name="sender">イベントの送信元</param>
     /// <param name="value">進捗状況を表す値</param>
-    public delegate void UpdateProgressEventHandler( object sender, int value );
+    public delegate void UpdateProgressEventHandler( Object sender, int value );
 
 }
 #endif

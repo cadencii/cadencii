@@ -11,10 +11,16 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.media;
+
+#else
 using System;
 
 namespace org.kbinani.media
 {
+#endif
+
     /// <summary>
     /// サンプリング周波数を変換するコア機能を提供
     /// </summary>
@@ -113,6 +119,7 @@ namespace org.kbinani.media
             aEnd = -1;
         }
 
+#if !JAVA
         /// <summary>
         /// デストラクタ
         /// </summary>
@@ -120,6 +127,7 @@ namespace org.kbinani.media
         {
             dispose();
         }
+#endif
 
         public int getSampleRateFrom()
         {
@@ -361,6 +369,7 @@ namespace org.kbinani.media
     }
 
 #if DEBUG
+#if !JAVA
     /// <summary>
     /// RateConvertContextをテストするクラス
     /// </summary>
@@ -430,5 +439,8 @@ namespace org.kbinani.media
         }
     }
 #endif
+#endif
 
+#if !JAVA
 }
+#endif

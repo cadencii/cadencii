@@ -415,12 +415,12 @@ namespace org.kbinani.cadencii
         }
 
         #region event handlers
-        private void txtPanpot_Enter( object sender, EventArgs e )
+        private void txtPanpot_Enter( Object sender, EventArgs e )
         {
             txtPanpot.selectAll();
         }
 
-        private void txtFeder_Enter( object sender, EventArgs e )
+        private void txtFeder_Enter( Object sender, EventArgs e )
         {
             txtFeder.selectAll();
         }

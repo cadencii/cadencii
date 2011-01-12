@@ -27,7 +27,7 @@ namespace org.kbinani.cadencii {
             return noteNumber.GetHashCode();
         }
 
-        public override boolean Equals( object obj ) {
+        public override boolean Equals( Object obj ) {
             if ( obj is NoteNumberProperty ) {
                 if ( noteNumber == ((NoteNumberProperty)obj).noteNumber ) {
                     return true;

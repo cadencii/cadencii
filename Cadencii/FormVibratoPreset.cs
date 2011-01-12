@@ -14,7 +14,7 @@
 #if JAVA
 package org.kbinani.cadencii;
 
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/Cadencii/FormVibratoConfig.java
+//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/Cadencii/FormVibratoPreset.java
 
 import java.util.*;
 import org.kbinani.*;
@@ -32,6 +32,7 @@ using org.kbinani.windows.forms;
 namespace org.kbinani.cadencii
 {
     using BEventArgs = System.EventArgs;
+    using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
     using boolean = System.Boolean;
 #endif
 
@@ -42,65 +43,46 @@ namespace org.kbinani.cadencii
 #endif
     {
         /// <summary>
-        /// ƒvƒŒƒrƒ…[‚ÌŠeƒOƒ‰ƒt‚É‚¨‚¢‚ÄCã‰º‚É’Ç‰Á‚·‚éƒ}[ƒWƒ“‚Ì‚‚³(ƒsƒNƒZƒ‹)
+        /// ãƒ—ãƒ¬ãƒ“ãƒ¥ãƒ¼ã®å„ã‚°ãƒ©ãƒ•ã«ãŠã„ã¦ï¼Œä¸Šä¸‹ã«è¿½åŠ ã™ã‚‹ãƒãƒ¼ã‚¸ãƒ³ã®é«˜ã•(ãƒ”ã‚¯ã‚»ãƒ«)
         /// </summary>
         private const int MARGIN = 3;
         /// <summary>
-        /// ‘O‰ñƒTƒCƒY•ÏX‚ÌCƒtƒH[ƒ€‚Ì•
+        /// æŠ˜ã‚Œç·šã®æç”»æ™‚ã«ï¼Œæç”»ã™ã‚‹ã‹ã©ã†ã‹ã‚’æ±ºã‚ã‚‹é–¾å€¤
+        /// </summary>
+        private const int MIN_DELTA = 2;
+        /// <summary>
+        /// å‰å›ã‚µã‚¤ã‚ºå¤‰æ›´æ™‚ã®ï¼Œãƒ•ã‚©ãƒ¼ãƒ ã®å¹…
         /// </summary>
         private static int mPreviousWidth = 527;
         /// <summary>
-        /// ‘O‰ñƒTƒCƒY•ÏX‚ÌCƒtƒH[ƒ€‚Ì‚‚³
+        /// å‰å›ã‚µã‚¤ã‚ºå¤‰æ›´æ™‚ã®ï¼Œãƒ•ã‚©ãƒ¼ãƒ ã®é«˜ã•
         /// </summary>
         private static int mPreviousHeight = 418;
 
         /// <summary>
-        /// AppManager.editorConfig.AutoVibratoCustom‚©‚çƒRƒs[‚µ‚Ä‚«‚½C
-        /// ƒrƒuƒ‰[ƒgƒnƒ“ƒhƒ‹‚ÌƒŠƒXƒg
+        /// AppManager.editorConfig.AutoVibratoCustomã‹ã‚‰ã‚³ãƒ”ãƒ¼ã—ã¦ããŸï¼Œ
+        /// ãƒ“ãƒ–ãƒ©ãƒ¼ãƒˆãƒãƒ³ãƒ‰ãƒ«ã®ãƒªã‚¹ãƒˆ
         /// </summary>
         private Vector<VibratoHandle> mHandles;
         /// <summary>
-        /// ‘I‘ğó‘Ô‚Ìƒrƒuƒ‰[ƒgƒnƒ“ƒhƒ‹
+        /// é¸æŠçŠ¶æ…‹ã®ãƒ“ãƒ–ãƒ©ãƒ¼ãƒˆãƒãƒ³ãƒ‰ãƒ«
         /// </summary>
         private VibratoHandle mSelected = null;
         /// <summary>
-        /// RateƒJ[ƒu‚ğ•`‰æ‚·‚é‚Ì‚Ég‚¤•`‰æŠí
+        /// Rateã‚«ãƒ¼ãƒ–ã‚’æç”»ã™ã‚‹ã®ã«ä½¿ã†æç”»å™¨
         /// </summary>
         private LineGraphDrawer mDrawerRate = null;
         /// <summary>
-        /// DepthƒJ[ƒu‚ğ•`‰æ‚·‚é‚Ì‚Ég‚¤•`‰æŠí
+        /// Depthã‚«ãƒ¼ãƒ–ã‚’æç”»ã™ã‚‹ã®ã«ä½¿ã†æç”»å™¨
         /// </summary>
         private LineGraphDrawer mDrawerDepth = null;
         /// <summary>
-        /// Œ‹‰Ê‚Æ‚µ‚Ä“¾‚ç‚ê‚éƒsƒbƒ`ƒxƒ“ƒhƒJ[ƒu‚ğ•`‰æ‚·‚é‚Ì‚Ég‚¤•`‰æŠí
+        /// çµæœã¨ã—ã¦å¾—ã‚‰ã‚Œã‚‹ãƒ”ãƒƒãƒãƒ™ãƒ³ãƒ‰ã‚«ãƒ¼ãƒ–ã‚’æç”»ã™ã‚‹ã®ã«ä½¿ã†æç”»å™¨
         /// </summary>
         private LineGraphDrawer mDrawerResulting = null;
 
-        private org.kbinani.windows.forms.BButton buttonRemove;
-        private org.kbinani.windows.forms.BButton buttonAdd;
-        private org.kbinani.windows.forms.BButton buttonUp;
-        private org.kbinani.windows.forms.BLabel labelRate;
-        private org.kbinani.windows.forms.BLabel labelDepth;
-        private NumberTextBox textRate;
-        private NumberTextBox textDepth;
-        private BLabel labelPresets;
-        private BPictureBox pictureRate;
-        private BLabel labelRateCurve;
-        private BLabel labelDepthCurve;
-        private BPictureBox pictureDepth;
-        private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.SplitContainer splitContainer2;
-        private BLabel labelResulting;
-        private BPictureBox pictureResulting;
-        private BGroupBox groupEdit;
-        private BLabel labelName;
-        private BTextBox textName;
-        private BGroupBox groupPreview;
-        private System.Windows.Forms.ListBox listPresets;
-        private org.kbinani.windows.forms.BButton buttonDown;
-
         /// <summary>
-        /// ƒRƒ“ƒXƒgƒ‰ƒNƒ^D
+        /// ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ï¼
         /// </summary>
         /// <param name="handles"></param>
         public FormVibratoPreset( Vector<VibratoHandle> handles )
@@ -116,14 +98,14 @@ namespace org.kbinani.cadencii
             this.setSize( mPreviousWidth, mPreviousHeight );
             registerEventHandlers();
 
-            // ƒnƒ“ƒhƒ‹‚ÌƒŠƒXƒg‚ğƒNƒ[ƒ“
+            // ãƒãƒ³ãƒ‰ãƒ«ã®ãƒªã‚¹ãƒˆã‚’ã‚¯ãƒ­ãƒ¼ãƒ³
             mHandles = new Vector<VibratoHandle>();
             int size = handles.size();
             for ( int i = 0; i < size; i++ ) {
                 mHandles.add( (VibratoHandle)handles.get( i ).clone() );
             }
 
-            // •\¦ó‘Ô‚ğXV
+            // è¡¨ç¤ºçŠ¶æ…‹ã‚’æ›´æ–°
             updateStatus();
             if ( size > 0 ) {
                 listPresets.SelectedIndex = 0;
@@ -132,12 +114,12 @@ namespace org.kbinani.cadencii
 
         #region public methods
         /// <summary>
-        /// ƒ_ƒCƒAƒƒO‚É‚æ‚éİ’èŒ‹‰Ê‚ğæ“¾‚µ‚Ü‚·
+        /// ãƒ€ã‚¤ã‚¢ãƒ­ã‚°ã«ã‚ˆã‚‹è¨­å®šçµæœã‚’å–å¾—ã—ã¾ã™
         /// </summary>
         /// <returns></returns>
         public Vector<VibratoHandle> getResult()
         {
-            // iconID‚ğ®‚¦‚é
+            // iconIDã‚’æ•´ãˆã‚‹
             if ( mHandles == null ) {
                 mHandles = new Vector<VibratoHandle>();
             }
@@ -150,38 +132,38 @@ namespace org.kbinani.cadencii
         #endregion
 
         #region event handlers
-        void listPresets_SelectedIndexChanged( object sender, EventArgs e )
+        public void listPresets_SelectedIndexChanged( Object sender, EventArgs e )
         {
-            // ƒCƒ“ƒfƒbƒNƒX‚ğæ“¾
-            int index = listPresets.SelectedIndex;
+            // ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’å–å¾—
+            int index = listPresets.getSelectedIndex();
 
-            // ”ÍˆÍŠO‚È‚çbailout
+            // ç¯„å›²å¤–ãªã‚‰bailout
             if ( (index < 0) || (mHandles.size() <= index) ) {
                 mSelected = null;
                 return;
             }
 
-            // ƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰‚ğˆê“I‚Éæ‚èœ‚­
-            textDepth.TextChanged -= textDepth_TextChanged;
-            textRate.TextChanged -= textRate_TextChanged;
-            textName.TextChanged -= textName_TextChanged;
+            // ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ©ã‚’ä¸€æ™‚çš„ã«å–ã‚Šé™¤ã
+            textDepth.TextChanged -= new EventHandler( textDepth_TextChanged );
+            textRate.TextChanged -= new EventHandler( textRate_TextChanged );
+            textName.TextChanged -= new EventHandler( textName_TextChanged );
 
-            // ƒeƒNƒXƒgƒ{ƒbƒNƒX‚É’l‚ğ”½‰f
+            // ãƒ†ã‚¯ã‚¹ãƒˆãƒœãƒƒã‚¯ã‚¹ã«å€¤ã‚’åæ˜ 
             mSelected = mHandles.get( index );
             textDepth.setText( mSelected.getStartDepth() + "" );
             textRate.setText( mSelected.getStartRate() + "" );
             textName.setText( mSelected.getCaption() );
 
-            // ƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰‚ğÄ“o˜^
-            textDepth.TextChanged += textDepth_TextChanged;
-            textRate.TextChanged += textRate_TextChanged;
-            textName.TextChanged += textName_TextChanged;
+            // ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ©ã‚’å†ç™»éŒ²
+            textDepth.TextChanged += new EventHandler( textDepth_TextChanged );
+            textRate.TextChanged += new EventHandler( textRate_TextChanged );
+            textName.TextChanged += new EventHandler( textName_TextChanged );
 
-            // Ä•`‰æ
+            // å†æç”»
             repaintPictures();
         }
 
-        void textName_TextChanged( object sender, EventArgs e )
+        public void textName_TextChanged( Object sender, EventArgs e )
         {
             if ( mSelected == null ) {
                 return;
@@ -191,7 +173,7 @@ namespace org.kbinani.cadencii
             updateStatus();
         }
 
-        void textRate_TextChanged( object sender, EventArgs e )
+        public void textRate_TextChanged( Object sender, EventArgs e )
         {
             if ( mSelected == null ) {
                 return;
@@ -199,7 +181,7 @@ namespace org.kbinani.cadencii
 
             int old = mSelected.getStartRate();
             int value = old;
-            string str = textRate.getText();
+            String str = textRate.getText();
             try {
                 value = PortUtil.parseInt( str );
             } catch ( Exception ex ) {
@@ -212,7 +194,7 @@ namespace org.kbinani.cadencii
                 value = 127;
             }
             mSelected.setStartRate( value );
-            string nstr = value + "";
+            String nstr = value + "";
             if ( str != nstr ) {
                 textRate.setText( nstr );
                 textRate.SelectionStart = textRate.Text.Length;
@@ -221,7 +203,7 @@ namespace org.kbinani.cadencii
             repaintPictures();
         }
 
-        void textDepth_TextChanged( object sender, EventArgs e )
+        public void textDepth_TextChanged( Object sender, EventArgs e )
         {
             if ( mSelected == null ) {
                 return;
@@ -229,7 +211,7 @@ namespace org.kbinani.cadencii
 
             int old = mSelected.getStartDepth();
             int value = old;
-            string str = textDepth.getText();
+            String str = textDepth.getText();
             try {
                 value = PortUtil.parseInt( str );
             } catch ( Exception ex ) {
@@ -242,7 +224,7 @@ namespace org.kbinani.cadencii
                 value = 127;
             }
             mSelected.setStartDepth( value );
-            string nstr = value + "";
+            String nstr = value + "";
             if ( str != nstr ) {
                 textDepth.setText( nstr );
                 textDepth.SelectionStart = textDepth.Text.Length;
@@ -251,23 +233,23 @@ namespace org.kbinani.cadencii
             repaintPictures();
         }
 
-        void buttonAdd_Click( object sender, EventArgs e )
+        public void buttonAdd_Click( Object sender, EventArgs e )
         {
-            // ’Ç‰Á‚µC
+            // è¿½åŠ ã—ï¼Œ
             VibratoHandle handle = new VibratoHandle();
             handle.setCaption( "No-Name" );
             mHandles.add( handle );
-            listPresets.SelectedIndices.Clear();
-            // •\¦”½‰f‚³‚¹‚Ä
+            listPresets.clearSelection();
+            // è¡¨ç¤ºåæ˜ ã•ã›ã¦
             updateStatus();
-            // ’Ç‰Á‚µ‚½‚Ì‚ğ‘I‘ğó‘Ô‚É‚·‚é
-            listPresets.SelectedIndex = mHandles.size() - 1;
+            // è¿½åŠ ã—ãŸã®ã‚’é¸æŠçŠ¶æ…‹ã«ã™ã‚‹
+            listPresets.setSelectedIndex( mHandles.size() - 1 );
         }
 
-        void buttonRemove_Click( object sender, EventArgs e )
+        public void buttonRemove_Click( Object sender, EventArgs e )
         {
-            int index = listPresets.SelectedIndex;
-            if ( index < 0 || listPresets.Items.Count <= index ) {
+            int index = listPresets.getSelectedIndex();
+            if ( index < 0 || listPresets.getItemCount() <= index ) {
                 return;
             }
 
@@ -275,63 +257,68 @@ namespace org.kbinani.cadencii
             updateStatus();
         }
 
-        void handleUpDownButtonClick( object sender, EventArgs e )
+        public void handleUpDownButtonClick( Object sender, EventArgs e )
         {
-            // ‘—MŒ³‚Ìƒ{ƒ^ƒ“‚É‚æ‚Á‚ÄC‘I‘ğƒCƒ“ƒfƒbƒNƒX‚Ì‘•ª‚ğ•Ï‚¦‚é
+            // é€ä¿¡å…ƒã®ãƒœã‚¿ãƒ³ã«ã‚ˆã£ã¦ï¼Œé¸æŠã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã®å¢—åˆ†ã‚’å¤‰ãˆã‚‹
             int delta = 1;
             if ( sender == buttonUp ) {
                 delta = -1;
             }
 
-            // ˆÚ“®Œã‚ÌƒCƒ“ƒfƒbƒNƒX‚ÍH
-            int index = listPresets.SelectedIndex;
+            // ç§»å‹•å¾Œã®ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã¯ï¼Ÿ
+            int index = listPresets.getSelectedIndex();
             int move_to = index + delta;
 
-            // ”ÍˆÍ“à‚©‚Ç‚¤‚©
+            // ç¯„å›²å†…ã‹ã©ã†ã‹
             if ( index < 0 ) {
                 return;
             }
             if ( move_to < 0 || mHandles.size() <= move_to ) {
-                // ”ÍˆÍŠO‚È‚ç‰½‚à‚µ‚È‚¢
+                // ç¯„å›²å¤–ãªã‚‰ä½•ã‚‚ã—ãªã„
                 return;
             }
 
-            // “ü‚ê‘Ö‚¦‚é
+            // å…¥ã‚Œæ›¿ãˆã‚‹
             VibratoHandle buff = mHandles.get( index );
             mHandles.set( index, mHandles.get( move_to ) );
             mHandles.set( move_to, buff );
 
-            // ‘I‘ğó‘Ô‚ğ•Ï‚¦‚é
-            listPresets.SelectedIndices.Clear();
+            // é¸æŠçŠ¶æ…‹ã‚’å¤‰ãˆã‚‹
+            listPresets.clearSelection();
             updateStatus();
-            listPresets.SelectedIndex = move_to;
+            listPresets.setSelectedIndex( move_to );
         }
 
-        void pictureResulting_Paint( object sender, System.Windows.Forms.PaintEventArgs e )
+        public void pictureResulting_Paint( Object sender, BPaintEventArgs e )
         {
-            // ”wŒi‚ğ•`‰æ
+            // èƒŒæ™¯ã‚’æç”»
             int raw_width = pictureResulting.getWidth();
             int raw_height = pictureResulting.getHeight();
+#if JAVA
+            Graphics g = 
+            g.setColor( PortUtil.LightGray );
+            g.fillRect( 0, 0, raw_width, raw_height );
+#else
             System.Drawing.Graphics g = e.Graphics;
-            //g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
             g.FillRectangle( System.Drawing.Brushes.LightGray, 0, 0, raw_width, raw_height );
+#endif
 
-            // ‘I‘ğ’†‚Ìƒnƒ“ƒhƒ‹‚ğæ“¾
+            // é¸æŠä¸­ã®ãƒãƒ³ãƒ‰ãƒ«ã‚’å–å¾—
             VibratoHandle handle = mSelected;
             if ( handle == null ) {
                 return;
             }
 
-            // •`‰æ‚Ì€”õ
+            // æç”»ã®æº–å‚™
             LineGraphDrawer d = getDrawerResulting();
             d.setGraphics( g );
 
-            // ƒrƒuƒ‰[ƒg‚Ìƒsƒbƒ`ƒxƒ“ƒh‚ğæ“¾‚·‚éƒCƒeƒŒ[ƒ^‚ğæ“¾
+            // ãƒ“ãƒ–ãƒ©ãƒ¼ãƒˆã®ãƒ”ãƒƒãƒãƒ™ãƒ³ãƒ‰ã‚’å–å¾—ã™ã‚‹ã‚¤ãƒ†ãƒ¬ãƒ¼ã‚¿ã‚’å–å¾—
             int width = raw_width;
             int vib_length = 960;
             int tempo = 500000;
             double vib_seconds = tempo * 1e-6 / 480.0 * vib_length;
-            // 480ƒNƒƒbƒN‚Í0.5•b
+            // 480ã‚¯ãƒ­ãƒƒã‚¯ã¯0.5ç§’
             VsqFileEx vsq = new VsqFileEx( "Miku", 1, 4, 4, tempo );
             VibratoBPList list_rate = handle.getRateBP();
             VibratoBPList list_depth = handle.getDepthBP();
@@ -343,7 +330,7 @@ namespace org.kbinani.cadencii
             if ( list_depth == null ) {
                 list_depth = new VibratoBPList( new float[] { 0.0f }, new int[] { start_depth } );
             }
-            // ‰ğ‘œ“x
+            // è§£åƒåº¦
             float resol = (float)(vib_seconds / width);
             if ( resol <= 0.0f ) {
                 return;
@@ -355,7 +342,7 @@ namespace org.kbinani.cadencii
                     list_depth, start_depth,
                     0, vib_length, resol );
 
-            // •`‰æ
+            // æç”»
             int height = raw_height - MARGIN * 2;
             d.clear();
             //g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
@@ -363,11 +350,10 @@ namespace org.kbinani.cadencii
             int lastx = 0;
             int lasty = -10;
             int tx = 0, ty = 0;
-            const int MIN_DELTA = 2;
             for ( ; itr.hasNext(); x++ ) {
                 double pitch = itr.next().getY();
                 int y = height - (int)((pitch + 1.25) / 2.5 * height) + MARGIN - 1;
-                int dx = x - lastx; // x‚Í’P’²‘‰Á
+                int dx = x - lastx; // xã¯å˜èª¿å¢—åŠ 
                 int dy = Math.Abs( y - lasty );
                 tx = x;
                 ty = y;
@@ -381,21 +367,27 @@ namespace org.kbinani.cadencii
             d.flush();
         }
 
-        void pictureRate_Paint( object sender, System.Windows.Forms.PaintEventArgs e )
+        public void pictureRate_Paint( Object sender, BPaintEventArgs e )
         {
-            // ”wŒi‚ğ•`‰æ
+            // èƒŒæ™¯ã‚’æç”»
             int width = pictureRate.getWidth();
             int height = pictureRate.getHeight();
+#if JAVA
+            Graphics g = e.Graphics;
+            g.setColor( PortUtil.LightGray );
+            g.fillRect( 0, 0, width, height );
+#else
             System.Drawing.Graphics g = e.Graphics;
             g.FillRectangle( System.Drawing.Brushes.LightGray, 0, 0, width, height );
+#endif
 
-            // ‘I‘ğ’†‚Ìƒnƒ“ƒhƒ‹‚ğæ“¾
+            // é¸æŠä¸­ã®ãƒãƒ³ãƒ‰ãƒ«ã‚’å–å¾—
             VibratoHandle handle = mSelected;
             if( handle == null ) {
                 return;
             }
 
-            // •`‰æ‚Ì€”õ
+            // æç”»ã®æº–å‚™
             LineGraphDrawer d = getDrawerRate();
             d.clear();
             d.setGraphics( g );
@@ -406,21 +398,27 @@ namespace org.kbinani.cadencii
                 width, height );
         }
 
-        void pictureDepth_Paint( object sender, System.Windows.Forms.PaintEventArgs e )
+        public void pictureDepth_Paint( Object sender, BPaintEventArgs e )
         {
-            // ”wŒi‚ğ•`‰æ
+            // èƒŒæ™¯ã‚’æç”»
             int width = pictureDepth.getWidth();
             int height = pictureDepth.getHeight();
+#if JAVA
+            Graphics g = e.Graphics;
+            g.setColor( PortUtil.LightGray );
+            g.fillRect( 0, 0, width, height );
+#else
             System.Drawing.Graphics g = e.Graphics;
             g.FillRectangle( System.Drawing.Brushes.LightGray, 0, 0, width, height );
+#endif
 
-            // ‘I‘ğ’†‚Ìƒnƒ“ƒhƒ‹‚ğæ“¾
+            // é¸æŠä¸­ã®ãƒãƒ³ãƒ‰ãƒ«ã‚’å–å¾—
             VibratoHandle handle = mSelected;
             if ( handle == null ) {
                 return;
             }
 
-            // •`‰æ‚Ì€”õ
+            // æç”»ã®æº–å‚™
             LineGraphDrawer d = getDrawerDepth();
             d.clear();
             d.setGraphics( g );
@@ -431,7 +429,7 @@ namespace org.kbinani.cadencii
                 width, height );
         }
 
-        void FormVibratoPreset_Resize( object sender, EventArgs e )
+        public void FormVibratoPreset_Resize( Object sender, EventArgs e )
         {
             if ( this.WindowState == System.Windows.Forms.FormWindowState.Normal ) {
                 mPreviousWidth = this.getWidth();
@@ -443,7 +441,7 @@ namespace org.kbinani.cadencii
 
         #region helper methods
         /// <summary>
-        /// ƒCƒxƒ“ƒgƒnƒ“ƒhƒ‰‚ğ“o˜^‚µ‚Ü‚·
+        /// ã‚¤ãƒ™ãƒ³ãƒˆãƒãƒ³ãƒ‰ãƒ©ã‚’ç™»éŒ²ã—ã¾ã™
         /// </summary>
         private void registerEventHandlers()
         {
@@ -463,7 +461,7 @@ namespace org.kbinani.cadencii
             this.Resize += new EventHandler( FormVibratoPreset_Resize );
         }
 
-        private static string _( string id )
+        private static String _( String id )
         {
             return Messaging.getMessage( id );
         }
@@ -492,7 +490,7 @@ namespace org.kbinani.cadencii
         }
 
         /// <summary>
-        /// Rate, Depth, Resulting pitch‚ÌŠeƒOƒ‰ƒt‚ğ‹­§•`‰æ‚µ‚Ü‚·
+        /// Rate, Depth, Resulting pitchã®å„ã‚°ãƒ©ãƒ•ã‚’å¼·åˆ¶æç”»ã—ã¾ã™
         /// </summary>
         private void repaintPictures()
         {
@@ -502,9 +500,9 @@ namespace org.kbinani.cadencii
         }
 
         /// <summary>
-        /// ƒrƒuƒ‰[ƒg‚ÌRate‚Ü‚½‚ÍDepthƒJ[ƒu‚ğw’è‚µ‚½ƒTƒCƒY‚Å•`‰æ‚µ‚Ü‚·
+        /// ãƒ“ãƒ–ãƒ©ãƒ¼ãƒˆã®Rateã¾ãŸã¯Depthã‚«ãƒ¼ãƒ–ã‚’æŒ‡å®šã—ãŸã‚µã‚¤ã‚ºã§æç”»ã—ã¾ã™
         /// </summary>
-        /// <param name="list">•`‰æ‚·‚éƒJ[ƒu</param>
+        /// <param name="list">æç”»ã™ã‚‹ã‚«ãƒ¼ãƒ–</param>
         /// <param name="start_value"></param>
         /// <param name="drawer"></param>
         /// <param name="width"></param>
@@ -532,7 +530,7 @@ namespace org.kbinani.cadencii
         }
 
         /// <summary>
-        /// RateƒJ[ƒu‚ğ•`‰æ‚·‚é‚Ì‚Ég‚¤•`‰æŠí‚ğæ“¾‚µ‚Ü‚·
+        /// Rateã‚«ãƒ¼ãƒ–ã‚’æç”»ã™ã‚‹ã®ã«ä½¿ã†æç”»å™¨ã‚’å–å¾—ã—ã¾ã™
         /// </summary>
         /// <returns></returns>
         private LineGraphDrawer getDrawerRate()
@@ -546,7 +544,7 @@ namespace org.kbinani.cadencii
         }
 
         /// <summary>
-        /// DepthƒJ[ƒu‚ğ•`‰æ‚·‚é‚Ì‚Ég‚¤•`‰æŠí‚ğæ“¾‚µ‚Ü‚·
+        /// Depthã‚«ãƒ¼ãƒ–ã‚’æç”»ã™ã‚‹ã®ã«ä½¿ã†æç”»å™¨ã‚’å–å¾—ã—ã¾ã™
         /// </summary>
         /// <returns></returns>
         private LineGraphDrawer getDrawerDepth()
@@ -560,7 +558,7 @@ namespace org.kbinani.cadencii
         }
 
         /// <summary>
-        /// Œ‹‰Ê‚Æ‚µ‚Ä“¾‚ç‚ê‚éƒsƒbƒ`ƒxƒ“ƒhƒJ[ƒu‚ğ•`‰æ‚·‚é‚Ì‚Ég‚¤•`‰æŠí‚ğæ“¾‚µ‚Ü‚·
+        /// çµæœã¨ã—ã¦å¾—ã‚‰ã‚Œã‚‹ãƒ”ãƒƒãƒãƒ™ãƒ³ãƒ‰ã‚«ãƒ¼ãƒ–ã‚’æç”»ã™ã‚‹ã®ã«ä½¿ã†æç”»å™¨ã‚’å–å¾—ã—ã¾ã™
         /// </summary>
         /// <returns></returns>
         private LineGraphDrawer getDrawerResulting()
@@ -576,61 +574,61 @@ namespace org.kbinani.cadencii
         }
 
         /// <summary>
-        /// ‰æ–Ê‚Ì•\¦ó‘Ô‚ğXV‚µ‚Ü‚·
+        /// ç”»é¢ã®è¡¨ç¤ºçŠ¶æ…‹ã‚’æ›´æ–°ã—ã¾ã™
         /// </summary>
         private void updateStatus()
         {
-            int old_select = listPresets.SelectedIndex;
-            listPresets.SelectedIndices.Clear();
+            int old_select = listPresets.getSelectedIndex();
+            listPresets.clearSelection();
 
-            // ƒAƒCƒeƒ€‚ÌŒÂ”‚É‰ß•s‘«‚ª‚ ‚ê‚Î”‚ğ®‚¦‚é
+            // ã‚¢ã‚¤ãƒ†ãƒ ã®å€‹æ•°ã«éä¸è¶³ãŒã‚ã‚Œã°æ•°ã‚’æ•´ãˆã‚‹
             int size = mHandles.size();
-            int delta = size - listPresets.Items.Count;
+            int delta = size - listPresets.getItemCount();
 #if DEBUG
             PortUtil.println( "FormVibratoPreset#updateStatus; delta=" + delta );
 #endif
             if ( delta > 0 ) {
                 for ( int i = 0; i < delta; i++ ) {
-                    listPresets.Items.Add( "" );
+                    listPresets.addItem( "" );
                 }
             } else if ( delta < 0 ) {
                 for ( int i = 0; i < -delta; i++ ) {
-                    listPresets.Items.RemoveAt( 0 );
+                    listPresets.removeItemAt( 0 );
                 }
             }
 
-            // ƒAƒCƒeƒ€‚ğXV
+            // ã‚¢ã‚¤ãƒ†ãƒ ã‚’æ›´æ–°
             for ( int i = 0; i < size; i++ ) {
                 VibratoHandle handle = mHandles.get( i );
-                listPresets.Items[i] = handle.getCaption();
+                listPresets.setItemAt( i, handle.getCaption() );
             }
 
-            // ‘I‘ğó‘Ô‚ğ•œ‹A
+            // é¸æŠçŠ¶æ…‹ã‚’å¾©å¸°
             if ( size <= old_select ) {
                 old_select = size - 1;
             }
             if ( old_select >= 0 ) {
-                listPresets.SelectedIndex = old_select;
+                listPresets.setSelectedIndex( old_select );
             }
         }
         #endregion
 
 #if JAVA
         #region UI Impl for Java
-        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/Cadencii/FormVibratoConfig.java
-        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/Cadencii/FormVibratoConfig.java
+        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/Cadencii/FormVibratoPreset.java
+        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/Cadencii/FormVibratoPreset.java
         #endregion
 #else
         #region UI Impl for C#
         /// <summary>
-        /// •K—v‚ÈƒfƒUƒCƒi•Ï”‚Å‚·B
+        /// å¿…è¦ãªãƒ‡ã‚¶ã‚¤ãƒŠå¤‰æ•°ã§ã™ã€‚
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
         /// <summary>
-        /// g—p’†‚ÌƒŠƒ\[ƒX‚ğ‚·‚×‚ÄƒNƒŠ[ƒ“ƒAƒbƒv‚µ‚Ü‚·B
+        /// ä½¿ç”¨ä¸­ã®ãƒªã‚½ãƒ¼ã‚¹ã‚’ã™ã¹ã¦ã‚¯ãƒªãƒ¼ãƒ³ã‚¢ãƒƒãƒ—ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="disposing">ƒ}ƒl[ƒW ƒŠƒ\[ƒX‚ª”jŠü‚³‚ê‚éê‡ trueA”jŠü‚³‚ê‚È‚¢ê‡‚Í false ‚Å‚·B</param>
+        /// <param name="disposing">ãƒãƒãƒ¼ã‚¸ ãƒªã‚½ãƒ¼ã‚¹ãŒç ´æ£„ã•ã‚Œã‚‹å ´åˆ trueã€ç ´æ£„ã•ã‚Œãªã„å ´åˆã¯ false ã§ã™ã€‚</param>
         protected override void Dispose( boolean disposing )
         {
             if ( disposing && (components != null) ) {
@@ -639,11 +637,11 @@ namespace org.kbinani.cadencii
             base.Dispose( disposing );
         }
 
-        #region Windows ƒtƒH[ƒ€ ƒfƒUƒCƒi‚Å¶¬‚³‚ê‚½ƒR[ƒh
+        #region Windows ãƒ•ã‚©ãƒ¼ãƒ  ãƒ‡ã‚¶ã‚¤ãƒŠã§ç”Ÿæˆã•ã‚ŒãŸã‚³ãƒ¼ãƒ‰
 
         /// <summary>
-        /// ƒfƒUƒCƒi ƒTƒ|[ƒg‚É•K—v‚Èƒƒ\ƒbƒh‚Å‚·B‚±‚Ìƒƒ\ƒbƒh‚Ì“à—e‚ğ
-        /// ƒR[ƒh ƒGƒfƒBƒ^‚Å•ÏX‚µ‚È‚¢‚Å‚­‚¾‚³‚¢B
+        /// ãƒ‡ã‚¶ã‚¤ãƒŠ ã‚µãƒãƒ¼ãƒˆã«å¿…è¦ãªãƒ¡ã‚½ãƒƒãƒ‰ã§ã™ã€‚ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã®å†…å®¹ã‚’
+        /// ã‚³ãƒ¼ãƒ‰ ã‚¨ãƒ‡ã‚£ã‚¿ã§å¤‰æ›´ã—ãªã„ã§ãã ã•ã„ã€‚
         /// </summary>
         private void InitializeComponent()
         {
@@ -668,7 +666,7 @@ namespace org.kbinani.cadencii
             this.textName = new org.kbinani.windows.forms.BTextBox();
             this.labelName = new org.kbinani.windows.forms.BLabel();
             this.groupPreview = new org.kbinani.windows.forms.BGroupBox();
-            this.listPresets = new System.Windows.Forms.ListBox();
+            this.listPresets = new BListBox();
             this.textDepth = new org.kbinani.cadencii.NumberTextBox();
             this.textRate = new org.kbinani.cadencii.NumberTextBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureRate)).BeginInit();
@@ -1002,6 +1000,28 @@ namespace org.kbinani.cadencii
 
         private BButton buttonCancel;
         private BButton buttonOk;
+        private org.kbinani.windows.forms.BButton buttonRemove;
+        private org.kbinani.windows.forms.BButton buttonAdd;
+        private org.kbinani.windows.forms.BButton buttonUp;
+        private org.kbinani.windows.forms.BLabel labelRate;
+        private org.kbinani.windows.forms.BLabel labelDepth;
+        private NumberTextBox textRate;
+        private NumberTextBox textDepth;
+        private BLabel labelPresets;
+        private BPictureBox pictureRate;
+        private BLabel labelRateCurve;
+        private BLabel labelDepthCurve;
+        private BPictureBox pictureDepth;
+        private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.SplitContainer splitContainer2;
+        private BLabel labelResulting;
+        private BPictureBox pictureResulting;
+        private BGroupBox groupEdit;
+        private BLabel labelName;
+        private BTextBox textName;
+        private BGroupBox groupPreview;
+        private BListBox listPresets;
+        private org.kbinani.windows.forms.BButton buttonDown;
         #endregion
 #endif
     }

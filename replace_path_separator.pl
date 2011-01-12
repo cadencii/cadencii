@@ -14,6 +14,7 @@ open( OUT, ">Makefile" );
 "./org.kbinani.windows.forms/BVScrollBar.java",
 "./org.kbinani.windows.forms/BPictureBox.java",
 "./org.kbinani.windows.forms/BPanel.java",
+"./org.kbinani.windows.forms/BListBox.java",
 "./org.kbinani.xml/XmlMember.java",
 "./org.kbinani.xml/XmlSerializer.java",
 "./Cadencii/FormImportLyric.java",
@@ -80,7 +81,7 @@ foreach my $sdep ( @special_dependencies ){
         $prefix = "org/kbinani/apputil";
     }
     $dep_special .= "./build/java/$prefix/$fname: ./BuildJavaUI/src/$prefix/$fname $sdep_cs\n";
-    $dep_special .= "\tmono ./pp_cs2java.exe \$(PPCS2JAVA_OPT) -i $sdep_cs -o ./build/java/$prefix/$fname\n\n";
+    $dep_special .= "\t\$(MONO)pp_cs2java.exe \$(PPCS2JAVA_OPT) -i $sdep_cs -o ./build/java/$prefix/$fname\n\n";
 }
 
 while( $line = <FILE> ){
@@ -112,12 +113,14 @@ while( $line = <FILE> ){
         $line =~ s/\@TARGET\@/.\\build\\win/g;
         $line =~ s/\@MKDIR\@/perl safe_mkdir\.pl/g;
         $line =~ s/\@PLAY_SOUND_DLL\@/\$\(TARGET\)\\PlaySound\.dll/g;
+        $line =~ s/\@MONO\@//g;
     }else{
         $line =~ s/\@CP\@/cp/g;
         $line =~ s/\@RM\@/rm/g;
         $line =~ s/\@TARGET\@/\.\/build\/win/g;
         $line =~ s/\@MKDIR\@/perl safe_mkdir\.pl/g;
         $line =~ s/\@PLAY_SOUND_DLL\@//g;
+        $line =~ s/\@MONO\@/mono /g;
     }
     print OUT $line;
 }
@@ -174,6 +177,6 @@ sub getSrcList{
         my $s = $cname . ".java";
         $_[3] = $_[3] . "$prefix$s:$dir/$s\n\t\$(CP) $dir/$s $prefix$s\n";
         $_[4] .= "$prefix$cname.java: $dir/$cname.cs\n";
-        $_[4] .= "\tmono ./pp_cs2java.exe \$(PPCS2JAVA_OPT) -i $dir/$cname.cs -o $prefix$cname.java\n\n";
+        $_[4] .= "\t\$(MONO)pp_cs2java.exe \$(PPCS2JAVA_OPT) -i $dir/$cname.cs -o $prefix$cname.java\n\n";
     }
 }

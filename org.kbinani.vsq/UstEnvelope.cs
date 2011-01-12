@@ -20,14 +20,16 @@ import org.kbinani.*;
 using System;
 using org.kbinani;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
 #endif
 
 #if JAVA
     public class UstEnvelope implements Cloneable, Serializable {
 #else
     [Serializable]
-    public class UstEnvelope : ICloneable {
+    public class UstEnvelope : ICloneable
+    {
 #endif
         public int p1 = 0;
         public int p2 = 5;
@@ -41,10 +43,12 @@ namespace org.kbinani.vsq {
         public int p5 = 0;
         public int v5 = 100;
 
-        public UstEnvelope() {
+        public UstEnvelope()
+        {
         }
 
-        public UstEnvelope( String line ) {
+        public UstEnvelope( String line )
+        {
             if ( line.ToLower().StartsWith( "envelope=" ) ) {
                 String[] spl = PortUtil.splitString( line, '=' );
                 spl = PortUtil.splitString( spl[1], ',' );
@@ -68,29 +72,34 @@ namespace org.kbinani.vsq {
             }
         }
 
-        public Object clone() {
+        public Object clone()
+        {
             return new UstEnvelope( toString() );
         }
 
 #if !JAVA
-        public object Clone() {
+        public object Clone()
+        {
             return clone();
         }
 #endif
 
 #if !JAVA
-        public override string ToString() {
+        public override String ToString()
+        {
             return toString();
         }
 #endif
 
-        public String toString() {
+        public String toString()
+        {
             String ret = "Envelope=" + p1 + "," + p2 + "," + p3 + "," + v1 + "," + v2 + "," + v3 + "," + v4;
             ret += ",%," + p4 + "," + p5 + "," + v5;
             return ret;
         }
 
-        public int getCount() {
+        public int getCount()
+        {
             //if ( Separator == "%" ) {
             return 5;
             //} else {

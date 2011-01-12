@@ -53,7 +53,7 @@ namespace org.kbinani.cadencii
 
     public class AppManager
     {
-        internal class RunGeneratorQueue
+        class RunGeneratorQueue
         {
             public WaveGenerator generator;
             public long samples;
@@ -693,7 +693,7 @@ namespace org.kbinani.cadencii
 
         /// <summary>
         /// 波形ビューのリロードが要求されたとき発生するイベント．
-        /// GeneralEventArgsの引数は，トラック番号,waveファイル名,開始時刻(秒),終了時刻(秒)が格納されたobject[]配列
+        /// GeneralEventArgsの引数は，トラック番号,waveファイル名,開始時刻(秒),終了時刻(秒)が格納されたObject[]配列
         /// 開始時刻＞終了時刻の場合は，partialではなく全体のリロード要求
         /// </summary>
 #if JAVA
@@ -891,7 +891,12 @@ namespace org.kbinani.cadencii
                             waveViewReloadRequired( this, track, wavePath, 1, -1 );
 #else
                             if ( WaveViewReloadRequired != null ) {
-                                WaveViewReloadRequired.Invoke( typeof( AppManager ), track, wavePath, 1, -1 );
+                                WaveViewRealoadRequiredEventArgs arg = new WaveViewRealoadRequiredEventArgs();
+                                arg.track = track;
+                                arg.file = wavePath;
+                                arg.secStart = 1;
+                                arg.secEnd = -1;
+                                WaveViewReloadRequired.Invoke( typeof( AppManager ), arg );
                             }
 #endif
                         } catch ( Exception ex ) {
@@ -1056,7 +1061,12 @@ namespace org.kbinani.cadencii
                             waveViewReloadRequired( this, tracks[k], wavePath, secStart, secEnd );
 #else
                             if ( WaveViewReloadRequired != null ) {
-                                WaveViewReloadRequired.Invoke( typeof( AppManager ), tracks[k], wavePath, secStart, secEnd );
+                                WaveViewRealoadRequiredEventArgs arg = new WaveViewRealoadRequiredEventArgs();
+                                arg.track = tracks[k];
+                                arg.file = wavePath;
+                                arg.secStart = secStart;
+                                arg.secEnd = secEnd;
+                                WaveViewReloadRequired.Invoke( typeof( AppManager ), arg );
                             }
 #endif
                         } catch ( Exception ex ) {
@@ -1917,7 +1927,11 @@ namespace org.kbinani.cadencii
         /// <param name="dialog"></param>
         /// <param name="main_form"></param>
         /// <returns></returns>
+#if JAVA
+        public static BDialogResult showModalDialog( BDialog dialog, Component parent_form )
+#else
         public static BDialogResult showModalDialog( BDialog dialog, System.Windows.Forms.Form parent_form )
+#endif
         {
             beginShowDialog();
             BDialogResult ret = dialog.showDialog( parent_form );
@@ -1931,7 +1945,11 @@ namespace org.kbinani.cadencii
         /// <param name="dialog"></param>
         /// <param name="main_form"></param>
         /// <returns></returns>
+#if JAVA
+        public static BDialogResult showModalDialog( BFolderBrowser dialog, Component main_form )
+#else
         public static BDialogResult showModalDialog( BFolderBrowser dialog, System.Windows.Forms.Form main_form )
+#endif
         {
             beginShowDialog();
             dialog.setVisible( true, main_form );
@@ -1946,7 +1964,11 @@ namespace org.kbinani.cadencii
         /// <param name="dialog"></param>
         /// <param name="main_form"></param>
         /// <returns></returns>
+#if JAVA
+        public static int showModalDialog( BFileChooser dialog, boolean open_mode, Component main_form )
+#else
         public static int showModalDialog( BFileChooser dialog, boolean open_mode, System.Windows.Forms.Form main_form )
+#endif
         {
             beginShowDialog();
             int ret = 0;
@@ -3991,7 +4013,11 @@ namespace org.kbinani.cadencii
                         if ( c == '.' ) {
                             num_period++;
                         } else {
+#if JAVA
+                            if ( Character.isDigit( c ) ) { 
+#else
                             if ( !char.IsNumber( c ) ) {
+#endif
                                 register = false;
                                 break;
                             }

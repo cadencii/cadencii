@@ -78,13 +78,17 @@ namespace org.kbinani.cadencii
         /// デフォルトビブラートのRate
         /// バージョン3.3で廃止
         /// </summary>
+#if !JAVA
         [Obsolete]
+#endif
         private int __revoked__DefaultVibratoRate = 64;
         /// <summary>
         /// デフォルトビブラートのDepth
         /// バージョン3.3で廃止
         /// </summary>
+#if !JAVA
         [Obsolete]
+#endif
         private int __revoked__DefaultVibratoDepth = 64;
         /// <summary>
         /// ビブラートの自動追加を行うかどうかを決める音符長さの閾値．単位はclock
@@ -103,7 +107,7 @@ namespace org.kbinani.cadencii
         /// カスタムのデフォルトビブラート設定
         /// <version>3.3+</version>
         /// </summary>
-        public string AutoVibratoTypeCustom = "$04040001";
+        public String AutoVibratoTypeCustom = "$04040001";
         /// <summary>
         /// ユーザー定義のビブラート設定．
         /// <version>3.3+</version>
@@ -945,12 +949,12 @@ namespace org.kbinani.cadencii
                     index = 0;
                 } else {
                     int trimlen = 4;
-                    int len = this.AutoVibratoTypeCustom.Length;
+                    int len = PortUtil.getStringLength( this.AutoVibratoTypeCustom );
                     if ( len < 4 ) {
                         trimlen = len;
                     }
                     if ( trimlen > 0 ) {
-                        string s = this.AutoVibratoTypeCustom.Substring( len - trimlen, trimlen );
+                        String s = this.AutoVibratoTypeCustom.Substring( len - trimlen, trimlen );
                         try {
                             index = (int)PortUtil.fromHexString( s );
                             index--;

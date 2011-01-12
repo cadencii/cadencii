@@ -226,7 +226,7 @@ namespace org.kbinani.cadencii {
             chkMetaText.Click += new EventHandler( chkMetaText_Click );
             chkExportVocaloidNrpn.CheckedChanged += new EventHandler( chkExportVocaloidNrpn_CheckedChanged );
             chkExportVocaloidNrpn.CheckedChanged += new EventHandler( chkExportVocaloidNrpn_CheckedChanged );
-            FormClosing += new System.Windows.Forms.FormClosingEventHandler( FormMidiImExport_FormClosing );
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( FormMidiImExport_FormClosing );
             btnOK.Click += new EventHandler( btnOK_Click );
             btnCancel.Click += new EventHandler( btnCancel_Click );
             radioGateTime.CheckedChanged += new EventHandler( radioGateTime_CheckedChanged );

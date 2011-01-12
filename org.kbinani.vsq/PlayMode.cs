@@ -15,10 +15,12 @@
 package org.kbinani.vsq;
 
 #else
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
 #endif
 
-    public class PlayMode {
+    public class PlayMode
+    {
         /// <summary>
         /// トラックはミュートされる．(-1)
         /// </summary>
@@ -32,7 +34,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         public const int PlayWithSynth = 1;
 
-        private PlayMode() {
+        private PlayMode()
+        {
         }
     }
 

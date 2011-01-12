@@ -23,7 +23,8 @@ using org.kbinani;
 using org.kbinani.java.util;
 using org.kbinani.java.io;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
     using boolean = System.Boolean;
 #endif
 
@@ -34,7 +35,8 @@ namespace org.kbinani.vsq {
     public class VsqEvent implements Comparable<VsqEvent>, Cloneable, Serializable {
 #else
     [Serializable]
-    public class VsqEvent : IComparable<VsqEvent>, ICloneable {
+    public class VsqEvent : IComparable<VsqEvent>, ICloneable
+    {
 #endif
         public String Tag;
         /// <summary>
@@ -45,7 +47,8 @@ namespace org.kbinani.vsq {
         public VsqID ID;
         public UstEvent UstEvent = new UstEvent();
 
-        public boolean equals( VsqEvent item ) {
+        public boolean equals( VsqEvent item )
+        {
             if ( this.Clock != item.Clock ) {
                 return false;
             }
@@ -216,7 +219,8 @@ namespace org.kbinani.vsq {
         /// このオブジェクトのコピーを作成します
         /// </summary>
         /// <returns></returns>
-        public Object clone() {
+        public Object clone()
+        {
             VsqEvent ret = new VsqEvent( Clock, (VsqID)ID.clone() );
             ret.InternalID = InternalID;
             if ( UstEvent != null ) {
@@ -227,18 +231,21 @@ namespace org.kbinani.vsq {
         }
 
 #if !JAVA
-        public object Clone() {
+        public object Clone()
+        {
             return clone();
         }
 #endif
 
 #if !JAVA
-        public int CompareTo( VsqEvent item ) {
+        public int CompareTo( VsqEvent item )
+        {
             return compareTo( item );
         }
 #endif
 
-        public int compareTo( VsqEvent item ) {
+        public int compareTo( VsqEvent item )
+        {
             int ret = this.Clock - item.Clock;
             if ( ret == 0 ) {
                 if ( this.ID != null && item.ID != null ) {
@@ -255,7 +262,8 @@ namespace org.kbinani.vsq {
             }
         }
 
-        public VsqEvent( String line ) {
+        public VsqEvent( String line )
+        {
             String[] spl = PortUtil.splitString( line, new char[] { '=' } );
             Clock = PortUtil.parseInt( spl[0] );
             if ( spl[1].Equals( "EOS" ) ) {
@@ -268,11 +276,13 @@ namespace org.kbinani.vsq {
             this( 0, new VsqID() );
 #else
         public VsqEvent()
-            : this( 0, new VsqID() ) {
+            : this( 0, new VsqID() )
+        {
 #endif
         }
 
-        public VsqEvent( int clock, VsqID id /*, int internal_id*/ ) {
+        public VsqEvent( int clock, VsqID id /*, int internal_id*/ )
+        {
             Clock = clock;
             ID = id;
             //InternalID = internal_id;

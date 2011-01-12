@@ -430,7 +430,7 @@ namespace org.kbinani.cadencii {
             // comboShiftValue
             // 
             this.comboShiftValue.FormattingEnabled = true;
-            this.comboShiftValue.Items.AddRange( new object[] {
+            this.comboShiftValue.Items.AddRange( new Object[] {
             "1(small)",
             "2",
             "3(medium)",
@@ -444,7 +444,7 @@ namespace org.kbinani.cadencii {
             // comboPitPattern
             // 
             this.comboPitPattern.FormattingEnabled = true;
-            this.comboPitPattern.Items.AddRange( new object[] {
+            this.comboPitPattern.Items.AddRange( new Object[] {
             "Pattern 1",
             "Pattern 2",
             "Pattern 3"} );
@@ -478,7 +478,7 @@ namespace org.kbinani.cadencii {
             // comboPitValue
             // 
             this.comboPitValue.FormattingEnabled = true;
-            this.comboPitValue.Items.AddRange( new object[] {
+            this.comboPitValue.Items.AddRange( new Object[] {
             "1(small)",
             "2",
             "3(medium)",

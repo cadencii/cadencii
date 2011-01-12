@@ -30,8 +30,8 @@ class pp_cs2java {
     static List<string> s_included = new List<string>(); // インクルードされたファイルのリスト
     static string[,] REPLACE = new string[0, 2];
     static readonly string[,] REPLACE_JAVA = new string[,]{
-        {"string", "String"},
-        {"bool", "boolean"},
+        //{"string", "String"},
+        //{" bool ", " boolean "},
         {".Equals(", ".equals(" },
         {".ToString(", ".toString(" },
         {".StartsWith(", ".startsWith(" },
@@ -411,12 +411,22 @@ class pp_cs2java {
                         DirectiveUnit d = new DirectiveUnit( name, true );
                         ds.Push( d );
                         s_current_dirctive.Push( ds );
+#if DEBUG
+                        Console.Write( "---if!         ; " );
+                        printCurrentDirectives();
+                        Console.WriteLine();
+#endif
                     } else if ( trim.StartsWith( "#if" ) ) {
                         string name = trim.Substring( 3 );
                         Directives ds = new Directives();
                         DirectiveUnit d = new DirectiveUnit( name, false );
                         ds.Push( d );
                         s_current_dirctive.Push( ds );
+#if DEBUG
+                        Console.Write( "---if          ; " );
+                        printCurrentDirectives();
+                        Console.WriteLine();
+#endif
                     } else if ( trim.StartsWith( "#else" ) || trim.StartsWith( "#elif" ) ) {
                         if ( s_current_dirctive.Count > 0 ) {
                             // 現在設定されているディレクティブを取得
@@ -430,9 +440,11 @@ class pp_cs2java {
                                 cache.Add( current.Pop() );
                             }
                             // 否定して格納
-                            for ( int i = 0; i < c; i++ ) {
+                            for ( int i = c - 1; i >= 0; i-- ) {
                                 DirectiveUnit d = cache[i];
-                                d.not = !d.not;
+                                if ( i == 0 ) {
+                                    d.not = !d.not;
+                                }
                                 current.Push( d );
                             }
 
@@ -451,10 +463,20 @@ class pp_cs2java {
                             // 格納
                             s_current_dirctive.Push( current );
                         }
+#if DEBUG
+                        Console.Write( "---else or elif; " );
+                        printCurrentDirectives();
+                        Console.WriteLine();
+#endif
                     } else if ( trim.StartsWith( "#endif" ) ) {
                         if ( s_current_dirctive.Count > 0 ) {
                             s_current_dirctive.Pop();
                         }
+#if DEBUG
+                        Console.Write( "---endif       ; " );
+                        printCurrentDirectives();
+                        Console.WriteLine();
+#endif
                     } else if ( trim.StartsWith( "#define" ) ) {
                         string direct = trim.Replace( " ", "" );
                         direct = direct.Substring( 7 );
@@ -475,21 +497,6 @@ class pp_cs2java {
                 }
 
                 bool print_this_line = true;// s_current_dirctive.Count <= 0;
-#if DEBUG
-
-                Console.WriteLine( "------------------------------------------------------------------------" );
-                Console.WriteLine( "    {" );
-                foreach ( Directives ds in s_current_dirctive ) {
-                    Console.WriteLine( "        {" );
-                    foreach ( DirectiveUnit d in ds ) {
-                        Console.WriteLine( "            " + (d.not ? "!" : "") + d.name );
-                    }
-                    Console.WriteLine( "        }," );
-                }
-                Console.WriteLine( "    }" );
-#endif
-                //string dirs = "";
-                //bool first = true;
 
                 // ディレクティブの定義状態を調べる
                 // 現在のディレクティブを全て取り出す
@@ -527,30 +534,39 @@ class pp_cs2java {
                     while ( index_typeof >= 0 ) {
                         int bra = line.IndexOf( "(", index_typeof );
                         int cket = line.IndexOf( ")", index_typeof );
+                        if ( bra < 0 || cket < 0 ) {
+                            break;
+                        }
                         string prefix = line.Substring( 0, index_typeof );
                         string suffix = line.Substring( cket + 1 );
                         string typename = line.Substring( bra + 1, cket - bra - 1 ).Trim();
                         string javaclass = typename + ".class";
                         switch ( typename ) {
-                            case "int":
-                            javaclass = "Integer.TYPE";
-                            break;
-                            case "float":
-                            javaclass = "Float.TYPE";
-                            break;
-                            case "double":
-                            javaclass = "Double.TYPE";
-                            break;
-                            case "void":
-                            javaclass = "Void.TYPE";
-                            break;
+                            case "int": {
+                                javaclass = "Integer.TYPE";
+                                break;
+                            }
+                            case "float": {
+                                javaclass = "Float.TYPE";
+                                break;
+                            }
+                            case "double": {
+                                javaclass = "Double.TYPE";
+                                break;
+                            }
+                            case "void": {
+                                javaclass = "Void.TYPE";
+                                break;
+                            }
                             case "bool":
-                            case "boolean":
-                            javaclass = "Boolean.TYPE";
-                            break;
-                            case "byte":
-                            javaclass = "Byte.TYPE";
-                            break;
+                            case "boolean": {
+                                javaclass = "Boolean.TYPE";
+                                break;
+                            }
+                            case "byte": {
+                                javaclass = "Byte.TYPE";
+                                break;
+                            }
                         }
                         line = prefix + javaclass + " " + suffix;
                         index_typeof = line.IndexOf( "typeof" );
@@ -579,7 +595,11 @@ class pp_cs2java {
                         } else {
                             ope = "remove";
                         }
-                        line = pre + instance + "." + ev.Substring( 0, 1 ).ToLower() + ev.Substring( 1 ) + "Event." + ope + "( new " + handler + "EventHandler( this, \"" + method + "\" ) );";
+                        if ( ev == "" ) {
+                            Console.Error.WriteLine( "error; ev is null; path=" + path + "+ line:" + line );
+                        } else {
+                            line = pre + instance + (instance == "" ? "" : ".") + ev.Substring( 0, 1 ).ToLower() + ev.Substring( 1 ) + "Event." + ope + "( new " + handler + "EventHandler( this, \"" + method + "\" ) );";
+                        }
                     }
 
                     if ( s_shift_indent < 0 ) {
@@ -696,6 +716,24 @@ class pp_cs2java {
             }
         }
         File.Delete( tmp );
+    }
+
+    /// <summary>
+    /// s_current_directiveの状態を1行で出力します(最後の改行無し)
+    /// </summary>
+    private static void printCurrentDirectives()
+    {
+        bool first0 = true;
+        foreach ( Directives d in s_current_dirctive.ToArray() ) {
+            Console.Write( (first0 ? "" : "," ) + "[" );
+            first0 = false;
+            bool first = true;
+            foreach ( DirectiveUnit du in d.ToArray() ) {
+                Console.Write( (first ? "" : ",") + (du.not ? "!" : "") + du.name );
+                first = false;
+            }
+            Console.Write( "]" );
+        }
     }
 
     /// <summary>

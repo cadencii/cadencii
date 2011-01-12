@@ -67,8 +67,8 @@ namespace org.kbinani.cadencii{
         public static void main( String[] args ){
             String file = parseArguments( args );
             AppManager.init();
-            AppManager.mainWindow = new FormMain( file );
-            AppManager.mainWindow.setVisible( true );
+            AppManager.mMainWindow = new FormMain( file );
+            AppManager.mMainWindow.setVisible( true );
         }
 #else
 
@@ -99,7 +99,7 @@ namespace org.kbinani.cadencii{
             }
 
             // 開発版の場合の警告ダイアログ
-            string str_minor = BAssemblyInfo.fileVersionMinor;
+            String str_minor = BAssemblyInfo.fileVersionMinor;
             int minor = 0;
             try {
                 minor = PortUtil.parseInt( str_minor );

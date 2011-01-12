@@ -25,14 +25,16 @@ using org.kbinani;
 using org.kbinani.java.util;
 using org.kbinani.java.io;
 
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
     using boolean = System.Boolean;
 #endif
 
     /// <summary>
     /// VOCALOID / VOCALOID2システムについての情報を取得するユーティリティ。
     /// </summary>
-    public class VocaloSysUtil {
+    public class VocaloSysUtil
+    {
         private static TreeMap<SynthesizerType, SingerConfigSys> s_singer_config_sys = new TreeMap<SynthesizerType, SingerConfigSys>();
         private static TreeMap<SynthesizerType, ExpressionConfigSys> s_exp_config_sys = new TreeMap<SynthesizerType, ExpressionConfigSys>();
         private static TreeMap<SynthesizerType, String> s_path_vsti = new TreeMap<SynthesizerType, String>();
@@ -49,10 +51,12 @@ namespace org.kbinani.vsq {
         /// </summary>
         private static boolean dseVersion101Available = false;
 
-        private VocaloSysUtil() {
+        private VocaloSysUtil()
+        {
         }
 
-        public static SingerConfigSys getSingerConfigSys( SynthesizerType type ) {
+        public static SingerConfigSys getSingerConfigSys( SynthesizerType type )
+        {
             if ( s_singer_config_sys.containsKey( type ) ) {
                 return s_singer_config_sys.get( type );
             } else {
@@ -64,7 +68,8 @@ namespace org.kbinani.vsq {
         /// VOCALOID1にて、バージョン1.1のSynthesize Engineが利用可能かどうか。
         /// 既定ではfalse。DSE1_1.dllが存在するかどうかで判定。
         /// </summary>
-        public static boolean isDSEVersion101Available() {
+        public static boolean isDSEVersion101Available()
+        {
             return dseVersion101Available;
         }
 
@@ -72,7 +77,8 @@ namespace org.kbinani.vsq {
         /// VOCALOID1の、デフォルトのSynthesize Engineバージョンを取得します。
         /// 1.0の場合100, 1.1の場合101。規定では100(1.0)。
         /// </summary>
-        public static int getDefaultDseVersion() {
+        public static int getDefaultDseVersion()
+        {
             if ( !isInitialized ) {
                 init();
             }
@@ -84,7 +90,8 @@ namespace org.kbinani.vsq {
         /// <summary>
         /// インストールされているVOCALOID / VOCALOID2についての情報を読み込み、初期化します。
         /// </summary>
-        public static void init() {
+        public static void init()
+        {
             init( null );
         }
 
@@ -92,7 +99,8 @@ namespace org.kbinani.vsq {
         /// インストールされているVOCALOID / VOCALOID2についての情報を読み込み、初期化します。
         /// </summary>
         /// <param name="sw"></param>
-        public static void init( BufferedWriter sw ) {
+        public static void init( BufferedWriter sw )
+        {
             if ( isInitialized ) {
                 return;
             }
@@ -110,7 +118,7 @@ namespace org.kbinani.vsq {
 #if DEBUG
                 if ( sw == null ) {
                     close = true;
-                    sw = new BufferedWriter( new FileWriter( 
+                    sw = new BufferedWriter( new FileWriter(
                         PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "reg_keys_vocalo1.txt" ) ) );
                 }
 #endif
@@ -150,7 +158,7 @@ namespace org.kbinani.vsq {
                          installed_singers1 );
                 s_path_vsti.put( SynthesizerType.VOCALOID1, path_vsti.value );
                 s_path_editor.put( SynthesizerType.VOCALOID1, path_editor.value );
-                SingerConfigSys singer_config_sys = 
+                SingerConfigSys singer_config_sys =
                     new SingerConfigSys( path_voicedb1.value, installed_singers1.toArray( new String[] { } ) );
                 String expression_map = PortUtil.combinePath( path_expdb1.value, "expression.map" );
                 if ( PortUtil.isFileExists( expression_map ) ) {
@@ -168,7 +176,7 @@ namespace org.kbinani.vsq {
                 }
 
                 // VOCALOID.iniから、DSEVersionを取得
-                if ( path_editor.value != null && !path_editor.value.Equals( "" ) && 
+                if ( path_editor.value != null && !path_editor.value.Equals( "" ) &&
                      PortUtil.isFileExists( path_editor.value ) ) {
                     String dir = PortUtil.getDirectoryName( path_editor.value );
                     String ini = PortUtil.combinePath( dir, "VOCALOID.ini" );
@@ -299,7 +307,8 @@ namespace org.kbinani.vsq {
         /// <param name="vibrato_length"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static VibratoHandle getDefaultVibratoHandle( String icon_id, int vibrato_length, SynthesizerType type ) {
+        public static VibratoHandle getDefaultVibratoHandle( String icon_id, int vibrato_length, SynthesizerType type )
+        {
             if ( !isInitialized ) {
                 init();
             }
@@ -324,7 +333,8 @@ namespace org.kbinani.vsq {
                                      ByRef<String> path_voicedb,
                                      ByRef<String> path_expdb,
                                      ByRef<String> path_editor,
-                                     Vector<String> installed_singers ) {
+                                     Vector<String> installed_singers )
+        {
             Vector<String> application = new Vector<String>();
             Vector<String> expression = new Vector<String>();
             Vector<String> voice = new Vector<String>();
@@ -426,7 +436,8 @@ namespace org.kbinani.vsq {
         /// <param name="reg_key_name"></param>
         /// <param name="parent_name"></param>
         /// <param name="list"></param>
-        private static void initPrint( String reg_key_name, String parent_name, Vector<String> list ) {
+        private static void initPrint( String reg_key_name, String parent_name, Vector<String> list )
+        {
 #if JAVA
 #else
             try {
@@ -462,7 +473,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static Iterator<NoteHeadHandle> attackConfigIterator( SynthesizerType type ) {
+        public static Iterator<NoteHeadHandle> attackConfigIterator( SynthesizerType type )
+        {
             if ( !isInitialized ) {
                 init();
             }
@@ -478,7 +490,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static Iterator<VibratoHandle> vibratoConfigIterator( SynthesizerType type ) {
+        public static Iterator<VibratoHandle> vibratoConfigIterator( SynthesizerType type )
+        {
             if ( !isInitialized ) {
                 init();
             }
@@ -494,7 +507,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static Iterator<IconDynamicsHandle> dynamicsConfigIterator( SynthesizerType type ) {
+        public static Iterator<IconDynamicsHandle> dynamicsConfigIterator( SynthesizerType type )
+        {
             if ( !isInitialized ) {
                 init();
             }
@@ -512,7 +526,8 @@ namespace org.kbinani.vsq {
         /// <param name="program"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static String getOriginalSinger( int language, int program, SynthesizerType type ) {
+        public static String getOriginalSinger( int language, int program, SynthesizerType type )
+        {
             if ( !isInitialized ) {
                 init();
             }
@@ -547,7 +562,8 @@ namespace org.kbinani.vsq {
         /// <param name="program"></param>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static VsqID getSingerID( int language, int program, SynthesizerType type ) {
+        public static VsqID getSingerID( int language, int program, SynthesizerType type )
+        {
             if ( !isInitialized ) {
                 init();
             }
@@ -563,7 +579,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static String getEditorPath( SynthesizerType type ) {
+        public static String getEditorPath( SynthesizerType type )
+        {
             if ( !isInitialized ) {
                 init();
             }
@@ -579,7 +596,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static String getDllPathVsti( SynthesizerType type ) {
+        public static String getDllPathVsti( SynthesizerType type )
+        {
             if ( !isInitialized ) {
                 init();
             }
@@ -595,7 +613,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public static SingerConfig[] getSingerConfigs( SynthesizerType type ) {
+        public static SingerConfig[] getSingerConfigs( SynthesizerType type )
+        {
             if ( !isInitialized ) {
                 init();
             }
@@ -611,7 +630,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="name">name of singer</param>
         /// <returns></returns>
-        public static VsqVoiceLanguage getLanguageFromName( String name ) {
+        public static VsqVoiceLanguage getLanguageFromName( String name )
+        {
             if ( !isInitialized ) {
                 init();
             }
@@ -634,8 +654,7 @@ namespace org.kbinani.vsq {
                 search.Equals( "miku_soft" ) ||
                 search.Equals( "miku_light" ) ||
                 search.Equals( "miku_vivid" ) ||
-                search.Equals( "miku_solid" ) )
-            {
+                search.Equals( "miku_solid" ) ) {
                 return VsqVoiceLanguage.Japanese;
             } else if ( search.Equals( "sweet_ann" ) ||
                 search.Equals( "prima" ) ||
@@ -644,8 +663,7 @@ namespace org.kbinani.vsq {
                 search.Equals( "lola" ) ||
                 search.Equals( "leon" ) ||
                 search.Equals( "miriam" ) ||
-                search.Equals( "big_al" ) )
-            {
+                search.Equals( "big_al" ) ) {
                 return VsqVoiceLanguage.English;
             }
             return VsqVoiceLanguage.Japanese;
@@ -656,7 +674,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="pan"></param>
         /// <returns></returns>
-        public static double getAmplifyCoeffFromPanLeft( int pan ) {
+        public static double getAmplifyCoeffFromPanLeft( int pan )
+        {
             return pan / -64.0 + 1.0;
         }
 
@@ -665,7 +684,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="pan"></param>
         /// <returns></returns>
-        public static double getAmplifyCoeffFromPanRight( int pan ) {
+        public static double getAmplifyCoeffFromPanRight( int pan )
+        {
             return pan / 64.0 + 1.0;
         }
 
@@ -674,7 +694,8 @@ namespace org.kbinani.vsq {
         /// </summary>
         /// <param name="feder"></param>
         /// <returns></returns>
-        public static double getAmplifyCoeffFromFeder( int feder ) {
+        public static double getAmplifyCoeffFromFeder( int feder )
+        {
             return Math.Exp( 1.18448420e-01 * feder / 10.0 );
         }
     }

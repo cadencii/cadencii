@@ -14,10 +14,12 @@
 #if JAVA
 package org.kbinani.vsq;
 #else
-namespace org.kbinani.vsq {
+namespace org.kbinani.vsq
+{
 #endif
 
-    public struct VsqBPPairSearchContext {
+    public struct VsqBPPairSearchContext
+    {
         public int clock;
         public int index;
         public VsqBPPair point;

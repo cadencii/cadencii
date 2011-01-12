@@ -15,6 +15,7 @@
 package org.kbinani.cadencii;
 
 import java.awt.*;
+import org.kbinani.*;
 #else
 using System;
 using org.kbinani.java.awt;
@@ -123,7 +124,7 @@ namespace org.kbinani.cadencii
         /// <param name="x">描画する位置のx座標</param>
         /// <param name="y">描画する位置のy座標</param>
         /// <returns>描画された装置図に外接する四角形のサイズ</returns>
-        public virtual void paintTo( Graphics graphics, int x, int y, int width, int height )
+        public virtual void paintTo( Graphics2D graphics, int x, int y, int width, int height )
         {
             // 現在の描画時のストローク、色を保存しておく
             Stroke old_stroke = graphics.getStroke();
@@ -142,8 +143,13 @@ namespace org.kbinani.cadencii
             paintBackground( graphics, mStroke, x, y, width, height, Color.black, PortUtil.Pink );
 
             // デバイス名を書く
+#if JAVA
+            String typename = this.getClass().getSimpleName();
+#else
+            String typename = this.GetType().Name;
+#endif
             PortUtil.drawStringEx(
-                (Graphics)graphics, this.GetType().Name, mFont,
+                (Graphics)graphics, typename, mFont,
                 new Rectangle( x, y, width, height ),
                 PortUtil.STRING_ALIGN_CENTER, PortUtil.STRING_ALIGN_CENTER );
 
@@ -152,7 +158,7 @@ namespace org.kbinani.cadencii
             graphics.setColor( old_color );
         }
 
-        protected void paintBackground( Graphics graphics, Stroke stroke, int x, int y, int width, int height, Color border, Color background )
+        protected void paintBackground( Graphics2D graphics, Stroke stroke, int x, int y, int width, int height, Color border, Color background )
         {
             // 背景を塗りつぶし
             graphics.setColor( background );

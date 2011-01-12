@@ -17,6 +17,7 @@ package org.kbinani.cadencii;
 import java.awt.*;
 import java.util.*;
 #else
+using System;
 using System.Threading;
 using org.kbinani.java.awt;
 using org.kbinani.java.util;
@@ -92,7 +93,7 @@ namespace org.kbinani.cadencii
             return mVersion;
         }
 
-        public override void setConfig( string parameters )
+        public override void setConfig( String parameters )
         {
             // do nothing
         }

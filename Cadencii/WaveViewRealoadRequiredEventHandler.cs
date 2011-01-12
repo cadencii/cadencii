@@ -11,9 +11,16 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+//INCLUDE ../BuildJavaUI/src/org/kbinani/cadencii/WaveViewRealoadRequiredEventHandler.java
+
+#else
+using System;
+
 namespace org.kbinani.cadencii
 {
 
-    public delegate void WaveViewRealoadRequiredEventHandler( object sender, int track, string file, double sec_start, double sec_end );
+    public delegate void WaveViewRealoadRequiredEventHandler( Object sender, WaveViewRealoadRequiredEventArgs arg );
 
 }
+#endif
