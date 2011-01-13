@@ -26,7 +26,8 @@ public class BForm extends JFrame
     public BEvent<BEventHandler> activatedEvent = new BEvent<BEventHandler>();
     public BEvent<BEventHandler> deactivateEvent = new BEvent<BEventHandler>();
     public BEvent<BEventHandler> loadEvent = new BEvent<BEventHandler>();
-    private boolean m_closed = false;
+    private boolean mClosed = false;
+    private Object mTag = null;
     
     public BForm(){
         this( "" );
@@ -42,6 +43,14 @@ public class BForm extends JFrame
             UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
         }catch( Exception e ){
         }
+    }
+    
+    public void setTag( Object value ){
+        mTag = value;
+    }
+    
+    public Object getTag(){
+        return mTag;
     }
     
     // root imol of KeyListener is in BButton
@@ -101,7 +110,7 @@ public class BForm extends JFrame
     }
     
     public void windowClosed( WindowEvent e ){
-        m_closed = true;
+        mClosed = true;
         try{
             formClosedEvent.raise( this, new BFormClosedEventArgs() );
         }catch( Exception ex ){
@@ -145,12 +154,12 @@ public class BForm extends JFrame
     
     public BEvent<BEventHandler> sizeChangedEvent = new BEvent<BEventHandler>();
     public BEvent<BEventHandler> locationChangedEvent = new BEvent<BEventHandler>();
-    
+    public BEvent<BEventHandler> resizeEvent = new BEvent<BEventHandler>();
     public class ShowDialogRunner implements Runnable{
         public void run(){
             setVisible( true );
-            m_closed = false;
-            while( !m_closed ){
+            mClosed = false;
+            while( !mClosed ){
                 try{
                     Thread.sleep( 100 );
                 }catch( Exception ex ){
@@ -176,6 +185,7 @@ public class BForm extends JFrame
 
     public void componentResized(ComponentEvent e) {
         try{
+            resizeEvent.raise( this, new BEventArgs() );
             sizeChangedEvent.raise( this, new BEventArgs() );
         }catch( Exception ex ){
             System.err.println( "BForm#componentResized; ex=" + ex );

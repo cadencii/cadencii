@@ -117,7 +117,7 @@ namespace org.kbinani.cadencii {
                 int oldLength = mWave.Length;
                 if ( oldLength < saTo ) {
 #if JAVA
-                    m_wave = Arrays.copyOf( m_wave, saTo );
+                    mWave = Arrays.copyOf( mWave, saTo );
 #else
                     Array.Resize( ref mWave, saTo );
 #endif

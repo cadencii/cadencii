@@ -1,5 +1,6 @@
 ﻿package org.kbinani.windows.forms;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -40,7 +41,13 @@ public class BDialog extends JDialog
         }
     }
     
-    // root imol of KeyListener is in BButton
+    public BDialogResult showDialog( Component parent ){
+        setModalityType( ModalityType.APPLICATION_MODAL );
+        setVisible( true );
+        return this.m_result;
+    }
+
+    // root impl of KeyListener is in BButton
     public BEvent<BPreviewKeyDownEventHandler> previewKeyDownEvent = new BEvent<BPreviewKeyDownEventHandler>();
     public BEvent<BKeyEventHandler> keyDownEvent = new BEvent<BKeyEventHandler>();
     public BEvent<BKeyEventHandler> keyUpEvent = new BEvent<BKeyEventHandler>();
@@ -136,7 +143,7 @@ public class BDialog extends JDialog
     
     public BEvent<BEventHandler> sizeChangedEvent = new BEvent<BEventHandler>();
     public BEvent<BEventHandler> locationChangedEvent = new BEvent<BEventHandler>();
-    
+    public BEvent<BEventHandler> resizeEvent = new BEvent<BEventHandler>();
     public BDialogResult getDialogResult(){
         return m_result;
     }
@@ -161,6 +168,7 @@ public class BDialog extends JDialog
 
     public void componentResized(ComponentEvent e) {
         try{
+            resizeEvent.raise( this, new BEventArgs() );
             sizeChangedEvent.raise( this, new BEventArgs() );
         }catch( Exception ex ){
             System.err.println( "BForm#componentResized; ex=" + ex );

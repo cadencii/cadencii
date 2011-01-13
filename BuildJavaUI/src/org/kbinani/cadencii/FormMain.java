@@ -261,9 +261,9 @@ public class FormMain extends BForm {
     private BMenuItem cMenuPianoLengthOff = null;
     private BPanel panel3 = null;
     private PictOverview panelOverview = null;
-    private PictPianoRoll pictPianoRoll = null;
+    public PictPianoRoll pictPianoRoll = null;
     private BVScrollBar vScroll = null;
-    private BHScrollBar hScroll = null;
+    public BHScrollBar hScroll = null;
     private BPanel pictureBox3 = null;
     private BSlider trackBar = null;
     private BButton pictKeyLengthSplitter = null;

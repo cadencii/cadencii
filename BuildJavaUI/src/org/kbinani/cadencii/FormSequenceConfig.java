@@ -31,8 +31,8 @@ public class FormSequenceConfig extends BForm {
     private static final long serialVersionUID = 5210609912644248288L;
     private JPanel jPanel1 = null;
     private JPanel jPanel3 = null;
-    private BButton buttonCancel = null;
-    private BButton buttonOk = null;
+    private BButton btnCancel = null;
+    private BButton btnOK = null;
     private BGroupBox groupWaveFileOutput = null;
     private JPanel jPanel = null;
     private BLabel lblChannel = null;
@@ -40,7 +40,14 @@ public class FormSequenceConfig extends BForm {
     private JPanel jPanel2 = null;
     private BRadioButton radioMasterTrack = null;
     private BRadioButton radioCurrentTrack = null;
-
+    private BGroupBox groupSequence = null;
+    private JPanel jPanel4 = null;
+    private BLabel labelPreMeasure = null;
+    private BComboBox comboPreMeasure = null;
+    private JPanel jPanel21 = null;
+    private BLabel labelSampleRate = null;
+    private BComboBox comboSampleRate = null;
+    private BLabel labelPreMeasure1 = null;
     //SECTION-END-FIELD
     public FormSequenceConfig() {
     	super();
@@ -49,8 +56,8 @@ public class FormSequenceConfig extends BForm {
     //SECTION-BEGIN-METHOD
 
     private void initialize() {
-        this.setSize(new Dimension(502, 427));
-        this.setTitle("Randomize");
+        this.setSize(new Dimension(343, 285));
+        this.setTitle("Sequence config");
         this.setContentPane(getJPanel1());
     		
     }
@@ -62,11 +69,27 @@ public class FormSequenceConfig extends BForm {
      */
     private JPanel getJPanel1() {
         if (jPanel1 == null) {
+            GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
+            gridBagConstraints21.gridx = 1;
+            gridBagConstraints21.weighty = 1.0D;
+            gridBagConstraints21.gridy = 2;
+            labelPreMeasure1 = new BLabel();
+            labelPreMeasure1.setText(" ");
+            labelPreMeasure1.setPreferredSize(new Dimension(4, 4));
+            GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
+            gridBagConstraints1.gridx = 1;
+            gridBagConstraints1.weightx = 1.0D;
+            gridBagConstraints1.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints1.insets = new Insets(3, 12, 0, 12);
+            gridBagConstraints1.gridy = 1;
             GridBagConstraints gridBagConstraints = new GridBagConstraints();
             gridBagConstraints.gridx = 1;
+            gridBagConstraints.weightx = 1.0D;
+            gridBagConstraints.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints.insets = new Insets(12, 12, 3, 12);
             gridBagConstraints.gridy = 0;
             GridBagConstraints gridBagConstraints20 = new GridBagConstraints();
-            gridBagConstraints20.gridy = 2;
+            gridBagConstraints20.gridy = 3;
             gridBagConstraints20.gridheight = 1;
             gridBagConstraints20.gridwidth = 2;
             gridBagConstraints20.gridx = 0;
@@ -82,6 +105,8 @@ public class FormSequenceConfig extends BForm {
             jPanel1.setLayout(new GridBagLayout());
             jPanel1.add(getJPanel3(), gridBagConstraints20);
             jPanel1.add(getGroupWaveFileOutput(), gridBagConstraints);
+            jPanel1.add(getGroupSequence(), gridBagConstraints1);
+            jPanel1.add(labelPreMeasure1, gridBagConstraints21);
         }
         return jPanel1;
     }
@@ -103,38 +128,38 @@ public class FormSequenceConfig extends BForm {
             gridBagConstraints1211.gridx = 1;
             jPanel3 = new JPanel();
             jPanel3.setLayout(new GridBagLayout());
-            jPanel3.add(getButtonCancel(), gridBagConstraints1211);
-            jPanel3.add(getButtonOk(), gridBagConstraints111);
+            jPanel3.add(getBtnCancel(), gridBagConstraints1211);
+            jPanel3.add(getBtnOK(), gridBagConstraints111);
         }
         return jPanel3;
     }
 
     /**
-     * This method initializes buttonCancel	
+     * This method initializes btnCancel	
      * 	
      * @return org.kbinani.windows.forms.BButton	
      */
-    private BButton getButtonCancel() {
-        if (buttonCancel == null) {
-            buttonCancel = new BButton();
-            buttonCancel.setText("Cancel");
-            buttonCancel.setPreferredSize(new Dimension(75, 23));
+    private BButton getBtnCancel() {
+        if (btnCancel == null) {
+            btnCancel = new BButton();
+            btnCancel.setText("Cancel");
+            btnCancel.setPreferredSize(new Dimension(75, 23));
         }
-        return buttonCancel;
+        return btnCancel;
     }
 
     /**
-     * This method initializes buttonOk	
+     * This method initializes btnOK	
      * 	
      * @return org.kbinani.windows.forms.BButton	
      */
-    private BButton getButtonOk() {
-        if (buttonOk == null) {
-            buttonOk = new BButton();
-            buttonOk.setText("OK");
-            buttonOk.setPreferredSize(new Dimension(75, 23));
+    private BButton getBtnOK() {
+        if (btnOK == null) {
+            btnOK = new BButton();
+            btnOK.setText("OK");
+            btnOK.setPreferredSize(new Dimension(75, 23));
         }
-        return buttonOk;
+        return btnOK;
     }
 
     /**
@@ -171,6 +196,20 @@ public class FormSequenceConfig extends BForm {
      */
     private JPanel getJPanel() {
         if (jPanel == null) {
+            GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
+            gridBagConstraints3.fill = GridBagConstraints.NONE;
+            gridBagConstraints3.gridy = 1;
+            gridBagConstraints3.weightx = 1.0;
+            gridBagConstraints3.insets = new Insets(3, 12, 3, 0);
+            gridBagConstraints3.anchor = GridBagConstraints.WEST;
+            gridBagConstraints3.gridx = 1;
+            GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
+            gridBagConstraints2.gridx = 0;
+            gridBagConstraints2.anchor = GridBagConstraints.WEST;
+            gridBagConstraints2.insets = new Insets(3, 12, 3, 0);
+            gridBagConstraints2.gridy = 1;
+            labelSampleRate = new BLabel();
+            labelSampleRate.setText("Sample rate");
             GridBagConstraints gridBagConstraints126 = new GridBagConstraints();
             gridBagConstraints126.anchor = GridBagConstraints.WEST;
             gridBagConstraints126.insets = new Insets(3, 12, 3, 0);
@@ -189,6 +228,8 @@ public class FormSequenceConfig extends BForm {
             jPanel.setLayout(new GridBagLayout());
             jPanel.add(lblChannel, gridBagConstraints127);
             jPanel.add(getComboChannel(), gridBagConstraints126);
+            jPanel.add(labelSampleRate, gridBagConstraints2);
+            jPanel.add(getComboSampleRate(), gridBagConstraints3);
         }
         return jPanel;
     }
@@ -256,6 +297,101 @@ public class FormSequenceConfig extends BForm {
             radioCurrentTrack.setText("Current");
         }
         return radioCurrentTrack;
+    }
+
+    /**
+     * This method initializes groupSequence	
+     * 	
+     * @return org.kbinani.windows.forms.BGroupBox	
+     */
+    private BGroupBox getGroupSequence() {
+        if (groupSequence == null) {
+            GridBagConstraints gridBagConstraints1341 = new GridBagConstraints();
+            gridBagConstraints1341.anchor = GridBagConstraints.WEST;
+            gridBagConstraints1341.gridx = 0;
+            gridBagConstraints1341.gridy = 1;
+            gridBagConstraints1341.weightx = 1.0D;
+            gridBagConstraints1341.fill = GridBagConstraints.HORIZONTAL;
+            GridBagConstraints gridBagConstraints1301 = new GridBagConstraints();
+            gridBagConstraints1301.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints1301.gridy = 0;
+            gridBagConstraints1301.weightx = 1.0D;
+            gridBagConstraints1301.gridx = 0;
+            groupSequence = new BGroupBox();
+            groupSequence.setLayout(new GridBagLayout());
+            groupSequence.setTitle("Sequence");
+            groupSequence.add(getJPanel4(), gridBagConstraints1301);
+            groupSequence.add(getJPanel21(), gridBagConstraints1341);
+        }
+        return groupSequence;
+    }
+
+    /**
+     * This method initializes jPanel4	
+     * 	
+     * @return javax.swing.JPanel	
+     */
+    private JPanel getJPanel4() {
+        if (jPanel4 == null) {
+            GridBagConstraints gridBagConstraints1261 = new GridBagConstraints();
+            gridBagConstraints1261.anchor = GridBagConstraints.WEST;
+            gridBagConstraints1261.insets = new Insets(3, 12, 3, 0);
+            gridBagConstraints1261.gridx = 1;
+            gridBagConstraints1261.gridy = 0;
+            gridBagConstraints1261.weightx = 1.0;
+            gridBagConstraints1261.fill = GridBagConstraints.NONE;
+            GridBagConstraints gridBagConstraints1271 = new GridBagConstraints();
+            gridBagConstraints1271.anchor = GridBagConstraints.WEST;
+            gridBagConstraints1271.gridx = 0;
+            gridBagConstraints1271.gridy = 0;
+            gridBagConstraints1271.insets = new Insets(3, 12, 3, 0);
+            labelPreMeasure = new BLabel();
+            labelPreMeasure.setText("Pre-measure");
+            jPanel4 = new JPanel();
+            jPanel4.setLayout(new GridBagLayout());
+            jPanel4.add(labelPreMeasure, gridBagConstraints1271);
+            jPanel4.add(getComboPreMeasure(), gridBagConstraints1261);
+        }
+        return jPanel4;
+    }
+
+    /**
+     * This method initializes comboPreMeasure	
+     * 	
+     * @return org.kbinani.windows.forms.BComboBox	
+     */
+    private BComboBox getComboPreMeasure() {
+        if (comboPreMeasure == null) {
+            comboPreMeasure = new BComboBox();
+            comboPreMeasure.setPreferredSize(new Dimension(97, 20));
+        }
+        return comboPreMeasure;
+    }
+
+    /**
+     * This method initializes jPanel21	
+     * 	
+     * @return javax.swing.JPanel	
+     */
+    private JPanel getJPanel21() {
+        if (jPanel21 == null) {
+            jPanel21 = new JPanel();
+            jPanel21.setLayout(new GridBagLayout());
+        }
+        return jPanel21;
+    }
+
+    /**
+     * This method initializes comboSampleRate	
+     * 	
+     * @return org.kbinani.windows.forms.BComboBox	
+     */
+    private BComboBox getComboSampleRate() {
+        if (comboSampleRate == null) {
+            comboSampleRate = new BComboBox();
+            comboSampleRate.setPreferredSize(new Dimension(97, 20));
+        }
+        return comboSampleRate;
     }
 
     //SECTION-END-METHOD

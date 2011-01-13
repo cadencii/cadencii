@@ -63,30 +63,24 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="kind">合成器の種類</param>
         /// <returns>指定した種類の合成器の新しいインスタンス</returns>
-        public static WaveGenerator getWaveGenerator( RendererKind kind ) {
-            switch ( kind ) {
+        public static WaveGenerator getWaveGenerator( RendererKind kind )
+        {
+            if ( kind == RendererKind.AQUES_TONE ) {
 #if ENABLE_AQUESTONE
-                case RendererKind.AQUES_TONE: {
-                    return new AquesToneWaveGenerator();
-                }
+                return new AquesToneWaveGenerator();
 #endif
-                case RendererKind.VCNT: {
-                    return new VConnectWaveGenerator();
-                }
-                case RendererKind.UTAU: {
-                    return new UtauWaveGenerator();
-                }
+            } else if ( kind == RendererKind.VCNT ) {
+                return new VConnectWaveGenerator();
+            } else if ( kind == RendererKind.UTAU ) {
+                return new UtauWaveGenerator();
+            } else if ( kind == RendererKind.VOCALOID1_100 ||
+                        kind == RendererKind.VOCALOID1_101 ||
+                        kind == RendererKind.VOCALOID2 ) {
 #if ENABLE_VOCALOID
-                case RendererKind.VOCALOID1_100:
-                case RendererKind.VOCALOID1_101:
-                case RendererKind.VOCALOID2: {
-                    return new VocaloidWaveGenerator();
-                }
+                return new VocaloidWaveGenerator();
 #endif
-                default: {
-                    return new EmptyWaveGenerator();
-                }
             }
+            return new EmptyWaveGenerator();
         }
 
         public static void init() {

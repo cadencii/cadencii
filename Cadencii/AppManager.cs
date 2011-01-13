@@ -52,14 +52,33 @@ namespace org.kbinani.cadencii
     using Float = System.Single;
 #endif
 
-    public class AppManager
+#if JAVA
+    class GeneratorRunner extends Thread
     {
-        class RunGeneratorQueue
+        WaveGenerator mGenerator = null;
+        long mSamples;
+
+        public GeneratorRunner( WaveGenerator generator, long samples )
         {
-            public WaveGenerator generator;
-            public long samples;
+            mGenerator = generator;
+            mSamples = samples;
         }
 
+        public void run()
+        {
+            mGenerator.begin( mSamples );
+        }
+    }
+#endif
+
+    class RunGeneratorQueue
+    {
+        public WaveGenerator generator;
+        public long samples;
+    }
+
+    public class AppManager
+    {
         public const int MIN_KEY_WIDTH = 68;
         public const int MAX_KEY_WIDTH = MIN_KEY_WIDTH * 5;
         /// <summary>
@@ -698,7 +717,7 @@ namespace org.kbinani.cadencii
         /// 開始時刻＞終了時刻の場合は，partialではなく全体のリロード要求
         /// </summary>
 #if JAVA
-        public static BEvent<WaveViewRealoadRequiredEventHandler> waveViewRealoadRequiredEvent = new BEvent<WaveViewRealoadRequiredEventHandler>();
+        public static BEvent<WaveViewRealoadRequiredEventHandler> waveViewReloadRequiredEvent = new BEvent<WaveViewRealoadRequiredEventHandler>();
 #elif QT_VERSION
         public: signals: void waveViewReloadRequired( QObject sender, int track, QString path, double sec_start, double sec_end );
 #else
@@ -864,12 +883,12 @@ namespace org.kbinani.cadencii
                 dialog.showDialog( main_window );
                 int finished = dialog.getFinished();
                 for ( int k = 0; k < tracks.size(); k++ ) {
-                    int track = tracks[k];
+                    int track = tracks.get( k );
                     String wavePath = PortUtil.combinePath( temppath, track + ".wav" );
                     Vector<Integer> queueIndex = new Vector<Integer>();
 
                     for ( int i = 0; i < queue.size(); i++ ) {
-                        if ( queue[i].track == track ) {
+                        if ( queue.get( i ).track == track ) {
                             queueIndex.add( i );
                         }
                     }
@@ -879,7 +898,7 @@ namespace org.kbinani.cadencii
                         continue;
                     }
 
-                    if ( queueIndex.size() == 1 && wavePath.Equals( queue[queueIndex[0]].file ) ) {
+                    if ( queueIndex.size() == 1 && wavePath.Equals( queue.get( queueIndex.get( 0 ) ).file ) ) {
                         // 第trackトラック全体の合成を指示するキューだった場合．
                         // このとき，パッチワークを行う必要なし．
                         mLastRenderedStatus[track - 1] =
@@ -920,8 +939,8 @@ namespace org.kbinani.cadencii
                             if ( finished <= i ) {
                                 break;
                             }
-                            double secStart = mVsq.getSecFromClock( queue[i].clockStart );
-                            int clockEnd = queue[i].clockEnd;
+                            double secStart = mVsq.getSecFromClock( queue.get( i ).clockStart );
+                            int clockEnd = queue.get( i ).clockEnd;
                             if ( clockEnd == int.MaxValue ) {
                                 clockEnd = mVsq.TotalClocks + 240;
                             }
@@ -931,7 +950,7 @@ namespace org.kbinani.cadencii
 
                             WaveReader wr = null;
                             try {
-                                wr = new WaveReader( queue[i].file );
+                                wr = new WaveReader( queue.get( i ).file );
                                 long remain2 = sampleEnd - sampleStart;
                                 long proc = 0;
                                 while ( remain2 > 0 ) {
@@ -956,7 +975,7 @@ namespace org.kbinani.cadencii
                             }
 
                             try {
-                                PortUtil.deleteFile( queue[i].file );
+                                PortUtil.deleteFile( queue.get( i ).file );
                             } catch ( Exception ex ) {
                                 Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
                                 PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
@@ -983,8 +1002,8 @@ namespace org.kbinani.cadencii
                                 if ( i < finished ) {
                                     continue;
                                 }
-                                int start = queue[i].clockStart;
-                                int end = queue[i].clockEnd;
+                                int start = queue.get( i ).clockStart;
+                                int end = queue.get( i ).clockEnd;
                                 VsqEvent singerAtEnd = vsq_track.getSingerEventAt( end );
 
                                 // startの位置に歌手変更が既に指定されていないかどうかを検査
@@ -1048,8 +1067,8 @@ namespace org.kbinani.cadencii
                         if ( i >= finished ) {
                             continue;
                         }
-                        double secStart = mVsq.getSecFromClock( queue[i].clockStart );
-                        int clockEnd = queue[i].clockEnd;
+                        double secStart = mVsq.getSecFromClock( queue.get( i ).clockStart );
+                        int clockEnd = queue.get( i ).clockEnd;
                         if ( clockEnd == int.MaxValue ) {
                             clockEnd = mVsq.TotalClocks + 240;
                         }
@@ -1057,13 +1076,13 @@ namespace org.kbinani.cadencii
 
                         try {
 #if JAVA
-                            waveViewRealoadRequiredEvent.raise( typeof( AppManager ), tracks[k], wavePath, secStart, secEnd );
+                            waveViewReloadRequiredEvent.raise( typeof( AppManager ), tracks.get( k ), wavePath, secStart, secEnd );
 #elif QT_VERSION
                             waveViewReloadRequired( this, tracks[k], wavePath, secStart, secEnd );
 #else
                             if ( WaveViewReloadRequired != null ) {
                                 WaveViewRealoadRequiredEventArgs arg = new WaveViewRealoadRequiredEventArgs();
-                                arg.track = tracks[k];
+                                arg.track = tracks.get( k );
                                 arg.file = wavePath;
                                 arg.secStart = secStart;
                                 arg.secEnd = secEnd;
@@ -1108,7 +1127,7 @@ namespace org.kbinani.cadencii
 
             for ( int k = 0; k < tracks.size(); k++ ) {
                 startIndex[k] = queue.size();
-                int track = tracks[k];
+                int track = tracks.get( k );
                 VsqTrack vsq_track = mVsq.Track.get( track );
                 String wavePath = PortUtil.combinePath( temppath, track + ".wav" );
 
@@ -1289,7 +1308,7 @@ namespace org.kbinani.cadencii
             if ( queue.size() <= 0 ) {
                 // パッチワークする必要なし
                 for ( int i = 0; i < tracks.size(); i++ ) {
-                    setRenderRequired( tracks[i], false );
+                    setRenderRequired( tracks.get( i ), false );
                 }
             }
 
@@ -1459,11 +1478,18 @@ namespace org.kbinani.cadencii
 #endif
                 Thread t = mPreviewThread;
                 if ( t != null ) {
-                    ThreadState state = t.ThreadState;
 #if DEBUG
-                    PortUtil.println( "AppManager#runGenerator; mPreviewThread.ThreadState=" + state );
+#if JAVA
+                    PortUtil.println( "AppManager#runGenerator; mPreviewThread.getState()=" + t.getState() );
+#else
+                    PortUtil.println( "AppManager#runGenerator; mPreviewThread.ThreadState=" + t.ThreadState );
 #endif
-                    if ( state != ThreadState.Stopped ) {
+#endif
+#if JAVA
+                    if( t.getState() != Thread.State.TERMINATED ){
+#else
+                    if ( t.ThreadState != ThreadState.Stopped ) {
+#endif
                         WaveGenerator g = mWaveGenerator;
                         if ( g != null ) {
                             g.stop();
@@ -1471,21 +1497,35 @@ namespace org.kbinani.cadencii
 #if DEBUG
                         PortUtil.println( "AppManager#runGenerator; waiting stop..." );
 #endif
+#if JAVA
+                        while( t.getState() != Thread.State.TERMINATED ){
+                            try{
+                                Thread.sleep( 100 );
+                            }catch( Exception ex ){
+                            }
+                        }
+#else
                         while ( t.ThreadState != ThreadState.Stopped ) {
                             Thread.Sleep( 100 );
                         }
+#endif
 #if DEBUG
                         PortUtil.println( "AppManager#runGenerator; waiting stop... done" );
 #endif
                     }
                 }
 
+#if JAVA
+                mPreviewThread = new GeneratorRunner( mWaveGenerator, samples );
+                mPreviewThread.start();
+#else
                 RunGeneratorQueue q = new RunGeneratorQueue();
                 q.generator = mWaveGenerator;
                 q.samples = samples;
                 mPreviewThread = new Thread(
                     new ParameterizedThreadStart( runGeneratorCore ) );
                 mPreviewThread.Start( q );
+#endif
             }
         }
 
@@ -1953,8 +1993,7 @@ namespace org.kbinani.cadencii
 #endif
         {
             beginShowDialog();
-            dialog.setVisible( true, main_form );
-            BDialogResult ret = dialog.getDialogResult();
+            BDialogResult ret = dialog.showDialog( main_form );
             endShowDialog();
             return ret;
         }
@@ -2021,22 +2060,22 @@ namespace org.kbinani.cadencii
 #if ENABLE_PROPERTY
             if ( propertyWindow != null ) {
                 Object tag = propertyWindow.getTag();
-                if ( tag != null && tag is boolean ) {
-                    propertyWindow.setAlwaysOnTop( (boolean)tag );
+                if ( tag != null && tag is Boolean ) {
+                    propertyWindow.setAlwaysOnTop( (Boolean)tag );
                 }
             }
 #endif
             if ( mMixerWindow != null ) {
                 Object tag = mMixerWindow.getTag();
-                if ( tag != null && tag is boolean ) {
-                    mMixerWindow.setAlwaysOnTop( (boolean)tag );
+                if ( tag != null && tag is Boolean ) {
+                    mMixerWindow.setAlwaysOnTop( (Boolean)tag );
                 }
             }
 
             if ( iconPalette != null ) {
                 Object tag = iconPalette.getTag();
-                if ( tag != null && tag is boolean ) {
-                    iconPalette.setAlwaysOnTop( (boolean)tag );
+                if ( tag != null && tag is Boolean ) {
+                    iconPalette.setAlwaysOnTop( (Boolean)tag );
                 }
             }
 
@@ -3679,7 +3718,11 @@ namespace org.kbinani.cadencii
             reloadUtauVoiceDB();
 
             mAutoBackupTimer = new BTimer();
+#if JAVA
+            mAutoBackupTimer.tickEvent.add( new BEventHandler( AppManager.class, "handleAutoBackupTimerTick" ) );
+#else
             mAutoBackupTimer.Tick += new BEventHandler( handleAutoBackupTimerTick );
+#endif
         }
 
         /// <summary>
@@ -3860,6 +3903,24 @@ namespace org.kbinani.cadencii
             ce.points = curve;
             ce.beziers = bezier;
             ce.copyStartedClock = copy_started_clock;
+#if CLIPBOARD_AS_TEXT
+            String clip = "";
+            try {
+                clip = getSerializedText( ce );
+            } catch ( Exception ex ) {
+#if JAVA
+                System.err.println( "AppManager#setCopiedEvent; ex=" + ex );
+#else // JAVA
+#if DEBUG
+                PortUtil.println( "AppManager#setCopiedEvent; ex=" + ex );
+#endif // DEBUG
+#endif // JAVA
+                Logger.write( typeof( AppManager ) + ".setClipboard; ex=" + ex + "\n" );
+                return;
+            }
+            PortUtil.clearClipboard();
+            PortUtil.setClipboardText( clip );
+#else // CLIPBOARD_AS_TEXT
 #if DEBUG
             // ClipboardEntryがシリアライズ可能かどうかを試すため，
             // この部分のコードは残しておくこと
@@ -3872,28 +3933,9 @@ namespace org.kbinani.cadencii
             } catch ( Exception ex ) {
                 PortUtil.println( "AppManager#setClipboard; ex=" + ex );
             }
-#endif
-
-#if CLIPBOARD_AS_TEXT
-            String clip = "";
-            try {
-                clip = getSerializedText( ce );
-            } catch ( Exception ex ) {
-#if JAVA
-                System.err.println( "AppManager#setCopiedEvent; ex=" + ex );
-#else
-#if DEBUG
-                PortUtil.println( "AppManager#setCopiedEvent; ex=" + ex );
-#endif
-#endif
-                Logger.write( typeof( AppManager ) + ".setClipboard; ex=" + ex + "\n" );
-                return;
-            }
-            PortUtil.clearClipboard();
-            PortUtil.setClipboardText( clip );
-#else
+#endif // DEBUG
             Clipboard.SetDataObject( ce, false );
-#endif
+#endif // CLIPBOARD_AS_TEXT
         }
 
         public static void setCopiedEvent( Vector<VsqEvent> item, int copy_started_clock )

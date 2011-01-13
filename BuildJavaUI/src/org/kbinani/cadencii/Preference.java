@@ -18,6 +18,7 @@ import org.kbinani.windows.forms.BCheckBox;
 import org.kbinani.windows.forms.BComboBox;
 import org.kbinani.windows.forms.BGroupBox;
 import org.kbinani.windows.forms.BLabel;
+import org.kbinani.windows.forms.BListBox;
 import org.kbinani.windows.forms.BListView;
 import org.kbinani.windows.forms.BNumericUpDown;
 import org.kbinani.windows.forms.BPanel;
@@ -42,8 +43,7 @@ public class Preference extends JFrame {
 	private BLabel jLabel13 = null;
 	private BGroupBox groupUserDefined = null;
 	private BPanel jPanel3 = null;
-	private BLabel lblAutoVibratoMinLength = null;
-	private BComboBox comboAutoVibratoMinLength = null;
+	private BLabel lblAutoVibratoThresholdLength = null;
 	private BLabel jLabel4 = null;
 	private BPanel jPanel4 = null;
 	private BLabel lblAutoVibratoType1 = null;
@@ -131,7 +131,7 @@ public class Preference extends JFrame {
 	private BTextBox txtWavtool = null;
 	private BButton btnWavtool = null;
 	private BCheckBox chkInvokeWithWine = null;
-	private BPanel tabUtauSingers = null;
+	private BPanel tabUtausingers = null;
 	private BListView listSingers = null;
 	private BButton btnAdd = null;
 	private BButton btnRemove = null;
@@ -182,13 +182,14 @@ public class Preference extends JFrame {
     private BComboBox comboDefaultSynthesizer = null;
     private BComboBox comboAutoVibratoTypeCustom = null;
     private JPanel jPanel = null;
-    private JList listResampler = null;
+    private BListBox listResampler = null;
     private BButton buttonResamplerAdd = null;
     private BButton buttonResamplerRemove = null;
     private BButton buttonResamplerUp = null;
     private BButton buttonResamplerDown = null;
     private BLabel jLabel91 = null;
     private BLabel jLabel911 = null;
+    private BTextBox txtAutoVibratoThresholdLength = null;
     //SECTION-END-FIELD
 	/**
 	 * This is the default constructor
@@ -203,7 +204,7 @@ public class Preference extends JFrame {
 		tabPane.addTab( "Appearance", getTabAppearance() );
 		tabPane.addTab( "Operation", getTabOperation() );
 		tabPane.addTab( "Platform", getTabPlatform() );
-		tabPane.addTab( "UTAU Singers", getTabUtauSingers() );
+		tabPane.addTab( "UTAU Singers", getTabUtausingers() );
 		tabPane.addTab( "File", getTabFile() );
 		tabPane.addTab( "Synthesizer", getTabSingingSynth() );
 		GridBagLayout layout = new GridBagLayout();
@@ -347,18 +348,17 @@ public class Preference extends JFrame {
 	 */
 	private BPanel getJPanel1() {
 		if (jPanel1 == null) {
+			GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
+			gridBagConstraints5.fill = GridBagConstraints.HORIZONTAL;
+			gridBagConstraints5.gridy = 1;
+			gridBagConstraints5.weightx = 1.0;
+			gridBagConstraints5.insets = new Insets(3, 24, 3, 0);
+			gridBagConstraints5.gridx = 3;
 			GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
 			gridBagConstraints6.anchor = GridBagConstraints.WEST;
 			gridBagConstraints6.gridy = 1;
 			gridBagConstraints6.weightx = 1.0D;
 			gridBagConstraints6.gridx = 4;
-			GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
-			gridBagConstraints5.fill = GridBagConstraints.NONE;
-			gridBagConstraints5.gridx = 3;
-			gridBagConstraints5.gridy = 1;
-			gridBagConstraints5.weightx = 0.0D;
-			gridBagConstraints5.anchor = GridBagConstraints.WEST;
-			gridBagConstraints5.insets = new Insets(3, 24, 3, 0);
 			GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
 			gridBagConstraints4.gridx = 0;
 			gridBagConstraints4.anchor = GridBagConstraints.WEST;
@@ -391,9 +391,9 @@ public class Preference extends JFrame {
 			jPanel1.add(lblVibratoLength, gridBagConstraints22);
 			jPanel1.add(getComboVibratoLength(), gridBagConstraints32);
 			jPanel1.add(jLabel13, gridBagConstraints81);
-			jPanel1.add(lblAutoVibratoMinLength, gridBagConstraints4);
-			jPanel1.add(getComboAutoVibratoMinLength(), gridBagConstraints5);
+			jPanel1.add(lblAutoVibratoThresholdLength, gridBagConstraints4);
 			jPanel1.add(jLabel4, gridBagConstraints6);
+			jPanel1.add(getTxtAutoVibratoThresholdLength(), gridBagConstraints5);
 		}
 		return jPanel1;
 	}
@@ -446,26 +446,13 @@ public class Preference extends JFrame {
 	private BPanel getJPanel3() {
 		if (jPanel3 == null) {
 			jLabel4 = new BLabel();
-			jLabel4.setText("beat");
-			lblAutoVibratoMinLength = new BLabel();
-			lblAutoVibratoMinLength.setText("Minimum note length for Automatic Vibrato");
+			jLabel4.setText("clock");
+			lblAutoVibratoThresholdLength = new BLabel();
+			lblAutoVibratoThresholdLength.setText("Minimum note length for Automatic Vibrato");
 			jPanel3 = new BPanel();
 			jPanel3.setLayout(new GridBagLayout());
 		}
 		return jPanel3;
-	}
-
-	/**
-	 * This method initializes comboAutoVibratoMinLength	
-	 * 	
-	 * @return javax.swing.BComboBox	
-	 */
-	private BComboBox getComboAutoVibratoMinLength() {
-		if (comboAutoVibratoMinLength == null) {
-			comboAutoVibratoMinLength = new BComboBox();
-			comboAutoVibratoMinLength.setPreferredSize(new Dimension(66, 20));
-		}
-		return comboAutoVibratoMinLength;
 	}
 
 	/**
@@ -1960,12 +1947,12 @@ public class Preference extends JFrame {
 	}
 
 	/**
-	 * This method initializes tabUtauSingers	
+	 * This method initializes tabUtausingers	
 	 * 	
 	 * @return javax.swing.BPanel	
 	 */
-	private BPanel getTabUtauSingers() {
-		if (tabUtauSingers == null) {
+	private BPanel getTabUtausingers() {
+		if (tabUtausingers == null) {
 			GridBagConstraints gridBagConstraints113 = new GridBagConstraints();
 			gridBagConstraints113.gridx = 1;
 			gridBagConstraints113.anchor = GridBagConstraints.EAST;
@@ -1985,13 +1972,13 @@ public class Preference extends JFrame {
 			gridBagConstraints107.insets = new Insets(12, 12, 12, 12);
 			gridBagConstraints107.gridwidth = 2;
 			gridBagConstraints107.gridx = 0;
-			tabUtauSingers = new BPanel();
-			tabUtauSingers.setLayout(new GridBagLayout());
-			tabUtauSingers.add(getListSingers(), gridBagConstraints107);
-			tabUtauSingers.add(getJPanel17(), gridBagConstraints112);
-			tabUtauSingers.add(getJPanel18(), gridBagConstraints113);
+			tabUtausingers = new BPanel();
+			tabUtausingers.setLayout(new GridBagLayout());
+			tabUtausingers.add(getListSingers(), gridBagConstraints107);
+			tabUtausingers.add(getJPanel17(), gridBagConstraints112);
+			tabUtausingers.add(getJPanel18(), gridBagConstraints113);
 		}
-		return tabUtauSingers;
+		return tabUtausingers;
 	}
 
 	/**
@@ -2805,9 +2792,9 @@ public class Preference extends JFrame {
      * 	
      * @return javax.swing.JList	
      */
-    private JList getListResampler() {
+    private BListBox getListResampler() {
         if (listResampler == null) {
-            listResampler = new JList();
+            listResampler = new BListBox();
         }
         return listResampler;
     }
@@ -2866,6 +2853,18 @@ public class Preference extends JFrame {
             buttonResamplerDown.setText("Down");
         }
         return buttonResamplerDown;
+    }
+
+    /**
+     * This method initializes txtAutoVibratoThresholdLength	
+     * 	
+     * @return org.kbinani.windows.forms.BTextBox	
+     */
+    private BTextBox getTxtAutoVibratoThresholdLength() {
+        if (txtAutoVibratoThresholdLength == null) {
+            txtAutoVibratoThresholdLength = new BTextBox();
+        }
+        return txtAutoVibratoThresholdLength;
     }
 
 	//SECTION-END-METHOD

@@ -34,6 +34,7 @@ namespace org.kbinani.cadencii
     using BEventArgs = System.EventArgs;
     using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
     using BEventHandler = System.EventHandler;
+    using BMouseEventHandler = System.Windows.Forms.MouseEventHandler;
     using boolean = System.Boolean;
     using BMouseButtons = System.Windows.Forms.MouseButtons;
 #endif
@@ -161,15 +162,15 @@ namespace org.kbinani.cadencii
             btnOK.Click += new BEventHandler( btnOK_Click );
             btnCancel.Click += new BEventHandler( btnCancel_Click );
             chkEnableSmooth.CheckedChanged += new BEventHandler( chkEnableSmooth_CheckedChanged );
-            btnLeft.MouseMove += new System.Windows.Forms.MouseEventHandler( common_MouseMove );
-            btnLeft.MouseDown += new System.Windows.Forms.MouseEventHandler( handleOperationButtonMouseDown );
-            btnLeft.MouseUp += new System.Windows.Forms.MouseEventHandler( common_MouseUp );
-            btnDataPoint.MouseMove += new System.Windows.Forms.MouseEventHandler( common_MouseMove );
-            btnDataPoint.MouseDown += new System.Windows.Forms.MouseEventHandler( handleOperationButtonMouseDown );
-            btnDataPoint.MouseUp += new System.Windows.Forms.MouseEventHandler( common_MouseUp );
-            btnRight.MouseMove += new System.Windows.Forms.MouseEventHandler( common_MouseMove );
-            btnRight.MouseDown += new System.Windows.Forms.MouseEventHandler( handleOperationButtonMouseDown );
-            btnRight.MouseUp += new System.Windows.Forms.MouseEventHandler( common_MouseUp );
+            btnLeft.MouseMove += new BMouseEventHandler( common_MouseMove );
+            btnLeft.MouseDown += new BMouseEventHandler( handleOperationButtonMouseDown );
+            btnLeft.MouseUp += new BMouseEventHandler( common_MouseUp );
+            btnDataPoint.MouseMove += new BMouseEventHandler( common_MouseMove );
+            btnDataPoint.MouseDown += new BMouseEventHandler( handleOperationButtonMouseDown );
+            btnDataPoint.MouseUp += new BMouseEventHandler( common_MouseUp );
+            btnRight.MouseMove += new BMouseEventHandler( common_MouseMove );
+            btnRight.MouseDown += new BMouseEventHandler( handleOperationButtonMouseDown );
+            btnRight.MouseUp += new BMouseEventHandler( common_MouseUp );
             btnBackward.Click += new BEventHandler( handleMoveButtonClick );
             btnForward.Click += new BEventHandler( handleMoveButtonClick );
         }

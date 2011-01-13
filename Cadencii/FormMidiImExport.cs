@@ -31,6 +31,7 @@ namespace org.kbinani.cadencii
     using BEventArgs = System.EventArgs;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
     using BEventHandler = System.EventHandler;
+    using BFormClosingEventHandler = System.Windows.Forms.FormClosingEventHandler;
     using boolean = System.Boolean;
 #endif
 
@@ -248,7 +249,7 @@ namespace org.kbinani.cadencii
             chkMetaText.Click += new BEventHandler( chkMetaText_Click );
             chkExportVocaloidNrpn.CheckedChanged += new BEventHandler( chkExportVocaloidNrpn_CheckedChanged );
             chkExportVocaloidNrpn.CheckedChanged += new BEventHandler( chkExportVocaloidNrpn_CheckedChanged );
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( FormMidiImExport_FormClosing );
+            this.FormClosing += new BFormClosingEventHandler( FormMidiImExport_FormClosing );
             btnOK.Click += new BEventHandler( btnOK_Click );
             btnCancel.Click += new BEventHandler( btnCancel_Click );
             radioGateTime.CheckedChanged += new BEventHandler( radioGateTime_CheckedChanged );

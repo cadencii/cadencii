@@ -6,6 +6,7 @@ import javax.swing.JTree;
 import javax.swing.JScrollPane;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import java.awt.Component;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import javax.swing.JLabel;
@@ -49,6 +50,14 @@ public class BFolderBrowser extends BDialog {
     
     public String getSelectedPath(){
         return dialog.getSelectedFile().getAbsolutePath();
+    }
+    
+    public BDialogResult showDialog( Component parent ){
+        int ret = dialog.showOpenDialog( parent );
+        if( ret == JFileChooser.APPROVE_OPTION ){
+            return BDialogResult.OK;
+        }
+        return BDialogResult.CANCEL;
     }
     
     //TODO:

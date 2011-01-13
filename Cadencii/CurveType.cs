@@ -167,7 +167,7 @@ namespace org.kbinani.cadencii {
             if ( mIndex == -1 ) {
                 if ( item.mIndex == -1 ) {
 #if JAVA
-                    return m_type.compareTo( item.m_type );
+                    return mType.compareTo( item.mType );
 #else
                     return mType.CompareTo( item.mType );
 #endif

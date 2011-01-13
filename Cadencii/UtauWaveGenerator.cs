@@ -109,7 +109,14 @@ namespace org.kbinani.cadencii
             if ( mRunning ) {
                 mAbortRequired = true;
                 while ( mRunning ) {
+#if JAVA
+                    try{
+                        Thread.sleep( 100 );
+                    }catch( Exception ex ){
+                    }
+#else
                     Thread.Sleep( 100 );
+#endif
                 }
             }
         }
@@ -538,15 +545,15 @@ namespace org.kbinani.cadencii
                     RenderQueue rq = mResamplerQueue.get( i );
                     if ( !rq.ResamplerFinished ) {
 #if MAKEBAT_SP
-                        bat.WriteLine( "\"" + m_resampler + "\" " + rq.getResamplerArgString() );
+                        bat.WriteLine( "\"" + mResampler + "\" " + rq.getResamplerArgString() );
 #endif
 
 #if JAVA
                         Vector<String> list = new Vector<String>();
-                        if( m_invoke_with_wine ){
+                        if( mInvokeWithWine ){
                             list.add( "wine" );
                         }
-                        list.add( "\"" + m_resampler.replace( "\\", "\\" + "\\" ) + "\"" );
+                        list.add( "\"" + mResampler.replace( "\\", "\\" + "\\" ) + "\"" );
                         for( String s : rq.getResamplerArg() ){
                             s = s.replace( "\\", "\\" + "\\" );
                             list.add( s );
@@ -983,16 +990,6 @@ namespace org.kbinani.cadencii
 
         private void waveIncoming( double[] l, double[] r, int length, int sample_rate )
         {
-            if ( mContext == null ) {
-                mContext = new RateConvertContext( sample_rate, mSampleRate );
-            } else {
-                if ( mContext.getSampleRateFrom() != sample_rate ||
-                     mContext.getSampleRateTo() != mSampleRate ) {
-                    mContext.dispose();
-                    mContext = null;
-                    mContext = new RateConvertContext( sample_rate, mSampleRate );
-                }
-            }
             int offset = 0;
             int mTrimRemain = (int)(mTrimRemainSeconds * sample_rate);
             if ( mTrimRemain > 0 ) {
@@ -1007,6 +1004,30 @@ namespace org.kbinani.cadencii
                 }
             }
             int remain = length - offset;
+
+            if ( mContext == null ) {
+                try {
+                    mContext = new RateConvertContext( sample_rate, mSampleRate );
+                } catch ( Exception ex ) {
+                    mContext = null;
+                }
+            } else {
+                if ( mContext.getSampleRateFrom() != sample_rate ||
+                     mContext.getSampleRateTo() != mSampleRate ) {
+                    mContext.dispose();
+                    mContext = null;
+                    try {
+                        mContext = new RateConvertContext( sample_rate, mSampleRate );
+                    } catch ( Exception ex ) {
+                        mContext = null;
+                    }
+                }
+            }
+            if ( mContext == null ) {
+                mTotalAppend += length;
+                return;
+            }
+
             while ( remain > 0 ) {
                 int amount = (remain > BUFLEN) ? BUFLEN : remain;
                 for ( int i = 0; i < amount; i++ ) {

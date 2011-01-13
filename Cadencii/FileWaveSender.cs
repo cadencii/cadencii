@@ -74,10 +74,6 @@ namespace org.kbinani.cadencii
             lock ( mSyncRoot ) {
                 if ( mConverter == null ) {
                     int rate = mRoot.getSampleRate();
-#if DEBUG
-                    PortUtil.println( "FileWaveSender#pull; mRoot.GetType()=" + mRoot.GetType() );
-                    PortUtil.println( "FileWaveSender#pull; rate=" + rate );
-#endif
                     mConverter = new WaveRateConverter( mReader, rate );
                 }
                 try {

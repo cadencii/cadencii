@@ -17,6 +17,8 @@ package org.kbinani.cadencii;
 import java.awt.*;
 import java.io.*;
 import java.util.*;
+import org.kbinani.*;
+import org.kbinani.media.*;
 import org.kbinani.vsq.*;
 #else
 using System;
@@ -120,7 +122,10 @@ namespace org.kbinani.cadencii
                 mAbortRequired = true;
                 while ( mRunning ) {
 #if JAVA
-                    Thread.sleep( 100 );
+                    try{
+                        Thread.sleep( 100 );
+                    }catch( Exception ex ){
+                    }
 #else
                     Thread.Sleep( 100 );
 #endif
@@ -336,7 +341,7 @@ namespace org.kbinani.cadencii
                     try{
                         Process process = pb.start();
                         InputStream stream = process.getInputStream();
-                        while( stream.read() >= 0 && !m_abort_required );
+                        while( stream.read() >= 0 && !mAbortRequired );
                     }catch( Exception ex ){
                         System.err.println( "StraightRenderingRunner#run; ex=" + ex );
 #if DEBUG
@@ -1080,10 +1085,6 @@ namespace org.kbinani.cadencii
             TreeMap<String, String> dict_singername_otoini,
             int end_clock,
             boolean world_mode )
-#if JAVA
-            throws IOException
-#endif
-
         {
             CurveType[] CURVE = new CurveType[]{
                 CurveType.PIT,
@@ -1094,27 +1095,28 @@ namespace org.kbinani.cadencii
                 CurveType.CLE,
                 CurveType.BRI, };
             // メモリーストリームに出力
-            writer.write( "[Tempo]" );
-            writer.newLine();
-            writer.write( TEMPO + "" );
-            writer.newLine();
-            writer.write( "[oto.ini]" );
-            writer.newLine();
-            for ( Iterator<String> itr = dict_singername_otoini.keySet().iterator(); itr.hasNext(); ) {
-                String singername = itr.next();
-                String oto_ini = dict_singername_otoini.get( singername );
-                if ( world_mode ) {
-                    writer.write( singername + "\t" + oto_ini );
-                    writer.newLine();
-                } else {
-                    writer.write( oto_ini );
-                    writer.newLine();
-                    break;
+            try {
+                writer.write( "[Tempo]" );
+                writer.newLine();
+                writer.write( TEMPO + "" );
+                writer.newLine();
+                writer.write( "[oto.ini]" );
+                writer.newLine();
+                for ( Iterator<String> itr = dict_singername_otoini.keySet().iterator(); itr.hasNext(); ) {
+                    String singername = itr.next();
+                    String oto_ini = dict_singername_otoini.get( singername );
+                    if ( world_mode ) {
+                        writer.write( singername + "\t" + oto_ini );
+                        writer.newLine();
+                    } else {
+                        writer.write( oto_ini );
+                        writer.newLine();
+                        break;
+                    }
                 }
-            }
-            Vector<VsqHandle> handles = vsq_track.MetaText.writeEventList( writer, end_clock );
-            Vector<String> print_targets = new Vector<String>( Arrays.asList(
-                                                               new String[]{ "Length",
+                Vector<VsqHandle> handles = vsq_track.MetaText.writeEventList( writer, end_clock );
+                Vector<String> print_targets = new Vector<String>( Arrays.asList(
+                                                                   new String[]{ "Length",
                                                                              "Note#",
                                                                              "Dynamics",
                                                                              "DEMdecGainRate",
@@ -1124,40 +1126,43 @@ namespace org.kbinani.cadencii
                                                                              "PMBendDepth",
                                                                              "PMBendLength",
                                                                              "PMbPortamentoUse", } ) );
-            for ( Iterator<VsqEvent> itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
-                VsqEvent item = itr.next();
-                item.write( writer, print_targets );
-            }
-            int count = handles.size();
-            for ( int i = 0; i < count; i++ ) {
-                handles.get( i ).write( writer );
-            }
-            count = CURVE.Length;
-            for ( int i = 0; i < count; i++ ) {
-                CurveType curve = CURVE[i];
-                VsqBPList src = vsq_track.getCurve( curve.getName() );
-                if ( src == null ) {
-                    continue;
+                for ( Iterator<VsqEvent> itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
+                    VsqEvent item = itr.next();
+                    item.write( writer, print_targets );
                 }
-                String name = "";
-                if ( curve.equals( CurveType.PIT ) ) {
-                    name = "[PitchBendBPList]";
-                } else if ( curve.equals( CurveType.PBS ) ) {
-                    name = "[PitchBendSensBPList]";
-                } else if ( curve.equals( CurveType.DYN ) ) {
-                    name = "[DynamicsBPList]";
-                } else if ( curve.equals( CurveType.BRE ) ) {
-                    name = "[EpRResidualBPList]";
-                } else if ( curve.equals( CurveType.GEN ) ) {
-                    name = "[GenderFactorBPList]";
-                } else if ( curve.equals( CurveType.BRI ) ) {
-                    name = "[EpRESlopeBPList]";
-                } else if ( curve.equals( CurveType.CLE ) ) {
-                    name = "[EpRESlopeDepthBPList]";
-                } else {
-                    continue;
+                int count = handles.size();
+                for ( int i = 0; i < count; i++ ) {
+                    handles.get( i ).write( writer );
                 }
-                src.print( writer, 0, name );
+                count = CURVE.Length;
+                for ( int i = 0; i < count; i++ ) {
+                    CurveType curve = CURVE[i];
+                    VsqBPList src = vsq_track.getCurve( curve.getName() );
+                    if ( src == null ) {
+                        continue;
+                    }
+                    String name = "";
+                    if ( curve.equals( CurveType.PIT ) ) {
+                        name = "[PitchBendBPList]";
+                    } else if ( curve.equals( CurveType.PBS ) ) {
+                        name = "[PitchBendSensBPList]";
+                    } else if ( curve.equals( CurveType.DYN ) ) {
+                        name = "[DynamicsBPList]";
+                    } else if ( curve.equals( CurveType.BRE ) ) {
+                        name = "[EpRResidualBPList]";
+                    } else if ( curve.equals( CurveType.GEN ) ) {
+                        name = "[GenderFactorBPList]";
+                    } else if ( curve.equals( CurveType.BRI ) ) {
+                        name = "[EpRESlopeBPList]";
+                    } else if ( curve.equals( CurveType.CLE ) ) {
+                        name = "[EpRESlopeDepthBPList]";
+                    } else {
+                        continue;
+                    }
+                    src.print( writer, 0, name );
+                }
+            } catch ( Exception ex ) {
+                Logger.write( typeof( VConnectWaveGenerator ) + ".prepareMetaText; ex=" + ex + "\n" );
             }
         }
 

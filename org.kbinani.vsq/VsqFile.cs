@@ -3137,7 +3137,7 @@ namespace org.kbinani.vsq
             List<String> spl = ve.ID.LyricHandle.L0.getPhoneticSymbolList();
             String s = "";
             for ( int j = 0; j < spl.Count; j++ ) {
-                s += spl[j];
+                s += vec.get<String>( spl, j );
             }
             char[] symbols = s.ToCharArray();
             if ( renderer.StartsWith( "DSB2" ) ) {
@@ -3145,13 +3145,14 @@ namespace org.kbinani.vsq
             }
             add.append( NRPN.CVM_NM_PHONETIC_SYMBOL_BYTES, (byte)symbols.Length, true );// (byte)0x12(Number of phonetic symbols in bytes)
             int count = -1;
-            List<int> consonantAdjustment = ve.ID.LyricHandle.L0.getConsonantAdjustmentList();
-            for ( int j = 0; j < spl.Count; j++ ) {
-                char[] chars = spl[j].ToCharArray();
+            List<Integer> consonantAdjustment = ve.ID.LyricHandle.L0.getConsonantAdjustmentList();
+            for ( int j = 0; j < vec.size<String>( spl ); j++ ) {
+                char[] chars = vec.get<String>( spl, j ).ToCharArray();
                 for ( int k = 0; k < chars.Length; k++ ) {
                     count++;
                     if ( k == 0 ) {
-                        add.append( (0x50 << 8) | (0x13 + count), (byte)chars[k], (byte)consonantAdjustment[j], true ); // Phonetic symbol j
+                        int v = vec.get<Integer>( consonantAdjustment, j );
+                        add.append( (0x50 << 8) | (0x13 + count), (byte)chars[k], (byte)v, true ); // Phonetic symbol j
                     } else {
                         add.append( (0x50 << 8) | (0x13 + count), (byte)chars[k], true ); // Phonetic symbol j
                     }

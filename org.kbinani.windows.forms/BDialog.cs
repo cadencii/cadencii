@@ -22,7 +22,7 @@
 #define COMPONENT_ENABLE_REPAINT
 #define COMPONENT_ENABLE_MINMAX_SIZE
 #define COMPONENT_DISABLE_VISIBLE
-
+#define DISABLE_EXTENDED_STATE
 using System;
 
 namespace org.kbinani.windows.forms
@@ -492,7 +492,6 @@ namespace org.kbinani.windows.forms
         }
         #endregion
 
-        // root implementation of java.awt.Frame
         #region java.awt.Frame
         // root implementation of java.awt.Frame is in BForm.cs
         public const int CROSSHAIR_CURSOR = 1;
@@ -547,8 +546,8 @@ namespace org.kbinani.windows.forms
             }
         }
 
-        public int getExtendedState()
-        {
+#if !DISABLE_EXTENDED_STATE
+        public int getExtendedState() {
             if ( base.WindowState == System.Windows.Forms.FormWindowState.Maximized ) {
                 return MAXIMIZED_BOTH;
             } else if ( base.WindowState == System.Windows.Forms.FormWindowState.Minimized ) {
@@ -557,6 +556,7 @@ namespace org.kbinani.windows.forms
                 return NORMAL;
             }
         }
+#endif
 
         public void setExtendedState( int value )
         {

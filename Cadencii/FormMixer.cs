@@ -39,6 +39,7 @@ namespace org.kbinani.cadencii
     using BEventArgs = System.EventArgs;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
     using BEventHandler = System.EventHandler;
+    using BFormClosingEventHandler = System.Windows.Forms.FormClosingEventHandler;
     using boolean = System.Boolean;
     using Integer = System.Int32;
 #endif
@@ -399,14 +400,14 @@ namespace org.kbinani.cadencii
             }
             for ( int i = 0; i < size; i++ ) {
                 VolumeTracker item = m_tracker.get( i );
-                item.PanpotChanged -= FormMixer_PanpotChanged;
-                item.FederChanged -= FormMixer_FederChanged;
-                item.MuteButtonClick -= FormMixer_MuteButtonClick;
-                item.SoloButtonClick -= FormMixer_SoloButtonClick;
+                item.PanpotChanged -= new PanpotChangedEventHandler( FormMixer_PanpotChanged );
+                item.FederChanged -= new FederChangedEventHandler( FormMixer_FederChanged );
+                item.MuteButtonClick -= new BEventHandler( FormMixer_MuteButtonClick );
+                item.SoloButtonClick -= new BEventHandler( FormMixer_SoloButtonClick );
             }
-            volumeMaster.PanpotChanged -= volumeMaster_PanpotChanged;
-            volumeMaster.FederChanged -= volumeMaster_FederChanged;
-            volumeMaster.MuteButtonClick -= volumeMaster_MuteButtonClick;
+            volumeMaster.PanpotChanged -= new PanpotChangedEventHandler( volumeMaster_PanpotChanged );
+            volumeMaster.FederChanged -= new FederChangedEventHandler( volumeMaster_FederChanged );
+            volumeMaster.MuteButtonClick -= new BEventHandler( volumeMaster_MuteButtonClick );
         }
 
         /// <summary>
@@ -420,14 +421,14 @@ namespace org.kbinani.cadencii
             }
             for ( int i = 0; i < size; i++ ) {
                 VolumeTracker item = m_tracker.get( i );
-                item.PanpotChanged += FormMixer_PanpotChanged;
-                item.FederChanged += FormMixer_FederChanged;
-                item.MuteButtonClick += FormMixer_MuteButtonClick;
-                item.SoloButtonClick += FormMixer_SoloButtonClick;
+                item.PanpotChanged += new PanpotChangedEventHandler( FormMixer_PanpotChanged );
+                item.FederChanged += new FederChangedEventHandler( FormMixer_FederChanged );
+                item.MuteButtonClick += new BEventHandler( FormMixer_MuteButtonClick );
+                item.SoloButtonClick += new BEventHandler( FormMixer_SoloButtonClick );
             }
-            volumeMaster.PanpotChanged += volumeMaster_PanpotChanged;
-            volumeMaster.FederChanged += volumeMaster_FederChanged;
-            volumeMaster.MuteButtonClick += volumeMaster_MuteButtonClick;
+            volumeMaster.PanpotChanged += new PanpotChangedEventHandler( volumeMaster_PanpotChanged );
+            volumeMaster.FederChanged += new FederChangedEventHandler( volumeMaster_FederChanged );
+            volumeMaster.MuteButtonClick += new BEventHandler( volumeMaster_MuteButtonClick );
         }
 
         private void registerEventHandlers()
@@ -439,7 +440,7 @@ namespace org.kbinani.cadencii
             panel1.Paint += new System.Windows.Forms.PaintEventHandler( this.panel1_Paint );
 #endif
             hScroll.ValueChanged += new BEventHandler( veScrollBar_ValueChanged );
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( FormMixer_FormClosing );
+            this.FormClosing += new BFormClosingEventHandler( FormMixer_FormClosing );
             reregisterEventHandlers();
         }
 
@@ -451,7 +452,10 @@ namespace org.kbinani.cadencii
         private void invokePanpotChangedEvent( int track, int panpot )
         {
 #if JAVA
-            panpotChangedEvent.raise( track, panpot );
+            try{
+                panpotChangedEvent.raise( track, panpot );
+            }catch( Exception ex ){
+            }
 #elif QT_VERSION
             panpotChanged( track, panpot );
 #else
@@ -464,7 +468,10 @@ namespace org.kbinani.cadencii
         private void invokeFederChangedEvent( int track, int feder )
         {
 #if JAVA
-            federChangedEvent.raise( track, feder );
+            try{
+                federChangedEvent.raise( track, feder );
+            }catch( Exception ex ){
+            }
 #elif QT_VERSION
             federChanged( track, feder );
 #else
@@ -477,7 +484,10 @@ namespace org.kbinani.cadencii
         private void invokeSoloChangedEvent( int track, boolean solo )
         {
 #if JAVA
-            soloChangedEvent.raise( track, solo );
+            try{
+                soloChangedEvent.raise( track, solo );
+            }catch( Exception ex ){
+            }
 #elif QT_VERSION
             soloChanged( track, solo );
 #else
@@ -490,7 +500,10 @@ namespace org.kbinani.cadencii
         private void invokeMuteChangedEvent( int track, boolean mute )
         {
 #if JAVA
-            muteChangedEvent.raise( track, mute );
+            try{
+                muteChangedEvent.raise( track, mute );
+            }catch( Exception ex ){
+            }
 #elif QT_VERSION
             muteChanged( track, mute );
 #else

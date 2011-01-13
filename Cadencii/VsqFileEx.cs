@@ -68,7 +68,7 @@ namespace org.kbinani.cadencii
 
 #if JAVA
         static {
-            sVsqSerializer = new XmlSerializer( VsqFileEx.class );
+            mVsqSerializer = new XmlSerializer( VsqFileEx.class );
         }
 #else
         static VsqFileEx()

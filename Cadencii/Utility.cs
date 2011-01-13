@@ -1062,11 +1062,11 @@ namespace org.kbinani.cadencii{
                 compareList( ret, new VsqBPListComparisonContext( list1, list2 ) );
             }
 
-            Vector<EditedZoneUnit> vec = new Vector<EditedZoneUnit>();
+            Vector<EditedZoneUnit> list3 = new Vector<EditedZoneUnit>();
             for ( Iterator<EditedZoneUnit> itr = ret.iterator(); itr.hasNext(); ) {
-                vec.add( itr.next() );
+                list3.add( itr.next() );
             }
-            return vec.toArray( new EditedZoneUnit[] { } );
+            return list3.toArray( new EditedZoneUnit[] { } );
         }
 
         /// <summary>
@@ -1089,7 +1089,7 @@ namespace org.kbinani.cadencii{
                     // item1とitem2が同じかどうか判定する
                     if ( item1.equals( item2 ) ) {
                         // UTAU 音源を使用する際はUstEvent内も比較しないといけない．
-                        if ( kind == RendererKind.VCNT || kind == RendererKind.UTAU || kind == RendererKind.STRAIGHT_UTAU ) {
+                        if ( kind == RendererKind.VCNT || kind == RendererKind.UTAU ) {
                             // 歌詞は UstEvent からは判断できないので
                             if ( item1.UstEvent.equalsForSynth( item2.UstEvent ) && item1.ID.LyricHandle.L0.Phrase == item2.ID.LyricHandle.L0.Phrase ) {
                                 found = true;

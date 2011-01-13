@@ -15,6 +15,7 @@
 package org.kbinani.cadencii;
 
 import java.awt.*;
+import org.kbinani.*;
 #else
 using System;
 using System.Drawing;
@@ -442,7 +443,7 @@ namespace org.kbinani.cadencii {
 
                 // 線を描く
                 if ( mLine ) {
-                    for ( int i = mIndex - 1; i < mPoints.Length; i++ ) {
+                    for ( int i = mIndex - 1; i < BUFLEN; i++ ) {
                         setPointData( i, mLastX, mLastY );
                     }
 #if JAVA
@@ -469,13 +470,13 @@ namespace org.kbinani.cadencii {
 #endif
                         if ( mDotType == DOT_CIRCLE ) {
 #if JAVA
-                            mGraphics.fillEllipse( p.x - mDotSize, p.y - mDotSize, mDotWidth, mDotWidth );
+                            mGraphics.fillOval( p.x - mDotSize, p.y - mDotSize, mDotWidth, mDotWidth );
 #else
                             mGraphics.FillEllipse( getDotBrush(), p.X - mDotSize, p.Y - mDotSize, mDotWidth, mDotWidth );
 #endif
                         } else if ( mDotType == DOT_RECT ) {
 #if JAVA
-                            mGraphics.fillRectangle( p.x - mDotSize, p.y - mDotSize, mDotWidth, mDotWidth );
+                            mGraphics.fillRect( p.x - mDotSize, p.y - mDotSize, mDotWidth, mDotWidth );
 #else
                             mGraphics.FillRectangle( getDotBrush(), p.X - mDotSize, p.Y - mDotSize, mDotWidth, mDotWidth );
 #endif
@@ -492,7 +493,7 @@ namespace org.kbinani.cadencii {
                     // 塗りつぶし用の枠を追加
                     setPointData( mIndex - 1, mLastX, mBaseLineY );
                     setPointData( mIndex, mFirstX, mBaseLineY );
-                    for ( int i = mIndex + 1; i < mPoints.Length; i++ ) {
+                    for ( int i = mIndex + 1; i < BUFLEN; i++ ) {
                         setPointData( i, mFirstX, mBaseLineY );
                     }
 
@@ -507,7 +508,7 @@ namespace org.kbinani.cadencii {
 
                 if ( mLine ) {
                     // 線を描く
-                    for ( int i = mIndex - 1; i < mPoints.Length; i++ ) {
+                    for ( int i = mIndex - 1; i < BUFLEN; i++ ) {
                         setPointData( i, mLastX, mLastY );
                     }
 #if JAVA
@@ -522,18 +523,26 @@ namespace org.kbinani.cadencii {
                     // データ点を描く
 #if JAVA
                     Color c = mDotColor;
+                    Point p = new Point( 0, 0 );
 #else
                     SolidBrush brs = getDotBrush();
                     Color c = brs.Color;
 #endif
                     for ( int i = 0; i < mIndex; i += 2 ) {
+#if JAVA
+                        p.x = mPointsX[i];
+                        p.y = mPointsY[i];
+                        int px = p.x;
+#else
                         Point p = mPoints[i];
-                        int alpha = (mDot == DOTMODE_NEAR) ? getAlpha( p.X ) : 255;
+                        int px = p.X;
+#endif
+                        int alpha = (mDot == DOTMODE_NEAR) ? getAlpha( px ) : 255;
                         if ( alpha <= 0 ) {
                             continue;
                         }
 #if JAVA
-                        c.a = alpha;
+                        c = new Color( mDotColor.getRed(), mDotColor.getGreen(), mDotColor.getBlue(), alpha );
                         mGraphics.setColor( c );
 #else
                         brs.Color = Color.FromArgb( alpha, c );
@@ -552,9 +561,7 @@ namespace org.kbinani.cadencii {
 #endif
                         }
                     }
-#if JAVA
-                    mDotColor.a = 255;
-#else
+#if !JAVA
                     brs.Color = Color.FromArgb( 255, c );
 #endif
                 }
@@ -585,9 +592,9 @@ namespace org.kbinani.cadencii {
         /// 描画に使用するグラフィックスを指定します
         /// </summary>
         /// <param name="g"></param>
-        public void setGraphics( java.awt.Graphics2D g ){
+        public void setGraphics( java.awt.Graphics g ){
 #if JAVA
-            mGraphics = g;
+            mGraphics = (Graphics2D)g;
 #else
             mGraphics = g.nativeGraphics;
 #endif

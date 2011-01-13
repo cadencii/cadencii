@@ -54,16 +54,6 @@ namespace org.kbinani.windows.forms {
             return new java.awt.Point( point_on_screen.x - p.x, point_on_screen.y - p.y );
         }
 
-#if JAVA
-        Object tag = null;
-        public Object getTag(){
-            return tag;
-        }
-
-        public void setTag( Object value ){
-            tag = value;
-        }
-#else
         public Object getTag() {
             return base.Tag;
         }
@@ -71,7 +61,6 @@ namespace org.kbinani.windows.forms {
         public void setTag( Object value ) {
             base.Tag = value;
         }
-#endif
         #endregion
 
         // root implementation of java.awt.Component
@@ -390,6 +379,7 @@ namespace org.kbinani.windows.forms {
             }
         }
 
+#if !DISABLE_EXTENDED_STATE
         public int getExtendedState() {
             if ( base.WindowState == System.Windows.Forms.FormWindowState.Maximized ) {
                 return MAXIMIZED_BOTH;
@@ -399,6 +389,7 @@ namespace org.kbinani.windows.forms {
                 return NORMAL;
             }
         }
+#endif
 
         public void setExtendedState( int value ) {
             if ( value == ICONIFIED ) {

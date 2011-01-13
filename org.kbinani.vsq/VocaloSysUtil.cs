@@ -124,7 +124,7 @@ namespace org.kbinani.vsq
 #endif
                 if ( sw != null ) {
                     try {
-                        sw.write( new String( '#', 72 ) );
+                        sw.write( "########################################################################" );
                         sw.newLine();
                         foreach ( String s in dir1 ) {
                             sw.write( s );
@@ -246,7 +246,7 @@ namespace org.kbinani.vsq
 #endif
                 if ( sw != null ) {
                     try {
-                        sw.write( new String( '#', 72 ) );
+                        sw.write( "########################################################################" );
                         sw.newLine();
                         foreach ( String s in dir2 ) {
                             sw.write( s );

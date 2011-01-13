@@ -15,6 +15,7 @@
 package org.kbinani.media;
 
 import java.util.*;
+import org.kbinani.*;
 #else
 using System;
 
@@ -41,7 +42,11 @@ namespace org.kbinani.media
             mReceiver = receiver;
             int rate_from = sample_rate;
             int rate_to = receiver.getSampleRate();
-            mContext = new RateConvertContext( rate_from, rate_to );
+            try {
+                mContext = new RateConvertContext( rate_from, rate_to );
+            } catch ( Exception ex ) {
+                mContext = null; // m9(＠ｑ＠)
+            }
         }
 
         public void close()

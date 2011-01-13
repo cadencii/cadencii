@@ -38,6 +38,9 @@ namespace org.kbinani.cadencii {
     using BRunWorkerCompletedEventArgs = System.ComponentModel.RunWorkerCompletedEventArgs;
     using BProgressChangedEventArgs = System.ComponentModel.ProgressChangedEventArgs;
     using BEventHandler = System.EventHandler;
+    using BDoWorkEventHandler = System.ComponentModel.DoWorkEventHandler;
+    using BRunWorkerCompletedEventHandler = System.ComponentModel.RunWorkerCompletedEventHandler;
+    using BProgressChangedEventHandler = System.ComponentModel.ProgressChangedEventHandler;
 #endif
 
 #if JAVA
@@ -111,10 +114,9 @@ namespace org.kbinani.cadencii {
 
         #region helper methods
         private void registerEventHandlers() {
-            bgWork.DoWork += new System.ComponentModel.DoWorkEventHandler( bgWork_DoWork );
-            bgWork.RunWorkerCompleted += 
-                new System.ComponentModel.RunWorkerCompletedEventHandler( bgWork_RunWorkerCompleted );
-            bgWork.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler( this.bgWork_ProgressChanged );
+            bgWork.DoWork += new BDoWorkEventHandler( bgWork_DoWork );
+            bgWork.RunWorkerCompleted += new BRunWorkerCompletedEventHandler( bgWork_RunWorkerCompleted );
+            bgWork.ProgressChanged += new BProgressChangedEventHandler( this.bgWork_ProgressChanged );
         }
 
         private void updateSinger() {
@@ -168,8 +170,7 @@ namespace org.kbinani.cadencii {
 
         public void btnBrowse_Click( Object sender, BEventArgs e ) {
             folderBrowser.setSelectedPath( txtDir.getText() );
-            folderBrowser.setVisible( true, this );
-            if ( folderBrowser.getDialogResult() != BDialogResult.OK ) {
+            if ( folderBrowser.showDialog( this ) != BDialogResult.OK ) {
                 return;
             }
             txtDir.setText( folderBrowser.getSelectedPath() );

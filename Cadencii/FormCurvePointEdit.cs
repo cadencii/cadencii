@@ -36,6 +36,7 @@ namespace org.kbinani.cadencii
     using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
     using boolean = System.Boolean;
     using BEventHandler = System.EventHandler;
+    using BKeyEventHandler = System.Windows.Forms.KeyEventHandler;
 #endif
 
 #if JAVA
@@ -167,9 +168,9 @@ namespace org.kbinani.cadencii
             btnForward2.Click += new BEventHandler( commonButton_Click );
             btnApply.Click += new BEventHandler( btnApply_Click );
             txtDataPointClock.TextChanged += new BEventHandler( commonTextBox_TextChanged );
-            txtDataPointClock.KeyUp += new System.Windows.Forms.KeyEventHandler( commonTextBox_KeyUp );
+            txtDataPointClock.KeyUp += new BKeyEventHandler( commonTextBox_KeyUp );
             txtDataPointValue.TextChanged += new BEventHandler( commonTextBox_TextChanged );
-            txtDataPointValue.KeyUp += new System.Windows.Forms.KeyEventHandler( commonTextBox_KeyUp );
+            txtDataPointValue.KeyUp += new BKeyEventHandler( commonTextBox_KeyUp );
             btnBackward3.Click += new BEventHandler( commonButton_Click );
             btnForward3.Click += new BEventHandler( commonButton_Click );
             btnUndo.Click += new BEventHandler( handleUndoRedo_Click );

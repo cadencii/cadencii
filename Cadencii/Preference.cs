@@ -39,6 +39,7 @@ namespace org.kbinani.cadencii
     using BEventArgs = System.EventArgs;
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
     using BEventHandler = System.EventHandler;
+    using BFormClosingEventHandler = System.Windows.Forms.FormClosingEventHandler;
     using boolean = System.Boolean;
 #endif
 
@@ -1745,7 +1746,7 @@ namespace org.kbinani.cadencii
             listSingers.SelectedIndexChanged += new BEventHandler( listSingers_SelectedIndexChanged );
             chkAutoBackup.CheckedChanged += new BEventHandler( chkAutoBackup_CheckedChanged );
             btnOK.Click += new BEventHandler( btnOK_Click );
-            FormClosing += new System.Windows.Forms.FormClosingEventHandler( Preference_FormClosing );
+            this.FormClosing += new BFormClosingEventHandler( Preference_FormClosing );
             btnCancel.Click += new BEventHandler( btnCancel_Click );
             chkLoadSecondaryVOCALOID1.CheckedChanged += new BEventHandler( chkLoadSecondaryVOCALOID1_CheckedChanged );
             radioVocaloidEditorCompatible.CheckedChanged += new BEventHandler( commonChangeAutoVibratoType );

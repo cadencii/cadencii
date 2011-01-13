@@ -21,7 +21,6 @@ namespace org.kbinani.windows.forms {
 
     public class BFolderBrowser {
         public FolderBrowserDialog dialog;
-        private BDialogResult m_result = BDialogResult.CANCEL;
 
         public BFolderBrowser() {
             dialog = new FolderBrowserDialog();
@@ -59,21 +58,13 @@ namespace org.kbinani.windows.forms {
             dialog.SelectedPath = value;
         }
 
-        public void setVisible( bool value, System.Windows.Forms.Form main_form ) {
-            if ( value ) {
-                DialogResult ret = dialog.ShowDialog( main_form );
-                if ( ret == DialogResult.OK ) {
-                    m_result = BDialogResult.OK;
-                } else {
-                    m_result = BDialogResult.CANCEL;
-                }
-            } else {
-                //do nothing
+        public BDialogResult showDialog( System.Windows.Forms.Form parent )
+        {
+            DialogResult ret = dialog.ShowDialog( parent );
+            if ( ret == DialogResult.OK ) {
+                return BDialogResult.OK;
             }
-        }
-
-        public BDialogResult getDialogResult() {
-            return m_result;
+            return BDialogResult.CANCEL;
         }
     }
 

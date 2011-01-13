@@ -40,6 +40,7 @@ namespace org.kbinani.cadencii
     using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
     using BPreviewKeyDownEventArgs = System.Windows.Forms.PreviewKeyDownEventArgs;
+    using BFormClosingEventHandler = System.Windows.Forms.FormClosingEventHandler;
     using java = org.kbinani.java;
 #endif
 
@@ -251,7 +252,7 @@ namespace org.kbinani.cadencii
 #endif
             btnLoadDefault.Click += new BEventHandler( btnLoadDefault_Click );
             btnRevert.Click += new BEventHandler( btnRevert_Click );
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( FormShortcutKeys_FormClosing );
+            this.FormClosing += new BFormClosingEventHandler( FormShortcutKeys_FormClosing );
             btnOK.Click += new BEventHandler( btnOK_Click );
             btnCancel.Click += new BEventHandler( btnCancel_Click );
         }

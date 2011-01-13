@@ -29,6 +29,7 @@ class pp_cs2java {
     static bool s_logfile_overwrite = false; // ログファイルを上書きするかどうか(trueなら上書きする、falseなら末尾に追加)
     static List<string> s_included = new List<string>(); // インクルードされたファイルのリスト
     static string[,] REPLACE = new string[0, 2];
+    static ReplaceMode s_mode = ReplaceMode.NONE;
     static readonly string[,] REPLACE_JAVA = new string[,]{
         //{"string", "String"},
         //{" bool ", " boolean "},
@@ -105,6 +106,13 @@ class pp_cs2java {
     };
     private static Regex reg_eventhandler = new Regex( @"(?<pre>.*?)(?<instance>\w*)[.]*(?<event>\w*)\s*(?<operator>[\+\-]\=)\s*new\s*(?<handler>\w*)EventHandler\s*\(\s*(?<method>.*)\s*\)" );
 
+    enum ReplaceMode
+    {
+        NONE,
+        JAVA,
+        CPP,
+    }
+
     static void printUsage() {
         Console.WriteLine( "pp_cs2java" );
         Console.WriteLine( "Copyright (C) kbinani, All Rights Reserved" );
@@ -173,8 +181,10 @@ class pp_cs2java {
                     string type = current_parse.Substring( "--replace-".Length );
                     if ( type == "java" ) {
                         REPLACE = REPLACE_JAVA;
+                        s_mode = ReplaceMode.JAVA;
                     } else if ( type == "cpp" ) {
                         REPLACE = REPLACE_CPP;
+                        s_mode = ReplaceMode.CPP;
                     }
                 }
             } else {
@@ -602,6 +612,87 @@ class pp_cs2java {
                                 method = method.Trim();
                                 line = pre + instance + (instance == "" ? "" : ".") + ev.Substring( 0, 1 ).ToLower() + ev.Substring( 1 ) + "Event." + ope + "( new " + handler + "EventHandler( this, \"" + method + "\" ) );";
                             }
+                        }
+                    }
+
+                    // javaのときのユーティリティ関数str, vec等をナントカする
+                    string[] sp_funcs = new string[] { "vec", "dic" };
+                    bool sp_changed = true;
+                    while ( sp_changed ) {
+                        sp_changed = false;
+                        foreach ( string func in sp_funcs ) {
+                            int indx = line.IndexOf( func + "." );
+                            if ( indx < 0 ) {
+                                continue;
+                            }
+                            int indx_bla = line.IndexOf( func + ".<" );
+#if DEBUG
+                            PortUtil.println( "pp_cs2java#preprocessCor; 0; indx=" + indx + "; indx_bla=" + indx_bla );
+#endif
+                            while ( indx_bla == indx ) {
+                                // 既に処理済
+                                indx = line.IndexOf( func + ".", indx + 1 );
+                                if ( indx < 0 ) {
+                                    break;
+                                }
+                                indx_bla = line.IndexOf( func + ".<", indx );
+                                if ( indx < 0 ) {
+                                    break;
+                                }
+                            }
+#if DEBUG
+                            PortUtil.println( "pp_cs2java#preprocessCor; 1; indx=" + indx + "; indx_bla=" + indx_bla );
+#endif
+                            if ( indx < 0 ) {
+                                // 既に処理済
+                                continue;
+                            }
+                            // クラス名の直後に出てくる<を検出
+                            indx_bla = line.IndexOf( "<", indx );
+                            // その間にあるのがメソッド名
+                            int indx_start = indx + (func + ".").Length;
+                            int indx_end = indx_bla;
+                            string method_name = line.Substring( indx_start, indx_end - indx_start );
+#if DEBUG
+                            PortUtil.println( "pp_cs2java#preprocessCor; line=" + line + "; method_name=" + method_name );
+#endif
+                            // 「>」を検出．型の指定にさらに総称型が入っていた場合を考慮
+                            int indx_cket = -1;
+                            int stack_count = 1;
+                            for ( int i = indx_bla + 1; i < line.Length; i++ ) {
+                                char c = line[i];
+#if DEBUG
+                                PortUtil.println( "pp_cs2java#preprocessCor; #" + i + "; c='" + new string( c, 1 ) + "'" );
+#endif
+                                if ( c == '>' ) {
+                                    stack_count--;
+                                }
+                                if ( c == '<' ) {
+                                    stack_count++;
+                                }
+                                if ( stack_count == 0 ) {
+                                    indx_cket = i;
+                                    break;
+                                }
+                            }
+#if DEBUG
+                            PortUtil.println( "pp_cs2java#preprocessCor; indx_bla=" + indx_bla + "; indx_cket=" + indx_cket );
+#endif
+                            // genericsの指定を抽出
+                            string generics = line.Substring( indx_bla + 1, indx_cket - indx_bla - 1 );
+#if DEBUG
+                            PortUtil.println( "pp_cs2java#preprocessCor; line=" + line + "; generics=" + generics );
+#endif
+                            // プレフィクス
+                            string prefix = line.Substring( 0, indx );
+                            // サフィックス
+                            string suffix = line.Substring( indx_cket + 1 );
+                            // 置換を実行
+                            line = prefix + func + ".<" + generics + ">" + method_name + suffix;
+#if DEBUG
+                            PortUtil.println( "pp_cs2java#preprocessCor; after; line=" + line );
+#endif
+                            sp_changed = true;
                         }
                     }
 

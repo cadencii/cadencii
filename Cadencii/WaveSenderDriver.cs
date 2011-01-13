@@ -16,6 +16,7 @@ package org.kbinani.cadencii;
 
 import java.awt.*;
 import java.util.*;
+import org.kbinani.*;
 #else
 using System;
 using System.Threading;
@@ -80,7 +81,10 @@ namespace org.kbinani.cadencii
                 mAbortRequired = true;
                 while ( mRunning ) {
 #if JAVA
-                    Threas.sleep( 100 );
+                    try{
+                        Thread.sleep( 100 );
+                    }catch( Exception ex ){
+                    }
 #else
                     Thread.Sleep( 100 );
 #endif

@@ -18,11 +18,11 @@ import org.kbinani.BEventHandler;
 
 public class RenderRequiredEventHandler extends BEventHandler{
     public RenderRequiredEventHandler( Object sender, String method_name ){
-        super( sender, method_name, Void.TYPE, Object.class, Integer[].class );
+        super( sender, method_name, Void.TYPE, Object.class, Integer.TYPE );
     }
     
     public RenderRequiredEventHandler( Class<?> sender, String method_name ){
-        super( sender, method_name, Void.TYPE, Object.class, Integer[].class );
+        super( sender, method_name, Void.TYPE, Object.class, Integer.TYPE );
     }
 }
 #else
@@ -30,7 +30,7 @@ using System;
 
 namespace org.kbinani.cadencii {
 
-    public delegate void RenderRequiredEventHandler( Object sender, int[] tracks );
+    public delegate void RenderRequiredEventHandler( Object sender, int tracks );
 
 }
 #endif

@@ -18,6 +18,7 @@ package org.kbinani.cadencii;
 
 import java.awt.event.*;
 import org.kbinani.*;
+import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
@@ -33,17 +34,18 @@ namespace org.kbinani.cadencii
     using BKeyEventArgs = System.Windows.Forms.KeyEventArgs;
 
     using BEventHandler = System.EventHandler;
+    using BKeyEventHandler = System.Windows.Forms.KeyEventHandler;
     
     using boolean = System.Boolean;
 #endif
 
 #if JAVA
-    public class VolumeTracker extends JPanel {
+    public class VolumeTracker extends JPanel implements IAmplifierView
 #else
     public class VolumeTracker : UserControl, IAmplifierView
-    {
 #endif
-        private int m_feder = 0;
+    {
+        private int mFeder = 0;
         private String m_number = "0";
         private String m_title = "";
         private Object m_tag = null;
@@ -164,7 +166,7 @@ namespace org.kbinani.cadencii
 #endif
 
 #if JAVA
-        public BEvent<BEventHandler> muteButtonClick = new BEvent<BEventHandler>();
+        public BEvent<BEventHandler> muteButtonClickEvent = new BEvent<BEventHandler>();
 #elif QT_VERSION
         public: signals: void muteButtonClick( QObject sender, QObject e );
 #else
@@ -172,7 +174,7 @@ namespace org.kbinani.cadencii
 #endif
 
 #if JAVA
-        public BEvent<BEventHandler> soloButtonClick = new BEvent<BEventHandler>();
+        public BEvent<BEventHandler> soloButtonClickEvent = new BEvent<BEventHandler>();
 #elif QT_VERSION
         public: signals: void soloButtonClick( QObject sender, QObject e );
 #else
@@ -210,7 +212,7 @@ namespace org.kbinani.cadencii
         {
             double ret = 0.0;
             if ( !mMuted ) {
-                ret = VocaloSysUtil.getAmplifyCoeffFromFeder( m_feder ) * VocaloSysUtil.getAmplifyCoeffFromPanLeft( mPanpot );
+                ret = VocaloSysUtil.getAmplifyCoeffFromFeder( mFeder ) * VocaloSysUtil.getAmplifyCoeffFromPanLeft( mPanpot );
             }
             return ret;
         }
@@ -219,7 +221,7 @@ namespace org.kbinani.cadencii
         {
             double ret = 0.0;
             if ( !mMuted ) {
-                ret = VocaloSysUtil.getAmplifyCoeffFromFeder( m_feder ) * VocaloSysUtil.getAmplifyCoeffFromPanRight( mPanpot );
+                ret = VocaloSysUtil.getAmplifyCoeffFromFeder( mFeder ) * VocaloSysUtil.getAmplifyCoeffFromPanRight( mPanpot );
             }
             return ret;
         }
@@ -323,29 +325,29 @@ namespace org.kbinani.cadencii
 
         public int getFeder()
         {
-            return m_feder;
+            return mFeder;
         }
 
         public void setFeder( int value )
         {
-            int old = m_feder;
-            m_feder = value;
-            if ( old != m_feder ) {
+            int old = mFeder;
+            mFeder = value;
+            if ( old != mFeder ) {
                 try {
 #if JAVA
-                    federChangedEvent.raise( mTrack, m_feder );
+                    federChangedEvent.raise( mTrack, mFeder );
 #elif QT_VERSION
-                    federChanged( mTrack, m_feder );
+                    federChanged( mTrack, mFeder );
 #else
                     if ( FederChanged != null ) {
-                        FederChanged.Invoke( mTrack, m_feder );
+                        FederChanged.Invoke( mTrack, mFeder );
                     }
 #endif
                 } catch ( Exception ex ) {
                     PortUtil.stderr.println( "VolumeTracker#setFeder; ex=" + ex );
                 }
             }
-            int v = 177 - getYCoordFromFeder( m_feder );
+            int v = 177 - getYCoordFromFeder( mFeder );
             trackFeder.setValue( v );
         }
 
@@ -438,8 +440,8 @@ namespace org.kbinani.cadencii
 
         public void trackFeder_ValueChanged( Object sender, BEventArgs e )
         {
-            m_feder = getFederFromYCoord( 151 - (trackFeder.getValue() - 26) );
-            txtFeder.setText( (m_feder / 10.0) + "" );
+            mFeder = getFederFromYCoord( 151 - (trackFeder.getValue() - 26) );
+            txtFeder.setText( (mFeder / 10.0) + "" );
             try {
 #if JAVA
                 federChangedEvent.raise( mTrack, mFeder );
@@ -447,7 +449,7 @@ namespace org.kbinani.cadencii
                 federChanged( mTrack, mFeder );
 #else
                 if ( FederChanged != null ) {
-                    FederChanged.Invoke( mTrack, m_feder );
+                    FederChanged.Invoke( mTrack, mFeder );
                 }
 #endif
             } catch ( Exception ex ) {
@@ -534,7 +536,7 @@ namespace org.kbinani.cadencii
         {
             try {
 #if JAVA
-                soloButtonClick.raise( this, e );
+                soloButtonClickEvent.raise( this, e );
 #elif QT_VERSION
                 soloButtonClick( this, e );
 #else
@@ -552,7 +554,7 @@ namespace org.kbinani.cadencii
             mMuted = chkMute.isSelected();
             try {
 #if JAVA
-                muteButtonClick.raise( this, e );
+                muteButtonClickEvent.raise( this, e );
 #elif QT_VERSION
                 muteButtonClick( this, e );
 #else
@@ -570,8 +572,8 @@ namespace org.kbinani.cadencii
         {
             trackFeder.ValueChanged += new BEventHandler( trackFeder_ValueChanged );
             trackPanpot.ValueChanged += new BEventHandler( trackPanpot_ValueChanged );
-            txtPanpot.KeyDown += new KeyEventHandler( txtPanpot_KeyDown );
-            txtFeder.KeyDown += new KeyEventHandler( txtFeder_KeyDown );
+            txtPanpot.KeyDown += new BKeyEventHandler( txtPanpot_KeyDown );
+            txtFeder.KeyDown += new BKeyEventHandler( txtFeder_KeyDown );
             chkSolo.Click += new BEventHandler( chkSolo_Click );
             chkMute.Click += new BEventHandler( chkMute_Click );
 #if !JAVA

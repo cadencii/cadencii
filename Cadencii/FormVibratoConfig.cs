@@ -73,12 +73,12 @@ namespace org.kbinani.cadencii
             PortUtil.println( "    type=" + type );
 #endif
             if ( use_original ) {
-                radioUserDefined.Checked = true;
+                radioUserDefined.setSelected( true );
             } else {
                 if ( type == SynthesizerType.VOCALOID1 ) {
-                    radioVocaloid1.Checked = true;
+                    radioVocaloid1.setSelected( true );
                 } else {
-                    radioVocaloid2.Checked = true;
+                    radioVocaloid2.setSelected( true );
                 }
             }
             if ( vibrato_handle != null ) {
@@ -162,7 +162,7 @@ namespace org.kbinani.cadencii
         private void updateComboBoxStatus()
         {
             // 選択位置
-            int old = comboVibratoType.SelectedIndex;
+            int old = comboVibratoType.getSelectedIndex();
 
             // 全部削除
             comboVibratoType.removeAllItems();
@@ -174,7 +174,7 @@ namespace org.kbinani.cadencii
             comboVibratoType.addItem( empty );
 
             // 選択元を元に，選択肢を追加する
-            if ( radioUserDefined.Checked ) {
+            if ( radioUserDefined.isSelected() ) {
                 // ユーザー定義のを使う場合
                 int size = AppManager.editorConfig.AutoVibratoCustom.size();
                 for ( int i = 0; i < size; i++ ) {
@@ -183,7 +183,7 @@ namespace org.kbinani.cadencii
                 }
             } else {
                 // VOCALOID1/VOCALOID2のシステム定義のを使う場合
-                SynthesizerType type = radioVocaloid1.Checked ? SynthesizerType.VOCALOID1 : SynthesizerType.VOCALOID2;
+                SynthesizerType type = radioVocaloid1.isSelected() ? SynthesizerType.VOCALOID1 : SynthesizerType.VOCALOID2;
                 for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
                     VibratoHandle vconfig = itr.next();
                     comboVibratoType.addItem( vconfig );
@@ -205,14 +205,14 @@ namespace org.kbinani.cadencii
             btnOK.Click += new BEventHandler( btnOK_Click );
             btnCancel.Click += new BEventHandler( btnCancel_Click );
             radioUserDefined.CheckedChanged += new BEventHandler( handleRadioCheckedChanged );
-            comboVibratoType.SelectedIndexChanged += comboVibratoType_SelectedIndexChanged;
+            comboVibratoType.SelectedIndexChanged += new BEventHandler( comboVibratoType_SelectedIndexChanged );
         }
 
         void handleRadioCheckedChanged( Object sender, EventArgs e )
         {
-            comboVibratoType.SelectedIndexChanged -= comboVibratoType_SelectedIndexChanged;
+            comboVibratoType.SelectedIndexChanged -= new BEventHandler( comboVibratoType_SelectedIndexChanged );
             updateComboBoxStatus();
-            comboVibratoType.SelectedIndexChanged += comboVibratoType_SelectedIndexChanged;
+            comboVibratoType.SelectedIndexChanged += new BEventHandler( comboVibratoType_SelectedIndexChanged );
         }
 
         private void setResources()
@@ -238,7 +238,7 @@ namespace org.kbinani.cadencii
                 } else {
                     txtVibratoLength.setEnabled( true );
                     VibratoHandle src = null;
-                    if ( radioUserDefined.Checked ) {
+                    if ( radioUserDefined.isSelected() ) {
                         int size = AppManager.editorConfig.AutoVibratoCustom.size();
                         for ( int i = 0; i < size; i++ ) {
                             VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
@@ -248,7 +248,7 @@ namespace org.kbinani.cadencii
                             }
                         }
                     } else {
-                        SynthesizerType type = radioVocaloid1.Checked ? SynthesizerType.VOCALOID1 : SynthesizerType.VOCALOID2;
+                        SynthesizerType type = radioVocaloid1.isSelected() ? SynthesizerType.VOCALOID1 : SynthesizerType.VOCALOID2;
                         for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
                             VibratoHandle vconfig = itr.next();
                             if ( s.Equals( vconfig.IconID ) ) {

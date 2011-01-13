@@ -64,11 +64,11 @@ namespace org.kbinani.cadencii {
         /// </summary>
         private int[] mTrace = null;
         /// <summary>
-        /// m_trace[0]が表してるx座標
+        /// mTrace[0]が表してるx座標
         /// </summary>
         private int mXAt0;
         /// <summary>
-        /// m_trace[m_size - 1]までが有効だということを表す
+        /// mTrace[m_size - 1]までが有効だということを表す
         /// </summary>
         private int mSize = 0;
         /// <summary>
@@ -207,7 +207,7 @@ namespace org.kbinani.cadencii {
         }
 
         /// <summary>
-        /// m_traceの長さが指定された長さ以上に変更します
+        /// mTraceの長さが指定された長さ以上に変更します
         /// </summary>
         /// <param name="new_length"></param>
         private void ensureLength( int new_length ) {
@@ -220,9 +220,9 @@ namespace org.kbinani.cadencii {
                 if ( mTrace.Length < new_length ) {
 #if JAVA
                     int[] newarray = new int[new_length];
-                    System.arraycopy( m_trace, 0, newarray, 0, m_trace.length );
-                    m_trace = null;
-                    m_trace = newarray;
+                    System.arraycopy( mTrace, 0, newarray, 0, mTrace.length );
+                    mTrace = null;
+                    mTrace = newarray;
 #else
                     Array.Resize( ref mTrace, new_length );
 #endif

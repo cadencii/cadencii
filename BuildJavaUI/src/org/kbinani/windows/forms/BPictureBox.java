@@ -3,6 +3,8 @@
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
@@ -22,7 +24,8 @@ public class BPictureBox extends JPanel
                                     MouseMotionListener,
                                     KeyListener,
                                     MouseWheelListener,
-                                    FocusListener
+                                    FocusListener,
+                                    ComponentListener
 {
     private static final long serialVersionUID = 5793624638905606676L;
     public BEvent<BKeyEventHandler> bKeyDownEvent = new BEvent<BKeyEventHandler>();
@@ -36,6 +39,34 @@ public class BPictureBox extends JPanel
         addKeyListener( this );
         addMouseWheelListener( this );
         addFocusListener( this );
+        addComponentListener( this );
+    }
+
+    // root impl of ComponentListener is in BButton
+    public BEvent<BEventHandler> visibleChangedEvent = new BEvent<BEventHandler>();
+    public BEvent<BEventHandler> resizeEvent = new BEvent<BEventHandler>();
+    public void componentHidden(ComponentEvent e) {
+        try{
+            visibleChangedEvent.raise( this, new BEventArgs() );
+        }catch( Exception ex ){
+            System.err.println( "BButton#componentHidden; ex=" + ex );
+        }
+    }
+    public void componentMoved(ComponentEvent e) {
+    }
+    public void componentResized(ComponentEvent e) {
+        try{
+            resizeEvent.raise( this, new BEventArgs() );
+        }catch( Exception ex ){
+            System.err.println( "BButton#componentResized; ex=" + ex );
+        }
+    }
+    public void componentShown(ComponentEvent e) {
+        try{
+            visibleChangedEvent.raise( this, new BEventArgs() );
+        }catch( Exception ex ){
+            System.err.println( "BButton#componentShown; ex=" + ex );
+        }
     }
 
     // root impl of FocusListener is in BButton

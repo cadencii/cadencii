@@ -1193,7 +1193,7 @@ namespace org.kbinani.cadencii
         /// </summary>
         private void invokeQuantizeModeChangedEvent()
 #if JAVA
-            throws java.lang.IllegalAccessException
+            throws java.lang.IllegalAccessException, java.lang.reflect.InvocationTargetException
 #endif
         {
 #if JAVA

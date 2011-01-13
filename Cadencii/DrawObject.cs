@@ -129,7 +129,8 @@ namespace org.kbinani.cadencii {
                     if ( !itr.hasNext() ) {
                         break;
                     }
-                    mVibratoPit[i] = (float)itr.next();
+                    double v = itr.next();
+                    mVibratoPit[i] = (float)v;
                 }
             }
         }

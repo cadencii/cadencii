@@ -620,6 +620,8 @@ namespace org.kbinani.cadencii
             Vector<VsqID> singers = AppManager.getSingerListFromRendererKind( kind );
             tvsq.Track.get( 1 ).changeRenderer( renderer, singers );
             AppManager.setVsqFile( tvsq );
+
+            trackSelector = new TrackSelector( this ); // initializeで引数なしのコンストラクタが呼ばれるのを予防
 #if JAVA
 		    initialize();
             timer = new BTimer();
@@ -682,7 +684,6 @@ namespace org.kbinani.cadencii
             menuSettingPaletteTool.setVisible( false );
             menuScript.setVisible( false );
 #endif
-            trackSelector = new TrackSelector( this );
             updateTrackSelectorVisibleCurve();
             trackSelector.setBackground( new Color( 108, 108, 108 ) );
             trackSelector.setCurveVisible( true );
@@ -5309,11 +5310,11 @@ namespace org.kbinani.cadencii
                 for ( Iterator<ValuePair<Integer, SelectedTempoEntry>> itr = AppManager.getSelectedTempoIterator(); itr.hasNext(); ) {
                     ValuePair<Integer, SelectedTempoEntry> item = itr.next();
                     if ( item.getKey() <= 0 ) {
-                        String msg = "Cannot remove first symbol of track!";
+                        String msg = _( "Cannot remove first symbol of track!" );
 #if JAVA
-                        statusLabel.setText( _( msg ) );
+                        statusLabel.setText( msg );
 #else
-                        statusLabel.Text = _( msg );
+                        statusLabel.Text = msg;
 #endif
 #if !JAVA
                         SystemSounds.Asterisk.Play();
@@ -7388,12 +7389,12 @@ namespace org.kbinani.cadencii
             pictKeyLengthSplitter.MouseUp += new BMouseEventHandler( pictKeyLengthSplitter_MouseUp );
             panelOverview.KeyUp += new BKeyEventHandler( handleSpaceKeyUp );
             panelOverview.KeyDown += new BKeyEventHandler( handleSpaceKeyDown );
-            vScroll.ValueChanged += new EventHandler( vScroll_ValueChanged );
-            vScroll.Resize += new EventHandler( vScroll_Resize );
-            vScroll.Enter += new EventHandler( vScroll_Enter );
-            hScroll.ValueChanged += new EventHandler( hScroll_ValueChanged );
-            hScroll.Resize += new EventHandler( hScroll_Resize );
-            hScroll.Enter += new EventHandler( hScroll_Enter );
+            vScroll.ValueChanged += new BEventHandler( vScroll_ValueChanged );
+            vScroll.Resize += new BEventHandler( vScroll_Resize );
+            vScroll.Enter += new BEventHandler( vScroll_Enter );
+            hScroll.ValueChanged += new BEventHandler( hScroll_ValueChanged );
+            hScroll.Resize += new BEventHandler( hScroll_Resize );
+            hScroll.Enter += new BEventHandler( hScroll_Enter );
             picturePositionIndicator.PreviewKeyDown += new BPreviewKeyDownEventHandler( picturePositionIndicator_PreviewKeyDown );
             picturePositionIndicator.MouseMove += new BMouseEventHandler( picturePositionIndicator_MouseMove );
             picturePositionIndicator.MouseDoubleClick += new BMouseEventHandler( picturePositionIndicator_MouseDoubleClick );
@@ -10442,7 +10443,7 @@ namespace org.kbinani.cadencii
                     FormGenerateKeySound form = null;
                     try {
                         form = new FormGenerateKeySound( true );
-                        form.FormClosed += new System.Windows.Forms.FormClosedEventHandler( FormGenerateKeySound_FormClosed );
+                        form.FormClosed += new BFormClosedEventHandler( FormGenerateKeySound_FormClosed );
                         form.setVisible( true );
                     } catch ( Exception ex ) {
                         Logger.write( typeof( FormMain ) + ".FormMain_Load; ex=" + ex + "\n" );
@@ -11831,7 +11832,9 @@ namespace org.kbinani.cadencii
             } finally {
                 if ( dialog != null ) {
                     try {
+#if !JAVA
                         dialog.Dispose();
+#endif
                     } catch ( Exception ex ) {
                     }
                 }
@@ -12304,7 +12307,7 @@ namespace org.kbinani.cadencii
                         mDialogPreference.applyLanguage();
                         AppManager.mMixerWindow.applyLanguage();
 #if JAVA
-                    if ( m_versioninfo != null ) {
+                        if ( mVersionInfo != null ) {
 #else
                         if ( mVersionInfo != null && !mVersionInfo.IsDisposed ) {
 #endif
@@ -12650,7 +12653,9 @@ namespace org.kbinani.cadencii
             } finally {
                 if ( dialog != null ) {
                     try {
+#if !JAVA
                         dialog.Dispose();
+#endif
                     } catch ( Exception ex2 ) {
                     }
                 }
@@ -13670,7 +13675,12 @@ namespace org.kbinani.cadencii
                             if ( AppManager.getSelectedTool() == EditTool.ERASER ) {
                                 #region ツールがEraser
                                 if ( vsq.TempoTable.get( index ).Clock == 0 ) {
-                                    statusLabel.Text = _( "Cannot remove first symbol of track!" );
+                                    String msg = _( "Cannot remove first symbol of track!" );
+#if JAVA
+                                    statusLabel.setText( msg );
+#else
+                                    statusLabel.Text = msg;
+#endif
 #if !JAVA
                                     SystemSounds.Asterisk.Play();
 #endif
@@ -13821,7 +13831,12 @@ namespace org.kbinani.cadencii
                         if ( AppManager.getSelectedTool() == EditTool.ERASER ) {
                             #region ツールがEraser
                             if ( vsq.TimesigTable.get( index ).Clock == 0 ) {
-                                statusLabel.Text = _( "Cannot remove first symbol of track!" );
+                                String msg = _( "Cannot remove first symbol of track!" );
+#if JAVA
+                                statusLabel.setText( msg );
+#else
+                                statusLabel.Text = msg;
+#endif
 #if !JAVA
                                 SystemSounds.Asterisk.Play();
 #endif
@@ -14178,7 +14193,12 @@ namespace org.kbinani.cadencii
                             if ( index >= 0 && AppManager.getSelectedTool() == EditTool.ERASER ) {
                                 #region ツールがEraser
                                 if ( vsq.TempoTable.get( index ).Clock == 0 ) {
-                                    statusLabel.Text = _( "Cannot remove first symbol of track!" );
+                                    String msg = _( "Cannot remove first symbol of track!" );
+#if JAVA
+                                    statusLabel.setText( msg );
+#else
+                                    statusLabel.Text = msg;
+#endif
 #if !JAVA
                                     SystemSounds.Asterisk.Play();
 #endif
@@ -14213,7 +14233,12 @@ namespace org.kbinani.cadencii
                             if ( AppManager.getSelectedTool() == EditTool.ERASER ) {
                                 #region ツールがEraser
                                 if ( vsq.TimesigTable.get( index ).Clock == 0 ) {
-                                    statusLabel.Text = _( "Cannot remove first symbol of track!" );
+                                    String msg = _( "Cannot remove first symbol of track!" );
+#if JAVA
+                                    statusLabel.setText( msg );
+#else
+                                    statusLabel.Text = msg;
+#endif
 #if !JAVA
                                     SystemSounds.Asterisk.Play();
 #endif
@@ -14360,9 +14385,9 @@ namespace org.kbinani.cadencii
         public void picturePositionIndicator_Paint( Object sender, BPaintEventArgs e )
         {
 #if JAVA
-            Graphics2D g = e.Graphics;
+            Graphics g = e.Graphics;
 #else
-            Graphics2D g = new Graphics2D( e.Graphics );
+            Graphics g = new Graphics( e.Graphics );
 #endif
             picturePositionIndicatorDrawTo( g );
 #if MONITOR_FPS
@@ -14449,12 +14474,6 @@ namespace org.kbinani.cadencii
 #if DEBUG
             PortUtil.println( "FormMain#menuHelpDebug_Click" );
 
-            int[] test = new int[] { 9, 65576, 65573, 65575, 65574 };
-            for ( int i = 0; i < test.Length; i++ ) {
-                System.Windows.Forms.Keys ks = (System.Windows.Forms.Keys)(test[i]);
-                PortUtil.println( "FormMain#menuHelpDebug_Click; ks=" + ks );
-            }
-
 #if ENABLE_VOCALOID
             /*BFileChooser dlg_fout = new BFileChooser( "" );
             if ( dlg_fout.showSaveDialog( this ) == BFileChooser.APPROVE_OPTION ) {
@@ -14508,7 +14527,10 @@ namespace org.kbinani.cadencii
 
             // ログファイルを開く
 #if JAVA
-            Runtime.getRuntime().exec( new String[] { file } );
+            try{
+                Runtime.getRuntime().exec( new String[] { file } );
+            }catch( Exception ex ){
+            }
 #else
             System.Diagnostics.Process.Start( file );
 #endif
@@ -14700,9 +14722,11 @@ namespace org.kbinani.cadencii
             processSpecialShortcutKey( e0, true );
         }
 
-        public void trackSelector_RenderRequired( Object sender, Integer[] tracks )
+        public void trackSelector_RenderRequired( Object sender, int track )
         {
-            AppManager.patchWorkToFreeze( this, Arrays.asList( tracks ) );
+            Vector<Integer> list = new Vector<Integer>();
+            list.add( track );
+            AppManager.patchWorkToFreeze( this, list );
             /*int selected = AppManager.getSelected();
             Vector<Integer> t = new Vector<Integer>( Arrays.asList( PortUtil.convertIntArray( tracks ) ) );
             if ( t.contains( selected) ) {
@@ -15726,8 +15750,14 @@ namespace org.kbinani.cadencii
         #region stripBtn*
         public void stripBtnGrid_Click( Object sender, EventArgs e )
         {
-            stripBtnGrid.Pushed = !stripBtnGrid.Pushed;
-            AppManager.setGridVisible( stripBtnGrid.Pushed );
+#if JAVA
+            boolean pushed = stripBtnGrid.isSelected();
+            stripBtnGrid.setSelected( !pushed );
+#else
+            boolean pushed = stripBtnGrid.Pushed;
+            stripBtnGrid.Pushed = !pushed;
+#endif
+            AppManager.setGridVisible( !pushed );
         }
 
         public void stripBtnArrow_Click( Object sender, EventArgs e )
@@ -15776,8 +15806,14 @@ namespace org.kbinani.cadencii
 
         public void stripBtnLoop_Click( Object sender, EventArgs e )
         {
-            stripBtnLoop.Pushed = !stripBtnLoop.Pushed;
-            AppManager.setRepeatMode( stripBtnLoop.Pushed );
+#if JAVA
+            boolean pushed = stripBtnLoop.isSelected();
+            stripBtnLoop.setSelected( !pushed );
+#else
+            boolean pushed = stripBtnLoop.Pushed;
+            stripBtnLoop.Pushed = !pushed;
+#endif
+            AppManager.setRepeatMode( !pushed );
             pictPianoRoll.requestFocus();
         }
 
@@ -15786,7 +15822,11 @@ namespace org.kbinani.cadencii
             // AppManager.mAddingEventがnullかどうかで処理が変わるのでnullにする
             AppManager.mAddingEvent = null;
             // モードを切り替える
+#if JAVA
+            mStepSequencerEnabled = stripBtnStepSequencer.isSelected();
+#else
             mStepSequencerEnabled = stripBtnStepSequencer.Checked;
+#endif
 
             // MIDIの受信を開始
 #if ENABLE_MIDI
@@ -16011,13 +16051,22 @@ namespace org.kbinani.cadencii
             if ( sender == null ) {
                 return;
             }
+#if JAVA
+            if ( !(sender instanceof BMenuItem) ) {
+#else
             if ( !(sender is System.Windows.Forms.ToolStripMenuItem) ) {
+#endif
                 return;
             }
 
             // イベントの送信元を特定
+#if JAVA
+            BMenuItem item = (BMenuItem)sender;
+            String text = item.getText();
+#else
             System.Windows.Forms.ToolStripMenuItem item = (System.Windows.Forms.ToolStripMenuItem)sender;
             String text = item.Text;
+#endif
 
             // メニューの表示文字列から，どの設定値についてのイベントかを探す
             VibratoHandle target = null;
@@ -16208,9 +16257,32 @@ namespace org.kbinani.cadencii
             }
 #endif
 
-            int count = toolBarTool.Buttons.Count;// toolStripTool.getComponentCount();
+#if JAVA
+            int count = toolStripTool.getComponentCount();
+#else
+            int count = toolBarTool.Buttons.Count;
+#endif
             for ( int i = 0; i < count; i++ ) {
-                Object item = toolBarTool.Buttons[i];// toolStripTool.getComponentAtIndex( i );
+#if JAVA
+                Object item = toolStripTool.getComponentAtIndex( i );
+#else
+                Object item = toolBarTool.Buttons[i];
+#endif
+#if JAVA
+                if( item instanceof BToggleButton ){
+                    BToggleButton button = (BToggleButton)item;
+                    Object tag = button.getTag();
+                    if( tag != null && tag instanceof String ){
+                        if( id.equals( (String)tag ) ){
+                            button.setSelected( true );
+                        }else{
+                            button.setSelected( false );
+                        }
+                    }else{
+                        button.setSelected( false );
+                    }
+                }
+#else
                 if ( item is System.Windows.Forms.ToolBarButton ) {
                     System.Windows.Forms.ToolBarButton button = (System.Windows.Forms.ToolBarButton)item;
                     if ( button.Style == System.Windows.Forms.ToolBarButtonStyle.ToggleButton && button.Tag != null && button.Tag is String ) {
@@ -16221,6 +16293,7 @@ namespace org.kbinani.cadencii
                         }
                     }
                 }
+#endif
             }
 
             MenuElement[] sub_cmenu_piano_palette_tool = cMenuPianoPaletteTool.getSubElements();
@@ -16464,7 +16537,11 @@ namespace org.kbinani.cadencii
         public void handleEndMarker_Click( Object sender, EventArgs e )
         {
             AppManager.mEndMarkerEnabled = !AppManager.mEndMarkerEnabled;
+#if JAVA
+            stripBtnEndMarker.setSelected( AppManager.mEndMarkerEnabled );
+#else
             stripBtnEndMarker.Pushed = AppManager.mEndMarkerEnabled;
+#endif
             menuVisualEndMarker.setSelected( AppManager.mEndMarkerEnabled );
             pictPianoRoll.requestFocus();
             refreshScreen();
@@ -16653,7 +16730,11 @@ namespace org.kbinani.cadencii
                 Logger.write( typeof( FormMain ) + ".handleMenuMouseEnter; cannot find message for " + item.getName() + "\n" );
             }
 #endif
+#if JAVA
+            statusLabel.setText( text );
+#else
             statusLabel.Text = text;
+#endif
         }
 
         public void handleSpaceKeyDown( Object sender, BKeyEventArgs e )
@@ -16695,12 +16776,42 @@ namespace org.kbinani.cadencii
             } else {
                 // イベント送信元のアイテムが，cMenuTrackTabRendererUtauまたは
                 // menuTrackRendererUTAUのサブアイテムかどうかをチェック
-                if( sender is System.Windows.Forms.ToolStripMenuItem ){
+#if JAVA
+                if ( sender instanceof BMenuItem ) {
+#else
+                if ( sender is System.Windows.Forms.ToolStripMenuItem ) {
+#endif
+#if JAVA
+                    BMenuItem item = (BMenuItem)sender;
+                    for ( int i = 0; i < cMenuTrackTabRendererUtau.getComponentCount(); i++ ){
+                        Component c = cMenuTrackTabRendererUtau.getComponent( i );
+                        if( c instanceof BMenuItem ){
+                            BMenuItem b = (BMenuItem)c;
+                            if( b == item ){
+                                resampler_index = i;
+                                break;
+                            }
+                        }
+                    }
+                    if( resampler_index < 0 ){
+                        for( int i = 0; i < menuTrackRendererUtau.getComponentCount(); i++ ){
+                            Component c = menuTrackRendererUtau.getComponent( i );
+                            if( c instanceof BMenuItem ){
+                                BMenuItem b = (BMenuItem)c;
+                                if( b == item ){
+                                    resampler_index = i;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+#else
                     System.Windows.Forms.ToolStripMenuItem item = (System.Windows.Forms.ToolStripMenuItem)sender;
                     resampler_index = cMenuTrackTabRendererUtau.DropDownItems.IndexOf( item );
                     if ( resampler_index < 0 ) {
                         resampler_index = menuTrackRendererUtau.DropDownItems.IndexOf( item );
                     }
+#endif
                 }
                 if ( resampler_index < 0 ) {
                     // 検出できないのでbailout
@@ -16765,12 +16876,27 @@ namespace org.kbinani.cadencii
                 menuTrackRendererVOCALOID2.setSelected( kind == RendererKind.VOCALOID2 );
                 menuTrackRendererUtau.setSelected( kind == RendererKind.UTAU );
                 menuTrackRendererVCNT.setSelected( kind == RendererKind.VCNT );
+#if JAVA
+                for( int i = 0; i < cMenuTrackTabRendererUtau.getComponentCount(); i++ ){
+                    Component c = cMenuTrackTabRendererUtau.getComponent( i );
+                    if( c instanceof BMenuItem ){
+                        ((BMenuItem)c).setSelected( (i == resampler_index) );
+                    }
+                }
+                for( int i = 0; i < menuTrackRendererUtau.getComponentCount(); i++ ){
+                    Component c = menuTrackRendererUtau.getComponent( i );
+                    if( c instanceof BMenuItem ){
+                        ((BMenuItem)c).setSelected( (i == resampler_index) );
+                    }
+                }
+#else
                 for ( int i = 0; i < cMenuTrackTabRendererUtau.DropDownItems.Count; i++ ) {
                     ((System.Windows.Forms.ToolStripMenuItem)cMenuTrackTabRendererUtau.DropDownItems[i]).Checked = (i == resampler_index);
                 }
                 for ( int i = 0; i < menuTrackRendererUtau.DropDownItems.Count; i++ ) {
                     ((System.Windows.Forms.ToolStripMenuItem)menuTrackRendererUtau.DropDownItems[i]).Checked = (i == resampler_index);
                 }
+#endif
                 setEdited( true );
                 refreshScreen();
             }

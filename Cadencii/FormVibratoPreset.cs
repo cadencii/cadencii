@@ -16,6 +16,7 @@ package org.kbinani.cadencii;
 
 //INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/Cadencii/FormVibratoPreset.java
 
+import java.awt.*;
 import java.util.*;
 import org.kbinani.*;
 import org.kbinani.apputil.*;
@@ -34,6 +35,7 @@ namespace org.kbinani.cadencii
     using BEventArgs = System.EventArgs;
     using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
     using BEventHandler = System.EventHandler;
+    using BPaintEventHandler = System.Windows.Forms.PaintEventHandler;
     using boolean = System.Boolean;
 #endif
 
@@ -109,7 +111,7 @@ namespace org.kbinani.cadencii
             // 表示状態を更新
             updateStatus();
             if ( size > 0 ) {
-                listPresets.SelectedIndex = 0;
+                listPresets.setSelectedIndex( 0 );
             }
         }
 
@@ -198,7 +200,11 @@ namespace org.kbinani.cadencii
             String nstr = value + "";
             if ( str != nstr ) {
                 textRate.setText( nstr );
+#if JAVA
+                textRate.setCaretPosition( nstr.length() );
+#else
                 textRate.SelectionStart = textRate.Text.Length;
+#endif
             }
 
             repaintPictures();
@@ -228,7 +234,11 @@ namespace org.kbinani.cadencii
             String nstr = value + "";
             if ( str != nstr ) {
                 textDepth.setText( nstr );
+#if JAVA
+                textDepth.setCaretPosition( nstr.length() );
+#else
                 textDepth.SelectionStart = textDepth.Text.Length;
+#endif
             }
 
             repaintPictures();
@@ -296,7 +306,7 @@ namespace org.kbinani.cadencii
             int raw_width = pictureResulting.getWidth();
             int raw_height = pictureResulting.getHeight();
 #if JAVA
-            Graphics g = 
+            Graphics g = e.Graphics;
             g.setColor( PortUtil.LightGray );
             g.fillRect( 0, 0, raw_width, raw_height );
 #else
@@ -432,10 +442,12 @@ namespace org.kbinani.cadencii
 
         public void FormVibratoPreset_Resize( Object sender, EventArgs e )
         {
+#if !JAVA
             if ( this.WindowState == System.Windows.Forms.FormWindowState.Normal ) {
                 mPreviousWidth = this.getWidth();
                 mPreviousHeight = this.getHeight();
             }
+#endif
             repaintPictures();
         }
         #endregion
@@ -455,9 +467,9 @@ namespace org.kbinani.cadencii
             buttonUp.Click += new BEventHandler( handleUpDownButtonClick );
             buttonDown.Click += new BEventHandler( handleUpDownButtonClick );
 
-            pictureDepth.Paint += new System.Windows.Forms.PaintEventHandler( pictureDepth_Paint );
-            pictureRate.Paint += new System.Windows.Forms.PaintEventHandler( pictureRate_Paint );
-            pictureResulting.Paint += new System.Windows.Forms.PaintEventHandler( pictureResulting_Paint );
+            pictureDepth.Paint += new BPaintEventHandler( pictureDepth_Paint );
+            pictureRate.Paint += new BPaintEventHandler( pictureRate_Paint );
+            pictureResulting.Paint += new BPaintEventHandler( pictureResulting_Paint );
 
             this.Resize += new BEventHandler( FormVibratoPreset_Resize );
         }

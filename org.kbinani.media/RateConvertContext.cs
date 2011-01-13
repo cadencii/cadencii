@@ -14,6 +14,7 @@
 #if JAVA
 package org.kbinani.media;
 
+import java.util.*;
 #else
 using System;
 
@@ -105,12 +106,23 @@ namespace org.kbinani.media
         /// <param name="sample_rate_from"></param>
         /// <param name="sample_rate_to"></param>
         public RateConvertContext( int sample_rate_from, int sample_rate_to )
+#if JAVA
+            throws Exception
+#endif
         {
             if ( sample_rate_from <= 0 ) {
+#if JAVA
+                throw new Exception();
+#else
                 throw new ArgumentOutOfRangeException( "sample_rate_from" );
+#endif
             }
             if ( sample_rate_to <= 0 ) {
+#if JAVA
+                throw new Exception();
+#else
                 throw new ArgumentOutOfRangeException( "sample_rate_to" );
+#endif
             }
             bRate = sample_rate_from;
             aRate = sample_rate_to;
@@ -339,7 +351,7 @@ namespace org.kbinani.media
                             context.bBufLeft = new double[num];
                         } else if ( context.bBufLeft.Length < num ) {
 #if JAVA
-                            bBufLeft = Arrays.copyOf( context.bBufLeft, num );
+                            context.bBufLeft = Arrays.copyOf( context.bBufLeft, num );
 #else
                             Array.Resize( ref context.bBufLeft, num );
 #endif
@@ -348,7 +360,7 @@ namespace org.kbinani.media
                             context.bBufRight = new double[num];
                         } else if ( context.bBufRight.Length < num ) {
 #if JAVA
-                            bBufRight = Arrays.copyOf( context.bBufRight, num );
+                            context.bBufRight = Arrays.copyOf( context.bBufRight, num );
 #else
                             Array.Resize( ref context.bBufRight, num );
 #endif

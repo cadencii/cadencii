@@ -186,7 +186,7 @@ namespace org.kbinani.vsq
             ret.IDS = handle.IDS;
             ret.Index = handle.Index;
             ret.Language = handle.Language;
-            ret.setLength( handle.Length );
+            ret.setLength( handle.getLength() );
             ret.Program = handle.Program;
             return ret;
         }

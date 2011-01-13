@@ -41,6 +41,9 @@ namespace org.kbinani.cadencii
     using boolean = System.Boolean;
     using BRunWorkerCompletedEventArgs = System.ComponentModel.RunWorkerCompletedEventArgs;
     using BEventHandler = System.EventHandler;
+    using BFormClosingEventHandler = System.Windows.Forms.FormClosingEventHandler;
+    using BRunWorkerCompletedEventHandler = System.ComponentModel.RunWorkerCompletedEventHandler;
+    using BDoWorkEventHandler = System.ComponentModel.DoWorkEventHandler;
     using Integer = System.Int32;
 #endif
 
@@ -71,13 +74,13 @@ namespace org.kbinani.cadencii
                                VsqFileEx vsq,
                                int presend,
                                PatchWorkQueue queue )
+        {
 #if JAVA
-        {
-            this( vsq, presend, new Integer[] { track }, new String[]{ file }, new Integer[]{ clock_start }, new Integer[]{ clock_end }, reflect_amp_to_wave );
-#else
-            : this( main_window, vsq, presend, Arrays.asList( new PatchWorkQueue[] { queue } ) )
-        {
+            super();
 #endif
+            Vector<PatchWorkQueue> qs = new Vector<PatchWorkQueue>();
+            qs.add( queue );
+            init( main_window, vsq, presend, qs );
         }
 
         public FormSynthesize( FormMain main_window,
@@ -88,6 +91,11 @@ namespace org.kbinani.cadencii
 #if JAVA
             super();
 #endif
+            init( main_window, vsq, presend, queue );
+        }
+
+        private void init( FormMain main_window, VsqFileEx vsq, int presend, Vector<PatchWorkQueue> queue )
+        {
             mMainWindow = main_window;
             mVsq = vsq;
             mPresend = presend;
@@ -155,11 +163,11 @@ namespace org.kbinani.cadencii
         {
             int totalClocks = 0;
             for ( int i = 0; i < value; i++ ) {
-                int end = mQueue[i].clockEnd;
+                int end = mQueue.get( i ).clockEnd;
                 if ( end == int.MaxValue ) {
                     end = mVsq.TotalClocks + 240;
                 }
-                totalClocks += (end - mQueue[i].clockStart);
+                totalClocks += (end - mQueue.get( i ).clockStart);
             }
             progressWhole.setValue( totalClocks );
             lblProgress.setText( value + "/" + mQueue.size() );
@@ -196,11 +204,10 @@ namespace org.kbinani.cadencii
         private void registerEventHandlers()
         {
             this.Load += new BEventHandler( FormSynthesize_Load );
-            bgWork.DoWork += new System.ComponentModel.DoWorkEventHandler( bgWork_DoWork );
-            bgWork.RunWorkerCompleted +=
-                new System.ComponentModel.RunWorkerCompletedEventHandler( bgWork_RunWorkerCompleted );
+            bgWork.DoWork += new BDoWorkEventHandler( bgWork_DoWork );
+            bgWork.RunWorkerCompleted += new BRunWorkerCompletedEventHandler( bgWork_RunWorkerCompleted );
             timer.Tick += new BEventHandler( timer_Tick );
-            this.FormClosing += new FormClosingEventHandler( FormSynthesize_FormClosing );
+            this.FormClosing += new BFormClosingEventHandler( FormSynthesize_FormClosing );
             btnCancel.Click += new BEventHandler( btnCancel_Click );
         }
 
@@ -229,10 +236,10 @@ namespace org.kbinani.cadencii
                 mFinished = 0;
 
                 for ( int k = 0; k < mQueue.size(); k++ ) {
-                    PatchWorkQueue q = mQueue[k];
+                    PatchWorkQueue q = mQueue.get( k );
                     int track = q.track;
 #if JAVA
-                    UpdateProgress( this, 1 );
+                    updateProgress( this, 1 );
 #else
                     this.Invoke( new UpdateProgressEventHandler( this.updateProgress ), this, k );
 #endif
@@ -249,9 +256,6 @@ namespace org.kbinani.cadencii
 
                         RendererKind kind = VsqFileEx.getTrackRendererKind( vsq_track );
                         mGenerator = VSTiDllManager.getWaveGenerator( kind );
-#if DEBUG
-                        PortUtil.println( "FormSynthesize#bgWork_DoWork; mGenerator.GetType()=" + mGenerator.GetType() );
-#endif
                         Amplifier amp = new Amplifier();
                         amp.setRoot( mGenerator );
                         if ( q.renderAll ) {
@@ -329,7 +333,7 @@ namespace org.kbinani.cadencii
                     }
                 }
 #if JAVA
-                UpdateProgress( this, m_tracks.Length );
+                updateProgress( this, mQueue.size() );
 #else
                 this.Invoke( new UpdateProgressEventHandler( this.updateProgress ), this, mQueue.size() );
 #endif

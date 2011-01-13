@@ -33,6 +33,7 @@ namespace org.kbinani.cadencii
     using BMouseButtons = System.Windows.Forms.MouseButtons;
     using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
     using BEventHandler = System.EventHandler;
+    using BMouseEventHandler = System.Windows.Forms.MouseEventHandler;
     using boolean = System.Boolean;
 #endif
 
@@ -142,8 +143,8 @@ namespace org.kbinani.cadencii
             if ( mOverviewUpdateThread != null ) {
                 try {
 #if JAVA
-                    m_overview_update_thread.stop();
-                    while( m_overview_update_thread.isAlive() ){
+                    mOverviewUpdateThread.stop();
+                    while( mOverviewUpdateThread.isAlive() ){
                         Thread.sleep( 0 );
                     }
 #else
@@ -166,8 +167,8 @@ namespace org.kbinani.cadencii
             if ( mOverviewUpdateThread != null ) {
                 try {
 #if JAVA
-                    m_overview_update_thread.stop();
-                    while( m_overview_update_thread.isAlive() ){
+                    mOverviewUpdateThread.stop();
+                    while( mOverviewUpdateThread.isAlive() ){
                         Thread.sleep( 0 );
                     }
 #else
@@ -184,8 +185,8 @@ namespace org.kbinani.cadencii
             }
             mOverviewDirection = -1;
 #if JAVA
-            m_overview_update_thread = new UpdateOverviewProc();
-            m_overview_update_thread.start();
+            mOverviewUpdateThread = new UpdateOverviewProc();
+            mOverviewUpdateThread.start();
 #else
             mOverviewUpdateThread = new Thread( new ThreadStart( this.updateOverview ) );
             mOverviewUpdateThread.Start();
@@ -204,7 +205,7 @@ namespace org.kbinani.cadencii
             if ( mOverviewUpdateThread != null ) {
                 try {
 #if JAVA
-                    while( m_overview_update_thread.isAlive() ){
+                    while( mOverviewUpdateThread.isAlive() ){
                         Thread.sleep( 0 );
                     }
 #else
@@ -220,8 +221,8 @@ namespace org.kbinani.cadencii
             }
             mOverviewDirection = 1;
 #if JAVA
-            m_overview_update_thread = new UpdateOverviewProc();
-            m_overview_update_thread.start();
+            mOverviewUpdateThread = new UpdateOverviewProc();
+            mOverviewUpdateThread.start();
 #else
             mOverviewUpdateThread = new Thread( new ThreadStart( this.updateOverview ) );
             mOverviewUpdateThread.Start();
@@ -425,12 +426,12 @@ namespace org.kbinani.cadencii
 
         private void registerEventHandlers()
         {
-            MouseDown += new System.Windows.Forms.MouseEventHandler( handleMouseDown );
-            MouseUp += new System.Windows.Forms.MouseEventHandler( handleMouseUp );
-            MouseMove += new System.Windows.Forms.MouseEventHandler( handleMouseMove );
-            MouseDoubleClick += new System.Windows.Forms.MouseEventHandler( handleMouseDoubleClick );
-            MouseLeave += new BEventHandler( handleMouseLeave );
-            Resize += new BEventHandler( handleResize );
+            this.MouseDown += new BMouseEventHandler( handleMouseDown );
+            this.MouseUp += new BMouseEventHandler( handleMouseUp );
+            this.MouseMove += new BMouseEventHandler( handleMouseMove );
+            this.MouseDoubleClick += new BMouseEventHandler( handleMouseDoubleClick );
+            this.MouseLeave += new BEventHandler( handleMouseLeave );
+            this.Resize += new BEventHandler( handleResize );
         }
 
         public void handleResize( Object sender, EventArgs e )

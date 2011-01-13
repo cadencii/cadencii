@@ -298,7 +298,7 @@ namespace org.kbinani.cadencii {
                     int event_x = (int)(original.Clock * scalex + xoffset);
                     int event_y = -original.ID.Note * track_height + yoffset;
 #if JAVA
-                    AppManager.inputTextBox.setLocation( pointToScreen( new Point( event_x + 4, event_y + 2 ) ) );
+                    AppManager.mInputTextBox.setLocation( pointToScreen( new Point( event_x + 4, event_y + 2 ) ) );
 #else
                     AppManager.mInputTextBox.Left = event_x + 4;
                     AppManager.mInputTextBox.Top = event_y + 2;

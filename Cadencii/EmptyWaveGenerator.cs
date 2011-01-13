@@ -118,7 +118,14 @@ namespace org.kbinani.cadencii
             if ( mRunning ) {
                 mAbortRequested = true;
                 while ( mRunning ) {
+#if JAVA
+                    try{
+                        Thread.sleep( 100 );
+                    }catch( Exception ex ){
+                    }
+#else
                     Thread.Sleep( 100 );
+#endif
                 }
             }
         }

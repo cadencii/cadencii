@@ -15,6 +15,7 @@
 package org.kbinani.cadencii;
 
 import java.util.*;
+import org.kbinani.*;
 import org.kbinani.media.*;
 #else
 using System;
@@ -27,7 +28,7 @@ namespace org.kbinani.cadencii
 #endif
 
 #if JAVA
-    public class FileWaveReceiver implements WaveReceiver {
+    public class FileWaveReceiver extends WaveUnit implements WaveReceiver {
 #else
     public class FileWaveReceiver : WaveUnit, WaveReceiver
     {
@@ -99,7 +100,12 @@ namespace org.kbinani.cadencii
 #if DEBUG
                     PortUtil.println( "FileWaveReceiver#push; sample_rate=" + sample_rate );
 #endif
-                    mAdapter = new WaveWriter( mPath, mChannel, mBitPerSample, sample_rate );
+                    try {
+                        mAdapter = new WaveWriter( mPath, mChannel, mBitPerSample, sample_rate );
+                    } catch ( Exception ex ) {
+                        Logger.write( typeof( FileWaveReceiver ) + ".push; ex=" + ex + "\n" );
+                        mAdapter = null;
+                    }
                 }
                 mAdapter.append( l, r, length );
                 if ( mReceiver != null ) {

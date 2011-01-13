@@ -14,7 +14,7 @@
 #if JAVA
 package org.kbinani.cadencii;
 
-//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/Cadencii/Preference.java
+//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/FormSequenceConfig.java
 
 import java.awt.*;
 import java.util.*;
@@ -48,16 +48,10 @@ namespace org.kbinani.cadencii
     class FormSequenceConfig : BDialog
 #endif
     {
-        private org.kbinani.windows.forms.BLabel labelSampleRate;
-        private org.kbinani.windows.forms.BGroupBox groupSequence;
-        private org.kbinani.windows.forms.BLabel labelPreMeasure;
-        private org.kbinani.windows.forms.BComboBox comboPreMeasure;
-        private org.kbinani.windows.forms.BComboBox comboSampleRate;
-
         public FormSequenceConfig()
         {
 #if JAVA
-            //INCLUDE-SECTION CTOR ../BuildJavaUI/src/org/kbinani/Cadencii/Preference.java
+            //INCLUDE-SECTION CTOR ../BuildJavaUI/src/org/kbinani/cadencii/FormSequenceConfig.java
 #else
             InitializeComponent();
 #endif
@@ -120,12 +114,14 @@ namespace org.kbinani.cadencii
             if ( indx >= 0 ) {
                 ret = AppManager.MIN_PRE_MEASURE + indx;
             } else {
+#if !JAVA
                 String str = comboPreMeasure.Text;
                 try {
                     ret = PortUtil.parseInt( str );
                 } catch ( Exception ex ) {
                     ret = AppManager.MIN_PRE_MEASURE;
                 }
+#endif
             }
             if ( ret < AppManager.MIN_PRE_MEASURE ) {
                 ret = AppManager.MIN_PRE_MEASURE;
@@ -160,10 +156,12 @@ namespace org.kbinani.cadencii
         {
             int index = comboSampleRate.getSelectedIndex();
             String str = "44100";
-            if ( index < 0 ) {
-                str = comboSampleRate.Text;
-            } else {
+            if ( index >= 0 ) {
                 str = (String)comboSampleRate.getItemAt( index );
+            } else {
+#if !JAVA
+                str = comboSampleRate.Text;
+#endif
             }
             int ret = 44100;
             try {
@@ -257,8 +255,8 @@ namespace org.kbinani.cadencii
 
         #region ui implementation
 #if JAVA
-        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/cadencii/Preference.java
-        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/cadencii/Preference.java
+        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/cadencii/FormSequenceConfig.java
+        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/cadencii/FormSequenceConfig.java
 #else
         /// <summary>
         /// 必要なデザイナ変数です。
@@ -469,6 +467,12 @@ namespace org.kbinani.cadencii
         private BGroupBox groupWaveFileOutput;
         private BRadioButton radioCurrentTrack;
         private BRadioButton radioMasterTrack;
+        private BLabel labelSampleRate;
+        private BGroupBox groupSequence;
+        private BLabel labelPreMeasure;
+        private BComboBox comboPreMeasure;
+        private BComboBox comboSampleRate;
+
 #endif
         #endregion
 

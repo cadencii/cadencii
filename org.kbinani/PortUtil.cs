@@ -956,7 +956,20 @@ namespace org.kbinani {
         }
 
         public static String[] listDirectories( String directory ) {
+#if JAVA
+            File f = new File( directory );
+            File[] list = f.listFiles();
+            Vector<String> ret = new Vector<String>();
+            for( int i = 0; i < list.length; i++ ){
+                File t = list[i];
+                if( t.isDirectory() ){
+                    ret.add( t.getName() );
+                }
+            }
+            return ret.toArray( new String[]{} );
+#else
             return System.IO.Directory.GetDirectories( directory );
+#endif
         }
 
         public static String[] listFiles( String directory, String extension ) {

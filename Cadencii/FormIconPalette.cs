@@ -39,6 +39,8 @@ namespace org.kbinani.cadencii
     using BFormClosingEventArgs = System.Windows.Forms.FormClosingEventArgs;
     using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
     using BEventHandler = System.EventHandler;
+    using BFormClosingEventHandler = System.Windows.Forms.FormClosingEventHandler;
+    using BMouseEventHandler = System.Windows.Forms.MouseEventHandler;
     using boolean = System.Boolean;
 #endif
 
@@ -96,7 +98,7 @@ namespace org.kbinani.cadencii
 
         private void registerEventHandlers()
         {
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( FormIconPalette_FormClosing );
+            this.FormClosing += new BFormClosingEventHandler( FormIconPalette_FormClosing );
             menuWindowHide.Click += new BEventHandler( menuWindowHide_Click );
         }
 
@@ -172,7 +174,7 @@ namespace org.kbinani.cadencii
                         btn.setText( str );
                     }
                 }
-                btn.MouseDown += new System.Windows.Forms.MouseEventHandler( handleCommonMouseDown );
+                btn.MouseDown += new BMouseEventHandler( handleCommonMouseDown );
                 btn.setPreferredSize( new Dimension( buttonWidth, buttonWidth ) );
                 int iw = 0;
                 int ih = 0;

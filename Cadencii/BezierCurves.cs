@@ -15,6 +15,7 @@
 package org.kbinani.cadencii;
 
 import java.util.*;
+import org.kbinani.*;
 #else
 using System;
 using org.kbinani.java.util;
