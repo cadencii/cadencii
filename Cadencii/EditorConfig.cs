@@ -716,10 +716,18 @@ namespace org.kbinani.cadencii
                     return "java.lang.String";
                 } else if ( name.Equals( "UserDictionaries" ) ) {
                     return "java.lang.String";
-                } else if ( name.Equals( "Utausingers" ) ) {
+                } else if ( name.Equals( "UtauSingers" ) ) {
                     return "org.kbinani.vsq.SingerConfig";
                 } else if ( name.Equals( "ShortcutKeys" ) ) {
                     return "org.kbinani.cadencii.ValuePairOfStringArrayOfKeys";
+                } else if ( name.Equals( "AutoVibratoCustom" ) ) {
+                    return "org.kbinani.vsq.VibratoHandle";
+                } else if ( name.Equals( "PathResamplers" ) ) {
+                    return "java.lang.String";
+                } else if ( name.Equals( "LastUsedPathIn" ) ) {
+                    return "java.lang.String";
+                } else if ( name.Equals( "LastUsedPathOut" ) ) {
+                    return "java.lang.String";
                 }
             }
             return "";

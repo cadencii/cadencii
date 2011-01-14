@@ -51,7 +51,8 @@ namespace org.kbinani.cadencii
         public FormSequenceConfig()
         {
 #if JAVA
-            //INCLUDE-SECTION CTOR ../BuildJavaUI/src/org/kbinani/cadencii/FormSequenceConfig.java
+            super();
+            initialize();
 #else
             InitializeComponent();
 #endif

@@ -159,12 +159,9 @@ public class FormMain extends BForm {
     private BButton stripBtnForward = null;
     private BButton stripBtnMoveEnd = null;
     private BButton stripBtnPlay = null;
-    private BButton stripBtnStop = null;
     private BToggleButton stripBtnScroll = null;
     private BToggleButton stripBtnLoop = null;
     private BToolBar toolStripMeasure = null;
-    private BComboBox stripDDBtnLength = null;
-    private BLabel BLabel = null;
     private BLabel jLabel1 = null;
     private BComboBox stripDDBtnQuantize = null;
     private BToggleButton stripBtnStartMarker = null;
@@ -255,7 +252,7 @@ public class FormMain extends BForm {
     private BMenu cMenuTrackTabRenderer = null;
     private BMenuItem cMenuTrackTabRendererVOCALOID2 = null;
     private BMenuItem cMenuTrackTabRendererVOCALOID100 = null;
-    private BMenuItem cMenuTrackTabRendererUtau = null;
+    private BMenu cMenuTrackTabRendererUtau = null;
     private BMenuItem cMenuTrackTabRendererStraight = null;
     private BMenuItem cMenuPianoQuantizeOff = null;
     private BMenuItem cMenuPianoLengthOff = null;
@@ -284,7 +281,7 @@ public class FormMain extends BForm {
     private BMenuItem menuHiddenCut = null;
     private BMenuItem menuTrackRendererVOCALOID100 = null;
     private BMenuItem menuTrackRendererVOCALOID2 = null;
-    private BMenuItem menuTrackRendererUtau = null;
+    private BMenu menuTrackRendererUtau = null;
     private BMenuItem menuTrackRendererVCNT = null;
     private BMenuItem menuSettingGameControlerSetting = null;
     private BMenuItem menuSettingGameControlerLoad = null;
@@ -322,13 +319,14 @@ public class FormMain extends BForm {
     private BMenuItem menuFileExportVsq = null;
     private BMenuItem menuFileExportUst = null;
     private BMenuItem menuFileExportVxt = null;
-    private BMenuItem menuLyricCopyVibratoToPreset = null;
+    private BMenu menuLyricCopyVibratoToPreset = null;
     private BMenuItem menuSettingSequence = null;
     private BMenu menuHelpLog = null;
     private BMenuItem menuHelpLogSwitch = null;
     private BMenuItem menuHelpLogOpen = null;
     private BMenuItem menuHiddenPrintPoToCSV = null;
     private BToggleButton stripBtnStepSequencer = null;
+    private JPanel jPanel2 = null;
     
     //SECTION-END-FIELD
     public FormMain( String vsq_file ) {
@@ -371,6 +369,7 @@ public class FormMain extends BForm {
     private BMenuItem getCMenuTrackTabRendererVOCALOID101() {
         if (cMenuTrackTabRendererVOCALOID101 == null) {
             cMenuTrackTabRendererVOCALOID101 = new BMenuItem();
+            cMenuTrackTabRendererVOCALOID101.setText("VOCALOID1 [1.1]");
         }
         return cMenuTrackTabRendererVOCALOID101;
     }
@@ -409,6 +408,7 @@ public class FormMain extends BForm {
     private BMenuItem getCMenuTrackTabRendererAquesTone() {
         if (cMenuTrackTabRendererAquesTone == null) {
             cMenuTrackTabRendererAquesTone = new BMenuItem();
+            cMenuTrackTabRendererAquesTone.setText("AquesTone");
         }
         return cMenuTrackTabRendererAquesTone;
     }
@@ -585,9 +585,9 @@ public class FormMain extends BForm {
      * 	
      * @return org.kbinani.windows.forms.BMenuItem	
      */
-    private BMenuItem getMenuLyricCopyVibratoToPreset() {
+    private BMenu getMenuLyricCopyVibratoToPreset() {
         if (menuLyricCopyVibratoToPreset == null) {
-            menuLyricCopyVibratoToPreset = new BMenuItem();
+            menuLyricCopyVibratoToPreset = new BMenu();
             menuLyricCopyVibratoToPreset.setText("Copy vibrato config to preset");
         }
         return menuLyricCopyVibratoToPreset;
@@ -673,10 +673,6 @@ public class FormMain extends BForm {
         return stripBtnStepSequencer;
     }
 
-    public static void main( String[] args ){
-       FormMain form = new FormMain( "" );
-       form.setVisible( true );
-    }
 
     /**
      * This method initializes this
@@ -686,14 +682,8 @@ public class FormMain extends BForm {
     private void initialize() {
         this.setSize(852, 561);
         this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        this.setContentPane(getJContentPane());
         this.setJMenuBar(getMenuStripMain());
-        this.setJMenuBar(getMenuStripMain());
-        this.setContentPane(getJContentPane());
-        this.setJMenuBar(getMenuStripMain());
-        this.setContentPane(getJContentPane());
-        this.setJMenuBar(getMenuStripMain());
-        this.setContentPane( this.getJContentPane());
+        this.setContentPane(this.getJContentPane());
         this.setTitle("JFrame");
         this.getCMenuPiano();
         this.getCMenuTrackSelector();
@@ -2146,10 +2136,11 @@ public class FormMain extends BForm {
      */
     private BPanel getPanel1() {
         if (panel1 == null) {
-            GridBagConstraints gridBagConstraints16 = new GridBagConstraints();
-            gridBagConstraints16.gridx = 3;
-            gridBagConstraints16.fill = GridBagConstraints.BOTH;
-            gridBagConstraints16.gridy = 1;
+            GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
+            gridBagConstraints2.gridx = 3;
+            gridBagConstraints2.gridheight = 2;
+            gridBagConstraints2.fill = GridBagConstraints.VERTICAL;
+            gridBagConstraints2.gridy = 0;
             GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
             gridBagConstraints11.fill = GridBagConstraints.NONE;
             gridBagConstraints11.gridy = 1;
@@ -2166,26 +2157,21 @@ public class FormMain extends BForm {
             gridBagConstraints9.weighty = 0.0D;
             gridBagConstraints9.weightx = 1.0D;
             gridBagConstraints9.gridx = 1;
-            GridBagConstraints gridBagConstraints8 = new GridBagConstraints();
-            gridBagConstraints8.fill = GridBagConstraints.VERTICAL;
-            gridBagConstraints8.gridy = 0;
-            gridBagConstraints8.weighty = 1.0D;
-            gridBagConstraints8.gridx = 3;
             GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
             gridBagConstraints7.gridx = 0;
             gridBagConstraints7.fill = GridBagConstraints.BOTH;
             gridBagConstraints7.weightx = 1.0D;
             gridBagConstraints7.weighty = 1.0D;
             gridBagConstraints7.gridwidth = 3;
+            gridBagConstraints7.gridheight = 1;
             gridBagConstraints7.gridy = 0;
             panel1 = new BPanel();
             panel1.setLayout(new GridBagLayout());
             panel1.add(getPictPianoRoll(), gridBagConstraints7);
-            panel1.add(getVScroll(), gridBagConstraints8);
             panel1.add(getPictureBox3(), gridBagConstraints10);
             panel1.add(getHScroll(), gridBagConstraints9);
             panel1.add(getTrackBar(), gridBagConstraints11);
-            panel1.add(getJPanel2(), gridBagConstraints16);
+            panel1.add(getJPanel22(), gridBagConstraints2);
         }
         return panel1;
     }
@@ -2444,7 +2430,6 @@ public class FormMain extends BForm {
             toolStripPosition.add(getStripBtnForward());
             toolStripPosition.add(getStripBtnMoveEnd());
             toolStripPosition.add(getStripBtnPlay());
-            toolStripPosition.add(getStripBtnStop());
             toolStripPosition.add(getStripBtnScroll());
             toolStripPosition.add(getStripBtnLoop());
             toolStripPosition.addSeparator();
@@ -2549,20 +2534,6 @@ public class FormMain extends BForm {
     }
 
     /**
-     * This method initializes stripBtnStop 
-     *  
-     * @return javax.swing.BButton  
-     */
-    private BButton getStripBtnStop() {
-        if (stripBtnStop == null) {
-            stripBtnStop = new BButton();
-            stripBtnStop.setText("");
-            stripBtnStop.setPreferredSize(new Dimension(23, 22));
-        }
-        return stripBtnStop;
-    }
-
-    /**
      * This method initializes stripBtnScroll   
      *  
      * @return javax.swing.BToggleButton    
@@ -2599,12 +2570,8 @@ public class FormMain extends BForm {
         if (toolStripMeasure == null) {
             jLabel1 = new BLabel();
             jLabel1.setText("QUANTIZE");
-            BLabel = new BLabel();
-            BLabel.setText("LENGTH");
             toolStripMeasure = new BToolBar();
             toolStripMeasure.setName("toolStripMeasure");
-            toolStripMeasure.add(BLabel);
-            toolStripMeasure.add(getStripDDBtnLength());
             toolStripMeasure.add(jLabel1);
             toolStripMeasure.add(getStripDDBtnQuantize());
             toolStripMeasure.add(getStripBtnStartMarker());
@@ -2612,18 +2579,6 @@ public class FormMain extends BForm {
             toolStripMeasure.addSeparator();
         }
         return toolStripMeasure;
-    }
-
-    /**
-     * This method initializes stripDDBtnLength 
-     *  
-     * @return javax.swing.BComboBox    
-     */
-    private BComboBox getStripDDBtnLength() {
-        if (stripDDBtnLength == null) {
-            stripDDBtnLength = new BComboBox();
-        }
-        return stripDDBtnLength;
     }
 
     /**
@@ -3727,6 +3682,7 @@ public class FormMain extends BForm {
     private BMenuItem getCMenuTrackTabRendererVOCALOID2() {
         if (cMenuTrackTabRendererVOCALOID2 == null) {
             cMenuTrackTabRendererVOCALOID2 = new BMenuItem();
+            cMenuTrackTabRendererVOCALOID2.setText("VOCALOID2");
         }
         return cMenuTrackTabRendererVOCALOID2;
     }
@@ -3739,6 +3695,7 @@ public class FormMain extends BForm {
     private BMenuItem getCMenuTrackTabRendererVOCALOID100() {
         if (cMenuTrackTabRendererVOCALOID100 == null) {
             cMenuTrackTabRendererVOCALOID100 = new BMenuItem();
+            cMenuTrackTabRendererVOCALOID100.setText("VOCALOID1 [1.0]");
         }
         return cMenuTrackTabRendererVOCALOID100;
     }
@@ -3748,9 +3705,10 @@ public class FormMain extends BForm {
      *  
      * @return javax.swing.BMenuItem    
      */
-    private BMenuItem getCMenuTrackTabRendererUtau() {
+    private BMenu getCMenuTrackTabRendererUtau() {
         if (cMenuTrackTabRendererUtau == null) {
-            cMenuTrackTabRendererUtau = new BMenuItem();
+            cMenuTrackTabRendererUtau = new BMenu();
+            cMenuTrackTabRendererUtau.setText("UTAU");
         }
         return cMenuTrackTabRendererUtau;
     }
@@ -3763,6 +3721,7 @@ public class FormMain extends BForm {
     private BMenuItem getCMenuTrackTabRendererStraight() {
         if (cMenuTrackTabRendererStraight == null) {
             cMenuTrackTabRendererStraight = new BMenuItem();
+            cMenuTrackTabRendererStraight.setText("vConnect-STAND");
         }
         return cMenuTrackTabRendererStraight;
     }
@@ -4180,9 +4139,9 @@ public class FormMain extends BForm {
      * 	
      * @return javax.swing.JMenuItem	
      */
-    private BMenuItem getMenuTrackRendererUtau() {
+    private BMenu getMenuTrackRendererUtau() {
         if (menuTrackRendererUtau == null) {
-            menuTrackRendererUtau = new BMenuItem();
+            menuTrackRendererUtau = new BMenu();
             menuTrackRendererUtau.setText("UTAU");
         }
         return menuTrackRendererUtau;
@@ -4261,6 +4220,7 @@ public class FormMain extends BForm {
         if (pictureBox2 == null) {
             pictureBox2 = new BPanel();
             pictureBox2.setLayout(new GridBagLayout());
+            pictureBox2.setPreferredSize(new Dimension(16, 48));
         }
         return pictureBox2;
     }
@@ -4463,6 +4423,34 @@ public class FormMain extends BForm {
             menuHiddenGoToEndMarker.setText("GoTo End Marker");
         }
         return menuHiddenGoToEndMarker;
+    }
+
+    /**
+     * This method initializes jPanel2	
+     * 	
+     * @return javax.swing.JPanel	
+     */
+    private JPanel getJPanel22() {
+        if (jPanel2 == null) {
+            GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
+            gridBagConstraints3.anchor = GridBagConstraints.NORTH;
+            gridBagConstraints3.gridheight = 1;
+            gridBagConstraints3.gridx = 0;
+            gridBagConstraints3.gridy = 1;
+            gridBagConstraints3.weighty = 0.0D;
+            gridBagConstraints3.fill = GridBagConstraints.BOTH;
+            GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
+            gridBagConstraints1.fill = GridBagConstraints.VERTICAL;
+            gridBagConstraints1.gridx = 0;
+            gridBagConstraints1.gridy = 0;
+            gridBagConstraints1.weighty = 1.0D;
+            gridBagConstraints1.gridheight = 1;
+            jPanel2 = new JPanel();
+            jPanel2.setLayout(new GridBagLayout());
+            jPanel2.add(getVScroll(), gridBagConstraints1);
+            jPanel2.add(getJPanel2(), gridBagConstraints3);
+        }
+        return jPanel2;
     }
 
     //SECTION-END-METHOD

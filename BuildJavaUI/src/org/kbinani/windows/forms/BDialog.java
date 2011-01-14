@@ -33,6 +33,7 @@ public class BDialog extends JDialog
         addWindowListener( this );
         addKeyListener( this );
         addComponentListener( this );
+        setDefaultCloseOperation( DO_NOTHING_ON_CLOSE );
         try{
             UIManager.getInstalledLookAndFeels();
             UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
@@ -113,9 +114,13 @@ public class BDialog extends JDialog
     
     public void windowClosing( WindowEvent e ){
         try{
-            formClosingEvent.raise( this, new BEventArgs() );
+            BFormClosingEventArgs ev = new BFormClosingEventArgs();
+            formClosingEvent.raise( this, ev );
+            if( !ev.Cancel ){
+                dispose();
+            }
         }catch( Exception ex ){
-            System.err.println( "BForm#windowClosing; ex=" + ex );
+            System.err.println( "BDialog#windowClosing; ex=" + ex );
         }
     }
     

@@ -961,15 +961,15 @@ namespace org.kbinani.cadencii
                                     remain2 -= delta;
                                 }
                             } catch ( Exception ex ) {
-                                Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
-                                PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
+                                Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
+                                PortUtil.stderr.println( "AppManager#patchWorkToFreeze; ex=" + ex );
                             } finally {
                                 if ( wr != null ) {
                                     try {
                                         wr.close();
                                     } catch ( Exception ex2 ) {
-                                        Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
-                                        PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex2=" + ex2 );
+                                        Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
+                                        PortUtil.stderr.println( "AppManager#patchWorkToFreeze; ex2=" + ex2 );
                                     }
                                 }
                             }
@@ -977,8 +977,8 @@ namespace org.kbinani.cadencii
                             try {
                                 PortUtil.deleteFile( queue.get( i ).file );
                             } catch ( Exception ex ) {
-                                Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
-                                PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
+                                Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
+                                PortUtil.stderr.println( "AppManager#patchWorkToFreeze; ex=" + ex );
                             }
                         }
 
@@ -1048,15 +1048,15 @@ namespace org.kbinani.cadencii
                             serializeRenderingStatus( temppath, track );
                         }
                     } catch ( Exception ex ) {
-                        Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
-                        PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
+                        Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
+                        PortUtil.stderr.println( "AppManager#patchWorkToFreeze; ex=" + ex );
                     } finally {
                         if ( writer != null ) {
                             try {
                                 writer.close();
                             } catch ( Exception ex2 ) {
-                                Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
-                                PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex2=" + ex2 );
+                                Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
+                                PortUtil.stderr.println( "AppManager#patchWorkToFreeze; ex2=" + ex2 );
                             }
                         }
                     }
@@ -1096,15 +1096,15 @@ namespace org.kbinani.cadencii
                     }
                 }
             } catch ( Exception ex ) {
-                Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
-                PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
+                Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
+                PortUtil.stderr.println( "AppManager#patchWorkToFreeze; ex=" + ex );
             } finally {
                 if ( dialog != null ) {
                     try {
                         dialog.close();
                     } catch ( Exception ex2 ) {
-                        Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
-                        PortUtil.stderr.println( "FormMain#patchWorkToFreeez; ex2=" + ex2 );
+                        Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
+                        PortUtil.stderr.println( "AppManager#patchWorkToFreeez; ex2=" + ex2 );
                     }
                 }
             }

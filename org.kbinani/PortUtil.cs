@@ -957,8 +957,14 @@ namespace org.kbinani {
 
         public static String[] listDirectories( String directory ) {
 #if JAVA
+            if( directory == null ){
+                return new String[]{};
+            }
             File f = new File( directory );
             File[] list = f.listFiles();
+            if( list == null ){
+                return new String[]{};
+            }
             Vector<String> ret = new Vector<String>();
             for( int i = 0; i < list.length; i++ ){
                 File t = list[i];
@@ -976,6 +982,9 @@ namespace org.kbinani {
 #if JAVA
             File f = new File( directory );
             File[] list = f.listFiles();
+            if( list == null ){
+                return new String[]{};
+            }
             Vector<String> ret = new Vector<String>();
             for( int i = 0; i < list.length; i++ ){
                 File t = list[i];

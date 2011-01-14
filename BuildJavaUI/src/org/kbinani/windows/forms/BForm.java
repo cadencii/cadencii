@@ -38,6 +38,7 @@ public class BForm extends JFrame
         addWindowListener( this );
         addKeyListener( this );
         addComponentListener( this );
+        setDefaultCloseOperation( DO_NOTHING_ON_CLOSE );
         try{
             UIManager.getInstalledLookAndFeels();
             UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
@@ -122,8 +123,8 @@ public class BForm extends JFrame
         try{
             BFormClosingEventArgs ev = new BFormClosingEventArgs();
             formClosingEvent.raise( this, ev );
-            if( ev.Cancel ){
-                System.err.println( "fixme: org.kbinani.windows.forms.BForm#windowClosing; not implemented yet for e.Cancel=true" );
+            if( !ev.Cancel ){
+                dispose();
             }
         }catch( Exception ex ){
             System.err.println( "BForm#windowClosing; ex=" + ex );

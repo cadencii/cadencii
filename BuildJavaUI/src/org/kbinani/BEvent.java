@@ -4,22 +4,25 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Vector;
 
 public class BEvent<T extends BEventHandler>{
-    private Vector<T> m_delegates;
+    private Vector<T> mDelegates;
 
     public BEvent(){
-        m_delegates = new Vector<T>();
+        mDelegates = new Vector<T>();
     }
 
     public void add( T delegate ){
-        m_delegates.add( delegate );
+        if( delegate == null ){
+            return;
+        }
+        mDelegates.add( delegate );
     }
 
     public void remove( T delegate ){
-        int count = m_delegates.size();
+        int count = mDelegates.size();
         for( int i = 0; i < count; i++ ){
-            T item = m_delegates.get( i );
+            T item = mDelegates.get( i );
             if( delegate.equals( item ) ){
-                m_delegates.remove( i );
+                mDelegates.remove( i );
                 break;
             }
         }
@@ -28,9 +31,9 @@ public class BEvent<T extends BEventHandler>{
     public void raise( Object... args ) 
         throws IllegalAccessException, InvocationTargetException
     {
-        int count = m_delegates.size();
+        int count = mDelegates.size();
         for( int i = 0; i < count; i++ ){
-            m_delegates.get( i ).invoke( args );
+            mDelegates.get( i ).invoke( args );
         }
     }
 }

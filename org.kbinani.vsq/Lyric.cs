@@ -127,7 +127,7 @@ namespace org
                     int size = arr.Count;
 
                     for ( int i = 0; i < size; i++ ) {
-                        int v = vec.get<Integer>( arr, i );
+                        int v = vec.get( arr, i );
                         ret += (i == 0 ? "" : " ") + v;
                     }
                     return ret;
@@ -161,7 +161,7 @@ namespace org
                         } catch ( Exception ex ) {
                             PortUtil.stderr.println( "Lyric#setCosonantAdjustment; ex=" + ex );
                         }
-                        vec.add<Integer>( arr, v );
+                        vec.add( arr, v );
                     }
                     setConsonantAdjustmentList( arr );
                 }
@@ -199,10 +199,10 @@ namespace org
                     }
 #endif
 
-                    vec.clear<Integer>( m_consonant_adjustment );
+                    vec.clear( m_consonant_adjustment );
                     for ( int i = 0; i < m_phonetic_symbol.Count; i++ ) {
-                        int v = VsqPhoneticSymbol.isConsonant( vec.get<String>( m_phonetic_symbol, i ) ) ? 64 : 0;
-                        vec.add<Integer>( m_consonant_adjustment, v );
+                        int v = VsqPhoneticSymbol.isConsonant( vec.get( m_phonetic_symbol, i ) ) ? 64 : 0;
+                        vec.add( m_consonant_adjustment, v );
                     }
                     return m_consonant_adjustment;
                 }
@@ -218,10 +218,10 @@ namespace org
                         return;
                     }
 #endif
-                    vec.clear<Integer>( m_consonant_adjustment );
+                    vec.clear( m_consonant_adjustment );
                     for ( int i = 0; i < value.Count; i++ ) {
-                        int v = vec.get<Integer>( value, i );
-                        vec.add<Integer>( m_consonant_adjustment, v );
+                        int v = vec.get( value, i );
+                        vec.add( m_consonant_adjustment, v );
                     }
                 }
 
@@ -235,14 +235,14 @@ namespace org
                     Lyric result = new Lyric();
                     result.Phrase = this.Phrase;
                     result.m_phonetic_symbol = new List<String>();
-                    for ( int i = 0; i < vec.size<String>( m_phonetic_symbol ); i++ ) {
-                        vec.add<String>( result.m_phonetic_symbol, vec.get<String>( m_phonetic_symbol, i ) );
+                    for ( int i = 0; i < vec.size( m_phonetic_symbol ); i++ ) {
+                        vec.add( result.m_phonetic_symbol, vec.get( m_phonetic_symbol, i ) );
                     }
                     result.UnknownFloat = this.UnknownFloat;
                     if ( m_consonant_adjustment != null ) {
                         result.m_consonant_adjustment = new List<Integer>();
-                        for ( int i = 0; i < vec.size<Integer>( m_consonant_adjustment ); i++ ) {
-                            vec.add<Integer>( result.m_consonant_adjustment, vec.get<Integer>( m_consonant_adjustment, i ) );
+                        for ( int i = 0; i < vec.size( m_consonant_adjustment ); i++ ) {
+                            vec.add( result.m_consonant_adjustment, vec.get( m_consonant_adjustment, i ) );
                         }
                     }
                     result.PhoneticSymbolProtected = PhoneticSymbolProtected;
@@ -284,8 +284,8 @@ namespace org
                 {
                     List<String> symbol = getPhoneticSymbolList();
                     String ret = "";
-                    for ( int i = 0; i < vec.size<String>( symbol ); i++ ) {
-                        ret += (i == 0 ? "" : " ") + vec.get<String>( symbol, i );
+                    for ( int i = 0; i < vec.size( symbol ); i++ ) {
+                        ret += (i == 0 ? "" : " ") + vec.get( symbol, i );
                     }
                     return ret;
                 }
@@ -300,10 +300,10 @@ namespace org
                     // 古い発音記号を保持しておく
                     List<String> old_symbol = null;
                     if ( m_phonetic_symbol != null ) {
+                        int count = vec.size( m_phonetic_symbol );
                         old_symbol = new List<String>();
-                        int count = vec.size<String>( m_phonetic_symbol );
                         for ( int i = 0; i < count; i++ ) {
-                            vec.add<String>( old_symbol, vec.get<String>( m_phonetic_symbol, i ) );
+                            vec.add( old_symbol, vec.get( m_phonetic_symbol, i ) );
                         }
                     }
 
@@ -311,9 +311,9 @@ namespace org
                     List<Integer> old_adjustment = null;
                     if ( m_consonant_adjustment != null ) {
                         old_adjustment = new List<Integer>();
-                        int count = vec.size<Integer>( m_consonant_adjustment );
+                        int count = vec.size( m_consonant_adjustment );
                         for ( int i = 0; i < count; i++ ) {
-                            vec.add<Integer>( old_adjustment, vec.get<Integer>( m_consonant_adjustment, i ) );
+                            vec.add( old_adjustment, vec.get( m_consonant_adjustment, i ) );
                         }
                     }
 
@@ -327,34 +327,36 @@ namespace org
                     }
                     int size = spl.Length;
 #endif
-                    vec.clear<String>( m_phonetic_symbol );
+                    vec.clear( m_phonetic_symbol );
                     for ( int i = 0; i < size; i++ ) {
-                        vec.add<String>( m_phonetic_symbol, spl[i] );
+                        vec.add( m_phonetic_symbol, spl[i] );
                     }
-                    for ( int i = 0; i < vec.size<String>( m_phonetic_symbol ); i++ ) {
-                        vec.set<String>( m_phonetic_symbol, i, vec.get<String>( m_phonetic_symbol, i ).Replace( "\\" + "\\", "\\" ) );
+                    for ( int i = 0; i < vec.size( m_phonetic_symbol ); i++ ) {
+                        vec.set( m_phonetic_symbol, i, vec.get( m_phonetic_symbol, i ).Replace( "\\" + "\\", "\\" ) );
                     }
 
                     // consonant adjustmentを更新
                     if ( m_consonant_adjustment == null ||
-                        (m_consonant_adjustment != null && vec.size<Integer>( m_consonant_adjustment ) != vec.size<String>( m_phonetic_symbol )) ) {
+                        (m_consonant_adjustment != null && vec.size( m_consonant_adjustment ) != vec.size( m_phonetic_symbol )) ) {
                         m_consonant_adjustment = new List<Integer>();
-                        for ( int i = 0; i < vec.size<String>( m_phonetic_symbol ); i++ ) {
-                            vec.add<Integer>( m_consonant_adjustment, 0 );
+                        for ( int i = 0; i < vec.size( m_phonetic_symbol ); i++ ) {
+                            vec.add( m_consonant_adjustment, 0 );
                         }
                     }
 
                     // 古い発音記号と同じなら、古い値を使う
-                    for ( int i = 0; i < vec.size<String>( m_phonetic_symbol ); i++ ) {
-                        String s0 = vec.get<String>( m_phonetic_symbol, i );
-                        String s1 = vec.get<String>( old_symbol, i );
-                        boolean use_old_value = (old_symbol != null && i < vec.size<String>( old_symbol )) &&
-                                                (str.compare( s0, s1 )) &&
-                                                (old_adjustment != null && i < vec.size<Integer>( old_adjustment ));
-                        if ( use_old_value ) {
-                            vec.set<Integer>( m_consonant_adjustment, i, VsqPhoneticSymbol.isConsonant( vec.get<String>( m_phonetic_symbol, i ) ) ? vec.get<Integer>( old_adjustment, i ) : 0 );
-                        } else {
-                            vec.set<Integer>( m_consonant_adjustment, i, VsqPhoneticSymbol.isConsonant( vec.get<String>( m_phonetic_symbol, i ) ) ? 64 : 0 );
+                    if ( old_symbol != null ) {
+                        for ( int i = 0; i < vec.size( m_phonetic_symbol ); i++ ) {
+                            String s0 = vec.get( m_phonetic_symbol, i );
+                            String s1 = vec.get( old_symbol, i );
+                            boolean use_old_value = (old_symbol != null && i < vec.size( old_symbol )) &&
+                                                    (str.compare( s0, s1 )) &&
+                                                    (old_adjustment != null && i < vec.size( old_adjustment ));
+                            if ( use_old_value ) {
+                                vec.set( m_consonant_adjustment, i, VsqPhoneticSymbol.isConsonant( vec.get( m_phonetic_symbol, i ) ) ? vec.get( old_adjustment, i ) : 0 );
+                            } else {
+                                vec.set( m_consonant_adjustment, i, VsqPhoneticSymbol.isConsonant( vec.get( m_phonetic_symbol, i ) ) ? 64 : 0 );
+                            }
                         }
                     }
                 }
@@ -498,12 +500,12 @@ namespace org
                     result = result.Replace( "\\" + "\\", "\\" );
                     if ( m_consonant_adjustment == null ) {
                         m_consonant_adjustment = new List<Integer>();
-                        for ( int i = 0; i < vec.size<String>( symbol ); i++ ) {
-                            vec.add<Integer>( m_consonant_adjustment, VsqPhoneticSymbol.isConsonant( vec.get<String>( symbol, i ) ) ? 64 : 0 );
+                        for ( int i = 0; i < vec.size( symbol ); i++ ) {
+                            vec.add( m_consonant_adjustment, VsqPhoneticSymbol.isConsonant( vec.get( symbol, i ) ) ? 64 : 0 );
                         }
                     }
-                    for ( int i = 0; i < vec.size<Integer>( m_consonant_adjustment ); i++ ) {
-                        result += "," + vec.get<Integer>( m_consonant_adjustment, i );
+                    for ( int i = 0; i < vec.size( m_consonant_adjustment ); i++ ) {
+                        result += "," + vec.get( m_consonant_adjustment, i );
                     }
                     if ( PhoneticSymbolProtected ) {
                         result += ",1";

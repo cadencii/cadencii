@@ -80,7 +80,6 @@
     <Compile Include="BufferedWriter.cs" />
     <Compile Include="ByRef.cs" />
     <Compile Include="Collections.cs" />
-    <Compile Include="conv.cs" />
     <Compile Include="cp932.cs" />
     <Compile Include="cp932reader.cs" />
     <Compile Include="cp932writer.cs" />

@@ -208,7 +208,7 @@ namespace org.kbinani.cadencii
             comboVibratoType.SelectedIndexChanged += new BEventHandler( comboVibratoType_SelectedIndexChanged );
         }
 
-        void handleRadioCheckedChanged( Object sender, EventArgs e )
+        public void handleRadioCheckedChanged( Object sender, EventArgs e )
         {
             comboVibratoType.SelectedIndexChanged -= new BEventHandler( comboVibratoType_SelectedIndexChanged );
             updateComboBoxStatus();

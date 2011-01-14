@@ -1111,52 +1111,43 @@ namespace org.kbinani.cadencii
         /// </summary>
         private void updateVibratoPresetMenu()
         {
+#if JAVA
+            menuLyricCopyVibratoToPreset.removeAll();
+            int size = AppManager.editorConfig.AutoVibratoCustom.size();
+            for ( int i = 0; i < size; i++ ) {
+                VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
+                BMenuItem item = new BMenuItem();
+                item.setText( handle.getCaption() );
+                item.clickEvent.add( new BEventHandler( this, "handleVibratoPresetSubelementClick" ) );
+                menuLyricCopyVibratoToPreset.add( item );
+            }
+#else
             // 現在の項目数に過不足があれば調節する
             int size = AppManager.editorConfig.AutoVibratoCustom.size();
-#if JAVA
-            int delta = size - menuLyricCopyVibratoToPreset.getSubElements().length;
-#else
             int delta = size - menuLyricCopyVibratoToPreset.DropDownItems.Count;
-#endif
             if ( delta > 0 ) {
                 // 項目を増やさないといけない
                 for ( int i = 0; i < delta; i++ ) {
-#if JAVA
-                    BMenuItem item = new BMenuItem();
-                    item.clickEvent.add( new BEventHandler( this, "handleVibratoPresetSubelementClick" ) );
-                    menuLyricCopyVibratoToPreset.add( item );
-#else
                     System.Windows.Forms.ToolStripMenuItem item =
                         new System.Windows.Forms.ToolStripMenuItem(
                             "", null, new BEventHandler( handleVibratoPresetSubelementClick ) );
                     menuLyricCopyVibratoToPreset.DropDownItems.Add( item );
-#endif
                 }
             } else if ( delta < 0 ) {
                 // 項目を減らさないといけない
                 for ( int i = 0; i < -delta; i++ ) {
-#if JAVA
-                    menuLyricCopyVibratoToPreset.remove( 0 );
-#else
                     System.Windows.Forms.ToolStripItem item = menuLyricCopyVibratoToPreset.DropDownItems[0];
                     menuLyricCopyVibratoToPreset.DropDownItems.RemoveAt( 0 );
                     item.Dispose();
-#endif
                 }
             }
 
             // 表示状態を更新
-#if JAVA
-            MenuElement[] sub = menuLyricCopyVibratoToPreset.getSubElements();
-#endif
             for ( int i = 0; i < size; i++ ) {
                 VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
-#if JAVA
-                ((BMenuItem)sub[i]).setText( handle.getCaption() );
-#else
                 menuLyricCopyVibratoToPreset.DropDownItems[i].Text = handle.getCaption();
-#endif
             }
+#endif
         }
 
         /// <summary>
@@ -2378,58 +2369,52 @@ namespace org.kbinani.cadencii
 
             // UTAU用のサブアイテムを更新
             int count = AppManager.editorConfig.getResamplerCount();
+            // サブアイテムの個数を整える
 #if JAVA
-            int delta = count - menuTrackRendererUtau.getSubElements().length;
+            menuTrackRendererUtau.removeAll();
+            cMenuTrackTabRendererUtau.removeAll();
+            for( int i = 0; i < count; i++ ){
+                String path = AppManager.editorConfig.getResamplerAt( i );
+                String name = PortUtil.getFileNameWithoutExtension( path );
+
+                BMenuItem item0 = new BMenuItem();
+                item0.clickEvent.add( new BEventHandler( this, "handleChangeRenderer" ) );
+                item0.setText( name );
+                item0.setToolTipText( path );
+                menuTrackRendererUtau.add( item0 );
+
+                BMenuItem item1 = new BMenuItem();
+                item1.clickEvent.add( new BEventHandler( this, "handleChangeRenderer" ) );
+                item1.setText( name );
+                item1.setToolTipText( path );
+                cMenuTrackTabRendererUtau.add( item1 );
+            }
 #else
             int delta = count - menuTrackRendererUtau.DropDownItems.Count;
-#endif
             if ( delta > 0 ) {
                 // 増やす
                 for ( int i = 0; i < delta; i++ ) {
-#if JAVA
-                    BMenuItem item0 = new BMenuItem();
-                    item0.clickEvent.add( new BEventHandler( this, "handleChangeRenderer" ) );
-                    cMenuTrackTabRendererUtau.add( item0 );
-                    BMenuItem item1 = new BMenuItem();
-                    item1.clickEvent.add( new BEventHandler( this, "handleChangeRenderer" ) );
-                    menuTrackRendererUtau.add( item1 );
-#else
                     cMenuTrackTabRendererUtau.DropDownItems.Add( "", null, new BEventHandler( handleChangeRenderer ) );
                     menuTrackRendererUtau.DropDownItems.Add( "", null, new BEventHandler( handleChangeRenderer ) );
-#endif
                 }
             } else if ( delta < 0 ) {
                 // 減らす
                 for ( int i = 0; i < -delta; i++ ) {
-#if JAVA
-                    cMenuTrackTabRendererUtau.remove( 0 );
-                    menuTrackRendererUtau.remove( 0 );
-#else
                     cMenuTrackTabRendererUtau.DropDownItems.RemoveAt( 0 );
                     menuTrackRendererUtau.DropDownItems.RemoveAt( 0 );
-#endif
                 }
             }
-#if JAVA
-            MenuElement[] sub0 = cMenuTrackTabRendererUtau.getSubElements();
-            MenuElement[] sub1 = menuTrackRendererUtau.getSubElements();
-#endif
+
             for ( int i = 0; i < count; i++ ) {
                 String path = AppManager.editorConfig.getResamplerAt( i );
                 String name = PortUtil.getFileNameWithoutExtension( path );
-#if JAVA
-                ((BMenuItem)sub0[i]).setText( name );
-                ((BMenuItem)sub1[i]).setText( name );
-                ((BMenuItem)sub0[i]).setToolTipText( path );
-                ((BMenuItem)sub1[i]).setToolTipText( path );
-#else
                 menuTrackRendererUtau.DropDownItems[i].Text = name;
                 cMenuTrackTabRendererUtau.DropDownItems[i].Text = name;
 
                 menuTrackRendererUtau.DropDownItems[i].ToolTipText = path;
                 cMenuTrackTabRendererUtau.DropDownItems[i].ToolTipText = path;
-#endif
             }
+#endif
         }
 
         public void drawUtauVibrato( Graphics2D g, UstVibrato vibrato, int note, int clock_start, int clock_width )
@@ -4097,7 +4082,8 @@ namespace org.kbinani.cadencii
                 work.add( new ValuePair<String, BMenuItem[]>( "menuTrackOverlay", new BMenuItem[] { cMenuTrackTabOverlay } ) );
                 work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererVOCALOID1", new BMenuItem[] { cMenuTrackTabRendererVOCALOID100 } ) );
                 work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererVOCALOID2", new BMenuItem[] { cMenuTrackTabRendererVOCALOID2 } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererUtau", new BMenuItem[] { cMenuTrackTabRendererUtau } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererAquesTone", new BMenuItem[] { menuTrackRendererAquesTone } ) );
+                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererVCNT", new BMenuItem[] { menuTrackRendererVCNT } ) );
                 int c = work.size();
                 for ( int j = 0; j < c; j++ ) {
                     ValuePair<String, BMenuItem[]> item = work.get( j );
@@ -7244,7 +7230,7 @@ namespace org.kbinani.cadencii
             menuTrackRendererVOCALOID2.MouseEnter += new BEventHandler( handleMenuMouseEnter );
             menuTrackRendererVOCALOID2.Click += new BEventHandler( handleChangeRenderer );
             menuTrackRendererUtau.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuTrackRendererUtau.Click += new BEventHandler( handleChangeRenderer );
+            //menuTrackRendererUtau.Click += new BEventHandler( handleChangeRenderer );
             menuTrackRendererVCNT.MouseEnter += new BEventHandler( handleMenuMouseEnter );
             menuTrackRendererVCNT.Click += new BEventHandler( handleChangeRenderer );
             menuTrackRendererAquesTone.MouseEnter += new BEventHandler( handleMenuMouseEnter );
@@ -7362,7 +7348,6 @@ namespace org.kbinani.cadencii
             cMenuTrackTabRendererVOCALOID100.Click += new BEventHandler( handleChangeRenderer );
             cMenuTrackTabRendererVOCALOID101.Click += new BEventHandler( handleChangeRenderer );
             cMenuTrackTabRendererVOCALOID2.Click += new BEventHandler( handleChangeRenderer );
-            cMenuTrackTabRendererUtau.Click += new BEventHandler( handleChangeRenderer );
             cMenuTrackTabRendererStraight.Click += new BEventHandler( handleChangeRenderer );
             cMenuTrackTabRendererAquesTone.Click += new BEventHandler( handleChangeRenderer );
             cMenuTrackSelector.Opening += new BCancelEventHandler( cMenuTrackSelector_Opening );
@@ -7428,7 +7413,34 @@ namespace org.kbinani.cadencii
             pictureBox2.MouseDown += new BMouseEventHandler( pictureBox2_MouseDown );
             pictureBox2.MouseUp += new BMouseEventHandler( pictureBox2_MouseUp );
             pictureBox2.Paint += new BPaintEventHandler( pictureBox2_Paint );
-#if !JAVA
+#if JAVA
+            stripBtnFileNew.clickEvent.add( new BEventHandler( this, "handleFileNew_Click" ) );
+            stripBtnFileOpen.clickEvent.add( new BEventHandler( this, "handleFileOpen_Click" ) );
+            stripBtnFileSave.clickEvent.add( new BEventHandler( this, "handleFileSave_Click" ) );
+            stripBtnCut.clickEvent.add( new BEventHandler( this, "handleEditCut_Click" ) );
+            stripBtnCopy.clickEvent.add( new BEventHandler( this, "handleEditCopy_Click" ) );
+            stripBtnPaste.clickEvent.add( new BEventHandler( this, "handleEditPaste_Click" ) );
+            stripBtnUndo.clickEvent.add( new BEventHandler( this, "handleEditUndo_Click" ) );
+            stripBtnRedo.clickEvent.add( new BEventHandler( this, "handleEditRedo_Click" ) );
+
+            stripBtnMoveTop.clickEvent.add( new BEventHandler( this, "stripBtnMoveTop_Click" ) );
+            stripBtnRewind.clickEvent.add( new BEventHandler( this, "stripBtnRewind_Click" ) );
+            stripBtnForward.clickEvent.add( new BEventHandler( this, "stripBtnForward_Click" ) );
+            stripBtnMoveEnd.clickEvent.add( new BEventHandler( this, "stripBtnMoveEnd_Click" ) );
+            stripBtnPlay.clickEvent.add( new BEventHandler( this, "stripBtnPlay_Click" ) );
+            stripBtnScroll.clickEvent.add( new BEventHandler( this, "stripBtnScroll_Click" ) );
+            stripBtnLoop.clickEvent.add( new BEventHandler( this, "stripBtnLoop_Click" ) );
+
+            stripBtnPointer.clickEvent.add( new BEventHandler( this, "stripBtnArrow_Click" ) );
+            stripBtnPencil.clickEvent.add( new BEventHandler( this, "stripBtnPencil_Click" ) );
+            stripBtnLine.clickEvent.add( new BEventHandler( this, "stripBtnLine_Click" ) );
+            stripBtnEraser.clickEvent.add( new BEventHandler( this, "stripBtnEraser_Click" ) );
+            stripBtnGrid.clickEvent.add( new BEventHandler( this, "stripBtnGrid_Click" ) );
+            stripBtnCurve.clickEvent.add( new BEventHandler( this, "stripBtnCurve_Click" ) );
+
+            stripBtnStartMarker.clickEvent.add( new BEventHandler( this, "handleStartMarker_Click" ) );
+            stripBtnEndMarker.clickEvent.add( new BEventHandler( this, "handleEndMarker_Click" ) );
+#else
             toolBarTool.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler( toolBarTool_ButtonClick );
             rebar.SizeChanged += new BEventHandler( toolStripContainer_TopToolStripPanel_SizeChanged );// toolStripContainer.TopToolStripPanel.SizeChanged += new BEventHandler( toolStripContainer_TopToolStripPanel_SizeChanged );
             stripDDBtnQuantize04.Click += handlePositionQuantize;
@@ -7462,6 +7474,34 @@ namespace org.kbinani.cadencii
                 stripBtnStepSequencer.setIcon( new ImageIcon( Resources.get_piano() ) );
 #else
                 this.stripBtnStepSequencer.Image = Resources.get_piano().image;
+#endif
+#if JAVA
+                stripBtnFileNew.setIcon( new ImageIcon( Resources.get_disk__plus() ) );
+                stripBtnFileOpen.setIcon( new ImageIcon( Resources.get_folder_horizontal_open() ) );
+                stripBtnFileSave.setIcon( new ImageIcon( Resources.get_disk() ) );
+                stripBtnCut.setIcon( new ImageIcon( Resources.get_scissors() ) );
+                stripBtnCopy.setIcon( new ImageIcon( Resources.get_documents() ) );
+                stripBtnPaste.setIcon( new ImageIcon( Resources.get_clipboard_paste() ) );
+                stripBtnUndo.setIcon( new ImageIcon( Resources.get_arrow_skip_180() ) );
+                stripBtnRedo.setIcon( new ImageIcon( Resources.get_arrow_skip() ) );
+
+                stripBtnMoveTop.setIcon( new ImageIcon( Resources.get_control_stop_180() ) );
+                stripBtnRewind.setIcon( new ImageIcon( Resources.get_control_double_180() ) );
+                stripBtnForward.setIcon( new ImageIcon( Resources.get_control_double() ) );
+                stripBtnMoveEnd.setIcon( new ImageIcon( Resources.get_control_stop() ) );
+                stripBtnPlay.setIcon( new ImageIcon( Resources.get_control() ) );
+                stripBtnScroll.setIcon( new ImageIcon( Resources.get_arrow_circle_double() ) );
+                stripBtnLoop.setIcon( new ImageIcon( Resources.get_arrow_return() ) );
+
+                stripBtnPointer.setIcon( new ImageIcon( Resources.get_arrow_135() ) );
+                stripBtnPencil.setIcon( new ImageIcon( Resources.get_pencil() ) );
+                stripBtnLine.setIcon( new ImageIcon( Resources.get_layer_shape_line() ) );
+                stripBtnEraser.setIcon( new ImageIcon( Resources.get_eraser() ) );
+                stripBtnGrid.setIcon( new ImageIcon( Resources.get_ruler_crop() ) );
+                stripBtnCurve.setIcon( new ImageIcon( Resources.get_layer_shape_curve() ) );
+
+                stripBtnStartMarker.setIcon( new ImageIcon( Resources.get_pin__arrow() ) );
+                stripBtnEndMarker.setIcon( new ImageIcon( Resources.get_pin__arrow_inv() ) );
 #endif
                 setIconImage( Resources.get_icon() );
             } catch ( Exception ex ) {
@@ -10365,8 +10405,8 @@ namespace org.kbinani.cadencii
 #endif
             updateBgmMenuState();
 
-            this.SizeChanged += new BEventHandler( this.FormMain_SizeChanged );
-            this.LocationChanged += new BEventHandler( this.FormMain_LocationChanged );
+            this.SizeChanged += new BEventHandler( FormMain_SizeChanged );
+            this.LocationChanged += new BEventHandler( FormMain_LocationChanged );
             repaint();
             updateLayout();
 #if DEBUG
@@ -12624,7 +12664,7 @@ namespace org.kbinani.cadencii
             }
         }
 
-        void menuSettingVibratoPreset_Click( Object sender, EventArgs e )
+        public void menuSettingVibratoPreset_Click( Object sender, EventArgs e )
         {
             FormVibratoPreset dialog = null;
             try {
@@ -12713,7 +12753,7 @@ namespace org.kbinani.cadencii
 
         //BOOKMARK: menuLyric
         #region menuLyric*
-        void menuLyric_DropDownOpening( Object sender, EventArgs e )
+        public void menuLyric_DropDownOpening( Object sender, EventArgs e )
         {
             menuLyricCopyVibratoToPreset.setEnabled( false );
 
@@ -15665,6 +15705,7 @@ namespace org.kbinani.cadencii
         public void pictureBox2_Paint( Object sender, BPaintEventArgs e )
         {
 #if JAVA
+            mGraphicsPictureBox2 = (Graphics2D)e.Graphics;
 #else
             if ( mGraphicsPictureBox2 == null ) {
                 mGraphicsPictureBox2 = new Graphics2D( null );
@@ -16783,24 +16824,32 @@ namespace org.kbinani.cadencii
 #endif
 #if JAVA
                     BMenuItem item = (BMenuItem)sender;
-                    for ( int i = 0; i < cMenuTrackTabRendererUtau.getComponentCount(); i++ ){
-                        Component c = cMenuTrackTabRendererUtau.getComponent( i );
-                        if( c instanceof BMenuItem ){
-                            BMenuItem b = (BMenuItem)c;
-                            if( b == item ){
-                                resampler_index = i;
-                                break;
-                            }
-                        }
-                    }
-                    if( resampler_index < 0 ){
-                        for( int i = 0; i < menuTrackRendererUtau.getComponentCount(); i++ ){
-                            Component c = menuTrackRendererUtau.getComponent( i );
+                    MenuElement[] subc0 = cMenuTrackTabRendererUtau.getSubElements();
+                    if( subc0.length > 0 ){
+                        MenuElement[] subc1 = subc0[0].getSubElements();
+                        for ( int i = 0; i < subc1.length; i++ ){
+                            MenuElement c = subc1[i];
                             if( c instanceof BMenuItem ){
                                 BMenuItem b = (BMenuItem)c;
                                 if( b == item ){
                                     resampler_index = i;
                                     break;
+                                }
+                            }
+                        }
+                    }
+                    if( resampler_index < 0 ){
+                        MenuElement[] subm0 = menuTrackRendererUtau.getSubElements();
+                        if( subm0.length > 0 ){
+                            MenuElement[] subm1 = subm0[0].getSubElements();
+                            for( int i = 0; i < subm1.length; i++ ){
+                                MenuElement c = subm1[i];
+                                if( c instanceof BMenuItem ){
+                                    BMenuItem b = (BMenuItem)c;
+                                    if( b == item ){
+                                        resampler_index = i;
+                                        break;
+                                    }
                                 }
                             }
                         }

@@ -307,6 +307,10 @@ class pp_cs2java {
     }
 
     static void preprocessCor( String path ) {
+        string t = Path.GetFileName( path );
+        if( t.StartsWith( "." ) ){
+            return;
+        }
         String tmp = Path.GetTempFileName();
         String package = "";
         int lines = 0;
@@ -616,7 +620,7 @@ class pp_cs2java {
                     }
 
                     // javaのときのユーティリティ関数str, vec等をナントカする
-                    string[] sp_funcs = new string[] { "vec", "dic" };
+                    /* string[] sp_funcs = new string[] { "vec", "dic" };
                     bool sp_changed = true;
                     while ( sp_changed ) {
                         sp_changed = false;
@@ -649,6 +653,9 @@ class pp_cs2java {
                             }
                             // クラス名の直後に出てくる<を検出
                             indx_bla = line.IndexOf( "<", indx );
+                            if ( indx_bla < 0 ) {
+                                continue;
+                            }
                             // その間にあるのがメソッド名
                             int indx_start = indx + (func + ".").Length;
                             int indx_end = indx_bla;
@@ -679,6 +686,9 @@ class pp_cs2java {
                             PortUtil.println( "pp_cs2java#preprocessCor; indx_bla=" + indx_bla + "; indx_cket=" + indx_cket );
 #endif
                             // genericsの指定を抽出
+                            if ( indx_cket <= indx_bla ) {
+                                continue;
+                            }
                             string generics = line.Substring( indx_bla + 1, indx_cket - indx_bla - 1 );
 #if DEBUG
                             PortUtil.println( "pp_cs2java#preprocessCor; line=" + line + "; generics=" + generics );
@@ -694,7 +704,7 @@ class pp_cs2java {
 #endif
                             sp_changed = true;
                         }
-                    }
+                    }*/
 
                     if ( s_shift_indent < 0 ) {
                         string search = new string( ' ', -s_shift_indent );
