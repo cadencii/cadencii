@@ -5,7 +5,7 @@ TARGET=@TARGET@
 MCS_OPT=-warn:0
 PLAY_SOUND_DLL=@PLAY_SOUND_DLL@
 JROOT=./build/java/org/kbinani
-PPCS2JAVA_OPT=--replace-java -DJAVA -DJAVA_1_5 -DDEBUG -DCLIPBOARD_AS_TEXT -encoding "UTF-8" -s -4 -c -e -l pp_cs2java.log
+PPCS2JAVA_OPT=--replace-java -DJAVA -DJAVA_1_5 -DDEBUG -DCLIPBOARD_AS_TEXT -DENABLE_PROPERTY -encoding "UTF-8" -s -4 -c -e -l pp_cs2java.log
 PPCS2CPP_OPT=--replace-cpp -D__cplusplus
 MONO=@MONO@
 

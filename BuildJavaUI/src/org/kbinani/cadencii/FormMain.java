@@ -144,21 +144,21 @@ public class FormMain extends BForm {
     private BPanel m_property_panel_container = null;
     private BToolBar toolStripFile = null;
     private BToolBar toolStripBottom = null;
-    private BButton stripBtnFileNew = null;
-    private BButton stripBtnFileOpen = null;
-    private BButton stripBtnFileSave = null;
-    private BButton stripBtnCut = null;
-    private BButton stripBtnCopy = null;
-    private BButton stripBtnPaste = null;
-    private BButton stripBtnUndo = null;
-    private BButton stripBtnRedo = null;
+    private BToggleButton stripBtnFileNew = null;
+    private BToggleButton stripBtnFileOpen = null;
+    private BToggleButton stripBtnFileSave = null;
+    private BToggleButton stripBtnCut = null;
+    private BToggleButton stripBtnCopy = null;
+    private BToggleButton stripBtnPaste = null;
+    private BToggleButton stripBtnUndo = null;
+    private BToggleButton stripBtnRedo = null;
     private BToolBar toolStripPosition = null;
-    private BButton stripBtnMoveTop = null;
+    private BToggleButton stripBtnMoveTop = null;
     private BPanel BPanel = null;
-    private BButton stripBtnRewind = null;
-    private BButton stripBtnForward = null;
-    private BButton stripBtnMoveEnd = null;
-    private BButton stripBtnPlay = null;
+    private BToggleButton stripBtnRewind = null;
+    private BToggleButton stripBtnForward = null;
+    private BToggleButton stripBtnMoveEnd = null;
+    private BToggleButton stripBtnPlay = null;
     private BToggleButton stripBtnScroll = null;
     private BToggleButton stripBtnLoop = null;
     private BToolBar toolStripMeasure = null;
@@ -177,8 +177,6 @@ public class FormMain extends BForm {
     private BLabel stripLblGameCtrlMode = null;
     private BLabel jLabel4 = null;
     private BLabel stripLblMidiIn = null;
-    private BLabel jLabel5 = null;
-    private BComboBox stripDDBtnSpeed = null;
     private BPopupMenu cMenuTrackSelector = null;  //  @jve:decl-index=0:visual-constraint="879,87"
     private BPopupMenu cMenuPiano = null;  //  @jve:decl-index=0:visual-constraint="900,261"
     private BPopupMenu cMenuTrackTab = null;  //  @jve:decl-index=0:visual-constraint="894,357"
@@ -444,11 +442,6 @@ public class FormMain extends BForm {
             gridBagConstraints29.anchor = GridBagConstraints.WEST;
             jLabel = new JLabel();
             jLabel.setText(" ");
-            GridBagConstraints gridBagConstraints28 = new GridBagConstraints();
-            gridBagConstraints28.gridx = 4;
-            gridBagConstraints28.fill = GridBagConstraints.HORIZONTAL;
-            gridBagConstraints28.anchor = GridBagConstraints.WEST;
-            gridBagConstraints28.gridy = 0;
             GridBagConstraints gridBagConstraints27 = new GridBagConstraints();
             gridBagConstraints27.gridx = 3;
             gridBagConstraints27.fill = GridBagConstraints.HORIZONTAL;
@@ -469,20 +462,12 @@ public class FormMain extends BForm {
             gridBagConstraints24.fill = GridBagConstraints.HORIZONTAL;
             gridBagConstraints24.anchor = GridBagConstraints.WEST;
             gridBagConstraints24.gridy = 0;
-            GridBagConstraints gridBagConstraints17 = new GridBagConstraints();
-            gridBagConstraints17.fill = GridBagConstraints.VERTICAL;
-            gridBagConstraints17.gridx = 5;
-            gridBagConstraints17.gridy = 0;
-            gridBagConstraints17.anchor = GridBagConstraints.WEST;
-            gridBagConstraints17.weightx = 0.0D;
             jPanel = new JPanel();
             jPanel.setLayout(new GridBagLayout());
             jPanel.add(jLabel3, gridBagConstraints24);
             jPanel.add(stripLblGameCtrlMode, gridBagConstraints25);
             jPanel.add(jLabel4, gridBagConstraints26);
             jPanel.add(stripLblMidiIn, gridBagConstraints27);
-            jPanel.add(jLabel5, gridBagConstraints28);
-            jPanel.add(getStripDDBtnSpeed(), gridBagConstraints17);
             jPanel.add(jLabel, gridBagConstraints29);
             jPanel.add(getStripBtnStepSequencer(), gridBagConstraints);
         }
@@ -2277,9 +2262,6 @@ public class FormMain extends BForm {
      */
     private BToolBar getToolStripBottom() {
         if (toolStripBottom == null) {
-            jLabel5 = new BLabel();
-            jLabel5.setText("Speed 1.0x");
-            jLabel5.setPreferredSize(new Dimension(73, 22));
             stripLblMidiIn = new BLabel();
             stripLblMidiIn.setText("Disabled");
             stripLblMidiIn.setPreferredSize(new Dimension(49, 20));
@@ -2309,9 +2291,9 @@ public class FormMain extends BForm {
      *  
      * @return javax.swing.BButton  
      */
-    private BButton getStripBtnFileNew() {
+    private BToggleButton getStripBtnFileNew() {
         if (stripBtnFileNew == null) {
-            stripBtnFileNew = new BButton();
+            stripBtnFileNew = new BToggleButton();
             stripBtnFileNew.setText("");
             stripBtnFileNew.setPreferredSize(new Dimension(23, 22));
         }
@@ -2323,9 +2305,9 @@ public class FormMain extends BForm {
      *  
      * @return javax.swing.BButton  
      */
-    private BButton getStripBtnFileOpen() {
+    private BToggleButton getStripBtnFileOpen() {
         if (stripBtnFileOpen == null) {
-            stripBtnFileOpen = new BButton();
+            stripBtnFileOpen = new BToggleButton();
             stripBtnFileOpen.setText("");
             stripBtnFileOpen.setPreferredSize(new Dimension(23, 22));
         }
@@ -2337,9 +2319,9 @@ public class FormMain extends BForm {
      *  
      * @return javax.swing.BButton  
      */
-    private BButton getStripBtnFileSave() {
+    private BToggleButton getStripBtnFileSave() {
         if (stripBtnFileSave == null) {
-            stripBtnFileSave = new BButton();
+            stripBtnFileSave = new BToggleButton();
             stripBtnFileSave.setText("");
             stripBtnFileSave.setPreferredSize(new Dimension(23, 22));
         }
@@ -2351,9 +2333,9 @@ public class FormMain extends BForm {
      *  
      * @return javax.swing.BButton  
      */
-    private BButton getStripBtnCut() {
+    private BToggleButton getStripBtnCut() {
         if (stripBtnCut == null) {
-            stripBtnCut = new BButton();
+            stripBtnCut = new BToggleButton();
             stripBtnCut.setText("");
             stripBtnCut.setPreferredSize(new Dimension(23, 22));
         }
@@ -2365,9 +2347,9 @@ public class FormMain extends BForm {
      *  
      * @return javax.swing.BButton  
      */
-    private BButton getStripBtnCopy() {
+    private BToggleButton getStripBtnCopy() {
         if (stripBtnCopy == null) {
-            stripBtnCopy = new BButton();
+            stripBtnCopy = new BToggleButton();
             stripBtnCopy.setText("");
             stripBtnCopy.setPreferredSize(new Dimension(23, 22));
         }
@@ -2379,9 +2361,9 @@ public class FormMain extends BForm {
      *  
      * @return javax.swing.BButton  
      */
-    private BButton getStripBtnPaste() {
+    private BToggleButton getStripBtnPaste() {
         if (stripBtnPaste == null) {
-            stripBtnPaste = new BButton();
+            stripBtnPaste = new BToggleButton();
             stripBtnPaste.setText("");
             stripBtnPaste.setPreferredSize(new Dimension(23, 22));
         }
@@ -2393,9 +2375,9 @@ public class FormMain extends BForm {
      *  
      * @return javax.swing.BButton  
      */
-    private BButton getStripBtnUndo() {
+    private BToggleButton getStripBtnUndo() {
         if (stripBtnUndo == null) {
-            stripBtnUndo = new BButton();
+            stripBtnUndo = new BToggleButton();
             stripBtnUndo.setText("");
             stripBtnUndo.setPreferredSize(new Dimension(23, 22));
         }
@@ -2407,9 +2389,9 @@ public class FormMain extends BForm {
      *  
      * @return javax.swing.BButton  
      */
-    private BButton getStripBtnRedo() {
+    private BToggleButton getStripBtnRedo() {
         if (stripBtnRedo == null) {
-            stripBtnRedo = new BButton();
+            stripBtnRedo = new BToggleButton();
             stripBtnRedo.setText("");
             stripBtnRedo.setPreferredSize(new Dimension(23, 22));
         }
@@ -2442,9 +2424,9 @@ public class FormMain extends BForm {
      *  
      * @return javax.swing.BButton  
      */
-    private BButton getStripBtnMoveTop() {
+    private BToggleButton getStripBtnMoveTop() {
         if (stripBtnMoveTop == null) {
-            stripBtnMoveTop = new BButton();
+            stripBtnMoveTop = new BToggleButton();
             stripBtnMoveTop.setText("");
             stripBtnMoveTop.setSize(new Dimension(16, 16));
             stripBtnMoveTop.setPreferredSize(new Dimension(23, 22));
@@ -2482,9 +2464,9 @@ public class FormMain extends BForm {
      *  
      * @return javax.swing.BButton  
      */
-    private BButton getStripBtnRewind() {
+    private BToggleButton getStripBtnRewind() {
         if (stripBtnRewind == null) {
-            stripBtnRewind = new BButton();
+            stripBtnRewind = new BToggleButton();
             stripBtnRewind.setText("");
             stripBtnRewind.setPreferredSize(new Dimension(23, 22));
         }
@@ -2496,9 +2478,9 @@ public class FormMain extends BForm {
      *  
      * @return javax.swing.BButton  
      */
-    private BButton getStripBtnForward() {
+    private BToggleButton getStripBtnForward() {
         if (stripBtnForward == null) {
-            stripBtnForward = new BButton();
+            stripBtnForward = new BToggleButton();
             stripBtnForward.setText("");
             stripBtnForward.setPreferredSize(new Dimension(23, 22));
         }
@@ -2510,9 +2492,9 @@ public class FormMain extends BForm {
      *  
      * @return javax.swing.BButton  
      */
-    private BButton getStripBtnMoveEnd() {
+    private BToggleButton getStripBtnMoveEnd() {
         if (stripBtnMoveEnd == null) {
-            stripBtnMoveEnd = new BButton();
+            stripBtnMoveEnd = new BToggleButton();
             stripBtnMoveEnd.setText("");
             stripBtnMoveEnd.setPreferredSize(new Dimension(23, 22));
         }
@@ -2524,9 +2506,9 @@ public class FormMain extends BForm {
      *  
      * @return javax.swing.BButton  
      */
-    private BButton getStripBtnPlay() {
+    private BToggleButton getStripBtnPlay() {
         if (stripBtnPlay == null) {
-            stripBtnPlay = new BButton();
+            stripBtnPlay = new BToggleButton();
             stripBtnPlay.setText("");
             stripBtnPlay.setPreferredSize(new Dimension(23, 22));
         }
@@ -2713,19 +2695,6 @@ public class FormMain extends BForm {
             stripBtnCurve.setText("Curve");
         }
         return stripBtnCurve;
-    }
-
-    /**
-     * This method initializes stripDDBtnSpeed  
-     *  
-     * @return javax.swing.BComboBox    
-     */
-    private BComboBox getStripDDBtnSpeed() {
-        if (stripDDBtnSpeed == null) {
-            stripDDBtnSpeed = new BComboBox();
-            stripDDBtnSpeed.setPreferredSize(new Dimension(70, 20));
-        }
-        return stripDDBtnSpeed;
     }
 
     /**

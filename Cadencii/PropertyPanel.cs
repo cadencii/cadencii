@@ -1,3 +1,4 @@
+#if ENABLE_PROPERTY
 /*
  * PropertyPanel.cs
  * Copyright © 2009-2011 kbinani
@@ -11,8 +12,10 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if ENABLE_PROPERTY
 #if JAVA
+package org.kbinani.cadencii;
+
+import java.util.*;
 #else
 using System;
 using System.Windows.Forms;
@@ -26,17 +29,35 @@ namespace org.kbinani.cadencii
     using boolean = System.Boolean;
     using Integer = System.Int32;
     using BEventHandler = System.EventHandler;
-
-    public delegate void CommandExecuteRequiredEventHandler( CadenciiCommand command );
+    using BPropertyValueChangedEventHandler = System.Windows.Forms.PropertyValueChangedEventHandler;
 #endif
 
 #if JAVA
-    public class PropertyPanel : BPanel {
+
+public class CommandExecuteRequiredEventHandler extends BEventHandler{
+    public CommandExecuteRequiredEventHandler( Object invoker, String method_name ){
+        super( invoker, method_name, Void.TYPE, Object.class, CadenciiCommand.class );
+    }
+    
+    public CommandExecuteRequiredEventHandler( Class<?> invoker, String method_name ){
+        super( invoker, method_name, Void.TYPE, Object.class, CadenciiCommand.class );
+    }
+}
+#else
+    public delegate void CommandExecuteRequiredEventHandler( object sender, CadenciiCommand command );
+#endif
+
+#if JAVA
+    public class PropertyPanel extends BPanel
 #else
     public class PropertyPanel : UserControl
-    {
 #endif
+    {
+#if JAVA
+        public BEvent<CommandExecuteRequiredEventHandler> commandExecuteRequiredEvent = new BEvent<CommandExecuteRequiredEventHandler>();
+#else
         public event CommandExecuteRequiredEventHandler CommandExecuteRequired;
+#endif
         private Vector<SelectedEventEntry> m_items;
         private int m_track;
         private boolean m_editing;
@@ -160,7 +181,7 @@ namespace org.kbinani.cadencii
             setEditing( false );
         }
 
-        private void propertyGrid_PropertyValueChanged( Object s, PropertyValueChangedEventArgs e )
+        public void propertyGrid_PropertyValueChanged( Object s, PropertyValueChangedEventArgs e )
         {
             int len = propertyGrid.SelectedObjects.Length;
             VsqEvent[] items = new VsqEvent[len];
@@ -168,10 +189,18 @@ namespace org.kbinani.cadencii
                 SelectedEventEntry proxy = (SelectedEventEntry)propertyGrid.SelectedObjects[i];
                 items[i] = proxy.editing;
             }
-            if ( CommandExecuteRequired != null ) {
-                CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventReplaceRange( m_track, items ) );
-                CommandExecuteRequired( run );
+            CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventReplaceRange( m_track, items ) );
+#if JAVA
+            try{
+                commandExecutedRequiredEvent.raise( this, run );
+            }catch( Exception ex ){
+                serr.println( PropertyPanel.class + ".propertyGridPropertyValueChanged; ex=" + ex );
             }
+#else
+            if ( CommandExecuteRequired != null ) {
+                CommandExecuteRequired( this, run );
+            }
+#endif
             for ( int i = 0; i < len; i++ ) {
                 AppManager.addSelectedEvent( items[i].InternalID );
             }
@@ -215,27 +244,31 @@ namespace org.kbinani.cadencii
             }
         }
 
+#if !JAVA
         private void propertyGrid_SelectedGridItemChanged( Object sender, SelectedGridItemChangedEventArgs e )
         {
             setEditing( true );
         }
+#endif
 
-        private void propertyGrid_Enter( Object sender, EventArgs e )
+        public void propertyGrid_Enter( Object sender, EventArgs e )
         {
             setEditing( true );
         }
 
-        private void propertyGrid_Leave( Object sender, EventArgs e )
+        public void propertyGrid_Leave( Object sender, EventArgs e )
         {
             setEditing( false );
         }
 
         private void registerEventHandlers()
         {
-            this.propertyGrid.SelectedGridItemChanged += new System.Windows.Forms.SelectedGridItemChangedEventHandler( this.propertyGrid_SelectedGridItemChanged );
-            this.propertyGrid.Leave += new BEventHandler( this.propertyGrid_Leave );
-            this.propertyGrid.Enter += new BEventHandler( this.propertyGrid_Enter );
-            this.propertyGrid.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler( this.propertyGrid_PropertyValueChanged );
+#if !JAVA
+            propertyGrid.SelectedGridItemChanged += new SelectedGridItemChangedEventHandler( propertyGrid_SelectedGridItemChanged );
+#endif
+            propertyGrid.Leave += new BEventHandler( propertyGrid_Leave );
+            propertyGrid.Enter += new BEventHandler( propertyGrid_Enter );
+            propertyGrid.PropertyValueChanged += new BPropertyValueChangedEventHandler( propertyGrid_PropertyValueChanged );
         }
 
         private void setResources()

@@ -9998,7 +9998,7 @@ namespace org.kbinani.cadencii
 
         #region propertyPanel
 #if ENABLE_PROPERTY
-        public void propertyPanel_CommandExecuteRequired( CadenciiCommand command )
+        public void propertyPanel_CommandExecuteRequired( Object sender, CadenciiCommand command )
         {
 #if DEBUG
             AppManager.debugWriteLine( "m_note_property_dlg_CommandExecuteRequired" );
