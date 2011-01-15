@@ -12,6 +12,12 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.cadencii;
+
+import org.kbinani.apputil.*;
+import org.kbinani.componentmodel.*;
+#else
 using System;
 using System.ComponentModel;
 using System.Reflection;
@@ -19,8 +25,15 @@ using org.kbinani.apputil;
 
 namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
+#endif
 
-    public class SelectedEventEntryPropertyDescriptor : PropertyDescriptor {
+#if JAVA
+    public class SelectedEventEntryPropertyDescriptor extends PropertyDescriptor 
+#else
+    public class SelectedEventEntryPropertyDescriptor : PropertyDescriptor 
+#endif
+    {
+#if !JAVA
         private Type m_type;
 
         public SelectedEventEntryPropertyDescriptor( MemberDescriptor md )
@@ -71,52 +84,59 @@ namespace org.kbinani.cadencii {
             }
         }
 
-        public override String DisplayName {
-            get {
-                switch ( base.Name ) {
-                    case "Clock":
-                        return _( "Clock" );
-                    case "Length":
-                        return _( "Length" );
-                    case "Note":
-                        return _( "Note#" );
-                    case "Velocity":
-                        return _( "Velocity" );
-                    case "BendDepth":
-                        return _( "Bend Depth" );
-                    case "BendLength":
-                        return _( "Bend Length" );
-                    case "Decay":
-                        return _( "Decay" );
-                    case "Accent":
-                        return _( "Accent" );
-                    case "UpPortamento":
-                        return _( "Up-Portamento" );
-                    case "DownPortamento":
-                        return _( "Down-Portamento" );
-                    case "VibratoLength":
-                        return _( "Vibrato Length" );
-                    case "PhoneticSymbol":
-                        return _( "Phonetic Symbol" );
-                    case "Phrase":
-                        return _( "Phrase" );
-                    case "PreUtterance":
-                        return _( "Pre Utterance" );
-                    case "Overlap":
-                        return _( "Overlap" );
-                    case "Moduration":
-                        return _( "Moduration" );
-                    case "Vibrato":
-                        return _( "Vibrato" );
-                    case "Attack":
-                        return _( "Attack" );
-                    case "AttackDuration":
-                        return _( "Attack Duration" );
-                    case "AttackDepth":
-                        return _( "Attack Depth" );
-                }
-                return _( this.Name );
+        public override String DisplayName
+        {
+            get
+            {
+                return getDescripter( base.Name );
             }
+        }
+#endif
+
+        public String getDescripter( String name )
+        {
+            if ( name.Equals( "Clock" ) ) {
+                return _( "Clock" );
+            } else if ( name.Equals( "Length" ) ) {
+                return _( "Length" );
+            } else if ( name.Equals( "Note" ) ) {
+                return _( "Note#" );
+            } else if ( name.Equals( "Velocity" ) ) {
+                return _( "Velocity" );
+            } else if ( name.Equals( "BendDepth" ) ) {
+                return _( "Bend Depth" );
+            } else if ( name.Equals( "BendLength" ) ) {
+                return _( "Bend Length" );
+            } else if ( name.Equals( "Decay" ) ) {
+                return _( "Decay" );
+            } else if ( name.Equals( "Accent" ) ) {
+                return _( "Accent" );
+            } else if ( name.Equals( "UpPortamento" ) ) {
+                return _( "Up-Portamento" );
+            } else if ( name.Equals( "DownPortamento" ) ) {
+                return _( "Down-Portamento" );
+            } else if ( name.Equals( "VibratoLength" ) ) {
+                return _( "Vibrato Length" );
+            } else if ( name.Equals( "PhoneticSymbol" ) ) {
+                return _( "Phonetic Symbol" );
+            } else if ( name.Equals( "Phrase" ) ) {
+                return _( "Phrase" );
+            } else if ( name.Equals( "PreUtterance" ) ) {
+                return _( "Pre Utterance" );
+            } else if ( name.Equals( "Overlap" ) ) {
+                return _( "Overlap" );
+            } else if ( name.Equals( "Moduration" ) ) {
+                return _( "Moduration" );
+            } else if ( name.Equals( "Vibrato" ) ) {
+                return _( "Vibrato" );
+            } else if ( name.Equals( "Attack" ) ) {
+                return _( "Attack" );
+            } else if ( name.Equals( "AttackDuration" ) ) {
+                return _( "Attack Duration" );
+            } else if ( name.Equals( "AttackDepth" ) ) {
+                return _( "Attack Depth" );
+            }
+            return _( name );
         }
 
         private static String _( String id ) {
@@ -124,5 +144,7 @@ namespace org.kbinani.cadencii {
         }
     }
 
+#if !JAVA
 }
+#endif
 #endif

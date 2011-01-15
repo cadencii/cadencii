@@ -14,16 +14,31 @@
 #if JAVA
 package org.kbinani.cadencii;
 
+import java.util.*;
 import org.kbinani.vsq.*;
+import org.kbinani.componentmodel.*;
 #else
 using System;
 using System.ComponentModel;
 using org.kbinani.java.util;
 using org.kbinani.vsq;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using Integer = System.Int32;
 #endif
+
+#if JAVA
+    class PositionSpec
+#else
+    struct PositionSpec
+#endif
+    {
+        public int measure;
+        public int beat;
+        public int gate;
+        public Timesig timesig;
+    }
 
     /// <summary>
     /// 選択されたアイテムを管理します。
@@ -31,9 +46,16 @@ namespace org.kbinani.cadencii {
     /// VsqFileExに登録されているオブジェクトとの間を取り持つ処理を担います。
     /// </summary>
 #if ENABLE_PROPERTY
+#if JAVA
+    public class SelectedEventEntry implements IPropertyDescripter
+#else
     [TypeConverter( typeof( SelectedEventEntryTypeConverter ) )]
+    public class SelectedEventEntry
 #endif
-    public class SelectedEventEntry {
+#else
+    public class SelectedEventEntry
+#endif
+    {
         /// <summary>
         /// 選択されたアイテムが存在しているトラック番号。
         /// </summary>
@@ -60,7 +82,9 @@ namespace org.kbinani.cadencii {
         private String m_beat;
         private String m_tick;
 #if DEBUG
+#if !JAVA
         private DEBUG_GatetimeProperty m_debug_clock = new DEBUG_GatetimeProperty();
+#endif
 #endif
 #endif
 
@@ -70,7 +94,8 @@ namespace org.kbinani.cadencii {
         /// <param name="track_"></param>
         /// <param name="original_"></param>
         /// <param name="editing_"></param>
-        public SelectedEventEntry( int track_, VsqEvent original_, VsqEvent editing_ ) {
+        public SelectedEventEntry( int track_, VsqEvent original_, VsqEvent editing_ )
+        {
             track = track_;
             original = original_;
             editing = editing_;
@@ -80,11 +105,10 @@ namespace org.kbinani.cadencii {
             m_clock = editing.Clock + "";
 
             // measure, beat, gate
-            int measure, beat, gate;
-            Timesig timesig = getPosition( out measure, out beat, out gate );
-            m_measure = measure + "";
-            m_beat = beat + "";
-            m_tick = gate + "";
+            PositionSpec ret = getPosition();
+            m_measure = ret.measure + "";
+            m_beat = ret.beat + "";
+            m_tick = ret.gate + "";
 
             // symbol_protected
             m_symbol_protected = BooleanEnum.Off;
@@ -137,6 +161,19 @@ namespace org.kbinani.cadencii {
         }
 
 #if ENABLE_PROPERTY
+#if JAVA
+        public SelectedEventEntry()
+        {
+        }
+
+        public PropertyDescripter getDescripter()
+        {
+            return new SelectedEventEntryPropertyDescripter();
+        }
+#endif
+#endif
+
+#if ENABLE_PROPERTY
         /// <summary>
         /// 小節数、拍数、ゲート数から、クロック値を計算します
         /// </summary>
@@ -144,7 +181,8 @@ namespace org.kbinani.cadencii {
         /// <param name="beat"></param>
         /// <param name="gate"></param>
         /// <returns></returns>
-        private int calculateClock( int measure, int beat, int gate ) {
+        private int calculateClock( int measure, int beat, int gate )
+        {
             VsqFileEx vsq = AppManager.getVsqFile();
             if ( vsq == null ) {
                 int premeasure = 2;
@@ -160,34 +198,35 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 現在のクロック値(m_clock)から、小節数、拍数、ゲート数(?)を計算します
         /// </summary>
-        /// <param name="measure"></param>
-        /// <param name="beat"></param>
-        /// <param name="gate"></param>
         /// <returns></returns>
-        private Timesig getPosition( out int measure, out int beat, out int gate ) {
+        private PositionSpec getPosition()
+        {
+            PositionSpec ret = new PositionSpec();
             VsqFileEx vsq = AppManager.getVsqFile();
             int clock = editing.Clock;
             if ( vsq == null ) {
                 // 4/4拍子, プリメジャー2と仮定
                 int i = clock / (480 * 4);
                 int tpremeasure = 2;
-                measure = i - tpremeasure + 1;
+                ret.measure = i - tpremeasure + 1;
                 int tdif = clock - i * 480 * 4;
-                beat = tdif / 480 + 1;
-                gate = tdif - (beat - 1) * 480;
-                return new Timesig( 4, 4 );
+                ret.beat = tdif / 480 + 1;
+                ret.gate = tdif - (ret.beat - 1) * 480;
+                ret.timesig = new Timesig( 4, 4 );
+                return ret;
             }
 
             int premeasure = vsq.getPreMeasure();
-            measure = vsq.getBarCountFromClock( clock ) - premeasure + 1;
-            int clock_bartop = vsq.getClockFromBarCount( measure + premeasure - 1 );
+            ret.measure = vsq.getBarCountFromClock( clock ) - premeasure + 1;
+            int clock_bartop = vsq.getClockFromBarCount( ret.measure + premeasure - 1 );
             Timesig timesig = vsq.getTimesigAt( clock );
             int den = timesig.denominator;
             int dif = clock - clock_bartop;
             int step = 480 * 4 / den;
-            beat = dif / step + 1;
-            gate = dif - (beat - 1) * step;
-            return timesig;
+            ret.beat = dif / step + 1;
+            ret.gate = dif - (ret.beat - 1) * step;
+            ret.timesig = timesig;
+            return ret;
         }
 
         /// <summary>
@@ -196,7 +235,8 @@ namespace org.kbinani.cadencii {
         /// <param name="old_value"></param>
         /// <param name="received_string"></param>
         /// <returns></returns>
-        public static int evalReceivedString( int old_value, String received_string ) {
+        public static int evalReceivedString( int old_value, String received_string )
+        {
             int draft = old_value;
             if ( received_string.StartsWith( "+" ) || received_string.StartsWith( "-" ) || received_string.StartsWith( "*" ) || received_string.StartsWith( "/" ) ) {
                 try {
@@ -218,13 +258,13 @@ namespace org.kbinani.cadencii {
                         eq = "(" + eq;
                     }
                     draft = (int)Utility.eval( draft, eq );
-                } catch {
+                } catch ( Exception ex ) {
                     draft = old_value;
                 }
             } else {
                 try {
                     draft = (int)Utility.eval( old_value, received_string );
-                } catch {
+                } catch ( Exception ex ) {
                     draft = old_value;
                 }
             }
@@ -232,715 +272,1182 @@ namespace org.kbinani.cadencii {
         }
 
         #region Lyric
+#if !JAVA
         [Category( "Lyric" )]
-        public String Phrase {
-            get {
-                if ( editing.ID.LyricHandle != null && editing.ID.LyricHandle.L0 != null ){
-                    return editing.ID.LyricHandle.L0.Phrase;
-                }
-                return "";
+        public String Phrase
+        {
+            get
+            {
+                return getPhrase();
             }
-            set {
-                if ( editing.ID.LyricHandle == null ){
-                    return;
-                }
-                if ( editing.ID.LyricHandle.L0 == null ) {
-                    return;
-                }
-                String old = editing.ID.LyricHandle.L0.Phrase;
-                if ( !old.Equals( value ) ) {
-                    // 歌詞
-                    String phrase = value;
-                    if ( AppManager.editorConfig.SelfDeRomanization ) {
-                        phrase = KanaDeRomanization.Attach( value );
-                    }
-                    editing.ID.LyricHandle.L0.Phrase = phrase;
-
-                    // 発音記号
-                    String phonetic_symbol = "";
-                    SymbolTableEntry entry = SymbolTable.attatch( phrase );
-                    if ( entry == null ) {
-                        phonetic_symbol = "a";
-                    } else {
-                        phonetic_symbol = entry.getSymbol();
-                    }
-                    editing.ID.LyricHandle.L0.setPhoneticSymbol( phonetic_symbol );
-
-                    // consonant adjustment
-                    String[] spl = PortUtil.splitString( phonetic_symbol, new char[] { ' ', ',' }, true );
-                    String consonant_adjustment = "";
-                    for ( int i = 0; i < spl.Length; i++ ) {
-                        consonant_adjustment += (i == 0 ? "" : " ") + (VsqPhoneticSymbol.isConsonant( spl[i] ) ? 64 : 0);
-                    }
-                    editing.ID.LyricHandle.L0.setConsonantAdjustment( consonant_adjustment );
-
-                    // overlap, preUtterancec
-                    VsqFileEx vsq = AppManager.getVsqFile();
-                    if ( vsq != null ) {
-                        int selected = AppManager.getSelected();
-                        VsqTrack vsq_track = vsq.Track.get( selected );
-                        VsqEvent singer = vsq_track.getSingerEventAt( editing.Clock );
-                        SingerConfig sc = AppManager.getSingerInfoUtau( singer.ID.IconHandle.Language, singer.ID.IconHandle.Program );
-                        if ( sc != null && AppManager.mUtauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
-                            UtauVoiceDB db = AppManager.mUtauVoiceDB.get( sc.VOICEIDSTR );
-                            OtoArgs oa = db.attachFileNameFromLyric( phrase );
-                            if ( editing.UstEvent == null ) {
-                                editing.UstEvent = new UstEvent();
-                            }
-                            editing.UstEvent.VoiceOverlap = oa.msOverlap;
-                            editing.UstEvent.PreUtterance = oa.msPreUtterance;
-                        }
-                    }
-                }
+            set
+            {
+                setPhrase( value );
             }
         }
+#endif
 
-        [Category( "Lyric" )]
-        public String PhoneticSymbol {
-            get {
-                if ( editing.ID.LyricHandle != null && editing.ID.LyricHandle.L0 != null ) {
-                    return editing.ID.LyricHandle.L0.getPhoneticSymbol();
-                }
-                return "";
+        public void setPhrase( String value )
+        {
+            if ( editing.ID.LyricHandle == null ) {
+                return;
             }
-            set {
-                if ( editing.ID.LyricHandle == null ) {
-                    return;
-                }
-                if ( editing.ID.LyricHandle.L0 == null ) {
-                    return;
-                }
-                editing.ID.LyricHandle.L0.setPhoneticSymbol( value );
+            if ( editing.ID.LyricHandle.L0 == null ) {
+                return;
             }
-        }
+            String old = editing.ID.LyricHandle.L0.Phrase;
+            if ( !old.Equals( value ) ) {
+                // 歌詞
+                String phrase = value;
+                if ( AppManager.editorConfig.SelfDeRomanization ) {
+                    phrase = KanaDeRomanization.Attach( value );
+                }
+                editing.ID.LyricHandle.L0.Phrase = phrase;
 
-        [Category( "Lyric" )]
-        public String CosonantAdjustment {
-            get {
-                if ( editing.ID.LyricHandle != null && editing.ID.LyricHandle.L0 != null ) {
-                    return editing.ID.LyricHandle.L0.getConsonantAdjustment();
+                // 発音記号
+                String phonetic_symbol = "";
+                SymbolTableEntry entry = SymbolTable.attatch( phrase );
+                if ( entry == null ) {
+                    phonetic_symbol = "a";
+                } else {
+                    phonetic_symbol = entry.getSymbol();
                 }
-                return "";
-            }
-            set {
-                if ( editing.ID.LyricHandle == null ) {
-                    return;
-                }
-                if ( editing.ID.LyricHandle.L0 == null ) {
-                    return;
-                }
-                String[] symbol = PortUtil.splitString( editing.ID.LyricHandle.L0.getPhoneticSymbol(), new char[] { ' ' }, true );
-                String[] adjustment = PortUtil.splitString( value, new char[] { ' ', ',' }, true );
-                if ( adjustment.Length < symbol.Length ) {
-                    Array.Resize( ref adjustment, symbol.Length );
-                }
-                int[] iadj = new int[symbol.Length];
-                for ( int i = 0; i < iadj.Length; i++ ) {
-                    if ( VsqPhoneticSymbol.isConsonant( symbol[i] ) ) {
-                        int v = 64;
-                        try {
-                            v = PortUtil.parseInt( adjustment[i] );
-                        } catch ( Exception ex ) {
-                        }
-                        if ( v < 0 ) {
-                            v = 0;
-                        } else if ( 127 < v ) {
-                            v = 127;
-                        }
-                        iadj[i] = v;
-                    } else {
-                        iadj[i] = 0;
-                    }
-                }
+                editing.ID.LyricHandle.L0.setPhoneticSymbol( phonetic_symbol );
+
+                // consonant adjustment
+                String[] spl = PortUtil.splitString( phonetic_symbol, new char[] { ' ', ',' }, true );
                 String consonant_adjustment = "";
-                for ( int i = 0; i < iadj.Length; i++ ) {
-                    consonant_adjustment += (i == 0 ? "" : " ") + iadj[i];
+                for ( int i = 0; i < spl.Length; i++ ) {
+                    consonant_adjustment += (i == 0 ? "" : " ") + (VsqPhoneticSymbol.isConsonant( spl[i] ) ? 64 : 0);
                 }
                 editing.ID.LyricHandle.L0.setConsonantAdjustment( consonant_adjustment );
+
+                // overlap, preUtterancec
+                VsqFileEx vsq = AppManager.getVsqFile();
+                if ( vsq != null ) {
+                    int selected = AppManager.getSelected();
+                    VsqTrack vsq_track = vsq.Track.get( selected );
+                    VsqEvent singer = vsq_track.getSingerEventAt( editing.Clock );
+                    SingerConfig sc = AppManager.getSingerInfoUtau( singer.ID.IconHandle.Language, singer.ID.IconHandle.Program );
+                    if ( sc != null && AppManager.mUtauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
+                        UtauVoiceDB db = AppManager.mUtauVoiceDB.get( sc.VOICEIDSTR );
+                        OtoArgs oa = db.attachFileNameFromLyric( phrase );
+                        if ( editing.UstEvent == null ) {
+                            editing.UstEvent = new UstEvent();
+                        }
+                        editing.UstEvent.VoiceOverlap = oa.msOverlap;
+                        editing.UstEvent.PreUtterance = oa.msPreUtterance;
+                    }
+                }
             }
         }
 
+        public String getPhrase()
+        {
+            if ( editing.ID.LyricHandle != null && editing.ID.LyricHandle.L0 != null ) {
+                return editing.ID.LyricHandle.L0.Phrase;
+            }
+            return "";
+        }
+
+#if !JAVA
         [Category( "Lyric" )]
-        public BooleanEnum Protect {
-            get {
-                return m_symbol_protected;
+        public String PhoneticSymbol
+        {
+            get
+            {
+                return getPhoneticSymbol();
             }
-            set {
-                m_symbol_protected = value;
-                if ( editing.ID.LyricHandle == null ) {
-                    return;
-                }
-                if ( editing.ID.LyricHandle.L0 == null ) {
-                    return;
-                }
-                editing.ID.LyricHandle.L0.PhoneticSymbolProtected = (value == BooleanEnum.On) ? true : false;
+            set
+            {
+                setPhoneticSymbol( value );
             }
+        }
+#endif
+
+        public void setPhoneticSymbol( String value )
+        {
+            if ( editing.ID.LyricHandle == null ) {
+                return;
+            }
+            if ( editing.ID.LyricHandle.L0 == null ) {
+                return;
+            }
+            editing.ID.LyricHandle.L0.setPhoneticSymbol( value );
+        }
+
+        public String getPhoneticSymbol()
+        {
+            if ( editing.ID.LyricHandle != null && editing.ID.LyricHandle.L0 != null ) {
+                return editing.ID.LyricHandle.L0.getPhoneticSymbol();
+            }
+            return "";
+        }
+
+#if !JAVA
+        [Category( "Lyric" )]
+        public String CosonantAdjustment
+        {
+            get
+            {
+                return getCosonantAdjustment();
+            }
+            set
+            {
+                setCosonantAdjustment( value );
+            }
+        }
+#endif
+
+        public void setCosonantAdjustment( String value )
+        {
+            if ( editing.ID.LyricHandle == null ) {
+                return;
+            }
+            if ( editing.ID.LyricHandle.L0 == null ) {
+                return;
+            }
+            String[] symbol = PortUtil.splitString( editing.ID.LyricHandle.L0.getPhoneticSymbol(), new char[] { ' ' }, true );
+            String[] adjustment = PortUtil.splitString( value, new char[] { ' ', ',' }, true );
+            if ( adjustment.Length < symbol.Length ) {
+#if JAVA
+                adjustment = new String[symbol.length];
+#else
+                Array.Resize( ref adjustment, symbol.Length );
+#endif
+            }
+            int[] iadj = new int[symbol.Length];
+            for ( int i = 0; i < iadj.Length; i++ ) {
+                if ( VsqPhoneticSymbol.isConsonant( symbol[i] ) ) {
+                    int v = 64;
+                    try {
+                        v = PortUtil.parseInt( adjustment[i] );
+                    } catch ( Exception ex ) {
+                    }
+                    if ( v < 0 ) {
+                        v = 0;
+                    } else if ( 127 < v ) {
+                        v = 127;
+                    }
+                    iadj[i] = v;
+                } else {
+                    iadj[i] = 0;
+                }
+            }
+            String consonant_adjustment = "";
+            for ( int i = 0; i < iadj.Length; i++ ) {
+                consonant_adjustment += (i == 0 ? "" : " ") + iadj[i];
+            }
+            editing.ID.LyricHandle.L0.setConsonantAdjustment( consonant_adjustment );
+        }
+
+        public String getCosonantAdjustment()
+        {
+            if ( editing.ID.LyricHandle != null && editing.ID.LyricHandle.L0 != null ) {
+                return editing.ID.LyricHandle.L0.getConsonantAdjustment();
+            }
+            return "";
+        }
+
+#if !JAVA
+        [Category( "Lyric" )]
+        public BooleanEnum Protect
+        {
+            get
+            {
+                return getProtect();
+            }
+            set
+            {
+                setProtect( value );
+            }
+        }
+#endif
+
+        public void setProtect( BooleanEnum value )
+        {
+            m_symbol_protected = value;
+            if ( editing.ID.LyricHandle == null ) {
+                return;
+            }
+            if ( editing.ID.LyricHandle.L0 == null ) {
+                return;
+            }
+            editing.ID.LyricHandle.L0.PhoneticSymbolProtected = (value == BooleanEnum.On) ? true : false;
+        }
+
+        public BooleanEnum getProtect()
+        {
+            return m_symbol_protected;
         }
         #endregion
 
         #region Note Location
+#if !JAVA
         [Category( "Note Location" )]
-        public String Clock {
-            get {
-                return m_clock;
+        public String Clock
+        {
+            get
+            {
+                return getClock();
             }
-            set {
-                int oldvalue = editing.Clock;
-                int draft = evalReceivedString( oldvalue, value );
-                editing.Clock = draft;
-                m_clock = draft + "";
+            set
+            {
+                setClock( value );
             }
         }
+#endif
 
-        [Category( "Note Location" )]
-        public String Measure {
-            get {
-                return m_measure;
-            }
-            set {
-                int measure, beat, tick;
-                Timesig timesig = getPosition( out measure, out beat, out tick );
-                int draft = evalReceivedString( measure, value );
-                int clock = calculateClock( draft, beat, tick );
-                editing.Clock = clock;
-                m_clock = clock + "";
-            }
+        public void setClock( String value )
+        {
+            int oldvalue = editing.Clock;
+            int draft = evalReceivedString( oldvalue, value );
+            editing.Clock = draft;
+            m_clock = draft + "";
         }
 
-        [Category( "Note Location" )]
-        public String Beat {
-            get {
-                return m_beat;
-            }
-            set {
-                int measure, beat, tick;
-                Timesig timesig = getPosition( out measure, out beat, out tick );
-                int draft = evalReceivedString( beat, value );
-                int clock = calculateClock( measure, draft, tick );
-                editing.Clock = clock;
-                m_clock = clock + "";
-            }
+        public String getClock()
+        {
+            return m_clock;
         }
 
+#if !JAVA
         [Category( "Note Location" )]
-        public String Tick {
-            get {
-                return m_tick;
+        public String Measure
+        {
+            get
+            {
+                return getMeasure();
             }
-            set {
-                int measure, beat, tick;
-                Timesig timesig = getPosition( out measure, out beat, out tick );
-                int draft = evalReceivedString( tick, value );
-                int clock = calculateClock( measure, beat, draft );
-                editing.Clock = clock;
-                m_clock = clock + "";
+            set
+            {
+                setMeasure( value );
             }
+        }
+#endif
+
+        public void setMeasure( String value )
+        {
+            PositionSpec ret = getPosition();
+            int draft = evalReceivedString( ret.measure, value );
+            int clock = calculateClock( draft, ret.beat, ret.gate );
+            editing.Clock = clock;
+            m_clock = clock + "";
+        }
+
+        public String getMeasure()
+        {
+            return m_measure;
+        }
+
+#if !JAVA
+        [Category( "Note Location" )]
+        public String Beat
+        {
+            get
+            {
+                return getBeat();
+            }
+            set
+            {
+                setBeat( value );
+            }
+        }
+#endif
+
+        public void setBeat( String value )
+        {
+            PositionSpec ret = getPosition();
+            int draft = evalReceivedString( ret.beat, value );
+            int clock = calculateClock( ret.measure, draft, ret.gate );
+            editing.Clock = clock;
+            m_clock = clock + "";
+        }
+
+        public String getBeat()
+        {
+            return m_beat;
+        }
+
+#if !JAVA
+        [Category( "Note Location" )]
+        public String Tick
+        {
+            get
+            {
+                return getTick();
+            }
+            set
+            {
+                setTick( value );
+            }
+        }
+#endif
+
+        public void setTick( String value )
+        {
+            PositionSpec ret = getPosition();
+            int draft = evalReceivedString( ret.gate, value );
+            int clock = calculateClock( ret.measure, ret.beat, draft );
+            editing.Clock = clock;
+            m_clock = clock + "";
+        }
+
+        public String getTick()
+        {
+            return m_tick;
         }
         #endregion
 
         #region Note
+#if !JAVA
         [Category( "Note" )]
-        public String Length {
-            get {
-                return m_length;
+        public String Length
+        {
+            get
+            {
+                return getLength();
             }
-            set {
-                int oldvalue = editing.ID.getLength();
-                int draft = evalReceivedString( oldvalue, value );
-                if ( draft < 0 ) {
-                    draft = 0;
-                } else {
-                    VsqFileEx vsq = AppManager.getVsqFile();
-                    if ( vsq != null ) {
-                        int maxlength = vsq.getMaximumNoteLengthAt( editing.Clock );
-                        if ( maxlength < draft ) {
-                            draft = maxlength;
-                        }
-                    }
-                }
-
-                // ビブラートの長さを調節
-                Utility.editLengthOfVsqEvent( editing, draft, AppManager.vibratoLengthEditingRule );
+            set
+            {
+                setLength( value );
             }
         }
+#endif
 
-        [Category( "Note" )]
-        public NoteNumberProperty Note {
-            get {
-                return m_note;
-            }
-            set {
-                if ( value.noteNumber < 0 ) {
-                    m_note.noteNumber = 0;
-                } else if ( 127 < value.noteNumber ) {
-                    m_note.noteNumber = 127;
-                } else {
-                    m_note = value;
+        public void setLength( String value )
+        {
+            int oldvalue = editing.ID.getLength();
+            int draft = evalReceivedString( oldvalue, value );
+            if ( draft < 0 ) {
+                draft = 0;
+            } else {
+                VsqFileEx vsq = AppManager.getVsqFile();
+                if ( vsq != null ) {
+                    int maxlength = vsq.getMaximumNoteLengthAt( editing.Clock );
+                    if ( maxlength < draft ) {
+                        draft = maxlength;
+                    }
                 }
-                editing.ID.Note = m_note.noteNumber;
             }
+
+            // ビブラートの長さを調節
+            Utility.editLengthOfVsqEvent( editing, draft, AppManager.vibratoLengthEditingRule );
+        }
+
+        public String getLength()
+        {
+            return m_length;
+        }
+
+#if !JAVA
+        [Category( "Note" )]
+        public NoteNumberProperty Note
+        {
+            get
+            {
+                return getNote();
+            }
+            set
+            {
+                setNote( value );
+            }
+        }
+#endif
+
+        public void setNote( NoteNumberProperty value )
+        {
+            if ( value.noteNumber < 0 ) {
+                m_note.noteNumber = 0;
+            } else if ( 127 < value.noteNumber ) {
+                m_note.noteNumber = 127;
+            } else {
+                m_note = value;
+            }
+            editing.ID.Note = m_note.noteNumber;
+        }
+
+        public NoteNumberProperty getNote()
+        {
+            return m_note;
         }
         #endregion
 
         #region UTAU
+#if !JAVA
         [Category( "UTAU" )]
-        public float PreUtterance {
-            get {
-                if ( editing.UstEvent == null ) {
-                    return 0;
-                }
-                return editing.UstEvent.PreUtterance;
+        public float PreUtterance
+        {
+            get
+            {
+                return getPreUtterance();
             }
-            set {
-                if ( editing.UstEvent == null ) {
-                    editing.UstEvent = new UstEvent();
-                }
-                editing.UstEvent.PreUtterance = value;
+            set
+            {
+                setPreUtterance( value );
             }
         }
+#endif
 
-        [Category( "UTAU" )]
-        public float Overlap {
-            get {
-                if ( editing.UstEvent == null ) {
-                    return 0;
-                }
-                return editing.UstEvent.VoiceOverlap;
+        public void setPreUtterance( float value )
+        {
+            if ( editing.UstEvent == null ) {
+                editing.UstEvent = new UstEvent();
             }
-            set {
-                if ( editing.UstEvent == null ) {
-                    editing.UstEvent = new UstEvent();
-                }
-                editing.UstEvent.VoiceOverlap = value;
-            }
+            editing.UstEvent.PreUtterance = value;
         }
 
-        [Category( "UTAU" )]
-        public int Moduration {
-            get {
-                if ( editing.UstEvent == null ) {
-                    editing.UstEvent = new UstEvent();
-                }
-                return editing.UstEvent.Moduration;
+        public float getPreUtterance()
+        {
+            if ( editing.UstEvent == null ) {
+                return 0;
             }
-            set {
-                if ( editing.UstEvent == null ) {
-                    editing.UstEvent = new UstEvent();
-                }
-                editing.UstEvent.Moduration = value;
-            }
+            return editing.UstEvent.PreUtterance;
         }
 
+#if !JAVA
         [Category( "UTAU" )]
-        public String Flags {
-            get {
-                if ( editing.UstEvent == null ) {
-                    return "";
-                }
-                return editing.UstEvent.Flags;
+        public float Overlap
+        {
+            get
+            {
+                return getOverlap();
             }
-            set {
-                if ( editing.UstEvent == null ) {
-                    editing.UstEvent = new UstEvent();
-                }
-                editing.UstEvent.Flags = value;
+            set
+            {
+                setOverlap( value );
             }
+        }
+#endif
+
+        public void setOverlap( float value )
+        {
+            if ( editing.UstEvent == null ) {
+                editing.UstEvent = new UstEvent();
+            }
+            editing.UstEvent.VoiceOverlap = value;
+        }
+
+        public float getOverlap()
+        {
+            if ( editing.UstEvent == null ) {
+                return 0;
+            }
+            return editing.UstEvent.VoiceOverlap;
+        }
+
+#if !JAVA
+        [Category( "UTAU" )]
+        public int Moduration
+        {
+            get
+            {
+                return getModuration();
+            }
+            set
+            {
+                setModuration( value );
+            }
+        }
+#endif
+
+        public void setModuration( int value )
+        {
+            if ( editing.UstEvent == null ) {
+                editing.UstEvent = new UstEvent();
+            }
+            editing.UstEvent.Moduration = value;
+        }
+
+        public int getModuration()
+        {
+            if ( editing.UstEvent == null ) {
+                editing.UstEvent = new UstEvent();
+            }
+            return editing.UstEvent.Moduration;
+        }
+
+#if !JAVA
+        [Category( "UTAU" )]
+        public String Flags
+        {
+            get
+            {
+                return getFlags();
+            }
+            set
+            {
+                setFlags( value );
+            }
+        }
+#endif
+
+        public void setFlags( String value )
+        {
+            if ( editing.UstEvent == null ) {
+                editing.UstEvent = new UstEvent();
+            }
+            editing.UstEvent.Flags = value;
+        }
+
+        public String getFlags()
+        {
+            if ( editing.UstEvent == null ) {
+                return "";
+            }
+            return editing.UstEvent.Flags;
         }
         #endregion
 
         #region VOCALOID2
+#if !JAVA
         [Category( "VOCALOID2" )]
-        public int Accent {
-            get {
-                return editing.ID.DEMaccent;
+        public int Accent
+        {
+            get
+            {
+                return getAccent();
             }
-            set {
-                int draft = value;
-                if ( value < 0 ) {
-                    draft = 0;
-                } else if ( 100 < value ) {
-                    draft = 100;
-                }
-                editing.ID.DEMaccent = draft;
+            set
+            {
+                setAccent( value );
             }
         }
+#endif
 
-        [Category( "VOCALOID2" )]
-        public int Decay {
-            get {
-                return editing.ID.DEMdecGainRate;
+        public void setAccent( int value )
+        {
+            int draft = value;
+            if ( value < 0 ) {
+                draft = 0;
+            } else if ( 100 < value ) {
+                draft = 100;
             }
-            set {
-                int draft = value;
-                if ( value < 0 ) {
-                    draft = 0;
-                } else if ( 100 < value ) {
-                    draft = 100;
-                }
-                editing.ID.DEMdecGainRate = draft;
-            }
+            editing.ID.DEMaccent = draft;
         }
 
-        [Category( "VOCALOID2" )]
-        public BooleanEnum UpPortamento {
-            get {
-                return m_portamento_up;
-            }
-            set {
-                m_portamento_up = value;
-                editing.ID.PMbPortamentoUse = (m_portamento_up == BooleanEnum.On ? 1 : 0) + (m_portamento_down == BooleanEnum.On ? 2 : 0);
-            }
+        public int getAccent()
+        {
+            return editing.ID.DEMaccent;
         }
 
+#if !JAVA
         [Category( "VOCALOID2" )]
-        public BooleanEnum DownPortamento {
-            get {
-                return m_portamento_down;
+        public int Decay
+        {
+            get
+            {
+                return getDecay();
             }
-            set {
-                m_portamento_down = value;
-                editing.ID.PMbPortamentoUse = (m_portamento_up == BooleanEnum.On ? 1 : 0) + (m_portamento_down == BooleanEnum.On ? 2 : 0);
+            set
+            {
+                setDecay( value );
             }
         }
+#endif
 
-        [Category( "VOCALOID2" )]
-        public int BendDepth {
-            get {
-                return editing.ID.PMBendDepth;
+        public void setDecay( int value )
+        {
+            int draft = value;
+            if ( value < 0 ) {
+                draft = 0;
+            } else if ( 100 < value ) {
+                draft = 100;
             }
-            set {
-                int draft = value;
-                if ( value < 0 ) {
-                    draft = 0;
-                } else if ( 100 < value ) {
-                    draft = 100;
-                }
-                editing.ID.PMBendDepth = draft;
-            }
+            editing.ID.DEMdecGainRate = draft;
         }
 
-        [Category( "VOCALOID2" )]
-        public int BendLength {
-            get {
-                return editing.ID.PMBendLength;
-            }
-            set {
-                int draft = value;
-                if ( value < 0 ) {
-                    draft = 0;
-                } else if ( 100 < value ) {
-                    draft = 100;
-                }
-                editing.ID.PMBendLength = draft;
-            }
+        public int getDecay()
+        {
+            return editing.ID.DEMdecGainRate;
         }
 
+#if !JAVA
         [Category( "VOCALOID2" )]
-        public int Velocity {
-            get {
-                return editing.ID.Dynamics;
+        public BooleanEnum UpPortamento
+        {
+            get
+            {
+                return getUpPortamento();
             }
-            set {
-                int draft = value;
-                if ( value < 0 ) {
-                    draft = 0;
-                } else if ( 127 < value ) {
-                    draft = 127;
-                }
-                editing.ID.Dynamics = draft;
+            set
+            {
+                setUpPortamento( value );
             }
         }
+#endif
 
-        [Category( "VOCALOID2" )]
-        public int pMeanOnsetFirstNote {
-            get {
-                return editing.ID.pMeanOnsetFirstNote;
-            }
-            set {
-                int draft = value;
-                if ( value < 0 ) {
-                    draft = 0;
-                } else if ( 0x32 < value ) {
-                    draft = 0x32;
-                }
-                editing.ID.pMeanOnsetFirstNote = draft;
-            }
+        public void setUpPortamento( BooleanEnum value )
+        {
+            m_portamento_up = value;
+            editing.ID.PMbPortamentoUse = (m_portamento_up == BooleanEnum.On ? 1 : 0) + (m_portamento_down == BooleanEnum.On ? 2 : 0);
         }
 
-        [Category( "VOCALOID2" )]
-        public int vMeanNoteTransition {
-            get {
-                return editing.ID.vMeanNoteTransition;
-            }
-            set {
-                int draft = value;
-                if ( value < 0x05 ) {
-                    draft = 0x05;
-                } else if ( 0x1e < value ) {
-                    draft = 0x1e;
-                }
-                editing.ID.vMeanNoteTransition = draft;
-            }
+        public BooleanEnum getUpPortamento()
+        {
+            return m_portamento_up;
         }
 
+#if !JAVA
         [Category( "VOCALOID2" )]
-        public int d4mean {
-            get {
-                return editing.ID.d4mean;
+        public BooleanEnum DownPortamento
+        {
+            get
+            {
+                return getDownPortamento();
             }
-            set {
-                int draft = value;
-                if ( value < 0x0a ) {
-                    draft = 0x0a;
-                } else if ( 0x3c < value ) {
-                    draft = 0x3c;
-                }
-                editing.ID.d4mean = draft;
+            set
+            {
+                setDownPortamento( value );
             }
         }
+#endif
 
+        public void setDownPortamento( BooleanEnum value )
+        {
+            m_portamento_down = value;
+            editing.ID.PMbPortamentoUse = (m_portamento_up == BooleanEnum.On ? 1 : 0) + (m_portamento_down == BooleanEnum.On ? 2 : 0);
+        }
+
+        public BooleanEnum getDownPortamento()
+        {
+            return m_portamento_down;
+        }
+
+#if !JAVA
         [Category( "VOCALOID2" )]
-        public int pMeanEndingNote {
-            get {
-                return editing.ID.pMeanEndingNote;
+        public int BendDepth
+        {
+            get
+            {
+                return getBendDepth();
             }
-            set {
-                int draft = value;
-                if ( value < 0x05 ) {
-                    draft = 0x05;
-                } else if ( 0x1e < value ) {
-                    draft = 0x1e;
-                }
-                editing.ID.pMeanEndingNote = draft;
+            set
+            {
+                setBendDepth( value );
             }
+        }
+#endif
+
+        public void setBendDepth( int value )
+        {
+            int draft = value;
+            if ( value < 0 ) {
+                draft = 0;
+            } else if ( 100 < value ) {
+                draft = 100;
+            }
+            editing.ID.PMBendDepth = draft;
+        }
+
+        public int getBendDepth()
+        {
+            return editing.ID.PMBendDepth;
+        }
+
+#if !JAVA
+        [Category( "VOCALOID2" )]
+        public int BendLength
+        {
+            get
+            {
+                return getBendLength();
+            }
+            set
+            {
+                setBendLength( value );
+            }
+        }
+#endif
+
+        public void setBendLength( int value )
+        {
+            int draft = value;
+            if ( value < 0 ) {
+                draft = 0;
+            } else if ( 100 < value ) {
+                draft = 100;
+            }
+            editing.ID.PMBendLength = draft;
+        }
+
+        public int getBendLength()
+        {
+            return editing.ID.PMBendLength;
+        }
+
+#if !JAVA
+        [Category( "VOCALOID2" )]
+        public int Velocity
+        {
+            get
+            {
+                return getVelocity();
+            }
+            set
+            {
+                setVelocity( value );
+            }
+        }
+#endif
+
+        public void setVelocity( int value )
+        {
+            int draft = value;
+            if ( value < 0 ) {
+                draft = 0;
+            } else if ( 127 < value ) {
+                draft = 127;
+            }
+            editing.ID.Dynamics = draft;
+        }
+
+        public int getVelocity()
+        {
+            return editing.ID.Dynamics;
+        }
+
+#if !JAVA
+        [Category( "VOCALOID2" )]
+        public int pMeanOnsetFirstNote
+        {
+            get
+            {
+                return getpMeanOnsetFirstNote();
+            }
+            set
+            {
+                setpMeanOnsetFirstNote( value );
+            }
+        }
+#endif
+
+        public void setpMeanOnsetFirstNote( int value )
+        {
+            int draft = value;
+            if ( value < 0 ) {
+                draft = 0;
+            } else if ( 0x32 < value ) {
+                draft = 0x32;
+            }
+            editing.ID.pMeanOnsetFirstNote = draft;
+        }
+
+        public int getpMeanOnsetFirstNote()
+        {
+            return editing.ID.pMeanOnsetFirstNote;
+        }
+
+#if !JAVA
+        [Category( "VOCALOID2" )]
+        public int vMeanNoteTransition
+        {
+            get
+            {
+                return getvMeanNoteTransition();
+            }
+            set
+            {
+                setvMeanNoteTransition( value );
+            }
+        }
+#endif
+
+        public void setvMeanNoteTransition( int value )
+        {
+            int draft = value;
+            if ( value < 0x05 ) {
+                draft = 0x05;
+            } else if ( 0x1e < value ) {
+                draft = 0x1e;
+            }
+            editing.ID.vMeanNoteTransition = draft;
+        }
+
+        public int getvMeanNoteTransition()
+        {
+            return editing.ID.vMeanNoteTransition;
+        }
+
+#if !JAVA
+        [Category( "VOCALOID2" )]
+        public int d4mean
+        {
+            get
+            {
+                return getd4mean();
+            }
+            set
+            {
+                setd4mean( value );
+            }
+        }
+#endif
+
+        public void setd4mean( int value )
+        {
+            int draft = value;
+            if ( value < 0x0a ) {
+                draft = 0x0a;
+            } else if ( 0x3c < value ) {
+                draft = 0x3c;
+            }
+            editing.ID.d4mean = draft;
+        }
+
+        public int getd4mean()
+        {
+            return editing.ID.d4mean;
+        }
+
+#if !JAVA
+        [Category( "VOCALOID2" )]
+        public int pMeanEndingNote
+        {
+            get
+            {
+                return getpMeanEndingNote();
+            }
+            set
+            {
+                setpMeanEndingNote( value );
+            }
+        }
+#endif
+
+        public void setpMeanEndingNote( int value )
+        {
+            int draft = value;
+            if ( value < 0x05 ) {
+                draft = 0x05;
+            } else if ( 0x1e < value ) {
+                draft = 0x1e;
+            }
+            editing.ID.pMeanEndingNote = draft;
+        }
+
+        public int getpMeanEndingNote()
+        {
+            return editing.ID.pMeanEndingNote;
         }
         #endregion
 
         #region VOCALOID1
+#if !JAVA
         [TypeConverter( typeof( AttackVariationConverter ) ), Category( "VOCALOID1" )]
-        public AttackVariation Attack {
-            get {
-                return m_attack;
+        public AttackVariation Attack
+        {
+            get
+            {
+                return getAttack();
             }
-            set {
-                m_attack = value;
-                VsqFileEx vsq = AppManager.getVsqFile();
-                if ( vsq != null ) {
-                    SynthesizerType type = SynthesizerType.VOCALOID2;
-                    RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
-                    if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
-                        type = SynthesizerType.VOCALOID1;
-                    }
+            set
+            {
+                setAttack( value );
+            }
+        }
+#endif
 
-                    if ( m_attack.mDescription.Equals( new AttackVariation().mDescription ) ) {
-                        editing.ID.NoteHeadHandle = null;
-                    } else {
-                        String description = m_attack.mDescription;
-                        int last_depth = 0;
-                        int last_duration = 0;
-                        if ( editing.ID.NoteHeadHandle != null ) {
-                            last_depth = editing.ID.NoteHeadHandle.getDepth();
-                            last_duration = editing.ID.NoteHeadHandle.getDuration();
-                        }
-                        for ( Iterator<NoteHeadHandle> itr = VocaloSysUtil.attackConfigIterator( type ); itr.hasNext(); ) {
-                            NoteHeadHandle aconfig = itr.next();
-                            if ( description.Equals( aconfig.getDisplayString() ) ) {
-                                editing.ID.NoteHeadHandle = (NoteHeadHandle)aconfig.clone();
-                                editing.ID.NoteHeadHandle.setDepth( last_depth );
-                                editing.ID.NoteHeadHandle.setDuration( last_duration );
-                                break;
-                            }
+        public void setAttack( AttackVariation value )
+        {
+            m_attack = value;
+            VsqFileEx vsq = AppManager.getVsqFile();
+            if ( vsq != null ) {
+                SynthesizerType type = SynthesizerType.VOCALOID2;
+                RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
+                if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
+                    type = SynthesizerType.VOCALOID1;
+                }
+
+                if ( m_attack.mDescription.Equals( new AttackVariation().mDescription ) ) {
+                    editing.ID.NoteHeadHandle = null;
+                } else {
+                    String description = m_attack.mDescription;
+                    int last_depth = 0;
+                    int last_duration = 0;
+                    if ( editing.ID.NoteHeadHandle != null ) {
+                        last_depth = editing.ID.NoteHeadHandle.getDepth();
+                        last_duration = editing.ID.NoteHeadHandle.getDuration();
+                    }
+                    for ( Iterator<NoteHeadHandle> itr = VocaloSysUtil.attackConfigIterator( type ); itr.hasNext(); ) {
+                        NoteHeadHandle aconfig = itr.next();
+                        if ( description.Equals( aconfig.getDisplayString() ) ) {
+                            editing.ID.NoteHeadHandle = (NoteHeadHandle)aconfig.clone();
+                            editing.ID.NoteHeadHandle.setDepth( last_depth );
+                            editing.ID.NoteHeadHandle.setDuration( last_duration );
+                            break;
                         }
                     }
                 }
             }
         }
 
-        [Category( "VOCALOID1" )]
-        public int AttackDepth {
-            get {
-                if ( editing.ID.NoteHeadHandle == null ) {
-                    return 0;
-                }
-                return editing.ID.NoteHeadHandle.getDepth();
-            }
-            set {
-                if ( editing.ID.NoteHeadHandle == null ) {
-                    return;
-                }
-                int draft = value;
-                if ( draft < 0 ) {
-                    draft = 0;
-                } else if ( 127 < draft ) {
-                    draft = 127;
-                }
-                editing.ID.NoteHeadHandle.setDepth( draft );
-            }
+        public AttackVariation getAttack()
+        {
+            return m_attack;
         }
 
+#if !JAVA
         [Category( "VOCALOID1" )]
-        public int AttackDuration {
-            get {
-                if ( editing.ID.NoteHeadHandle == null ) {
-                    return 0;
-                }
-                return editing.ID.NoteHeadHandle.getDuration();
+        public int AttackDepth
+        {
+            get
+            {
+                return getAttackDepth();
             }
-            set {
-                if ( editing.ID.NoteHeadHandle == null ) {
-                    return;
-                }
-                int draft = value;
-                if ( draft < 0 ) {
-                    draft = 0;
-                } else if ( 127 < draft ) {
-                    draft = 127;
-                }
-                editing.ID.NoteHeadHandle.setDuration( draft );
+            set
+            {
+                setAttackDepth( value );
             }
+        }
+#endif
+
+        public void setAttackDepth( int value )
+        {
+            if ( editing.ID.NoteHeadHandle == null ) {
+                return;
+            }
+            int draft = value;
+            if ( draft < 0 ) {
+                draft = 0;
+            } else if ( 127 < draft ) {
+                draft = 127;
+            }
+            editing.ID.NoteHeadHandle.setDepth( draft );
+        }
+
+        public int getAttackDepth()
+        {
+            if ( editing.ID.NoteHeadHandle == null ) {
+                return 0;
+            }
+            return editing.ID.NoteHeadHandle.getDepth();
+        }
+
+#if !JAVA
+        [Category( "VOCALOID1" )]
+        public int AttackDuration
+        {
+            get
+            {
+                return getAttackDuration();
+            }
+            set
+            {
+                setAttackDuration( value );
+            }
+        }
+#endif
+
+        public void setAttackDuration( int value )
+        {
+            if ( editing.ID.NoteHeadHandle == null ) {
+                return;
+            }
+            int draft = value;
+            if ( draft < 0 ) {
+                draft = 0;
+            } else if ( 127 < draft ) {
+                draft = 127;
+            }
+            editing.ID.NoteHeadHandle.setDuration( draft );
+        }
+
+        public int getAttackDuration()
+        {
+            if ( editing.ID.NoteHeadHandle == null ) {
+                return 0;
+            }
+            return editing.ID.NoteHeadHandle.getDuration();
         }
         #endregion
 
         #region Vibrato
+#if !JAVA
         [Category( "Vibrato" )]
-        public VibratoVariation Vibrato {
-            get {
-                return m_vibrato;
+        public VibratoVariation Vibrato
+        {
+            get
+            {
+                return getVibrato();
             }
-            set {
-                if ( value.description.Equals( VibratoVariation.empty.description ) ) {
-                    editing.ID.VibratoHandle = null;
-                } else {
-                    int last_length = 0;
-                    if ( editing.ID.VibratoHandle != null ) {
-                        last_length = editing.ID.VibratoHandle.getLength();
-                    }
+            set
+            {
+                setVibrato( value );
+            }
+        }
+#endif
 
-                    if ( m_vibrato != null && value != null && !m_vibrato.equals( value ) ) {
-                        String description = value.description;
-                        if ( AppManager.editorConfig.UseUserDefinedAutoVibratoType ) {
-                            int size = AppManager.editorConfig.AutoVibratoCustom.size();
-                            for ( int i = 0; i < size; i++ ) {
-                                VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
-                                String display_string = handle.getDisplayString();
-                                if ( description == display_string ) {
-                                    editing.ID.VibratoHandle = (VibratoHandle)handle.clone();
+        public void setVibrato( VibratoVariation value )
+        {
+            if ( value.description.Equals( VibratoVariation.empty.description ) ) {
+                editing.ID.VibratoHandle = null;
+            } else {
+                int last_length = 0;
+                if ( editing.ID.VibratoHandle != null ) {
+                    last_length = editing.ID.VibratoHandle.getLength();
+                }
+
+                if ( m_vibrato != null && value != null && !m_vibrato.equals( value ) ) {
+                    String description = value.description;
+                    if ( AppManager.editorConfig.UseUserDefinedAutoVibratoType ) {
+                        int size = AppManager.editorConfig.AutoVibratoCustom.size();
+                        for ( int i = 0; i < size; i++ ) {
+                            VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
+                            String display_string = handle.getDisplayString();
+                            if ( description == display_string ) {
+                                editing.ID.VibratoHandle = (VibratoHandle)handle.clone();
+                                break;
+                            }
+                        }
+                    } else {
+                        VsqFileEx vsq = AppManager.getVsqFile();
+                        if ( vsq != null ) {
+                            SynthesizerType type = SynthesizerType.VOCALOID2;
+                            RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
+                            if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
+                                type = SynthesizerType.VOCALOID1;
+                            }
+                            for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
+                                VibratoHandle vconfig = itr.next();
+                                if ( description.Equals( vconfig.getDisplayString() ) ) {
+                                    editing.ID.VibratoHandle = (VibratoHandle)vconfig.clone();
                                     break;
                                 }
                             }
-                        } else {
-                            VsqFileEx vsq = AppManager.getVsqFile();
-                            if ( vsq != null ) {
-                                SynthesizerType type = SynthesizerType.VOCALOID2;
-                                RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
-                                if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
-                                    type = SynthesizerType.VOCALOID1;
-                                }
-                                for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
-                                    VibratoHandle vconfig = itr.next();
-                                    if ( description.Equals( vconfig.getDisplayString() ) ) {
-                                        editing.ID.VibratoHandle = (VibratoHandle)vconfig.clone();
-                                        break;
-                                    }
-                                }
-                            }
                         }
-                    }
-                    if ( editing.ID.VibratoHandle != null ) {
-                        if ( last_length <= 0 ) {
-                            last_length = lastVibratoLength;
-                            if ( last_length <= 0 ) {
-                                last_length = 66;
-                            }
-                        }
-                        editing.ID.VibratoHandle.setLength( last_length );
                     }
                 }
-                m_vibrato = value;
+                if ( editing.ID.VibratoHandle != null ) {
+                    if ( last_length <= 0 ) {
+                        last_length = lastVibratoLength;
+                        if ( last_length <= 0 ) {
+                            last_length = 66;
+                        }
+                    }
+                    editing.ID.VibratoHandle.setLength( last_length );
+                }
+            }
+            m_vibrato = value;
+        }
+
+        public VibratoVariation getVibrato()
+        {
+            return m_vibrato;
+        }
+
+#if !JAVA
+        [Category( "Vibrato" )]
+        public int VibratoLength
+        {
+            get
+            {
+                return getVibratoLength();
+            }
+            set
+            {
+                setVibratoLength( value );
+            }
+        }
+#endif
+
+        public void setVibratoLength( int value )
+        {
+#if DEBUG
+            PortUtil.println( "VsqEventItemProxy#set_VibratoLength; value=" + value );
+#endif
+            if ( value <= 0 ) {
+                m_vibrato = new VibratoVariation( VibratoVariation.empty.description );
+                editing.ID.VibratoHandle = null;
+                editing.ID.VibratoDelay = editing.ID.getLength();
+            } else {
+                int draft = value;
+                if ( 100 < draft ) {
+                    draft = 100;
+                }
+                if ( editing.ID.VibratoHandle == null ) {
+                    VsqFileEx vsq = AppManager.getVsqFile();
+                    if ( vsq != null ) {
+                        String iconid = AppManager.editorConfig.AutoVibratoType2;
+                        SynthesizerType type = SynthesizerType.VOCALOID2;
+                        RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
+                        if ( kind == RendererKind.VOCALOID1_100 ||
+                            kind == RendererKind.VOCALOID1_101 ) {
+                            type = SynthesizerType.VOCALOID1;
+                        }
+                        editing.ID.VibratoHandle = AppManager.editorConfig.createAutoVibrato( type, 480 ); // 480はダミー
+                    }
+                    if ( editing.ID.VibratoHandle == null ) {
+                        editing.ID.VibratoHandle = new VibratoHandle();
+                    }
+                }
+                editing.ID.VibratoHandle.setLength( editing.ID.getLength() * draft / 100 );
+                editing.ID.VibratoDelay = editing.ID.getLength() - editing.ID.VibratoHandle.getLength();
+                lastVibratoLength = editing.ID.VibratoHandle.getLength() * 100 / editing.ID.getLength();
             }
         }
 
-        [Category( "Vibrato" )]
-        public int VibratoLength {
-            get {
-                if ( editing.ID.VibratoHandle == null ) {
-                    return 0;
-                }
-                return editing.ID.VibratoHandle.getLength() * 100 / editing.ID.getLength();
+        public int getVibratoLength()
+        {
+            if ( editing.ID.VibratoHandle == null ) {
+                return 0;
             }
-            set {
-#if DEBUG
-                PortUtil.println( "VsqEventItemProxy#set_VibratoLength; value=" + value );
-#endif
-                if ( value <= 0 ) {
-                    m_vibrato = new VibratoVariation( VibratoVariation.empty.description );
-                    editing.ID.VibratoHandle = null;
-                    editing.ID.VibratoDelay = editing.ID.getLength();
-                } else {
-                    int draft = value;
-                    if ( 100 < draft ) {
-                        draft = 100;
-                    }
-                    if ( editing.ID.VibratoHandle == null ) {
-                        VsqFileEx vsq = AppManager.getVsqFile();
-                        if ( vsq != null ) {
-                            String iconid = AppManager.editorConfig.AutoVibratoType2;
-                            SynthesizerType type = SynthesizerType.VOCALOID2;
-                            RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
-                            if ( kind == RendererKind.VOCALOID1_100 ||
-                                kind == RendererKind.VOCALOID1_101 ) {
-                                type = SynthesizerType.VOCALOID1;
-                            }
-                            editing.ID.VibratoHandle = AppManager.editorConfig.createAutoVibrato( type, 480 ); // 480はダミー
-                        }
-                        if ( editing.ID.VibratoHandle == null ) {
-                            editing.ID.VibratoHandle = new VibratoHandle();
-                        }
-                    }
-                    editing.ID.VibratoHandle.setLength( editing.ID.getLength() * draft / 100 );
-                    editing.ID.VibratoDelay = editing.ID.getLength() - editing.ID.VibratoHandle.getLength();
-                    lastVibratoLength = editing.ID.VibratoHandle.getLength() * 100 / editing.ID.getLength();
-                }
-            }
+            return editing.ID.VibratoHandle.getLength() * 100 / editing.ID.getLength();
         }
         #endregion
 
         #region AquesTone
+#if !JAVA
         [Category( "AquesTone" )]
-        public int Release {
-            get {
-                VsqEvent e = new VsqEvent();
-                e.Tag = editing.Tag;
-                String v = VsqFileEx.getEventTag( e, VsqFileEx.TAG_VSQEVENT_AQUESTONE_RELEASE );
-                int value = 64;
-                if ( !v.Equals( "" ) ) {
-                    try {
-                        value = PortUtil.parseInt( v );
-                    } catch ( Exception ex ) {
-                        PortUtil.stderr.println( "VsqEventItemProxy#get_Release; ex=" + ex );
-                        value = 64;
-                    }
-                }
-                if ( 0 > value ) {
-                    value = 0;
-                } else if ( 127 < value ) {
-                    value = 127;
-                }
-                VsqFileEx.setEventTag( e, VsqFileEx.TAG_VSQEVENT_AQUESTONE_RELEASE, value + "" );
-                editing.Tag = e.Tag;
-                return value;
+        public int Release
+        {
+            get
+            {
+                return getRelease();
             }
-            set {
-                if ( 0 > value ) {
-                    value = 0;
-                } else if ( 127 < value ) {
-                    value = 127;
-                }
-                VsqEvent e = new VsqEvent();
-                e.Tag = editing.Tag;
-                VsqFileEx.setEventTag( e, VsqFileEx.TAG_VSQEVENT_AQUESTONE_RELEASE, value + "" );
-                editing.Tag = e.Tag;
+            set
+            {
+                setRelease( value );
             }
+        }
+#endif
+
+        public void setRelease( int value )
+        {
+            int r = value;
+            if ( 0 > r ) {
+                r = 0;
+            } else if ( 127 < r ) {
+                r = 127;
+            }
+            VsqEvent e = new VsqEvent();
+            e.Tag = editing.Tag;
+            VsqFileEx.setEventTag( e, VsqFileEx.TAG_VSQEVENT_AQUESTONE_RELEASE, r + "" );
+            editing.Tag = e.Tag;
+        }
+
+        public int getRelease()
+        {
+            VsqEvent e = new VsqEvent();
+            e.Tag = editing.Tag;
+            String v = VsqFileEx.getEventTag( e, VsqFileEx.TAG_VSQEVENT_AQUESTONE_RELEASE );
+            int value = 64;
+            if ( !v.Equals( "" ) ) {
+                try {
+                    value = PortUtil.parseInt( v );
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "VsqEventItemProxy#get_Release; ex=" + ex );
+                    value = 64;
+                }
+            }
+            if ( 0 > value ) {
+                value = 0;
+            } else if ( 127 < value ) {
+                value = 127;
+            }
+            VsqFileEx.setEventTag( e, VsqFileEx.TAG_VSQEVENT_AQUESTONE_RELEASE, value + "" );
+            editing.Tag = e.Tag;
+            return value;
         }
         #endregion
 
@@ -949,8 +1456,10 @@ namespace org.kbinani.cadencii {
 
 #if !JAVA
 #if DEBUG
-    public class DEBUG_GatetimePropertyConverter : ExpandableObjectConverter {
-        public override bool CanConvertFrom( ITypeDescriptorContext context, Type sourceType ) {
+    public class DEBUG_GatetimePropertyConverter : ExpandableObjectConverter
+    {
+        public override bool CanConvertFrom( ITypeDescriptorContext context, Type sourceType )
+        {
             if ( sourceType == typeof( String ) ) {
                 return true;
             }
@@ -958,7 +1467,8 @@ namespace org.kbinani.cadencii {
         }
 
         // String -> DEBUG_GatetimeProperty
-        public override Object ConvertFrom( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, Object value ) {
+        public override Object ConvertFrom( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, Object value )
+        {
             if ( value is String ) {
                 String s = (String)value;
                 String[] spl = s.Split( ',' );
@@ -979,7 +1489,8 @@ namespace org.kbinani.cadencii {
             return base.ConvertFrom( context, culture, value );
         }
 
-        public override bool CanConvertTo( ITypeDescriptorContext context, Type destinationType ) {
+        public override bool CanConvertTo( ITypeDescriptorContext context, Type destinationType )
+        {
             if ( destinationType == typeof( DEBUG_GatetimeProperty ) ) {
                 return true;
             }
@@ -987,7 +1498,8 @@ namespace org.kbinani.cadencii {
         }
 
         // DEBUG_GatetimeProperty -> String
-        public override Object ConvertTo( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, Object value, Type destinationType ) {
+        public override Object ConvertTo( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, Object value, Type destinationType )
+        {
             if ( value is DEBUG_GatetimeProperty && destinationType == typeof( String ) ) {
                 DEBUG_GatetimeProperty gp = (DEBUG_GatetimeProperty)value;
                 return gp.Measure + ", " + gp.Beat + ", " + gp.Gate;
@@ -996,38 +1508,48 @@ namespace org.kbinani.cadencii {
         }
     }
 
-    [TypeConverter( typeof( DEBUG_GatetimePropertyConverter) )]
-    public class DEBUG_GatetimeProperty {
+    [TypeConverter( typeof( DEBUG_GatetimePropertyConverter ) )]
+    public class DEBUG_GatetimeProperty
+    {
         String m = "1";
         String b = "2";
         String g = "3";
 
-        [NotifyParentProperty(true), RefreshProperties(RefreshProperties.All)]
-        public String Measure {
-            get {
+        [NotifyParentProperty( true ), RefreshProperties( RefreshProperties.All )]
+        public String Measure
+        {
+            get
+            {
                 return m;
             }
-            set {
+            set
+            {
                 m = value;
             }
         }
 
         [NotifyParentProperty( true ), RefreshProperties( RefreshProperties.All )]
-        public String Beat {
-            get {
+        public String Beat
+        {
+            get
+            {
                 return b;
             }
-            set {
+            set
+            {
                 b = value;
             }
         }
 
         [NotifyParentProperty( true ), RefreshProperties( RefreshProperties.All )]
-        public String Gate {
-            get {
+        public String Gate
+        {
+            get
+            {
                 return g;
             }
-            set {
+            set
+            {
                 g = value;
             }
         }

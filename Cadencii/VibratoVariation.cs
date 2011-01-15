@@ -1,4 +1,4 @@
-#if !JAVA
+#if ENABLE_PROPERTY
 /*
  * VibratoVariation.cs
  * Copyright © 2009-2011 kbinani
@@ -12,27 +12,49 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.cadencii;
+
+import org.kbinani.componentmodel.*;
+#else
 using System;
 using System.ComponentModel;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using boolean = System.Boolean;
+#endif
 
+#if JAVA
+    public class VibratoVariation implements ITypeConverter
+#else
     [TypeConverter( typeof( VibratoVariationConverter ) )]
-    public class VibratoVariation {
+    public class VibratoVariation
+#endif
+    {
         public static readonly VibratoVariation empty = new VibratoVariation();
 
         public String description = "";
 
-        private VibratoVariation() {
+        private VibratoVariation()
+        {
             description = "-";
         }
 
-        public VibratoVariation( String description ) {
+        public VibratoVariation( String description )
+        {
             this.description = description;
         }
 
-        public boolean equals( Object obj ){
+#if JAVA
+        public TypeConverter getTypeConverter()
+        {
+            return new VibratoVariationConverter();
+        }
+#endif
+
+        public boolean equals( Object obj )
+        {
             if ( obj != null && obj is VibratoVariation ) {
                 return ((VibratoVariation)obj).description.Equals( description );
             } else {
@@ -41,13 +63,15 @@ namespace org.kbinani.cadencii {
         }
 
 #if !JAVA
-        public override bool Equals( Object obj ) {
+        public override bool Equals( Object obj )
+        {
             return equals( obj );
         }
 #endif
 
 #if !JAVA
-        public override int GetHashCode() {
+        public override int GetHashCode()
+        {
             if ( description == null ) {
                 return "".GetHashCode();
             } else {
@@ -56,16 +80,21 @@ namespace org.kbinani.cadencii {
         }
 #endif
 
-        public Object clone() {
+        public Object clone()
+        {
             return new VibratoVariation( this.description );
         }
 
 #if !JAVA
-        public Object Clone() {
+        public Object Clone()
+        {
             return clone();
         }
 #endif
 
     }
+
+#if !JAVA
 }
+#endif
 #endif

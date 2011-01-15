@@ -1,4 +1,5 @@
 #if ENABLE_PROPERTY
+#if !JAVA
 /*
  * SelectedEventEntryTypeConverter.cs
  * Copyright © 2010-2011 kbinani
@@ -39,4 +40,5 @@ namespace org.kbinani.cadencii {
     }
 
 }
+#endif
 #endif

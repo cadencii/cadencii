@@ -1,4 +1,4 @@
-#if !JAVA
+#if ENABLE_PROPERTY
 /*
  * PropertyPanelContainer.cs
  * Copyright © 2009-2011 kbinani
@@ -12,51 +12,89 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.cadencii;
+
+//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/PropertyPanelContainer.java
+import java.awt.*;
+import org.kbinani.*;
+import org.kbinani.windows.forms.*;
+#else
+
 using System;
 using System.Windows.Forms;
+using org.kbinani.java.awt;
+using org.kbinani.windows.forms;
 
 namespace org.kbinani.cadencii
 {
+    using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
     using BEventHandler = System.EventHandler;
+    using BMouseEventHandler = System.Windows.Forms.MouseEventHandler;
     using boolean = System.Boolean;
+#endif
 
+#if JAVA
+    public class PropertyPanelContainer extends BPanel
+#else
     public class PropertyPanelContainer : UserControl
+#endif
     {
         public const int _TITLE_HEIGHT = 29;
+#if JAVA
+        public BEvent<StateChangeRequiredEventHandler> stateChangeRequiredEvent = new BEvent<StateChangeRequiredEventHandler>();
+#else
         public event StateChangeRequiredEventHandler StateChangeRequired;
+#endif
 
         public PropertyPanelContainer()
         {
+#if JAVA
+            super();
+            initialize();
+#else
             InitializeComponent();
+#endif
             registerEventHandlers();
             setResources();
         }
 
-        public void Add( Control c )
+#if !JAVA
+        public void addComponent( Control c )
         {
             panelMain.Controls.Add( c );
             c.Dock = DockStyle.Fill;
         }
+#endif
 
-        private void panelTitle_MouseDoubleClick( Object sender, MouseEventArgs e )
+        private void panelTitle_MouseDoubleClick( Object sender, BMouseEventArgs e )
         {
-            if ( StateChangeRequired != null ) {
-                StateChangeRequired( this, PanelState.Window );
-            }
+            invokeStateChangeRequiredEvent( PanelState.Window );
         }
 
         private void btnClose_Click( Object sender, EventArgs e )
         {
-            if ( StateChangeRequired != null ) {
-                StateChangeRequired( this, PanelState.Hidden );
-            }
+            invokeStateChangeRequiredEvent( PanelState.Hidden );
         }
 
         private void btnWindow_Click( Object sender, EventArgs e )
         {
-            if ( StateChangeRequired != null ) {
-                StateChangeRequired( this, PanelState.Window );
+            invokeStateChangeRequiredEvent( PanelState.Window );
+        }
+
+        private void invokeStateChangeRequiredEvent( PanelState state )
+        {
+#if JAVA
+            try{
+                stateChangeRequiredEvent.raise( this, state );
+            }catch( Exception ex ){
+                PortUtil.stderr.println( "PropertyPanelContainer#invokeStateChangeRequiredEvent; ex=" + ex );
             }
+#else
+            if ( StateChangeRequired != null ) {
+                StateChangeRequired( this, state );
+            }
+#endif
         }
 
         private void panelMain_SizeChanged( Object sender, EventArgs e )
@@ -77,18 +115,22 @@ namespace org.kbinani.cadencii
             this.panelMain.SizeChanged += new BEventHandler( this.panelMain_SizeChanged );
             this.btnClose.Click += new BEventHandler( this.btnClose_Click );
             this.btnWindow.Click += new BEventHandler( this.btnWindow_Click );
-            this.panelTitle.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler( this.panelTitle_MouseDoubleClick );
+            this.panelTitle.MouseDoubleClick += new BMouseEventHandler( this.panelTitle_MouseDoubleClick );
         }
 
         private void setResources()
         {
-            this.btnClose.Image = Resources.get_cross_small().image;
-            this.btnWindow.Image = Resources.get_chevron_small_collapse().image;
+            this.btnClose.setIcon( new ImageIcon( Resources.get_cross_small() ) );
+            this.btnWindow.setIcon( new ImageIcon( Resources.get_chevron_small_collapse() ) );
         }
 
 #if JAVA
+        #region ui impl for Java
+        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/cadencii/PropertyPanelContainer.java
+        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/cadencii/PropertyPanelContainer.java
+        #endregion
 #else
-        #region UI Impl for C#
+        #region ui impl for C#
         /// <summary> 
         /// 必要なデザイナ変数です。
         /// </summary>
@@ -115,8 +157,8 @@ namespace org.kbinani.cadencii
         private void InitializeComponent()
         {
             this.panelMain = new System.Windows.Forms.Panel();
-            this.btnClose = new System.Windows.Forms.Button();
-            this.btnWindow = new System.Windows.Forms.Button();
+            this.btnClose = new BButton();
+            this.btnWindow = new BButton();
             this.panelTitle = new System.Windows.Forms.Panel();
             this.panelTitle.SuspendLayout();
             this.SuspendLayout();
@@ -177,11 +219,14 @@ namespace org.kbinani.cadencii
         #endregion
 
         private System.Windows.Forms.Panel panelMain;
-        private System.Windows.Forms.Button btnClose;
-        private System.Windows.Forms.Button btnWindow;
+        private BButton btnClose;
+        private BButton btnWindow;
         private System.Windows.Forms.Panel panelTitle;
         #endregion
 #endif
     }
+
+#if !JAVA
 }
+#endif
 #endif

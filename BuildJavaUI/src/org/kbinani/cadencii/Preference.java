@@ -662,7 +662,7 @@ public class Preference extends JFrame {
 	private BNumericUpDown getNumPreSendTime() {
 		if (numPreSendTime == null) {
 			numPreSendTime = new BNumericUpDown();
-			numPreSendTime.setPreferredSize(new Dimension(68, 20));
+			numPreSendTime.setPreferredSize(new Dimension(68, 25));
 		}
 		return numPreSendTime;
 	}
@@ -675,7 +675,7 @@ public class Preference extends JFrame {
 	private BNumericUpDown getNumWait() {
 		if (numWait == null) {
 			numWait = new BNumericUpDown();
-			numWait.setPreferredSize(new Dimension(68, 20));
+			numWait.setPreferredSize(new Dimension(68, 25));
 		}
 		return numWait;
 	}
@@ -887,7 +887,7 @@ public class Preference extends JFrame {
 	private BNumericUpDown getNumTrackHeight() {
 		if (numTrackHeight == null) {
 			numTrackHeight = new BNumericUpDown();
-			numTrackHeight.setPreferredSize(new Dimension(121, 20));
+			numTrackHeight.setPreferredSize(new Dimension(121, 25));
 		}
 		return numTrackHeight;
 	}
@@ -1421,7 +1421,7 @@ public class Preference extends JFrame {
 	private BNumericUpDown getNumericUpDownEx1() {
 		if (numericUpDownEx1 == null) {
 			numericUpDownEx1 = new BNumericUpDown();
-			numericUpDownEx1.setPreferredSize(new Dimension(120, 20));
+			numericUpDownEx1.setPreferredSize(new Dimension(120, 25));
 		}
 		return numericUpDownEx1;
 	}
@@ -1601,7 +1601,7 @@ public class Preference extends JFrame {
 	private BNumericUpDown getNumMaximumFrameRate() {
 		if (numMaximumFrameRate == null) {
 			numMaximumFrameRate = new BNumericUpDown();
-			numMaximumFrameRate.setPreferredSize(new Dimension(120, 20));
+			numMaximumFrameRate.setPreferredSize(new Dimension(120, 25));
 		}
 		return numMaximumFrameRate;
 	}
@@ -1614,7 +1614,7 @@ public class Preference extends JFrame {
 	private BNumericUpDown getNumMouseHoverTime() {
 		if (numMouseHoverTime == null) {
 			numMouseHoverTime = new BNumericUpDown();
-			numMouseHoverTime.setPreferredSize(new Dimension(120, 20));
+			numMouseHoverTime.setPreferredSize(new Dimension(120, 25));
 		}
 		return numMouseHoverTime;
 	}
@@ -2296,7 +2296,7 @@ public class Preference extends JFrame {
 	private BNumericUpDown getNumAutoBackupInterval() {
 		if (numAutoBackupInterval == null) {
 			numAutoBackupInterval = new BNumericUpDown();
-			numAutoBackupInterval.setPreferredSize(new Dimension(69, 20));
+			numAutoBackupInterval.setPreferredSize(new Dimension(69, 25));
 		}
 		return numAutoBackupInterval;
 	}
@@ -2348,7 +2348,7 @@ public class Preference extends JFrame {
     private BNumericUpDown getNumBuffer() {
         if (numBuffer == null) {
             numBuffer = new BNumericUpDown();
-            numBuffer.setPreferredSize(new Dimension(68, 20));
+            numBuffer.setPreferredSize(new Dimension(68, 25));
             numBuffer.setMinimum(100.0F);
             numBuffer.setDecimalPlaces(0);
             numBuffer.setMaximum(1000.0F);

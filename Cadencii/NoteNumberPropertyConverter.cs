@@ -1,4 +1,4 @@
-#if !JAVA
+#if ENABLE_PROPERTY
 /*
  * NoteNumberPropertyConverter.cs
  * Copyright © 2009-2011 kbinani
@@ -12,6 +12,13 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.cadencii;
+
+import org.kbinani.*;
+import org.kbinani.componentmodel.*;
+import org.kbinani.vsq.*;
+#else
 using System;
 using System.ComponentModel;
 using System.Globalization;
@@ -19,45 +26,74 @@ using System.Globalization;
 using org.kbinani;
 using org.kbinani.vsq;
 
-namespace org.kbinani.cadencii {
-
+namespace org.kbinani.cadencii
+{
     using boolean = Boolean;
+#endif
 
-    public class NoteNumberPropertyConverter : TypeConverter {
-        public override boolean CanConvertTo( ITypeDescriptorContext context, Type destinationType ) {
+#if JAVA
+    public class NoteNumberPropertyConverter extends TypeConverter<NoteNumberProperty, String>
+#else
+    public class NoteNumberPropertyConverter : TypeConverter
+#endif
+    {
+#if !JAVA
+        public override boolean CanConvertTo( ITypeDescriptorContext context, Type destinationType )
+        {
             if ( destinationType == typeof( NoteNumberProperty ) ) {
                 return true;
             }
             return base.CanConvertTo( context, destinationType );
         }
+#endif
 
-        public override Object ConvertTo( ITypeDescriptorContext context, CultureInfo culture, Object value, Type destinationType ) {
+#if !JAVA
+        public override Object ConvertTo( ITypeDescriptorContext context, CultureInfo culture, Object value, Type destinationType )
+        {
             if ( destinationType == typeof( String ) && value is NoteNumberProperty ) {
-                NoteNumberProperty obj = (NoteNumberProperty)value;
-                String ret = getNoteString( obj.noteNumber );
-                return ret;
+                return convertTo( (NoteNumberProperty)value );
             }
             return base.ConvertTo( context, culture, value, destinationType );
         }
+#endif
 
-        public override boolean CanConvertFrom( ITypeDescriptorContext context, Type sourceType ) {
+#if !JAVA
+        public override boolean CanConvertFrom( ITypeDescriptorContext context, Type sourceType )
+        {
             if ( sourceType == typeof( String ) ) {
                 return true;
             }
             return base.CanConvertFrom( context, sourceType );
         }
+#endif
 
-        public override Object ConvertFrom( ITypeDescriptorContext context, CultureInfo culture, Object value ) {
+#if !JAVA
+        public override Object ConvertFrom( ITypeDescriptorContext context, CultureInfo culture, Object value )
+        {
             if ( value is String ) {
-                NoteNumberProperty obj = new NoteNumberProperty();
-                obj.noteNumber = NoteNumberPropertyConverter.parse( (String)value );
-                return obj;
+                return convertFrom( (String)value );
+            } else {
+                return base.ConvertFrom( context, culture, value );
             }
-            return base.ConvertFrom( context, culture, value );
+        }
+#endif
+
+        public String convertTo( NoteNumberProperty value )
+        {
+            String ret = getNoteString( value.noteNumber );
+            return ret;
         }
 
-        private static String getNoteString( int note ) {
-            String[] jp = new String[]{ "ハ", "嬰ハ", "ニ", "変ホ", "ホ", "ヘ", "嬰へ", "ト", "嬰ト", "イ", "変ロ", "ロ" };
+        public NoteNumberProperty convertFrom( String value )
+        {
+            NoteNumberProperty obj = new NoteNumberProperty();
+            obj.noteNumber = NoteNumberPropertyConverter.parse( value );
+            return obj;
+        }
+
+        private static String getNoteString( int note )
+        {
+            String[] jp = new String[] { "ハ", "嬰ハ", "ニ", "変ホ", "ホ", "ヘ", "嬰へ", "ト", "嬰ト", "イ", "変ロ", "ロ" };
             String[] jpfixed = new String[] { "ド", "ド#", "レ", "ミb", "ミ", "ファ", "ファ#", "ソ", "ソ#", "ラ", "シb", "シ", };
             String[] de = { "C", "Cis", "D", "Es", "E", "F", "Fis", "G", "Gis", "A", "Hes", "H" };
             if ( AppManager.editorConfig != null ) {
@@ -81,19 +117,20 @@ namespace org.kbinani.cadencii {
             return "";
         }
 
-        public static int parse( String value ) {
+        public static int parse( String value )
+        {
             if ( value.Equals( "" ) ) {
                 return 60;
             }
 
             value = value.ToUpper();
             try {
-                int draft_note_number = int.Parse( value );
+                int draft_note_number = PortUtil.parseInt( value );
                 if ( AppManager.editorConfig != null ) {
                     AppManager.editorConfig.PropertyWindowStatus.LastUsedNoteNumberExpression = NoteNumberExpressionType.Numeric;
                 }
                 return draft_note_number;
-            } catch {
+            } catch ( Exception ex ) {
             }
 
             int scale = 3;
@@ -105,27 +142,27 @@ namespace org.kbinani.cadencii {
             while ( true ) {
                 int trim = 1;
 
-                if ( value.StartsWith( "AS" ) ){
+                if ( value.StartsWith( "AS" ) ) {
                     offset = -1;
                     odd = 9;
                     trim = 2;
                     exp_type = NoteNumberExpressionType.Deutsche;
-                } else if ( value.StartsWith( "ASAS" ) || value.StartsWith( "ASES" ) ){
+                } else if ( value.StartsWith( "ASAS" ) || value.StartsWith( "ASES" ) ) {
                     offset = -1;
                     doubled = true;
                     odd = 9;
                     trim = 4;
                     exp_type = NoteNumberExpressionType.Deutsche;
-                } else if ( value.StartsWith( "ISIS" ) ){
+                } else if ( value.StartsWith( "ISIS" ) ) {
                     offset = 1;
                     doubled = true;
                     trim = 4;
                     exp_type = NoteNumberExpressionType.Deutsche;
-                } else if ( value.StartsWith( "IS" ) ){
+                } else if ( value.StartsWith( "IS" ) ) {
                     offset = 1;
                     trim = 2;
                     exp_type = NoteNumberExpressionType.Deutsche;
-                } else if ( value.StartsWith( "ESES" ) ){
+                } else if ( value.StartsWith( "ESES" ) ) {
                     if ( first ) {
                         odd = 4;
                     }
@@ -133,7 +170,7 @@ namespace org.kbinani.cadencii {
                     doubled = true;
                     trim = 4;
                     exp_type = NoteNumberExpressionType.Deutsche;
-                } else if ( value.StartsWith( "ES" ) ){
+                } else if ( value.StartsWith( "ES" ) ) {
                     if ( first ) {
                         offset = -1;
                         odd = 4;
@@ -151,69 +188,69 @@ namespace org.kbinani.cadencii {
                 } else if ( value.StartsWith( "重" ) ) {
                     doubled = true;
                     exp_type = NoteNumberExpressionType.Japanese;
-                } else if ( value.StartsWith( "C" ) ){
+                } else if ( value.StartsWith( "C" ) ) {
                     odd = 0;
                     exp_type = NoteNumberExpressionType.International;
-                } else if ( value.StartsWith( "ド" ) || value.StartsWith( "ど" ) ){
+                } else if ( value.StartsWith( "ド" ) || value.StartsWith( "ど" ) ) {
                     odd = 0;
                     exp_type = NoteNumberExpressionType.JapaneseFixedDo;
                 } else if ( value.StartsWith( "は" ) || value.StartsWith( "ハ" ) || value.StartsWith( "ﾊ" ) ) {
                     odd = 0;
                     exp_type = NoteNumberExpressionType.Japanese;
-                } else if ( value.StartsWith( "ﾄﾞ" ) ){
+                } else if ( value.StartsWith( "ﾄﾞ" ) ) {
                     odd = 0;
                     trim = 2;
                     exp_type = NoteNumberExpressionType.JapaneseFixedDo;
-                } else if ( value.StartsWith( "D" ) ){
+                } else if ( value.StartsWith( "D" ) ) {
                     odd = 2;
                     exp_type = NoteNumberExpressionType.International;
-                } else if ( value.StartsWith( "レ" ) || value.StartsWith( "れ" ) || value.StartsWith( "ﾚ" ) ){
+                } else if ( value.StartsWith( "レ" ) || value.StartsWith( "れ" ) || value.StartsWith( "ﾚ" ) ) {
                     odd = 2;
                     exp_type = NoteNumberExpressionType.JapaneseFixedDo;
                 } else if ( value.StartsWith( "に" ) || value.StartsWith( "ニ" ) || value.StartsWith( "ﾆ" ) ) {
                     odd = 2;
                     exp_type = NoteNumberExpressionType.Japanese;
-                } else if ( value.StartsWith( "E" ) ){
+                } else if ( value.StartsWith( "E" ) ) {
                     odd = 4;
                     exp_type = NoteNumberExpressionType.International;
-                } else if ( value.StartsWith( "ミ" ) || value.StartsWith( "み" ) || value.StartsWith( "ﾐ" ) ){
+                } else if ( value.StartsWith( "ミ" ) || value.StartsWith( "み" ) || value.StartsWith( "ﾐ" ) ) {
                     odd = 4;
                     exp_type = NoteNumberExpressionType.JapaneseFixedDo;
-                } else if (value.StartsWith( "ほ" ) || value.StartsWith( "ホ" ) || value.StartsWith( "ﾎ" ) ) {
+                } else if ( value.StartsWith( "ほ" ) || value.StartsWith( "ホ" ) || value.StartsWith( "ﾎ" ) ) {
                     odd = 4;
                     exp_type = NoteNumberExpressionType.Japanese;
-                } else if ( value.StartsWith( "F" ) ){
+                } else if ( value.StartsWith( "F" ) ) {
                     odd = 5;
                     exp_type = NoteNumberExpressionType.International;
-                } else if ( value.StartsWith( "ヘ" ) || value.StartsWith( "へ" ) || value.StartsWith( "ﾍ" ) ){
+                } else if ( value.StartsWith( "ヘ" ) || value.StartsWith( "へ" ) || value.StartsWith( "ﾍ" ) ) {
                     odd = 5;
                     exp_type = NoteNumberExpressionType.Japanese;
                 } else if ( value.StartsWith( "ファ" ) || value.StartsWith( "ふぁ" ) || value.StartsWith( "ﾌｧ" ) ) {
                     odd = 5;
                     trim = 2;
                     exp_type = NoteNumberExpressionType.JapaneseFixedDo;
-                } else if ( value.StartsWith( "G" ) ){
+                } else if ( value.StartsWith( "G" ) ) {
                     odd = 7;
                     exp_type = NoteNumberExpressionType.International;
-                } else if ( value.StartsWith( "ソ" ) || value.StartsWith( "そ" ) || value.StartsWith( "ｿ" ) ){
+                } else if ( value.StartsWith( "ソ" ) || value.StartsWith( "そ" ) || value.StartsWith( "ｿ" ) ) {
                     odd = 7;
                     exp_type = NoteNumberExpressionType.JapaneseFixedDo;
                 } else if ( value.StartsWith( "と" ) || value.StartsWith( "ト" ) || value.StartsWith( "ﾄ" ) ) {
                     odd = 7;
                     exp_type = NoteNumberExpressionType.Japanese;
-                } else if ( value.StartsWith( "A" ) ){
+                } else if ( value.StartsWith( "A" ) ) {
                     odd = 9;
                     exp_type = NoteNumberExpressionType.International;
-                } else if ( value.StartsWith( "ラ" ) || value.StartsWith( "ら" ) || value.StartsWith( "ﾗ" ) ){
+                } else if ( value.StartsWith( "ラ" ) || value.StartsWith( "ら" ) || value.StartsWith( "ﾗ" ) ) {
                     odd = 9;
                     exp_type = NoteNumberExpressionType.JapaneseFixedDo;
                 } else if ( value.StartsWith( "い" ) || value.StartsWith( "イ" ) || value.StartsWith( "ｲ" ) ) {
                     odd = 9;
                     exp_type = NoteNumberExpressionType.Japanese;
-                } else if ( value.StartsWith( "H" ) ){
+                } else if ( value.StartsWith( "H" ) ) {
                     odd = 11;
                     exp_type = NoteNumberExpressionType.International;
-                } else if ( value.StartsWith( "シ" ) || value.StartsWith( "し" ) || value.StartsWith( "ｼ" ) ){
+                } else if ( value.StartsWith( "シ" ) || value.StartsWith( "し" ) || value.StartsWith( "ｼ" ) ) {
                     odd = 11;
                     exp_type = NoteNumberExpressionType.JapaneseFixedDo;
                 } else if ( value.StartsWith( "ろ" ) || value.StartsWith( "ロ" ) || value.StartsWith( "ﾛ" ) ) {
@@ -258,5 +295,7 @@ namespace org.kbinani.cadencii {
         }
     }
 
+#if !JAVA
 }
+#endif
 #endif

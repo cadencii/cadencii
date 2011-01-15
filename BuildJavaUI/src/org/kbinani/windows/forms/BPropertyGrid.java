@@ -7,31 +7,32 @@ import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.Label;
 import java.awt.LayoutManager;
 import java.awt.Panel;
-import java.awt.TextField;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
-import javax.swing.border.LineBorder;
-import org.kbinani.xml.*;
+import org.kbinani.componentmodel.IPropertyDescripter;
+import org.kbinani.componentmodel.PropertyDescripter;
+import org.kbinani.xml.XmlMember;
+import org.kbinani.xml.XmlSerializer;
 
 public class BPropertyGrid extends Panel {
-    private Class<?> _class;
-    private Object[] _selected;
-    private XmlMember[] _xml_members;
-    private Component[] _components;
+    private static final long serialVersionUID = -5937300027752664252L;
+    private Class<?> mClass;
+    private Object[] mSelected;
+    private XmlMember[] mXmlMembers;
+    private Component[] mComponents;
+    private PropertyDescripter mDescripter;
     
     public BPropertyGrid(){
         super();
     }
 
     public Object[] getSelectedObjects(){
-        return this._selected;
+        return this.mSelected;
     }
 
     public void setSelectedObjects( Object[] objects ){
@@ -52,38 +53,38 @@ System.out.println( "BPropertyGrid#setSelectedObjects" );
             }
         }
 
-        if( this._class == null ){
-            this._class = cls;
-            _updateGridComponents();
+        if( this.mClass == null ){
+            this.mClass = cls;
+            updateGridComponents();
         }else{
-            if( !this._class.equals( cls ) ){
-                this._class = cls;
-                _updateGridComponents();
+            if( !this.mClass.equals( cls ) ){
+                this.mClass = cls;
+                updateGridComponents();
             }
         }
-        this._selected = objects;
-        _update();
+        this.mSelected = objects;
+        update();
     }
 
     /**
      * 選択されたオブジェクトの値を，グリッドのコンポーネントの表示状態に反映させます
      */
-    private void _update(){
-        for( int i = 0; i < this._xml_members.length; i++ ){
-            XmlMember xm = this._xml_members[i];
+    private void update(){
+        for( int i = 0; i < this.mXmlMembers.length; i++ ){
+            XmlMember xm = this.mXmlMembers[i];
             Class<?> member_type = xm.getType();
-            if( member_type.equals( this._class ) ){
+            if( member_type.equals( this.mClass ) ){
                 continue;
             }
             String draft = null;
             boolean all_equals = true;
-            for( Object o : this._selected ){
+            for( Object o : this.mSelected ){
                 if( o == null ){
                     continue;
                 }
                 Object value = xm.get( o );
                 String s = value + "";
-System.out.println( "BPropertyGrid#_updatd; s=" + s );
+System.out.println( "BPropertyGrid#updatd; s=" + s );
                 if( draft == null ){
                     draft = s;
                 }else{
@@ -95,7 +96,7 @@ System.out.println( "BPropertyGrid#_updatd; s=" + s );
                 }
             }
 
-            Component c = this._components[i];
+            Component c = this.mComponents[i];
             if( c instanceof JTextField ){
                 JTextField jtf = (JTextField)c;
                 jtf.setText( draft );
@@ -119,11 +120,11 @@ System.out.println( "BPropertyGrid#_updatd; s=" + s );
     /**
      * グリッドのコンポーネントを，選択されたオブジェクトの型に合わせて変更します
      */
-    private void _updateGridComponents(){
+    private void updateGridComponents(){
         // まず現在登録されているコンポーネントをすべて破棄する
         this.removeAll();
         // プロパティーを追加．再帰的に
-        int rows =_appendComponentTo( this, this._class, true );
+        int rows =appendComponentTo( this, this.mClass, true );
         // 一番下にスペーサを設置
         LayoutManager lm = this.getLayout();
         GridBagLayout gbl = (GridBagLayout)lm;
@@ -142,25 +143,39 @@ System.out.println( "BPropertyGrid#_updatd; s=" + s );
      * @param comp
      * @param cls
      */
-    private int _appendComponentTo( Container container, Class<?> cls, boolean add_spacer ){
-System.out.println( "BPropertyGrid#_appendComponentTo; cls=" + cls );
+    private int appendComponentTo( Container container, Class<?> cls, boolean add_spacer ){
+System.out.println( "BPropertyGrid#appendComponentTo; cls=" + cls );
         // レイアウト適用
         GridBagLayout layout = new GridBagLayout();
         container.setLayout( layout );
         
         // プロパティを抽出
-        this._xml_members = XmlMember.extractMembers( cls );
-        this._components = new Component[this._xml_members.length];
-System.out.println( "BPropertyGrid#_appendComponentTo; xml_members.length=" + this._xml_members.length );
+        this.mXmlMembers = XmlMember.extractMembers( cls );
+        
+        // プロパティ・デスクリプタを取得
+        if( cls.isAssignableFrom( IPropertyDescripter.class ) ){
+            try{
+                IPropertyDescripter ipd = (IPropertyDescripter)cls.newInstance();
+                this.mDescripter = ipd.getDescripter();
+            }catch( Exception ex ){
+                this.mDescripter = null;
+            }
+        }
+        if( this.mDescripter == null ){
+            this.mDescripter = new PropertyDescripter();
+        }
+
+        this.mComponents = new Component[this.mXmlMembers.length];
+System.out.println( "BPropertyGrid#appendComponentTo; mXmlMembers.length=" + this.mXmlMembers.length );
         int rows = 0;
-        for ( XmlMember xm : this._xml_members ){
+        for ( XmlMember xm : this.mXmlMembers ){
             Class<?> member_type = xm.getType();
             if( member_type.equals( cls ) ){
                 // 自分自身のフィールド等に同じ型のものがあると再帰になるので，スルーする
                 continue;
             }
             String cli_name = XmlSerializer.getCliTypeName( member_type );
-System.out.println( "BPropertyGrid#_appendComponentTo; member_type=" + member_type + "; cli_name=" + cli_name );
+System.out.println( "BPropertyGrid#appendComponentTo; member_type=" + member_type + "; cli_name=" + cli_name );
             // プリミティブ型
             rows++;
             Color bgcolor = (rows % 2 != 0) ? Color.WHITE : new Color( 240, 240, 240 );
@@ -184,7 +199,7 @@ System.out.println( "BPropertyGrid#_appendComponentTo; member_type=" + member_ty
             // プロパティの名前
             JLabel propname = new JLabel();
             gx++;
-            propname.setText( xm.getName() );
+            propname.setText( this.mDescripter.getDisplayName( xm.getName() ) );
             propname.setBorder( new EmptyBorder( 0, 0, 0, 0 ) );
             propname.setBackground( bgcolor );
             propname.setOpaque( true );
@@ -228,7 +243,7 @@ System.out.println( "BPropertyGrid#_appendComponentTo; member_type=" + member_ty
                 JTextField text = new JTextField();
                 comp = text;
             }
-            this._components[rows - 1] = comp;
+            this.mComponents[rows - 1] = comp;
             comp.setBorder( new EmptyBorder( 0, 0, 0, 0 ) );
             comp.setBackground( bgcolor );
             gbc.gridx = gx;

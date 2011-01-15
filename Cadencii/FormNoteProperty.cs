@@ -53,6 +53,14 @@ namespace org.kbinani.cadencii
         }
 
         #region public methods
+#if !JAVA
+        public void addComponent( System.Windows.Forms.Control c )
+        {
+            this.Controls.Add( c );
+            c.Dock = System.Windows.Forms.DockStyle.Fill;
+        }
+#endif
+
         public void applyLanguage()
         {
             setTitle( _( "Note Property" ) );

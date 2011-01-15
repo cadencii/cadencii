@@ -11,6 +11,11 @@ public class BPropertyGridTest extends Frame {
 
     private BPropertyGrid jPanel = null;
    
+    public static void main( String[] args ){
+        BPropertyGridTest dialog = new BPropertyGridTest();
+        dialog.setVisible( true );
+    }
+    
     /**
      * This method initializes 
      * 

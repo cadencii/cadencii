@@ -593,8 +593,7 @@ namespace org.kbinani.cadencii
 #if ENABLE_PROPERTY
             AppManager.propertyPanel = new PropertyPanel();
             AppManager.propertyWindow = new FormNoteProperty();
-            AppManager.propertyWindow.Controls.Add( AppManager.propertyPanel );
-            AppManager.propertyPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            AppManager.propertyWindow.addComponent( AppManager.propertyPanel );
 #endif
 
 #if DEBUG
@@ -2076,7 +2075,7 @@ namespace org.kbinani.cadencii
         public void updatePropertyPanelState( PanelState state )
         {
             if ( state == PanelState.Docked ) {
-                mPropertyPanelContainer.Add( AppManager.propertyPanel );
+                mPropertyPanelContainer.addComponent( AppManager.propertyPanel );
                 AppManager.propertyWindow.setVisible( false );
                 menuVisualProperty.setSelected( true );
                 AppManager.editorConfig.PropertyWindowStatus.State = PanelState.Docked;
@@ -14427,7 +14426,7 @@ namespace org.kbinani.cadencii
 #if JAVA
             Graphics g = e.Graphics;
 #else
-            Graphics g = new Graphics( e.Graphics );
+            Graphics2D g = new Graphics2D( e.Graphics );
 #endif
             picturePositionIndicatorDrawTo( g );
 #if MONITOR_FPS
@@ -17790,16 +17789,16 @@ namespace org.kbinani.cadencii
             this.rebar = new org.kbinani.windows.forms.Rebar();
             this.imageListMenu = new System.Windows.Forms.ImageList( this.components );
             this.toolBarFile = new System.Windows.Forms.ToolBar();
-            this.stripBtnFileNew = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnFileOpen = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnFileSave = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnFileNew = new BToolBarButton();
+            this.stripBtnFileOpen = new BToolBarButton();
+            this.stripBtnFileSave = new BToolBarButton();
             this.toolBarButton1 = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnCut = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnCopy = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnPaste = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnCut = new BToolBarButton();
+            this.stripBtnCopy = new BToolBarButton();
+            this.stripBtnPaste = new BToolBarButton();
             this.toolBarButton2 = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnUndo = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnRedo = new System.Windows.Forms.ToolBarButton();
+            this.stripBtnUndo = new BToolBarButton();
+            this.stripBtnRedo = new BToolBarButton();
             this.toolBarPosition = new System.Windows.Forms.ToolBar();
             this.stripBtnMoveTop = new System.Windows.Forms.ToolBarButton();
             this.stripBtnRewind = new System.Windows.Forms.ToolBarButton();
@@ -20582,14 +20581,14 @@ namespace org.kbinani.cadencii
         public BMenuItem menuFileImportMidi;
         public BStatusLabel toolStripStatusLabel1;
         public BStatusLabel toolStripStatusLabel2;
-        public System.Windows.Forms.ToolBarButton stripBtnFileSave;
-        public System.Windows.Forms.ToolBarButton stripBtnFileOpen;
-        public System.Windows.Forms.ToolBarButton stripBtnCut;
-        public System.Windows.Forms.ToolBarButton stripBtnCopy;
-        public System.Windows.Forms.ToolBarButton stripBtnPaste;
-        public System.Windows.Forms.ToolBarButton stripBtnFileNew;
-        public System.Windows.Forms.ToolBarButton stripBtnUndo;
-        public System.Windows.Forms.ToolBarButton stripBtnRedo;
+        public BToolBarButton stripBtnFileSave;
+        public BToolBarButton stripBtnFileOpen;
+        public BToolBarButton stripBtnCut;
+        public BToolBarButton stripBtnCopy;
+        public BToolBarButton stripBtnPaste;
+        public BToolBarButton stripBtnFileNew;
+        public BToolBarButton stripBtnUndo;
+        public BToolBarButton stripBtnRedo;
         public BMenuItem cMenuTrackSelectorPaletteTool;
         public BMenuItem cMenuPianoPaletteTool;
         public System.Windows.Forms.ToolStripSeparator toolStripSeparator14;

@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>9.0.21022</ProductVersion>
+    <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{B9481E3B-6842-4AB3-8ED4-29C86C2579A3}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -156,6 +156,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="BToolBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="BToolBarButton.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="BToolStripButton.cs">

@@ -1,4 +1,4 @@
-#if !JAVA
+#if ENABLE_PROPERTY
 /*
  * VibratoVariationConverter.cs
  * Copyright © 2009-2011 kbinani
@@ -12,20 +12,50 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+package org.kbinani.cadencii;
+
+import java.util.*;
+import org.kbinani.componentmodel.*;
+import org.kbinani.vsq.*;
+#else
 using System;
 using System.ComponentModel;
 using org.kbinani.java.util;
 using org.kbinani.vsq;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
+    using boolean = System.Boolean;
+#endif
 
+#if JAVA
+    public class VibratoVariationConverter extends TypeConverter<VibratoVariation, String>
+#else
+    public class VibratoVariationConverter : TypeConverter
+#endif
+    {
+#if !JAVA
+        public override bool GetStandardValuesSupported( ITypeDescriptorContext context )
+        {
+            return isStandardValuesSupported();
+        }
+#endif
 
-    public class VibratoVariationConverter : TypeConverter {
-        public override bool GetStandardValuesSupported( ITypeDescriptorContext context ) {
+        public boolean isStandardValuesSupported()
+        {
             return true;
         }
 
-        public override StandardValuesCollection GetStandardValues( ITypeDescriptorContext context ) {
+#if !JAVA
+        public override StandardValuesCollection GetStandardValues( ITypeDescriptorContext context )
+        {
+            return new StandardValuesCollection( getStandardValues().toArray( new VibratoVariation[] { } ) );
+        }
+#endif
+
+        public Vector<VibratoVariation> getStandardValues()
+        {
             // ビブラート種類の候補値を列挙
             Vector<VibratoVariation> list = new Vector<VibratoVariation>();
             list.add( new VibratoVariation( VibratoVariation.empty.description ) );
@@ -58,71 +88,94 @@ namespace org.kbinani.cadencii {
                     list.add( new VibratoVariation( vconfig.getDisplayString() ) );
                 }
             }
-            return new StandardValuesCollection( list.toArray( new VibratoVariation[] { } ) );
+            return list;
         }
 
-        public override bool CanConvertTo( ITypeDescriptorContext context, Type destinationType ) {
+#if !JAVA
+        public override bool CanConvertTo( ITypeDescriptorContext context, Type destinationType )
+        {
             if ( destinationType == typeof( String ) ) {
                 return true;
             } else {
                 return base.CanConvertTo( context, destinationType );
             }
         }
+#endif
 
-        public override Object ConvertTo( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, Object value, Type destinationType ) {
+#if !JAVA
+        public override Object ConvertTo( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, Object value, Type destinationType )
+        {
             if ( destinationType == typeof( String ) && value is VibratoVariation ) {
-                return ((VibratoVariation)value).description;
+                return convertTo( (VibratoVariation)value );
             } else {
                 return base.ConvertTo( context, culture, value, destinationType );
             }
         }
+#endif
 
-        public override Object ConvertFrom( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, Object value ) {
+        public String convertTo( VibratoVariation value )
+        {
+            return value.description;
+        }
+
+#if !JAVA
+        public override Object ConvertFrom( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, Object value )
+        {
             if ( value is String ) {
-                if ( value.Equals( VibratoVariation.empty.description ) ) {
-                    return new VibratoVariation( VibratoVariation.empty.description );
-                } else {
-                    String svalue = (String)value;
-                    if ( AppManager.editorConfig.UseUserDefinedAutoVibratoType ) {
-                        int size = AppManager.editorConfig.AutoVibratoCustom.size();
-                        for ( int i = 0; i < size; i++ ) {
-                            String display_string = AppManager.editorConfig.AutoVibratoCustom.get( i ).getDisplayString();
-                            if ( svalue.Equals( display_string ) ) {
-                                return new VibratoVariation( display_string );
-                            }
-                        }
-                    } else {
-                        SynthesizerType type = SynthesizerType.VOCALOID2;
-                        VsqFileEx vsq = AppManager.getVsqFile();
-                        if ( vsq != null ) {
-                            RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
-                            if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
-                                type = SynthesizerType.VOCALOID1;
-                            }
-                            for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
-                                VibratoHandle vconfig = itr.next();
-                                String display_string = vconfig.getDisplayString();
-                                if ( svalue.Equals( display_string ) ) {
-                                    return new VibratoVariation( display_string );
-                                }
-                            }
-                        }
-                    }
-                    return new VibratoVariation( VibratoVariation.empty.description );
-                }
+                return convertFrom( (String)value );
             } else {
                 return base.ConvertFrom( context, culture, value );
             }
         }
+#endif
 
-        public override bool CanConvertFrom( ITypeDescriptorContext context, Type sourceType ) {
+        public VibratoVariation convertFrom( String value )
+        {
+            if ( value.Equals( VibratoVariation.empty.description ) ) {
+                return new VibratoVariation( VibratoVariation.empty.description );
+            } else {
+                if ( AppManager.editorConfig.UseUserDefinedAutoVibratoType ) {
+                    int size = AppManager.editorConfig.AutoVibratoCustom.size();
+                    for ( int i = 0; i < size; i++ ) {
+                        String display_string = AppManager.editorConfig.AutoVibratoCustom.get( i ).getDisplayString();
+                        if ( value.Equals( display_string ) ) {
+                            return new VibratoVariation( display_string );
+                        }
+                    }
+                } else {
+                    SynthesizerType type = SynthesizerType.VOCALOID2;
+                    VsqFileEx vsq = AppManager.getVsqFile();
+                    if ( vsq != null ) {
+                        RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
+                        if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
+                            type = SynthesizerType.VOCALOID1;
+                        }
+                        for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
+                            VibratoHandle vconfig = itr.next();
+                            String display_string = vconfig.getDisplayString();
+                            if ( value.Equals( display_string ) ) {
+                                return new VibratoVariation( display_string );
+                            }
+                        }
+                    }
+                }
+                return new VibratoVariation( VibratoVariation.empty.description );
+            }
+        }
+
+#if !JAVA
+        public override bool CanConvertFrom( ITypeDescriptorContext context, Type sourceType )
+        {
             if ( sourceType == typeof( String ) ) {
                 return true;
             } else {
                 return base.CanConvertFrom( context, sourceType );
             }
         }
+#endif
     }
 
+#if !JAVA
 }
+#endif
 #endif

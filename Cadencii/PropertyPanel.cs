@@ -16,25 +16,27 @@
 package org.kbinani.cadencii;
 
 import java.util.*;
+import org.kbinani.*;
+import org.kbinani.apputil.*;
+import org.kbinani.vsq.*;
+import org.kbinani.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
 using org.kbinani.apputil;
-using org.kbinani.vsq;
-using org.kbinani;
 using org.kbinani.java.util;
+using org.kbinani.vsq;
 
 namespace org.kbinani.cadencii
 {
-    using boolean = System.Boolean;
-    using Integer = System.Int32;
     using BEventHandler = System.EventHandler;
+    using boolean = System.Boolean;
     using BPropertyValueChangedEventHandler = System.Windows.Forms.PropertyValueChangedEventHandler;
 #endif
 
 #if JAVA
 
-public class CommandExecuteRequiredEventHandler extends BEventHandler{
+class CommandExecuteRequiredEventHandler extends BEventHandler{
     public CommandExecuteRequiredEventHandler( Object invoker, String method_name ){
         super( invoker, method_name, Void.TYPE, Object.class, CadenciiCommand.class );
     }
@@ -88,6 +90,7 @@ public class CommandExecuteRequiredEventHandler extends BEventHandler{
 
         private void popGridItemExpandStatus()
         {
+#if !JAVA
             if ( propertyGrid.SelectedGridItem == null ) {
                 return;
             }
@@ -98,8 +101,10 @@ public class CommandExecuteRequiredEventHandler extends BEventHandler{
             }
 
             popGridItemExpandStatusCore( root );
+#endif
         }
 
+#if !JAVA
         private void popGridItemExpandStatusCore( GridItem item )
         {
             if ( item.Expandable ) {
@@ -120,9 +125,11 @@ public class CommandExecuteRequiredEventHandler extends BEventHandler{
                 popGridItemExpandStatusCore( child );
             }
         }
+#endif
 
         private void pushGridItemExpandStatus()
         {
+#if !JAVA
             if ( propertyGrid.SelectedGridItem == null ) {
                 return;
             }
@@ -133,8 +140,10 @@ public class CommandExecuteRequiredEventHandler extends BEventHandler{
             }
 
             pushGridItemExpandStatusCore( root );
+#endif
         }
 
+#if !JAVA
         private void pushGridItemExpandStatusCore( GridItem item )
         {
             if ( item.Expandable ) {
@@ -159,6 +168,7 @@ public class CommandExecuteRequiredEventHandler extends BEventHandler{
                 pushGridItemExpandStatusCore( child );
             }
         }
+#endif
 
         public void updateValue( int track )
         {
@@ -208,6 +218,7 @@ public class CommandExecuteRequiredEventHandler extends BEventHandler{
             setEditing( false );
         }
 
+#if !JAVA
         /// <summary>
         /// itemが属しているGridItemツリーの基点にある親を探します
         /// </summary>
@@ -221,7 +232,9 @@ public class CommandExecuteRequiredEventHandler extends BEventHandler{
                 return findRootGridItem( item.Parent );
             }
         }
+#endif
 
+#if !JAVA
         /// <summary>
         /// itemが属しているGridItemツリーの中で，itemを特定するための文字列を取得します
         /// </summary>
@@ -243,6 +256,7 @@ public class CommandExecuteRequiredEventHandler extends BEventHandler{
                 }
             }
         }
+#endif
 
 #if !JAVA
         private void propertyGrid_SelectedGridItemChanged( Object sender, SelectedGridItemChangedEventArgs e )
@@ -280,7 +294,7 @@ public class CommandExecuteRequiredEventHandler extends BEventHandler{
 
         private void initialize(){
             if( propertyGrid == null ){
-                propertyGrid = new BPropertyGrid()+
+                propertyGrid = new BPropertyGrid();
             }
             this.add( propertyGrid );
         }
@@ -342,5 +356,7 @@ public class CommandExecuteRequiredEventHandler extends BEventHandler{
 #endif
     }
 
+#if !JAVA
 }
+#endif
 #endif
