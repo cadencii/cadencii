@@ -147,10 +147,10 @@ namespace org
             public static int split( string s, List<string> dst, List<string> splitter, bool ignore_empty )
 #endif
             {
-                int len = vec.size<String>( splitter );
-                vec.clear<String>( dst );
+                int len = vec.size( splitter );
+                vec.clear( dst );
                 if ( len == 0 ) {
-                    vec.add<String>( dst, s );
+                    vec.add( dst, s );
                     return 1;
                 }
 #if JAVA
@@ -158,28 +158,28 @@ namespace org
 #else
                 string remain = s;
 #endif
-                int index = find( remain, vec.get<String>( splitter, 0 ), 0 );
+                int index = find( remain, vec.get( splitter, 0 ), 0 );
                 int i = 1;
                 while ( index < 0 && i < len ) {
-                    index = find( remain, vec.get<String>( splitter, i ), 0 );
+                    index = find( remain, vec.get( splitter, i ), 0 );
                     i++;
                 }
                 int added_count = 0;
                 while ( index >= 0 ) {
                     if ( !ignore_empty || (ignore_empty && index > 0) ) {
-                        vec.add<String>( dst, sub( remain, 0, index ) );
+                        vec.add( dst, sub( remain, 0, index ) );
                         added_count++;
                     }
                     remain = sub( remain, index + len );
-                    index = find( remain, vec.get<String>( splitter, 0 ) );
+                    index = find( remain, vec.get( splitter, 0 ) );
                     i = 1;
                     while ( index < 0 && i < len ) {
-                        index = find( remain, vec.get<String>( splitter, i ) );
+                        index = find( remain, vec.get( splitter, i ) );
                         i++;
                     }
                 }
                 if ( !ignore_empty || (ignore_empty && length( remain ) > 0) ) {
-                    vec.add<String>( dst, remain );
+                    vec.add( dst, remain );
                 }
                 return added_count;
             }
@@ -199,7 +199,7 @@ namespace org
 #else
                 List<String> splitter = new List<string>();
 #endif
-                vec.add<String>( splitter, s1 );
+                vec.add( splitter, s1 );
                 return split( s, dst, splitter, ignore_empty );
             }
 

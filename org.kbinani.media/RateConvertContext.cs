@@ -351,7 +351,11 @@ namespace org.kbinani.media
                             context.bBufLeft = new double[num];
                         } else if ( context.bBufLeft.Length < num ) {
 #if JAVA
+#if JAVA_1_5
+                            context.bBufLeft = new double[num];
+#else
                             context.bBufLeft = Arrays.copyOf( context.bBufLeft, num );
+#endif
 #else
                             Array.Resize( ref context.bBufLeft, num );
 #endif
@@ -360,7 +364,11 @@ namespace org.kbinani.media
                             context.bBufRight = new double[num];
                         } else if ( context.bBufRight.Length < num ) {
 #if JAVA
+#if JAVA_1_5
+                            context.bBufRight = new double[num];
+#else
                             context.bBufRight = Arrays.copyOf( context.bBufRight, num );
+#endif
 #else
                             Array.Resize( ref context.bBufRight, num );
 #endif

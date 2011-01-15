@@ -5,7 +5,7 @@ TARGET=@TARGET@
 MCS_OPT=-warn:0
 PLAY_SOUND_DLL=@PLAY_SOUND_DLL@
 JROOT=./build/java/org/kbinani
-PPCS2JAVA_OPT=--replace-java -DJAVA -DJAVA_1_5 -DDEBUG -DCLIPBOARD_AS_TEXT -DENABLE_PROPERTY -encoding "UTF-8" -s -4 -c -e -l pp_cs2java.log
+PPCS2JAVA_OPT=--replace-java -DJAVA -DJAVA_1_5 -DDEBUG -DCLIPBOARD_AS_TEXT -encoding "UTF-8" -s -4 -c -e -l pp_cs2java.log
 PPCS2CPP_OPT=--replace-cpp -D__cplusplus
 MONO=@MONO@
 
@@ -67,9 +67,9 @@ cpp_vsq: pp_cs2java.exe
 # jcadencii
 #
 jcadencii: pp_cs2java.exe $(SRC_JCORLIB) $(SRC_JWINFORMS) $(SRC_JAPPUTIL) $(SRC_JMEDIA) $(SRC_JVSQ) $(SRC_JCADENCII) $(SRC_JCOMPONENTMODEL) $(SRC_JXML) ./build/java/org/kbinani/cadencii/Resources.java ./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java ./build/java/Cadencii.mf ./build/java/ja.po ./build/java/zh-CN.po ./build/java/zh-TW.po
-	$(RM) ./build/java/Cadencii.java
+	perl safe_rm.pl ./build/java/Cadencii.java
 	$(CP) ./build/java/org/kbinani/cadencii/Cadencii.java ./build/java/Cadencii.java
-	$(RM) ./build/java/org/kbinani/cadencii/Cadencii.java
+	perl safe_rm.pl ./build/java/org/kbinani/cadencii/Cadencii.java
 	javac ./build/java/Cadencii.java ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/*.java ./build/java/org/kbinani/apputil/*.java ./build/java/org/kbinani/media/*.java ./build/java/org/kbinani/vsq/*.java ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/componentmodel/*.java ./build/java/org/kbinani/windows/forms/*.java ./build/java/org/kbinani/xml/*.java -encoding UTF8 -target 1.5 -source 1.5
 	cd ./build/java && jar cfm Cadencii.jar Cadencii.mf Cadencii.class org/kbinani/cadencii/*.class org/kbinani/*.class org/kbinani/apputil/*.class org/kbinani/media/*.class org/kbinani/vsq/*.class org/kbinani/cadencii/*.class org/kbinani/componentmodel/*.class org/kbinani/windows/forms/*.class org/kbinani/xml/*.class
 	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .png
@@ -87,8 +87,11 @@ jcadencii: pp_cs2java.exe $(SRC_JCORLIB) $(SRC_JWINFORMS) $(SRC_JAPPUTIL) $(SRC_
 	$(CP) ./Cadencii/zh-TW.po ./build/java/zh-TW.po
 
 ./build/java/Cadencii.mf: ./Cadencii/Cadencii.mf
-	$(RM) ./build/java/Cadencii.mf
+	perl safe_rm.pl ./build/java/Cadencii.mf
 	$(CP) ./Cadencii/Cadencii.mf ./build/java/Cadencii.mf
+
+./build/java/org/kbinani/cadencii/Resources.java: ./Cadencii/Resources.cs
+	$(MONO)pp_cs2java.exe $(PPCS2JAVA_OPT) -i ./Cadencii/Resources.cs -o ./build/java/org/kbinani/cadencii/Resources.java
 
 jcadencii_win: jcadencii
 	exewrap -g -t 1.6 -o .\build\java\jCadencii.exe -i .\Cadencii\resources\icon.ico .\build\java\Cadencii.jar
@@ -111,31 +114,31 @@ jcorlib: pp_cs2java.exe $(SRC_JCORLIB) ./BuildJavaUI/src/org/kbinani/math.java .
 jpostprocess: ./BuildJavaUI/src/org/kbinani/math.java ./BuildJavaUI/src/org/kbinani/PortUtil.java ./BuildJavaUI/src/org/kbinani/InternalStdErr.java ./BuildJavaUI/src/org/kbinani/InternalStdOut.java ./BuildJavaUI/src/org/kbinani/ByRef.java ./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java
 
 ./BuildJavaUI/src/org/kbinani/math.java: ./build/java/org/kbinani/math.java
-	$(RM) ./BuildJavaUI/src/org/kbinani/math.java
+	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/math.java
 	$(CP) ./build/java/org/kbinani/math.java ./BuildJavaUI/src/org/kbinani/math.java
 
 ./BuildJavaUI/src/org/kbinani/PortUtil.java: ./build/java/org/kbinani/PortUtil.java
-	$(RM) ./BuildJavaUI/src/org/kbinani/PortUtil.java
+	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/PortUtil.java
 	$(CP) ./build/java/org/kbinani/PortUtil.java ./BuildJavaUI/src/org/kbinani/PortUtil.java
 
 ./BuildJavaUI/src/org/kbinani/InternalStdErr.java: ./build/java/org/kbinani/InternalStdErr.java
-	$(RM) ./BuildJavaUI/src/org/kbinani/InternalStdErr.java
+	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/InternalStdErr.java
 	$(CP) ./build/java/org/kbinani/InternalStdErr.java ./BuildJavaUI/src/org/kbinani/InternalStdErr.java
 
 ./BuildJavaUI/src/org/kbinani/InternalStdOut.java: ./build/java/org/kbinani/InternalStdOut.java
-	$(RM) ./BuildJavaUI/src/org/kbinani/InternalStdOut.java
+	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/InternalStdOut.java
 	$(CP) ./build/java/org/kbinani/InternalStdOut.java ./BuildJavaUI/src/org/kbinani/InternalStdOut.java
 
 ./BuildJavaUI/src/org/kbinani/ByRef.java: ./build/java/org/kbinani/ByRef.java
-	$(RM) ./BuildJavaUI/src/org/kbinani/ByRef.java
+	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/ByRef.java
 	$(CP) ./build/java/org/kbinani/ByRef.java ./BuildJavaUI/src/org/kbinani/ByRef.java
 
 ./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java: ./build/java/org/kbinani/cadencii/NumberTextBox.java
-	$(RM) ./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java
+	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java
 	$(CP) ./build/java/org/kbinani/cadencii/NumberTextBox.java ./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java
 
 ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java: ./build/java/org/kbinani/cadencii/NumericUpDownEx.java
-	$(RM) ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java
+	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java
 	$(CP) ./build/java/org/kbinani/cadencii/NumericUpDownEx.java ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java
 
 ########################################################################
@@ -155,7 +158,7 @@ jxml: pp_cs2java.exe $(SRC_JXML)
 #
 pp_cs2java.exe: first $(TARGET)/org.kbinani.dll $(TARGET)/org.kbinani.windows.forms.dll ./pp_cs2java/Program.cs
 	gmcs ./pp_cs2java/Program.cs -out:./pp_cs2java.exe -r:$(TARGET)/org.kbinani.dll,System.Drawing $(MCS_OPT)
-	$(RM) ./org.kbinani.dll
+#	$(RM) ./org.kbinani.dll
 	$(CP) $(TARGET)/org.kbinani.dll ./org.kbinani.dll
 
 ########################################################################
@@ -168,7 +171,7 @@ $(TARGET)/Cadencii.exe: ./Cadencii/Resources.cs ./Cadencii/*.cs ./Cadencii/resou
 	perl copy_with_ext.pl ./Cadencii/resources/ $(TARGET)/resources/ .ico
 
 ./Cadencii/Resources.cs: ./Cadencii/Resources.list makeRes.exe
-	$(MONO)./makeRes.exe -i ./Cadencii/Resources.list -o ./Cadencii/Resources.cs -p org.kbinani.cadencii -n org.kbinani.cadencii
+	$(MONO)makeRes.exe -i ./Cadencii/Resources.list -o ./Cadencii/Resources.cs -p org.kbinani.cadencii -n org.kbinani.cadencii
 
 ########################################################################
 # resource collector

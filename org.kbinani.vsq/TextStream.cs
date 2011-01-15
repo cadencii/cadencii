@@ -99,7 +99,15 @@ namespace org.kbinani.vsq
                     newLength = array.Length * order;
                 }
 #if JAVA
+#if JAVA_1_5
+                char[] buf = new char[newLength];
+                for( int i = 0; i < array.length; i++ ){
+                    buf[i] = array[i];
+                }
+                array = buf;
+#else
                 array = Arrays.copyOf( array, newLength );
+#endif
 #else
                 Array.Resize( ref array, newLength );
 #endif

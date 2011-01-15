@@ -137,8 +137,21 @@ namespace org.kbinani.vsq
                     newLength = clocks.Length * order;
                 }
 #if JAVA
+#if JAVA_1_5
+                int[] buf_c = new int[newLength];
+                for( int i = 0; i < clocks.length; i++ ){
+                    buf_c[i] = clocks[i];
+                }
+                clocks = buf_c;
+                VsqBPPair[] buf_v = new VsqBPPair[newLength];
+                for( int i = 0; i < items.length; i++ ){
+                    buf_v[i] = items[i];
+                }
+                items = buf_v;
+#else
                 clocks = Arrays.copyOf( clocks, newLength );
                 items = Arrays.copyOf( items, newLength );
+#endif
 #else
                 Array.Resize( ref clocks, newLength );
                 Array.Resize( ref items, newLength );
