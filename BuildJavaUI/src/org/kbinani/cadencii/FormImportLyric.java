@@ -22,9 +22,6 @@ public class FormImportLyric extends BForm {
     private JPanel jPanel = null;
     private BButton btnOK = null;
     private BButton btnCancel = null;
-    private JButton jButton = null;
-    private JButton jButton1 = null;
-
     //SECTION-END-FIELD
     /**
      * This is the default constructor
@@ -53,12 +50,6 @@ public class FormImportLyric extends BForm {
      */
     private JPanel getJContentPane() {
     	if (jContentPane == null) {
-    		GridBagConstraints gridBagConstraints41 = new GridBagConstraints();
-    		gridBagConstraints41.gridx = 1;
-    		gridBagConstraints41.gridy = 2;
-    		GridBagConstraints gridBagConstraints31 = new GridBagConstraints();
-    		gridBagConstraints31.gridx = 1;
-    		gridBagConstraints31.gridy = 1;
     		GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
     		gridBagConstraints4.gridx = 0;
     		gridBagConstraints4.anchor = GridBagConstraints.EAST;
@@ -83,8 +74,6 @@ public class FormImportLyric extends BForm {
     		jContentPane.add(lblNotes, gridBagConstraints);
     		jContentPane.add(getTxtLyrics(), gridBagConstraints1);
     		jContentPane.add(getJPanel(), gridBagConstraints4);
-    		jContentPane.add(getJButton(), gridBagConstraints31);
-    		jContentPane.add(getJButton1(), gridBagConstraints41);
     	}
     	return jContentPane;
     }
@@ -148,30 +137,6 @@ public class FormImportLyric extends BForm {
             btnCancel.setText("Cancel");
         }
         return btnCancel;
-    }
-    
-    /**
-     * This method initializes jButton	
-     * 	
-     * @return javax.swing.JButton	
-     */
-    private JButton getJButton() {
-        if (jButton == null) {
-            jButton = new JButton();
-        }
-        return jButton;
-    }
-    
-    /**
-     * This method initializes jButton1	
-     * 	
-     * @return javax.swing.JButton	
-     */
-    private JButton getJButton1() {
-        if (jButton1 == null) {
-            jButton1 = new JButton();
-        }
-        return jButton1;
     }
     
     //SECTION-END-METHOD

@@ -18,7 +18,6 @@ public class FormIconPalette extends BForm {
     private BMenuBar myMenuBar = null;
     private BMenu menuWindow = null;
     private BMenuItem menuWindowHide = null;
-    private BCheckBox chkTopMost = null;
     private JPanel jPanel = null;
 
     //SECTION-END-FIELD
@@ -76,31 +75,14 @@ public class FormIconPalette extends BForm {
     }
 
     /**
-     * This method initializes chkTopMost	
-     * 	
-     * @return org.kbinani.windows.forms.BCheckBox	
-     */
-    private BCheckBox getChkTopMost() {
-        if (chkTopMost == null) {
-            chkTopMost = new BCheckBox();
-            chkTopMost.setText("TopMost");
-        }
-        return chkTopMost;
-    }
-
-    /**
      * This method initializes jPanel	
      * 	
      * @return javax.swing.JPanel	
      */
     private JPanel getJPanel() {
         if (jPanel == null) {
-            GridBagConstraints gridBagConstraints = new GridBagConstraints();
-            gridBagConstraints.gridx = 0;
-            gridBagConstraints.gridy = 0;
             jPanel = new JPanel();
             jPanel.setLayout(new GridBagLayout());
-            jPanel.add(getChkTopMost(), gridBagConstraints);
         }
         return jPanel;
     }

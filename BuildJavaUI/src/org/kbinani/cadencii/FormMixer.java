@@ -21,8 +21,7 @@ public class FormMixer extends BForm {
 	private BPanel panel1 = null;
 	private BHScrollBar hScroll = null;
 	private VolumeTracker volumeMaster = null;
-	private BCheckBox chkTopmost = null;
-    private JMenuBar menuMain = null;
+	private JMenuBar menuMain = null;
     private BMenu menuVisual = null;
     private BMenuItem menuVisualReturn = null;
 
@@ -55,12 +54,6 @@ public class FormMixer extends BForm {
 	 */
 	private JPanel getJContentPane() {
 		if (jContentPane == null) {
-			GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
-			gridBagConstraints5.gridx = 1;
-			gridBagConstraints5.weightx = 0.0D;
-			gridBagConstraints5.anchor = GridBagConstraints.WEST;
-			gridBagConstraints5.fill = GridBagConstraints.HORIZONTAL;
-			gridBagConstraints5.gridy = 1;
 			GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
 			gridBagConstraints4.gridx = 1;
 			gridBagConstraints4.weightx = 0.0D;
@@ -92,7 +85,6 @@ public class FormMixer extends BForm {
 			jContentPane.add(getPanel1(), gridBagConstraints3);
 			jContentPane.add(getVolumeMaster(), gridBagConstraints4);
 			jContentPane.add(getHScroll(), gridBagConstraints1);
-			jContentPane.add(getChkTopmost(), gridBagConstraints5);
 		}
 		return jContentPane;
 	}
@@ -135,20 +127,6 @@ public class FormMixer extends BForm {
 	}
 
 	/**
-	 * This method initializes chkTopmost	
-	 * 	
-	 * @return javax.swing.JCheckBox	
-	 */
-	private BCheckBox getChkTopmost() {
-		if (chkTopmost == null) {
-			chkTopmost = new BCheckBox();
-			chkTopmost.setText("Top most");
-			chkTopmost.setText("Top most");
-		}
-		return chkTopmost;
-	}
-
-    /**
      * This method initializes menuMain	
      * 	
      * @return javax.swing.JMenuBar	

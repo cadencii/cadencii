@@ -56,7 +56,7 @@ public class FormRandomize extends BForm {
     //SECTION-BEGIN-METHOD
 
     private void initialize() {
-        this.setSize(new Dimension(361, 289));
+        this.setSize(new Dimension(361, 344));
         this.setTitle("Randomize");
         this.setContentPane(getJPanel1());
     		
@@ -153,7 +153,7 @@ public class FormRandomize extends BForm {
     private NumericUpDownEx getNumStartBar() {
         if (numStartBar == null) {
             numStartBar = new NumericUpDownEx();
-            numStartBar.setPreferredSize(new Dimension(54, 19));
+            numStartBar.setPreferredSize(new Dimension(54, 28));
         }
         return numStartBar;
     }
@@ -168,7 +168,7 @@ public class FormRandomize extends BForm {
             jLabel11 = new BLabel();
             jLabel11.setText("-");
             numStartBeat = new NumericUpDownEx();
-            numStartBeat.setPreferredSize(new Dimension(54, 19));
+            numStartBeat.setPreferredSize(new Dimension(54, 28));
         }
         return numStartBeat;
     }
@@ -184,7 +184,7 @@ public class FormRandomize extends BForm {
             gridBagConstraints6.gridx = -1;
             gridBagConstraints6.gridy = -1;
             numEndBar = new NumericUpDownEx();
-            numEndBar.setPreferredSize(new Dimension(54, 19));
+            numEndBar.setPreferredSize(new Dimension(54, 28));
         }
         return numEndBar;
     }
@@ -197,7 +197,7 @@ public class FormRandomize extends BForm {
     private NumericUpDownEx getNumEndBeat() {
         if (numEndBeat == null) {
             numEndBeat = new NumericUpDownEx();
-            numEndBeat.setPreferredSize(new Dimension(54, 19));
+            numEndBeat.setPreferredSize(new Dimension(54, 28));
         }
         return numEndBeat;
     }
@@ -246,6 +246,8 @@ public class FormRandomize extends BForm {
             gridBagConstraints17.gridx = 2;
             gridBagConstraints17.anchor = GridBagConstraints.EAST;
             gridBagConstraints17.insets = new Insets(16, 0, 0, 16);
+            gridBagConstraints17.weightx = 1.0D;
+            gridBagConstraints17.fill = GridBagConstraints.HORIZONTAL;
             gridBagConstraints17.gridy = 3;
             GridBagConstraints gridBagConstraints16 = new GridBagConstraints();
             gridBagConstraints16.gridx = 1;
@@ -335,7 +337,7 @@ public class FormRandomize extends BForm {
     private BComboBox getComboShiftValue() {
         if (comboShiftValue == null) {
             comboShiftValue = new BComboBox();
-            comboShiftValue.setPreferredSize(new Dimension(218, 19));
+            comboShiftValue.setPreferredSize(new Dimension(218, 27));
         }
         return comboShiftValue;
     }
@@ -361,7 +363,7 @@ public class FormRandomize extends BForm {
     private NumericUpDownEx getNumResolution() {
         if (numResolution == null) {
             numResolution = new NumericUpDownEx();
-            numResolution.setPreferredSize(new Dimension(54, 19));
+            numResolution.setPreferredSize(new Dimension(54, 28));
         }
         return numResolution;
     }
@@ -403,7 +405,7 @@ public class FormRandomize extends BForm {
     private BComboBox getComboPitPattern() {
         if (comboPitPattern == null) {
             comboPitPattern = new BComboBox();
-            comboPitPattern.setPreferredSize(new Dimension(218, 19));
+            comboPitPattern.setPreferredSize(new Dimension(218, 27));
         }
         return comboPitPattern;
     }
@@ -445,7 +447,7 @@ public class FormRandomize extends BForm {
     private BComboBox getComboPitValue() {
         if (comboPitValue == null) {
             comboPitValue = new BComboBox();
-            comboPitValue.setPreferredSize(new Dimension(218, 19));
+            comboPitValue.setPreferredSize(new Dimension(218, 27));
         }
         return comboPitValue;
     }

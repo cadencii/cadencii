@@ -47,7 +47,6 @@ public class FormSequenceConfig extends BForm {
     private JPanel jPanel21 = null;
     private BLabel labelSampleRate = null;
     private BComboBox comboSampleRate = null;
-    private BLabel labelPreMeasure1 = null;
     //SECTION-END-FIELD
     public FormSequenceConfig() {
     	super();
@@ -56,7 +55,7 @@ public class FormSequenceConfig extends BForm {
     //SECTION-BEGIN-METHOD
 
     private void initialize() {
-        this.setSize(new Dimension(343, 285));
+        this.setSize(new Dimension(343, 295));
         this.setTitle("Sequence config");
         this.setContentPane(getJPanel1());
     		
@@ -69,13 +68,6 @@ public class FormSequenceConfig extends BForm {
      */
     private JPanel getJPanel1() {
         if (jPanel1 == null) {
-            GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
-            gridBagConstraints21.gridx = 1;
-            gridBagConstraints21.weighty = 1.0D;
-            gridBagConstraints21.gridy = 2;
-            labelPreMeasure1 = new BLabel();
-            labelPreMeasure1.setText(" ");
-            labelPreMeasure1.setPreferredSize(new Dimension(4, 4));
             GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
             gridBagConstraints1.gridx = 1;
             gridBagConstraints1.weightx = 1.0D;
@@ -89,7 +81,7 @@ public class FormSequenceConfig extends BForm {
             gridBagConstraints.insets = new Insets(12, 12, 3, 12);
             gridBagConstraints.gridy = 0;
             GridBagConstraints gridBagConstraints20 = new GridBagConstraints();
-            gridBagConstraints20.gridy = 3;
+            gridBagConstraints20.gridy = 2;
             gridBagConstraints20.gridheight = 1;
             gridBagConstraints20.gridwidth = 2;
             gridBagConstraints20.gridx = 0;
@@ -106,7 +98,6 @@ public class FormSequenceConfig extends BForm {
             jPanel1.add(getJPanel3(), gridBagConstraints20);
             jPanel1.add(getGroupWaveFileOutput(), gridBagConstraints);
             jPanel1.add(getGroupSequence(), gridBagConstraints1);
-            jPanel1.add(labelPreMeasure1, gridBagConstraints21);
         }
         return jPanel1;
     }
@@ -143,7 +134,7 @@ public class FormSequenceConfig extends BForm {
         if (btnCancel == null) {
             btnCancel = new BButton();
             btnCancel.setText("Cancel");
-            btnCancel.setPreferredSize(new Dimension(75, 23));
+            btnCancel.setPreferredSize(new Dimension(75, 29));
         }
         return btnCancel;
     }
@@ -157,7 +148,7 @@ public class FormSequenceConfig extends BForm {
         if (btnOK == null) {
             btnOK = new BButton();
             btnOK.setText("OK");
-            btnOK.setPreferredSize(new Dimension(75, 23));
+            btnOK.setPreferredSize(new Dimension(75, 29));
         }
         return btnOK;
     }
@@ -242,7 +233,7 @@ public class FormSequenceConfig extends BForm {
     private BComboBox getComboChannel() {
         if (comboChannel == null) {
             comboChannel = new BComboBox();
-            comboChannel.setPreferredSize(new Dimension(97, 20));
+            comboChannel.setPreferredSize(new Dimension(97, 27));
         }
         return comboChannel;
     }
@@ -363,7 +354,7 @@ public class FormSequenceConfig extends BForm {
     private BComboBox getComboPreMeasure() {
         if (comboPreMeasure == null) {
             comboPreMeasure = new BComboBox();
-            comboPreMeasure.setPreferredSize(new Dimension(97, 20));
+            comboPreMeasure.setPreferredSize(new Dimension(97, 27));
         }
         return comboPreMeasure;
     }
@@ -389,7 +380,7 @@ public class FormSequenceConfig extends BForm {
     private BComboBox getComboSampleRate() {
         if (comboSampleRate == null) {
             comboSampleRate = new BComboBox();
-            comboSampleRate.setPreferredSize(new Dimension(97, 20));
+            comboSampleRate.setPreferredSize(new Dimension(97, 27));
         }
         return comboSampleRate;
     }

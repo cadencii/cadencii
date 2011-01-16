@@ -39,9 +39,6 @@ public class FormBeatConfig extends BForm {
     private BLabel jLabel4 = null;
     private BLabel jLabel7 = null;
     private BLabel jLabel8 = null;
-    private BLabel jLabel41 = null;
-    private BLabel jLabel42 = null;
-
     //SECTION-END-FIELD
     public FormBeatConfig(){
         super();
@@ -56,7 +53,7 @@ public class FormBeatConfig extends BForm {
      */
     private void initialize() {
         this.setTitle("Beat Change");
-        this.setSize(314, 330);
+        this.setSize(314, 287);
         this.setContentPane(getJContentPane());
         this.setTitle("JFrame");
     }
@@ -114,12 +111,6 @@ public class FormBeatConfig extends BForm {
      */
     private BGroupBox getGroupPosition() {
         if (groupPosition == null) {
-            GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
-            gridBagConstraints21.gridx = 0;
-            gridBagConstraints21.weighty = 1.0D;
-            gridBagConstraints21.gridy = 3;
-            jLabel41 = new BLabel();
-            jLabel41.setText(" ");
             GridBagConstraints gridBagConstraints61 = new GridBagConstraints();
             gridBagConstraints61.gridx = 3;
             gridBagConstraints61.gridy = 2;
@@ -182,7 +173,6 @@ public class FormBeatConfig extends BForm {
             groupPosition.add(lblBar2, gridBagConstraints5);
             groupPosition.add(jLabel7, gridBagConstraints51);
             groupPosition.add(jLabel8, gridBagConstraints61);
-            groupPosition.add(jLabel41, gridBagConstraints21);
         }
         return groupPosition;
     }
@@ -195,7 +185,7 @@ public class FormBeatConfig extends BForm {
     private BNumericUpDown getNumStart() {
         if (numStart == null) {
             numStart = new BNumericUpDown();
-            numStart.setPreferredSize(new Dimension(31, 20));
+            numStart.setPreferredSize(new Dimension(31, 29));
         }
         return numStart;
     }
@@ -221,7 +211,7 @@ public class FormBeatConfig extends BForm {
     private BNumericUpDown getNumEnd() {
         if (numEnd == null) {
             numEnd = new BNumericUpDown();
-            numEnd.setPreferredSize(new Dimension(31, 20));
+            numEnd.setPreferredSize(new Dimension(31, 29));
         }
         return numEnd;
     }
@@ -233,12 +223,6 @@ public class FormBeatConfig extends BForm {
      */
     private BGroupBox getGroupBeat() {
         if (groupBeat == null) {
-            GridBagConstraints gridBagConstraints14 = new GridBagConstraints();
-            gridBagConstraints14.gridx = 0;
-            gridBagConstraints14.weighty = 1.0D;
-            gridBagConstraints14.gridy = 1;
-            jLabel42 = new BLabel();
-            jLabel42.setText(" ");
             GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
             gridBagConstraints13.gridx = 4;
             gridBagConstraints13.gridy = 0;
@@ -274,7 +258,6 @@ public class FormBeatConfig extends BForm {
             groupBeat.add(jLabel1, gridBagConstraints11);
             groupBeat.add(getComboDenominator(), gridBagConstraints12);
             groupBeat.add(jLabel2, gridBagConstraints13);
-            groupBeat.add(jLabel42, gridBagConstraints14);
         }
         return groupBeat;
     }
@@ -287,7 +270,7 @@ public class FormBeatConfig extends BForm {
     private BNumericUpDown getNumNumerator() {
         if (numNumerator == null) {
             numNumerator = new BNumericUpDown();
-            numNumerator.setPreferredSize(new Dimension(31, 20));
+            numNumerator.setPreferredSize(new Dimension(31, 29));
         }
         return numNumerator;
     }
@@ -300,7 +283,7 @@ public class FormBeatConfig extends BForm {
     private BComboBox getComboDenominator() {
         if (comboDenominator == null) {
             comboDenominator = new BComboBox();
-            comboDenominator.setPreferredSize(new Dimension(31, 20));
+            comboDenominator.setPreferredSize(new Dimension(31, 27));
         }
         return comboDenominator;
     }

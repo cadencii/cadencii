@@ -53,7 +53,7 @@ public class FormVibratoConfig extends BForm {
 	 * @return void
 	 */
 	private void initialize() {
-		this.setSize(354, 225);
+		this.setSize(398, 225);
 		this.setContentPane(getJContentPane());
 		this.setTitle("JFrame");
 	}
@@ -163,7 +163,7 @@ public class FormVibratoConfig extends BForm {
 		if (btnOK == null) {
 			btnOK = new BButton();
 			btnOK.setText("OK");
-			btnOK.setPreferredSize(new Dimension(75, 23));
+			btnOK.setPreferredSize(new Dimension(75, 29));
 		}
 		return btnOK;
 	}
@@ -177,7 +177,7 @@ public class FormVibratoConfig extends BForm {
 		if (btnCancel == null) {
 			btnCancel = new BButton();
 			btnCancel.setText("Cancel");
-			btnCancel.setPreferredSize(new Dimension(75, 23));
+			btnCancel.setPreferredSize(new Dimension(75, 29));
 		}
 		return btnCancel;
 	}
@@ -190,7 +190,7 @@ public class FormVibratoConfig extends BForm {
 	private JTextField getTxtVibratoLength() {
 		if (txtVibratoLength == null) {
 			txtVibratoLength = new BTextBox();
-			txtVibratoLength.setPreferredSize(new Dimension(61, 19));
+			txtVibratoLength.setPreferredSize(new Dimension(70, 19));
 		}
 		return txtVibratoLength;
 	}
@@ -203,7 +203,7 @@ public class FormVibratoConfig extends BForm {
 	private JComboBox getComboVibratoType() {
 		if (comboVibratoType == null) {
 			comboVibratoType = new BComboBox();
-			comboVibratoType.setPreferredSize(new Dimension(167, 20));
+			comboVibratoType.setPreferredSize(new Dimension(167, 27));
 		}
 		return comboVibratoType;
 	}

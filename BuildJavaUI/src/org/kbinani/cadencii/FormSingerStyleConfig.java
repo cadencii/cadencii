@@ -36,7 +36,6 @@ public class FormSingerStyleConfig extends BForm {
     private BLabel jLabel5 = null;
     private BCheckBox chkUpPortamento = null;
     private BCheckBox chkDownPortamento = null;
-    private BLabel jLabel6 = null;
     private BGroupBox groupDynamicsControl = null;
     private BLabel lblDecay = null;
     private BSlider trackDecay = null;
@@ -46,7 +45,6 @@ public class FormSingerStyleConfig extends BForm {
     private BSlider trackAccent = null;
     private BTextBox txtAccent = null;
     private BLabel jLabel51 = null;
-    private BLabel jLabel61 = null;
     private BPanel jPanel2 = null;
     private BButton btnOK = null;
     private BButton btnCancel = null;
@@ -69,7 +67,7 @@ public class FormSingerStyleConfig extends BForm {
      * 
      */
     private void initialize() {
-        this.setSize(new Dimension(401, 359));
+        this.setSize(new Dimension(401, 388));
         this.setTitle("Default Singer Style");
         this.setContentPane(getJPanel());
     		
@@ -119,7 +117,7 @@ public class FormSingerStyleConfig extends BForm {
     private BComboBox getComboTemplate() {
         if (comboTemplate == null) {
             comboTemplate = new BComboBox();
-            comboTemplate.setPreferredSize(new Dimension(121, 22));
+            comboTemplate.setPreferredSize(new Dimension(121, 27));
         }
         return comboTemplate;
     }
@@ -131,15 +129,6 @@ public class FormSingerStyleConfig extends BForm {
      */
     private BGroupBox getGroupPitchControl() {
         if (groupPitchControl == null) {
-            GridBagConstraints gridBagConstraints14 = new GridBagConstraints();
-            gridBagConstraints14.fill = GridBagConstraints.BOTH;
-            gridBagConstraints14.gridx = 0;
-            gridBagConstraints14.gridy = 4;
-            gridBagConstraints14.weightx = 1.0D;
-            gridBagConstraints14.weighty = 1.0D;
-            gridBagConstraints14.gridwidth = 4;
-            jLabel6 = new BLabel();
-            jLabel6.setText("");
             GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
             gridBagConstraints13.anchor = GridBagConstraints.WEST;
             gridBagConstraints13.gridwidth = 4;
@@ -223,7 +212,6 @@ public class FormSingerStyleConfig extends BForm {
             groupPitchControl.add(jLabel5, gridBagConstraints11);
             groupPitchControl.add(getChkUpPortamento(), gridBagConstraints12);
             groupPitchControl.add(getChkDownPortamento(), gridBagConstraints13);
-            groupPitchControl.add(jLabel6, gridBagConstraints14);
         }
         return groupPitchControl;
     }
@@ -236,7 +224,7 @@ public class FormSingerStyleConfig extends BForm {
     private BSlider getTrackBendDepth() {
         if (trackBendDepth == null) {
             trackBendDepth = new BSlider();
-            trackBendDepth.setPreferredSize(new Dimension(156, 18));
+            trackBendDepth.setPreferredSize(new Dimension(156, 29));
             trackBendDepth.setValue(8);
         }
         return trackBendDepth;
@@ -265,7 +253,7 @@ public class FormSingerStyleConfig extends BForm {
     private BSlider getTrackBendLength() {
         if (trackBendLength == null) {
             trackBendLength = new BSlider();
-            trackBendLength.setPreferredSize(new Dimension(156, 18));
+            trackBendLength.setPreferredSize(new Dimension(156, 29));
             trackBendLength.setValue(0);
         }
         return trackBendLength;
@@ -319,15 +307,6 @@ public class FormSingerStyleConfig extends BForm {
      */
     private BGroupBox getGroupDynamicsControl() {
         if (groupDynamicsControl == null) {
-            GridBagConstraints gridBagConstraints141 = new GridBagConstraints();
-            gridBagConstraints141.fill = GridBagConstraints.BOTH;
-            gridBagConstraints141.gridx = 0;
-            gridBagConstraints141.gridy = 4;
-            gridBagConstraints141.weightx = 1.0D;
-            gridBagConstraints141.weighty = 1.0D;
-            gridBagConstraints141.gridwidth = 4;
-            jLabel61 = new BLabel();
-            jLabel61.setText("");
             GridBagConstraints gridBagConstraints111 = new GridBagConstraints();
             gridBagConstraints111.anchor = GridBagConstraints.WEST;
             gridBagConstraints111.gridx = 3;
@@ -395,7 +374,6 @@ public class FormSingerStyleConfig extends BForm {
             groupDynamicsControl.add(getTrackAccent(), gridBagConstraints91);
             groupDynamicsControl.add(getTxtAccent(), gridBagConstraints101);
             groupDynamicsControl.add(jLabel51, gridBagConstraints111);
-            groupDynamicsControl.add(jLabel61, gridBagConstraints141);
         }
         return groupDynamicsControl;
     }
@@ -408,7 +386,7 @@ public class FormSingerStyleConfig extends BForm {
     private BSlider getTrackDecay() {
         if (trackDecay == null) {
             trackDecay = new BSlider();
-            trackDecay.setPreferredSize(new Dimension(156, 18));
+            trackDecay.setPreferredSize(new Dimension(156, 29));
         }
         return trackDecay;
     }
@@ -436,7 +414,7 @@ public class FormSingerStyleConfig extends BForm {
     private BSlider getTrackAccent() {
         if (trackAccent == null) {
             trackAccent = new BSlider();
-            trackAccent.setPreferredSize(new Dimension(156, 18));
+            trackAccent.setPreferredSize(new Dimension(156, 29));
         }
         return trackAccent;
     }
@@ -564,7 +542,7 @@ public class FormSingerStyleConfig extends BForm {
     private BButton getBtnApply() {
         if (btnApply == null) {
             btnApply = new BButton();
-            btnApply.setText("Apply to current track(&C)");
+            btnApply.setText("Apply to current track");
         }
         return btnApply;
     }

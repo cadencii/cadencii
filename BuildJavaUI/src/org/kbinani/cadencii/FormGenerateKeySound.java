@@ -40,7 +40,7 @@ public class FormGenerateKeySound extends BForm {
     //SECTION-BEGIN-METHOD
 
     private void initialize() {
-        this.setSize(new Dimension(342, 197));
+        this.setSize(new Dimension(382, 208));
         this.setContentPane(getJPanel());
     		
     }
@@ -228,7 +228,7 @@ public class FormGenerateKeySound extends BForm {
     private JComboBox getComboSingingSynthSystem() {
         if (comboSingingSynthSystem == null) {
             comboSingingSynthSystem = new JComboBox();
-            comboSingingSynthSystem.setPreferredSize(new Dimension(121, 20));
+            comboSingingSynthSystem.setPreferredSize(new Dimension(121, 27));
         }
         return comboSingingSynthSystem;
     }
@@ -241,7 +241,7 @@ public class FormGenerateKeySound extends BForm {
     private JComboBox getComboSinger() {
         if (comboSinger == null) {
             comboSinger = new JComboBox();
-            comboSinger.setPreferredSize(new Dimension(121, 20));
+            comboSinger.setPreferredSize(new Dimension(121, 27));
         }
         return comboSinger;
     }
@@ -260,4 +260,4 @@ public class FormGenerateKeySound extends BForm {
     }
 
     //SECTION-END-METHOD
-}
+}  //  @jve:decl-index=0:visual-constraint="10,10"

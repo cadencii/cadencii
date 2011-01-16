@@ -327,7 +327,6 @@ public class FormMain extends BForm {
     private BMenuItem menuHiddenPrintPoToCSV = null;
     private BToggleButton stripBtnStepSequencer = null;
     private JPanel jPanel2 = null;
-    
     //SECTION-END-FIELD
     public FormMain( String vsq_file ) {
         super();
@@ -2270,16 +2269,16 @@ public class FormMain extends BForm {
         if (toolStripBottom == null) {
             stripLblMidiIn = new BLabel();
             stripLblMidiIn.setText("Disabled");
-            stripLblMidiIn.setPreferredSize(new Dimension(49, 20));
+            stripLblMidiIn.setPreferredSize(new Dimension(70, 20));
             jLabel4 = new BLabel();
-            jLabel4.setText("MIDI In");
-            jLabel4.setPreferredSize(new Dimension(41, 20));
+            jLabel4.setText("MIDI In:");
+            jLabel4.setPreferredSize(new Dimension(50, 20));
             stripLblGameCtrlMode = new BLabel();
             stripLblGameCtrlMode.setText("Disabled");
-            stripLblGameCtrlMode.setPreferredSize(new Dimension(49, 20));
+            stripLblGameCtrlMode.setPreferredSize(new Dimension(70, 20));
             jLabel3 = new BLabel();
-            jLabel3.setText("Game Controler");
-            jLabel3.setPreferredSize(new Dimension(85, 20));
+            jLabel3.setText("Game Controler:");
+            jLabel3.setPreferredSize(new Dimension(105, 20));
             toolStripBottom = new BToolBar();
             toolStripBottom.addSeparator();
             toolStripBottom.addSeparator();
@@ -3793,6 +3792,7 @@ public class FormMain extends BForm {
     private BVScrollBar getVScroll() {
         if (vScroll == null) {
             vScroll = new BVScrollBar();
+            vScroll.setPreferredSize(new Dimension(17, 96));
         }
         return vScroll;
     }
@@ -3805,7 +3805,7 @@ public class FormMain extends BForm {
     private BHScrollBar getHScroll() {
         if (hScroll == null) {
             hScroll = new BHScrollBar();
-            hScroll.setPreferredSize(new Dimension(48, 16));
+            hScroll.setPreferredSize(new Dimension(48, 17));
         }
         return hScroll;
     }
@@ -3843,7 +3843,7 @@ public class FormMain extends BForm {
     private BSlider getTrackBar() {
         if (trackBar == null) {
             trackBar = new BSlider();
-            trackBar.setPreferredSize(new Dimension(83, 16));
+            trackBar.setPreferredSize(new Dimension(83, 17));
             trackBar.setMinimum(17);
             trackBar.setPreferredSize(new Dimension(200, 16));
             trackBar.setMaximum(609);

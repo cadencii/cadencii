@@ -171,7 +171,7 @@ public class FormMidiImExport extends BForm {
 			btnCheckAll = new BButton();
 			btnCheckAll.setText("Check All");
 			btnCheckAll.setName("btnCheckAll");
-			btnCheckAll.setPreferredSize(new Dimension(87, 23));
+			btnCheckAll.setPreferredSize(new Dimension(87, 29));
 		}
 		return btnCheckAll;
 	}
@@ -186,7 +186,7 @@ public class FormMidiImExport extends BForm {
 			btnUncheckAll = new BButton();
 			btnUncheckAll.setText("Uncheck All");
 			btnUncheckAll.setName("btnUncheckAll");
-			btnUncheckAll.setPreferredSize(new Dimension(101, 23));
+			btnUncheckAll.setPreferredSize(new Dimension(101, 29));
 		}
 		return btnUncheckAll;
 	}

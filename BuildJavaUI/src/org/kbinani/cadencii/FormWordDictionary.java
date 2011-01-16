@@ -175,7 +175,7 @@ public class FormWordDictionary extends BForm {
         if (btnUp == null) {
             btnUp = new BButton();
             btnUp.setText("Up");
-            btnUp.setPreferredSize(new Dimension(49, 23));
+            btnUp.setPreferredSize(new Dimension(49, 29));
         }
         return btnUp;
     }
@@ -189,7 +189,7 @@ public class FormWordDictionary extends BForm {
         if (btnDown == null) {
             btnDown = new BButton();
             btnDown.setText("Down");
-            btnDown.setPreferredSize(new Dimension(66, 23));
+            btnDown.setPreferredSize(new Dimension(66, 29));
         }
         return btnDown;
     }

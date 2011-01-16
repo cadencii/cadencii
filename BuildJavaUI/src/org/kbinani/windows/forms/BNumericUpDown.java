@@ -309,12 +309,14 @@ class BNumericUpDownButtons extends JPanel
     
     public void paint( Graphics g ){
         if( mOwnerDraw ){
+            int height = getHeight();
+            int delta = (height - mImgHeight) / 2;
             if( mButtonState == 0 ){
-                g.drawImage( mImg00, 0, 0, null );
+                g.drawImage( mImg00, 0, delta, null );
             }else if( mButtonState == 1 ){
-                g.drawImage( mImg01, 0, 0, null );
+                g.drawImage( mImg01, 0, delta, null );
             }else if( mButtonState == 10 ){
-                g.drawImage( mImg10, 0, 0, null );
+                g.drawImage( mImg10, 0, delta, null );
             }
         }else{
             super.paint( g );
@@ -336,7 +338,7 @@ class BNumericUpDownButtons extends JPanel
 
     public void mousePressed(MouseEvent e) {
         Point p = e.getPoint();
-        if( p.y < mImgHeight / 2 ){
+        if( p.y < getHeight() / 2 ){
             mButtonState = 10;
         }else{
             mButtonState = 1;

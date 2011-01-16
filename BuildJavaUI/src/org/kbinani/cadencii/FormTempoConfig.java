@@ -173,7 +173,7 @@ public class FormTempoConfig extends BForm {
     private BNumericUpDown getNumBar() {
         if (numBar == null) {
             numBar = new BNumericUpDown();
-            numBar.setPreferredSize(new Dimension(45, 20));
+            numBar.setPreferredSize(new Dimension(45, 28));
         }
         return numBar;
     }
@@ -186,7 +186,7 @@ public class FormTempoConfig extends BForm {
     private BNumericUpDown getNumBeat() {
         if (numBeat == null) {
             numBeat = new BNumericUpDown();
-            numBeat.setPreferredSize(new Dimension(45, 20));
+            numBeat.setPreferredSize(new Dimension(45, 28));
         }
         return numBeat;
     }
@@ -199,7 +199,7 @@ public class FormTempoConfig extends BForm {
     private BNumericUpDown getNumClock() {
         if (numClock == null) {
             numClock = new BNumericUpDown();
-            numClock.setPreferredSize(new Dimension(45, 20));
+            numClock.setPreferredSize(new Dimension(45, 28));
         }
         return numClock;
     }
@@ -253,7 +253,7 @@ public class FormTempoConfig extends BForm {
     private BNumericUpDown getNumTempo() {
         if (numTempo == null) {
             numTempo = new BNumericUpDown();
-            numTempo.setPreferredSize(new Dimension(59, 20));
+            numTempo.setPreferredSize(new Dimension(59, 28));
             numTempo.setMaximum(300);
             numTempo.setValue(120);
             numTempo.setMinimum(20);

@@ -227,7 +227,8 @@ public class Preference extends JFrame {
 	 * @return void
 	 */
 	private void initialize() {
-		this.setSize(504, 496);
+		this.setSize(520, 540);
+		this.setResizable(true);
 		this.setContentPane(getJPanel5());
 		this.setTitle("Preference");
 	}
@@ -266,6 +267,7 @@ public class Preference extends JFrame {
 			gridBagConstraints21.anchor = GridBagConstraints.WEST;
 			gridBagConstraints21.gridy = 1;
 			gridBagConstraints21.insets = new Insets(3, 12, 3, 0);
+			gridBagConstraints21.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints21.gridx = 0;
 			GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
 			gridBagConstraints1.anchor = GridBagConstraints.WEST;
@@ -336,7 +338,7 @@ public class Preference extends JFrame {
 	private BComboBox getComboResolControlCurve() {
 		if (comboResolControlCurve == null) {
 			comboResolControlCurve = new BComboBox();
-			comboResolControlCurve.setPreferredSize(new Dimension(101, 20));
+			comboResolControlCurve.setPreferredSize(new Dimension(101, 27));
 		}
 		return comboResolControlCurve;
 	}
@@ -406,7 +408,7 @@ public class Preference extends JFrame {
 	private BComboBox getComboVibratoLength() {
 		if (comboVibratoLength == null) {
 			comboVibratoLength = new BComboBox();
-			comboVibratoLength.setPreferredSize(new Dimension(101, 20));
+			comboVibratoLength.setPreferredSize(new Dimension(101, 27));
 		}
 		return comboVibratoLength;
 	}
@@ -506,7 +508,7 @@ public class Preference extends JFrame {
 	private BComboBox getComboAutoVibratoType1() {
 		if (comboAutoVibratoType1 == null) {
 			comboAutoVibratoType1 = new BComboBox();
-			comboAutoVibratoType1.setPreferredSize(new Dimension(101, 20));
+			comboAutoVibratoType1.setPreferredSize(new Dimension(101, 27));
 		}
 		return comboAutoVibratoType1;
 	}
@@ -519,7 +521,7 @@ public class Preference extends JFrame {
 	private BComboBox getComboAutoVibratoType2() {
 		if (comboAutoVibratoType2 == null) {
 			comboAutoVibratoType2 = new BComboBox();
-			comboAutoVibratoType2.setPreferredSize(new Dimension(101, 20));
+			comboAutoVibratoType2.setPreferredSize(new Dimension(101, 27));
 		}
 		return comboAutoVibratoType2;
 	}
@@ -649,7 +651,7 @@ public class Preference extends JFrame {
 	private BComboBox getComboDefualtSinger() {
 		if (comboDefualtSinger == null) {
 			comboDefualtSinger = new BComboBox();
-			comboDefualtSinger.setPreferredSize(new Dimension(222, 20));
+			comboDefualtSinger.setPreferredSize(new Dimension(222, 27));
 		}
 		return comboDefualtSinger;
 	}
@@ -662,7 +664,7 @@ public class Preference extends JFrame {
 	private BNumericUpDown getNumPreSendTime() {
 		if (numPreSendTime == null) {
 			numPreSendTime = new BNumericUpDown();
-			numPreSendTime.setPreferredSize(new Dimension(68, 25));
+			numPreSendTime.setPreferredSize(new Dimension(68, 28));
 		}
 		return numPreSendTime;
 	}
@@ -675,7 +677,7 @@ public class Preference extends JFrame {
 	private BNumericUpDown getNumWait() {
 		if (numWait == null) {
 			numWait = new BNumericUpDown();
-			numWait.setPreferredSize(new Dimension(68, 25));
+			numWait.setPreferredSize(new Dimension(68, 28));
 		}
 		return numWait;
 	}
@@ -789,7 +791,7 @@ public class Preference extends JFrame {
 		if (btnChangeMenuFont == null) {
 			btnChangeMenuFont = new BButton();
 			btnChangeMenuFont.setText("Change");
-			btnChangeMenuFont.setPreferredSize(new Dimension(85, 23));
+			btnChangeMenuFont.setPreferredSize(new Dimension(85, 29));
 		}
 		return btnChangeMenuFont;
 	}
@@ -802,7 +804,7 @@ public class Preference extends JFrame {
 	private BButton getBtnChangeScreenFont() {
 		if (btnChangeScreenFont == null) {
 			btnChangeScreenFont = new BButton();
-			btnChangeScreenFont.setPreferredSize(new Dimension(85, 23));
+			btnChangeScreenFont.setPreferredSize(new Dimension(85, 29));
 			btnChangeScreenFont.setText("Change");
 		}
 		return btnChangeScreenFont;
@@ -845,7 +847,7 @@ public class Preference extends JFrame {
 	private BComboBox getComboLanguage() {
 		if (comboLanguage == null) {
 			comboLanguage = new BComboBox();
-			comboLanguage.setPreferredSize(new Dimension(121, 20));
+			comboLanguage.setPreferredSize(new Dimension(121, 27));
 		}
 		return comboLanguage;
 	}
@@ -887,7 +889,7 @@ public class Preference extends JFrame {
 	private BNumericUpDown getNumTrackHeight() {
 		if (numTrackHeight == null) {
 			numTrackHeight = new BNumericUpDown();
-			numTrackHeight.setPreferredSize(new Dimension(121, 25));
+			numTrackHeight.setPreferredSize(new Dimension(121, 28));
 		}
 		return numTrackHeight;
 	}
@@ -1333,7 +1335,7 @@ public class Preference extends JFrame {
 			gridBagConstraints78.gridy = 0;
 			tabOperation = new BPanel();
 			tabOperation.setLayout(new GridBagLayout());
-			tabOperation.setSize(new Dimension(443, 404));
+			tabOperation.setSize(new Dimension(462, 460));
 			tabOperation.add(getGroupPianoroll(), gridBagConstraints78);
 			tabOperation.add(getGroupMisc(), gridBagConstraints87);
 		}
@@ -1421,7 +1423,7 @@ public class Preference extends JFrame {
 	private BNumericUpDown getNumericUpDownEx1() {
 		if (numericUpDownEx1 == null) {
 			numericUpDownEx1 = new BNumericUpDown();
-			numericUpDownEx1.setPreferredSize(new Dimension(120, 25));
+			numericUpDownEx1.setPreferredSize(new Dimension(120, 28));
 		}
 		return numericUpDownEx1;
 	}
@@ -1601,7 +1603,7 @@ public class Preference extends JFrame {
 	private BNumericUpDown getNumMaximumFrameRate() {
 		if (numMaximumFrameRate == null) {
 			numMaximumFrameRate = new BNumericUpDown();
-			numMaximumFrameRate.setPreferredSize(new Dimension(120, 25));
+			numMaximumFrameRate.setPreferredSize(new Dimension(120, 28));
 		}
 		return numMaximumFrameRate;
 	}
@@ -1614,7 +1616,7 @@ public class Preference extends JFrame {
 	private BNumericUpDown getNumMouseHoverTime() {
 		if (numMouseHoverTime == null) {
 			numMouseHoverTime = new BNumericUpDown();
-			numMouseHoverTime.setPreferredSize(new Dimension(120, 25));
+			numMouseHoverTime.setPreferredSize(new Dimension(120, 28));
 		}
 		return numMouseHoverTime;
 	}
@@ -1627,7 +1629,7 @@ public class Preference extends JFrame {
 	private BComboBox getComboMidiInPortNumber() {
 		if (comboMidiInPortNumber == null) {
 			comboMidiInPortNumber = new BComboBox();
-			comboMidiInPortNumber.setPreferredSize(new Dimension(239, 20));
+			comboMidiInPortNumber.setPreferredSize(new Dimension(239, 27));
 		}
 		return comboMidiInPortNumber;
 	}
@@ -1722,7 +1724,7 @@ public class Preference extends JFrame {
 	private BComboBox getComboPlatform() {
 		if (comboPlatform == null) {
 			comboPlatform = new BComboBox();
-			comboPlatform.setPreferredSize(new Dimension(121, 20));
+			comboPlatform.setPreferredSize(new Dimension(121, 27));
 		}
 		return comboPlatform;
 	}
@@ -1792,7 +1794,7 @@ public class Preference extends JFrame {
 			gridBagConstraints96.gridy = 1;
 			lblVOCALOID2 = new BLabel();
 			lblVOCALOID2.setText("VOCALOID2");
-			lblVOCALOID2.setPreferredSize(new Dimension(72, 16));
+			lblVOCALOID2.setPreferredSize(new Dimension(76, 16));
 			GridBagConstraints gridBagConstraints95 = new GridBagConstraints();
 			gridBagConstraints95.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints95.gridy = 0;
@@ -1807,7 +1809,7 @@ public class Preference extends JFrame {
 			gridBagConstraints94.gridy = 0;
 			lblVOCALOID1 = new BLabel();
 			lblVOCALOID1.setText("VOCALOID1");
-			lblVOCALOID1.setPreferredSize(new Dimension(72, 16));
+			lblVOCALOID1.setPreferredSize(new Dimension(76, 16));
 			groupVsti = new BGroupBox();
 			groupVsti.setLayout(new GridBagLayout());
 			groupVsti.setBorder(BorderFactory.createTitledBorder(null, "VST Instruments", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
@@ -1927,7 +1929,7 @@ public class Preference extends JFrame {
 	private BButton getBtnWavtool() {
 		if (btnWavtool == null) {
 			btnWavtool = new BButton();
-			btnWavtool.setPreferredSize(new Dimension(61, 23));
+			btnWavtool.setPreferredSize(new Dimension(75, 29));
 			btnWavtool.setText("Browse");
 		}
 		return btnWavtool;
@@ -2002,7 +2004,7 @@ public class Preference extends JFrame {
 		if (btnAdd == null) {
 			btnAdd = new BButton();
 			btnAdd.setText("Add");
-			btnAdd.setPreferredSize(new Dimension(85, 23));
+			btnAdd.setPreferredSize(new Dimension(85, 29));
 		}
 		return btnAdd;
 	}
@@ -2016,7 +2018,7 @@ public class Preference extends JFrame {
 		if (btnRemove == null) {
 			btnRemove = new BButton();
 			btnRemove.setText("Remove");
-			btnRemove.setPreferredSize(new Dimension(85, 23));
+			btnRemove.setPreferredSize(new Dimension(85, 29));
 		}
 		return btnRemove;
 	}
@@ -2030,7 +2032,7 @@ public class Preference extends JFrame {
 		if (btnUp == null) {
 			btnUp = new BButton();
 			btnUp.setText("Up");
-			btnUp.setPreferredSize(new Dimension(75, 23));
+			btnUp.setPreferredSize(new Dimension(75, 29));
 		}
 		return btnUp;
 	}
@@ -2044,7 +2046,7 @@ public class Preference extends JFrame {
 		if (btnDown == null) {
 			btnDown = new BButton();
 			btnDown.setText("Down");
-			btnDown.setPreferredSize(new Dimension(75, 23));
+			btnDown.setPreferredSize(new Dimension(75, 29));
 		}
 		return btnDown;
 	}
@@ -2296,7 +2298,7 @@ public class Preference extends JFrame {
 	private BNumericUpDown getNumAutoBackupInterval() {
 		if (numAutoBackupInterval == null) {
 			numAutoBackupInterval = new BNumericUpDown();
-			numAutoBackupInterval.setPreferredSize(new Dimension(69, 25));
+			numAutoBackupInterval.setPreferredSize(new Dimension(69, 28));
 		}
 		return numAutoBackupInterval;
 	}
@@ -2334,7 +2336,7 @@ public class Preference extends JFrame {
     private BButton getBtnAquesTone() {
         if (btnAquesTone == null) {
             btnAquesTone = new BButton();
-            btnAquesTone.setPreferredSize(new Dimension(41, 23));
+            btnAquesTone.setPreferredSize(new Dimension(41, 29));
             btnAquesTone.setText("...");
         }
         return btnAquesTone;
@@ -2348,7 +2350,7 @@ public class Preference extends JFrame {
     private BNumericUpDown getNumBuffer() {
         if (numBuffer == null) {
             numBuffer = new BNumericUpDown();
-            numBuffer.setPreferredSize(new Dimension(68, 25));
+            numBuffer.setPreferredSize(new Dimension(68, 28));
             numBuffer.setMinimum(100.0F);
             numBuffer.setDecimalPlaces(0);
             numBuffer.setMaximum(1000.0F);
@@ -2364,7 +2366,7 @@ public class Preference extends JFrame {
     private BComboBox getComboMtcMidiInPortNumber() {
         if (comboMtcMidiInPortNumber == null) {
             comboMtcMidiInPortNumber = new BComboBox();
-            comboMtcMidiInPortNumber.setPreferredSize(new Dimension(239, 20));
+            comboMtcMidiInPortNumber.setPreferredSize(new Dimension(239, 27));
         }
         return comboMtcMidiInPortNumber;
     }
@@ -2729,7 +2731,7 @@ public class Preference extends JFrame {
     private BComboBox getComboDefaultSynthesizer() {
         if (comboDefaultSynthesizer == null) {
             comboDefaultSynthesizer = new BComboBox();
-            comboDefaultSynthesizer.setPreferredSize(new Dimension(222, 20));
+            comboDefaultSynthesizer.setPreferredSize(new Dimension(222, 27));
         }
         return comboDefaultSynthesizer;
     }
@@ -2742,7 +2744,7 @@ public class Preference extends JFrame {
     private BComboBox getComboAutoVibratoTypeCustom() {
         if (comboAutoVibratoTypeCustom == null) {
             comboAutoVibratoTypeCustom = new BComboBox();
-            comboAutoVibratoTypeCustom.setPreferredSize(new Dimension(101, 20));
+            comboAutoVibratoTypeCustom.setPreferredSize(new Dimension(101, 27));
         }
         return comboAutoVibratoTypeCustom;
     }
@@ -2807,7 +2809,7 @@ public class Preference extends JFrame {
     private BButton getButtonResamplerAdd() {
         if (buttonResamplerAdd == null) {
             buttonResamplerAdd = new BButton();
-            buttonResamplerAdd.setPreferredSize(new Dimension(61, 23));
+            buttonResamplerAdd.setPreferredSize(new Dimension(75, 29));
             buttonResamplerAdd.setText("Add");
         }
         return buttonResamplerAdd;
@@ -2821,7 +2823,7 @@ public class Preference extends JFrame {
     private BButton getButtonResamplerRemove() {
         if (buttonResamplerRemove == null) {
             buttonResamplerRemove = new BButton();
-            buttonResamplerRemove.setPreferredSize(new Dimension(61, 23));
+            buttonResamplerRemove.setPreferredSize(new Dimension(75, 29));
             buttonResamplerRemove.setText("Remove");
         }
         return buttonResamplerRemove;
@@ -2835,7 +2837,7 @@ public class Preference extends JFrame {
     private BButton getButtonResamplerUp() {
         if (buttonResamplerUp == null) {
             buttonResamplerUp = new BButton();
-            buttonResamplerUp.setPreferredSize(new Dimension(61, 23));
+            buttonResamplerUp.setPreferredSize(new Dimension(75, 29));
             buttonResamplerUp.setText("Up");
         }
         return buttonResamplerUp;
@@ -2849,7 +2851,7 @@ public class Preference extends JFrame {
     private BButton getButtonResamplerDown() {
         if (buttonResamplerDown == null) {
             buttonResamplerDown = new BButton();
-            buttonResamplerDown.setPreferredSize(new Dimension(61, 23));
+            buttonResamplerDown.setPreferredSize(new Dimension(75, 29));
             buttonResamplerDown.setText("Down");
         }
         return buttonResamplerDown;

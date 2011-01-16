@@ -37,7 +37,6 @@ public class FormNoteExpressionConfig extends BForm {
 	private BLabel jLabel5 = null;
 	private BCheckBox chkUpPortamento = null;
 	private BCheckBox chkDownPortamento = null;
-	private BLabel jLabel6 = null;
 	private BGroupBox groupDynamicsControl = null;
 	private BLabel lblDecay = null;
 	private BSlider trackDecay = null;
@@ -47,7 +46,6 @@ public class FormNoteExpressionConfig extends BForm {
 	private BSlider trackAccent = null;
 	private BTextBox txtAccent = null;
 	private BLabel jLabel51 = null;
-	private BLabel jLabel61 = null;
 	private BGroupBox groupAttack = null;
 	private BLabel lblDuration = null;
 	private BSlider trackDuration = null;
@@ -57,7 +55,6 @@ public class FormNoteExpressionConfig extends BForm {
 	private BSlider trackDepth = null;
 	private BTextBox txtDepth = null;
 	private BLabel jLabel511 = null;
-	private BLabel jLabel611 = null;
 	private BLabel lblAttackTemplate = null;
 	private BComboBox comboAttackTemplate = null;
 	private BPanel jPanel2 = null;
@@ -80,7 +77,7 @@ public class FormNoteExpressionConfig extends BForm {
 	 * @return void
 	 */
 	private void initialize() {
-		this.setSize(403, 461);
+		this.setSize(403, 540);
 		this.setContentPane(getJContentPane());
 		this.setTitle("Default Singer Style");
 	}
@@ -178,7 +175,7 @@ public class FormNoteExpressionConfig extends BForm {
 	private BComboBox getComboTemplate() {
 		if (comboTemplate == null) {
 			comboTemplate = new BComboBox();
-			comboTemplate.setPreferredSize(new Dimension(121, 22));
+			comboTemplate.setPreferredSize(new Dimension(121, 27));
 		}
 		return comboTemplate;
 	}
@@ -190,15 +187,6 @@ public class FormNoteExpressionConfig extends BForm {
 	 */
 	private BGroupBox getGroupPitchControl() {
 		if (groupPitchControl == null) {
-			GridBagConstraints gridBagConstraints14 = new GridBagConstraints();
-			gridBagConstraints14.gridx = 0;
-			gridBagConstraints14.fill = GridBagConstraints.BOTH;
-			gridBagConstraints14.weighty = 1.0D;
-			gridBagConstraints14.weightx = 1.0D;
-			gridBagConstraints14.gridwidth = 4;
-			gridBagConstraints14.gridy = 4;
-			jLabel6 = new BLabel();
-			jLabel6.setText("");
 			GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
 			gridBagConstraints13.gridx = 0;
 			gridBagConstraints13.gridwidth = 4;
@@ -282,7 +270,6 @@ public class FormNoteExpressionConfig extends BForm {
 			groupPitchControl.add(jLabel5, gridBagConstraints11);
 			groupPitchControl.add(getChkUpPortamento(), gridBagConstraints12);
 			groupPitchControl.add(getChkDownPortamento(), gridBagConstraints13);
-			groupPitchControl.add(jLabel6, gridBagConstraints14);
 		}
 		return groupPitchControl;
 	}
@@ -295,7 +282,7 @@ public class FormNoteExpressionConfig extends BForm {
 	private BSlider getTrackBendDepth() {
 		if (trackBendDepth == null) {
 			trackBendDepth = new BSlider();
-			trackBendDepth.setPreferredSize(new Dimension(156, 18));
+			trackBendDepth.setPreferredSize(new Dimension(156, 29));
 			trackBendDepth.setValue(8);
 		}
 		return trackBendDepth;
@@ -324,7 +311,7 @@ public class FormNoteExpressionConfig extends BForm {
 	private BSlider getTrackBendLength() {
 		if (trackBendLength == null) {
 			trackBendLength = new BSlider();
-			trackBendLength.setPreferredSize(new Dimension(156, 18));
+			trackBendLength.setPreferredSize(new Dimension(156, 29));
 			trackBendLength.setValue(0);
 		}
 		return trackBendLength;
@@ -378,15 +365,6 @@ public class FormNoteExpressionConfig extends BForm {
 	 */
 	private BGroupBox getGroupDynamicsControl() {
 		if (groupDynamicsControl == null) {
-			GridBagConstraints gridBagConstraints141 = new GridBagConstraints();
-			gridBagConstraints141.fill = GridBagConstraints.BOTH;
-			gridBagConstraints141.gridx = 0;
-			gridBagConstraints141.gridy = 4;
-			gridBagConstraints141.weightx = 1.0D;
-			gridBagConstraints141.weighty = 1.0D;
-			gridBagConstraints141.gridwidth = 4;
-			jLabel61 = new BLabel();
-			jLabel61.setText("");
 			GridBagConstraints gridBagConstraints111 = new GridBagConstraints();
 			gridBagConstraints111.gridx = 3;
 			gridBagConstraints111.anchor = GridBagConstraints.WEST;
@@ -454,7 +432,6 @@ public class FormNoteExpressionConfig extends BForm {
 			groupDynamicsControl.add(getTrackAccent(), gridBagConstraints91);
 			groupDynamicsControl.add(getTxtAccent(), gridBagConstraints101);
 			groupDynamicsControl.add(jLabel51, gridBagConstraints111);
-			groupDynamicsControl.add(jLabel61, gridBagConstraints141);
 		}
 		return groupDynamicsControl;
 	}
@@ -467,7 +444,7 @@ public class FormNoteExpressionConfig extends BForm {
 	private BSlider getTrackDecay() {
 		if (trackDecay == null) {
 			trackDecay = new BSlider();
-			trackDecay.setPreferredSize(new Dimension(156, 18));
+			trackDecay.setPreferredSize(new Dimension(156, 29));
 		}
 		return trackDecay;
 	}
@@ -495,7 +472,7 @@ public class FormNoteExpressionConfig extends BForm {
 	private BSlider getTrackAccent() {
 		if (trackAccent == null) {
 			trackAccent = new BSlider();
-			trackAccent.setPreferredSize(new Dimension(156, 18));
+			trackAccent.setPreferredSize(new Dimension(156, 29));
 		}
 		return trackAccent;
 	}
@@ -536,15 +513,6 @@ public class FormNoteExpressionConfig extends BForm {
 			gridBagConstraints17.gridy = 0;
 			lblAttackTemplate = new BLabel();
 			lblAttackTemplate.setText("Attack Variation");
-			GridBagConstraints gridBagConstraints1411 = new GridBagConstraints();
-			gridBagConstraints1411.fill = GridBagConstraints.BOTH;
-			gridBagConstraints1411.gridx = 0;
-			gridBagConstraints1411.gridy = 5;
-			gridBagConstraints1411.weightx = 1.0D;
-			gridBagConstraints1411.weighty = 1.0D;
-			gridBagConstraints1411.gridwidth = 4;
-			jLabel611 = new BLabel();
-			jLabel611.setText("");
 			GridBagConstraints gridBagConstraints1111 = new GridBagConstraints();
 			gridBagConstraints1111.gridx = 3;
 			gridBagConstraints1111.anchor = GridBagConstraints.WEST;
@@ -612,7 +580,6 @@ public class FormNoteExpressionConfig extends BForm {
 			groupAttack.add(getTrackDepth(), gridBagConstraints911);
 			groupAttack.add(getTxtDepth(), gridBagConstraints1011);
 			groupAttack.add(jLabel511, gridBagConstraints1111);
-			groupAttack.add(jLabel611, gridBagConstraints1411);
 			groupAttack.add(lblAttackTemplate, gridBagConstraints17);
 			groupAttack.add(getComboAttackTemplate(), gridBagConstraints18);
 		}
@@ -627,7 +594,7 @@ public class FormNoteExpressionConfig extends BForm {
 	private BSlider getTrackDuration() {
 		if (trackDuration == null) {
 			trackDuration = new BSlider();
-			trackDuration.setPreferredSize(new Dimension(156, 18));
+			trackDuration.setPreferredSize(new Dimension(156, 29));
 			trackDuration.setValue(64);
 			trackDuration.setMaximum(127);
 		}
@@ -657,7 +624,7 @@ public class FormNoteExpressionConfig extends BForm {
 	private BSlider getTrackDepth() {
 		if (trackDepth == null) {
 			trackDepth = new BSlider();
-			trackDepth.setPreferredSize(new Dimension(156, 18));
+			trackDepth.setPreferredSize(new Dimension(156, 29));
 			trackDepth.setMaximum(127);
 			trackDepth.setValue(64);
 		}
@@ -687,7 +654,7 @@ public class FormNoteExpressionConfig extends BForm {
 	private BComboBox getComboAttackTemplate() {
 		if (comboAttackTemplate == null) {
 			comboAttackTemplate = new BComboBox();
-			comboAttackTemplate.setPreferredSize(new Dimension(143, 20));
+			comboAttackTemplate.setPreferredSize(new Dimension(143, 27));
 		}
 		return comboAttackTemplate;
 	}

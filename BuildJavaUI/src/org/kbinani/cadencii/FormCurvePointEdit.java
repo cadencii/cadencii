@@ -50,7 +50,7 @@ public class FormCurvePointEdit extends BForm {
      * 
      */
     private void initialize() {
-        this.setSize(new Dimension(322, 198));
+        this.setSize(new Dimension(328, 195));
         this.setTitle("FormCurvePointEdit");
         this.setContentPane(getJPanel1());
     		
@@ -108,7 +108,7 @@ public class FormCurvePointEdit extends BForm {
         if (btnBackward3 == null) {
             btnBackward3 = new BButton();
             btnBackward3.setText("<10");
-            btnBackward3.setPreferredSize(new Dimension(55, 30));
+            btnBackward3.setPreferredSize(new Dimension(55, 29));
         }
         return btnBackward3;
     }
@@ -122,7 +122,7 @@ public class FormCurvePointEdit extends BForm {
         if (btnBackward2 == null) {
             btnBackward2 = new BButton();
             btnBackward2.setText("<5");
-            btnBackward2.setPreferredSize(new Dimension(48, 30));
+            btnBackward2.setPreferredSize(new Dimension(48, 29));
         }
         return btnBackward2;
     }
@@ -136,7 +136,7 @@ public class FormCurvePointEdit extends BForm {
         if (btnBackward == null) {
             btnBackward = new BButton();
             btnBackward.setText("<");
-            btnBackward.setPreferredSize(new Dimension(41, 30));
+            btnBackward.setPreferredSize(new Dimension(41, 29));
         }
         return btnBackward;
     }
@@ -150,7 +150,7 @@ public class FormCurvePointEdit extends BForm {
         if (btnForward == null) {
             btnForward = new BButton();
             btnForward.setText(">");
-            btnForward.setPreferredSize(new Dimension(41, 30));
+            btnForward.setPreferredSize(new Dimension(41, 29));
         }
         return btnForward;
     }
@@ -164,7 +164,7 @@ public class FormCurvePointEdit extends BForm {
         if (btnForward2 == null) {
             btnForward2 = new BButton();
             btnForward2.setText("5>");
-            btnForward2.setPreferredSize(new Dimension(48, 30));
+            btnForward2.setPreferredSize(new Dimension(48, 29));
         }
         return btnForward2;
     }
@@ -178,7 +178,7 @@ public class FormCurvePointEdit extends BForm {
         if (btnForward3 == null) {
             btnForward3 = new BButton();
             btnForward3.setText("10>");
-            btnForward3.setPreferredSize(new Dimension(55, 30));
+            btnForward3.setPreferredSize(new Dimension(55, 29));
         }
         return btnForward3;
     }
@@ -202,10 +202,10 @@ public class FormCurvePointEdit extends BForm {
             gridBagConstraints12.insets = new Insets(4, 0, 0, 12);
             gridBagConstraints12.gridy = 2;
             GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
-            gridBagConstraints11.fill = GridBagConstraints.NONE;
+            gridBagConstraints11.fill = GridBagConstraints.HORIZONTAL;
             gridBagConstraints11.gridy = 2;
             gridBagConstraints11.weightx = 1.0;
-            gridBagConstraints11.insets = new Insets(4, 0, 0, 0);
+            gridBagConstraints11.insets = new Insets(4, 12, 0, 0);
             gridBagConstraints11.gridx = 1;
             GridBagConstraints gridBagConstraints10 = new GridBagConstraints();
             gridBagConstraints10.gridx = 0;
@@ -224,10 +224,10 @@ public class FormCurvePointEdit extends BForm {
             gridBagConstraints8.insets = new Insets(12, 0, 12, 0);
             gridBagConstraints8.gridx = 0;
             GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
-            gridBagConstraints7.fill = GridBagConstraints.NONE;
+            gridBagConstraints7.fill = GridBagConstraints.HORIZONTAL;
             gridBagConstraints7.gridy = 1;
             gridBagConstraints7.weightx = 1.0;
-            gridBagConstraints7.insets = new Insets(4, 0, 0, 0);
+            gridBagConstraints7.insets = new Insets(4, 12, 0, 0);
             gridBagConstraints7.gridx = 1;
             GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
             gridBagConstraints6.gridx = 0;
@@ -273,7 +273,7 @@ public class FormCurvePointEdit extends BForm {
         if (btnUndo == null) {
             btnUndo = new BButton();
             btnUndo.setText("undo");
-            btnUndo.setPreferredSize(new Dimension(63, 23));
+            btnUndo.setPreferredSize(new Dimension(63, 29));
         }
         return btnUndo;
     }
@@ -300,7 +300,7 @@ public class FormCurvePointEdit extends BForm {
         if (btnRedo == null) {
             btnRedo = new BButton();
             btnRedo.setText("redo");
-            btnRedo.setPreferredSize(new Dimension(63, 23));
+            btnRedo.setPreferredSize(new Dimension(63, 29));
         }
         return btnRedo;
     }

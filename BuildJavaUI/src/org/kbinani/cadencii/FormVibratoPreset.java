@@ -156,7 +156,7 @@ public class FormVibratoPreset extends BForm {
         if (buttonCancel == null) {
             buttonCancel = new BButton();
             buttonCancel.setText("Cancel");
-            buttonCancel.setPreferredSize(new Dimension(75, 23));
+            buttonCancel.setPreferredSize(new Dimension(75, 29));
         }
         return buttonCancel;
     }
@@ -170,7 +170,7 @@ public class FormVibratoPreset extends BForm {
         if (buttonOk == null) {
             buttonOk = new BButton();
             buttonOk.setText("OK");
-            buttonOk.setPreferredSize(new Dimension(75, 23));
+            buttonOk.setPreferredSize(new Dimension(75, 29));
         }
         return buttonOk;
     }
@@ -239,7 +239,7 @@ public class FormVibratoPreset extends BForm {
             buttonAdd.setText("Add");
             buttonAdd.setVerticalAlignment(SwingConstants.TOP);
             buttonAdd.setHorizontalAlignment(SwingConstants.CENTER);
-            buttonAdd.setPreferredSize(new Dimension(75, 23));
+            buttonAdd.setPreferredSize(new Dimension(75, 29));
         }
         return buttonAdd;
     }
@@ -254,7 +254,7 @@ public class FormVibratoPreset extends BForm {
             buttonDown = new BButton();
             buttonDown.setText("Down");
             buttonDown.setHorizontalAlignment(SwingConstants.CENTER);
-            buttonDown.setPreferredSize(new Dimension(75, 23));
+            buttonDown.setPreferredSize(new Dimension(75, 29));
         }
         return buttonDown;
     }
@@ -269,7 +269,7 @@ public class FormVibratoPreset extends BForm {
             buttonRemove = new BButton();
             buttonRemove.setText("Remove");
             buttonRemove.setHorizontalAlignment(SwingConstants.CENTER);
-            buttonRemove.setPreferredSize(new Dimension(75, 23));
+            buttonRemove.setPreferredSize(new Dimension(75, 29));
         }
         return buttonRemove;
     }
@@ -284,7 +284,7 @@ public class FormVibratoPreset extends BForm {
             buttonUp = new BButton();
             buttonUp.setText("Up");
             buttonUp.setHorizontalAlignment(SwingConstants.CENTER);
-            buttonUp.setPreferredSize(new Dimension(75, 23));
+            buttonUp.setPreferredSize(new Dimension(75, 29));
         }
         return buttonUp;
     }
