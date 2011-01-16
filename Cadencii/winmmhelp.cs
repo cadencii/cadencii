@@ -116,11 +116,17 @@ namespace org.kbinani.cadencii {
         }
 
         public static boolean JoyGetStatus( int index_, out byte[] buttons, out int pov ) {
+#if DEBUG
+            PortUtil.println( "winmmhelp#JoyGetStatus; s_initialized=" + s_initialized );
+#endif
             if ( !s_initialized ) {
                 pov = -1;
                 buttons = new byte[0];
                 return false;
             }
+#if DEBUG
+            PortUtil.println( "winmmhelp#JoyGetStatus; s_num_joydev=" + s_num_joydev + "; index_=" + index_ );
+#endif
             if ( s_num_joydev == 0 || index_ < 0 || (int)s_num_joydev <= index_ ) {
                 pov = -1;
                 buttons = new byte[0];
@@ -139,8 +145,15 @@ namespace org.kbinani.cadencii {
                 ji_ex.dwFlags = win32.JOY_RETURNBUTTONS | win32.JOY_RETURNX | win32.JOY_RETURNY;
             }
 
+#if DEBUG
+            PortUtil.println( "winmmhelp#JoyGetStatus; index=" + index + "; s_joy_attatched[" + index + "]=" + s_joy_attatched[index] );
+#endif
             if ( s_joy_attatched[index] ) {
-                if ( win32.joyGetPosEx( (uint)index, ref ji_ex ) != win32.JOYERR_NOERROR ) {
+                uint ret_getpos = win32.joyGetPosEx( (uint)index, ref ji_ex );
+#if DEBUG
+                PortUtil.println( "winmmhelp#JoyGetStatus; ret_getpos=" + ret_getpos + "; (ret_getpos==win32.JOYERR_NOERROR)=" + (ret_getpos == win32.JOYERR_NOERROR) );
+#endif
+                if ( ret_getpos == win32.JOYERR_NOERROR ) {
                     if ( (jcs.wCaps & win32.JOYCAPS_HASPOV) == win32.JOYCAPS_HASPOV ) {
                         pov = (int)ji_ex.dwPOV;
                         if ( (0xffff & ji_ex.dwPOV) == 0xffff ) {

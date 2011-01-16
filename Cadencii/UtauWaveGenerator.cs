@@ -386,13 +386,11 @@ namespace org.kbinani.cadencii
                         "\"" + note + "\"",
                         "100",
                         item.UstEvent.Flags,
-                        "L", 
                         oa.msOffset + "",
                         millisec + "",
                         oa.msConsonant + "",
                         oa.msBlank + "",
-                        "100",
-                        item.UstEvent.Moduration + "" };
+                        item.UstEvent.Intensity + "" };
 
                     // ピッチを取得
                     Vector<String> pitch = new Vector<String>();
@@ -411,7 +409,7 @@ namespace org.kbinani.cadencii
                             }
                             pitch.add( PortUtil.formatDecimal( "0.00", pvalue ) );
                             if ( i == 0 ) {
-                                pitch.add( "Q" + tempo );
+                                pitch.add( item.UstEvent.Moduration + "Q" + tempo );
                             }
                         }
                     } else {
@@ -425,7 +423,7 @@ namespace org.kbinani.cadencii
                             float pvalue = (float)target.getPitchAt( clock );
                             pitch.add( PortUtil.formatDecimal( "0.00", pvalue ) );
                             if ( totalcount == 0 ) {
-                                pitch.add( "Q" + tempo );
+                                pitch.add( item.UstEvent.Moduration + "Q" + tempo );
                             }
                             totalcount++;
                         }
@@ -445,7 +443,7 @@ namespace org.kbinani.cadencii
                             float pvalue = (float)target.getPitchAt( clock );
                             pitch.add( PortUtil.formatDecimal( "0.00", pvalue + ret.getY() * 100.0f ) );
                             if ( totalcount == 0 ) {
-                                pitch.add( "Q" + tempo );
+                                pitch.add( item.UstEvent.Moduration + "Q" + tempo );
                             }
                             totalcount++;
                         }

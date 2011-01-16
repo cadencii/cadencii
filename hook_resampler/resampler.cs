@@ -10,16 +10,29 @@ class Resampler{
             arg += "\"" + s + "\" ";
         }
         string path = Application.StartupPath;
-        using( StreamWriter sw = new StreamWriter( Path.Combine( path, "resampler.log" ), true ) ){
+        string log = Path.Combine( path, "resampler.log" );
+        using( StreamWriter sw = new StreamWriter( log, true ) ){
             sw.WriteLine( arg );
-        }
-        using( Process p = new Process() ){
-            ProcessStartInfo psi = new ProcessStartInfo();
-            psi.FileName = Path.Combine( path, "_resampler.exe" );
-            psi.Arguments = arg;
-            p.StartInfo = psi;
-            p.Start();
-            p.WaitForExit();
+            Process p = null;
+            try{
+                p = new Process();
+                ProcessStartInfo psi = new ProcessStartInfo();
+                psi.FileName = Path.Combine( path, "_resampler.exe" );
+                psi.Arguments = arg;
+                psi.CreateNoWindow = true;
+                p.StartInfo = psi;
+                p.Start();
+                p.WaitForExit();
+            }catch( Exception ex ){
+                sw.WriteLine( "Resampler.Main(string[]); ex=" + ex );
+            }finally{
+                if( p != null ){
+                    try{
+                        p.Dispose();
+                    }catch{
+                    }
+                }
+            }
         }
     }
 }

@@ -10603,7 +10603,15 @@ namespace org.kbinani.cadencii
                 byte[] buttons;
                 int pov0;
 #if !JAVA
-                winmmhelp.JoyGetStatus( 0, out buttons, out pov0 );
+                boolean ret = winmmhelp.JoyGetStatus( 0, out buttons, out pov0 );
+#endif
+#if DEBUG
+                String s = "FormMain#mTimer_Tick; buttons={";
+                for ( int i = 0; i < buttons.Length; i++ ) {
+                    s += buttons[i] + ",";
+                }
+                s += "}; pov0=" + pov0 + "; ret=" + ret;
+                PortUtil.println( s );
 #endif
                 boolean event_processed = false;
                 double dt_ms = (now - mLastEventProcessed) * 1000.0;

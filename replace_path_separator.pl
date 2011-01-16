@@ -2,51 +2,11 @@ open( FILE, "<Makefile.include" );
 open( OUT, ">Makefile" );
 
 @special_dependencies = (
-"./org.kbinani/BDelegate.java",
-"./org.kbinani/BEvent.java",
-"./org.kbinani/BEventArgs.java",
-"./org.kbinani/BEventHandler.java",
-"./org.kbinani.windows.forms/BDialog.java",
-"./org.kbinani.windows.forms/BPropertyGrid.java",
-"./org.kbinani.windows.forms/BListView.java",
-"./org.kbinani.windows.forms/BFolderBrowser.java",
-"./org.kbinani.windows.forms/BHScrollBar.java",
-"./org.kbinani.windows.forms/BVScrollBar.java",
-"./org.kbinani.windows.forms/BPictureBox.java",
-"./org.kbinani.windows.forms/BPanel.java",
-"./org.kbinani.windows.forms/BListBox.java",
-"./org.kbinani.xml/XmlMember.java",
-"./org.kbinani.xml/XmlSerializer.java",
-"./Cadencii/FormImportLyric.java",
-"./Cadencii/FormMain.java",
-"./Cadencii/LyricTextBox.java",
-"./Cadencii/TrackSelector.java",
-"./Cadencii/Preference.java",
-"./Cadencii/FormAskKeySoundGeneration.java",
-"./Cadencii/FormBeatConfig.java",
-"./Cadencii/FormBezierPointEdit.java",
-"./Cadencii/FormCompileResult.java",
-"./Cadencii/FormCurvePointEdit.java",
-"./Cadencii/FormDeleteBar.java",
-"./Cadencii/FormGameControlerConfig.java",
-"./Cadencii/FormGenerateKeySound.java",
-"./Cadencii/FormIconPalette.java",
-"./Cadencii/FormInsertBar.java",
-"./Cadencii/FormMidiConfig.java",
-"./Cadencii/FormMidiImExport.java",
-"./Cadencii/FormMixer.java",
-"./Cadencii/FormNoteExpressionConfig.java",
-"./Cadencii/FormNoteProperty.java",
-"./Cadencii/FormRandomize.java",
-"./Cadencii/FormRealtimeConfig.java",
-"./Cadencii/FormShortcutKeys.java",
-"./Cadencii/FormSingerStyleConfig.java",
-"./Cadencii/FormSynthesize.java",
-"./Cadencii/FormTempoConfig.java",
-"./Cadencii/FormTrackProperty.java",
-"./Cadencii/FormVibratoConfig.java",
-"./Cadencii/FormWordDictionary.java",
-"./Cadencii/VersionInfo.java",
+"./BuildJavaUI/src/org/kbinani/ByRef.java",
+"./BuildJavaUI/src/org/kbinani/InternalStdErr.java",
+"./BuildJavaUI/src/org/kbinani/InternalStdOut.java",
+"./BuildJavaUI/src/org/kbinani/math.java",
+"./BuildJavaUI/src/org/kbinani/PortUtil.java",
 );
 
 &getSrcList( "./org.kbinani", "./build/java/org/kbinani/", $src_corlib, $cp_corlib, $dep_corlib );
@@ -57,32 +17,6 @@ open( OUT, ">Makefile" );
 &getSrcList( "./org.kbinani.windows.forms", "./build/java/org/kbinani/windows/forms/", $src_winforms, $cp_winforms, $dep_winforms );
 &getSrcList( "./org.kbinani.xml", "./build/java/org/kbinani/xml/", $src_xml, $cp_xml, $dep_xml );
 &getSrcList( "./Cadencii", "./build/java/org/kbinani/cadencii/", $src_cadencii, $cp_cadencii, $dep_cadencii );
-
-$dep_special = "";
-foreach my $sdep ( @special_dependencies ){
-    my $indx = rindex( $sdep, "/" );
-    my $fname = substr( $sdep, $indx + 1 );
-    my $indx2 = rindex( $sdep, ".java" );
-    my $sdep_cs = substr( $sdep, 0, length( $sdep ) - 5 ) . ".cs";
-    my $prefix = "";
-    if( index( $sdep, "./Cadencii/" ) == 0 ){
-        $prefix = "org/kbinani/cadencii";
-    }elsif( index( $sdep, "./org.kbinani/" ) == 0 ){
-        $prefix = "org/kbinani";
-    }elsif( index( $sdep, "./org.kbinani.windows.forms/" ) == 0 ){
-        $prefix = "org/kbinani/windows/forms";
-    }elsif( index( $sdep, "./org.kbinani.xml/" ) == 0 ){
-        $prefix = "org/kbinani/xml";
-    }elsif( index( $sdep, "./org.kbinani.vsq/" ) == 0 ){
-        $prefix = "org/kbinani/vsq";
-    }elsif( index( $sdep, "./org.kbinani.media/" ) == 0 ){
-        $prefix = "org/kbinani/media";
-    }elsif( index( $sdep, "./org.kbinani.apputil/" ) == 0 ){
-        $prefix = "org/kbinani/apputil";
-    }
-    $dep_special .= "./build/java/$prefix/$fname: ./BuildJavaUI/src/$prefix/$fname $sdep_cs\n";
-    $dep_special .= "\t\$(MONO)pp_cs2java.exe \$(PPCS2JAVA_OPT) -i $sdep_cs -o ./build/java/$prefix/$fname\n\n";
-}
 
 while( $line = <FILE> ){
     $line =~ s/\@SRC_JAPPUTIL\@/$src_apputil/g;
@@ -102,7 +36,6 @@ while( $line = <FILE> ){
     $line =~ s/\@DEP_JCADENCII\@/$dep_cadencii/g;
     $line =~ s/\@DEP_JCOMPONENTMODEL\@/$dep_componentmodel/g;
     $line =~ s/\@DEP_JXML\@/$dep_xml/g;
-    $line =~ s/\@DEP_SPECIAL\@/$dep_special/g;
 
     if( $ARGV[0] eq "MSWin32" ){
         if( ($line =~ /\$\(CP\)/) | ($line =~ /\$\(RM\)/) | ($line =~ /\$\(MKDIR\)/) ){
@@ -148,7 +81,7 @@ sub getSrcList{
             foreach my $s ( @special_dependencies ){
                 if( $s eq $search ){
                     $found = 1;
-                    break;
+                    last;
                 }
             }
             if( $found == 0 ){
@@ -157,9 +90,9 @@ sub getSrcList{
             push( @srcall, $s1 );
         }
     }
-    $_[2] = "";
-    $_[3] = "";
-    $_[4] = "";
+    $_[2] = ""; #src
+    $_[3] = ""; #cp
+    $_[4] = ""; #dep
     my $count = @srcall;
     for( $i = 0; $i < $count; $i++ ){
         my $cname = $srcall[$i];
@@ -170,13 +103,44 @@ sub getSrcList{
             $_[2] = $_[2] . " \\" . "\n        " . $prefix . $s;
         }
     }
-    
+
+    # check BuildJavaUI
+    $build_java_ui_prefix = "";
+    if( index( $dir, "./Cadencii" ) == 0 ){
+        $build_java_ui_prefix = "./BuildJavaUI/src/org/kbinani/org/kbinani/cadencii/";
+    }elsif( index( $dir, "./org.kbinani.windows.forms" ) == 0 ){
+        $build_java_ui_prefix = "./BuildJavaUI/src/org/kbinani/windows/forms/";
+    }elsif( index( $dir, "./org.kbinani.xml" ) == 0 ){
+        $build_java_ui_prefix = "./BuildJavaUI/src/org/kbinani/xml/";
+    }elsif( index( $dir, "./org.kbinani.vsq" ) == 0 ){
+        $build_java_ui_prefix = "./BuildJavaUI/src/org/kbinani/vsq/";
+    }elsif( index( $dir, "./org.kbinani.media" ) == 0 ){
+        $build_java_ui_prefix = "./BuildJavaUI/src/org/kbinani/media/";
+    }elsif( index( $dir, "./org.kbinani.apputil" ) == 0 ){
+        $build_java_ui_prefix = "./BuildJavaUI/src/org/kbinani/apputil/";
+    }elsif( index( $dir, "./org.kbinani" ) == 0 ){
+        $build_java_ui_prefix = "./BuildJavaUI/src/org/kbinani/";
+    }
+
     $count = @src;
     for( $i = 0; $i < $count; $i++ ){
         my $cname = $src[$i];
         my $s = $cname . ".java";
         $_[3] = $_[3] . "$prefix$s:$dir/$s\n\t\$(CP) $dir/$s $prefix$s\n";
-        $_[4] .= "$prefix$cname.java: $dir/$cname.cs\n";
+        $_[4] .= "$prefix$cname.java: $dir/$cname.cs";
+        $add_to = 1;
+        my $c = @special_dependencies;
+        for( my $j = 0; $j < $c; $j++ ){
+            if( "$build_java_ui_prefix$cname.java" eq $special_dependencies[$j] ){
+                $add_to = 0;
+                last;
+            }
+        }
+        if( -e "$build_java_ui_prefix$cname.java" && $add_to == 1 ){
+            $_[4] .= " $build_java_ui_prefix$cname.java\n";
+        }else{
+            $_[4] .= "\n";
+        }
         $_[4] .= "\t\$(MONO)pp_cs2java.exe \$(PPCS2JAVA_OPT) -i $dir/$cname.cs -o $prefix$cname.java\n\n";
     }
 }

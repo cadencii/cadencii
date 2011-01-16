@@ -42,7 +42,6 @@
 
 -general todo----------------------------------------------------------
 -splashウィンドウで，アイコンの部分などをdragしてもウィンドウが動くようにしたい
--ゲームコントローラが使えない
 -ustに出力した際，以下の問題がある
 --先行発音，オーバーラップ，モジュレーションの3つのパラメータ以外が引き継がれない
 --ツール1，2が空欄のまま
@@ -76,6 +75,42 @@
 --トラック(第1,3,4,5トラック)、時間範囲を指定してレンダリング「cadencii foo.vsq -o foo.wav -ss 10 -d 300 -t 1,3-5」
 
 -jcadencii todo--------------------------------------------------------
+-BNumericUpDownで，panelButtonsの描画の際のボタン画像の上下のスペースについて．上のスペースより下のスペースが小さくなるようにする．(スペースの和が奇数のとき)
+-BNumericUpDownでテキストボックスに文字を入力したときの動作がおかしい
+-ツールバーでGridのon/offが切り替えられない
+-menuJobのrewire関係のメニューアイテムを削除する
+-FormNoteExpressionについて
+--上のtemplateのComboboxの中身が空
+--VOCALOID1, 2でgroupBoxの表示非表示を切り替えているが，ダイアログのサイズがそれに応じて変更されない
+-右下のズームスライダの幅が広すぎるんじゃなイカ？
+-コピペができない
+-FormVibratoPropertyでビブラートの種類を編集しても反映されない
+-トラックの名前を編集するためのテキストボックスがスゴイところに出る
+-cMenuTrackTabについて
+--Play After Synthを消し忘れている
+-ピアノロールのコンテキストメニューについて
+--Note Fixed Lengthのサブ項目の文字が空欄．off, triplet, dot以外
+--Quantizeのサブ項目の文字が空欄,off, triplet以外
+--Quantizeの下にある項目が空欄
+-FormVibratoPresetで，OK,Cancelボタンが仕事してない
+-FormVibratoPresetで，addを押して追加しても，右のEdit, Previewの表示が変化しない．
+-BNumericUpDownのdecimalPlacementの設定が反映されていない
+-Job-Ranomizeを押してもダイアログが出てこない
+-View-Grid lineでグリッドの表示・非表示の切り替えが出来ない
+-全てのダイアログで，ラベルの後ろの&T等のショートカットがウザイ．Javaの場合setMnemonic？
+-Navigationの表示・非表示の切り替えが出来ない
+-アイコンパレットのダイアログに何も表示されない
+-WAVEの表示・非表示の切り替えが出来ない
+-Mixerダイアログの美観が悪い．レイアウトと，非表示のはずのメニューバーが見えてる点．
+-View-Control Trackで一度コントロールトラックを非表示にした後，再び押しても元に戻らない
+-ツールバーの再生ボタンのpreferredSizeをナントカする．表示が...になっている
+-ビブラートの長さをいじるとき，音符が後ろに吹っ飛ぶ
+-音符の左右端をいじるときに，カーソルがおかしい．上下矢印ではなく左右矢印にする
+-ツールバーのquantizeとstartmarker, endMarkerが乗ってるツールバーは邪魔なので取ってしまおう->代わりにstep sequencerを上に持ってくる．下のツールバーは削除する
+-ツールバーのツールボタンが本当にtoggle buttonになってしまっている
+-AppManager#patchWorkToFreezでエラーが起きる
+-BListViewのgroupは破棄して，tableを使ったシンプルなのに書き換える
+-radioButtonの扱いがヤバイ．同一group内のradioButtonが複数checkedになる
 -BListViewのカラム・ヘッダーの扱いがヤバイ
 -BForm, BDialogを継承している全てのクラスで，コンストラクタの先頭にsuper();initialize();を忘れていないかチェック
 -BListViewで，行ごとの選択ができない
