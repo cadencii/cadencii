@@ -77,17 +77,17 @@ namespace org.kbinani.cadencii
 
         public int getBeatCount()
         {
-            return (int)numBeat.getValue();
+            return (int)numBeat.getFloatValue();
         }
 
         public int getClock()
         {
-            return (int)numClock.getValue();
+            return (int)numClock.getFloatValue();
         }
 
         public float getTempo()
         {
-            return numTempo.getValue();
+            return numTempo.getFloatValue();
         }
         #endregion
 

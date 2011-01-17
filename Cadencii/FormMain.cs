@@ -12286,7 +12286,7 @@ namespace org.kbinani.cadencii
                 mDialogPreference.setMidiInPort( AppManager.editorConfig.MidiInPort.PortNumber );
 #endif
 #if ENABLE_MTC
-            m_preference_dlg.setMtcMidiInPort( AppManager.editorConfig.MidiInPortMtc.PortNumber );
+            	m_preference_dlg.setMtcMidiInPort( AppManager.editorConfig.MidiInPortMtc.PortNumber );
 
 #endif
                 mDialogPreference.setInvokeWithWine( AppManager.editorConfig.InvokeUtauCoreWithWine );
@@ -12554,6 +12554,9 @@ namespace org.kbinani.cadencii
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuSettingPreference_Click; ex=" + ex + "\n" );
                 AppManager.debugWriteLine( "FormMain#menuSettingPreference_Click; ex=" + ex );
+#if JAVA
+                ex.printStackTrace();
+#endif
             }
         }
 

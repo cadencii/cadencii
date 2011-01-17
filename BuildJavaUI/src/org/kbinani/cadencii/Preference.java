@@ -24,7 +24,6 @@ import org.kbinani.windows.forms.BNumericUpDown;
 import org.kbinani.windows.forms.BPanel;
 import org.kbinani.windows.forms.BRadioButton;
 import org.kbinani.windows.forms.BTextBox;
-import javax.swing.JList;
 
 //SECTION-END-IMPORT
 public class Preference extends JFrame {
@@ -665,6 +664,10 @@ public class Preference extends JFrame {
 		if (numPreSendTime == null) {
 			numPreSendTime = new BNumericUpDown();
 			numPreSendTime.setPreferredSize(new Dimension(68, 28));
+			numPreSendTime.setMinimum(500.0F);
+			numPreSendTime.setFloatValue(500.0F);
+			numPreSendTime.setDecimalPlaces(0);
+			numPreSendTime.setMaximum(5000.0F);
 		}
 		return numPreSendTime;
 	}
@@ -678,6 +681,9 @@ public class Preference extends JFrame {
 		if (numWait == null) {
 			numWait = new BNumericUpDown();
 			numWait.setPreferredSize(new Dimension(68, 28));
+			numWait.setMinimum(200.0F);
+			numWait.setFloatValue(200.0F);
+			numWait.setMaximum(2000.0F);
 		}
 		return numWait;
 	}
@@ -2298,7 +2304,11 @@ public class Preference extends JFrame {
 	private BNumericUpDown getNumAutoBackupInterval() {
 		if (numAutoBackupInterval == null) {
 			numAutoBackupInterval = new BNumericUpDown();
-			numAutoBackupInterval.setPreferredSize(new Dimension(69, 28));
+            numAutoBackupInterval.setDecimalPlaces(0);
+            numAutoBackupInterval.setFloatValue(1.0F);
+            numAutoBackupInterval.setMaximum(100.0F);
+			numAutoBackupInterval.setMinimum(1.0F);
+            numAutoBackupInterval.setPreferredSize(new Dimension(69, 28));
 		}
 		return numAutoBackupInterval;
 	}
@@ -2351,8 +2361,9 @@ public class Preference extends JFrame {
         if (numBuffer == null) {
             numBuffer = new BNumericUpDown();
             numBuffer.setPreferredSize(new Dimension(68, 28));
-            numBuffer.setMinimum(100.0F);
             numBuffer.setDecimalPlaces(0);
+            numBuffer.setMinimum(100.0F);
+            numBuffer.setFloatValue(100.0F);
             numBuffer.setMaximum(1000.0F);
         }
         return numBuffer;

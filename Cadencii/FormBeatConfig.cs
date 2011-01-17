@@ -123,7 +123,7 @@ namespace org.kbinani.cadencii
 
         public int getStart()
         {
-            return (int)numStart.getValue();
+            return (int)numStart.getFloatValue();
         }
 
         public boolean isEndSpecified()
@@ -133,12 +133,12 @@ namespace org.kbinani.cadencii
 
         public int getEnd()
         {
-            return (int)numEnd.getValue();
+            return (int)numEnd.getFloatValue();
         }
 
         public int getNumerator()
         {
-            return (int)numNumerator.getValue();
+            return (int)numNumerator.getFloatValue();
         }
 
         public int getDenominator()

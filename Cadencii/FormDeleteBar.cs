@@ -65,22 +65,22 @@ namespace org.kbinani.cadencii
 
         public int getStart()
         {
-            return (int)numStart.getValue();
+            return (int)numStart.getFloatValue();
         }
 
         public void setStart( int value )
         {
-            numStart.setValue( value );
+            numStart.setFloatValue( value );
         }
 
         public int getEnd()
         {
-            return (int)numEnd.getValue();
+            return (int)numEnd.getFloatValue();
         }
 
         public void setEnd( int value )
         {
-            numEnd.setValue( value );
+            numEnd.setFloatValue( value );
         }
         #endregion
 

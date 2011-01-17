@@ -320,7 +320,7 @@ namespace org.kbinani.cadencii
         /// <returns></returns>
         public int getBufferSize()
         {
-            return (int)numBuffer.getValue();
+            return (int)numBuffer.getFloatValue();
         }
 
         /// <summary>
@@ -462,7 +462,7 @@ namespace org.kbinani.cadencii
         public int getAutoBackupIntervalMinutes()
         {
             if ( chkAutoBackup.isSelected() ) {
-                return (int)numAutoBackupInterval.getValue();
+                return (int)numAutoBackupInterval.getFloatValue();
             } else {
                 return 0;
             }
@@ -785,7 +785,7 @@ namespace org.kbinani.cadencii
 
         public int getMouseHoverTime()
         {
-            return (int)numMouseHoverTime.getValue();
+            return (int)numMouseHoverTime.getFloatValue();
         }
 
         public void setMouseHoverTime( int value )
@@ -795,7 +795,7 @@ namespace org.kbinani.cadencii
 
         public int getPxTrackHeight()
         {
-            return (int)numTrackHeight.getValue();
+            return (int)numTrackHeight.getFloatValue();
         }
 
         public void setPxTrackHeight( int value )
@@ -832,7 +832,7 @@ namespace org.kbinani.cadencii
 
         public int getMaximumFrameRate()
         {
-            return (int)numMaximumFrameRate.getValue();
+            return (int)numMaximumFrameRate.getFloatValue();
         }
 
         public void setMaximumFrameRate( int value )
@@ -1062,7 +1062,7 @@ namespace org.kbinani.cadencii
 
         public int getPreSendTime()
         {
-            return (int)numPreSendTime.getValue();
+            return (int)numPreSendTime.getFloatValue();
         }
 
         public void setPreSendTime( int value )
@@ -1224,7 +1224,7 @@ namespace org.kbinani.cadencii
 
         public int getWheelOrder()
         {
-            return (int)numericUpDownEx1.getValue();
+            return (int)numericUpDownEx1.getFloatValue();
         }
 
         public void setWheelOrder( int value )

@@ -46,12 +46,12 @@ namespace org.kbinani.windows.forms {
             base.Increment = (decimal)value;
         }
 
-        public float getValue() {
+        public float getFloatValue() {
             float v = (float)base.Value;
             return v;// +(float)minimumStep;
         }
 
-        public void setValue( float value ) {
+        public void setFloatValue( float value ) {
             base.Value = (decimal)value;
         }
 

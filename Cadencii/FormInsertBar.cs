@@ -75,22 +75,22 @@ namespace org.kbinani.cadencii
 
         public int getLength()
         {
-            return (int)numLength.getValue();
+            return (int)numLength.getFloatValue();
         }
 
         public void setLength( int value )
         {
-            numLength.setValue( value );
+            numLength.setFloatValue( value );
         }
 
         public int getPosition()
         {
-            return (int)numPosition.getValue();
+            return (int)numPosition.getFloatValue();
         }
 
         public void setPosition( int value )
         {
-            numPosition.setValue( value );
+            numPosition.setFloatValue( value );
         }
         #endregion
 

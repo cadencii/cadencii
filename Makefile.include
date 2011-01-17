@@ -90,6 +90,9 @@ jcadencii: pp_cs2java.exe $(SRC_JCORLIB) $(SRC_JWINFORMS) $(SRC_JAPPUTIL) $(SRC_
 	perl safe_rm.pl ./build/java/Cadencii.mf
 	$(CP) ./Cadencii/Cadencii.mf ./build/java/Cadencii.mf
 
+./build/java/org/kbinani/cadencii/Resources.java: ./Cadencii/Resources.cs pp_cs2java.exe
+	$(MONO)pp_cs2java.exe $(PPCS2JAVA_OPT) -i ./Cadencii/Resources.cs -o ./build/java/org/kbinani/cadencii/Resources.java
+
 jcadencii_win: jcadencii
 	exewrap -g -t 1.6 -o .\build\java\jCadencii.exe -i .\Cadencii\resources\icon.ico .\build\java\Cadencii.jar
 

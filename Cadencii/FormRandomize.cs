@@ -222,27 +222,27 @@ namespace org.kbinani.cadencii
         #region public methods
         public int getResolution()
         {
-            return (int)numResolution.getValue();
+            return (int)numResolution.getFloatValue();
         }
 
         public int getStartBar()
         {
-            return (int)numStartBar.getValue();
+            return (int)numStartBar.getFloatValue();
         }
 
         public int getStartBeat()
         {
-            return (int)numStartBeat.getValue();
+            return (int)numStartBeat.getFloatValue();
         }
 
         public int getEndBar()
         {
-            return (int)numEndBar.getValue();
+            return (int)numEndBar.getFloatValue();
         }
 
         public int getEndBeat()
         {
-            return (int)numEndBeat.getValue();
+            return (int)numEndBeat.getFloatValue();
         }
 
         public boolean isPositionRandomizeEnabled()

@@ -61,7 +61,7 @@ namespace org.kbinani.cadencii
         #region public methods
         public float getSpeed()
         {
-            return (float)numSpeed.getValue();
+            return (float)numSpeed.getFloatValue();
         }
         #endregion
 

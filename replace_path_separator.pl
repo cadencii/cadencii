@@ -84,6 +84,9 @@ sub getSrcList{
                     last;
                 }
             }
+            if( $s1 eq "Resources" ){
+                $found = 1;
+            }
             if( $found == 0 ){
                 push( @src, $s1 );
             }
