@@ -51,6 +51,7 @@ namespace org.kbinani.cadencii
         private const int BUFLEN = 1024;
         private const int VERSION = 0;
         private static TreeMap<String, ValuePair<String, Double>> mCache = new TreeMap<String, ValuePair<String, Double>>();
+        private const int BASE_TEMPO = 120;
 
         private Vector<RenderQueue> mResamplerQueue = new Vector<RenderQueue>();
         private double[] mLeft;
@@ -196,7 +197,7 @@ namespace org.kbinani.cadencii
                     mVsq.removePart( 0, trim_end );
                 }
             }
-            mVsq.adjustClockToMatchWith( 125.0 );
+            mVsq.adjustClockToMatchWith( BASE_TEMPO );
             mVsq.updateTotalClocks();
 
             mTrimRemainSeconds = trim_sec;
@@ -237,6 +238,11 @@ namespace org.kbinani.cadencii
 #if MAKEBAT_SP
             StreamWriter bat = null;
             StreamWriter log = null;
+#endif
+#if DEBUG
+#if !JAVA
+            System.IO.StreamWriter sw = new System.IO.StreamWriter( "UtauWaveGenerator.begin(long).log" );
+#endif
 #endif
             try {
                 double sample_length = mVsq.getSecFromClock( mVsq.TotalClocks ) * mSampleRate;
@@ -328,27 +334,27 @@ namespace org.kbinani.cadencii
                             sec_end_act = sec_start_act_next;
                         }
                     }
-                    float t_temp = (float)(item.ID.getLength() / (sec_end - sec_start) / 8.0);
+                    //float t_temp = (float)(item.ID.getLength() / (sec_end - sec_start) / 8.0);
                     if ( (count == 0 && sec_start > 0.0) || (sec_start > sec_end_old) ) {
                         // 最初の音符，
                         double sec_start2 = sec_end_old;
                         double sec_end2 = sec_start;
-                        // t_temp2が125から大きく外れないように
-                        int draft_length = (int)((sec_end2 - sec_start2) * 8.0 * 125.0);
-                        float t_temp2 = (float)(draft_length / (sec_end2 - sec_start2) / 8.0);
-                        String str_t_temp2 = PortUtil.formatDecimal( "0.00", t_temp2 );
-                        double act_t_temp2 = PortUtil.parseDouble( str_t_temp2 );
+                        // t_temp2がBASE_TEMPOから大きく外れないように
+                        int draft_length = (int)((sec_end2 - sec_start2) * 8.0 * BASE_TEMPO);
+                        //float t_temp2 = (float)(draft_length / (sec_end2 - sec_start2) / 8.0);
+                        //String str_t_temp2 = PortUtil.formatDecimal( "0.00", t_temp2 );
+                        //double act_t_temp2 = PortUtil.parseDouble( str_t_temp2 );
 #if DEBUG
-                        error_sum += (draft_length / (act_t_temp2 * 8.0)) - (sec_end2 - sec_start2);
+                        //error_sum += (draft_length / (act_t_temp2 * 8.0)) - (sec_end2 - sec_start2);
 #endif
                         RenderQueue rq = new RenderQueue();
                         rq.WavtoolArgPrefix =
                             "\"" + file + "\" \"" + PortUtil.combinePath( singer, "R.wav" ) + "\" 0 " + draft_length + "@"
-                            + str_t_temp2;
+                            + BASE_TEMPO;
                         rq.WavtoolArgSuffix = " 0 0";
                         rq.Oto = new OtoArgs();
                         rq.FileName = "";
-                        rq.secEnd = sec_end2;
+                        rq.secStart = sec_start2;
                         rq.ResamplerFinished = true;
                         mResamplerQueue.add( rq );
                         count++;
@@ -396,38 +402,20 @@ namespace org.kbinani.cadencii
                     Vector<String> pitch = new Vector<String>();
                     boolean allzero = true;
                     int delta_clock = 5;  //ピッチを取得するクロック間隔
-                    int tempo = 125;
+                    int tempo = BASE_TEMPO;
                     double delta_sec = delta_clock / (8.0 * tempo); //ピッチを取得する時間間隔
-                    if ( item.ID.VibratoHandle == null ) {
-                        int pit_count = (int)((sec_end_act - sec_start_act) / delta_sec) + 1;
-                        for ( int i = 0; i < pit_count; i++ ) {
-                            double gtime = sec_start_act + delta_sec * i;
-                            int clock = (int)mVsq.getClockFromSec( gtime );
-                            float pvalue = (float)target.getPitchAt( clock );
-                            if ( pvalue != 0 ) {
-                                allzero = false;
-                            }
-                            pitch.add( PortUtil.formatDecimal( "0.00", pvalue ) );
-                            if ( i == 0 ) {
-                                pitch.add( item.UstEvent.Moduration + "Q" + tempo );
-                            }
-                        }
-                    } else {
-                        // ビブラートが始まるまでのピッチを取得
-                        double sec_vibstart = mVsq.getSecFromClock( item.Clock + item.ID.VibratoDelay );
-                        int pit_count = (int)((sec_vibstart - sec_start_act) / delta_sec);
-                        int totalcount = 0;
-                        for ( int i = 0; i < pit_count; i++ ) {
-                            double gtime = sec_start_act + delta_sec * i;
-                            int clock = (int)mVsq.getClockFromSec( gtime );
-                            float pvalue = (float)target.getPitchAt( clock );
-                            pitch.add( PortUtil.formatDecimal( "0.00", pvalue ) );
-                            if ( totalcount == 0 ) {
-                                pitch.add( item.UstEvent.Moduration + "Q" + tempo );
-                            }
-                            totalcount++;
-                        }
-                        Iterator<PointD> itr = new VibratoPointIteratorBySec(
+
+                    // sec_start_act～sec_end_actまでの，item.ID.Note基準のピッチベンドを取得
+                    // ただしdelta_sec秒間隔で
+                    double sec = sec_start_act;
+                    int indx = 0;
+                    int base_note = item.ID.Note;
+                    double sec_vibstart = mVsq.getSecFromClock( item.Clock + item.ID.VibratoDelay );
+                    int totalcount = 0;
+
+                    Iterator<PointD> vibitr = null;
+                    if ( item.ID.VibratoHandle != null ) {
+                        vibitr = new VibratoPointIteratorBySec(
                             mVsq,
                             item.ID.VibratoHandle.getRateBP(),
                             item.ID.VibratoHandle.getStartRate(),
@@ -436,18 +424,53 @@ namespace org.kbinani.cadencii
                             item.Clock + item.ID.VibratoDelay,
                             item.ID.getLength() - item.ID.VibratoDelay,
                             (float)delta_sec );
-                        for ( ; itr.hasNext(); ) {
-                            PointD ret = itr.next();
-                            float gtime = (float)ret.getX();
-                            int clock = (int)mVsq.getClockFromSec( gtime );
-                            float pvalue = (float)target.getPitchAt( clock );
-                            pitch.add( PortUtil.formatDecimal( "0.00", pvalue + ret.getY() * 100.0f ) );
-                            if ( totalcount == 0 ) {
-                                pitch.add( item.UstEvent.Moduration + "Q" + tempo );
+                    }
+                    
+                    while ( sec <= sec_end_act ) {
+                        // clockでの音符の音の高さを調べる
+                        // ピッチベンドを調べたい時刻
+                        int clock = (int)mVsq.getClockFromSec( sec );
+                        // dst_noteに，clockでの，音符のノートナンバー(あれば．なければ元の音符と同じ値)
+                        int dst_note = base_note;
+                        for ( int i = indx; i < events_count; i++ ) {
+                            VsqEvent itemi = vec.get( events, i );
+                            if ( clock < itemi.Clock ) {
+                                continue;
                             }
-                            totalcount++;
+                            int itemi_length = itemi.ID.getLength();
+                            if ( itemi.Clock <= clock && clock < itemi.Clock + itemi_length ) {
+                                dst_note = itemi.ID.Note;
+                                indx = i;
+                                break;
+                            }
                         }
-                        allzero = totalcount == 0;
+
+                        // PIT, PBSによるピッチベンドを加味
+                        double pvalue = (dst_note - base_note) * 100.0 + target.getPitchAt( clock );
+
+                        // ビブラートがあれば，ビブラートによるピッチベンドを加味
+                        if ( sec_vibstart <= sec && vibitr != null && vibitr.hasNext() ) {
+                            PointD pd = vibitr.next();
+                            pvalue += pd.getY() * 100.0;
+                        }
+
+                        // リストに入れる
+                        vec.add( pitch, PortUtil.formatDecimal( "0.00", pvalue ) );
+                        if ( totalcount == 0 ) {
+                            vec.add( pitch, item.UstEvent.Moduration + "Q" + tempo );
+                        }
+#if DEBUG
+#if !JAVA
+                        sw.WriteLine( clock + "\t" + pvalue );
+#endif
+#endif
+                        totalcount++;
+                        if ( pvalue != 0.0 ) {
+                            allzero = false;
+                        }
+
+                        // 次
+                        sec += delta_sec;
                     }
 
                     //4_あ_C#4_550.wav
@@ -500,14 +523,14 @@ namespace org.kbinani.cadencii
                         filename = mCache.get( search_key ).getKey();
                     }
 
-                    String str_t_temp = PortUtil.formatDecimal( "0.00", t_temp );
+                    String str_t_temp = PortUtil.formatDecimal( "0.00", BASE_TEMPO );
 #if DEBUG
                     double act_t_temp = PortUtil.parseDouble( str_t_temp );
                     error_sum += (item.ID.getLength() / (8.0 * act_t_temp)) - (sec_end - sec_start);
                     Logger.write( "UtauWaveGenerator#begin; error_sum=" + error_sum + "\n" );
 #endif
                     rq2.WavtoolArgPrefix =
-                        "\"" + file + "\" \"" + filename + "\" 0 "
+                        "\"" + file + "\" \"" + filename + "\" " + item.UstEvent.getStartPoint() + " "
                         + item.ID.getLength() + "@" + str_t_temp;
                     UstEnvelope env = item.UstEvent.Envelope;
                     if ( env == null ) {
@@ -517,7 +540,7 @@ namespace org.kbinani.cadencii
                     rq2.WavtoolArgSuffix += " " + oa.msOverlap + " " + env.p4 + " " + env.p5 + " " + env.v5;
                     rq2.Oto = oa;
                     rq2.FileName = filename;
-                    rq2.secEnd = sec_end;
+                    rq2.secStart = sec_start_act;
                     rq2.ResamplerFinished = exist_in_cache;
                     mResamplerQueue.add( rq2 );
 #if MAKEBAT_SP
@@ -610,7 +633,14 @@ namespace org.kbinani.cadencii
                     } else {
                         oa_next = new OtoArgs();
                     }
-                    sec_fin = p.secEnd - oa_next.msOverlap / 1000.0;
+
+                    // この後のwavtool呼び出しで，どこまで波形が確定するか？
+                    // 安全のために，wavtoolでくっつける音符の先頭位置までが確定するだろう，ということにする
+                    sec_fin = p.secStart;
+                    if ( i + 1 == num_queues ) {
+                        // 最後の音符だった場合は，最後まで読み取ることにする
+                        sec_fin = mTotalSamples / (double)mSampleRate;
+                    }
 #if DEBUG
                     AppManager.debugWriteLine( "UtauWaveGenerator#run; sec_fin=" + sec_fin );
 #endif
@@ -944,6 +974,11 @@ namespace org.kbinani.cadencii
                 if ( log != null ) {
                     log.Close();
                 }
+#endif
+#if DEBUG
+#if !JAVA
+                sw.Close();
+#endif
 #endif
                 mRunning = false;
                 mAbortRequired = false;

@@ -14523,6 +14523,29 @@ namespace org.kbinani.cadencii
         {
 #if DEBUG
             PortUtil.println( "FormMain#menuHelpDebug_Click" );
+            BFileChooser fc = null;
+            try {
+                fc = new BFileChooser( "" );
+                int ret = fc.showOpenDialog( this );
+                if ( ret != BFileChooser.APPROVE_OPTION ) {
+                    return;
+                }
+                string from = fc.getSelectedFile();
+                UstFile ust = new UstFile( from );
+                string dir = PortUtil.getDirectoryName( from );
+                string to = PortUtil.combinePath( dir, "_" + PortUtil.getFileName( from ) );
+                ust.write( to );
+            } catch ( Exception ex ) {
+            } finally {
+#if !JAVA
+                if ( fc != null ) {
+                    try {
+                        fc.Dispose();
+                    } catch ( Exception ex2 ) {
+                    }
+                }
+#endif
+            }
 
 #if ENABLE_VOCALOID
             /*BFileChooser dlg_fout = new BFileChooser( "" );

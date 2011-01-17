@@ -79,8 +79,14 @@ namespace org.kbinani.vsq
             : this( "Miku", 1, 4, 4, ust.getBaseTempo() )
         {
 #endif
+#if DEBUG
+#if !JAVA
+            System.IO.StreamWriter sw = new System.IO.StreamWriter( "VsqFile.ctor.log" );
+#endif
+#endif
             int clock_count = 480 * 4; //pre measure = 1、4分の4拍子としたので
             VsqBPList pitch = new VsqBPList( "", 0, -2400, 2400 ); // ノートナンバー×100
+            VsqTrack vsq_track = vec.get( this.Track, 1 );
             for ( Iterator<UstEvent> itr = ust.getTrack( 0 ).getNoteEventIterator(); itr.hasNext(); ) {
                 UstEvent ue = itr.next();
                 if ( ue.Lyric != "R" ) {
@@ -94,31 +100,79 @@ namespace org.kbinani.vsq
                     id.LyricHandle = new LyricHandle( ue.Lyric, psymbol );
                     id.Note = ue.Note;
                     id.type = VsqIDType.Anote;
+                    id.Dynamics = ue.Intensity;
                     VsqEvent ve = new VsqEvent( clock_count, id );
                     ve.UstEvent = (UstEvent)ue.clone();
-                    Track.get( 1 ).addEvent( ve );
+                    vsq_track.addEvent( ve );
 
                     if ( ue.Pitches != null ) {
                         // PBTypeクロックごとにデータポイントがある
-                        int clock = clock_count - ue.PBType;
+                        // ただし，先行発音開始位置から記録されているので注意
+
+                        // 先行発音の秒数
+                        double sec_preutterance = ue.PreUtterance / 1000.0;
+                        // 音符の開始位置(秒)
+                        double sec_clock = TempoTable.getSecFromClock( clock_count );
+                        // 先行発音込みの，音符の開始位置(秒)
+                        double sec_at_preutterance = sec_clock - sec_preutterance;
+                        // 先行発音込みの，音符の開始位置(クロック)
+                        int clock_at_preutterance = (int)TempoTable.getClockFromSec( sec_at_preutterance );
+                        int clock = clock_at_preutterance - ue.PBType;
+                        int indx = 0;
                         for ( int i = 0; i < ue.Pitches.Length; i++ ) {
                             clock += ue.PBType;
-                            pitch.add( clock, (int)ue.Pitches[i] );
+                            if ( ve.Clock <= clock && clock < ve.Clock + ve.ID.getLength() ) {
+                                // clockクロックでの音の高さはいくらか？
+                                int base_note = id.Note;
+                                int dst_note = base_note;
+                                int size = vsq_track.getEventCount();
+                                for ( int j = indx; j < size; j++ ) {
+                                    VsqEvent itemj = vsq_track.getEvent( j );
+                                    if ( itemj.ID.type != VsqIDType.Anote ) {
+                                        continue;
+                                    }
+                                    int itemj_length = itemj.ID.getLength();
+                                    if ( clock < itemj.Clock ) {
+                                        continue;
+                                    }
+                                    if ( itemj.Clock <= clock && clock < itemj.Clock + itemj_length ) {
+                                        dst_note = itemj.ID.Note;
+                                        indx = j;
+                                        break;
+                                    }
+                                }
+                                float pit_cent = (base_note - dst_note) * 100.0f + ue.Pitches[i];
+                                pitch.add( clock, (int)pit_cent );
+#if DEBUG
+#if !JAVA
+                                sw.WriteLine( clock + "\t" + (id.Note * 100 + ue.Pitches[i]) );
+#endif
+#endif
+                            }
                         }
                     }
                 }
                 if ( ue.Tempo > 0.0f ) {
                     TempoTable.add( new TempoTableEntry( clock_count, (int)(60e6 / ue.Tempo), 0.0 ) );
+                    TempoTable.updateTempoInfo();
                 }
                 clock_count += ue.getLength();
             }
-            updateTempoInfo();
             updateTotalClocks();
             updateTimesigInfo();
+#if DEBUG
+#if !JAVA
+            for ( int i = 0; i < pitch.size(); i++ ) {
+                VsqBPPair p = pitch.getElementB( i );
+                sw.WriteLine( "#" + pitch.getKeyClock( i ) + "\t" + p.value );
+            }
+            sw.Close();
+#endif
+#endif
             reflectPitch( this, 1, pitch );
 #if DEBUG
             PortUtil.println( "VsqFile#.ctor(UstFile)" );
-            VsqTrack vsq_track = Track.get( 1 );
+            //VsqTrack vsq_track = Track.get( 1 );
             for ( int i = 0; i < vsq_track.getEventCount(); i++ ) {
                 VsqEvent item = vsq_track.getEvent( i );
                 PortUtil.println( "    #" + i + "; type=" + item.ID.type + "; clock=" + item.Clock + "; length=" + item.ID.getLength() );

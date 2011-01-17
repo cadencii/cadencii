@@ -106,10 +106,12 @@ namespace org.kbinani.vsq
             sw.newLine();
             sw.write( "PBS=" + Start );
             sw.newLine();
-            sw.write( "PBY=" + pby );
-            sw.newLine();
-            sw.write( "PBM=" + pbm );
-            sw.newLine();
+            if ( vec.size( Points ) >= 2 ) {
+                sw.write( "PBY=" + pby );
+                sw.newLine();
+                sw.write( "PBM=" + pbm );
+                sw.newLine();
+            }
         }
 
         public Object clone()

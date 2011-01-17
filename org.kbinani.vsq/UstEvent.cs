@@ -49,11 +49,42 @@ namespace org.kbinani.vsq
         public String Flags = "";
         public int Moduration = 100;
         public int Index;
-        public int StartPoint;
+        private float mStartPoint;
+        private boolean mIsStartPointSpecified = false;
 
         public UstEvent()
         {
         }
+
+        public float getStartPoint()
+        {
+            return mStartPoint;
+        }
+
+        public void setStartPoint( float value )
+        {
+            mStartPoint = value;
+            mIsStartPointSpecified = true;
+        }
+
+        public boolean isStartPointSpecified()
+        {
+            return mIsStartPointSpecified;
+        }
+
+#if !JAVA
+        public float StartPoint
+        {
+            get
+            {
+                return getStartPoint();
+            }
+            set
+            {
+                setStartPoint( value );
+            }
+        }
+#endif
 
         public int getLength()
         {
@@ -93,7 +124,8 @@ namespace org.kbinani.vsq
             ret.VoiceOverlap = VoiceOverlap;
             ret.Flags = Flags;
             ret.Moduration = Moduration;
-            ret.StartPoint = StartPoint;
+            ret.mStartPoint = mStartPoint;
+            ret.mIsStartPointSpecified = mIsStartPointSpecified;
             ret.Tag = Tag;
             return ret;
         }
@@ -174,8 +206,8 @@ namespace org.kbinani.vsq
                 sw.write( "Moduration=" + Moduration );
                 sw.newLine();
             }
-            if ( StartPoint != 0 ) {
-                sw.write( "StartPoint=" + StartPoint );
+            if ( mIsStartPointSpecified ) {
+                sw.write( "StartPoint=" + getStartPoint() );
                 sw.newLine();
             }
         }

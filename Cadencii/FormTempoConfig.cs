@@ -50,15 +50,15 @@ namespace org.kbinani.cadencii
             applyLanguage();
             numBar.setMinimum( -pre_measure + 1 );
             numBar.setMaximum( 100000 );
-            numBar.setValue( bar_count );
+            numBar.setFloatValue( bar_count );
 
             numBeat.setMinimum( 1 );
             numBeat.setMaximum( beat_max );
-            numBeat.setValue( beat );
+            numBeat.setFloatValue( beat );
             numClock.setMinimum( 0 );
             numClock.setMaximum( clock_max );
-            numClock.setValue( clock );
-            numTempo.setValue( tempo );
+            numClock.setFloatValue( clock );
+            numTempo.setFloatValue( tempo );
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 

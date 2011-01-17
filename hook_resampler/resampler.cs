@@ -9,17 +9,20 @@ class Resampler{
         foreach( string s in args ){
             arg += "\"" + s + "\" ";
         }
+        string exe = Environment.GetCommandLineArgs()[0];
+        string exe_name = Path.GetFileNameWithoutExtension( exe );
         string path = Application.StartupPath;
-        string log = Path.Combine( path, "resampler.log" );
-        using( StreamWriter sw = new StreamWriter( log, true ) ){
+        using( StreamWriter sw = new StreamWriter( Path.Combine( path, exe_name + ".log" ), true ) ){
             sw.WriteLine( arg );
             Process p = null;
             try{
                 p = new Process();
                 ProcessStartInfo psi = new ProcessStartInfo();
-                psi.FileName = Path.Combine( path, "_resampler.exe" );
+                psi.FileName = Path.Combine( path, "_" + exe_name + ".exe" );
                 psi.Arguments = arg;
                 psi.CreateNoWindow = true;
+                psi.UseShellExecute = false;
+                psi.UseShellExecute = false;
                 p.StartInfo = psi;
                 p.Start();
                 p.WaitForExit();

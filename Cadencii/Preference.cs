@@ -334,7 +334,7 @@ namespace org.kbinani.cadencii
             } else if ( numBuffer.getMaximum() < value ) {
                 value = (int)numBuffer.getMaximum();
             }
-            numBuffer.setValue( value );
+            numBuffer.setFloatValue( value );
         }
 
         /// <summary>
@@ -474,7 +474,7 @@ namespace org.kbinani.cadencii
                 chkAutoBackup.setSelected( false );
             } else {
                 chkAutoBackup.setSelected( true );
-                numAutoBackupInterval.setValue( value );
+                numAutoBackupInterval.setFloatValue( value );
             }
         }
 
@@ -790,7 +790,7 @@ namespace org.kbinani.cadencii
 
         public void setMouseHoverTime( int value )
         {
-            numMouseHoverTime.setValue( value );
+            numMouseHoverTime.setFloatValue( value );
         }
 
         public int getPxTrackHeight()
@@ -800,7 +800,7 @@ namespace org.kbinani.cadencii
 
         public void setPxTrackHeight( int value )
         {
-            numTrackHeight.setValue( value );
+            numTrackHeight.setFloatValue( value );
         }
 
         public boolean isKeepLyricInputMode()
@@ -837,7 +837,7 @@ namespace org.kbinani.cadencii
 
         public void setMaximumFrameRate( int value )
         {
-            numMaximumFrameRate.setValue( value );
+            numMaximumFrameRate.setFloatValue( value );
         }
 
         public boolean isScrollHorizontalOnWheel()
@@ -1067,7 +1067,7 @@ namespace org.kbinani.cadencii
 
         public void setPreSendTime( int value )
         {
-            numPreSendTime.setValue( value );
+            numPreSendTime.setFloatValue( value );
         }
 
         public boolean isEnableAutoVibrato()
@@ -1230,11 +1230,11 @@ namespace org.kbinani.cadencii
         public void setWheelOrder( int value )
         {
             if ( value < numericUpDownEx1.getMinimum() ) {
-                numericUpDownEx1.setValue( numericUpDownEx1.getMinimum() );
+                numericUpDownEx1.setFloatValue( numericUpDownEx1.getMinimum() );
             } else if ( numericUpDownEx1.getMaximum() < value ) {
-                numericUpDownEx1.setValue( numericUpDownEx1.getMaximum() );
+                numericUpDownEx1.setFloatValue( numericUpDownEx1.getMaximum() );
             } else {
-                numericUpDownEx1.setValue( value );
+                numericUpDownEx1.setFloatValue( value );
             }
         }
 

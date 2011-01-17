@@ -28,7 +28,8 @@ namespace org.kbinani.cadencii {
         public String WavtoolArgPrefix;
         public String WavtoolArgSuffix;
         public OtoArgs Oto;
-        public double secEnd;
+        //public double secEnd;
+        public double secStart;
         public String FileName;
         public boolean ResamplerFinished;
 

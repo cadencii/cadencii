@@ -78,29 +78,29 @@ namespace org.kbinani.cadencii
 
             // 拍子の分子
             if ( numerator < numNumerator.getMinimum() ) {
-                numNumerator.setValue( numNumerator.getMinimum() );
+                numNumerator.setFloatValue( numNumerator.getMinimum() );
             } else if ( numNumerator.getMaximum() < numerator ) {
-                numNumerator.setValue( numNumerator.getMaximum() );
+                numNumerator.setFloatValue( numNumerator.getMaximum() );
             } else {
-                numNumerator.setValue( numerator );
+                numNumerator.setFloatValue( numerator );
             }
 
             // 始点
             if ( bar_count < numStart.getMinimum() ) {
-                numStart.setValue( numStart.getMinimum() );
+                numStart.setFloatValue( numStart.getMinimum() );
             } else if ( numStart.getMaximum() < bar_count ) {
-                numStart.setValue( numStart.getMaximum() );
+                numStart.setFloatValue( numStart.getMaximum() );
             } else {
-                numStart.setValue( bar_count );
+                numStart.setFloatValue( bar_count );
             }
 
             // 終点
             if ( bar_count < numEnd.getMinimum() ) {
-                numEnd.setValue( numEnd.getMinimum() );
+                numEnd.setFloatValue( numEnd.getMinimum() );
             } else if ( numEnd.getMaximum() < bar_count ) {
-                numEnd.setValue( numEnd.getMaximum() );
+                numEnd.setFloatValue( numEnd.getMaximum() );
             } else {
-                numEnd.setValue( bar_count );
+                numEnd.setFloatValue( bar_count );
             }
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }

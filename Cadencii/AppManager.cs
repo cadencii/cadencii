@@ -922,6 +922,9 @@ namespace org.kbinani.cadencii
                         } catch ( Exception ex ) {
                             Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
                             PortUtil.println( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex );
+#if JAVA
+                            ex.printStackTrace();
+#endif
                         }
                         continue;
                     }
@@ -963,6 +966,9 @@ namespace org.kbinani.cadencii
                             } catch ( Exception ex ) {
                                 Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
                                 PortUtil.stderr.println( "AppManager#patchWorkToFreeze; ex=" + ex );
+#if JAVA
+                                ex.printStackTrace();
+#endif
                             } finally {
                                 if ( wr != null ) {
                                     try {
@@ -970,6 +976,9 @@ namespace org.kbinani.cadencii
                                     } catch ( Exception ex2 ) {
                                         Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
                                         PortUtil.stderr.println( "AppManager#patchWorkToFreeze; ex2=" + ex2 );
+#if JAVA
+                                        ex2.printStackTrace();
+#endif
                                     }
                                 }
                             }
@@ -979,6 +988,9 @@ namespace org.kbinani.cadencii
                             } catch ( Exception ex ) {
                                 Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
                                 PortUtil.stderr.println( "AppManager#patchWorkToFreeze; ex=" + ex );
+#if JAVA
+                                ex.printStackTrace();
+#endif
                             }
                         }
 
@@ -1050,6 +1062,9 @@ namespace org.kbinani.cadencii
                     } catch ( Exception ex ) {
                         Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
                         PortUtil.stderr.println( "AppManager#patchWorkToFreeze; ex=" + ex );
+#if JAVA
+                        ex.printStackTrace();
+#endif
                     } finally {
                         if ( writer != null ) {
                             try {
@@ -1057,6 +1072,9 @@ namespace org.kbinani.cadencii
                             } catch ( Exception ex2 ) {
                                 Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
                                 PortUtil.stderr.println( "AppManager#patchWorkToFreeze; ex2=" + ex2 );
+#if JAVA
+                                ex2.printStackTrace();
+#endif
                             }
                         }
                     }
@@ -1092,12 +1110,18 @@ namespace org.kbinani.cadencii
                         } catch ( Exception ex ) {
                             Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
                             PortUtil.println( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex );
+#if JAVA
+                            ex.printStackTrace();
+#endif
                         }
                     }
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
                 PortUtil.stderr.println( "AppManager#patchWorkToFreeze; ex=" + ex );
+#if JAVA
+                ex.printStackTrace();
+#endif
             } finally {
                 if ( dialog != null ) {
                     try {
@@ -1105,6 +1129,9 @@ namespace org.kbinani.cadencii
                     } catch ( Exception ex2 ) {
                         Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
                         PortUtil.stderr.println( "AppManager#patchWorkToFreeez; ex2=" + ex2 );
+#if JAVA
+                        ex2.printStackTrace();
+#endif
                     }
                 }
             }

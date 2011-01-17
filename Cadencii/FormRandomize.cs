@@ -66,14 +66,14 @@ namespace org.kbinani.cadencii
             chkShift.setSelected( lastPositionRandomizeEnabled );
             comboShiftValue.setSelectedIndex( lastPositionRandomizeValue - 1 );
             chkPit.setSelected( lastPitRandomizeEnabled );
-            numResolution.setValue( lastResolution );
+            numResolution.setFloatValue( lastResolution );
             comboPitPattern.setSelectedIndex( lastPitRandomizePattern - 1 );
             comboPitValue.setSelectedIndex( lastPitRandomizeValue - 1 );
             lockRequired = true;
-            numStartBar.setValue( lastStartBar );
-            numStartBeat.setValue( lastStartBeat );
-            numEndBar.setValue( lastEndBar );
-            numEndBeat.setValue( lastEndBeat );
+            numStartBar.setFloatValue( lastStartBar );
+            numStartBeat.setFloatValue( lastStartBeat );
+            numEndBar.setFloatValue( lastEndBar );
+            numEndBeat.setFloatValue( lastEndBeat );
             lockRequired = false;
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }

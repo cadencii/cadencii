@@ -213,19 +213,19 @@ namespace org.kbinani.vsq
                                 //VoiceOverlap=6
                             } else if ( spl[0].Equals( "VoiceOverlap" ) ) {
                                 if ( spl[1] != "" ) {
-                                    ue.VoiceOverlap = PortUtil.parseInt( spl[1] );
+                                    ue.VoiceOverlap = PortUtil.parseFloat( spl[1] );
                                 }
                             } else if ( spl[0].Equals( "PreUtterance" ) ) {
                                 if ( spl[1] != "" ) {
-                                    ue.PreUtterance = PortUtil.parseInt( spl[1] );
+                                    ue.PreUtterance = PortUtil.parseFloat( spl[1] );
                                 }
                             } else if ( spl[0].Equals( "Flags" ) ) {
                                 ue.Flags = line.Substring( 6 );
                             } else if ( spl[0].Equals( "StartPoint" ) ) {
                                 try {
-                                    ue.StartPoint = PortUtil.parseInt( spl[1] );
+                                    float stp = PortUtil.parseFloat( spl[1] );
+                                    ue.setStartPoint( stp );
                                 } catch ( Exception ex ) {
-                                    ue.StartPoint = 0;
                                 }
                             } else if ( spl[0].Equals( "Moduration" ) ) {
                                 try {

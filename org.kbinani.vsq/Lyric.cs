@@ -347,6 +347,9 @@ namespace org
                     // 古い発音記号と同じなら、古い値を使う
                     if ( old_symbol != null ) {
                         for ( int i = 0; i < vec.size( m_phonetic_symbol ); i++ ) {
+                            if ( i >= vec.size( old_symbol ) ) {
+                                break;
+                            }
                             String s0 = vec.get( m_phonetic_symbol, i );
                             String s1 = vec.get( old_symbol, i );
                             boolean use_old_value = (old_symbol != null && i < vec.size( old_symbol )) &&

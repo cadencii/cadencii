@@ -133,13 +133,13 @@ namespace org.kbinani.cadencii
                         }
                     } else if ( numSpeed.isFocusOwner() ) {
                         if ( R1 ) {
-                            if ( numSpeed.getValue() + numSpeed.getIncrement() <= numSpeed.getMaximum() ) {
-                                numSpeed.setValue( numSpeed.getValue() + numSpeed.getIncrement() );
+                            if ( numSpeed.getFloatValue() + numSpeed.getIncrement() <= numSpeed.getMaximum() ) {
+                                numSpeed.setFloatValue( numSpeed.getFloatValue() + numSpeed.getIncrement() );
                                 m_last_event_processed = now;
                             }
                         } else if ( L1 ) {
-                            if ( numSpeed.getValue() - numSpeed.getIncrement() >= numSpeed.getMinimum() ) {
-                                numSpeed.setValue( numSpeed.getValue() - numSpeed.getIncrement() );
+                            if ( numSpeed.getFloatValue() - numSpeed.getIncrement() >= numSpeed.getMinimum() ) {
+                                numSpeed.setFloatValue( numSpeed.getFloatValue() - numSpeed.getIncrement() );
                                 m_last_event_processed = now;
                             }
                         } else if ( pov_l ) {
