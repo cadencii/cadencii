@@ -8855,12 +8855,23 @@ namespace org.kbinani.cadencii
                 #region MiddleDrag
                 int drafth = computeHScrollValueForMiddleDrag( e.X );
                 int draftv = computeVScrollValueForMiddleDrag( e.Y );
+                boolean moved = false;
                 if ( drafth != hScroll.getValue() ) {
+                    //moved = true;
+                    //hScroll.beQuiet();
                     hScroll.setValue( drafth );
                 }
                 if ( draftv != vScroll.getValue() ) {
+                    //moved = true;
+                    //vScroll.beQuiet();
                     vScroll.setValue( draftv );
                 }
+                //if ( moved ) {
+                //    vScroll.setQuiet( false );
+                //    hScroll.setQuiet( false );
+                //    refreshScreen( true );
+                //}
+                refreshScreen( true );
                 if ( AppManager.isPlaying() ) {
                     return;
                 }
@@ -13594,7 +13605,10 @@ namespace org.kbinani.cadencii
 #endif
                 mTextBoxTrackName = null;
             }
-            refreshScreen( true );
+            if ( AppManager.getEditMode() != EditMode.MIDDLE_DRAG ) {
+                // MIDDLE_DRAGのときは，pictPianoRoll_MouseMoveでrefreshScreenされるので，それ以外のときだけ描画・
+                refreshScreen( true );
+            }
         }
         #endregion
 
@@ -13674,7 +13688,10 @@ namespace org.kbinani.cadencii
 #endif
                 mTextBoxTrackName = null;
             }
-            refreshScreen( true );
+            if ( AppManager.getEditMode() != EditMode.MIDDLE_DRAG ) {
+                // MIDDLE_DRAGのときは，pictPianoRoll_MouseMoveでrefreshScreenされるので，それ以外のときだけ描画・
+                refreshScreen( true );
+            }
         }
         #endregion
 
@@ -17778,7 +17795,7 @@ namespace org.kbinani.cadencii
             this.pictureBox3 = new org.kbinani.windows.forms.BPictureBox();
             this.pictKeyLengthSplitter = new org.kbinani.windows.forms.BPictureBox();
             this.pictureBox2 = new org.kbinani.windows.forms.BPictureBox();
-            this.vScroll = new org.kbinani.windows.forms.BVScrollBar();
+            this.vScroll = new BVScrollBar();
             this.picturePositionIndicator = new org.kbinani.windows.forms.BPictureBox();
             this.toolStripBottom = new org.kbinani.windows.forms.BToolBar();
             this.toolStripStatusLabel1 = new org.kbinani.windows.forms.BStatusLabel();
@@ -17811,7 +17828,7 @@ namespace org.kbinani.cadencii
             this.panel1 = new System.Windows.Forms.Panel();
             this.panelOverview = new org.kbinani.cadencii.PictOverview();
             this.pictPianoRoll = new org.kbinani.cadencii.PictPianoRoll();
-            this.hScroll = new org.kbinani.windows.forms.BHScrollBar();
+            this.hScroll = new BHScrollBar();
             this.rebar = new org.kbinani.windows.forms.Rebar();
             this.imageListMenu = new System.Windows.Forms.ImageList( this.components );
             this.toolBarFile = new System.Windows.Forms.ToolBar();

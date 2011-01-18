@@ -174,7 +174,7 @@ namespace org.kbinani.vsq
                                     ue.PBType = v;
                                 } catch ( Exception ex ) {
                                 }
-                            } else if ( spl[0].Equals( "Pitches" ) ) {
+                            } else if ( spl[0].Equals( "Piches" ) ) {
                                 String[] spl2 = PortUtil.splitString( spl[1], ',' );
                                 float[] t = new float[spl2.Length];
                                 for ( int i = 0; i < spl2.Length; i++ ) {

@@ -82,14 +82,16 @@ namespace org.kbinani.vsq
 #endif
 #if DEBUG
 #if !JAVA
-            System.IO.StreamWriter sw = new System.IO.StreamWriter( "VsqFile.ctor.log" );
+            System.IO.StreamWriter sw = new System.IO.StreamWriter( fsys.combine( PortUtil.getApplicationStartupPath(), "VsqFile.ctor.log" ) );
+            int max = int.MinValue;
+            int min = int.MaxValue;
+            int lastc = 0;
 #endif
 #endif
             int clock_count = 480 * 4; //pre measure = 1、4分の4拍子としたので
             VsqBPList abs_pitch = new VsqBPList( "", 640000, 0, 1270000 ); // 絶対ピッチ(単位: 1/100 cent，つまり10000で1ノートナンバー)
             VsqTrack vsq_track = vec.get( this.Track, 1 );
-            int previous_clock = 0;
-            int previous_length = 0;
+            int last_clock = -1;
             for ( Iterator<UstEvent> itr = ust.getTrack( 0 ).getNoteEventIterator(); itr.hasNext(); ) {
                 UstEvent ue = itr.next();
                 if ( !str.compare( ue.Lyric, "R" ) ) {
@@ -109,7 +111,7 @@ namespace org.kbinani.vsq
                     vsq_track.addEvent( ve );
 
 #if DEBUG
-                    sw.WriteLine( ue.Lyric + "; (ue.Pitch==null)=" + (ue.Pitches == null) );
+                    //sw.WriteLine( ue.Lyric + "; (ue.Pitch==null)=" + (ue.Pitches == null) );
 #endif
                     if ( ue.Pitches != null ) {
                         // PBTypeクロックごとにデータポイントがある
@@ -121,7 +123,7 @@ namespace org.kbinani.vsq
                         double sec_stp = ue.getStartPoint() / 1000.0;
 #if DEBUG
 #if !JAVA
-                        sw.WriteLine( "ue.Lyric=" + ue.Lyric + "; ue.PreUtterance=" + ue.PreUtterance );
+                        //sw.WriteLine( "ue.Lyric=" + ue.Lyric + "; ue.PreUtterance=" + ue.PreUtterance );
 #endif
 #endif
                         // 音符の開始位置(秒)
@@ -133,21 +135,28 @@ namespace org.kbinani.vsq
                         int clock = clock_at_preutterance - ue.PBType;
 #if DEBUG
 #if !JAVA
-                        sw.WriteLine( "clock_count=" + clock_count + "; clock_at_preutterance=" + clock_at_preutterance );
+                        //sw.WriteLine( "clock_count=" + clock_count + "; clock_at_preutterance=" + clock_at_preutterance );
 #endif
 #endif
-                        // 2個以上前の音符については，ピッチを書き込まないようにする
+                        // 書き込み済みの位置より左側には，ピッチを書き込まないようにする
                         for ( int i = 0; i < ue.Pitches.Length; i++ ) {
                             clock += ue.PBType;
-                            if ( clock < previous_clock ) {
+                            if ( clock < last_clock ) {
                                 continue;
                             }
-                            abs_pitch.add( clock, id.Note * 10000 + (int)(ue.Pitches[i] * 100) );
+                            int pvalue = id.Note * 10000 + (int)(ue.Pitches[i] * 100);
+                            abs_pitch.add( clock, pvalue );
+                            last_clock = clock;
+#if DEBUG
+#if !JAVA
+                            max = Math.Max( max, pvalue );
+                            min = Math.Min( min, pvalue );
+                            lastc = clock;
+                            sw.WriteLine( clock + "\t" + pvalue );
+#endif
+#endif
                         }
                     }
-
-                    previous_clock = clock_count;
-                    previous_length = ue.getLength();
                 }
                 if ( ue.Tempo > 0.0f ) {
                     TempoTable.add( new TempoTableEntry( clock_count, (int)(60e6 / ue.Tempo), 0.0 ) );
@@ -218,10 +227,31 @@ namespace org.kbinani.vsq
             updateTimesigInfo();
 #if DEBUG
 #if !JAVA
-            for ( int i = 0; i < pitch.size(); i++ ) {
+            /*for ( int i = 0; i < pitch.size(); i++ ) {
                 VsqBPPair p = pitch.getElementB( i );
-                sw.WriteLine( "#" + pitch.getKeyClock( i ) + "\t" + p.value );
+                int c = pitch.getKeyClock( i );
+                lastc = c;
+                sw.WriteLine( c + "\t" + p.value );
+                max = Math.Max( max, p.value );
+                min = Math.Min( min, p.value );
+            }*/
+            sw.Close();
+
+
+            sw = new System.IO.StreamWriter( fsys.combine( PortUtil.getApplicationStartupPath(), "VsqFile.ctor2.log" ) );
+
+            int DELTA = 10;
+            for ( int i = 0; i < vsq_track.getEventCount(); i++ ) {
+                VsqEvent item = vsq_track.getEvent( i );
+                if ( item.ID.type != VsqIDType.Anote ) {
+                    continue;
+                }
+                sw.WriteLine( item.Clock + "\t" + (min - DELTA) );
+                sw.WriteLine( item.Clock + "\t" + (max + DELTA) );
+                sw.WriteLine( (item.Clock + item.ID.getLength()) + "\t" + (max + DELTA) );
+                sw.WriteLine( (item.Clock + item.ID.getLength()) + "\t" + (min - DELTA) );
             }
+
             sw.Close();
 #endif
 #endif

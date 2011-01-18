@@ -404,7 +404,8 @@ namespace org.kbinani.cadencii
                         millisec + "",
                         oa.msConsonant + "",
                         oa.msBlank + "",
-                        item.UstEvent.Intensity + "" };
+                        item.UstEvent.Intensity + "",
+                        item.UstEvent.Moduration + "" };
 
                     // ピッチを取得
                     Vector<String> pitch = new Vector<String>();
@@ -477,9 +478,10 @@ namespace org.kbinani.cadencii
                         }
 
                         // リストに入れる
-                        vec.add( pitch, PortUtil.formatDecimal( "0.00", pvalue ) );
                         if ( totalcount == 0 ) {
-                            vec.add( pitch, item.UstEvent.Moduration + "Q" + tempo );
+                            vec.add( pitch, PortUtil.formatDecimal( "0.00", pvalue ) + "Q" + tempo );
+                        } else {
+                            vec.add( pitch, PortUtil.formatDecimal( "0.00", pvalue ) );
                         }
                         totalcount++;
 #if DEBUG
