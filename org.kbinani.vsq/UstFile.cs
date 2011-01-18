@@ -174,7 +174,7 @@ namespace org.kbinani.vsq
                                     ue.PBType = v;
                                 } catch ( Exception ex ) {
                                 }
-                            } else if ( spl[0].Equals( "Piches" ) ) {
+                            } else if ( spl[0].Equals( "Pitches" ) ) {
                                 String[] spl2 = PortUtil.splitString( spl[1], ',' );
                                 float[] t = new float[spl2.Length];
                                 for ( int i = 0; i < spl2.Length; i++ ) {
@@ -324,15 +324,12 @@ namespace org.kbinani.vsq
                     id_map.add( new ValuePair<Integer, Integer>( itemust.Index, -1 ) );
                     track_add.addEvent( itemust );
                 }
-                UstEvent item_add = new UstEvent();
+                UstEvent item_add = (UstEvent)item.UstEvent.clone();
                 item_add.setLength( item.ID.getLength() );
                 item_add.Lyric = item.ID.LyricHandle.L0.Phrase;
                 item_add.Note = item.ID.Note;
                 item_add.Index = index;
                 item_add.Intensity = item.ID.Dynamics;
-                item_add.Moduration = item.UstEvent.Moduration;
-                item_add.PreUtterance = item.UstEvent.PreUtterance;
-                item_add.VoiceOverlap = item.UstEvent.VoiceOverlap;
                 id_map.add( new ValuePair<Integer, Integer>( item_add.Index, item.InternalID ) );
                 if ( item.UstEvent.Envelope != null ) {
                     item_add.Envelope = (UstEnvelope)item.UstEvent.Envelope.clone();
@@ -345,15 +342,50 @@ namespace org.kbinani.vsq
             // 再生秒時を無視して，ピッチベンドを追加
             //VsqBPList pbs = track.getCurve( "pbs" );
             //VsqBPList pit = track.getCurve( "pit" );
+            // まず絶対ピッチを取得
+            VsqBPList abs_pit = new VsqBPList( "", 600000, 0, 1280000 );
+            VsqBPList cpit = track.getCurve( "pit" );
             int clock = 0;
+            int search_indx = 0;
+            int pit_size = cpit.size();
             for ( Iterator<UstEvent> itr = track_add.getNoteEventIterator(); itr.hasNext(); ) {
                 UstEvent item = itr.next();
-                int clock_begin = clock;
+                int c = clock;
+                int len = item.getLength();
+                clock += len;
+                if ( str.compare( item.Lyric, "R" ) ) {
+                    continue;
+                }
+                // 音符の先頭のpitは必ず入れる
+                abs_pit.add( c, (int)(item.Note * 10000 + track.getPitchAt( c ) * 100) );
+
+                // c～c+lenまで
+                for ( int i = search_indx; i < pit_size; i++ ) {
+                    int c2 = cpit.getKeyClock( i );
+                    if ( c < c2 && c2 < clock ) {
+                        abs_pit.add( c2, (int)(item.Note * 10000 + track.getPitchAt( c2 ) * 100) );
+                        search_indx = i;
+                    } else if ( clock <= c2 ) {
+                        break;
+                    }
+                }
+            }
+
+            clock = 0;
+            for ( Iterator<UstEvent> itr = track_add.getNoteEventIterator(); itr.hasNext(); ) {
+                UstEvent item = itr.next();
+                double sec_at_clock = vsq.getSecFromClock( clock );
+                double sec_pre = item.PreUtterance / 1000.0;
+                double sec_stp = item.getStartPoint() / 1000.0;
+                double sec_at_begin = sec_at_clock - sec_pre - sec_stp;
+                int clock_begin = (int)vsq.getClockFromSec( sec_at_begin );
                 int clock_end = clock + item.getLength();
                 Vector<Float> pitch = new Vector<Float>();
                 boolean allzero = true;
+                ByRef<Integer> ref_indx = new ByRef<Integer>( 0 );
                 for ( int cl = clock_begin; cl <= clock_end; cl += PBTYPE ) {
-                    float pit = (float)track.getPitchAt( cl );
+                    int abs = abs_pit.getValue( cl, ref_indx );
+                    float pit = (float)(abs / 100.0) - item.Note * 100;
                     if ( pit != 0.0 ) {
                         allzero = false;
                     }

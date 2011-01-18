@@ -242,6 +242,7 @@ namespace org.kbinani.cadencii
 #if DEBUG
 #if !JAVA
             System.IO.StreamWriter sw = new System.IO.StreamWriter( "UtauWaveGenerator.begin(long).log" );
+            System.IO.StreamWriter sw2 = new System.IO.StreamWriter( "UtauWaveGenerator.begin(long).notes.log" );
 #endif
 #endif
             try {
@@ -288,7 +289,14 @@ namespace org.kbinani.cadencii
                 // 前後の音符の先行発音やオーバーラップやらを取得したいので、一度リストに格納する
                 Vector<VsqEvent> events = new Vector<VsqEvent>();
                 for ( Iterator<VsqEvent> itr = target.getNoteEventIterator(); itr.hasNext(); ) {
-                    events.add( itr.next() );
+                    VsqEvent itemi = itr.next();
+                    events.add( itemi );
+#if DEBUG
+#if !JAVA
+                    sw2.WriteLine( itemi.Clock + "\t" + itemi.ID.Note * 100 );
+                    sw2.WriteLine( (itemi.Clock + itemi.ID.getLength()) + "\t" + itemi.ID.Note * 100 );
+#endif
+#endif
                 }
 
 #if MAKEBAT_SP
@@ -379,10 +387,10 @@ namespace org.kbinani.cadencii
 #endif
                     RenderQueue rq2 = new RenderQueue();
                     String wavPath = "";
-                    if ( PortUtil.getStringLength( oa.fileName ) > 0 ) {
-                        wavPath = PortUtil.combinePath( singer, oa.fileName );
+                    if ( str.length( oa.fileName ) > 0 ) {
+                        wavPath = fsys.combine( singer, oa.fileName );
                     } else {
-                        wavPath = PortUtil.combinePath( singer, lyric + ".wav" );
+                        wavPath = fsys.combine( singer, lyric + ".wav" );
                     }
 #if DEBUG
                     PortUtil.println( "UtauWaveGenerator#run; wavPath=" + wavPath );
@@ -407,7 +415,7 @@ namespace org.kbinani.cadencii
 
                     // sec_start_act～sec_end_actまでの，item.ID.Note基準のピッチベンドを取得
                     // ただしdelta_sec秒間隔で
-                    double sec = sec_start_act;
+                    double sec = mVsq.getSecFromClock( item.Clock ) - (item.UstEvent.PreUtterance + item.UstEvent.getStartPoint()) / 1000.0;
                     int indx = 0;
                     int base_note = item.ID.Note;
                     double sec_vibstart = mVsq.getSecFromClock( item.Clock + item.ID.VibratoDelay );
@@ -426,12 +434,26 @@ namespace org.kbinani.cadencii
                             (float)delta_sec );
                     }
                     
-                    while ( sec <= sec_end_act ) {
+#if DEBUG
+#if !JAVA
+                    String logname =
+                        PortUtil.combinePath( mTempDir, k + "_" + PortUtil.getFileNameWithoutExtension( wavPath ) + "_" + note + ".log" );
+                    System.IO.StreamWriter sw3 = new System.IO.StreamWriter( logname );
+                    int prevx = 0;
+                    float max = -100;
+                    float min = 12800;
+#endif
+#endif
+                    while ( sec <= sec_end ) {
                         // clockでの音符の音の高さを調べる
                         // ピッチベンドを調べたい時刻
                         int clock = (int)mVsq.getClockFromSec( sec );
                         // dst_noteに，clockでの，音符のノートナンバー(あれば．なければ元の音符と同じ値)
                         int dst_note = base_note;
+                        if ( k > 0 ) {
+                            VsqEvent prev = vec.get( events, k - 1 );
+                            dst_note = base_note;
+                        }
                         for ( int i = indx; i < events_count; i++ ) {
                             VsqEvent itemi = vec.get( events, i );
                             if ( clock < itemi.Clock ) {
@@ -459,12 +481,17 @@ namespace org.kbinani.cadencii
                         if ( totalcount == 0 ) {
                             vec.add( pitch, item.UstEvent.Moduration + "Q" + tempo );
                         }
+                        totalcount++;
 #if DEBUG
 #if !JAVA
-                        sw.WriteLine( clock + "\t" + pvalue );
+                        float ty = (float)pvalue + base_note * 100;
+                        max = Math.Max( max, ty );
+                        min = Math.Min( min, ty );
+                        prevx = clock;
+                        sw3.WriteLine( clock + "\t" + ty );
+                        sw.WriteLine( clock + "\t" + pvalue + "\t" + dst_note + "\t" + base_note + "\t" + target.getPitchAt( clock ) );
 #endif
 #endif
-                        totalcount++;
                         if ( pvalue != 0.0 ) {
                             allzero = false;
                         }
@@ -472,6 +499,18 @@ namespace org.kbinani.cadencii
                         // 次
                         sec += delta_sec;
                     }
+#if DEBUG
+#if !JAVA
+                    int delta = 20;
+                    sw3.WriteLine( prevx + "\t" + (min - delta) );
+                    sw3.WriteLine( (item.Clock + item.ID.getLength()) + "\t" + (min - delta) );
+                    sw3.WriteLine( (item.Clock + item.ID.getLength()) + "\t" + (max + delta) );
+                    sw3.WriteLine( (item.Clock + item.ID.getLength()) + "\t" + (min - delta) );
+                    sw3.WriteLine( item.Clock + "\t" + (min - delta) );
+                    sw3.WriteLine( item.Clock + "\t" + (max + delta) );
+                    sw3.Close();
+#endif
+#endif
 
                     //4_あ_C#4_550.wav
                     String md5_src = "";
@@ -484,8 +523,13 @@ namespace org.kbinani.cadencii
                     foreach ( String s in pitch ) {
                         md5_src += s + " ";
                     }
+#if DEBUG
+                    String filename =
+                        PortUtil.combinePath( mTempDir, k + "_" + PortUtil.getFileNameWithoutExtension( wavPath ) + "_" + note + ".wav" );
+#else
                     String filename =
                         PortUtil.combinePath( mTempDir, PortUtil.getMD5FromString( mCache.size() + md5_src ) + ".wav" );
+#endif
 
                     rq2.appendArgRange( resampler_arg_prefix );
                     rq2.appendArg( "\"" + filename + "\"" );
@@ -513,8 +557,8 @@ namespace org.kbinani.cadencii
                             try {
                                 PortUtil.deleteFile( delfile );
                             } catch ( Exception ex ) {
-                                PortUtil.stderr.println( "UtauWaveGenerator#run; ex=" + ex );
-                                Logger.write( "UtauWaveGenerator::begin(long): ex=" + ex + "\n" );
+                                PortUtil.stderr.println( "UtauWaveGenerator#begin; ex=" + ex );
+                                Logger.write( "UtauWaveGenerator#begin(long): ex=" + ex + "\n" );
                             }
                             mCache.remove( delkey );
                         }
@@ -731,14 +775,14 @@ namespace org.kbinani.cadencii
                             //int total_samples = size / (channel * byte_per_sample);
                             #endregion
                         } catch ( Exception ex ) {
-                            PortUtil.stderr.println( "UtauWaveGenerator#run; ex=" + ex );
+                            PortUtil.stderr.println( "UtauWaveGenerator#begin; ex=" + ex );
                             Logger.write( "UtauWaveGenerator::begin(long); ex=" + ex + "\n" );
                         } finally {
                             if ( whd != null ) {
                                 try {
                                     whd.close();
                                 } catch ( Exception ex2 ) {
-                                    PortUtil.stderr.println( "UtauWaveGenerator#run; ex2=" + ex2 );
+                                    PortUtil.stderr.println( "UtauWaveGenerator#begin; ex2=" + ex2 );
                                     Logger.write( "UtauWaveGenerator::begin(long); ex=" + ex2 + "\n" );
                                 }
                             }
@@ -978,6 +1022,7 @@ namespace org.kbinani.cadencii
 #if DEBUG
 #if !JAVA
                 sw.Close();
+                sw2.Close();
 #endif
 #endif
                 mRunning = false;

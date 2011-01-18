@@ -30,6 +30,7 @@ namespace org.kbinani.vsq
     using boolean = System.Boolean;
     using Integer = System.Int32;
     using Long = System.Int64;
+    using Float = System.Single;
 #endif
 
     /// <summary>
@@ -85,11 +86,13 @@ namespace org.kbinani.vsq
 #endif
 #endif
             int clock_count = 480 * 4; //pre measure = 1、4分の4拍子としたので
-            VsqBPList pitch = new VsqBPList( "", 0, -2400, 2400 ); // ノートナンバー×100
+            VsqBPList abs_pitch = new VsqBPList( "", 640000, 0, 1270000 ); // 絶対ピッチ(単位: 1/100 cent，つまり10000で1ノートナンバー)
             VsqTrack vsq_track = vec.get( this.Track, 1 );
+            int previous_clock = 0;
+            int previous_length = 0;
             for ( Iterator<UstEvent> itr = ust.getTrack( 0 ).getNoteEventIterator(); itr.hasNext(); ) {
                 UstEvent ue = itr.next();
-                if ( ue.Lyric != "R" ) {
+                if ( !str.compare( ue.Lyric, "R" ) ) {
                     VsqID id = new VsqID( 0 );
                     id.setLength( ue.getLength() );
                     String psymbol = "a";
@@ -105,52 +108,46 @@ namespace org.kbinani.vsq
                     ve.UstEvent = (UstEvent)ue.clone();
                     vsq_track.addEvent( ve );
 
+#if DEBUG
+                    sw.WriteLine( ue.Lyric + "; (ue.Pitch==null)=" + (ue.Pitches == null) );
+#endif
                     if ( ue.Pitches != null ) {
                         // PBTypeクロックごとにデータポイントがある
-                        // ただし，先行発音開始位置から記録されているので注意
+                        // ただし，音符の先頭の時刻から，先行発音とStartPointを引いた時刻から記録されているので注意
 
                         // 先行発音の秒数
                         double sec_preutterance = ue.PreUtterance / 1000.0;
+                        // STPの秒数
+                        double sec_stp = ue.getStartPoint() / 1000.0;
+#if DEBUG
+#if !JAVA
+                        sw.WriteLine( "ue.Lyric=" + ue.Lyric + "; ue.PreUtterance=" + ue.PreUtterance );
+#endif
+#endif
                         // 音符の開始位置(秒)
                         double sec_clock = TempoTable.getSecFromClock( clock_count );
                         // 先行発音込みの，音符の開始位置(秒)
-                        double sec_at_preutterance = sec_clock - sec_preutterance;
+                        double sec_at_preutterance = sec_clock - sec_preutterance - sec_stp;
                         // 先行発音込みの，音符の開始位置(クロック)
                         int clock_at_preutterance = (int)TempoTable.getClockFromSec( sec_at_preutterance );
                         int clock = clock_at_preutterance - ue.PBType;
-                        int indx = 0;
-                        for ( int i = 0; i < ue.Pitches.Length; i++ ) {
-                            clock += ue.PBType;
-                            if ( ve.Clock <= clock && clock < ve.Clock + ve.ID.getLength() ) {
-                                // clockクロックでの音の高さはいくらか？
-                                int base_note = id.Note;
-                                int dst_note = base_note;
-                                int size = vsq_track.getEventCount();
-                                for ( int j = indx; j < size; j++ ) {
-                                    VsqEvent itemj = vsq_track.getEvent( j );
-                                    if ( itemj.ID.type != VsqIDType.Anote ) {
-                                        continue;
-                                    }
-                                    int itemj_length = itemj.ID.getLength();
-                                    if ( clock < itemj.Clock ) {
-                                        continue;
-                                    }
-                                    if ( itemj.Clock <= clock && clock < itemj.Clock + itemj_length ) {
-                                        dst_note = itemj.ID.Note;
-                                        indx = j;
-                                        break;
-                                    }
-                                }
-                                float pit_cent = (base_note - dst_note) * 100.0f + ue.Pitches[i];
-                                pitch.add( clock, (int)pit_cent );
 #if DEBUG
 #if !JAVA
-                                sw.WriteLine( clock + "\t" + (id.Note * 100 + ue.Pitches[i]) );
+                        sw.WriteLine( "clock_count=" + clock_count + "; clock_at_preutterance=" + clock_at_preutterance );
 #endif
 #endif
+                        // 2個以上前の音符については，ピッチを書き込まないようにする
+                        for ( int i = 0; i < ue.Pitches.Length; i++ ) {
+                            clock += ue.PBType;
+                            if ( clock < previous_clock ) {
+                                continue;
                             }
+                            abs_pitch.add( clock, id.Note * 10000 + (int)(ue.Pitches[i] * 100) );
                         }
                     }
+
+                    previous_clock = clock_count;
+                    previous_length = ue.getLength();
                 }
                 if ( ue.Tempo > 0.0f ) {
                     TempoTable.add( new TempoTableEntry( clock_count, (int)(60e6 / ue.Tempo), 0.0 ) );
@@ -158,6 +155,65 @@ namespace org.kbinani.vsq
                 }
                 clock_count += ue.getLength();
             }
+
+            // 音符の先頭位置のピッチが必ず指定された状態にする
+            int search_start = 0;
+            for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
+                VsqEvent item = itr.next();
+                int clock = item.Clock;
+                int size = abs_pitch.size();
+                int x0 = -1;
+                int y0 = 0;
+                for ( int i = search_start; i < size; i++ ) {
+                    int c = abs_pitch.getKeyClock( i );
+                    if ( c == clock ){
+                        search_start = i;
+                        break;
+                    } else if ( c < clock ) {
+                        x0 = c;
+                        y0 = abs_pitch.getElementA( i );
+                        search_start = i;
+                    } else {
+                        if ( x0 < 0 ) {
+                            // clockの直後のピッチは見つかったけれど，直前のピッチが見つからないので断念
+                            break;
+                        }
+                        int x1 = c;
+                        int y1 = abs_pitch.getElementA( i );
+                        int y = (int)((clock - x0) * (y1 - y0) / (double)(x1 - x0) + y0);
+                        abs_pitch.add( clock, y );
+                        break;
+                    }
+                }
+            }
+
+            // 絶対ピッチから，音符を考慮した相対ピッチに変換する
+            VsqBPList pitch = new VsqBPList( "", 0, -2400, 2400 ); // ノートナンバー×100
+            search_start = 0;
+            for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
+                VsqEvent item = itr.next();
+                int clock_start = item.Clock;
+                int clock_end = item.Clock + item.ID.getLength();
+
+                // 音符の範囲内についてのみ変換すればよい
+                int size = abs_pitch.size();
+                for ( int i = search_start; i < size; i++ ) {
+                    int c = abs_pitch.getKeyClock( i );
+                    if ( c < clock_start ) {
+                        search_start = i;
+                        continue;
+                    }
+                    if ( clock_start <= c && c < clock_end ) {
+                        int abspit = abs_pitch.getElementA( i );
+                        int relpit = (int)(abspit / 100.0f - item.ID.Note * 100.0f);
+                        pitch.add( c, relpit );
+                    }
+                    if ( clock_end <= c ) {
+                        break;
+                    }
+                }
+            }
+
             updateTotalClocks();
             updateTimesigInfo();
 #if DEBUG
