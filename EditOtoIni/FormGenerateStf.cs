@@ -90,7 +90,7 @@ namespace org.kbinani.editotoini {
             if ( !PortUtil.isFileExists( m_oto_ini ) ) {
                 return;
             }
-            String straightVoiceDB = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "straightVoiceDB.exe" );
+            String straightVoiceDB = fsys.combine( PortUtil.getApplicationStartupPath(), "straightVoiceDB.exe" );
             String resampler = AppManager.getPathResampler();
 #if DEBUG
             Console.WriteLine( "FormUtauVoiceConfig#bgWork_DoWork; straightVoiceDB=" + straightVoiceDB );
@@ -114,7 +114,7 @@ namespace org.kbinani.editotoini {
                     return;
                 }
                 String dir = PortUtil.getDirectoryName( m_oto_ini );
-                String analyzed = PortUtil.combinePath( dir, "analyzed" );
+                String analyzed = fsys.combine( dir, "analyzed" );
                 if ( !PortUtil.isDirectoryExists( analyzed ) ) {
                     PortUtil.createDirectory( analyzed );
                 }
@@ -126,8 +126,8 @@ namespace org.kbinani.editotoini {
                 for ( int i = 0; i < count; i++ ) {
                     StfQueueArgs item = m_list_files.get( i );
                     String wav_name = item.waveName;
-                    String wav_file = PortUtil.combinePath( dir, wav_name );
-                    String stf_file = PortUtil.combinePath( analyzed, PortUtil.getFileNameWithoutExtension( wav_name ) + ".stf" );
+                    String wav_file = fsys.combine( dir, wav_name );
+                    String stf_file = fsys.combine( analyzed, PortUtil.getFileNameWithoutExtension( wav_name ) + ".stf" );
                     if ( PortUtil.isFileExists( stf_file ) ) {
                         continue;
                     }
@@ -151,8 +151,8 @@ namespace org.kbinani.editotoini {
 #if DEBUG
                     Console.WriteLine( "FormUtauVoiceConfig#bgWork_DoWork; wav_name=" + wav_name );
 #endif
-                    String wav_file = PortUtil.combinePath( dir, wav_name );
-                    String stf_file = PortUtil.combinePath( analyzed, PortUtil.getFileNameWithoutExtension( wav_name ) + ".stf" );
+                    String wav_file = fsys.combine( dir, wav_name );
+                    String stf_file = fsys.combine( analyzed, PortUtil.getFileNameWithoutExtension( wav_name ) + ".stf" );
                     if ( PortUtil.isFileExists( stf_file ) ) {
                         continue;
                     }
@@ -228,8 +228,8 @@ namespace org.kbinani.editotoini {
                 for ( int i = 0; i < count; i++ ) {
                     StfQueueArgs item = m_list_files.get( i );
                     String wav_name = item.waveName;
-                    String wav_file = PortUtil.combinePath( dir, wav_name );
-                    String frq_file = PortUtil.combinePath( dir, wav_name.Replace( ".", "_" ) + ".frq" );
+                    String wav_file = fsys.combine( dir, wav_name );
+                    String frq_file = fsys.combine( dir, wav_name.Replace( ".", "_" ) + ".frq" );
                     if ( PortUtil.isFileExists( frq_file ) ) {
                         continue;
                     }
@@ -252,8 +252,8 @@ namespace org.kbinani.editotoini {
 #if DEBUG
                     Console.WriteLine( "FormUtauVoiceConfig#bgWork_DoWork; wav_name=" + wav_name );
 #endif
-                    String wav_file = PortUtil.combinePath( dir, wav_name );
-                    String frq_file = PortUtil.combinePath( dir, wav_name.Replace( ".", "_" ) + ".frq" );
+                    String wav_file = fsys.combine( dir, wav_name );
+                    String frq_file = fsys.combine( dir, wav_name.Replace( ".", "_" ) + ".frq" );
                     if ( PortUtil.isFileExists( frq_file ) ) {
                         continue;
                     }

@@ -1449,7 +1449,7 @@ namespace org.kbinani.cadencii
                 if ( txtWavtool.getText().Equals( "" ) ) {
                     // wavtoolの欄が空欄だった場合のみ，
                     // wavtoolの候補を登録する(wavtoolがあれば)
-                    String wavtool = PortUtil.combinePath( PortUtil.getDirectoryName( path ), "wavtool.exe" );
+                    String wavtool = fsys.combine( PortUtil.getDirectoryName( path ), "wavtool.exe" );
                     if ( PortUtil.isFileExists( wavtool ) ) {
                         txtWavtool.setText( wavtool );
                     }
@@ -1499,7 +1499,7 @@ namespace org.kbinani.cadencii
                 String path = openUtauCore.getSelectedFile();
                 txtWavtool.setText( path );
                 if ( listResampler.getItemCount() == 0 ) {
-                    String resampler = PortUtil.combinePath( PortUtil.getDirectoryName( path ), "resampler.exe" );
+                    String resampler = fsys.combine( PortUtil.getDirectoryName( path ), "resampler.exe" );
                     if ( PortUtil.isFileExists( resampler ) ) {
                         listResampler.addItem( resampler );
                     }

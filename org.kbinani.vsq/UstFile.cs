@@ -159,8 +159,8 @@ namespace org.kbinani.vsq
                                 } catch ( Exception ex ) {
                                 }
                             } else if ( spl[0].Equals( "Intensity" ) ) {
-                                ue.Intensity = 64;
-                                int v = 64;
+                                ue.Intensity = 100;
+                                int v = 100;
                                 try {
                                     v = PortUtil.parseInt( spl[1] );
                                     ue.Intensity = v;
@@ -289,15 +289,71 @@ namespace org.kbinani.vsq
         /// <param name="id_map">UstEventのIndexフィールドと、元になったVsqEventのInternalIDを対応付けるマップ。キーがIndex、値がInternalIDを表す</param>
         public UstFile( VsqFile vsq, int track_index, Vector<ValuePair<Integer, Integer>> id_map )
         {
-            VsqTrack track = vsq.Track.get( track_index );
+            VsqFile work = (VsqFile)vsq.clone();
+            work.removePart( 0, work.getPreMeasureClocks() );
+
+            VsqTrack vsq_track = work.Track.get( track_index );
 
             // デフォルトのテンポ
-            if ( vsq.TempoTable.size() <= 0 ) {
+            if ( work.TempoTable.size() <= 0 ) {
                 m_tempo = 120.0f;
             } else {
-                m_tempo = (float)(60e6 / (double)vsq.TempoTable.get( 0 ).Tempo);
+                m_tempo = (float)(60e6 / (double)work.TempoTable.get( 0 ).Tempo);
             }
-            updateTempoInfo();
+            m_tempo_table = new Vector<TempoTableEntry>();
+            m_tempo_table.clear();
+            // ustには、テンポチェンジを音符の先頭にしか入れられない
+            // あとで音符に反映させるためのテンプレートを作っておく
+            TempoVector tempo = new TempoVector();
+            int last_clock = 0;
+            int itempo = (int)(60e6 / m_tempo);
+            for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
+                VsqEvent item = itr.next();
+                if ( last_clock < item.Clock ) {
+                    // 休符Rの分
+                    vec.add( tempo, new TempoTableEntry( last_clock, itempo, work.getSecFromClock( last_clock ) ) );
+                }
+                vec.add( tempo, new TempoTableEntry( item.Clock, itempo, work.getSecFromClock( item.Clock ) ) );
+                last_clock = item.Clock + item.ID.getLength();
+            }
+            if ( vec.size( tempo ) == 0 ) {
+                vec.add( tempo, new TempoTableEntry( 0, (int)(60e6 / m_tempo), 0.0 ) );
+            }
+            // tempoの中の各要素の時刻が、vsq.TempoTableから計算した時刻と合致するよう調節
+#if DEBUG
+            sout.println( "UstFile#.ctor; before; list=" );
+            for ( int i = 0; i < vec.size( tempo ); i++ ) {
+                TempoTableEntry item = vec.get( tempo, i );
+                sout.println( "    #" + i + "; c" + item.Clock + "; T" + item.Tempo + "; t" + (60e6 / item.Tempo) + "; sec" + item.Time );
+            }
+#endif
+            TempoTableEntry prev = vec.get( tempo, 0 );
+            for ( int i = 1; i < vec.size( tempo ); i++ ) {
+                TempoTableEntry item = vec.get( tempo, i );
+                double sec = item.Time - prev.Time;
+                int delta = item.Clock - prev.Clock;
+                // deltaクロックでsecを表現するにはテンポをいくらにすればいいか？
+                int draft = (int)(480.0 * sec * 1e6 / (double)delta);
+                // 丸め誤差が入るので、Timeを更新
+                // ustに実際に記録されるテンポはいくらか？
+                float act_tempo = (float)str.tof( PortUtil.formatDecimal( "0.00", 60e6 / draft ) );
+                int i_act_tempo = (int)(60e6 / act_tempo);
+                prev.Tempo = i_act_tempo;
+                item.Time = prev.Time + 1e-6 * delta * prev.Tempo / 480.0;
+                prev = item;
+            }
+#if DEBUG
+            sout.println( "UstFile#.ctor; after; list=" );
+            for ( int i = 0; i < vec.size( tempo ); i++ ) {
+                TempoTableEntry item = vec.get( tempo, i );
+                sout.println( "    #" + i + "; c" + item.Clock + "; T" + item.Tempo + "; t" + (60e6 / item.Tempo) + "; sec" + item.Time );
+            }
+            sout.println( "UstFile#.ctor; vsq.TempoTable=" );
+            for ( int i = 0; i < work.TempoTable.size(); i++ ) {
+                TempoTableEntry item = work.TempoTable.get( i );
+                sout.println( "    #" + i + "; c" + item.Clock + "; T" + item.Tempo + "; t" + (60e6 / item.Tempo) + "; sec" + item.Time );
+            }
+#endif
 
             // R用音符のテンプレート
             int PBTYPE = 5;
@@ -311,9 +367,9 @@ namespace org.kbinani.vsq
 
             // 再生秒時をとりあえず無視して，ゲートタイム基準で音符を追加
             UstTrack track_add = new UstTrack();
-            int last_clock = 0;
+            last_clock = 0;
             int index = 0;
-            for ( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ) {
+            for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
                 VsqEvent item = itr.next();
                 if ( last_clock < item.Clock ) {
                     // ゲートタイム差あり，Rを追加
@@ -329,7 +385,6 @@ namespace org.kbinani.vsq
                 item_add.Lyric = item.ID.LyricHandle.L0.Phrase;
                 item_add.Note = item.ID.Note;
                 item_add.Index = index;
-                item_add.Intensity = item.ID.Dynamics;
                 id_map.add( new ValuePair<Integer, Integer>( item_add.Index, item.InternalID ) );
                 if ( item.UstEvent.Envelope != null ) {
                     item_add.Envelope = (UstEnvelope)item.UstEvent.Envelope.clone();
@@ -339,12 +394,29 @@ namespace org.kbinani.vsq
                 last_clock = item.Clock + item.ID.getLength();
             }
 
-            // 再生秒時を無視して，ピッチベンドを追加
-            //VsqBPList pbs = track.getCurve( "pbs" );
-            //VsqBPList pit = track.getCurve( "pit" );
+            // テンポを格納(イベント数はあっているはず)
+            if ( track_add.getEventCount() > 0 ) {
+                int size = track_add.getEventCount();
+                int lasttempo = -1; // ありえない値にしておく
+                for ( int i = 0; i < size; i++ ) {
+                    TempoTableEntry item = vec.get( tempo, i );
+                    if ( lasttempo != item.Tempo ) {
+                        // テンポ値が変わっているもののみ追加
+                        UstEvent ue = track_add.getEvent( i );
+                        ue.Tempo = (float)(60e6 / item.Tempo);
+                        lasttempo = item.Tempo;
+                        vec.add( m_tempo_table, item );
+                    }
+                }
+            } else {
+                // tempoはどうせ破棄されるのでクローンしなくていい
+                vec.add( m_tempo_table, vec.get( tempo, 0 ) );
+            }
+
+            // ピッチを反映
             // まず絶対ピッチを取得
             VsqBPList abs_pit = new VsqBPList( "", 600000, 0, 1280000 );
-            VsqBPList cpit = track.getCurve( "pit" );
+            VsqBPList cpit = vsq_track.getCurve( "pit" );
             int clock = 0;
             int search_indx = 0;
             int pit_size = cpit.size();
@@ -357,13 +429,13 @@ namespace org.kbinani.vsq
                     continue;
                 }
                 // 音符の先頭のpitは必ず入れる
-                abs_pit.add( c, (int)(item.Note * 10000 + track.getPitchAt( c ) * 100) );
+                abs_pit.add( c, (int)(item.Note * 10000 + vsq_track.getPitchAt( c ) * 100) );
 
                 // c～c+lenまで
                 for ( int i = search_indx; i < pit_size; i++ ) {
                     int c2 = cpit.getKeyClock( i );
                     if ( c < c2 && c2 < clock ) {
-                        abs_pit.add( c2, (int)(item.Note * 10000 + track.getPitchAt( c2 ) * 100) );
+                        abs_pit.add( c2, (int)(item.Note * 10000 + vsq_track.getPitchAt( c2 ) * 100) );
                         search_indx = i;
                     } else if ( clock <= c2 ) {
                         break;
@@ -371,14 +443,15 @@ namespace org.kbinani.vsq
                 }
             }
 
+            // ピッチをピッチベンドに変換しながら反映
             clock = 0;
             for ( Iterator<UstEvent> itr = track_add.getNoteEventIterator(); itr.hasNext(); ) {
                 UstEvent item = itr.next();
-                double sec_at_clock = vsq.getSecFromClock( clock );
+                double sec_at_clock = tempo.getSecFromClock( clock );
                 double sec_pre = item.PreUtterance / 1000.0;
                 double sec_stp = item.getStartPoint() / 1000.0;
                 double sec_at_begin = sec_at_clock - sec_pre - sec_stp;
-                int clock_begin = (int)vsq.getClockFromSec( sec_at_begin );
+                int clock_begin = (int)tempo.getClockFromSec( sec_at_begin );
                 int clock_end = clock + item.getLength();
                 Vector<Float> pitch = new Vector<Float>();
                 boolean allzero = true;
@@ -400,15 +473,31 @@ namespace org.kbinani.vsq
                 clock += item.getLength();
             }
 
-            // 再生秒時を考慮して，適時テンポを追加
-            //TODO: このへん
-            // throw new NotImplementedException();
-
             m_tracks.add( track_add );
         }
 
         private UstFile()
         {
+        }
+
+        public void setWavTool( String value )
+        {
+            m_tool1 = value;
+        }
+
+        public String getWavTool()
+        {
+            return m_tool1;
+        }
+
+        public void setResampler( String value )
+        {
+            m_tool2 = value;
+        }
+
+        public String getResampler()
+        {
+            return m_tool2;
         }
 
         public void setVoiceDir( String value )

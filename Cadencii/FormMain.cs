@@ -1074,6 +1074,121 @@ namespace org.kbinani.cadencii
 
         #region helper methods
         /// <summary>
+        /// 指定した歌手とリサンプラーについて，設定値に登録されていないものだったら登録する．
+        /// </summary>
+        /// <param name="resampler_path"></param>
+        /// <param name="singer_path"></param>
+        private void checkUnknownResamplerAndSinger( ByRef<String> resampler_path, ByRef<String> singer_path )
+        {
+            String utau = Utility.getExecutingUtau();
+            String utau_dir = "";
+            if ( !str.compare( utau, "" ) ) {
+                utau_dir = PortUtil.getDirectoryName( utau );
+            }
+
+            // 可能なら，VOICEの文字列を置換する
+            String search = "%VOICE%";
+            if ( str.startsWith( singer_path.value, search ) && str.length( singer_path.value ) > str.length( search ) ) {
+                singer_path.value = str.sub( singer_path.value, str.length( search ) );
+                singer_path.value = fsys.combine( fsys.combine( utau_dir, "voice" ), singer_path.value );
+            }
+
+            // 歌手はknownかunknownか？
+            // 歌手指定が知らない歌手だった場合に，ダイアログを出すかどうか
+            boolean check_unknown_singer = false;
+            if ( fsys.isFileExists( fsys.combine( singer_path.value, "oto.ini" ) ) ) {
+                // oto.iniが存在する場合
+                // editorConfigに入っていない場合に，ダイアログを出す
+                boolean found = false;
+                for ( int i = 0; i < vec.size( AppManager.editorConfig.UtauSingers ); i++ ) {
+                    SingerConfig sc = vec.get( AppManager.editorConfig.UtauSingers, i );
+                    if ( sc == null ) {
+                        continue;
+                    }
+                    if ( str.compare( sc.VOICEIDSTR, singer_path.value ) ) {
+                        found = true;
+                        break;
+                    }
+                }
+                check_unknown_singer = !found;
+            }
+
+            // リサンプラーが知っているやつかどうか
+            boolean check_unknwon_resampler = false;
+            String resampler_dir = PortUtil.getDirectoryName( resampler_path.value );
+            if ( str.compare( resampler_dir, "" ) ) {
+                // ディレクトリが空欄なので，UTAUのデフォルトのリサンプラー指定である
+                resampler_path.value = fsys.combine( utau_dir, resampler_path.value );
+                resampler_dir = PortUtil.getDirectoryName( resampler_path.value );
+            }
+            if ( !str.compare( resampler_dir, "" ) &&  fsys.isFileExists( resampler_path.value ) ) {
+                boolean found = false;
+                for ( int i = 0; i < AppManager.editorConfig.getResamplerCount(); i++ ) {
+                    String resampler = AppManager.editorConfig.getResamplerAt( i );
+                    if ( str.compare( resampler, resampler_path.value ) ) {
+                        found = true;
+                        break;
+                    }
+                }
+                check_unknwon_resampler = !found;
+            }
+
+            // unknownな歌手やリサンプラーが発見された場合.
+            // 登録するかどうか問い合わせるダイアログを出す
+            FormCheckUnknownSingerAndResampler dialog = null;
+            try {
+                if ( check_unknown_singer || check_unknwon_resampler ) {
+                    Vector<String> singers = new Vector<String>();
+                    Vector<String> resamplers = new Vector<String>();
+                    if ( check_unknown_singer ) {
+                        vec.add( singers, singer_path.value );
+                    }
+                    if ( check_unknwon_resampler ) {
+                        vec.add( resamplers, resampler_path.value );
+                    }
+                    dialog = new FormCheckUnknownSingerAndResampler( singers, resamplers );
+                    dialog.setLocation( getFormPreferedLocation( dialog ) );
+                    BDialogResult dr = AppManager.showModalDialog( dialog, this );
+                    if ( dr != BDialogResult.OK ) {
+                        return;
+                    }
+
+                    // 登録する
+                    // リサンプラー
+                    Vector<String> ret_resamplers = dialog.getCheckedResamplers();
+                    int size = vec.size( ret_resamplers );
+                    for ( int i = 0; i < size; i++ ) {
+                        String path = vec.get( ret_resamplers, i );
+                        if ( fsys.isFileExists( path ) ) {
+                            AppManager.editorConfig.addResampler( path );
+                        }
+                    }
+                    // 歌手
+                    Vector<String> ret_singers = dialog.getCheckedSingers();
+                    size = vec.size( ret_singers );
+                    for ( int i = 0; i < size; i++ ) {
+                        String path = vec.get( ret_singers, i );
+                        if ( PortUtil.isDirectoryExists( path ) ) {
+                            SingerConfig sc = Utility.readUtausingerConfig( path );
+                            vec.add( AppManager.editorConfig.UtauSingers, sc );
+                        }
+                    }
+                    if ( size > 0 ) {
+                        AppManager.reloadUtauVoiceDB();
+                    }
+                }
+            } catch ( Exception ex ) {
+            } finally {
+                if ( dialog != null ) {
+                    try {
+                        dialog.close();
+                    } catch ( Exception ex2 ) {
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// ピアノロールの縦軸の拡大率をdelta段階上げます
         /// </summary>
         /// <param name="delta"></param>
@@ -4322,7 +4437,7 @@ namespace org.kbinani.cadencii
 
         public void clearTempWave()
         {
-            String tmppath = PortUtil.combinePath( AppManager.getCadenciiTempDir(), AppManager.getID() );
+            String tmppath = fsys.combine( AppManager.getCadenciiTempDir(), AppManager.getID() );
             if ( !PortUtil.isDirectoryExists( tmppath ) ) {
                 return;
             }
@@ -4332,7 +4447,7 @@ namespace org.kbinani.cadencii
 
             // このFormMainのインスタンスが使用したデータを消去する
             for ( int i = 1; i <= 16; i++ ) {
-                String file = PortUtil.combinePath( tmppath, i + ".wav" );
+                String file = fsys.combine( tmppath, i + ".wav" );
                 if ( PortUtil.isFileExists( file ) ) {
                     for ( int error = 0; error < 100; error++ ) {
                         try {
@@ -4361,7 +4476,7 @@ namespace org.kbinani.cadencii
                     }
                 }
             }
-            String whd = PortUtil.combinePath( tmppath, UtauWaveGenerator.FILEBASE + ".whd" );
+            String whd = fsys.combine( tmppath, UtauWaveGenerator.FILEBASE + ".whd" );
             if ( PortUtil.isFileExists( whd ) ) {
                 try {
                     PortUtil.deleteFile( whd );
@@ -4369,7 +4484,7 @@ namespace org.kbinani.cadencii
                     Logger.write( typeof( FormMain ) + ".clearTempWave; ex=" + ex + "\n" );
                 }
             }
-            String dat = PortUtil.combinePath( tmppath, UtauWaveGenerator.FILEBASE + ".dat" );
+            String dat = fsys.combine( tmppath, UtauWaveGenerator.FILEBASE + ".dat" );
             if ( PortUtil.isFileExists( dat ) ) {
                 try {
                     PortUtil.deleteFile( dat );
@@ -6339,6 +6454,8 @@ namespace org.kbinani.cadencii
                     for ( int track = 1; track < track_count; track++ ) {
                         VsqTrack vsq_track = vsq.Track.get( track );
                         Vector<DrawObject> tmp = new Vector<DrawObject>();
+                        RendererKind kind = VsqFileEx.getTrackRendererKind( vsq_track );
+                        AppManager.mDrawIsUtau[track - 1] = kind == RendererKind.UTAU;
 
                         // 音符イベント
                         for ( Iterator<VsqEvent> itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
@@ -6391,10 +6508,11 @@ namespace org.kbinani.cadencii
                                         (oa.fileName != null && oa.fileName.Equals( "" )) ) {
                                         is_valid_for_utau = false;
                                     } else {
-                                        is_valid_for_utau = PortUtil.isFileExists( PortUtil.combinePath( sc.VOICEIDSTR, oa.fileName ) );
+                                        is_valid_for_utau = PortUtil.isFileExists( fsys.combine( sc.VOICEIDSTR, oa.fileName ) );
                                     }
                                 }
                             }
+                            int intensity = ev.UstEvent == null ? 100 : ev.UstEvent.Intensity;
 
                             //追加
                             tmp.add( new DrawObject( DrawObjectType.Note,
@@ -6418,7 +6536,8 @@ namespace org.kbinani.cadencii
                                                      timesig,
                                                      is_valid_for_utau,
                                                      is_valid_for_utau, // vConnect-STANDはstfファイルを必要としないので，
-                                                     vib_delay ) );
+                                                     vib_delay,
+                                                     intensity ) );
                         }
 
                         // Dynaff, Crescendイベント
@@ -6499,7 +6618,8 @@ namespace org.kbinani.cadencii
                                                      clock,
                                                      true,
                                                      true,
-                                                     length ) );
+                                                     length,
+                                                     0 ) );
                         }
 
                         // 重複部分があるかどうかを判定
@@ -6795,7 +6915,7 @@ namespace org.kbinani.cadencii
                 String cacheDir = vsq.cacheDir; // xvsqに保存されていたキャッシュのディレクトリ
                 String dir = PortUtil.getDirectoryName( file );
                 String name = PortUtil.getFileNameWithoutExtension( file );
-                String estimatedCacheDir = PortUtil.combinePath( dir, name + ".cadencii" ); // ファイル名から推測されるキャッシュディレクトリ
+                String estimatedCacheDir = fsys.combine( dir, name + ".cadencii" ); // ファイル名から推測されるキャッシュディレクトリ
                 if ( cacheDir == null ) cacheDir = "";
                 if ( !cacheDir.Equals( "" ) && PortUtil.isDirectoryExists( cacheDir ) ) {
                     if ( !estimatedCacheDir.Equals( "" ) &&
@@ -6821,11 +6941,11 @@ namespace org.kbinani.cadencii
 
                         // ファイルを移す
                         for ( int i = 1; i < vsq.Track.size(); i++ ) {
-                            String wavFrom = PortUtil.combinePath( cacheDir, i + ".wav" );
-                            String xmlFrom = PortUtil.combinePath( cacheDir, i + ".xml" );
+                            String wavFrom = fsys.combine( cacheDir, i + ".wav" );
+                            String xmlFrom = fsys.combine( cacheDir, i + ".xml" );
 
-                            String wavTo = PortUtil.combinePath( estimatedCacheDir, i + ".wav" );
-                            String xmlTo = PortUtil.combinePath( estimatedCacheDir, i + ".xml" );
+                            String wavTo = fsys.combine( estimatedCacheDir, i + ".wav" );
+                            String xmlTo = fsys.combine( estimatedCacheDir, i + ".xml" );
                             if ( PortUtil.isFileExists( wavFrom ) ) {
                                 try {
                                     PortUtil.moveFile( wavFrom, wavTo );
@@ -6871,7 +6991,7 @@ namespace org.kbinani.cadencii
                 // キャッシュ内のwavを、waveViewに読み込む
                 waveView.unloadAll();
                 for ( int i = 1; i < vsq.Track.size(); i++ ) {
-                    String wav = PortUtil.combinePath( cacheDir, i + ".wav" );
+                    String wav = fsys.combine( cacheDir, i + ".wav" );
                     if ( !PortUtil.isFileExists( wav ) ) {
                         continue;
                     }
@@ -10170,11 +10290,11 @@ namespace org.kbinani.cadencii
         public void FormMain_FormClosed( Object sender, BFormClosedEventArgs e )
         {
             clearTempWave();
-            String tempdir = PortUtil.combinePath( AppManager.getCadenciiTempDir(), AppManager.getID() );
+            String tempdir = fsys.combine( AppManager.getCadenciiTempDir(), AppManager.getID() );
             if ( !PortUtil.isDirectoryExists( tempdir ) ) {
                 PortUtil.createDirectory( tempdir );
             }
-            String log = PortUtil.combinePath( tempdir, "run.log" );
+            String log = fsys.combine( tempdir, "run.log" );
 #if !JAVA
             org.kbinani.debug.close();
 #endif
@@ -10425,11 +10545,11 @@ namespace org.kbinani.cadencii
 
             // 鍵盤用のキャッシュが古い位置に保存されている場合。
             String cache_new = Utility.getKeySoundPath();
-            String cache_old = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "cache" );
+            String cache_old = fsys.combine( PortUtil.getApplicationStartupPath(), "cache" );
             if ( PortUtil.isDirectoryExists( cache_old ) ) {
                 boolean exists = false;
                 for ( int i = 0; i < 127; i++ ) {
-                    String s = PortUtil.combinePath( cache_new, i + ".wav" );
+                    String s = fsys.combine( cache_new, i + ".wav" );
                     if ( PortUtil.isFileExists( s ) ) {
                         exists = true;
                         break;
@@ -10439,8 +10559,8 @@ namespace org.kbinani.cadencii
                 // 新しいキャッシュが1つも無い場合に、古いディレクトリからコピーする
                 if ( !exists ) {
                     for ( int i = 0; i < 127; i++ ) {
-                        String wav_from = PortUtil.combinePath( cache_old, i + ".wav" );
-                        String wav_to = PortUtil.combinePath( cache_new, i + ".wav" );
+                        String wav_from = fsys.combine( cache_old, i + ".wav" );
+                        String wav_to = fsys.combine( cache_new, i + ".wav" );
                         if ( PortUtil.isFileExists( wav_from ) ) {
                             try {
                                 PortUtil.copyFile( wav_from, wav_to );
@@ -10457,7 +10577,7 @@ namespace org.kbinani.cadencii
             // 足りてないキャッシュがひとつでもあればFormGenerateKeySound発動する
             boolean cache_is_incomplete = false;
             for ( int i = 0; i < 127; i++ ) {
-                String wav = PortUtil.combinePath( cache_new, i + ".wav" );
+                String wav = fsys.combine( cache_new, i + ".wav" );
                 if ( !PortUtil.isFileExists( wav ) ) {
                     cache_is_incomplete = true;
                     break;
@@ -11126,7 +11246,7 @@ namespace org.kbinani.cadencii
                 }
                 dir = file_dialog.getSelectedPath();
                 // 1.wavはダミー
-                initial_dir = PortUtil.combinePath( dir, "1.wav" );
+                initial_dir = fsys.combine( dir, "1.wav" );
                 AppManager.editorConfig.setLastUsedPathOut( initial_dir );
             } catch ( Exception ex ) {
             } finally {
@@ -11163,7 +11283,7 @@ namespace org.kbinani.cadencii
                 q.track = i;
                 q.clockStart = clockStart;
                 q.clockEnd = clockEnd;
-                q.file = PortUtil.combinePath( dir, i + ".wav" );
+                q.file = fsys.combine( dir, i + ".wav" );
                 q.renderAll = true;
                 queue.add( q );
             }
@@ -11240,6 +11360,12 @@ namespace org.kbinani.cadencii
                 }
             }
             ust.setVoiceDir( voice_dir );
+            ust.setWavTool( AppManager.editorConfig.PathWavtool );
+            int resampler_index = VsqFileEx.getTrackResamplerUsed( vsq_track );
+            if ( 0 <= resampler_index && resampler_index < AppManager.editorConfig.getResamplerCount() ) {
+                ust.setResampler(
+                    AppManager.editorConfig.getResamplerAt( resampler_index ) );
+            }
             ust.write( file_name );
         }
 
@@ -11355,7 +11481,7 @@ namespace org.kbinani.cadencii
 
                 // oto.iniで終わってる？
                 if ( !oto_ini.EndsWith( "oto.ini" ) ) {
-                    oto_ini = PortUtil.combinePath( oto_ini, "oto.ini" );
+                    oto_ini = fsys.combine( oto_ini, "oto.ini" );
                 }
 
                 // 出力
@@ -11855,6 +11981,62 @@ namespace org.kbinani.cadencii
                 // vsqに変換
                 VsqFile vsq = new VsqFile( ust );
 
+                // RendererKindをUTAUに指定
+                for ( int i = 1; i < vec.size( vsq.Track ); i++ ) {
+                    VsqTrack vsq_track = vec.get( vsq.Track, i );
+                    VsqFileEx.setTrackRendererKind( vsq_track, RendererKind.UTAU );
+                }
+
+                // unknownな歌手とresamplerを何とかする
+                ByRef<String> ref_resampler = new ByRef<string>( ust.getResampler() );
+                ByRef<String> ref_singer = new ByRef<String>( ust.getVoiceDir() );
+                checkUnknownResamplerAndSinger( ref_resampler, ref_singer );
+
+                // 歌手変更を何とかする
+                int program = 0;
+                for ( int i = 0; i < vec.size( AppManager.editorConfig.UtauSingers ); i++ ) {
+                    SingerConfig sc = vec.get( AppManager.editorConfig.UtauSingers, i );
+                    if ( sc == null ) {
+                        continue;
+                    }
+                    if ( str.compare( sc.VOICEIDSTR, ref_singer.value ) ) {
+                        program = i;
+                        break;
+                    }
+                }
+                // 歌手変更のテンプレートを作成
+                VsqID singer_id = Utility.getSingerID( RendererKind.UTAU, program, 0 );
+                if ( singer_id == null ) {
+                    singer_id = new VsqID();
+                    singer_id.type = VsqIDType.Singer;
+                    singer_id.IconHandle = new IconHandle();
+                    singer_id.IconHandle.Program = program;
+                    singer_id.IconHandle.IconID = "$0401" + PortUtil.toHexString( 0, 4 );
+                }
+                // トラックの歌手変更イベントをすべて置き換える
+                for ( int i = 1; i < vec.size( vsq.Track ); i++ ) {
+                    VsqTrack vsq_track = vec.get( vsq.Track, i );
+                    int c = vsq_track.getEventCount();
+                    for ( int j = 0; j < c; j++ ) {
+                        VsqEvent itemj = vsq_track.getEvent( j );
+                        if ( itemj.ID.type == VsqIDType.Singer ) {
+                            itemj.ID = (VsqID)singer_id.clone();
+                        }
+                    }
+                }
+
+                // resamplerUsedを更新(可能なら)
+                for ( int j = 1; j < vec.size( vsq.Track ); j++ ) {
+                    VsqTrack vsq_track = vec.get( vsq.Track, j );
+                    for ( int i = 0; i < AppManager.editorConfig.getResamplerCount(); i++ ) {
+                        String resampler = AppManager.editorConfig.getResamplerAt( i );
+                        if ( str.compare( resampler, ref_resampler.value ) ) {
+                            VsqFileEx.setTrackResamplerUsed( vsq_track, i );
+                            break;
+                        }
+                    }
+                }
+
                 // 読込先のvsqと，インポートするvsqではテンポテーブルがずれているので，
                 // 読み込んだ方のvsqの内容を，現在のvsqと合致するように編集する
                 VsqFileEx dst = (VsqFileEx)AppManager.getVsqFile().clone();
@@ -11879,6 +12061,7 @@ namespace org.kbinani.cadencii
                 setEdited( true );
                 refreshScreen( true );
             } catch ( Exception ex ) {
+                Logger.write( typeof( FormMain ) + ".menuFileImportUst_Click; ex=" + ex + "\t" );
             } finally {
                 if ( dialog != null ) {
                     try {
@@ -12060,8 +12243,69 @@ namespace org.kbinani.cadencii
             try {
                 String filename = openUstDialog.getSelectedFile();
                 AppManager.editorConfig.setLastUsedPathIn( filename );
+                
+                // ust読み込み
                 UstFile ust = new UstFile( filename );
+                
+                // vsqに変換
                 VsqFileEx vsq = new VsqFileEx( ust );
+                
+                // すべてのトラックの合成器指定をUTAUにする
+                for ( int i = 1; i < vec.size( vsq.Track ); i++ ) {
+                    VsqTrack vsq_track = vec.get( vsq.Track, i );
+                    VsqFileEx.setTrackRendererKind( vsq_track, RendererKind.UTAU );
+                }
+
+                // unknownな歌手やresamplerを何とかする
+                ByRef<String> ref_resampler = new ByRef<String>( ust.getResampler() );
+                ByRef<String> ref_singer = new ByRef<String>( ust.getVoiceDir() );
+                checkUnknownResamplerAndSinger( ref_resampler, ref_singer );
+
+                // 歌手変更を何とかする
+                int program = 0;
+                for ( int i = 0; i < vec.size( AppManager.editorConfig.UtauSingers ); i++ ) {
+                    SingerConfig sc = vec.get( AppManager.editorConfig.UtauSingers, i );
+                    if ( sc == null ) {
+                        continue;
+                    }
+                    if ( str.compare( sc.VOICEIDSTR, ref_singer.value ) ) {
+                        program = i;
+                        break;
+                    }
+                }
+                // 歌手変更のテンプレートを作成
+                VsqID singer_id = Utility.getSingerID( RendererKind.UTAU, program, 0 );
+                if ( singer_id == null ) {
+                    singer_id = new VsqID();
+                    singer_id.type = VsqIDType.Singer;
+                    singer_id.IconHandle = new IconHandle();
+                    singer_id.IconHandle.Program = program;
+                    singer_id.IconHandle.IconID = "$0401" + PortUtil.toHexString( 0, 4 );
+                }
+                // トラックの歌手変更イベントをすべて置き換える
+                for ( int i = 1; i < vec.size( vsq.Track ); i++ ) {
+                    VsqTrack vsq_track = vec.get( vsq.Track, i );
+                    int c = vsq_track.getEventCount();
+                    for ( int j = 0; j < c; j++ ) {
+                        VsqEvent itemj = vsq_track.getEvent( j );
+                        if ( itemj.ID.type == VsqIDType.Singer ) {
+                            itemj.ID = (VsqID)singer_id.clone();
+                        }
+                    }
+                }
+
+                // resamplerUsedを更新(可能なら)
+                for ( int j = 1; j < vec.size( vsq.Track ); j++ ) {
+                    VsqTrack vsq_track = vec.get( vsq.Track, j );
+                    for ( int i = 0; i < AppManager.editorConfig.getResamplerCount(); i++ ) {
+                        String resampler = AppManager.editorConfig.getResamplerAt( i );
+                        if ( str.compare( resampler, ref_resampler.value ) ) {
+                            VsqFileEx.setTrackResamplerUsed( vsq_track, i );
+                            break;
+                        }
+                    }
+                }
+                
                 clearExistingData();
                 AppManager.setVsqFile( vsq );
                 setEdited( false );
@@ -12069,6 +12313,7 @@ namespace org.kbinani.cadencii
                 clearTempWave();
                 updateDrawObjectList();
                 refreshScreen();
+
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileOpenUst_Click; ex=" + ex + "\n" );
 #if DEBUG
@@ -12455,14 +12700,14 @@ namespace org.kbinani.cadencii
                         if ( file != null && !file.Equals( "" ) ) {
                             String dir = PortUtil.getDirectoryName( file );
                             String name = PortUtil.getFileNameWithoutExtension( file );
-                            String projectCacheDir = PortUtil.combinePath( dir, name + ".cadencii" );
-                            String commonCacheDir = PortUtil.combinePath( AppManager.getCadenciiTempDir(), AppManager.getID() );
+                            String projectCacheDir = fsys.combine( dir, name + ".cadencii" );
+                            String commonCacheDir = fsys.combine( AppManager.getCadenciiTempDir(), AppManager.getID() );
                             if ( PortUtil.isDirectoryExists( projectCacheDir ) ) {
                                 VsqFileEx vsq = AppManager.getVsqFile();
                                 for ( int i = 1; i < vsq.Track.size(); i++ ) {
                                     // wavを移動
-                                    String wavFrom = PortUtil.combinePath( projectCacheDir, i + ".wav" );
-                                    String wavTo = PortUtil.combinePath( commonCacheDir, i + ".wav" );
+                                    String wavFrom = fsys.combine( projectCacheDir, i + ".wav" );
+                                    String wavTo = fsys.combine( commonCacheDir, i + ".wav" );
                                     if ( !PortUtil.isFileExists( wavFrom ) ) {
                                         continue;
                                     }
@@ -12483,8 +12728,8 @@ namespace org.kbinani.cadencii
                                     }
 
                                     // xmlを移動
-                                    String xmlFrom = PortUtil.combinePath( projectCacheDir, i + ".xml" );
-                                    String xmlTo = PortUtil.combinePath( commonCacheDir, i + ".xml" );
+                                    String xmlFrom = fsys.combine( projectCacheDir, i + ".xml" );
+                                    String xmlTo = fsys.combine( commonCacheDir, i + ".xml" );
                                     if ( !PortUtil.isFileExists( xmlFrom ) ) {
                                         continue;
                                     }
@@ -14532,29 +14777,8 @@ namespace org.kbinani.cadencii
         {
 #if DEBUG
             PortUtil.println( "FormMain#menuHelpDebug_Click" );
-            BFileChooser fc = null;
-            try {
-                fc = new BFileChooser( "" );
-                int ret = fc.showOpenDialog( this );
-                if ( ret != BFileChooser.APPROVE_OPTION ) {
-                    return;
-                }
-                string from = fc.getSelectedFile();
-                UstFile ust = new UstFile( from );
-                string dir = PortUtil.getDirectoryName( from );
-                string to = PortUtil.combinePath( dir, "_" + PortUtil.getFileName( from ) );
-                ust.write( to );
-            } catch ( Exception ex ) {
-            } finally {
-#if !JAVA
-                if ( fc != null ) {
-                    try {
-                        fc.Dispose();
-                    } catch ( Exception ex2 ) {
-                    }
-                }
-#endif
-            }
+
+            AppManager.showMessageBox( Utility.getExecutingUtau() );
 
 #if ENABLE_VOCALOID
             /*BFileChooser dlg_fout = new BFileChooser( "" );
@@ -14812,7 +15036,7 @@ namespace org.kbinani.cadencii
             /*int selected = AppManager.getSelected();
             Vector<Integer> t = new Vector<Integer>( Arrays.asList( PortUtil.convertIntArray( tracks ) ) );
             if ( t.contains( selected) ) {
-                String file = PortUtil.combinePath( AppManager.getTempWaveDir(), selected + ".wav" );
+                String file = fsys.combine( AppManager.getTempWaveDir(), selected + ".wav" );
                 if ( PortUtil.isFileExists( file ) ) {
 #if JAVA
                     Thread loadwave_thread = new Thread( new LoadWaveProc( file ) );
@@ -15218,7 +15442,7 @@ namespace org.kbinani.cadencii
 
             Collections.sort( keys );
             String dir = PortUtil.getApplicationStartupPath();
-            String fname = PortUtil.combinePath( dir, "cadencii_trans.csv" );
+            String fname = fsys.combine( dir, "cadencii_trans.csv" );
 #if DEBUG
             PortUtil.println( "FormMain#menuHiddenPrintPoToCSV_Click; fname=" + fname );
 #endif
@@ -16526,7 +16750,7 @@ namespace org.kbinani.cadencii
             clearTempWave();
 
             // キャッシュディレクトリのパスを、デフォルトに戻す
-            AppManager.setTempWaveDir( PortUtil.combinePath( AppManager.getCadenciiTempDir(), AppManager.getID() ) );
+            AppManager.setTempWaveDir( fsys.combine( AppManager.getCadenciiTempDir(), AppManager.getID() ) );
 
             updateDrawObjectList();
             refreshScreen();
@@ -17154,12 +17378,12 @@ namespace org.kbinani.cadencii
                         IPaletteTool ipt = (IPaletteTool)instance;
                         if ( ipt.openDialog() == System.Windows.Forms.DialogResult.OK ) {
                             XmlSerializer xsms = new XmlSerializer( instance.GetType(), true );
-                            String dir = PortUtil.combinePath( Utility.getApplicationDataPath(), "tool" );
+                            String dir = fsys.combine( Utility.getApplicationDataPath(), "tool" );
                             if ( !PortUtil.isDirectoryExists( dir ) ) {
                                 PortUtil.createDirectory( dir );
                             }
                             String cfg = id + ".config";
-                            String config = PortUtil.combinePath( dir, cfg );
+                            String config = fsys.combine( dir, cfg );
                             FileOutputStream fs = null;
                             try {
                                 fs = new FileOutputStream( config );
@@ -17197,7 +17421,7 @@ namespace org.kbinani.cadencii
 #if DEBUG
                 PortUtil.println( "FormMain#handleScriptMenuItem_Click; id=" + id );
 #endif
-                String script_file = PortUtil.combinePath( dir, id );
+                String script_file = fsys.combine( dir, id );
                 if ( ScriptServer.getTimestamp( id ) != PortUtil.getFileLastModified( script_file ) ) {
                     ScriptServer.reload( id );
                 }

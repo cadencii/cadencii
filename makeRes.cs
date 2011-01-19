@@ -85,7 +85,7 @@ class makeRes{
             sw.WriteLine();
             sw.WriteLine( cs_space + "    private static String getBasePath(){" );
             sw.WriteLine( cs_space + "        if( basePath == null ){" );
-            sw.WriteLine( cs_space + "            basePath = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), \"resources\" );" );
+            sw.WriteLine( cs_space + "            basePath = fsys.combine( PortUtil.getApplicationStartupPath(), \"resources\" );" );
             sw.WriteLine( cs_space + "        }" );
             sw.WriteLine( cs_space + "        return basePath;" );
             sw.WriteLine( cs_space + "    }" );
@@ -110,7 +110,7 @@ class makeRes{
                     sw.WriteLine( cs_space + "    private static Image " + instance + " = null;" );
                     sw.WriteLine( cs_space + "    public static Image get_" + name + "(){" );
                     sw.WriteLine( cs_space + "        if( " + instance + " == null ){" );
-                    sw.WriteLine( cs_space + "            String res_path = PortUtil.combinePath( getBasePath(), \"" + fname + "\" );" );
+                    sw.WriteLine( cs_space + "            String res_path = fsys.combine( getBasePath(), \"" + fname + "\" );" );
                     sw.WriteLine( cs_space + "            try{" );
                     sw.WriteLine( "#if JAVA" );
                     sw.WriteLine( cs_space + "                " + instance + " = ImageIO.read( new File( res_path ) );" );
@@ -136,7 +136,7 @@ class makeRes{
                     sw.WriteLine( cs_space + "    public static System.Drawing.Icon get_" + name + "(){" );
                     sw.WriteLine( "#endif" );
                     sw.WriteLine( cs_space + "        if( " + instance + " == null ){" );
-                    sw.WriteLine( cs_space + "            String res_path = PortUtil.combinePath( getBasePath(), \"" + fname + "\" );" );
+                    sw.WriteLine( cs_space + "            String res_path = fsys.combine( getBasePath(), \"" + fname + "\" );" );
                     sw.WriteLine( cs_space + "            try{" );
                     sw.WriteLine( "#if JAVA" );
                     sw.WriteLine( cs_space + "                " + instance + " = ImageIO.read( new File( res_path ) );" );
@@ -156,7 +156,7 @@ class makeRes{
                     sw.WriteLine( cs_space + "    private static Cursor " + instance + " = null;" );
                     sw.WriteLine( cs_space + "    public static Cursor get_" + name + "(){" );
                     sw.WriteLine( cs_space + "        if( " + instance + " == null ){" );
-                    sw.WriteLine( cs_space + "            String res_path = PortUtil.combinePath( getBasePath(), \"" + fname + "\" );" );
+                    sw.WriteLine( cs_space + "            String res_path = fsys.combine( getBasePath(), \"" + fname + "\" );" );
                     sw.WriteLine( cs_space + "            try{" );
                     sw.WriteLine( "#if JAVA" );
                     sw.WriteLine( cs_space + "                Image img = ImageIO.read( new File( res_path ) );" );

@@ -42,7 +42,7 @@ namespace org.kbinani.cadencii {
         /// <param name="singer_config"></param>
         public UtauVoiceDB( SingerConfig singer_config ) {
             _name = singer_config.VOICENAME;
-            String oto_ini = PortUtil.combinePath( singer_config.VOICEIDSTR, "oto.ini" );
+            String oto_ini = fsys.combine( singer_config.VOICEIDSTR, "oto.ini" );
             readOtoIni( oto_ini );
         }
 
@@ -77,7 +77,7 @@ namespace org.kbinani.cadencii {
                         }
 
                         // ファイルがちゃんとあるかどうか？
-                        String fullpath = PortUtil.combinePath( dir, file_name );
+                        String fullpath = fsys.combine( dir, file_name );
                         if ( !PortUtil.isFileExists( fullpath ) ) {
                             continue;
                         }

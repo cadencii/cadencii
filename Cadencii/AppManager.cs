@@ -544,6 +544,10 @@ namespace org.kbinani.cadencii
         /// </summary>
         public static int[] mDrawStartIndex = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         /// <summary>
+        /// 各トラックがUTAUモードかどうか．mDrawObjectsと同じタイミングで更新される
+        /// </summary>
+        public static boolean[] mDrawIsUtau = new boolean[16];
+        /// <summary>
         /// マウスが降りていて，かつ範囲選択をしているときに立つフラグ
         /// </summary>
         public static boolean mIsPointerDowned = false;
@@ -751,7 +755,7 @@ namespace org.kbinani.cadencii
             Vector<Amplifier> waves = new Vector<Amplifier>();
             for ( int i = 0; i < tracks.size(); i++ ) {
                 int track = tracks.get( i );
-                String file = PortUtil.combinePath( tmppath, track + ".wav" );
+                String file = fsys.combine( tmppath, track + ".wav" );
                 WaveReader wr = null;
                 try {
                     wr = new WaveReader( file );
@@ -874,7 +878,7 @@ namespace org.kbinani.cadencii
             }
 
             FormSynthesize dialog = null;
-            String tempWave = PortUtil.combinePath( temppath, "temp.wav" );
+            String tempWave = fsys.combine( temppath, "temp.wav" );
             try {
                 dialog = new FormSynthesize( main_window,
                                              mVsq,
@@ -884,7 +888,7 @@ namespace org.kbinani.cadencii
                 int finished = dialog.getFinished();
                 for ( int k = 0; k < tracks.size(); k++ ) {
                     int track = tracks.get( k );
-                    String wavePath = PortUtil.combinePath( temppath, track + ".wav" );
+                    String wavePath = fsys.combine( temppath, track + ".wav" );
                     Vector<Integer> queueIndex = new Vector<Integer>();
 
                     for ( int i = 0; i < queue.size(); i++ ) {
@@ -1156,7 +1160,7 @@ namespace org.kbinani.cadencii
                 startIndex[k] = queue.size();
                 int track = tracks.get( k );
                 VsqTrack vsq_track = mVsq.Track.get( track );
-                String wavePath = PortUtil.combinePath( temppath, track + ".wav" );
+                String wavePath = fsys.combine( temppath, track + ".wav" );
 
                 if ( mLastRenderedStatus[track - 1] == null ) {
                     // この場合は全部レンダリングする必要がある
@@ -1326,7 +1330,7 @@ namespace org.kbinani.cadencii
 #if DEBUG
                     PortUtil.println( "    start=" + unit.mStart + "; end=" + unit.mEnd );
 #endif
-                    q.file = PortUtil.combinePath( temppath, track + "_" + j + ".wav" );
+                    q.file = fsys.combine( temppath, track + "_" + j + ".wav" );
                     queue.add( q );
                 }
             }
@@ -1865,7 +1869,7 @@ namespace org.kbinani.cadencii
 
         public static void deserializeRenderingStatus( String temppath, int track )
         {
-            String xml = PortUtil.combinePath( temppath, track + ".xml" );
+            String xml = fsys.combine( temppath, track + ".xml" );
             if ( !PortUtil.isFileExists( xml ) ) {
                 return;
             }
@@ -1898,7 +1902,7 @@ namespace org.kbinani.cadencii
         {
             FileOutputStream fs = null;
             try {
-                fs = new FileOutputStream( PortUtil.combinePath( temppath, track + ".xml" ) );
+                fs = new FileOutputStream( fsys.combine( temppath, track + ".xml" ) );
                 mRenderingStatusSerializer.serialize( fs, mLastRenderedStatus[track - 1] );
             } catch ( Exception ex ) {
                 PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
@@ -2263,8 +2267,8 @@ namespace org.kbinani.cadencii
 #endif
             if ( !mFile.Equals( "" ) && PortUtil.isFileExists( mFile ) ) {
                 String path = PortUtil.getDirectoryName( mFile );
-                String backup = PortUtil.combinePath( path, "~$" + PortUtil.getFileName( mFile ) );
-                String file2 = PortUtil.combinePath( path, PortUtil.getFileNameWithoutExtension( backup ) + ".vsq" );
+                String backup = fsys.combine( path, "~$" + PortUtil.getFileName( mFile ) );
+                String file2 = fsys.combine( path, PortUtil.getFileNameWithoutExtension( backup ) + ".vsq" );
                 if ( PortUtil.isFileExists( backup ) ) {
                     try {
                         PortUtil.deleteFile( backup );
@@ -2291,7 +2295,7 @@ namespace org.kbinani.cadencii
 #if DEBUG
             try {
                 if ( mDebugLog == null ) {
-                    String log_file = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "log.txt" );
+                    String log_file = fsys.combine( PortUtil.getApplicationStartupPath(), "log.txt" );
                     mDebugLog = new BufferedWriter( new FileWriter( log_file ) );
                 }
                 mDebugLog.write( message );
@@ -2346,7 +2350,7 @@ namespace org.kbinani.cadencii
         /// <returns></returns>
         public static String getCadenciiTempDir()
         {
-            String temp = PortUtil.combinePath( PortUtil.getTempPath(), TEMPDIR_NAME );
+            String temp = fsys.combine( PortUtil.getTempPath(), TEMPDIR_NAME );
             if ( !PortUtil.isDirectoryExists( temp ) ) {
                 PortUtil.createDirectory( temp );
             }
@@ -3260,7 +3264,7 @@ namespace org.kbinani.cadencii
             boolean hide = false;
             if ( mVsq != null ) {
                 String path = PortUtil.getDirectoryName( file );
-                //String file2 = PortUtil.combinePath( path, PortUtil.getFileNameWithoutExtension( file ) + ".vsq" );
+                //String file2 = fsys.combine( path, PortUtil.getFileNameWithoutExtension( file ) + ".vsq" );
                 mVsq.writeAsXml( file );
                 //mVsq.write( file2 );
 #if !JAVA
@@ -3284,7 +3288,7 @@ namespace org.kbinani.cadencii
                     // キャッシュディレクトリの処理
                     String dir = PortUtil.getDirectoryName( file );
                     String name = PortUtil.getFileNameWithoutExtension( file );
-                    String cacheDir = PortUtil.combinePath( dir, name + ".cadencii" );
+                    String cacheDir = fsys.combine( dir, name + ".cadencii" );
 
                     if ( !PortUtil.isDirectoryExists( cacheDir ) ) {
                         try {
@@ -3303,8 +3307,8 @@ namespace org.kbinani.cadencii
                     String currentCacheDir = getTempWaveDir();
                     if ( !currentCacheDir.Equals( cacheDir ) ) {
                         for ( int i = 1; i < mVsq.Track.size(); i++ ) {
-                            String wavFrom = PortUtil.combinePath( currentCacheDir, i + ".wav" );
-                            String wavTo = PortUtil.combinePath( cacheDir, i + ".wav" );
+                            String wavFrom = fsys.combine( currentCacheDir, i + ".wav" );
+                            String wavTo = fsys.combine( cacheDir, i + ".wav" );
                             if ( PortUtil.isFileExists( wavFrom ) ) {
                                 if ( PortUtil.isFileExists( wavTo ) ) {
                                     try {
@@ -3327,8 +3331,8 @@ namespace org.kbinani.cadencii
                                 }
                             }
 
-                            String xmlFrom = PortUtil.combinePath( currentCacheDir, i + ".xml" );
-                            String xmlTo = PortUtil.combinePath( cacheDir, i + ".xml" );
+                            String xmlFrom = fsys.combine( currentCacheDir, i + ".xml" );
+                            String xmlTo = fsys.combine( cacheDir, i + ".xml" );
                             if ( PortUtil.isFileExists( xmlFrom ) ) {
                                 if ( PortUtil.isFileExists( xmlTo ) ) {
                                     try {
@@ -3560,7 +3564,7 @@ namespace org.kbinani.cadencii
 #if DEBUG
                 PortUtil.stdout.println( "AppManager#init; dir=" + dir );
 #endif
-                String character = PortUtil.combinePath( dir, "character.txt" );
+                String character = fsys.combine( dir, "character.txt" );
                 if ( !PortUtil.isFileExists( character ) ) {
 #if DEBUG
                     PortUtil.println( "AppManager#init; file not found: " + character );
@@ -3586,7 +3590,7 @@ namespace org.kbinani.cadencii
                         if ( !token.Equals( "image" ) ) {
                             continue;
                         }
-                        path_image = PortUtil.combinePath( dir, img );
+                        path_image = fsys.combine( dir, img );
                         break;
                     }
                 } catch ( Exception ex ) {
@@ -3627,8 +3631,8 @@ namespace org.kbinani.cadencii
                         continue;
                     }
                     String name = sc.VOICENAME.ToLower();
-                    String path_image = PortUtil.combinePath(
-                                            PortUtil.combinePath(
+                    String path_image = fsys.combine(
+                                            fsys.combine(
                                                 PortUtil.getApplicationStartupPath(), "resources" ),
                                             name + ".png" );
 #if DEBUG
@@ -3653,8 +3657,8 @@ namespace org.kbinani.cadencii
                         continue;
                     }
                     String name = sc.VOICENAME.ToLower();
-                    String path_image = PortUtil.combinePath(
-                                            PortUtil.combinePath(
+                    String path_image = fsys.combine(
+                                            fsys.combine(
                                                 PortUtil.getApplicationStartupPath(), "resources" ),
                                             name + ".png" );
 #if DEBUG
@@ -3678,14 +3682,14 @@ namespace org.kbinani.cadencii
             SymbolTable.loadSystemDictionaries();
             // 日本語辞書
             SymbolTable.loadDictionary(
-                PortUtil.combinePath( PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "resources" ), "dict_ja.txt" ),
+                fsys.combine( fsys.combine( PortUtil.getApplicationStartupPath(), "resources" ), "dict_ja.txt" ),
                 "DEFAULT_JP" );
             // 英語辞書
             SymbolTable.loadDictionary(
-                PortUtil.combinePath( PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "resources" ), "dict_en.txt" ),
+                fsys.combine( fsys.combine( PortUtil.getApplicationStartupPath(), "resources" ), "dict_en.txt" ),
                 "DEFAULT_EN" );
             // 拡張辞書
-            SymbolTable.loadAllDictionaries( PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "udic" ) );
+            SymbolTable.loadAllDictionaries( fsys.combine( PortUtil.getApplicationStartupPath(), "udic" ) );
             //VSTiProxy.CurrentUser = "";
 #if JAVA
             Util.isApplyFontRecurseEnabled = false;
@@ -3735,11 +3739,11 @@ namespace org.kbinani.cadencii
 
 #if !TREECOM
             mID = PortUtil.getMD5FromString( (long)PortUtil.getCurrentTime() + "" ).Replace( "_", "" );
-            mTempWaveDir = PortUtil.combinePath( getCadenciiTempDir(), mID );
+            mTempWaveDir = fsys.combine( getCadenciiTempDir(), mID );
             if ( !PortUtil.isDirectoryExists( mTempWaveDir ) ) {
                 PortUtil.createDirectory( mTempWaveDir );
             }
-            String log = PortUtil.combinePath( getTempWaveDir(), "run.log" );
+            String log = fsys.combine( getTempWaveDir(), "run.log" );
 #endif
 
             reloadUtauVoiceDB();
@@ -4033,7 +4037,7 @@ namespace org.kbinani.cadencii
             }
 
             // シリアライズして保存
-            String file = PortUtil.combinePath( Utility.getConfigPath(), CONFIG_FILE_NAME );
+            String file = fsys.combine( Utility.getConfigPath(), CONFIG_FILE_NAME );
             try {
                 EditorConfig.serialize( editorConfig, file );
             } catch ( Exception ex ) {
@@ -4056,7 +4060,7 @@ namespace org.kbinani.cadencii
             }
 
             // バージョン番号付きのファイル
-            String config_file = PortUtil.combinePath( Utility.getConfigPath(), CONFIG_FILE_NAME );
+            String config_file = fsys.combine( Utility.getConfigPath(), CONFIG_FILE_NAME );
             EditorConfig ret = null;
             if ( PortUtil.isFileExists( config_file ) ) {
                 // このバージョン用の設定ファイルがあればそれを利用
@@ -4127,7 +4131,7 @@ namespace org.kbinani.cadencii
                         // 読み込んではいけない
                         continue;
                     }
-                    config_file = PortUtil.combinePath( PortUtil.combinePath( appdata, vs.getRawString() ), CONFIG_FILE_NAME );
+                    config_file = fsys.combine( fsys.combine( appdata, vs.getRawString() ), CONFIG_FILE_NAME );
                     if ( PortUtil.isFileExists( config_file ) ) {
                         try {
                             ret = EditorConfig.deserialize( config_file );
@@ -4144,7 +4148,7 @@ namespace org.kbinani.cadencii
                 // それでも読み込めなかった場合，旧来のデフォルトの位置にある
                 // 設定ファイルを読みに行く
                 if ( ret == null ) {
-                    config_file = PortUtil.combinePath( appdata, CONFIG_FILE_NAME );
+                    config_file = fsys.combine( appdata, CONFIG_FILE_NAME );
                     if ( PortUtil.isFileExists( config_file ) ) {
                         try {
                             ret = EditorConfig.deserialize( config_file );

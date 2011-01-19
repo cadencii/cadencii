@@ -221,7 +221,7 @@ namespace org.kbinani.cadencii {
             }
 
             for ( int i = 0; i < 127; i++ ) {
-                String path = PortUtil.combinePath( dir, i + ".wav" );
+                String path = fsys.combine( dir, i + ".wav" );
                 PortUtil.println( "writing \"" + path + "\" ..." );
                 if ( replace || (!replace && !PortUtil.isFileExists( path )) ) {
                     try {
@@ -331,7 +331,7 @@ namespace org.kbinani.cadencii {
             vsq.Track.get( 1 ).addEvent( item );
             vsq.updateTotalClocks();
             int ms_presend = 500;
-            String tempdir = PortUtil.combinePath( AppManager.getCadenciiTempDir(), AppManager.getID() );
+            String tempdir = fsys.combine( AppManager.getCadenciiTempDir(), AppManager.getID() );
             if ( !PortUtil.isDirectoryExists( tempdir ) ) {
                 try {
                     PortUtil.createDirectory( tempdir );

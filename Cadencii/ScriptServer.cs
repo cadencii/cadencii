@@ -32,7 +32,7 @@ namespace org.kbinani.cadencii {
         /// <param name="id"></param>
         public static void reload( String id ) {
             String dir = Utility.getScriptPath();
-            String file = PortUtil.combinePath( dir, id );
+            String file = fsys.combine( dir, id );
 #if DEBUG
             PortUtil.println( "ScriptServer#reload; file=" + file + "; isFileExists(file)=" + PortUtil.isFileExists( file ) );
 #endif
@@ -174,11 +174,11 @@ namespace org.kbinani.cadencii {
         /// <param name="script_file"></param>
         /// <returns></returns>
         public static String configFileNameFromScriptFileName( String script_file ) {
-            String dir = PortUtil.combinePath( Utility.getApplicationDataPath(), "script" );
+            String dir = fsys.combine( Utility.getApplicationDataPath(), "script" );
             if ( !PortUtil.isDirectoryExists( dir ) ) {
                 PortUtil.createDirectory( dir );
             }
-            return PortUtil.combinePath( dir, PortUtil.getFileNameWithoutExtension( script_file ) + ".config" );
+            return fsys.combine( dir, PortUtil.getFileNameWithoutExtension( script_file ) + ".config" );
         }
 
         private static String _( String id ) {

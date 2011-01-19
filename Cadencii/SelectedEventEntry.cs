@@ -271,6 +271,14 @@ namespace org.kbinani.cadencii
             return draft;
         }
 
+        private UstEvent getEditingUstEvent()
+        {
+            if ( editing.UstEvent == null ){
+                editing.UstEvent = new UstEvent();
+            }
+            return editing.UstEvent;
+        }
+
         #region Lyric
 #if !JAVA
         [Category( "Lyric" )]
@@ -796,6 +804,56 @@ namespace org.kbinani.cadencii
                 return "";
             }
             return editing.UstEvent.Flags;
+        }
+
+#if !JAVA
+        [Category( "UTAU" )]
+        public float StartPoint
+        {
+            get
+            {
+                return getStartPoint();
+            }
+            set
+            {
+                setStartPoint( value );
+            }
+        }
+#endif
+
+        public float getStartPoint()
+        {
+            return getEditingUstEvent().getStartPoint();
+        }
+
+        public void setStartPoint( float value )
+        {
+            getEditingUstEvent().setStartPoint( value );
+        }
+
+#if !JAVA
+        [Category( "UTAU" )]
+        public int Intensity
+        {
+            get
+            {
+                return getIntensity();
+            }
+            set
+            {
+                setIntensity( value );
+            }
+        }
+#endif
+
+        public int getIntensity()
+        {
+            return getEditingUstEvent().Intensity;
+        }
+
+        public void setIntensity( int value )
+        {
+            getEditingUstEvent().Intensity = value;
         }
         #endregion
 

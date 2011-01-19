@@ -1326,7 +1326,7 @@ namespace org.kbinani.cadencii
 #endif
             AttachedCurves = new AttachedCurve();
 
-            String xml = PortUtil.combinePath( PortUtil.getDirectoryName( _fpath ), PortUtil.getFileName( _fpath ) + ".xml" );
+            String xml = fsys.combine( PortUtil.getDirectoryName( _fpath ), PortUtil.getFileName( _fpath ) + ".xml" );
             for ( int i = 1; i < Track.size(); i++ ) {
                 AttachedCurves.add( new BezierCurves() );
             }

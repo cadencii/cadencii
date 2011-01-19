@@ -199,7 +199,7 @@ namespace org.kbinani.cadencii
 
         private static String getKoeFilePath()
         {
-            String ret = PortUtil.combinePath( AppManager.getCadenciiTempDir(), "jphonefifty.txt" );
+            String ret = fsys.combine( AppManager.getCadenciiTempDir(), "jphonefifty.txt" );
             BufferedWriter bw = null;
             try {
                 bw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( ret ), "Shift_JIS" ) );

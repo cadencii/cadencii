@@ -75,6 +75,42 @@ namespace org.kbinani.cadencii{
         /// </summary>
         private static Vector<String> usedAssemblyChache = new Vector<String>();
 
+        /// <summary>
+        /// 実行中のUTAUがあれば，その実行ファイルのパスを調べます(Windowsのみ)
+        /// </summary>
+        /// <returns></returns>
+        public static String getExecutingUtau()
+        {
+#if !JAVA
+            foreach ( System.Diagnostics.Process p in System.Diagnostics.Process.GetProcessesByName( "utau" ) ) {
+                return p.MainModule.FileName;
+            }
+#endif
+            return "";
+        }
+
+        /// <summary>
+        /// 指定した歌声合成器の，指定したプログラムチェンジ，Language値を表現するVsqIDを作成します
+        /// </summary>
+        /// <param name="renderer_kind"></param>
+        /// <param name="program"></param>
+        /// <param name="language"></param>
+        /// <returns></returns>
+        public static VsqID getSingerID( RendererKind renderer_kind, int program, int language )
+        {
+            VsqID item = null;
+            if ( renderer_kind == RendererKind.VOCALOID1_100 || renderer_kind == RendererKind.VOCALOID1_101 ) {
+                item = VocaloSysUtil.getSingerID( language, program, SynthesizerType.VOCALOID1 );
+            } else if ( renderer_kind == RendererKind.VOCALOID2 ) {
+                item = VocaloSysUtil.getSingerID( language, program, SynthesizerType.VOCALOID2 );
+            } else if ( renderer_kind == RendererKind.UTAU || renderer_kind == RendererKind.VCNT ) {
+                item = AppManager.getSingerIDUtau( language, program );
+            } else if ( renderer_kind == RendererKind.AQUES_TONE ) {
+                item = AppManager.getSingerIDAquesTone( program );
+            }
+            return item;
+        }
+
         public static int[] getRandomizePitPattern1() {
             if ( RANDOMIZE_PIT_PATTERN1 == null ) {
                 RANDOMIZE_PIT_PATTERN1 = new int[] {
@@ -608,7 +644,7 @@ namespace org.kbinani.cadencii{
             sc.VOICEIDSTR = directory;
 
             // character.txt読込み
-            String character = PortUtil.combinePath( directory, "character.txt" );
+            String character = fsys.combine( directory, "character.txt" );
             String name = null;
             if ( PortUtil.isFileExists( character ) ) {
                 // 読み込みを試みるエンコーディングのリスト
@@ -1315,17 +1351,17 @@ namespace org.kbinani.cadencii{
             } else {
                 String home = System.getenv( "HOME" );
                 if ( home != null ) {
-                    appdata = PortUtil.combinePath( PortUtil.combinePath( home, "Library" ), "Preference" );
+                    appdata = fsys.combine( fsys.combine( home, "Library" ), "Preference" );
                 }
             }
-            String dir = PortUtil.combinePath( appdata, "Boare" );
+            String dir = fsys.combine( appdata, "Boare" );
 #else
-            String dir = PortUtil.combinePath( Environment.GetFolderPath( Environment.SpecialFolder.LocalApplicationData ), "Boare" );
+            String dir = fsys.combine( Environment.GetFolderPath( Environment.SpecialFolder.LocalApplicationData ), "Boare" );
 #endif
             if ( !PortUtil.isDirectoryExists( dir ) ) {
                 PortUtil.createDirectory( dir );
             }
-            String dir2 = PortUtil.combinePath( dir, CONFIG_DIR_NAME );
+            String dir2 = fsys.combine( dir, CONFIG_DIR_NAME );
             if ( !PortUtil.isDirectoryExists( dir2 ) ) {
                 PortUtil.createDirectory( dir2 );
             }
@@ -1338,7 +1374,7 @@ namespace org.kbinani.cadencii{
         /// <returns></returns>
         public static String getConfigPath() {
             String dir2 = getApplicationDataPath();
-            String dir3 = PortUtil.combinePath( dir2, BAssemblyInfo.fileVersionMeasure + "." + BAssemblyInfo.fileVersionMinor );
+            String dir3 = fsys.combine( dir2, BAssemblyInfo.fileVersionMeasure + "." + BAssemblyInfo.fileVersionMinor );
             if ( !PortUtil.isDirectoryExists( dir3 ) ) {
                 PortUtil.createDirectory( dir3 );
             }
@@ -1352,7 +1388,8 @@ namespace org.kbinani.cadencii{
             String dir = getCachedAssemblyPath();
             String[] files = PortUtil.listFiles( dir, ".dll" );
             foreach ( String file in files ) {
-                String full = PortUtil.combinePath( dir, file );
+                String name = PortUtil.getFileName( file );
+                String full = fsys.combine( dir, name );
                 if ( !usedAssemblyChache.contains( full ) ) {
                     try {
                         PortUtil.deleteFile( full );
@@ -1372,7 +1409,7 @@ namespace org.kbinani.cadencii{
             Assembly ret = null;
 
             String md5 = PortUtil.getMD5FromString( code ).Replace( "_", "" );
-            String cached_asm_file = PortUtil.combinePath( getCachedAssemblyPath(), md5 + ".dll" );
+            String cached_asm_file = fsys.combine( getCachedAssemblyPath(), md5 + ".dll" );
             boolean compiled = false;
             if ( PortUtil.isFileExists( cached_asm_file ) ) {
                 ret = Assembly.LoadFile( cached_asm_file );
@@ -1391,12 +1428,12 @@ namespace org.kbinani.cadencii{
                 CSharpCodeProvider provider = new CSharpCodeProvider();
                 String path = System.Windows.Forms.Application.StartupPath;
                 CompilerParameters parameters = new CompilerParameters( new String[] {
-                PortUtil.combinePath( path, "org.kbinani.vsq.dll" ),
-                PortUtil.combinePath( path, "Cadencii.exe" ),
-                PortUtil.combinePath( path, "org.kbinani.media.dll" ),
-                PortUtil.combinePath( path, "org.kbinani.apputil.dll" ),
-                PortUtil.combinePath( path, "org.kbinani.windows.forms.dll" ),
-                PortUtil.combinePath( path, "org.kbinani.dll" ) } );
+                fsys.combine( path, "org.kbinani.vsq.dll" ),
+                fsys.combine( path, "Cadencii.exe" ),
+                fsys.combine( path, "org.kbinani.media.dll" ),
+                fsys.combine( path, "org.kbinani.apputil.dll" ),
+                fsys.combine( path, "org.kbinani.windows.forms.dll" ),
+                fsys.combine( path, "org.kbinani.dll" ) } );
                 parameters.ReferencedAssemblies.Add( "System.Windows.Forms.dll" );
                 parameters.ReferencedAssemblies.Add( "System.dll" );
                 parameters.ReferencedAssemblies.Add( "System.Drawing.dll" );
@@ -1619,7 +1656,7 @@ namespace org.kbinani.cadencii{
         /// </summary>
         /// <returns></returns>
         public static String getScriptPath() {
-            String dir = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "script" );
+            String dir = fsys.combine( PortUtil.getApplicationStartupPath(), "script" );
             if ( !PortUtil.isDirectoryExists( dir ) ) {
                 PortUtil.createDirectory( dir );
             }
@@ -1631,7 +1668,7 @@ namespace org.kbinani.cadencii{
         /// </summary>
         /// <returns></returns>
         public static String getCachedAssemblyPath() {
-            String dir = PortUtil.combinePath( Utility.getApplicationDataPath(), "cachedAssembly" );
+            String dir = fsys.combine( Utility.getApplicationDataPath(), "cachedAssembly" );
             if ( !PortUtil.isDirectoryExists( dir ) ) {
                 PortUtil.createDirectory( dir );
             }
@@ -1643,7 +1680,7 @@ namespace org.kbinani.cadencii{
         /// </summary>
         /// <returns></returns>
         public static String getToolPath() {
-            String dir = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "tool" );
+            String dir = fsys.combine( PortUtil.getApplicationStartupPath(), "tool" );
             if ( !PortUtil.isDirectoryExists( dir ) ) {
                 PortUtil.createDirectory( dir );
             }
@@ -1656,7 +1693,7 @@ namespace org.kbinani.cadencii{
         /// <returns></returns>
         public static String getKeySoundPath() {
             String data_path = getApplicationDataPath();
-            String ret = PortUtil.combinePath( data_path, "cache" );
+            String ret = fsys.combine( data_path, "cache" );
             if ( !PortUtil.isDirectoryExists( ret ) ) {
                 PortUtil.createDirectory( ret );
             }

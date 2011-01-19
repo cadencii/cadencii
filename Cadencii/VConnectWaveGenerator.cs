@@ -234,7 +234,7 @@ namespace org.kbinani.cadencii
             mAbortRequired = false;
             double[] bufL = new double[BUFLEN];
             double[] bufR = new double[BUFLEN];
-            String straight_synth = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), STRAIGHT_SYNTH );
+            String straight_synth = fsys.combine( PortUtil.getApplicationStartupPath(), STRAIGHT_SYNTH );
             if ( !PortUtil.isFileExists( straight_synth ) ) {
 #if DEBUG
                 PortUtil.println( "StraightRendeingRunner#run; \"" + straight_synth + "\" does not exists" );
@@ -293,7 +293,7 @@ namespace org.kbinani.cadencii
                 VConnectRenderingQueue queue = mQueue.get( i );
                 String tmp_dir = AppManager.getTempWaveDir();
 
-                String tmp_file = PortUtil.combinePath( tmp_dir, "tmp.usq" );
+                String tmp_file = fsys.combine( tmp_dir, "tmp.usq" );
                 String hash = "";
                 BufferedWriter sw = null;
                 try {
@@ -319,11 +319,11 @@ namespace org.kbinani.cadencii
                 } catch ( Exception ex ) {
                 }
                 try {
-                    PortUtil.copyFile( tmp_file, PortUtil.combinePath( tmp_dir, hash + ".usq" ) );
+                    PortUtil.copyFile( tmp_file, fsys.combine( tmp_dir, hash + ".usq" ) );
                     PortUtil.deleteFile( tmp_file );
                 } catch ( Exception ex ) {
                 }
-                tmp_file = PortUtil.combinePath( tmp_dir, hash );
+                tmp_file = fsys.combine( tmp_dir, hash );
                 if ( !mCache.containsKey( hash ) || !PortUtil.isFileExists( tmp_file + ".wav" ) ) {
 #if JAVA
                     String[] args = new String[]{ 
@@ -399,7 +399,7 @@ namespace org.kbinani.cadencii
                         }
                         mCache.remove( old_key );
                         try {
-                            PortUtil.deleteFile( PortUtil.combinePath( tmp_dir, old_key + ".wav" ) );
+                            PortUtil.deleteFile( fsys.combine( tmp_dir, old_key + ".wav" ) );
                         } catch ( Exception ex ) {
                         }
                     }
@@ -898,7 +898,7 @@ namespace org.kbinani.cadencii
             if ( singer_path.Equals( "" ) ) {
                 return;
             }
-            String oto_ini = PortUtil.combinePath( singer_path, "oto.ini" );
+            String oto_ini = fsys.combine( singer_path, "oto.ini" );
             if ( !PortUtil.isFileExists( oto_ini ) ) {
                 // STRAIGHT合成用のoto.iniが存在しないので離脱
                 return;
@@ -1172,7 +1172,7 @@ namespace org.kbinani.cadencii
             for ( Iterator<String> itr = mCache.keySet().iterator(); itr.hasNext(); ) {
                 String key = itr.next();
                 try {
-                    PortUtil.deleteFile( PortUtil.combinePath( tmp_dir, key + ".wav" ) );
+                    PortUtil.deleteFile( fsys.combine( tmp_dir, key + ".wav" ) );
                 } catch ( Exception ex ) {
                 }
             }

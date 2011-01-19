@@ -36,7 +36,7 @@ namespace org.kbinani.editotoini {
         private static Font baseFont = null;
 
         public static void loadConfig() {
-            String config_file = PortUtil.combinePath( getApplicationDataPath(), CONFIG_FILE_NAME );
+            String config_file = fsys.combine( getApplicationDataPath(), CONFIG_FILE_NAME );
             if ( !PortUtil.isFileExists( config_file ) ) {
                 cadenciiConfig = new EditorConfig();
                 return;
@@ -70,14 +70,14 @@ namespace org.kbinani.editotoini {
         /// </summary>
         public static String getApplicationDataPath() {
 #if JAVA
-            String dir = PortUtil.combinePath( System.getenv( "APPDATA" ), "Boare" );
+            String dir = fsys.combine( System.getenv( "APPDATA" ), "Boare" );
 #else
-            String dir = PortUtil.combinePath( Environment.GetFolderPath( Environment.SpecialFolder.LocalApplicationData ), "Boare" );
+            String dir = fsys.combine( Environment.GetFolderPath( Environment.SpecialFolder.LocalApplicationData ), "Boare" );
 #endif
             if ( !PortUtil.isDirectoryExists( dir ) ) {
                 PortUtil.createDirectory( dir );
             }
-            String dir2 = PortUtil.combinePath( dir, CONFIG_DIR_NAME );
+            String dir2 = fsys.combine( dir, CONFIG_DIR_NAME );
             if ( !PortUtil.isDirectoryExists( dir2 ) ) {
                 PortUtil.createDirectory( dir2 );
             }

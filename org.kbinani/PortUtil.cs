@@ -1056,7 +1056,7 @@ namespace org.kbinani {
 #endif
         }
 
-        public static String combinePath( String path1, String path2 ) {
+        /*public static String combinePath( String path1, String path2 ) {
 #if JAVA
             if( path1 != null && path1.endsWith( File.separator ) ){
                 path1 = path1.substring( 0, path1.length() - 1 );
@@ -1068,7 +1068,7 @@ namespace org.kbinani {
 #else
             return System.IO.Path.Combine( path1, path2 );
 #endif
-        }
+        }*/
 
         public static String getTempPath() {
 #if JAVA

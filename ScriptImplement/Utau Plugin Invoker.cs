@@ -370,7 +370,6 @@ public class Utau_Plugin_Invoker : Form {
                         int v = target.ID.Dynamics;
                         try {
                             v = int.Parse( right );
-                            target.ID.Dynamics = v;
                             target.UstEvent.Intensity = v;
                         } catch {
                         }

@@ -135,6 +135,10 @@ namespace org.kbinani.cadencii {
                 return _( "Attack Duration" );
             } else if ( name.Equals( "AttackDepth" ) ) {
                 return _( "Attack Depth" );
+            } else if ( str.compare( name, "StartPoint" ) ) {
+                return _( "StartPoint" );
+            } else if ( str.compare( name, "Intensity" ) ) {
+                return _( "Intensity" );
             }
             return _( name );
         }

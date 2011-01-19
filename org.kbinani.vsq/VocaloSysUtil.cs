@@ -119,7 +119,7 @@ namespace org.kbinani.vsq
                 if ( sw == null ) {
                     close = true;
                     sw = new BufferedWriter( new FileWriter(
-                        PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "reg_keys_vocalo1.txt" ) ) );
+                        fsys.combine( PortUtil.getApplicationStartupPath(), "reg_keys_vocalo1.txt" ) ) );
                 }
 #endif
                 if ( sw != null ) {
@@ -160,7 +160,7 @@ namespace org.kbinani.vsq
                 s_path_editor.put( SynthesizerType.VOCALOID1, path_editor.value );
                 SingerConfigSys singer_config_sys =
                     new SingerConfigSys( path_voicedb1.value, installed_singers1.toArray( new String[] { } ) );
-                String expression_map = PortUtil.combinePath( path_expdb1.value, "expression.map" );
+                String expression_map = fsys.combine( path_expdb1.value, "expression.map" );
                 if ( PortUtil.isFileExists( expression_map ) ) {
                     exp_config_sys1 = new ExpressionConfigSys( path_editor.value, path_expdb1.value );
                 }
@@ -169,7 +169,7 @@ namespace org.kbinani.vsq
                 // DSE1_1.dllがあるかどうか？
                 if ( !path_vsti.value.Equals( "" ) ) {
                     String path_dll = PortUtil.getDirectoryName( path_vsti.value );
-                    String dse1_1 = PortUtil.combinePath( path_dll, "DSE1_1.dll" );
+                    String dse1_1 = fsys.combine( path_dll, "DSE1_1.dll" );
                     dseVersion101Available = PortUtil.isFileExists( dse1_1 );
                 } else {
                     dseVersion101Available = false;
@@ -179,7 +179,7 @@ namespace org.kbinani.vsq
                 if ( path_editor.value != null && !path_editor.value.Equals( "" ) &&
                      PortUtil.isFileExists( path_editor.value ) ) {
                     String dir = PortUtil.getDirectoryName( path_editor.value );
-                    String ini = PortUtil.combinePath( dir, "VOCALOID.ini" );
+                    String ini = fsys.combine( dir, "VOCALOID.ini" );
                     if ( PortUtil.isFileExists( ini ) ) {
                         BufferedReader br = null;
                         try {
@@ -240,7 +240,7 @@ namespace org.kbinani.vsq
 #if DEBUG
                 if ( sw == null ) {
                     sw = new BufferedWriter( new FileWriter(
-                        PortUtil.combinePath( PortUtil.getApplicationStartupPath(), "reg_keys_vocalo2.txt" ) ) );
+                        fsys.combine( PortUtil.getApplicationStartupPath(), "reg_keys_vocalo2.txt" ) ) );
                     close = true;
                 }
 #endif
@@ -279,7 +279,7 @@ namespace org.kbinani.vsq
                 s_path_vsti.put( SynthesizerType.VOCALOID2, path_vsti.value );
                 s_path_editor.put( SynthesizerType.VOCALOID2, path_editor.value );
                 SingerConfigSys singer_config_sys = new SingerConfigSys( path_voicedb2.value, installed_singers2.toArray( new String[] { } ) );
-                if ( PortUtil.isFileExists( PortUtil.combinePath( path_expdb2.value, "expression.map" ) ) ) {
+                if ( PortUtil.isFileExists( fsys.combine( path_expdb2.value, "expression.map" ) ) ) {
                     exp_config_sys2 = new ExpressionConfigSys( path_editor.value, path_expdb2.value );
                 }
                 s_singer_config_sys.put( SynthesizerType.VOCALOID2, singer_config_sys );
@@ -387,7 +387,7 @@ namespace org.kbinani.vsq
                         if ( spl[1].Equals( "INSTALLDIR" ) ) {
                             // VOCALOID1の場合は、ここには到達しないはず
                             String installdir = spl[2];
-                            install_dirs.put( id, PortUtil.combinePath( installdir, id ) );
+                            install_dirs.put( id, fsys.combine( installdir, id ) );
                         }
                     }
                 }
@@ -398,7 +398,7 @@ namespace org.kbinani.vsq
                 String id = itr.next();
                 String install = install_dirs.get( id );
                 if ( install.Equals( "" ) ) {
-                    install = PortUtil.combinePath( path_voicedb.value, id );
+                    install = fsys.combine( path_voicedb.value, id );
                 }
                 installed_singers.add( install );
             }

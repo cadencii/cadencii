@@ -89,7 +89,7 @@ namespace org.kbinani.cadencii {
             String editor_dir = VocaloSysUtil.getEditorPath( SynthesizerType.VOCALOID1 );
             String ini = "";
             if( !editor_dir.Equals( "" ) ){
-                ini = PortUtil.combinePath( PortUtil.getDirectoryName( editor_dir ), "VOCALOID.ini" );
+                ini = fsys.combine( PortUtil.getDirectoryName( editor_dir ), "VOCALOID.ini" );
             }
             String vocalo2_dll_path = VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID2 );
             String vocalo1_dll_path = VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID1 );
@@ -257,7 +257,7 @@ namespace org.kbinani.cadencii {
                 }
             }
             if ( renderer == RendererKind.VCNT ) {
-                String synth_path = PortUtil.combinePath( PortUtil.getApplicationStartupPath(), VConnectWaveGenerator.STRAIGHT_SYNTH );
+                String synth_path = fsys.combine( PortUtil.getApplicationStartupPath(), VConnectWaveGenerator.STRAIGHT_SYNTH );
                 if ( PortUtil.isFileExists( synth_path ) ) {
                     int count = AppManager.editorConfig.UtauSingers.size();
                     if ( count > 0 ) {

@@ -77,7 +77,7 @@ namespace org.kbinani.cadencii{
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault( false );
             Logger.setEnabled( false );
-            Logger.setPath( PortUtil.combinePath( Utility.getApplicationDataPath(), "log.txt" ) );
+            Logger.setPath( fsys.combine( Utility.getApplicationDataPath(), "log.txt" ) );
 #if DEBUG
             Logger.setEnabled( true );
 #endif

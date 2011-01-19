@@ -101,7 +101,7 @@ namespace org.kbinani.vsq
                 }
                 m_time_format = 480;
 #if DEBUG && MIDI_PRINT_TO_FILE
-                String dbg = PortUtil.combinePath( PortUtil.getDirectoryName( path ), PortUtil.getFileNameWithoutExtension( path ) + ".txt" );
+                String dbg = fsys.combine( PortUtil.getDirectoryName( path ), PortUtil.getFileNameWithoutExtension( path ) + ".txt" );
                 BufferedWriter sw = null;
                 try {
                     sw = new BufferedWriter( new FileWriter( dbg ) );

@@ -938,7 +938,7 @@ class UtauPluginManager : Form {
                 if ( !getPlugins().Contains( file ) ) {
                     string name = getPluginName( file );
                     if ( name != "" ) {
-                        string script_path = PortUtil.combinePath( Utility.getScriptPath(), name + ".txt" );
+                        string script_path = fsys.combine( Utility.getScriptPath(), name + ".txt" );
                         if ( PortUtil.isFileExists( script_path ) ) {
                             PortUtil.deleteFile( script_path );
                         }
@@ -963,7 +963,7 @@ class UtauPluginManager : Form {
             string text = TEXT;
             string code = text.Replace( "{0}", name );
             code = code.Replace( "{1}", file );
-            using ( StreamWriter sw = new StreamWriter( PortUtil.combinePath( Utility.getScriptPath(), name + ".txt" ) ) ) {
+            using ( StreamWriter sw = new StreamWriter( fsys.combine( Utility.getScriptPath(), name + ".txt" ) ) ) {
                 sw.WriteLine( code );
             }
         }

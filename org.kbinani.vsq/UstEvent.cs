@@ -33,11 +33,20 @@ namespace org.kbinani.vsq
     public class UstEvent : ICloneable
     {
 #endif
+        /// <summary>
+        /// 音量の最大値
+        /// </summary>
+        public const int MAX_INTENSITY = 200;
+        /// <summary>
+        /// 音量の最小値
+        /// </summary>
+        public const int MIN_INTENSITY = -100;
+
         public String Tag;
         public int Length = 0;
         public String Lyric = "";
         public int Note = -1;
-        public int Intensity = -1;
+        public int Intensity = 100;
         public int PBType = -1;
         public float[] Pitches = null;
         public float Tempo = -1;

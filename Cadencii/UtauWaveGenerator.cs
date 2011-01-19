@@ -153,7 +153,7 @@ namespace org.kbinani.cadencii
             mResampler = mConfig.getResamplerAt( resampler_index );
             mWavtool = mConfig.PathWavtool;
             mSampleRate = sample_rate;
-            mTempDir = PortUtil.combinePath( AppManager.getCadenciiTempDir(), AppManager.getID() );
+            mTempDir = fsys.combine( AppManager.getCadenciiTempDir(), AppManager.getID() );
             mInvokeWithWine = mConfig.InvokeUtauCoreWithWine;
 
             mVsq = (VsqFileEx)vsq.clone();
@@ -259,15 +259,15 @@ namespace org.kbinani.cadencii
                 // 原音設定を読み込み
                 VsqTrack target = mVsq.Track.get( mTrack );
 
-                String file = PortUtil.combinePath( mTempDir, FILEBASE );
+                String file = fsys.combine( mTempDir, FILEBASE );
                 if ( PortUtil.isFileExists( file ) ) {
                     PortUtil.deleteFile( file );
                 }
-                String file_whd = PortUtil.combinePath( mTempDir, FILEBASE + ".whd" );
+                String file_whd = fsys.combine( mTempDir, FILEBASE + ".whd" );
                 if ( PortUtil.isFileExists( file_whd ) ) {
                     PortUtil.deleteFile( file_whd );
                 }
-                String file_dat = PortUtil.combinePath( mTempDir, FILEBASE + ".dat" );
+                String file_dat = fsys.combine( mTempDir, FILEBASE + ".dat" );
                 if ( PortUtil.isFileExists( file_dat ) ) {
                     PortUtil.deleteFile( file_dat );
                 }
@@ -357,7 +357,7 @@ namespace org.kbinani.cadencii
 #endif
                         RenderQueue rq = new RenderQueue();
                         rq.WavtoolArgPrefix =
-                            "\"" + file + "\" \"" + PortUtil.combinePath( singer, "R.wav" ) + "\" 0 " + draft_length + "@"
+                            "\"" + file + "\" \"" + fsys.combine( singer, "R.wav" ) + "\" 0 " + draft_length + "@"
                             + BASE_TEMPO;
                         rq.WavtoolArgSuffix = " 0 0";
                         rq.Oto = new OtoArgs();
@@ -438,7 +438,7 @@ namespace org.kbinani.cadencii
 #if DEBUG
 #if !JAVA
                     String logname =
-                        PortUtil.combinePath( mTempDir, k + "_" + PortUtil.getFileNameWithoutExtension( wavPath ) + "_" + note + ".log" );
+                        fsys.combine( mTempDir, k + "_" + PortUtil.getFileNameWithoutExtension( wavPath ) + "_" + note + ".log" );
                     System.IO.StreamWriter sw3 = new System.IO.StreamWriter( logname );
                     int prevx = 0;
                     float max = -100;
@@ -527,10 +527,10 @@ namespace org.kbinani.cadencii
                     }
 #if DEBUG
                     String filename =
-                        PortUtil.combinePath( mTempDir, k + "_" + PortUtil.getFileNameWithoutExtension( wavPath ) + "_" + note + ".wav" );
+                        fsys.combine( mTempDir, k + "_" + PortUtil.getFileNameWithoutExtension( wavPath ) + "_" + note + ".wav" );
 #else
                     String filename =
-                        PortUtil.combinePath( mTempDir, PortUtil.getMD5FromString( mCache.size() + md5_src ) + ".wav" );
+                        fsys.combine( mTempDir, PortUtil.getMD5FromString( mCache.size() + md5_src ) + ".wav" );
 #endif
 
                     rq2.appendArgRange( resampler_arg_prefix );

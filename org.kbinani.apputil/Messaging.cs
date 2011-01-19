@@ -84,7 +84,8 @@ namespace org.kbinani.apputil {
             s_messages.clear();
             String[] files = PortUtil.listFiles( directory, ".po" );
             for ( int i = 0; i < files.Length; i++ ){
-                String fname = PortUtil.combinePath( directory, files[i] );
+                String name = PortUtil.getFileName( files[i] );
+                String fname = fsys.combine( directory, name );
                 appendFromFile( fname );
             }
         }

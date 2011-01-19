@@ -125,14 +125,14 @@ namespace org
                     // 辞書フォルダからの読込み
                     String editor_path = VocaloSysUtil.getEditorPath( SynthesizerType.VOCALOID2 );
                     if ( editor_path != "" ) {
-                        String path = PortUtil.combinePath( PortUtil.getDirectoryName( editor_path ), "UDIC" );
+                        String path = fsys.combine( PortUtil.getDirectoryName( editor_path ), "UDIC" );
                         if ( !PortUtil.isDirectoryExists( path ) ) {
                             return;
                         }
                         String[] files = PortUtil.listFiles( path, "*.udc" );
                         for ( int i = 0; i < files.Length; i++ ) {
                             files[i] = PortUtil.getFileName( files[i] );
-                            String dict = PortUtil.combinePath( path, files[i] );
+                            String dict = fsys.combine( path, files[i] );
                             mTable.add( new SymbolTable( dict, true, false, "Shift_JIS" ) );
                         }
                     }
@@ -150,7 +150,7 @@ namespace org
                         String[] files2 = PortUtil.listFiles( directory, "*.eudc" );
                         for ( int i = 0; i < files2.Length; i++ ) {
                             files2[i] = PortUtil.getFileName( files2[i] );
-                            String dict = PortUtil.combinePath( directory, files2[i] );
+                            String dict = fsys.combine( directory, files2[i] );
                             mTable.add( new SymbolTable( dict, true, false, "UTF-8" ) );
                         }
                     }

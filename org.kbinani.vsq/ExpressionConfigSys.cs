@@ -1003,7 +1003,7 @@ namespace org.kbinani.vsq
             m_dynamics_configs = new Vector<IconDynamicsHandle>();
 
             String base_path = PortUtil.getDirectoryName( path_editor );
-            String aiconDB_def = PortUtil.combinePath( base_path, "AiconDB.def" );
+            String aiconDB_def = fsys.combine( base_path, "AiconDB.def" );
             if ( PortUtil.isFileExists( aiconDB_def ) ) {
                 String folder_name = "";
                 TreeMap<String, Vector<String>> list = new TreeMap<String, Vector<String>>();
@@ -1058,12 +1058,12 @@ namespace org.kbinani.vsq
                 }
 
                 if ( !folder_name.Equals( "" ) ) {
-                    String aiconDB_path = PortUtil.combinePath( base_path, folder_name );
+                    String aiconDB_path = fsys.combine( base_path, folder_name );
                     if ( PortUtil.isDirectoryExists( aiconDB_path ) ) {
                         for ( Iterator<String> itr = list.keySet().iterator(); itr.hasNext(); ) {
                             String key = itr.next();
                             String section_name = key.Replace( "[", "" ).Replace( "]", "" );
-                            String section_path = PortUtil.combinePath( aiconDB_path, section_name );
+                            String section_path = fsys.combine( aiconDB_path, section_name );
                             if ( PortUtil.isDirectoryExists( section_path ) ) {
                                 for ( Iterator<String> itr2 = list.get( key ).iterator(); itr2.hasNext(); ) {
                                     String line = itr2.next();
@@ -1086,12 +1086,12 @@ namespace org.kbinani.vsq
                                         if ( !aic_name.EndsWith( ".aic" ) ) {
                                             aic_name += ".aic";
                                         }
-                                        String aic_path = PortUtil.combinePath( section_path, aic_name );
+                                        String aic_path = fsys.combine( section_path, aic_name );
                                         String ids = spl2[i];
                                         String icon_id = preset + PortUtil.formatDecimal( "0000", i );
                                         if ( PortUtil.isFileExists( aic_path ) ) {
                                             IconDynamicsHandle handle = new IconDynamicsHandle( aic_path, ids, icon_id, i );
-                                            handle.setButtonImageFullPath( PortUtil.combinePath( section_path, handle.getButton() ) );
+                                            handle.setButtonImageFullPath( fsys.combine( section_path, handle.getButton() ) );
                                             m_dynamics_configs.add( handle );
                                         }
                                     }
@@ -1102,7 +1102,7 @@ namespace org.kbinani.vsq
                 }
             }
 
-            String expression = PortUtil.combinePath( path_expdb, "expression.map" );
+            String expression = fsys.combine( path_expdb, "expression.map" );
             if ( !PortUtil.isFileExists( expression ) ) {
                 return;
             }
@@ -1118,11 +1118,11 @@ namespace org.kbinani.vsq
                         continue;
                     }
 
-                    String ved = PortUtil.combinePath( path_expdb, "vexp" + value + ".ved" );
+                    String ved = fsys.combine( path_expdb, "vexp" + value + ".ved" );
                     if ( !PortUtil.isFileExists( ved ) ) {
                         continue;
                     }
-                    String vexp_dir = PortUtil.combinePath( path_expdb, "vexp" + value );
+                    String vexp_dir = fsys.combine( path_expdb, "vexp" + value );
                     if ( !PortUtil.isDirectoryExists( vexp_dir ) ) {
                         continue;
                     }
@@ -1155,7 +1155,7 @@ namespace org.kbinani.vsq
                                 }
                                 // ex: 1,1,"normal","normal2_type1.aic","[Normal]:Type:1","Standard","YAMAHA",0
                                 String file = spl2[3].Replace( "\"", "" );
-                                String aic_file = PortUtil.combinePath( vexp_dir, file );
+                                String aic_file = fsys.combine( vexp_dir, file );
                                 int index = PortUtil.parseInt( spl2[0] );
                                 String icon_id = "$0404" + PortUtil.toHexString( index, 4 );
                                 String ids = "";//spl2[2].Replace( "\"", "" );
@@ -1170,7 +1170,7 @@ namespace org.kbinani.vsq
                                 }
                                 // ex: 1,1,"normal","normal2_type1.aic","[Normal]:Type:1","Standard","YAMAHA",0
                                 String file = spl2[3].Replace( "\"", "" );
-                                String aic_path = PortUtil.combinePath( vexp_dir, file );
+                                String aic_path = fsys.combine( vexp_dir, file );
                                 if ( !PortUtil.isFileExists( aic_path ) ) {
                                     continue;
                                 }

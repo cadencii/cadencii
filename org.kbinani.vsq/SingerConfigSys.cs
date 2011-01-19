@@ -43,7 +43,7 @@ namespace org.kbinani.vsq
         {
             m_installed_singers = new Vector<SingerConfig>();
             m_singer_configs = new Vector<SingerConfig>();
-            String map = PortUtil.combinePath( path_voicedb, "voice.map" );
+            String map = fsys.combine( path_voicedb, "voice.map" );
             if ( !PortUtil.isFileExists( map ) ) {
                 return;
             }
@@ -78,7 +78,7 @@ namespace org.kbinani.vsq
                         fs.read( dat, 0, 8 );
                         long value = PortUtil.make_int64_le( dat );
                         if ( value >= 1 ) {
-                            String vvd = PortUtil.combinePath( path_voicedb, "vvoice" + value + ".vvd" );
+                            String vvd = fsys.combine( path_voicedb, "vvoice" + value + ".vvd" );
                             SingerConfig item = SingerConfig.fromVvd( vvd, language, program );
                             m_singer_configs.add( item );
                         }

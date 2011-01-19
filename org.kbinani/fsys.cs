@@ -100,6 +100,11 @@ namespace org
                 if ( path1 == null ) path1 = "";
                 if ( path2 == null ) path2 = "";
 #endif
+#if DEBUG
+#if !JAVA
+                String ret2 = System.IO.Path.Combine( path1, path2 );
+#endif
+#endif
                 separator();
                 if ( str.endsWith( path1, mSeparator ) ) {
                     path1 = str.sub( path1, 0, str.length( path1 ) - 1 );
@@ -107,6 +112,14 @@ namespace org
                 if ( str.startsWith( path2, mSeparator ) ) {
                     path2 = str.sub( path2, 1 );
                 }
+#if DEBUG
+#if !JAVA
+                String ret = path1 + mSeparator + path2;
+                if ( ret2 != ret ) {
+                    System.Windows.Forms.MessageBox.Show( "fsys#combine; ret=" + ret + "; ret2=" + ret2 );
+                }
+#endif
+#endif
                 return path1 + mSeparator + path2;
             }
 

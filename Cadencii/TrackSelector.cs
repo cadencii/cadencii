@@ -905,8 +905,21 @@ namespace org.kbinani.cadencii
         /// <returns></returns>
         public int valueFromYCoord( int y )
         {
-            int max = mSelectedCurve.getMaximum();
-            int min = mSelectedCurve.getMinimum();
+            int max = 127;
+            int min = 0;
+            if ( mSelectedCurve.equals( CurveType.VEL ) ) {
+                int selected = AppManager.getSelected();
+                if ( AppManager.mDrawIsUtau[selected - 1] ) {
+                    max = UstEvent.MAX_INTENSITY;
+                    min = UstEvent.MIN_INTENSITY;
+                } else {
+                    max = mSelectedCurve.getMaximum();
+                    min = mSelectedCurve.getMinimum();
+                }
+            } else {
+                max = mSelectedCurve.getMaximum();
+                min = mSelectedCurve.getMinimum();
+            }
             return valueFromYCoord( y, max, min );
         }
 
@@ -919,8 +932,21 @@ namespace org.kbinani.cadencii
 
         public int yCoordFromValue( int value )
         {
-            int max = mSelectedCurve.getMaximum();
-            int min = mSelectedCurve.getMinimum();
+            int max = 127;
+            int min = 0;
+            if ( mSelectedCurve.equals( CurveType.VEL ) ) {
+                int selected = AppManager.getSelected();
+                if ( AppManager.mDrawIsUtau[selected - 1] ) {
+                    max = UstEvent.MAX_INTENSITY;
+                    min = UstEvent.MIN_INTENSITY;
+                } else {
+                    max = mSelectedCurve.getMaximum();
+                    min = mSelectedCurve.getMinimum();
+                }
+            } else {
+                max = mSelectedCurve.getMaximum();
+                min = mSelectedCurve.getMinimum();
+            }
             return yCoordFromValue( value, max, min );
         }
 
@@ -1517,7 +1543,9 @@ namespace org.kbinani.cadencii
                     // 現在表示されているカーブの名前
                     g.setFont( AppManager.baseFont9 );
                     g.setColor( brs_string );
-                    g.drawString( mSelectedCurve.getName(), 7, AppManager.baseFont9Height / 2 - AppManager.baseFont9OffsetHeight + 1 ); // new Rectangle( 7, 24, 56, 14 ), sf
+                    boolean is_utau_mode = AppManager.mDrawIsUtau[selected - 1];
+                    String name = (is_utau_mode && mSelectedCurve.equals( CurveType.VEL )) ? "INT" : mSelectedCurve.getName();
+                    g.drawString( name, 7, AppManager.baseFont9Height / 2 - AppManager.baseFont9OffsetHeight + 1 ); // new Rectangle( 7, 24, 56, 14 ), sf
 
                     for ( int i = 0; i < AppManager.getViewingCurveCount(); i++ ) {
                         CurveType curve = AppManager.getViewingCurveElement( i );
@@ -1530,12 +1558,16 @@ namespace org.kbinani.cadencii
                         g.drawRect( rc.x, rc.y, rc.width, rc.height );
                         Rectangle rc_str = new Rectangle( rc.x, rc.y + rc.height / 2 - AppManager.baseFont9OffsetHeight, rc.width, rc.height );
                         rc_str.y += 2;
+                        String n = curve.getName();
+                        if ( is_utau_mode && curve.equals( CurveType.VEL ) ) {
+                            n = "INT";
+                        }
                         if ( curve.equals( mSelectedCurve ) ) {
                             g.setColor( Color.white );
-                            g.drawString( curve.getName(), rc_str.x, rc_str.y ); // sf );
+                            g.drawString( n, rc_str.x, rc_str.y ); // sf );
                         } else {
                             g.setColor( font_color_normal );
-                            g.drawString( curve.getName(), rc_str.x, rc_str.y ); // sf );
+                            g.drawString( n, rc_str.x, rc_str.y ); // sf );
                         }
                     }
                     #endregion
@@ -2036,7 +2068,11 @@ namespace org.kbinani.cadencii
 
             int HEADER = 8;
             int graph_height = getGraphHeight();
-            float order = (type.equals( CurveType.VEL )) ? graph_height / 127f : graph_height / 100f;
+            // 描画する値の最大値
+            int max = 100;
+            // 描画する値の最小値
+            int min = 0;
+
             int height = getHeight();
             int width = getWidth();
             int oy = height - 42;
@@ -2067,27 +2103,46 @@ namespace org.kbinani.cadencii
                     } else {
                         int value = 0;
                         if ( type.equals( CurveType.VEL ) ) {
-                            value = dobj.mVelocity;
+                            if ( AppManager.mDrawIsUtau[selected - 1] ) {
+                                value = dobj.mIntensity;
+                                max = UstEvent.MAX_INTENSITY;
+                                min = UstEvent.MIN_INTENSITY;
+                            } else {
+                                value = dobj.mVelocity;
+                                max = 127;
+                                min = 0;
+                            }
                         } else if ( type.equals( CurveType.Accent ) ) {
                             value = dobj.mAccent;
+                            max = 100;
+                            min = 0;
                         } else if ( type.equals( CurveType.Decay ) ) {
                             value = dobj.mDecay;
+                            max = 100;
+                            min = 0;
                         }
-                        int y = oy - (int)(value * order);
+                        //float order = (type.equals( CurveType.VEL )) ? graph_height / 127f : graph_height / 100f;
+
+                        int y = oy - graph_height * (value - min) / (max - min);
                         if ( is_front && AppManager.isSelectedEventContains( selected, dobj.mInternalID ) ) {
                             g.setColor( COLOR_A127R008G166B172 );
                             g.fillRect( x, y, VEL_BAR_WIDTH, oy - y );
                             if ( mMouseDownMode == MouseDownMode.VEL_EDIT ) {
                                 int editing = 0;
                                 if ( mVeEditSelected.containsKey( dobj.mInternalID ) ) {
+                                    VsqEvent ve_editing = mVeEditSelected.get( dobj.mInternalID ).editing;
                                     if ( mSelectedCurve.equals( CurveType.VEL ) ) {
-                                        editing = mVeEditSelected.get( dobj.mInternalID ).editing.ID.Dynamics;
+                                        if ( AppManager.mDrawIsUtau[selected - 1] ) {
+                                            editing = ve_editing.UstEvent == null ? 100 : ve_editing.UstEvent.Intensity;
+                                        } else {
+                                            editing = ve_editing.ID.Dynamics;
+                                        }
                                     } else if ( mSelectedCurve.equals( CurveType.Accent ) ) {
-                                        editing = mVeEditSelected.get( dobj.mInternalID ).editing.ID.DEMaccent;
+                                        editing = ve_editing.ID.DEMaccent;
                                     } else if ( mSelectedCurve.equals( CurveType.Decay ) ) {
-                                        editing = mVeEditSelected.get( dobj.mInternalID ).editing.ID.DEMdecGainRate;
+                                        editing = ve_editing.ID.DEMdecGainRate;
                                     }
-                                    int edit_y = oy - (int)(editing * order);
+                                    int edit_y = oy - graph_height * (editing - min) / (max - min);
                                     g.setColor( COLOR_A244R255G023B012 );
                                     g.fillRect( x, edit_y, VEL_BAR_WIDTH, oy - edit_y );
                                     g.setColor( Color.white );
@@ -2570,8 +2625,9 @@ namespace org.kbinani.cadencii
                             cmenuCurveEnvelope.setVisible( false );
 
                             cmenuCurveBreathiness.setText( "Noise" );
+                            cmenuCurveVelocity.setText( "Velocity" );
                         } else if ( kind == RendererKind.UTAU || kind == RendererKind.VCNT ) {
-                            cmenuCurveVelocity.setVisible( false );
+                            cmenuCurveVelocity.setVisible( (kind == RendererKind.UTAU) );
                             cmenuCurveAccent.setVisible( false );
                             cmenuCurveDecay.setVisible( false );
 
@@ -2602,6 +2658,10 @@ namespace org.kbinani.cadencii
                             cmenuCurveSeparator5.setVisible( true );
                             cmenuCurveEffect2Depth.setVisible( false );
                             cmenuCurveEnvelope.setVisible( true );
+
+                            if ( kind == RendererKind.UTAU ) {
+                                cmenuCurveVelocity.setText( "Intensity" );
+                            }
                         } else {
                             cmenuCurveVelocity.setVisible( true );
                             cmenuCurveAccent.setVisible( true );
@@ -2636,6 +2696,7 @@ namespace org.kbinani.cadencii
                             cmenuCurveEnvelope.setVisible( false );
 
                             cmenuCurveBreathiness.setText( "Breathiness" );
+                            cmenuCurveVelocity.setText( "Velocity" );
                         }
                         for ( int i = 0; i < sub_cmenu_curve.Length; i++ ) {
                             MenuElement tsi = sub_cmenu_curve[i];
@@ -2889,6 +2950,12 @@ namespace org.kbinani.cadencii
             int value_raw = value;
             int max = mSelectedCurve.getMaximum();
             int min = mSelectedCurve.getMinimum();
+            int selected = AppManager.getSelected();
+            boolean is_utau_mode = AppManager.mDrawIsUtau[selected - 1];
+            if ( is_utau_mode && mSelectedCurve.equals( CurveType.VEL ) ) {
+                max = UstEvent.MAX_INTENSITY;
+                min = UstEvent.MIN_INTENSITY;
+            }
             if ( value < min ) {
                 value = min;
             } else if ( max < value ) {
@@ -2928,16 +2995,16 @@ namespace org.kbinani.cadencii
             if ( e.Button == BMouseButtons.Left &&
                  0 <= e.Y && e.Y <= getHeight() - 2 * OFFSET_TRACK_TAB &&
                  mMouseDownMode == MouseDownMode.CURVE_EDIT ) {
-                EditTool selected = AppManager.getSelectedTool();
-                if ( selected == EditTool.PENCIL ) {
+                EditTool selected_tool = AppManager.getSelectedTool();
+                if ( selected_tool == EditTool.PENCIL ) {
                     mPencilMoved = e.X + stdx != mMouseDownLocation.x ||
                                      e.Y != mMouseDownLocation.y;
                     mMouseTracer.append( e.X + stdx, e.Y );
-                } else if ( selected == EditTool.LINE ) {
+                } else if ( selected_tool == EditTool.LINE ) {
                     mPencilMoved = e.X + stdx != mMouseDownLocation.x ||
                                      e.Y != mMouseDownLocation.y;
-                } else if ( selected == EditTool.ARROW ||
-                            selected == EditTool.ERASER ) {
+                } else if ( selected_tool == EditTool.ARROW ||
+                            selected_tool == EditTool.ERASER ) {
                     int draft_clock = clock;
                     if ( AppManager.editorConfig.CurveSelectingQuantized ) {
                         int unit = AppManager.getPositionQuantizeClock();
@@ -2961,8 +3028,13 @@ namespace org.kbinani.cadencii
             } else if ( mMouseDownMode == MouseDownMode.VEL_EDIT ) {
                 int t_value = valueFromYCoord( e.Y - mVelEditShiftY );
                 int d_vel = 0;
+                VsqEvent ve_original = mVeEditSelected.get( mVelEditLastSelectedID ).original;
                 if ( mSelectedCurve.equals( CurveType.VEL ) ) {
-                    d_vel = t_value - mVeEditSelected.get( mVelEditLastSelectedID ).original.ID.Dynamics;
+                    if ( is_utau_mode ) {
+                        d_vel = t_value - ((ve_original.UstEvent == null) ? 100 : ve_original.UstEvent.Intensity);
+                    } else {
+                        d_vel = t_value - ve_original.ID.Dynamics;
+                    }
                 } else if ( mSelectedCurve.equals( CurveType.Accent ) ) {
                     d_vel = t_value - mVeEditSelected.get( mVelEditLastSelectedID ).original.ID.DEMaccent;
                 } else if ( mSelectedCurve.equals( CurveType.Decay ) ) {
@@ -2971,13 +3043,25 @@ namespace org.kbinani.cadencii
                 for ( Iterator<Integer> itr = mVeEditSelected.keySet().iterator(); itr.hasNext(); ) {
                     int id = itr.next();
                     if ( mSelectedCurve.equals( CurveType.VEL ) ) {
-                        int new_vel = mVeEditSelected.get( id ).original.ID.Dynamics + d_vel;
+                        VsqEvent item = mVeEditSelected.get( id ).original;
+                        int new_vel = item.ID.Dynamics + d_vel;
+                        if ( is_utau_mode ) {
+                            new_vel = item.UstEvent == null ? 100 + d_vel : item.UstEvent.Intensity + d_vel;
+                        }
                         if ( new_vel < min ) {
                             new_vel = min;
                         } else if ( max < new_vel ) {
                             new_vel = max;
                         }
-                        mVeEditSelected.get( id ).editing.ID.Dynamics = new_vel;
+                        if ( is_utau_mode ) {
+                            VsqEvent item_o = mVeEditSelected.get( id ).editing;
+                            if ( item_o.UstEvent == null ) {
+                                item_o.UstEvent = new UstEvent();
+                            }
+                            item_o.UstEvent.Intensity = new_vel;
+                        } else {
+                            mVeEditSelected.get( id ).editing.ID.Dynamics = new_vel;
+                        }
                     } else if ( mSelectedCurve.equals( CurveType.Accent ) ) {
                         int new_vel = mVeEditSelected.get( id ).original.ID.DEMaccent + d_vel;
                         if ( new_vel < min ) {
@@ -2999,7 +3083,7 @@ namespace org.kbinani.cadencii
             } else if ( mMouseDownMode == MouseDownMode.BEZIER_MODE ) {
                 HandleMouseMoveForBezierMove( clock, value, value_raw, AppManager.getLastSelectedBezier().picked );
             } else if ( mMouseDownMode == MouseDownMode.BEZIER_ADD_NEW || mMouseDownMode == MouseDownMode.BEZIER_EDIT ) {
-                BezierChain target = vsq.AttachedCurves.get( AppManager.getSelected() - 1 ).getBezierChain( mSelectedCurve, AppManager.getLastSelectedBezier().chainID );
+                BezierChain target = vsq.AttachedCurves.get( selected - 1 ).getBezierChain( mSelectedCurve, AppManager.getLastSelectedBezier().chainID );
                 int point_id = AppManager.getLastSelectedBezier().pointID;
                 int index = -1;
                 for ( int i = 0; i < target.points.size(); i++ ) {
@@ -3181,6 +3265,7 @@ namespace org.kbinani.cadencii
             mMouseDownLocation.y = e.Y;
             int clock = AppManager.clockFromXCoord( e.X );
             int selected = AppManager.getSelected();
+            VsqTrack vsq_track = vec.get( vsq.Track, selected );
             mMouseMoved = false;
             mMouseDowned = true;
             if ( AppManager.keyWidth < e.X && clock < vsq.getPreMeasure() ) {
@@ -3207,10 +3292,10 @@ namespace org.kbinani.cadencii
                     //AppManager.isCurveSelectedIntervalEnabled() = false;
                     mMouseTracer.clear();
                     int selecter_width = getSelectorWidth();
-                    if ( AppManager.getVsqFile() != null ) {
+                    if ( vsq != null ) {
                         for ( int i = 0; i < 16; i++ ) {
                             int x = AppManager.keyWidth + i * selecter_width;
-                            if ( AppManager.getVsqFile().Track.size() > i + 1 ) {
+                            if ( vec.size( vsq.Track ) > i + 1 ) {
                                 if ( x <= e.X && e.X < x + selecter_width ) {
                                     int new_selected = i + 1;
                                     if ( AppManager.getSelected() != new_selected ) {
@@ -3310,7 +3395,7 @@ namespace org.kbinani.cadencii
                 boolean clock_inner_note = false; //マウスの降りたクロックが，ノートの範囲内かどうかをチェック
                 int left_clock = AppManager.clockFromXCoord( AppManager.keyWidth );
                 int right_clock = AppManager.clockFromXCoord( getWidth() );
-                for ( Iterator<VsqEvent> itr = vsq.Track.get( AppManager.getSelected() ).getEventIterator(); itr.hasNext(); ) {
+                for ( Iterator<VsqEvent> itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
                     VsqEvent ve = itr.next();
                     if ( ve.ID.type == VsqIDType.Anote ) {
                         int start = ve.Clock;
@@ -3547,7 +3632,11 @@ namespace org.kbinani.cadencii
                                     mMouseDownMode = MouseDownMode.VEL_WAIT_HOVER;
                                     mVelEditLastSelectedID = ve.InternalID;
                                     if ( mSelectedCurve.equals( CurveType.VEL ) ) {
-                                        mVelEditShiftY = e.Y - yCoordFromValue( ve.ID.Dynamics );
+                                        if ( AppManager.mDrawIsUtau[selected - 1] ) {
+                                            mVelEditShiftY = e.Y - yCoordFromValue( ve.UstEvent == null ? 100 : ve.UstEvent.Intensity );
+                                        } else {
+                                            mVelEditShiftY = e.Y - yCoordFromValue( ve.ID.Dynamics );
+                                        }
                                     } else if ( mSelectedCurve.equals( CurveType.Accent ) ) {
                                         mVelEditShiftY = e.Y - yCoordFromValue( ve.ID.DEMaccent );
                                     } else if ( mSelectedCurve.equals( CurveType.Decay ) ) {
@@ -4115,6 +4204,7 @@ namespace org.kbinani.cadencii
             }
 
             int selected = AppManager.getSelected();
+            boolean is_utau_mode = AppManager.mDrawIsUtau[selected - 1];
             int stdx = AppManager.getStartToDrawX();
 
             int max = mSelectedCurve.getMaximum();
@@ -4502,17 +4592,39 @@ namespace org.kbinani.cadencii
                                 if ( velocity.size() > 0 ) {
                                     Vector<ValuePair<Integer, Integer>> cpy = new Vector<ValuePair<Integer, Integer>>();
                                     for ( Iterator<Integer> itr = velocity.keySet().iterator(); itr.hasNext(); ) {
-                                        int key = itr.next();
-                                        int value = (Integer)velocity.get( key );
-                                        cpy.add( new ValuePair<Integer, Integer>( key, value ) );
+                                        int internal_id = itr.next();
+                                        int value = (Integer)velocity.get( internal_id );
+                                        cpy.add( new ValuePair<Integer, Integer>( internal_id, value ) );
                                     }
                                     CadenciiCommand run = null;
                                     if ( mSelectedCurve.equals( CurveType.VEL ) ) {
-                                        run = new CadenciiCommand( VsqCommand.generateCommandEventChangeVelocity( selected, cpy ) );
+                                        if ( is_utau_mode ) {
+                                            int size = velocity.size();
+                                            VsqEvent[] events = new VsqEvent[size];
+                                            int i = 0;
+                                            for ( Iterator<Integer> itr = velocity.keySet().iterator(); itr.hasNext(); ){
+                                                int internal_id = itr.next();
+                                                VsqEvent item = (VsqEvent)vsq_track.findEventFromID( internal_id ).clone();
+                                                if ( item.UstEvent == null ) {
+                                                    item.UstEvent = new UstEvent();
+                                                }
+                                                item.UstEvent.Intensity = velocity.get( internal_id );
+                                                events[i] = item;
+                                                i++;
+                                            }
+                                            run = new CadenciiCommand(
+                                                VsqCommand.generateCommandEventReplaceRange(
+                                                    selected, events ) );
+                                        } else {
+                                            run = new CadenciiCommand( 
+                                                VsqCommand.generateCommandEventChangeVelocity( selected, cpy ) );
+                                        }
                                     } else if ( mSelectedCurve.equals( CurveType.Accent ) ) {
-                                        run = new CadenciiCommand( VsqCommand.generateCommandEventChangeAccent( selected, cpy ) );
+                                        run = new CadenciiCommand(
+                                            VsqCommand.generateCommandEventChangeAccent( selected, cpy ) );
                                     } else if ( mSelectedCurve.equals( CurveType.Decay ) ) {
-                                        run = new CadenciiCommand( VsqCommand.generateCommandEventChangeDecay( selected, cpy ) );
+                                        run = new CadenciiCommand(
+                                            VsqCommand.generateCommandEventChangeDecay( selected, cpy ) );
                                     }
                                     executeCommand( run, true );
                                 }
@@ -4788,18 +4900,37 @@ namespace org.kbinani.cadencii
                     }
                 }
             } else if ( mMouseDownMode == MouseDownMode.VEL_EDIT ) {
-                int count = mVeEditSelected.size();
-                int[] ids = new int[count];
-                VsqID[] values = new VsqID[count];
-                int i = -1;
-                for ( Iterator<Integer> itr = mVeEditSelected.keySet().iterator(); itr.hasNext(); ) {
-                    int id = itr.next();
-                    i++;
-                    ids[i] = id;
-                    values[i] = (VsqID)mVeEditSelected.get( id ).editing.ID.clone();
+                if ( mSelectedCurve.equals( CurveType.VEL ) && is_utau_mode ) {
+                    int count = mVeEditSelected.size();
+                    VsqEvent[] values = new VsqEvent[count];
+                    int i = 0;
+                    for ( Iterator<Integer> itr = mVeEditSelected.keySet().iterator(); itr.hasNext(); ) {
+                        int internal_id = itr.next();
+                        VsqEvent item = (VsqEvent)vsq_track.findEventFromID( internal_id ).clone();
+                        if ( item.UstEvent == null ) {
+                            item.UstEvent = new UstEvent();
+                        }
+                        item.UstEvent.Intensity = mVeEditSelected.get( internal_id ).editing.UstEvent.Intensity;
+                        values[i] = item;
+                        i++;
+                    }
+                    CadenciiCommand run = new CadenciiCommand(
+                        VsqCommand.generateCommandEventReplaceRange( selected, values ) );
+                    executeCommand( run, true );
+                } else {
+                    int count = mVeEditSelected.size();
+                    int[] ids = new int[count];
+                    VsqID[] values = new VsqID[count];
+                    int i = -1;
+                    for ( Iterator<Integer> itr = mVeEditSelected.keySet().iterator(); itr.hasNext(); ) {
+                        int id = itr.next();
+                        i++;
+                        ids[i] = id;
+                        values[i] = (VsqID)mVeEditSelected.get( id ).editing.ID.clone();
+                    }
+                    CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventChangeIDContaintsRange( selected, ids, values ) );
+                    executeCommand( run, true );
                 }
-                CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventChangeIDContaintsRange( selected, ids, values ) );
-                executeCommand( run, true );
                 if ( mVeEditSelected.size() == 1 ) {
                     AppManager.clearSelectedEvent();
                     AppManager.addSelectedEvent( mVelEditLastSelectedID );
@@ -4933,6 +5064,11 @@ namespace org.kbinani.cadencii
                 int value = valueFromYCoord( mouse.y );
                 int min = mSelectedCurve.getMinimum();
                 int max = mSelectedCurve.getMaximum();
+
+                int selected = AppManager.getSelected();
+                VsqFileEx vsq = AppManager.getVsqFile();
+                VsqTrack vsq_track = vec.get( vsq.Track, selected );
+
                 if ( value < min ) {
                     value = min;
                 } else if ( max < value ) {
@@ -4943,7 +5079,7 @@ namespace org.kbinani.cadencii
                     float x = -1f;
                     VsqID edited = null;
                     int event_id = -1;
-                    for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getNoteEventIterator(); itr.hasNext(); ) {
+                    for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
                         VsqEvent ve = itr.next();
                         if ( ve.ID.VibratoHandle == null ) {
                             continue;
@@ -5048,13 +5184,13 @@ namespace org.kbinani.cadencii
                         }
                         CadenciiCommand run = new CadenciiCommand(
                             VsqCommand.generateCommandEventChangeIDContaints(
-                                AppManager.getSelected(),
+                                selected,
                                 event_id,
                                 edited ) );
                         executeCommand( run, true );
                     }
                 } else {
-                    VsqBPList list = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( mSelectedCurve.getName() );
+                    VsqBPList list = vsq_track.getCurve( mSelectedCurve.getName() );
                     if ( list != null ) {
                         Vector<Long> delete = new Vector<Long>();
                         TreeMap<Integer, VsqBPPair> add = new TreeMap<Integer, VsqBPPair>();
@@ -5071,7 +5207,7 @@ namespace org.kbinani.cadencii
                         }
                         add.put( clock, new VsqBPPair( value, maxid + 1 ) );
                         CadenciiCommand run = new CadenciiCommand(
-                            VsqCommand.generateCommandTrackCurveEdit2( AppManager.getSelected(),
+                            VsqCommand.generateCommandTrackCurveEdit2( selected,
                                                                        mSelectedCurve.getName(),
                                                                        delete,
                                                                        add ) );
@@ -5514,16 +5650,7 @@ namespace org.kbinani.cadencii
                 TagForCMenusingerDropDown tag_dditem = (TagForCMenusingerDropDown)((BMenuItem)sender).getTag();
                 int language = tag_dditem.Language;
                 int program = tag_dditem.Program;
-                VsqID item = null;
-                if ( mCMenuSingerPrepared == RendererKind.VOCALOID1_100 || mCMenuSingerPrepared == RendererKind.VOCALOID1_101 ) {
-                    item = VocaloSysUtil.getSingerID( language, program, SynthesizerType.VOCALOID1 );
-                } else if ( mCMenuSingerPrepared == RendererKind.VOCALOID2 ) {
-                    item = VocaloSysUtil.getSingerID( language, program, SynthesizerType.VOCALOID2 );
-                } else if ( mCMenuSingerPrepared == RendererKind.UTAU || mCMenuSingerPrepared == RendererKind.VCNT ) {
-                    item = AppManager.getSingerIDUtau( language, program );
-                } else if ( mCMenuSingerPrepared == RendererKind.AQUES_TONE ) {
-                    item = AppManager.getSingerIDAquesTone( program );
-                }
+                VsqID item = Utility.getSingerID( mCMenuSingerPrepared, program, language );
                 if ( item != null ) {
                     int selected = AppManager.getSelected();
                     if ( tag.SingerChangeExists ) {

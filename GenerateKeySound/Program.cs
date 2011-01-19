@@ -32,7 +32,7 @@ namespace org.kbinani.generatekeysound {
             String singer = "Miku";
             object locker = new object();
             double amp = 1.0;
-            String dir = PortUtil.combinePath( Application.StartupPath, "cache" );
+            String dir = fsys.combine( Application.StartupPath, "cache" );
             bool replace = true;
             int search = -1;
             int arguments = 0;
@@ -157,7 +157,7 @@ namespace org.kbinani.generatekeysound {
             }
 
             for ( int i = 0; i < 127; i++ ) {
-                string path = PortUtil.combinePath( dir, i + ".wav" );
+                string path = fsys.combine( dir, i + ".wav" );
                 Console.Write( "writing \"" + path + "\" ..." );
                 if ( replace || (!replace && !PortUtil.isFileExists( path )) ) {
                     try {

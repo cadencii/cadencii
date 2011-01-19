@@ -35,6 +35,10 @@ namespace org.kbinani.vsq
 #endif
         public String ID = "";
         public String FORMAT = "";
+        /// <summary>
+        /// VOCALOIDの場合，音源のディレクトリへのパス．
+        /// UTAUの場合，oto.iniが保存されているディレクトリへのパス
+        /// </summary>
         public String VOICEIDSTR = "";
         public String VOICENAME = "Unknown";
         public int Breathiness;

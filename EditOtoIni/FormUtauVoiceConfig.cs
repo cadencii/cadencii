@@ -216,14 +216,14 @@ namespace org.kbinani.editotoini {
         /// </summary>
         public static String getApplicationDataPath() {
 #if JAVA
-            String dir = PortUtil.combinePath( System.getenv( "APPDATA" ), "Boare" );
+            String dir = fsys.combine( System.getenv( "APPDATA" ), "Boare" );
 #else
-            String dir = PortUtil.combinePath( Environment.GetFolderPath( Environment.SpecialFolder.LocalApplicationData ), "Boare" );
+            String dir = fsys.combine( Environment.GetFolderPath( Environment.SpecialFolder.LocalApplicationData ), "Boare" );
 #endif
             if ( !PortUtil.isDirectoryExists( dir ) ) {
                 PortUtil.createDirectory( dir );
             }
-            String dir2 = PortUtil.combinePath( dir, "EditOtoIni" );
+            String dir2 = fsys.combine( dir, "EditOtoIni" );
             if ( !PortUtil.isDirectoryExists( dir2 ) ) {
                 PortUtil.createDirectory( dir2 );
             }
@@ -436,13 +436,13 @@ namespace org.kbinani.editotoini {
                     String f = line.Substring( 0, eq );
                     line = line.Substring( eq + 1 );
                     String[] spl = PortUtil.splitString( line, ',' );
-                    String file = PortUtil.combinePath( dir, f );
+                    String file = fsys.combine( dir, f );
                     WaveDrawContext wdc = new WaveDrawContext( file );
                     wdc.setName( f + spl[0] );
                     String wave_name = PortUtil.getFileNameWithoutExtension( f );
                     String ext = PortUtil.getExtension( file ).Replace( ".", "" );
                     String f2 = wave_name + "_" + ext + ".frq"; // f.Replace( ".wav", "_wav.frq" );
-                    String freq = PortUtil.combinePath( dir, f2 );
+                    String freq = fsys.combine( dir, f2 );
                     boolean freq_exists = PortUtil.isFileExists( freq );
                     if ( freq_exists ) {
                         //wdc.Freq = UtauFreq.FromFrq( freq );
@@ -451,7 +451,7 @@ namespace org.kbinani.editotoini {
                     Vector<String> columns = new Vector<String>( Arrays.asList( spl ) );
                     columns.insertElementAt( f, 0 );
                     columns.add( freq_exists ? "○" : "" );
-                    String stf = PortUtil.combinePath( PortUtil.combinePath( dir, "analyzed" ), wave_name + ".stf" );
+                    String stf = fsys.combine( fsys.combine( dir, "analyzed" ), wave_name + ".stf" );
                     boolean stf_exists = PortUtil.isFileExists( stf );
                     columns.add( stf_exists ? "○" : "" );
 #if JAVA
@@ -781,7 +781,7 @@ namespace org.kbinani.editotoini {
                 }
 
                 if ( 0 <= m_index && m_index < listFiles.getItemCount( "" ) ) {
-                    String file = PortUtil.combinePath( PortUtil.getDirectoryName( m_oto_ini ), listFiles.getItemAt( "", m_index ).getSubItemAt( 0 ) );
+                    String file = fsys.combine( PortUtil.getDirectoryName( m_oto_ini ), listFiles.getItemAt( "", m_index ).getSubItemAt( 0 ) );
                     if ( PortUtil.isFileExists( file ) && m_player.SoundLocation != file ) {
                         m_player.Close();
                         m_player.Load( file );
@@ -1051,8 +1051,8 @@ namespace org.kbinani.editotoini {
             }
 
             // analyzed/oto.ini
-            String analyzed = PortUtil.combinePath( PortUtil.getDirectoryName( file ), "analyzed" );
-            String analyzed_oto_ini = PortUtil.combinePath( analyzed, PortUtil.getFileName( file ) );
+            String analyzed = fsys.combine( PortUtil.getDirectoryName( file ), "analyzed" );
+            String analyzed_oto_ini = fsys.combine( analyzed, PortUtil.getFileName( file ) );
             if ( !PortUtil.isDirectoryExists( analyzed ) ) {
                 PortUtil.createDirectory( analyzed );
             }
@@ -1101,7 +1101,7 @@ namespace org.kbinani.editotoini {
 
         private void FormUtauVoiceConfig_Load( Object sender, BEventArgs e ) {
             FormConfigUtauVoiceConfig config = null;
-            String config_path = PortUtil.combinePath( getApplicationDataPath(), "config.xml" );
+            String config_path = fsys.combine( getApplicationDataPath(), "config.xml" );
             if ( PortUtil.isFileExists( config_path ) ) {
                 FileInputStream fout = null;
                 try {
@@ -1132,15 +1132,15 @@ namespace org.kbinani.editotoini {
 
             // Cadencii本体の設定を読み込む
             Messaging.loadMessages();
-            String dir = PortUtil.combinePath( Environment.GetFolderPath( Environment.SpecialFolder.LocalApplicationData ), "Boare" );
+            String dir = fsys.combine( Environment.GetFolderPath( Environment.SpecialFolder.LocalApplicationData ), "Boare" );
             if ( !PortUtil.isDirectoryExists( dir ) ) {
                 return;
             }
-            String dir2 = PortUtil.combinePath( dir, "Cadencii" );
+            String dir2 = fsys.combine( dir, "Cadencii" );
             if ( !PortUtil.isDirectoryExists( dir2 ) ) {
                 return;
             }
-            String path_config_cadencii = PortUtil.combinePath( dir2, "config.xml" );
+            String path_config_cadencii = fsys.combine( dir2, "config.xml" );
             if ( !PortUtil.isFileExists( path_config_cadencii ) ) {
                 return;
             }
@@ -1169,7 +1169,7 @@ namespace org.kbinani.editotoini {
                 }
             }
 
-            String config_path = PortUtil.combinePath( getApplicationDataPath(), "config.xml" );
+            String config_path = fsys.combine( getApplicationDataPath(), "config.xml" );
 #if DEBUG
             Console.WriteLine( "FormUtauVoiceConfig#FormUtauVoiceConfig_FormClosing; config_path=" + config_path );
 #endif
@@ -1208,11 +1208,11 @@ namespace org.kbinani.editotoini {
             if ( m_oto_ini.Equals( "" ) ) {
                 return;
             }
-            String analyzed = PortUtil.combinePath( PortUtil.getDirectoryName( m_oto_ini ), "analyzed" );
+            String analyzed = fsys.combine( PortUtil.getDirectoryName( m_oto_ini ), "analyzed" );
             for ( int i = 0; i < count; i++ ) {
                 BListViewItem item = listFiles.getItemAt( "", i );
                 String wav_name = item.getSubItemAt( 0 );
-                String stf_path = PortUtil.combinePath( analyzed, PortUtil.getFileNameWithoutExtension( wav_name ) + ".stf" );
+                String stf_path = fsys.combine( analyzed, PortUtil.getFileNameWithoutExtension( wav_name ) + ".stf" );
                 item.SubItems[8].Text = PortUtil.isFileExists( stf_path ) ? "○" : "";
             }
         }
@@ -1226,7 +1226,7 @@ namespace org.kbinani.editotoini {
             for ( int i = 0; i < count; i++ ) {
                 BListViewItem item = listFiles.getItemAt( "", i );
                 String wav_name = item.SubItems[0].Text;
-                String frq_path = PortUtil.combinePath( dir, wav_name.Replace( ".", "_" ) + ".frq" );
+                String frq_path = fsys.combine( dir, wav_name.Replace( ".", "_" ) + ".frq" );
                 item.SubItems[7].Text = PortUtil.isFileExists( frq_path ) ? "○" : "";
             }
         }
@@ -1239,12 +1239,12 @@ namespace org.kbinani.editotoini {
                 return;
             }
             String dir = PortUtil.getDirectoryName( m_oto_ini );
-            String analyzed = PortUtil.combinePath( dir, "analyzed" );
-            String wav_path = PortUtil.combinePath( dir, m_file );
+            String analyzed = fsys.combine( dir, "analyzed" );
+            String wav_path = fsys.combine( dir, m_file );
             if ( !PortUtil.isFileExists( wav_path ) ) {
                 return;
             }
-            String stf_path = PortUtil.combinePath( analyzed, PortUtil.getFileNameWithoutExtension( m_file ) + ".stf" );
+            String stf_path = fsys.combine( analyzed, PortUtil.getFileNameWithoutExtension( m_file ) + ".stf" );
             if ( PortUtil.isFileExists( stf_path ) ) {
                 try {
                     PortUtil.deleteFile( stf_path );
@@ -1272,11 +1272,11 @@ namespace org.kbinani.editotoini {
                 return;
             }
             String dir = PortUtil.getDirectoryName( m_oto_ini );
-            String wav_path = PortUtil.combinePath( dir, m_file );
+            String wav_path = fsys.combine( dir, m_file );
             if ( !PortUtil.isFileExists( wav_path ) ) {
                 return;
             }
-            String frq_path = PortUtil.combinePath( dir, m_file.Replace( ".", "_" ) + ".frq" );
+            String frq_path = fsys.combine( dir, m_file.Replace( ".", "_" ) + ".frq" );
             if ( PortUtil.isFileExists( frq_path ) ) {
                 try {
                     PortUtil.deleteFile( frq_path );

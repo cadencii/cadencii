@@ -75,6 +75,10 @@ namespace org.kbinani.cadencii {
         /// 単位はノート、配列のインデックスがクロックに相当する。
         /// </summary>
         public float[] mVibratoPit = null;
+        /// <summary>
+        /// UTAUの音量
+        /// </summary>
+        public int mIntensity = 100;
 
         public DrawObject( DrawObjectType type,
                            VsqFileEx vsq,
@@ -97,7 +101,8 @@ namespace org.kbinani.cadencii {
                            int clock,
                            boolean is_valid_for_utau,
                            boolean is_valid_for_straight,
-                           int vib_delay ) {
+                           int vib_delay,
+                           int intensity ) {
             this.mType = type;
             mRectangleInPixel = rect;
             mText = text_;
@@ -108,6 +113,7 @@ namespace org.kbinani.cadencii {
             mVibratoDelayInPixel = vibrato_delay;
             mIsOverlapped = overwrapped;
             mIsSymbolProtected = symbol_protected;
+            mIntensity = intensity;
 
             mNote = note_;
             mUstEnvelope = ust_envelope;

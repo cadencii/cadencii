@@ -1123,9 +1123,6 @@ namespace org.kbinani.cadencii {
                         g.fillRect( start, 0, end - start, getHeight() );
                     }
                 } else if ( AppManager.mIsPointerDowned ) {
-#if DEBUG
-                    PortUtil.println( "pictPianoRoll#paint; AppManager.mIsPoinerDowned=" + AppManager.mIsPointerDowned );
-#endif
                     Point pmouse = pointToClient( PortUtil.getMousePosition() );
                     Point mouse = new Point( pmouse.x, pmouse.y );
                     int tx, ty, twidth, theight;

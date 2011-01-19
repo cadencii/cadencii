@@ -132,7 +132,7 @@ namespace org.kbinani.vsq
             int c = size();
             for ( int i = c - 1; i >= 0; i-- ) {
                 TempoTableEntry item = get( i );
-                if ( item.Clock < clock ) {
+                if ( item.Clock <= clock ) {
                     double init = item.Time;
                     double dclock = clock - item.Clock;
                     double sec_per_clock1 = item.Tempo * 1e-6 / 480.0;

@@ -105,7 +105,6 @@ namespace org.kbinani.vsq
                     id.LyricHandle = new LyricHandle( ue.Lyric, psymbol );
                     id.Note = ue.Note;
                     id.type = VsqIDType.Anote;
-                    id.Dynamics = ue.Intensity;
                     VsqEvent ve = new VsqEvent( clock_count, id );
                     ve.UstEvent = (UstEvent)ue.clone();
                     vsq_track.addEvent( ve );
