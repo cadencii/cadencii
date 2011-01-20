@@ -49,7 +49,7 @@ namespace org.kbinani.javax.imageio {
                 PortUtil.println( "ImageIO#write; output.getPath()=" + output.getPath() );
 #endif
                 fs = new System.IO.FileStream( output.getPath(), System.IO.FileMode.Create, System.IO.FileAccess.Write );
-                im.m_image.Save( fs, fmt );
+                im.image.Save( fs, fmt );
                 ret = true;
             } catch ( System.Exception ex ) {
                 ret = false;

@@ -28,8 +28,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "org.kbinani.xml", "org.kbin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cadencii", "Cadencii\Cadencii.csproj", "{A97A6445-5A48-4CEC-A7CE-05B10126CA2A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "pp_cs2java", "pp_cs2java\pp_cs2java.csproj", "{421EDC80-EED3-4CFC-8041-FD1243707B0A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptImplement", "ScriptImplement\ScriptImplement.csproj", "{A0B35F11-5790-4473-A508-5868FFA67D70}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenerateKeySound", "GenerateKeySound\GenerateKeySound.csproj", "{AF5EB52F-11D8-4939-ADCD-90F432A71ECC}"
@@ -106,12 +104,6 @@ Global
 		{A97A6445-5A48-4CEC-A7CE-05B10126CA2A}.MonoRelease|x86.Build.0 = MonoRelease|x86
 		{A97A6445-5A48-4CEC-A7CE-05B10126CA2A}.Release|x86.ActiveCfg = Release|x86
 		{A97A6445-5A48-4CEC-A7CE-05B10126CA2A}.Release|x86.Build.0 = Release|x86
-		{421EDC80-EED3-4CFC-8041-FD1243707B0A}.Debug|x86.ActiveCfg = Debug|x86
-		{421EDC80-EED3-4CFC-8041-FD1243707B0A}.Debug|x86.Build.0 = Debug|x86
-		{421EDC80-EED3-4CFC-8041-FD1243707B0A}.MonoRelease|x86.ActiveCfg = MonoRelease|x86
-		{421EDC80-EED3-4CFC-8041-FD1243707B0A}.MonoRelease|x86.Build.0 = MonoRelease|x86
-		{421EDC80-EED3-4CFC-8041-FD1243707B0A}.Release|x86.ActiveCfg = Release|x86
-		{421EDC80-EED3-4CFC-8041-FD1243707B0A}.Release|x86.Build.0 = Release|x86
 		{A0B35F11-5790-4473-A508-5868FFA67D70}.Debug|x86.ActiveCfg = Debug|x86
 		{A0B35F11-5790-4473-A508-5868FFA67D70}.Debug|x86.Build.0 = Debug|x86
 		{A0B35F11-5790-4473-A508-5868FFA67D70}.MonoRelease|x86.ActiveCfg = MonoRelease|x86

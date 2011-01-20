@@ -101,8 +101,8 @@ namespace org.kbinani.cadencii {
                             if ( img != null ) {
 #if JAVA
 #else
-                                if ( img.m_image != null ) {
-                                    img.m_image.Dispose();
+                                if ( img.image != null ) {
+                                    img.image.Dispose();
                                 }
 #endif
                             }

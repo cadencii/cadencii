@@ -7,6 +7,9 @@ open( OUT, ">Makefile" );
 "./BuildJavaUI/src/org/kbinani/InternalStdOut.java",
 "./BuildJavaUI/src/org/kbinani/math.java",
 "./BuildJavaUI/src/org/kbinani/PortUtil.java",
+"./BuildJavaUI/src/org/kbinani/str.java",
+"./BuildJavaUI/src/org/kbinani/fsys.java",
+"./BuildJavaUI/src/org/kbinani/vec.java",
 );
 
 &getSrcList( "./org.kbinani", "./build/java/org/kbinani/", $src_corlib, $cp_corlib, $dep_corlib );
@@ -144,6 +147,6 @@ sub getSrcList{
         }else{
             $_[4] .= "\n";
         }
-        $_[4] .= "\t\$(MONO)pp_cs2java.exe \$(PPCS2JAVA_OPT) -i $dir/$cname.cs -o $prefix$cname.java\n\n";
+        $_[4] .= "\tjava -jar pp_cs2java.jar \$(PPCS2JAVA_OPT) -i $dir/$cname.cs -o $prefix$cname.java\n\n";
     }
 }

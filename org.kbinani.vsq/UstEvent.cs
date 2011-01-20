@@ -236,7 +236,7 @@ namespace org.kbinani.vsq
             // ほかに有効な値でかつ VsqEvent で比較できないものは何かあったか
             if ( this.Moduration != item.Moduration ) ret = false;
             else if ( this.PreUtterance != item.PreUtterance ) ret = false;
-            else if ( this.StartPoint != item.StartPoint ) ret = false;
+            else if ( this.getStartPoint() != item.getStartPoint() ) ret = false;
             else if ( this.VoiceOverlap != item.VoiceOverlap ) ret = false;
             return ret;
         }

@@ -112,14 +112,6 @@ namespace org
                 if ( str.startsWith( path2, mSeparator ) ) {
                     path2 = str.sub( path2, 1 );
                 }
-#if DEBUG
-#if !JAVA
-                String ret = path1 + mSeparator + path2;
-                if ( ret2 != ret ) {
-                    System.Windows.Forms.MessageBox.Show( "fsys#combine; ret=" + ret + "; ret2=" + ret2 );
-                }
-#endif
-#endif
                 return path1 + mSeparator + path2;
             }
 

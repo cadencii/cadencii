@@ -129,7 +129,7 @@ namespace org.kbinani.apputil {
 #if JAVA
                 b2 = b;
 #else
-                b2 = new BitmapEx( b.m_image );
+                b2 = new BitmapEx( b.image );
 #endif
                 // 上端に最初に現れる色つきピクセルを探す
                 int firsty = 0;
@@ -182,8 +182,8 @@ namespace org.kbinani.apputil {
             } finally {
 #if JAVA
 #else
-                if ( b != null && b.m_image != null ) {
-                    b.m_image.Dispose();
+                if ( b != null && b.image != null ) {
+                    b.image.Dispose();
                 }
                 if ( g != null ) {
                     g.nativeGraphics.Dispose();

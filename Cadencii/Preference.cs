@@ -1546,7 +1546,8 @@ namespace org.kbinani.cadencii
                     // そのファイルの存在するパスに修正
                     dir = PortUtil.getDirectoryName( dir );
                 }
-                SingerConfig sc = Utility.readUtausingerConfig( dir );
+                SingerConfig sc = new SingerConfig();
+                Utility.readUtauSingerConfig( dir, sc );
                 m_utau_singers.add( sc );
                 UpdateUtausingerList();
             }

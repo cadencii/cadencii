@@ -639,13 +639,14 @@ namespace org.kbinani.cadencii{
         /// </summary>
         /// <param name="directory"></param>
         /// <returns></returns>
-        public static SingerConfig readUtausingerConfig( String directory ) {
-            SingerConfig sc = new SingerConfig();
+        public static String readUtauSingerConfig( String directory, SingerConfig sc ) {
             sc.VOICEIDSTR = directory;
 
             // character.txt読込み
             String character = fsys.combine( directory, "character.txt" );
             String name = null;
+            String image = "";
+            int mode = 0;
             if ( PortUtil.isFileExists( character ) ) {
                 // 読み込みを試みるエンコーディングのリスト
                 foreach ( String encoding in AppManager.TEXT_ENCODINGS_IN_UTAU ) {
@@ -656,8 +657,15 @@ namespace org.kbinani.cadencii{
                         while ( (line = sr2.readLine()) != null ) {
                             String[] spl = PortUtil.splitString( line, '=' );
                             if ( spl.Length > 1 ) {
-                                if ( spl[0].ToLower().Equals( "name" ) ) {
+                                String s = spl[0].ToLower();
+                                if ( str.compare( s, "name" ) ) {
                                     name = spl[1];
+                                    mode |= 1;
+                                } else if ( str.compare( s, "image" ) ) {
+                                    image = fsys.combine( directory, spl[1] );
+                                    mode |= 2;
+                                }
+                                if ( mode == 3 ) {
                                     break;
                                 }
                             }
@@ -687,7 +695,7 @@ namespace org.kbinani.cadencii{
                 name = PortUtil.getFileNameWithoutExtension( directory );
             }
             sc.VOICENAME = name;
-            return sc;
+            return image;
         }
 
         /// <summary>

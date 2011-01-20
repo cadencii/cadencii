@@ -1,6 +1,8 @@
 package org.kbinani.windows.forms;
 
 import java.awt.Graphics;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
@@ -20,7 +22,8 @@ public class BPanel extends JPanel
                                MouseMotionListener,
                                KeyListener,
                                MouseWheelListener,
-                               FocusListener
+                               FocusListener,
+                               ComponentListener
 {
     private static final long serialVersionUID = -1767993910090796469L;
 
@@ -31,6 +34,7 @@ public class BPanel extends JPanel
         addKeyListener( this );
         addMouseWheelListener( this );
         addFocusListener( this );
+        addComponentListener( this );
     }
     
     // root impl of MouseWheel event is in BButton
@@ -72,6 +76,33 @@ public class BPanel extends JPanel
         }
     }
     
+    // root impl of ComponentListener is in BButton
+    public BEvent<BEventHandler> visibleChangedEvent = new BEvent<BEventHandler>();
+    public BEvent<BEventHandler> resizeEvent = new BEvent<BEventHandler>();
+    public void componentHidden(ComponentEvent e) {
+        try{
+            visibleChangedEvent.raise( this, new BEventArgs() );
+        }catch( Exception ex ){
+            System.err.println( "BButton#componentHidden; ex=" + ex );
+        }
+    }
+    public void componentMoved(ComponentEvent e) {
+    }
+    public void componentResized(ComponentEvent e) {
+        try{
+            resizeEvent.raise( this, new BEventArgs() );
+        }catch( Exception ex ){
+            System.err.println( "BButton#componentResized; ex=" + ex );
+        }
+    }
+    public void componentShown(ComponentEvent e) {
+        try{
+            visibleChangedEvent.raise( this, new BEventArgs() );
+        }catch( Exception ex ){
+            System.err.println( "BButton#componentShown; ex=" + ex );
+        }
+    }
+
     // root imol of KeyListener is in BButton
     public BEvent<BPreviewKeyDownEventHandler> previewKeyDownEvent = new BEvent<BPreviewKeyDownEventHandler>();
     public BEvent<BKeyEventHandler> keyDownEvent = new BEvent<BKeyEventHandler>();

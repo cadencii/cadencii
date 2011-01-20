@@ -3561,51 +3561,8 @@ namespace org.kbinani.cadencii
                     continue;
                 }
                 String dir = sc.VOICEIDSTR;
-#if DEBUG
-                PortUtil.stdout.println( "AppManager#init; dir=" + dir );
-#endif
-                String character = fsys.combine( dir, "character.txt" );
-                if ( !PortUtil.isFileExists( character ) ) {
-#if DEBUG
-                    PortUtil.println( "AppManager#init; file not found: " + character );
-#endif
-                    continue;
-                }
-
-                String path_image = "";
-                BufferedReader br = null;
-                try {
-                    br = new BufferedReader( new InputStreamReader( new FileInputStream( character ), "Shift_JIS" ) );
-                    String line = "";
-                    while ( (line = br.readLine()) != null ) {
-                        if ( !line.StartsWith( "image" ) ) {
-                            continue;
-                        }
-                        String[] spl = line.Split( '=' );
-                        if ( spl.Length < 2 ) {
-                            continue;
-                        }
-                        String token = spl[0].Trim().ToLower();
-                        String img = spl[1].Trim();
-                        if ( !token.Equals( "image" ) ) {
-                            continue;
-                        }
-                        path_image = fsys.combine( dir, img );
-                        break;
-                    }
-                } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "AppManager#init; ex=" + ex );
-                    Logger.write( typeof( AppManager ) + ".init; ex=" + ex + "\n" );
-                } finally {
-                    if ( br != null ) {
-                        try {
-                            br.close();
-                        } catch ( Exception ex2 ) {
-                            PortUtil.stderr.println( "AppManager#init; ex2=" + ex2 );
-                            Logger.write( typeof( AppManager ) + ".init; ex=" + ex2 + "\n" );
-                        }
-                    }
-                }
+                SingerConfig sc_temp = new SingerConfig();
+                String path_image = Utility.readUtauSingerConfig( dir, sc_temp );
 
 #if DEBUG
                 PortUtil.println( "AppManager#init; path_image=" + path_image );

@@ -18,20 +18,13 @@ SRC_JCADENCII=@SRC_JCADENCII@
 SRC_JCOMPONENTMODEL=@SRC_JCOMPONENTMODEL@
 SRC_JXML=@SRC_JXML@
 
-#.SUFFIXES:	.cs .java
-
-#.cs.java:
-#	$(MONO)pp_cs2java.exe $(PPCS2JAVA_OPT) -i $< -o $@
-
-all: first $(TARGET)/Cadencii.exe
+all: jcadencii
 
 ########################################################################
 # pre process
 #
 first:
 	$(MKDIR) build
-	$(MKDIR) $(TARGET)
-	$(MKDIR) $(TARGET)/resources
 	$(MKDIR) build/java
 	$(MKDIR) build/java/resources
 	$(MKDIR) build/java/org
@@ -44,9 +37,6 @@ first:
 	$(MKDIR) build/java/org/kbinani/windows
 	$(MKDIR) build/java/org/kbinani/windows/forms
 	$(MKDIR) build/java/org/kbinani/xml
-	$(MKDIR) build/cpp
-	$(MKDIR) build/cpp/vsq
-#	$(RM) pp_cs2java.log
 
 ########################################################################
 # cpp/vsq
@@ -54,28 +44,28 @@ first:
 
 DRAFTMODE=__DRAFT__
 
-cpp_vsq: pp_cs2java.exe
-	$(MONO)pp_cs2java.exe $(PPCS2CPP_OPT) -i ./$(DRAFTMODE)org.kbinani.vsq/VsqUtility.cs -o ./build/cpp/vsq/VsqUtility.h
-	$(MONO)pp_cs2java.exe $(PPCS2CPP_OPT) -i ./$(DRAFTMODE)org.kbinani.vsq/RandomAccessFile.cs -o ./build/cpp/vsq/RandomAccessFile.h
-	$(MONO)pp_cs2java.exe $(PPCS2CPP_OPT) -i ./$(DRAFTMODE)org.kbinani.vsq/Lyric.cs -o ./build/cpp/vsq/Lyric.h
-	$(MONO)pp_cs2java.exe $(PPCS2CPP_OPT) -i ./$(DRAFTMODE)org.kbinani.vsq/BPPair.cs -o ./build/cpp/vsq/BPPair.h
-	$(MONO)pp_cs2java.exe $(PPCS2CPP_OPT) -i ./$(DRAFTMODE)org.kbinani.vsq/IconHandle.cs -o ./build/cpp/vsq/IconHandle.h
-	$(MONO)pp_cs2java.exe $(PPCS2CPP_OPT) -i ./$(DRAFTMODE)org.kbinani.vsq/LyricHandle.cs -o ./build/cpp/vsq/LyricHandle.h
-	$(MONO)pp_cs2java.exe $(PPCS2CPP_OPT) -i ./$(DRAFTMODE)org.kbinani.vsq/VsqHandleType.cs -o ./build/cpp/vsq/VsqHandleType.h
+cpp_vsq: pp_cs2java.jar
+	java -jar pp_cs2java.jar $(PPCS2CPP_OPT) -i ./$(DRAFTMODE)org.kbinani.vsq/VsqUtility.cs -o ./build/cpp/vsq/VsqUtility.h
+	java -jar pp_cs2java.jar $(PPCS2CPP_OPT) -i ./$(DRAFTMODE)org.kbinani.vsq/RandomAccessFile.cs -o ./build/cpp/vsq/RandomAccessFile.h
+	java -jar pp_cs2java.jar $(PPCS2CPP_OPT) -i ./$(DRAFTMODE)org.kbinani.vsq/Lyric.cs -o ./build/cpp/vsq/Lyric.h
+	java -jar pp_cs2java.jar $(PPCS2CPP_OPT) -i ./$(DRAFTMODE)org.kbinani.vsq/BPPair.cs -o ./build/cpp/vsq/BPPair.h
+	java -jar pp_cs2java.jar $(PPCS2CPP_OPT) -i ./$(DRAFTMODE)org.kbinani.vsq/IconHandle.cs -o ./build/cpp/vsq/IconHandle.h
+	java -jar pp_cs2java.jar $(PPCS2CPP_OPT) -i ./$(DRAFTMODE)org.kbinani.vsq/LyricHandle.cs -o ./build/cpp/vsq/LyricHandle.h
+	java -jar pp_cs2java.jar $(PPCS2CPP_OPT) -i ./$(DRAFTMODE)org.kbinani.vsq/VsqHandleType.cs -o ./build/cpp/vsq/VsqHandleType.h
 
 ########################################################################
 # jcadencii
 #
-jcadencii: pp_cs2java.exe $(SRC_JCORLIB) $(SRC_JWINFORMS) $(SRC_JAPPUTIL) $(SRC_JMEDIA) $(SRC_JVSQ) $(SRC_JCADENCII) $(SRC_JCOMPONENTMODEL) $(SRC_JXML) ./build/java/org/kbinani/cadencii/Resources.java ./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java ./build/java/Cadencii.mf ./build/java/ja.po ./build/java/zh-CN.po ./build/java/zh-TW.po
+jcadencii: first pp_cs2java.jar $(SRC_JCORLIB) $(SRC_JWINFORMS) $(SRC_JAPPUTIL) $(SRC_JMEDIA) $(SRC_JVSQ) $(SRC_JCADENCII) $(SRC_JCOMPONENTMODEL) $(SRC_JXML) ./build/java/org/kbinani/cadencii/Resources.java ./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java ./build/java/Cadencii.mf ./build/java/ja.po ./build/java/zh-CN.po ./build/java/zh-TW.po
 	perl safe_rm.pl ./build/java/Cadencii.java
 	$(CP) ./build/java/org/kbinani/cadencii/Cadencii.java ./build/java/Cadencii.java
 	perl safe_rm.pl ./build/java/org/kbinani/cadencii/Cadencii.java
+	$(MAKE) jpostprocess
 	javac ./build/java/Cadencii.java ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/*.java ./build/java/org/kbinani/apputil/*.java ./build/java/org/kbinani/media/*.java ./build/java/org/kbinani/vsq/*.java ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/componentmodel/*.java ./build/java/org/kbinani/windows/forms/*.java ./build/java/org/kbinani/xml/*.java -encoding UTF8 -target 1.5 -source 1.5
 	cd ./build/java && jar cfm Cadencii.jar Cadencii.mf Cadencii.class org/kbinani/cadencii/*.class org/kbinani/*.class org/kbinani/apputil/*.class org/kbinani/media/*.class org/kbinani/vsq/*.class org/kbinani/cadencii/*.class org/kbinani/componentmodel/*.class org/kbinani/windows/forms/*.class org/kbinani/xml/*.class
 	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .png
 	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .txt
 	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .ico
-	$(MAKE) jpostprocess
 
 ./build/java/ja.po: ./Cadencii/ja.po
 	$(CP) ./Cadencii/ja.po ./build/java/ja.po
@@ -90,8 +80,8 @@ jcadencii: pp_cs2java.exe $(SRC_JCORLIB) $(SRC_JWINFORMS) $(SRC_JAPPUTIL) $(SRC_
 	perl safe_rm.pl ./build/java/Cadencii.mf
 	$(CP) ./Cadencii/Cadencii.mf ./build/java/Cadencii.mf
 
-./build/java/org/kbinani/cadencii/Resources.java: ./Cadencii/Resources.cs pp_cs2java.exe
-	$(MONO)pp_cs2java.exe $(PPCS2JAVA_OPT) -i ./Cadencii/Resources.cs -o ./build/java/org/kbinani/cadencii/Resources.java
+./build/java/org/kbinani/cadencii/Resources.java: ./Cadencii/Resources.cs pp_cs2java.jar
+	java -jar pp_cs2java.jar $(PPCS2JAVA_OPT) -i ./Cadencii/Resources.cs -o ./build/java/org/kbinani/cadencii/Resources.java
 
 jcadencii_win: jcadencii
 	exewrap -g -t 1.6 -o .\build\java\jCadencii.exe -i .\Cadencii\resources\icon.ico .\build\java\Cadencii.jar
@@ -99,23 +89,35 @@ jcadencii_win: jcadencii
 ########################################################################
 # jeditotoini
 #
-jeditotoini: pp_cs2java.exe jcorlib japputil jmedia jvsq
-	$(MONO)pp_cs2java.exe $(PPCS2JAVA_OPT) -b ./build/java -t ./EditOtoIni
+jeditotoini: pp_cs2java.jar jcorlib japputil jmedia jvsq
+	java -jar pp_cs2java.jar $(PPCS2JAVA_OPT) -b ./build/java -t ./EditOtoIni
 	javac $(JROOT)/editotoini/*.java $(JROOT)/*.java $(JROOT)/windows/forms/*.java $(JROOT)/componentmodel/*.java $(JROOT)/vsq/*.java $(JROOT)/xml/*.java $(JROOT)/apputil/*.java $(JROOT)/media/*.java -encoding UTF8
 
 ########################################################################
 # jcorlib
 #
-jcorlib: pp_cs2java.exe $(SRC_JCORLIB)
+jcorlib: pp_cs2java.jar $(SRC_JCORLIB)
 
 ########################################################################
 # post process for BuildJavaUI
 #
-jpostprocess: ./BuildJavaUI/src/org/kbinani/math.java ./BuildJavaUI/src/org/kbinani/PortUtil.java ./BuildJavaUI/src/org/kbinani/InternalStdErr.java ./BuildJavaUI/src/org/kbinani/InternalStdOut.java ./BuildJavaUI/src/org/kbinani/ByRef.java ./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java
+jpostprocess: ./BuildJavaUI/src/org/kbinani/math.java ./BuildJavaUI/src/org/kbinani/PortUtil.java ./BuildJavaUI/src/org/kbinani/InternalStdErr.java ./BuildJavaUI/src/org/kbinani/InternalStdOut.java ./BuildJavaUI/src/org/kbinani/ByRef.java ./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java ./BuildJavaUI/src/org/kbinani/cadencii/IconParader.java ./BuildJavaUI/src/org/kbinani/fsys.java ./BuildJavaUI/src/org/kbinani/str.java ./BuildJavaUI/src/org/kbinani/vec.java
 
 ./BuildJavaUI/src/org/kbinani/math.java: ./build/java/org/kbinani/math.java
 	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/math.java
 	$(CP) ./build/java/org/kbinani/math.java ./BuildJavaUI/src/org/kbinani/math.java
+
+./BuildJavaUI/src/org/kbinani/fsys.java: ./build/java/org/kbinani/fsys.java
+	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/fsys.java
+	$(CP) ./build/java/org/kbinani/fsys.java ./BuildJavaUI/src/org/kbinani/fsys.java
+
+./BuildJavaUI/src/org/kbinani/str.java: ./build/java/org/kbinani/str.java
+	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/str.java
+	$(CP) ./build/java/org/kbinani/str.java ./BuildJavaUI/src/org/kbinani/str.java
+
+./BuildJavaUI/src/org/kbinani/vec.java: ./build/java/org/kbinani/vec.java
+	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/vec.java
+	$(CP) ./build/java/org/kbinani/vec.java ./BuildJavaUI/src/org/kbinani/vec.java
 
 ./BuildJavaUI/src/org/kbinani/PortUtil.java: ./build/java/org/kbinani/PortUtil.java
 	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/PortUtil.java
@@ -141,6 +143,10 @@ jpostprocess: ./BuildJavaUI/src/org/kbinani/math.java ./BuildJavaUI/src/org/kbin
 	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java
 	$(CP) ./build/java/org/kbinani/cadencii/NumericUpDownEx.java ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java
 
+./BuildJavaUI/src/org/kbinani/cadencii/IconParader.java: ./build/java/org/kbinani/cadencii/IconParader.java
+	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/cadencii/IconParader.java
+	$(CP) ./build/java/org/kbinani/cadencii/IconParader.java ./BuildJavaUI/src/org/kbinani/cadencii/IconParader.java
+
 ########################################################################
 # jcomponentmodel
 #
@@ -149,68 +155,32 @@ jcomponentmodel: pp_cs2java.exe $(SRC_JCOMPONENTMODEL)
 ########################################################################
 # jxml
 #
-jxml: pp_cs2java.exe $(SRC_JXML)
+jxml: pp_cs2java.jar $(SRC_JXML)
 	$(RM) ./BuildJavaUI/src/org/kbinani/xml/XmlSerializable.java
 	$(CP) ./build/java/org/kbinani/xml/XmlSerializable.java ./BuildJavaUI/src/org/kbinani/xml/XmlSerializable.java
 
 ########################################################################
 # preprocessor
 #
-pp_cs2java.exe: first $(TARGET)/org.kbinani.dll $(TARGET)/org.kbinani.windows.forms.dll ./pp_cs2java/Program.cs
-	gmcs ./pp_cs2java/Program.cs -out:./pp_cs2java.exe -r:$(TARGET)/org.kbinani.dll,System.Drawing $(MCS_OPT)
+pp_cs2java.jar: ./pp_cs2java/pp_cs2java.java
+	cd pp_cs2java && $(MAKE)
+#	gmcs ./pp_cs2java/Program.cs -out:./pp_cs2java.exe -r:$(TARGET)/org.kbinani.dll,System.Drawing $(MCS_OPT)
 #	$(RM) ./org.kbinani.dll
-	$(CP) $(TARGET)/org.kbinani.dll ./org.kbinani.dll
-
-########################################################################
-# build Cadencii with $(MONO)(gmcs)
-#
-$(TARGET)/Cadencii.exe: ./Cadencii/Resources.cs ./Cadencii/*.cs ./Cadencii/resources/*.png ./Cadencii/resources/*.txt ./Cadencii/resources/*.ico $(TARGET)/org.kbinani.dll $(TARGET)/org.kbinani.windows.forms.dll $(TARGET)/org.kbinani.apputil.dll $(TARGET)/org.kbinani.media.dll $(TARGET)/org.kbinani.vsq.dll $(TARGET)/org.kbinani.componentmodel.dll $(TARGET)/org.kbinani.xml.dll $(PLAY_SOUND_DLL)
-	gmcs -recurse:./Cadencii/*.cs -define:MONO,ENABLE_VOCALOID,ENABLE_AQUESTONE,ENABLE_MIDI,ENABLE_PROPERTY -out:$(TARGET)/Cadencii.exe -r:System.Windows.Forms,System.Drawing,$(TARGET)/org.kbinani.dll,$(TARGET)/org.kbinani.apputil.dll,$(TARGET)/org.kbinani.media.dll,$(TARGET)/org.kbinani.vsq.dll,$(TARGET)/org.kbinani.windows.forms.dll,$(TARGET)/org.kbinani.componentmodel.dll,$(TARGET)/org.kbinani.xml.dll -unsafe+ -codepage:utf8 -win32icon:./Cadencii/resources/icon.ico $(MCS_OPT)
-	perl copy_with_ext.pl ./Cadencii/resources/ $(TARGET)/resources/ .png
-	perl copy_with_ext.pl ./Cadencii/resources/ $(TARGET)/resources/ .txt
-	perl copy_with_ext.pl ./Cadencii/resources/ $(TARGET)/resources/ .ico
-
-./Cadencii/Resources.cs: ./Cadencii/Resources.list makeRes.exe
-	$(MONO)makeRes.exe -i ./Cadencii/Resources.list -o ./Cadencii/Resources.cs -p org.kbinani.cadencii -n org.kbinani.cadencii
+	$(CP) ./pp_cs2java/pp_cs2java.jar ./pp_cs2java.jar
 
 ########################################################################
 # resource collector
 #
-makeRes.exe: ./makeRes.cs
-	gmcs makeRes.cs $(MCS_OPT)
+makeRes.class: ./makeRes.java
+	javac makeRes.java -encoding UTF8
 
-$(TARGET)/PlaySound.dll: ./PlaySound2/PlaySound2.cpp ./PlaySound2/PlaySound2.h
-	g++ -shared -s -o $(TARGET)/PlaySound.dll ./PlaySound2/PlaySound2.cpp -lwinmm
-
-$(TARGET)/org.kbinani.dll: ./org.kbinani/*.cs
-	gmcs -recurse:./org.kbinani/*.cs -target:library -define:MONO -out:$(TARGET)/org.kbinani.dll -r:System.Windows.Forms,System.Drawing -unsafe+ -codepage:utf8 $(MCS_OPT)
-
-$(TARGET)/org.kbinani.apputil.dll: $(TARGET)/org.kbinani.dll ./org.kbinani.apputil/*.cs
-	gmcs -recurse:./org.kbinani.apputil/*.cs -target:library -define:MONO -out:$(TARGET)/org.kbinani.apputil.dll -r:System.Windows.Forms,System.Drawing,$(TARGET)/org.kbinani.dll -unsafe+ -codepage:utf8 $(MCS_OPT)
-
-$(TARGET)/org.kbinani.media.dll: $(TARGET)/org.kbinani.dll ./org.kbinani.media/*.cs
-	gmcs -recurse:./org.kbinani.media/*.cs -target:library -define:MONO -out:$(TARGET)/org.kbinani.media.dll -r:System.Windows.Forms,System.Drawing,$(TARGET)/org.kbinani.dll -unsafe+ -codepage:utf8 $(MCS_OPT)
-
-$(TARGET)/org.kbinani.vsq.dll: $(TARGET)/org.kbinani.dll ./org.kbinani.vsq/*.cs
-	gmcs -recurse:./org.kbinani.vsq/*.cs -target:library -define:MONO -out:$(TARGET)/org.kbinani.vsq.dll -r:System.Windows.Forms,System.Drawing,$(TARGET)/org.kbinani.dll  -codepage:utf8 $(MCS_OPT)
-
-$(TARGET)/org.kbinani.windows.forms.dll: $(TARGET)/org.kbinani.dll ./org.kbinani.windows.forms/*.cs
-	gmcs -recurse:./org.kbinani.windows.forms/*.cs -target:library -define:MONO -out:$(TARGET)/org.kbinani.windows.forms.dll -r:System.Windows.Forms,System.Drawing,System,$(TARGET)/org.kbinani.dll  -codepage:utf8 $(MCS_OPT)
-
-$(TARGET)/org.kbinani.componentmodel.dll: $(TARGET)/org.kbinani.dll ./org.kbinani.componentmodel/*.cs
-	gmcs -recurse:./org.kbinani.componentmodel/*.cs -target:library -define:MONO -out:$(TARGET)/org.kbinani.componentmodel.dll -r:System.Windows.Forms,System.Drawing,$(TARGET)/org.kbinani.dll  -codepage:utf8 $(MCS_OPT)
-
-$(TARGET)/org.kbinani.xml.dll: $(TARGET)/org.kbinani.dll ./org.kbinani.xml/*.cs
-	gmcs -recurse:./org.kbinani.xml/*.cs -target:library -define:MONO -out:$(TARGET)/org.kbinani.xml.dll -r:System.Windows.Forms,System.Drawing,$(TARGET)/org.kbinani.dll  -codepage:utf8 $(MCS_OPT)
+./Cadencii/Resources.cs: ./Cadencii/Resources.list makeRes.class
+	java makeRes -i ./Cadencii/Resources.list -o ./Cadencii/Resources.cs -p org.kbinani.cadencii -n org.kbinani.cadencii
 
 doc: jcadencii
 	javadoc -sourcepath ./build/java org.kbinani.windows.forms org.kbinani.vsq org.kbinani org.kbinani.apputil org.kbinani.media org.kbinani.cadencii -encoding UTF8 -use -public -d ./docs/javadoc/
 
 clean:
-	$(RM) $(TARGET)/org.kbinani.dll $(TARGET)/org.kbinani.apputil.dll $(TARGET)/org.kbinani.media.dll $(TARGET)/org.kbinani.vsq.dll $(TARGET)/Cadencii.exe $(TARGET)/PlaySound.dll pp_cs2java.exe org.kbinani.dll
-
-clean_jcadencii:
-	$(RM) ./Cadencii/*.java ./org.kbinani/*.java ./org.kbinani.apputil/*.java ./org.kbinani.media/*.java ./org.kbinani.vsq/*.java
 	$(RM) ./build/java/org/kbinani/*.java ./build/java/org/kbinani/apputil/*.java ./build/java/org/kbinani/media/*.java ./build/java/org/kbinani/vsq/*.java ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/componentmodel/*.java ./build/java/org/kbinani/windows/forms/*.java ./build/java/org/kbinani/xml/*.java
 	$(RM) ./build/java/org/kbinani/*.class ./build/java/org/kbinani/apputil/*.class ./build/java/org/kbinani/media/*.class ./build/java/org/kbinani/vsq/*.class ./build/java/org/kbinani/cadencii/*.class ./build/java/org/kbinani/componentmodel/*.class ./build/java/org/kbinani/windows/forms/*.class ./build/java/org/kbinani/xml/*.class
 

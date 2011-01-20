@@ -1,4 +1,4 @@
-﻿/*
+/*
  * SequenceConfig.cs
  * Copyright © 2009-2011 kbinani
  *

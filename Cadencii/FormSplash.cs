@@ -87,49 +87,13 @@ namespace org.kbinani.cadencii {
         /// <param name="path_image">イメージファイルへのパス</param>
         /// <param name="singer_name">歌手の名前</param>
         public void addIcon( String path_image, String singer_name ) {
-#if JAVA
-            //fixme: FormSplash#addIcon(String,String)
-#else
             IconParader p = new IconParader();
+            Image img = IconParader.createIconImage( path_image, singer_name );
+            p.setImage( img );
 
-            if ( PortUtil.isFileExists( path_image ) ) {
-                System.IO.FileStream fs = null;
-                try {
-                    fs = new System.IO.FileStream( path_image, System.IO.FileMode.Open, System.IO.FileAccess.Read );
-                    System.Drawing.Image img = System.Drawing.Image.FromStream( fs );
-                    p.setImage( img );
-                } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "FormSplash#addIcon; ex=" + ex );
-                } finally {
-                    if ( fs != null ) {
-                        try {
-                            fs.Close();
-                        } catch ( Exception ex2 ) {
-                            PortUtil.stderr.println( "FormSplash#addICon; ex2=" + ex2 );
-                        }
-                    }
-                }
-            } else {
-                // 画像ファイルが無かった場合
 #if JAVA
-                p.setImage( null );
+            panelIcon.add( p );
 #else
-                // 歌手名が描かれた画像をセットする
-                System.Drawing.Bitmap bmp = new System.Drawing.Bitmap( IconParader.ICON_WIDTH, IconParader.ICON_HEIGHT );
-                using ( System.Drawing.Graphics g = System.Drawing.Graphics.FromImage( bmp ) ) {
-                    g.Clear( System.Drawing.Color.White );
-                    System.Drawing.StringFormat sf = new System.Drawing.StringFormat();
-                    sf.Alignment = System.Drawing.StringAlignment.Near;
-                    sf.LineAlignment = System.Drawing.StringAlignment.Near;
-                    g.DrawString(
-                        singer_name, SystemInformation.MenuFont, System.Drawing.Brushes.Black,
-                        new System.Drawing.RectangleF( 1, 1, IconParader.ICON_WIDTH - 2, IconParader.ICON_HEIGHT - 2 ),
-                        sf );
-                }
-                p.setImage( bmp );
-#endif
-            }
-
             panelIcon.BringToFront();
             panelIcon.Controls.Add( p );
 #endif

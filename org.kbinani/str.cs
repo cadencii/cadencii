@@ -278,7 +278,7 @@ namespace org
                 if ( a == null || b == null ) {
                     return false;
                 }
-                return a.Equals( b );
+                return a.equals( b );
 #else
                 return a == b;
 #endif

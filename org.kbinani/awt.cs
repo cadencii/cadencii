@@ -210,10 +210,6 @@ namespace org.kbinani.java.awt {
             nativeGraphics.Clip = new System.Drawing.Region( new System.Drawing.Rectangle( x, y, width, height ) );
         }
 
-        public void drawImage( org.kbinani.java.awt.image.BufferedImage img, int x, int y, object obs ) {
-            nativeGraphics.DrawImage( img.m_image, new System.Drawing.Point( x, y ) );
-        }
-
         public void drawImage( org.kbinani.java.awt.Image img, int x, int y, object obs ) {
             if ( img == null ) {
                 return;

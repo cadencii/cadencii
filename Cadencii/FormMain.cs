@@ -1138,15 +1138,7 @@ namespace org.kbinani.cadencii
             FormCheckUnknownSingerAndResampler dialog = null;
             try {
                 if ( check_unknown_singer || check_unknwon_resampler ) {
-                    Vector<String> singers = new Vector<String>();
-                    Vector<String> resamplers = new Vector<String>();
-                    if ( check_unknown_singer ) {
-                        vec.add( singers, singer_path.value );
-                    }
-                    if ( check_unknwon_resampler ) {
-                        vec.add( resamplers, resampler_path.value );
-                    }
-                    dialog = new FormCheckUnknownSingerAndResampler( singers, resamplers );
+                    dialog = new FormCheckUnknownSingerAndResampler( singer_path.value, check_unknown_singer, resampler_path.value, check_unknwon_resampler );
                     dialog.setLocation( getFormPreferedLocation( dialog ) );
                     BDialogResult dr = AppManager.showModalDialog( dialog, this );
                     if ( dr != BDialogResult.OK ) {
@@ -1155,29 +1147,25 @@ namespace org.kbinani.cadencii
 
                     // 登録する
                     // リサンプラー
-                    Vector<String> ret_resamplers = dialog.getCheckedResamplers();
-                    int size = vec.size( ret_resamplers );
-                    for ( int i = 0; i < size; i++ ) {
-                        String path = vec.get( ret_resamplers, i );
+                    if ( dialog.isResamplerChecked() ) {
+                        String path = dialog.getResamplerPath();
                         if ( fsys.isFileExists( path ) ) {
                             AppManager.editorConfig.addResampler( path );
                         }
                     }
                     // 歌手
-                    Vector<String> ret_singers = dialog.getCheckedSingers();
-                    size = vec.size( ret_singers );
-                    for ( int i = 0; i < size; i++ ) {
-                        String path = vec.get( ret_singers, i );
+                    if ( dialog.isSingerChecked() ) {
+                        String path = dialog.getSingerPath();
                         if ( PortUtil.isDirectoryExists( path ) ) {
-                            SingerConfig sc = Utility.readUtausingerConfig( path );
+                            SingerConfig sc = new SingerConfig();
+                            Utility.readUtauSingerConfig( path, sc );
                             vec.add( AppManager.editorConfig.UtauSingers, sc );
                         }
-                    }
-                    if ( size > 0 ) {
                         AppManager.reloadUtauVoiceDB();
                     }
                 }
             } catch ( Exception ex ) {
+                Logger.write( typeof( FormMain ) + ".checkUnknownResamplerAndSinger; ex=" + ex + "\n" );
             } finally {
                 if ( dialog != null ) {
                     try {
@@ -4022,6 +4010,9 @@ namespace org.kbinani.cadencii
             // コンポーネントの高さが0の場合，スクロールの設定が出来ないので．
             int pheight = pictPianoRoll.getHeight();
             int vheight = vScroll.getHeight();
+#if DEBUG
+            sout.println( "FormMain#updateScrollRangeVertical; pheight=" + pheight + "; vheight=" + vheight );
+#endif
             if ( pheight <= 0 || vheight <= 0 ) {
                 return;
             }
@@ -4029,7 +4020,7 @@ namespace org.kbinani.cadencii
             float scaley = AppManager.getScaleY();
 
             int maximum = (int)(128 * (int)(100 * scaley) / scaley);
-            int large_change = (int)(pictPianoRoll.getHeight() / scaley);
+            int large_change = (int)(pheight / scaley);
 
 #if JAVA
             int thumb_height = 40;
@@ -4047,7 +4038,10 @@ namespace org.kbinani.cadencii
             if ( maximum <= 0 ) maximum = 1;
             vScroll.setVisibleAmount( large_change );
             vScroll.setMaximum( maximum );
-            vScroll.setVisibleAmount( 100 );
+#if !JAVA
+            vScroll.SmallChange = 100;
+#endif
+
 #if JAVA
             int unit_increment = large_change / 10;
             if( unit_increment <= 0 ){
@@ -7494,7 +7488,8 @@ namespace org.kbinani.cadencii
             panelOverview.KeyUp += new BKeyEventHandler( handleSpaceKeyUp );
             panelOverview.KeyDown += new BKeyEventHandler( handleSpaceKeyDown );
             vScroll.ValueChanged += new BEventHandler( vScroll_ValueChanged );
-            vScroll.Resize += new BEventHandler( vScroll_Resize );
+            //this.Resize += new BEventHandler( handleVScrollResize );
+            pictPianoRoll.Resize += new BEventHandler( handleVScrollResize );
             vScroll.Enter += new BEventHandler( vScroll_Enter );
             hScroll.ValueChanged += new BEventHandler( hScroll_ValueChanged );
             hScroll.Resize += new BEventHandler( hScroll_Resize );
@@ -10711,6 +10706,17 @@ namespace org.kbinani.cadencii
             processSpecialShortcutKey( ex, true );
         }
 
+        public void handleVScrollResize( Object sender, EventArgs e )
+        {
+#if DEBUG
+            sout.println( "FormMain#handleVScrollResize" );
+#endif
+            if ( getExtendedState() != BForm.ICONIFIED ) {
+                updateScrollRangeVertical();
+                AppManager.setStartToDrawY( calculateStartToDrawY() );
+            }
+        }
+
         public void FormMain_Deactivate( Object sender, EventArgs e )
         {
             mFormActivated = false;
@@ -11988,7 +11994,7 @@ namespace org.kbinani.cadencii
                 }
 
                 // unknownな歌手とresamplerを何とかする
-                ByRef<String> ref_resampler = new ByRef<string>( ust.getResampler() );
+                ByRef<String> ref_resampler = new ByRef<String>( ust.getResampler() );
                 ByRef<String> ref_singer = new ByRef<String>( ust.getVoiceDir() );
                 checkUnknownResamplerAndSinger( ref_resampler, ref_singer );
 
@@ -13829,14 +13835,6 @@ namespace org.kbinani.cadencii
         public void vScroll_Enter( Object sender, EventArgs e )
         {
             pictPianoRoll.requestFocus();
-        }
-
-        public void vScroll_Resize( Object sender, EventArgs e )
-        {
-            if ( getExtendedState() != BForm.ICONIFIED ) {
-                AppManager.setStartToDrawY( calculateStartToDrawY() );
-                updateScrollRangeVertical();
-            }
         }
 
         public void vScroll_ValueChanged( Object sender, EventArgs e )

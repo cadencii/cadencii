@@ -11,44 +11,130 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if !JAVA
-using System;
-using System.Windows.Forms;
-using System.Drawing;
-using System.Drawing.Drawing2D;
+#if JAVA
+package org.kbinani.cadencii;
 
-namespace org.kbinani.cadencii {
+import java.awt.*;
+import java.awt.image.*;
+import java.io.*;
+import javax.imageio.*;
+import org.kbinani.*;
+import org.kbinani.windows.forms.*;
+#else
+using System;
+using org.kbinani.java.awt;
+using org.kbinani.java.awt.image;
+using org.kbinani.javax.imageio;
+using org.kbinani.windows.forms;
+
+namespace org.kbinani.cadencii
+{
+#endif
 
     /// <summary>
     /// 起動時のスプラッシュウィンドウに表示されるアイコンパレードの、1個のアイコンを表現します
     /// </summary>
-    public class IconParader : PictureBox {
+#if JAVA
+    public class IconParader extends BPictureBox
+#else
+    public class IconParader : BPictureBox
+#endif
+    {
         const int RADIUS = 6; // 角の丸み
         const int DIAMETER = 2 * RADIUS;
         public const int ICON_WIDTH = 48;
         public const int ICON_HEIGHT = 48;
 
-        private GraphicsPath graphicsPath = null;
-        private Region region = null;
-        private Region invRegion = null;
-        private SolidBrush brush = null;
+#if !JAVA
+        private System.Drawing.Drawing2D.GraphicsPath graphicsPath = null;
+        private System.Drawing.Region region = null;
+        private System.Drawing.Region invRegion = null;
+        private System.Drawing.SolidBrush brush = null;
+#endif
 
-        public IconParader() {
-            Size s = new Size( ICON_WIDTH, ICON_HEIGHT );
-            base.Size = s;
-            base.MaximumSize = s;
-            base.MinimumSize = s;
-            base.SizeMode = PictureBoxSizeMode.Zoom;
+        public IconParader()
+        {
+            Dimension d = new Dimension( ICON_WIDTH, ICON_HEIGHT );
+            setSize( d );
+            setMaximumSize( d );
+            setMinimumSize( d );
+            setPreferredSize( d );
+#if !JAVA
+            base.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+#endif
         }
 
-        public void setImage( Image img ) {
-            Bitmap bmp = new Bitmap( ICON_WIDTH, ICON_HEIGHT );
+        public static Image createIconImage( String path_image, String singer_name )
+        {
+#if DEBUG
+#if !JAVA
+            sout.println( "IconParader#createIconImage; path_image=" + path_image );
+#endif
+#endif
+            Image ret = null;
+            if ( fsys.isFileExists( path_image ) ) {
+#if JAVA
+                try{
+                    ret = ImageIO.read( new File( path_image ) );
+                }catch( Exception ex ){
+                    ret = null;
+                    System.out.println( "IconParader#createIconImage; ex=" + ex );
+                }
+#else
+                System.IO.FileStream fs = null;
+                try {
+                    fs = new System.IO.FileStream( path_image, System.IO.FileMode.Open, System.IO.FileAccess.Read );
+                    System.Drawing.Image img = System.Drawing.Image.FromStream( fs );
+                    ret = new Image();
+                    ret.image = img;
+                } catch ( Exception ex ) {
+                    PortUtil.stderr.println( "IconParader#createIconImage; ex=" + ex );
+                } finally {
+                    if ( fs != null ) {
+                        try {
+                            fs.Close();
+                        } catch ( Exception ex2 ) {
+                            PortUtil.stderr.println( "IconParader#createIconImage; ex2=" + ex2 );
+                        }
+                    }
+                }
+#endif
+            }
+
+            if ( ret == null ) {
+                // 画像ファイルが無かったか，読み込みに失敗した場合
+
+                // 歌手名が描かれた画像をセットする
+                BufferedImage bmp = new BufferedImage( ICON_WIDTH, ICON_HEIGHT, BufferedImage.TYPE_INT_RGB );
+                Graphics2D g = bmp.createGraphics();
+                g.clearRect( 0, 0, ICON_WIDTH, ICON_HEIGHT );
+#if JAVA
+                Font font = new Font( "Arial", 0, 10 );
+#else
+                Font font = new Font( System.Windows.Forms.SystemInformation.MenuFont );
+#endif
+                PortUtil.drawStringEx(
+                    (Graphics)g, singer_name, font, new Rectangle( 1, 1, ICON_WIDTH - 2, ICON_HEIGHT - 2 ),
+                    PortUtil.STRING_ALIGN_NEAR, PortUtil.STRING_ALIGN_NEAR );
+                ret = bmp;
+            }
+
+            return ret;
+        }
+
+        public void setImage( Image img )
+        {
+            BufferedImage bmp = new BufferedImage( ICON_WIDTH, ICON_HEIGHT, BufferedImage.TYPE_INT_RGB );
             Graphics g = null;
             try {
-                g = Graphics.FromImage( bmp );
-                g.SmoothingMode = SmoothingMode.HighQuality;
+                g = bmp.createGraphics();
+#if !JAVA
+                g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+#endif
                 if ( img != null ) {
-                    double a = img.Height / (double)img.Width;
+                    int img_width = img.getWidth( null );
+                    int img_height = img.getHeight( null );
+                    double a = img_height / (double)img_width;
                     double aspecto = ICON_HEIGHT / (double)ICON_WIDTH;
 
                     int x = 0;
@@ -66,41 +152,43 @@ namespace org.kbinani.cadencii {
                         y = (int)((ICON_HEIGHT - act_height) / 2.0);
                         h = (int)act_height;
                     }
-                    Rectangle destRect = new Rectangle( x, y, w, h );
-                    Rectangle srcRect = new Rectangle( 0, 0, img.Width, img.Height );
-                    g.DrawImage( img, destRect, srcRect, GraphicsUnit.Pixel );
+#if JAVA
+                    g.drawImage( img, x, y, w, h, null );
+#else
+                    System.Drawing.Rectangle destRect = new System.Drawing.Rectangle( x, y, w, h );
+                    System.Drawing.Rectangle srcRect = new System.Drawing.Rectangle( 0, 0, img_width, img_height );
+                    g.nativeGraphics.DrawImage( img.image, destRect, srcRect, System.Drawing.GraphicsUnit.Pixel );
+#endif
                 }
-                g.FillRegion( getBrush(), getInvRegion() );
-                g.DrawPath( Pens.DarkGray, getGraphicsPath() );
+#if !JAVA
+                g.nativeGraphics.FillRegion( getBrush(), getInvRegion() );
+                g.nativeGraphics.DrawPath( System.Drawing.Pens.DarkGray, getGraphicsPath() );
+#endif
             } catch ( Exception ex ) {
+#if JAVA
+                System.err.println( "IconParader#setImage; ex=" + ex );
+#else
                 Logger.write( typeof( IconParader ) + ".setImage; ex=" + ex + "\n" );
+#endif
             } finally {
+#if !JAVA
                 if ( g != null ) {
-                    g.Dispose();
+                    g.nativeGraphics.Dispose();
                 }
+#endif
             }
-            base.Image = bmp;
+            base.setImage( bmp );
         }
 
-        /*/// <summary>
-        /// オーバーライドされます。4隅を塗りつぶし、枠線を描く処理が追加されています。
-        /// </summary>
-        /// <param name="pe"></param>
-        protected override void OnPaint( PaintEventArgs pe ) {
-            pe.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            base.OnPaint( pe );
-            pe.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            pe.Graphics.FillRegion( getBrush(), getInvRegion() );
-            pe.Graphics.DrawPath( Pens.DarkGray, getGraphicsPath() );
-        }*/
-
+#if !JAVA
         /// <summary>
         /// アイコンの4隅を塗りつぶすためのブラシを取得します
         /// </summary>
         /// <returns></returns>
-        private SolidBrush getBrush() {
+        private System.Drawing.SolidBrush getBrush()
+        {
             if ( brush == null ) {
-                brush = new SolidBrush( base.BackColor );
+                brush = new System.Drawing.SolidBrush( base.BackColor );
             } else {
                 if ( brush.Color != base.BackColor ) {
                     brush.Color = base.BackColor;
@@ -108,14 +196,17 @@ namespace org.kbinani.cadencii {
             }
             return brush;
         }
+#endif
 
+#if !JAVA
         /// <summary>
         /// 角の丸い枠線を表すGraphicsPathを取得します
         /// </summary>
         /// <returns></returns>
-        private GraphicsPath getGraphicsPath() {
+        private System.Drawing.Drawing2D.GraphicsPath getGraphicsPath()
+        {
             if ( graphicsPath == null ) {
-                graphicsPath = new GraphicsPath();
+                graphicsPath = new System.Drawing.Drawing2D.GraphicsPath();
                 graphicsPath.StartFigure();
                 int w = base.Width - 1;
                 int h = base.Height - 1;
@@ -139,30 +230,38 @@ namespace org.kbinani.cadencii {
             }
             return graphicsPath;
         }
+#endif
 
+#if !JAVA
         /// <summary>
         /// 角の丸いアイコンの画像領域を取得します
         /// </summary>
         /// <returns></returns>
-        private Region getRegion() {
+        private System.Drawing.Region getRegion()
+        {
             if ( region == null ) {
-                region = new Region( getGraphicsPath() );
+                region = new System.Drawing.Region( getGraphicsPath() );
             }
             return region;
         }
+#endif
 
+#if !JAVA
         /// <summary>
         /// アイコンの画像領域以外の領域(4隅)を取得します
         /// </summary>
         /// <returns></returns>
-        private Region getInvRegion() {
+        private System.Drawing.Region getInvRegion()
+        {
             if ( invRegion == null ) {
-                invRegion = new Region();
+                invRegion = new System.Drawing.Region();
                 invRegion.Exclude( getGraphicsPath() );
             }
             return invRegion;
         }
+#endif
     }
 
+#if !JAVA
 }
 #endif

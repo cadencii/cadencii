@@ -1,27 +1,21 @@
 ﻿package org.kbinani.cadencii;
 //SECTION-BEGIN-IMPORT
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import org.kbinani.windows.forms.BButton;
-import org.kbinani.windows.forms.BCheckBox;
-import org.kbinani.windows.forms.BComboBox;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BGroupBox;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BListBox;
 import org.kbinani.windows.forms.BPictureBox;
 import org.kbinani.windows.forms.BTextBox;
-import javax.swing.JList;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.BorderFactory;
-import java.awt.Color;
 
 //SECTION-END-IMPORT
 public class FormVibratoPreset extends BForm {

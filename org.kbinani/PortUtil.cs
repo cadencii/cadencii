@@ -1097,9 +1097,11 @@ namespace org.kbinani {
             File f = new File( path );
             File[] list = f.listFiles();
             for( int i = 0; i < list.length; i++ ){
-                File f0 = new File( combinePath( path, list[i].getName() ) );
+                File f0 = new File( fsys.combine( path, list[i].getName() ) );
                 if( f0.isDirectory() ){
-                    deleteDirectory( f0.getPath(), true );
+                    if( recurse ){
+                        deleteDirectory( f0.getPath(), true );
+                    }
                 }else{
                     f0.delete();
                 }
