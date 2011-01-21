@@ -41,9 +41,7 @@
 0276	03230de6583d22a8daf90ea325d4a023 *resampler.exe
 
 -general todo----------------------------------------------------------
--resamplerが増えたりするのはなぜか？
 -スタートマーカー，エンドマーカーがxvsqに保存されるようにする
--ImportOtoIniConfig.csをsvn add / ビルドイベントも追加
 -StartPointの項目を加えられないか？
 -Overlapとかの旗をダブルクリックしたら数値入力できるようにしたい
 -PreferenceのUTAU歌手の一覧にアイコンを表示できないか？

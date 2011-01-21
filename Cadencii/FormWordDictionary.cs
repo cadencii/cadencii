@@ -70,7 +70,7 @@ namespace org.kbinani.cadencii
         public Vector<ValuePair<String, Boolean>> getResult()
         {
             Vector<ValuePair<String, Boolean>> ret = new Vector<ValuePair<String, Boolean>>();
-            int count = listDictionaries.getRowCount();
+            int count = listDictionaries.getItemCountRow();
 #if DEBUG
             sout.println( "FormWordDictionary#getResult; count=" + count );
 #endif
@@ -137,7 +137,7 @@ namespace org.kbinani.cadencii
                     listDictionaries.setItemAt( index, 0, upper_name );
                     listDictionaries.setRowChecked( index, upper_enabled );
 
-                    listDictionaries.setRowSelected( index - 1, true );
+                    listDictionaries.setSelectedRow( index - 1 );
                 } catch ( Exception ex ) {
                     serr.println( "FormWordDictionary#btnUp_Click; ex=" + ex );
                 }
@@ -147,7 +147,7 @@ namespace org.kbinani.cadencii
         public void btnDown_Click( Object sender, BEventArgs e )
         {
             int index = listDictionaries.getSelectedRow();
-            if ( 0 <= index && index + 1 < listDictionaries.getRowCount() ) {
+            if ( 0 <= index && index + 1 < listDictionaries.getItemCountRow() ) {
                 try {
                     listDictionaries.clearSelection();
                     String upper_name = listDictionaries.getItemAt( index, 0 );
@@ -160,7 +160,7 @@ namespace org.kbinani.cadencii
                     listDictionaries.setItemAt( index, 0, lower_name );
                     listDictionaries.setRowChecked( index, lower_enabled );
 
-                    listDictionaries.setRowSelected( index + 1, true );
+                    listDictionaries.setSelectedRow( index + 1 );
                 } catch ( Exception ex ) {
                     serr.println( "FormWordDictionary#btnDown_Click; ex=" + ex );
                 }

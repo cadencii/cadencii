@@ -131,7 +131,7 @@ sub getSrcList{
     # check BuildJavaUI
     $build_java_ui_prefix = "";
     if( index( $dir, "./Cadencii" ) == 0 ){
-        $build_java_ui_prefix = "./BuildJavaUI/src/org/kbinani/org/kbinani/cadencii/";
+        $build_java_ui_prefix = "./BuildJavaUI/src/org/kbinani/cadencii/";
     }elsif( index( $dir, "./org.kbinani.windows.forms" ) == 0 ){
         $build_java_ui_prefix = "./BuildJavaUI/src/org/kbinani/windows/forms/";
     }elsif( index( $dir, "./org.kbinani.xml" ) == 0 ){
@@ -142,6 +142,8 @@ sub getSrcList{
         $build_java_ui_prefix = "./BuildJavaUI/src/org/kbinani/media/";
     }elsif( index( $dir, "./org.kbinani.apputil" ) == 0 ){
         $build_java_ui_prefix = "./BuildJavaUI/src/org/kbinani/apputil/";
+    }elsif( index( $dir, "./org.kbinani.componentmodel" ) == 0 ){
+        $build_java_ui_prefix = "./BuildJavaUI/src/org/kbinani/componentmodel/";
     }elsif( index( $dir, "./org.kbinani" ) == 0 ){
         $build_java_ui_prefix = "./BuildJavaUI/src/org/kbinani/";
     }
@@ -160,7 +162,7 @@ sub getSrcList{
                 last;
             }
         }
-        if( -e "$build_java_ui_prefix$cname.java" && $add_to == 1 ){
+        if( (-e "$build_java_ui_prefix$cname.java") && $add_to == 1 ){
             $_[4] .= " $build_java_ui_prefix$cname.java\n";
         }else{
             $_[4] .= "\n";

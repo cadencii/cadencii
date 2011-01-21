@@ -13,8 +13,10 @@ public class BBackgroundWorker{
         private BDoWorkEventArgs m_arg = null;
         private BEvent<BDoWorkEventHandler> m_delegate = null;
         private boolean isBusy = false;
+        private BBackgroundWorker mParent = null;
         
-        public WorkerRunner( BEvent<BDoWorkEventHandler> delegate, Object argument ){
+        public WorkerRunner( BBackgroundWorker parent, BEvent<BDoWorkEventHandler> delegate, Object argument ){
+            mParent = parent;
             m_delegate = delegate;
             m_arg = new BDoWorkEventArgs( argument );
         }
@@ -22,9 +24,9 @@ public class BBackgroundWorker{
         public void run(){
             isBusy = true;
             try{
-                m_delegate.raise( m_arg );
+                m_delegate.raise( mParent, m_arg );
                 BRunWorkerCompletedEventArgs e = new BRunWorkerCompletedEventArgs( null, null, false );
-                runWorkerCompletedEvent.raise( e );
+                runWorkerCompletedEvent.raise( mParent, e );
             }catch( Exception ex ){
                 System.err.println( "BBackgroundWorker#WorkerRunner#run(void); ex=" + ex );
             }
@@ -53,7 +55,7 @@ public class BBackgroundWorker{
     }
 
     public void runWorkerAsync( Object argument ){
-        m_runner = new WorkerRunner( doWorkEvent, argument );
+        m_runner = new WorkerRunner( this, doWorkEvent, argument );
         thread = new Thread( m_runner );
         thread.start();
     }

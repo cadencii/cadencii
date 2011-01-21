@@ -11015,7 +11015,7 @@ namespace org.kbinani.cadencii
                     vsq.removePart( 0, vsq.getPreMeasureClocks() );
                 }
                 int track_count = 0;
-                for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.getRowCount(); i++ ) {
+                for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.getItemCountRow(); i++ ) {
                     if ( mDialogMidiImportAndExport.listTrack.isRowChecked( i ) ) {
                         track_count++;
                     }
@@ -11050,7 +11050,7 @@ namespace org.kbinani.cadencii
                         fs.write( (byte)0x01 );
                         fs.write( (byte)0xe0 );
                         int count = -1;
-                        for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.getRowCount(); i++ ) {
+                        for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.getItemCountRow(); i++ ) {
                             if ( !mDialogMidiImportAndExport.listTrack.isRowChecked( i ) ) {
                                 continue;
                             }
@@ -11858,7 +11858,7 @@ namespace org.kbinani.cadencii
                 work.updateTimesigInfo();
             }
 
-            for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.getRowCount(); i++ ) {
+            for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.getItemCountRow(); i++ ) {
                 if ( !mDialogMidiImportAndExport.listTrack.isRowChecked( i ) ) {
                     continue;
                 }
@@ -12162,7 +12162,7 @@ namespace org.kbinani.cadencii
             }
 
             Vector<Integer> add_track = new Vector<Integer>();
-            for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.getRowCount(); i++ ) {
+            for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.getItemCountRow(); i++ ) {
                 if ( mDialogMidiImportAndExport.listTrack.isRowChecked( i ) ) {
                     add_track.add( i + 1 );
                 }

@@ -19,6 +19,7 @@ import org.kbinani.windows.forms.BGroupBox;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BListView;
 import org.kbinani.windows.forms.BRadioButton;
+import javax.swing.JScrollPane;
 
 //SECTION-END-IMPORT
 public class FormMidiImExport extends BForm {
@@ -58,6 +59,7 @@ public class FormMidiImExport extends BForm {
     private BLabel lblOffset = null;
     private NumberTextBox txtOffset = null;
     private BLabel lblOffsetUnit = null;
+    private JScrollPane jScrollPane = null;
 	
 	//SECTION-END-FIELD
 	/**
@@ -75,7 +77,7 @@ public class FormMidiImExport extends BForm {
 	 * @return void
 	 */
 	private void initialize() {
-		this.setSize(357, 513);
+		this.setSize(383, 552);
 		this.setContentPane(getJContentPane());
 		this.setTitle("JFrame");
 	}
@@ -87,6 +89,13 @@ public class FormMidiImExport extends BForm {
 	 */
 	private JPanel getJContentPane() {
 		if (jContentPane == null) {
+			GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
+			gridBagConstraints4.fill = GridBagConstraints.BOTH;
+			gridBagConstraints4.weighty = 1.0;
+			gridBagConstraints4.gridx = 0;
+			gridBagConstraints4.gridy = 1;
+			gridBagConstraints4.insets = new Insets(3, 12, 3, 12);
+			gridBagConstraints4.weightx = 1.0;
 			GridBagConstraints gridBagConstraints22 = new GridBagConstraints();
 			gridBagConstraints22.gridx = 0;
 			gridBagConstraints22.weightx = 1.0D;
@@ -104,22 +113,17 @@ public class FormMidiImExport extends BForm {
 			gridBagConstraints12.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints12.insets = new Insets(3, 12, 3, 12);
 			gridBagConstraints12.gridy = 2;
-			GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
-			gridBagConstraints4.fill = GridBagConstraints.BOTH;
-			gridBagConstraints4.gridy = 1;
-			gridBagConstraints4.weightx = 1.0;
-			gridBagConstraints4.weighty = 1.0;
-			gridBagConstraints4.insets = new Insets(3, 12, 3, 12);
-			gridBagConstraints4.gridx = 0;
 			GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
 			gridBagConstraints3.insets = new Insets(12, 12, 6, 12);
 			gridBagConstraints3.gridy = 0;
 			gridBagConstraints3.ipadx = 146;
+			gridBagConstraints3.anchor = GridBagConstraints.WEST;
 			gridBagConstraints3.gridx = 0;
 			jContentPane = new JPanel();
 			jContentPane.setLayout(new GridBagLayout());
+			jContentPane.setPreferredSize(new Dimension(100, 100));
 			jContentPane.add(getJPanel(), gridBagConstraints3);
-			jContentPane.add(getListTrack(), gridBagConstraints4);
+			jContentPane.add(getJScrollPane(), gridBagConstraints4);
 			jContentPane.add(getGroupCommonOption(), gridBagConstraints12);
 			jContentPane.add(getJPanel2(), gridBagConstraints13);
 			jContentPane.add(getGroupMode(), gridBagConstraints22);
@@ -199,6 +203,7 @@ public class FormMidiImExport extends BForm {
 	private BListView getListTrack() {
 		if (listTrack == null) {
 			listTrack = new BListView();
+			listTrack.setPreferredSize(new Dimension(25, 50));
 		}
 		return listTrack;
 	}
@@ -230,6 +235,7 @@ public class FormMidiImExport extends BForm {
 			groupCommonOption = new BGroupBox();
 			groupCommonOption.setLayout(new GridBagLayout());
 			groupCommonOption.setBorder(BorderFactory.createTitledBorder(null, "Option", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
+			groupCommonOption.setPreferredSize(new Dimension(274, 80));
 			groupCommonOption.add(getJPanel3(), gridBagConstraints9);
 			groupCommonOption.add(getPanel2(), gridBagConstraints10);
 			groupCommonOption.add(getJPanel32(), gridBagConstraints11);
@@ -283,6 +289,7 @@ public class FormMidiImExport extends BForm {
 		if (btnOK == null) {
 			btnOK = new BButton();
 			btnOK.setText("OK");
+			btnOK.setPreferredSize(new Dimension(49, 29));
 		}
 		return btnOK;
 	}
@@ -296,6 +303,7 @@ public class FormMidiImExport extends BForm {
 		if (btnCancel == null) {
 			btnCancel = new BButton();
 			btnCancel.setText("Cancel");
+			btnCancel.setPreferredSize(new Dimension(67, 29));
 		}
 		return btnCancel;
 	}
@@ -491,6 +499,7 @@ public class FormMidiImExport extends BForm {
             groupMode = new BGroupBox();
             groupMode.setLayout(new GridBagLayout());
             groupMode.setBorder(BorderFactory.createTitledBorder(null, "Import Basis", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
+            groupMode.setPreferredSize(new Dimension(168, 80));
             groupMode.add(getPanel21(), gridBagConstraints16);
             groupMode.add(getJPanel31(), gridBagConstraints20);
         }
@@ -602,6 +611,20 @@ public class FormMidiImExport extends BForm {
             txtOffset = new NumberTextBox();
         }
         return txtOffset;
+    }
+
+    /**
+     * This method initializes jScrollPane	
+     * 	
+     * @return javax.swing.JScrollPane	
+     */
+    private JScrollPane getJScrollPane() {
+        if (jScrollPane == null) {
+            jScrollPane = new JScrollPane();
+            jScrollPane.setPreferredSize(new Dimension(100, 100));
+            jScrollPane.setViewportView(getListTrack());
+        }
+        return jScrollPane;
     }
 
 	//SECTION-END-METHOD

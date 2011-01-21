@@ -24,6 +24,7 @@ import org.kbinani.windows.forms.BNumericUpDown;
 import org.kbinani.windows.forms.BPanel;
 import org.kbinani.windows.forms.BRadioButton;
 import org.kbinani.windows.forms.BTextBox;
+import javax.swing.JScrollPane;
 
 //SECTION-END-IMPORT
 public class Preference extends JFrame {
@@ -130,7 +131,7 @@ public class Preference extends JFrame {
 	private BTextBox txtWavtool = null;
 	private BButton btnWavtool = null;
 	private BCheckBox chkInvokeWithWine = null;
-	private BPanel tabUtausingers = null;
+	private BPanel tabUtausingers = null;  //  @jve:decl-index=0:visual-constraint="-81,1502"
 	private BListView listSingers = null;
 	private BButton btnAdd = null;
 	private BButton btnRemove = null;
@@ -189,6 +190,7 @@ public class Preference extends JFrame {
     private BLabel jLabel91 = null;
     private BLabel jLabel911 = null;
     private BTextBox txtAutoVibratoThresholdLength = null;
+    private JScrollPane jScrollPane = null;
     //SECTION-END-FIELD
 	/**
 	 * This is the default constructor
@@ -215,6 +217,7 @@ public class Preference extends JFrame {
 		gb.fill = GridBagConstraints.BOTH;
 		layout.setConstraints( tabPane, gb );
 	    this.getPanelUpper().add( tabPane );
+	    listSingers.fixLeftColumn();
 	
 		//SECTION-END-CTOR
 	}
@@ -226,7 +229,7 @@ public class Preference extends JFrame {
 	 * @return void
 	 */
 	private void initialize() {
-		this.setSize(520, 540);
+		this.setSize(520, 573);
 		this.setResizable(true);
 		this.setContentPane(getJPanel5());
 		this.setTitle("Preference");
@@ -1785,7 +1788,7 @@ public class Preference extends JFrame {
 			gridBagConstraints131.weightx = 1.0;
 			lblAquesTone = new BLabel();
 			lblAquesTone.setText("AquesTone");
-			lblAquesTone.setPreferredSize(new Dimension(72, 16));
+			lblAquesTone.setPreferredSize(new Dimension(72, 29));
 			GridBagConstraints gridBagConstraints97 = new GridBagConstraints();
 			gridBagConstraints97.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints97.gridy = 1;
@@ -1800,7 +1803,7 @@ public class Preference extends JFrame {
 			gridBagConstraints96.gridy = 1;
 			lblVOCALOID2 = new BLabel();
 			lblVOCALOID2.setText("VOCALOID2");
-			lblVOCALOID2.setPreferredSize(new Dimension(76, 16));
+			lblVOCALOID2.setPreferredSize(new Dimension(76, 29));
 			GridBagConstraints gridBagConstraints95 = new GridBagConstraints();
 			gridBagConstraints95.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints95.gridy = 0;
@@ -1815,7 +1818,7 @@ public class Preference extends JFrame {
 			gridBagConstraints94.gridy = 0;
 			lblVOCALOID1 = new BLabel();
 			lblVOCALOID1.setText("VOCALOID1");
-			lblVOCALOID1.setPreferredSize(new Dimension(76, 16));
+			lblVOCALOID1.setPreferredSize(new Dimension(76, 29));
 			groupVsti = new BGroupBox();
 			groupVsti.setLayout(new GridBagLayout());
 			groupVsti.setBorder(BorderFactory.createTitledBorder(null, "VST Instruments", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
@@ -1961,6 +1964,15 @@ public class Preference extends JFrame {
 	 */
 	private BPanel getTabUtausingers() {
 		if (tabUtausingers == null) {
+			GridBagConstraints gridBagConstraints107 = new GridBagConstraints();
+			gridBagConstraints107.fill = GridBagConstraints.BOTH;
+			gridBagConstraints107.weighty = 1.0;
+			gridBagConstraints107.gridx = 0;
+			gridBagConstraints107.gridy = 0;
+			gridBagConstraints107.gridwidth = 2;
+			gridBagConstraints107.insets = new Insets(12, 12, 12, 12);
+			gridBagConstraints107.anchor = GridBagConstraints.NORTH;
+			gridBagConstraints107.weightx = 1.0;
 			GridBagConstraints gridBagConstraints113 = new GridBagConstraints();
 			gridBagConstraints113.gridx = 1;
 			gridBagConstraints113.anchor = GridBagConstraints.EAST;
@@ -1971,20 +1983,12 @@ public class Preference extends JFrame {
 			gridBagConstraints112.anchor = GridBagConstraints.WEST;
 			gridBagConstraints112.insets = new Insets(0, 12, 12, 12);
 			gridBagConstraints112.gridy = 1;
-			GridBagConstraints gridBagConstraints107 = new GridBagConstraints();
-			gridBagConstraints107.fill = GridBagConstraints.BOTH;
-			gridBagConstraints107.gridy = 0;
-			gridBagConstraints107.weightx = 1.0;
-			gridBagConstraints107.weighty = 1.0D;
-			gridBagConstraints107.anchor = GridBagConstraints.NORTH;
-			gridBagConstraints107.insets = new Insets(12, 12, 12, 12);
-			gridBagConstraints107.gridwidth = 2;
-			gridBagConstraints107.gridx = 0;
 			tabUtausingers = new BPanel();
 			tabUtausingers.setLayout(new GridBagLayout());
-			tabUtausingers.add(getListSingers(), gridBagConstraints107);
+			tabUtausingers.setSize(new Dimension(392, 182));
 			tabUtausingers.add(getJPanel17(), gridBagConstraints112);
 			tabUtausingers.add(getJPanel18(), gridBagConstraints113);
+			tabUtausingers.add(getJScrollPane(), gridBagConstraints107);
 		}
 		return tabUtausingers;
 	}
@@ -2878,6 +2882,19 @@ public class Preference extends JFrame {
             txtAutoVibratoThresholdLength = new BTextBox();
         }
         return txtAutoVibratoThresholdLength;
+    }
+
+    /**
+     * This method initializes jScrollPane	
+     * 	
+     * @return javax.swing.JScrollPane	
+     */
+    private JScrollPane getJScrollPane() {
+        if (jScrollPane == null) {
+            jScrollPane = new JScrollPane();
+            jScrollPane.setViewportView(getListSingers());
+        }
+        return jScrollPane;
     }
 
 	//SECTION-END-METHOD

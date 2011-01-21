@@ -1588,7 +1588,7 @@ namespace org.kbinani.cadencii
                 m_utau_singers.set( index, (SingerConfig)m_utau_singers.get( index + 1 ).clone() );
                 m_utau_singers.set( index + 1, buf );
                 UpdateUtausingerList();
-                listSingers.setRowSelected( index + 1, true );
+                listSingers.setSelectedRow( index + 1 );
             }
         }
 
@@ -1603,7 +1603,7 @@ namespace org.kbinani.cadencii
                 m_utau_singers.set( index, (SingerConfig)m_utau_singers.get( index - 1 ).clone() );
                 m_utau_singers.set( index - 1, buf );
                 UpdateUtausingerList();
-                listSingers.setRowSelected( index - 1, true );
+                listSingers.setSelectedRow( index - 1 );
             }
         }
 

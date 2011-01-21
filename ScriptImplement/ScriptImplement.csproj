@@ -86,6 +86,7 @@
     <Compile Include="Hamori.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="ImportOtoIniConfig.cs" />
     <Compile Include="Render As UTAU.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -167,6 +168,7 @@
 copy "$(ProjectDir)Generate VLF.cs" "$(ProjectDir)..\Cadencii\bin\x86\$(ConfigurationName)\script\Generate VLF.txt"
 copy "$(ProjectDir)DivideNote.cs" "$(ProjectDir)..\Cadencii\bin\x86\$(ConfigurationName)\tool\DivideNote.txt"
 copy "$(ProjectDir)Utau Plugin Manager.cs" "$(ProjectDir)..\Cadencii\bin\x86\$(ConfigurationName)\script\Utau Plugin Manager.txt"
-copy "$(ProjectDir)RunOnce.cs" "$(ProjectDir)..\Cadencii\bin\x86\$(ConfigurationName)\script\RunOnce.txt"</PostBuildEvent>
+copy "$(ProjectDir)RunOnce.cs" "$(ProjectDir)..\Cadencii\bin\x86\$(ConfigurationName)\script\RunOnce.txt"
+copy "$(ProjectDir)ImportOtoIniConfig.cs" "$(ProjectDir)..\Cadencii\bin\x86\$(ConfigurationName)\script\ImportOtoIniConfig.txt"</PostBuildEvent>
   </PropertyGroup>
 </Project>

@@ -41,6 +41,7 @@ namespace org.kbinani.cadencii
     using boolean = System.Boolean;
     using BPreviewKeyDownEventArgs = System.Windows.Forms.PreviewKeyDownEventArgs;
     using BFormClosingEventHandler = System.Windows.Forms.FormClosingEventHandler;
+    using BKeyEventHandler = System.Windows.Forms.KeyEventHandler;
     using java = org.kbinani.java;
 #endif
 
@@ -238,7 +239,7 @@ namespace org.kbinani.cadencii
         /// </summary>
         private void updateColor()
         {
-            int size = list.getRowCount();
+            int size = list.getItemCountRow();
             for ( int i = 0; i < size; i++ ) {
                 //BListViewItem list_item = list.getItemAt( i );
                 String field_name = mFieldName.get( i );
@@ -278,13 +279,13 @@ namespace org.kbinani.cadencii
 
         private void registerEventHandlers()
         {
-            this.list.KeyDown += new System.Windows.Forms.KeyEventHandler( this.list_KeyDown );
+            this.list.KeyDown += new BKeyEventHandler( list_KeyDown );
             btnLoadDefault.Click += new BEventHandler( btnLoadDefault_Click );
             btnRevert.Click += new BEventHandler( btnRevert_Click );
             this.FormClosing += new BFormClosingEventHandler( FormShortcutKeys_FormClosing );
             btnOK.Click += new BEventHandler( btnOK_Click );
             btnCancel.Click += new BEventHandler( btnCancel_Click );
-            comboCategory.SelectedIndexChanged += new EventHandler( comboCategory_SelectedIndexChanged );
+            comboCategory.SelectedIndexChanged += new BEventHandler( comboCategory_SelectedIndexChanged );
         }
 
         private void setResources()
@@ -293,20 +294,17 @@ namespace org.kbinani.cadencii
         #endregion
 
         #region event handlers
-        public void comboCategory_SelectedIndexChanged( object sender, EventArgs e )
+        public void comboCategory_SelectedIndexChanged( Object sender, EventArgs e )
         {
             int selected = comboCategory.getSelectedIndex();
 #if DEBUG
             sout.println( "FormShortcutKeys#comboCategory_selectedIndexChanged; selected=" + selected );
 #endif
             if ( selected < 0 ) {
-                //comboCategory.setSelectedIndex( 0 );
+                comboCategory.setSelectedIndex( 0 );
                 //updateList();
                 return;
             }
-#if !JAVA
-            comboCategory.Text = (String)comboCategory.getItemAt( selected );
-#endif
             updateList();
         }
 

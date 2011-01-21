@@ -471,7 +471,7 @@ namespace org.kbinani.windows.forms
             this.Items.Clear();
         }
 
-        public void setItemAt( int column, int row, string item )
+        public void setItemAt( int row, int column, string item )
         {
             this.Items[row].SubItems[column].Text = item;
         }
@@ -486,7 +486,7 @@ namespace org.kbinani.windows.forms
             return this.Items[row].SubItems[column].Text;
         }
 
-        public int getRowCount()
+        public int getItemCountRow()
         {
             return this.Items.Count;
         }
@@ -515,9 +515,12 @@ namespace org.kbinani.windows.forms
             this.SelectedIndices.Clear();
         }
 
-        public void setRowSelected( int row, bool value )
+        public void setSelectedRow( int row )
         {
-            this.Items[row].Selected = value;
+            if ( !this.Items[row].Selected ) {
+                this.SelectedIndices.Clear();
+                this.Items[row].Selected = true;
+            }
         }
 
         public void addItem( string[] items, bool selected )

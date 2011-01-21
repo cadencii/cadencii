@@ -187,7 +187,7 @@ public class BButton extends JButton
     }
 
     /* root impl of KeyListener */
-    // root imol of KeyListener is in BButton
+    // root impl of KeyListener is in BButton
     public BEvent<BPreviewKeyDownEventHandler> previewKeyDownEvent = new BEvent<BPreviewKeyDownEventHandler>();
     public BEvent<BKeyEventHandler> keyDownEvent = new BEvent<BKeyEventHandler>();
     public BEvent<BKeyEventHandler> keyUpEvent = new BEvent<BKeyEventHandler>();

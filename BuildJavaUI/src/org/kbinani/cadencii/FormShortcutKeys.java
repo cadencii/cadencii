@@ -1,14 +1,17 @@
 ﻿package org.kbinani.cadencii;
 
 //SECTION-BEGIN-IMPORT
-import org.kbinani.windows.forms.BForm;
-import org.kbinani.windows.forms.BListView;
 import java.awt.Dimension;
-import javax.swing.JPanel;
-import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
-import org.kbinani.windows.forms.BButton;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
+import javax.swing.JPanel;
+import org.kbinani.windows.forms.BButton;
+import org.kbinani.windows.forms.BComboBox;
+import org.kbinani.windows.forms.BForm;
+import org.kbinani.windows.forms.BLabel;
+import org.kbinani.windows.forms.BListView;
+import javax.swing.JScrollPane;
 
 //SECTION-END-IMPORT
 public class FormShortcutKeys extends BForm {
@@ -16,14 +19,16 @@ public class FormShortcutKeys extends BForm {
  
     private static final long serialVersionUID = 2743132471603994391L;
     private JPanel jPanel = null;
-    private BListView list = null;
     private JPanel jPanel3 = null;
     private BButton btnLoadDefault = null;
     private BButton btnRevert = null;
     private JPanel jPanel31 = null;
     private BButton btnCancel = null;
     private BButton btnOK = null;
-
+    private BListView list = null;
+    private BLabel labelCategory = null;
+    private BComboBox comboCategory = null;
+    private JScrollPane jScrollPane = null;
     //SECTION-END-FIELD
     /**
      * This method initializes 
@@ -40,7 +45,7 @@ public class FormShortcutKeys extends BForm {
      * 
      */
     private void initialize() {
-        this.setSize(new Dimension(396, 468));
+        this.setSize(new Dimension(396, 523));
         this.setTitle("Shortcut Config");
         this.setContentPane(getJPanel());
     		
@@ -53,42 +58,47 @@ public class FormShortcutKeys extends BForm {
      */
     private JPanel getJPanel() {
         if (jPanel == null) {
+            GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
+            gridBagConstraints11.fill = GridBagConstraints.BOTH;
+            gridBagConstraints11.gridy = 2;
+            gridBagConstraints11.weightx = 1.0;
+            gridBagConstraints11.weighty = 1.0;
+            gridBagConstraints11.insets = new Insets(12, 12, 6, 12);
+            gridBagConstraints11.anchor = GridBagConstraints.NORTHWEST;
+            gridBagConstraints11.gridx = 0;
+            GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
+            gridBagConstraints3.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints3.gridy = 1;
+            gridBagConstraints3.weightx = 1.0;
+            gridBagConstraints3.insets = new Insets(3, 12, 3, 12);
+            gridBagConstraints3.weighty = 0.0D;
+            gridBagConstraints3.gridx = 0;
+            GridBagConstraints gridBagConstraints = new GridBagConstraints();
+            gridBagConstraints.gridx = 0;
+            gridBagConstraints.insets = new Insets(12, 12, 3, 12);
+            gridBagConstraints.anchor = GridBagConstraints.WEST;
+            gridBagConstraints.gridy = 0;
+            labelCategory = new BLabel();
+            labelCategory.setText("Vibrato Type");
             GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
             gridBagConstraints2.gridx = 0;
             gridBagConstraints2.anchor = GridBagConstraints.EAST;
             gridBagConstraints2.insets = new Insets(0, 0, 16, 12);
-            gridBagConstraints2.gridy = 2;
+            gridBagConstraints2.gridy = 4;
             GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
             gridBagConstraints1.gridx = 0;
             gridBagConstraints1.anchor = GridBagConstraints.WEST;
             gridBagConstraints1.insets = new Insets(0, 12, 12, 0);
-            gridBagConstraints1.gridy = 1;
-            GridBagConstraints gridBagConstraints = new GridBagConstraints();
-            gridBagConstraints.gridx = 0;
-            gridBagConstraints.fill = GridBagConstraints.BOTH;
-            gridBagConstraints.weightx = 1.0D;
-            gridBagConstraints.weighty = 1.0D;
-            gridBagConstraints.insets = new Insets(12, 12, 6, 12);
-            gridBagConstraints.gridy = 0;
+            gridBagConstraints1.gridy = 3;
             jPanel = new JPanel();
             jPanel.setLayout(new GridBagLayout());
-            jPanel.add(getList(), gridBagConstraints);
             jPanel.add(getJPanel3(), gridBagConstraints1);
             jPanel.add(getJPanel31(), gridBagConstraints2);
+            jPanel.add(labelCategory, gridBagConstraints);
+            jPanel.add(getComboCategory(), gridBagConstraints3);
+            jPanel.add(getJScrollPane(), gridBagConstraints11);
         }
         return jPanel;
-    }
-
-    /**
-     * This method initializes list	
-     * 	
-     * @return javax.swing.JPanel	
-     */
-    private BListView getList() {
-        if (list == null) {
-            list = new BListView();
-        }
-        return list;
     }
 
     /**
@@ -123,6 +133,7 @@ public class FormShortcutKeys extends BForm {
         if (btnLoadDefault == null) {
             btnLoadDefault = new BButton();
             btnLoadDefault.setText("Load Default");
+            btnLoadDefault.setPreferredSize(new Dimension(97, 29));
         }
         return btnLoadDefault;
     }
@@ -136,6 +147,7 @@ public class FormShortcutKeys extends BForm {
         if (btnRevert == null) {
             btnRevert = new BButton();
             btnRevert.setText("Revert");
+            btnRevert.setPreferredSize(new Dimension(67, 29));
         }
         return btnRevert;
     }
@@ -172,6 +184,7 @@ public class FormShortcutKeys extends BForm {
         if (btnCancel == null) {
             btnCancel = new BButton();
             btnCancel.setText("Cancel");
+            btnCancel.setPreferredSize(new Dimension(67, 29));
         }
         return btnCancel;
     }
@@ -185,8 +198,49 @@ public class FormShortcutKeys extends BForm {
         if (btnOK == null) {
             btnOK = new BButton();
             btnOK.setText("OK");
+            btnOK.setPreferredSize(new Dimension(49, 29));
         }
         return btnOK;
+    }
+
+    /**
+     * This method initializes list	
+     * 	
+     * @return javax.swing.JTable	
+     */
+    private BListView getList() {
+        if (list == null) {
+            list = new BListView();
+        }
+        return list;
+    }
+
+    /**
+     * This method initializes comboCategory	
+     * 	
+     * @return org.kbinani.windows.forms.BComboBox	
+     */
+    private BComboBox getComboCategory() {
+        if (comboCategory == null) {
+            comboCategory = new BComboBox();
+            comboCategory.setPreferredSize(new Dimension(167, 27));
+        }
+        return comboCategory;
+    }
+
+    /**
+     * This method initializes jScrollPane	
+     * 	
+     * @return javax.swing.JScrollPane	
+     */
+    private JScrollPane getJScrollPane() {
+        if (jScrollPane == null) {
+            jScrollPane = new JScrollPane();
+            jScrollPane.setPreferredSize(new Dimension(100, 100));
+            jScrollPane.setViewportView(getList());
+            list.fixLeftColumn();
+        }
+        return jScrollPane;
     }
 
     //SECTION-END-METHOD

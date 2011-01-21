@@ -11,6 +11,7 @@ import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BListView;
 import org.kbinani.windows.forms.BPanel;
+import javax.swing.JScrollPane;
 
 //SECTION-END-IMPORT
 public class FormWordDictionary extends BForm {
@@ -26,6 +27,7 @@ public class FormWordDictionary extends BForm {
     private BButton btnUp = null;
     private BButton btnDown = null;
     private BListView listDictionaries = null;
+    private JScrollPane jScrollPane = null;
     
     //SECTION-END-FIELD
     /**
@@ -56,6 +58,13 @@ public class FormWordDictionary extends BForm {
      */
     private JPanel getJPanel() {
         if (jPanel == null) {
+            GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
+            gridBagConstraints2.fill = GridBagConstraints.BOTH;
+            gridBagConstraints2.gridy = 1;
+            gridBagConstraints2.weightx = 1.0;
+            gridBagConstraints2.weighty = 1.0;
+            gridBagConstraints2.insets = new Insets(6, 12, 6, 12);
+            gridBagConstraints2.gridx = 0;
             GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
             gridBagConstraints4.gridx = 0;
             gridBagConstraints4.anchor = GridBagConstraints.EAST;
@@ -66,13 +75,6 @@ public class FormWordDictionary extends BForm {
             gridBagConstraints3.anchor = GridBagConstraints.EAST;
             gridBagConstraints3.insets = new Insets(6, 0, 6, 12);
             gridBagConstraints3.gridy = 2;
-            GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-            gridBagConstraints1.gridx = 0;
-            gridBagConstraints1.weightx = 1.0D;
-            gridBagConstraints1.weighty = 1.0D;
-            gridBagConstraints1.fill = GridBagConstraints.BOTH;
-            gridBagConstraints1.insets = new Insets(6, 12, 6, 12);
-            gridBagConstraints1.gridy = 1;
             GridBagConstraints gridBagConstraints = new GridBagConstraints();
             gridBagConstraints.gridx = 0;
             gridBagConstraints.anchor = GridBagConstraints.WEST;
@@ -83,9 +85,9 @@ public class FormWordDictionary extends BForm {
             jPanel = new JPanel();
             jPanel.setLayout(new GridBagLayout());
             jPanel.add(lblAvailableDictionaries, gridBagConstraints);
-            jPanel.add(getListDictionaries(), gridBagConstraints1);
             jPanel.add(getJPanel21(), gridBagConstraints3);
             jPanel.add(getJPanel2(), gridBagConstraints4);
+            jPanel.add(getJScrollPane(), gridBagConstraints2);
         }
         return jPanel;
     }
@@ -109,6 +111,7 @@ public class FormWordDictionary extends BForm {
             gridBagConstraints42.insets = new Insets(0, 0, 0, 16);
             jPanel2 = new BPanel();
             jPanel2.setLayout(new GridBagLayout());
+            jPanel2.setPreferredSize(new Dimension(132, 29));
             jPanel2.add(getBtnOK(), gridBagConstraints42);
             jPanel2.add(getBtnCancel(), gridBagConstraints52);
         }
@@ -124,6 +127,7 @@ public class FormWordDictionary extends BForm {
         if (btnOK == null) {
             btnOK = new BButton();
             btnOK.setText("OK");
+            btnOK.setPreferredSize(new Dimension(49, 29));
         }
         return btnOK;
     }
@@ -137,6 +141,7 @@ public class FormWordDictionary extends BForm {
         if (btnCancel == null) {
             btnCancel = new BButton();
             btnCancel.setText("Cancel");
+            btnCancel.setPreferredSize(new Dimension(67, 29));
         }
         return btnCancel;
     }
@@ -204,6 +209,20 @@ public class FormWordDictionary extends BForm {
             listDictionaries = new BListView();
         }
         return listDictionaries;
+    }
+
+    /**
+     * This method initializes jScrollPane	
+     * 	
+     * @return javax.swing.JScrollPane	
+     */
+    private JScrollPane getJScrollPane() {
+        if (jScrollPane == null) {
+            jScrollPane = new JScrollPane();
+            jScrollPane.setPreferredSize(new Dimension(100, 100));
+            jScrollPane.setViewportView(getListDictionaries());
+        }
+        return jScrollPane;
     }
 
     //SECTION-END-METHOD
