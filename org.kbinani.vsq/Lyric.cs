@@ -159,7 +159,7 @@ namespace org
                         try {
                             v = PortUtil.parseInt( spl[i] );
                         } catch ( Exception ex ) {
-                            PortUtil.stderr.println( "Lyric#setCosonantAdjustment; ex=" + ex );
+                            serr.println( "Lyric#setCosonantAdjustment; ex=" + ex );
                         }
                         vec.add( arr, v );
                     }

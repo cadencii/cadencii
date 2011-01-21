@@ -113,7 +113,7 @@ namespace org.kbinani.cadencii
         {
             mSampleRate = sample_rate;
 #if DEBUG
-            PortUtil.println( "WaveSenderDriver#init; sample_rate=" + sample_rate );
+            sout.println( "WaveSenderDriver#init; sample_rate=" + sample_rate );
 #endif
         }
 

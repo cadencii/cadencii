@@ -140,7 +140,7 @@ namespace org.kbinani.vsq
                 }
                 String str = PortUtil.getDecodedString( "Shift_JIS", idat );
 #if DEBUG
-                PortUtil.println( "SingerConfig.readSingerConfig; str=" + str );
+                sout.println( "SingerConfig.readSingerConfig; str=" + str );
 #endif
                 String crlf = "" + (char)0x0d + "" + (char)0x0a;
                 String[] spl = PortUtil.splitString( str, new String[] { crlf }, true );

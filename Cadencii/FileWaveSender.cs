@@ -80,7 +80,7 @@ namespace org.kbinani.cadencii
                     mConverter.read( mPosition, length, l, r );
                     mPosition += length;
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "FileWaveSender#pull; ex=" + ex );
+                    serr.println( "FileWaveSender#pull; ex=" + ex );
                     Logger.write( typeof( FileWaveSender ) + ".pull; ex=" + ex + "\n" );
                 }
             }
@@ -90,13 +90,13 @@ namespace org.kbinani.cadencii
         {
 #if DEBUG
             mNumInstance--;
-            PortUtil.println( "FileWaveSender#end; mNumInstance=" + mNumInstance );
+            sout.println( "FileWaveSender#end; mNumInstance=" + mNumInstance );
 #endif
             lock ( mSyncRoot ) {
                 try {
                     mConverter.close();
                 } catch ( Exception ex ) {
-                    PortUtil.println( "FileWaveSender#end; ex=" + ex );
+                    sout.println( "FileWaveSender#end; ex=" + ex );
                     Logger.write( typeof( FileWaveSender ) + ".end; ex=" + ex + "\n" );
                 }
             }

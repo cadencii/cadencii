@@ -195,7 +195,7 @@ class makeRes{
 					sw.newLine();
 					sw.write( cs_space + "            }catch( Exception ex ){" );
 					sw.newLine();
-					sw.write( cs_space + "                PortUtil.stderr.println( \"Resources#get_" + name + "; ex=\" + ex + \"; res_path=\" + res_path );" );
+					sw.write( cs_space + "                serr.println( \"Resources#get_" + name + "; ex=\" + ex + \"; res_path=\" + res_path );" );
 					sw.newLine();
 					sw.write( cs_space + "            }" );
 					sw.newLine();
@@ -241,7 +241,7 @@ class makeRes{
 					sw.newLine();
 					sw.write( cs_space + "            }catch( Exception ex ){" );
 					sw.newLine();
-					sw.write( cs_space + "                PortUtil.stderr.println( \"Resources#get_" + name + "; ex=\" + ex + \"; res_path=\" + res_path );" );
+					sw.write( cs_space + "                serr.println( \"Resources#get_" + name + "; ex=\" + ex + \"; res_path=\" + res_path );" );
 					sw.newLine();
 					sw.write( cs_space + "            }" );
 					sw.newLine();
@@ -283,7 +283,7 @@ class makeRes{
 			        sw.newLine();
 			        sw.write( cs_space + "                }catch( Exception ex0 ){" );
 			        sw.newLine();
-			        sw.write( cs_space + "                    PortUtil.stderr.println( \"Resources#get_" + name + "; ex0=\" + ex0 + \"; res_path=\" + res_path );" );
+			        sw.write( cs_space + "                    serr.println( \"Resources#get_" + name + "; ex0=\" + ex0 + \"; res_path=\" + res_path );" );
 			        sw.newLine();
 			        sw.write( cs_space + "                }finally{" );
 			        sw.newLine();
@@ -307,7 +307,7 @@ class makeRes{
 			        sw.newLine();
 			        sw.write( cs_space + "            }catch( Exception ex ){" );
 			        sw.newLine();
-			        sw.write( cs_space + "                PortUtil.stderr.println( \"Resources#get_" + name + "; ex=\" + ex + \"; res_path=\" + res_path );" );
+			        sw.write( cs_space + "                serr.println( \"Resources#get_" + name + "; ex=\" + ex + \"; res_path=\" + res_path );" );
 			        sw.newLine();
 			        sw.write( cs_space + "            }" );
 			        sw.newLine();

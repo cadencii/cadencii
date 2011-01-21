@@ -100,8 +100,8 @@ namespace org.kbinani.editotoini {
 #else
             long started_date = (long)(DateTime.Now.Ticks * 100.0 / 1e9);
 #if DEBUG
-            PortUtil.println( "DateTime.Now.Ticks=" + DateTime.Now.Ticks );
-            PortUtil.println( "started_date=" + started_date );
+            sout.println( "DateTime.Now.Ticks=" + DateTime.Now.Ticks );
+            sout.println( "started_date=" + started_date );
 #endif
 #endif
             if ( m_mode == GenerateMode.STF ) {

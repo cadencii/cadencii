@@ -124,7 +124,7 @@ namespace org.kbinani.media {
                 MIDIINCAPS m = new MIDIINCAPS();
                 uint r = win32.midiInGetDevCaps( i, ref m, (uint)Marshal.SizeOf( m ) );
 #if DEBUG
-                PortUtil.println( "MidiInDevice#GetMidiDevices; #" + i + "; r=" + r + "; m=" + m );
+                sout.println( "MidiInDevice#GetMidiDevices; #" + i + "; r=" + r + "; m=" + m );
 #endif
                 ret.Add( m );
             }
@@ -178,7 +178,7 @@ namespace org.kbinani.media {
                                     } else if ( b0 == 0xf2 ) {
                                         // song position pointer
 #if DEBUG
-                                        PortUtil.println( "MidiInDevice#MidiInProc; 0xf2; b0=" + PortUtil.toHexString( b0, 2 ) + "; b1=" + PortUtil.toHexString( b1, 2 ) + "; b2=" + PortUtil.toHexString( b2, 2 ) );
+                                        sout.println( "MidiInDevice#MidiInProc; 0xf2; b0=" + PortUtil.toHexString( b0, 2 ) + "; b1=" + PortUtil.toHexString( b1, 2 ) + "; b2=" + PortUtil.toHexString( b2, 2 ) );
 #endif
                                     }
                                 }

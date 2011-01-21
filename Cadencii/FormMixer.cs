@@ -157,7 +157,7 @@ namespace org.kbinani.cadencii
         private void updateSoloMute()
         {
 #if DEBUG
-            PortUtil.println( "FormMixer#updateSoloMute" );
+            sout.println( "FormMixer#updateSoloMute" );
 #endif
             VsqFileEx vsq = AppManager.getVsqFile();
             if ( vsq == null ) {
@@ -212,7 +212,7 @@ namespace org.kbinani.cadencii
             VsqFileEx vsq = AppManager.getVsqFile();
             int num = vsq.Mixer.Slave.size() + AppManager.getBgmCount();
 #if DEBUG
-            PortUtil.println( "FormMixer#UpdateStatus; num=" + num );
+            sout.println( "FormMixer#UpdateStatus; num=" + num );
 #endif
 #if !OLD_IMPL
             if ( m_tracker == null ) {
@@ -291,7 +291,7 @@ namespace org.kbinani.cadencii
                 VsqMixerEntry vme = itr.next();
                 j++;
 #if DEBUG
-                PortUtil.println( "FormMixer#updateStatus; #" + j + "; feder=" + vme.Feder + "; panpot=" + vme.Panpot );
+                sout.println( "FormMixer#updateStatus; #" + j + "; feder=" + vme.Feder + "; panpot=" + vme.Panpot );
 #endif
                 VolumeTracker tracker = m_tracker.get( j );
                 tracker.setFeder( vme.Feder );
@@ -324,7 +324,7 @@ namespace org.kbinani.cadencii
                 addToPanel1( tracker, j );
             }
 #if DEBUG
-            PortUtil.println( "FormMixer#updateStatus; vsq.Mixer.MasterFeder=" + vsq.Mixer.MasterFeder );
+            sout.println( "FormMixer#updateStatus; vsq.Mixer.MasterFeder=" + vsq.Mixer.MasterFeder );
 #endif
             volumeMaster.setFeder( vsq.Mixer.MasterFeder );
             volumeMaster.setPanpot( vsq.Mixer.MasterPanpot );
@@ -343,12 +343,12 @@ namespace org.kbinani.cadencii
             rc = c.getBounds( rc );
             int xdiff = this.getWidth() - rc.width;
             int ydiff = this.getHeight() - rc.height;
-            PortUtil.println( "FormMixer#updateStatus; this.getWidth()=" + this.getWidth() + "; this.getHeight()=" + this.getHeight() );
-            PortUtil.println( "FormMixer#updateStatus; rc.width=" + rc.width + "; rc.height=" + rc.height );
+            sout.println( "FormMixer#updateStatus; this.getWidth()=" + this.getWidth() + "; this.getHeight()=" + this.getHeight() );
+            sout.println( "FormMixer#updateStatus; rc.width=" + rc.width + "; rc.height=" + rc.height );
             int w = screen_num * (VolumeTracker.WIDTH + 1) + 3;
             int h = VolumeTracker.HEIGHT + hScroll.getHeight();
             this.setSize( w, h + hScroll.getHeight() + menuMain.getHeight() );
-            PortUtil.println( "FormMixer#updateStatus; w=" + w + "; h=" + h + "; xdiff=" + xdiff + "; ydiff=" + ydiff );
+            sout.println( "FormMixer#updateStatus; w=" + w + "; h=" + h + "; xdiff=" + xdiff + "; ydiff=" + ydiff );
             /*c.setMaximumSize( null );
             c.setMinimumSize( null );
             Dimension s = new Dimension( w, h );
@@ -521,7 +521,7 @@ namespace org.kbinani.cadencii
                 invokePanpotChangedEvent( track, panpot );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMixer ) + ".FormMixer_PanpotChanged; ex=" + ex + "\n" );
-                PortUtil.stderr.println( "FormMixer#FormMixer_PanpotChanged; ex=" + ex );
+                serr.println( "FormMixer#FormMixer_PanpotChanged; ex=" + ex );
             }
         }
 
@@ -531,7 +531,7 @@ namespace org.kbinani.cadencii
                 invokeFederChangedEvent( track, feder );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMixer ) + ".FormMixer_FederChanged; ex=" + ex + "\n" );
-                PortUtil.stderr.println( "FormMixer#FormMixer_FederChanged; ex=" + ex );
+                serr.println( "FormMixer#FormMixer_FederChanged; ex=" + ex );
             }
         }
 
@@ -543,7 +543,7 @@ namespace org.kbinani.cadencii
                 invokeSoloChangedEvent( track, parent.isSolo() );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMixer ) + ".FormMixer_SoloButtonClick; ex=" + ex + "\n" );
-                PortUtil.stderr.println( "FormMixer#FormMixer_IsSoloChanged; ex=" + ex );
+                serr.println( "FormMixer#FormMixer_IsSoloChanged; ex=" + ex );
             }
             updateSoloMute();
         }
@@ -556,7 +556,7 @@ namespace org.kbinani.cadencii
                 invokeMuteChangedEvent( track, parent.isMuted() );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMixer ) + ".FormMixer_MuteButtonClick; ex=" + ex + "\n" );
-                PortUtil.stderr.println( "FormMixer#FormMixer_IsMutedChanged; ex=" + ex );
+                serr.println( "FormMixer#FormMixer_IsMutedChanged; ex=" + ex );
             }
             updateSoloMute();
         }
@@ -611,7 +611,7 @@ namespace org.kbinani.cadencii
                 invokeFederChangedEvent( 0, feder );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMixer ) + ".volumeMaster_FederChanged; ex=" + ex + "\n" );
-                PortUtil.stderr.println( "FormMixer#volumeMaster_FederChanged; ex=" + ex );
+                serr.println( "FormMixer#volumeMaster_FederChanged; ex=" + ex );
             }
         }
 
@@ -621,7 +621,7 @@ namespace org.kbinani.cadencii
                 invokePanpotChangedEvent( 0, panpot );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMixer ) + ".volumeMaster_PanpotChanged; ex=" + ex + "\n" );
-                PortUtil.stderr.println( "FormMixer#volumeMaster_PanpotChanged; ex=" + ex );
+                serr.println( "FormMixer#volumeMaster_PanpotChanged; ex=" + ex );
             }
         }
 
@@ -631,7 +631,7 @@ namespace org.kbinani.cadencii
                 invokeMuteChangedEvent( 0, volumeMaster.isMuted() );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMixer ) + ".volumeMaster_MuteButtonClick; ex=" + ex + "\n" );
-                PortUtil.stderr.println( "FormMixer#volumeMaster_IsMutedChanged; ex=" + ex );
+                serr.println( "FormMixer#volumeMaster_IsMutedChanged; ex=" + ex );
             }
         }
         #endregion

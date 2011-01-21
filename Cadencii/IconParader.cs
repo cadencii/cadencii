@@ -88,13 +88,13 @@ namespace org.kbinani.cadencii
                     ret = new Image();
                     ret.image = img;
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "IconParader#createIconImage; ex=" + ex );
+                    serr.println( "IconParader#createIconImage; ex=" + ex );
                 } finally {
                     if ( fs != null ) {
                         try {
                             fs.Close();
                         } catch ( Exception ex2 ) {
-                            PortUtil.stderr.println( "IconParader#createIconImage; ex2=" + ex2 );
+                            serr.println( "IconParader#createIconImage; ex2=" + ex2 );
                         }
                     }
                 }

@@ -598,7 +598,7 @@ namespace org.kbinani.cadencii
             int size = mHandles.size();
             int delta = size - listPresets.getItemCount();
 #if DEBUG
-            PortUtil.println( "FormVibratoPreset#updateStatus; delta=" + delta );
+            sout.println( "FormVibratoPreset#updateStatus; delta=" + delta );
 #endif
             if ( delta > 0 ) {
                 for ( int i = 0; i < delta; i++ ) {

@@ -110,7 +110,7 @@ namespace org.kbinani.media {
             try {
                 SoundSetResolution( value );
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "PlaySound#setResolution; ex=" + ex );
+                serr.println( "PlaySound#setResolution; ex=" + ex );
             }
 #endif
         }
@@ -127,7 +127,7 @@ namespace org.kbinani.media {
                 SoundInit();
                 _is_initialized = true;
             } catch ( Exception ex ) {
-                PortUtil.println( "PlaySound#init; ex=" + ex );
+                sout.println( "PlaySound#init; ex=" + ex );
             }
 #endif
         }
@@ -139,7 +139,7 @@ namespace org.kbinani.media {
             try {
                 SoundKill();
             } catch( Exception ex ){
-                PortUtil.println( "PlaySound#kill; ex=" + ex );
+                sout.println( "PlaySound#kill; ex=" + ex );
             }
 #endif
         }
@@ -151,7 +151,7 @@ namespace org.kbinani.media {
             try {
                 return SoundGetPosition();
             } catch ( Exception ex ) {
-                PortUtil.println( "PlaySound#getPosition; ex=" + ex );
+                sout.println( "PlaySound#getPosition; ex=" + ex );
                 return 0.0;
             }
 #endif
@@ -167,7 +167,7 @@ namespace org.kbinani.media {
             try {
                 SoundWaitForExit();
             } catch ( Exception ex ) {
-                PortUtil.println( "PlaySound#waitForExit; ex=" + ex );
+                sout.println( "PlaySound#waitForExit; ex=" + ex );
             }
 #endif
         }
@@ -201,7 +201,7 @@ namespace org.kbinani.media {
                 IntPtr r = Marshal.UnsafeAddrOfPinnedArrayElement( right, 0 );
                 SoundAppend( l, r, length );
             } catch ( Exception ex ) {
-                PortUtil.println( "PlaySound#append; ex=" + ex );
+                sout.println( "PlaySound#append; ex=" + ex );
             }
 #endif
         }
@@ -225,10 +225,10 @@ namespace org.kbinani.media {
             try {
                 int ret = SoundPrepare( sample_rate );
 #if DEBUG
-                PortUtil.println( "PlaySound#prepare; ret=" + ret );
+                sout.println( "PlaySound#prepare; ret=" + ret );
 #endif
             } catch ( Exception ex ) {
-                PortUtil.println( "PlaySound#prepare; ex=" + ex );
+                sout.println( "PlaySound#prepare; ex=" + ex );
             }
 #endif
         }
@@ -246,14 +246,14 @@ namespace org.kbinani.media {
                 m_line.open( m_format );
                 m_line.start();
             }catch( Exception ex ){
-                PortUtil.stderr.println( "PlaySound#reset; ex=" + ex );
+                serr.println( "PlaySound#reset; ex=" + ex );
                 m_line = null;
             }
 #else
             try {
                 SoundExit();
             } catch ( Exception ex ) {
-                PortUtil.println( "PlaySound#exit; ex=" + ex );
+                sout.println( "PlaySound#exit; ex=" + ex );
             }
 #endif
         }
@@ -265,7 +265,7 @@ namespace org.kbinani.media {
             try {
                 SoundUnprepare();
             } catch ( Exception ex ) {
-                PortUtil.println( "PlaySound#unprepare; ex=" + ex );
+                sout.println( "PlaySound#unprepare; ex=" + ex );
             }
 #endif
         }

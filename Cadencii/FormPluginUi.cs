@@ -70,7 +70,7 @@ namespace org.kbinani.cadencii {
                     try {
                         ret = win32.InvalidateRect( childWnd, IntPtr.Zero, false );
                     } catch ( Exception ex ) {
-                        PortUtil.stderr.println( "FormPluginUi#invalidateUi; ex=" + ex );
+                        serr.println( "FormPluginUi#invalidateUi; ex=" + ex );
                         ret = false;
                     }
                     lastDrawn = now;

@@ -1537,9 +1537,9 @@ namespace org.kbinani.cadencii
 #endif
 #endif
 #if DEBUG
-                PortUtil.println( "Preference#btnAdd_Click; dir=" + dir );
-                PortUtil.println( "Preference#btnAdd_Clicl; PortUtil.isDirectoryExists(dir)=" + PortUtil.isDirectoryExists( dir ) );
-                PortUtil.println( "Preference#btnAdd_Clicl; PortUtil.isFileExists(dir)=" + PortUtil.isFileExists( dir ) );
+                sout.println( "Preference#btnAdd_Click; dir=" + dir );
+                sout.println( "Preference#btnAdd_Clicl; PortUtil.isDirectoryExists(dir)=" + PortUtil.isDirectoryExists( dir ) );
+                sout.println( "Preference#btnAdd_Clicl; PortUtil.isFileExists(dir)=" + PortUtil.isFileExists( dir ) );
 #endif
                 if ( !PortUtil.isDirectoryExists( dir ) && PortUtil.isFileExists( dir ) ) {
                     // dirの指すパスがフォルダではなくファイルだった場合、

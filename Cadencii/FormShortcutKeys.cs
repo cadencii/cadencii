@@ -68,12 +68,12 @@ namespace org.kbinani.cadencii
 #endif
             } catch ( Exception ex ) {
 #if DEBUG
-                PortUtil.stderr.println( "FormShortcutKeys#.ctor; ex=" + ex );
+                serr.println( "FormShortcutKeys#.ctor; ex=" + ex );
 #endif
             }
 
 #if DEBUG
-            PortUtil.println( "FormShortcutKeys#.ctor; dict.size()=" + dict.size() );
+            sout.println( "FormShortcutKeys#.ctor; dict.size()=" + dict.size() );
 #endif
             list.setColumnHeaders( new String[] { "Command", "Shortcut Key" } );
             list.setColumnWidth( 0, mColumnWidthCommand );
@@ -199,7 +199,7 @@ namespace org.kbinani.cadencii
                     group = "listGroupOther";
                 }
 #if DEBUG
-                PortUtil.println( "FormShortcutKeys#UpdateList; name=" + name + "; group=" + group );
+                sout.println( "FormShortcutKeys#UpdateList; name=" + name + "; group=" + group );
 #endif
                 list.addItem( group, item );
             }
@@ -359,7 +359,7 @@ namespace org.kbinani.cadencii
             mColumnWidthCommand = list.getColumnWidth( 0 );
             mColumnWidthShortcutKey = list.getColumnWidth( 1 );
 #if DEBUG
-            PortUtil.println( "FormShortCurKeys#FormShortcutKeys_FormClosing; columnWidthCommand,columnWidthShortcutKey=" + mColumnWidthCommand + "," + mColumnWidthShortcutKey );
+            sout.println( "FormShortCurKeys#FormShortcutKeys_FormClosing; columnWidthCommand,columnWidthShortcutKey=" + mColumnWidthCommand + "," + mColumnWidthShortcutKey );
 #endif
         }
 

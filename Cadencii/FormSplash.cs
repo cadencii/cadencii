@@ -26,7 +26,10 @@ using org.kbinani.java.awt;
 using org.kbinani.javax.imageio;
 using org.kbinani.windows.forms;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
+    using BMouseEventHandler = System.Windows.Forms.MouseEventHandler;
+    using BMouseEventArgs = System.Windows.Forms.MouseEventArgs;
     using boolean = System.Boolean;
 #endif
 
@@ -36,7 +39,8 @@ namespace org.kbinani.cadencii {
 #if JAVA
     public class FormSplash extends BDialog {
 #else
-    public class FormSplash : BDialog {
+    public class FormSplash : BDialog
+    {
 #endif
 
 #if !JAVA
@@ -57,7 +61,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// コンストラクタ
         /// </summary>
-        public FormSplash() {
+        public FormSplash()
+        {
 #if JAVA
             super();
             initialize();
@@ -74,7 +79,8 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="path_image"></param>
         /// <param name="singer_name"></param>
-        public void addIconThreadSafe( String path_image, String singer_name ) {
+        public void addIconThreadSafe( String path_image, String singer_name )
+        {
             Delegate deleg = (Delegate)new AddIconThreadSafeDelegate( addIcon );
             if ( deleg != null ) {
                 this.Invoke( deleg, new String[] { path_image, singer_name } );
@@ -86,11 +92,14 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="path_image">イメージファイルへのパス</param>
         /// <param name="singer_name">歌手の名前</param>
-        public void addIcon( String path_image, String singer_name ) {
+        public void addIcon( String path_image, String singer_name )
+        {
             IconParader p = new IconParader();
             Image img = IconParader.createIconImage( path_image, singer_name );
             p.setImage( img );
-
+            p.MouseDown += new BMouseEventHandler( handleMouseDown );
+            p.MouseUp += new BMouseEventHandler( handleMouseUp );
+            p.MouseMove += new BMouseEventHandler( handleMouseMove );
 #if JAVA
             panelIcon.add( p );
 #else
@@ -98,40 +107,66 @@ namespace org.kbinani.cadencii {
             panelIcon.Controls.Add( p );
 #endif
         }
+
         #endregion
 
         #region helper methods
-        private void setResources() {
+        private void setResources()
+        {
 #if !JAVA
             this.BackgroundImage = Resources.get_splash().image;
 #endif
         }
 
-        private void registerEventHandlers() {
+        private void registerEventHandlers()
+        {
 #if JAVA
-            PortUtil.stdout.println( "//TODO: fixme: FormSplash#registerEventHandlers" );
+            sout.println( "//TODO: fixme: FormSplash#registerEventHandlers" );
 #else
-            this.MouseDown += new System.Windows.Forms.MouseEventHandler( FormSplash_MouseDown );
-            this.MouseUp += new System.Windows.Forms.MouseEventHandler( FormSplash_MouseUp );
-            this.MouseMove += new System.Windows.Forms.MouseEventHandler( FormSplash_MouseMove );
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler( handleMouseDown );
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler( handleMouseUp );
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler( handleMouseMove );
+            panelIcon.MouseDown += new MouseEventHandler( handleMouseDown );
+            panelIcon.MouseUp += new MouseEventHandler( handleMouseUp );
+            panelIcon.MouseMove += new MouseEventHandler( handleMouseMove );
 #endif
         }
         #endregion
 
         #region event handlers
-        public void FormSplash_MouseDown( Object sender, MouseEventArgs e ) {
+        /// <summary>
+        /// このスプラッシュウィンドウに，MouseDownイベントを通知します
+        /// </summary>
+        /// <param name="screen_x"></param>
+        /// <param name="screen_y"></param>
+        public void handleMouseDown( Object sender, BMouseEventArgs arg )
+        {
             mouseDowned = true;
-            mouseDownedLocation = new Point( e.X, e.Y );
+            Point screen = PortUtil.getMousePosition();
+            Point p = pointToClient( screen );
+            mouseDownedLocation = p;
         }
 
-        public void FormSplash_MouseUp( Object sender, MouseEventArgs e ) {
+        /// <summary>
+        /// このスプラッシュウィンドウに，MouseUpイベントを通知します
+        /// </summary>
+        public void handleMouseUp( Object sender, BMouseEventArgs arg )
+        {
             mouseDowned = false;
         }
 
-        public void FormSplash_MouseMove( Object sender, MouseEventArgs e ) {
-            if ( !mouseDowned ) return;
-            Point globalMouseLocation = PortUtil.getMousePosition();
-            this.setLocation( globalMouseLocation.x - mouseDownedLocation.x, globalMouseLocation.y - mouseDownedLocation.y );
+        /// <summary>
+        /// このスプラッシュウィンドウに，MouseMoveイベントを通知します
+        /// </summary>
+        public void handleMouseMove( Object sender, BMouseEventArgs arg )
+        {
+            if ( !mouseDowned ) {
+                return;
+            }
+
+            Point screen = PortUtil.getMousePosition();
+            Point p = new Point( screen.x - mouseDownedLocation.x, screen.y - mouseDownedLocation.y );
+            setLocation( p );
         }
         #endregion
 
@@ -141,7 +176,8 @@ namespace org.kbinani.cadencii {
             setSize( 500, 335 );
         }
 #else
-        private void InitializeComponent() {
+        private void InitializeComponent()
+        {
             this.components = new System.ComponentModel.Container();
             this.panelIcon = new System.Windows.Forms.FlowLayoutPanel();
             this.toolTip = new System.Windows.Forms.ToolTip( this.components );

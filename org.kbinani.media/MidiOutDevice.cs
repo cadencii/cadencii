@@ -109,7 +109,7 @@ namespace org.kbinani.media {
                 }
                 win32.midiOutUnprepareHeader( m_handle, ref hdr, size );
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "MidiOutDevice#SendLong; ex=" + ex );
+                serr.println( "MidiOutDevice#SendLong; ex=" + ex );
             } finally {
                 if ( ptrData != IntPtr.Zero ) {
                     Marshal.FreeHGlobal( ptrData );

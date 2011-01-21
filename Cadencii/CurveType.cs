@@ -15,9 +15,11 @@
 package org.kbinani.cadencii;
 
 import java.io.*;
+import org.kbinani.*;
 import org.kbinani.vsq.*;
 #else
 using System;
+using org.kbinani;
 using org.kbinani.vsq;
 
 namespace org.kbinani.cadencii
@@ -205,6 +207,8 @@ namespace org.kbinani.cadencii
                 mName = "BRE";
             } else if ( mType == CurveTypeImpl.BRI ) {
                 mName = "BRI";
+            } else if ( mType == CurveTypeImpl.CLE ) {
+                mName = "CLE";
             } else if ( mType == CurveTypeImpl.OPE ) {
                 mName = "OPE";
             } else if ( mType == CurveTypeImpl.GEN ) {
@@ -254,6 +258,9 @@ namespace org.kbinani.cadencii
             } else if ( mType == CurveTypeImpl.Env ) {
                 mName = "Env";
             } else {
+#if DEBUG
+                sout.println( "CurveType#.ctor; mType=" + mType );
+#endif
                 mName = "Empty";
             }
         }

@@ -1,3 +1,7 @@
+ul{
+	list-style-type: none;
+}
+
 body{
 	font-family: 'Verdana';
 	font-size: 15px;

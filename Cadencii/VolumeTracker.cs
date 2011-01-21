@@ -344,7 +344,7 @@ namespace org.kbinani.cadencii
                     }
 #endif
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "VolumeTracker#setFeder; ex=" + ex );
+                    serr.println( "VolumeTracker#setFeder; ex=" + ex );
                 }
             }
             int v = 177 - getYCoordFromFeder( mFeder );
@@ -453,7 +453,7 @@ namespace org.kbinani.cadencii
                 }
 #endif
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "VolumeTracker#trackFeder_ValueChanged; ex=" + ex );
+                serr.println( "VolumeTracker#trackFeder_ValueChanged; ex=" + ex );
             }
         }
 
@@ -472,7 +472,7 @@ namespace org.kbinani.cadencii
                 }
 #endif
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "VolumeTracker#trackPanpot_ValueChanged; ex=" + ex );
+                serr.println( "VolumeTracker#trackPanpot_ValueChanged; ex=" + ex );
             }
         }
 
@@ -500,7 +500,7 @@ namespace org.kbinani.cadencii
                 txtFeder.requestFocusInWindow();
                 txtFeder.selectAll();
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "VolumeTracker#txtFeder_KeyDown; ex=" + ex );
+                serr.println( "VolumeTracker#txtFeder_KeyDown; ex=" + ex );
             }
         }
 
@@ -528,7 +528,7 @@ namespace org.kbinani.cadencii
                 txtPanpot.requestFocusInWindow();
                 txtPanpot.selectAll();
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "VolumeTracker#txtPanpot_KeyDown; ex=" + ex );
+                serr.println( "VolumeTracker#txtPanpot_KeyDown; ex=" + ex );
             }
         }
 
@@ -545,7 +545,7 @@ namespace org.kbinani.cadencii
                 }
 #endif
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "VolumeTracker#chkSolo_Click; ex=" + ex );
+                serr.println( "VolumeTracker#chkSolo_Click; ex=" + ex );
             }
         }
 
@@ -563,7 +563,7 @@ namespace org.kbinani.cadencii
                 }
 #endif
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "VolumeTracker#chkMute_Click; ex=" + ex );
+                serr.println( "VolumeTracker#chkMute_Click; ex=" + ex );
             }
         }
         #endregion

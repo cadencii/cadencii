@@ -769,7 +769,10 @@ namespace org.kbinani.cadencii
                     f.setRoot( driver );
                 } catch ( Exception ex ) {
                     Logger.write( typeof( AppManager ) + ".previewStart; ex=" + ex + "\n" );
-                    PortUtil.stderr.println( "AppManager.previewStart; ex=" + ex );
+                    serr.println( "AppManager.previewStart; ex=" + ex );
+#if JAVA
+                    ex.printStackTrace();
+#endif
                 }
             }
 
@@ -796,7 +799,7 @@ namespace org.kbinani.cadencii
                     }
                     wr.setOffsetSeconds( offset );
 #if DEBUG
-                    PortUtil.println( "AppManager.previewStart; bgm.file=" + bgm.file + "; offset=" + offset );
+                    sout.println( "AppManager.previewStart; bgm.file=" + bgm.file + "; offset=" + offset );
 
 #endif
                     Amplifier a = new Amplifier();
@@ -808,7 +811,7 @@ namespace org.kbinani.cadencii
                     f.setRoot( driver );
                 } catch ( Exception ex ) {
                     Logger.write( typeof( AppManager ) + ".previewStart; ex=" + ex + "\n" );
-                    PortUtil.stderr.println( "AppManager.previewStart; ex=" + ex );
+                    serr.println( "AppManager.previewStart; ex=" + ex );
                 }
             }
 
@@ -840,11 +843,11 @@ namespace org.kbinani.cadencii
             long samples = (long)((end_sec - mDirectPlayShift) * sample_rate);
             driver.init( mVsq, mSelected, 0, end_clock, sample_rate );
 #if DEBUG
-            PortUtil.println( "AppManager.previewStart; calling runGenerator..." );
+            sout.println( "AppManager.previewStart; calling runGenerator..." );
 #endif
             runGenerator( samples );
 #if DEBUG
-            PortUtil.println( "AppManager.previewStart; calling runGenerator... done" );
+            sout.println( "AppManager.previewStart; calling runGenerator... done" );
 #endif
         }
 
@@ -902,34 +905,17 @@ namespace org.kbinani.cadencii
                         continue;
                     }
 
+#if DEBUG
+                    sout.println( "AppManager#pathWorkToFreeze; wavePath=" + wavePath + "; queue.get( queueIndex.get( 0 ) ).file=" + queue.get( queueIndex.get( 0 ) ).file );
+                    sout.println( "AppManager#pathWorkToFreeze; queueIndex.size()=" + queueIndex.size() );
+#endif
                     if ( queueIndex.size() == 1 && wavePath.Equals( queue.get( queueIndex.get( 0 ) ).file ) ) {
                         // 第trackトラック全体の合成を指示するキューだった場合．
                         // このとき，パッチワークを行う必要なし．
                         mLastRenderedStatus[track - 1] =
                             new RenderedStatus( (VsqTrack)mVsq.Track.get( track ).clone(), mVsq.TempoTable, (SequenceConfig)mVsq.config.clone() );
                         serializeRenderingStatus( temppath, track );
-                        try {
-#if JAVA
-                            waveViewReloadRequiredEvent.raise( typeof( AppManager ), track, wavePath, 1, -1 );
-#elif QT_VERSION
-                            waveViewReloadRequired( this, track, wavePath, 1, -1 );
-#else
-                            if ( WaveViewReloadRequired != null ) {
-                                WaveViewRealoadRequiredEventArgs arg = new WaveViewRealoadRequiredEventArgs();
-                                arg.track = track;
-                                arg.file = wavePath;
-                                arg.secStart = 1;
-                                arg.secEnd = -1;
-                                WaveViewReloadRequired.Invoke( typeof( AppManager ), arg );
-                            }
-#endif
-                        } catch ( Exception ex ) {
-                            Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
-                            PortUtil.println( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex );
-#if JAVA
-                            ex.printStackTrace();
-#endif
-                        }
+                        invokeWaveViewReloadRequiredEvent( track, wavePath, 1, -1 );
                         continue;
                     }
 
@@ -969,7 +955,7 @@ namespace org.kbinani.cadencii
                                 }
                             } catch ( Exception ex ) {
                                 Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
-                                PortUtil.stderr.println( "AppManager#patchWorkToFreeze; ex=" + ex );
+                                serr.println( "AppManager#patchWorkToFreeze; ex=" + ex );
 #if JAVA
                                 ex.printStackTrace();
 #endif
@@ -979,7 +965,7 @@ namespace org.kbinani.cadencii
                                         wr.close();
                                     } catch ( Exception ex2 ) {
                                         Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
-                                        PortUtil.stderr.println( "AppManager#patchWorkToFreeze; ex2=" + ex2 );
+                                        serr.println( "AppManager#patchWorkToFreeze; ex2=" + ex2 );
 #if JAVA
                                         ex2.printStackTrace();
 #endif
@@ -991,7 +977,7 @@ namespace org.kbinani.cadencii
                                 PortUtil.deleteFile( queue.get( i ).file );
                             } catch ( Exception ex ) {
                                 Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
-                                PortUtil.stderr.println( "AppManager#patchWorkToFreeze; ex=" + ex );
+                                serr.println( "AppManager#patchWorkToFreeze; ex=" + ex );
 #if JAVA
                                 ex.printStackTrace();
 #endif
@@ -1065,7 +1051,7 @@ namespace org.kbinani.cadencii
                         }
                     } catch ( Exception ex ) {
                         Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
-                        PortUtil.stderr.println( "AppManager#patchWorkToFreeze; ex=" + ex );
+                        serr.println( "AppManager#patchWorkToFreeze; ex=" + ex );
 #if JAVA
                         ex.printStackTrace();
 #endif
@@ -1075,7 +1061,7 @@ namespace org.kbinani.cadencii
                                 writer.close();
                             } catch ( Exception ex2 ) {
                                 Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
-                                PortUtil.stderr.println( "AppManager#patchWorkToFreeze; ex2=" + ex2 );
+                                serr.println( "AppManager#patchWorkToFreeze; ex2=" + ex2 );
 #if JAVA
                                 ex2.printStackTrace();
 #endif
@@ -1096,33 +1082,12 @@ namespace org.kbinani.cadencii
                         }
                         double secEnd = mVsq.getSecFromClock( clockEnd );
 
-                        try {
-#if JAVA
-                            waveViewReloadRequiredEvent.raise( typeof( AppManager ), tracks.get( k ), wavePath, secStart, secEnd );
-#elif QT_VERSION
-                            waveViewReloadRequired( this, tracks[k], wavePath, secStart, secEnd );
-#else
-                            if ( WaveViewReloadRequired != null ) {
-                                WaveViewRealoadRequiredEventArgs arg = new WaveViewRealoadRequiredEventArgs();
-                                arg.track = tracks.get( k );
-                                arg.file = wavePath;
-                                arg.secStart = secStart;
-                                arg.secEnd = secEnd;
-                                WaveViewReloadRequired.Invoke( typeof( AppManager ), arg );
-                            }
-#endif
-                        } catch ( Exception ex ) {
-                            Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
-                            PortUtil.println( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex );
-#if JAVA
-                            ex.printStackTrace();
-#endif
-                        }
+                        invokeWaveViewReloadRequiredEvent( tracks.get( k ), wavePath, secStart, secEnd );
                     }
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
-                PortUtil.stderr.println( "AppManager#patchWorkToFreeze; ex=" + ex );
+                serr.println( "AppManager#patchWorkToFreeze; ex=" + ex );
 #if JAVA
                 ex.printStackTrace();
 #endif
@@ -1132,12 +1097,40 @@ namespace org.kbinani.cadencii
                         dialog.close();
                     } catch ( Exception ex2 ) {
                         Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
-                        PortUtil.stderr.println( "AppManager#patchWorkToFreeez; ex2=" + ex2 );
+                        serr.println( "AppManager#patchWorkToFreeez; ex2=" + ex2 );
 #if JAVA
                         ex2.printStackTrace();
 #endif
                     }
                 }
+            }
+        }
+
+        private static void invokeWaveViewReloadRequiredEvent( int track, String wavePath, double secStart, double secEnd )
+        {
+            try {
+#if QT_VERSION
+                waveViewReloadRequired( this, track, wavePath, secStart, secEnd );
+#else
+                WaveViewRealoadRequiredEventArgs arg = new WaveViewRealoadRequiredEventArgs();
+                arg.track = track;
+                arg.file = wavePath;
+                arg.secStart = secStart;
+                arg.secEnd = secEnd;
+#if JAVA
+                waveViewReloadRequiredEvent.raise( AppManager.class, arg );
+#else
+                if ( WaveViewReloadRequired != null ) {
+                    WaveViewReloadRequired.Invoke( typeof( AppManager ), arg );
+                }
+#endif
+#endif
+            } catch ( Exception ex ) {
+                Logger.write( typeof( AppManager ) + ".invokeWaveViewReloadRequiredEvent; ex=" + ex + "\n" );
+                sout.println( typeof( AppManager ) + ".invokeWaveViewReloadRequiredEvent; ex=" + ex );
+#if JAVA
+                ex.printStackTrace();
+#endif
             }
         }
 
@@ -1291,10 +1284,10 @@ namespace org.kbinani.cadencii
                             }
 #if DEBUG
                             if ( e.mStart != exStart ) {
-                                PortUtil.println( "FormMain#patchWorkToFreeze; start extended; " + e.mStart + " => " + exStart );
+                                sout.println( "FormMain#patchWorkToFreeze; start extended; " + e.mStart + " => " + exStart );
                             }
                             if ( e.mEnd != exEnd ) {
-                                PortUtil.println( "FormMain#patchWorkToFreeze; end extended; " + e.mEnd + " => " + exEnd );
+                                sout.println( "FormMain#patchWorkToFreeze; end extended; " + e.mEnd + " => " + exEnd );
                             }
 #endif
 
@@ -1302,14 +1295,14 @@ namespace org.kbinani.cadencii
                         }
                     } catch ( Exception ex ) {
                         Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
-                        PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
+                        serr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
                     } finally {
                         if ( wr != null ) {
                             try {
                                 wr.close();
                             } catch ( Exception ex2 ) {
                                 Logger.write( typeof( FormMain ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
-                                PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex2=" + ex2 );
+                                serr.println( "FormMain#patchWorkToFreeze; ex2=" + ex2 );
                             }
                         }
                     }
@@ -1318,7 +1311,7 @@ namespace org.kbinani.cadencii
                 // zoneに、レンダリングが必要なアイテムの範囲が格納されているので。
                 int j = -1;
 #if DEBUG
-                PortUtil.println( "AppManager#patchWorkCreateQueue; track#" + track );
+                sout.println( "AppManager#patchWorkCreateQueue; track#" + track );
 #endif
                 for ( Iterator<EditedZoneUnit> itr = zone.iterator(); itr.hasNext(); ) {
                     EditedZoneUnit unit = itr.next();
@@ -1328,7 +1321,7 @@ namespace org.kbinani.cadencii
                     q.clockStart = unit.mStart;
                     q.clockEnd = unit.mEnd;
 #if DEBUG
-                    PortUtil.println( "    start=" + unit.mStart + "; end=" + unit.mEnd );
+                    sout.println( "    start=" + unit.mStart + "; end=" + unit.mEnd );
 #endif
                     q.file = fsys.combine( temppath, track + "_" + j + ".wav" );
                     queue.add( q );
@@ -1505,15 +1498,15 @@ namespace org.kbinani.cadencii
         {
             lock ( mLocker ) {
 #if DEBUG
-                PortUtil.println( "AppManager#runGenerator; (mPreviewThread==null)=" + (mPreviewThread == null) );
+                sout.println( "AppManager#runGenerator; (mPreviewThread==null)=" + (mPreviewThread == null) );
 #endif
                 Thread t = mPreviewThread;
                 if ( t != null ) {
 #if DEBUG
 #if JAVA
-                    PortUtil.println( "AppManager#runGenerator; mPreviewThread.getState()=" + t.getState() );
+                    sout.println( "AppManager#runGenerator; mPreviewThread.getState()=" + t.getState() );
 #else
-                    PortUtil.println( "AppManager#runGenerator; mPreviewThread.ThreadState=" + t.ThreadState );
+                    sout.println( "AppManager#runGenerator; mPreviewThread.ThreadState=" + t.ThreadState );
 #endif
 #endif
 #if JAVA
@@ -1526,7 +1519,7 @@ namespace org.kbinani.cadencii
                             g.stop();
                         }
 #if DEBUG
-                        PortUtil.println( "AppManager#runGenerator; waiting stop..." );
+                        sout.println( "AppManager#runGenerator; waiting stop..." );
 #endif
 #if JAVA
                         while( t.getState() != Thread.State.TERMINATED ){
@@ -1541,7 +1534,7 @@ namespace org.kbinani.cadencii
                         }
 #endif
 #if DEBUG
-                        PortUtil.println( "AppManager#runGenerator; waiting stop... done" );
+                        sout.println( "AppManager#runGenerator; waiting stop... done" );
 #endif
                     }
                 }
@@ -1569,7 +1562,7 @@ namespace org.kbinani.cadencii
                 g.begin( samples );
             } catch ( Exception ex ) {
                 Logger.write( typeof( AppManager ) + ".runGeneratorCore; ex=" + ex + "\n" );
-                PortUtil.println( "AppManager#runGeneratorCore; ex=" + ex );
+                sout.println( "AppManager#runGeneratorCore; ex=" + ex );
             }
         }
 
@@ -1884,14 +1877,14 @@ namespace org.kbinani.cadencii
             } catch ( Exception ex ) {
                 Logger.write( typeof( AppManager ) + ".deserializeRederingStatus; ex=" + ex + "\n" );
                 status = null;
-                PortUtil.stderr.println( "AppManager#deserializeRederingStatus; ex=" + ex );
+                serr.println( "AppManager#deserializeRederingStatus; ex=" + ex );
             } finally {
                 if ( fs != null ) {
                     try {
                         fs.close();
                     } catch ( Exception ex2 ) {
                         Logger.write( typeof( AppManager ) + ".deserializeRederingStatus; ex=" + ex2 + "\n" );
-                        PortUtil.stderr.println( "AppManager#deserializeRederingStatus; ex2=" + ex2 );
+                        serr.println( "AppManager#deserializeRederingStatus; ex2=" + ex2 );
                     }
                 }
             }
@@ -1905,14 +1898,14 @@ namespace org.kbinani.cadencii
                 fs = new FileOutputStream( fsys.combine( temppath, track + ".xml" ) );
                 mRenderingStatusSerializer.serialize( fs, mLastRenderedStatus[track - 1] );
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
+                serr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
                 Logger.write( typeof( AppManager ) + ".serializeRenderingStauts; ex=" + ex + "\n" );
             } finally {
                 if ( fs != null ) {
                     try {
                         fs.close();
                     } catch ( Exception ex2 ) {
-                        PortUtil.stderr.println( "FormMain#patchWorkToFreeze; ex2=" + ex2 );
+                        serr.println( "FormMain#patchWorkToFreeze; ex2=" + ex2 );
                         Logger.write( typeof( AppManager ) + ".serializeRenderingStatus; ex=" + ex2 + "\n" );
                     }
                 }
@@ -2122,7 +2115,7 @@ namespace org.kbinani.cadencii
 #endif
             } catch ( Exception ex ) {
                 Logger.write( typeof( AppManager ) + ".endShowDialog; ex=" + ex + "\n" );
-                PortUtil.println( typeof( AppManager ) + ".endShowDialog; ex=" + ex );
+                sout.println( typeof( AppManager ) + ".endShowDialog; ex=" + ex );
             }
         }
 
@@ -2179,7 +2172,7 @@ namespace org.kbinani.cadencii
 #endif
             } catch ( Exception ex ) {
                 Logger.write( typeof( AppManager ) + ".removeBgm; ex=" + ex + "\n" );
-                PortUtil.stderr.println( typeof( AppManager ) + ".removeBgm; ex=" + ex );
+                serr.println( typeof( AppManager ) + ".removeBgm; ex=" + ex );
             }
             mMixerWindow.updateStatus();
         }
@@ -2204,7 +2197,7 @@ namespace org.kbinani.cadencii
 #endif
             } catch ( Exception ex ) {
                 Logger.write( typeof( AppManager ) + ".removeBgm; ex=" + ex + "\n" );
-                PortUtil.stderr.println( typeof( AppManager ) + ".removeBgm; ex=" + ex );
+                serr.println( typeof( AppManager ) + ".removeBgm; ex=" + ex );
             }
             mMixerWindow.updateStatus();
         }
@@ -2238,7 +2231,7 @@ namespace org.kbinani.cadencii
 #endif
             } catch ( Exception ex ) {
                 Logger.write( typeof( AppManager ) + ".removeBgm; ex=" + ex + "\n" );
-                PortUtil.stderr.println( typeof( AppManager ) + ".removeBgm; ex=" + ex );
+                serr.println( typeof( AppManager ) + ".removeBgm; ex=" + ex );
             }
             mMixerWindow.updateStatus();
         }
@@ -2263,7 +2256,7 @@ namespace org.kbinani.cadencii
         public static void handleAutoBackupTimerTick( Object sender, BEventArgs e )
         {
 #if DEBUG
-            PortUtil.println( "AppManager::handleAutoBackupTimerTick" );
+            sout.println( "AppManager::handleAutoBackupTimerTick" );
 #endif
             if ( !mFile.Equals( "" ) && PortUtil.isFileExists( mFile ) ) {
                 String path = PortUtil.getDirectoryName( mFile );
@@ -2273,7 +2266,7 @@ namespace org.kbinani.cadencii
                     try {
                         PortUtil.deleteFile( backup );
                     } catch ( Exception ex ) {
-                        PortUtil.stderr.println( "AppManager::handleAutoBackupTimerTick; ex=" + ex );
+                        serr.println( "AppManager::handleAutoBackupTimerTick; ex=" + ex );
                         Logger.write( typeof( AppManager ) + ".handleAutoBackupTimerTick; ex=" + ex + "\n" );
                     }
                 }
@@ -2281,7 +2274,7 @@ namespace org.kbinani.cadencii
                     try {
                         PortUtil.deleteFile( file2 );
                     } catch ( Exception ex ) {
-                        PortUtil.stderr.println( "AppManager::handleAutoBackupTimerTick; ex=" + ex );
+                        serr.println( "AppManager::handleAutoBackupTimerTick; ex=" + ex );
                         Logger.write( typeof( AppManager ) + ".handleAutoBackupTimerTick; ex=" + ex + "\n" );
                     }
                 }
@@ -2301,10 +2294,10 @@ namespace org.kbinani.cadencii
                 mDebugLog.write( message );
                 mDebugLog.newLine();
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "AppManager#debugWriteLine; ex=" + ex );
+                serr.println( "AppManager#debugWriteLine; ex=" + ex );
                 Logger.write( typeof( AppManager ) + ".debugWriteLine; ex=" + ex + "\n" );
             }
-            PortUtil.println( message );
+            sout.println( message );
 #endif
         }
 
@@ -2329,8 +2322,8 @@ namespace org.kbinani.cadencii
         public static void setTempWaveDir( String value )
         {
 #if DEBUG
-            PortUtil.println( "AppManager#setTempWaveDir; before: \"" + mTempWaveDir + "\"" );
-            PortUtil.println( "                           after:  \"" + value + "\"" );
+            sout.println( "AppManager#setTempWaveDir; before: \"" + mTempWaveDir + "\"" );
+            sout.println( "                           after:  \"" + value + "\"" );
 #endif
             mTempWaveDir = value;
         }
@@ -2386,7 +2379,7 @@ namespace org.kbinani.cadencii
                     }
 #endif
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "AppManager#setCurveMode; ex=" + ex );
+                    serr.println( "AppManager#setCurveMode; ex=" + ex );
                     Logger.write( typeof( AppManager ) + ".setCurveMode; ex=" + ex + "\n" );
                 }
             }
@@ -2438,7 +2431,7 @@ namespace org.kbinani.cadencii
 #endif
                     } catch ( Exception ex ) {
                         Logger.write( typeof( AppManager ) + ".undo; ex=" + ex + "\n" );
-                        PortUtil.stderr.println( typeof( AppManager ) + ".undo; ex=" + ex );
+                        serr.println( typeof( AppManager ) + ".undo; ex=" + ex );
                     }
                 }
                 mCommands.set( mCommandIndex, inv );
@@ -2485,7 +2478,7 @@ namespace org.kbinani.cadencii
 #endif
                     } catch ( Exception ex ) {
                         Logger.write( typeof( AppManager ) + ".redo; ex=" + ex + "\n" );
-                        PortUtil.stderr.println( typeof( AppManager ) + ".redo; ex=" + ex );
+                        serr.println( typeof( AppManager ) + ".redo; ex=" + ex );
                     }
                 }
                 mCommands.set( mCommandIndex + 1, inv );
@@ -2511,7 +2504,8 @@ namespace org.kbinani.cadencii
                 SelectedEventEntry item = mSelectedEvents.get( i );
                 if ( item.track == selected ) {
                     int internal_id = item.original.InternalID;
-                    item.original = vsq_track.findEventFromID( internal_id );
+                    VsqEvent ev = vsq_track.findEventFromID( internal_id );
+                    mSelectedEvents.set( i, new SelectedEventEntry( selected, ev, (VsqEvent)ev.clone() ) );
                 } else {
                     mSelectedEvents.removeElementAt( i );
                     i--;
@@ -2622,7 +2616,7 @@ namespace org.kbinani.cadencii
 #endif
 
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "AppManager#setSelectedTool; ex=" + ex );
+                    serr.println( "AppManager#setSelectedTool; ex=" + ex );
                     Logger.write( typeof( AppManager ) + ".setSelectedTool; ex=" + ex + "\n" );
                 }
             }
@@ -2977,7 +2971,7 @@ namespace org.kbinani.cadencii
                             }
 #endif
                         } catch ( Exception ex ) {
-                            PortUtil.stderr.println( "AppManager#addSelectedEventCor; ex=" + ex );
+                            serr.println( "AppManager#addSelectedEventCor; ex=" + ex );
                             Logger.write( typeof( AppManager ) + ".addSelectedCurveCor; ex=" + ex + "\n" );
                         }
                     }
@@ -3108,7 +3102,7 @@ namespace org.kbinani.cadencii
                 }
 #endif
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "AppManager#checkSelectedItemExistence; ex=" + ex );
+                serr.println( "AppManager#checkSelectedItemExistence; ex=" + ex );
                 Logger.write( typeof( AppManager ) + ".checkSelectedItemExistence; ex=" + ex + "\n" );
             }
         }
@@ -3175,7 +3169,7 @@ namespace org.kbinani.cadencii
                     }
 #endif
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "AppManager#setGridVisible; ex=" + ex );
+                    serr.println( "AppManager#setGridVisible; ex=" + ex );
                     Logger.write( typeof( AppManager ) + ".setGridVisible; ex=" + ex + "\n" );
                 }
             }
@@ -3205,7 +3199,7 @@ namespace org.kbinani.cadencii
         public static void setPlaying( boolean value, FormMain form )
         {
 #if DEBUG
-            PortUtil.println( "AppManager#setPlaying; value=" + value );
+            sout.println( "AppManager#setPlaying; value=" + value );
 #endif
             lock ( mLockerPlayingProperty ) {
                 boolean previous = mPlaying;
@@ -3224,14 +3218,17 @@ namespace org.kbinani.cadencii
                             }
 #endif
                         } catch ( Exception ex ) {
-                            PortUtil.stderr.println( "AppManager#setPlaying; ex=" + ex );
+                            serr.println( "AppManager#setPlaying; ex=" + ex );
                             Logger.write( typeof( AppManager ) + ".setPlaying; ex=" + ex + "\n" );
+#if JAVA
+                            ex.printStackTrace();
+#endif
                         }
                     } else if ( !mPlaying ) {
                         try {
                             previewStop();
 #if DEBUG
-                            PortUtil.println( "AppManager#setPlaying; raise previewAbortedEvent" );
+                            sout.println( "AppManager#setPlaying; raise previewAbortedEvent" );
 #endif
 #if JAVA
                             previewAbortedEvent.raise( typeof( AppManager ), new BEventArgs() );
@@ -3243,8 +3240,11 @@ namespace org.kbinani.cadencii
                             }
 #endif
                         } catch ( Exception ex ) {
-                            PortUtil.stderr.println( "AppManager#setPlaying; ex=" + ex );
+                            serr.println( "AppManager#setPlaying; ex=" + ex );
                             Logger.write( typeof( AppManager ) + ".setPlaying; ex=" + ex + "\n" );
+#if JAVA
+                            ex.printStackTrace();
+#endif
                         }
                     }
                 }
@@ -3273,7 +3273,7 @@ namespace org.kbinani.cadencii
                         System.IO.File.SetAttributes( file, System.IO.FileAttributes.Hidden );
                         //System.IO.File.SetAttributes( file2, System.IO.FileAttributes.Hidden );
                     } catch ( Exception ex ) {
-                        PortUtil.stderr.println( "AppManager#saveToCor; ex=" + ex );
+                        serr.println( "AppManager#saveToCor; ex=" + ex );
                         Logger.write( typeof( AppManager ) + ".saveToCor; ex=" + ex + "\n" );
                     }
                 }
@@ -3294,7 +3294,7 @@ namespace org.kbinani.cadencii
                         try {
                             PortUtil.createDirectory( cacheDir );
                         } catch ( Exception ex ) {
-                            PortUtil.stderr.println( "AppManager#saveTo; ex=" + ex );
+                            serr.println( "AppManager#saveTo; ex=" + ex );
                             showMessageBox( PortUtil.formatMessage( _( "failed creating cache directory, '{0}'." ), cacheDir ),
                                             _( "Info." ),
                                             PortUtil.OK_OPTION,
@@ -3314,14 +3314,14 @@ namespace org.kbinani.cadencii
                                     try {
                                         PortUtil.deleteFile( wavTo );
                                     } catch ( Exception ex ) {
-                                        PortUtil.stderr.println( "AppManager#saveTo; ex=" + ex );
+                                        serr.println( "AppManager#saveTo; ex=" + ex );
                                         Logger.write( typeof( AppManager ) + ".saveTo; ex=" + ex + "\n" );
                                     }
                                 }
                                 try {
                                     PortUtil.moveFile( wavFrom, wavTo );
                                 } catch ( Exception ex ) {
-                                    PortUtil.stderr.println( "AppManager#saveTo; ex=" + ex );
+                                    serr.println( "AppManager#saveTo; ex=" + ex );
                                     showMessageBox( PortUtil.formatMessage( _( "failed copying WAVE cache file, '{0}'." ), wavFrom ),
                                                     _( "Error" ),
                                                     PortUtil.OK_OPTION,
@@ -3338,14 +3338,14 @@ namespace org.kbinani.cadencii
                                     try {
                                         PortUtil.deleteFile( xmlTo );
                                     } catch ( Exception ex ) {
-                                        PortUtil.stderr.println( "AppManager#saveTo; ex=" + ex );
+                                        serr.println( "AppManager#saveTo; ex=" + ex );
                                         Logger.write( typeof( AppManager ) + ".saveTo; ex=" + ex + "\n" );
                                     }
                                 }
                                 try {
                                     PortUtil.moveFile( xmlFrom, xmlTo );
                                 } catch ( Exception ex ) {
-                                    PortUtil.stderr.println( "AppManager#saveTo; ex=" + ex );
+                                    serr.println( "AppManager#saveTo; ex=" + ex );
                                     showMessageBox( PortUtil.formatMessage( _( "failed copying XML cache file, '{0}'." ), xmlFrom ),
                                                     _( "Error" ),
                                                     PortUtil.OK_OPTION,
@@ -3455,7 +3455,7 @@ namespace org.kbinani.cadencii
             try {
                 newvsq = VsqFileEx.readFromXml( file );
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "AppManager#readVsq; ex=" + ex );
+                serr.println( "AppManager#readVsq; ex=" + ex );
 #if JAVA
                 ex.printStackTrace();
 #endif
@@ -3493,7 +3493,7 @@ namespace org.kbinani.cadencii
 #endif
             } catch ( Exception ex ) {
                 Logger.write( typeof( AppManager ) + ".readVsq; ex=" + ex + "\n" );
-                PortUtil.stderr.println( typeof( AppManager ) + ".readVsq; ex=" + ex );
+                serr.println( typeof( AppManager ) + ".readVsq; ex=" + ex );
             }
         }
 
@@ -3545,7 +3545,7 @@ namespace org.kbinani.cadencii
 #endif
             } catch ( Exception ex ) {
                 Logger.write( typeof( AppManager ) + ".setVsqFile; ex=" + ex + "\n" );
-                PortUtil.stderr.println( typeof( AppManager ) + ".setVsqFile; ex=" + ex );
+                serr.println( typeof( AppManager ) + ".setVsqFile; ex=" + ex );
             }
         }
 
@@ -3565,13 +3565,13 @@ namespace org.kbinani.cadencii
                 String path_image = Utility.readUtauSingerConfig( dir, sc_temp );
 
 #if DEBUG
-                PortUtil.println( "AppManager#init; path_image=" + path_image );
+                sout.println( "AppManager#init; path_image=" + path_image );
 #endif
                 if ( Cadencii.splash != null ) {
                     try {
                         Cadencii.splash.addIconThreadSafe( path_image, sc.VOICENAME );
                     } catch ( Exception ex ) {
-                        PortUtil.stderr.println( "AppManager#init; ex=" + ex );
+                        serr.println( "AppManager#init; ex=" + ex );
                         Logger.write( typeof( AppManager ) + ".init; ex=" + ex + "\n" );
                     }
                 }
@@ -3593,13 +3593,13 @@ namespace org.kbinani.cadencii
                                                 PortUtil.getApplicationStartupPath(), "resources" ),
                                             name + ".png" );
 #if DEBUG
-                    PortUtil.println( "AppManager#init; path_image=" + path_image );
+                    sout.println( "AppManager#init; path_image=" + path_image );
 #endif
                     if ( Cadencii.splash != null ) {
                         try {
                             Cadencii.splash.addIconThreadSafe( path_image, sc.VOICENAME );
                         } catch ( Exception ex ) {
-                            PortUtil.stderr.println( "AppManager#init; ex=" + ex );
+                            serr.println( "AppManager#init; ex=" + ex );
                             Logger.write( typeof( AppManager ) + ".init; ex=" + ex + "\n" );
                         }
                     }
@@ -3619,13 +3619,13 @@ namespace org.kbinani.cadencii
                                                 PortUtil.getApplicationStartupPath(), "resources" ),
                                             name + ".png" );
 #if DEBUG
-                    PortUtil.println( "AppManager#init; path_image=" + path_image );
+                    sout.println( "AppManager#init; path_image=" + path_image );
 #endif
                     if ( Cadencii.splash != null ) {
                         try {
                             Cadencii.splash.addIconThreadSafe( path_image, sc.VOICENAME );
                         } catch ( Exception ex ) {
-                            PortUtil.stderr.println( "AppManager#init; ex=" + ex );
+                            serr.println( "AppManager#init; ex=" + ex );
                             Logger.write( typeof( AppManager ) + ".init; ex=" + ex + "\n" );
                         }
                     }
@@ -3691,7 +3691,7 @@ namespace org.kbinani.cadencii
                 }
                 SymbolTable.changeOrder( common );
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "AppManager#init; ex=" + ex );
+                serr.println( "AppManager#init; ex=" + ex );
             }
 
 #if !TREECOM
@@ -3728,7 +3728,7 @@ namespace org.kbinani.cadencii
                 try {
                     db = new UtauVoiceDB( config );
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "AppManager#reloadUtauVoiceDB; ex=" + ex );
+                    serr.println( "AppManager#reloadUtauVoiceDB; ex=" + ex );
                     db = null;
                     Logger.write( typeof( AppManager ) + ".reloadUtauVoiceDB; ex=" + ex + "\n" );
                 }
@@ -3812,7 +3812,7 @@ namespace org.kbinani.cadencii
             try {
                 clip = getSerializedText( item );
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "AppManager#setClipboard; ex=" + ex );
+                serr.println( "AppManager#setClipboard; ex=" + ex );
                 Logger.write( typeof( AppManager ) + ".setClipboard; ex=" + ex + "\n" );
                 return;
             }
@@ -3900,7 +3900,7 @@ namespace org.kbinani.cadencii
                 System.err.println( "AppManager#setCopiedEvent; ex=" + ex );
 #else // JAVA
 #if DEBUG
-                PortUtil.println( "AppManager#setCopiedEvent; ex=" + ex );
+                sout.println( "AppManager#setCopiedEvent; ex=" + ex );
 #endif // DEBUG
 #endif // JAVA
                 Logger.write( typeof( AppManager ) + ".setClipboard; ex=" + ex + "\n" );
@@ -3919,7 +3919,7 @@ namespace org.kbinani.cadencii
                 ms = new System.IO.MemoryStream();
                 bf.Serialize( ms, ce );
             } catch ( Exception ex ) {
-                PortUtil.println( "AppManager#setClipboard; ex=" + ex );
+                sout.println( "AppManager#setClipboard; ex=" + ex );
             }
 #endif // DEBUG
             Clipboard.SetDataObject( ce, false );
@@ -3977,7 +3977,7 @@ namespace org.kbinani.cadencii
         {
 #if JAVA
             //TODO: AppManager#saveConfig
-            PortUtil.println( "AppManager#saveConfig; FIXME" );
+            sout.println( "AppManager#saveConfig; FIXME" );
 #else
             // ユーザー辞書の情報を取り込む
             editorConfig.UserDictionaries.clear();
@@ -3998,7 +3998,7 @@ namespace org.kbinani.cadencii
             try {
                 EditorConfig.serialize( editorConfig, file );
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "AppManager#saveConfig; ex=" + ex );
+                serr.println( "AppManager#saveConfig; ex=" + ex );
                 Logger.write( typeof( AppManager ) + ".saveConfig; ex=" + ex + "\n" );
             }
 #endif
@@ -4024,7 +4024,7 @@ namespace org.kbinani.cadencii
                 try {
                     ret = EditorConfig.deserialize( config_file );
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "AppManager#loadConfig; ex=" + ex );
+                    serr.println( "AppManager#loadConfig; ex=" + ex );
                     ret = null;
                     Logger.write( typeof( AppManager ) + ".loadConfig; ex=" + ex + "\n" );
                 }
@@ -4110,7 +4110,7 @@ namespace org.kbinani.cadencii
                         try {
                             ret = EditorConfig.deserialize( config_file );
                         } catch ( Exception ex ) {
-                            PortUtil.stderr.println( "AppManager#locdConfig; ex=" + ex );
+                            serr.println( "AppManager#locdConfig; ex=" + ex );
                             ret = null;
                             Logger.write( typeof( AppManager ) + ".loadConfig; ex=" + ex + "\n" );
                         }

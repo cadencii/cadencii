@@ -256,11 +256,11 @@ namespace org.kbinani.vsq
 #endif
             reflectPitch( this, 1, pitch );
 #if DEBUG
-            PortUtil.println( "VsqFile#.ctor(UstFile)" );
+            sout.println( "VsqFile#.ctor(UstFile)" );
             //VsqTrack vsq_track = Track.get( 1 );
             for ( int i = 0; i < vsq_track.getEventCount(); i++ ) {
                 VsqEvent item = vsq_track.getEvent( i );
-                PortUtil.println( "    #" + i + "; type=" + item.ID.type + "; clock=" + item.Clock + "; length=" + item.ID.getLength() );
+                sout.println( "    #" + i + "; type=" + item.ID.type + "; clock=" + item.Clock + "; length=" + item.ID.getLength() );
             }
 #endif
         }
@@ -623,9 +623,9 @@ namespace org.kbinani.vsq
                 intTempo = vsq.getTempoAt( 0 );
             }
 #if DEBUG
-            PortUtil.println( "VsqFile#printAsMusicXmlCore; change_tempo=" + change_tempo );
-            PortUtil.println( "VsqFile#printAsMusicXmlCore; tempo=" + tempo );
-            PortUtil.println( "VsqFile#printAsMusicXmlCore; intTempo=" + intTempo + "; tempo=" + tempo );
+            sout.println( "VsqFile#printAsMusicXmlCore; change_tempo=" + change_tempo );
+            sout.println( "VsqFile#printAsMusicXmlCore; tempo=" + tempo );
+            sout.println( "VsqFile#printAsMusicXmlCore; intTempo=" + intTempo + "; tempo=" + tempo );
 #endif
             if ( change_tempo ) {
                 //VsqFile tempoVsq = new VsqFile( "", getPreMeasure(), 4, 4, intTempo );
@@ -820,13 +820,13 @@ namespace org.kbinani.vsq
                 }
                 sw.write( "</score-partwise>" ); sw.newLine();
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "VsqFile#printAsMusicXml; ex=" + ex );
+                serr.println( "VsqFile#printAsMusicXml; ex=" + ex );
             } finally {
                 if ( sw != null ) {
                     try {
                         sw.close();
                     } catch ( Exception ex2 ) {
-                        PortUtil.stderr.println( "VsqFile#printAsMusicXml; ex2=" + ex2 );
+                        serr.println( "VsqFile#printAsMusicXml; ex2=" + ex2 );
                     }
                 }
             }
@@ -971,13 +971,13 @@ namespace org.kbinani.vsq
                 }
                 sw.write( "</score-partwise>" ); sw.newLine();
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "VsqFile#printAsMusicXml; ex=" + ex );
+                serr.println( "VsqFile#printAsMusicXml; ex=" + ex );
             } finally {
                 if ( sw != null ) {
                     try {
                         sw.close();
                     } catch ( Exception ex2 ) {
-                        PortUtil.stderr.println( "VsqFile#printAsMusicXml; ex2=" + ex2 );
+                        serr.println( "VsqFile#printAsMusicXml; ex2=" + ex2 );
                     }
                 }
             }
@@ -1116,7 +1116,7 @@ namespace org.kbinani.vsq
         public VsqCommand executeCommand( VsqCommand command )
         {
 #if DEBUG
-            PortUtil.stdout.println( "VsqFile#executeCommand(VsqCommand); type=" + command.Type );
+            sout.println( "VsqFile#executeCommand(VsqCommand); type=" + command.Type );
 #endif
             VsqCommandType type = command.Type;
             if ( type == VsqCommandType.CHANGE_PRE_MEASURE ) {
@@ -1332,7 +1332,7 @@ namespace org.kbinani.vsq
             } else if ( type == VsqCommandType.EVENT_ADD_RANGE ) {
                 #region EVENT_ADD_RANGE
 #if DEBUG
-                PortUtil.stdout.println( "    TrackAddNoteRange" );
+                sout.println( "    TrackAddNoteRange" );
 #endif
                 int track = (Integer)command.Args[0];
                 VsqEvent[] items = (VsqEvent[])command.Args[1];
@@ -1345,12 +1345,12 @@ namespace org.kbinani.vsq
                     min_clock = Math.Min( min_clock, item.Clock );
                     max_clock = Math.Max( max_clock, item.Clock + item.ID.getLength() );
 #if DEBUG
-                    PortUtil.stdout.println( "        i=" + i + "; item.InternalID=" + item.InternalID );
+                    sout.println( "        i=" + i + "; item.InternalID=" + item.InternalID );
 #endif
                     target.addEvent( item );
                     inv_ids.add( item.InternalID );
 #if DEBUG
-                    PortUtil.stdout.println( " => " + item.InternalID );
+                    sout.println( " => " + item.InternalID );
 #endif
                 }
                 updateTotalClocks();
@@ -2046,9 +2046,9 @@ namespace org.kbinani.vsq
         public void removePart( int clock_start, int clock_end )
         {
 #if DEBUG
-            PortUtil.println( "VsqFile#removePart; before:" );
+            sout.println( "VsqFile#removePart; before:" );
             for ( int i = 0; i < TempoTable.size(); i++ ) {
-                PortUtil.println( "    c" + TempoTable.get( i ).Clock + ", s" + TempoTable.get( i ).Time + ", t" + TempoTable.get( i ).Tempo );
+                sout.println( "    c" + TempoTable.get( i ).Clock + ", s" + TempoTable.get( i ).Time + ", t" + TempoTable.get( i ).Tempo );
             }
 #endif
             int dclock = clock_end - clock_start;
@@ -2157,9 +2157,9 @@ namespace org.kbinani.vsq
                 }
             }
 #if DEBUG
-            PortUtil.println( "VsqFile#removePart; after:" );
+            sout.println( "VsqFile#removePart; after:" );
             for ( int i = 0; i < TempoTable.size(); i++ ) {
-                PortUtil.println( "    c" + TempoTable.get( i ).Clock + ", s" + TempoTable.get( i ).Time + ", t" + TempoTable.get( i ).Tempo );
+                sout.println( "    c" + TempoTable.get( i ).Clock + ", s" + TempoTable.get( i ).Time + ", t" + TempoTable.get( i ).Tempo );
             }
 #endif
         }
@@ -2599,7 +2599,7 @@ namespace org.kbinani.vsq
             Track = new Vector<VsqTrack>();
             int num_track = mf.getTrackCount();
 #if DEBUG
-            PortUtil.println( "VsqFile#.ctor; num_track=" + num_track );
+            sout.println( "VsqFile#.ctor; num_track=" + num_track );
 #endif
             for ( int i = 0; i < num_track; i++ ) {
                 Track.add( new VsqTrack( mf.getMidiEventList( i ), encoding ) );
@@ -2625,12 +2625,12 @@ namespace org.kbinani.vsq
             Track.get( 1 ).setMixer( null );
 
 #if DEBUG
-            PortUtil.stdout.println( "VsqFile#ctor(String,String)" );
+            sout.println( "VsqFile#ctor(String,String)" );
 #endif
             int master_track = -1;
             for ( int i = 0; i < Track.size(); i++ ) {
 #if DEBUG
-                PortUtil.stdout.println( "    m_tracks[i].Name=" + Track.get( i ).getName() );
+                sout.println( "    m_tracks[i].Name=" + Track.get( i ).getName() );
 #endif
                 if ( Track.get( i ).getName().Equals( "Master Track" ) ) {
                     master_track = i;
@@ -2715,7 +2715,7 @@ namespace org.kbinani.vsq
             updateTimesigInfo();
             updateTotalClocks();
 #if DEBUG
-            PortUtil.stdout.println( "    m_total_clocks=" + TotalClocks );
+            sout.println( "    m_total_clocks=" + TotalClocks );
 #endif
         }
 
@@ -2725,9 +2725,9 @@ namespace org.kbinani.vsq
         public void updateTimesigInfo()
         {
 #if DEBUG
-            PortUtil.println( "VsqFile#updateTimesigInfo; before:" );
+            sout.println( "VsqFile#updateTimesigInfo; before:" );
             for ( int i = 0; i < TimesigTable.size(); i++ ) {
-                PortUtil.println( "    " + TimesigTable.get( i ).Clock + " " + TimesigTable.get( i ).Numerator + "/" + TimesigTable.get( i ).Denominator );
+                sout.println( "    " + TimesigTable.get( i ).Clock + " " + TimesigTable.get( i ).Numerator + "/" + TimesigTable.get( i ).Denominator );
             }
 #endif
             if ( TimesigTable.get( 0 ).Clock != 0 ) {
@@ -2747,9 +2747,9 @@ namespace org.kbinani.vsq
                 TimesigTable.get( j ).Clock = clock;
             }
 #if DEBUG
-            PortUtil.println( "VsqFile#updateTimesigInfo; after:" );
+            sout.println( "VsqFile#updateTimesigInfo; after:" );
             for ( int i = 0; i < TimesigTable.size(); i++ ) {
-                PortUtil.println( "    " + TimesigTable.get( i ).Clock + " " + TimesigTable.get( i ).Numerator + "/" + TimesigTable.get( i ).Denominator );
+                sout.println( "    " + TimesigTable.get( i ).Clock + " " + TimesigTable.get( i ).Numerator + "/" + TimesigTable.get( i ).Denominator );
             }
 #endif
         }
@@ -2989,18 +2989,18 @@ namespace org.kbinani.vsq
 #endif
                 }
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "VsqFile#generateMetaTextEvent; ex=" + ex );
+                serr.println( "VsqFile#generateMetaTextEvent; ex=" + ex );
             } finally {
                 if ( sr != null ) {
                     try {
                         sr.close();
                     } catch ( Exception ex2 ) {
-                        PortUtil.stderr.println( "VsqFile#generateMetaTextEvent; ex2=" + ex2 );
+                        serr.println( "VsqFile#generateMetaTextEvent; ex2=" + ex2 );
                     }
                 }
             }
 #if DEBUG
-            PortUtil.stdout.println( "VsqFile#generateMetaTextEvent; ret.size()=" + ret.size() );
+            sout.println( "VsqFile#generateMetaTextEvent; ret.size()=" + ret.size() );
 #endif
             return ret;
         }
@@ -3197,8 +3197,8 @@ namespace org.kbinani.vsq
             double msEnd = vsq.getSecFromClock( ve.Clock + ve.ID.getLength() ) * 1000.0;
             int duration = (int)Math.Ceiling( msEnd - clock_msec );
 #if DEBUG
-            PortUtil.println( "GenerateNoteNRPN" );
-            PortUtil.println( "    duration=" + duration );
+            sout.println( "GenerateNoteNRPN" );
+            sout.println( "    duration=" + duration );
 #endif
             ValuePair<Byte, Byte> d = getMsbAndLsb( duration );
             byte duration0 = d.getKey();
@@ -3440,7 +3440,7 @@ namespace org.kbinani.vsq
         public static VsqNrpn[] generateNRPN( VsqFile vsq, int track, int msPreSend )
         {
 #if DEBUG
-            PortUtil.println( "GenerateNRPN(VsqTrack,int,int,int,int)" );
+            sout.println( "GenerateNRPN(VsqTrack,int,int,int,int)" );
 #endif
             Vector<VsqNrpn> list = new Vector<VsqNrpn>();
 
@@ -3791,7 +3791,7 @@ namespace org.kbinani.vsq
         public void write( String file, int msPreSend, String encoding )
         {
 #if DEBUG
-            PortUtil.println( "VsqFile.Write(String)" );
+            sout.println( "VsqFile.Write(String)" );
 #endif
             int last_clock = 0;
             int track_size = Track.size();
@@ -3858,14 +3858,14 @@ namespace org.kbinani.vsq
                     last_clock = Math.Max( last_clock, entry.Clock );
                 }
 #if DEBUG
-                PortUtil.println( "    events.Count=" + events.size() );
+                sout.println( "    events.Count=" + events.size() );
 #endif
                 Collections.sort( events );
                 long last = 0;
                 for ( Iterator<MidiEvent> itr = events.iterator(); itr.hasNext(); ) {
                     MidiEvent me = itr.next();
 #if DEBUG
-                    PortUtil.println( "me.Clock=" + me.clock );
+                    sout.println( "me.Clock=" + me.clock );
 #endif
                     writeFlexibleLengthUnsignedLong( fs, (long)(me.clock - last) );
                     me.writeData( fs );

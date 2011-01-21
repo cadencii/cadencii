@@ -57,7 +57,7 @@ namespace org.kbinani.xml {
                     xw.Formatting = System.Xml.Formatting.None;
                     m_serializer.Serialize( xw, obj );
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "XmlSerializer#serialize; ex=" + ex );
+                    serr.println( "XmlSerializer#serialize; ex=" + ex );
                 }
             }
         }

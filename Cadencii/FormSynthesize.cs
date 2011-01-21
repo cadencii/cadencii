@@ -103,6 +103,7 @@ namespace org.kbinani.cadencii
 #if JAVA
             initialize();
             timer = new BTimer();
+            bgWork = new BBackgroundWorker();
 #else
             InitializeComponent();
             timer = new BTimer( this.components );
@@ -291,7 +292,7 @@ namespace org.kbinani.cadencii
                                     double amp_left_i = amp_i * pan_left_i;
                                     double amp_right_i = amp_i * pan_right_i;
 #if DEBUG
-                                    PortUtil.println( "FormSynthesize#bgWork_DoWork; #" + i + "; amp_left_i=" + amp_left_i + "; amp_right_i=" + amp_right_i );
+                                    sout.println( "FormSynthesize#bgWork_DoWork; #" + i + "; amp_left_i=" + amp_left_i + "; amp_right_i=" + amp_right_i );
 #endif
                                     amp_i_unit.setAmplify( amp_left_i, amp_right_i );
                                     FileWaveSender wave_sender = new FileWaveSender( r );
@@ -338,7 +339,7 @@ namespace org.kbinani.cadencii
                 this.Invoke( new UpdateProgressEventHandler( this.updateProgress ), this, mQueue.size() );
 #endif
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "FormSynthesize#bgWork_DoWork; ex=" + ex );
+                serr.println( "FormSynthesize#bgWork_DoWork; ex=" + ex );
             }
         }
 
@@ -369,7 +370,7 @@ namespace org.kbinani.cadencii
             double progress = mGenerator.getProgress() * 100;
 
 #if DEBUG
-            PortUtil.println( "FormSynthesize#timer_Tick; progress=" + progress );
+            sout.println( "FormSynthesize#timer_Tick; progress=" + progress );
 #endif
             /*long elapsed = (long)VSTiProxy.getElapsedSeconds();
             long remaining = (long)VSTiProxy.computeRemainintSeconds();

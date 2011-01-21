@@ -405,11 +405,11 @@ namespace org.kbinani.editotoini {
             m_drawer.clear();
 
 #if DEBUG
-            PortUtil.println( "FormUtauVoiceConfig#bgWorkRead_DoWork; oto_init_path=" + oto_ini_path );
+            sout.println( "FormUtauVoiceConfig#bgWorkRead_DoWork; oto_init_path=" + oto_ini_path );
 #endif
             if ( !PortUtil.isFileExists( oto_ini_path ) ) {
 #if DEBUG
-                PortUtil.println( "FormUtauVoiceConfig#bgWorkRead_DoWork; '" + oto_ini_path + "' not found" );
+                sout.println( "FormUtauVoiceConfig#bgWorkRead_DoWork; '" + oto_ini_path + "' not found" );
 #endif
                 return;
             }
@@ -421,11 +421,11 @@ namespace org.kbinani.editotoini {
                 String line = "";
                 while ( (line = sr.readLine()) != null ) {
 #if DEBUG
-                    //PortUtil.println( "FormUtauVoiceConfig#bgWorkRead_DoWork; line=" + line );
+                    //sout.println( "FormUtauVoiceConfig#bgWorkRead_DoWork; line=" + line );
 #endif
                     if ( m_cancel_required ) {
 #if DEBUG
-                        //PortUtil.println( "FormUtauVoiceConfig#bgWorkRead_DoWork; cancel required" );
+                        //sout.println( "FormUtauVoiceConfig#bgWorkRead_DoWork; cancel required" );
 #endif
                         break;
                     }
@@ -467,7 +467,7 @@ namespace org.kbinani.editotoini {
                 }
             } catch ( Exception ex ) {
 #if DEBUG
-                PortUtil.println( "FormUtauVoiceConfig#bgWorkRead_DoWork; ex=" + ex );
+                sout.println( "FormUtauVoiceConfig#bgWorkRead_DoWork; ex=" + ex );
 #endif
             } finally {
                 if ( sr != null ) {
@@ -1323,7 +1323,7 @@ namespace org.kbinani.editotoini {
                 form = new FormGenerateStf( m_oto_ini, list, mode );
                 form.ShowDialog();
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "FormUtauVoiceConfig#generateSTForFRQ; ex=" + ex );
+                serr.println( "FormUtauVoiceConfig#generateSTForFRQ; ex=" + ex );
             } finally {
                 if ( form != null ) {
                     form.close();

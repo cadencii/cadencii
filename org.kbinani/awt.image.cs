@@ -1,3 +1,4 @@
+#if !JAVA
 /*
  * awt.image.cs
  * Copyright © 2009-2011 kbinani
@@ -11,17 +12,19 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if !JAVA
-namespace org.kbinani.java.awt.image {
+namespace org.kbinani.java.awt.image
+{
 
-    public class BufferedImage : java.awt.Image {
+    public class BufferedImage : java.awt.Image
+    {
         public static int TYPE_INT_BGR = 0;
         public static int TYPE_INT_RGB = 1;
         public static int TYPE_INT_ARGB = 2;
 
         //public System.Drawing.Bitmap m_image;
 
-        public BufferedImage( int width, int height, int imageType ) {
+        public BufferedImage( int width, int height, int imageType )
+        {
             System.Drawing.Imaging.PixelFormat format = System.Drawing.Imaging.PixelFormat.Format24bppRgb;
             if ( imageType == TYPE_INT_ARGB ) {
                 format = System.Drawing.Imaging.PixelFormat.Format32bppArgb;
@@ -29,23 +32,28 @@ namespace org.kbinani.java.awt.image {
             image = new System.Drawing.Bitmap( width, height, format );
         }
 
-        public Graphics2D createGraphics() {
+        public Graphics2D createGraphics()
+        {
             return new Graphics2D( System.Drawing.Graphics.FromImage( image ) );
         }
 
-        public int getHeight( object observer ) {
+        public int getHeight( object observer )
+        {
             return image.Height;
         }
 
-        public int getWidth( object observer ) {
+        public int getWidth( object observer )
+        {
             return image.Width;
         }
 
-        public int getWidth() {
+        public int getWidth()
+        {
             return image.Width;
         }
 
-        public int getHeight() {
+        public int getHeight()
+        {
             return image.Height;
         }
     }

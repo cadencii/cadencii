@@ -237,7 +237,7 @@ namespace org.kbinani.cadencii
             String straight_synth = fsys.combine( PortUtil.getApplicationStartupPath(), STRAIGHT_SYNTH );
             if ( !PortUtil.isFileExists( straight_synth ) ) {
 #if DEBUG
-                PortUtil.println( "StraightRendeingRunner#run; \"" + straight_synth + "\" does not exists" );
+                sout.println( "StraightRendeingRunner#run; \"" + straight_synth + "\" does not exists" );
 #endif
                 postProcess();
                 return;
@@ -250,12 +250,12 @@ namespace org.kbinani.cadencii
                 total_samples += mQueue.get( i ).abstractSamples;
             }
 #if DEBUG
-            PortUtil.println( "StraightRenderingRunner#run; total_samples=" + total_samples );
+            sout.println( "StraightRenderingRunner#run; total_samples=" + total_samples );
 #endif
 
             mTrimRemain = (int)(mTrimMillisec / 1000.0 * mSampleRate); //先頭から省かなければならないサンプル数の残り
 #if DEBUG
-            PortUtil.println( "StraightRenderingRunner#run; m_trim_remain=" + mTrimRemain );
+            sout.println( "StraightRenderingRunner#run; m_trim_remain=" + mTrimRemain );
 #endif
             long max_next_wave_start = mVsqLengthSamples;
 
@@ -301,7 +301,7 @@ namespace org.kbinani.cadencii
                     prepareMetaText( sw, queue.track, queue.oto_ini, queue.endClock );
                 } catch ( Exception ex ) {
 #if DEBUG
-                    PortUtil.println( "StraightRenderingRunner#run; ex=" + ex );
+                    sout.println( "StraightRenderingRunner#run; ex=" + ex );
 #endif
                 } finally {
                     if ( sw != null ) {
@@ -309,7 +309,7 @@ namespace org.kbinani.cadencii
                             sw.close();
                         } catch ( Exception ex2 ) {
 #if DEBUG
-                            PortUtil.println( "StraightRenderingRunner#run; ex2=" + ex2 );
+                            sout.println( "StraightRenderingRunner#run; ex2=" + ex2 );
 #endif
                         }
                     }
@@ -331,9 +331,9 @@ namespace org.kbinani.cadencii
                         "\"" + tmp_file.replace( "\\", "\\" + "\\" ) + ".usq\"",
                         "\"" + tmp_file.replace( "\\", "\\" + "\\" ) + ".wav\"" };
 #if DEBUG
-                    PortUtil.println( "StraightRenderingRunner#run; args=" );
+                    sout.println( "StraightRenderingRunner#run; args=" );
                     for( String s : args ){
-                        PortUtil.println( "StraightRenderingRunner#run; " + s );
+                        sout.println( "StraightRenderingRunner#run; " + s );
                     }
 #endif
                     ProcessBuilder pb = new ProcessBuilder( args );
@@ -355,7 +355,7 @@ namespace org.kbinani.cadencii
                         process.StartInfo.FileName = straight_synth;
                         process.StartInfo.Arguments = "\"" + tmp_file + ".usq\" \"" + tmp_file + ".wav\"";
 #if DEBUG
-                        PortUtil.println( "VConnectWaveGenerator#begin; StartInfo.FileName=" + process.StartInfo.FileName + "; .Arguments=" + process.StartInfo.Arguments );
+                        sout.println( "VConnectWaveGenerator#begin; StartInfo.FileName=" + process.StartInfo.FileName + "; .Arguments=" + process.StartInfo.Arguments );
 #endif
                         process.StartInfo.WorkingDirectory = PortUtil.getApplicationStartupPath();
                         process.StartInfo.CreateNoWindow = true;
@@ -434,7 +434,7 @@ namespace org.kbinani.cadencii
 
                     if ( cached_data_length == 0 ) {
 #if DEBUG
-                        PortUtil.println( "StraightRenderingRunner#run; cache is null; queue=" + queue.__DEBUG__toString() );
+                        sout.println( "StraightRenderingRunner#run; cache is null; queue=" + queue.__DEBUG__toString() );
 #endif
                         // キャッシュが残っていない場合
                         int remain = wave_samples;
@@ -496,7 +496,7 @@ namespace org.kbinani.cadencii
                         }
                     } else {
 #if DEBUG
-                        PortUtil.println( "StraightRenderingRunner#run; cache is NOT null" );
+                        sout.println( "StraightRenderingRunner#run; cache is NOT null" );
 #endif
                         // キャッシュが残っている場合
                         int rendered_length = 0;
@@ -506,7 +506,7 @@ namespace org.kbinani.cadencii
                         if ( rendered_length < cached_data_length ) {
                             if ( next_wave_start < queue.startSample + cached_data_length ) {
 #if DEBUG
-                                PortUtil.println( "StraightRenderingRunner#run; (i) or (ii);" + queue.__DEBUG__toString() );
+                                sout.println( "StraightRenderingRunner#run; (i) or (ii);" + queue.__DEBUG__toString() );
 #endif
                                 // PATTERN A
                                 //  ----[*****************************]----------------->  cache
@@ -556,7 +556,7 @@ namespace org.kbinani.cadencii
                                 }
                             } else {
 #if DEBUG
-                                PortUtil.println( "StraightRenderingRunner#run; (iii);" + queue.__DEBUG__toString() );
+                                sout.println( "StraightRenderingRunner#run; (iii);" + queue.__DEBUG__toString() );
 #endif
                                 // PATTERN C
                                 //  ----[*****************************]----------------->   cache
@@ -607,7 +607,7 @@ namespace org.kbinani.cadencii
                         } else {
                             if ( next_wave_start < queue.startSample + cached_data_length ) {
 #if DEBUG
-                                PortUtil.println( "StraightRenderingRunner#run; (iv);" + queue.__DEBUG__toString() );
+                                sout.println( "StraightRenderingRunner#run; (iv);" + queue.__DEBUG__toString() );
 #endif
                                 // PATTERN D
                                 //  ----[*************]--------------------------------->  cache
@@ -678,7 +678,7 @@ namespace org.kbinani.cadencii
                                 }
                             } else if ( next_wave_start < queue.startSample + rendered_length ) {
 #if DEBUG
-                                PortUtil.println( "StraightRenderingRunner#run; (v);" + queue.__DEBUG__toString() );
+                                sout.println( "StraightRenderingRunner#run; (v);" + queue.__DEBUG__toString() );
 #endif
                                 // PATTERN E
                                 //  ----[*************]--------------------------------->  cache
@@ -737,7 +737,7 @@ namespace org.kbinani.cadencii
                                 }
                             } else {
 #if DEBUG
-                                PortUtil.println( "StraightRenderingRunner#run; (vi);" + queue.__DEBUG__toString() );
+                                sout.println( "StraightRenderingRunner#run; (vi);" + queue.__DEBUG__toString() );
 #endif
                                 // PATTERN F
                                 //  ----[*************]--------------------------------->  cache
@@ -796,13 +796,13 @@ namespace org.kbinani.cadencii
                         }
                     }
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "StraightRenderingRunner#run; ex=" + ex );
+                    serr.println( "StraightRenderingRunner#run; ex=" + ex );
                 } finally {
                     if ( wr != null ) {
                         try {
                             wr.close();
                         } catch ( Exception ex2 ) {
-                            PortUtil.stderr.println( "StraightRenderingRunner#run; ex2=" + ex2 );
+                            serr.println( "StraightRenderingRunner#run; ex2=" + ex2 );
                         }
                         wr = null;
                     }
@@ -821,7 +821,7 @@ namespace org.kbinani.cadencii
             }
             int tremain = (int)(mTotalSamples - mTotalAppend);
 #if DEBUG
-            PortUtil.println( "UtauRenderingRunner#run; tremain=" + tremain );
+            sout.println( "UtauRenderingRunner#run; tremain=" + tremain );
 #endif
             while ( tremain > 0 && !mAbortRequired ) {
                 int tlength = tremain > BUFLEN ? BUFLEN : tremain;

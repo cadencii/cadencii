@@ -170,13 +170,13 @@ namespace org.kbinani.cadencii {
                     mActualMaxAmplitude = (d > mActualMaxAmplitude) ? (float)d : mActualMaxAmplitude;
                 }
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "WaveDrawContext#reloadPartial; ex=" + ex );
+                serr.println( "WaveDrawContext#reloadPartial; ex=" + ex );
             } finally {
                 if ( wr != null ) {
                     try {
                         wr.close();
                     } catch ( Exception ex2 ) {
-                        PortUtil.stderr.println( "WaveDrawContext#reloadPartial; ex2=" + ex2 );
+                        serr.println( "WaveDrawContext#reloadPartial; ex2=" + ex2 );
                     }
                 }
             }

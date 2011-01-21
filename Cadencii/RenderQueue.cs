@@ -25,8 +25,10 @@ namespace org.kbinani.cadencii {
 
     public class RenderQueue {
         private Vector<String> _resampler_arg = new Vector<String>();
-        public String WavtoolArgPrefix;
-        public String WavtoolArgSuffix;
+        public Vector<String> WavtoolArgPrefix = new Vector<String>();
+        public Vector<String> WavtoolArgSuffix = new Vector<String>();
+        //public String WavtoolArgPrefix;
+        //public String WavtoolArgSuffix;
         public OtoArgs Oto;
         //public double secEnd;
         public double secStart;

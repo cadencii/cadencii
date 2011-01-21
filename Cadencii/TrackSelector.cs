@@ -275,7 +275,7 @@ namespace org.kbinani.cadencii
         /// <summary>
         /// マウス長押しによるVELの編集。編集対象の音符のリスト。
         /// </summary>
-        private TreeMap<Integer, SelectedEventEntry> mVeEditSelected = new TreeMap<Integer, SelectedEventEntry>();
+        private TreeMap<Integer, SelectedEventEntry> mVelEditSelected = new TreeMap<Integer, SelectedEventEntry>();
         /// <summary>
         /// 現在編集操作が行われているBezierChainの、編集直前のオリジナル
         /// </summary>
@@ -855,7 +855,7 @@ namespace org.kbinani.cadencii
                 }
 #endif
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "TrackSelector#executeCommand; ex=" + ex );
+                serr.println( "TrackSelector#executeCommand; ex=" + ex );
             }
         }
 
@@ -893,7 +893,7 @@ namespace org.kbinani.cadencii
                     }
 #endif
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "TrackSelector#setSelectedCurve; ex=" + ex );
+                    serr.println( "TrackSelector#setSelectedCurve; ex=" + ex );
                 }
             }
         }
@@ -1038,7 +1038,7 @@ namespace org.kbinani.cadencii
                     }
 #endif
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "TrackSelector#getRectFromCurveType; ex=" + ex );
+                    serr.println( "TrackSelector#getRectFromCurveType; ex=" + ex );
                 }
                 mLastPreferredMinHeight = min_size;
             }
@@ -1502,13 +1502,13 @@ namespace org.kbinani.cadencii
                                     g.setColor( COLOR_A144R255G255B255 );
                                     g.fillRect( x_start, y_start, x_end - x_start, y_end - y_start );
                                 }
-                            } else if ( mMouseDownMode == MouseDownMode.VEL_EDIT && mVeEditSelected.containsKey( mVelEditLastSelectedID ) ) {
+                            } else if ( mMouseDownMode == MouseDownMode.VEL_EDIT && mVelEditSelected.containsKey( mVelEditLastSelectedID ) ) {
                                 if ( mSelectedCurve.equals( CurveType.VEL ) ) {
-                                    numeric_view = mVeEditSelected.get( mVelEditLastSelectedID ).editing.ID.Dynamics;
+                                    numeric_view = mVelEditSelected.get( mVelEditLastSelectedID ).editing.ID.Dynamics;
                                 } else if ( mSelectedCurve.equals( CurveType.Accent ) ) {
-                                    numeric_view = mVeEditSelected.get( mVelEditLastSelectedID ).editing.ID.DEMaccent;
+                                    numeric_view = mVelEditSelected.get( mVelEditLastSelectedID ).editing.ID.DEMaccent;
                                 } else if ( mSelectedCurve.equals( CurveType.Decay ) ) {
-                                    numeric_view = mVeEditSelected.get( mVelEditLastSelectedID ).editing.ID.DEMdecGainRate;
+                                    numeric_view = mVelEditSelected.get( mVelEditLastSelectedID ).editing.ID.DEMdecGainRate;
                                 }
                             }
                         }
@@ -1616,7 +1616,7 @@ namespace org.kbinani.cadencii
                     }
                 }
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "TrackSelector#paint; ex= " + ex );
+                serr.println( "TrackSelector#paint; ex= " + ex );
 #if JAVA
                 ex.printStackTrace();
 #endif
@@ -1798,10 +1798,10 @@ namespace org.kbinani.cadencii
             g.setColor( PortUtil.LawnGreen );
             g.drawLine( px_overlap, HEADER + 1, px_overlap, graph_height + HEADER );
 
-            String s_pre = "Pre Utterance: " + preutterance;
+            String s_pre = "Pre Utterance: " + PortUtil.formatDecimal( "0.00", preutterance );
             java.awt.Dimension size = Util.measureString( s_pre, AppManager.baseFont10 );
             mPreUtteranceBounds = new Rectangle( px_preutterance + 1, OFFSET_PRE, (int)size.width, (int)size.height );
-            String s_ovl = "Overlap: " + overlap;
+            String s_ovl = "Overlap: " + PortUtil.formatDecimal( "0.00", overlap );
             size = Util.measureString( s_ovl, AppManager.baseFont10 );
             nOverlapBounds = new Rectangle( px_overlap + 1, OFFSET_OVL, (int)size.width, (int)size.height );
 
@@ -2129,8 +2129,8 @@ namespace org.kbinani.cadencii
                             g.fillRect( x, y, VEL_BAR_WIDTH, oy - y );
                             if ( mMouseDownMode == MouseDownMode.VEL_EDIT ) {
                                 int editing = 0;
-                                if ( mVeEditSelected.containsKey( dobj.mInternalID ) ) {
-                                    VsqEvent ve_editing = mVeEditSelected.get( dobj.mInternalID ).editing;
+                                if ( mVelEditSelected.containsKey( dobj.mInternalID ) ) {
+                                    VsqEvent ve_editing = mVelEditSelected.get( dobj.mInternalID ).editing;
                                     if ( mSelectedCurve.equals( CurveType.VEL ) ) {
                                         if ( AppManager.mDrawIsUtau[selected - 1] ) {
                                             editing = ve_editing.UstEvent == null ? 100 : ve_editing.UstEvent.Intensity;
@@ -3028,7 +3028,7 @@ namespace org.kbinani.cadencii
             } else if ( mMouseDownMode == MouseDownMode.VEL_EDIT ) {
                 int t_value = valueFromYCoord( e.Y - mVelEditShiftY );
                 int d_vel = 0;
-                VsqEvent ve_original = mVeEditSelected.get( mVelEditLastSelectedID ).original;
+                VsqEvent ve_original = mVelEditSelected.get( mVelEditLastSelectedID ).original;
                 if ( mSelectedCurve.equals( CurveType.VEL ) ) {
                     if ( is_utau_mode ) {
                         d_vel = t_value - ((ve_original.UstEvent == null) ? 100 : ve_original.UstEvent.Intensity);
@@ -3036,14 +3036,14 @@ namespace org.kbinani.cadencii
                         d_vel = t_value - ve_original.ID.Dynamics;
                     }
                 } else if ( mSelectedCurve.equals( CurveType.Accent ) ) {
-                    d_vel = t_value - mVeEditSelected.get( mVelEditLastSelectedID ).original.ID.DEMaccent;
+                    d_vel = t_value - mVelEditSelected.get( mVelEditLastSelectedID ).original.ID.DEMaccent;
                 } else if ( mSelectedCurve.equals( CurveType.Decay ) ) {
-                    d_vel = t_value - mVeEditSelected.get( mVelEditLastSelectedID ).original.ID.DEMdecGainRate;
+                    d_vel = t_value - mVelEditSelected.get( mVelEditLastSelectedID ).original.ID.DEMdecGainRate;
                 }
-                for ( Iterator<Integer> itr = mVeEditSelected.keySet().iterator(); itr.hasNext(); ) {
+                for ( Iterator<Integer> itr = mVelEditSelected.keySet().iterator(); itr.hasNext(); ) {
                     int id = itr.next();
                     if ( mSelectedCurve.equals( CurveType.VEL ) ) {
-                        VsqEvent item = mVeEditSelected.get( id ).original;
+                        VsqEvent item = mVelEditSelected.get( id ).original;
                         int new_vel = item.ID.Dynamics + d_vel;
                         if ( is_utau_mode ) {
                             new_vel = item.UstEvent == null ? 100 + d_vel : item.UstEvent.Intensity + d_vel;
@@ -3054,30 +3054,30 @@ namespace org.kbinani.cadencii
                             new_vel = max;
                         }
                         if ( is_utau_mode ) {
-                            VsqEvent item_o = mVeEditSelected.get( id ).editing;
+                            VsqEvent item_o = mVelEditSelected.get( id ).editing;
                             if ( item_o.UstEvent == null ) {
                                 item_o.UstEvent = new UstEvent();
                             }
                             item_o.UstEvent.Intensity = new_vel;
                         } else {
-                            mVeEditSelected.get( id ).editing.ID.Dynamics = new_vel;
+                            mVelEditSelected.get( id ).editing.ID.Dynamics = new_vel;
                         }
                     } else if ( mSelectedCurve.equals( CurveType.Accent ) ) {
-                        int new_vel = mVeEditSelected.get( id ).original.ID.DEMaccent + d_vel;
+                        int new_vel = mVelEditSelected.get( id ).original.ID.DEMaccent + d_vel;
                         if ( new_vel < min ) {
                             new_vel = min;
                         } else if ( max < new_vel ) {
                             new_vel = max;
                         }
-                        mVeEditSelected.get( id ).editing.ID.DEMaccent = new_vel;
+                        mVelEditSelected.get( id ).editing.ID.DEMaccent = new_vel;
                     } else if ( mSelectedCurve.equals( CurveType.Decay ) ) {
-                        int new_vel = mVeEditSelected.get( id ).original.ID.DEMdecGainRate + d_vel;
+                        int new_vel = mVelEditSelected.get( id ).original.ID.DEMdecGainRate + d_vel;
                         if ( new_vel < min ) {
                             new_vel = min;
                         } else if ( max < new_vel ) {
                             new_vel = max;
                         }
-                        mVeEditSelected.get( id ).editing.ID.DEMdecGainRate = new_vel;
+                        mVelEditSelected.get( id ).editing.ID.DEMdecGainRate = new_vel;
                     }
                 }
             } else if ( mMouseDownMode == MouseDownMode.BEZIER_MODE ) {
@@ -3309,7 +3309,7 @@ namespace org.kbinani.cadencii
                                             }
 #endif
                                         } catch ( Exception ex ) {
-                                            PortUtil.stderr.println( "TrackSelector#TrackSelector_MouseDown; ex=" + ex );
+                                            serr.println( "TrackSelector#TrackSelector_MouseDown; ex=" + ex );
                                         }
                                         invalidate();
                                         return;
@@ -3324,7 +3324,7 @@ namespace org.kbinani.cadencii
                                                 }
 #endif
                                             } catch ( Exception ex ) {
-                                                PortUtil.stderr.println( "TrackSelector#TrackSelector_MouseDown; ex=" + ex );
+                                                serr.println( "TrackSelector#TrackSelector_MouseDown; ex=" + ex );
                                             }
                                         }
                                     }
@@ -3642,17 +3642,17 @@ namespace org.kbinani.cadencii
                                     } else if ( mSelectedCurve.equals( CurveType.Decay ) ) {
                                         mVelEditShiftY = e.Y - yCoordFromValue( ve.ID.DEMdecGainRate );
                                     }
-                                    mVeEditSelected.clear();
+                                    mVelEditSelected.clear();
                                     if ( AppManager.isSelectedEventContains( AppManager.getSelected(), mVelEditLastSelectedID ) ) {
                                         for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
                                             SelectedEventEntry item = itr.next();
-                                            mVeEditSelected.put( item.original.InternalID,
+                                            mVelEditSelected.put( item.original.InternalID,
                                                                     new SelectedEventEntry( AppManager.getSelected(),
                                                                                             item.original,
                                                                                             item.editing ) );
                                         }
                                     } else {
-                                        mVeEditSelected.put( mVelEditLastSelectedID,
+                                        mVelEditSelected.put( mVelEditLastSelectedID,
                                                                 new SelectedEventEntry( AppManager.getSelected(),
                                                                                         (VsqEvent)ve.clone(),
                                                                                         (VsqEvent)ve.clone() ) );
@@ -3862,7 +3862,7 @@ namespace org.kbinani.cadencii
         private boolean processMouseDownBezier( BMouseEventArgs e )
         {
 #if DEBUG
-            PortUtil.println( "TrackSelector::processMouseDownBezier" );
+            sout.println( "TrackSelector::processMouseDownBezier" );
 #endif
             int clock = AppManager.clockFromXCoord( e.X );
             int max = mSelectedCurve.getMaximum();
@@ -3891,7 +3891,7 @@ namespace org.kbinani.cadencii
                 dict, found_chain, found_point, found_side,
                 DOT_WID, AppManager.editorConfig.PxToleranceBezier );
 #if DEBUG
-            PortUtil.println( "TrackSelector::processMouseDownBezier; (found_chain.value==null)=" + (found_chain.value == null) );
+            sout.println( "TrackSelector::processMouseDownBezier; (found_chain.value==null)=" + (found_chain.value == null) );
 #endif
 
             if ( found_chain.value != null ) {
@@ -3946,7 +3946,7 @@ namespace org.kbinani.cadencii
 #if DEBUG
                     AppManager.debugWriteLine( "    (target_chain==null)=" + (target_chain == null) );
                     if ( target_chain != null && found_point.value != null ) {
-                        PortUtil.println( "TrackSelector::procesMouseDownBezier; before:(" + found_point.value.getPosition( found_side.value ) + "," + found_point.value.getPosition( found_side.value ) + "); after:(" + clock + "," + value + ")" );
+                        sout.println( "TrackSelector::procesMouseDownBezier; before:(" + found_point.value.getPosition( found_side.value ) + "," + found_point.value.getPosition( found_side.value ) + "); after:(" + clock + "," + value + ")" );
                     }
 #endif
                     // fork whether target_chain is null or not
@@ -4030,7 +4030,7 @@ namespace org.kbinani.cadencii
             ByRef<Integer> point_kind = new ByRef<Integer>( -1 );
             if ( !findEnvelopePointAt( e.X, e.Y, internal_id, point_kind ) ) {
 #if DEBUG
-                PortUtil.println( "processTrackSelectorMouseDownForEnvelope; not found" );
+                sout.println( "processTrackSelectorMouseDownForEnvelope; not found" );
 #endif
                 return false;
             }
@@ -4098,7 +4098,7 @@ namespace org.kbinani.cadencii
         private void changeCurve( CurveType curve )
         {
 #if DEBUG
-            PortUtil.println( "TrackSelector#changCurve; AppManager.getViewingCurveCount()=" + AppManager.getViewingCurveCount() );
+            sout.println( "TrackSelector#changCurve; AppManager.getViewingCurveCount()=" + AppManager.getViewingCurveCount() );
 #endif
             if ( !mSelectedCurve.equals( curve ) ) {
                 mLastSelectedCurve = mSelectedCurve;
@@ -4114,7 +4114,7 @@ namespace org.kbinani.cadencii
                     }
 #endif
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "TrackSelector#changeCurve; ex=" + ex );
+                    serr.println( "TrackSelector#changeCurve; ex=" + ex );
                 }
             }
         }
@@ -4292,7 +4292,7 @@ namespace org.kbinani.cadencii
 
                                 if ( (mModifierOnMouseDown & InputEvent.CTRL_MASK) != InputEvent.CTRL_MASK ) {
 #if DEBUG
-                                    PortUtil.println( "TrackSelector#TrackSelector_MouseUp; CTRL was not pressed" );
+                                    sout.println( "TrackSelector#TrackSelector_MouseUp; CTRL was not pressed" );
 #endif
                                     AppManager.clearSelectedPoint();
                                 }
@@ -4309,14 +4309,14 @@ namespace org.kbinani.cadencii
                                                                   Math.Abs( AppManager.mCurveSelectingRectangle.width ),
                                                                   Math.Abs( AppManager.mCurveSelectingRectangle.height ) );
 #if DEBUG
-                                    PortUtil.println( "TrackSelectro#TrackSelectro_MouseUp; rc={x=" + rc.x + ", y=" + rc.y + ", width=" + rc.width + ", height=" + rc.height + "}" );
+                                    sout.println( "TrackSelectro#TrackSelectro_MouseUp; rc={x=" + rc.x + ", y=" + rc.y + ", width=" + rc.width + ", height=" + rc.height + "}" );
 #endif
                                     for ( int i = 0; i < count; i++ ) {
                                         int clock = list.getKeyClock( i );
                                         VsqBPPair item = list.getElementB( i );
                                         if ( isInRect( clock, item.value, rc ) ) {
 #if DEBUG
-                                            PortUtil.println( "TrackSelector#TrackSelectro_MosueUp; selected; clock=" + clock + "; id=" + item.id );
+                                            sout.println( "TrackSelector#TrackSelectro_MosueUp; selected; clock=" + clock + "; id=" + item.id );
 #endif
                                             AppManager.addSelectedPoint( mSelectedCurve, item.id );
                                         }
@@ -4766,7 +4766,7 @@ namespace org.kbinani.cadencii
                                 int last = start;
 
 #if DEBUG
-                                PortUtil.println( "TrackSelector#TrackSelector_MouseUp; start, end=" + start + ", " + end );
+                                sout.println( "TrackSelector#TrackSelector_MouseUp; start, end=" + start + ", " + end );
 #endif
                                 VsqBPList list = vsq.Track.get( track ).getCurve( mSelectedCurve.getName() );
                                 long maxid = list.getMaxID();
@@ -4901,16 +4901,16 @@ namespace org.kbinani.cadencii
                 }
             } else if ( mMouseDownMode == MouseDownMode.VEL_EDIT ) {
                 if ( mSelectedCurve.equals( CurveType.VEL ) && is_utau_mode ) {
-                    int count = mVeEditSelected.size();
+                    int count = mVelEditSelected.size();
                     VsqEvent[] values = new VsqEvent[count];
                     int i = 0;
-                    for ( Iterator<Integer> itr = mVeEditSelected.keySet().iterator(); itr.hasNext(); ) {
+                    for ( Iterator<Integer> itr = mVelEditSelected.keySet().iterator(); itr.hasNext(); ) {
                         int internal_id = itr.next();
                         VsqEvent item = (VsqEvent)vsq_track.findEventFromID( internal_id ).clone();
                         if ( item.UstEvent == null ) {
                             item.UstEvent = new UstEvent();
                         }
-                        item.UstEvent.Intensity = mVeEditSelected.get( internal_id ).editing.UstEvent.Intensity;
+                        item.UstEvent.Intensity = mVelEditSelected.get( internal_id ).editing.UstEvent.Intensity;
                         values[i] = item;
                         i++;
                     }
@@ -4918,20 +4918,20 @@ namespace org.kbinani.cadencii
                         VsqCommand.generateCommandEventReplaceRange( selected, values ) );
                     executeCommand( run, true );
                 } else {
-                    int count = mVeEditSelected.size();
+                    int count = mVelEditSelected.size();
                     int[] ids = new int[count];
                     VsqID[] values = new VsqID[count];
                     int i = -1;
-                    for ( Iterator<Integer> itr = mVeEditSelected.keySet().iterator(); itr.hasNext(); ) {
+                    for ( Iterator<Integer> itr = mVelEditSelected.keySet().iterator(); itr.hasNext(); ) {
                         int id = itr.next();
                         i++;
                         ids[i] = id;
-                        values[i] = (VsqID)mVeEditSelected.get( id ).editing.ID.clone();
+                        values[i] = (VsqID)mVelEditSelected.get( id ).editing.ID.clone();
                     }
                     CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventChangeIDContaintsRange( selected, ids, values ) );
                     executeCommand( run, true );
                 }
-                if ( mVeEditSelected.size() == 1 ) {
+                if ( mVelEditSelected.size() == 1 ) {
                     AppManager.clearSelectedEvent();
                     AppManager.addSelectedEvent( mVelEditLastSelectedID );
                 }
@@ -5217,9 +5217,9 @@ namespace org.kbinani.cadencii
             } else if ( mMouseDownMode == MouseDownMode.VEL_WAIT_HOVER ) {
 #if DEBUG
                 AppManager.debugWriteLine( "    entered VelEdit" );
-                AppManager.debugWriteLine( "    m_veledit_selected.Count=" + mVeEditSelected.size() );
+                AppManager.debugWriteLine( "    m_veledit_selected.Count=" + mVelEditSelected.size() );
                 AppManager.debugWriteLine( "    m_veledit_last_selectedid=" + mVelEditLastSelectedID );
-                AppManager.debugWriteLine( "    m_veledit_selected.ContainsKey(m_veledit_last_selectedid" + mVeEditSelected.containsKey( mVelEditLastSelectedID ) );
+                AppManager.debugWriteLine( "    m_veledit_selected.ContainsKey(m_veledit_last_selectedid" + mVelEditSelected.containsKey( mVelEditLastSelectedID ) );
 #endif
                 mMouseDownMode = MouseDownMode.VEL_EDIT;
                 invalidate();
@@ -5622,7 +5622,7 @@ namespace org.kbinani.cadencii
                     toolTip.Show( tip, cmenuSinger, new System.Drawing.Point( cmenuSinger.Width, y ), 5000 );
                 }
             } catch ( Exception ex ) {
-                PortUtil.println( "TarckSelectro.tsmi_MouseHover; ex=" + ex );
+                sout.println( "TarckSelectro.tsmi_MouseHover; ex=" + ex );
                 AppManager.debugWriteLine( "TarckSelectro.tsmi_MouseHover; ex=" + ex );
             }
 #endif
@@ -5681,7 +5681,7 @@ namespace org.kbinani.cadencii
             System.Drawing.Rectangle rrc = e.Bounds;
             Rectangle rc = new Rectangle( rrc.X, rrc.Y, rrc.Width, rrc.Height );
 #if DEBUG
-            PortUtil.println( "TrackSelector#toolTip_Draw; sender.GetType()=" + sender.GetType() );
+            sout.println( "TrackSelector#toolTip_Draw; sender.GetType()=" + sender.GetType() );
 #endif
 
             System.Windows.Forms.ToolTip tooltip = (System.Windows.Forms.ToolTip)sender;

@@ -208,7 +208,7 @@ namespace org.kbinani.cadencii {
 
         public void bgWork_DoWork( Object sender, BDoWorkEventArgs e ) {
 #if DEBUG
-            PortUtil.println( "FormGenerateKeySound#bgWork_DoWork" );
+            sout.println( "FormGenerateKeySound#bgWork_DoWork" );
 #endif
             PrepareStartArgument arg = (PrepareStartArgument)e.Argument;
             String singer = arg.singer;
@@ -222,7 +222,7 @@ namespace org.kbinani.cadencii {
 
             for ( int i = 0; i < 127; i++ ) {
                 String path = fsys.combine( dir, i + ".wav" );
-                PortUtil.println( "writing \"" + path + "\" ..." );
+                sout.println( "writing \"" + path + "\" ..." );
                 if ( replace || (!replace && !PortUtil.isFileExists( path )) ) {
                     try {
                         GenerateSinglePhone( i, singer, path, amp );
@@ -233,16 +233,16 @@ namespace org.kbinani.cadencii {
                                 wv.monoralize();
                                 wv.write( path );
                             } catch ( Exception ex0 ) {
-                                PortUtil.stderr.println( "FormGenerateKeySound#bgWork_DoWork; ex0=" + ex0 );
+                                serr.println( "FormGenerateKeySound#bgWork_DoWork; ex0=" + ex0 );
                                 Logger.write( typeof( FormGenerateKeySound ) + ".bgWork_DoWork; ex=" + ex0 + "\n" );
                             }
                         }
                     } catch ( Exception ex ) {
                         Logger.write( typeof( FormGenerateKeySound ) + ".bgWork_DoWork; ex=" + ex + "\n" );
-                        PortUtil.stderr.println( "FormGenerateKeySound#bgWork_DoWork; ex=" + ex );
+                        serr.println( "FormGenerateKeySound#bgWork_DoWork; ex=" + ex );
                     }
                 }
-                PortUtil.println( " done" );
+                sout.println( " done" );
                 if ( m_cancel_required ) {
                     m_cancel_required = false;
                     break;
@@ -337,7 +337,7 @@ namespace org.kbinani.cadencii {
                     PortUtil.createDirectory( tempdir );
                 } catch ( Exception ex ) {
                     Logger.write( typeof( FormGenerateKeySound ) + ".GenerateSinglePhone; ex=" + ex + "\n" );
-                    PortUtil.stderr.println( "Program#GenerateSinglePhone; ex=" + ex );
+                    serr.println( "Program#GenerateSinglePhone; ex=" + ex );
                     return;
                 }
             }
@@ -351,13 +351,13 @@ namespace org.kbinani.cadencii {
                 generator.setGlobalConfig( AppManager.editorConfig );
                 int sample_rate = vsq.config.SamplingRate;
 #if DEBUG
-                PortUtil.println( "FormGenerateKeySound#GenerateSinglePhone; sample_rate=" + sample_rate );
+                sout.println( "FormGenerateKeySound#GenerateSinglePhone; sample_rate=" + sample_rate );
 #endif
                 generator.init( vsq, 1, 0, vsq.TotalClocks, sample_rate );
                 double total_sec = vsq.getSecFromClock( vsq.TotalClocks ) + 1.0;
                 generator.begin( (long)(total_sec * sample_rate) );
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "FormGenerateKeySound#GenerateSinglePhone; ex=" + ex );
+                serr.println( "FormGenerateKeySound#GenerateSinglePhone; ex=" + ex );
                 Logger.write( typeof( FormGenerateKeySound ) + ".GenerateSinglePhone; ex=" + ex + "\n" );
             } finally {
                 if ( ww != null ) {
@@ -365,7 +365,7 @@ namespace org.kbinani.cadencii {
                         ww.close();
                     } catch ( Exception ex2 ) {
                         Logger.write( typeof( FormGenerateKeySound ) + ".GenerateSinglePhone; ex=" + ex2 + "\n" );
-                        PortUtil.stderr.println( "FormGenerateKeySound#GenerateSinglePhone; ex2=" + ex2 );
+                        serr.println( "FormGenerateKeySound#GenerateSinglePhone; ex2=" + ex2 );
                     }
                 }
             }

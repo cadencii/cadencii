@@ -178,7 +178,7 @@ namespace org.kbinani.cadencii
                     }
 #endif
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "FormMain#btnLeft_MouseDown; ex=" + ex );
+                    serr.println( "FormMain#btnLeft_MouseDown; ex=" + ex );
                     Logger.write( typeof( FormMain ) + ".btnLeft_MouseDown; ex=" + ex + "\n" );
                 }
                 mOverviewUpdateThread = null;
@@ -214,7 +214,7 @@ namespace org.kbinani.cadencii
                     }
 #endif
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "FormMain#btnRight_MouseDown; ex=" + ex );
+                    serr.println( "FormMain#btnRight_MouseDown; ex=" + ex );
                     Logger.write( typeof( FormMain ) + ".btnRight_MouseDown; ex=" + ex + "\n" );
                 }
                 mOverviewUpdateThread = null;
@@ -345,7 +345,7 @@ namespace org.kbinani.cadencii
             for ( ; д; ) {
 #if DEBUG
                 count++;
-                PortUtil.println( "FormMain#updateOverview; count=" + count );
+                sout.println( "FormMain#updateOverview; count=" + count );
 #endif
 #if JAVA
                 try{

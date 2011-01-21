@@ -1046,13 +1046,13 @@ namespace org.kbinani.vsq
                         }
                     }
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "ExpressionConfigSys#.ctor; ex=" + ex );
+                    serr.println( "ExpressionConfigSys#.ctor; ex=" + ex );
                 } finally {
                     if ( sr != null ) {
                         try {
                             sr.close();
                         } catch ( Exception ex2 ) {
-                            PortUtil.stderr.println( "ExpressionConfigSys#.ctor; ex2=" + ex2 );
+                            serr.println( "ExpressionConfigSys#.ctor; ex2=" + ex2 );
                         }
                     }
                 }
@@ -1184,25 +1184,25 @@ namespace org.kbinani.vsq
                             }
                         }
                     } catch ( Exception ex ) {
-                        PortUtil.stderr.println( "ExpressionConfigSys#.ctor; ex=" + ex );
+                        serr.println( "ExpressionConfigSys#.ctor; ex=" + ex );
                     } finally {
                         if ( fs_ved != null ) {
                             try {
                                 fs_ved.close();
                             } catch ( Exception ex2 ) {
-                                PortUtil.stderr.println( "ExpressionConfigSys#.ctor; ex2=" + ex2 );
+                                serr.println( "ExpressionConfigSys#.ctor; ex2=" + ex2 );
                             }
                         }
                     }
                 }
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "ExpressionConfigSys#.ctor; ex=" + ex );
+                serr.println( "ExpressionConfigSys#.ctor; ex=" + ex );
             } finally {
                 if ( fs != null ) {
                     try {
                         fs.close();
                     } catch ( Exception ex2 ) {
-                        PortUtil.stderr.println( "ExpressionConfigSys#.ctor; ex2=" + ex2 );
+                        serr.println( "ExpressionConfigSys#.ctor; ex2=" + ex2 );
                     }
                 }
             }

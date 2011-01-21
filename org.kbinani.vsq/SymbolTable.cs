@@ -336,13 +336,13 @@ namespace org
                             }
                         }
                     } catch ( Exception ex ) {
-                        PortUtil.stderr.println( "SymbolTable#.ctor; ex=" + ex );
+                        serr.println( "SymbolTable#.ctor; ex=" + ex );
                     } finally {
                         if ( sr != null ) {
                             try {
                                 sr.close();
                             } catch ( Exception ex2 ) {
-                                PortUtil.stderr.println( "SymbolTable#.ctor; ex=" + ex2 );
+                                serr.println( "SymbolTable#.ctor; ex=" + ex2 );
                             }
                         }
                     }

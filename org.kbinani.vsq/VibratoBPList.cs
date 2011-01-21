@@ -47,7 +47,7 @@ namespace org.kbinani.vsq
             try {
                 num = PortUtil.parseInt( strNum );
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "org.kbinani.vsq.VibratoBPList#.ctor; ex=" + ex );
+                serr.println( "org.kbinani.vsq.VibratoBPList#.ctor; ex=" + ex );
                 num = 0;
             }
             String[] bpx = PortUtil.splitString( strBPX, ',' );
@@ -61,7 +61,7 @@ namespace org.kbinani.vsq
                         x[i] = PortUtil.parseFloat( bpx[i] );
                         y[i] = PortUtil.parseInt( bpy[i] );
                     } catch ( Exception ex ) {
-                        PortUtil.stderr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
+                        serr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                     }
                 }
 

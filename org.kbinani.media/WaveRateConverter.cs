@@ -76,8 +76,8 @@ namespace org.kbinani.media {
             aRate = rate;
             bRate = reader.getSampleRate();
 #if DEBUG
-            PortUtil.println( "WaveRateConverter#.ctor; aRate=" + aRate + "; bRate=" + bRate );
-            //PortUtil.println( "type eny key to exit..." );
+            sout.println( "WaveRateConverter#.ctor; aRate=" + aRate + "; bRate=" + bRate );
+            //sout.println( "type eny key to exit..." );
             //Console.Read();
 #endif
             int gcd = (int)math.gcd( aRate, bRate );

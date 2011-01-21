@@ -1,3 +1,4 @@
+#if !JAVA
 /*
  * awt.geom.cs
  * Copyright © 2009-2011 kbinani
@@ -11,17 +12,20 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if !JAVA
-namespace org.kbinani.java {
+namespace org.kbinani.java
+{
 
-    public class AffineTransform {
+    public class AffineTransform
+    {
         System.Drawing.Drawing2D.Matrix m_matrix;
 
-        public AffineTransform() {
+        public AffineTransform()
+        {
             m_matrix = new System.Drawing.Drawing2D.Matrix();
         }
 
-        public AffineTransform( float m00, float m10, float m01, float m11, float m02, float m12 ) {
+        public AffineTransform( float m00, float m10, float m01, float m11, float m02, float m12 )
+        {
             m_matrix = new System.Drawing.Drawing2D.Matrix( m00, m01, m10, m11, m02, m12 );
         }
     }

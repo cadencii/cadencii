@@ -724,14 +724,7 @@ class pp_cs2java {
                     	ev = ev.substring( 0, 1 ).toLowerCase() + ev.substring( 1 ) + "Event";
                     	handler = handler.trim();
                     	method = method.trim();
-                    	System.out.println( "---------------------------------------------------" );
-                    	System.out.println( "line(before)=" + line );
-                    	System.out.println( "    pre_instance=" + pre_instance );
-                    	System.out.println( "    ev=" + ev );
-                    	System.out.println( "    handler=" + handler );
-                    	System.out.println( "    method=" + method );
                     	line = pre_instance + "." + ev + (operator_mode > 0 ? ".add( " : ".remove( ") + "new " + handler + "( this, \"" + method + "\" ) );";
-                    	System.out.println( "line(after)=" + line );
                     }
 
                     if ( s_shift_indent < 0 ) {

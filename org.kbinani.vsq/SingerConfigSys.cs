@@ -52,7 +52,7 @@ namespace org.kbinani.vsq
             for ( int j = 0; j < path_installed_singers.Length; j++ ) {
                 String ipath = path_installed_singers[j];
 #if DEBUG
-                PortUtil.println( "SingerConfigSys#.ctor; path_installed_singers[" + j + "]=" + path_installed_singers[j] );
+                sout.println( "SingerConfigSys#.ctor; path_installed_singers[" + j + "]=" + path_installed_singers[j] );
 #endif
                 //TODO: ここでエラー起こる場合があるよ。SingerConfigSys::.ctor
                 //      実際にディレクトリがある場合にのみ，ファイルのリストアップをするようにした．
@@ -85,13 +85,13 @@ namespace org.kbinani.vsq
                     }
                 }
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "SingerConfigSys#.ctor; ex=" + ex );
+                serr.println( "SingerConfigSys#.ctor; ex=" + ex );
             } finally {
                 if ( fs != null ) {
                     try {
                         fs.close();
                     } catch ( Exception ex2 ) {
-                        PortUtil.stderr.println( "SingerConfigSys#.ctor; ex2=" + ex2 );
+                        serr.println( "SingerConfigSys#.ctor; ex2=" + ex2 );
                     }
                 }
             }

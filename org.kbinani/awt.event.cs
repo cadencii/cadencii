@@ -1,3 +1,4 @@
+#if !JAVA
 /*
  * awt.event.cs
  * Copyright © 2009-2011 kbinani
@@ -11,10 +12,11 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if !JAVA
-namespace org.kbinani.java.awt.event_ {
+namespace org.kbinani.java.awt.event_
+{
 
-    public class InputEvent {
+    public class InputEvent
+    {
         public const int ALT_DOWN_MASK = 512;
         public const int ALT_GRAPH_DOWN_MASK = 8192;
         public const int ALT_GRAPH_MASK = 32;
@@ -33,7 +35,8 @@ namespace org.kbinani.java.awt.event_ {
         public const int SHIFT_MASK = 1;
     }
 
-    public class KeyEvent {
+    public class KeyEvent
+    {
         //public const char CHAR_UNDEFINED = 65535;
         public const int KEY_FIRST = 400;
         public const int KEY_LAST = 402;

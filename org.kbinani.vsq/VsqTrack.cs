@@ -689,13 +689,13 @@ namespace org.kbinani.vsq
                     sw.newLine();
                 }
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "VsqTrack#printMetaText; ex=" + ex );
+                serr.println( "VsqTrack#printMetaText; ex=" + ex );
             } finally {
                 if ( sw != null ) {
                     try {
                         sw.close();
                     } catch ( Exception ex2 ) {
-                        PortUtil.stderr.println( "VsqTrack#printMetaText; ex2=" + ex2 );
+                        serr.println( "VsqTrack#printMetaText; ex2=" + ex2 );
                     }
                 }
             }
@@ -957,7 +957,7 @@ namespace org.kbinani.vsq
                                 int index_0x0a = buffer.indexOf( 0x0a );
 #if DEBUG
 #if JAVA
-                                PortUtil.println( "VsqTrack#.ctor; index_0x0a=" + index_0x0a );
+                                sout.println( "VsqTrack#.ctor; index_0x0a=" + index_0x0a );
 #endif
 #endif
                                 while ( index_0x0a >= 0 ) {
@@ -970,7 +970,7 @@ namespace org.kbinani.vsq
                                     String line = PortUtil.getDecodedString( encoding, cpy );
 #if DEBUG
 #if JAVA
-                                    PortUtil.println( "VsqTrack#.ctor; line=" + line );
+                                    sout.println( "VsqTrack#.ctor; line=" + line );
 #endif
 #endif
                                     sw.writeLine( line );
@@ -1004,7 +1004,7 @@ namespace org.kbinani.vsq
                     String line = PortUtil.getDecodedString( encoding, cpy );
 #if DEBUG
 #if JAVA
-                    PortUtil.println( "VsqTrack#.ctor; line=" + line );
+                    sout.println( "VsqTrack#.ctor; line=" + line );
 #endif
 #endif
                     sw.writeLine( line );
@@ -1014,13 +1014,13 @@ namespace org.kbinani.vsq
                 MetaText = new VsqMetaText( sw );
                 setName( track_name );
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "org.kbinani.vsq.VsqTrack#.ctor; ex=" + ex );
+                serr.println( "org.kbinani.vsq.VsqTrack#.ctor; ex=" + ex );
             } finally {
                 if ( sw != null ) {
                     try {
                         sw.close();
                     } catch ( Exception ex2 ) {
-                        PortUtil.stderr.println( "org.kbinani.vsq.VsqTrack#.ctor; ex2=" + ex2 );
+                        serr.println( "org.kbinani.vsq.VsqTrack#.ctor; ex2=" + ex2 );
                     }
                 }
             }

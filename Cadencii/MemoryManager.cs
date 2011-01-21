@@ -62,7 +62,7 @@ namespace org.kbinani.cadencii {
                 try {
                     Marshal.FreeHGlobal( v );
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "MemoryManager#dispose; ex=" + ex );
+                    serr.println( "MemoryManager#dispose; ex=" + ex );
                 }
             }
             mList.clear();

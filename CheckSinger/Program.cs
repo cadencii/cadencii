@@ -81,14 +81,14 @@ namespace CheckSinger {
                                 continue;
                             }
 #if DEBUG
-                            PortUtil.println( "Main; keys=" + keys );
+                            sout.println( "Main; keys=" + keys );
 #endif
                             if( !keys.Equals( "KEYS" ) ){
                                 continue;
                             }
                             String key = s.Substring( PortUtil.getStringLength( h ), 16 );
 #if DEBUG
-                            PortUtil.println( "Main; key=" + key );
+                            sout.println( "Main; key=" + key );
 #endif
                             addIdMap( key );
                         }
@@ -110,13 +110,13 @@ namespace CheckSinger {
                         }
                     }
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "Main; ex=" + ex );
+                    serr.println( "Main; ex=" + ex );
                 } finally {
                     if ( br2 != null ) {
                         try {
                             br2.close();
                         } catch ( Exception ex2 ) {
-                            PortUtil.stderr.println( "Main; ex2=" + ex2 );
+                            serr.println( "Main; ex2=" + ex2 );
                         }
                     }
                 }

@@ -35,7 +35,7 @@ namespace org.kbinani.cadencii {
         
         public static void init() {
 #if DEBUG
-            PortUtil.println( "KeySoundPlayer#init" );
+            sout.println( "KeySoundPlayer#init" );
 #endif
             m_sound_previewer = new BSoundPlayer[48];
             m_temp_player = null;
@@ -49,7 +49,7 @@ namespace org.kbinani.cadencii {
                         try {
                             m_sound_previewer[i - 36] = new BSoundPlayer( path );
                         } catch( Exception ex ) {
-                            PortUtil.stderr.println( "KeySoundPlayer#init; ex=" + ex );
+                            serr.println( "KeySoundPlayer#init; ex=" + ex );
                         }
                     }
                 } else {
@@ -70,7 +70,7 @@ namespace org.kbinani.cadencii {
                     try {
                         m_sound_previewer[note - 36].play();
                     } catch( Exception ex ) {
-                        PortUtil.stderr.println( "KeySoundPlayer#play; ex=" + ex );
+                        serr.println( "KeySoundPlayer#play; ex=" + ex );
                     }
                 }
             } else {

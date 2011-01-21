@@ -308,7 +308,7 @@ namespace org.kbinani.vsq
                 this.reso4FreqBPList = value;
             } else {
 #if DEBUG
-                PortUtil.println( "VsqMetaText#setElement; warning:unknown curve; curve=" + curve );
+                sout.println( "VsqMetaText#setElement; warning:unknown curve; curve=" + curve );
 #endif
             }
         }
@@ -847,7 +847,7 @@ namespace org.kbinani.vsq
                     String[] spl = PortUtil.splitString( buffer, new char[] { '#' } );
 #if DEBUG
                     if ( spl.Length < 2 ) {
-                        PortUtil.println( "VsqMetaText#.ctor; spl.Length=" + spl.Length + "; buffer=" + buffer );
+                        sout.println( "VsqMetaText#.ctor; spl.Length=" + spl.Length + "; buffer=" + buffer );
                     }
 #endif
                     int index = PortUtil.parseInt( spl[1] );

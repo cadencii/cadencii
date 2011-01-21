@@ -319,7 +319,7 @@ namespace org.kbinani.cadencii
         public void timer_Tick( Object sender, BEventArgs e )
         {
 #if DEBUG
-            PortUtil.println( "VersionInfo#timer_Tick" );
+            sout.println( "VersionInfo#timer_Tick" );
 #endif
 #if JAVA
             this.repaint();
@@ -340,7 +340,7 @@ namespace org.kbinani.cadencii
 #endif
             } catch ( Exception ex ) {
 #if DEBUG
-                PortUtil.stderr.println( "VersionInfo_Paint; ex=" + ex );
+                serr.println( "VersionInfo_Paint; ex=" + ex );
 #endif
             }
         }

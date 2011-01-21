@@ -285,9 +285,9 @@ namespace org.kbinani.vsq
                     maxId++;
                     length++;
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "VsqBPList#setData; ex=" + ex );
+                    serr.println( "VsqBPList#setData; ex=" + ex );
 #if DEBUG
-                    PortUtil.println( "    i=" + i + "; spl2[0]=" + spl2[0] + "; spl2[1]=" + spl2[1] );
+                    sout.println( "    i=" + i + "; spl2[0]=" + spl2[0] + "; spl2[1]=" + spl2[1] );
 #endif
                 }
             }
@@ -599,7 +599,7 @@ namespace org.kbinani.vsq
         public String appendFromText( TextStream reader )
         {
 #if DEBUG
-            PortUtil.println( "VsqBPList#appendFromText; start" );
+            sout.println( "VsqBPList#appendFromText; start" );
             double started = PortUtil.getCurrentTime();
             int count = 0;
 #endif

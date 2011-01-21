@@ -141,7 +141,7 @@ namespace org.kbinani.xml {
             parameters.GenerateExecutable = false;
             parameters.IncludeDebugInformation = true;
 #if DEBUG
-            PortUtil.println( "XmlStaticMemberSerializer#Compile; code=" + code );
+            sout.println( "XmlStaticMemberSerializer#Compile; code=" + code );
 #endif
             CompilerResults results = provider.CompileAssemblyFromSource( parameters, code );
             return results.CompiledAssembly;

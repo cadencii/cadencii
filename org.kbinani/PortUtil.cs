@@ -197,8 +197,6 @@ namespace org.kbinani {
         public static Color WhiteSmoke = new Color( 245, 245, 245 );
         public static Color Yellow = new Color( 255, 255, 0 );
         public static Color YellowGreen = new Color( 154, 205, 50 );
-        public static InternalStdOut stdout = new InternalStdOut();
-        public static InternalStdErr stderr = new InternalStdErr();
 
         public const int YES_OPTION = 0;
         public const int NO_OPTION = 1;
@@ -1634,14 +1632,6 @@ namespace org.kbinani {
             return System.getProperty( "user.dir" );
 #else
             return System.Windows.Forms.Application.StartupPath;
-#endif
-        }
-
-        public static void println( String s ) {
-#if JAVA
-            System.out.println( s );
-#else
-            Console.WriteLine( s );
 #endif
         }
     }

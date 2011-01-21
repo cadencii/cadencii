@@ -663,7 +663,7 @@ namespace org.kbinani.cadencii
                 ret = (EditorConfig)s_serializer.deserialize( fs );
             } catch ( Exception ex ) {
 #if JAVA
-                PortUtil.stderr.println( "EditorConfig#deserialize; ex=" + ex );
+                serr.println( "EditorConfig#deserialize; ex=" + ex );
                 ex.printStackTrace();
 #endif
                 Logger.write( typeof( EditorConfig ) + ".deserialize; ex=" + ex + "\n" );
@@ -968,14 +968,14 @@ namespace org.kbinani.cadencii
                             index = (int)PortUtil.fromHexString( s );
                             index--;
                         } catch ( Exception ex ) {
-                            PortUtil.stderr.println( typeof( EditorConfig ) + ".createAutoVibrato; ex=" + ex + "; AutoVibratoTypeCustom=" + AutoVibratoTypeCustom + "; s=" + s );
+                            serr.println( typeof( EditorConfig ) + ".createAutoVibrato; ex=" + ex + "; AutoVibratoTypeCustom=" + AutoVibratoTypeCustom + "; s=" + s );
                             index = 0;
                         }
                     }
                 }
 
 #if DEBUG
-                PortUtil.println( "EditorConfig.createAutoVibrato; AutoVibratoTypeCustom=" + AutoVibratoTypeCustom + "; index=" + index );
+                sout.println( "EditorConfig.createAutoVibrato; AutoVibratoTypeCustom=" + AutoVibratoTypeCustom + "; index=" + index );
 #endif
                 VibratoHandle ret = null;
                 if ( 0 <= index && index < this.AutoVibratoCustom.size() ) {
@@ -1093,7 +1093,7 @@ namespace org.kbinani.cadencii
                     invokeQuantizeModeChangedEvent();
                 } catch ( Exception ex ) {
                     Logger.write( typeof( EditorConfig ) + ".getPositionQuantize; ex=" + ex + "\n" );
-                    PortUtil.stderr.println( "EditorConfig#setPositionQuantize; ex=" + ex );
+                    serr.println( "EditorConfig#setPositionQuantize; ex=" + ex );
                 }
             }
         }
@@ -1125,7 +1125,7 @@ namespace org.kbinani.cadencii
                 try {
                     invokeQuantizeModeChangedEvent();
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "EditorConfig#setPositionQuantizeTriplet; ex=" + ex );
+                    serr.println( "EditorConfig#setPositionQuantizeTriplet; ex=" + ex );
                     Logger.write( typeof( EditorConfig ) + ".setPositionQuantizeTriplet; ex=" + ex + "\n" );
                 }
             }
@@ -1158,7 +1158,7 @@ namespace org.kbinani.cadencii
                 try {
                     invokeQuantizeModeChangedEvent();
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "EditorConfig#setLengthQuantize; ex=" + ex );
+                    serr.println( "EditorConfig#setLengthQuantize; ex=" + ex );
                     Logger.write( typeof( EditorConfig ) + ".setLengthQuantize; ex=" + ex + "\n" );
                 }
             }
@@ -1190,7 +1190,7 @@ namespace org.kbinani.cadencii
                 try {
                     invokeQuantizeModeChangedEvent();
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "EditorConfig#setLengthQuantizeTriplet; ex=" + ex );
+                    serr.println( "EditorConfig#setLengthQuantizeTriplet; ex=" + ex );
                     Logger.write( typeof( EditorConfig ) + ".setLengthQuantizeTriplet; ex=" + ex + "\n" );
                 }
             }

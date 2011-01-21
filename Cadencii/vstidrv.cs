@@ -132,7 +132,7 @@ namespace org.kbinani.cadencii
             try {
                 ret = aEffect.GetParameter( index );
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "vstidrv#getParameter; ex=" + ex );
+                serr.println( "vstidrv#getParameter; ex=" + ex );
             }
             return ret;
         }
@@ -142,7 +142,7 @@ namespace org.kbinani.cadencii
             try {
                 aEffect.SetParameter( index, value );
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "vstidrv#setParameter; ex=" + ex );
+                serr.println( "vstidrv#setParameter; ex=" + ex );
             }
         }
 
@@ -161,7 +161,7 @@ namespace org.kbinani.cadencii
                     }
                 }
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "vstidrv#getStringCore; ex=" + ex );
+                serr.println( "vstidrv#getStringCore; ex=" + ex );
             }
             String ret = Encoding.ASCII.GetString( arr );
             return ret;
@@ -239,7 +239,7 @@ namespace org.kbinani.cadencii
                     offset += proc;
                 }
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "vstidrv#process; ex=" + ex );
+                serr.println( "vstidrv#process; ex=" + ex );
             }
         }
 
@@ -278,13 +278,13 @@ namespace org.kbinani.cadencii
                     }
                     aEffect.Dispatch( AEffectXOpcodes.effProcessEvents, 0, 0, new IntPtr( pVSTEvents ), 0 );
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "vstidrv#send; ex=" + ex );
+                    serr.println( "vstidrv#send; ex=" + ex );
                 } finally {
                     if ( mman != null ) {
                         try {
                             mman.dispose();
                         } catch ( Exception ex2 ) {
-                            PortUtil.stderr.println( "vstidrv#send; ex2=" + ex2 );
+                            serr.println( "vstidrv#send; ex2=" + ex2 );
                         }
                     }
                 }
@@ -343,7 +343,7 @@ namespace org.kbinani.cadencii
                         ui.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
                         isUiOpened = true;
                     } catch ( Exception ex ) {
-                        PortUtil.stderr.println( "vstidrv#open; ex=" + ex );
+                        serr.println( "vstidrv#open; ex=" + ex );
                         isUiOpened = false;
                     }
                 }
@@ -357,7 +357,7 @@ namespace org.kbinani.cadencii
             int ret1 = aEffect.Dispatch( AEffectOpcodes.effSetSampleRate, 0, 0, IntPtr.Zero, (float)sampleRate );
             int ret2 = aEffect.Dispatch( AEffectOpcodes.effSetBlockSize, 0, sampleRate, IntPtr.Zero, 0 );
 #if DEBUG
-            PortUtil.println( "vstidrv#setSampleRate; ret1=" + ret1 + "; ret2=" + ret2 );
+            sout.println( "vstidrv#setSampleRate; ret1=" + ret1 + "; ret2=" + ret2 );
 #endif
         }
 
@@ -376,7 +376,7 @@ namespace org.kbinani.cadencii
 #endif
             }
             if ( dllHandle == IntPtr.Zero ) {
-                PortUtil.stderr.println( "vstidrv#open; dllHandle is null" );
+                serr.println( "vstidrv#open; dllHandle is null" );
                 return false;
             }
 
@@ -390,13 +390,13 @@ namespace org.kbinani.cadencii
             mainDelegate = (PVSTMAIN)Marshal.GetDelegateForFunctionPointer( mainProcPointer,
                                                                             typeof( PVSTMAIN ) );
             if ( mainDelegate == null ) {
-                PortUtil.stderr.println( "vstidrv#open; mainDelegate is null" );
+                serr.println( "vstidrv#open; mainDelegate is null" );
                 return false;
             }
 
             audioMaster = new audioMasterCallback( AudioMaster );
             if ( audioMaster == null ) {
-                PortUtil.stderr.println( "vstidrv#open; audioMaster is null" );
+                serr.println( "vstidrv#open; audioMaster is null" );
                 return false;
             }
 
@@ -404,11 +404,11 @@ namespace org.kbinani.cadencii
             try {
                 aEffectPointer = mainDelegate( audioMaster );
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "vstidrv#open; ex=" + ex );
+                serr.println( "vstidrv#open; ex=" + ex );
                 return false;
             }
             if ( aEffectPointer == IntPtr.Zero ) {
-                PortUtil.stderr.println( "vstidrv#open; aEffectPointer is null" );
+                serr.println( "vstidrv#open; aEffectPointer is null" );
                 return false;
             }
             blockSize = block_size;
@@ -418,7 +418,7 @@ namespace org.kbinani.cadencii
             aEffect.Dispatch( AEffectOpcodes.effOpen, 0, 0, IntPtr.Zero, 0 );
             int ret = aEffect.Dispatch( AEffectOpcodes.effSetSampleRate, 0, 0, IntPtr.Zero, (float)sampleRate );
 #if DEBUG
-            PortUtil.println( "vstidrv#open; dll_path=" + path + "; ret for effSetSampleRate=" + ret );
+            sout.println( "vstidrv#open; dll_path=" + path + "; ret for effSetSampleRate=" + ret );
 #endif
 
             aEffect.Dispatch( AEffectOpcodes.effSetBlockSize, 0, blockSize, IntPtr.Zero, 0 );
@@ -439,7 +439,7 @@ namespace org.kbinani.cadencii
                 try {
                     win32.EnumChildWindows( ui.Handle, enumChildProc, 0 );
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "vstidrv#updatePluginUiRect; ex=" + ex );
+                    serr.println( "vstidrv#updatePluginUiRect; ex=" + ex );
                 }
             }
         }
@@ -450,7 +450,7 @@ namespace org.kbinani.cadencii
             try {
                 win32.GetWindowRect( hwnd, ref rc );
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "vstidrv#enumChildProc; ex=" + ex );
+                serr.println( "vstidrv#enumChildProc; ex=" + ex );
             }
             if ( ui != null ) {
                 ui.childWnd = hwnd;
@@ -463,19 +463,19 @@ namespace org.kbinani.cadencii
         {
             lock ( mSyncRoot ) {
 #if TEST
-                PortUtil.println( "vstidrv#close" );
+                sout.println( "vstidrv#close" );
 #endif
                 if ( ui != null && !ui.IsDisposed ) {
                     ui.close();
                 }
                 try {
-                    PortUtil.println( "vstidrv#close; (aEffect==null)=" + (aEffect == null) );
+                    sout.println( "vstidrv#close; (aEffect==null)=" + (aEffect == null) );
                     if ( aEffect != null ) {
                         aEffect.Dispatch( AEffectOpcodes.effClose, 0, 0, IntPtr.Zero, 0.0f );
                     }
-                    PortUtil.println( "vstidrv#close; dllHandle=" + dllHandle );
+                    sout.println( "vstidrv#close; dllHandle=" + dllHandle );
                     if ( dllHandle != IntPtr.Zero ) {
-                        PortUtil.println( "vstidrv#close; useNativeDllLoader=" + useNativeDllLoader );
+                        sout.println( "vstidrv#close; useNativeDllLoader=" + useNativeDllLoader );
                         if ( useNativeDllLoader ) {
                             win32.FreeLibrary( dllHandle );
                         } else {
@@ -489,7 +489,7 @@ namespace org.kbinani.cadencii
                     mainDelegate = null;
                     audioMaster = null;
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "vstidrv#close; ex=" + ex );
+                    serr.println( "vstidrv#close; ex=" + ex );
                 }
                 releaseBuffer();
             }

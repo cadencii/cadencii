@@ -72,7 +72,7 @@ namespace org.kbinani.cadencii
             Vector<ValuePair<String, Boolean>> ret = new Vector<ValuePair<String, Boolean>>();
             int count = listDictionaries.getItemCount( "" );
 #if DEBUG
-            PortUtil.println( "FormWordDictionary#getResult; count=" + count );
+            sout.println( "FormWordDictionary#getResult; count=" + count );
 #endif
             for ( int i = 0; i < count; i++ ) {
                 BListViewItem item = listDictionaries.getItemAt( "", i );
@@ -138,7 +138,7 @@ namespace org.kbinani.cadencii
 
                     listDictionaries.setItemSelectedAt( "", index - 1, true );
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "FormWordDictionary#btnUp_Click; ex=" + ex );
+                    serr.println( "FormWordDictionary#btnUp_Click; ex=" + ex );
                 }
             }
         }
@@ -161,7 +161,7 @@ namespace org.kbinani.cadencii
 
                     listDictionaries.setItemSelectedAt( "", index + 1, true );
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "FormWordDictionary#btnDown_Click; ex=" + ex );
+                    serr.println( "FormWordDictionary#btnDown_Click; ex=" + ex );
                 }
             }
         }

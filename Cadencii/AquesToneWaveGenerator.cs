@@ -151,7 +151,7 @@ namespace org.kbinani.cadencii
             mTrimRemain = (int)(trim_sec * mSampleRate);
             //mTrimRemain = 0;
 #if DEBUG
-            PortUtil.println( "AeuqsToneWaveGenerator#init; mTrimRemain=" + mTrimRemain );
+            sout.println( "AeuqsToneWaveGenerator#init; mTrimRemain=" + mTrimRemain );
 #endif
         }
 
@@ -166,7 +166,7 @@ namespace org.kbinani.cadencii
         public void begin( long total_samples )
         {
 #if DEBUG
-            PortUtil.println( "AquesToneRenderingRunner#begin; (mDriver==null)=" + (mDriver == null) );
+            sout.println( "AquesToneRenderingRunner#begin; (mDriver==null)=" + (mDriver == null) );
             String file = System.IO.Path.Combine( System.Windows.Forms.Application.StartupPath, "AquesToneWaveGenerator.txt" );
             log = new System.IO.StreamWriter( file );
             log.AutoFlush = true;
@@ -180,7 +180,7 @@ namespace org.kbinani.cadencii
             }
 
 #if DEBUG
-            PortUtil.println( "AquesToneRenderingRunner#begin; mDriver.loaded=" + mDriver.loaded );
+            sout.println( "AquesToneRenderingRunner#begin; mDriver.loaded=" + mDriver.loaded );
 #endif
             if ( !mDriver.loaded ) {
 #if DEBUG
@@ -194,7 +194,7 @@ namespace org.kbinani.cadencii
             mAbortRequired = false;
             mTotalSamples = total_samples;
 #if DEBUG
-            PortUtil.println( "AquesToneWaveGenerator#begin; mTotalSamples=" + mTotalSamples );
+            sout.println( "AquesToneWaveGenerator#begin; mTotalSamples=" + mTotalSamples );
             log.WriteLine( "mTotalSamples=" + mTotalSamples );
             log.WriteLine( "mTrimRemain=" + mTrimRemain );
 #endif
@@ -238,7 +238,7 @@ namespace org.kbinani.cadencii
             for ( Iterator<VsqEvent> itr = track.getNoteEventIterator(); itr.hasNext(); ) {
                 VsqEvent item = itr.next();
 #if DEBUG
-                PortUtil.println( "AquesToneWaveGenerator#begin; item.Clock=" + item.Clock );
+                sout.println( "AquesToneWaveGenerator#begin; item.Clock=" + item.Clock );
                 log.WriteLine( "*********************************************************" );
                 log.WriteLine( "item.Clock=" + item.Clock );
 #endif
@@ -255,7 +255,7 @@ namespace org.kbinani.cadencii
                     Integer clock = itr2.next();
 #if DEBUG
                     log.WriteLine( "-------------------------------------------------------" );
-                    PortUtil.println( "AquesToneWaveGenerator#begin;     clock=" + clock );
+                    sout.println( "AquesToneWaveGenerator#begin;     clock=" + clock );
 #endif
                     long saStart = (long)(mVsq.getSecFromClock( clock ) * mSampleRate);
                     saRemain = (int)(saStart - saProcessed);
@@ -288,7 +288,7 @@ namespace org.kbinani.cadencii
                             for ( int j = 0; j < itemi.data.Length; j++ ) {
                                 str += "0x" + PortUtil.toHexString( itemi.data[j], 2 ) + " ";
                             }
-                            PortUtil.println( typeof( AquesToneWaveGenerator ) + "#begin;         noteoff; " + str );
+                            sout.println( typeof( AquesToneWaveGenerator ) + "#begin;         noteoff; " + str );
                         }
 #endif
                         mDriver.send( queue.noteoff.toArray( new MidiEvent[] { } ) );
@@ -299,7 +299,7 @@ namespace org.kbinani.cadencii
                         for ( Iterator<ParameterEvent> itr3 = queue.param.iterator(); itr3.hasNext(); ) {
                             ParameterEvent pe = itr3.next();
 #if DEBUG
-                            PortUtil.println( typeof( AquesToneWaveGenerator ) + "#begin;         param;   index=" + pe.index + "; value=" + pe.value );
+                            sout.println( typeof( AquesToneWaveGenerator ) + "#begin;         param;   index=" + pe.index + "; value=" + pe.value );
 #endif
                             mDriver.setParameter( pe.index, pe.value );
                         }
@@ -319,7 +319,7 @@ namespace org.kbinani.cadencii
                             for ( int j = 0; j < itemi.data.Length; j++ ) {
                                 str += "0x" + PortUtil.toHexString( itemi.data[j], 2 ) + " ";
                             }
-                            PortUtil.println( typeof( AquesToneWaveGenerator ) + "#begin;         noteon;  " + str );
+                            sout.println( typeof( AquesToneWaveGenerator ) + "#begin;         noteon;  " + str );
                         }
 #endif
                         mDriver.send( queue.noteon.toArray( new MidiEvent[] { } ) );
@@ -334,7 +334,7 @@ namespace org.kbinani.cadencii
                             for ( int j = 0; j < itemi.data.Length; j++ ) {
                                 str += "0x" + PortUtil.toHexString( itemi.data[j], 2 ) + " ";
                             }
-                            PortUtil.println( typeof( AquesToneWaveGenerator ) + "#begin;         pit;     " + str );
+                            sout.println( typeof( AquesToneWaveGenerator ) + "#begin;         pit;     " + str );
                         }
 #endif
                         mDriver.send( queue.pit.toArray( new MidiEvent[] { } ) );
@@ -348,7 +348,7 @@ namespace org.kbinani.cadencii
             // totalSamplesに足りなかったら、追加してレンダリング
             saRemain = (int)(mTotalSamples - mTotalAppend);
 #if DEBUG
-            PortUtil.println( "AquesToneRenderingRunner#run; totalSamples=" + mTotalSamples + "; mTotalAppend=" + mTotalAppend + "; saRemain=" + saRemain );
+            sout.println( "AquesToneRenderingRunner#run; totalSamples=" + mTotalSamples + "; mTotalAppend=" + mTotalAppend + "; saRemain=" + saRemain );
 #endif
             while ( saRemain > 0 ) {
                 if ( mAbortRequired ) {
@@ -627,7 +627,7 @@ namespace org.kbinani.cadencii
                         // ピッチベンドの最大値を実現するのに必要なPBS
                         int required_pbs = (int)Math.Ceiling( pitmax / 100.0 );
 #if DEBUG
-                        PortUtil.println( "AquesToneRenderingRunner#generateMidiEvent; required_pbs=" + required_pbs );
+                        sout.println( "AquesToneRenderingRunner#generateMidiEvent; required_pbs=" + required_pbs );
 #endif
                         if ( required_pbs > 13 ) {
                             required_pbs = 13;

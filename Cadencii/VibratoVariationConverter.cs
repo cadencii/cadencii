@@ -64,12 +64,12 @@ namespace org.kbinani.cadencii
                 // ユーザー定義の中から選ぶ場合
                 int size = AppManager.editorConfig.AutoVibratoCustom.size();
 #if DEBUG
-                PortUtil.println( "VibratoVariationConverter#GetStandardValues; size=" + size );
+                sout.println( "VibratoVariationConverter#GetStandardValues; size=" + size );
 #endif
                 for ( int i = 0; i < size; i++ ) {
                     VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
 #if DEBUG
-                    PortUtil.println( "VibratoVariationConverter#GetStandardValues; handle.getDisplayString()=" + handle.getDisplayString() );
+                    sout.println( "VibratoVariationConverter#GetStandardValues; handle.getDisplayString()=" + handle.getDisplayString() );
 #endif
                     list.add( new VibratoVariation( handle.getDisplayString() ) );
                 }

@@ -101,6 +101,29 @@ namespace org.kbinani.cadencii
             editing = editing_;
 
 #if ENABLE_PROPERTY
+            captureValuesFromEditing();
+#endif
+        }
+
+#if ENABLE_PROPERTY
+#if JAVA
+        public SelectedEventEntry()
+        {
+        }
+
+        public PropertyDescripter getDescripter()
+        {
+            return new SelectedEventEntryPropertyDescripter();
+        }
+#endif
+#endif
+
+#if ENABLE_PROPERTY
+        /// <summary>
+        /// このオブジェクトのeditingフィールドの値から、プロパティの各値のオブジェクトを構築します
+        /// </summary>
+        public void captureValuesFromEditing()
+        {
             // clock
             m_clock = editing.Clock + "";
 
@@ -157,20 +180,7 @@ namespace org.kbinani.cadencii
             if ( m_vibrato == null ) {
                 m_vibrato = new VibratoVariation( VibratoVariation.empty.description );
             }
-#endif
         }
-
-#if ENABLE_PROPERTY
-#if JAVA
-        public SelectedEventEntry()
-        {
-        }
-
-        public PropertyDescripter getDescripter()
-        {
-            return new SelectedEventEntryPropertyDescripter();
-        }
-#endif
 #endif
 
 #if ENABLE_PROPERTY
@@ -1412,7 +1422,7 @@ namespace org.kbinani.cadencii
         public void setVibratoLength( int value )
         {
 #if DEBUG
-            PortUtil.println( "VsqEventItemProxy#set_VibratoLength; value=" + value );
+            sout.println( "VsqEventItemProxy#set_VibratoLength; value=" + value );
 #endif
             if ( value <= 0 ) {
                 m_vibrato = new VibratoVariation( VibratoVariation.empty.description );
@@ -1494,7 +1504,7 @@ namespace org.kbinani.cadencii
                 try {
                     value = PortUtil.parseInt( v );
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "VsqEventItemProxy#get_Release; ex=" + ex );
+                    serr.println( "VsqEventItemProxy#get_Release; ex=" + ex );
                     value = 64;
                 }
             }

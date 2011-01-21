@@ -1,3 +1,4 @@
+#if !JAVA
 /*
  * lang.cs
  * Copyright © 2009-2011 kbinani
@@ -11,8 +12,13 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if !JAVA
-public interface Runnable {
-    void run();
+namespace org.kbinani.java.lang
+{
+
+    public interface Runnable
+    {
+        void run();
+    }
+
 }
 #endif

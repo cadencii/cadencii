@@ -61,7 +61,7 @@ namespace org.kbinani {
                     log.AutoFlush = true;
 #endif
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "Logger#write; ex=" + ex );
+                    serr.println( "Logger#write; ex=" + ex );
                 }
             }
 
@@ -76,7 +76,7 @@ namespace org.kbinani {
                 log.Write( s );
 #endif
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "Logger#write; ex=" + ex );
+                serr.println( "Logger#write; ex=" + ex );
             }
         }
 
@@ -94,20 +94,20 @@ namespace org.kbinani {
                     log.Close();
 #endif
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "Logger#setPath; ex=" + ex );
+                    serr.println( "Logger#setPath; ex=" + ex );
                 }
                 log = null;
                 if( PortUtil.isFileExists( file ) ){
                     try{
                         PortUtil.deleteFile( file );
                     }catch( Exception ex ){
-                        PortUtil.stderr.println( "Logger#setPath; ex=" + ex );
+                        serr.println( "Logger#setPath; ex=" + ex );
                     }
                 }
                 try {
                     PortUtil.moveFile( path, file );
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "Logger#setPath; ex=" + ex );
+                    serr.println( "Logger#setPath; ex=" + ex );
                 }
                 append = true;
             }
@@ -122,7 +122,7 @@ namespace org.kbinani {
                     log.AutoFlush = true;
 #endif
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "Logger#setPath; ex=" + ex );
+                    serr.println( "Logger#setPath; ex=" + ex );
                 }
             }
         }

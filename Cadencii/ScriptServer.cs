@@ -34,7 +34,7 @@ namespace org.kbinani.cadencii {
             String dir = Utility.getScriptPath();
             String file = fsys.combine( dir, id );
 #if DEBUG
-            PortUtil.println( "ScriptServer#reload; file=" + file + "; isFileExists(file)=" + PortUtil.isFileExists( file ) );
+            sout.println( "ScriptServer#reload; file=" + file + "; isFileExists(file)=" + PortUtil.isFileExists( file ) );
 #endif
             if ( !PortUtil.isFileExists( file ) ) {
                 return;
@@ -143,7 +143,7 @@ namespace org.kbinani.cadencii {
                         fs = new FileOutputStream( config_file );
                         script_invoker.Serializer.serialize( fs, null );
                     } catch ( Exception ex ) {
-                        PortUtil.stderr.println( "AppManager#invokeScript; ex=" + ex );
+                        serr.println( "AppManager#invokeScript; ex=" + ex );
                         delete_xml_when_exit = true;
                     } finally {
                         if ( fs != null ) {
@@ -153,14 +153,14 @@ namespace org.kbinani.cadencii {
                                     PortUtil.deleteFile( config_file );
                                 }
                             } catch ( Exception ex2 ) {
-                                PortUtil.stderr.println( "AppManager#invokeScript; ex2=" + ex2 );
+                                serr.println( "AppManager#invokeScript; ex2=" + ex2 );
                             }
                         }
                     }
                     return (ret == ScriptReturnStatus.EDITED);
                 } catch ( Exception ex ) {
                     AppManager.showMessageBox( _( "Script runtime error:" ) + " " + ex, _( "Error" ), org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
-                    PortUtil.stderr.println( "AppManager#invokeScript; ex=" + ex );
+                    serr.println( "AppManager#invokeScript; ex=" + ex );
                 }
             } else {
                 AppManager.showMessageBox( _( "Script compilation failed." ), _( "Error" ), org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
@@ -206,7 +206,7 @@ namespace org.kbinani.cadencii {
                     try {
                         ret = invoker.getDisplayNameDelegate();
                     } catch ( Exception ex ) {
-                        PortUtil.stderr.println( "ScriptServer#getDisplayName; ex=" + ex );
+                        serr.println( "ScriptServer#getDisplayName; ex=" + ex );
                         ret = PortUtil.getFileNameWithoutExtension( id );
                     }
                     return ret;

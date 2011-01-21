@@ -169,14 +169,14 @@ namespace org.kbinani.generatekeysound {
                                 wv.monoralize();
                                 wv.write( path );
                             } catch( Exception ex ) {
-                                PortUtil.stderr.println( "Program#run; ex=" + ex );
+                                serr.println( "Program#run; ex=" + ex );
                             }
                         }
                     } catch( Exception ex ) {
-                        PortUtil.stderr.println( "Program#run; ex=" + ex );
+                        serr.println( "Program#run; ex=" + ex );
                     }
                 }
-                PortUtil.println( " done" );
+                sout.println( " done" );
             }
         }
 

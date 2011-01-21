@@ -62,8 +62,8 @@ namespace org.kbinani.vsq
             try {
                 sr = new BufferedReader( new InputStreamReader( new FileInputStream( path ), "Shift_JIS" ) );
 #if DEBUG
-                PortUtil.println( "UstFile#.ctor; path=" + path );
-                PortUtil.println( "UstFile#.ctor; (sr==null)=" + (sr == null) );
+                sout.println( "UstFile#.ctor; path=" + path );
+                sout.println( "UstFile#.ctor; (sr==null)=" + (sr == null) );
 #endif
                 String line = sr.readLine();
 
@@ -71,7 +71,7 @@ namespace org.kbinani.vsq
                 int type = 0; //0 => reading "SETTING" section
                 while ( true ) {
 #if DEBUG
-                    PortUtil.println( "UstFile#.ctor; line=" + line );
+                    sout.println( "UstFile#.ctor; line=" + line );
 #endif
                     UstEvent ue = null;
                     if ( type == 1 ) {
@@ -96,12 +96,12 @@ namespace org.kbinani.vsq
                             index = PortUtil.parseInt( s );
                         } catch ( Exception ex ) {
 #if DEBUG
-                            PortUtil.println( "UstFile#.ctor; ex=" + ex );
+                            sout.println( "UstFile#.ctor; ex=" + ex );
 #endif
                         }
                     }
 #if DEBUG
-                    PortUtil.println( "UstFile#.ctor; index=" + index );
+                    sout.println( "UstFile#.ctor; index=" + index );
 #endif
                     line = sr.readLine(); // "[#" 直下の行
                     if ( line == null ) {
@@ -109,7 +109,7 @@ namespace org.kbinani.vsq
                     }
                     while ( !line.StartsWith( "[#" ) ) {
 #if DEBUG
-                        PortUtil.println( "line=" + line );
+                        sout.println( "line=" + line );
 #endif
                         String[] spl = PortUtil.splitString( line, new char[] { '=' }, 2 );
                         if ( type == 0 ) {
@@ -235,7 +235,7 @@ namespace org.kbinani.vsq
                                 }
                             } else {
 #if DEBUG
-                                PortUtil.println( "UstFile#.ctor; info: don't know how to process this line; line=" + line );
+                                sout.println( "UstFile#.ctor; info: don't know how to process this line; line=" + line );
 #endif
                             }
                         }
@@ -255,7 +255,7 @@ namespace org.kbinani.vsq
                 updateTempoInfo();
             } catch ( Exception ex ) {
 #if DEBUG
-                PortUtil.stderr.println( "UstFile#.ctor(String); ex=" + ex );
+                serr.println( "UstFile#.ctor(String); ex=" + ex );
 #endif
             } finally {
                 if ( sr != null ) {
@@ -667,13 +667,13 @@ namespace org.kbinani.vsq
                 }
                 sw.newLine();
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "UstFile#write; ex=" + ex );
+                serr.println( "UstFile#write; ex=" + ex );
             } finally {
                 if ( sw != null ) {
                     try {
                         sw.close();
                     } catch ( Exception ex2 ) {
-                        PortUtil.stderr.println( "UstFile#write; ex2=" + ex2 );
+                        serr.println( "UstFile#write; ex2=" + ex2 );
                     }
                 }
             }

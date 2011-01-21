@@ -132,7 +132,7 @@ namespace org.kbinani.vsq
                         }
                     } catch ( Exception ex ) {
                         Logger.write( typeof( VocaloSysUtil ) + ".init; ex=" + ex + "\n" );
-                        PortUtil.stderr.println( "VocaloSysUtil#init; ex=" + ex );
+                        serr.println( "VocaloSysUtil#init; ex=" + ex );
                     } finally {
                         // ファイルは閉じない
                         if ( close && sw != null ) {
@@ -140,7 +140,7 @@ namespace org.kbinani.vsq
                                 sw.close();
                             } catch ( Exception ex2 ) {
                                 Logger.write( typeof( VocaloSysUtil ) + ".init; ex=" + ex2 + "\n" );
-                                PortUtil.stderr.println( typeof( VocaloSysUtil ) + ".init; ex2=" + ex2 );
+                                serr.println( typeof( VocaloSysUtil ) + ".init; ex2=" + ex2 );
                             }
                             sw = null;
                         }
@@ -195,7 +195,7 @@ namespace org.kbinani.vsq
                                         try {
                                             defaultDseVersion = PortUtil.parseInt( str_dse_version );
                                         } catch ( Exception ex ) {
-                                            PortUtil.stderr.println( "VocaloSysUtil#init; ex=" + ex );
+                                            serr.println( "VocaloSysUtil#init; ex=" + ex );
                                             defaultDseVersion = 100;
                                         }
                                     }
@@ -203,20 +203,20 @@ namespace org.kbinani.vsq
                                 }
                             }
                         } catch ( Exception ex ) {
-                            PortUtil.stderr.println( "VocaloSysUtil#init; ex=" + ex );
+                            serr.println( "VocaloSysUtil#init; ex=" + ex );
                         } finally {
                             if ( br != null ) {
                                 try {
                                     br.close();
                                 } catch ( Exception ex2 ) {
-                                    PortUtil.stderr.println( "VocaloSysUtil#init; ex2=" + ex2 );
+                                    serr.println( "VocaloSysUtil#init; ex2=" + ex2 );
                                 }
                             }
                         }
                     }
                 }
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "VocaloSysUtil#init; ex=" + ex );
+                serr.println( "VocaloSysUtil#init; ex=" + ex );
                 SingerConfigSys singer_config_sys = new SingerConfigSys( "", new String[] { } );
                 exp_config_sys1 = null;
                 s_singer_config_sys.put( SynthesizerType.VOCALOID1, singer_config_sys );
@@ -254,14 +254,14 @@ namespace org.kbinani.vsq
                         }
                     } catch ( Exception ex ) {
                         Logger.write( typeof( VocaloSysUtil ) + ".init; ex=" + ex + "\n" );
-                        PortUtil.stderr.println( "VocaloSysUtil#.cctor; ex=" + ex );
+                        serr.println( "VocaloSysUtil#.cctor; ex=" + ex );
                     } finally {
                         if ( close && sw != null ) {
                             try {
                                 sw.close();
                             } catch ( Exception ex2 ) {
                                 Logger.write( typeof( VocaloSysUtil ) + ".init; ex=" + ex2 + "\n" );
-                                PortUtil.stderr.println( "VocaloSysUtil#.cctor; ex2=" + ex2 );
+                                serr.println( "VocaloSysUtil#.cctor; ex2=" + ex2 );
                             }
                         }
                     }
@@ -284,14 +284,14 @@ namespace org.kbinani.vsq
                 }
                 s_singer_config_sys.put( SynthesizerType.VOCALOID2, singer_config_sys );
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "VocaloSysUtil..cctor; ex=" + ex );
+                serr.println( "VocaloSysUtil..cctor; ex=" + ex );
                 SingerConfigSys singer_config_sys = new SingerConfigSys( "", new String[] { } );
                 exp_config_sys2 = null;
                 s_singer_config_sys.put( SynthesizerType.VOCALOID2, singer_config_sys );
             }
             if ( exp_config_sys2 == null ) {
 #if DEBUG
-                PortUtil.println( "VocaloSysUtil#.ctor; loading default ExpressionConfigSys..." );
+                sout.println( "VocaloSysUtil#.ctor; loading default ExpressionConfigSys..." );
 #endif
                 exp_config_sys2 = ExpressionConfigSys.getVocaloid2Default();
             }
@@ -423,10 +423,10 @@ namespace org.kbinani.vsq
                 }
             }
 #if DEBUG
-            PortUtil.println( "path_vsti=" + path_vsti.value );
-            PortUtil.println( "path_voicedb=" + path_voicedb.value );
-            PortUtil.println( "path_expdb=" + path_expdb.value );
-            PortUtil.println( "installed_singers=" );
+            sout.println( "path_vsti=" + path_vsti.value );
+            sout.println( "path_voicedb=" + path_voicedb.value );
+            sout.println( "path_expdb=" + path_expdb.value );
+            sout.println( "installed_singers=" );
 #endif
         }
 
@@ -463,7 +463,7 @@ namespace org.kbinani.vsq
                 }
                 key.Close();
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "VocaloSysUtil#initPrint; ex=" + ex );
+                serr.println( "VocaloSysUtil#initPrint; ex=" + ex );
             }
 #endif
         }

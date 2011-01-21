@@ -178,7 +178,7 @@ namespace org.kbinani.apputil {
                 int center = (firsty + endy) / 2;
                 ret = center - string_desty;
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "Util#getStringDrawOffset; ex=" + ex );
+                serr.println( "Util#getStringDrawOffset; ex=" + ex );
             } finally {
 #if JAVA
 #else

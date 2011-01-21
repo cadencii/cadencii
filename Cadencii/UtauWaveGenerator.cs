@@ -225,7 +225,7 @@ namespace org.kbinani.cadencii
                 try {
                     PortUtil.deleteFile( file );
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "UtauWaveGenerator#clearCache; ex=" + ex );
+                    serr.println( "UtauWaveGenerator#clearCache; ex=" + ex );
                     Logger.write( "UtauWaveGenerator::clearCache; ex=" + ex + "\n" );
                 }
             }
@@ -356,10 +356,16 @@ namespace org.kbinani.cadencii
                         //error_sum += (draft_length / (act_t_temp2 * 8.0)) - (sec_end2 - sec_start2);
 #endif
                         RenderQueue rq = new RenderQueue();
-                        rq.WavtoolArgPrefix =
-                            "\"" + file + "\" \"" + fsys.combine( singer, "R.wav" ) + "\" 0 " + draft_length + "@"
-                            + BASE_TEMPO;
-                        rq.WavtoolArgSuffix = " 0 0";
+                        //rq.WavtoolArgPrefix = "\"" + file + "\" \"" + fsys.combine( singer, "R.wav" ) + "\" 0 " + draft_length + "@" + BASE_TEMPO;
+                        rq.WavtoolArgPrefix.clear();
+                        rq.WavtoolArgPrefix.add( "\"" + file + "\"" );
+                        rq.WavtoolArgPrefix.add( "\"" + fsys.combine( singer, "R.wav" ) + "\"" );
+                        rq.WavtoolArgPrefix.add( "0" );
+                        rq.WavtoolArgPrefix.add( draft_length + "@" + BASE_TEMPO );
+                        //rq.WavtoolArgSuffix = " 0 0";
+                        rq.WavtoolArgSuffix.clear();
+                        rq.WavtoolArgSuffix.add( "0" );
+                        rq.WavtoolArgSuffix.add( "0" );
                         rq.Oto = new OtoArgs();
                         rq.FileName = "";
                         rq.secStart = sec_start2;
@@ -382,8 +388,8 @@ namespace org.kbinani.cadencii
                     oa.msPreUtterance = item.UstEvent.PreUtterance;
                     oa.msOverlap = item.UstEvent.VoiceOverlap;
 #if DEBUG
-                    PortUtil.println( "UtauWaveGenerator#run; oa.fileName=" + oa.fileName );
-                    PortUtil.println( "UtauWaveGenerator#run; lyric=" + lyric );
+                    sout.println( "UtauWaveGenerator#run; oa.fileName=" + oa.fileName );
+                    sout.println( "UtauWaveGenerator#run; lyric=" + lyric );
 #endif
                     RenderQueue rq2 = new RenderQueue();
                     String wavPath = "";
@@ -393,13 +399,13 @@ namespace org.kbinani.cadencii
                         wavPath = fsys.combine( singer, lyric + ".wav" );
                     }
 #if DEBUG
-                    PortUtil.println( "UtauWaveGenerator#run; wavPath=" + wavPath );
+                    sout.println( "UtauWaveGenerator#run; wavPath=" + wavPath );
 #endif
                     String[] resampler_arg_prefix = new String[] { "\"" + wavPath + "\"" };
                     String[] resampler_arg_suffix = new String[]{
                         "\"" + note + "\"",
                         "100",
-                        item.UstEvent.Flags,
+                        "\"" + item.UstEvent.Flags + "\"",
                         oa.msOffset + "",
                         millisec + "",
                         oa.msConsonant + "",
@@ -559,7 +565,7 @@ namespace org.kbinani.cadencii
                             try {
                                 PortUtil.deleteFile( delfile );
                             } catch ( Exception ex ) {
-                                PortUtil.stderr.println( "UtauWaveGenerator#begin; ex=" + ex );
+                                serr.println( "UtauWaveGenerator#begin; ex=" + ex );
                                 Logger.write( "UtauWaveGenerator#begin(long): ex=" + ex + "\n" );
                             }
                             mCache.remove( delkey );
@@ -575,15 +581,30 @@ namespace org.kbinani.cadencii
                     error_sum += (item.ID.getLength() / (8.0 * act_t_temp)) - (sec_end - sec_start);
                     Logger.write( "UtauWaveGenerator#begin; error_sum=" + error_sum + "\n" );
 #endif
-                    rq2.WavtoolArgPrefix =
-                        "\"" + file + "\" \"" + filename + "\" " + item.UstEvent.getStartPoint() + " "
-                        + item.ID.getLength() + "@" + str_t_temp;
+                    //rq2.WavtoolArgPrefix = "\"" + file + "\" \"" + filename + "\" " + item.UstEvent.getStartPoint() + " " + item.ID.getLength() + "@" + str_t_temp;
+                    rq2.WavtoolArgPrefix.clear();
+                    rq2.WavtoolArgPrefix.add( "\"" + file + "\"" );
+                    rq2.WavtoolArgPrefix.add( "\"" + filename + "\"" );
+                    rq2.WavtoolArgPrefix.add( "" + item.UstEvent.getStartPoint() );
+                    rq2.WavtoolArgPrefix.add( "" + item.ID.getLength() + "@" + str_t_temp );
                     UstEnvelope env = item.UstEvent.Envelope;
                     if ( env == null ) {
                         env = new UstEnvelope();
                     }
-                    rq2.WavtoolArgSuffix = " " + env.p1 + " " + env.p2 + " " + env.p3 + " " + env.v1 + " " + env.v2 + " " + env.v3 + " " + env.v4;
-                    rq2.WavtoolArgSuffix += " " + oa.msOverlap + " " + env.p4 + " " + env.p5 + " " + env.v5;
+                    //rq2.WavtoolArgSuffix = " " + env.p1 + " " + env.p2 + " " + env.p3 + " " + env.v1 + " " + env.v2 + " " + env.v3 + " " + env.v4;
+                    //rq2.WavtoolArgSuffix += " " + oa.msOverlap + " " + env.p4 + " " + env.p5 + " " + env.v5;
+                    rq2.WavtoolArgSuffix.clear();
+                    rq2.WavtoolArgSuffix.add( "" + env.p1 );
+                    rq2.WavtoolArgSuffix.add( "" + env.p2 );
+                    rq2.WavtoolArgSuffix.add( "" + env.p3 );
+                    rq2.WavtoolArgSuffix.add( "" + env.v1 );
+                    rq2.WavtoolArgSuffix.add( "" + env.v2 );
+                    rq2.WavtoolArgSuffix.add( "" + env.v3 );
+                    rq2.WavtoolArgSuffix.add( "" + env.v4 );
+                    rq2.WavtoolArgSuffix.add( "" + oa.msOverlap );
+                    rq2.WavtoolArgSuffix.add( "" + env.p4 );
+                    rq2.WavtoolArgSuffix.add( "" + env.p5 );
+                    rq2.WavtoolArgSuffix.add( "" + env.v5 );
                     rq2.Oto = oa;
                     rq2.FileName = filename;
                     rq2.secStart = sec_start_act;
@@ -620,15 +641,16 @@ namespace org.kbinani.cadencii
                         if( mInvokeWithWine ){
                             list.add( "wine" );
                         }
-                        list.add( "\"" + mResampler.replace( "\\", "\\" + "\\" ) + "\"" );
+                        //list.add( "\"" + mResampler.replace( "\\", "\\" + "\\" ) + "\"" );
+                        list.add( "\"" + mResampler + "\"" );
                         for( String s : rq.getResamplerArg() ){
-                            s = s.replace( "\\", "\\" + "\\" );
+                            //s = s.replace( "\\", "\\" + "\\" );
                             list.add( s );
                         }
 #if DEBUG
-                        PortUtil.println( "UtauRenderingRunner#run; args=" );
+                        sout.println( "UtauWaveGenerator#run; args=" );
                         for( String s : list ){
-                            PortUtil.println( "UtauRenderingRunner#run; " + s );
+                            sout.println( "UtauWaveGenerator#run; " + s );
                         }
 #endif
                         ProcessBuilder pb = new ProcessBuilder( list );
@@ -638,6 +660,7 @@ namespace org.kbinani.cadencii
                             try{
                                 int ecode = process.exitValue();
                             }catch( Exception ex ){
+                                //ex.printStackTrace();
                                 Logger.write( UtauWaveGenerator.class + ".begin; ex=" + ex + "\n" );
                                 continue;
                             }
@@ -672,7 +695,7 @@ namespace org.kbinani.cadencii
 
                     // wavtoolを起動
                     double sec_fin; // 今回のwavtool起動によってレンダリングが完了したサンプル長さ
-                    RenderQueue p = mResamplerQueue.get( i ); //Phon p = s_resampler_queue[i];
+                    RenderQueue p = mResamplerQueue.get( i );
                     OtoArgs oa_next;
                     if ( i + 1 < num_queues ) {
                         oa_next = mResamplerQueue.get( i + 1 ).Oto;
@@ -691,7 +714,20 @@ namespace org.kbinani.cadencii
                     AppManager.debugWriteLine( "UtauWaveGenerator#run; sec_fin=" + sec_fin );
 #endif
                     float mten = p.Oto.msPreUtterance + oa_next.msOverlap - oa_next.msPreUtterance;
-                    String arg_wavtool = p.WavtoolArgPrefix + (mten >= 0 ? ("+" + mten) : ("-" + (-mten))) + p.WavtoolArgSuffix;
+                    //String arg_wavtool = p.WavtoolArgPrefix + (mten >= 0 ? ("+" + mten) : ("-" + (-mten))) + p.WavtoolArgSuffix;
+                    Vector<String> arg_wavtool = new Vector<String>();
+                    int size = vec.size( p.WavtoolArgPrefix );
+                    for ( int j = 0; j < size; j++ ) {
+                        String s = vec.get( p.WavtoolArgPrefix, j );
+                        if ( j == size - 1 ) {
+                            s += (mten >= 0 ? ("+" + mten) : ("-" + (-mten)));
+                        }
+                        vec.add( arg_wavtool, s );
+                    }
+                    size = vec.size( p.WavtoolArgSuffix );
+                    for ( int j = 0; j < size; j++ ) {
+                        vec.add( arg_wavtool, vec.get( p.WavtoolArgSuffix, j ) );
+                    }
 #if MAKEBAT_SP
                     bat.WriteLine( "\"" + m_wavtool + "\" " + arg_wavtool );
 #endif
@@ -753,7 +789,10 @@ namespace org.kbinani.cadencii
                             channel = buf[1] << 8 | buf[0];
                             // サンプリングレート
                             whd.read( buf, 0, 4 );
-                            mThisSampleRate = buf[0] | buf[1] << 8 | buf[2] << 16 | buf[3] << 24;
+                            mThisSampleRate = PortUtil.make_int32_le( buf );//.__BBBBBBBBBAAAAAAAAAAAAAAAAAAAAAAAARRRRRRRR__stderr buf[0] | buf[1] << 8 | buf[2] << 16 | buf[3] << 24;
+#if DEBUG
+                            sout.println( "UtauWaveGenerator#begin; mThisSampleRate=" + mThisSampleRate );
+#endif
                             // データ速度
                             whd.read( buf, 0, 4 );
                             // ブロックサイズ
@@ -777,14 +816,14 @@ namespace org.kbinani.cadencii
                             //int total_samples = size / (channel * byte_per_sample);
                             #endregion
                         } catch ( Exception ex ) {
-                            PortUtil.stderr.println( "UtauWaveGenerator#begin; ex=" + ex );
+                            serr.println( "UtauWaveGenerator#begin; ex=" + ex );
                             Logger.write( "UtauWaveGenerator::begin(long); ex=" + ex + "\n" );
                         } finally {
                             if ( whd != null ) {
                                 try {
                                     whd.close();
                                 } catch ( Exception ex2 ) {
-                                    PortUtil.stderr.println( "UtauWaveGenerator#begin; ex2=" + ex2 );
+                                    serr.println( "UtauWaveGenerator#begin; ex2=" + ex2 );
                                     Logger.write( "UtauWaveGenerator::begin(long); ex=" + ex2 + "\n" );
                                 }
                             }
@@ -901,7 +940,7 @@ namespace org.kbinani.cadencii
                                             int clock = (int)mVsq.getClockFromSec( gtime_dyn );
                                             int dyn = dyn_curve.getValue( clock, index );
                                             float amp = (float)dyn * k_inv64;
-                                            float v = ((short)(wavbuf[c] | wavbuf[c + 1] << 8)) * k_inv32768 * amp;
+                                            float v = ((short)(PortUtil.make_int16_le( wavbuf, c ))) * k_inv32768 * amp;
                                             mLeft[pos] = v;
                                             mRight[pos] = v;
                                             c += 2;
@@ -932,8 +971,8 @@ namespace org.kbinani.cadencii
                                             int clock = (int)mVsq.getClockFromSec( gtime_dyn );
                                             int dyn = dyn_curve.getValue( clock, index );
                                             float amp = (float)dyn * k_inv64;
-                                            float vl = ((short)(wavbuf[c] | wavbuf[c + 1] << 8)) * k_inv32768 * amp;
-                                            float vr = ((short)(wavbuf[c + 2] | wavbuf[c + 3] << 8)) * k_inv32768 * amp;
+                                            float vl = ((short)(PortUtil.make_int16_le( wavbuf, c ))) * k_inv32768 * amp;
+                                            float vr = ((short)(PortUtil.make_int16_le( wavbuf, c + 2))) * k_inv32768 * amp;
                                             mLeft[pos] = vl;
                                             mRight[pos] = vr;
                                             c += 4;
@@ -948,14 +987,14 @@ namespace org.kbinani.cadencii
                             }
                             #endregion
                         } catch ( Exception ex ) {
-                            PortUtil.stderr.println( "UtauWaveGenerator#run; ex=" + ex );
+                            serr.println( "UtauWaveGenerator#run; ex=" + ex );
                             Logger.write( "UtauWaveGenerator::begin(long); ex=" + ex + "\n" );
                         } finally {
                             if ( dat != null ) {
                                 try {
                                     dat.close();
                                 } catch ( Exception ex2 ) {
-                                    PortUtil.stderr.println( "UtauWaveGenerator#run; ex2=" + ex2 );
+                                    serr.println( "UtauWaveGenerator#run; ex2=" + ex2 );
                                     Logger.write( typeof( UtauWaveGenerator ) + "::begin(long); ex=" + ex2 + "\n" );
                                 }
                                 dat = null;
@@ -993,7 +1032,7 @@ namespace org.kbinani.cadencii
 
                 int tremain = (int)(mTotalSamples - mTotalAppend);
 #if DEBUG
-                PortUtil.println( "UtauWaveGenerator#run; tremain=" + tremain );
+                sout.println( "UtauWaveGenerator#run; tremain=" + tremain );
 #endif
                 for ( int i = 0; i < BUFLEN; i++ ) {
                     mBufferL[i] = 0.0;
@@ -1005,7 +1044,7 @@ namespace org.kbinani.cadencii
                     tremain -= amount;
                 }
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "UtauWaveGenerator.begin; ex=" + ex );
+                serr.println( "UtauWaveGenerator.begin; ex=" + ex );
                 Logger.write( typeof( UtauWaveGenerator ) + ".begin; ex=" + ex + "\n" );
 #if JAVA
                 ex.printStackTrace();
@@ -1033,10 +1072,15 @@ namespace org.kbinani.cadencii
             }
         }
 
-        private static void processWavtool( String arg, String filebase, String temp_dir, String wavtool, boolean invoke_with_wine )
+        private static void processWavtool( Vector<String> arg, String filebase, String temp_dir, String wavtool, boolean invoke_with_wine )
         {
 #if JAVA
-            String[] args = new String[]{ (invoke_with_wine ? "wine \"" : "\"") + wavtool + "\"", arg };
+            Vector<String> args = new Vector<String>();//[] args = new String[]{ (invoke_with_wine ? "wine \"" : "\"") + wavtool + "\"", arg };
+            args.add( (invoke_with_wine ? "wine \"" : "\"") + wavtool.replace( "\\", "/" ) + "\"" );
+            int size = vec.size( arg );
+            for( int i = 0; i < size; i++ ){
+                args.add( vec.get( arg, i ) );
+            }
             ProcessBuilder pb = new ProcessBuilder( args );
             try{
                 Process process = pb.start();
@@ -1049,12 +1093,22 @@ namespace org.kbinani.cadencii
             try {
                 process = new Process();
                 process.StartInfo.FileName = (invoke_with_wine ? "wine \"" : "\"") + wavtool + "\"";
-                process.StartInfo.Arguments = arg;
+                String argument = "";
+                int size = vec.size( arg );
+                for ( int i = 0; i < size; i++ ) {
+                    argument += vec.get( arg, i ) + (i == size - 1 ? "" : " ");
+                }
+                /*if ( __a != arg ) {
+                    serr.println( "UtauWaveGenerator#processWavtool; warning; (__a != arg);" );
+                    serr.println( "  __a=" + __a );
+                    serr.println( "  arg=" + arg );
+                }*/
+                process.StartInfo.Arguments = argument;
                 process.StartInfo.WorkingDirectory = temp_dir;
                 process.StartInfo.WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden;
 #if DEBUG
-                PortUtil.println( "UtauWaveGenerator#processWavTool; invoke_with_wine=" + invoke_with_wine );
-                PortUtil.println( "UtauWaveGenerator#processWavTool; .FileName=" + process.StartInfo.FileName + "; .Arguments=" + process.StartInfo.Arguments );
+                sout.println( "UtauWaveGenerator#processWavTool; invoke_with_wine=" + invoke_with_wine );
+                sout.println( "UtauWaveGenerator#processWavTool; .FileName=" + process.StartInfo.FileName + "; .Arguments=" + process.StartInfo.Arguments );
 #endif
                 process.Start();
                 process.WaitForExit();

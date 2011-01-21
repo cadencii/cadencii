@@ -265,7 +265,7 @@ namespace org.kbinani.cadencii
             // 合計合成する予定のサンプル数を決める
             mTotalSamples = (long)((end_sec - start_sec) * mDriverSampleRate) + errorSamples;
 #if DEBUG
-            PortUtil.println( "VocaloidWaveGenerator#begin; mTotalSamples=" + mTotalSamples + "; start_sec,end_sec=" + start_sec + "," + end_sec + "; errorSamples=" + errorSamples );
+            sout.println( "VocaloidWaveGenerator#begin; mTotalSamples=" + mTotalSamples + "; start_sec,end_sec=" + start_sec + "," + end_sec + "; errorSamples=" + errorSamples );
 #endif
 
             // アボート要求フラグを初期化

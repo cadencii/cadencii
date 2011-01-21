@@ -105,7 +105,7 @@ namespace org.kbinani.cadencii {
             if ( vocalo1_dll_path != "" && PortUtil.isFileExists( vocalo1_dll_path ) ) {
                 // VOCALOID.iniを読み込んでデフォルトのDSEVersionを調べる
 #if DEBUG
-                PortUtil.println( "VSTiProxy#init; ini=" + ini );
+                sout.println( "VSTiProxy#init; ini=" + ini );
 #endif
                 if ( !ini.Equals( "" ) && PortUtil.isFileExists( ini ) ) {
                     // デフォルトのDSEバージョンのVOCALOID1 VSTi DLL
@@ -168,20 +168,20 @@ namespace org.kbinani.cadencii {
                                         }
                                     }
                                 } catch ( Exception ex ) {
-                                    PortUtil.stderr.println( "VSTiProxy#initCor; ex=" + ex );
+                                    serr.println( "VSTiProxy#initCor; ex=" + ex );
                                 } finally {
                                     if ( bw != null ) {
                                         try {
                                             bw.close();
                                         } catch ( Exception ex2 ) {
-                                            PortUtil.stderr.println( "VSTiProxy#initCor; ex2=" + ex2 );
+                                            serr.println( "VSTiProxy#initCor; ex2=" + ex2 );
                                         }
                                     }
                                     if ( br != null ) {
                                         try {
                                             br.close();
                                         } catch ( Exception ex2 ) {
-                                            PortUtil.stderr.println( "VSTiProxy#initCor; ex2=" + ex2 );
+                                            serr.println( "VSTiProxy#initCor; ex2=" + ex2 );
                                         }
                                     }
                                 }
@@ -198,7 +198,7 @@ namespace org.kbinani.cadencii {
                                 PortUtil.copyFile( copy_ini, ini );
                                 PortUtil.deleteFile( copy_ini );
                             } catch ( Exception ex ) {
-                                PortUtil.stderr.println( "VSTiProxy#initCor; ex=" + ex );
+                                serr.println( "VSTiProxy#initCor; ex=" + ex );
                             }
                         }
                     } else {
@@ -206,7 +206,7 @@ namespace org.kbinani.cadencii {
                     }
                     vocaloidDriver.get( i ).loaded = loaded;
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "VSTiProxy#initCor; ex=" + ex );
+                    serr.println( "VSTiProxy#initCor; ex=" + ex );
                 }
             }
 #endif

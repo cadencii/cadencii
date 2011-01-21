@@ -179,9 +179,9 @@ public class FormMain extends BForm {
     private BLabel stripLblGameCtrlMode = null;
     private BLabel jLabel4 = null;
     private BLabel stripLblMidiIn = null;
-    private BPopupMenu cMenuTrackSelector = null;  //  @jve:decl-index=0:visual-constraint="879,87"
-    private BPopupMenu cMenuPiano = null;  //  @jve:decl-index=0:visual-constraint="900,261"
-    private BPopupMenu cMenuTrackTab = null;  //  @jve:decl-index=0:visual-constraint="894,357"
+    private BPopupMenu cMenuTrackSelector = null;  //  @jve:decl-index=0:visual-constraint="985,100"
+    private BPopupMenu cMenuPiano = null;  //  @jve:decl-index=0:visual-constraint="984,231"
+    private BPopupMenu cMenuTrackTab = null;  //  @jve:decl-index=0:visual-constraint="985,358"
     private BMenuItem cMenuTrackSelectorPointer = null;
     private BMenuItem cMenuTrackSelectorPencil = null;
     private BMenuItem cMenuTrackSelectorLine = null;
@@ -327,6 +327,9 @@ public class FormMain extends BForm {
     private BMenuItem menuHiddenPrintPoToCSV = null;
     private BToggleButton stripBtnStepSequencer = null;
     private JPanel jPanel2 = null;
+    private BPopupMenu cMenuPositionIndicator = null;  //  @jve:decl-index=0:visual-constraint="991,295"
+    private BMenuItem cMenuPositionIndicatorStartMarker = null;
+    private BMenuItem cMenuPositionIndicatorEndMarker = null;
     //SECTION-END-FIELD
     public FormMain( String vsq_file ) {
         super();
@@ -674,6 +677,7 @@ public class FormMain extends BForm {
         this.getCMenuPiano();
         this.getCMenuTrackSelector();
         this.getCMenuTrackTab();
+        this.getCMenuPositionIndicator();
     }
 
     /**
@@ -4447,6 +4451,46 @@ public class FormMain extends BForm {
             jPanel2.add(getJPanel2(), gridBagConstraints3);
         }
         return jPanel2;
+    }
+
+    /**
+     * This method initializes cMenuPositionIndicator	
+     * 	
+     * @return org.kbinani.windows.forms.BPopupMenu	
+     */
+    private BPopupMenu getCMenuPositionIndicator() {
+        if (cMenuPositionIndicator == null) {
+            cMenuPositionIndicator = new BPopupMenu();
+            cMenuPositionIndicator.add(getCMenuPositionIndicatorStartMarker());
+            cMenuPositionIndicator.add(getCMenuPositionIndicatorEndMarker());
+        }
+        return cMenuPositionIndicator;
+    }
+
+    /**
+     * This method initializes cMenuPositionIndicatorStartMarker	
+     * 	
+     * @return org.kbinani.windows.forms.BMenuItem	
+     */
+    private BMenuItem getCMenuPositionIndicatorStartMarker() {
+        if (cMenuPositionIndicatorStartMarker == null) {
+            cMenuPositionIndicatorStartMarker = new BMenuItem();
+            cMenuPositionIndicatorStartMarker.setText("Set start marker");
+        }
+        return cMenuPositionIndicatorStartMarker;
+    }
+
+    /**
+     * This method initializes cMenuPositionIndicatorEndMarker	
+     * 	
+     * @return org.kbinani.windows.forms.BMenuItem	
+     */
+    private BMenuItem getCMenuPositionIndicatorEndMarker() {
+        if (cMenuPositionIndicatorEndMarker == null) {
+            cMenuPositionIndicatorEndMarker = new BMenuItem();
+            cMenuPositionIndicatorEndMarker.setText("Set end marker");
+        }
+        return cMenuPositionIndicatorEndMarker;
     }
 
     //SECTION-END-METHOD

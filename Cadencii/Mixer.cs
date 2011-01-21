@@ -133,11 +133,11 @@ namespace org.kbinani.cadencii {
             if ( !mSenders.contains( s ) ) {
                 mSenders.add( s );
 #if DEBUG
-                PortUtil.println( "Mixer#addSender; sender added" );
+                sout.println( "Mixer#addSender; sender added" );
 #endif
             } else {
 #if DEBUG
-                PortUtil.println( "Mixer#addSender; sender NOT added" );
+                sout.println( "Mixer#addSender; sender NOT added" );
 #endif
             }
         }

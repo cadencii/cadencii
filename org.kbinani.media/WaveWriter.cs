@@ -223,7 +223,7 @@ namespace org.kbinani.media {
 
         public void close() {
 #if DEBUG
-            PortUtil.println( "WaveWriter#close" );
+            sout.println( "WaveWriter#close" );
 #endif
             if ( m_stream == null ) {
                 return;
@@ -244,7 +244,7 @@ namespace org.kbinani.media {
 
                 m_stream.close();
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "WaveWriter#close; ex=" + ex );
+                serr.println( "WaveWriter#close; ex=" + ex );
             }
         }
 
@@ -400,7 +400,7 @@ namespace org.kbinani.media {
                 }
                 m_total_samples += (int)length;
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "WaveWriter#append(double[],double[],int); ex=" + ex );
+                serr.println( "WaveWriter#append(double[],double[],int); ex=" + ex );
             }
         }
 

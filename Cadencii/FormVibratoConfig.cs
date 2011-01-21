@@ -70,7 +70,7 @@ namespace org.kbinani.cadencii
 #if DEBUG
             AppManager.debugWriteLine( "FormVibratoConfig.ctor(Vsqhandle,int,DefaultVibratoLength)" );
             AppManager.debugWriteLine( "    (vibrato_handle==null)=" + (vibrato_handle == null) );
-            PortUtil.println( "    type=" + type );
+            sout.println( "    type=" + type );
 #endif
             if ( use_original ) {
                 radioUserDefined.setSelected( true );
@@ -93,12 +93,12 @@ namespace org.kbinani.cadencii
             updateComboBoxStatus();
             // どれを選ぶか？
 #if DEBUG
-            PortUtil.println( "FormVibratoConfig#.ctor; vibrato_handle.IconID=" + vibrato_handle.IconID );
+            sout.println( "FormVibratoConfig#.ctor; vibrato_handle.IconID=" + vibrato_handle.IconID );
 #endif
             for ( int i = 0; i < comboVibratoType.getItemCount(); i++ ) {
                 VibratoHandle handle = (VibratoHandle)comboVibratoType.getItemAt( i );
 #if DEBUG
-                PortUtil.println( "FormVibratoConfig#.ctor; handle.IconID=" + handle.IconID );
+                sout.println( "FormVibratoConfig#.ctor; handle.IconID=" + handle.IconID );
 #endif
                 if ( vibrato_handle.IconID.Equals( handle.IconID ) ) {
                     comboVibratoType.setSelectedIndex( i );

@@ -88,7 +88,7 @@ namespace org.kbinani.cadencii
             try{
                 stateChangeRequiredEvent.raise( this, state );
             }catch( Exception ex ){
-                PortUtil.stderr.println( "PropertyPanelContainer#invokeStateChangeRequiredEvent; ex=" + ex );
+                serr.println( "PropertyPanelContainer#invokeStateChangeRequiredEvent; ex=" + ex );
             }
 #else
             if ( StateChangeRequired != null ) {

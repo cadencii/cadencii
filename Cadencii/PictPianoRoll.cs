@@ -1111,7 +1111,7 @@ namespace org.kbinani.cadencii {
                 #region pictPianoRoll_Paintより
                 if ( AppManager.isWholeSelectedIntervalEnabled() ) {
 #if DEBUG
-                    PortUtil.println( "pictPianoRoll#paint; AppManager.isWholeSelectedIntervalEnabled()=" + AppManager.isWholeSelectedIntervalEnabled() );
+                    sout.println( "pictPianoRoll#paint; AppManager.isWholeSelectedIntervalEnabled()=" + AppManager.isWholeSelectedIntervalEnabled() );
 #endif
                     int start = (int)(AppManager.mWholeSelectedInterval.getStart() * scalex) + xoffset;
                     if ( start < key_width ) {
@@ -1283,7 +1283,7 @@ namespace org.kbinani.cadencii {
                 }
             } catch ( Exception ex ) {
 #if DEBUG
-                PortUtil.stderr.println( "PictPianoRoll#paint; ex=" + ex );
+                serr.println( "PictPianoRoll#paint; ex=" + ex );
 #endif
             }
         }

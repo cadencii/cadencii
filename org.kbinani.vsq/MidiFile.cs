@@ -162,13 +162,13 @@ namespace org.kbinani.vsq
                 }
 #endif
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "MidiFile#.ctor; ex=" + ex );
+                serr.println( "MidiFile#.ctor; ex=" + ex );
             } finally {
                 if ( stream != null ) {
                     try {
                         stream.close();
                     } catch ( Exception ex2 ) {
-                        PortUtil.stderr.println( "MidiFile#.ctor; ex2=" + ex2 );
+                        serr.println( "MidiFile#.ctor; ex2=" + ex2 );
                     }
                 }
             }

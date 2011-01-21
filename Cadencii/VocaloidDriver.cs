@@ -120,7 +120,7 @@ namespace org.kbinani.cadencii
         {
             boolean ret = base.open( block_size, sample_rate, use_native_dll_loader );
 #if DEBUG
-            PortUtil.println( "VocaloidDriver#open; dllHandle=0x" + PortUtil.toHexString( dllHandle.ToInt32() ).ToUpper() );
+            sout.println( "VocaloidDriver#open; dllHandle=0x" + PortUtil.toHexString( dllHandle.ToInt32() ).ToUpper() );
 #endif
             g_pEvents = new Vector<MidiEvent>();
             g_midiPrepared0 = false;
@@ -192,9 +192,9 @@ namespace org.kbinani.cadencii
                 int pPrev = 0;
                 s_track_events.get( targetTrack ).clear();
 #if VOCALO_DRIVER_PRINT_EVENTS
-            PortUtil.println( "VocaloidDriver#SendEvent" );
-            byte msb = 0x0;
-            byte lsb = 0x0;
+                sout.println( "VocaloidDriver#SendEvent" );
+                byte msb = 0x0;
+                byte lsb = 0x0;
 #endif
                 for ( int i = 0; i < numEvents; i++ ) {
                     count += 3;
@@ -222,7 +222,7 @@ namespace org.kbinani.cadencii
                         str += (src[count + 1] == 0x26) ? (" 0x" + PortUtil.toHexString( src[count + 2], 2 )) : "";
 
                         int nrpn = msb << 8 | lsb;
-                        PortUtil.println( "VocaloidDriver#SendEvent; NRPN: 0x" + PortUtil.toHexString( nrpn, 4 ) + " " + str );
+                        sout.println( "VocaloidDriver#SendEvent; NRPN: 0x" + PortUtil.toHexString( nrpn, 4 ) + " " + str );
                     }
 #endif
                         pEvent.firstByte = src[count];
@@ -249,7 +249,7 @@ namespace org.kbinani.cadencii
         public int startRendering( long total_samples, boolean mode_infinite, int sample_rate, IWaveIncoming runner )
         {
 #if DEBUG
-            PortUtil.println( "VocaloidDriver#startRendering; entry; total_samples=" + total_samples + "; sample_rate=" + sample_rate );
+            sout.println( "VocaloidDriver#startRendering; entry; total_samples=" + total_samples + "; sample_rate=" + sample_rate );
 #endif
             lock ( locker ) {
                 rendering = true;
@@ -280,7 +280,7 @@ namespace org.kbinani.cadencii
                     org.kbinani.debug.push_log( "    calling initial dispatch..." );
 #endif
 #if DEBUG
-                    PortUtil.println( "VocaloidDriver#startRendering; sampleRate=" + sampleRate );
+                    sout.println( "VocaloidDriver#startRendering; sampleRate=" + sampleRate );
 #endif
                     aEffect.Dispatch( AEffectOpcodes.effSetSampleRate, 0, 0, IntPtr.Zero, (float)sampleRate );
                     aEffect.Dispatch( AEffectOpcodes.effMainsChanged, 0, 1, IntPtr.Zero, 0 );
@@ -511,7 +511,7 @@ namespace org.kbinani.cadencii
                     }
 
 #if TEST
-                    PortUtil.println( "vstidrv::StartRendering; total_processed=" + total_processed );
+                    sout.println( "vstidrv::StartRendering; total_processed=" + total_processed );
 #endif
 
                     if ( mode_infinite ) {
@@ -530,16 +530,16 @@ namespace org.kbinani.cadencii
                     aEffect.Dispatch( AEffectOpcodes.effMainsChanged, 0, 0, IntPtr.Zero, 0 );
                     lpEvents.clear();
 #if DEBUG
-                    PortUtil.println( "VocaloidDriver#startRendering; done; total_processed=" + total_processed + "; total_processed2=" + total_processed2 );
+                    sout.println( "VocaloidDriver#startRendering; done; total_processed=" + total_processed + "; total_processed2=" + total_processed2 );
 #endif
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "VocaloidDriver#startRendering; ex=" + ex );
+                    serr.println( "VocaloidDriver#startRendering; ex=" + ex );
                 } finally {
                     if ( mman != null ) {
                         try {
                             mman.dispose();
                         } catch ( Exception ex2 ) {
-                            PortUtil.stderr.println( "VocaloidDriver#startRendering; ex2=" + ex2 );
+                            serr.println( "VocaloidDriver#startRendering; ex2=" + ex2 );
                         }
                     }
                 }

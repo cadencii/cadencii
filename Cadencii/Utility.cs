@@ -671,21 +671,21 @@ namespace org.kbinani.cadencii{
                             }
                         }
                     } catch ( Exception ex ) {
-                        PortUtil.stderr.println( "Utility#readUtausingerConfig; ex=" + ex );
+                        serr.println( "Utility#readUtausingerConfig; ex=" + ex );
                         Logger.write( typeof( Utility ) + ".readUtausingerConfig; ex=" + ex + "\n" );
                     } finally {
                         if ( sr2 != null ) {
                             try {
                                 sr2.close();
                             } catch ( Exception ex2 ) {
-                                PortUtil.stderr.println( "Utility#readUtausingerConfig; ex2=" + ex2 );
+                                serr.println( "Utility#readUtausingerConfig; ex2=" + ex2 );
                                 Logger.write( typeof( Utility ) + ".readUtausingerConfig; ex= " + ex2 + "\n" );
                             }
                         }
                     }
                     if ( name != null ) {
 #if DEBUG
-                        PortUtil.println( "Utility#readUtausingerConfig; name=" + name + "; encoding=" + encoding );
+                        sout.println( "Utility#readUtausingerConfig; name=" + name + "; encoding=" + encoding );
 #endif
                         break;
                     }
@@ -706,7 +706,7 @@ namespace org.kbinani.cadencii{
         /// <param name="rule"></param>
         public static void editLengthOfVsqEvent( VsqEvent vsq_event, int new_length, VibratoLengthEditingRule rule ) {
 #if DEBUG
-            PortUtil.println( "Utility#editLengthOfVsqEvent; rule=" + rule );
+            sout.println( "Utility#editLengthOfVsqEvent; rule=" + rule );
 #endif
             if ( vsq_event.ID.VibratoHandle != null ) {
                 int oldlength = vsq_event.ID.getLength();
@@ -1402,7 +1402,7 @@ namespace org.kbinani.cadencii{
                     try {
                         PortUtil.deleteFile( full );
                     } catch ( Exception ex ) {
-                        PortUtil.stderr.println( "Utility#cleanupUnusedAssemblyCache; ex=" + ex );
+                        serr.println( "Utility#cleanupUnusedAssemblyCache; ex=" + ex );
                         Logger.write( typeof( Utility ) + ".cleanupUnusedAssemblyCache; ex=" + ex + "\n" );
                     }
                 }
@@ -1412,7 +1412,7 @@ namespace org.kbinani.cadencii{
 #if ENABLE_SCRIPT
         public static Assembly compileScript( String code, Vector<String> errors ) {
 #if DEBUG
-            PortUtil.println( "Utility#compileScript" );
+            sout.println( "Utility#compileScript" );
 #endif
             Assembly ret = null;
 
@@ -1431,7 +1431,7 @@ namespace org.kbinani.cadencii{
             CompilerResults cr = null;
             if ( ret == null ) {
 #if DEBUG
-                PortUtil.println( "Utility#compileScriptl code=" + code );
+                sout.println( "Utility#compileScriptl code=" + code );
 #endif
                 CSharpCodeProvider provider = new CSharpCodeProvider();
                 String path = System.Windows.Forms.Application.StartupPath;
@@ -1454,7 +1454,7 @@ namespace org.kbinani.cadencii{
                     ret = cr.CompiledAssembly;
                     compiled = true;
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "Utility#compileScript; ex=" + ex );
+                    serr.println( "Utility#compileScript; ex=" + ex );
                     Logger.write( typeof( Utility ) + ".compileScript; ex=" + ex + "\n" );
                 }
                 if ( !compiled ) {
@@ -1473,14 +1473,14 @@ namespace org.kbinani.cadencii{
                     try {
                         PortUtil.deleteFile( cached_asm_file );
                     } catch ( Exception ex ) {
-                        PortUtil.stderr.println( "Utility#compileScript; ex=" + ex );
+                        serr.println( "Utility#compileScript; ex=" + ex );
                         Logger.write( typeof( Utility ) + ".compileScript; ex=" + ex + "\n" );
                     }
                 }
                 try {
                     PortUtil.copyFile( cr.PathToAssembly, cached_asm_file );
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "Utility#compileScript; ex=" + ex );
+                    serr.println( "Utility#compileScript; ex=" + ex );
                     Logger.write( typeof( Utility ) + ".compileScript; ex=" + ex + "\n" );
                 }
             }
@@ -1519,14 +1519,14 @@ namespace org.kbinani.cadencii{
                     script += line + "\n";
                 }
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "Utility#loadScript; ex=" + ex );
+                serr.println( "Utility#loadScript; ex=" + ex );
                 Logger.write( typeof( Utility ) + ".loadScript; ex=" + ex + "\n" );
             } finally {
                 if ( sr != null ) {
                     try {
                         sr.close();
                     } catch ( Exception ex2 ) {
-                        PortUtil.stderr.println( "Utility#loadScript; ex2=" + ex2 );
+                        serr.println( "Utility#loadScript; ex2=" + ex2 );
                         Logger.write( typeof( Utility ) + ".loadScript; ex=" + ex2 + "\n" );
                     }
                 }
@@ -1602,7 +1602,7 @@ namespace org.kbinani.cadencii{
                             fs = new System.IO.FileStream( config_file, System.IO.FileMode.Open, System.IO.FileAccess.Read );
                             ret.Serializer.deserialize( fs );
                         } catch ( Exception ex ) {
-                            PortUtil.stderr.println( "Utility#loadScript; ex=" + ex );
+                            serr.println( "Utility#loadScript; ex=" + ex );
                             Logger.write( typeof( Utility ) + ".loadScript; ex=" + ex + "\n" );
                             delete_when_exit = true;
                         } finally {
@@ -1613,7 +1613,7 @@ namespace org.kbinani.cadencii{
                                         System.IO.File.Delete( config_file );
                                     }
                                 } catch ( Exception ex2 ) {
-                                    PortUtil.stderr.println( "Utility#loadScript; ex2=" + ex2 );
+                                    serr.println( "Utility#loadScript; ex2=" + ex2 );
                                     Logger.write( typeof( Utility ) + ".loadScritp; ex=" + ex2 + "\n" );
                                 }
                             }

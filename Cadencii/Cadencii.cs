@@ -55,7 +55,7 @@ namespace org.kbinani.cadencii{
                 }
             }
 
-            PortUtil.println( "Cadencii#parseArguments; resources=" + resources );
+            sout.println( "Cadencii#parseArguments; resources=" + resources );
             if ( !resources.Equals( "" ) ) {
                 Resources.setBasePath( resources );
             }
@@ -95,7 +95,7 @@ namespace org.kbinani.cadencii{
                 Messaging.setLanguage( ec.Language );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".ctor; ex=" + ex + "\n" );
-                PortUtil.stderr.println( "FormMain#.ctor; ex=" + ex );
+                serr.println( "FormMain#.ctor; ex=" + ex );
             }
 
             // 開発版の場合の警告ダイアログ
@@ -130,7 +130,7 @@ namespace org.kbinani.cadencii{
                 ScriptServer.reload();
                 PaletteToolServer.init();
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "Cadencii::Main; ex=" + ex );
+                serr.println( "Cadencii::Main; ex=" + ex );
                 Logger.write( typeof( Cadencii ) + ".Main; ex=" + ex + "\n" );
             }
 #endif

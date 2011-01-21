@@ -837,7 +837,7 @@ namespace org.kbinani.cadencii
             }
 
 #if DEBUG
-            PortUtil.println( "FormMain#.ctor; this.Width=" + this.Width );
+            sout.println( "FormMain#.ctor; this.Width=" + this.Width );
 #endif
             bandTool.Resize += this.toolStripEdit_Resize;
             bandMeasure.Resize += this.toolStripMeasure_Resize;
@@ -1014,7 +1014,7 @@ namespace org.kbinani.cadencii
                             updateBgmMenuState();
                         } catch ( Exception ex ) {
                             Logger.write( typeof( FormMain ) + ".ctor; ex=" + ex + "\n" );
-                            PortUtil.stderr.println( "FormMain#.ctor; ex=" + ex );
+                            serr.println( "FormMain#.ctor; ex=" + ex );
                         }
                     }
                 }
@@ -2897,7 +2897,7 @@ namespace org.kbinani.cadencii
         public void updateTrackSelectorVisibleCurve()
         {
 #if DEBUG
-            PortUtil.println( "FormMain#updateTrackSelectorVisibleCurve; before; AppManager.getViewingCurveCount()" + AppManager.getViewingCurveCount() );
+            sout.println( "FormMain#updateTrackSelectorVisibleCurve; before; AppManager.getViewingCurveCount()" + AppManager.getViewingCurveCount() );
 #endif
             if ( AppManager.editorConfig.CurveVisibleVelocity ) {
                 AppManager.addViewingCurve( CurveType.VEL );
@@ -3279,7 +3279,7 @@ namespace org.kbinani.cadencii
             int portNumber = AppManager.editorConfig.MidiInPort.PortNumber;
             int portNumberMtc = AppManager.editorConfig.MidiInPortMtc.PortNumber;
 #if DEBUG
-            PortUtil.println( "FormMain#reloadMidiIn; portNumber=" + portNumber + "; portNumberMtc=" + portNumberMtc );
+            sout.println( "FormMain#reloadMidiIn; portNumber=" + portNumber + "; portNumberMtc=" + portNumberMtc );
 #endif
             try {
                 mMidiIn = new MidiInDevice( portNumber );
@@ -3300,7 +3300,7 @@ namespace org.kbinani.cadencii
 #endif
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".reloadMidiIn; ex=" + ex + "\n" );
-                PortUtil.stderr.println( "FormMain#reloadMidiIn; ex=" + ex );
+                serr.println( "FormMain#reloadMidiIn; ex=" + ex );
             }
 
 #if ENABLE_MTC
@@ -3318,7 +3318,7 @@ namespace org.kbinani.cadencii
                     m_midi_in_mtc.Start();
                 } catch ( Exception ex ) {
                     Logger.write( typeof( FormMain ) + ".reloadMidiIn; ex=" + ex + "\n" );
-                    PortUtil.stderr.println( "FormMain#reloadMidiIn; ex=" + ex );
+                    serr.println( "FormMain#reloadMidiIn; ex=" + ex );
                 }
             }
 #endif
@@ -3475,7 +3475,7 @@ namespace org.kbinani.cadencii
                     if ( holder.shortcut.getKeyCode() == keycode && holder.shortcut.getModifiers() == modifier ) {
                         try {
 #if DEBUG
-                            PortUtil.println( "FormMain#processSpecialShortcutKey; holder.menu.Name=" + holder.menu.getName() );
+                            sout.println( "FormMain#processSpecialShortcutKey; holder.menu.Name=" + holder.menu.getName() );
 #endif
 #if JAVA
                             holder.menu.clickEvent.raise( holder.menu, new BEventArgs() );
@@ -3484,7 +3484,7 @@ namespace org.kbinani.cadencii
 #endif
                         } catch ( Exception ex ) {
                             Logger.write( typeof( FormMain ) + ".processSpecialShortcutKey; ex=" + ex + "\n" );
-                            PortUtil.stderr.println( "FormMain#processSpecialShortcutKey; ex=" + ex );
+                            serr.println( "FormMain#processSpecialShortcutKey; ex=" + ex );
                         }
 #if JAVA
                         if ( e.KeyValue == KeyEvent.VK_TAB ) {
@@ -4934,6 +4934,11 @@ namespace org.kbinani.cadencii
             cMenuTrackSelectorSelectAll.setMnemonic( KeyEvent.VK_E );
             #endregion
 
+            #region cMenuPositionIndicator
+            cMenuPositionIndicatorStartMarker.setText( _( "Set start marker" ) );
+            cMenuPositionIndicatorEndMarker.setText( _( "Set end marker" ) );
+            #endregion
+
             stripLblGameCtrlMode.setToolTipText( _( "Game Controler" ) );
 
             // Palette Tool
@@ -5036,7 +5041,7 @@ namespace org.kbinani.cadencii
                     String[] phrases = mDialogImportLyric.getLetters();
 #if DEBUG
                     foreach ( String s in phrases ) {
-                        PortUtil.println( "FormMain#importLyric; phrases; s=" + s );
+                        sout.println( "FormMain#importLyric; phrases; s=" + s );
                     }
 #endif
                     int min = Math.Min( count, phrases.Length );
@@ -5512,8 +5517,8 @@ namespace org.kbinani.cadencii
             int copy_started_clock = ce.copyStartedClock;
             Vector<VsqEvent> copied_events = ce.events;
 #if DEBUG
-            PortUtil.println( "FormMain#pasteEvent; copy_started_clock=" + copy_started_clock );
-            PortUtil.println( "FormMain#pasteEvent; copied_events.size()=" + copied_events.size() );
+            sout.println( "FormMain#pasteEvent; copy_started_clock=" + copy_started_clock );
+            sout.println( "FormMain#pasteEvent; copied_events.size()=" + copied_events.size() );
 #endif
             if ( copied_events.size() != 0 ) {
                 // VsqEventのペーストを行うコマンドを発行
@@ -5582,7 +5587,7 @@ namespace org.kbinani.cadencii
             VsqCommand edit_bpcurve = null; // BPListを変更するコマンド
             TreeMap<CurveType, VsqBPList> copied_curve = ce.points;
 #if DEBUG
-            PortUtil.println( "FormMain#pasteEvent; copied_curve.size()=" + copied_curve.size() );
+            sout.println( "FormMain#pasteEvent; copied_curve.size()=" + copied_curve.size() );
 #endif
             if ( copied_curve.size() > 0 ) {
                 int dclock = clock - copy_started_clock;
@@ -5606,7 +5611,7 @@ namespace org.kbinani.cadencii
                         VsqBPList target = (VsqBPList)AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( curve.getName() ).clone();
                         int count = list.size();
 #if DEBUG
-                        PortUtil.println( "FormMain#pasteEvent; list.getCount()=" + count );
+                        sout.println( "FormMain#pasteEvent; list.getCount()=" + count );
 #endif
                         int min = list.getKeyClock( 0 ) + dclock;
                         int max = list.getKeyClock( count - 1 ) + dclock;
@@ -5636,7 +5641,7 @@ namespace org.kbinani.cadencii
                     }
                 }
 #if DEBUG
-                PortUtil.println( "FormMain#pasteEvent; work.size()=" + work.size() );
+                sout.println( "FormMain#pasteEvent; work.size()=" + work.size() );
 #endif
                 if ( work.size() > 0 ) {
                     String[] curves = new String[work.size()];
@@ -5657,7 +5662,7 @@ namespace org.kbinani.cadencii
             CadenciiCommand edit_bezier = null;
             TreeMap<CurveType, Vector<BezierChain>> copied_bezier = ce.beziers;
 #if DEBUG
-            PortUtil.println( "FormMain#pasteEvent; copied_bezier.size()=" + copied_bezier.size() );
+            sout.println( "FormMain#pasteEvent; copied_bezier.size()=" + copied_bezier.size() );
 #endif
             if ( copied_bezier.size() > 0 ) {
                 int dclock = clock - copy_started_clock;
@@ -5744,7 +5749,7 @@ namespace org.kbinani.cadencii
 
             if ( AppManager.isWholeSelectedIntervalEnabled() ) {
 #if DEBUG
-                PortUtil.println( "FormMain#copyEvent; selected with CTRL key" );
+                sout.println( "FormMain#copyEvent; selected with CTRL key" );
 #endif
                 int stdx = AppManager.getStartToDrawX();
                 int start_clock = AppManager.mWholeSelectedInterval.getStart();
@@ -6661,7 +6666,7 @@ namespace org.kbinani.cadencii
                     }
                 } catch ( Exception ex ) {
                     Logger.write( typeof( FormMain ) + ".updateDrawObjectList; ex=" + ex + "\n" );
-                    PortUtil.stderr.println( "FormMain#updateDrawObjectList; ex=" + ex );
+                    serr.println( "FormMain#updateDrawObjectList; ex=" + ex );
                 } finally {
 #if !JAVA
                     if ( SMALL_FONT != null ) {
@@ -6924,7 +6929,7 @@ namespace org.kbinani.cadencii
                                 PortUtil.createDirectory( estimatedCacheDir );
                             } catch ( Exception ex ) {
                                 Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex + "\n" );
-                                PortUtil.stderr.println( "FormMain#handleFileOpen_Click; ex=" + ex );
+                                serr.println( "FormMain#handleFileOpen_Click; ex=" + ex );
                                 AppManager.showMessageBox( PortUtil.formatMessage( _( "cannot create cache directory: '{0}'" ), estimatedCacheDir ),
                                                            _( "Info." ),
                                                            PortUtil.OK_OPTION,
@@ -6945,7 +6950,7 @@ namespace org.kbinani.cadencii
                                     PortUtil.moveFile( wavFrom, wavTo );
                                 } catch ( Exception ex ) {
                                     Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex + "\n" );
-                                    PortUtil.stderr.println( "FormMain#commonFileOpen; ex=" + ex );
+                                    serr.println( "FormMain#commonFileOpen; ex=" + ex );
                                 }
                             }
                             if ( PortUtil.isFileExists( xmlFrom ) ) {
@@ -6953,7 +6958,7 @@ namespace org.kbinani.cadencii
                                     PortUtil.moveFile( xmlFrom, xmlTo );
                                 } catch ( Exception ex ) {
                                     Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex + "\n" );
-                                    PortUtil.stderr.println( "FormMain#commonFileOpen; ex=" + ex );
+                                    serr.println( "FormMain#commonFileOpen; ex=" + ex );
                                 }
                             }
                         }
@@ -6968,7 +6973,7 @@ namespace org.kbinani.cadencii
                         PortUtil.createDirectory( cacheDir );
                     } catch ( Exception ex ) {
                         Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex + "\n" );
-                        PortUtil.stderr.println( "FormMain#handleFileOpen_Click; ex=" + ex );
+                        serr.println( "FormMain#handleFileOpen_Click; ex=" + ex );
                         AppManager.showMessageBox( PortUtil.formatMessage( _( "cannot create cache directory: '{0}'" ), estimatedCacheDir ),
                                                    _( "Info." ),
                                                    PortUtil.OK_OPTION,
@@ -7052,6 +7057,7 @@ namespace org.kbinani.cadencii
             Font SMALL_FONT = AppManager.baseFont8;
             int small_font_offset = AppManager.baseFont8OffsetHeight;
             try {
+                int key_width = AppManager.keyWidth;
                 int width = picturePositionIndicator.getWidth();
                 int height = picturePositionIndicator.getHeight();
                 VsqFileEx vsq = AppManager.getVsqFile();
@@ -7161,23 +7167,56 @@ namespace org.kbinani.cadencii
                 }
 
                 #region 現在のマーカー
-                float xoffset = AppManager.keyWidth + AppManager.keyOffset - AppManager.getStartToDrawX();
+                // ソングポジション
+                float xoffset = key_width + AppManager.keyOffset - AppManager.getStartToDrawX();
                 int marker_x = (int)(AppManager.getCurrentClock() * AppManager.getScaleX() + xoffset);
-                if ( AppManager.keyWidth <= marker_x && marker_x <= width ) {
+                if ( key_width <= marker_x && marker_x <= width ) {
                     g.setStroke( new BasicStroke( 2.0f ) );
                     g.setColor( Color.white );
                     g.drawLine( marker_x, 0, marker_x, height );
                     g.setStroke( new BasicStroke() );
                 }
+
+                // スタートマーカーとエンドマーカー
+                boolean right = false;
+                boolean left = false;
                 if ( AppManager.mStartMarkerEnabled ) {
                     int x = AppManager.xCoordFromClocks( AppManager.mStartMarker );
-                    g.drawImage(
-                        Resources.get_start_marker(), x, 3, this );
+                    if ( x < key_width ) {
+                        left = true;
+                    } else if ( width < x ) {
+                        right = true;
+                    } else {
+                        g.drawImage(
+                            Resources.get_start_marker(), x, 3, this );
+                    }
                 }
                 if ( AppManager.mEndMarkerEnabled ) {
                     int x = AppManager.xCoordFromClocks( AppManager.mEndMarker ) - 6;
-                    g.drawImage(
-                        Resources.get_end_marker(), x, 3, this );
+                    if ( x < key_width ) {
+                        left = true;
+                    } else if ( width < x ) {
+                        right = true;
+                    } else {
+                        g.drawImage(
+                            Resources.get_end_marker(), x, 3, this );
+                    }
+                }
+
+                // 範囲外にスタートマーカーとエンドマーカーがある場合のマーク
+                if ( right ) {
+                    g.setColor( Color.white );
+                    g.fillPolygon(
+                        new int[] { width - 6, width, width - 6 },
+                        new int[] { 3, 10, 16 },
+                        3 );
+                }
+                if ( left ) {
+                    g.setColor( Color.white );
+                    g.fillPolygon(
+                        new int[] { key_width + 7, key_width + 1, key_width + 7 },
+                        new int[] { 3, 10, 16 },
+                        3 );
                 }
                 #endregion
 
@@ -7203,7 +7242,7 @@ namespace org.kbinani.cadencii
                 #endregion
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".picturePositionIndicatorDrawTo; ex=" + ex + "\n" );
-                PortUtil.stderr.println( "FormMain#picturePositionIndicatorDrawTo; ex=" + ex );
+                serr.println( "FormMain#picturePositionIndicatorDrawTo; ex=" + ex );
             }
         }
 
@@ -7477,6 +7516,8 @@ namespace org.kbinani.cadencii
             cMenuTrackSelectorDelete.Click += new BEventHandler( cMenuTrackSelectorDelete_Click );
             cMenuTrackSelectorDeleteBezier.Click += new BEventHandler( cMenuTrackSelectorDeleteBezier_Click );
             cMenuTrackSelectorSelectAll.Click += new BEventHandler( cMenuTrackSelectorSelectAll_Click );
+            cMenuPositionIndicatorEndMarker.Click += new BEventHandler( cMenuPositionIndicatorEndMarker_Click );
+            cMenuPositionIndicatorStartMarker.Click += new BEventHandler( cMenuPositionIndicatorStartMarker_Click );
             trackBar.ValueChanged += new BEventHandler( trackBar_ValueChanged );
             trackBar.MouseDown += new BMouseEventHandler( trackBar_MouseDown );
             trackBar.Enter += new BEventHandler( trackBar_Enter );
@@ -7496,6 +7537,7 @@ namespace org.kbinani.cadencii
             hScroll.Enter += new BEventHandler( hScroll_Enter );
             picturePositionIndicator.PreviewKeyDown += new BPreviewKeyDownEventHandler( picturePositionIndicator_PreviewKeyDown );
             picturePositionIndicator.MouseMove += new BMouseEventHandler( picturePositionIndicator_MouseMove );
+            picturePositionIndicator.MouseClick += new BMouseEventHandler( picturePositionIndicator_MouseClick );
             picturePositionIndicator.MouseDoubleClick += new BMouseEventHandler( picturePositionIndicator_MouseDoubleClick );
             picturePositionIndicator.MouseDown += new BMouseEventHandler( picturePositionIndicator_MouseDown );
             picturePositionIndicator.MouseUp += new BMouseEventHandler( picturePositionIndicator_MouseUp );
@@ -7620,7 +7662,7 @@ namespace org.kbinani.cadencii
                 setIconImage( Resources.get_icon() );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".setResources; ex=" + ex + "\n" );
-                PortUtil.stderr.println( "FormMain#setResources; ex=" + ex );
+                serr.println( "FormMain#setResources; ex=" + ex );
             }
         }
         #endregion // public methods
@@ -7639,7 +7681,7 @@ namespace org.kbinani.cadencii
         public void mInputTextBox_KeyDown( Object sender, BKeyEventArgs e )
         {
 #if DEBUG
-            PortUtil.println( "FormMain#mInputTextBox_KeyDown" );
+            sout.println( "FormMain#mInputTextBox_KeyDown" );
 #endif
 #if JAVA
             int keycode = e.getKeyCode();
@@ -7751,7 +7793,7 @@ namespace org.kbinani.cadencii
         public void mInputTextBox_KeyUp( Object sender, BKeyEventArgs e )
         {
 #if DEBUG
-            PortUtil.println( "FormMain#mInputTextBox_KeyUp" );
+            sout.println( "FormMain#mInputTextBox_KeyUp" );
 #endif
 #if JAVA
             boolean flip = (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_DOWN) && ((e.getModifiers() & InputEvent.ALT_MASK) == InputEvent.ALT_MASK);
@@ -7778,7 +7820,7 @@ namespace org.kbinani.cadencii
         public void mInputTextBox_KeyPress( Object sender, BKeyPressEventArgs e )
         {
 #if DEBUG
-            PortUtil.println( "FormMain#mInputTextBox_KeyPress" );
+            sout.println( "FormMain#mInputTextBox_KeyPress" );
 #endif
 #if !JAVA
             //           Enter                                  Tab
@@ -7813,7 +7855,7 @@ namespace org.kbinani.cadencii
         public void AppManager_PreviewAborted( Object sender, EventArgs e )
         {
 #if DEBUG
-            PortUtil.println( "FormMain#AppManager_PreviewAborted" );
+            sout.println( "FormMain#AppManager_PreviewAborted" );
 #endif
 #if JAVA
             stripBtnPlay.setIcon( new ImageIcon( Resources.get_control() ) );
@@ -7835,7 +7877,7 @@ namespace org.kbinani.cadencii
         public void AppManager_PreviewStarted( Object sender, EventArgs e )
         {
 #if DEBUG
-            PortUtil.println( "FormMain#AppManager_PreviewStarted" );
+            sout.println( "FormMain#AppManager_PreviewStarted" );
 #endif
             AppManager.mAddingEvent = null;
             int selected = AppManager.getSelected();
@@ -8200,14 +8242,14 @@ namespace org.kbinani.cadencii
                                     }
                                 } catch ( Exception ex ) {
                                     Logger.write( typeof( FormMain ) + ".pictPianoRoll_MouseDoubleClick; ex=" + ex + "\n" );
-                                    PortUtil.stderr.println( typeof( FormMain ) + ".pictPianoRoll_MouseDoubleClick" + ex );
+                                    serr.println( typeof( FormMain ) + ".pictPianoRoll_MouseDoubleClick" + ex );
                                 } finally {
                                     if ( dlg != null ) {
                                         try {
                                             dlg.close();
                                         } catch ( Exception ex2 ) {
                                             Logger.write( typeof( FormMain ) + ".pictPianoRoll_MouseDoubleClick; ex=" + ex2 + "\n" );
-                                            PortUtil.stderr.println( typeof( FormMain ) + ".pictPianoRoll_MouseDoubleClick" );
+                                            serr.println( typeof( FormMain ) + ".pictPianoRoll_MouseDoubleClick" );
                                         }
                                     }
                                 }
@@ -8239,7 +8281,7 @@ namespace org.kbinani.cadencii
                                 SynthesizerType type = SynthesizerType.VOCALOID2;
                                 RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( selected ) );
 #if DEBUG
-                                PortUtil.println( "FormMain#pictPianoRoll_MouseDoubleClick; kind=" + kind );
+                                sout.println( "FormMain#pictPianoRoll_MouseDoubleClick; kind=" + kind );
 #endif
                                 if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
                                     type = SynthesizerType.VOCALOID1;
@@ -9085,7 +9127,7 @@ namespace org.kbinani.cadencii
                     }
                     item.editing.ID.setLength( new_length );
 #if DEBUG
-                    PortUtil.println( "FormMain#pictPianoRoll_MouseMove; length(before,after)=(" + item.original.ID.getLength() + "," + item.editing.ID.getLength() + ")" );
+                    sout.println( "FormMain#pictPianoRoll_MouseMove; length(before,after)=(" + item.original.ID.getLength() + "," + item.editing.ID.getLength() + ")" );
 #endif
                 }
                 #endregion
@@ -9402,12 +9444,12 @@ namespace org.kbinani.cadencii
             } else if ( edit_mode == EditMode.MOVE_ENTRY ) {
                 #region MoveEntry
 #if DEBUG
-                PortUtil.println( "FormMain#pictPianoRoll_MouseUp; edit_mode is MOVE_ENTRY" );
+                sout.println( "FormMain#pictPianoRoll_MouseUp; edit_mode is MOVE_ENTRY" );
 #endif
                 if ( AppManager.getSelectedEventCount() > 0 ) {
                     SelectedEventEntry last_selected_event = AppManager.getLastSelectedEvent();
 #if DEBUG
-                    PortUtil.println( "FormMain#pictPianoRoll_MouseUp; last_selected_event.original.InternalID=" + last_selected_event.original.InternalID );
+                    sout.println( "FormMain#pictPianoRoll_MouseUp; last_selected_event.original.InternalID=" + last_selected_event.original.InternalID );
 #endif
                     VsqEvent original = last_selected_event.original;
                     if ( original.Clock != last_selected_event.editing.Clock ||
@@ -9550,7 +9592,7 @@ namespace org.kbinani.cadencii
                 #endregion
             } else if ( edit_mode == EditMode.MOVE_ENTRY_WHOLE ) {
 #if DEBUG
-                PortUtil.println( "FormMain#pictPianoRoll_MouseUp; EditMode.MOVE_ENTRY_WHOLE" );
+                sout.println( "FormMain#pictPianoRoll_MouseUp; EditMode.MOVE_ENTRY_WHOLE" );
 #endif
                 #region MOVE_ENTRY_WHOLE
                 int src_clock_start = AppManager.mWholeSelectedInterval.getStart();
@@ -9572,13 +9614,13 @@ namespace org.kbinani.cadencii
                     selected_ids[k] = internal_id;
                     k++;
 #if DEBUG
-                    PortUtil.println( "FormMain#pictPianoRoll_MouseUp; internal_id=" + internal_id );
+                    sout.println( "FormMain#pictPianoRoll_MouseUp; internal_id=" + internal_id );
 #endif
                     for ( Iterator<VsqEvent> itr2 = work.getNoteEventIterator(); itr2.hasNext(); ) {
                         VsqEvent vsq_event = itr2.next();
                         if ( internal_id == vsq_event.InternalID ) {
 #if DEBUG
-                            PortUtil.println( "FormMain#pictPianoRoll_MouseUp; before: clock=" + vsq_event.Clock + "; after: clock=" + item.editing.Clock );
+                            sout.println( "FormMain#pictPianoRoll_MouseUp; before: clock=" + vsq_event.Clock + "; after: clock=" + item.editing.Clock );
 #endif
                             vsq_event.Clock = item.editing.Clock;
                             break;
@@ -9650,7 +9692,7 @@ namespace org.kbinani.cadencii
                 int start = AppManager.mWholeSelectedInterval.getStart();
                 int end = AppManager.mWholeSelectedInterval.getEnd();
 #if DEBUG
-                PortUtil.println( "FormMain#pictPianoRoll_MouseUp; WholeSelectedInterval; (start,end)=" + start + ", " + end );
+                sout.println( "FormMain#pictPianoRoll_MouseUp; WholeSelectedInterval; (start,end)=" + start + ", " + end );
 #endif
                 AppManager.clearSelectedEvent();
 
@@ -9967,7 +10009,7 @@ namespace org.kbinani.cadencii
                 return;
             }
 #if DEBUG
-            PortUtil.println( "FormMain#menuVisualPluginVocaloidCommon_Click; search=" + search );
+            sout.println( "FormMain#menuVisualPluginVocaloidCommon_Click; search=" + search );
 #endif
 
 #if ENABLE_VOCALOID
@@ -10100,7 +10142,7 @@ namespace org.kbinani.cadencii
         public void mixerWindow_FederChanged( int track, int feder )
         {
 #if DEBUG
-            PortUtil.println( "FormMain#mixerWindow_FederChanged; track=" + track + "; feder=" + feder );
+            sout.println( "FormMain#mixerWindow_FederChanged; track=" + track + "; feder=" + feder );
 #endif
             if ( track == 0 ) {
                 AppManager.getVsqFile().Mixer.MasterFeder = feder;
@@ -10152,7 +10194,7 @@ namespace org.kbinani.cadencii
         public void propertyWindow_LocationOrSizeChanged( Object sender, EventArgs e )
         {
 #if DEBUG
-            PortUtil.println( "m_note_proeprty_dlg_LocationOrSizeChanged; WindowState=" + AppManager.propertyWindow.WindowState );
+            sout.println( "m_note_proeprty_dlg_LocationOrSizeChanged; WindowState=" + AppManager.propertyWindow.WindowState );
 #endif
             if ( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Window ) {
                 if ( AppManager.propertyWindow.getExtendedState() == BForm.ICONIFIED ) {
@@ -10300,7 +10342,7 @@ namespace org.kbinani.cadencii
                 PortUtil.deleteDirectory( tempdir, true );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".FormMain_FormClosed; ex=" + ex + "\n" );
-                PortUtil.stderr.println( "FormMain#FormMain_FormClosed; ex=" + ex );
+                serr.println( "FormMain#FormMain_FormClosed; ex=" + ex );
             }
             AppManager.stopGenerator();
             VSTiDllManager.terminate();
@@ -10562,7 +10604,7 @@ namespace org.kbinani.cadencii
                                 PortUtil.deleteFile( wav_from );
                             } catch ( Exception ex ) {
                                 Logger.write( typeof( FormMain ) + ".FormMain_Load; ex=" + ex + "\n" );
-                                PortUtil.stderr.println( "FormMain#FormMain_Load; ex=" + ex );
+                                serr.println( "FormMain#FormMain_Load; ex=" + ex );
                             }
                         }
                     }
@@ -10591,14 +10633,14 @@ namespace org.kbinani.cadencii
                     always_check_this = dialog.isAlwaysPerformThisCheck();
                 } catch ( Exception ex ) {
                     Logger.write( typeof( FormMain ) + ".FormMain_Load; ex=" + ex + "\n" );
-                    PortUtil.stderr.println( "FormMain#FormMain_Load; ex=" + ex );
+                    serr.println( "FormMain#FormMain_Load; ex=" + ex );
                 } finally {
                     if ( dialog != null ) {
                         try {
                             dialog.close();
                         } catch ( Exception ex2 ) {
                             Logger.write( typeof( FormMain ) + ".FormMain_Load; ex=" + ex2 + "\n" );
-                            PortUtil.stderr.println( "FormMain#FormMain_Load; ex2=" + ex2 );
+                            serr.println( "FormMain#FormMain_Load; ex2=" + ex2 );
                         }
                     }
                 }
@@ -10612,7 +10654,7 @@ namespace org.kbinani.cadencii
                         form.setVisible( true );
                     } catch ( Exception ex ) {
                         Logger.write( typeof( FormMain ) + ".FormMain_Load; ex=" + ex + "\n" );
-                        PortUtil.stderr.println( "FormMain#FormMain_Load; ex=" + ex );
+                        serr.println( "FormMain#FormMain_Load; ex=" + ex );
                     }
                     init_key_sound_player_immediately = false;
                 }
@@ -10623,7 +10665,7 @@ namespace org.kbinani.cadencii
                     KeySoundPlayer.init();
                 } catch ( Exception ex ) {
                     Logger.write( typeof( FormMain ) + ".FormMain_Load; ex=" + ex + "\n" );
-                    PortUtil.stderr.println( "FormMain#FormMain_Load; ex=" + ex );
+                    serr.println( "FormMain#FormMain_Load; ex=" + ex );
                 }
             }
         }
@@ -10634,7 +10676,7 @@ namespace org.kbinani.cadencii
                 KeySoundPlayer.init();
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".FormGenerateKeySound_FormClosed; ex=" + ex + "\n" );
-                PortUtil.stderr.println( "FormMain#FormGenerateKeySound_FormClosed; ex=" + ex );
+                serr.println( "FormMain#FormGenerateKeySound_FormClosed; ex=" + ex );
             }
         }
 
@@ -10674,7 +10716,7 @@ namespace org.kbinani.cadencii
         public void FormMain_MouseWheel( Object sender, BMouseEventArgs e )
         {
 #if DEBUG
-            PortUtil.println( "FormMain#FormMain_MouseWheel" );
+            sout.println( "FormMain#FormMain_MouseWheel" );
 #endif
             if ( (PortUtil.getCurrentModifierKey() & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
                 hScroll.setValue( computeScrollValueFromWheelDelta( e.Delta ) );
@@ -10696,7 +10738,7 @@ namespace org.kbinani.cadencii
         public void FormMain_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e )
         {
 #if DEBUG
-            PortUtil.println( "FormMain#FormMain_PreviewKeyDown" );
+            sout.println( "FormMain#FormMain_PreviewKeyDown" );
 #endif
 #if JAVA
             BKeyEventArgs ex = new BKeyEventArgs( e.getRawEvent() );
@@ -11125,8 +11167,8 @@ namespace org.kbinani.cadencii
                                 vocaloid_nrpn_midievent = new Vector<MidiEvent>();
                             }
 #if DEBUG
-                            PortUtil.println( "menuFileExportMidi_Click" );
-                            PortUtil.println( "    vocaloid_nrpn_midievent.size()=" + vocaloid_nrpn_midievent.size() );
+                            sout.println( "menuFileExportMidi_Click" );
+                            sout.println( "    vocaloid_nrpn_midievent.size()=" + vocaloid_nrpn_midievent.size() );
 #endif
 
                             // midi eventを出力
@@ -11221,7 +11263,7 @@ namespace org.kbinani.cadencii
                 AppManager.editorConfig.setLastUsedPathOut( file );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileExportMusicXml_Click; ex=" + ex + "\n" );
-                PortUtil.stderr.println( "FormMain#menuFileExportMusicXml_Click; ex=" + ex );
+                serr.println( "FormMain#menuFileExportMusicXml_Click; ex=" + ex );
             } finally {
                 if ( dialog != null ) {
                     try {
@@ -11230,7 +11272,7 @@ namespace org.kbinani.cadencii
 #endif
                     } catch ( Exception ex2 ) {
                         Logger.write( typeof( FormMain ) + ".menuFileExportMusicXml_Click; ex=" + ex2 + "\n" );
-                        PortUtil.stderr.println( "FormMain#menuFileExportMusicXml_Click; ex2=" + ex2 );
+                        serr.println( "FormMain#menuFileExportMusicXml_Click; ex2=" + ex2 );
                     }
                 }
             }
@@ -11495,7 +11537,7 @@ namespace org.kbinani.cadencii
                     bw, vsq_track, oto_ini, vsq.TotalClocks, false );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileExportVxt_Click; ex=" + ex + "\n" );
-                PortUtil.stderr.println( typeof( FormMain ) + ".menuFileExportVxt_Click; ex=" + ex );
+                serr.println( typeof( FormMain ) + ".menuFileExportVxt_Click; ex=" + ex );
             } finally {
                 if ( bw != null ) {
                     try {
@@ -11514,7 +11556,7 @@ namespace org.kbinani.cadencii
             try {
                 String last_path = AppManager.editorConfig.getLastUsedPathOut( "wav" );
 #if DEBUG
-                PortUtil.println( "FormMain#menuFileExportWave_Click; last_path=" + last_path );
+                sout.println( "FormMain#menuFileExportWave_Click; last_path=" + last_path );
 #endif
                 sfd = new BFileChooser( last_path );
                 sfd.setInitialDirectory( last_path );
@@ -11781,7 +11823,7 @@ namespace org.kbinani.cadencii
             boolean import_tempo = mDialogMidiImportAndExport.isTempo();
             if ( import_tempo ) {
 #if DEBUG
-                PortUtil.println( "FormMain#menuFileImportMidi_Click; sec_at_premeasure=" + sec_at_premeasure );
+                sout.println( "FormMain#menuFileImportMidi_Click; sec_at_premeasure=" + sec_at_premeasure );
 #endif
                 // 最初に、workにある全てのイベント・コントロールカーブ・ベジエ曲線をtempoのテンポテーブルに合うように、シフトする
                 //ShiftClockToMatchWith( work, copy_src, work.getSecFromClock( work.getPreMeasureClocks() ) );
@@ -11856,7 +11898,7 @@ namespace org.kbinani.cadencii
                             }
                         }
 #if DEBUG
-                        PortUtil.println( "FormMain#menuFileImprotMidi_Click; not_closed_note=" + not_closed_note );
+                        sout.println( "FormMain#menuFileImprotMidi_Click; not_closed_note=" + not_closed_note );
 #endif
                         if ( ((itemj.firstByte & 0xf0) == 0x90 && itemj.data.Length >= 2 && itemj.data[1] == 0) ||
                              ((itemj.firstByte & 0xf0) == 0x80 && itemj.data.Length >= 2) ||
@@ -11888,7 +11930,7 @@ namespace org.kbinani.cadencii
                                 vid.type = VsqIDType.Anote;
                                 vid.setLength( add_clock_off - add_clock_on );
 #if DEBUG
-                                PortUtil.println( "FormMain#menuFileImportMidi_Click; vid.Length=" + vid.getLength() );
+                                sout.println( "FormMain#menuFileImportMidi_Click; vid.Length=" + vid.getLength() );
 #endif
                                 String phrase = "a";
                                 if ( mDialogMidiImportAndExport.isLyric() ) {
@@ -12314,7 +12356,7 @@ namespace org.kbinani.cadencii
                 
                 clearExistingData();
                 AppManager.setVsqFile( vsq );
-                setEdited( false );
+                setEdited( true );
                 AppManager.mMixerWindow.updateStatus();
                 clearTempWave();
                 updateDrawObjectList();
@@ -12323,7 +12365,7 @@ namespace org.kbinani.cadencii
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileOpenUst_Click; ex=" + ex + "\n" );
 #if DEBUG
-                PortUtil.println( "FormMain#menuFileOpenUst_Click; ex=" + ex );
+                sout.println( "FormMain#menuFileOpenUst_Click; ex=" + ex );
 #endif
             }
         }
@@ -12367,14 +12409,14 @@ namespace org.kbinani.cadencii
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileOpenVsq_Click; ex=" + ex + "\n" );
 #if DEBUG
-                PortUtil.println( "FormMain#menuFileOpenVsq_Click; ex=" + ex );
+                sout.println( "FormMain#menuFileOpenVsq_Click; ex=" + ex );
 #endif
                 AppManager.showMessageBox( _( "Invalid VSQ/VOCALOID MIDI file" ), _( "Error" ), org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
                 return;
             }
             AppManager.setSelected( 1 );
             clearExistingData();
-            setEdited( false );
+            setEdited( true );
             AppManager.mMixerWindow.updateStatus();
             clearTempWave();
             updateDrawObjectList();
@@ -12576,13 +12618,13 @@ namespace org.kbinani.cadencii
                     float old_base_font_size = AppManager.editorConfig.BaseFontSize;
                     Font new_base_font = mDialogPreference.getBaseFont();
 #if DEBUG
-                    PortUtil.println( "FormMain#menuSettingPreference; old_base_font_name=" + old_base_font_name + "; new_base_font.getName()=" + new_base_font.getName() );
-                    PortUtil.println( "FormMain#menuSettingPreference; old_base_font_size=" + old_base_font_size + "; new_base_font.getSize2D()=" + new_base_font.getSize2D() );
+                    sout.println( "FormMain#menuSettingPreference; old_base_font_name=" + old_base_font_name + "; new_base_font.getName()=" + new_base_font.getName() );
+                    sout.println( "FormMain#menuSettingPreference; old_base_font_size=" + old_base_font_size + "; new_base_font.getSize2D()=" + new_base_font.getSize2D() );
 #endif
                     if ( !old_base_font_name.Equals( new_base_font.getName() ) ||
                          old_base_font_size != new_base_font.getSize2D() ) {
 #if DEBUG
-                        PortUtil.println( "FormMain#menuSettingPreference; font changed" );
+                        sout.println( "FormMain#menuSettingPreference; font changed" );
 #endif
                         AppManager.editorConfig.BaseFontName = mDialogPreference.getBaseFont().getName();
                         AppManager.editorConfig.BaseFontSize = mDialogPreference.getBaseFont().getSize2D();
@@ -12722,7 +12764,7 @@ namespace org.kbinani.cadencii
                                             PortUtil.deleteFile( wavTo );
                                         } catch ( Exception ex ) {
                                             Logger.write( typeof( FormMain ) + ".menuSettingPreference_Click; ex=" + ex + "\n" );
-                                            PortUtil.stderr.println( "FormMain#menuSettingPreference_Click; ex=" + ex );
+                                            serr.println( "FormMain#menuSettingPreference_Click; ex=" + ex );
                                             continue;
                                         }
                                     }
@@ -12730,7 +12772,7 @@ namespace org.kbinani.cadencii
                                         PortUtil.moveFile( wavFrom, wavTo );
                                     } catch ( Exception ex ) {
                                         Logger.write( typeof( FormMain ) + ".menuSettingPreference_Click; ex=" + ex + "\n" );
-                                        PortUtil.stderr.println( "FormMain#menuSettingPreference_Click; ex=" + ex );
+                                        serr.println( "FormMain#menuSettingPreference_Click; ex=" + ex );
                                     }
 
                                     // xmlを移動
@@ -12744,7 +12786,7 @@ namespace org.kbinani.cadencii
                                             PortUtil.deleteFile( xmlTo );
                                         } catch ( Exception ex ) {
                                             Logger.write( typeof( FormMain ) + ".menuSettingPreference_Click; ex=" + ex + "\n" );
-                                            PortUtil.stderr.println( "FormMain#menuSettingPreference_Click; ex=" + ex );
+                                            serr.println( "FormMain#menuSettingPreference_Click; ex=" + ex );
                                             continue;
                                         }
                                     }
@@ -12752,7 +12794,7 @@ namespace org.kbinani.cadencii
                                         PortUtil.moveFile( xmlFrom, xmlTo );
                                     } catch ( Exception ex ) {
                                         Logger.write( typeof( FormMain ) + ".menuSettingPreference_Click; ex=" + ex + "\n" );
-                                        PortUtil.stderr.println( "FormMain#menuSettingPreference_Click; ex=" + ex );
+                                        serr.println( "FormMain#menuSettingPreference_Click; ex=" + ex );
                                     }
                                 }
 
@@ -12763,7 +12805,7 @@ namespace org.kbinani.cadencii
                                         PortUtil.deleteDirectory( projectCacheDir );
                                     } catch ( Exception ex ) {
                                         Logger.write( typeof( FormMain ) + ".menuSettingPreference_Click; ex=" + ex + "\n" );
-                                        PortUtil.stderr.println( "FormMain#menuSettingPreference_Click; ex=" + ex );
+                                        serr.println( "FormMain#menuSettingPreference_Click; ex=" + ex );
                                     }
                                 }
 
@@ -12838,7 +12880,7 @@ namespace org.kbinani.cadencii
                 String name = itr.next();
                 Object menu = searchMenuItemFromName( name );
 #if DEBUG
-                PortUtil.println( "menuSettingShrtcut_Click; name=" + name + "; (menu==null)=" + (menu == null) );
+                sout.println( "menuSettingShrtcut_Click; name=" + name + "; (menu==null)=" + (menu == null) );
 #endif
                 if ( menu != null ) {
                     String parent = "";
@@ -13098,7 +13140,7 @@ namespace org.kbinani.cadencii
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuLyricDictionary_Click; ex=" + ex + "\n" );
-                PortUtil.stderr.println( "FormMain#menuLyricDictionary_Click; ex=" + ex );
+                serr.println( "FormMain#menuLyricDictionary_Click; ex=" + ex );
             } finally {
                 if ( dlg != null ) {
                     try {
@@ -13804,14 +13846,14 @@ namespace org.kbinani.cadencii
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuJobRandomize_Click; ex=" + ex + "\n" );
-                PortUtil.stderr.println( "FormMain#menuJobRandomize_Click; ex=" + ex );
+                serr.println( "FormMain#menuJobRandomize_Click; ex=" + ex );
             } finally {
                 if ( dlg != null ) {
                     try {
                         dlg.close();
                     } catch ( Exception ex2 ) {
                         Logger.write( typeof( FormMain ) + ".menuJobRandomize_Click; ex=" + ex2 + "\n" );
-                        PortUtil.stderr.println( "FormMain#menuJobRandomize; ex2=" + ex2 );
+                        serr.println( "FormMain#menuJobRandomize; ex2=" + ex2 );
                     }
                 }
             }
@@ -13874,7 +13916,7 @@ namespace org.kbinani.cadencii
         public void waveView_MouseDown( Object sender, BMouseEventArgs e )
         {
 #if DEBUG
-            PortUtil.println( "waveView_MouseDown; isMiddleButtonDowned=" + isMouseMiddleButtonDowned( e.Button ) );
+            sout.println( "waveView_MouseDown; isMiddleButtonDowned=" + isMouseMiddleButtonDowned( e.Button ) );
 #endif
             if ( isMouseMiddleButtonDowned( e.Button ) ) {
                 mEditCurveMode = CurveEditMode.MIDDLE_DRAG;
@@ -13943,9 +13985,24 @@ namespace org.kbinani.cadencii
         public void picturePositionIndicator_MouseWheel( Object sender, BMouseEventArgs e )
         {
 #if DEBUG
-            PortUtil.println( "FormMain#picturePositionIndicator_MouseWheel" );
+            sout.println( "FormMain#picturePositionIndicator_MouseWheel" );
 #endif
             hScroll.setValue( computeScrollValueFromWheelDelta( e.Delta ) );
+        }
+
+        public void picturePositionIndicator_MouseClick( Object sender, BMouseEventArgs e )
+        {
+            if ( e.Button == BMouseButtons.Right && 0 < e.Y && e.Y <= 18 && AppManager.keyWidth < e.X ) {
+                // クリックされた位置でのクロックを保存
+                int clock = AppManager.clockFromXCoord( e.X );
+                int unit = AppManager.getPositionQuantizeClock();
+                clock = doQuantize( clock, unit );
+                if ( clock < 0 ) {
+                    clock = 0;
+                }
+                cMenuPositionIndicator.setTag( clock );
+                cMenuPositionIndicator.show( picturePositionIndicator, e.X, e.Y );
+            }
         }
 
         public void picturePositionIndicator_MouseDoubleClick( Object sender, BMouseEventArgs e )
@@ -14025,14 +14082,14 @@ namespace org.kbinani.cadencii
                                     }
                                 } catch ( Exception ex ) {
                                     Logger.write( typeof( FormMain ) + ".picturePositionIndicator_MouseDoubleClick; ex=" + ex + "\n" );
-                                    PortUtil.stderr.println( "FormMain#picturePositionIndicator_MouseDoubleClick; ex=" + ex );
+                                    serr.println( "FormMain#picturePositionIndicator_MouseDoubleClick; ex=" + ex );
                                 } finally {
                                     if ( dlg != null ) {
                                         try {
                                             dlg.close();
                                         } catch ( Exception ex2 ) {
                                             Logger.write( typeof( FormMain ) + ".picturePositionIndicator_MouseDoubleClick; ex=" + ex2 + "\n" );
-                                            PortUtil.stderr.println( "FormMain#picturePositionIndicator_MouseDoubleClick; ex2=" + ex2 );
+                                            serr.println( "FormMain#picturePositionIndicator_MouseDoubleClick; ex2=" + ex2 );
                                         }
                                     }
                                 }
@@ -14182,9 +14239,9 @@ namespace org.kbinani.cadencii
                                         setEdited( true );
                                     } else {
 #if DEBUG
-                                        PortUtil.println( "picturePositionIndicator_MouseDoubleClick" );
-                                        PortUtil.println( "    bar_count=" + bar_count );
-                                        PortUtil.println( "    dlg.Start+pre_measure-1=" + (dlg.getStart() + pre_measure - 1) );
+                                        sout.println( "picturePositionIndicator_MouseDoubleClick" );
+                                        sout.println( "    bar_count=" + bar_count );
+                                        sout.println( "    dlg.Start+pre_measure-1=" + (dlg.getStart() + pre_measure - 1) );
 #endif
                                         CadenciiCommand run = new CadenciiCommand(
                                             VsqCommand.generateCommandUpdateTimesig( bar_count,
@@ -14197,14 +14254,14 @@ namespace org.kbinani.cadencii
                                 }
                             } catch ( Exception ex ) {
                                 Logger.write( typeof( FormMain ) + ".picturePositionIndicator_MouseDoubleClick; ex=" + ex + "\n" );
-                                PortUtil.stderr.println( "FormMain#picturePositionIndicator_MouseDoubleClick; ex=" + ex );
+                                serr.println( "FormMain#picturePositionIndicator_MouseDoubleClick; ex=" + ex );
                             } finally {
                                 if ( dlg != null ) {
                                     try {
                                         dlg.close();
                                     } catch ( Exception ex2 ) {
                                         Logger.write( typeof( FormMain ) + ".picturePositionIndicator_MouseDoubleClick; ex=" + ex2 + "\n" );
-                                        PortUtil.stderr.println( "FormMain#picturePositionIndicator_MouseDoubleClic; ex2=" + ex2 );
+                                        serr.println( "FormMain#picturePositionIndicator_MouseDoubleClic; ex2=" + ex2 );
                                     }
                                 }
                             }
@@ -14307,17 +14364,34 @@ namespace org.kbinani.cadencii
             if ( e.Button == BMouseButtons.Left ) {
                 if ( 0 <= e.Y && e.Y <= 18 ) {
                     #region スタート/エンドマーク
+                    int tolerance = AppManager.editorConfig.PxTolerance;
+                    int start_marker_width = Resources.get_start_marker().getWidth( this );
+                    int end_marker_width = Resources.get_end_marker().getWidth( this );
+                    int startx = AppManager.xCoordFromClocks( AppManager.mStartMarker );
+                    int endx = AppManager.xCoordFromClocks( AppManager.mEndMarker );
+                    
+                    // マウスの当たり判定が重なるようなら，判定幅を最小にする
+                    int start0 = startx - tolerance;
+                    int start1 = startx + start_marker_width + tolerance;
+                    int end0 = endx - end_marker_width - tolerance;
+                    int end1 = endx + tolerance;
+                    if ( AppManager.mStartMarkerEnabled && AppManager.mEndMarkerEnabled ) {
+                        if ( start0 < end1 && end1 < start1 ||
+                            start1 < end0 && end0 < start1 ) {
+                            start0 = startx;
+                            start1 = startx + start_marker_width;
+                            end0 = endx - end_marker_width;
+                            end1 = endx;
+                        }
+                    }
+
                     if ( AppManager.mStartMarkerEnabled ) {
-                        int startx = AppManager.xCoordFromClocks( AppManager.mStartMarker ) - AppManager.editorConfig.PxTolerance;
-                        int marker_width = Resources.get_start_marker().getWidth( this );
-                        if ( startx <= e.X && e.X <= startx + AppManager.editorConfig.PxTolerance * 2 + marker_width ) {
+                        if ( start0 <= e.X && e.X <= start1 ) {
                             mPositionIndicatorMouseDownMode = PositionIndicatorMouseDownMode.MARK_START;
                         }
                     }
                     if ( AppManager.mEndMarkerEnabled && mPositionIndicatorMouseDownMode != PositionIndicatorMouseDownMode.MARK_START ) {
-                        int marker_width = Resources.get_end_marker().getWidth( this );
-                        int endx = AppManager.xCoordFromClocks( AppManager.mEndMarker ) - marker_width - AppManager.editorConfig.PxTolerance;
-                        if ( endx <= e.X && e.X <= endx + AppManager.editorConfig.PxTolerance * 2 + marker_width ) {
+                        if ( end0 <= e.X && e.X <= end1 ) {
                             mPositionIndicatorMouseDownMode = PositionIndicatorMouseDownMode.MARK_END;
                         }
                     }
@@ -14743,7 +14817,7 @@ namespace org.kbinani.cadencii
         public void menuHelpAbout_Click( Object sender, EventArgs e )
         {
 #if DEBUG
-            PortUtil.println( "FormMain#menuHelpAbout_Click" );
+            sout.println( "FormMain#menuHelpAbout_Click" );
 #endif
 
 #if JAVA
@@ -14774,9 +14848,7 @@ namespace org.kbinani.cadencii
         public void menuHelpDebug_Click( Object sender, EventArgs e )
         {
 #if DEBUG
-            PortUtil.println( "FormMain#menuHelpDebug_Click" );
-
-            AppManager.showMessageBox( Utility.getExecutingUtau() );
+            sout.println( "FormMain#menuHelpDebug_Click" );
 
 #if ENABLE_VOCALOID
             /*BFileChooser dlg_fout = new BFileChooser( "" );
@@ -14987,7 +15059,7 @@ namespace org.kbinani.cadencii
         public void trackSelector_MouseWheel( Object sender, BMouseEventArgs e )
         {
 #if DEBUG
-            PortUtil.println( "FormMain#trackSelector_MouseWheel" );
+            sout.println( "FormMain#trackSelector_MouseWheel" );
 #endif
             if ( (PortUtil.getCurrentModifierKey() & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
                 double new_val = (double)vScroll.getValue() - e.Delta;
@@ -15011,7 +15083,7 @@ namespace org.kbinani.cadencii
             if ( menuVisualControlTrack.isSelected() ) {
                 splitContainer1.setPanel2MinSize( trackSelector.getPreferredMinSize() );
 #if DEBUG
-                PortUtil.println( "FormMain#trackSelector_PreferredMinHeightChanged; splitContainer1.Panel2MinSize changed" );
+                sout.println( "FormMain#trackSelector_PreferredMinHeightChanged; splitContainer1.Panel2MinSize changed" );
 #endif
             }
         }
@@ -15425,7 +15497,7 @@ namespace org.kbinani.cadencii
         void menuHiddenPrintPoToCSV_Click( Object sender, EventArgs e )
         {
 #if DEBUG
-            PortUtil.println( "FormMain#menuHiddenPrintPoToCSV_Click" );
+            sout.println( "FormMain#menuHiddenPrintPoToCSV_Click" );
 #endif
 
             Vector<String> keys = new Vector<String>();
@@ -15442,7 +15514,7 @@ namespace org.kbinani.cadencii
             String dir = PortUtil.getApplicationStartupPath();
             String fname = fsys.combine( dir, "cadencii_trans.csv" );
 #if DEBUG
-            PortUtil.println( "FormMain#menuHiddenPrintPoToCSV_Click; fname=" + fname );
+            sout.println( "FormMain#menuHiddenPrintPoToCSV_Click; fname=" + fname );
 #endif
             String old_lang = Messaging.getLanguage();
             BufferedWriter br = null;
@@ -15464,7 +15536,7 @@ namespace org.kbinani.cadencii
                     br.newLine();
                 }
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "FormMain#menuHiddenPrintPoToCSV_Click; ex=" + ex );
+                serr.println( "FormMain#menuHiddenPrintPoToCSV_Click; ex=" + ex );
             } finally {
                 if ( br != null ) {
                     try {
@@ -15482,7 +15554,7 @@ namespace org.kbinani.cadencii
             boolean triplet = AppManager.editorConfig.isPositionQuantizeTriplet();
             int delta = -QuantizeModeUtil.getQuantizeClock( mode, triplet );
 #if DEBUG
-            PortUtil.println( "FormMain#menuHiddenMoveLeft_Click; delta=" + delta );
+            sout.println( "FormMain#menuHiddenMoveLeft_Click; delta=" + delta );
 #endif
             moveUpDownLeftRight( 0, delta );
         }
@@ -15692,6 +15764,36 @@ namespace org.kbinani.cadencii
                 mTextBoxTrackName.Dispose();
 #endif
                 mTextBoxTrackName = null;
+            }
+        }
+        #endregion
+
+        #region cPotisionIndicator
+        public void cMenuPositionIndicatorStartMarker_Click( Object sender, EventArgs e )
+        {
+            Object tag = cMenuPositionIndicator.getTag();
+            if ( tag != null && tag is Integer ) {
+                int clock = (Integer)tag;
+                AppManager.mStartMarkerEnabled = true;
+                AppManager.mStartMarker = clock;
+                if ( AppManager.mEndMarker < clock ) {
+                    AppManager.mEndMarker = clock;
+                }
+                picturePositionIndicator.invalidate();
+            }
+        }
+
+        public void cMenuPositionIndicatorEndMarker_Click( Object sender, EventArgs e )
+        {
+            Object tag = cMenuPositionIndicator.getTag();
+            if ( tag != null && tag is Integer ) {
+                int clock = (Integer)tag;
+                AppManager.mEndMarkerEnabled = true;
+                AppManager.mEndMarker = clock;
+                if ( AppManager.mStartMarker > clock ) {
+                    AppManager.mStartMarker = clock;
+                }
+                picturePositionIndicator.invalidate();
             }
         }
         #endregion
@@ -16425,7 +16527,7 @@ namespace org.kbinani.cadencii
                     play_time = monitor.getPlayTime();
                 }
 #if DEBUG
-                PortUtil.println( "FormMain#timer_Tick; play_time=" + play_time );
+                sout.println( "FormMain#timer_Tick; play_time=" + play_time );
 #endif
                 double now = play_time + AppManager.mDirectPlayShift;
                 int clock = (int)AppManager.getVsqFile().getClockFromSec( now );
@@ -16465,7 +16567,7 @@ namespace org.kbinani.cadencii
                 this.Invoke( new BEventHandler( this.refreshScreenCore ) );
 #endif
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "FormMain#bgWorkScreen_DoWork; ex=" + ex );
+                serr.println( "FormMain#bgWorkScreen_DoWork; ex=" + ex );
                 Logger.write( typeof( FormMain ) + ".bgWorkScreen_DoWork; ex=" + ex + "\n" );
             }
         }
@@ -17132,7 +17234,7 @@ namespace org.kbinani.cadencii
                 }
 
 #if DEBUG
-                PortUtil.println( "FormMain#handleChangeRenderer; resampler_index=" + resampler_index );
+                sout.println( "FormMain#handleChangeRenderer; resampler_index=" + resampler_index );
 #endif
                 // 検出できた
                 // このばあいは確実にUTAU
@@ -17148,16 +17250,16 @@ namespace org.kbinani.cadencii
                 changed = (old_resampler_index != resampler_index);
             }
 #if DEBUG
-            PortUtil.println( "FormMain#handleChangeRenderer; old=" + old + "; kind=" + kind );
-            PortUtil.println( "FormMain#handleChangeRenderer; old_resampler_index=" + old_resampler_index + "; resampler_index=" + resampler_index );
-            PortUtil.println( "FormMaiN#handleChangeRenderer; changed=" + changed );
+            sout.println( "FormMain#handleChangeRenderer; old=" + old + "; kind=" + kind );
+            sout.println( "FormMain#handleChangeRenderer; old_resampler_index=" + old_resampler_index + "; resampler_index=" + resampler_index );
+            sout.println( "FormMaiN#handleChangeRenderer; changed=" + changed );
 #endif
             if ( changed ) {
                 VsqTrack item = (VsqTrack)vsq_track.clone();
                 Vector<VsqID> singers = AppManager.getSingerListFromRendererKind( kind );
                 String renderer = AppManager.getVersionStringFromRendererKind( kind );
                 if ( singers == null ) {
-                    PortUtil.stderr.println( "FormMain#changeRendererCor; singers is null" );
+                    serr.println( "FormMain#changeRendererCor; singers is null" );
                     return;
                 }
 
@@ -17165,11 +17267,11 @@ namespace org.kbinani.cadencii
                 VsqFileEx.setTrackRendererKind( item, kind );
                 if ( kind == RendererKind.UTAU ) {
 #if DEBUG
-                    PortUtil.println( "FormMain#handleChangeRenderer; before; item.Tag=" + item.Tag );
+                    sout.println( "FormMain#handleChangeRenderer; before; item.Tag=" + item.Tag );
 #endif
                     VsqFileEx.setTrackResamplerUsed( item, resampler_index );
 #if DEBUG
-                    PortUtil.println( "FormMain#handleChangeRenderer; after; item.Tag=" + item.Tag );
+                    sout.println( "FormMain#handleChangeRenderer; after; item.Tag=" + item.Tag );
 #endif
                 }
                 CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( selected,
@@ -17177,7 +17279,7 @@ namespace org.kbinani.cadencii
                                                                              vsq.AttachedCurves.get( selected - 1 ) );
                 AppManager.register( vsq.executeCommand( run ) );
 #if DEBUG
-                PortUtil.println( "FormMain#handleChangeRenderer; after executing command; resamplerUsed=" + VsqFileEx.getTrackResamplerUsed( vsq.Track.get( selected ) ) );
+                sout.println( "FormMain#handleChangeRenderer; after executing command; resamplerUsed=" + VsqFileEx.getTrackResamplerUsed( vsq.Track.get( selected ) ) );
 #endif
                 cMenuTrackTabRendererVOCALOID100.setSelected( kind == RendererKind.VOCALOID1_100 );
                 cMenuTrackTabRendererVOCALOID101.setSelected( kind == RendererKind.VOCALOID1_101 );
@@ -17408,7 +17510,7 @@ namespace org.kbinani.cadencii
         public void handleScriptMenuItem_Click( Object sender, EventArgs e )
         {
 #if DEBUG
-            PortUtil.println( "FormMain#handleScriptMenuItem_Click; sender.GetType()=" + sender.GetType() );
+            sout.println( "FormMain#handleScriptMenuItem_Click; sender.GetType()=" + sender.GetType() );
 #endif
             try {
                 String dir = Utility.getScriptPath();
@@ -17417,7 +17519,7 @@ namespace org.kbinani.cadencii
                     id = (String)((BMenuItem)sender).getTag();
                 }
 #if DEBUG
-                PortUtil.println( "FormMain#handleScriptMenuItem_Click; id=" + id );
+                sout.println( "FormMain#handleScriptMenuItem_Click; id=" + id );
 #endif
                 String script_file = fsys.combine( dir, id );
                 if ( ScriptServer.getTimestamp( id ) != PortUtil.getFileLastModified( script_file ) ) {
@@ -17427,6 +17529,12 @@ namespace org.kbinani.cadencii
                     if ( ScriptServer.invokeScript( id, AppManager.getVsqFile() ) ) {
                         setEdited( true );
                         updateDrawObjectList();
+                        int selected = AppManager.getSelected();
+#if DEBUG
+                        sout.println( "FormMain#handleScriptMenuItem_Click; ScriptServer.invokeScript has returned TRUE" );
+#endif
+                        AppManager.updateSelectedEventInstance();
+                        AppManager.propertyPanel.updateValue( selected );
                         refreshScreen();
                     }
                 } else {
@@ -17449,7 +17557,7 @@ namespace org.kbinani.cadencii
             } catch ( Exception ex3 ) {
                 Logger.write( typeof( FormMain ) + ".handleScriptMenuItem_Click; ex=" + ex3 + "\n" );
 #if DEBUG
-                PortUtil.println( "AppManager#dd_run_Click; ex3=" + ex3 );
+                sout.println( "AppManager#dd_run_Click; ex3=" + ex3 );
 #endif
             }
         }
@@ -17514,7 +17622,7 @@ namespace org.kbinani.cadencii
                     }
                 }*/
 #if DEBUG
-                PortUtil.println( "FormMain#handleMtcMidiReceived; time=" + time );
+                sout.println( "FormMain#handleMtcMidiReceived; time=" + time );
 #endif
             }
         }
@@ -17525,7 +17633,7 @@ namespace org.kbinani.cadencii
         {
 #if !JAVA
 #if DEBUG
-            PortUtil.println( "FormMain#mMidiIn_MidiReceived; time=" + time );
+            sout.println( "FormMain#mMidiIn_MidiReceived; time=" + time );
 #endif
             if ( data.Length <= 2 ) {
                 return;
@@ -18017,7 +18125,7 @@ namespace org.kbinani.cadencii
             this.pictureBox3 = new org.kbinani.windows.forms.BPictureBox();
             this.pictKeyLengthSplitter = new org.kbinani.windows.forms.BPictureBox();
             this.pictureBox2 = new org.kbinani.windows.forms.BPictureBox();
-            this.vScroll = new BVScrollBar();
+            this.vScroll = new org.kbinani.windows.forms.BVScrollBar();
             this.picturePositionIndicator = new org.kbinani.windows.forms.BPictureBox();
             this.toolStripBottom = new org.kbinani.windows.forms.BToolBar();
             this.toolStripStatusLabel1 = new org.kbinani.windows.forms.BStatusLabel();
@@ -18050,20 +18158,20 @@ namespace org.kbinani.cadencii
             this.panel1 = new System.Windows.Forms.Panel();
             this.panelOverview = new org.kbinani.cadencii.PictOverview();
             this.pictPianoRoll = new org.kbinani.cadencii.PictPianoRoll();
-            this.hScroll = new BHScrollBar();
+            this.hScroll = new org.kbinani.windows.forms.BHScrollBar();
             this.rebar = new org.kbinani.windows.forms.Rebar();
             this.imageListMenu = new System.Windows.Forms.ImageList( this.components );
             this.toolBarFile = new System.Windows.Forms.ToolBar();
-            this.stripBtnFileNew = new BToolBarButton();
-            this.stripBtnFileOpen = new BToolBarButton();
-            this.stripBtnFileSave = new BToolBarButton();
+            this.stripBtnFileNew = new org.kbinani.windows.forms.BToolBarButton();
+            this.stripBtnFileOpen = new org.kbinani.windows.forms.BToolBarButton();
+            this.stripBtnFileSave = new org.kbinani.windows.forms.BToolBarButton();
             this.toolBarButton1 = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnCut = new BToolBarButton();
-            this.stripBtnCopy = new BToolBarButton();
-            this.stripBtnPaste = new BToolBarButton();
+            this.stripBtnCut = new org.kbinani.windows.forms.BToolBarButton();
+            this.stripBtnCopy = new org.kbinani.windows.forms.BToolBarButton();
+            this.stripBtnPaste = new org.kbinani.windows.forms.BToolBarButton();
             this.toolBarButton2 = new System.Windows.Forms.ToolBarButton();
-            this.stripBtnUndo = new BToolBarButton();
-            this.stripBtnRedo = new BToolBarButton();
+            this.stripBtnUndo = new org.kbinani.windows.forms.BToolBarButton();
+            this.stripBtnRedo = new org.kbinani.windows.forms.BToolBarButton();
             this.toolBarPosition = new System.Windows.Forms.ToolBar();
             this.stripBtnMoveTop = new System.Windows.Forms.ToolBarButton();
             this.stripBtnRewind = new System.Windows.Forms.ToolBarButton();
@@ -18089,6 +18197,9 @@ namespace org.kbinani.cadencii
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.cMenuPositionIndicator = new org.kbinani.windows.forms.BPopupMenu( this.components );
+            this.cMenuPositionIndicatorStartMarker = new org.kbinani.windows.forms.BMenuItem();
+            this.cMenuPositionIndicatorEndMarker = new org.kbinani.windows.forms.BMenuItem();
             this.menuStripMain.SuspendLayout();
             this.cMenuPiano.SuspendLayout();
             this.cMenuTrackTab.SuspendLayout();
@@ -18107,6 +18218,7 @@ namespace org.kbinani.cadencii
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();
             this.statusStrip.SuspendLayout();
+            this.cMenuPositionIndicator.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStripMain
@@ -20581,6 +20693,28 @@ namespace org.kbinani.cadencii
             this.statusLabel.Name = "statusLabel";
             this.statusLabel.Size = new System.Drawing.Size( 0, 17 );
             // 
+            // cMenuPositionIndicator
+            // 
+            this.cMenuPositionIndicator.Items.AddRange( new System.Windows.Forms.ToolStripItem[] {
+            this.cMenuPositionIndicatorStartMarker,
+            this.cMenuPositionIndicatorEndMarker} );
+            this.cMenuPositionIndicator.Name = "cMenuTrackTab";
+            this.cMenuPositionIndicator.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+            this.cMenuPositionIndicator.ShowImageMargin = false;
+            this.cMenuPositionIndicator.Size = new System.Drawing.Size( 151, 48 );
+            // 
+            // cMenuPositionIndicatorStartMarker
+            // 
+            this.cMenuPositionIndicatorStartMarker.Name = "cMenuPositionIndicatorStartMarker";
+            this.cMenuPositionIndicatorStartMarker.Size = new System.Drawing.Size( 150, 22 );
+            this.cMenuPositionIndicatorStartMarker.Text = "Set start marker";
+            // 
+            // cMenuPositionIndicatorEndMarker
+            // 
+            this.cMenuPositionIndicatorEndMarker.Name = "cMenuPositionIndicatorEndMarker";
+            this.cMenuPositionIndicatorEndMarker.Size = new System.Drawing.Size( 150, 22 );
+            this.cMenuPositionIndicatorEndMarker.Text = "Set end marker";
+            // 
             // FormMain
             // 
             this.AllowDrop = true;
@@ -20620,6 +20754,7 @@ namespace org.kbinani.cadencii
             this.toolStripContainer1.PerformLayout();
             this.statusStrip.ResumeLayout( false );
             this.statusStrip.PerformLayout();
+            this.cMenuPositionIndicator.ResumeLayout( false );
             this.ResumeLayout( false );
             this.PerformLayout();
 
@@ -20948,6 +21083,9 @@ namespace org.kbinani.cadencii
         public BMenuItem menuFileExportParaWave;
         public BMenuItem menuFileImportUst;
         private System.Windows.Forms.ToolStripButton stripBtnStepSequencer;
+        public BPopupMenu cMenuPositionIndicator;
+        public BMenuItem cMenuPositionIndicatorStartMarker;
+        public BMenuItem cMenuPositionIndicatorEndMarker;
 
 #endif
         #endregion

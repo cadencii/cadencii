@@ -1,3 +1,4 @@
+#if !JAVA
 /*
  * imageio.cs
  * Copyright © 2009-2011 kbinani
@@ -11,42 +12,44 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if !JAVA
 using org.kbinani.java.awt.image;
 using org.kbinani.java.io;
 
-namespace org.kbinani.javax.imageio {
+namespace org.kbinani.javax.imageio
+{
 
-    public class ImageIO {
-        public static bool write( BufferedImage im, string formatName, File output ) {
+    public class ImageIO
+    {
+        public static bool write( BufferedImage im, string formatName, File output )
+        {
             System.Drawing.Imaging.ImageFormat fmt = System.Drawing.Imaging.ImageFormat.Bmp;
             switch ( formatName ) {
                 case "BMP":
                 case "bmp":
-                    fmt = System.Drawing.Imaging.ImageFormat.Bmp;
-                    break;
+                fmt = System.Drawing.Imaging.ImageFormat.Bmp;
+                break;
                 case "jpg":
                 case "JPG":
                 case "jpeg":
                 case "JPEG":
-                    fmt = System.Drawing.Imaging.ImageFormat.Jpeg;
-                    break;
+                fmt = System.Drawing.Imaging.ImageFormat.Jpeg;
+                break;
                 case "png":
                 case "PNG":
-                    fmt = System.Drawing.Imaging.ImageFormat.Png;
-                    break;
+                fmt = System.Drawing.Imaging.ImageFormat.Png;
+                break;
                 case "GIF":
                 case "gif":
-                    fmt = System.Drawing.Imaging.ImageFormat.Gif;
-                    break;
+                fmt = System.Drawing.Imaging.ImageFormat.Gif;
+                break;
                 default:
-                    return false;
+                return false;
             }
             System.IO.FileStream fs = null;
             bool ret = false;
             try {
 #if DEBUG
-                PortUtil.println( "ImageIO#write; output.getPath()=" + output.getPath() );
+                sout.println( "ImageIO#write; output.getPath()=" + output.getPath() );
 #endif
                 fs = new System.IO.FileStream( output.getPath(), System.IO.FileMode.Create, System.IO.FileAccess.Write );
                 im.image.Save( fs, fmt );
@@ -54,7 +57,7 @@ namespace org.kbinani.javax.imageio {
             } catch ( System.Exception ex ) {
                 ret = false;
                 Logger.write( typeof( ImageIO ) + ".write; ex=" + ex );
-                PortUtil.println( typeof( ImageIO ) + "#write; ex=" + ex );
+                sout.println( typeof( ImageIO ) + "#write; ex=" + ex );
             } finally {
                 if ( fs != null ) {
                     try {

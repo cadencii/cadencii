@@ -52,7 +52,7 @@ namespace org.kbinani.media
         public void close()
         {
 #if DEBUG
-            PortUtil.println( "WaveRateConvertAdapter#close" );
+            sout.println( "WaveRateConvertAdapter#close" );
 #endif
             mReceiver.close();
         }

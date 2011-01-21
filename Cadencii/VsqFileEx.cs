@@ -404,7 +404,7 @@ namespace org.kbinani.cadencii
             double premeasure_sec_target = getSecFromClock( getPreMeasureClocks() );
             double premeasure_sec_tempo = premeasure_sec_target;
 #if DEBUG
-            PortUtil.println( "FormMain#ShiftClockToMatchWith; premeasure_sec_target=" + premeasure_sec_target + "; premeasre_sec_tempo=" + premeasure_sec_tempo );
+            sout.println( "FormMain#ShiftClockToMatchWith; premeasure_sec_target=" + premeasure_sec_target + "; premeasre_sec_tempo=" + premeasure_sec_tempo );
 #endif
 
             // テンポをリプレースする場合。
@@ -635,7 +635,7 @@ namespace org.kbinani.cadencii
                                     new_chain.id = chain.id;
                                     list.set( j, new_chain );
                                 } catch ( Exception ex ) {
-                                    PortUtil.stderr.println( "VsqFileEx#shift; ex=" + ex );
+                                    serr.println( "VsqFileEx#shift; ex=" + ex );
                                     Logger.write( typeof( VsqFileEx ) + ".shift; ex=" + ex + "\n" );
                                 }
                             } else {
@@ -961,7 +961,7 @@ namespace org.kbinani.cadencii
                                     }
                                     if ( value != last_value ) {
 #if DEBUG
-                                        PortUtil.println( "VsqFileEx#executeCommand; clock,value=" + clock + "," + value );
+                                        sout.println( "VsqFileEx#executeCommand; clock,value=" + clock + "," + value );
 #endif
                                         index++;
                                         add.put( clock, new VsqBPPair( value, list.getMaxID() + index ) );
@@ -1352,14 +1352,14 @@ namespace org.kbinani.cadencii
                 xw = new FileOutputStream( file );
                 mVsqSerializer.serialize( xw, this );
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "VsqFileEx#writeAsXml; ex=" + ex );
+                serr.println( "VsqFileEx#writeAsXml; ex=" + ex );
                 Logger.write( typeof( VsqFileEx ) + ".writeAsXml; ex=" + ex + "\n" );
             } finally {
                 if ( xw != null ) {
                     try {
                         xw.close();
                     } catch ( Exception ex2 ) {
-                        PortUtil.stderr.println( "VsqFileEx#writeAsXml; ex2=" + ex2 );
+                        serr.println( "VsqFileEx#writeAsXml; ex2=" + ex2 );
                         Logger.write( typeof( VsqFileEx ) + ".writeAsXml; ex=" + ex2 + "\n" );
                     }
                 }
@@ -1374,7 +1374,7 @@ namespace org.kbinani.cadencii
                 fs = new FileInputStream( file );
                 ret = (VsqFileEx)mVsqSerializer.deserialize( fs );
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "VsqFileEx#readFromXml; ex=" + ex );
+                serr.println( "VsqFileEx#readFromXml; ex=" + ex );
                 Logger.write( typeof( VsqFileEx ) + ".readFromXml; ex=" + ex + "\n" );
 #if JAVA
                 ex.printStackTrace();
@@ -1384,7 +1384,7 @@ namespace org.kbinani.cadencii
                     try {
                         fs.close();
                     } catch ( Exception ex2 ) {
-                        PortUtil.stderr.println( "VsqFileEx#readFromXml; ex2=" + ex2 );
+                        serr.println( "VsqFileEx#readFromXml; ex2=" + ex2 );
                         Logger.write( typeof( VsqFileEx ) + ".readFromXml; ex=" + ex2 + "\n" );
 #if JAVA
                         ex2.printStackTrace();

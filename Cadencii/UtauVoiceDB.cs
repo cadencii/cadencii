@@ -129,13 +129,13 @@ namespace org.kbinani.cadencii {
                         }
                     }
                 } catch ( Exception ex ) {
-                    //PortUtil.stderr.println( "UtauVoiceDB#.ctor; ex=" + ex );
+                    //serr.println( "UtauVoiceDB#.ctor; ex=" + ex );
                 } finally {
                     if ( sr != null ) {
                         try {
                             sr.close();
                         } catch ( Exception ex2 ) {
-                            PortUtil.stderr.println( "UtauVoiceDB#.ctor; ex2=" + ex2 );
+                            serr.println( "UtauVoiceDB#.ctor; ex2=" + ex2 );
                         }
                     }
                 }

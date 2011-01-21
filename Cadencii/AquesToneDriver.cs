@@ -100,7 +100,7 @@ namespace org.kbinani.cadencii
                 try {
                     mInstance.close();
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "AquesToneDriver#unload; ex=" + ex );
+                    serr.println( "AquesToneDriver#unload; ex=" + ex );
                 }
             }
         }
@@ -148,25 +148,25 @@ namespace org.kbinani.cadencii
                 try {
                     loaded = mInstance.open( sample_rate, sample_rate, true );
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "VSTiProxy#realoadAquesTone; ex=" + ex );
+                    serr.println( "VSTiProxy#realoadAquesTone; ex=" + ex );
                     loaded = false;
                     Logger.write( typeof( AquesToneDriver ) + ".reload; ex=" + ex + "\n" );
                 }
 #if DEBUG
-                PortUtil.println( "AquesToneDriver#reload(int); loaded=" + loaded + "; sample_rate=" + sample_rate );
+                sout.println( "AquesToneDriver#reload(int); loaded=" + loaded + "; sample_rate=" + sample_rate );
 #endif
                 mInstance.loaded = loaded;
             }
 
 #if DEBUG
-            PortUtil.println( "AquesToneDriver#initCor; aquesToneDriver.loaded=" + mInstance.loaded );
+            sout.println( "AquesToneDriver#initCor; aquesToneDriver.loaded=" + mInstance.loaded );
 #endif
         }
 
         public override boolean open( int block_size, int sample_rate, boolean use_native_dll_loader )
         {
 #if DEBUG
-            PortUtil.println( "AquesToneDriver#open" );
+            sout.println( "AquesToneDriver#open" );
 #endif
             int strlen = 260;
             StringBuilder sb = new StringBuilder( strlen );
@@ -184,7 +184,7 @@ namespace org.kbinani.cadencii
                 ret = base.open( block_size, sample_rate, true );
             } catch ( Exception ex ) {
                 ret = false;
-                PortUtil.stderr.println( "AquesToneDriver#open; ex=" + ex );
+                serr.println( "AquesToneDriver#open; ex=" + ex );
                 Logger.write( typeof( AquesToneDriver ) + ".open; ex=" + ex + "\n" );
             }
 
@@ -192,7 +192,7 @@ namespace org.kbinani.cadencii
                 win32.WriteProfileString( "AquesTone", "FileKoe_00", koe_old );
             }
 #if DEBUG
-            PortUtil.println( "AquesToneDriver#open; done; ret=" + ret );
+            sout.println( "AquesToneDriver#open; done; ret=" + ret );
 #endif
             return ret;
         }
@@ -208,14 +208,14 @@ namespace org.kbinani.cadencii
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( AquesToneDriver ) + ".getKoeFilePath; ex=" + ex + "\n" );
-                PortUtil.stderr.println( "AquesToneDriver#getKoeFilePath; ex=" + ex );
+                serr.println( "AquesToneDriver#getKoeFilePath; ex=" + ex );
             } finally {
                 if ( bw != null ) {
                     try {
                         bw.close();
                     } catch ( Exception ex2 ) {
                         Logger.write( typeof( AquesToneDriver ) + ".getKoeFilePath; ex=" + ex2 + "\n" );
-                        PortUtil.stderr.println( "AquesToneDriver#getKoeFilePath; ex=" + ex2 );
+                        serr.println( "AquesToneDriver#getKoeFilePath; ex=" + ex2 );
                     }
                 }
             }

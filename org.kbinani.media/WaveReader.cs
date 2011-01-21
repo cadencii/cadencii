@@ -137,7 +137,7 @@ namespace org.kbinani.media {
             if ( buf[0] != 'R' || buf[1] != 'I' || buf[2] != 'F' || buf[3] != 'F' ) {
                 m_stream.close();
 #if DEBUG
-                PortUtil.stderr.println( "WaveReader#open; header error(RIFF)" );
+                serr.println( "WaveReader#open; header error(RIFF)" );
 #endif
                 return false;
             }
@@ -150,7 +150,7 @@ namespace org.kbinani.media {
             if ( buf[0] != 'W' || buf[1] != 'A' || buf[2] != 'V' || buf[3] != 'E' ) {
                 m_stream.close();
 #if DEBUG
-                PortUtil.stderr.println( "WaveReader#open; header error(WAVE)" );
+                serr.println( "WaveReader#open; header error(WAVE)" );
 #endif
                 return false;
             }
@@ -160,7 +160,7 @@ namespace org.kbinani.media {
             if ( buf[0] != 'f' || buf[1] != 'm' || buf[2] != 't' || buf[3] != ' ' ) {
                 m_stream.close();
 #if DEBUG
-                PortUtil.stderr.println( "WaveReader#open; header error(fmt )" );
+                serr.println( "WaveReader#open; header error(fmt )" );
 #endif
                 return false;
             }
@@ -201,7 +201,7 @@ namespace org.kbinani.media {
             if ( buf[0] != 'd' || buf[1] != 'a' || buf[2] != 't' || buf[3] != 'a' ) {
                 m_stream.close();
 #if DEBUG
-                PortUtil.stderr.println( "WaveReader#open; header error (data)" );
+                serr.println( "WaveReader#open; header error (data)" );
 #endif
                 return false;
             }

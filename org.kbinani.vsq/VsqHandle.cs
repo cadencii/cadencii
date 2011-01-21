@@ -390,7 +390,7 @@ namespace org.kbinani.vsq
         private void print()
         {
             String result = toString();
-            PortUtil.println( result );
+            sout.println( result );
         }
 
         /// <summary>

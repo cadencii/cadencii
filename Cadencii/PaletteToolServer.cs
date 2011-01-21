@@ -67,7 +67,7 @@ namespace org.kbinani.cadencii {
                 try {
                     asm = Utility.compileScript( code, errors );
                 } catch ( Exception ex ) {
-                    PortUtil.stderr.println( "PaletteToolServer#init; ex=" + ex );
+                    serr.println( "PaletteToolServer#init; ex=" + ex );
                     asm = null;
                 }
                 if ( asm == null ) {
@@ -98,16 +98,16 @@ namespace org.kbinani.cadencii {
                                         xsms.Deserialize( fs );
                                     } catch ( Exception ex ) {
                                         errorOnDeserialize = true;
-                                        PortUtil.stderr.println( "PaletteToolServer#init; ex=" + ex );
+                                        serr.println( "PaletteToolServer#init; ex=" + ex );
                                     }
                                 } catch ( Exception ex ) {
-                                    PortUtil.stderr.println( "PaletteToolServer#init; ex=" + ex );
+                                    serr.println( "PaletteToolServer#init; ex=" + ex );
                                 } finally {
                                     if ( fs != null ) {
                                         try {
                                             fs.Close();
                                         } catch ( Exception ex2 ) {
-                                            PortUtil.stderr.println( "PaletteToolServer#init; ex2=" + ex2 );
+                                            serr.println( "PaletteToolServer#init; ex2=" + ex2 );
                                         }
                                     }
                                 }
@@ -115,14 +115,14 @@ namespace org.kbinani.cadencii {
                                     try {
                                         PortUtil.deleteFile( config );
                                     } catch ( Exception ex ) {
-                                        PortUtil.stderr.println( "PaletteToolServer#init; ex=" + ex );
+                                        serr.println( "PaletteToolServer#init; ex=" + ex );
                                     }
                                 }
                             }
                             String id = Path.GetFileNameWithoutExtension( file.FullName );
                             loadedTools.put( id, instance );
                         } catch ( Exception ex ) {
-                            PortUtil.stderr.println( "PlaetteToolServer#init; ex=" + ex );
+                            serr.println( "PlaetteToolServer#init; ex=" + ex );
                         }
                     }
                 }
@@ -162,7 +162,7 @@ namespace org.kbinani.cadencii {
                         "Error",
                         org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
                         org.kbinani.windows.forms.Utility.MSGBOX_ERROR_MESSAGE );
-                    PortUtil.stderr.println( typeof( PaletteToolServer ) + ".invokePaletteTool; ex=" + ex );
+                    serr.println( typeof( PaletteToolServer ) + ".invokePaletteTool; ex=" + ex );
                     edited = false;
                 }
                 if ( edited ) {

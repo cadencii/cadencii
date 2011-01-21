@@ -1,3 +1,4 @@
+#if !JAVA
 /*
  * awt.cs
  * Copyright © 2009-2011 kbinani
@@ -11,7 +12,6 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-#if !JAVA
 using System;
 using org.kbinani.java.awt;
 using org.kbinani.java.awt.geom;
@@ -200,7 +200,7 @@ namespace org.kbinani.java.awt {
                 Rectangle rc = (Rectangle)clip;
                 nativeGraphics.Clip = new System.Drawing.Region( new System.Drawing.Rectangle( rc.x, rc.y, rc.width, rc.height ) );
             } else {
-                PortUtil.stderr.println( 
+                serr.println( 
                     "fixme: org.kbinani.java.awt.Graphics#setClip; argument type of clip is not supported for '" +
                     clip.GetType() + "'." );
             }
@@ -259,7 +259,7 @@ namespace org.kbinani.java.awt {
                 Rectangle rc = (Rectangle)s;
                 nativeGraphics.FillRectangle( brush, rc.x, rc.y, rc.width, rc.height );
             } else {
-                PortUtil.stderr.println(
+                serr.println(
                     "fixme; org.kbinani.java.awt.Graphics2D#fill; type of argument s is not supported for '" +
                     s.GetType() + "'." );
             }
@@ -613,7 +613,7 @@ namespace org.kbinani.java.awt.geom
                 Rectangle rc = (Rectangle)s;
                 region = new System.Drawing.Region( new System.Drawing.Rectangle( rc.x, rc.y, rc.width, rc.height ) );
             } else {
-                PortUtil.stderr.println(
+                serr.println(
                     "fixme: org.kbinani.java.awt.Area#.ctor(org.kbinani.java.awt.Shape); type of argument s is not supported for '" +
                     s.GetType() + "'." );
                 region = new System.Drawing.Region();

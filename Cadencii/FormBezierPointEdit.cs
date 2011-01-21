@@ -242,7 +242,7 @@ namespace org.kbinani.cadencii
         public void handleOperationButtonMouseDown( Object sender, BMouseEventArgs e )
         {
 #if DEBUG
-            PortUtil.println( "FormBezierPointEdit::handleOperationButtonMouseDown" );
+            sout.println( "FormBezierPointEdit::handleOperationButtonMouseDown" );
 #endif
             BezierPickedSide side = BezierPickedSide.BASE;
             if ( sender == btnLeft ) {

@@ -211,7 +211,7 @@ namespace org.kbinani.cadencii {
             }
 
 #if DEBUG
-            PortUtil.println( "LineGraphDrawer#mMaxPoints=" + mMaxPoints );
+            sout.println( "LineGraphDrawer#mMaxPoints=" + mMaxPoints );
 #endif
             mFirst = true;
         }

@@ -48,14 +48,14 @@ namespace org.kbinani.editotoini {
                 ifs = new FileInputStream( config_file );
                 cadenciiConfig = (EditorConfig)xs.deserialize( ifs );
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "AppManager#loadConfig; ex=" + ex );
+                serr.println( "AppManager#loadConfig; ex=" + ex );
                 cadenciiConfig = null;
             } finally {
                 if ( ifs != null ) {
                     try {
                         ifs.close();
                     } catch ( Exception ex2 ) {
-                        PortUtil.stderr.println( "AppManager#loadConfig; ex2=" + ex2 );
+                        serr.println( "AppManager#loadConfig; ex2=" + ex2 );
                     }
                 }
             }

@@ -83,7 +83,7 @@ namespace org.kbinani.cadencii
             lock ( mSyncRoot ) {
 #if DEBUG
                 if ( mAdapter == null ) {
-                    PortUtil.println( "FileWaveReceiver#end; warning; 'end' when mAdapter is null" );
+                    sout.println( "FileWaveReceiver#end; warning; 'end' when mAdapter is null" );
                 }
 #endif
                 if ( mAdapter != null ) {
@@ -98,7 +98,7 @@ namespace org.kbinani.cadencii
                 if ( mAdapter == null ) {
                     int sample_rate = mRoot.getSampleRate();
 #if DEBUG
-                    PortUtil.println( "FileWaveReceiver#push; sample_rate=" + sample_rate );
+                    sout.println( "FileWaveReceiver#push; sample_rate=" + sample_rate );
 #endif
                     try {
                         mAdapter = new WaveWriter( mPath, mChannel, mBitPerSample, sample_rate );

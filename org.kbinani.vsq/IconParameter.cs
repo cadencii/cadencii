@@ -170,55 +170,55 @@ namespace org.kbinani.vsq
                         try {
                             length = PortUtil.parseInt( value );
                         } catch ( Exception ex ) {
-                            PortUtil.stderr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
+                            serr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
                     } else if ( name.Equals( "StartDepth" ) ) {
                         try {
                             startDepth = PortUtil.parseInt( value );
                         } catch ( Exception ex ) {
-                            PortUtil.stderr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
+                            serr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
                     } else if ( name.Equals( "EndDepth" ) ) {
                         try {
                             endDepth = PortUtil.parseInt( value );
                         } catch ( Exception ex ) {
-                            PortUtil.stderr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
+                            serr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
                     } else if ( name.Equals( "StartRate" ) ) {
                         try {
                             startRate = PortUtil.parseInt( value );
                         } catch ( Exception ex ) {
-                            PortUtil.stderr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
+                            serr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
                     } else if ( name.Equals( "EndRate" ) ) {
                         try {
                             endRate = PortUtil.parseInt( value );
                         } catch ( Exception ex ) {
-                            PortUtil.stderr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
+                            serr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
                     } else if ( name.Equals( "StartDyn" ) ) {
                         try {
                             startDyn = PortUtil.parseInt( value );
                         } catch ( Exception ex ) {
-                            PortUtil.stderr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
+                            serr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
                     } else if ( name.Equals( "EndDyn" ) ) {
                         try {
                             endDyn = PortUtil.parseInt( value );
                         } catch ( Exception ex ) {
-                            PortUtil.stderr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
+                            serr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
                     } else if ( name.Equals( "Duration" ) ) {
                         try {
                             duration = PortUtil.parseInt( value );
                         } catch ( Exception ex ) {
-                            PortUtil.stderr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
+                            serr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
                     } else if ( name.Equals( "Depth" ) ) {
                         try {
                             depth = PortUtil.parseInt( value );
                         } catch ( Exception ex ) {
-                            PortUtil.stderr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
+                            serr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
                     } else if ( name.Equals( "DynBPNum" ) ) {
                         strDynBPNum = value;
@@ -244,7 +244,7 @@ namespace org.kbinani.vsq
                 rateBP = getBPListFromText( strRateBPNum, strRateBPX, strRateBPY );
                 depthBP = getBPListFromText( strDepthBPNum, strDepthBPX, strDepthBPY );
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
+                serr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
             } finally {
                 if ( sr != null ) {
                     try {
@@ -272,7 +272,7 @@ namespace org.kbinani.vsq
             try {
                 num = PortUtil.parseInt( strNum );
             } catch ( Exception ex ) {
-                PortUtil.stderr.println( "org.kbinani.vsq.IconParameter.getBPListFromText; ex=" + ex );
+                serr.println( "org.kbinani.vsq.IconParameter.getBPListFromText; ex=" + ex );
                 num = 0;
             }
             String[] sx = PortUtil.splitString( strBPX, ',' );
@@ -286,7 +286,7 @@ namespace org.kbinani.vsq
                         x[i] = PortUtil.parseFloat( sx[i] );
                         y[i] = PortUtil.parseInt( sy[i] );
                     } catch ( Exception ex ) {
-                        PortUtil.stderr.println( "org.kbinani.vsq.IconParameter.getBPListFromText; ex=" + ex );
+                        serr.println( "org.kbinani.vsq.IconParameter.getBPListFromText; ex=" + ex );
                     }
                 }
                 ret = new VibratoBPList( x, y );
