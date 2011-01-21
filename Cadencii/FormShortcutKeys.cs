@@ -50,11 +50,23 @@ namespace org.kbinani.cadencii
     public class FormShortcutKeys : BDialog
     {
 #endif
-        private TreeMap<String, ValuePair<String, BKeys[]>> mDict;
-        private TreeMap<String, ValuePair<String, BKeys[]>> mFirstDict;
+        /// <summary>
+        /// カテゴリーのリスト
+        /// </summary>
+        private static readonly String[] mCategories = new String[]{
+            "menuFile", "menuEdit", "menuVisual", "menuJob", "menuLyric", "menuTrack",
+            "menuScript", "menuSetting", "menuHelp", ".other" };
         private static int mColumnWidthCommand = 240;
         private static int mColumnWidthShortcutKey = 140;
 
+        private TreeMap<String, ValuePair<String, BKeys[]>> mDict;
+        private TreeMap<String, ValuePair<String, BKeys[]>> mFirstDict;
+        private Vector<String> mFieldName = new Vector<String>();
+
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="dict">メニューアイテムの表示文字列をキーとする，メニューアイテムのフィールド名とショートカットキーのペアを格納したマップ</param>
         public FormShortcutKeys( TreeMap<String, ValuePair<String, BKeys[]>> dict )
         {
 #if JAVA
@@ -79,13 +91,14 @@ namespace org.kbinani.cadencii
             list.setColumnWidth( 0, mColumnWidthCommand );
             list.setColumnWidth( 1, mColumnWidthShortcutKey );
 
-            registerEventHandlers();
             setResources();
             applyLanguage();
-
             mDict = dict;
+            comboCategory.setSelectedIndex( 0 );
             mFirstDict = new TreeMap<String, ValuePair<String, BKeys[]>>();
             copyDict( mDict, mFirstDict );
+
+            registerEventHandlers();
             updateList();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
@@ -107,31 +120,38 @@ namespace org.kbinani.cadencii
             toolTip.SetToolTip( list, _( "Select command and hit key(s) you want to set.\nHit Backspace if you want to remove shortcut key." ) );
 #endif
 
-            int num_groups = list.getGroupCount();
-            for ( int i = 0; i < num_groups; i++ ) {
-                String name = list.getGroupNameAt( i );
-                if ( name.Equals( "listGroupFile" ) ) {
-                    list.setGroupHeader( name, _( "File" ) );
-                } else if ( name.Equals( "listGroupEdit" ) ) {
-                    list.setGroupHeader( name, _( "Edit" ) );
-                } else if ( name.Equals( "listGroupVisual" ) ) {
-                    list.setGroupHeader( name, _( "View" ) );
-                } else if ( name.Equals( "listGroupJob" ) ) {
-                    list.setGroupHeader( name, _( "Job" ) );
-                } else if ( name.Equals( "listGroupLyric" ) ) {
-                    list.setGroupHeader( name, _( "Lyrics" ) );
-                } else if ( name.Equals( "listGroupSetting" ) ) {
-                    list.setGroupHeader( name, _( "Setting" ) );
-                } else if ( name.Equals( "listGroupHelp" ) ) {
-                    list.setGroupHeader( name, _( "Help" ) );
-                } else if ( name.Equals( "listGroupTrack" ) ) {
-                    list.setGroupHeader( name, _( "Track" ) );
-                } else if ( name.Equals( "listGroupScript" ) ) {
-                    list.setGroupHeader( name, _( "Script" ) );
-                } else if ( name.Equals( "listGroupOther" ) ) {
-                    list.setGroupHeader( name, _( "Others" ) );
+            labelCategory.setText( _( "Select category of menu" ) );
+            int selected = comboCategory.getSelectedIndex();
+            comboCategory.removeAllItems();
+            foreach ( String category in mCategories ) {
+                String c = category;
+                if ( str.compare( category, "menuFile" ) ) {
+                    c = _( "File" );
+                } else if ( str.compare( category, "menuEdit" ) ) {
+                    c = _( "Edit" );
+                } else if ( str.compare( category, "menuVisual" ) ) {
+                    c = _( "Visual" );
+                } else if ( str.compare( category, "menuJob" ) ) {
+                    c = _( "Job" );
+                } else if ( str.compare( category, "menuLyric" ) ) {
+                    c = _( "Lyric" );
+                } else if ( str.compare( category, "menuTrack" ) ) {
+                    c = _( "Track" );
+                } else if ( str.compare( category, "menuScript" ) ) {
+                    c = _( "Script" );
+                } else if ( str.compare( category, "menuSetting" ) ){
+                    c = _( "Setting" );
+                } else if ( str.compare( category, "menuHelp" ) ) {
+                    c = _( "Help" );
+                } else {
+                    c = _( "Other" );
                 }
+                comboCategory.addItem( c );
             }
+            if ( comboCategory.getItemCount() <= selected ) {
+                selected = comboCategory.getItemCount() - 1;
+            }
+            comboCategory.setSelectedIndex( selected );
         }
 
         public TreeMap<String, ValuePair<String, BKeys[]>> getResult()
@@ -163,98 +183,108 @@ namespace org.kbinani.cadencii
             }
         }
 
+        /// <summary>
+        /// リストを更新します
+        /// </summary>
         private void updateList()
         {
             list.clear();
+            mFieldName.clear();
+
+            // 現在のカテゴリーを取得
+            int selected = comboCategory.getSelectedIndex();
+            if ( selected < 0 ) {
+                selected = 0;
+            }
+            String category = mCategories[selected];
+
+            // 現在のカテゴリーに合致するものについてのみ，リストに追加
             for ( Iterator<String> itr = mDict.keySet().iterator(); itr.hasNext(); ) {
                 String display = itr.next();
-                Vector<BKeys> a = new Vector<BKeys>();
-                foreach ( BKeys key in mDict.get( display ).getValue() ) {
-                    a.add( key );
-                }
-
-                BListViewItem item = new BListViewItem( new String[] { display, Utility.getShortcutDisplayString( a.toArray( new BKeys[] { } ) ) } );
-                String name = mDict.get( display ).getKey();
-                item.setName( name );
-                String group = "";
-                if ( name.StartsWith( "menuFile" ) ) {
-                    group = "listGroupFile";
-                } else if ( name.StartsWith( "menuEdit" ) ) {
-                    group = "listGroupEdit";
-                } else if ( name.StartsWith( "menuVisual" ) ) {
-                    group = "listGroupVisual";
-                } else if ( name.StartsWith( "menuJob" ) ) {
-                    group = "listGroupJob";
-                } else if ( name.StartsWith( "menuLyric" ) ) {
-                    group = "listGroupLyric";
-                } else if ( name.StartsWith( "menuTrack" ) ) {
-                    group = "listGroupTrack";
-                } else if ( name.StartsWith( "menuScript" ) ) {
-                    group = "listGroupScript";
-                } else if ( name.StartsWith( "menuSetting" ) ) {
-                    group = "listGroupSetting";
-                } else if ( name.StartsWith( "menuHelp" ) ) {
-                    group = "listGroupHelp";
-                } else {
-                    group = "listGroupOther";
-                }
-#if DEBUG
-                sout.println( "FormShortcutKeys#UpdateList; name=" + name + "; group=" + group );
-#endif
-                list.addItem( group, item );
-            }
-            updateColor();
-            applyLanguage();
-        }
-
-        private void updateColor()
-        {
-            int num_groups = list.getGroupCount();
-            for ( int k = 0; k < num_groups; k++ ) {
-                String name = list.getGroupNameAt( k );
-                for ( int i = 0; i < list.getItemCount( name ); i++ ) {
-                    String compare = list.getItemAt( name, i ).getSubItemAt( 1 );
-                    if ( compare.Equals( "" ) ) {
-                        list.setItemBackColorAt( name, i, java.awt.Color.white );
-                        continue;
-                    }
-                    boolean found = false;
-                    for ( int n = 0; n < num_groups; n++ ) {
-                        String search_name = list.getGroupNameAt( n );
-                        for ( int j = 0; j < list.getItemCount( search_name ); j++ ) {
-                            if ( n == k && i == j ) {
-                                continue;
-                            }
-                            if ( compare.Equals( list.getItemAt( search_name, j ).getSubItemAt( 1 ) ) ) {
-                                found = true;
-                                break;
-                            }
+                ValuePair<String, BKeys[]> item = mDict.get( display );
+                String field_name = item.getKey();
+                BKeys[] keys = item.getValue();
+                boolean add_this_one = false;
+                if ( str.compare( category, ".other" ) ) {
+                    add_this_one = true;
+                    for ( int i = 0; i < mCategories.Length; i++ ) {
+                        String c = mCategories[i];
+                        if ( str.compare( c, ".other" ) ) {
+                            continue;
                         }
-                        if ( found ) {
+                        if ( str.startsWith( field_name, c ) ) {
+                            add_this_one = false;
                             break;
                         }
                     }
-                    if ( found ) {
-                        list.setItemBackColorAt( name, i, java.awt.Color.yellow );
-                    } else {
-                        list.setItemBackColorAt( name, i, java.awt.Color.white );
+                } else {
+                    if ( str.startsWith( field_name, category ) ) {
+                        add_this_one = true;
                     }
+                }
+                if ( add_this_one ) {
+                     list.addItem( new String[] { display, Utility.getShortcutDisplayString( keys ) } );
+                     mFieldName.add( field_name );
+                }
+            }
+
+            updateColor();
+            //applyLanguage();
+        }
+
+        /// <summary>
+        /// リストアイテムの背景色を更新します．
+        /// 2つ以上のメニューに対して同じショートカットが割り当てられた場合に警告色で表示する．
+        /// </summary>
+        private void updateColor()
+        {
+            int size = list.getRowCount();
+            for ( int i = 0; i < size; i++ ) {
+                //BListViewItem list_item = list.getItemAt( i );
+                String field_name = mFieldName.get( i );
+                String key_display = list.getItemAt( i, 1 );
+                if ( str.compare( key_display, "" ) ){
+                    // ショートカットキーが割り当てられていないのでスルー
+                    list.setRowBackColor( i, java.awt.Color.white );
+                    continue;
+                }
+
+                boolean found = false;
+                for ( Iterator<String> itr = mDict.keySet().iterator(); itr.hasNext(); ) {
+                    String display1 = itr.next();
+                    ValuePair<String, BKeys[]> item1 = mDict.get( display1 );
+                    String field_name1 = item1.getKey();
+                    if ( str.compare( field_name, field_name1 ) ) {
+                        // 自分自身なのでスルー
+                        continue;
+                    }
+                    BKeys[] keys1 = item1.getValue();
+                    String key_display1 = Utility.getShortcutDisplayString( keys1 );
+                    if ( str.compare( key_display, key_display1 ) ) {
+                        // 同じキーが割り当てられてる！！
+                        found = true;
+                        break;
+                    }
+                }
+
+                // 背景色を変える
+                if ( found ) {
+                    list.setRowBackColor( i, java.awt.Color.yellow );
+                } else {
+                    list.setRowBackColor(  i, java.awt.Color.white );
                 }
             }
         }
 
         private void registerEventHandlers()
         {
-#if JAVA
-#else
-            this.list.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler( this.list_PreviewKeyDown );
             this.list.KeyDown += new System.Windows.Forms.KeyEventHandler( this.list_KeyDown );
-#endif
             btnLoadDefault.Click += new BEventHandler( btnLoadDefault_Click );
             btnRevert.Click += new BEventHandler( btnRevert_Click );
             this.FormClosing += new BFormClosingEventHandler( FormShortcutKeys_FormClosing );
             btnOK.Click += new BEventHandler( btnOK_Click );
             btnCancel.Click += new BEventHandler( btnCancel_Click );
+            comboCategory.SelectedIndexChanged += new EventHandler( comboCategory_SelectedIndexChanged );
         }
 
         private void setResources()
@@ -263,29 +293,29 @@ namespace org.kbinani.cadencii
         #endregion
 
         #region event handlers
-        public void list_PreviewKeyDown( Object sender, BPreviewKeyDownEventArgs e )
+        public void comboCategory_SelectedIndexChanged( object sender, EventArgs e )
         {
+            int selected = comboCategory.getSelectedIndex();
+#if DEBUG
+            sout.println( "FormShortcutKeys#comboCategory_selectedIndexChanged; selected=" + selected );
+#endif
+            if ( selected < 0 ) {
+                //comboCategory.setSelectedIndex( 0 );
+                //updateList();
+                return;
+            }
+#if !JAVA
+            comboCategory.Text = (String)comboCategory.getItemAt( selected );
+#endif
+            updateList();
         }
 
         public void list_KeyDown( Object sender, BKeyEventArgs e )
         {
-            String selected_group = "";
-            int selected_index = -1;
-            int num_groups = list.getGroupCount();
-            for ( int i = 0; i < num_groups; i++ ) {
-                String name = list.getGroupNameAt( i );
-                int indx = list.getSelectedIndex( name );
-                if ( indx >= 0 ) {
-                    selected_group = name;
-                    selected_index = indx;
-                    break;
-                }
-            }
-
-            if ( selected_index < 0 ) {
+            int index = list.getSelectedRow();
+            if ( index < 0 ) {
                 return;
             }
-            int index = selected_index;
 #if JAVA
             KeyStroke stroke = KeyStroke.getKeyStroke( e.getKeyCode(), e.getModifiers() );
 #else
@@ -319,10 +349,10 @@ namespace org.kbinani.cadencii
                 }
             }
 
-            BListViewItem item = list.getItemAt( selected_group, index );
-            item.setSubItemAt( 1, Utility.getShortcutDisplayString( capturelist.toArray( new BKeys[] { } ) ) );
-            list.setItemAt( selected_group, index, item );
-            String display = list.getItemAt( selected_group, index ).getSubItemAt( 0 );
+            //BListViewItem item = list.getItemAt( index );
+            list.setItemAt( index, 1, Utility.getShortcutDisplayString( capturelist.toArray( new BKeys[] { } ) ) );
+            //list.setItemAt( index, item );
+            String display = list.getItemAt( index, 0 );
             if ( mDict.containsKey( display ) ) {
                 mDict.get( display ).setValue( capturelist.toArray( new BKeys[] { } ) );
             }
@@ -414,6 +444,8 @@ namespace org.kbinani.cadencii
             this.btnLoadDefault = new org.kbinani.windows.forms.BButton();
             this.btnRevert = new org.kbinani.windows.forms.BButton();
             this.toolTip = new System.Windows.Forms.ToolTip( this.components );
+            this.labelCategory = new org.kbinani.windows.forms.BLabel();
+            this.comboCategory = new org.kbinani.windows.forms.BComboBox();
             this.SuspendLayout();
             // 
             // btnCancel
@@ -444,10 +476,10 @@ namespace org.kbinani.cadencii
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.list.FullRowSelect = true;
-            this.list.Location = new System.Drawing.Point( 12, 12 );
+            this.list.Location = new System.Drawing.Point( 12, 53 );
             this.list.MultiSelect = false;
             this.list.Name = "list";
-            this.list.Size = new System.Drawing.Size( 388, 343 );
+            this.list.Size = new System.Drawing.Size( 388, 302 );
             this.list.TabIndex = 9;
             this.list.UseCompatibleStateImageBehavior = false;
             this.list.View = System.Windows.Forms.View.Details;
@@ -472,6 +504,25 @@ namespace org.kbinani.cadencii
             this.btnRevert.Text = "Revert";
             this.btnRevert.UseVisualStyleBackColor = true;
             // 
+            // labelCategory
+            // 
+            this.labelCategory.AutoSize = true;
+            this.labelCategory.Location = new System.Drawing.Point( 12, 12 );
+            this.labelCategory.Name = "labelCategory";
+            this.labelCategory.Size = new System.Drawing.Size( 130, 12 );
+            this.labelCategory.TabIndex = 12;
+            this.labelCategory.Text = "Select category of menu";
+            // 
+            // comboCategory
+            // 
+            this.comboCategory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboCategory.FormattingEnabled = true;
+            this.comboCategory.Location = new System.Drawing.Point( 12, 27 );
+            this.comboCategory.Name = "comboCategory";
+            this.comboCategory.Size = new System.Drawing.Size( 388, 20 );
+            this.comboCategory.TabIndex = 13;
+            // 
             // FormShortcutKeys
             // 
             this.AcceptButton = this.btnOK;
@@ -479,6 +530,8 @@ namespace org.kbinani.cadencii
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size( 412, 438 );
+            this.Controls.Add( this.comboCategory );
+            this.Controls.Add( this.labelCategory );
             this.Controls.Add( this.btnLoadDefault );
             this.Controls.Add( this.btnRevert );
             this.Controls.Add( this.list );
@@ -492,6 +545,7 @@ namespace org.kbinani.cadencii
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Shortcut Config";
             this.ResumeLayout( false );
+            this.PerformLayout();
 
         }
 
@@ -503,6 +557,9 @@ namespace org.kbinani.cadencii
         private BButton btnLoadDefault;
         private BButton btnRevert;
         private System.Windows.Forms.ToolTip toolTip;
+        private BLabel labelCategory;
+        private BComboBox comboCategory;
+
         #endregion
 #endif
         #endregion

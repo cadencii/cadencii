@@ -11004,8 +11004,8 @@ namespace org.kbinani.cadencii
                     VsqEvent obj = itr.next();
                     notes++;
                 }
-                mDialogMidiImportAndExport.listTrack.addItem( "", new BListViewItem( new String[] { i + "", track.getName(), notes + "" } ) );
-                mDialogMidiImportAndExport.listTrack.setItemCheckedAt( "", i, true );
+                mDialogMidiImportAndExport.listTrack.addItem( new String[] { i + "", track.getName(), notes + "" } );
+                mDialogMidiImportAndExport.listTrack.setRowChecked( i, true );
             }
             mDialogMidiImportAndExport.setMode( FormMidiImExport.FormMidiMode.EXPORT );
             mDialogMidiImportAndExport.setLocation( getFormPreferedLocation( mDialogMidiImportAndExport ) );
@@ -11015,8 +11015,8 @@ namespace org.kbinani.cadencii
                     vsq.removePart( 0, vsq.getPreMeasureClocks() );
                 }
                 int track_count = 0;
-                for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.getItemCount( "" ); i++ ) {
-                    if ( mDialogMidiImportAndExport.listTrack.isItemCheckedAt( "", i ) ) {
+                for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.getRowCount(); i++ ) {
+                    if ( mDialogMidiImportAndExport.listTrack.isRowChecked( i ) ) {
                         track_count++;
                     }
                 }
@@ -11050,8 +11050,8 @@ namespace org.kbinani.cadencii
                         fs.write( (byte)0x01 );
                         fs.write( (byte)0xe0 );
                         int count = -1;
-                        for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.getItemCount( "" ); i++ ) {
-                            if ( !mDialogMidiImportAndExport.listTrack.isItemCheckedAt( "", i ) ) {
+                        for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.getRowCount(); i++ ) {
+                            if ( !mDialogMidiImportAndExport.listTrack.isRowChecked( i ) ) {
                                 continue;
                             }
                             VsqTrack track = vsq.Track.get( i );
@@ -11690,8 +11690,8 @@ namespace org.kbinani.cadencii
                         notes++;
                     }
                 }
-                mDialogMidiImportAndExport.listTrack.addItem( "", new BListViewItem( new String[] { i + "", track_name, notes + "" } ) );
-                mDialogMidiImportAndExport.listTrack.setItemCheckedAt( "", i, true );
+                mDialogMidiImportAndExport.listTrack.addItem( new String[] { i + "", track_name, notes + "" } );
+                mDialogMidiImportAndExport.listTrack.setRowChecked( i, true );
             }
 
             BDialogResult dr = AppManager.showModalDialog( mDialogMidiImportAndExport, this );
@@ -11858,14 +11858,14 @@ namespace org.kbinani.cadencii
                 work.updateTimesigInfo();
             }
 
-            for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.getItemCount( "" ); i++ ) {
-                if ( !mDialogMidiImportAndExport.listTrack.isItemCheckedAt( "", i ) ) {
+            for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.getRowCount(); i++ ) {
+                if ( !mDialogMidiImportAndExport.listTrack.isRowChecked( i ) ) {
                     continue;
                 }
                 if ( work.Track.size() + 1 > 16 ) {
                     break;
                 }
-                VsqTrack work_track = new VsqTrack( mDialogMidiImportAndExport.listTrack.getItemAt( "", i ).getSubItemAt( 1 ), "Miku" );
+                VsqTrack work_track = new VsqTrack( mDialogMidiImportAndExport.listTrack.getItemAt( i, 1 ), "Miku" );
 
                 // デフォルトの音声合成システムに切り替え
                 RendererKind kind = AppManager.editorConfig.DefaultSynthesizer;
@@ -12146,10 +12146,11 @@ namespace org.kbinani.cadencii
             }
             mDialogMidiImportAndExport.listTrack.clear();
             for ( int track = 1; track < vsq.Track.size(); track++ ) {
-                mDialogMidiImportAndExport.listTrack.addItem( "", new BListViewItem( new String[] { track + "", 
-                                                                                                vsq.Track.get( track ).getName(),
-                                                                                                vsq.Track.get( track ).getEventCount() + "" } ) );
-                mDialogMidiImportAndExport.listTrack.setItemCheckedAt( "", track - 1, true );
+                mDialogMidiImportAndExport.listTrack.addItem( new String[] { 
+                    track + "", 
+                    vsq.Track.get( track ).getName(),
+                    vsq.Track.get( track ).getEventCount() + "" } );
+                mDialogMidiImportAndExport.listTrack.setRowChecked( track - 1, true );
             }
             mDialogMidiImportAndExport.setMode( FormMidiImExport.FormMidiMode.IMPORT_VSQ );
             mDialogMidiImportAndExport.setTempo( false );
@@ -12161,8 +12162,8 @@ namespace org.kbinani.cadencii
             }
 
             Vector<Integer> add_track = new Vector<Integer>();
-            for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.getItemCount( "" ); i++ ) {
-                if ( mDialogMidiImportAndExport.listTrack.isItemCheckedAt( "", i ) ) {
+            for ( int i = 0; i < mDialogMidiImportAndExport.listTrack.getRowCount(); i++ ) {
+                if ( mDialogMidiImportAndExport.listTrack.isRowChecked( i ) ) {
                     add_track.add( i + 1 );
                 }
             }
@@ -12716,9 +12717,21 @@ namespace org.kbinani.cadencii
                     AppManager.editorConfig.InvokeUtauCoreWithWine = mDialogPreference.isInvokeWithWine();
                     Vector<String> new_resamplers = mDialogPreference.getPathResamplers();
                     AppManager.editorConfig.clearResampler();
+#if DEBUG
+                    sout.println( "FormMain#menuSettingPreference_Click; before;" );
+                    for ( int i = 0; i < new_resamplers.size(); i++ ) {
+                        sout.println( "  " + new_resamplers.get( i ) );
+                    }
+#endif
                     for ( int i = 0; i < new_resamplers.size(); i++ ) {
                         AppManager.editorConfig.addResampler( new_resamplers.get( i ) );
                     }
+#if DEBUG
+                    sout.println( "FormMain#menuSettingPreference_Click; after;" );
+                    for ( int i = 0; i < AppManager.editorConfig.getResamplerCount(); i++ ) {
+                        sout.println( "  " + AppManager.editorConfig.getResamplerAt( i ) );
+                    }
+#endif
                     AppManager.editorConfig.PathWavtool = mDialogPreference.getPathWavtool();
 
                     AppManager.editorConfig.UtauSingers.clear();

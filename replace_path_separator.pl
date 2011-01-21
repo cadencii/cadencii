@@ -12,6 +12,24 @@ open( OUT, ">Makefile" );
 "./BuildJavaUI/src/org/kbinani/vec.java",
 );
 
+@ignore = (
+"./org.kbinani/Arrays.cs",
+"./org.kbinani/awt.cs",
+"./org.kbinani/awt.event.cs",
+"./org.kbinani/awt.geom.cs",
+"./org.kbinani/awt.image.cs",
+"./org.kbinani/Collections.cs",
+"./org.kbinani/imageio.cs",
+"./org.kbinani/io.cs",
+"./org.kbinani/Iterator.cs",
+"./org.kbinani/lang.cs",
+"./org.kbinani/ListIterator.cs",
+"./org.kbinani/RandomAccessFile.cs",
+"./org.kbinani/swing.cs",
+"./org.kbinani/util.cs",
+"./org.kbinani/Vector.cs",
+);
+
 &getSrcList( "./org.kbinani", "./build/java/org/kbinani/", $src_corlib, $cp_corlib, $dep_corlib );
 &getSrcList( "./org.kbinani.apputil", "./build/java/org/kbinani/apputil/", $src_apputil, $cp_apputil, $dep_apputil );
 &getSrcList( "./org.kbinani.componentmodel", "./build/java/org/kbinani/componentmodel/", $src_componentmodel, $cp_componentmodel, $dep_componentmodel );

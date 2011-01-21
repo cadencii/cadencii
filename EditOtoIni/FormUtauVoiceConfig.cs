@@ -393,7 +393,7 @@ namespace org.kbinani.editotoini {
             boolean exists = bool_value;
             BListViewItem item = new BListViewItem( columns );
             item.setTag( exists );
-            listFiles.addItem( "", item );
+            listFiles.addItem(  item );
         }
 
         public void bgWorkRead_DoWork( Object sender, DoWorkEventArgs e ) {
@@ -481,18 +481,18 @@ namespace org.kbinani.editotoini {
         }
 
         private void listFiles_SelectedIndexChanged( Object sender, EventArgs e ) {
-            if ( listFiles.getSelectedIndex( "" ) < 0 ) {
+            if ( listFiles.getSelectedIndex() < 0 ) {
                 return;
             }
-            int index = listFiles.getSelectedIndex( "" );
-            BListViewItem selected_item = listFiles.getItemAt( "", index );
+            int index = listFiles.getSelectedIndex();
+            BListViewItem selected_item = listFiles.getItemAt( index );
             String name = selected_item.getSubItemAt( 0 ) + selected_item.getSubItemAt( 1 );
             boolean enabled = true;
             if ( selected_item.getTag() != null && selected_item.getTag() is Boolean ) {
                 enabled = (Boolean)selected_item.getTag();
             }
             if ( !enabled ) {
-                listFiles.clearSelection( "" );
+                listFiles.clearSelection();
                 return;
             }
             int c = m_drawer.size();
@@ -780,8 +780,8 @@ namespace org.kbinani.editotoini {
                     }
                 }
 
-                if ( 0 <= m_index && m_index < listFiles.getItemCount( "" ) ) {
-                    String file = fsys.combine( PortUtil.getDirectoryName( m_oto_ini ), listFiles.getItemAt( "", m_index ).getSubItemAt( 0 ) );
+                if ( 0 <= m_index && m_index < listFiles.getItemCount() ) {
+                    String file = fsys.combine( PortUtil.getDirectoryName( m_oto_ini ), listFiles.getItemAt( m_index ).getSubItemAt( 0 ) );
                     if ( PortUtil.isFileExists( file ) && m_player.SoundLocation != file ) {
                         m_player.Close();
                         m_player.Load( file );
@@ -868,10 +868,10 @@ namespace org.kbinani.editotoini {
         }
 
         private void txtAlias_TextChanged( Object sender, EventArgs e ) {
-            if ( 0 <= m_index && m_index < listFiles.getItemCount( "" ) ) {
-                BListViewItem item = listFiles.getItemAt( "", m_index );
+            if ( 0 <= m_index && m_index < listFiles.getItemCount() ) {
+                BListViewItem item = listFiles.getItemAt( m_index );
                 item.setSubItemAt( 1, txtAlias.getText() );
-                listFiles.setItemAt( "", m_index, item );
+                listFiles.setItemAt( m_index, item );
                 setEdited( true );
                 pictWave.invalidate();
             }
@@ -885,10 +885,10 @@ namespace org.kbinani.editotoini {
                 return;
             }
             m_offset = round2Digits( i );
-            if ( 0 <= m_index && m_index < listFiles.getItemCount( "" ) ) {
-                BListViewItem item = listFiles.getItemAt( "", m_index );
+            if ( 0 <= m_index && m_index < listFiles.getItemCount() ) {
+                BListViewItem item = listFiles.getItemAt( m_index );
                 item.setSubItemAt( 2, txtOffset.getText() );
-                listFiles.setItemAt( "", m_index, item );
+                listFiles.setItemAt( m_index, item );
                 setEdited( true );
                 pictWave.invalidate();
             }
@@ -902,10 +902,10 @@ namespace org.kbinani.editotoini {
                 return;
             }
             m_consonant = round2Digits( i );
-            if ( 0 <= m_index && m_index < listFiles.getItemCount( "" ) ) {
-                BListViewItem item = listFiles.getItemAt( "", m_index );
+            if ( 0 <= m_index && m_index < listFiles.getItemCount() ) {
+                BListViewItem item = listFiles.getItemAt( m_index );
                 item.setSubItemAt( 3, txtConsonant.getText() );
-                listFiles.setItemAt( "", m_index, item );
+                listFiles.setItemAt( m_index, item );
                 setEdited( true );
                 pictWave.invalidate();
             }
@@ -919,10 +919,10 @@ namespace org.kbinani.editotoini {
                 return;
             }
             m_blank = round2Digits( i );
-            if ( 0 <= m_index && m_index < listFiles.getItemCount( "" ) ) {
-                BListViewItem item = listFiles.getItemAt( "", m_index );
+            if ( 0 <= m_index && m_index < listFiles.getItemCount() ) {
+                BListViewItem item = listFiles.getItemAt( m_index );
                 item.setSubItemAt( 4, txtBlank.getText() );
-                listFiles.setItemAt( "", m_index, item );
+                listFiles.setItemAt( m_index, item );
                 setEdited( true );
                 pictWave.invalidate();
             }
@@ -936,10 +936,10 @@ namespace org.kbinani.editotoini {
                 return;
             }
             m_pre_utterance = round2Digits( i );
-            if ( 0 <= m_index && m_index < listFiles.getItemCount( "" ) ) {
-                BListViewItem item = listFiles.getItemAt( "", m_index );
+            if ( 0 <= m_index && m_index < listFiles.getItemCount() ) {
+                BListViewItem item = listFiles.getItemAt( m_index );
                 item.setSubItemAt( 5, txtPreUtterance.getText() );
-                listFiles.setItemAt( "", m_index, item );
+                listFiles.setItemAt( m_index, item );
                 setEdited( true );
                 pictWave.invalidate();
             }
@@ -953,10 +953,10 @@ namespace org.kbinani.editotoini {
                 return;
             }
             m_overlap = round2Digits( i );
-            if ( 0 <= m_index && m_index < listFiles.getItemCount( "" ) ) {
-                BListViewItem item = listFiles.getItemAt( "", m_index );
+            if ( 0 <= m_index && m_index < listFiles.getItemCount() ) {
+                BListViewItem item = listFiles.getItemAt( m_index );
                 item.setSubItemAt( 6, txtOverlap.getText() );
-                listFiles.setItemAt( "", m_index, item );
+                listFiles.setItemAt( m_index, item );
                 setEdited( true );
                 pictWave.invalidate();
             }
@@ -1031,12 +1031,12 @@ namespace org.kbinani.editotoini {
             BufferedWriter sw = null;
             try {
                 sw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( file ), "Shift_JIS" ) );
-                int i1 = listFiles.getItemCount( "" );
+                int i1 = listFiles.getItemCount();
                 for ( int i = 0; i < i1; i++ ) {
-                    int i2 = listFiles.getItemAt( "", i ).getSubItemCount();
-                    sw.write( listFiles.getItemAt( "", i ).getSubItemAt( 0 ) + "=" );
+                    int i2 = listFiles.getItemAt( i ).getSubItemCount();
+                    sw.write( listFiles.getItemAt( i ).getSubItemAt( 0 ) + "=" );
                     for ( int j = 1; j <= 6; j++ ) {
-                        sw.write( (j > 1 ? "," : "") + listFiles.getItemAt( "", i ).getSubItemAt( j ) );
+                        sw.write( (j > 1 ? "," : "") + listFiles.getItemAt( i ).getSubItemAt( j ) );
                     }
                     sw.newLine();
                 }
@@ -1061,10 +1061,10 @@ namespace org.kbinani.editotoini {
                 sw2 = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( analyzed_oto_ini ), "Shift_JIS" ) );
                 int count = listFiles.Items.Count;
                 for ( int i = 0; i < count; i++ ) {
-                    int i2 = listFiles.getItemAt( "", i ).getSubItemCount();
-                    sw2.write( listFiles.getItemAt( "", i ).getSubItemAt( 0 ) + "=" );
+                    int i2 = listFiles.getItemAt( i ).getSubItemCount();
+                    sw2.write( listFiles.getItemAt( i ).getSubItemAt( 0 ) + "=" );
                     for ( int j = 1; j <= 6; j++ ) {
-                        String add = listFiles.getItemAt( "", i ).getSubItemAt( j );
+                        String add = listFiles.getItemAt( i ).getSubItemAt( j );
                         if ( j == 2 || j == 4 ) { // j==2はoffset, j==4はblank。STF化した場合、この2つは0固定になる。
                             add = "0";
                         }
@@ -1204,13 +1204,13 @@ namespace org.kbinani.editotoini {
         }
 
         private void checkSTFExistence() {
-            int count = listFiles.getItemCount( "" );
+            int count = listFiles.getItemCount();
             if ( m_oto_ini.Equals( "" ) ) {
                 return;
             }
             String analyzed = fsys.combine( PortUtil.getDirectoryName( m_oto_ini ), "analyzed" );
             for ( int i = 0; i < count; i++ ) {
-                BListViewItem item = listFiles.getItemAt( "", i );
+                BListViewItem item = listFiles.getItemAt( i );
                 String wav_name = item.getSubItemAt( 0 );
                 String stf_path = fsys.combine( analyzed, PortUtil.getFileNameWithoutExtension( wav_name ) + ".stf" );
                 item.SubItems[8].Text = PortUtil.isFileExists( stf_path ) ? "○" : "";
@@ -1218,13 +1218,13 @@ namespace org.kbinani.editotoini {
         }
 
         private void checkFRQExistence() {
-            int count = listFiles.getItemCount( "" );
+            int count = listFiles.getItemCount();
             if ( m_oto_ini.Equals( "" ) ) {
                 return;
             }
             String dir = PortUtil.getDirectoryName( m_oto_ini );
             for ( int i = 0; i < count; i++ ) {
-                BListViewItem item = listFiles.getItemAt( "", i );
+                BListViewItem item = listFiles.getItemAt( i );
                 String wav_name = item.SubItems[0].Text;
                 String frq_path = fsys.combine( dir, wav_name.Replace( ".", "_" ) + ".frq" );
                 item.SubItems[7].Text = PortUtil.isFileExists( frq_path ) ? "○" : "";
@@ -1301,9 +1301,9 @@ namespace org.kbinani.editotoini {
 
         private void generateSTForFRQ( FormGenerateStf.GenerateMode mode ) {
             Vector<StfQueueArgs> list = new Vector<StfQueueArgs>();
-            int count = listFiles.getItemCount( "" );
+            int count = listFiles.getItemCount();
             for ( int i = 0; i < count; i++ ) {
-                BListViewItem item = listFiles.getItemAt( "", i );
+                BListViewItem item = listFiles.getItemAt( i );
                 StfQueueArgs queue = new StfQueueArgs();
                 queue.waveName = item.SubItems[0].Text;
                 queue.offset = item.SubItems[2].Text;
@@ -1362,15 +1362,15 @@ namespace org.kbinani.editotoini {
         }
 
         private boolean checkListFileItem( int index, String search ) {
-            BListViewItem item = listFiles.getItemAt( "", index );
+            BListViewItem item = listFiles.getItemAt( index );
             if ( item.SubItems[0].Text.Contains( search ) ) {
                 item.Selected = true;
-                listFiles.ensureRowVisible( "", index );
+                listFiles.ensureRowVisible( index );
                 return true;
             }
             if ( item.SubItems[1].Text.Contains( search ) ) {
                 item.Selected = true;
-                listFiles.ensureRowVisible( "", index );
+                listFiles.ensureRowVisible( index );
                 return true;
             }
             return false;
@@ -1392,14 +1392,14 @@ namespace org.kbinani.editotoini {
                 return;
             }
             int first_index;
-            if ( listFiles.getSelectedIndex( "" ) < 0 ) {
-                if ( listFiles.getItemCount( "" ) <= 0 ) {
+            if ( listFiles.getSelectedIndex() < 0 ) {
+                if ( listFiles.getItemCount() <= 0 ) {
                     setSearchTextColor( false );
                     return;
                 }
                 first_index = 0;
             } else {
-                first_index = listFiles.getSelectedIndex( "" );
+                first_index = listFiles.getSelectedIndex();
             }
             String search = txtSearch.getText();
             if ( go_back ) {
@@ -1409,14 +1409,14 @@ namespace org.kbinani.editotoini {
                         return;
                     }
                 }
-                for ( int i = listFiles.getItemCount( "" ) - 1; i >= first_index; i-- ) {
+                for ( int i = listFiles.getItemCount() - 1; i >= first_index; i-- ) {
                     if ( checkListFileItem( i, search ) ) {
                         setSearchTextColor( true );
                         return;
                     }
                 }
             } else {
-                for ( int i = first_index + 1; i < listFiles.getItemCount( "" ); i++ ) {
+                for ( int i = first_index + 1; i < listFiles.getItemCount(); i++ ) {
                     if ( checkListFileItem( i, search ) ) {
                         setSearchTextColor( true );
                         return;

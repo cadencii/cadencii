@@ -70,13 +70,15 @@ namespace org.kbinani.cadencii
         public Vector<ValuePair<String, Boolean>> getResult()
         {
             Vector<ValuePair<String, Boolean>> ret = new Vector<ValuePair<String, Boolean>>();
-            int count = listDictionaries.getItemCount( "" );
+            int count = listDictionaries.getRowCount();
 #if DEBUG
             sout.println( "FormWordDictionary#getResult; count=" + count );
 #endif
             for ( int i = 0; i < count; i++ ) {
-                BListViewItem item = listDictionaries.getItemAt( "", i );
-                ret.add( new ValuePair<String, Boolean>( item.getSubItemAt( 0 ), listDictionaries.isItemCheckedAt( "", i ) ) );
+                String name = listDictionaries.getItemAt( i, 0 );
+                
+                ret.add( new ValuePair<String, Boolean>(
+                    listDictionaries.getItemAt( i, 0 ), listDictionaries.isRowChecked( i ) ) );
             }
             return ret;
         }
@@ -109,8 +111,7 @@ namespace org.kbinani.cadencii
             for ( int i = 0; i < SymbolTable.getCount(); i++ ) {
                 String name = SymbolTable.getSymbolTable( i ).getName();
                 boolean enabled = SymbolTable.getSymbolTable( i ).isEnabled();
-                BListViewItem item = new BListViewItem( new String[] { name } );
-                listDictionaries.addItem( "", item, enabled );
+                listDictionaries.addItem( new String[]{ name }, enabled );
             }
             listDictionaries.setColumnWidth( 0, listDictionaries.getWidth() );
         }
@@ -122,21 +123,21 @@ namespace org.kbinani.cadencii
 
         public void btnUp_Click( Object sender, BEventArgs e )
         {
-            int index = listDictionaries.getSelectedIndex( "" );
+            int index = listDictionaries.getSelectedRow();
             if ( index >= 1 ) {
                 try {
-                    listDictionaries.clearSelection( "" );
-                    String upper_name = listDictionaries.getItemAt( "", index - 1 ).getSubItemAt( 0 );
-                    boolean upper_enabled = listDictionaries.isItemCheckedAt( "", index - 1 );
-                    String lower_name = listDictionaries.getItemAt( "", index ).getSubItemAt( 0 );
-                    boolean lower_enabled = listDictionaries.isItemCheckedAt( "", index );
+                    listDictionaries.clearSelection();
+                    String upper_name = listDictionaries.getItemAt( index - 1, 0 );
+                    boolean upper_enabled = listDictionaries.isRowChecked( index - 1 );
+                    String lower_name = listDictionaries.getItemAt( index, 0 );
+                    boolean lower_enabled = listDictionaries.isRowChecked( index );
 
-                    listDictionaries.getItemAt( "", index - 1 ).setSubItemAt( 0, lower_name );
-                    listDictionaries.setItemCheckedAt( "", index - 1, lower_enabled );
-                    listDictionaries.getItemAt( "", index ).setSubItemAt( 0, upper_name );
-                    listDictionaries.setItemCheckedAt( "", index, upper_enabled );
+                    listDictionaries.setItemAt( index - 1, 0, lower_name );
+                    listDictionaries.setRowChecked( index - 1, lower_enabled );
+                    listDictionaries.setItemAt( index, 0, upper_name );
+                    listDictionaries.setRowChecked( index, upper_enabled );
 
-                    listDictionaries.setItemSelectedAt( "", index - 1, true );
+                    listDictionaries.setRowSelected( index - 1, true );
                 } catch ( Exception ex ) {
                     serr.println( "FormWordDictionary#btnUp_Click; ex=" + ex );
                 }
@@ -145,21 +146,21 @@ namespace org.kbinani.cadencii
 
         public void btnDown_Click( Object sender, BEventArgs e )
         {
-            int index = listDictionaries.getSelectedIndex( "" );
-            if ( 0 <= index && index + 1 < listDictionaries.getItemCount( "" ) ) {
+            int index = listDictionaries.getSelectedRow();
+            if ( 0 <= index && index + 1 < listDictionaries.getRowCount() ) {
                 try {
-                    listDictionaries.clearSelection( "" );
-                    String upper_name = listDictionaries.getItemAt( "", index ).getSubItemAt( 0 );
-                    boolean upper_enabled = listDictionaries.isItemCheckedAt( "", index );
-                    String lower_name = listDictionaries.getItemAt( "", index + 1 ).getSubItemAt( 0 );
-                    boolean lower_enabled = listDictionaries.isItemCheckedAt( "", index + 1 );
+                    listDictionaries.clearSelection();
+                    String upper_name = listDictionaries.getItemAt( index, 0 );
+                    boolean upper_enabled = listDictionaries.isRowChecked( index );
+                    String lower_name = listDictionaries.getItemAt( index + 1, 0 );
+                    boolean lower_enabled = listDictionaries.isRowChecked( index + 1 );
 
-                    listDictionaries.getItemAt( "", index + 1 ).setSubItemAt( 0, upper_name );
-                    listDictionaries.setItemCheckedAt( "", index + 1, upper_enabled );
-                    listDictionaries.getItemAt( "", index ).setSubItemAt( 0, lower_name );
-                    listDictionaries.setItemCheckedAt( "", index, lower_enabled );
+                    listDictionaries.setItemAt( index + 1, 0, upper_name );
+                    listDictionaries.setRowChecked( index + 1, upper_enabled );
+                    listDictionaries.setItemAt( index, 0, lower_name );
+                    listDictionaries.setRowChecked( index, lower_enabled );
 
-                    listDictionaries.setItemSelectedAt( "", index + 1, true );
+                    listDictionaries.setRowSelected( index + 1, true );
                 } catch ( Exception ex ) {
                     serr.println( "FormWordDictionary#btnDown_Click; ex=" + ex );
                 }
@@ -224,6 +225,7 @@ namespace org.kbinani.cadencii
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.listDictionaries.CheckBoxes = true;
             listViewGroup1.Header = "ListViewGroup";
+            listViewGroup1.Name = null;
             listViewGroup2.Header = "ListViewGroup";
             listViewGroup2.Name = null;
             listViewGroup3.Header = "ListViewGroup";
@@ -232,6 +234,7 @@ namespace org.kbinani.cadencii
             listViewGroup1,
             listViewGroup2,
             listViewGroup3} );
+            this.listDictionaries.HideSelection = false;
             listViewItem1.Checked = true;
             listViewItem1.Group = listViewGroup3;
             listViewItem1.StateImageIndex = 1;

@@ -264,15 +264,15 @@ namespace org.kbinani.cadencii
         #region event handlers
         public void btnCheckAll_Click( Object sender, BEventArgs e )
         {
-            for ( int i = 0; i < listTrack.getItemCount( "" ); i++ ) {
-                listTrack.setItemCheckedAt( "", i, true );
+            for ( int i = 0; i < listTrack.getRowCount(); i++ ) {
+                listTrack.setRowChecked( i, true );
             }
         }
 
         public void btnUnckeckAll_Click( Object sender, BEventArgs e )
         {
-            for ( int i = 0; i < listTrack.getItemCount( "" ); i++ ) {
-                listTrack.setItemCheckedAt( "", i, false );
+            for ( int i = 0; i < listTrack.getRowCount(); i++ ) {
+                listTrack.setRowChecked( i, false );
             }
         }
 

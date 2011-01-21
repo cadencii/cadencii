@@ -22,9 +22,30 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
 import org.kbinani.BEvent;
 import org.kbinani.BEventArgs;
 import org.kbinani.BEventHandler;
+
+class __draft__BListView extends JTable
+{
+    private DefaultTableModel mModel = null;
+    private String[] mColumns = new String[0];
+    
+    public __draft__BListView()
+    {
+        mModel = new DefaultTableModel(); 
+    }
+
+    public void clear()
+    {
+        mModel.setRowCount( 0 );
+    }
+
+    public void setItemAt( int index, BListViewItem item )
+    {
+    }
+}
 
 public class BListView extends JPanel implements MouseMotionListener{
     private static final long serialVersionUID = 1L;

@@ -41,7 +41,7 @@
 0276	03230de6583d22a8daf90ea325d4a023 *resampler.exe
 
 -general todo----------------------------------------------------------
--pp_cs2javaでからのファイルになる場合無視するオプションが効いてない？
+-resamplerが増えたりするのはなぜか？
 -スタートマーカー，エンドマーカーがxvsqに保存されるようにする
 -ImportOtoIniConfig.csをsvn add / ビルドイベントも追加
 -StartPointの項目を加えられないか？

@@ -137,7 +137,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormSequenceConfig.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormVibratoPreset.cs">
       <SubType>Form</SubType>
@@ -315,7 +314,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormSingerStyleConfig.cs">
-      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormSynthesize.cs">
       <SubType>Form</SubType>
@@ -356,11 +354,17 @@
     <EmbeddedResource Include="FormSequenceConfig.resx">
       <DependentUpon>FormSequenceConfig.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormShortcutKeys.resx">
+      <DependentUpon>FormShortcutKeys.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormVibratoConfig.resx">
       <DependentUpon>FormVibratoConfig.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormVibratoPreset.resx">
       <DependentUpon>FormVibratoPreset.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormWordDictionary.resx">
+      <DependentUpon>FormWordDictionary.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Preference.resx">
       <DependentUpon>Preference.cs</DependentUpon>
