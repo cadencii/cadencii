@@ -1,6 +1,6 @@
 /*
  * BDialog.cs
- * Copyright © 2010-2011 kbinani
+ * Copyright ﾂｩ 2010-2011 kbinani
  *
  * This file is part of org.kbinani.windows.forms.
  *

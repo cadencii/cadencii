@@ -91,8 +91,6 @@ public class FormMain extends BForm {
     private BMenuItem menuJobRandomize = null;
     private BMenuItem menuJobConnect = null;
     private BMenuItem menuJobLyric = null;
-    private BMenuItem menuJobRewire = null;
-    private BMenuItem menuJobReloadVsti = null;
     private BMenu menuTrack = null;
     private BMenuItem menuTrackOn = null;
     private JSeparator toolStripMenuItem10321 = null;
@@ -145,7 +143,6 @@ public class FormMain extends BForm {
     private BSplitPane splitContainerProperty = null;
     private BPanel m_property_panel_container = null;
     private BToolBar toolStripFile = null;
-    private BToolBar toolStripBottom = null;
     private BToolBarButton stripBtnFileNew = null;
     private BToolBarButton stripBtnFileOpen = null;
     private BToolBarButton stripBtnFileSave = null;
@@ -163,11 +160,6 @@ public class FormMain extends BForm {
     private BToolBarButton stripBtnPlay = null;
     private BToolBarButton stripBtnScroll = null;
     private BToolBarButton stripBtnLoop = null;
-    private BToolBar toolStripMeasure = null;
-    private BLabel jLabel1 = null;
-    private BComboBox stripDDBtnQuantize = null;
-    private BToggleButton stripBtnStartMarker = null;
-    private BToggleButton stripBtnEndMarker = null;
     private BToolBar toolStripTool = null;
     private BToolBarButton stripBtnPointer = null;
     private BToolBarButton stripBtnPencil = null;
@@ -175,10 +167,6 @@ public class FormMain extends BForm {
     private BToolBarButton stripBtnEraser = null;
     private BToolBarButton stripBtnGrid = null;
     private BToolBarButton stripBtnCurve = null;
-    private BLabel jLabel3 = null;
-    private BLabel stripLblGameCtrlMode = null;
-    private BLabel jLabel4 = null;
-    private BLabel stripLblMidiIn = null;
     private BPopupMenu cMenuTrackSelector = null;  //  @jve:decl-index=0:visual-constraint="985,100"
     private BPopupMenu cMenuPiano = null;  //  @jve:decl-index=0:visual-constraint="984,231"
     private BPopupMenu cMenuTrackTab = null;  //  @jve:decl-index=0:visual-constraint="985,358"
@@ -233,14 +221,6 @@ public class FormMain extends BForm {
     private BMenuItem cMenuPianoQuantize64 = null;
     private BMenuItem cMenuPianoQuantize128 = null;
     private BMenuItem cMenuPianoQuantizeTriplet = null;
-    private BMenu cMenuPianoLength = null;
-    private BMenuItem cMenuPianoLength04 = null;
-    private BMenuItem cMenuPianoLength08 = null;
-    private BMenuItem cMenuPianoLength16 = null;
-    private BMenuItem cMenuPianoLength32 = null;
-    private BMenuItem cMenuPianoLength64 = null;
-    private BMenuItem cMenuPianoLength128 = null;
-    private BMenuItem cMenuPianoLengthTriplet = null;
     private BMenuItem cMenuTrackTabTrackOn = null;
     private BMenuItem cMenuTrackTabAdd = null;
     private BMenuItem cMenuTrackTabCopy = null;
@@ -255,7 +235,6 @@ public class FormMain extends BForm {
     private BMenu cMenuTrackTabRendererUtau = null;
     private BMenuItem cMenuTrackTabRendererStraight = null;
     private BMenuItem cMenuPianoQuantizeOff = null;
-    private BMenuItem cMenuPianoLengthOff = null;
     private BPanel panel3 = null;
     private PictOverview panelOverview = null;
     public PictPianoRoll pictPianoRoll = null;
@@ -304,15 +283,12 @@ public class FormMain extends BForm {
     private BMenuItem menuHiddenGoToStartMarker = null;
     private BMenuItem menuHiddenGoToEndMarker = null;
     private BMenuItem menuFileExportMusicXml = null;
-    private BMenuItem cMenuTrackTabPlayAfterSynth = null;
     private BMenuItem cMenuTrackTabRendererVOCALOID101 = null;
     private BMenuItem menuTrackRendererVOCALOID101 = null;
     private BMenuItem menuTrackRendererAquesTone = null;
     private BMenuItem cMenuTrackTabRendererAquesTone = null;
     private BMenuItem menuVisualIconPalette = null;
-    private JPanel jPanel = null;
-    private JLabel jLabel = null;
-	private BMenuItem menuHiddenPlayFromStartMarker = null;
+    private BMenuItem menuHiddenPlayFromStartMarker = null;
     private BMenuItem menuHiddenFlipCurveOnPianorollMode = null;
     private BMenuItem menuFileImportUst = null;
     private BMenuItem menuFileExportParaWave = null;
@@ -348,19 +324,6 @@ public class FormMain extends BForm {
             menuFileExportMusicXml.setText("MusicXML");
         }
         return menuFileExportMusicXml;
-    }
-
-    /**
-     * This method initializes cMenuTrackTabPlayAfterSynth	
-     * 	
-     * @return org.kbinani.windows.forms.BMenuItem	
-     */
-    private BMenuItem getCMenuTrackTabPlayAfterSynth() {
-        if (cMenuTrackTabPlayAfterSynth == null) {
-            cMenuTrackTabPlayAfterSynth = new BMenuItem();
-            cMenuTrackTabPlayAfterSynth.setText("Play After Synth");
-        }
-        return cMenuTrackTabPlayAfterSynth;
     }
 
     /**
@@ -424,58 +387,9 @@ public class FormMain extends BForm {
         if (menuVisualIconPalette == null) {
             menuVisualIconPalette = new BMenuItem();
             menuVisualIconPalette.setText("Icon Palette");
+            menuVisualIconPalette.setCheckOnClick(true);
         }
         return menuVisualIconPalette;
-    }
-
-    /**
-     * This method initializes jPanel	
-     * 	
-     * @return javax.swing.JPanel	
-     */
-    private JPanel getJPanel4() {
-        if (jPanel == null) {
-            GridBagConstraints gridBagConstraints = new GridBagConstraints();
-            gridBagConstraints.gridx = 6;
-            gridBagConstraints.gridy = 0;
-            GridBagConstraints gridBagConstraints29 = new GridBagConstraints();
-            gridBagConstraints29.weightx = 1.0D;
-            gridBagConstraints29.fill = GridBagConstraints.HORIZONTAL;
-            gridBagConstraints29.gridx = 7;
-            gridBagConstraints29.gridy = 0;
-            gridBagConstraints29.anchor = GridBagConstraints.WEST;
-            jLabel = new JLabel();
-            jLabel.setText(" ");
-            GridBagConstraints gridBagConstraints27 = new GridBagConstraints();
-            gridBagConstraints27.gridx = 3;
-            gridBagConstraints27.fill = GridBagConstraints.HORIZONTAL;
-            gridBagConstraints27.anchor = GridBagConstraints.WEST;
-            gridBagConstraints27.gridy = 0;
-            GridBagConstraints gridBagConstraints26 = new GridBagConstraints();
-            gridBagConstraints26.gridx = 2;
-            gridBagConstraints26.anchor = GridBagConstraints.WEST;
-            gridBagConstraints26.fill = GridBagConstraints.HORIZONTAL;
-            gridBagConstraints26.gridy = 0;
-            GridBagConstraints gridBagConstraints25 = new GridBagConstraints();
-            gridBagConstraints25.gridx = 1;
-            gridBagConstraints25.fill = GridBagConstraints.HORIZONTAL;
-            gridBagConstraints25.anchor = GridBagConstraints.WEST;
-            gridBagConstraints25.gridy = 0;
-            GridBagConstraints gridBagConstraints24 = new GridBagConstraints();
-            gridBagConstraints24.gridx = 0;
-            gridBagConstraints24.fill = GridBagConstraints.HORIZONTAL;
-            gridBagConstraints24.anchor = GridBagConstraints.WEST;
-            gridBagConstraints24.gridy = 0;
-            jPanel = new JPanel();
-            jPanel.setLayout(new GridBagLayout());
-            jPanel.add(jLabel3, gridBagConstraints24);
-            jPanel.add(stripLblGameCtrlMode, gridBagConstraints25);
-            jPanel.add(jLabel4, gridBagConstraints26);
-            jPanel.add(stripLblMidiIn, gridBagConstraints27);
-            jPanel.add(jLabel, gridBagConstraints29);
-            jPanel.add(getStripBtnStepSequencer(), gridBagConstraints);
-        }
-        return jPanel;
     }
 
     /**
@@ -619,6 +533,7 @@ public class FormMain extends BForm {
         if (menuHelpLogSwitch == null) {
             menuHelpLogSwitch = new BMenuItem();
             menuHelpLogSwitch.setText("Enable log");
+            menuHelpLogSwitch.setCheckOnClick(true);
         }
         return menuHelpLogSwitch;
     }
@@ -657,7 +572,7 @@ public class FormMain extends BForm {
     private BToggleButton getStripBtnStepSequencer() {
         if (stripBtnStepSequencer == null) {
             stripBtnStepSequencer = new BToggleButton();
-            stripBtnStepSequencer.setText("Step sequencer");
+            stripBtnStepSequencer.setText("Step");
         }
         return stripBtnStepSequencer;
     }
@@ -1188,6 +1103,7 @@ public class FormMain extends BForm {
         if (menuVisualControlTrack == null) {
             menuVisualControlTrack = new BMenuItem();
             menuVisualControlTrack.setText("Control Track");
+            menuVisualControlTrack.setCheckOnClick(true);
         }
         return menuVisualControlTrack;
     }
@@ -1201,6 +1117,7 @@ public class FormMain extends BForm {
         if (menuVisualMixer == null) {
             menuVisualMixer = new BMenuItem();
             menuVisualMixer.setText("Mixer");
+            menuVisualMixer.setCheckOnClick(true);
         }
         return menuVisualMixer;
     }
@@ -1214,6 +1131,7 @@ public class FormMain extends BForm {
         if (menuVisualWaveform == null) {
             menuVisualWaveform = new BMenuItem();
             menuVisualWaveform.setText("Waveform");
+            menuVisualWaveform.setCheckOnClick(true);
         }
         return menuVisualWaveform;
     }
@@ -1227,6 +1145,7 @@ public class FormMain extends BForm {
         if (menuVisualProperty == null) {
             menuVisualProperty = new BMenuItem();
             menuVisualProperty.setText("Property Window");
+            menuVisualProperty.setCheckOnClick(true);
         }
         return menuVisualProperty;
     }
@@ -1240,6 +1159,7 @@ public class FormMain extends BForm {
         if (menuVisualOverview == null) {
             menuVisualOverview = new BMenuItem();
             menuVisualOverview.setText("Navigation");
+            menuVisualOverview.setCheckOnClick(true);
         }
         return menuVisualOverview;
     }
@@ -1265,6 +1185,7 @@ public class FormMain extends BForm {
         if (menuVisualGridline == null) {
             menuVisualGridline = new BMenuItem();
             menuVisualGridline.setText("Grid Line");
+            menuVisualGridline.setCheckOnClick(true);
         }
         return menuVisualGridline;
     }
@@ -1290,6 +1211,7 @@ public class FormMain extends BForm {
         if (menuVisualStartMarker == null) {
             menuVisualStartMarker = new BMenuItem();
             menuVisualStartMarker.setText("Start Marker");
+            menuVisualStartMarker.setCheckOnClick(false);
         }
         return menuVisualStartMarker;
     }
@@ -1303,6 +1225,7 @@ public class FormMain extends BForm {
         if (menuVisualEndMarker == null) {
             menuVisualEndMarker = new BMenuItem();
             menuVisualEndMarker.setText("End Marker");
+            menuVisualEndMarker.setCheckOnClick(false);
         }
         return menuVisualEndMarker;
     }
@@ -1328,6 +1251,7 @@ public class FormMain extends BForm {
         if (menuVisualNoteProperty == null) {
             menuVisualNoteProperty = new BMenuItem();
             menuVisualNoteProperty.setText("Note Expression/Vibrato");
+            menuVisualNoteProperty.setCheckOnClick(true);
         }
         return menuVisualNoteProperty;
     }
@@ -1341,6 +1265,7 @@ public class FormMain extends BForm {
         if (menuVisualLyrics == null) {
             menuVisualLyrics = new BMenuItem();
             menuVisualLyrics.setText("Lyrics/Phoneme");
+            menuVisualLyrics.setCheckOnClick(true);
         }
         return menuVisualLyrics;
     }
@@ -1354,6 +1279,7 @@ public class FormMain extends BForm {
         if (menuVisualPitchLine == null) {
             menuVisualPitchLine = new BMenuItem();
             menuVisualPitchLine.setText("Pitch Line");
+            menuVisualPitchLine.setCheckOnClick(true);
         }
         return menuVisualPitchLine;
     }
@@ -1373,8 +1299,6 @@ public class FormMain extends BForm {
             menuJob.add(getBMenuItem33());
             menuJob.add(getBMenuItem42());
             menuJob.add(getBMenuItem52());
-            menuJob.add(getBMenuItem62());
-            menuJob.add(getBMenuItem26());
         }
         return menuJob;
     }
@@ -1458,32 +1382,6 @@ public class FormMain extends BForm {
     }
 
     /**
-     * This method initializes BMenuItem6   
-     *  
-     * @return javax.swing.BMenuItem    
-     */
-    private BMenuItem getBMenuItem62() {
-        if (menuJobRewire == null) {
-            menuJobRewire = new BMenuItem();
-            menuJobRewire.setText("Import ReWire Host Tempo");
-        }
-        return menuJobRewire;
-    }
-
-    /**
-     * This method initializes BMenuItem    
-     *  
-     * @return javax.swing.BMenuItem    
-     */
-    private BMenuItem getBMenuItem26() {
-        if (menuJobReloadVsti == null) {
-            menuJobReloadVsti = new BMenuItem();
-            menuJobReloadVsti.setText("Reload VSTi");
-        }
-        return menuJobReloadVsti;
-    }
-
-    /**
      * This method initializes menuTrack    
      *  
      * @return javax.swing.BMenu    
@@ -1519,6 +1417,7 @@ public class FormMain extends BForm {
         if (menuTrackOn == null) {
             menuTrackOn = new BMenuItem();
             menuTrackOn.setText("Track On");
+            menuTrackOn.setCheckOnClick(true);
         }
         return menuTrackOn;
     }
@@ -1646,6 +1545,7 @@ public class FormMain extends BForm {
         if (menuTrackOverlay == null) {
             menuTrackOverlay = new BMenuItem();
             menuTrackOverlay.setText("Overlay");
+            menuTrackOverlay.setCheckOnClick(true);
         }
         return menuTrackOverlay;
     }
@@ -2254,7 +2154,6 @@ public class FormMain extends BForm {
             toolStripFile.add(getStripBtnFileNew());
             toolStripFile.add(getStripBtnFileOpen());
             toolStripFile.add(getStripBtnFileSave());
-            toolStripFile.addSeparator();
             toolStripFile.add(getStripBtnCut());
             toolStripFile.add(getStripBtnCopy());
             toolStripFile.add(getStripBtnPaste());
@@ -2262,37 +2161,6 @@ public class FormMain extends BForm {
             toolStripFile.add(getStripBtnRedo());
         }
         return toolStripFile;
-    }
-
-    /**
-     * This method initializes toolStripBottom  
-     *  
-     * @return javax.swing.BToolBar 
-     */
-    private BToolBar getToolStripBottom() {
-        if (toolStripBottom == null) {
-            stripLblMidiIn = new BLabel();
-            stripLblMidiIn.setText("Disabled");
-            stripLblMidiIn.setPreferredSize(new Dimension(70, 20));
-            jLabel4 = new BLabel();
-            jLabel4.setText("MIDI In:");
-            jLabel4.setPreferredSize(new Dimension(50, 20));
-            stripLblGameCtrlMode = new BLabel();
-            stripLblGameCtrlMode.setText("Disabled");
-            stripLblGameCtrlMode.setPreferredSize(new Dimension(70, 20));
-            jLabel3 = new BLabel();
-            jLabel3.setText("Game Controler:");
-            jLabel3.setPreferredSize(new Dimension(105, 20));
-            toolStripBottom = new BToolBar();
-            toolStripBottom.addSeparator();
-            toolStripBottom.addSeparator();
-            toolStripBottom.addSeparator();
-            toolStripBottom.addSeparator();
-            toolStripBottom.add(getJPanel4());
-            toolStripBottom.addSeparator();
-            
-        }
-        return toolStripBottom;
     }
 
     /**
@@ -2423,7 +2291,6 @@ public class FormMain extends BForm {
             toolStripPosition.add(getStripBtnPlay());
             toolStripPosition.add(getStripBtnScroll());
             toolStripPosition.add(getStripBtnLoop());
-            toolStripPosition.addSeparator();
         }
         return toolStripPosition;
     }
@@ -2463,7 +2330,6 @@ public class FormMain extends BForm {
             BPanel.add(getToolStripFile(), null);
             BPanel.add(getToolStripPosition(), null);
             BPanel.add(getToolStripTool(), null);
-            BPanel.add(getToolStripMeasure(), null);
         }
         return BPanel;
     }
@@ -2518,7 +2384,7 @@ public class FormMain extends BForm {
     private BToolBarButton getStripBtnPlay() {
         if (stripBtnPlay == null) {
             stripBtnPlay = new BToolBarButton();
-            stripBtnPlay.setText("");
+            stripBtnPlay.setText("Play");
             stripBtnPlay.setPreferredSize(new Dimension(23, 22));
         }
         return stripBtnPlay;
@@ -2555,62 +2421,6 @@ public class FormMain extends BForm {
     }
 
     /**
-     * This method initializes toolStripMeasure 
-     *  
-     * @return javax.swing.BToolBar 
-     */
-    private BToolBar getToolStripMeasure() {
-        if (toolStripMeasure == null) {
-            jLabel1 = new BLabel();
-            jLabel1.setText("QUANTIZE");
-            toolStripMeasure = new BToolBar();
-            toolStripMeasure.setName("toolStripMeasure");
-            toolStripMeasure.add(jLabel1);
-            toolStripMeasure.add(getStripDDBtnQuantize());
-            toolStripMeasure.add(getStripBtnStartMarker());
-            toolStripMeasure.add(getStripBtnEndMarker());
-            toolStripMeasure.addSeparator();
-        }
-        return toolStripMeasure;
-    }
-
-    /**
-     * This method initializes stripDDBtnQuantize   
-     *  
-     * @return javax.swing.BComboBox    
-     */
-    private BComboBox getStripDDBtnQuantize() {
-        if (stripDDBtnQuantize == null) {
-            stripDDBtnQuantize = new BComboBox();
-        }
-        return stripDDBtnQuantize;
-    }
-
-    /**
-     * This method initializes stripBtnStartMarker  
-     *  
-     * @return javax.swing.BToggleButton    
-     */
-    private BToggleButton getStripBtnStartMarker() {
-        if (stripBtnStartMarker == null) {
-            stripBtnStartMarker = new BToggleButton();
-        }
-        return stripBtnStartMarker;
-    }
-
-    /**
-     * This method initializes stripBtnEndMarker    
-     *  
-     * @return javax.swing.BToggleButton    
-     */
-    private BToggleButton getStripBtnEndMarker() {
-        if (stripBtnEndMarker == null) {
-            stripBtnEndMarker = new BToggleButton();
-        }
-        return stripBtnEndMarker;
-    }
-
-    /**
      * This method initializes toolStripTool    
      *  
      * @return javax.swing.BToolBar 
@@ -2624,7 +2434,7 @@ public class FormMain extends BForm {
             toolStripTool.add(getStripBtnEraser());
             toolStripTool.add(getStripBtnGrid());
             toolStripTool.add(getStripBtnCurve());
-            toolStripTool.addSeparator();
+            toolStripTool.add(getStripBtnStepSequencer());
         }
         return toolStripTool;
     }
@@ -2761,7 +2571,6 @@ public class FormMain extends BForm {
             cMenuPiano.addSeparator();
             cMenuPiano.add(getCMenuPianoFixed());
             cMenuPiano.add(getCMenuPianoQuantize());
-            cMenuPiano.add(getCMenuPianoLength());
             cMenuPiano.add(getCMenuPianoGrid());
             cMenuPiano.addSeparator();
             cMenuPiano.add(getCMenuPianoUndo());
@@ -2791,7 +2600,6 @@ public class FormMain extends BForm {
         if (cMenuTrackTab == null) {
             cMenuTrackTab = new BPopupMenu();
             cMenuTrackTab.add(getCMenuTrackTabTrackOn());
-            cMenuTrackTab.add(getCMenuTrackTabPlayAfterSynth());
             cMenuTrackTab.addSeparator();
             cMenuTrackTab.add(getCMenuTrackTabAdd());
             cMenuTrackTab.add(getCMenuTrackTabCopy());
@@ -3232,6 +3040,7 @@ public class FormMain extends BForm {
     private BMenuItem getCMenuPianoFixed02() {
         if (cMenuPianoFixed02 == null) {
             cMenuPianoFixed02 = new BMenuItem();
+            cMenuPianoFixed02.setText("1/2");
         }
         return cMenuPianoFixed02;
     }
@@ -3244,6 +3053,7 @@ public class FormMain extends BForm {
     private BMenuItem getCMenuPianoFixed04() {
         if (cMenuPianoFixed04 == null) {
             cMenuPianoFixed04 = new BMenuItem();
+            cMenuPianoFixed04.setText("1/4");
         }
         return cMenuPianoFixed04;
     }
@@ -3256,6 +3066,7 @@ public class FormMain extends BForm {
     private BMenuItem getCMenuPianoFixed08() {
         if (cMenuPianoFixed08 == null) {
             cMenuPianoFixed08 = new BMenuItem();
+            cMenuPianoFixed08.setText("1/8");
         }
         return cMenuPianoFixed08;
     }
@@ -3268,6 +3079,7 @@ public class FormMain extends BForm {
     private BMenuItem getCMenuPianoFixed01() {
         if (cMenuPianoFixed01 == null) {
             cMenuPianoFixed01 = new BMenuItem();
+            cMenuPianoFixed01.setText("1/1");
         }
         return cMenuPianoFixed01;
     }
@@ -3280,6 +3092,7 @@ public class FormMain extends BForm {
     private BMenuItem getCMenuPianoFixed16() {
         if (cMenuPianoFixed16 == null) {
             cMenuPianoFixed16 = new BMenuItem();
+            cMenuPianoFixed16.setText("1/16");
         }
         return cMenuPianoFixed16;
     }
@@ -3292,6 +3105,7 @@ public class FormMain extends BForm {
     private BMenuItem getCMenuPianoFixed32() {
         if (cMenuPianoFixed32 == null) {
             cMenuPianoFixed32 = new BMenuItem();
+            cMenuPianoFixed32.setText("1/32");
         }
         return cMenuPianoFixed32;
     }
@@ -3304,6 +3118,7 @@ public class FormMain extends BForm {
     private BMenuItem getCMenuPianoFixed64() {
         if (cMenuPianoFixed64 == null) {
             cMenuPianoFixed64 = new BMenuItem();
+            cMenuPianoFixed64.setText("1/64");
         }
         return cMenuPianoFixed64;
     }
@@ -3316,6 +3131,7 @@ public class FormMain extends BForm {
     private BMenuItem getCMenuPianoFixed128() {
         if (cMenuPianoFixed128 == null) {
             cMenuPianoFixed128 = new BMenuItem();
+            cMenuPianoFixed128.setText("1/128");
         }
         return cMenuPianoFixed128;
     }
@@ -3328,6 +3144,7 @@ public class FormMain extends BForm {
     private BMenuItem getCMenuPianoFixedOff() {
         if (cMenuPianoFixedOff == null) {
             cMenuPianoFixedOff = new BMenuItem();
+            cMenuPianoFixedOff.setText("Off");
         }
         return cMenuPianoFixedOff;
     }
@@ -3340,6 +3157,7 @@ public class FormMain extends BForm {
     private BMenuItem getCMenuPianoFixedTriplet() {
         if (cMenuPianoFixedTriplet == null) {
             cMenuPianoFixedTriplet = new BMenuItem();
+            cMenuPianoFixedTriplet.setText("Triplet");
         }
         return cMenuPianoFixedTriplet;
     }
@@ -3352,6 +3170,7 @@ public class FormMain extends BForm {
     private BMenuItem getCMenuPianoFixedDotted() {
         if (cMenuPianoFixedDotted == null) {
             cMenuPianoFixedDotted = new BMenuItem();
+            cMenuPianoFixedDotted.setText("Dot");
         }
         return cMenuPianoFixedDotted;
     }
@@ -3364,6 +3183,7 @@ public class FormMain extends BForm {
     private BMenuItem getCMenuPianoQuantize04() {
         if (cMenuPianoQuantize04 == null) {
             cMenuPianoQuantize04 = new BMenuItem();
+            cMenuPianoQuantize04.setText("1/4");
         }
         return cMenuPianoQuantize04;
     }
@@ -3376,6 +3196,7 @@ public class FormMain extends BForm {
     private BMenuItem getCMenuPianoQuantize08() {
         if (cMenuPianoQuantize08 == null) {
             cMenuPianoQuantize08 = new BMenuItem();
+            cMenuPianoQuantize08.setText("1/8");
         }
         return cMenuPianoQuantize08;
     }
@@ -3388,6 +3209,7 @@ public class FormMain extends BForm {
     private BMenuItem getCMenuPianoQuantize16() {
         if (cMenuPianoQuantize16 == null) {
             cMenuPianoQuantize16 = new BMenuItem();
+            cMenuPianoQuantize16.setText("1/16");
         }
         return cMenuPianoQuantize16;
     }
@@ -3400,6 +3222,8 @@ public class FormMain extends BForm {
     private BMenuItem getCMenuPianoQuantize32() {
         if (cMenuPianoQuantize32 == null) {
             cMenuPianoQuantize32 = new BMenuItem();
+            cMenuPianoQuantize32.setToolTipText("");
+            cMenuPianoQuantize32.setText("1/32");
         }
         return cMenuPianoQuantize32;
     }
@@ -3412,6 +3236,7 @@ public class FormMain extends BForm {
     private BMenuItem getCMenuPianoQuantize64() {
         if (cMenuPianoQuantize64 == null) {
             cMenuPianoQuantize64 = new BMenuItem();
+            cMenuPianoQuantize64.setText("1/64");
         }
         return cMenuPianoQuantize64;
     }
@@ -3424,6 +3249,7 @@ public class FormMain extends BForm {
     private BMenuItem getCMenuPianoQuantize128() {
         if (cMenuPianoQuantize128 == null) {
             cMenuPianoQuantize128 = new BMenuItem();
+            cMenuPianoQuantize128.setText("1/128");
         }
         return cMenuPianoQuantize128;
     }
@@ -3436,113 +3262,9 @@ public class FormMain extends BForm {
     private BMenuItem getCMenuPianoQuantizeTriplet() {
         if (cMenuPianoQuantizeTriplet == null) {
             cMenuPianoQuantizeTriplet = new BMenuItem();
+            cMenuPianoQuantizeTriplet.setText("Triplet");
         }
         return cMenuPianoQuantizeTriplet;
-    }
-
-    /**
-     * This method initializes cMenuPianoLength 
-     *  
-     * @return javax.swing.BMenu    
-     */
-    private BMenu getCMenuPianoLength() {
-        if (cMenuPianoLength == null) {
-            cMenuPianoLength = new BMenu();
-            cMenuPianoLength.add(getCMenuPianoLength04());
-            cMenuPianoLength.add(getCMenuPianoLength08());
-            cMenuPianoLength.add(getCMenuPianoLength16());
-            cMenuPianoLength.add(getCMenuPianoLength32());
-            cMenuPianoLength.add(getCMenuPianoLength64());
-            cMenuPianoLength.add(getCMenuPianoLength128());
-            cMenuPianoLength.add(getCMenuPianoLengthOff());
-            cMenuPianoLength.addSeparator();
-            cMenuPianoLength.add(getCMenuPianoLengthTriplet());
-        }
-        return cMenuPianoLength;
-    }
-
-    /**
-     * This method initializes cMenuPianoLength04   
-     *  
-     * @return javax.swing.BMenuItem    
-     */
-    private BMenuItem getCMenuPianoLength04() {
-        if (cMenuPianoLength04 == null) {
-            cMenuPianoLength04 = new BMenuItem();
-        }
-        return cMenuPianoLength04;
-    }
-
-    /**
-     * This method initializes cMenuPianoLength08   
-     *  
-     * @return javax.swing.BMenuItem    
-     */
-    private BMenuItem getCMenuPianoLength08() {
-        if (cMenuPianoLength08 == null) {
-            cMenuPianoLength08 = new BMenuItem();
-        }
-        return cMenuPianoLength08;
-    }
-
-    /**
-     * This method initializes cMenuPianoLength16   
-     *  
-     * @return javax.swing.BMenuItem    
-     */
-    private BMenuItem getCMenuPianoLength16() {
-        if (cMenuPianoLength16 == null) {
-            cMenuPianoLength16 = new BMenuItem();
-        }
-        return cMenuPianoLength16;
-    }
-
-    /**
-     * This method initializes cMenuPianoLength32   
-     *  
-     * @return javax.swing.BMenuItem    
-     */
-    private BMenuItem getCMenuPianoLength32() {
-        if (cMenuPianoLength32 == null) {
-            cMenuPianoLength32 = new BMenuItem();
-        }
-        return cMenuPianoLength32;
-    }
-
-    /**
-     * This method initializes cMenuPianoLength64   
-     *  
-     * @return javax.swing.BMenuItem    
-     */
-    private BMenuItem getCMenuPianoLength64() {
-        if (cMenuPianoLength64 == null) {
-            cMenuPianoLength64 = new BMenuItem();
-        }
-        return cMenuPianoLength64;
-    }
-
-    /**
-     * This method initializes cMenuPianoLength128  
-     *  
-     * @return javax.swing.BMenuItem    
-     */
-    private BMenuItem getCMenuPianoLength128() {
-        if (cMenuPianoLength128 == null) {
-            cMenuPianoLength128 = new BMenuItem();
-        }
-        return cMenuPianoLength128;
-    }
-
-    /**
-     * This method initializes cMenuPianoLengthTriplet  
-     *  
-     * @return javax.swing.BMenuItem    
-     */
-    private BMenuItem getCMenuPianoLengthTriplet() {
-        if (cMenuPianoLengthTriplet == null) {
-            cMenuPianoLengthTriplet = new BMenuItem();
-        }
-        return cMenuPianoLengthTriplet;
     }
 
     /**
@@ -3720,20 +3442,9 @@ public class FormMain extends BForm {
     private BMenuItem getCMenuPianoQuantizeOff() {
         if (cMenuPianoQuantizeOff == null) {
             cMenuPianoQuantizeOff = new BMenuItem();
+            cMenuPianoQuantizeOff.setText("Off");
         }
         return cMenuPianoQuantizeOff;
-    }
-
-    /**
-     * This method initializes BMenuItem    
-     *  
-     * @return javax.swing.BMenuItem    
-     */
-    private BMenuItem getCMenuPianoLengthOff() {
-        if (cMenuPianoLengthOff == null) {
-            cMenuPianoLengthOff = new BMenuItem();
-        }
-        return cMenuPianoLengthOff;
     }
 
     /**
@@ -3926,15 +3637,22 @@ public class FormMain extends BForm {
      */
     private BPanel getJPanel3() {
         if (jPanel3 == null) {
-            GridLayout gridLayout1 = new GridLayout();
-            gridLayout1.setRows(2);
-            gridLayout1.setColumns(1);
+            GridBagConstraints gridBagConstraints = new GridBagConstraints();
+            gridBagConstraints.insets = new Insets(0, 0, 0, 0);
+            gridBagConstraints.gridy = 0;
+            gridBagConstraints.ipadx = 0;
+            gridBagConstraints.ipady = 0;
+            gridBagConstraints.fill = GridBagConstraints.BOTH;
+            gridBagConstraints.anchor = GridBagConstraints.WEST;
+            gridBagConstraints.weightx = 1.0D;
+            gridBagConstraints.gridx = 0;
             statusLabel = new BLabel();
             statusLabel.setText("");
+            statusLabel.setPreferredSize(new Dimension(10, 27));
             jPanel3 = new BPanel();
-            jPanel3.setLayout(gridLayout1);
-            jPanel3.add(getToolStripBottom(), null);
-            jPanel3.add(statusLabel, null);
+            jPanel3.setPreferredSize(new Dimension(10, 27));
+            jPanel3.setLayout(new GridBagLayout());
+            jPanel3.add(statusLabel, gridBagConstraints);
         }
         return jPanel3;
     }

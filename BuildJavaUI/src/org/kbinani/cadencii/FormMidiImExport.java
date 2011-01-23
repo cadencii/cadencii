@@ -19,6 +19,7 @@ import org.kbinani.windows.forms.BGroupBox;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BListView;
 import org.kbinani.windows.forms.BRadioButton;
+import org.kbinani.windows.forms.RadioButtonManager;
 import javax.swing.JScrollPane;
 
 //SECTION-END-IMPORT
@@ -60,6 +61,7 @@ public class FormMidiImExport extends BForm {
     private NumberTextBox txtOffset = null;
     private BLabel lblOffsetUnit = null;
     private JScrollPane jScrollPane = null;
+    private RadioButtonManager mButtonManager = null;  //  @jve:decl-index=0:
 	
 	//SECTION-END-FIELD
 	/**
@@ -80,6 +82,9 @@ public class FormMidiImExport extends BForm {
 		this.setSize(383, 552);
 		this.setContentPane(getJContentPane());
 		this.setTitle("JFrame");
+		mButtonManager = new RadioButtonManager();
+		mButtonManager.add( radioGateTime );
+		mButtonManager.add( radioPlayTime );
 	}
 
 	/**
@@ -584,6 +589,7 @@ public class FormMidiImExport extends BForm {
         if (radioGateTime == null) {
             radioGateTime = new BRadioButton();
             radioGateTime.setText("gate-time");
+            radioGateTime.setSelected(true);
         }
         return radioGateTime;
     }

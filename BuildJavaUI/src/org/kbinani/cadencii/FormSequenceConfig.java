@@ -16,6 +16,7 @@ import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BListBox;
 import org.kbinani.windows.forms.BPictureBox;
 import org.kbinani.windows.forms.BTextBox;
+import org.kbinani.windows.forms.RadioButtonManager;
 import javax.swing.JList;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -47,6 +48,8 @@ public class FormSequenceConfig extends BForm {
     private JPanel jPanel21 = null;
     private BLabel labelSampleRate = null;
     private BComboBox comboSampleRate = null;
+    private RadioButtonManager mManager = null;
+    
     //SECTION-END-FIELD
     public FormSequenceConfig() {
     	super();
@@ -58,7 +61,9 @@ public class FormSequenceConfig extends BForm {
         this.setSize(new Dimension(343, 295));
         this.setTitle("Sequence config");
         this.setContentPane(getJPanel1());
-    		
+    	mManager = new RadioButtonManager();
+    	mManager.add( radioCurrentTrack );
+    	mManager.add( radioMasterTrack );
     }
 
     /**
@@ -286,6 +291,7 @@ public class FormSequenceConfig extends BForm {
         if (radioCurrentTrack == null) {
             radioCurrentTrack = new BRadioButton();
             radioCurrentTrack.setText("Current");
+            radioCurrentTrack.setSelected(true);
         }
         return radioCurrentTrack;
     }

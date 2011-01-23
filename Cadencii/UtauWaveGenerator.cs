@@ -531,13 +531,13 @@ namespace org.kbinani.cadencii
                     foreach ( String s in pitch ) {
                         md5_src += s + " ";
                     }
-#if DEBUG
-                    String filename =
-                        fsys.combine( mTempDir, k + "_" + PortUtil.getFileNameWithoutExtension( wavPath ) + "_" + note + ".wav" );
-#else
+//#if DEBUG
+//                    String filename =
+//                        fsys.combine( mTempDir, k + "_" + PortUtil.getFileNameWithoutExtension( wavPath ) + "_" + note + ".wav" );
+//#else
                     String filename =
                         fsys.combine( mTempDir, PortUtil.getMD5FromString( mCache.size() + md5_src ) + ".wav" );
-#endif
+//#endif
 
                     rq2.appendArgRange( resampler_arg_prefix );
                     rq2.appendArg( "\"" + filename + "\"" );
@@ -639,7 +639,8 @@ namespace org.kbinani.cadencii
 #if JAVA
                         Vector<String> list = new Vector<String>();
                         if( mInvokeWithWine ){
-                            list.add( "wine" );
+                            //list.add( "wine" );
+                            list.add( "/usr/local/bin/wine" );
                         }
                         //list.add( "\"" + mResampler.replace( "\\", "\\" + "\\" ) + "\"" );
                         list.add( "\"" + mResampler + "\"" );
@@ -1076,7 +1077,7 @@ namespace org.kbinani.cadencii
         {
 #if JAVA
             Vector<String> args = new Vector<String>();//[] args = new String[]{ (invoke_with_wine ? "wine \"" : "\"") + wavtool + "\"", arg };
-            args.add( (invoke_with_wine ? "wine \"" : "\"") + wavtool.replace( "\\", "/" ) + "\"" );
+            args.add( (invoke_with_wine ? "/usr/local/bin/wine \"" : "\"") + wavtool.replace( "\\", "/" ) + "\"" );
             int size = vec.size( arg );
             for( int i = 0; i < size; i++ ){
                 args.add( vec.get( arg, i ) );

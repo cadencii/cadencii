@@ -24,6 +24,7 @@ import org.kbinani.windows.forms.BNumericUpDown;
 import org.kbinani.windows.forms.BPanel;
 import org.kbinani.windows.forms.BRadioButton;
 import org.kbinani.windows.forms.BTextBox;
+import org.kbinani.windows.forms.RadioButtonManager;
 import javax.swing.JScrollPane;
 
 //SECTION-END-IMPORT
@@ -191,6 +192,8 @@ public class Preference extends JFrame {
     private BLabel jLabel911 = null;
     private BTextBox txtAutoVibratoThresholdLength = null;
     private JScrollPane jScrollPane = null;
+    private RadioButtonManager mManager = null;
+    
     //SECTION-END-FIELD
 	/**
 	 * This is the default constructor
@@ -218,6 +221,9 @@ public class Preference extends JFrame {
 		layout.setConstraints( tabPane, gb );
 	    this.getPanelUpper().add( tabPane );
 	    listSingers.fixLeftColumn();
+        mManager = new RadioButtonManager();
+        mManager.add( radioUserDefined );
+        mManager.add( radioVocaloidEditorCompatible );
 	
 		//SECTION-END-CTOR
 	}
@@ -2698,6 +2704,7 @@ public class Preference extends JFrame {
         if (radioVocaloidEditorCompatible == null) {
             radioVocaloidEditorCompatible = new BRadioButton();
             radioVocaloidEditorCompatible.setText("VOCALOID Editor Compatible");
+            radioVocaloidEditorCompatible.setSelected(true);
         }
         return radioVocaloidEditorCompatible;
     }

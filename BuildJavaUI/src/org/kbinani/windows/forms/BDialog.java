@@ -1,4 +1,4 @@
-﻿package org.kbinani.windows.forms;
+package org.kbinani.windows.forms;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -44,6 +44,7 @@ public class BDialog extends JDialog
     
     public BDialogResult showDialog( Component parent ){
         setModalityType( ModalityType.APPLICATION_MODAL );
+		//setModal( true );
         setVisible( true );
         return this.m_result;
     }

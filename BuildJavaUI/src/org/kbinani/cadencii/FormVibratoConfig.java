@@ -17,6 +17,7 @@ import org.kbinani.windows.forms.BPanel;
 import org.kbinani.windows.forms.BRadioButton;
 import org.kbinani.windows.forms.BTextBox;
 import org.kbinani.windows.forms.BGroupBox;
+import org.kbinani.windows.forms.RadioButtonManager;
 import javax.swing.SwingConstants;
 
 //SECTION-END-IMPORT
@@ -37,6 +38,8 @@ public class FormVibratoConfig extends BForm {
     private BRadioButton radioVocaloid1 = null;
     private BRadioButton radioVocaloid2 = null;
     private BRadioButton radioUserDefined = null;
+    private RadioButtonManager mManager = null;
+    
     //SECTION-END-FIELD
 	/**
 	 * This is the default constructor
@@ -56,6 +59,10 @@ public class FormVibratoConfig extends BForm {
 		this.setSize(398, 225);
 		this.setContentPane(getJContentPane());
 		this.setTitle("JFrame");
+		mManager = new RadioButtonManager();
+		mManager.add( radioUserDefined );
+		mManager.add( radioVocaloid1 );
+		mManager.add( radioVocaloid2 );
 	}
 
 	/**

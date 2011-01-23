@@ -13,6 +13,7 @@
  */
 #if JAVA
 import org.kbinani.*;
+import org.kbinani.apputil.*;
 import org.kbinani.cadencii.*;
 #else
 using System;
@@ -66,6 +67,12 @@ namespace org.kbinani.cadencii{
 #if JAVA
         public static void main( String[] args ){
             String file = parseArguments( args );
+            try{
+            	Messaging.loadMessages();
+            }catch( Exception ex ){
+                Logger.write( Cadencii.class + ".main; ex=" + ex + "\n" );
+                serr.println( "Cadencii.main; ex=" + ex );
+            }
             AppManager.init();
             AppManager.mMainWindow = new FormMain( file );
             AppManager.mMainWindow.setVisible( true );

@@ -9,6 +9,7 @@ import org.kbinani.*;
 public class BListBox extends JList
                       implements ListSelectionListener
 {
+    private static final long serialVersionUID = 3749301116724119106L;
     private DefaultListModel mModel = null;
     
     public BListBox(){

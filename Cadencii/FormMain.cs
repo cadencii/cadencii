@@ -4576,7 +4576,10 @@ namespace org.kbinani.cadencii
                 openWaveDialog.addFileFilter( "All Files(*.*)|*.*" );
             }
 
+#if !JAVA
             stripLblGameCtrlMode.setToolTipText( _( "Game controler" ) );
+#endif
+
 #if JAVA
             updateGameControlerStatus( this, new EventArgs() );
 #else
@@ -4722,10 +4725,6 @@ namespace org.kbinani.cadencii
             menuJobConnect.setMnemonic( KeyEvent.VK_C );
             menuJobLyric.setText( _( "Insert lyrics" ) );
             menuJobLyric.setMnemonic( KeyEvent.VK_L );
-            menuJobRewire.setText( _( "Import ReWire host tempo" ) );
-            menuJobRewire.setMnemonic( KeyEvent.VK_T );
-            menuJobReloadVsti.setText( _( "Reload VSTi" ) );
-            menuJobReloadVsti.setMnemonic( KeyEvent.VK_R );
 
             menuTrack.setText( _( "Track" ) );
             menuTrack.setMnemonic( KeyEvent.VK_T );
@@ -4939,7 +4938,9 @@ namespace org.kbinani.cadencii
             cMenuPositionIndicatorEndMarker.setText( _( "Set end marker" ) );
             #endregion
 
+#if !JAVA
             stripLblGameCtrlMode.setToolTipText( _( "Game Controler" ) );
+#endif
 
             // Palette Tool
 #if DEBUG
@@ -7352,9 +7353,6 @@ namespace org.kbinani.cadencii
             menuJobConnect.Click += new BEventHandler( menuJobConnect_Click );
             menuJobLyric.MouseEnter += new BEventHandler( handleMenuMouseEnter );
             menuJobLyric.Click += new BEventHandler( menuJobLyric_Click );
-            menuJobRewire.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuJobReloadVsti.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuJobReloadVsti.Click += new BEventHandler( menuJobReloadVsti_Click );
             menuTrack.DropDownOpening += new BEventHandler( menuTrack_DropDownOpening );
             menuTrackOn.MouseEnter += new BEventHandler( handleMenuMouseEnter );
             menuTrackBgm.MouseEnter += new BEventHandler( handleMenuMouseEnter );
@@ -7593,9 +7591,6 @@ namespace org.kbinani.cadencii
             stripBtnEraser.clickEvent.add( new BEventHandler( this, "stripBtnEraser_Click" ) );
             stripBtnGrid.clickEvent.add( new BEventHandler( this, "stripBtnGrid_Click" ) );
             stripBtnCurve.clickEvent.add( new BEventHandler( this, "stripBtnCurve_Click" ) );
-
-            stripBtnStartMarker.clickEvent.add( new BEventHandler( this, "handleStartMarker_Click" ) );
-            stripBtnEndMarker.clickEvent.add( new BEventHandler( this, "handleEndMarker_Click" ) );
 #else
             toolBarTool.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler( toolBarTool_ButtonClick );
             rebar.SizeChanged += new BEventHandler( toolStripContainer_TopToolStripPanel_SizeChanged );// toolStripContainer.TopToolStripPanel.SizeChanged += new BEventHandler( toolStripContainer_TopToolStripPanel_SizeChanged );
@@ -7624,8 +7619,11 @@ namespace org.kbinani.cadencii
         public void setResources()
         {
             try {
+#if !JAVA
                 this.stripLblGameCtrlMode.setIcon( new ImageIcon( Resources.get_slash() ) );
                 this.stripLblMidiIn.setIcon( new ImageIcon( Resources.get_slash() ) );
+#endif
+
 #if JAVA
                 stripBtnStepSequencer.setIcon( new ImageIcon( Resources.get_piano() ) );
 #else
@@ -7655,9 +7653,6 @@ namespace org.kbinani.cadencii
                 stripBtnEraser.setIcon( new ImageIcon( Resources.get_eraser() ) );
                 stripBtnGrid.setIcon( new ImageIcon( Resources.get_ruler_crop() ) );
                 stripBtnCurve.setIcon( new ImageIcon( Resources.get_layer_shape_curve() ) );
-
-                stripBtnStartMarker.setIcon( new ImageIcon( Resources.get_pin__arrow() ) );
-                stripBtnEndMarker.setIcon( new ImageIcon( Resources.get_pin__arrow_inv() ) );
 #endif
                 setIconImage( Resources.get_icon() );
             } catch ( Exception ex ) {
@@ -10853,8 +10848,10 @@ namespace org.kbinani.cadencii
                     if ( !event_processed && !SELECT && mLastBtnSelect ) {
                         event_processed = true;
                         mGameMode = GameControlMode.KEYBOARD;
+#if !JAVA
                         stripLblGameCtrlMode.setText( mGameMode.ToString() );
                         stripLblGameCtrlMode.setIcon( new ImageIcon( Resources.get_piano() ) );
+#endif
                     }
                     mLastBtnSelect = SELECT;
                 } else if ( mGameMode == GameControlMode.KEYBOARD ) {
@@ -15240,8 +15237,9 @@ namespace org.kbinani.cadencii
 
         public void cMenuPianoGrid_Click( Object sender, EventArgs e )
         {
-            cMenuPianoGrid.setSelected( !cMenuPianoGrid.isSelected() );
-            AppManager.setGridVisible( cMenuPianoGrid.isSelected() );
+            boolean new_v = !AppManager.isGridVisible();
+            cMenuPianoGrid.setSelected( new_v );
+            AppManager.setGridVisible( new_v );
         }
 
         public void cMenuPianoUndo_Click( Object sender, EventArgs e )
@@ -16170,14 +16168,9 @@ namespace org.kbinani.cadencii
         #region stripBtn*
         public void stripBtnGrid_Click( Object sender, EventArgs e )
         {
-#if JAVA
-            boolean pushed = stripBtnGrid.isSelected();
-            stripBtnGrid.setSelected( !pushed );
-#else
-            boolean pushed = stripBtnGrid.Pushed;
-            stripBtnGrid.Pushed = !pushed;
-#endif
-            AppManager.setGridVisible( !pushed );
+            boolean new_v = !AppManager.isGridVisible();
+            stripBtnGrid.setSelected( new_v );
+            AppManager.setGridVisible( new_v );
         }
 
         public void stripBtnArrow_Click( Object sender, EventArgs e )
@@ -16957,9 +16950,7 @@ namespace org.kbinani.cadencii
         public void handleEndMarker_Click( Object sender, EventArgs e )
         {
             AppManager.mEndMarkerEnabled = !AppManager.mEndMarkerEnabled;
-#if JAVA
-            stripBtnEndMarker.setSelected( AppManager.mEndMarkerEnabled );
-#else
+#if !JAVA
             stripBtnEndMarker.Pushed = AppManager.mEndMarkerEnabled;
 #endif
             menuVisualEndMarker.setSelected( AppManager.mEndMarkerEnabled );
@@ -17068,10 +17059,12 @@ namespace org.kbinani.cadencii
                 text = _( "Lengthen note end to neighboring note." );
             } else if ( sender == menuJobLyric ) {
                 text = _( "Import lyric." );
+#if !JAVA
             } else if ( sender == menuJobRewire ) {
                 text = _( "Import tempo from ReWire host." ) + _( "(not implemented)" );
             } else if ( sender == menuJobReloadVsti ) {
                 text = _( "Reload VSTi dll." ) + _( "(not implemented)" );
+#endif
             } else if ( sender == menuJobNormalize ) {
                 text = _( "Correct overlapped item." );
             } else if ( sender == menuJobInsertBar ) {
@@ -20086,7 +20079,7 @@ namespace org.kbinani.cadencii
             this.stripBtnStepSequencer.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.stripBtnStepSequencer.Name = "stripBtnStepSequencer";
             this.stripBtnStepSequencer.Size = new System.Drawing.Size( 113, 22 );
-            this.stripBtnStepSequencer.Text = "Step recording";
+            this.stripBtnStepSequencer.Text = "Step";
             // 
             // splitContainerProperty
             // 

@@ -3829,7 +3829,7 @@ namespace org.kbinani.cadencii
 #if CLIPBOARD_AS_TEXT
             if ( PortUtil.isClipboardContainsText() ) {
                 String clip = PortUtil.getClipboardText();
-                if ( clip.StartsWith( CLIP_PREFIX ) ) {
+                if ( clip != null && str.startsWith( clip, CLIP_PREFIX ) ) {
                     int index1 = clip.IndexOf( ":" );
                     int index2 = clip.IndexOf( ":", index1 + 1 );
                     String typename = clip.Substring( index1 + 1, index2 - index1 - 1 );

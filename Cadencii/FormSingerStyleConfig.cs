@@ -51,6 +51,20 @@ namespace org.kbinani.cadencii
 #else
             InitializeComponent();
 #endif
+
+            comboTemplate.removeAllItems();
+            String[] strs = new String[]{
+                "[Select a template]",
+                "normal",
+                "accent",
+                "strong accent",
+                "legato",
+                "slow legate",
+            };
+            for( int i = 0; i < strs.Length; i++ ){
+                comboTemplate.addItem( strs[i] );
+            }
+
             registerEventHandlers();
             setResources();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
@@ -289,43 +303,20 @@ namespace org.kbinani.cadencii
 
         public void comboBox1_SelectedIndexChanged( Object sender, EventArgs e )
         {
-            switch ( comboTemplate.getSelectedIndex() ) {
-                case 1:
-                setPMBendDepth( 8 );
-                setPMBendLength( 0 );
-                setPMbPortamentoUse( 0 );
-                setDEMdecGainRate( 50 );
-                setDEMaccent( 50 );
-                break;
-                case 2:
-                setPMBendDepth( 8 );
-                setPMBendLength( 0 );
-                setPMbPortamentoUse( 0 );
-                setDEMdecGainRate( 50 );
-                setDEMaccent( 68 );
-                break;
-                case 3:
-                setPMBendDepth( 8 );
-                setPMBendLength( 0 );
-                setPMbPortamentoUse( 0 );
-                setDEMdecGainRate( 70 );
-                setDEMaccent( 80 );
-                break;
-                case 4:
-                setPMBendDepth( 20 );
-                setPMBendLength( 0 );
-                setPMbPortamentoUse( 3 );
-                setDEMdecGainRate( 50 );
-                setDEMaccent( 42 );
-                break;
-                case 5:
-                setPMBendDepth( 20 );
-                setPMBendLength( 0 );
-                setPMbPortamentoUse( 3 );
-                setDEMdecGainRate( 50 );
-                setDEMaccent( 25 );
-                break;
+            int index = comboTemplate.getSelectedIndex() - 1;
+            if( index < 0 || 4 < index ){
+                return;
             }
+            int[] pm_bend_depth      = new int[]{  8,  8,  8, 20, 20 };
+            int[] pm_bend_length     = new int[]{  0,  0,  0,  0, 0 };
+            int[] pmb_portamento_use = new int[]{  0,  0,  0,  3, 3 };
+            int[] dem_dec_gain_rate  = new int[]{ 50, 50, 70, 50, 50 };
+            int[] dem_accent         = new int[]{ 50, 68, 80, 42, 25 };
+            setPMBendDepth( pm_bend_depth[index] );
+            setPMBendLength( pm_bend_length[index] );
+            setPMbPortamentoUse( pmb_portamento_use[index] );
+            setDEMdecGainRate( dem_dec_gain_rate[index] );
+            setDEMaccent( dem_accent[index] );
         }
 
         public void btnApply_Click( Object sender, EventArgs e )
