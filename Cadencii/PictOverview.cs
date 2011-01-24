@@ -314,6 +314,12 @@ namespace org.kbinani.cadencii
             return new Rectangle( AppManager.keyWidth - 16 - 2 - 48, 13, 22, 23 );
         }
 
+        public void updateCachedImage( int width_px )
+        {
+            mDrawer.setWidth( width_px );
+            mDrawer.updateCache( this );
+        }
+
         public void updateCachedImage()
         {
             VsqFileEx vsq = AppManager.getVsqFile();
@@ -327,8 +333,7 @@ namespace org.kbinani.cadencii
             int total_clocks = vsq.TotalClocks;
             if ( max < total_clocks ) max = total_clocks;
             int required_width = (int)(max * mOverviewPixelPerClock) + getWidth();
-            mDrawer.setWidth( required_width );
-            mDrawer.updateCache( this );
+            updateCachedImage( required_width );
         }
 
 #if JAVA

@@ -921,8 +921,8 @@ namespace org.kbinani.cadencii
             pictPianoRoll.MouseWheel += new BMouseEventHandler( pictPianoRoll_MouseWheel );
             trackSelector.MouseWheel += new BMouseEventHandler( trackSelector_MouseWheel );
             picturePositionIndicator.MouseWheel += new BMouseEventHandler( picturePositionIndicator_MouseWheel );
-            menuVisualOverview.CheckedChanged += new BEventHandler( menuVisualOverview_CheckedChanged );
 #endif
+            menuVisualOverview.CheckedChanged += new BEventHandler( menuVisualOverview_CheckedChanged );
 
             hScroll.setMaximum( AppManager.getVsqFile().TotalClocks + 240 );
             hScroll.setVisibleAmount( 240 * 4 );
@@ -2352,6 +2352,20 @@ namespace org.kbinani.cadencii
             Dimension d2 = new Dimension( keywidth, pictureBox3.getHeight() );
             pictureBox3.setPreferredSize( d2 );
             pictureBox3.setSize( d2 );
+            
+            Dimension overview_pref_size = panelOverview.getPreferredSize();
+            if( AppManager.editorConfig.OverviewEnabled ){
+                panel3.setPreferredSize( new Dimension( (int)overview_pref_size.getWidth(), _OVERVIEW_HEIGHT ) );
+                //panel3.setHeight( _OVERVIEW_HEIGHT );
+            }else{
+                panel3.setPreferredSize( new Dimension( (int)overview_pref_size.getWidth(), 0 ) );
+                //panel3.setHeight( 0 );
+            }
+            jPanel1.doLayout();
+            panel1.doLayout();
+            int overview_width = this.getWidth();
+            panelOverview.updateCachedImage( overview_width );
+            refreshScreenCore( null, null );
 #else
             int width = panel1.Width;
             int height = panel1.Height;
@@ -2873,7 +2887,7 @@ namespace org.kbinani.cadencii
         /// </summary>
         public void updateSplitContainer2Size()
         {
-            if ( menuVisualWaveform.isSelected() ) {
+            if ( AppManager.editorConfig.ViewWaveform ) {
                 splitContainer2.setPanel2MinSize( _SPL2_PANEL2_MIN_HEIGHT );
                 splitContainer2.setSplitterFixed( false );
                 splitContainer2.setDividerSize( _SPL_SPLITTER_WIDTH );
@@ -3092,7 +3106,7 @@ namespace org.kbinani.cadencii
             int txtlen = PortUtil.getStringLength( txt );
             if ( txtlen > 0 ) {
                 // 1文字目は，UTAUの連続音入力のハイフンの可能性があるので，無駄に置換されるのを回避
-                phrase[0] = txt.Substring( 0, 1 ) + ((txtlen > 1) ? txt.Substring( 1 ).Replace( "-", "" ) : "");
+                phrase[0] = str.sub( txt, 0, 1 ) + ((txtlen > 1) ? str.sub( txt, 1 ).Replace( "-", "" ) : "");
             } else {
                 phrase[0] = "";
             }
@@ -5745,7 +5759,6 @@ namespace org.kbinani.cadencii
 #if DEBUG
             AppManager.debugWriteLine( "FormMain#copyEvent" );
 #endif
-            AppManager.clearClipBoard();
             int min = int.MaxValue; // コピーされたアイテムの中で、最小の開始クロック
 
             if ( AppManager.isWholeSelectedIntervalEnabled() ) {
@@ -6100,7 +6113,30 @@ namespace org.kbinani.cadencii
         /// </summary>
         public void changeTrackNameCore()
         {
-            if ( mTextBoxTrackName != null ) {
+            InputBox ib = null;
+            try{
+                int selected = AppManager.getSelected();
+                VsqFileEx vsq = AppManager.getVsqFile();
+                ib = new InputBox( _( "Input new name of track" ) );
+                ib.setResult( vsq.Track.get( selected ).getName() );
+                ib.setLocation( getFormPreferedLocation( ib ) );
+                BDialogResult dr = AppManager.showModalDialog( ib, this );
+                if( dr == BDialogResult.OK ){
+                    String ret = ib.getResult();
+                    CadenciiCommand run = new CadenciiCommand(
+                        VsqCommand.generateCommandTrackChangeName( selected, ret ) );
+                    AppManager.register( vsq.executeCommand( run ) );
+                    setEdited( true );
+                    refreshScreen();
+                }
+            }catch( Exception ex ){
+            }finally{
+                if( ib != null ){
+                    ib.close();
+                }
+            }
+
+/*            if ( mTextBoxTrackName != null ) {
 #if !JAVA
                 if ( !mTextBoxTrackName.IsDisposed ) {
                     mTextBoxTrackName.Dispose();
@@ -6128,7 +6164,7 @@ namespace org.kbinani.cadencii
             mTextBoxTrackName.setSize( selector_width, TrackSelector.OFFSET_TRACK_TAB );
             mTextBoxTrackName.setVisible( true );
             mTextBoxTrackName.requestFocus();
-            mTextBoxTrackName.selectAll();
+            mTextBoxTrackName.selectAll();*/
         }
 
         /// <summary>
@@ -9849,6 +9885,9 @@ namespace org.kbinani.cadencii
 
         public void menuVisualOverview_CheckedChanged( Object sender, EventArgs e )
         {
+#if DEBUG
+            sout.println( "FormMain#menuVisualOverview_CheckedChanged; menuVisualOverview.isSelected()=" + menuVisualOverview.isSelected() );
+#endif
             AppManager.editorConfig.OverviewEnabled = menuVisualOverview.isSelected();
             updateLayout();
         }
@@ -9890,9 +9929,8 @@ namespace org.kbinani.cadencii
                     new BEventHandler( iconPalette_LocationChanged );
 #endif
             }
-            boolean old = menuVisualIconPalette.isSelected();
-            menuVisualIconPalette.setSelected( !old );
-            AppManager.iconPalette.setVisible( !old );
+            boolean pushed = menuVisualIconPalette.isSelected();
+            AppManager.iconPalette.setVisible( pushed );
         }
 
         public void menuVisualLyrics_CheckedChanged( Object sender, EventArgs e )
@@ -12915,14 +12953,14 @@ namespace org.kbinani.cadencii
                         String s = casted_owner_item.getText();
                         int i = s.IndexOf( "(&" );
                         if ( i > 0 ) {
-                            s = s.Substring( 0, i );
+                            s = str.sub( s, 0, i );
                         }
                         parent = s + " -> ";
                     }
                     String s1 = casted_menu.getText();
                     int i1 = s1.IndexOf( "(&" );
                     if ( i1 > 0 ) {
-                        s1 = s1.Substring( 0, i1 );
+                        s1 = str.sub( s1, 0, i1 );
                     }
                     dict.put( parent + s1, new ValuePair<String, BKeys[]>( name, configured.get( name ) ) );
                 }
@@ -13857,6 +13895,9 @@ namespace org.kbinani.cadencii
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuJobRandomize_Click; ex=" + ex + "\n" );
                 serr.println( "FormMain#menuJobRandomize_Click; ex=" + ex );
+#if JAVA
+                ex.printStackTrace();
+#endif
             } finally {
                 if ( dlg != null ) {
                     try {
@@ -16459,7 +16500,7 @@ namespace org.kbinani.cadencii
             }
         }
 
-        private void handleVibratoPresetSubelementClick( Object sender, EventArgs e )
+        public void handleVibratoPresetSubelementClick( Object sender, EventArgs e )
         {
             if ( sender == null ) {
                 return;

@@ -115,6 +115,10 @@ namespace org.kbinani.cadencii
             btnCancel.setText( _( "Cancel" ) );
             lblStart.setText( _( "From" ) );
             lblStart.setDisplayedMnemonic( KeyEvent.VK_F );
+#if JAVA
+            lblStart.setDisplayedMnemonicIndex( 0 );
+            lblStart.setLabelFor( numStart );
+#endif
             chkEnd.setText( _( "To" ) );
             chkEnd.setDisplayedMnemonicIndex( 0 );
             lblBar1.setText( _( "Measure" ) );

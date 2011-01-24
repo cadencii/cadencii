@@ -1,5 +1,6 @@
 package org.kbinani.windows.forms;
 
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -26,6 +27,21 @@ public class BLabel extends JLabel{
                 repaint();
             }
         } );
+    }
+    
+    public void setMnemonic( int value, Component comp )
+    {
+        char c = (char)value;
+        String text = getText();
+        int index = text.indexOf( value );
+        if( index < 0 ){
+            text += " (" + Character.toString( (char)value ) + ")";
+            index = text.lastIndexOf( value );
+            setText( text );
+        }
+        setDisplayedMnemonic( value );
+        setDisplayedMnemonicIndex( index );
+        setLabelFor( comp );
     }
     
     private GlyphVector getWrappedGlyphVector( String str, float wrapping, Font font, FontRenderContext frc ){

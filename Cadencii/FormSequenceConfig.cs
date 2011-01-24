@@ -17,6 +17,7 @@ package org.kbinani.cadencii;
 //INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/FormSequenceConfig.java
 
 import java.awt.*;
+import java.awt.event.*;
 import java.util.*;
 import java.io.*;
 import org.kbinani.*;
@@ -89,7 +90,10 @@ namespace org.kbinani.cadencii
             btnOK.setText( _( "OK" ) );
 
             groupWaveFileOutput.setTitle( _( "Wave File Output" ) );
-            lblChannel.setText( _( "Channel" ) + "(&C)" );
+            lblChannel.setText( _( "Channel" ) );
+            lblChannel.setMnemonic( KeyEvent.VK_C, comboChannel );
+            labelSampleRate.setText( _( "Sample rate" ) );
+            labelSampleRate.setMnemonic( KeyEvent.VK_S, comboSampleRate );
             radioMasterTrack.setText( _( "Master Track" ) );
             radioCurrentTrack.setText( _( "Current Track" ) );
             labelSampleRate.setText( _( "Sample rate" ) );

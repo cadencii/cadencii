@@ -42,6 +42,19 @@ public class BButton extends JButton
         addMouseWheelListener( this );
     }
 
+    public void setMnemonic( int value )
+    {
+        String text = getText();
+        int index = text.indexOf( value );
+        if( index < 0 ){
+            text += " (" + Character.toString( (char)value ) + ")";
+            index = text.lastIndexOf( value );
+            setText( text );
+        }
+        super.setMnemonic( value );
+        super.setDisplayedMnemonicIndex( index );
+    }
+    
     public Object getTag(){
         return m_tag;
     }

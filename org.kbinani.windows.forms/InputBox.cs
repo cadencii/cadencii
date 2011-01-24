@@ -13,11 +13,9 @@
  */
 #if JAVA
 package org.kbinani.windows.forms;
+//INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/windows/forms/InputBox.java
 
-import java.awt.*;
-import javax.swing.*;
 import org.kbinani.*;
-import org.kbinani.windows.forms.*;
 #else
 using System;
 using System.Windows.Forms;
@@ -28,175 +26,61 @@ namespace org.kbinani.windows.forms {
 #endif
 
 #if JAVA
-    public class InputBox extends BDialog {
+    public class InputBox extends BDialog
 #else
-    public class InputBox : BDialog {
+    public class InputBox : BDialog
 #endif
-        private BLabel lblMessage;
-        private BButton btnCancel;
-        private BTextBox txtInput;
-        private BButton btnOk;
+    {
+        public InputBox( String message )
+        {
 #if JAVA
-        public boolean closed = false;
-        private BDialogResult m_result = BDialogResult.CANCEL;
+            super();
+            initialize();
+#else
+            InitializeComponent();
+#endif
+            registerEventHandlers();
+            lblMessage.setText( message );
+        }
+
+        public String getResult()
+        {
+            return txtInput.getText();
+        }
+        
+        public void setResult( String value )
+        {
+            txtInput.setText( value );
+        }
+
+        public void btnCancel_Click( Object sender, BEventArgs e )
+        {
+            setDialogResult( BDialogResult.CANCEL );
+        }
+
+        public void btnOk_Click( Object sender, BEventArgs e )
+        {
+#if DEBUG
+            sout.println( "InputBox#btnOk_Click" );
+#endif
+            setDialogResult( BDialogResult.OK );
+        }
+
+        private void registerEventHandlers()
+        {
+            btnOk.Click += new BEventHandler( btnOk_Click );
+            btnCancel.Click += new BEventHandler( btnCancel_Click );
+        }
+
+#if JAVA
+        //INCLUDE-SECTION FIELD ../BuildJavaUI/src/org/kbinani/windows/forms/InputBox.java
+        //INCLUDE-SECTION METHOD ../BuildJavaUI/src/org/kbinani/windows/forms/InputBox.java
 #else
         /// <summary>
         /// 必要なデザイナ変数です。
         /// </summary>
         private System.ComponentModel.IContainer components = null;
-#endif
 
-        public InputBox( String message ) {
-#if JAVA
-            initializeComponent();
-#else
-            InitializeComponent();
-#endif
-            lblMessage.setText( message );
-        }
-
-#if JAVA
-        public class ShowDialogRunner implements Runnable{
-            public void run(){
-                show();
-                while( !closed ){
-                    try{
-                        Thread.sleep( 100 );
-                    }catch( Exception ex ){
-                        break;
-                    }
-                }
-                hide();
-            }
-        }
-
-        public BDialogResult showDialog(){
-            Thread t = new Thread( new ShowDialogRunner() );
-            t.run();
-            return m_result;
-        }
-#endif
-
-        public String getResult(){
-            return txtInput.getText();
-        }
-        
-        public void setResult( String value ){
-            txtInput.setText( value );
-        }
-
-        public void btnOk_Click( Object sender, BEventArgs e ) {
-#if JAVA
-            closed = true;
-            m_result = BDialogResult.OK;
-#else
-            DialogResult = DialogResult.OK;
-#endif
-        }
-
-#if JAVA
-        private void initializeComponent(){
-            txtInput = new BTextBox();
-            btnOk = new BButton();
-            lblMessage = new BLabel();
-            btnCancel = new BButton();
-            // 
-            // txtInput
-            // 
-            // 
-            // btnOk
-            // 
-            this.btnOk.setText( "OK" );
-            this.btnOk.clickEvent.add( new BEventHandler( this, "btnOk_Click" ) );
-            // 
-            // lblMessage
-            // 
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.setText( "Cancel" );
-            this.btnCancel.setVisible( false );
-            // 
-            // InputBox
-            // 
-            GridBagLayout gridbag = new GridBagLayout();
-            GridBagConstraints c = new GridBagConstraints();
-            setLayout( gridbag );
-            // 1段目
-            JPanel jp1_1 = new JPanel();
-            gridbag.setConstraints( jp1_1, c );
-            add( jp1_1 );
-
-            c.gridwidth = 2;
-            c.fill = GridBagConstraints.HORIZONTAL;
-            gridbag.setConstraints( lblMessage, c );
-            add( lblMessage );
-            
-            JPanel jp1_2 = new JPanel();
-            c.gridwidth = GridBagConstraints.REMAINDER;
-            c.fill = GridBagConstraints.NONE;
-            gridbag.setConstraints( jp1_2, c );
-            add( jp1_2 );
-
-            // 2段目
-            JPanel jp2_1 = new JPanel();
-            c.gridwidth = 1;
-            gridbag.setConstraints( jp2_1, c );
-            add( jp2_1 );
-            
-            c.gridwidth = 2;
-            c.fill = GridBagConstraints.HORIZONTAL;
-            c.weightx = 1.0;
-            gridbag.setConstraints( txtInput, c );
-            add( txtInput );
-            
-            JPanel jp2_2 = new JPanel();
-            c.gridwidth = GridBagConstraints.REMAINDER;
-            c.fill = GridBagConstraints.NONE;
-            c.weightx = 0.0;
-            gridbag.setConstraints( jp2_2, c );
-            add( jp2_2 );
-
-            // 3段目
-            JPanel jp3 = new JPanel();
-            c.gridwidth = GridBagConstraints.REMAINDER;
-            gridbag.setConstraints( jp3, c );
-            add( jp3 );
-
-            // 4段目
-            JPanel jp4_1 = new JPanel();
-            c.gridwidth = 2;
-            gridbag.setConstraints( jp4_1, c );
-            add( jp4_1 );
-            
-            c.gridwidth = 1;
-            c.anchor = GridBagConstraints.EAST;
-            gridbag.setConstraints( btnOk, c );
-            add( btnOk );
-            
-            JPanel jp4_2 = new JPanel();
-            c.gridwidth = GridBagConstraints.REMAINDER;
-            c.anchor = GridBagConstraints.CENTER;
-            gridbag.setConstraints( jp4_2, c );
-            add( jp4_2 );
-
-            // 5段目
-            JPanel jp5 = new JPanel();
-            c.gridwidth = GridBagConstraints.REMAINDER;
-            c.gridheight = GridBagConstraints.REMAINDER;
-            c.fill = GridBagConstraints.BOTH;
-            gridbag.setConstraints( jp5, c );
-            add( jp5 );
-
-            this.formClosedEvent.add( new BEventHandler( this, "InputBox_FormClosed" ) );
-            this.setTitle( "InputBox" );
-            this.setSize( 339, 110 );
-        }
-
-        public void InputBox_FormClosed( Object sender, BEventArgs e ){
-            closed = true;
-        }
-#else
         /// <summary>
         /// 使用中のリソースをすべてクリーンアップします。
         /// </summary>
@@ -239,7 +123,6 @@ namespace org.kbinani.windows.forms {
             this.btnOk.TabIndex = 1;
             this.btnOk.Text = "OK";
             this.btnOk.UseVisualStyleBackColor = true;
-            this.btnOk.Click += new System.EventHandler( this.btnOk_Click );
             // 
             // lblMessage
             // 
@@ -283,6 +166,11 @@ namespace org.kbinani.windows.forms {
 
         }
         #endregion
+
+        private BLabel lblMessage;
+        private BButton btnCancel;
+        private BTextBox txtInput;
+        private BButton btnOk;
 #endif
     }
 

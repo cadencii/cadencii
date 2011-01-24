@@ -16,6 +16,7 @@ package org.kbinani.cadencii;
 
 //INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/Cadencii/FormTempoConfig.java
 
+import java.awt.event.*;
 import org.kbinani.*;
 import org.kbinani.apputil.*;
 import org.kbinani.windows.forms.*;
@@ -67,9 +68,12 @@ namespace org.kbinani.cadencii
         {
             setTitle( _( "Global Tempo" ) );
             groupPosition.setTitle( _( "Position" ) );
-            lblBar.setText( _( "Measure" ) + "(&M)" );
-            lblBeat.setText( _( "Beat" ) + "(&B)" );
-            lblClock.setText( _( "Clock" ) + "(&L)" );
+            lblBar.setText( _( "Measure" ) );
+            lblBar.setMnemonic( KeyEvent.VK_M, numBar );
+            lblBeat.setText( _( "Beat" ) );
+            lblBeat.setMnemonic( KeyEvent.VK_B, numBeat );
+            lblClock.setText( _( "Clock" ) );
+            lblClock.setMnemonic( KeyEvent.VK_L, numClock );
             groupTempo.setTitle( _( "Tempo" ) );
             btnOK.setText( _( "OK" ) );
             btnCancel.setText( _( "Cancel" ) );

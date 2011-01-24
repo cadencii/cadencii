@@ -3455,9 +3455,9 @@ public class FormMain extends BForm {
     private BPanel getPanel3() {
         if (panel3 == null) {
             GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
-            gridBagConstraints6.gridx = 1;
+            gridBagConstraints6.gridx = 0;
             gridBagConstraints6.weightx = 1.0D;
-            gridBagConstraints6.gridheight = 2;
+            gridBagConstraints6.gridheight = 1;
             gridBagConstraints6.weighty = 1.0D;
             gridBagConstraints6.fill = GridBagConstraints.BOTH;
             gridBagConstraints6.gridy = 0;
@@ -3560,7 +3560,6 @@ public class FormMain extends BForm {
             trackBar = new BSlider();
             trackBar.setPreferredSize(new Dimension(83, 17));
             trackBar.setMinimum(17);
-            trackBar.setPreferredSize(new Dimension(200, 16));
             trackBar.setMaximum(609);
         }
         return trackBar;

@@ -137,7 +137,7 @@ namespace org.kbinani.vsq
                     // コメントを除去する
                     int indx_colon = line.IndexOf( ';' );
                     if ( indx_colon >= 0 ) {
-                        line = line.Substring( 0, indx_colon );
+                        line = str.sub( line, 0, indx_colon );
                     }
                     // セクション名の指定行
                     if ( line.StartsWith( "[" ) ) {

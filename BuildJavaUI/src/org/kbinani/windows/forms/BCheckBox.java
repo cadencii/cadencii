@@ -25,6 +25,19 @@ public class BCheckBox extends JCheckBox
         addItemListener( this );
     }
 
+    public void setMnemonic( int value )
+    {
+        String text = getText();
+        int index = text.indexOf( value );
+        if( index < 0 ){
+            text += " (" + Character.toString( (char)value ) + ")";
+            index = text.lastIndexOf( value );
+            setText( text );
+        }
+        super.setMnemonic( value );
+        super.setDisplayedMnemonicIndex( index );
+    }
+    
     // root impl of Click event is in BButton
     public BEvent<BEventHandler> clickEvent = new BEvent<BEventHandler>();
     public void actionPerformed( ActionEvent e ){

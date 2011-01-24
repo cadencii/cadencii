@@ -2944,8 +2944,8 @@ namespace org.kbinani.vsq
                         while ( PortUtil.getEncodedByteCount( encoding, tmp + getLinePrefix( line_count + 1 ) ) >= 127 ) {
                             line_count++;
                             tmp = getLinePrefix( line_count ) + tmp;
-                            String work = substring127Bytes( tmp, encoding );// tmp.Substring( 0, 127 );
-                            tmp = tmp.Substring( PortUtil.getStringLength( work ) );
+                            String work = substring127Bytes( tmp, encoding );
+                            tmp = str.sub( tmp, PortUtil.getStringLength( work ) );
                             line_bytes = PortUtil.getEecodedByte( encoding, work );
                             MidiEvent add = new MidiEvent();
                             add.clock = 0;
@@ -2963,7 +2963,7 @@ namespace org.kbinani.vsq
                     tmp = getLinePrefix( line_count ) + tmp + _NL;
                     while ( PortUtil.getEncodedByteCount( encoding, tmp ) > 127 ) {
                         String work = substring127Bytes( tmp, encoding );
-                        tmp = tmp.Substring( PortUtil.getStringLength( work ) );
+                        tmp = str.sub( tmp, PortUtil.getStringLength( work ) );
                         line_bytes = PortUtil.getEecodedByte( encoding, work );
                         MidiEvent add = new MidiEvent();
                         add.clock = 0;
@@ -3014,9 +3014,9 @@ namespace org.kbinani.vsq
         private static String substring127Bytes( String s, String encoding )
         {
             int count = Math.Min( 127, PortUtil.getStringLength( s ) );
-            int c = PortUtil.getEncodedByteCount( encoding, s.Substring( 0, count ) );
+            int c = PortUtil.getEncodedByteCount( encoding, str.sub( s, 0, count ) );
             if ( c == 127 ) {
-                return s.Substring( 0, count );
+                return str.sub( s, 0, count );
             }
             int delta = c > 127 ? -1 : 1;
             while ( (delta == -1 && c > 127) || (delta == 1 && c < 127) ) {
@@ -3026,9 +3026,9 @@ namespace org.kbinani.vsq
                 } else if ( delta == 1 && count == PortUtil.getStringLength( s ) ) {
                     break;
                 }
-                c = PortUtil.getEncodedByteCount( encoding, s.Substring( 0, count ) );
+                c = PortUtil.getEncodedByteCount( encoding, str.sub( s, 0, count ) );
             }
-            return s.Substring( 0, count );
+            return str.sub( s, 0, count );
         }
 
         private static void printTrack( VsqFile vsq, int track, RandomAccessFile fs, int msPreSend, String encoding )
@@ -3261,7 +3261,7 @@ namespace org.kbinani.vsq
             if ( ve.ID.VibratoHandle != null ) {
                 add.append( NRPN.CVM_NM_INDEX_OF_VIBRATO_DB, (byte)0x00, (byte)0x00, true );
                 String icon_id = ve.ID.VibratoHandle.IconID;
-                String num = icon_id.Substring( PortUtil.getStringLength( icon_id ) - 4 );
+                String num = str.sub( icon_id, PortUtil.getStringLength( icon_id ) - 4 );
                 int vibrato_type = (int)PortUtil.fromHexString( num );
                 int note_length = ve.ID.getLength();
                 int vibrato_delay = ve.ID.VibratoDelay;

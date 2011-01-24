@@ -220,7 +220,7 @@ namespace org.kbinani.vsq
                                     ue.PreUtterance = PortUtil.parseFloat( spl[1] );
                                 }
                             } else if ( spl[0].Equals( "Flags" ) ) {
-                                ue.Flags = line.Substring( 6 );
+                                ue.Flags = str.sub( line, 6 );
                             } else if ( spl[0].Equals( "StartPoint" ) ) {
                                 try {
                                     float stp = PortUtil.parseFloat( spl[1] );

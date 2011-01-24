@@ -16,6 +16,7 @@ public class BListBox extends JList
         super();
         mModel = new DefaultListModel();
         super.setModel( mModel );
+        addListSelectionListener( this );
     }
     
     public int getItemCount(){

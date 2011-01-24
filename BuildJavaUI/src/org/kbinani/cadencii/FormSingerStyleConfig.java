@@ -117,7 +117,7 @@ public class FormSingerStyleConfig extends BForm {
     private BComboBox getComboTemplate() {
         if (comboTemplate == null) {
             comboTemplate = new BComboBox();
-            comboTemplate.setPreferredSize(new Dimension(121, 27));
+            comboTemplate.setPreferredSize(new Dimension(140, 27));
         }
         return comboTemplate;
     }
@@ -508,6 +508,7 @@ public class FormSingerStyleConfig extends BForm {
             gridBagConstraints16.gridwidth = 2;
             gridBagConstraints16.fill = GridBagConstraints.HORIZONTAL;
             gridBagConstraints16.insets = new Insets(6, 12, 6, 12);
+            gridBagConstraints16.weightx = 1.0D;
             gridBagConstraints16.gridy = 2;
             GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
             gridBagConstraints15.gridx = 0;

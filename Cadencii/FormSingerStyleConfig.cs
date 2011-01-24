@@ -17,6 +17,7 @@ package org.kbinani.cadencii;
 //INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/Cadencii/FormSingerStyleConfig.java
 
 import java.awt.*;
+import java.awt.event.*;
 import org.kbinani.*;
 import org.kbinani.apputil.*;
 import org.kbinani.windows.forms.*;
@@ -75,20 +76,28 @@ namespace org.kbinani.cadencii
         #region public methods
         public void applyLanguage()
         {
-            lblTemplate.setText( _( "Template" ) + "(&T)" );
+            lblTemplate.setText( _( "Template" ) );
+            lblTemplate.setMnemonic( KeyEvent.VK_T, comboTemplate );
             groupPitchControl.setTitle( _( "Pitch Control" ) );
-            lblBendDepth.setText( _( "Bend Depth" ) + "(&B)" );
-            lblBendLength.setText( _( "Bend Length" ) + "(&L)" );
-            chkUpPortamento.setText( _( "Add portamento in rising movement" ) + "(&R)" );
-            chkDownPortamento.setText( _( "Add portamento in falling movement" ) + "(&F)" );
+            lblBendDepth.setText( _( "Bend Depth" ) );
+            lblBendDepth.setMnemonic( KeyEvent.VK_B, txtBendDepth );
+            lblBendLength.setText( _( "Bend Length" ) );
+            lblBendLength.setMnemonic( KeyEvent.VK_L, txtBendLength );
+            chkUpPortamento.setText( _( "Add portamento in rising movement" ) );
+            chkUpPortamento.setMnemonic( KeyEvent.VK_R );
+            chkDownPortamento.setText( _( "Add portamento in falling movement" ) );
+            chkDownPortamento.setMnemonic( KeyEvent.VK_F );
 
             groupDynamicsControl.setTitle( _( "Dynamics Control" ) );
-            lblDecay.setText( _( "Decay" ) + "(&D)" );
-            lblAccent.setText( _( "Accent" ) + "(&A)" );
+            lblDecay.setText( _( "Decay" ) );
+            lblDecay.setMnemonic( KeyEvent.VK_D, txtDecay );
+            lblAccent.setText( _( "Accent" ) );
+            lblAccent.setMnemonic( KeyEvent.VK_A, txtAccent );
 
             btnOK.setText( _( "OK" ) );
             btnCancel.setText( _( "Cancel" ) );
-            btnApply.setText( _( "Apply to current track" ) + "(&C)" );
+            btnApply.setText( _( "Apply to current track" ) );
+            btnApply.setMnemonic( KeyEvent.VK_C );
 
 #if !JAVA
             lblTemplate.Left = comboTemplate.Left - lblTemplate.Width;

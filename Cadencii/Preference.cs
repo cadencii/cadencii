@@ -17,6 +17,7 @@ package org.kbinani.cadencii;
 //INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/Cadencii/Preference.java
 
 import java.awt.*;
+import java.awt.event.*;
 import java.util.*;
 import java.io.*;
 import org.kbinani.*;
@@ -921,28 +922,40 @@ namespace org.kbinani.cadencii
 
             #region tabSequence
             lblResolution.setText( _( "Resolution(VSTi)" ) );
-            lblResolControlCurve.setText( _( "Control Curve" ) + "(&C)" );
+            lblResolControlCurve.setText( _( "Control Curve" ) );
+            lblResolControlCurve.setMnemonic( KeyEvent.VK_C, comboResolControlCurve );
 
-            chkEnableAutoVibrato.setText( _( "Enable Automatic Vibrato" ) + "(&E)" );
-            lblVibratoLength.setText( _( "Default Vibrato Length" ) + "(&L)" );
-            lblAutoVibratoThresholdLength.setText( _( "Minimum note length for Automatic Vibrato" ) + "(&M)" );
+            chkEnableAutoVibrato.setText( _( "Enable Automatic Vibrato" ) );
+            chkEnableAutoVibrato.setMnemonic( KeyEvent.VK_E );
+            lblVibratoLength.setText( _( "Default Vibrato Length" ) );
+            lblVibratoLength.setMnemonic( KeyEvent.VK_L, comboVibratoLength );
+            lblAutoVibratoThresholdLength.setText( _( "Minimum note length for Automatic Vibrato" ) );
+            lblAutoVibratoThresholdLength.setMnemonic( KeyEvent.VK_M, txtAutoVibratoThresholdLength );
 
             lblAutoVibratoType.setText( _( "Auto Vibrato Type" ) );
             groupVocaloidEditorCompatible.setTitle( _( "VOCALOID Editor Compatible" ) );
             groupUserDefined.setTitle( _( "User Defined" ) );
             radioVocaloidEditorCompatible.setText( _( "VOCALOID Editor Compatible" ) );
             radioUserDefined.setText( _( "User Defined" ) );
-            chkEnableAutoVibrato.setText( _( "Enable Automatic Vibrato" ) + "(&E)" );
-            lblAutoVibratoType1.setText( _( "Vibrato Type" ) + ": VOCALOID1 (&T)" );
-            lblAutoVibratoType2.setText( _( "Vibrato Type" ) + ": VOCALOID2 (&T)" );
+            chkEnableAutoVibrato.setText( _( "Enable Automatic Vibrato" ) );
+            chkEnableAutoVibrato.setMnemonic( KeyEvent.VK_E );
+            lblAutoVibratoType1.setText( _( "Vibrato Type" ) + ": VOCALOID1" );
+            lblAutoVibratoType1.setMnemonic( KeyEvent.VK_T, comboAutoVibratoType1 );
+            lblAutoVibratoType2.setText( _( "Vibrato Type" ) + ": VOCALOID2" );
+            lblAutoVibratoType2.setMnemonic( KeyEvent.VK_T, comboAutoVibratoType2 );
             #endregion
 
             #region tabAnother
-            lblDefaultSinger.setText( _( "Default Singer" ) + "(&S)" );
-            lblPreSendTime.setText( _( "Pre-Send time" ) + "(&P)" );
-            lblWait.setText( _( "Waiting Time" ) + "(&W)" );
-            chkChasePastEvent.setText( _( "Chase Event" ) + "(&C)" );
-            lblBuffer.setText( _( "Buffer Size" ) + "(&B)" );
+            lblDefaultSinger.setText( _( "Default Singer" ) );
+            lblDefaultSinger.setMnemonic( KeyEvent.VK_S, comboDefualtSinger );
+            lblPreSendTime.setText( _( "Pre-Send time" ) );
+            lblPreSendTime.setMnemonic( KeyEvent.VK_P, numPreSendTime );
+            lblWait.setText( _( "Waiting Time" ) );
+            lblWait.setMnemonic( KeyEvent.VK_W, numWait );
+            chkChasePastEvent.setText( _( "Chase Event" ) );
+            chkChasePastEvent.setMnemonic( KeyEvent.VK_C );
+            lblBuffer.setText( _( "Buffer Size" ) );
+            lblBuffer.setMnemonic( KeyEvent.VK_B, numBuffer );
             lblBufferSize.setText( "msec(" + EditorConfig.MIN_BUFFER_MILLIXEC + "-" + EditorConfig.MAX_BUFFER_MILLISEC + ")" );
             #endregion
 

@@ -212,6 +212,7 @@ public class FormBeatConfig extends BForm {
         if (numEnd == null) {
             numEnd = new BNumericUpDown();
             numEnd.setPreferredSize(new Dimension(31, 29));
+            numEnd.setEnabled(false);
         }
         return numEnd;
     }

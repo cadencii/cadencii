@@ -274,7 +274,7 @@ namespace org.kbinani.cadencii
                     break;
                 }
 
-                value = value.Substring( trim );
+                value = str.sub( value, trim );
                 int draft_scale;
                 try {
                     draft_scale = PortUtil.parseInt( value );

@@ -345,11 +345,11 @@ namespace org.kbinani.vsq
             for ( Iterator<String> itr = dir.iterator(); itr.hasNext(); ) {
                 String s = itr.next();
                 if ( s.StartsWith( header + "\\APPLICATION" ) ) {
-                    application.add( s.Substring( PortUtil.getStringLength( header + "\\APPLICATION" ) ) );
+                    application.add( str.sub( s, PortUtil.getStringLength( header + "\\APPLICATION" ) ) );
                 } else if ( s.StartsWith( header + "\\DATABASE\\EXPRESSION" ) ) {
-                    expression.add( s.Substring( PortUtil.getStringLength( header + "\\DATABASE\\EXPRESSION" ) ) );
+                    expression.add( str.sub( s, PortUtil.getStringLength( header + "\\DATABASE\\EXPRESSION" ) ) );
                 } else if ( s.StartsWith( header + "\\DATABASE\\VOICE" ) ) {
-                    voice.add( s.Substring( PortUtil.getStringLength( header + "\\DATABASE\\VOICE\\" ) ) );
+                    voice.add( str.sub( s, PortUtil.getStringLength( header + "\\DATABASE\\VOICE\\" ) ) );
                 }
             }
 

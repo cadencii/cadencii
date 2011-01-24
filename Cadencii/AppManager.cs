@@ -3775,7 +3775,7 @@ namespace org.kbinani.cadencii
                 index = s.IndexOf( ":", index + 1 );
                 Object ret = null;
                 try {
-                    ByteArrayInputStream bais = new ByteArrayInputStream( Base64.decode( s.Substring( index + 1 ) ) );
+                    ByteArrayInputStream bais = new ByteArrayInputStream( Base64.decode( str.sub( s, index + 1 ) ) );
                     ObjectInputStream ois = new ObjectInputStream( bais );
                     ret = ois.readObject();
                 } catch ( Exception ex ) {
@@ -3789,34 +3789,20 @@ namespace org.kbinani.cadencii
         }
 #endif
 
-        public static void clearClipBoard()
-        {
-#if CLIPBOARD_AS_TEXT
-            if ( PortUtil.isClipboardContainsText() ) {
-                String clip = PortUtil.getClipboardText();
-                if ( clip != null && clip.StartsWith( CLIP_PREFIX ) ) {
-                    PortUtil.clearClipboard();
-                }
-            }
-#else
-            if ( Clipboard.ContainsData( typeof( ClipboardEntry ) + "" ) ) {
-                Clipboard.Clear();
-            }
-#endif
-        }
-
         public static void setClipboard( ClipboardEntry item )
         {
 #if CLIPBOARD_AS_TEXT
             String clip = "";
             try {
                 clip = getSerializedText( item );
+#if DEBUG
+                sout.println( "AppManager#setClipboard; clip=" + clip );
+#endif
             } catch ( Exception ex ) {
                 serr.println( "AppManager#setClipboard; ex=" + ex );
                 Logger.write( typeof( AppManager ) + ".setClipboard; ex=" + ex + "\n" );
                 return;
             }
-            PortUtil.clearClipboard();
             PortUtil.setClipboardText( clip );
 #else
             Clipboard.SetDataObject( item, false );
@@ -3827,22 +3813,23 @@ namespace org.kbinani.cadencii
         {
             ClipboardEntry ce = null;
 #if CLIPBOARD_AS_TEXT
-            if ( PortUtil.isClipboardContainsText() ) {
-                String clip = PortUtil.getClipboardText();
-                if ( clip != null && str.startsWith( clip, CLIP_PREFIX ) ) {
-                    int index1 = clip.IndexOf( ":" );
-                    int index2 = clip.IndexOf( ":", index1 + 1 );
-                    String typename = clip.Substring( index1 + 1, index2 - index1 - 1 );
-#if JAVA
-                    if ( typename.Equals( ClipboardEntry.class.getName() ) ) {
-#else
-                    if ( typename.Equals( typeof( ClipboardEntry ).FullName ) ) {
+            String clip = PortUtil.getClipboardText();
+            if ( clip != null && str.startsWith( clip, CLIP_PREFIX ) ) {
+                int index1 = clip.IndexOf( ":" );
+                int index2 = clip.IndexOf( ":", index1 + 1 );
+                String typename = str.sub( clip, index1 + 1, index2 - index1 - 1 );
+#if DEBUG
+                sout.println( "AppManager#getCopiedItems; typename=" + typename );
 #endif
-                        try {
-                            ce = (ClipboardEntry)getDeserializedObjectFromText( clip );
-                        } catch ( Exception ex ) {
-                            Logger.write( typeof( AppManager ) + ".getCopiedItems; ex=" + ex + "\n" );
-                        }
+#if JAVA
+                if ( typename.Equals( ClipboardEntry.class.getName() ) ) {
+#else
+                if ( typename.Equals( typeof( ClipboardEntry ).FullName ) ) {
+#endif
+                    try {
+                        ce = (ClipboardEntry)getDeserializedObjectFromText( clip );
+                    } catch ( Exception ex ) {
+                        Logger.write( typeof( AppManager ) + ".getCopiedItems; ex=" + ex + "\n" );
                     }
                 }
             }
@@ -3895,18 +3882,14 @@ namespace org.kbinani.cadencii
             String clip = "";
             try {
                 clip = getSerializedText( ce );
-            } catch ( Exception ex ) {
-#if JAVA
-                System.err.println( "AppManager#setCopiedEvent; ex=" + ex );
-#else // JAVA
 #if DEBUG
-                sout.println( "AppManager#setCopiedEvent; ex=" + ex );
-#endif // DEBUG
-#endif // JAVA
+                sout.println( "AppManager#setClipboard; clip=" + clip );
+#endif
+            } catch ( Exception ex ) {
+                serr.println( "AppManager#setClipboard; ex=" + ex );
                 Logger.write( typeof( AppManager ) + ".setClipboard; ex=" + ex + "\n" );
                 return;
             }
-            PortUtil.clearClipboard();
             PortUtil.setClipboardText( clip );
 #else // CLIPBOARD_AS_TEXT
 #if DEBUG

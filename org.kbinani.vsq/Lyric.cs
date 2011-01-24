@@ -426,7 +426,7 @@ namespace org
                                     if ( work.StartsWith( "\"" ) && work.EndsWith( "\"" ) ) {
                                         int l = str.length( work );
                                         if ( l > 2 ) {
-                                            Phrase = work.Substring( 1, l - 2 );
+                                            Phrase = str.sub( work, 1, l - 2 );
                                         } else {
                                             Phrase = "a";
                                         }
@@ -440,7 +440,7 @@ namespace org
                                     if ( work.StartsWith( "\"" ) && work.EndsWith( "\"" ) ) {
                                         int l = PortUtil.getStringLength( work );
                                         if ( l > 2 ) {
-                                            symbols = work.Substring( 1, l - 2 );
+                                            symbols = str.sub( work, 1, l - 2 );
                                         } else {
                                             symbols = "a";
                                         }

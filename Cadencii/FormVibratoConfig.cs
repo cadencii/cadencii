@@ -16,6 +16,7 @@ package org.kbinani.cadencii;
 
 //INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/Cadencii/FormVibratoConfig.java
 
+import java.awt.event.*;
 import java.util.*;
 import org.kbinani.*;
 import org.kbinani.apputil.*;
@@ -134,8 +135,10 @@ namespace org.kbinani.cadencii
         public void applyLanguage()
         {
             setTitle( _( "Vibrato property" ) );
-            lblVibratoLength.setText( _( "Vibrato length" ) + "(&L)" );
-            lblVibratoType.setText( _( "Vibrato Type" ) + "(&T)" );
+            lblVibratoLength.setText( _( "Vibrato length" ) );
+            lblVibratoLength.setMnemonic( KeyEvent.VK_L, txtVibratoLength );
+            lblVibratoType.setText( _( "Vibrato Type" ) );
+            lblVibratoType.setMnemonic( KeyEvent.VK_T, comboVibratoType );
             btnOK.setText( _( "OK" ) );
             btnCancel.setText( _( "Cancel" ) );
             groupSelect.setTitle( _( "Select from" ) );

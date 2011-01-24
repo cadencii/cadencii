@@ -21,6 +21,10 @@ using System;
 namespace org.kbinani.windows.forms {
 
     public class BButton : System.Windows.Forms.Button {
+        public void setMnemonic( int value ) {
+            setText( BMenuItem.setMnemonicFromText( getText(), value ) );
+        }
+
         #region java.awt.Component
         // root implementation of java.awt.Component is in BForm.cs
         public java.awt.Dimension getMinimumSize() {

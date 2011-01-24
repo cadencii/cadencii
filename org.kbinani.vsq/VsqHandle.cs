@@ -309,7 +309,7 @@ namespace org.kbinani.vsq
                 } else if ( search.Equals( "DynBPY" ) ) {
                     tmpDynBPY = spl[1];
                 } else if ( search.StartsWith( "L" ) && PortUtil.getStringLength( search ) >= 2 ) {
-                    String num = search.Substring( 1 );
+                    String num = str.sub( search, 1 );
                     ByRef<Integer> vals = new ByRef<Integer>( 0 );
                     if ( PortUtil.tryParseInt( num, vals ) ) {
                         Lyric lyric = new Lyric( spl[1] );

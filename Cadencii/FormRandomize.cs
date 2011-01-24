@@ -63,6 +63,38 @@ namespace org.kbinani.cadencii
 #endif
             registerEventHandlers();
             applyLanguage();
+
+            comboShiftValue.removeAllItems();
+            String[] shift_items = new String[]{
+                "1(small)",
+                "2",
+                "3(medium)",
+                "4",
+                "5(large)"};
+            for( int i = 0; i < shift_items.Length; i++ ){
+                comboShiftValue.addItem( shift_items[i] );
+            }
+            
+            comboPitPattern.removeAllItems();
+            String[] pit_pat_items = new String[]{
+                "Pattern 1",
+                "Pattern 2",
+                "Pattern 3"};
+            for( int i = 0; i < pit_pat_items.Length; i++ ){
+                comboPitPattern.addItem( pit_pat_items[i] );
+            }
+
+            comboPitValue.removeAllItems();
+            String[] pit_value_items = new String[]{
+                "1(small)",
+                "2",
+                "3(medium)",
+                "4",
+                "5(large)"};
+            for( int i = 0; i < pit_value_items.Length; i++ ){
+                comboPitValue.addItem( pit_value_items[i] );
+            }
+
             chkShift.setSelected( lastPositionRandomizeEnabled );
             comboShiftValue.setSelectedIndex( lastPositionRandomizeValue - 1 );
             chkPit.setSelected( lastPitRandomizeEnabled );

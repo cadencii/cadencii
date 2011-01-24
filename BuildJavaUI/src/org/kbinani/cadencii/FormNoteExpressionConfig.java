@@ -100,6 +100,7 @@ public class FormNoteExpressionConfig extends BForm {
 			gridBagConstraints19.gridx = 0;
 			gridBagConstraints19.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints19.insets = new Insets(12, 12, 0, 12);
+			gridBagConstraints19.weightx = 1.0D;
 			gridBagConstraints19.gridy = 3;
 			GridBagConstraints gridBagConstraints16 = new GridBagConstraints();
 			gridBagConstraints16.gridx = 0;
@@ -175,7 +176,7 @@ public class FormNoteExpressionConfig extends BForm {
 	private BComboBox getComboTemplate() {
 		if (comboTemplate == null) {
 			comboTemplate = new BComboBox();
-			comboTemplate.setPreferredSize(new Dimension(121, 27));
+			comboTemplate.setPreferredSize(new Dimension(140, 27));
 		}
 		return comboTemplate;
 	}

@@ -344,37 +344,15 @@ namespace org.kbinani {
 #endif
         }
 
-        public static void clearClipboard() {
-#if JAVA
-            Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();
-		    clip.setContents( new StringSelection( null ), null );
-#else
-            System.Windows.Forms.Clipboard.Clear();
-#endif
-        }
-
-        public static boolean isClipboardContainsText() {
-#if JAVA
-            Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();
-            Transferable data = clip.getContents( null );
-
-            if( data == null || !data.isDataFlavorSupported( DataFlavor.stringFlavor ) ){
-                return true;
-            }else{
-                return false;
-            }
-#else
-            return System.Windows.Forms.Clipboard.ContainsText();
-#endif
-        }
-
         public static String getClipboardText() {
 #if JAVA
             Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();
             Transferable data = clip.getContents( null );
 
             String str = null;
-            if( data == null || !data.isDataFlavorSupported( DataFlavor.stringFlavor ) ){
+            if( data == null ){
+                str = null;
+            }else if( !data.isDataFlavorSupported( DataFlavor.stringFlavor ) ){
                 str = null;
             }else{
                 try {

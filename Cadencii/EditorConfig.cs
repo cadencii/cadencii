@@ -742,7 +742,7 @@ namespace org.kbinani.cadencii
             if ( extension.Equals( "." ) ) return "";
 
             if ( extension.StartsWith( "." ) ) {
-                extension = extension.Substring( 1 );
+                extension = str.sub( extension, 1 );
             }
 
             int c = list.size();
@@ -765,7 +765,7 @@ namespace org.kbinani.cadencii
             if ( extension == null ) return;
             if ( extension.Equals( "." ) ) return;
             if ( extension.StartsWith( "." ) ) {
-                extension = extension.Substring( 1 );
+                extension = str.sub( extension, 1 );
             }
 
             int c = list.size();
@@ -963,7 +963,7 @@ namespace org.kbinani.cadencii
                         trimlen = len;
                     }
                     if ( trimlen > 0 ) {
-                        String s = this.AutoVibratoTypeCustom.Substring( len - trimlen, trimlen );
+                        String s = str.sub( this.AutoVibratoTypeCustom, len - trimlen, trimlen );
                         try {
                             index = (int)PortUtil.fromHexString( s );
                             index--;

@@ -794,9 +794,9 @@ namespace org.kbinani.cadencii{
                 int eq_mi_1 = equ[m1 - 1];
 #endif
                 if ( m1 == 0 || eq_mi_1 == 40 || eq_mi_1 == 42 || eq_mi_1 == 47 || eq_mi_1 == 43 || eq_mi_1 == 44 ) {
-                    equ = equ.Substring( 0, m1 - 0 ) + equ.Substring( m1 + 2 ); // -- を 取る
+                    equ = str.sub( equ, 0, m1 - 0 ) + str.sub( equ, m1 + 2 ); // -- を 取る
                 } else {
-                    equ = equ.Substring( 0, m1 - 0 ) + "+" + equ.Substring( m1 + 2 ); // -- を + に置換
+                    equ = str.sub( equ, 0, m1 - 0 ) + "+" + str.sub( equ, m1 + 2 ); // -- を + に置換
                 }
                 m0 = m1;
                 if ( m0 > PortUtil.getStringLength( equ ) - 1 ) {
@@ -818,7 +818,7 @@ namespace org.kbinani.cadencii{
                 if ( m1 == 0 || eq_mi_1 == 40 || eq_mi_1 == 42 || eq_mi_1 == 47 || eq_mi_1 == 43 || eq_mi_1 == 44 ) {
                     m0 = m1 + 1;
                 } else {
-                    equ = equ.Substring( 0, m1 - 0 ) + "+(-1)*" + equ.Substring( m1 + 1 ); // -a、-Math.sin(A) などを +(-1)*a、 +(-1)*Math.sin(A) などに置き換える
+                    equ = str.sub( equ, 0, m1 - 0 ) + "+(-1)*" + str.sub( equ, m1 + 1 ); // -a、-Math.sin(A) などを +(-1)*a、 +(-1)*Math.sin(A) などに置き換える
                     m0 = m1 + 6;
                 }
                 if ( m0 > PortUtil.getStringLength( equ ) - 1 ) {
@@ -842,36 +842,36 @@ namespace org.kbinani.cadencii{
                 if ( n2 < 0 ) {
                     break;
                 }
-                String str = equ.Substring( n2 + 1, n1 - n2 - 1 ); // ( )内の文字
-                int ne0 = str.IndexOf( "," ); // ( )内の , の検索
+                String str2 = str.sub( equ, n2 + 1, n1 - n2 - 1 ); // ( )内の文字
+                int ne0 = str2.IndexOf( "," ); // ( )内の , の検索
                 double val = 0;
 
                 if ( ne0 >= 0 ) {
                     // ( )内に , があるので、 Math.log(A,B) or Math.Pow(A,B) の処理
-                    if ( equ.Substring( n2 - 3, n2 - n2 + 3 ).Equals( "log" ) ) {
+                    if ( str.sub( equ, n2 - 3, n2 - n2 + 3 ).Equals( "log" ) ) {
                         // Math.log(A,B) のとき
-                        String strA = str.Substring( 0, ne0 - 0 ); // Math.log(A,B)の A の文字
+                        String strA = str.sub( str2, 0, ne0 - 0 ); // Math.log(A,B)の A の文字
                         double valA = PortUtil.parseDouble( evalMy0( "(" + strA + ")" ) ); // （注：再帰である）
-                        String strB = str.Substring( ne0 + 1 ); // Math.log(A,B)の B の文字
+                        String strB = str.sub( str2, ne0 + 1 ); // Math.log(A,B)の B の文字
                         double valB = PortUtil.parseDouble( evalMy0( "(" + strB + ")" ) ); //（注：再帰である）
                         val = Math.Log( valB ) / Math.Log( valA );
                         equ = equ.Replace( "Math.Log(" + strA + "," + strB + ")", "" + val );
-                    } else if ( equ.Substring( n2 - 3, n2 - n2 + 3 ).Equals( "pow" ) ) { // Math.Pow(A,B) のとき
-                        String strA = str.Substring( 0, ne0 - 0 ); // Math.Pow(A,B)の A の文字
+                    } else if ( str.sub( equ, n2 - 3, n2 - n2 + 3 ).Equals( "pow" ) ) { // Math.Pow(A,B) のとき
+                        String strA = str.sub( str2, 0, ne0 - 0 ); // Math.Pow(A,B)の A の文字
                         double valA = PortUtil.parseDouble( evalMy0( "(" + strA + ")" ) ); // （注：再帰である）
-                        String strB = str.Substring( ne0 + 1 ); // Math.Pow(A,B)の B の文字
+                        String strB = str.sub( str2, ne0 + 1 ); // Math.Pow(A,B)の B の文字
                         double valB = PortUtil.parseDouble( evalMy0( "(" + strB + ")" ) ); //（注：再帰である）
                         val = Math.Pow( valA, valB );
                         equ = equ.Replace( "Math.Pow(" + strA + "," + strB + ")", "" + val );
                     }
                 } else {
                     int check0 = 0; // strが数値（数字）かどうかチェック（str="-3.7" なら 数値なので 0 とする）
-                    for ( int i = 0; i < PortUtil.getStringLength( str ); i++ ) {
+                    for ( int i = 0; i < PortUtil.getStringLength( str2 ); i++ ) {
                         if ( i == 0 ) {
 #if JAVA
-                            int str0 = (int)str.charAt( 0 );
+                            int str0 = (int)str2.charAt( 0 );
 #else
-                            int str0 = str[0];
+                            int str0 = str2[0];
 #endif
                             if ( (str0 < 48 || str0 > 57) && str0 != 46 && str0 != 43 && str0 != 45 ) {
                                 check0 = 1;
@@ -879,9 +879,9 @@ namespace org.kbinani.cadencii{
                             }
                         } else {
 #if JAVA
-                            int stri = (int)str.charAt( i );
+                            int stri = (int)str2.charAt( i );
 #else
-                            int stri = str[i];
+                            int stri = str2[i];
 #endif
                             if ( (stri < 48 || stri > 57) && stri != 46 ) {
                                 check0 = 1;
@@ -891,57 +891,57 @@ namespace org.kbinani.cadencii{
                     }
 
                     if ( check0 == 1 ) {
-                        val = evalMy1( str ); // ( ) の処理をし数値をもとめる
+                        val = evalMy1( str2 ); // ( ) の処理をし数値をもとめる
                     } else {
-                        val = PortUtil.parseDouble( str ); // 文字を数値に変換
+                        val = PortUtil.parseDouble( str2 ); // 文字を数値に変換
                     }
                     if ( n2 - 8 >= 0 ) {
-                        String str1 = equ.Substring( n2 - 8, n2 - (n2 - 8) );
+                        String str1 = str.sub( equ, n2 - 8, n2 - (n2 - 8) );
                         if ( str1.Equals( "Math.Sin" ) ) {
                             val = Math.Sin( val );
-                            equ = equ.Replace( "Math.Sin(" + str + ")", "" + val );
+                            equ = equ.Replace( "Math.Sin(" + str2 + ")", "" + val );
                             n2 -= 8;
                         } else if ( str1.Equals( "Math.Cos" ) ) {
                             val = Math.Cos( val );
-                            equ = equ.Replace( "Math.Cos(" + str + ")", "" + val );
+                            equ = equ.Replace( "Math.Cos(" + str2 + ")", "" + val );
                             n2 -= 8;
                         } else if ( str1.Equals( "Math.Tan" ) ) {
                             val = Math.Tan( val );
-                            equ = equ.Replace( "Math.Tan(" + str + ")", "" + val );
+                            equ = equ.Replace( "Math.Tan(" + str2 + ")", "" + val );
                             n2 -= 8;
                         } else if ( str1.Equals( "ath.Asin" ) ) {
                             val = Math.Asin( val );
-                            equ = equ.Replace( "Math.Asin(" + str + ")", "" + val );
+                            equ = equ.Replace( "Math.Asin(" + str2 + ")", "" + val );
                             n2 -= 9;
                         } else if ( str1.Equals( "ath.Acos" ) ) {
                             val = Math.Acos( val );
-                            equ = equ.Replace( "Math.Acos(" + str + ")", "" + val );
+                            equ = equ.Replace( "Math.Acos(" + str2 + ")", "" + val );
                             n2 -= 9;
                         } else if ( str1.Equals( "ath.Atan" ) ) {
                             val = Math.Atan( val );
-                            equ = equ.Replace( "Math.Atan(" + str + ")", "" + val );
+                            equ = equ.Replace( "Math.Atan(" + str2 + ")", "" + val );
                             n2 -= 9;
                         } else if ( str1.Equals( "Math.Log" ) ) {
                             val = Math.Log( val );
-                            equ = equ.Replace( "Math.Log(" + str + ")", "" + val );
+                            equ = equ.Replace( "Math.Log(" + str2 + ")", "" + val );
                             n2 -= 8;
                         } else if ( str1.Equals( "Math.Exp" ) ) {
                             val = Math.Exp( val );
-                            equ = equ.Replace( "Math.Exp(" + str + ")", "" + val );
+                            equ = equ.Replace( "Math.Exp(" + str2 + ")", "" + val );
                             n2 -= 8;
                         } else if ( str1.Equals( "Math.Abs" ) ) {
                             val = Math.Abs( val );
-                            equ = equ.Replace( "Math.Abs(" + str + ")", "" + val );
+                            equ = equ.Replace( "Math.Abs(" + str2 + ")", "" + val );
                             n2 -= 8;
                         } else if ( str1.Equals( "ath.Sqrt" ) ) {
                             val = Math.Sqrt( val );
-                            equ = equ.Replace( "Math.Sqrt(" + str + ")", "" + val );
+                            equ = equ.Replace( "Math.Sqrt(" + str2 + ")", "" + val );
                             n2 -= 9;
                         } else {
-                            equ = equ.Replace( "(" + str + ")", "" + val );
+                            equ = equ.Replace( "(" + str2 + ")", "" + val );
                         } // ( ) を取る
                     } else {
-                        equ = equ.Replace( "(" + str + ")", "" + val ); // ( ) を取る
+                        equ = equ.Replace( "(" + str2 + ")", "" + val ); // ( ) を取る
                     }
                 }
             }
@@ -957,13 +957,13 @@ namespace org.kbinani.cadencii{
                 if ( n0 < 0 ) {
                     equ0 = equation;
                 } else {
-                    equ0 = equation.Substring( 0, n0 - 0 );
+                    equ0 = str.sub( equation, 0, n0 - 0 );
                 } // 最初の + より前の項
                 val += evalMy2( equ0 );
                 if ( n0 < 0 ) {
                     break;
                 } else {
-                    equation = equation.Substring( n0 + 1 );
+                    equation = str.sub( equation, n0 + 1 );
                 } // 最初の + より以降の項
             }
             return val;
@@ -978,7 +978,7 @@ namespace org.kbinani.cadencii{
                 if ( n0 < 0 ) {
                     equ0 = equation;
                 } else {
-                    equ0 = equation.Substring( 0, n0 );
+                    equ0 = str.sub( equation, 0, n0 );
                 } // 最初の * より前の項
 
                 int kai = 0;
@@ -989,7 +989,7 @@ namespace org.kbinani.cadencii{
                     if ( n1 < 0 ) {
                         equ1 = equ0;
                     } else {
-                        equ1 = equ0.Substring( 0, n1 - 0 );
+                        equ1 = str.sub( equ0, 0, n1 - 0 );
                     } // 最初の / より前の項
                     if ( kai == 0 ) {
                         val1 = PortUtil.parseDouble( equ1 );
@@ -1000,14 +1000,14 @@ namespace org.kbinani.cadencii{
                         break;
                     } else {
                         kai++;
-                        equ0 = equ0.Substring( n1 + 1 );
+                        equ0 = str.sub( equ0, n1 + 1 );
                     } // 最初の / より以降の項
                 }
                 val0 *= val1;
                 if ( n0 < 0 ) {
                     break;
                 } else {
-                    equation = equation.Substring( n0 + 1 );
+                    equation = str.sub( equation, n0 + 1 );
                 } // 最初の * より以降の項
             }
             return val0;
@@ -1651,7 +1651,7 @@ namespace org.kbinani.cadencii{
                 }
                 delete_count -= 1;
                 if ( delete_count > 0 ) {
-                    edited = item.Substring( 0, delete_count ) + "...";
+                    edited = str.sub( item, 0, delete_count ) + "...";
                 } else {
                     return edited;
                 }

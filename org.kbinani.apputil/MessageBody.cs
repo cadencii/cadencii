@@ -189,9 +189,9 @@ namespace org.kbinani.apputil {
             int index_space = line.IndexOf( ' ' );
             int index_dquoter = line.IndexOf( '"' );
             int index = Math.Min( index_dquoter, index_space );
-            entry.value = line.Substring( 0, index );
-            message.value = line.Substring( index_dquoter + 1 );
-            message.value = message.value.Substring( 0, PortUtil.getStringLength( message.value ) - 1 );
+            entry.value = str.sub( line, 0, index );
+            message.value = str.sub( line, index_dquoter + 1 );
+            message.value = str.sub( message.value, 0, PortUtil.getStringLength( message.value ) - 1 );
         }
 
         private static String readTillMessageEnd( BufferedReader sr, String first_line, String entry, ByRef<String> msg, ByRef<String[]> locations )
@@ -212,7 +212,7 @@ namespace org.kbinani.apputil {
             } else {
                 while ( (line = sr.readLine()) != null ) {
                     if ( line.StartsWith( "#:" ) ) {
-                        line = line.Substring( 2 ).Trim();
+                        line = str.sub( line, 2 ).Trim();
                         location.add( line );
                     } else if ( line.StartsWith( entry ) ) {
                         ByRef<String> dum = new ByRef<String>( "" );
@@ -232,7 +232,7 @@ namespace org.kbinani.apputil {
                     return line;
                 }
                 int index = line.LastIndexOf( "\"" );
-                msg.value += line.Substring( 1, index - 1 );
+                msg.value += str.sub( line, 1, index - 1 );
             }
             msg.value = msg.value.Replace( "\\\"", "\"" );
             msg.value = msg.value.Replace( "\\n", "\n" );

@@ -138,12 +138,12 @@ namespace org.kbinani.vsq
                 for ( int i = 0; i < length; i++ ) {
                     idat[i] = dat[i];
                 }
-                String str = PortUtil.getDecodedString( "Shift_JIS", idat );
+                String str1 = PortUtil.getDecodedString( "Shift_JIS", idat );
 #if DEBUG
-                sout.println( "SingerConfig.readSingerConfig; str=" + str );
+                sout.println( "SingerConfig.readSingerConfig; str1=" + str1 );
 #endif
                 String crlf = "" + (char)0x0d + "" + (char)0x0a;
-                String[] spl = PortUtil.splitString( str, new String[] { crlf }, true );
+                String[] spl = PortUtil.splitString( str1, new String[] { crlf }, true );
 
                 int count = spl.Length;
                 for ( int i = 0; i < spl.Length; i++ ) {
@@ -155,8 +155,8 @@ namespace org.kbinani.vsq
                     char[] chs = s.ToCharArray();
                     String id = new String( chs, first, first_end - first + 1 );
                     String value = new String( chs, second, second_end - second + 1 );
-                    id = id.Substring( 1, PortUtil.getStringLength( id ) - 2 );
-                    value = value.Substring( 1, PortUtil.getStringLength( value ) - 2 );
+                    id = str.sub( id, 1, PortUtil.getStringLength( id ) - 2 );
+                    value = str.sub( value, 1, PortUtil.getStringLength( value ) - 2 );
                     value = value.Replace( "\\" + "\"", "\"" );
                     int parsed_int = 64;
                     try {

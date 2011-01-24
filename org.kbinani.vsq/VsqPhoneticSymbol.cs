@@ -177,7 +177,7 @@ namespace org.kbinani.vsq
             // ブレスの判定
             int strlen = PortUtil.getStringLength( symbol );
             if ( symbol.StartsWith( "br" ) && strlen > 2 ) {
-                String s = symbol.Substring( 2 );
+                String s = str.sub( symbol, 2 );
                 try {
                     // br001とかをfalseにするためのチェック
                     int num = PortUtil.parseInt( s );

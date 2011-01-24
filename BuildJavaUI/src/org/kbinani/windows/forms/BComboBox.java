@@ -19,8 +19,6 @@ public class BComboBox extends JComboBox implements ItemListener{
     
     public void itemStateChanged( ItemEvent e )
     {
-int state = e.getStateChange();
-System.out.println( "BComboBox#itemStateChanged; state=" + state );
         try{
             selectedIndexChangedEvent.raise( this, new BEventArgs() );
         }catch( Exception ex ){

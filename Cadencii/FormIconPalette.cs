@@ -75,9 +75,8 @@ namespace org.kbinani.cadencii
                 KeyStroke shortcut = BKeysUtility.getKeyStrokeFromBKeys( keys );
                 menuWindowHide.setAccelerator( shortcut );
             }
-            setAlwaysOnTop( true );
         }
-
+    
         #region public methods
         public void applyLanguage()
         {
@@ -98,6 +97,7 @@ namespace org.kbinani.cadencii
 
         private void registerEventHandlers()
         {
+            this.Load += new BEventHandler( FormIconPalette_Load );
             this.FormClosing += new BFormClosingEventHandler( FormIconPalette_FormClosing );
             menuWindowHide.Click += new BEventHandler( menuWindowHide_Click );
         }
@@ -197,6 +197,19 @@ namespace org.kbinani.cadencii
                     continue;
                 }
 #if JAVA
+                LayoutManager lm = jPanel.getLayout();
+                GridBagLayout gbl = null;
+                if( lm != null && lm instanceof GridBagLayout ){
+                    gbl = (GridBagLayout)lm;
+                }else{
+                    gbl = new GridBagLayout();
+                    jPanel.setLayout( gbl );
+                }
+                GridBagConstraints g = new GridBagConstraints();
+                g.gridx = iw;
+                g.gridy = ih;
+                gbl.setConstraints( btn, g );
+                jPanel.add( btn );
 #else
                 btn.Location = new System.Drawing.Point( iw * buttonWidth, ih * buttonWidth );
                 this.Controls.Add( btn );
@@ -219,16 +232,29 @@ namespace org.kbinani.cadencii
                 height += buttonWidth;
             }
             width = Math.Max( width, buttonWidth * decrescendButtons.size() );
-#if !JAVA
+#if JAVA
+            pack();
+            Insets i = getInsets();
+            Dimension size = new Dimension( width + i.left + i.right, height + i.top + i.bottom );
+            setPreferredSize( size );
+            setSize( size );
+            setResizable( false );
+#else
             this.ClientSize = new System.Drawing.Size( width, height );
-#endif
             Dimension size = getSize();
+#endif
             setMaximumSize( size );
             setMinimumSize( size );
         }
         #endregion
 
         #region event handlers
+        public void FormIconPalette_Load( Object sender, BEventArgs e )
+        {
+            // コンストラクタから呼ぶと、スレッドが違うので（たぶん）うまく行かない
+            setAlwaysOnTop( true );
+        }
+
         public void FormIconPalette_FormClosing( Object sender, BFormClosingEventArgs e )
         {
             e.Cancel = true;

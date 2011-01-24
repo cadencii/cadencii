@@ -135,13 +135,29 @@ namespace org.kbinani.cadencii
         #endregion
 
         #region event handlers
+        public void buttonOk_Click( Object sender, EventArgs e )
+        {
+            setDialogResult( BDialogResult.OK );
+        }
+        
+        public void buttonCancel_Click( Object sender, EventArgs e )
+        {
+            setDialogResult( BDialogResult.CANCEL );
+        }
+        
         public void listPresets_SelectedIndexChanged( Object sender, EventArgs e )
         {
             // インデックスを取得
             int index = listPresets.getSelectedIndex();
+#if DEBUG
+            sout.println( "FormVibratoPreset#listPresets_SelectedIndexChanged; index=" + index );
+#endif
 
             // 範囲外ならbailout
             if ( (index < 0) || (mHandles.size() <= index) ) {
+#if DEBUG
+                sout.println( "FormVibratoPreset#listPresets_SelectedIndexChanged; bail-out, mSelected -> null; index=" + index );
+#endif
                 mSelected = null;
                 return;
             }
@@ -173,7 +189,10 @@ namespace org.kbinani.cadencii
             }
 
             mSelected.setCaption( textName.getText() );
-            updateStatus();
+            int index = listPresets.getSelectedIndex();
+            if( index >= 0 ){
+                listPresets.setItemAt( index, mSelected.getCaption() );
+            }
         }
 
         public void textRate_TextChanged( Object sender, EventArgs e )
@@ -184,9 +203,9 @@ namespace org.kbinani.cadencii
 
             int old = mSelected.getStartRate();
             int value = old;
-            String str = textRate.getText();
+            String s = textRate.getText();
             try {
-                value = PortUtil.parseInt( str );
+                value = PortUtil.parseInt( s );
             } catch ( Exception ex ) {
                 value = old;
             }
@@ -198,7 +217,7 @@ namespace org.kbinani.cadencii
             }
             mSelected.setStartRate( value );
             String nstr = value + "";
-            if ( str != nstr ) {
+            if ( !str.compare( s, nstr ) ) {
                 textRate.setText( nstr );
 #if JAVA
                 textRate.setCaretPosition( nstr.length() );
@@ -218,9 +237,9 @@ namespace org.kbinani.cadencii
 
             int old = mSelected.getStartDepth();
             int value = old;
-            String str = textDepth.getText();
+            String s = textDepth.getText();
             try {
-                value = PortUtil.parseInt( str );
+                value = PortUtil.parseInt( s );
             } catch ( Exception ex ) {
                 value = old;
             }
@@ -232,7 +251,7 @@ namespace org.kbinani.cadencii
             }
             mSelected.setStartDepth( value );
             String nstr = value + "";
-            if ( str != nstr ) {
+            if ( !str.compare( s, nstr ) ) {
                 textDepth.setText( nstr );
 #if JAVA
                 textDepth.setCaretPosition( nstr.length() );
@@ -472,6 +491,8 @@ namespace org.kbinani.cadencii
             pictureResulting.Paint += new BPaintEventHandler( pictureResulting_Paint );
 
             this.Resize += new BEventHandler( FormVibratoPreset_Resize );
+            buttonOk.Click += new BEventHandler( buttonOk_Click );
+            buttonCancel.Click += new BEventHandler( buttonCancel_Click );
         }
 
         private static String _( String id )
@@ -620,8 +641,16 @@ namespace org.kbinani.cadencii
             if ( size <= old_select ) {
                 old_select = size - 1;
             }
+#if DEBUG
+            sout.println( "FormVibratoPreset#updateStatus; A; old_selected=" + old_select );
+#endif
             if ( old_select >= 0 ) {
+#if DEBUG
+                sout.println( "FormVibratoPreset#updateStatus; B; old_selected=" + old_select );
+#endif
+                //listPresets.SelectedIndexChanged -= new BEventHandler( listPresets_SelectedIndexChanged );
                 listPresets.setSelectedIndex( old_select );
+                //listPresets.SelectedIndexChanged += new BEventHandler( listPresets_SelectedIndexChanged );
             }
         }
         #endregion

@@ -33,11 +33,11 @@ namespace org.kbinani.windows.forms{
             base.AutoEllipsis = value;
         }
 
-        public int getDisplayedMnemonic() {
+        public int getMnemonic() {
             return BMenuItem.getMnemonicFromText( getText() );
         }
 
-        public void setDisplayedMnemonic( int value ) {
+        public void setMnemonic( int value, Control control ) {
             setText( BMenuItem.setMnemonicFromText( getText(), value ) );
         }
 

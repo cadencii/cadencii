@@ -1015,7 +1015,7 @@ namespace org.kbinani.vsq
                     while ( (line = sr.readLine()) != null ) {
                         int index_semicollon = line.IndexOf( ';' );
                         if ( index_semicollon >= 0 ) {
-                            line = line.Substring( 0, index_semicollon );
+                            line = str.sub( line, 0, index_semicollon );
                         }
                         line = line.Trim();
                         if ( line.StartsWith( "[" ) ) {
