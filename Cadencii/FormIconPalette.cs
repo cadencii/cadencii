@@ -41,6 +41,7 @@ namespace org.kbinani.cadencii
     using BEventHandler = System.EventHandler;
     using BFormClosingEventHandler = System.Windows.Forms.FormClosingEventHandler;
     using BMouseEventHandler = System.Windows.Forms.MouseEventHandler;
+    using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
 #endif
 

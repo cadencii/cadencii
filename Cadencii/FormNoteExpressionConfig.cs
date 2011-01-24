@@ -27,9 +27,10 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using org.kbinani.apputil;
-using org.kbinani.java.util;
 using org.kbinani.vsq;
 using org.kbinani.windows.forms;
+using org.kbinani.java.util;
+using org.kbinani.java.awt.event_;
 
 namespace org.kbinani.cadencii
 {

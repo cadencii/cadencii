@@ -37,7 +37,7 @@ namespace org.kbinani.windows.forms{
             return BMenuItem.getMnemonicFromText( getText() );
         }
 
-        public void setMnemonic( int value, Control control ) {
+        public void setMnemonic( int value, System.Windows.Forms.Control control ) {
             setText( BMenuItem.setMnemonicFromText( getText(), value ) );
         }
 

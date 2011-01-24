@@ -29,6 +29,7 @@ import org.kbinani.windows.forms.*;
 using System;
 using org.kbinani.apputil;
 using org.kbinani.java.awt;
+using org.kbinani.java.awt.event_;
 using org.kbinani.java.io;
 using org.kbinani.java.util;
 using org.kbinani.media;

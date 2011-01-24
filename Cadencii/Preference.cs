@@ -29,6 +29,7 @@ import org.kbinani.windows.forms.*;
 using System;
 using org.kbinani.apputil;
 using org.kbinani.java.awt;
+using org.kbinani.java.awt.event_;
 using org.kbinani.java.io;
 using org.kbinani.java.util;
 using org.kbinani.media;
@@ -1545,8 +1546,7 @@ namespace org.kbinani.cadencii
             if ( folderBrowserSingers.showOpenDialog( this ) == BFileChooser.APPROVE_OPTION ) {
                 String dir = folderBrowserSingers.getSelectedFile();
 #else
-            folderBrowserSingers.setVisible( true, this );
-            if ( folderBrowserSingers.getDialogResult() == BDialogResult.OK ) {
+            if ( folderBrowserSingers.showDialog( this ) == BDialogResult.OK ) {
                 String dir = folderBrowserSingers.getSelectedPath();
 #endif
 #endif

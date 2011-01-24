@@ -24,11 +24,12 @@ import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
+using org.kbinani;
 using org.kbinani.apputil;
 using org.kbinani.vsq;
-using org.kbinani;
-using org.kbinani.java.util;
 using org.kbinani.windows.forms;
+using org.kbinani.java.awt.event_;
+using org.kbinani.java.util;
 
 namespace org.kbinani.cadencii
 {

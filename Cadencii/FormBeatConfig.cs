@@ -114,11 +114,7 @@ namespace org.kbinani.cadencii
             btnOK.setText( _( "OK" ) );
             btnCancel.setText( _( "Cancel" ) );
             lblStart.setText( _( "From" ) );
-            lblStart.setDisplayedMnemonic( KeyEvent.VK_F );
-#if JAVA
-            lblStart.setDisplayedMnemonicIndex( 0 );
-            lblStart.setLabelFor( numStart );
-#endif
+            lblStart.setMnemonic( KeyEvent.VK_F, numStart );
             chkEnd.setText( _( "To" ) );
             chkEnd.setDisplayedMnemonicIndex( 0 );
             lblBar1.setText( _( "Measure" ) );

@@ -22,6 +22,7 @@ import org.kbinani.apputil.*;
 import org.kbinani.windows.forms.*;
 #else
 using System;
+using org.kbinani.java.awt.event_;
 using org.kbinani.apputil;
 using org.kbinani.windows.forms;
 

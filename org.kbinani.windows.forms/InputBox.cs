@@ -23,6 +23,7 @@ using org.kbinani.windows.forms;
 
 namespace org.kbinani.windows.forms {
     using BEventArgs = System.EventArgs;
+    using BEventHandler = System.EventHandler;
 #endif
 
 #if JAVA
