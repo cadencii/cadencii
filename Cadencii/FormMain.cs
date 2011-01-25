@@ -11413,7 +11413,7 @@ namespace org.kbinani.cadencii
 
         public void menuFileExportUst_Click( Object sender, EventArgs e )
         {
-            VsqFileEx vsq = AppManager.getVsqFile();
+            VsqFileEx vsq = (VsqFileEx)AppManager.getVsqFile().clone();
 
             // どのトラックを出力するか決める
             int selected = AppManager.getSelected();
@@ -11449,6 +11449,7 @@ namespace org.kbinani.cadencii
             }
 
             // 出力処理
+            vsq.removePart( 0, vsq.getPreMeasureClocks() );
             UstFile ust = new UstFile( vsq, selected );
             // voice dirを設定
             VsqTrack vsq_track = vsq.Track.get( selected );

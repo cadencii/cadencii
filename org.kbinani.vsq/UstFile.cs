@@ -290,7 +290,7 @@ namespace org.kbinani.vsq
         public UstFile( VsqFile vsq, int track_index, Vector<ValuePair<Integer, Integer>> id_map )
         {
             VsqFile work = (VsqFile)vsq.clone();
-            work.removePart( 0, work.getPreMeasureClocks() );
+            //work.removePart( 0, work.getPreMeasureClocks() );
 
             VsqTrack vsq_track = work.Track.get( track_index );
 

@@ -66,6 +66,20 @@ namespace org.kbinani.apputil {
             return this.Width;
         }
 
+        public void setPanel2Hidden( bool value )
+        {
+            if ( value ) {
+                if( m_orientation == Orientation.Horizontal ){
+                    setDividerLocation( getWidth() );
+                } else {
+                    setDividerLocation( getHeight() );
+                }
+                setSplitterFixed( true );
+            } else {
+                setSplitterFixed( false );
+            }
+        }
+
         public System.Windows.Forms.FixedPanel FixedPanel {
             get {
                 return m_fixed_panel;

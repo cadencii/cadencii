@@ -303,7 +303,9 @@ namespace org.kbinani.cadencii
                 tracker.setSolo( (vme.Solo == 1) );
                 tracker.setTrack( j + 1 );
                 tracker.setSoloButtonVisible( true );
+#if JAVA
                 tracker.setPreferredSize( new Dimension( VolumeTracker.WIDTH, VolumeTracker.HEIGHT ) );
+#endif
                 addToPanelSlaves( tracker, j );
             }
             int count = AppManager.getBgmCount();
@@ -321,7 +323,9 @@ namespace org.kbinani.cadencii
                 tracker.setSolo( false );
                 tracker.setTrack( -i - 1 );
                 tracker.setSoloButtonVisible( false );
+#if JAVA
                 tracker.setPreferredSize( new Dimension( VolumeTracker.WIDTH, VolumeTracker.HEIGHT ) );
+#endif
                 addToPanelSlaves( tracker, j );
             }
 #if DEBUG

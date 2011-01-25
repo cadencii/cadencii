@@ -68,7 +68,121 @@ public class Utau_Plugin_Invoker : Form {
 
     }
 
-    public static ScriptReturnStatus Edit( VsqFileEx vsq ) {
+    public static ScriptReturnStatus Edit( VsqFileEx vsq )
+    {
+        Console.WriteLine( "AppManager.getSelectedEventCount()=" + AppManager.getSelectedEventCount() );
+
+        // 選択状態のアイテムがなければ戻る
+        if ( AppManager.getSelectedEventCount() <= 0 ) {
+            return ScriptReturnStatus.NOT_EDITED;
+        }
+
+        // 現在のトラック
+        int selected = AppManager.getSelected();
+        VsqTrack vsq_track = vsq.Track.get( selected );
+
+        // プラグイン情報の定義ファイル(plugin.txt)があるかどうかチェック
+        string pluginTxtPath = s_plugin_txt_path;
+        if ( pluginTxtPath == "" ) {
+            AppManager.showMessageBox( "pluginTxtPath=" + pluginTxtPath );
+            return ScriptReturnStatus.ERROR;
+        }
+        if ( !System.IO.File.Exists( pluginTxtPath ) ) {
+            AppManager.showMessageBox( "'" + pluginTxtPath + "' does not exists" );
+            return ScriptReturnStatus.ERROR;
+        }
+
+        // plugin.txtがあれば，プラグインの実行ファイルのパスを取得する
+        System.Text.Encoding shift_jis = System.Text.Encoding.GetEncoding( "Shift_JIS" );
+        string name = "";
+        string exe_path = "";
+        using ( StreamReader sr = new StreamReader( pluginTxtPath, shift_jis ) ) {
+            string line = "";
+            while ( (line = sr.ReadLine()) != null ) {
+                string[] spl = line.Split( new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries );
+                if ( line.StartsWith( "name=" ) ) {
+                    name = spl[1];
+                } else if ( line.StartsWith( "execute=" ) ) {
+                    exe_path = Path.Combine( Path.GetDirectoryName( pluginTxtPath ), spl[1] );
+                }
+            }
+        }
+        Console.WriteLine( "exe_path=" + exe_path );
+        if ( exe_path == "" ) {
+            return ScriptReturnStatus.ERROR;
+        }
+        if ( !System.IO.File.Exists( exe_path ) ) {
+            AppManager.showMessageBox( "'" + exe_path + "' does not exists" );
+            return ScriptReturnStatus.ERROR;
+        }
+
+        // 選択状態のアイテムの最初と最後がどこか調べる
+        int id_start = -1;
+        int clock_start = int.MaxValue;
+        int id_end = -1;
+        int clock_end = int.MinValue;
+        for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
+            SelectedEventEntry item = itr.next();
+            if ( item.original.ID.type != VsqIDType.Anote ) {
+                continue;
+            }
+            int clock = item.original.Clock;
+            if ( clock < clock_start ) {
+                id_start = item.original.InternalID;
+                clock_start = clock;
+            }
+            if ( clock_end < clock ) {
+                id_end = item.original.InternalID;
+                clock_end = clock;
+            }
+        }
+        Console.WriteLine( "id_start=" + id_start );
+        Console.WriteLine( "id_end=" + id_end );
+
+        // 作業用のVSQに，選択範囲のアイテムを格納
+        VsqFile v = new VsqFile( "Miku", 1, 4, 4, 500000 );
+        VsqTrack v_track = v.Track.get( 1 );
+        for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
+            VsqEvent item = itr.next();
+            if ( clock_start <= item.Clock && item.Clock <= clock_end ) {
+                v_track.addEvent( (VsqEvent)item.clone() );
+            }
+        }
+        // 0～選択範囲の開始位置までを削除する
+        v.removePart( 0, clock_start );
+
+        // vsq -> ustに変換
+        // キーがustのIndex, 値がInternalID
+        Vector<ValuePair<int, int>> map = new Vector<ValuePair<int, int>>();
+        UstFile u = new UstFile( v, 1, map );
+
+        // PREV, ENDがあれば追加
+        // TODO:
+
+        // ustファイルに出力
+        UstFileWriteOptions option = new UstFileWriteOptions();
+        option.settingCacheDir = false;
+        option.settingOutFile = false;
+        option.settingProjectName = false;
+        option.settingTempo = true;
+        option.settingTool1 = true;
+        option.settingTool2 = true;
+        option.settingTracks = false;
+        option.settingVoiceDir = true;
+        option.trackEnd = false;
+        string temp = Path.GetTempFileName();
+        u.write( temp, option );
+
+        // プラグインの実行ファイルを起動
+        Utau_Plugin_Invoker dialog = new Utau_Plugin_Invoker( exe_path, temp );
+        dialog.ShowDialog();
+
+        // TODO: このへんから, 上にあるPREV, ENDのところも何とかすること．
+        return ScriptReturnStatus.ERROR;
+    }
+
+    public static ScriptReturnStatus _Edit( VsqFileEx vsq )
+    {
         if ( AppManager.getSelectedEventCount() <= 0 ) {
             return ScriptReturnStatus.NOT_EDITED;
         }
