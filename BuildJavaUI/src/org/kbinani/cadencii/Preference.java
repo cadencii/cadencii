@@ -193,6 +193,7 @@ public class Preference extends JFrame {
     private BTextBox txtAutoVibratoThresholdLength = null;
     private JScrollPane jScrollPane = null;
     private RadioButtonManager mManager = null;
+    private JScrollPane jScrollPane1 = null;
     
     //SECTION-END-FIELD
 	/**
@@ -1870,18 +1871,18 @@ public class Preference extends JFrame {
 	 */
 	private BGroupBox getGroupUtauCores() {
 		if (groupUtauCores == null) {
-			GridBagConstraints gridBagConstraints101 = new GridBagConstraints();
-			gridBagConstraints101.gridx = 3;
-			gridBagConstraints101.fill = GridBagConstraints.VERTICAL;
-			gridBagConstraints101.insets = new Insets(3, 0, 3, 0);
-			gridBagConstraints101.gridy = 1;
 			GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
 			gridBagConstraints12.fill = GridBagConstraints.BOTH;
 			gridBagConstraints12.gridy = 1;
 			gridBagConstraints12.weightx = 1.0;
 			gridBagConstraints12.weighty = 1.0;
-			gridBagConstraints12.insets = new Insets(3, 12, 3, 12);
+			gridBagConstraints12.insets = new Insets(3, 15, 3, 15);
 			gridBagConstraints12.gridx = 1;
+			GridBagConstraints gridBagConstraints101 = new GridBagConstraints();
+			gridBagConstraints101.gridx = 3;
+			gridBagConstraints101.fill = GridBagConstraints.VERTICAL;
+			gridBagConstraints101.insets = new Insets(3, 0, 3, 0);
+			gridBagConstraints101.gridy = 1;
 			GridBagConstraints gridBagConstraints105 = new GridBagConstraints();
 			gridBagConstraints105.gridx = 0;
 			gridBagConstraints105.gridwidth = 3;
@@ -1918,8 +1919,8 @@ public class Preference extends JFrame {
 			groupUtauCores.add(getTxtWavtool(), gridBagConstraints103);
 			groupUtauCores.add(getBtnWavtool(), gridBagConstraints104);
 			groupUtauCores.add(getChkInvokeWithWine(), gridBagConstraints105);
-			groupUtauCores.add(getListResampler(), gridBagConstraints12);
 			groupUtauCores.add(getJPanel2(), gridBagConstraints101);
+			groupUtauCores.add(getJScrollPane1(), gridBagConstraints12);
 		}
 		return groupUtauCores;
 	}
@@ -2007,6 +2008,7 @@ public class Preference extends JFrame {
 	private BListView getListSingers() {
 		if (listSingers == null) {
 			listSingers = new BListView();
+			listSingers.setCheckBoxes(false);
 		}
 		return listSingers;
 	}
@@ -2902,6 +2904,22 @@ public class Preference extends JFrame {
             jScrollPane.setViewportView(getListSingers());
         }
         return jScrollPane;
+    }
+
+    /**
+     * This method initializes jScrollPane1	
+     * 	
+     * @return javax.swing.JScrollPane	
+     */
+    private JScrollPane getJScrollPane1() {
+        if (jScrollPane1 == null) {
+            jScrollPane1 = new JScrollPane();
+            jScrollPane1.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+            jScrollPane1.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+            jScrollPane1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+            jScrollPane1.setViewportView(getListResampler());
+        }
+        return jScrollPane1;
     }
 
 	//SECTION-END-METHOD

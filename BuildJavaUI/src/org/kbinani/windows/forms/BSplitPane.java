@@ -24,11 +24,11 @@ public class BSplitPane extends JSplitPane implements ComponentListener {
     }
 
     public boolean isSplitterFixed(){
-        return super.isEnabled();
+        return !super.isEnabled();
     }
     
     public void setSplitterFixed( boolean value ){
-        super.setEnabled( value );
+        super.setEnabled( !value );
     }
     
     public void setPanel1MinSize( int value ){

@@ -50,6 +50,9 @@ namespace org.kbinani.cadencii
     public class FormMixer : BForm
 #endif
     {
+#if JAVA
+        final int SCROLL_HEIGHT = 15;
+#endif
         private FormMain m_parent;
         private Vector<VolumeTracker> m_tracker = null;
 
@@ -104,8 +107,8 @@ namespace org.kbinani.cadencii
             volumeMaster.setTitle( "" );
             applyLanguage();
             m_parent = parent;
-            setAlwaysOnTop( true );
 #if !JAVA
+            setAlwaysOnTop( true );
             this.SetStyle( ControlStyles.DoubleBuffer, true );
 #endif
         }
@@ -214,12 +217,18 @@ namespace org.kbinani.cadencii
 #if DEBUG
             sout.println( "FormMixer#UpdateStatus; num=" + num );
 #endif
-#if !OLD_IMPL
             if ( m_tracker == null ) {
                 m_tracker = new Vector<VolumeTracker>();
             }
 
             unregisterEventHandlers();
+
+#if JAVA
+            // panelに追加済みのものをいったん除去する
+            for( int i = 0; i < m_tracker.size(); i++ ){
+                panelSlaves.remove( m_tracker.get( i ) );
+            }
+#endif
 
             if ( m_tracker.size() < num ) {
                 int remain = num - m_tracker.size();
@@ -242,18 +251,6 @@ namespace org.kbinani.cadencii
 #endif
                 }
             }
-#else
-            if ( m_tracker != null ) {
-                for ( int i = 0; i < m_tracker.Length; i++ ) {
-#if !JAVA
-                    m_tracker[i].Dispose();
-#endif
-                    m_tracker[i] = null;
-                }
-                m_tracker = null;
-            }
-            m_tracker = new VolumeTracker[num];
-#endif
 
             // 同時に表示できるVolumeTrackerの個数を計算
             int max = PortUtil.getWorkingArea( this ).width;
@@ -264,27 +261,29 @@ namespace org.kbinani.cadencii
 
             int screen_num = num <= max_num ? num : max_num; //スクリーン上に表示するVolumeTrackerの個数
 
-            // panel1上に配置するVolumeTrackerの個数
+            // panelSlaves上に配置するVolumeTrackerの個数
             int num_vtracker_on_panel = vsq.Mixer.Slave.size() + AppManager.getBgmCount();
-            // panel1上に配置可能なVolumeTrackerの個数
+            // panelSlaves上に一度に表示可能なVolumeTrackerの個数
             int panel_capacity = max_num - 1;
 
+#if !JAVA
             if ( panel_capacity >= num_vtracker_on_panel ) {
                 // volumeMaster以外の全てのVolumeTrackerを，画面上に同時表示可能
                 hScroll.setMinimum( 0 );
                 hScroll.setValue( 0 );
                 hScroll.setMaximum( 0 );
                 hScroll.setVisibleAmount( 1 );
-                hScroll.setPreferredSize( new Dimension( (VolumeTracker.WIDTH + 1) * num_vtracker_on_panel, hScroll.getHeight() ) );
+                hScroll.setPreferredSize( new Dimension( (VolumeTracker.WIDTH + 1) * num_vtracker_on_panel, 15 ) );
             } else {
                 // num_vtracker_on_panel個のVolumeTrackerのうち，panel_capacity個しか，画面上に同時表示できない
                 hScroll.setMinimum( 0 );
                 hScroll.setValue( 0 );
                 hScroll.setMaximum( num_vtracker_on_panel * VolumeTracker.WIDTH );
                 hScroll.setVisibleAmount( panel_capacity * VolumeTracker.WIDTH );
-                hScroll.setPreferredSize( new Dimension( (VolumeTracker.WIDTH + 1) * panel_capacity, hScroll.getHeight() ) );
+                hScroll.setPreferredSize( new Dimension( (VolumeTracker.WIDTH + 1) * panel_capacity, 15 ) );
             }
             hScroll.setLocation( 0, VolumeTracker.HEIGHT );
+#endif
 
             int j = -1;
             for ( Iterator<VsqMixerEntry> itr = vsq.Mixer.Slave.iterator(); itr.hasNext(); ) {
@@ -304,7 +303,8 @@ namespace org.kbinani.cadencii
                 tracker.setSolo( (vme.Solo == 1) );
                 tracker.setTrack( j + 1 );
                 tracker.setSoloButtonVisible( true );
-                addToPanel1( tracker, j );
+                tracker.setPreferredSize( new Dimension( VolumeTracker.WIDTH, VolumeTracker.HEIGHT ) );
+                addToPanelSlaves( tracker, j );
             }
             int count = AppManager.getBgmCount();
             for ( int i = 0; i < count; i++ ) {
@@ -321,7 +321,8 @@ namespace org.kbinani.cadencii
                 tracker.setSolo( false );
                 tracker.setTrack( -i - 1 );
                 tracker.setSoloButtonVisible( false );
-                addToPanel1( tracker, j );
+                tracker.setPreferredSize( new Dimension( VolumeTracker.WIDTH, VolumeTracker.HEIGHT ) );
+                addToPanelSlaves( tracker, j );
             }
 #if DEBUG
             sout.println( "FormMixer#updateStatus; vsq.Mixer.MasterFeder=" + vsq.Mixer.MasterFeder );
@@ -336,28 +337,23 @@ namespace org.kbinani.cadencii
             reregisterEventHandlers();
 #if JAVA
             this.setResizable( true );
-            //panel1.setPreferredSize( new Dimension( (VolumeTracker.WIDTH + 1) * (screen_num - 1), VolumeTracker.HEIGHT ) );
+            scrollSlaves.setPreferredSize( new Dimension( (VolumeTracker.WIDTH + 1) * (screen_num - 1), VolumeTracker.HEIGHT ) );
             JPanel c = getJContentPane();
             Dimension size = c.getSize();
             Rectangle rc = new Rectangle();
             rc = c.getBounds( rc );
             int xdiff = this.getWidth() - rc.width;
             int ydiff = this.getHeight() - rc.height;
-            sout.println( "FormMixer#updateStatus; this.getWidth()=" + this.getWidth() + "; this.getHeight()=" + this.getHeight() );
-            sout.println( "FormMixer#updateStatus; rc.width=" + rc.width + "; rc.height=" + rc.height );
             int w = screen_num * (VolumeTracker.WIDTH + 1) + 3;
-            int h = VolumeTracker.HEIGHT + hScroll.getHeight();
-            this.setSize( w, h + hScroll.getHeight() + menuMain.getHeight() );
+            int h = VolumeTracker.HEIGHT + SCROLL_HEIGHT;
+            //this.setSize( w, h + hScroll.getHeight() + menuMain.getHeight() );
+            pack();
+#if DEBUG
             sout.println( "FormMixer#updateStatus; w=" + w + "; h=" + h + "; xdiff=" + xdiff + "; ydiff=" + ydiff );
-            /*c.setMaximumSize( null );
-            c.setMinimumSize( null );
-            Dimension s = new Dimension( w, h );
-            c.setPreferredSize( s );
-            c.setMaximumSize( s );
-            c.setMinimumSize( s );*/
+#endif
             this.setResizable( false );
 #else
-            panel1.Width = (VolumeTracker.WIDTH + 1) * (screen_num - 1);
+            panelSlaves.Width = (VolumeTracker.WIDTH + 1) * (screen_num - 1);
             volumeMaster.Location = new System.Drawing.Point( (screen_num - 1) * (VolumeTracker.WIDTH + 1) + 3, 0 );
             this.MaximumSize = Size.Empty;
             this.MinimumSize = Size.Empty;
@@ -371,7 +367,7 @@ namespace org.kbinani.cadencii
         #endregion
 
         #region helper methods
-        private void addToPanel1( VolumeTracker item, int ix )
+        private void addToPanelSlaves( VolumeTracker item, int ix )
         {
 #if JAVA
             GridBagConstraints gbc = new GridBagConstraints();
@@ -381,9 +377,9 @@ namespace org.kbinani.cadencii
             gbc.weighty = 1.0D;
             gbc.anchor = GridBagConstraints.WEST;
             gbc.fill = GridBagConstraints.VERTICAL;
-            panel1.add( item, gbc );
+            panelSlaves.add( item, gbc );
 #else
-            panel1.Controls.Add( item );
+            panelSlaves.Controls.Add( item );
 #endif
         }
 
@@ -434,13 +430,11 @@ namespace org.kbinani.cadencii
         private void registerEventHandlers()
         {
             menuVisualReturn.Click += new BEventHandler( menuVisualReturn_Click );
-#if JAVA
-            //TODO: fixme: FormMixer#registerEventHandlers; paint event handler for panel1
-#else
-            panel1.Paint += new System.Windows.Forms.PaintEventHandler( this.panel1_Paint );
-#endif
+#if !JAVA
             hScroll.ValueChanged += new BEventHandler( veScrollBar_ValueChanged );
+#endif
             this.FormClosing += new BFormClosingEventHandler( FormMixer_FormClosing );
+            this.Load += new BEventHandler( FormMixer_Load );
             reregisterEventHandlers();
         }
 
@@ -515,6 +509,14 @@ namespace org.kbinani.cadencii
         #endregion
 
         #region event handlers
+        public void FormMixer_Load( Object sender, EventArgs e )
+        {
+#if DEBUG
+            sout.println( "FormMixer#FormMixer_Load" );
+#endif
+            setAlwaysOnTop( true );
+        }
+        
         public void FormMixer_PanpotChanged( int track, int panpot )
         {
             try {
@@ -573,29 +575,6 @@ namespace org.kbinani.cadencii
         }
 
 #if !JAVA
-        public void panel1_Paint( Object sender, PaintEventArgs e )
-        {
-            /*int stdx = hScroll.getValue();
-            Pen pen_102_102_102 = null;
-            try {
-                pen_102_102_102 = new Pen( System.Drawing.Color.FromArgb( 102, 102, 102 ) );
-                for ( int i = 0; i < m_tracker.size(); i++ ) {
-                    int x = -stdx + (i + 1) * (VolumeTracker.WIDTH + 1);
-                    e.Graphics.DrawLine(
-                        pen_102_102_102,
-                        new System.Drawing.Point( x - 1, 0 ),
-                        new System.Drawing.Point( x - 1, 261 + 4 ) );
-                }
-            } catch ( Exception ex ) {
-                Logger.write( typeof( FormMixer ) + ".panel1_Paint; ex=" + ex + "\n" );
-            } finally {
-                if ( pen_102_102_102 != null ) {
-                    pen_102_102_102.Dispose();
-                }
-            }*/
-        }
-#endif
-
         public void veScrollBar_ValueChanged( Object sender, BEventArgs e )
         {
             int stdx = hScroll.getValue();
@@ -604,6 +583,7 @@ namespace org.kbinani.cadencii
             }
             this.invalidate();
         }
+#endif
 
         public void volumeMaster_FederChanged( int track, int feder )
         {
@@ -672,7 +652,7 @@ namespace org.kbinani.cadencii
             this.menuMain = new org.kbinani.windows.forms.BMenuBar();
             this.menuVisual = new org.kbinani.windows.forms.BMenuItem();
             this.menuVisualReturn = new org.kbinani.windows.forms.BMenuItem();
-            this.panel1 = new org.kbinani.windows.forms.BPanel();
+            this.panelSlaves = new org.kbinani.windows.forms.BPanel();
             this.hScroll = new org.kbinani.windows.forms.BHScrollBar();
             this.volumeMaster = new org.kbinani.cadencii.VolumeTracker();
             this.menuMain.SuspendLayout();
@@ -704,13 +684,13 @@ namespace org.kbinani.cadencii
             this.menuVisualReturn.Size = new System.Drawing.Size( 177, 22 );
             this.menuVisualReturn.Text = "エディタ画面へ戻る";
             // 
-            // panel1
+            // panelSlaves
             // 
-            this.panel1.Location = new System.Drawing.Point( 0, 0 );
-            this.panel1.Margin = new System.Windows.Forms.Padding( 0 );
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size( 85, 284 );
-            this.panel1.TabIndex = 6;
+            this.panelSlaves.Location = new System.Drawing.Point( 0, 0 );
+            this.panelSlaves.Margin = new System.Windows.Forms.Padding( 0 );
+            this.panelSlaves.Name = "panelSlaves";
+            this.panelSlaves.Size = new System.Drawing.Size( 85, 284 );
+            this.panelSlaves.TabIndex = 6;
             // 
             // hScroll
             // 
@@ -737,7 +717,7 @@ namespace org.kbinani.cadencii
             this.BackColor = System.Drawing.Color.FromArgb( ((int)(((byte)(180)))), ((int)(((byte)(180)))), ((int)(((byte)(180)))) );
             this.ClientSize = new System.Drawing.Size( 170, 304 );
             this.Controls.Add( this.hScroll );
-            this.Controls.Add( this.panel1 );
+            this.Controls.Add( this.panelSlaves );
             this.Controls.Add( this.volumeMaster );
             this.Controls.Add( this.menuMain );
             this.DoubleBuffered = true;
@@ -760,7 +740,7 @@ namespace org.kbinani.cadencii
         private BMenuItem menuVisual;
         private BMenuItem menuVisualReturn;
         private VolumeTracker volumeMaster;
-        private BPanel panel1;
+        private BPanel panelSlaves;
         private BHScrollBar hScroll;
         #endregion
 #endif

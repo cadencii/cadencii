@@ -10,6 +10,11 @@ import org.kbinani.windows.forms.BHScrollBar;
 import org.kbinani.windows.forms.BMenu;
 import org.kbinani.windows.forms.BMenuItem;
 import org.kbinani.windows.forms.BPanel;
+import javax.swing.JScrollPane;
+import java.awt.Dimension;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import java.awt.Color;
 
 //SECTION-END-IMPORT
 public class FormMixer extends BForm {
@@ -17,12 +22,13 @@ public class FormMixer extends BForm {
 
     private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
-	private BPanel panel1 = null;
-	private BHScrollBar hScroll = null;
+	private BPanel panelSlaves = null;
 	private VolumeTracker volumeMaster = null;
 	private JMenuBar menuMain = null;
     private BMenu menuVisual = null;
     private BMenuItem menuVisualReturn = null;
+    private JScrollPane scrollSlaves = null;
+    private JLabel jLabel = null;
 
 	//SECTION-END-FIELD
 	/**
@@ -40,7 +46,7 @@ public class FormMixer extends BForm {
 	 * @return void
 	 */
 	private void initialize() {
-		this.setSize(161, 343);
+		this.setSize(190, 348);
 		this.setJMenuBar(getMenuMain());
 		this.setContentPane(getJContentPane());
 		this.setTitle("JFrame");
@@ -53,6 +59,16 @@ public class FormMixer extends BForm {
 	 */
 	private JPanel getJContentPane() {
 		if (jContentPane == null) {
+			GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
+			gridBagConstraints2.gridx = 1;
+			gridBagConstraints2.gridy = 1;
+			GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
+			gridBagConstraints11.fill = GridBagConstraints.BOTH;
+			gridBagConstraints11.gridy = 0;
+			gridBagConstraints11.weightx = 1.0;
+			gridBagConstraints11.weighty = 1.0;
+			gridBagConstraints11.gridheight = 2;
+			gridBagConstraints11.gridx = 0;
 			GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
 			gridBagConstraints4.gridx = 1;
 			gridBagConstraints4.weightx = 0.0D;
@@ -60,19 +76,6 @@ public class FormMixer extends BForm {
 			gridBagConstraints4.fill = GridBagConstraints.BOTH;
 			gridBagConstraints4.anchor = GridBagConstraints.NORTH;
 			gridBagConstraints4.gridy = 0;
-			GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
-			gridBagConstraints3.gridx = 0;
-			gridBagConstraints3.fill = GridBagConstraints.BOTH;
-			gridBagConstraints3.weightx = 1.0D;
-			gridBagConstraints3.weighty = 1.0D;
-			gridBagConstraints3.gridy = 0;
-			GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-			gridBagConstraints1.fill = GridBagConstraints.HORIZONTAL;
-			gridBagConstraints1.gridy = 1;
-			gridBagConstraints1.weighty = 0.0D;
-			gridBagConstraints1.anchor = GridBagConstraints.WEST;
-			gridBagConstraints1.weightx = 1.0D;
-			gridBagConstraints1.gridx = 0;
 			GridBagConstraints gridBagConstraints = new GridBagConstraints();
 			gridBagConstraints.gridx = 0;
 			gridBagConstraints.weighty = 1.0D;
@@ -81,36 +84,26 @@ public class FormMixer extends BForm {
 			gridBagConstraints.gridy = 0;
 			jContentPane = new JPanel();
 			jContentPane.setLayout(new GridBagLayout());
-			jContentPane.add(getPanel1(), gridBagConstraints3);
 			jContentPane.add(getVolumeMaster(), gridBagConstraints4);
-			jContentPane.add(getHScroll(), gridBagConstraints1);
+			jContentPane.add(getScrollSlaves(), gridBagConstraints11);
+			jContentPane.add(jLabel, gridBagConstraints2);
 		}
 		return jContentPane;
 	}
 
 	/**
-	 * This method initializes panel1	
+	 * This method initializes panelSlaves	
 	 * 	
 	 * @return javax.swing.JPanel	
 	 */
-	private BPanel getPanel1() {
-		if (panel1 == null) {
-			panel1 = new BPanel();
-			panel1.setLayout(new GridBagLayout());
+	private BPanel getPanelSlaves() {
+		if (panelSlaves == null) {
+			panelSlaves = new BPanel();
+			panelSlaves.setLayout(new GridBagLayout());
+			panelSlaves.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+			panelSlaves.setBackground(new Color(180, 180, 180));
 		}
-		return panel1;
-	}
-
-	/**
-	 * This method initializes hScroll	
-	 * 	
-	 * @return javax.swing.JScrollBar	
-	 */
-	private BHScrollBar getHScroll() {
-		if (hScroll == null) {
-			hScroll = new BHScrollBar();
-		}
-		return hScroll;
+		return panelSlaves;
 	}
 
 	/**
@@ -120,6 +113,9 @@ public class FormMixer extends BForm {
 	 */
 	private JPanel getVolumeMaster() {
 		if (volumeMaster == null) {
+			jLabel = new JLabel();
+			jLabel.setText(" ");
+			jLabel.setPreferredSize(new Dimension(4, 15));
 			volumeMaster = new VolumeTracker();
 		}
 		return volumeMaster;
@@ -161,6 +157,24 @@ public class FormMixer extends BForm {
             menuVisualReturn = new BMenuItem();
         }
         return menuVisualReturn;
+    }
+
+    /**
+     * This method initializes scrollSlaves	
+     * 	
+     * @return javax.swing.JScrollPane	
+     */
+    private JScrollPane getScrollSlaves() {
+        if (scrollSlaves == null) {
+            scrollSlaves = new JScrollPane();
+            scrollSlaves.setViewportBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+            scrollSlaves.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+            scrollSlaves.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+            scrollSlaves.setBackground(new Color(180, 180, 180));
+            scrollSlaves.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+            scrollSlaves.setViewportView(getPanelSlaves());
+        }
+        return scrollSlaves;
     }
 
 	//SECTION-END-METHOD

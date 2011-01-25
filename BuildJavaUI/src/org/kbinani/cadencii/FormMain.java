@@ -10,12 +10,11 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.WindowConstants;
+import javax.swing.border.EmptyBorder;
 import org.kbinani.windows.forms.BButton;
-import org.kbinani.windows.forms.BComboBox;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BHScrollBar;
 import org.kbinani.windows.forms.BLabel;
@@ -1103,6 +1102,7 @@ public class FormMain extends BForm {
         if (menuVisualControlTrack == null) {
             menuVisualControlTrack = new BMenuItem();
             menuVisualControlTrack.setText("Control Track");
+            menuVisualControlTrack.setSelected(true);
             menuVisualControlTrack.setCheckOnClick(true);
         }
         return menuVisualControlTrack;
@@ -2007,14 +2007,15 @@ public class FormMain extends BForm {
     private BSplitPane getSplitContainer2() {
         if (splitContainer2 == null) {
             splitContainer2 = new BSplitPane();
-            splitContainer2.setDividerSize(0);
+            splitContainer2.setDividerSize(9);
             splitContainer2.setDividerLocation(300);
             splitContainer2.setEnabled(false);
-            splitContainer2.setResizeWeight(0.0D);
+            splitContainer2.setResizeWeight(1.0D);
             splitContainer2.setPanel2Hidden(true);
             splitContainer2.setBottomComponent(getPanel2());
             splitContainer2.setTopComponent(getJPanel1());
             splitContainer2.setOrientation(BSplitPane.VERTICAL_SPLIT);
+            splitContainer2.setBorder( new EmptyBorder( 0, 0, 0, 0 ) );
         }
         return splitContainer2;
     }
@@ -2091,9 +2092,11 @@ public class FormMain extends BForm {
             splitContainer1 = new BSplitPane();
             splitContainer1.setDividerLocation(300);
             splitContainer1.setResizeWeight(1.0D);
+            splitContainer1.setDividerSize(9);
             splitContainer1.setTopComponent(getSplitContainer2());
             splitContainer1.setBottomComponent(getTrackSelector());
             splitContainer1.setOrientation(BSplitPane.VERTICAL_SPLIT);
+            splitContainer1.setBorder( new EmptyBorder( 0, 0, 0, 0 ) );
         }
         return splitContainer1;
     }
@@ -2122,8 +2125,10 @@ public class FormMain extends BForm {
             splitContainerProperty.setDividerLocation(0);
             splitContainerProperty.setEnabled(false);
             splitContainerProperty.setDividerSize(0);
+            splitContainerProperty.setResizeWeight(1.0D);
             splitContainerProperty.setRightComponent(getSplitContainer1());
             splitContainerProperty.setLeftComponent(getM_property_panel_container());
+            splitContainerProperty.setBorder( new EmptyBorder( 0, 0, 0, 0 ) );
         }
         return splitContainerProperty;
     }
@@ -3651,6 +3656,7 @@ public class FormMain extends BForm {
             jPanel3 = new BPanel();
             jPanel3.setPreferredSize(new Dimension(10, 27));
             jPanel3.setLayout(new GridBagLayout());
+            jPanel3.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
             jPanel3.add(statusLabel, gridBagConstraints);
         }
         return jPanel3;

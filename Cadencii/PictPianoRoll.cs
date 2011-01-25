@@ -873,6 +873,9 @@ namespace org.kbinani.cadencii {
                          edit_mode == EditMode.DRAG_DROP ||
                          mMainForm.isStepSequencerEnabled() ) {
                         if ( AppManager.mAddingEvent != null ) {
+#if DEBUG
+                            sout.println( "PictPianoRoll#paint; drawing mAddingEvent" );
+#endif
                             int x = (int)(AppManager.mAddingEvent.Clock * scalex + xoffset);
                             y = -AppManager.mAddingEvent.ID.Note * track_height + yoffset + 1;
                             int length = (int)(AppManager.mAddingEvent.ID.getLength() * scalex);
@@ -1076,7 +1079,7 @@ namespace org.kbinani.cadencii {
                     }
                     int rate = (int)(drate * 100.0);
                     String percent = rate + "%";
-                    Dimension size = Util.measureString( percent, FONT_9PT );
+                    Dimension size = Util.measureString( percent, AppManager.baseFont9 );
                     int delay_x = (int)((AppManager.mAddingEvent.Clock + AppManager.mAddingEvent.ID.getLength() - AppManager.mAddingEventLength + AppManager.mAddingEvent.ID.VibratoDelay) * scalex + xoffset);
                     Rectangle pxArea = new Rectangle( delay_x,
                                                       (int)(y + track_height * 2.5),
@@ -1089,8 +1092,11 @@ namespace org.kbinani.cadencii {
                     // StringFormat sf = new StringFormat();
                     //sf.Alignment = StringAlignment.Center;
                     //sf.LineAlignment = StringAlignment.Center;
-                    g.setFont( FONT_9PT );
-                    g.drawString( percent, pxArea.x, pxArea.y );// , sf );
+                    g.setFont( AppManager.baseFont9 );
+                    g.drawString(
+                        percent,
+                        pxArea.x + 3,
+                        pxArea.y + AppManager.baseFont9Height / 2 - AppManager.baseFont9OffsetHeight + 2 );
                     #endregion
                 }
 

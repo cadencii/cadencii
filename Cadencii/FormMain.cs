@@ -303,7 +303,11 @@ namespace org.kbinani.cadencii
         /// <summary>
         /// splitContainer*で使用するSplitterWidthプロパティの値
         /// </summary>
+#if JAVA
+        public const int _SPL_SPLITTER_WIDTH = 9;
+#else
         public const int _SPL_SPLITTER_WIDTH = 4;
+#endif
         const int _PICT_POSITION_INDICATOR_HEIGHT = 48;
         const int _SCROLL_WIDTH = 16;
         /// <summary>
@@ -622,7 +626,7 @@ namespace org.kbinani.cadencii
 
             trackSelector = new TrackSelector( this ); // initializeで引数なしのコンストラクタが呼ばれるのを予防
 #if JAVA
-		    initialize();
+            initialize();
             timer = new BTimer();
             getCMenuPiano();
             getCMenuTrackTab();
@@ -2890,6 +2894,7 @@ namespace org.kbinani.cadencii
             if ( AppManager.editorConfig.ViewWaveform ) {
                 splitContainer2.setPanel2MinSize( _SPL2_PANEL2_MIN_HEIGHT );
                 splitContainer2.setSplitterFixed( false );
+                splitContainer2.setPanel2Hidden( false );
                 splitContainer2.setDividerSize( _SPL_SPLITTER_WIDTH );
                 if ( mLastSplitcontainer2SplitDistance <= 0 || mLastSplitcontainer2SplitDistance > splitContainer2.getHeight() ) {
                     splitContainer2.setDividerLocation( (int)(splitContainer2.getHeight() * 0.9) );
@@ -2899,6 +2904,7 @@ namespace org.kbinani.cadencii
             } else {
                 mLastSplitcontainer2SplitDistance = splitContainer2.getDividerLocation();
                 splitContainer2.setPanel2MinSize( 0 );
+                splitContainer2.setPanel2Hidden( true );
                 splitContainer2.setDividerSize( 0 );
                 splitContainer2.setDividerLocation( splitContainer2.getHeight() );
                 splitContainer2.setSplitterFixed( true );
@@ -4072,6 +4078,28 @@ namespace org.kbinani.cadencii
         }
 
         /// <summary>
+        /// コントロールトラックの表示・非表示状態を更新します
+        /// </summary>
+        public void flipControlCurveVisible( boolean visible )
+        {
+            trackSelector.setCurveVisible( visible );
+            if ( visible ) {
+                splitContainer1.setSplitterFixed( false );
+                splitContainer1.setDividerSize( _SPL_SPLITTER_WIDTH );
+                splitContainer1.setDividerLocation( splitContainer1.getHeight() - AppManager.mLastTrackSelectorHeight - splitContainer1.getDividerSize() );
+                splitContainer1.setPanel2MinSize( trackSelector.getPreferredMinSize() );
+            } else {
+                AppManager.mLastTrackSelectorHeight = splitContainer1.getHeight() - splitContainer1.getDividerLocation() - splitContainer1.getDividerSize();
+                splitContainer1.setSplitterFixed( true );
+                splitContainer1.setDividerSize( 0 );
+                int panel2height = TrackSelector.OFFSET_TRACK_TAB * 2;
+                splitContainer1.setDividerLocation( splitContainer1.getHeight() - panel2height - splitContainer1.getDividerSize() );
+                splitContainer1.setPanel2MinSize( panel2height );
+            }
+            refreshScreen();
+        }
+
+        /// <summary>
         /// ミキサーダイアログの表示・非表示状態を更新します
         /// </summary>
         /// <param name="visible">表示状態にする場合true，そうでなければfalse</param>
@@ -4079,7 +4107,9 @@ namespace org.kbinani.cadencii
         {
             AppManager.mMixerWindow.setVisible( visible );
             AppManager.editorConfig.MixerVisible = visible;
-            menuVisualMixer.setSelected( visible );
+            if( visible != menuVisualMixer.isSelected() ){
+                menuVisualMixer.setSelected( visible );
+            }
         }
 
         /// <summary>
@@ -8498,7 +8528,7 @@ namespace org.kbinani.cadencii
                     AppManager.mWholeSelectedInterval.setEnd( startClock );
                     AppManager.mIsPointerDowned = true;
                 } else {
-                    boolean vibrato_found = false;
+                    DrawObject vibrato_dobj = null;
                     if ( selected_tool == EditTool.LINE || selected_tool == EditTool.PENCIL ) {
                         // ビブラート範囲の編集
                         int px_vibrato_length = 0;
@@ -8521,29 +8551,33 @@ namespace org.kbinani.cadencii
                                                 _EDIT_HANDLE_WIDTH,
                                                 (int)(100 * AppManager.getScaleY()) );
                             if ( Utility.isInRect( new Point( e.X, e.Y ), rc ) ) {
-                                vibrato_found = true;
+                                vibrato_dobj = dobj;
+                                //vibrato_found = true;
                                 mVibratoEditingId = dobj.mInternalID;
-                                pxFound = dobj.mRectangleInPixel;
+                                pxFound.x = dobj.mRectangleInPixel.x;
+                                pxFound.y = dobj.mRectangleInPixel.y;
+                                pxFound.width = dobj.mRectangleInPixel.width;
+                                pxFound.height = dobj.mRectangleInPixel.height;// = new Rectangle dobj.mRectangleInPixel;
                                 pxFound.x += key_width;
                                 px_vibrato_length = dobj.mRectangleInPixel.width - dobj.mVibratoDelayInPixel;
                                 break;
                             }
                         }
-                        if ( vibrato_found ) {
+                        if ( vibrato_dobj != null ) {
                             int clock = AppManager.clockFromXCoord( pxFound.x + pxFound.width - px_vibrato_length - stdx );
-                            int note = AppManager.noteFromYCoord( pxFound.y + (int)(100 * AppManager.getScaleY()) - stdy );
-                            int length = (int)(pxFound.width * AppManager.getScaleXInv());
+                            int note = vibrato_dobj.mNote - 1;// AppManager.noteFromYCoord( pxFound.y + (int)(100 * AppManager.getScaleY()) - stdy );
+                            int length = vibrato_dobj.mClock + vibrato_dobj.mLength - clock;// (int)(pxFound.width * AppManager.getScaleXInv());
                             AppManager.mAddingEvent = new VsqEvent( clock, new VsqID( 0 ) );
                             AppManager.mAddingEvent.ID.type = VsqIDType.Anote;
                             AppManager.mAddingEvent.ID.Note = note;
-                            AppManager.mAddingEvent.ID.setLength( (int)(px_vibrato_length * AppManager.getScaleXInv()) );
-                            AppManager.mAddingEventLength = length;
+                            AppManager.mAddingEvent.ID.setLength( length );
+                            AppManager.mAddingEventLength = vibrato_dobj.mLength;
                             AppManager.mAddingEvent.ID.VibratoDelay = length - (int)(px_vibrato_length * AppManager.getScaleXInv());
                             AppManager.setEditMode( EditMode.EDIT_VIBRATO_DELAY );
                             start_mouse_hover_generator = false;
                         }
                     }
-                    if ( !vibrato_found ) {
+                    if ( vibrato_dobj == null ) {
                         if ( (selected_tool == EditTool.PENCIL || selected_tool == EditTool.LINE) &&
                             e.Button == BMouseButtons.Left &&
                             e.X >= key_width ) {
@@ -8654,7 +8688,7 @@ namespace org.kbinani.cadencii
                                 }
                                 AppManager.addSelectedEvent( item.InternalID );
 #if JAVA
-                                setCursor( new Cursor( Cursor.S_RESIZE_CURSOR ) );
+                                setCursor( new Cursor( Cursor.W_RESIZE_CURSOR ) );
 #else
                                 this.Cursor = System.Windows.Forms.Cursors.VSplit;
 #endif
@@ -8678,7 +8712,7 @@ namespace org.kbinani.cadencii
                                 }
                                 AppManager.addSelectedEvent( item.InternalID );
 #if JAVA
-                                setCursor( new Cursor( Cursor.S_RESIZE_CURSOR ) );
+                                setCursor( new Cursor( Cursor.E_RESIZE_CURSOR ) );
 #else
                                 this.Cursor = System.Windows.Forms.Cursors.VSplit;
 #endif
@@ -9894,9 +9928,8 @@ namespace org.kbinani.cadencii
 
         public void menuVisualMixer_Click( Object sender, EventArgs e )
         {
-            menuVisualMixer.setSelected( !menuVisualMixer.isSelected() );
-            AppManager.editorConfig.MixerVisible = menuVisualMixer.isSelected();
-            AppManager.mMixerWindow.setVisible( AppManager.editorConfig.MixerVisible );
+            boolean v = !AppManager.editorConfig.MixerVisible;
+            flipMixerDialogVisible( v );
             requestFocus();
         }
 
@@ -9951,21 +9984,7 @@ namespace org.kbinani.cadencii
 
         public void menuVisualControlTrack_CheckedChanged( Object sender, EventArgs e )
         {
-            trackSelector.setCurveVisible( menuVisualControlTrack.isSelected() );
-            if ( menuVisualControlTrack.isSelected() ) {
-                splitContainer1.setSplitterFixed( false );
-                splitContainer1.setDividerSize( _SPL_SPLITTER_WIDTH );
-                splitContainer1.setDividerLocation( splitContainer1.getHeight() - AppManager.mLastTrackSelectorHeight - splitContainer1.getDividerSize() );
-                splitContainer1.setPanel2MinSize( trackSelector.getPreferredMinSize() );
-            } else {
-                AppManager.mLastTrackSelectorHeight = splitContainer1.getHeight() - splitContainer1.getDividerLocation() - splitContainer1.getDividerSize();
-                splitContainer1.setSplitterFixed( true );
-                splitContainer1.setDividerSize( 0 );
-                int panel2height = TrackSelector.OFFSET_TRACK_TAB * 2;
-                splitContainer1.setDividerLocation( splitContainer1.getHeight() - panel2height - splitContainer1.getDividerSize() );
-                splitContainer1.setPanel2MinSize( panel2height );
-            }
-            refreshScreen();
+            flipControlCurveVisible( menuVisualControlTrack.isSelected() );
         }
 
         public void menuVisualWaveform_CheckedChanged( Object sender, EventArgs e )
@@ -10604,6 +10623,7 @@ namespace org.kbinani.cadencii
             updatePropertyPanelState( AppManager.editorConfig.PropertyWindowStatus.State );
 #endif
             updateBgmMenuState();
+            flipControlCurveVisible( true );
 
             this.SizeChanged += new BEventHandler( FormMain_SizeChanged );
             this.LocationChanged += new BEventHandler( FormMain_LocationChanged );
@@ -14886,12 +14906,11 @@ namespace org.kbinani.cadencii
                 mVersionInfo.setVisible( true );
             } else {
 #if !JAVA
-                if ( mVersionInfo.IsDisposed )
-#endif
- {
+                if ( mVersionInfo.IsDisposed ) {
                     mVersionInfo = new VersionInfo( _APP_NAME, version_str );
                     mVersionInfo.setAuthorList( _CREDIT );
                 }
+#endif
                 mVersionInfo.setVisible( true );
             }
         }

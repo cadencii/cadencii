@@ -1501,6 +1501,13 @@ namespace org.kbinani.cadencii
                 return;
             }
             listResampler.removeItemAt( index );
+            // 選択し直す
+            if( index >= count - 1 ){
+                index--;
+            }
+            if( 0 <= index && index < count - 1 ){
+                listResampler.setSelectedIndex( index );
+            }
         }
 
         public void btnWavtool_Click( Object sender, BEventArgs e )

@@ -65,6 +65,7 @@ namespace org.kbinani.cadencii
             btnCancel.setText( _( "Cancel" ) );
             btnUp.setText( _( "Up" ) );
             btnDown.setText( _( "Down" ) );
+            listDictionaries.setColumnHeaders( new String[]{ _( "Name of dictionary" ) } );
         }
 
         public Vector<ValuePair<String, Boolean>> getResult()

@@ -25,6 +25,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
@@ -50,11 +52,11 @@ class TestBListView extends JFrame
     
     public TestBListView(){
         BListView b = new BListView();
+        JScrollPane sp = new JScrollPane(b);
+        b.setColumnHeaders( new String[]{ "1", "2" } );
+        b.fixLeftColumn();
         b.addItem( new String[]{ "one", "two" } );
         b.addItem( new String[]{ "I", "II" } );
-        b.setColumnHeaders( new String[]{ "1", "2" } );
-        JScrollPane sp = new JScrollPane(b);
-        //b.fixLeftColumn();
         //sp.setPreferredSize(new Dimension(250, 90));
 
         //JPanel p = new JPanel();
@@ -368,7 +370,7 @@ public class BListView extends JTable
         mModel = new DefaultTableModel()
         {
             public Class<?> getColumnClass( int column ){
-                if( column == 0 ){
+                if( mCheckBoxes && (column == 0) ){
                     return Boolean.class;
                 }else{
                     return String.class;
@@ -377,9 +379,18 @@ public class BListView extends JTable
             
             public boolean isCellEditable( int row, int column )
             {
-                return column == 0;
+                return mCheckBoxes && (column == 0);
             }
         };
+        final BListView t = this;
+        /*mModel.addTableModelListener( new TableModelListener(){
+            public void tableChanged( TableModelEvent e )
+            {
+                if(e.getType()==TableModelEvent.UPDATE) {
+                    t.repaint();
+                }
+            }
+        } );*/
         setModel( mModel );
         setAutoResizeMode( JTable.AUTO_RESIZE_OFF );
         addColumnCore();
@@ -398,29 +409,58 @@ public class BListView extends JTable
 
     public Component prepareEditor( TableCellEditor editor, int row, int column )
     {
-        if( column == 0 ){
-            JCheckBox c = new JCheckBox();
-            return c;
+        Component cmp = super.prepareEditor( editor, row, column );
+        if( convertColumnIndexToModel( column ) == 0 ){
+            
+        }
+        return cmp;
+        /*if( column == 0 ){
+            if( mCheckBoxes ){
+                JCheckBox c = new JCheckBox();
+                Object obj = mModel.getValueAt( row, column );
+                boolean v = false;
+                if( obj instanceof Boolean ){
+                    v = (boolean)((Boolean)obj);
+                }
+                c.setSelected( v );
+                return c;
+            }else{
+                return null;
+            }
         }else{
             return super.prepareEditor( editor, row, column );
-        }
+        }*/
     }
     
     public Component prepareRenderer( TableCellRenderer renderer, int row, int column )
     {
-        if( column == 0 ){
-            JCheckBox c = new JCheckBox();
-            return c;
+        Component cmp = super.prepareRenderer( renderer, row, column );
+        return cmp;
+        /*if( column == 0 ){
+            if( mCheckBoxes ){
+                JCheckBox c = new JCheckBox();
+                Object obj = mModel.getValueAt( row, column );
+                boolean v = false;
+                if( obj instanceof Boolean ){
+                    v = (boolean)((Boolean)obj);
+                }
+                c.setSelected( v );
+                return c;
+            }else{
+                return null;
+            }
         }else{
             return super.prepareRenderer( renderer, row, column );
-        }
+        }*/
     }
     
-    public int getItemCountRow(){
+    public int getItemCountRow()
+    {
         return mModel.getRowCount();
     }
     
-    public int getItemCountColumn(){
+    public int getItemCountColumn()
+    {
         return mModel.getColumnCount();
     }
     
@@ -436,8 +476,9 @@ public class BListView extends JTable
             return;
         }
         TableColumn column = super.getColumnModel().getColumn( 0 );
+        column.setResizable( true );
         setAutoResizeMode( JTable.AUTO_RESIZE_OFF );
-        column.setPreferredWidth( FIRST_COLUMN_WIDTH );
+        column.setPreferredWidth( mCheckBoxes ? FIRST_COLUMN_WIDTH : 0 );
         column.setResizable( false );
     }
     
@@ -545,7 +586,7 @@ public class BListView extends JTable
         System.out.println( "addItem; before" );
         printData();
         Object[] data = new Object[items.length + 1];
-        data[0] = selected;//selected;
+        data[0] = Boolean.valueOf( selected );//selected;
         for( int i = 0; i < items.length; i++ ){
             data[i + 1] = items[i];
         }
@@ -594,6 +635,7 @@ public class BListView extends JTable
             act[i + 1] = headers[i];
         }
         mModel.setColumnIdentifiers( act );
+        fixLeftColumn();
     }
     
     public String[] getColumnHeaders()
@@ -627,6 +669,10 @@ public class BListView extends JTable
     public void setCheckBoxes( boolean value )
     {
         mCheckBoxes = value;
+        if( super.getColumnCount() < 1 ){
+            addColumnCore();
+        }
+        fixLeftColumn();
     }
 }
 

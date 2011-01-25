@@ -12,6 +12,8 @@ import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BListView;
 import org.kbinani.windows.forms.BPanel;
 import javax.swing.JScrollPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.BorderFactory;
 
 //SECTION-END-IMPORT
 public class FormWordDictionary extends BForm {
@@ -207,6 +209,8 @@ public class FormWordDictionary extends BForm {
     private BListView getListDictionaries() {
         if (listDictionaries == null) {
             listDictionaries = new BListView();
+            listDictionaries.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            listDictionaries.setRowSelectionAllowed(true);
         }
         return listDictionaries;
     }
@@ -220,6 +224,9 @@ public class FormWordDictionary extends BForm {
         if (jScrollPane == null) {
             jScrollPane = new JScrollPane();
             jScrollPane.setPreferredSize(new Dimension(100, 100));
+            jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+            jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+            jScrollPane.setViewportBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
             jScrollPane.setViewportView(getListDictionaries());
         }
         return jScrollPane;
