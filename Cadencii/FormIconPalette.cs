@@ -18,6 +18,8 @@ package org.kbinani.cadencii;
 
 import java.util.*;
 import java.awt.*;
+import java.awt.datatransfer.*;
+import java.awt.dnd.*;
 import java.io.*;
 import javax.swing.*;
 import javax.imageio.*;
@@ -43,6 +45,42 @@ namespace org.kbinani.cadencii
     using BMouseEventHandler = System.Windows.Forms.MouseEventHandler;
     using BEventArgs = System.EventArgs;
     using boolean = System.Boolean;
+#endif
+
+#if JAVA
+    class DraggableBButton extends BButton
+    {
+        public DraggableBButton()
+        {
+            super();
+            int drag_action = DnDConstants.ACTION_COPY;
+            new DragSource().createDefaultDragGestureRecognizer(
+                this, 
+                drag_action, 
+                new DragGestureListener(){
+                    //@Override
+                    public void dragGestureRecognized( DragGestureEvent e ) {
+                        // 1) cursor
+                        Cursor dragCursor = DragSource.DefaultCopyDrop;
+    
+                        // 2) transfer data
+                        // タグにはIconDynamicsHandleが格納されている
+                        Object obj = getTag();
+                        if( obj == null ){
+                            return;
+                        }
+                        if( !(obj instanceof IconDynamicsHandle) ){
+                            return;
+                        }
+                        String icon_id = ((IconDynamicsHandle)obj).IconID;
+                        StringSelection transferable = new StringSelection( AppManager.CLIP_PREFIX + ":" + icon_id );
+    
+                        // 3) start drag
+                        e.startDrag( dragCursor, transferable );
+                    }
+                } );
+        }
+    }
 #endif
 
 #if JAVA
@@ -108,7 +146,11 @@ namespace org.kbinani.cadencii
             for ( Iterator<IconDynamicsHandle> itr = VocaloSysUtil.dynamicsConfigIterator( SynthesizerType.VOCALOID1 ); itr.hasNext(); ) {
                 IconDynamicsHandle handle = itr.next();
                 String icon_id = handle.IconID;
+#if JAVA
+                DraggableBButton btn = new DraggableBButton();
+#else
                 BButton btn = new BButton();
+#endif
                 btn.setName( icon_id );
                 btn.setTag( handle );
                 String buttonIconPath = handle.getButtonImageFullPath();

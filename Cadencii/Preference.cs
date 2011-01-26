@@ -1401,7 +1401,7 @@ namespace org.kbinani.cadencii
         public void btnOK_Click( Object sender, BEventArgs e )
         {
             boolean was_modified = false;
-
+#if !JAVA
             if ( AppManager.editorConfig.LoadSecondaryVocaloid1Dll != isSecondaryVocaloid1DllRequired() ) {
                 was_modified = true;
             }
@@ -1414,6 +1414,7 @@ namespace org.kbinani.cadencii
             if ( AppManager.editorConfig.DoNotUseVocaloid100 != (!isVocaloid100Required()) ) {
                 was_modified = true;
             }
+#endif
             if ( was_modified ) {
                 AppManager.showMessageBox( _( "Restart Cadencii to complete your changes\n(restart will NOT be automatically done)" ),
                                            "Cadencii",

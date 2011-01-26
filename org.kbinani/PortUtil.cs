@@ -1262,11 +1262,12 @@ namespace org.kbinani {
             }
             Vector<String> ret = new Vector<String>();
             String remain = s;
-            int len = separator.length;
+            int len = separator[0].length();
             int index = remain.indexOf( separator[0] );
             int i = 1;
             while( index < 0 && i < separator.length ){
                 index = remain.indexOf( separator[i] );
+                len = separator[i].length();
                 i++;
             }
             int added_count = 0;
@@ -1284,6 +1285,7 @@ namespace org.kbinani {
                 i = 1;
                 while( index < 0 && i < separator.length ){
                     index = remain.indexOf( separator[i] );
+                    len = separator[i].length();
                     i++;
                 }
             }

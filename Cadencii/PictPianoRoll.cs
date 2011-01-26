@@ -15,6 +15,8 @@
 package org.kbinani.cadencii;
 
 import java.awt.*;
+import java.awt.datatransfer.*;
+import java.awt.dnd.*;
 import java.awt.geom.*;
 import java.util.*;
 import org.kbinani.*;
@@ -135,6 +137,79 @@ namespace org.kbinani.cadencii {
         /// メイン画面への参照
         /// </summary>
         private FormMain mMainForm = null;
+
+        public PictPianoRoll()
+        {
+#if JAVA
+            super();
+            final int action = DnDConstants.ACTION_COPY;
+            new DropTarget(
+                this,
+                action,
+                new DropTargetListener(){
+                    public void drop( DropTargetDropEvent e ) { 
+                        e.acceptDrop( action );
+            
+                        Transferable tr = e.getTransferable(); 
+            
+                        IconDynamicsHandle data = null;
+                        try{
+                            String icon_id = null;
+                            if ( e.isDataFlavorSupported( DataFlavor.stringFlavor ) ) { 
+                                String s = (String)tr.getTransferData( DataFlavor.stringFlavor );
+                                String prefix = AppManager.CLIP_PREFIX + ":";
+                                if( str.startsWith( s, prefix ) ){
+                                    icon_id = str.sub( s, str.length( prefix ) );
+                                }
+                            }
+            
+                            if( mMainForm != null ){
+                                for ( Iterator<IconDynamicsHandle> itr = VocaloSysUtil.dynamicsConfigIterator( SynthesizerType.VOCALOID1 ); itr.hasNext(); ) {
+                                    IconDynamicsHandle handle = itr.next();
+                                    String id = handle.IconID;
+                                    if( str.compare( id, icon_id ) ){
+                                        data = (IconDynamicsHandle)handle.clone();
+                                        break;
+                                    }
+                                }
+                                Point p = pointToScreen( e.getLocation() );                            
+                                mMainForm.handleDragDrop( data, p.x, p.y );
+                            }
+                        }catch( Exception ex ){
+                            ex.printStackTrace();
+                        }finally{
+                            e.dropComplete( (data != null) );
+                        }
+                    }
+            
+                    //@Override
+                    public void dragOver( DropTargetDragEvent dtde ){ 
+                        if( mMainForm != null ){
+                            Point p = pointToScreen( dtde.getLocation() );
+                            mMainForm.handleDragOver( p.x, p.y );
+                        }
+                    }
+
+                    //@Override
+                    public void dragExit(DropTargetEvent dte) {
+                        if( mMainForm != null ){
+                            mMainForm.handleDragExit();
+                        }
+                    }
+
+                    //@Override
+                    public void dragEnter(DropTargetDragEvent dtde) {
+                        if( mMainForm != null ){
+                            mMainForm.handleDragEnter();
+                        }
+                    }
+
+                    //@Override
+                    public void dropActionChanged(DropTargetDragEvent dtde) {
+                    }
+                } );
+#endif
+        }
 
         /// <summary>
         /// メイン画面への参照を設定します

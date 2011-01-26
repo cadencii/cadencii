@@ -8,6 +8,8 @@ import javax.swing.event.PopupMenuListener;
 import org.kbinani.BEvent;
 import org.kbinani.BEventArgs;
 import org.kbinani.BEventHandler;
+import org.kbinani.componentmodel.BCancelEventArgs;
+import org.kbinani.componentmodel.BCancelEventHandler;
 
 public class BPopupMenu extends JPopupMenu 
                         implements ComponentListener,
@@ -16,6 +18,13 @@ public class BPopupMenu extends JPopupMenu
     private static final long serialVersionUID = 363411779635481115L;
     private Object tag = null;
 
+    public BPopupMenu()
+    {
+        super();
+        addComponentListener( this );
+        addPopupMenuListener( this );
+    }
+    
     public Object getTag(){
         return tag;
     }
@@ -26,14 +35,18 @@ public class BPopupMenu extends JPopupMenu
 
     /* root impl of PopupMenuListener */
     // root impl of PopupMenuListener is in BPopupMenu
-    public BEvent<BEventHandler> openingEvent = new BEvent<BEventHandler>();
+    public BEvent<BCancelEventHandler> openingEvent = new BEvent<BCancelEventHandler>();
     public void popupMenuCanceled( PopupMenuEvent e ){
     }
     public void popupMenuWillBecomeInvisible( PopupMenuEvent e ){
     }
     public void popupMenuWillBecomeVisible( PopupMenuEvent e ){
         try{
-            openingEvent.raise( this, new BEventArgs() );
+            BCancelEventArgs e1 = new BCancelEventArgs();
+            openingEvent.raise( this, e1 );
+            if( e1.Cancel ){
+                setVisible( false );
+            }
         }catch( Exception ex ){
             System.err.println( "BPopupMenu#popupMenuWillBecomeVisible; ex=" + ex );
         }

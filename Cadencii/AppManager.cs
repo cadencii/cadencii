@@ -94,7 +94,7 @@ namespace org.kbinani.cadencii
         /// <summary>
         /// OSのクリップボードに貼り付ける文字列の接頭辞．これがついていた場合，クリップボードの文字列をCadenciiが使用できると判断する．
         /// </summary>
-        private const String CLIP_PREFIX = "CADENCIIOBJ";
+        public const String CLIP_PREFIX = "CADENCIIOBJ";
 #endif
         /// <summary>
         /// 強弱記号の，ピアノロール画面上の表示幅（ピクセル）
@@ -3979,10 +3979,6 @@ namespace org.kbinani.cadencii
         /// </summary>
         public static void saveConfig()
         {
-#if JAVA
-            //TODO: AppManager#saveConfig
-            sout.println( "AppManager#saveConfig; FIXME" );
-#else
             // ユーザー辞書の情報を取り込む
             editorConfig.UserDictionaries.clear();
             int count = SymbolTable.getCount();
@@ -3992,20 +3988,27 @@ namespace org.kbinani.cadencii
             }
             editorConfig.KeyWidth = keyWidth;
 
+#if !JAVA
             // chevronの幅を保存
             if ( Rebar.CHEVRON_WIDTH > 0 ) {
                 editorConfig.ChevronWidth = Rebar.CHEVRON_WIDTH;
             }
+#endif
 
             // シリアライズして保存
             String file = fsys.combine( Utility.getConfigPath(), CONFIG_FILE_NAME );
+#if DEBUG
+            sout.println( "AppManager#saveConfig; file=" + file );
+#endif
             try {
                 EditorConfig.serialize( editorConfig, file );
             } catch ( Exception ex ) {
                 serr.println( "AppManager#saveConfig; ex=" + ex );
                 Logger.write( typeof( AppManager ) + ".saveConfig; ex=" + ex + "\n" );
-            }
+#if JAVA
+                ex.printStackTrace();
 #endif
+            }
         }
 
         /// <summary>
@@ -4015,6 +4018,9 @@ namespace org.kbinani.cadencii
         public static void loadConfig()
         {
             String appdata = Utility.getApplicationDataPath();
+#if DEBUG
+            sout.println( "AppManager#loadConfig; appdata=" + appdata );
+#endif
             if ( appdata.Equals( "" ) ) {
                 editorConfig = new EditorConfig();
                 return;
@@ -4022,6 +4028,9 @@ namespace org.kbinani.cadencii
 
             // バージョン番号付きのファイル
             String config_file = fsys.combine( Utility.getConfigPath(), CONFIG_FILE_NAME );
+#if DEBUG
+            sout.println( "AppManager#loadConfig; config_file=" + config_file );
+#endif
             EditorConfig ret = null;
             if ( PortUtil.isFileExists( config_file ) ) {
                 // このバージョン用の設定ファイルがあればそれを利用

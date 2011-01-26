@@ -10266,16 +10266,23 @@ namespace org.kbinani.cadencii
 
         //BOOKMARK: FormMain
         #region FormMain
-#if !JAVA
-        private void FormMain_DragLeave( Object sender, EventArgs e )
+        public void handleDragExit()
         {
             AppManager.setEditMode( EditMode.NONE );
             mIconPaletteOnceDragEntered = false;
         }
-#endif
 
 #if !JAVA
-        private void FormMain_DragOver( Object sender, System.Windows.Forms.DragEventArgs e )
+        private void FormMain_DragLeave( Object sender, EventArgs e )
+        {
+            handleDragExit();
+        }
+#endif
+
+        /// <summary>
+        /// アイテムがドラッグされている最中の処理を行います
+        /// </summary>
+        public void handleDragOver( int screen_x, int screen_y )
         {
             if ( AppManager.getEditMode() != EditMode.DRAG_DROP ) {
                 return;
@@ -10284,7 +10291,7 @@ namespace org.kbinani.cadencii
             if ( !mIconPaletteOnceDragEntered ) {
                 int keywidth = AppManager.keyWidth;
                 Rectangle rc = new Rectangle( pt.x + keywidth, pt.y, pictPianoRoll.getWidth() - keywidth, pictPianoRoll.getHeight() );
-                if ( Utility.isInRect( new Point( e.X, e.Y ), rc ) ) {
+                if ( Utility.isInRect( new Point( screen_x, screen_y ), rc ) ) {
                     mIconPaletteOnceDragEntered = true;
                 } else {
                     return;
@@ -10292,41 +10299,31 @@ namespace org.kbinani.cadencii
             }
             BMouseEventArgs e0 = new BMouseEventArgs( BMouseButtons.Left,
                                                       1,
-                                                      e.X - pt.x,
-                                                      e.Y - pt.y,
+                                                      screen_x - pt.x,
+                                                      screen_y - pt.y,
                                                       0 );
             pictPianoRoll_MouseMove( this, e0 );
         }
-#endif
 
 #if !JAVA
-        private void FormMain_DragDrop( Object sender, System.Windows.Forms.DragEventArgs e )
+        private void FormMain_DragOver( Object sender, System.Windows.Forms.DragEventArgs e )
         {
-            AppManager.setEditMode( EditMode.NONE );
-            mIconPaletteOnceDragEntered = false;
-            mMouseDowned = false;
-            if ( !e.Data.GetDataPresent( typeof( IconDynamicsHandle ) ) ) {
+            handleDragOver( e.X, e.Y );
+        }
+#endif
+
+        /// <summary>
+        /// ピアノロールにドロップされたIconDynamicsHandleの受け入れ処理を行います
+        /// </summary>
+        public void handleDragDrop( IconDynamicsHandle handle, int screen_x, int screen_y )
+        {
+            if( handle == null ){
                 return;
             }
             Point locPianoroll = pictPianoRoll.getLocationOnScreen();
-            int keywidth = AppManager.keyWidth;
-            Rectangle rcPianoroll = new Rectangle( locPianoroll.x + keywidth,
-                                                   locPianoroll.y,
-                                                   pictPianoRoll.getWidth() - keywidth,
-                                                   pictPianoRoll.getHeight() );
-            if ( !Utility.isInRect( new Point( e.X, e.Y ), rcPianoroll ) ) {
-                return;
-            }
-
-            // dynaff, crescend, decrescend のどれがドロップされたのか検査
-            IconDynamicsHandle this_is_it = (IconDynamicsHandle)e.Data.GetData( typeof( IconDynamicsHandle ) );
-            if ( this_is_it == null ) {
-                return;
-            }
-
             // ドロップ位置を特定して，アイテムを追加する
-            int x = e.X - locPianoroll.x;
-            int y = e.Y - locPianoroll.y;
+            int x = screen_x - locPianoroll.x;
+            int y = screen_y - locPianoroll.y;
             int clock1 = AppManager.clockFromXCoord( x );
 
             // クオンタイズの処理
@@ -10359,8 +10356,47 @@ namespace org.kbinani.cadencii
             CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( selected, work, vsq.AttachedCurves.get( selected - 1 ) );
             AppManager.register( vsq.executeCommand( run ) );
             setEdited( true );
+            AppManager.setEditMode( EditMode.NONE );
+            refreshScreen();
+        }
+
+#if !JAVA
+        private void FormMain_DragDrop( Object sender, System.Windows.Forms.DragEventArgs e )
+        {
+            AppManager.setEditMode( EditMode.NONE );
+            mIconPaletteOnceDragEntered = false;
+            mMouseDowned = false;
+            if ( !e.Data.GetDataPresent( typeof( IconDynamicsHandle ) ) ) {
+                return;
+            }
+            Point locPianoroll = pictPianoRoll.getLocationOnScreen();
+            int keywidth = AppManager.keyWidth;
+            Rectangle rcPianoroll = new Rectangle( locPianoroll.x + keywidth,
+                                                   locPianoroll.y,
+                                                   pictPianoRoll.getWidth() - keywidth,
+                                                   pictPianoRoll.getHeight() );
+            if ( !Utility.isInRect( new Point( e.X, e.Y ), rcPianoroll ) ) {
+                return;
+            }
+
+            // dynaff, crescend, decrescend のどれがドロップされたのか検査
+            IconDynamicsHandle this_is_it = (IconDynamicsHandle)e.Data.GetData( typeof( IconDynamicsHandle ) );
+            if ( this_is_it == null ) {
+                return;
+            }
+
+            handleDragDrop( this_is_it, e.X, e.Y );
         }
 #endif
+
+        /// <summary>
+        /// ドラッグの開始処理を行います
+        /// </summary>
+        public void handleDragEnter()
+        {
+            AppManager.setEditMode( EditMode.DRAG_DROP );
+            mMouseDowned = true;
+        }
 
 #if !JAVA
         private void FormMain_DragEnter( Object sender, System.Windows.Forms.DragEventArgs e )
@@ -10368,8 +10404,7 @@ namespace org.kbinani.cadencii
             if ( e.Data.GetDataPresent( typeof( IconDynamicsHandle ) ) ) {
                 // ドロップ可能
                 e.Effect = System.Windows.Forms.DragDropEffects.All;
-                AppManager.setEditMode( EditMode.DRAG_DROP );
-                mMouseDowned = true;
+                handleDragEnter();
             } else {
                 e.Effect = System.Windows.Forms.DragDropEffects.None;
                 AppManager.setEditMode( EditMode.NONE );
@@ -15416,6 +15451,9 @@ namespace org.kbinani.cadencii
         #region menuTrack*
         public void menuTrack_DropDownOpening( Object sender, EventArgs e )
         {
+#if DEBUG
+            sout.println( "FormMain#menuTrack_DropDownOpening" );
+#endif
             updateTrackMenuStatus();
         }
 
@@ -15719,6 +15757,9 @@ namespace org.kbinani.cadencii
 
         public void cMenuTrackTab_Opening( Object sender, BCancelEventArgs e )
         {
+#if DEBUG
+            sout.println( "FormMain#cMenuTrackTab_Opening" );
+#endif
             updateTrackMenuStatus();
         }
 
@@ -16807,17 +16848,19 @@ namespace org.kbinani.cadencii
 
         public void handleTrackOn_Click( Object sender, EventArgs e )
         {
-            boolean newStatus = (sender == cMenuTrackTabTrackOn) ? !cMenuTrackTabTrackOn.isSelected() : !menuTrackOn.isSelected();
-            menuTrackOn.setSelected( newStatus );
-            cMenuTrackTabTrackOn.setSelected( newStatus );
-
             int selected = AppManager.getSelected();
             VsqTrack vsq_track = AppManager.getVsqFile().Track.get( selected );
+            boolean old_status = vsq_track.isTrackOn();
+            boolean new_status = !old_status;
             int last_play_mode = vsq_track.getCommon().LastPlayMode;
-            CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandTrackChangePlayMode( selected,
-                                                                                                      newStatus ? last_play_mode : PlayMode.Off,
-                                                                                                      last_play_mode ) );
+            CadenciiCommand run = new CadenciiCommand(
+                VsqCommand.generateCommandTrackChangePlayMode(
+                    selected,
+                    new_status ? last_play_mode : PlayMode.Off,
+                    last_play_mode ) );
             AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
+            menuTrackOn.setSelected( new_status );
+            cMenuTrackTabTrackOn.setSelected( new_status );
             setEdited( true );
             refreshScreen();
         }

@@ -1,32 +1,39 @@
 package org.kbinani.windows.forms;
 
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.JMenu;
 import javax.swing.MenuElement;
 import javax.swing.MenuSelectionManager;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.kbinani.BEvent;
 import org.kbinani.BEventArgs;
 import org.kbinani.BEventHandler;
 
 public class BMenu extends JMenu
-                   implements MouseListener
+                   implements MouseListener, ItemListener
 {
     private static final long serialVersionUID = 7752494798603286721L;
 
     public BMenu(){
         addMouseListener( this );
+        addItemListener( this );
     }
     
     /* root impl of DropDownOpening event */
     // root impl of DropDownOpening event is in BMenu
     public BEvent<BEventHandler> dropDownOpeningEvent = new BEvent<BEventHandler>();
-    public void processMouseEvent(MouseEvent e, MenuElement[] path, MenuSelectionManager manager){
-        super.processMouseEvent( e, path, manager );
-        try{
-            dropDownOpeningEvent.raise( this, new BEventArgs() );
-        }catch( Exception ex ){
-            System.err.println( "BMenu#processMouseEvent; ex=" + ex );
+    public void itemStateChanged(ItemEvent e) {
+        int state = e.getStateChange();
+        if( state == ItemEvent.SELECTED ){
+            try{
+                dropDownOpeningEvent.raise( this, new BEventArgs() );
+            }catch( Exception ex ){
+                System.err.println( "BMenu#itemStateChanged; ex=" + ex );
+            }
         }
     }
     

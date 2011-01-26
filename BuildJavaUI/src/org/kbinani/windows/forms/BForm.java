@@ -86,7 +86,6 @@ public class BForm extends JFrame
     }
     
     public void close(){
-        setVisible( false );
         try{
             BFormClosingEventArgs e = new BFormClosingEventArgs();
             formClosingEvent.raise( this, e );
@@ -97,6 +96,7 @@ public class BForm extends JFrame
         }catch( Exception ex ){
             System.err.println( "BForm#close; ex=" + ex );
         }
+        setVisible( false );
         dispose();
     }
     

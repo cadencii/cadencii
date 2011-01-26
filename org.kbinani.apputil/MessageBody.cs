@@ -236,6 +236,9 @@ namespace org.kbinani.apputil {
             }
             msg.value = msg.value.Replace( "\\\"", "\"" );
             msg.value = msg.value.Replace( "\\n", "\n" );
+            if( line == null ){
+                line = "";
+            }
             return line;
         }
     }

@@ -24,6 +24,18 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+class TestDummy{
+    public int intValue = 0;
+}
+
+class TestXmlSerializer
+{
+    public static void main( String[] args )
+    {
+        TestDummy td = new TestDummy();
+    }
+}
+
 /**
  * .NETのSystem.Xml.Serialization.XmlSerializerと同じ書式で入出力するためのXMLシリアライザ．<br>
  * シリアライズしたいクラスには，以下のメソッドを実装しておく必要があります．<br>
@@ -372,6 +384,7 @@ public class XmlSerializer{
     }
 
     private void parseFieldAndProperty( Class t, Object obj, Element el ) throws IllegalAccessException{
+System.out.println( "XmlSerializer#parseFieldAndProperty; t=" + t );
         if( obj == null ){
             return;
         }
@@ -379,6 +392,7 @@ public class XmlSerializer{
         for( XmlMember xm : members ){
             String name = xm.getName();
             Element el2 = m_document.createElement( name );
+System.out.println( "XmlSerializer#parseFieldAndProprety; xm.getName()=" + name + "; xm.getType()=" + xm.getType() + "; calli printItemRecurse" );
             printItemRecurse( xm.getType(), xm.get( obj ), el2 );
             el.appendChild( el2 );
         }
@@ -416,6 +430,7 @@ public class XmlSerializer{
     
     private void printItemRecurse( Class t, Object obj, Element parent ) throws IllegalAccessException{
         try{
+            System.out.println( "XmlSerializer#printItemRecurse; t=" + t.getSimpleName() );
             if ( !tryWriteValueType( t, obj, parent ) ){
                 if( t.isArray() || t.equals( Vector.class ) || isInterfaceDeclared( t, AbstractList.class ) ){
                     Object[] array = null;
@@ -455,6 +470,41 @@ public class XmlSerializer{
                             }
                         }
                     }
+                    java.awt.Point p;
+                }else if( t.equals( java.awt.Rectangle.class ) ){
+                    // 特例．ここで処理しないと，stack overflowになる
+                    Element e_x = m_document.createElement( "x" );
+                    Element e_y = m_document.createElement( "y" );
+                    Element e_width = m_document.createElement( "width" );
+                    Element e_height = m_document.createElement( "height" );
+                    java.awt.Rectangle rc = null;
+                    if( obj instanceof java.awt.Rectangle ){
+                        rc = (java.awt.Rectangle)obj;
+                    }else{
+                        rc = new java.awt.Rectangle();
+                    }
+                    e_x.appendChild( m_document.createTextNode( rc.x + "" ) );
+                    e_y.appendChild( m_document.createTextNode( rc.y + "" ) );
+                    e_width.appendChild( m_document.createTextNode( rc.width + "" ) );
+                    e_height.appendChild( m_document.createTextNode( rc.height + "") );
+                    parent.appendChild( e_x );
+                    parent.appendChild( e_y );
+                    parent.appendChild( e_width );
+                    parent.appendChild( e_height );
+                }else if( t.equals( java.awt.Point.class ) ){
+                    // ここで処理しないと，x, yの他にX, Yが追加されてしまう
+                    Element e_x = m_document.createElement( "x" );
+                    Element e_y = m_document.createElement( "y" );
+                    java.awt.Point p = null;
+                    if( obj instanceof java.awt.Point ){
+                        p = (java.awt.Point)obj;
+                    }else{
+                        p = new java.awt.Point();
+                    }
+                    e_x.appendChild( m_document.createTextNode( p.x + "" ) );
+                    e_y.appendChild( m_document.createTextNode( p.y + "" ) );
+                    parent.appendChild( e_x );
+                    parent.appendChild( e_y );
                 }else{
                     parseFieldAndProperty( t, obj, parent );
                 }
@@ -515,6 +565,7 @@ public class XmlSerializer{
     }
     
     private boolean tryWriteValueType( Class t, Object obj, Element element ){
+System.out.println( "XmlSerializer#tryWriteValueType; t=" + t );
         if( t.equals( Boolean.class ) || t.equals( Boolean.TYPE ) ){
             element.appendChild( m_document.createTextNode( (Boolean)obj + "" ) );
             return true;

@@ -235,9 +235,9 @@ namespace org.kbinani.cadencii
             double[] bufL = new double[BUFLEN];
             double[] bufR = new double[BUFLEN];
             String straight_synth = fsys.combine( PortUtil.getApplicationStartupPath(), STRAIGHT_SYNTH );
-            if ( !PortUtil.isFileExists( straight_synth ) ) {
+            if ( !fsys.isFileExists( straight_synth ) ) {
 #if DEBUG
-                sout.println( "StraightRendeingRunner#run; \"" + straight_synth + "\" does not exists" );
+                sout.println( "VConnectWaveGenerator#begin; \"" + straight_synth + "\" does not exists" );
 #endif
                 postProcess();
                 return;
@@ -250,12 +250,12 @@ namespace org.kbinani.cadencii
                 total_samples += mQueue.get( i ).abstractSamples;
             }
 #if DEBUG
-            sout.println( "StraightRenderingRunner#run; total_samples=" + total_samples );
+            sout.println( "VConnectWaveGenerator#begin; total_samples=" + total_samples );
 #endif
 
             mTrimRemain = (int)(mTrimMillisec / 1000.0 * mSampleRate); //先頭から省かなければならないサンプル数の残り
 #if DEBUG
-            sout.println( "StraightRenderingRunner#run; m_trim_remain=" + mTrimRemain );
+            sout.println( "VConnectWaveGenerator#begin; m_trim_remain=" + mTrimRemain );
 #endif
             long max_next_wave_start = mVsqLengthSamples;
 
@@ -294,6 +294,9 @@ namespace org.kbinani.cadencii
                 String tmp_dir = AppManager.getTempWaveDir();
 
                 String tmp_file = fsys.combine( tmp_dir, "tmp.usq" );
+#if DEBUG
+                sout.println( "VConnectWaveGenerator#begin; tmp_file=" + tmp_file );
+#endif
                 String hash = "";
                 BufferedWriter sw = null;
                 try {
@@ -301,7 +304,10 @@ namespace org.kbinani.cadencii
                     prepareMetaText( sw, queue.track, queue.oto_ini, queue.endClock );
                 } catch ( Exception ex ) {
 #if DEBUG
-                    sout.println( "StraightRenderingRunner#run; ex=" + ex );
+                    sout.println( "VConnectWaveGenerator#begin; ex=" + ex );
+#if JAVA
+                    ex.printStackTrace();
+#endif
 #endif
                 } finally {
                     if ( sw != null ) {
@@ -309,7 +315,7 @@ namespace org.kbinani.cadencii
                             sw.close();
                         } catch ( Exception ex2 ) {
 #if DEBUG
-                            sout.println( "StraightRenderingRunner#run; ex2=" + ex2 );
+                            serr.println( "VConnectWaveGenerator#begin; ex2=" + ex2 );
 #endif
                         }
                     }
@@ -317,6 +323,9 @@ namespace org.kbinani.cadencii
                 try {
                     hash = PortUtil.getMD5( tmp_file ).Replace( "_", "" );
                 } catch ( Exception ex ) {
+#if DEBUG
+                    serr.println( "VConnectWaveGenerator#begin; ex=" + ex );
+#endif
                 }
                 try {
                     PortUtil.copyFile( tmp_file, fsys.combine( tmp_dir, hash + ".usq" ) );
@@ -324,16 +333,16 @@ namespace org.kbinani.cadencii
                 } catch ( Exception ex ) {
                 }
                 tmp_file = fsys.combine( tmp_dir, hash );
-                if ( !mCache.containsKey( hash ) || !PortUtil.isFileExists( tmp_file + ".wav" ) ) {
+                if ( !mCache.containsKey( hash ) || !fsys.isFileExists( tmp_file + ".wav" ) ) {
 #if JAVA
                     String[] args = new String[]{ 
                         straight_synth.replace( "\\", "\\" + "\\" ), 
-                        "\"" + tmp_file.replace( "\\", "\\" + "\\" ) + ".usq\"",
-                        "\"" + tmp_file.replace( "\\", "\\" + "\\" ) + ".wav\"" };
+                        tmp_file.replace( "\\", "\\" + "\\" ) + ".usq",
+                        tmp_file.replace( "\\", "\\" + "\\" ) + ".wav" };
 #if DEBUG
-                    sout.println( "StraightRenderingRunner#run; args=" );
+                    sout.println( "VConnectWaveGenerator#begin; args=" );
                     for( String s : args ){
-                        sout.println( "StraightRenderingRunner#run; " + s );
+                        sout.println( "VConnectWaveGenerator#begin; " + s );
                     }
 #endif
                     ProcessBuilder pb = new ProcessBuilder( args );
@@ -343,12 +352,12 @@ namespace org.kbinani.cadencii
                         InputStream stream = process.getInputStream();
                         while( stream.read() >= 0 && !mAbortRequired );
                     }catch( Exception ex ){
-                        System.err.println( "StraightRenderingRunner#run; ex=" + ex );
+                        System.err.println( "VConnectWaveGenerator#begin; ex=" + ex );
 #if DEBUG
                         ex.printStackTrace();
 #endif
                     }
-#else
+#else // JAVA
                     Process process = null;
                     try {
                         process = new Process();
@@ -370,7 +379,7 @@ namespace org.kbinani.cadencii
                             process.Dispose();
                         }
                     }
-#endif
+#endif // JAVA
 
 #if !DEBUG
                     try {
@@ -434,7 +443,7 @@ namespace org.kbinani.cadencii
 
                     if ( cached_data_length == 0 ) {
 #if DEBUG
-                        sout.println( "StraightRenderingRunner#run; cache is null; queue=" + queue.__DEBUG__toString() );
+                        sout.println( "VConnectWaveGenerator#begin; cache is null; queue=" + queue.__DEBUG__toString() );
 #endif
                         // キャッシュが残っていない場合
                         int remain = wave_samples;
@@ -496,7 +505,7 @@ namespace org.kbinani.cadencii
                         }
                     } else {
 #if DEBUG
-                        sout.println( "StraightRenderingRunner#run; cache is NOT null" );
+                        sout.println( "VConnectWaveGenerator#begin; cache is NOT null" );
 #endif
                         // キャッシュが残っている場合
                         int rendered_length = 0;
@@ -506,7 +515,7 @@ namespace org.kbinani.cadencii
                         if ( rendered_length < cached_data_length ) {
                             if ( next_wave_start < queue.startSample + cached_data_length ) {
 #if DEBUG
-                                sout.println( "StraightRenderingRunner#run; (i) or (ii);" + queue.__DEBUG__toString() );
+                                sout.println( "VConnectWaveGenerator#begin; (i) or (ii);" + queue.__DEBUG__toString() );
 #endif
                                 // PATTERN A
                                 //  ----[*****************************]----------------->  cache
@@ -552,11 +561,11 @@ namespace org.kbinani.cadencii
                                     }
                                     cached_data_length -= append_len;
                                 } catch ( Exception ex ) {
-                                    AppManager.debugWriteLine( "StraightRenderingRunner#run; (A),(B); ex=" + ex );
+                                    AppManager.debugWriteLine( "VConnectWaveGenerator#begin; (A),(B); ex=" + ex );
                                 }
                             } else {
 #if DEBUG
-                                sout.println( "StraightRenderingRunner#run; (iii);" + queue.__DEBUG__toString() );
+                                sout.println( "VConnectWaveGenerator#begin; (iii);" + queue.__DEBUG__toString() );
 #endif
                                 // PATTERN C
                                 //  ----[*****************************]----------------->   cache
@@ -601,13 +610,13 @@ namespace org.kbinani.cadencii
                                     // キャッシュの長さは0になる
                                     cached_data_length = 0;
                                 } catch ( Exception ex ) {
-                                    AppManager.debugWriteLine( "StraightRenderingRunner#run; (C); ex=" + ex );
+                                    AppManager.debugWriteLine( "VConnectWaveGenerator#begin; (C); ex=" + ex );
                                 }
                             }
                         } else {
                             if ( next_wave_start < queue.startSample + cached_data_length ) {
 #if DEBUG
-                                sout.println( "StraightRenderingRunner#run; (iv);" + queue.__DEBUG__toString() );
+                                sout.println( "VConnectWaveGenerator#begin; (iv);" + queue.__DEBUG__toString() );
 #endif
                                 // PATTERN D
                                 //  ----[*************]--------------------------------->  cache
@@ -674,11 +683,11 @@ namespace org.kbinani.cadencii
                                         offset += amount;
                                     }
                                 } catch ( Exception ex ) {
-                                    AppManager.debugWriteLine( "StraightRenderingRunner#run; (D); ex=" + ex );
+                                    AppManager.debugWriteLine( "VConnectWaveGenerator#begin; (D); ex=" + ex );
                                 }
                             } else if ( next_wave_start < queue.startSample + rendered_length ) {
 #if DEBUG
-                                sout.println( "StraightRenderingRunner#run; (v);" + queue.__DEBUG__toString() );
+                                sout.println( "VConnectWaveGenerator#begin; (v);" + queue.__DEBUG__toString() );
 #endif
                                 // PATTERN E
                                 //  ----[*************]--------------------------------->  cache
@@ -733,11 +742,11 @@ namespace org.kbinani.cadencii
                                     // レンダリング結果を読み込む
                                     wr.read( offset, remain, cached_data_l, cached_data_r );
                                 } catch ( Exception ex ) {
-                                    AppManager.debugWriteLine( "StraightRenderingRunner#run; (E); ex=" + ex );
+                                    AppManager.debugWriteLine( "VConnectWaveGenerator#begin; (E); ex=" + ex );
                                 }
                             } else {
 #if DEBUG
-                                sout.println( "StraightRenderingRunner#run; (vi);" + queue.__DEBUG__toString() );
+                                sout.println( "VConnectWaveGenerator#begin; (vi);" + queue.__DEBUG__toString() );
 #endif
                                 // PATTERN F
                                 //  ----[*************]--------------------------------->  cache
@@ -790,19 +799,19 @@ namespace org.kbinani.cadencii
                                     // キャッシュは無くなる
                                     cached_data_length = 0;
                                 } catch ( Exception ex ) {
-                                    AppManager.debugWriteLine( "StraightRenderingRunner#run; (F); ex=" + ex );
+                                    AppManager.debugWriteLine( "VConnectWaveGenerator#begin; (F); ex=" + ex );
                                 }
                             }
                         }
                     }
                 } catch ( Exception ex ) {
-                    serr.println( "StraightRenderingRunner#run; ex=" + ex );
+                    serr.println( "VConnectWaveGenerator#begin; ex=" + ex );
                 } finally {
                     if ( wr != null ) {
                         try {
                             wr.close();
                         } catch ( Exception ex2 ) {
-                            serr.println( "StraightRenderingRunner#run; ex2=" + ex2 );
+                            serr.println( "VConnectWaveGenerator#begin; ex2=" + ex2 );
                         }
                         wr = null;
                     }

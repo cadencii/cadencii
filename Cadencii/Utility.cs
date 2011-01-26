@@ -1359,7 +1359,7 @@ namespace org.kbinani.cadencii{
             } else {
                 String home = System.getenv( "HOME" );
                 if ( home != null ) {
-                    appdata = fsys.combine( fsys.combine( home, "Library" ), "Preference" );
+                    appdata = fsys.combine( fsys.combine( home, "Library" ), "Preferences" );
                 }
             }
             String dir = fsys.combine( appdata, "Boare" );

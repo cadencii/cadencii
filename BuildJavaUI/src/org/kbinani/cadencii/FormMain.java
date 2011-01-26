@@ -1417,7 +1417,6 @@ public class FormMain extends BForm {
         if (menuTrackOn == null) {
             menuTrackOn = new BMenuItem();
             menuTrackOn.setText("Track On");
-            menuTrackOn.setCheckOnClick(true);
         }
         return menuTrackOn;
     }

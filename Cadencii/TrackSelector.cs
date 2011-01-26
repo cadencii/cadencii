@@ -1799,10 +1799,10 @@ namespace org.kbinani.cadencii
             g.drawLine( px_overlap, HEADER + 1, px_overlap, graph_height + HEADER );
 
             String s_pre = "Pre Utterance: " + PortUtil.formatDecimal( "0.00", preutterance );
-            java.awt.Dimension size = Util.measureString( s_pre, AppManager.baseFont10 );
+            java.awt.Dimension size = Util.measureString( s_pre, AppManager.baseFont8 );
             mPreUtteranceBounds = new Rectangle( px_preutterance + 1, OFFSET_PRE, (int)size.width, (int)size.height );
             String s_ovl = "Overlap: " + PortUtil.formatDecimal( "0.00", overlap );
-            size = Util.measureString( s_ovl, AppManager.baseFont10 );
+            size = Util.measureString( s_ovl, AppManager.baseFont8 );
             nOverlapBounds = new Rectangle( px_overlap + 1, OFFSET_OVL, (int)size.width, (int)size.height );
 
             Color pen = new Color( 0, 0, 0, 50 );
@@ -1817,10 +1817,10 @@ namespace org.kbinani.cadencii
             g.setColor( pen );
             g.drawRect( nOverlapBounds.x, nOverlapBounds.y, nOverlapBounds.width, nOverlapBounds.height );
 
-            g.setFont( AppManager.baseFont10 );
+            g.setFont( AppManager.baseFont8 );
             g.setColor( Color.black );
-            g.drawString( s_pre, px_preutterance + 1, OFFSET_PRE );
-            g.drawString( s_ovl, px_overlap + 1, OFFSET_OVL );
+            g.drawString( s_pre, px_preutterance + 1, OFFSET_PRE + AppManager.baseFont8Height / 2 - AppManager.baseFont8OffsetHeight + 1  );
+            g.drawString( s_ovl, px_overlap + 1, OFFSET_OVL + AppManager.baseFont8Height / 2 - AppManager.baseFont8OffsetHeight + 1 );
         }
 
         /// <summary>
