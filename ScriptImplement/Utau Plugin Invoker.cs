@@ -80,6 +80,7 @@ public class Utau_Plugin_Invoker : Form {
         // 現在のトラック
         int selected = AppManager.getSelected();
         VsqTrack vsq_track = vsq.Track.get( selected );
+        vsq_track.sortEvent();
 
         // プラグイン情報の定義ファイル(plugin.txt)があるかどうかチェック
         string pluginTxtPath = s_plugin_txt_path;
@@ -131,6 +132,7 @@ public class Utau_Plugin_Invoker : Form {
                 id_start = item.original.InternalID;
                 clock_start = clock;
             }
+            clock += item.original.ID.getLength();
             if ( clock_end < clock ) {
                 id_end = item.original.InternalID;
                 clock_end = clock;
@@ -138,15 +140,82 @@ public class Utau_Plugin_Invoker : Form {
         }
         Console.WriteLine( "id_start=" + id_start );
         Console.WriteLine( "id_end=" + id_end );
+        Console.WriteLine( "#1; (clock_start,clock_end)=" + "(" + clock_start + "," + clock_end + ")" );
+
+        // 選択範囲の前後の音符を探す
+        VsqEvent ve_prev = null;
+        VsqEvent ve_next = null;
+        VsqEvent l = null;
+        for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
+            VsqEvent item = itr.next();
+            if ( item.InternalID == id_start ) {
+                if ( l != null ) {
+                    ve_prev = l;
+                }
+            }
+            if ( l != null ) {
+                if ( l.InternalID == id_end ) {
+                    ve_next = item;
+                }
+            }
+            l = item;
+            if ( ve_prev != null && ve_next != null ) {
+                break;
+            }
+        }
+        if ( ve_prev != null ) {
+            Console.WriteLine( "ve_prev.InternalID=" + ve_prev.InternalID );
+        }
+        if ( ve_next != null ) {
+            Console.WriteLine( "ve_next.InternalID=" + ve_next.InternalID );
+        }
+        int next_rest_clock = -1;
+        bool prev_is_rest = false;
+        if ( ve_prev != null ) {
+            // 直前の音符がある場合
+            if ( ve_prev.Clock + ve_prev.ID.getLength() == clock_start ) {
+                // 接続している
+                clock_start = ve_prev.Clock;
+            } else {
+                // 接続していない
+                clock_start = ve_prev.Clock + ve_prev.ID.getLength();
+            }
+        } else {
+            // 無い場合
+            if ( vsq.getPreMeasureClocks() < clock_start ) {
+                prev_is_rest = true;
+            }
+            clock_start = vsq.getPreMeasureClocks();
+        }
+        if ( ve_next != null ) {
+            // 直後の音符がある場合
+            if ( ve_next.Clock == clock_end ) {
+                // 接続している
+                clock_end = ve_next.Clock + ve_next.ID.getLength();
+            } else {
+                // 接続していない
+                next_rest_clock = clock_end;
+                clock_end = ve_next.Clock;
+            }
+        }
+        Console.WriteLine( "#2; (clock_start,clock_end)=" + "(" + clock_start + "," + clock_end + ")" );
 
         // 作業用のVSQに，選択範囲のアイテムを格納
         VsqFile v = new VsqFile( "Miku", 1, 4, 4, 500000 );
         VsqTrack v_track = v.Track.get( 1 );
         for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
             VsqEvent item = itr.next();
-            if ( clock_start <= item.Clock && item.Clock <= clock_end ) {
+            if ( clock_start <= item.Clock && item.Clock + item.ID.getLength() <= clock_end ) {
                 v_track.addEvent( (VsqEvent)item.clone() );
             }
+        }
+        // 最後のRを手動で追加．これは自動化できない
+        if ( next_rest_clock != -1 ) {
+            VsqEvent item = (VsqEvent)ve_next.clone();
+            item.ID.LyricHandle.L0.Phrase = "R";
+            item.Clock = next_rest_clock;
+            item.ID.setLength( clock_end - next_rest_clock );
+            v_track.addEvent( item );
         }
         // 0～選択範囲の開始位置までを削除する
         v.removePart( 0, clock_start );
@@ -156,8 +225,13 @@ public class Utau_Plugin_Invoker : Form {
         Vector<ValuePair<int, int>> map = new Vector<ValuePair<int, int>>();
         UstFile u = new UstFile( v, 1, map );
 
-        // PREV, ENDがあれば追加
-        // TODO:
+        // PREV, NEXTのIndex値を設定する
+        if ( ve_prev != null || prev_is_rest ) {
+            u.getTrack( 0 ).getEvent( 0 ).Index = UstFile.PREV_INDEX;
+        }
+        if ( ve_next != null ) {
+            u.getTrack( 0 ).getEvent( u.getTrack( 0 ).getEventCount() - 1 ).Index = UstFile.NEXT_INDEX;
+        }
 
         // ustファイルに出力
         UstFileWriteOptions option = new UstFileWriteOptions();
