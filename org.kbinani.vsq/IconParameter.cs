@@ -117,7 +117,7 @@ namespace org.kbinani.vsq
             if ( file == null ) {
                 return;
             }
-            if ( file.Equals( "" ) ) {
+            if ( str.compare( file, "" ) ) {
                 return;
             }
             BufferedReader sr = null;
@@ -150,93 +150,93 @@ namespace org.kbinani.vsq
                     }
                     String name = spl[0].Trim();// new char[]{ ' ', '\t' } );
                     String value = spl[1].Trim();// new char[]{ ' ', '\t' } );
-                    if ( name.Equals( "Articulation" ) ) {
-                        if ( value.Equals( "Vibrato" ) ) {
+                    if ( str.compare( name, "Articulation" ) ) {
+                        if ( str.compare( value, "Vibrato" ) ) {
                             articulation = ArticulationType.Vibrato;
-                        } else if ( value.Equals( "Crescendo" ) ) {
+                        } else if ( str.compare( value, "Crescendo" ) ) {
                             articulation = ArticulationType.Crescendo;
-                        } else if ( value.Equals( "Dynaff" ) ) {
+                        } else if ( str.compare( value, "Dynaff" ) ) {
                             articulation = ArticulationType.Dynaff;
-                        } else if ( value.Equals( "NoteAttack" ) ) {
+                        } else if ( str.compare( value, "NoteAttack" ) ) {
                             articulation = ArticulationType.NoteAttack;
-                        } else if ( value.Equals( "NoteTransition" ) ) {
+                        } else if ( str.compare( value, "NoteTransition" ) ) {
                             articulation = ArticulationType.NoteTransition;
                         }
-                    } else if ( name.Equals( "Button" ) ) {
+                    } else if ( str.compare( name, "Button" ) ) {
                         button = value;
-                    } else if ( name.Equals( "Caption" ) ) {
+                    } else if ( str.compare( name, "Caption" ) ) {
                         caption = value;
-                    } else if ( name.Equals( "Length" ) ) {
+                    } else if ( str.compare( name, "Length" ) ) {
                         try {
-                            length = PortUtil.parseInt( value );
+                            length = str.toi( value );
                         } catch ( Exception ex ) {
                             serr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
-                    } else if ( name.Equals( "StartDepth" ) ) {
+                    } else if ( str.compare( name, "StartDepth" ) ) {
                         try {
-                            startDepth = PortUtil.parseInt( value );
+                            startDepth = str.toi( value );
                         } catch ( Exception ex ) {
                             serr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
-                    } else if ( name.Equals( "EndDepth" ) ) {
+                    } else if ( str.compare( name, "EndDepth" ) ) {
                         try {
-                            endDepth = PortUtil.parseInt( value );
+                            endDepth = str.toi( value );
                         } catch ( Exception ex ) {
                             serr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
-                    } else if ( name.Equals( "StartRate" ) ) {
+                    } else if ( str.compare( name, "StartRate" ) ) {
                         try {
-                            startRate = PortUtil.parseInt( value );
+                            startRate = str.toi( value );
                         } catch ( Exception ex ) {
                             serr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
-                    } else if ( name.Equals( "EndRate" ) ) {
+                    } else if ( str.compare( name, "EndRate" ) ) {
                         try {
-                            endRate = PortUtil.parseInt( value );
+                            endRate = str.toi( value );
                         } catch ( Exception ex ) {
                             serr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
-                    } else if ( name.Equals( "StartDyn" ) ) {
+                    } else if ( str.compare( name, "StartDyn" ) ) {
                         try {
-                            startDyn = PortUtil.parseInt( value );
+                            startDyn = str.toi( value );
                         } catch ( Exception ex ) {
                             serr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
-                    } else if ( name.Equals( "EndDyn" ) ) {
+                    } else if ( str.compare( name, "EndDyn" ) ) {
                         try {
-                            endDyn = PortUtil.parseInt( value );
+                            endDyn = str.toi( value );
                         } catch ( Exception ex ) {
                             serr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
-                    } else if ( name.Equals( "Duration" ) ) {
+                    } else if ( str.compare( name, "Duration" ) ) {
                         try {
-                            duration = PortUtil.parseInt( value );
+                            duration = str.toi( value );
                         } catch ( Exception ex ) {
                             serr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
-                    } else if ( name.Equals( "Depth" ) ) {
+                    } else if ( str.compare( name, "Depth" ) ) {
                         try {
-                            depth = PortUtil.parseInt( value );
+                            depth = str.toi( value );
                         } catch ( Exception ex ) {
                             serr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                         }
-                    } else if ( name.Equals( "DynBPNum" ) ) {
+                    } else if ( str.compare( name, "DynBPNum" ) ) {
                         strDynBPNum = value;
-                    } else if ( name.Equals( "DynBPX" ) ) {
+                    } else if ( str.compare( name, "DynBPX" ) ) {
                         strDynBPX = value;
-                    } else if ( name.Equals( "DynBPY" ) ) {
+                    } else if ( str.compare( name, "DynBPY" ) ) {
                         strDynBPY = value;
-                    } else if ( name.Equals( "DepthBPNum" ) ) {
+                    } else if ( str.compare( name, "DepthBPNum" ) ) {
                         strDepthBPNum = value;
-                    } else if ( name.Equals( "DepthBPX" ) ) {
+                    } else if ( str.compare( name, "DepthBPX" ) ) {
                         strDepthBPX = value;
-                    } else if ( name.Equals( "DepthBPY" ) ) {
+                    } else if ( str.compare( name, "DepthBPY" ) ) {
                         strDepthBPY = value;
-                    } else if ( name.Equals( "RateBPNum" ) ) {
+                    } else if ( str.compare( name, "RateBPNum" ) ) {
                         strRateBPNum = value;
-                    } else if ( name.Equals( "RateBPX" ) ) {
+                    } else if ( str.compare( name, "RateBPX" ) ) {
                         strRateBPX = value;
-                    } else if ( name.Equals( "RateBPY" ) ) {
+                    } else if ( str.compare( name, "RateBPY" ) ) {
                         strRateBPY = value;
                     }
                 }
@@ -265,12 +265,12 @@ namespace org.kbinani.vsq
         private static VibratoBPList getBPListFromText( String strNum, String strBPX, String strBPY )
         {
             VibratoBPList ret = null;
-            if ( strNum == null || (strNum != null && strNum.Equals( "" )) ) {
+            if ( strNum == null || (strNum != null && str.compare( strNum, "" )) ) {
                 return ret;
             }
             int num = 0;
             try {
-                num = PortUtil.parseInt( strNum );
+                num = str.toi( strNum );
             } catch ( Exception ex ) {
                 serr.println( "org.kbinani.vsq.IconParameter.getBPListFromText; ex=" + ex );
                 num = 0;
@@ -283,8 +283,8 @@ namespace org.kbinani.vsq
                 int[] y = new int[actNum];
                 for ( int i = 0; i < actNum; i++ ) {
                     try {
-                        x[i] = PortUtil.parseFloat( sx[i] );
-                        y[i] = PortUtil.parseInt( sy[i] );
+                        x[i] = (float)str.tof( sx[i] );
+                        y[i] = str.toi( sy[i] );
                     } catch ( Exception ex ) {
                         serr.println( "org.kbinani.vsq.IconParameter.getBPListFromText; ex=" + ex );
                     }

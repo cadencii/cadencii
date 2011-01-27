@@ -1000,7 +1000,7 @@ namespace org.kbinani.cadencii
             AppManager.mMixerWindow = new FormMixer( this );
 
             // ファイルを開く
-            if ( !file.Equals( "" ) ) {
+            if ( !str.compare( file, "" ) ) {
                 if ( PortUtil.isFileExists( file ) ) {
                     String low_file = file.ToLower();
                     if ( low_file.EndsWith( ".xvsq" ) ) {
@@ -1020,7 +1020,6 @@ namespace org.kbinani.cadencii
                 }
             }
 
-            applyLanguage();
             trackBar.setValue( AppManager.editorConfig.DefaultXScale );
             AppManager.setCurrentClock( 0 );
             setEdited( false );
@@ -1086,7 +1085,7 @@ namespace org.kbinani.cadencii
             // RunOnceという名前のスクリプトがあれば，そいつを実行
             for ( Iterator<String> itr = ScriptServer.getScriptIdIterator(); itr.hasNext(); ) {
                 String id = itr.next();
-                if ( PortUtil.getFileNameWithoutExtension( id ).ToLower().Equals( "runonce" ) ) {
+                if ( str.compare( PortUtil.getFileNameWithoutExtension( id ).ToLower(), "runonce" ) ) {
                     ScriptServer.invokeScript( id, AppManager.getVsqFile() );
                     break;
                 }
@@ -2431,7 +2430,7 @@ namespace org.kbinani.cadencii
                 return null;
             }
 #endif
-            if ( tree_name.Equals( name ) ) {
+            if ( str.compare( tree_name, name ) ) {
                 return tree;
             } else {
                 if ( menu == null ) {
@@ -2465,7 +2464,7 @@ namespace org.kbinani.cadencii
                         continue;
                     }
 #endif
-                    if ( tsi_name.Equals( name ) ) {
+                    if ( str.compare( tsi_name, name ) ) {
                         return tsi;
                     }
                     Object ret = searchMenuItemRecurse( name, tsi );
@@ -2979,7 +2978,7 @@ namespace org.kbinani.cadencii
         {
             if ( mEdited ) {
                 String file = AppManager.getFileName();
-                if ( file.Equals( "" ) ) {
+                if ( str.compare( file, "" ) ) {
                     file = "Untitled";
                 } else {
                     file = PortUtil.getFileName( file );
@@ -2989,7 +2988,7 @@ namespace org.kbinani.cadencii
                                                               org.kbinani.windows.forms.Utility.MSGBOX_YES_NO_CANCEL_OPTION,
                                                               org.kbinani.windows.forms.Utility.MSGBOX_QUESTION_MESSAGE );
                 if ( dr == BDialogResult.YES ) {
-                    if ( AppManager.getFileName().Equals( "" ) ) {
+                    if ( str.compare( AppManager.getFileName(), "" ) ) {
                         int dr2 = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
                         if ( dr2 == BFileChooser.APPROVE_OPTION ) {
                             AppManager.saveTo( saveXmlVsqDialog.getSelectedFile() );
@@ -3279,8 +3278,8 @@ namespace org.kbinani.cadencii
             }
 
             // 発音記号または歌詞が変更された場合の処理
-            if ( (phonetic_symbol_edit_mode && !AppManager.mInputTextBox.getText().Equals( original_symbol[0] )) ||
-                 (!phonetic_symbol_edit_mode && !phrase[0].Equals( original_phrase[0] )) ) {
+            if ( (phonetic_symbol_edit_mode && !str.compare( AppManager.mInputTextBox.getText(), original_symbol[0] )) ||
+                 (!phonetic_symbol_edit_mode && !str.compare( phrase[0], original_phrase[0] )) ) {
                 if ( phonetic_symbol_edit_mode ) {
                     // 発音記号を編集するモード
                     phrase[0] = AppManager.mInputTextBox.getBufferText();
@@ -3360,7 +3359,7 @@ namespace org.kbinani.cadencii
                             items[j].UstEvent.VoiceOverlap = oa.msOverlap;
                         }
                     }
-                    if ( !original_symbol[j].Equals( phonetic_symbol[j] ) ) {
+                    if ( !str.compare( original_symbol[j], phonetic_symbol[j] ) ) {
 #if JAVA
                         Vector<String> spl = items[j].ID.LyricHandle.L0.getPhoneticSymbolList();
 #else
@@ -3533,7 +3532,7 @@ namespace org.kbinani.cadencii
             int count = 0;
             for ( Iterator<String> itr = ScriptServer.getScriptIdIterator(); itr.hasNext(); ) {
                 String id = itr.next();
-                if ( PortUtil.getFileNameWithoutExtension( id ).ToLower().Equals( "runonce" ) ) {
+                if ( str.compare( PortUtil.getFileNameWithoutExtension( id ).ToLower(), "runonce" ) ) {
                     continue;
                 }
                 String display = ScriptServer.getDisplayName( id );
@@ -4329,7 +4328,7 @@ namespace org.kbinani.cadencii
                 #region menuStripMain
                 for ( Iterator<String> itr = dict.keySet().iterator(); itr.hasNext(); ) {
                     String key = itr.next();
-                    if ( key.Equals( "menuEditCopy" ) || key.Equals( "menuEditCut" ) || key.Equals( "menuEditPaste" ) || key.Equals( "SpecialShortcutGoToFirst" ) ) {
+                    if ( str.compare( key, "menuEditCopy" ) || str.compare( key, "menuEditCut" ) || str.compare( key, "menuEditPaste" ) || str.compare( key, "SpecialShortcutGoToFirst" ) ) {
                         continue;
                     }
                     Object menu = searchMenuItemFromName( key );
@@ -6554,7 +6553,7 @@ namespace org.kbinani.cadencii
 #if ENABLE_SCRIPT
                         if ( tool == EditTool.PALETTE_TOOL ) {
                             String id = (String)tag;
-                            tsb.Pushed = (AppManager.mSelectedPaletteTool.Equals( id ));
+                            tsb.Pushed = str.compare( AppManager.mSelectedPaletteTool, id );
                         } else
 #endif // ENABLE_SCRIPT
  {
@@ -6573,7 +6572,7 @@ namespace org.kbinani.cadencii
 #if ENABLE_SCRIPT
                         if ( tool == EditTool.PALETTE_TOOL ) {
                             String id = (String)tsmi.getTag();
-                            tsmi.setSelected( (AppManager.mSelectedPaletteTool.Equals( id )) );
+                            tsmi.setSelected( str.compare( AppManager.mSelectedPaletteTool, id ) );
                         } else
 #endif
  {
@@ -6592,7 +6591,7 @@ namespace org.kbinani.cadencii
 #if ENABLE_SCRIPT
                         if ( tool == EditTool.PALETTE_TOOL ) {
                             String id = (String)tsmi.getTag();
-                            tsmi.setSelected( (AppManager.mSelectedPaletteTool.Equals( id )) );
+                            tsmi.setSelected( str.compare( AppManager.mSelectedPaletteTool, id ) );
                         } else
 #endif
  {
@@ -6721,7 +6720,7 @@ namespace org.kbinani.cadencii
                                     UtauVoiceDB db = AppManager.mUtauVoiceDB.get( sc.VOICEIDSTR );
                                     OtoArgs oa = db.attachFileNameFromLyric( lyric_jp );
                                     if ( oa.fileName == null ||
-                                        (oa.fileName != null && oa.fileName.Equals( "" )) ) {
+                                        (oa.fileName != null && str.compare( oa.fileName, "" )) ) {
                                         is_valid_for_utau = false;
                                     } else {
                                         is_valid_for_utau = PortUtil.isFileExists( fsys.combine( sc.VOICEIDSTR, oa.fileName ) );
@@ -6946,7 +6945,7 @@ namespace org.kbinani.cadencii
         {
             mEdited = value;
             String file = AppManager.getFileName();
-            if ( file.Equals( "" ) ) {
+            if ( str.compare( file, "" ) ) {
                 file = "Untitled";
             } else {
                 file = PortUtil.getFileNameWithoutExtension( file );
@@ -6955,7 +6954,7 @@ namespace org.kbinani.cadencii
                 file += " *";
             }
             String title = file + " - " + _APP_NAME;
-            if ( !getTitle().Equals( title ) ) {
+            if ( !str.compare( getTitle(), title ) ) {
                 setTitle( title );
             }
             boolean redo = AppManager.isRedoAvailable();
@@ -7133,9 +7132,9 @@ namespace org.kbinani.cadencii
                 String name = PortUtil.getFileNameWithoutExtension( file );
                 String estimatedCacheDir = fsys.combine( dir, name + ".cadencii" ); // ファイル名から推測されるキャッシュディレクトリ
                 if ( cacheDir == null ) cacheDir = "";
-                if ( !cacheDir.Equals( "" ) && PortUtil.isDirectoryExists( cacheDir ) ) {
-                    if ( !estimatedCacheDir.Equals( "" ) &&
-                         !cacheDir.Equals( estimatedCacheDir ) ) {
+                if ( !str.compare( cacheDir, "" ) && PortUtil.isDirectoryExists( cacheDir ) ) {
+                    if ( !str.compare( estimatedCacheDir, "" ) &&
+                         !str.compare( cacheDir, estimatedCacheDir ) ) {
                         // ファイル名から推測されるキャッシュディレクトリ名と
                         // xvsqに指定されているキャッシュディレクトリと異なる場合
                         // cacheDirの必要な部分をestimatedCacheDirに移す
@@ -7222,7 +7221,7 @@ namespace org.kbinani.cadencii
 
         public void updateMenuFonts()
         {
-            if ( AppManager.editorConfig.BaseFontName.Equals( "" ) ) {
+            if ( str.compare( AppManager.editorConfig.BaseFontName, "" ) ) {
                 return;
             }
             Font font = AppManager.editorConfig.getBaseFont();
@@ -10666,6 +10665,8 @@ namespace org.kbinani.cadencii
 
         public void FormMain_Load( Object sender, EventArgs e )
         {
+            applyLanguage();
+
             // 鍵盤用のキャッシュが古い位置に保存されている場合。
             String cache_new = Utility.getKeySoundPath();
             String cache_old = fsys.combine( PortUtil.getApplicationStartupPath(), "cache" );
@@ -13499,7 +13500,7 @@ namespace org.kbinani.cadencii
                     String str_result = dialog.getResult();
                     int result = old_pre_measure;
                     try {
-                        result = PortUtil.parseInt( str_result );
+                        result = str.toi( str_result );
                     } catch ( Exception ex ) {
                         result = old_pre_measure;
                     }
@@ -17469,7 +17470,7 @@ namespace org.kbinani.cadencii
                 }
                 double draft;
                 try {
-                    draft = PortUtil.parseDouble( ib.getResult() );
+                    draft = str.tof( ib.getResult() );
                     item.readOffsetSeconds = draft;
                     parent.setToolTipText( draft + " " + _( "seconds" ) );
                 } catch ( Exception ex3 ) {
@@ -17539,7 +17540,7 @@ namespace org.kbinani.cadencii
             boolean found = false;
             for ( int i = 0; i < count; i++ ) {
                 BgmFile item = AppManager.getBgm( i );
-                if ( file.Equals( item.file ) ) {
+                if ( str.compare( file, item.file ) ) {
                     found = true;
                     break;
                 }

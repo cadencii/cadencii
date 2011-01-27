@@ -63,9 +63,9 @@ namespace org.kbinani.vsq
         public Object clone()
         {
             String[] spl = PortUtil.splitString( Color, new char[] { ',' }, 3 );
-            int r = PortUtil.parseInt( spl[0] );
-            int g = PortUtil.parseInt( spl[1] );
-            int b = PortUtil.parseInt( spl[2] );
+            int r = str.toi( spl[0] );
+            int g = str.toi( spl[1] );
+            int b = str.toi( spl[2] );
             VsqCommon res = new VsqCommon( Name, r, g, b, DynamicsMode, PlayMode );
             res.Version = Version;
             res.LastPlayMode = LastPlayMode;
@@ -122,9 +122,9 @@ namespace org.kbinani.vsq
                 } else if ( search.Equals( "Color" ) ) {
                     this.Color = spl[1];
                 } else if ( search.Equals( "DynamicsMode" ) ) {
-                    this.DynamicsMode = PortUtil.parseInt( spl[1] );
+                    this.DynamicsMode = str.toi( spl[1] );
                 } else if ( search.Equals( "PlayMode" ) ) {
-                    this.PlayMode = PortUtil.parseInt( spl[1] );
+                    this.PlayMode = str.toi( spl[1] );
                 }
                 if ( !sr.ready() ) {
                     break;

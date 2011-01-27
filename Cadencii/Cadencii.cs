@@ -109,7 +109,7 @@ namespace org.kbinani.cadencii{
             String str_minor = BAssemblyInfo.fileVersionMinor;
             int minor = 0;
             try {
-                minor = PortUtil.parseInt( str_minor );
+                minor = str.toi( str_minor );
             } catch ( Exception ex ) {
             }
             if ( (minor % 2) != 0 ) {

@@ -193,7 +193,7 @@ namespace org.kbinani.vsq
                                     if ( spl.Length >= 2 ) {
                                         String str_dse_version = spl[1];
                                         try {
-                                            defaultDseVersion = PortUtil.parseInt( str_dse_version );
+                                            defaultDseVersion = str.toi( str_dse_version );
                                         } catch ( Exception ex ) {
                                             serr.println( "VocaloSysUtil#init; ex=" + ex );
                                             defaultDseVersion = 100;

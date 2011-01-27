@@ -68,9 +68,18 @@ public class Utau_Plugin_Invoker : Form {
 
     }
 
+    /// <summary>
+    /// あとで消す
+    /// </summary>
+    /// <param name="s"></param>
+    private static void println( String s )
+    {
+        Console.WriteLine( s );
+    }
+
     public static ScriptReturnStatus Edit( VsqFileEx vsq )
     {
-        Console.WriteLine( "AppManager.getSelectedEventCount()=" + AppManager.getSelectedEventCount() );
+        println( "AppManager.getSelectedEventCount()=" + AppManager.getSelectedEventCount() );
 
         // 選択状態のアイテムがなければ戻る
         if ( AppManager.getSelectedEventCount() <= 0 ) {
@@ -108,7 +117,7 @@ public class Utau_Plugin_Invoker : Form {
                 }
             }
         }
-        Console.WriteLine( "exe_path=" + exe_path );
+        println( "exe_path=" + exe_path );
         if ( exe_path == "" ) {
             return ScriptReturnStatus.ERROR;
         }
@@ -138,9 +147,9 @@ public class Utau_Plugin_Invoker : Form {
                 clock_end = clock;
             }
         }
-        Console.WriteLine( "id_start=" + id_start );
-        Console.WriteLine( "id_end=" + id_end );
-        Console.WriteLine( "#1; (clock_start,clock_end)=" + "(" + clock_start + "," + clock_end + ")" );
+        println( "id_start=" + id_start );
+        println( "id_end=" + id_end );
+        println( "#1; (clock_start,clock_end)=" + "(" + clock_start + "," + clock_end + ")" );
 
         // 選択範囲の前後の音符を探す
         VsqEvent ve_prev = null;
@@ -164,41 +173,53 @@ public class Utau_Plugin_Invoker : Form {
             }
         }
         if ( ve_prev != null ) {
-            Console.WriteLine( "ve_prev.InternalID=" + ve_prev.InternalID );
+            println( "ve_prev.InternalID=" + ve_prev.InternalID );
         }
         if ( ve_next != null ) {
-            Console.WriteLine( "ve_next.InternalID=" + ve_next.InternalID );
+            println( "ve_next.InternalID=" + ve_next.InternalID );
         }
         int next_rest_clock = -1;
         bool prev_is_rest = false;
+        int prev_length = 0;
         if ( ve_prev != null ) {
             // 直前の音符がある場合
             if ( ve_prev.Clock + ve_prev.ID.getLength() == clock_start ) {
                 // 接続している
                 clock_start = ve_prev.Clock;
+                prev_length = ve_prev.ID.getLength();
             } else {
                 // 接続していない
-                clock_start = ve_prev.Clock + ve_prev.ID.getLength();
+                int new_clock_start = ve_prev.Clock + ve_prev.ID.getLength();
+                prev_length = clock_start - new_clock_start;
+                clock_start = new_clock_start;
             }
         } else {
             // 無い場合
             if ( vsq.getPreMeasureClocks() < clock_start ) {
                 prev_is_rest = true;
             }
-            clock_start = vsq.getPreMeasureClocks();
+            int new_clock_start = vsq.getPreMeasureClocks();
+            prev_length = clock_start - new_clock_start;
+            clock_start = new_clock_start;
         }
+        int next_length = 0;
         if ( ve_next != null ) {
             // 直後の音符がある場合
             if ( ve_next.Clock == clock_end ) {
                 // 接続している
                 clock_end = ve_next.Clock + ve_next.ID.getLength();
+                next_length = ve_next.ID.getLength();
             } else {
                 // 接続していない
                 next_rest_clock = clock_end;
+                next_length = ve_next.Clock - clock_end;
                 clock_end = ve_next.Clock;
             }
+        } else {
+            // 直後の音符が無い場合
+            next_length = 0;
         }
-        Console.WriteLine( "#2; (clock_start,clock_end)=" + "(" + clock_start + "," + clock_end + ")" );
+        println( "#2; (clock_start,clock_end)=" + "(" + clock_start + "," + clock_end + ")" );
 
         // 作業用のVSQに，選択範囲のアイテムを格納
         VsqFile v = new VsqFile( "Miku", 1, 4, 4, 500000 );
@@ -222,7 +243,7 @@ public class Utau_Plugin_Invoker : Form {
 
         // vsq -> ustに変換
         // キーがustのIndex, 値がInternalID
-        Vector<ValuePair<int, int>> map = new Vector<ValuePair<int, int>>();
+        TreeMap<int, int> map = new TreeMap<int, int>();
         UstFile u = new UstFile( v, 1, map );
 
         // PREV, NEXTのIndex値を設定する
@@ -247,15 +268,74 @@ public class Utau_Plugin_Invoker : Form {
         string temp = Path.GetTempFileName();
         u.write( temp, option );
 
+        println( "-before----------------------------------------------------------------" );
+        using ( StreamReader sr = new StreamReader( temp, System.Text.Encoding.GetEncoding( "Shift_JIS" ) ) ) {
+            string line = "";
+            while ( (line = sr.ReadLine()) != null ) {
+                println( line );
+            }
+        }
         // プラグインの実行ファイルを起動
         Utau_Plugin_Invoker dialog = new Utau_Plugin_Invoker( exe_path, temp );
         dialog.ShowDialog();
+        println( "-after-----------------------------------------------------------------" );
+        using ( StreamReader sr = new StreamReader( temp, System.Text.Encoding.GetEncoding( "Shift_JIS" ) ) ) {
+            string line = "";
+            while ( (line = sr.ReadLine()) != null ) {
+                println( line );
+            }
+        }
 
-        // TODO: このへんから, 上にあるPREV, ENDのところも何とかすること．
+        //Console.WriteLine( typeof( Utau_Plugin_Invoker ) + ";
+        // プラグインの実行結果をustオブジェクトにロード
+        UstFile r = new UstFile( temp );
+        if ( r.getTrackCount() < 1 ) {
+            return ScriptReturnStatus.ERROR;
+        }
+
+        // PREVとNEXT含めて，clock_startからclock_endまでプラグインに渡したけれど，
+        // それが伸びて帰ってきたか縮んで帰ってきたか．
+        int ret_length = 0;
+        UstTrack r_track = r.getTrack( 0 );
+        int size = r_track.getEventCount();
+        bool prev_detected = false;
+        bool next_detected = false;
+        for ( int i = 0; i < size; i++ ) {
+            UstEvent ue = r_track.getEvent( i );
+            int ue_length = ue.getLength();
+            if ( ue.Index == UstFile.PREV_INDEX ) {
+                prev_detected = true;
+            }
+            if ( ue.Index == UstFile.NEXT_INDEX ) {
+                next_detected = true;
+            }
+            if ( !ue.isLengthSpecified() && map.ContainsKey( ue.Index ) ) {
+                int internal_id = map[ue.Index];
+                VsqEvent found_item = vsq_track.findEventFromID( internal_id );
+                if ( found_item != null ) {
+                    ue_length = found_item.ID.getLength();
+                }
+            }
+            ret_length += ue_length;
+        }
+        // PREVとNEXTは，戻りのUSTファイルに記録されていなくてもよいので，
+        // 抜けてたらフォローする
+        if ( prev_length > 0 && !prev_detected ) {
+            ret_length += prev_length;
+        }
+        if ( next_length > 0 && !next_detected ) {
+            ret_length += next_length;
+        }
+        // TODO: ここが正しくない
+        // ret_length == clock_end - clock_start
+        // がtrueでなくてはならない
+        // TODO: PREV, NEXT以外でも，変更がなければ出力されてこない？
+        println( "Utau_Plugin_Invoker#Edit; ret_length=" + ret_length + "; clock_start=" + clock_start + "; clock_end=" + clock_end );
+
         return ScriptReturnStatus.ERROR;
     }
 
-    public static ScriptReturnStatus _Edit( VsqFileEx vsq )
+    /*public static ScriptReturnStatus _Edit( VsqFileEx vsq )
     {
         if ( AppManager.getSelectedEventCount() <= 0 ) {
             return ScriptReturnStatus.NOT_EDITED;
@@ -411,7 +491,7 @@ public class Utau_Plugin_Invoker : Form {
         copyCurve( vsq_track.getCurve( "pbs" ), conv_track.getCurve( "pbs" ), clock_begin );
 
         string temp = Path.GetTempFileName();
-        Vector<ValuePair<int, int>> map_id = new Vector<ValuePair<int, int>>(); // キーが[#   ]の番号、値がInternalID
+        TreeMap<int, int> map_id = new TreeMap<int, int>(); // キーが[#   ]の番号、値がInternalID
         UstFile tust = new UstFile( conv, 1, map_id );
 
         Console.WriteLine( "Utau_Plugin_Invoker#Edit;" );
@@ -468,12 +548,11 @@ public class Utau_Plugin_Invoker : Form {
                         newitem.ID.type = VsqIDType.Anote;
                         int id = vsq_track.addEvent( newitem );
                         int max_num = -1;
-                        for ( Iterator<ValuePair<int, int>> itr = map_id.iterator(); itr.hasNext(); ) {
-                            int num = itr.next().getKey();
+                        foreach ( int num in map_id.Keys ) {
                             max_num = Math.Max( max_num, num );
                         }
                         max_num++;
-                        map_id.Add( new ValuePair<int, int>( max_num, id ) ); // 末尾に追加されるので、indexとの整合性は破綻しない
+                        map_id.put( max_num, id ); // 末尾に追加されるので、indexとの整合性は破綻しない
                         current_parse = "[#" + PortUtil.formatDecimal( "0000", max_num ) + "]";
                     } else if ( current_parse == "[#DELETE]" ) {
                         int internal_id = map_id.get( index ).getValue();
@@ -535,7 +614,7 @@ public class Utau_Plugin_Invoker : Form {
                         try {
                             v = int.Parse( right );
                             target.ID.setLength( v );
-                            target.UstEvent.Length = v;
+                            target.UstEvent.setLength( v );
                             tlength = v;
                         } catch {
                         }
@@ -736,7 +815,7 @@ public class Utau_Plugin_Invoker : Form {
         } catch ( Exception ex ) {
         }
         return ScriptReturnStatus.EDITED;
-    }
+    }*/
 
     private static void copyCurve( VsqBPList src, VsqBPList dest, int clock_shift ) {
         int last_value = src.getDefault();

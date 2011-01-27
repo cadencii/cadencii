@@ -125,7 +125,7 @@ namespace org.kbinani.cadencii
 
             value = value.ToUpper();
             try {
-                int draft_note_number = PortUtil.parseInt( value );
+                int draft_note_number = str.toi( value );
                 if ( AppManager.editorConfig != null ) {
                     AppManager.editorConfig.PropertyWindowStatus.LastUsedNoteNumberExpression = NoteNumberExpressionType.Numeric;
                 }
@@ -277,7 +277,7 @@ namespace org.kbinani.cadencii
                 value = str.sub( value, trim );
                 int draft_scale;
                 try {
-                    draft_scale = PortUtil.parseInt( value );
+                    draft_scale = str.toi( value );
                     scale = draft_scale;
                     break;
                 } catch ( Exception ex ) {

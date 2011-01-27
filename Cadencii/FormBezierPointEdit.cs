@@ -188,8 +188,8 @@ namespace org.kbinani.cadencii
         {
             try {
                 int x, y;
-                x = PortUtil.parseInt( txtDataPointClock.getText() );
-                y = PortUtil.parseInt( txtDataPointValue.getText() );
+                x = str.toi( txtDataPointClock.getText() );
+                y = str.toi( txtDataPointValue.getText() );
                 if ( y < m_min || m_max < y ) {
                     AppManager.showMessageBox( 
                         _( "Invalid value" ), 
@@ -199,10 +199,10 @@ namespace org.kbinani.cadencii
                     return;
                 }
                 if ( chkEnableSmooth.isSelected() ) {
-                    x = PortUtil.parseInt( txtLeftClock.getText() );
-                    y = PortUtil.parseInt( txtLeftValue.getText() );
-                    x = PortUtil.parseInt( txtRightClock.getText() );
-                    y = PortUtil.parseInt( txtRightValue.getText() );
+                    x = str.toi( txtLeftClock.getText() );
+                    y = str.toi( txtLeftValue.getText() );
+                    x = str.toi( txtRightClock.getText() );
+                    y = str.toi( txtRightValue.getText() );
                 }
                 setDialogResult( BDialogResult.OK );
             } catch ( Exception ex ) {

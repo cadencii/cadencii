@@ -157,7 +157,7 @@ namespace org
                     for ( int i = 0; i < spl.Length; i++ ) {
                         int v = 64;
                         try {
-                            v = PortUtil.parseInt( spl[i] );
+                            v = str.toi( spl[i] );
                         } catch ( Exception ex ) {
                             serr.println( "Lyric#setCosonantAdjustment; ex=" + ex );
                         }
@@ -451,7 +451,7 @@ namespace org
                                     work = "";
                                 } else if ( indx == 2 ) {
                                     // UnknownFloat
-                                    UnknownFloat = PortUtil.parseFloat( work );
+                                    UnknownFloat = (float)str.tof( work );
                                     work = "";
                                 } else {
                                     if ( indx - 3 < m_phonetic_symbol.Count ) {
@@ -463,7 +463,7 @@ namespace org
                                         }
                                     } else {
                                         // protected
-                                        PhoneticSymbolProtected = work.Equals( "1" );
+                                        PhoneticSymbolProtected = str.compare( work, "1" );
                                     }
                                     work = "";
                                 }
@@ -495,7 +495,7 @@ namespace org
                     List<String> symbol = getPhoneticSymbolList();
                     String strSymbol = getPhoneticSymbol();
                     if ( !add_quatation_mark ) {
-                        if ( strSymbol == null || (strSymbol != null && strSymbol.Equals( "" )) ) {
+                        if ( strSymbol == null || (strSymbol != null && str.compare( strSymbol, "" )) ) {
                             strSymbol = "u:";
                         }
                     }

@@ -511,7 +511,7 @@ namespace org.kbinani.cadencii
                         String strRelease = VsqFileEx.getEventTag( item, VsqFileEx.TAG_VSQEVENT_AQUESTONE_RELEASE );
                         int release = 64;
                         try {
-                            release = PortUtil.parseInt( strRelease );
+                            release = str.toi( strRelease );
                         } catch ( Exception ex ) {
                             Logger.write( typeof( AquesToneWaveGenerator ) + ".generateMidiEvent; ex=" + ex + "\n" );
                             release = 64;

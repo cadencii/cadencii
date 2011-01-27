@@ -1172,7 +1172,7 @@ namespace org.kbinani.cadencii
         public int getAutoVibratoThresholdLength()
         {
             try {
-                int ret = PortUtil.parseInt( txtAutoVibratoThresholdLength.getText() );
+                int ret = str.toi( txtAutoVibratoThresholdLength.getText() );
                 if ( ret < 0 ) {
                     ret = 0;
                 }

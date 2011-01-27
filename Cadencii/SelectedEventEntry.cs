@@ -439,7 +439,7 @@ namespace org.kbinani.cadencii
                 if ( VsqPhoneticSymbol.isConsonant( symbol[i] ) ) {
                     int v = 64;
                     try {
-                        v = PortUtil.parseInt( adjustment[i] );
+                        v = str.toi( adjustment[i] );
                     } catch ( Exception ex ) {
                     }
                     if ( v < 0 ) {
@@ -1502,7 +1502,7 @@ namespace org.kbinani.cadencii
             int value = 64;
             if ( !v.Equals( "" ) ) {
                 try {
-                    value = PortUtil.parseInt( v );
+                    value = str.toi( v );
                 } catch ( Exception ex ) {
                     serr.println( "VsqEventItemProxy#get_Release; ex=" + ex );
                     value = 64;

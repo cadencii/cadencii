@@ -949,13 +949,13 @@ namespace org.kbinani.vsq
                     last_line.value = sr.readLine();
                     while ( !last_line.value.StartsWith( "[" ) ) {
                         String[] spl2 = PortUtil.splitString( last_line.value, new char[] { '=' } );
-                        int clock = PortUtil.parseInt( spl2[0] );
+                        int clock = str.toi( spl2[0] );
                         int id_number = -1;
                         if ( !spl2[1].Equals( "EOS" ) ) {
                             String[] ids = PortUtil.splitString( spl2[1], ',' );
                             for ( int i = 0; i < ids.Length; i++ ) {
                                 String[] spl3 = PortUtil.splitString( ids[i], new char[] { '#' } );
-                                id_number = PortUtil.parseInt( spl3[1] );
+                                id_number = str.toi( spl3[1] );
                                 t_event_list.add( new ValuePair<Integer, Integer>( clock, id_number ) );
                             }
                         } else {
@@ -1018,7 +1018,7 @@ namespace org.kbinani.vsq
                     buffer = buffer.Replace( "[", "" );
                     buffer = buffer.Replace( "]", "" );
                     String[] spl = PortUtil.splitString( buffer, new char[] { '#' } );
-                    int index = PortUtil.parseInt( spl[1] );
+                    int index = str.toi( spl[1] );
                     if ( last_line.value.StartsWith( "[ID#" ) ) {
                         __id.put( index, new VsqID( sr, index, last_line ) );
                     } else if ( last_line.value.StartsWith( "[h#" ) ) {

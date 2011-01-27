@@ -221,7 +221,7 @@ namespace org.kbinani.cadencii
         public void txtBendDepth_TextChanged( Object sender, EventArgs e )
         {
             try {
-                int draft = PortUtil.parseInt( txtBendDepth.getText() );
+                int draft = str.toi( txtBendDepth.getText() );
                 if ( draft < trackBendDepth.getMinimum() ) {
                     draft = trackBendDepth.getMinimum();
                     txtBendDepth.setText( draft + "" );
@@ -248,7 +248,7 @@ namespace org.kbinani.cadencii
         public void txtBendLength_TextChanged( Object sender, EventArgs e )
         {
             try {
-                int draft = PortUtil.parseInt( txtBendLength.getText() );
+                int draft = str.toi( txtBendLength.getText() );
                 if ( draft < trackBendLength.getMinimum() ) {
                     draft = trackBendLength.getMinimum();
                     txtBendLength.setText( draft + "" );
@@ -275,7 +275,7 @@ namespace org.kbinani.cadencii
         public void txtDecay_TextChanged( Object sender, EventArgs e )
         {
             try {
-                int draft = PortUtil.parseInt( txtDecay.getText() );
+                int draft = str.toi( txtDecay.getText() );
                 if ( draft < trackDecay.getMinimum() ) {
                     draft = trackDecay.getMinimum();
                     txtDecay.setText( draft + "" );
@@ -302,7 +302,7 @@ namespace org.kbinani.cadencii
         public void txtAccent_TextChanged( Object sender, EventArgs e )
         {
             try {
-                int draft = PortUtil.parseInt( txtAccent.getText() );
+                int draft = str.toi( txtAccent.getText() );
                 if ( draft < trackAccent.getMinimum() ) {
                     draft = trackAccent.getMinimum();
                     txtAccent.setText( draft + "" );

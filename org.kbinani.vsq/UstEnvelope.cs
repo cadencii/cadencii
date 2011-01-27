@@ -56,18 +56,18 @@ namespace org.kbinani.vsq
                     return;
                 }
                 //Separator = "";
-                p1 = PortUtil.parseInt( spl[0] );
-                p2 = PortUtil.parseInt( spl[1] );
-                p3 = PortUtil.parseInt( spl[2] );
-                v1 = PortUtil.parseInt( spl[3] );
-                v2 = PortUtil.parseInt( spl[4] );
-                v3 = PortUtil.parseInt( spl[5] );
-                v4 = PortUtil.parseInt( spl[6] );
+                p1 = str.toi( spl[0] );
+                p2 = str.toi( spl[1] );
+                p3 = str.toi( spl[2] );
+                v1 = str.toi( spl[3] );
+                v2 = str.toi( spl[4] );
+                v3 = str.toi( spl[5] );
+                v4 = str.toi( spl[6] );
                 if ( spl.Length == 11 ) {
                     //Separator = "%";
-                    p4 = PortUtil.parseInt( spl[8] );
-                    p5 = PortUtil.parseInt( spl[9] );
-                    v5 = PortUtil.parseInt( spl[10] );
+                    p4 = str.toi( spl[8] );
+                    p5 = str.toi( spl[9] );
+                    v5 = str.toi( spl[10] );
                 }
             }
         }

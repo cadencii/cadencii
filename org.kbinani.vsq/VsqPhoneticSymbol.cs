@@ -180,7 +180,7 @@ namespace org.kbinani.vsq
                 String s = str.sub( symbol, 2 );
                 try {
                     // br001とかをfalseにするためのチェック
-                    int num = PortUtil.parseInt( s );
+                    int num = str.toi( s );
                     if ( s.Equals( "" + num ) ) {
                         return true;
                     }

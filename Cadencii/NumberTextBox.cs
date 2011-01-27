@@ -88,7 +88,7 @@ namespace org.kbinani.cadencii {
             if ( m_value_type == ValueType.Double ) {
                 double dou;
                 try {
-                    dou = PortUtil.parseDouble( text );
+                    dou = str.tof( text );
                     valid = true;
                 } catch ( Exception ex ) {
                     valid = false;
@@ -96,7 +96,7 @@ namespace org.kbinani.cadencii {
             } else if ( m_value_type == ValueType.Float ) {
                 float flo;
                 try {
-                    flo = PortUtil.parseFloat( text );
+                    flo = (float)str.tof( text );
                     valid = true;
                 } catch ( Exception ex ) {
                     valid = false;
@@ -104,7 +104,7 @@ namespace org.kbinani.cadencii {
             } else if ( m_value_type == ValueType.Integer ) {
                 int inte;
                 try {
-                    inte = PortUtil.parseInt( text );
+                    inte = str.toi( text );
                     valid = true;
                 } catch ( Exception ex ) {
                     valid = false;

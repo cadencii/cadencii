@@ -258,9 +258,9 @@ namespace org.kbinani.cadencii
 
         private void updateTitle()
         {
-            if ( m_number.Equals( "" ) ) {
+            if ( str.compare( m_number, "" ) ) {
                 lblTitle.setText( m_title );
-            } else if ( m_title.Equals( "" ) ) {
+            } else if ( str.compare( m_title, "" ) ) {
                 lblTitle.setText( m_number );
             } else {
                 lblTitle.setText( m_number + " " + m_title );
@@ -488,7 +488,7 @@ namespace org.kbinani.cadencii
             }
 #endif
             try {
-                int feder = (int)(PortUtil.parseFloat( txtFeder.getText() ) * 10.0f);
+                int feder = (int)((float)str.tof( txtFeder.getText() ) * 10.0f);
                 if ( 55 < feder ) {
                     feder = 55;
                 }
@@ -516,7 +516,7 @@ namespace org.kbinani.cadencii
             }
 #endif
             try {
-                int panpot = PortUtil.parseInt( txtPanpot.getText() );
+                int panpot = str.toi( txtPanpot.getText() );
                 if ( panpot < -64 ) {
                     panpot = -64;
                 }

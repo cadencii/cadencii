@@ -577,7 +577,7 @@ namespace org.kbinani.cadencii
 
                     String str_t_temp = PortUtil.formatDecimal( "0.00", BASE_TEMPO );
 #if DEBUG
-                    double act_t_temp = PortUtil.parseDouble( str_t_temp );
+                    double act_t_temp = str.tof( str_t_temp );
                     error_sum += (item.ID.getLength() / (8.0 * act_t_temp)) - (sec_end - sec_start);
                     Logger.write( "UtauWaveGenerator#begin; error_sum=" + error_sum + "\n" );
 #endif

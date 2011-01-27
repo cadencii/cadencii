@@ -95,7 +95,7 @@ namespace org.kbinani.cadencii
         {
             int v = m_master_tuning;
             try {
-                v = PortUtil.parseInt( txtMasterTuning.getText() );
+                v = str.toi( txtMasterTuning.getText() );
                 m_master_tuning = v;
             } catch ( Exception ex ) {
             }

@@ -56,25 +56,25 @@ namespace org
                 /// 「メジャー.マイナー.メンテナンス」の記法に基づく文字列をパースし，新しいインスタンスを作成します
                 /// </summary>
                 /// <param name="str"></param>
-                public VersionString( String str )
+                public VersionString( String s )
                 {
-                    mRawString = str;
-                    String[] spl = PortUtil.splitString( str, '.' );
+                    mRawString = s;
+                    String[] spl = PortUtil.splitString( s, '.' );
                     if ( spl.Length >= 1 ) {
                         try {
-                            major = PortUtil.parseInt( spl[0] );
+                            major = str.toi( spl[0] );
                         } catch ( Exception ex ) {
                         }
                     }
                     if ( spl.Length >= 2 ) {
                         try {
-                            minor = PortUtil.parseInt( spl[1] );
+                            minor = str.toi( spl[1] );
                         } catch ( Exception ex ) {
                         }
                     }
                     if ( spl.Length >= 3 ) {
                         try {
-                            build = PortUtil.parseInt( spl[2] );
+                            build = str.toi( spl[2] );
                         } catch ( Exception ex ) {
                         }
                     }

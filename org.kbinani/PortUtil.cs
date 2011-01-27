@@ -1115,7 +1115,7 @@ namespace org.kbinani {
         #region Number Formatting
         public static boolean tryParseInt( String s, ByRef<Integer> value ) {
             try {
-                value.value = parseInt( s );
+                value.value = str.toi( s );
             } catch ( Exception ex ) {
                 return false;
             }
@@ -1124,36 +1124,20 @@ namespace org.kbinani {
 
         public static boolean tryParseFloat( String s, ByRef<Float> value ) {
             try {
-                value.value = parseFloat( s );
+                value.value = (float)str.tof( s );
             } catch ( Exception ex ) {
                 return false;
             }
             return true;
         }
 
-        public static int parseInt( String value ) {
-#if JAVA
-            return Integer.parseInt( value );
-#else
-            return int.Parse( value );
-#endif
-        }
-
-        public static float parseFloat( String value ) {
+        /*public static float parseFloat( String value ) {
 #if JAVA
             return Float.parseFloat( value );
 #else
             return float.Parse( value );
 #endif
-        }
-
-        public static double parseDouble( String value ) {
-#if JAVA
-            return Double.parseDouble( value );
-#else
-            return double.Parse( value );
-#endif
-        }
+        }*/
 
         public static String formatDecimal( String format, double value ) {
 #if JAVA

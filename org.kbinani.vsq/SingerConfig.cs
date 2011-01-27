@@ -160,7 +160,7 @@ namespace org.kbinani.vsq
                     value = value.Replace( "\\" + "\"", "\"" );
                     int parsed_int = 64;
                     try {
-                        parsed_int = PortUtil.parseInt( value );
+                        parsed_int = str.toi( value );
                     } catch ( Exception ex ) {
                     }
                     if ( id.Equals( "ID" ) ) {

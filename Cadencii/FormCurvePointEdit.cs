@@ -98,7 +98,7 @@ namespace org.kbinani.cadencii
             }
             int value = m_curve.getDefault();
             try {
-                value = PortUtil.parseInt( txtDataPointValue.getText() );
+                value = str.toi( txtDataPointValue.getText() );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormCurvePointEdit ) + ".applyValue; ex=" + ex + "\n" );
                 return;
@@ -111,7 +111,7 @@ namespace org.kbinani.cadencii
 
             int clock = 0;
             try {
-                clock = PortUtil.parseInt( txtDataPointClock.getText() );
+                clock = str.toi( txtDataPointClock.getText() );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormCurvePointEdit ) + ".applyValue; ex=" + ex + "\n" );
                 return;

@@ -121,9 +121,9 @@ namespace org.kbinani.cadencii
                 ret = AppManager.MIN_PRE_MEASURE + indx;
             } else {
 #if !JAVA
-                String str = comboPreMeasure.Text;
+                String s = comboPreMeasure.Text;
                 try {
-                    ret = PortUtil.parseInt( str );
+                    ret = str.toi( s );
                 } catch ( Exception ex ) {
                     ret = AppManager.MIN_PRE_MEASURE;
                 }
@@ -161,17 +161,17 @@ namespace org.kbinani.cadencii
         public int getSampleRate()
         {
             int index = comboSampleRate.getSelectedIndex();
-            String str = "44100";
+            String s = "44100";
             if ( index >= 0 ) {
-                str = (String)comboSampleRate.getItemAt( index );
+                s = (String)comboSampleRate.getItemAt( index );
             } else {
 #if !JAVA
-                str = comboSampleRate.Text;
+                s = comboSampleRate.Text;
 #endif
             }
             int ret = 44100;
             try {
-                ret = PortUtil.parseInt( str );
+                ret = str.toi( s );
             } catch ( Exception ex ) {
                 ret = 44100;
             }
@@ -186,10 +186,10 @@ namespace org.kbinani.cadencii
         {
             comboSampleRate.setSelectedIndex( 0 );
             for ( int i = 0; i < comboSampleRate.getItemCount(); i++ ) {
-                String str = (String)comboSampleRate.getItemAt( i );
+                String s = (String)comboSampleRate.getItemAt( i );
                 int rate = 0;
                 try {
-                    rate = PortUtil.parseInt( str );
+                    rate = str.toi( s );
                 } catch ( Exception ex ) {
                     rate = 0;
                 }

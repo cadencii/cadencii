@@ -2,69 +2,80 @@
 
 import org.kbinani.BEvent;
 
-public class BBackgroundWorker{
+public class BBackgroundWorker
+{
     public BEvent<BDoWorkEventHandler> doWorkEvent = new BEvent<BDoWorkEventHandler>();
     public BEvent<BProgressChangedEventHandler> progressChangedEvent = new BEvent<BProgressChangedEventHandler>();
     public BEvent<BRunWorkerCompletedEventHandler> runWorkerCompletedEvent = new BEvent<BRunWorkerCompletedEventHandler>();
-    private WorkerRunner m_runner = null;
-    private Thread thread = null;
+    private WorkerRunner mRunner = null;
+    private Thread mThread = null;
 
-    class WorkerRunner implements Runnable{
-        private BDoWorkEventArgs m_arg = null;
-        private BEvent<BDoWorkEventHandler> m_delegate = null;
-        private boolean isBusy = false;
+    class WorkerRunner implements Runnable
+    {
+        private BDoWorkEventArgs mArg = null;
+        private BEvent<BDoWorkEventHandler> mDelegate = null;
+        private boolean mIsBusy = false;
         private BBackgroundWorker mParent = null;
         
-        public WorkerRunner( BBackgroundWorker parent, BEvent<BDoWorkEventHandler> delegate, Object argument ){
+        public WorkerRunner( BBackgroundWorker parent, BEvent<BDoWorkEventHandler> delegate, Object argument )
+        {
             mParent = parent;
-            m_delegate = delegate;
-            m_arg = new BDoWorkEventArgs( argument );
+            mDelegate = delegate;
+            mArg = new BDoWorkEventArgs( argument );
         }
 
-        public void run(){
-            isBusy = true;
+        public void run()
+        {
+            mIsBusy = true;
             try{
-                m_delegate.raise( mParent, m_arg );
+                mDelegate.raise( mParent, mArg );
                 BRunWorkerCompletedEventArgs e = new BRunWorkerCompletedEventArgs( null, null, false );
                 runWorkerCompletedEvent.raise( mParent, e );
             }catch( Exception ex ){
                 System.err.println( "BBackgroundWorker#WorkerRunner#run(void); ex=" + ex );
             }
-            isBusy = false;
+            mIsBusy = false;
         }
     }
 
-    public boolean isBusy(){
-        if( m_runner == null ){
+    public boolean isBusy()
+    {
+        if( mRunner == null ){
             return false;
         }else{
-            return m_runner.isBusy;
+            return mRunner.mIsBusy;
         }
     }
     
-    public void cancelAsync(){
-        thread.interrupt();
+    public void cancelAsync()
+    {
+        mThread.interrupt();
         System.err.println( "info; BBackgroundWorker#cancelAsync" );
     }
     
-    public BBackgroundWorker(){
+    public BBackgroundWorker()
+    {
     }
     
-    public void runWorkerAsync(){
+    public void runWorkerAsync()
+    {
         runWorkerAsync( null );
     }
 
-    public void runWorkerAsync( Object argument ){
-        m_runner = new WorkerRunner( this, doWorkEvent, argument );
-        thread = new Thread( m_runner );
-        thread.start();
+    public void runWorkerAsync( Object argument )
+    {
+        mRunner = new WorkerRunner( this, doWorkEvent, argument );
+        mThread = new Thread( mRunner );
+        mThread.start();
     }
 
-    public void reportProgress( int percentProgress ){
+    public void reportProgress( int percentProgress )
+    {
         reportProgress( percentProgress, null );
     }
     
-    public void reportProgress( int percentProgress, Object userState ){
+    public void reportProgress( int percentProgress, Object userState )
+    {
         BProgressChangedEventArgs e = new BProgressChangedEventArgs( percentProgress, userState );
         try{
             progressChangedEvent.raise( this, e );

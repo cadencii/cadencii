@@ -45,7 +45,7 @@ namespace org.kbinani.vsq
         {
             int num = 0;
             try {
-                num = PortUtil.parseInt( strNum );
+                num = str.toi( strNum );
             } catch ( Exception ex ) {
                 serr.println( "org.kbinani.vsq.VibratoBPList#.ctor; ex=" + ex );
                 num = 0;
@@ -58,8 +58,8 @@ namespace org.kbinani.vsq
                 int[] y = new int[actNum];
                 for ( int i = 0; i < actNum; i++ ) {
                     try {
-                        x[i] = PortUtil.parseFloat( bpx[i] );
-                        y[i] = PortUtil.parseInt( bpy[i] );
+                        x[i] = (float)str.tof( bpx[i] );
+                        y[i] = str.toi( bpy[i] );
                     } catch ( Exception ex ) {
                         serr.println( "org.kbinani.vsq.IconParameter#.ctor; ex=" + ex );
                     }
@@ -216,7 +216,7 @@ namespace org.kbinani.vsq
                 if ( spl2.Length < 2 ) {
                     continue;
                 }
-                m_list.add( new VibratoBPPair( PortUtil.parseFloat( spl2[0] ), PortUtil.parseInt( spl2[1] ) ) );
+                m_list.add( new VibratoBPPair( (float)str.tof( spl2[0] ), str.toi( spl2[1] ) ) );
             }
         }
     }

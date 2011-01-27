@@ -277,7 +277,7 @@ namespace org.kbinani.cadencii
                     if ( src != null ) {
                         int percent;
                         try {
-                            percent = PortUtil.parseInt( txtVibratoLength.getText() );
+                            percent = str.toi( txtVibratoLength.getText() );
                         } catch ( Exception ex ) {
                             return;
                         }
@@ -297,7 +297,7 @@ namespace org.kbinani.cadencii
 #endif
             int percent = 0;
             try {
-                percent = PortUtil.parseInt( txtVibratoLength.getText() );
+                percent = str.toi( txtVibratoLength.getText() );
                 if ( percent < 0 ) {
                     percent = 0;
                 } else if ( 100 < percent ) {

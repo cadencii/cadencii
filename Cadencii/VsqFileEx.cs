@@ -107,7 +107,7 @@ namespace org.kbinani.cadencii
             String str_indx = getTagCor( vsq_track.Tag, TAG_VSQTRACK_RESAMPLER_USED );
             int ret = 0;
             try {
-                ret = PortUtil.parseInt( str_indx );
+                ret = str.toi( str_indx );
             } catch ( Exception ex ) {
                 ret = 0;
             }

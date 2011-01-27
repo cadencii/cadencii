@@ -205,7 +205,7 @@ namespace org.kbinani.cadencii
             int value = old;
             String s = textRate.getText();
             try {
-                value = PortUtil.parseInt( s );
+                value = str.toi( s );
             } catch ( Exception ex ) {
                 value = old;
             }
@@ -239,7 +239,7 @@ namespace org.kbinani.cadencii
             int value = old;
             String s = textDepth.getText();
             try {
-                value = PortUtil.parseInt( s );
+                value = str.toi( s );
             } catch ( Exception ex ) {
                 value = old;
             }

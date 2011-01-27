@@ -68,14 +68,14 @@ namespace org.kbinani.vsq
                 spl = PortUtil.splitString( spl[1], ',' );
                 //VBR=65,180,70,20.0,17.6,82.8,49.8,100
                 if ( spl.Length >= 8 ) {
-                    Length = PortUtil.parseFloat( spl[0] );
-                    Period = PortUtil.parseFloat( spl[1] );
-                    Depth = PortUtil.parseFloat( spl[2] );
-                    In = PortUtil.parseFloat( spl[3] );
-                    Out = PortUtil.parseFloat( spl[4] );
-                    Phase = PortUtil.parseFloat( spl[5] );
-                    Shift = PortUtil.parseFloat( spl[6] );
-                    Unknown = PortUtil.parseFloat( spl[7] );
+                    Length = (float)str.tof( spl[0] );
+                    Period = (float)str.tof( spl[1] );
+                    Depth = (float)str.tof( spl[2] );
+                    In = (float)str.tof( spl[3] );
+                    Out = (float)str.tof( spl[4] );
+                    Phase = (float)str.tof( spl[5] );
+                    Shift = (float)str.tof( spl[6] );
+                    Unknown = (float)str.tof( spl[7] );
                 }
             }
         }

@@ -86,27 +86,27 @@ namespace org.kbinani.cadencii {
                         oa.fileName = file_name;
                         oa.Alias = spl[0];
                         try {
-                            oa.msOffset = PortUtil.parseFloat( spl[1] );
+                            oa.msOffset = (float)str.tof( spl[1] );
                         } catch ( Exception ex ) {
                             oa.msOffset = 0;
                         }
                         try {
-                            oa.msConsonant = PortUtil.parseFloat( spl[2] );
+                            oa.msConsonant = (float)str.tof( spl[2] );
                         } catch ( Exception ex ) {
                             oa.msConsonant = 0;
                         }
                         try {
-                            oa.msBlank = PortUtil.parseFloat( spl[3] );
+                            oa.msBlank = (float)str.tof( spl[3] );
                         } catch ( Exception ex ) {
                             oa.msBlank = 0;
                         }
                         try {
-                            oa.msPreUtterance = PortUtil.parseFloat( spl[4] );
+                            oa.msPreUtterance = (float)str.tof( spl[4] );
                         } catch ( Exception ex ) {
                             oa.msPreUtterance = 0;
                         }
                         try {
-                            oa.msOverlap = PortUtil.parseFloat( spl[5] );
+                            oa.msOverlap = (float)str.tof( spl[5] );
                         } catch ( Exception ex ) {
                             oa.msOverlap = 0;
                         }
@@ -151,10 +151,10 @@ namespace org.kbinani.cadencii {
             int count = _configs.size();
             for ( Iterator<OtoArgs> itr = _configs.iterator(); itr.hasNext(); ) {
                 OtoArgs item = itr.next();
-                if ( PortUtil.getFileNameWithoutExtension( item.fileName ).Equals( lyric ) ) {
+                if ( str.compare( PortUtil.getFileNameWithoutExtension( item.fileName ), lyric ) ) {
                     return item;
                 }
-                if ( item.Alias.Equals( lyric ) ) {
+                if ( str.compare( item.Alias, lyric ) ) {
                     return item;
                 }
             }

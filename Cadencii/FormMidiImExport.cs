@@ -113,7 +113,7 @@ namespace org.kbinani.cadencii
         {
             double v = 0.0;
             try {
-                v = PortUtil.parseDouble( txtOffset.getText() );
+                v = str.tof( txtOffset.getText() );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMidiImExport ) + ".getOffsetSeconds; ex=" + ex + "\n" );
                 serr.println( "FormMidiImExport#getOffsetClocks; ex=" + ex );
@@ -125,7 +125,7 @@ namespace org.kbinani.cadencii
         {
             int v = 0;
             try {
-                v = PortUtil.parseInt( txtOffset.getText() );
+                v = str.toi( txtOffset.getText() );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMidiImExport ) + ".getOffsetClocks; ex=" + ex + "\n" );
                 serr.println( "FormMidiImExport#getOffsetClocks; ex=" + ex );

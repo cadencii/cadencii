@@ -78,13 +78,13 @@ namespace org.kbinani.vsq
                         ue = new UstEvent();
                     }
                     int index = 0;
-                    if ( line.Equals( "[#TRACKEND]" ) ) {
+                    if ( str.compare( line, "[#TRACKEND]" ) ) {
                         break;
-                    } else if ( line.ToUpper().Equals( "[#NEXT]" ) ) {
+                    } else if ( str.compare( line.ToUpper(), "[#NEXT]" ) ) {
                         index = NEXT_INDEX;
-                    } else if ( line.ToUpper().Equals( "[#PREV]" ) ) {
+                    } else if ( str.compare( line.ToUpper(), "[#PREV]" ) ) {
                         index = PREV_INDEX;
-                    } else if ( line.ToUpper().Equals( "[#SETTING]" ) ) {
+                    } else if ( str.compare( line.ToUpper(), "[#SETTING]" ) ) {
                         type = 0;
                     } else {
                         if ( type != 1 ) {
@@ -93,7 +93,7 @@ namespace org.kbinani.vsq
                         }
                         String s = line.Replace( "[#", "" ).Replace( "]", "" ).Trim();
                         try {
-                            index = PortUtil.parseInt( s );
+                            index = str.toi( s );
                         } catch ( Exception ex ) {
 #if DEBUG
                             sout.println( "UstFile#.ctor; ex=" + ex );
@@ -114,129 +114,128 @@ namespace org.kbinani.vsq
                         String[] spl = PortUtil.splitString( line, new char[] { '=' }, 2 );
                         if ( type == 0 ) {
                             // reading "SETTING" section
-                            if ( spl[0].Equals( "Tempo" ) ) {
+                            if ( str.compare( spl[0], "Tempo" ) ) {
                                 m_tempo = 125f;
                                 float v = 125f;
                                 try {
-                                    v = PortUtil.parseFloat( spl[1] );
+                                    v = (float)str.tof( spl[1] );
                                     m_tempo = v;
                                 } catch ( Exception ex ) {
                                 }
-                            } else if ( spl[0].Equals( "ProjectName" ) ) {
+                            } else if ( str.compare( spl[0], "ProjectName" ) ) {
                                 m_project_name = spl[1];
-                            } else if ( spl[0].Equals( "VoiceDir" ) ) {
+                            } else if ( str.compare( spl[0], "VoiceDir" ) ) {
                                 m_voice_dir = spl[1];
-                            } else if ( spl[0].Equals( "OutFile" ) ) {
+                            } else if ( str.compare( spl[0], "OutFile" ) ) {
                                 m_out_file = spl[1];
-                            } else if ( spl[0].Equals( "CacheDir" ) ) {
+                            } else if ( str.compare( spl[0], "CacheDir" ) ) {
                                 m_cache_dir = spl[1];
-                            } else if ( spl[0].Equals( "Tool1" ) ) {
+                            } else if ( str.compare( spl[0], "Tool1" ) ) {
                                 m_tool1 = spl[1];
-                            } else if ( spl[0].Equals( "Tool2" ) ) {
+                            } else if ( str.compare( spl[0], "Tool2" ) ) {
                                 m_tool2 = spl[1];
                             }
                         } else if ( type == 1 ) {
-                            if ( spl.Length < 2 ) {
-                                continue;
-                            }
-                            // readin event section
-                            if ( spl[0].Equals( "Length" ) ) {
-                                ue.setLength( 0 );
-                                int v = 0;
-                                try {
-                                    v = PortUtil.parseInt( spl[1] );
-                                    ue.setLength( v );
-                                } catch ( Exception ex ) {
-                                }
-                            } else if ( spl[0].Equals( "Lyric" ) ) {
-                                ue.Lyric = spl[1];
-                            } else if ( spl[0].Equals( "NoteNum" ) ) {
-                                ue.Note = 0;
-                                int v = 0;
-                                try {
-                                    v = PortUtil.parseInt( spl[1] );
-                                    ue.Note = v;
-                                } catch ( Exception ex ) {
-                                }
-                            } else if ( spl[0].Equals( "Intensity" ) ) {
-                                ue.Intensity = 100;
-                                int v = 100;
-                                try {
-                                    v = PortUtil.parseInt( spl[1] );
-                                    ue.Intensity = v;
-                                } catch ( Exception ex ) {
-                                }
-                            } else if ( spl[0].Equals( "PBType" ) ) {
-                                ue.PBType = 5;
-                                int v = 5;
-                                try {
-                                    v = PortUtil.parseInt( spl[1] );
-                                    ue.PBType = v;
-                                } catch ( Exception ex ) {
-                                }
-                            } else if ( spl[0].Equals( "Piches" ) ) {
-                                String[] spl2 = PortUtil.splitString( spl[1], ',' );
-                                float[] t = new float[spl2.Length];
-                                for ( int i = 0; i < spl2.Length; i++ ) {
-                                    float v = 0;
+                            if ( spl.Length >= 2 ) {
+                                // readin event section
+                                if ( str.compare( spl[0], "Length" ) ) {
+                                    ue.setLength( 0 );
+                                    int v = 0;
                                     try {
-                                        v = PortUtil.parseFloat( spl2[i] );
-                                        t[i] = v;
+                                        v = str.toi( spl[1] );
+                                        ue.setLength( v );
                                     } catch ( Exception ex ) {
                                     }
-                                }
-                                ue.Pitches = t;
-                            } else if ( spl[0].Equals( "Tempo" ) ) {
-                                ue.Tempo = 125f;
-                                float v;
-                                try {
-                                    v = PortUtil.parseFloat( spl[1] );
-                                    ue.Tempo = v;
-                                } catch ( Exception ex ) {
-                                }
-                            } else if ( spl[0].Equals( "VBR" ) ) {
-                                ue.Vibrato = new UstVibrato( line );
-                                /*
-                                PBW=50,50,46,48,56,50,50,50,50
-                                PBS=-87
-                                PBY=-15.9,-20,-31.5,-26.6
-                                PBM=,s,r,j,s,s,s,s,s
-                                */
-                            } else if ( spl[0].Equals( "PBW" ) || spl[0].Equals( "PBS" ) || spl[0].Equals( "PBY" ) || spl[0].Equals( "PBM" ) ) {
-                                if ( ue.Portamento == null ) {
-                                    ue.Portamento = new UstPortamento();
-                                }
-                                ue.Portamento.ParseLine( line );
-                            } else if ( spl[0].Equals( "Envelope" ) ) {
-                                ue.Envelope = new UstEnvelope( line );
-                                //PreUtterance=1
-                                //VoiceOverlap=6
-                            } else if ( spl[0].Equals( "VoiceOverlap" ) ) {
-                                if ( spl[1] != "" ) {
-                                    ue.VoiceOverlap = PortUtil.parseFloat( spl[1] );
-                                }
-                            } else if ( spl[0].Equals( "PreUtterance" ) ) {
-                                if ( spl[1] != "" ) {
-                                    ue.PreUtterance = PortUtil.parseFloat( spl[1] );
-                                }
-                            } else if ( spl[0].Equals( "Flags" ) ) {
-                                ue.Flags = str.sub( line, 6 );
-                            } else if ( spl[0].Equals( "StartPoint" ) ) {
-                                try {
-                                    float stp = PortUtil.parseFloat( spl[1] );
-                                    ue.setStartPoint( stp );
-                                } catch ( Exception ex ) {
-                                }
-                            } else if ( spl[0].Equals( "Moduration" ) ) {
-                                try {
-                                    ue.Moduration = PortUtil.parseInt( spl[1] );
-                                } catch ( Exception ex ) {
-                                    ue.Moduration = 0;
-                                }
-                            } else {
+                                } else if ( str.compare( spl[0], "Lyric" ) ) {
+                                    ue.Lyric = spl[1];
+                                } else if ( str.compare( spl[0], "NoteNum" ) ) {
+                                    ue.Note = 0;
+                                    int v = 0;
+                                    try {
+                                        v = str.toi( spl[1] );
+                                        ue.Note = v;
+                                    } catch ( Exception ex ) {
+                                    }
+                                } else if ( str.compare( spl[0], "Intensity" ) ) {
+                                    ue.Intensity = 100;
+                                    int v = 100;
+                                    try {
+                                        v = str.toi( spl[1] );
+                                        ue.Intensity = v;
+                                    } catch ( Exception ex ) {
+                                    }
+                                } else if ( str.compare( spl[0], "PBType" ) ) {
+                                    ue.PBType = 5;
+                                    int v = 5;
+                                    try {
+                                        v = str.toi( spl[1] );
+                                        ue.PBType = v;
+                                    } catch ( Exception ex ) {
+                                    }
+                                } else if ( str.compare( spl[0], "Piches" ) ) {
+                                    String[] spl2 = PortUtil.splitString( spl[1], ',' );
+                                    float[] t = new float[spl2.Length];
+                                    for ( int i = 0; i < spl2.Length; i++ ) {
+                                        float v = 0;
+                                        try {
+                                            v = (float)str.tof( spl2[i] );
+                                            t[i] = v;
+                                        } catch ( Exception ex ) {
+                                        }
+                                    }
+                                    ue.Pitches = t;
+                                } else if ( str.compare( spl[0], "Tempo" ) ) {
+                                    ue.Tempo = 125f;
+                                    float v;
+                                    try {
+                                        v = (float)str.tof( spl[1] );
+                                        ue.Tempo = v;
+                                    } catch ( Exception ex ) {
+                                    }
+                                } else if ( str.compare( spl[0], "VBR" ) ) {
+                                    ue.Vibrato = new UstVibrato( line );
+                                    /*
+                                    PBW=50,50,46,48,56,50,50,50,50
+                                    PBS=-87
+                                    PBY=-15.9,-20,-31.5,-26.6
+                                    PBM=,s,r,j,s,s,s,s,s
+                                    */
+                                } else if ( str.compare( spl[0], "PBW" ) || str.compare( spl[0], "PBS" ) || str.compare( spl[0], "PBY" ) || str.compare( spl[0], "PBM" ) ) {
+                                    if ( ue.Portamento == null ) {
+                                        ue.Portamento = new UstPortamento();
+                                    }
+                                    ue.Portamento.ParseLine( line );
+                                } else if ( str.compare( spl[0], "Envelope" ) ) {
+                                    ue.Envelope = new UstEnvelope( line );
+                                    //PreUtterance=1
+                                    //VoiceOverlap=6
+                                } else if ( str.compare( spl[0], "VoiceOverlap" ) ) {
+                                    if ( spl[1] != "" ) {
+                                        ue.VoiceOverlap = (float)str.tof( spl[1] );
+                                    }
+                                } else if ( str.compare( spl[0], "PreUtterance" ) ) {
+                                    if ( spl[1] != "" ) {
+                                        ue.PreUtterance = (float)str.tof( spl[1] );
+                                    }
+                                } else if ( str.compare( spl[0], "Flags" ) ) {
+                                    ue.Flags = str.sub( line, 6 );
+                                } else if ( str.compare( spl[0], "StartPoint" ) ) {
+                                    try {
+                                        float stp = (float)str.tof( spl[1] );
+                                        ue.setStartPoint( stp );
+                                    } catch ( Exception ex ) {
+                                    }
+                                } else if ( str.compare( spl[0], "Moduration" ) ) {
+                                    try {
+                                        ue.Moduration = str.toi( spl[1] );
+                                    } catch ( Exception ex ) {
+                                        ue.Moduration = 0;
+                                    }
+                                } else {
 #if DEBUG
-                                sout.println( "UstFile#.ctor; info: don't know how to process this line; line=" + line );
+                                    sout.println( "UstFile#.ctor; info: don't know how to process this line; line=" + line );
 #endif
+                                }
                             }
                         }
                         if ( !sr.ready() ) {
@@ -273,7 +272,7 @@ namespace org.kbinani.vsq
 #else
             :
 #endif
- this( vsq, track_index, new Vector<ValuePair<Integer, Integer>>() )
+ this( vsq, track_index, new TreeMap<Integer, Integer>() )
 #if JAVA
             ;
 #else
@@ -287,7 +286,7 @@ namespace org.kbinani.vsq
         /// <param name="vsq"></param>
         /// <param name="track_index"></param>
         /// <param name="id_map">UstEventのIndexフィールドと、元になったVsqEventのInternalIDを対応付けるマップ。キーがIndex、値がInternalIDを表す</param>
-        public UstFile( VsqFile vsq, int track_index, Vector<ValuePair<Integer, Integer>> id_map )
+        public UstFile( VsqFile vsq, int track_index, TreeMap<Integer, Integer> id_map )
         {
             VsqFile work = (VsqFile)vsq.clone();
             //work.removePart( 0, work.getPreMeasureClocks() );
@@ -377,7 +376,7 @@ namespace org.kbinani.vsq
                     itemust.setLength( item.Clock - last_clock );
                     itemust.Index = index;
                     index++;
-                    id_map.add( new ValuePair<Integer, Integer>( itemust.Index, -1 ) );
+                    id_map.put( itemust.Index, -1 );
                     track_add.addEvent( itemust );
                 }
                 UstEvent item_add = (UstEvent)item.UstEvent.clone();
@@ -385,7 +384,7 @@ namespace org.kbinani.vsq
                 item_add.Lyric = item.ID.LyricHandle.L0.Phrase;
                 item_add.Note = item.ID.Note;
                 item_add.Index = index;
-                id_map.add( new ValuePair<Integer, Integer>( item_add.Index, item.InternalID ) );
+                id_map.put( item_add.Index, item.InternalID );
                 if ( item.UstEvent.Envelope != null ) {
                     item_add.Envelope = (UstEnvelope)item.UstEvent.Envelope.clone();
                 }

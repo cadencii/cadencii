@@ -43,7 +43,6 @@ namespace org.kbinani.vsq
         public const int MIN_INTENSITY = -100;
 
         public String Tag;
-        public int Length = 0;
         public String Lyric = "";
         public int Note = -1;
         public int Intensity = 100;
@@ -60,22 +59,38 @@ namespace org.kbinani.vsq
         public int Index;
         private float mStartPoint;
         private boolean mIsStartPointSpecified = false;
+        private int mLength = 0;
+        private boolean mIsLengthSpecified = false;
 
         public UstEvent()
         {
         }
 
+        #region StartPoint
+        /// <summary>
+        /// StartPointの値を取得します
+        /// </summary>
+        /// <returns></returns>
         public float getStartPoint()
         {
             return mStartPoint;
         }
 
+        /// <summary>
+        /// StartPoinの値を設定します
+        /// </summary>
+        /// <param name="value"></param>
         public void setStartPoint( float value )
         {
             mStartPoint = value;
             mIsStartPointSpecified = true;
         }
 
+        /// <summary>
+        /// StartPointプロパティが設定されているかどうかを表す値を取得します．
+        /// この値がfalseの場合，getStartPointで得られる値は不定です
+        /// </summary>
+        /// <returns></returns>
         public boolean isStartPointSpecified()
         {
             return mIsStartPointSpecified;
@@ -94,21 +109,61 @@ namespace org.kbinani.vsq
             }
         }
 #endif
+        #endregion
 
+        #region Length
+        /// <summary>
+        /// Lengthプロパティが設定されているかどうかを表す値を取得します．
+        /// この値がfalseの場合，getLengthで得られる値は不定です
+        /// </summary>
+        /// <returns></returns>
+        public boolean isLengthSpecified()
+        {
+            return mIsLengthSpecified;
+        }
+
+        /// <summary>
+        /// このイベントの長さを取得します
+        /// </summary>
+        /// <returns></returns>
         public int getLength()
         {
-            return Length;
+            return mLength;
         }
 
+        /// <summary>
+        /// このイベントの長さを設定します
+        /// </summary>
+        /// <param name="value"></param>
         public void setLength( int value )
         {
-            Length = value;
+            mLength = value;
+            mIsLengthSpecified = true;
         }
+
+#if !JAVA
+        /// <summary>
+        /// XML用
+        /// </summary>
+        public int Length
+        {
+            get
+            {
+                return getLength();
+            }
+            set
+            {
+                setLength( value );
+            }
+        }
+#endif
+        #endregion
 
         public Object clone()
         {
             UstEvent ret = new UstEvent();
-            ret.setLength( Length );
+            ret.mLength = mLength;
+            ret.mIsLengthSpecified = mIsLengthSpecified;
             ret.Lyric = Lyric;
             ret.Note = Note;
             ret.Intensity = Intensity;
@@ -161,7 +216,9 @@ namespace org.kbinani.vsq
                 sw.write( "[#" + PortUtil.formatDecimal( "0000", Index ) + "]" );
                 sw.newLine();
             }
-            sw.write( "Length=" + Length );
+            if ( isLengthSpecified() ) {
+                sw.write( "Length=" + mLength );
+            }
             sw.newLine();
             sw.write( "Lyric=" + Lyric );
             sw.newLine();
@@ -207,7 +264,7 @@ namespace org.kbinani.vsq
                 sw.write( Envelope.ToString() );
                 sw.newLine();
             }
-            if ( Flags != "" ) {
+            if ( !str.compare( Flags, "" ) ) {
                 sw.write( "Flags=" + Flags );
                 sw.newLine();
             }
@@ -215,7 +272,7 @@ namespace org.kbinani.vsq
                 sw.write( "Moduration=" + Moduration );
                 sw.newLine();
             }
-            if ( mIsStartPointSpecified ) {
+            if ( isStartPointSpecified() ) {
                 sw.write( "StartPoint=" + getStartPoint() );
                 sw.newLine();
             }

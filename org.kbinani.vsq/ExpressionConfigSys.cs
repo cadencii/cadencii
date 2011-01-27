@@ -1138,8 +1138,8 @@ namespace org.kbinani.vsq
                         for ( int j = 0; j < byte_ved.Length; j++ ) {
                             int_ved[j] = 0xff & byte_ved[j];
                         }
-                        String str = PortUtil.getDecodedString( "ASCII", int_ved );
-                        String[] spl = PortUtil.splitString( str, new String[] { NL }, true );
+                        String s = PortUtil.getDecodedString( "ASCII", int_ved );
+                        String[] spl = PortUtil.splitString( s, new String[] { NL }, true );
                         String current_entry = "";
                         for ( int j = 0; j < spl.Length; j++ ) {
                             if ( spl[j].StartsWith( "[" ) ) {
@@ -1156,7 +1156,7 @@ namespace org.kbinani.vsq
                                 // ex: 1,1,"normal","normal2_type1.aic","[Normal]:Type:1","Standard","YAMAHA",0
                                 String file = spl2[3].Replace( "\"", "" );
                                 String aic_file = fsys.combine( vexp_dir, file );
-                                int index = PortUtil.parseInt( spl2[0] );
+                                int index = str.toi( spl2[0] );
                                 String icon_id = "$0404" + PortUtil.toHexString( index, 4 );
                                 String ids = "";//spl2[2].Replace( "\"", "" );
                                 String caption = spl2[4].Replace( "\"", "" ).Replace( ":", " " );
@@ -1176,7 +1176,7 @@ namespace org.kbinani.vsq
                                 }
                                 String ids = "";// spl2[2].Replace( "\"", "" );
                                 String caption = spl2[4].Replace( "\"", "" ).Replace( ":", " " );
-                                int index = PortUtil.parseInt( spl2[0] );
+                                int index = str.toi( spl2[0] );
                                 String icon_id = "$0101" + PortUtil.toHexString( index, 4 );
                                 NoteHeadHandle item = new NoteHeadHandle( aic_path, ids, icon_id, index );
                                 item.setCaption( caption );

@@ -47,7 +47,7 @@ namespace org.kbinani.vsq
         public static String getGenericTypeName( String name )
         {
             if ( name != null ) {
-                if ( name.Equals( "Points" ) ) {
+                if ( str.compare( name, "Points" ) ) {
                     return "org.kbinani.vsq.UstPortamentoPoint";
                 }
             }
@@ -147,14 +147,14 @@ namespace org.kbinani.vsq
             }
             String[] values = PortUtil.splitString( spl[1], ',' );
             if ( line.StartsWith( "pbs=" ) ) {
-                Start = PortUtil.parseInt( values[0] );
+                Start = str.toi( values[0] );
             } else if ( line.StartsWith( "pbw=" ) ) {
                 for ( int i = 0; i < values.Length; i++ ) {
                     if ( i >= Points.size() ) {
                         Points.add( new UstPortamentoPoint() );
                     }
                     UstPortamentoPoint up = Points.get( i );
-                    up.Step = PortUtil.parseInt( values[i] );
+                    up.Step = str.toi( values[i] );
                     Points.set( i, up );
                 }
             } else if ( line.StartsWith( "pby=" ) ) {
@@ -163,7 +163,7 @@ namespace org.kbinani.vsq
                         Points.add( new UstPortamentoPoint() );
                     }
                     UstPortamentoPoint up = Points.get( i );
-                    up.Value = PortUtil.parseFloat( values[i] );
+                    up.Value = (float)str.tof( values[i] );
                     Points.set( i, up );
                 }
             } else if ( line.StartsWith( "pbm=" ) ) {
@@ -173,11 +173,11 @@ namespace org.kbinani.vsq
                     }
                     UstPortamentoPoint up = Points.get( i );
                     String search = values[i].ToLower();
-                    if ( search.Equals( "s" ) ) {
+                    if ( str.compare( search, "s" ) ) {
                         up.Type = UstPortamentoType.Linear;
-                    } else if ( search.Equals( "r" ) ) {
+                    } else if ( str.compare( search, "r" ) ) {
                         up.Type = UstPortamentoType.R;
-                    } else if ( search.Equals( "j" ) ) {
+                    } else if ( str.compare( search, "j" ) ) {
                         up.Type = UstPortamentoType.J;
                     } else {
                         up.Type = UstPortamentoType.S;
