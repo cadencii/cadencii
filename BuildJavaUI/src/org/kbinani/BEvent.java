@@ -11,19 +11,23 @@ public class BEvent<T extends BEventHandler>{
     }
 
     public void add( T delegate ){
-        if( delegate == null ){
-            return;
+        synchronized( mDelegates ){
+            if( delegate == null ){
+                return;
+            }
+            mDelegates.add( delegate );
         }
-        mDelegates.add( delegate );
     }
 
     public void remove( T delegate ){
-        int count = mDelegates.size();
-        for( int i = 0; i < count; i++ ){
-            T item = mDelegates.get( i );
-            if( delegate.equals( item ) ){
-                mDelegates.remove( i );
-                break;
+        synchronized( mDelegates ){
+            int count = mDelegates.size();
+            for( int i = 0; i < count; i++ ){
+                T item = mDelegates.get( i );
+                if( delegate.equals( item ) ){
+                    mDelegates.remove( i );
+                    break;
+                }
             }
         }
     }

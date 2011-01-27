@@ -37,7 +37,9 @@ public class BMouseEventArgs extends BEventArgs{
     
     public static BMouseEventArgs fromMouseWheelEvent( MouseWheelEvent e ){
         BMouseEventArgs ret = fromMouseEvent( e );
-        ret.Delta = e.getWheelRotation();
+        // .NETのばあい，１回のホイールにつき120動く
+        // javaは1のようなので.NETにあわせた
+        ret.Delta = -120 * e.getWheelRotation();
         return ret;
     }
 }

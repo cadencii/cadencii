@@ -620,18 +620,25 @@ namespace org.kbinani.cadencii
                 this.BaseFontName = f.Name;
                 this.ScreenFontName = f.Name;
             }
+#endif
 
             // 言語設定を，システムのデフォルトの言語を用いる
-            String name = System.Windows.Forms.Application.CurrentCulture.Name;
             String lang = "";
+#if JAVA
+            String name = System.getProperty( "user.language" );
+            if( name != null ){
+                lang = name;
+            }
+#else
+            String name = System.Windows.Forms.Application.CurrentCulture.Name;
             if ( name.Equals( "ja" ) ||
                  name.StartsWith( "ja-" ) ) {
                 lang = "ja";
             } else {
                 lang = name;
             }
-            this.Language = lang;
 #endif
+            this.Language = lang;
         }
 
         #region public static method

@@ -571,7 +571,7 @@ public class FormMain extends BForm {
     private BToggleButton getStripBtnStepSequencer() {
         if (stripBtnStepSequencer == null) {
             stripBtnStepSequencer = new BToggleButton();
-            stripBtnStepSequencer.setText("Step");
+            stripBtnStepSequencer.setText("");
         }
         return stripBtnStepSequencer;
     }
@@ -2508,7 +2508,7 @@ public class FormMain extends BForm {
     private BToolBarButton getStripBtnGrid() {
         if (stripBtnGrid == null) {
             stripBtnGrid = new BToolBarButton();
-            stripBtnGrid.setText("Grid");
+            stripBtnGrid.setText("");
             stripBtnGrid.setCheckOnClick(true);
         }
         return stripBtnGrid;
@@ -2522,7 +2522,7 @@ public class FormMain extends BForm {
     private BToolBarButton getStripBtnCurve() {
         if (stripBtnCurve == null) {
             stripBtnCurve = new BToolBarButton();
-            stripBtnCurve.setText("Curve");
+            stripBtnCurve.setText("");
             stripBtnCurve.setCheckOnClick(true);
         }
         return stripBtnCurve;

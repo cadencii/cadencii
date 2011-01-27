@@ -313,101 +313,109 @@ namespace org.kbinani.cadencii
 
         public void trackBendDepth_Scroll( Object sender, BEventArgs e )
         {
-            txtBendDepth.setText( trackBendDepth.getValue() + "" );
+            String s = trackBendDepth.getValue() + "";
+            if( !str.compare( s, txtBendDepth.getText() ) ){
+                txtBendDepth.setText( s );
+            }
         }
 
         public void txtBendDepth_TextChanged( Object sender, BEventArgs e )
         {
             try {
                 int draft = PortUtil.parseInt( txtBendDepth.getText() );
+                if ( draft < trackBendDepth.getMinimum() ) {
+                    draft = trackBendDepth.getMinimum();
+                    txtBendDepth.setText( draft + "" );
+                } else if ( trackBendDepth.getMaximum() < draft ) {
+                    draft = trackBendDepth.getMaximum();
+                    txtBendDepth.setText( draft + "" );
+                }
                 if ( draft != trackBendDepth.getValue() ) {
-                    if ( draft < trackBendDepth.getMinimum() ) {
-                        draft = trackBendDepth.getMinimum();
-                        txtBendDepth.setText( draft + "" );
-                    } else if ( trackBendDepth.getMaximum() < draft ) {
-                        draft = trackBendDepth.getMaximum();
-                        txtBendDepth.setText( draft + "" );
-                    }
                     trackBendDepth.setValue( draft );
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormNoteExpressionConfig ) + ".txtBendDepth_TextChanged; ex=" + ex + "\n" );
-                //txtBendDepth.Text = trackBendDepth.Value + "";
             }
         }
 
         public void trackBendLength_Scroll( Object sender, BEventArgs e )
         {
-            txtBendLength.setText( trackBendLength.getValue() + "" );
+            String s = trackBendLength.getValue() + "";
+            if( !str.compare( s, txtBendLength.getText() ) ){
+                txtBendLength.setText( s );
+            }
         }
 
         public void txtBendLength_TextChanged( Object sender, BEventArgs e )
         {
             try {
                 int draft = PortUtil.parseInt( txtBendLength.getText() );
+                if ( draft < trackBendLength.getMinimum() ) {
+                    draft = trackBendLength.getMinimum();
+                    txtBendLength.setText( draft + "" );
+                } else if ( trackBendLength.getMaximum() < draft ) {
+                    draft = trackBendLength.getMaximum();
+                    txtBendLength.setText( draft + "" );
+                }
                 if ( draft != trackBendLength.getValue() ) {
-                    if ( draft < trackBendLength.getMinimum() ) {
-                        draft = trackBendLength.getMinimum();
-                        txtBendLength.setText( draft + "" );
-                    } else if ( trackBendLength.getMaximum() < draft ) {
-                        draft = trackBendLength.getMaximum();
-                        txtBendLength.setText( draft + "" );
-                    }
                     trackBendLength.setValue( draft );
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormNoteExpressionConfig ) + ".txtBendLength_TextChanged; ex=" + ex + "\n" );
-                //txtBendLength.Text = trackBendLength.Value + "";
             }
         }
 
         public void trackDecay_Scroll( Object sender, BEventArgs e )
         {
-            txtDecay.setText( trackDecay.getValue() + "" );
+            String s = trackDecay.getValue() + "";
+            if( !str.compare( s, txtDecay.getText() ) ){
+                txtDecay.setText( s );
+            }
         }
 
         public void txtDecay_TextChanged( Object sender, BEventArgs e )
         {
             try {
                 int draft = PortUtil.parseInt( txtDecay.getText() );
+                if ( draft < trackDecay.getMinimum() ) {
+                    draft = trackDecay.getMinimum();
+                    txtDecay.setText( draft + "" );
+                } else if ( trackDecay.getMaximum() < draft ) {
+                    draft = trackDecay.getMaximum();
+                    txtDecay.setText( draft + "" );
+                }
                 if ( draft != trackDecay.getValue() ) {
-                    if ( draft < trackDecay.getMinimum() ) {
-                        draft = trackDecay.getMinimum();
-                        txtDecay.setText( draft + "" );
-                    } else if ( trackDecay.getMaximum() < draft ) {
-                        draft = trackDecay.getMaximum();
-                        txtDecay.setText( draft + "" );
-                    }
                     trackDecay.setValue( draft );
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormNoteExpressionConfig ) + ".txtDecay_TextChanged; ex=" + ex + "\n" );
-                //txtDecay.Text = trackDecay.Value + "";
             }
         }
 
         public void trackAccent_Scroll( Object sender, BEventArgs e )
         {
-            txtAccent.setText( trackAccent.getValue() + "" );
+            String s = trackAccent.getValue() + "";
+            if( !str.compare( s, txtAccent.getText() ) ){
+                txtAccent.setText( s );
+            }
         }
 
         public void txtAccent_TextChanged( Object sender, BEventArgs e )
         {
             try {
                 int draft = PortUtil.parseInt( txtAccent.getText() );
+                if ( draft < trackAccent.getMinimum() ) {
+                    draft = trackAccent.getMinimum();
+                    txtAccent.setText( draft + "" );
+                } else if ( trackAccent.getMaximum() < draft ) {
+                    draft = trackAccent.getMaximum();
+                    txtAccent.setText( draft + "" );
+                }
                 if ( draft != trackAccent.getValue() ) {
-                    if ( draft < trackAccent.getMinimum() ) {
-                        draft = trackAccent.getMinimum();
-                        txtAccent.setText( draft + "" );
-                    } else if ( trackAccent.getMaximum() < draft ) {
-                        draft = trackAccent.getMaximum();
-                        txtAccent.setText( draft + "" );
-                    }
                     trackAccent.setValue( draft );
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormNoteExpressionConfig ) + ".txtAccent_TextChanged; ex=" + ex + "\n" );
-                //txtAccent.Text = trackAccent.Value + "";
             }
         }
 
@@ -447,7 +455,10 @@ namespace org.kbinani.cadencii
 
         public void trackDuration_Scroll( Object sender, BEventArgs e )
         {
-            txtDuration.setText( trackDuration.getValue() + "" );
+            String s = trackDuration.getValue() + "";
+            if( !str.compare( s, txtDuration.getText() ) ){
+                txtDuration.setText( s );
+            }
             if ( m_note_head_handle != null ) {
                 m_note_head_handle.setDuration( trackDuration.getValue() );
             }
@@ -455,7 +466,10 @@ namespace org.kbinani.cadencii
 
         public void trackDepth_Scroll( Object sender, BEventArgs e )
         {
-            txtDepth.setText( trackDepth.getValue() + "" );
+            String s = trackDepth.getValue() + "";
+            if( !str.compare( s, txtDepth.getText() ) ){
+                txtDepth.setText( s );
+            }
             if ( m_note_head_handle != null ) {
                 m_note_head_handle.setDepth( trackDepth.getValue() );
             }
@@ -465,20 +479,24 @@ namespace org.kbinani.cadencii
         {
             try {
                 int draft = PortUtil.parseInt( txtDuration.getText() );
-                if ( draft != trackDuration.getValue() ) {
-                    if ( draft < trackDuration.getMinimum() ) {
-                        draft = trackDuration.getMinimum();
-                    } else if ( trackDuration.getMaximum() < draft ) {
-                        draft = trackDuration.getMaximum();
-                    }
+                if ( draft < trackDuration.getMinimum() ) {
+                    draft = trackDuration.getMinimum();
                     txtDuration.setText( draft + "" );
+                } else if ( trackDuration.getMaximum() < draft ) {
+                    draft = trackDuration.getMaximum();
+                    txtDuration.setText( draft + "" );
+                }
+                if ( draft != trackDuration.getValue() ) {
                     trackDuration.setValue( draft );
-                    if ( m_note_head_handle != null ) {
-                        m_note_head_handle.setDuration( draft );
-                    }
+                }
+                if ( m_note_head_handle != null ) {
+                    m_note_head_handle.setDuration( draft );
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormNoteExpressionConfig ) + ".txtDuration_TextChanged; ex=" + ex + "\n" );
+#if JAVA
+                ex.printStackTrace();
+#endif
             }
         }
 
@@ -486,20 +504,24 @@ namespace org.kbinani.cadencii
         {
             try {
                 int draft = PortUtil.parseInt( txtDepth.getText() );
-                if ( draft != trackDepth.getValue() ) {
-                    if ( draft < trackDepth.getMinimum() ) {
-                        draft = trackDepth.getMinimum();
-                    } else if ( trackDepth.getMaximum() < draft ) {
-                        draft = trackDepth.getMaximum();
-                    }
+                if ( draft < trackDepth.getMinimum() ) {
+                    draft = trackDepth.getMinimum();
                     txtDepth.setText( draft + "" );
+                } else if ( trackDepth.getMaximum() < draft ) {
+                    draft = trackDepth.getMaximum();
+                    txtDepth.setText( draft + "" );
+                }
+                if ( draft != trackDepth.getValue() ) {
                     trackDepth.setValue( draft );
-                    if ( m_note_head_handle != null ) {
-                        m_note_head_handle.setDepth( trackDepth.getValue() );
-                    }
+                }
+                if ( m_note_head_handle != null ) {
+                    m_note_head_handle.setDepth( trackDepth.getValue() );
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormNoteExpressionConfig ) + ".txtDepth_TextChanged; ex=" + ex + "\n" );
+#if JAVA
+                ex.printStackTrace();
+#endif
             }
         }
 

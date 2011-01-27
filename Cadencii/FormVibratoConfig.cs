@@ -87,24 +87,22 @@ namespace org.kbinani.cadencii
                 m_vibrato = (VibratoHandle)vibrato_handle.clone();
             }
 
-            registerEventHandlers();
-            setResources();
-            applyLanguage();
-
             // 選択肢の状態を更新
             updateComboBoxStatus();
             // どれを選ぶか？
+            if( vibrato_handle != null ){
 #if DEBUG
-            sout.println( "FormVibratoConfig#.ctor; vibrato_handle.IconID=" + vibrato_handle.IconID );
+                sout.println( "FormVibratoConfig#.ctor; vibrato_handle.IconID=" + vibrato_handle.IconID );
 #endif
-            for ( int i = 0; i < comboVibratoType.getItemCount(); i++ ) {
-                VibratoHandle handle = (VibratoHandle)comboVibratoType.getItemAt( i );
+                for ( int i = 0; i < comboVibratoType.getItemCount(); i++ ) {
+                    VibratoHandle handle = (VibratoHandle)comboVibratoType.getItemAt( i );
 #if DEBUG
-                sout.println( "FormVibratoConfig#.ctor; handle.IconID=" + handle.IconID );
+                    sout.println( "FormVibratoConfig#.ctor; handle.IconID=" + handle.IconID );
 #endif
-                if ( vibrato_handle.IconID.Equals( handle.IconID ) ) {
-                    comboVibratoType.setSelectedIndex( i );
-                    break;
+                    if ( vibrato_handle.IconID.Equals( handle.IconID ) ) {
+                        comboVibratoType.setSelectedIndex( i );
+                        break;
+                    }
                 }
             }
 
@@ -124,11 +122,13 @@ namespace org.kbinani.cadencii
                 }
                 txtVibratoLength.setText( s );
             }
-
-            comboVibratoType.SelectedIndexChanged += new BEventHandler( comboVibratoType_SelectedIndexChanged );
-            txtVibratoLength.TextChanged += new BEventHandler( txtVibratoLength_TextChanged );
-
+  
             m_note_length = note_length;
+
+            registerEventHandlers();
+            setResources();
+            applyLanguage();
+
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
         }
 
@@ -210,6 +210,7 @@ namespace org.kbinani.cadencii
             btnCancel.Click += new BEventHandler( btnCancel_Click );
             radioUserDefined.CheckedChanged += new BEventHandler( handleRadioCheckedChanged );
             comboVibratoType.SelectedIndexChanged += new BEventHandler( comboVibratoType_SelectedIndexChanged );
+              txtVibratoLength.TextChanged += new BEventHandler( txtVibratoLength_TextChanged );
         }
 
         public void handleRadioCheckedChanged( Object sender, EventArgs e )
@@ -233,9 +234,18 @@ namespace org.kbinani.cadencii
         public void comboVibratoType_SelectedIndexChanged( Object sender, BEventArgs e )
         {
             int index = comboVibratoType.getSelectedIndex();
+#if DEBUG
+            sout.println( "FormVibratoConfig#comboVibratoType_SelectedIndexChanged; index=" + index );
+#endif
             if ( index >= 0 ) {
                 String s = ((VibratoHandle)comboVibratoType.getItemAt( index )).IconID;
+#if DEBUG
+                sout.println( "FormVibratoConfig#comboVibratoType_SelectedIndexChanged; index=" + index + "; iconid=" + s );
+#endif
                 if ( s.Equals( "$04040000" ) ) {
+#if DEBUG
+                    sout.println( "FormVibratoConfig#comboVibratoType_SelectedIndexChanged; B; m_vibrato -> null" );
+#endif
                     m_vibrato = null;
                     txtVibratoLength.setEnabled( false );
                     return;
@@ -243,10 +253,10 @@ namespace org.kbinani.cadencii
                     txtVibratoLength.setEnabled( true );
                     VibratoHandle src = null;
                     if ( radioUserDefined.isSelected() ) {
-                        int size = AppManager.editorConfig.AutoVibratoCustom.size();
+                        int size = vec.size( AppManager.editorConfig.AutoVibratoCustom );
                         for ( int i = 0; i < size; i++ ) {
-                            VibratoHandle handle = AppManager.editorConfig.AutoVibratoCustom.get( i );
-                            if ( s.Equals( handle.IconID ) ) {
+                            VibratoHandle handle = vec.get( AppManager.editorConfig.AutoVibratoCustom, i );
+                            if ( str.compare( s, handle.IconID ) ) {
                                 src = handle;
                                 break;
                             }
@@ -255,12 +265,15 @@ namespace org.kbinani.cadencii
                         SynthesizerType type = radioVocaloid1.isSelected() ? SynthesizerType.VOCALOID1 : SynthesizerType.VOCALOID2;
                         for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
                             VibratoHandle vconfig = itr.next();
-                            if ( s.Equals( vconfig.IconID ) ) {
+                            if ( str.compare( s, vconfig.IconID ) ) {
                                 src = vconfig;
                                 break;
                             }
                         }
                     }
+#if DEBUG
+                    sout.println( "FormVibratoConfig#comboVibratoType_SelectedIndexChanged; (src==null)=" + (src == null) );
+#endif
                     if ( src != null ) {
                         int percent;
                         try {
@@ -295,6 +308,9 @@ namespace org.kbinani.cadencii
             }
             if ( percent == 0 ) {
                 m_vibrato = null;
+#if DEBUG
+                sout.println( "FormVibratoConfig#txtVibratoLength_TextChanged; A; m_vibrato -> null" );
+#endif
                 txtVibratoLength.setEnabled( false );
             } else {
                 if ( m_vibrato != null ) {

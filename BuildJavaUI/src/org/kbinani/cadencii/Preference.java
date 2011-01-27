@@ -2663,6 +2663,7 @@ public class Preference extends JFrame {
             gridBagConstraints151.gridy = 0;
             lblAutoVibratoTypeCustom = new BLabel();
             lblAutoVibratoTypeCustom.setText("Vibrato Type: Custom");
+            lblAutoVibratoTypeCustom.setEnabled(false);
             jPanel41 = new BPanel();
             jPanel41.setLayout(new GridBagLayout());
             jPanel41.add(lblAutoVibratoTypeCustom, gridBagConstraints151);
@@ -2769,6 +2770,7 @@ public class Preference extends JFrame {
         if (comboAutoVibratoTypeCustom == null) {
             comboAutoVibratoTypeCustom = new BComboBox();
             comboAutoVibratoTypeCustom.setPreferredSize(new Dimension(101, 27));
+            comboAutoVibratoTypeCustom.setEnabled(false);
         }
         return comboAutoVibratoTypeCustom;
     }

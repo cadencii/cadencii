@@ -99,7 +99,6 @@ namespace org.kbinani.cadencii
 
             m_credit = new AuthorListEntry[] { };
             lblVstLogo.setForeground( m_version_color );
-            lblStraightAcknowledgement.setForeground( m_version_color );
 #if DEBUG
             //m_scroll = generateAuthorListB( false );
             //m_scroll_with_id = generateAuthorListB( true );
@@ -156,7 +155,6 @@ namespace org.kbinani.cadencii
         {
             m_version_color = value;
             lblVstLogo.setForeground( value );
-            lblStraightAcknowledgement.setForeground( value );
         }
 
         /// <summary>
@@ -218,7 +216,11 @@ namespace org.kbinani.cadencii
                 g.setColor( new Color( 0, 0, 0, 40 ) );
                 PortUtil.drawStringEx( g, m_app_name,
                                        f,
+#if JAVA
+                                       new Rectangle( shadow_shift, shadow_shift + height, width, height ),
+#else
                                        new Rectangle( shadow_shift, shadow_shift, width, height ),
+#endif
                                        align,
                                        valign );
             }
@@ -226,7 +228,11 @@ namespace org.kbinani.cadencii
             PortUtil.drawStringEx( g,
                                    m_app_name,
                                    f,
+#if JAVA
+                                   new Rectangle( 0, height, width, height ),
+#else
                                    new Rectangle( 0, 0, width, height ),
+#endif
                                    align,
                                    valign );
             for ( int i = 0; i < m_credit.Length; i++ ) {
@@ -242,7 +248,11 @@ namespace org.kbinani.cadencii
                     PortUtil.drawStringEx( g,
                                            str,
                                            font,
+#if JAVA
+                                           new Rectangle( 0 + shadow_shift, 40 + (int)(i * height * 1.1) + shadow_shift + height, width, height ),
+#else
                                            new Rectangle( 0 + shadow_shift, 40 + (int)(i * height * 1.1) + shadow_shift, width, height ),
+#endif
                                            align,
                                            valign );
                 }
@@ -250,7 +260,11 @@ namespace org.kbinani.cadencii
                 PortUtil.drawStringEx( g,
                                        str,
                                        f2,
+#if JAVA
+                                       new Rectangle( 0, 40 + (int)(i * height * 1.1) + height, width, height ),
+#else
                                        new Rectangle( 0, 40 + (int)(i * height * 1.1), width, height ),
+#endif
                                        align,
                                        valign );
             }
@@ -289,7 +303,6 @@ namespace org.kbinani.cadencii
         {
             m_credit_mode = !m_credit_mode;
             if ( m_credit_mode ) {
-                btnFlip.setPreferredSize( new Dimension( m_button_width_about, btnFlip.getHeight() ) );
                 try {
                     btnFlip.setText( PortUtil.formatMessage( _( "About {0}" ), m_app_name ) );
                 } catch ( Exception ex ) {
@@ -301,26 +314,20 @@ namespace org.kbinani.cadencii
                 m_shift = 0f;
                 pictVstLogo.setVisible( false );
                 lblVstLogo.setVisible( false );
-                lblStraightAcknowledgement.setVisible( false );
                 chkTwitterID.setVisible( true );
                 timer.start();
             } else {
                 timer.stop();
-                btnFlip.setPreferredSize( new Dimension( m_button_width_credit, btnFlip.getHeight() ) );
                 btnFlip.setText( _( "Credit" ) );
                 pictVstLogo.setVisible( true );
                 lblVstLogo.setVisible( true );
-                lblStraightAcknowledgement.setVisible( true );
                 chkTwitterID.setVisible( false );
             }
-            invalidate();
+            this.repaint();
         }
 
         public void timer_Tick( Object sender, BEventArgs e )
         {
-#if DEBUG
-            sout.println( "VersionInfo#timer_Tick" );
-#endif
 #if JAVA
             this.repaint();
 #else
@@ -349,7 +356,8 @@ namespace org.kbinani.cadencii
         {
             Graphics2D g = (Graphics2D)g1;
             g.clipRect( 0, 0, getWidth(), m_height );
-            g.clearRect( 0, 0, getWidth(), getHeight() );
+            g.fillRect( 0, 0, getWidth(), getHeight() );
+            //g.clearRect( 0, 0, getWidth(), getHeight() );
             if ( m_credit_mode ) {
                 float times = (float)(PortUtil.getCurrentTime() - m_scroll_started) - 3f;
                 float speed = (float)((2.0 - math.erfc( times * 0.8 )) / 2.0) * m_speed;

@@ -144,14 +144,10 @@ namespace org.kbinani.cadencii
             new AuthorListEntry( "tool icons designer:", 2 ),
             new AuthorListEntry( "Yusuke KAMIYAMANE", "@ykamiyamane" ),
             new AuthorListEntry(),
-            new AuthorListEntry( "developper of STRAIGHT LIBRARY:", 2 ),
-            new AuthorListEntry( "Hideki KAWAHARA" ),
-            new AuthorListEntry( "Tetsu TAKAHASHI" ),
-            new AuthorListEntry( "Hideki BANNO" ),
+            new AuthorListEntry( "developper of WORLD:", 2 ),
             new AuthorListEntry( "Masanori MORISE", "@m_morise" ),
-            new AuthorListEntry( "(sorry, list is not complete)", 2 ),
             new AuthorListEntry(),
-            new AuthorListEntry( "developper of v.Connect:", 2 ),
+            new AuthorListEntry( "developper of v.Connect-STAND:", 2 ),
             new AuthorListEntry( "修羅場P", "@shurabaP" ),
             new AuthorListEntry(),
             new AuthorListEntry( "developper of UTAU:", 2 ),
@@ -208,6 +204,8 @@ namespace org.kbinani.cadencii
             new AuthorListEntry( "空耳P", "@soramiku" ),
             new AuthorListEntry( "kotoi" ),
             new AuthorListEntry( "げっぺータロー", "@geppeitaro" ),
+            new AuthorListEntry( "みけCAT" ),
+            new AuthorListEntry( "ぎんじ" ),
             new AuthorListEntry( "all members of Cadencii bbs", 2 ),
             new AuthorListEntry(),
             new AuthorListEntry( "     ... and you !", 3 ),
@@ -631,7 +629,8 @@ namespace org.kbinani.cadencii
             getCMenuPiano();
             getCMenuTrackTab();
             getCMenuTrackSelector();
-
+            // MIDIステップ入力は使えないことにする
+            toolStripTool.remove( getStripBtnStepSequencer() );
 #else
             InitializeComponent();
             timer = new BTimer( this.components );
@@ -919,13 +918,10 @@ namespace org.kbinani.cadencii
             splitContainer2.Panel1.ResumeLayout();
 #endif
 
-#if JAVA
-            // TODO: FormMain#.ctor
-#else
             pictPianoRoll.MouseWheel += new BMouseEventHandler( pictPianoRoll_MouseWheel );
             trackSelector.MouseWheel += new BMouseEventHandler( trackSelector_MouseWheel );
             picturePositionIndicator.MouseWheel += new BMouseEventHandler( picturePositionIndicator_MouseWheel );
-#endif
+
             menuVisualOverview.CheckedChanged += new BEventHandler( menuVisualOverview_CheckedChanged );
 
             hScroll.setMaximum( AppManager.getVsqFile().TotalClocks + 240 );
@@ -1023,6 +1019,163 @@ namespace org.kbinani.cadencii
                     }
                 }
             }
+
+            applyLanguage();
+            trackBar.setValue( AppManager.editorConfig.DefaultXScale );
+            AppManager.setCurrentClock( 0 );
+            setEdited( false );
+
+            AppManager.PreviewStarted += new BEventHandler( AppManager_PreviewStarted );
+            AppManager.PreviewAborted += new BEventHandler( AppManager_PreviewAborted );
+            AppManager.GridVisibleChanged += new BEventHandler( AppManager_GridVisibleChanged );
+            AppManager.SelectedEventChanged += new SelectedEventChangedEventHandler( AppManager_SelectedEventChanged );
+            AppManager.SelectedToolChanged += new BEventHandler( AppManager_SelectedToolChanged );
+            AppManager.UpdateBgmStatusRequired += new BEventHandler( AppManager_UpdateBgmStatusRequired );
+            AppManager.MainWindowFocusRequired += new BEventHandler( AppManager_MainWindowFocusRequired );
+            AppManager.EditedStateChanged += new EditedStateChangedEventHandler( AppManager_EditedStateChanged );
+            AppManager.WaveViewReloadRequired += new WaveViewRealoadRequiredEventHandler( AppManager_WaveViewRealoadRequired );
+            EditorConfig.QuantizeModeChanged += new BEventHandler( handleEditorConfig_QuantizeModeChanged );
+
+#if ENABLE_PROPERTY
+            mPropertyPanelContainer.StateChangeRequired += new StateChangeRequiredEventHandler( mPropertyPanelContainer_StateChangeRequired );
+#endif
+
+            updateRecentFileMenu();
+
+            // C3が画面中央に来るように調整
+            int draft_start_to_draw_y = 68 * (int)(100 * AppManager.getScaleY()) - pictPianoRoll.getHeight() / 2;
+            int draft_vscroll_value = (int)((draft_start_to_draw_y * (double)vScroll.getMaximum()) / (128 * (int)(100 * AppManager.getScaleY()) - vScroll.getHeight()));
+            try {
+                vScroll.setValue( draft_vscroll_value );
+            } catch ( Exception ex ) {
+                Logger.write( typeof( FormMain ) + ".FormMain_Load; ex=" + ex + "\n" );
+            }
+
+            // x=97がプリメジャークロックになるように調整
+            int cp = AppManager.getVsqFile().getPreMeasureClocks();
+            int draft_hscroll_value = (int)(cp - 24.0 * AppManager.getScaleXInv());
+            try {
+                hScroll.setValue( draft_hscroll_value );
+            } catch ( Exception ex ) {
+                Logger.write( typeof( FormMain ) + ".FormMain_Load; ex=" + ex + "\n" );
+            }
+
+            //s_pen_dashed_171_171_171.DashPattern = new float[] { 3, 3 };
+            //s_pen_dashed_209_204_172.DashPattern = new float[] { 3, 3 };
+
+            menuVisualNoteProperty.setSelected( AppManager.editorConfig.ShowExpLine );
+            menuVisualLyrics.setSelected( AppManager.editorConfig.ShowLyric );
+            menuVisualMixer.setSelected( AppManager.editorConfig.MixerVisible );
+            menuVisualPitchLine.setSelected( AppManager.editorConfig.ViewAtcualPitch );
+
+            updateMenuFonts();
+
+            AppManager.mMixerWindow.FederChanged += new FederChangedEventHandler( mixerWindow_FederChanged );
+            AppManager.mMixerWindow.PanpotChanged += new PanpotChangedEventHandler( mixerWindow_PanpotChanged );
+            AppManager.mMixerWindow.MuteChanged += new MuteChangedEventHandler( mixerWindow_MuteChanged );
+            AppManager.mMixerWindow.SoloChanged += new SoloChangedEventHandler( mixerWindow_SoloChanged );
+            AppManager.mMixerWindow.updateStatus();
+            if ( AppManager.editorConfig.MixerVisible ) {
+                AppManager.mMixerWindow.setVisible( true );
+            }
+
+            trackSelector.CommandExecuted += new BEventHandler( trackSelector_CommandExecuted );
+
+#if ENABLE_SCRIPT
+            updateScriptShortcut();
+            // RunOnceという名前のスクリプトがあれば，そいつを実行
+            for ( Iterator<String> itr = ScriptServer.getScriptIdIterator(); itr.hasNext(); ) {
+                String id = itr.next();
+                if ( PortUtil.getFileNameWithoutExtension( id ).ToLower().Equals( "runonce" ) ) {
+                    ScriptServer.invokeScript( id, AppManager.getVsqFile() );
+                    break;
+                }
+            }
+#endif
+
+            clearTempWave();
+            updateVibratoPresetMenu();
+            mPencilMode.setMode( PencilModeEnum.Off );
+            updateCMenuPianoFixed();
+            loadGameControler();
+#if ENABLE_MIDI
+            reloadMidiIn();
+#endif
+            menuVisualWaveform.setSelected( AppManager.editorConfig.ViewWaveform );
+            updateSplitContainer2Size();
+
+            updateRendererMenu();
+
+            // ウィンドウの位置・サイズを再現
+            this.SizeChanged += new BEventHandler( FormMain_SizeChanged );
+            this.LocationChanged += new BEventHandler( FormMain_LocationChanged );
+            if ( AppManager.editorConfig.WindowMaximized ) {
+                setExtendedState( BForm.MAXIMIZED_BOTH );
+            } else {
+                setExtendedState( BForm.NORMAL );
+            }
+            Rectangle bounds = AppManager.editorConfig.WindowRect;
+            this.setBounds( bounds );
+            // ウィンドウ位置・サイズの設定値が、使えるディスプレイのどれにも被っていない場合
+            Rectangle rc2 = PortUtil.getScreenBounds( this );
+            if ( bounds.x < rc2.x ||
+                 rc2.x + rc2.width < bounds.x + bounds.width ||
+                 bounds.y < rc2.y ||
+                 rc2.y + rc2.height < bounds.y + bounds.height ) {
+                bounds.x = rc2.x;
+                bounds.y = rc2.y;
+                this.setBounds( bounds );
+                AppManager.editorConfig.WindowRect = bounds;
+            }
+
+            updateScrollRangeHorizontal();
+            updateScrollRangeVertical();
+
+            // プロパティウィンドウの位置を復元
+            Rectangle rc1 = PortUtil.getScreenBounds( this );
+            Rectangle rcScreen = new Rectangle( rc1.x, rc1.y, rc1.width, rc1.height );
+            Point p = this.getLocation();
+            XmlRectangle xr = AppManager.editorConfig.PropertyWindowStatus.Bounds;
+            Point p0 = new Point( xr.x, xr.y );
+            Point a = new Point( p.x + p0.x, p.y + p0.y );
+            Rectangle rc = new Rectangle( a.x,
+                                          a.y,
+                                          AppManager.editorConfig.PropertyWindowStatus.Bounds.getWidth(),
+                                          AppManager.editorConfig.PropertyWindowStatus.Bounds.getHeight() );
+
+            if ( a.y > rcScreen.y + rcScreen.height ) {
+                a = new Point( a.x, rcScreen.y + rcScreen.height - rc.height );
+            }
+            if ( a.y < rcScreen.y ) {
+                a = new Point( a.x, rcScreen.y );
+            }
+            if ( a.x > rcScreen.x + rcScreen.width ) {
+                a = new Point( rcScreen.x + rcScreen.width - rc.width, a.y );
+            }
+            if ( a.x < rcScreen.x ) {
+                a = new Point( rcScreen.x, a.y );
+            }
+#if DEBUG
+            AppManager.debugWriteLine( "FormMain_Load; a=" + a );
+#endif
+
+#if ENABLE_PROPERTY
+            AppManager.propertyWindow.setBounds( a.x, a.y, rc.width, rc.height );
+            AppManager.propertyWindow.LocationChanged += new BEventHandler( propertyWindow_LocationOrSizeChanged );
+            AppManager.propertyWindow.SizeChanged += new BEventHandler( propertyWindow_LocationOrSizeChanged );
+            AppManager.propertyWindow.FormClosing += new System.Windows.Forms.FormClosingEventHandler( propertyWindow_FormClosing );
+            AppManager.propertyPanel.CommandExecuteRequired += new CommandExecuteRequiredEventHandler( propertyPanel_CommandExecuteRequired );
+            AppManager.propertyWindow.setFormCloseShortcutKey( AppManager.editorConfig.getShortcutKeyFor( menuVisualProperty ) );
+            updatePropertyPanelState( AppManager.editorConfig.PropertyWindowStatus.State );
+#endif
+            updateBgmMenuState();
+            flipControlCurveVisible( true );
+
+            repaint();
+            updateLayout();
+#if DEBUG
+            menuHidden.setVisible( true );
+#endif
 
 #if !JAVA
 #if DEBUG
@@ -4030,9 +4183,6 @@ namespace org.kbinani.cadencii
             // コンポーネントの高さが0の場合，スクロールの設定が出来ないので．
             int pheight = pictPianoRoll.getHeight();
             int vheight = vScroll.getHeight();
-#if DEBUG
-            sout.println( "FormMain#updateScrollRangeVertical; pheight=" + pheight + "; vheight=" + vheight );
-#endif
             if ( pheight <= 0 || vheight <= 0 ) {
                 return;
             }
@@ -4639,9 +4789,9 @@ namespace org.kbinani.cadencii
             stripBtnLine.setToolTipText( _( "Line" ) );
             stripBtnEraser.setText( _( "Eraser" ) );
             stripBtnEraser.setToolTipText( _( "Eraser" ) );
-            stripBtnCurve.setText( _( "Curve" ) );
+            //stripBtnCurve.setText( _( "Curve" ) );
             stripBtnCurve.setToolTipText( _( "Curve" ) );
-            stripBtnGrid.setText( _( "Grid" ) );
+            //stripBtnGrid.setText( _( "Grid" ) );
             stripBtnGrid.setToolTipText( _( "Grid" ) );
             if ( AppManager.isPlaying() ) {
                 stripBtnPlay.setText( _( "Stop" ) );
@@ -8230,7 +8380,8 @@ namespace org.kbinani.cadencii
 #if ENABLE_SCRIPT
                 if ( AppManager.getSelectedTool() != EditTool.PALETTE_TOOL )
 #endif
- {
+
+                {
                     AppManager.clearSelectedEvent();
                     AppManager.addSelectedEvent( item.InternalID );
 #if ENABLE_MOUSEHOVER
@@ -8320,13 +8471,14 @@ namespace org.kbinani.cadencii
                         }
 
                         // ビブラートプロパティダイアログを表示するかどうかを決める
-                        rect = new Rectangle( dobj.mRectangleInPixel.x + AppManager.keyWidth - stdx + 21,
-                                              dobj.mRectangleInPixel.y - stdy + (int)(100 * AppManager.getScaleY()),
-                                              dobj.mRectangleInPixel.width - 21,
-                                              (int)(100 * AppManager.getScaleY()) );
+                        rect = new Rectangle(
+                            dobj.mRectangleInPixel.x + AppManager.keyWidth - stdx + 21,
+                            dobj.mRectangleInPixel.y - stdy + (int)(100 * AppManager.getScaleY()),
+                            dobj.mRectangleInPixel.width - 21,
+                            (int)(100 * AppManager.getScaleY()) );
                         if ( Utility.isInRect( new Point( e.X, e.Y ), rect ) ) {
                             VsqEvent selectedEvent = null;
-                            for ( Iterator<VsqEvent> itr2 = vsq.Track.get( AppManager.getSelected() ).getEventIterator(); itr2.hasNext(); ) {
+                            for ( Iterator<VsqEvent> itr2 = vsq.Track.get( selected ).getEventIterator(); itr2.hasNext(); ) {
                                 VsqEvent ev = itr2.next();
                                 if ( ev.InternalID == dobj.mInternalID ) {
                                     selectedEvent = ev;
@@ -8349,21 +8501,23 @@ namespace org.kbinani.cadencii
                                 }
                                 FormVibratoConfig dlg = null;
                                 try {
-                                    dlg =
-                                        new FormVibratoConfig(
-                                            selectedEvent.ID.VibratoHandle,
-                                            selectedEvent.ID.getLength(),
-                                            AppManager.editorConfig.DefaultVibratoLength,
-                                            type,
-                                            AppManager.editorConfig.UseUserDefinedAutoVibratoType );
+                                    dlg = new FormVibratoConfig(
+                                        selectedEvent.ID.VibratoHandle,
+                                        selectedEvent.ID.getLength(),
+                                        AppManager.editorConfig.DefaultVibratoLength,
+                                        type,
+                                        AppManager.editorConfig.UseUserDefinedAutoVibratoType );
                                     dlg.setLocation( getFormPreferedLocation( dlg ) );
                                     BDialogResult dr = AppManager.showModalDialog( dlg, this );
                                     if ( dr == BDialogResult.OK ) {
                                         VsqID t = (VsqID)selectedEvent.ID.clone();
                                         VibratoHandle handle = dlg.getVibratoHandle();
+#if DEBUG
+                                        sout.println( "FormMain#pictPianoRoll_MouseDoubleClick; (handle==null)=" + (handle == null) );
+#endif
                                         if ( handle != null ) {
                                             String iconid = handle.IconID;
-                                            int vibrato_length = t.VibratoHandle.getLength();
+                                            int vibrato_length = handle.getLength();
                                             int note_length = selectedEvent.ID.getLength();
                                             t.VibratoDelay = note_length - vibrato_length;
                                             t.VibratoHandle = handle;
@@ -8962,11 +9116,11 @@ namespace org.kbinani.cadencii
                 if ( px_move / dt > AppManager.editorConfig.MouseDragMaximumRate ) {
                     px_move = (int)(dt * AppManager.editorConfig.MouseDragMaximumRate);
                 }
+                px_move += 50;
                 if ( mExtDragY == ExtDragYMode.UP ) {
                     px_move *= -1;
                 }
-                int draft = stdy + px_move;
-                //int draft = (int)((draft_stdy * (double)vScroll.getMaximum()) / (128.0 * AppManager.editorConfig.getActualNoteHeight() - vScroll.getHeight()));
+                int draft = vScroll.getValue() + px_move;
                 if ( draft < 0 ) {
                     draft = 0;
                 }
@@ -9861,7 +10015,7 @@ namespace org.kbinani.cadencii
                 if ( horizontal ) {
                     hScroll.setValue( computeScrollValueFromWheelDelta( e.Delta ) );
                 } else {
-                    double new_val = (double)vScroll.getValue() - e.Delta;
+                    double new_val = (double)vScroll.getValue() - e.Delta * 10;
                     int min = vScroll.getMinimum();
                     int max = vScroll.getMaximum() - vScroll.getVisibleAmount();
                     if ( new_val > max ) {
@@ -10512,162 +10666,6 @@ namespace org.kbinani.cadencii
 
         public void FormMain_Load( Object sender, EventArgs e )
         {
-            applyLanguage();
-            trackBar.setValue( AppManager.editorConfig.DefaultXScale );
-            AppManager.setCurrentClock( 0 );
-            setEdited( false );
-
-            AppManager.PreviewStarted += new BEventHandler( AppManager_PreviewStarted );
-            AppManager.PreviewAborted += new BEventHandler( AppManager_PreviewAborted );
-            AppManager.GridVisibleChanged += new BEventHandler( AppManager_GridVisibleChanged );
-            AppManager.SelectedEventChanged += new SelectedEventChangedEventHandler( AppManager_SelectedEventChanged );
-            AppManager.SelectedToolChanged += new BEventHandler( AppManager_SelectedToolChanged );
-            AppManager.UpdateBgmStatusRequired += new BEventHandler( AppManager_UpdateBgmStatusRequired );
-            AppManager.MainWindowFocusRequired += new BEventHandler( AppManager_MainWindowFocusRequired );
-            AppManager.EditedStateChanged += new EditedStateChangedEventHandler( AppManager_EditedStateChanged );
-            AppManager.WaveViewReloadRequired += new WaveViewRealoadRequiredEventHandler( AppManager_WaveViewRealoadRequired );
-            EditorConfig.QuantizeModeChanged += new BEventHandler( handleEditorConfig_QuantizeModeChanged );
-
-#if ENABLE_PROPERTY
-            mPropertyPanelContainer.StateChangeRequired += new StateChangeRequiredEventHandler( mPropertyPanelContainer_StateChangeRequired );
-#endif
-
-            updateRecentFileMenu();
-
-            // C3が画面中央に来るように調整
-            int draft_start_to_draw_y = 68 * (int)(100 * AppManager.getScaleY()) - pictPianoRoll.getHeight() / 2;
-            int draft_vscroll_value = (int)((draft_start_to_draw_y * (double)vScroll.getMaximum()) / (128 * (int)(100 * AppManager.getScaleY()) - vScroll.getHeight()));
-            try {
-                vScroll.setValue( draft_vscroll_value );
-            } catch ( Exception ex ) {
-                Logger.write( typeof( FormMain ) + ".FormMain_Load; ex=" + ex + "\n" );
-            }
-
-            // x=97がプリメジャークロックになるように調整
-            int cp = AppManager.getVsqFile().getPreMeasureClocks();
-            int draft_hscroll_value = (int)(cp - 24.0 * AppManager.getScaleXInv());
-            try {
-                hScroll.setValue( draft_hscroll_value );
-            } catch ( Exception ex ) {
-                Logger.write( typeof( FormMain ) + ".FormMain_Load; ex=" + ex + "\n" );
-            }
-
-            //s_pen_dashed_171_171_171.DashPattern = new float[] { 3, 3 };
-            //s_pen_dashed_209_204_172.DashPattern = new float[] { 3, 3 };
-
-            menuVisualNoteProperty.setSelected( AppManager.editorConfig.ShowExpLine );
-            menuVisualLyrics.setSelected( AppManager.editorConfig.ShowLyric );
-            menuVisualMixer.setSelected( AppManager.editorConfig.MixerVisible );
-            menuVisualPitchLine.setSelected( AppManager.editorConfig.ViewAtcualPitch );
-
-            updateMenuFonts();
-
-            AppManager.mMixerWindow.FederChanged += new FederChangedEventHandler( mixerWindow_FederChanged );
-            AppManager.mMixerWindow.PanpotChanged += new PanpotChangedEventHandler( mixerWindow_PanpotChanged );
-            AppManager.mMixerWindow.MuteChanged += new MuteChangedEventHandler( mixerWindow_MuteChanged );
-            AppManager.mMixerWindow.SoloChanged += new SoloChangedEventHandler( mixerWindow_SoloChanged );
-            AppManager.mMixerWindow.updateStatus();
-            if ( AppManager.editorConfig.MixerVisible ) {
-                AppManager.mMixerWindow.setVisible( true );
-            }
-
-            trackSelector.CommandExecuted += new BEventHandler( trackSelector_CommandExecuted );
-
-#if ENABLE_SCRIPT
-            updateScriptShortcut();
-            // RunOnceという名前のスクリプトがあれば，そいつを実行
-            for ( Iterator<String> itr = ScriptServer.getScriptIdIterator(); itr.hasNext(); ) {
-                String id = itr.next();
-                if ( PortUtil.getFileNameWithoutExtension( id ).ToLower().Equals( "runonce" ) ) {
-                    ScriptServer.invokeScript( id, AppManager.getVsqFile() );
-                    break;
-                }
-            }
-#endif
-
-            clearTempWave();
-            updateScrollRangeHorizontal();
-            updateScrollRangeVertical();
-            updateVibratoPresetMenu();
-            mPencilMode.setMode( PencilModeEnum.Off );
-            updateCMenuPianoFixed();
-            loadGameControler();
-#if ENABLE_MIDI
-            reloadMidiIn();
-#endif
-            menuVisualWaveform.setSelected( AppManager.editorConfig.ViewWaveform );
-            updateSplitContainer2Size();
-
-            updateRendererMenu();
-
-            // ウィンドウの位置・サイズを再現
-            if ( AppManager.editorConfig.WindowMaximized ) {
-                setExtendedState( BForm.MAXIMIZED_BOTH );
-            } else {
-                setExtendedState( BForm.NORMAL );
-            }
-            Rectangle bounds = AppManager.editorConfig.WindowRect;
-            this.setBounds( bounds );
-            // ウィンドウ位置・サイズの設定値が、使えるディスプレイのどれにも被っていない場合
-            Rectangle rc2 = PortUtil.getScreenBounds( this );
-            if ( bounds.x < rc2.x ||
-                 rc2.x + rc2.width < bounds.x + bounds.width ||
-                 bounds.y < rc2.y ||
-                 rc2.y + rc2.height < bounds.y + bounds.height ) {
-                bounds.x = rc2.x;
-                bounds.y = rc2.y;
-                this.setBounds( bounds );
-                AppManager.editorConfig.WindowRect = bounds;
-            }
-
-            // プロパティウィンドウの位置を復元
-            Rectangle rc1 = PortUtil.getScreenBounds( this );
-            Rectangle rcScreen = new Rectangle( rc1.x, rc1.y, rc1.width, rc1.height );
-            Point p = this.getLocation();
-            XmlRectangle xr = AppManager.editorConfig.PropertyWindowStatus.Bounds;
-            Point p0 = new Point( xr.x, xr.y );
-            Point a = new Point( p.x + p0.x, p.y + p0.y );
-            Rectangle rc = new Rectangle( a.x,
-                                          a.y,
-                                          AppManager.editorConfig.PropertyWindowStatus.Bounds.getWidth(),
-                                          AppManager.editorConfig.PropertyWindowStatus.Bounds.getHeight() );
-
-            if ( a.y > rcScreen.y + rcScreen.height ) {
-                a = new Point( a.x, rcScreen.y + rcScreen.height - rc.height );
-            }
-            if ( a.y < rcScreen.y ) {
-                a = new Point( a.x, rcScreen.y );
-            }
-            if ( a.x > rcScreen.x + rcScreen.width ) {
-                a = new Point( rcScreen.x + rcScreen.width - rc.width, a.y );
-            }
-            if ( a.x < rcScreen.x ) {
-                a = new Point( rcScreen.x, a.y );
-            }
-#if DEBUG
-            AppManager.debugWriteLine( "FormMain_Load; a=" + a );
-#endif
-
-#if ENABLE_PROPERTY
-            AppManager.propertyWindow.setBounds( a.x, a.y, rc.width, rc.height );
-            AppManager.propertyWindow.LocationChanged += new BEventHandler( propertyWindow_LocationOrSizeChanged );
-            AppManager.propertyWindow.SizeChanged += new BEventHandler( propertyWindow_LocationOrSizeChanged );
-            AppManager.propertyWindow.FormClosing += new System.Windows.Forms.FormClosingEventHandler( propertyWindow_FormClosing );
-            AppManager.propertyPanel.CommandExecuteRequired += new CommandExecuteRequiredEventHandler( propertyPanel_CommandExecuteRequired );
-            AppManager.propertyWindow.setFormCloseShortcutKey( AppManager.editorConfig.getShortcutKeyFor( menuVisualProperty ) );
-            updatePropertyPanelState( AppManager.editorConfig.PropertyWindowStatus.State );
-#endif
-            updateBgmMenuState();
-            flipControlCurveVisible( true );
-
-            this.SizeChanged += new BEventHandler( FormMain_SizeChanged );
-            this.LocationChanged += new BEventHandler( FormMain_LocationChanged );
-            repaint();
-            updateLayout();
-#if DEBUG
-            menuHidden.setVisible( true );
-#endif
-
             // 鍵盤用のキャッシュが古い位置に保存されている場合。
             String cache_new = Utility.getKeySoundPath();
             String cache_old = fsys.combine( PortUtil.getApplicationStartupPath(), "cache" );
@@ -16633,11 +16631,16 @@ namespace org.kbinani.cadencii
         public void timer_Tick( Object sender, EventArgs e )
         {
             if ( AppManager.isGeneratorRunning() ) {
+#if JAVA
+                // !JAVAのときもこれで行けなイカ？
+                double play_time = PlaySound.getPosition();
+#else
                 MonitorWaveReceiver monitor = MonitorWaveReceiver.getInstance();
                 double play_time = 0.0;
                 if ( monitor != null ) {
                     play_time = monitor.getPlayTime();
                 }
+#endif
 #if DEBUG
                 sout.println( "FormMain#timer_Tick; play_time=" + play_time );
 #endif

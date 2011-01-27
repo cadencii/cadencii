@@ -383,8 +383,9 @@ public class XmlSerializer{
         transformer.transform( new DOMSource( m_document ), new StreamResult( stream ) ); 
     }
 
-    private void parseFieldAndProperty( Class t, Object obj, Element el ) throws IllegalAccessException{
-System.out.println( "XmlSerializer#parseFieldAndProperty; t=" + t );
+    private void parseFieldAndProperty( Class t, Object obj, Element el )
+        throws IllegalAccessException
+    {
         if( obj == null ){
             return;
         }
@@ -392,7 +393,6 @@ System.out.println( "XmlSerializer#parseFieldAndProperty; t=" + t );
         for( XmlMember xm : members ){
             String name = xm.getName();
             Element el2 = m_document.createElement( name );
-System.out.println( "XmlSerializer#parseFieldAndProprety; xm.getName()=" + name + "; xm.getType()=" + xm.getType() + "; calli printItemRecurse" );
             printItemRecurse( xm.getType(), xm.get( obj ), el2 );
             el.appendChild( el2 );
         }
@@ -430,7 +430,6 @@ System.out.println( "XmlSerializer#parseFieldAndProprety; xm.getName()=" + name 
     
     private void printItemRecurse( Class t, Object obj, Element parent ) throws IllegalAccessException{
         try{
-            System.out.println( "XmlSerializer#printItemRecurse; t=" + t.getSimpleName() );
             if ( !tryWriteValueType( t, obj, parent ) ){
                 if( t.isArray() || t.equals( Vector.class ) || isInterfaceDeclared( t, AbstractList.class ) ){
                     Object[] array = null;
@@ -565,7 +564,6 @@ System.out.println( "XmlSerializer#parseFieldAndProprety; xm.getName()=" + name 
     }
     
     private boolean tryWriteValueType( Class t, Object obj, Element element ){
-System.out.println( "XmlSerializer#tryWriteValueType; t=" + t );
         if( t.equals( Boolean.class ) || t.equals( Boolean.TYPE ) ){
             element.appendChild( m_document.createTextNode( (Boolean)obj + "" ) );
             return true;

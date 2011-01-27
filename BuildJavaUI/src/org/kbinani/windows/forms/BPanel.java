@@ -40,23 +40,7 @@ public class BPanel extends JPanel
     // root impl of MouseWheel event is in BButton
     public BEvent<BMouseEventHandler> mouseWheelEvent = new BEvent<BMouseEventHandler>();
     public void mouseWheelMoved( MouseWheelEvent e ){
-        BMouseButtons btn = BMouseButtons.Middle;
-        switch( e.getButton() ){
-            case MouseEvent.BUTTON1:
-                btn = BMouseButtons.Left;
-                break;
-            case MouseEvent.BUTTON2:
-                btn = BMouseButtons.Middle;
-                break;
-            case MouseEvent.BUTTON3:
-                btn = BMouseButtons.Right;
-                break;
-        }
-        BMouseEventArgs ev = new BMouseEventArgs( btn,
-                                                  e.getClickCount(), 
-                                                  e.getX(),
-                                                  e.getY(),
-                                                  e.getWheelRotation() * e.getUnitsToScroll() );
+        BMouseEventArgs ev = BMouseEventArgs.fromMouseWheelEvent( e );
         try{
             mouseWheelEvent.raise( this, ev );
         } catch( Exception ex ){

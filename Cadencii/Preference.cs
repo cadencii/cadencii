@@ -1647,8 +1647,16 @@ namespace org.kbinani.cadencii
 
         public void commonChangeAutoVibratoType( Object sender, BEventArgs e )
         {
-            groupVocaloidEditorCompatible.setEnabled( radioVocaloidEditorCompatible.isSelected() );
-            groupUserDefined.setEnabled( radioUserDefined.isSelected() );
+            boolean v = radioVocaloidEditorCompatible.isSelected();
+            boolean ud = radioUserDefined.isSelected();
+            groupVocaloidEditorCompatible.setEnabled( v );
+            groupUserDefined.setEnabled( ud );
+            comboAutoVibratoType1.setEnabled( v );
+            comboAutoVibratoType2.setEnabled( v );
+            comboAutoVibratoTypeCustom.setEnabled( ud );
+            lblAutoVibratoType1.setEnabled( v );
+            lblAutoVibratoType2.setEnabled( v );
+            lblAutoVibratoTypeCustom.setEnabled( ud );
         }
         #endregion
 

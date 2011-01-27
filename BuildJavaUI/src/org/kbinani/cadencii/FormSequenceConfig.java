@@ -238,7 +238,7 @@ public class FormSequenceConfig extends BForm {
     private BComboBox getComboChannel() {
         if (comboChannel == null) {
             comboChannel = new BComboBox();
-            comboChannel.setPreferredSize(new Dimension(97, 27));
+            comboChannel.setPreferredSize(new Dimension(120, 27));
         }
         return comboChannel;
     }

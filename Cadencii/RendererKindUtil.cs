@@ -14,8 +14,10 @@
 #if JAVA
 package org.kbinani.cadencii;
 
+import org.kbinani.*;
 #else
 using System;
+using org.kbinani;
 
 namespace org.kbinani.cadencii {
 #endif
@@ -27,7 +29,7 @@ namespace org.kbinani.cadencii {
         const String VOCALOID1_100 = "VOCALOID1 [1.0]";
         const String VOCALOID1_101 = "VOCALOID1 [1.1]";
         const String VOCALOID2 = "VOCALOID2";
-        const String STRAIGHT_UTAU = "Straight x UTAU";
+        const String VCNT = "vConnect-STAND";
         const String UTAU = "UTAU";
         const String AQUES_TONE = "AquesTone";
 
@@ -39,7 +41,7 @@ namespace org.kbinani.cadencii {
             } else if ( value == RendererKind.VOCALOID2 ) {
                 return VOCALOID2;
             } else if ( value == RendererKind.VCNT ) {
-                return STRAIGHT_UTAU;
+                return VCNT;
             } else if ( value == RendererKind.UTAU ) {
                 return UTAU;
             } else if ( value == RendererKind.AQUES_TONE ) {
@@ -53,17 +55,17 @@ namespace org.kbinani.cadencii {
             if ( value == null ) {
                 return RendererKind.NULL;
             }
-            if ( value.Equals( VOCALOID1_100 ) ) {
+            if ( str.compare( value, VOCALOID1_100 ) ) {
                 return RendererKind.VOCALOID1_100;
-            } else if ( value.Equals( VOCALOID1_101 ) ) {
+            } else if ( str.compare( value, VOCALOID1_101 ) ) {
                 return RendererKind.VOCALOID1_101;
-            } else if ( value.Equals( VOCALOID2 ) ) {
+            } else if ( str.compare( value, VOCALOID2 ) ) {
                 return RendererKind.VOCALOID2;
-            } else if ( value.Equals( STRAIGHT_UTAU ) ) {
+            } else if ( str.compare( value, VCNT ) ) {
                 return RendererKind.VCNT;
-            } else if ( value.Equals( UTAU ) ) {
+            } else if ( str.compare( value, UTAU ) ) {
                 return RendererKind.UTAU;
-            } else if ( value.Equals( AQUES_TONE ) ) {
+            } else if ( str.compare( value, AQUES_TONE ) ) {
                 return RendererKind.AQUES_TONE;
             } else {
                 return RendererKind.NULL;

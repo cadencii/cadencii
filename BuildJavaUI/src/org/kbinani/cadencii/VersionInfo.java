@@ -31,7 +31,6 @@ public class VersionInfo extends BForm {
     private BButton btnOK = null;
     private JLabel jLabel1 = null;
     private JTextArea lblVstLogo = null;
-    private JTextArea lblStraightAcknowledgement = null;
     private BPictureBox pictVstLogo = null;
     private BCheckBox chkTwitterID = null;
     
@@ -51,7 +50,10 @@ public class VersionInfo extends BForm {
      * 
      */
     private void initialize() {
-        this.setSize(new Dimension(327, 464));
+        this.setSize(new Dimension(327, 455));
+        this.setMinimumSize(new Dimension(327, 455));
+        this.setPreferredSize(new Dimension(327, 455));
+        this.setResizable(false);
         this.setContentPane(getJPanel());
     		
     }
@@ -66,13 +68,13 @@ public class VersionInfo extends BForm {
             GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
             gridBagConstraints11.gridx = 1;
             gridBagConstraints11.weightx = 0.0D;
-            gridBagConstraints11.insets = new Insets(0, 0, 12, 6);
+            gridBagConstraints11.insets = new Insets(0, 0, 12, 3);
             gridBagConstraints11.anchor = GridBagConstraints.EAST;
             gridBagConstraints11.gridy = 1;
             GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
             gridBagConstraints3.gridx = 2;
             gridBagConstraints3.weightx = 0.0D;
-            gridBagConstraints3.insets = new Insets(0, 6, 12, 24);
+            gridBagConstraints3.insets = new Insets(0, 3, 12, 12);
             gridBagConstraints3.anchor = GridBagConstraints.EAST;
             gridBagConstraints3.gridy = 1;
             GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
@@ -82,7 +84,7 @@ public class VersionInfo extends BForm {
             GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
             gridBagConstraints1.gridx = 0;
             gridBagConstraints1.weightx = 1.0D;
-            gridBagConstraints1.insets = new Insets(0, 24, 12, 0);
+            gridBagConstraints1.insets = new Insets(0, 12, 12, 0);
             gridBagConstraints1.anchor = GridBagConstraints.WEST;
             gridBagConstraints1.gridy = 1;
             GridBagConstraints gridBagConstraints = new GridBagConstraints();
@@ -113,6 +115,8 @@ public class VersionInfo extends BForm {
         if (panelCredit == null) {
             panelCredit = new BPanel();
             panelCredit.setName("jScrollPane");
+            panelCredit.setBackground(Color.white);
+            panelCredit.setPreferredSize(new Dimension(327, 111));
         }
         return panelCredit;
     }
@@ -124,13 +128,6 @@ public class VersionInfo extends BForm {
      */
     private JPanel getJPanel1() {
         if (jPanel1 == null) {
-            GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
-            gridBagConstraints7.fill = GridBagConstraints.BOTH;
-            gridBagConstraints7.gridy = 3;
-            gridBagConstraints7.weightx = 1.0;
-            gridBagConstraints7.weighty = 0.0D;
-            gridBagConstraints7.insets = new Insets(6, 12, 12, 12);
-            gridBagConstraints7.gridx = 0;
             GridBagConstraints gridBagConstraints6 = new GridBagConstraints();
             gridBagConstraints6.fill = GridBagConstraints.BOTH;
             gridBagConstraints6.gridy = 2;
@@ -156,10 +153,10 @@ public class VersionInfo extends BForm {
             jPanel1.setLayout(new GridBagLayout());
             jPanel1.setName("jPanel1");
             jPanel1.setBackground(Color.white);
+            jPanel1.setPreferredSize(new Dimension(327, 111));
             jPanel1.add(jLabel1, gridBagConstraints5);
             jPanel1.add(getLblVstLogo(), gridBagConstraints6);
             jPanel1.add(getPictVstLogo(), new GridBagConstraints());
-            jPanel1.add(getLblStraightAcknowledgement(), gridBagConstraints7);
         }
         return jPanel1;
     }
@@ -173,6 +170,7 @@ public class VersionInfo extends BForm {
         if (jPanel2 == null) {
             jPanel2 = new JPanel();
             jPanel2.setLayout(new CardLayout());
+            jPanel2.setPreferredSize(new Dimension(327, 111));
             jPanel2.add(getPanelCredit(), getPanelCredit().getName());
             jPanel2.add(getJPanel1(), getJPanel1().getName());
         }
@@ -188,6 +186,7 @@ public class VersionInfo extends BForm {
         if (btnFlip == null) {
             btnFlip = new BButton();
             btnFlip.setText("Credit");
+            btnFlip.setPreferredSize(new Dimension(150, 29));
         }
         return btnFlip;
     }
@@ -230,20 +229,6 @@ public class VersionInfo extends BForm {
             lblVstLogo.setLineWrap(true);
         }
         return lblVstLogo;
-    }
-
-    /**
-     * This method initializes lblStraightAcknowledgement	
-     * 	
-     * @return javax.swing.JTextArea	
-     */
-    private JTextArea getLblStraightAcknowledgement() {
-        if (lblStraightAcknowledgement == null) {
-            lblStraightAcknowledgement = new JTextArea();
-            lblStraightAcknowledgement.setText("Components of Cadencii, \"vConnect.exe\" and \"straightVoiceDB.exe\", are powererd by STRAIGHT LIBRARY.");
-            lblStraightAcknowledgement.setLineWrap(true);
-        }
-        return lblStraightAcknowledgement;
     }
 
     /**

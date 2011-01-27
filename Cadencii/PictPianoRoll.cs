@@ -1204,9 +1204,16 @@ namespace org.kbinani.cadencii {
                         g.fillRect( start, 0, end - start, getHeight() );
                     }
                 } else if ( AppManager.mIsPointerDowned ) {
-                    Point pmouse = pointToClient( PortUtil.getMousePosition() );
-                    Point mouse = new Point( pmouse.x, pmouse.y );
+                    // 選択範囲を半透明で塗りつぶす
+                    Point mouse = pointToClient( PortUtil.getMousePosition() );
+                    // 描く四角形の位置とサイズ
                     int tx, ty, twidth, theight;
+                    // 上下左右の枠を表示していいかどうか
+                    boolean vtop = true;
+                    boolean vbottom = true;
+                    boolean vleft = true;
+                    boolean vright = true;
+                    // マウスが下りた位置のx座標
                     int lx = AppManager.mMouseDownLocation.x - stdx;
                     if ( lx < mouse.x ) {
                         tx = lx;
@@ -1227,17 +1234,42 @@ namespace org.kbinani.cadencii {
                         int txold = tx;
                         tx = key_width;
                         twidth -= (tx - txold);
+                        vleft = false;
+                    }
+                    if( width < tx + twidth ){
+                        vright = false;
+                        twidth = width - tx;
+                    }
+                    if( ty < 0 ){
+                        vtop = false;
+                        int tyold = ty;
+                        ty = 0;
+                        theight -= (ty - tyold);
+                    }
+                    if( height < ty + theight ){
+                        vbottom = false;
+                        theight = height - ty;
                     }
                     Rectangle rc = new Rectangle( tx, ty, twidth, theight );
                     Color pen = new Color( 0, 0, 0, 200 );
                     g.setColor( new Color( 0, 0, 0, 100 ) );
-                    g.fillRect( rc.x, rc.y, rc.width, rc.height );
+                    g.fillRect( tx, ty, twidth, theight );
 #if !JAVA
                     g.nativeGraphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 #endif
-                    g.setStroke( new BasicStroke( 1.0f, 0, BasicStroke.JOIN_ROUND ) );
                     g.setColor( pen );
-                    g.drawRect( rc.x, rc.y, rc.width, rc.height );
+                    if( vtop && twidth > 1 && ty < height){
+                        g.drawLine( tx, ty, tx + twidth - 1, ty );
+                    }
+                    if( vbottom && twidth > 1 ){
+                        g.drawLine( tx, ty + theight, tx + twidth - 1, ty + theight );
+                    }
+                    if( vleft && theight > 1 && tx < width ){
+                        g.drawLine( tx, ty, tx, ty + theight - 1 );
+                    }
+                    if( vright && theight > 1 && key_width < tx + twidth ){
+                        g.drawLine( tx + twidth, ty, tx + twidth, ty + theight - 1 );
+                    }
                 }
                 #endregion
 

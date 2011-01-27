@@ -15,6 +15,7 @@
 package org.kbinani.cadencii;
 
 import java.util.*;
+import org.kbinani.*;
 import org.kbinani.vsq.*;
 #else
 using System;
@@ -53,10 +54,10 @@ namespace org.kbinani.cadencii
             config = new SequenceConfig();
         }
 
-        public String getGenericTypeName( String name )
+        public static String getGenericTypeName( String name )
         {
             if ( name != null ) {
-                if ( name.Equals( "tempo" ) ) {
+                if ( str.compare( name, "tempo" ) ) {
                     return "org.kbinani.vsq.TempoTableEntry";
                 }
             }
