@@ -113,7 +113,6 @@ public class FormWordDictionary extends BForm {
             gridBagConstraints42.insets = new Insets(0, 0, 0, 16);
             jPanel2 = new BPanel();
             jPanel2.setLayout(new GridBagLayout());
-            jPanel2.setPreferredSize(new Dimension(132, 29));
             jPanel2.add(getBtnOK(), gridBagConstraints42);
             jPanel2.add(getBtnCancel(), gridBagConstraints52);
         }
@@ -129,7 +128,7 @@ public class FormWordDictionary extends BForm {
         if (btnOK == null) {
             btnOK = new BButton();
             btnOK.setText("OK");
-            btnOK.setPreferredSize(new Dimension(49, 29));
+            btnOK.setPreferredSize(new Dimension(100, 29));
         }
         return btnOK;
     }
@@ -143,7 +142,7 @@ public class FormWordDictionary extends BForm {
         if (btnCancel == null) {
             btnCancel = new BButton();
             btnCancel.setText("Cancel");
-            btnCancel.setPreferredSize(new Dimension(67, 29));
+            btnCancel.setPreferredSize(new Dimension(100, 29));
         }
         return btnCancel;
     }
@@ -182,7 +181,7 @@ public class FormWordDictionary extends BForm {
         if (btnUp == null) {
             btnUp = new BButton();
             btnUp.setText("Up");
-            btnUp.setPreferredSize(new Dimension(49, 29));
+            btnUp.setPreferredSize(new Dimension(75, 29));
         }
         return btnUp;
     }
@@ -196,7 +195,7 @@ public class FormWordDictionary extends BForm {
         if (btnDown == null) {
             btnDown = new BButton();
             btnDown.setText("Down");
-            btnDown.setPreferredSize(new Dimension(66, 29));
+            btnDown.setPreferredSize(new Dimension(75, 29));
         }
         return btnDown;
     }

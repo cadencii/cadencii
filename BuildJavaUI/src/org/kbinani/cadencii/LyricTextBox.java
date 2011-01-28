@@ -1,8 +1,10 @@
 ﻿package org.kbinani.cadencii;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Frame;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
@@ -20,57 +22,72 @@ import org.kbinani.windows.forms.BKeyEventHandler;
 import org.kbinani.windows.forms.BKeyPressEventArgs;
 import org.kbinani.windows.forms.BKeyPressEventHandler;
 
-public class LyricTextBox extends JWindow implements WindowFocusListener, ComponentListener, KeyListener {
+public class LyricTextBox extends JWindow
+                          implements WindowFocusListener, ComponentListener, KeyListener
+{
+    private static final long serialVersionUID = -8530774432912981644L;
+    private JPanel mContentPane = null;
+    private JTextField mTextField = null;
+    private String mBufText;
+    private boolean mPhoneticSymbolEditMode;
 
-    private static final long serialVersionUID = 1L;
-    private JPanel jContentPane = null;
-    private JTextField jTextField = null;
-    private String m_buf_text;
-    private boolean m_phonetic_symbol_edit_mode;
+    public void requestFocus()
+    {
+        super.requestFocus();
+        mTextField.requestFocus();
+    }
 
     /**
      * 発音記号を編集するモードかどうかを表すブール値を取得します
      */
-    public boolean isPhoneticSymbolEditMode() {
-        return m_phonetic_symbol_edit_mode;
+    public boolean isPhoneticSymbolEditMode()
+    {
+        return mPhoneticSymbolEditMode;
     }
 
     /**
      * 発音記号を編集するモードかどうかを表すブール値を設定します
      */
-    public void setPhoneticSymbolEditMode( boolean value ) {
-        m_phonetic_symbol_edit_mode = value;
+    public void setPhoneticSymbolEditMode( boolean value )
+    {
+        mPhoneticSymbolEditMode = value;
     }
 
     /**
      * バッファーテキストを取得します
      * (バッファーテキストには，発音記号モードでは歌詞，歌詞モードでは発音記号がそれぞれ格納される)
      */
-    public String getBufferText() {
-        return m_buf_text;
+    public String getBufferText()
+    {
+        return mBufText;
     }
 
     /**
      * バッファーテキストを設定します
      * (バッファーテキストには，発音記号モードでは歌詞，歌詞モードでは発音記号がそれぞれ格納される)
      */
-    public void setBufferText( String value ) {
-        m_buf_text = value;
+    public void setBufferText( String value )
+    {
+        mBufText = value;
     }
 
-    public void selectAll(){
-        jTextField.selectAll();
+    public void selectAll()
+    {
+        mTextField.selectAll();
     }
     
-    public String getText(){
-        return jTextField.getText();
+    public String getText()
+    {
+        return mTextField.getText();
     }
 
-    public void setText( String value ){
-        jTextField.setText( value );
+    public void setText( String value )
+    {
+        mTextField.setText( value );
     }
     
-    public boolean isImeModeOn(){
+    public boolean isImeModeOn()
+    {
         try{
             JTextField jtf = getJTextField();
             if( jtf == null ){
@@ -88,7 +105,8 @@ public class LyricTextBox extends JWindow implements WindowFocusListener, Compon
         return false;
     }
 
-    public void setImeModeOn( boolean value ){
+    public void setImeModeOn( boolean value )
+    {
         try{
             JTextField jtf = getJTextField();
             if( jtf == null ){
@@ -195,11 +213,16 @@ public class LyricTextBox extends JWindow implements WindowFocusListener, Compon
     /**
      * @param owner
      */
-    public LyricTextBox(Frame owner) {
+    public LyricTextBox( Frame owner )
+    {
         super( owner );
         initialize();
         addWindowFocusListener( this );
-        jTextField.addKeyListener( this );
+        mTextField.addKeyListener( this );
+        Dimension d = new Dimension( 115, 22 );
+        mTextField.setPreferredSize( d );
+        mContentPane.setPreferredSize( d );
+        pack();
     }
 
     /**
@@ -218,12 +241,20 @@ public class LyricTextBox extends JWindow implements WindowFocusListener, Compon
      * @return javax.swing.JPanel
      */
     private JPanel getJContentPane() {
-        if (jContentPane == null) {
-            jContentPane = new JPanel();
-            jContentPane.setLayout(new BorderLayout());
-            jContentPane.add(getJTextField(), BorderLayout.CENTER);
+        if (mContentPane == null) {
+            GridBagConstraints gridBagConstraints = new GridBagConstraints();
+            gridBagConstraints.fill = GridBagConstraints.BOTH;
+            gridBagConstraints.gridy = 0;
+            gridBagConstraints.ipadx = 0;
+            gridBagConstraints.ipady = 0;
+            gridBagConstraints.weightx = 1.0;
+            gridBagConstraints.weighty = 1.0D;
+            gridBagConstraints.gridx = 0;
+            mContentPane = new JPanel();
+            mContentPane.setLayout(new GridBagLayout());
+            mContentPane.add(getJTextField(), gridBagConstraints);
         }
-        return jContentPane;
+        return mContentPane;
     }
 
     /**
@@ -232,10 +263,11 @@ public class LyricTextBox extends JWindow implements WindowFocusListener, Compon
      * @return javax.swing.JTextField   
      */
     private JTextField getJTextField() {
-        if (jTextField == null) {
-            jTextField = new JTextField();
+        if (mTextField == null) {
+            mTextField = new JTextField();
+            mTextField.setFocusTraversalKeysEnabled( false );
         }
-        return jTextField;
+        return mTextField;
     }
 
-}
+}  //  @jve:decl-index=0:visual-constraint="10,10"

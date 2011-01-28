@@ -115,7 +115,7 @@ public class Preference extends JFrame {
 	private BNumericUpDown numMouseHoverTime = null;
 	private BLabel lblMidiInPort = null;
 	private BComboBox comboMidiInPortNumber = null;
-	private BPanel tabPlatform = null;  //  @jve:decl-index=0:visual-constraint="-94,516"
+	private BPanel tabPlatform = null;  //  @jve:decl-index=0:visual-constraint="-79,590"
 	private BGroupBox groupPlatform = null;
 	private BLabel lblPlatform = null;
 	private BComboBox comboPlatform = null;
@@ -161,7 +161,7 @@ public class Preference extends JFrame {
     private BLabel lblBufferSize = null;
     private BLabel labelMtcMidiInPort = null;
     private BComboBox comboMtcMidiInPortNumber = null;
-    private BPanel tabSingingSynth = null;  //  @jve:decl-index=0:visual-constraint="378,555"
+    private BPanel tabSingingSynth = null;  //  @jve:decl-index=0:visual-constraint="385,596"
     private BGroupBox groupSynthesizerDll = null;
     private BCheckBox chkLoadSecondaryVOCALOID1 = null;
     private BCheckBox chkLoadVocaloid100 = null;
@@ -221,7 +221,6 @@ public class Preference extends JFrame {
 		gb.fill = GridBagConstraints.BOTH;
 		layout.setConstraints( tabPane, gb );
 	    this.getPanelUpper().add( tabPane );
-	    listSingers.fixLeftColumn();
         mManager = new RadioButtonManager();
         mManager.add( radioUserDefined );
         mManager.add( radioVocaloidEditorCompatible );
@@ -2252,6 +2251,7 @@ public class Preference extends JFrame {
 		if (btnOK == null) {
 			btnOK = new BButton();
 			btnOK.setText("OK");
+			btnOK.setPreferredSize(new Dimension(100, 29));
 		}
 		return btnOK;
 	}
@@ -2265,6 +2265,7 @@ public class Preference extends JFrame {
 		if (btnCancel == null) {
 			btnCancel = new BButton();
 			btnCancel.setText("Cancel");
+			btnCancel.setPreferredSize(new Dimension(100, 29));
 		}
 		return btnCancel;
 	}
@@ -2903,6 +2904,8 @@ public class Preference extends JFrame {
     private JScrollPane getJScrollPane() {
         if (jScrollPane == null) {
             jScrollPane = new JScrollPane();
+            jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+            jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
             jScrollPane.setViewportView(getListSingers());
         }
         return jScrollPane;

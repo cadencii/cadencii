@@ -126,11 +126,11 @@ public class FormVibratoPreset extends BForm {
     private JPanel getJPanel3() {
         if (jPanel3 == null) {
             GridBagConstraints gridBagConstraints111 = new GridBagConstraints();
-            gridBagConstraints111.insets = new Insets(0, 0, 0, 6);
+            gridBagConstraints111.insets = new Insets(0, 0, 0, 8);
             gridBagConstraints111.gridy = 0;
             gridBagConstraints111.gridx = 0;
             GridBagConstraints gridBagConstraints1211 = new GridBagConstraints();
-            gridBagConstraints1211.insets = new Insets(0, 6, 0, 0);
+            gridBagConstraints1211.insets = new Insets(0, 8, 0, 0);
             gridBagConstraints1211.gridy = 0;
             gridBagConstraints1211.gridx = 1;
             jPanel3 = new JPanel();
@@ -150,7 +150,7 @@ public class FormVibratoPreset extends BForm {
         if (buttonCancel == null) {
             buttonCancel = new BButton();
             buttonCancel.setText("Cancel");
-            buttonCancel.setPreferredSize(new Dimension(75, 29));
+            buttonCancel.setPreferredSize(new Dimension(100, 29));
         }
         return buttonCancel;
     }
@@ -164,7 +164,7 @@ public class FormVibratoPreset extends BForm {
         if (buttonOk == null) {
             buttonOk = new BButton();
             buttonOk.setText("OK");
-            buttonOk.setPreferredSize(new Dimension(75, 29));
+            buttonOk.setPreferredSize(new Dimension(100, 29));
         }
         return buttonOk;
     }
@@ -231,7 +231,7 @@ public class FormVibratoPreset extends BForm {
         if (buttonAdd == null) {
             buttonAdd = new BButton();
             buttonAdd.setText("Add");
-            buttonAdd.setVerticalAlignment(SwingConstants.TOP);
+            buttonAdd.setVerticalAlignment(SwingConstants.CENTER);
             buttonAdd.setHorizontalAlignment(SwingConstants.CENTER);
             buttonAdd.setPreferredSize(new Dimension(75, 29));
         }

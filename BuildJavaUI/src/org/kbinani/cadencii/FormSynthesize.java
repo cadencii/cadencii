@@ -141,6 +141,7 @@ public class FormSynthesize extends BForm {
         if (btnCancel == null) {
             btnCancel = new BButton();
             btnCancel.setText("Cancel");
+            btnCancel.setPreferredSize(new Dimension(100, 29));
         }
         return btnCancel;
     }

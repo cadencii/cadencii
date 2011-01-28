@@ -342,6 +342,9 @@ namespace org.kbinani.cadencii
                     if ( (modifier & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
                         capturelist.add( BKeys.Shift );
                     }
+                    if ( (modifier & InputEvent.META_MASK) == InputEvent.META_MASK ) {
+                        capturelist.add( BKeys.Menu );
+                    }
                     capture = k;
                     break;
                 }

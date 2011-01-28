@@ -10,6 +10,7 @@ import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BNumericUpDown;
+import java.awt.Dimension;
 
 //SECTION-END-IMPORT
 public class FormInsertBar extends BForm {
@@ -44,7 +45,7 @@ public class FormInsertBar extends BForm {
      * @return void
      */
     private void initialize() {
-        this.setSize(249, 158);
+        this.setSize(311, 153);
         this.setContentPane(getJContentPane());
         this.setTitle("Insert bar");
     }
@@ -182,6 +183,7 @@ public class FormInsertBar extends BForm {
         if (btnOK == null) {
             btnOK = new BButton();
             btnOK.setText("OK");
+            btnOK.setPreferredSize(new Dimension(100, 29));
         }
         return btnOK;
     }
@@ -195,6 +197,7 @@ public class FormInsertBar extends BForm {
         if (btnCancel == null) {
             btnCancel = new BButton();
             btnCancel.setText("Cancel");
+            btnCancel.setPreferredSize(new Dimension(100, 29));
         }
         return btnCancel;
     }

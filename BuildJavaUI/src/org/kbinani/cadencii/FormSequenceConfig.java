@@ -115,11 +115,11 @@ public class FormSequenceConfig extends BForm {
     private JPanel getJPanel3() {
         if (jPanel3 == null) {
             GridBagConstraints gridBagConstraints111 = new GridBagConstraints();
-            gridBagConstraints111.insets = new Insets(0, 0, 0, 6);
+            gridBagConstraints111.insets = new Insets(0, 0, 0, 16);
             gridBagConstraints111.gridy = 0;
             gridBagConstraints111.gridx = 0;
             GridBagConstraints gridBagConstraints1211 = new GridBagConstraints();
-            gridBagConstraints1211.insets = new Insets(0, 6, 0, 0);
+            gridBagConstraints1211.insets = new Insets(0, 0, 0, 0);
             gridBagConstraints1211.gridy = 0;
             gridBagConstraints1211.gridx = 1;
             jPanel3 = new JPanel();
@@ -139,7 +139,7 @@ public class FormSequenceConfig extends BForm {
         if (btnCancel == null) {
             btnCancel = new BButton();
             btnCancel.setText("Cancel");
-            btnCancel.setPreferredSize(new Dimension(75, 29));
+            btnCancel.setPreferredSize(new Dimension(100, 29));
         }
         return btnCancel;
     }
@@ -153,7 +153,7 @@ public class FormSequenceConfig extends BForm {
         if (btnOK == null) {
             btnOK = new BButton();
             btnOK.setText("OK");
-            btnOK.setPreferredSize(new Dimension(75, 29));
+            btnOK.setPreferredSize(new Dimension(100, 29));
         }
         return btnOK;
     }

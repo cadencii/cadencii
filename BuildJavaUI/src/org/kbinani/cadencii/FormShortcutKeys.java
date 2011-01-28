@@ -133,7 +133,6 @@ public class FormShortcutKeys extends BForm {
         if (btnLoadDefault == null) {
             btnLoadDefault = new BButton();
             btnLoadDefault.setText("Load Default");
-            btnLoadDefault.setPreferredSize(new Dimension(97, 29));
         }
         return btnLoadDefault;
     }
@@ -147,7 +146,6 @@ public class FormShortcutKeys extends BForm {
         if (btnRevert == null) {
             btnRevert = new BButton();
             btnRevert.setText("Revert");
-            btnRevert.setPreferredSize(new Dimension(67, 29));
         }
         return btnRevert;
     }
@@ -166,9 +164,11 @@ public class FormShortcutKeys extends BForm {
             GridBagConstraints gridBagConstraints1211 = new GridBagConstraints();
             gridBagConstraints1211.insets = new Insets(0, 0, 0, 0);
             gridBagConstraints1211.gridy = 0;
+            gridBagConstraints1211.fill = GridBagConstraints.NONE;
             gridBagConstraints1211.gridx = 2;
             jPanel31 = new JPanel();
             jPanel31.setLayout(new GridBagLayout());
+            jPanel31.setPreferredSize(new Dimension(220, 40));
             jPanel31.add(getBtnCancel(), gridBagConstraints1211);
             jPanel31.add(getBtnOK(), gridBagConstraints1111);
         }
@@ -184,7 +184,7 @@ public class FormShortcutKeys extends BForm {
         if (btnCancel == null) {
             btnCancel = new BButton();
             btnCancel.setText("Cancel");
-            btnCancel.setPreferredSize(new Dimension(67, 29));
+            btnCancel.setPreferredSize(new Dimension(100, 29));
         }
         return btnCancel;
     }
@@ -198,7 +198,7 @@ public class FormShortcutKeys extends BForm {
         if (btnOK == null) {
             btnOK = new BButton();
             btnOK.setText("OK");
-            btnOK.setPreferredSize(new Dimension(49, 29));
+            btnOK.setPreferredSize(new Dimension(100, 29));
         }
         return btnOK;
     }
@@ -238,7 +238,6 @@ public class FormShortcutKeys extends BForm {
             jScrollPane = new JScrollPane();
             jScrollPane.setPreferredSize(new Dimension(100, 100));
             jScrollPane.setViewportView(getList());
-            list.fixLeftColumn();
         }
         return jScrollPane;
     }

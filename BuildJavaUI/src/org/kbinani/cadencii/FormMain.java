@@ -3,13 +3,17 @@
 //SECTION-BEGIN-IMPORT
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.lang.reflect.Field;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.WindowConstants;
@@ -313,6 +317,55 @@ public class FormMain extends BForm {
     //SECTION-BEGIN-METHOD
 
     /**
+     * 指定したメニューの名前を，そのオブジェクトのフィールド名に変更します．
+     * メニューの子についても再帰的に処理を行います
+     */
+    private void setMenuName( JMenuItem menu )
+    {
+        if ( menu instanceof JMenu ){
+            JMenu jm = (JMenu)menu;
+            int count = jm.getMenuComponentCount();
+            for( int i = 0; i < count; i++ ){
+                Component comp = jm.getMenuComponent( i );
+                if ( comp instanceof JMenuItem ){
+                    setMenuName( (JMenuItem)comp );
+                }
+            }
+        }
+        setMenuNameCore( menu );
+    }
+
+    /**
+     * 指定したメニューの名前を，そのオブジェクトのフィールド名に変更します
+     * @param item
+     */
+    private void setMenuNameCore( Object item )
+    {
+        if ( item == null ){
+            return;
+        }
+        if ( !(item instanceof JMenuItem) ){
+            return;
+        }
+        for( Field f : FormMain.class.getDeclaredFields() ){
+            if( item.getClass().isAssignableFrom( f.getType() ) ){
+                // 型が同じ場合
+                try{
+                    Object obj = f.get( this );
+                    if ( obj != null ){
+                        JMenuItem jmi = (JMenuItem)obj;
+                        if ( jmi == item ){
+                            // nameプロパティにフィールド名を用いる
+                            jmi.setName( f.getName() );
+                        }
+                    }
+                }catch( Exception ex ){
+                }
+            }
+        }
+    }
+    
+    /**
      * This method initializes menuFileExportMusicXml	
      * 	
      * @return org.kbinani.windows.forms.BMenuItem	
@@ -584,7 +637,6 @@ public class FormMain extends BForm {
      */
     private void initialize() {
         this.setSize(960, 636);
-        this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         this.setJMenuBar(getMenuStripMain());
         this.setContentPane(this.getJContentPane());
         this.setTitle("JFrame");
@@ -592,6 +644,11 @@ public class FormMain extends BForm {
         this.getCMenuTrackSelector();
         this.getCMenuTrackTab();
         this.getCMenuPositionIndicator();
+        int count = menuStripMain.getMenuCount();
+        for ( int i = 0; i < count; i++ ){
+            JMenu jm = menuStripMain.getMenu( i );
+            setMenuName( jm );
+        }
     }
 
     /**
@@ -3998,7 +4055,6 @@ public class FormMain extends BForm {
         if (menuVisualPluginUiVocaloid2 == null) {
             menuVisualPluginUiVocaloid2 = new BMenuItem();
             menuVisualPluginUiVocaloid2.setText("VOCALOID2");
-            menuVisualPluginUiVocaloid2.setActionCommand("VOCALOID2");
         }
         return menuVisualPluginUiVocaloid2;
     }

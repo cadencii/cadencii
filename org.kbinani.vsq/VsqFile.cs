@@ -2292,34 +2292,8 @@ namespace org.kbinani.vsq
 
             public VsqBarLineType next()
             {
-                int mod = clock_step * local_numerator;
-                if ( clock < t_end ) {
-                    if ( (clock - local_clock) % mod == 0 ) {
-                        bar_counter++;
-                        VsqBarLineType ret = new VsqBarLineType( clock, true, local_denominator, local_numerator, bar_counter );
-                        clock += clock_step;
-                        return ret;
-                    } else {
-                        VsqBarLineType ret = new VsqBarLineType( clock, false, local_denominator, local_numerator, bar_counter );
-                        clock += clock_step;
-                        return ret;
-                    }
-                }
-
-                if ( i < m_list.size() ) {
-                    local_denominator = m_list.get( i ).Denominator;
-                    local_numerator = m_list.get( i ).Numerator;
-                    local_clock = m_list.get( i ).Clock;
-                    int local_bar_count = m_list.get( i ).BarCount;
-                    clock_step = 480 * 4 / local_denominator;
-                    mod = clock_step * local_numerator;
-                    bar_counter = local_bar_count - 1;
-                    t_end = m_end_clock;
-                    if ( i + 1 < m_list.size() ) {
-                        t_end = m_list.get( i + 1 ).Clock;
-                    }
-                    i++;
-                    clock = local_clock;
+                lock( m_list ){
+                    int mod = clock_step * local_numerator;
                     if ( clock < t_end ) {
                         if ( (clock - local_clock) % mod == 0 ) {
                             bar_counter++;
@@ -2332,8 +2306,36 @@ namespace org.kbinani.vsq
                             return ret;
                         }
                     }
+    
+                    if ( i < m_list.size() ) {
+                        local_denominator = m_list.get( i ).Denominator;
+                        local_numerator = m_list.get( i ).Numerator;
+                        local_clock = m_list.get( i ).Clock;
+                        int local_bar_count = m_list.get( i ).BarCount;
+                        clock_step = 480 * 4 / local_denominator;
+                        mod = clock_step * local_numerator;
+                        bar_counter = local_bar_count - 1;
+                        t_end = m_end_clock;
+                        if ( i + 1 < m_list.size() ) {
+                            t_end = m_list.get( i + 1 ).Clock;
+                        }
+                        i++;
+                        clock = local_clock;
+                        if ( clock < t_end ) {
+                            if ( (clock - local_clock) % mod == 0 ) {
+                                bar_counter++;
+                                VsqBarLineType ret = new VsqBarLineType( clock, true, local_denominator, local_numerator, bar_counter );
+                                clock += clock_step;
+                                return ret;
+                            } else {
+                                VsqBarLineType ret = new VsqBarLineType( clock, false, local_denominator, local_numerator, bar_counter );
+                                clock += clock_step;
+                                return ret;
+                            }
+                        }
+                    }
+                    return new VsqBarLineType();
                 }
-                return new VsqBarLineType();
             }
 
             public void remove()

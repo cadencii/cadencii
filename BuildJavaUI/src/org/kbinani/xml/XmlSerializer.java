@@ -472,10 +472,10 @@ public class XmlSerializer{
                     java.awt.Point p;
                 }else if( t.equals( java.awt.Rectangle.class ) ){
                     // 特例．ここで処理しないと，stack overflowになる
-                    Element e_x = m_document.createElement( "x" );
-                    Element e_y = m_document.createElement( "y" );
-                    Element e_width = m_document.createElement( "width" );
-                    Element e_height = m_document.createElement( "height" );
+                    Element e_x = m_document.createElement( "X" );
+                    Element e_y = m_document.createElement( "Y" );
+                    Element e_width = m_document.createElement( "Width" );
+                    Element e_height = m_document.createElement( "Height" );
                     java.awt.Rectangle rc = null;
                     if( obj instanceof java.awt.Rectangle ){
                         rc = (java.awt.Rectangle)obj;
@@ -492,8 +492,8 @@ public class XmlSerializer{
                     parent.appendChild( e_height );
                 }else if( t.equals( java.awt.Point.class ) ){
                     // ここで処理しないと，x, yの他にX, Yが追加されてしまう
-                    Element e_x = m_document.createElement( "x" );
-                    Element e_y = m_document.createElement( "y" );
+                    Element e_x = m_document.createElement( "X" );
+                    Element e_y = m_document.createElement( "Y" );
                     java.awt.Point p = null;
                     if( obj instanceof java.awt.Point ){
                         p = (java.awt.Point)obj;

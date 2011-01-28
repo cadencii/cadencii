@@ -1271,13 +1271,6 @@ namespace org.kbinani.cadencii{
         public static String getShortcutDisplayString( BKeys[] keys ) {
             String ret = "";
             Vector<BKeys> list = new Vector<BKeys>( Arrays.asList( keys ) );
-            if ( list.contains( BKeys.Menu ) ) {
-#if JAVA
-                ret = new String( new char[]{ '\u2318' } );
-#else
-                ret = new String( '\x2318', 1 );
-#endif
-            }
             if ( list.contains( BKeys.Control ) ) {
                 ret += (str.compare( ret, "" ) ? "" : "+") + "Ctrl";
             }

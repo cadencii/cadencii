@@ -1168,12 +1168,31 @@ namespace org.kbinani.cadencii
             updatePropertyPanelState( AppManager.editorConfig.PropertyWindowStatus.State );
 #endif
             updateBgmMenuState();
+            AppManager.mLastTrackSelectorHeight = trackSelector.getPreferredMinSize();
             flipControlCurveVisible( true );
 
             repaint();
             updateLayout();
 #if DEBUG
             menuHidden.setVisible( true );
+#endif
+
+#if JAVA
+            com.apple.eawt.Application app = com.apple.eawt.Application.getApplication();
+            app.setAboutHandler( new com.apple.eawt.AboutHandler(){
+                public void handleAbout( com.apple.eawt.AppEvent.AboutEvent arg0 ) {
+                    menuHelpAbout_Click( null, null );
+                }
+            });
+            app.setQuitHandler( new com.apple.eawt.QuitHandler(){
+                public void handleQuitRequestWith( com.apple.eawt.AppEvent.QuitEvent arg0, com.apple.eawt.QuitResponse arg1 ) {
+                    if( handleFormClosing() ){
+                        arg1.cancelQuit();
+                    }else{
+                        arg1.performQuit();
+                    }
+                }
+            } );
 #endif
 
 #if !JAVA
@@ -2407,19 +2426,36 @@ namespace org.kbinani.cadencii
         /// <returns></returns>
         public Object searchMenuItemRecurse( String name, Object tree )
         {
-            String tree_name = "";
 #if JAVA
-            JMenuItem menu = null;
-            if( tree instanceof JMenuItem ){
-                menu = (JMenuItem)tree;
-                tree_name = menu.getName();
-                if( tree_name == null ){
-                    tree_name = "";
-                }
-            }else{
+            if( tree == null ){
                 return null;
             }
+            // 子メニューを持つ場合
+            if( tree instanceof JMenu ){
+                JMenu jm = (JMenu)tree;
+                int size = jm.getMenuComponentCount();
+                for( int i = 0; i < size; i++ ){
+                    Component comp = jm.getMenuComponent( i );
+                    if( comp != null && comp instanceof JMenuItem ){
+                        JMenuItem jmi = (JMenuItem)comp;
+                        Object obj = searchMenuItemRecurse( name, jmi );
+                        if ( obj != null ){
+                            return obj;
+                        }
+                    }
+                }
+            }
+            // 自分自身が該当しないか？
+            if( tree instanceof JMenuItem ){
+                JMenuItem jmi = (JMenuItem)tree;
+                if( str.compare( name, jmi.getName() ) ){
+                    return tree;
+                }
+            }
+            // 該当しなかった
+            return null;
 #else
+            String tree_name = "";
             System.Windows.Forms.ToolStripMenuItem menu = null;
             if ( tree is System.Windows.Forms.ToolStripItem ) {
                 if ( tree is System.Windows.Forms.ToolStripMenuItem ) {
@@ -2429,41 +2465,23 @@ namespace org.kbinani.cadencii
             } else {
                 return null;
             }
-#endif
+
             if ( str.compare( tree_name, name ) ) {
                 return tree;
             } else {
                 if ( menu == null ) {
                     return null;
                 }
-#if JAVA
-                int count = menu.getComponentCount();
-#else
                 int count = menu.DropDownItems.Count;
-#endif
                 for ( int i = 0; i < count; i++ ) {
-#if JAVA
-                    Component tsi = menu.getComponent( i );
-#else
                     System.Windows.Forms.ToolStripItem tsi = menu.DropDownItems[i];
-#endif
                     String tsi_name = "";
-#if JAVA
-                    if( tsi instanceof Component ){
-                        tsi_name = ((Component)tsi).getName();
-                        if( tsi_name == null ){
-                            tsi_name = "";
-                        }
-                    }else{
-                        continue;
-                    }
-#else
                     if ( tsi is System.Windows.Forms.ToolStripItem ) {
                         tsi_name = ((System.Windows.Forms.ToolStripItem)tsi).Name;
                     } else {
                         continue;
                     }
-#endif
+
                     if ( str.compare( tsi_name, name ) ) {
                         return tsi;
                     }
@@ -2474,6 +2492,7 @@ namespace org.kbinani.cadencii
                 }
                 return null;
             }
+#endif
         }
 
         /// <summary>
@@ -4463,13 +4482,38 @@ namespace org.kbinani.cadencii
         /// <param name="default_shortcut"></param>
         public void applyMenuItemShortcut( TreeMap<String, BKeys[]> dict, Object item, String item_name )
         {
-            try {
-                if ( dict.containsKey( item_name ) ) {
 #if JAVA
+            if( item == null ){
+                return;
+            }
+            if( item instanceof JMenu ){
+                return;
+            }
+            try {
+                sout.println( "FormMain#applyMenuItemShortcut; item_name=" + item_name );
+                if ( dict.containsKey( item_name ) ) {
                     if( item instanceof JMenuItem ){
-                        ((JMenuItem)item).setAccelerator( BKeysUtility.getKeyStrokeFromBKeys( dict.get( item_name ) ) );
+                        BKeys[] k = dict.get( item_name );
+                        KeyStroke ks = BKeysUtility.getKeyStrokeFromBKeys( k );
+                        ((JMenuItem)item).setAccelerator( ks );
+                        String disp = Utility.getShortcutDisplayString( k );
+                        sout.println( "FormMain#applyMenuItemShortcut; item_name=" + item_name + "; disp=" + disp );
                     }
+                } else {
+                    if( item instanceof JMenuItem ){
+                        ((JMenuItem)item).setAccelerator( KeyStroke.getKeyStroke( 0, 0 ) );
+                    }
+                }
+            } catch ( Exception ex ) {
+                Logger.write( FormMain.class  + ".applyMenuItemShortcut; ex=" + ex + "\n" );
+                ex.printStackTrace();
+            }
 #else
+            try {
+#if DEBUG
+                sout.println( "FormMain#applyMenuItemShortcut; item_name=" + item_name );
+#endif
+                if ( dict.containsKey( item_name ) ) {
 #if DEBUG
                     if ( !(item is BMenuItem) ) {
                         throw new Exception( "FormMain#applyMenuItemShortcut; item is NOT BMenuItem" );
@@ -4501,21 +4545,15 @@ namespace org.kbinani.cadencii
                             }
                         }
                     }
-#endif
                 } else {
-#if JAVA
-                    if( item instanceof JMenuItem ){
-                        ((JMenuItem)item).setAccelerator( KeyStroke.getKeyStroke( 0, 0 ) );
-                    }
-#else
                     if ( item is BMenuItem ) {
                         ((BMenuItem)item).setAccelerator( BKeysUtility.getKeyStrokeFromBKeys( new BKeys[] { BKeys.None } ) );
                     }
-#endif
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".applyMenuItemShortcut; ex=" + ex + "\n" );
             }
+#endif
         }
 
         /// <summary>
@@ -10611,6 +10649,16 @@ namespace org.kbinani.cadencii
                 return;
             }
 #endif
+            e.Cancel = handleFormClosing();
+        }
+        
+        /// <summary>
+        /// ウィンドウが閉じようとしているときの処理を行う
+        /// 戻り値がtrueの場合，ウィンドウが閉じるのをキャンセルする処理が必要
+        /// </summary>
+        /// <returns></returns>
+        public boolean handleFormClosing()
+        {
             if ( isEdited() ) {
                 String file = AppManager.getFileName();
                 if ( file.Equals( "" ) ) {
@@ -10628,16 +10676,14 @@ namespace org.kbinani.cadencii
                         if ( dr == BFileChooser.APPROVE_OPTION ) {
                             AppManager.saveTo( saveXmlVsqDialog.getSelectedFile() );
                         } else {
-                            e.Cancel = true;
-                            return;
+                            return true;
                         }
                     } else {
                         AppManager.saveTo( AppManager.getFileName() );
                     }
 
                 } else if ( ret == BDialogResult.CANCEL ) {
-                    e.Cancel = true;
-                    return;
+                    return true;
                 }
             }
             AppManager.editorConfig.WindowMaximized = (getExtendedState() == BForm.MAXIMIZED_BOTH);
@@ -10653,7 +10699,7 @@ namespace org.kbinani.cadencii
 #if !JAVA
             bgWorkScreen.Dispose();
 #endif
-            e.Cancel = false;
+            return false;
         }
 
         public void FormMain_LocationChanged( Object sender, EventArgs e )
@@ -10837,9 +10883,6 @@ namespace org.kbinani.cadencii
 
         public void handleVScrollResize( Object sender, EventArgs e )
         {
-#if DEBUG
-            sout.println( "FormMain#handleVScrollResize" );
-#endif
             if ( getExtendedState() != BForm.ICONIFIED ) {
                 updateScrollRangeVertical();
                 AppManager.setStartToDrawY( calculateStartToDrawY() );
@@ -12963,6 +13006,15 @@ namespace org.kbinani.cadencii
         {
             TreeMap<String, ValuePair<String, BKeys[]>> dict = new TreeMap<String, ValuePair<String, BKeys[]>>();
             TreeMap<String, BKeys[]> configured = AppManager.editorConfig.getShortcutKeysDictionary();
+#if DEBUG
+            sout.println( "FormMain#menuSettingShortcut_Click; configured=" );
+            for( Iterator<String> itr = configured.keySet().iterator(); itr.hasNext(); ){
+                String name = itr.next();
+                BKeys[] keys = configured.get( name );
+                String disp = Utility.getShortcutDisplayString( keys );
+                sout.println( "    " + name + " -> " + disp );
+            }
+#endif
 
             // スクリプトのToolStripMenuITemを蒐集
             Vector<String> script_shortcut = new Vector<String>();

@@ -54,12 +54,12 @@ public class FormGenerateKeySound extends BForm {
         if (jPanel1 == null) {
             GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
             gridBagConstraints5.anchor = GridBagConstraints.WEST;
-            gridBagConstraints5.gridx = 1;
+            gridBagConstraints5.gridx = 0;
             gridBagConstraints5.gridy = 0;
             gridBagConstraints5.insets = new Insets(0, 0, 0, 16);
             GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
             gridBagConstraints4.anchor = GridBagConstraints.WEST;
-            gridBagConstraints4.gridx = 0;
+            gridBagConstraints4.gridx = 1;
             gridBagConstraints4.gridy = 0;
             gridBagConstraints4.insets = new Insets(0, 0, 0, 16);
             jPanel1 = new JPanel();
@@ -79,6 +79,7 @@ public class FormGenerateKeySound extends BForm {
         if (btnCancel == null) {
             btnCancel = new BButton();
             btnCancel.setText("Close");
+            btnCancel.setPreferredSize(new Dimension(100, 29));
         }
         return btnCancel;
     }
@@ -92,6 +93,7 @@ public class FormGenerateKeySound extends BForm {
         if (btnExecute == null) {
             btnExecute = new BButton();
             btnExecute.setText("Execute");
+            btnExecute.setPreferredSize(new Dimension(100, 29));
         }
         return btnExecute;
     }
@@ -104,8 +106,10 @@ public class FormGenerateKeySound extends BForm {
     private JPanel getJPanel() {
         if (jPanel == null) {
             GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
-            gridBagConstraints11.gridx = 1;
+            gridBagConstraints11.gridx = 0;
             gridBagConstraints11.weighty = 1.0D;
+            gridBagConstraints11.gridwidth = 2;
+            gridBagConstraints11.anchor = GridBagConstraints.EAST;
             gridBagConstraints11.gridy = 4;
             GridBagConstraints gridBagConstraints10 = new GridBagConstraints();
             gridBagConstraints10.gridx = 0;

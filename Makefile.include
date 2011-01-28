@@ -20,6 +20,25 @@ SRC_JXML=@SRC_JXML@
 
 all: jcadencii
 
+jcadencii_mac: jcadencii ./Cadencii/PkgInfo ./Cadencii/Info.plist
+	rm -rf ./build/java/Cadencii.app
+	$(MKDIR) ./build/java/Cadencii.app
+	$(MKDIR) ./build/java/Cadencii.app/Contents
+	$(MKDIR) ./build/java/Cadencii.app/Contents/MacOS
+	$(MKDIR) ./build/java/Cadencii.app/Contents/Resources
+	$(MKDIR) ./build/java/Cadencii.app/Contents/Resources/Java
+	$(CP) /System/Library/Frameworks/JavaVM.framework/Versions/Current/Resources/MacOS/JavaApplicationStub ./build/java/Cadencii.app/Contents/MacOS/JavaApplicationStub
+	$(CP) ./Cadencii/Info.plist ./build/java/Cadencii.app/Contents/Info.plist
+	$(CP) ./Cadencii/PkgInfo ./build/java/Cadencii.app/Contents/PkgInfo
+	$(CP) ./Cadencii/resources/icon.icns ./build/java/Cadencii.app/Contents/Resources/icon.icns
+	$(CP) ./build/java/Cadencii.jar ./build/java/Cadencii.app/Contents/Resources/Java/Cadencii.jar
+	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/Cadencii.app/Contents/Resources/Java/ .png
+	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/Cadencii.app/Contents/Resources/Java/ .txt
+	perl copy_with_ext.pl ./Cadencii/ ./build/java/Cadencii.app/Contents/Resources/Java/ .po
+	cd ../../vConnect/stand && $(MAKE)
+	$(CP) ../../vConnect/stand/vConnect-STAND.exe ./build/java/Cadencii.app/Contents/Resources/Java/vConnect-STAND.exe
+	/Developer/Tools/SetFile -a B ./build/java/Cadencii.app
+
 ########################################################################
 # pre process
 #

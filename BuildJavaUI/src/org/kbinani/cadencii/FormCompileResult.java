@@ -9,6 +9,7 @@ import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BTextArea;
+import java.awt.Dimension;
 
 //SECTION-END-IMPORT
 public class FormCompileResult extends BForm {
@@ -98,6 +99,7 @@ public class FormCompileResult extends BForm {
 		if (btnOK == null) {
 			btnOK = new BButton();
 			btnOK.setText("OK");
+			btnOK.setPreferredSize(new Dimension(100, 29));
 		}
 		return btnOK;
 	}

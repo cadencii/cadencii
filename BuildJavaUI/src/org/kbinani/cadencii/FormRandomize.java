@@ -484,6 +484,7 @@ public class FormRandomize extends BForm {
         if (btnCancel == null) {
             btnCancel = new BButton();
             btnCancel.setText("Cancel");
+            btnCancel.setPreferredSize(new Dimension(100, 29));
         }
         return btnCancel;
     }
@@ -497,6 +498,7 @@ public class FormRandomize extends BForm {
         if (btnOK == null) {
             btnOK = new BButton();
             btnOK.setText("OK");
+            btnOK.setPreferredSize(new Dimension(100, 29));
         }
         return btnOK;
     }

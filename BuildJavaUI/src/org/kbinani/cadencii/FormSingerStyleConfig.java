@@ -67,7 +67,8 @@ public class FormSingerStyleConfig extends BForm {
      * 
      */
     private void initialize() {
-        this.setSize(new Dimension(401, 388));
+        this.setSize(new Dimension(401, 421));
+        this.setSize(new Dimension(401, 459));
         this.setTitle("Default Singer Style");
         this.setContentPane(getJPanel());
     		
@@ -468,6 +469,7 @@ public class FormSingerStyleConfig extends BForm {
         if (btnOK == null) {
             btnOK = new BButton();
             btnOK.setText("OK");
+            btnOK.setPreferredSize(new Dimension(100, 29));
         }
         return btnOK;
     }
@@ -481,6 +483,8 @@ public class FormSingerStyleConfig extends BForm {
         if (btnCancel == null) {
             btnCancel = new BButton();
             btnCancel.setText("Cancel");
+            btnCancel.setPreferredSize(new Dimension(100, 29));
+            btnCancel.setPreferredSize(new Dimension(100, 29));
         }
         return btnCancel;
     }
@@ -496,23 +500,25 @@ public class FormSingerStyleConfig extends BForm {
             gridBagConstraints18.gridx = 0;
             gridBagConstraints18.weighty = 1.0D;
             gridBagConstraints18.anchor = GridBagConstraints.NORTHWEST;
-            gridBagConstraints18.insets = new Insets(6, 12, 12, 0);
+            gridBagConstraints18.insets = new Insets(6, 12, 6, 0);
+            gridBagConstraints18.gridwidth = 1;
             gridBagConstraints18.gridy = 3;
             GridBagConstraints gridBagConstraints17 = new GridBagConstraints();
-            gridBagConstraints17.gridx = 1;
+            gridBagConstraints17.gridx = 0;
             gridBagConstraints17.anchor = GridBagConstraints.NORTHEAST;
             gridBagConstraints17.insets = new Insets(6, 0, 12, 12);
-            gridBagConstraints17.gridy = 3;
+            gridBagConstraints17.gridwidth = 1;
+            gridBagConstraints17.gridy = 4;
             GridBagConstraints gridBagConstraints16 = new GridBagConstraints();
             gridBagConstraints16.gridx = 0;
-            gridBagConstraints16.gridwidth = 2;
+            gridBagConstraints16.gridwidth = 1;
             gridBagConstraints16.fill = GridBagConstraints.HORIZONTAL;
             gridBagConstraints16.insets = new Insets(6, 12, 6, 12);
             gridBagConstraints16.weightx = 1.0D;
             gridBagConstraints16.gridy = 2;
             GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
             gridBagConstraints15.gridx = 0;
-            gridBagConstraints15.gridwidth = 2;
+            gridBagConstraints15.gridwidth = 1;
             gridBagConstraints15.weightx = 1.0D;
             gridBagConstraints15.fill = GridBagConstraints.HORIZONTAL;
             gridBagConstraints15.insets = new Insets(6, 12, 6, 12);
@@ -520,7 +526,7 @@ public class FormSingerStyleConfig extends BForm {
             GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
             gridBagConstraints3.gridx = 0;
             gridBagConstraints3.fill = GridBagConstraints.HORIZONTAL;
-            gridBagConstraints3.gridwidth = 2;
+            gridBagConstraints3.gridwidth = 1;
             gridBagConstraints3.weightx = 1.0D;
             gridBagConstraints3.insets = new Insets(12, 12, 6, 12);
             gridBagConstraints3.gridy = 0;

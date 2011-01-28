@@ -113,6 +113,7 @@ public class FormAskKeySoundGeneration extends BForm {
         if (btnYes == null) {
             btnYes = new BButton();
             btnYes.setText("Yes");
+            btnYes.setPreferredSize(new Dimension(100, 29));
         }
         return btnYes;
     }
@@ -126,6 +127,7 @@ public class FormAskKeySoundGeneration extends BForm {
         if (btnNo == null) {
             btnNo = new BButton();
             btnNo.setText("No");
+            btnNo.setPreferredSize(new Dimension(100, 29));
         }
         return btnNo;
     }

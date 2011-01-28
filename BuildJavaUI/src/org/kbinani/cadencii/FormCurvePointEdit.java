@@ -337,6 +337,7 @@ public class FormCurvePointEdit extends BForm {
         if (btnExit == null) {
             btnExit = new BButton();
             btnExit.setText("Exit");
+            btnExit.setPreferredSize(new Dimension(100, 29));
         }
         return btnExit;
     }
@@ -350,6 +351,7 @@ public class FormCurvePointEdit extends BForm {
         if (btnApply == null) {
             btnApply = new BButton();
             btnApply.setText("Apply");
+            btnApply.setPreferredSize(new Dimension(100, 29));
         }
         return btnApply;
     }

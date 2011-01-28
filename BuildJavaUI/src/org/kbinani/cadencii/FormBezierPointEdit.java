@@ -12,6 +12,7 @@ import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BGroupBox;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BTextBox;
+import java.awt.Dimension;
 
 //SECTION-END-IMPORT
 public class FormBezierPointEdit extends BForm {
@@ -457,6 +458,7 @@ public class FormBezierPointEdit extends BForm {
 		if (btnOK == null) {
 			btnOK = new BButton();
 			btnOK.setText("OK");
+			btnOK.setPreferredSize(new Dimension(100, 29));
 		}
 		return btnOK;
 	}
@@ -470,6 +472,7 @@ public class FormBezierPointEdit extends BForm {
 		if (btnCancel == null) {
 			btnCancel = new BButton();
 			btnCancel.setText("Cancel");
+			btnCancel.setPreferredSize(new Dimension(100, 29));
 		}
 		return btnCancel;
 	}

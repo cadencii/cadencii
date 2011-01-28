@@ -121,12 +121,15 @@ public class BForm extends JFrame
         try{
             BFormClosingEventArgs ev = new BFormClosingEventArgs();
             formClosingEvent.raise( this, ev );
-            if( !ev.Cancel ){
-                dispose();
+            if( ev.Cancel ){
+                setVisible( true );
+                return;
             }
         }catch( Exception ex ){
             System.err.println( "BForm#windowClosing; ex=" + ex );
         }
+        setVisible( false );
+        dispose();
     }
     
     public void windowDeactivated( WindowEvent e ){

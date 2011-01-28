@@ -294,7 +294,7 @@ public class FormMidiImExport extends BForm {
 		if (btnOK == null) {
 			btnOK = new BButton();
 			btnOK.setText("OK");
-			btnOK.setPreferredSize(new Dimension(49, 29));
+			btnOK.setPreferredSize(new Dimension(100, 29));
 		}
 		return btnOK;
 	}
@@ -308,7 +308,7 @@ public class FormMidiImExport extends BForm {
 		if (btnCancel == null) {
 			btnCancel = new BButton();
 			btnCancel.setText("Cancel");
-			btnCancel.setPreferredSize(new Dimension(67, 29));
+			btnCancel.setPreferredSize(new Dimension(100, 29));
 		}
 		return btnCancel;
 	}
