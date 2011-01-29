@@ -65,24 +65,24 @@ while( $line = <FILE> ){
     $line =~ s/\@DEP_JXML\@/$dep_xml/g;
     $line =~ s/\@DJAVA_MAC\@/$djava_mac/g;
 
-    if( $ARGV[0] eq "MSWin32" ){
-        if( ($line =~ /\$\(CP\)/) | ($line =~ /\$\(RM\)/) | ($line =~ /\$\(MKDIR\)/) ){
-            $line =~ s/\//\\/g;
-        }
-        $line =~ s/\@CP\@/copy/g;
-        $line =~ s/\@RM\@/del/g;
-        $line =~ s/\@TARGET\@/.\\build\\win/g;
-        $line =~ s/\@MKDIR\@/perl safe_mkdir\.pl/g;
-        $line =~ s/\@PLAY_SOUND_DLL\@/\$\(TARGET\)\\PlaySound\.dll/g;
-        $line =~ s/\@MONO\@//g;
-    }else{
+    #if( $ARGV[0] eq "MSWin32" ){
+    #    if( ($line =~ /\$\(CP\)/) | ($line =~ /\$\(RM\)/) | ($line =~ /\$\(MKDIR\)/) ){
+    #        $line =~ s/\//\\/g;
+    #    }
+    #    $line =~ s/\@CP\@/copy/g;
+    #    $line =~ s/\@RM\@/del/g;
+    #    $line =~ s/\@TARGET\@/.\\build\\win/g;
+    #    $line =~ s/\@MKDIR\@/perl safe_mkdir\.pl/g;
+    #    $line =~ s/\@PLAY_SOUND_DLL\@/\$\(TARGET\)\\PlaySound\.dll/g;
+    #    $line =~ s/\@MONO\@//g;
+    #}else{
         $line =~ s/\@CP\@/cp/g;
         $line =~ s/\@RM\@/rm/g;
         $line =~ s/\@TARGET\@/\.\/build\/win/g;
         $line =~ s/\@MKDIR\@/perl safe_mkdir\.pl/g;
         $line =~ s/\@PLAY_SOUND_DLL\@//g;
         $line =~ s/\@MONO\@/mono /g;
-    }
+    #}
     print OUT $line;
 }
 
