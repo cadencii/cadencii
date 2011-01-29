@@ -99,12 +99,12 @@ public class FormImportLyric extends BForm {
     private JPanel getJPanel() {
     	if (jPanel == null) {
     		GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
-    		gridBagConstraints3.gridx = 1;
-    		gridBagConstraints3.insets = new Insets(0, 0, 0, 16);
+    		gridBagConstraints3.gridx = 0;
+    		gridBagConstraints3.insets = new Insets(0, 0, 0, 0);
     		gridBagConstraints3.gridy = 0;
     		GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
-    		gridBagConstraints2.gridx = 0;
-    		gridBagConstraints2.insets = new Insets(0, 0, 0, 16);
+    		gridBagConstraints2.gridx = 1;
+    		gridBagConstraints2.insets = new Insets(0, 0, 0, 12);
     		gridBagConstraints2.gridy = 0;
     		jPanel = new JPanel();
     		jPanel.setLayout(new GridBagLayout());

@@ -1,4 +1,4 @@
-﻿package org.kbinani.cadencii;
+package org.kbinani.cadencii;
 
 //SECTION-BEGIN-IMPORT
 import java.awt.Dimension;
@@ -158,14 +158,14 @@ public class FormShortcutKeys extends BForm {
     private JPanel getJPanel31() {
         if (jPanel31 == null) {
             GridBagConstraints gridBagConstraints1111 = new GridBagConstraints();
-            gridBagConstraints1111.insets = new Insets(0, 0, 0, 16);
+            gridBagConstraints1111.insets = new Insets(0, 0, 0, 0);
             gridBagConstraints1111.gridy = 0;
-            gridBagConstraints1111.gridx = 0;
+            gridBagConstraints1111.gridx = 1;
             GridBagConstraints gridBagConstraints1211 = new GridBagConstraints();
             gridBagConstraints1211.insets = new Insets(0, 0, 0, 0);
             gridBagConstraints1211.gridy = 0;
             gridBagConstraints1211.fill = GridBagConstraints.NONE;
-            gridBagConstraints1211.gridx = 2;
+            gridBagConstraints1211.gridx = 0;
             jPanel31 = new JPanel();
             jPanel31.setLayout(new GridBagLayout());
             jPanel31.setPreferredSize(new Dimension(220, 40));

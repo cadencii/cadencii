@@ -89,11 +89,11 @@ public class FormAskKeySoundGeneration extends BForm {
     private JPanel getJPanel1() {
         if (jPanel1 == null) {
             GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
-            gridBagConstraints3.gridx = 1;
+            gridBagConstraints3.gridx = 0;
             gridBagConstraints3.weightx = 1.0D;
             gridBagConstraints3.gridy = 0;
             GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
-            gridBagConstraints2.gridx = 0;
+            gridBagConstraints2.gridx = 1;
             gridBagConstraints2.weightx = 1.0D;
             gridBagConstraints2.gridy = 0;
             jPanel1 = new JPanel();

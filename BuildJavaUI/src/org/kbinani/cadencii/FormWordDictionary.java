@@ -70,7 +70,7 @@ public class FormWordDictionary extends BForm {
             GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
             gridBagConstraints4.gridx = 0;
             gridBagConstraints4.anchor = GridBagConstraints.EAST;
-            gridBagConstraints4.insets = new Insets(6, 0, 12, 16);
+            gridBagConstraints4.insets = new Insets(6, 0, 12, 12);
             gridBagConstraints4.gridy = 3;
             GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
             gridBagConstraints3.gridx = 0;
@@ -103,14 +103,14 @@ public class FormWordDictionary extends BForm {
         if (jPanel2 == null) {
             GridBagConstraints gridBagConstraints52 = new GridBagConstraints();
             gridBagConstraints52.anchor = GridBagConstraints.SOUTHWEST;
-            gridBagConstraints52.gridx = 1;
+            gridBagConstraints52.gridx = 0;
             gridBagConstraints52.gridy = 0;
             gridBagConstraints52.insets = new Insets(0, 0, 0, 0);
             GridBagConstraints gridBagConstraints42 = new GridBagConstraints();
             gridBagConstraints42.anchor = GridBagConstraints.WEST;
-            gridBagConstraints42.gridx = 0;
+            gridBagConstraints42.gridx = 1;
             gridBagConstraints42.gridy = 0;
-            gridBagConstraints42.insets = new Insets(0, 0, 0, 16);
+            gridBagConstraints42.insets = new Insets(0, 0, 0, 0);
             jPanel2 = new BPanel();
             jPanel2.setLayout(new GridBagLayout());
             jPanel2.add(getBtnOK(), gridBagConstraints42);

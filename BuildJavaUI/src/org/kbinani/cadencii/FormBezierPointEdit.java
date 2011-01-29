@@ -485,12 +485,12 @@ public class FormBezierPointEdit extends BForm {
 	private JPanel getJPanel3() {
 		if (jPanel3 == null) {
 			GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
-			gridBagConstraints11.gridx = 0;
-			gridBagConstraints11.insets = new Insets(0, 0, 0, 16);
+			gridBagConstraints11.gridx = 1;
+			gridBagConstraints11.insets = new Insets(0, 0, 0, 12);
 			gridBagConstraints11.gridy = 0;
 			GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
-			gridBagConstraints12.gridx = 2;
-			gridBagConstraints12.insets = new Insets(0, 0, 0, 16);
+			gridBagConstraints12.gridx = 0;
+			gridBagConstraints12.insets = new Insets(0, 0, 0, 0);
 			gridBagConstraints12.gridy = 0;
 			jPanel3 = new JPanel();
 			jPanel3.setLayout(new GridBagLayout());

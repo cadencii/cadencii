@@ -2227,13 +2227,13 @@ public class Preference extends JFrame {
 	private BPanel getPanelLower() {
 		if (panelLower == null) {
 			GridBagConstraints gridBagConstraints311 = new GridBagConstraints();
-			gridBagConstraints311.insets = new Insets(0, 0, 0, 12);
-			gridBagConstraints311.gridy = 1;
-			gridBagConstraints311.gridx = 1;
+			gridBagConstraints311.insets = new Insets(0, 0, 0, 0);
+			gridBagConstraints311.gridy = 0;
+			gridBagConstraints311.gridx = 0;
 			GridBagConstraints gridBagConstraints211 = new GridBagConstraints();
-			gridBagConstraints211.insets = new Insets(0, 0, 0, 16);
-			gridBagConstraints211.gridy = 1;
-			gridBagConstraints211.gridx = 0;
+			gridBagConstraints211.insets = new Insets(0, 0, 0, 12);
+			gridBagConstraints211.gridy = 0;
+			gridBagConstraints211.gridx = 1;
 			panelLower = new BPanel();
 			panelLower.setLayout(new GridBagLayout());
 			panelLower.add(getBtnOK(), gridBagConstraints211);

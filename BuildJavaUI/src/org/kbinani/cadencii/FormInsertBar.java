@@ -157,14 +157,14 @@ public class FormInsertBar extends BForm {
     private JPanel getJPanel() {
         if (jPanel == null) {
             GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
-            gridBagConstraints5.gridx = 1;
+            gridBagConstraints5.gridx = 0;
             gridBagConstraints5.anchor = GridBagConstraints.WEST;
-            gridBagConstraints5.insets = new Insets(0, 0, 0, 16);
+            gridBagConstraints5.insets = new Insets(0, 0, 0, 0);
             gridBagConstraints5.gridy = 0;
             GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
-            gridBagConstraints4.gridx = 0;
+            gridBagConstraints4.gridx = 1;
             gridBagConstraints4.anchor = GridBagConstraints.WEST;
-            gridBagConstraints4.insets = new Insets(0, 0, 0, 16);
+            gridBagConstraints4.insets = new Insets(0, 0, 0, 12);
             gridBagConstraints4.gridy = 0;
             jPanel = new JPanel();
             jPanel.setLayout(new GridBagLayout());

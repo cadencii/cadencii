@@ -57,7 +57,7 @@ public class FormSynthesize extends BForm {
             gridBagConstraints5.gridwidth = 2;
             gridBagConstraints5.anchor = GridBagConstraints.NORTHEAST;
             gridBagConstraints5.weighty = 1.0D;
-            gridBagConstraints5.insets = new Insets(12, 0, 12, 16);
+            gridBagConstraints5.insets = new Insets(12, 0, 12, 12);
             gridBagConstraints5.gridy = 4;
             GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
             gridBagConstraints4.gridx = 0;

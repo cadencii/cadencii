@@ -52,7 +52,7 @@ public class FormCompileResult extends BForm {
 			GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
 			gridBagConstraints2.gridx = 0;
 			gridBagConstraints2.anchor = GridBagConstraints.EAST;
-			gridBagConstraints2.insets = new Insets(0, 16, 16, 16);
+			gridBagConstraints2.insets = new Insets(0, 16, 16, 12);
 			gridBagConstraints2.gridy = 2;
 			GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
 			gridBagConstraints1.fill = GridBagConstraints.BOTH;

@@ -270,13 +270,13 @@ public class FormMidiImExport extends BForm {
 	private JPanel getJPanel2() {
 		if (jPanel2 == null) {
 			GridBagConstraints gridBagConstraints31 = new GridBagConstraints();
-			gridBagConstraints31.insets = new Insets(0, 0, 0, 12);
+			gridBagConstraints31.insets = new Insets(0, 0, 0, 0);
 			gridBagConstraints31.gridy = 0;
-			gridBagConstraints31.gridx = 1;
+			gridBagConstraints31.gridx = 0;
 			GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
-			gridBagConstraints21.insets = new Insets(0, 0, 0, 16);
+			gridBagConstraints21.insets = new Insets(0, 0, 0, 12);
 			gridBagConstraints21.gridy = 0;
-			gridBagConstraints21.gridx = 0;
+			gridBagConstraints21.gridx = 1;
 			jPanel2 = new JPanel();
 			jPanel2.setLayout(new GridBagLayout());
 			jPanel2.add(getBtnOK(), gridBagConstraints21);

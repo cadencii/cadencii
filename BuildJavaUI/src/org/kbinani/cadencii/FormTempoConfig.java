@@ -70,7 +70,7 @@ public class FormTempoConfig extends BForm {
             gridBagConstraints9.anchor = GridBagConstraints.NORTHEAST;
             gridBagConstraints9.weightx = 1.0D;
             gridBagConstraints9.weighty = 0.0D;
-            gridBagConstraints9.insets = new Insets(0, 0, 16, 16);
+            gridBagConstraints9.insets = new Insets(0, 0, 16, 12);
             gridBagConstraints9.gridy = 1;
             GridBagConstraints gridBagConstraints8 = new GridBagConstraints();
             gridBagConstraints8.gridx = 1;
@@ -270,14 +270,14 @@ public class FormTempoConfig extends BForm {
         if (jPanel2 == null) {
             GridBagConstraints gridBagConstraints52 = new GridBagConstraints();
             gridBagConstraints52.anchor = GridBagConstraints.SOUTHWEST;
-            gridBagConstraints52.gridx = 1;
+            gridBagConstraints52.gridx = 0;
             gridBagConstraints52.gridy = 0;
             gridBagConstraints52.insets = new Insets(0, 0, 0, 0);
             GridBagConstraints gridBagConstraints42 = new GridBagConstraints();
             gridBagConstraints42.anchor = GridBagConstraints.WEST;
-            gridBagConstraints42.gridx = 0;
+            gridBagConstraints42.gridx = 1;
             gridBagConstraints42.gridy = 0;
-            gridBagConstraints42.insets = new Insets(0, 0, 0, 16);
+            gridBagConstraints42.insets = new Insets(0, 0, 0, 0);
             jPanel2 = new BPanel();
             jPanel2.setLayout(new GridBagLayout());
             jPanel2.add(getBtnOK(), gridBagConstraints42);

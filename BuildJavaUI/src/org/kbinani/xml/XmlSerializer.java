@@ -1,5 +1,7 @@
 package org.kbinani.xml;
 
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Array;
@@ -273,6 +275,48 @@ public class XmlSerializer{
                 if( o.toString().equals( str ) ){
                     ret = o;
                     break;
+                }
+            }
+            return ret;
+        }else if( t.equals( Rectangle.class ) ){
+            // C#のXmlSerializerとの互換性のために必要
+            Rectangle ret = new Rectangle();
+            for( int i = 0; i < numChild; i++ ){
+                Node n = childs.item( i );
+                String tc = n.getTextContent();
+                int inte = 0;
+                try{
+                    inte = Integer.parseInt( tc );
+                }catch( Exception ex ){
+                }
+                String nodename = n.getNodeName();
+                if( nodename.equals( "X" ) ){
+                    ret.x = inte;
+                }else if( nodename.equals( "Y" ) ){
+                    ret.y = inte;
+                }else if( nodename.equals( "Width" ) ){
+                    ret.width = inte;
+                }else if( nodename.equals( "Height" ) ){
+                    ret.height = inte;
+                }
+            }
+            return ret;
+        }else if( t.equals( Point.class ) ){
+            // C#のXmlSerializerとの互換性のために必要
+            Point ret = new Point();
+            for( int i = 0; i < numChild; i++ ){
+                Node n = childs.item( i );
+                String tc = n.getTextContent();
+                int inte = 0;
+                try{
+                    inte = Integer.parseInt( tc );
+                }catch( Exception ex ){
+                }
+                String nodename = n.getNodeName();
+                if( nodename.equals( "X" ) ){
+                    ret.x = inte;
+                }else if( nodename.equals( "Y" ) ){
+                    ret.y = inte;
                 }
             }
             return ret;

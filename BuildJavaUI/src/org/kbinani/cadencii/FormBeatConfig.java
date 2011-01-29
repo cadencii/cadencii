@@ -304,14 +304,14 @@ public class FormBeatConfig extends BForm {
             jLabel4 = new BLabel();
             jLabel4.setText(" ");
             GridBagConstraints gridBagConstraints16 = new GridBagConstraints();
-            gridBagConstraints16.gridx = 2;
+            gridBagConstraints16.gridx = 1;
             gridBagConstraints16.anchor = GridBagConstraints.EAST;
-            gridBagConstraints16.insets = new Insets(0, 8, 0, 0);
+            gridBagConstraints16.insets = new Insets(0, 0, 0, 0);
             gridBagConstraints16.gridy = 0;
             GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
-            gridBagConstraints15.gridx = 1;
+            gridBagConstraints15.gridx = 2;
             gridBagConstraints15.anchor = GridBagConstraints.EAST;
-            gridBagConstraints15.insets = new Insets(0, 0, 0, 8);
+            gridBagConstraints15.insets = new Insets(0, 0, 0, 0);
             gridBagConstraints15.gridy = 0;
             jPanel1 = new BPanel();
             jPanel1.setLayout(new GridBagLayout());

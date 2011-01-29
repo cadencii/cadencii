@@ -328,13 +328,14 @@ namespace org.kbinani.cadencii
                 return;
             }
 #if JAVA
-            KeyStroke stroke = KeyStroke.getKeyStroke( e.getKeyCode(), e.getModifiers() );
+            int code = e.getKeyCode();
+            int modifier = e.getModifiers();
 #else
             KeyStroke stroke = KeyStroke.getKeyStroke( 0, 0 );
             stroke.keys = e.KeyCode | e.Modifiers;
-#endif
             int code = stroke.getKeyCode();
             int modifier = stroke.getModifiers();
+#endif
 
             Vector<BKeys> capturelist = new Vector<BKeys>();
             BKeys capture = BKeys.None;
@@ -363,9 +364,7 @@ namespace org.kbinani.cadencii
                 }
             }
 
-            //BListViewItem item = list.getItemAt( index );
             list.setItemAt( index, 1, Utility.getShortcutDisplayString( capturelist.toArray( new BKeys[] { } ) ) );
-            //list.setItemAt( index, item );
             String display = list.getItemAt( index, 0 );
             if ( mDict.containsKey( display ) ) {
                 mDict.get( display ).setValue( capturelist.toArray( new BKeys[] { } ) );

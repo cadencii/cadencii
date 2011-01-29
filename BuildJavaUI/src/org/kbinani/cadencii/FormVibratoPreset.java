@@ -126,13 +126,13 @@ public class FormVibratoPreset extends BForm {
     private JPanel getJPanel3() {
         if (jPanel3 == null) {
             GridBagConstraints gridBagConstraints111 = new GridBagConstraints();
-            gridBagConstraints111.insets = new Insets(0, 0, 0, 8);
+            gridBagConstraints111.insets = new Insets(0, 0, 0, 0);
             gridBagConstraints111.gridy = 0;
-            gridBagConstraints111.gridx = 0;
+            gridBagConstraints111.gridx = 1;
             GridBagConstraints gridBagConstraints1211 = new GridBagConstraints();
-            gridBagConstraints1211.insets = new Insets(0, 8, 0, 0);
+            gridBagConstraints1211.insets = new Insets(0, 0, 0, 0);
             gridBagConstraints1211.gridy = 0;
-            gridBagConstraints1211.gridx = 1;
+            gridBagConstraints1211.gridx = 0;
             jPanel3 = new JPanel();
             jPanel3.setLayout(new GridBagLayout());
             jPanel3.add(getButtonCancel(), gridBagConstraints1211);

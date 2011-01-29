@@ -313,13 +313,13 @@ public class FormCurvePointEdit extends BForm {
     private JPanel getJPanel3() {
         if (jPanel3 == null) {
             GridBagConstraints gridBagConstraints111 = new GridBagConstraints();
-            gridBagConstraints111.insets = new Insets(0, 0, 0, 16);
+            gridBagConstraints111.insets = new Insets(0, 0, 0, 12);
             gridBagConstraints111.gridy = 0;
-            gridBagConstraints111.gridx = 0;
+            gridBagConstraints111.gridx = 1;
             GridBagConstraints gridBagConstraints121 = new GridBagConstraints();
-            gridBagConstraints121.insets = new Insets(0, 0, 0, 16);
+            gridBagConstraints121.insets = new Insets(0, 0, 0, 0);
             gridBagConstraints121.gridy = 0;
-            gridBagConstraints121.gridx = 2;
+            gridBagConstraints121.gridx = 0;
             jPanel3 = new JPanel();
             jPanel3.setLayout(new GridBagLayout());
             jPanel3.add(getBtnExit(), gridBagConstraints121);
