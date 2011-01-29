@@ -1177,13 +1177,13 @@ namespace org.kbinani.cadencii
             menuHidden.setVisible( true );
 #endif
 
-#if JAVA
+#if JAVA_MAC
             com.apple.eawt.Application app = com.apple.eawt.Application.getApplication();
             app.setAboutHandler( new com.apple.eawt.AboutHandler(){
                 public void handleAbout( com.apple.eawt.AppEvent.AboutEvent arg0 ) {
                     menuHelpAbout_Click( null, null );
                 }
-            });
+            } );
             app.setQuitHandler( new com.apple.eawt.QuitHandler(){
                 public void handleQuitRequestWith( com.apple.eawt.AppEvent.QuitEvent arg0, com.apple.eawt.QuitResponse arg1 ) {
                     if( handleFormClosing() ){
@@ -2404,14 +2404,18 @@ namespace org.kbinani.cadencii
         /// メインメニュー項目の中から，Nameプロパティがnameであるものを検索します．見つからなければnullを返す．
         /// </summary>
         /// <param name="name"></param>
+        /// <param name="parent"></param>
         /// <returns></returns>
-        public Object searchMenuItemFromName( String name )
+        public Object searchMenuItemFromName( String name, ByRef<Object> parent )
         {
             int count = menuStripMain.getMenuCount();
             for ( int i = 0; i < count; i++ ) {
                 Object tsi = menuStripMain.getMenu( i );
-                Object ret = searchMenuItemRecurse( name, tsi );
+                Object ret = searchMenuItemRecurse( name, tsi, parent );
                 if ( ret != null ) {
+                    if ( parent.value == null ) {
+                        parent.value = tsi;
+                    }
                     return ret;
                 }
             }
@@ -2424,7 +2428,7 @@ namespace org.kbinani.cadencii
         /// <param name="name"></param>
         /// <param name="tree"></param>
         /// <returns></returns>
-        public Object searchMenuItemRecurse( String name, Object tree )
+        public Object searchMenuItemRecurse( String name, Object tree, ByRef<Object> parent )
         {
 #if JAVA
             if( tree == null ){
@@ -2438,8 +2442,9 @@ namespace org.kbinani.cadencii
                     Component comp = jm.getMenuComponent( i );
                     if( comp != null && comp instanceof JMenuItem ){
                         JMenuItem jmi = (JMenuItem)comp;
-                        Object obj = searchMenuItemRecurse( name, jmi );
+                        Object obj = searchMenuItemRecurse( name, jmi, parent );
                         if ( obj != null ){
+                            parent.value = tree;
                             return obj;
                         }
                     }
@@ -2449,6 +2454,7 @@ namespace org.kbinani.cadencii
             if( tree instanceof JMenuItem ){
                 JMenuItem jmi = (JMenuItem)tree;
                 if( str.compare( name, jmi.getName() ) ){
+                    parent.value = null;
                     return tree;
                 }
             }
@@ -2467,6 +2473,7 @@ namespace org.kbinani.cadencii
             }
 
             if ( str.compare( tree_name, name ) ) {
+                parent.value = null;
                 return tree;
             } else {
                 if ( menu == null ) {
@@ -2485,8 +2492,9 @@ namespace org.kbinani.cadencii
                     if ( str.compare( tsi_name, name ) ) {
                         return tsi;
                     }
-                    Object ret = searchMenuItemRecurse( name, tsi );
+                    Object ret = searchMenuItemRecurse( name, tsi, parent );
                     if ( ret != null ) {
+                        parent.value = tsi;
                         return ret;
                     }
                 }
@@ -4345,12 +4353,13 @@ namespace org.kbinani.cadencii
             } else {
                 TreeMap<String, BKeys[]> dict = AppManager.editorConfig.getShortcutKeysDictionary();
                 #region menuStripMain
+                ByRef<Object> parent = new ByRef<Object>( null );
                 for ( Iterator<String> itr = dict.keySet().iterator(); itr.hasNext(); ) {
                     String key = itr.next();
                     if ( str.compare( key, "menuEditCopy" ) || str.compare( key, "menuEditCut" ) || str.compare( key, "menuEditPaste" ) || str.compare( key, "SpecialShortcutGoToFirst" ) ) {
                         continue;
                     }
-                    Object menu = searchMenuItemFromName( key );
+                    Object menu = searchMenuItemFromName( key, parent );
                     if ( menu != null ) {
                         String menu_name = "";
 #if JAVA
@@ -13033,44 +13042,57 @@ namespace org.kbinani.cadencii
 
             for ( Iterator<String> itr = configured.keySet().iterator(); itr.hasNext(); ) {
                 String name = itr.next();
-                Object menu = searchMenuItemFromName( name );
+                ByRef<Object> owner = new ByRef<Object>( null );
+                Object menu = searchMenuItemFromName( name, owner );
 #if DEBUG
-                sout.println( "menuSettingShrtcut_Click; name=" + name + "; (menu==null)=" + (menu == null) );
-#endif
-                if ( menu != null ) {
-                    String parent = "";
-                    MenuElement owner_item = null;
-                    if ( !(menu is BMenuItem) ) {
-                        continue;
-                    }
-                    BMenuItem casted_menu = (BMenuItem)menu;
-                    Object pa = casted_menu.getParent();
-                    if ( pa != null && pa is MenuElement ) {
-                        owner_item = (MenuElement)pa;
-                    }
-
-                    if ( owner_item == null ) {
-                        continue;
-                    }
-                    if ( !(owner_item is BMenuItem) ) {
-                        continue;
-                    }
-                    BMenuItem casted_owner_item = (BMenuItem)owner_item;
-                    if ( !casted_owner_item.getName().Equals( menuHidden.getName() ) ) {
-                        String s = casted_owner_item.getText();
-                        int i = s.IndexOf( "(&" );
-                        if ( i > 0 ) {
-                            s = str.sub( s, 0, i );
-                        }
-                        parent = s + " -> ";
-                    }
-                    String s1 = casted_menu.getText();
-                    int i1 = s1.IndexOf( "(&" );
-                    if ( i1 > 0 ) {
-                        s1 = str.sub( s1, 0, i1 );
-                    }
-                    dict.put( parent + s1, new ValuePair<String, BKeys[]>( name, configured.get( name ) ) );
+                if ( menu == null || owner.value == null ) {
+                    serr.println( "FormMain#enuSettingShrtcut_Click; name=" + name + "; menu is null" );
+                    continue;
                 }
+#endif
+#if JAVA
+                JMenuItem casted_owner_item = null;
+                if ( owner.value is JMenuItem ) {
+                    casted_owner_item = (JMenuItem)owner.value;
+                }
+#else
+                BMenuItem casted_owner_item = null;
+                if ( owner.value is BMenuItem ) {
+                    casted_owner_item = (BMenuItem)owner.value;
+                }
+#endif
+                if ( casted_owner_item == null ) {
+                    continue;
+                }
+                String parent = "";
+                if ( !casted_owner_item.getName().Equals( menuHidden.getName() ) ) {
+                    String s = casted_owner_item.getText();
+                    int i = s.IndexOf( "(&" );
+                    if ( i > 0 ) {
+                        s = str.sub( s, 0, i );
+                    }
+                    parent = s + " -> ";
+                }
+#if JAVA
+                JMenuItem casted_menu = null;
+                if( menu instanceof JMenuItem ){
+                    casted_menu = (JMenuItem)menu;
+                }
+#else
+                BMenuItem casted_menu = null;
+                if ( menu is BMenuItem ) {
+                    casted_menu = (BMenuItem)menu;
+                }
+#endif
+                if ( casted_menu == null ) {
+                    continue;
+                }
+                String s1 = casted_menu.getText();
+                int i1 = s1.IndexOf( "(&" );
+                if ( i1 > 0 ) {
+                    s1 = str.sub( s1, 0, i1 );
+                }
+                dict.put( parent + s1, new ValuePair<String, BKeys[]>( name, configured.get( name ) ) );
             }
 
             // 最初に戻る、のショートカットキー

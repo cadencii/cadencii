@@ -94,6 +94,13 @@ namespace org.kbinani.cadencii
 
             setResources();
             applyLanguage();
+#if DEBUG
+            sout.println( "FormShortcutKeys#.ctor; dict=" );
+            for ( Iterator<String> itr = dict.keySet().iterator(); itr.hasNext(); ) {
+                String disp = itr.next();
+                sout.println( "    disp=" + disp );
+            }
+#endif
             mDict = dict;
             comboCategory.setSelectedIndex( 0 );
             mFirstDict = new TreeMap<String, ValuePair<String, BKeys[]>>();
@@ -200,8 +207,14 @@ namespace org.kbinani.cadencii
             String category = mCategories[selected];
 
             // 現在のカテゴリーに合致するものについてのみ，リストに追加
+#if DEBUG
+            sout.println( "FormShortcutKey#updateList; mDict=" );
+#endif
             for ( Iterator<String> itr = mDict.keySet().iterator(); itr.hasNext(); ) {
                 String display = itr.next();
+#if DEBUG
+                sout.println( "  display=" + display );
+#endif
                 ValuePair<String, BKeys[]> item = mDict.get( display );
                 String field_name = item.getKey();
                 BKeys[] keys = item.getValue();

@@ -107,12 +107,8 @@ public class BMenuItem extends JCheckBoxMenuItem
     }
 
     public void mousePressed(MouseEvent e) {
-        // TODO �����������ꂽ���\�b�h�E�X�^�u
-        
     }
 
     public void mouseReleased(MouseEvent e) {
-        // TODO �����������ꂽ���\�b�h�E�X�^�u
-        
     }
 }

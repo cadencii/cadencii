@@ -118,6 +118,8 @@ public class BListView extends JTable
         //column.setPreferredWidth( FIRST_COLUMN_WIDTH );
         //column.setResizable( false );
         addKeyListener( this );
+        showHorizontalLines = false;
+        showVerticalLines = false;
     }
 
     public Component prepareEditor( TableCellEditor editor, int row, int column )

@@ -39,6 +39,12 @@ open( OUT, ">Makefile" );
 &getSrcList( "./org.kbinani.xml", "./build/java/org/kbinani/xml/", $src_xml, $cp_xml, $dep_xml );
 &getSrcList( "./Cadencii", "./build/java/org/kbinani/cadencii/", $src_cadencii, $cp_cadencii, $dep_cadencii );
 
+if( $ARGV[0] eq "MSWin32" ){
+    $djava_mac = "";
+}else{
+    $djava_mac = "-DJAVA_MAC";
+}
+
 while( $line = <FILE> ){
     $line =~ s/\@SRC_JAPPUTIL\@/$src_apputil/g;
     $line =~ s/\@SRC_JCORLIB\@/$src_corlib/g;
@@ -57,6 +63,7 @@ while( $line = <FILE> ){
     $line =~ s/\@DEP_JCADENCII\@/$dep_cadencii/g;
     $line =~ s/\@DEP_JCOMPONENTMODEL\@/$dep_componentmodel/g;
     $line =~ s/\@DEP_JXML\@/$dep_xml/g;
+    $line =~ s/\@DJAVA_MAC\@/$djava_mac/g;
 
     if( $ARGV[0] eq "MSWin32" ){
         if( ($line =~ /\$\(CP\)/) | ($line =~ /\$\(RM\)/) | ($line =~ /\$\(MKDIR\)/) ){

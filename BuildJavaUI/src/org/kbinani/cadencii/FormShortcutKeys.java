@@ -211,6 +211,8 @@ public class FormShortcutKeys extends BForm {
     private BListView getList() {
         if (list == null) {
             list = new BListView();
+            list.setCheckBoxes(false);
+            list.setShowGrid(false);
         }
         return list;
     }
@@ -237,6 +239,8 @@ public class FormShortcutKeys extends BForm {
         if (jScrollPane == null) {
             jScrollPane = new JScrollPane();
             jScrollPane.setPreferredSize(new Dimension(100, 100));
+            jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+            jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
             jScrollPane.setViewportView(getList());
         }
         return jScrollPane;

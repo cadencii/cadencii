@@ -47,6 +47,9 @@ namespace org.kbinani.cadencii
         /// デフォルトで使用する歌手の名前
         /// </summary>
         public String DefaultSingerName = "Miku";
+        /// <summary>
+        /// デフォルトの横軸方向のスケール
+        /// </summary>
         public int DefaultXScale = 65;
         public String BaseFontName = "MS UI Gothic";
         public float BaseFontSize = 9.0f;
@@ -519,7 +522,6 @@ namespace org.kbinani.cadencii
             new ValuePairOfStringArrayOfKeys( "menuEditSelectAllEvents", new BKeys[]{ BKeys.Control, BKeys.Shift, BKeys.A } ),
             new ValuePairOfStringArrayOfKeys( "menuEditDelete", new BKeys[]{ BKeys.Delete } ),
             new ValuePairOfStringArrayOfKeys( "menuVisualMixer", new BKeys[]{ BKeys.F3 } ),
-            new ValuePairOfStringArrayOfKeys( "menuJobRealTime", new BKeys[]{ BKeys.F5 } ),
             new ValuePairOfStringArrayOfKeys( "menuHiddenEditLyric", new BKeys[]{ BKeys.F2 } ),
             new ValuePairOfStringArrayOfKeys( "menuHiddenEditFlipToolPointerPencil", new BKeys[]{ BKeys.Control, BKeys.W } ),
             new ValuePairOfStringArrayOfKeys( "menuHiddenEditFlipToolPointerEraser", new BKeys[]{ BKeys.Control, BKeys.E } ),
@@ -527,7 +529,6 @@ namespace org.kbinani.cadencii
             new ValuePairOfStringArrayOfKeys( "menuHiddenVisualBackwardParameter", new BKeys[]{ BKeys.Control, BKeys.Alt, BKeys.PageUp } ),
             new ValuePairOfStringArrayOfKeys( "menuHiddenTrackNext", new BKeys[]{ BKeys.Control, BKeys.PageDown } ),
             new ValuePairOfStringArrayOfKeys( "menuHiddenTrackBack", new BKeys[]{ BKeys.Control, BKeys.PageUp } ),
-            new ValuePairOfStringArrayOfKeys( "menuHiddenBackToTheFirst", new BKeys[]{ BKeys.Home } ),
             new ValuePairOfStringArrayOfKeys( "menuHiddenSelectBackward", new BKeys[]{ BKeys.Alt, BKeys.Left } ),
             new ValuePairOfStringArrayOfKeys( "menuHiddenSelectForward", new BKeys[]{ BKeys.Alt, BKeys.Right } ),
             new ValuePairOfStringArrayOfKeys( "menuHiddenMoveUp", new BKeys[]{ BKeys.Shift, BKeys.Up } ),
@@ -545,7 +546,6 @@ namespace org.kbinani.cadencii
             new ValuePairOfStringArrayOfKeys( "menuFileImportMidi", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuFileExportWave", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuFileExportMidi", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuFileDelete", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuVisualWaveform", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuVisualProperty", new BKeys[]{ BKeys.F6 } ),
             new ValuePairOfStringArrayOfKeys( "menuVisualGridline", new BKeys[]{} ),
@@ -569,24 +569,22 @@ namespace org.kbinani.cadencii
             new ValuePairOfStringArrayOfKeys( "menuTrackRenderCurrent", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuTrackRenderAll", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuTrackOverlay", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuTrackRendererVOCALOID1", new BKeys[]{} ),
+            new ValuePairOfStringArrayOfKeys( "menuTrackRendererVOCALOID100", new BKeys[]{} ),
+            new ValuePairOfStringArrayOfKeys( "menuTrackRendererVOCALOID101", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuTrackRendererVOCALOID2", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuTrackRendererUtau", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuTrackMasterTuning", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuLyricExpressionProperty", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuLyricVibratoProperty", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuLyricSymbol", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuLyricDictionary", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuScriptUpdate", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuSettingPreference", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuSettingGameControlerSetting", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuSettingGameControlerReload", new BKeys[]{} ),
+            new ValuePairOfStringArrayOfKeys( "menuSettingGameControlerLoad", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuSettingPaletteTool", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuSettingShortcut", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuSettingSingerProperty", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuHelpAbout", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuHiddenFlipCurveOnPianorollMode", new BKeys[]{ BKeys.Tab } ),
-            new ValuePairOfStringArrayOfKeys( "menuVisualCircuitDiagram", new BKeys[]{} ),
         } ) );
 
 #if JAVA
