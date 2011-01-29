@@ -33,6 +33,8 @@ import org.kbinani.windows.forms.BToggleButton;
 import org.kbinani.windows.forms.BToolBar;
 import org.kbinani.windows.forms.BToolBarButton;
 import org.kbinani.windows.forms.BVScrollBar;
+import java.awt.Font;
+import javax.swing.ImageIcon;
 
 //SECTION-END-IMPORT
 public class FormMain extends BForm {
@@ -309,6 +311,10 @@ public class FormMain extends BForm {
     private BPopupMenu cMenuPositionIndicator = null;  //  @jve:decl-index=0:visual-constraint="991,295"
     private BMenuItem cMenuPositionIndicatorStartMarker = null;
     private BMenuItem cMenuPositionIndicatorEndMarker = null;
+    private BButton btnVZoom = null;
+    private JPanel jPanel = null;
+    private BButton btnVMooz = null;
+    private JPanel jPanel4 = null;
     //SECTION-END-FIELD
     public FormMain( String vsq_file ) {
         super();
@@ -3994,10 +4000,26 @@ public class FormMain extends BForm {
      */
     private BPanel getJPanel2() {
         if (pictureBox2 == null) {
+            GridBagConstraints gridBagConstraints16 = new GridBagConstraints();
+            gridBagConstraints16.gridx = 0;
+            gridBagConstraints16.gridy = 3;
+            GridBagConstraints gridBagConstraints8 = new GridBagConstraints();
+            gridBagConstraints8.gridx = 0;
+            gridBagConstraints8.gridy = 2;
+            GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
+            gridBagConstraints5.gridx = 0;
+            gridBagConstraints5.gridy = 1;
+            GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
+            gridBagConstraints4.gridx = 0;
+            gridBagConstraints4.gridy = 0;
             pictureBox2 = new BPanel();
             pictureBox2.setLayout(new GridBagLayout());
             pictureBox2.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-            pictureBox2.setPreferredSize(new Dimension(16, 64));
+            pictureBox2.setPreferredSize(new Dimension(17, 68));
+            pictureBox2.add(getBtnVZoom(), gridBagConstraints4);
+            pictureBox2.add(getJPanel4(), gridBagConstraints5);
+            pictureBox2.add(getBtnVMooz(), gridBagConstraints8);
+            pictureBox2.add(getJPanel42(), gridBagConstraints16);
             pictureBox2.setPreferredSize(new Dimension(16, 48));
         }
         return pictureBox2;
@@ -4269,6 +4291,61 @@ public class FormMain extends BForm {
             cMenuPositionIndicatorEndMarker.setText("Set end marker");
         }
         return cMenuPositionIndicatorEndMarker;
+    }
+
+    /**
+     * This method initializes btnVZoom	
+     * 	
+     * @return org.kbinani.windows.forms.BButton	
+     */
+    private BButton getBtnVZoom() {
+        if (btnVZoom == null) {
+            btnVZoom = new BButton();
+            btnVZoom.setPreferredSize(new Dimension(17, 17));
+            btnVZoom.setFont(new Font("Lucida Grande", Font.BOLD, 13));
+        }
+        return btnVZoom;
+    }
+
+    /**
+     * This method initializes jPanel	
+     * 	
+     * @return javax.swing.JPanel	
+     */
+    private JPanel getJPanel4() {
+        if (jPanel == null) {
+            jPanel = new JPanel();
+            jPanel.setLayout(new GridBagLayout());
+            jPanel.setPreferredSize(new Dimension(17, 17));
+        }
+        return jPanel;
+    }
+
+    /**
+     * This method initializes btnVMooz	
+     * 	
+     * @return org.kbinani.windows.forms.BButton	
+     */
+    private BButton getBtnVMooz() {
+        if (btnVMooz == null) {
+            btnVMooz = new BButton();
+            btnVMooz.setPreferredSize(new Dimension(17, 17));
+        }
+        return btnVMooz;
+    }
+
+    /**
+     * This method initializes jPanel4	
+     * 	
+     * @return javax.swing.JPanel	
+     */
+    private JPanel getJPanel42() {
+        if (jPanel4 == null) {
+            jPanel4 = new JPanel();
+            jPanel4.setLayout(new GridBagLayout());
+            jPanel4.setPreferredSize(new Dimension(17, 17));
+        }
+        return jPanel4;
     }
 
     //SECTION-END-METHOD
