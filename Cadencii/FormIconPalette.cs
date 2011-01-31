@@ -108,7 +108,7 @@ namespace org.kbinani.cadencii
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
             init();
             registerEventHandlers();
-            TreeMap<String, BKeys[]> dict = AppManager.editorConfig.getShortcutKeysDictionary();
+            TreeMap<String, BKeys[]> dict = AppManager.editorConfig.getShortcutKeysDictionary( mMainWindow.getDefaultShortcutKeys() );
             if ( dict.containsKey( "menuVisualIconPalette" ) ) {
                 BKeys[] keys = dict.get( "menuVisualIconPalette" );
                 KeyStroke shortcut = BKeysUtility.getKeyStrokeFromBKeys( keys );

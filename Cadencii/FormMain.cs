@@ -61,6 +61,7 @@ namespace org.kbinani.cadencii
     using boolean = System.Boolean;
     using BPaintEventArgs = System.Windows.Forms.PaintEventArgs;
     using BPreviewKeyDownEventArgs = System.Windows.Forms.PreviewKeyDownEventArgs;
+    using BEventArgs = System.EventArgs;
 
     using BEventHandler = System.EventHandler;
     using BMouseEventHandler = System.Windows.Forms.MouseEventHandler;
@@ -550,11 +551,13 @@ namespace org.kbinani.cadencii
         /// panel2の描画ループで使うグラフィックス
         /// </summary>
         private Graphics2D mGraphicsPanel2 = null;
+#if !JAVA
         /// <summary>
         /// ピアノロールの縦方向の拡大率を変更するパネル上でのマウスの状態。
         /// 0がデフォルト、&gt;0は+ボタンにマウスが降りた状態、&lt;0は-ボタンにマウスが降りた状態
         /// </summary>
         private int mPianoRollScaleYMouseStatus = 0;
+#endif
         /// <summary>
         /// MIDIステップ入力モードがONかどうか
         /// </summary>
@@ -2069,40 +2072,45 @@ namespace org.kbinani.cadencii
         /// </summary>
         public Vector<ValuePairOfStringArrayOfKeys> getDefaultShortcutKeys()
         {
+#if JAVA_MAC
+            BKeys ctrl = BKeys.Meta;
+#else
+            BKeys ctrl = BKeys.Control;
+#endif
             Vector<ValuePairOfStringArrayOfKeys> ret = new Vector<ValuePairOfStringArrayOfKeys>( Arrays.asList(
                 new ValuePairOfStringArrayOfKeys[]{
-                new ValuePairOfStringArrayOfKeys( menuFileNew.getName(), new BKeys[]{ BKeys.Control, BKeys.N } ),
-                new ValuePairOfStringArrayOfKeys( menuFileOpen.getName(), new BKeys[]{ BKeys.Control, BKeys.O } ),
+                new ValuePairOfStringArrayOfKeys( menuFileNew.getName(), new BKeys[]{ ctrl, BKeys.N } ),
+                new ValuePairOfStringArrayOfKeys( menuFileOpen.getName(), new BKeys[]{ ctrl, BKeys.O } ),
                 new ValuePairOfStringArrayOfKeys( menuFileOpenVsq.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuFileSave.getName(), new BKeys[]{ BKeys.Control, BKeys.S } ),
-                new ValuePairOfStringArrayOfKeys( menuFileQuit.getName(), new BKeys[]{ BKeys.Control, BKeys.Q } ),
-                new ValuePairOfStringArrayOfKeys( menuEditUndo.getName(), new BKeys[]{ BKeys.Control, BKeys.Z } ),
-                new ValuePairOfStringArrayOfKeys( menuEditRedo.getName(), new BKeys[]{ BKeys.Control, BKeys.Shift, BKeys.Z } ),
-                new ValuePairOfStringArrayOfKeys( menuEditCut.getName(), new BKeys[]{ BKeys.Control, BKeys.X } ),
-                new ValuePairOfStringArrayOfKeys( menuEditCopy.getName(), new BKeys[]{ BKeys.Control, BKeys.C } ),
-                new ValuePairOfStringArrayOfKeys( menuEditPaste.getName(), new BKeys[]{ BKeys.Control, BKeys.V } ),
-                new ValuePairOfStringArrayOfKeys( menuEditSelectAll.getName(), new BKeys[]{ BKeys.Control, BKeys.A } ),
-                new ValuePairOfStringArrayOfKeys( menuEditSelectAllEvents.getName(), new BKeys[]{ BKeys.Control, BKeys.Shift, BKeys.A } ),
+                new ValuePairOfStringArrayOfKeys( menuFileSave.getName(), new BKeys[]{ ctrl, BKeys.S } ),
+                new ValuePairOfStringArrayOfKeys( menuFileQuit.getName(), new BKeys[]{ ctrl, BKeys.Q } ),
+                new ValuePairOfStringArrayOfKeys( menuEditUndo.getName(), new BKeys[]{ ctrl, BKeys.Z } ),
+                new ValuePairOfStringArrayOfKeys( menuEditRedo.getName(), new BKeys[]{ ctrl, BKeys.Shift, BKeys.Z } ),
+                new ValuePairOfStringArrayOfKeys( menuEditCut.getName(), new BKeys[]{ ctrl, BKeys.X } ),
+                new ValuePairOfStringArrayOfKeys( menuEditCopy.getName(), new BKeys[]{ ctrl, BKeys.C } ),
+                new ValuePairOfStringArrayOfKeys( menuEditPaste.getName(), new BKeys[]{ ctrl, BKeys.V } ),
+                new ValuePairOfStringArrayOfKeys( menuEditSelectAll.getName(), new BKeys[]{ ctrl, BKeys.A } ),
+                new ValuePairOfStringArrayOfKeys( menuEditSelectAllEvents.getName(), new BKeys[]{ ctrl, BKeys.Shift, BKeys.A } ),
                 new ValuePairOfStringArrayOfKeys( menuEditDelete.getName(), new BKeys[]{ BKeys.Delete } ),
                 new ValuePairOfStringArrayOfKeys( menuVisualMixer.getName(), new BKeys[]{ BKeys.F3 } ),
                 new ValuePairOfStringArrayOfKeys( menuHiddenEditLyric.getName(), new BKeys[]{ BKeys.F2 } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenEditFlipToolPointerPencil.getName(), new BKeys[]{ BKeys.Control, BKeys.W } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenEditFlipToolPointerEraser.getName(), new BKeys[]{ BKeys.Control, BKeys.E } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenVisualForwardParameter.getName(), new BKeys[]{ BKeys.Control, BKeys.Alt, BKeys.PageDown } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenVisualBackwardParameter.getName(), new BKeys[]{ BKeys.Control, BKeys.Alt, BKeys.PageUp } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenTrackNext.getName(), new BKeys[]{ BKeys.Control, BKeys.PageDown } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenTrackBack.getName(), new BKeys[]{ BKeys.Control, BKeys.PageUp } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenEditFlipToolPointerPencil.getName(), new BKeys[]{ ctrl, BKeys.W } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenEditFlipToolPointerEraser.getName(), new BKeys[]{ ctrl, BKeys.E } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenVisualForwardParameter.getName(), new BKeys[]{ ctrl, BKeys.Alt, BKeys.PageDown } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenVisualBackwardParameter.getName(), new BKeys[]{ ctrl, BKeys.Alt, BKeys.PageUp } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenTrackNext.getName(), new BKeys[]{ ctrl, BKeys.PageDown } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenTrackBack.getName(), new BKeys[]{ ctrl, BKeys.PageUp } ),
                 new ValuePairOfStringArrayOfKeys( menuHiddenSelectBackward.getName(), new BKeys[]{ BKeys.Alt, BKeys.Left } ),
                 new ValuePairOfStringArrayOfKeys( menuHiddenSelectForward.getName(), new BKeys[]{ BKeys.Alt, BKeys.Right } ),
                 new ValuePairOfStringArrayOfKeys( menuHiddenMoveUp.getName(), new BKeys[]{ BKeys.Shift, BKeys.Up } ),
                 new ValuePairOfStringArrayOfKeys( menuHiddenMoveDown.getName(), new BKeys[]{ BKeys.Shift, BKeys.Down } ),
                 new ValuePairOfStringArrayOfKeys( menuHiddenMoveLeft.getName(), new BKeys[]{ BKeys.Shift, BKeys.Left } ),
                 new ValuePairOfStringArrayOfKeys( menuHiddenMoveRight.getName(), new BKeys[]{ BKeys.Shift, BKeys.Right } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenLengthen.getName(), new BKeys[]{ BKeys.Control, BKeys.Right } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenShorten.getName(), new BKeys[]{ BKeys.Control, BKeys.Left } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenGoToEndMarker.getName(), new BKeys[]{ BKeys.Control, BKeys.End } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenGoToStartMarker.getName(), new BKeys[]{ BKeys.Control, BKeys.Home } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenPlayFromStartMarker.getName(), new BKeys[]{ BKeys.Control, BKeys.Enter } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenLengthen.getName(), new BKeys[]{ ctrl, BKeys.Right } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenShorten.getName(), new BKeys[]{ ctrl, BKeys.Left } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenGoToEndMarker.getName(), new BKeys[]{ ctrl, BKeys.End } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenGoToStartMarker.getName(), new BKeys[]{ ctrl, BKeys.Home } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenPlayFromStartMarker.getName(), new BKeys[]{ ctrl, BKeys.Enter } ),
                 new ValuePairOfStringArrayOfKeys( menuFileSaveNamed.getName(), new BKeys[]{} ),
                 new ValuePairOfStringArrayOfKeys( menuFileImportVsq.getName(), new BKeys[]{} ),
                 new ValuePairOfStringArrayOfKeys( menuFileOpenUst.getName(), new BKeys[]{} ),
@@ -3789,7 +3797,7 @@ namespace org.kbinani.cadencii
 
             if ( onPreviewKeyDown && keycode != 0 ) {
                 foreach ( SpecialShortcutHolder holder in mSpecialShortcutHolders ) {
-                    if ( stroke.equals( holder.shortcut ) ) {
+                    if ( stroke.Equals( holder.shortcut ) ) {
                         try {
 #if JAVA
                             holder.menu.clickEvent.raise( holder.menu, new BEventArgs() );
@@ -4478,7 +4486,7 @@ namespace org.kbinani.cadencii
                 #endregion
                 #endregion
             } else {
-                TreeMap<String, BKeys[]> dict = AppManager.editorConfig.getShortcutKeysDictionary();
+                TreeMap<String, BKeys[]> dict = AppManager.editorConfig.getShortcutKeysDictionary( this.getDefaultShortcutKeys() );
                 #region menuStripMain
                 ByRef<Object> parent = new ByRef<Object>( null );
                 for ( Iterator<String> itr = dict.keySet().iterator(); itr.hasNext(); ) {
@@ -7962,9 +7970,14 @@ namespace org.kbinani.cadencii
             this.DragLeave += new BEventHandler( FormMain_DragLeave );
 #endif
             pictureBox3.MouseDown += new BMouseEventHandler( pictureBox3_MouseDown );
+#if JAVA
+            buttonVZoom.clickEvent.add( new BEventHandler( this, "buttonVZoom_Click" ) );
+            buttonVMooz.clickEvent.add( new BEventHandler( this, "buttonVMooz_Click" ) );
+#else
             pictureBox2.MouseDown += new BMouseEventHandler( pictureBox2_MouseDown );
             pictureBox2.MouseUp += new BMouseEventHandler( pictureBox2_MouseUp );
             pictureBox2.Paint += new BPaintEventHandler( pictureBox2_Paint );
+#endif
 #if JAVA
             stripBtnFileNew.clickEvent.add( new BEventHandler( this, "handleFileNew_Click" ) );
             stripBtnFileOpen.clickEvent.add( new BEventHandler( this, "handleFileOpen_Click" ) );
@@ -10780,11 +10793,11 @@ namespace org.kbinani.cadencii
 #endif
             boolean cancel = handleFormClosing();
             e.Cancel = cancel;
+#if JAVA
             if( !cancel ){
-                //AppManager.mMixerWindow.close();
-                //AppManager.iconPalette.close();
                 dispose();
             }
+#endif
         }
         
         /// <summary>
@@ -13140,7 +13153,7 @@ namespace org.kbinani.cadencii
         public void menuSettingShortcut_Click( Object sender, EventArgs e )
         {
             TreeMap<String, ValuePair<String, BKeys[]>> dict = new TreeMap<String, ValuePair<String, BKeys[]>>();
-            TreeMap<String, BKeys[]> configured = AppManager.editorConfig.getShortcutKeysDictionary();
+            TreeMap<String, BKeys[]> configured = AppManager.editorConfig.getShortcutKeysDictionary( this.getDefaultShortcutKeys() );
 #if DEBUG
             sout.println( "FormMain#menuSettingShortcut_Click; configured=" );
             for( Iterator<String> itr = configured.keySet().iterator(); itr.hasNext(); ){
@@ -13230,7 +13243,7 @@ namespace org.kbinani.cadencii
 
             FormShortcutKeys form = null;
             try {
-                form = new FormShortcutKeys( dict );
+                form = new FormShortcutKeys( dict, this );
                 form.setLocation( getFormPreferedLocation( form ) );
                 BDialogResult dr = AppManager.showModalDialog( form, this );
                 if ( dr == BDialogResult.OK ) {
@@ -16380,17 +16393,26 @@ namespace org.kbinani.cadencii
         }
         #endregion
 
+        #region buttonVZoom & buttonVMooz
+        public void buttonVZoom_Click( Object sender, BEventArgs e )
+        {
+            zoomY( 1 );
+        }
+
+        public void buttonVMooz_Click( Object sender, BEventArgs e )
+        {
+            zoomY( -1 );
+        }
+        #endregion
+
         #region pictureBox2
+#if !JAVA
         public void pictureBox2_Paint( Object sender, BPaintEventArgs e )
         {
-#if JAVA
-            mGraphicsPictureBox2 = (Graphics2D)e.Graphics;
-#else
             if ( mGraphicsPictureBox2 == null ) {
                 mGraphicsPictureBox2 = new Graphics2D( null );
             }
             mGraphicsPictureBox2.nativeGraphics = e.Graphics;
-#endif
             int width = pictureBox2.getWidth();
             int height = pictureBox2.getHeight();
             int unit_height = height / 4;
@@ -16418,15 +16440,15 @@ namespace org.kbinani.cadencii
             mGraphicsPictureBox2.setColor( (mPianoRollScaleYMouseStatus < 0) ? Color.lightGray : Color.gray );
             mGraphicsPictureBox2.drawLine( cx - 4, cy, cx + 4, cy );
         }
+#endif
 
+#if !JAVA
         public void pictureBox2_MouseDown( Object sender, BMouseEventArgs e )
         {
             if ( mTextBoxTrackName != null ) {
-#if !JAVA
                 if ( !mTextBoxTrackName.IsDisposed ) {
                     mTextBoxTrackName.Dispose();
                 }
-#endif
                 mTextBoxTrackName = null;
             }
 
@@ -16458,12 +16480,15 @@ namespace org.kbinani.cadencii
             }
             refreshScreen();
         }
+#endif
 
+#if !JAVA
         public void pictureBox2_MouseUp( Object sender, BMouseEventArgs e )
         {
             mPianoRollScaleYMouseStatus = 0;
             pictureBox2.invalidate();
         }
+#endif
         #endregion
 
         //BOOKMARK: stripBtn

@@ -356,6 +356,9 @@
     <EmbeddedResource Include="FormSequenceConfig.resx">
       <DependentUpon>FormSequenceConfig.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormShortcutKeys.resx">
+      <DependentUpon>FormShortcutKeys.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormVibratoConfig.resx">
       <DependentUpon>FormVibratoConfig.cs</DependentUpon>
     </EmbeddedResource>
@@ -372,6 +375,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="TrackSelector.resx">
       <DependentUpon>TrackSelector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VersionInfo.resx">
+      <DependentUpon>VersionInfo.cs</DependentUpon>
     </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

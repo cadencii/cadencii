@@ -3974,6 +3974,77 @@ namespace org.kbinani.cadencii
             return QuantizeModeUtil.getQuantizeClock( editorConfig.getLengthQuantize(), editorConfig.isLengthQuantizeTriplet() );
         }
 
+        public static void serializeEditorConfig( EditorConfig instance, String file )
+        {
+            FileOutputStream fs = null;
+            try {
+                fs = new FileOutputStream( file );
+                EditorConfig.getSerializer().serialize( fs, instance );
+            } catch ( Exception ex ) {
+                Logger.write( typeof( EditorConfig ) + ".serialize; ex=" + ex + "\n" );
+            } finally {
+                if ( fs != null ) {
+                    try {
+                        fs.close();
+                    } catch ( Exception ex2 ) {
+                        Logger.write( typeof( EditorConfig ) + ".serialize; ex=" + ex2 + "\n" );
+                    }
+                }
+            }
+        }
+
+        public static EditorConfig deserializeEditorConfig( String file )
+        {
+            EditorConfig ret = null;
+            FileInputStream fs = null;
+            try {
+                fs = new FileInputStream( file );
+                ret = (EditorConfig)EditorConfig.getSerializer().deserialize( fs );
+            } catch ( Exception ex ) {
+#if JAVA
+                serr.println( "EditorConfig#deserialize; ex=" + ex );
+                ex.printStackTrace();
+#endif
+                Logger.write( typeof( EditorConfig ) + ".deserialize; ex=" + ex + "\n" );
+            } finally {
+                if ( fs != null ) {
+                    try {
+                        fs.close();
+                    } catch ( Exception ex2 ) {
+                        Logger.write( typeof( EditorConfig ) + ".deserialize; ex=" + ex2 + "\n" );
+                    }
+                }
+            }
+
+            if ( ret == null ) {
+                return null;
+            }
+
+            if ( mMainWindow != null ) {
+                Vector<ValuePairOfStringArrayOfKeys> defs = mMainWindow.getDefaultShortcutKeys();
+                for ( int j = 0; j < defs.size(); j++ ) {
+                    boolean found = false;
+                    for ( int i = 0; i < ret.ShortcutKeys.size(); i++ ) {
+                        if ( defs.get( j ).Key.Equals( ret.ShortcutKeys.get( i ).Key ) ) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if ( !found ) {
+                        ret.ShortcutKeys.add( defs.get( j ) );
+                    }
+                }
+            }
+
+            // バッファーサイズを正規化
+            if ( ret.BufferSizeMilliSeconds < EditorConfig.MIN_BUFFER_MILLIXEC ) {
+                ret.BufferSizeMilliSeconds = EditorConfig.MIN_BUFFER_MILLIXEC;
+            } else if ( EditorConfig.MAX_BUFFER_MILLISEC < ret.BufferSizeMilliSeconds ) {
+                ret.BufferSizeMilliSeconds = EditorConfig.MAX_BUFFER_MILLISEC;
+            }
+            return ret;
+        }
+
         /// <summary>
         /// 現在の設定を設定ファイルに書き込みます。
         /// </summary>
@@ -4001,7 +4072,7 @@ namespace org.kbinani.cadencii
             sout.println( "AppManager#saveConfig; file=" + file );
 #endif
             try {
-                EditorConfig.serialize( editorConfig, file );
+                serializeEditorConfig( editorConfig, file );
             } catch ( Exception ex ) {
                 serr.println( "AppManager#saveConfig; ex=" + ex );
                 Logger.write( typeof( AppManager ) + ".saveConfig; ex=" + ex + "\n" );
@@ -4035,7 +4106,7 @@ namespace org.kbinani.cadencii
             if ( PortUtil.isFileExists( config_file ) ) {
                 // このバージョン用の設定ファイルがあればそれを利用
                 try {
-                    ret = EditorConfig.deserialize( config_file );
+                    ret = deserializeEditorConfig( config_file );
                 } catch ( Exception ex ) {
                     serr.println( "AppManager#loadConfig; ex=" + ex );
                     ret = null;
@@ -4104,7 +4175,7 @@ namespace org.kbinani.cadencii
                     config_file = fsys.combine( fsys.combine( appdata, vs.getRawString() ), CONFIG_FILE_NAME );
                     if ( PortUtil.isFileExists( config_file ) ) {
                         try {
-                            ret = EditorConfig.deserialize( config_file );
+                            ret = deserializeEditorConfig( config_file );
                         } catch ( Exception ex ) {
                             Logger.write( typeof( AppManager ) + ".loadConfig; ex=" + ex + "\n" );
                             ret = null;
@@ -4121,7 +4192,7 @@ namespace org.kbinani.cadencii
                     config_file = fsys.combine( appdata, CONFIG_FILE_NAME );
                     if ( PortUtil.isFileExists( config_file ) ) {
                         try {
-                            ret = EditorConfig.deserialize( config_file );
+                            ret = deserializeEditorConfig( config_file );
                         } catch ( Exception ex ) {
                             serr.println( "AppManager#locdConfig; ex=" + ex );
                             ret = null;

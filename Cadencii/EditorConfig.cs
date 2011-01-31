@@ -514,7 +514,7 @@ namespace org.kbinani.cadencii
         public const int MIN_PIANOROLL_SCALEY = -4;
 
         #region static fields
-        public static readonly Vector<ValuePairOfStringArrayOfKeys> DEFAULT_SHORTCUT_KEYS = new Vector<ValuePairOfStringArrayOfKeys>( Arrays.asList(
+        /*public static readonly Vector<ValuePairOfStringArrayOfKeys> DEFAULT_SHORTCUT_KEYS = new Vector<ValuePairOfStringArrayOfKeys>( Arrays.asList(
             new ValuePairOfStringArrayOfKeys[]{
             new ValuePairOfStringArrayOfKeys( "menuFileNew", new BKeys[]{ BKeys.Control, BKeys.N } ),
             new ValuePairOfStringArrayOfKeys( "menuFileOpen", new BKeys[]{ BKeys.Control, BKeys.O } ),
@@ -593,7 +593,7 @@ namespace org.kbinani.cadencii
             new ValuePairOfStringArrayOfKeys( "menuSettingSingerProperty", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuHelpAbout", new BKeys[]{} ),
             new ValuePairOfStringArrayOfKeys( "menuHiddenFlipCurveOnPianorollMode", new BKeys[]{ BKeys.Tab } ),
-        } ) );
+        } ) );*/
 
 #if JAVA
         private static XmlSerializer s_serializer = new XmlSerializer( EditorConfig.class );
@@ -648,72 +648,13 @@ namespace org.kbinani.cadencii
         }
 
         #region public static method
-        public static void serialize( EditorConfig instance, String file )
+        /// <summary>
+        /// EditorConfigのインスタンスをxmlシリアライズするためのシリアライザを取得します
+        /// </summary>
+        /// <returns></returns>
+        public static XmlSerializer getSerializer()
         {
-            FileOutputStream fs = null;
-            try {
-                fs = new FileOutputStream( file );
-                s_serializer.serialize( fs, instance );
-            } catch ( Exception ex ) {
-                Logger.write( typeof( EditorConfig ) + ".serialize; ex=" + ex + "\n" );
-            } finally {
-                if ( fs != null ) {
-                    try {
-                        fs.close();
-                    } catch ( Exception ex2 ) {
-                        Logger.write( typeof( EditorConfig ) + ".serialize; ex=" + ex2 + "\n" );
-                    }
-                }
-            }
-        }
-
-        public static EditorConfig deserialize( String file )
-        {
-            EditorConfig ret = null;
-            FileInputStream fs = null;
-            try {
-                fs = new FileInputStream( file );
-                ret = (EditorConfig)s_serializer.deserialize( fs );
-            } catch ( Exception ex ) {
-#if JAVA
-                serr.println( "EditorConfig#deserialize; ex=" + ex );
-                ex.printStackTrace();
-#endif
-                Logger.write( typeof( EditorConfig ) + ".deserialize; ex=" + ex + "\n" );
-            } finally {
-                if ( fs != null ) {
-                    try {
-                        fs.close();
-                    } catch ( Exception ex2 ) {
-                        Logger.write( typeof( EditorConfig ) + ".deserialize; ex=" + ex2 + "\n" );
-                    }
-                }
-            }
-
-            if ( ret == null ) {
-                return null;
-            }
-
-            for ( int j = 0; j < DEFAULT_SHORTCUT_KEYS.size(); j++ ) {
-                boolean found = false;
-                for ( int i = 0; i < ret.ShortcutKeys.size(); i++ ) {
-                    if ( DEFAULT_SHORTCUT_KEYS.get( j ).Key.Equals( ret.ShortcutKeys.get( i ).Key ) ) {
-                        found = true;
-                        break;
-                    }
-                }
-                if ( !found ) {
-                    ret.ShortcutKeys.add( DEFAULT_SHORTCUT_KEYS.get( j ) );
-                }
-            }
-
-            // バッファーサイズを正規化
-            if ( ret.BufferSizeMilliSeconds < MIN_BUFFER_MILLIXEC ) {
-                ret.BufferSizeMilliSeconds = MIN_BUFFER_MILLIXEC;
-            } else if ( MAX_BUFFER_MILLISEC < ret.BufferSizeMilliSeconds ) {
-                ret.BufferSizeMilliSeconds = MAX_BUFFER_MILLISEC;
-            }
-            return ret;
+            return s_serializer;
         }
 
         /// <summary>
@@ -1039,13 +980,13 @@ namespace org.kbinani.cadencii
             return ret.toArray( new BKeys[] { } );
         }
 
-        public TreeMap<String, BKeys[]> getShortcutKeysDictionary()
+        public TreeMap<String, BKeys[]> getShortcutKeysDictionary( Vector<ValuePairOfStringArrayOfKeys> defs )
         {
             TreeMap<String, BKeys[]> ret = new TreeMap<String, BKeys[]>();
             for ( int i = 0; i < ShortcutKeys.size(); i++ ) {
                 ret.put( ShortcutKeys.get( i ).Key, ShortcutKeys.get( i ).Value );
             }
-            for ( Iterator<ValuePairOfStringArrayOfKeys> itr = DEFAULT_SHORTCUT_KEYS.iterator(); itr.hasNext(); ) {
+            for ( Iterator<ValuePairOfStringArrayOfKeys> itr = defs.iterator(); itr.hasNext(); ) {
                 ValuePairOfStringArrayOfKeys item = itr.next();
                 if ( !ret.containsKey( item.Key ) ) {
                     ret.put( item.Key, item.Value );

@@ -214,27 +214,30 @@ namespace org.kbinani.cadencii
             Font f = new Font( font_name, java.awt.Font.BOLD, (int)(font_size * 1.1f) );
             if ( m_shadow_enablde ) {
                 g.setColor( new Color( 0, 0, 0, 40 ) );
-                PortUtil.drawStringEx( g, m_app_name,
-                                       f,
+                PortUtil.drawStringEx(
+                    g,
+                    m_app_name,
+                    f,
 #if JAVA
-                                       new Rectangle( shadow_shift, shadow_shift + height, width, height ),
+                    new Rectangle( shadow_shift, shadow_shift + height, width, height ),
 #else
-                                       new Rectangle( shadow_shift, shadow_shift, width, height ),
+                    new Rectangle( shadow_shift, shadow_shift, width, height ),
 #endif
-                                       align,
-                                       valign );
+                    align,
+                    valign );
             }
             g.setColor( Color.black );
-            PortUtil.drawStringEx( g,
-                                   m_app_name,
-                                   f,
+            PortUtil.drawStringEx(
+                g,
+                m_app_name,
+                f,
 #if JAVA
-                                   new Rectangle( 0, height, width, height ),
+                new Rectangle( 0, height, width, height ),
 #else
-                                   new Rectangle( 0, 0, width, height ),
+                new Rectangle( 0, 0, width, height ),
 #endif
-                                   align,
-                                   valign );
+                align,
+                valign );
             for ( int i = 0; i < m_credit.Length; i++ ) {
                 AuthorListEntry itemi = m_credit[i];
                 Font f2 = new Font( font_name, itemi.getStyle(), font_size );
@@ -245,28 +248,30 @@ namespace org.kbinani.cadencii
                 String str = itemi.getName() + (id.Equals( "" ) ? "" : (" (" + id + ")"));
                 if ( m_shadow_enablde ) {
                     g.setColor( new Color( 0, 0, 0, 40 ) );
-                    PortUtil.drawStringEx( g,
-                                           str,
-                                           font,
+                    PortUtil.drawStringEx(
+                        g,
+                        str,
+                        font,
 #if JAVA
-                                           new Rectangle( 0 + shadow_shift, 40 + (int)(i * height * 1.1) + shadow_shift + height, width, height ),
+                        new Rectangle( 0 + shadow_shift, 40 + (int)(i * height * 1.1) + shadow_shift + height, width, height ),
 #else
-                                           new Rectangle( 0 + shadow_shift, 40 + (int)(i * height * 1.1) + shadow_shift, width, height ),
+                        new Rectangle( 0 + shadow_shift, 40 + (int)(i * height * 1.1) + shadow_shift, width, height ),
 #endif
-                                           align,
-                                           valign );
+                        align,
+                        valign );
                 }
                 g.setColor( Color.black );
-                PortUtil.drawStringEx( g,
-                                       str,
-                                       f2,
+                PortUtil.drawStringEx( 
+                    g,
+                    str,
+                    f2,
 #if JAVA
-                                       new Rectangle( 0, 40 + (int)(i * height * 1.1) + height, width, height ),
+                    new Rectangle( 0, 40 + (int)(i * height * 1.1) + height, width, height ),
 #else
-                                       new Rectangle( 0, 40 + (int)(i * height * 1.1), width, height ),
+                    new Rectangle( 0, 40 + (int)(i * height * 1.1), width, height ),
 #endif
-                                       align,
-                                       valign );
+                    align,
+                    valign );
             }
             return ret;
         }
@@ -356,6 +361,7 @@ namespace org.kbinani.cadencii
         {
             Graphics2D g = (Graphics2D)g1;
             g.clipRect( 0, 0, getWidth(), m_height );
+            g.setColor( Color.white );
             g.fillRect( 0, 0, getWidth(), getHeight() );
             //g.clearRect( 0, 0, getWidth(), getHeight() );
             if ( m_credit_mode ) {
@@ -471,7 +477,6 @@ namespace org.kbinani.cadencii
             this.btnOK = new org.kbinani.windows.forms.BButton();
             this.lblVstLogo = new org.kbinani.windows.forms.BLabel();
             this.pictVstLogo = new org.kbinani.windows.forms.BPictureBox();
-            this.lblStraightAcknowledgement = new org.kbinani.windows.forms.BLabel();
             this.chkTwitterID = new org.kbinani.windows.forms.BCheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictVstLogo)).BeginInit();
             this.SuspendLayout();
@@ -500,7 +505,7 @@ namespace org.kbinani.cadencii
             // lblVstLogo
             // 
             this.lblVstLogo.BackColor = System.Drawing.Color.White;
-            this.lblVstLogo.Location = new System.Drawing.Point( 25, 238 );
+            this.lblVstLogo.Location = new System.Drawing.Point( 25, 277 );
             this.lblVstLogo.Name = "lblVstLogo";
             this.lblVstLogo.Size = new System.Drawing.Size( 263, 32 );
             this.lblVstLogo.TabIndex = 5;
@@ -509,22 +514,12 @@ namespace org.kbinani.cadencii
             // pictVstLogo
             // 
             this.pictVstLogo.BackColor = System.Drawing.Color.White;
-            this.pictVstLogo.Location = new System.Drawing.Point( 27, 265 );
+            this.pictVstLogo.Location = new System.Drawing.Point( 27, 304 );
             this.pictVstLogo.Name = "pictVstLogo";
             this.pictVstLogo.Size = new System.Drawing.Size( 88, 60 );
             this.pictVstLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictVstLogo.TabIndex = 4;
             this.pictVstLogo.TabStop = false;
-            // 
-            // lblStraightAcknowledgement
-            // 
-            this.lblStraightAcknowledgement.BackColor = System.Drawing.Color.White;
-            this.lblStraightAcknowledgement.Location = new System.Drawing.Point( 25, 328 );
-            this.lblStraightAcknowledgement.Name = "lblStraightAcknowledgement";
-            this.lblStraightAcknowledgement.Size = new System.Drawing.Size( 263, 40 );
-            this.lblStraightAcknowledgement.TabIndex = 6;
-            this.lblStraightAcknowledgement.Text = "Components of Cadencii, \"vConnect.exe\" and \"straightVoiceDB.exe\", are powererd by" +
-                " STRAIGHT LIBRARY.";
             // 
             // chkTwitterID
             // 
@@ -546,7 +541,6 @@ namespace org.kbinani.cadencii
             this.ClientSize = new System.Drawing.Size( 300, 419 );
             this.Controls.Add( this.chkTwitterID );
             this.Controls.Add( this.pictVstLogo );
-            this.Controls.Add( this.lblStraightAcknowledgement );
             this.Controls.Add( this.lblVstLogo );
             this.Controls.Add( this.btnOK );
             this.Controls.Add( this.btnFlip );
@@ -571,7 +565,6 @@ namespace org.kbinani.cadencii
         private BButton btnOK;
         private BPictureBox pictVstLogo;
         private BLabel lblVstLogo;
-        private BLabel lblStraightAcknowledgement;
         private BCheckBox chkTwitterID;
 #endif
         #endregion

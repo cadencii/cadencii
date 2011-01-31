@@ -311,9 +311,9 @@ public class FormMain extends BForm {
     private BPopupMenu cMenuPositionIndicator = null;  //  @jve:decl-index=0:visual-constraint="991,295"
     private BMenuItem cMenuPositionIndicatorStartMarker = null;
     private BMenuItem cMenuPositionIndicatorEndMarker = null;
-    private BButton btnVZoom = null;
+    private BButton buttonVZoom = null;
     private JPanel jPanel = null;
-    private BButton btnVMooz = null;
+    private BButton buttonVMooz = null;
     private JPanel jPanel4 = null;
     //SECTION-END-FIELD
     public FormMain( String vsq_file ) {
@@ -4018,9 +4018,9 @@ public class FormMain extends BForm {
             pictureBox2.setLayout(new GridBagLayout());
             pictureBox2.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
             pictureBox2.setPreferredSize(new Dimension(17, 68));
-            pictureBox2.add(getBtnVZoom(), gridBagConstraints4);
+            pictureBox2.add(getButtonVZoom(), gridBagConstraints4);
             pictureBox2.add(getJPanel4(), gridBagConstraints5);
-            pictureBox2.add(getBtnVMooz(), gridBagConstraints8);
+            pictureBox2.add(getButtonVMooz(), gridBagConstraints8);
             pictureBox2.add(getJPanel42(), gridBagConstraints16);
             pictureBox2.setPreferredSize(new Dimension(16, 48));
         }
@@ -4296,17 +4296,17 @@ public class FormMain extends BForm {
     }
 
     /**
-     * This method initializes btnVZoom	
+     * This method initializes buttonVZoom	
      * 	
      * @return org.kbinani.windows.forms.BButton	
      */
-    private BButton getBtnVZoom() {
-        if (btnVZoom == null) {
-            btnVZoom = new BButton();
-            btnVZoom.setPreferredSize(new Dimension(17, 17));
-            btnVZoom.setFont(new Font("Lucida Grande", Font.BOLD, 13));
+    private BButton getButtonVZoom() {
+        if (buttonVZoom == null) {
+            buttonVZoom = new BButton();
+            buttonVZoom.setPreferredSize(new Dimension(17, 17));
+            buttonVZoom.setFont(new Font("Lucida Grande", Font.BOLD, 13));
         }
-        return btnVZoom;
+        return buttonVZoom;
     }
 
     /**
@@ -4324,16 +4324,16 @@ public class FormMain extends BForm {
     }
 
     /**
-     * This method initializes btnVMooz	
+     * This method initializes buttonVMooz	
      * 	
      * @return org.kbinani.windows.forms.BButton	
      */
-    private BButton getBtnVMooz() {
-        if (btnVMooz == null) {
-            btnVMooz = new BButton();
-            btnVMooz.setPreferredSize(new Dimension(17, 17));
+    private BButton getButtonVMooz() {
+        if (buttonVMooz == null) {
+            buttonVMooz = new BButton();
+            buttonVMooz.setPreferredSize(new Dimension(17, 17));
         }
-        return btnVMooz;
+        return buttonVMooz;
     }
 
     /**

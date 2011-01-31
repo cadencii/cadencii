@@ -65,12 +65,13 @@ namespace org.kbinani.cadencii
         private TreeMap<String, ValuePair<String, BKeys[]>> mDict;
         private TreeMap<String, ValuePair<String, BKeys[]>> mFirstDict;
         private Vector<String> mFieldName = new Vector<String>();
+        private FormMain mMainForm = null;
 
         /// <summary>
         /// コンストラクタ
         /// </summary>
         /// <param name="dict">メニューアイテムの表示文字列をキーとする，メニューアイテムのフィールド名とショートカットキーのペアを格納したマップ</param>
-        public FormShortcutKeys( TreeMap<String, ValuePair<String, BKeys[]>> dict )
+        public FormShortcutKeys( TreeMap<String, ValuePair<String, BKeys[]>> dict, FormMain main_form )
         {
 #if JAVA
             super();
@@ -91,6 +92,7 @@ namespace org.kbinani.cadencii
             sout.println( "FormShortcutKeys#.ctor; dict.size()=" + dict.size() );
             sout.println( "FormShortcutKeys#.ctor; mColumnWidthCommand=" + mColumnWidthCommand + "; mColumnWidthShortcutKey=" + mColumnWidthShortcutKey );
 #endif
+            mMainForm = main_form;
             list.setColumnHeaders( new String[] { _( "Command" ), _( "Shortcut Key" ) } );
             list.setColumnWidth( 0, mColumnWidthCommand );
             list.setColumnWidth( 1, mColumnWidthShortcutKey );
@@ -118,7 +120,7 @@ namespace org.kbinani.cadencii
                     for( int j = i + 1; j < size; j++ ){
                         String itemi = keys[i] + "";
                         String itemj = keys[j] + "";
-                        if( itemi.compareToIgnoreCase( itemj ) > 0 ){
+                        if( itemi.CompareTo( itemj ) > 0 ){
                             BKeys t = keys[i];
                             keys[i] = keys[j];
                             keys[j] = t;
@@ -127,7 +129,7 @@ namespace org.kbinani.cadencii
                     }
                 }
             }
-            for( BKeys key : keys ){
+            foreach( BKeys key in keys ){
                 comboEditKey.addItem( key );
             }
             this.setSize( mWindowWidth, mWindowHeight );
@@ -463,9 +465,10 @@ namespace org.kbinani.cadencii
 
         public void btnLoadDefault_Click( Object sender, BEventArgs e )
         {
-            for ( int i = 0; i < EditorConfig.DEFAULT_SHORTCUT_KEYS.size(); i++ ) {
-                String name = EditorConfig.DEFAULT_SHORTCUT_KEYS.get( i ).Key;
-                BKeys[] keys = EditorConfig.DEFAULT_SHORTCUT_KEYS.get( i ).Value;
+            Vector<ValuePairOfStringArrayOfKeys> defaults = mMainForm.getDefaultShortcutKeys();
+            for ( int i = 0; i < defaults.size(); i++ ) {
+                String name = defaults.get( i ).Key;
+                BKeys[] keys = defaults.get( i ).Value;
                 for ( Iterator<String> itr = mDict.keySet().iterator(); itr.hasNext(); ) {
                     String display = itr.next();
                     if ( name.Equals( mDict.get( display ).getKey() ) ) {
@@ -539,6 +542,15 @@ namespace org.kbinani.cadencii
             this.toolTip = new System.Windows.Forms.ToolTip( this.components );
             this.labelCategory = new org.kbinani.windows.forms.BLabel();
             this.comboCategory = new org.kbinani.windows.forms.BComboBox();
+            this.labelCommand = new org.kbinani.windows.forms.BLabel();
+            this.labelEdit = new org.kbinani.windows.forms.BLabel();
+            this.labelEditKey = new org.kbinani.windows.forms.BLabel();
+            this.labelEditModifier = new org.kbinani.windows.forms.BLabel();
+            this.comboEditKey = new org.kbinani.windows.forms.BComboBox();
+            this.checkCommand = new org.kbinani.windows.forms.BCheckBox();
+            this.checkShift = new org.kbinani.windows.forms.BCheckBox();
+            this.checkControl = new org.kbinani.windows.forms.BCheckBox();
+            this.checkOption = new org.kbinani.windows.forms.BCheckBox();
             this.SuspendLayout();
             // 
             // btnCancel
@@ -569,10 +581,10 @@ namespace org.kbinani.cadencii
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.list.FullRowSelect = true;
-            this.list.Location = new System.Drawing.Point( 12, 53 );
+            this.list.Location = new System.Drawing.Point( 36, 76 );
             this.list.MultiSelect = false;
             this.list.Name = "list";
-            this.list.Size = new System.Drawing.Size( 388, 302 );
+            this.list.Size = new System.Drawing.Size( 364, 182 );
             this.list.TabIndex = 9;
             this.list.UseCompatibleStateImageBehavior = false;
             this.list.View = System.Windows.Forms.View.Details;
@@ -582,7 +594,7 @@ namespace org.kbinani.cadencii
             this.btnLoadDefault.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnLoadDefault.Location = new System.Drawing.Point( 113, 361 );
             this.btnLoadDefault.Name = "btnLoadDefault";
-            this.btnLoadDefault.Size = new System.Drawing.Size( 95, 23 );
+            this.btnLoadDefault.Size = new System.Drawing.Size( 122, 23 );
             this.btnLoadDefault.TabIndex = 11;
             this.btnLoadDefault.Text = "Load Default";
             this.btnLoadDefault.UseVisualStyleBackColor = true;
@@ -602,19 +614,116 @@ namespace org.kbinani.cadencii
             this.labelCategory.AutoSize = true;
             this.labelCategory.Location = new System.Drawing.Point( 12, 12 );
             this.labelCategory.Name = "labelCategory";
-            this.labelCategory.Size = new System.Drawing.Size( 130, 12 );
+            this.labelCategory.Size = new System.Drawing.Size( 51, 12 );
             this.labelCategory.TabIndex = 12;
-            this.labelCategory.Text = "Select category of menu";
+            this.labelCategory.Text = "Category";
             // 
             // comboCategory
             // 
             this.comboCategory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.comboCategory.FormattingEnabled = true;
-            this.comboCategory.Location = new System.Drawing.Point( 12, 27 );
+            this.comboCategory.Location = new System.Drawing.Point( 36, 27 );
             this.comboCategory.Name = "comboCategory";
-            this.comboCategory.Size = new System.Drawing.Size( 388, 20 );
+            this.comboCategory.Size = new System.Drawing.Size( 364, 20 );
             this.comboCategory.TabIndex = 13;
+            // 
+            // labelCommand
+            // 
+            this.labelCommand.AutoSize = true;
+            this.labelCommand.Location = new System.Drawing.Point( 12, 61 );
+            this.labelCommand.Name = "labelCommand";
+            this.labelCommand.Size = new System.Drawing.Size( 55, 12 );
+            this.labelCommand.TabIndex = 14;
+            this.labelCommand.Text = "Command";
+            // 
+            // labelEdit
+            // 
+            this.labelEdit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.labelEdit.AutoSize = true;
+            this.labelEdit.Location = new System.Drawing.Point( 12, 276 );
+            this.labelEdit.Name = "labelEdit";
+            this.labelEdit.Size = new System.Drawing.Size( 25, 12 );
+            this.labelEdit.TabIndex = 15;
+            this.labelEdit.Text = "Edit";
+            // 
+            // labelEditKey
+            // 
+            this.labelEditKey.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.labelEditKey.AutoSize = true;
+            this.labelEditKey.Location = new System.Drawing.Point( 34, 293 );
+            this.labelEditKey.Name = "labelEditKey";
+            this.labelEditKey.Size = new System.Drawing.Size( 26, 12 );
+            this.labelEditKey.TabIndex = 16;
+            this.labelEditKey.Text = "Key:";
+            // 
+            // labelEditModifier
+            // 
+            this.labelEditModifier.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.labelEditModifier.AutoSize = true;
+            this.labelEditModifier.Location = new System.Drawing.Point( 34, 317 );
+            this.labelEditModifier.Name = "labelEditModifier";
+            this.labelEditModifier.Size = new System.Drawing.Size( 48, 12 );
+            this.labelEditModifier.TabIndex = 17;
+            this.labelEditModifier.Text = "Modifier:";
+            // 
+            // comboEditKey
+            // 
+            this.comboEditKey.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboEditKey.FormattingEnabled = true;
+            this.comboEditKey.Location = new System.Drawing.Point( 101, 290 );
+            this.comboEditKey.Name = "comboEditKey";
+            this.comboEditKey.Size = new System.Drawing.Size( 299, 20 );
+            this.comboEditKey.TabIndex = 18;
+            // 
+            // checkCommand
+            // 
+            this.checkCommand.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.checkCommand.AutoSize = true;
+            this.checkCommand.Location = new System.Drawing.Point( 101, 316 );
+            this.checkCommand.Name = "checkCommand";
+            this.checkCommand.Padding = new System.Windows.Forms.Padding( 5, 0, 5, 0 );
+            this.checkCommand.Size = new System.Drawing.Size( 82, 16 );
+            this.checkCommand.TabIndex = 153;
+            this.checkCommand.Text = "command";
+            this.checkCommand.UseVisualStyleBackColor = true;
+            // 
+            // checkShift
+            // 
+            this.checkShift.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.checkShift.AutoSize = true;
+            this.checkShift.Location = new System.Drawing.Point( 189, 316 );
+            this.checkShift.Name = "checkShift";
+            this.checkShift.Padding = new System.Windows.Forms.Padding( 5, 0, 5, 0 );
+            this.checkShift.Size = new System.Drawing.Size( 57, 16 );
+            this.checkShift.TabIndex = 154;
+            this.checkShift.Text = "shift";
+            this.checkShift.UseVisualStyleBackColor = true;
+            // 
+            // checkControl
+            // 
+            this.checkControl.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.checkControl.AutoSize = true;
+            this.checkControl.Location = new System.Drawing.Point( 252, 316 );
+            this.checkControl.Name = "checkControl";
+            this.checkControl.Padding = new System.Windows.Forms.Padding( 5, 0, 5, 0 );
+            this.checkControl.Size = new System.Drawing.Size( 69, 16 );
+            this.checkControl.TabIndex = 155;
+            this.checkControl.Text = "control";
+            this.checkControl.UseVisualStyleBackColor = true;
+            // 
+            // checkOption
+            // 
+            this.checkOption.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.checkOption.AutoSize = true;
+            this.checkOption.Location = new System.Drawing.Point( 325, 316 );
+            this.checkOption.Name = "checkOption";
+            this.checkOption.Padding = new System.Windows.Forms.Padding( 5, 0, 5, 0 );
+            this.checkOption.Size = new System.Drawing.Size( 65, 16 );
+            this.checkOption.TabIndex = 156;
+            this.checkOption.Text = "option";
+            this.checkOption.UseVisualStyleBackColor = true;
             // 
             // FormShortcutKeys
             // 
@@ -623,6 +732,15 @@ namespace org.kbinani.cadencii
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size( 412, 438 );
+            this.Controls.Add( this.checkOption );
+            this.Controls.Add( this.checkControl );
+            this.Controls.Add( this.checkShift );
+            this.Controls.Add( this.checkCommand );
+            this.Controls.Add( this.comboEditKey );
+            this.Controls.Add( this.labelEditModifier );
+            this.Controls.Add( this.labelEditKey );
+            this.Controls.Add( this.labelEdit );
+            this.Controls.Add( this.labelCommand );
             this.Controls.Add( this.comboCategory );
             this.Controls.Add( this.labelCategory );
             this.Controls.Add( this.btnLoadDefault );
@@ -652,6 +770,15 @@ namespace org.kbinani.cadencii
         private System.Windows.Forms.ToolTip toolTip;
         private BLabel labelCategory;
         private BComboBox comboCategory;
+        private org.kbinani.windows.forms.BLabel labelCommand;
+        private org.kbinani.windows.forms.BLabel labelEdit;
+        private org.kbinani.windows.forms.BLabel labelEditKey;
+        private org.kbinani.windows.forms.BLabel labelEditModifier;
+        private org.kbinani.windows.forms.BComboBox comboEditKey;
+        private BCheckBox checkCommand;
+        private BCheckBox checkShift;
+        private BCheckBox checkControl;
+        private BCheckBox checkOption;
 
         #endregion
 #endif
