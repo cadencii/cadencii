@@ -146,7 +146,11 @@ namespace org.kbinani.media {
 
         public static double getPosition() {
 #if JAVA
-            return m_line.getMicrosecondPosition() * 1e-6;
+            if( m_line == null ){
+                return 0.0;
+            }else{
+                return m_line.getMicrosecondPosition() * 1e-6;
+            }
 #else
             try {
                 return SoundGetPosition();

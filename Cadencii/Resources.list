@@ -56,3 +56,5 @@ dim3	Image	.\resources\dim3.png
 dim4	Image	.\resources\dim4.png
 dim5	Image	.\resources\dim5.png
 splash	Image	.\resources\splash.png
+plus8x8	Image	.\resources\plus8x8.png
+minus8x8	Image	.\resources\minus8x8.png

@@ -114,10 +114,12 @@ namespace org.kbinani.cadencii {
         /// コンポーネントの描画関数です
         /// </summary>
         /// <param name="g"></param>
-        private void paint( Graphics2D g ) {
+        public void paint( Graphics g1 ) {
             int width = getWidth();
             int height = getHeight();
             Rectangle rc = new Rectangle( 0, 0, width, height );
+
+            Graphics2D g = (Graphics2D)g1;
 
             // 背景を塗りつぶす
             g.setStroke( getStrokeDefault() );
@@ -130,12 +132,13 @@ namespace org.kbinani.cadencii {
                 g.drawLine( 0, 0, 0, height );
 
                 g.setColor( Color.black );
-                PortUtil.drawStringEx( g, 
-                                       "(hidden for performance)", 
-                                       AppManager.baseFont10,
-                                       rc, 
-                                       PortUtil.STRING_ALIGN_CENTER,
-                                       PortUtil.STRING_ALIGN_CENTER );
+                PortUtil.drawStringEx(
+                    g,
+                    "(hidden for performance)", 
+                    AppManager.baseFont8,
+                    rc, 
+                    PortUtil.STRING_ALIGN_CENTER,
+                    PortUtil.STRING_ALIGN_CENTER );
                 return;
             }
             
@@ -150,22 +153,24 @@ namespace org.kbinani.cadencii {
 
             if ( context != null ) {
                 if ( mAutoMaximize ) {
-                    context.draw( g,
-                                  Color.black,
-                                  rc,
-                                  AppManager.clockFromXCoord( AppManager.keyWidth ),
-                                  AppManager.clockFromXCoord( AppManager.keyWidth + width ),
-                                  AppManager.getVsqFile().TempoTable,
-                                  AppManager.getScaleX() );
+                    context.draw(
+                        g,
+                        Color.black,
+                        rc,
+                        AppManager.clockFromXCoord( AppManager.keyWidth ),
+                        AppManager.clockFromXCoord( AppManager.keyWidth + width ),
+                        AppManager.getVsqFile().TempoTable,
+                        AppManager.getScaleX() );
                 } else {
-                    context.draw( g,
-                                  Color.black,
-                                  rc,
-                                  AppManager.clockFromXCoord( AppManager.keyWidth ),
-                                  AppManager.clockFromXCoord( AppManager.keyWidth + width ),
-                                  AppManager.getVsqFile().TempoTable,
-                                  AppManager.getScaleX(),
-                                  mScale );
+                    context.draw(
+                        g,
+                        Color.black,
+                        rc,
+                        AppManager.clockFromXCoord( AppManager.keyWidth ),
+                        AppManager.clockFromXCoord( AppManager.keyWidth + width ),
+                        AppManager.getVsqFile().TempoTable,
+                        AppManager.getScaleX(),
+                        mScale );
                 }
             }
 
@@ -274,12 +279,12 @@ namespace org.kbinani.cadencii {
             mDrawer[index].load( wave_path );
         }
 
+#if !JAVA
         /// <summary>
         /// オーバーライドされます。
         /// <seealso cref="M:System.Windows.Forms.Control.OnPaint"/>
         /// </summary>
         /// <param name="e"></param>
-#if !JAVA
         protected override void OnPaint( PaintEventArgs e ) {
             base.OnPaint( e );
             if ( mGraphics == null ) {

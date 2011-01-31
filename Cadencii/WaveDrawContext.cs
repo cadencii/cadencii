@@ -41,7 +41,11 @@ namespace org.kbinani.cadencii {
 #else
     public class WaveDrawContext : IDisposable {
 #endif
+#if JAVA
         private byte[] mWave;
+#else
+        private sbyte[] mWave;
+#endif
         private int mSampleRate = 44100;
         private String mName;
         private float mLength;
@@ -62,7 +66,11 @@ namespace org.kbinani.cadencii {
         /// デフォルトのコンストラクタ。
         /// </summary>
         public WaveDrawContext() {
+#if JAVA
             mWave = new byte[0];
+#else
+            mWave = new sbyte[0];
+#endif
             mLength = 0.0f;
             mDrawer = new PolylineDrawer( null, 1024 );
         }
@@ -72,7 +80,11 @@ namespace org.kbinani.cadencii {
         /// </summary>
         public void unload() {
             mDrawer.clear();
+#if JAVA
             mWave = new byte[0];
+#else
+            mWave = new sbyte[0];
+#endif
             mLength = 0.0f;
         }
 
@@ -133,9 +145,13 @@ namespace org.kbinani.cadencii {
                     // 既存波形の縮小を行う
                     double ampall = 1.0 / max;
                     for ( int i = 0; i < mWave.Length; i++ ) {
-                        double vold = (mWave[i] - 127.0) / 127.0 * mMaxAmplitude;
+                        double vold = mWave[i] / 127.0 * mMaxAmplitude;
                         double vnew = vold * ampall;
-                        mWave[i] = (byte)(127 + vnew * 127);
+#if JAVA
+                        mWave[i] = (byte)(vnew * 127);
+#else
+                        mWave[i] = (sbyte)(vnew * 127);
+#endif
                     }
 
                 }
@@ -153,7 +169,11 @@ namespace org.kbinani.cadencii {
 
                     for ( int i = 0; i < delta; i++ ) {
                         double d = (left[i] + right[i]) * 0.5 * amp;
-                        byte b = (byte)(127 + d * 127);
+#if JAVA
+                        byte b = (byte)(d * 127);
+#else
+                        sbyte b = (sbyte)(d * 127);
+#endif
                         mWave[pos + i] = b;
                     }
 
@@ -166,7 +186,7 @@ namespace org.kbinani.cadencii {
                 // mActualMaxAmplitudeの値を更新
                 mActualMaxAmplitude = 0.0f;
                 for ( int i = 0; i < mWave.Length; i++ ) {
-                    double d = Math.Abs( (mWave[i] - 127) / 127.0 * mMaxAmplitude );
+                    double d = Math.Abs( mWave[i] / 127.0 * mMaxAmplitude );
                     mActualMaxAmplitude = (d > mActualMaxAmplitude) ? (float)d : mActualMaxAmplitude;
                 }
             } catch ( Exception ex ) {
@@ -188,7 +208,11 @@ namespace org.kbinani.cadencii {
         /// <param name="file">読み込むWAVEファイルのパス</param>
         public void load( String file ) {
             if ( !PortUtil.isFileExists( file ) ) {
+#if JAVA
                 mWave = new byte[0];
+#else
+                mWave = new sbyte[0];
+#endif
                 mLength = 0.0f;
                 return;
             }
@@ -196,7 +220,12 @@ namespace org.kbinani.cadencii {
             Wave wr = null;
             try {
                 wr = new Wave( file );
-                mWave = new byte[(int)wr.getTotalSamples()];
+                int len = (int)wr.getTotalSamples();
+#if JAVA
+                mWave = new byte[len];
+#else
+                mWave = new sbyte[len];
+#endif
                 mSampleRate = (int)wr.getSampleRate();
                 mLength = wr.getTotalSamples() / (float)wr.getSampleRate();
                 int count = (int)wr.getTotalSamples();
@@ -216,7 +245,11 @@ namespace org.kbinani.cadencii {
                 double amp = (max > 0.0) ? (1.0 / max) : 0.0;
                 for ( int i = 0; i < count; i++ ) {
                     double b = wr.getDouble( i ) * amp;
-                    mWave[i] = (byte)(127 + 127 * b);
+#if JAVA
+                    mWave[i] = (byte)(127 * b);
+#else
+                    mWave[i] = (sbyte)(127 * b);
+#endif
                 }
             } catch ( Exception ex ) {
             } finally {
@@ -228,7 +261,11 @@ namespace org.kbinani.cadencii {
                 }
             }
             if ( mWave == null ) {
+#if JAVA
                 mWave = new byte[0];
+#else
+                mWave = new sbyte[0];
+#endif
                 mSampleRate = 44100;
                 mLength = 0.0f;
             }
@@ -346,15 +383,17 @@ namespace org.kbinani.cadencii {
         /// <param name="pixel_per_clock">ゲートタイムあたりの秒数</param>
         /// <param name="scale_y">Y軸方向の描画スケール。デフォルトは1.0</param>
         /// <param name="auto_maximize">自動で最大化するかどうか</param>
-        private void drawCore( Graphics2D g, 
-                          Color pen,
-                          Rectangle rect,
-                          int clock_start,
-                          int clock_end, 
-                          TempoVector tempo_table, 
-                          float pixel_per_clock,
-                          float scale_y,
-                          boolean auto_maximize ) {
+        private void drawCore(
+            Graphics2D g,
+            Color pen,
+            Rectangle rect,
+            int clock_start,
+            int clock_end, 
+            TempoVector tempo_table, 
+            float pixel_per_clock,
+            float scale_y,
+            boolean auto_maximize )
+        {
             if ( mWave.Length == 0 ) {
                 return;
             }
@@ -379,7 +418,7 @@ namespace org.kbinani.cadencii {
             }
             int ox = rect.x;
             int oy = rect.height / 2;
-            int last = mWave[0] - 127;
+            int last = mWave[0];
             int lastx = ox;
             int lastYMax = oy - (int)(last * order_y);
             int lastYMin = lastYMax;
@@ -443,7 +482,7 @@ namespace org.kbinani.cadencii {
 
                 boolean breakRequired = false;
                 for ( int j = j0; j < j1; j++ ) {
-                    int v = mWave[j] - 127;
+                    int v = mWave[j];
                     if ( v == last ) {
                         skipped = true;
                         continue;

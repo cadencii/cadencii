@@ -120,7 +120,11 @@ namespace org.kbinani.cadencii
                     for( int j = i + 1; j < size; j++ ){
                         String itemi = keys[i] + "";
                         String itemj = keys[j] + "";
+#if JAVA
+                        if( itemi.compareTo( itemj ) > 0 ){
+#else
                         if( itemi.CompareTo( itemj ) > 0 ){
+#endif
                             BKeys t = keys[i];
                             keys[i] = keys[j];
                             keys[j] = t;

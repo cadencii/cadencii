@@ -1532,20 +1532,12 @@ namespace org.kbinani.cadencii
                     g.setColor( new Color( 212, 212, 212 ) );
                     g.fillRect( 0, 0, key_width, size.height - 2 * OFFSET_TRACK_TAB );
 
-                    // 数値ビュー
-                    /*Rectangle num_view = new Rectangle( 13, 4, 38, 16 );
-                    g.setColor( new Color( 125, 123, 124 ) );
-                    g.drawRect( num_view.x, num_view.y, num_view.width, num_view.height );
-                    g.setFont( AppManager.baseFont9 );
-                    g.setColor( brs_string );
-                    g.drawString( numeric_view + "", num_view.x, num_view.y + num_view.height / 2 - AppManager.baseFont9OffsetHeight + 1 ); // sf );*/
-
                     // 現在表示されているカーブの名前
-                    g.setFont( AppManager.baseFont9 );
+                    g.setFont( AppManager.baseFont8 );
                     g.setColor( brs_string );
                     boolean is_utau_mode = AppManager.mDrawIsUtau[selected - 1];
                     String name = (is_utau_mode && mSelectedCurve.equals( CurveType.VEL )) ? "INT" : mSelectedCurve.getName();
-                    g.drawString( name, 7, AppManager.baseFont9Height / 2 - AppManager.baseFont9OffsetHeight + 1 ); // new Rectangle( 7, 24, 56, 14 ), sf
+                    g.drawString( name, 7, AppManager.baseFont8Height / 2 - AppManager.baseFont8OffsetHeight + 1 );
 
                     for ( int i = 0; i < AppManager.getViewingCurveCount(); i++ ) {
                         CurveType curve = AppManager.getViewingCurveElement( i );
@@ -1556,18 +1548,18 @@ namespace org.kbinani.cadencii
                         }
                         g.setColor( rect_curve );
                         g.drawRect( rc.x, rc.y, rc.width, rc.height );
-                        Rectangle rc_str = new Rectangle( rc.x, rc.y + rc.height / 2 - AppManager.baseFont9OffsetHeight, rc.width, rc.height );
-                        rc_str.y += 2;
+                        int rc_str_x = rc.x + 2;
+                        int rc_str_y = rc.y + AppManager.baseFont8Height / 2 - AppManager.baseFont8OffsetHeight + 1;
                         String n = curve.getName();
                         if ( is_utau_mode && curve.equals( CurveType.VEL ) ) {
                             n = "INT";
                         }
                         if ( curve.equals( mSelectedCurve ) ) {
                             g.setColor( Color.white );
-                            g.drawString( n, rc_str.x, rc_str.y ); // sf );
+                            g.drawString( n, rc_str_x, rc_str_y );
                         } else {
                             g.setColor( font_color_normal );
-                            g.drawString( n, rc_str.x, rc_str.y ); // sf );
+                            g.drawString( n, rc_str_x, rc_str_y );
                         }
                     }
                     #endregion

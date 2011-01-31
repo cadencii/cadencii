@@ -228,33 +228,33 @@ namespace org.kbinani.cadencii
             } else if ( mType == CurveTypeImpl.Decay ) {
                 mName = "Decay";
             } else if ( mType == CurveTypeImpl.harmonics ) {
-                mName = "Harmonics";
+                mName = "Harm";
             } else if ( mType == CurveTypeImpl.fx2depth ) {
-                mName = "FX2Depth";
+                mName = "fx2dep";
             } else if ( mType == CurveTypeImpl.reso1freq ) {
-                mName = "reso1freq";
+                mName = "res1freq";
             } else if ( mType == CurveTypeImpl.reso1bw ) {
-                mName = "reso1bw";
+                mName = "res1bw";
             } else if ( mType == CurveTypeImpl.reso1amp ) {
-                mName = "reso1amp";
+                mName = "res1amp";
             } else if ( mType == CurveTypeImpl.reso2freq ) {
-                mName = "reso2freq";
+                mName = "res2freq";
             } else if ( mType == CurveTypeImpl.reso2bw ) {
-                mName = "reso2bw";
+                mName = "res2bw";
             } else if ( mType == CurveTypeImpl.reso2amp ) {
-                mName = "reso2amp";
+                mName = "res2amp";
             } else if ( mType == CurveTypeImpl.reso3freq ) {
-                mName = "reso3freq";
+                mName = "res3freq";
             } else if ( mType == CurveTypeImpl.reso3bw ) {
-                mName = "reso3bw";
+                mName = "res3bw";
             } else if ( mType == CurveTypeImpl.reso3amp ) {
-                mName = "reso3amp";
+                mName = "res3amp";
             } else if ( mType == CurveTypeImpl.reso4freq ) {
-                mName = "reso4freq";
+                mName = "res4freq";
             } else if ( mType == CurveTypeImpl.reso4bw ) {
-                mName = "reso4bw";
+                mName = "res4bw";
             } else if ( mType == CurveTypeImpl.reso4amp ) {
-                mName = "reso4amp";
+                mName = "res4amp";
             } else if ( mType == CurveTypeImpl.Env ) {
                 mName = "Env";
             } else {

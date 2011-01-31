@@ -142,7 +142,7 @@ public class FormMain extends BForm {
     private BMenuItem menuHelpAbout = null;
     private BSplitPane splitContainer2 = null;
     private BPanel panel1 = null;
-    private BPanel panel2 = null;
+    private BPanel panel2A = null;
     private BSplitPane splitContainer1 = null;
     private TrackSelector trackSelector = null;
     private BSplitPane splitContainerProperty = null;
@@ -312,9 +312,10 @@ public class FormMain extends BForm {
     private BMenuItem cMenuPositionIndicatorStartMarker = null;
     private BMenuItem cMenuPositionIndicatorEndMarker = null;
     private BButton buttonVZoom = null;
-    private JPanel jPanel = null;
     private BButton buttonVMooz = null;
     private JPanel jPanel4 = null;
+    private BPanel panel2 = null;
+    private WaveView waveView = null;
     //SECTION-END-FIELD
     public FormMain( String vsq_file ) {
         super();
@@ -2072,11 +2073,12 @@ public class FormMain extends BForm {
         if (splitContainer2 == null) {
             splitContainer2 = new BSplitPane();
             splitContainer2.setDividerSize(9);
-            splitContainer2.setDividerLocation(300);
+            splitContainer2.setDividerLocation(200);
             splitContainer2.setEnabled(false);
             splitContainer2.setResizeWeight(1.0D);
             splitContainer2.setPanel2Hidden(true);
-            splitContainer2.setBottomComponent(getPanel2());
+            splitContainer2.setContinuousLayout(true);
+            splitContainer2.setBottomComponent(getPanel2A());
             splitContainer2.setTopComponent(getJPanel1());
             splitContainer2.setOrientation(BSplitPane.VERTICAL_SPLIT);
             splitContainer2.setBorder( new EmptyBorder( 0, 0, 0, 0 ) );
@@ -2107,7 +2109,7 @@ public class FormMain extends BForm {
             gridBagConstraints10.fill = GridBagConstraints.BOTH;
             gridBagConstraints10.gridy = 1;
             GridBagConstraints gridBagConstraints9 = new GridBagConstraints();
-            gridBagConstraints9.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints9.fill = GridBagConstraints.BOTH;
             gridBagConstraints9.gridy = 1;
             gridBagConstraints9.weighty = 0.0D;
             gridBagConstraints9.weightx = 1.0D;
@@ -2133,17 +2135,30 @@ public class FormMain extends BForm {
     }
 
     /**
-     * This method initializes panel2   
+     * This method initializes panel2A   
      *  
      * @return javax.swing.BPanel   
      */
-    private BPanel getPanel2() {
-        if (panel2 == null) {
-            panel2 = new BPanel();
-            panel2.setLayout(new GridBagLayout());
-            panel2.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+    private BPanel getPanel2A() {
+        if (panel2A == null) {
+            GridBagConstraints gridBagConstraints17 = new GridBagConstraints();
+            gridBagConstraints17.gridx = 1;
+            gridBagConstraints17.fill = GridBagConstraints.BOTH;
+            gridBagConstraints17.weightx = 1.0D;
+            gridBagConstraints17.weighty = 1.0D;
+            gridBagConstraints17.gridy = 0;
+            GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
+            gridBagConstraints5.gridx = 0;
+            gridBagConstraints5.weighty = 1.0D;
+            gridBagConstraints5.fill = GridBagConstraints.VERTICAL;
+            gridBagConstraints5.gridy = 0;
+            panel2A = new BPanel();
+            panel2A.setLayout(new GridBagLayout());
+            panel2A.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+            panel2A.add(getPanel2(), gridBagConstraints5);
+            panel2A.add(getWaveView(), gridBagConstraints17);
         }
-        return panel2;
+        return panel2A;
     }
 
     /**
@@ -2157,6 +2172,7 @@ public class FormMain extends BForm {
             splitContainer1.setDividerLocation(300);
             splitContainer1.setResizeWeight(1.0D);
             splitContainer1.setDividerSize(9);
+            splitContainer1.setContinuousLayout(true);
             splitContainer1.setTopComponent(getSplitContainer2());
             splitContainer1.setBottomComponent(getTrackSelector());
             splitContainer1.setOrientation(BSplitPane.VERTICAL_SPLIT);
@@ -2190,6 +2206,7 @@ public class FormMain extends BForm {
             splitContainerProperty.setEnabled(false);
             splitContainerProperty.setDividerSize(0);
             splitContainerProperty.setResizeWeight(1.0D);
+            splitContainerProperty.setContinuousLayout(true);
             splitContainerProperty.setRightComponent(getSplitContainer1());
             splitContainerProperty.setLeftComponent(getM_property_panel_container());
             splitContainerProperty.setBorder( new EmptyBorder( 0, 0, 0, 0 ) );
@@ -3576,7 +3593,7 @@ public class FormMain extends BForm {
     private BVScrollBar getVScroll() {
         if (vScroll == null) {
             vScroll = new BVScrollBar();
-            vScroll.setPreferredSize(new Dimension(17, 96));
+            vScroll.setPreferredSize(new Dimension(16, 50));
         }
         return vScroll;
     }
@@ -4008,21 +4025,16 @@ public class FormMain extends BForm {
             GridBagConstraints gridBagConstraints8 = new GridBagConstraints();
             gridBagConstraints8.gridx = 0;
             gridBagConstraints8.gridy = 2;
-            GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
-            gridBagConstraints5.gridx = 0;
-            gridBagConstraints5.gridy = 1;
             GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
             gridBagConstraints4.gridx = 0;
             gridBagConstraints4.gridy = 0;
             pictureBox2 = new BPanel();
             pictureBox2.setLayout(new GridBagLayout());
             pictureBox2.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-            pictureBox2.setPreferredSize(new Dimension(17, 68));
+            pictureBox2.setPreferredSize(new Dimension(16, 49));
             pictureBox2.add(getButtonVZoom(), gridBagConstraints4);
-            pictureBox2.add(getJPanel4(), gridBagConstraints5);
             pictureBox2.add(getButtonVMooz(), gridBagConstraints8);
             pictureBox2.add(getJPanel42(), gridBagConstraints16);
-            pictureBox2.setPreferredSize(new Dimension(16, 48));
         }
         return pictureBox2;
     }
@@ -4241,7 +4253,7 @@ public class FormMain extends BForm {
             gridBagConstraints3.weighty = 0.0D;
             gridBagConstraints3.fill = GridBagConstraints.BOTH;
             GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-            gridBagConstraints1.fill = GridBagConstraints.VERTICAL;
+            gridBagConstraints1.fill = GridBagConstraints.BOTH;
             gridBagConstraints1.gridx = 0;
             gridBagConstraints1.gridy = 0;
             gridBagConstraints1.weighty = 1.0D;
@@ -4303,24 +4315,10 @@ public class FormMain extends BForm {
     private BButton getButtonVZoom() {
         if (buttonVZoom == null) {
             buttonVZoom = new BButton();
-            buttonVZoom.setPreferredSize(new Dimension(17, 17));
+            buttonVZoom.setPreferredSize(new Dimension(16, 16));
             buttonVZoom.setFont(new Font("Lucida Grande", Font.BOLD, 13));
         }
         return buttonVZoom;
-    }
-
-    /**
-     * This method initializes jPanel	
-     * 	
-     * @return javax.swing.JPanel	
-     */
-    private JPanel getJPanel4() {
-        if (jPanel == null) {
-            jPanel = new JPanel();
-            jPanel.setLayout(new GridBagLayout());
-            jPanel.setPreferredSize(new Dimension(17, 17));
-        }
-        return jPanel;
     }
 
     /**
@@ -4331,7 +4329,7 @@ public class FormMain extends BForm {
     private BButton getButtonVMooz() {
         if (buttonVMooz == null) {
             buttonVMooz = new BButton();
-            buttonVMooz.setPreferredSize(new Dimension(17, 17));
+            buttonVMooz.setPreferredSize(new Dimension(16, 16));
         }
         return buttonVMooz;
     }
@@ -4345,9 +4343,39 @@ public class FormMain extends BForm {
         if (jPanel4 == null) {
             jPanel4 = new JPanel();
             jPanel4.setLayout(new GridBagLayout());
-            jPanel4.setPreferredSize(new Dimension(17, 17));
+            jPanel4.setPreferredSize(new Dimension(16, 17));
+            jPanel4.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         }
         return jPanel4;
+    }
+
+    /**
+     * This method initializes panel2	
+     * 	
+     * @return org.kbinani.windows.forms.BPanel	
+     */
+    private BPanel getPanel2() {
+        if (panel2 == null) {
+            panel2 = new BPanel();
+            panel2.setLayout(new GridBagLayout());
+            panel2.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+            panel2.setPreferredSize(new Dimension(68, 4));
+        }
+        return panel2;
+    }
+
+    /**
+     * This method initializes waveView	
+     * 	
+     * @return org.kbinani.windows.forms.BPanel	
+     */
+    private WaveView getWaveView() {
+        if (waveView == null) {
+            waveView = new WaveView();
+            waveView.setLayout(new GridBagLayout());
+            waveView.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+        }
+        return waveView;
     }
 
     //SECTION-END-METHOD

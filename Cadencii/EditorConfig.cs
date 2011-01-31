@@ -275,6 +275,11 @@ namespace org.kbinani.cadencii
         /// </summary>
         public boolean ViewWaveform = false;
         /// <summary>
+        /// スプリットコンテナのディバイダの位置
+        /// <version>3.3+</version>
+        /// </summary>
+        public int SplitContainer2LastDividerLocation = -1;
+        /// <summary>
         /// キーボードからの入力に使用するデバイス
         /// </summary>
         public MidiPortConfig MidiInPort = new MidiPortConfig();
@@ -514,87 +519,6 @@ namespace org.kbinani.cadencii
         public const int MIN_PIANOROLL_SCALEY = -4;
 
         #region static fields
-        /*public static readonly Vector<ValuePairOfStringArrayOfKeys> DEFAULT_SHORTCUT_KEYS = new Vector<ValuePairOfStringArrayOfKeys>( Arrays.asList(
-            new ValuePairOfStringArrayOfKeys[]{
-            new ValuePairOfStringArrayOfKeys( "menuFileNew", new BKeys[]{ BKeys.Control, BKeys.N } ),
-            new ValuePairOfStringArrayOfKeys( "menuFileOpen", new BKeys[]{ BKeys.Control, BKeys.O } ),
-            new ValuePairOfStringArrayOfKeys( "menuFileOpenVsq", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuFileSave", new BKeys[]{ BKeys.Control, BKeys.S } ),
-            new ValuePairOfStringArrayOfKeys( "menuFileQuit", new BKeys[]{ BKeys.Control, BKeys.Q } ),
-            new ValuePairOfStringArrayOfKeys( "menuEditUndo", new BKeys[]{ BKeys.Control, BKeys.Z } ),
-            new ValuePairOfStringArrayOfKeys( "menuEditRedo", new BKeys[]{ BKeys.Control, BKeys.Shift, BKeys.Z } ),
-            new ValuePairOfStringArrayOfKeys( "menuEditCut", new BKeys[]{ BKeys.Control, BKeys.X } ),
-            new ValuePairOfStringArrayOfKeys( "menuEditCopy", new BKeys[]{ BKeys.Control, BKeys.C } ),
-            new ValuePairOfStringArrayOfKeys( "menuEditPaste", new BKeys[]{ BKeys.Control, BKeys.V } ),
-            new ValuePairOfStringArrayOfKeys( "menuEditSelectAll", new BKeys[]{ BKeys.Control, BKeys.A } ),
-            new ValuePairOfStringArrayOfKeys( "menuEditSelectAllEvents", new BKeys[]{ BKeys.Control, BKeys.Shift, BKeys.A } ),
-            new ValuePairOfStringArrayOfKeys( "menuEditDelete", new BKeys[]{ BKeys.Delete } ),
-            new ValuePairOfStringArrayOfKeys( "menuVisualMixer", new BKeys[]{ BKeys.F3 } ),
-            new ValuePairOfStringArrayOfKeys( "menuHiddenEditLyric", new BKeys[]{ BKeys.F2 } ),
-            new ValuePairOfStringArrayOfKeys( "menuHiddenEditFlipToolPointerPencil", new BKeys[]{ BKeys.Control, BKeys.W } ),
-            new ValuePairOfStringArrayOfKeys( "menuHiddenEditFlipToolPointerEraser", new BKeys[]{ BKeys.Control, BKeys.E } ),
-            new ValuePairOfStringArrayOfKeys( "menuHiddenVisualForwardParameter", new BKeys[]{ BKeys.Control, BKeys.Alt, BKeys.PageDown } ),
-            new ValuePairOfStringArrayOfKeys( "menuHiddenVisualBackwardParameter", new BKeys[]{ BKeys.Control, BKeys.Alt, BKeys.PageUp } ),
-            new ValuePairOfStringArrayOfKeys( "menuHiddenTrackNext", new BKeys[]{ BKeys.Control, BKeys.PageDown } ),
-            new ValuePairOfStringArrayOfKeys( "menuHiddenTrackBack", new BKeys[]{ BKeys.Control, BKeys.PageUp } ),
-            new ValuePairOfStringArrayOfKeys( "menuHiddenSelectBackward", new BKeys[]{ BKeys.Alt, BKeys.Left } ),
-            new ValuePairOfStringArrayOfKeys( "menuHiddenSelectForward", new BKeys[]{ BKeys.Alt, BKeys.Right } ),
-            new ValuePairOfStringArrayOfKeys( "menuHiddenMoveUp", new BKeys[]{ BKeys.Shift, BKeys.Up } ),
-            new ValuePairOfStringArrayOfKeys( "menuHiddenMoveDown", new BKeys[]{ BKeys.Shift, BKeys.Down } ),
-            new ValuePairOfStringArrayOfKeys( "menuHiddenMoveLeft", new BKeys[]{ BKeys.Shift, BKeys.Left } ),
-            new ValuePairOfStringArrayOfKeys( "menuHiddenMoveRight", new BKeys[]{ BKeys.Shift, BKeys.Right } ),
-            new ValuePairOfStringArrayOfKeys( "menuHiddenLengthen", new BKeys[]{ BKeys.Control, BKeys.Right } ),
-            new ValuePairOfStringArrayOfKeys( "menuHiddenShorten", new BKeys[]{ BKeys.Control, BKeys.Left } ),
-            new ValuePairOfStringArrayOfKeys( "menuHiddenGoToEndMarker", new BKeys[]{ BKeys.Control, BKeys.End } ),
-            new ValuePairOfStringArrayOfKeys( "menuHiddenGoToStartMarker", new BKeys[]{ BKeys.Control, BKeys.Home } ),
-            new ValuePairOfStringArrayOfKeys( "menuHiddenPlayFromStartMarker", new BKeys[]{ BKeys.Control, BKeys.Enter } ),
-            new ValuePairOfStringArrayOfKeys( "menuFileSaveNamed", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuFileImportVsq", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuFileOpenUst", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuFileImportMidi", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuFileExportWave", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuFileExportMidi", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuVisualWaveform", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuVisualProperty", new BKeys[]{ BKeys.F6 } ),
-            new ValuePairOfStringArrayOfKeys( "menuVisualGridline", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuVisualStartMarker", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuVisualEndMarker", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuVisualLyrics", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuVisualNoteProperty", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuVisualPitchLine", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuVisualIconPalette", new BKeys[]{ BKeys.F4 } ),
-            new ValuePairOfStringArrayOfKeys( "menuJobNormalize", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuJobInsertBar", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuJobDeleteBar", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuJobRandomize", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuJobConnect", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuJobLyric", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuTrackOn", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuTrackAdd", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuTrackCopy", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuTrackChangeName", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuTrackDelete", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuTrackRenderCurrent", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuTrackRenderAll", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuTrackOverlay", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuTrackRendererVOCALOID100", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuTrackRendererVOCALOID101", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuTrackRendererVOCALOID2", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuTrackRendererUtau", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuLyricExpressionProperty", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuLyricVibratoProperty", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuLyricDictionary", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuScriptUpdate", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuSettingPreference", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuSettingGameControlerSetting", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuSettingGameControlerLoad", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuSettingPaletteTool", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuSettingShortcut", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuSettingSingerProperty", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuHelpAbout", new BKeys[]{} ),
-            new ValuePairOfStringArrayOfKeys( "menuHiddenFlipCurveOnPianorollMode", new BKeys[]{ BKeys.Tab } ),
-        } ) );*/
-
 #if JAVA
         private static XmlSerializer s_serializer = new XmlSerializer( EditorConfig.class );
 #else

@@ -437,10 +437,6 @@ namespace org.kbinani.cadencii
         /// 前回ゲームコントローラのイベントを処理した時刻
         /// </summary>
         public double mLastEventProcessed;
-        /// <summary>
-        /// splitContainer2.Panel2を最小化する直前の、splitContainer2.SplitterDistance
-        /// </summary>
-        public int mLastSplitcontainer2SplitDistance = -1;
         public boolean mSpacekeyDowned = false;
 #if ENABLE_MIDI
         public MidiInDevice mMidiIn = null;
@@ -490,7 +486,6 @@ namespace org.kbinani.cadencii
         public BFileChooser openWaveDialog;
         public BTimer timer;
         public BBackgroundWorker bgWorkScreen;
-        public WaveView waveView;
         /// <summary>
         /// アイコンパレットのドラッグ＆ドロップ処理中，一度でもpictPianoRoll内にマウスが入ったかどうか
         /// </summary>
@@ -643,7 +638,6 @@ namespace org.kbinani.cadencii
             panelOverview.setMainForm( this );
             pictPianoRoll.setMainForm( this );
             bgWorkScreen = new BBackgroundWorker();
-            waveView = new WaveView();
 #if JAVA
 #else
             this.panel2.Controls.Add( this.waveView );
@@ -1118,7 +1112,6 @@ namespace org.kbinani.cadencii
             reloadMidiIn();
 #endif
             menuVisualWaveform.setSelected( AppManager.editorConfig.ViewWaveform );
-            updateSplitContainer2Size();
 
             updateRendererMenu();
 
@@ -2073,7 +2066,7 @@ namespace org.kbinani.cadencii
         public Vector<ValuePairOfStringArrayOfKeys> getDefaultShortcutKeys()
         {
 #if JAVA_MAC
-            BKeys ctrl = BKeys.Meta;
+            BKeys ctrl = BKeys.Menu;
 #else
             BKeys ctrl = BKeys.Control;
 #endif
@@ -2658,9 +2651,10 @@ namespace org.kbinani.cadencii
         {
 #if JAVA
             int keywidth = AppManager.keyWidth;
-            Dimension d2 = new Dimension( keywidth, pictureBox3.getHeight() );
-            pictureBox3.setPreferredSize( d2 );
-            pictureBox3.setSize( d2 );
+            pictureBox3.setPreferredSize( new Dimension( keywidth, 4 ) );
+            pictureBox3.setSize( new Dimension( keywidth, pictureBox3.getHeight() ) );
+            panel2.setPreferredSize( new Dimension( keywidth, 4 ) );
+            panel2.setSize( new Dimension( keywidth, panel2.getHeight() ) );
             
             Dimension overview_pref_size = panelOverview.getPreferredSize();
             if( AppManager.editorConfig.OverviewEnabled ){
@@ -3192,22 +3186,29 @@ namespace org.kbinani.cadencii
         }
 
         /// <summary>
-        /// menuVisualWaveform.isSelected()の値をもとに、splitterContainer2の表示状態を更新します
+        /// AppManager.editorConfig.ViewWaveformの値をもとに、splitterContainer2の表示状態を更新します
         /// </summary>
-        public void updateSplitContainer2Size()
+        public void updateSplitContainer2Size( boolean save_to_config )
         {
             if ( AppManager.editorConfig.ViewWaveform ) {
                 splitContainer2.setPanel2MinSize( _SPL2_PANEL2_MIN_HEIGHT );
                 splitContainer2.setSplitterFixed( false );
                 splitContainer2.setPanel2Hidden( false );
                 splitContainer2.setDividerSize( _SPL_SPLITTER_WIDTH );
-                if ( mLastSplitcontainer2SplitDistance <= 0 || mLastSplitcontainer2SplitDistance > splitContainer2.getHeight() ) {
-                    splitContainer2.setDividerLocation( (int)(splitContainer2.getHeight() * 0.9) );
+                int lastloc = AppManager.editorConfig.SplitContainer2LastDividerLocation;
+                if ( lastloc <= 0 || lastloc > splitContainer2.getHeight() ) {
+                    int draft = splitContainer2.getHeight() -  100;
+                    if( draft <= 0 ){
+                        draft = splitContainer2.getHeight() / 2;
+                    }
+                    splitContainer2.setDividerLocation( draft );
                 } else {
-                    splitContainer2.setDividerLocation( mLastSplitcontainer2SplitDistance );
+                    splitContainer2.setDividerLocation( lastloc );
                 }
             } else {
-                mLastSplitcontainer2SplitDistance = splitContainer2.getDividerLocation();
+                if( save_to_config ){
+                    AppManager.editorConfig.SplitContainer2LastDividerLocation = splitContainer2.getDividerLocation();
+                }
                 splitContainer2.setPanel2MinSize( 0 );
                 splitContainer2.setPanel2Hidden( true );
                 splitContainer2.setDividerSize( 0 );
@@ -8064,6 +8065,9 @@ namespace org.kbinani.cadencii
                 stripBtnEraser.setIcon( new ImageIcon( Resources.get_eraser() ) );
                 stripBtnGrid.setIcon( new ImageIcon( Resources.get_ruler_crop() ) );
                 stripBtnCurve.setIcon( new ImageIcon( Resources.get_layer_shape_curve() ) );
+
+                buttonVZoom.setIcon( new ImageIcon( Resources.get_plus8x8() ) );
+                buttonVMooz.setIcon( new ImageIcon( Resources.get_minus8x8() ) );
 #endif
                 setIconImage( Resources.get_icon() );
             } catch ( Exception ex ) {
@@ -10323,7 +10327,7 @@ namespace org.kbinani.cadencii
         public void menuVisualWaveform_CheckedChanged( Object sender, EventArgs e )
         {
             AppManager.editorConfig.ViewWaveform = menuVisualWaveform.isSelected();
-            updateSplitContainer2Size();
+            updateSplitContainer2Size( true );
         }
 
         public void menuVisualPluginUi_DropDownOpening( Object sender, EventArgs e )
@@ -10786,6 +10790,10 @@ namespace org.kbinani.cadencii
 
         public void FormMain_FormClosing( Object sender, BFormClosingEventArgs e )
         {
+            // 設定値を格納
+            if( AppManager.editorConfig.ViewWaveform ){
+                AppManager.editorConfig.SplitContainer2LastDividerLocation = splitContainer2.getDividerLocation();
+            }
 #if !JAVA
             if ( e.CloseReason == System.Windows.Forms.CloseReason.WindowsShutDown ) {
                 return;
@@ -10860,6 +10868,7 @@ namespace org.kbinani.cadencii
         public void FormMain_Load( Object sender, EventArgs e )
         {
             applyLanguage();
+            updateSplitContainer2Size( false );
 
             // 鍵盤用のキャッシュが古い位置に保存されている場合。
             String cache_new = Utility.getKeySoundPath();
@@ -16358,8 +16367,11 @@ namespace org.kbinani.cadencii
                 g.fillRect( SPACE + 3, SPACE + 3, 11, 11 );
             }
             g.setColor( Color.black );
-            g.setFont( AppManager.baseFont9 );
-            g.drawString( "Auto Maximize", SPACE + 16 + SPACE, SPACE + 16 / 2 - AppManager.baseFont9OffsetHeight + 1 );
+            g.setFont( AppManager.baseFont8 );
+            g.drawString(
+                "Auto Maximize",
+                SPACE + 16 + SPACE,
+                SPACE + AppManager.baseFont8Height / 2 - AppManager.baseFont8OffsetHeight + 1 );
 
             // ズーム用ボタンを描く
             int zoom_button_y = SPACE + 16 + SPACE;
@@ -21431,6 +21443,7 @@ namespace org.kbinani.cadencii
         public BPopupMenu cMenuPositionIndicator;
         public BMenuItem cMenuPositionIndicatorStartMarker;
         public BMenuItem cMenuPositionIndicatorEndMarker;
+        public WaveView waveView;
 
 #endif
         #endregion

@@ -45,10 +45,11 @@ namespace org.kbinani {
 #endif
 
 #if JAVA
-    public class PortUtil implements AWTEventListener {
+    public class PortUtil implements AWTEventListener
 #else
-    public class PortUtil {
+    public class PortUtil
 #endif
+    {
 
 #if JAVA
         private static boolean s_ctrl = false;
@@ -827,11 +828,11 @@ namespace org.kbinani {
                 x = rect.x + rect.width / 2.0f - ret.width / 2.0f;
             }
             if( valign > 0 ){
-                y = rect.y + rect.height - ret.height;
+                y = rect.y + rect.height;// - ret.height;
             }else if( valign < 0 ){
-                y = rect.y;
+                y = rect.y + ret.height;
             }else{
-                y = rect.y + rect.height / 2.0f - ret.height / 2.0f;
+                y = rect.y + rect.height / 2.0f + ret.height / 2.0f;
             }
             g.drawString( s, x, y );
 #else

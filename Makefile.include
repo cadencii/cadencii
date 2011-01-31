@@ -143,14 +143,6 @@ jpostprocess: ./BuildJavaUI/src/org/kbinani/math.java ./BuildJavaUI/src/org/kbin
 	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/PortUtil.java
 	$(CP) ./build/java/org/kbinani/PortUtil.java ./BuildJavaUI/src/org/kbinani/PortUtil.java
 
-./BuildJavaUI/src/org/kbinani/InternalStdErr.java: ./build/java/org/kbinani/InternalStdErr.java
-	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/InternalStdErr.java
-	$(CP) ./build/java/org/kbinani/InternalStdErr.java ./BuildJavaUI/src/org/kbinani/InternalStdErr.java
-
-./BuildJavaUI/src/org/kbinani/InternalStdOut.java: ./build/java/org/kbinani/InternalStdOut.java
-	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/InternalStdOut.java
-	$(CP) ./build/java/org/kbinani/InternalStdOut.java ./BuildJavaUI/src/org/kbinani/InternalStdOut.java
-
 ./BuildJavaUI/src/org/kbinani/ByRef.java: ./build/java/org/kbinani/ByRef.java
 	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/ByRef.java
 	$(CP) ./build/java/org/kbinani/ByRef.java ./BuildJavaUI/src/org/kbinani/ByRef.java
