@@ -116,7 +116,7 @@ namespace org.kbinani.cadencii {
         private void registerEventHandlers() {
             bgWork.DoWork += new BDoWorkEventHandler( bgWork_DoWork );
             bgWork.RunWorkerCompleted += new BRunWorkerCompletedEventHandler( bgWork_RunWorkerCompleted );
-            bgWork.ProgressChanged += new BProgressChangedEventHandler( this.bgWork_ProgressChanged );
+            bgWork.ProgressChanged += new BProgressChangedEventHandler( bgWork_ProgressChanged );
         }
 
         private void updateSinger() {

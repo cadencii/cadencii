@@ -51,6 +51,7 @@ public class FormVibratoPreset extends BForm {
     private JPanel jPanel52 = null;
     private BLabel labelDepthCurve = null;
     private BPictureBox pictureDepth = null;
+    private BLabel lblSpacer = null;
 
     //SECTION-END-FIELD
     public FormVibratoPreset() {
@@ -102,7 +103,7 @@ public class FormVibratoPreset extends BForm {
             gridBagConstraints20.gridx = 0;
             gridBagConstraints20.gridx = 0;
             gridBagConstraints20.gridwidth = 3;
-            gridBagConstraints20.fill = GridBagConstraints.NONE;
+            gridBagConstraints20.fill = GridBagConstraints.HORIZONTAL;
             gridBagConstraints20.anchor = GridBagConstraints.EAST;
             gridBagConstraints20.weightx = 0.0D;
             gridBagConstraints20.insets = new Insets(16, 0, 16, 12);
@@ -125,18 +126,26 @@ public class FormVibratoPreset extends BForm {
      */
     private JPanel getJPanel3() {
         if (jPanel3 == null) {
+            GridBagConstraints gridBagConstraints22 = new GridBagConstraints();
+            gridBagConstraints22.gridx = 0;
+            gridBagConstraints22.weightx = 1.0D;
+            gridBagConstraints22.gridy = 0;
+            lblSpacer = new BLabel();
+            lblSpacer.setPreferredSize(new Dimension(4, 4));
+            lblSpacer.setText("");
             GridBagConstraints gridBagConstraints111 = new GridBagConstraints();
             gridBagConstraints111.insets = new Insets(0, 0, 0, 0);
             gridBagConstraints111.gridy = 0;
-            gridBagConstraints111.gridx = 1;
+            gridBagConstraints111.gridx = 2;
             GridBagConstraints gridBagConstraints1211 = new GridBagConstraints();
             gridBagConstraints1211.insets = new Insets(0, 0, 0, 0);
             gridBagConstraints1211.gridy = 0;
-            gridBagConstraints1211.gridx = 0;
+            gridBagConstraints1211.gridx = 1;
             jPanel3 = new JPanel();
             jPanel3.setLayout(new GridBagLayout());
             jPanel3.add(getButtonCancel(), gridBagConstraints1211);
             jPanel3.add(getButtonOk(), gridBagConstraints111);
+            jPanel3.add(lblSpacer, gridBagConstraints22);
         }
         return jPanel3;
     }

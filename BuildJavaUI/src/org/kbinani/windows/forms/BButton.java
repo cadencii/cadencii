@@ -233,6 +233,8 @@ public class BButton extends JButton
     // root impl of ComponentListener is in BButton
     public BEvent<BEventHandler> visibleChangedEvent = new BEvent<BEventHandler>();
     public BEvent<BEventHandler> resizeEvent = new BEvent<BEventHandler>();
+    public BEvent<BEventHandler> sizeChangedEvent = new BEvent<BEventHandler>();
+    public BEvent<BEventHandler> locationChangedEvent = new BEvent<BEventHandler>();
     public void componentHidden(ComponentEvent e) {
         try{
             visibleChangedEvent.raise( this, new BEventArgs() );
@@ -241,10 +243,16 @@ public class BButton extends JButton
         }
     }
     public void componentMoved(ComponentEvent e) {
+        try{
+            locationChangedEvent.raise( this, new BEventArgs() );
+        }catch( Exception ex ){
+            System.err.println( "BButton#componentMoved; ex=" + ex );
+        }
     }
     public void componentResized(ComponentEvent e) {
         try{
             resizeEvent.raise( this, new BEventArgs() );
+            sizeChangedEvent.raise( this, new BEventArgs() );
         }catch( Exception ex ){
             System.err.println( "BButton#componentResized; ex=" + ex );
         }

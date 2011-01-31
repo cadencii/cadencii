@@ -13,7 +13,8 @@
     *Basic Properties
 	    下の方のSet Working Directory to Inside Applicatio Packageのチェックを入れる
 	*Additional Properties
-	    Addボタンを押してKeyにcom.apple.macos.useScreenMenuBar、Valueにtrueと入力
+	    Addボタンを押してKeyにapple.laf.useScreenMenuBar、Valueにtrueと入力
+	    (com.apple.macos.useScreenMenuBar=trueでも可だがobsolete)
 
 以上の設定が終わったら、Createボタンを押して適当なディレクトリに出力する
 アイコンファイル(*.icns)の作成は、Img2icnsを使った。

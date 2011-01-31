@@ -23,6 +23,7 @@ public class FormImportLyric extends BForm {
     private JPanel jPanel = null;
     private BButton btnOK = null;
     private BButton btnCancel = null;
+    private BLabel lblRightValue = null;
     //SECTION-END-FIELD
     /**
      * This is the default constructor
@@ -55,6 +56,7 @@ public class FormImportLyric extends BForm {
     		gridBagConstraints4.gridx = 0;
     		gridBagConstraints4.anchor = GridBagConstraints.EAST;
     		gridBagConstraints4.insets = new Insets(0, 0, 16, 0);
+    		gridBagConstraints4.fill = GridBagConstraints.HORIZONTAL;
     		gridBagConstraints4.gridy = 2;
     		GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
     		gridBagConstraints1.fill = GridBagConstraints.BOTH;
@@ -98,18 +100,26 @@ public class FormImportLyric extends BForm {
      */
     private JPanel getJPanel() {
     	if (jPanel == null) {
+    		GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
+    		gridBagConstraints5.gridx = 0;
+    		gridBagConstraints5.weightx = 1.0D;
+    		gridBagConstraints5.gridy = 0;
+    		lblRightValue = new BLabel();
+    		lblRightValue.setText("");
+    		lblRightValue.setPreferredSize(new Dimension(4, 4));
     		GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
-    		gridBagConstraints3.gridx = 0;
+    		gridBagConstraints3.gridx = 1;
     		gridBagConstraints3.insets = new Insets(0, 0, 0, 0);
     		gridBagConstraints3.gridy = 0;
     		GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
-    		gridBagConstraints2.gridx = 1;
+    		gridBagConstraints2.gridx = 2;
     		gridBagConstraints2.insets = new Insets(0, 0, 0, 12);
     		gridBagConstraints2.gridy = 0;
     		jPanel = new JPanel();
     		jPanel.setLayout(new GridBagLayout());
     		jPanel.add(getBtnOK(), gridBagConstraints2);
     		jPanel.add(getBtnCancel(), gridBagConstraints3);
+    		jPanel.add(lblRightValue, gridBagConstraints5);
     	}
     	return jPanel;
     }

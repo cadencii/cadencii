@@ -998,6 +998,7 @@ namespace org.kbinani.cadencii
             applyShortcut();
 
             AppManager.mMixerWindow = new FormMixer( this );
+            AppManager.iconPalette = new FormIconPalette( this );
 
             // ファイルを開く
             if ( !str.compare( file, "" ) ) {
@@ -1077,6 +1078,19 @@ namespace org.kbinani.cadencii
             if ( AppManager.editorConfig.MixerVisible ) {
                 AppManager.mMixerWindow.setVisible( true );
             }
+            AppManager.mMixerWindow.VisibleChanged += new BEventHandler( mMixerWindow_VisibleChanged );
+
+            Point p1 = AppManager.editorConfig.FormIconPaletteLocation.toPoint();
+            if ( !PortUtil.isPointInScreens( p1 ) ) {
+                Rectangle workingArea = PortUtil.getWorkingArea( this );
+                p1 = new Point( workingArea.x, workingArea.y );
+            }
+            AppManager.iconPalette.setLocation( p1 );
+            if ( AppManager.editorConfig.IconPaletteVisible ) {
+                AppManager.iconPalette.setVisible( true );
+            }
+            AppManager.iconPalette.VisibleChanged += new BEventHandler( iconPalette_VisibleChanged );
+            AppManager.iconPalette.LocationChanged += new BEventHandler( iconPalette_LocationChanged );
 
             trackSelector.CommandExecuted += new BEventHandler( trackSelector_CommandExecuted );
 
@@ -1174,16 +1188,22 @@ namespace org.kbinani.cadencii
             repaint();
             updateLayout();
 #if DEBUG
-            menuHidden.setVisible( true );
+            menuHidden.setVisible( false );
 #endif
 
 #if JAVA_MAC
+            // Macの一般的なメニュー編成にあわせる
             com.apple.eawt.Application app = com.apple.eawt.Application.getApplication();
+
+            // 「Cadenciiについて」
             app.setAboutHandler( new com.apple.eawt.AboutHandler(){
                 public void handleAbout( com.apple.eawt.AppEvent.AboutEvent arg0 ) {
                     menuHelpAbout_Click( null, null );
                 }
             } );
+            menuHelp.remove( menuHelpAbout );
+
+            // 「Cadenciiを終了」
             app.setQuitHandler( new com.apple.eawt.QuitHandler(){
                 public void handleQuitRequestWith( com.apple.eawt.AppEvent.QuitEvent arg0, com.apple.eawt.QuitResponse arg1 ) {
                     if( handleFormClosing() ){
@@ -1193,6 +1213,16 @@ namespace org.kbinani.cadencii
                     }
                 }
             } );
+            menuFile.remove( menuFileSeparator3 );
+            menuFile.remove( menuFileQuit );
+
+            // 「環境設定」
+            app.setPreferencesHandler( new com.apple.eawt.PreferencesHandler(){
+                public void handlePreferences( com.apple.eawt.AppEvent.PreferencesEvent arg0 ){
+                    menuSettingPreference_Click( null, null );
+                }
+            });
+            menuSetting.remove( menuSettingPreference );
 #endif
 
 #if !JAVA
@@ -2034,6 +2064,94 @@ namespace org.kbinani.cadencii
         #endregion
 
         #region public methods
+        /// <summary>
+        /// デフォルトのショートカットキーを格納したリストを取得します
+        /// </summary>
+        public Vector<ValuePairOfStringArrayOfKeys> getDefaultShortcutKeys()
+        {
+            Vector<ValuePairOfStringArrayOfKeys> ret = new Vector<ValuePairOfStringArrayOfKeys>( Arrays.asList(
+                new ValuePairOfStringArrayOfKeys[]{
+                new ValuePairOfStringArrayOfKeys( menuFileNew.getName(), new BKeys[]{ BKeys.Control, BKeys.N } ),
+                new ValuePairOfStringArrayOfKeys( menuFileOpen.getName(), new BKeys[]{ BKeys.Control, BKeys.O } ),
+                new ValuePairOfStringArrayOfKeys( menuFileOpenVsq.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuFileSave.getName(), new BKeys[]{ BKeys.Control, BKeys.S } ),
+                new ValuePairOfStringArrayOfKeys( menuFileQuit.getName(), new BKeys[]{ BKeys.Control, BKeys.Q } ),
+                new ValuePairOfStringArrayOfKeys( menuEditUndo.getName(), new BKeys[]{ BKeys.Control, BKeys.Z } ),
+                new ValuePairOfStringArrayOfKeys( menuEditRedo.getName(), new BKeys[]{ BKeys.Control, BKeys.Shift, BKeys.Z } ),
+                new ValuePairOfStringArrayOfKeys( menuEditCut.getName(), new BKeys[]{ BKeys.Control, BKeys.X } ),
+                new ValuePairOfStringArrayOfKeys( menuEditCopy.getName(), new BKeys[]{ BKeys.Control, BKeys.C } ),
+                new ValuePairOfStringArrayOfKeys( menuEditPaste.getName(), new BKeys[]{ BKeys.Control, BKeys.V } ),
+                new ValuePairOfStringArrayOfKeys( menuEditSelectAll.getName(), new BKeys[]{ BKeys.Control, BKeys.A } ),
+                new ValuePairOfStringArrayOfKeys( menuEditSelectAllEvents.getName(), new BKeys[]{ BKeys.Control, BKeys.Shift, BKeys.A } ),
+                new ValuePairOfStringArrayOfKeys( menuEditDelete.getName(), new BKeys[]{ BKeys.Delete } ),
+                new ValuePairOfStringArrayOfKeys( menuVisualMixer.getName(), new BKeys[]{ BKeys.F3 } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenEditLyric.getName(), new BKeys[]{ BKeys.F2 } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenEditFlipToolPointerPencil.getName(), new BKeys[]{ BKeys.Control, BKeys.W } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenEditFlipToolPointerEraser.getName(), new BKeys[]{ BKeys.Control, BKeys.E } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenVisualForwardParameter.getName(), new BKeys[]{ BKeys.Control, BKeys.Alt, BKeys.PageDown } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenVisualBackwardParameter.getName(), new BKeys[]{ BKeys.Control, BKeys.Alt, BKeys.PageUp } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenTrackNext.getName(), new BKeys[]{ BKeys.Control, BKeys.PageDown } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenTrackBack.getName(), new BKeys[]{ BKeys.Control, BKeys.PageUp } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenSelectBackward.getName(), new BKeys[]{ BKeys.Alt, BKeys.Left } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenSelectForward.getName(), new BKeys[]{ BKeys.Alt, BKeys.Right } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenMoveUp.getName(), new BKeys[]{ BKeys.Shift, BKeys.Up } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenMoveDown.getName(), new BKeys[]{ BKeys.Shift, BKeys.Down } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenMoveLeft.getName(), new BKeys[]{ BKeys.Shift, BKeys.Left } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenMoveRight.getName(), new BKeys[]{ BKeys.Shift, BKeys.Right } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenLengthen.getName(), new BKeys[]{ BKeys.Control, BKeys.Right } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenShorten.getName(), new BKeys[]{ BKeys.Control, BKeys.Left } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenGoToEndMarker.getName(), new BKeys[]{ BKeys.Control, BKeys.End } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenGoToStartMarker.getName(), new BKeys[]{ BKeys.Control, BKeys.Home } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenPlayFromStartMarker.getName(), new BKeys[]{ BKeys.Control, BKeys.Enter } ),
+                new ValuePairOfStringArrayOfKeys( menuFileSaveNamed.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuFileImportVsq.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuFileOpenUst.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuFileImportMidi.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuFileExportWave.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuFileExportMidi.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuVisualWaveform.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuVisualProperty.getName(), new BKeys[]{ BKeys.F6 } ),
+                new ValuePairOfStringArrayOfKeys( menuVisualGridline.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuVisualStartMarker.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuVisualEndMarker.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuVisualLyrics.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuVisualNoteProperty.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuVisualPitchLine.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuVisualIconPalette.getName(), new BKeys[]{ BKeys.F4 } ),
+                new ValuePairOfStringArrayOfKeys( menuJobNormalize.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuJobInsertBar.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuJobDeleteBar.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuJobRandomize.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuJobConnect.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuJobLyric.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackOn.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackAdd.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackCopy.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackChangeName.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackDelete.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackRenderCurrent.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackRenderAll.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackOverlay.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackRendererVOCALOID100.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackRendererVOCALOID101.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackRendererVOCALOID2.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackRendererUtau.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuLyricExpressionProperty.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuLyricVibratoProperty.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuLyricDictionary.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuScriptUpdate.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuSettingPreference.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuSettingGameControlerSetting.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuSettingGameControlerLoad.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuSettingPaletteTool.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuSettingShortcut.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuSettingSingerProperty.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuHelpAbout.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenFlipCurveOnPianorollMode.getName(), new BKeys[]{ BKeys.Tab } ),
+            } ) );
+            return ret;
+        }
+
         /// <summary>
         /// MIDIステップ入力モードがONかどうかを取得します
         /// </summary>
@@ -3666,16 +3784,13 @@ namespace org.kbinani.cadencii
             // 最初に、特殊な取り扱いが必要なショートカット、について、
             // 該当するショートカットがあればそいつらを発動する。
             int modifier = PortUtil.getCurrentModifierKey();
-            if ( onPreviewKeyDown ) {
-                KeyStroke stroke = KeyStroke.getKeyStroke( e.KeyValue, modifier );
-                int keycode = stroke.getKeyCode();
+            KeyStroke stroke = KeyStroke.getKeyStroke( e.KeyValue, modifier );
+            int keycode = e.KeyValue;
 
+            if ( onPreviewKeyDown && keycode != 0 ) {
                 foreach ( SpecialShortcutHolder holder in mSpecialShortcutHolders ) {
-                    if ( holder.shortcut.getKeyCode() == keycode && holder.shortcut.getModifiers() == modifier ) {
+                    if ( stroke.equals( holder.shortcut ) ) {
                         try {
-#if DEBUG
-                            sout.println( "FormMain#processSpecialShortcutKey; holder.menu.Name=" + holder.menu.getName() );
-#endif
 #if JAVA
                             holder.menu.clickEvent.raise( holder.menu, new BEventArgs() );
 #else
@@ -4289,6 +4404,18 @@ namespace org.kbinani.cadencii
         }
 
         /// <summary>
+        /// アイコンパレットの表示・非表示状態を更新します
+        /// </summary>
+        public void flipIconPaletteVisible( boolean visible )
+        {
+            AppManager.iconPalette.setVisible( visible );
+            AppManager.editorConfig.IconPaletteVisible = visible;
+            if( visible != menuVisualIconPalette.isSelected() ){
+                menuVisualIconPalette.setSelected( visible );
+            }
+        }
+
+        /// <summary>
         /// メニューのショートカットキーを、AppManager.EditorConfig.ShorcutKeysの内容に応じて変更します
         /// </summary>
         public void applyShortcut()
@@ -4498,36 +4625,45 @@ namespace org.kbinani.cadencii
             if( item instanceof JMenu ){
                 return;
             }
+            if( !(item instanceof BMenuItem) ){
+                return;
+            }
+            BMenuItem menu = (BMenuItem)item;
+            menu.setAccelerator( null );
+            if( !dict.containsKey( item_name ) ){
+                return;
+            }
+            BKeys[] k = dict.get( item_name );
+            if( k == null ){
+                return;
+            }
+            if( k.length <= 0 ){
+                return;
+            }
             try {
                 sout.println( "FormMain#applyMenuItemShortcut; item_name=" + item_name );
-                if ( dict.containsKey( item_name ) ) {
-                    if( item instanceof JMenuItem ){
-                        BKeys[] k = dict.get( item_name );
-                        KeyStroke ks = BKeysUtility.getKeyStrokeFromBKeys( k );
-                        ((JMenuItem)item).setAccelerator( ks );
-                        String disp = Utility.getShortcutDisplayString( k );
-                        sout.println( "FormMain#applyMenuItemShortcut; item_name=" + item_name + "; disp=" + disp );
-                    }
-                } else {
-                    if( item instanceof JMenuItem ){
-                        ((JMenuItem)item).setAccelerator( KeyStroke.getKeyStroke( 0, 0 ) );
-                    }
+                KeyStroke ks = BKeysUtility.getKeyStrokeFromBKeys( k );
+                if( str.startsWith( item_name, "menuHidden" ) ){
+                    mSpecialShortcutHolders.add(
+                        new SpecialShortcutHolder( BKeysUtility.getKeyStrokeFromBKeys( k ), menu ) );
+                }else{
+                    menu.setAccelerator( ks );
                 }
             } catch ( Exception ex ) {
                 Logger.write( FormMain.class  + ".applyMenuItemShortcut; ex=" + ex + "\n" );
                 ex.printStackTrace();
             }
-#else
+#else // JAVA
             try {
 #if DEBUG
                 sout.println( "FormMain#applyMenuItemShortcut; item_name=" + item_name );
-#endif
+#endif // DEBUG
                 if ( dict.containsKey( item_name ) ) {
 #if DEBUG
                     if ( !(item is BMenuItem) ) {
                         throw new Exception( "FormMain#applyMenuItemShortcut; item is NOT BMenuItem" );
                     }
-#endif
+#endif // DEBUG
                     if ( item is BMenuItem ) {
                         BMenuItem menu = (BMenuItem)item;
                         BKeys[] keys = dict.get( item_name );
@@ -4548,7 +4684,7 @@ namespace org.kbinani.cadencii
                                 menu.ShortcutKeys = System.Windows.Forms.Keys.None;
 #if DEBUG
                                 //Logger.write( "FormMain#applyMenuItemShortcut; add to mSpecialShortcutHolders; menu.getName()=" + menu.getName() + "; ex=" + ex + "\n" );
-#endif
+#endif // DEBUG
                                 mSpecialShortcutHolders.add(
                                     new SpecialShortcutHolder( BKeysUtility.getKeyStrokeFromBKeys( keys ), menu ) );
                             }
@@ -4562,7 +4698,7 @@ namespace org.kbinani.cadencii
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".applyMenuItemShortcut; ex=" + ex + "\n" );
             }
-#endif
+#endif // else JAVA
         }
 
         /// <summary>
@@ -7925,6 +8061,11 @@ namespace org.kbinani.cadencii
         #endregion // public methods
 
         #region event handlers
+        public void mMixerWindow_VisibleChanged( Object sender, BEventArgs e )
+        {
+            flipMixerDialogVisible( AppManager.mMixerWindow.isVisible() );
+        }
+        
         //BOOKMARK: panelOverview
         #region panelOverview
         public void panelOverview_Enter( Object sender, EventArgs e )
@@ -10094,9 +10235,9 @@ namespace org.kbinani.cadencii
             AppManager.editorConfig.FormIconPaletteLocation = new XmlPoint( AppManager.iconPalette.getLocation() );
         }
 
-        public void iconPalette_FormClosing( Object sender, BFormClosingEventArgs e )
+        public void iconPalette_VisibleChanged( Object sender, BEventArgs e )
         {
-            menuVisualIconPalette.setSelected( false );
+            flipIconPaletteVisible( AppManager.iconPalette.isVisible() );
         }
         #endregion
 
@@ -10141,29 +10282,8 @@ namespace org.kbinani.cadencii
 
         public void menuVisualIconPalette_Click( Object sender, EventArgs e )
         {
-            if ( AppManager.iconPalette == null ) {
-                AppManager.iconPalette = new FormIconPalette( this );
-#if JAVA
-                AppManager.iconPalette.formClosingEvent.add( new BFormClosingEventHandler( this, "iconPalette_FormClosing" ) );
-#else
-                AppManager.iconPalette.FormClosing +=
-                    new System.Windows.Forms.FormClosingEventHandler( iconPalette_FormClosing );
-#endif
-                Point p = AppManager.editorConfig.FormIconPaletteLocation.toPoint();
-                if ( !PortUtil.isPointInScreens( p ) ) {
-                    Rectangle workingArea = PortUtil.getWorkingArea( this );
-                    p = new Point( workingArea.x, workingArea.y );
-                }
-                AppManager.iconPalette.setLocation( p );
-#if JAVA
-                AppManager.iconPalette.locationChangedEvent.add( new BEventHandler( this, "iconPalette_LocationChanged" ) );
-#else
-                AppManager.iconPalette.LocationChanged +=
-                    new BEventHandler( iconPalette_LocationChanged );
-#endif
-            }
-            boolean pushed = menuVisualIconPalette.isSelected();
-            AppManager.iconPalette.setVisible( pushed );
+            boolean v = !AppManager.editorConfig.IconPaletteVisible;
+            flipIconPaletteVisible( v );
         }
 
         public void menuVisualLyrics_CheckedChanged( Object sender, EventArgs e )
@@ -10658,7 +10778,13 @@ namespace org.kbinani.cadencii
                 return;
             }
 #endif
-            e.Cancel = handleFormClosing();
+            boolean cancel = handleFormClosing();
+            e.Cancel = cancel;
+            if( !cancel ){
+                //AppManager.mMixerWindow.close();
+                //AppManager.iconPalette.close();
+                dispose();
+            }
         }
         
         /// <summary>
@@ -15798,6 +15924,7 @@ namespace org.kbinani.cadencii
                 showInputTextBox( original.ID.LyricHandle.L0.Phrase,
                                   original.ID.LyricHandle.L0.getPhoneticSymbol(),
                                   pos, mLastSymbolEditMode );
+                refreshScreen();
             } else if ( input_enabled ) {
                 if ( AppManager.mInputTextBox.isPhoneticSymbolEditMode() ) {
                     flipInputTextBoxMode();

@@ -54,6 +54,7 @@ namespace org.kbinani {
         private static boolean s_ctrl = false;
         private static boolean s_shift = false;
         private static boolean s_alt = false;
+        private static boolean s_meta = false;
         private static PortUtil s_instance = null;
 #endif
 
@@ -280,6 +281,8 @@ namespace org.kbinani {
                         s_ctrl = true;
                     }else if( code == KeyEvent.VK_SHIFT ){
                         s_shift = true;
+                    }else if( code == KeyEvent.VK_META ){
+                        s_meta = true;
                     }
                 }else if( id == KeyEvent.KEY_RELEASED ){
                     if( code == KeyEvent.VK_ALT ){
@@ -288,6 +291,8 @@ namespace org.kbinani {
                         s_ctrl = false;
                     }else if( code == KeyEvent.VK_SHIFT ){
                         s_shift = false;
+                    }else if( code == KeyEvent.VK_META ){
+                        s_meta = false;
                     }
                 }
             }
@@ -303,6 +308,9 @@ namespace org.kbinani {
             }
             if( s_shift ){
                 ret += InputEvent.SHIFT_MASK;
+            }
+            if( s_meta ){
+                ret += InputEvent.META_MASK;
             }
             return ret;
         }

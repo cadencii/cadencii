@@ -46,6 +46,7 @@ public class FormBezierPointEdit extends BForm {
 	private BLabel jLabel4 = null;
 	private BLabel jLabel5 = null;
 	private JPanel jPanel3 = null;
+    private BLabel lblRightValue1 = null;
 
 	//SECTION-END-FIELD
 	/**
@@ -79,6 +80,7 @@ public class FormBezierPointEdit extends BForm {
 			gridBagConstraints91.gridx = 0;
 			gridBagConstraints91.gridwidth = 3;
 			gridBagConstraints91.anchor = GridBagConstraints.EAST;
+			gridBagConstraints91.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints91.gridy = 4;
 			GridBagConstraints gridBagConstraints81 = new GridBagConstraints();
 			gridBagConstraints81.gridx = 0;
@@ -484,18 +486,26 @@ public class FormBezierPointEdit extends BForm {
 	 */
 	private JPanel getJPanel3() {
 		if (jPanel3 == null) {
+			GridBagConstraints gridBagConstraints14 = new GridBagConstraints();
+			gridBagConstraints14.gridx = 0;
+			gridBagConstraints14.weightx = 1.0D;
+			gridBagConstraints14.gridy = 0;
+			lblRightValue1 = new BLabel();
+			lblRightValue1.setText("");
+			lblRightValue1.setPreferredSize(new Dimension(4, 4));
 			GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
-			gridBagConstraints11.gridx = 1;
+			gridBagConstraints11.gridx = 2;
 			gridBagConstraints11.insets = new Insets(0, 0, 0, 12);
 			gridBagConstraints11.gridy = 0;
 			GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
-			gridBagConstraints12.gridx = 0;
+			gridBagConstraints12.gridx = 1;
 			gridBagConstraints12.insets = new Insets(0, 0, 0, 0);
 			gridBagConstraints12.gridy = 0;
 			jPanel3 = new JPanel();
 			jPanel3.setLayout(new GridBagLayout());
 			jPanel3.add(getBtnCancel(), gridBagConstraints12);
 			jPanel3.add(getBtnOK(), gridBagConstraints11);
+			jPanel3.add(lblRightValue1, gridBagConstraints14);
 		}
 		return jPanel3;
 	}

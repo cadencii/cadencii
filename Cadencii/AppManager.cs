@@ -321,7 +321,6 @@ namespace org.kbinani.cadencii
             BKeys.L,
             BKeys.Left,
             BKeys.M,
-            BKeys.Menu,
             BKeys.N,
             BKeys.NumPad0,
             BKeys.NumPad1,

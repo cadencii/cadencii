@@ -39,6 +39,7 @@ public class FormVibratoConfig extends BForm {
     private BRadioButton radioVocaloid2 = null;
     private BRadioButton radioUserDefined = null;
     private RadioButtonManager mManager = null;
+    private BLabel lblSpacer = null;
     
     //SECTION-END-FIELD
 	/**
@@ -85,6 +86,7 @@ public class FormVibratoConfig extends BForm {
 			gridBagConstraints5.weighty = 0.0D;
 			gridBagConstraints5.anchor = GridBagConstraints.EAST;
 			gridBagConstraints5.insets = new Insets(16, 0, 16, 12);
+			gridBagConstraints5.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints5.gridy = 3;
 			GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
 			gridBagConstraints4.fill = GridBagConstraints.NONE;
@@ -143,20 +145,28 @@ public class FormVibratoConfig extends BForm {
 	 */
 	private JPanel getJPanel2() {
 		if (jPanel2 == null) {
+			GridBagConstraints gridBagConstraints9 = new GridBagConstraints();
+			gridBagConstraints9.gridx = 0;
+			gridBagConstraints9.weightx = 1.0D;
+			gridBagConstraints9.gridy = 0;
+			lblSpacer = new BLabel();
+			lblSpacer.setPreferredSize(new Dimension(4, 4));
+			lblSpacer.setText("");
 			GridBagConstraints gridBagConstraints52 = new GridBagConstraints();
 			gridBagConstraints52.anchor = GridBagConstraints.SOUTHWEST;
-			gridBagConstraints52.gridx = 0;
+			gridBagConstraints52.gridx = 1;
 			gridBagConstraints52.gridy = 0;
 			gridBagConstraints52.insets = new Insets(0, 0, 0, 0);
 			GridBagConstraints gridBagConstraints42 = new GridBagConstraints();
 			gridBagConstraints42.anchor = GridBagConstraints.WEST;
-			gridBagConstraints42.gridx = 1;
+			gridBagConstraints42.gridx = 2;
 			gridBagConstraints42.gridy = 0;
 			gridBagConstraints42.insets = new Insets(0, 0, 0, 0);
 			jPanel2 = new BPanel();
 			jPanel2.setLayout(new GridBagLayout());
 			jPanel2.add(getBtnOK(), gridBagConstraints42);
 			jPanel2.add(getBtnCancel(), gridBagConstraints52);
+			jPanel2.add(lblSpacer, gridBagConstraints9);
 		}
 		return jPanel2;
 	}

@@ -194,6 +194,7 @@ public class Preference extends JFrame {
     private JScrollPane jScrollPane = null;
     private RadioButtonManager mManager = null;
     private JScrollPane jScrollPane1 = null;
+    private BLabel lblPlatform1 = null;
     
     //SECTION-END-FIELD
 	/**
@@ -2226,18 +2227,27 @@ public class Preference extends JFrame {
 	 */
 	private BPanel getPanelLower() {
 		if (panelLower == null) {
+			GridBagConstraints gridBagConstraints127 = new GridBagConstraints();
+			gridBagConstraints127.gridx = 0;
+			gridBagConstraints127.weightx = 1.0D;
+			gridBagConstraints127.fill = GridBagConstraints.NONE;
+			gridBagConstraints127.gridy = 0;
+			lblPlatform1 = new BLabel();
+			lblPlatform1.setText("");
+			lblPlatform1.setPreferredSize(new Dimension(4, 4));
 			GridBagConstraints gridBagConstraints311 = new GridBagConstraints();
 			gridBagConstraints311.insets = new Insets(0, 0, 0, 0);
 			gridBagConstraints311.gridy = 0;
-			gridBagConstraints311.gridx = 0;
+			gridBagConstraints311.gridx = 1;
 			GridBagConstraints gridBagConstraints211 = new GridBagConstraints();
 			gridBagConstraints211.insets = new Insets(0, 0, 0, 12);
 			gridBagConstraints211.gridy = 0;
-			gridBagConstraints211.gridx = 1;
+			gridBagConstraints211.gridx = 2;
 			panelLower = new BPanel();
 			panelLower.setLayout(new GridBagLayout());
 			panelLower.add(getBtnOK(), gridBagConstraints211);
 			panelLower.add(getBtnCancel(), gridBagConstraints311);
+			panelLower.add(lblPlatform1, gridBagConstraints127);
 		}
 		return panelLower;
 	}
@@ -2287,6 +2297,8 @@ public class Preference extends JFrame {
 			gridBagConstraints119.gridx = 0;
 			gridBagConstraints119.anchor = GridBagConstraints.EAST;
 			gridBagConstraints119.insets = new Insets(12, 0, 12, 0);
+			gridBagConstraints119.weightx = 1.0D;
+			gridBagConstraints119.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints119.gridy = 1;
 			jPanel5 = new BPanel();
 			jPanel5.setLayout(new GridBagLayout());

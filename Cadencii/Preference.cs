@@ -907,6 +907,8 @@ namespace org.kbinani.cadencii
                     tabPane.setTitleAt( i, _( "UTAU Singers" ) );
                 }else if( p == tabFile ){
                     tabPane.setTitleAt( i, _( "File" ) );
+                }else if( p == tabSingingSynth ){
+                    tabPane.setTitleAt( i, _( "Synthesizer" ) );
                 }
             }
 #else

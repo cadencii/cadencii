@@ -24,7 +24,6 @@ public class BForm extends JFrame
     public BEvent<BEventHandler> activatedEvent = new BEvent<BEventHandler>();
     public BEvent<BEventHandler> deactivateEvent = new BEvent<BEventHandler>();
     public BEvent<BEventHandler> loadEvent = new BEvent<BEventHandler>();
-    private boolean mClosed = false;
     private Object mTag = null;
     
     public BForm(){
@@ -87,10 +86,11 @@ public class BForm extends JFrame
     
     public void close(){
         try{
+            boolean previous = isVisible();
             BFormClosingEventArgs e = new BFormClosingEventArgs();
             formClosingEvent.raise( this, e );
             if( e.Cancel ){
-                setVisible( true );
+                setVisible( previous );
                 return;
             }
         }catch( Exception ex ){
@@ -109,7 +109,6 @@ public class BForm extends JFrame
     }
     
     public void windowClosed( WindowEvent e ){
-        mClosed = true;
         try{
             formClosedEvent.raise( this, new BFormClosedEventArgs() );
         }catch( Exception ex ){
@@ -119,17 +118,17 @@ public class BForm extends JFrame
     
     public void windowClosing( WindowEvent e ){
         try{
+            boolean previous = isVisible();
             BFormClosingEventArgs ev = new BFormClosingEventArgs();
             formClosingEvent.raise( this, ev );
             if( ev.Cancel ){
-                setVisible( true );
+                setVisible( previous );
                 return;
             }
         }catch( Exception ex ){
             System.err.println( "BForm#windowClosing; ex=" + ex );
         }
         setVisible( false );
-        dispose();
     }
     
     public void windowDeactivated( WindowEvent e ){
@@ -153,30 +152,19 @@ public class BForm extends JFrame
             System.err.println( "BForm#windowOpened; ex=" + ex );
         }
     }
-    
+
+    // root impl of ComponentListener is in BButton
+    public BEvent<BEventHandler> visibleChangedEvent = new BEvent<BEventHandler>();
+    public BEvent<BEventHandler> resizeEvent = new BEvent<BEventHandler>();
     public BEvent<BEventHandler> sizeChangedEvent = new BEvent<BEventHandler>();
     public BEvent<BEventHandler> locationChangedEvent = new BEvent<BEventHandler>();
-    public BEvent<BEventHandler> resizeEvent = new BEvent<BEventHandler>();
-    public class ShowDialogRunner implements Runnable{
-        public void run(){
-            setVisible( true );
-            mClosed = false;
-            while( !mClosed ){
-                try{
-                    Thread.sleep( 100 );
-                }catch( Exception ex ){
-                    break;
-                }
-            }
-            setVisible( false );
+    public void componentHidden(ComponentEvent e) {
+        try{
+            visibleChangedEvent.raise( this, new BEventArgs() );
+        }catch( Exception ex ){
+            System.err.println( "BForm#componentHidden; ex=" + ex );
         }
     }
-    
-    public void componentHidden(ComponentEvent e) {
-        // TODO �����������ꂽ���\�b�h�E�X�^�u
-        
-    }
-
     public void componentMoved(ComponentEvent e) {
         try{
             locationChangedEvent.raise( this, new BEventArgs() );
@@ -184,7 +172,6 @@ public class BForm extends JFrame
             System.err.println( "BForm#componentMoved; ex=" + ex );
         }
     }
-
     public void componentResized(ComponentEvent e) {
         try{
             resizeEvent.raise( this, new BEventArgs() );
@@ -193,9 +180,11 @@ public class BForm extends JFrame
             System.err.println( "BForm#componentResized; ex=" + ex );
         }
     }
-
     public void componentShown(ComponentEvent e) {
-        // TODO �����������ꂽ���\�b�h�E�X�^�u
-        
+        try{
+            visibleChangedEvent.raise( this, new BEventArgs() );
+        }catch( Exception ex ){
+            System.err.println( "BForm#componentShown; ex=" + ex );
+        }
     }
 }

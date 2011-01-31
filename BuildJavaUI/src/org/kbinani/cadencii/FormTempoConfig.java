@@ -34,6 +34,7 @@ public class FormTempoConfig extends BForm {
     private BButton btnCancel = null;
     private BLabel jLabel4 = null;
     private BLabel jLabel41 = null;
+    private BLabel lblRightValue = null;
     
     //SECTION-END-FIELD
     /**
@@ -71,6 +72,7 @@ public class FormTempoConfig extends BForm {
             gridBagConstraints9.weightx = 1.0D;
             gridBagConstraints9.weighty = 0.0D;
             gridBagConstraints9.insets = new Insets(0, 0, 16, 12);
+            gridBagConstraints9.fill = GridBagConstraints.HORIZONTAL;
             gridBagConstraints9.gridy = 1;
             GridBagConstraints gridBagConstraints8 = new GridBagConstraints();
             gridBagConstraints8.gridx = 1;
@@ -268,20 +270,28 @@ public class FormTempoConfig extends BForm {
      */
     private BPanel getJPanel2() {
         if (jPanel2 == null) {
+            GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
+            gridBagConstraints13.gridx = 0;
+            gridBagConstraints13.weightx = 1.0D;
+            gridBagConstraints13.gridy = 0;
+            lblRightValue = new BLabel();
+            lblRightValue.setPreferredSize(new Dimension(4, 4));
+            lblRightValue.setText("");
             GridBagConstraints gridBagConstraints52 = new GridBagConstraints();
             gridBagConstraints52.anchor = GridBagConstraints.SOUTHWEST;
-            gridBagConstraints52.gridx = 0;
+            gridBagConstraints52.gridx = 1;
             gridBagConstraints52.gridy = 0;
             gridBagConstraints52.insets = new Insets(0, 0, 0, 0);
             GridBagConstraints gridBagConstraints42 = new GridBagConstraints();
             gridBagConstraints42.anchor = GridBagConstraints.WEST;
-            gridBagConstraints42.gridx = 1;
+            gridBagConstraints42.gridx = 2;
             gridBagConstraints42.gridy = 0;
             gridBagConstraints42.insets = new Insets(0, 0, 0, 0);
             jPanel2 = new BPanel();
             jPanel2.setLayout(new GridBagLayout());
             jPanel2.add(getBtnOK(), gridBagConstraints42);
             jPanel2.add(getBtnCancel(), gridBagConstraints52);
+            jPanel2.add(lblRightValue, gridBagConstraints13);
         }
         return jPanel2;
     }

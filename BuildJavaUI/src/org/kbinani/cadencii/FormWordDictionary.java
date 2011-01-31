@@ -30,6 +30,8 @@ public class FormWordDictionary extends BForm {
     private BButton btnDown = null;
     private BListView listDictionaries = null;
     private JScrollPane jScrollPane = null;
+    private BLabel lblSpacer = null;
+    private BLabel lblSpacer1 = null;
     
     //SECTION-END-FIELD
     /**
@@ -71,11 +73,13 @@ public class FormWordDictionary extends BForm {
             gridBagConstraints4.gridx = 0;
             gridBagConstraints4.anchor = GridBagConstraints.EAST;
             gridBagConstraints4.insets = new Insets(6, 0, 12, 12);
+            gridBagConstraints4.fill = GridBagConstraints.HORIZONTAL;
             gridBagConstraints4.gridy = 3;
             GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
             gridBagConstraints3.gridx = 0;
             gridBagConstraints3.anchor = GridBagConstraints.EAST;
             gridBagConstraints3.insets = new Insets(6, 0, 6, 12);
+            gridBagConstraints3.fill = GridBagConstraints.HORIZONTAL;
             gridBagConstraints3.gridy = 2;
             GridBagConstraints gridBagConstraints = new GridBagConstraints();
             gridBagConstraints.gridx = 0;
@@ -101,20 +105,28 @@ public class FormWordDictionary extends BForm {
      */
     private BPanel getJPanel2() {
         if (jPanel2 == null) {
+            GridBagConstraints gridBagConstraints5 = new GridBagConstraints();
+            gridBagConstraints5.gridx = 0;
+            gridBagConstraints5.weightx = 1.0D;
+            gridBagConstraints5.gridy = 0;
+            lblSpacer1 = new BLabel();
+            lblSpacer1.setPreferredSize(new Dimension(4, 4));
+            lblSpacer1.setText("");
             GridBagConstraints gridBagConstraints52 = new GridBagConstraints();
             gridBagConstraints52.anchor = GridBagConstraints.SOUTHWEST;
-            gridBagConstraints52.gridx = 0;
+            gridBagConstraints52.gridx = 1;
             gridBagConstraints52.gridy = 0;
             gridBagConstraints52.insets = new Insets(0, 0, 0, 0);
             GridBagConstraints gridBagConstraints42 = new GridBagConstraints();
             gridBagConstraints42.anchor = GridBagConstraints.WEST;
-            gridBagConstraints42.gridx = 1;
+            gridBagConstraints42.gridx = 2;
             gridBagConstraints42.gridy = 0;
             gridBagConstraints42.insets = new Insets(0, 0, 0, 0);
             jPanel2 = new BPanel();
             jPanel2.setLayout(new GridBagLayout());
             jPanel2.add(getBtnOK(), gridBagConstraints42);
             jPanel2.add(getBtnCancel(), gridBagConstraints52);
+            jPanel2.add(lblSpacer1, gridBagConstraints5);
         }
         return jPanel2;
     }
@@ -154,20 +166,28 @@ public class FormWordDictionary extends BForm {
      */
     private BPanel getJPanel21() {
         if (jPanel21 == null) {
+            GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
+            gridBagConstraints1.gridx = 0;
+            gridBagConstraints1.weightx = 1.0D;
+            gridBagConstraints1.gridy = 0;
+            lblSpacer = new BLabel();
+            lblSpacer.setPreferredSize(new Dimension(4, 4));
+            lblSpacer.setText("");
             GridBagConstraints gridBagConstraints521 = new GridBagConstraints();
             gridBagConstraints521.anchor = GridBagConstraints.SOUTHWEST;
-            gridBagConstraints521.gridx = 1;
+            gridBagConstraints521.gridx = 2;
             gridBagConstraints521.gridy = 0;
             gridBagConstraints521.insets = new Insets(0, 0, 0, 0);
             GridBagConstraints gridBagConstraints421 = new GridBagConstraints();
             gridBagConstraints421.anchor = GridBagConstraints.WEST;
-            gridBagConstraints421.gridx = 0;
+            gridBagConstraints421.gridx = 1;
             gridBagConstraints421.gridy = 0;
             gridBagConstraints421.insets = new Insets(0, 0, 0, 16);
             jPanel21 = new BPanel();
             jPanel21.setLayout(new GridBagLayout());
             jPanel21.add(getBtnUp(), gridBagConstraints421);
             jPanel21.add(getBtnDown(), gridBagConstraints521);
+            jPanel21.add(lblSpacer, gridBagConstraints1);
         }
         return jPanel21;
     }

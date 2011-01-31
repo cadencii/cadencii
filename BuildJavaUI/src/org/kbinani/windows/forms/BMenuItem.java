@@ -1,5 +1,6 @@
 package org.kbinani.windows.forms;
 
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -15,6 +16,7 @@ public class BMenuItem extends JCheckBoxMenuItem
     private static final long serialVersionUID = -1354135252399786976L;
     private Object tag;
     private boolean checkOnClick = false;
+    private String mShortcutDisplayString = "";
     public BEvent<BEventHandler> clickEvent = new BEvent<BEventHandler>();
     public BEvent<BEventHandler> checkedChangedEvent = new BEvent<BEventHandler>();
     public BEvent<BEventHandler> mouseEnterEvent = new BEvent<BEventHandler>();
@@ -25,6 +27,21 @@ public class BMenuItem extends JCheckBoxMenuItem
         addMouseListener( this );
     }
 
+    public void setShortcutKeyDisplayString( String value )
+    {
+        mShortcutDisplayString = value;
+    }
+    
+    public String getShortcutKeyDisplayString()
+    {
+        return mShortcutDisplayString;
+    }
+    
+    public void paintComponent( Graphics g )
+    {
+System.out.println( "BMenuItem#paintComponent" );
+    }
+    
     public void setSelected( boolean value )
     {
         if( super.isSelected() != value ){

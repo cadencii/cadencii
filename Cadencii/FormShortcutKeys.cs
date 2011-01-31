@@ -57,8 +57,10 @@ namespace org.kbinani.cadencii
         private static readonly String[] mCategories = new String[]{
             "menuFile", "menuEdit", "menuVisual", "menuJob", "menuLyric", "menuTrack",
             "menuScript", "menuSetting", "menuHelp", ".other" };
-        private static int mColumnWidthCommand = 240;
-        private static int mColumnWidthShortcutKey = 140;
+        private static int mColumnWidthCommand = 272;
+        private static int mColumnWidthShortcutKey = 177;
+        private static int mWindowWidth = 541;
+        private static int mWindowHeight = 572;
 
         private TreeMap<String, ValuePair<String, BKeys[]>> mDict;
         private TreeMap<String, ValuePair<String, BKeys[]>> mFirstDict;
@@ -87,24 +89,48 @@ namespace org.kbinani.cadencii
 
 #if DEBUG
             sout.println( "FormShortcutKeys#.ctor; dict.size()=" + dict.size() );
+            sout.println( "FormShortcutKeys#.ctor; mColumnWidthCommand=" + mColumnWidthCommand + "; mColumnWidthShortcutKey=" + mColumnWidthShortcutKey );
 #endif
-            list.setColumnHeaders( new String[] { "Command", "Shortcut Key" } );
+            list.setColumnHeaders( new String[] { _( "Command" ), _( "Shortcut Key" ) } );
             list.setColumnWidth( 0, mColumnWidthCommand );
             list.setColumnWidth( 1, mColumnWidthShortcutKey );
 
-            setResources();
             applyLanguage();
-#if DEBUG
-            sout.println( "FormShortcutKeys#.ctor; dict=" );
-            for ( Iterator<String> itr = dict.keySet().iterator(); itr.hasNext(); ) {
-                String disp = itr.next();
-                sout.println( "    disp=" + disp );
-            }
-#endif
+            setResources();
+
             mDict = dict;
             comboCategory.setSelectedIndex( 0 );
             mFirstDict = new TreeMap<String, ValuePair<String, BKeys[]>>();
             copyDict( mDict, mFirstDict );
+
+            comboEditKey.removeAllItems();
+            comboEditKey.addItem( BKeys.None );
+            // アルファベット順になるように一度配列に入れて並べ替える
+            int size = AppManager.SHORTCUT_ACCEPTABLE.size();
+            BKeys[] keys = new BKeys[size];
+            for ( int i = 0; i < size; i++ ){
+                keys[i] = AppManager.SHORTCUT_ACCEPTABLE.get( i );
+            }
+            boolean changed = true;
+            while( changed ){
+                changed = false;
+                for( int i = 0; i < size - 1; i++ ){
+                    for( int j = i + 1; j < size; j++ ){
+                        String itemi = keys[i] + "";
+                        String itemj = keys[j] + "";
+                        if( itemi.compareToIgnoreCase( itemj ) > 0 ){
+                            BKeys t = keys[i];
+                            keys[i] = keys[j];
+                            keys[j] = t;
+                            changed = true;
+                        }
+                    }
+                }
+            }
+            for( BKeys key : keys ){
+                comboEditKey.addItem( key );
+            }
+            this.setSize( mWindowWidth, mWindowHeight );
 
             registerEventHandlers();
             updateList();
@@ -128,7 +154,7 @@ namespace org.kbinani.cadencii
             toolTip.SetToolTip( list, _( "Select command and hit key(s) you want to set.\nHit Backspace if you want to remove shortcut key." ) );
 #endif
 
-            labelCategory.setText( _( "Select category of menu" ) );
+            labelCategory.setText( _( "Category" ) );
             int selected = comboCategory.getSelectedIndex();
             comboCategory.removeAllItems();
             foreach ( String category in mCategories ) {
@@ -160,6 +186,11 @@ namespace org.kbinani.cadencii
                 selected = comboCategory.getItemCount() - 1;
             }
             comboCategory.setSelectedIndex( selected );
+
+            labelCommand.setText( _( "Command" ) );
+            labelEdit.setText( _( "Edit" ) );
+            labelEditKey.setText( _( "Key:" ) );
+            labelEditModifier.setText( _( "Modifier:" ) );
         }
 
         public TreeMap<String, ValuePair<String, BKeys[]>> getResult()
@@ -196,7 +227,9 @@ namespace org.kbinani.cadencii
         /// </summary>
         private void updateList()
         {
+            list.SelectedIndexChanged -= new BEventHandler( list_SelectedIndexChanged );
             list.clear();
+            list.SelectedIndexChanged += new BEventHandler( list_SelectedIndexChanged );
             mFieldName.clear();
 
             // 現在のカテゴリーを取得
@@ -207,14 +240,8 @@ namespace org.kbinani.cadencii
             String category = mCategories[selected];
 
             // 現在のカテゴリーに合致するものについてのみ，リストに追加
-#if DEBUG
-            sout.println( "FormShortcutKey#updateList; mDict=" );
-#endif
             for ( Iterator<String> itr = mDict.keySet().iterator(); itr.hasNext(); ) {
                 String display = itr.next();
-#if DEBUG
-                sout.println( "  display=" + display );
-#endif
                 ValuePair<String, BKeys[]> item = mDict.get( display );
                 String field_name = item.getKey();
                 BKeys[] keys = item.getValue();
@@ -292,13 +319,34 @@ namespace org.kbinani.cadencii
 
         private void registerEventHandlers()
         {
-            this.list.KeyDown += new BKeyEventHandler( list_KeyDown );
+            //this.list.KeyDown += new BKeyEventHandler( list_KeyDown );
             btnLoadDefault.Click += new BEventHandler( btnLoadDefault_Click );
             btnRevert.Click += new BEventHandler( btnRevert_Click );
             this.FormClosing += new BFormClosingEventHandler( FormShortcutKeys_FormClosing );
             btnOK.Click += new BEventHandler( btnOK_Click );
             btnCancel.Click += new BEventHandler( btnCancel_Click );
             comboCategory.SelectedIndexChanged += new BEventHandler( comboCategory_SelectedIndexChanged );
+            list.SelectedIndexChanged += new BEventHandler( list_SelectedIndexChanged );
+            this.SizeChanged += new BEventHandler( FormShortcutKeys_SizeChanged );
+            reRegisterHandlers();
+        }
+
+        private void unRegisterHandlers()
+        {
+            comboEditKey.SelectedIndexChanged -= new BEventHandler( comboEditKey_SelectedIndexChanged );
+            checkCommand.CheckedChanged -= new BEventHandler( handleModifier_CheckedChanged );
+            checkShift.CheckedChanged -= new BEventHandler( handleModifier_CheckedChanged );
+            checkControl.CheckedChanged -= new BEventHandler( handleModifier_CheckedChanged );
+            checkOption.CheckedChanged -= new BEventHandler( handleModifier_CheckedChanged );
+        }
+        
+        private void reRegisterHandlers()
+        {
+            comboEditKey.SelectedIndexChanged += new BEventHandler( comboEditKey_SelectedIndexChanged );
+            checkCommand.CheckedChanged += new BEventHandler( handleModifier_CheckedChanged );
+            checkShift.CheckedChanged += new BEventHandler( handleModifier_CheckedChanged );
+            checkControl.CheckedChanged += new BEventHandler( handleModifier_CheckedChanged );
+            checkOption.CheckedChanged += new BEventHandler( handleModifier_CheckedChanged );
         }
 
         private void setResources()
@@ -307,6 +355,92 @@ namespace org.kbinani.cadencii
         #endregion
 
         #region event handlers
+        public void FormShortcutKeys_SizeChanged( Object sender, BEventArgs e )
+        {
+            mWindowWidth = getWidth();
+            mWindowHeight = getHeight();
+        }
+        
+        public void handleModifier_CheckedChanged( Object sender, BEventArgs e )
+        {
+            updateSelectionKeys();
+        }
+
+        public void comboEditKey_SelectedIndexChanged( Object sender, BEventArgs e )
+        {
+            updateSelectionKeys();
+        }
+        
+        /// <summary>
+        /// 現在選択中のコマンドのショートカットキーを，comboEditKey, 
+        /// checkCommand, checkShift, checkControl, checkControlの状態にあわせて変更します．
+        /// </summary>
+        private void updateSelectionKeys()
+        {
+            int indx = comboEditKey.getSelectedIndex();
+            if( indx < 0 ){
+                return;
+            }
+            int indx_row = list.getSelectedRow();
+            if( indx_row < 0 ){
+                return;
+            }
+            BKeys key = (BKeys)comboEditKey.getItemAt( indx );
+            String display = list.getItemAt( indx_row, 0 );
+            if ( !mDict.containsKey( display ) ) {
+                return;
+            }
+            Vector<BKeys> capturelist = new Vector<BKeys>();
+            if( key != BKeys.None ){
+                capturelist.add( key );
+                if( checkCommand.isSelected() ){
+                    capturelist.add( BKeys.Menu );
+                }
+                if( checkShift.isSelected() ){
+                    capturelist.add( BKeys.Shift );
+                }
+                if( checkControl.isSelected() ){
+                    capturelist.add( BKeys.Control );
+                }
+                if( checkOption.isSelected() ){
+                    capturelist.add( BKeys.Alt );
+                }
+            }
+            BKeys[] keys = capturelist.toArray( new BKeys[] { } );
+            mDict.get( display ).setValue( keys );
+            list.setItemAt( indx_row, 1, Utility.getShortcutDisplayString( keys ) ); 
+        } 
+
+        public void list_SelectedIndexChanged( Object sender, BEventArgs e )
+        {
+            int indx = list.getSelectedRow();
+            if( indx < 0 ){
+                return;
+            }
+            String display = list.getItemAt( indx, 0 );
+            if( !mDict.containsKey( display ) ){
+                return;
+            }
+            unRegisterHandlers();
+            ValuePair<String, BKeys[]> item = mDict.get( display );
+            BKeys[] keys = item.getValue();
+            Vector<BKeys> vkeys = new Vector<BKeys>( Arrays.asList( keys ) );
+            checkCommand.setSelected( vkeys.contains( BKeys.Menu ) );
+            checkShift.setSelected( vkeys.contains( BKeys.Shift ) );
+            checkControl.setSelected( vkeys.contains( BKeys.Control ) );
+            checkOption.setSelected( vkeys.contains( BKeys.Alt ) );
+            int size = comboEditKey.getItemCount();
+            comboEditKey.setSelectedIndex( -1 );
+            for( int i = 0; i < size; i++ ){
+                BKeys k = (BKeys)comboEditKey.getItemAt( i );
+                if( vkeys.contains( k ) ){
+                    comboEditKey.setSelectedIndex( i );
+                    break;
+                }
+            }
+            reRegisterHandlers();
+        }
+        
         public void comboCategory_SelectedIndexChanged( Object sender, EventArgs e )
         {
             int selected = comboCategory.getSelectedIndex();
@@ -319,60 +453,6 @@ namespace org.kbinani.cadencii
                 return;
             }
             updateList();
-        }
-
-        public void list_KeyDown( Object sender, BKeyEventArgs e )
-        {
-            int index = list.getSelectedRow();
-            if ( index < 0 ) {
-                return;
-            }
-#if JAVA
-            int code = e.getKeyCode();
-            int modifier = e.getModifiers();
-#else
-            KeyStroke stroke = KeyStroke.getKeyStroke( 0, 0 );
-            stroke.keys = e.KeyCode | e.Modifiers;
-            int code = stroke.getKeyCode();
-            int modifier = stroke.getModifiers();
-#endif
-
-            Vector<BKeys> capturelist = new Vector<BKeys>();
-            BKeys capture = BKeys.None;
-            for ( Iterator<BKeys> itr = AppManager.SHORTCUT_ACCEPTABLE.iterator(); itr.hasNext(); ) {
-                BKeys k = itr.next();
-#if JAVA
-                if( code == k.getValue() ){
-#else
-                if ( code == (int)k ) {
-#endif
-                    capturelist.add( k );
-                    if ( (modifier & InputEvent.ALT_MASK) == InputEvent.ALT_MASK ) {
-                        capturelist.add( BKeys.Alt );
-                    }
-                    if ( (modifier & InputEvent.CTRL_MASK) == InputEvent.CTRL_MASK ) {
-                        capturelist.add( BKeys.Control );
-                    }
-                    if ( (modifier & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
-                        capturelist.add( BKeys.Shift );
-                    }
-                    if ( (modifier & InputEvent.META_MASK) == InputEvent.META_MASK ) {
-                        capturelist.add( BKeys.Menu );
-                    }
-                    capture = k;
-                    break;
-                }
-            }
-
-            list.setItemAt( index, 1, Utility.getShortcutDisplayString( capturelist.toArray( new BKeys[] { } ) ) );
-            String display = list.getItemAt( index, 0 );
-            if ( mDict.containsKey( display ) ) {
-                mDict.get( display ).setValue( capturelist.toArray( new BKeys[] { } ) );
-            }
-            updateColor();
-#if !JAVA
-            e.Handled = true;
-#endif
         }
 
         public void btnRevert_Click( Object sender, BEventArgs e )

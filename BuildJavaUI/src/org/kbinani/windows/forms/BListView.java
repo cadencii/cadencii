@@ -52,10 +52,12 @@ class TestBListView extends JFrame
     
     public TestBListView(){
         BListView b = new BListView();
-        JScrollPane sp = new JScrollPane(b);
-        b.setColumnHeaders( new String[]{ "1", "2" } );
+        b.setColumnHeaders( new String[]{ "1A", "2A" } );
         b.addItem( new String[]{ "one", "two" } );
         b.addItem( new String[]{ "I", "II" } );
+        b.setColumnWidth( 0, 120 );
+        b.setColumnHeaders( new String[]{ "1B", "2B" } );
+        JScrollPane sp = new JScrollPane(b);
         //sp.setPreferredSize(new Dimension(250, 90));
 
         //JPanel p = new JPanel();
@@ -82,6 +84,8 @@ public class BListView extends JTable
         super();
         mModel = new DefaultTableModel()
         {
+            private static final long serialVersionUID = 1444372218140865006L;
+
             public Class<?> getColumnClass( int column ){
                 if( mCheckBoxes && (column == 0) ){
                     return Boolean.class;
@@ -95,28 +99,11 @@ public class BListView extends JTable
                 return mCheckBoxes && (column == 0);
             }
         };
-        final BListView t = this;
-        /*mModel.addTableModelListener( new TableModelListener(){
-            public void tableChanged( TableModelEvent e )
-            {
-                if(e.getType()==TableModelEvent.UPDATE) {
-                    t.repaint();
-                }
-            }
-        } );*/
         setModel( mModel );
         setAutoResizeMode( JTable.AUTO_RESIZE_OFF );
         addColumnCore();
         fixLeftColumn();
-        TableColumn column = this.getColumnModel().getColumn( 0 );
-        //column.setCellEditor( new DefaultCellEditor( new JCheckBox() ) );
-        //column.setCellRenderer( new CheckCellRenderer() );
         getTableHeader().setReorderingAllowed( false );
-        //column.setMaxWidth( FIRST_COLUMN_WIDTH );
-        //column.setMinWidth( FIRST_COLUMN_WIDTH );
-        //column.setResizable( true );
-        //column.setPreferredWidth( FIRST_COLUMN_WIDTH );
-        //column.setResizable( false );
         addKeyListener( this );
         showHorizontalLines = false;
         showVerticalLines = false;
@@ -270,8 +257,6 @@ public class BListView extends JTable
     
     public void addItem( String[] items, boolean selected )
     {
-        System.out.println( "addItem; before" );
-        printData();
         Object[] data = new Object[items.length + 1];
         data[0] = Boolean.valueOf( selected );//selected;
         for( int i = 0; i < items.length; i++ ){
@@ -282,13 +267,7 @@ public class BListView extends JTable
                 addColumnCore();
             }
         }
-        System.out.println( "addItem; data=" );
-        for( int i = 0; i < data.length; i++ ){
-            System.out.println( "    \"" + data[i] + "\"" );
-        }
         mModel.addRow( data );
-        System.out.println( "addItem; before" );
-        printData();
     }
     
     public void addItem( String[] items )
@@ -313,15 +292,28 @@ public class BListView extends JTable
     
     public void setColumnHeaders( String[] headers )
     {
+System.out.println( "BListView#setColumnHeaders; before; width is..." );
+for( int i = 0; i < super.getColumnModel().getColumnCount(); i++ ){
+    TableColumn col = super.getColumnModel().getColumn( i );
+    System.out.println( "    #" + i + "; " + col.getWidth() + "; resizable=" + col.getResizable() );
+}
         String[] act = new String[headers.length + 1];
         for( int i = super.getColumnCount(); i < act.length; i++ ){
             addColumnCore();
         }
         act[0] = "";
+        getColumnModel().getColumn( 0 ).setHeaderValue( "" );
         for( int i = 0; i < headers.length; i++ ){
-            act[i + 1] = headers[i];
+            getColumnModel().getColumn( i + 1 ).setHeaderValue( headers[i] );
+            //act[i + 1] = headers[i];
         }
-        mModel.setColumnIdentifiers( act );
+        //mModel.setColumnIdentifiers( act );
+//        mModel.get
+System.out.println( "BListView#setColumnHeaders; after; width is..." );
+for( int i = 0; i < super.getColumnModel().getColumnCount(); i++ ){
+    TableColumn col = super.getColumnModel().getColumn( i );
+    System.out.println( "    #" + i + "; " + col.getWidth() + "; resizable=" + col.getResizable() );
+}
         fixLeftColumn();
     }
     
@@ -340,7 +332,9 @@ public class BListView extends JTable
     
     public void setColumnWidth( int column, int width )
     {
-        this.getColumnModel().getColumn( column + 1 ).setWidth( width );
+System.out.println( "BListView#setColumnWidth; width=" + width + "; before; width=" + getColumnWidth( column ) );
+        this.getColumnModel().getColumn( column + 1 ).setPreferredWidth( width );
+System.out.println( "BListView#setColumnWidth; width=" + width + "; after; width=" + getColumnWidth( column ) );
     }
     
     public int getColumnWidth( int column )

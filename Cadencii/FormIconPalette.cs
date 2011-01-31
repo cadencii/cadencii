@@ -300,13 +300,15 @@ namespace org.kbinani.cadencii
 
         public void FormIconPalette_FormClosing( Object sender, BFormClosingEventArgs e )
         {
-            e.Cancel = true;
             setVisible( false );
+#if !JAVA
+            e.Cancel = true;
+#endif
         }
 
         public void menuWindowHide_Click( Object sender, EventArgs e )
         {
-            close();
+            setVisible( false );
         }
 
         public void handleCommonMouseDown( Object sender, BMouseEventArgs e )

@@ -29,7 +29,7 @@ namespace org.kbinani.windows.forms{
         private BKeysUtility(){
         }
 
-#region System.Windows.Forms.Keys and org.kbinani.windows.forms.BKeys
+        #region System.Windows.Forms.Keys and org.kbinani.windows.forms.BKeys
 #if !JAVA
         public static int getModifierFromKeys( System.Windows.Forms.Keys keys ) {
             int ret = 0;
@@ -56,6 +56,8 @@ namespace org.kbinani.windows.forms{
                     modifier += InputEvent.CTRL_MASK;
                 } else if ( keys[i] == BKeys.Shift ) {
                     modifier += InputEvent.SHIFT_MASK;
+                } else if ( keys[i] == BKeys.Menu ){
+                    modifier += InputEvent.META_MASK;
                 } else {
 #if JAVA
                     keycode = keys[i].getValue();
@@ -80,6 +82,9 @@ namespace org.kbinani.windows.forms{
             }
             if ( (modifier & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
                 ret.add( BKeys.Shift );
+            }
+            if ( (modifier & InputEvent.META_MASK) == InputEvent.META_MASK ) {
+                ret.add( BKeys.Menu );
             }
             return ret.toArray( new BKeys[] { } );
         }

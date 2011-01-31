@@ -127,7 +127,15 @@ namespace org.kbinani.cadencii
         public int PxTrackHeight = 14;
         public int MouseDragIncrement = 50;
         public int MouseDragMaximumRate = 600;
+        /// <summary>
+        /// ミキサーウィンドウが表示された状態かどうか
+        /// </summary>
         public boolean MixerVisible = false;
+        /// <summary>
+        /// アイコンパレットが表示された状態かどうか
+        /// <version>3.3+</version>
+        /// </summary>
+        public boolean IconPaletteVisible = false;
         public int PreSendTime = 500;
         public ClockResolution ControlCurveResolution = ClockResolution.L30;
         /// <summary>

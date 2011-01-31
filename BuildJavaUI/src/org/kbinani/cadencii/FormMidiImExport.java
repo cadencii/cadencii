@@ -62,6 +62,7 @@ public class FormMidiImExport extends BForm {
     private BLabel lblOffsetUnit = null;
     private JScrollPane jScrollPane = null;
     private RadioButtonManager mButtonManager = null;  //  @jve:decl-index=0:
+    private BLabel lblRightValue = null;
 	
 	//SECTION-END-FIELD
 	/**
@@ -79,7 +80,7 @@ public class FormMidiImExport extends BForm {
 	 * @return void
 	 */
 	private void initialize() {
-		this.setSize(383, 552);
+		this.setSize(400, 449);
 		this.setContentPane(getJContentPane());
 		this.setTitle("JFrame");
 		mButtonManager = new RadioButtonManager();
@@ -96,7 +97,7 @@ public class FormMidiImExport extends BForm {
 		if (jContentPane == null) {
 			GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
 			gridBagConstraints4.fill = GridBagConstraints.BOTH;
-			gridBagConstraints4.weighty = 1.0;
+			gridBagConstraints4.weighty = 1.0D;
 			gridBagConstraints4.gridx = 0;
 			gridBagConstraints4.gridy = 1;
 			gridBagConstraints4.insets = new Insets(3, 12, 3, 12);
@@ -104,25 +105,28 @@ public class FormMidiImExport extends BForm {
 			GridBagConstraints gridBagConstraints22 = new GridBagConstraints();
 			gridBagConstraints22.gridx = 0;
 			gridBagConstraints22.weightx = 1.0D;
-			gridBagConstraints22.fill = GridBagConstraints.HORIZONTAL;
+			gridBagConstraints22.fill = GridBagConstraints.BOTH;
 			gridBagConstraints22.insets = new Insets(3, 12, 3, 12);
 			gridBagConstraints22.gridy = 3;
 			GridBagConstraints gridBagConstraints13 = new GridBagConstraints();
 			gridBagConstraints13.gridx = 0;
 			gridBagConstraints13.anchor = GridBagConstraints.EAST;
 			gridBagConstraints13.insets = new Insets(12, 0, 12, 0);
+			gridBagConstraints13.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints13.gridy = 4;
 			GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
 			gridBagConstraints12.gridx = 0;
 			gridBagConstraints12.weightx = 1.0D;
-			gridBagConstraints12.fill = GridBagConstraints.HORIZONTAL;
+			gridBagConstraints12.fill = GridBagConstraints.BOTH;
 			gridBagConstraints12.insets = new Insets(3, 12, 3, 12);
+			gridBagConstraints12.weighty = 0.0D;
 			gridBagConstraints12.gridy = 2;
 			GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
 			gridBagConstraints3.insets = new Insets(12, 12, 6, 12);
 			gridBagConstraints3.gridy = 0;
 			gridBagConstraints3.ipadx = 146;
 			gridBagConstraints3.anchor = GridBagConstraints.WEST;
+			gridBagConstraints3.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints3.gridx = 0;
 			jContentPane = new JPanel();
 			jContentPane.setLayout(new GridBagLayout());
@@ -146,20 +150,21 @@ public class FormMidiImExport extends BForm {
 			GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
 			gridBagConstraints2.gridx = 2;
 			gridBagConstraints2.weightx = 1.0D;
-			gridBagConstraints2.fill = GridBagConstraints.HORIZONTAL;
+			gridBagConstraints2.fill = GridBagConstraints.NONE;
 			gridBagConstraints2.insets = new Insets(0, 0, 0, 0);
 			gridBagConstraints2.gridy = 0;
 			jLabel = new JLabel();
 			jLabel.setText(" ");
+			jLabel.setPreferredSize(new Dimension(4, 4));
 			GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
 			gridBagConstraints1.gridx = 1;
-			gridBagConstraints1.insets = new Insets(3, 3, 3, 3);
+			gridBagConstraints1.insets = new Insets(0, 0, 0, 0);
 			gridBagConstraints1.gridy = 0;
 			GridBagConstraints gridBagConstraints = new GridBagConstraints();
 			gridBagConstraints.gridx = 0;
 			gridBagConstraints.weighty = 0.0D;
 			gridBagConstraints.fill = GridBagConstraints.NONE;
-			gridBagConstraints.insets = new Insets(3, 3, 3, 3);
+			gridBagConstraints.insets = new Insets(0, 0, 0, 0);
 			gridBagConstraints.gridy = 0;
 			jPanel = new JPanel();
 			jPanel.setLayout(new GridBagLayout());
@@ -180,7 +185,7 @@ public class FormMidiImExport extends BForm {
 			btnCheckAll = new BButton();
 			btnCheckAll.setText("Check All");
 			btnCheckAll.setName("btnCheckAll");
-			btnCheckAll.setPreferredSize(new Dimension(87, 29));
+			btnCheckAll.setPreferredSize(new Dimension(120, 29));
 		}
 		return btnCheckAll;
 	}
@@ -195,7 +200,7 @@ public class FormMidiImExport extends BForm {
 			btnUncheckAll = new BButton();
 			btnUncheckAll.setText("Uncheck All");
 			btnUncheckAll.setName("btnUncheckAll");
-			btnUncheckAll.setPreferredSize(new Dimension(101, 29));
+			btnUncheckAll.setPreferredSize(new Dimension(170, 29));
 		}
 		return btnUncheckAll;
 	}
@@ -208,7 +213,6 @@ public class FormMidiImExport extends BForm {
 	private BListView getListTrack() {
 		if (listTrack == null) {
 			listTrack = new BListView();
-			listTrack.setPreferredSize(new Dimension(25, 50));
 		}
 		return listTrack;
 	}
@@ -240,7 +244,7 @@ public class FormMidiImExport extends BForm {
 			groupCommonOption = new BGroupBox();
 			groupCommonOption.setLayout(new GridBagLayout());
 			groupCommonOption.setBorder(BorderFactory.createTitledBorder(null, "Option", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
-			groupCommonOption.setPreferredSize(new Dimension(274, 80));
+			groupCommonOption.setPreferredSize(new Dimension(274, 85));
 			groupCommonOption.add(getJPanel3(), gridBagConstraints9);
 			groupCommonOption.add(getPanel2(), gridBagConstraints10);
 			groupCommonOption.add(getJPanel32(), gridBagConstraints11);
@@ -269,18 +273,26 @@ public class FormMidiImExport extends BForm {
 	 */
 	private JPanel getJPanel2() {
 		if (jPanel2 == null) {
+			GridBagConstraints gridBagConstraints23 = new GridBagConstraints();
+			gridBagConstraints23.gridx = 0;
+			gridBagConstraints23.weightx = 1.0D;
+			gridBagConstraints23.gridy = 0;
+			lblRightValue = new BLabel();
+			lblRightValue.setPreferredSize(new Dimension(4, 4));
+			lblRightValue.setText("");
 			GridBagConstraints gridBagConstraints31 = new GridBagConstraints();
 			gridBagConstraints31.insets = new Insets(0, 0, 0, 0);
 			gridBagConstraints31.gridy = 0;
-			gridBagConstraints31.gridx = 0;
+			gridBagConstraints31.gridx = 1;
 			GridBagConstraints gridBagConstraints21 = new GridBagConstraints();
 			gridBagConstraints21.insets = new Insets(0, 0, 0, 12);
 			gridBagConstraints21.gridy = 0;
-			gridBagConstraints21.gridx = 1;
+			gridBagConstraints21.gridx = 2;
 			jPanel2 = new JPanel();
 			jPanel2.setLayout(new GridBagLayout());
 			jPanel2.add(getBtnOK(), gridBagConstraints21);
 			jPanel2.add(getBtnCancel(), gridBagConstraints31);
+			jPanel2.add(lblRightValue, gridBagConstraints23);
 		}
 		return jPanel2;
 	}
@@ -338,6 +350,7 @@ public class FormMidiImExport extends BForm {
 			gridBagConstraints5.gridy = 0;
 			jPanel3 = new JPanel();
 			jPanel3.setLayout(new GridBagLayout());
+			jPanel3.setPreferredSize(new Dimension(206, 25));
 			jPanel3.add(getChkTempo(), gridBagConstraints5);
 			jPanel3.add(getChkBeat(), gridBagConstraints6);
 			jPanel3.add(getChkLyric(), gridBagConstraints7);
@@ -394,6 +407,7 @@ public class FormMidiImExport extends BForm {
 			gridBagConstraints51.gridy = 0;
 			panel2 = new JPanel();
 			panel2.setLayout(new GridBagLayout());
+			panel2.setPreferredSize(new Dimension(219, 25));
 			panel2.add(getChkNote(), gridBagConstraints51);
 			panel2.add(getChkMetaText(), gridBagConstraints61);
 			panel2.add(jLabel11, gridBagConstraints81);
@@ -449,6 +463,7 @@ public class FormMidiImExport extends BForm {
 			gridBagConstraints52.gridy = 0;
 			jPanel32 = new JPanel();
 			jPanel32.setLayout(new GridBagLayout());
+			jPanel32.setPreferredSize(new Dimension(315, 25));
 			jPanel32.add(getChkExportVocaloidNrpn(), gridBagConstraints52);
 			jPanel32.add(getChkPreMeasure(), gridBagConstraints62);
 			jPanel32.add(jLabel12, gridBagConstraints82);
@@ -628,6 +643,8 @@ public class FormMidiImExport extends BForm {
         if (jScrollPane == null) {
             jScrollPane = new JScrollPane();
             jScrollPane.setPreferredSize(new Dimension(100, 100));
+            jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+            jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
             jScrollPane.setViewportView(getListTrack());
         }
         return jScrollPane;

@@ -1270,25 +1270,41 @@ namespace org.kbinani.cadencii{
 
         public static String getShortcutDisplayString( BKeys[] keys ) {
             String ret = "";
+#if JAVA_MAC
+            String plus = "";
+            String ctrl = "^";
+            String shift = "⇧";
+            String option = "⌥";
+            String command = "⌘";
+#else
+            String plus = "+";
+            String ctrl = "Ctrl";
+            String shift = "Shift";
+            String option = "Alt";
+            String command = "Meta";
+#endif
             Vector<BKeys> list = new Vector<BKeys>( Arrays.asList( keys ) );
             if ( list.contains( BKeys.Control ) ) {
-                ret += (str.compare( ret, "" ) ? "" : "+") + "Ctrl";
-            }
-            if ( list.contains( BKeys.Shift ) ) {
-                ret += (str.compare( ret, "" ) ? "" : "+") + "Shift";
+                ret += (str.compare( ret, "" ) ? "" : plus) + ctrl;
             }
             if ( list.contains( BKeys.Alt ) ) {
-                ret += (str.compare( ret, "" ) ? "" : "+") + "Alt";
+                ret += (str.compare( ret, "" ) ? "" : plus) + option;
+            }
+            if ( list.contains( BKeys.Shift ) ) {
+                ret += (str.compare( ret, "" ) ? "" : plus) + shift;
+            }
+            if ( list.contains( BKeys.Menu ) ) {
+                ret += (str.compare( ret, "" ) ? "" : plus) + command;
             }
             Vector<BKeys> list2 = new Vector<BKeys>();
             foreach ( BKeys key in keys ) {
-                if ( key != BKeys.Control && key != BKeys.Shift && key != BKeys.Alt ) {
+                if ( key != BKeys.Control && key != BKeys.Shift && key != BKeys.Alt && key != BKeys.Menu ) {
                     list2.add( key );
                 }
             }
             Collections.sort( list2 );
             for ( int i = 0; i < list2.size(); i++ ) {
-                ret += (str.compare( ret, "" ) ? "" : "+") + getKeyDisplayString( list2.get( i ) );
+                ret += (str.compare( ret, "" ) ? "" : plus) + getKeyDisplayString( list2.get( i ) );
             }
             return ret;
         }
@@ -1323,6 +1339,10 @@ namespace org.kbinani.cadencii{
                 return new String( new char[]{ '\u2318' } );
 #else
                 return new String( '\x2318', 1 );
+#endif
+#if JAVA_MAC
+            } else if ( key.Equals( BKeys.Back ) ){
+                return "⌫";
 #endif
             } else {
                 return key.ToString();

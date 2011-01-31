@@ -50,6 +50,7 @@ public class FormSingerStyleConfig extends BForm {
     private BButton btnCancel = null;
     private JPanel jPanel = null;
     private BButton btnApply = null;
+    private BLabel lblRightValue = null;
 
     //SECTION-END-FIELD
     /**
@@ -442,20 +443,28 @@ public class FormSingerStyleConfig extends BForm {
      */
     private BPanel getJPanel2() {
         if (jPanel2 == null) {
+            GridBagConstraints gridBagConstraints14 = new GridBagConstraints();
+            gridBagConstraints14.gridx = 0;
+            gridBagConstraints14.weightx = 1.0D;
+            gridBagConstraints14.gridy = 0;
+            lblRightValue = new BLabel();
+            lblRightValue.setPreferredSize(new Dimension(4, 4));
+            lblRightValue.setText("");
             GridBagConstraints gridBagConstraints52 = new GridBagConstraints();
             gridBagConstraints52.anchor = GridBagConstraints.SOUTHWEST;
-            gridBagConstraints52.gridx = 0;
+            gridBagConstraints52.gridx = 1;
             gridBagConstraints52.gridy = 0;
             gridBagConstraints52.insets = new Insets(0, 0, 0, 0);
             GridBagConstraints gridBagConstraints42 = new GridBagConstraints();
             gridBagConstraints42.anchor = GridBagConstraints.WEST;
-            gridBagConstraints42.gridx = 1;
+            gridBagConstraints42.gridx = 2;
             gridBagConstraints42.gridy = 0;
             gridBagConstraints42.insets = new Insets(0, 0, 0, 0);
             jPanel2 = new BPanel();
             jPanel2.setLayout(new GridBagLayout());
             jPanel2.add(getBtnOK(), gridBagConstraints42);
             jPanel2.add(getBtnCancel(), gridBagConstraints52);
+            jPanel2.add(lblRightValue, gridBagConstraints14);
         }
         return jPanel2;
     }
@@ -508,6 +517,7 @@ public class FormSingerStyleConfig extends BForm {
             gridBagConstraints17.anchor = GridBagConstraints.NORTHEAST;
             gridBagConstraints17.insets = new Insets(6, 0, 12, 12);
             gridBagConstraints17.gridwidth = 1;
+            gridBagConstraints17.fill = GridBagConstraints.HORIZONTAL;
             gridBagConstraints17.gridy = 4;
             GridBagConstraints gridBagConstraints16 = new GridBagConstraints();
             gridBagConstraints16.gridx = 0;

@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BTextBox;
+import org.kbinani.windows.forms.BLabel;
 
 //SECTION-END-IMPORT
 public class FormCurvePointEdit extends BForm {
@@ -33,6 +34,7 @@ public class FormCurvePointEdit extends BForm {
     private JPanel jPanel3 = null;
     private BButton btnExit = null;
     private BButton btnApply = null;
+    private BLabel lblRightValue = null;
 
     //SECTION-END-FIELD
     /**
@@ -196,6 +198,7 @@ public class FormCurvePointEdit extends BForm {
             gridBagConstraints13.anchor = GridBagConstraints.EAST;
             gridBagConstraints13.insets = new Insets(12, 0, 12, 0);
             gridBagConstraints13.weighty = 1.0D;
+            gridBagConstraints13.fill = GridBagConstraints.HORIZONTAL;
             gridBagConstraints13.gridy = 3;
             GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
             gridBagConstraints12.gridx = 2;
@@ -312,18 +315,26 @@ public class FormCurvePointEdit extends BForm {
      */
     private JPanel getJPanel3() {
         if (jPanel3 == null) {
+            GridBagConstraints gridBagConstraints14 = new GridBagConstraints();
+            gridBagConstraints14.gridx = 0;
+            gridBagConstraints14.weightx = 1.0D;
+            gridBagConstraints14.gridy = 0;
+            lblRightValue = new BLabel();
+            lblRightValue.setText("");
+            lblRightValue.setPreferredSize(new Dimension(4, 4));
             GridBagConstraints gridBagConstraints111 = new GridBagConstraints();
             gridBagConstraints111.insets = new Insets(0, 0, 0, 12);
             gridBagConstraints111.gridy = 0;
-            gridBagConstraints111.gridx = 1;
+            gridBagConstraints111.gridx = 2;
             GridBagConstraints gridBagConstraints121 = new GridBagConstraints();
             gridBagConstraints121.insets = new Insets(0, 0, 0, 0);
             gridBagConstraints121.gridy = 0;
-            gridBagConstraints121.gridx = 0;
+            gridBagConstraints121.gridx = 1;
             jPanel3 = new JPanel();
             jPanel3.setLayout(new GridBagLayout());
             jPanel3.add(getBtnExit(), gridBagConstraints121);
             jPanel3.add(getBtnApply(), gridBagConstraints111);
+            jPanel3.add(lblRightValue, gridBagConstraints14);
         }
         return jPanel3;
     }

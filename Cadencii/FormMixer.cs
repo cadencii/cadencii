@@ -569,13 +569,15 @@ namespace org.kbinani.cadencii
 
         public void menuVisualReturn_Click( Object sender, BEventArgs e )
         {
-            m_parent.flipMixerDialogVisible( false );
+            this.setVisible( false );
         }
 
         public void FormMixer_FormClosing( Object sender, BFormClosingEventArgs e )
         {
-            m_parent.flipMixerDialogVisible( false );
+            this.setVisible( false );
+#if !JAVA
             e.Cancel = true;
+#endif
         }
 
 #if !JAVA

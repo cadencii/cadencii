@@ -48,14 +48,14 @@ public class FormMain extends BForm {
     private BMenuItem menuFileOpen = null;
     private BMenuItem menuFileSave = null;
     private BMenuItem menuFileSaveNamed = null;
-    private JSeparator toolStripMenuItem10 = null;
+    private JSeparator menuFileSeparator1 = null;
     private BMenuItem menuFileOpenVsq = null;
     private BMenuItem menuFileOpenUst = null;
     private BMenu menuFileImport = null;
     private BMenu menuFileExport = null;
-    private JSeparator toolStripMenuItem101 = null;
+    private JSeparator menuFileSeparator2 = null;
     private BMenu menuFileRecent = null;
-    private JSeparator toolStripMenuItem102 = null;
+    private JSeparator menuFileSeparator3 = null;
     private BMenuItem menuFileQuit = null;
     private BMenuItem menuFileImportVsq = null;
     private BMenuItem menuFileImportMidi = null;
@@ -655,6 +655,8 @@ public class FormMain extends BForm {
             JMenu jm = menuStripMain.getMenu( i );
             setMenuName( jm );
         }
+        pictPianoRoll.setFocusTraversalKeysEnabled( false );
+        trackSelector.setFocusTraversalKeysEnabled( false );
     }
 
     /**
@@ -713,9 +715,9 @@ public class FormMain extends BForm {
             menuFile.add(getBMenuItem3());
             menuFile.add(getMenuFileImport());
             menuFile.add(getMenuFileExport());
-            menuFile.add(getToolStripMenuItem101());
+            menuFile.add(getMenuFileSeparator2());
             menuFile.add(getBMenuItem4());
-            menuFile.add(getToolStripMenuItem102());
+            menuFile.add(getMenuFileSeparator3());
             menuFile.add(getBMenuItem5());
         }
         return menuFile;
@@ -779,10 +781,10 @@ public class FormMain extends BForm {
      * @return javax.swing.JSeparator   
      */
     private JSeparator getBMenuItem() {
-        if (toolStripMenuItem10 == null) {
-            toolStripMenuItem10 = new JSeparator();
+        if (menuFileSeparator1 == null) {
+            menuFileSeparator1 = new JSeparator();
         }
-        return toolStripMenuItem10;
+        return menuFileSeparator1;
     }
 
     /**
@@ -848,15 +850,15 @@ public class FormMain extends BForm {
     }
 
     /**
-     * This method initializes toolStripMenuItem101 
+     * This method initializes menuFileSeparator2 
      *  
      * @return javax.swing.JSeparator   
      */
-    private JSeparator getToolStripMenuItem101() {
-        if (toolStripMenuItem101 == null) {
-            toolStripMenuItem101 = new JSeparator();
+    private JSeparator getMenuFileSeparator2() {
+        if (menuFileSeparator2 == null) {
+            menuFileSeparator2 = new JSeparator();
         }
-        return toolStripMenuItem101;
+        return menuFileSeparator2;
     }
 
     /**
@@ -873,15 +875,15 @@ public class FormMain extends BForm {
     }
 
     /**
-     * This method initializes toolStripMenuItem102 
+     * This method initializes menuFileSeparator3 
      *  
      * @return javax.swing.JSeparator   
      */
-    private JSeparator getToolStripMenuItem102() {
-        if (toolStripMenuItem102 == null) {
-            toolStripMenuItem102 = new JSeparator();
+    private JSeparator getMenuFileSeparator3() {
+        if (menuFileSeparator3 == null) {
+            menuFileSeparator3 = new JSeparator();
         }
-        return toolStripMenuItem102;
+        return menuFileSeparator3;
     }
 
     /**

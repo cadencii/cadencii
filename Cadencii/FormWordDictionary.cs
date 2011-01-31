@@ -42,6 +42,10 @@ namespace org.kbinani.cadencii
     class FormWordDictionary : BDialog
     {
 #endif
+        private static int mColumnWidth = 256;
+        private static int mWidth = 327;
+        private static int mHeight = 404;
+
         public FormWordDictionary()
         {
 #if JAVA
@@ -54,6 +58,8 @@ namespace org.kbinani.cadencii
             setResources();
             applyLanguage();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
+            this.setSize( mWidth, mHeight );
+            listDictionaries.setColumnWidth( 0, mColumnWidth );
         }
 
         #region public methods
@@ -94,6 +100,7 @@ namespace org.kbinani.cadencii
         private void registerEventHandlers()
         {
             this.Load += new BEventHandler( FormWordDictionary_Load );
+            this.FormClosing += new BFormClosingEventHandler( FormWordDictionary_FormClosing );
             btnOK.Click += new BEventHandler( btnOK_Click );
             btnUp.Click += new BEventHandler( btnUp_Click );
             btnDown.Click += new BEventHandler( btnDown_Click );
@@ -106,6 +113,13 @@ namespace org.kbinani.cadencii
         #endregion
 
         #region event handlers
+        public void FormWordDictionary_FormClosing( Object sender, BFormClosingEventArgs e )
+        {
+            mColumnWidth = listDictionaries.getColumnWidth( 0 );
+            mWidth = getWidth();
+            mHeight = getHeight();
+        }
+
         public void FormWordDictionary_Load( Object sender, BEventArgs e )
         {
             listDictionaries.clear();
@@ -114,7 +128,6 @@ namespace org.kbinani.cadencii
                 boolean enabled = SymbolTable.getSymbolTable( i ).isEnabled();
                 listDictionaries.addItem( new String[]{ name }, enabled );
             }
-            listDictionaries.setColumnWidth( 0, listDictionaries.getWidth() );
         }
 
         public void btnOK_Click( Object sender, BEventArgs e )

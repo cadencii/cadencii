@@ -50,9 +50,9 @@ namespace org.kbinani.cadencii
 
         private FormMidiMode m_mode;
         private VsqFileEx m_vsq;
-        private static int columnWidthTrack = 54;
-        private static int columnWidthName = 122;
-        private static int columnWidthNotes = 126;
+        private static int columnWidthTrack = 55;
+        private static int columnWidthName = 217;
+        private static int columnWidthNotes = 58;
 
         public FormMidiImExport()
         {
