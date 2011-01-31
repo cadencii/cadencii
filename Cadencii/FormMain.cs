@@ -632,6 +632,7 @@ namespace org.kbinani.cadencii
 #else
             InitializeComponent();
             timer = new BTimer( this.components );
+            waveView = new WaveView();
 #endif
 
             menuTrackRendererVCNT.setText( "vConnect-STAND(5)" );

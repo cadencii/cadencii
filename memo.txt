@@ -86,6 +86,8 @@
 -ミキサーウィンドウで，masterにミュートを入れて解除すると，左端のにミュートが入ったままになる
 -FormMidiImExportのapplyLanguageが呼ばれてない
 -WaveViewのpartialLoadがうまくいってない
+-WaveViewのautoMaximizeボタンを切り替えた直後画面が更新されない
+-TrackSelectorのVELとかのフォントが小さい．javaは8でC#は9にする
 -etc.
 -PropertyGridを実装(優先度低い)
 

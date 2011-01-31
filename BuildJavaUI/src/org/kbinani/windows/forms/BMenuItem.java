@@ -37,11 +37,6 @@ public class BMenuItem extends JCheckBoxMenuItem
         return mShortcutDisplayString;
     }
     
-    public void paintComponent( Graphics g )
-    {
-System.out.println( "BMenuItem#paintComponent" );
-    }
-    
     public void setSelected( boolean value )
     {
         if( super.isSelected() != value ){
