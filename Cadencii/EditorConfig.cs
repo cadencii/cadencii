@@ -661,6 +661,23 @@ namespace org.kbinani.cadencii
 
         #region public method
         /// <summary>
+        /// wineの実行ファイルのパスを取得します
+        /// </summary>
+        public String getWineExecutable()
+        {
+            String appstart = PortUtil.getApplicationStartupPath();
+            String ret = fsys.combine( appstart, "Wine.bundle" );
+            ret = fsys.combine( ret, "Contents" );
+            ret = fsys.combine( ret, "SharedSupport" );
+            ret = fsys.combine( ret, "bin" );
+            ret = fsys.combine( ret, "wine" );
+#if DEBUG
+            sout.println( "EditorConfig#getWineExecutable; ret=" + ret );
+#endif
+            return ret;
+        }
+
+        /// <summary>
         /// 登録されているUTAU互換合成器の個数を調べます
         /// </summary>
         /// <returns></returns>

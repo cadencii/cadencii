@@ -1,3 +1,12 @@
+my $ENABLE_DEBUG = 0;
+
+for( my $i = 0; $i <= $#ARGV; $i++ ){
+    my $arg = $ARGV[$i];
+    if( $arg eq "--enable-debug" ){
+        $ENABLE_DEBUG = 1;
+    }
+}
+
 open( FILE, "<Makefile.include" );
 open( OUT, ">Makefile" );
 
@@ -44,6 +53,11 @@ if( $ARGV[0] eq "MSWin32" ){
 }else{
     $djava_mac = "-DJAVA_MAC";
 }
+if( $ENABLE_DEBUG == 0 ){
+    $ddebug = "";
+}else{
+    $ddebug = "-DDEBUG";
+}
 
 while( $line = <FILE> ){
     $line =~ s/\@SRC_JAPPUTIL\@/$src_apputil/g;
@@ -64,6 +78,7 @@ while( $line = <FILE> ){
     $line =~ s/\@DEP_JCOMPONENTMODEL\@/$dep_componentmodel/g;
     $line =~ s/\@DEP_JXML\@/$dep_xml/g;
     $line =~ s/\@DJAVA_MAC\@/$djava_mac/g;
+    $line =~ s/\@DDEBUG\@/$ddebug/g;
 
     #if( $ARGV[0] eq "MSWin32" ){
     #    if( ($line =~ /\$\(CP\)/) | ($line =~ /\$\(RM\)/) | ($line =~ /\$\(MKDIR\)/) ){
@@ -89,7 +104,8 @@ while( $line = <FILE> ){
 close( FILE );
 close( OUT );
 
-sub getSrcList{
+sub getSrcList
+{
     my $dir = $_[0];
     my $prefix = $_[1];
     my $DIR;

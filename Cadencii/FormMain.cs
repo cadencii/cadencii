@@ -635,7 +635,6 @@ namespace org.kbinani.cadencii
             waveView = new WaveView();
 #endif
 
-            menuTrackRendererVCNT.setText( "vConnect-STAND(5)" );
             panelOverview.setMainForm( this );
             pictPianoRoll.setMainForm( this );
             bgWorkScreen = new BBackgroundWorker();
@@ -959,9 +958,16 @@ namespace org.kbinani.cadencii
 
             int fps = 1000 / AppManager.editorConfig.MaximumFrameRate;
             timer.setDelay( (fps <= 0) ? 1 : fps );
+
+#if JAVA
+#if !DEBUG
+            menuHelp.remove( menuHelpDebug );
+#endif // !DEBUG
+#else // JAVA
 #if DEBUG
             menuHelpDebug.setVisible( true );
-#endif
+#endif // DEBUG
+#endif // else JAVA
 
 #if !JAVA
             String _HAND = "AAACAAEAICAAABAAEADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAgAIAAAAAAAAAAAAAAAAAAAAAAAAAA" +
@@ -1076,7 +1082,7 @@ namespace org.kbinani.cadencii
             if ( AppManager.editorConfig.MixerVisible ) {
                 AppManager.mMixerWindow.setVisible( true );
             }
-            AppManager.mMixerWindow.VisibleChanged += new BEventHandler( mMixerWindow_VisibleChanged );
+            AppManager.mMixerWindow.VisibleChanged += new BEventHandler( mixerWindow_VisibleChanged );
 
             Point p1 = AppManager.editorConfig.FormIconPaletteLocation.toPoint();
             if ( !PortUtil.isPointInScreens( p1 ) ) {
@@ -1184,7 +1190,7 @@ namespace org.kbinani.cadencii
 
             repaint();
             updateLayout();
-#if DEBUG
+#if !DEBUG
             menuHidden.setVisible( false );
 #endif
 
@@ -1275,6 +1281,17 @@ namespace org.kbinani.cadencii
         #endregion
 
         #region helper methods
+        /// <summary>
+        /// ファイル名に拡張子が付いているかどうか確認し，付いてなければ追加します
+        /// </summary>
+        private static String ensureExtension( String file_path, String ext_with_dot )
+        {
+            if( !str.endsWith( file_path, ext_with_dot ) ){
+                file_path = file_path + ext_with_dot;
+            }
+            return file_path;
+        }
+        
         /// <summary>
         /// 指定した歌手とリサンプラーについて，設定値に登録されていないものだったら登録する．
         /// </summary>
@@ -2078,6 +2095,12 @@ namespace org.kbinani.cadencii
                 new ValuePairOfStringArrayOfKeys( menuFileOpenVsq.getName(), new BKeys[]{} ),
                 new ValuePairOfStringArrayOfKeys( menuFileSave.getName(), new BKeys[]{ ctrl, BKeys.S } ),
                 new ValuePairOfStringArrayOfKeys( menuFileQuit.getName(), new BKeys[]{ ctrl, BKeys.Q } ),
+                new ValuePairOfStringArrayOfKeys( menuFileSaveNamed.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuFileImportVsq.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuFileOpenUst.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuFileImportMidi.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuFileExportWave.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuFileExportMidi.getName(), new BKeys[]{} ),
                 new ValuePairOfStringArrayOfKeys( menuEditUndo.getName(), new BKeys[]{ ctrl, BKeys.Z } ),
                 new ValuePairOfStringArrayOfKeys( menuEditRedo.getName(), new BKeys[]{ ctrl, BKeys.Shift, BKeys.Z } ),
                 new ValuePairOfStringArrayOfKeys( menuEditCut.getName(), new BKeys[]{ ctrl, BKeys.X } ),
@@ -2085,32 +2108,8 @@ namespace org.kbinani.cadencii
                 new ValuePairOfStringArrayOfKeys( menuEditPaste.getName(), new BKeys[]{ ctrl, BKeys.V } ),
                 new ValuePairOfStringArrayOfKeys( menuEditSelectAll.getName(), new BKeys[]{ ctrl, BKeys.A } ),
                 new ValuePairOfStringArrayOfKeys( menuEditSelectAllEvents.getName(), new BKeys[]{ ctrl, BKeys.Shift, BKeys.A } ),
-                new ValuePairOfStringArrayOfKeys( menuEditDelete.getName(), new BKeys[]{ BKeys.Delete } ),
+                new ValuePairOfStringArrayOfKeys( menuEditDelete.getName(), new BKeys[]{ BKeys.Back } ),
                 new ValuePairOfStringArrayOfKeys( menuVisualMixer.getName(), new BKeys[]{ BKeys.F3 } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenEditLyric.getName(), new BKeys[]{ BKeys.F2 } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenEditFlipToolPointerPencil.getName(), new BKeys[]{ ctrl, BKeys.W } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenEditFlipToolPointerEraser.getName(), new BKeys[]{ ctrl, BKeys.E } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenVisualForwardParameter.getName(), new BKeys[]{ ctrl, BKeys.Alt, BKeys.PageDown } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenVisualBackwardParameter.getName(), new BKeys[]{ ctrl, BKeys.Alt, BKeys.PageUp } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenTrackNext.getName(), new BKeys[]{ ctrl, BKeys.PageDown } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenTrackBack.getName(), new BKeys[]{ ctrl, BKeys.PageUp } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenSelectBackward.getName(), new BKeys[]{ BKeys.Alt, BKeys.Left } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenSelectForward.getName(), new BKeys[]{ BKeys.Alt, BKeys.Right } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenMoveUp.getName(), new BKeys[]{ BKeys.Shift, BKeys.Up } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenMoveDown.getName(), new BKeys[]{ BKeys.Shift, BKeys.Down } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenMoveLeft.getName(), new BKeys[]{ BKeys.Shift, BKeys.Left } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenMoveRight.getName(), new BKeys[]{ BKeys.Shift, BKeys.Right } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenLengthen.getName(), new BKeys[]{ ctrl, BKeys.Right } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenShorten.getName(), new BKeys[]{ ctrl, BKeys.Left } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenGoToEndMarker.getName(), new BKeys[]{ ctrl, BKeys.End } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenGoToStartMarker.getName(), new BKeys[]{ ctrl, BKeys.Home } ),
-                new ValuePairOfStringArrayOfKeys( menuHiddenPlayFromStartMarker.getName(), new BKeys[]{ ctrl, BKeys.Enter } ),
-                new ValuePairOfStringArrayOfKeys( menuFileSaveNamed.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuFileImportVsq.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuFileOpenUst.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuFileImportMidi.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuFileExportWave.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuFileExportMidi.getName(), new BKeys[]{} ),
                 new ValuePairOfStringArrayOfKeys( menuVisualWaveform.getName(), new BKeys[]{} ),
                 new ValuePairOfStringArrayOfKeys( menuVisualProperty.getName(), new BKeys[]{ BKeys.F6 } ),
                 new ValuePairOfStringArrayOfKeys( menuVisualGridline.getName(), new BKeys[]{} ),
@@ -2148,7 +2147,28 @@ namespace org.kbinani.cadencii
                 new ValuePairOfStringArrayOfKeys( menuSettingPaletteTool.getName(), new BKeys[]{} ),
                 new ValuePairOfStringArrayOfKeys( menuSettingShortcut.getName(), new BKeys[]{} ),
                 new ValuePairOfStringArrayOfKeys( menuSettingSingerProperty.getName(), new BKeys[]{} ),
+#if JAVA
+                new ValuePairOfStringArrayOfKeys( menuWindowMinimize.getName(), new BKeys[]{ ctrl, BKeys.M } ),
+#endif
                 new ValuePairOfStringArrayOfKeys( menuHelpAbout.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenEditLyric.getName(), new BKeys[]{ BKeys.F2 } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenEditFlipToolPointerPencil.getName(), new BKeys[]{ ctrl, BKeys.W } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenEditFlipToolPointerEraser.getName(), new BKeys[]{ ctrl, BKeys.E } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenVisualForwardParameter.getName(), new BKeys[]{ ctrl, BKeys.Alt, BKeys.PageDown } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenVisualBackwardParameter.getName(), new BKeys[]{ ctrl, BKeys.Alt, BKeys.PageUp } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenTrackNext.getName(), new BKeys[]{ ctrl, BKeys.PageDown } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenTrackBack.getName(), new BKeys[]{ ctrl, BKeys.PageUp } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenSelectBackward.getName(), new BKeys[]{ BKeys.Alt, BKeys.Left } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenSelectForward.getName(), new BKeys[]{ BKeys.Alt, BKeys.Right } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenMoveUp.getName(), new BKeys[]{ BKeys.Shift, BKeys.Up } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenMoveDown.getName(), new BKeys[]{ BKeys.Shift, BKeys.Down } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenMoveLeft.getName(), new BKeys[]{ BKeys.Shift, BKeys.Left } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenMoveRight.getName(), new BKeys[]{ BKeys.Shift, BKeys.Right } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenLengthen.getName(), new BKeys[]{ ctrl, BKeys.Right } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenShorten.getName(), new BKeys[]{ ctrl, BKeys.Left } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenGoToEndMarker.getName(), new BKeys[]{ ctrl, BKeys.End } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenGoToStartMarker.getName(), new BKeys[]{ ctrl, BKeys.Home } ),
+                new ValuePairOfStringArrayOfKeys( menuHiddenPlayFromStartMarker.getName(), new BKeys[]{ ctrl, BKeys.Enter } ),
                 new ValuePairOfStringArrayOfKeys( menuHiddenFlipCurveOnPianorollMode.getName(), new BKeys[]{ BKeys.Tab } ),
             } ) );
             return ret;
@@ -2643,7 +2663,12 @@ namespace org.kbinani.cadencii
             }
             int left = mouse.x - dlg.getWidth() / 2;
             if ( left + dlg.getWidth() > rcScreen.x + rcScreen.width ) {
+                // ダイアログの右端が隠れる場合，位置をずらす
                 left = rcScreen.x + rcScreen.width - dlg.getWidth();
+            }
+            if ( left < rcScreen.x ) {
+                // ダイアログの左端が隠れる場合，位置をずらす
+                left = rcScreen.x;
             }
             return new Point( left, top );
         }
@@ -3139,7 +3164,8 @@ namespace org.kbinani.cadencii
                     if ( str.compare( AppManager.getFileName(), "" ) ) {
                         int dr2 = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
                         if ( dr2 == BFileChooser.APPROVE_OPTION ) {
-                            AppManager.saveTo( saveXmlVsqDialog.getSelectedFile() );
+                            String sf = ensureExtension( saveXmlVsqDialog.getSelectedFile(), ".xvsq" );
+                            AppManager.saveTo( sf );
                             return true;
                         } else {
                             return false;
@@ -5131,6 +5157,12 @@ namespace org.kbinani.cadencii
             menuTrackOverlay.setMnemonic( KeyEvent.VK_O );
             menuTrackRenderer.setText( _( "Renderer" ) );
             menuTrackRenderer.setMnemonic( KeyEvent.VK_R );
+            menuTrackRendererVOCALOID100.setMnemonic( KeyEvent.VK_1 );
+            menuTrackRendererVOCALOID101.setMnemonic( KeyEvent.VK_2 );
+            menuTrackRendererVOCALOID2.setMnemonic( KeyEvent.VK_3 );
+            menuTrackRendererUtau.setMnemonic( KeyEvent.VK_4 );
+            menuTrackRendererVCNT.setMnemonic( KeyEvent.VK_5 );
+            menuTrackRendererAquesTone.setMnemonic( KeyEvent.VK_6 );
 
             menuLyric.setText( _( "Lyrics" ) );
             menuLyric.setMnemonic( KeyEvent.VK_L );
@@ -5178,6 +5210,11 @@ namespace org.kbinani.cadencii
             menuSettingPaletteTool.setMnemonic( KeyEvent.VK_T );
             menuSettingVibratoPreset.setText( _( "Vibrato preset" ) );
             menuSettingVibratoPreset.setMnemonic( KeyEvent.VK_V );
+
+#if JAVA
+            menuWindow.setText( _( "Window" ) );
+            menuWindowMinimize.setText( _( "Minimize" ) );
+#endif
 
             menuHelp.setText( _( "Help" ) );
             menuHelp.setMnemonic( KeyEvent.VK_H );
@@ -7829,6 +7866,9 @@ namespace org.kbinani.cadencii
             menuSettingPositionQuantize128.Click += new BEventHandler( handlePositionQuantize );
             menuSettingPositionQuantizeOff.Click += new BEventHandler( handlePositionQuantize );
             menuSettingPositionQuantizeTriplet.Click += new BEventHandler( handlePositionQuantizeTriplet_Click );
+#if JAVA
+            menuWindowMinimize.Click += new BEventHandler( menuWindowMinimize_Click );
+#endif
             menuHelpAbout.Click += new BEventHandler( menuHelpAbout_Click );
             menuHelpLogSwitch.CheckedChanged += new BEventHandler( menuHelpLogSwitch_CheckedChanged );
             menuHelpLogOpen.Click += new BEventHandler( menuHelpLogOpen_Click );
@@ -8079,9 +8119,12 @@ namespace org.kbinani.cadencii
         #endregion // public methods
 
         #region event handlers
-        public void mMixerWindow_VisibleChanged( Object sender, BEventArgs e )
+        public void menuWindowMinimize_Click( Object sender, BEventArgs e )
         {
-            flipMixerDialogVisible( AppManager.mMixerWindow.isVisible() );
+            int state = this.getExtendedState();
+            if( state != BForm.ICONIFIED ){
+                setExtendedState( BForm.ICONIFIED );
+            }
         }
         
         //BOOKMARK: panelOverview
@@ -10478,6 +10521,11 @@ namespace org.kbinani.cadencii
 
         //BOOKMARK: mixerWindow
         #region mixerWindow
+        public void mixerWindow_VisibleChanged( Object sender, BEventArgs e )
+        {
+            flipMixerDialogVisible( AppManager.mMixerWindow.isVisible() );
+        }
+        
         public void mixerWindow_SoloChanged( int track, boolean solo )
         {
 #if DEBUG
@@ -10831,7 +10879,7 @@ namespace org.kbinani.cadencii
                     if ( AppManager.getFileName().Equals( "" ) ) {
                         int dr = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
                         if ( dr == BFileChooser.APPROVE_OPTION ) {
-                            AppManager.saveTo( saveXmlVsqDialog.getSelectedFile() );
+                            AppManager.saveTo( ensureExtension( saveXmlVsqDialog.getSelectedFile(), ".xvsq" ) );
                         } else {
                             return true;
                         }
@@ -11261,7 +11309,7 @@ namespace org.kbinani.cadencii
             saveXmlVsqDialog.setInitialDirectory( dir );
             int dr = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
             if ( dr == BFileChooser.APPROVE_OPTION ) {
-                String file = saveXmlVsqDialog.getSelectedFile();
+                String file = ensureExtension( saveXmlVsqDialog.getSelectedFile(), ".xvsq" );
                 AppManager.editorConfig.setLastUsedPathOut( file );
                 AppManager.saveTo( file );
                 updateRecentFileMenu();
@@ -11320,7 +11368,7 @@ namespace org.kbinani.cadencii
 
                 if ( dialog_result == BFileChooser.APPROVE_OPTION ) {
                     RandomAccessFile fs = null;
-                    String filename = saveMidiDialog.getSelectedFile();
+                    String filename = ensureExtension( saveMidiDialog.getSelectedFile(), ".mid" );
                     AppManager.editorConfig.setLastUsedPathOut( filename );
                     try {
                         fs = new RandomAccessFile( filename, "rw" );
@@ -11547,7 +11595,7 @@ namespace org.kbinani.cadencii
                 if ( result != BFileChooser.APPROVE_OPTION ) {
                     return;
                 }
-                String file = dialog.getSelectedFile();
+                String file = ensureExtension( dialog.getSelectedFile(), ".xml" );
                 String software = "Cadencii version " + BAssemblyInfo.fileVersion;
                 vsq.printAsMusicXml( file, "UTF-8", software );
                 AppManager.editorConfig.setLastUsedPathOut( file );
@@ -11667,7 +11715,7 @@ namespace org.kbinani.cadencii
                 if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
                     return;
                 }
-                file_name = dialog.getSelectedFile();
+                file_name = ensureExtension( dialog.getSelectedFile(), ".ust" );
                 AppManager.editorConfig.setLastUsedPathOut( file_name );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileExportUst_Click; ex=" + ex + "\n" );
@@ -11726,7 +11774,7 @@ namespace org.kbinani.cadencii
                 if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
                     return;
                 }
-                file_name = dialog.getSelectedFile();
+                file_name = ensureExtension( dialog.getSelectedFile(), ".vsq" );
                 AppManager.editorConfig.setLastUsedPathOut( file_name );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileExportVsq_Click; ex=" + ex + "\n" );
@@ -11777,7 +11825,7 @@ namespace org.kbinani.cadencii
                 if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
                     return;
                 }
-                file_name = dialog.getSelectedFile();
+                file_name = ensureExtension( dialog.getSelectedFile(), ".txt" );
                 AppManager.editorConfig.setLastUsedPathOut( file_name );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileExportVxt_Click; ex=" + ex + "\n" );
@@ -11858,7 +11906,7 @@ namespace org.kbinani.cadencii
                 if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
                     return;
                 }
-                filename = sfd.getSelectedFile();
+                filename = ensureExtension( sfd.getSelectedFile(), ".wav" );
                 AppManager.editorConfig.setLastUsedPathOut( filename );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileExportWave_Click; ex=" + ex + "\n" );
@@ -12952,6 +13000,9 @@ namespace org.kbinani.cadencii
                         AppManager.propertyWindow.applyLanguage();
                         AppManager.propertyPanel.updateValue( AppManager.getSelected() );
 #endif
+                        if( mDialogMidiImportAndExport != null ){
+                            mDialogMidiImportAndExport.applyLanguage();
+                        }
                     }
 
                     AppManager.editorConfig.ControlCurveResolution = mDialogPreference.getControlCurveResolution();
@@ -16336,7 +16387,7 @@ namespace org.kbinani.cadencii
 
             mWaveViewButtonAutoMaximizeMouseDowned = false;
             mWaveViewButtonZoomMouseDowned = false;
-            panel2.repaint();
+            refreshScreen();
         }
 
         public void panel2_Paint( Object sender, BPaintEventArgs e )
@@ -16881,9 +16932,6 @@ namespace org.kbinani.cadencii
                     play_time = monitor.getPlayTime();
                 }
 #endif
-#if DEBUG
-                sout.println( "FormMain#timer_Tick; play_time=" + play_time );
-#endif
                 double now = play_time + AppManager.mDirectPlayShift;
                 int clock = (int)AppManager.getVsqFile().getClockFromSec( now );
                 if ( mLastClock <= clock ) {
@@ -17151,7 +17199,7 @@ namespace org.kbinani.cadencii
                 }
                 int dr = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
                 if ( dr == BFileChooser.APPROVE_OPTION ) {
-                    file = saveXmlVsqDialog.getSelectedFile();
+                    file = ensureExtension( saveXmlVsqDialog.getSelectedFile(), ".xvsq" );
                     AppManager.editorConfig.setLastUsedPathOut( file );
                 }
             }

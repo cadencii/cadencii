@@ -16,6 +16,7 @@ package org.kbinani.cadencii;
 
 //INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/Cadencii/FormSynthesize.java
 
+import java.awt.*;
 import java.util.*;
 import org.kbinani.*;
 import org.kbinani.apputil.*;
@@ -129,6 +130,19 @@ namespace org.kbinani.cadencii
             progressWhole.setValue( 0 );
             applyLanguage();
             Util.applyFontRecurse( this, AppManager.editorConfig.getBaseFont() );
+#if JAVA
+            // 親ウィンドウの真ん中に表示する．Javaは手動で
+            if( mMainWindow != null ){
+                Point p = mMainWindow.getLocation();
+                int x = p.x;
+                int y = p.y;
+                int w = mMainWindow.getWidth();
+                int h = mMainWindow.getHeight();
+                int tw = getWidth();
+                int th = getHeight();
+                this.setLocation( new Point( x + w / 2 - tw / 2, y + h / 2 - th / 2 ) );
+            }
+#endif
         }
 
         #region public methods

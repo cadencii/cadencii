@@ -64,6 +64,7 @@ namespace org.kbinani.cadencii
         private boolean mInvokeWithWine;
         private boolean mAbortRequired = false;
         private boolean mRunning = false;
+        private String mWine = "";
 
         private long mTotalSamples;
         private WaveReceiver mReceiver = null;
@@ -71,7 +72,6 @@ namespace org.kbinani.cadencii
         private int mTrack;
         private double[] mBufferL = new double[BUFLEN];
         private double[] mBufferR = new double[BUFLEN];
-//        private int mTrimRemain = 0;
         private double mTrimRemainSeconds = 0.0;
         private int mSampleRate;
         /// <summary>
@@ -155,6 +155,7 @@ namespace org.kbinani.cadencii
             mSampleRate = sample_rate;
             mTempDir = fsys.combine( AppManager.getCadenciiTempDir(), AppManager.getID() );
             mInvokeWithWine = mConfig.InvokeUtauCoreWithWine;
+            mWine = mConfig.getWineExecutable();
 
             mVsq = (VsqFileEx)vsq.clone();
             mVsq.updateTotalClocks();
@@ -639,13 +640,13 @@ namespace org.kbinani.cadencii
 #if JAVA
                         Vector<String> list = new Vector<String>();
                         if( mInvokeWithWine ){
-                            //list.add( "wine" );
-                            list.add( "/usr/local/bin/wine" );
+                            list.add( mWine );
                         }
-                        //list.add( "\"" + mResampler.replace( "\\", "\\" + "\\" ) + "\"" );
-                        list.add( "\"" + mResampler + "\"" );
+                        list.add( mResampler );
                         for( String s : rq.getResamplerArg() ){
-                            //s = s.replace( "\\", "\\" + "\\" );
+                            if( s.startsWith( "\"" ) && s.endsWith( "\"" ) ){
+                                s = str.sub( s, 1, s.length() -2 );
+                            }
                             list.add( s );
                         }
 #if DEBUG
@@ -1073,14 +1074,34 @@ namespace org.kbinani.cadencii
             }
         }
 
-        private static void processWavtool( Vector<String> arg, String filebase, String temp_dir, String wavtool, boolean invoke_with_wine )
+        private void processWavtool( Vector<String> arg, String filebase, String temp_dir, String wavtool, boolean invoke_with_wine )
         {
 #if JAVA
-            Vector<String> args = new Vector<String>();//[] args = new String[]{ (invoke_with_wine ? "wine \"" : "\"") + wavtool + "\"", arg };
-            args.add( (invoke_with_wine ? "/usr/local/bin/wine \"" : "\"") + wavtool.replace( "\\", "/" ) + "\"" );
+            Vector<String> args = new Vector<String>();
+#if DEBUG
+            sout.println( "UtauWaveGenerator#processWavtool; wavtool=" + wavtool + "; invoke_with_wine=" + invoke_with_wine );
+#endif
+            if( invoke_with_wine ){
+                args.add( mWine );
+            }
+            args.add( wavtool.replace( "\\", "/" ) );
             int size = vec.size( arg );
             for( int i = 0; i < size; i++ ){
-                args.add( vec.get( arg, i ) );
+                vec.add( args, vec.get( arg, i ) );
+            }
+#if DEBUG
+            sout.println( "UtauWaveGenerator#processWavtool; arg=" );
+#endif
+            size = vec.size( args );
+            for( int i = 0; i < size; i++ ){
+                String s = vec.get( args, i );
+                if( s.startsWith( "\"" ) && s.endsWith( "\"" ) ){
+                    s = str.sub( s, 1, s.length() - 2 );
+                }
+#if DEBUG
+                sout.println( "    " + s );
+#endif
+                vec.set( args, i, s );
             }
             ProcessBuilder pb = new ProcessBuilder( args );
             try{

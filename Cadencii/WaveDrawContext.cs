@@ -130,7 +130,11 @@ namespace org.kbinani.cadencii {
                 if ( oldLength < saTo ) {
 #if JAVA
 #if JAVA_1_5
+                    byte[] old = mWave;
                     mWave = new byte[saTo];
+                    for( int i = 0; i < oldLength; i++ ){
+                        mWave[i] = old[i];
+                    }
 #else
                     mWave = Arrays.copyOf( mWave, saTo );
 #endif

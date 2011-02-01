@@ -1528,16 +1528,25 @@ namespace org.kbinani.cadencii
 
                 if ( mCurveVisible ) {
                     #region カーブの種類一覧
+#if JAVA
+                    Font text_font = AppManager.baseFont8;
+                    int text_font_height = AppManager.baseFont8Height;
+                    int text_font_offset = AppManager.baseFont8OffsetHeight;
+#else
+                    Font text_font = AppManager.baseFont9;
+                    int text_font_height = AppManager.baseFont9Height;
+                    int text_font_offset = AppManager.baseFont9OffsetHeight;
+#endif
                     Color font_color_normal = Color.black;
                     g.setColor( new Color( 212, 212, 212 ) );
                     g.fillRect( 0, 0, key_width, size.height - 2 * OFFSET_TRACK_TAB );
 
                     // 現在表示されているカーブの名前
-                    g.setFont( AppManager.baseFont8 );
+                    g.setFont( text_font );
                     g.setColor( brs_string );
                     boolean is_utau_mode = AppManager.mDrawIsUtau[selected - 1];
                     String name = (is_utau_mode && mSelectedCurve.equals( CurveType.VEL )) ? "INT" : mSelectedCurve.getName();
-                    g.drawString( name, 7, AppManager.baseFont8Height / 2 - AppManager.baseFont8OffsetHeight + 1 );
+                    g.drawString( name, 7, text_font_height / 2 - text_font_offset + 1 );
 
                     for ( int i = 0; i < AppManager.getViewingCurveCount(); i++ ) {
                         CurveType curve = AppManager.getViewingCurveElement( i );
@@ -1549,7 +1558,7 @@ namespace org.kbinani.cadencii
                         g.setColor( rect_curve );
                         g.drawRect( rc.x, rc.y, rc.width, rc.height );
                         int rc_str_x = rc.x + 2;
-                        int rc_str_y = rc.y + AppManager.baseFont8Height / 2 - AppManager.baseFont8OffsetHeight + 1;
+                        int rc_str_y = rc.y + text_font_height / 2 - text_font_offset + 1;
                         String n = curve.getName();
                         if ( is_utau_mode && curve.equals( CurveType.VEL ) ) {
                             n = "INT";

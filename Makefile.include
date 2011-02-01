@@ -5,8 +5,9 @@ TARGET=@TARGET@
 MCS_OPT=-warn:0
 DJAVA_MAC=@DJAVA_MAC@
 PLAY_SOUND_DLL=@PLAY_SOUND_DLL@
+DDEBUG=@DDEBUG@
 JROOT=./build/java/org/kbinani
-PPCS2JAVA_OPT=--replace-java -DJAVA -DJAVA_1_5 -DDEBUG -DCLIPBOARD_AS_TEXT $(DJAVA_MAC) -encoding "UTF-8" -s -4 -c -e -l pp_cs2java.log
+PPCS2JAVA_OPT=--replace-java -DJAVA -DJAVA_1_5 $(DDEBUG) -DCLIPBOARD_AS_TEXT $(DJAVA_MAC) -encoding "UTF-8" -s -4 -c -e -l pp_cs2java.log
 PPCS2CPP_OPT=--replace-cpp -D__cplusplus
 MONO=@MONO@
 
@@ -195,6 +196,15 @@ doc: jcadencii
 clean:
 	$(RM) ./build/java/org/kbinani/*.java ./build/java/org/kbinani/apputil/*.java ./build/java/org/kbinani/media/*.java ./build/java/org/kbinani/vsq/*.java ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/componentmodel/*.java ./build/java/org/kbinani/windows/forms/*.java ./build/java/org/kbinani/xml/*.java
 	$(RM) ./build/java/org/kbinani/*.class ./build/java/org/kbinani/apputil/*.class ./build/java/org/kbinani/media/*.class ./build/java/org/kbinani/vsq/*.class ./build/java/org/kbinani/cadencii/*.class ./build/java/org/kbinani/componentmodel/*.class ./build/java/org/kbinani/windows/forms/*.class ./build/java/org/kbinani/xml/*.class
+
+########################################################################
+# build wine
+#
+#wine:
+#    wget http://prdownloads.sourceforge.net/wine/wine-1.2.2.tar.bz2
+#    ./configure --disable-win16
+#    $(MAKE)
+#    sudo $(MAKE) install
 
 ########################################################################
 # dependency definition

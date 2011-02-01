@@ -316,6 +316,8 @@ public class FormMain extends BForm {
     private JPanel jPanel4 = null;
     private BPanel panel2 = null;
     private WaveView waveView = null;
+    private BMenu menuWindow = null;
+    private BMenuItem menuWindowMinimize = null;
     //SECTION-END-FIELD
     public FormMain( String vsq_file ) {
         super();
@@ -692,6 +694,7 @@ public class FormMain extends BForm {
             menuStripMain.add(getMenuLyric());
             menuStripMain.add(getMenuScript());
             menuStripMain.add(getMenuSetting());
+            menuStripMain.add(getMenuWindow());
             menuStripMain.add(getMenuHelp());
             menuStripMain.add(getMenuHidden());
         }
@@ -4376,6 +4379,33 @@ public class FormMain extends BForm {
             waveView.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         }
         return waveView;
+    }
+
+    /**
+     * This method initializes menuWindow	
+     * 	
+     * @return org.kbinani.windows.forms.BMenu	
+     */
+    private BMenu getMenuWindow() {
+        if (menuWindow == null) {
+            menuWindow = new BMenu();
+            menuWindow.setText("Window");
+            menuWindow.add(getMenuWindowMinimize());
+        }
+        return menuWindow;
+    }
+
+    /**
+     * This method initializes menuWindowMinimize	
+     * 	
+     * @return org.kbinani.windows.forms.BMenuItem	
+     */
+    private BMenuItem getMenuWindowMinimize() {
+        if (menuWindowMinimize == null) {
+            menuWindowMinimize = new BMenuItem();
+            menuWindowMinimize.setText("Minimize");
+        }
+        return menuWindowMinimize;
     }
 
     //SECTION-END-METHOD

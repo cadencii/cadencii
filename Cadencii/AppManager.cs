@@ -274,6 +274,7 @@ namespace org.kbinani.cadencii
         public static readonly Vector<BKeys> SHORTCUT_ACCEPTABLE = new Vector<BKeys>( Arrays.asList( new BKeys[]{
             BKeys.A,
             BKeys.B,
+            BKeys.Back,
             BKeys.C,
             BKeys.D,
             BKeys.D0,
@@ -1070,7 +1071,7 @@ namespace org.kbinani.cadencii
                     }
 
                     // 波形表示用のWaveDrawContextの内容を更新する。
-                    for ( int j = 0; j < queueIndex.size(); j++ ) {
+                    /*for ( int j = 0; j < queueIndex.size(); j++ ) {
                         int i = queueIndex.get( j );
                         if ( i >= finished ) {
                             continue;
@@ -1083,7 +1084,8 @@ namespace org.kbinani.cadencii
                         double secEnd = mVsq.getSecFromClock( clockEnd );
 
                         invokeWaveViewReloadRequiredEvent( tracks.get( k ), wavePath, secStart, secEnd );
-                    }
+                    }*/
+                    invokeWaveViewReloadRequiredEvent( track, wavePath, 1, -1 );
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex + "\n" );

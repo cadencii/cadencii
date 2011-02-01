@@ -157,11 +157,11 @@ namespace org.kbinani.cadencii
             }
         }
 
+        /// <summary>
+        /// ソロ，ミュートのボタンのチェック状態を更新します
+        /// </summary>
         private void updateSoloMute()
         {
-#if DEBUG
-            sout.println( "FormMixer#updateSoloMute" );
-#endif
             VsqFileEx vsq = AppManager.getVsqFile();
             if ( vsq == null ) {
                 return;
@@ -198,6 +198,8 @@ namespace org.kbinani.cadencii
             for ( int i = 0; i < vsq.BgmFiles.size(); i++ ) {
                 m_tracker.get( offset + i ).setMuted( masterMuted ? true : vsq.BgmFiles.get( i ).mute == 1 );
             }
+
+            this.repaint();
         }
 
         public void applyShortcut( KeyStroke shortcut )
@@ -210,17 +212,18 @@ namespace org.kbinani.cadencii
             setTitle( _( "Mixer" ) );
         }
 
+        /// <summary>
+        /// 現在のシーケンスの状態に応じて，ミキサーウィンドウの状態を更新します
+        /// </summary>
         public void updateStatus()
         {
             VsqFileEx vsq = AppManager.getVsqFile();
             int num = vsq.Mixer.Slave.size() + AppManager.getBgmCount();
-#if DEBUG
-            sout.println( "FormMixer#UpdateStatus; num=" + num );
-#endif
             if ( m_tracker == null ) {
                 m_tracker = new Vector<VolumeTracker>();
             }
 
+            // イベントハンドラをいったん解除する
             unregisterEventHandlers();
 
 #if JAVA
@@ -230,6 +233,10 @@ namespace org.kbinani.cadencii
             }
 #endif
 
+            // trackerの総数が変化したかどうか
+            boolean num_changed = (m_tracker.size() != num);
+            
+            // trackerに過不足があれば数を調節
             if ( m_tracker.size() < num ) {
                 int remain = num - m_tracker.size();
                 for ( int i = 0; i < remain; i++ ) {
@@ -339,34 +346,34 @@ namespace org.kbinani.cadencii
 
             // イベントハンドラを再登録
             reregisterEventHandlers();
+
+            // ウィンドウのサイズを更新（必要なら）
+            if( num_changed ){
 #if JAVA
-            this.setResizable( true );
-            scrollSlaves.setPreferredSize( new Dimension( (VolumeTracker.WIDTH + 1) * (screen_num - 1), VolumeTracker.HEIGHT ) );
-            JPanel c = getJContentPane();
-            Dimension size = c.getSize();
-            Rectangle rc = new Rectangle();
-            rc = c.getBounds( rc );
-            int xdiff = this.getWidth() - rc.width;
-            int ydiff = this.getHeight() - rc.height;
-            int w = screen_num * (VolumeTracker.WIDTH + 1) + 3;
-            int h = VolumeTracker.HEIGHT + SCROLL_HEIGHT;
-            //this.setSize( w, h + hScroll.getHeight() + menuMain.getHeight() );
-            pack();
-#if DEBUG
-            sout.println( "FormMixer#updateStatus; w=" + w + "; h=" + h + "; xdiff=" + xdiff + "; ydiff=" + ydiff );
-#endif
-            this.setResizable( false );
+                this.setResizable( true );
+                scrollSlaves.setPreferredSize( new Dimension( (VolumeTracker.WIDTH + 1) * (screen_num - 1), VolumeTracker.HEIGHT ) );
+                JPanel c = getJContentPane();
+                Dimension size = c.getSize();
+                Rectangle rc = new Rectangle();
+                rc = c.getBounds( rc );
+                int xdiff = this.getWidth() - rc.width;
+                int ydiff = this.getHeight() - rc.height;
+                int w = screen_num * (VolumeTracker.WIDTH + 1) + 3;
+                int h = VolumeTracker.HEIGHT + SCROLL_HEIGHT;
+                pack();
+                this.setResizable( false );
 #else
-            panelSlaves.Width = (VolumeTracker.WIDTH + 1) * (screen_num - 1);
-            volumeMaster.Location = new System.Drawing.Point( (screen_num - 1) * (VolumeTracker.WIDTH + 1) + 3, 0 );
-            this.MaximumSize = Size.Empty;
-            this.MinimumSize = Size.Empty;
-            this.ClientSize = new Size( screen_num * (VolumeTracker.WIDTH + 1) + 3, VolumeTracker.HEIGHT + hScroll.Height );
-            this.MinimumSize = this.Size;
-            this.MaximumSize = this.Size;
-            this.Invalidate();
-            m_parent.requestFocusInWindow();
+                panelSlaves.Width = (VolumeTracker.WIDTH + 1) * (screen_num - 1);
+                volumeMaster.Location = new System.Drawing.Point( (screen_num - 1) * (VolumeTracker.WIDTH + 1) + 3, 0 );
+                this.MaximumSize = Size.Empty;
+                this.MinimumSize = Size.Empty;
+                this.ClientSize = new Size( screen_num * (VolumeTracker.WIDTH + 1) + 3, VolumeTracker.HEIGHT + hScroll.Height );
+                this.MinimumSize = this.Size;
+                this.MaximumSize = this.Size;
+                this.Invalidate();
+                //m_parent.requestFocusInWindow(); // <-要る？
 #endif
+            }
         }
         #endregion
 

@@ -189,7 +189,7 @@ namespace org.kbinani.cadencii
                 mSingerConfigSys = new Vector<SingerConfig>();
             }
             int midi_tempo = 60000000 / TEMPO;
-            VsqFileEx work = (VsqFileEx)vsq.clone();
+            VsqFileEx work = (VsqFileEx)mVsq.clone();
             TempoVector tempo = new TempoVector();
             tempo.clear();
             tempo.add( new TempoTableEntry( 0, midi_tempo, 0.0 ) );
