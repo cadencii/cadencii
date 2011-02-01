@@ -6896,6 +6896,8 @@ namespace org.kbinani.cadencii
                     int track_height = (int)(100 * AppManager.getScaleY());
                     VsqFileEx vsq = AppManager.getVsqFile();
                     int track_count = vsq.Track.size();
+                    Polygon env = new Polygon( new int[7], new int[7], 7 );
+                    ByRef<Integer> overlap_x = new ByRef<Integer>( 0 );
                     for ( int track = 1; track < track_count; track++ ) {
                         VsqTrack vsq_track = vsq.Track.get( track );
                         Vector<DrawObject> tmp = new Vector<DrawObject>();
@@ -6903,27 +6905,37 @@ namespace org.kbinani.cadencii
                         AppManager.mDrawIsUtau[track - 1] = kind == RendererKind.UTAU;
 
                         // 音符イベント
-                        for ( Iterator<VsqEvent> itr = vsq_track.getEventIterator(); itr.hasNext(); ) {
-                            VsqEvent ev = itr.next();
-                            if ( ev.ID.LyricHandle == null ) {
+                        Iterator<VsqEvent> itr_note = vsq_track.getNoteEventIterator();
+                        VsqEvent item_prev = null;
+                        VsqEvent item = null;
+                        VsqEvent item_next = itr_note.hasNext() ? itr_note.next() : null;
+                        while ( item_prev != null || item != null || item_next != null ) {
+                            item_prev = item;
+                            item = item_next;
+                            if ( itr_note.hasNext() ) {
+                                item_next = itr_note.next();
+                            } else {
+                                item_next = null;
+                            }
+                            if ( item.ID.LyricHandle == null ) {
                                 continue;
                             }
-                            int timesig = ev.Clock;
-                            int length = ev.ID.getLength();
-                            int note = ev.ID.Note;
+                            int timesig = item.Clock;
+                            int length = item.ID.getLength();
+                            int note = item.ID.Note;
                             int x = (int)(timesig * scalex + xoffset);
                             int y = -note * track_height + yoffset;
                             int lyric_width = (int)(length * scalex);
-                            String lyric_jp = ev.ID.LyricHandle.L0.Phrase;
-                            String lyric_en = ev.ID.LyricHandle.L0.getPhoneticSymbol();
+                            String lyric_jp = item.ID.LyricHandle.L0.Phrase;
+                            String lyric_en = item.ID.LyricHandle.L0.getPhoneticSymbol();
                             String title = Utility.trimString( lyric_jp + " [" + lyric_en + "]", SMALL_FONT, lyric_width );
-                            int accent = ev.ID.DEMaccent;
+                            int accent = item.ID.DEMaccent;
                             int px_vibrato_start = x + lyric_width;
                             int px_vibrato_end = x;
                             int px_vibrato_delay = lyric_width * 2;
                             int vib_delay = length;
-                            if ( ev.ID.VibratoHandle != null ) {
-                                vib_delay = ev.ID.VibratoDelay;
+                            if ( item.ID.VibratoHandle != null ) {
+                                vib_delay = item.ID.VibratoDelay;
                                 double rate = (double)vib_delay / (double)length;
                                 px_vibrato_delay = _PX_ACCENT_HEADER + (int)((lyric_width - _PX_ACCENT_HEADER) * rate);
                             }
@@ -6931,11 +6943,11 @@ namespace org.kbinani.cadencii
                             VibratoBPList depth_bp = null;
                             int rate_start = 0;
                             int depth_start = 0;
-                            if ( ev.ID.VibratoHandle != null ) {
-                                rate_bp = ev.ID.VibratoHandle.getRateBP();
-                                depth_bp = ev.ID.VibratoHandle.getDepthBP();
-                                rate_start = ev.ID.VibratoHandle.getStartRate();
-                                depth_start = ev.ID.VibratoHandle.getStartDepth();
+                            if ( item.ID.VibratoHandle != null ) {
+                                rate_bp = item.ID.VibratoHandle.getRateBP();
+                                depth_bp = item.ID.VibratoHandle.getDepthBP();
+                                rate_start = item.ID.VibratoHandle.getStartRate();
+                                depth_start = item.ID.VibratoHandle.getStartDepth();
                             }
 
                             // analyzed/のSTFが引き当てられるかどうか
@@ -6957,7 +6969,10 @@ namespace org.kbinani.cadencii
                                     }
                                 }
                             }
-                            int intensity = ev.UstEvent == null ? 100 : ev.UstEvent.Intensity;
+                            int intensity = item.UstEvent == null ? 100 : item.UstEvent.Intensity;
+
+                            // エンベロープの座標を計算
+                            getEnvelopePoints( vsq, item_prev, item, item_next, env, overlap_x );
 
                             //追加
                             tmp.add( new DrawObject( DrawObjectType.Note,
@@ -6965,18 +6980,21 @@ namespace org.kbinani.cadencii
                                                      new Rectangle( x, y, lyric_width, track_height ),
                                                      title,
                                                      accent,
-                                                     ev.ID.DEMdecGainRate,
-                                                     ev.ID.Dynamics,
-                                                     ev.InternalID,
+                                                     item.ID.DEMdecGainRate,
+                                                     item.ID.Dynamics,
+                                                     item.InternalID,
                                                      px_vibrato_delay,
                                                      false,
-                                                     ev.ID.LyricHandle.L0.PhoneticSymbolProtected,
+                                                     item.ID.LyricHandle.L0.PhoneticSymbolProtected,
                                                      rate_bp,
                                                      depth_bp,
                                                      rate_start,
                                                      depth_start,
-                                                     ev.ID.Note,
-                                                     ev.UstEvent.Envelope,
+                                                     item.ID.Note,
+                                                     overlap_x.value,
+                                                     env.xpoints[0],
+                                                     env.xpoints[1], env.xpoints[2], env.xpoints[3], env.xpoints[4], env.xpoints[5], env.xpoints[6],
+                                                     env.ypoints[1], env.ypoints[2], env.ypoints[3], env.ypoints[4], env.ypoints[5],
                                                      length,
                                                      timesig,
                                                      is_valid_for_utau,
@@ -6987,13 +7005,13 @@ namespace org.kbinani.cadencii
 
                         // Dynaff, Crescendイベント
                         for ( Iterator<VsqEvent> itr = vsq_track.getDynamicsEventIterator(); itr.hasNext(); ) {
-                            VsqEvent item = itr.next();
-                            IconDynamicsHandle handle = item.ID.IconDynamicsHandle;
+                            VsqEvent item_itr = itr.next();
+                            IconDynamicsHandle handle = item_itr.ID.IconDynamicsHandle;
                             if ( handle == null ) {
                                 continue;
                             }
-                            int clock = item.Clock;
-                            int length = item.ID.getLength();
+                            int clock = item_itr.Clock;
+                            int length = item_itr.ID.getLength();
                             if ( length <= 0 ) {
                                 length = 1;
                             }
@@ -7039,7 +7057,7 @@ namespace org.kbinani.cadencii
                             if ( type == DrawObjectType.Note ) {
                                 continue;
                             }
-                            int note = item.ID.Note;
+                            int note = item_itr.ID.Note;
                             int x = (int)(clock * scalex + xoffset);
                             int y = -note * (int)(100 * AppManager.getScaleY()) + yoffset;
                             tmp.add( new DrawObject( type,
@@ -7049,7 +7067,7 @@ namespace org.kbinani.cadencii
                                                      0,
                                                      0,
                                                      0,
-                                                     item.InternalID,
+                                                     item_itr.InternalID,
                                                      0,
                                                      false,
                                                      false,
@@ -7057,8 +7075,10 @@ namespace org.kbinani.cadencii
                                                      null,
                                                      0,
                                                      0,
-                                                     item.ID.Note,
-                                                     null,
+                                                     item_itr.ID.Note,
+                                                     0, 0,
+                                                     0, 0, 0, 0, 0, 0,
+                                                     0, 0, 0, 0, 0,
                                                      length,
                                                      clock,
                                                      true,
@@ -7121,6 +7141,83 @@ namespace org.kbinani.cadencii
 #endif
                 }
             }
+        }
+
+        /// <summary>
+        /// エンベロープを描画するための座標を計算します
+        /// </summary>
+        /// <param name="vsq"></param>
+        /// <param name="prev_item"></param>
+        /// <param name="item"></param>
+        /// <param name="next_item"></param>
+        /// <param name="env"></param>
+        /// <param name="overlap_x"></param>
+        private void getEnvelopePoints(
+            VsqFileEx vsq,
+            VsqEvent prev_item, VsqEvent item, VsqEvent next_item,
+            Polygon env, ByRef<Integer> overlap_x )
+        {
+            if ( env == null ) {
+                return;
+            }
+            if ( env.npoints < 7 ) {
+                return;
+            }
+            double sec_start1 = vsq.getSecFromClock( item.Clock );
+            double sec_end1 = vsq.getSecFromClock( item.Clock + item.ID.getLength() );
+            UstEvent ust_event1 = item.UstEvent;
+            if ( ust_event1 == null ) {
+                ust_event1 = new UstEvent();
+            }
+            UstEnvelope draw_target = ust_event1.Envelope;
+            if ( draw_target == null ) {
+                draw_target = new UstEnvelope();
+            }
+            double sec_pre_utterance1 = ust_event1.PreUtterance / 1000.0;
+            double sec_overlap1 = ust_event1.VoiceOverlap / 1000.0;
+
+            // 先行発音があることによる，この音符のエンベロープの実際の開始位置
+            double sec_env_start1 = sec_start1 - sec_pre_utterance1;
+
+            // 直後の音符の有る無しで，この音符のエンベロープの実際の終了位置が変わる
+            double sec_env_end1 = sec_end1;
+            if ( next_item != null && next_item.UstEvent != null ) {
+                // 直後に音符がある場合
+                UstEvent ust_event2 = next_item.UstEvent;
+                double sec_pre_utterance2 = ust_event2.PreUtterance / 1000.0;
+                double sec_overlap2 = ust_event2.VoiceOverlap / 1000.0;
+                sec_env_end1 = sec_end1 - sec_pre_utterance2 + sec_overlap2;
+            }
+
+            float scalex = AppManager.getScaleX();
+            int px_env_start1 = (int)(vsq.getClockFromSec( sec_env_start1 ) * scalex);
+            int px_env_end1 = (int)(vsq.getClockFromSec( sec_env_end1 ) * scalex);
+            //px_pre_utteramce.value = px_env_start1;
+            //px_overlap.value = (int)(vsq.getClockFromSec( sec_env_start1 + sec_overlap1 ) * scalex);
+            double sec_p1 = sec_env_start1 + draw_target.p1 / 1000.0;
+            double sec_p2 = sec_env_start1 + (draw_target.p1 + draw_target.p2) / 1000.0;
+            double sec_p5 = sec_env_start1 + (draw_target.p1 + draw_target.p2 + draw_target.p5) / 1000.0;
+            double sec_p3 = sec_env_end1 - (draw_target.p3 + draw_target.p4) / 1000.0;
+            double sec_p4 = sec_env_end1 - draw_target.p4 / 1000.0;
+            int p1 = (int)(vsq.getClockFromSec( sec_p1 ) * scalex);
+            int p2 = (int)(vsq.getClockFromSec( sec_p2 ) * scalex);
+            int p5 = (int)(vsq.getClockFromSec( sec_p5 ) * scalex);
+            int p3 = (int)(vsq.getClockFromSec( sec_p3 ) * scalex);
+            int p4 = (int)(vsq.getClockFromSec( sec_p4 ) * scalex);
+            env.xpoints[0] = px_env_start1;
+            env.xpoints[1] = p1;
+            env.xpoints[2] = p2;
+            env.xpoints[3] = p5;
+            env.xpoints[4] = p3;
+            env.xpoints[5] = p4;
+            env.xpoints[6] = px_env_end1;
+            env.ypoints[0] = 0;
+            env.ypoints[1] = draw_target.v1;
+            env.ypoints[2] = draw_target.v2;
+            env.ypoints[3] = draw_target.v5;
+            env.ypoints[4] = draw_target.v3;
+            env.ypoints[5] = draw_target.v4;
+            env.ypoints[6] = 0;
         }
 
         /// <summary>
@@ -15367,7 +15464,9 @@ namespace org.kbinani.cadencii
                 }
             }
             if ( e.Button == BMouseButtons.None ) {
-                refreshScreen();
+                if ( !timer.isRunning() ) {
+                    refreshScreen( true );
+                }
                 return;
             }
             int parent_width = ((TrackSelector)sender).getWidth();
@@ -15423,7 +15522,9 @@ namespace org.kbinani.cadencii
                     hScroll.setValue( draft );
                 }
             }
-            refreshScreen();
+            if ( !timer.isRunning() ) {
+                refreshScreen( true );
+            }
         }
 
         public void trackSelector_MouseUp( Object sender, BMouseEventArgs e )
@@ -16387,7 +16488,11 @@ namespace org.kbinani.cadencii
 
             mWaveViewButtonAutoMaximizeMouseDowned = false;
             mWaveViewButtonZoomMouseDowned = false;
+#if JAVA
             refreshScreen();
+#else
+            panel2.repaint();
+#endif
         }
 
         public void panel2_Paint( Object sender, BPaintEventArgs e )

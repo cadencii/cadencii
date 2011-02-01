@@ -750,8 +750,10 @@ namespace org.kbinani.cadencii
             int count = 0;
             for ( Iterator<DrawObject> itr = objs.iterator(); itr.hasNext(); ) {
                 DrawObject dobj = itr.next();
-                sum += dobj.mNote;
-                count++;
+                if ( dobj.mType == DrawObjectType.Note ) {
+                    sum += dobj.mNote;
+                    count++;
+                }
             }
             float average_note = (float)(sum / (double)count);
 
