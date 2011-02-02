@@ -6887,7 +6887,7 @@ namespace org.kbinani.cadencii
                     AppManager.mDrawObjects.clear();
                 }
 
-                int xoffset = 6;// 6 + AppManager.keyWidth;
+                int xoffset = AppManager.keyOffset;// 6 + AppManager.keyWidth;
                 int yoffset = (int)(127 * (int)(100 * AppManager.getScaleY()));
                 float scalex = AppManager.getScaleX();
                 Font SMALL_FONT = null;
@@ -6974,9 +6974,6 @@ namespace org.kbinani.cadencii
                             }
                             int intensity = item.UstEvent == null ? 100 : item.UstEvent.Intensity;
 
-                            // エンベロープの座標を計算
-                            getEnvelopePoints( vsq, item_prev, item, item_next, env, overlap_x );
-
                             //追加
                             tmp.add( new DrawObject( DrawObjectType.Note,
                                                      vsq,
@@ -6994,10 +6991,7 @@ namespace org.kbinani.cadencii
                                                      rate_start,
                                                      depth_start,
                                                      item.ID.Note,
-                                                     overlap_x.value,
-                                                     env.xpoints[0],
-                                                     env.xpoints[1], env.xpoints[2], env.xpoints[3], env.xpoints[4], env.xpoints[5], env.xpoints[6],
-                                                     env.ypoints[1], env.ypoints[2], env.ypoints[3], env.ypoints[4], env.ypoints[5],
+                                                     item.UstEvent.Envelope,
                                                      length,
                                                      timesig,
                                                      is_valid_for_utau,
@@ -7079,9 +7073,7 @@ namespace org.kbinani.cadencii
                                                      0,
                                                      0,
                                                      item_itr.ID.Note,
-                                                     0, 0,
-                                                     0, 0, 0, 0, 0, 0,
-                                                     0, 0, 0, 0, 0,
+                                                     null,
                                                      length,
                                                      clock,
                                                      true,
@@ -7147,83 +7139,6 @@ namespace org.kbinani.cadencii
 #endif
                 }
             }
-        }
-
-        /// <summary>
-        /// エンベロープを描画するための座標を計算します
-        /// </summary>
-        /// <param name="vsq"></param>
-        /// <param name="prev_item"></param>
-        /// <param name="item"></param>
-        /// <param name="next_item"></param>
-        /// <param name="env"></param>
-        /// <param name="overlap_x"></param>
-        private void getEnvelopePoints(
-            VsqFileEx vsq,
-            VsqEvent prev_item, VsqEvent item, VsqEvent next_item,
-            Polygon env, ByRef<Integer> overlap_x )
-        {
-            if ( env == null ) {
-                return;
-            }
-            if ( env.npoints < 7 ) {
-                return;
-            }
-            double sec_start1 = vsq.getSecFromClock( item.Clock );
-            double sec_end1 = vsq.getSecFromClock( item.Clock + item.ID.getLength() );
-            UstEvent ust_event1 = item.UstEvent;
-            if ( ust_event1 == null ) {
-                ust_event1 = new UstEvent();
-            }
-            UstEnvelope draw_target = ust_event1.Envelope;
-            if ( draw_target == null ) {
-                draw_target = new UstEnvelope();
-            }
-            double sec_pre_utterance1 = ust_event1.PreUtterance / 1000.0;
-            double sec_overlap1 = ust_event1.VoiceOverlap / 1000.0;
-
-            // 先行発音があることによる，この音符のエンベロープの実際の開始位置
-            double sec_env_start1 = sec_start1 - sec_pre_utterance1;
-
-            // 直後の音符の有る無しで，この音符のエンベロープの実際の終了位置が変わる
-            double sec_env_end1 = sec_end1;
-            if ( next_item != null && next_item.UstEvent != null ) {
-                // 直後に音符がある場合
-                UstEvent ust_event2 = next_item.UstEvent;
-                double sec_pre_utterance2 = ust_event2.PreUtterance / 1000.0;
-                double sec_overlap2 = ust_event2.VoiceOverlap / 1000.0;
-                sec_env_end1 = sec_end1 - sec_pre_utterance2 + sec_overlap2;
-            }
-
-            float scalex = AppManager.getScaleX();
-            int px_env_start1 = (int)(vsq.getClockFromSec( sec_env_start1 ) * scalex);
-            int px_env_end1 = (int)(vsq.getClockFromSec( sec_env_end1 ) * scalex);
-            //px_pre_utteramce.value = px_env_start1;
-            //px_overlap.value = (int)(vsq.getClockFromSec( sec_env_start1 + sec_overlap1 ) * scalex);
-            double sec_p1 = sec_env_start1 + draw_target.p1 / 1000.0;
-            double sec_p2 = sec_env_start1 + (draw_target.p1 + draw_target.p2) / 1000.0;
-            double sec_p5 = sec_env_start1 + (draw_target.p1 + draw_target.p2 + draw_target.p5) / 1000.0;
-            double sec_p3 = sec_env_end1 - (draw_target.p3 + draw_target.p4) / 1000.0;
-            double sec_p4 = sec_env_end1 - draw_target.p4 / 1000.0;
-            int p1 = (int)(vsq.getClockFromSec( sec_p1 ) * scalex);
-            int p2 = (int)(vsq.getClockFromSec( sec_p2 ) * scalex);
-            int p5 = (int)(vsq.getClockFromSec( sec_p5 ) * scalex);
-            int p3 = (int)(vsq.getClockFromSec( sec_p3 ) * scalex);
-            int p4 = (int)(vsq.getClockFromSec( sec_p4 ) * scalex);
-            env.xpoints[0] = px_env_start1;
-            env.xpoints[1] = p1;
-            env.xpoints[2] = p2;
-            env.xpoints[3] = p5;
-            env.xpoints[4] = p3;
-            env.xpoints[5] = p4;
-            env.xpoints[6] = px_env_end1;
-            env.ypoints[0] = 0;
-            env.ypoints[1] = draw_target.v1;
-            env.ypoints[2] = draw_target.v2;
-            env.ypoints[3] = draw_target.v5;
-            env.ypoints[4] = draw_target.v3;
-            env.ypoints[5] = draw_target.v4;
-            env.ypoints[6] = 0;
         }
 
         /// <summary>

@@ -208,6 +208,18 @@ namespace org.kbinani.cadencii
         /// トラックの名前表示部分の最大表示幅（ピクセル）
         /// </summary>
         const int TRACK_SELECTOR_MAX_WIDTH = 80;
+        /// <summary>
+        /// 先行発音を表示する旗を描画する位置のy座標
+        /// </summary>
+        const int OFFSET_PRE = 15;
+        /// <summary>
+        /// オーバーラップを表示する旗を描画する位置のy座標
+        /// </summary>
+        const int OFFSET_OVL = 40;
+        /// <summary>
+        /// 旗の上下に追加するスペース(ピクセル)
+        /// </summary>
+        const int FLAG_SPACE = 2;
         #endregion
 
         /// <summary>
@@ -296,7 +308,7 @@ namespace org.kbinani.cadencii
         /// <summary>
         /// エンベロープ点を動かすモードで，選択されているInternalID．
         /// </summary>
-        private int mEnvelopeMoveID = -1;
+        private int mEnvelopeEdigintID = -1;
         /// <summary>
         /// エンベロープ点を動かすモードで，選択されている点のタイプ
         /// </summary>
@@ -327,30 +339,14 @@ namespace org.kbinani.cadencii
         private double mEnvelopeRangeEnd;
 
         /// <summary>
-        /// 現在表示されているPreUtterance編集用の旗のID．負なら表示されていない
-        /// </summary>
-        private int mPreUtteranceViewing = -1;
-        /// <summary>
-        /// PreUtterance編集用の旗の現在位置
-        /// </summary>
-        private Rectangle mPreUtteranceBounds;
-        /// <summary>
         /// 現在PreUtteranceを編集中のVsqEventのID
         /// </summary>
-        private int mPreUtteranceMovingID;
+        private int mPreUtteranceEditingID;
 
-        /// <summary>
-        /// 現在表意されているオーバーラップ編集用の旗のID．負なら表示されていない
-        /// </summary>
-        private int mOverlapViewing = -1;
-        /// <summary>
-        /// オーバーラップ編集用の旗の現在位置
-        /// </summary>
-        private Rectangle nOverlapBounds;
         /// <summary>
         /// 現在オーバーラップを編集中のVsqEventのID
         /// </summary>
-        private int mOverlapMovingID;
+        private int mOverlapEditingID;
         /// <summary>
         /// オーバーラップを編集する前の音符情報
         /// </summary>
@@ -1632,42 +1628,36 @@ namespace org.kbinani.cadencii
             }
         }
 
-        private void drawEnvelope( Graphics2D g, int track, Color fill_color )
-        {
-            if ( AppManager.mDrawObjects == null ) {
-                return;
-            }
-            lock ( AppManager.mDrawObjects ) {
-                Vector<DrawObject> list = vec.get( AppManager.mDrawObjects, track - 1 );
-                int size = vec.size( list );
-                //TODO: このへんがまだ
-            }
-        }
-
-        private void __obsolete__drawEnvelope( Graphics2D g, VsqTrack track, Color fill_color )
+        /// <summary>
+        /// 指定したトラックのエンベロープ，先行発音，オーバーラップを画面に描画します
+        /// </summary>
+        /// <param name="g"></param>
+        /// <param name="track"></param>
+        /// <param name="fill_color"></param>
+        private void drawEnvelope( Graphics2D g, int track_index, Color fill_color )
         {
             int clock_start = AppManager.clockFromXCoord( AppManager.keyWidth );
             int clock_end = AppManager.clockFromXCoord( getWidth() );
 
             VsqFileEx vsq = AppManager.getVsqFile();
+            VsqTrack track = vec.get( vsq.Track, track_index );
             VsqEvent itr_prev = null;
             VsqEvent itr_item = null;
             VsqEvent itr_next = null;
-            Polygon highlight = null;
             Point mouse = pointToClient( PortUtil.getMousePosition() );
-            int px_preutterance = int.MinValue;
-            int px_overlap = int.MinValue;
-            int drawn_id = -1;
-            int distance = int.MaxValue;
-            float drawn_preutterance = 0;
-            float drawn_overlap = 0;
 
             Color brs = fill_color;
             Point selected_point = new Point();
             boolean selected_found = false;
+            // yが範囲内なので，xも検索するときtrue
             boolean search_mouse = (0 <= mouse.y && mouse.y <= getHeight());
+            boolean draw_env_points = false;
             Iterator<VsqEvent> itr = track.getNoteEventIterator();
-            while( true ){
+            int dotwid = DOT_WID * 2 + 1;
+            int tolerance = AppManager.editorConfig.PxTolerance;
+            // 選択アイテムが1個以上あるので，検索するときtrue
+            boolean search_sel = AppManager.getSelectedEventCount() > 0;
+            while ( true ) {
                 itr_prev = itr_item;
                 itr_item = itr_next;
                 if ( itr.hasNext() ) {
@@ -1704,63 +1694,74 @@ namespace org.kbinani.cadencii
                 }
                 ByRef<Integer> preutterance = new ByRef<Integer>();
                 ByRef<Integer> overlap = new ByRef<Integer>();
-                Polygon points = getEnvelopePoints( vsq, prev_item, item, next_item, preutterance, overlap );
-                if ( mMouseDownMode == MouseDownMode.ENVELOPE_MOVE ||
-                     mMouseDownMode == MouseDownMode.PRE_UTTERANCE_MOVE ||
-                     mMouseDownMode == MouseDownMode.OVERLAP_MOVE ) {
-                    if ( mMouseDownMode == MouseDownMode.ENVELOPE_MOVE && item.InternalID == mEnvelopeMoveID ) {
-                        selected_point = new Point( points.xpoints[mEnvelopePointKind], points.ypoints[mEnvelopePointKind] );
-                        selected_found = true;
-                        highlight = points;
-                        px_overlap = overlap.value;
-                        px_preutterance = preutterance.value;
-                        drawn_preutterance = item.UstEvent.PreUtterance;
-                        drawn_overlap = item.UstEvent.VoiceOverlap;
-                        drawn_id = item.InternalID;
-                    } else if ( (mMouseDownMode == MouseDownMode.PRE_UTTERANCE_MOVE && item.InternalID == mPreUtteranceMovingID) ||
-                                (mMouseDownMode == MouseDownMode.OVERLAP_MOVE && item.InternalID == mOverlapMovingID) ) {
-                        highlight = points;
-                        px_overlap = overlap.value;
-                        px_preutterance = preutterance.value;
-                        drawn_preutterance = item.UstEvent.PreUtterance;
-                        drawn_overlap = item.UstEvent.VoiceOverlap;
-                        drawn_id = item.InternalID;
-                    }
-                } else if ( search_mouse ) {
-                    int draft_distance = int.MaxValue;
-                    if ( points.xpoints[0] <= mouse.x && mouse.x <= points.xpoints[6] ) {
-                        draft_distance = 0;
-                    } else if ( mouse.x < points.xpoints[0] ) {
-                        draft_distance = points.xpoints[0] - mouse.x;
-                    } else {
-                        draft_distance = mouse.x - points.xpoints[6];
-                    }
-                    if ( distance > draft_distance ) {
-                        distance = draft_distance;
-                        highlight = points;
-                        px_overlap = overlap.value;
-                        px_preutterance = preutterance.value;
-                        drawn_preutterance = item.UstEvent.PreUtterance;
-                        drawn_overlap = item.UstEvent.VoiceOverlap;
-                        drawn_id = item.InternalID;
+                Polygon points = getEnvelopePoints( vsq.TempoTable, prev_item, item, next_item, preutterance, overlap );
+                if ( mMouseDownMode == MouseDownMode.ENVELOPE_MOVE && item.InternalID == mEnvelopeEdigintID ) {
+                    selected_point = new Point( points.xpoints[mEnvelopePointKind], points.ypoints[mEnvelopePointKind] );
+                    selected_found = true;
+                }
+
+                // 編集中のアイテムだったら描く
+                // エンベロープ
+                if ( !draw_env_points ) {
+                    if ( mMouseDownMode == MouseDownMode.ENVELOPE_MOVE && item.InternalID == mEnvelopeEdigintID ) {
+                        draw_env_points = true;
                     }
                 }
+                // 先行発音
+                if ( !draw_env_points ) {
+                    if ( mMouseDownMode == MouseDownMode.PRE_UTTERANCE_MOVE && item.InternalID == mPreUtteranceEditingID ) {
+                        draw_env_points = true;
+                    }
+                }
+                // オーバーラップ
+                if ( !draw_env_points ) {
+                    if ( mMouseDownMode == MouseDownMode.OVERLAP_MOVE && item.InternalID == mOverlapEditingID ) {
+                        draw_env_points = true;
+                    }
+                }
+
+                // マウスのx座標が範囲内なら描く
+                if ( !draw_env_points ) {
+                    if ( search_mouse ) {
+                        if ( points.xpoints[0] - tolerance <= mouse.x && mouse.x <= points.xpoints[points.npoints - 1] + tolerance ) {
+                            draw_env_points = true;
+                        }
+                    }
+                }
+
+                // 選択されてたら描く
+                if ( !draw_env_points && search_sel ) {
+                    if ( AppManager.isSelectedEventContains( track_index, item.InternalID ) ) {
+                        draw_env_points = true;
+                    }
+                }
+
+                // 多角形
                 g.setColor( brs );
                 g.fillPolygon( points );
                 g.setColor( Color.white );
                 g.drawPolyline( points.xpoints, points.ypoints, points.npoints );
-            }
-            int dotwid = DOT_WID * 2 + 1;
-            if ( highlight != null ) {
-                for ( int i = 1; i < 6; i++ ) {
-                    Point p = new Point( highlight.xpoints[i], highlight.ypoints[i] );
-                    Rectangle rc = new Rectangle( p.x - DOT_WID, p.y - DOT_WID, dotwid, dotwid );
-                    g.setColor( COLOR_BEZIER_DOT_NORMAL );
-                    g.fillRect( rc.x, rc.y, rc.width, rc.height );
-                    g.setColor( COLOR_BEZIER_DOT_NORMAL );
-                    g.drawRect( rc.x, rc.y, rc.width, rc.height );
+
+                if ( draw_env_points ) {
+                    // データ点の表示
+                    for ( int i = 1; i < 6; i++ ) {
+                        Point p = new Point( points.xpoints[i], points.ypoints[i] );
+                        Rectangle rc = new Rectangle( p.x - DOT_WID, p.y - DOT_WID, dotwid, dotwid );
+                        g.setColor( COLOR_BEZIER_DOT_NORMAL );
+                        g.fillRect( rc.x, rc.y, rc.width, rc.height );
+                        g.setColor( COLOR_BEZIER_DOT_NORMAL );
+                        g.drawRect( rc.x, rc.y, rc.width, rc.height );
+                    }
+
+                    // 旗を描く
+                    drawPreutteranceAndOverlap(
+                        g, 
+                        preutterance.value, overlap.value, 
+                        item.UstEvent.PreUtterance, item.UstEvent.VoiceOverlap );
                 }
             }
+
+            // 選択されている点のハイライト表示
             if ( selected_found ) {
                 Rectangle rc = new Rectangle( selected_point.x - DOT_WID, selected_point.y - DOT_WID, dotwid, dotwid );
                 g.setColor( AppManager.getHilightColor() );
@@ -1768,61 +1769,83 @@ namespace org.kbinani.cadencii
                 g.setColor( COLOR_BEZIER_DOT_NORMAL );
                 g.drawRect( rc.x, rc.y, rc.width, rc.height );
             }
-
-            if ( px_preutterance != int.MinValue && px_overlap != int.MinValue ) {
-                drawPreutteranceAndOverlap( g, px_preutterance, px_overlap, drawn_preutterance, drawn_overlap );
-            }
-            mOverlapViewing = drawn_id;
-            mPreUtteranceViewing = drawn_id;
         }
 
+        /// <summary>
+        /// 先行発音，またはオーバーラップを表示する旗に描く文字列を取得します
+        /// </summary>
+        /// <param name="flag_is_pre_utterance">先行発音用の文字列を取得する場合にtrue，そうでなければfalseを指定します</param>
+        /// <param name="value">先行発音，またはオーバーラップの値</param>
+        /// <returns>旗に描くための文字列（Overlap: 0.00など）</returns>
+        private static String getFlagTitle( boolean flag_is_pre_utterance, float value )
+        {
+            if ( flag_is_pre_utterance ) {
+                return "Pre Utterance: " + PortUtil.formatDecimal( "0.00", value );
+            } else {
+                return "Overlap: " + PortUtil.formatDecimal( "0.00", value );
+            }
+        }
+
+        /// <summary>
+        /// 指定した文字列を旗に書いたときの，旗のサイズを計算します
+        /// </summary>
+        /// <param name="flag_title"></param>
+        private Dimension getFlagBounds( String flag_title )
+        {
+            if ( mTextWidthPerLetter <= 0.0f ) {
+#if JAVA
+                Font font = AppManager.baseFont9;
+#else
+                Font font = AppManager.baseFont10;
+#endif
+                Dimension s = Util.measureString( flag_title, font );
+                mTextWidthPerLetter = s.width / (float)str.length( flag_title );
+                mTextHeight = s.height;
+            }
+            return new Dimension( (int)(str.length( flag_title) * mTextWidthPerLetter), mTextHeight );
+        }
+
+        /// <summary>
+        /// 先行発音とオーバーラップを表示する旗を描画します
+        /// </summary>
+        /// <param name="g"></param>
+        /// <param name="px_preutterance"></param>
+        /// <param name="px_overlap"></param>
+        /// <param name="preutterance"></param>
+        /// <param name="overlap"></param>
         private void drawPreutteranceAndOverlap( Graphics2D g, int px_preutterance, int px_overlap, float preutterance, float overlap )
         {
-            // TODO: ここの呼び出し元で，px_preutteranceなんかをdobjから取るように
-            int OFFSET_PRE = 15;
-            int OFFSET_OVL = 40;
             int graph_height = getGraphHeight();
             g.setColor( PortUtil.Orange );
             g.drawLine( px_preutterance, HEADER + 1, px_preutterance, graph_height + HEADER );
             g.setColor( PortUtil.LawnGreen );
             g.drawLine( px_overlap, HEADER + 1, px_overlap, graph_height + HEADER );
 
-            String s_pre = "Pre Utterance: " + PortUtil.formatDecimal( "0.00", preutterance );
+            String s_pre = getFlagTitle( true, preutterance );
+            String s_ovl = getFlagTitle( false, overlap );
 #if JAVA
-            Font font = AppManager.baseFont8;
-            int font_height = AppManager.baseFont8Height;
-            int font_offset = AppManager.baseFont8OffsetHeight;
-#else
             Font font = AppManager.baseFont9;
             int font_height = AppManager.baseFont9Height;
             int font_offset = AppManager.baseFont9OffsetHeight;
+#else
+            Font font = AppManager.baseFont10;
+            int font_height = AppManager.baseFont10Height;
+            int font_offset = AppManager.baseFont10OffsetHeight;
 #endif
-            if ( mTextWidthPerLetter <= 0.0f ) {
-                Dimension size = Util.measureString( s_pre, font );
-                mTextWidthPerLetter = size.width / (float)str.length( s_pre );
-                mTextHeight = size.height;
-            }
-            mPreUtteranceBounds =
-                new Rectangle( 
-                    px_preutterance + 1, OFFSET_PRE,
-                    (int)(str.length( s_pre ) * mTextWidthPerLetter), mTextHeight );
-            String s_ovl = "Overlap: " + PortUtil.formatDecimal( "0.00", overlap );
-            nOverlapBounds =
-                new Rectangle(
-                    px_overlap + 1, OFFSET_OVL,
-                    (int)(str.length( s_ovl ) * mTextWidthPerLetter), mTextHeight );
+            Dimension pre_bounds = getFlagBounds( s_pre );
+            Dimension ovl_bounds = getFlagBounds( s_ovl );
 
             Color pen = new Color( 0, 0, 0, 50 );
             Color transp = new Color( PortUtil.Orange.getRed(), PortUtil.Orange.getGreen(), PortUtil.Orange.getBlue(), 50 );
             g.setColor( transp );
-            g.fillRect( mPreUtteranceBounds.x, mPreUtteranceBounds.y, mPreUtteranceBounds.width, mPreUtteranceBounds.height );
+            g.fillRect( px_preutterance, OFFSET_PRE - FLAG_SPACE, pre_bounds.width, pre_bounds.height + FLAG_SPACE * 2);
             g.setColor( pen );
-            g.drawRect( mPreUtteranceBounds.x, mPreUtteranceBounds.y, mPreUtteranceBounds.width, mPreUtteranceBounds.height );
+            g.drawRect( px_preutterance, OFFSET_PRE - FLAG_SPACE, pre_bounds.width, pre_bounds.height + FLAG_SPACE * 2 );
             transp = new Color( PortUtil.LawnGreen.getRed(), PortUtil.LawnGreen.getGreen(), PortUtil.LawnGreen.getBlue(), 50 );
             g.setColor( transp );
-            g.fillRect( nOverlapBounds.x, nOverlapBounds.y, nOverlapBounds.width, nOverlapBounds.height );
+            g.fillRect( px_overlap, OFFSET_OVL - FLAG_SPACE, ovl_bounds.width, ovl_bounds.height + FLAG_SPACE * 2 );
             g.setColor( pen );
-            g.drawRect( nOverlapBounds.x, nOverlapBounds.y, nOverlapBounds.width, nOverlapBounds.height );
+            g.drawRect( px_overlap, OFFSET_OVL - FLAG_SPACE, ovl_bounds.width, ovl_bounds.height + FLAG_SPACE * 2 );
 
             g.setFont( font );
             g.setColor( Color.black );
@@ -1833,8 +1856,9 @@ namespace org.kbinani.cadencii
         /// <summary>
         /// 画面上の指定した点に、コントロールカーブのデータ点があるかどうかを調べます
         /// </summary>
-        /// <param name="location"></param>
-        /// <returns></returns>
+        /// <param name="locx">調べたい点の画面上のx座標</param>
+        /// <param name="locy">調べたい点の画面上のy座標</param>
+        /// <returns>データ点が見つかれば，データ点のid，そうでなければ-1を返します</returns>
         private long findDataPointAt( int locx, int locy )
         {
             if ( mSelectedCurve.equals( CurveType.Accent ) ||
@@ -1873,13 +1897,48 @@ namespace org.kbinani.cadencii
         /// <summary>
         /// 画面上の指定した点に、エンベロープのポイントがあるかどうかを調べます
         /// </summary>
-        /// <param name="location">画面上の点</param>
+        /// <param name="locx">調べたい点の画面上のx座標</param>
+        /// <param name="locy">調べたい点の画面上のy座標</param>
         /// <param name="internal_id">見つかったエンベロープ・ポイントを保持しているVsqEventのID</param>
         /// <param name="point_kind">見つかったエンベロープ・ポイントのタイプ。(p1,v1)なら1、(p2,v2)なら2，(p5,v5)なら3，(p3,v3)なら4，(p4,v4)なら5</param>
         /// <returns>見つかった場合は真を、そうでなければ偽を返します</returns>
         private boolean findEnvelopePointAt( int locx, int locy, ByRef<Integer> internal_id, ByRef<Integer> point_kind )
         {
-            // TODO: ここもAppManager.mDrawObjectsの値から取得するようにする
+            return findEnvelopeCore( locx, locy, internal_id, point_kind, null );
+        }
+
+        /// <summary>
+        /// 画面上の指定した位置に，先行発音またはオーバーラップ用の旗が表示されているかどうかを調べます
+        /// </summary>
+        /// <param name="locx">調べたい点の画面上のx座標</param>
+        /// <param name="locy">調べたい点の画面上のy座標</param>
+        /// <param name="internal_id">見つかったイベントを表現するVsqEventのInternalID</param>
+        /// <param name="found_flag_was_overlap">見つかった旗がオーバーラップのものであった場合にtrue，それ以外はfalse</param>
+        /// <returns>旗が見つかった場合にtrue，それ以外はfalseを返します</returns>
+        private boolean findPreUtteranceOrOverlapAt( int locx, int locy, ByRef<Integer> internal_id, ByRef<Boolean> found_flag_was_overlap )
+        {
+            return findEnvelopeCore( locx, locy, internal_id, null, found_flag_was_overlap );
+        }
+
+        /// <summary>
+        /// findPreUtteranceOrOverlapAtとfindEnvelopePointAtから呼ばれるユーティリティ
+        /// </summary>
+        /// <param name="locx"></param>
+        /// <param name="locy"></param>
+        /// <param name="internal_id"></param>
+        /// <param name="point_kind"></param>
+        /// <param name="found_flag_was_overlap"></param>
+        /// <returns></returns>
+        private boolean findEnvelopeCore(
+            int locx, int locy, 
+            ByRef<Integer> internal_id, 
+            ByRef<Integer> point_kind, ByRef<Boolean> found_flag_was_overlap )
+        {
+            internal_id.value = -1;
+            if ( point_kind != null ) {
+                point_kind.value = -1;
+            }
+
             int clock_start = AppManager.clockFromXCoord( AppManager.keyWidth );
             int clock_end = AppManager.clockFromXCoord( getWidth() );
             int dotwid = DOT_WID * 2 + 1;
@@ -1888,6 +1947,9 @@ namespace org.kbinani.cadencii
             VsqEvent itr_prev = null;
             VsqEvent itr_item = null;
             VsqEvent itr_next = null;
+            ByRef<Integer> px_preutterance = new ByRef<Integer>();
+            ByRef<Integer> px_overlap = new ByRef<Integer>();
+            Dimension size = new Dimension();
             while( true ){
                 itr_prev = itr_item;
                 itr_item = itr_next;
@@ -1923,42 +1985,117 @@ namespace org.kbinani.cadencii
                         next_item = null;
                     }
                 }
-                Polygon points = getEnvelopePoints( vsq, prev_item, item, next_item );
-                for ( int i = 5; i >= 1; i-- ) {
-                    Point p = new Point( points.xpoints[i], points.ypoints[i] );
-                    Rectangle rc = new Rectangle( p.x - DOT_WID, p.y - DOT_WID, dotwid, dotwid );
-                    if ( isInRect( locx, locy, rc ) ) {
+                // エンベロープの点の座標を計算
+                Polygon points = getEnvelopePoints( vsq.TempoTable, prev_item, item, next_item, px_preutterance, px_overlap );
+                // エンベロープの点の当たり判定
+                if ( point_kind != null ) {
+                    for ( int i = 5; i >= 1; i-- ) {
+                        Point p = new Point( points.xpoints[i], points.ypoints[i] );
+                        Rectangle rc = new Rectangle( p.x - DOT_WID, p.y - DOT_WID, dotwid, dotwid );
+                        if ( isInRect( locx, locy, rc ) ) {
+                            internal_id.value = item.InternalID;
+                            point_kind.value = i;
+                            return true;
+                        }
+                    }
+                }
+                // 先行発音の旗の当たり判定
+                if ( found_flag_was_overlap != null ) {
+                    String title_preutterance = getFlagTitle( true, item.UstEvent.PreUtterance );
+                    size = getFlagBounds( title_preutterance );
+                    if ( Utility.isInRect( locx, locy, px_preutterance.value, OFFSET_PRE - FLAG_SPACE, size.width, size.height + FLAG_SPACE * 2 ) ) {
                         internal_id.value = item.InternalID;
-                        point_kind.value = i;
+                        found_flag_was_overlap.value = false;
+                        return true;
+                    }
+                    // オーバーラップ用の旗の当たり判定
+                    String title_overlap = getFlagTitle( false, item.UstEvent.VoiceOverlap );
+                    size = getFlagBounds( title_overlap );
+                    if ( Utility.isInRect( locx, locy, px_overlap.value, OFFSET_OVL - FLAG_SPACE, size.width, size.height + FLAG_SPACE * 2 ) ) {
+                        internal_id.value = item.InternalID;
+                        found_flag_was_overlap.value = true;
                         return true;
                     }
                 }
             }
-            internal_id.value = -1;
-            point_kind.value = -1;
             return false;
         }
 
-        //[Obsolete]
+        /// <summary>
+        /// 指定したアイテムのエンベロープを画面に描画するための多角形を取得します
+        /// </summary>
+        /// <param name="tempo_table">クロックから秒時を計算するためのテンポテーブル</param>
+        /// <param name="prev_item">直前にある音符イベント，直前が休符(UTAUでのR)の場合はnull</param>
+        /// <param name="item">エンベロープを調べる対象の音符イベント</param>
+        /// <param name="next_item">直後にある音符イベント，直後が休符(UTAUでのR)の場合はnull</param>
+        /// <param name="px_pre_utteramce">先行発音を描画するための旗のx座標</param>
+        /// <param name="px_overlap">オーバーラップを描画するための旗のx座標</param>
+        /// <returns>指定した音符イベントのエンベロープを描画するための多角形．x方向の単位は画面上のピクセル単位，y方向の単位はエンベロープの値と同じ単位</returns>
         private Polygon getEnvelopePoints(
-            VsqFileEx vsq,
-            VsqEvent prev_item, VsqEvent item, VsqEvent next_item )
-        {
-            //TODO: あとでけす
-            ByRef<Integer> i = new ByRef<Integer>();
-            ByRef<Integer> j = new ByRef<Integer>();
-            return getEnvelopePoints( vsq, prev_item, item, next_item, i, j );
-        }
-
-        //[Obsolete]
-        private Polygon getEnvelopePoints(
-            VsqFileEx vsq, 
+            TempoVector tempo_table, 
             VsqEvent prev_item, VsqEvent item, VsqEvent next_item,
             ByRef<Integer> px_pre_utteramce, ByRef<Integer> px_overlap )
         {
-            // TODO: あとで消す
-            double sec_start1 = vsq.getSecFromClock( item.Clock );
-            double sec_end1 = vsq.getSecFromClock( item.Clock + item.ID.getLength() );
+            ByRef<Double> sec_env_start1 = new ByRef<Double>( 0.0 );
+            ByRef<Double> sec_env_end1 = new ByRef<Double>( 0.0 );
+            getEnvelopeRegion( tempo_table, prev_item, item, next_item, sec_env_start1, sec_env_end1 );
+            
+            UstEvent ust_event1 = item.UstEvent;
+            if ( ust_event1 == null ) {
+                ust_event1 = new UstEvent();
+            }
+            UstEnvelope draw_target = ust_event1.Envelope;
+            if ( draw_target == null ) {
+                draw_target = new UstEnvelope();
+            }
+            double sec_pre_utterance1 = ust_event1.PreUtterance / 1000.0;
+            double sec_overlap1 = ust_event1.VoiceOverlap / 1000.0;
+
+            int px_env_start1 = AppManager.xCoordFromClocks( (int)tempo_table.getClockFromSec( sec_env_start1.value ) );
+            int px_env_end1 = AppManager.xCoordFromClocks( (int)tempo_table.getClockFromSec( sec_env_end1.value ) );
+            if ( px_pre_utteramce != null ) {
+                px_pre_utteramce.value = px_env_start1;
+            }
+            if ( px_overlap != null ) {
+                px_overlap.value = AppManager.xCoordFromClocks( (int)tempo_table.getClockFromSec( sec_env_start1.value + sec_overlap1 ) );
+            }
+            double sec_p1 = sec_env_start1.value + draw_target.p1 / 1000.0;
+            double sec_p2 = sec_env_start1.value + (draw_target.p1 + draw_target.p2) / 1000.0;
+            double sec_p5 = sec_env_start1.value +(draw_target.p1 + draw_target.p2 + draw_target.p5) / 1000.0;
+            double sec_p3 = sec_env_end1.value - (draw_target.p3 + draw_target.p4) / 1000.0;
+            double sec_p4 = sec_env_end1.value - draw_target.p4 / 1000.0;
+            int p1 = AppManager.xCoordFromClocks( (int)tempo_table.getClockFromSec( sec_p1 ) );
+            int p2 = AppManager.xCoordFromClocks( (int)tempo_table.getClockFromSec( sec_p2 ) );
+            int p5 = AppManager.xCoordFromClocks( (int)tempo_table.getClockFromSec( sec_p5 ) );
+            int p3 = AppManager.xCoordFromClocks( (int)tempo_table.getClockFromSec( sec_p3 ) );
+            int p4 = AppManager.xCoordFromClocks( (int)tempo_table.getClockFromSec( sec_p4 ) );
+            int v1 = yCoordFromValue( draw_target.v1 );
+            int v2 = yCoordFromValue( draw_target.v2 );
+            int v3 = yCoordFromValue( draw_target.v3 );
+            int v4 = yCoordFromValue( draw_target.v4 );
+            int v5 = yCoordFromValue( draw_target.v5 );
+            int y = yCoordFromValue( 0 );
+            return new Polygon( new int[] { px_env_start1, p1, p2, p5, p3, p4, px_env_end1 },
+                                new int[] { y, v1, v2, v5, v3, v4, y },
+                                7 );
+        }
+
+        /// <summary>
+        /// 前後の音符の有無や先行発音などにより，音符のエンベロープがどの範囲に及ぶかを調べます
+        /// </summary>
+        /// <param name="tempo_table">クロックを秒時に変換するためのテンポテーブル</param>
+        /// <param name="item_prev">直前の音符．休符であればnullを指定する</param>
+        /// <param name="item">調べる対象の音符</param>
+        /// <param name="item_next">直後の音符．休符であればnullを指定する</param>
+        /// <param name="env_start_sec">エンベロープの開始時刻(秒)</param>
+        /// <param name="env_end_sec">エンベロープの終了時刻(秒)</param>
+        private void getEnvelopeRegion( 
+            TempoVector tempo_table, 
+            VsqEvent item_prev, VsqEvent item, VsqEvent item_next,
+            ByRef<Double> env_start_sec, ByRef<Double> env_end_sec )
+        {
+            double sec_start1 = tempo_table.getSecFromClock( item.Clock );
+            double sec_end1 = tempo_table.getSecFromClock( item.Clock + item.ID.getLength() );
             UstEvent ust_event1 = item.UstEvent;
             if ( ust_event1 == null ) {
                 ust_event1 = new UstEvent();
@@ -1975,94 +2112,16 @@ namespace org.kbinani.cadencii
 
             // 直後の音符の有る無しで，この音符のエンベロープの実際の終了位置が変わる
             double sec_env_end1 = sec_end1;
-            if ( next_item != null && next_item.UstEvent != null ) {
+            if ( item_next != null && item_next.UstEvent != null ) {
                 // 直後に音符がある場合
-                UstEvent ust_event2 = next_item.UstEvent;
+                UstEvent ust_event2 = item_next.UstEvent;
                 double sec_pre_utterance2 = ust_event2.PreUtterance / 1000.0;
                 double sec_overlap2 = ust_event2.VoiceOverlap / 1000.0;
                 sec_env_end1 = sec_end1 - sec_pre_utterance2 + sec_overlap2;
             }
-            
-            int px_env_start1 = AppManager.xCoordFromClocks( (int)vsq.getClockFromSec( sec_env_start1 ) );
-            int px_env_end1 = AppManager.xCoordFromClocks( (int)vsq.getClockFromSec( sec_env_end1 ) );
-            px_pre_utteramce.value = px_env_start1;
-            px_overlap.value = AppManager.xCoordFromClocks( (int)vsq.getClockFromSec( sec_env_start1 + sec_overlap1 ) );
-            double sec_p1 = sec_env_start1 + draw_target.p1 / 1000.0;
-            double sec_p2 = sec_env_start1 + (draw_target.p1 + draw_target.p2) / 1000.0;
-            double sec_p5 = sec_env_start1 +(draw_target.p1 + draw_target.p2 + draw_target.p5) / 1000.0;
-            double sec_p3 = sec_env_end1 - (draw_target.p3 + draw_target.p4) / 1000.0;
-            double sec_p4 = sec_env_end1 - draw_target.p4 / 1000.0;
-            int p1 = AppManager.xCoordFromClocks( (int)vsq.getClockFromSec( sec_p1 ) );
-            int p2 = AppManager.xCoordFromClocks( (int)vsq.getClockFromSec( sec_p2 ) );
-            int p5 = AppManager.xCoordFromClocks( (int)vsq.getClockFromSec( sec_p5 ) );
-            int p3 = AppManager.xCoordFromClocks( (int)vsq.getClockFromSec( sec_p3 ) );
-            int p4 = AppManager.xCoordFromClocks( (int)vsq.getClockFromSec( sec_p4 ) );
-            int v1 = yCoordFromValue( draw_target.v1 );
-            int v2 = yCoordFromValue( draw_target.v2 );
-            int v3 = yCoordFromValue( draw_target.v3 );
-            int v4 = yCoordFromValue( draw_target.v4 );
-            int v5 = yCoordFromValue( draw_target.v5 );
-            int y = yCoordFromValue( 0 );
-            return new Polygon( new int[] { px_env_start1, p1, p2, p5, p3, p4, px_env_end1 },
-                                new int[] { y, v1, v2, v5, v3, v4, y },
-                                7 );
-        }
 
-        private Polygon __obsolete__getEnvelopePoints(
-            VsqFileEx vsq,
-            VsqEvent prev_item, VsqEvent item, VsqEvent next_item,
-            ByRef<Integer> px_pre_utteramce, ByRef<Integer> px_overlap )
-        {
-            double sec_start = vsq.getSecFromClock( item.Clock );
-            double sec_end = vsq.getSecFromClock( item.Clock + item.ID.getLength() );
-            UstEvent ust_event = item.UstEvent;
-            if ( ust_event == null ) {
-                ust_event = new UstEvent();
-            }
-            UstEnvelope draw_target = ust_event.Envelope;
-            if ( draw_target == null ) {
-                draw_target = new UstEnvelope();
-            }
-            float pre_utterance = ust_event.PreUtterance;
-            float overlap = ust_event.VoiceOverlap;
-
-            // 直後の音符
-            UstEvent ust_event_next = null;
-            double sec_start_next = double.MaxValue;
-            if ( next_item != null ) {
-                ust_event_next = next_item.UstEvent;
-                sec_start_next = vsq.getSecFromClock( next_item.Clock );
-            }
-
-            // 直前の音符
-            UstEvent ust_event_prev = null;
-            if ( ust_event_next == null ) {
-                ust_event_next = new UstEvent();
-            }
-            sec_start_next = sec_start_next - (ust_event_next.PreUtterance - ust_event_next.VoiceOverlap) / 1000.0;
-
-            sec_start = sec_start - pre_utterance / 1000.0;
-            if ( sec_start_next < sec_end ) {
-                sec_end = sec_start_next;
-            }
-            int p_start = AppManager.xCoordFromClocks( (int)vsq.getClockFromSec( sec_start ) );
-            int p_end = AppManager.xCoordFromClocks( (int)vsq.getClockFromSec( sec_end ) );
-            px_pre_utteramce.value = p_start;
-            px_overlap.value = AppManager.xCoordFromClocks( (int)vsq.getClockFromSec( sec_start + overlap / 1000.0 ) );
-            int p1 = AppManager.xCoordFromClocks( (int)vsq.getClockFromSec( sec_start + draw_target.p1 / 1000.0 ) );
-            int p2 = AppManager.xCoordFromClocks( (int)vsq.getClockFromSec( sec_start + (draw_target.p1 + draw_target.p2) / 1000.0 ) );
-            int p5 = AppManager.xCoordFromClocks( (int)vsq.getClockFromSec( sec_start + (draw_target.p1 + draw_target.p2 + draw_target.p5) / 1000.0 ) );
-            int p3 = AppManager.xCoordFromClocks( (int)vsq.getClockFromSec( sec_end - (draw_target.p4 + draw_target.p3) / 1000.0 ) );
-            int p4 = AppManager.xCoordFromClocks( (int)vsq.getClockFromSec( sec_end - draw_target.p4 / 1000.0 ) );
-            int v1 = yCoordFromValue( draw_target.v1 );
-            int v2 = yCoordFromValue( draw_target.v2 );
-            int v3 = yCoordFromValue( draw_target.v3 );
-            int v4 = yCoordFromValue( draw_target.v4 );
-            int v5 = yCoordFromValue( draw_target.v5 );
-            int y = yCoordFromValue( 0 );
-            return new Polygon( new int[] { p_start, p1, p2, p5, p3, p4, p_end },
-                                new int[] { y, v1, v2, v5, v3, v4, y },
-                                7 );
+            env_start_sec.value = sec_env_start1;
+            env_end_sec.value = sec_env_end1;
         }
 
         private void drawTrackTab( Graphics2D g, Rectangle destRect, String name, boolean selected, boolean enabled, boolean render_required, Color hilight, Color render_button_hilight )
@@ -4087,27 +4146,30 @@ namespace org.kbinani.cadencii
 
         private boolean processMouseDownPreutteranceAndOverlap( BMouseEventArgs e )
         {
-            if ( mPreUtteranceViewing >= 0 && isInRect( e.X, e.Y, mPreUtteranceBounds ) ) {
-                mPreUtteranceMovingID = mPreUtteranceViewing;
-                mPreOverlapEditing = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).findEventFromID( mPreUtteranceMovingID );
-                if ( mPreOverlapEditing == null ) {
-                    mMouseDownMode = MouseDownMode.NONE;
-                    return false;
+            ByRef<Integer> internal_id = new ByRef<Integer>();
+            ByRef<Boolean> found_flag_was_overlap = new ByRef<Boolean>();
+            if ( findPreUtteranceOrOverlapAt( e.X, e.Y, internal_id, found_flag_was_overlap ) ) {
+                if ( found_flag_was_overlap.value ) {
+                    mOverlapEditingID = internal_id.value;
+                    mPreOverlapEditing = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).findEventFromID( mOverlapEditingID );
+                    if ( mPreOverlapEditing == null ) {
+                        mMouseDownMode = MouseDownMode.NONE;
+                        return false;
+                    }
+                    mPreOverlapOriginal = (VsqEvent)mPreOverlapEditing.clone();
+                    mMouseDownMode = MouseDownMode.OVERLAP_MOVE;
+                    return true;
+                } else {
+                    mPreUtteranceEditingID = internal_id.value;
+                    mPreOverlapEditing = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).findEventFromID( mPreUtteranceEditingID );
+                    if ( mPreOverlapEditing == null ) {
+                        mMouseDownMode = MouseDownMode.NONE;
+                        return false;
+                    }
+                    mPreOverlapOriginal = (VsqEvent)mPreOverlapEditing.clone();
+                    mMouseDownMode = MouseDownMode.PRE_UTTERANCE_MOVE;
+                    return true;
                 }
-                mPreOverlapOriginal = (VsqEvent)mPreOverlapEditing.clone();
-                mMouseDownMode = MouseDownMode.PRE_UTTERANCE_MOVE;
-                return true;
-            }
-            if ( mOverlapViewing >= 0 && isInRect( e.X, e.Y, nOverlapBounds ) ) {
-                mOverlapMovingID = mOverlapViewing;
-                mPreOverlapEditing = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).findEventFromID( mOverlapMovingID );
-                if ( mPreOverlapEditing == null ) {
-                    mMouseDownMode = MouseDownMode.NONE;
-                    return false;
-                }
-                mPreOverlapOriginal = (VsqEvent)mPreOverlapEditing.clone();
-                mMouseDownMode = MouseDownMode.OVERLAP_MOVE;
-                return true;
             }
             return false;
         }
@@ -4117,53 +4179,73 @@ namespace org.kbinani.cadencii
             ByRef<Integer> internal_id = new ByRef<Integer>( -1 );
             ByRef<Integer> point_kind = new ByRef<Integer>( -1 );
             if ( !findEnvelopePointAt( e.X, e.Y, internal_id, point_kind ) ) {
+                return false;
+            }
 #if DEBUG
-                sout.println( "processTrackSelectorMouseDownForEnvelope; not found" );
+            sout.println( "processTrackSelectorMouseDownForEnvelope; internal_id=" + internal_id.value + "; point_kind=" + point_kind.value );
 #endif
-                return false;
-            }
             mEnvelopeOriginal = null;
-            VsqTrack target = AppManager.getVsqFile().Track.get( AppManager.getSelected() );
-            VsqEvent item = target.findEventFromID( internal_id.value );
-            if ( item == null ) {
+            VsqFileEx vsq = AppManager.getVsqFile();
+            VsqTrack vsq_track = vsq.Track.get( AppManager.getSelected() );
+            VsqEvent found = vsq_track.findEventFromID( internal_id.value );
+            if ( found == null ) {
                 return false;
             }
-            if ( item != null && item.UstEvent != null && item.UstEvent.Envelope != null ) {
-                mEnvelopeOriginal = (UstEnvelope)item.UstEvent.Envelope.clone();
-                mEnvelopeEditing = item.UstEvent.Envelope;
+            if ( found.UstEvent != null && found.UstEvent.Envelope != null ) {
+                mEnvelopeOriginal = (UstEnvelope)found.UstEvent.Envelope.clone();
+                mEnvelopeEditing = found.UstEvent.Envelope;
             }
             if ( mEnvelopeOriginal == null ) {
-                item.UstEvent.Envelope = new UstEnvelope();
-                mEnvelopeEditing = item.UstEvent.Envelope;
-                mEnvelopeOriginal = (UstEnvelope)item.UstEvent.Envelope.clone();
+                found.UstEvent.Envelope = new UstEnvelope();
+                mEnvelopeEditing = found.UstEvent.Envelope;
+                mEnvelopeOriginal = (UstEnvelope)found.UstEvent.Envelope.clone();
             }
             mMouseDownMode = MouseDownMode.ENVELOPE_MOVE;
-            mEnvelopeMoveID = internal_id.value;
+            mEnvelopeEdigintID = internal_id.value;
             mEnvelopePointKind = point_kind.value;
 
             // エンベロープ点が移動可能な範囲を、あらかじめ取得
-            VsqEvent next = null;
-            int count = target.getEventCount();
-            for ( int i = 0; i < count; i++ ) {
-                if ( target.getEvent( i ).InternalID == mEnvelopeMoveID ) {
-                    for ( int j = i + 1; j < count; j++ ) {
-                        if ( target.getEvent( j ).ID.type == VsqIDType.Anote ) {
-                            next = target.getEvent( j );
-                            break;
-                        }
-                    }
+            // 描画される位置を取得
+            VsqEvent item_prev = null;
+            VsqEvent item = null;
+            VsqEvent item_next = null;
+            Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator();
+            while ( true ) {
+                item_prev = item;
+                item = item_next;
+                if ( itr.hasNext() ) {
+                    item_next = itr.next();
+                } else {
+                    item_next = null;
+                }
+                if ( item_prev == null && item == null && item_next == null ) {
+                    break;
+                }
+                if ( item == null ) {
+                    continue;
+                }
+                if ( item.InternalID == mEnvelopeEdigintID ) {
                     break;
                 }
             }
-            double sec = AppManager.getVsqFile().getSecFromClock( AppManager.clockFromXCoord( e.X ) );
-            mEnvelopeRangeBegin = AppManager.getVsqFile().getSecFromClock( item.Clock ) - item.UstEvent.PreUtterance / 1000.0;
-            mEnvelopeRangeEnd = AppManager.getVsqFile().getSecFromClock( item.Clock + item.ID.getLength() );
-            if ( next != null ) {
-                double sec_start_next = AppManager.getVsqFile().getSecFromClock( next.Clock ) - next.UstEvent.PreUtterance / 1000.0 + next.UstEvent.VoiceOverlap / 1000.0;
-                if ( sec_start_next < mEnvelopeRangeEnd ) {
-                    mEnvelopeRangeEnd = sec_start_next;
+            if ( item_prev != null ) {
+                // 直前の音符と接触しているかどうか
+                if ( item_prev.Clock + item_prev.ID.getLength() < item.Clock ) {
+                    item_prev = null;
                 }
             }
+            if ( item_next != null ) {
+                // 直後の音符と接触しているかどうか
+                if ( item.Clock + item.ID.getLength() < item_next.Clock ) {
+                    item_next = null;
+                }
+            }
+            ByRef<Double> env_start = new ByRef<Double>( 0.0 );
+            ByRef<Double> env_end = new ByRef<Double>( 0.0 );
+            getEnvelopeRegion( vsq.TempoTable, item_prev, item, item_next, env_start, env_end );
+
+            mEnvelopeRangeBegin = env_start.value;
+            mEnvelopeRangeEnd = env_end.value;
             if ( mEnvelopePointKind == 1 ) {
                 mEnvelopeDotBegin = mEnvelopeRangeBegin;
                 mEnvelopeDotEnd = mEnvelopeRangeEnd - (mEnvelopeOriginal.p4 + mEnvelopeOriginal.p3 + mEnvelopeOriginal.p5 + mEnvelopeOriginal.p2) / 1000.0;
@@ -5027,13 +5109,13 @@ namespace org.kbinani.cadencii
                 mMouseDownMode = MouseDownMode.NONE;
                 if ( mMouseMoved ) {
                     VsqTrack target = vsq_track;
-                    VsqEvent edited = (VsqEvent)target.findEventFromID( mEnvelopeMoveID ).clone();
+                    VsqEvent edited = (VsqEvent)target.findEventFromID( mEnvelopeEdigintID ).clone();
 
                     // m_envelope_originalに，編集前のが入っているので，いったん置き換え
                     int count = target.getEventCount();
                     for ( int i = 0; i < count; i++ ) {
                         VsqEvent item = target.getEvent( i );
-                        if ( item.ID.type == VsqIDType.Anote && item.InternalID == mEnvelopeMoveID ) {
+                        if ( item.ID.type == VsqIDType.Anote && item.InternalID == mEnvelopeEdigintID ) {
                             item.UstEvent.Envelope = mEnvelopeOriginal;
                             target.setEvent( i, item );
                             break;
@@ -5049,13 +5131,13 @@ namespace org.kbinani.cadencii
                 mMouseDownMode = MouseDownMode.NONE;
                 if ( mMouseMoved ) {
                     VsqTrack target = vsq_track;
-                    VsqEvent edited = (VsqEvent)target.findEventFromID( mPreUtteranceMovingID ).clone();
+                    VsqEvent edited = (VsqEvent)target.findEventFromID( mPreUtteranceEditingID ).clone();
 
                     // m_envelope_originalに，編集前のが入っているので，いったん置き換え
                     int count = target.getEventCount();
                     for ( int i = 0; i < count; i++ ) {
                         VsqEvent item = target.getEvent( i );
-                        if ( item.ID.type == VsqIDType.Anote && item.InternalID == mPreUtteranceMovingID ) {
+                        if ( item.ID.type == VsqIDType.Anote && item.InternalID == mPreUtteranceEditingID ) {
                             target.setEvent( i, mPreOverlapOriginal );
                             break;
                         }
@@ -5070,13 +5152,13 @@ namespace org.kbinani.cadencii
                 mMouseDownMode = MouseDownMode.NONE;
                 if ( mMouseMoved ) {
                     VsqTrack target = vsq_track;
-                    VsqEvent edited = (VsqEvent)target.findEventFromID( mOverlapMovingID ).clone();
+                    VsqEvent edited = (VsqEvent)target.findEventFromID( mOverlapEditingID ).clone();
 
                     // m_envelope_originalに，編集前のが入っているので，いったん置き換え
                     int count = target.getEventCount();
                     for ( int i = 0; i < count; i++ ) {
                         VsqEvent item = target.getEvent( i );
-                        if ( item.ID.type == VsqIDType.Anote && item.InternalID == mOverlapMovingID ) {
+                        if ( item.ID.type == VsqIDType.Anote && item.InternalID == mOverlapEditingID ) {
                             target.setEvent( i, mPreOverlapOriginal );
                             break;
                         }

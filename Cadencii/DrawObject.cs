@@ -29,11 +29,10 @@ namespace org.kbinani.cadencii {
     /// 画面に描画するアイテムを表します
     /// </summary>
 #if JAVA
-    public class DrawObject implements Comparable<DrawObject>
+    public class DrawObject implements Comparable<DrawObject>{
 #else
-    public class DrawObject : IComparable<DrawObject>
+    public class DrawObject : IComparable<DrawObject> {
 #endif
-    {
         public Rectangle mRectangleInPixel;
         public String mText;
         public int mAccent;
@@ -50,6 +49,7 @@ namespace org.kbinani.cadencii {
         public boolean mIsOverlapped;
         public boolean mIsSymbolProtected;
         public int mNote;
+        public UstEnvelope mUstEnvelope;
         /// <summary>
         /// 音符の長さ（クロック）
         /// </summary>
@@ -79,58 +79,6 @@ namespace org.kbinani.cadencii {
         /// UTAUの音量
         /// </summary>
         public int mIntensity = 100;
-        /// <summary>
-        /// Overlapの旗のx座標．単位はピクセル（仮想画面上）
-        /// </summary>
-        public int mOverlapX;
-        /// <summary>
-        /// PreUtteranceの旗のx座標．単位はピクセル（仮想画面上）
-        /// </summary>
-        public int mPreUtteranceX;
-        /// <summary>
-        /// エンベロープのp1点のx座標．単位はピクセル（仮想画面上）
-        /// </summary>
-        public int mEnvP1X;
-        /// <summary>
-        /// エンベロープのp2点のx座標．単位はピクセル（仮想画面上）
-        /// </summary>
-        public int mEnvP2X;
-        /// <summary>
-        /// エンベロープのp5点のx座標．単位はピクセル（仮想画面上）
-        /// </summary>
-        public int mEnvP5X;
-        /// <summary>
-        /// エンベロープのp3点のx座標．単位はピクセル（仮想画面上）
-        /// </summary>
-        public int mEnvP3X;
-        /// <summary>
-        /// エンベロープのp4点のx座標．単位はピクセル（仮想画面上）
-        /// </summary>
-        public int mEnvP4X;
-        /// <summary>
-        /// エンベロープの右端のx座標．単位はピクセル（仮想画面上）
-        /// </summary>
-        public int mEnvEndX;
-        /// <summary>
-        /// エンベロープのp1点の値
-        /// </summary>
-        public int mEnvP1V;
-        /// <summary>
-        /// エンベロープのp2点の値
-        /// </summary>
-        public int mEnvP2V;
-        /// <summary>
-        /// エンベロープのp5点の値
-        /// </summary>
-        public int mEnvP5V;
-        /// <summary>
-        /// エンベロープのp3点の値
-        /// </summary>
-        public int mEnvP3V;
-        /// <summary>
-        /// エンベロープのp4点の値
-        /// </summary>
-        public int mEnvP4V;
 
         public DrawObject( DrawObjectType type,
                            VsqFileEx vsq,
@@ -148,10 +96,7 @@ namespace org.kbinani.cadencii {
                            int vib_start_rate,
                            int vib_start_depth,
                            int note_,
-                           int overlap_x,
-                           int pre_utterance_x, 
-                           int p1x, int p2x, int p5x, int p3x, int p4x, int pex,
-                           int p1v, int p2v, int p5v, int p3v, int p4v,
+                           UstEnvelope ust_envelope,
                            int length,
                            int clock,
                            boolean is_valid_for_utau,
@@ -171,24 +116,12 @@ namespace org.kbinani.cadencii {
             mIntensity = intensity;
 
             mNote = note_;
+            mUstEnvelope = ust_envelope;
             this.mLength = length;
             this.mClock = clock;
             this.mIsValidForUtau = is_valid_for_utau;
             this.mIsValidForStraight = is_valid_for_straight;
             this.mVibDelay = vib_delay;
-            mOverlapX = overlap_x;
-            mPreUtteranceX = pre_utterance_x;
-            mEnvP1X = p1x;
-            mEnvP2X = p2x;
-            mEnvP5X = p5x;
-            mEnvP3X = p3x;
-            mEnvP4X = p4x;
-            mEnvEndX = pex;
-            mEnvP1V = p1v;
-            mEnvP2V = p2v;
-            mEnvP5V = p5v;
-            mEnvP3V = p3v;
-            mEnvP4V = p4v;
 
             if ( vib_rate != null && vib_depth != null ) {
                 int viblength = length - vib_delay;
