@@ -50,8 +50,10 @@ open( OUT, ">Makefile" );
 
 if( $ARGV[0] eq "MSWin32" ){
     $djava_mac = "";
+    $to_devnull = "";
 }else{
     $djava_mac = "-DJAVA_MAC";
+    $to_devnull = "2>/dev/null";
 }
 if( $ENABLE_DEBUG == 0 ){
     $ddebug = "";
@@ -79,6 +81,7 @@ while( $line = <FILE> ){
     $line =~ s/\@DEP_JXML\@/$dep_xml/g;
     $line =~ s/\@DJAVA_MAC\@/$djava_mac/g;
     $line =~ s/\@DDEBUG\@/$ddebug/g;
+    $line =~ s/\@TO_DEVNULL\@/$to_devnull/g;
 
     #if( $ARGV[0] eq "MSWin32" ){
     #    if( ($line =~ /\$\(CP\)/) | ($line =~ /\$\(RM\)/) | ($line =~ /\$\(MKDIR\)/) ){

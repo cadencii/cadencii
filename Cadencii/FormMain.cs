@@ -6917,6 +6917,9 @@ namespace org.kbinani.cadencii
                             } else {
                                 item_next = null;
                             }
+                            if ( item == null ) {
+                                continue;
+                            }
                             if ( item.ID.LyricHandle == null ) {
                                 continue;
                             }
@@ -7133,6 +7136,9 @@ namespace org.kbinani.cadencii
                 } catch ( Exception ex ) {
                     Logger.write( typeof( FormMain ) + ".updateDrawObjectList; ex=" + ex + "\n" );
                     serr.println( "FormMain#updateDrawObjectList; ex=" + ex );
+#if JAVA
+                    ex.printStackTrace();
+#endif
                 } finally {
 #if !JAVA
                     if ( SMALL_FONT != null ) {

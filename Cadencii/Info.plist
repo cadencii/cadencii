@@ -38,6 +38,8 @@
 		<dict>
 			<key>com.apple.macos.useScreenMenuBar</key>
 			<string>true</string>
+			<key>file.encoding</key>
+			<string>UTF-8</string>
 		</dict>
 	</dict>
 </dict>

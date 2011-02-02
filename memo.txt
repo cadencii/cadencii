@@ -84,6 +84,27 @@
 -etc.
 -PropertyGridを実装(優先度低い)
 
+-Wine.bundle
+--Contents
+---COPYING.LIB
+---Info.plist
+---SharedSupport
+----bin
+-----wine
+-----wineserver
+----lib
+-----libwine.1.0.dylib
+-----libwine.1.dylib
+-----libwine.dylib
+-----wine
+------advapi32.dll.so
+------iphlpapi.dll.so
+------kernel32.dll.so
+------ntdll.dll.so
+------rpcrt4.dll.so
+------services.exe.so
+------wineboot.exe.so
+
 -v3.2.0todo------------------------------------------------------------
 -Lengthが変わると、後ろのアイテムもずれるはずだが、これができてない
 

@@ -10,6 +10,9 @@ JROOT=./build/java/org/kbinani
 PPCS2JAVA_OPT=--replace-java -DJAVA -DJAVA_1_5 $(DDEBUG) -DCLIPBOARD_AS_TEXT $(DJAVA_MAC) -encoding "UTF-8" -s -4 -c -e -l pp_cs2java.log
 PPCS2CPP_OPT=--replace-cpp -D__cplusplus
 MONO=@MONO@
+TO_DEVNULL=@TO_DEVNULL@
+WINE_VERSION=1.1.2
+WINE_DIR=./wine-$(WINE_VERSION)/
 
 SRC_JAPPUTIL=@SRC_JAPPUTIL@
 SRC_JCORLIB=@SRC_JCORLIB@
@@ -20,44 +23,49 @@ SRC_JCADENCII=@SRC_JCADENCII@
 SRC_JCOMPONENTMODEL=@SRC_JCOMPONENTMODEL@
 SRC_JXML=@SRC_JXML@
 
-all: jcadencii
+all: jcadencii_mac
 
-jcadencii_mac: jcadencii ./Cadencii/PkgInfo ./Cadencii/Info.plist
+jcadencii_mac: jcadencii ./Cadencii/PkgInfo ./Cadencii/Info.plist ./build/java/Wine.bundle
 	rm -rf ./build/java/Cadencii.app
-	$(MKDIR) ./build/java/Cadencii.app
-	$(MKDIR) ./build/java/Cadencii.app/Contents
-	$(MKDIR) ./build/java/Cadencii.app/Contents/MacOS
-	$(MKDIR) ./build/java/Cadencii.app/Contents/Resources
-	$(MKDIR) ./build/java/Cadencii.app/Contents/Resources/Java
+	$(MKDIR) ./build/java/Cadencii.app $(TO_DEVNULL)
+	$(MKDIR) ./build/java/Cadencii.app/Contents $(TO_DEVNULL)
+	$(MKDIR) ./build/java/Cadencii.app/Contents/MacOS $(TO_DEVNULL)
+	$(MKDIR) ./build/java/Cadencii.app/Contents/Resources $(TO_DEVNULL)
+	$(MKDIR) ./build/java/Cadencii.app/Contents/Resources/Java $(TO_DEVNULL)
 	$(CP) /System/Library/Frameworks/JavaVM.framework/Versions/Current/Resources/MacOS/JavaApplicationStub ./build/java/Cadencii.app/Contents/MacOS/JavaApplicationStub
 	$(CP) ./Cadencii/Info.plist ./build/java/Cadencii.app/Contents/Info.plist
 	$(CP) ./Cadencii/PkgInfo ./build/java/Cadencii.app/Contents/PkgInfo
 	$(CP) ./Cadencii/resources/icon.icns ./build/java/Cadencii.app/Contents/Resources/icon.icns
 	$(CP) ./build/java/Cadencii.jar ./build/java/Cadencii.app/Contents/Resources/Java/Cadencii.jar
-	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/Cadencii.app/Contents/Resources/Java/ .png
-	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/Cadencii.app/Contents/Resources/Java/ .txt
-	perl copy_with_ext.pl ./Cadencii/ ./build/java/Cadencii.app/Contents/Resources/Java/ .po
+	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/Cadencii.app/Contents/Resources/Java/ .png $(TO_DEVNULL)
+	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/Cadencii.app/Contents/Resources/Java/ .txt $(TO_DEVNULL)
+	perl copy_with_ext.pl ./Cadencii/ ./build/java/Cadencii.app/Contents/Resources/Java/ .po $(TO_DEVNULL)
 	cd ../../vConnect/stand && $(MAKE)
 	$(CP) ../../vConnect/stand/vConnect-STAND.exe ./build/java/Cadencii.app/Contents/Resources/Java/vConnect-STAND.exe
 	/Developer/Tools/SetFile -a B ./build/java/Cadencii.app
+	cp -r -p ./build/java/Wine.bundle ./build/java/Cadencii.app/Contents/Resources/Wine.bundle
+	rm ./build/java/Cadencii.app/Contents/Resources/Wine.bundle/Contents/SharedSupport/lib/libwine.1.dylib
+	rm ./build/java/Cadencii.app/Contents/Resources/Wine.bundle/Contents/SharedSupport/lib/libwine.dylib
+	ln -s libwine.1.0.dylib ./build/java/Cadencii.app/Contents/Resources/Wine.bundle/Contents/SharedSupport/lib/libwine.1.dylib
+	ln -s libwine.1.0.dylib ./build/java/Cadencii.app/Contents/Resources/Wine.bundle/Contents/SharedSupport/lib/libwine.dylib
 
 ########################################################################
 # pre process
 #
 first:
-	$(MKDIR) build
-	$(MKDIR) build/java
-	$(MKDIR) build/java/resources
-	$(MKDIR) build/java/org
-	$(MKDIR) build/java/org/kbinani
-	$(MKDIR) build/java/org/kbinani/apputil
-	$(MKDIR) build/java/org/kbinani/cadencii
-	$(MKDIR) build/java/org/kbinani/componentmodel
-	$(MKDIR) build/java/org/kbinani/media
-	$(MKDIR) build/java/org/kbinani/vsq
-	$(MKDIR) build/java/org/kbinani/windows
-	$(MKDIR) build/java/org/kbinani/windows/forms
-	$(MKDIR) build/java/org/kbinani/xml
+	$(MKDIR) build $(TO_DEVNULL)
+	$(MKDIR) build/java $(TO_DEVNULL)
+	$(MKDIR) build/java/resources $(TO_DEVNULL)
+	$(MKDIR) build/java/org $(TO_DEVNULL)
+	$(MKDIR) build/java/org/kbinani $(TO_DEVNULL)
+	$(MKDIR) build/java/org/kbinani/apputil $(TO_DEVNULL)
+	$(MKDIR) build/java/org/kbinani/cadencii $(TO_DEVNULL)
+	$(MKDIR) build/java/org/kbinani/componentmodel $(TO_DEVNULL)
+	$(MKDIR) build/java/org/kbinani/media $(TO_DEVNULL)
+	$(MKDIR) build/java/org/kbinani/vsq $(TO_DEVNULL)
+	$(MKDIR) build/java/org/kbinani/windows $(TO_DEVNULL)
+	$(MKDIR) build/java/org/kbinani/windows/forms $(TO_DEVNULL)
+	$(MKDIR) build/java/org/kbinani/xml $(TO_DEVNULL)
 
 ########################################################################
 # cpp/vsq
@@ -78,15 +86,15 @@ cpp_vsq: pp_cs2java.jar
 # jcadencii
 #
 jcadencii: first pp_cs2java.jar $(SRC_JCORLIB) $(SRC_JWINFORMS) $(SRC_JAPPUTIL) $(SRC_JMEDIA) $(SRC_JVSQ) $(SRC_JCADENCII) $(SRC_JCOMPONENTMODEL) $(SRC_JXML) ./build/java/org/kbinani/cadencii/Resources.java ./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java ./build/java/Cadencii.mf ./build/java/ja.po ./build/java/zh-CN.po ./build/java/zh-TW.po
-	perl safe_rm.pl ./build/java/Cadencii.java
+	perl safe_rm.pl ./build/java/Cadencii.java $(TO_DEVNULL)
 	$(CP) ./build/java/org/kbinani/cadencii/Cadencii.java ./build/java/Cadencii.java
-	perl safe_rm.pl ./build/java/org/kbinani/cadencii/Cadencii.java
+	perl safe_rm.pl ./build/java/org/kbinani/cadencii/Cadencii.java $(TO_DEVNULL)
 	$(MAKE) jpostprocess
 	javac ./build/java/Cadencii.java ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/*.java ./build/java/org/kbinani/apputil/*.java ./build/java/org/kbinani/media/*.java ./build/java/org/kbinani/vsq/*.java ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/componentmodel/*.java ./build/java/org/kbinani/windows/forms/*.java ./build/java/org/kbinani/xml/*.java -encoding UTF8 -target 1.5 -source 1.5
 	cd ./build/java && jar cfm Cadencii.jar Cadencii.mf Cadencii.class org/kbinani/cadencii/*.class org/kbinani/*.class org/kbinani/apputil/*.class org/kbinani/media/*.class org/kbinani/vsq/*.class org/kbinani/cadencii/*.class org/kbinani/componentmodel/*.class org/kbinani/windows/forms/*.class org/kbinani/xml/*.class
-	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .png
-	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .txt
-	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .ico
+	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .png $(TO_DEVNULL)
+	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .txt $(TO_DEVNULL)
+	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .ico $(TO_DEVNULL)
 
 ./build/java/ja.po: ./Cadencii/ja.po
 	$(CP) ./Cadencii/ja.po ./build/java/ja.po
@@ -98,7 +106,7 @@ jcadencii: first pp_cs2java.jar $(SRC_JCORLIB) $(SRC_JWINFORMS) $(SRC_JAPPUTIL) 
 	$(CP) ./Cadencii/zh-TW.po ./build/java/zh-TW.po
 
 ./build/java/Cadencii.mf: ./Cadencii/Cadencii.mf
-	perl safe_rm.pl ./build/java/Cadencii.mf
+	perl safe_rm.pl ./build/java/Cadencii.mf $(TO_DEVNULL)
 	$(CP) ./Cadencii/Cadencii.mf ./build/java/Cadencii.mf
 
 ./build/java/org/kbinani/cadencii/Resources.java: ./Cadencii/Resources.cs pp_cs2java.jar
@@ -125,39 +133,39 @@ jcorlib: pp_cs2java.jar $(SRC_JCORLIB)
 jpostprocess: ./BuildJavaUI/src/org/kbinani/math.java ./BuildJavaUI/src/org/kbinani/PortUtil.java ./BuildJavaUI/src/org/kbinani/InternalStdErr.java ./BuildJavaUI/src/org/kbinani/InternalStdOut.java ./BuildJavaUI/src/org/kbinani/ByRef.java ./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java ./BuildJavaUI/src/org/kbinani/cadencii/IconParader.java ./BuildJavaUI/src/org/kbinani/fsys.java ./BuildJavaUI/src/org/kbinani/str.java ./BuildJavaUI/src/org/kbinani/vec.java
 
 ./BuildJavaUI/src/org/kbinani/math.java: ./build/java/org/kbinani/math.java
-	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/math.java
+	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/math.java $(TO_DEVNULL)
 	$(CP) ./build/java/org/kbinani/math.java ./BuildJavaUI/src/org/kbinani/math.java
 
 ./BuildJavaUI/src/org/kbinani/fsys.java: ./build/java/org/kbinani/fsys.java
-	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/fsys.java
+	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/fsys.java $(TO_DEVNULL)
 	$(CP) ./build/java/org/kbinani/fsys.java ./BuildJavaUI/src/org/kbinani/fsys.java
 
 ./BuildJavaUI/src/org/kbinani/str.java: ./build/java/org/kbinani/str.java
-	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/str.java
+	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/str.java $(TO_DEVNULL)
 	$(CP) ./build/java/org/kbinani/str.java ./BuildJavaUI/src/org/kbinani/str.java
 
 ./BuildJavaUI/src/org/kbinani/vec.java: ./build/java/org/kbinani/vec.java
-	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/vec.java
+	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/vec.java $(TO_DEVNULL)
 	$(CP) ./build/java/org/kbinani/vec.java ./BuildJavaUI/src/org/kbinani/vec.java
 
 ./BuildJavaUI/src/org/kbinani/PortUtil.java: ./build/java/org/kbinani/PortUtil.java
-	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/PortUtil.java
+	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/PortUtil.java $(TO_DEVNULL)
 	$(CP) ./build/java/org/kbinani/PortUtil.java ./BuildJavaUI/src/org/kbinani/PortUtil.java
 
 ./BuildJavaUI/src/org/kbinani/ByRef.java: ./build/java/org/kbinani/ByRef.java
-	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/ByRef.java
+	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/ByRef.java $(TO_DEVNULL)
 	$(CP) ./build/java/org/kbinani/ByRef.java ./BuildJavaUI/src/org/kbinani/ByRef.java
 
 ./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java: ./build/java/org/kbinani/cadencii/NumberTextBox.java
-	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java
+	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java $(TO_DEVNULL)
 	$(CP) ./build/java/org/kbinani/cadencii/NumberTextBox.java ./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java
 
 ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java: ./build/java/org/kbinani/cadencii/NumericUpDownEx.java
-	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java
+	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java $(TO_DEVNULL)
 	$(CP) ./build/java/org/kbinani/cadencii/NumericUpDownEx.java ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java
 
 ./BuildJavaUI/src/org/kbinani/cadencii/IconParader.java: ./build/java/org/kbinani/cadencii/IconParader.java
-	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/cadencii/IconParader.java
+	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/cadencii/IconParader.java $(TO_DEVNULL)
 	$(CP) ./build/java/org/kbinani/cadencii/IconParader.java ./BuildJavaUI/src/org/kbinani/cadencii/IconParader.java
 
 ########################################################################
@@ -198,13 +206,58 @@ clean:
 	$(RM) ./build/java/org/kbinani/*.class ./build/java/org/kbinani/apputil/*.class ./build/java/org/kbinani/media/*.class ./build/java/org/kbinani/vsq/*.class ./build/java/org/kbinani/cadencii/*.class ./build/java/org/kbinani/componentmodel/*.class ./build/java/org/kbinani/windows/forms/*.class ./build/java/org/kbinani/xml/*.class
 
 ########################################################################
-# build wine
+# prepare Wine.bundle
 #
-#wine:
-#    wget http://prdownloads.sourceforge.net/wine/wine-1.2.2.tar.bz2
-#    ./configure --disable-win16
-#    $(MAKE)
-#    sudo $(MAKE) install
+# wget source of wine
+./wine-$(WINE_VERSION).tar.bz2:
+	curl -o ./wine-$(WINE_VERSION).tar.bz2 http://ibiblio.org/pub/linux/system/emulators/wine/wine-$(WINE_VERSION).tar.bz2
+	tar jxvf ./wine-$(WINE_VERSION).tar.bz2
+	cd wine-$(WINE_VERSION) && ./configure && $(MAKE) depend && $(MAKE)
+
+# prepare bundle
+./build/java/Wine.bundle: ./wine-$(WINE_VERSION).tar.bz2
+	rm -rf ./build/java/Wine.bundle
+	mkdir ./build/java/Wine.bundle
+	mkdir ./build/java/Wine.bundle/Contents/
+	{ \
+	  echo '<?xml version="1.0" encoding="UTF-8"?>'; \
+	  echo '<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">'; \
+	  echo '<plist version="1.0">'; \
+	  echo '<dict>'; \
+	  echo '	<key>CFBundleInfoDictionaryVersion</key>'; \
+	  echo '	<string>6.0</string>'; \
+	  echo '	<key>CFBundleGetInfoString</key>'; \
+	  echo '	<string>Cadencii 3.4</string>'; \
+	  echo '	<key>CFBundleName</key>'; \
+	  echo '	<string>Cadencii</string>'; \
+	  echo '	<key>CFBundleVersion</key>'; \
+	  echo '	<string>Cadencii 3.4</string>'; \
+	  echo '	<key>CFBundlePackageType</key>'; \
+	  echo '	<string>thng</string>'; \
+	  echo '	<key>CFBundleIdentifier</key>'; \
+	  echo '	<string>jp.sourceforge.cadencii.Wine</string>'; \
+	  echo '</dict>'; \
+	  echo '</plist>'; \
+	} > ./build/java/Wine.bundle/Contents/Info.plist
+	mkdir ./build/java/Wine.bundle/Contents/SharedSupport
+	mkdir ./build/java/Wine.bundle/Contents/SharedSupport/bin
+	mkdir ./build/java/Wine.bundle/Contents/SharedSupport/lib
+	mkdir ./build/java/Wine.bundle/Contents/SharedSupport/lib/wine
+	cp $(WINE_DIR)loader/wine-pthread ./build/java/Wine.bundle/Contents/SharedSupport/bin/wine
+	cp $(WINE_DIR)server/wineserver ./build/java/Wine.bundle/Contents/SharedSupport/bin/wineserver
+	install_name_tool -change @executable_path/../libs/wine/libwine.1.dylib @executable_path/../lib/libwine.1.dylib ./build/java/Wine.bundle/Contents/SharedSupport/bin/wine
+	install_name_tool -change @executable_path/../libs/wine/libwine.1.dylib @executable_path/../lib/libwine.1.dylib ./build/java/Wine.bundle/Contents/SharedSupport/bin/wineserver
+	cp $(WINE_DIR)libs/wine/libwine.1.0.dylib ./build/java/Wine.bundle/Contents/SharedSupport/lib/libwine.1.0.dylib
+	ln -s libwine.1.0.dylib ./build/java/Wine.bundle/Contents/SharedSupport/lib/libwine.1.dylib
+	ln -s libwine.1.0.dylib ./build/java/Wine.bundle/Contents/SharedSupport/lib/libwine.dylib
+	cp $(WINE_DIR)dlls/advapi32/advapi32.dll.so ./build/java/Wine.bundle/Contents/SharedSupport/lib/wine/advapi32.dll.so
+	cp $(WINE_DIR)dlls/iphlpapi/iphlpapi.dll.so ./build/java/Wine.bundle/Contents/SharedSupport/lib/wine/iphlpapi.dll.so
+	cp $(WINE_DIR)dlls/kernel32/kernel32.dll.so ./build/java/Wine.bundle/Contents/SharedSupport/lib/wine/kernel32.dll.so
+	cp $(WINE_DIR)dlls/ntdll/ntdll.dll.so ./build/java/Wine.bundle/Contents/SharedSupport/lib/wine/ntdll.dll.so
+	cp $(WINE_DIR)dlls/rpcrt4/rpcrt4.dll.so ./build/java/Wine.bundle/Contents/SharedSupport/lib/wine/rpcrt4.dll.so
+	cp $(WINE_DIR)programs/services/services.exe.so ./build/java/Wine.bundle/Contents/SharedSupport/lib/wine/services.exe.so
+	cp $(WINE_DIR)programs/wineboot/wineboot.exe.so ./build/java/Wine.bundle/Contents/SharedSupport/lib/wine/wineboot.exe.so
+	/Developer/Tools/SetFile -a B ./build/java/Wine.bundle
 
 ########################################################################
 # dependency definition

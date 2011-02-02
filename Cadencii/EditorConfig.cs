@@ -666,11 +666,22 @@ namespace org.kbinani.cadencii
         public String getWineExecutable()
         {
             String appstart = PortUtil.getApplicationStartupPath();
-            String ret = fsys.combine( appstart, "Wine.bundle" );
+            // Wine.bundleの場所は../Wine.bundleまたは./Wine.bundleのどちらか
+            // まず../Wine.bundleがあるかどうかチェック
+            String parent = PortUtil.getDirectoryName( appstart );
+            String ret = fsys.combine( parent, "Wine.bundle" );
             ret = fsys.combine( ret, "Contents" );
             ret = fsys.combine( ret, "SharedSupport" );
             ret = fsys.combine( ret, "bin" );
             ret = fsys.combine( ret, "wine" );
+            if( !fsys.isFileExists( ret ) ){
+                // ../Wine.bundleが無い場合
+                ret = fsys.combine( appstart, "Wine.bundle" );
+                ret = fsys.combine( ret, "Contents" );
+                ret = fsys.combine( ret, "SharedSupport" );
+                ret = fsys.combine( ret, "bin" );
+                ret = fsys.combine( ret, "wine" );
+            }
 #if DEBUG
             sout.println( "EditorConfig#getWineExecutable; ret=" + ret );
 #endif

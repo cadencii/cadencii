@@ -1299,7 +1299,7 @@ namespace org.kbinani.cadencii
                         } else if ( mSelectedCurve.equals( CurveType.VibratoRate ) || mSelectedCurve.equals( CurveType.VibratoDepth ) ) {
                             drawVibratoControlCurve( g, vsq_track, mSelectedCurve, front, true );
                         } else if ( mSelectedCurve.equals( CurveType.Env ) ) {
-                            drawEnvelope( g, vsq_track, front );
+                            drawEnvelope( g, selected, front );
                         } else {
                             VsqBPList list_front = vsq_track.getCurve( mSelectedCurve.getName() );
                             if ( list_front != null ) {
@@ -1939,7 +1939,7 @@ namespace org.kbinani.cadencii
             return false;
         }
 
-        [Obsolete]
+        //[Obsolete]
         private Polygon getEnvelopePoints(
             VsqFileEx vsq,
             VsqEvent prev_item, VsqEvent item, VsqEvent next_item )
@@ -1950,7 +1950,7 @@ namespace org.kbinani.cadencii
             return getEnvelopePoints( vsq, prev_item, item, next_item, i, j );
         }
 
-        [Obsolete]
+        //[Obsolete]
         private Polygon getEnvelopePoints(
             VsqFileEx vsq, 
             VsqEvent prev_item, VsqEvent item, VsqEvent next_item,
