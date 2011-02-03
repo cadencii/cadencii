@@ -138,11 +138,10 @@ namespace org.kbinani.vsq
 
         public void newLine()
         {
-            int new_size = length + 2;
+            int new_size = length + 1;
             int offset = length;
             ensureCapacity( new_size );
-            array[offset] = 0x0d;
-            array[offset + 1] = 0x0a;
+            array[offset] = '\n';
             length = new_size;
         }
 

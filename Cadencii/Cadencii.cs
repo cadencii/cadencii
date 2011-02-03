@@ -22,10 +22,13 @@ using System.Windows.Forms;
 using org.kbinani;
 using org.kbinani.apputil;
 
-namespace org.kbinani.cadencii{
+namespace org.kbinani.cadencii
+{
+    using boolean = System.Boolean;
 #endif
 
-    public class Cadencii {
+    public class Cadencii
+    {
 #if !JAVA
         delegate void VoidDelegate();
         public static FormSplash splash = null;
@@ -40,14 +43,15 @@ namespace org.kbinani.cadencii{
         /// 戻り値は、コマンドライン引数のうちVSQ,またはXVSQファイルとして指定された引数、または空文字です。
         /// </summary>
         /// <param name="arg"></param>
-        private static void parseArguments( String[] arg ) {
+        private static void parseArguments( String[] arg )
+        {
             String currentparse = "";
 
             for ( int i = 0; i < arg.Length; i++ ) {
                 String argi = arg[i];
                 if ( str.startsWith( argi, "-" ) ) {
                     currentparse = argi;
-                    if( str.compare( argi, "--version" ) ){
+                    if ( str.compare( argi, "--version" ) ) {
                         mPrintVersion = true;
                         currentparse = "";
                     }
@@ -87,13 +91,14 @@ namespace org.kbinani.cadencii{
 #else
 
         [STAThread]
-        public static void Main( String[] args ) {
+        public static void Main( String[] args )
+        {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault( false );
 
             // 引数を解釈
             parseArguments( args );
-            if( mPrintVersion ){
+            if ( mPrintVersion ) {
                 Console.Write( BAssemblyInfo.fileVersion );
                 return;
             }
@@ -190,7 +195,8 @@ namespace org.kbinani.cadencii{
         /// <param name="ex"></param>
         /// <param name="depth_count"></param>
         /// <returns></returns>
-        private static String getExceptionText( Exception ex, int depth_count ) {
+        private static String getExceptionText( Exception ex, int depth_count )
+        {
             String ret = ex.ToString();
             if ( ex.InnerException != null ) {
                 ret += "\n" +
@@ -200,20 +206,24 @@ namespace org.kbinani.cadencii{
             return ret;
         }
 
-        private static String _( String id ) {
+        private static String _( String id )
+        {
             return Messaging.getMessage( id );
         }
 
-        static void showSplash() {
+        static void showSplash()
+        {
             splash = new FormSplash();
             splash.showDialog( null );
         }
 
-        static void closeSplash() {
+        static void closeSplash()
+        {
             splash.close();
         }
 
-        public static void mainWindow_Load( Object sender, EventArgs e ) {
+        public static void mainWindow_Load( Object sender, EventArgs e )
+        {
             if ( splash != null ) {
                 VoidDelegate deleg = new VoidDelegate( closeSplash );
                 if ( deleg != null ) {

@@ -206,51 +206,51 @@ namespace org.kbinani.vsq
         public VsqBPList getElement( String curve )
         {
             String search = curve.Trim().ToLower();
-            if ( search.Equals( "bre" ) ) {
+            if ( str.compare( search, "bre" ) ) {
                 return this.BRE;
-            } else if ( search.Equals( "bri" ) ) {
+            } else if ( str.compare( search, "bri" ) ) {
                 return this.BRI;
-            } else if ( search.Equals( "cle" ) ) {
+            } else if ( str.compare( search, "cle" ) ) {
                 return this.CLE;
-            } else if ( search.Equals( "dyn" ) ) {
+            } else if ( str.compare( search, "dyn" ) ) {
                 return this.DYN;
-            } else if ( search.Equals( "gen" ) ) {
+            } else if ( str.compare( search, "gen" ) ) {
                 return this.GEN;
-            } else if ( search.Equals( "ope" ) ) {
+            } else if ( str.compare( search, "ope" ) ) {
                 return this.OPE;
-            } else if ( search.Equals( "pbs" ) ) {
+            } else if ( str.compare( search, "pbs" ) ) {
                 return this.PBS;
-            } else if ( search.Equals( "pit" ) ) {
+            } else if ( str.compare( search, "pit" ) ) {
                 return this.PIT;
-            } else if ( search.Equals( "por" ) ) {
+            } else if ( str.compare( search, "por" ) ) {
                 return this.POR;
-            } else if ( search.Equals( "harmonics" ) ) {
+            } else if ( str.compare( search, "harmonics" ) ) {
                 return this.harmonics;
-            } else if ( search.Equals( "fx2depth" ) ) {
+            } else if ( str.compare( search, "fx2depth" ) ) {
                 return this.fx2depth;
-            } else if ( search.Equals( "reso1amp" ) ) {
+            } else if ( str.compare( search, "reso1amp" ) ) {
                 return this.reso1AmpBPList;
-            } else if ( search.Equals( "reso1bw" ) ) {
+            } else if ( str.compare( search, "reso1bw" ) ) {
                 return this.reso1BWBPList;
-            } else if ( search.Equals( "reso1freq" ) ) {
+            } else if ( str.compare( search, "reso1freq" ) ) {
                 return this.reso1FreqBPList;
-            } else if ( search.Equals( "reso2amp" ) ) {
+            } else if ( str.compare( search, "reso2amp" ) ) {
                 return this.reso2AmpBPList;
-            } else if ( search.Equals( "reso2bw" ) ) {
+            } else if ( str.compare( search, "reso2bw" ) ) {
                 return this.reso2BWBPList;
-            } else if ( search.Equals( "reso2freq" ) ) {
+            } else if ( str.compare( search, "reso2freq" ) ) {
                 return this.reso2FreqBPList;
-            } else if ( search.Equals( "reso3amp" ) ) {
+            } else if ( str.compare( search, "reso3amp" ) ) {
                 return this.reso3AmpBPList;
-            } else if ( search.Equals( "reso3bw" ) ) {
+            } else if ( str.compare( search, "reso3bw" ) ) {
                 return this.reso3BWBPList;
-            } else if ( search.Equals( "reso3freq" ) ) {
+            } else if ( str.compare( search, "reso3freq" ) ) {
                 return this.reso3FreqBPList;
-            } else if ( search.Equals( "reso4amp" ) ) {
+            } else if ( str.compare( search, "reso4amp" ) ) {
                 return this.reso4AmpBPList;
-            } else if ( search.Equals( "reso4bw" ) ) {
+            } else if ( str.compare( search, "reso4bw" ) ) {
                 return this.reso4BWBPList;
-            } else if ( search.Equals( "reso4freq" ) ) {
+            } else if ( str.compare( search, "reso4freq" ) ) {
                 return this.reso4FreqBPList;
             } else {
                 return null;
@@ -260,51 +260,51 @@ namespace org.kbinani.vsq
         public void setElement( String curve, VsqBPList value )
         {
             String search = curve.Trim().ToLower();
-            if ( search.Equals( "bre" ) ) {
+            if ( str.compare( search, "bre" ) ) {
                 this.BRE = value;
-            } else if ( search.Equals( "bri" ) ) {
+            } else if ( str.compare( search, "bri" ) ) {
                 this.BRI = value;
-            } else if ( search.Equals( "cle" ) ) {
+            } else if ( str.compare( search, "cle" ) ) {
                 this.CLE = value;
-            } else if ( search.Equals( "dyn" ) ) {
+            } else if ( str.compare( search, "dyn" ) ) {
                 this.DYN = value;
-            } else if ( search.Equals( "gen" ) ) {
+            } else if ( str.compare( search, "gen" ) ) {
                 this.GEN = value;
-            } else if ( search.Equals( "ope" ) ) {
+            } else if ( str.compare( search, "ope" ) ) {
                 this.OPE = value;
-            } else if ( search.Equals( "pbs" ) ) {
+            } else if ( str.compare( search, "pbs" ) ) {
                 this.PBS = value;
-            } else if ( search.Equals( "pit" ) ) {
+            } else if ( str.compare( search, "pit" ) ) {
                 this.PIT = value;
-            } else if ( search.Equals( "por" ) ) {
+            } else if ( str.compare( search, "por" ) ) {
                 this.POR = value;
-            } else if ( search.Equals( "harmonics" ) ) {
+            } else if ( str.compare( search, "harmonics" ) ) {
                 this.harmonics = value;
-            } else if ( search.Equals( "fx2depth" ) ) {
+            } else if ( str.compare( search, "fx2depth" ) ) {
                 this.fx2depth = value;
-            } else if ( search.Equals( "reso1amp" ) ) {
+            } else if ( str.compare( search, "reso1amp" ) ) {
                 this.reso1AmpBPList = value;
-            } else if ( search.Equals( "reso1bw" ) ) {
+            } else if ( str.compare( search, "reso1bw" ) ) {
                 this.reso1BWBPList = value;
-            } else if ( search.Equals( "reso1freq" ) ) {
+            } else if ( str.compare( search, "reso1freq" ) ) {
                 this.reso1FreqBPList = value;
-            } else if ( search.Equals( "reso2amp" ) ) {
+            } else if ( str.compare( search, "reso2amp" ) ) {
                 this.reso2AmpBPList = value;
-            } else if ( search.Equals( "reso2bw" ) ) {
+            } else if ( str.compare( search, "reso2bw" ) ) {
                 this.reso2BWBPList = value;
-            } else if ( search.Equals( "reso2freq" ) ) {
+            } else if ( str.compare( search, "reso2freq" ) ) {
                 this.reso2FreqBPList = value;
-            } else if ( search.Equals( "reso3amp" ) ) {
+            } else if ( str.compare( search, "reso3amp" ) ) {
                 this.reso3AmpBPList = value;
-            } else if ( search.Equals( "reso3bw" ) ) {
+            } else if ( str.compare( search, "reso3bw" ) ) {
                 this.reso3BWBPList = value;
-            } else if ( search.Equals( "reso3freq" ) ) {
+            } else if ( str.compare( search, "reso3freq" ) ) {
                 this.reso3FreqBPList = value;
-            } else if ( search.Equals( "reso4amp" ) ) {
+            } else if ( str.compare( search, "reso4amp" ) ) {
                 this.reso4AmpBPList = value;
-            } else if ( search.Equals( "reso4bw" ) ) {
+            } else if ( str.compare( search, "reso4bw" ) ) {
                 this.reso4BWBPList = value;
-            } else if ( search.Equals( "reso4freq" ) ) {
+            } else if ( str.compare( search, "reso4freq" ) ) {
                 this.reso4FreqBPList = value;
             } else {
 #if DEBUG
@@ -429,8 +429,8 @@ namespace org.kbinani.vsq
             int current_id = -1;
             int current_handle = -1;
             boolean add_quotation_mark = true;
-            boolean is_vocalo1 = Common.Version.StartsWith( "DSB2" );
-            boolean is_vocalo2 = Common.Version.StartsWith( "DSB3" );
+            boolean is_vocalo1 = str.startsWith( Common.Version, "DSB2" );
+            boolean is_vocalo2 = str.startsWith( Common.Version, "DSB3" );
             for ( Iterator<VsqEvent> itr = Events.iterator(); itr.hasNext(); ) {
                 VsqEvent item = itr.next();
                 current_id++;
@@ -611,14 +611,14 @@ namespace org.kbinani.vsq
             }
             Collections.sort( temp );
             int i = 0;
-            while ( i < temp.size() ) {
-                VsqEvent item = temp.get( i );
+            while ( i < vec.size( temp ) ) {
+                VsqEvent item = vec.get( temp, i );
                 if ( !item.ID.Equals( VsqID.EOS ) ) {
                     String ids = "ID#" + PortUtil.formatDecimal( "0000", item.ID.value );
-                    int clock = temp.get( i ).Clock;
-                    while ( i + 1 < temp.size() && clock == temp.get( i + 1 ).Clock ) {
+                    int clock = vec.get( temp, i ).Clock;
+                    while ( i + 1 < vec.size( temp ) && clock == vec.get( temp, i + 1 ).Clock ) {
                         i++;
-                        ids += ",ID#" + PortUtil.formatDecimal( "0000", temp.get( i + 1 ).ID.value );
+                        ids += ",ID#" + PortUtil.formatDecimal( "0000", vec.get( temp, i + 1 ).ID.value );
                     }
                     writer.writeLine( clock + "=" + ids );
                 }
@@ -732,178 +732,6 @@ namespace org.kbinani.vsq
             Events.add( new VsqEvent( 0, id ) );
         }
 
-        /* public VsqMetaText( TextMemoryStream sr ) {
-            Vector<ValuePair<Integer, Integer>> t_event_list = new Vector<ValuePair<Integer, Integer>>();
-            TreeMap<Integer, VsqID> __id = new TreeMap<Integer, VsqID>();
-            TreeMap<Integer, VsqHandle> __handle = new TreeMap<Integer, VsqHandle>();
-            PIT = new VsqBPList( "pit", 0, -8192, 8191 );
-            PBS = new VsqBPList( "pbs", 2, 0, 24 );
-            DYN = new VsqBPList( "dyn", 64, 0, 127 );
-            BRE = new VsqBPList( "bre", 0, 0, 127 );
-            BRI = new VsqBPList( "bri", 64, 0, 127 );
-            CLE = new VsqBPList( "cle", 0, 0, 127 );
-            reso1FreqBPList = new VsqBPList( "reso1freq", 64, 0, 127 );
-            reso2FreqBPList = new VsqBPList( "reso2freq", 64, 0, 127 );
-            reso3FreqBPList = new VsqBPList( "reso3freq", 64, 0, 127 );
-            reso4FreqBPList = new VsqBPList( "reso4freq", 64, 0, 127 );
-            reso1BWBPList = new VsqBPList( "reso1bw", 64, 0, 127 );
-            reso2BWBPList = new VsqBPList( "reso2bw", 64, 0, 127 );
-            reso3BWBPList = new VsqBPList( "reso3bw", 64, 0, 127 );
-            reso4BWBPList = new VsqBPList( "reso4bw", 64, 0, 127 );
-            reso1AmpBPList = new VsqBPList( "reso1amp", 64, 0, 127 );
-            reso2AmpBPList = new VsqBPList( "reso2amp", 64, 0, 127 );
-            reso3AmpBPList = new VsqBPList( "reso3amp", 64, 0, 127 );
-            reso4AmpBPList = new VsqBPList( "reso4amp", 64, 0, 127 );
-            harmonics = new VsqBPList( "harmonics", 64, 0, 127 );
-            fx2depth = new VsqBPList( "fx2depth", 64, 0, 127 );
-            GEN = new VsqBPList( "gen", 64, 0, 127 );
-            POR = new VsqBPList( "por", 64, 0, 127 );
-            OPE = new VsqBPList( "ope", 127, 0, 127 );
-
-            ByRef<String> last_line = new ByRef<String>( sr.readLine() );
-            while ( true ) {
-                #region "TextMemoryStreamから順次読込み"
-                if ( PortUtil.getStringLength( last_line.value ) == 0 ) {
-                    break;
-                }
-                if ( last_line.value.Equals( "[Common]" ) ) {
-                    Common = new VsqCommon( sr, last_line );
-                } else if ( last_line.value.Equals( "[Master]" ) ) {
-                    master = new VsqMaster( sr, last_line );
-                } else if ( last_line.value.Equals( "[Mixer]" ) ) {
-                    mixer = new VsqMixer( sr, last_line );
-                } else if ( last_line.value.Equals( "[EventList]" ) ) {
-                    last_line.value = sr.readLine();
-                    while ( !last_line.value.StartsWith( "[" ) ) {
-                        String[] spl2 = PortUtil.splitString( last_line.value, new char[] { '=' } );
-                        int clock = PortUtil.parseInt( spl2[0] );
-                        int id_number = -1;
-                        if ( spl2[1] != "EOS" ) {
-                            String[] ids = PortUtil.splitString( spl2[1], ',' );
-                            for ( int i = 0; i < ids.Length; i++ ) {
-                                String[] spl3 = PortUtil.splitString( ids[i], new char[] { '#' } );
-                                id_number = PortUtil.parseInt( spl3[1] );
-                                t_event_list.add( new ValuePair<Integer, Integer>( clock, id_number ) );
-                            }
-                        } else {
-                            t_event_list.add( new ValuePair<Integer, Integer>( clock, -1 ) );
-                        }
-                        if ( sr.peek() < 0 ) {
-                            break;
-                        } else {
-                            last_line.value = sr.readLine();
-                        }
-                    }
-                } else if ( last_line.value.Equals( "[PitchBendBPList]" ) ) {
-                    last_line.value = PIT.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[PitchBendSensBPList]" ) ) {
-                    last_line.value = PBS.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[DynamicsBPList]" ) ) {
-                    last_line.value = DYN.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[EpRResidualBPList]" ) ) {
-                    last_line.value = BRE.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[EpRESlopeBPList]" ) ) {
-                    last_line.value = BRI.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[EpRESlopeDepthBPList]" ) ) {
-                    last_line.value = CLE.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[EpRSineBPList]" ) ) {
-                    last_line.value = harmonics.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[VibTremDepthBPList]" ) ) {
-                    last_line.value = fx2depth.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[Reso1FreqBPList]" ) ) {
-                    last_line.value = reso1FreqBPList.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[Reso2FreqBPList]" ) ) {
-                    last_line.value = reso2FreqBPList.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[Reso3FreqBPList]" ) ) {
-                    last_line.value = reso3FreqBPList.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[Reso4FreqBPList]" ) ) {
-                    last_line.value = reso4FreqBPList.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[Reso1BWBPList]" ) ) {
-                    last_line.value = reso1BWBPList.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[Reso2BWBPList]" ) ) {
-                    last_line.value = reso2BWBPList.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[Reso3BWBPList]" ) ) {
-                    last_line.value = reso3BWBPList.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[Reso4BWBPList]" ) ) {
-                    last_line.value = reso4BWBPList.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[Reso1AmpBPList]" ) ) {
-                    last_line.value = reso1AmpBPList.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[Reso2AmpBPList]" ) ) {
-                    last_line.value = reso2AmpBPList.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[Reso3AmpBPList]" ) ) {
-                    last_line.value = reso3AmpBPList.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[Reso4AmpBPList]" ) ) {
-                    last_line.value = reso4AmpBPList.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[GenderFactorBPList]" ) ) {
-                    last_line.value = GEN.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[PortamentoTimingBPList]" ) ) {
-                    last_line.value = POR.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[OpeningBPList]" ) ) {
-                    last_line.value = OPE.appendFromText( sr );
-                } else {
-                    String buffer = last_line.value;
-                    buffer = buffer.Replace( "[", "" );
-                    buffer = buffer.Replace( "]", "" );
-                    String[] spl = PortUtil.splitString( buffer, new char[] { '#' } );
-#if DEBUG
-                    if ( spl.Length < 2 ) {
-                        sout.println( "VsqMetaText#.ctor; spl.Length=" + spl.Length + "; buffer=" + buffer );
-                    }
-#endif
-                    int index = PortUtil.parseInt( spl[1] );
-                    if ( last_line.value.StartsWith( "[ID#" ) ) {
-                        __id.put( index, new VsqID( sr, index, last_line ) );
-                    } else if ( last_line.value.StartsWith( "[h#" ) ) {
-                        __handle.put( index, new VsqHandle( sr, index, last_line ) );
-                    }
-                #endregion
-                }
-
-                if ( sr.peek() < 0 ) {
-                    break;
-                }
-            }
-
-            // まずhandleをidに埋め込み
-            int c = __id.size();
-            for ( int i = 0; i < c; i++ ) {
-                VsqID id = __id.get( i );
-                if ( __handle.containsKey( id.IconHandle_index ) ) {
-#if DEBUG
-                    Console.WriteLine( "VsqMetaText#.ctor; id.type=" + id.type + "; id.IconHandle_index=" + id.IconHandle_index );
-#endif
-                    if ( id.type == VsqIDType.Singer ) {
-                        id.IconHandle = __handle.get( id.IconHandle_index ).castToIconHandle();
-                    } else if ( id.type == VsqIDType.Aicon ) {
-                        id.IconDynamicsHandle = __handle.get( id.IconHandle_index ).castToIconDynamicsHandle();
-                    }
-                }
-                if ( __handle.containsKey( id.LyricHandle_index ) ) {
-                    id.LyricHandle = __handle.get( id.LyricHandle_index ).castToLyricHandle();
-                }
-                if ( __handle.containsKey( id.VibratoHandle_index ) ) {
-                    id.VibratoHandle = __handle.get( id.VibratoHandle_index ).castToVibratoHandle();
-                }
-                if ( __handle.containsKey( id.NoteHeadHandle_index ) ) {
-                    id.NoteHeadHandle = __handle.get( id.NoteHeadHandle_index ).castToNoteHeadHandle();
-                }
-            }
-
-            // idをeventListに埋め込み
-            Events = new VsqEventList();
-            for ( int i = 0; i < t_event_list.size(); i++ ) {
-                int clock = t_event_list.get( i ).getKey();
-                int id_number = t_event_list.get( i ).getValue();
-                if ( __id.containsKey( id_number ) ) {
-                    Events.add( new VsqEvent( clock, (VsqID)__id.get( id_number ).clone() ) );
-                }
-            }
-
-            if ( Common == null ) {
-                Common = new VsqCommon();
-            }
-        } */
-
         public VsqMetaText( TextStream sr )
         {
             Vector<ValuePair<Integer, Integer>> t_event_list = new Vector<ValuePair<Integer, Integer>>();
@@ -936,30 +764,30 @@ namespace org.kbinani.vsq
             ByRef<String> last_line = new ByRef<String>( sr.readLine() );
             while ( true ) {
                 #region "TextMemoryStreamから順次読込み"
-                if ( PortUtil.getStringLength( last_line.value ) == 0 ) {
+                if ( str.length( last_line.value ) == 0 ) {
                     break;
                 }
-                if ( last_line.value.Equals( "[Common]" ) ) {
+                if ( str.compare( last_line.value, "[Common]" ) ) {
                     Common = new VsqCommon( sr, last_line );
-                } else if ( last_line.value.Equals( "[Master]" ) ) {
+                } else if ( str.compare( last_line.value, "[Master]" ) ) {
                     master = new VsqMaster( sr, last_line );
-                } else if ( last_line.value.Equals( "[Mixer]" ) ) {
+                } else if ( str.compare( last_line.value, "[Mixer]" ) ) {
                     mixer = new VsqMixer( sr, last_line );
-                } else if ( last_line.value.Equals( "[EventList]" ) ) {
+                } else if ( str.compare( last_line.value, "[EventList]" ) ) {
                     last_line.value = sr.readLine();
-                    while ( !last_line.value.StartsWith( "[" ) ) {
+                    while ( !str.startsWith( last_line.value, "[" ) ) {
                         String[] spl2 = PortUtil.splitString( last_line.value, new char[] { '=' } );
                         int clock = str.toi( spl2[0] );
                         int id_number = -1;
-                        if ( !spl2[1].Equals( "EOS" ) ) {
+                        if ( !str.compare( spl2[1], "EOS" ) ) {
                             String[] ids = PortUtil.splitString( spl2[1], ',' );
                             for ( int i = 0; i < ids.Length; i++ ) {
                                 String[] spl3 = PortUtil.splitString( ids[i], new char[] { '#' } );
                                 id_number = str.toi( spl3[1] );
-                                t_event_list.add( new ValuePair<Integer, Integer>( clock, id_number ) );
+                                vec.add( t_event_list, new ValuePair<Integer, Integer>( clock, id_number ) );
                             }
                         } else {
-                            t_event_list.add( new ValuePair<Integer, Integer>( clock, -1 ) );
+                            vec.add( t_event_list, new ValuePair<Integer, Integer>( clock, -1 ) );
                         }
                         if ( !sr.ready() ) {
                             break;
@@ -967,61 +795,64 @@ namespace org.kbinani.vsq
                             last_line.value = sr.readLine();
                         }
                     }
-                } else if ( last_line.value.Equals( "[PitchBendBPList]" ) ) {
+                } else if ( str.compare( last_line.value, "[PitchBendBPList]" ) ) {
                     last_line.value = PIT.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[PitchBendSensBPList]" ) ) {
+                } else if ( str.compare( last_line.value, "[PitchBendSensBPList]" ) ) {
                     last_line.value = PBS.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[DynamicsBPList]" ) ) {
+                } else if ( str.compare( last_line.value, "[DynamicsBPList]" ) ) {
                     last_line.value = DYN.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[EpRResidualBPList]" ) ) {
+                } else if ( str.compare( last_line.value, "[EpRResidualBPList]" ) ) {
                     last_line.value = BRE.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[EpRESlopeBPList]" ) ) {
+                } else if ( str.compare( last_line.value, "[EpRESlopeBPList]" ) ) {
                     last_line.value = BRI.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[EpRESlopeDepthBPList]" ) ) {
+                } else if ( str.compare( last_line.value, "[EpRESlopeDepthBPList]" ) ) {
                     last_line.value = CLE.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[EpRSineBPList]" ) ) {
+                } else if ( str.compare( last_line.value, "[EpRSineBPList]" ) ) {
                     last_line.value = harmonics.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[VibTremDepthBPList]" ) ) {
+                } else if ( str.compare( last_line.value, "[VibTremDepthBPList]" ) ) {
                     last_line.value = fx2depth.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[Reso1FreqBPList]" ) ) {
+                } else if ( str.compare( last_line.value, "[Reso1FreqBPList]" ) ) {
                     last_line.value = reso1FreqBPList.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[Reso2FreqBPList]" ) ) {
+                } else if ( str.compare( last_line.value, "[Reso2FreqBPList]" ) ) {
                     last_line.value = reso2FreqBPList.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[Reso3FreqBPList]" ) ) {
+                } else if ( str.compare( last_line.value, "[Reso3FreqBPList]" ) ) {
                     last_line.value = reso3FreqBPList.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[Reso4FreqBPList]" ) ) {
+                } else if ( str.compare( last_line.value, "[Reso4FreqBPList]" ) ) {
                     last_line.value = reso4FreqBPList.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[Reso1BWBPList]" ) ) {
+                } else if ( str.compare( last_line.value, "[Reso1BWBPList]" ) ) {
                     last_line.value = reso1BWBPList.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[Reso2BWBPList]" ) ) {
+                } else if ( str.compare( last_line.value, "[Reso2BWBPList]" ) ) {
                     last_line.value = reso2BWBPList.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[Reso3BWBPList]" ) ) {
+                } else if ( str.compare( last_line.value, "[Reso3BWBPList]" ) ) {
                     last_line.value = reso3BWBPList.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[Reso4BWBPList]" ) ) {
+                } else if ( str.compare( last_line.value, "[Reso4BWBPList]" ) ) {
                     last_line.value = reso4BWBPList.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[Reso1AmpBPList]" ) ) {
+                } else if ( str.compare( last_line.value, "[Reso1AmpBPList]" ) ) {
                     last_line.value = reso1AmpBPList.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[Reso2AmpBPList]" ) ) {
+                } else if ( str.compare( last_line.value, "[Reso2AmpBPList]" ) ) {
                     last_line.value = reso2AmpBPList.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[Reso3AmpBPList]" ) ) {
+                } else if ( str.compare( last_line.value, "[Reso3AmpBPList]" ) ) {
                     last_line.value = reso3AmpBPList.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[Reso4AmpBPList]" ) ) {
+                } else if ( str.compare( last_line.value, "[Reso4AmpBPList]" ) ) {
                     last_line.value = reso4AmpBPList.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[GenderFactorBPList]" ) ) {
+                } else if ( str.compare( last_line.value, "[GenderFactorBPList]" ) ) {
                     last_line.value = GEN.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[PortamentoTimingBPList]" ) ) {
+                } else if ( str.compare( last_line.value, "[PortamentoTimingBPList]" ) ) {
                     last_line.value = POR.appendFromText( sr );
-                } else if ( last_line.value.Equals( "[OpeningBPList]" ) ) {
+                } else if ( str.compare( last_line.value, "[OpeningBPList]" ) ) {
                     last_line.value = OPE.appendFromText( sr );
                 } else {
                     String buffer = last_line.value;
                     buffer = buffer.Replace( "[", "" );
                     buffer = buffer.Replace( "]", "" );
+#if DEBUG
+                    sout.println( "VsqMetaText#.ctor; buffer=" + buffer );
+#endif
                     String[] spl = PortUtil.splitString( buffer, new char[] { '#' } );
                     int index = str.toi( spl[1] );
-                    if ( last_line.value.StartsWith( "[ID#" ) ) {
+                    if ( str.startsWith( last_line.value, "[ID#" ) ) {
                         __id.put( index, new VsqID( sr, index, last_line ) );
-                    } else if ( last_line.value.StartsWith( "[h#" ) ) {
+                    } else if ( str.startsWith( last_line.value, "[h#" ) ) {
                         __handle.put( index, new VsqHandle( sr, index, last_line ) );
                     }
                 }
@@ -1057,9 +888,10 @@ namespace org.kbinani.vsq
             // idをeventListに埋め込み
             Events = new VsqEventList();
             int count = 0;
-            for ( int i = 0; i < t_event_list.size(); i++ ) {
-                int clock = t_event_list.get( i ).getKey();
-                int id_number = t_event_list.get( i ).getValue();
+            for ( int i = 0; i < vec.size( t_event_list ); i++ ) {
+                ValuePair<Integer, Integer> item = vec.get( t_event_list, i );
+                int clock = item.getKey();
+                int id_number = item.getValue();
                 if ( __id.containsKey( id_number ) ) {
                     count++;
                     Events.add( new VsqEvent( clock, (VsqID)__id.get( id_number ).clone() ), count );

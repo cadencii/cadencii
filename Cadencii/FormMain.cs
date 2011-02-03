@@ -1282,6 +1282,20 @@ namespace org.kbinani.cadencii
 
         #region helper methods
         /// <summary>
+        /// 音符イベントに，デフォルトの歌唱スタイルを適用します
+        /// </summary>
+        /// <param name="item"></param>
+        public void applyDefaultSingerStyle( VsqID item )
+        {
+            if ( item == null ) return;
+            item.PMBendDepth = AppManager.editorConfig.DefaultPMBendDepth;
+            item.PMBendLength = AppManager.editorConfig.DefaultPMBendLength;
+            item.PMbPortamentoUse = AppManager.editorConfig.DefaultPMbPortamentoUse;
+            item.DEMdecGainRate = AppManager.editorConfig.DefaultDEMdecGainRate;
+            item.DEMaccent = AppManager.editorConfig.DefaultDEMaccent;
+        }
+
+        /// <summary>
         /// ファイル名に拡張子が付いているかどうか確認し，付いてなければ追加します
         /// </summary>
         private static String ensureExtension( String file_path, String ext_with_dot )
@@ -9012,11 +9026,8 @@ namespace org.kbinani.cadencii
                                 int unit = AppManager.getPositionQuantizeClock();
                                 int new_clock = doQuantize( clock, unit );
                                 AppManager.mAddingEvent = new VsqEvent( new_clock, new VsqID( 0 ) );
-                                AppManager.mAddingEvent.ID.PMBendDepth = AppManager.editorConfig.DefaultPMBendDepth;
-                                AppManager.mAddingEvent.ID.PMBendLength = AppManager.editorConfig.DefaultPMBendLength;
-                                AppManager.mAddingEvent.ID.PMbPortamentoUse = AppManager.editorConfig.DefaultPMbPortamentoUse;
-                                AppManager.mAddingEvent.ID.DEMdecGainRate = AppManager.editorConfig.DefaultDEMdecGainRate;
-                                AppManager.mAddingEvent.ID.DEMaccent = AppManager.editorConfig.DefaultDEMaccent;
+                                // デフォルトの歌唱スタイルを適用する
+                                applyDefaultSingerStyle( AppManager.mAddingEvent.ID );
                                 if ( mPencilMode.getMode() == PencilModeEnum.Off ) {
                                     AppManager.setEditMode( EditMode.ADD_ENTRY );
                                     mButtonInitial = new Point( e.X, e.Y );
@@ -12012,11 +12023,19 @@ namespace org.kbinani.cadencii
                 mf = new MidiFile( filename );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileImportMidi_Click; ex=" + ex + "\n" );
-                AppManager.showMessageBox( _( "Invalid MIDI file." ), _( "Error" ), org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
+                AppManager.showMessageBox(
+                    _( "Invalid MIDI file." ),
+                    _( "Error" ),
+                    org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
+                    org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
                 return;
             }
             if ( mf == null ) {
-                AppManager.showMessageBox( _( "Invalid MIDI file." ), _( "Error" ), org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
+                AppManager.showMessageBox(
+                    _( "Invalid MIDI file." ),
+                    _( "Error" ),
+                    org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
+                    org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
                 return;
             }
             int count = mf.getTrackCount();
@@ -12203,13 +12222,15 @@ namespace org.kbinani.cadencii
             if ( mDialogMidiImportAndExport.isTimesig() ) {
                 work.TimesigTable.clear();
                 Vector<TimeSigTableEntry> list = tempo.TimesigTable;
-                int list_count = list.size();
+                int list_count = vec.size( list );
                 for ( int i = 0; i < list_count; i++ ) {
                     TimeSigTableEntry item = list.get( i );
-                    work.TimesigTable.add( new TimeSigTableEntry( item.Clock,
-                                                                  item.Numerator,
-                                                                  item.Denominator,
-                                                                  item.BarCount ) );
+                    work.TimesigTable.add( 
+                        new TimeSigTableEntry(
+                            item.Clock,
+                            item.Numerator,
+                            item.Denominator,
+                            item.BarCount ) );
                 }
                 Collections.sort( work.TimesigTable );
                 work.updateTimesigInfo();
@@ -12219,7 +12240,7 @@ namespace org.kbinani.cadencii
                 if ( !mDialogMidiImportAndExport.listTrack.isRowChecked( i ) ) {
                     continue;
                 }
-                if ( work.Track.size() + 1 > 16 ) {
+                if ( vec.size( work.Track ) + 1 > 16 ) {
                     break;
                 }
                 VsqTrack work_track = new VsqTrack( mDialogMidiImportAndExport.listTrack.getItemAt( i, 1 ), "Miku" );
@@ -12232,7 +12253,7 @@ namespace org.kbinani.cadencii
 
                 Vector<MidiEvent> events = mf.getMidiEventList( i );
                 Collections.sort( events );
-                int events_count = events.size();
+                int events_count = vec.size( events );
 
                 // note
                 if ( mDialogMidiImportAndExport.isNotes() ) {
@@ -12244,7 +12265,7 @@ namespace org.kbinani.cadencii
                     }
                     int last_note = -1;
                     for ( int j = 0; j < events_count; j++ ) {
-                        MidiEvent itemj = events.get( j );
+                        MidiEvent itemj = vec.get( events, j );
                         int not_closed_note = -1;
                         if ( (itemj.firstByte & 0xf0) == 0x90 && itemj.data.Length >= 2 && itemj.data[1] > 0 ) {
                             for ( int m = 0; m < 128; m++ ) {
@@ -12292,7 +12313,7 @@ namespace org.kbinani.cadencii
                                 String phrase = "a";
                                 if ( mDialogMidiImportAndExport.isLyric() ) {
                                     for ( int k = 0; k < events_count; k++ ) {
-                                        MidiEvent itemk = events.get( k );
+                                        MidiEvent itemk = vec.get( events, k );
                                         if ( onclock_each_note[note] <= (int)itemk.clock && (int)itemk.clock <= clock_off ) {
                                             if ( itemk.firstByte == 0xff && itemk.data.Length >= 2 && itemk.data[0] == 0x05 ) {
                                                 int[] d = new int[itemk.data.Length - 1];
@@ -12308,8 +12329,8 @@ namespace org.kbinani.cadencii
                                 vid.LyricHandle = new LyricHandle( phrase, "a" );
                                 vid.Note = note;
                                 vid.Dynamics = velocity_each_note[note];
-                                vid.DEMaccent = 50;
-                                vid.DEMdecGainRate = 50;
+                                // デフォルとの歌唱スタイルを適用する
+                                applyDefaultSingerStyle( vid );
 
                                 // ビブラート
                                 if ( AppManager.editorConfig.EnableAutoVibrato ) {
@@ -12351,11 +12372,13 @@ namespace org.kbinani.cadencii
                         }
                     }
 
-                    int track = work.Track.size();
-                    CadenciiCommand run_add = VsqFileEx.generateCommandAddTrack( work_track,
-                                                                                 new VsqMixerEntry( 0, 0, 0, 0 ),
-                                                                                 track,
-                                                                                 new BezierCurves() );
+                    int track = vec.size( work.Track );
+                    CadenciiCommand run_add =
+                        VsqFileEx.generateCommandAddTrack(
+                            work_track,
+                            new VsqMixerEntry( 0, 0, 0, 0 ),
+                            track,
+                            new BezierCurves() );
                     work.executeCommand( run_add );
                 }
             }
@@ -12769,7 +12792,11 @@ namespace org.kbinani.cadencii
 #if DEBUG
                 sout.println( "FormMain#menuFileOpenVsq_Click; ex=" + ex );
 #endif
-                AppManager.showMessageBox( _( "Invalid VSQ/VOCALOID MIDI file" ), _( "Error" ), org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION, org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
+                AppManager.showMessageBox(
+                    _( "Invalid VSQ/VOCALOID MIDI file" ),
+                    _( "Error" ),
+                    org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
+                    org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
                 return;
             }
             AppManager.setSelected( 1 );
@@ -12799,6 +12826,11 @@ namespace org.kbinani.cadencii
                 dlg.setLocation( getFormPreferedLocation( dlg ) );
                 BDialogResult dr = AppManager.showModalDialog( dlg, this );
                 if ( dr == BDialogResult.OK ) {
+                    AppManager.editorConfig.DefaultPMBendDepth = dlg.getPMBendDepth();
+                    AppManager.editorConfig.DefaultPMBendLength = dlg.getPMBendLength();
+                    AppManager.editorConfig.DefaultPMbPortamentoUse = dlg.getPMbPortamentoUse();
+                    AppManager.editorConfig.DefaultDEMdecGainRate = dlg.getDEMdecGainRate();
+                    AppManager.editorConfig.DefaultDEMaccent = dlg.getDEMaccent();
                     if ( dlg.getApplyCurrentTrack() ) {
                         VsqFileEx vsq = AppManager.getVsqFile();
                         VsqTrack vsq_track = vsq.Track.get( selected );
@@ -12806,28 +12838,21 @@ namespace org.kbinani.cadencii
                         boolean changed = false;
                         for ( int i = 0; i < copy.getEventCount(); i++ ) {
                             if ( copy.getEvent( i ).ID.type == VsqIDType.Anote ) {
-                                copy.getEvent( i ).ID.PMBendDepth = dlg.getPMBendDepth();
-                                copy.getEvent( i ).ID.PMBendLength = dlg.getPMBendLength();
-                                copy.getEvent( i ).ID.PMbPortamentoUse = dlg.getPMbPortamentoUse();
-                                copy.getEvent( i ).ID.DEMdecGainRate = dlg.getDEMdecGainRate();
-                                copy.getEvent( i ).ID.DEMaccent = dlg.getDEMaccent();
+                                applyDefaultSingerStyle( copy.getEvent( i ).ID );
                                 changed = true;
                             }
                         }
                         if ( changed ) {
-                            CadenciiCommand run = VsqFileEx.generateCommandTrackReplace( selected,
-                                                                                         copy,
-                                                                                         vsq.AttachedCurves.get( selected - 1 ) );
+                            CadenciiCommand run = 
+                                VsqFileEx.generateCommandTrackReplace(
+                                    selected,
+                                    copy,
+                                    vsq.AttachedCurves.get( selected - 1 ) );
                             AppManager.register( vsq.executeCommand( run ) );
                             updateDrawObjectList();
                             refreshScreen();
                         }
                     }
-                    AppManager.editorConfig.DefaultPMBendDepth = dlg.getPMBendDepth();
-                    AppManager.editorConfig.DefaultPMBendLength = dlg.getPMBendLength();
-                    AppManager.editorConfig.DefaultPMbPortamentoUse = dlg.getPMbPortamentoUse();
-                    AppManager.editorConfig.DefaultDEMdecGainRate = dlg.getDEMdecGainRate();
-                    AppManager.editorConfig.DefaultDEMaccent = dlg.getDEMaccent();
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuSettingDefaultSingerStyle_Click; ex=" + ex + "\n" );
@@ -17208,8 +17233,9 @@ namespace org.kbinani.cadencii
                 if ( AppManager.getVsqFile().Track.get( track ).getEventCount() == 0 ) {
                     AppManager.showMessageBox(
                         PortUtil.formatMessage(
-                            _( "Invalid note data.\nTrack {0} : {1}\n\n-> Piano roll : Blank sequence." ), track, AppManager.getVsqFile().Track.get( track ).getName()
-                        ),
+                            _( "Invalid note data.\nTrack {0} : {1}\n\n-> Piano roll : Blank sequence." ),
+                            track,
+                            AppManager.getVsqFile().Track.get( track ).getName() ),
                         _APP_NAME,
                         org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
                         org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
@@ -17859,10 +17885,11 @@ namespace org.kbinani.cadencii
                 }
             }
             if ( found ) {
-                AppManager.showMessageBox( PortUtil.formatMessage( _( "file '{0}' is already registered as BGM." ), file ),
-                                 _( "Error" ),
-                                 org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
-                                 org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
+                AppManager.showMessageBox(
+                    PortUtil.formatMessage( _( "file '{0}' is already registered as BGM." ), file ),
+                    _( "Error" ),
+                    org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
+                    org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
                 return;
             }
 

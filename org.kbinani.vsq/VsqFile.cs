@@ -37,12 +37,12 @@ namespace org.kbinani.vsq
     /// VSQファイルの内容を保持するクラス
     /// </summary>
 #if JAVA
-    public class VsqFile implements Cloneable, Serializable {
+    public class VsqFile implements Cloneable, Serializable
 #else
     [Serializable]
     public class VsqFile : ICloneable
-    {
 #endif
+    {
         /// <summary>
         /// トラックのリスト．最初のトラックはMasterTrackであり，通常の音符が格納されるトラックはインデックス1以降となる
         /// </summary>
@@ -73,7 +73,8 @@ namespace org.kbinani.vsq
         public const int MAX_TRACKS = 16;
 
 #if JAVA
-        public VsqFile( UstFile ust ){
+        public VsqFile( UstFile ust )
+        {
             this( "Miku", 1, 4, 4, ust.getBaseTempo() );
 #else
         public VsqFile( UstFile ust )
@@ -109,9 +110,6 @@ namespace org.kbinani.vsq
                     ve.UstEvent = (UstEvent)ue.clone();
                     vsq_track.addEvent( ve );
 
-#if DEBUG
-                    //sw.WriteLine( ue.Lyric + "; (ue.Pitch==null)=" + (ue.Pitches == null) );
-#endif
                     if ( ue.Pitches != null ) {
                         // PBTypeクロックごとにデータポイントがある
                         // ただし，音符の先頭の時刻から，先行発音とStartPointを引いた時刻から記録されているので注意
@@ -120,11 +118,6 @@ namespace org.kbinani.vsq
                         double sec_preutterance = ue.PreUtterance / 1000.0;
                         // STPの秒数
                         double sec_stp = ue.getStartPoint() / 1000.0;
-#if DEBUG
-#if !JAVA
-                        //sw.WriteLine( "ue.Lyric=" + ue.Lyric + "; ue.PreUtterance=" + ue.PreUtterance );
-#endif
-#endif
                         // 音符の開始位置(秒)
                         double sec_clock = TempoTable.getSecFromClock( clock_count );
                         // 先行発音込みの，音符の開始位置(秒)
@@ -132,11 +125,6 @@ namespace org.kbinani.vsq
                         // 先行発音込みの，音符の開始位置(クロック)
                         int clock_at_preutterance = (int)TempoTable.getClockFromSec( sec_at_preutterance );
                         int clock = clock_at_preutterance - ue.PBType;
-#if DEBUG
-#if !JAVA
-                        //sw.WriteLine( "clock_count=" + clock_count + "; clock_at_preutterance=" + clock_at_preutterance );
-#endif
-#endif
                         // 書き込み済みの位置より左側には，ピッチを書き込まないようにする
                         for ( int i = 0; i < ue.Pitches.Length; i++ ) {
                             clock += ue.PBType;
@@ -722,6 +710,7 @@ namespace org.kbinani.vsq
                                 sw.write( "            <beat-unit>quarter</beat-unit>" ); sw.newLine();
                                 sw.write( "            <per-minute>" + tempo + "</per-minute>" ); sw.newLine();
                                 sw.write( "          </metronome>" ); sw.newLine();
+                                sw.write( "          <words>Tempo " + tempo + "</words>" ); sw.newLine();
                                 sw.write( "        </direction-type>" ); sw.newLine();
                                 sw.write( "        <sound tempo=\"" + tempo + "\"/>" ); sw.newLine();
                                 sw.write( "      </direction>" ); sw.newLine();

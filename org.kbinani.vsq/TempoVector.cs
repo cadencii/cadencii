@@ -47,19 +47,80 @@ namespace org.kbinani.vsq
         /// <summary>
         /// コンストラクタ
         /// </summary>
+#if JAVA
         public TempoVector()
-#if JAVA
         {
-#else
-            :
-#endif
- base()
-#if JAVA
-            ;
-#else
-        {
-#endif
+            super();
         }
+#else
+        public TempoVector() : base()
+        {
+        }
+#endif
+
+        /// <summary>
+        /// 指定した時刻におけるゲートタイムを取得します
+        /// </summary>
+        /// <param name="time">ゲートタイムを取得する時刻(秒)</param>
+        /// <returns>ゲートタイム</returns>
+        public double __draft__getClockFromSec( double time )
+        {
+            return __draft__getClockFromSec( time, null );
+        }
+
+        public double __draft__getClockFromSec( double time, TempoVectorSearchContext context )
+        {
+            int tempo = baseTempo;
+            double base_clock = 0;
+            double base_time = 0.0;
+            int c = size();
+            if ( c == 0 ) {
+                tempo = baseTempo;
+                base_clock = 0;
+                base_time = 0f;
+            } else if ( c == 1 ) {
+                tempo = get( 0 ).Tempo;
+                base_clock = get( 0 ).Clock;
+                base_time = get( 0 ).Time;
+            } else {
+                int i0 = c - 1;
+                if ( context != null ) {
+                    if ( time >= context.mSec2ClockSec ) {
+                        // 探そうとしている時刻が前回検索時の時刻と同じかそれ以降の場合
+                        i0 = context.mSec2ClockIndex;
+                    } else {
+                        // リセットする
+                        context.mSec2ClockIndex = 0;
+                    }
+                    context.mSec2ClockSec = time;
+                }
+                TempoTableEntry prev = null;
+                for ( int i = i0; i < c; i++ ) {
+                    TempoTableEntry item = get( i );
+                    if ( item.Time >= time ) {
+                        if ( prev != null ) {
+                            base_time = prev.Time;
+                            base_clock = prev.Clock;
+                            tempo = prev.Tempo;
+                            if ( context != null ) {
+                                context.mSec2ClockIndex = i > 0 ? i - 1 : 0;
+                            }
+                            break;
+                        }
+                    }
+                    prev = item;
+                }
+                /*for ( int i = c - 1; i >= 0; i-- ) {
+                    TempoTableEntry item = get( i );
+                    if ( item.Time < time ) {
+                        return item.Clock + (time - item.Time) * gatetimePerQuater * 1000000.0 / item.Tempo;
+                    }
+                }*/
+            }
+            double dt = time - base_time;
+            return base_clock + dt * gatetimePerQuater * 1000000.0 / (double)tempo;
+        }
+
 
         /// <summary>
         /// 指定した時刻におけるゲートタイムを取得します

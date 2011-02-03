@@ -16,10 +16,16 @@ package org.kbinani.vsq;
 
 import java.io.*;
 #else
+
+using System;
+
 namespace org.kbinani.vsq
 {
 #endif
 
+    /// <summary>
+    /// 改行コードに0x0d 0x0aを用いるテキストライター
+    /// </summary>
 #if JAVA
     class InternalStreamWriter implements ITextWriter
 #else
@@ -27,7 +33,11 @@ namespace org.kbinani.vsq
 #endif
     {
         private String mNL = "\n";
+#if JAVA
         private BufferedWriter mStream;
+#else
+        private System.IO.StreamWriter mStream;
+#endif
 
         public InternalStreamWriter( String path, String encoding )
 #if JAVA
@@ -35,8 +45,12 @@ namespace org.kbinani.vsq
                    java.io.UnsupportedEncodingException
 #endif
         {
-            mNL = new String( new char[]{ 0x0d, 0x0a } );
+            mNL = new String( new char[]{ (char)0x0d, (char)0x0a } );
+#if JAVA
             mStream = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( path ), encoding ) );
+#else
+            mStream = new System.IO.StreamWriter( path, false, System.Text.Encoding.GetEncoding( encoding ) );
+#endif
         }
 
         public void write( String s )
@@ -44,7 +58,11 @@ namespace org.kbinani.vsq
             throws java.io.IOException
 #endif
         {
+#if JAVA
             mStream.write( s );
+#else
+            mStream.Write( s );
+#endif
         }
         
         public void writeLine( String s )
@@ -61,7 +79,7 @@ namespace org.kbinani.vsq
             throws java.io.IOException
 #endif
         {
-            mStream.write( mNL );
+            write( mNL );
         }
         
         public void close()
@@ -69,7 +87,11 @@ namespace org.kbinani.vsq
             throws java.io.IOException
 #endif
         {
+#if JAVA
             mStream.close();
+#else
+            mStream.Close();
+#endif
         }
     }
 
