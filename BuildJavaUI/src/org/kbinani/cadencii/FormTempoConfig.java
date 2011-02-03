@@ -7,6 +7,7 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.JPanel;
 import org.kbinani.windows.forms.BButton;
+import org.kbinani.windows.forms.BDialog;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BGroupBox;
 import org.kbinani.windows.forms.BLabel;
@@ -14,7 +15,7 @@ import org.kbinani.windows.forms.BNumericUpDown;
 import org.kbinani.windows.forms.BPanel;
 
 //SECTION-END-IMPORT
-public class FormTempoConfig extends BForm {
+public class FormTempoConfig extends BDialog {
     //SECTION-BEGIN-FIELD
     
     private static final long serialVersionUID = 3025908775165151783L;
@@ -55,7 +56,7 @@ public class FormTempoConfig extends BForm {
         this.setSize(new Dimension(446, 240));
         this.setTitle("Global Tempo");
         this.setContentPane(getJPanel());
-    		
+        setCancelButton( btnCancel );
     }
 
     /**

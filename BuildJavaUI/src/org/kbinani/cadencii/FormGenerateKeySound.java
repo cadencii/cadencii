@@ -1,6 +1,7 @@
 ﻿package org.kbinani.cadencii;
 
 //SECTION-BEGIN-IMPORT
+import org.kbinani.windows.forms.BDialog;
 import org.kbinani.windows.forms.BForm;
 import java.awt.Dimension;
 import javax.swing.JPanel;
@@ -14,7 +15,7 @@ import javax.swing.JComboBox;
 import javax.swing.JCheckBox;
 
 //SECTION-END-IMPORT
-public class FormGenerateKeySound extends BForm {
+public class FormGenerateKeySound extends BDialog {
     //SECTION-BEGIN-FIELD
     
     private static final long serialVersionUID = 3420499863033740708L;
@@ -42,7 +43,7 @@ public class FormGenerateKeySound extends BForm {
     private void initialize() {
         this.setSize(new Dimension(382, 208));
         this.setContentPane(getJPanel());
-    		
+    	setCancelButton( btnCancel );
     }
 
     /**

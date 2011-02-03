@@ -5,6 +5,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
+import org.kbinani.windows.forms.BDialog;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BHScrollBar;
 import org.kbinani.windows.forms.BMenu;
@@ -17,7 +18,7 @@ import javax.swing.JLabel;
 import java.awt.Color;
 
 //SECTION-END-IMPORT
-public class FormMixer extends BForm {
+public class FormMixer extends BDialog {
     //SECTION-BEGIN-FIELD
 
     private static final long serialVersionUID = 1L;

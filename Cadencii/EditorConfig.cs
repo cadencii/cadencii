@@ -666,17 +666,17 @@ namespace org.kbinani.cadencii
         public String getWineExecutable()
         {
             String appstart = PortUtil.getApplicationStartupPath();
-            // Wine.bundleの場所は../Wine.bundleまたは./Wine.bundleのどちらか
+            // WineMinimum.bundleの場所は../WineMinimum.bundleまたは./WineMinimum.bundleのどちらか
             // まず../Wine.bundleがあるかどうかチェック
             String parent = PortUtil.getDirectoryName( appstart );
-            String ret = fsys.combine( parent, "Wine.bundle" );
+            String ret = fsys.combine( parent, "WineMinimum.bundle" );
             ret = fsys.combine( ret, "Contents" );
             ret = fsys.combine( ret, "SharedSupport" );
             ret = fsys.combine( ret, "bin" );
             ret = fsys.combine( ret, "wine" );
             if( !fsys.isFileExists( ret ) ){
-                // ../Wine.bundleが無い場合
-                ret = fsys.combine( appstart, "Wine.bundle" );
+                // ../WineMinimum.bundleが無い場合
+                ret = fsys.combine( appstart, "WineMinimum.bundle" );
                 ret = fsys.combine( ret, "Contents" );
                 ret = fsys.combine( ret, "SharedSupport" );
                 ret = fsys.combine( ret, "bin" );

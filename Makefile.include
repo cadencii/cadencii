@@ -25,7 +25,7 @@ SRC_JXML=@SRC_JXML@
 
 all: jcadencii_mac
 
-jcadencii_mac: jcadencii ./Cadencii/PkgInfo ./Cadencii/Info.plist ./build/java/Wine.bundle
+jcadencii_mac: jcadencii ./Cadencii/PkgInfo ./Cadencii/Info.plist ./build/java/WineMinimum.bundle
 	rm -rf ./build/java/Cadencii.app
 	$(MKDIR) ./build/java/Cadencii.app $(TO_DEVNULL)
 	$(MKDIR) ./build/java/Cadencii.app/Contents $(TO_DEVNULL)
@@ -43,11 +43,11 @@ jcadencii_mac: jcadencii ./Cadencii/PkgInfo ./Cadencii/Info.plist ./build/java/W
 	cd ../../vConnect/stand && $(MAKE)
 	$(CP) ../../vConnect/stand/vConnect-STAND.exe ./build/java/Cadencii.app/Contents/Resources/Java/vConnect-STAND.exe
 	/Developer/Tools/SetFile -a B ./build/java/Cadencii.app
-	cp -r -p ./build/java/Wine.bundle ./build/java/Cadencii.app/Contents/Resources/Wine.bundle
-	rm ./build/java/Cadencii.app/Contents/Resources/Wine.bundle/Contents/SharedSupport/lib/libwine.1.dylib
-	rm ./build/java/Cadencii.app/Contents/Resources/Wine.bundle/Contents/SharedSupport/lib/libwine.dylib
-	ln -s libwine.1.0.dylib ./build/java/Cadencii.app/Contents/Resources/Wine.bundle/Contents/SharedSupport/lib/libwine.1.dylib
-	ln -s libwine.1.0.dylib ./build/java/Cadencii.app/Contents/Resources/Wine.bundle/Contents/SharedSupport/lib/libwine.dylib
+	cp -r -p ./build/java/WineMinimum.bundle ./build/java/Cadencii.app/Contents/Resources/WineMinimum.bundle
+	rm ./build/java/Cadencii.app/Contents/Resources/WineMinimum.bundle/Contents/SharedSupport/lib/libwine.1.dylib
+	rm ./build/java/Cadencii.app/Contents/Resources/WineMinimum.bundle/Contents/SharedSupport/lib/libwine.dylib
+	ln -s libwine.1.0.dylib ./build/java/Cadencii.app/Contents/Resources/WineMinimum.bundle/Contents/SharedSupport/lib/libwine.1.dylib
+	ln -s libwine.1.0.dylib ./build/java/Cadencii.app/Contents/Resources/WineMinimum.bundle/Contents/SharedSupport/lib/libwine.dylib
 
 ########################################################################
 # pre process
@@ -206,7 +206,7 @@ clean:
 	$(RM) ./build/java/org/kbinani/*.class ./build/java/org/kbinani/apputil/*.class ./build/java/org/kbinani/media/*.class ./build/java/org/kbinani/vsq/*.class ./build/java/org/kbinani/cadencii/*.class ./build/java/org/kbinani/componentmodel/*.class ./build/java/org/kbinani/windows/forms/*.class ./build/java/org/kbinani/xml/*.class
 
 ########################################################################
-# prepare Wine.bundle
+# prepare WineMinimum.bundle
 #
 # wget source of wine
 ./wine-$(WINE_VERSION).tar.bz2:
@@ -215,11 +215,27 @@ clean:
 	cd wine-$(WINE_VERSION) && ./configure && $(MAKE) depend && $(MAKE)
 
 # prepare bundle
-./build/java/Wine.bundle: ./wine-$(WINE_VERSION).tar.bz2
-	rm -rf ./build/java/Wine.bundle
-	mkdir ./build/java/Wine.bundle
-	mkdir ./build/java/Wine.bundle/Contents/
+./build/java/WineMinimum.bundle: ./wine-$(WINE_VERSION).tar.bz2
+	rm -rf ./build/java/WineMinimum.bundle
+	mkdir -p ./build/java/WineMinimum.bundle/Contents/SharedSupport/bin
+	mkdir -p ./build/java/WineMinimum.bundle/Contents/SharedSupport/lib/wine
+	cp $(WINE_DIR)loader/wine-pthread ./build/java/WineMinimum.bundle/Contents/SharedSupport/bin/wine
+	cp $(WINE_DIR)server/wineserver ./build/java/WineMinimum.bundle/Contents/SharedSupport/bin/wineserver
+	install_name_tool -change @executable_path/../libs/wine/libwine.1.dylib @executable_path/../lib/libwine.1.dylib ./build/java/WineMinimum.bundle/Contents/SharedSupport/bin/wine
+	install_name_tool -change @executable_path/../libs/wine/libwine.1.dylib @executable_path/../lib/libwine.1.dylib ./build/java/WineMinimum.bundle/Contents/SharedSupport/bin/wineserver
+	cp $(WINE_DIR)libs/wine/libwine.1.0.dylib ./build/java/WineMinimum.bundle/Contents/SharedSupport/lib/libwine.1.0.dylib
+	ln -s libwine.1.0.dylib ./build/java/WineMinimum.bundle/Contents/SharedSupport/lib/libwine.1.dylib
+	ln -s libwine.1.0.dylib ./build/java/WineMinimum.bundle/Contents/SharedSupport/lib/libwine.dylib
+	cp $(WINE_DIR)dlls/advapi32/advapi32.dll.so ./build/java/WineMinimum.bundle/Contents/SharedSupport/lib/wine/advapi32.dll.so
+	cp $(WINE_DIR)dlls/iphlpapi/iphlpapi.dll.so ./build/java/WineMinimum.bundle/Contents/SharedSupport/lib/wine/iphlpapi.dll.so
+	cp $(WINE_DIR)dlls/kernel32/kernel32.dll.so ./build/java/WineMinimum.bundle/Contents/SharedSupport/lib/wine/kernel32.dll.so
+	cp $(WINE_DIR)dlls/ntdll/ntdll.dll.so ./build/java/WineMinimum.bundle/Contents/SharedSupport/lib/wine/ntdll.dll.so
+	cp $(WINE_DIR)dlls/rpcrt4/rpcrt4.dll.so ./build/java/WineMinimum.bundle/Contents/SharedSupport/lib/wine/rpcrt4.dll.so
+	cp $(WINE_DIR)programs/services/services.exe.so ./build/java/WineMinimum.bundle/Contents/SharedSupport/lib/wine/services.exe.so
+	cp $(WINE_DIR)programs/wineboot/wineboot.exe.so ./build/java/WineMinimum.bundle/Contents/SharedSupport/lib/wine/wineboot.exe.so
 	{ \
+	  wine_version=`PATH='./build/java/WineMinimum.bundle/Contents/SharedSupport/bin'":$PATH";wine --version`; \
+	  cadencii_version=`java -jar ./build/java/Cadencii.jar --version`; \
 	  echo '<?xml version="1.0" encoding="UTF-8"?>'; \
 	  echo '<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">'; \
 	  echo '<plist version="1.0">'; \
@@ -227,37 +243,19 @@ clean:
 	  echo '	<key>CFBundleInfoDictionaryVersion</key>'; \
 	  echo '	<string>6.0</string>'; \
 	  echo '	<key>CFBundleGetInfoString</key>'; \
-	  echo '	<string>Cadencii 3.4</string>'; \
+	  echo '	<string>Cadencii '"$$cadencii_version"', '"$$wine_version"'</string>'; \
 	  echo '	<key>CFBundleName</key>'; \
 	  echo '	<string>Cadencii</string>'; \
 	  echo '	<key>CFBundleVersion</key>'; \
-	  echo '	<string>Cadencii 3.4</string>'; \
+	  echo '	<string>Cadencii '"$$cadencii_version"', '"$$wine_version"'</string>'; \
 	  echo '	<key>CFBundlePackageType</key>'; \
 	  echo '	<string>thng</string>'; \
 	  echo '	<key>CFBundleIdentifier</key>'; \
-	  echo '	<string>jp.sourceforge.cadencii.Wine</string>'; \
+	  echo '	<string>jp.sourceforge.cadencii.WineMinimum</string>'; \
 	  echo '</dict>'; \
 	  echo '</plist>'; \
-	} > ./build/java/Wine.bundle/Contents/Info.plist
-	mkdir ./build/java/Wine.bundle/Contents/SharedSupport
-	mkdir ./build/java/Wine.bundle/Contents/SharedSupport/bin
-	mkdir ./build/java/Wine.bundle/Contents/SharedSupport/lib
-	mkdir ./build/java/Wine.bundle/Contents/SharedSupport/lib/wine
-	cp $(WINE_DIR)loader/wine-pthread ./build/java/Wine.bundle/Contents/SharedSupport/bin/wine
-	cp $(WINE_DIR)server/wineserver ./build/java/Wine.bundle/Contents/SharedSupport/bin/wineserver
-	install_name_tool -change @executable_path/../libs/wine/libwine.1.dylib @executable_path/../lib/libwine.1.dylib ./build/java/Wine.bundle/Contents/SharedSupport/bin/wine
-	install_name_tool -change @executable_path/../libs/wine/libwine.1.dylib @executable_path/../lib/libwine.1.dylib ./build/java/Wine.bundle/Contents/SharedSupport/bin/wineserver
-	cp $(WINE_DIR)libs/wine/libwine.1.0.dylib ./build/java/Wine.bundle/Contents/SharedSupport/lib/libwine.1.0.dylib
-	ln -s libwine.1.0.dylib ./build/java/Wine.bundle/Contents/SharedSupport/lib/libwine.1.dylib
-	ln -s libwine.1.0.dylib ./build/java/Wine.bundle/Contents/SharedSupport/lib/libwine.dylib
-	cp $(WINE_DIR)dlls/advapi32/advapi32.dll.so ./build/java/Wine.bundle/Contents/SharedSupport/lib/wine/advapi32.dll.so
-	cp $(WINE_DIR)dlls/iphlpapi/iphlpapi.dll.so ./build/java/Wine.bundle/Contents/SharedSupport/lib/wine/iphlpapi.dll.so
-	cp $(WINE_DIR)dlls/kernel32/kernel32.dll.so ./build/java/Wine.bundle/Contents/SharedSupport/lib/wine/kernel32.dll.so
-	cp $(WINE_DIR)dlls/ntdll/ntdll.dll.so ./build/java/Wine.bundle/Contents/SharedSupport/lib/wine/ntdll.dll.so
-	cp $(WINE_DIR)dlls/rpcrt4/rpcrt4.dll.so ./build/java/Wine.bundle/Contents/SharedSupport/lib/wine/rpcrt4.dll.so
-	cp $(WINE_DIR)programs/services/services.exe.so ./build/java/Wine.bundle/Contents/SharedSupport/lib/wine/services.exe.so
-	cp $(WINE_DIR)programs/wineboot/wineboot.exe.so ./build/java/Wine.bundle/Contents/SharedSupport/lib/wine/wineboot.exe.so
-	/Developer/Tools/SetFile -a B ./build/java/Wine.bundle
+	} > ./build/java/WineMinimum.bundle/Contents/Info.plist
+	/Developer/Tools/SetFile -a B ./build/java/WineMinimum.bundle
 
 ########################################################################
 # dependency definition

@@ -44,10 +44,11 @@ namespace org.kbinani.cadencii {
 #endif
 
 #if JAVA
-    public class FormGenerateKeySound extends BForm {
+    public class FormGenerateKeySound extends BDialog
 #else
-    public class FormGenerateKeySound : BForm {
+    public class FormGenerateKeySound : BDialog
 #endif
+    {
 #if !JAVA
         private delegate void updateTitleDelegate( String title );
 #endif

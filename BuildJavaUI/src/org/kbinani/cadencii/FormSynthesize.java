@@ -7,12 +7,13 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.JPanel;
 import org.kbinani.windows.forms.BButton;
+import org.kbinani.windows.forms.BDialog;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BProgressBar;
 
 //SECTION-END-IMPORT
-public class FormSynthesize extends BForm {
+public class FormSynthesize extends BDialog {
     //SECTION-BEGIN-FIELD
     
     private static final long serialVersionUID = 1L;
@@ -42,7 +43,7 @@ public class FormSynthesize extends BForm {
     private void initialize() {
         this.setSize(new Dimension(376, 197));
         this.setContentPane(getJPanel());
-    		
+        setCancelButton( btnCancel );
     }
 
     /**

@@ -8,6 +8,7 @@ import java.awt.Insets;
 import javax.swing.JPanel;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BComboBox;
+import org.kbinani.windows.forms.BDialog;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BListView;
@@ -15,7 +16,7 @@ import javax.swing.JScrollPane;
 import org.kbinani.windows.forms.BCheckBox;
 
 //SECTION-END-IMPORT
-public class FormShortcutKeys extends BForm {
+public class FormShortcutKeys extends BDialog {
     //SECTION-BEGIN-FIELD
  
     private static final long serialVersionUID = 2743132471603994391L;
@@ -61,7 +62,7 @@ public class FormShortcutKeys extends BForm {
         this.setSize(new Dimension(541, 572));
         this.setTitle("Shortcut Config");
         this.setContentPane(getJPanel());
-    		
+        setCancelButton( btnCancel );
     }
 
     /**

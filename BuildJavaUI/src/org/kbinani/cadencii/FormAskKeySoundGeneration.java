@@ -8,11 +8,12 @@ import java.awt.Insets;
 import javax.swing.JPanel;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BCheckBox;
+import org.kbinani.windows.forms.BDialog;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BLabel;
 
 //SECTION-END-IMPORT
-public class FormAskKeySoundGeneration extends BForm {
+public class FormAskKeySoundGeneration extends BDialog {
 //SECTION-BEGIN-FIELD
 
     private static final long serialVersionUID = 1L;
@@ -37,7 +38,7 @@ public class FormAskKeySoundGeneration extends BForm {
     private void initialize() {
         this.setSize(new Dimension(376, 190));
         this.setContentPane(getJPanel());
-    		
+        setCancelButton( btnNo );
     }
 
     /**

@@ -16,6 +16,7 @@ import javax.swing.border.TitledBorder;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BCheckBox;
 import org.kbinani.windows.forms.BComboBox;
+import org.kbinani.windows.forms.BDialog;
 import org.kbinani.windows.forms.BGroupBox;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BListBox;
@@ -28,7 +29,7 @@ import org.kbinani.windows.forms.RadioButtonManager;
 import javax.swing.JScrollPane;
 
 //SECTION-END-IMPORT
-public class Preference extends JFrame {
+public class Preference extends BDialog {
     //SECTION-BEGIN-FIELD
 
     private static final long serialVersionUID = 1L;
@@ -225,7 +226,7 @@ public class Preference extends JFrame {
         mManager = new RadioButtonManager();
         mManager.add( radioUserDefined );
         mManager.add( radioVocaloidEditorCompatible );
-	
+        setCancelButton( btnCancel );
 		//SECTION-END-CTOR
 	}
 

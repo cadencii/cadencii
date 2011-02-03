@@ -10,11 +10,12 @@ import javax.swing.SwingConstants;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BCheckBox;
 import org.kbinani.windows.forms.BComboBox;
+import org.kbinani.windows.forms.BDialog;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BLabel;
 
 //SECTION-END-IMPORT
-public class FormRandomize extends BForm {
+public class FormRandomize extends BDialog {
     //SECTION-BEGIN-FIELD
 
     private static final long serialVersionUID = 5210609912644248288L;
@@ -60,7 +61,7 @@ public class FormRandomize extends BForm {
         this.setSize(new Dimension(361, 344));
         this.setTitle("Randomize");
         this.setContentPane(getJPanel1());
-    		
+   		setCancelButton( btnCancel );
     }
 
     /**

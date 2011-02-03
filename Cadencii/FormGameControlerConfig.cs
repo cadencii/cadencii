@@ -36,11 +36,11 @@ namespace org.kbinani.cadencii
 #endif
 
 #if JAVA
-    public class FormGameControlerConfig extends BDialog {
+    public class FormGameControlerConfig extends BDialog
 #else
     public class FormGameControlerConfig : BDialog
-    {
 #endif
+    {
         private Vector<Integer> m_list = new Vector<Integer>();
         private Vector<Integer> m_povs = new Vector<Integer>();
         private int index;

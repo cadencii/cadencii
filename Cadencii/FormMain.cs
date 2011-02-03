@@ -16432,16 +16432,16 @@ namespace org.kbinani.cadencii
             int height = panel2.getHeight() - 1;
 
             // 背景を塗る
-            g.setColor( Color.darkGray );
+            g.setColor( PortUtil.DarkGray );
             g.fillRect( 0, 0, width, height );
 
             // AutoMaximizeのチェックボックスを描く
-            g.setColor( mWaveViewButtonAutoMaximizeMouseDowned ? Color.gray : Color.lightGray );
+            g.setColor( mWaveViewButtonAutoMaximizeMouseDowned ? PortUtil.Gray : PortUtil.LightGray );
             g.fillRect( SPACE, SPACE, 16, 16 );
-            g.setColor( Color.gray );
+            g.setColor( PortUtil.Gray );
             g.drawRect( SPACE, SPACE, 16, 16 );
             if ( mWaveViewAutoMaximize ) {
-                g.setColor( Color.gray );
+                g.setColor( PortUtil.Gray );
                 g.fillRect( SPACE + 3, SPACE + 3, 11, 11 );
             }
             g.setColor( Color.black );
@@ -16456,12 +16456,12 @@ namespace org.kbinani.cadencii
             int zoom_button_height = height - SPACE - zoom_button_y;
             Rectangle rc = getButtonBoundsWaveViewZoom();
             if ( !mWaveViewAutoMaximize ) {
-                g.setColor( mWaveViewButtonZoomMouseDowned ? Color.gray : Color.lightGray );
+                g.setColor( mWaveViewButtonZoomMouseDowned ? PortUtil.Gray : PortUtil.LightGray );
                 g.fillRect( rc.x, rc.y, rc.width, rc.height );
             }
-            g.setColor( Color.gray );
+            g.setColor( PortUtil.Gray );
             g.drawRect( rc.x, rc.y, rc.width, rc.height );
-            g.setColor( mWaveViewAutoMaximize ? Color.gray : Color.black );
+            g.setColor( mWaveViewAutoMaximize ? PortUtil.Gray : Color.black );
             rc.y = rc.y + 1;
             PortUtil.drawStringEx(
                 g, (mWaveViewButtonZoomMouseDowned ? "↑Move Mouse↓" : "Zoom"), AppManager.baseFont9,

@@ -132,19 +132,18 @@ namespace org.kbinani.vsq
 
         public void writeLine( String str )
         {
-            int len = PortUtil.getStringLength( str );
-            int newSize = length + len + 1;
+            write( str );
+            newLine();
+        }
+
+        public void newLine()
+        {
+            int new_size = length + 2;
             int offset = length;
-            ensureCapacity( newSize );
-            for ( int i = 0; i < len; i++ ) {
-#if JAVA
-                array[offset + i] = str.charAt( i );
-#else
-                array[offset + i] = str[i];
-#endif
-            }
-            array[offset + len] = '\n';
-            length = newSize;
+            ensureCapacity( new_size );
+            array[offset] = 0x0d;
+            array[offset + 1] = 0x0a;
+            length = new_size;
         }
 
         public void close()

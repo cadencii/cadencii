@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
 import javax.swing.JPanel;
+import org.kbinani.windows.forms.BDialog;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BMenu;
 import org.kbinani.windows.forms.BMenuBar;
@@ -13,7 +14,7 @@ import javax.swing.JButton;
 import java.awt.GridBagConstraints;
 
 //SECTION-END-IMPORT
-public class FormNoteProperty extends BForm {
+public class FormNoteProperty extends BDialog {
     //SECTION-BEGIN-FIELD
 
     private static final long serialVersionUID = 1L;

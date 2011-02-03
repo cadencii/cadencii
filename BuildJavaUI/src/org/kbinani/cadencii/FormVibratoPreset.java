@@ -10,6 +10,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import org.kbinani.windows.forms.BButton;
+import org.kbinani.windows.forms.BDialog;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BGroupBox;
 import org.kbinani.windows.forms.BLabel;
@@ -18,7 +19,7 @@ import org.kbinani.windows.forms.BPictureBox;
 import org.kbinani.windows.forms.BTextBox;
 
 //SECTION-END-IMPORT
-public class FormVibratoPreset extends BForm {
+public class FormVibratoPreset extends BDialog {
     //SECTION-BEGIN-FIELD
 
     private static final long serialVersionUID = 5210609912644248288L;
@@ -64,7 +65,7 @@ public class FormVibratoPreset extends BForm {
         this.setSize(new Dimension(502, 427));
         this.setTitle("Randomize");
         this.setContentPane(getJPanel1());
-    		
+        setCancelButton( buttonCancel );
     }
 
     /**

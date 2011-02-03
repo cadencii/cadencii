@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BCheckBox;
 import org.kbinani.windows.forms.BComboBox;
+import org.kbinani.windows.forms.BDialog;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BGroupBox;
 import org.kbinani.windows.forms.BLabel;
@@ -17,7 +18,7 @@ import org.kbinani.windows.forms.BSlider;
 import org.kbinani.windows.forms.BTextBox;
 
 //SECTION-END-IMPORT
-public class FormSingerStyleConfig extends BForm {
+public class FormSingerStyleConfig extends BDialog {
     //SECTION-BEGIN-FIELD
 
     private static final long serialVersionUID = 1L;
@@ -72,7 +73,7 @@ public class FormSingerStyleConfig extends BForm {
         this.setSize(new Dimension(401, 459));
         this.setTitle("Default Singer Style");
         this.setContentPane(getJPanel());
-    		
+        setCancelButton( btnCancel );
     }
 
     /**

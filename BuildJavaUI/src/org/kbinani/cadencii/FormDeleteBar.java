@@ -8,12 +8,13 @@ import java.awt.Insets;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import org.kbinani.windows.forms.BButton;
+import org.kbinani.windows.forms.BDialog;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BNumericUpDown;
 
 //SECTION-END-IMPORT
-public class FormDeleteBar extends BForm {
+public class FormDeleteBar extends BDialog {
     //SECTION-BEGIN-FIELD
 
     private static final long serialVersionUID = 1L;
@@ -48,6 +49,7 @@ public class FormDeleteBar extends BForm {
 		this.setSize(311, 153);
 		this.setContentPane(getJContentPane());
 		this.setTitle("JFrame");
+		setCancelButton( btnCancel );
 	}
 
 	/**

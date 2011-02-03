@@ -11,12 +11,13 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BCheckBox;
+import org.kbinani.windows.forms.BDialog;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BTextBox;
 
 //SECTION-END-IMPORT
-public class FormCheckUnknownSingerAndResampler extends BForm {
+public class FormCheckUnknownSingerAndResampler extends BDialog {
     //SECTION-BEGIN-FIELD
 
     private static final long serialVersionUID = 5210609912644248288L;
@@ -45,7 +46,7 @@ public class FormCheckUnknownSingerAndResampler extends BForm {
         this.setSize(new Dimension(419, 349));
         this.setTitle("Unknown singers and resamplers");
         this.setContentPane(getJPanel1());
-    		
+        setCancelButton( buttonCancel );
     }
 
     /**

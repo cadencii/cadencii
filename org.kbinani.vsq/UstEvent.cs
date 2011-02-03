@@ -201,7 +201,7 @@ namespace org.kbinani.vsq
         }
 #endif
 
-        public void print( BufferedWriter sw )
+        public void print( ITextWriter sw )
 #if JAVA
             throws IOException
 #endif

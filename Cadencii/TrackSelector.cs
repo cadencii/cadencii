@@ -1651,13 +1651,13 @@ namespace org.kbinani.cadencii
             boolean selected_found = false;
             // yが範囲内なので，xも検索するときtrue
             boolean search_mouse = (0 <= mouse.y && mouse.y <= getHeight());
-            boolean draw_env_points = false;
             Iterator<VsqEvent> itr = track.getNoteEventIterator();
             int dotwid = DOT_WID * 2 + 1;
             int tolerance = AppManager.editorConfig.PxTolerance;
             // 選択アイテムが1個以上あるので，検索するときtrue
             boolean search_sel = AppManager.getSelectedEventCount() > 0;
             while ( true ) {
+                boolean draw_env_points = false;
                 itr_prev = itr_item;
                 itr_item = itr_next;
                 if ( itr.hasNext() ) {
@@ -1798,7 +1798,7 @@ namespace org.kbinani.cadencii
 #else
                 Font font = AppManager.baseFont10;
 #endif
-                Dimension s = Util.measureString( flag_title, font );
+                Dimension s = Util.measureString( flag_title + " ", font );
                 mTextWidthPerLetter = s.width / (float)str.length( flag_title );
                 mTextHeight = s.height;
             }

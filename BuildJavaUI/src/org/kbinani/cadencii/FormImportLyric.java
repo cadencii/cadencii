@@ -7,13 +7,14 @@ import java.awt.Insets;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import org.kbinani.windows.forms.BButton;
+import org.kbinani.windows.forms.BDialog;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BTextArea;
 import java.awt.Dimension;
 
 //SECTION-END-IMPORT
-public class FormImportLyric extends BForm {
+public class FormImportLyric extends BDialog {
     //SECTION-BEGIN-FIELD
 
     private static final long serialVersionUID = 1L;
@@ -43,6 +44,7 @@ public class FormImportLyric extends BForm {
     	this.setSize(456, 380);
     	this.setContentPane(getJContentPane());
     	this.setTitle("JFrame");
+    	setCancelButton( btnCancel );
     }
     
     /**

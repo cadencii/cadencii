@@ -10,6 +10,7 @@ import javax.swing.SwingConstants;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BCheckBox;
 import org.kbinani.windows.forms.BComboBox;
+import org.kbinani.windows.forms.BDialog;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BGroupBox;
 import org.kbinani.windows.forms.BLabel;
@@ -26,7 +27,7 @@ import java.awt.Color;
 import org.kbinani.windows.forms.BRadioButton;
 
 //SECTION-END-IMPORT
-public class FormSequenceConfig extends BForm {
+public class FormSequenceConfig extends BDialog {
     //SECTION-BEGIN-FIELD
 
     private static final long serialVersionUID = 5210609912644248288L;
@@ -62,9 +63,10 @@ public class FormSequenceConfig extends BForm {
         this.setSize(new Dimension(343, 295));
         this.setTitle("Sequence config");
         this.setContentPane(getJPanel1());
-    	mManager = new RadioButtonManager();
-    	mManager.add( radioCurrentTrack );
-    	mManager.add( radioMasterTrack );
+        mManager = new RadioButtonManager();
+        mManager.add( radioCurrentTrack );
+        mManager.add( radioMasterTrack );
+        setCancelButton( this.btnCancel );
     }
 
     /**

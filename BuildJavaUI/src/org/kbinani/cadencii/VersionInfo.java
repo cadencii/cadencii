@@ -13,12 +13,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BCheckBox;
+import org.kbinani.windows.forms.BDialog;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BPanel;
 import org.kbinani.windows.forms.BPictureBox;
 
 //SECTION-END-IMPORT
-public class VersionInfo extends BForm {
+public class VersionInfo extends BDialog {
     //SECTION-BEGIN-FIELD
 
     private static final long serialVersionUID = 1L;
@@ -55,7 +56,7 @@ public class VersionInfo extends BForm {
         this.setPreferredSize(new Dimension(327, 455));
         this.setResizable(false);
         this.setContentPane(getJPanel());
-    		
+        setCancelButton( btnOK );
     }
 
     /**

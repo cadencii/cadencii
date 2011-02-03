@@ -6,6 +6,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import org.kbinani.windows.forms.BButton;
+import org.kbinani.windows.forms.BDialog;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BPanel;
@@ -13,7 +14,7 @@ import org.kbinani.windows.forms.BPictureBox;
 import org.kbinani.windows.forms.BProgressBar;
 
 //SECTION-END-IMPORT
-public class FormGameControlerConfig extends BForm {
+public class FormGameControlerConfig extends BDialog {
     //SECTION-BEGIN-FIELD
 
     private static final long serialVersionUID = 1L;
@@ -47,7 +48,7 @@ public class FormGameControlerConfig extends BForm {
         this.setSize(new Dimension(356, 224));
         this.setTitle("Game Controler Configuration");
         this.setContentPane(getJPanel());
-    		
+        setCancelButton( btnCancel );
     }
 
     /**

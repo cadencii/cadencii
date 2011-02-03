@@ -8,12 +8,13 @@ import java.awt.Insets;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.kbinani.windows.forms.BButton;
+import org.kbinani.windows.forms.BDialog;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BTextBox;
 import org.kbinani.windows.forms.BLabel;
 
 //SECTION-END-IMPORT
-public class FormCurvePointEdit extends BForm {
+public class FormCurvePointEdit extends BDialog {
     //SECTION-BEGIN-FIELD
     
     private static final long serialVersionUID = 1L;
@@ -55,7 +56,7 @@ public class FormCurvePointEdit extends BForm {
         this.setSize(new Dimension(328, 195));
         this.setTitle("FormCurvePointEdit");
         this.setContentPane(getJPanel1());
-    		
+    	setCancelButton( btnExit );
     }
 
     /**

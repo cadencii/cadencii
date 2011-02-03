@@ -29,12 +29,12 @@ namespace org.kbinani.vsq
 #endif
 
 #if JAVA
-    public class UstPortamento implements Cloneable, Serializable {
+    public class UstPortamento implements Cloneable, Serializable
 #else
     [Serializable]
     public class UstPortamento : ICloneable
-    {
 #endif
+    {
         public Vector<UstPortamentoPoint> Points = new Vector<UstPortamentoPoint>();
         public int Start;
 
@@ -76,7 +76,7 @@ namespace org.kbinani.vsq
             return name;
         }
 
-        public void print( BufferedWriter sw )
+        public void print( ITextWriter sw )
 #if JAVA
             throws IOException
 #endif

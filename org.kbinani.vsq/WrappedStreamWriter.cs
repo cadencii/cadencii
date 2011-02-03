@@ -37,6 +37,14 @@ namespace org.kbinani.vsq
             m_writer = stream_writer;
         }
 
+        public void newLine()
+#if JAVA
+            throws java.io.IOException
+#endif
+        {
+            m_writer.newLine();
+        }
+
         public void write( String value )
 #if JAVA
             throws IOException

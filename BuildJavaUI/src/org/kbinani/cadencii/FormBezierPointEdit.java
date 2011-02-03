@@ -8,6 +8,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BCheckBox;
+import org.kbinani.windows.forms.BDialog;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BGroupBox;
 import org.kbinani.windows.forms.BLabel;
@@ -15,7 +16,7 @@ import org.kbinani.windows.forms.BTextBox;
 import java.awt.Dimension;
 
 //SECTION-END-IMPORT
-public class FormBezierPointEdit extends BForm {
+public class FormBezierPointEdit extends BDialog {
     //SECTION-BEGIN-FIELD
 
     private static final long serialVersionUID = 1L;
@@ -67,6 +68,7 @@ public class FormBezierPointEdit extends BForm {
 		this.setSize(469, 266);
 		this.setContentPane(getJContentPane());
 		this.setTitle("Edit Bezier Data Point");
+		setCancelButton( btnCancel );
 	}
 
 	/**

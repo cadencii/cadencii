@@ -14,6 +14,7 @@ import javax.swing.JRadioButton;
 import javax.swing.border.TitledBorder;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BCheckBox;
+import org.kbinani.windows.forms.BDialog;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BGroupBox;
 import org.kbinani.windows.forms.BLabel;
@@ -23,7 +24,7 @@ import org.kbinani.windows.forms.RadioButtonManager;
 import javax.swing.JScrollPane;
 
 //SECTION-END-IMPORT
-public class FormMidiImExport extends BForm {
+public class FormMidiImExport extends BDialog {
     //SECTION-BEGIN-FIELD
 
     private static final long serialVersionUID = 1L;
@@ -86,6 +87,7 @@ public class FormMidiImExport extends BForm {
 		mButtonManager = new RadioButtonManager();
 		mButtonManager.add( radioGateTime );
 		mButtonManager.add( radioPlayTime );
+		setCancelButton( btnCancel );
 	}
 
 	/**

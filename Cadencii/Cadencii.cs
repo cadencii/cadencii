@@ -31,42 +31,49 @@ namespace org.kbinani.cadencii{
         public static FormSplash splash = null;
         static Thread splashThread = null;
 #endif
+        private static String mPathVsq = "";
+        private static String mPathResource = "";
+        private static boolean mPrintVersion = false;
 
         /// <summary>
         /// 起動時に渡されたコマンドライン引数を評価します。
         /// 戻り値は、コマンドライン引数のうちVSQ,またはXVSQファイルとして指定された引数、または空文字です。
         /// </summary>
         /// <param name="arg"></param>
-        /// <returns></returns>
-        private static String parseArguments( String[] arg ) {
-            String ret = "";
-            String resources = "";
+        private static void parseArguments( String[] arg ) {
             String currentparse = "";
 
             for ( int i = 0; i < arg.Length; i++ ) {
-                if ( arg[i].StartsWith( "-" ) ) {
-                    currentparse = arg[i];
+                String argi = arg[i];
+                if ( str.startsWith( argi, "-" ) ) {
+                    currentparse = argi;
+                    if( str.compare( argi, "--version" ) ){
+                        mPrintVersion = true;
+                        currentparse = "";
+                    }
                 } else {
-                    if ( currentparse.Equals( "" ) ) {
-                        ret = arg[i];
-                    } else if ( currentparse.Equals( "-resources" ) ) {
-                        resources = arg[i];
+                    if ( str.compare( currentparse, "" ) ) {
+                        mPathVsq = argi;
+                    } else if ( str.compare( currentparse, "-resources" ) ) {
+                        mPathResource = argi;
                     }
                     currentparse = "";
                 }
             }
-
-            sout.println( "Cadencii#parseArguments; resources=" + resources );
-            if ( !resources.Equals( "" ) ) {
-                Resources.setBasePath( resources );
-            }
-
-            return ret;
         }
 
 #if JAVA
         public static void main( String[] args ){
-            String file = parseArguments( args );
+            // 引数を解釈
+            parseArguments( args );
+            if( mPrintVersion ){
+                System.out.print( BAssemblyInfo.fileVersion );
+                return;
+            }
+            String file = mPathVsq;
+            if ( !str.compare( mPathResource, "" ) ) {
+                Resources.setBasePath( mPathResource );
+            }
             try{
             	Messaging.loadMessages();
             }catch( Exception ex ){
@@ -83,6 +90,18 @@ namespace org.kbinani.cadencii{
         public static void Main( String[] args ) {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault( false );
+
+            // 引数を解釈
+            parseArguments( args );
+            if( mPrintVersion ){
+                Console.Write( BAssemblyInfo.fileVersion );
+                return;
+            }
+            String file = mPathVsq;
+            if ( !str.compare( mPathResource, "" ) ) {
+                Resources.setBasePath( mPathResource );
+            }
+
             Logger.setEnabled( false );
             Logger.setPath( fsys.combine( Utility.getApplicationDataPath(), "log.txt" ) );
 #if DEBUG
@@ -141,7 +160,6 @@ namespace org.kbinani.cadencii{
                 Logger.write( typeof( Cadencii ) + ".Main; ex=" + ex + "\n" );
             }
 #endif
-            String file = parseArguments( args );
             AppManager.mMainWindow = new FormMain( file );
 #if !MONO
             AppManager.mMainWindow.Load += mainWindow_Load;

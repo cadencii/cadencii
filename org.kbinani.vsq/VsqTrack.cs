@@ -679,9 +679,9 @@ namespace org.kbinani.vsq
             int count = MetaText.getEventList().getCount();
             int clLast = MetaText.getEventList().getElement( count - 1 ).Clock + 480;
             MetaText.print( tms, clLast, 0 );
-            BufferedWriter sw = null;
+            InternalStreamWriter sw = null;
             try {
-                sw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( file ), encoding ) );
+                sw = new InternalStreamWriter( file, encoding );
                 tms.setPointer( -1 );
                 while ( tms.ready() ) {
                     String line = tms.readLine().ToString();

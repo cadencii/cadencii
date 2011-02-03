@@ -628,9 +628,9 @@ namespace org.kbinani.vsq
 
         public void write( String file, UstFileWriteOptions options )
         {
-            BufferedWriter sw = null;
+            InternalStreamWriter sw = null;
             try {
-                sw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( file ), "Shift_JIS" ) );
+                sw = new InternalStreamWriter( file, "Shift_JIS" );
                 sw.write( "[#SETTING]" ); sw.newLine();
                 if ( options.settingTempo ) {
                     sw.write( "Tempo=" + m_tempo ); sw.newLine();

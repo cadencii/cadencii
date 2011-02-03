@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BComboBox;
+import org.kbinani.windows.forms.BDialog;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BPanel;
@@ -21,7 +22,7 @@ import org.kbinani.windows.forms.RadioButtonManager;
 import javax.swing.SwingConstants;
 
 //SECTION-END-IMPORT
-public class FormVibratoConfig extends BForm {
+public class FormVibratoConfig extends BDialog {
     //SECTION-BEGIN-FIELD
     
 	private static final long serialVersionUID = 1L;
@@ -64,6 +65,7 @@ public class FormVibratoConfig extends BForm {
 		mManager.add( radioUserDefined );
 		mManager.add( radioVocaloid1 );
 		mManager.add( radioVocaloid2 );
+        setCancelButton( btnCancel );
 	}
 
 	/**

@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BCheckBox;
 import org.kbinani.windows.forms.BComboBox;
+import org.kbinani.windows.forms.BDialog;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BGroupBox;
 import org.kbinani.windows.forms.BLabel;
@@ -17,7 +18,7 @@ import org.kbinani.windows.forms.BSlider;
 import org.kbinani.windows.forms.BTextBox;
 
 //SECTION-END-IMPORT
-public class FormNoteExpressionConfig extends BForm {
+public class FormNoteExpressionConfig extends BDialog {
     //SECTION-BEGIN-FIELD
 
     private static final long serialVersionUID = 1L;
@@ -81,6 +82,7 @@ public class FormNoteExpressionConfig extends BForm {
 		this.setSize(403, 540);
 		this.setContentPane(getJContentPane());
 		this.setTitle("Default Singer Style");
+		setCancelButton( btnCancel );
 	}
 
 	/**

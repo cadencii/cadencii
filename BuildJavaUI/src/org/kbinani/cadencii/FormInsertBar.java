@@ -7,13 +7,14 @@ import java.awt.Insets;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import org.kbinani.windows.forms.BButton;
+import org.kbinani.windows.forms.BDialog;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BNumericUpDown;
 import java.awt.Dimension;
 
 //SECTION-END-IMPORT
-public class FormInsertBar extends BForm {
+public class FormInsertBar extends BDialog {
     //SECTION-BEGIN-FIELD
 
     private static final long serialVersionUID = 1L;
@@ -49,6 +50,7 @@ public class FormInsertBar extends BForm {
         this.setSize(311, 153);
         this.setContentPane(getJContentPane());
         this.setTitle("Insert bar");
+        setCancelButton( btnCancel );
     }
 
     /**

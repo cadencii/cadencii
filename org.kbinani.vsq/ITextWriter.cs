@@ -28,10 +28,12 @@ namespace org.kbinani.vsq
         void write( String value ) throws IOException;
         void writeLine( String value ) throws IOException;
         void close() throws IOException;
+        void newLine() throws IOException;
 #else
         void write( String value );
         void writeLine( String value );
         void close();
+        void newLine();
 #endif
     }
 

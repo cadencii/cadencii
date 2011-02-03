@@ -1,6 +1,7 @@
 ﻿package org.kbinani.cadencii;
 
 //SECTION-BEGIN-IMPORT
+import org.kbinani.windows.forms.BDialog;
 import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BGroupBox;
 import org.kbinani.windows.forms.BNumericUpDown;
@@ -16,7 +17,7 @@ import javax.swing.JToggleButton;
 import org.kbinani.windows.forms.BButton;
 
 //SECTION-END-IMPORT
-public class FormMidiConfig extends BForm {
+public class FormMidiConfig extends BDialog {
     //SECTION-BEGIN-FIELD
 
     private static final long serialVersionUID = 1L;

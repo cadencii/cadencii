@@ -1,13 +1,18 @@
 package org.kbinani.windows.forms;
 
+import java.awt.AWTEvent;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.event.AWTEventListener;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.UIManager;
 import org.kbinani.BEvent;
@@ -17,7 +22,8 @@ import org.kbinani.BEventHandler;
 public class BDialog extends JDialog 
                    implements WindowListener, 
                               KeyListener, 
-                              ComponentListener
+                              ComponentListener,
+                              AWTEventListener
 {
     private static final long serialVersionUID = 6813116345545558212L;
 
@@ -39,6 +45,43 @@ public class BDialog extends JDialog
             UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName() );
         }catch( Exception ex ){
             System.err.println( "BDialog#.ctor; ex=" + ex );
+        }
+    }
+
+    /**
+     * ESCを押したときにクリックするボタン
+     */
+    private JButton mCancelButton = null;
+    public void setCancelButton( JButton button )
+    {
+        mCancelButton = button;
+    }
+    public void eventDispatched( AWTEvent arg0 ) {
+        if ( mCancelButton == null ){
+            return;
+        }
+        if( !(arg0 instanceof KeyEvent ) ){
+            return;
+        }
+        KeyEvent e = (KeyEvent)arg0;
+        int state = e.getID();
+        if ( state != KeyEvent.KEY_PRESSED ){
+            return;
+        }
+        Object obj = e.getComponent();
+        if ( obj == null ){
+            return;
+        }
+        int code = e.getKeyCode();
+        if ( code == KeyEvent.VK_ESCAPE ){
+            if ( obj instanceof JComboBox ){
+                JComboBox cb = (JComboBox)obj;
+                if( cb.isPopupVisible() ){
+                    // ポップアップが表示中の場合は何もしない
+                    return;
+                }
+            }
+            mCancelButton.doClick();
         }
     }
     
@@ -100,12 +143,14 @@ public class BDialog extends JDialog
     public void windowActivated( WindowEvent e ){
         try{
             activatedEvent.raise( this, new BEventArgs() );
+            Toolkit.getDefaultToolkit().addAWTEventListener( this, AWTEvent.KEY_EVENT_MASK );
         }catch( Exception ex ){
             System.err.println( "BForm#windowActivated; ex=" + ex );
         }
     }
     
     public void windowClosed( WindowEvent e ){
+        Toolkit.getDefaultToolkit().removeAWTEventListener( this );
         try{
             formClosedEvent.raise( this, new BEventArgs() );
         }catch( Exception ex ){
@@ -128,6 +173,7 @@ public class BDialog extends JDialog
     public void windowDeactivated( WindowEvent e ){
         try{
             deactivateEvent.raise( this, new BEventArgs() );
+            Toolkit.getDefaultToolkit().removeAWTEventListener( this );
         }catch( Exception ex ){
             System.err.println( "BForm#windowDeactivated; ex=" + ex );
         }
