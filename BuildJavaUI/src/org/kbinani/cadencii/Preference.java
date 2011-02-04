@@ -33,7 +33,7 @@ public class Preference extends BDialog {
     //SECTION-BEGIN-FIELD
 
     private static final long serialVersionUID = 1L;
-	private BPanel tabSequence = null;  //  @jve:decl-index=0:visual-constraint="-91,1001"
+	private BPanel tabSequence = null;  //  @jve:decl-index=0:visual-constraint="-88,1076"
 	private BLabel lblResolution = null;
 	private BPanel BPanel = null;
 	private BLabel lblResolControlCurve = null;
@@ -116,7 +116,7 @@ public class Preference extends BDialog {
 	private BNumericUpDown numMouseHoverTime = null;
 	private BLabel lblMidiInPort = null;
 	private BComboBox comboMidiInPortNumber = null;
-	private BPanel tabPlatform = null;  //  @jve:decl-index=0:visual-constraint="-79,590"
+	private BPanel tabPlatform = null;  //  @jve:decl-index=0:visual-constraint="-102,589"
 	private BGroupBox groupPlatform = null;
 	private BLabel lblPlatform = null;
 	private BComboBox comboPlatform = null;
@@ -196,7 +196,7 @@ public class Preference extends BDialog {
     private RadioButtonManager mManager = null;
     private JScrollPane jScrollPane1 = null;
     private BLabel lblPlatform1 = null;
-    
+    private JPanel jPanel2 = null;
     //SECTION-END-FIELD
 	/**
 	 * This is the default constructor
@@ -1664,7 +1664,8 @@ public class Preference extends BDialog {
 			gridBagConstraints125.weighty = 1.0D;
 			gridBagConstraints125.gridy = 3;
 			jLabel91 = new BLabel();
-			jLabel91.setText("   ");
+			jLabel91.setText(" ");
+			jLabel91.setPreferredSize(new Dimension(4, 4));
 			GridBagConstraints gridBagConstraints106 = new GridBagConstraints();
 			gridBagConstraints106.gridx = 0;
 			gridBagConstraints106.anchor = GridBagConstraints.NORTH;
@@ -1681,7 +1682,7 @@ public class Preference extends BDialog {
 			gridBagConstraints93.gridy = 0;
 			tabPlatform = new BPanel();
 			tabPlatform.setLayout(new GridBagLayout());
-			tabPlatform.setSize(new Dimension(412, 462));
+			tabPlatform.setSize(new Dimension(455, 462));
 			tabPlatform.add(getGroupPlatform(), gridBagConstraints93);
 			tabPlatform.add(getGroupUtauCores(), gridBagConstraints106);
 			tabPlatform.add(jLabel91, gridBagConstraints125);
@@ -1872,10 +1873,15 @@ public class Preference extends BDialog {
 	 */
 	private BGroupBox getGroupUtauCores() {
 		if (groupUtauCores == null) {
+			GridBagConstraints gridBagConstraints128 = new GridBagConstraints();
+			gridBagConstraints128.gridx = 3;
+			gridBagConstraints128.insets = new Insets(3, 0, 3, 0);
+			gridBagConstraints128.fill = GridBagConstraints.BOTH;
+			gridBagConstraints128.gridy = 0;
 			GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
 			gridBagConstraints12.fill = GridBagConstraints.BOTH;
 			gridBagConstraints12.gridy = 1;
-			gridBagConstraints12.weightx = 1.0;
+			gridBagConstraints12.weightx = 1.0D;
 			gridBagConstraints12.weighty = 1.0;
 			gridBagConstraints12.insets = new Insets(3, 15, 3, 15);
 			gridBagConstraints12.gridx = 1;
@@ -1890,14 +1896,10 @@ public class Preference extends BDialog {
 			gridBagConstraints105.anchor = GridBagConstraints.WEST;
 			gridBagConstraints105.insets = new Insets(0, 12, 0, 0);
 			gridBagConstraints105.gridy = 2;
-			GridBagConstraints gridBagConstraints104 = new GridBagConstraints();
-			gridBagConstraints104.gridx = 3;
-			gridBagConstraints104.insets = new Insets(3, 3, 3, 3);
-			gridBagConstraints104.gridy = 0;
 			GridBagConstraints gridBagConstraints103 = new GridBagConstraints();
 			gridBagConstraints103.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints103.gridy = 0;
-			gridBagConstraints103.weightx = 1.0;
+			gridBagConstraints103.weightx = 1.0D;
 			gridBagConstraints103.insets = new Insets(3, 12, 3, 12);
 			gridBagConstraints103.gridx = 1;
 			GridBagConstraints gridBagConstraints102 = new GridBagConstraints();
@@ -1905,6 +1907,7 @@ public class Preference extends BDialog {
 			gridBagConstraints102.gridy = 0;
 			lblWavtool = new BLabel();
 			lblWavtool.setText("wavtool");
+			lblWavtool.setPreferredSize(new Dimension(49, 29));
 			GridBagConstraints gridBagConstraints99 = new GridBagConstraints();
 			gridBagConstraints99.gridx = 0;
 			gridBagConstraints99.anchor = GridBagConstraints.NORTHWEST;
@@ -1915,13 +1918,13 @@ public class Preference extends BDialog {
 			groupUtauCores = new BGroupBox();
 			groupUtauCores.setLayout(new GridBagLayout());
 			groupUtauCores.setBorder(BorderFactory.createTitledBorder(null, "UTAU Cores", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
-			groupUtauCores.add(lblResampler, gridBagConstraints99);
 			groupUtauCores.add(lblWavtool, gridBagConstraints102);
 			groupUtauCores.add(getTxtWavtool(), gridBagConstraints103);
-			groupUtauCores.add(getBtnWavtool(), gridBagConstraints104);
-			groupUtauCores.add(getChkInvokeWithWine(), gridBagConstraints105);
-			groupUtauCores.add(getJPanel2(), gridBagConstraints101);
-			groupUtauCores.add(getJScrollPane1(), gridBagConstraints12);
+			groupUtauCores.add(getJPanel22(), gridBagConstraints128);
+            groupUtauCores.add(lblResampler, gridBagConstraints99);
+            groupUtauCores.add(getJScrollPane1(), gridBagConstraints12);
+            groupUtauCores.add(getJPanel2(), gridBagConstraints101);
+            groupUtauCores.add(getChkInvokeWithWine(), gridBagConstraints105);
 		}
 		return groupUtauCores;
 	}
@@ -1946,8 +1949,8 @@ public class Preference extends BDialog {
 	private BButton getBtnWavtool() {
 		if (btnWavtool == null) {
 			btnWavtool = new BButton();
-			btnWavtool.setPreferredSize(new Dimension(75, 29));
 			btnWavtool.setText("Browse");
+			btnWavtool.setPreferredSize(new Dimension(90, 29));
 		}
 		return btnWavtool;
 	}
@@ -2801,7 +2804,7 @@ public class Preference extends BDialog {
             gridBagConstraints126.weighty = 1.0D;
             gridBagConstraints126.gridy = 2;
             jLabel911 = new BLabel();
-            jLabel911.setText("   ");
+            jLabel911.setText(" ");
             GridBagConstraints gridBagConstraints100 = new GridBagConstraints();
             gridBagConstraints100.gridx = 0;
             gridBagConstraints100.insets = new Insets(3, 3, 3, 3);
@@ -2817,9 +2820,11 @@ public class Preference extends BDialog {
             GridBagConstraints gridBagConstraints20 = new GridBagConstraints();
             gridBagConstraints20.gridx = 0;
             gridBagConstraints20.insets = new Insets(3, 3, 3, 3);
+            gridBagConstraints20.fill = GridBagConstraints.NONE;
             gridBagConstraints20.gridy = 0;
             jPanel = new JPanel();
             jPanel.setLayout(new GridBagLayout());
+            jPanel.setPreferredSize(new Dimension(120, 156));
             jPanel.add(getButtonResamplerAdd(), gridBagConstraints20);
             jPanel.add(getButtonResamplerRemove(), gridBagConstraints33);
             jPanel.add(getButtonResamplerUp(), gridBagConstraints34);
@@ -2849,7 +2854,7 @@ public class Preference extends BDialog {
     private BButton getButtonResamplerAdd() {
         if (buttonResamplerAdd == null) {
             buttonResamplerAdd = new BButton();
-            buttonResamplerAdd.setPreferredSize(new Dimension(75, 29));
+            buttonResamplerAdd.setPreferredSize(new Dimension(90, 29));
             buttonResamplerAdd.setText("Add");
         }
         return buttonResamplerAdd;
@@ -2863,8 +2868,8 @@ public class Preference extends BDialog {
     private BButton getButtonResamplerRemove() {
         if (buttonResamplerRemove == null) {
             buttonResamplerRemove = new BButton();
-            buttonResamplerRemove.setPreferredSize(new Dimension(75, 29));
             buttonResamplerRemove.setText("Remove");
+            buttonResamplerRemove.setPreferredSize(new Dimension(90, 29));
         }
         return buttonResamplerRemove;
     }
@@ -2877,7 +2882,7 @@ public class Preference extends BDialog {
     private BButton getButtonResamplerUp() {
         if (buttonResamplerUp == null) {
             buttonResamplerUp = new BButton();
-            buttonResamplerUp.setPreferredSize(new Dimension(75, 29));
+            buttonResamplerUp.setPreferredSize(new Dimension(90, 29));
             buttonResamplerUp.setText("Up");
         }
         return buttonResamplerUp;
@@ -2891,7 +2896,7 @@ public class Preference extends BDialog {
     private BButton getButtonResamplerDown() {
         if (buttonResamplerDown == null) {
             buttonResamplerDown = new BButton();
-            buttonResamplerDown.setPreferredSize(new Dimension(75, 29));
+            buttonResamplerDown.setPreferredSize(new Dimension(90, 29));
             buttonResamplerDown.setText("Down");
         }
         return buttonResamplerDown;
@@ -2938,6 +2943,28 @@ public class Preference extends BDialog {
             jScrollPane1.setViewportView(getListResampler());
         }
         return jScrollPane1;
+    }
+
+    /**
+     * This method initializes jPanel2	
+     * 	
+     * @return javax.swing.JPanel	
+     */
+    private JPanel getJPanel22() {
+        if (jPanel2 == null) {
+            GridBagConstraints gridBagConstraints104 = new GridBagConstraints();
+            gridBagConstraints104.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints104.gridx = 0;
+            gridBagConstraints104.gridy = 0;
+            gridBagConstraints104.weightx = 0.0D;
+            gridBagConstraints104.insets = new Insets(3, 3, 3, 3);
+            jPanel2 = new JPanel();
+            jPanel2.setLayout(new GridBagLayout());
+            jPanel2.setPreferredSize(new Dimension(103, 35));
+            jPanel2.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+            jPanel2.add(getBtnWavtool(), gridBagConstraints104);
+        }
+        return jPanel2;
     }
 
 	//SECTION-END-METHOD

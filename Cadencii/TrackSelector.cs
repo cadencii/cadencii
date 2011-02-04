@@ -1066,7 +1066,7 @@ namespace org.kbinani.cadencii
             Color brs_string = Color.black;
             Color rect_curve = new Color( 41, 46, 55 );
             int centre = HEADER + graph_height / 2;
-            g.setColor( Color.darkGray );
+            g.setColor( PortUtil.DarkGray );
             g.fillRect( 0, size.height - 2 * OFFSET_TRACK_TAB, size.width, 2 * OFFSET_TRACK_TAB );
             int numeric_view = mMouseValue;
             Point p = pointToClient( PortUtil.getMousePosition() );
@@ -1196,7 +1196,7 @@ namespace org.kbinani.cadencii
 
                     g.setColor( new Color( 125, 123, 124 ) );
                     g.drawLine( key_width, 0,
-                                key_width, size.height );
+                                key_width, size.height - 1 );
 
                     if ( AppManager.isCurveSelectedIntervalEnabled() ) {
                         int x0 = AppManager.xCoordFromClocks( AppManager.mCurveSelectedInterval.getStart() );
@@ -2147,7 +2147,7 @@ namespace org.kbinani.cadencii
             // 左縦線
             g.setColor( border );
             g.drawLine( destRect.x, destRect.y,
-                        destRect.x, destRect.y + destRect.height );
+                        destRect.x, destRect.y + destRect.height - 1 );
             if ( PortUtil.getStringLength( name ) > 0 ) {
                 // 上横線
                 g.setColor( border );
@@ -2171,7 +2171,7 @@ namespace org.kbinani.cadencii
             if ( selected ) {
                 g.setColor( border );
                 g.drawLine( destRect.x + destRect.width - 1, destRect.y,
-                            destRect.x + destRect.width - 1, destRect.y + destRect.height );
+                            destRect.x + destRect.width - 1, destRect.y + destRect.height - 1 );
                 g.setColor( border );
                 g.drawLine( destRect.x, destRect.y + destRect.height - 1,
                             destRect.x + destRect.width, destRect.y + destRect.height - 1 );
@@ -2179,7 +2179,7 @@ namespace org.kbinani.cadencii
             g.setClip( null );
             g.setColor( AppManager.COLOR_BORDER );
             g.drawLine( destRect.x + destRect.width, destRect.y,
-                        destRect.x + destRect.width, destRect.y + destRect.height );
+                        destRect.x + destRect.width, destRect.y + destRect.height - 1 );
         }
 
         /// <summary>

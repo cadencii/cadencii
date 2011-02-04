@@ -138,7 +138,7 @@ class ExtensionFilenameFilter implements FilenameFilter
         }
         for( int i = 0; i < size; i++ ){
             String e = mExtensions.get( i );
-            if( str.compare( e, "*" ) ){
+            if( str.compare( e, ".*" ) ){
                 return true;
             }else if( name.endsWith( e ) ){
                 return true;
@@ -149,102 +149,3 @@ class ExtensionFilenameFilter implements FilenameFilter
     
 }
 
-class ExtensionFileFilter extends FileFilter
-{
-    private String mDescription = "";
-    private String mExt = "";
-
-    public ExtensionFileFilter( String filter )
-    {
-        // MusicXML(*.xml)|*.xml"
-        if( filter == null ){
-            return;
-        }
-        int indx = filter.indexOf( "|" );
-        if( indx < 1 ){
-            return;
-        }
-        mDescription = filter.substring( 0, indx );
-        String s = filter.substring( indx + 1 );
-        indx = s.lastIndexOf( "." );
-        if( indx >= 0 ){
-            mExt = s.substring( indx + 1 );
-        }
-    }
-    
-    @Override
-    public boolean accept(File arg0) {
-        if( arg0.isDirectory() ){
-            return true;
-        }else{
-            String name = arg0.getName();
-            if( name.endsWith( mExt ) ){
-                return true;
-            }else{
-                return false;
-            }
-        }
-    }
-
-    @Override
-    public String getDescription() {
-        return mDescription;
-    }
-    
-}
-
-class _BFileChooser{
-    public static final int APPROVE_OPTION = 0;
-    public static final int CANCEL_OPTION = 1;
-    public static final int ERROR_OPTION = -1;
-    private JFileChooser m_dialog = null;
-    
-    public _BFileChooser( String currentDirectoryPath ){
-        m_dialog = new JFileChooser( currentDirectoryPath );
-    }
-    
-    public void setInitialDirectory( String path ){
-        m_dialog.setCurrentDirectory( new File( path ) );
-    }
-    
-    public void addFileFilter( String filter ){
-        // TODO: [not implemented yet at BFileChooser#addFileFilter]
-    }
-    
-    public String[] getChoosableFileFilter(){
-        return new String[]{}; // TODO: [not implemented yet; BFileChooser#getChoosableFileFilter]
-    }
-    
-    public String getFileFilter(){
-        return ""; // TODO: [fake return at BFileChooser#getFileFilter]
-    }
-    
-    public void setFileFilter( String value ){
-        // TODO: [not implemented yet; BFileChooser#setFileFilter]
-    }
-    
-    public void clearChoosableFileFilter() {
-        // TODO: [not implemented yet; BFileChooser#clearChoosableFileFilter]
-    }
-    
-    public String getSelectedFile(){
-        File f = m_dialog.getSelectedFile();
-        return f.getAbsolutePath();
-    }
-    
-    public void setSelectedFile( String file ){
-        m_dialog.setSelectedFile( new File( file ) );
-    }
-    
-    public int showOpenDialog( Component parent ){
-        return m_dialog.showOpenDialog( parent );
-    }
-    
-    public int showSaveDialog( Component parent ){
-        return m_dialog.showSaveDialog( parent );
-    }
-    
-    public void setDialogTitle( String dialogTitle ){
-        m_dialog.setDialogTitle( dialogTitle );
-    }
-}
