@@ -27,6 +27,7 @@ import org.kbinani.windows.forms.BRadioButton;
 import org.kbinani.windows.forms.BTextBox;
 import org.kbinani.windows.forms.RadioButtonManager;
 import javax.swing.JScrollPane;
+import javax.swing.border.EtchedBorder;
 
 //SECTION-END-IMPORT
 public class Preference extends BDialog {
@@ -116,7 +117,7 @@ public class Preference extends BDialog {
 	private BNumericUpDown numMouseHoverTime = null;
 	private BLabel lblMidiInPort = null;
 	private BComboBox comboMidiInPortNumber = null;
-	private BPanel tabPlatform = null;  //  @jve:decl-index=0:visual-constraint="-102,589"
+	private BPanel tabPlatform = null;  //  @jve:decl-index=0:visual-constraint="-96,607"
 	private BGroupBox groupPlatform = null;
 	private BLabel lblPlatform = null;
 	private BComboBox comboPlatform = null;
@@ -146,11 +147,11 @@ public class Preference extends BDialog {
 	private BLabel lblAutoBackupInterval = null;
 	private BLabel lblAutoBackupMinutes = null;
 	private BPanel jPanel20 = null;
-	private BPanel panelLower = null;
+	private BPanel panelMiddle = null;
 	private BButton btnOK = null;
 	private BButton btnCancel = null;
 	private BPanel jPanel5 = null;
-	private BPanel panelUpper = null;
+	private BPanel panelTop = null;
     private JTabbedPane tabPane = null;
 	private BNumericUpDown numAutoBackupInterval = null;
     private JCheckBox chkChasePastEvent = null;
@@ -200,6 +201,8 @@ public class Preference extends BDialog {
     private BLabel labelWavtoolPath = null;
     private BLabel lblResampler1 = null;
     private BLabel labelResamplerWithWine = null;
+    private BPanel panelBottom = null;
+    private BLabel labelStatus = null;
     //SECTION-END-FIELD
 	/**
 	 * This is the default constructor
@@ -218,14 +221,14 @@ public class Preference extends BDialog {
 		tabPane.addTab( "File", getTabFile() );
 		tabPane.addTab( "Synthesizer", getTabSingingSynth() );
 		GridBagLayout layout = new GridBagLayout();
-		getPanelUpper().setLayout( layout );
+		getPanelTop().setLayout( layout );
 		GridBagConstraints gb = new GridBagConstraints();
 		gb.weighty = 1;
 		gb.weightx = 1;
 		gb.insets = new Insets( 12, 12, 0, 12 );
 		gb.fill = GridBagConstraints.BOTH;
 		layout.setConstraints( tabPane, gb );
-	    this.getPanelUpper().add( tabPane );
+	    this.getPanelTop().add( tabPane );
         mManager = new RadioButtonManager();
         mManager.add( radioUserDefined );
         mManager.add( radioVocaloidEditorCompatible );
@@ -240,7 +243,7 @@ public class Preference extends BDialog {
 	 * @return void
 	 */
 	private void initialize() {
-		this.setSize(520, 573);
+		this.setSize(520, 591);
 		this.setResizable(true);
 		this.setContentPane(getJPanel5());
 		this.setTitle("Preference");
@@ -521,7 +524,7 @@ public class Preference extends BDialog {
 	private BComboBox getComboAutoVibratoType1() {
 		if (comboAutoVibratoType1 == null) {
 			comboAutoVibratoType1 = new BComboBox();
-			comboAutoVibratoType1.setPreferredSize(new Dimension(101, 27));
+			comboAutoVibratoType1.setPreferredSize(new Dimension(150, 27));
 		}
 		return comboAutoVibratoType1;
 	}
@@ -534,7 +537,7 @@ public class Preference extends BDialog {
 	private BComboBox getComboAutoVibratoType2() {
 		if (comboAutoVibratoType2 == null) {
 			comboAutoVibratoType2 = new BComboBox();
-			comboAutoVibratoType2.setPreferredSize(new Dimension(101, 27));
+			comboAutoVibratoType2.setPreferredSize(new Dimension(150, 27));
 		}
 		return comboAutoVibratoType2;
 	}
@@ -1909,7 +1912,7 @@ public class Preference extends BDialog {
 			gridBagConstraints12.gridy = 4;
 			gridBagConstraints12.weightx = 1.0D;
 			gridBagConstraints12.weighty = 1.0;
-			gridBagConstraints12.insets = new Insets(3, 36, 3, 15);
+			gridBagConstraints12.insets = new Insets(3, 36, 3, 3);
 			gridBagConstraints12.gridwidth = 2;
 			gridBagConstraints12.gridx = 0;
 			GridBagConstraints gridBagConstraints101 = new GridBagConstraints();
@@ -1927,7 +1930,7 @@ public class Preference extends BDialog {
 			gridBagConstraints103.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints103.gridy = 1;
 			gridBagConstraints103.weightx = 1.0D;
-			gridBagConstraints103.insets = new Insets(3, 12, 3, 12);
+			gridBagConstraints103.insets = new Insets(3, 12, 3, 0);
 			gridBagConstraints103.gridx = 1;
 			GridBagConstraints gridBagConstraints102 = new GridBagConstraints();
 			gridBagConstraints102.gridx = 0;
@@ -2258,12 +2261,12 @@ public class Preference extends BDialog {
 	}
 
 	/**
-	 * This method initializes panelLower	
+	 * This method initializes panelMiddle	
 	 * 	
 	 * @return javax.swing.BPanel	
 	 */
-	private BPanel getPanelLower() {
-		if (panelLower == null) {
+	private BPanel getPanelMiddle() {
+		if (panelMiddle == null) {
 			GridBagConstraints gridBagConstraints127 = new GridBagConstraints();
 			gridBagConstraints127.gridx = 0;
 			gridBagConstraints127.weightx = 1.0D;
@@ -2280,13 +2283,13 @@ public class Preference extends BDialog {
 			gridBagConstraints211.insets = new Insets(0, 0, 0, 12);
 			gridBagConstraints211.gridy = 0;
 			gridBagConstraints211.gridx = 2;
-			panelLower = new BPanel();
-			panelLower.setLayout(new GridBagLayout());
-			panelLower.add(getBtnOK(), gridBagConstraints211);
-			panelLower.add(getBtnCancel(), gridBagConstraints311);
-			panelLower.add(lblPlatform1, gridBagConstraints127);
+			panelMiddle = new BPanel();
+			panelMiddle.setLayout(new GridBagLayout());
+			panelMiddle.add(getBtnOK(), gridBagConstraints211);
+			panelMiddle.add(getBtnCancel(), gridBagConstraints311);
+			panelMiddle.add(lblPlatform1, gridBagConstraints127);
 		}
-		return panelLower;
+		return panelMiddle;
 	}
 
 	/**
@@ -2324,6 +2327,11 @@ public class Preference extends BDialog {
 	 */
 	private BPanel getJPanel5() {
 		if (jPanel5 == null) {
+			GridBagConstraints gridBagConstraints147 = new GridBagConstraints();
+			gridBagConstraints147.gridx = 0;
+			gridBagConstraints147.weightx = 1.0D;
+			gridBagConstraints147.fill = GridBagConstraints.HORIZONTAL;
+			gridBagConstraints147.gridy = 2;
 			GridBagConstraints gridBagConstraints120 = new GridBagConstraints();
 			gridBagConstraints120.gridx = 0;
 			gridBagConstraints120.fill = GridBagConstraints.BOTH;
@@ -2339,23 +2347,24 @@ public class Preference extends BDialog {
 			gridBagConstraints119.gridy = 1;
 			jPanel5 = new BPanel();
 			jPanel5.setLayout(new GridBagLayout());
-			jPanel5.add(getPanelUpper(), gridBagConstraints120);
-			jPanel5.add(getPanelLower(), gridBagConstraints119);
+			jPanel5.add(getPanelTop(), gridBagConstraints120);
+			jPanel5.add(getPanelMiddle(), gridBagConstraints119);
+			jPanel5.add(getPanelBottom(), gridBagConstraints147);
 		}
 		return jPanel5;
 	}
 
 	/**
-	 * This method initializes panelUpper	
+	 * This method initializes panelTop	
 	 * 	
 	 * @return javax.swing.BPanel	
 	 */
-	private BPanel getPanelUpper() {
-		if (panelUpper == null) {
-			panelUpper = new BPanel();
-			panelUpper.setLayout(new GridBagLayout());
+	private BPanel getPanelTop() {
+		if (panelTop == null) {
+			panelTop = new BPanel();
+			panelTop.setLayout(new GridBagLayout());
 		}
-		return panelUpper;
+		return panelTop;
 	}
 
 	/**
@@ -2838,6 +2847,7 @@ public class Preference extends BDialog {
             gridBagConstraints126.gridy = 2;
             jLabel911 = new BLabel();
             jLabel911.setText(" ");
+            jLabel911.setPreferredSize(new Dimension(4, 4));
             GridBagConstraints gridBagConstraints100 = new GridBagConstraints();
             gridBagConstraints100.gridx = 0;
             gridBagConstraints100.insets = new Insets(3, 3, 3, 3);
@@ -2970,7 +2980,7 @@ public class Preference extends BDialog {
     private JScrollPane getJScrollPane1() {
         if (jScrollPane1 == null) {
             jScrollPane1 = new JScrollPane();
-            jScrollPane1.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+            jScrollPane1.setBorder(BorderFactory.createLineBorder(Color.gray, 1));
             jScrollPane1.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
             jScrollPane1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
             jScrollPane1.setViewportView(getListResampler());
@@ -2998,6 +3008,30 @@ public class Preference extends BDialog {
             jPanel2.add(getBtnWavtool(), gridBagConstraints104);
         }
         return jPanel2;
+    }
+
+    /**
+     * This method initializes panelBottom	
+     * 	
+     * @return org.kbinani.windows.forms.BPanel	
+     */
+    private BPanel getPanelBottom() {
+        if (panelBottom == null) {
+            GridBagConstraints gridBagConstraints1271 = new GridBagConstraints();
+            gridBagConstraints1271.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints1271.gridy = 0;
+            gridBagConstraints1271.weightx = 1.0D;
+            gridBagConstraints1271.insets = new Insets(0, 5, 0, 20);
+            gridBagConstraints1271.gridx = 0;
+            labelStatus = new BLabel();
+            labelStatus.setPreferredSize(new Dimension(10, 18));
+            labelStatus.setText("");
+            panelBottom = new BPanel();
+            panelBottom.setLayout(new GridBagLayout());
+            panelBottom.setPreferredSize(new Dimension(10, 18));
+            panelBottom.add(labelStatus, gridBagConstraints1271);
+        }
+        return panelBottom;
     }
 
 	//SECTION-END-METHOD

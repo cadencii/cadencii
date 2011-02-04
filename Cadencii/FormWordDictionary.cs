@@ -128,7 +128,7 @@ namespace org.kbinani.cadencii
             for ( int i = 0; i < SymbolTable.getCount(); i++ ) {
                 String name = SymbolTable.getSymbolTable( i ).getName();
                 boolean enabled = SymbolTable.getSymbolTable( i ).isEnabled();
-                listDictionaries.addItem( new String[]{ name }, enabled );
+                listDictionaries.addRow( new String[]{ name }, enabled );
             }
         }
 

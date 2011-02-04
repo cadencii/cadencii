@@ -140,7 +140,7 @@ namespace org.kbinani.windows.forms.obsolete {
             g.Items[index].Selected = value;
         }
 
-        public void addItem( string group, BListViewItem item, bool value ) {
+        public void addRow( string group, BListViewItem item, bool value ) {
             int dif = item.getSubItemCount() - base.Columns.Count;
             for ( int i = 0; i < dif; i++ ) {
                 ColumnHeader hdr = new ColumnHeader();
@@ -153,7 +153,7 @@ namespace org.kbinani.windows.forms.obsolete {
             base.Items.Add( item );
         }
 
-        public void addItem( string group, BListViewItem item ) {
+        public void addRow( string group, BListViewItem item ) {
             addItem( group, item, false );
         }
 

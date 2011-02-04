@@ -63,9 +63,6 @@ namespace org.kbinani.cadencii
 
         private BFileChooser openUtauCore;
         private BFontChooser fontDialog;
-        private BLabel labelWavtoolPath;
-        private System.Windows.Forms.ColumnHeader columnHeaderPath;
-        private BLabel labelResamplerWithWine;
 #if JAVA
         private BFileChooser folderBrowserSingers;
 #else
@@ -103,6 +100,9 @@ namespace org.kbinani.cadencii
 #endif
 #endif
             applyLanguage();
+#if JAVA
+            listResampler.setColumnWidth( 0, 258 );
+#endif
 
             comboVibratoLength.removeAllItems();
 #if JAVA
@@ -1324,7 +1324,8 @@ namespace org.kbinani.cadencii
                 return;
             }
             for ( int i = 0; i < vec.size( path ); i++ ) {
-                listResampler.addItem( new String[]{ vec.get( path, i ) }, vec.get( with_wine, i ) );
+                listResampler.addRow(
+                    new String[]{ vec.get( path, i ) }, vec.get( with_wine, i ) );
             }
         }
 
@@ -1468,13 +1469,23 @@ namespace org.kbinani.cadencii
             int dr = AppManager.showModalDialog( openUtauCore, true, this );
             if ( dr == BFileChooser.APPROVE_OPTION ) {
                 String path = openUtauCore.getSelectedFile();
-                listResampler.addItem( new String[]{ path }, false );
-                if ( txtWavtool.getText().Equals( "" ) ) {
+                boolean check = false;
+                boolean is_mac = isMac();
+                if( is_mac ){
+                    check = isWindowsExecutable( path );
+                }
+                listResampler.addRow( new String[]{ path }, check );
+                if ( str.compare( txtWavtool.getText(), "" ) ) {
                     // wavtoolの欄が空欄だった場合のみ，
                     // wavtoolの候補を登録する(wavtoolがあれば)
                     String wavtool = fsys.combine( PortUtil.getDirectoryName( path ), "wavtool.exe" );
                     if ( PortUtil.isFileExists( wavtool ) ) {
                         txtWavtool.setText( wavtool );
+                        check = false;
+                        if( is_mac ){
+                            check = isWindowsExecutable( wavtool );
+                        }
+                        chkWavtoolWithWine.setSelected( check );
                     }
                 }
             }
@@ -1531,10 +1542,20 @@ namespace org.kbinani.cadencii
             if ( dr == BFileChooser.APPROVE_OPTION ) {
                 String path = openUtauCore.getSelectedFile();
                 txtWavtool.setText( path );
+                boolean is_mac = isMac();
+                boolean check = false;
+                if( is_mac ){
+                    check = isWindowsExecutable( path );
+                }
+                chkWavtoolWithWine.setSelected( check );
                 if ( listResampler.getItemCountRow() == 0 ) {
                     String resampler = fsys.combine( PortUtil.getDirectoryName( path ), "resampler.exe" );
                     if ( PortUtil.isFileExists( resampler ) ) {
-                        listResampler.addItem( new String[]{ resampler }, false );
+                        check = false;
+                        if( is_mac ){
+                            check = isWindowsExecutable( resampler );
+                        }
+                        listResampler.addRow( new String[]{ resampler }, check );
                     }
                 }
             }
@@ -1671,6 +1692,45 @@ namespace org.kbinani.cadencii
         #endregion
 
         #region helper methods
+        private boolean isMac()
+        {
+#if JAVA
+            String osname = System.getProperty( "os.name" );
+            if( osname == null ){
+                osname = "";
+            }
+            return (osname.indexOf( "Mac" ) >= 0);
+#else
+            return false;
+#endif
+        }
+        
+        private boolean isWindowsExecutable( String path )
+        {
+            if( !fsys.isFileExists( path ) ){
+                return false;
+            }
+            RandomAccessFile fs = null;
+            try{
+                fs = new RandomAccessFile( path, "r" );
+                int r0 = fs.read(); // 'M'
+                int r1 = fs.read(); // 'Z'
+                if( 'M' == (char)r0 && 'Z' == (char)r1 ){
+                    return true;
+                }
+            }catch( Exception ex ){
+                serr.println( "Preference#isWindowsExecutable; ex=" + ex );
+            }finally{
+                if( fs != null ){
+                    try{
+                        fs.close();
+                    }catch( Exception ex2 ){
+                    }
+                }
+            }
+            return false;
+        }
+
         /// <summary>
         /// カスタムビブラートの選択肢の欄を更新します
         /// </summary>
@@ -1758,7 +1818,7 @@ namespace org.kbinani.cadencii
             listSingers.clear();
             for ( int i = 0; i < m_utau_singers.size(); i++ ) {
                 m_utau_singers.get( i ).Program = i;
-                listSingers.addItem( 
+                listSingers.addRow( 
                     new String[] { 
                         m_utau_singers.get( i ).Program + "",
                         m_utau_singers.get( i ).VOICENAME, 
@@ -4066,6 +4126,9 @@ namespace org.kbinani.cadencii
         private BButton buttonResamplerAdd;
         private BButton buttonResamplerUp;
         private BButton buttonResamplerDown;
+        private BLabel labelWavtoolPath;
+        private System.Windows.Forms.ColumnHeader columnHeaderPath;
+        private BLabel labelResamplerWithWine;
 #endif
         #endregion
 

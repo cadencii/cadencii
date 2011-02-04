@@ -16,6 +16,7 @@ package org.kbinani.vsq;
 
 import java.io.*;
 import java.util.*;
+import org.kbinani.*;
 #else
 using System;
 using org.kbinani.java.util;
@@ -35,8 +36,9 @@ namespace org.kbinani.vsq
             tv.add( new TempoTableEntry( 1920, 500000, 0.0 ) );
             tv.add( new TempoTableEntry( 3820, 500000, 0.0 ) );
             tv.updateTempoInfo();
-            for ( int i = 0; i < tv.size(); i++ ) {
-                sout.println( "   #" + i + "; " + tv[i].Clock + "; " + tv[i].Time + "; " + (60e6 / tv[i].Tempo) );
+            for ( int i = 0; i < vec.size( tv ); i++ ) {
+                TempoTableEntry itemi = vec.get( tv, i );
+                sout.println( "   #" + i + "; " + itemi.Clock + "; " + itemi.Time + "; " + (60e6 / itemi.Tempo) );
             }
             /*
   #0; 0; 0; 120

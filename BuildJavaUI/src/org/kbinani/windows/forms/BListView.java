@@ -32,8 +32,8 @@ class TestBListView extends JFrame
     public TestBListView(){
         BListView b = new BListView();
         b.setColumnHeaders( new String[]{ "1A", "2A" } );
-        b.addItem( new String[]{ "one", "two" } );
-        b.addItem( new String[]{ "I", "II" } );
+        b.addRow( new String[]{ "one", "two" } );
+        b.addRow( new String[]{ "I", "II" } );
         b.setColumnWidth( 0, 120 );
         b.setColumnHeaders( new String[]{ "1B", "2B" } );
         JScrollPane sp = new JScrollPane(b);
@@ -234,7 +234,7 @@ public class BListView extends JTable
         }
     }
     
-    public void addItem( String[] items, boolean selected )
+    public void addRow( String[] items, boolean selected )
     {
         Object[] data = new Object[items.length + 1];
         data[0] = Boolean.valueOf( selected );//selected;
@@ -249,10 +249,15 @@ public class BListView extends JTable
         mModel.addRow( data );
     }
     
-    public void addItem( String[] items )
+    public void addRow( String[] items )
     {
-        addItem( items, false );
+        addRow( items, false );
     }
+    
+    public void removeRow( int index )
+    {
+        mModel.removeRow( index );
+    }    
    
     public boolean isMultiSelect()
     {

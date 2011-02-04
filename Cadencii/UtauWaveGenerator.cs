@@ -534,6 +534,7 @@ namespace org.kbinani.cadencii
                     foreach ( String s in pitch ) {
                         md5_src += s + " ";
                     }
+                    md5_src += mResampler;
 //#if DEBUG
 //                    String filename =
 //                        fsys.combine( mTempDir, k + "_" + PortUtil.getFileNameWithoutExtension( wavPath ) + "_" + note + ".wav" );
@@ -641,7 +642,7 @@ namespace org.kbinani.cadencii
 
 #if JAVA
                         Vector<String> list = new Vector<String>();
-                        if( mInvokeWithWine ){
+                        if( mResamplerWithWine ){
                             list.add( mWine );
                         }
                         list.add( mResampler );
@@ -660,7 +661,7 @@ namespace org.kbinani.cadencii
                         ProcessBuilder pb = new ProcessBuilder( list );
                         Process process = pb.start();
                         boolean д = true;
-                        for( ;д; ){
+                        for( ; д; ){
                             try{
                                 int ecode = process.exitValue();
                             }catch( Exception ex ){

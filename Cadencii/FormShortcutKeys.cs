@@ -270,7 +270,7 @@ namespace org.kbinani.cadencii
                     }
                 }
                 if ( add_this_one ) {
-                     list.addItem( new String[] { display, Utility.getShortcutDisplayString( keys ) } );
+                     list.addRow( new String[] { display, Utility.getShortcutDisplayString( keys ) } );
                      mFieldName.add( field_name );
                 }
             }

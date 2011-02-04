@@ -1205,36 +1205,6 @@ namespace org.kbinani.cadencii
                         g.fillRect( x0, HEADER, x1 - x0, graph_height );
                     }
 
-                    #region 音符の境界
-                    if ( AppManager.mDrawObjects != null && selected - 1 < AppManager.mDrawObjects.size() ) {
-                        if ( AppManager.drawItemBorderInControlCurveView &&
-                             !mSelectedCurve.equals( CurveType.VibratoDepth ) &&
-                             !mSelectedCurve.equals( CurveType.VibratoRate ) ) {
-                            lock ( AppManager.mDrawObjects ) {
-                                Vector<DrawObject> objs = AppManager.mDrawObjects.get( selected - 1 );
-                                int start = AppManager.mDrawStartIndex[selected - 1];
-                                int count = objs.size();
-                                Color line = new Color( 0, 0, 0, 128 );
-                                Color fill = new Color( 0, 0, 0, 32 );
-                                for ( int i = start; i < count; i++ ) {
-                                    DrawObject obj = objs.get( i );
-                                    int x0 = obj.mRectangleInPixel.x + key_width - stdx;
-                                    int w = obj.mRectangleInPixel.width;
-                                    int x1 = x0 + w;
-                                    if ( width < x0 ) {
-                                        break;
-                                    }
-                                    g.setColor( fill );
-                                    g.fillRect( x0, HEADER, w, graph_height );
-                                    g.setColor( line );
-                                    g.drawLine( x0, HEADER, x0, HEADER + graph_height );
-                                    g.drawLine( x1, HEADER, x1, HEADER + graph_height );
-                                }
-                            }
-                        }
-                    }
-                    #endregion
-
                     #region 小節ごとのライン
                     if ( vsq != null ) {
                         int dashed_line_step = AppManager.getPositionQuantizeClock();

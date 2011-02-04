@@ -35,12 +35,14 @@ using org.kbinani.windows.forms;
 using org.kbinani.xml;
 using org.kbinani.java.awt;
 
-namespace org.kbinani.cadencii{
+namespace org.kbinani.cadencii
+{
     using boolean = System.Boolean;
     using Integer = System.Int32;
 #endif
 
-    public class Utility{
+    public class Utility
+    {
         private const String CONFIG_DIR_NAME = "Cadencii";
         public static readonly CurveType[] CURVE_USAGE = new CurveType[]{ CurveType.DYN,
                                                                           CurveType.BRE,

@@ -7485,6 +7485,7 @@ namespace org.kbinani.cadencii
             }
             Font font = AppManager.editorConfig.getBaseFont();
             Util.applyFontRecurse( this, font );
+#if !JAVA_MAC
             Util.applyContextMenuFontRecurse( cMenuPiano, font );
             Util.applyContextMenuFontRecurse( cMenuTrackSelector, font );
             if ( AppManager.mMixerWindow != null ) {
@@ -7501,15 +7502,18 @@ namespace org.kbinani.cadencii
             Util.applyToolStripFontRecurse( menuScript, font );
             Util.applyToolStripFontRecurse( menuSetting, font );
             Util.applyToolStripFontRecurse( menuHelp, font );
+#endif
 #if !JAVA
             Util.applyFontRecurse( toolBarFile, font );
             Util.applyFontRecurse( toolBarMeasure, font );
             Util.applyFontRecurse( toolBarPosition, font );
             Util.applyFontRecurse( toolBarTool, font );
 #endif
+#if !JAVA_MAC
             if ( mDialogPreference != null ) {
                 Util.applyFontRecurse( mDialogPreference, font );
             }
+#endif
 
             AppManager.baseFont10Bold = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.BOLD, AppManager.FONT_SIZE10 );
             AppManager.baseFont8 = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE8 );
@@ -11356,8 +11360,7 @@ namespace org.kbinani.cadencii
                     VsqEvent obj = itr.next();
                     notes++;
                 }
-                mDialogMidiImportAndExport.listTrack.addItem( new String[] { i + "", track.getName(), notes + "" } );
-                mDialogMidiImportAndExport.listTrack.setRowChecked( i, true );
+                mDialogMidiImportAndExport.listTrack.addRow( new String[] { i + "", track.getName(), notes + "" }, true );
             }
             mDialogMidiImportAndExport.setMode( FormMidiImExport.FormMidiMode.EXPORT );
             mDialogMidiImportAndExport.setLocation( getFormPreferedLocation( mDialogMidiImportAndExport ) );
@@ -12051,8 +12054,8 @@ namespace org.kbinani.cadencii
                         notes++;
                     }
                 }
-                mDialogMidiImportAndExport.listTrack.addItem( new String[] { i + "", track_name, notes + "" } );
-                mDialogMidiImportAndExport.listTrack.setRowChecked( i, true );
+                mDialogMidiImportAndExport.listTrack.addRow(
+                    new String[] { i + "", track_name, notes + "" }, true );
             }
 
             BDialogResult dr = AppManager.showModalDialog( mDialogMidiImportAndExport, this );
@@ -12511,11 +12514,10 @@ namespace org.kbinani.cadencii
             }
             mDialogMidiImportAndExport.listTrack.clear();
             for ( int track = 1; track < vsq.Track.size(); track++ ) {
-                mDialogMidiImportAndExport.listTrack.addItem( new String[] { 
+                mDialogMidiImportAndExport.listTrack.addRow( new String[] { 
                     track + "", 
                     vsq.Track.get( track ).getName(),
-                    vsq.Track.get( track ).getEventCount() + "" } );
-                mDialogMidiImportAndExport.listTrack.setRowChecked( track - 1, true );
+                    vsq.Track.get( track ).getEventCount() + "" }, true );
             }
             mDialogMidiImportAndExport.setMode( FormMidiImExport.FormMidiMode.IMPORT_VSQ );
             mDialogMidiImportAndExport.setTempo( false );

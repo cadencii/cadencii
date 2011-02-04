@@ -13,15 +13,22 @@
  */
 #if JAVA
 package org.kbinani.vsq;
+
+import java.io.*;
 #else
+
 using System;
 
 namespace org.kbinani.vsq
 {
 #endif
 
+#if JAVA
+    public class UstPortamentoPoint implements Serializable
+#else
     [Serializable]
     public struct UstPortamentoPoint
+#endif
     {
         public int Step;
         public float Value;
