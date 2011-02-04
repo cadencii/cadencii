@@ -373,10 +373,6 @@ namespace org.kbinani.cadencii
         /// </summary>
         public Point mContextMenuOpenedPosition = new Point();
         /// <summary>
-        /// トラック名の入力に使用するテキストボックス
-        /// </summary>
-        public LyricTextBox mTextBoxTrackName;
-        /// <summary>
         /// ピアノロールの画面外へのドラッグ時、前回自動スクロール操作を行った時刻
         /// </summary>
         public double mTimerDragLastIgnitted;
@@ -1383,7 +1379,7 @@ namespace org.kbinani.cadencii
                     if ( dialog.isResamplerChecked() ) {
                         String path = dialog.getResamplerPath();
                         if ( fsys.isFileExists( path ) ) {
-                            AppManager.editorConfig.addResampler( path );
+                            AppManager.editorConfig.addResampler( path, false );
                         }
                     }
                     // 歌手
@@ -3905,10 +3901,11 @@ namespace org.kbinani.cadencii
                         if ( AppManager.isPlaying() ) {
                             AppManager.setPlaying( false, this );
                         } else {
-                            if ( !AppManager.mStartMarkerEnabled ) {
+                            VsqFileEx vsq = AppManager.getVsqFile();
+                            if ( !vsq.config.StartMarkerEnabled ) {
                                 AppManager.setCurrentClock( 0 );
                             } else {
-                                AppManager.setCurrentClock( AppManager.mStartMarker );
+                                AppManager.setCurrentClock( vsq.config.StartMarker );
                             }
                             refreshScreen();
                         }
@@ -7658,8 +7655,8 @@ namespace org.kbinani.cadencii
                 // スタートマーカーとエンドマーカー
                 boolean right = false;
                 boolean left = false;
-                if ( AppManager.mStartMarkerEnabled ) {
-                    int x = AppManager.xCoordFromClocks( AppManager.mStartMarker );
+                if ( vsq.config.StartMarkerEnabled ) {
+                    int x = AppManager.xCoordFromClocks( vsq.config.StartMarker );
                     if ( x < key_width ) {
                         left = true;
                     } else if ( width < x ) {
@@ -7669,8 +7666,8 @@ namespace org.kbinani.cadencii
                             Resources.get_start_marker(), x, 3, this );
                     }
                 }
-                if ( AppManager.mEndMarkerEnabled ) {
-                    int x = AppManager.xCoordFromClocks( AppManager.mEndMarker ) - 6;
+                if ( vsq.config.EndMarkerEnabled ) {
+                    int x = AppManager.xCoordFromClocks( vsq.config.EndMarker ) - 6;
                     if ( x < key_width ) {
                         left = true;
                     } else if ( width < x ) {
@@ -7730,7 +7727,6 @@ namespace org.kbinani.cadencii
         public void registerEventHandlers()
         {
             this.Load += new BEventHandler( FormMain_Load );
-            menuStripMain.MouseDown += new BMouseEventHandler( menuStrip1_MouseDown );
             menuFileNew.MouseEnter += new BEventHandler( handleMenuMouseEnter );
             menuFileNew.Click += new BEventHandler( handleFileNew_Click );
             menuFileOpen.MouseEnter += new BEventHandler( handleMenuMouseEnter );
@@ -7997,7 +7993,6 @@ namespace org.kbinani.cadencii
             cMenuPositionIndicatorEndMarker.Click += new BEventHandler( cMenuPositionIndicatorEndMarker_Click );
             cMenuPositionIndicatorStartMarker.Click += new BEventHandler( cMenuPositionIndicatorStartMarker_Click );
             trackBar.ValueChanged += new BEventHandler( trackBar_ValueChanged );
-            trackBar.MouseDown += new BMouseEventHandler( trackBar_MouseDown );
             trackBar.Enter += new BEventHandler( trackBar_Enter );
             bgWorkScreen.DoWork += new BDoWorkEventHandler( bgWorkScreen_DoWork );
             timer.Tick += new BEventHandler( timer_Tick );
@@ -8043,7 +8038,7 @@ namespace org.kbinani.cadencii
             this.DragOver += new System.Windows.Forms.DragEventHandler( FormMain_DragOver );
             this.DragLeave += new BEventHandler( FormMain_DragLeave );
 #endif
-            pictureBox3.MouseDown += new BMouseEventHandler( pictureBox3_MouseDown );
+
 #if JAVA
             buttonVZoom.clickEvent.add( new BEventHandler( this, "buttonVZoom_Click" ) );
             buttonVMooz.clickEvent.add( new BEventHandler( this, "buttonVMooz_Click" ) );
@@ -8883,16 +8878,6 @@ namespace org.kbinani.cadencii
             mMouseDowned = true;
             mButtonInitial = new Point( e.X, e.Y );
             int modefier = PortUtil.getCurrentModifierKey();
-            if ( mTextBoxTrackName != null ) {
-#if JAVA
-                mTextBoxTrackName.setVisible( false );
-#else
-                if ( !mTextBoxTrackName.IsDisposed ) {
-                    mTextBoxTrackName.Dispose();
-                }
-#endif
-                mTextBoxTrackName = null;
-            }
 
             EditTool selected_tool = AppManager.getSelectedTool();
 #if ENABLE_SCRIPT
@@ -11683,8 +11668,8 @@ namespace org.kbinani.cadencii
             Vector<PatchWorkQueue> queue = AppManager.patchWorkCreateQueue( tracks );
 
             // 全トラックをファイルに出力するためのキュー
-            int clockStart = AppManager.mStartMarkerEnabled ? AppManager.mStartMarker : 0;
-            int clockEnd = AppManager.mEndMarkerEnabled ? AppManager.mEndMarker : vsq.TotalClocks + 240;
+            int clockStart = vsq.config.StartMarkerEnabled ? vsq.config.StartMarker : 0;
+            int clockEnd = vsq.config.EndMarkerEnabled ? vsq.config.EndMarker : vsq.TotalClocks + 240;
             if ( clockStart > clockEnd ) {
                 AppManager.showMessageBox(
                     _( "invalid rendering region; start>=end" ),
@@ -11954,8 +11939,8 @@ namespace org.kbinani.cadencii
             FormSynthesize fs = null;
             try {
                 VsqFileEx vsq = AppManager.getVsqFile();
-                int clockStart = AppManager.mStartMarkerEnabled ? AppManager.mStartMarker : 0;
-                int clockEnd = AppManager.mEndMarkerEnabled ? AppManager.mEndMarker : vsq.TotalClocks + 240;
+                int clockStart = vsq.config.StartMarkerEnabled ? vsq.config.StartMarker : 0;
+                int clockEnd = vsq.config.EndMarkerEnabled ? vsq.config.EndMarker : vsq.TotalClocks + 240;
                 if ( clockStart > clockEnd ) {
                     AppManager.showMessageBox( 
                         _( "invalid rendering region; start>=end" ), 
@@ -12968,14 +12953,16 @@ namespace org.kbinani.cadencii
             	m_preference_dlg.setMtcMidiInPort( AppManager.editorConfig.MidiInPortMtc.PortNumber );
 
 #endif
-                mDialogPreference.setInvokeWithWine( AppManager.editorConfig.InvokeUtauCoreWithWine );
                 Vector<String> resamplers = new Vector<String>();
+                Vector<Boolean> with_wine = new Vector<Boolean>();
                 int size = AppManager.editorConfig.getResamplerCount();
                 for ( int i = 0; i < size; i++ ) {
                     resamplers.add( AppManager.editorConfig.getResamplerAt( i ) );
+                    with_wine.add( AppManager.editorConfig.isResamplerWithWineAt( i ) );
                 }
-                mDialogPreference.setPathResamplers( resamplers );
+                mDialogPreference.setResamplersConfig( resamplers, with_wine );
                 mDialogPreference.setPathWavtool( AppManager.editorConfig.PathWavtool );
+                mDialogPreference.setWavtoolWithWine( AppManager.editorConfig.WavtoolWithWine );
                 mDialogPreference.setUtausingers( AppManager.editorConfig.UtauSingers );
                 mDialogPreference.setSelfDeRomantization( AppManager.editorConfig.SelfDeRomanization );
                 mDialogPreference.setAutoBackupIntervalMinutes( AppManager.editorConfig.AutoBackupIntervalMinutes );
@@ -13099,8 +13086,9 @@ namespace org.kbinani.cadencii
                     reloadMidiIn();
 #endif
 
-                    AppManager.editorConfig.InvokeUtauCoreWithWine = mDialogPreference.isInvokeWithWine();
-                    Vector<String> new_resamplers = mDialogPreference.getPathResamplers();
+                    Vector<String> new_resamplers = new Vector<String>();
+                    Vector<Boolean> new_with_wine = new Vector<Boolean>();
+                    mDialogPreference.copyResamplersConfig( new_resamplers, new_with_wine );
                     AppManager.editorConfig.clearResampler();
 #if DEBUG
                     sout.println( "FormMain#menuSettingPreference_Click; before;" );
@@ -13109,7 +13097,7 @@ namespace org.kbinani.cadencii
                     }
 #endif
                     for ( int i = 0; i < new_resamplers.size(); i++ ) {
-                        AppManager.editorConfig.addResampler( new_resamplers.get( i ) );
+                        AppManager.editorConfig.addResampler( new_resamplers.get( i ), new_with_wine.get( i ) );
                     }
 #if DEBUG
                     sout.println( "FormMain#menuSettingPreference_Click; after;" );
@@ -13118,6 +13106,7 @@ namespace org.kbinani.cadencii
                     }
 #endif
                     AppManager.editorConfig.PathWavtool = mDialogPreference.getPathWavtool();
+                    AppManager.editorConfig.WavtoolWithWine = mDialogPreference.isWavtoolWithWine();
 
                     AppManager.editorConfig.UtauSingers.clear();
                     for ( Iterator<SingerConfig> itr = mDialogPreference.getUtausingers().iterator(); itr.hasNext(); ) {
@@ -14305,14 +14294,6 @@ namespace org.kbinani.cadencii
         public void vScroll_ValueChanged( Object sender, EventArgs e )
         {
             AppManager.setStartToDrawY( calculateStartToDrawY() );
-            if ( mTextBoxTrackName != null ) {
-#if !JAVA
-                if ( !mTextBoxTrackName.IsDisposed ) {
-                    mTextBoxTrackName.Dispose();
-                }
-#endif
-                mTextBoxTrackName = null;
-            }
             if ( AppManager.getEditMode() != EditMode.MIDDLE_DRAG ) {
                 // MIDDLE_DRAGのときは，pictPianoRoll_MouseMoveでrefreshScreenされるので，それ以外のときだけ描画・
                 refreshScreen( true );
@@ -14388,14 +14369,6 @@ namespace org.kbinani.cadencii
         {
             int stdx = calculateStartToDrawX();
             AppManager.setStartToDrawX( stdx );
-            if ( mTextBoxTrackName != null ) {
-#if !JAVA
-                if ( !mTextBoxTrackName.IsDisposed ) {
-                    mTextBoxTrackName.Dispose();
-                }
-#endif
-                mTextBoxTrackName = null;
-            }
             if ( AppManager.getEditMode() != EditMode.MIDDLE_DRAG ) {
                 // MIDDLE_DRAGのときは，pictPianoRoll_MouseMoveでrefreshScreenされるので，それ以外のときだけ描画・
                 refreshScreen( true );
@@ -14769,36 +14742,28 @@ namespace org.kbinani.cadencii
 
         public void picturePositionIndicator_MouseDown( Object sender, BMouseEventArgs e )
         {
-            if ( mTextBoxTrackName != null ) {
-#if !JAVA
-                if ( !mTextBoxTrackName.IsDisposed ) {
-                    mTextBoxTrackName.Dispose();
-                }
-#endif
-                mTextBoxTrackName = null;
-            }
-
             if ( e.X < AppManager.keyWidth || getWidth() - 3 < e.X ) {
                 return;
             }
 
             mPositionIndicatorMouseDownMode = PositionIndicatorMouseDownMode.NONE;
             int modifiers = PortUtil.getCurrentModifierKey();
+            VsqFileEx vsq = AppManager.getVsqFile();
             if ( e.Button == BMouseButtons.Left ) {
                 if ( 0 <= e.Y && e.Y <= 18 ) {
                     #region スタート/エンドマーク
                     int tolerance = AppManager.editorConfig.PxTolerance;
                     int start_marker_width = Resources.get_start_marker().getWidth( this );
                     int end_marker_width = Resources.get_end_marker().getWidth( this );
-                    int startx = AppManager.xCoordFromClocks( AppManager.mStartMarker );
-                    int endx = AppManager.xCoordFromClocks( AppManager.mEndMarker );
+                    int startx = AppManager.xCoordFromClocks( vsq.config.StartMarker );
+                    int endx = AppManager.xCoordFromClocks( vsq.config.EndMarker );
                     
                     // マウスの当たり判定が重なるようなら，判定幅を最小にする
                     int start0 = startx - tolerance;
                     int start1 = startx + start_marker_width + tolerance;
                     int end0 = endx - end_marker_width - tolerance;
                     int end1 = endx + tolerance;
-                    if ( AppManager.mStartMarkerEnabled && AppManager.mEndMarkerEnabled ) {
+                    if ( vsq.config.StartMarkerEnabled && vsq.config.EndMarkerEnabled ) {
                         if ( start0 < end1 && end1 < start1 ||
                             start1 < end0 && end0 < start1 ) {
                             start0 = startx;
@@ -14808,12 +14773,12 @@ namespace org.kbinani.cadencii
                         }
                     }
 
-                    if ( AppManager.mStartMarkerEnabled ) {
+                    if ( vsq.config.StartMarkerEnabled ) {
                         if ( start0 <= e.X && e.X <= start1 ) {
                             mPositionIndicatorMouseDownMode = PositionIndicatorMouseDownMode.MARK_START;
                         }
                     }
-                    if ( AppManager.mEndMarkerEnabled && mPositionIndicatorMouseDownMode != PositionIndicatorMouseDownMode.MARK_START ) {
+                    if ( vsq.config.EndMarkerEnabled && mPositionIndicatorMouseDownMode != PositionIndicatorMouseDownMode.MARK_START ) {
                         if ( end0 <= e.X && e.X <= end1 ) {
                             mPositionIndicatorMouseDownMode = PositionIndicatorMouseDownMode.MARK_END;
                         }
@@ -15123,6 +15088,7 @@ namespace org.kbinani.cadencii
 
         public void picturePositionIndicator_MouseMove( Object sender, BMouseEventArgs e )
         {
+            VsqFileEx vsq = AppManager.getVsqFile();
             if ( mPositionIndicatorMouseDownMode == PositionIndicatorMouseDownMode.TEMPO ) {
                 int clock = AppManager.clockFromXCoord( e.X ) - mTempoDraggingDeltaClock;
                 int step = AppManager.getPositionQuantizeClock();
@@ -15137,7 +15103,7 @@ namespace org.kbinani.cadencii
                 picturePositionIndicator.repaint();
             } else if ( mPositionIndicatorMouseDownMode == PositionIndicatorMouseDownMode.TIMESIG ) {
                 int clock = AppManager.clockFromXCoord( e.X ) - mTimesigDraggingDeltaClock;
-                int barcount = AppManager.getVsqFile().getBarCountFromClock( clock );
+                int barcount = vsq.getBarCountFromClock( clock );
                 int last_barcount = AppManager.getLastSelectedTimesigBarcount();
                 int dbarcount = barcount - last_barcount;
                 for ( Iterator<ValuePair<Integer, SelectedTimesigEntry>> itr = AppManager.getSelectedTimesigIterator(); itr.hasNext(); ) {
@@ -15153,13 +15119,15 @@ namespace org.kbinani.cadencii
                 if ( clock < 0 ) {
                     clock = 0;
                 }
-                int draft_start = Math.Min( clock, AppManager.mEndMarker );
-                int draft_end = Math.Max( clock, AppManager.mEndMarker );
-                if ( draft_start != AppManager.mStartMarker ) {
-                    AppManager.mStartMarker = draft_start;
+                int draft_start = Math.Min( clock, vsq.config.EndMarker );
+                int draft_end = Math.Max( clock, vsq.config.EndMarker );
+                if ( draft_start != vsq.config.StartMarker ) {
+                    vsq.config.StartMarker = draft_start;
+                    setEdited( true );
                 }
-                if ( draft_end != AppManager.mEndMarker ) {
-                    AppManager.mEndMarker = draft_end;
+                if ( draft_end != vsq.config.EndMarker ) {
+                    vsq.config.EndMarker = draft_end;
+                    setEdited( true );
                 }
                 refreshScreen();
             } else if ( mPositionIndicatorMouseDownMode == PositionIndicatorMouseDownMode.MARK_END ) {
@@ -15169,13 +15137,15 @@ namespace org.kbinani.cadencii
                 if ( clock < 0 ) {
                     clock = 0;
                 }
-                int draft_start = Math.Min( clock, AppManager.mStartMarker );
-                int draft_end = Math.Max( clock, AppManager.mStartMarker );
-                if ( draft_start != AppManager.mStartMarker ) {
-                    AppManager.mStartMarker = draft_start;
+                int draft_start = Math.Min( clock, vsq.config.StartMarker );
+                int draft_end = Math.Max( clock, vsq.config.StartMarker );
+                if ( draft_start != vsq.config.StartMarker ) {
+                    vsq.config.StartMarker = draft_start;
+                    setEdited( true );
                 }
-                if ( draft_end != AppManager.mEndMarker ) {
-                    AppManager.mEndMarker = draft_end;
+                if ( draft_end != vsq.config.EndMarker ) {
+                    vsq.config.EndMarker = draft_end;
+                    setEdited( true );
                 }
                 refreshScreen();
             }
@@ -15212,18 +15182,6 @@ namespace org.kbinani.cadencii
         public void trackBar_Enter( Object sender, EventArgs e )
         {
             pictPianoRoll.requestFocus();
-        }
-
-        public void trackBar_MouseDown( Object sender, BMouseEventArgs e )
-        {
-            if ( mTextBoxTrackName != null ) {
-#if !JAVA
-                if ( !mTextBoxTrackName.IsDisposed ) {
-                    mTextBoxTrackName.Dispose();
-                }
-#endif
-                mTextBoxTrackName = null;
-            }
         }
 
         public void trackBar_ValueChanged( Object sender, EventArgs e )
@@ -15353,14 +15311,6 @@ namespace org.kbinani.cadencii
                         cMenuTrackSelector.show( trackSelector, e.X, e.Y );
                     }
                 }
-            }
-            if ( mTextBoxTrackName != null ) {
-#if !JAVA
-                if ( !mTextBoxTrackName.IsDisposed ) {
-                    mTextBoxTrackName.Dispose();
-                }
-#endif
-                mTextBoxTrackName = null;
             }
         }
 
@@ -15873,8 +15823,9 @@ namespace org.kbinani.cadencii
                 return;
             }
 
-            if ( AppManager.mEndMarkerEnabled ) {
-                AppManager.setCurrentClock( AppManager.mEndMarker );
+            VsqFileEx vsq = AppManager.getVsqFile();
+            if ( vsq.config.EndMarkerEnabled ) {
+                AppManager.setCurrentClock( vsq.config.EndMarker );
                 ensureCursorVisible();
                 refreshScreen();
             }
@@ -15886,8 +15837,9 @@ namespace org.kbinani.cadencii
                 return;
             }
 
-            if ( AppManager.mStartMarkerEnabled ) {
-                AppManager.setCurrentClock( AppManager.mStartMarker );
+            VsqFileEx vsq = AppManager.getVsqFile();
+            if ( vsq.config.StartMarkerEnabled ) {
+                AppManager.setCurrentClock( vsq.config.StartMarker );
                 ensureCursorVisible();
                 refreshScreen();
             }
@@ -15916,11 +15868,12 @@ namespace org.kbinani.cadencii
             if ( AppManager.isPlaying() ) {
                 return;
             }
-            if ( !AppManager.mStartMarkerEnabled ) {
+            VsqFileEx vsq = AppManager.getVsqFile();
+            if ( !vsq.config.StartMarkerEnabled ) {
                 return;
             }
 
-            AppManager.setCurrentClock( AppManager.mStartMarker );
+            AppManager.setCurrentClock( vsq.config.StartMarker );
             AppManager.setPlaying( true, this );
         }
 
@@ -16170,49 +16123,19 @@ namespace org.kbinani.cadencii
         }
         #endregion
 
-        //BOOKMARK: mTextboxTrackName
-        #region mTextboxTrackName
-        public void mTextBoxTrackName_KeyUp( Object sender, BKeyEventArgs e )
-        {
-#if JAVA
-            if ( e.KeyValue == KeyEvent.VK_ENTER ){
-#else
-            if ( e.KeyCode == System.Windows.Forms.Keys.Enter ) {
-#endif
-                CadenciiCommand run = new CadenciiCommand(
-                    VsqCommand.generateCommandTrackChangeName( AppManager.getSelected(), mTextBoxTrackName.getText() ) );
-                AppManager.register( AppManager.getVsqFile().executeCommand( run ) );
-                setEdited( true );
-#if !JAVA
-                mTextBoxTrackName.Dispose();
-#endif
-                mTextBoxTrackName = null;
-                refreshScreen();
-#if JAVA
-            } else if ( e.KeyValue == KeyEvent.VK_ESCAPE ) {
-#else
-            } else if ( e.KeyCode == System.Windows.Forms.Keys.Escape ) {
-#endif
-
-#if !JAVA
-                mTextBoxTrackName.Dispose();
-#endif
-                mTextBoxTrackName = null;
-            }
-        }
-        #endregion
-
         #region cPotisionIndicator
         public void cMenuPositionIndicatorStartMarker_Click( Object sender, EventArgs e )
         {
             Object tag = cMenuPositionIndicator.getTag();
             if ( tag != null && tag is Integer ) {
                 int clock = (Integer)tag;
-                AppManager.mStartMarkerEnabled = true;
-                AppManager.mStartMarker = clock;
-                if ( AppManager.mEndMarker < clock ) {
-                    AppManager.mEndMarker = clock;
+                VsqFileEx vsq = AppManager.getVsqFile();
+                vsq.config.StartMarkerEnabled = true;
+                vsq.config.StartMarker = clock;
+                if ( vsq.config.EndMarker < clock ) {
+                    vsq.config.EndMarker = clock;
                 }
+                setEdited( true );
                 picturePositionIndicator.invalidate();
             }
         }
@@ -16222,11 +16145,13 @@ namespace org.kbinani.cadencii
             Object tag = cMenuPositionIndicator.getTag();
             if ( tag != null && tag is Integer ) {
                 int clock = (Integer)tag;
-                AppManager.mEndMarkerEnabled = true;
-                AppManager.mEndMarker = clock;
-                if ( AppManager.mStartMarker > clock ) {
-                    AppManager.mStartMarker = clock;
+                VsqFileEx vsq = AppManager.getVsqFile();
+                vsq.config.EndMarkerEnabled = true;
+                vsq.config.EndMarker = clock;
+                if ( vsq.config.StartMarker > clock ) {
+                    vsq.config.StartMarker = clock;
                 }
+                setEdited( true );
                 picturePositionIndicator.invalidate();
             }
         }
@@ -16494,20 +16419,6 @@ namespace org.kbinani.cadencii
         }
         #endregion
 
-        #region pictureBox3
-        public void pictureBox3_MouseDown( Object sender, BMouseEventArgs e )
-        {
-            if ( mTextBoxTrackName != null ) {
-#if !JAVA
-                if ( !mTextBoxTrackName.IsDisposed ) {
-                    mTextBoxTrackName.Dispose();
-                }
-#endif
-                mTextBoxTrackName = null;
-            }
-        }
-        #endregion
-
         #region buttonVZoom & buttonVMooz
         public void buttonVZoom_Click( Object sender, BEventArgs e )
         {
@@ -16560,13 +16471,6 @@ namespace org.kbinani.cadencii
 #if !JAVA
         public void pictureBox2_MouseDown( Object sender, BMouseEventArgs e )
         {
-            if ( mTextBoxTrackName != null ) {
-                if ( !mTextBoxTrackName.IsDisposed ) {
-                    mTextBoxTrackName.Dispose();
-                }
-                mTextBoxTrackName = null;
-            }
-
             // 拡大・縮小ボタンが押されたかどうか判定
             int height = pictureBox2.getHeight();
             int width = pictureBox2.getWidth();
@@ -16893,18 +16797,6 @@ namespace org.kbinani.cadencii
         }
 #endif
 
-        public void menuStrip1_MouseDown( Object sender, BMouseEventArgs e )
-        {
-            if ( mTextBoxTrackName != null ) {
-#if !JAVA
-                if ( !mTextBoxTrackName.IsDisposed ) {
-                    mTextBoxTrackName.Dispose();
-                }
-#endif
-                mTextBoxTrackName = null;
-            }
-        }
-
         public void handleVibratoPresetSubelementClick( Object sender, EventArgs e )
         {
             if ( sender == null ) {
@@ -17002,8 +16894,9 @@ namespace org.kbinani.cadencii
                 refreshScreen( true );
                 if ( AppManager.isRepeatMode() ) {
                     int dest_clock = 0;
-                    if ( AppManager.mStartMarkerEnabled ) {
-                        dest_clock = AppManager.mStartMarker;
+                    VsqFileEx vsq = AppManager.getVsqFile();
+                    if ( vsq.config.StartMarkerEnabled ) {
+                        dest_clock = vsq.config.StartMarker;
                     }
                     AppManager.setCurrentClock( dest_clock );
                     AppManager.setPlaying( true, this );
@@ -17392,19 +17285,23 @@ namespace org.kbinani.cadencii
 
         public void handleStartMarker_Click( Object sender, EventArgs e )
         {
-            AppManager.mStartMarkerEnabled = !AppManager.mStartMarkerEnabled;
-            menuVisualStartMarker.setSelected( AppManager.mStartMarkerEnabled );
+            VsqFileEx vsq = AppManager.getVsqFile();
+            vsq.config.StartMarkerEnabled = !vsq.config.StartMarkerEnabled;
+            menuVisualStartMarker.setSelected( vsq.config.StartMarkerEnabled );
+            setEdited( true );
             pictPianoRoll.requestFocus();
             refreshScreen();
         }
 
         public void handleEndMarker_Click( Object sender, EventArgs e )
         {
-            AppManager.mEndMarkerEnabled = !AppManager.mEndMarkerEnabled;
+            VsqFileEx vsq = AppManager.getVsqFile();
+            vsq.config.EndMarkerEnabled = !vsq.config.EndMarkerEnabled;
 #if !JAVA
-            stripBtnEndMarker.Pushed = AppManager.mEndMarkerEnabled;
+            stripBtnEndMarker.Pushed = vsq.config.EndMarkerEnabled;
 #endif
-            menuVisualEndMarker.setSelected( AppManager.mEndMarkerEnabled );
+            menuVisualEndMarker.setSelected( vsq.config.EndMarkerEnabled );
+            setEdited( true );
             pictPianoRoll.requestFocus();
             refreshScreen();
         }

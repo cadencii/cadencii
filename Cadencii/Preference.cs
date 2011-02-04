@@ -63,6 +63,9 @@ namespace org.kbinani.cadencii
 
         private BFileChooser openUtauCore;
         private BFontChooser fontDialog;
+        private BLabel labelWavtoolPath;
+        private System.Windows.Forms.ColumnHeader columnHeaderPath;
+        private BLabel labelResamplerWithWine;
 #if JAVA
         private BFileChooser folderBrowserSingers;
 #else
@@ -488,16 +491,6 @@ namespace org.kbinani.cadencii
         public void setSelfDeRomantization( boolean value )
         {
             chkTranslateRoman.setSelected( value );
-        }
-
-        public boolean isInvokeWithWine()
-        {
-            return chkInvokeWithWine.isSelected();
-        }
-
-        public void setInvokeWithWine( boolean value )
-        {
-            chkInvokeWithWine.setSelected( value );
         }
 
 #if ENABLE_MTC
@@ -999,7 +992,10 @@ namespace org.kbinani.cadencii
             chkTranslateRoman.setText( _( "Translate Roman letters into Kana" ) );
 
             groupUtauCores.setTitle( _( "UTAU Cores" ) );
-            chkInvokeWithWine.setText( _( "Invoke UTAU cores with Wine" ) );
+            labelWavtoolPath.setText( _( "Path:" ) );
+            chkWavtoolWithWine.setText( _( "Invoke wavtool with Wine" ) );
+            listResampler.setColumnHeaders( new String[] { _( "path" ) } );
+            labelResamplerWithWine.setText( _( "Check the box to use Wine" ) );
             #endregion
 
             #region tabUtausingers
@@ -1310,27 +1306,36 @@ namespace org.kbinani.cadencii
             chkCommandKeyAsControl.setSelected( value );
         }
 
-        public Vector<String> getPathResamplers()
+        public void copyResamplersConfig( Vector<String> ret, Vector<Boolean> with_wine )
         {
-            Vector<String> ret = new Vector<String>();
-            for ( int i = 0; i < listResampler.getItemCount(); i++ ) {
-                ret.add( (String)listResampler.getItemAt( i ) );
+            for ( int i = 0; i < listResampler.getItemCountRow(); i++ ) {
+                ret.add( (String)listResampler.getItemAt( i, 0 ) );
+                with_wine.add( listResampler.isRowChecked( i ) );
             }
-            return ret;
         }
 
-        public void setPathResamplers( Vector<String> value )
+        public void setResamplersConfig( Vector<String> path, Vector<Boolean> with_wine )
         {
-            int size = listResampler.getItemCount();
+            int size = listResampler.getItemCountRow();
             for ( int i = 0; i < size; i++ ) {
-                listResampler.removeItemAt( 0 );
+                listResampler.removeRow( 0 );
             }
-            if ( value == null ) {
+            if ( path == null ) {
                 return;
             }
-            for ( int i = 0; i < vec.size( value ); i++ ) {
-                listResampler.addItem( vec.get( value, i ) );
+            for ( int i = 0; i < vec.size( path ); i++ ) {
+                listResampler.addItem( new String[]{ vec.get( path, i ) }, vec.get( with_wine, i ) );
             }
+        }
+
+        public void setWavtoolWithWine( boolean value )
+        {
+            chkWavtoolWithWine.setSelected( value );
+        }
+
+        public boolean isWavtoolWithWine()
+        {
+            return chkWavtoolWithWine.isSelected();
         }
 
         public String getPathWavtool()
@@ -1463,7 +1468,7 @@ namespace org.kbinani.cadencii
             int dr = AppManager.showModalDialog( openUtauCore, true, this );
             if ( dr == BFileChooser.APPROVE_OPTION ) {
                 String path = openUtauCore.getSelectedFile();
-                listResampler.addItem( path );
+                listResampler.addItem( new String[]{ path }, false );
                 if ( txtWavtool.getText().Equals( "" ) ) {
                     // wavtoolの欄が空欄だった場合のみ，
                     // wavtoolの候補を登録する(wavtoolがあれば)
@@ -1481,8 +1486,8 @@ namespace org.kbinani.cadencii
             if ( sender == buttonResamplerUp ) {
                 delta = -1;
             }
-            int index = listResampler.getSelectedIndex();
-            int count = listResampler.getItemCount();
+            int index = listResampler.getSelectedRow();
+            int count = listResampler.getItemCountRow();
             if ( index < 0 || count <= index ) {
                 return;
             }
@@ -1490,26 +1495,29 @@ namespace org.kbinani.cadencii
                 return;
             }
 
-            String sel = (String)listResampler.getItemAt( index );
-            listResampler.setItemAt( index, listResampler.getItemAt( index + delta ) );
-            listResampler.setItemAt( index + delta, sel );
-            listResampler.setSelectedIndex( index + delta );
+            String sel = (String)listResampler.getItemAt( index, 0 );
+            boolean chk = listResampler.isRowChecked( index );
+            listResampler.setItemAt( index, 0, listResampler.getItemAt( index + delta, 0 ) );
+            listResampler.setRowChecked( index, listResampler.isRowChecked( index + delta ) );
+            listResampler.setItemAt( index + delta, 0, sel );
+            listResampler.setRowChecked( index + delta, chk );
+            listResampler.setSelectedRow( index + delta );
         }
 
         public void buttonResamplerRemove_Click( Object sender, EventArgs e )
         {
-            int index = listResampler.getSelectedIndex();
-            int count = listResampler.getItemCount();
+            int index = listResampler.getSelectedRow();
+            int count = listResampler.getItemCountRow();
             if ( index < 0 || count <= index ) {
                 return;
             }
-            listResampler.removeItemAt( index );
+            listResampler.removeRow( index );
             // 選択し直す
             if( index >= count - 1 ){
                 index--;
             }
             if( 0 <= index && index < count - 1 ){
-                listResampler.setSelectedIndex( index );
+                listResampler.setSelectedRow( index );
             }
         }
 
@@ -1523,10 +1531,10 @@ namespace org.kbinani.cadencii
             if ( dr == BFileChooser.APPROVE_OPTION ) {
                 String path = openUtauCore.getSelectedFile();
                 txtWavtool.setText( path );
-                if ( listResampler.getItemCount() == 0 ) {
+                if ( listResampler.getItemCountRow() == 0 ) {
                     String resampler = fsys.combine( PortUtil.getDirectoryName( path ), "resampler.exe" );
                     if ( PortUtil.isFileExists( resampler ) ) {
-                        listResampler.addItem( resampler );
+                        listResampler.addItem( new String[]{ resampler }, false );
                     }
                 }
             }
@@ -1962,13 +1970,16 @@ namespace org.kbinani.cadencii
             this.chkKeepLyricInputMode = new org.kbinani.windows.forms.BCheckBox();
             this.tabPlatform = new System.Windows.Forms.TabPage();
             this.groupUtauCores = new org.kbinani.windows.forms.BGroupBox();
+            this.labelResamplerWithWine = new org.kbinani.windows.forms.BLabel();
+            this.labelWavtoolPath = new org.kbinani.windows.forms.BLabel();
             this.buttonResamplerUp = new org.kbinani.windows.forms.BButton();
             this.buttonResamplerDown = new org.kbinani.windows.forms.BButton();
             this.buttonResamplerRemove = new org.kbinani.windows.forms.BButton();
             this.buttonResamplerAdd = new org.kbinani.windows.forms.BButton();
-            this.listResampler = new org.kbinani.windows.forms.BListBox();
+            this.listResampler = new org.kbinani.windows.forms.BListView();
+            this.columnHeaderPath = new System.Windows.Forms.ColumnHeader();
             this.lblResampler = new org.kbinani.windows.forms.BLabel();
-            this.chkInvokeWithWine = new org.kbinani.windows.forms.BCheckBox();
+            this.chkWavtoolWithWine = new org.kbinani.windows.forms.BCheckBox();
             this.btnWavtool = new org.kbinani.windows.forms.BButton();
             this.lblWavtool = new org.kbinani.windows.forms.BLabel();
             this.txtWavtool = new org.kbinani.windows.forms.BTextBox();
@@ -3162,29 +3173,49 @@ namespace org.kbinani.cadencii
             // 
             // groupUtauCores
             // 
+            this.groupUtauCores.Controls.Add( this.labelResamplerWithWine );
+            this.groupUtauCores.Controls.Add( this.labelWavtoolPath );
             this.groupUtauCores.Controls.Add( this.buttonResamplerUp );
             this.groupUtauCores.Controls.Add( this.buttonResamplerDown );
             this.groupUtauCores.Controls.Add( this.buttonResamplerRemove );
             this.groupUtauCores.Controls.Add( this.buttonResamplerAdd );
             this.groupUtauCores.Controls.Add( this.listResampler );
             this.groupUtauCores.Controls.Add( this.lblResampler );
-            this.groupUtauCores.Controls.Add( this.chkInvokeWithWine );
+            this.groupUtauCores.Controls.Add( this.chkWavtoolWithWine );
             this.groupUtauCores.Controls.Add( this.btnWavtool );
             this.groupUtauCores.Controls.Add( this.lblWavtool );
             this.groupUtauCores.Controls.Add( this.txtWavtool );
             this.groupUtauCores.Location = new System.Drawing.Point( 23, 123 );
             this.groupUtauCores.Name = "groupUtauCores";
-            this.groupUtauCores.Size = new System.Drawing.Size( 407, 234 );
+            this.groupUtauCores.Size = new System.Drawing.Size( 407, 296 );
             this.groupUtauCores.TabIndex = 108;
             this.groupUtauCores.TabStop = false;
             this.groupUtauCores.Text = "UTAU Cores";
             // 
+            // labelResamplerWithWine
+            // 
+            this.labelResamplerWithWine.AutoSize = true;
+            this.labelResamplerWithWine.Location = new System.Drawing.Point( 49, 266 );
+            this.labelResamplerWithWine.Name = "labelResamplerWithWine";
+            this.labelResamplerWithWine.Size = new System.Drawing.Size( 143, 12 );
+            this.labelResamplerWithWine.TabIndex = 121;
+            this.labelResamplerWithWine.Text = "Check the box to use Wine";
+            // 
+            // labelWavtoolPath
+            // 
+            this.labelWavtoolPath.AutoSize = true;
+            this.labelWavtoolPath.Location = new System.Drawing.Point( 44, 49 );
+            this.labelWavtoolPath.Name = "labelWavtoolPath";
+            this.labelWavtoolPath.Size = new System.Drawing.Size( 30, 12 );
+            this.labelWavtoolPath.TabIndex = 120;
+            this.labelWavtoolPath.Text = "Path:";
+            // 
             // buttonResamplerUp
             // 
             this.buttonResamplerUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonResamplerUp.Location = new System.Drawing.Point( 340, 134 );
+            this.buttonResamplerUp.Location = new System.Drawing.Point( 326, 211 );
             this.buttonResamplerUp.Name = "buttonResamplerUp";
-            this.buttonResamplerUp.Size = new System.Drawing.Size( 61, 23 );
+            this.buttonResamplerUp.Size = new System.Drawing.Size( 75, 23 );
             this.buttonResamplerUp.TabIndex = 119;
             this.buttonResamplerUp.Text = "Up";
             this.buttonResamplerUp.UseVisualStyleBackColor = true;
@@ -3192,9 +3223,9 @@ namespace org.kbinani.cadencii
             // buttonResamplerDown
             // 
             this.buttonResamplerDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonResamplerDown.Location = new System.Drawing.Point( 340, 163 );
+            this.buttonResamplerDown.Location = new System.Drawing.Point( 326, 240 );
             this.buttonResamplerDown.Name = "buttonResamplerDown";
-            this.buttonResamplerDown.Size = new System.Drawing.Size( 61, 23 );
+            this.buttonResamplerDown.Size = new System.Drawing.Size( 75, 23 );
             this.buttonResamplerDown.TabIndex = 118;
             this.buttonResamplerDown.Text = "Down";
             this.buttonResamplerDown.UseVisualStyleBackColor = true;
@@ -3202,9 +3233,9 @@ namespace org.kbinani.cadencii
             // buttonResamplerRemove
             // 
             this.buttonResamplerRemove.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonResamplerRemove.Location = new System.Drawing.Point( 340, 78 );
+            this.buttonResamplerRemove.Location = new System.Drawing.Point( 326, 158 );
             this.buttonResamplerRemove.Name = "buttonResamplerRemove";
-            this.buttonResamplerRemove.Size = new System.Drawing.Size( 61, 23 );
+            this.buttonResamplerRemove.Size = new System.Drawing.Size( 75, 23 );
             this.buttonResamplerRemove.TabIndex = 117;
             this.buttonResamplerRemove.Text = "Remove";
             this.buttonResamplerRemove.UseVisualStyleBackColor = true;
@@ -3212,9 +3243,9 @@ namespace org.kbinani.cadencii
             // buttonResamplerAdd
             // 
             this.buttonResamplerAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonResamplerAdd.Location = new System.Drawing.Point( 340, 49 );
+            this.buttonResamplerAdd.Location = new System.Drawing.Point( 326, 129 );
             this.buttonResamplerAdd.Name = "buttonResamplerAdd";
-            this.buttonResamplerAdd.Size = new System.Drawing.Size( 61, 23 );
+            this.buttonResamplerAdd.Size = new System.Drawing.Size( 75, 23 );
             this.buttonResamplerAdd.TabIndex = 116;
             this.buttonResamplerAdd.Text = "Add";
             this.buttonResamplerAdd.UseVisualStyleBackColor = true;
@@ -3224,41 +3255,51 @@ namespace org.kbinani.cadencii
             this.listResampler.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.listResampler.FormattingEnabled = true;
-            this.listResampler.HorizontalScrollbar = true;
-            this.listResampler.ItemHeight = 12;
-            this.listResampler.Location = new System.Drawing.Point( 100, 49 );
+            this.listResampler.CheckBoxes = true;
+            this.listResampler.Columns.AddRange( new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeaderPath} );
+            this.listResampler.FullRowSelect = true;
+            this.listResampler.HideSelection = false;
+            this.listResampler.Location = new System.Drawing.Point( 46, 129 );
+            this.listResampler.MultiSelect = false;
             this.listResampler.Name = "listResampler";
-            this.listResampler.ScrollAlwaysVisible = true;
-            this.listResampler.Size = new System.Drawing.Size( 234, 136 );
+            this.listResampler.ShowGroups = false;
+            this.listResampler.Size = new System.Drawing.Size( 274, 134 );
             this.listResampler.TabIndex = 115;
+            this.listResampler.UseCompatibleStateImageBehavior = false;
+            this.listResampler.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeaderPath
+            // 
+            this.columnHeaderPath.Text = "path";
+            this.columnHeaderPath.Width = 280;
             // 
             // lblResampler
             // 
             this.lblResampler.AutoSize = true;
-            this.lblResampler.Location = new System.Drawing.Point( 17, 52 );
+            this.lblResampler.Location = new System.Drawing.Point( 17, 109 );
             this.lblResampler.Name = "lblResampler";
             this.lblResampler.Size = new System.Drawing.Size( 55, 12 );
             this.lblResampler.TabIndex = 111;
             this.lblResampler.Text = "resampler";
             // 
-            // chkInvokeWithWine
+            // chkWavtoolWithWine
             // 
-            this.chkInvokeWithWine.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.chkInvokeWithWine.AutoSize = true;
-            this.chkInvokeWithWine.Location = new System.Drawing.Point( 19, 198 );
-            this.chkInvokeWithWine.Name = "chkInvokeWithWine";
-            this.chkInvokeWithWine.Size = new System.Drawing.Size( 177, 16 );
-            this.chkInvokeWithWine.TabIndex = 113;
-            this.chkInvokeWithWine.Text = "Invoke UTAU cores with Wine";
-            this.chkInvokeWithWine.UseVisualStyleBackColor = true;
+            this.chkWavtoolWithWine.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.chkWavtoolWithWine.AutoSize = true;
+            this.chkWavtoolWithWine.Location = new System.Drawing.Point( 46, 79 );
+            this.chkWavtoolWithWine.Name = "chkWavtoolWithWine";
+            this.chkWavtoolWithWine.Size = new System.Drawing.Size( 153, 16 );
+            this.chkWavtoolWithWine.TabIndex = 113;
+            this.chkWavtoolWithWine.Text = "Invoke wavtool with Wine";
+            this.chkWavtoolWithWine.UseVisualStyleBackColor = true;
             // 
             // btnWavtool
             // 
             this.btnWavtool.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnWavtool.Location = new System.Drawing.Point( 340, 20 );
+            this.btnWavtool.Location = new System.Drawing.Point( 326, 44 );
             this.btnWavtool.Name = "btnWavtool";
-            this.btnWavtool.Size = new System.Drawing.Size( 61, 23 );
+            this.btnWavtool.Size = new System.Drawing.Size( 75, 23 );
             this.btnWavtool.TabIndex = 112;
             this.btnWavtool.Text = "Browse";
             this.btnWavtool.UseVisualStyleBackColor = true;
@@ -3276,9 +3317,9 @@ namespace org.kbinani.cadencii
             // 
             this.txtWavtool.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtWavtool.Location = new System.Drawing.Point( 100, 22 );
+            this.txtWavtool.Location = new System.Drawing.Point( 100, 46 );
             this.txtWavtool.Name = "txtWavtool";
-            this.txtWavtool.Size = new System.Drawing.Size( 234, 19 );
+            this.txtWavtool.Size = new System.Drawing.Size( 220, 19 );
             this.txtWavtool.TabIndex = 111;
             // 
             // groupPlatform
@@ -3351,7 +3392,7 @@ namespace org.kbinani.cadencii
             // btnRemove
             // 
             this.btnRemove.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnRemove.Location = new System.Drawing.Point( 98, 388 );
+            this.btnRemove.Location = new System.Drawing.Point( 98, 401 );
             this.btnRemove.Name = "btnRemove";
             this.btnRemove.Size = new System.Drawing.Size( 75, 23 );
             this.btnRemove.TabIndex = 122;
@@ -3361,7 +3402,7 @@ namespace org.kbinani.cadencii
             // btnAdd
             // 
             this.btnAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnAdd.Location = new System.Drawing.Point( 17, 388 );
+            this.btnAdd.Location = new System.Drawing.Point( 17, 401 );
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size( 75, 23 );
             this.btnAdd.TabIndex = 121;
@@ -3371,7 +3412,7 @@ namespace org.kbinani.cadencii
             // btnUp
             // 
             this.btnUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnUp.Location = new System.Drawing.Point( 279, 388 );
+            this.btnUp.Location = new System.Drawing.Point( 279, 401 );
             this.btnUp.Name = "btnUp";
             this.btnUp.Size = new System.Drawing.Size( 75, 23 );
             this.btnUp.TabIndex = 123;
@@ -3381,7 +3422,7 @@ namespace org.kbinani.cadencii
             // btnDown
             // 
             this.btnDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDown.Location = new System.Drawing.Point( 360, 388 );
+            this.btnDown.Location = new System.Drawing.Point( 360, 401 );
             this.btnDown.Name = "btnDown";
             this.btnDown.Size = new System.Drawing.Size( 75, 23 );
             this.btnDown.TabIndex = 124;
@@ -3532,7 +3573,7 @@ namespace org.kbinani.cadencii
             this.listSingers.Location = new System.Drawing.Point( 17, 23 );
             this.listSingers.MultiSelect = false;
             this.listSingers.Name = "listSingers";
-            this.listSingers.Size = new System.Drawing.Size( 418, 350 );
+            this.listSingers.Size = new System.Drawing.Size( 418, 372 );
             this.listSingers.TabIndex = 120;
             this.listSingers.UseCompatibleStateImageBehavior = false;
             this.listSingers.View = System.Windows.Forms.View.Details;
@@ -3967,7 +4008,7 @@ namespace org.kbinani.cadencii
         private BListView listSingers;
         private BGroupBox groupUtauCores;
         private BLabel lblResampler;
-        private BCheckBox chkInvokeWithWine;
+        private BCheckBox chkWavtoolWithWine;
         private BButton btnWavtool;
         private BLabel lblWavtool;
         private BTextBox txtWavtool;
@@ -4020,7 +4061,7 @@ namespace org.kbinani.cadencii
         private NumberTextBox txtAutoVibratoThresholdLength;
         private BComboBox comboAutoVibratoTypeCustom;
         private BLabel lblAutoVibratoTypeCustom;
-        private BListBox listResampler;
+        private BListView listResampler;
         private BButton buttonResamplerRemove;
         private BButton buttonResamplerAdd;
         private BButton buttonResamplerUp;

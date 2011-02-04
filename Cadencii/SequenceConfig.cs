@@ -35,6 +35,26 @@ namespace org.kbinani.cadencii
         /// <version>3.3+</version>
         /// </summary>
         public boolean WaveFileOutputFromMasterTrack = false;
+        /// <summary>
+        /// スタートマーカーの位置(clock)
+        /// version 3.3+
+        /// </summary>
+        public int StartMarker = 0;
+        /// <summary>
+        /// スタートマーカーが有効かどうか
+        /// version 3.3+
+        /// </summary>
+        public boolean StartMarkerEnabled = false;
+        /// <summary>
+        /// エンドマーカーの位置(clock)
+        /// version 3.3+
+        /// </summary>
+        public int EndMarker = 0;
+        /// <summary>
+        /// エンドマーカーが有効かどうか
+        /// version 3.3+
+        /// </summary>
+        public boolean EndMarkerEnabled = false;
 
         public boolean equals( SequenceConfig item )
         {

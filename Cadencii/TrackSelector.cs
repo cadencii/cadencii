@@ -2051,24 +2051,29 @@ namespace org.kbinani.cadencii
             double sec_pre_utterance1 = ust_event1.PreUtterance / 1000.0;
             double sec_overlap1 = ust_event1.VoiceOverlap / 1000.0;
 
-            int px_env_start1 = AppManager.xCoordFromClocks( (int)tempo_table.getClockFromSec( sec_env_start1.value ) );
-            int px_env_end1 = AppManager.xCoordFromClocks( (int)tempo_table.getClockFromSec( sec_env_end1.value ) );
+            TempoVectorSearchContext context = new TempoVectorSearchContext();
+            int px_env_start1 = 
+                AppManager.xCoordFromClocks( 
+                    (int)tempo_table.getClockFromSec( sec_env_start1.value, context ) );
             if ( px_pre_utteramce != null ) {
                 px_pre_utteramce.value = px_env_start1;
-            }
-            if ( px_overlap != null ) {
-                px_overlap.value = AppManager.xCoordFromClocks( (int)tempo_table.getClockFromSec( sec_env_start1.value + sec_overlap1 ) );
             }
             double sec_p1 = sec_env_start1.value + draw_target.p1 / 1000.0;
             double sec_p2 = sec_env_start1.value + (draw_target.p1 + draw_target.p2) / 1000.0;
             double sec_p5 = sec_env_start1.value +(draw_target.p1 + draw_target.p2 + draw_target.p5) / 1000.0;
             double sec_p3 = sec_env_end1.value - (draw_target.p3 + draw_target.p4) / 1000.0;
             double sec_p4 = sec_env_end1.value - draw_target.p4 / 1000.0;
-            int p1 = AppManager.xCoordFromClocks( (int)tempo_table.getClockFromSec( sec_p1 ) );
-            int p2 = AppManager.xCoordFromClocks( (int)tempo_table.getClockFromSec( sec_p2 ) );
-            int p5 = AppManager.xCoordFromClocks( (int)tempo_table.getClockFromSec( sec_p5 ) );
-            int p3 = AppManager.xCoordFromClocks( (int)tempo_table.getClockFromSec( sec_p3 ) );
-            int p4 = AppManager.xCoordFromClocks( (int)tempo_table.getClockFromSec( sec_p4 ) );
+            int p1 = AppManager.xCoordFromClocks( (int)tempo_table.getClockFromSec( sec_p1, context ) );
+            int p2 = AppManager.xCoordFromClocks( (int)tempo_table.getClockFromSec( sec_p2, context ) );
+            int p5 = AppManager.xCoordFromClocks( (int)tempo_table.getClockFromSec( sec_p5, context ) );
+            int p3 = AppManager.xCoordFromClocks( (int)tempo_table.getClockFromSec( sec_p3, context ) );
+            int p4 = AppManager.xCoordFromClocks( (int)tempo_table.getClockFromSec( sec_p4, context ) );
+            int px_env_end1 = AppManager.xCoordFromClocks( (int)tempo_table.getClockFromSec( sec_env_end1.value, context ) );
+            if ( px_overlap != null ) {
+                px_overlap.value = 
+                    AppManager.xCoordFromClocks(
+                        (int)tempo_table.getClockFromSec( sec_env_start1.value + sec_overlap1, context ) );
+            }
             int v1 = yCoordFromValue( draw_target.v1 );
             int v2 = yCoordFromValue( draw_target.v2 );
             int v3 = yCoordFromValue( draw_target.v3 );

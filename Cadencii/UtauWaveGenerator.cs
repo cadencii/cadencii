@@ -61,7 +61,8 @@ namespace org.kbinani.cadencii
         private String mResampler;
         private String mWavtool;
         private String mTempDir;
-        private boolean mInvokeWithWine;
+        private boolean mResamplerWithWine;
+        private boolean mWavtoolWithWine;
         private boolean mAbortRequired = false;
         private boolean mRunning = false;
         private String mWine = "";
@@ -154,7 +155,8 @@ namespace org.kbinani.cadencii
             mWavtool = mConfig.PathWavtool;
             mSampleRate = sample_rate;
             mTempDir = fsys.combine( AppManager.getCadenciiTempDir(), AppManager.getID() );
-            mInvokeWithWine = mConfig.InvokeUtauCoreWithWine;
+            mResamplerWithWine = mConfig.isResamplerWithWineAt( resampler_index );
+            mWavtoolWithWine = mConfig.WavtoolWithWine;
             mWine = mConfig.getWineExecutable();
 
             mVsq = (VsqFileEx)vsq.clone();
@@ -673,7 +675,7 @@ namespace org.kbinani.cadencii
                         Process process = null;
                         try {
                             process = new Process();
-                            process.StartInfo.FileName = (mInvokeWithWine ? "wine \"" : "\"") + mResampler + "\"";
+                            process.StartInfo.FileName = (mResamplerWithWine ? "wine \"" : "\"") + mResampler + "\"";
                             process.StartInfo.Arguments = rq.getResamplerArgString();
                             process.StartInfo.WorkingDirectory = mTempDir;
                             process.StartInfo.CreateNoWindow = true;
@@ -733,7 +735,7 @@ namespace org.kbinani.cadencii
 #if MAKEBAT_SP
                     bat.WriteLine( "\"" + m_wavtool + "\" " + arg_wavtool );
 #endif
-                    processWavtool( arg_wavtool, file, mTempDir, mWavtool, mInvokeWithWine );
+                    processWavtool( arg_wavtool, file, mTempDir, mWavtool, mWavtoolWithWine );
 
                     // できたwavを読み取ってWaveIncomingイベントを発生させる
                     int sample_end = (int)(sec_fin * mSampleRate);

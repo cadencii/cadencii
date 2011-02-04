@@ -285,20 +285,35 @@ namespace org.kbinani.cadencii
         public MidiPortConfig MidiInPort = new MidiPortConfig();
 
         public boolean ViewAtcualPitch = false;
-        public boolean InvokeUtauCoreWithWine = false;
+        public boolean __revoked__InvokeUtauCoreWithWine = false;
         public Vector<SingerConfig> UtauSingers = new Vector<SingerConfig>();
         /// <summary>
         /// UTAU互換の合成器のパス(1個目)
         /// </summary>
         public String PathResampler = "";
         /// <summary>
+        /// UTAU互換の合成器の1個目を，wine経由で呼ぶかどうか
+        /// version 3.3+
+        /// </summary>
+        public boolean ResamplerWithWine = false;
+        /// <summary>
         /// UTAU互換の合成器のパス(2個目以降)
         /// </summary>
         public Vector<String> PathResamplers = new Vector<String>();
         /// <summary>
+        /// UTAU互換の合成器を，wine経由で呼ぶかどうか
+        /// version 3.3+
+        /// </summary>
+        public Vector<Boolean> ResamplersWithWine = new Vector<Boolean>();
+        /// <summary>
         /// UTAU用のwave切り貼りツール
         /// </summary>
         public String PathWavtool = "";
+        /// <summary>
+        /// wavtoolをwine経由で呼ぶかどうか
+        /// version 3.3+
+        /// </summary>
+        public boolean WavtoolWithWine = false;
         /// <summary>
         /// ベジエ制御点を掴む時の，掴んだと判定する際の誤差．制御点の外輪からPxToleranceBezierピクセルずれていても，掴んだと判定する．
         /// </summary>
@@ -708,6 +723,42 @@ namespace org.kbinani.cadencii
         {
             PathResamplers.clear();
             PathResampler = "";
+            ResamplersWithWine.clear();
+        }
+
+        /// <summary>
+        /// 第index番目に登録されているresamplerをwine経由で呼ぶかどうかを表す値を取得します
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public boolean isResamplerWithWineAt( int index )
+        {
+            if ( index == 0 ) {
+                return ResamplerWithWine;
+            } else {
+                index--;
+                if ( 0 <= index && index < vec.size( ResamplersWithWine ) ) {
+                    return vec.get( ResamplersWithWine, index );
+                }
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// 第index番目に登録されているresamplerをwine経由で呼ぶかどうかを設定します
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="with_wine"></param>
+        public void setResamplerWithWineAt( int index, boolean with_wine )
+        {
+            if ( index == 0 ) {
+                ResamplerWithWine = with_wine;
+            } else {
+                index--;
+                if ( 0 <= index && index < vec.size( ResamplersWithWine ) ) {
+                    vec.set( ResamplersWithWine, index, with_wine );
+                }
+            }
         }
 
         /// <summary>
@@ -761,10 +812,13 @@ namespace org.kbinani.cadencii
             if ( index == 0 ) {
                 if ( size > 0 ) {
                     PathResampler = PathResamplers.get( 0 );
+                    ResamplerWithWine = ResamplersWithWine.get( 0 );
                     for ( int i = 0; i < size - 1; i++ ) {
                         PathResamplers.set( i, PathResamplers.get( i + 1 ) );
+                        ResamplersWithWine.set( i, ResamplersWithWine.get( i + 1 ) );
                     }
                     PathResamplers.removeElementAt( size - 1 );
+                    ResamplersWithWine.removeElementAt( size - 1 );
                 } else {
                     PathResampler = "";
                 }
@@ -773,8 +827,10 @@ namespace org.kbinani.cadencii
                 if ( 0 <= index && index < size ) {
                     for ( int i = 0; i < size - 1; i++ ) {
                         PathResamplers.set( i, PathResamplers.get( i + 1 ) );
+                        ResamplersWithWine.set( i, ResamplersWithWine.get( i + 1 ) );
                     }
                     PathResamplers.removeElementAt( size - 1 );
+                    ResamplersWithWine.removeElementAt( size - 1 );
                 }
             }
         }
@@ -783,13 +839,15 @@ namespace org.kbinani.cadencii
         /// 新しいUTAU互換合成器のパスを登録します
         /// </summary>
         /// <param name="path"></param>
-        public void addResampler( String path )
+        public void addResampler( String path, boolean with_wine )
         {
             int count = getResamplerCount();
             if ( count == 0 ) {
                 PathResampler = path;
+                ResamplerWithWine = with_wine;
             } else {
                 PathResamplers.add( path );
+                ResamplersWithWine.add( with_wine );
             }
         }
 
@@ -1192,6 +1250,43 @@ namespace org.kbinani.cadencii
                 RecentFiles.removeElementAt( index );
             }
             RecentFiles.insertElementAt( new_file, 0 );
+        }
+        #endregion
+
+        #region private method
+        /// <summary>
+        /// このインスタンスの整合性をチェックします．
+        /// PathResamplersとPathResamplersWithWineの個数があってるかどうかなどのチェックを行う
+        /// </summary>
+        public void check()
+        {
+            // key_widthを最大，最小の間に収める
+            int draft_key_width = this.KeyWidth;
+            if ( draft_key_width < AppManager.MIN_KEY_WIDTH ) {
+                draft_key_width = AppManager.MIN_KEY_WIDTH;
+            } else if ( AppManager.MAX_KEY_WIDTH < draft_key_width ) {
+                draft_key_width = AppManager.MAX_KEY_WIDTH;
+            }
+
+            // PathResamplersWithWineの個数があってるかどうかチェック
+            if ( PathResamplers == null ) {
+                PathResamplers = new Vector<String>();
+            }
+            if ( ResamplersWithWine == null ) {
+                ResamplersWithWine = new Vector<Boolean>();
+            }
+            if ( vec.size( PathResamplers ) != vec.size( ResamplersWithWine ) ) {
+                int delta = vec.size( ResamplersWithWine ) - vec.size( PathResamplers );
+                if ( delta > 0 ) {
+                    for ( int i = 0; i < delta; i++ ) {
+                        ResamplersWithWine.removeElementAt( vec.size( ResamplersWithWine ) - 1 );
+                    }
+                } else if ( delta < 0 ) {
+                    for ( int i = 0; i < -delta; i++ ) {
+                        vec.add( ResamplersWithWine, false );
+                    }
+                }
+            }
         }
         #endregion
     }

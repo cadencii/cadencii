@@ -466,14 +466,6 @@ namespace org.kbinani.cadencii
         /// </summary> 
         public static boolean mAutoNormalize = false;
         /// <summary>
-        /// エンドマーカーの位置(clock)
-        /// </summary>
-        public static int mEndMarker = 0;
-        /// <summary>
-        /// エンドマーカーが有効かどうか
-        /// </summary>
-        public static boolean mEndMarkerEnabled = false;
-        /// <summary>
         /// x方向の表示倍率(pixel/clock)
         /// </summary>
         private static float mScaleX = 0.1f;
@@ -482,17 +474,9 @@ namespace org.kbinani.cadencii
         /// </summary>
         private static float mInvScaleX = 1.0f / mScaleX;
         /// <summary>
-        /// スタートマーカーの位置(clock)
-        /// </summary>
-        public static int mStartMarker = 0;
-        /// <summary>
         /// Bezierカーブ編集モードが有効かどうかを表す
         /// </summary>
         private static boolean mIsCurveMode = false;
-        /// <summary>
-        /// スタートマーカーが有効かどうか
-        /// </summary>
-        public static boolean mStartMarkerEnabled = false;
         /// <summary>
         /// 再生時に自動スクロールするかどうか
         /// </summary>
@@ -835,8 +819,8 @@ namespace org.kbinani.cadencii
             }
 
             int end_clock = mVsq.TotalClocks;
-            if ( mEndMarkerEnabled ) {
-                end_clock = mEndMarker;
+            if ( mVsq.config.EndMarkerEnabled ) {
+                end_clock = mVsq.config.EndMarker;
             }
             mPreviewEndingClock = end_clock;
             double end_sec = mVsq.getSecFromClock( end_clock );
@@ -3496,9 +3480,9 @@ namespace org.kbinani.cadencii
                     mVsq.editorStatus.renderRequired[i] = false;
                 }
             }
-            mStartMarker = mVsq.getPreMeasureClocks();
-            int bar = mVsq.getPreMeasure() + 1;
-            mEndMarker = mVsq.getClockFromBarCount( bar );
+            //mStartMarker = mVsq.getPreMeasureClocks();
+            //int bar = mVsq.getPreMeasure() + 1;
+            //mEndMarker = mVsq.getClockFromBarCount( bar );
             if ( mVsq.Track.size() >= 1 ) {
                 mSelected = 1;
             } else {
@@ -3552,9 +3536,9 @@ namespace org.kbinani.cadencii
                 }
             }
             mFile = "";
-            mStartMarker = mVsq.getPreMeasureClocks();
-            int bar = mVsq.getPreMeasure() + 1;
-            mEndMarker = mVsq.getClockFromBarCount( bar );
+            //mStartMarker = mVsq.getPreMeasureClocks();
+            //int bar = mVsq.getPreMeasure() + 1;
+            //mEndMarker = mVsq.getClockFromBarCount( bar );
             mAutoBackupTimer.stop();
             try {
 #if JAVA
@@ -4227,13 +4211,8 @@ namespace org.kbinani.cadencii
                 }
             }
 
-            int draft_key_width = editorConfig.KeyWidth;
-            if ( draft_key_width < MIN_KEY_WIDTH ) {
-                draft_key_width = MIN_KEY_WIDTH;
-            } else if ( MAX_KEY_WIDTH < draft_key_width ) {
-                draft_key_width = MAX_KEY_WIDTH;
-            }
-            keyWidth = draft_key_width;
+            editorConfig.check();
+            keyWidth = editorConfig.KeyWidth;
         }
 
         public static VsqID getSingerIDUtau( int language, int program )

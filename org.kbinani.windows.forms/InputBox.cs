@@ -100,10 +100,10 @@ namespace org.kbinani.windows.forms {
         /// コード エディタで変更しないでください。
         /// </summary>
         private void InitializeComponent() {
-            this.txtInput = new BTextBox();
-            this.btnOk = new BButton();
-            this.lblMessage = new BLabel();
-            this.btnCancel = new BButton();
+            this.txtInput = new org.kbinani.windows.forms.BTextBox();
+            this.btnOk = new org.kbinani.windows.forms.BButton();
+            this.lblMessage = new org.kbinani.windows.forms.BLabel();
+            this.btnCancel = new org.kbinani.windows.forms.BButton();
             this.SuspendLayout();
             // 
             // txtInput
@@ -118,7 +118,7 @@ namespace org.kbinani.windows.forms {
             // btnOk
             // 
             this.btnOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOk.Location = new System.Drawing.Point( 246, 49 );
+            this.btnOk.Location = new System.Drawing.Point( 165, 49 );
             this.btnOk.Name = "btnOk";
             this.btnOk.Size = new System.Drawing.Size( 75, 23 );
             this.btnOk.TabIndex = 1;
@@ -136,7 +136,7 @@ namespace org.kbinani.windows.forms {
             // btnCancel
             // 
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point( -100, 49 );
+            this.btnCancel.Location = new System.Drawing.Point( 246, 49 );
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size( 75, 23 );
             this.btnCancel.TabIndex = 3;

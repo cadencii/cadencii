@@ -132,7 +132,7 @@ public class Preference extends BDialog {
 	private BLabel lblWavtool = null;
 	private BTextBox txtWavtool = null;
 	private BButton btnWavtool = null;
-	private BCheckBox chkInvokeWithWine = null;
+	private BCheckBox chkWavtoolWithWine = null;
 	private BPanel tabUtausingers = null;  //  @jve:decl-index=0:visual-constraint="-81,1502"
 	private BListView listSingers = null;
 	private BButton btnAdd = null;
@@ -184,7 +184,7 @@ public class Preference extends BDialog {
     private BComboBox comboDefaultSynthesizer = null;
     private BComboBox comboAutoVibratoTypeCustom = null;
     private JPanel jPanel = null;
-    private BListBox listResampler = null;
+    private BListView listResampler = null;
     private BButton buttonResamplerAdd = null;
     private BButton buttonResamplerRemove = null;
     private BButton buttonResamplerUp = null;
@@ -197,6 +197,9 @@ public class Preference extends BDialog {
     private JScrollPane jScrollPane1 = null;
     private BLabel lblPlatform1 = null;
     private JPanel jPanel2 = null;
+    private BLabel labelWavtoolPath = null;
+    private BLabel lblResampler1 = null;
+    private BLabel labelResamplerWithWine = null;
     //SECTION-END-FIELD
 	/**
 	 * This is the default constructor
@@ -1682,7 +1685,7 @@ public class Preference extends BDialog {
 			gridBagConstraints93.gridy = 0;
 			tabPlatform = new BPanel();
 			tabPlatform.setLayout(new GridBagLayout());
-			tabPlatform.setSize(new Dimension(455, 462));
+			tabPlatform.setSize(new Dimension(455, 498));
 			tabPlatform.add(getGroupPlatform(), gridBagConstraints93);
 			tabPlatform.add(getGroupUtauCores(), gridBagConstraints106);
 			tabPlatform.add(jLabel91, gridBagConstraints125);
@@ -1873,37 +1876,64 @@ public class Preference extends BDialog {
 	 */
 	private BGroupBox getGroupUtauCores() {
 		if (groupUtauCores == null) {
+			GridBagConstraints gridBagConstraints134 = new GridBagConstraints();
+			gridBagConstraints134.gridx = 0;
+			gridBagConstraints134.anchor = GridBagConstraints.WEST;
+			gridBagConstraints134.gridwidth = 3;
+			gridBagConstraints134.insets = new Insets(3, 36, 3, 12);
+			gridBagConstraints134.gridy = 5;
+			labelResamplerWithWine = new BLabel();
+			labelResamplerWithWine.setText("Check the box to use Wine");
+			GridBagConstraints gridBagConstraints130 = new GridBagConstraints();
+			gridBagConstraints130.gridx = 0;
+			gridBagConstraints130.gridwidth = 3;
+			gridBagConstraints130.anchor = GridBagConstraints.WEST;
+			gridBagConstraints130.insets = new Insets(3, 36, 3, 12);
+			gridBagConstraints130.gridy = 5;
+			lblResampler1 = new BLabel();
+			lblResampler1.setText("resampler");
+			GridBagConstraints gridBagConstraints129 = new GridBagConstraints();
+			gridBagConstraints129.gridx = 0;
+			gridBagConstraints129.insets = new Insets(0, 36, 0, 0);
+			gridBagConstraints129.gridy = 1;
+			labelWavtoolPath = new BLabel();
+			labelWavtoolPath.setPreferredSize(new Dimension(49, 29));
+			labelWavtoolPath.setText("Path:");
 			GridBagConstraints gridBagConstraints128 = new GridBagConstraints();
 			gridBagConstraints128.gridx = 3;
 			gridBagConstraints128.insets = new Insets(3, 0, 3, 0);
 			gridBagConstraints128.fill = GridBagConstraints.BOTH;
-			gridBagConstraints128.gridy = 0;
+			gridBagConstraints128.gridy = 1;
 			GridBagConstraints gridBagConstraints12 = new GridBagConstraints();
 			gridBagConstraints12.fill = GridBagConstraints.BOTH;
-			gridBagConstraints12.gridy = 1;
+			gridBagConstraints12.gridy = 4;
 			gridBagConstraints12.weightx = 1.0D;
 			gridBagConstraints12.weighty = 1.0;
-			gridBagConstraints12.insets = new Insets(3, 15, 3, 15);
-			gridBagConstraints12.gridx = 1;
+			gridBagConstraints12.insets = new Insets(3, 36, 3, 15);
+			gridBagConstraints12.gridwidth = 2;
+			gridBagConstraints12.gridx = 0;
 			GridBagConstraints gridBagConstraints101 = new GridBagConstraints();
 			gridBagConstraints101.gridx = 3;
 			gridBagConstraints101.fill = GridBagConstraints.VERTICAL;
 			gridBagConstraints101.insets = new Insets(3, 0, 3, 0);
-			gridBagConstraints101.gridy = 1;
+			gridBagConstraints101.gridy = 4;
 			GridBagConstraints gridBagConstraints105 = new GridBagConstraints();
 			gridBagConstraints105.gridx = 0;
 			gridBagConstraints105.gridwidth = 3;
 			gridBagConstraints105.anchor = GridBagConstraints.WEST;
-			gridBagConstraints105.insets = new Insets(0, 12, 0, 0);
+			gridBagConstraints105.insets = new Insets(0, 36, 0, 0);
 			gridBagConstraints105.gridy = 2;
 			GridBagConstraints gridBagConstraints103 = new GridBagConstraints();
 			gridBagConstraints103.fill = GridBagConstraints.HORIZONTAL;
-			gridBagConstraints103.gridy = 0;
+			gridBagConstraints103.gridy = 1;
 			gridBagConstraints103.weightx = 1.0D;
 			gridBagConstraints103.insets = new Insets(3, 12, 3, 12);
 			gridBagConstraints103.gridx = 1;
 			GridBagConstraints gridBagConstraints102 = new GridBagConstraints();
 			gridBagConstraints102.gridx = 0;
+			gridBagConstraints102.gridwidth = 3;
+			gridBagConstraints102.anchor = GridBagConstraints.WEST;
+			gridBagConstraints102.insets = new Insets(3, 12, 0, 0);
 			gridBagConstraints102.gridy = 0;
 			lblWavtool = new BLabel();
 			lblWavtool.setText("wavtool");
@@ -1911,8 +1941,9 @@ public class Preference extends BDialog {
 			GridBagConstraints gridBagConstraints99 = new GridBagConstraints();
 			gridBagConstraints99.gridx = 0;
 			gridBagConstraints99.anchor = GridBagConstraints.NORTHWEST;
-			gridBagConstraints99.insets = new Insets(3, 12, 0, 0);
-			gridBagConstraints99.gridy = 1;
+			gridBagConstraints99.insets = new Insets(12, 12, 0, 0);
+			gridBagConstraints99.gridwidth = 3;
+			gridBagConstraints99.gridy = 3;
 			lblResampler = new BLabel();
 			lblResampler.setText("resampler");
 			groupUtauCores = new BGroupBox();
@@ -1921,10 +1952,12 @@ public class Preference extends BDialog {
 			groupUtauCores.add(lblWavtool, gridBagConstraints102);
 			groupUtauCores.add(getTxtWavtool(), gridBagConstraints103);
 			groupUtauCores.add(getJPanel22(), gridBagConstraints128);
-            groupUtauCores.add(lblResampler, gridBagConstraints99);
-            groupUtauCores.add(getJScrollPane1(), gridBagConstraints12);
-            groupUtauCores.add(getJPanel2(), gridBagConstraints101);
-            groupUtauCores.add(getChkInvokeWithWine(), gridBagConstraints105);
+			groupUtauCores.add(lblResampler, gridBagConstraints99);
+			groupUtauCores.add(getJScrollPane1(), gridBagConstraints12);
+			groupUtauCores.add(getJPanel2(), gridBagConstraints101);
+			groupUtauCores.add(getChkWavtoolWithWine(), gridBagConstraints105);
+			groupUtauCores.add(labelWavtoolPath, gridBagConstraints129);
+			groupUtauCores.add(labelResamplerWithWine, gridBagConstraints134);
 		}
 		return groupUtauCores;
 	}
@@ -1956,16 +1989,16 @@ public class Preference extends BDialog {
 	}
 
 	/**
-	 * This method initializes chkInvokeWithWine	
+	 * This method initializes chkWavtoolWithWine	
 	 * 	
 	 * @return javax.swing.BCheckBox	
 	 */
-	private BCheckBox getChkInvokeWithWine() {
-		if (chkInvokeWithWine == null) {
-			chkInvokeWithWine = new BCheckBox();
-			chkInvokeWithWine.setText("Invoke UTAU cores with Wine");
+	private BCheckBox getChkWavtoolWithWine() {
+		if (chkWavtoolWithWine == null) {
+			chkWavtoolWithWine = new BCheckBox();
+			chkWavtoolWithWine.setText("Invoke wavtool with Wine");
 		}
-		return chkInvokeWithWine;
+		return chkWavtoolWithWine;
 	}
 
 	/**
@@ -2839,9 +2872,9 @@ public class Preference extends BDialog {
      * 	
      * @return javax.swing.JList	
      */
-    private BListBox getListResampler() {
+    private BListView getListResampler() {
         if (listResampler == null) {
-            listResampler = new BListBox();
+            listResampler = new BListView();
         }
         return listResampler;
     }

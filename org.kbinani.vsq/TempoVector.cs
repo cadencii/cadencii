@@ -25,6 +25,39 @@ namespace org.kbinani.vsq
     using boolean = System.Boolean;
 #endif
 
+#if DEBUG
+    class TestTempoVector
+    {
+        public void run()
+        {
+            TempoVector tv = new TempoVector();
+            tv.add( new TempoTableEntry( 0, 500000, 0.0 ) );
+            tv.add( new TempoTableEntry( 1920, 500000, 0.0 ) );
+            tv.add( new TempoTableEntry( 3820, 500000, 0.0 ) );
+            tv.updateTempoInfo();
+            for ( int i = 0; i < tv.size(); i++ ) {
+                sout.println( "   #" + i + "; " + tv[i].Clock + "; " + tv[i].Time + "; " + (60e6 / tv[i].Tempo) );
+            }
+            /*
+  #0; 0; 0; 120
+  #1; 1920; 2; 120
+  #2; 3820; 3.97916666666667; 120             */
+            TempoVectorSearchContext c = new TempoVectorSearchContext();
+            sout.println( "getClockFromSec; time=1.0; c.mSec2ClockIndex=" + c.mSec2ClockIndex + "; c.mSec2ClockSec=" + c.mSec2ClockSec );
+            double cl = tv.getClockFromSec( 1.0, c );
+            sout.println( "cl=" + cl + "; c.mSec2ClockIndex=" + c.mSec2ClockIndex + "; c.mSec2ClockSec=" + c.mSec2ClockSec );
+
+            sout.println( "getClockFromSec; time=2.5; c.mSec2ClockIndex=" + c.mSec2ClockIndex + "; c.mSec2ClockSec=" + c.mSec2ClockSec );
+            cl = tv.getClockFromSec( 2.5, c );
+            sout.println( "cl=" + cl + "; c.mSec2ClockIndex=" + c.mSec2ClockIndex + "; c.mSec2ClockSec=" + c.mSec2ClockSec );
+
+            sout.println( "getClockFromSec; time=4.0; c.mSec2ClockIndex=" + c.mSec2ClockIndex + "; c.mSec2ClockSec=" + c.mSec2ClockSec );
+            cl = tv.getClockFromSec( 4.0, c );
+            sout.println( "cl=" + cl + "; c.mSec2ClockIndex=" + c.mSec2ClockIndex + "; c.mSec2ClockSec=" + c.mSec2ClockSec );
+        }
+    }
+#endif
+
     /// <summary>
     /// テンポ情報を格納したテーブル．
     /// </summary>
@@ -63,12 +96,19 @@ namespace org.kbinani.vsq
         /// </summary>
         /// <param name="time">ゲートタイムを取得する時刻(秒)</param>
         /// <returns>ゲートタイム</returns>
-        public double __draft__getClockFromSec( double time )
+        public double getClockFromSec( double time )
         {
-            return __draft__getClockFromSec( time, null );
+            return getClockFromSec( time, null );
         }
 
-        public double __draft__getClockFromSec( double time, TempoVectorSearchContext context )
+        /// <summary>
+        /// 指定した時刻におけるゲートタイムを取得します．
+        /// このメソッドでは検索コンテキストを用い，取得したいtimeの値が順に大きくなる状況でこのメソッドの実行速度の高速化を図ります
+        /// </summary>
+        /// <param name="time">ゲートタイムを取得する時刻(秒)</param>
+        /// <param name="context">計算を高速化するための検索コンテキスト</param>
+        /// <returns>ゲートタイム</returns>
+        public double getClockFromSec( double time, TempoVectorSearchContext context )
         {
             int tempo = baseTempo;
             double base_clock = 0;
@@ -77,13 +117,14 @@ namespace org.kbinani.vsq
             if ( c == 0 ) {
                 tempo = baseTempo;
                 base_clock = 0;
-                base_time = 0f;
+                base_time = 0.0;
             } else if ( c == 1 ) {
-                tempo = get( 0 ).Tempo;
-                base_clock = get( 0 ).Clock;
-                base_time = get( 0 ).Time;
+                TempoTableEntry t0 = get( 0 );
+                tempo = t0.Tempo;
+                base_clock = t0.Clock;
+                base_time = t0.Time;
             } else {
-                int i0 = c - 1;
+                int i0 = 0;
                 if ( context != null ) {
                     if ( time >= context.mSec2ClockSec ) {
                         // 探そうとしている時刻が前回検索時の時刻と同じかそれ以降の場合
@@ -97,56 +138,18 @@ namespace org.kbinani.vsq
                 TempoTableEntry prev = null;
                 for ( int i = i0; i < c; i++ ) {
                     TempoTableEntry item = get( i );
-                    if ( item.Time >= time ) {
-                        if ( prev != null ) {
-                            base_time = prev.Time;
-                            base_clock = prev.Clock;
-                            tempo = prev.Tempo;
-                            if ( context != null ) {
-                                context.mSec2ClockIndex = i > 0 ? i - 1 : 0;
-                            }
-                            break;
+                    if ( time <= item.Time ) {
+                        if ( context != null ) {
+                            context.mSec2ClockIndex = i > 0 ? i - 1 : 0;
                         }
+                        break;
                     }
                     prev = item;
                 }
-                /*for ( int i = c - 1; i >= 0; i-- ) {
-                    TempoTableEntry item = get( i );
-                    if ( item.Time < time ) {
-                        return item.Clock + (time - item.Time) * gatetimePerQuater * 1000000.0 / item.Tempo;
-                    }
-                }*/
-            }
-            double dt = time - base_time;
-            return base_clock + dt * gatetimePerQuater * 1000000.0 / (double)tempo;
-        }
-
-
-        /// <summary>
-        /// 指定した時刻におけるゲートタイムを取得します
-        /// </summary>
-        /// <param name="time">ゲートタイムを取得する時刻(秒)</param>
-        /// <returns>ゲートタイム</returns>
-        public double getClockFromSec( double time )
-        {
-            int tempo = baseTempo;
-            double base_clock = 0;
-            double base_time = 0f;
-            int c = size();
-            if ( c == 0 ) {
-                tempo = baseTempo;
-                base_clock = 0;
-                base_time = 0f;
-            } else if ( c == 1 ) {
-                tempo = get( 0 ).Tempo;
-                base_clock = get( 0 ).Clock;
-                base_time = get( 0 ).Time;
-            } else {
-                for ( int i = c - 1; i >= 0; i-- ) {
-                    TempoTableEntry item = get( i );
-                    if ( item.Time < time ) {
-                        return item.Clock + (time - item.Time) * gatetimePerQuater * 1000000.0 / item.Tempo;
-                    }
+                if ( prev != null ) {
+                    base_time = prev.Time;
+                    base_clock = prev.Clock;
+                    tempo = prev.Tempo;
                 }
             }
             double dt = time - base_time;

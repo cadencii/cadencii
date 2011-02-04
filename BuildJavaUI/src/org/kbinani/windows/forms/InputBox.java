@@ -38,7 +38,7 @@ public class InputBox extends BDialog
     private void initialize() {
         this.setSize(new Dimension(320, 132));
         this.setContentPane(getJPanel());
-    		
+    	setCancelButton( btnCancel );
     }
 
     /**
@@ -99,6 +99,7 @@ public class InputBox extends BDialog
         if (btnOk == null) {
             btnOk = new BButton();
             btnOk.setText("OK");
+            btnOk.setPreferredSize(new Dimension(100, 29));
         }
         return btnOk;
     }
@@ -111,10 +112,11 @@ public class InputBox extends BDialog
     private JPanel getJPanel1() {
         if (jPanel1 == null) {
             GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
-            gridBagConstraints3.gridx = 1;
+            gridBagConstraints3.gridx = 0;
             gridBagConstraints3.gridy = 0;
             GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
-            gridBagConstraints2.gridx = 0;
+            gridBagConstraints2.gridx = 1;
+            gridBagConstraints2.insets = new Insets(0, 0, 0, 12);
             gridBagConstraints2.gridy = 0;
             jPanel1 = new JPanel();
             jPanel1.setLayout(new GridBagLayout());
@@ -133,6 +135,7 @@ public class InputBox extends BDialog
         if (btnCancel == null) {
             btnCancel = new BButton();
             btnCancel.setText("Cancel");
+            btnCancel.setPreferredSize(new Dimension(100, 29));
         }
         return btnCancel;
     }
