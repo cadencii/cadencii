@@ -1193,14 +1193,13 @@ namespace org.kbinani.cadencii
 #if JAVA_MAC
             // Macの一般的なメニュー編成にあわせる
             com.apple.eawt.Application app = com.apple.eawt.Application.getApplication();
-
+#if JAVA_1_5
             // 「Cadenciiについて」
             app.setAboutHandler( new com.apple.eawt.AboutHandler(){
                 public void handleAbout( com.apple.eawt.AppEvent.AboutEvent arg0 ) {
                     menuHelpAbout_Click( null, null );
                 }
             } );
-            menuHelp.remove( menuHelpAbout );
 
             // 「Cadenciiを終了」
             app.setQuitHandler( new com.apple.eawt.QuitHandler(){
@@ -1212,8 +1211,6 @@ namespace org.kbinani.cadencii
                     }
                 }
             } );
-            menuFile.remove( menuFileSeparator3 );
-            menuFile.remove( menuFileQuit );
 
             // 「環境設定」
             app.setPreferencesHandler( new com.apple.eawt.PreferencesHandler(){
@@ -1221,8 +1218,41 @@ namespace org.kbinani.cadencii
                     menuSettingPreference_Click( null, null );
                 }
             });
-            menuSetting.remove( menuSettingPreference );
+#else // JAVA_1_5
+	        app.setEnabledPreferencesMenu( true );
+	        app.setEnabledAboutMenu( true );
+	        app.addApplicationListener( new com.apple.eawt.ApplicationListener(){
+				public void handleAbout(ApplicationEvent arg0) {
+	                arg0.setHandled( true );
+	                menuHelpAbout_Click( null, null );
+				}
+	
+				public void handleOpenApplication(ApplicationEvent arg0) {
+				}
+	
+				public void handleOpenFile(ApplicationEvent arg0) {
+				}
+	
+				public void handlePreferences(ApplicationEvent arg0) {
+					menuSettingPreference_Click( null, null );
+				}
+	
+				public void handlePrintFile(ApplicationEvent arg0) {
+				}
+	
+				public void handleQuit(ApplicationEvent arg0) {
+					arg0.setHandled( !handleFormClosing() );
+				}
+	
+				public void handleReOpenApplication(ApplicationEvent arg0) {
+				}
+	        });
 #endif
+	        menuHelp.remove( menuHelpAbout );
+	        menuFile.remove( menuFileSeparator3 );
+	        menuFile.remove( menuFileQuit );
+	        menuSetting.remove( menuSettingPreference );
+#endif // JAVA_MAC
 
 #if !JAVA
 #if DEBUG
