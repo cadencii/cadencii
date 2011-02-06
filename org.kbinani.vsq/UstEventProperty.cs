@@ -1,5 +1,5 @@
 /*
- * TempoVectorSearchContext.cs
+ * UstEventProperty.cs
  * Copyright © 2011 kbinani
  *
  * This file is part of org.kbinani.vsq.
@@ -15,21 +15,34 @@
 
 package org.kbinani.vsq;
 
+import java.io.*;
 #else
+
+using System;
 
 namespace org.kbinani.vsq
 {
 #endif
 
-    /// <summary>
-    /// テンポテーブルに基づき，時刻とゲートタイムを相互変換する際の検索量を小さくするための検索コンテキスト
-    /// </summary>
-    public class TempoVectorSearchContext
+#if JAVA
+    public class UstEventProperty implements Serializable
+#else
+    [Serializable]
+    public class UstEventProperty
+#endif
     {
-        public int mSec2ClockIndex = 0;
-        public double mSec2ClockSec = 0.0;
-        public int mClock2SecIndex = 0;
-        public double mClock2SecClock = 0.0;
+        public String Name;
+        public String Value;
+
+        public UstEventProperty()
+        {
+        }
+
+        public UstEventProperty( String name, String value )
+        {
+            Name = name;
+            Value = value;
+        }
     }
 
 #if !JAVA

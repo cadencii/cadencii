@@ -329,7 +329,7 @@ namespace org.kbinani.cadencii
                     }
                     count++;
                     double sec_start = mVsq.getSecFromClock( item.Clock );
-                    double sec_start_act = sec_start - item.UstEvent.PreUtterance / 1000.0;
+                    double sec_start_act = sec_start - item.UstEvent.getPreUtterance() / 1000.0;
                     sec_end_old = sec_end;
                     sec_end = mVsq.getSecFromClock( item.Clock + item.ID.getLength() );
                     double sec_end_act = sec_end;
@@ -339,8 +339,8 @@ namespace org.kbinani.cadencii
                     }
                     if ( item_next != null ) {
                         double sec_start_act_next =
-                            mVsq.getSecFromClock( item_next.Clock ) - item_next.UstEvent.PreUtterance / 1000.0
-                            + item_next.UstEvent.VoiceOverlap / 1000.0;
+                            mVsq.getSecFromClock( item_next.Clock ) - item_next.UstEvent.getPreUtterance() / 1000.0
+                            + item_next.UstEvent.getVoiceOverlap() / 1000.0;
                         if ( sec_start_act_next < sec_end_act ) {
                             sec_end_act = sec_start_act_next;
                         }
@@ -388,8 +388,8 @@ namespace org.kbinani.cadencii
 #if MAKEBAT_SP
                     log.Write( "; lyric=" + lyric + "; fileName=" + oa.fileName );
 #endif
-                    oa.msPreUtterance = item.UstEvent.PreUtterance;
-                    oa.msOverlap = item.UstEvent.VoiceOverlap;
+                    oa.msPreUtterance = item.UstEvent.getPreUtterance();
+                    oa.msOverlap = item.UstEvent.getVoiceOverlap();
 #if DEBUG
                     sout.println( "UtauWaveGenerator#run; oa.fileName=" + oa.fileName );
                     sout.println( "UtauWaveGenerator#run; lyric=" + lyric );
@@ -413,8 +413,8 @@ namespace org.kbinani.cadencii
                         millisec + "",
                         oa.msConsonant + "",
                         oa.msBlank + "",
-                        item.UstEvent.Intensity + "",
-                        item.UstEvent.Moduration + "" };
+                        item.UstEvent.getIntensity() + "",
+                        item.UstEvent.getModuration() + "" };
 
                     // ピッチを取得
                     Vector<String> pitch = new Vector<String>();
@@ -425,7 +425,7 @@ namespace org.kbinani.cadencii
 
                     // sec_start_act～sec_end_actまでの，item.ID.Note基準のピッチベンドを取得
                     // ただしdelta_sec秒間隔で
-                    double sec = mVsq.getSecFromClock( item.Clock ) - (item.UstEvent.PreUtterance + item.UstEvent.getStartPoint()) / 1000.0;
+                    double sec = mVsq.getSecFromClock( item.Clock ) - (item.UstEvent.getPreUtterance() + item.UstEvent.getStartPoint()) / 1000.0;
                     int indx = 0;
                     int base_note = item.ID.Note;
                     double sec_vibstart = mVsq.getSecFromClock( item.Clock + item.ID.VibratoDelay );
@@ -591,7 +591,7 @@ namespace org.kbinani.cadencii
                     rq2.WavtoolArgPrefix.add( "\"" + filename + "\"" );
                     rq2.WavtoolArgPrefix.add( "" + item.UstEvent.getStartPoint() );
                     rq2.WavtoolArgPrefix.add( "" + item.ID.getLength() + "@" + str_t_temp );
-                    UstEnvelope env = item.UstEvent.Envelope;
+                    UstEnvelope env = item.UstEvent.getEnvelope();
                     if ( env == null ) {
                         env = new UstEnvelope();
                     }

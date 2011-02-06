@@ -68,19 +68,8 @@ public class Utau_Plugin_Invoker : Form {
 
     }
 
-    /// <summary>
-    /// あとで消す
-    /// </summary>
-    /// <param name="s"></param>
-    private static void println( String s )
-    {
-        Console.WriteLine( s );
-    }
-
     public static ScriptReturnStatus Edit( VsqFileEx vsq )
     {
-        println( "AppManager.getSelectedEventCount()=" + AppManager.getSelectedEventCount() );
-
         // 選択状態のアイテムがなければ戻る
         if ( AppManager.getSelectedEventCount() <= 0 ) {
             return ScriptReturnStatus.NOT_EDITED;
@@ -117,7 +106,6 @@ public class Utau_Plugin_Invoker : Form {
                 }
             }
         }
-        println( "exe_path=" + exe_path );
         if ( exe_path == "" ) {
             return ScriptReturnStatus.ERROR;
         }
@@ -127,10 +115,14 @@ public class Utau_Plugin_Invoker : Form {
         }
 
         // 選択状態のアイテムの最初と最後がどこか調べる
+        // clock_start, clock_endは，最終的にはPREV, NEXTを含んだ範囲を表すことになる
+        // sel_start, sel_endはPREV, NEXTを含まない選択範囲を表す
         int id_start = -1;
         int clock_start = int.MaxValue;
         int id_end = -1;
         int clock_end = int.MinValue;
+        int sel_start = 0;
+        int sel_end = 0;
         for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
             SelectedEventEntry item = itr.next();
             if ( item.original.ID.type != VsqIDType.Anote ) {
@@ -140,16 +132,15 @@ public class Utau_Plugin_Invoker : Form {
             if ( clock < clock_start ) {
                 id_start = item.original.InternalID;
                 clock_start = clock;
+                sel_start = clock;
             }
             clock += item.original.ID.getLength();
             if ( clock_end < clock ) {
                 id_end = item.original.InternalID;
                 clock_end = clock;
+                sel_end = clock;
             }
         }
-        println( "id_start=" + id_start );
-        println( "id_end=" + id_end );
-        println( "#1; (clock_start,clock_end)=" + "(" + clock_start + "," + clock_end + ")" );
 
         // 選択範囲の前後の音符を探す
         VsqEvent ve_prev = null;
@@ -172,25 +163,16 @@ public class Utau_Plugin_Invoker : Form {
                 break;
             }
         }
-        if ( ve_prev != null ) {
-            println( "ve_prev.InternalID=" + ve_prev.InternalID );
-        }
-        if ( ve_next != null ) {
-            println( "ve_next.InternalID=" + ve_next.InternalID );
-        }
         int next_rest_clock = -1;
         bool prev_is_rest = false;
-        int prev_length = 0;
         if ( ve_prev != null ) {
             // 直前の音符がある場合
             if ( ve_prev.Clock + ve_prev.ID.getLength() == clock_start ) {
                 // 接続している
                 clock_start = ve_prev.Clock;
-                prev_length = ve_prev.ID.getLength();
             } else {
                 // 接続していない
                 int new_clock_start = ve_prev.Clock + ve_prev.ID.getLength();
-                prev_length = clock_start - new_clock_start;
                 clock_start = new_clock_start;
             }
         } else {
@@ -199,35 +181,36 @@ public class Utau_Plugin_Invoker : Form {
                 prev_is_rest = true;
             }
             int new_clock_start = vsq.getPreMeasureClocks();
-            prev_length = clock_start - new_clock_start;
             clock_start = new_clock_start;
         }
-        int next_length = 0;
         if ( ve_next != null ) {
             // 直後の音符がある場合
             if ( ve_next.Clock == clock_end ) {
                 // 接続している
                 clock_end = ve_next.Clock + ve_next.ID.getLength();
-                next_length = ve_next.ID.getLength();
             } else {
                 // 接続していない
                 next_rest_clock = clock_end;
-                next_length = ve_next.Clock - clock_end;
                 clock_end = ve_next.Clock;
             }
-        } else {
-            // 直後の音符が無い場合
-            next_length = 0;
         }
-        println( "#2; (clock_start,clock_end)=" + "(" + clock_start + "," + clock_end + ")" );
 
         // 作業用のVSQに，選択範囲のアイテムを格納
-        VsqFile v = new VsqFile( "Miku", 1, 4, 4, 500000 );
+        VsqFileEx v = (VsqFileEx)vsq.clone();// new VsqFile( "Miku", 1, 4, 4, 500000 );
+        // 選択トラックだけ残して他を削る
+        for ( int i = 1; i < selected; i++ ) {
+            v.Track.removeElementAt( 1 );
+        }
+        for ( int i = selected + 1; i < v.Track.size(); i++ ) {
+            v.Track.removeElementAt( selected + 1 );
+        }
+        // 選択トラックの音符を全消去する
         VsqTrack v_track = v.Track.get( 1 );
+        v_track.MetaText.getEventList().clear();
         for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
             VsqEvent item = itr.next();
             if ( clock_start <= item.Clock && item.Clock + item.ID.getLength() <= clock_end ) {
-                v_track.addEvent( (VsqEvent)item.clone() );
+                v_track.addEvent( (VsqEvent)item.clone(), item.InternalID );
             }
         }
         // 最後のRを手動で追加．これは自動化できない
@@ -245,6 +228,8 @@ public class Utau_Plugin_Invoker : Form {
         // キーがustのIndex, 値がInternalID
         TreeMap<int, int> map = new TreeMap<int, int>();
         UstFile u = new UstFile( v, 1, map );
+
+        u.write( fsys.combine( PortUtil.getApplicationStartupPath(), "u.ust" ) );
 
         // PREV, NEXTのIndex値を設定する
         if ( ve_prev != null || prev_is_rest ) {
@@ -268,29 +253,89 @@ public class Utau_Plugin_Invoker : Form {
         string temp = Path.GetTempFileName();
         u.write( temp, option );
 
-        println( "-before----------------------------------------------------------------" );
+        StringBuilder before = new StringBuilder();
         using ( StreamReader sr = new StreamReader( temp, System.Text.Encoding.GetEncoding( "Shift_JIS" ) ) ) {
             string line = "";
             while ( (line = sr.ReadLine()) != null ) {
-                println( line );
+                before.AppendLine( line );
             }
         }
+        String md5_before = PortUtil.getMD5FromString( before.ToString() );
         // プラグインの実行ファイルを起動
         Utau_Plugin_Invoker dialog = new Utau_Plugin_Invoker( exe_path, temp );
         dialog.ShowDialog();
-        println( "-after-----------------------------------------------------------------" );
+        StringBuilder after = new StringBuilder();
         using ( StreamReader sr = new StreamReader( temp, System.Text.Encoding.GetEncoding( "Shift_JIS" ) ) ) {
             string line = "";
             while ( (line = sr.ReadLine()) != null ) {
-                println( line );
+                after.AppendLine( line );
             }
         }
+        String md5_after = PortUtil.getMD5FromString( after.ToString() );
+        if ( str.compare( md5_before, md5_after ) ) {
+            // 編集されなかったようだ
+            return ScriptReturnStatus.NOT_EDITED;
+        }
 
-        //Console.WriteLine( typeof( Utau_Plugin_Invoker ) + ";
         // プラグインの実行結果をustオブジェクトにロード
         UstFile r = new UstFile( temp );
         if ( r.getTrackCount() < 1 ) {
             return ScriptReturnStatus.ERROR;
+        }
+
+        // 変更のなかったものについてはプラグインは記録してこないので，
+        // 最初の値を代入するようにする
+        UstTrack utrack_src = u.getTrack( 0 );
+        UstTrack utrack_dst = r.getTrack( 0 );
+        for ( int i = 0; i < utrack_dst.getEventCount(); i++ ) {
+            UstEvent ue_dst = utrack_dst.getEvent( i );
+            int index = ue_dst.Index;
+            UstEvent ue_src = utrack_src.findEventFromIndex( index );
+            if ( ue_src == null ) {
+                continue;
+            }
+            if ( !ue_dst.isEnvelopeSpecified() && ue_src.isEnvelopeSpecified() ) {
+                ue_dst.setEnvelope( ue_src.getEnvelope() );
+            }
+            if ( !ue_dst.isIntensitySpecified() && ue_src.isIntensitySpecified() ) {
+                ue_dst.setIntensity( ue_src.getIntensity() );
+            }
+            if ( !ue_dst.isLengthSpecified() && ue_src.isLengthSpecified() ) {
+                ue_dst.setLength( ue_src.getLength() );
+            }
+            if ( !ue_dst.isLyricSpecified() && ue_src.isLyricSpecified() ) {
+                ue_dst.setLyric( ue_src.getLyric() );
+            }
+            if ( !ue_dst.isModurationSpecified() && ue_src.isModurationSpecified() ) {
+                ue_dst.setModuration( ue_src.getModuration() );
+            }
+            if ( !ue_dst.isNoteSpecified() && ue_src.isNoteSpecified() ) {
+                ue_dst.setNote( ue_src.getNote() );
+            }
+            if ( !ue_dst.isPBTypeSpecified() && ue_src.isPBTypeSpecified() ) {
+                ue_dst.setPBType( ue_src.getPBType() );
+            }
+            if ( !ue_dst.isPitchesSpecified() && ue_src.isPitchesSpecified() ) {
+                ue_dst.setPitches( ue_src.getPitches() );
+            }
+            if ( !ue_dst.isPortamentoSpecified() && ue_src.isPortamentoSpecified() ) {
+                ue_dst.setPortamento( ue_src.getPortamento() );
+            }
+            if ( !ue_dst.isPreUtteranceSpecified() && ue_src.isPreUtteranceSpecified() ) {
+                ue_dst.setPreUtterance( ue_src.getPreUtterance() );
+            }
+            if ( !ue_dst.isStartPointSpecified() && ue_src.isStartPointSpecified() ) {
+                ue_dst.setStartPoint( ue_src.getStartPoint() );
+            }
+            if ( !ue_dst.isTempoSpecified() && ue_src.isTempoSpecified() ) {
+                ue_dst.setTempo( ue_src.getTempo() );
+            }
+            if ( !ue_dst.isVibratoSpecified() && ue_src.isVibratoSpecified() ) {
+                ue_dst.setVibrato( ue_src.getVibrato() );
+            }
+            if ( !ue_dst.isVoiceOverlapSpecified() && ue_src.isVoiceOverlapSpecified() ) {
+                ue_dst.setVoiceOverlap( ue_src.getVoiceOverlap() );
+            }
         }
 
         // PREVとNEXT含めて，clock_startからclock_endまでプラグインに渡したけれど，
@@ -298,17 +343,10 @@ public class Utau_Plugin_Invoker : Form {
         int ret_length = 0;
         UstTrack r_track = r.getTrack( 0 );
         int size = r_track.getEventCount();
-        bool prev_detected = false;
-        bool next_detected = false;
         for ( int i = 0; i < size; i++ ) {
             UstEvent ue = r_track.getEvent( i );
+            // 戻りのustには，変更があったものしか記録されていない
             int ue_length = ue.getLength();
-            if ( ue.Index == UstFile.PREV_INDEX ) {
-                prev_detected = true;
-            }
-            if ( ue.Index == UstFile.NEXT_INDEX ) {
-                next_detected = true;
-            }
             if ( !ue.isLengthSpecified() && map.ContainsKey( ue.Index ) ) {
                 int internal_id = map[ue.Index];
                 VsqEvent found_item = vsq_track.findEventFromID( internal_id );
@@ -316,526 +354,218 @@ public class Utau_Plugin_Invoker : Form {
                     ue_length = found_item.ID.getLength();
                 }
             }
-            ret_length += ue_length;
-        }
-        // PREVとNEXTは，戻りのUSTファイルに記録されていなくてもよいので，
-        // 抜けてたらフォローする
-        if ( prev_length > 0 && !prev_detected ) {
-            ret_length += prev_length;
-        }
-        if ( next_length > 0 && !next_detected ) {
-            ret_length += next_length;
-        }
-        // TODO: ここが正しくない
-        // ret_length == clock_end - clock_start
-        // がtrueでなくてはならない
-        // TODO: PREV, NEXT以外でも，変更がなければ出力されてこない？
-        println( "Utau_Plugin_Invoker#Edit; ret_length=" + ret_length + "; clock_start=" + clock_start + "; clock_end=" + clock_end );
-
-        return ScriptReturnStatus.ERROR;
-    }
-
-    /*public static ScriptReturnStatus _Edit( VsqFileEx vsq )
-    {
-        if ( AppManager.getSelectedEventCount() <= 0 ) {
-            return ScriptReturnStatus.NOT_EDITED;
-        }
-
-        int selected = AppManager.getSelected();
-        
-        string pluginTxtPath = s_plugin_txt_path;
-        if ( pluginTxtPath == "" ) {
-            AppManager.showMessageBox( "pluginTxtPath=" + pluginTxtPath );
-            return ScriptReturnStatus.ERROR;
-        }
-        if ( !System.IO.File.Exists( pluginTxtPath ) ) {
-            AppManager.showMessageBox( "'" + pluginTxtPath + "' does not exists" );
-            return ScriptReturnStatus.ERROR;
-        }
-
-        System.Text.Encoding shift_jis = System.Text.Encoding.GetEncoding( "Shift_JIS" );
-        string name = "";
-        string exe_path = "";
-        using ( StreamReader sr = new StreamReader( pluginTxtPath, shift_jis ) ) {
-            string line = "";
-            while ( (line = sr.ReadLine()) != null ) {
-                string[] spl = line.Split( new char[] { '=' }, StringSplitOptions.RemoveEmptyEntries );
-                if ( line.StartsWith( "name=" ) ) {
-                    name = spl[1];
-                } else if ( line.StartsWith( "execute=" ) ) {
-                    exe_path = Path.Combine( Path.GetDirectoryName( pluginTxtPath ), spl[1] );
-                }
-            }
-        }
-        if ( exe_path == "" ) {
-            return ScriptReturnStatus.ERROR;
-        }
-        if ( !System.IO.File.Exists( exe_path ) ) {
-            AppManager.showMessageBox( "'" + exe_path + "' does not exists" );
-            return ScriptReturnStatus.ERROR;
-        }
-
-        // ustを用意 ------------------------------------------------------------------------
-        // 方針は，一度VsqFileに音符を格納->UstFile#.ctor( VsqFile )を使って一括変換
-        // メイン画面で選択されているアイテムを列挙
-        List<VsqEvent> items = new List<VsqEvent>(); // Ustに追加する音符のリスト
-        int num_selected = 0; // 選択されていた音符の個数
-        for ( Iterator<SelectedEventEntry> itr = AppManager.getSelectedEventIterator(); itr.hasNext(); ) {
-            SelectedEventEntry item_itr = (SelectedEventEntry)itr.next();
-            if ( item_itr.original.ID.type == VsqIDType.Anote ) {
-                items.Add( (VsqEvent)item_itr.original.clone() );
-                num_selected++;
-            }
-        }
-        items.Sort();
-
-        // R用音符のテンプレート
-        VsqEvent template = new VsqEvent();
-        template.ID.type = VsqIDType.Anote;
-        template.ID.LyricHandle = new LyricHandle( "R", "" );
-        template.InternalID = -1; // VSQ上には実際に存在しないダミーであることを表す
-
-        int count = items.Count;
-        // アイテムが2個以上の場合は、間にRを挿入する必要があるかどうか判定
-        if ( count > 1 ) {
-            List<VsqEvent> add = new List<VsqEvent>(); // 追加するR
-            VsqEvent last_event = items[0];
-            for ( int i = 1; i < count; i++ ) {
-                VsqEvent item = items[i];
-                if ( last_event.Clock + last_event.ID.Length < item.Clock ) {
-                    VsqEvent add_temp = (VsqEvent)template.clone();
-                    add_temp.Clock = last_event.Clock + last_event.ID.Length;
-                    add_temp.ID.Length = item.Clock - add_temp.Clock;
-                    add.Add( add_temp );
-                }
-                last_event = item;
-            }
-            foreach ( VsqEvent v in add ) {
-                items.Add( v );
-            }
-            items.Sort();
-        }
-
-        // ヘッダ
-        int TEMPO = 120;
-
-        // 選択アイテムの直前直後に未選択アイテムがあるかどうかを判定
-        int clock_begin = items[0].Clock;
-        int clock_end = items[items.Count - 1].Clock;
-        int clock_end_end = clock_end + items[items.Count - 1].ID.Length;
-        VsqTrack vsq_track = vsq.Track.get( selected );
-        VsqEvent tlast_event = null;
-        VsqEvent prev = null;
-        VsqEvent next = null;
-
-        // VsqFile -> UstFileのコンバート
-        VsqFile conv = new VsqFile( "Miku", 2, 4, 4, (int)(6e7 / TEMPO) );
-        VsqTrack conv_track = conv.Track.get( 1 );
-        for ( Iterator<VsqEvent> itr = vsq_track.getNoteEventIterator(); itr.hasNext(); ) {
-            VsqEvent item_itr = itr.next();
-            if ( item_itr.Clock == clock_begin ) {
-                if ( tlast_event != null ) {
-                    // アイテムあり
-                    if ( tlast_event.Clock + tlast_event.ID.Length == clock_begin ) {
-                        // ゲートタイム差0で接続
-                        prev = (VsqEvent)tlast_event.clone();
-                    } else {
-                        // 時間差アリで接続
-                        prev = (VsqEvent)template.clone();
-                        prev.Clock = tlast_event.Clock + tlast_event.ID.Length;
-                        prev.ID.Length = clock_begin - (tlast_event.Clock + tlast_event.ID.Length);
-                    }
-                }
-            }
-            tlast_event = item_itr;
-            if ( item_itr.Clock == clock_end ) {
-                if ( itr.hasNext() ) {
-                    VsqEvent foo = (VsqEvent)itr.next();
-                    if ( foo.Clock == clock_end_end ) {
-                        // ゲートタイム差0で接続
-                        next = (VsqEvent)foo.clone();
-                    } else {
-                        // 時間差アリで接続
-                        next = (VsqEvent)template.clone();
-                        next.Clock = clock_end_end;
-                        next.ID.Length = foo.Clock - clock_end_end;
-                    }
-                }
-                break;
-            }
-
-        }
-
-        // [#PREV]を追加
-        if ( prev != null ) {
-            prev.Clock -= clock_begin;
-            conv_track.addEvent( prev, prev.InternalID );
-        }
-
-        // ゲートタイムを計算しながら追加
-        count = items.Count;
-        for ( int i = 0; i < count; i++ ) {
-            VsqEvent itemi = items[i];
-            itemi.Clock -= clock_begin;
-            conv_track.addEvent( itemi, itemi.InternalID );
-        }
-
-        // [#NEXT]を追加
-        if ( next != null ) {
-            next.Clock -= clock_begin;
-            conv_track.addEvent( next, next.InternalID );
-        }
-
-        // PIT, PBSを追加
-        copyCurve( vsq_track.getCurve( "pit" ), conv_track.getCurve( "pit" ), clock_begin );
-        copyCurve( vsq_track.getCurve( "pbs" ), conv_track.getCurve( "pbs" ), clock_begin );
-
-        string temp = Path.GetTempFileName();
-        TreeMap<int, int> map_id = new TreeMap<int, int>(); // キーが[#   ]の番号、値がInternalID
-        UstFile tust = new UstFile( conv, 1, map_id );
-
-        Console.WriteLine( "Utau_Plugin_Invoker#Edit;" );
-        for ( int i = 0; i < map_id.size(); i++ ) {
-            ValuePair<int, int> itemi = map_id.get( i );
-            Console.WriteLine( "[#" + PortUtil.formatDecimal( "0000", itemi.getKey() ) + "] => " + itemi.getValue() );
-        }
-
-        VsqEvent singer_event = vsq.Track.get( 1 ).getSingerEventAt( clock_begin );
-        string voice_dir = "";
-        SingerConfig sc = AppManager.getSingerInfoUtau( singer_event.ID.IconHandle.Language, singer_event.ID.IconHandle.Program );
-        if ( sc != null ) {
-            voice_dir = sc.VOICEIDSTR;
-        }
-        tust.setVoiceDir( voice_dir );
-
-        if ( prev != null ) {
-            tust.getTrack( 0 ).getEvent( 0 ).Index = UstFile.PREV_INDEX;
-        }
-        if ( next != null ) {
-            tust.getTrack( 0 ).getEvent( tust.getTrack( 0 ).getEventCount() - 1 ).Index = UstFile.NEXT_INDEX;
-        }
-        UstFileWriteOptions options = new UstFileWriteOptions();
-        options.settingTempo = true;
-        options.settingVoiceDir = true;
-        options.settingCacheDir = true;
-        tust.write( temp, options );
-
-        // 起動 -----------------------------------------------------------------------------
-        Utau_Plugin_Invoker dialog = new Utau_Plugin_Invoker( exe_path, temp );
-        dialog.ShowDialog();
-
-        // 結果を反映 -----------------------------------------------------------------------
-        List<int> pit_added_ids = new List<int>(); // Pitchesが追加されたので、後でPIT, PBSに反映させる処理が必要なVsqEventの、InternalID
-        VsqEvent dustbox = new VsqEvent(); // Lyric=Rのプロパティを捨てるためのゴミ箱
-        dustbox.ID.LyricHandle = new LyricHandle( "a", "a" );
-        using ( StreamReader sr = new StreamReader( temp, Encoding.GetEncoding( 932 ) ) ) {
-            string line = "";
-            string current_parse = "";
-            int clock = clock_begin;
-            int tlength = 0;
-            int index = -1; // 先頭から何番目の音符か？map_id.get( index ).getKey()が、現在処理中のUstEvent.Index, map_id.get( index ).getValue()が、現在処理中のVsqEvent.InternalID
-            while ( (line = sr.ReadLine()) != null ) {
-                if ( line.StartsWith( "[#" ) ){
-                    current_parse = line;
-                    clock += tlength;
-                    if ( line != "[#SETTING]" && line != "[#TRACKEND]" && line != "[#INSERT]" ) {
-                        index++;
-                    }
-                    if ( current_parse == "[#INSERT]" ) {
-                        VsqEvent newitem = new VsqEvent();
-                        newitem.Clock = clock;
-                        newitem.ID.setLength( 0 );
-                        newitem.ID.type = VsqIDType.Anote;
-                        int id = vsq_track.addEvent( newitem );
-                        int max_num = -1;
-                        foreach ( int num in map_id.Keys ) {
-                            max_num = Math.Max( max_num, num );
-                        }
-                        max_num++;
-                        map_id.put( max_num, id ); // 末尾に追加されるので、indexとの整合性は破綻しない
-                        current_parse = "[#" + PortUtil.formatDecimal( "0000", max_num ) + "]";
-                    } else if ( current_parse == "[#DELETE]" ) {
-                        int internal_id = map_id.get( index ).getValue();
-                        int i = vsq_track.findEventIndexFromID( internal_id );
-
-                        Console.WriteLine( "Utau_Plugin_Invoker#Edit; DELETE; internal_id=" + internal_id + "; index=" + i );
-
-                        if ( 0 <= i  && i < vsq_track.getEventCount() ) {
-                            vsq_track.removeEvent( i );
-                        }
-                    }
-                    continue;
-                }
-
-                if ( current_parse == "[#SETTING]" ) {
-                } else if ( current_parse == "[#TRACKEND]" ) {
-                } else if ( current_parse == "[#PREV]" ) {
-                } else if ( current_parse == "[#NEXT]" ) {
-                //} else if ( current_parse == "[#INSERT]" ) { NEVER ENEBLE THIS LINE!!
-                } else if ( current_parse == "[#DELETE]" ) {
-                    //do nothing
-                } else if ( current_parse.StartsWith( "[#" ) ) {
-                    int indx_blacket = current_parse.IndexOf( ']' );
-                    string str_num = current_parse.Substring( 2, indx_blacket - 2 );
-                    int num = -1;
-                    if ( !int.TryParse( str_num, out num ) ) {
-                        continue;
-                    }
-                    int id = -1;
-                    bool found = false;
-                    for ( Iterator<ValuePair<int, int>> itr = map_id.iterator(); itr.hasNext(); ) {
-                        ValuePair<int, int> item = itr.next();
-                        if ( num == item.getKey() ) {
-                            id = item.getValue();
-                            found = true;
-                            break;
-                        }
-                    }
-                    if ( !found ) {
-                        continue;
-                    }
-                    VsqEvent target = vsq_track.findEventFromID( id );
-                    if ( target == null ) {
-                        target = dustbox;
-                    }
-                    target.Clock = clock;
-                    tlength = target.ID.getLength();
-                    if ( target.UstEvent == null ) {
-                        target.UstEvent = new UstEvent();
-                    }
-                    string[] spl = line.Split( '=' );
-                    if ( spl.Length < 2 ) {
-                        continue;
-                    }
-                    string left = spl[0];
-                    string right = spl[1];
-                    if ( left == "Length" ) {
-                        int v = target.ID.getLength();
-                        try {
-                            v = int.Parse( right );
-                            target.ID.setLength( v );
-                            target.UstEvent.setLength( v );
-                            tlength = v;
-                        } catch {
-                        }
-                    } else if ( left == "Lyric" ) {
-                        if ( target.ID.LyricHandle == null ) {
-                            target.ID.LyricHandle = new LyricHandle( "あ", "a" );
-                        }
-                        target.ID.LyricHandle.L0.Phrase = right;
-                        target.UstEvent.Lyric = right;
-                        AppManager.changePhrase( vsq, selected, target, clock, right );
-                    } else if ( left == "NoteNum" ) {
-                        int v = target.ID.Note;
-                        try {
-                            v = int.Parse( right );
-                            target.ID.Note = v;
-                            target.UstEvent.Note = v;
-                        } catch {
-                        }
-                    } else if ( left == "Intensity" ) {
-                        int v = target.ID.Dynamics;
-                        try {
-                            v = int.Parse( right );
-                            target.UstEvent.Intensity = v;
-                        } catch {
-                        }
-                    } else if ( left == "PBType" ) {
-                        int v = target.UstEvent.PBType;
-                        try {
-                            v = int.Parse( right );
-                            target.UstEvent.PBType = v;
-                        } catch {
-                        }
-                    } else if ( left == "Piches" ) {
-                        string[] spl2 = right.Split( ',' );
-                        float[] t = new float[spl2.Length];
-                        for ( int i = 0; i < spl2.Length; i++ ) {
-                            float v = 0;
-                            try {
-                                v = float.Parse( spl2[i] );
-                                t[i] = v;
-                            } catch {
-                            }
-                        }
-                        target.UstEvent.Pitches = t;
-
-                        if ( !pit_added_ids.Contains( id ) ) {
-                            pit_added_ids.Add( id );
-                        }
-                    } else if ( left == "Tempo" ) {
-                        float v = 125f;
-                        try {
-                            v = float.Parse( right );
-                            vsq.TempoTable.add( new TempoTableEntry( target.Clock, (int)(60e6 / v), 0.0 ) );
-                            vsq.updateTempoInfo();
-                        } catch {
-                        }
-                    } else if ( left == "VBR" ) {
-                        target.UstEvent.Vibrato = new UstVibrato( line );
-                    } else if ( left == "PBW" ||
-                                left == "PBS" ||
-                                left == "PBY" ||
-                                left == "PBM" ) {
-                        if ( target.UstEvent.Portamento == null ) {
-                            target.UstEvent.Portamento = new UstPortamento();
-                        }
-                        target.UstEvent.Portamento.ParseLine( line );
-                    } else if ( left == "Envelope" ) {
-                        target.UstEvent.Envelope = new UstEnvelope( line );
-                    } else if ( left == "VoiceOverlap" ) {
-                        float v = target.UstEvent.VoiceOverlap;
-                        try {
-                            v = float.Parse( right );
-                            target.UstEvent.VoiceOverlap = v;
-                        } catch {
-                        }
-                    } else if ( left == "PreUtterance" ) {
-                        float v = target.UstEvent.PreUtterance;
-                        try {
-                            v = float.Parse( right );
-                            target.UstEvent.PreUtterance = v;
-                        } catch {
-                        }
-                    }
-                }
+            // PREV, ENDの場合は長さに加えない
+            if ( ue.Index != UstFile.NEXT_INDEX &&
+                 ue.Index != UstFile.PREV_INDEX ) {
+                ret_length += ue_length;
             }
         }
 
-        // PitchesをPIT, PBSに反映させる処理
-        VsqBPList cpit = vsq_track.getCurve( "pit" );
-        if ( cpit == null ) {
-            cpit = new VsqBPList( CurveType.PIT.getName(),
-                                  CurveType.PIT.getDefault(),
-                                  CurveType.PIT.getMinimum(),
-                                  CurveType.PIT.getMaximum() );
-            vsq_track.setCurve( "pit", cpit );
+        // 伸び縮みがあった場合
+        // 伸ばしたり縮めたりするよ
+        int delta = ret_length - (sel_end - sel_start);
+        if ( delta > 0 ) {
+            // のびた
+            vsq.insertBlank( selected, sel_end, delta );
+        } else if ( delta < 0 ) {
+            // 縮んだ
+            vsq.removePart( selected, sel_end + delta, sel_end );
         }
-        VsqBPList cpbs = vsq_track.getCurve( "pbs" );
-        if ( cpbs == null ) {
-            cpbs = new VsqBPList( CurveType.PBS.getName(),
-                                  CurveType.PBS.getDefault(),
-                                  CurveType.PBS.getMinimum(),
-                                  CurveType.PBS.getMaximum() );
-            vsq_track.setCurve( "pbs", cpbs );
-        }
-        for ( int i = 0; i < pit_added_ids.Count; i++ ) {
-            int internal_id = pit_added_ids[i];
-            VsqEvent target = vsq_track.findEventFromID( internal_id );
-            if ( target == null ) {
+
+        // r_trackの内容をvsq_trackに転写
+        size = r_track.getEventCount();
+        int c = clock_start;
+        for ( int i = 0; i < size; i++ ) {
+            UstEvent ue = r_track.getEvent( i );
+            if ( ue.Index == UstFile.NEXT_INDEX || ue.Index == UstFile.PREV_INDEX ) {
+                // PREVとNEXTは単に無視する
                 continue;
             }
-
-            // ピッチベンド絶対値の最大値を調べる
-            float abs_pit_max = 0;
-            for ( int j = 0; j < target.UstEvent.Pitches.Length; j++ ) {
-                abs_pit_max = Math.Max( abs_pit_max, Math.Abs( target.UstEvent.Pitches[j] ) );
-            }
-
-            // ピッチベンドを表現するのに最低限必要なPBSを調べる。
-            int pbs = (int)(abs_pit_max / 100.0);
-            if ( pbs * 100 != abs_pit_max ) {
-                // abs_pit_maxが100の倍数で無い場合。
-                pbs++;
-            }
-            if ( pbs < 1 ) {
-                pbs = 1;
-            }
-            if ( CurveType.PBS.getMaximum() < pbs ){
-                pbs = CurveType.PBS.getMaximum();
-            }
-
-            // これからPITをいじる範囲内のPBSが、pbsと違う値になっていた場合の処理
-            double sec_pitstart = vsq.getSecFromClock( target.Clock ) - target.UstEvent.PreUtterance / 1000.0;
-            int pit_start = (int)vsq.getClockFromSec( sec_pitstart );
-            int pbtype = target.UstEvent.PBType;
-            if ( pbtype < 1 ) {
-                pbtype = 5;
-            }
-            target.UstEvent.PBType = pbtype;
-            int pit_end = pit_start + pbtype * target.UstEvent.Pitches.Length;
-            int pbs_at_pitend = cpbs.getValue( pit_end - 1 );
-            for ( int j = 0; j < cpbs.size(); ) {
-                int jclock = cpbs.getKeyClock( j );
-                if ( pit_start <= jclock && jclock < pit_end ) {
-                    int jpbs = cpbs.getElement( j );
-                    if ( jpbs != pbs ) {
-                        cpbs.removeElementAt( j );
-                    } else {
-                        j++;
-                    }
-                } else if ( pit_end < jclock ) {
-                    break;
-                } else {
-                    j++;
+            int ue_length = ue.getLength();
+            if ( map.containsKey( ue.Index ) ) {
+                // 既存の音符の編集
+                VsqEvent target = vsq_track.findEventFromID( map[ue.Index] );
+                if ( target == null ) {
+                    // そんなばかな・・・
+                    continue;
                 }
-            }
-            if ( cpbs.getValue( pit_start ) != pbs ) {
-                cpbs.add( pit_start, pbs );
-            }
-            if ( pbs_at_pitend != pbs ) {
-                cpbs.add( pit_end, pbs_at_pitend );
-            }
-
-            // これからPITをいじる範囲にPITが指定されていたら削除する
-            int pit_at_pitend = cpit.getValue( pit_end );
-            for ( int j = 0; j < cpit.size(); ) {
-                int jclock = cpit.getKeyClock( j );
-                if ( pit_start <= jclock && jclock < pit_end ) {
-                    cpit.removeElementAt( j );
-                } else if ( pit_end < jclock ) {
-                    break;
-                } else {
-                    j++;
+                if ( !ue.isLengthSpecified() ) {
+                    ue_length = target.ID.getLength();
                 }
-            }
-
-            // PITを追加。
-            int lastpit = CurveType.PIT.getMinimum() - 1;
-            for ( int j = 0; j < target.UstEvent.Pitches.Length; j++ ) {
-                int jclock = pit_start + j * pbtype;
-                int pit = (int)(8192.0 * target.UstEvent.Pitches[j] / 100.0 / (double)pbs);
-                if ( pit < CurveType.PIT.getMinimum() ) {
-                    pit = CurveType.PIT.getMinimum();
-                } else if ( CurveType.PIT.getMaximum() < pit ) {
-                    pit = CurveType.PIT.getMaximum();
+                if ( target.UstEvent == null ) {
+                    target.UstEvent = (UstEvent)ue.clone();
                 }
-                if ( pit != lastpit ) {
-                    cpit.add( jclock, pit );
-                    lastpit = pit;
+                // utau固有のパラメータを転写
+                // pitchは後でやるので無視していい
+                // テンポもあとでやるので無視していい
+                if ( ue.isEnvelopeSpecified() ) {
+                    target.UstEvent.setEnvelope( ue.getEnvelope() );
                 }
-            }
-            if ( cpit.getValue( pit_end ) != pit_at_pitend ) {
-                cpit.add( pit_end, pit_at_pitend );
-            }
-        }
-
-        try {
-            System.IO.File.Delete( temp );
-        } catch ( Exception ex ) {
-        }
-        return ScriptReturnStatus.EDITED;
-    }*/
-
-    private static void copyCurve( VsqBPList src, VsqBPList dest, int clock_shift ) {
-        int last_value = src.getDefault();
-        int count = src.size();
-        bool first_over_zero = true;
-        for ( int i = 0; i < count; i++ ) {
-            int cl = src.getKeyClock( i ) - clock_shift;
-            int value = src.getElementA( i );
-            if ( cl < 0 ) {
-                last_value = value;
+                if ( ue.isModurationSpecified() ) {
+                    target.UstEvent.setModuration( ue.getModuration() );
+                }
+                if ( ue.isPBTypeSpecified() ) {
+                    target.UstEvent.setPBType( ue.getPBType() );
+                }
+                if ( ue.isPortamentoSpecified() ) {
+                    target.UstEvent.setPortamento( ue.getPortamento() );
+                }
+                if ( ue.isPreUtteranceSpecified() ) {
+                    target.UstEvent.setPreUtterance( ue.getPreUtterance() );
+                }
+                if ( ue.isStartPointSpecified() ) {
+                    target.UstEvent.setStartPoint( ue.getStartPoint() );
+                }
+                if ( ue.isVibratoSpecified() ) {
+                    target.UstEvent.setVibrato( ue.getVibrato() );
+                }
+                if ( ue.isVoiceOverlapSpecified() ) {
+                    target.UstEvent.setVoiceOverlap( ue.getVoiceOverlap() );
+                }
+                // vocaloid, utauで同じ意味のパラメータを転写
+                if ( ue.isIntensitySpecified() ) {
+                    target.UstEvent.setIntensity( ue.getIntensity() );
+                    target.ID.Dynamics = ue.getIntensity();
+                }
+                if ( ue.isLengthSpecified() ) {
+                    target.UstEvent.setLength( ue.getLength() );
+                    target.ID.setLength( ue.getLength() );
+                }
+                if ( ue.isLyricSpecified() ) {
+                    target.UstEvent.setLyric( ue.getLyric() );
+                    target.ID.LyricHandle.L0.Phrase = ue.getLyric();
+                }
+                if ( ue.isNoteSpecified() ) {
+                    target.UstEvent.setNote( ue.getNote() );
+                    target.ID.Note = ue.getNote();
+                }
             } else {
-                if ( first_over_zero ) {
-                    first_over_zero = false;
-                    if ( last_value != src.getDefault() ) {
-                        dest.add( 0, last_value );
+                // マップに入っていないので，新しい音符の追加だと思う
+                if ( str.compare( ue.getLyric(), "R" ) ) {
+                    // 休符．なにもしない
+                } else {
+                    VsqEvent newe = new VsqEvent();
+                    newe.Clock = c;
+                    newe.UstEvent = (UstEvent)ue.clone();
+                    newe.ID = new VsqID();
+                    AppManager.editorConfig.applyDefaultSingerStyle( newe.ID );
+                    if ( ue.isIntensitySpecified() ) {
+                        newe.ID.Dynamics = ue.getIntensity();
                     }
+                    newe.ID.LyricHandle = new LyricHandle( "あ", "a" );
+                    if ( ue.isLyricSpecified() ) {
+                        newe.ID.LyricHandle.L0.Phrase = ue.getLyric();
+                    }
+                    newe.ID.Note = ue.getNote();
+                    newe.ID.setLength( ue.getLength() );
+                    newe.ID.type = VsqIDType.Anote;
+                    // internal id はaddEventメソッドで自動で割り振られる
+                    vsq_track.addEvent( newe );
                 }
-                dest.add( cl, value );
+            }
+
+            // テンポの追加がないかチェック
+            if ( ue.isTempoSpecified() ) {
+                insertTempoInto( vsq, c, ue.getTempo() );
+            }
+
+            c += ue_length;
+        }
+
+        // ピッチを転写
+        // pitのデータがほしいので，PREV, NEXTを削除して，VsqFileにコンバートする
+        UstFile uf = (UstFile)r.clone();
+        // prev, nextを削除
+        UstTrack uf_track = uf.getTrack( 0 );
+        for ( int i = 0; i < uf_track.getEventCount(); ) {
+            UstEvent ue = uf_track.getEvent( i );
+            if ( ue.Index == UstFile.NEXT_INDEX ||
+                 ue.Index == UstFile.PREV_INDEX ) {
+                uf_track.removeEventAt( i );
+            } else {
+                i++;
             }
         }
+        uf.updateTempoInfo();
+        // VsqFileにコンバート
+        VsqFile uf_vsq = new VsqFile( uf );
+        // uf_vsqの最初のトラックの0からret_lengthクロックまでが，
+        // vsq_trackのsel_startからsel_start+ret_lengthクロックまでに対応する．
+        // まずPBSをコピーする
+        CurveType[] type = new CurveType[] { CurveType.PBS, CurveType.PIT };
+        foreach ( CurveType ct in type ) {
+            // コピー元を取得
+            VsqBPList src = vec.get( uf_vsq.Track, 1 ).getCurve( ct.getName() );
+            if ( src != null ) {
+                // コピー先を取得
+                VsqBPList dst = vsq_track.getCurve( ct.getName() );
+                if ( dst == null ) {
+                    // コピー先がnullだった場合は作成
+                    dst = new VsqBPList( ct.getName(), ct.getDefault(), ct.getMinimum(), ct.getMaximum() );
+                    vsq_track.setCurve( ct.getName(), dst );
+                }
+                // あとで復元するので，最終位置での値を保存しておく
+                int value_at_end = dst.getValue( sel_start + ret_length );
+                // 復元するかどうか．最終位置にそもそもデータ点があれば復帰の必要がないので．
+                bool do_revert = (dst.findIndexFromClock( sel_start + ret_length ) < 0);
+                // [sel_start, sel_start + ret_length)の範囲の値を削除しておく
+                size = dst.size();
+                for ( int i = size - 1; i >= 0; i-- ) {
+                    int cl = dst.getKeyClock( i );
+                    if ( sel_start <= cl && cl < sel_start + ret_length ) {
+                        dst.removeElementAt( i );
+                    }
+                }
+                // コピーを実行
+                size = src.size();
+                for ( int i = 0; i < size; i++ ) {
+                    int cl = src.getKeyClock( i );
+                    if ( ret_length <= cl ) {
+                        break;
+                    }
+                    int value = src.getElementA( i );
+                    dst.add( cl + sel_start, value );
+                }
+                // コピー後，最終位置での値が元と異なる場合，元に戻すようにする
+                if ( do_revert && dst.getValue( sel_start + ret_length ) != value_at_end ) {
+                    dst.add( sel_start + ret_length, value_at_end );
+                }
+            }
+        }
+
+        return ScriptReturnStatus.EDITED;
+    }
+
+    /// <summary>
+    /// 指定したVSQの指定した位置に，テンポの挿入を試みます．
+    /// 既存のテンポがある場合，値が上書きされます
+    /// </summary>
+    /// <param name="vsq">挿入対象のVSQ</param>
+    /// <param name="clock">挿入位置</param>
+    /// <param name="tempo">楽譜表記上のテンポ．BPS</param>
+    private static void insertTempoInto( VsqFileEx vsq, int clock, float t )
+    {
+        // clockの位置にテンポ変更があるかどうか？
+        int num_tempo = vsq.TempoTable.size();
+        int index = -1;
+        for ( int j = 0; j < num_tempo; j++ ) {
+            TempoTableEntry itemj = vec.get( vsq.TempoTable, j );
+            if ( itemj.Clock == clock ) {
+                index = j;
+                break;
+            }
+        }
+        int tempo = (int)(60e6 / t);
+        if ( index >= 0 ) {
+            // clock位置に既存のテンポ変更がある場合，テンポ値を変更
+            TempoTableEntry itemj = vec.get( vsq.TempoTable, index );
+            itemj.Tempo = tempo;
+        } else {
+            // 既存のものはないので新規に追加
+            vec.add( vsq.TempoTable, new TempoTableEntry( clock, tempo, 0.0 ) );
+        }
+        // テンポテーブルを更新
+        vsq.TempoTable.updateTempoInfo();
     }
 
     private void Utau_Plugin_Invoker_Load( object sender, EventArgs e ) {

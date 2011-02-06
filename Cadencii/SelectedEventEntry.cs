@@ -353,8 +353,8 @@ namespace org.kbinani.cadencii
                         if ( editing.UstEvent == null ) {
                             editing.UstEvent = new UstEvent();
                         }
-                        editing.UstEvent.VoiceOverlap = oa.msOverlap;
-                        editing.UstEvent.PreUtterance = oa.msPreUtterance;
+                        editing.UstEvent.setVoiceOverlap( oa.msOverlap );
+                        editing.UstEvent.setPreUtterance( oa.msPreUtterance );
                     }
                 }
             }
@@ -712,7 +712,7 @@ namespace org.kbinani.cadencii
             if ( editing.UstEvent == null ) {
                 editing.UstEvent = new UstEvent();
             }
-            editing.UstEvent.PreUtterance = value;
+            editing.UstEvent.setPreUtterance( value );
         }
 
         public float getPreUtterance()
@@ -720,7 +720,7 @@ namespace org.kbinani.cadencii
             if ( editing.UstEvent == null ) {
                 return 0;
             }
-            return editing.UstEvent.PreUtterance;
+            return editing.UstEvent.getPreUtterance();
         }
 
 #if !JAVA
@@ -743,7 +743,7 @@ namespace org.kbinani.cadencii
             if ( editing.UstEvent == null ) {
                 editing.UstEvent = new UstEvent();
             }
-            editing.UstEvent.VoiceOverlap = value;
+            editing.UstEvent.setVoiceOverlap( value );
         }
 
         public float getOverlap()
@@ -751,7 +751,7 @@ namespace org.kbinani.cadencii
             if ( editing.UstEvent == null ) {
                 return 0;
             }
-            return editing.UstEvent.VoiceOverlap;
+            return editing.UstEvent.getVoiceOverlap();
         }
 
 #if !JAVA
@@ -774,7 +774,7 @@ namespace org.kbinani.cadencii
             if ( editing.UstEvent == null ) {
                 editing.UstEvent = new UstEvent();
             }
-            editing.UstEvent.Moduration = value;
+            editing.UstEvent.setModuration( value );
         }
 
         public int getModuration()
@@ -782,7 +782,7 @@ namespace org.kbinani.cadencii
             if ( editing.UstEvent == null ) {
                 editing.UstEvent = new UstEvent();
             }
-            return editing.UstEvent.Moduration;
+            return editing.UstEvent.getModuration();
         }
 
 #if !JAVA
@@ -858,12 +858,12 @@ namespace org.kbinani.cadencii
 
         public int getIntensity()
         {
-            return getEditingUstEvent().Intensity;
+            return getEditingUstEvent().getIntensity();
         }
 
         public void setIntensity( int value )
         {
-            getEditingUstEvent().Intensity = value;
+            getEditingUstEvent().setIntensity( value );
         }
         #endregion
 

@@ -154,11 +154,6 @@ namespace org.kbinani.cadencii
             btnLoadDefault.setText( _( "Load Default" ) );
 
             list.setColumnHeaders( new String[] { _( "Command" ), _( "Shortcut Key" ) } );
-#if JAVA
-            System.err.println( "info; FormShortcutKeys#applyLanguage; \"toolTip.SetToolTip( list, _( \"Select command and hit key(s) you want to set.\\nHit Backspace if you want to remove shortcut key.\" ) )" );
-#else
-            toolTip.SetToolTip( list, _( "Select command and hit key(s) you want to set.\nHit Backspace if you want to remove shortcut key." ) );
-#endif
 
             labelCategory.setText( _( "Category" ) );
             int selected = comboCategory.getSelectedIndex();

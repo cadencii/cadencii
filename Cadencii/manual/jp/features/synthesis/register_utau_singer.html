@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<title>Cadenciiマニュアル - リファレンス - 歌声合成に関係する機能</title>
+<link rel="stylesheet" type="text/css" href="../../../manual.css"/>
+</head>
+<body>
+<a href="../../index.html">目次</a>&nbsp;/&nbsp;<a href="../index.html">機能別リファレンス</a>&nbsp;/&nbsp;歌声合成に関係する機能
+<hr/>
+
+<h2>3-2. UTAU音源を使用する方法</h2>
+<div>
+  <h3>音源について</h3>
+  <div>
+    <p>
+      CadenciiはUTAUのように音源用の専用ディレクトリを用いません．
+      このため，用意した音源を好みのディレクトリに保存し，
+      Cadenciiにそのディレクトリを登録する，という使い方をします．
+    </p>
+  </div>
+  <h3>合成器について</h3>
+  <div>
+    <p>
+      CadenciiはUTAU用の合成器自体は提供しません．
+      このため，合成器の実行ファイルを好みのディレクトリに保存し，
+      Cadenciiにその場所を登録する，という使い方をします．
+    </p>
+    <p>
+      resamplerについては，resampler互換の合成器を複数登録してトラックごとに
+      切り替えて使うことができます．
+    </p>
+  </div>
+  <h3>音源の登録方法</h3>
+  <div>
+    <p>
+      「設定」メニュー，
+      「プリファレンス」とメニューをたどり(Mac版の場合は「Cadencii」メニュー「環境設定」)，
+      設定ダイアログを出します．<br/>
+      「UTAU音源」タブを選びます．下のような画面が出ます．
+    </p>
+    <div style="text-align: center;">
+      <img src="register_utau_singer_fig1.png" alt="設定ダイアログの「UTAU音源」タブ"/>
+    </div>
+    <p>
+      左下の「追加」ボタンを押すとファイルを選ぶダイアログが出るので，
+      登録したい音源のoto.iniを選んで，ファイルダイアログを閉じます．<br/>
+      設定ダイアログに戻るので「OK」ボタンを押して完了です．
+    </p>
+  </div>
+  <h3>合成器の登録方法</h3>
+  <div>
+    <p>
+      「設定」メニュー，
+      「プリファレンス」とメニューをたどり(Mac版の場合は「Cadencii」メニュー「環境設定」)，
+      設定ダイアログを出します．<br/>
+      「実行環境」タブを選びます．<br/>
+      下のような画面が出ます．ここで使うのは下半分の「UTAUコア」の欄です．
+    </p>
+    <div style="text-align: center;">
+      <img src="register_utau_singer_fig2.png" alt="設定ダイアログの「実行環境」タブ"/>
+    </div>
+    <p>
+      wavtool，resamplerのどちらかが欠けると合成できないので両方とも登録します．<br/>
+      wavtoolを登録するときは「Browse」ボタンを，resamplerを登録するときは「Add」ボタンをそれぞれ押し，
+      出てきたファイル選択ダイアログでそれぞれの実行ファイルを選びます．
+    </p>
+    <p>
+      Wineに関する設定項目がありますが，これはWindows用の実行ファイルをWindows以外で使うための設定項目です．<br/>
+      Windowsの場合は常にチェックを外した状態にしてください．
+      Windows以外の場合は，選択された実行ファイルがWindows用のものかどうかを判定し
+      自動的にチェックのON/OFFが切り替わります．
+    </p>
+    <p>
+      設定ダイアログの「OK」ボタンを押して完了です．
+    </p>
+  </div>
+  <h3></h3>
+</div>
+
+<hr/>
+<a href="../../index.html">目次</a>&nbsp;/&nbsp;<a href="../index.html">機能別リファレンス</a>&nbsp;/&nbsp;歌声合成に関係する機能
+
+</body>
+</html>

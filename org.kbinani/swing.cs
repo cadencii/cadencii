@@ -74,19 +74,25 @@ namespace org.kbinani.javax.swing
             return ret;
         }
 
-        /* private static org.kbinani.util.TreeMap<string, int> getKeyCodes() {
-            if ( keyCodes == null ) {
-                keyCodes = new org.kbinani.util.TreeMap<string, int>();
-                foreach ( System.Reflection.FieldInfo fi in typeof( org.kbinani.awt.event_.KeyEvent ).GetFields() ) {
-                    if ( fi.IsStatic && fi.IsPublic && fi.FieldType == typeof( int ) ) {
-                        string name = fi.Name;
-                        int value = fi.GetValue( typeof( org.kbinani.awt.event_.KeyEvent ) );
-                        keyCodes.put( name, value );
-                    }
-                }
+        public bool equals( Object value )
+        {
+            if ( value == null ) {
+                return false;
             }
-            return keyCodes;
-        }*/
+            if ( !(value is KeyStroke) ) {
+                return false;
+            }
+            KeyStroke stroke = (KeyStroke)value;
+            return (this.keys == stroke.keys);
+        }
+
+#if !JAVA
+        public override bool Equals( object obj )
+        {
+            return equals( obj );
+        }
+#endif
+
     }
 
 }

@@ -38,6 +38,21 @@ namespace org.kbinani.vsq
             m_events = new Vector<UstEvent>();
         }
 
+        /// <summary>
+        /// 指定したindex値を持つイベントを検索します
+        /// </summary>
+        /// <param name="index">検索するindex値</param>
+        /// <returns>見つからなかったらnullを返す</returns>
+        public UstEvent findEventFromIndex( int index )
+        {
+            foreach ( UstEvent ue in m_events ) {
+                if ( ue.Index == index ) {
+                    return ue;
+                }
+            }
+            return null;
+        }
+
         public UstEvent getEvent( int index )
         {
             return m_events.get( index );
@@ -71,9 +86,9 @@ namespace org.kbinani.vsq
         public Object clone()
         {
             UstTrack ret = new UstTrack();
-            int c = m_events.size();
+            int c = vec.size( m_events );
             for ( int i = 0; i < c; i++ ) {
-                ret.m_events.set( i, (UstEvent)m_events.get( i ).clone() );
+                vec.add( ret.m_events, (UstEvent)vec.get( m_events, i ).clone() );
             }
             return ret;
         }

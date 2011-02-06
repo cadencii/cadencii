@@ -1727,7 +1727,7 @@ namespace org.kbinani.cadencii
                     drawPreutteranceAndOverlap(
                         g, 
                         preutterance.value, overlap.value, 
-                        item.UstEvent.PreUtterance, item.UstEvent.VoiceOverlap );
+                        item.UstEvent.getPreUtterance(), item.UstEvent.getVoiceOverlap() );
                 }
             }
 
@@ -1971,7 +1971,7 @@ namespace org.kbinani.cadencii
                 }
                 // 先行発音の旗の当たり判定
                 if ( found_flag_was_overlap != null ) {
-                    String title_preutterance = getFlagTitle( true, item.UstEvent.PreUtterance );
+                    String title_preutterance = getFlagTitle( true, item.UstEvent.getPreUtterance() );
                     size = getFlagBounds( title_preutterance );
                     if ( Utility.isInRect( locx, locy, px_preutterance.value, OFFSET_PRE - FLAG_SPACE, size.width, size.height + FLAG_SPACE * 2 ) ) {
                         internal_id.value = item.InternalID;
@@ -1979,7 +1979,7 @@ namespace org.kbinani.cadencii
                         return true;
                     }
                     // オーバーラップ用の旗の当たり判定
-                    String title_overlap = getFlagTitle( false, item.UstEvent.VoiceOverlap );
+                    String title_overlap = getFlagTitle( false, item.UstEvent.getVoiceOverlap() );
                     size = getFlagBounds( title_overlap );
                     if ( Utility.isInRect( locx, locy, px_overlap.value, OFFSET_OVL - FLAG_SPACE, size.width, size.height + FLAG_SPACE * 2 ) ) {
                         internal_id.value = item.InternalID;
@@ -2014,12 +2014,12 @@ namespace org.kbinani.cadencii
             if ( ust_event1 == null ) {
                 ust_event1 = new UstEvent();
             }
-            UstEnvelope draw_target = ust_event1.Envelope;
+            UstEnvelope draw_target = ust_event1.getEnvelope();
             if ( draw_target == null ) {
                 draw_target = new UstEnvelope();
             }
-            double sec_pre_utterance1 = ust_event1.PreUtterance / 1000.0;
-            double sec_overlap1 = ust_event1.VoiceOverlap / 1000.0;
+            double sec_pre_utterance1 = ust_event1.getPreUtterance() / 1000.0;
+            double sec_overlap1 = ust_event1.getVoiceOverlap() / 1000.0;
 
             TempoVectorSearchContext context = new TempoVectorSearchContext();
             int px_env_start1 = 
@@ -2075,12 +2075,12 @@ namespace org.kbinani.cadencii
             if ( ust_event1 == null ) {
                 ust_event1 = new UstEvent();
             }
-            UstEnvelope draw_target = ust_event1.Envelope;
+            UstEnvelope draw_target = ust_event1.getEnvelope();
             if ( draw_target == null ) {
                 draw_target = new UstEnvelope();
             }
-            double sec_pre_utterance1 = ust_event1.PreUtterance / 1000.0;
-            double sec_overlap1 = ust_event1.VoiceOverlap / 1000.0;
+            double sec_pre_utterance1 = ust_event1.getPreUtterance() / 1000.0;
+            double sec_overlap1 = ust_event1.getVoiceOverlap() / 1000.0;
 
             // 先行発音があることによる，この音符のエンベロープの実際の開始位置
             double sec_env_start1 = sec_start1 - sec_pre_utterance1;
@@ -2090,8 +2090,8 @@ namespace org.kbinani.cadencii
             if ( item_next != null && item_next.UstEvent != null ) {
                 // 直後に音符がある場合
                 UstEvent ust_event2 = item_next.UstEvent;
-                double sec_pre_utterance2 = ust_event2.PreUtterance / 1000.0;
-                double sec_overlap2 = ust_event2.VoiceOverlap / 1000.0;
+                double sec_pre_utterance2 = ust_event2.getPreUtterance() / 1000.0;
+                double sec_overlap2 = ust_event2.getVoiceOverlap() / 1000.0;
                 sec_env_end1 = sec_end1 - sec_pre_utterance2 + sec_overlap2;
             }
 
@@ -2255,7 +2255,7 @@ namespace org.kbinani.cadencii
                                     VsqEvent ve_editing = mVelEditSelected.get( dobj.mInternalID ).editing;
                                     if ( mSelectedCurve.equals( CurveType.VEL ) ) {
                                         if ( AppManager.mDrawIsUtau[selected - 1] ) {
-                                            editing = ve_editing.UstEvent == null ? 100 : ve_editing.UstEvent.Intensity;
+                                            editing = ve_editing.UstEvent == null ? 100 : ve_editing.UstEvent.getIntensity();
                                         } else {
                                             editing = ve_editing.ID.Dynamics;
                                         }
@@ -3153,7 +3153,7 @@ namespace org.kbinani.cadencii
                 VsqEvent ve_original = mVelEditSelected.get( mVelEditLastSelectedID ).original;
                 if ( mSelectedCurve.equals( CurveType.VEL ) ) {
                     if ( is_utau_mode ) {
-                        d_vel = t_value - ((ve_original.UstEvent == null) ? 100 : ve_original.UstEvent.Intensity);
+                        d_vel = t_value - ((ve_original.UstEvent == null) ? 100 : ve_original.UstEvent.getIntensity());
                     } else {
                         d_vel = t_value - ve_original.ID.Dynamics;
                     }
@@ -3168,7 +3168,7 @@ namespace org.kbinani.cadencii
                         VsqEvent item = mVelEditSelected.get( id ).original;
                         int new_vel = item.ID.Dynamics + d_vel;
                         if ( is_utau_mode ) {
-                            new_vel = item.UstEvent == null ? 100 + d_vel : item.UstEvent.Intensity + d_vel;
+                            new_vel = item.UstEvent == null ? 100 + d_vel : item.UstEvent.getIntensity() + d_vel;
                         }
                         if ( new_vel < min ) {
                             new_vel = min;
@@ -3180,7 +3180,7 @@ namespace org.kbinani.cadencii
                             if ( item_o.UstEvent == null ) {
                                 item_o.UstEvent = new UstEvent();
                             }
-                            item_o.UstEvent.Intensity = new_vel;
+                            item_o.UstEvent.setIntensity( new_vel );
                         } else {
                             mVelEditSelected.get( id ).editing.ID.Dynamics = new_vel;
                         }
@@ -3269,13 +3269,13 @@ namespace org.kbinani.cadencii
             } else if ( mMouseDownMode == MouseDownMode.PRE_UTTERANCE_MOVE ) {
                 int clock_at_downed = AppManager.clockFromXCoord( mMouseDownLocation.x - stdx );
                 double dsec = vsq.getSecFromClock( clock ) - vsq.getSecFromClock( clock_at_downed );
-                float draft_preutterance = mPreOverlapOriginal.UstEvent.PreUtterance - (float)(dsec * 1000);
-                mPreOverlapEditing.UstEvent.PreUtterance = draft_preutterance;
+                float draft_preutterance = mPreOverlapOriginal.UstEvent.getPreUtterance() - (float)(dsec * 1000);
+                mPreOverlapEditing.UstEvent.setPreUtterance( draft_preutterance );
             } else if ( mMouseDownMode == MouseDownMode.OVERLAP_MOVE ) {
                 int clock_at_downed = AppManager.clockFromXCoord( mMouseDownLocation.x - stdx );
                 double dsec = vsq.getSecFromClock( clock ) - vsq.getSecFromClock( clock_at_downed );
-                float draft_overlap = mPreOverlapOriginal.UstEvent.VoiceOverlap + (float)(dsec * 1000);
-                mPreOverlapEditing.UstEvent.VoiceOverlap = draft_overlap;
+                float draft_overlap = mPreOverlapOriginal.UstEvent.getVoiceOverlap() + (float)(dsec * 1000);
+                mPreOverlapEditing.UstEvent.setVoiceOverlap( draft_overlap );
             }
 #if JAVA
             repaint();
@@ -3755,7 +3755,7 @@ namespace org.kbinani.cadencii
                                     mVelEditLastSelectedID = ve.InternalID;
                                     if ( mSelectedCurve.equals( CurveType.VEL ) ) {
                                         if ( AppManager.mDrawIsUtau[selected - 1] ) {
-                                            mVelEditShiftY = e.Y - yCoordFromValue( ve.UstEvent == null ? 100 : ve.UstEvent.Intensity );
+                                            mVelEditShiftY = e.Y - yCoordFromValue( ve.UstEvent == null ? 100 : ve.UstEvent.getIntensity() );
                                         } else {
                                             mVelEditShiftY = e.Y - yCoordFromValue( ve.ID.Dynamics );
                                         }
@@ -4166,14 +4166,14 @@ namespace org.kbinani.cadencii
             if ( found == null ) {
                 return false;
             }
-            if ( found.UstEvent != null && found.UstEvent.Envelope != null ) {
-                mEnvelopeOriginal = (UstEnvelope)found.UstEvent.Envelope.clone();
-                mEnvelopeEditing = found.UstEvent.Envelope;
+            if ( found.UstEvent != null && found.UstEvent.getEnvelope() != null ) {
+                mEnvelopeOriginal = (UstEnvelope)found.UstEvent.getEnvelope().clone();
+                mEnvelopeEditing = found.UstEvent.getEnvelope();
             }
             if ( mEnvelopeOriginal == null ) {
-                found.UstEvent.Envelope = new UstEnvelope();
-                mEnvelopeEditing = found.UstEvent.Envelope;
-                mEnvelopeOriginal = (UstEnvelope)found.UstEvent.Envelope.clone();
+                found.UstEvent.setEnvelope( new UstEnvelope() );
+                mEnvelopeEditing = found.UstEvent.getEnvelope();
+                mEnvelopeOriginal = (UstEnvelope)found.UstEvent.getEnvelope().clone();
             }
             mMouseDownMode = MouseDownMode.ENVELOPE_MOVE;
             mEnvelopeEdigintID = internal_id.value;
@@ -4753,7 +4753,7 @@ namespace org.kbinani.cadencii
                                                 if ( item.UstEvent == null ) {
                                                     item.UstEvent = new UstEvent();
                                                 }
-                                                item.UstEvent.Intensity = velocity.get( internal_id );
+                                                item.UstEvent.setIntensity( velocity.get( internal_id ) );
                                                 events[i] = item;
                                                 i++;
                                             }
@@ -5055,7 +5055,7 @@ namespace org.kbinani.cadencii
                         if ( item.UstEvent == null ) {
                             item.UstEvent = new UstEvent();
                         }
-                        item.UstEvent.Intensity = mVelEditSelected.get( internal_id ).editing.UstEvent.Intensity;
+                        item.UstEvent.setIntensity( mVelEditSelected.get( internal_id ).editing.UstEvent.getIntensity() );
                         values[i] = item;
                         i++;
                     }
@@ -5091,7 +5091,7 @@ namespace org.kbinani.cadencii
                     for ( int i = 0; i < count; i++ ) {
                         VsqEvent item = target.getEvent( i );
                         if ( item.ID.type == VsqIDType.Anote && item.InternalID == mEnvelopeEdigintID ) {
-                            item.UstEvent.Envelope = mEnvelopeOriginal;
+                            item.UstEvent.setEnvelope( mEnvelopeOriginal );
                             target.setEvent( i, item );
                             break;
                         }

@@ -51,7 +51,7 @@ namespace org.kbinani.vsq
         /// テンポ情報を保持したテーブル
         /// </summary>
         public TempoVector TempoTable;
-        public Vector<TimeSigTableEntry> TimesigTable;
+        public TimesigVector/*Vector<TimeSigTableEntry>*/ TimesigTable;
         protected const int m_tpq = 480;
         /// <summary>
         /// 曲の長さを取得します。(クロック(4分音符は480クロック))
@@ -66,7 +66,6 @@ namespace org.kbinani.vsq
         static readonly byte[] _MTRK = new byte[] { (byte)0x4d, (byte)0x54, (byte)0x72, (byte)0x6b };
         static readonly byte[] _MTHD = new byte[] { (byte)0x4d, (byte)0x54, (byte)0x68, (byte)0x64 };
         static readonly byte[] _MASTER_TRACK = new byte[] { (byte)0x4D, (byte)0x61, (byte)0x73, (byte)0x74, (byte)0x65, (byte)0x72, (byte)0x20, (byte)0x54, (byte)0x72, (byte)0x61, (byte)0x63, (byte)0x6B, };
-        static readonly String[] _CURVES = new String[] { "VEL", "DYN", "BRE", "BRI", "CLE", "OPE", "GEN", "POR", "PIT", "PBS" };
         /// <summary>
         /// マスタートラックを除いた，トラック総数の最大値
         /// </summary>
@@ -89,33 +88,34 @@ namespace org.kbinani.vsq
             int lastc = 0;
 #endif
 #endif
-            int clock_count = 480 * 4; //pre measure = 1、4分の4拍子としたので
+            int clock_count = 0;
             VsqBPList abs_pitch = new VsqBPList( "", 640000, 0, 1270000 ); // 絶対ピッチ(単位: 1/100 cent，つまり10000で1ノートナンバー)
             VsqTrack vsq_track = vec.get( this.Track, 1 );
             int last_clock = -1;
             for ( Iterator<UstEvent> itr = ust.getTrack( 0 ).getNoteEventIterator(); itr.hasNext(); ) {
                 UstEvent ue = itr.next();
-                if ( !str.compare( ue.Lyric, "R" ) ) {
+                if ( !str.compare( ue.getLyric(), "R" ) ) {
                     VsqID id = new VsqID( 0 );
                     id.setLength( ue.getLength() );
                     String psymbol = "a";
-                    SymbolTableEntry entry = SymbolTable.attatch( ue.Lyric );
+                    SymbolTableEntry entry = SymbolTable.attatch( ue.getLyric() );
                     if ( entry != null ) {
                         psymbol = entry.getSymbol();
                     }
-                    id.LyricHandle = new LyricHandle( ue.Lyric, psymbol );
-                    id.Note = ue.Note;
+                    id.LyricHandle = new LyricHandle( ue.getLyric(), psymbol );
+                    id.Note = ue.getNote();
                     id.type = VsqIDType.Anote;
                     VsqEvent ve = new VsqEvent( clock_count, id );
                     ve.UstEvent = (UstEvent)ue.clone();
                     vsq_track.addEvent( ve );
 
-                    if ( ue.Pitches != null ) {
+                    float[] pitches = ue.getPitches();
+                    if ( pitches != null ) {
                         // PBTypeクロックごとにデータポイントがある
                         // ただし，音符の先頭の時刻から，先行発音とStartPointを引いた時刻から記録されているので注意
 
                         // 先行発音の秒数
-                        double sec_preutterance = ue.PreUtterance / 1000.0;
+                        double sec_preutterance = ue.getPreUtterance() / 1000.0;
                         // STPの秒数
                         double sec_stp = ue.getStartPoint() / 1000.0;
                         // 音符の開始位置(秒)
@@ -124,14 +124,18 @@ namespace org.kbinani.vsq
                         double sec_at_preutterance = sec_clock - sec_preutterance - sec_stp;
                         // 先行発音込みの，音符の開始位置(クロック)
                         int clock_at_preutterance = (int)TempoTable.getClockFromSec( sec_at_preutterance );
-                        int clock = clock_at_preutterance - ue.PBType;
+                        int pbtype = ue.isPBTypeSpecified() ? ue.getPBType() : 5;
+                        if ( pbtype <= 0 ) {
+                            pbtype = 5;
+                        }
+                        int clock = clock_at_preutterance - pbtype;
                         // 書き込み済みの位置より左側には，ピッチを書き込まないようにする
-                        for ( int i = 0; i < ue.Pitches.Length; i++ ) {
-                            clock += ue.PBType;
+                        for ( int i = 0; i < pitches.Length; i++ ) {
+                            clock += pbtype;
                             if ( clock < last_clock ) {
                                 continue;
                             }
-                            int pvalue = id.Note * 10000 + (int)(ue.Pitches[i] * 100);
+                            int pvalue = id.Note * 10000 + (int)(pitches[i] * 100);
                             abs_pitch.add( clock, pvalue );
                             last_clock = clock;
 #if DEBUG
@@ -145,12 +149,16 @@ namespace org.kbinani.vsq
                         }
                     }
                 }
-                if ( ue.Tempo > 0.0f ) {
-                    TempoTable.add( new TempoTableEntry( clock_count, (int)(60e6 / ue.Tempo), 0.0 ) );
+                if ( ue.getTempo() > 0.0f ) {
+                    TempoTable.add( new TempoTableEntry( clock_count, (int)(60e6 / ue.getTempo()), 0.0 ) );
                     TempoTable.updateTempoInfo();
                 }
                 clock_count += ue.getLength();
             }
+
+#if DEBUG
+            sw.Close();
+#endif
 
             // 音符の先頭位置のピッチが必ず指定された状態にする
             int search_start = 0;
@@ -214,18 +222,20 @@ namespace org.kbinani.vsq
             updateTimesigInfo();
 #if DEBUG
 #if !JAVA
-            /*for ( int i = 0; i < pitch.size(); i++ ) {
+
+
+            sw = new System.IO.StreamWriter( fsys.combine( PortUtil.getApplicationStartupPath(), "VsqFile.ctor2.log" ) );
+
+            max = int.MinValue;
+            min = int.MaxValue;
+            for ( int i = 0; i < pitch.size(); i++ ) {
                 VsqBPPair p = pitch.getElementB( i );
                 int c = pitch.getKeyClock( i );
                 lastc = c;
                 sw.WriteLine( c + "\t" + p.value );
                 max = Math.Max( max, p.value );
                 min = Math.Min( min, p.value );
-            }*/
-            sw.Close();
-
-
-            sw = new System.IO.StreamWriter( fsys.combine( PortUtil.getApplicationStartupPath(), "VsqFile.ctor2.log" ) );
+            }
 
             int DELTA = 10;
             for ( int i = 0; i < vsq_track.getEventCount(); i++ ) {
@@ -322,8 +332,8 @@ namespace org.kbinani.vsq
                 }
 
                 // コントロールカーブをシフト
-                for ( int j = 0; j < _CURVES.Length; j++ ) {
-                    String ct = _CURVES[j];
+                for ( int j = 0; j < VsqTrack.CURVES.Length; j++ ) {
+                    String ct = VsqTrack.CURVES[j];
                     VsqBPList item = vsq_track.getCurve( ct );
                     if ( item == null ) {
                         continue;
@@ -387,8 +397,8 @@ namespace org.kbinani.vsq
                 }
 
                 // コントロールカーブをシフト
-                for ( int j = 0; j < _CURVES.Length; j++ ) {
-                    String ct = _CURVES[j];
+                for ( int j = 0; j < VsqTrack.CURVES.Length; j++ ) {
+                    String ct = VsqTrack.CURVES[j];
                     VsqBPList item = vsq_track.getCurve( ct );
                     if ( item == null ) {
                         continue;
@@ -839,8 +849,8 @@ namespace org.kbinani.vsq
             int vpit = 0;
 
             Vector<Integer> parts = new Vector<Integer>();   // 連続した音符ブロックの先頭音符のクロック位置。のリスト
-            parts.add( premeasure_clock );
-            int lastclock = premeasure_clock;
+            parts.add( 0 );
+            int lastclock = 0;// premeasure_clock;
             for ( Iterator<VsqEvent> itr = vsq.Track.get( track ).getNoteEventIterator(); itr.hasNext(); ) {
                 VsqEvent ve = itr.next();
                 if ( ve.Clock <= lastclock ) {
@@ -1876,9 +1886,36 @@ namespace org.kbinani.vsq
         }
 
         /// <summary>
+        /// 指定した位置に，指定した量の空白を挿入します
+        /// </summary>
+        /// <param name="clock_start">空白を挿入する位置</param>
+        /// <param name="clock_amount">挿入する空白の量</param>
+        public void insertBlank( int clock_start, int clock_amount )
+        {
+            // テンポを挿入
+            int size = vec.size( TempoTable );
+            for ( int i = 0; i < size; i++ ) {
+                TempoTableEntry itemi = vec.get( TempoTable, i );
+                if ( itemi.Clock <= 0 ) {
+                    continue;
+                }
+                if ( clock_start <= itemi.Clock ) {
+                    itemi.Clock += clock_amount;
+                }
+            }
+            TempoTable.updateTempoInfo();
+
+            // 各トラックに空白を挿入
+            size = vec.size( Track );
+            for ( int i = 1; i < size; i++ ) {
+                VsqTrack vsq_track = vec.get( Track, i );
+                vsq_track.insertBlank( clock_start, clock_amount );
+            }
+        }
+
+        /// <summary>
         /// VSQファイルの指定されたクロック範囲のイベント等を削除します
         /// </summary>
-        /// <param name="vsq">編集対象のVsqFileインスタンス</param>
         /// <param name="clock_start">削除を行う範囲の開始クロック</param>
         /// <param name="clock_end">削除を行う範囲の終了クロック</param>
         public void removePart( int clock_start, int clock_end )
@@ -1924,75 +1961,7 @@ namespace org.kbinani.vsq
             int numTrack = Track.size();
             for ( int track = 1; track < numTrack; track++ ) {
                 VsqTrack vsqTrack = Track.get( track );
-                // 削除する範囲に歌手変更イベントが存在するかどうかを検査。
-                VsqEvent t_last_singer = null;
-                for ( Iterator<VsqEvent> itr = vsqTrack.getSingerEventIterator(); itr.hasNext(); ) {
-                    VsqEvent ve = itr.next();
-                    if ( clock_start <= ve.Clock && ve.Clock < clock_end ) {
-                        t_last_singer = ve;
-                    }
-                    if ( ve.Clock == clock_end ) {
-                        t_last_singer = null; // 後でclock_endの位置に補うが、そこにに既に歌手変更イベントがあるとまずいので。
-                    }
-                }
-                VsqEvent last_singer = null;
-                if ( t_last_singer != null ) {
-                    last_singer = (VsqEvent)t_last_singer.clone();
-                    last_singer.Clock = clock_end;
-                }
-
-                changed = true;
-                // イベントの削除
-                while ( changed ) {
-                    changed = false;
-                    int numEvents = vsqTrack.getEventCount();
-                    for ( int i = 0; i < numEvents; i++ ) {
-                        VsqEvent itemi = vsqTrack.getEvent( i );
-                        if ( clock_start <= itemi.Clock && itemi.Clock < clock_end ) {
-                            vsqTrack.removeEvent( i );
-                            changed = true;
-                            break;
-                        }
-                    }
-                }
-
-                // クロックのシフト
-                if ( last_singer != null ) {
-                    vsqTrack.addEvent( last_singer ); //歌手変更イベントを補う
-                }
-                int num_events = vsqTrack.getEventCount();
-                for ( int i = 0; i < num_events; i++ ) {
-                    VsqEvent itemi = vsqTrack.getEvent( i );
-                    if ( clock_end <= itemi.Clock ) {
-                        itemi.Clock -= dclock;
-                    }
-                }
-
-                for ( int i = 0; i < _CURVES.Length; i++ ) {
-                    String curve = _CURVES[i];
-                    VsqBPList bplist = vsqTrack.getCurve( curve );
-                    if ( bplist == null ) {
-                        continue;
-                    }
-                    VsqBPList buf_bplist = (VsqBPList)bplist.clone();
-                    bplist.clear();
-                    int value_at_end = buf_bplist.getValue( clock_end );
-                    boolean at_end_added = false;
-                    for ( Iterator<Integer> itr = buf_bplist.keyClockIterator(); itr.hasNext(); ) {
-                        int key = itr.next();
-                        if ( key < clock_start ) {
-                            bplist.add( key, buf_bplist.getValue( key ) );
-                        } else if ( clock_end <= key ) {
-                            if ( key == clock_end ) {
-                                at_end_added = true;
-                            }
-                            bplist.add( key - dclock, buf_bplist.getValue( key ) );
-                        }
-                    }
-                    if ( !at_end_added ) {
-                        bplist.add( clock_end - dclock, value_at_end );
-                    }
-                }
+                vsqTrack.removePart( clock_start, clock_end );
             }
 #if DEBUG
             sout.println( "VsqFile#removePart; after:" );
@@ -2030,8 +1999,8 @@ namespace org.kbinani.vsq
                         itemi.Clock += dclock;
                     }
                 }
-                for ( int i = 0; i < _CURVES.Length; i++ ) {
-                    String curve = _CURVES[i];
+                for ( int i = 0; i < VsqTrack.CURVES.Length; i++ ) {
+                    String curve = VsqTrack.CURVES[i];
                     VsqBPList edit = vsqTrack.getCurve( curve );
                     if ( edit == null ) {
                         continue;
@@ -2065,7 +2034,7 @@ namespace org.kbinani.vsq
                 ret.TempoTable.add( (TempoTableEntry)TempoTable.get( i ).clone() );
             }
 
-            ret.TimesigTable = new Vector<TimeSigTableEntry>();
+            ret.TimesigTable = new TimesigVector();// Vector<TimeSigTableEntry>();
             for ( int i = 0; i < TimesigTable.size(); i++ ) {
                 ret.TimesigTable.add( (TimeSigTableEntry)TimesigTable.get( i ).clone() );
             }
@@ -2283,40 +2252,12 @@ namespace org.kbinani.vsq
         /// <param name="clock"></param>
         public Timesig getTimesigAt( int clock )
         {
-            Timesig ret = new Timesig();
-            ret.numerator = 4;
-            ret.denominator = 4;
-            int index = 0;
-            int c = TimesigTable.size();
-            for ( int i = c - 1; i >= 0; i-- ) {
-                index = i;
-                if ( TimesigTable.get( i ).Clock <= clock ) {
-                    break;
-                }
-            }
-            ret.numerator = TimesigTable.get( index ).Numerator;
-            ret.denominator = TimesigTable.get( index ).Denominator;
-            return ret;
+            return TimesigTable.getTimesigAt( clock );
         }
 
         public Timesig getTimesigAt( int clock, ByRef<Integer> bar_count )
         {
-            int index = 0;
-            int c = TimesigTable.size();
-            for ( int i = c - 1; i >= 0; i-- ) {
-                index = i;
-                if ( TimesigTable.get( i ).Clock <= clock ) {
-                    break;
-                }
-            }
-            TimeSigTableEntry item = TimesigTable.get( index );
-            Timesig ret = new Timesig();
-            ret.numerator = item.Numerator;
-            ret.denominator = item.Denominator;
-            int diff = clock - item.Clock;
-            int clock_per_bar = 480 * 4 / ret.denominator * ret.numerator;
-            bar_count.value = item.BarCount + diff / clock_per_bar;
-            return ret;
+            return TimesigTable.getTimesigAt( clock, bar_count );
         }
 
         /// <summary>
@@ -2344,21 +2285,7 @@ namespace org.kbinani.vsq
         /// <returns></returns>
         public int getClockFromBarCount( int bar_count )
         {
-            int index = 0;
-            int c = TimesigTable.size();
-            for ( int i = c - 1; i >= 0; i-- ) {
-                index = i;
-                if ( TimesigTable.get( i ).BarCount <= bar_count ) {
-                    break;
-                }
-            }
-            TimeSigTableEntry item = TimesigTable.get( index );
-            int numerator = item.Numerator;
-            int denominator = item.Denominator;
-            int init_clock = item.Clock;
-            int init_bar_count = item.BarCount;
-            int clock_per_bar = numerator * 480 * 4 / denominator;
-            return init_clock + (bar_count - init_bar_count) * clock_per_bar;
+            return TimesigTable.getClockFromBarCount( bar_count );
         }
 
         /// <summary>
@@ -2368,24 +2295,7 @@ namespace org.kbinani.vsq
         /// <returns></returns>
         public int getBarCountFromClock( int clock )
         {
-            int index = 0;
-            int c = TimesigTable.size();
-            for ( int i = c - 1; i >= 0; i-- ) {
-                index = i;
-                if ( TimesigTable.get( i ).Clock <= clock ) {
-                    break;
-                }
-            }
-            int bar_count = 0;
-            if ( index >= 0 ) {
-                int last_clock = TimesigTable.get( index ).Clock;
-                int t_bar_count = TimesigTable.get( index ).BarCount;
-                int numerator = TimesigTable.get( index ).Numerator;
-                int denominator = TimesigTable.get( index ).Denominator;
-                int clock_per_bar = numerator * 480 * 4 / denominator;
-                bar_count = t_bar_count + (clock - last_clock) / clock_per_bar;
-            }
-            return bar_count;
+            return TimesigTable.getBarCountFromClock( clock );
         }
 
         /// <summary>
@@ -2414,7 +2324,7 @@ namespace org.kbinani.vsq
             Master = new VsqMaster( pre_measure );
             Mixer = new VsqMixer( 0, 0, 0, 0 );
             Mixer.Slave.add( new VsqMixerEntry( 0, 0, 0, 0 ) );
-            TimesigTable = new Vector<TimeSigTableEntry>();
+            TimesigTable = new TimesigVector();// Vector<TimeSigTableEntry>();
             TimesigTable.add( new TimeSigTableEntry( 0, numerator, denominator, 0 ) );
             TempoTable = new TempoVector();
             TempoTable.add( new TempoTableEntry( 0, tempo, 0.0 ) );
@@ -2432,7 +2342,7 @@ namespace org.kbinani.vsq
 #endif
         {
             TempoTable = new TempoVector();
-            TimesigTable = new Vector<TimeSigTableEntry>();
+            TimesigTable = new TimesigVector();// Vector<TimeSigTableEntry>();
 
             // SMFをコンバートしたテキストファイルを作成
             MidiFile mf = new MidiFile( _fpath );
@@ -2564,34 +2474,7 @@ namespace org.kbinani.vsq
         /// </summary>
         public void updateTimesigInfo()
         {
-#if DEBUG
-            sout.println( "VsqFile#updateTimesigInfo; before:" );
-            for ( int i = 0; i < TimesigTable.size(); i++ ) {
-                sout.println( "    " + TimesigTable.get( i ).Clock + " " + TimesigTable.get( i ).Numerator + "/" + TimesigTable.get( i ).Denominator );
-            }
-#endif
-            if ( TimesigTable.get( 0 ).Clock != 0 ) {
-                return;
-            }
-            TimesigTable.get( 0 ).Clock = 0;
-            Collections.sort( TimesigTable );
-            int count = TimesigTable.size();
-            for ( int j = 1; j < count; j++ ) {
-                TimeSigTableEntry item = TimesigTable.get( j - 1 );
-                int numerator = item.Numerator;
-                int denominator = item.Denominator;
-                int clock = item.Clock;
-                int bar_count = item.BarCount;
-                int dif = 480 * 4 / denominator * numerator;//1小節が何クロックか？
-                clock += (TimesigTable.get( j ).BarCount - bar_count) * dif;
-                TimesigTable.get( j ).Clock = clock;
-            }
-#if DEBUG
-            sout.println( "VsqFile#updateTimesigInfo; after:" );
-            for ( int i = 0; i < TimesigTable.size(); i++ ) {
-                sout.println( "    " + TimesigTable.get( i ).Clock + " " + TimesigTable.get( i ).Numerator + "/" + TimesigTable.get( i ).Denominator );
-            }
-#endif
+            TimesigTable.updateTimesigInfo();
         }
 
         /// <summary>
@@ -2615,8 +2498,8 @@ namespace org.kbinani.vsq
                     VsqEvent lastItem = track.getEvent( numEvents - 1 );
                     max = Math.Max( max, lastItem.Clock + lastItem.ID.getLength() );
                 }
-                for ( int j = 0; j < _CURVES.Length; j++ ) {
-                    String vct = _CURVES[j];
+                for ( int j = 0; j < VsqTrack.CURVES.Length; j++ ) {
+                    String vct = VsqTrack.CURVES[j];
                     VsqBPList list = track.getCurve( vct );
                     if ( list == null ) {
                         continue;
@@ -3164,13 +3047,11 @@ namespace org.kbinani.vsq
                 byte accent = (byte)((byte)0x64 * ve.ID.DEMaccent / 100.0);
                 add.append( NRPN.CVM_NM_ACCENT, accent, true );// (byte)0x5a(Accent)
             }
-            if ( renderer.StartsWith( "UTU0" ) ) {
+            if ( str.startsWith( renderer, "UTU0" ) ) {
                 // エンベロープ
                 if ( ve.UstEvent != null ) {
-                    UstEnvelope env = null;
-                    if ( ve.UstEvent.Envelope != null ) {
-                        env = ve.UstEvent.Envelope;
-                    } else {
+                    UstEnvelope env = ve.UstEvent.getEnvelope();
+                    if ( env == null ) {
                         env = new UstEnvelope();
                     }
                     int[] vals = null;
@@ -3207,14 +3088,14 @@ namespace org.kbinani.vsq
 
                     // モジュレーション
                     ValuePair<Byte, Byte> m;
-                    if ( -100 <= ve.UstEvent.Moduration && ve.UstEvent.Moduration <= 100 ) {
-                        m = getMsbAndLsb( ve.UstEvent.Moduration + 100 );
+                    if ( -100 <= ve.UstEvent.getModuration() && ve.UstEvent.getModuration() <= 100 ) {
+                        m = getMsbAndLsb( ve.UstEvent.getModuration() + 100 );
                         add.append( NRPN.CVM_EXNM_MODURATION, m.getKey(), m.getValue() );
                     }
 
                     // 先行発声
-                    if ( ve.UstEvent.PreUtterance != 0 ) {
-                        m = getMsbAndLsb( (int)(ve.UstEvent.PreUtterance + 8192) );
+                    if ( ve.UstEvent.isPreUtteranceSpecified() ) {
+                        m = getMsbAndLsb( (int)(ve.UstEvent.getPreUtterance() + 8192) );
                         add.append( NRPN.CVM_EXNM_PRE_UTTERANCE, m.getKey(), m.getValue() );
                     }
 
@@ -3230,8 +3111,8 @@ namespace org.kbinani.vsq
                     }
 
                     // オーバーラップ
-                    if ( ve.UstEvent.VoiceOverlap != 0 ) {
-                        m = getMsbAndLsb( (int)(ve.UstEvent.VoiceOverlap + 8192) );
+                    if ( ve.UstEvent.isVoiceOverlapSpecified() ) {
+                        m = getMsbAndLsb( (int)(ve.UstEvent.getVoiceOverlap() + 8192) );
                         add.append( NRPN.CVM_EXNM_VOICE_OVERLAP, m.getKey(), m.getValue() );
                     }
                 }

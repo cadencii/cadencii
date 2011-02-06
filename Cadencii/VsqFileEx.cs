@@ -263,6 +263,70 @@ namespace org.kbinani.cadencii
         }
 
         /// <summary>
+        /// 指定した位置に，指定した量の空白を挿入します
+        /// </summary>
+        /// <param name="clock_start">空白を挿入する位置</param>
+        /// <param name="clock_amount">挿入する空白の量</param>
+        public void insertBlank( int clock_start, int clock_amount )
+        {
+            base.insertBlank( clock_start, clock_amount );
+            Vector<BezierCurves> curves = AttachedCurves.getCurves();
+            int size = vec.size( curves );
+            for ( int i = 0; i < size; i++ ) {
+                BezierCurves bcs = vec.get( curves, i );
+                bcs.insertBlank( clock_start, clock_amount );
+            }
+        }
+
+        /// <summary>
+        /// 指定した位置に，指定した量の空白を挿入します
+        /// </summary>
+        /// <param name="track">挿入を行う対象のトラック</param>
+        /// <param name="clock_start">空白を挿入する位置</param>
+        /// <param name="clock_amount">挿入する空白の量</param>
+        public void insertBlank( int track, int clock_start, int clock_amount )
+        {
+            VsqTrack vsq_track = vec.get( Track, track );
+            vsq_track.insertBlank( clock_start, clock_amount );
+            BezierCurves bcs = AttachedCurves.get( track - 1 );
+            bcs.insertBlank( clock_start, clock_amount );
+        }
+
+        /// <summary>
+        /// VSQファイルの指定されたクロック範囲のイベント等を削除します
+        /// </summary>
+        /// <param name="clock_start">削除を行う範囲の開始クロック</param>
+        /// <param name="clock_end">削除を行う範囲の終了クロック</param>
+#if JAVA
+        public void removePart( int clock_start, int clock_end )
+#else
+        public new void removePart( int clock_start, int clock_end )
+#endif
+        {
+            base.removePart( clock_start, clock_end );
+            Vector<BezierCurves> curves = AttachedCurves.getCurves();
+            int size = vec.size( curves );
+            for ( int i = 0; i < size; i++ ) {
+                BezierCurves bcs = vec.get( curves, i );
+                bcs.removePart( clock_start, clock_end );
+            }
+        }
+
+        /// <summary>
+        /// 指定したトラックの，指定した範囲のイベント等を削除します
+        /// </summary>
+        /// <param name="track">削除を行う対象のトラック</param>
+        /// <param name="clock_start">削除を行う範囲の開始クロック</param>
+        /// <param name="clock_end">削除を行う範囲の終了クロック</param>
+        public void removePart( int track, int clock_start, int clock_end )
+        {
+            VsqTrack vsq_track = vec.get( Track, track );
+            vsq_track.removePart( clock_start, clock_end );
+            BezierCurves bcs = AttachedCurves.get( track - 1 );
+            bcs.removePart( clock_start, clock_end );
+        }
+
+        /// <summary>
         /// MasterMute, トラックのMute指定、トラックのSolo指定、トラックのPlayModeを考慮し、このVSQシーケンスの指定したトラックがミュートされた状態かどうかを判定します。
         /// </summary>
         /// <param name="track"></param>
@@ -684,7 +748,7 @@ namespace org.kbinani.cadencii
             for ( int i = 0; i < c; i++ ) {
                 ret.TempoTable.add( (TempoTableEntry)TempoTable.get( i ).clone() );
             }
-            ret.TimesigTable = new Vector<TimeSigTableEntry>();
+            ret.TimesigTable = new TimesigVector();// Vector<TimeSigTableEntry>();
             c = TimesigTable.size();
             for ( int i = 0; i < c; i++ ) {
                 ret.TimesigTable.add( (TimeSigTableEntry)TimesigTable.get( i ).clone() );

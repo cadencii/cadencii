@@ -83,13 +83,7 @@ namespace org.kbinani.windows.forms {
         }
 
         public void setMnemonic( int value ) {
-#if DEBUG
-            sout.println( "BMenuItem#seMnemonic; before; text=" + base.Text );
-#endif
             setText( setMnemonicFromText( base.Text, value ) );
-#if DEBUG
-            sout.println( "BMenuItem#seMnemonic; after; text=" + base.Text );
-#endif
         }
 
         int m_mnemonic_index = -1;

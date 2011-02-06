@@ -874,7 +874,7 @@ msgstr "次のコントロールカーブへ"
 
 #: Cadencii/FormMain.cs:5262
 msgid "Change pitch drawing mode"
-msgstr "このトラックの名前を変更"
+msgstr "ピッチの描画モードを切り替える"
 
 #: Cadencii/FormMain.cs:5266
 #: Cadencii/FormMain.cs:5337

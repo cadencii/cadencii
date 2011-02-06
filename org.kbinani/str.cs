@@ -17,7 +17,10 @@ package org.kbinani;
 import java.text.*;
 import java.util.*;
 #else
-#if !__cplusplus
+
+#if __cplusplus
+//#include <cctype>
+#else
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -51,6 +54,60 @@ namespace org
 #if __cplusplus
         public:
 #endif
+
+#if JAVA
+            public static String toUpper( String s )
+#elif __cplusplus
+            static string toUpper( string s )
+#else
+            public static string toUpper( string s )
+#endif
+            {
+#if JAVA
+                if ( s == null ) {
+                    return "";
+                }else{
+                    return s.toUpperCase();
+                }
+#elif __cplusplus
+                string s1 = s;
+                transform( s1.begin(), s1.end(), s1.begin(), tolower );
+                return s1;
+#else
+                if ( s == null ) {
+                    return "";
+                }else{
+                    return s.ToUpper();
+                }
+#endif
+            }
+
+#if JAVA
+            public static String toLower( String s )
+#elif __cplusplus
+            static string toLower( string s )
+#else
+            public static string toLower( string s )
+#endif
+            {
+#if JAVA
+                if( s == null ){
+                    return "";
+                }else{
+                    return s.toLowerCase();
+                }
+#elif __cplusplus
+                string s1 = s;
+                transform( s1.begin(), s1.end(), s1.begin(), toupper );
+                return s1;
+#else
+                if ( s == null ){
+                    return "";
+                }else{
+                    return s.ToLower();
+                }
+#endif
+            }
 
 #if JAVA
             public static boolean endsWith( String s, String search )

@@ -721,127 +721,6 @@ namespace org.kbinani.cadencii
             updatePaletteTool();
 #endif
 
-
-#if !JAVA
-            // toolStipの位置を，前回終了時の位置に戻す
-            int chevron_width = AppManager.editorConfig.ChevronWidth;
-            this.bandFile = new RebarBand();
-            this.bandPosition = new RebarBand();
-            this.bandMeasure = new RebarBand();
-            this.bandTool = new RebarBand();
-
-            bool variant_height = false;
-            this.bandFile.VariantHeight = variant_height;
-            this.bandPosition.VariantHeight = variant_height;
-            this.bandMeasure.VariantHeight = variant_height;
-            this.bandTool.VariantHeight = variant_height;
-
-            int MAX_BAND_HEIGHT = 26;// toolBarTool.Height;
-
-            this.rebar.Controls.Add( this.toolBarFile );
-            this.rebar.Controls.Add( this.toolBarTool );
-            this.rebar.Controls.Add( this.toolBarPosition );
-            this.rebar.Controls.Add( this.toolBarMeasure );
-            // bandFile
-            this.bandFile.AllowVertical = false;
-            this.bandFile.Child = this.toolBarFile;
-            this.bandFile.Header = -1;
-            this.bandFile.Integral = 1;
-            this.bandFile.MaxHeight = MAX_BAND_HEIGHT;
-            this.bandFile.UseChevron = true;
-            if ( toolBarFile.Buttons.Count > 0 ) {
-                this.bandFile.IdealWidth =
-                    toolBarFile.Buttons[toolBarFile.Buttons.Count - 1].Rectangle.Right + chevron_width;
-            }
-            this.bandFile.BandSize = AppManager.editorConfig.BandSizeFile;
-            this.bandFile.NewRow = AppManager.editorConfig.BandNewRowFile;
-            // bandPosition
-            this.bandPosition.AllowVertical = false;
-            this.bandPosition.Child = this.toolBarPosition;
-            this.bandPosition.Header = -1;
-            this.bandPosition.Integral = 1;
-            this.bandPosition.MaxHeight = MAX_BAND_HEIGHT;
-            this.bandPosition.UseChevron = true;
-            if ( toolBarPosition.Buttons.Count > 0 ) {
-                this.bandPosition.IdealWidth =
-                    toolBarPosition.Buttons[toolBarPosition.Buttons.Count - 1].Rectangle.Right + chevron_width;
-            }
-            this.bandPosition.BandSize = AppManager.editorConfig.BandSizePosition;
-            this.bandPosition.NewRow = AppManager.editorConfig.BandNewRowPosition;
-            // bandMeasure
-            this.bandMeasure.AllowVertical = false;
-            this.bandMeasure.Child = this.toolBarMeasure;
-            this.bandMeasure.Header = -1;
-            this.bandMeasure.Integral = 1;
-            this.bandMeasure.MaxHeight = MAX_BAND_HEIGHT;
-            this.bandMeasure.UseChevron = true;
-            if ( toolBarMeasure.Buttons.Count > 0 ) {
-                this.bandMeasure.IdealWidth =
-                    toolBarMeasure.Buttons[toolBarMeasure.Buttons.Count - 1].Rectangle.Right + chevron_width;
-            }
-            this.bandMeasure.BandSize = AppManager.editorConfig.BandSizeMeasure;
-            this.bandMeasure.NewRow = AppManager.editorConfig.BandNewRowMeasure;
-            // bandTool
-            this.bandTool.AllowVertical = false;
-            this.bandTool.Child = this.toolBarTool;
-            this.bandTool.Header = -1;
-            this.bandTool.Integral = 1;
-            this.bandTool.MaxHeight = MAX_BAND_HEIGHT;
-            this.bandTool.UseChevron = true;
-            if ( toolBarTool.Buttons.Count > 0 ) {
-                this.bandTool.IdealWidth =
-                    toolBarTool.Buttons[toolBarTool.Buttons.Count - 1].Rectangle.Right + chevron_width;
-            }
-            this.bandTool.BandSize = AppManager.editorConfig.BandSizeTool;
-            this.bandTool.NewRow = AppManager.editorConfig.BandNewRowTool;
-            // 一度リストに入れてから追加する
-            var bands = new RebarBand[] { null, null, null, null };
-            // 番号がおかしくないかチェック
-            if ( AppManager.editorConfig.BandOrderFile < 0 || bands.Length <= AppManager.editorConfig.BandOrderFile ) AppManager.editorConfig.BandOrderFile = 0;
-            if ( AppManager.editorConfig.BandOrderMeasure < 0 || bands.Length <= AppManager.editorConfig.BandOrderMeasure ) AppManager.editorConfig.BandOrderMeasure = 0;
-            if ( AppManager.editorConfig.BandOrderPosition < 0 || bands.Length <= AppManager.editorConfig.BandOrderPosition ) AppManager.editorConfig.BandOrderPosition = 0;
-            if ( AppManager.editorConfig.BandOrderTool < 0 || bands.Length <= AppManager.editorConfig.BandOrderTool ) AppManager.editorConfig.BandOrderTool = 0;
-            bands[AppManager.editorConfig.BandOrderFile] = bandFile;
-            bands[AppManager.editorConfig.BandOrderMeasure] = bandMeasure;
-            bands[AppManager.editorConfig.BandOrderPosition] = bandPosition;
-            bands[AppManager.editorConfig.BandOrderTool] = bandTool;
-            // nullチェック
-            boolean null_exists = false;
-            for ( var i = 0; i < bands.Length; i++ ) {
-                if ( bands[i] == null ) {
-                    null_exists = true;
-                    break;
-                }
-            }
-            if ( null_exists ) {
-                // 番号に矛盾があれば，デフォルトの並び方で
-                bands[0] = bandFile;
-                bands[1] = bandMeasure;
-                bands[2] = bandPosition;
-                bands[3] = bandTool;
-                bandFile.NewRow = true;
-                bandMeasure.NewRow = true;
-                bandPosition.NewRow = true;
-                bandTool.NewRow = true;
-            }
-
-            // 追加
-            for ( var i = 0; i < bands.Length; i++ ) {
-                if ( i == 0 ) bands[i].NewRow = true;
-                bands[i].MinHeight = 24;
-                this.rebar.Bands.Add( bands[i] );
-            }
-
-#if DEBUG
-            sout.println( "FormMain#.ctor; this.Width=" + this.Width );
-#endif
-            bandTool.Resize += this.toolStripEdit_Resize;
-            bandMeasure.Resize += this.toolStripMeasure_Resize;
-            bandPosition.Resize += this.toolStripPosition_Resize;
-            bandFile.Resize += this.toolStripFile_Resize;
-
-#endif
-
 #if !JAVA
             splitContainer1.Panel1.BorderStyle = System.Windows.Forms.BorderStyle.None;
             splitContainer1.Panel2.BorderStyle = System.Windows.Forms.BorderStyle.None;
@@ -1119,8 +998,6 @@ namespace org.kbinani.cadencii
             updateRendererMenu();
 
             // ウィンドウの位置・サイズを再現
-            this.SizeChanged += new BEventHandler( FormMain_SizeChanged );
-            this.LocationChanged += new BEventHandler( FormMain_LocationChanged );
             if ( AppManager.editorConfig.WindowMaximized ) {
                 setExtendedState( BForm.MAXIMIZED_BOTH );
             } else {
@@ -1139,6 +1016,8 @@ namespace org.kbinani.cadencii
                 this.setBounds( bounds );
                 AppManager.editorConfig.WindowRect = bounds;
             }
+            this.SizeChanged += new BEventHandler( FormMain_SizeChanged );
+            this.LocationChanged += new BEventHandler( FormMain_LocationChanged );
 
             updateScrollRangeHorizontal();
             updateScrollRangeVertical();
@@ -1186,7 +1065,9 @@ namespace org.kbinani.cadencii
 
             repaint();
             updateLayout();
-#if !DEBUG
+#if DEBUG
+            menuHidden.setVisible( true );
+#else
             menuHidden.setVisible( false );
 #endif
 
@@ -1307,20 +1188,6 @@ namespace org.kbinani.cadencii
         #endregion
 
         #region helper methods
-        /// <summary>
-        /// 音符イベントに，デフォルトの歌唱スタイルを適用します
-        /// </summary>
-        /// <param name="item"></param>
-        public void applyDefaultSingerStyle( VsqID item )
-        {
-            if ( item == null ) return;
-            item.PMBendDepth = AppManager.editorConfig.DefaultPMBendDepth;
-            item.PMBendLength = AppManager.editorConfig.DefaultPMBendLength;
-            item.PMbPortamentoUse = AppManager.editorConfig.DefaultPMbPortamentoUse;
-            item.DEMdecGainRate = AppManager.editorConfig.DefaultDEMdecGainRate;
-            item.DEMaccent = AppManager.editorConfig.DefaultDEMaccent;
-        }
-
         /// <summary>
         /// ファイル名に拡張子が付いているかどうか確認し，付いてなければ追加します
         /// </summary>
@@ -1588,8 +1455,8 @@ namespace org.kbinani.cadencii
             if ( singerConfig != null && AppManager.mUtauVoiceDB.containsKey( singerConfig.VOICEIDSTR ) ) {
                 UtauVoiceDB utauVoiceDb = AppManager.mUtauVoiceDB.get( singerConfig.VOICEIDSTR );
                 OtoArgs otoArgs = utauVoiceDb.attachFileNameFromLyric( lyric.L0.Phrase );
-                AppManager.mAddingEvent.UstEvent.PreUtterance = otoArgs.msPreUtterance;
-                AppManager.mAddingEvent.UstEvent.VoiceOverlap = otoArgs.msOverlap;
+                AppManager.mAddingEvent.UstEvent.setPreUtterance( otoArgs.msPreUtterance );
+                AppManager.mAddingEvent.UstEvent.setVoiceOverlap( otoArgs.msOverlap );
             }
 
             // 自動ノーマライズのモードで、処理を分岐
@@ -3576,8 +3443,8 @@ namespace org.kbinani.cadencii
                         if ( sc != null && AppManager.mUtauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
                             UtauVoiceDB db = AppManager.mUtauVoiceDB.get( sc.VOICEIDSTR );
                             OtoArgs oa = db.attachFileNameFromLyric( phrase[j] );
-                            items[j].UstEvent.PreUtterance = oa.msPreUtterance;
-                            items[j].UstEvent.VoiceOverlap = oa.msOverlap;
+                            items[j].UstEvent.setPreUtterance( oa.msPreUtterance );
+                            items[j].UstEvent.setVoiceOverlap( oa.msOverlap );
                         }
                     }
                     if ( !str.compare( original_symbol[j], phonetic_symbol[j] ) ) {
@@ -3855,6 +3722,9 @@ namespace org.kbinani.cadencii
         /// <param name="onPreviewKeyDown">PreviewKeyDownイベントから送信されてきた場合、true（送る側が設定する）</param>
         public void processSpecialShortcutKey( BKeyEventArgs e, boolean onPreviewKeyDown )
         {
+#if DEBUG
+            sout.println( "FormMain#processSpecialShortcutKey" );
+#endif
             boolean flipPlaying = false; // 再生/停止状態の切り替えが要求されたらtrue
 
             // 最初に、特殊な取り扱いが必要なショートカット、について、
@@ -3867,6 +3737,9 @@ namespace org.kbinani.cadencii
                 foreach ( SpecialShortcutHolder holder in mSpecialShortcutHolders ) {
                     if ( stroke.Equals( holder.shortcut ) ) {
                         try {
+#if DEBUG
+                            sout.println( "FormMain#processSpecialShortcutKey; perform click: name=" + holder.menu.getName() );
+#endif
 #if JAVA
                             holder.menu.clickEvent.raise( holder.menu, new BEventArgs() );
 #else
@@ -3889,6 +3762,9 @@ namespace org.kbinani.cadencii
             }
 
             if ( modifier != KeyEvent.VK_UNDEFINED ) {
+#if DEBUG
+                sout.println( "FormMain#processSpecialShortcutKey; bailout with (modifier != VK_UNDEFINED)" );
+#endif
                 return;
             }
 
@@ -4732,9 +4608,6 @@ namespace org.kbinani.cadencii
             }
 #else // JAVA
             try {
-#if DEBUG
-                sout.println( "FormMain#applyMenuItemShortcut; item_name=" + item_name );
-#endif // DEBUG
                 if ( dict.containsKey( item_name ) ) {
 #if DEBUG
                     if ( !(item is BMenuItem) ) {
@@ -4759,9 +4632,6 @@ namespace org.kbinani.cadencii
                                 // ショートカットの適用に失敗する→特殊な取り扱いが必要
                                 menu.ShortcutKeyDisplayString = Utility.getShortcutDisplayString( keys );
                                 menu.ShortcutKeys = System.Windows.Forms.Keys.None;
-#if DEBUG
-                                //Logger.write( "FormMain#applyMenuItemShortcut; add to mSpecialShortcutHolders; menu.getName()=" + menu.getName() + "; ex=" + ex + "\n" );
-#endif // DEBUG
                                 mSpecialShortcutHolders.add(
                                     new SpecialShortcutHolder( BKeysUtility.getKeyStrokeFromBKeys( keys ), menu ) );
                             }
@@ -5736,6 +5606,9 @@ namespace org.kbinani.cadencii
                     continue;
                 }
                 VsqBPList target = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( vct.getName() );
+                if ( target == null ) {
+                    continue;
+                }
                 int count = target.size();
                 if ( count >= 1 ) {
                     //int[] keys = target.getKeys();
@@ -7013,7 +6886,7 @@ namespace org.kbinani.cadencii
                                     }
                                 }
                             }
-                            int intensity = item.UstEvent == null ? 100 : item.UstEvent.Intensity;
+                            int intensity = item.UstEvent == null ? 100 : item.UstEvent.getIntensity();
 
                             //追加
                             tmp.add( new DrawObject( DrawObjectType.Note,
@@ -7032,7 +6905,7 @@ namespace org.kbinani.cadencii
                                                      rate_start,
                                                      depth_start,
                                                      item.ID.Note,
-                                                     item.UstEvent.Envelope,
+                                                     item.UstEvent.getEnvelope(),
                                                      length,
                                                      timesig,
                                                      is_valid_for_utau,
@@ -9046,7 +8919,7 @@ namespace org.kbinani.cadencii
                                 int new_clock = doQuantize( clock, unit );
                                 AppManager.mAddingEvent = new VsqEvent( new_clock, new VsqID( 0 ) );
                                 // デフォルトの歌唱スタイルを適用する
-                                applyDefaultSingerStyle( AppManager.mAddingEvent.ID );
+                                AppManager.editorConfig.applyDefaultSingerStyle( AppManager.mAddingEvent.ID );
                                 if ( mPencilMode.getMode() == PencilModeEnum.Off ) {
                                     AppManager.setEditMode( EditMode.ADD_ENTRY );
                                     mButtonInitial = new Point( e.X, e.Y );
@@ -10957,14 +10830,144 @@ namespace org.kbinani.cadencii
 
         public void FormMain_LocationChanged( Object sender, EventArgs e )
         {
+#if DEBUG
+            sout.println( "FormMain#FormMain_LocationChanged; getExtendedState()=" + getExtendedState() + "; NORMAL=" + BForm.NORMAL );
+#endif
             if ( getExtendedState() == BForm.NORMAL ) {
+#if DEBUG
+                sout.println( "FormMain#FormMain_LocationChanged; before; WindowRect=" + AppManager.editorConfig.WindowRect );
+#endif
                 AppManager.editorConfig.WindowRect = this.getBounds();
+#if DEBUG
+                sout.println( "FormMain#FormMain_LocationChanged; after; WindowRect=" + AppManager.editorConfig.WindowRect );
+#endif
             }
         }
 
         public void FormMain_Load( Object sender, EventArgs e )
         {
             applyLanguage();
+
+#if !JAVA
+            // ツールバーの位置を復帰させる
+            // toolStipの位置を，前回終了時の位置に戻す
+            int chevron_width = AppManager.editorConfig.ChevronWidth;
+            this.bandFile = new RebarBand();
+            this.bandPosition = new RebarBand();
+            this.bandMeasure = new RebarBand();
+            this.bandTool = new RebarBand();
+
+            bool variant_height = false;
+            this.bandFile.VariantHeight = variant_height;
+            this.bandPosition.VariantHeight = variant_height;
+            this.bandMeasure.VariantHeight = variant_height;
+            this.bandTool.VariantHeight = variant_height;
+
+            int MAX_BAND_HEIGHT = 26;// toolBarTool.Height;
+
+            this.rebar.Controls.Add( this.toolBarFile );
+            this.rebar.Controls.Add( this.toolBarTool );
+            this.rebar.Controls.Add( this.toolBarPosition );
+            this.rebar.Controls.Add( this.toolBarMeasure );
+            // bandFile
+            this.bandFile.AllowVertical = false;
+            this.bandFile.Child = this.toolBarFile;
+            this.bandFile.Header = -1;
+            this.bandFile.Integral = 1;
+            this.bandFile.MaxHeight = MAX_BAND_HEIGHT;
+            this.bandFile.UseChevron = true;
+            if ( toolBarFile.Buttons.Count > 0 ) {
+                this.bandFile.IdealWidth =
+                    toolBarFile.Buttons[toolBarFile.Buttons.Count - 1].Rectangle.Right + chevron_width;
+            }
+            this.bandFile.BandSize = AppManager.editorConfig.BandSizeFile;
+            this.bandFile.NewRow = AppManager.editorConfig.BandNewRowFile;
+            // bandPosition
+            this.bandPosition.AllowVertical = false;
+            this.bandPosition.Child = this.toolBarPosition;
+            this.bandPosition.Header = -1;
+            this.bandPosition.Integral = 1;
+            this.bandPosition.MaxHeight = MAX_BAND_HEIGHT;
+            this.bandPosition.UseChevron = true;
+            if ( toolBarPosition.Buttons.Count > 0 ) {
+                this.bandPosition.IdealWidth =
+                    toolBarPosition.Buttons[toolBarPosition.Buttons.Count - 1].Rectangle.Right + chevron_width;
+            }
+            this.bandPosition.BandSize = AppManager.editorConfig.BandSizePosition;
+            this.bandPosition.NewRow = AppManager.editorConfig.BandNewRowPosition;
+            // bandMeasure
+            this.bandMeasure.AllowVertical = false;
+            this.bandMeasure.Child = this.toolBarMeasure;
+            this.bandMeasure.Header = -1;
+            this.bandMeasure.Integral = 1;
+            this.bandMeasure.MaxHeight = MAX_BAND_HEIGHT;
+            this.bandMeasure.UseChevron = true;
+            if ( toolBarMeasure.Buttons.Count > 0 ) {
+                this.bandMeasure.IdealWidth =
+                    toolBarMeasure.Buttons[toolBarMeasure.Buttons.Count - 1].Rectangle.Right + chevron_width;
+            }
+            this.bandMeasure.BandSize = AppManager.editorConfig.BandSizeMeasure;
+            this.bandMeasure.NewRow = AppManager.editorConfig.BandNewRowMeasure;
+            // bandTool
+            this.bandTool.AllowVertical = false;
+            this.bandTool.Child = this.toolBarTool;
+            this.bandTool.Header = -1;
+            this.bandTool.Integral = 1;
+            this.bandTool.MaxHeight = MAX_BAND_HEIGHT;
+            this.bandTool.UseChevron = true;
+            if ( toolBarTool.Buttons.Count > 0 ) {
+                this.bandTool.IdealWidth =
+                    toolBarTool.Buttons[toolBarTool.Buttons.Count - 1].Rectangle.Right + chevron_width;
+            }
+            this.bandTool.BandSize = AppManager.editorConfig.BandSizeTool;
+            this.bandTool.NewRow = AppManager.editorConfig.BandNewRowTool;
+            // 一度リストに入れてから追加する
+            var bands = new RebarBand[] { null, null, null, null };
+            // 番号がおかしくないかチェック
+            if ( AppManager.editorConfig.BandOrderFile < 0 || bands.Length <= AppManager.editorConfig.BandOrderFile ) AppManager.editorConfig.BandOrderFile = 0;
+            if ( AppManager.editorConfig.BandOrderMeasure < 0 || bands.Length <= AppManager.editorConfig.BandOrderMeasure ) AppManager.editorConfig.BandOrderMeasure = 0;
+            if ( AppManager.editorConfig.BandOrderPosition < 0 || bands.Length <= AppManager.editorConfig.BandOrderPosition ) AppManager.editorConfig.BandOrderPosition = 0;
+            if ( AppManager.editorConfig.BandOrderTool < 0 || bands.Length <= AppManager.editorConfig.BandOrderTool ) AppManager.editorConfig.BandOrderTool = 0;
+            bands[AppManager.editorConfig.BandOrderFile] = bandFile;
+            bands[AppManager.editorConfig.BandOrderMeasure] = bandMeasure;
+            bands[AppManager.editorConfig.BandOrderPosition] = bandPosition;
+            bands[AppManager.editorConfig.BandOrderTool] = bandTool;
+            // nullチェック
+            boolean null_exists = false;
+            for ( var i = 0; i < bands.Length; i++ ) {
+                if ( bands[i] == null ) {
+                    null_exists = true;
+                    break;
+                }
+            }
+            if ( null_exists ) {
+                // 番号に矛盾があれば，デフォルトの並び方で
+                bands[0] = bandFile;
+                bands[1] = bandMeasure;
+                bands[2] = bandPosition;
+                bands[3] = bandTool;
+                bandFile.NewRow = true;
+                bandMeasure.NewRow = true;
+                bandPosition.NewRow = true;
+                bandTool.NewRow = true;
+            }
+
+            // 追加
+            for ( var i = 0; i < bands.Length; i++ ) {
+                if ( i == 0 ) bands[i].NewRow = true;
+                bands[i].MinHeight = 24;
+                this.rebar.Bands.Add( bands[i] );
+            }
+
+#if DEBUG
+            sout.println( "FormMain#.ctor; this.Width=" + this.Width );
+#endif
+            bandTool.Resize += this.toolStripEdit_Resize;
+            bandMeasure.Resize += this.toolStripMeasure_Resize;
+            bandPosition.Resize += this.toolStripPosition_Resize;
+            bandFile.Resize += this.toolStripFile_Resize;
+#endif // !JAVA
+
             updateSplitContainer2Size( false );
 
             // 鍵盤用のキャッシュが古い位置に保存されている場合。
@@ -12348,7 +12351,7 @@ namespace org.kbinani.cadencii
                                 vid.Note = note;
                                 vid.Dynamics = velocity_each_note[note];
                                 // デフォルとの歌唱スタイルを適用する
-                                applyDefaultSingerStyle( vid );
+                                AppManager.editorConfig.applyDefaultSingerStyle( vid );
 
                                 // ビブラート
                                 if ( AppManager.editorConfig.EnableAutoVibrato ) {
@@ -12426,6 +12429,7 @@ namespace org.kbinani.cadencii
 
                 // vsqに変換
                 VsqFile vsq = new VsqFile( ust );
+                vsq.insertBlank( 0, vsq.getPreMeasureClocks() );
 
                 // RendererKindをUTAUに指定
                 for ( int i = 1; i < vec.size( vsq.Track ); i++ ) {
@@ -12695,6 +12699,7 @@ namespace org.kbinani.cadencii
                 
                 // vsqに変換
                 VsqFileEx vsq = new VsqFileEx( ust );
+                vsq.insertBlank( 0, vsq.getPreMeasureClocks() );
                 
                 // すべてのトラックの合成器指定をUTAUにする
                 for ( int i = 1; i < vec.size( vsq.Track ); i++ ) {
@@ -12855,7 +12860,7 @@ namespace org.kbinani.cadencii
                         boolean changed = false;
                         for ( int i = 0; i < copy.getEventCount(); i++ ) {
                             if ( copy.getEvent( i ).ID.type == VsqIDType.Anote ) {
-                                applyDefaultSingerStyle( copy.getEvent( i ).ID );
+                                AppManager.editorConfig.applyDefaultSingerStyle( copy.getEvent( i ).ID );
                                 changed = true;
                             }
                         }

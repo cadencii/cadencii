@@ -676,6 +676,20 @@ namespace org.kbinani.cadencii
 
         #region public method
         /// <summary>
+        /// 音符イベントに，デフォルトの歌唱スタイルを適用します
+        /// </summary>
+        /// <param name="item"></param>
+        public void applyDefaultSingerStyle( VsqID item )
+        {
+            if ( item == null ) return;
+            item.PMBendDepth = this.DefaultPMBendDepth;
+            item.PMBendLength = this.DefaultPMBendLength;
+            item.PMbPortamentoUse = this.DefaultPMbPortamentoUse;
+            item.DEMdecGainRate = this.DefaultDEMdecGainRate;
+            item.DEMaccent = this.DefaultDEMaccent;
+        }
+
+        /// <summary>
         /// wineの実行ファイルのパスを取得します
         /// </summary>
         public String getWineExecutable()

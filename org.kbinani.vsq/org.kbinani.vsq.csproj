@@ -82,9 +82,11 @@
     <Compile Include="TempoVectorSearchContext.cs" />
     <Compile Include="TextStream.cs" />
     <Compile Include="Timesig.cs" />
+    <Compile Include="TimesigVector.cs" />
     <Compile Include="TransCodeUtil.cs" />
     <Compile Include="UstEnvelope.cs" />
     <Compile Include="UstEvent.cs" />
+    <Compile Include="UstEventProperty.cs" />
     <Compile Include="UstFile.cs" />
     <Compile Include="UstFileWriteOptions.cs" />
     <Compile Include="UstPortamento.cs" />

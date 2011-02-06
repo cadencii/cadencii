@@ -31,6 +31,33 @@ namespace org.kbinani.cadencii {
     /// </summary>
     public class BezierCurves : ICloneable
     {
+        public readonly CurveType[] CURVES = new CurveType[]{
+            CurveType.DYN,
+            CurveType.BRE,
+            CurveType.BRI,
+            CurveType.CLE,
+            CurveType.OPE,
+            CurveType.GEN,
+            CurveType.POR,
+            CurveType.VibratoRate,
+            CurveType.VibratoDepth,
+            CurveType.harmonics,
+            CurveType.fx2depth,
+            CurveType.reso1freq,
+            CurveType.reso1bw,
+            CurveType.reso1amp,
+            CurveType.reso2freq,
+            CurveType.reso2bw,
+            CurveType.reso2amp,
+            CurveType.reso3freq,
+            CurveType.reso3bw,
+            CurveType.reso3amp,
+            CurveType.reso4freq,
+            CurveType.reso4bw,
+            CurveType.reso4amp,
+            CurveType.PIT,
+            CurveType.PBS, };
+
         public Vector<BezierChain> Dynamics;
         public Vector<BezierChain> Brethiness;
         public Vector<BezierChain> Brightness;
@@ -335,6 +362,78 @@ namespace org.kbinani.cadencii {
             addBezierChain( curve, chain, chain.id );
         }
 
+        /// <summary>
+        /// 指定した位置に，指定した量の空白を挿入します
+        /// </summary>
+        /// <param name="clock_start">空白を挿入する位置</param>
+        /// <param name="clock_amount">挿入する空白の量</param>
+        public void insertBlank( int clock_start, int clock_amount )
+        {
+            // 全種類のカーブ
+            Vector<CurveType> target_curve = new Vector<CurveType>();
+            foreach ( CurveType ct in CURVES ) {
+                Vector<BezierChain> vbc = get( ct );
+                for ( Iterator<BezierChain> itr = vbc.iterator(); itr.hasNext(); ) {
+                    BezierChain bc = itr.next();
+                    int size = vec.size( bc.points );
+                    for ( int i = 0; i < size; i++ ) {
+                        BezierPoint bp = vec.get( bc.points, i );
+                        PointD p = bp.getBase();
+                        if ( clock_start <= p.getX() ) {
+                            p.setX( p.getX() + clock_amount );
+                            bp.setBase( p );
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 全種類のカーブの指定した範囲を削除します．
+        /// 削除範囲以降の部分は，操作後には(clock_end - clock_start)だけシフトされます．
+        /// </summary>
+        /// <param name="clock_start"></param>
+        /// <param name="clock_end"></param>
+        public void removePart( int clock_start, int clock_end )
+        {
+            // 全種類のカーブが対象
+            Vector<CurveType> target_curve = new Vector<CurveType>();
+            foreach ( CurveType ct in CURVES ) {
+                vec.add( target_curve, ct );
+            }
+
+            // 便利メソッドで削除をやる
+            deleteBeziers( target_curve, clock_start, clock_end );
+
+            // データ点のclockがclock_end以降になってるものについて，シフトを行う
+            int delta = clock_end - clock_start;
+            for ( Iterator<CurveType> itr = target_curve.iterator(); itr.hasNext(); ) {
+                CurveType ct = itr.next();
+                Vector<BezierChain> vbc = get( ct );
+                for ( Iterator<BezierChain> itr_bc = vbc.iterator(); itr_bc.hasNext(); ) {
+                    BezierChain bc = itr_bc.next();
+                    int size = vec.size( bc.points );
+                    for ( int i = 0; i < size; i++ ) {
+                        BezierPoint bp = vec.get( bc.points, i );
+                        PointD p = bp.getBase();
+                        if ( clock_end <= p.getX() ) {
+                            p.setX( p.getX() - delta );
+                            bp.setBase( p );
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 指定したカーブ種類のベジエ曲線の，指定した範囲を削除します．
+        /// 削除はclock_startからclock_endの範囲について行われ，clock_end以降のシフト操作は行われません．
+        /// つまり，操作後にclock_end以降のイベントが(clock_end - clock_start)だけ前方にシフトしてくることはありません．
+        /// </summary>
+        /// <param name="target_curve"></param>
+        /// <param name="clock_start"></param>
+        /// <param name="clock_end"></param>
+        /// <returns></returns>
         public boolean deleteBeziers(
             Vector<CurveType> target_curve,
             int clock_start,

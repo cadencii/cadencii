@@ -15,11 +15,13 @@
 package org.kbinani.vsq;
 
 import java.io.*;
+import java.util.*;
 import org.kbinani.*;
 #else
 using System;
 using org.kbinani;
 using org.kbinani.java.io;
+using org.kbinani.java.util;
 
 namespace org.kbinani.vsq
 {
@@ -43,28 +45,442 @@ namespace org.kbinani.vsq
         public const int MIN_INTENSITY = -100;
 
         public String Tag;
-        public String Lyric = "";
-        public int Note = -1;
-        public int Intensity = 100;
-        public int PBType = -1;
-        public float[] Pitches = null;
-        public float Tempo = -1;
-        public UstVibrato Vibrato = null;
-        public UstPortamento Portamento = null;
-        public float PreUtterance = 0;
-        public float VoiceOverlap = 0;
-        public UstEnvelope Envelope = null;
+
+        private String mLyric = "";
+        private boolean mIsLyricSpec = false;
+
+        private int mNote = -1;
+        private boolean mIsNoteSpec = false;
+
+        private int mIntensity = 100;
+        private boolean mIsIntensitySpec = false;
+
+        private int mPBType = -1;
+        private boolean mIsPBTypeSpec = false;
+
+        private float[] mPitches = null;
+        private boolean mIsPitchesSpec = false;
+        
+        private float mTempo = -1;
+        private boolean mIsTempoSpec = false;
+
+        private UstVibrato mVibrato = null;
+        private boolean mIsVibratoSpec = false;
+
+        private UstPortamento mPortamento = null;
+        private boolean mIsPortamentoSpec = false;
+
+        private float mPreUtterance = 0;
+        private boolean mIsPreUtteranceSpec = false;
+
+        private float mVoiceOverlap = 0;
+        private boolean mIsVoiceOverlapSpec = false;
+        
+        private UstEnvelope mEnvelope = null;
+        private boolean mIsEnvelopeSpec = false;
+
         public String Flags = "";
-        public int Moduration = 100;
+        
+        private int mModuration = 100;
+        private boolean mIsModurationSpec = false;
+        
         public int Index;
+
         private float mStartPoint;
-        private boolean mIsStartPointSpecified = false;
+        private boolean mIsStartPointSpec = false;
+        
         private int mLength = 0;
-        private boolean mIsLengthSpecified = false;
+        private boolean mIsLengthSpec = false;
+
+        public Vector<UstEventProperty> Properties = new Vector<UstEventProperty>();
 
         public UstEvent()
         {
         }
+
+        #region Lyric
+        public String getLyric()
+        {
+            return mLyric;
+        }
+
+        public void setLyric( String value )
+        {
+            mLyric = value;
+            mIsLyricSpec = true;
+        }
+
+        public boolean isLyricSpecified()
+        {
+            return mIsLyricSpec;
+        }
+
+#if !JAVA
+        public String Lyric
+        {
+            get
+            {
+                return getLyric();
+            }
+            set
+            {
+                setLyric( value );
+            }
+        }
+#endif
+        #endregion
+
+        #region Note
+        public int getNote()
+        {
+            return mNote;
+        }
+
+        public void setNote( int value )
+        {
+            mNote = value;
+            mIsNoteSpec = true;
+        }
+
+        public boolean isNoteSpecified()
+        {
+            return mIsNoteSpec;
+        }
+
+#if !JAVA
+        public int Note
+        {
+            get
+            {
+                return getNote();
+            }
+            set
+            {
+                setNote( value );
+            }
+        }
+#endif
+        #endregion
+
+        #region Intensity
+        public int getIntensity()
+        {
+            return mIntensity;
+        }
+
+        public void setIntensity( int value )
+        {
+            mIntensity = value;
+            mIsIntensitySpec = true;
+        }
+
+        public boolean isIntensitySpecified()
+        {
+            return mIsIntensitySpec;
+        }
+
+#if !JAVA
+        public int Intensity
+        {
+            get
+            {
+                return getIntensity();
+            }
+            set
+            {
+                setIntensity( value );
+            }
+        }
+#endif
+        #endregion
+
+        #region PBType
+        public int getPBType()
+        {
+            return mPBType;
+        }
+
+        public void setPBType( int value )
+        {
+            mPBType = value;
+            mIsPBTypeSpec = true;
+        }
+
+        public boolean isPBTypeSpecified()
+        {
+            return mIsPBTypeSpec;
+        }
+
+#if !JAVA
+        public int PBType
+        {
+            get
+            {
+                return getPBType();
+            }
+            set
+            {
+                setPBType( value );
+            }
+        }
+#endif
+        #endregion
+
+        #region Pitches
+        public float[] getPitches()
+        {
+            return mPitches;
+        }
+
+        public void setPitches( float[] value )
+        {
+            mPitches = value;
+            mIsPitchesSpec = true;
+        }
+
+        public boolean isPitchesSpecified()
+        {
+            return mIsPitchesSpec;
+        }
+
+#if !JAVA
+        public float[] Pitches
+        {
+            get
+            {
+                return getPitches();
+            }
+            set
+            {
+                setPitches( value );
+            }
+        }
+#endif
+        #endregion
+
+        #region Tempo
+        public float getTempo()
+        {
+            return mTempo;
+        }
+
+        public void setTempo( float value )
+        {
+            mTempo = value;
+            mIsTempoSpec = true;
+        }
+
+        public boolean isTempoSpecified()
+        {
+            return mIsTempoSpec;
+        }
+
+#if !JAVA
+        public float Tempo
+        {
+            get
+            {
+                return getTempo();
+            }
+            set
+            {
+                setTempo( value );
+            }
+        }
+#endif
+        #endregion
+
+        #region Vibrato
+        public UstVibrato getVibrato()
+        {
+            return mVibrato;
+        }
+
+        public void setVibrato( UstVibrato value )
+        {
+            mVibrato = value;
+            mIsVibratoSpec = true;
+        }
+
+        public boolean isVibratoSpecified()
+        {
+            return mIsVibratoSpec;
+        }
+
+#if !JAVA
+        public UstVibrato Vibrato
+        {
+            get
+            {
+                return getVibrato();
+            }
+            set
+            {
+                setVibrato( value );
+            }
+        }
+#endif
+        #endregion
+
+        #region Portamento
+        public UstPortamento getPortamento()
+        {
+            return mPortamento;
+        }
+
+        public void setPortamento( UstPortamento value )
+        {
+            mPortamento = value;
+            mIsPortamentoSpec = true;
+        }
+
+        public boolean isPortamentoSpecified()
+        {
+            return mIsPortamentoSpec;
+        }
+
+#if !JAVA
+        public UstPortamento Portamento
+        {
+            get
+            {
+                return getPortamento();
+            }
+            set
+            {
+                setPortamento( value );
+            }
+        }
+#endif
+        #endregion
+
+        #region PreUtterance
+        public float getPreUtterance()
+        {
+            return mPreUtterance;
+        }
+
+        public void setPreUtterance( float value )
+        {
+            mPreUtterance = value;
+            mIsPreUtteranceSpec = true;
+        }
+
+        public boolean isPreUtteranceSpecified()
+        {
+            return mIsPreUtteranceSpec;
+        }
+
+#if !JAVA
+        public float PreUtterance
+        {
+            get
+            {
+                return getPreUtterance();
+            }
+            set
+            {
+                setPreUtterance( value );
+            }
+        }
+#endif
+        #endregion
+
+        #region VoiceOverlap
+        public float getVoiceOverlap()
+        {
+            return mVoiceOverlap;
+        }
+
+        public void setVoiceOverlap( float value )
+        {
+            mVoiceOverlap = value;
+            mIsVoiceOverlapSpec = true;
+        }
+
+        public boolean isVoiceOverlapSpecified()
+        {
+            return mIsVoiceOverlapSpec;
+        }
+
+#if !JAVA
+        public float VoiceOverlap
+        {
+            get
+            {
+                return getVoiceOverlap();
+            }
+            set
+            {
+                setVoiceOverlap( value );
+            }
+        }
+#endif
+        #endregion
+
+        #region Envelope
+        public UstEnvelope getEnvelope()
+        {
+            return mEnvelope;
+        }
+
+        public void setEnvelope( UstEnvelope value )
+        {
+            mEnvelope = value;
+            mIsEnvelopeSpec = true;
+        }
+
+        public boolean isEnvelopeSpecified()
+        {
+            return mIsEnvelopeSpec;
+        }
+
+#if !JAVA
+        public UstEnvelope Envelope
+        {
+            get
+            {
+                return getEnvelope();
+            }
+            set
+            {
+                setEnvelope( value );
+            }
+        }
+#endif
+        #endregion
+
+        #region Moduration
+        public int getModuration()
+        {
+            return mModuration;
+        }
+
+        public void setModuration( int value )
+        {
+            mModuration = value;
+            mIsModurationSpec = true;
+        }
+
+        public boolean isModurationSpecified()
+        {
+            return mIsModurationSpec;
+        }
+
+#if !JAVA
+        public int Moduration
+        {
+            get
+            {
+                return getModuration();
+            }
+            set
+            {
+                setModuration( value );
+            }
+        }
+#endif
+        #endregion
 
         #region StartPoint
         /// <summary>
@@ -83,7 +499,7 @@ namespace org.kbinani.vsq
         public void setStartPoint( float value )
         {
             mStartPoint = value;
-            mIsStartPointSpecified = true;
+            mIsStartPointSpec = true;
         }
 
         /// <summary>
@@ -93,7 +509,7 @@ namespace org.kbinani.vsq
         /// <returns></returns>
         public boolean isStartPointSpecified()
         {
-            return mIsStartPointSpecified;
+            return mIsStartPointSpec;
         }
 
 #if !JAVA
@@ -119,7 +535,7 @@ namespace org.kbinani.vsq
         /// <returns></returns>
         public boolean isLengthSpecified()
         {
-            return mIsLengthSpecified;
+            return mIsLengthSpec;
         }
 
         /// <summary>
@@ -138,7 +554,7 @@ namespace org.kbinani.vsq
         public void setLength( int value )
         {
             mLength = value;
-            mIsLengthSpecified = true;
+            mIsLengthSpec = true;
         }
 
 #if !JAVA
@@ -163,34 +579,47 @@ namespace org.kbinani.vsq
         {
             UstEvent ret = new UstEvent();
             ret.mLength = mLength;
-            ret.mIsLengthSpecified = mIsLengthSpecified;
-            ret.Lyric = Lyric;
-            ret.Note = Note;
-            ret.Intensity = Intensity;
-            ret.PBType = PBType;
-            if ( Pitches != null ) {
-                ret.Pitches = new float[Pitches.Length];
-                for ( int i = 0; i < Pitches.Length; i++ ) {
-                    ret.Pitches[i] = Pitches[i];
+            ret.mIsLengthSpec = mIsLengthSpec;
+            ret.mLyric = mLyric;
+            ret.mIsLyricSpec = mIsLyricSpec;
+            ret.mNote = mNote;
+            ret.mIsNoteSpec = mIsNoteSpec;
+            ret.mIntensity = mIntensity;
+            ret.mIsIntensitySpec = mIsIntensitySpec;
+            ret.mPBType = mPBType;
+            ret.mIsPBTypeSpec = mIsPBTypeSpec;
+            if ( mPitches != null ) {
+                ret.mPitches = new float[mPitches.Length];
+                for ( int i = 0; i < mPitches.Length; i++ ) {
+                    ret.mPitches[i] = mPitches[i];
                 }
             }
-            ret.Tempo = Tempo;
-            if ( Vibrato != null ) {
-                ret.Vibrato = (UstVibrato)Vibrato.clone();
+            ret.mIsPitchesSpec = mIsPitchesSpec;
+            ret.mTempo = mTempo;
+            ret.mIsTempoSpec = mIsTempoSpec;
+            if ( mVibrato != null ) {
+                ret.mVibrato = (UstVibrato)mVibrato.clone();
             }
-            if ( Portamento != null ) {
-                ret.Portamento = (UstPortamento)Portamento.clone();
+            ret.mIsVibratoSpec = mIsVibratoSpec;
+            if ( mPortamento != null ) {
+                ret.mPortamento = (UstPortamento)mPortamento.clone();
             }
-            if ( Envelope != null ) {
-                ret.Envelope = (UstEnvelope)Envelope.clone();
+            ret.mIsPortamentoSpec = mIsPortamentoSpec;
+            if ( mEnvelope != null ) {
+                ret.mEnvelope = (UstEnvelope)mEnvelope.clone();
             }
-            ret.PreUtterance = PreUtterance;
-            ret.VoiceOverlap = VoiceOverlap;
+            ret.mIsEnvelopeSpec = mIsEnvelopeSpec;
+            ret.mPreUtterance = mPreUtterance;
+            ret.mIsPreUtteranceSpec = mIsPreUtteranceSpec;
+            ret.mVoiceOverlap = mVoiceOverlap;
+            ret.mIsVoiceOverlapSpec = mIsVoiceOverlapSpec;
             ret.Flags = Flags;
-            ret.Moduration = Moduration;
+            ret.mModuration = mModuration;
+            ret.mIsModurationSpec = mIsModurationSpec;
             ret.mStartPoint = mStartPoint;
-            ret.mIsStartPointSpecified = mIsStartPointSpecified;
+            ret.mIsStartPointSpec = mIsStartPointSpec;
             ret.Tag = Tag;
+            ret.Index = Index;
             return ret;
         }
 
@@ -218,63 +647,75 @@ namespace org.kbinani.vsq
             }
             if ( isLengthSpecified() ) {
                 sw.write( "Length=" + mLength );
-            }
-            sw.newLine();
-            sw.write( "Lyric=" + Lyric );
-            sw.newLine();
-            sw.write( "NoteNum=" + Note );
-            sw.newLine();
-            if ( Intensity >= 0 ) {
-                sw.write( "Intensity=" + Intensity );
                 sw.newLine();
             }
-            if ( PBType >= 0 && Pitches != null ) {
-                sw.write( "PBType=" + PBType );
+            if ( isLyricSpecified() ) {
+                sw.write( "Lyric=" + getLyric() );
+                sw.newLine();
+            }
+            if ( isNoteSpecified() ) {
+                sw.write( "NoteNum=" + getNote() );
+                sw.newLine();
+            }
+            if ( isIntensitySpecified() ) {
+                sw.write( "Intensity=" + getIntensity() );
+                sw.newLine();
+            }
+            if ( isPitchesSpecified() && mPitches != null ) {
+                sw.write( "PBType=" + getPBType() );
                 sw.newLine();
                 sw.write( "Piches=" );
-                for ( int i = 0; i < Pitches.Length; i++ ) {
+                for ( int i = 0; i < mPitches.Length; i++ ) {
                     if ( i == 0 ) {
-                        sw.write( Pitches[i] + "" );
+                        sw.write( mPitches[i] + "" );
                     } else {
-                        sw.write( "," + Pitches[i] );
+                        sw.write( "," + mPitches[i] );
                     }
                 }
                 sw.newLine();
             }
-            if ( Tempo > 0 ) {
-                sw.write( "Tempo=" + Tempo );
+            if ( isTempoSpecified() ) {
+                sw.write( "Tempo=" + getTempo() );
                 sw.newLine();
             }
-            if ( Vibrato != null ) {
-                sw.write( Vibrato.ToString() );
+            if ( isVibratoSpecified() && mVibrato != null ) {
+                sw.write( mVibrato.ToString() );
                 sw.newLine();
             }
-            if ( Portamento != null ) {
-                Portamento.print( sw );
+            if ( isPortamentoSpecified() && mPortamento != null ) {
+                mPortamento.print( sw );
             }
-            if ( PreUtterance != 0 ) {
-                sw.write( "PreUtterance=" + PreUtterance );
+            if ( isPreUtteranceSpecified() ) {
+                sw.write( "PreUtterance=" + getPreUtterance() );
                 sw.newLine();
             }
-            if ( VoiceOverlap != 0 ) {
-                sw.write( "VoiceOverlap=" + VoiceOverlap );
+            if ( isVoiceOverlapSpecified() ) {
+                sw.write( "VoiceOverlap=" + getVoiceOverlap() );
                 sw.newLine();
             }
-            if ( Envelope != null ) {
-                sw.write( Envelope.ToString() );
+            if ( isEnvelopeSpecified() && mEnvelope != null ) {
+                sw.write( mEnvelope.ToString() );
                 sw.newLine();
             }
             if ( !str.compare( Flags, "" ) ) {
                 sw.write( "Flags=" + Flags );
                 sw.newLine();
             }
-            if ( Moduration >= 0 ) {
-                sw.write( "Moduration=" + Moduration );
+            if ( isModurationSpecified() ) {
+                sw.write( "Moduration=" + getModuration() );
                 sw.newLine();
             }
             if ( isStartPointSpecified() ) {
                 sw.write( "StartPoint=" + getStartPoint() );
                 sw.newLine();
+            }
+            if ( Properties != null ) {
+                int size = vec.size( Properties );
+                for ( int i = 0; i < size; i++ ) {
+                    UstEventProperty itemi = vec.get( Properties, i );
+                    sw.write( itemi.Name + "=" + itemi.Value );
+                    sw.newLine();
+                }
             }
         }
 
@@ -291,27 +732,50 @@ namespace org.kbinani.vsq
             boolean ret = true;
             // モジュレーション・先行発声・スタート位置・オーバーラップのみチェック．
             // ほかに有効な値でかつ VsqEvent で比較できないものは何かあったか
-            if ( this.Moduration != item.Moduration ) ret = false;
-            else if ( this.PreUtterance != item.PreUtterance ) ret = false;
+            if ( this.getModuration() != item.getModuration() ) ret = false;
+            else if ( this.getPreUtterance() != item.getPreUtterance() ) ret = false;
             else if ( this.getStartPoint() != item.getStartPoint() ) ret = false;
-            else if ( this.VoiceOverlap != item.VoiceOverlap ) ret = false;
+            else if ( this.getVoiceOverlap() != item.getVoiceOverlap() ) ret = false;
             return ret;
         }
 
-        /*public VsqEvent convertToVsqEvent( int clock, int internal_id ) {
-            VsqEvent ret = new VsqEvent();
-            ret.Clock = clock;
-            ret.InternalID = internal_id;
-            ret.UstEvent = (UstEvent)this.clone();
-            ret.ID.setLength( Length );
-            ByRef<string> phonetic_symbol = new ByRef<string>( "" );
-            SymbolTable.attatch( Lyric, phonetic_symbol );
-            ret.ID.LyricHandle = new LyricHandle( Lyric, phonetic_symbol.value );
-            ret.ID.Note = Note;
-            ret.ID.Dynamics = Intensity;
-            ret.ID.type = VsqIDType.Anote;
-            return ret;
-        }*/
+        /// <summary>
+        /// このクラスの指定した名前のプロパティが総称型引数を用いる型である場合に，
+        /// その型の限定名を返します．それ以外の場合は空文字を返します．
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static String getGenericTypeName( String name )
+        {
+            if ( name != null ) {
+                if ( str.compare( name, "Properties" ) ) {
+                    return "org.kbinani.vsq.UstEventProperty";
+                }
+            }
+            return "";
+        }
+
+        /// <summary>
+        /// このクラスの指定した名前のプロパティを，XMLシリアライズ時に無視するかどうかを表す
+        /// ブール値を返します．デフォルトの実装では戻り値は全てfalseです．
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static boolean isXmlIgnored( String name )
+        {
+            return false;
+        }
+
+        /// <summary>
+        /// このクラスの指定した名前のプロパティをXMLシリアライズする際に使用する
+        /// 要素名を取得します．
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static String getXmlElementName( String name )
+        {
+            return name;
+        }
     }
 
 #if !JAVA

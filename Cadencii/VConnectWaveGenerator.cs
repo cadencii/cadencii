@@ -945,12 +945,12 @@ namespace org.kbinani.cadencii
                     next = events.get( i );
                 }
 
-                double current_sec_start = vsq.getSecFromClock( current.Clock ) - current.UstEvent.PreUtterance / 1000.0;
+                double current_sec_start = vsq.getSecFromClock( current.Clock ) - current.UstEvent.getPreUtterance() / 1000.0;
                 double current_sec_end = vsq.getSecFromClock( current.Clock + current.ID.getLength() );
                 double next_sec_start = double.MaxValue;
                 if ( next != null ) {
                     // 次の音符の開始位置
-                    next_sec_start = vsq.getSecFromClock( next.Clock ) - current.UstEvent.PreUtterance / 1000.0 + current.UstEvent.VoiceOverlap / 1000.0;
+                    next_sec_start = vsq.getSecFromClock( next.Clock ) - current.UstEvent.getPreUtterance() / 1000.0 + current.UstEvent.getVoiceOverlap() / 1000.0;
                     if ( next_sec_start < current_sec_end ) {
                         // 先行発音によって，現在取り扱っている音符「current」の終了時刻がずれる.
                         current_sec_end = next_sec_start;

@@ -39,6 +39,30 @@ namespace org.kbinani.vsq
     public class VsqTrack : ICloneable
     {
 #endif
+        public static readonly String[] CURVES = new String[] { 
+            "bre", 
+            "bri",
+            "cle", 
+            "dyn", 
+            "gen", 
+            "ope", 
+            "pbs", 
+            "pit", 
+            "por", 
+            "harmonics", 
+            "fx2depth", 
+            "reso1amp", 
+            "reso1bw", 
+            "reso1freq", 
+            "reso2amp", 
+            "reso2bw", 
+            "reso2freq", 
+            "reso3amp", 
+            "reso3bw", 
+            "reso3freq", 
+            "reso4amp", 
+            "reso4bw", 
+            "reso4freq", };
         public String Tag;
         public VsqMetaText MetaText;
 
@@ -330,6 +354,123 @@ namespace org.kbinani.vsq
             {
                 if ( 0 <= m_pos && m_pos < m_list.getCount() ) {
                     m_list.removeAt( m_pos );
+                }
+            }
+        }
+
+        /// <summary>
+        /// 指定した位置に，指定した量の空白を挿入します
+        /// </summary>
+        /// <param name="clock_start">空白を挿入する位置</param>
+        /// <param name="clock_amount">挿入する空白の量</param>
+        public void insertBlank( int clock_start, int clock_amount )
+        {
+            // イベントをシフト
+            for ( Iterator<VsqEvent> itr = getEventIterator(); itr.hasNext(); ) {
+                VsqEvent item = itr.next();
+                if ( item.ID.type == VsqIDType.Singer && item.Clock <= 0 ) {
+                    continue;
+                }
+                if ( clock_start <= item.Clock ) {
+                    item.Clock += clock_amount;
+                }
+            }
+
+            // コントロールカーブをシフト
+            foreach ( String name in CURVES ) {
+                VsqBPList list = getCurve( name );
+                if ( list == null ) {
+                    continue;
+                }
+
+                // 後ろからシフトしないといけない
+                int size = list.size();
+                for ( int i = size - 1; i >= 0; i-- ){
+                    int clock = list.getKeyClock( i );
+                    if ( clock_start <= clock ) {
+                        int value = list.getElementA( i );
+                        list.move( clock, clock + clock_amount, value );
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// このトラックの指定した範囲を削除し，削除範囲以降の部分を削除開始位置までシフトします
+        /// </summary>
+        /// <param name="clock_start"></param>
+        /// <param name="clock_end"></param>
+        public void removePart( int clock_start, int clock_end )
+        {
+            int dclock = clock_end - clock_start;
+
+            // 削除する範囲に歌手変更イベントが存在するかどうかを検査。
+            VsqEvent t_last_singer = null;
+            for ( Iterator<VsqEvent> itr = getSingerEventIterator(); itr.hasNext(); ) {
+                VsqEvent ve = itr.next();
+                if ( clock_start <= ve.Clock && ve.Clock < clock_end ) {
+                    t_last_singer = ve;
+                }
+                if ( ve.Clock == clock_end ) {
+                    t_last_singer = null; // 後でclock_endの位置に補うが、そこにに既に歌手変更イベントがあるとまずいので。
+                }
+            }
+            VsqEvent last_singer = null;
+            if ( t_last_singer != null ) {
+                last_singer = (VsqEvent)t_last_singer.clone();
+                last_singer.Clock = clock_end;
+            }
+
+            boolean changed = true;
+            // イベントの削除
+            while ( changed ) {
+                changed = false;
+                int numEvents = getEventCount();
+                for ( int i = 0; i < numEvents; i++ ) {
+                    VsqEvent itemi = getEvent( i );
+                    if ( clock_start <= itemi.Clock && itemi.Clock < clock_end ) {
+                        removeEvent( i );
+                        changed = true;
+                        break;
+                    }
+                }
+            }
+
+            // クロックのシフト
+            if ( last_singer != null ) {
+                addEvent( last_singer ); //歌手変更イベントを補う
+            }
+            int num_events = getEventCount();
+            for ( int i = 0; i < num_events; i++ ) {
+                VsqEvent itemi = getEvent( i );
+                if ( clock_end <= itemi.Clock ) {
+                    itemi.Clock -= dclock;
+                }
+            }
+
+            for ( int i = 0; i < VsqTrack.CURVES.Length; i++ ) {
+                String curve = VsqTrack.CURVES[i];
+                VsqBPList bplist = getCurve( curve );
+                if ( bplist == null ) {
+                    continue;
+                }
+                VsqBPList buf_bplist = (VsqBPList)bplist.clone();
+                bplist.clear();
+                int value_at_end = buf_bplist.getValue( clock_end );
+                boolean at_end_added = false;
+                for ( Iterator<Integer> itr = buf_bplist.keyClockIterator(); itr.hasNext(); ) {
+                    int key = itr.next();
+                    if ( key < clock_start ) {
+                        bplist.add( key, buf_bplist.getValue( key ) );
+                    } else if ( clock_end <= key ) {
+                        if ( key == clock_end ) {
+                            at_end_added = true;
+                        }
+                        bplist.add( key - dclock, buf_bplist.getValue( key ) );
+                    }
+                }
+                if ( !at_end_added ) {
+                    bplist.add( clock_end - dclock, value_at_end );
                 }
             }
         }

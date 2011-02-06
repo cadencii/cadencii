@@ -1840,8 +1840,8 @@ namespace org.kbinani.cadencii
                     if ( item.UstEvent == null ) {
                         item.UstEvent = new UstEvent();
                     }
-                    item.UstEvent.VoiceOverlap = oa.msOverlap;
-                    item.UstEvent.PreUtterance = oa.msPreUtterance;
+                    item.UstEvent.setVoiceOverlap( oa.msOverlap );
+                    item.UstEvent.setPreUtterance( oa.msPreUtterance );
                 }
             }
         }
@@ -2509,9 +2509,12 @@ namespace org.kbinani.cadencii
 
             for ( int i = 0; i < mSelectedEvents.size(); i++ ) {
                 SelectedEventEntry item = mSelectedEvents.get( i );
+                VsqEvent ev = null;
                 if ( item.track == selected ) {
                     int internal_id = item.original.InternalID;
-                    VsqEvent ev = vsq_track.findEventFromID( internal_id );
+                    ev = vsq_track.findEventFromID( internal_id );
+                }
+                if ( ev != null ){
                     mSelectedEvents.set( i, new SelectedEventEntry( selected, ev, (VsqEvent)ev.clone() ) );
                 } else {
                     mSelectedEvents.removeElementAt( i );

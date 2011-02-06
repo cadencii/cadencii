@@ -378,7 +378,7 @@ namespace org.kbinani.vsq
         public void remove( int clock )
         {
             ensureBufferLength( length );
-            int index = find( clock );
+            int index = findIndexFromClock( clock );
             removeElementAt( index );
         }
 
@@ -396,7 +396,7 @@ namespace org.kbinani.vsq
         public boolean isContainsKey( int clock )
         {
             ensureBufferLength( length );
-            return (find( clock ) >= 0);
+            return (findIndexFromClock( clock ) >= 0);
         }
 
         /// <summary>
@@ -409,7 +409,7 @@ namespace org.kbinani.vsq
         public void move( int clock, int new_clock, int new_value )
         {
             ensureBufferLength( length );
-            int index = find( clock );
+            int index = findIndexFromClock( clock );
             if ( index < 0 ) {
                 return;
             }
@@ -419,7 +419,7 @@ namespace org.kbinani.vsq
                 items[i] = items[i + 1];
             }
             length--;
-            int index_new = find( new_clock );
+            int index_new = findIndexFromClock( new_clock );
             if ( index_new >= 0 ) {
                 item.value = new_value;
                 items[index_new] = item;
@@ -433,7 +433,7 @@ namespace org.kbinani.vsq
 #else
                 Array.Sort( clocks, 0, length );
 #endif
-                index_new = find( new_clock );
+                index_new = findIndexFromClock( new_clock );
                 item.value = new_value;
                 for ( int i = length - 1; i > index_new; i-- ) {
                     items[i] = items[i - 1];
@@ -683,7 +683,13 @@ namespace org.kbinani.vsq
             return new KeyClockIterator( this );
         }
 
-        private int find( int value )
+        /// <summary>
+        /// 指定した時刻にあるデータ点のインデックスを検索します．
+        /// 見つかればインデックスを，そうでなければ-1を返します．
+        /// </summary>
+        /// <param name="clock"></param>
+        /// <returns></returns>
+        public int findIndexFromClock( int value )
         {
 #if JAVA
             // caution: length of array 'clocks' is equal to or larger than the value of 'length' field.
@@ -727,7 +733,7 @@ namespace org.kbinani.vsq
         public long add( int clock, int value )
         {
             ensureBufferLength( length );
-            int index = find( clock );
+            int index = findIndexFromClock( clock );
             if ( index >= 0 ) {
                 VsqBPPair v = items[index];
                 v.value = value;
@@ -742,7 +748,7 @@ namespace org.kbinani.vsq
 #else
                 Array.Sort( clocks, 0, length );
 #endif
-                index = find( clock );
+                index = findIndexFromClock( clock );
                 maxId++;
                 for ( int i = length - 1; i > index; i-- ) {
                     items[i] = items[i - 1];
@@ -755,7 +761,7 @@ namespace org.kbinani.vsq
         public void addWithID( int clock, int value, long id )
         {
             ensureBufferLength( length );
-            int index = find( clock );
+            int index = findIndexFromClock( clock );
             if ( index >= 0 ) {
                 VsqBPPair v = items[index];
                 v.value = value;
@@ -770,7 +776,7 @@ namespace org.kbinani.vsq
 #else
                 Array.Sort( clocks, 0, length );
 #endif
-                index = find( clock );
+                index = findIndexFromClock( clock );
                 for ( int i = length - 1; i > index; i-- ) {
                     items[i] = items[i - 1];
                 }
@@ -796,7 +802,7 @@ namespace org.kbinani.vsq
         public int getValue( int clock )
         {
             ensureBufferLength( length );
-            int index = find( clock );
+            int index = findIndexFromClock( clock );
             if ( index >= 0 ) {
                 return items[index].value;
             } else {

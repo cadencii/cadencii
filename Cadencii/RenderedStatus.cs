@@ -42,7 +42,7 @@ namespace org.kbinani.cadencii
             this.track = track;
             this.tempo = new TempoVector();
             for ( Iterator<TempoTableEntry> itr = tempo.iterator(); itr.hasNext(); ) {
-                this.tempo.add( itr.next() );
+                vec.add( this.tempo, (TempoTableEntry)itr.next().clone() );
             }
             this.config = config;
         }

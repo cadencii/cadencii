@@ -147,29 +147,26 @@ namespace org.kbinani.vsq
                                     } catch ( Exception ex ) {
                                     }
                                 } else if ( str.compare( spl[0], "Lyric" ) ) {
-                                    ue.Lyric = spl[1];
+                                    ue.setLyric( spl[1] );
                                 } else if ( str.compare( spl[0], "NoteNum" ) ) {
-                                    ue.Note = 0;
                                     int v = 0;
                                     try {
                                         v = str.toi( spl[1] );
-                                        ue.Note = v;
+                                        ue.setNote( v );
                                     } catch ( Exception ex ) {
                                     }
                                 } else if ( str.compare( spl[0], "Intensity" ) ) {
-                                    ue.Intensity = 100;
                                     int v = 100;
                                     try {
                                         v = str.toi( spl[1] );
-                                        ue.Intensity = v;
+                                        ue.setIntensity( v );
                                     } catch ( Exception ex ) {
                                     }
                                 } else if ( str.compare( spl[0], "PBType" ) ) {
-                                    ue.PBType = 5;
                                     int v = 5;
                                     try {
                                         v = str.toi( spl[1] );
-                                        ue.PBType = v;
+                                        ue.setPBType( v );
                                     } catch ( Exception ex ) {
                                     }
                                 } else if ( str.compare( spl[0], "Piches" ) ) {
@@ -183,17 +180,16 @@ namespace org.kbinani.vsq
                                         } catch ( Exception ex ) {
                                         }
                                     }
-                                    ue.Pitches = t;
+                                    ue.setPitches( t );
                                 } else if ( str.compare( spl[0], "Tempo" ) ) {
-                                    ue.Tempo = 125f;
                                     float v;
                                     try {
                                         v = (float)str.tof( spl[1] );
-                                        ue.Tempo = v;
+                                        ue.setTempo( v );
                                     } catch ( Exception ex ) {
                                     }
                                 } else if ( str.compare( spl[0], "VBR" ) ) {
-                                    ue.Vibrato = new UstVibrato( line );
+                                    ue.setVibrato( new UstVibrato( line ) );
                                     /*
                                     PBW=50,50,46,48,56,50,50,50,50
                                     PBS=-87
@@ -201,21 +197,21 @@ namespace org.kbinani.vsq
                                     PBM=,s,r,j,s,s,s,s,s
                                     */
                                 } else if ( str.compare( spl[0], "PBW" ) || str.compare( spl[0], "PBS" ) || str.compare( spl[0], "PBY" ) || str.compare( spl[0], "PBM" ) ) {
-                                    if ( ue.Portamento == null ) {
-                                        ue.Portamento = new UstPortamento();
+                                    if ( ue.getPortamento() == null ) {
+                                        ue.setPortamento( new UstPortamento() );
                                     }
-                                    ue.Portamento.ParseLine( line );
+                                    ue.getPortamento().ParseLine( line );
                                 } else if ( str.compare( spl[0], "Envelope" ) ) {
-                                    ue.Envelope = new UstEnvelope( line );
+                                    ue.setEnvelope( new UstEnvelope( line ) );
                                     //PreUtterance=1
                                     //VoiceOverlap=6
                                 } else if ( str.compare( spl[0], "VoiceOverlap" ) ) {
-                                    if ( spl[1] != "" ) {
-                                        ue.VoiceOverlap = (float)str.tof( spl[1] );
+                                    if ( !str.compare( spl[1], "" ) ) {
+                                        ue.setVoiceOverlap( (float)str.tof( spl[1] ) );
                                     }
                                 } else if ( str.compare( spl[0], "PreUtterance" ) ) {
-                                    if ( spl[1] != "" ) {
-                                        ue.PreUtterance = (float)str.tof( spl[1] );
+                                    if ( !str.compare( spl[1], "" ) ) {
+                                        ue.setPreUtterance( (float)str.tof( spl[1] ) );
                                     }
                                 } else if ( str.compare( spl[0], "Flags" ) ) {
                                     ue.Flags = str.sub( line, 6 );
@@ -227,14 +223,17 @@ namespace org.kbinani.vsq
                                     }
                                 } else if ( str.compare( spl[0], "Moduration" ) ) {
                                     try {
-                                        ue.Moduration = str.toi( spl[1] );
+                                        int moduration = str.toi( spl[1] );
+                                        ue.setModuration( moduration );
                                     } catch ( Exception ex ) {
-                                        ue.Moduration = 0;
                                     }
                                 } else {
-#if DEBUG
-                                    sout.println( "UstFile#.ctor; info: don't know how to process this line; line=" + line );
-#endif
+                                    String name = spl[0];
+                                    String value = spl[1];
+                                    if ( ue.Properties == null ) {
+                                        ue.Properties = new Vector<UstEventProperty>();
+                                    }
+                                    vec.add( ue.Properties, new UstEventProperty( name, value ) );
                                 }
                             }
                         }
@@ -357,12 +356,12 @@ namespace org.kbinani.vsq
             // R用音符のテンプレート
             int PBTYPE = 5;
             UstEvent template = new UstEvent();
-            template.Lyric = "R";
-            template.Note = 60;
-            template.PreUtterance = 0;
-            template.VoiceOverlap = 0;
-            template.Intensity = 100;
-            template.Moduration = 0;
+            template.setLyric( "R" );
+            template.setNote( 60 );
+            template.setPreUtterance( 0 );
+            template.setVoiceOverlap( 0 );
+            template.setIntensity( 100 );
+            template.setModuration( 0 );
 
             // 再生秒時をとりあえず無視して，ゲートタイム基準で音符を追加
             UstTrack track_add = new UstTrack();
@@ -381,12 +380,12 @@ namespace org.kbinani.vsq
                 }
                 UstEvent item_add = (UstEvent)item.UstEvent.clone();
                 item_add.setLength( item.ID.getLength() );
-                item_add.Lyric = item.ID.LyricHandle.L0.Phrase;
-                item_add.Note = item.ID.Note;
+                item_add.setLyric( item.ID.LyricHandle.L0.Phrase );
+                item_add.setNote( item.ID.Note );
                 item_add.Index = index;
                 id_map.put( item_add.Index, item.InternalID );
-                if ( item.UstEvent.Envelope != null ) {
-                    item_add.Envelope = (UstEnvelope)item.UstEvent.Envelope.clone();
+                if ( item.UstEvent.getEnvelope() != null ) {
+                    item_add.setEnvelope( (UstEnvelope)item.UstEvent.getEnvelope().clone() );
                 }
                 index++;
                 track_add.addEvent( item_add );
@@ -402,7 +401,7 @@ namespace org.kbinani.vsq
                     if ( lasttempo != item.Tempo ) {
                         // テンポ値が変わっているもののみ追加
                         UstEvent ue = track_add.getEvent( i );
-                        ue.Tempo = (float)(60e6 / item.Tempo);
+                        ue.setTempo( (float)(60e6 / item.Tempo) );
                         lasttempo = item.Tempo;
                         vec.add( m_tempo_table, item );
                     }
@@ -424,17 +423,17 @@ namespace org.kbinani.vsq
                 int c = clock;
                 int len = item.getLength();
                 clock += len;
-                if ( str.compare( item.Lyric, "R" ) ) {
+                if ( str.compare( item.getLyric(), "R" ) ) {
                     continue;
                 }
                 // 音符の先頭のpitは必ず入れる
-                abs_pit.add( c, (int)(item.Note * 10000 + vsq_track.getPitchAt( c ) * 100) );
+                abs_pit.add( c, (int)(item.getNote() * 10000 + vsq_track.getPitchAt( c ) * 100) );
 
                 // c～c+lenまで
                 for ( int i = search_indx; i < pit_size; i++ ) {
                     int c2 = cpit.getKeyClock( i );
                     if ( c < c2 && c2 < clock ) {
-                        abs_pit.add( c2, (int)(item.Note * 10000 + vsq_track.getPitchAt( c2 ) * 100) );
+                        abs_pit.add( c2, (int)(item.getNote() * 10000 + vsq_track.getPitchAt( c2 ) * 100) );
                         search_indx = i;
                     } else if ( clock <= c2 ) {
                         break;
@@ -447,27 +446,36 @@ namespace org.kbinani.vsq
             for ( Iterator<UstEvent> itr = track_add.getNoteEventIterator(); itr.hasNext(); ) {
                 UstEvent item = itr.next();
                 double sec_at_clock = tempo.getSecFromClock( clock );
-                double sec_pre = item.PreUtterance / 1000.0;
+                double sec_pre = item.getPreUtterance() / 1000.0;
                 double sec_stp = item.getStartPoint() / 1000.0;
                 double sec_at_begin = sec_at_clock - sec_pre - sec_stp;
                 int clock_begin = (int)tempo.getClockFromSec( sec_at_begin );
+                // 音符先頭との距離がPBTYPEの倍数になるようにする
+                clock_begin -= (clock < clock_begin) ? ((clock_begin - clock) % PBTYPE)
+                                                     : ((clock - clock_begin) % PBTYPE);
+                // clock_beginがsec_at_beginより前方になるとNGなので修正する
+                double sec_at_clock_begin = tempo.getSecFromClock( clock_begin );
+                while ( sec_at_clock_begin < sec_at_begin ) {
+                    clock_begin += PBTYPE;
+                    sec_at_clock_begin = tempo.getSecFromClock( clock_begin );
+                }
                 int clock_end = clock + item.getLength();
                 Vector<Float> pitch = new Vector<Float>();
                 boolean allzero = true;
                 ByRef<Integer> ref_indx = new ByRef<Integer>( 0 );
-                for ( int cl = clock_begin; cl <= clock_end; cl += PBTYPE ) {
+                for ( int cl = clock_begin; cl < clock_end; cl += PBTYPE ) {
                     int abs = abs_pit.getValue( cl, ref_indx );
-                    float pit = (float)(abs / 100.0) - item.Note * 100;
+                    float pit = (float)(abs / 100.0) - item.getNote() * 100;
                     if ( pit != 0.0 ) {
                         allzero = false;
                     }
                     pitch.add( pit );
                 }
                 if ( !allzero ) {
-                    item.Pitches = PortUtil.convertFloatArray( pitch.toArray( new Float[] { } ) );
-                    item.PBType = PBTYPE;
+                    item.setPitches( PortUtil.convertFloatArray( pitch.toArray( new Float[] { } ) ) );
+                    item.setPBType( PBTYPE );
                 } else {
-                    item.PBType = -1;
+                    item.setPBType( -1 );
                 }
                 clock += item.getLength();
             }
@@ -553,7 +561,11 @@ namespace org.kbinani.vsq
         /// <returns></returns>
         public void updateTempoInfo()
         {
-            m_tempo_table = new Vector<TempoTableEntry>();
+            if ( m_tempo_table == null ) {
+                m_tempo_table = new Vector<TempoTableEntry>();
+            } else {
+                m_tempo_table.clear();
+            }
             if ( m_tracks.size() <= 0 ) {
                 return;
             }
@@ -561,17 +573,19 @@ namespace org.kbinani.vsq
             double time = 0.0;
             int last_tempo_clock = 0;  //最後にTempo値が代入されていたイベントのクロック
             float last_tempo = m_tempo;   //最後に代入されていたテンポの値
-            for ( int i = 0; i < m_tracks.get( 0 ).getEventCount(); i++ ) {
-                if ( m_tracks.get( 0 ).getEvent( i ).Tempo > 0f ) {
+            UstTrack ust_track = m_tracks.get( 0 );
+            for ( int i = 0; i < ust_track.getEventCount(); i++ ) {
+                UstEvent itemi = ust_track.getEvent( i );
+                if ( ust_track.getEvent( i ).isTempoSpecified() ) {
                     time += (clock - last_tempo_clock) / (8.0 * last_tempo);
                     if ( m_tempo_table.size() == 0 && clock != 0 ) {
                         m_tempo_table.add( new TempoTableEntry( 0, (int)(6e7 / m_tempo), 0.0 ) );
                     }
-                    m_tempo_table.add( new TempoTableEntry( clock, (int)(6e7 / m_tracks.get( 0 ).getEvent( i ).Tempo), time ) );
-                    last_tempo = m_tracks.get( 0 ).getEvent( i ).Tempo;
+                    m_tempo_table.add( new TempoTableEntry( clock, (int)(6e7 / itemi.getTempo()), time ) );
+                    last_tempo = itemi.getTempo();
                     last_tempo_clock = clock;
                 }
-                clock += (int)m_tracks.get( 0 ).getEvent( i ).getLength();
+                clock += (int)itemi.getLength();
             }
         }
 
@@ -688,8 +702,10 @@ namespace org.kbinani.vsq
             ret.m_cache_dir = m_cache_dir;
             ret.m_tool1 = m_tool1;
             ret.m_tool2 = m_tool2;
-            for ( int i = 0; i < m_tracks.size(); i++ ) {
-                ret.m_tracks.set( i, (UstTrack)m_tracks.get( i ).clone() );
+            int size = vec.size( m_tracks );
+            ret.m_tracks = new Vector<UstTrack>();
+            for ( int i = 0; i < size; i++ ) {
+                vec.add( ret.m_tracks, (UstTrack)vec.get( m_tracks, i ).clone() );
             }
             ret.m_tempo_table = new Vector<TempoTableEntry>();
             for ( int i = 0; i < m_tempo_table.size(); i++ ) {

@@ -36,8 +36,8 @@ public class ImportOtoIniConfig
                 if ( editing.UstEvent == null ) {
                     editing.UstEvent = new UstEvent();
                 }
-                editing.UstEvent.VoiceOverlap = oa.msOverlap;
-                editing.UstEvent.PreUtterance = oa.msPreUtterance;
+                editing.UstEvent.setVoiceOverlap( oa.msOverlap );
+                editing.UstEvent.setPreUtterance( oa.msPreUtterance );
                 edited = true;
             }
         }
