@@ -17,6 +17,7 @@ package org.kbinani.vsq;
 
 import java.io.*;
 import java.util.*;
+import org.kbinani.*;
 
 #else
 

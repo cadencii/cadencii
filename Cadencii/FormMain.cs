@@ -741,8 +741,12 @@ namespace org.kbinani.cadencii
 #endif
 
 #if ENABLE_PROPERTY
+#if JAVA
+            splitContainerProperty.setLeftComponent( mPropertyPanelContainer );
+#else
             splitContainerProperty.Panel1.Controls.Add( mPropertyPanelContainer );
             mPropertyPanelContainer.Dock = System.Windows.Forms.DockStyle.Fill;
+#endif
 #else
             splitContainerProperty.setDividerLocation( 0 );
             splitContainerProperty.setEnabled( false );
@@ -1054,7 +1058,7 @@ namespace org.kbinani.cadencii
             AppManager.propertyWindow.setBounds( a.x, a.y, rc.width, rc.height );
             AppManager.propertyWindow.LocationChanged += new BEventHandler( propertyWindow_LocationOrSizeChanged );
             AppManager.propertyWindow.SizeChanged += new BEventHandler( propertyWindow_LocationOrSizeChanged );
-            AppManager.propertyWindow.FormClosing += new System.Windows.Forms.FormClosingEventHandler( propertyWindow_FormClosing );
+            AppManager.propertyWindow.FormClosing += new BFormClosingEventHandler( propertyWindow_FormClosing );
             AppManager.propertyPanel.CommandExecuteRequired += new CommandExecuteRequiredEventHandler( propertyPanel_CommandExecuteRequired );
             AppManager.propertyWindow.setFormCloseShortcutKey( AppManager.editorConfig.getShortcutKeyFor( menuVisualProperty ) );
             updatePropertyPanelState( AppManager.editorConfig.PropertyWindowStatus.State );
@@ -2406,7 +2410,11 @@ namespace org.kbinani.cadencii
                 AppManager.editorConfig.PropertyWindowStatus.State = PanelState.Docked;
                 splitContainerProperty.setSplitterFixed( false );
                 splitContainerProperty.setDividerSize( _SPL_SPLITTER_WIDTH );
+#if JAVA
+                serr.println( "fixme: FormMain#updatePropertyPanelState; Panel1MinSize not set" );
+#else
                 splitContainerProperty.Panel1MinSize = _PROPERTY_DOCK_MIN_WIDTH;
+#endif
                 splitContainerProperty.setDividerLocation( AppManager.editorConfig.PropertyWindowStatus.DockWidth );
                 AppManager.editorConfig.PropertyWindowStatus.WindowState = BFormWindowState.Minimized;
                 AppManager.propertyWindow.setExtendedState( BForm.ICONIFIED );
@@ -2417,7 +2425,11 @@ namespace org.kbinani.cadencii
                     AppManager.editorConfig.PropertyWindowStatus.DockWidth = splitContainerProperty.getDividerLocation();
                 }
                 AppManager.editorConfig.PropertyWindowStatus.State = PanelState.Hidden;
+#if JAVA
+                serr.println( "fixme: FormMain#updatePropertyPanelState; Panel1MinSize not set" );
+#else
                 splitContainerProperty.Panel1MinSize = 0;
+#endif
                 splitContainerProperty.setDividerLocation( 0 );
                 splitContainerProperty.setDividerSize( 0 );
                 splitContainerProperty.setSplitterFixed( true );
@@ -2426,18 +2438,26 @@ namespace org.kbinani.cadencii
                 if ( AppManager.propertyWindow.getExtendedState() != BForm.NORMAL ) {
                     AppManager.propertyWindow.setExtendedState( BForm.NORMAL );
                 }
+#if JAVA
+                AppManager.propertyWindow.addComponent( AppManager.propertyPanel );
+#else
                 AppManager.propertyWindow.Controls.Add( AppManager.propertyPanel );
+#endif
                 Point parent = this.getLocation();
                 XmlRectangle rc = AppManager.editorConfig.PropertyWindowStatus.Bounds;
                 Point property = new Point( rc.x, rc.y );
-                AppManager.propertyWindow.setBounds( new Rectangle( parent.x + property.x, parent.y + property.y, rc.Width, rc.Height ) );
+                AppManager.propertyWindow.setBounds( new Rectangle( parent.x + property.x, parent.y + property.y, rc.width, rc.height ) );
                 normalizeFormLocation( AppManager.propertyWindow );
                 menuVisualProperty.setSelected( true );
                 if ( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Docked ) {
                     AppManager.editorConfig.PropertyWindowStatus.DockWidth = splitContainerProperty.getDividerLocation();
                 }
                 AppManager.editorConfig.PropertyWindowStatus.State = PanelState.Window;
+#if JAVA
+                serr.println( "fixme: FormMain#updatePropertyPanelState; splitContainerProperty.Panel1MinSize not set" );
+#else
                 splitContainerProperty.Panel1MinSize = 0;
+#endif
                 splitContainerProperty.setDividerLocation( 0 );
                 splitContainerProperty.setDividerSize( 0 );
                 splitContainerProperty.setSplitterFixed( true );
@@ -10542,19 +10562,19 @@ namespace org.kbinani.cadencii
 #if ENABLE_PROPERTY
         public void propertyWindow_FormClosing( Object sender, BFormClosingEventArgs e )
         {
-            if ( e.CloseReason == System.Windows.Forms.CloseReason.UserClosing ) {
-                e.Cancel = true;
-                updatePropertyPanelState( PanelState.Hidden );
+#if !JAVA        
+            if ( e.CloseReason != System.Windows.Forms.CloseReason.UserClosing ) {
+                return;
             }
+#endif
+            e.Cancel = true;
+            updatePropertyPanelState( PanelState.Hidden );
         }
 #endif
 
 #if ENABLE_PROPERTY
         public void propertyWindow_LocationOrSizeChanged( Object sender, EventArgs e )
         {
-#if DEBUG
-            sout.println( "m_note_proeprty_dlg_LocationOrSizeChanged; WindowState=" + AppManager.propertyWindow.WindowState );
-#endif
             if ( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Window ) {
                 if ( AppManager.propertyWindow.getExtendedState() == BForm.ICONIFIED ) {
                     updatePropertyPanelState( PanelState.Docked );
@@ -15383,16 +15403,18 @@ namespace org.kbinani.cadencii
 
         public void trackSelector_MouseMove( Object sender, BMouseEventArgs e )
         {
-            if ( mFormActivated ) {
-#if ENABLE_PROPERTY
-                if ( AppManager.mInputTextBox != null && !AppManager.mInputTextBox.IsDisposed && !AppManager.mInputTextBox.isVisible() && !AppManager.propertyPanel.isEditing() ) {
-#else
+            if ( mFormActivated && AppManager.mInputTextBox != null ){
 #if JAVA
-                if ( AppManager.mInputTextBox != null && !AppManager.mInputTextBox.isVisible() ) {
+                boolean input_visible = AppManager.mInputTextBox.isVisible();
 #else
-                if ( AppManager.mInputTextBox != null && !AppManager.mInputTextBox.IsDisposed && !AppManager.mInputTextBox.isVisible() ) {
+                boolean input_visible = !AppManager.mInputTextBox.IsDisposed && AppManager.mInputTextBox.isVisible();
 #endif
+#if ENABLE_PROPERTY
+                boolean prop_editing = AppManager.propertyPanel.isEditing();
+#else
+                boolean prop_editing = false;
 #endif
+                if( input_visible && !prop_editing ){
                     trackSelector.requestFocus();
                 }
             }

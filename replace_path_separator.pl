@@ -1,9 +1,13 @@
 my $ENABLE_DEBUG = 0;
+my $ENABLE_PROPERTY = 1;
 
 for( my $i = 0; $i <= $#ARGV; $i++ ){
     my $arg = $ARGV[$i];
     if( $arg eq "--enable-debug" ){
         $ENABLE_DEBUG = 1;
+    }
+    if( $arg eq "--disable-property" ){
+        $ENABLE_PROPERTY = 0;
     }
 }
 
@@ -60,6 +64,11 @@ if( $ENABLE_DEBUG == 0 ){
 }else{
     $ddebug = "-DDEBUG";
 }
+if( $ENABLE_PROPERTY == 0 ){
+    $denable_property = "";
+}else{
+    $denable_property = "-DENABLE_PROPERTY";
+}
 
 while( $line = <FILE> ){
     $line =~ s/\@SRC_JAPPUTIL\@/$src_apputil/g;
@@ -81,6 +90,7 @@ while( $line = <FILE> ){
     $line =~ s/\@DEP_JXML\@/$dep_xml/g;
     $line =~ s/\@DJAVA_MAC\@/$djava_mac/g;
     $line =~ s/\@DDEBUG\@/$ddebug/g;
+    $line =~ s/\@DENABLE_PROPERTY\@/$denable_property/g;
     $line =~ s/\@TO_DEVNULL\@/$to_devnull/g;
 
     #if( $ARGV[0] eq "MSWin32" ){

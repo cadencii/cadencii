@@ -1,5 +1,5 @@
 ﻿/*
- * PropertyDescripter.cs
+ * PropertyDescriptor.cs
  * Copyright © 2011 kbinani
  *
  * This file is part of org.kbinani.componentmodel.
@@ -11,4 +11,4 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
-//INCLUDE ../BuildJavaUI/src/org/kbinani/componentmodel/PropertyDescripter.java
+//INCLUDE ../BuildJavaUI/src/org/kbinani/componentmodel/PropertyDescriptor.java

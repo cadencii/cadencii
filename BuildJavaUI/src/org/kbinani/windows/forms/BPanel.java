@@ -26,6 +26,7 @@ public class BPanel extends JPanel
                                ComponentListener
 {
     private static final long serialVersionUID = -1767993910090796469L;
+    private Object tag;
 
     public BPanel(){
         super();
@@ -35,6 +36,16 @@ public class BPanel extends JPanel
         addMouseWheelListener( this );
         addFocusListener( this );
         addComponentListener( this );
+    }
+    
+    public Object getTag()
+    {
+        return tag;
+    }
+    
+    public void setTag( Object value )
+    {
+        tag = value;
     }
     
     // root impl of MouseWheel event is in BButton

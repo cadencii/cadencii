@@ -12,9 +12,12 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
+
 package org.kbinani.vsq;
 
 import java.util.*;
+import org.kbinani.*;
+
 #else
 using System;
 using org.kbinani;

@@ -269,7 +269,7 @@ namespace org.kbinani.cadencii
                     offset = -1;
                 }
                 first = false;
-                int len = value.Length;
+                int len = str.length( value );
                 if ( len == trim ) {
                     break;
                 }

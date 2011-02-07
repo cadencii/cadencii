@@ -16,6 +16,7 @@
 package org.kbinani.cadencii;
 
 import java.util.*;
+import org.kbinani.*;
 import org.kbinani.componentmodel.*;
 import org.kbinani.vsq.*;
 #else

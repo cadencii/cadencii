@@ -16,6 +16,8 @@
 package org.kbinani.cadencii;
 
 import java.util.*;
+import javax.swing.*;
+import java.awt.*;
 import org.kbinani.*;
 import org.kbinani.apputil.*;
 import org.kbinani.vsq.*;
@@ -32,21 +34,7 @@ namespace org.kbinani.cadencii
     using BEventHandler = System.EventHandler;
     using boolean = System.Boolean;
     using BPropertyValueChangedEventHandler = System.Windows.Forms.PropertyValueChangedEventHandler;
-#endif
-
-#if JAVA
-
-class CommandExecuteRequiredEventHandler extends BEventHandler{
-    public CommandExecuteRequiredEventHandler( Object invoker, String method_name ){
-        super( invoker, method_name, Void.TYPE, Object.class, CadenciiCommand.class );
-    }
-    
-    public CommandExecuteRequiredEventHandler( Class<?> invoker, String method_name ){
-        super( invoker, method_name, Void.TYPE, Object.class, CadenciiCommand.class );
-    }
-}
-#else
-    public delegate void CommandExecuteRequiredEventHandler( object sender, CadenciiCommand command );
+    using BPropertyValueChangedEventArgs = System.Windows.Forms.PropertyValueChangedEventArgs;
 #endif
 
 #if JAVA
@@ -186,23 +174,24 @@ class CommandExecuteRequiredEventHandler extends BEventHandler{
                 objs[i] = item;
             }
 
-            propertyGrid.SelectedObjects = objs;
+            propertyGrid.setSelectedObjects( objs );
             popGridItemExpandStatus();
             setEditing( false );
         }
 
-        public void propertyGrid_PropertyValueChanged( Object s, PropertyValueChangedEventArgs e )
+        public void propertyGrid_PropertyValueChanged( Object s, BPropertyValueChangedEventArgs e )
         {
-            int len = propertyGrid.SelectedObjects.Length;
+            Object[] selobj = propertyGrid.getSelectedObjects();
+            int len = selobj.Length;
             VsqEvent[] items = new VsqEvent[len];
             for ( int i = 0; i < len; i++ ) {
-                SelectedEventEntry proxy = (SelectedEventEntry)propertyGrid.SelectedObjects[i];
+                SelectedEventEntry proxy = (SelectedEventEntry)selobj[i];
                 items[i] = proxy.editing;
             }
             CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventReplaceRange( m_track, items ) );
 #if JAVA
             try{
-                commandExecutedRequiredEvent.raise( this, run );
+                commandExecuteRequiredEvent.raise( this, run );
             }catch( Exception ex ){
                 serr.println( PropertyPanel.class + ".propertyGridPropertyValueChanged; ex=" + ex );
             }
@@ -214,7 +203,7 @@ class CommandExecuteRequiredEventHandler extends BEventHandler{
             for ( int i = 0; i < len; i++ ) {
                 AppManager.addSelectedEvent( items[i].InternalID );
             }
-            propertyGrid.Refresh();
+            propertyGrid.repaint();//.Refresh();
             setEditing( false );
         }
 
@@ -296,7 +285,13 @@ class CommandExecuteRequiredEventHandler extends BEventHandler{
             if( propertyGrid == null ){
                 propertyGrid = new BPropertyGrid();
             }
-            this.add( propertyGrid );
+            GridBagLayout lm = new GridBagLayout();
+            this.setLayout( lm );
+            GridBagConstraints gc = new GridBagConstraints();
+            gc.fill = GridBagConstraints.BOTH;
+            gc.weightx = 1.0D;
+            gc.weighty = 1.0D;
+            this.add( propertyGrid, gc );
         }
 #else
         #region UI Impl for C#

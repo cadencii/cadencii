@@ -50,7 +50,11 @@ namespace org.kbinani.cadencii
 
         public int hashCode()
         {
+#if JAVA
+            return Integer.valueOf( noteNumber ).hashCode();
+#else
             return noteNumber.GetHashCode();
+#endif
         }
 
 #if !JAVA
@@ -60,7 +64,7 @@ namespace org.kbinani.cadencii
         }
 #endif
 
-        private boolean equals( Object obj )
+        public boolean equals( Object obj )
         {
             if ( obj is NoteNumberProperty ) {
                 if ( noteNumber == ((NoteNumberProperty)obj).noteNumber ) {

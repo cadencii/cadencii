@@ -15,6 +15,7 @@
 package org.kbinani.cadencii;
 
 import java.util.*;
+import org.kbinani.*;
 import org.kbinani.vsq.*;
 import org.kbinani.componentmodel.*;
 #else
@@ -47,7 +48,7 @@ namespace org.kbinani.cadencii
     /// </summary>
 #if ENABLE_PROPERTY
 #if JAVA
-    public class SelectedEventEntry implements IPropertyDescripter
+    public class SelectedEventEntry implements IPropertyDescriptor
 #else
     [TypeConverter( typeof( SelectedEventEntryTypeConverter ) )]
     public class SelectedEventEntry
@@ -111,12 +112,25 @@ namespace org.kbinani.cadencii
         {
         }
 
-        public PropertyDescripter getDescripter()
+        public PropertyDescriptor getDescriptor()
         {
-            return new SelectedEventEntryPropertyDescripter();
+            return new SelectedEventEntryPropertyDescriptor();
         }
 #endif
 #endif
+
+        public static boolean isXmlIgnored( String name )
+        {
+            if( str.compare( name, "track" ) ){
+                return true;
+            }else if( str.compare( name, "editing" ) ){
+                return true;
+            }else if( str.compare( name, "original" ) ){
+                return true;
+            }else{
+                return false;
+            }
+        }
 
 #if ENABLE_PROPERTY
         /// <summary>
@@ -255,8 +269,8 @@ namespace org.kbinani.cadencii
                     // 「+ 480)*1.1」みたいな書式を許容したいので。「+ 480)*1.1」=>「(x+ 480)*1.1」
                     int num_bla = 0; // "("の個数
                     int num_cket = 0; // ")"の個数
-                    for ( int i = 0; i < eq.Length; i++ ) {
-                        char c = eq[i];
+                    for ( int i = 0; i < str.length( eq ); i++ ) {
+                        char c = str.charAt( eq, i );
                         if ( c == '(' ) {
                             num_bla++;
                         } else if ( c == ')' ) {

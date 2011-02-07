@@ -157,7 +157,9 @@ namespace org.kbinani.vsq
             }
 
 #if DEBUG
+#if !JAVA
             sw.Close();
+#endif
 #endif
 
             // 音符の先頭位置のピッチが必ず指定された状態にする

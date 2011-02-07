@@ -7,6 +7,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BPanel;
@@ -16,7 +17,7 @@ public class PropertyPanelContainer extends BPanel {
     //SECTION-BEGIN-FIELD
 
     private static final long serialVersionUID = 2607395876517475240L;
-    private JPanel panelTitle = null;
+    private BPanel panelTitle = null;
     private BButton btnClose = null;
     private BButton btnWindow = null;
     private JPanel panelMain = null;
@@ -72,7 +73,7 @@ public class PropertyPanelContainer extends BPanel {
      * 	
      * @return javax.swing.JPanel	
      */
-    private JPanel getPanelTitle() {
+    private BPanel getPanelTitle() {
         if (panelTitle == null) {
             GridBagConstraints gridBagConstraints111 = new GridBagConstraints();
             gridBagConstraints111.insets = new Insets(3, 0, 3, 3);
@@ -85,7 +86,7 @@ public class PropertyPanelContainer extends BPanel {
             gridBagConstraints1211.gridy = 0;
             gridBagConstraints1211.anchor = GridBagConstraints.EAST;
             gridBagConstraints1211.gridx = 3;
-            panelTitle = new JPanel();
+            panelTitle = new BPanel();
             panelTitle.setLayout(new GridBagLayout());
             panelTitle.setPreferredSize(new Dimension(156, 29));
             panelTitle.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));

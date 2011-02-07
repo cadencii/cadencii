@@ -15,15 +15,19 @@
 #if JAVA
 package org.kbinani.cadencii;
 
+import org.kbinani.*;
 import org.kbinani.apputil.*;
 import org.kbinani.componentmodel.*;
+
 #else
+
 using System;
 using System.ComponentModel;
 using System.Reflection;
 using org.kbinani.apputil;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using boolean = System.Boolean;
 #endif
 
@@ -88,12 +92,12 @@ namespace org.kbinani.cadencii {
         {
             get
             {
-                return getDescripter( base.Name );
+                return getDisplayName( base.Name );
             }
         }
 #endif
 
-        public String getDescripter( String name )
+        public String getDisplayName( String name )
         {
             if ( name.Equals( "Clock" ) ) {
                 return _( "Clock" );

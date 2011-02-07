@@ -67,17 +67,17 @@ namespace org.kbinani.cadencii
         }
 #endif
 
-        private void panelTitle_MouseDoubleClick( Object sender, BMouseEventArgs e )
+        public void panelTitle_MouseDoubleClick( Object sender, BMouseEventArgs e )
         {
             invokeStateChangeRequiredEvent( PanelState.Window );
         }
 
-        private void btnClose_Click( Object sender, EventArgs e )
+        public void btnClose_Click( Object sender, EventArgs e )
         {
             invokeStateChangeRequiredEvent( PanelState.Hidden );
         }
 
-        private void btnWindow_Click( Object sender, EventArgs e )
+        public void btnWindow_Click( Object sender, EventArgs e )
         {
             invokeStateChangeRequiredEvent( PanelState.Window );
         }
@@ -97,6 +97,10 @@ namespace org.kbinani.cadencii
 #endif
         }
 
+#if !JAVA
+        /// <summary>
+        /// javaは自動レイアウトなのでいらない
+        /// </summary>
         private void panelMain_SizeChanged( Object sender, EventArgs e )
         {
             panelTitle.Left = 0;
@@ -109,13 +113,16 @@ namespace org.kbinani.cadencii
             panelMain.Width = this.Width;
             panelMain.Height = this.Height - _TITLE_HEIGHT;
         }
+#endif
 
         private void registerEventHandlers()
         {
-            this.panelMain.SizeChanged += new BEventHandler( this.panelMain_SizeChanged );
-            this.btnClose.Click += new BEventHandler( this.btnClose_Click );
-            this.btnWindow.Click += new BEventHandler( this.btnWindow_Click );
-            this.panelTitle.MouseDoubleClick += new BMouseEventHandler( this.panelTitle_MouseDoubleClick );
+#if !JAVA
+            this.panelMain.SizeChanged += new BEventHandler( panelMain_SizeChanged );
+#endif
+            this.btnClose.Click += new BEventHandler( btnClose_Click );
+            this.btnWindow.Click += new BEventHandler( btnWindow_Click );
+            this.panelTitle.MouseDoubleClick += new BMouseEventHandler( panelTitle_MouseDoubleClick );
         }
 
         private void setResources()

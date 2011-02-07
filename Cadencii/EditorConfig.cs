@@ -605,22 +605,24 @@ namespace org.kbinani.cadencii
         public static String getGenericTypeName( String name )
         {
             if ( name != null ) {
-                if ( name.Equals( "RecentFiles" ) ) {
+                if ( str.compare( name, "RecentFiles" ) ) {
                     return "java.lang.String";
-                } else if ( name.Equals( "UserDictionaries" ) ) {
+                } else if ( str.compare( name, "UserDictionaries" ) ) {
                     return "java.lang.String";
-                } else if ( name.Equals( "UtauSingers" ) ) {
+                } else if ( str.compare( name, "UtauSingers" ) ) {
                     return "org.kbinani.vsq.SingerConfig";
-                } else if ( name.Equals( "ShortcutKeys" ) ) {
+                } else if ( str.compare( name, "ShortcutKeys" ) ) {
                     return "org.kbinani.cadencii.ValuePairOfStringArrayOfKeys";
-                } else if ( name.Equals( "AutoVibratoCustom" ) ) {
+                } else if ( str.compare( name, "AutoVibratoCustom" ) ) {
                     return "org.kbinani.vsq.VibratoHandle";
-                } else if ( name.Equals( "PathResamplers" ) ) {
+                } else if ( str.compare( name, "PathResamplers" ) ) {
                     return "java.lang.String";
-                } else if ( name.Equals( "LastUsedPathIn" ) ) {
+                } else if ( str.compare( name, "LastUsedPathIn" ) ) {
                     return "java.lang.String";
-                } else if ( name.Equals( "LastUsedPathOut" ) ) {
+                } else if ( str.compare( name, "LastUsedPathOut" ) ) {
                     return "java.lang.String";
+                } else if ( str.compare( name, "ResamplersWithWine" ) ) {
+                    return "java.lang.Boolean";
                 }
             }
             return "";

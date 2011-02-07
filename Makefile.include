@@ -4,15 +4,17 @@ MKDIR=@MKDIR@
 TARGET=@TARGET@
 MCS_OPT=-warn:0
 DJAVA_MAC=@DJAVA_MAC@
+DENABLE_PROPERTY=@DENABLE_PROPERTY@
 PLAY_SOUND_DLL=@PLAY_SOUND_DLL@
 DDEBUG=@DDEBUG@
 JROOT=./build/java/org/kbinani
-PPCS2JAVA_OPT=--replace-java -DJAVA -DJAVA_1_5 $(DDEBUG) -DCLIPBOARD_AS_TEXT $(DJAVA_MAC) -encoding "UTF-8" -s -4 -c -e -l pp_cs2java.log
+PPCS2JAVA_OPT=--replace-java -DJAVA -DJAVA_1_5 $(DDEBUG) -DCLIPBOARD_AS_TEXT $(DJAVA_MAC) $(DENABLE_PROPERTY) -encoding "UTF-8" -s -4 -c -e -l pp_cs2java.log
 PPCS2CPP_OPT=--replace-cpp -D__cplusplus
 MONO=@MONO@
 TO_DEVNULL=@TO_DEVNULL@
 WINE_VERSION=1.1.2
 WINE_DIR=./wine-$(WINE_VERSION)/
+JAVAC=javac
 
 SRC_JAPPUTIL=@SRC_JAPPUTIL@
 SRC_JCORLIB=@SRC_JCORLIB@
@@ -27,27 +29,76 @@ all: jcadencii_mac
 
 jcadencii_mac: jcadencii ./Cadencii/PkgInfo ./Cadencii/Info.plist ./build/java/WineMinimum.bundle
 	rm -rf ./build/java/Cadencii.app
-	$(MKDIR) ./build/java/Cadencii.app $(TO_DEVNULL)
-	$(MKDIR) ./build/java/Cadencii.app/Contents $(TO_DEVNULL)
-	$(MKDIR) ./build/java/Cadencii.app/Contents/MacOS $(TO_DEVNULL)
-	$(MKDIR) ./build/java/Cadencii.app/Contents/Resources $(TO_DEVNULL)
-	$(MKDIR) ./build/java/Cadencii.app/Contents/Resources/Java $(TO_DEVNULL)
-	$(CP) /System/Library/Frameworks/JavaVM.framework/Versions/Current/Resources/MacOS/JavaApplicationStub ./build/java/Cadencii.app/Contents/MacOS/JavaApplicationStub
-	$(CP) ./Cadencii/Info.plist ./build/java/Cadencii.app/Contents/Info.plist
-	$(CP) ./Cadencii/PkgInfo ./build/java/Cadencii.app/Contents/PkgInfo
-	$(CP) ./Cadencii/resources/icon.icns ./build/java/Cadencii.app/Contents/Resources/icon.icns
-	$(CP) ./build/java/Cadencii.jar ./build/java/Cadencii.app/Contents/Resources/Java/Cadencii.jar
+	mkdir -p ./build/java/Cadencii.app/Contents/Resources/Java
+	mkdir -p ./build/java/Cadencii.app/Contents/MacOS
+	cp /System/Library/Frameworks/JavaVM.framework/Versions/Current/Resources/MacOS/JavaApplicationStub ./build/java/Cadencii.app/Contents/MacOS/JavaApplicationStub
+	cp ./Cadencii/Info.plist ./build/java/Cadencii.app/Contents/Info.plist
+	cp ./Cadencii/PkgInfo ./build/java/Cadencii.app/Contents/PkgInfo
+	cp ./Cadencii/resources/icon.icns ./build/java/Cadencii.app/Contents/Resources/icon.icns
+	cp ./build/java/Cadencii.jar ./build/java/Cadencii.app/Contents/Resources/Java/Cadencii.jar
 	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/Cadencii.app/Contents/Resources/Java/ .png $(TO_DEVNULL)
 	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/Cadencii.app/Contents/Resources/Java/ .txt $(TO_DEVNULL)
 	perl copy_with_ext.pl ./Cadencii/ ./build/java/Cadencii.app/Contents/Resources/Java/ .po $(TO_DEVNULL)
 	cd ../../vConnect/stand && $(MAKE)
-	$(CP) ../../vConnect/stand/vConnect-STAND.exe ./build/java/Cadencii.app/Contents/Resources/Java/vConnect-STAND.exe
+	cp ../../vConnect/stand/vConnect-STAND.exe ./build/java/Cadencii.app/Contents/Resources/Java/vConnect-STAND.exe
 	/Developer/Tools/SetFile -a B ./build/java/Cadencii.app
 	cp -r -p ./build/java/WineMinimum.bundle ./build/java/Cadencii.app/Contents/Resources/WineMinimum.bundle
 	rm ./build/java/Cadencii.app/Contents/Resources/WineMinimum.bundle/Contents/SharedSupport/lib/libwine.1.dylib
 	rm ./build/java/Cadencii.app/Contents/Resources/WineMinimum.bundle/Contents/SharedSupport/lib/libwine.dylib
 	ln -s libwine.1.0.dylib ./build/java/Cadencii.app/Contents/Resources/WineMinimum.bundle/Contents/SharedSupport/lib/libwine.1.dylib
 	ln -s libwine.1.0.dylib ./build/java/Cadencii.app/Contents/Resources/WineMinimum.bundle/Contents/SharedSupport/lib/libwine.dylib
+
+########################################################################
+# prepare WineMinimum.bundle
+#
+# wget source of wine
+./wine-$(WINE_VERSION).tar.bz2:
+	curl -o ./wine-$(WINE_VERSION).tar.bz2 http://ibiblio.org/pub/linux/system/emulators/wine/wine-$(WINE_VERSION).tar.bz2
+	tar jxvf ./wine-$(WINE_VERSION).tar.bz2
+	cd wine-$(WINE_VERSION) && ./configure && $(MAKE) depend && $(MAKE)
+
+# prepare bundle
+./build/java/WineMinimum.bundle: ./wine-$(WINE_VERSION).tar.bz2
+	rm -rf ./build/java/WineMinimum.bundle
+	mkdir -p ./build/java/WineMinimum.bundle/Contents/SharedSupport/bin
+	mkdir -p ./build/java/WineMinimum.bundle/Contents/SharedSupport/lib/wine
+	cp $(WINE_DIR)loader/wine-pthread ./build/java/WineMinimum.bundle/Contents/SharedSupport/bin/wine
+	cp $(WINE_DIR)server/wineserver ./build/java/WineMinimum.bundle/Contents/SharedSupport/bin/wineserver
+	install_name_tool -change @executable_path/../libs/wine/libwine.1.dylib @executable_path/../lib/libwine.1.dylib ./build/java/WineMinimum.bundle/Contents/SharedSupport/bin/wine
+	install_name_tool -change @executable_path/../libs/wine/libwine.1.dylib @executable_path/../lib/libwine.1.dylib ./build/java/WineMinimum.bundle/Contents/SharedSupport/bin/wineserver
+	cp $(WINE_DIR)libs/wine/libwine.1.0.dylib ./build/java/WineMinimum.bundle/Contents/SharedSupport/lib/libwine.1.0.dylib
+	ln -s libwine.1.0.dylib ./build/java/WineMinimum.bundle/Contents/SharedSupport/lib/libwine.1.dylib
+	ln -s libwine.1.0.dylib ./build/java/WineMinimum.bundle/Contents/SharedSupport/lib/libwine.dylib
+	cp $(WINE_DIR)dlls/advapi32/advapi32.dll.so ./build/java/WineMinimum.bundle/Contents/SharedSupport/lib/wine/advapi32.dll.so
+	cp $(WINE_DIR)dlls/iphlpapi/iphlpapi.dll.so ./build/java/WineMinimum.bundle/Contents/SharedSupport/lib/wine/iphlpapi.dll.so
+	cp $(WINE_DIR)dlls/kernel32/kernel32.dll.so ./build/java/WineMinimum.bundle/Contents/SharedSupport/lib/wine/kernel32.dll.so
+	cp $(WINE_DIR)dlls/ntdll/ntdll.dll.so ./build/java/WineMinimum.bundle/Contents/SharedSupport/lib/wine/ntdll.dll.so
+	cp $(WINE_DIR)dlls/rpcrt4/rpcrt4.dll.so ./build/java/WineMinimum.bundle/Contents/SharedSupport/lib/wine/rpcrt4.dll.so
+	cp $(WINE_DIR)programs/services/services.exe.so ./build/java/WineMinimum.bundle/Contents/SharedSupport/lib/wine/services.exe.so
+	cp $(WINE_DIR)programs/wineboot/wineboot.exe.so ./build/java/WineMinimum.bundle/Contents/SharedSupport/lib/wine/wineboot.exe.so
+	{ \
+	  wine_version=`PATH='./build/java/WineMinimum.bundle/Contents/SharedSupport/bin'":$PATH";wine --version`; \
+	  cadencii_version=`java -jar ./build/java/Cadencii.jar --version`; \
+	  echo '<?xml version="1.0" encoding="UTF-8"?>'; \
+	  echo '<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">'; \
+	  echo '<plist version="1.0">'; \
+	  echo '<dict>'; \
+	  echo '    <key>CFBundleInfoDictionaryVersion</key>'; \
+	  echo '    <string>6.0</string>'; \
+	  echo '    <key>CFBundleGetInfoString</key>'; \
+	  echo '    <string>Cadencii '"$$cadencii_version"', '"$$wine_version"'</string>'; \
+	  echo '    <key>CFBundleName</key>'; \
+	  echo '    <string>Cadencii</string>'; \
+	  echo '    <key>CFBundleVersion</key>'; \
+	  echo '    <string>Cadencii '"$$cadencii_version"', '"$$wine_version"'</string>'; \
+	  echo '    <key>CFBundlePackageType</key>'; \
+	  echo '    <string>thng</string>'; \
+	  echo '    <key>CFBundleIdentifier</key>'; \
+	  echo '    <string>jp.sourceforge.cadencii.WineMinimum</string>'; \
+	  echo '</dict>'; \
+	  echo '</plist>'; \
+	} > ./build/java/WineMinimum.bundle/Contents/Info.plist
+	/Developer/Tools/SetFile -a B ./build/java/WineMinimum.bundle
 
 ########################################################################
 # pre process
@@ -90,7 +141,7 @@ jcadencii: first pp_cs2java.jar $(SRC_JCORLIB) $(SRC_JWINFORMS) $(SRC_JAPPUTIL) 
 	$(CP) ./build/java/org/kbinani/cadencii/Cadencii.java ./build/java/Cadencii.java
 	perl safe_rm.pl ./build/java/org/kbinani/cadencii/Cadencii.java $(TO_DEVNULL)
 	$(MAKE) jpostprocess
-	javac ./build/java/Cadencii.java ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/*.java ./build/java/org/kbinani/apputil/*.java ./build/java/org/kbinani/media/*.java ./build/java/org/kbinani/vsq/*.java ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/componentmodel/*.java ./build/java/org/kbinani/windows/forms/*.java ./build/java/org/kbinani/xml/*.java -encoding UTF8 -target 1.5 -source 1.5
+	$(JAVAC) ./build/java/Cadencii.java ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/*.java ./build/java/org/kbinani/apputil/*.java ./build/java/org/kbinani/media/*.java ./build/java/org/kbinani/vsq/*.java ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/componentmodel/*.java ./build/java/org/kbinani/windows/forms/*.java ./build/java/org/kbinani/xml/*.java -encoding UTF8 -target 1.5 -source 1.5
 	cd ./build/java && jar cfm Cadencii.jar Cadencii.mf Cadencii.class org/kbinani/cadencii/*.class org/kbinani/*.class org/kbinani/apputil/*.class org/kbinani/media/*.class org/kbinani/vsq/*.class org/kbinani/cadencii/*.class org/kbinani/componentmodel/*.class org/kbinani/windows/forms/*.class org/kbinani/xml/*.class
 	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .png $(TO_DEVNULL)
 	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .txt $(TO_DEVNULL)
@@ -120,7 +171,7 @@ jcadencii_win: jcadencii
 #
 jeditotoini: pp_cs2java.jar jcorlib japputil jmedia jvsq
 	java -jar pp_cs2java.jar $(PPCS2JAVA_OPT) -b ./build/java -t ./EditOtoIni
-	javac $(JROOT)/editotoini/*.java $(JROOT)/*.java $(JROOT)/windows/forms/*.java $(JROOT)/componentmodel/*.java $(JROOT)/vsq/*.java $(JROOT)/xml/*.java $(JROOT)/apputil/*.java $(JROOT)/media/*.java -encoding UTF8
+	$(JAVAC) $(JROOT)/editotoini/*.java $(JROOT)/*.java $(JROOT)/windows/forms/*.java $(JROOT)/componentmodel/*.java $(JROOT)/vsq/*.java $(JROOT)/xml/*.java $(JROOT)/apputil/*.java $(JROOT)/media/*.java -encoding UTF8
 
 ########################################################################
 # jcorlib
@@ -193,7 +244,7 @@ pp_cs2java.jar: ./pp_cs2java/pp_cs2java.java
 # resource collector
 #
 makeRes.class: ./makeRes.java
-	javac makeRes.java -encoding UTF8
+	$(JAVAC) makeRes.java -encoding UTF8
 
 ./Cadencii/Resources.cs: ./Cadencii/Resources.list makeRes.class
 	java makeRes -i ./Cadencii/Resources.list -o ./Cadencii/Resources.cs -p org.kbinani.cadencii -n org.kbinani.cadencii
@@ -205,57 +256,6 @@ clean:
 	$(RM) ./build/java/org/kbinani/*.java ./build/java/org/kbinani/apputil/*.java ./build/java/org/kbinani/media/*.java ./build/java/org/kbinani/vsq/*.java ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/componentmodel/*.java ./build/java/org/kbinani/windows/forms/*.java ./build/java/org/kbinani/xml/*.java
 	$(RM) ./build/java/org/kbinani/*.class ./build/java/org/kbinani/apputil/*.class ./build/java/org/kbinani/media/*.class ./build/java/org/kbinani/vsq/*.class ./build/java/org/kbinani/cadencii/*.class ./build/java/org/kbinani/componentmodel/*.class ./build/java/org/kbinani/windows/forms/*.class ./build/java/org/kbinani/xml/*.class
 
-########################################################################
-# prepare WineMinimum.bundle
-#
-# wget source of wine
-./wine-$(WINE_VERSION).tar.bz2:
-	curl -o ./wine-$(WINE_VERSION).tar.bz2 http://ibiblio.org/pub/linux/system/emulators/wine/wine-$(WINE_VERSION).tar.bz2
-	tar jxvf ./wine-$(WINE_VERSION).tar.bz2
-	cd wine-$(WINE_VERSION) && ./configure && $(MAKE) depend && $(MAKE)
-
-# prepare bundle
-./build/java/WineMinimum.bundle: ./wine-$(WINE_VERSION).tar.bz2
-	rm -rf ./build/java/WineMinimum.bundle
-	mkdir -p ./build/java/WineMinimum.bundle/Contents/SharedSupport/bin
-	mkdir -p ./build/java/WineMinimum.bundle/Contents/SharedSupport/lib/wine
-	cp $(WINE_DIR)loader/wine-pthread ./build/java/WineMinimum.bundle/Contents/SharedSupport/bin/wine
-	cp $(WINE_DIR)server/wineserver ./build/java/WineMinimum.bundle/Contents/SharedSupport/bin/wineserver
-	install_name_tool -change @executable_path/../libs/wine/libwine.1.dylib @executable_path/../lib/libwine.1.dylib ./build/java/WineMinimum.bundle/Contents/SharedSupport/bin/wine
-	install_name_tool -change @executable_path/../libs/wine/libwine.1.dylib @executable_path/../lib/libwine.1.dylib ./build/java/WineMinimum.bundle/Contents/SharedSupport/bin/wineserver
-	cp $(WINE_DIR)libs/wine/libwine.1.0.dylib ./build/java/WineMinimum.bundle/Contents/SharedSupport/lib/libwine.1.0.dylib
-	ln -s libwine.1.0.dylib ./build/java/WineMinimum.bundle/Contents/SharedSupport/lib/libwine.1.dylib
-	ln -s libwine.1.0.dylib ./build/java/WineMinimum.bundle/Contents/SharedSupport/lib/libwine.dylib
-	cp $(WINE_DIR)dlls/advapi32/advapi32.dll.so ./build/java/WineMinimum.bundle/Contents/SharedSupport/lib/wine/advapi32.dll.so
-	cp $(WINE_DIR)dlls/iphlpapi/iphlpapi.dll.so ./build/java/WineMinimum.bundle/Contents/SharedSupport/lib/wine/iphlpapi.dll.so
-	cp $(WINE_DIR)dlls/kernel32/kernel32.dll.so ./build/java/WineMinimum.bundle/Contents/SharedSupport/lib/wine/kernel32.dll.so
-	cp $(WINE_DIR)dlls/ntdll/ntdll.dll.so ./build/java/WineMinimum.bundle/Contents/SharedSupport/lib/wine/ntdll.dll.so
-	cp $(WINE_DIR)dlls/rpcrt4/rpcrt4.dll.so ./build/java/WineMinimum.bundle/Contents/SharedSupport/lib/wine/rpcrt4.dll.so
-	cp $(WINE_DIR)programs/services/services.exe.so ./build/java/WineMinimum.bundle/Contents/SharedSupport/lib/wine/services.exe.so
-	cp $(WINE_DIR)programs/wineboot/wineboot.exe.so ./build/java/WineMinimum.bundle/Contents/SharedSupport/lib/wine/wineboot.exe.so
-	{ \
-	  wine_version=`PATH='./build/java/WineMinimum.bundle/Contents/SharedSupport/bin'":$PATH";wine --version`; \
-	  cadencii_version=`java -jar ./build/java/Cadencii.jar --version`; \
-	  echo '<?xml version="1.0" encoding="UTF-8"?>'; \
-	  echo '<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">'; \
-	  echo '<plist version="1.0">'; \
-	  echo '<dict>'; \
-	  echo '	<key>CFBundleInfoDictionaryVersion</key>'; \
-	  echo '	<string>6.0</string>'; \
-	  echo '	<key>CFBundleGetInfoString</key>'; \
-	  echo '	<string>Cadencii '"$$cadencii_version"', '"$$wine_version"'</string>'; \
-	  echo '	<key>CFBundleName</key>'; \
-	  echo '	<string>Cadencii</string>'; \
-	  echo '	<key>CFBundleVersion</key>'; \
-	  echo '	<string>Cadencii '"$$cadencii_version"', '"$$wine_version"'</string>'; \
-	  echo '	<key>CFBundlePackageType</key>'; \
-	  echo '	<string>thng</string>'; \
-	  echo '	<key>CFBundleIdentifier</key>'; \
-	  echo '	<string>jp.sourceforge.cadencii.WineMinimum</string>'; \
-	  echo '</dict>'; \
-	  echo '</plist>'; \
-	} > ./build/java/WineMinimum.bundle/Contents/Info.plist
-	/Developer/Tools/SetFile -a B ./build/java/WineMinimum.bundle
 
 ########################################################################
 # dependency definition

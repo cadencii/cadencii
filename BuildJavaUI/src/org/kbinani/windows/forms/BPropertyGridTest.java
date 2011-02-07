@@ -6,13 +6,15 @@ import java.awt.Frame;
 import java.awt.GridBagLayout;
 import java.awt.Point;
 import java.awt.Rectangle;
+import javax.swing.JFrame;
 
-public class BPropertyGridTest extends Frame {
+public class BPropertyGridTest extends JFrame {
 
     private BPropertyGrid jPanel = null;
    
     public static void main( String[] args ){
         BPropertyGridTest dialog = new BPropertyGridTest();
+        dialog.setDefaultCloseOperation( EXIT_ON_CLOSE );
         dialog.setVisible( true );
     }
     
@@ -23,7 +25,7 @@ public class BPropertyGridTest extends Frame {
     public BPropertyGridTest() {
     	super();
     	initialize();
-    	jPanel.setSelectedObjects( new Point[]{ new Point( 10, 20 ), new Point( 10, 30 ) } );
+    	jPanel.setSelectedObjects( new BPropertyGridTestItem[]{ new BPropertyGridTestItem() } );
     }
 
     /**
@@ -55,13 +57,4 @@ enum FooEnum{
     VALUE1,
     VALUE2,
     NONE,
-}
-
-class Foo{
-    public boolean A = true;
-    public String B = "text";
-    public int C = 10;
-    public Point D = new Point( 1, 2 );
-    public Rectangle E = new Rectangle( 1, 2, 3, 4 );
-    public FooEnum F = FooEnum.VALUE1;
 }

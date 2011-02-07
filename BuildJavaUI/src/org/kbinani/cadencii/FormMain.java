@@ -2175,7 +2175,7 @@ public class FormMain extends BForm {
             splitContainer1.setDividerLocation(300);
             splitContainer1.setResizeWeight(1.0D);
             splitContainer1.setDividerSize(9);
-            splitContainer1.setContinuousLayout(true);
+            splitContainer1.setContinuousLayout(false);
             splitContainer1.setTopComponent(getSplitContainer2());
             splitContainer1.setBottomComponent(getTrackSelector());
             splitContainer1.setOrientation(BSplitPane.VERTICAL_SPLIT);
@@ -2209,7 +2209,7 @@ public class FormMain extends BForm {
             splitContainerProperty.setEnabled(false);
             splitContainerProperty.setDividerSize(0);
             splitContainerProperty.setResizeWeight(1.0D);
-            splitContainerProperty.setContinuousLayout(true);
+            splitContainerProperty.setContinuousLayout(false);
             splitContainerProperty.setRightComponent(getSplitContainer1());
             splitContainerProperty.setLeftComponent(getM_property_panel_container());
             splitContainerProperty.setBorder( new EmptyBorder( 0, 0, 0, 0 ) );

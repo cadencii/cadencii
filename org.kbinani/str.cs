@@ -56,6 +56,21 @@ namespace org
 #endif
 
 #if JAVA
+            public static char charAt( String s, int index )
+#elif __cplusplus
+            static char charAt( string s, int index )
+#else
+            public static char charAt( string s, int index )
+#endif
+            {
+#if JAVA
+                return s.charAt( index ); 
+#else
+                return s[index];
+#endif
+            }                                    
+
+#if JAVA
             public static String toUpper( String s )
 #elif __cplusplus
             static string toUpper( string s )
