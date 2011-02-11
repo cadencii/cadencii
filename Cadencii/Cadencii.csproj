@@ -129,6 +129,7 @@
     <Compile Include="ClipboardEntry.cs" />
     <Compile Include="ClockResolution.cs" />
     <Compile Include="ClockResolutionUtility.cs" />
+    <Compile Include="CommandExecuteRequiredEventHandler.cs" />
     <Compile Include="EditedStateChangedEventHandler.cs">
       <SubType>Code</SubType>
     </Compile>

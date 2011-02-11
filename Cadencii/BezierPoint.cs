@@ -37,7 +37,7 @@ namespace org.kbinani.cadencii
     public class BezierPoint implements Comparable<BezierPoint>, Cloneable, Serializable
 #else
     [Serializable]
-    public class BezierPoint : IComparable<BezierPoint>, ICloneable {
+    public class BezierPoint : IComparable<BezierPoint>, ICloneable
 #endif
     {
 #if JAVA

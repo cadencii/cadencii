@@ -174,14 +174,22 @@ namespace org.kbinani.cadencii
                 objs[i] = item;
             }
 
+#if JAVA
             propertyGrid.setSelectedObjects( objs );
+#else
+            propertyGrid.SelectedObjects = objs;
+#endif
             popGridItemExpandStatus();
             setEditing( false );
         }
 
         public void propertyGrid_PropertyValueChanged( Object s, BPropertyValueChangedEventArgs e )
         {
+#if JAVA
             Object[] selobj = propertyGrid.getSelectedObjects();
+#else
+            Object[] selobj = propertyGrid.SelectedObjects;
+#endif
             int len = selobj.Length;
             VsqEvent[] items = new VsqEvent[len];
             for ( int i = 0; i < len; i++ ) {
@@ -203,7 +211,11 @@ namespace org.kbinani.cadencii
             for ( int i = 0; i < len; i++ ) {
                 AppManager.addSelectedEvent( items[i].InternalID );
             }
+#if JAVA
             propertyGrid.repaint();//.Refresh();
+#else
+            propertyGrid.Refresh();
+#endif
             setEditing( false );
         }
 

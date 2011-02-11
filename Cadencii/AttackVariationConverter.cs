@@ -104,7 +104,11 @@ namespace org.kbinani.cadencii
             if ( value is AttackVariation ) {
                 return ((AttackVariation)value).mDescription;
             } else {
-                return base.convertTo( value );
+#if JAVA
+                return super.convertTo( value );
+#else
+                return "";
+#endif
             }
         }
 

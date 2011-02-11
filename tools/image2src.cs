@@ -17,7 +17,8 @@ class image2src
             return;
         }
 
-        Console.WriteLine( "Image foo()" );
+        string name = Path.GetFileNameWithoutExtension( file );
+        Console.WriteLine( "Image " + name + "()" );
         Console.WriteLine( "{" );
         Console.WriteLine( "    try{" );
         Console.Write( "        return ImageIO.read( new ByteArrayInputStream( new byte[]{" );
