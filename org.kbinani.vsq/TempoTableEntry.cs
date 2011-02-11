@@ -24,12 +24,12 @@ namespace org.kbinani.vsq
 #endif
 
 #if JAVA
-    public class TempoTableEntry implements Comparable<TempoTableEntry>, Cloneable, Serializable {
+    public class TempoTableEntry implements Comparable<TempoTableEntry>, Cloneable, Serializable
 #else
     [Serializable]
     public class TempoTableEntry : IComparable<TempoTableEntry>, ICloneable
-    {
 #endif
+    {
         public int Clock;
         public int Tempo;
         public double Time;

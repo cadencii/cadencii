@@ -63,6 +63,9 @@ namespace org.kbinani.cadencii
         /// <summary>
         /// 最近使用したファイルのリスト
         /// </summary>
+#if JAVA
+        @XmlGenericType( String.class )
+#endif
         public Vector<String> RecentFiles = new Vector<String>();
         public int DefaultPMBendDepth = 8;
         public int DefaultPMBendLength = 0;
@@ -116,6 +119,9 @@ namespace org.kbinani.cadencii
         /// ユーザー定義のビブラート設定．
         /// <version>3.3+</version>
         /// </summary>
+#if JAVA
+        @XmlGenericType( VibratoHandle.class )
+#endif
         public Vector<VibratoHandle> AutoVibratoCustom = new Vector<VibratoHandle>();
         /// <summary>
         /// ビブラートの自動追加を行うかどうか
@@ -157,6 +163,9 @@ namespace org.kbinani.cadencii
         /// <summary>
         /// ユーザー辞書のOn/Offと順序
         /// </summary>
+#if JAVA
+        @XmlGenericType( String.class )
+#endif
         public Vector<String> UserDictionaries = new Vector<String>();
         /// <summary>
         /// 実行環境
@@ -286,6 +295,9 @@ namespace org.kbinani.cadencii
 
         public boolean ViewAtcualPitch = false;
         public boolean __revoked__InvokeUtauCoreWithWine = false;
+#if JAVA
+        @XmlGenericType( SingerConfig.class )
+#endif
         public Vector<SingerConfig> UtauSingers = new Vector<SingerConfig>();
         /// <summary>
         /// UTAU互換の合成器のパス(1個目)
@@ -299,11 +311,17 @@ namespace org.kbinani.cadencii
         /// <summary>
         /// UTAU互換の合成器のパス(2個目以降)
         /// </summary>
+#if JAVA
+        @XmlGenericType( String.class )
+#endif
         public Vector<String> PathResamplers = new Vector<String>();
         /// <summary>
         /// UTAU互換の合成器を，wine経由で呼ぶかどうか
         /// version 3.3+
         /// </summary>
+#if JAVA
+        @XmlGenericType( Boolean.class )
+#endif
         public Vector<Boolean> ResamplersWithWine = new Vector<Boolean>();
         /// <summary>
         /// UTAU用のwave切り貼りツール
@@ -331,6 +349,9 @@ namespace org.kbinani.cadencii
         /// 3.3で廃止
         /// </summary>
         private boolean __revoked__MixerTopMost = true;
+#if JAVA
+        @XmlGenericType( ValuePairOfStringArrayOfKeys.class )
+#endif
         public Vector<ValuePairOfStringArrayOfKeys> ShortcutKeys = new Vector<ValuePairOfStringArrayOfKeys>();
         public PropertyPanelState PropertyWindowStatus = new PropertyPanelState();
         /// <summary>
@@ -507,6 +528,9 @@ namespace org.kbinani.cadencii
         /// 拡張子はピリオドを含めない
         /// <remarks>version 3.3+</remarks>
         /// </summary>
+#if JAVA
+        @XmlGenericType( String.class )
+#endif
         public Vector<String> LastUsedPathIn = new Vector<String>();
         /// <summary>
         /// 最後に出力したファイルパスのリスト
@@ -514,6 +538,9 @@ namespace org.kbinani.cadencii
         /// 拡張子はピリオドを含めない
         /// <remarks>version 3.3+</remarks>
         /// </summary>
+#if JAVA
+        @XmlGenericType( String.class )
+#endif
         public Vector<String> LastUsedPathOut = new Vector<String>();
 
         /// <summary>
@@ -594,38 +621,6 @@ namespace org.kbinani.cadencii
         public static XmlSerializer getSerializer()
         {
             return s_serializer;
-        }
-
-        /// <summary>
-        /// このクラスの指定した名前のプロパティが総称型引数を用いる型である場合に，
-        /// その型の限定名を返します．それ以外の場合は空文字を返します．
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public static String getGenericTypeName( String name )
-        {
-            if ( name != null ) {
-                if ( str.compare( name, "RecentFiles" ) ) {
-                    return "java.lang.String";
-                } else if ( str.compare( name, "UserDictionaries" ) ) {
-                    return "java.lang.String";
-                } else if ( str.compare( name, "UtauSingers" ) ) {
-                    return "org.kbinani.vsq.SingerConfig";
-                } else if ( str.compare( name, "ShortcutKeys" ) ) {
-                    return "org.kbinani.cadencii.ValuePairOfStringArrayOfKeys";
-                } else if ( str.compare( name, "AutoVibratoCustom" ) ) {
-                    return "org.kbinani.vsq.VibratoHandle";
-                } else if ( str.compare( name, "PathResamplers" ) ) {
-                    return "java.lang.String";
-                } else if ( str.compare( name, "LastUsedPathIn" ) ) {
-                    return "java.lang.String";
-                } else if ( str.compare( name, "LastUsedPathOut" ) ) {
-                    return "java.lang.String";
-                } else if ( str.compare( name, "ResamplersWithWine" ) ) {
-                    return "java.lang.Boolean";
-                }
-            }
-            return "";
         }
         #endregion
 

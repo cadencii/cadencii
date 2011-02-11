@@ -12,18 +12,28 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
+
 package org.kbinani.cadencii;
 
 import java.awt.*;
+import java.io.*;
+
 #else
+
 using System;
 using org.kbinani.java.awt;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
 #endif
 
+#if JAVA
+    public class PointD implements Serializable
+#else
     [Serializable]
-    public struct PointD {
+    public struct PointD
+#endif
+    {
         private double m_x;
         private double m_y;
 

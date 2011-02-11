@@ -32,12 +32,12 @@ namespace org.kbinani.vsq
     /// vsqファイルのメタテキスト内に記述されるイベント。
     /// </summary>
 #if JAVA
-    public class VsqEvent implements Comparable<VsqEvent>, Cloneable, Serializable {
+    public class VsqEvent implements Comparable<VsqEvent>, Cloneable, Serializable
 #else
     [Serializable]
     public class VsqEvent : IComparable<VsqEvent>, ICloneable
-    {
 #endif
+    {
         public String Tag;
         /// <summary>
         /// 内部で使用するインスタンス固有のID

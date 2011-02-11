@@ -46,6 +46,9 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// プロパティの表示項目の展開・縮小状態を格納したリスト
         /// </summary>
+#if JAVA
+        @XmlGenericType( ValuePairOfStringBoolean.class )
+#endif
         public Vector<ValuePairOfStringBoolean> ExpandStatus = new Vector<ValuePairOfStringBoolean>();
         /// <summary>
         /// 音階の表現形式
@@ -59,21 +62,6 @@ namespace org.kbinani.cadencii {
         /// プロパティパネルがドッキングされた状態における表示幅(ピクセル)
         /// </summary>
         public int DockWidth = 200;
-
-        /// <summary>
-        /// このクラスの指定した名前のプロパティが総称型引数を用いる型である場合に，
-        /// その型の限定名を返します．それ以外の場合は空文字を返します．
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public static String getGenericTypeName( String name ) {
-            if ( name != null ) {
-                if ( name.Equals( "ExpandStatus" ) ) {
-                    return "org.kbinani.cadencii.ValuePairOfStringBoolean";
-                }
-            }
-            return "";
-        }
     }
 
 #if !JAVA

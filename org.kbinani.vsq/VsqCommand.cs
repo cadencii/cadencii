@@ -34,12 +34,12 @@ namespace org.kbinani.vsq
     /// 
     /// </summary>
 #if JAVA
-    public class VsqCommand implements Serializable {
+    public class VsqCommand implements Serializable
 #else
     [Serializable]
     public class VsqCommand
-    {
 #endif
+    {
         public VsqCommandType Type;
         /// <summary>
         /// コマンドの処理内容を保持します。Args具体的な内容は、処理するクラスごとに異なります

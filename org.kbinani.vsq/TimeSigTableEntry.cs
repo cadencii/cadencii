@@ -24,12 +24,12 @@ namespace org.kbinani.vsq
 #endif
 
 #if JAVA
-    public class TimeSigTableEntry implements Comparable<TimeSigTableEntry>, Cloneable, Serializable {
+    public class TimeSigTableEntry implements Comparable<TimeSigTableEntry>, Cloneable, Serializable
 #else
     [Serializable]
     public class TimeSigTableEntry : IComparable<TimeSigTableEntry>, ICloneable
-    {
 #endif
+    {
         /// <summary>
         /// クロック数
         /// </summary>

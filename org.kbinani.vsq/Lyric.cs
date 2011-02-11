@@ -17,6 +17,8 @@ package org.kbinani.vsq;
 import java.io.*;
 import java.util.*;
 import org.kbinani.*;
+import org.kbinani.xml.*;
+
 #elif __cplusplus
 #else
 using System;
@@ -38,14 +40,14 @@ namespace org
             /// VsqHandleに格納される歌詞の情報を扱うクラス。
             /// </summary>
 #if JAVA
-            public class Lyric implements Serializable {
+            public class Lyric implements Serializable
 #elif __cplusplus
-            class Lyric {
+            class Lyric
 #else
             [Serializable]
             public class Lyric
-            {
 #endif
+            {
                 /// <summary>
                 /// この歌詞のフレーズ
                 /// </summary>
@@ -64,28 +66,6 @@ namespace org
                 public static String getXmlElementName( String name )
                 {
                     return name;
-                }
-
-                /// <summary>
-                /// このクラスの指定した名前のプロパティを，XMLシリアライズ時に無視するかどうかを表す
-                /// ブール値を返します．デフォルトの実装では戻り値は全てfalseです．
-                /// </summary>
-                /// <param name="name"></param>
-                /// <returns></returns>
-                public static boolean isXmlIgnored( String name )
-                {
-                    return str.compare( name, "ConsonantAdjustmentList" );
-                }
-
-                /// <summary>
-                /// このクラスの指定した名前のプロパティが総称型引数を用いる型である場合に，
-                /// その型の限定名を返します．それ以外の場合は空文字を返します．
-                /// </summary>
-                /// <param name="name"></param>
-                /// <returns></returns>
-                public static String getGenericTypeName( String name )
-                {
-                    return "";
                 }
 
                 /// <summary>
@@ -187,6 +167,9 @@ namespace org
                 /// Consonant Adjustmentを、整数配列で取得します。
                 /// </summary>
                 /// <returns></returns>
+#if JAVA
+                @XmlIgnore
+#endif
                 public List<Integer> getConsonantAdjustmentList()
                 {
 #if !__cplusplus
@@ -211,6 +194,9 @@ namespace org
                 /// Consonant Adjustmentを、整数配列形式で設定します。
                 /// </summary>
                 /// <param name="value"></param>
+#if JAVA
+                @XmlIgnore
+#endif
                 public void setConsonantAdjustmentList( List<Integer> value )
                 {
 #if !__cplusplus

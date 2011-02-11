@@ -12,27 +12,32 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
+
 package org.kbinani.cadencii;
 
 import java.awt.*;
 import java.util.*;
 import org.kbinani.*;
+
 #else
+
 using System;
 using org.kbinani.java.util;
 using org.kbinani.java.awt;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
 #endif
 
     /// <summary>
     /// 増幅器の実装
     /// </summary>
 #if JAVA
-    public class Amplifier extends WaveUnit implements WaveSender, WaveReceiver {
+    public class Amplifier extends WaveUnit implements WaveSender, WaveReceiver
 #else
-    public class Amplifier : WaveUnit, WaveSender, WaveReceiver {
+    public class Amplifier : WaveUnit, WaveSender, WaveReceiver
 #endif
+    {
         private const int _BUFLEN = 1024;
         private double[] mBufferL = new double[_BUFLEN];
         private double[] mBufferR = new double[_BUFLEN];

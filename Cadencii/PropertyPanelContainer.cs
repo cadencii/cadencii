@@ -16,6 +16,7 @@
 package org.kbinani.cadencii;
 
 //INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/PropertyPanelContainer.java
+import javax.swing.*;
 import java.awt.*;
 import org.kbinani.*;
 import org.kbinani.windows.forms.*;

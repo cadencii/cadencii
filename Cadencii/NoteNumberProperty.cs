@@ -13,10 +13,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
+
 package org.kbinani.cadencii;
 
 import org.kbinani.componentmodel.*;
+
 #else
+
 using System;
 using System.ComponentModel;
 
@@ -26,20 +29,14 @@ namespace org.kbinani.cadencii
 #endif
 
 #if JAVA
-    public class NoteNumberProperty implements ITypeConverter
+    @TypeConverterAnnotation( NoteNumberPropertyConverter.class )
+    public class NoteNumberProperty
 #else
     [TypeConverter( typeof( NoteNumberPropertyConverter ) )]
     public class NoteNumberProperty
 #endif
     {
         public int noteNumber = 60;
-
-#if JAVA
-        public TypeConverter getTypeConverter()
-        {
-            return new NoteNumberPropertyConverter();
-        }
-#endif
 
 #if !JAVA
         public override int GetHashCode()

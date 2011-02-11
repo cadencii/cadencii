@@ -33,12 +33,12 @@ namespace org.kbinani.vsq
     /// vsqのメタテキストの中身を処理するためのクラス
     /// </summary>
 #if JAVA
-    public class VsqMetaText implements Cloneable, Serializable {
+    public class VsqMetaText implements Cloneable, Serializable
 #else
     [Serializable]
     public class VsqMetaText : ICloneable
-    {
 #endif
+    {
         public VsqCommon Common;
         public VsqMaster master;
         public VsqMixer mixer;

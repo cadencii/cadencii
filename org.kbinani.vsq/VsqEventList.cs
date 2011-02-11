@@ -16,6 +16,8 @@ package org.kbinani.vsq;
 
 import java.io.*;
 import java.util.*;
+import org.kbinani.xml.*;
+
 #else
 using System;
 using org.kbinani;
@@ -31,11 +33,14 @@ namespace org.kbinani.vsq
     /// 固有ID付きのVsqEventのリストを取り扱う
     /// </summary>
 #if JAVA
-    public class VsqEventList implements Serializable {
+    public class VsqEventList implements Serializable
 #else
     [Serializable]
     public class VsqEventList
+#endif
     {
+#if JAVA
+        @XmlGenericType( VsqEvent.class )
 #endif
         public Vector<VsqEvent> Events;
         private Vector<Integer> m_ids;
@@ -58,33 +63,6 @@ namespace org.kbinani.vsq
         public static String getXmlElementName( String name )
         {
             return name;
-        }
-
-        /// <summary>
-        /// このクラスの指定した名前のプロパティを，XMLシリアライズ時に無視するかどうかを表す
-        /// ブール値を返します．デフォルトの実装では戻り値は全てfalseです．
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public static boolean isXmlIgnored( String name )
-        {
-            return false;
-        }
-
-        /// <summary>
-        /// このクラスの指定した名前のプロパティが総称型引数を用いる型である場合に，
-        /// その型の限定名を返します．それ以外の場合は空文字を返します．
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public static String getGenericTypeName( String name )
-        {
-            if ( name != null ) {
-                if ( name.Equals( "Events" ) ) {
-                    return "org.kbinani.vsq.VsqEvent";
-                }
-            }
-            return "";
         }
 
         public int findIndexFromID( int internal_id )

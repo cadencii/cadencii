@@ -17,6 +17,8 @@ package org.kbinani.vsq;
 import java.io.*;
 import java.util.*;
 import org.kbinani.*;
+import org.kbinani.xml.*;
+
 #else
 using System;
 using org.kbinani;
@@ -29,12 +31,12 @@ namespace org.kbinani.vsq
 #endif
 
 #if JAVA
-    public class UstEvent implements Cloneable, Serializable {
+    public class UstEvent implements Cloneable, Serializable
 #else
     [Serializable]
     public class UstEvent : ICloneable
-    {
 #endif
+    {
         /// <summary>
         /// 音量の最大値
         /// </summary>
@@ -92,6 +94,9 @@ namespace org.kbinani.vsq
         private int mLength = 0;
         private boolean mIsLengthSpec = false;
 
+#if JAVA
+        @XmlGenericType( UstEventProperty.class )
+#endif
         public Vector<UstEventProperty> Properties = new Vector<UstEventProperty>();
 
         public UstEvent()
@@ -737,33 +742,6 @@ namespace org.kbinani.vsq
             else if ( this.getStartPoint() != item.getStartPoint() ) ret = false;
             else if ( this.getVoiceOverlap() != item.getVoiceOverlap() ) ret = false;
             return ret;
-        }
-
-        /// <summary>
-        /// このクラスの指定した名前のプロパティが総称型引数を用いる型である場合に，
-        /// その型の限定名を返します．それ以外の場合は空文字を返します．
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public static String getGenericTypeName( String name )
-        {
-            if ( name != null ) {
-                if ( str.compare( name, "Properties" ) ) {
-                    return "org.kbinani.vsq.UstEventProperty";
-                }
-            }
-            return "";
-        }
-
-        /// <summary>
-        /// このクラスの指定した名前のプロパティを，XMLシリアライズ時に無視するかどうかを表す
-        /// ブール値を返します．デフォルトの実装では戻り値は全てfalseです．
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public static boolean isXmlIgnored( String name )
-        {
-            return false;
         }
 
         /// <summary>

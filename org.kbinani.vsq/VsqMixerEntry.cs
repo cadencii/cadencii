@@ -26,12 +26,12 @@ namespace org.kbinani.vsq
     /// VsqMixerのSlave要素に格納される各エントリ
     /// </summary>
 #if JAVA
-    public class VsqMixerEntry implements Cloneable, Serializable {
+    public class VsqMixerEntry implements Cloneable, Serializable
 #else
     [Serializable]
     public class VsqMixerEntry : ICloneable
-    {
 #endif
+    {
         public int Feder;
         public int Panpot;
         public int Mute;

@@ -16,6 +16,8 @@ package org.kbinani.vsq;
 
 import java.io.*;
 import java.util.*;
+import org.kbinani.xml.*;
+
 #elif __cplusplus
 namespace org { namespace kbinani { namespace vsq {
 #else
@@ -28,19 +30,22 @@ namespace org.kbinani.vsq
 #endif
 
 #if JAVA
-    public class LyricHandle implements Cloneable, Serializable {
+    public class LyricHandle implements Cloneable, Serializable
 #elif __cplusplus
-    class LyricHandle {
+    class LyricHandle
 #else
     [Serializable]
     public class LyricHandle : ICloneable
-    {
 #endif
+    {
         public Lyric L0;
         public int Index;
 #if __cplusplus
         public: vector<Lyric> Trailing;
 #else
+#if JAVA
+        @XmlGenericType( Lyric.class )
+#endif
         public Vector<Lyric> Trailing = new Vector<Lyric>();
 #endif
 
@@ -49,42 +54,6 @@ namespace org.kbinani.vsq
 #if !__cplusplus
             L0 = new Lyric();
 #endif
-        }
-
-        /// <summary>
-        /// このクラスの指定した名前のプロパティが総称型引数を用いる型である場合に，
-        /// その型の限定名を返します．それ以外の場合は空文字を返します．
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public static String getGenericTypeName( String name )
-        {
-#if !__cplusplus
-            if ( name == null ) {
-                return "";
-            }
-#endif
-            String compare = "Trailing";
-#if __cplusplus
-            if( name == compare )
-#else
-            if ( name.Equals( compare ) )
-#endif
- {
-                return "org.kbinani.vsq.Lyric";
-            }
-            return "";
-        }
-
-        /// <summary>
-        /// このクラスの指定した名前のプロパティを，XMLシリアライズ時に無視するかどうかを表す
-        /// ブール値を返します．デフォルトの実装では戻り値は全てfalseです．
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public static boolean isXmlIgnored( String name )
-        {
-            return false;
         }
 
         /// <summary>

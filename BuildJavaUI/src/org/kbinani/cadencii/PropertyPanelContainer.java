@@ -7,8 +7,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BPanel;
 
@@ -20,7 +19,7 @@ public class PropertyPanelContainer extends BPanel {
     private BPanel panelTitle = null;
     private BButton btnClose = null;
     private BButton btnWindow = null;
-    private JPanel panelMain = null;
+    private JScrollPane panelMain = null;
 
     //SECTION-END-FIELD
     /**
@@ -127,12 +126,11 @@ public class PropertyPanelContainer extends BPanel {
     /**
      * This method initializes panelMain	
      * 	
-     * @return javax.swing.JPanel	
+     * @return javax.swing.JScrollPane
      */
-    private JPanel getPanelMain() {
+    private JScrollPane getPanelMain() {
         if (panelMain == null) {
-            panelMain = new JPanel();
-            panelMain.setLayout(new GridBagLayout());
+            panelMain = new JScrollPane();
             panelMain.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         }
         return panelMain;

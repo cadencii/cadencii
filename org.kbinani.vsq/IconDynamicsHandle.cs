@@ -27,12 +27,12 @@ namespace org.kbinani.vsq
     /// 強弱記号設定を表します。
     /// </summary>
 #if JAVA
-    public class IconDynamicsHandle extends IconParameter implements Cloneable, Serializable {
+    public class IconDynamicsHandle extends IconParameter implements Cloneable, Serializable
 #else
     [Serializable]
     public class IconDynamicsHandle : IconParameter, ICloneable
-    {
 #endif
+    {
         /// <summary>
         /// 強弱記号の場合の、IconIDの最初の5文字。
         /// </summary>

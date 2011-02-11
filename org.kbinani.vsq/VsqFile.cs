@@ -18,6 +18,8 @@ package org.kbinani.vsq;
 import java.util.*;
 import java.io.*;
 import org.kbinani.*;
+import org.kbinani.xml.*;
+
 #else
 using System;
 using System.Collections.Generic;
@@ -46,12 +48,21 @@ namespace org.kbinani.vsq
         /// <summary>
         /// トラックのリスト．最初のトラックはMasterTrackであり，通常の音符が格納されるトラックはインデックス1以降となる
         /// </summary>
+#if JAVA
+        @XmlGenericType( VsqTrack.class )
+#endif
         public Vector<VsqTrack> Track;
         /// <summary>
         /// テンポ情報を保持したテーブル
         /// </summary>
+#if JAVA
+        @XmlGenericType( TempoTableEntry.class )
+#endif
         public TempoVector TempoTable;
-        public TimesigVector/*Vector<TimeSigTableEntry>*/ TimesigTable;
+#if JAVA
+        @XmlGenericType( TimeSigTableEntry.class )
+#endif
+        public TimesigVector TimesigTable;
         protected const int m_tpq = 480;
         /// <summary>
         /// 曲の長さを取得します。(クロック(4分音符は480クロック))
@@ -263,37 +274,6 @@ namespace org.kbinani.vsq
                 sout.println( "    #" + i + "; type=" + item.ID.type + "; clock=" + item.Clock + "; length=" + item.ID.getLength() );
             }
 #endif
-        }
-
-        /// <summary>
-        /// このクラスの指定した名前のプロパティが総称型引数を用いる型である場合に，
-        /// その型の限定名を返します．それ以外の場合は空文字を返します．
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public static String getGenericTypeName( String name )
-        {
-            if ( name != null ) {
-                if ( name.Equals( "Track" ) ) {
-                    return "org.kbinani.vsq.VsqTrack";
-                } else if ( name.Equals( "TimesigTable" ) ) {
-                    return "org.kbinani.vsq.TimeSigTableEntry";
-                } else if ( name.Equals( "TempoTable" ) ) {
-                    return "org.kbinani.vsq.TempoTableEntry";
-                }
-            }
-            return "";
-        }
-
-        /// <summary>
-        /// このクラスの指定した名前のプロパティを，XMLシリアライズ時に無視するかどうかを表す
-        /// ブール値を返します．デフォルトの実装では戻り値は全てfalseです．
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public static boolean isXmlIgnored( String name )
-        {
-            return false;
         }
 
         /// <summary>

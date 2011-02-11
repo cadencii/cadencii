@@ -23,12 +23,12 @@ namespace org.kbinani.vsq
 #endif
 
 #if JAVA
-    public class VsqBPPair implements Cloneable, Serializable {
+    public class VsqBPPair implements Cloneable, Serializable
 #else
     [Serializable]
     public struct VsqBPPair
-    {
 #endif
+    {
         public int value;
         public long id;
 

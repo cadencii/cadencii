@@ -33,12 +33,12 @@ namespace org.kbinani.vsq
     /// Stores the data of a vsq track.
     /// </summary>
 #if JAVA
-    public class VsqTrack implements Cloneable, Serializable {
+    public class VsqTrack implements Cloneable, Serializable
 #else
     [Serializable]
     public class VsqTrack : ICloneable
-    {
 #endif
+    {
         public static readonly String[] CURVES = new String[] { 
             "bre", 
             "bri",

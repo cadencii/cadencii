@@ -64,12 +64,12 @@ namespace org.kbinani.vsq
     /// テンポ情報を格納したテーブル．
     /// </summary>
 #if JAVA
-    public class TempoVector extends Vector<TempoTableEntry> implements Serializable {
+    public class TempoVector extends Vector<TempoTableEntry> implements Serializable
 #else
     [Serializable]
     public class TempoVector : Vector<TempoTableEntry>
-    {
 #endif
+    {
         /// <summary>
         /// 4分音符1拍あたりのゲートタイム
         /// </summary>

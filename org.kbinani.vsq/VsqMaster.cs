@@ -31,12 +31,12 @@ namespace org.kbinani.vsq
     /// vsqファイルのメタテキストの[Master]に記録される内容を取り扱う
     /// </summary>
 #if JAVA
-    public class VsqMaster implements Cloneable, Serializable {
+    public class VsqMaster implements Cloneable, Serializable
 #else
     [Serializable]
     public class VsqMaster : ICloneable
-    {
 #endif
+    {
         public int PreMeasure;
 
         public Object clone()

@@ -33,12 +33,12 @@ namespace org.kbinani.vsq
     /// ハンドルを取り扱います。ハンドルにはLyricHandle、VibratoHandle、IconHandleおよびNoteHeadHandleがある
     /// </summary>
 #if JAVA
-    public class VsqHandle implements Serializable {
+    public class VsqHandle implements Serializable
 #else
     [Serializable]
     public class VsqHandle
-    {
 #endif
+    {
         public VsqHandleType m_type;
         public int Index;
         public String IconID = "";

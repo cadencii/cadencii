@@ -1,4 +1,3 @@
-#if !JAVA
 /*
  * AttackVariationConverter.cs
  * Copyright © 2009-2011 kbinani
@@ -12,6 +11,18 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+
+package org.kbinani.cadencii;
+
+import java.util.*;
+import java.io.*;
+import org.kbinani.*;
+import org.kbinani.vsq.*;
+import org.kbinani.componentmodel.*;
+
+#else
+
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
@@ -20,17 +31,24 @@ using org.kbinani;
 using org.kbinani.java.util;
 using org.kbinani.java.io;
 
-namespace org.kbinani.cadencii {
-
+namespace org.kbinani.cadencii
+{
     using boolean = System.Boolean;
+#endif
 
-    public class AttackVariationConverter : TypeConverter {
+#if JAVA
+    public class AttackVariationConverter extends TypeConverter
+#else
+    public class AttackVariationConverter : TypeConverter
+#endif
+    {
+#if !JAVA
         public override bool GetStandardValuesSupported( ITypeDescriptorContext context ) {
-            return true;
+            return isStandardValuesSupported();
         }
 
         public override StandardValuesCollection GetStandardValues( ITypeDescriptorContext context ) {
-            SynthesizerType type = SynthesizerType.VOCALOID2;
+            /*SynthesizerType type = SynthesizerType.VOCALOID2;
             VsqFileEx vsq = AppManager.getVsqFile();
             if ( vsq != null ) {
                 RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
@@ -44,7 +62,8 @@ namespace org.kbinani.cadencii {
                 NoteHeadHandle aconfig = itr.next();
                 list.add( new AttackVariation( aconfig.getDisplayString() ) );
             }
-            return new StandardValuesCollection( list.toArray( new AttackVariation[] { } ) );
+            return new StandardValuesCollection( list.toArray( new AttackVariation[] { } ) );*/
+            return new StandardValuesCollection( getStandardValues() );
         }
 
         public override bool CanConvertTo( ITypeDescriptorContext context, Type destinationType ) {
@@ -56,36 +75,13 @@ namespace org.kbinani.cadencii {
         }
 
         public override Object ConvertTo( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, Object value, Type destinationType ) {
-            if ( destinationType == typeof( String ) && value is AttackVariation ) {
-                return ((AttackVariation)value).mDescription;
-            } else {
-                return base.ConvertTo( context, culture, value, destinationType );
-            }
+            return convertTo( value );
         }
 
         public override Object ConvertFrom( ITypeDescriptorContext context, System.Globalization.CultureInfo culture, Object value ) {
             if ( value is String ) {
-                if ( value.Equals( new AttackVariation().mDescription ) ) {
-                    return new AttackVariation();
-                } else {
-                    SynthesizerType type = SynthesizerType.VOCALOID2;
-                    VsqFileEx vsq = AppManager.getVsqFile();
-                    if ( vsq != null ) {
-                        RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
-                        if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
-                            type = SynthesizerType.VOCALOID1;
-                        }
-                        String svalue = (String)value;
-                        for ( Iterator<NoteHeadHandle> itr = VocaloSysUtil.attackConfigIterator( type ); itr.hasNext(); ) {
-                            NoteHeadHandle aconfig = itr.next();
-                            String display_string = aconfig.getDisplayString();
-                            if ( svalue.Equals( display_string ) ) {
-                                return new AttackVariation( display_string );
-                            }
-                        }
-                    }
-                    return new AttackVariation();
-                }
+                String s = (String)value;
+                return convertFrom( s );
             } else {
                 return base.ConvertFrom( context, culture, value );
             }
@@ -98,7 +94,80 @@ namespace org.kbinani.cadencii {
                 return base.CanConvertFrom( context, sourceType );
             }
         }
+#endif
+
+#if JAVA
+        @Override
+#endif
+        public String convertTo( Object value )
+        {
+            if ( value is AttackVariation ) {
+                return ((AttackVariation)value).mDescription;
+            } else {
+                return base.convertTo( value );
+            }
+        }
+
+#if JAVA
+        @Override
+#endif
+        public AttackVariation convertFrom( String value )
+        {
+            if ( value.Equals( new AttackVariation().mDescription ) ) {
+                return new AttackVariation();
+            } else {
+                SynthesizerType type = SynthesizerType.VOCALOID2;
+                VsqFileEx vsq = AppManager.getVsqFile();
+                if ( vsq != null ) {
+                    RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
+                    if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
+                        type = SynthesizerType.VOCALOID1;
+                    }
+                    String svalue = (String)value;
+                    for ( Iterator<NoteHeadHandle> itr = VocaloSysUtil.attackConfigIterator( type ); itr.hasNext(); ) {
+                        NoteHeadHandle aconfig = itr.next();
+                        String display_string = aconfig.getDisplayString();
+                        if ( svalue.Equals( display_string ) ) {
+                            return new AttackVariation( display_string );
+                        }
+                    }
+                }
+                return new AttackVariation();
+            }
+        }
+
+#if JAVA
+        @Override
+#endif
+        public Vector<Object> getStandardValues()
+        {
+            SynthesizerType type = SynthesizerType.VOCALOID2;
+            VsqFileEx vsq = AppManager.getVsqFile();
+            if ( vsq != null ) {
+                RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
+                if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ){
+                    type = SynthesizerType.VOCALOID1;
+                }
+            }
+            Vector<Object> list = new Vector<Object>();
+            list.add( new AttackVariation() );
+            for ( Iterator<NoteHeadHandle> itr = VocaloSysUtil.attackConfigIterator( type ); itr.hasNext(); ) {
+                NoteHeadHandle aconfig = itr.next();
+                list.add( new AttackVariation( aconfig.getDisplayString() ) );
+            }
+            return list;//new StandardValuesCollection( list.toArray( new AttackVariation[] { } ) );
+        }
+
+#if JAVA
+        @Override
+#endif
+        public boolean isStandardValuesSupported()
+        {
+            return true;
+        }
+
     }
 
+#if !JAVA
 }
 #endif

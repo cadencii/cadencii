@@ -30,14 +30,14 @@ namespace org.kbinani.vsq
     /// 歌手設定を表します。
     /// </summary>
 #if JAVA
-    public class IconHandle implements Cloneable, Serializable{
+    public class IconHandle implements Cloneable, Serializable
 #elif __cplusplus
-    class IconHandle {
+    class IconHandle
 #else
     [Serializable]
     public class IconHandle : ICloneable
-    {
 #endif
+    {
         /// <summary>
         /// キャプション。
         /// </summary>

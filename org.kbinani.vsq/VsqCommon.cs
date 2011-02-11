@@ -31,12 +31,12 @@ namespace org.kbinani.vsq
     /// vsqファイルのメタテキストの[Common]セクションに記録される内容を取り扱う
     /// </summary>
 #if JAVA
-    public class VsqCommon implements Cloneable, Serializable {
+    public class VsqCommon implements Cloneable, Serializable
 #else
     [Serializable]
     public class VsqCommon : ICloneable
-    {
 #endif
+    {
         public String Version;
         public String Name;
         public String Color;

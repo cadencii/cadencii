@@ -27,12 +27,12 @@ namespace org.kbinani.vsq
     /// ビブラートハンドル
     /// </summary>
 #if JAVA
-    public class VibratoHandle extends IconParameter implements Cloneable, Serializable {
+    public class VibratoHandle extends IconParameter implements Cloneable, Serializable
 #else
     [Serializable]
     public class VibratoHandle : IconParameter, ICloneable
-    {
 #endif
+    {
         public int Index;
         public String IconID = "";
         public String IDS = "";

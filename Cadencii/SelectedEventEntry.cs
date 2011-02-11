@@ -18,6 +18,8 @@ import java.util.*;
 import org.kbinani.*;
 import org.kbinani.vsq.*;
 import org.kbinani.componentmodel.*;
+import org.kbinani.xml.*;
+
 #else
 using System;
 using System.ComponentModel;
@@ -60,14 +62,23 @@ namespace org.kbinani.cadencii
         /// <summary>
         /// 選択されたアイテムが存在しているトラック番号。
         /// </summary>
+#if JAVA
+        @XmlIgnore
+#endif
         public int track;
         /// <summary>
         /// 選択されたアイテム。
         /// </summary>
+#if JAVA
+        @XmlIgnore
+#endif
         public VsqEvent original;
         /// <summary>
         /// 選択されたアイテムの、編集後の値。
         /// </summary>
+#if JAVA
+        @XmlIgnore
+#endif
         public VsqEvent editing;
 #if ENABLE_PROPERTY
         private static int lastVibratoLength = 66;
@@ -118,19 +129,6 @@ namespace org.kbinani.cadencii
         }
 #endif
 #endif
-
-        public static boolean isXmlIgnored( String name )
-        {
-            if( str.compare( name, "track" ) ){
-                return true;
-            }else if( str.compare( name, "editing" ) ){
-                return true;
-            }else if( str.compare( name, "original" ) ){
-                return true;
-            }else{
-                return false;
-            }
-        }
 
 #if ENABLE_PROPERTY
         /// <summary>
@@ -319,6 +317,9 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Category( "Lyric" )
+#endif
         public void setPhrase( String value )
         {
             if ( editing.ID.LyricHandle == null ) {
@@ -374,6 +375,9 @@ namespace org.kbinani.cadencii
             }
         }
 
+#if JAVA
+        @Category( "Lyric" )
+#endif
         public String getPhrase()
         {
             if ( editing.ID.LyricHandle != null && editing.ID.LyricHandle.L0 != null ) {
@@ -397,6 +401,9 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Category( "Lyric" )
+#endif
         public void setPhoneticSymbol( String value )
         {
             if ( editing.ID.LyricHandle == null ) {
@@ -408,6 +415,9 @@ namespace org.kbinani.cadencii
             editing.ID.LyricHandle.L0.setPhoneticSymbol( value );
         }
 
+#if JAVA
+        @Category( "Lyric" )
+#endif
         public String getPhoneticSymbol()
         {
             if ( editing.ID.LyricHandle != null && editing.ID.LyricHandle.L0 != null ) {
@@ -431,6 +441,9 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Category( "Lyric" )
+#endif
         public void setCosonantAdjustment( String value )
         {
             if ( editing.ID.LyricHandle == null ) {
@@ -473,6 +486,9 @@ namespace org.kbinani.cadencii
             editing.ID.LyricHandle.L0.setConsonantAdjustment( consonant_adjustment );
         }
 
+#if JAVA
+        @Category( "Lyric" )
+#endif
         public String getCosonantAdjustment()
         {
             if ( editing.ID.LyricHandle != null && editing.ID.LyricHandle.L0 != null ) {
@@ -496,6 +512,9 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Category( "Lyric" )
+#endif
         public void setProtect( BooleanEnum value )
         {
             m_symbol_protected = value;
@@ -508,6 +527,9 @@ namespace org.kbinani.cadencii
             editing.ID.LyricHandle.L0.PhoneticSymbolProtected = (value == BooleanEnum.On) ? true : false;
         }
 
+#if JAVA
+        @Category( "Lyric" )
+#endif
         public BooleanEnum getProtect()
         {
             return m_symbol_protected;
@@ -530,6 +552,9 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Category( "Note Location" )
+#endif
         public void setClock( String value )
         {
             int oldvalue = editing.Clock;
@@ -538,6 +563,9 @@ namespace org.kbinani.cadencii
             m_clock = draft + "";
         }
 
+#if JAVA
+        @Category( "Note Location" )
+#endif
         public String getClock()
         {
             return m_clock;
@@ -558,6 +586,9 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Category( "Note Location" )
+#endif
         public void setMeasure( String value )
         {
             PositionSpec ret = getPosition();
@@ -567,6 +598,9 @@ namespace org.kbinani.cadencii
             m_clock = clock + "";
         }
 
+#if JAVA
+        @Category( "Note Location" )
+#endif
         public String getMeasure()
         {
             return m_measure;
@@ -587,6 +621,9 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Category( "Note Location" )
+#endif
         public void setBeat( String value )
         {
             PositionSpec ret = getPosition();
@@ -596,6 +633,9 @@ namespace org.kbinani.cadencii
             m_clock = clock + "";
         }
 
+#if JAVA
+        @Category( "Note Location" )
+#endif
         public String getBeat()
         {
             return m_beat;
@@ -616,6 +656,9 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Category( "Note Location" )
+#endif
         public void setTick( String value )
         {
             PositionSpec ret = getPosition();
@@ -625,6 +668,9 @@ namespace org.kbinani.cadencii
             m_clock = clock + "";
         }
 
+#if JAVA
+        @Category( "Note Location" )
+#endif
         public String getTick()
         {
             return m_tick;
@@ -647,6 +693,9 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Category( "Note" )
+#endif
         public void setLength( String value )
         {
             int oldvalue = editing.ID.getLength();
@@ -667,6 +716,9 @@ namespace org.kbinani.cadencii
             Utility.editLengthOfVsqEvent( editing, draft, AppManager.vibratoLengthEditingRule );
         }
 
+#if JAVA
+        @Category( "Note" )
+#endif
         public String getLength()
         {
             return m_length;
@@ -687,6 +739,9 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Category( "Note" )
+#endif
         public void setNote( NoteNumberProperty value )
         {
             if ( value.noteNumber < 0 ) {
@@ -699,6 +754,9 @@ namespace org.kbinani.cadencii
             editing.ID.Note = m_note.noteNumber;
         }
 
+#if JAVA
+        @Category( "Note" )
+#endif
         public NoteNumberProperty getNote()
         {
             return m_note;
@@ -721,6 +779,9 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Category( "UTAU" )
+#endif
         public void setPreUtterance( float value )
         {
             if ( editing.UstEvent == null ) {
@@ -729,6 +790,9 @@ namespace org.kbinani.cadencii
             editing.UstEvent.setPreUtterance( value );
         }
 
+#if JAVA
+        @Category( "UTAU" )
+#endif
         public float getPreUtterance()
         {
             if ( editing.UstEvent == null ) {
@@ -752,6 +816,9 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Category( "UTAU" )
+#endif
         public void setOverlap( float value )
         {
             if ( editing.UstEvent == null ) {
@@ -760,6 +827,9 @@ namespace org.kbinani.cadencii
             editing.UstEvent.setVoiceOverlap( value );
         }
 
+#if JAVA
+        @Category( "UTAU" )
+#endif
         public float getOverlap()
         {
             if ( editing.UstEvent == null ) {
@@ -783,6 +853,9 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Category( "UTAU" )
+#endif
         public void setModuration( int value )
         {
             if ( editing.UstEvent == null ) {
@@ -791,6 +864,9 @@ namespace org.kbinani.cadencii
             editing.UstEvent.setModuration( value );
         }
 
+#if JAVA
+        @Category( "UTAU" )
+#endif
         public int getModuration()
         {
             if ( editing.UstEvent == null ) {
@@ -814,6 +890,9 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Category( "UTAU" )
+#endif
         public void setFlags( String value )
         {
             if ( editing.UstEvent == null ) {
@@ -822,6 +901,9 @@ namespace org.kbinani.cadencii
             editing.UstEvent.Flags = value;
         }
 
+#if JAVA
+        @Category( "UTAU" )
+#endif
         public String getFlags()
         {
             if ( editing.UstEvent == null ) {
@@ -845,11 +927,17 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Category( "UTAU" )
+#endif
         public float getStartPoint()
         {
             return getEditingUstEvent().getStartPoint();
         }
 
+#if JAVA
+        @Category( "UTAU" )
+#endif
         public void setStartPoint( float value )
         {
             getEditingUstEvent().setStartPoint( value );
@@ -870,11 +958,17 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Category( "UTAU" )
+#endif
         public int getIntensity()
         {
             return getEditingUstEvent().getIntensity();
         }
 
+#if JAVA
+        @Category( "UTAU" )
+#endif
         public void setIntensity( int value )
         {
             getEditingUstEvent().setIntensity( value );
@@ -897,6 +991,9 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Category( "VOCALOID2" )
+#endif
         public void setAccent( int value )
         {
             int draft = value;
@@ -908,6 +1005,9 @@ namespace org.kbinani.cadencii
             editing.ID.DEMaccent = draft;
         }
 
+#if JAVA
+        @Category( "VOCALOID2" )
+#endif
         public int getAccent()
         {
             return editing.ID.DEMaccent;
@@ -928,6 +1028,9 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Category( "VOCALOID2" )
+#endif
         public void setDecay( int value )
         {
             int draft = value;
@@ -939,6 +1042,9 @@ namespace org.kbinani.cadencii
             editing.ID.DEMdecGainRate = draft;
         }
 
+#if JAVA
+        @Category( "VOCALOID2" )
+#endif
         public int getDecay()
         {
             return editing.ID.DEMdecGainRate;
@@ -959,12 +1065,18 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Category( "VOCALOID2" )
+#endif
         public void setUpPortamento( BooleanEnum value )
         {
             m_portamento_up = value;
             editing.ID.PMbPortamentoUse = (m_portamento_up == BooleanEnum.On ? 1 : 0) + (m_portamento_down == BooleanEnum.On ? 2 : 0);
         }
 
+#if JAVA
+        @Category( "VOCALOID2" )
+#endif
         public BooleanEnum getUpPortamento()
         {
             return m_portamento_up;
@@ -985,12 +1097,18 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Category( "VOCALOID2" )
+#endif
         public void setDownPortamento( BooleanEnum value )
         {
             m_portamento_down = value;
             editing.ID.PMbPortamentoUse = (m_portamento_up == BooleanEnum.On ? 1 : 0) + (m_portamento_down == BooleanEnum.On ? 2 : 0);
         }
 
+#if JAVA
+        @Category( "VOCALOID2" )
+#endif
         public BooleanEnum getDownPortamento()
         {
             return m_portamento_down;
@@ -1011,6 +1129,9 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Category( "VOCALOID2" )
+#endif
         public void setBendDepth( int value )
         {
             int draft = value;
@@ -1022,6 +1143,9 @@ namespace org.kbinani.cadencii
             editing.ID.PMBendDepth = draft;
         }
 
+#if JAVA
+        @Category( "VOCALOID2" )
+#endif
         public int getBendDepth()
         {
             return editing.ID.PMBendDepth;
@@ -1042,6 +1166,9 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Category( "VOCALOID2" )
+#endif
         public void setBendLength( int value )
         {
             int draft = value;
@@ -1053,6 +1180,9 @@ namespace org.kbinani.cadencii
             editing.ID.PMBendLength = draft;
         }
 
+#if JAVA
+        @Category( "VOCALOID2" )
+#endif
         public int getBendLength()
         {
             return editing.ID.PMBendLength;
@@ -1073,6 +1203,9 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Category( "VOCALOID2" )
+#endif
         public void setVelocity( int value )
         {
             int draft = value;
@@ -1084,6 +1217,9 @@ namespace org.kbinani.cadencii
             editing.ID.Dynamics = draft;
         }
 
+#if JAVA
+        @Category( "VOCALOID2" )
+#endif
         public int getVelocity()
         {
             return editing.ID.Dynamics;
@@ -1104,6 +1240,9 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Category( "VOCALOID2" )
+#endif
         public void setpMeanOnsetFirstNote( int value )
         {
             int draft = value;
@@ -1115,6 +1254,9 @@ namespace org.kbinani.cadencii
             editing.ID.pMeanOnsetFirstNote = draft;
         }
 
+#if JAVA
+        @Category( "VOCALOID2" )
+#endif
         public int getpMeanOnsetFirstNote()
         {
             return editing.ID.pMeanOnsetFirstNote;
@@ -1135,6 +1277,9 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Category( "VOCALOID2" )
+#endif
         public void setvMeanNoteTransition( int value )
         {
             int draft = value;
@@ -1146,6 +1291,9 @@ namespace org.kbinani.cadencii
             editing.ID.vMeanNoteTransition = draft;
         }
 
+#if JAVA
+        @Category( "VOCALOID2" )
+#endif
         public int getvMeanNoteTransition()
         {
             return editing.ID.vMeanNoteTransition;
@@ -1166,6 +1314,9 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Category( "VOCALOID2" )
+#endif
         public void setd4mean( int value )
         {
             int draft = value;
@@ -1177,6 +1328,9 @@ namespace org.kbinani.cadencii
             editing.ID.d4mean = draft;
         }
 
+#if JAVA
+        @Category( "VOCALOID2" )
+#endif
         public int getd4mean()
         {
             return editing.ID.d4mean;
@@ -1197,6 +1351,9 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Category( "VOCALOID2" )
+#endif
         public void setpMeanEndingNote( int value )
         {
             int draft = value;
@@ -1208,6 +1365,9 @@ namespace org.kbinani.cadencii
             editing.ID.pMeanEndingNote = draft;
         }
 
+#if JAVA
+        @Category( "VOCALOID2" )
+#endif
         public int getpMeanEndingNote()
         {
             return editing.ID.pMeanEndingNote;
@@ -1230,6 +1390,9 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Category( "VOCALOID1" )
+#endif
         public void setAttack( AttackVariation value )
         {
             m_attack = value;
@@ -1264,6 +1427,9 @@ namespace org.kbinani.cadencii
             }
         }
 
+#if JAVA
+        @Category( "VOCALOID1" )
+#endif
         public AttackVariation getAttack()
         {
             return m_attack;
@@ -1284,6 +1450,9 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Category( "VOCALOID1" )
+#endif
         public void setAttackDepth( int value )
         {
             if ( editing.ID.NoteHeadHandle == null ) {
@@ -1298,6 +1467,9 @@ namespace org.kbinani.cadencii
             editing.ID.NoteHeadHandle.setDepth( draft );
         }
 
+#if JAVA
+        @Category( "VOCALOID1" )
+#endif
         public int getAttackDepth()
         {
             if ( editing.ID.NoteHeadHandle == null ) {
@@ -1321,6 +1493,9 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Category( "VOCALOID1" )
+#endif
         public void setAttackDuration( int value )
         {
             if ( editing.ID.NoteHeadHandle == null ) {
@@ -1335,6 +1510,9 @@ namespace org.kbinani.cadencii
             editing.ID.NoteHeadHandle.setDuration( draft );
         }
 
+#if JAVA
+        @Category( "VOCALOID1" )
+#endif
         public int getAttackDuration()
         {
             if ( editing.ID.NoteHeadHandle == null ) {
@@ -1360,6 +1538,9 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Category( "Vibrato" )
+#endif
         public void setVibrato( VibratoVariation value )
         {
             if ( value.description.Equals( VibratoVariation.empty.description ) ) {
@@ -1413,6 +1594,9 @@ namespace org.kbinani.cadencii
             m_vibrato = value;
         }
 
+#if JAVA
+        @Category( "Vibrato" )
+#endif
         public VibratoVariation getVibrato()
         {
             return m_vibrato;
@@ -1433,6 +1617,9 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Category( "Vibrato" )
+#endif
         public void setVibratoLength( int value )
         {
 #if DEBUG
@@ -1469,6 +1656,9 @@ namespace org.kbinani.cadencii
             }
         }
 
+#if JAVA
+        @Category( "Vibrato" )
+#endif
         public int getVibratoLength()
         {
             if ( editing.ID.VibratoHandle == null ) {
@@ -1494,6 +1684,9 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Category( "AquesTone" )
+#endif
         public void setRelease( int value )
         {
             int r = value;
@@ -1508,6 +1701,9 @@ namespace org.kbinani.cadencii
             editing.Tag = e.Tag;
         }
 
+#if JAVA
+        @Category( "AquesTone" )
+#endif
         public int getRelease()
         {
             VsqEvent e = new VsqEvent();

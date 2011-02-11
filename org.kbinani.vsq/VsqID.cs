@@ -16,6 +16,8 @@ package org.kbinani.vsq;
 
 import java.io.*;
 import org.kbinani.*;
+import org.kbinani.xml.*;
+
 #else
 using System;
 using org.kbinani;
@@ -30,21 +32,26 @@ namespace org.kbinani.vsq
     /// メタテキストに埋め込まれるIDを表すクラス。
     /// </summary>
 #if JAVA
-    public class VsqID implements Cloneable, Serializable {
+    public class VsqID implements Cloneable, Serializable
 #else
     [Serializable]
     public class VsqID : ICloneable
-    {
 #endif
+    {
         /// <summary>
         /// ミリ秒で表した、音符の最大長さ
         /// </summary>
         public const int MAX_NOTE_MILLISEC_LENGTH = 16383;
 #if JAVA
+        @XmlIgnore
         public int value;
+        @XmlIgnore
         public int IconHandle_index;
+        @XmlIgnore
         public int LyricHandle_index;
+        @XmlIgnore
         public int VibratoHandle_index;
+        @XmlIgnore
         public int NoteHeadHandle_index;
 #else
         internal int value;
@@ -98,28 +105,6 @@ namespace org.kbinani.vsq
             }
         }
 #endif
-
-        /// <summary>
-        /// このクラスの指定した名前のプロパティを，XMLシリアライズ時に無視するかどうかを表す
-        /// ブール値を返します．デフォルトの実装では戻り値は全てfalseです．
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public static boolean isXmlIgnored( String name )
-        {
-            if ( name.Equals( "IconHandle_index" ) ) {
-                return true;
-            } else if ( name.Equals( "value" ) ) {
-                return true;
-            } else if ( name.Equals( "LyricHandle_index" ) ) {
-                return true;
-            } else if ( name.Equals( "NoteHeadHandle_index" ) ) {
-                return true;
-            } else if ( name.Equals( "VibratoHandle_index" ) ) {
-                return true;
-            }
-            return false;
-        }
 
         /// <summary>
         /// このクラスの指定した名前のプロパティをXMLシリアライズする際に使用する

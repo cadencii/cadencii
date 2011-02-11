@@ -23,12 +23,12 @@ namespace org.kbinani.vsq
 #endif
 
 #if JAVA
-    public class NoteHeadHandle extends IconParameter implements Cloneable, Serializable {
+    public class NoteHeadHandle extends IconParameter implements Cloneable, Serializable
 #else
     [Serializable]
     public class NoteHeadHandle : IconParameter, ICloneable
-    {
 #endif
+    {
         public int Index;
         public String IconID = "";
         public String IDS = "";

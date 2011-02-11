@@ -1,5 +1,5 @@
 package org.kbinani.componentmodel;
 
-public interface ITypeConverter {
+/*public interface ITypeConverter {
     TypeConverter getTypeConverter();
-}
+}*/

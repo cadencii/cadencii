@@ -30,16 +30,16 @@ namespace org.kbinani.vsq
     using Integer = System.Int32;
 #endif
 
-#if JAVA
-    public class VsqBPList implements Cloneable, Serializable{
-#else
     /// <summary>
     /// コントロールカーブのデータ点リスト
     /// </summary>
+#if JAVA
+    public class VsqBPList implements Cloneable, Serializable
+#else
     [Serializable]
     public class VsqBPList : ICloneable
-    {
 #endif
+    {
         private int[] clocks;
         private VsqBPPair[] items;
         private int length = 0; // clocks, itemsに入っているアイテムの個数

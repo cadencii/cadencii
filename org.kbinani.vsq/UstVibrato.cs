@@ -25,12 +25,12 @@ namespace org.kbinani.vsq
 #endif
 
 #if JAVA
-    public class UstVibrato implements Cloneable, Serializable {
+    public class UstVibrato implements Cloneable, Serializable
 #else
     [Serializable]
     public class UstVibrato : ICloneable
-    {
 #endif
+    {
         /// <summary>
         /// 音符の長さに対する、パーセントで表したビブラートの長さ。
         /// </summary>

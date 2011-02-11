@@ -25,7 +25,7 @@ public class BPropertyGridTest extends JFrame {
     public BPropertyGridTest() {
     	super();
     	initialize();
-    	jPanel.setSelectedObjects( new BPropertyGridTestItem[]{ new BPropertyGridTestItem() } );
+    	jPanel.setSelectedObjects( null );// new BPropertyGridTestItem[]{ new BPropertyGridTestItem() } );
     }
 
     /**

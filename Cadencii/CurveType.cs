@@ -65,12 +65,12 @@ namespace org.kbinani.cadencii
     /// vsqファイルで編集可能なカーブ・プロパティの種類
     /// </summary>
 #if JAVA
-    public class CurveType implements Serializable {
+    public class CurveType implements Serializable
 #else
     [Serializable]
     public struct CurveType : IEquatable<CurveType>, IComparable<CurveType>
-    {
 #endif
+    {
         private String mName;
         private boolean mIsScalar;
         private int mMinimum;

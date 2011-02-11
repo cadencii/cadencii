@@ -28,12 +28,12 @@ namespace org.kbinani.vsq
 #endif
 
 #if JAVA
-    public class VibratoBPList implements Cloneable, Serializable {
+    public class VibratoBPList implements Cloneable, Serializable
 #else
     [Serializable]
     public class VibratoBPList : ICloneable
-    {
 #endif
+    {
         private Vector<VibratoBPPair> m_list;
 
         public VibratoBPList()

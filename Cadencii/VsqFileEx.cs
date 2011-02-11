@@ -12,6 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
+
 package org.kbinani.cadencii;
 
 import java.io.*;
@@ -19,7 +20,9 @@ import java.util.*;
 import org.kbinani.*;
 import org.kbinani.vsq.*;
 import org.kbinani.xml.*;
+
 #else
+
 using System;
 using org.kbinani.vsq;
 using org.kbinani;
@@ -35,12 +38,12 @@ namespace org.kbinani.cadencii
 #endif
 
 #if JAVA
-    public class VsqFileEx extends VsqFile implements Cloneable, ICommandRunnable, Serializable{
+    public class VsqFileEx extends VsqFile implements Cloneable, ICommandRunnable, Serializable
 #else
     [Serializable]
     public class VsqFileEx : VsqFile, ICloneable, ICommandRunnable
-    {
 #endif
+    {
         private static XmlSerializer mVsqSerializer;
 
         public const String TAG_VSQEVENT_AQUESTONE_RELEASE = "org.kbinani.cadencii.AquesToneRelease";
@@ -51,6 +54,9 @@ namespace org.kbinani.cadencii
         public const String TAG_VSQTRACK_RESAMPLER_USED = "org.kbinani.cadencii.ResamplerUsed";
 
         public AttachedCurve AttachedCurves;
+#if JAVA
+        @XmlGenericType( BgmFile.class )
+#endif
         public Vector<BgmFile> BgmFiles = new Vector<BgmFile>();
         /// <summary>
         /// キャッシュ用ディレクトリのパス
@@ -76,26 +82,6 @@ namespace org.kbinani.cadencii
             mVsqSerializer = new XmlSerializer( typeof( VsqFileEx ) );
         }
 #endif
-
-        /// <summary>
-        /// このクラスの指定した名前のプロパティが総称型引数を用いる型である場合に，
-        /// その型の限定名を返します．それ以外の場合は空文字を返します．
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-#if JAVA
-        public static String getGenericTypeName( String name ) {
-#else
-        public new static String getGenericTypeName( String name )
-        {
-#endif
-            if ( name != null ) {
-                if ( name.Equals( "BgmFiles" ) ) {
-                    return "org.kbinani.cadencii.BgmFile";
-                }
-            }
-            return VsqFile.getGenericTypeName( name );
-        }
 
         /// <summary>
         /// 指定したトラックに対して使用する，UTAU互換合成器の番号を取得します

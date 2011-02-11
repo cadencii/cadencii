@@ -12,6 +12,8 @@ import org.kbinani.windows.forms.BMenuBar;
 import org.kbinani.windows.forms.BMenuItem;
 import javax.swing.JButton;
 import java.awt.GridBagConstraints;
+import javax.swing.JScrollPane;
+import javax.swing.BorderFactory;
 
 //SECTION-END-IMPORT
 public class FormNoteProperty extends BDialog {
@@ -22,6 +24,7 @@ public class FormNoteProperty extends BDialog {
     private BMenuBar menuStrip = null;
     private BMenu menuWindow = null;
     private BMenuItem menuClose = null;
+    private JScrollPane jScrollPane = null;
     //SECTION-END-FIELD
     /**
      * This method initializes 
@@ -34,14 +37,7 @@ public class FormNoteProperty extends BDialog {
 
     //SECTION-BEGIN-METHOD
     public void addComponent( Component c ){
-        GridBagConstraints gridBagConstraints = new GridBagConstraints();
-        gridBagConstraints.gridx = 0;
-        gridBagConstraints.fill = GridBagConstraints.BOTH;
-        gridBagConstraints.weightx = 1.0D;
-        gridBagConstraints.weighty = 1.0D;
-        gridBagConstraints.anchor = GridBagConstraints.NORTH;
-        gridBagConstraints.gridy = 0;
-        getPanelMain().add( c, gridBagConstraints);
+        getJScrollPane().setViewportView( c );
     }
     
     /**
@@ -63,8 +59,15 @@ public class FormNoteProperty extends BDialog {
      */
     private JPanel getPanelMain() {
         if (panelMain == null) {
+            GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
+            gridBagConstraints1.fill = GridBagConstraints.BOTH;
+            gridBagConstraints1.gridy = 0;
+            gridBagConstraints1.weightx = 1.0;
+            gridBagConstraints1.weighty = 1.0;
+            gridBagConstraints1.gridx = 0;
             panelMain = new JPanel();
             panelMain.setLayout(new GridBagLayout());
+            panelMain.add(getJScrollPane(), gridBagConstraints1);
         }
         return panelMain;
     }
@@ -108,6 +111,21 @@ public class FormNoteProperty extends BDialog {
             menuClose.setText("Close");
         }
         return menuClose;
+    }
+
+    /**
+     * This method initializes jScrollPane	
+     * 	
+     * @return javax.swing.JScrollPane	
+     */
+    private JScrollPane getJScrollPane() {
+        if (jScrollPane == null) {
+            jScrollPane = new JScrollPane();
+            jScrollPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+            jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+            jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        }
+        return jScrollPane;
     }
 
     //SECTION-END-METHOD

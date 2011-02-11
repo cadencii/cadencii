@@ -28,14 +28,14 @@ namespace org.kbinani.vsq
     /// ゲートタイムと、何らかのパラメータ値とのペアを表します。主にVsqBPListで使用します。
     /// </summary>
 #if JAVA
-    public class BPPair implements Comparable<BPPair>, Serializable{
+    public class BPPair implements Comparable<BPPair>, Serializable
 #elif __cplusplus
-    class BPPair{
+    class BPPair
 #else
     [Serializable]
     public class BPPair : IComparable<BPPair>
-    {
 #endif
+    {
         public int Clock;
         public int Value;
 

@@ -13,10 +13,13 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
+
 package org.kbinani.cadencii;
 
 import org.kbinani.componentmodel.*;
+
 #else
+
 using System;
 using System.ComponentModel;
 
@@ -26,7 +29,8 @@ namespace org.kbinani.cadencii
 #endif
 
 #if JAVA
-    public class VibratoVariation implements ITypeConverter
+    @TypeConverterAnnotation( VibratoVariationConverter.class )
+    public class VibratoVariation
 #else
     [TypeConverter( typeof( VibratoVariationConverter ) )]
     public class VibratoVariation
@@ -45,13 +49,6 @@ namespace org.kbinani.cadencii
         {
             this.description = description;
         }
-
-#if JAVA
-        public TypeConverter getTypeConverter()
-        {
-            return new VibratoVariationConverter();
-        }
-#endif
 
         public boolean equals( Object obj )
         {

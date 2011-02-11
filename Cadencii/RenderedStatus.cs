@@ -17,6 +17,8 @@ package org.kbinani.cadencii;
 import java.util.*;
 import org.kbinani.*;
 import org.kbinani.vsq.*;
+import org.kbinani.xml.*;
+
 #else
 using System;
 using org.kbinani.java.util;
@@ -29,6 +31,9 @@ namespace org.kbinani.cadencii
     public class RenderedStatus
     {
         public VsqTrack track;
+#if JAVA
+        @XmlGenericType( TempoTableEntry.class )
+#endif
         public TempoVector tempo;
         public SequenceConfig config;
 
@@ -52,16 +57,6 @@ namespace org.kbinani.cadencii
             track = new VsqTrack( 0, 0, 0 );
             tempo = new TempoVector();
             config = new SequenceConfig();
-        }
-
-        public static String getGenericTypeName( String name )
-        {
-            if ( name != null ) {
-                if ( str.compare( name, "tempo" ) ) {
-                    return "org.kbinani.vsq.TempoTableEntry";
-                }
-            }
-            return "";
         }
     }
 

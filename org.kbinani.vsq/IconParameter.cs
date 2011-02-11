@@ -32,12 +32,12 @@ namespace org.kbinani.vsq
     /// <see cref="T:org.kbinani.vsq.VibratoHandle"/>
     /// </summary>
 #if JAVA
-    public class IconParameter implements Serializable {
+    public class IconParameter implements Serializable
 #else
     [Serializable]
     public class IconParameter
-    {
 #endif
+    {
         /// <summary>
         /// アイコン設定の種類を表します。
         /// </summary>

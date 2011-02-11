@@ -13,16 +13,18 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
+
 package org.kbinani.cadencii;
 
 import org.kbinani.*;
 import org.kbinani.componentmodel.*;
 import org.kbinani.vsq.*;
+
 #else
+
 using System;
 using System.ComponentModel;
 using System.Globalization;
-
 using org.kbinani;
 using org.kbinani.vsq;
 
@@ -32,7 +34,7 @@ namespace org.kbinani.cadencii
 #endif
 
 #if JAVA
-    public class NoteNumberPropertyConverter extends TypeConverter<NoteNumberProperty, String>
+    public class NoteNumberPropertyConverter extends TypeConverter<NoteNumberProperty>
 #else
     public class NoteNumberPropertyConverter : TypeConverter
 #endif
@@ -78,10 +80,17 @@ namespace org.kbinani.cadencii
         }
 #endif
 
-        public String convertTo( NoteNumberProperty value )
+        public String convertTo( Object value )
         {
-            String ret = getNoteString( value.noteNumber );
-            return ret;
+            if( value == null ){
+                return "";
+            }else if( value is NoteNumberProperty ){
+                NoteNumberProperty nnp = (NoteNumberProperty)value;
+                String ret = getNoteString( nnp.noteNumber );
+                return ret;
+            }else{
+                return "";
+            }
         }
 
         public NoteNumberProperty convertFrom( String value )
@@ -285,7 +294,7 @@ namespace org.kbinani.cadencii
             }
             if ( AppManager.editorConfig != null ) {
                 if ( exp_type == NoteNumberExpressionType.International &&
-                     AppManager.editorConfig.PropertyWindowStatus.LastUsedNoteNumberExpression == NoteNumberExpressionType.Deutsche ) {
+                    AppManager.editorConfig.PropertyWindowStatus.LastUsedNoteNumberExpression == NoteNumberExpressionType.Deutsche ) {
                     // do nothing
                 } else {
                     AppManager.editorConfig.PropertyWindowStatus.LastUsedNoteNumberExpression = exp_type;

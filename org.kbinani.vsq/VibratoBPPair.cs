@@ -23,12 +23,12 @@ namespace org.kbinani.vsq
 #endif
 
 #if JAVA
-    public class VibratoBPPair implements Comparable<VibratoBPPair>, Serializable {
+    public class VibratoBPPair implements Comparable<VibratoBPPair>, Serializable
 #else
     [Serializable]
     public struct VibratoBPPair : IComparable<VibratoBPPair>
-    {
 #endif
+    {
         public float X;
         public int Y;
 

@@ -1,9 +1,14 @@
 import java.awt.Dimension;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
+import java.awt.GridBagLayout;
+import javax.swing.JPanel;
 import org.kbinani.windows.forms.BForm;
-import org.kbinani.windows.forms.BMenu;
+import javax.swing.JComboBox;
+import java.awt.GridBagConstraints;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import javax.swing.JTextField;
 
 
 public class Test extends BForm {
@@ -11,11 +16,36 @@ public class Test extends BForm {
      * 
      */
     private static final long serialVersionUID = 1L;
-    private JMenuBar jJMenuBar = null;
-    private BMenu jMenu = null;
-    private JMenuItem jMenuItem = null;
-    private JMenu jMenu1 = null;
+    private JPanel jPanel = null;
+    private JTextField jTextField = null;
+    /**
+     * This method initializes jTextField	
+     * 	
+     * @return javax.swing.JTextField	
+     */
+    private JTextField getJTextField() {
+        if (jTextField == null) {
+            jTextField = new JTextField();
+            jTextField.addActionListener( new ActionListener(){
 
+                @Override
+                public void actionPerformed(ActionEvent arg0) {
+                    System.out.println( "actionPerformed" );
+                    // TODO Auto-generated method stub
+                    
+                }
+                
+            });
+        }
+        return jTextField;
+    }
+
+    public static void main( String[] args )
+    {
+        Test t = new Test();
+        t.setVisible( true );
+    }
+    
     /**
      * This method initializes 
      * 
@@ -31,61 +61,26 @@ public class Test extends BForm {
      */
     private void initialize() {
         this.setSize(new Dimension(315, 240));
-        this.setJMenuBar(getJJMenuBar());
+        this.setContentPane(getJPanel());
     }
 
     /**
-     * This method initializes jJMenuBar	
+     * This method initializes jPanel	
      * 	
-     * @return javax.swing.JMenuBar	
+     * @return javax.swing.JPanel	
      */
-    private JMenuBar getJJMenuBar() {
-        if (jJMenuBar == null) {
-            jJMenuBar = new JMenuBar();
-            jJMenuBar.add(getJMenu());
-            jJMenuBar.add(getJMenu1());
+    private JPanel getJPanel() {
+        if (jPanel == null) {
+            GridBagConstraints gridBagConstraints = new GridBagConstraints();
+            gridBagConstraints.fill = GridBagConstraints.VERTICAL;
+            gridBagConstraints.gridy = 0;
+            gridBagConstraints.weightx = 1.0;
+            gridBagConstraints.gridx = 0;
+            jPanel = new JPanel();
+            jPanel.setLayout(new GridBagLayout());
+            jPanel.add(getJTextField(), gridBagConstraints);
         }
-        return jJMenuBar;
+        return jPanel;
     }
 
-    /**
-     * This method initializes jMenu	
-     * 	
-     * @return javax.swing.JMenu	
-     */
-    private BMenu getJMenu() {
-        if (jMenu == null) {
-            jMenu = new BMenu();
-            jMenu.setText("File");
-            jMenu.add(getJMenuItem());
-        }
-        return jMenu;
-    }
-
-    /**
-     * This method initializes jMenuItem	
-     * 	
-     * @return javax.swing.JMenuItem	
-     */
-    private JMenuItem getJMenuItem() {
-        if (jMenuItem == null) {
-            jMenuItem = new JMenuItem();
-            jMenuItem.setText("Open");
-        }
-        return jMenuItem;
-    }
-
-    /**
-     * This method initializes jMenu1	
-     * 	
-     * @return javax.swing.JMenu	
-     */
-    private JMenu getJMenu1() {
-        if (jMenu1 == null) {
-            jMenu1 = new JMenu();
-            jMenu1.setText("Edit");
-        }
-        return jMenu1;
-    }
-
-}  //  @jve:decl-index=0:visual-constraint="10,10"
+}  //  @jve:decl-index=0:visual-constraint="63,28"

@@ -59,16 +59,6 @@ namespace org {
                 }
 
                 /// <summary>
-                /// このクラスの指定した名前のプロパティを，XMLシリアライズ時に無視するかどうかを表す
-                /// ブール値を返します．デフォルトの実装では戻り値は全てfalseです．
-                /// </summary>
-                /// <param name="name"></param>
-                /// <returns></returns>
-                public static bool isXmlIgnored( string name ) {
-                    return str.compare( name, "ConsonantAdjustmentList" );
-                }
-
-                /// <summary>
                 /// このクラスの指定した名前のプロパティが総称型引数を用いる型である場合に，
                 /// その型の限定名を返します．それ以外の場合は空文字を返します．
                 /// </summary>
@@ -108,6 +98,9 @@ namespace org {
                 /// Consonant Adjustmentの文字列形式を取得します。
                 /// </summary>
                 /// <returns></returns>
+#if JAVA
+                @XmlIgnore
+#endif
                 public string getConsonantAdjustment() {
                     string ret = "";
                     List<int> arr = getConsonantAdjustmentList();
@@ -174,6 +167,9 @@ namespace org {
                 /// Consonant Adjustmentを、整数配列で取得します。
                 /// </summary>
                 /// <returns></returns>
+#if JAVA
+                @XmlIgnore
+#endif
                 public List<int> getConsonantAdjustmentList() {
 #if !__cplusplus
                     if ( m_consonant_adjustment != null ) {

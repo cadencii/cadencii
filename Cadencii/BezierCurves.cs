@@ -16,6 +16,8 @@ package org.kbinani.cadencii;
 
 import java.util.*;
 import org.kbinani.*;
+import org.kbinani.xml.*;
+
 #else
 using System;
 using org.kbinani.java.util;
@@ -58,30 +60,105 @@ namespace org.kbinani.cadencii {
             CurveType.PIT,
             CurveType.PBS, };
 
+#if JAVA
+        @XmlGenericType( BezierChain.class )
+#endif
         public Vector<BezierChain> Dynamics;
+#if JAVA
+        @XmlGenericType( BezierChain.class )
+#endif
         public Vector<BezierChain> Brethiness;
+#if JAVA
+        @XmlGenericType( BezierChain.class )
+#endif
         public Vector<BezierChain> Brightness;
+#if JAVA
+        @XmlGenericType( BezierChain.class )
+#endif
         public Vector<BezierChain> Clearness;
+#if JAVA
+        @XmlGenericType( BezierChain.class )
+#endif
         public Vector<BezierChain> Opening;
+#if JAVA
+        @XmlGenericType( BezierChain.class )
+#endif
         public Vector<BezierChain> GenderFactor;
+#if JAVA
+        @XmlGenericType( BezierChain.class )
+#endif
         public Vector<BezierChain> PortamentoTiming;
+#if JAVA
+        @XmlGenericType( BezierChain.class )
+#endif
         public Vector<BezierChain> VibratoRate;
+#if JAVA
+        @XmlGenericType( BezierChain.class )
+#endif
         public Vector<BezierChain> VibratoDepth;
+#if JAVA
+        @XmlGenericType( BezierChain.class )
+#endif
         public Vector<BezierChain> Harmonics;
+#if JAVA
+        @XmlGenericType( BezierChain.class )
+#endif
         public Vector<BezierChain> FX2Depth;
+#if JAVA
+        @XmlGenericType( BezierChain.class )
+#endif
         public Vector<BezierChain> Reso1Freq;
+#if JAVA
+        @XmlGenericType( BezierChain.class )
+#endif
         public Vector<BezierChain> Reso1BW;
+#if JAVA
+        @XmlGenericType( BezierChain.class )
+#endif
         public Vector<BezierChain> Reso1Amp;
+#if JAVA
+        @XmlGenericType( BezierChain.class )
+#endif
         public Vector<BezierChain> Reso2Freq;
+#if JAVA
+        @XmlGenericType( BezierChain.class )
+#endif
         public Vector<BezierChain> Reso2BW;
+#if JAVA
+        @XmlGenericType( BezierChain.class )
+#endif
         public Vector<BezierChain> Reso2Amp;
+#if JAVA
+        @XmlGenericType( BezierChain.class )
+#endif
         public Vector<BezierChain> Reso3Freq;
+#if JAVA
+        @XmlGenericType( BezierChain.class )
+#endif
         public Vector<BezierChain> Reso3BW;
+#if JAVA
+        @XmlGenericType( BezierChain.class )
+#endif
         public Vector<BezierChain> Reso3Amp;
+#if JAVA
+        @XmlGenericType( BezierChain.class )
+#endif
         public Vector<BezierChain> Reso4Freq;
+#if JAVA
+        @XmlGenericType( BezierChain.class )
+#endif
         public Vector<BezierChain> Reso4BW;
+#if JAVA
+        @XmlGenericType( BezierChain.class )
+#endif
         public Vector<BezierChain> Reso4Amp;
+#if JAVA
+        @XmlGenericType( BezierChain.class )
+#endif
         public Vector<BezierChain> PitchBend;
+#if JAVA
+        @XmlGenericType( BezierChain.class )
+#endif
         public Vector<BezierChain> PitchBendSensitivity;
 
         public BezierCurves()
@@ -111,21 +188,6 @@ namespace org.kbinani.cadencii {
             Reso4Amp = new Vector<BezierChain>();
             PitchBend = new Vector<BezierChain>();
             PitchBendSensitivity = new Vector<BezierChain>();
-        }
-
-        /// <summary>
-        /// このクラスの指定した名前のプロパティが総称型引数を用いる型である場合に，
-        /// その型の限定名を返します．それ以外の場合は空文字を返します．
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public static String getGenericTypeName( String name )
-        {
-            if ( name != null ) {
-                // 手抜き実装
-                return "org.kbinani.cadencii.BezierChain";
-            }
-            return "";
         }
 
         public BezierChain getBezierChain( CurveType curve_type, int chain_id )

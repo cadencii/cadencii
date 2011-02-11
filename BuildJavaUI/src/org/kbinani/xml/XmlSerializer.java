@@ -6,8 +6,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.AbstractList;
 import java.util.Vector;
 import javax.xml.parsers.DocumentBuilder;
@@ -40,20 +38,19 @@ class TestXmlSerializer
 
 /**
  * .NETのSystem.Xml.Serialization.XmlSerializerと同じ書式で入出力するためのXMLシリアライザ．<br>
- * シリアライズしたいクラスには，以下のメソッドを実装しておく必要があります．<br>
- * <dl>
- *   <dt>getXmlElementNameメソッド</dt>
- *   <dd>フィールド名やgetter/setter名からXMLのノード名を調べる</dd>
- *   <dt>isXmlIgnoredメソッド</dt>
- *   <dd>アイテムをXMLに出力するかどうかを決める</dd>
- *   <dt>getGenericTypeNameメソッド</dt>
- *   <dd>アイテムが総称型を含むクラスの場合に，その総称型名を調べる</dd>
- * </dl>
+ * Vectorなどの型引数をとる型の場合，型引数の型を特定するためのアノテーションを追加しなければなりません．<br>
+ * 例えば以下の例ではlistフィールドはInteger型のVectorであることを示すために
+ * XmlGenericType( Integer.class )が追加されています．
+ * また，XMLの要素名にプロパティ名以外のものを使いたい場合，@XmlElementNameアノテーションを追加します．
+ * 以下の例では，valueをValueに，listをListに変更しています
  * <pre>
  *  public class Test2{
+    @XmlElementName( "Value" )
     public float value = 1.0f;
+    private int m_a = 2;
     private boolean m_b = true;
-    private int m_i = 2;
+    @XmlElementName( "List" )
+    @XmlGenericType( Integer.class )
     public Vector<Integer> list = new Vector<Integer>();
     
     public boolean isHoge(){
@@ -63,40 +60,19 @@ class TestXmlSerializer
     public void setHoge( boolean value ){
         m_b = value;
     }
-    
-    public int getInteger(){
-        return m_i;
-    }
-    
-    public void setInteger( int value ){
-        m_i = value;
-    }
-    
-    public static String getXmlElementName( String name ){
-        if( name.equals( "value" ) ){
-            return "Value";
-        }else if( name.equals( "list" ) ){
-            return "List";
-        }
-        return name;
-    }
 
-    public static boolean isXmlIgnored( String name ){
-        if( name.equals( "Integer" ) ){
-            return true;
-        }
-        return false;
+    @XmlIgnore
+    public int getA(){
+        return m_a;
     }
-
-    public static String getGenericTypeName( String name ){
-        if( name.equals( "list" ) ){
-            return "java.lang.Integer";
-        }
-        return "";
+    
+    public void setA( int value ){
+        m_a = value;
     }
 }
  * </pre>
  * このように実装しておくと，だいたい以下のようなXMLの入出力が可能になります．
+ * この例では，プロパティAはXmlIgnoreあのテーションがついているためXMLには現れないようになっています．
  * <pre>
 &lt;Test2&gt;
     &lt;Value&gt;1.0&lt;/Value&gt;
@@ -164,91 +140,22 @@ public class XmlSerializer{
      * @return 検査対象の型の，指定したプロパティの型の型引数の型を表すClass<?>
      */
     public static Class<?> getGenericType( Class<?> cls, String property_name ){
-        for( Method m : cls.getMethods() ){
-            int modifier = m.getModifiers();
-            if( Modifier.isPublic( modifier ) && 
-                Modifier.isStatic( modifier ) &&
-                m.getName().equals( "getGenericTypeName" ) &&
-                m.getReturnType().equals( String.class ) ){
-                Class<?>[] param_types = m.getParameterTypes();
-                if( param_types.length == 1 &&
-                    param_types[0].equals( String.class ) ){
-                    String cls_name = null;
-                    try{
-                        cls_name = (String)m.invoke( null, property_name );
-                        Class<?> ret = Class.forName( cls_name );
-                        return ret;
-                    }catch( Exception ex ){
-                        System.err.println( "XmlSerializer#getComponentType; ex=" + ex + "; cls_name=" + cls_name + "; property_name=" + property_name );
-                        ex.printStackTrace();
-                    }
+        XmlMember xm = XmlMember.extract( cls, property_name );
+        if( xm != null ){
+            XmlGenericType gt = xm.getGetterAnnotation( XmlGenericType.class );
+            if( gt != null ){
+                return gt.value();
+            }else{
+                gt = xm.getSetterAnnotation( XmlGenericType.class );
+                if( gt != null ){
+                    return gt.value();
                 }
             }
         }
         return null;
     }
 
-    /**
-     * このクラスの指定した名前のプロパティをXMLシリアライズする際に使用する
-     * 要素名を取得します．
-     * @param cls 検査対象のクラス
-     * @param property_name 検査対象のプロパティ名
-     * @return
-     */
-    public static String getXmlElementName( Class<?> cls, String property_name ){
-        for( Method m : cls.getMethods() ){
-            int modifier = m.getModifiers();
-            if( Modifier.isPublic( modifier ) && 
-                Modifier.isStatic( modifier ) &&
-                m.getName().equals( "getXmlElementName" ) &&
-                m.getReturnType().equals( String.class ) ){
-                Class<?>[] param_types = m.getParameterTypes();
-                if( param_types.length == 1 &&
-                    param_types[0].equals( String.class ) ){
-                    try{
-                        String element_name = (String)m.invoke( null, property_name );
-                        return element_name;
-                    }catch( Exception ex ){
-                        System.err.println( "XmlSerializer#getXmlElementName; ex=" + ex );
-                        ex.printStackTrace();
-                    }
-                }
-            }
-        }
-        return property_name;
-    }
-
-    /**
-     * このクラスの指定した名前のプロパティを，XMLシリアライズ時に無視するかどうかを表す
-     * ブール値を返します．デフォルトの実装では戻り値は全てfalseです．
-     * @param cls 検査対象のクラス
-     * @param property_name 検査対象のプロパティ名
-     * @return
-     */
-    public static boolean isXmlIgnored( Class<?> cls, String property_name ){
-        for( Method m : cls.getMethods() ){
-            int modifier = m.getModifiers();
-            if( Modifier.isPublic( modifier ) && 
-                Modifier.isStatic( modifier ) &&
-                m.getName().equals( "isXmlIgnored" ) &&
-                m.getReturnType().equals( Boolean.TYPE ) ){
-                Class<?>[] param_types = m.getParameterTypes();
-                if( param_types.length == 1 &&
-                    param_types[0].equals( String.class ) ){
-                    try{
-                        Boolean ret = (Boolean)m.invoke( null, property_name );
-                        return ret.booleanValue();
-                    }catch( Exception ex ){
-                        System.err.println( "XmlSerializer#isXmlIgnored; ex=" + ex );
-                        ex.printStackTrace();
-                    }
-                }
-            }
-        }
-        return false;
-    }
-    
-    private Object parseNode( Class t, Class<?> parent_class, Node node )
+    private Object parseNode( Class<?> t, Class<?> parent_class, Node node )
         throws Exception
     {
         NodeList childs = node.getChildNodes();
@@ -334,7 +241,7 @@ public class XmlSerializer{
                         "XmlSerializer#parseNode; error; " + 
                         "cannot specify generic type of property named '" + 
                         node.getNodeName() + "' in class '" + parent_class + "'.\n" +
-                        "please implement 'static String' method named 'getGenericTypeName( String property_name )'" );
+                        "please add @XmlGenericType annotation" );
                 }
                 Vector<Object> vec = new Vector<Object>();
                 for( int i = 0; i < numChild; i++ ){
@@ -374,7 +281,7 @@ public class XmlSerializer{
                     for( int i = 0; i < length; i++ ){
                         abst_list.add( vec.get( i ) );
                     }
-                    return ret;
+                    return abst_list;
                 }
             }catch( Exception ex ){
                 System.err.println( "XmlSerializer.parseNode; ex=" + ex );
@@ -395,7 +302,7 @@ public class XmlSerializer{
             if( c.getNodeType() == Node.ELEMENT_NODE ) {
                 Element f = (Element)c;
                 for( XmlMember xm : members ){
-                    if( f.getTagName().equals( xm.getName() ) ) {
+                    if( f.getTagName().equals( xm.getXmlName() ) ) {
                         xm.set( obj, parseNode( xm.getType(), t, c ) );
                         break;
                     }
@@ -427,7 +334,7 @@ public class XmlSerializer{
         transformer.transform( new DOMSource( m_document ), new StreamResult( stream ) ); 
     }
 
-    private void parseFieldAndProperty( Class t, Object obj, Element el )
+    private void parseFieldAndProperty( Class<?> t, Object obj, Element el )
         throws IllegalAccessException
     {
         if( obj == null ){
@@ -435,7 +342,7 @@ public class XmlSerializer{
         }
         XmlMember[] members = XmlMember.extractMembers( t );
         for( XmlMember xm : members ){
-            String name = xm.getName();
+            String name = xm.getXmlName();
             Element el2 = m_document.createElement( name );
             printItemRecurse( xm.getType(), xm.get( obj ), el2 );
             el.appendChild( el2 );
@@ -472,7 +379,7 @@ public class XmlSerializer{
         return false;
     }
     
-    private void printItemRecurse( Class t, Object obj, Element parent ) throws IllegalAccessException{
+    private void printItemRecurse( Class<?> t, Object obj, Element parent ) throws IllegalAccessException{
         try{
             if ( !tryWriteValueType( t, obj, parent ) ){
                 if( t.isArray() || t.equals( Vector.class ) || isInterfaceDeclared( t, AbstractList.class ) ){
@@ -513,7 +420,6 @@ public class XmlSerializer{
                             }
                         }
                     }
-                    java.awt.Point p;
                 }else if( t.equals( java.awt.Rectangle.class ) ){
                     // 特例．ここで処理しないと，stack overflowになる
                     Element e_x = m_document.createElement( "X" );
@@ -607,7 +513,7 @@ public class XmlSerializer{
         }
     }
     
-    private boolean tryWriteValueType( Class t, Object obj, Element element ){
+    private boolean tryWriteValueType( Class<?> t, Object obj, Element element ){
         if( t.equals( Boolean.class ) || t.equals( Boolean.TYPE ) ){
             element.appendChild( m_document.createTextNode( (Boolean)obj + "" ) );
             return true;

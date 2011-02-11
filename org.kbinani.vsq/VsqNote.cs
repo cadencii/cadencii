@@ -27,12 +27,12 @@ namespace org.kbinani.vsq
     /// 音階を表現するためのクラス
     /// </summary>
 #if JAVA
-    public class VsqNote implements Serializable {
+    public class VsqNote implements Serializable
 #else
     [Serializable]
     public class VsqNote
-    {
 #endif
+    {
         /// <summary>
         /// このインスタンスが表す音階のノート値
         /// </summary>

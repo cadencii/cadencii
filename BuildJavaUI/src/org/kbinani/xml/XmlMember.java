@@ -1,14 +1,17 @@
 package org.kbinani.xml;
 
-import java.util.*;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.lang.reflect.*;
-import org.kbinani.PortUtil;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Vector;
 
-public class XmlMember{
+public class XmlMember
+{
     /**
      * スーパークラスに対する再帰的なメンバー検索を行わないクラスのリスト
      */
@@ -19,18 +22,77 @@ public class XmlMember{
     private Method m_setter = null;
     private Field m_field = null;
     private Class<?> m_type = null;
+    private String m_xmlname;
     
     private XmlMember(){
     }
     
+    /**
+     * このプロパティの，xml上でのエレメント名を取得します
+     * @return このプロパティのxmlでのエレメント名
+     */
+    public String getXmlName()
+    {
+        return m_xmlname;
+    }
+    
+    /**
+     * プロパティの名前を取得します
+     * @return このプロパティの名前
+     */
     public String getName(){
         return m_name;
     }
-    
+
+    /**
+     * このプロパティの型を取得します
+     * @return このプロパティの型
+     */
     public Class<?> getType(){
         return m_type;
     }
-    
+
+    /**
+     * getterメソッドまたはフィールドのアノテーションを取得します
+     * @param annotation 取得するアノテーションの型
+     * @return アノテーションが見つかればアノテーションのインスタンス，見つからなければnull
+     */
+    public <T extends Annotation> T getGetterAnnotation( Class<T> annotation )
+    {
+        T ret = null;
+        if( m_field != null ){
+            ret = m_field.getAnnotation( annotation );
+        }else{
+            if( m_getter != null ){
+                ret = m_getter.getAnnotation( annotation );
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * setterメソッド，またはフィールドのアノテーションを取得します
+     * @param annotation 取得するアノテーションの型
+     * @return アノテーションが見つかればアノテーションのインスタンス，見つからなければnull
+     */
+    public <T extends Annotation> T getSetterAnnotation( Class<T> annotation )
+    {
+        T ret = null;
+        if( m_field != null ){
+            ret = m_field.getAnnotation( annotation );
+        }else{
+            if( m_setter != null ){
+                ret = m_setter.getAnnotation( annotation );
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * 指定した型から，プロパティー一覧を抽出します
+     * @param t 抽出対象のクラス
+     * @return 指定したクラスに含まれるプロパティの一覧
+     */
     public static XmlMember[] extractMembers( Class<?> t ){
         Vector<XmlMember> members = new Vector<XmlMember>();
     
@@ -86,21 +148,30 @@ public class XmlMember{
         }
     
         for( String name : props ){
-            boolean ignore = XmlSerializer.isXmlIgnored( t, name );
-            if( ignore ){
+            XmlMember xm = extract( t, name );
+            if( xm == null ){
                 continue;
             }
-            String xmlname = XmlSerializer.getXmlElementName( t, name );
-            XmlMember xm = extract( t, name );
-            if( xm != null ){
-                xm.m_name = xmlname;
-                members.add( xm );
+            XmlIgnore xi = xm.getGetterAnnotation( XmlIgnore.class );
+            if( xi != null ){
+                continue;
             }
+            xi = xm.getSetterAnnotation( XmlIgnore.class );
+            if( xi != null ){
+                continue;
+            }
+            members.add( xm );
         }
     
         return members.toArray( new XmlMember[]{} );
     }
-    
+
+    /**
+     * 指定した型から，指定した名前のプロパティを抽出します．該当するプロパティがなければnullを返します．
+     * @param cls 抽出対象のクラス
+     * @param property_name 抽出するプロパティの名前
+     * @return プロパティが見つかればそのプロパティを表現するXmlMemberクラスのインスタンス，見つからなければnull
+     */
     public static XmlMember extract( Class<?> cls, String property_name ){
         for( Field f : cls.getDeclaredFields() ){
             int m = f.getModifiers();
@@ -111,10 +182,20 @@ public class XmlMember{
             if( name.equals( property_name ) ){
                 XmlMember xm = new XmlMember();
                 xm.m_name = property_name;
+                xm.m_xmlname = property_name;
                 xm.m_field = f;
                 xm.m_getter = null;
                 xm.m_setter = null;
                 xm.m_type = f.getType();
+                XmlElementName en = xm.getGetterAnnotation( XmlElementName.class );
+                if( en != null ){
+                    xm.m_xmlname = en.value();
+                }else{
+                    en = xm.getSetterAnnotation( XmlElementName.class );
+                    if( en != null ){
+                        xm.m_xmlname = en.value();
+                    }
+                }
                 return xm;
             }
         }
@@ -209,10 +290,20 @@ public class XmlMember{
         if( getter != null && setter != null ){
             XmlMember xm = new XmlMember();
             xm.m_name = property_name;
+            xm.m_xmlname = property_name;
             xm.m_field = null;
             xm.m_getter = getter;
             xm.m_setter = setter;
             xm.m_type = prop_type;
+            XmlElementName en = xm.getGetterAnnotation( XmlElementName.class );
+            if( en != null ){
+                xm.m_xmlname = en.value();
+            }else{
+                en = xm.getSetterAnnotation( XmlElementName.class );
+                if( en != null ){
+                    xm.m_xmlname = en.value();
+                }
+            }
             return xm;
         }else{
             return null;

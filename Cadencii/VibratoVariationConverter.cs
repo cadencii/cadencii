@@ -13,13 +13,16 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
+
 package org.kbinani.cadencii;
 
 import java.util.*;
 import org.kbinani.*;
 import org.kbinani.componentmodel.*;
 import org.kbinani.vsq.*;
+
 #else
+
 using System;
 using System.ComponentModel;
 using org.kbinani.java.util;
@@ -31,7 +34,7 @@ namespace org.kbinani.cadencii
 #endif
 
 #if JAVA
-    public class VibratoVariationConverter extends TypeConverter<VibratoVariation, String>
+    public class VibratoVariationConverter extends TypeConverter<VibratoVariation>
 #else
     public class VibratoVariationConverter : TypeConverter
 #endif
@@ -43,6 +46,9 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Override
+#endif
         public boolean isStandardValuesSupported()
         {
             return true;
@@ -55,6 +61,9 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Override
+#endif
         public Vector<VibratoVariation> getStandardValues()
         {
             // ビブラート種類の候補値を列挙
@@ -114,9 +123,17 @@ namespace org.kbinani.cadencii
         }
 #endif
 
-        public String convertTo( VibratoVariation value )
+#if JAVA
+        @Override
+#endif
+        public String convertTo( Object value )
         {
-            return value.description;
+            if( value == null ){
+                return "";
+            }else{
+                VibratoVariation vv = (VibratoVariation)value;
+                return vv.description;
+            }
         }
 
 #if !JAVA
@@ -130,6 +147,9 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if JAVA
+        @Override
+#endif
         public VibratoVariation convertFrom( String value )
         {
             if ( value.Equals( VibratoVariation.empty.description ) ) {

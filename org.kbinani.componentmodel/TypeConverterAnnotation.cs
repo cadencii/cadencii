@@ -1,5 +1,5 @@
 ﻿/*
- * PropertyDescriptor.cs
+ * TypeConverterAnnotation.cs
  * Copyright © 2011 kbinani
  *
  * This file is part of org.kbinani.componentmodel.
@@ -12,5 +12,5 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-//INCLUDE ../BuildJavaUI/src/org/kbinani/componentmodel/PropertyDescriptor.java
+//INCLUDE ../BuildJavaUI/src/org/kbinani/componentmodel/TypeConverterAnnotation.java
 #endif

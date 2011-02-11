@@ -12,20 +12,29 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
+
 package org.kbinani.cadencii;
+
+import org.kbinani.componentmodel.*;
+
 #else
+
 using System;
 using System.ComponentModel;
 using System.Drawing.Design;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using boolean = System.Boolean;
 #endif
 
-#if !JAVA
+#if JAVA
+    @TypeConverterAnnotation( AttackVariationConverter.class )
+#else
     [TypeConverter( typeof( AttackVariationConverter ) )]
 #endif
-    public class AttackVariation {
+    public class AttackVariation
+    {
         public String mDescription = "";
 
         public AttackVariation() {
@@ -37,11 +46,7 @@ namespace org.kbinani.cadencii {
         }
 
         public boolean equals( Object obj ) {
-#if JAVA
-            if( obj != null && obj.getClass() == AttackVariation.class ){
-#else
             if ( obj != null && obj is AttackVariation ) {
-#endif
                 return ((AttackVariation)obj).mDescription.Equals( mDescription );
             } else {
                 return base.Equals( obj );

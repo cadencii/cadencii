@@ -17,6 +17,8 @@ package org.kbinani.vsq;
 import java.util.*;
 import java.io.*;
 import org.kbinani.*;
+import org.kbinani.xml.*;
+
 #else
 using System;
 using org.kbinani;
@@ -35,35 +37,11 @@ namespace org.kbinani.vsq
     public class UstPortamento : ICloneable
 #endif
     {
+#if JAVA
+        @XmlGenericType( UstPortamentoPoint.class )
+#endif
         public Vector<UstPortamentoPoint> Points = new Vector<UstPortamentoPoint>();
         public int Start;
-
-        /// <summary>
-        /// このクラスの指定した名前のプロパティが総称型引数を用いる型である場合に，
-        /// その型の限定名を返します．それ以外の場合は空文字を返します．
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public static String getGenericTypeName( String name )
-        {
-            if ( name != null ) {
-                if ( str.compare( name, "Points" ) ) {
-                    return "org.kbinani.vsq.UstPortamentoPoint";
-                }
-            }
-            return "";
-        }
-
-        /// <summary>
-        /// このクラスの指定した名前のプロパティを，XMLシリアライズ時に無視するかどうかを表す
-        /// ブール値を返します．デフォルトの実装では戻り値は全てfalseです．
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public static boolean isXmlIgnored( String name )
-        {
-            return false;
-        }
 
         /// <summary>
         /// このクラスの指定した名前のプロパティをXMLシリアライズする際に使用する

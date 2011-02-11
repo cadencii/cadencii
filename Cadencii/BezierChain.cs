@@ -18,42 +18,34 @@ import java.awt.*;
 import java.util.*;
 import java.io.*;
 import org.kbinani.*;
+import org.kbinani.xml.*;
+
 #else
 using System;
 using System.Runtime.Serialization;
 using org.kbinani.java.awt;
 using org.kbinani.java.util;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using boolean = System.Boolean;
 #endif
 
 #if JAVA
-    public class BezierChain implements Cloneable{
+    public class BezierChain implements Cloneable, Serializable
 #else
     [Serializable]
-    public class BezierChain : IDisposable, ICloneable {
+    public class BezierChain : IDisposable, ICloneable
+#endif
+    {
+#if JAVA
+        @XmlGenericType( BezierPoint.class )
 #endif
         public Vector<BezierPoint> points;
         public double Default;
         public int id;
         private Color mColor;
         const double EPSILON = 1e-9;
-
-        /// <summary>
-        /// このクラスの指定した名前のプロパティが総称型引数を用いる型である場合に，
-        /// その型の限定名を返します．それ以外の場合は空文字を返します．
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public static String getGenericTypeName( String name ) {
-            if ( name != null ) {
-                if ( name.Equals( "points" ) ) {
-                    return "org.kbinani.cadencii.BezierPoint";
-                }
-            }
-            return "";
-        }
 
         /// <summary>
         /// このベジエ曲線の開始位置を取得します。データ点が1つも無い場合はdouble.NaNを返します

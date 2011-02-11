@@ -12,17 +12,22 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
+
 package org.kbinani.cadencii;
 
 import java.util.*;
 import org.kbinani.*;
+import org.kbinani.xml.*;
+
 #else
+
 using System;
 using org.kbinani;
 using org.kbinani.java.util;
 using org.kbinani.java.io;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
 #endif
 
 #if JAVA
@@ -46,27 +51,15 @@ namespace org.kbinani.cadencii {
         }
 #endif
 
+#if JAVA
+        @XmlGenericType( BezierCurves.class )
+#endif
         public Vector<BezierCurves> getCurves() {
             return mCurves;
         }
 
         public void setCurves( Vector<BezierCurves> value ) {
             mCurves = value;
-        }
-
-        /// <summary>
-        /// このクラスの指定した名前のプロパティが総称型引数を用いる型である場合に，
-        /// その型の限定名を返します．それ以外の場合は空文字を返します．
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public static String getGenericTypeName( String name ) {
-            if ( name != null ) {
-                if ( name.Equals( "Curves" ) ) {
-                    return "org.kbinani.cadencii.BezierCurves";
-                }
-            }
-            return "";
         }
 
         public BezierCurves get( int index ) {

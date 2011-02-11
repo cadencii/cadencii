@@ -12,14 +12,21 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
+
 package org.kbinani.cadencii;
+
+import java.io.*;
+import org.kbinani.xml.*;
+
 #else
+
 using System;
 using System.Drawing;
 using System.Xml.Serialization;
 using System.ComponentModel;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii
+{
     using boolean = System.Boolean;
 #endif
 
@@ -27,16 +34,21 @@ namespace org.kbinani.cadencii {
     /// ベジエ曲線を構成するデータ点。
     /// </summary>
 #if JAVA
-    public class BezierPoint implements Comparable<BezierPoint>, Cloneable {
+    public class BezierPoint implements Comparable<BezierPoint>, Cloneable, Serializable
 #else
     [Serializable]
     public class BezierPoint : IComparable<BezierPoint>, ICloneable {
 #endif
-#if !JAVA
+    {
+#if JAVA
+        @XmlIgnore
+#else
         [XmlIgnore]
 #endif
         public PointD controlLeft;
-#if !JAVA
+#if JAVA
+        @XmlIgnore
+#else
         [XmlIgnore]
 #endif
         public PointD controlRight;
@@ -49,29 +61,16 @@ namespace org.kbinani.cadencii {
         private BezierControlType mTypeLeft;
         private BezierControlType mTypeRight;
 
-        /// <summary>
-        /// このクラスの指定した名前のプロパティを，XMLシリアライズ時に無視するかどうかを表す
-        /// ブール値を返します．デフォルトの実装では戻り値は全てfalseです．
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public static boolean isXmlIgnored( String name ) {
-            if ( name != null ) {
-                if ( name.Equals( "ID" ) ) {
-                    return true;
-                } else if ( name.Equals( "controlLeft" ) ) {
-                    return true;
-                } else if ( name.Equals( "controlRight" ) ) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
+#if JAVA
+        @XmlIgnore
+#endif
         public int getID() {
             return mID;
         }
 
+#if JAVA
+        @XmlIgnore
+#endif
         public void setID( int value ) {
             mID = value;
         }
