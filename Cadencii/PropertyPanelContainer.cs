@@ -68,17 +68,33 @@ namespace org.kbinani.cadencii
         }
 #endif
 
+#if !JAVA
         public void panelTitle_MouseDoubleClick( Object sender, BMouseEventArgs e )
         {
-            invokeStateChangeRequiredEvent( PanelState.Window );
+            handleRestoreWindow();
         }
+#endif
 
+#if !JAVA
         public void btnClose_Click( Object sender, EventArgs e )
+        {
+            handleClose();
+        }
+#endif
+
+#if !JAVA
+        public void btnWindow_Click( Object sender, EventArgs e )
+        {
+            handleRestoreWindow();
+        }
+#endif
+
+        private void handleClose()
         {
             invokeStateChangeRequiredEvent( PanelState.Hidden );
         }
 
-        public void btnWindow_Click( Object sender, EventArgs e )
+        private void handleRestoreWindow()
         {
             invokeStateChangeRequiredEvent( PanelState.Window );
         }
@@ -120,16 +136,18 @@ namespace org.kbinani.cadencii
         {
 #if !JAVA
             this.panelMain.SizeChanged += new BEventHandler( panelMain_SizeChanged );
-#endif
             this.btnClose.Click += new BEventHandler( btnClose_Click );
             this.btnWindow.Click += new BEventHandler( btnWindow_Click );
             this.panelTitle.MouseDoubleClick += new BMouseEventHandler( panelTitle_MouseDoubleClick );
+#endif
         }
 
         private void setResources()
         {
+#if !JAVA
             this.btnClose.setIcon( new ImageIcon( Resources.get_cross_small() ) );
             this.btnWindow.setIcon( new ImageIcon( Resources.get_chevron_small_collapse() ) );
+#endif
         }
 
 #if JAVA

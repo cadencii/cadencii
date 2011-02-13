@@ -45,6 +45,22 @@ namespace org.kbinani.windows.forms
             m_is_modal = is_modal;
         }
 
+        #region WindowStateChanged event
+        // root implementation: WindowStateChanged is in BForm
+        public event EventHandler WindowStateChanged;
+        protected System.Windows.Forms.FormWindowState mWindowState = System.Windows.Forms.FormWindowState.Normal;
+        protected override void OnSizeChanged( EventArgs e )
+        {
+            base.OnSizeChanged( e );
+            if ( mWindowState != this.WindowState ) {
+                if ( WindowStateChanged != null ) {
+                    WindowStateChanged.Invoke( this, new EventArgs() );
+                }
+            }
+            mWindowState = this.WindowState;
+        }
+        #endregion
+
         public virtual void setVisible( bool value )
         {
             if ( value ) {

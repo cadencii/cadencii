@@ -36,6 +36,23 @@ namespace org.kbinani.windows.forms {
             base.Close();
         }
 
+        // root implementation: WindowStateChanged
+        #region WindowStateChanged event
+        // root implementation: WindowStateChanged is in BForm
+        public event EventHandler WindowStateChanged;
+        protected System.Windows.Forms.FormWindowState mWindowState = System.Windows.Forms.FormWindowState.Normal;
+        protected override void OnSizeChanged( EventArgs e )
+        {
+            base.OnSizeChanged( e );
+            if ( mWindowState != this.WindowState ) {
+                if ( WindowStateChanged != null ) {
+                    WindowStateChanged.Invoke( this, new EventArgs() );
+                }
+            }
+            mWindowState = this.WindowState;
+        }
+        #endregion
+
         public org.kbinani.java.awt.Dimension getClientSize() {
             System.Drawing.Size s = base.Size;
             return new org.kbinani.java.awt.Dimension( s.Width, s.Height );

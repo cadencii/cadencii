@@ -12,6 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
+
 package org.kbinani.cadencii;
 
 //INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/Cadencii/FormNoteProperty.java
@@ -20,8 +21,11 @@ import javax.swing.*;
 import org.kbinani.*;
 import org.kbinani.apputil.*;
 import org.kbinani.windows.forms.*;
+
 #else
+
 using System;
+using org.kbinani.javax.swing;
 using org.kbinani.apputil;
 using org.kbinani;
 using org.kbinani.windows.forms;

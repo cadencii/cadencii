@@ -1058,6 +1058,7 @@ namespace org.kbinani.cadencii
 
 #if ENABLE_PROPERTY
             AppManager.propertyWindow.setBounds( a.x, a.y, rc.width, rc.height );
+            AppManager.propertyWindow.WindowStateChanged += new BEventHandler( propertyWindow_WindowStateChanged );
             AppManager.propertyWindow.LocationChanged += new BEventHandler( propertyWindow_LocationOrSizeChanged );
             AppManager.propertyWindow.SizeChanged += new BEventHandler( propertyWindow_LocationOrSizeChanged );
             AppManager.propertyWindow.FormClosing += new BFormClosingEventHandler( propertyWindow_FormClosing );
@@ -10584,14 +10585,32 @@ namespace org.kbinani.cadencii
 #endif
 
 #if ENABLE_PROPERTY
-        public void propertyWindow_LocationOrSizeChanged( Object sender, EventArgs e )
+        public void propertyWindow_WindowStateChanged( Object sender, BEventArgs e )
         {
+#if DEBUG
+            sout.println( "FormMain#propertyWindow_WindowStateChanged" );
+#endif
             if ( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Window ) {
                 if ( AppManager.propertyWindow.getExtendedState() == BForm.ICONIFIED ) {
                     updatePropertyPanelState( PanelState.Docked );
+#if JAVA
+                    AppManager.propertyWindow.formClosingEvent.remove( new BFormClosingEventHandler( this, "propertyWindow_FormClosing" ) );
                     AppManager.propertyWindow.close();
-                    //AppManager.propertyWindow.setVisible( false );
-                } else {
+                    AppManager.propertyWindow.formClosingEvent.add( new BFormClosingEventHandler( this, "propertyWindow_FormClosing" ) );
+#else
+                    AppManager.propertyWindow.setVisible( false );
+#endif
+                }
+            }
+        }
+
+        public void propertyWindow_LocationOrSizeChanged( Object sender, EventArgs e )
+        {
+#if DEBUG
+            sout.println( "FormMain#propertyWindow_LocationOrSizeChanged" );
+#endif
+            if ( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Window ) {
+                if ( AppManager.propertyWindow.getExtendedState() != BForm.ICONIFIED ) {
                     Point parent = this.getLocation();
                     Point proeprty = AppManager.propertyWindow.getLocation();
                     AppManager.editorConfig.PropertyWindowStatus.Bounds = 
