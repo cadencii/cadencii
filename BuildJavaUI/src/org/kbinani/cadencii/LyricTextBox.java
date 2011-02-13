@@ -137,9 +137,9 @@ public class LyricTextBox extends JWindow
 
     /* REGION java.awt.Component */
     /* root implementation of java.awt.Component is in BForm.cs(java) */
-    public BEvent<BKeyEventHandler> keyUpEvent = new BEvent<BKeyEventHandler>();
-    public BEvent<BKeyEventHandler> keyDownEvent = new BEvent<BKeyEventHandler>();
-    public BEvent<BKeyPressEventHandler> keyPressEvent = new BEvent<BKeyPressEventHandler>();
+    public final BEvent<BKeyEventHandler> keyUpEvent = new BEvent<BKeyEventHandler>();
+    public final BEvent<BKeyEventHandler> keyDownEvent = new BEvent<BKeyEventHandler>();
+    public final BEvent<BKeyPressEventHandler> keyPressEvent = new BEvent<BKeyPressEventHandler>();
 
     public void keyPressed( KeyEvent e0 ){
         try{

@@ -1,5 +1,7 @@
 import java.awt.Dimension;
 import java.awt.GridBagLayout;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
 import javax.swing.JPanel;
 import org.kbinani.windows.forms.BForm;
 import javax.swing.JComboBox;
@@ -40,8 +42,14 @@ public class Test extends BForm {
         return jTextField;
     }
 
-    public static void main( String[] args )
+    public static void main( String[] args ) throws Exception
     {
+        String script = "display dialog \"持ち物がありません\" buttons {\"OK\"} default button \"OK\"";
+        
+        ScriptEngineManager mgr = new ScriptEngineManager();
+        ScriptEngine engine = mgr.getEngineByName("AppleScript");
+        engine.eval(script);
+
         Test t = new Test();
         t.setVisible( true );
     }

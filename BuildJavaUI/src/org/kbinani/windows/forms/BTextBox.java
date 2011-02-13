@@ -24,7 +24,7 @@ public class BTextBox extends JTextField
     
     /* root impl of TextChanged event */
     // root impl of TextChanged event is in BTextBox
-    public BEvent<BEventHandler> textChangedEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> textChangedEvent = new BEvent<BEventHandler>();
     public void changedUpdate( DocumentEvent e ){
         updates( e );
     }
@@ -83,10 +83,10 @@ public class BTextBox extends JTextField
     /* END REGION */
     
     // root impl of KeyListener is in BButton
-    public BEvent<BPreviewKeyDownEventHandler> previewKeyDownEvent = new BEvent<BPreviewKeyDownEventHandler>();
-    public BEvent<BKeyEventHandler> keyDownEvent = new BEvent<BKeyEventHandler>();
-    public BEvent<BKeyEventHandler> keyUpEvent = new BEvent<BKeyEventHandler>();
-    public BEvent<BKeyPressEventHandler> keyPressEvent = new BEvent<BKeyPressEventHandler>();
+    public final BEvent<BPreviewKeyDownEventHandler> previewKeyDownEvent = new BEvent<BPreviewKeyDownEventHandler>();
+    public final BEvent<BKeyEventHandler> keyDownEvent = new BEvent<BKeyEventHandler>();
+    public final BEvent<BKeyEventHandler> keyUpEvent = new BEvent<BKeyEventHandler>();
+    public final BEvent<BKeyPressEventHandler> keyPressEvent = new BEvent<BKeyPressEventHandler>();
     public void keyPressed( KeyEvent e ) {
         try{
             previewKeyDownEvent.raise( this, new BPreviewKeyDownEventArgs( e ) );

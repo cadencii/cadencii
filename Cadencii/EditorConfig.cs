@@ -984,23 +984,6 @@ namespace org.kbinani.cadencii
             return ClockResolutionUtility.getValue( ControlCurveResolution );
         }
 
-        public BKeys[] getShortcutKeyFor( BMenuItem menu_item )
-        {
-            String name = menu_item.getName();
-            Vector<BKeys> ret = new Vector<BKeys>();
-            for ( Iterator<ValuePairOfStringArrayOfKeys> itr = ShortcutKeys.iterator(); itr.hasNext(); ) {
-                ValuePairOfStringArrayOfKeys item = itr.next();
-                if ( name.Equals( item.Key ) ) {
-                    for ( int i = 0; i < item.Value.Length; i++ ) {
-                        BKeys k = item.Value[i];
-                        ret.add( k );
-                    }
-                    return ret.toArray( new BKeys[] { } );
-                }
-            }
-            return ret.toArray( new BKeys[] { } );
-        }
-
         public TreeMap<String, BKeys[]> getShortcutKeysDictionary( Vector<ValuePairOfStringArrayOfKeys> defs )
         {
             TreeMap<String, BKeys[]> ret = new TreeMap<String, BKeys[]>();

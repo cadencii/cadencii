@@ -17,12 +17,12 @@ public class BMenuBar extends JMenuBar
     }
     
     // root impl of Mouse* event is in BButton
-    public BEvent<BMouseEventHandler> mouseClickEvent = new BEvent<BMouseEventHandler>();
-    public BEvent<BMouseEventHandler> mouseDoubleClickEvent = new BEvent<BMouseEventHandler>();
-    public BEvent<BMouseEventHandler> mouseDownEvent = new BEvent<BMouseEventHandler>();
-    public BEvent<BMouseEventHandler> mouseUpEvent = new BEvent<BMouseEventHandler>();
-    public BEvent<BEventHandler> mouseEnterEvent = new BEvent<BEventHandler>();
-    public BEvent<BEventHandler> mouseLeaveEvent = new BEvent<BEventHandler>();
+    public final BEvent<BMouseEventHandler> mouseClickEvent = new BEvent<BMouseEventHandler>();
+    public final BEvent<BMouseEventHandler> mouseDoubleClickEvent = new BEvent<BMouseEventHandler>();
+    public final BEvent<BMouseEventHandler> mouseDownEvent = new BEvent<BMouseEventHandler>();
+    public final BEvent<BMouseEventHandler> mouseUpEvent = new BEvent<BMouseEventHandler>();
+    public final BEvent<BEventHandler> mouseEnterEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> mouseLeaveEvent = new BEvent<BEventHandler>();
     public void mouseClicked( MouseEvent e ){
         try{
             mouseClickEvent.raise( this, BMouseEventArgs.fromMouseEvent( e ) );

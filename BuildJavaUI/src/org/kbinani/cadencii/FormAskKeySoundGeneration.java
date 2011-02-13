@@ -9,7 +9,6 @@ import javax.swing.JPanel;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BCheckBox;
 import org.kbinani.windows.forms.BDialog;
-import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BLabel;
 
 //SECTION-END-IMPORT

@@ -16,6 +16,7 @@ package org.kbinani.cadencii;
 
 //INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/Cadencii/FormNoteProperty.java
 
+import javax.swing.*;
 import org.kbinani.*;
 import org.kbinani.apputil.*;
 import org.kbinani.windows.forms.*;
@@ -66,14 +67,9 @@ namespace org.kbinani.cadencii
             setTitle( _( "Note Property" ) );
         }
 
-        public BKeys[] getFormCloseShortcutKey()
+        public void applyShortcut( KeyStroke value )
         {
-            return BKeysUtility.getBKeysFromKeyStroke( menuClose.getAccelerator() );
-        }
-
-        public void setFormCloseShortcutKey( BKeys[] value )
-        {
-            menuClose.setAccelerator( BKeysUtility.getKeyStrokeFromBKeys( value ) );
+            menuClose.setAccelerator( value );
         }
         #endregion
 
@@ -86,6 +82,7 @@ namespace org.kbinani.cadencii
         private void registerEventHandlers()
         {
             menuClose.Click += new BEventHandler( menuClose_Click );
+            this.Load += new BEventHandler( FormNoteProperty_Load );
         }
 
         private void setResources()
@@ -94,6 +91,11 @@ namespace org.kbinani.cadencii
         #endregion
 
         #region event handlers
+        public void FormNoteProperty_Load( Object sender, EventArgs e )
+        {
+            setAlwaysOnTop( true );
+        }
+        
         public void menuClose_Click( Object sender, BEventArgs e )
         {
             close();

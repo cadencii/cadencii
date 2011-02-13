@@ -1,19 +1,19 @@
 ﻿package org.kbinani.cadencii;
 
 //SECTION-BEGIN-IMPORT
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.JPanel;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BDialog;
-import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BTextArea;
-import java.awt.Dimension;
 
 //SECTION-END-IMPORT
-public class FormCompileResult extends BDialog {
+public class FormCompileResult extends BDialog
+{
     //SECTION-BEGIN-FIELD
 
     private static final long serialVersionUID = 1L;

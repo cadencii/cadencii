@@ -41,7 +41,7 @@ public class BListBox extends JList
 
     /* root impl of SelectedIndexChanged event */
     // root impl of SelectedIndexChanged event is in BListBox
-    public BEvent<BEventHandler> selectedIndexChangedEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> selectedIndexChangedEvent = new BEvent<BEventHandler>();
     public void valueChanged(ListSelectionEvent e) {
         try{
             selectedIndexChangedEvent.raise( this, new BEventArgs() );

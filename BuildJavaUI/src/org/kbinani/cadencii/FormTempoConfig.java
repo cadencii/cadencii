@@ -8,7 +8,6 @@ import java.awt.Insets;
 import javax.swing.JPanel;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BDialog;
-import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BGroupBox;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BNumericUpDown;

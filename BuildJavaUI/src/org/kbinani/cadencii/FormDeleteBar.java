@@ -9,12 +9,12 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BDialog;
-import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BNumericUpDown;
 
 //SECTION-END-IMPORT
-public class FormDeleteBar extends BDialog {
+public class FormDeleteBar extends BDialog
+{
     //SECTION-BEGIN-FIELD
 
     private static final long serialVersionUID = 1L;

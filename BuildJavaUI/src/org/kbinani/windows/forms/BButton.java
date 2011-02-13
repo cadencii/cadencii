@@ -65,7 +65,7 @@ public class BButton extends JButton
 
     /* root impl of MouseWheel event */
     // root impl of MouseWheel event is in BButton
-    public BEvent<BMouseEventHandler> mouseWheelEvent = new BEvent<BMouseEventHandler>();
+    public final BEvent<BMouseEventHandler> mouseWheelEvent = new BEvent<BMouseEventHandler>();
     public void mouseWheelMoved( MouseWheelEvent e ){
         BMouseButtons btn = BMouseButtons.Middle;
         switch( e.getButton() ){
@@ -93,7 +93,7 @@ public class BButton extends JButton
     
     /* root impl of Paint event */
     // root impl of Paint event is in BButton
-    public BEvent<BPaintEventHandler> paintEvent = new BEvent<BPaintEventHandler>();
+    public final BEvent<BPaintEventHandler> paintEvent = new BEvent<BPaintEventHandler>();
     public void paint( Graphics g ){
         super.paint( g );
         BPaintEventArgs e = new BPaintEventArgs( g );
@@ -106,7 +106,7 @@ public class BButton extends JButton
     
     /* root impl of Click event */
     // root impl of Click event is in BButton
-    public BEvent<BEventHandler> clickEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> clickEvent = new BEvent<BEventHandler>();
     public void actionPerformed( ActionEvent e ){
         try{
             clickEvent.raise( this, new BEventArgs() );
@@ -117,12 +117,12 @@ public class BButton extends JButton
     
     /* root impl of MouseListener */
     // root impl of MouseListener is in BButton
-    public BEvent<BMouseEventHandler> mouseClickEvent = new BEvent<BMouseEventHandler>();
-    public BEvent<BMouseEventHandler> mouseDoubleClickEvent = new BEvent<BMouseEventHandler>();
-    public BEvent<BMouseEventHandler> mouseDownEvent = new BEvent<BMouseEventHandler>();
-    public BEvent<BMouseEventHandler> mouseUpEvent = new BEvent<BMouseEventHandler>();
-    public BEvent<BEventHandler> mouseEnterEvent = new BEvent<BEventHandler>();
-    public BEvent<BEventHandler> mouseLeaveEvent = new BEvent<BEventHandler>();
+    public final BEvent<BMouseEventHandler> mouseClickEvent = new BEvent<BMouseEventHandler>();
+    public final BEvent<BMouseEventHandler> mouseDoubleClickEvent = new BEvent<BMouseEventHandler>();
+    public final BEvent<BMouseEventHandler> mouseDownEvent = new BEvent<BMouseEventHandler>();
+    public final BEvent<BMouseEventHandler> mouseUpEvent = new BEvent<BMouseEventHandler>();
+    public final BEvent<BEventHandler> mouseEnterEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> mouseLeaveEvent = new BEvent<BEventHandler>();
     public void mouseClicked( MouseEvent e ){
         try{
             mouseClickEvent.raise( this, BMouseEventArgs.fromMouseEvent( e ) );
@@ -164,7 +164,7 @@ public class BButton extends JButton
 
     /* root impl of MouseMotionListener */
     // root impl of MouseMotionListener is in BButton
-    public BEvent<BMouseEventHandler> mouseMoveEvent = new BEvent<BMouseEventHandler>();
+    public final BEvent<BMouseEventHandler> mouseMoveEvent = new BEvent<BMouseEventHandler>();
     public void mouseDragged( MouseEvent e ){
         try{
             mouseMoveEvent.raise( this, BMouseEventArgs.fromMouseEvent( e ) );
@@ -182,8 +182,8 @@ public class BButton extends JButton
 
     /* root impl of FocusListener */
     // root impl of FocusListener is in BButton
-    public BEvent<BEventHandler> enterEvent = new BEvent<BEventHandler>();
-    public BEvent<BEventHandler> leaveEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> enterEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> leaveEvent = new BEvent<BEventHandler>();
     public void focusGained(FocusEvent e) {
         try{
             enterEvent.raise( this, new BEventArgs() );
@@ -201,10 +201,10 @@ public class BButton extends JButton
 
     /* root impl of KeyListener */
     // root impl of KeyListener is in BButton
-    public BEvent<BPreviewKeyDownEventHandler> previewKeyDownEvent = new BEvent<BPreviewKeyDownEventHandler>();
-    public BEvent<BKeyEventHandler> keyDownEvent = new BEvent<BKeyEventHandler>();
-    public BEvent<BKeyEventHandler> keyUpEvent = new BEvent<BKeyEventHandler>();
-    public BEvent<BKeyPressEventHandler> keyPressEvent = new BEvent<BKeyPressEventHandler>();
+    public final BEvent<BPreviewKeyDownEventHandler> previewKeyDownEvent = new BEvent<BPreviewKeyDownEventHandler>();
+    public final BEvent<BKeyEventHandler> keyDownEvent = new BEvent<BKeyEventHandler>();
+    public final BEvent<BKeyEventHandler> keyUpEvent = new BEvent<BKeyEventHandler>();
+    public final BEvent<BKeyPressEventHandler> keyPressEvent = new BEvent<BKeyPressEventHandler>();
     public void keyPressed( KeyEvent e ) {
         try{
             previewKeyDownEvent.raise( this, new BPreviewKeyDownEventArgs( e ) );
@@ -231,10 +231,10 @@ public class BButton extends JButton
 
     /* root impl of ComponentListener */
     // root impl of ComponentListener is in BButton
-    public BEvent<BEventHandler> visibleChangedEvent = new BEvent<BEventHandler>();
-    public BEvent<BEventHandler> resizeEvent = new BEvent<BEventHandler>();
-    public BEvent<BEventHandler> sizeChangedEvent = new BEvent<BEventHandler>();
-    public BEvent<BEventHandler> locationChangedEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> visibleChangedEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> resizeEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> sizeChangedEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> locationChangedEvent = new BEvent<BEventHandler>();
     public void componentHidden(ComponentEvent e) {
         try{
             visibleChangedEvent.raise( this, new BEventArgs() );

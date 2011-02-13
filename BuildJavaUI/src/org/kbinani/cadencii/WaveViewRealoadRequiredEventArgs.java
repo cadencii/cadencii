@@ -1,7 +1,5 @@
 package org.kbinani.cadencii;
 
-import org.kbinani.BEventHandler;
-
 public class WaveViewRealoadRequiredEventArgs
 {
     public int track;

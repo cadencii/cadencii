@@ -9,7 +9,7 @@ import org.kbinani.BEventHandler;
 
 public class BToolStripButton extends JToggleButton implements ActionListener{
     private static final long serialVersionUID = -9098464491775550703L;
-    public BEvent<BEventHandler> clickEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> clickEvent = new BEvent<BEventHandler>();
     private Object tag;
     private boolean checkOnClick = true;
     

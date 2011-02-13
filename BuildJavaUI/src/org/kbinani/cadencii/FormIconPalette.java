@@ -2,18 +2,16 @@
 
 //SECTION-BEGIN-IMPORT
 import java.awt.Dimension;
-import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import javax.swing.JPanel;
-import org.kbinani.windows.forms.BCheckBox;
 import org.kbinani.windows.forms.BDialog;
-import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BMenu;
 import org.kbinani.windows.forms.BMenuBar;
 import org.kbinani.windows.forms.BMenuItem;
 
 //SECTION-END-IMPORT
-public class FormIconPalette extends BDialog {
+public class FormIconPalette extends BDialog
+{
 //SECTION-BEGIN-FIELD
     private static final long serialVersionUID = 1L;
     private BMenuBar myMenuBar = null;

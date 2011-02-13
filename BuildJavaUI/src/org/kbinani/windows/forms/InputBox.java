@@ -5,14 +5,13 @@ import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-//SECTION-END-IMPORT
 
+//SECTION-END-IMPORT
 public class InputBox extends BDialog
 {
     //SECTION-BEGIN-FIELD
-
+    private static final long serialVersionUID = -8016706120038301899L;
     private JPanel jPanel = null;
     private BLabel lblMessage = null;
     private BTextBox txtInput = null;
@@ -142,129 +141,3 @@ public class InputBox extends BDialog
     
     //SECTION-END-METHOD
 }  //  @jve:decl-index=0:visual-constraint="10,2"
-
-class _InputBox extends BDialog {
-    //private BLabel lblMessage;
-    //private BButton btnCancel;
-    //private BTextBox txtInput;
-    //private BButton btnOk;
-
-    private JLabel jLabel = null;
-    /**
-     * This method initializes 
-     * 
-     */
-    public _InputBox() {
-    	super();
-    	initialize();
-    }
-    /**
-     * This method initializes this
-     * 
-     */
-    private void initialize() {
-       jLabel = new JLabel();
-        jLabel.setText("JLabel");
-        this.setSize(new Dimension(280, 124));
-        this.setContentPane(jLabel);
-    		
-    }
-
-/*    private void initializeComponent(){
-        txtInput = new BTextBox();
-        btnOk = new BButton();
-        lblMessage = new BLabel();
-        btnCancel = new BButton();
-        // 
-        // txtInput
-        // 
-        // 
-        // btnOk
-        // 
-        this.btnOk.setText( "OK" );
-        this.btnOk.clickEvent.add( new BEventHandler( this, "btnOk_Click" ) );
-        // 
-        // lblMessage
-        // 
-        // 
-        // btnCancel
-        // 
-        this.btnCancel.setText( "Cancel" );
-        //this.btnCancel.setVisible( false );
-        // 
-        // InputBox
-        // 
-        GridBagLayout gridbag = new GridBagLayout();
-        GridBagConstraints c = new GridBagConstraints();
-        setLayout( gridbag );
-        // 1段目
-        JPanel jp1_1 = new JPanel();
-        gridbag.setConstraints( jp1_1, c );
-        add( jp1_1 );
-
-        c.gridwidth = 2;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        gridbag.setConstraints( lblMessage, c );
-        add( lblMessage );
-        
-        JPanel jp1_2 = new JPanel();
-        c.gridwidth = GridBagConstraints.REMAINDER;
-        c.fill = GridBagConstraints.NONE;
-        gridbag.setConstraints( jp1_2, c );
-        add( jp1_2 );
-
-        // 2段目
-        JPanel jp2_1 = new JPanel();
-        c.gridwidth = 1;
-        gridbag.setConstraints( jp2_1, c );
-        add( jp2_1 );
-        
-        c.gridwidth = 2;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.weightx = 1.0;
-        gridbag.setConstraints( txtInput, c );
-        add( txtInput );
-        
-        JPanel jp2_2 = new JPanel();
-        c.gridwidth = GridBagConstraints.REMAINDER;
-        c.fill = GridBagConstraints.NONE;
-        c.weightx = 0.0;
-        gridbag.setConstraints( jp2_2, c );
-        add( jp2_2 );
-
-        // 3段目
-        JPanel jp3 = new JPanel();
-        c.gridwidth = GridBagConstraints.REMAINDER;
-        gridbag.setConstraints( jp3, c );
-        add( jp3 );
-
-        // 4段目
-        JPanel jp4_1 = new JPanel();
-        c.gridwidth = 2;
-        gridbag.setConstraints( jp4_1, c );
-        add( jp4_1 );
-        
-        c.gridwidth = 1;
-        c.anchor = GridBagConstraints.EAST;
-        gridbag.setConstraints( btnOk, c );
-        add( btnOk );
-        
-        JPanel jp4_2 = new JPanel();
-        c.gridwidth = GridBagConstraints.REMAINDER;
-        c.anchor = GridBagConstraints.CENTER;
-        gridbag.setConstraints( jp4_2, c );
-        add( jp4_2 );
-
-        // 5段目
-        JPanel jp5 = new JPanel();
-        c.gridwidth = GridBagConstraints.REMAINDER;
-        c.gridheight = GridBagConstraints.REMAINDER;
-        c.fill = GridBagConstraints.BOTH;
-        gridbag.setConstraints( jp5, c );
-        add( jp5 );
-
-        this.setTitle( "InputBox" );
-        this.setSize( 339, 110 );
-    }*/
-}  //  @jve:decl-index=0:visual-constraint="10,10"
-

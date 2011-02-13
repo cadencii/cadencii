@@ -1,20 +1,19 @@
 ﻿package org.kbinani.cadencii;
 
 //SECTION-BEGIN-IMPORT
-import org.kbinani.windows.forms.BDialog;
-import org.kbinani.windows.forms.BForm;
-import org.kbinani.windows.forms.BGroupBox;
-import org.kbinani.windows.forms.BNumericUpDown;
 import java.awt.Dimension;
-import javax.swing.JPanel;
-import java.awt.GridBagLayout;
-import javax.swing.JLabel;
 import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.Insets;
-import javax.swing.JComboBox;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import org.kbinani.windows.forms.BButton;
+import org.kbinani.windows.forms.BDialog;
+import org.kbinani.windows.forms.BGroupBox;
+import org.kbinani.windows.forms.BNumericUpDown;
 
 //SECTION-END-IMPORT
 public class FormMidiConfig extends BDialog {

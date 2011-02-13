@@ -9,8 +9,8 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.border.TitledBorder;
 import org.kbinani.windows.forms.BButton;
@@ -19,15 +19,12 @@ import org.kbinani.windows.forms.BComboBox;
 import org.kbinani.windows.forms.BDialog;
 import org.kbinani.windows.forms.BGroupBox;
 import org.kbinani.windows.forms.BLabel;
-import org.kbinani.windows.forms.BListBox;
 import org.kbinani.windows.forms.BListView;
 import org.kbinani.windows.forms.BNumericUpDown;
 import org.kbinani.windows.forms.BPanel;
 import org.kbinani.windows.forms.BRadioButton;
 import org.kbinani.windows.forms.BTextBox;
 import org.kbinani.windows.forms.RadioButtonManager;
-import javax.swing.JScrollPane;
-import javax.swing.border.EtchedBorder;
 
 //SECTION-END-IMPORT
 public class Preference extends BDialog {

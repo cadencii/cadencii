@@ -11,7 +11,6 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BDialog;
-import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BGroupBox;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BListBox;

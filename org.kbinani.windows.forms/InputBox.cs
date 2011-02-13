@@ -13,15 +13,19 @@
  */
 #if JAVA
 package org.kbinani.windows.forms;
+
 //INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/windows/forms/InputBox.java
 
 import org.kbinani.*;
+
 #else
+
 using System;
 using System.Windows.Forms;
 using org.kbinani.windows.forms;
 
-namespace org.kbinani.windows.forms {
+namespace org.kbinani.windows.forms
+{
     using BEventArgs = System.EventArgs;
     using BEventHandler = System.EventHandler;
 #endif

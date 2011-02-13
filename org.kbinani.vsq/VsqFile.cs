@@ -2101,7 +2101,11 @@ namespace org.kbinani.vsq
                         local_numerator = m_list.get( i ).Numerator;
                         local_clock = m_list.get( i ).Clock;
                         int local_bar_count = m_list.get( i ).BarCount;
-                        clock_step = 480 * 4 / local_denominator;
+                        int denom = local_denominator;
+                        if( denom <= 0 ){
+                            denom = 4;
+                        }
+                        clock_step = 480 * 4 / denom;
                         mod = clock_step * local_numerator;
                         bar_counter = local_bar_count - 1;
                         t_end = m_end_clock;

@@ -26,7 +26,7 @@ public class BNumericUpDown extends JSpinner
         addChangeListener( this );
     }
 
-    public BEvent<BEventHandler> valueChangedEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> valueChangedEvent = new BEvent<BEventHandler>();
     public void stateChanged( ChangeEvent e ){
         try{
             valueChangedEvent.raise( this, new BEventArgs() );

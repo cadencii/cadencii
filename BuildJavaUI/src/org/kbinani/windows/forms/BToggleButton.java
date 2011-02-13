@@ -31,7 +31,7 @@ public class BToggleButton extends JToggleButton
     }
     
     // root impl of ItemListener is in BCheckBox
-    public BEvent<BEventHandler> checkedChangedEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> checkedChangedEvent = new BEvent<BEventHandler>();
     public void itemStateChanged(ItemEvent e) {
         try{
             checkedChangedEvent.raise( this, new BEventArgs() );
@@ -41,7 +41,7 @@ public class BToggleButton extends JToggleButton
     }
     
     // root impl of Click event is in BButton
-    public BEvent<BEventHandler> clickEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> clickEvent = new BEvent<BEventHandler>();
     public void actionPerformed( ActionEvent e ){
         try{
             clickEvent.raise( this, new BEventArgs() );

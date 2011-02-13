@@ -7,14 +7,14 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BDialog;
-import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BPanel;
 import org.kbinani.windows.forms.BPictureBox;
 import org.kbinani.windows.forms.BProgressBar;
 
 //SECTION-END-IMPORT
-public class FormGameControlerConfig extends BDialog {
+public class FormGameControlerConfig extends BDialog
+{
     //SECTION-BEGIN-FIELD
 
     private static final long serialVersionUID = 1L;

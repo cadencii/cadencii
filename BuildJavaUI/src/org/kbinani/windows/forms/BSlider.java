@@ -17,7 +17,7 @@ public class BSlider extends JSlider
                                 FocusListener
 {
     private static final long serialVersionUID = -2771998534716750091L;
-    public BEvent<BEventHandler> valueChangedEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> valueChangedEvent = new BEvent<BEventHandler>();
     
     public BSlider(){
         addChangeListener( this );
@@ -34,8 +34,8 @@ public class BSlider extends JSlider
     }
 
     // root impl of FocusListener is in BButton
-    public BEvent<BEventHandler> enterEvent = new BEvent<BEventHandler>();
-    public BEvent<BEventHandler> leaveEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> enterEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> leaveEvent = new BEvent<BEventHandler>();
     public void focusGained(FocusEvent e) {
         try{
             enterEvent.raise( this, new BEventArgs() );
@@ -52,12 +52,12 @@ public class BSlider extends JSlider
     }
 
     // root impl of MouseListener is in BButton
-    public BEvent<BMouseEventHandler> mouseClickEvent = new BEvent<BMouseEventHandler>();
-    public BEvent<BMouseEventHandler> mouseDoubleClickEvent = new BEvent<BMouseEventHandler>();
-    public BEvent<BMouseEventHandler> mouseDownEvent = new BEvent<BMouseEventHandler>();
-    public BEvent<BMouseEventHandler> mouseUpEvent = new BEvent<BMouseEventHandler>();
-    public BEvent<BEventHandler> mouseEnterEvent = new BEvent<BEventHandler>();
-    public BEvent<BEventHandler> mouseLeaveEvent = new BEvent<BEventHandler>();
+    public final BEvent<BMouseEventHandler> mouseClickEvent = new BEvent<BMouseEventHandler>();
+    public final BEvent<BMouseEventHandler> mouseDoubleClickEvent = new BEvent<BMouseEventHandler>();
+    public final BEvent<BMouseEventHandler> mouseDownEvent = new BEvent<BMouseEventHandler>();
+    public final BEvent<BMouseEventHandler> mouseUpEvent = new BEvent<BMouseEventHandler>();
+    public final BEvent<BEventHandler> mouseEnterEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> mouseLeaveEvent = new BEvent<BEventHandler>();
     public void mouseClicked( MouseEvent e ){
         try{
             mouseClickEvent.raise( this, BMouseEventArgs.fromMouseEvent( e ) );

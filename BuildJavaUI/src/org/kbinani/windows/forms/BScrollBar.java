@@ -17,7 +17,7 @@ public class BScrollBar extends JScrollBar
                                    FocusListener
 {
     private static final long serialVersionUID = 1L;
-    public BEvent<BEventHandler> valueChangedEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> valueChangedEvent = new BEvent<BEventHandler>();
 
     public BScrollBar( int orientation ){
         super();
@@ -36,8 +36,8 @@ public class BScrollBar extends JScrollBar
     }
     
     // root impl of FocusListener is in BButton
-    public BEvent<BEventHandler> enterEvent = new BEvent<BEventHandler>();
-    public BEvent<BEventHandler> leaveEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> enterEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> leaveEvent = new BEvent<BEventHandler>();
     public void focusGained(FocusEvent e) {
         try{
             enterEvent.raise( this, new BEventArgs() );
@@ -54,8 +54,8 @@ public class BScrollBar extends JScrollBar
     }
     
     // root impl of ComponentListener is in BButton
-    public BEvent<BEventHandler> visibleChangedEvent = new BEvent<BEventHandler>();
-    public BEvent<BEventHandler> resizeEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> visibleChangedEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> resizeEvent = new BEvent<BEventHandler>();
     public void componentHidden(ComponentEvent e) {
         try{
             visibleChangedEvent.raise( this, new BEventArgs() );

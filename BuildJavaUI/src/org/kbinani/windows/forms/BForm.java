@@ -19,11 +19,11 @@ public class BForm extends JFrame
                               ComponentListener
 {
     private static final long serialVersionUID = -3700177079249925623L;
-    public BEvent<BFormClosingEventHandler> formClosingEvent = new BEvent<BFormClosingEventHandler>();
-    public BEvent<BEventHandler> formClosedEvent = new BEvent<BEventHandler>();
-    public BEvent<BEventHandler> activatedEvent = new BEvent<BEventHandler>();
-    public BEvent<BEventHandler> deactivateEvent = new BEvent<BEventHandler>();
-    public BEvent<BEventHandler> loadEvent = new BEvent<BEventHandler>();
+    public final BEvent<BFormClosingEventHandler> formClosingEvent = new BEvent<BFormClosingEventHandler>();
+    public final BEvent<BEventHandler> formClosedEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> activatedEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> deactivateEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> loadEvent = new BEvent<BEventHandler>();
     private Object mTag = null;
     
     public BForm(){
@@ -52,10 +52,10 @@ public class BForm extends JFrame
     }
     
     // root imol of KeyListener is in BButton
-    public BEvent<BPreviewKeyDownEventHandler> previewKeyDownEvent = new BEvent<BPreviewKeyDownEventHandler>();
-    public BEvent<BKeyEventHandler> keyDownEvent = new BEvent<BKeyEventHandler>();
-    public BEvent<BKeyEventHandler> keyUpEvent = new BEvent<BKeyEventHandler>();
-    public BEvent<BKeyPressEventHandler> keyPressEvent = new BEvent<BKeyPressEventHandler>();
+    public final BEvent<BPreviewKeyDownEventHandler> previewKeyDownEvent = new BEvent<BPreviewKeyDownEventHandler>();
+    public final BEvent<BKeyEventHandler> keyDownEvent = new BEvent<BKeyEventHandler>();
+    public final BEvent<BKeyEventHandler> keyUpEvent = new BEvent<BKeyEventHandler>();
+    public final BEvent<BKeyPressEventHandler> keyPressEvent = new BEvent<BKeyPressEventHandler>();
     public void keyPressed( KeyEvent e ) {
         try{
             previewKeyDownEvent.raise( this, new BPreviewKeyDownEventArgs( e ) );
@@ -140,9 +140,19 @@ public class BForm extends JFrame
     }
     
     public void windowDeiconified( WindowEvent e ){
+        try{
+            sizeChangedEvent.raise( this, new BEventArgs() );
+        }catch( Exception ex ){
+            System.err.println( "BForm#windowDeiconified; ex=" + ex );
+        }
     }
     
     public void windowIconified( WindowEvent e ){
+        try{
+            sizeChangedEvent.raise( this, new BEventArgs() );
+        }catch( Exception ex ){
+            System.err.println( "BForm#windowDeiconified; ex=" + ex );
+        }
     }
     
     public void windowOpened( WindowEvent e ){
@@ -154,10 +164,10 @@ public class BForm extends JFrame
     }
 
     // root impl of ComponentListener is in BButton
-    public BEvent<BEventHandler> visibleChangedEvent = new BEvent<BEventHandler>();
-    public BEvent<BEventHandler> resizeEvent = new BEvent<BEventHandler>();
-    public BEvent<BEventHandler> sizeChangedEvent = new BEvent<BEventHandler>();
-    public BEvent<BEventHandler> locationChangedEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> visibleChangedEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> resizeEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> sizeChangedEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> locationChangedEvent = new BEvent<BEventHandler>();
     public void componentHidden(ComponentEvent e) {
         try{
             visibleChangedEvent.raise( this, new BEventArgs() );

@@ -2,15 +2,14 @@
 //SECTION-BEGIN-IMPORT
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JSeparator;
 import javax.swing.JToolTip;
 import org.kbinani.windows.forms.BMenu;
 import org.kbinani.windows.forms.BMenuItem;
 import org.kbinani.windows.forms.BPopupMenu;
-import java.awt.Color;
 
 //SECTION-END-IMPORT
 public class TrackSelector extends JPanel {

@@ -5,6 +5,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -16,7 +17,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
-import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BForm;
@@ -33,8 +33,6 @@ import org.kbinani.windows.forms.BToggleButton;
 import org.kbinani.windows.forms.BToolBar;
 import org.kbinani.windows.forms.BToolBarButton;
 import org.kbinani.windows.forms.BVScrollBar;
-import java.awt.Font;
-import javax.swing.ImageIcon;
 
 //SECTION-END-IMPORT
 public class FormMain extends BForm {
@@ -2208,7 +2206,7 @@ public class FormMain extends BForm {
             splitContainerProperty.setDividerLocation(0);
             splitContainerProperty.setEnabled(false);
             splitContainerProperty.setDividerSize(0);
-            splitContainerProperty.setResizeWeight(1.0D);
+            splitContainerProperty.setResizeWeight(0.0D);
             splitContainerProperty.setContinuousLayout(false);
             splitContainerProperty.setRightComponent(getSplitContainer1());
             splitContainerProperty.setLeftComponent(getM_property_panel_container());

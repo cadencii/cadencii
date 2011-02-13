@@ -3,17 +3,15 @@
 //SECTION-BEGIN-IMPORT
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import org.kbinani.windows.forms.BDialog;
-import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BMenu;
 import org.kbinani.windows.forms.BMenuBar;
 import org.kbinani.windows.forms.BMenuItem;
-import javax.swing.JButton;
-import java.awt.GridBagConstraints;
-import javax.swing.JScrollPane;
-import javax.swing.BorderFactory;
 
 //SECTION-END-IMPORT
 public class FormNoteProperty extends BDialog {
@@ -26,6 +24,7 @@ public class FormNoteProperty extends BDialog {
     private BMenuItem menuClose = null;
     private JScrollPane jScrollPane = null;
     //SECTION-END-FIELD
+
     /**
      * This method initializes 
      * 
@@ -80,7 +79,7 @@ public class FormNoteProperty extends BDialog {
     private BMenuBar getMenuStrip() {
         if (menuStrip == null) {
             menuStrip = new BMenuBar();
-            menuStrip.setVisible(false);
+            menuStrip.setVisible(true);
             menuStrip.add(getMenuWindow());
         }
         return menuStrip;
@@ -123,7 +122,7 @@ public class FormNoteProperty extends BDialog {
             jScrollPane = new JScrollPane();
             jScrollPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
             jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-            jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+            jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         }
         return jScrollPane;
     }

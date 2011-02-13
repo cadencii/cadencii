@@ -44,7 +44,7 @@ namespace org.kbinani.cadencii
 #endif
     {
 #if JAVA
-        public BEvent<CommandExecuteRequiredEventHandler> commandExecuteRequiredEvent = new BEvent<CommandExecuteRequiredEventHandler>();
+        public final BEvent<CommandExecuteRequiredEventHandler> commandExecuteRequiredEvent = new BEvent<CommandExecuteRequiredEventHandler>();
 #else
         public event CommandExecuteRequiredEventHandler CommandExecuteRequired;
 #endif
@@ -57,6 +57,7 @@ namespace org.kbinani.cadencii
 #if JAVA
             super();
             initialize();
+            propertyGrid.setColumnWidth( 172 );
 #else
             InitializeComponent();
 #endif

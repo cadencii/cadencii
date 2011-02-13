@@ -42,6 +42,7 @@ import java.util.Vector;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -68,124 +69,239 @@ public class BPropertyGrid extends BPanel
 {
     private static final long serialVersionUID = 413826982000655392L;
 
-    public static final int HEIGHT = 16;
+    public static final int DEFAULT_ROW_HEIGHT = 16;
     public static final int WIDTH = 14;
     public static final int SPACE = 14;
-    public static final Color COLOR_EVEN = new Color( 255, 255, 255 );
-    public static final Color COLOR_ODD = new Color( 237, 243, 254 );
     public static final Color COLOR_SEPARATOR = new Color( 204, 204, 204 );
-
-    public BEvent<BPropertyValueChangedEventHandler> propertyValueChangedEvent = new BEvent<BPropertyValueChangedEventHandler>();
+    public static final Color DEFAULT_BACKGROUND_EVEN = new Color( 255, 255, 255 );
+    public static final Color DEFAULT_BACKGROUND_ODD = new Color( 237, 243, 254 );
+    
+    public final BEvent<BPropertyValueChangedEventHandler> propertyValueChangedEvent = new BEvent<BPropertyValueChangedEventHandler>();
 
     private Object[] mSelected;
-    private TreeMap<String, BPropertyGridControl> mCachedControls = new TreeMap<String, BPropertyGridControl>();
-    private BPropertyGridControl mControl = null;
+    private TreeMap<String, BPropertyGridController> mCachedControllers = new TreeMap<String, BPropertyGridController>();
+    private BPropertyGridController mController = null;
+    private Color mColorEven = new Color( 255, 255, 255 );
+    private Color mColorOdd = new Color( 237, 243, 254 );
+    private int mRowHeight = 16;
+    /**
+     * 区切り線の現在の位置
+     */
+    private int mColumnWidth = 60;
 
     public BPropertyGrid()
     {
         super();
         this.setLayout( new GridBagLayout() );
+        setSelectedObjects( null );
     }
 
-    public void setControl( BPropertyGridControl model )
+    /**
+     * グリッド１行の表示高さを取得します(単位:ピクセル)
+     * @return グリッド１行の表示高さ
+     */
+    public int getRowHeight()
     {
-        if( mControl != null ){
-            mControl.setOwner( null );
+        return mRowHeight;
+    }
+    
+    /**
+     * グリッド１行の表示高さを設定します(単位:ピクセル)
+     */
+    public void setRowHeight( int value )
+    {
+        if( value <= 0 ){
+            value = 1;
         }
-        mControl = model;
+        mRowHeight = value;
+        mController.changeRowHeight();
+    }
+
+    /**
+     * 偶数行に位置するアイテムの背景色を取得します
+     * @return 偶数行に位置するアイテムの背景色
+     */
+    public Color getBackgroundEven()
+    {
+        return mColorEven;
+    }   
+    
+    /**
+     * 偶数行に位置するアイテムの背景色を設定します
+     * @param value 設定する色
+     */
+    public void setBackgroundEven( Color value )
+    {
+        mColorEven = value;
+    }
+
+    /**
+     * 奇数行に位置するアイテムの背景色を取得します
+     * @return 奇数行に位置するアイテムの背景色
+     */
+    public Color getBackgroundOdd()
+    {
+        return mColorOdd;
+    }
+    
+    /**
+     * 奇数行に位置するアイテムの背景色を設定します
+     * @param value 設定する色
+     */
+    public void setBackgroundOdd( Color value )
+    {
+        mColorOdd = value;
+    }
+
+    /**
+     * コントローラーを設定します
+     * @param controller 新しく設定するコントローラー
+     */
+    private void setController( BPropertyGridController controller )
+    {
+        if( mController != null ){
+            mController.setView( null );
+        }
+        mController = controller;
         this.removeAll();
-        if( mControl != null ){
-            mControl.setOwner( this );
-            mControl.setContentPane( this );
-            mControl.updateBackground( true );
+        if( mController != null ){
+            mController.changeRowHeight();
+            mController.setView( this );
+            mController.setContentPane( this );
+            mController.updateBackground( true );
+            mColumnWidth = mController.applyColumnWidth( mColumnWidth );
         }
     }
 
+    /**
+     * プロパティ名を表示するカラムの幅を設定します
+     * @param value 新しく設定するカラムの幅
+     */
     public void setColumnWidth( int value )
     {
-        mControl.setColumnWidth( value );
-    }
-    
-    public int getColumnWidth()
-    {
-        if( mControl != null ){
-            return mControl.getColumnWidth();
+        if( mController != null ){
+            mColumnWidth = mController.applyColumnWidth( value );
         }else{
-            return 0;
+            mColumnWidth = value;
         }
     }
     
+    /**
+     * プロパティ名を表示するカラムの現在の幅を取得します
+     * @return カラムの幅
+     */
+    public int getColumnWidth()
+    {
+        return mColumnWidth;
+    }
+
+    /**
+     * グリッドに現在表示されているオブジェクトの一覧を取得します
+     * @return オブジェクトの一覧
+     */
     public Object[] getSelectedObjects()
     {
         return mSelected;
     }
 
+    /**
+     * グリッドに表示するオブジェクトの一覧を設定します
+     * @param value 新しく設定するオブジェクトの一覧
+     */
     public void setSelectedObjects( Object[] value )
     {
         mSelected = value;
-        //TODO: BPropertyGrid#setSelectedObjects
         if( value != null && value.length > 0 ){
-            updateGridComponent( value[0].getClass() );
+            String f = null;
+            boolean all_eq = true;
+            for( Object o : value ){
+                if( o == null ){
+                    continue;
+                }
+                if( f == null ){
+                    f = o.getClass().getName();
+                }else{
+                    if( !f.equals( o.getClass().getName() ) ){
+                        all_eq = false;
+                        break;
+                    }
+                }
+            }
+            if( all_eq ){
+                updateGridComponent( value[0].getClass() );
+            }else{
+                updateGridComponent( Object.class );
+            }
         }else{
             updateGridComponent( Object.class );
         }
-        if( mControl != null ){
-            mControl.updateValue();
-            mControl.updateView();
+        if( mController != null ){
+            mController.updateValue();
+            mController.updateView();
         }
     }
 
     /**
-     * 指定された型のためのグリッドを構築します
-     * @param cls
+     * 指定された型のためのグリッドを更新します
+     * @param cls グリッドの構築元となる型
      */
     private void updateGridComponent( Class<?> cls )
     {
         if( cls == null ) return;
-        BPropertyGridControl control = null;
-        if( mCachedControls.containsKey( cls.getName() ) && (mCachedControls.get( cls.getName() ) != null) ){
-            control = mCachedControls.get( cls.getName() );
+        BPropertyGridController controller = null;
+        if( mCachedControllers.containsKey( cls.getName() ) && (mCachedControllers.get( cls.getName() ) != null) ){
+            controller = mCachedControllers.get( cls.getName() );
         }else{
-            control = new BPropertyGridControl( cls );
-            mCachedControls.put( cls.getName(), control );
+            controller = new BPropertyGridController( cls );
+            mCachedControllers.put( cls.getName(), controller );
         }
-        setControl( control );
+        setController( controller );
     }
 }
 
-class BPropertyGridUnit
+class BPropertyGridController
 {
-    public XmlMember member;
-    public Vector<XmlMember> memberStack = new Vector<XmlMember>();
-    public Component editor;
-    public Vector<BPropertyGridUnit> children = new Vector<BPropertyGridUnit>();
-    public TypeConverter<?> converter = null;
-}
-
-class BPropertyGridControl
-{
+    /**
+     * このコントローラーに属するコンポーネントの親．
+     * ビューからこのコントローラーから切り離されるときは，このフィールドのインスタンスがビューから削除される．
+     */
     private BPanel mContentPane = null;
     /**
-     * 上からkey番目のコンポーネントのリスト
+     * 上からkey番目のコンポーネントのリスト，を保持するマップ
      */
     private TreeMap<Integer, Vector<Component>> mComponents;
+    /**
+     * タイトルのビューと値のビュー＆エディタを区切る区切り線を表現するのに使われているコンポーネントの一覧
+     */
     private Vector<Component> mSplitters = new Vector<Component>();
     private Vector<Component> mLefts = new Vector<Component>();
+    /**
+     * このコントローラーにコンポーネントを追加していく際に，そのコンポーネントが上から何番目かを数え上げるためのカウンター
+     */
     private int mRowCounter = 0;
+    /**
+     * このコントローラーを保持しているビューへの参照．このコントローラーが表示されていなければnullになる．
+     */
     private BPropertyGrid mView = null;
-    private int mColumnWidth = 60;
+    /**
+     * このコントローラーにより，表示させられているグリッドの行数
+     */
     private int mViewingRows = 0;
     /**
      * プロパティー・ツリーのルート
      */
-    private BPropertyGridUnit mRoot = null;
+    private BGridItem mRoot = null;
+    /**
+     * 推奨高さが指定されたアイテムの一覧
+     */
+    private Vector<Component> mPreferredHeightSpecified = new Vector<Component>();
     
-    public BPropertyGridControl( Class<?> cls )
+    public BPropertyGridController( Class<?> cls )
     {
         mComponents = new TreeMap<Integer, Vector<Component>>();
         mContentPane = new BPanel();
         mContentPane.setLayout( new GridBagLayout() );
-        mRoot = new BPropertyGridUnit();
+        mRoot = new BGridItem();
 
         // クラスのプロパティのメンバーを取得
         XmlMember[] members = XmlMember.extractMembers( cls );
@@ -226,12 +342,13 @@ class BPropertyGridControl
         for( Iterator<String> itr = groups.keySet().iterator(); itr.hasNext(); ){
             String key = itr.next();
             Vector<XmlMember> m = groups.get( key );
-            rows = prepareCategory( this, rows, key, m, descriptor, mouse_adapter );
+            rows = prepareCategory( rows, key, m, descriptor, mouse_adapter );
         }
         
         // 末尾にスペーサを入れる
         BPropertyGridBottomSpacer sp_bottom = new BPropertyGridBottomSpacer( this );
         sp_bottom.setPreferredSize( new Dimension( 4, 1 ) );
+        registPreferredHeightSpecified( sp_bottom );
         GridBagConstraints g = new GridBagConstraints();
         g.gridx = 0;
         g.gridy = rows;
@@ -257,7 +374,43 @@ class BPropertyGridControl
         });
     }
 
-    private static void updateValueCore( Object[] objs, BPropertyGridUnit unit )
+    /**
+     * viewにcolumn_widthの変更を通知するようこのcontroller要求します
+     */
+    public void notifyColumnWidthToView( int value )
+    {
+        if( mView != null ){
+            mView.setColumnWidth( value );
+        }
+    }
+    
+    /**
+     * アイテムの推奨高さを更新します
+     */
+    public void changeRowHeight()
+    {
+        if( mView == null ){
+            return;
+        }
+        int row_height = mView.getRowHeight();
+        for( Component c : mPreferredHeightSpecified ){
+            int w = c.getPreferredSize().width;
+            Dimension d = new Dimension( w, row_height );
+            c.setPreferredSize( d );
+        }
+        updateView();
+    }
+    
+    /**
+     * アイテムの高さが指定されているアイテムとしてコントローラーに登録する
+     * @param comp 登録するコンポーネント
+     */
+    public void registPreferredHeightSpecified( Component comp )
+    {
+        mPreferredHeightSpecified.add( comp );
+    }
+    
+    private static void updateValueCore( Object[] objs, BGridItem unit )
     {
         if( objs.length <= 0 ){
             return;
@@ -276,6 +429,7 @@ class BPropertyGridControl
                 f = o;
             }else{
                 if( !o.equals( f ) ){
+                    f = null;
                     break;
                 }
             }
@@ -284,7 +438,7 @@ class BPropertyGridControl
             if( unit.converter != null ){
                 ((JTextField)unit.editor).setText( unit.converter.convertTo( f ) );
             }else{
-                ((JTextField)unit.editor).setText( "" + f );
+                ((JTextField)unit.editor).setText( (f == null) ? "" : "" + f );
             }
         }else if( unit.editor instanceof BPropertyGridComboBox ){
             BPropertyGridComboBox cbox = (BPropertyGridComboBox)unit.editor;
@@ -303,7 +457,7 @@ class BPropertyGridControl
             }
             cbox.setSelectedIndex( indx );
         }else{
-            for( BPropertyGridUnit u : unit.children ){
+            for( BGridItem u : unit.children ){
                 updateValueCore( subobjs, u );
             }
         }
@@ -311,8 +465,9 @@ class BPropertyGridControl
     
     public void updateValue()
     {
-        for( BPropertyGridUnit unit : mRoot.children ){
-            updateValueCore( mView.getSelectedObjects(), unit );
+        Object[] objs = (mView != null) ? mView.getSelectedObjects() : new Object[]{};
+        for( BGridItem unit : mRoot.children ){
+            updateValueCore( objs, unit );
         }
     }
     
@@ -337,8 +492,7 @@ class BPropertyGridControl
      * @param members
      * @param descriptor
      */
-    private int prepareCategory( 
-        BPropertyGridControl model, 
+    private int prepareCategory(
         int row_start_index,
         String category, 
         Vector<XmlMember> members, 
@@ -356,13 +510,13 @@ class BPropertyGridControl
         int rows = row_start_index;
         
         // カテゴリをエクスパンドするための＋ーボタン
-        BPropertyGridExpandMark plus = new BPropertyGridExpandMark( model, true );
+        BPropertyGridExpandMark plus = new BPropertyGridExpandMark( this, true );
         g.gridx = 0;
         g.gridy = rows;
         g.weightx = 0.0D;
         g.fill = GridBagConstraints.BOTH;
-        model.mContentPane.add( plus, g );
-        model.register( plus );
+        mContentPane.add( plus, g );
+        register( plus );
         
         // カテゴリ名を表示するラベル
         BPropertyGridHeaderBase title = new BPropertyGridHeaderBase();
@@ -372,16 +526,17 @@ class BPropertyGridControl
             title_text = "Other";
         }
         title.setText( title_text );
-        title.setPreferredSize( new Dimension( 4, BPropertyGrid.HEIGHT ) );
+        title.setPreferredSize( new Dimension( 4, BPropertyGrid.DEFAULT_ROW_HEIGHT ) );
+        registPreferredHeightSpecified( title );
         plus.setAdditionalMouseTrigger( title );
         g.gridx = 1;
         g.gridy = rows;
         g.gridwidth = 1;
         g.weightx = 1.0D;
         g.fill = GridBagConstraints.BOTH;
-        model.mContentPane.add( title, g );
-        model.register( title );
-        model.nextRow();
+        mContentPane.add( title, g );
+        register( title );
+        nextRow();
         rows++;
         
         // 各プロパティ毎の処理
@@ -398,7 +553,7 @@ class BPropertyGridControl
         int internal_rows = 0;
         int i = 0;
         for( XmlMember xm : members ){
-            internal_rows += prepareRowComponent( model, model.mRoot, left, right, xm, descriptor, i );
+            internal_rows += prepareRowComponent( this, mRoot, left, right, xm, descriptor, i );
             i++;
         }
         g.gridx = 0;
@@ -408,7 +563,7 @@ class BPropertyGridControl
         g.weightx = 0.0D;
         g.weighty = 0.0D;
         g.fill = GridBagConstraints.BOTH;
-        left.setPreferredSize( new Dimension( model.getColumnWidth(), 4 ) );
+        left.setPreferredSize( new Dimension( mView == null ? 60 : mView.getColumnWidth(), 4 ) );
         p.add( left, g );
         g.gridx = 1;
         g.gridy = 0;
@@ -425,7 +580,6 @@ class BPropertyGridControl
         g.weightx = 1.0D;
         g.weighty = 0.0D;
         g.fill = GridBagConstraints.BOTH;
-        //right.setPreferredSize( new Dimension( 4, UNIT_WIDTH * internal_rows ) );
         p.add( right, g );
         GridBagConstraints g_p = new GridBagConstraints();
         g_p.gridx = 1;
@@ -435,7 +589,7 @@ class BPropertyGridControl
         g_p.weightx = 1.0D;
         g_p.weighty = 0.0D;
         g_p.fill = GridBagConstraints.BOTH;
-        model.mContentPane.add( p, g_p );
+        mContentPane.add( p, g_p );
         GridBagConstraints g_sp = new GridBagConstraints();
         g_sp.gridx = 0;
         g_sp.gridy = rows;
@@ -444,11 +598,11 @@ class BPropertyGridControl
         g_sp.weightx = 0.0D;
         g_sp.weighty = 0.0D;
         g_sp.fill = GridBagConstraints.BOTH;
-        BPropertyGridLeftSpacer sp = new BPropertyGridLeftSpacer( plus );
-        model.mContentPane.add( sp, g_sp );
+        BPropertyGridLeftSpacer sp = new BPropertyGridLeftSpacer( this, plus );
+        mContentPane.add( sp, g_sp );
         
-        plus.leftSpacerConfig = new BPropertyGridExpandComponentConfig( model.mContentPane, sp, g_sp );
-        plus.leftComponentConfig = new BPropertyGridExpandComponentConfig( model.mContentPane, p, g_p );
+        plus.leftSpacerConfig = new BPropertyGridExpandComponentConfig( mContentPane, sp, g_sp );
+        plus.leftComponentConfig = new BPropertyGridExpandComponentConfig( mContentPane, p, g_p );
         mouse_adapter.register( left, splitter );
         
         rows++;
@@ -460,15 +614,15 @@ class BPropertyGridControl
      * 
      */
     private int prepareRowComponent(
-        BPropertyGridControl model,
-        BPropertyGridUnit tree,
+        BPropertyGridController controller,
+        BGridItem tree,
         Container left,
         Container right,
         XmlMember xm,
         PropertyDescriptor pd,
         int row_index )
     {
-        final BPropertyGridUnit child = new BPropertyGridUnit();
+        final BGridItem child = new BGridItem();
         child.member = xm;
         for( XmlMember x : tree.memberStack ){
             child.memberStack.add( x );
@@ -501,12 +655,12 @@ class BPropertyGridControl
             if( child.converter.isStandardValuesSupported() ){
                 // 型コンバータがデフォルト値の一覧を提供する場合
                 // コンボボックスを表示する
-                final BPropertyGridComboBox cbox = new BPropertyGridComboBox();
+                final BPropertyGridComboBox cbox = new BPropertyGridComboBox( controller );
                 Object[] items = child.converter.getStandardValues().toArray();
                 for( Object o : items ){
                     cbox.addItem( child.converter.convertTo( o ) );
                 }
-                cbox.setUnitSize( BPropertyGrid.WIDTH, BPropertyGrid.HEIGHT );
+                cbox.setUnitSize( BPropertyGrid.WIDTH, BPropertyGrid.DEFAULT_ROW_HEIGHT );
                 // イベントハンドラ
                 cbox.addItemListener( new ItemListener(){
                     @Override
@@ -556,12 +710,12 @@ class BPropertyGridControl
                 comp = text;
             }
         }else if( member_type.isEnum() ){
-            final BPropertyGridComboBox cbox = new BPropertyGridComboBox();
+            final BPropertyGridComboBox cbox = new BPropertyGridComboBox( controller );
             Object[] items = member_type.getEnumConstants();
             for( Object o : items ){
                 cbox.addItem( o );
             }
-            cbox.setUnitSize( BPropertyGrid.WIDTH, BPropertyGrid.HEIGHT );
+            cbox.setUnitSize( BPropertyGrid.WIDTH, BPropertyGrid.DEFAULT_ROW_HEIGHT );
             cbox.addItemListener( new ItemListener(){
                 @Override
                 public void itemStateChanged(ItemEvent arg0) {
@@ -584,10 +738,10 @@ class BPropertyGridControl
             } );
             comp = cbox;
         }else if( cli_name.equals( "bool" ) ){
-            final BPropertyGridComboBox cbox = new BPropertyGridComboBox();
+            final BPropertyGridComboBox cbox = new BPropertyGridComboBox( controller );
             cbox.addItem( "True" );
             cbox.addItem( "False" );
-            cbox.setUnitSize( BPropertyGrid.WIDTH, BPropertyGrid.HEIGHT );
+            cbox.setUnitSize( BPropertyGrid.WIDTH, BPropertyGrid.DEFAULT_ROW_HEIGHT );
             cbox.addItemListener( new ItemListener(){
                 @Override
                 public void itemStateChanged(ItemEvent arg0) {
@@ -676,7 +830,8 @@ class BPropertyGridControl
             // 展開の必要なし
             // スペーサ
             JLabel sp = new JLabel();
-            sp.setPreferredSize( new Dimension( BPropertyGrid.SPACE, BPropertyGrid.HEIGHT ) );
+            sp.setPreferredSize( new Dimension( BPropertyGrid.SPACE, BPropertyGrid.DEFAULT_ROW_HEIGHT ) );
+            controller.registPreferredHeightSpecified( sp );
             g.gridx = 0;
             g.gridy = row_index;
             g.gridwidth = 1;
@@ -685,11 +840,12 @@ class BPropertyGridControl
             g.weighty = 0.0D;
             g.fill = GridBagConstraints.BOTH;
             left.add( sp, g );
-            model.register( sp );
+            controller.register( sp );
             // プロパティの名前
             JLabel title = new JLabel();
             title.setText( pd.getDisplayName( name ) );
-            title.setPreferredSize( new Dimension( 4, BPropertyGrid.HEIGHT ) );
+            title.setPreferredSize( new Dimension( 4, BPropertyGrid.DEFAULT_ROW_HEIGHT ) );
+            controller.registPreferredHeightSpecified( title );
             g.gridx = 1;
             g.gridy = row_index;
             g.gridwidth = 1;
@@ -698,10 +854,11 @@ class BPropertyGridControl
             g.weighty = 0.0D;
             g.fill = GridBagConstraints.BOTH;
             left.add( title, g );
-            model.register( title );
+            controller.register( title );
             // 値を格納するコンポーネント
-            comp.setPreferredSize( new Dimension( 4, BPropertyGrid.HEIGHT ) );
+            comp.setPreferredSize( new Dimension( 4, BPropertyGrid.DEFAULT_ROW_HEIGHT ) );
             comp.setBorder( new EmptyBorder( 0, 0, 0, 0 ) );
+            controller.registPreferredHeightSpecified( comp );
             g.gridx = 0;
             g.gridy = row_index;
             g.gridwidth = 1;
@@ -710,9 +867,9 @@ class BPropertyGridControl
             g.weighty = 0.0D;
             g.fill = GridBagConstraints.BOTH;
             right.add( comp, g );
-            model.register( comp );
+            controller.register( comp );
             rows++;
-            model.nextRow();
+            controller.nextRow();
             child.editor = comp;
         }else{
             BPanel i_left = new BPanel();
@@ -748,7 +905,8 @@ class BPropertyGridControl
             PropertyDescriptor n_pd = getDescriptor( n_cls );
             // 左側
             // ▶
-            BPropertyGridExpandMark n_plus = new BPropertyGridExpandMark( model, false );
+            BPropertyGridExpandMark n_plus = new BPropertyGridExpandMark( controller, false );
+            child.expandMark = n_plus;
             g.gridx = 0;
             g.gridy = 0;
             g.gridwidth = 1;
@@ -757,10 +915,12 @@ class BPropertyGridControl
             g.weighty = 0.0D;
             g.fill = GridBagConstraints.NONE;
             i_left.add( n_plus, g );
-            model.register( n_plus );
+            controller.register( n_plus );
             // プロパティ名
             JLabel n_title = new JLabel();
             n_title.setText( n_pd.getDisplayName( name ) );
+            n_title.setPreferredSize( new Dimension( 4, BPropertyGrid.DEFAULT_ROW_HEIGHT ) );
+            controller.registPreferredHeightSpecified( n_title );
             n_plus.setAdditionalMouseTrigger( n_title );
             g.gridx = 1;
             g.gridy = 0;
@@ -770,10 +930,11 @@ class BPropertyGridControl
             g.weighty = 0.0D;
             g.fill = GridBagConstraints.BOTH;
             i_left.add( n_title, g );
-            model.register( n_title );
+            controller.register( n_title );
             // 右側
             JLabel n_value = new JLabel();
-            n_value.setPreferredSize( new Dimension( 4, BPropertyGrid.HEIGHT ) );
+            n_value.setPreferredSize( new Dimension( 4, BPropertyGrid.DEFAULT_ROW_HEIGHT ) );
+            controller.registPreferredHeightSpecified( n_value );
             g.gridx = 0;
             g.gridy = 0;
             g.gridwidth = 1;
@@ -782,10 +943,12 @@ class BPropertyGridControl
             g.weighty = 0.0D;
             g.fill = GridBagConstraints.BOTH;
             i_right.add( n_value, g );
-            model.register( n_value );
+            controller.register( n_value );
             // サブプロパティ用のプロパティ名
             GridBagConstraints g_sp = new GridBagConstraints();
-            BPropertyGridLeftSpacer sp = new BPropertyGridLeftSpacer( n_plus );
+            BPropertyGridLeftSpacer sp = new BPropertyGridLeftSpacer( controller, n_plus );
+            sp.setPreferredSize( new Dimension( 4, BPropertyGrid.DEFAULT_ROW_HEIGHT ) );
+            controller.registPreferredHeightSpecified( sp );
             g_sp.gridx = 0;
             g_sp.gridy = 1;
             g_sp.gridwidth = 1;
@@ -817,13 +980,13 @@ class BPropertyGridControl
             n_plus.rightComponentConfig = new BPropertyGridExpandComponentConfig( i_right, n_right, g_n_right );
             n_plus.leftSpacerConfig = new BPropertyGridExpandComponentConfig( i_left, sp, g_sp );
             // サブアイテム
-            model.nextRow();
+            controller.nextRow();
             int i = 0;
             for( XmlMember n_xm : n_member ){
                 if( n_xm.getType().equals( xm.getType() ) ){
                     continue;
                 }
-                rows += prepareRowComponent( model, child, n_left, n_right, n_xm, n_pd, i ); 
+                rows += prepareRowComponent( controller, child, n_left, n_right, n_xm, n_pd, i ); 
                 i++;
             }
             child.editor = n_value;
@@ -834,7 +997,7 @@ class BPropertyGridControl
         return rows;
     }
 
-    private void setNewValue( BPropertyGridUnit unit, Object[] dst, Object new_value )
+    private void setNewValue( BGridItem unit, Object[] dst, Object new_value )
     {
         if( dst == null ){
             return;
@@ -900,27 +1063,36 @@ class BPropertyGridControl
         return ret;
     }
 
-    public void setColumnWidth( int value )
+    public int applyColumnWidth( int value )
     {
-        if( mView.getWidth() < value ){
-            value = mView.getWidth();
+        // -4は，BPropertyGridComboBoxのドロップダウンボタンの最小幅
+        if( mView == null ){
+            return value;
+        }
+        if( !mView.isShowing() ){
+            return value;
+        }
+        if( mView.getWidth() - 4 < value ){
+            value = mView.getWidth() - 4;
         }
         if( value < 0 ){
             value = 0;
         }
-        mColumnWidth = value;
         for( Component c : mLefts ){
             c.setPreferredSize( new Dimension( value, 4 ) );
         }
         doLayoutRecurse( mView );
+        return value;
     }
 
-    public int getColumnWidth() {
-        return mColumnWidth;
+    public void setView( BPropertyGrid view )
+    {
+        mView = view;
     }
-
-    public void setOwner( BPropertyGrid owner ) {
-        mView = owner;
+    
+    public BPropertyGrid getView()
+    {
+        return mView;
     }
 
     public void registSplitter( Component comp )
@@ -958,7 +1130,7 @@ class BPropertyGridControl
                 continue;
             }
             actrow++;
-            Color c = actrow % 2 == 0 ? BPropertyGrid.COLOR_EVEN : BPropertyGrid.COLOR_ODD;
+            Color c = actrow % 2 == 0 ? mView.getBackgroundEven() : mView.getBackgroundOdd();
             for( Component comp : mComponents.get( row ) ){
                 if( comp instanceof JLabel ){
                     ((JLabel)comp).setOpaque( true );
@@ -998,7 +1170,7 @@ class BPropertyGridControl
     {
         updateBackground( false );
         // 高さの+1は最下段のスペーサの分
-        mView.setPreferredSize( new Dimension( 4, mViewingRows * BPropertyGrid.HEIGHT + 1 ) );
+        mView.setPreferredSize( new Dimension( 4, mViewingRows * BPropertyGrid.DEFAULT_ROW_HEIGHT + 1 ) );
         doLayoutRecurse( mView );
         mView.revalidate();
     }
@@ -1014,59 +1186,74 @@ class BPropertyGridControl
             }
         }
     }
+
+    public int getColumnWidthFromView() {
+        if( mView != null ){
+            return mView.getColumnWidth();
+        }else{
+            return 60;
+        }
+    }
 }
 
 class BPropertyGridSplitAdapter implements MouseMotionListener, MouseListener
 {
     private int mInitX;
     private int mInitWidth;
-    private BPropertyGridControl mModel;
+    private BPropertyGridController mController;
     
-    public BPropertyGridSplitAdapter( BPropertyGridControl model )
+    public BPropertyGridSplitAdapter( BPropertyGridController controller )
     {
-        mModel = model;
+        mController = controller;
     }
     
     public void register( Component left, Component splitter )
     {
-        mModel.registSplitter( splitter );
-        mModel.registLeft( left );
+        mController.registSplitter( splitter );
+        mController.registLeft( left );
         splitter.addMouseListener( this );
         splitter.addMouseMotionListener( this );
     }
 
     @Override
-    public void mouseClicked(MouseEvent arg0) {
+    public void mouseClicked( MouseEvent arg0 )
+    {
     }
 
     @Override
-    public void mouseEntered(MouseEvent arg0) {
+    public void mouseEntered( MouseEvent arg0 )
+    {
     }
 
     @Override
-    public void mouseExited(MouseEvent arg0) {
+    public void mouseExited( MouseEvent arg0 )
+    {
     }
 
     @Override
-    public void mousePressed(MouseEvent arg0) {
+    public void mousePressed( MouseEvent arg0 )
+    {
         mInitX = MouseInfo.getPointerInfo().getLocation().x;
-        mInitWidth = mModel.getColumnWidth();
+        mInitWidth = mController.getColumnWidthFromView();
     }
 
     @Override
-    public void mouseReleased(MouseEvent arg0) {
+    public void mouseReleased( MouseEvent arg0 )
+    {
     }
 
     @Override
-    public void mouseDragged(MouseEvent arg0) {
+    public void mouseDragged( MouseEvent arg0 )
+    {
         int x = MouseInfo.getPointerInfo().getLocation().x;
         int delta = x - mInitX;
         int draft = mInitWidth + delta;
-        mModel.setColumnWidth( draft );
+        mController.notifyColumnWidthToView( draft );
     }
 
     @Override
-    public void mouseMoved(MouseEvent arg0) {
+    public void mouseMoved( MouseEvent arg0 )
+    {
     }
 }
 
@@ -1102,22 +1289,29 @@ class BPropertyGridBottomSpacer extends JPanel
 {
     private static final long serialVersionUID = -6766316508357991559L;
 
-    private BPropertyGridControl mControl;
+    private BPropertyGridController mController;
     
-    public BPropertyGridBottomSpacer( BPropertyGridControl control )
+    public BPropertyGridBottomSpacer( BPropertyGridController controller )
     {
-        mControl = control;
+        mController = controller;
     }
     
     @Override
     public void paint( Graphics g )
     {
-        int indx = mControl.getViewingRows();
-        int num = getHeight() / BPropertyGrid.HEIGHT + 1;
+        int indx = mController.getViewingRows();
+        BPropertyGrid view = mController.getView();
+        int row_height = BPropertyGrid.DEFAULT_ROW_HEIGHT;
+        if( view != null ){
+            row_height = view.getRowHeight();
+        }
+        int num = getHeight() / row_height + 1;
         int width = getWidth();
+        Color even = (view == null) ? BPropertyGrid.DEFAULT_BACKGROUND_EVEN : view.getBackgroundEven();
+        Color odd = (view == null) ? BPropertyGrid.DEFAULT_BACKGROUND_ODD : view.getBackgroundOdd();
         for( int i = 0; i < num; i++ ){
-            g.setColor( (indx % 2 == 0) ? BPropertyGrid.COLOR_EVEN : BPropertyGrid.COLOR_ODD );
-            g.fillRect( 0, i * BPropertyGrid.HEIGHT, width, BPropertyGrid.HEIGHT );
+            g.setColor( (indx % 2 == 0) ? even : odd );
+            g.fillRect( 0, i * row_height, width, row_height );
             indx++;
         }
     }
@@ -1140,7 +1334,8 @@ class BPropertyGridHeaderBase extends JPanel
         setOpaque( true );
     }
     
-    public boolean isDrawBackground() {
+    public boolean isDrawBackground()
+    {
         return mIsDrawBackground;
     }
 
@@ -1160,7 +1355,8 @@ class BPropertyGridHeaderBase extends JPanel
      * @param font 
      * @return 
      */
-    public static Dimension measureString( String text, Font font ){
+    public static Dimension measureString( String text, Font font )
+    {
         BufferedImage dumy = new BufferedImage( 1, 1, BufferedImage.TYPE_INT_BGR );
         Graphics2D g = dumy.createGraphics();
         g.setFont( font );
@@ -1176,7 +1372,8 @@ class BPropertyGridHeaderBase extends JPanel
      * @param font 
      * @return 
      */
-    private static int getStringDrawOffset( java.awt.Font font ) {
+    private static int getStringDrawOffset( java.awt.Font font )
+    {
         int ret = 0;
         java.awt.Dimension size = measureString( PANGRAM, font );
         if ( size.height <= 0 ) {
@@ -1293,9 +1490,11 @@ class BPropertyGridLeftSpacer extends JPanel
     private static final long serialVersionUID = 9187548066947509485L;
 
     private BPropertyGridExpandMark mOwner = null;
+    private BPropertyGridController mController = null;
     
-    public BPropertyGridLeftSpacer( BPropertyGridExpandMark owner )
+    public BPropertyGridLeftSpacer( BPropertyGridController controller, BPropertyGridExpandMark owner )
     {
+        mController = controller;
         mOwner = owner;
     }
     
@@ -1308,11 +1507,18 @@ class BPropertyGridLeftSpacer extends JPanel
         }
         int height = this.getHeight();
         int width = this.getWidth();
-        int num_row = (height + 1) / BPropertyGrid.HEIGHT;
+        BPropertyGrid view = mController.getView();
+        int row_height = BPropertyGrid.DEFAULT_ROW_HEIGHT;
+        if( view != null ){
+            row_height = view.getRowHeight();
+        }
+        int num_row = (height + 1) / row_height;
+        Color even = (view == null) ? BPropertyGrid.DEFAULT_BACKGROUND_EVEN : view.getBackgroundEven();
+        Color odd = (view == null) ? BPropertyGrid.DEFAULT_BACKGROUND_ODD : view.getBackgroundOdd();
         for( int i = 0; i < num_row; i++ ){
             indx++;
-            g.setColor( (indx % 2 == 0) ? BPropertyGrid.COLOR_EVEN : BPropertyGrid.COLOR_ODD );
-            g.fillRect( 0, i * BPropertyGrid.HEIGHT, width, BPropertyGrid.HEIGHT );
+            g.setColor( (indx % 2 == 0) ? even : odd );
+            g.fillRect( 0, i * row_height, width, row_height );
         }
     }
 }
@@ -1327,7 +1533,7 @@ class BPropertyGridExpandMark extends BPropertyGridHeaderBase
     private boolean mIsExpand = true;
     private Image mIconFold;
     private Image mIconExpand;
-    private BPropertyGridControl mModel;
+    private BPropertyGridController mController;
     public int actualRowIndex = 0;
     private Component mAdditionalMouseTrigger = null;
     private MouseListener mMouseListener = null;
@@ -1335,17 +1541,16 @@ class BPropertyGridExpandMark extends BPropertyGridHeaderBase
    /**
     * ▶▼などと書かれたラベルを作る
     */
-   public BPropertyGridExpandMark( final BPropertyGridControl model, boolean draw_background )
+   public BPropertyGridExpandMark( final BPropertyGridController controller, boolean draw_background )
    {
        super();
        setDrawBackground( draw_background );
-       mModel = model;
+       mController = controller;
        mIconFold = getImageFold();
        mIconExpand = getImageExpand();
        setIcon( mIconExpand );
-       this.setPreferredSize( new Dimension( BPropertyGrid.SPACE, BPropertyGrid.HEIGHT ) );
-       //this.setHorizontalAlignment( JLabel.LEADING );
-       //this.setVerticalAlignment( JLabel.CENTER );
+       this.setPreferredSize( new Dimension( BPropertyGrid.SPACE, BPropertyGrid.DEFAULT_ROW_HEIGHT ) );
+       mController.registPreferredHeightSpecified( this );
        this.addMouseListener( new MouseAdapter(){
            @Override
            public void mouseClicked( MouseEvent e )
@@ -1379,6 +1584,11 @@ class BPropertyGridExpandMark extends BPropertyGridHeaderBase
        } );
    }
 
+   public boolean isExpanded()
+   {
+       return mIsExpand;
+   }
+   
    @Override
    public void addMouseListener( MouseListener l )
    {
@@ -1402,7 +1612,7 @@ class BPropertyGridExpandMark extends BPropertyGridHeaderBase
    
    private void handleExpandStateChange()
    {
-       mModel.updateView();
+       mController.updateView();
        this.repaint();
    }
    
@@ -1493,38 +1703,46 @@ class BPropertyGridComboBox extends JPanel
     private BPropertyGridComboBoxDropdown windowDropdown = null;  //  @jve:decl-index=0:visual-constraint="184,55"
     private Vector<ItemListener> mItemListeners = new Vector<ItemListener>();
     private int mSelectedIndex = -1;
+    private BPropertyGridController mController = null;
 
     /**
      * This method initializes 
      * 
      */
-    public BPropertyGridComboBox() {
+    public BPropertyGridComboBox( BPropertyGridController controller )
+    {
         super();
+        mController = controller;
         initialize();
         getWindowDropdown();
         this.addComponentListener( new ComponentListener(){
             @Override
-            public void componentHidden(ComponentEvent arg0) {
+            public void componentHidden( ComponentEvent arg0 )
+            {
             }
 
             @Override
-            public void componentMoved(ComponentEvent arg0) {
+            public void componentMoved( ComponentEvent arg0 )
+            {
             }
 
             @Override
-            public void componentResized(ComponentEvent arg0) {
+            public void componentResized( ComponentEvent arg0 )
+            {
                 if( windowDropdown.isVisible() ){
                     windowDropdown.setSize( getWidth(), windowDropdown.getHeight() );
                 }
             }
 
             @Override
-            public void componentShown(ComponentEvent arg0) {
+            public void componentShown( ComponentEvent arg0 )
+            {
             }
         });
         labelValue.addMouseListener( new MouseListener(){
             @Override
-            public void mouseClicked(MouseEvent arg0) {
+            public void mouseClicked( MouseEvent arg0 )
+            {
                 if( getWindowDropdown().isVisible() ){
                     //hideDropdown();
                 }else{
@@ -1533,15 +1751,18 @@ class BPropertyGridComboBox extends JPanel
             }
 
             @Override
-            public void mouseEntered(MouseEvent arg0) {
+            public void mouseEntered( MouseEvent arg0 )
+            {
             }
 
             @Override
-            public void mouseExited(MouseEvent arg0) {
+            public void mouseExited( MouseEvent arg0 )
+            {
             }
 
             @Override
-            public void mousePressed(MouseEvent arg0) {
+            public void mousePressed( MouseEvent arg0 )
+            {
                 if( getWindowDropdown().isVisible() ){
                     hideDropdown();
                 }else{
@@ -1550,9 +1771,42 @@ class BPropertyGridComboBox extends JPanel
             }
 
             @Override
-            public void mouseReleased(MouseEvent arg0) {
+            public void mouseReleased( MouseEvent arg0 )
+            {
             }
         } );
+    }
+
+    private Image ddown2()
+    {
+        try{
+            return ImageIO.read( new ByteArrayInputStream( new byte[]{
+                (byte)137, (byte)80,  (byte)78,  (byte)71,  (byte)13,  (byte)10,  (byte)26,  (byte)10,  (byte)0,   (byte)0,
+                (byte)0,   (byte)13,  (byte)73,  (byte)72,  (byte)68,  (byte)82,  (byte)0,   (byte)0,   (byte)0,   (byte)7,
+                (byte)0,   (byte)0,   (byte)0,   (byte)6,   (byte)8,   (byte)6,   (byte)0,   (byte)0,   (byte)0,   (byte)15,
+                (byte)14,  (byte)132, (byte)118, (byte)0,   (byte)0,   (byte)0,   (byte)1,   (byte)115, (byte)82,  (byte)71,
+                (byte)66,  (byte)0,   (byte)174, (byte)206, (byte)28,  (byte)233, (byte)0,   (byte)0,   (byte)0,   (byte)4,
+                (byte)103, (byte)65,  (byte)77,  (byte)65,  (byte)0,   (byte)0,   (byte)177, (byte)143, (byte)11,  (byte)252,
+                (byte)97,  (byte)5,   (byte)0,   (byte)0,   (byte)0,   (byte)32,  (byte)99,  (byte)72,  (byte)82,  (byte)77,
+                (byte)0,   (byte)0,   (byte)122, (byte)38,  (byte)0,   (byte)0,   (byte)128, (byte)132, (byte)0,   (byte)0,
+                (byte)250, (byte)0,   (byte)0,   (byte)0,   (byte)128, (byte)232, (byte)0,   (byte)0,   (byte)117, (byte)48,
+                (byte)0,   (byte)0,   (byte)234, (byte)96,  (byte)0,   (byte)0,   (byte)58,  (byte)152, (byte)0,   (byte)0,
+                (byte)23,  (byte)112, (byte)156, (byte)186, (byte)81,  (byte)60,  (byte)0,   (byte)0,   (byte)0,   (byte)100,
+                (byte)73,  (byte)68,  (byte)65,  (byte)84,  (byte)24,  (byte)87,  (byte)99,  (byte)252, (byte)255, (byte)255,
+                (byte)63,  (byte)3,   (byte)78,  (byte)112, (byte)247, (byte)238, (byte)93,  (byte)199, (byte)230, (byte)230,
+                (byte)230, (byte)247, (byte)245, (byte)245, (byte)245, (byte)223, (byte)97,  (byte)184, (byte)165, (byte)165,
+                (byte)229, (byte)237, (byte)253, (byte)7,   (byte)15,  (byte)108, (byte)25,  (byte)64,  (byte)58,  (byte)15,
+                (byte)28,  (byte)56,  (byte)80,  (byte)89,  (byte)93,  (byte)93,  (byte)253, (byte)31,  (byte)134, (byte)143,
+                (byte)28,  (byte)57,  (byte)82,  (byte)8,   (byte)54,  (byte)17,  (byte)68,  (byte)128, (byte)240, (byte)194,
+                (byte)133, (byte)11,  (byte)183, (byte)130, (byte)36,  (byte)151, (byte)47,  (byte)95,  (byte)190, (byte)10,
+                (byte)38,  (byte)6,   (byte)151, (byte)124, (byte)244, (byte)232, (byte)145, (byte)197, (byte)244, (byte)233,
+                (byte)211, (byte)79,  (byte)60,  (byte)121, (byte)242, (byte)196, (byte)4,   (byte)67,  (byte)18,  (byte)36,
+                (byte)240, (byte)234, (byte)213, (byte)43,  (byte)13,  (byte)152, (byte)4,   (byte)136, (byte)6,   (byte)0,
+                (byte)228, (byte)53,  (byte)100, (byte)110, (byte)59,  (byte)11,  (byte)255, (byte)234, (byte)0,   (byte)0,
+                (byte)0,   (byte)0,   (byte)73,  (byte)69,  (byte)78,  (byte)68,  (byte)174, (byte)66,  (byte)96,  (byte)130,} ) );
+        }catch( Exception ex ){
+            return null;
+        }
     }
 
     @Override
@@ -1577,7 +1831,8 @@ class BPropertyGridComboBox extends JPanel
     }
     
     @Override
-    public Object[] getSelectedObjects() {
+    public Object[] getSelectedObjects()
+    {
         int indx = windowDropdown.getSelectedIndex();
         if( 0 <= indx && indx < windowDropdown.getItemCount() ){
             return new Object[]{ windowDropdown.getItemAt( indx ) };
@@ -1586,7 +1841,8 @@ class BPropertyGridComboBox extends JPanel
         }
     }
 
-    public void setUnitSize( int width, int height ){
+    public void setUnitSize( int width, int height )
+    {
         labelValue.setPreferredSize( new Dimension( 4, width ) );
         buttonDropdown.setPreferredSize( new Dimension( width, height ) );
     }
@@ -1713,7 +1969,8 @@ class BPropertyGridComboBox extends JPanel
         }
     }
     
-    public void actionPerformed(java.awt.event.ActionEvent e) {
+    public void actionPerformed( java.awt.event.ActionEvent e )
+    {
         if ( getWindowDropdown().isVisible() ){
             hideDropdown();
         }else{
@@ -1725,7 +1982,8 @@ class BPropertyGridComboBox extends JPanel
      * This method initializes this
      * 
      */
-    private void initialize() {
+    private void initialize()
+    {
         GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
         gridBagConstraints1.gridx = 1;
         gridBagConstraints1.weighty = 1.0D;
@@ -1742,12 +2000,12 @@ class BPropertyGridComboBox extends JPanel
         labelValue = new BLabel();
         labelValue.setText("");
         labelValue.setPreferredSize(new Dimension(16, 16));
+        mController.registPreferredHeightSpecified( labelValue );
         this.setLayout(new GridBagLayout());
         this.setSize(new Dimension(60, 16));
         this.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
         this.add(labelValue, gridBagConstraints);
         this.add(getButtonDropdown(), gridBagConstraints1);
-            
     }
 
     /**
@@ -1755,10 +2013,13 @@ class BPropertyGridComboBox extends JPanel
      *  
      * @return javax.swing.JButton  
      */
-    private JButton getButtonDropdown() {
+    private JButton getButtonDropdown()
+    {
         if (buttonDropdown == null) {
             buttonDropdown = new JButton();
             buttonDropdown.setPreferredSize(new Dimension(16, 16));
+            buttonDropdown.setIcon( new ImageIcon( ddown2() ) );
+            mController.registPreferredHeightSpecified( buttonDropdown );
             buttonDropdown.addActionListener( this );
             buttonDropdown.addKeyListener( new KeyAdapter(){
                 @Override
@@ -1823,9 +2084,10 @@ class BPropertyGridComboBox extends JPanel
      *  
      * @return javax.swing.JWindow  
      */
-    private BPropertyGridComboBoxDropdown getWindowDropdown() {
+    private BPropertyGridComboBoxDropdown getWindowDropdown()
+    {
         if (windowDropdown == null) {
-            windowDropdown = new BPropertyGridComboBoxDropdown( SwingUtilities.getWindowAncestor( this ) );
+            windowDropdown = new BPropertyGridComboBoxDropdown( mController );
             windowDropdown.setSize(new Dimension(97, 48));
             windowDropdown.listItems.addMouseListener( new MouseAdapter(){
                 @Override
@@ -1845,24 +2107,29 @@ class BPropertyGridComboBox extends JPanel
     }
 }  //  @jve:decl-index=0:visual-constraint="10,10"
 
-class BPropertyGridComboBoxDropdown extends Window {
+class BPropertyGridComboBoxDropdown extends Window
+{
     private static final long serialVersionUID = -330369852089355660L;
     private static final int MAX_ROW_COUNT = 8; 
+
     public JList listItems = null;
     private JPanel jPanel = null;
     private DefaultListModel model = null;
     private JScrollPane scrollPane = null;
     private Window rootWindow = null;
     private ComponentAdapter rootWindowComponentAdapter = null;
+    //private BPropertyGridController mController = null;
 
     /**
      * This method initializes 
      * 
      */
-    public BPropertyGridComboBoxDropdown( Window w ) {
-        super( w );
+    public BPropertyGridComboBoxDropdown( BPropertyGridController controller )
+    {
+        super( null );
         initialize();
-        listItems.setFixedCellHeight( BPropertyGrid.HEIGHT );
+        //mController = controller;
+        listItems.setFixedCellHeight( BPropertyGrid.DEFAULT_ROW_HEIGHT );
         setMaximumRowCount( 1 );
         addWindowListener( new WindowAdapter(){
             @Override
@@ -1883,10 +2150,11 @@ class BPropertyGridComboBoxDropdown extends Window {
         if( listItems.getVisibleRowCount() < c ){
             c = listItems.getVisibleRowCount();
         }
-        setSize( listItems.getWidth(), c * BPropertyGrid.HEIGHT );
+        setSize( listItems.getWidth(), c * BPropertyGrid.DEFAULT_ROW_HEIGHT );
     }
     
-    public void setMaximumRowCount( int value ){
+    public void setMaximumRowCount( int value )
+    {
         if( value <= 0 ){
             value = 1;
         }
@@ -1952,7 +2220,8 @@ class BPropertyGridComboBoxDropdown extends Window {
      * This method initializes this
      * 
      */
-    private void initialize() {
+    private void initialize()
+    {
         this.setSize(new Dimension(92, 125));
         this.add(getJPanel());
             
@@ -1971,7 +2240,8 @@ class BPropertyGridComboBoxDropdown extends Window {
      *  
      * @return javax.swing.JList    
      */
-    private JList getListItems() {
+    private JList getListItems()
+    {
         if (listItems == null) {
             listItems = new JList();
             listItems.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
@@ -1987,7 +2257,8 @@ class BPropertyGridComboBoxDropdown extends Window {
      *  
      * @return javax.swing.JPanel   
      */
-    private JPanel getJPanel() {
+    private JPanel getJPanel()
+    {
         if (jPanel == null) {
             GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
             gridBagConstraints1.fill = GridBagConstraints.BOTH;
@@ -2009,7 +2280,8 @@ class BPropertyGridComboBoxDropdown extends Window {
      *  
      * @return javax.swing.JScrollPane  
      */
-    private JScrollPane getJScrollPane() {
+    private JScrollPane getJScrollPane()
+    {
         if (scrollPane == null) {
             scrollPane = new JScrollPane();
             scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));

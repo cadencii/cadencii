@@ -42,7 +42,6 @@ public class BLabel extends JLabel{
     
     public void setMnemonic( int value, Component comp )
     {
-        char c = (char)value;
         String text = getText();
         int index = text.indexOf( value );
         if( index < 0 ){

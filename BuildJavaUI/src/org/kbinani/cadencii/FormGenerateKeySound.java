@@ -2,7 +2,6 @@
 
 //SECTION-BEGIN-IMPORT
 import org.kbinani.windows.forms.BDialog;
-import org.kbinani.windows.forms.BForm;
 import java.awt.Dimension;
 import javax.swing.JPanel;
 import java.awt.GridBagLayout;
@@ -15,7 +14,8 @@ import javax.swing.JComboBox;
 import javax.swing.JCheckBox;
 
 //SECTION-END-IMPORT
-public class FormGenerateKeySound extends BDialog {
+public class FormGenerateKeySound extends BDialog
+{
     //SECTION-BEGIN-FIELD
     
     private static final long serialVersionUID = 3420499863033740708L;

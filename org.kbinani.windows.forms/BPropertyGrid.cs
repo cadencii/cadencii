@@ -1,6 +1,6 @@
 /*
- * BMenuItem.cs
- * Copyright © 2009-2011 kbinani
+ * BPropertyGrid.cs
+ * Copyright © 2011 kbinani
  *
  * This file is part of org.kbinani.windows.forms.
  *

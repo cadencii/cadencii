@@ -12,12 +12,12 @@ import javax.swing.SwingConstants;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BCheckBox;
 import org.kbinani.windows.forms.BDialog;
-import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BLabel;
 import org.kbinani.windows.forms.BTextBox;
 
 //SECTION-END-IMPORT
-public class FormCheckUnknownSingerAndResampler extends BDialog {
+public class FormCheckUnknownSingerAndResampler extends BDialog
+{
     //SECTION-BEGIN-FIELD
 
     private static final long serialVersionUID = 5210609912644248288L;

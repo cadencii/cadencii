@@ -35,7 +35,7 @@ public class BPopupMenu extends JPopupMenu
 
     /* root impl of PopupMenuListener */
     // root impl of PopupMenuListener is in BPopupMenu
-    public BEvent<BCancelEventHandler> openingEvent = new BEvent<BCancelEventHandler>();
+    public final BEvent<BCancelEventHandler> openingEvent = new BEvent<BCancelEventHandler>();
     public void popupMenuCanceled( PopupMenuEvent e ){
     }
     public void popupMenuWillBecomeInvisible( PopupMenuEvent e ){
@@ -53,8 +53,8 @@ public class BPopupMenu extends JPopupMenu
     }
 
     // root impl of ComponentListener is in BButton
-    public BEvent<BEventHandler> visibleChangedEvent = new BEvent<BEventHandler>();
-    public BEvent<BEventHandler> resizeEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> visibleChangedEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> resizeEvent = new BEvent<BEventHandler>();
     public void componentHidden(ComponentEvent e) {
         try{
             visibleChangedEvent.raise( this, new BEventArgs() );

@@ -20,6 +20,8 @@ import org.kbinani.BEventHandler;
 
 class TestBListView extends JFrame
 {
+    private static final long serialVersionUID = 1L;
+
     public static void main( String[] args )
     {
         TestBListView f = new TestBListView();
@@ -52,7 +54,7 @@ public class BListView extends JTable
 {
     private static final long serialVersionUID = 3654926773702743627L;
 
-    public BEvent<BEventHandler> selectedIndexChangedEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> selectedIndexChangedEvent = new BEvent<BEventHandler>();
     private final int FIRST_COLUMN_WIDTH = 25;
     private DefaultTableModel mModel = null;
     private boolean mMultiSelect = false;
@@ -135,10 +137,10 @@ public class BListView extends JTable
     }
     
     // root impl of KeyListener is in BButton
-    public BEvent<BPreviewKeyDownEventHandler> previewKeyDownEvent = new BEvent<BPreviewKeyDownEventHandler>();
-    public BEvent<BKeyEventHandler> keyDownEvent = new BEvent<BKeyEventHandler>();
-    public BEvent<BKeyEventHandler> keyUpEvent = new BEvent<BKeyEventHandler>();
-    public BEvent<BKeyPressEventHandler> keyPressEvent = new BEvent<BKeyPressEventHandler>();
+    public final BEvent<BPreviewKeyDownEventHandler> previewKeyDownEvent = new BEvent<BPreviewKeyDownEventHandler>();
+    public final BEvent<BKeyEventHandler> keyDownEvent = new BEvent<BKeyEventHandler>();
+    public final BEvent<BKeyEventHandler> keyUpEvent = new BEvent<BKeyEventHandler>();
+    public final BEvent<BKeyPressEventHandler> keyPressEvent = new BEvent<BKeyPressEventHandler>();
     public void keyPressed( KeyEvent e ) {
         try{
             previewKeyDownEvent.raise( this, new BPreviewKeyDownEventArgs( e ) );

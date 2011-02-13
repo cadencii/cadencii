@@ -19,7 +19,7 @@ public class BRadioButton extends JRadioButton
     }
     
     // root impl of ItemListener is in BCheckBox
-    public BEvent<BEventHandler> checkedChangedEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> checkedChangedEvent = new BEvent<BEventHandler>();
     public void itemStateChanged(ItemEvent e) {
         try{
             checkedChangedEvent.raise( this, new BEventArgs() );

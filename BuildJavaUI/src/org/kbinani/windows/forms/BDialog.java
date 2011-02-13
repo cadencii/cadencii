@@ -27,11 +27,11 @@ public class BDialog extends JDialog
 {
     private static final long serialVersionUID = 6813116345545558212L;
 
-    public BEvent<BFormClosingEventHandler> formClosingEvent = new BEvent<BFormClosingEventHandler>();
-    public BEvent<BEventHandler> formClosedEvent = new BEvent<BEventHandler>();
-    public BEvent<BEventHandler> activatedEvent = new BEvent<BEventHandler>();
-    public BEvent<BEventHandler> deactivateEvent = new BEvent<BEventHandler>();
-    public BEvent<BEventHandler> loadEvent = new BEvent<BEventHandler>();
+    public final BEvent<BFormClosingEventHandler> formClosingEvent = new BEvent<BFormClosingEventHandler>();
+    public final BEvent<BEventHandler> formClosedEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> activatedEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> deactivateEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> loadEvent = new BEvent<BEventHandler>();
     private BDialogResult m_result = BDialogResult.CANCEL;
     
     public BDialog(){
@@ -93,10 +93,10 @@ public class BDialog extends JDialog
     }
 
     // root impl of KeyListener is in BButton
-    public BEvent<BPreviewKeyDownEventHandler> previewKeyDownEvent = new BEvent<BPreviewKeyDownEventHandler>();
-    public BEvent<BKeyEventHandler> keyDownEvent = new BEvent<BKeyEventHandler>();
-    public BEvent<BKeyEventHandler> keyUpEvent = new BEvent<BKeyEventHandler>();
-    public BEvent<BKeyPressEventHandler> keyPressEvent = new BEvent<BKeyPressEventHandler>();
+    public final BEvent<BPreviewKeyDownEventHandler> previewKeyDownEvent = new BEvent<BPreviewKeyDownEventHandler>();
+    public final BEvent<BKeyEventHandler> keyDownEvent = new BEvent<BKeyEventHandler>();
+    public final BEvent<BKeyEventHandler> keyUpEvent = new BEvent<BKeyEventHandler>();
+    public final BEvent<BKeyPressEventHandler> keyPressEvent = new BEvent<BKeyPressEventHandler>();
     public void keyPressed( KeyEvent e ) {
         try{
             previewKeyDownEvent.raise( this, new BPreviewKeyDownEventArgs( e ) );
@@ -193,9 +193,9 @@ public class BDialog extends JDialog
         }
     }
     
-    public BEvent<BEventHandler> sizeChangedEvent = new BEvent<BEventHandler>();
-    public BEvent<BEventHandler> locationChangedEvent = new BEvent<BEventHandler>();
-    public BEvent<BEventHandler> resizeEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> sizeChangedEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> locationChangedEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> resizeEvent = new BEvent<BEventHandler>();
     public BDialogResult getDialogResult(){
         return m_result;
     }

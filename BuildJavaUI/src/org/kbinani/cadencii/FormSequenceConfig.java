@@ -6,25 +6,13 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 import org.kbinani.windows.forms.BButton;
-import org.kbinani.windows.forms.BCheckBox;
 import org.kbinani.windows.forms.BComboBox;
 import org.kbinani.windows.forms.BDialog;
-import org.kbinani.windows.forms.BForm;
 import org.kbinani.windows.forms.BGroupBox;
 import org.kbinani.windows.forms.BLabel;
-import org.kbinani.windows.forms.BListBox;
-import org.kbinani.windows.forms.BPictureBox;
-import org.kbinani.windows.forms.BTextBox;
-import org.kbinani.windows.forms.RadioButtonManager;
-import javax.swing.JList;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.BorderFactory;
-import java.awt.Color;
 import org.kbinani.windows.forms.BRadioButton;
+import org.kbinani.windows.forms.RadioButtonManager;
 
 //SECTION-END-IMPORT
 public class FormSequenceConfig extends BDialog {

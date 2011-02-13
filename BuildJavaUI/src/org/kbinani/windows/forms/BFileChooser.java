@@ -1,16 +1,11 @@
 ﻿package org.kbinani.windows.forms;
 
-import java.awt.Component;
 import java.awt.Dialog;
 import java.awt.FileDialog;
 import java.awt.Frame;
-import java.awt.Window;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Vector;
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
-import org.kbinani.PortUtil;
 import org.kbinani.fsys;
 import org.kbinani.str;
 

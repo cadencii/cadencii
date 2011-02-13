@@ -28,7 +28,9 @@ import org.kbinani.media.*;
 import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*;
 import org.kbinani.xml.*;
+
 #else
+
 //#define USE_BGWORK_SCREEN
 using System;
 using System.Collections.Generic;
@@ -961,7 +963,7 @@ namespace org.kbinani.cadencii
             if ( AppManager.editorConfig.MixerVisible ) {
                 AppManager.mMixerWindow.setVisible( true );
             }
-            AppManager.mMixerWindow.VisibleChanged += new BEventHandler( mixerWindow_VisibleChanged );
+            AppManager.mMixerWindow.FormClosing += new BFormClosingEventHandler( mixerWindow_FormClosing );
 
             Point p1 = AppManager.editorConfig.FormIconPaletteLocation.toPoint();
             if ( !PortUtil.isPointInScreens( p1 ) ) {
@@ -972,7 +974,7 @@ namespace org.kbinani.cadencii
             if ( AppManager.editorConfig.IconPaletteVisible ) {
                 AppManager.iconPalette.setVisible( true );
             }
-            AppManager.iconPalette.VisibleChanged += new BEventHandler( iconPalette_VisibleChanged );
+            AppManager.iconPalette.FormClosing += new BFormClosingEventHandler( iconPalette_FormClosing );
             AppManager.iconPalette.LocationChanged += new BEventHandler( iconPalette_LocationChanged );
 
             trackSelector.CommandExecuted += new BEventHandler( trackSelector_CommandExecuted );
@@ -1060,7 +1062,6 @@ namespace org.kbinani.cadencii
             AppManager.propertyWindow.SizeChanged += new BEventHandler( propertyWindow_LocationOrSizeChanged );
             AppManager.propertyWindow.FormClosing += new BFormClosingEventHandler( propertyWindow_FormClosing );
             AppManager.propertyPanel.CommandExecuteRequired += new CommandExecuteRequiredEventHandler( propertyPanel_CommandExecuteRequired );
-            AppManager.propertyWindow.setFormCloseShortcutKey( AppManager.editorConfig.getShortcutKeyFor( menuVisualProperty ) );
             updatePropertyPanelState( AppManager.editorConfig.PropertyWindowStatus.State );
 #endif
             updateBgmMenuState();
@@ -4545,6 +4546,16 @@ namespace org.kbinani.cadencii
                     }
                 }
 
+#if ENABLE_PROPERTY
+                // プロパティ
+                if( AppManager.propertyWindow != null ){
+                    if( dict.containsKey( menuVisualProperty.getName() ) ){
+                        KeyStroke shortcut = BKeysUtility.getKeyStrokeFromBKeys( dict.get( menuVisualProperty.getName() ) );
+                        AppManager.propertyWindow.applyShortcut( shortcut );
+                    }
+                }
+#endif
+
                 // スクリプトにショートカットを適用
 #if JAVA
                 MenuElement[] sub_menu_script = menuScript.getSubElements();
@@ -7719,7 +7730,7 @@ namespace org.kbinani.cadencii
             menuVisualWaveform.CheckedChanged += new BEventHandler( menuVisualWaveform_CheckedChanged );
             menuVisualWaveform.MouseEnter += new BEventHandler( handleMenuMouseEnter );
             menuVisualProperty.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuVisualProperty.Click += new BEventHandler( menuVisualProperty_Click );
+            menuVisualProperty.CheckedChanged += new BEventHandler( menuVisualProperty_CheckedChanged );
             menuVisualGridline.CheckedChanged += new BEventHandler( menuVisualGridline_CheckedChanged );
             menuVisualGridline.MouseEnter += new BEventHandler( handleMenuMouseEnter );
             menuVisualIconPalette.Click += new BEventHandler( menuVisualIconPalette_Click );
@@ -10237,7 +10248,7 @@ namespace org.kbinani.cadencii
             AppManager.editorConfig.FormIconPaletteLocation = new XmlPoint( AppManager.iconPalette.getLocation() );
         }
 
-        public void iconPalette_VisibleChanged( Object sender, BEventArgs e )
+        public void iconPalette_FormClosing( Object sender, BFormClosingEventArgs e )
         {
             flipIconPaletteVisible( AppManager.iconPalette.isVisible() );
         }
@@ -10245,7 +10256,7 @@ namespace org.kbinani.cadencii
 
         //BOOKMARK: menuVisual
         #region menuVisual*
-        public void menuVisualProperty_Click( Object sender, EventArgs e )
+        public void menuVisualProperty_CheckedChanged( Object sender, EventArgs e )
         {
 #if ENABLE_PROPERTY
             if ( menuVisualProperty.isSelected() ) {
@@ -10462,7 +10473,7 @@ namespace org.kbinani.cadencii
 
         //BOOKMARK: mixerWindow
         #region mixerWindow
-        public void mixerWindow_VisibleChanged( Object sender, BEventArgs e )
+        public void mixerWindow_FormClosing( Object sender, BFormClosingEventArgs e )
         {
             flipMixerDialogVisible( AppManager.mMixerWindow.isVisible() );
         }
@@ -10566,8 +10577,8 @@ namespace org.kbinani.cadencii
             if ( e.CloseReason != System.Windows.Forms.CloseReason.UserClosing ) {
                 return;
             }
-#endif
             e.Cancel = true;
+#endif
             updatePropertyPanelState( PanelState.Hidden );
         }
 #endif
@@ -10578,13 +10589,16 @@ namespace org.kbinani.cadencii
             if ( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Window ) {
                 if ( AppManager.propertyWindow.getExtendedState() == BForm.ICONIFIED ) {
                     updatePropertyPanelState( PanelState.Docked );
+                    AppManager.propertyWindow.close();
+                    //AppManager.propertyWindow.setVisible( false );
                 } else {
                     Point parent = this.getLocation();
                     Point proeprty = AppManager.propertyWindow.getLocation();
-                    AppManager.editorConfig.PropertyWindowStatus.Bounds = new XmlRectangle( proeprty.x - parent.x,
-                                                                                            proeprty.y - parent.y,
-                                                                                            AppManager.propertyWindow.getWidth(),
-                                                                                            AppManager.propertyWindow.getHeight() );
+                    AppManager.editorConfig.PropertyWindowStatus.Bounds = 
+                        new XmlRectangle( proeprty.x - parent.x,
+                                          proeprty.y - parent.y,
+                                          AppManager.propertyWindow.getWidth(),
+                                          AppManager.propertyWindow.getHeight() );
                 }
             }
         }
@@ -11092,18 +11106,37 @@ namespace org.kbinani.cadencii
 
         public void FormMain_SizeChanged( Object sender, EventArgs e )
         {
-            if ( getExtendedState() == BForm.NORMAL ) {
-                AppManager.editorConfig.WindowRect = this.getBounds();
+            int state = getExtendedState();
+            if ( state == BForm.NORMAL || state == BForm.MAXIMIZED_BOTH ) {
+                if( state == BForm.NORMAL ){
+                    AppManager.editorConfig.WindowRect = this.getBounds();
+                }
 #if ENABLE_PROPERTY
-                AppManager.propertyWindow.setExtendedState( BForm.NORMAL );
-                AppManager.propertyWindow.setVisible( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Window );
+                // プロパティウィンドウの状態を更新
+                if( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Window ){
+                    if( AppManager.propertyWindow.getExtendedState() != BForm.NORMAL ){
+                        AppManager.propertyWindow.setExtendedState( BForm.NORMAL );
+                    }
+                    if( !AppManager.propertyWindow.isVisible() ){
+                        AppManager.propertyWindow.setVisible( true );
+                    }
+                }
 #endif
-                AppManager.mMixerWindow.setVisible( AppManager.editorConfig.MixerVisible );
+                // ミキサーウィンドウの状態を更新
+                boolean vm = AppManager.editorConfig.MixerVisible;
+                if( vm != AppManager.mMixerWindow.isVisible() ){
+                    AppManager.mMixerWindow.setVisible( vm );
+                }
+                
+                // アイコンパレットの状態を更新
                 if ( AppManager.iconPalette != null && menuVisualIconPalette.isSelected() ) {
-                    AppManager.iconPalette.setVisible( true );
+                    if( !AppManager.iconPalette.isVisible() ){
+                        AppManager.iconPalette.setVisible( true );
+                    }
                 }
                 updateLayout();
-            } else if ( getExtendedState() == BForm.ICONIFIED ) {
+                this.requestFocus();
+            } else if ( state == BForm.ICONIFIED ) {
 #if ENABLE_PROPERTY
                 AppManager.propertyWindow.setVisible( false );
 #endif
@@ -11111,7 +11144,7 @@ namespace org.kbinani.cadencii
                 if ( AppManager.iconPalette != null ) {
                     AppManager.iconPalette.setVisible( false );
                 }
-            } else if ( getExtendedState() == BForm.MAXIMIZED_BOTH ) {
+            }/* else if ( state == BForm.MAXIMIZED_BOTH ) {
 #if ENABLE_PROPERTY
                 AppManager.propertyWindow.setExtendedState( BForm.NORMAL );
                 AppManager.propertyWindow.setVisible( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Window );
@@ -11120,7 +11153,8 @@ namespace org.kbinani.cadencii
                 if ( AppManager.iconPalette != null && menuVisualIconPalette.isSelected() ) {
                     AppManager.iconPalette.setVisible( true );
                 }
-            }
+                this.requestFocus();
+            }*/
         }
 
         public void FormMain_MouseWheel( Object sender, BMouseEventArgs e )
@@ -13419,9 +13453,6 @@ namespace org.kbinani.cadencii
                         }
                     }
                     applyShortcut();
-#if ENABLE_PROPERTY
-                    AppManager.propertyWindow.setFormCloseShortcutKey( AppManager.editorConfig.getShortcutKeyFor( menuVisualProperty ) );
-#endif
                 }
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuSettingShortcut_Click; ex=" + ex + "\n" );

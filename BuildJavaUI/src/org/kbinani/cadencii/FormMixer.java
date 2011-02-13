@@ -1,21 +1,19 @@
 ﻿package org.kbinani.cadencii;
 
 //SECTION-BEGIN-IMPORT
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import org.kbinani.windows.forms.BDialog;
-import org.kbinani.windows.forms.BForm;
-import org.kbinani.windows.forms.BHScrollBar;
 import org.kbinani.windows.forms.BMenu;
 import org.kbinani.windows.forms.BMenuItem;
 import org.kbinani.windows.forms.BPanel;
-import javax.swing.JScrollPane;
-import java.awt.Dimension;
-import javax.swing.BorderFactory;
-import javax.swing.JLabel;
-import java.awt.Color;
 
 //SECTION-END-IMPORT
 public class FormMixer extends BDialog {

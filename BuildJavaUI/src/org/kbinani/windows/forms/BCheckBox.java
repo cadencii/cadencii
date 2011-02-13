@@ -39,7 +39,7 @@ public class BCheckBox extends JCheckBox
     }
     
     // root impl of Click event is in BButton
-    public BEvent<BEventHandler> clickEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> clickEvent = new BEvent<BEventHandler>();
     public void actionPerformed( ActionEvent e ){
         try{
             clickEvent.raise( this, new BEventArgs() );
@@ -49,12 +49,12 @@ public class BCheckBox extends JCheckBox
     }
     
     // root impl of MouseListener is in BButton
-    public BEvent<BMouseEventHandler> mouseClickEvent = new BEvent<BMouseEventHandler>();
-    public BEvent<BMouseEventHandler> mouseDoubleClickEvent = new BEvent<BMouseEventHandler>();
-    public BEvent<BMouseEventHandler> mouseDownEvent = new BEvent<BMouseEventHandler>();
-    public BEvent<BMouseEventHandler> mouseUpEvent = new BEvent<BMouseEventHandler>();
-    public BEvent<BEventHandler> mouseEnterEvent = new BEvent<BEventHandler>();
-    public BEvent<BEventHandler> mouseLeaveEvent = new BEvent<BEventHandler>();
+    public final BEvent<BMouseEventHandler> mouseClickEvent = new BEvent<BMouseEventHandler>();
+    public final BEvent<BMouseEventHandler> mouseDoubleClickEvent = new BEvent<BMouseEventHandler>();
+    public final BEvent<BMouseEventHandler> mouseDownEvent = new BEvent<BMouseEventHandler>();
+    public final BEvent<BMouseEventHandler> mouseUpEvent = new BEvent<BMouseEventHandler>();
+    public final BEvent<BEventHandler> mouseEnterEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> mouseLeaveEvent = new BEvent<BEventHandler>();
     public void mouseClicked( MouseEvent e ){
         try{
             mouseClickEvent.raise( this, BMouseEventArgs.fromMouseEvent( e ) );
@@ -96,7 +96,7 @@ public class BCheckBox extends JCheckBox
 
     /* root impl of ItemListener */
     // root impl of ItemListener is in BCheckBox
-    public BEvent<BEventHandler> checkedChangedEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> checkedChangedEvent = new BEvent<BEventHandler>();
     public void itemStateChanged(ItemEvent e) {
         try{
             checkedChangedEvent.raise( this, new BEventArgs() );

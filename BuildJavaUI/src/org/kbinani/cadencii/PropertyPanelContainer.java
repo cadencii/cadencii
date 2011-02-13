@@ -7,6 +7,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import javax.swing.BorderFactory;
+import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BPanel;
@@ -20,6 +21,7 @@ public class PropertyPanelContainer extends BPanel {
     private BButton btnClose = null;
     private BButton btnWindow = null;
     private JScrollPane panelMain = null;
+    private JLabel btnClose1 = null;
 
     //SECTION-END-FIELD
     /**
@@ -33,14 +35,14 @@ public class PropertyPanelContainer extends BPanel {
     //SECTION-BEGIN-METHOD
 
     public void addComponent( Component comp ){
-        GridBagConstraints gridBagConstraints = new GridBagConstraints();
+        /*GridBagConstraints gridBagConstraints = new GridBagConstraints();
         gridBagConstraints.gridx = 0;
         gridBagConstraints.fill = GridBagConstraints.BOTH;
         gridBagConstraints.weightx = 1.0D;
         gridBagConstraints.weighty = 1.0D;
         gridBagConstraints.anchor = GridBagConstraints.NORTH;
-        gridBagConstraints.gridy = 0;
-        getPanelMain().add( comp, gridBagConstraints);
+        gridBagConstraints.gridy = 0;*/
+        getPanelMain().setViewportView( comp );//.add( comp, gridBagConstraints);
     }
     
     /**
@@ -74,23 +76,28 @@ public class PropertyPanelContainer extends BPanel {
      */
     private BPanel getPanelTitle() {
         if (panelTitle == null) {
+            GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
+            gridBagConstraints2.gridx = 0;
+            gridBagConstraints2.weightx = 1.0D;
+            gridBagConstraints2.gridy = 0;
             GridBagConstraints gridBagConstraints111 = new GridBagConstraints();
             gridBagConstraints111.insets = new Insets(3, 0, 3, 3);
             gridBagConstraints111.gridy = 0;
             gridBagConstraints111.anchor = GridBagConstraints.EAST;
-            gridBagConstraints111.weightx = 1.0D;
+            gridBagConstraints111.weightx = 0.0D;
             gridBagConstraints111.gridx = 1;
             GridBagConstraints gridBagConstraints1211 = new GridBagConstraints();
             gridBagConstraints1211.insets = new Insets(3, 0, 3, 3);
             gridBagConstraints1211.gridy = 0;
             gridBagConstraints1211.anchor = GridBagConstraints.EAST;
-            gridBagConstraints1211.gridx = 3;
+            gridBagConstraints1211.gridx = 2;
             panelTitle = new BPanel();
             panelTitle.setLayout(new GridBagLayout());
-            panelTitle.setPreferredSize(new Dimension(156, 29));
+            panelTitle.setPreferredSize(new Dimension(4, 29));
             panelTitle.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
             panelTitle.add(getBtnClose(), gridBagConstraints1211);
             panelTitle.add(getBtnWindow(), gridBagConstraints111);
+            panelTitle.add(getBtnClose1(), gridBagConstraints2);
         }
         return panelTitle;
     }
@@ -132,8 +139,25 @@ public class PropertyPanelContainer extends BPanel {
         if (panelMain == null) {
             panelMain = new JScrollPane();
             panelMain.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+            panelMain.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+            panelMain.setPreferredSize(new Dimension(4, 4));
+            panelMain.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         }
         return panelMain;
+    }
+
+    /**
+     * This method initializes btnClose1	
+     * 	
+     * @return org.kbinani.windows.forms.BButton	
+     */
+    private JLabel getBtnClose1() {
+        if (btnClose1 == null) {
+            btnClose1 = new JLabel();
+            btnClose1.setPreferredSize(new Dimension(4, 4));
+            btnClose1.setText("");
+        }
+        return btnClose1;
     }
 
     //SECTION-END-METHOD
