@@ -1022,7 +1022,7 @@ namespace org.kbinani.cadencii
                 this.setBounds( bounds );
                 AppManager.editorConfig.WindowRect = bounds;
             }
-            this.SizeChanged += new BEventHandler( FormMain_SizeChanged );
+            this.WindowStateChanged += new BEventHandler( FormMain_WindowStateChanged );
             this.LocationChanged += new BEventHandler( FormMain_LocationChanged );
 
             updateScrollRangeHorizontal();
@@ -2407,7 +2407,6 @@ namespace org.kbinani.cadencii
         {
             if ( state == PanelState.Docked ) {
                 mPropertyPanelContainer.addComponent( AppManager.propertyPanel );
-                AppManager.propertyWindow.setVisible( false );
                 menuVisualProperty.setSelected( true );
                 AppManager.editorConfig.PropertyWindowStatus.State = PanelState.Docked;
                 splitContainerProperty.setSplitterFixed( false );
@@ -2419,7 +2418,13 @@ namespace org.kbinani.cadencii
 #endif
                 splitContainerProperty.setDividerLocation( AppManager.editorConfig.PropertyWindowStatus.DockWidth );
                 AppManager.editorConfig.PropertyWindowStatus.WindowState = BFormWindowState.Minimized;
-                AppManager.propertyWindow.setExtendedState( BForm.ICONIFIED );
+#if JAVA
+                AppManager.propertyWindow.formClosingEvent.remove( new BFormClosingEventHandler( this, "propertyWindow_FormClosing" ) );
+                AppManager.propertyWindow.close();
+                AppManager.propertyWindow.formClosingEvent.add( new BFormClosingEventHandler( this, "propertyWindow_FormClosing" ) );
+#else
+                AppManager.propertyWindow.setVisible( false );
+#endif
             } else if ( state == PanelState.Hidden ) {
                 AppManager.propertyWindow.setVisible( false );
                 menuVisualProperty.setSelected( false );
@@ -2436,10 +2441,6 @@ namespace org.kbinani.cadencii
                 splitContainerProperty.setDividerSize( 0 );
                 splitContainerProperty.setSplitterFixed( true );
             } else if ( state == PanelState.Window ) {
-                AppManager.propertyWindow.setVisible( true );
-                if ( AppManager.propertyWindow.getExtendedState() != BForm.NORMAL ) {
-                    AppManager.propertyWindow.setExtendedState( BForm.NORMAL );
-                }
 #if JAVA
                 AppManager.propertyWindow.addComponent( AppManager.propertyPanel );
 #else
@@ -2450,6 +2451,10 @@ namespace org.kbinani.cadencii
                 Point property = new Point( rc.x, rc.y );
                 AppManager.propertyWindow.setBounds( new Rectangle( parent.x + property.x, parent.y + property.y, rc.width, rc.height ) );
                 normalizeFormLocation( AppManager.propertyWindow );
+                if ( AppManager.propertyWindow.getExtendedState() != BForm.NORMAL ) {
+                    AppManager.propertyWindow.setExtendedState( BForm.NORMAL );
+                }
+                AppManager.propertyWindow.setVisible( true );
                 menuVisualProperty.setSelected( true );
                 if ( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Docked ) {
                     AppManager.editorConfig.PropertyWindowStatus.DockWidth = splitContainerProperty.getDividerLocation();
@@ -10330,6 +10335,7 @@ namespace org.kbinani.cadencii
         public void menuVisualPluginUi_DropDownOpening( Object sender, EventArgs e )
         {
 #if ENABLE_VOCALOID
+#if !JAVA
             // VOCALOID1, 2
             int c = VSTiDllManager.vocaloidDriver.size();
             for ( int i = 0; i < c; i++ ) {
@@ -10355,6 +10361,7 @@ namespace org.kbinani.cadencii
                     menuVisualPluginUiVocaloid2.setSelected( chkv );
                 }
             }
+#endif
 #endif
 
 #if ENABLE_AQUESTONE
@@ -10399,6 +10406,7 @@ namespace org.kbinani.cadencii
 #endif
 
 #if ENABLE_VOCALOID
+#if !JAVA
             int c = VSTiDllManager.vocaloidDriver.size();
             for ( int i = 0; i < c; i++ ) {
                 VocaloidDriver vd = VSTiDllManager.vocaloidDriver.get( i );
@@ -10437,6 +10445,7 @@ namespace org.kbinani.cadencii
                     break;
                 }
             }
+#endif
 #endif
         }
 
@@ -10593,13 +10602,6 @@ namespace org.kbinani.cadencii
             if ( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Window ) {
                 if ( AppManager.propertyWindow.getExtendedState() == BForm.ICONIFIED ) {
                     updatePropertyPanelState( PanelState.Docked );
-#if JAVA
-                    AppManager.propertyWindow.formClosingEvent.remove( new BFormClosingEventHandler( this, "propertyWindow_FormClosing" ) );
-                    AppManager.propertyWindow.close();
-                    AppManager.propertyWindow.formClosingEvent.add( new BFormClosingEventHandler( this, "propertyWindow_FormClosing" ) );
-#else
-                    AppManager.propertyWindow.setVisible( false );
-#endif
                 }
             }
         }
@@ -10883,17 +10885,8 @@ namespace org.kbinani.cadencii
 
         public void FormMain_LocationChanged( Object sender, EventArgs e )
         {
-#if DEBUG
-            sout.println( "FormMain#FormMain_LocationChanged; getExtendedState()=" + getExtendedState() + "; NORMAL=" + BForm.NORMAL );
-#endif
             if ( getExtendedState() == BForm.NORMAL ) {
-#if DEBUG
-                sout.println( "FormMain#FormMain_LocationChanged; before; WindowRect=" + AppManager.editorConfig.WindowRect );
-#endif
                 AppManager.editorConfig.WindowRect = this.getBounds();
-#if DEBUG
-                sout.println( "FormMain#FormMain_LocationChanged; after; WindowRect=" + AppManager.editorConfig.WindowRect );
-#endif
             }
         }
 
@@ -11123,7 +11116,7 @@ namespace org.kbinani.cadencii
             }
         }
 
-        public void FormMain_SizeChanged( Object sender, EventArgs e )
+        public void FormMain_WindowStateChanged( Object sender, EventArgs e )
         {
             int state = getExtendedState();
             if ( state == BForm.NORMAL || state == BForm.MAXIMIZED_BOTH ) {

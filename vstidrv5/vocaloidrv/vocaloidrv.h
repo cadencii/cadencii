@@ -1,14 +1,39 @@
+/*
+ * vocaloidrv.h
+ * Copyright Â© 2011 kbinani
+ *
+ * This file is part of org.kbinani.cadencii.
+ *
+ * org.kbinani.cadencii is free software; you can redistribute it and/or
+ * modify it under the terms of the GPLv3 License.
+ *
+ * org.kbinani.cadencii is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+#pragma once
+
+// æ¨™æº–å‡ºåŠ›ã«waveã‚’ãƒã‚¤ãƒŠãƒªãƒ¢ãƒ¼ãƒ‰ã§å‡ºåŠ›ã™ã‚‹å ´åˆã«å®šç¾©
+//#define USE_STDOUT 1
+
 #include "../vstidrv.h"
+#include <io.h>
+#include <fcntl.h>
 
 void print_help();
 
 class vocaloidrv : public vstidrv
 {
 public:
-    vocaloidrv( string path ) : vstidrv( path ){
+    vocaloidrv( string path, string wave ) : vstidrv( path ){
         mIsRendering = false;
-        mFile = NULL;
-    };
+		mFile = NULL;
+		mUseStdOut = wave.length() == 0;
+		mFileName = wave;
+#ifdef _DEBUG
+		cout << "vocaloidrv#.ctor; mUseStdOut=" << (mUseStdOut ? "True" : "False") << "; mFileName=" << mFileName << endl;
+#endif
+	};
 
     ~vocaloidrv();
 
@@ -22,7 +47,7 @@ public:
     /// <param name="total_samples"></param>
     /// <param name="mode_infinite"></param>
     /// <param name="sample_rate"></param>
-    /// <param name="runner">‚±‚Ìƒhƒ‰ƒCƒo‚ğ‹ì“®‚µ‚Ä‚¢‚éRenderingRunner‚ÌƒIƒuƒWƒFƒNƒg</param>
+    /// <param name="runner">ã“ã®ãƒ‰ãƒ©ã‚¤ãƒã‚’é§†å‹•ã—ã¦ã„ã‚‹RenderingRunnerã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ</param>
     /// <returns></returns>
     int startRendering( long total_samples, bool mode_infinite, int sample_rate );
 
@@ -38,27 +63,29 @@ public:
 
 private:
     /// <summary>
-    /// w’è‚µ‚½ƒ^ƒCƒ€ƒR[ƒh‚É‚¨‚¯‚éC‹È“ª‚©‚ç‘ª‚Á‚½ŠÔ‚ğ’²‚×‚é
+    /// æŒ‡å®šã—ãŸã‚¿ã‚¤ãƒ ã‚³ãƒ¼ãƒ‰ã«ãŠã‘ã‚‹ï¼Œæ›²é ­ã‹ã‚‰æ¸¬ã£ãŸæ™‚é–“ã‚’èª¿ã¹ã‚‹
     /// </summary>
     double msec_from_clock( int timeCode );
 
-    // ”gŒ`‚Ìo—Íˆ—‚ğs‚¤D–ß‚è’l‚ªtrue‚Ìê‡C”gŒ`ˆ—’†‚É’†’f—v‹‚ªs‚í‚ê‚½‚±‚Æ‚ğ•\‚·
+    // æ³¢å½¢ã®å‡ºåŠ›å‡¦ç†ã‚’è¡Œã†ï¼æˆ»ã‚Šå€¤ãŒtrueã®å ´åˆï¼Œæ³¢å½¢å‡¦ç†ä¸­ã«ä¸­æ–­è¦æ±‚ãŒè¡Œã‚ã‚ŒãŸã“ã¨ã‚’è¡¨ã™
     bool waveIncoming( double *left, double *right, int length );
 
     static void merge_events( vector<MidiEvent *> &x0, vector<MidiEvent *> &y0, vector<MidiEvent *> &dst );
 
 private:
     static const int TIME_FORMAT = 480;
-    static const int DEF_TEMPO = 500000;           // ƒfƒtƒHƒ‹ƒg‚Ìƒeƒ“ƒ|D
+    static const int DEF_TEMPO = 500000;           // ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆã®ãƒ†ãƒ³ãƒï¼
 
     vector<MidiEvent *> mEvents0;
     vector<MidiEvent *> mEvents1;
     vector<TempoInfo *> mTempoList;
     bool mIsCancelRequired;
     /// <summary>
-    /// StartRenderingƒƒ\ƒbƒh‚ª‰ñ‚Á‚Ä‚¢‚éÅ’†‚Étrue
+    /// StartRenderingãƒ¡ã‚½ãƒƒãƒ‰ãŒå›ã£ã¦ã„ã‚‹æœ€ä¸­ã«true
     /// </summary>
     bool mIsRendering;
-    FILE *mFile;
+	FILE *mFile;
+	bool mUseStdOut;
+	string mFileName;
 
 };

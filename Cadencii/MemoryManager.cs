@@ -1,4 +1,4 @@
-#if ENABLE_VOCALOID
+#if !JAVA
 /*
  * MemoryManager.cs
  * Copyright © 2009-2011 kbinani

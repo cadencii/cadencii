@@ -1,4 +1,4 @@
-/**
+/*
  * VSTiDllManager.cs
  * Copyright © 2008-2011 kbinani
  *
@@ -53,9 +53,31 @@ namespace org.kbinani.cadencii {
         const float a0 = -17317.563f;
         const float a1 = 86.7312112f;
         const float a2 = -0.237323499f;
+        /// <summary>
+        /// 使用するWINEPREFIX
+        /// </summary>
+        public static String WinePrefix = "~/Library/Application Support/MikuInstaller/prefix/default";
+        /// <summary>
+        /// wineのトップディレクトリ
+        /// </summary>
+        public static String WineTop = "/Applications/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/SharedSupport";
+        /// <summary>
+        /// Wineでインストールされている（かもしれない）vocaloid2のvsti dllのパス．windowsのパス区切り形式で代入すること
+        /// </summary>
+        public static String WineVocaloid2Dll = "C:\\Program Files\\Steinberg\\VSTplugins\\VOCALOID2\\VOCALOID2.dll";
+        /// <summary>
+        /// Wineでインストールされている（かもしれない）vocaloidのvsti dllのパス．windowsのパス区切り形式で代入すること
+        /// </summary>
+        public static String WineVocaloid1Dll = "C:\\Program Files\\Steinberg\\VSTplugins\\VOCALOID\\VOCALOID.dll";
+        /// <summary>
+        /// Wineでインストールされている（かもしれない）AquesToneのvsti dllのパス．windowsのパス区切り形式で代入すること
+        /// </summary>
+        public static String WineAquesToneDll = "C:\\Program Files\\Steinberg\\VSTplugins\\AquesTone.dll";
 
 #if ENABLE_VOCALOID
+#if !JAVA
         public static Vector<VocaloidDriver> vocaloidDriver = new Vector<VocaloidDriver>();
+#endif
 #endif
 
         /// <summary>
@@ -85,6 +107,7 @@ namespace org.kbinani.cadencii {
 
         public static void init() {
 #if ENABLE_VOCALOID
+#if !JAVA
             int default_dse_version = VocaloSysUtil.getDefaultDseVersion();
             String editor_dir = VocaloSysUtil.getEditorPath( SynthesizerType.VOCALOID1 );
             String ini = "";
@@ -209,7 +232,8 @@ namespace org.kbinani.cadencii {
                     serr.println( "VSTiProxy#initCor; ex=" + ex );
                 }
             }
-#endif
+#endif // !JAVA
+#endif // ENABLE_VOCALOID
 
 #if ENABLE_AQUESTONE
             reloadAquesTone();
@@ -224,12 +248,39 @@ namespace org.kbinani.cadencii {
 
         public static boolean isRendererAvailable( RendererKind renderer ) {
 #if ENABLE_VOCALOID
+#if JAVA
+            if( renderer == RendererKind.VOCALOID2  || renderer == RendererKind.VOCALOID1_100 || renderer == RendererKind.VOCALOID1_101 ){
+                String dll = (renderer == RendererKind.VOCALOID2) ? WineVocaloid2Dll : WineVocaloid1Dll;
+                if( dll != null && dll.length() > 3 ){
+                    char drive_letter = dll.charAt( 0 );
+                    String drive = new String( new char[]{ drive_letter } ).toLowerCase();
+                    String inner_path = dll.substring( 2 ).replace( "\\", "/" );
+                    String prefix = WinePrefix;
+                    if( prefix == null ){
+                        prefix = "";
+                    }
+                    if( prefix.indexOf( "~" ) >= 0 ){
+                        String usr = System.getProperty( "user.name" );
+                        String tild = "/Users/" + usr;
+                        prefix = prefix.replace( "~", tild );
+                    }
+                    String act_dll = fsys.combine( fsys.combine( prefix, "drive_" + drive ), inner_path );
+                    String wine_exe = fsys.combine( fsys.combine( WineTop, "bin" ), "wine" );
+#if DEBUG
+                    sout.println( "VSTiDllManager#isRendererAvailable; act_dll=" + act_dll + "; exists=" + fsys.isFileExists( act_dll ) );
+                    sout.println( "VSTiDllManager#isRendererAvailable; wine_exe=" + wine_exe + "; exists=" + fsys.isFileExists( wine_exe ) );
+#endif // DEBUG
+                    return fsys.isFileExists( wine_exe ) && fsys.isFileExists( act_dll );
+                }
+            }
+#else // JAVA
             for ( int i = 0; i < vocaloidDriver.size(); i++ ) {
                 if ( renderer == vocaloidDriver.get( i ).kind && vocaloidDriver.get( i ).loaded ) {
                     return true;
                 }
             }
-#endif
+#endif // JAVA
+#endif // ENABLE_VOCALOID
 
 #if ENABLE_AQUESTONE
             AquesToneDriver aquesToneDriver = AquesToneDriver.getInstance();
@@ -270,19 +321,23 @@ namespace org.kbinani.cadencii {
 
         public static void terminate() {
 #if ENABLE_VOCALOID
+#if !JAVA
             for ( int i = 0; i < vocaloidDriver.size(); i++ ) {
                 if ( vocaloidDriver.get( i ) != null ) {
                     vocaloidDriver.get( i ).close();
                 }
             }
             vocaloidDriver.clear();
+#endif // !JAVA
 #if !MONO
+#if !JAVA
             if ( org.kbinani.cadencii.util.DllLoad.isInitialized() ) {
                 //うおお・・・
                 org.kbinani.cadencii.util.DllLoad.terminate();
             }
-#endif
-#endif
+#endif // !MONO
+#endif // !JAVA
+#endif // !ENABLE_VOCALOID
 
 #if ENABLE_AQUESTONE
             AquesToneDriver.unload();

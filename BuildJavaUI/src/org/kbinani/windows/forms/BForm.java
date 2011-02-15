@@ -24,6 +24,7 @@ public class BForm extends JFrame
     public final BEvent<BEventHandler> activatedEvent = new BEvent<BEventHandler>();
     public final BEvent<BEventHandler> deactivateEvent = new BEvent<BEventHandler>();
     public final BEvent<BEventHandler> loadEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> windowStateChangedEvent = new BEvent<BEventHandler>();
     private Object mTag = null;
     
     public BForm(){
@@ -141,7 +142,7 @@ public class BForm extends JFrame
     
     public void windowDeiconified( WindowEvent e ){
         try{
-            sizeChangedEvent.raise( this, new BEventArgs() );
+            windowStateChangedEvent.raise( this, new BEventArgs() );
         }catch( Exception ex ){
             System.err.println( "BForm#windowDeiconified; ex=" + ex );
         }
@@ -149,9 +150,9 @@ public class BForm extends JFrame
     
     public void windowIconified( WindowEvent e ){
         try{
-            sizeChangedEvent.raise( this, new BEventArgs() );
+            windowStateChangedEvent.raise( this, new BEventArgs() );
         }catch( Exception ex ){
-            System.err.println( "BForm#windowDeiconified; ex=" + ex );
+            System.err.println( "BForm#windowIconified; ex=" + ex );
         }
     }
     

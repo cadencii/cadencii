@@ -12,6 +12,19 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+
+package org.kbinani.cadencii;
+
+import java.awt.*;
+import java.io.*;
+import java.util.*;
+import org.kbinani.*;
+import org.kbinani.media.*;
+import org.kbinani.vsq.*;
+
+#else
+
 using System;
 using System.Windows.Forms;
 using System.Threading;
@@ -42,8 +55,13 @@ namespace org.kbinani.cadencii {
 namespace org.kbinani.cadencii
 {
     using boolean = System.Boolean;
+#endif
 
+#if JAVA
+    public class VocaloidWaveGenerator extends WaveUnit implements WaveGenerator
+#else
     public class VocaloidWaveGenerator : WaveUnit, WaveGenerator, IWaveIncoming
+#endif
     {
         private const int BUFLEN = 1024;
         private const int VERSION = 0;
@@ -60,7 +78,9 @@ namespace org.kbinani.cadencii
         private WaveReceiver mReceiver = null;
         private int mTrimRemain = 0;
         private boolean mRunning = false;
+#if !JAVA
         private VocaloidDriver mDriver = null;
+#endif
         /// <summary>
         /// 波形処理ラインのサンプリング周波数
         /// </summary>
@@ -101,11 +121,18 @@ namespace org.kbinani.cadencii
         public void stop()
         {
             if ( mRunning ) {
+#if !JAVA
                 mDriver.abortRendering();
+#endif
                 mAbortRequired = true;
                 while ( mRunning ) {
 #if JAVA
-                    Thread.sleep( 100 );
+                    try{
+                        Thread.sleep( 100 );
+                    }catch( Exception ex ){
+                        ex.printStackTrace();
+                        break;
+                    }
 #else
                     Thread.Sleep( 100 );
 #endif
@@ -134,7 +161,15 @@ namespace org.kbinani.cadencii
             mEndClock = end_clock;
             mSampleRate = sample_rate;
             mDriverSampleRate = 44100;
-            mContext = new RateConvertContext( mDriverSampleRate, mSampleRate );
+            try{
+                mContext = new RateConvertContext( mDriverSampleRate, mSampleRate );
+            }catch( Exception ex ){
+                try{
+                    // 苦肉の策
+                    mContext = new RateConvertContext( mDriverSampleRate, mDriverSampleRate );
+                }catch( Exception ex2 ){
+                }
+            }
         }
 
         public override int getVersion()
@@ -232,6 +267,7 @@ namespace org.kbinani.cadencii
             }
             split.updateTotalClocks();
 
+#if !JAVA
             // 対象のトラックの合成を担当するVSTiを検索
             // トラックの合成エンジンの種類
             RendererKind s_working_renderer = VsqFileEx.getTrackRendererKind( vsq_track );
@@ -246,6 +282,7 @@ namespace org.kbinani.cadencii
             if ( mDriver == null ) return;
             // ドライバーが読み込み完了していなかったらbail out
             if ( !mDriver.loaded ) return;
+#endif
 
             // NRPNを作成
             int ms_present = mConfig.PreSendTime;
@@ -270,6 +307,7 @@ namespace org.kbinani.cadencii
 
             // アボート要求フラグを初期化
             mAbortRequired = false;
+#if !JAVA
             // 使いたいドライバーが使用中だった場合、ドライバーにアボート要求を送る。
             // アボートが終了するか、このインスタンス自身にアボート要求が来るまで待つ。
             if ( mDriver.isRendering() ) {
@@ -277,19 +315,18 @@ namespace org.kbinani.cadencii
                 mDriver.abortRendering();
                 while ( mDriver.isRendering() && !mAbortRequired ) {
                     // 待つ
-#if JAVA
-                    Thread.sleep( 100 );
-#else
                     Thread.Sleep( 100 );
-#endif
                 }
             }
+#endif
 
             // ここにきて初めて再生中フラグが立つ
             mRunning = true;
 
+#if !JAVA
             // 古いイベントをクリア
             mDriver.clearSendEvents();
+#endif
 
             // ドライバーに渡すイベントを準備
             // まず、マスタートラックに渡すテンポ変更イベントを作成
@@ -301,16 +338,42 @@ namespace org.kbinani.cadencii
                 count += 3;
                 TempoTableEntry itemi = split.TempoTable.get( i );
                 masterClocksSrc[i] = itemi.Clock;
-                byte b0 = (byte)(itemi.Tempo >> 16);
-                uint u0 = (uint)(itemi.Tempo - (b0 << 16));
-                byte b1 = (byte)(u0 >> 8);
-                byte b2 = (byte)(u0 - (u0 << 8));
+                byte b0 = (byte)(0xff & (itemi.Tempo >> 16));
+                long u0 = (long)(itemi.Tempo - (b0 << 16));
+                byte b1 = (byte)(0xff & (u0 >> 8));
+                byte b2 = (byte)(0xff & (u0 - (u0 << 8)));
                 masterEventsSrc[count] = b0;
                 masterEventsSrc[count + 1] = b1;
                 masterEventsSrc[count + 2] = b2;
             }
             // 送る
+#if JAVA
+            String midi_master_file = fsys.combine( PortUtil.getApplicationStartupPath(), "midi_master.bin" );
+            //String midi_master_file = PortUtil.createTempFile();
+            RandomAccessFile fs = null;
+            try{
+                fs = new RandomAccessFile( midi_master_file, "rw" );
+                count = 0;
+                for( int i = 0; i < tempo_count; i++ ){
+                    byte[] buf = PortUtil.getbytes_int32_le( masterClocksSrc[i] );
+                    fs.write( buf, 0, 4 );
+                    fs.write( masterEventsSrc, count, 3 );
+                    count += 3;
+                }
+            }catch( Exception ex ){
+                ex.printStackTrace();
+            }finally{
+                if( fs != null ){
+                    try{
+                        fs.close();
+                    }catch( Exception ex2 ){
+                        ex2.printStackTrace();
+                    }
+                }
+            }
+#else
             mDriver.sendEvent( masterEventsSrc, masterClocksSrc, 0 );
+#endif
 
             // 次に、合成対象トラックの音符イベントを作成
             int numEvents = nrpn.Length;
@@ -320,23 +383,122 @@ namespace org.kbinani.cadencii
             int last_clock = 0;
             for ( int i = 0; i < numEvents; i++ ) {
                 count += 3;
-                bodyEventsSrc[count] = 0xb0;
+                bodyEventsSrc[count] = (byte)0xb0;
                 bodyEventsSrc[count + 1] = nrpn[i].getParameter();
                 bodyEventsSrc[count + 2] = nrpn[i].Value;
                 bodyClocksSrc[i] = nrpn[i].getClock();
                 last_clock = nrpn[i].getClock();
             }
             // 送る
+#if JAVA
+            String midi_body_file = fsys.combine( PortUtil.getApplicationStartupPath(), "midi_body.bin" );
+            //String midi_body_file = PortUtil.createTempFile();
+            try{
+                fs = new RandomAccessFile( midi_body_file, "rw" );
+                count = 0;
+                for( int i = 0; i < numEvents; i++ ){
+                    byte[] buf = PortUtil.getbytes_int32_le( bodyClocksSrc[i] );
+                    fs.write( buf, 0, 4 );
+                    fs.write( bodyEventsSrc, count, 3 );
+                    count += 3;
+                }
+            }catch( Exception ex ){
+                ex.printStackTrace();
+            }finally{
+                if( fs != null ){
+                    try{
+                        fs.close();
+                    }catch( Exception ex2 ){
+                        ex2.printStackTrace();
+                    }
+                }
+            }
+#else
             mDriver.sendEvent( bodyEventsSrc, bodyClocksSrc, 1 );
+#endif
 
             // 合成を開始
             // 合成が終わるか、ドライバへのアボート要求が来るまでは制御は返らない
             // この
+#if JAVA
+            Vector<String> list = new Vector<String>();
+            // /bin/sh vocaloidrv.sh WINEPREFIX WINETOP vocaloidrv.exe midi_master.bin midi_body.bin TOTAL_SAMPLES
+            list.add( "/bin/sh" );
+            String vocaloidrv_sh = fsys.combine( PortUtil.getApplicationStartupPath(), "vocaloidrv.sh" );
+            list.add( vocaloidrv_sh );
+            list.add( VSTiDllManager.WinePrefix );
+            list.add( VSTiDllManager.WineTop );
+            String vocaloidrv_exe = fsys.combine( PortUtil.getApplicationStartupPath(), "vocaloidrv.exe" );
+            list.add( vocaloidrv_exe );
+            list.add( VSTiDllManager.WineVocaloid2Dll );
+            list.add( midi_master_file );
+            list.add( midi_body_file );
+            list.add( "" + total_samples );
+#if DEBUG
+            list.add( fsys.combine( PortUtil.getApplicationStartupPath(), "out.wav" ) );
+            sout.println( "VocaloidWaveGenerator#begin; list=" );
+            for( String s : list ){
+                sout.println( "    " + s );
+            }
+#endif
+            ProcessBuilder pb = new ProcessBuilder( list );
+            pb.redirectErrorStream( true );
+            try{
+                Process process = pb.start();
+                InputStream stream = process.getInputStream();
+                final int BUFLEN = 1024;
+                double[] left = new double[BUFLEN];
+                double[] right = new double[BUFLEN];
+                int i = 0;
+                int hi = 0, lo = 0;
+                while( true ){
+                    int c = stream.read();
+                    if( c < 0 ){
+                        break;
+                    }
+                    if( mAbortRequired ){
+                        process.destroy();
+                        break;
+                    }
+                    switch( i % 4 ){
+                        case 0:{
+                            hi = c;
+                            break;
+                        }
+                        case 1:{
+                            lo = c;
+                            left[i] = (((0xff & hi) << 8 | (0xff & lo)) - 32768) / 32768.0;
+                            break;
+                        }
+                        case 2:{
+                            hi = c;
+                            break;
+                        }
+                        case 3:{
+                            lo = c;
+                            right[i] = (((0xff & hi) << 8 | (0xff & lo)) - 32768) / 32768.0;
+                            i++;
+                            break;
+                        }
+                    }
+                    if( i == BUFLEN ){
+                        waveIncomingImpl( left, right, i );
+                        i = 0;
+                    }
+                }
+                if( i > 0 ){
+                    waveIncomingImpl( left, right, i );
+                }
+            }catch( Exception ex ){
+                ex.printStackTrace();
+            }
+#else
             mDriver.startRendering(
                 mTotalSamples + mTrimRemain + (int)(ms_present / 1000.0 * mDriverSampleRate),
                 false,
                 mDriverSampleRate,
                 this );
+#endif
 
             // ここに来るということは合成が終わったか、ドライバへのアボート要求が実行されたってこと。
             // このインスタンスが受け持っている波形レシーバに、処理終了を知らせる。
@@ -350,5 +512,7 @@ namespace org.kbinani.cadencii
         }
     }
 
+#if !JAVA
 }
+#endif
 #endif

@@ -1,78 +1,89 @@
-// vocaloidrv.cpp : ƒRƒ“ƒ\[ƒ‹ ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚ÌƒGƒ“ƒgƒŠ ƒ|ƒCƒ“ƒg‚ğ’è‹`‚µ‚Ü‚·B
-//
-
+/*
+ * vocaloidrv.cpp
+ * Copyright Â© 2011 kbinani
+ *
+ * This file is part of org.kbinani.cadencii.
+ *
+ * org.kbinani.cadencii is free software; you can redistribute it and/or
+ * modify it under the terms of the GPLv3 License.
+ *
+ * org.kbinani.cadencii is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
 #include "vocaloidrv.h"
 
 vocaloidrv::~vocaloidrv()
 {
-    if( mFile ){
-        long pos = ftell( mFile );
-        // RIFF
-        fseek( mFile, 4, SEEK_SET );
-        unsigned int len = (unsigned int)(pos - 8);
-        fwrite( &len, sizeof( unsigned int ), 1, mFile );
-        // data
-        fseek( mFile, 0x28, SEEK_SET );
-        len = (unsigned int)(pos - 0x28 - 4);
-        fwrite( &len, sizeof( unsigned int ), 1, mFile );
-        fclose( mFile );
-        mFile = NULL;
-    }
+	if( !mUseStdOut && mFile ){
+		long pos = ftell( mFile );
+		fseek( mFile, 0x4, SEEK_SET );
+		unsigned int len = pos - 0x4 - 0x04;
+		fwrite( &len, sizeof( unsigned int ), 1, mFile );
+		fseek( mFile, 0x28, SEEK_SET );
+		len = pos - 0x28 - 0x04;
+		fwrite( &len, sizeof( unsigned int ), 1, mFile );
+		fclose( mFile );
+	}
 }
 
 bool vocaloidrv::waveIncoming( double *left, double *right, int length )
 {
-    if( NULL == mFile ){
-        mFile = fopen( "out.wav", "wb" );
-	    fwrite( "RIFF", 4 * sizeof( char ), 1, mFile );
-	    unsigned int riff_length = 0;
-	    fwrite( &riff_length, sizeof( unsigned int ), 1, mFile );
-	    fwrite( "WAVE", 4 * sizeof( char ), 1, mFile );
-	    fwrite( "fmt ", 4 * sizeof( char ), 1, mFile );
-	    // length of "fmt " chunk
-	    unsigned int fmt_len = 16;
-	    fwrite( &fmt_len, sizeof( unsigned int ), 1, mFile );
-	    // format id
-	    unsigned short format_id = 1;
-	    fwrite( &format_id, sizeof( unsigned short ), 1, mFile );
-	    // ƒ`ƒƒƒ“ƒlƒ‹”
-	    unsigned short channels = 2;
-	    fwrite( &channels, sizeof( unsigned short ), 1, mFile );
-	    // ƒTƒ“ƒvƒŠƒ“ƒOƒŒ[ƒg
-	    unsigned int sample_rate = sampleRate;
-	    fwrite( &sample_rate, sizeof( unsigned int ), 1, mFile );
-	    // ƒf[ƒ^‘¬“x
-	    unsigned short bit_per_sample = 16;
-	    unsigned short block_size = channels * bit_per_sample / 8;
-        unsigned int data_rate = sampleRate * block_size;
-	    fwrite( &data_rate, sizeof( unsigned int ), 1, mFile );
-	    // ƒuƒƒbƒNƒTƒCƒY
-	    fwrite( &block_size, sizeof( unsigned short ), 1, mFile );
-	    // ƒTƒ“ƒvƒ‹‚ ‚½‚è‚Ìƒrƒbƒg”
-	    fwrite( &bit_per_sample, sizeof( unsigned short ), 1, mFile );
-	    // dataƒ`ƒƒƒ“ƒN
-	    fwrite( "data", 4 * sizeof( char ), 1, mFile );
-	    // dataƒ`ƒƒƒ“ƒN‚Ì’·‚³
-	    unsigned int data_length = 0;
-	    fwrite( &data_length, sizeof( unsigned int ), 1, mFile );
-    }
+	if( mUseStdOut ){
+		for( int i = 0; i < length; i++ ){
+			WORD l = (WORD)(32768 * left[i]);
+			WORD r = (WORD)(32768 * right[i]);
+			putchar( 0xff & l );
+			putchar( 0xff & (l >> 8) );
+			putchar( 0xff & r );
+			putchar( 0xff & (r >> 8) );
+		}
+	}else{
+		if( !mFile ){
+			mFile = fopen( "out.wav", "wb" );
+			fwrite( "RIFF", 4 * sizeof( char ), 1, mFile );
+			unsigned int riff_length = 0;
+			fwrite( &riff_length, sizeof( unsigned int ), 1, mFile );
+			fwrite( "WAVE", 4 * sizeof( char ), 1, mFile );
+			fwrite( "fmt ", 4 * sizeof( char ), 1, mFile );
+			// length of "fmt " chunk
+			unsigned int fmt_len = 16;
+			fwrite( &fmt_len, sizeof( unsigned int ), 1, mFile );
+			// format id
+			unsigned short format_id = 1;
+			fwrite( &format_id, sizeof( unsigned short ), 1, mFile );
+			// ãƒãƒ£ãƒ³ãƒãƒ«æ•°
+			unsigned short channels = 2;
+			fwrite( &channels, sizeof( unsigned short ), 1, mFile );
+			// ã‚µãƒ³ãƒ—ãƒªãƒ³ã‚°ãƒ¬ãƒ¼ãƒˆ
+			unsigned int sample_rate = sampleRate;
+			fwrite( &sample_rate, sizeof( unsigned int ), 1, mFile );
+			// ãƒ‡ãƒ¼ã‚¿é€Ÿåº¦
+			unsigned short bit_per_sample = 16;
+			unsigned short block_size = channels * bit_per_sample / 8;
+			unsigned int data_rate = sampleRate * block_size;
+			fwrite( &data_rate, sizeof( unsigned int ), 1, mFile );
+			// ãƒ–ãƒ­ãƒƒã‚¯ã‚µã‚¤ã‚º
+			fwrite( &block_size, sizeof( unsigned short ), 1, mFile );
+			// ã‚µãƒ³ãƒ—ãƒ«ã‚ãŸã‚Šã®ãƒ“ãƒƒãƒˆæ•°
+			fwrite( &bit_per_sample, sizeof( unsigned short ), 1, mFile );
+			// dataãƒãƒ£ãƒ³ã‚¯
+			fwrite( "data", 4 * sizeof( char ), 1, mFile );
+			// dataãƒãƒ£ãƒ³ã‚¯ã®é•·ã•
+			unsigned int data_length = 0;
+			fwrite( &data_length, sizeof( unsigned int ), 1, mFile );
+		}
 
-    const int LEN = 1024;
-    static DWORD buf[LEN];
-    int offset = 0;
-    while( length > 0 ){
-        int amount = (length > LEN) ? LEN : length;
-        for( int i = 0; i < amount; i++ ){
-            WORD l = (WORD)(32768 * left[i + offset]);
-            WORD r = (WORD)(32768 * right[i + offset]);
-            buf[i] = MAKELONG( r, l );
-        }
-        fwrite( buf, amount * sizeof( DWORD ), 1, mFile );
-        length -= amount;
-        offset += amount;
-    }
-
-    return false;
+		for( int i = 0; i < length; i++ ){
+			WORD l = (WORD)(32768 * left[i]);
+			WORD r = (WORD)(32768 * right[i]);
+			fputc( 0xff & l, mFile );
+			fputc( 0xff & (l >> 8), mFile );
+			fputc( 0xff & r, mFile );
+			fputc( 0xff & (r >> 8), mFile );
+		}
+	}
+	return false;
 }
 
 void vocaloidrv::merge_events( vector<MidiEvent *> &x0, vector<MidiEvent *> &y0, vector<MidiEvent *> &ret )
@@ -104,7 +115,7 @@ void vocaloidrv::merge_events( vector<MidiEvent *> &x0, vector<MidiEvent *> &y0,
 /// <param name="total_samples"></param>
 /// <param name="mode_infinite"></param>
 /// <param name="sample_rate"></param>
-/// <param name="runner">‚±‚Ìƒhƒ‰ƒCƒo‚ğ‹ì“®‚µ‚Ä‚¢‚éRenderingRunner‚ÌƒIƒuƒWƒFƒNƒg</param>
+/// <param name="runner">ã“ã®ãƒ‰ãƒ©ã‚¤ãƒã‚’é§†å‹•ã—ã¦ã„ã‚‹RenderingRunnerã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ</param>
 /// <returns></returns>
 int vocaloidrv::startRendering( long total_samples, bool mode_infinite, int sample_rate )
 {
@@ -148,10 +159,10 @@ int vocaloidrv::startRendering( long total_samples, bool mode_infinite, int samp
     aEffect->dispatcher( aEffect, effSetSampleRate, 0, 0, NULL, (float)sampleRate );
     aEffect->dispatcher( aEffect, effMainsChanged, 0, 1, NULL, 0 );
 
-    // ‚±‚±‚Å‚ÍƒuƒƒbƒNƒTƒCƒYƒTƒ“ƒvƒŠƒ“ƒOƒŒ[ƒg‚Æ‚¢‚¤‚±‚Æ‚É‚·‚é
+    // ã“ã“ã§ã¯ãƒ–ãƒ­ãƒƒã‚¯ã‚µã‚¤ã‚ºï¼ã‚µãƒ³ãƒ—ãƒªãƒ³ã‚°ãƒ¬ãƒ¼ãƒˆã¨ã„ã†ã“ã¨ã«ã™ã‚‹
     aEffect->dispatcher( aEffect, effSetBlockSize, 0, sampleRate, NULL, 0 );
 
-    // ƒŒƒ“ƒ_ƒŠƒ“ƒO‚Ì“r’†‚Å’â~‚µ‚½ê‡C‚±‚±‚ÅProcess‚·‚é•”•ª‚ª–³‰¹‚Å‚È‚¢ê‡‚ª‚ ‚é
+    // ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°ã®é€”ä¸­ã§åœæ­¢ã—ãŸå ´åˆï¼Œã“ã“ã§Processã™ã‚‹éƒ¨åˆ†ãŒç„¡éŸ³ã§ãªã„å ´åˆãŒã‚ã‚‹
     for ( int i = 0; i < 3; i++ ) {
         aEffect->processReplacing( aEffect, NULL, out_buffer, sampleRate );
     }
@@ -225,7 +236,7 @@ int vocaloidrv::startRendering( long total_samples, bool mode_infinite, int samp
             process_event_count = current_count;
         }
         while ( current->clock == dwNow ) {
-            // duration‚ğæ“¾
+            // durationã‚’å–å¾—
             if ( (current->firstByte & 0xf0) == 0xb0 ) {
                 switch ( current->data[0] ) {
                     case 0x63:{
@@ -290,7 +301,7 @@ int vocaloidrv::startRendering( long total_samples, bool mode_infinite, int samp
                     break;
                 }
                 default:{
-                    pMidiEvent = (VstMidiEvent *)malloc( (int)(sizeof( VstMidiEvent ) + (pProcessEvent->dataLength + 1) * sizeof( byte )) );
+                    pMidiEvent = (VstMidiEvent *)malloc( (int)(sizeof( VstMidiEvent ) + (pProcessEvent->dataLength + 1) * sizeof( unsigned char ) ) );
                     mman2.push_back( pMidiEvent );
                     pMidiEvent->byteSize = sizeof( VstMidiEvent );
                     pMidiEvent->deltaFrames = dwDelta;
@@ -408,6 +419,7 @@ int vocaloidrv::startRendering( long total_samples, bool mode_infinite, int samp
     }
 
     aEffect->dispatcher( aEffect, effMainsChanged, 0, 0, NULL, 0 );
+    // all_eventsã®ä¸­èº«ã¯mEvents0, mEvents1ãªã®ã§ï¼Œã“ã“ã§freeã—ãªãã¦ã„ã„
     all_events.clear();
 #if DEBUG
     sout.println( "VocaloidDriver#startRendering; done; total_processed=" + total_processed + "; total_processed2=" + total_processed2 );
@@ -420,7 +432,6 @@ int vocaloidrv::startRendering( long total_samples, bool mode_infinite, int samp
     mman.clear();
 
     mIsRendering = false;
-    //g_saProcessed = 0;
     for ( int i = 0; i < mEvents0.size(); i++ ) {
         MidiEvent *ptr = mEvents0[i];
         if( ptr ) delete ptr;
@@ -443,8 +454,8 @@ int vocaloidrv::startRendering( long total_samples, bool mode_infinite, int samp
 
 bool vocaloidrv::sendEvent( unsigned char *midi_data, int *clock_data, int num_data, int targetTrack )
 {
-    // midi_data‚ªMIDIƒf[ƒ^‚Ì–{‘ÌCclock_data‚ªƒQ[ƒgƒ^ƒCƒ€‚ÌƒŠƒXƒgD
-    // midi_data‚Ìƒf[ƒ^ŒÂ”‚ÍCnum_data‚Ì3”{‚É‚È‚é
+    // midi_dataãŒMIDIãƒ‡ãƒ¼ã‚¿ã®æœ¬ä½“ï¼Œclock_dataãŒã‚²ãƒ¼ãƒˆã‚¿ã‚¤ãƒ ã®ãƒªã‚¹ãƒˆï¼
+    // midi_dataã®ãƒ‡ãƒ¼ã‚¿å€‹æ•°ã¯ï¼Œnum_dataã®3å€ã«ãªã‚‹
     int count;
     if ( targetTrack == 0 ) {
         for( int i = 0; i < mTempoList.size(); i++ ){
@@ -489,7 +500,7 @@ bool vocaloidrv::sendEvent( unsigned char *midi_data, int *clock_data, int num_d
         }
     }
 
-    // —^‚¦‚ç‚ê‚½ƒCƒxƒ“ƒgî•ñ‚ğs_track_events‚Éû”[
+    // ä¸ãˆã‚‰ã‚ŒãŸã‚¤ãƒ™ãƒ³ãƒˆæƒ…å ±ã‚’s_track_eventsã«åç´
     count = -3;
     int pPrev = 0;
     if( targetTrack == 0 ){

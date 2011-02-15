@@ -1606,8 +1606,12 @@ namespace org.kbinani.cadencii
         /// <param name="fill_color"></param>
         private void drawEnvelope( Graphics2D g, int track_index, Color fill_color )
         {
-            int clock_start = AppManager.clockFromXCoord( AppManager.keyWidth );
-            int clock_end = AppManager.clockFromXCoord( getWidth() );
+            int key_width = AppManager.keyWidth;
+            int width = getWidth();
+            int height = getHeight();
+            g.setClip( key_width, 0, width - key_width, height );
+            int clock_start = AppManager.clockFromXCoord( key_width );
+            int clock_end = AppManager.clockFromXCoord( width );
 
             VsqFileEx vsq = AppManager.getVsqFile();
             VsqTrack track = vec.get( vsq.Track, track_index );
@@ -1620,7 +1624,7 @@ namespace org.kbinani.cadencii
             Point selected_point = new Point();
             boolean selected_found = false;
             // yが範囲内なので，xも検索するときtrue
-            boolean search_mouse = (0 <= mouse.y && mouse.y <= getHeight());
+            boolean search_mouse = (0 <= mouse.y && mouse.y <= height);
             Iterator<VsqEvent> itr = track.getNoteEventIterator();
             int dotwid = DOT_WID * 2 + 1;
             int tolerance = AppManager.editorConfig.PxTolerance;
@@ -1739,6 +1743,8 @@ namespace org.kbinani.cadencii
                 g.setColor( COLOR_BEZIER_DOT_NORMAL );
                 g.drawRect( rc.x, rc.y, rc.width, rc.height );
             }
+            
+            g.setClip( null );
         }
 
         /// <summary>

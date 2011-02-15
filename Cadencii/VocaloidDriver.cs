@@ -12,6 +12,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if !JAVA
 #if DEBUG
 //#define TEST
 #endif
@@ -596,4 +597,5 @@ namespace org.kbinani.cadencii
     }
 
 }
-#endif
+#endif // !JAVA
+#endif // ENABLE_VOCALOID

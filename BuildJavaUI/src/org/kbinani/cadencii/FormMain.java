@@ -311,11 +311,11 @@ public class FormMain extends BForm {
     private BMenuItem cMenuPositionIndicatorEndMarker = null;
     private BButton buttonVZoom = null;
     private BButton buttonVMooz = null;
-    private JPanel jPanel4 = null;
     private BPanel panel2 = null;
     private WaveView waveView = null;
     private BMenu menuWindow = null;
     private BMenuItem menuWindowMinimize = null;
+    private BPanel panel21 = null;
     //SECTION-END-FIELD
     public FormMain( String vsq_file ) {
         super();
@@ -2096,14 +2096,15 @@ public class FormMain extends BForm {
         if (panel1 == null) {
             GridBagConstraints gridBagConstraints2 = new GridBagConstraints();
             gridBagConstraints2.gridx = 3;
-            gridBagConstraints2.gridheight = 2;
+            gridBagConstraints2.gridheight = 1;
             gridBagConstraints2.fill = GridBagConstraints.VERTICAL;
             gridBagConstraints2.gridy = 0;
             GridBagConstraints gridBagConstraints11 = new GridBagConstraints();
-            gridBagConstraints11.fill = GridBagConstraints.NONE;
+            gridBagConstraints11.fill = GridBagConstraints.HORIZONTAL;
             gridBagConstraints11.gridy = 1;
             gridBagConstraints11.weightx = 0.0D;
             gridBagConstraints11.anchor = GridBagConstraints.EAST;
+            gridBagConstraints11.gridwidth = 1;
             gridBagConstraints11.gridx = 2;
             GridBagConstraints gridBagConstraints10 = new GridBagConstraints();
             gridBagConstraints10.gridx = 0;
@@ -2115,18 +2116,9 @@ public class FormMain extends BForm {
             gridBagConstraints9.weighty = 0.0D;
             gridBagConstraints9.weightx = 1.0D;
             gridBagConstraints9.gridx = 1;
-            GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
-            gridBagConstraints7.gridx = 0;
-            gridBagConstraints7.fill = GridBagConstraints.BOTH;
-            gridBagConstraints7.weightx = 1.0D;
-            gridBagConstraints7.weighty = 1.0D;
-            gridBagConstraints7.gridwidth = 3;
-            gridBagConstraints7.gridheight = 1;
-            gridBagConstraints7.gridy = 0;
             panel1 = new BPanel();
             panel1.setLayout(new GridBagLayout());
             panel1.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-            panel1.add(getPictPianoRoll(), gridBagConstraints7);
             panel1.add(getPictureBox3(), gridBagConstraints10);
             panel1.add(getHScroll(), gridBagConstraints9);
             panel1.add(getTrackBar(), gridBagConstraints11);
@@ -3594,7 +3586,7 @@ public class FormMain extends BForm {
     private BVScrollBar getVScroll() {
         if (vScroll == null) {
             vScroll = new BVScrollBar();
-            vScroll.setPreferredSize(new Dimension(16, 50));
+            vScroll.setPreferredSize(new Dimension(15, 50));
         }
         return vScroll;
     }
@@ -3645,7 +3637,7 @@ public class FormMain extends BForm {
     private BSlider getTrackBar() {
         if (trackBar == null) {
             trackBar = new BSlider();
-            trackBar.setPreferredSize(new Dimension(83, 17));
+            trackBar.setPreferredSize(new Dimension(98, 17));
             trackBar.setMinimum(17);
             trackBar.setMaximum(609);
         }
@@ -3689,12 +3681,17 @@ public class FormMain extends BForm {
      */
     private BPanel getJPanel1() {
         if (jPanel1 == null) {
+            GridBagConstraints gridBagConstraints16 = new GridBagConstraints();
+            gridBagConstraints16.gridx = 0;
+            gridBagConstraints16.fill = GridBagConstraints.BOTH;
+            gridBagConstraints16.weighty = 1.0D;
+            gridBagConstraints16.gridy = 2;
             GridBagConstraints gridBagConstraints15 = new GridBagConstraints();
             gridBagConstraints15.gridx = 0;
-            gridBagConstraints15.fill = GridBagConstraints.BOTH;
+            gridBagConstraints15.fill = GridBagConstraints.HORIZONTAL;
             gridBagConstraints15.weightx = 1.0D;
-            gridBagConstraints15.weighty = 1.0D;
-            gridBagConstraints15.gridy = 2;
+            gridBagConstraints15.weighty = 0.0D;
+            gridBagConstraints15.gridy = 3;
             GridBagConstraints gridBagConstraints14 = new GridBagConstraints();
             gridBagConstraints14.gridx = 0;
             gridBagConstraints14.fill = GridBagConstraints.HORIZONTAL;
@@ -3712,6 +3709,7 @@ public class FormMain extends BForm {
             jPanel1.add(getPanel3(), gridBagConstraints13);
             jPanel1.add(getPicturePositionIndicator(), gridBagConstraints14);
             jPanel1.add(getPanel1(), gridBagConstraints15);
+            jPanel1.add(getPanel21(), gridBagConstraints16);
         }
         return jPanel1;
     }
@@ -4020,22 +4018,24 @@ public class FormMain extends BForm {
      */
     private BPanel getJPanel2() {
         if (pictureBox2 == null) {
-            GridBagConstraints gridBagConstraints16 = new GridBagConstraints();
-            gridBagConstraints16.gridx = 0;
-            gridBagConstraints16.gridy = 3;
+            GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
+            gridBagConstraints4.gridx = 0;
+            gridBagConstraints4.gridy = 1;
+            GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
+            gridBagConstraints3.fill = GridBagConstraints.VERTICAL;
+            gridBagConstraints3.gridy = 0;
+            gridBagConstraints3.weighty = 1.0;
+            gridBagConstraints3.gridx = 0;
             GridBagConstraints gridBagConstraints8 = new GridBagConstraints();
             gridBagConstraints8.gridx = 0;
             gridBagConstraints8.gridy = 2;
-            GridBagConstraints gridBagConstraints4 = new GridBagConstraints();
-            gridBagConstraints4.gridx = 0;
-            gridBagConstraints4.gridy = 0;
             pictureBox2 = new BPanel();
             pictureBox2.setLayout(new GridBagLayout());
             pictureBox2.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-            pictureBox2.setPreferredSize(new Dimension(16, 49));
-            pictureBox2.add(getButtonVZoom(), gridBagConstraints4);
+            pictureBox2.setPreferredSize(new Dimension(15, 32));
             pictureBox2.add(getButtonVMooz(), gridBagConstraints8);
-            pictureBox2.add(getJPanel42(), gridBagConstraints16);
+            pictureBox2.add(getVScroll(), gridBagConstraints3);
+            pictureBox2.add(getButtonVZoom(), gridBagConstraints4);
         }
         return pictureBox2;
     }
@@ -4246,24 +4246,9 @@ public class FormMain extends BForm {
      */
     private JPanel getJPanel22() {
         if (jPanel2 == null) {
-            GridBagConstraints gridBagConstraints3 = new GridBagConstraints();
-            gridBagConstraints3.anchor = GridBagConstraints.NORTH;
-            gridBagConstraints3.gridheight = 1;
-            gridBagConstraints3.gridx = 0;
-            gridBagConstraints3.gridy = 1;
-            gridBagConstraints3.weighty = 0.0D;
-            gridBagConstraints3.fill = GridBagConstraints.BOTH;
-            GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
-            gridBagConstraints1.fill = GridBagConstraints.BOTH;
-            gridBagConstraints1.gridx = 0;
-            gridBagConstraints1.gridy = 0;
-            gridBagConstraints1.weighty = 1.0D;
-            gridBagConstraints1.gridheight = 1;
             jPanel2 = new JPanel();
             jPanel2.setLayout(new GridBagLayout());
             jPanel2.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-            jPanel2.add(getVScroll(), gridBagConstraints1);
-            jPanel2.add(getJPanel2(), gridBagConstraints3);
         }
         return jPanel2;
     }
@@ -4316,7 +4301,7 @@ public class FormMain extends BForm {
     private BButton getButtonVZoom() {
         if (buttonVZoom == null) {
             buttonVZoom = new BButton();
-            buttonVZoom.setPreferredSize(new Dimension(16, 16));
+            buttonVZoom.setPreferredSize(new Dimension(15, 16));
             buttonVZoom.setFont(new Font("Lucida Grande", Font.BOLD, 13));
         }
         return buttonVZoom;
@@ -4330,24 +4315,9 @@ public class FormMain extends BForm {
     private BButton getButtonVMooz() {
         if (buttonVMooz == null) {
             buttonVMooz = new BButton();
-            buttonVMooz.setPreferredSize(new Dimension(16, 16));
+            buttonVMooz.setPreferredSize(new Dimension(15, 16));
         }
         return buttonVMooz;
-    }
-
-    /**
-     * This method initializes jPanel4	
-     * 	
-     * @return javax.swing.JPanel	
-     */
-    private JPanel getJPanel42() {
-        if (jPanel4 == null) {
-            jPanel4 = new JPanel();
-            jPanel4.setLayout(new GridBagLayout());
-            jPanel4.setPreferredSize(new Dimension(16, 17));
-            jPanel4.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        }
-        return jPanel4;
     }
 
     /**
@@ -4404,6 +4374,35 @@ public class FormMain extends BForm {
             menuWindowMinimize.setText("Minimize");
         }
         return menuWindowMinimize;
+    }
+
+    /**
+     * This method initializes panel21	
+     * 	
+     * @return org.kbinani.windows.forms.BPanel	
+     */
+    private BPanel getPanel21() {
+        if (panel21 == null) {
+            GridBagConstraints gridBagConstraints1 = new GridBagConstraints();
+            gridBagConstraints1.gridx = 1;
+            gridBagConstraints1.fill = GridBagConstraints.VERTICAL;
+            gridBagConstraints1.gridy = 0;
+            GridBagConstraints gridBagConstraints7 = new GridBagConstraints();
+            gridBagConstraints7.fill = GridBagConstraints.BOTH;
+            gridBagConstraints7.gridwidth = 1;
+            gridBagConstraints7.gridx = 0;
+            gridBagConstraints7.gridy = 0;
+            gridBagConstraints7.weightx = 1.0D;
+            gridBagConstraints7.weighty = 1.0D;
+            gridBagConstraints7.gridheight = 1;
+            panel21 = new BPanel();
+            panel21.setLayout(new GridBagLayout());
+            panel21.setPreferredSize(new Dimension(68, 4));
+            panel21.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+            panel21.add(getPictPianoRoll(), gridBagConstraints7);
+            panel21.add(getJPanel2(), gridBagConstraints1);
+        }
+        return panel21;
     }
 
     //SECTION-END-METHOD

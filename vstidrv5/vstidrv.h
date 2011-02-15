@@ -1,6 +1,6 @@
 /*
  * vstidrv.h
- * Copyright © 2008-2011 kbinani
+ * Copyright © 2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
  *

@@ -17,7 +17,9 @@ package org.kbinani.cadencii;
 
 import org.kbinani.*;
 import org.kbinani.vsq.*;
+
 #else
+
 using System;
 using System.Text;
 using org.kbinani;

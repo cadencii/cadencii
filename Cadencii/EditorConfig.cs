@@ -21,7 +21,9 @@ import org.kbinani.*;
 import org.kbinani.vsq.*;
 import org.kbinani.xml.*;
 import org.kbinani.windows.forms.*;
+
 #else
+
 using System;
 using org.kbinani;
 using org.kbinani.java.awt;

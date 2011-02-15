@@ -32,6 +32,7 @@ public class BDialog extends JDialog
     public final BEvent<BEventHandler> activatedEvent = new BEvent<BEventHandler>();
     public final BEvent<BEventHandler> deactivateEvent = new BEvent<BEventHandler>();
     public final BEvent<BEventHandler> loadEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> windowStateChangedEvent = new BEvent<BEventHandler>();
     private BDialogResult m_result = BDialogResult.CANCEL;
     
     public BDialog(){
@@ -178,11 +179,23 @@ public class BDialog extends JDialog
             System.err.println( "BForm#windowDeactivated; ex=" + ex );
         }
     }
-    
+
+    @Override
     public void windowDeiconified( WindowEvent e ){
+        try{
+            windowStateChangedEvent.raise( this, new BEventArgs() );
+        }catch( Exception ex ){
+            System.err.println( "BDialog#windowDeiconified; ex=" + ex );
+        }
     }
     
+    @Override
     public void windowIconified( WindowEvent e ){
+        try{
+            windowStateChangedEvent.raise( this, new BEventArgs() );
+        }catch( Exception ex ){
+            System.err.println( "BDialog#windowIconified; ex=" + ex );
+        }
     }
     
     public void windowOpened( WindowEvent e ){
