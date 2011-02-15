@@ -536,6 +536,7 @@ bool vocaloidrv::sendEvent( unsigned char *midi_data, int *clock_data, int num_d
             pEvent->data[2] = midi_data[count];
             pEvent->data[3] = midi_data[count + 1];
             pEvent->data[4] = midi_data[count + 2];
+			pEvent->dataLength = 5;
         } else {
 #if VOCALO_DRIVER_PRINT_EVENTS
         if ( src[count + 1] == 0x63 ) {
@@ -555,6 +556,7 @@ bool vocaloidrv::sendEvent( unsigned char *midi_data, int *clock_data, int num_d
             pEvent->data[0] = midi_data[count + 1];
             pEvent->data[1] = midi_data[count + 2];
             pEvent->data[2] = 0x00;
+			pEvent->dataLength = 3;
         }
         (targetTrack == 0 ? mEvents0 : mEvents1).push_back( pEvent );
     }

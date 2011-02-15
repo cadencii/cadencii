@@ -15,7 +15,7 @@
 
 int main( int argc, char* argv[] )
 {
-    if( argc <= 5 ){
+    if( argc < 5 ){
         print_help();
         return -1;
     }
@@ -28,10 +28,10 @@ int main( int argc, char* argv[] )
 		wav = argv[5];
 	}
 	bool use_stdout = wav.compare( "" ) == 0;
-    cout << "dll_path=" << dll_path << endl;
+    //cout << "dll_path=" << dll_path << endl;
     vocaloidrv drv( dll_path, wav );
     if( drv.open( sample_rate, sample_rate ) ){
-        cout << "drv.open; successed" << endl;
+        //cout << "drv.open; successed" << endl;
     }else{
         cout << "drv.open; failed" << endl;
         return 1;
