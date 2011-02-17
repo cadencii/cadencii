@@ -57,7 +57,6 @@ namespace org.kbinani.cadencii
 #if JAVA
             super();
             initialize();
-            propertyGrid.setColumnWidth( 172 );
 #else
             InitializeComponent();
 #endif
@@ -297,6 +296,12 @@ namespace org.kbinani.cadencii
         private void initialize(){
             if( propertyGrid == null ){
                 propertyGrid = new BPropertyGrid();
+                VsqEvent ve = new VsqEvent();
+                ve.ID = new VsqID();
+                propertyGrid.setSelectedObjects( 
+                    new SelectedEventEntry[]{ new SelectedEventEntry( 0, ve, ve ) } );
+                propertyGrid.setSelectedObjects( new Object[]{} );
+                propertyGrid.setColumnWidth( 154 );
             }
             GridBagLayout lm = new GridBagLayout();
             this.setLayout( lm );

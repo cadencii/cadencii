@@ -74,15 +74,19 @@ bool vocaloidrv::waveIncoming( double *left, double *right, int length )
 			fwrite( &data_length, sizeof( unsigned int ), 1, mFile );
 		}
 
+        if( mBufferCount < length ){
+            mBuffer = (DWORD *)realloc( mBuffer, length * sizeof( DWORD ) );
+            mBufferCount = length;
+        }
+        
 		for( int i = 0; i < length; i++ ){
 			WORD l = (WORD)(32768 * left[i]);
 			WORD r = (WORD)(32768 * right[i]);
-			fputc( 0xff & l, mFile );
-			fputc( 0xff & (l >> 8), mFile );
-			fputc( 0xff & r, mFile );
-			fputc( 0xff & (r >> 8), mFile );
+            mBuffer[i] = MAKELONG( r, l );
 		}
-	}
+
+        fwrite( mBuffer, length * sizeof( DWORD ), 1, mFile );
+    }
 	return false;
 }
 

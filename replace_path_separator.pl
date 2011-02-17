@@ -1,6 +1,7 @@
 my $ENABLE_DEBUG = 0;
 my $ENABLE_PROPERTY = 1;
-my $ENABLE_VOCALOID = 1;
+my $ENABLE_VOCALOID = 0;
+my $ENABLE_AQUESTONE = 0;
 
 for( my $i = 0; $i <= $#ARGV; $i++ ){
     my $arg = $ARGV[$i];
@@ -10,8 +11,11 @@ for( my $i = 0; $i <= $#ARGV; $i++ ){
     if( $arg eq "--disable-property" ){
         $ENABLE_PROPERTY = 0;
     }
-    if( $arg eq "--disable-vocaloid" ){
-        $ENABLE_VOCALOID = 0;
+    if( $arg eq "--enable-vocaloid" ){
+        $ENABLE_VOCALOID = 1;
+    }
+    if( $arg eq "--enable-aquestone" ){
+        $ENABLE_AQUESTONE = 1;
     }
 }
 
@@ -78,6 +82,11 @@ if( $ENABLE_VOCALOID == 0 ){
 }else{
     $denable_vocaloid = "-DENABLE_VOCALOID";
 }
+if( $ENABLE_AQUESTONE == 0 ){
+    $denable_aquestone = "";
+}else{
+    $denable_aquestone = "-DENABLE_AQUESTONE";
+}
 
 while( $line = <FILE> ){
     $line =~ s/\@SRC_JAPPUTIL\@/$src_apputil/g;
@@ -101,6 +110,7 @@ while( $line = <FILE> ){
     $line =~ s/\@DDEBUG\@/$ddebug/g;
     $line =~ s/\@DENABLE_PROPERTY\@/$denable_property/g;
     $line =~ s/\@DENABLE_VOCALOID\@/$denable_vocaloid/g;
+    $line =~ s/\@DENABLE_AQUESTONE\@/$denable_aquestone/g;
     $line =~ s/\@TO_DEVNULL\@/$to_devnull/g;
 
     #if( $ARGV[0] eq "MSWin32" ){

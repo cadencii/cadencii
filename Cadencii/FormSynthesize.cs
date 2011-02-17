@@ -254,7 +254,7 @@ namespace org.kbinani.cadencii
                     PatchWorkQueue q = mQueue.get( k );
                     int track = q.track;
 #if JAVA
-                    updateProgress( this, 1 );
+                    updateProgress( this, k );
 #else
                     this.Invoke( new UpdateProgressEventHandler( this.updateProgress ), this, k );
 #endif
@@ -320,7 +320,11 @@ namespace org.kbinani.cadencii
                         }
 
                         PortUtil.deleteFile( q.file );
-                        FileWaveReceiver wave_receiver = new FileWaveReceiver( q.file, channel, 16 );
+                        int sample_rate = mVsq.config.SamplingRate;
+#if DEBUG
+                        sout.println( "FormSynthesize#bgWork_DoWork; q.file=" + q.file );
+#endif
+                        FileWaveReceiver wave_receiver = new FileWaveReceiver( q.file, channel, 16, sample_rate );
                         wave_receiver.setRoot( mGenerator );
                         wave_receiver.setGlobalConfig( AppManager.editorConfig );
                         Amplifier amp_unit_master = new Amplifier();
@@ -335,7 +339,6 @@ namespace org.kbinani.cadencii
 
                         int end = q.clockEnd;
                         if ( end == int.MaxValue ) end = mVsq.TotalClocks + 240;
-                        int sample_rate = mVsq.config.SamplingRate;
                         mGenerator.init( mVsq, track, q.clockStart, end, sample_rate );
 
                         double sec_start = mVsq.getSecFromClock( q.clockStart );

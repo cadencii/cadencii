@@ -649,25 +649,22 @@ namespace org.kbinani.cadencii
             this.waveView.Size = new System.Drawing.Size( 355, 59 );
             this.waveView.TabIndex = 17;
 #endif
-            registerEventHandlers();
-            setResources();
-
-            openXmlVsqDialog = new BFileChooser( "" );
+            openXmlVsqDialog = new BFileChooser();
             openXmlVsqDialog.addFileFilter( "VSQ Format(*.vsq)|*.vsq" );
             openXmlVsqDialog.addFileFilter( "XML-VSQ Format(*.xvsq)|*.xvsq" );
 
-            saveXmlVsqDialog = new BFileChooser( "" );
+            saveXmlVsqDialog = new BFileChooser();
             saveXmlVsqDialog.addFileFilter( "VSQ Format(*.vsq)|*.vsq" );
             saveXmlVsqDialog.addFileFilter( "XML-VSQ Format(*.xvsq)|*.xvsq" );
             saveXmlVsqDialog.addFileFilter( "All files(*.*)|*.*" );
 
-            openUstDialog = new BFileChooser( "" );
+            openUstDialog = new BFileChooser();
             openUstDialog.addFileFilter( "UTAU Project File(*.ust)|*.ust" );
             openUstDialog.addFileFilter( "All Files(*.*)|*.*" );
 
-            openMidiDialog = new BFileChooser( "" );
-            saveMidiDialog = new BFileChooser( "" );
-            openWaveDialog = new BFileChooser( "" );
+            openMidiDialog = new BFileChooser();
+            saveMidiDialog = new BFileChooser();
+            openWaveDialog = new BFileChooser();
 
             /*mOverviewScaleCount = AppManager.editorConfig.OverviewScaleCount;
             mOverviewPixelPerClock = getOverviewScaleX( mOverviewScaleCount );*/
@@ -675,7 +672,11 @@ namespace org.kbinani.cadencii
             menuVisualOverview.setSelected( AppManager.editorConfig.OverviewEnabled );
 #if ENABLE_PROPERTY
             mPropertyPanelContainer = new PropertyPanelContainer();
+            updatePropertyPanelState( AppManager.editorConfig.PropertyWindowStatus.State );
 #endif
+
+            registerEventHandlers();
+            setResources();
 
 #if !ENABLE_SCRIPT
             menuSettingPaletteTool.setVisible( false );
@@ -1063,7 +1064,6 @@ namespace org.kbinani.cadencii
             AppManager.propertyWindow.SizeChanged += new BEventHandler( propertyWindow_LocationOrSizeChanged );
             AppManager.propertyWindow.FormClosing += new BFormClosingEventHandler( propertyWindow_FormClosing );
             AppManager.propertyPanel.CommandExecuteRequired += new CommandExecuteRequiredEventHandler( propertyPanel_CommandExecuteRequired );
-            updatePropertyPanelState( AppManager.editorConfig.PropertyWindowStatus.State );
 #endif
             updateBgmMenuState();
             AppManager.mLastTrackSelectorHeight = trackSelector.getPreferredMinSize();
@@ -1075,6 +1075,20 @@ namespace org.kbinani.cadencii
             menuHidden.setVisible( true );
 #else
             menuHidden.setVisible( false );
+#endif
+
+#if !ENABLE_VOCALOID
+            menuTrackRenderer.remove( menuTrackRendererVOCALOID2 );
+            menuTrackRenderer.remove( menuTrackRendererVOCALOID100 );
+            menuTrackRenderer.remove( menuTrackRendererVOCALOID101 );
+            cMenuTrackTabRenderer.remove( cMenuTrackTabRendererVOCALOID2 );
+            cMenuTrackTabRenderer.remove( cMenuTrackTabRendererVOCALOID100 );
+            cMenuTrackTabRenderer.remove( cMenuTrackTabRendererVOCALOID101 );
+#endif
+
+#if !ENABLE_AQUESTONE
+            menuTrackRenderer.remove( menuTrackRendererAquesTone );
+            cMenuTrackTabRenderer.remove( cMenuTrackTabRendererAquesTone );
 #endif
 
 #if JAVA_MAC
@@ -1195,17 +1209,6 @@ namespace org.kbinani.cadencii
 
         #region helper methods
         /// <summary>
-        /// ファイル名に拡張子が付いているかどうか確認し，付いてなければ追加します
-        /// </summary>
-        private static String ensureExtension( String file_path, String ext_with_dot )
-        {
-            if( !str.endsWith( file_path, ext_with_dot ) ){
-                file_path = file_path + ext_with_dot;
-            }
-            return file_path;
-        }
-        
-        /// <summary>
         /// 指定した歌手とリサンプラーについて，設定値に登録されていないものだったら登録する．
         /// </summary>
         /// <param name="resampler_path"></param>
@@ -1325,7 +1328,7 @@ namespace org.kbinani.cadencii
             if ( scaley != draft ) {
                 AppManager.editorConfig.PianoRollScaleY = draft;
                 updateScrollRangeVertical();
-                AppManager.setStartToDrawY( calculateStartToDrawY() );
+                AppManager.setStartToDrawY( calculateStartToDrawY( vScroll.getValue() ) );
                 updateDrawObjectList();
             }
         }
@@ -1974,13 +1977,22 @@ namespace org.kbinani.cadencii
         }
 
         /// <summary>
+        /// 仮想スクリーン上でみた時の，現在のピアノロール画面の上端のy座標が指定した値とするための，vScrollの値を計算します
+        /// calculateStartToDrawYの逆関数です
+        /// </summary>
+        private int calculateVScrollValueFromStartToDrawY( int start_to_draw_y )
+        {
+            return (int)(start_to_draw_y / AppManager.getScaleY());
+        }
+
+        /// <summary>
         /// 現在表示されているピアノロール画面の右上の、仮想スクリーン上座標で見たときのy座標(pixel)を取得します
         /// </summary>
-        private int calculateStartToDrawY()
+        private int calculateStartToDrawY( int vscroll_value )
         {
             int min = vScroll.getMinimum();
             int max = vScroll.getMaximum() - vScroll.getVisibleAmount();
-            int value = vScroll.getValue();
+            int value = vscroll_value;
             if ( value < min ) {
                 value = min;
             } else if ( max < value ) {
@@ -2405,6 +2417,9 @@ namespace org.kbinani.cadencii
 #if ENABLE_PROPERTY
         public void updatePropertyPanelState( PanelState state )
         {
+#if DEBUG
+            sout.println( "FormMain#updatePropertyPanelState; state=" + state );
+#endif
             if ( state == PanelState.Docked ) {
                 mPropertyPanelContainer.addComponent( AppManager.propertyPanel );
                 menuVisualProperty.setSelected( true );
@@ -2416,10 +2431,20 @@ namespace org.kbinani.cadencii
 #else
                 splitContainerProperty.Panel1MinSize = _PROPERTY_DOCK_MIN_WIDTH;
 #endif
-                splitContainerProperty.setDividerLocation( AppManager.editorConfig.PropertyWindowStatus.DockWidth );
+                int w = AppManager.editorConfig.PropertyWindowStatus.DockWidth;
+                if( w < _PROPERTY_DOCK_MIN_WIDTH ){
+                    w = _PROPERTY_DOCK_MIN_WIDTH;
+                }
+                splitContainerProperty.setDividerLocation( w );
                 AppManager.editorConfig.PropertyWindowStatus.WindowState = BFormWindowState.Minimized;
 #if JAVA
-                AppManager.propertyWindow.formClosingEvent.remove( new BFormClosingEventHandler( this, "propertyWindow_FormClosing" ) );
+                int before = AppManager.propertyWindow.formClosingEvent.size();
+                int after = before - 1;
+                while( before != after ){
+                    before = AppManager.propertyWindow.formClosingEvent.size();
+                    AppManager.propertyWindow.formClosingEvent.remove( new BFormClosingEventHandler( this, "propertyWindow_FormClosing" ) );
+                    after = AppManager.propertyWindow.formClosingEvent.size();
+                }
                 AppManager.propertyWindow.close();
                 AppManager.propertyWindow.formClosingEvent.add( new BFormClosingEventHandler( this, "propertyWindow_FormClosing" ) );
 #else
@@ -2626,6 +2651,7 @@ namespace org.kbinani.cadencii
             }
             jPanel1.doLayout();
             panel1.doLayout();
+            panel21.doLayout();
             int overview_width = this.getWidth();
             panelOverview.updateCachedImage( overview_width );
             refreshScreenCore( null, null );
@@ -3098,7 +3124,7 @@ namespace org.kbinani.cadencii
                     if ( str.compare( AppManager.getFileName(), "" ) ) {
                         int dr2 = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
                         if ( dr2 == BFileChooser.APPROVE_OPTION ) {
-                            String sf = ensureExtension( saveXmlVsqDialog.getSelectedFile(), ".xvsq" );
+                            String sf = saveXmlVsqDialog.getSelectedFile();
                             AppManager.saveTo( sf );
                             return true;
                         } else {
@@ -3679,28 +3705,31 @@ namespace org.kbinani.cadencii
         /// <param name="note"></param>
         public void ensureVisibleY( int note )
         {
-            if ( note == 0 ) {
+            if ( note <= 0 ) {
                 vScroll.setValue( vScroll.getMaximum() - vScroll.getVisibleAmount() );
                 return;
-            } else if ( note == 127 ) {
+            } else if ( note >= 127 ) {
                 vScroll.setValue( vScroll.getMinimum() );
                 return;
             }
-            int height = vScroll.getHeight();
+            int height = pictPianoRoll.getHeight();
             int noteTop = AppManager.noteFromYCoord( 0 ); //画面上端でのノートナンバー
             int noteBottom = AppManager.noteFromYCoord( height ); // 画面下端でのノートナンバー
 
             int maximum = vScroll.getMaximum();
             int track_height = (int)(100 * AppManager.getScaleY());
+            // ノートナンバーnoteの現在のy座標がいくらか？
+            int note_y = AppManager.yCoordFromNote( note );
             if ( note < noteBottom ) {
-                // noteBottomがnoteになるようにstartToDrawYを変える
-                int draft = (127 - note) * track_height - height;
-                int value = draft * maximum / (128 * track_height - height);
+                // ノートナンバーnoteBottomの現在のy座標が新しいnoteのy座標と同一になるよう，startToDrawYを変える
+                // startToDrawYを次の値にする必要がある
+                int new_start_to_draw_y = AppManager.getStartToDrawY() + (note_y - height);
+                int value = calculateVScrollValueFromStartToDrawY( new_start_to_draw_y );
                 vScroll.setValue( value );
             } else if ( noteTop < note ) {
-                // noteTopがnoteになるようにstartToDrawYを変える
-                int draft = (127 - note) * track_height;
-                int value = draft * maximum / (128 * track_height - height);
+                // ノートナンバーnoteTopの現在のy座標が，ノートナンバーnoteの新しいy座標と同一になるよう，startToDrawYを変える
+                int new_start_to_draw_y = AppManager.getStartToDrawY() + (note_y - 0);
+                int value = calculateVScrollValueFromStartToDrawY( new_start_to_draw_y );
                 vScroll.setValue( value );
             }
         }
@@ -3752,6 +3781,16 @@ namespace org.kbinani.cadencii
 #if DEBUG
             sout.println( "FormMain#processSpecialShortcutKey" );
 #endif
+            // 歌詞入力用のテキストボックスが表示されていたら，何もしない
+#if JAVA
+            if ( AppManager.mInputTextBox.isVisible() ) {
+#else
+            if ( AppManager.mInputTextBox.Enabled ) {
+#endif
+                AppManager.mInputTextBox.requestFocus();
+                return;
+            }
+
             boolean flipPlaying = false; // 再生/停止状態の切り替えが要求されたらtrue
 
             // 最初に、特殊な取り扱いが必要なショートカット、について、
@@ -3798,120 +3837,113 @@ namespace org.kbinani.cadencii
             EditMode edit_mode = AppManager.getEditMode();
 
 #if JAVA
-            if ( !AppManager.mInputTextBox.isVisible() ) {
+            if ( e.KeyValue == KeyEvent.VK_ENTER ) {
 #else
-            if ( !AppManager.mInputTextBox.Enabled ) {
+            if ( e.KeyCode == System.Windows.Forms.Keys.Return ) {
 #endif
-
-#if JAVA
-                if ( e.KeyValue == KeyEvent.VK_ENTER ) {
-#else
-                if ( e.KeyCode == System.Windows.Forms.Keys.Return ) {
-#endif
-                    // MIDIステップ入力のときの処理
-                    if ( isStepSequencerEnabled() ) {
-                        if ( AppManager.mAddingEvent != null ) {
-                            fixAddingEvent();
-                            AppManager.mAddingEvent = null;
-                            refreshScreen( true );
-                        }
+                // MIDIステップ入力のときの処理
+                if ( isStepSequencerEnabled() ) {
+                    if ( AppManager.mAddingEvent != null ) {
+                        fixAddingEvent();
+                        AppManager.mAddingEvent = null;
+                        refreshScreen( true );
                     }
+                }
 #if JAVA
-                } else if ( e.KeyValue == KeyEvent.VK_SPACE ) {
+            } else if ( e.KeyValue == KeyEvent.VK_SPACE ) {
 #else
-                } else if ( e.KeyCode == System.Windows.Forms.Keys.Space ) {
+            } else if ( e.KeyCode == System.Windows.Forms.Keys.Space ) {
 #endif
-                    if ( !AppManager.editorConfig.UseSpaceKeyAsMiddleButtonModifier ) {
-                        flipPlaying = true;
-                    }
+                if ( !AppManager.editorConfig.UseSpaceKeyAsMiddleButtonModifier ) {
+                    flipPlaying = true;
+                }
 #if JAVA
-                } else if ( e.KeyValue == KeyEvent.VK_PERIOD ) {
+            } else if ( e.KeyValue == KeyEvent.VK_PERIOD ) {
 #else
-                } else if ( e.KeyCode == System.Windows.Forms.Keys.OemPeriod ) {
+            } else if ( e.KeyCode == System.Windows.Forms.Keys.OemPeriod ) {
 #endif
-                    if ( !onPreviewKeyDown ) {
+                if ( !onPreviewKeyDown ) {
 
-                        if ( AppManager.isPlaying() ) {
-                            AppManager.setPlaying( false, this );
+                    if ( AppManager.isPlaying() ) {
+                        AppManager.setPlaying( false, this );
+                    } else {
+                        VsqFileEx vsq = AppManager.getVsqFile();
+                        if ( !vsq.config.StartMarkerEnabled ) {
+                            AppManager.setCurrentClock( 0 );
                         } else {
-                            VsqFileEx vsq = AppManager.getVsqFile();
-                            if ( !vsq.config.StartMarkerEnabled ) {
-                                AppManager.setCurrentClock( 0 );
-                            } else {
-                                AppManager.setCurrentClock( vsq.config.StartMarker );
-                            }
+                            AppManager.setCurrentClock( vsq.config.StartMarker );
+                        }
+                        refreshScreen();
+                    }
+                }
+#if JAVA
+            } else if( e.KeyValue == KeyEvent.VK_ADD || e.KeyValue == KeyEvent.VK_PLUS || e.KeyValue == KeyEvent.VK_RIGHT ) {
+#else
+            } else if ( e.KeyCode == System.Windows.Forms.Keys.Add || e.KeyCode == System.Windows.Forms.Keys.Oemplus || e.KeyCode == System.Windows.Forms.Keys.Right ) {
+#endif
+                if ( onPreviewKeyDown ) {
+                    forward();
+                }
+#if JAVA
+            } else if ( e.KeyValue == KeyEvent.VK_MINUS || e.KeyValue == KeyEvent.VK_LEFT ) {
+#else
+            } else if ( e.KeyCode == System.Windows.Forms.Keys.Subtract || e.KeyCode == System.Windows.Forms.Keys.OemMinus || e.KeyCode == System.Windows.Forms.Keys.Left ) {
+#endif
+                if ( onPreviewKeyDown ) {
+                    rewind();
+                }
+#if JAVA
+            } else if ( e.KeyValue == KeyEvent.VK_ESCAPE ) {
+#else
+            } else if ( e.KeyCode == System.Windows.Forms.Keys.Escape ) {
+#endif
+                // ステップ入力中の場合，入力中の音符をクリアする
+                VsqEvent item = AppManager.mAddingEvent;
+                if ( isStepSequencerEnabled() && item != null ) {
+                    // 入力中だった音符の長さを取得し，
+                    int length = item.ID.getLength();
+                    AppManager.mAddingEvent = null;
+                    int clock = AppManager.getCurrentClock();
+                    int clock_draft = clock - length;
+                    if ( clock_draft < 0 ) {
+                        clock_draft = 0;
+                    }
+                    // その分だけソングポジションを戻す．
+                    AppManager.setCurrentClock( clock_draft );
+                    refreshScreen( true );
+                }
+            } else {
+                if ( !AppManager.isPlaying() ) {
+                    // 最初に戻る、の機能を発動
+                    BKeys[] specialGoToFirst = AppManager.editorConfig.SpecialShortcutGoToFirst;
+                    if ( specialGoToFirst != null && specialGoToFirst.Length > 0 ) {
+                        KeyStroke ks = BKeysUtility.getKeyStrokeFromBKeys( specialGoToFirst );
+#if JAVA
+                        if( e.KeyCode == ks.getKeyCode() )
+#else
+                        if ( e.KeyCode == ks.keys )
+#endif
+                        {
+                            AppManager.setCurrentClock( 0 );
+                            ensureCursorVisible();
                             refreshScreen();
                         }
                     }
-#if JAVA
-                } else if( e.KeyValue == KeyEvent.VK_ADD || e.KeyValue == KeyEvent.VK_PLUS || e.KeyValue == KeyEvent.VK_RIGHT ) {
-#else
-                } else if ( e.KeyCode == System.Windows.Forms.Keys.Add || e.KeyCode == System.Windows.Forms.Keys.Oemplus || e.KeyCode == System.Windows.Forms.Keys.Right ) {
-#endif
-                    if ( onPreviewKeyDown ) {
-                        forward();
+                }
+            }
+            if ( !onPreviewKeyDown && flipPlaying ) {
+                if ( AppManager.isPlaying() ) {
+                    double elapsed = PlaySound.getPosition();
+                    double threshold = AppManager.mForbidFlipPlayingThresholdSeconds;
+                    if ( threshold < 0 ) {
+                        threshold = 0.0;
                     }
-#if JAVA
-                } else if ( e.KeyValue == KeyEvent.VK_MINUS || e.KeyValue == KeyEvent.VK_LEFT ) {
-#else
-                } else if ( e.KeyCode == System.Windows.Forms.Keys.Subtract || e.KeyCode == System.Windows.Forms.Keys.OemMinus || e.KeyCode == System.Windows.Forms.Keys.Left ) {
-#endif
-                    if ( onPreviewKeyDown ) {
-                        rewind();
-                    }
-#if JAVA
-                } else if ( e.KeyValue == KeyEvent.VK_ESCAPE ) {
-#else
-                } else if ( e.KeyCode == System.Windows.Forms.Keys.Escape ) {
-#endif
-                    // ステップ入力中の場合，入力中の音符をクリアする
-                    VsqEvent item = AppManager.mAddingEvent;
-                    if ( isStepSequencerEnabled() && item != null ) {
-                        // 入力中だった音符の長さを取得し，
-                        int length = item.ID.getLength();
-                        AppManager.mAddingEvent = null;
-                        int clock = AppManager.getCurrentClock();
-                        int clock_draft = clock - length;
-                        if ( clock_draft < 0 ) {
-                            clock_draft = 0;
-                        }
-                        // その分だけソングポジションを戻す．
-                        AppManager.setCurrentClock( clock_draft );
-                        refreshScreen( true );
+                    if ( elapsed > threshold ) {
+                        timer.stop();
+                        AppManager.setPlaying( false, this );
                     }
                 } else {
-                    if ( !AppManager.isPlaying() ) {
-                        // 最初に戻る、の機能を発動
-                        BKeys[] specialGoToFirst = AppManager.editorConfig.SpecialShortcutGoToFirst;
-                        if ( specialGoToFirst != null && specialGoToFirst.Length > 0 ) {
-                            KeyStroke ks = BKeysUtility.getKeyStrokeFromBKeys( specialGoToFirst );
-#if JAVA
-                            if( e.KeyCode == ks.getKeyCode() )
-#else
-                            if ( e.KeyCode == ks.keys )
-#endif
- {
-                                AppManager.setCurrentClock( 0 );
-                                ensureCursorVisible();
-                                refreshScreen();
-                            }
-                        }
-                    }
-                }
-                if ( !onPreviewKeyDown && flipPlaying ) {
-                    if ( AppManager.isPlaying() ) {
-                        double elapsed = PlaySound.getPosition();
-                        double threshold = AppManager.mForbidFlipPlayingThresholdSeconds;
-                        if ( threshold < 0 ) {
-                            threshold = 0.0;
-                        }
-                        if ( elapsed > threshold ) {
-                            timer.stop();
-                            AppManager.setPlaying( false, this );
-                        }
-                    } else {
-                        AppManager.setPlaying( true, this );
-                    }
+                    AppManager.setPlaying( true, this );
                 }
             }
 #if JAVA
@@ -3921,331 +3953,6 @@ namespace org.kbinani.cadencii
 #endif
                 pictPianoRoll.requestFocus();
             }
-            return;
-            #region OLD CODES DO NOT REMOVE <- なんで？
-            /*if ( AppManager.EditorConfig.Platform == Platform.Macintosh ) {
-                if ( AppManager.EditorConfig.CommandKeyAsControl ) {
-                    #region menuStripMain
-                    if ( e.Alt && e.KeyCode == Keys.N && menuFileNew.isEnabled() ) {
-                        this.menuFileNew_Click( menuFileNew, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.O && menuFileOpen.isEnabled() ) {
-                        this.menuFileOpen_Click( menuFileOpen, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.S && menuFileSave.isEnabled() ) {
-                        this.menuFileSave_Click( menuFileSave, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.Q && menuFileQuit.isEnabled() ) {
-                        this.menuFileQuit_Click( menuFileQuit, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.Z && menuEditUndo.isEnabled() ) {
-                        this.menuEditUndo_Click( menuEditUndo, null );
-                        return;
-                    } else if ( e.Alt && e.Shift && e.KeyCode == Keys.Z && menuEditRedo.isEnabled() ) {
-                        this.menuEditRedo_Click( this.menuEditRedo, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.X && this.menuEditCut.isEnabled() ) {
-                        this.menuEditCut_Click( this.menuEditCut, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.C && this.menuEditCopy.isEnabled() ) {
-                        this.menuEditCopy_Click( this.menuEditCopy, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.V && this.menuEditPaste.isEnabled() ) {
-                        this.menuEditPaste_Click( this.menuEditPaste, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.A && this.menuEditSelectAll.isEnabled() ) {
-                        this.menuEditSelectAll_Click( this.menuEditSelectAll, null );
-                        return;
-                    } else if ( e.Alt && e.Shift && this.menuEditSelectAllEvents.isEnabled() ) {
-                        this.menuEditSelectAllEvents_Click( this.menuEditSelectAllEvents, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.V && this.menuHiddenEditPaste.isEnabled() ) {
-                        this.menuHiddenEditPaste_Click( this.menuHiddenEditPaste, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.W && this.menuHiddenEditFlipToolPointerPencil.isEnabled() ) {
-                        this.menuHiddenEditFlipToolPointerPencil_Click( this.menuHiddenEditFlipToolPointerPencil, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.E && this.menuHiddenEditFlipToolPointerEraser.isEnabled() ) {
-                        this.menuHiddenEditFlipToolPointerEraser_Click( this.menuHiddenEditFlipToolPointerEraser, null );
-                        return;
-                    } else if ( (e.KeyCode & Keys.Clear) == Keys.Clear && e.Alt && e.Shift && this.menuHiddenVisualForwardParameter.isEnabled() ) {
-                        this.menuHiddenVisualForwardParameter_Click( this.menuHiddenVisualForwardParameter, null );
-                        return;
-                    } else if ( (e.KeyCode & Keys.LButton) == Keys.LButton && (e.KeyCode & Keys.LineFeed) == Keys.LineFeed && e.Alt && e.Shift && this.menuHiddenVisualBackwardParameter.isEnabled() ) {
-                        this.menuHiddenVisualBackwardParameter_Click( this.menuHiddenVisualBackwardParameter, null );
-                        return;
-                    } else if ( (e.KeyCode & Keys.Clear) == Keys.Clear && e.Alt && this.menuHiddenTrackNext.isEnabled() ) {
-                        this.menuHiddenTrackNext_Click( this.menuHiddenTrackNext, null );
-                        return;
-                    } else if ( (e.KeyCode & Keys.LButton) == Keys.LButton && (e.KeyCode & Keys.LineFeed) == Keys.LineFeed && e.Alt && this.menuHiddenTrackBack.isEnabled() ) {
-                        this.menuHiddenTrackBack_Click( this.menuHiddenTrackBack, null );
-                        return;
-                    }
-                    #endregion
-
-                    #region cMenuPiano
-                    if ( e.Alt && e.KeyCode == Keys.Z && cMenuPianoUndo.isEnabled() ) {
-                        this.cMenuPianoUndo_Click( this.cMenuPianoUndo, null );
-                        return;
-                    } else if ( e.Alt && e.Shift && e.KeyCode == Keys.Z && this.cMenuPianoRedo.isEnabled() ) {
-                        this.cMenuPianoRedo_Click( this.cMenuPianoRedo, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.X && this.cMenuPianoCut.isEnabled() ) {
-                        this.cMenuPianoCut_Click( this.cMenuPianoCut, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.C && this.cMenuPianoCopy.isEnabled() ) {
-                        this.cMenuPianoCopy_Click( this.cMenuPianoCopy, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.A && cMenuPianoSelectAll.isEnabled() ) {
-                        this.cMenuPianoSelectAll_Click( this.cMenuPianoSelectAll, null );
-                        return;
-                    } else if ( e.Alt && e.Shift && e.KeyCode == Keys.A && cMenuPianoSelectAllEvents.isEnabled() ) {
-                        this.cMenuPianoSelectAllEvents_Click( this.cMenuPianoSelectAllEvents, null );
-                        return;
-                    }
-                    #endregion
-
-                    #region cMenuTrackSelector
-                    if ( e.Alt && e.KeyCode == Keys.Z && cMenuTrackSelectorUndo.isEnabled() ) {
-                        this.cMenuTrackSelectorUndo_Click( this.cMenuTrackSelectorUndo, null );
-                        return;
-                    } else if ( e.Alt && e.Shift && e.KeyCode == Keys.Z && this.cMenuTrackSelectorRedo.isEnabled() ) {
-                        this.cMenuTrackSelectorRedo_Click( this.cMenuTrackSelectorRedo, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.X && this.cMenuTrackSelectorCut.isEnabled() ) {
-                        this.cMenuTrackSelectorCut_Click( this.cMenuTrackSelectorCut, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.C && this.cMenuTrackSelectorCopy.isEnabled() ) {
-                        this.cMenuTrackSelectorCopy_Click( this.cMenuTrackSelectorCopy, null );
-                        return;
-                    } else if ( e.Alt && e.KeyCode == Keys.V && this.cMenuTrackSelectorPaste.isEnabled() ) {
-                        this.cMenuTrackSelectorPaste_Click( this.cMenuTrackSelectorPaste, null );
-                        return;
-                    } else if ( e.Alt && e.Shift && e.KeyCode == Keys.A && this.cMenuTrackSelectorSelectAll.isEnabled() ) {
-                        this.cMenuTrackSelectorSelectAll_Click( this.cMenuTrackSelectorSelectAll, null );
-                        return;
-                    }
-                    #endregion
-                } else {
-                    boolean RButton = (e.KeyCode & Keys.RButton) == Keys.RButton;
-                    boolean Clear = (e.KeyCode & Keys.Clear) == Keys.Clear;
-                    boolean Return = (e.KeyCode & Keys.Return) == Keys.Return;
-                    boolean Pause = (e.KeyCode & Keys.Pause) == Keys.Pause;
-                    boolean FinalMode = (e.KeyCode & Keys.FinalMode) == Keys.FinalMode;
-                    boolean Cancel = (e.KeyCode & Keys.Cancel) == Keys.Cancel;
-                    boolean CapsLock = (e.KeyCode & Keys.CapsLock) == Keys.CapsLock;
-                    boolean LButton = (e.KeyCode & Keys.LButton) == Keys.LButton;
-                    boolean JunjaMode = (e.KeyCode & Keys.JunjaMode) == Keys.JunjaMode;
-                    boolean LineFeed = (e.KeyCode & Keys.LineFeed) == Keys.LineFeed;
-                    boolean ControlKey = (e.KeyCode & Keys.ControlKey) == Keys.ControlKey;
-                    boolean XButton1 = (e.KeyCode & Keys.XButton1) == Keys.XButton1;
-
-                    #region menuStripMain
-                    if ( RButton && Clear && (e.KeyCode & Keys.N) == Keys.N && menuFileNew.isEnabled() ) {
-                        this.menuFileNew_Click( menuFileNew, null );
-                        return;
-                    } else if ( RButton && Return && (e.KeyCode & Keys.O) == Keys.O && menuFileOpen.isEnabled() ) {
-                        this.menuFileOpen_Click( menuFileOpen, null );
-                        return;
-                    } else if ( Pause && (e.KeyCode & Keys.S) == Keys.S && menuFileSave.isEnabled() ) {
-                        this.menuFileSave_Click( menuFileSave, null );
-                        return;
-                    } else if ( ControlKey && (e.KeyCode & Keys.Q) == Keys.Q && menuFileQuit.isEnabled() ) {
-                        this.menuFileQuit_Click( menuFileQuit, null );
-                        return;
-                    } else if ( RButton && FinalMode && (e.KeyCode & Keys.Z) == Keys.Z && menuEditUndo.isEnabled() ) {
-                        this.menuEditUndo_Click( menuEditUndo, null );
-                        return;
-                    } else if ( RButton && FinalMode && e.Shift && (e.KeyCode & Keys.Z) == Keys.Z && menuEditRedo.isEnabled() ) {
-                        this.menuEditRedo_Click( this.menuEditRedo, null );
-                        return;
-                    } else if ( FinalMode && (e.KeyCode & Keys.X) == Keys.X && this.menuEditCut.isEnabled() ) {
-                        this.menuEditCut_Click( this.menuEditCut, null );
-                        return;
-                    } else if ( Cancel && (e.KeyCode & Keys.C) == Keys.C && this.menuEditCopy.isEnabled() ) {
-                        this.menuEditCopy_Click( this.menuEditCopy, null );
-                        return;
-                    } else if ( RButton && CapsLock && (e.KeyCode & Keys.V) == Keys.V && this.menuEditPaste.isEnabled() ) {
-                        this.menuEditPaste_Click( this.menuEditPaste, null );
-                        return;
-                    } else if ( LButton && (e.KeyCode & Keys.A) == Keys.A && this.menuEditSelectAll.isEnabled() ) {
-                        this.menuEditSelectAll_Click( this.menuEditSelectAll, null );
-                        return;
-                    } else if ( LButton && e.Shift && (e.KeyCode & Keys.A) == Keys.A && this.menuEditSelectAllEvents.isEnabled() ) {
-                        this.menuEditSelectAllEvents_Click( this.menuEditSelectAllEvents, null );
-                        return;
-                    } else if ( RButton && CapsLock && (e.KeyCode & Keys.V) == Keys.V && this.menuHiddenEditPaste.isEnabled() ) {
-                        this.menuHiddenEditPaste_Click( this.menuHiddenEditPaste, null );
-                        return;
-                    } else if ( JunjaMode && (e.KeyCode & Keys.W) == Keys.W && this.menuHiddenEditFlipToolPointerPencil.isEnabled() ) {
-                        this.menuHiddenEditFlipToolPointerPencil_Click( this.menuHiddenEditFlipToolPointerPencil, null );
-                        return;
-                    } else if ( XButton1 && (e.KeyCode & Keys.E) == Keys.E && this.menuHiddenEditFlipToolPointerEraser.isEnabled() ) {
-                        this.menuHiddenEditFlipToolPointerEraser_Click( this.menuHiddenEditFlipToolPointerEraser, null );
-                        return;
-                    } else if ( Clear && e.Control && e.Shift && this.menuHiddenVisualForwardParameter.isEnabled() ) {
-                        this.menuHiddenVisualForwardParameter_Click( this.menuHiddenVisualForwardParameter, null );
-                        return;
-                    } else if ( LButton && LineFeed && e.Control && e.Shift && this.menuHiddenVisualBackwardParameter.isEnabled() ) {
-                        this.menuHiddenVisualBackwardParameter_Click( this.menuHiddenVisualBackwardParameter, null );
-                        return;
-                    } else if ( Clear && e.Control && this.menuHiddenTrackNext.isEnabled() ) {
-                        this.menuHiddenTrackNext_Click( this.menuHiddenTrackNext, null );
-                        return;
-                    } else if ( LButton && LineFeed && e.Control && this.menuHiddenTrackBack.isEnabled() ) {
-                        this.menuHiddenTrackBack_Click( this.menuHiddenTrackBack, null );
-                        return;
-                    }
-                    #endregion
-
-                    #region cMenuPiano
-                    if ( RButton && FinalMode && (e.KeyCode & Keys.Z) == Keys.Z && cMenuPianoUndo.isEnabled() ) {
-                        this.cMenuPianoUndo_Click( this.cMenuPianoUndo, null );
-                        return;
-                    } else if ( RButton && FinalMode && e.Shift && (e.KeyCode & Keys.Z) == Keys.Z && this.cMenuPianoRedo.isEnabled() ) {
-                        this.cMenuPianoRedo_Click( this.cMenuPianoRedo, null );
-                        return;
-                    } else if ( FinalMode && (e.KeyCode & Keys.X) == Keys.X && this.cMenuPianoCut.isEnabled() ) {
-                        this.cMenuPianoCut_Click( this.cMenuPianoCut, null );
-                        return;
-                    } else if ( Cancel && (e.KeyCode & Keys.C) == Keys.C && this.cMenuPianoCopy.isEnabled() ) {
-                        this.cMenuPianoCopy_Click( this.cMenuPianoCopy, null );
-                        return;
-                    } else if ( LButton && (e.KeyCode & Keys.A) == Keys.A && cMenuPianoSelectAll.isEnabled() ) {
-                        this.cMenuPianoSelectAll_Click( this.cMenuPianoSelectAll, null );
-                        return;
-                    } else if ( LButton && e.Shift && (e.KeyCode & Keys.A) == Keys.A && cMenuPianoSelectAllEvents.isEnabled() ) {
-                        this.cMenuPianoSelectAllEvents_Click( this.cMenuPianoSelectAllEvents, null );
-                        return;
-                    }
-                    #endregion
-
-                    #region cMenuTrackSelector
-                    if ( RButton && FinalMode && (e.KeyCode & Keys.Z) == Keys.Z && cMenuTrackSelectorUndo.isEnabled() ) {
-                        this.cMenuTrackSelectorUndo_Click( this.cMenuTrackSelectorUndo, null );
-                        return;
-                    } else if ( RButton && FinalMode && e.Shift && (e.KeyCode & Keys.Z) == Keys.Z && this.cMenuTrackSelectorRedo.isEnabled() ) {
-                        this.cMenuTrackSelectorRedo_Click( this.cMenuTrackSelectorRedo, null );
-                        return;
-                    } else if ( FinalMode && (e.KeyCode & Keys.X) == Keys.X && this.cMenuTrackSelectorCut.isEnabled() ) {
-                        this.cMenuTrackSelectorCut_Click( this.cMenuTrackSelectorCut, null );
-                        return;
-                    } else if ( Cancel && (e.KeyCode & Keys.C) == Keys.C && this.cMenuTrackSelectorCopy.isEnabled() ) {
-                        this.cMenuTrackSelectorCopy_Click( this.cMenuTrackSelectorCopy, null );
-                        return;
-                    } else if ( RButton && CapsLock && (e.KeyCode & Keys.V) == Keys.V && this.cMenuTrackSelectorPaste.isEnabled() ) {
-                        this.cMenuTrackSelectorPaste_Click( this.cMenuTrackSelectorPaste, null );
-                        return;
-                    } else if ( LButton && e.Shift && (e.KeyCode & Keys.A) == Keys.A && this.cMenuTrackSelectorSelectAll.isEnabled() ) {
-                        this.cMenuTrackSelectorSelectAll_Click( this.cMenuTrackSelectorSelectAll, null );
-                        return;
-                    }
-                    #endregion
-                }
-            } else {
-                #region menuStripMain
-                if ( e.Control && e.KeyCode == Keys.N && menuFileNew.isEnabled() ) {
-                    this.menuFileNew_Click( menuFileNew, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.O && menuFileOpen.isEnabled() ) {
-                    this.menuFileOpen_Click( menuFileOpen, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.S && menuFileSave.isEnabled() ) {
-                    this.menuFileSave_Click( menuFileSave, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.Q && menuFileQuit.isEnabled() ) {
-                    this.menuFileQuit_Click( menuFileQuit, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.Z && menuEditUndo.isEnabled() ) {
-                    this.menuEditUndo_Click( menuEditUndo, null );
-                    return;
-                } else if ( e.Control && e.Shift && e.KeyCode == Keys.Z && menuEditRedo.isEnabled() ) {
-                    this.menuEditRedo_Click( this.menuEditRedo, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.X && this.menuEditCut.isEnabled() ) {
-                    this.menuEditCut_Click( this.menuEditCut, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.C && this.menuEditCopy.isEnabled() ) {
-                    this.menuEditCopy_Click( this.menuEditCopy, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.V && this.menuEditPaste.isEnabled() ) {
-                    this.menuEditPaste_Click( this.menuEditPaste, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.A && this.menuEditSelectAll.isEnabled() ) {
-                    this.menuEditSelectAll_Click( this.menuEditSelectAll, null );
-                    return;
-                } else if ( e.Control && e.Shift && this.menuEditSelectAllEvents.isEnabled() ) {
-                    this.menuEditSelectAllEvents_Click( this.menuEditSelectAllEvents, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.V && this.menuHiddenEditPaste.isEnabled() ) {
-                    this.menuHiddenEditPaste_Click( this.menuHiddenEditPaste, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.W && this.menuHiddenEditFlipToolPointerPencil.isEnabled() ) {
-                    this.menuHiddenEditFlipToolPointerPencil_Click( this.menuHiddenEditFlipToolPointerPencil, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.E && this.menuHiddenEditFlipToolPointerEraser.isEnabled() ) {
-                    this.menuHiddenEditFlipToolPointerEraser_Click( this.menuHiddenEditFlipToolPointerEraser, null );
-                    return;
-                } else if ( e.Control && e.Alt && (e.KeyCode & Keys.PageDown) == Keys.PageDown && this.menuHiddenVisualForwardParameter.isEnabled() ) {
-                    this.menuHiddenVisualForwardParameter_Click( this.menuHiddenVisualForwardParameter, null );
-                    return;
-                } else if ( e.Control && e.Alt && (e.KeyCode & Keys.PageUp) == Keys.PageUp && this.menuHiddenVisualBackwardParameter.isEnabled() ) {
-                    this.menuHiddenVisualBackwardParameter_Click( this.menuHiddenVisualBackwardParameter, null );
-                    return;
-                } else if ( e.Control && (e.KeyCode & Keys.PageDown) == Keys.PageDown && this.menuHiddenTrackNext.isEnabled() ) {
-                    this.menuHiddenTrackNext_Click( this.menuHiddenTrackNext, null );
-                    return;
-                } else if ( e.Control && (e.KeyCode & Keys.PageUp) == Keys.PageUp && this.menuHiddenTrackBack.isEnabled() ) {
-                    this.menuHiddenTrackBack_Click( this.menuHiddenTrackBack, null );
-                    return;
-                }
-                #endregion
-
-                #region cMenuPiano
-                if ( e.Control && e.KeyCode == Keys.Z && cMenuPianoUndo.isEnabled() ) {
-                    this.cMenuPianoUndo_Click( this.cMenuPianoUndo, null );
-                    return;
-                } else if ( e.Control && e.Shift && e.KeyCode == Keys.Z && this.cMenuPianoRedo.isEnabled() ) {
-                    this.cMenuPianoRedo_Click( this.cMenuPianoRedo, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.X && this.cMenuPianoCut.isEnabled() ) {
-                    this.cMenuPianoCut_Click( this.cMenuPianoCut, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.C && this.cMenuPianoCopy.isEnabled() ) {
-                    this.cMenuPianoCopy_Click( this.cMenuPianoCopy, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.A && cMenuPianoSelectAll.isEnabled() ) {
-                    this.cMenuPianoSelectAll_Click( this.cMenuPianoSelectAll, null );
-                    return;
-                } else if ( e.Control && e.Shift && e.KeyCode == Keys.A && cMenuPianoSelectAllEvents.isEnabled() ) {
-                    this.cMenuPianoSelectAllEvents_Click( this.cMenuPianoSelectAllEvents, null );
-                    return;
-                }
-                #endregion
-
-                #region cMenuTrackSelector
-                if ( e.Control && e.KeyCode == Keys.Z && cMenuTrackSelectorUndo.isEnabled() ) {
-                    this.cMenuTrackSelectorUndo_Click( this.cMenuTrackSelectorUndo, null );
-                    return;
-                } else if ( e.Control && e.Shift && e.KeyCode == Keys.Z && this.cMenuTrackSelectorRedo.isEnabled() ) {
-                    this.cMenuTrackSelectorRedo_Click( this.cMenuTrackSelectorRedo, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.X && this.cMenuTrackSelectorCut.isEnabled() ) {
-                    this.cMenuTrackSelectorCut_Click( this.cMenuTrackSelectorCut, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.C && this.cMenuTrackSelectorCopy.isEnabled() ) {
-                    this.cMenuTrackSelectorCopy_Click( this.cMenuTrackSelectorCopy, null );
-                    return;
-                } else if ( e.Control && e.KeyCode == Keys.V && this.cMenuTrackSelectorPaste.isEnabled() ) {
-                    this.cMenuTrackSelectorPaste_Click( this.cMenuTrackSelectorPaste, null );
-                    return;
-                } else if ( e.Control && e.Shift && e.KeyCode == Keys.A && this.cMenuTrackSelectorSelectAll.isEnabled() ) {
-                    this.cMenuTrackSelectorSelectAll_Click( this.cMenuTrackSelectorSelectAll, null );
-                    return;
-                }
-                #endregion
-            }*/
-            #endregion
         }
 
         public void updateScrollRangeHorizontal()
@@ -7110,10 +6817,12 @@ namespace org.kbinani.cadencii
                         boolean available = PortUtil.isFileExists( item );
                         BMenuItem itm = new BMenuItem();
                         itm.setText( short_name );
+                        String tooltip = "";
                         if ( !available ) {
-                            itm.setToolTipText( _( "[file not found]" ) + " " );
+                            tooltip = _( "[file not found]" ) + " ";
                         }
-                        itm.setToolTipText( itm.getToolTipText() + item );
+                        tooltip += item;
+                        itm.setToolTipText( tooltip );
                         itm.setTag( item );
                         itm.setEnabled( available );
                         itm.Click += new BEventHandler( handleRecentFileMenuItem_Click );
@@ -7191,13 +6900,10 @@ namespace org.kbinani.cadencii
 #endif
             hideInputTextBox();
 
-#if JAVA
-            AppManager.mInputTextBox.keyUpEvent.add( new BKeyEventHandler( this, "mInputTextBox_KeyUp" ) );
-            AppManager.mInputTextBox.keyDownEvent.add( new BKeyEventHandler( this, "mInputTextBox_KeyDown" ) );
-            //TODO: JAVA: AppManager.mInputTextBox.ImeModeChanged += mInputTextBox_ImeModeChanged;
-#else
             AppManager.mInputTextBox.KeyUp += new BKeyEventHandler( mInputTextBox_KeyUp );
             AppManager.mInputTextBox.KeyDown += new BKeyEventHandler( mInputTextBox_KeyDown );
+            //TODO: JAVA: AppManager.mInputTextBox.ImeModeChanged += mInputTextBox_ImeModeChanged;
+#if !JAVA
             AppManager.mInputTextBox.ImeModeChanged += mInputTextBox_ImeModeChanged;
 #endif
 
@@ -7214,7 +6920,12 @@ namespace org.kbinani.cadencii
                 AppManager.mInputTextBox.setBackground( Color.white );
             }
             AppManager.mInputTextBox.setFont( new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE9 ) );
-            AppManager.mInputTextBox.setLocation( position.x + 4, position.y + 2 );
+            Point p = new Point( position.x + 4, position.y + 2 );
+#if JAVA
+            p = pictPianoRoll.pointToScreen( p );
+#endif
+            AppManager.mInputTextBox.setLocation( p );
+
 #if !JAVA
             AppManager.mInputTextBox.Parent = pictPianoRoll;
 #endif
@@ -8006,8 +7717,8 @@ namespace org.kbinani.cadencii
             stripBtnForward.clickEvent.add( new BEventHandler( this, "stripBtnForward_Click" ) );
             stripBtnMoveEnd.clickEvent.add( new BEventHandler( this, "stripBtnMoveEnd_Click" ) );
             stripBtnPlay.clickEvent.add( new BEventHandler( this, "stripBtnPlay_Click" ) );
-            stripBtnScroll.clickEvent.add( new BEventHandler( this, "stripBtnScroll_Click" ) );
-            stripBtnLoop.clickEvent.add( new BEventHandler( this, "stripBtnLoop_Click" ) );
+            stripBtnScroll.checkedChangedEvent.add( new BEventHandler( this, "stripBtnScroll_CheckedChanged" ) );
+            stripBtnLoop.checkedChangedEvent.add( new BEventHandler( this, "stripBtnLoop_CheckedChanged" ) );
 
             stripBtnPointer.clickEvent.add( new BEventHandler( this, "stripBtnArrow_Click" ) );
             stripBtnPencil.clickEvent.add( new BEventHandler( this, "stripBtnPencil_Click" ) );
@@ -8116,22 +7827,24 @@ namespace org.kbinani.cadencii
 #if JAVA
             int keycode = e.getKeyCode();
             int modifiers = e.getModifiers();
-            if ( keycode == KeyEvent.VK_TAB || 
-                 keycode == KeyEvent.VK_ENTER ) {
+            boolean shift = (modifiers & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK;
+            boolean tab = keycode == KeyEvent.VK_TAB;
+            boolean enter = keycode == KeyEvent.VK_ENTER; 
 #else
-            if ( e.KeyCode == System.Windows.Forms.Keys.Tab ||
-                 e.KeyCode == System.Windows.Forms.Keys.Return ) {
+            boolean shift = (e.Modifiers & System.Windows.Forms.Keys.Shift) == System.Windows.Forms.Keys.Shift;
+            boolean tab = e.KeyCode == System.Windows.Forms.Keys.Tab;
+            boolean enter = e.KeyCode == System.Windows.Forms.Keys.Return;
 #endif
+            if ( tab || enter ) {
                 executeLyricChangeCommand();
                 int selected = AppManager.getSelected();
                 int index = -1;
+                int width = pictPianoRoll.getWidth();
+                int height = pictPianoRoll.getHeight();
+                int key_width = AppManager.keyWidth;
                 VsqTrack track = AppManager.getVsqFile().Track.get( selected );
                 track.sortEvent();
-#if JAVA
-                if( keycode == KeyEvent.VK_TAB ) {
-#else
-                if ( e.KeyCode == System.Windows.Forms.Keys.Tab ) {
-#endif
+                if( tab ) {
                     int clock = 0;
                     int search_index = AppManager.getLastSelectedEvent().original.InternalID;
                     int c = track.getEventCount();
@@ -8143,11 +7856,7 @@ namespace org.kbinani.cadencii
                             break;
                         }
                     }
-#if JAVA
-                    if( (modifiers & InputEvent.SHIFT_MASK) == InputEvent.SHIFT_MASK ) {
-#else
-                    if ( (e.Modifiers & System.Windows.Forms.Keys.Shift) == System.Windows.Forms.Keys.Shift ) {
-#endif
+                    if( shift ) {
                         // 1個前の音符イベントを検索
                         int tindex = -1;
                         for ( int i = track.getEventCount() - 1; i >= 0; i-- ) {
@@ -8188,16 +7897,27 @@ namespace org.kbinani.cadencii
 
                     // 画面上にAppManager.mInputTextBoxが見えるように，移動
                     int SPACE = 20;
-                    if ( x < AppManager.keyWidth || pictPianoRoll.getWidth() < x + AppManager.mInputTextBox.getWidth() ) {
+                    // vScrollやhScrollをいじった場合はfalseにする．
+                    boolean refresh_screen = true;
+                    // X軸方向について，見えるように移動
+                    if ( x < key_width || width < x + AppManager.mInputTextBox.getWidth() ) {
                         int clock, clock_x;
-                        if ( x < AppManager.keyWidth ) {
+                        if ( x < key_width ) {
+                            // 左に隠れてしまう場合
                             clock = item.Clock;
-                            clock_x = AppManager.keyWidth + SPACE;
                         } else {
+                            // 右に隠れてしまう場合
                             clock = item.Clock + clWidth;
-                            clock_x = pictPianoRoll.getWidth() - SPACE;
                         }
-                        double draft_d = (73 - clock_x) * AppManager.getScaleXInv() + clock;
+                        if( shift ){
+                            // 左方向に移動していた場合
+                            // 右から３分の１の位置に移動させる
+                            clock_x = width - (width - key_width) / 3;
+                        }else{
+                            // 右方向に移動していた場合
+                            clock_x = key_width + (width - key_width) / 3;
+                        }
+                        double draft_d = (key_width + AppManager.keyOffset - clock_x) * AppManager.getScaleXInv() + clock;
                         if ( draft_d < 0.0 ) {
                             draft_d = 0.0;
                         }
@@ -8207,8 +7927,29 @@ namespace org.kbinani.cadencii
                         } else if ( hScroll.getMaximum() < draft ) {
                             draft = hScroll.getMaximum();
                         }
+                        refresh_screen = false;
                         hScroll.setValue( draft );
-                    } else {
+                    }
+                    // y軸方向について，見えるように移動
+                    int track_height = (int)(100 * AppManager.getScaleY());
+                    if( y <= 0 || height - track_height  <= y ){
+                        int note = item.ID.Note;
+                        if( y <= 0 ){
+                            // 上にはみ出してしまう場合
+                            note = item.ID.Note + 1;
+                        }else{
+                            // 下にはみ出してしまう場合
+                            note = item.ID.Note - 2;
+                        }
+                        if( 127 < note ){
+                            note = 127;
+                        }
+                        if( note < 0 ){
+                            note = 0;
+                        }
+                        ensureVisibleY( note );
+                    }
+                    if ( refresh_screen ) {
                         refreshScreen();
                     }
                 } else {
@@ -8609,7 +8350,11 @@ namespace org.kbinani.cadencii
                     if ( !AppManager.editorConfig.KeepLyricInputMode ) {
                         mLastSymbolEditMode = false;
                     }
-                    showInputTextBox( item.ID.LyricHandle.L0.Phrase, item.ID.LyricHandle.L0.getPhoneticSymbol(), new Point( rect.x, rect.y ), mLastSymbolEditMode );
+                    showInputTextBox(
+                        item.ID.LyricHandle.L0.Phrase,
+                        item.ID.LyricHandle.L0.getPhoneticSymbol(),
+                        new Point( rect.x, rect.y ),
+                        mLastSymbolEditMode );
                     refreshScreen();
                     return;
                 }
@@ -10855,7 +10600,7 @@ namespace org.kbinani.cadencii
                     if ( AppManager.getFileName().Equals( "" ) ) {
                         int dr = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
                         if ( dr == BFileChooser.APPROVE_OPTION ) {
-                            AppManager.saveTo( ensureExtension( saveXmlVsqDialog.getSelectedFile(), ".xvsq" ) );
+                            AppManager.saveTo( saveXmlVsqDialog.getSelectedFile() );
                         } else {
                             return true;
                         }
@@ -11016,6 +10761,10 @@ namespace org.kbinani.cadencii
 
             updateSplitContainer2Size( false );
 
+            ensureVisibleY( 60 );
+
+#if !JAVA
+            // 鍵盤用の音源の準備．Javaはこの機能は削除で．
             // 鍵盤用のキャッシュが古い位置に保存されている場合。
             String cache_new = Utility.getKeySoundPath();
             String cache_old = fsys.combine( PortUtil.getApplicationStartupPath(), "cache" );
@@ -11056,8 +10805,10 @@ namespace org.kbinani.cadencii
                     break;
                 }
             }
+#endif
 
             boolean init_key_sound_player_immediately = true; //FormGenerateKeySoundの終了を待たずにKeySoundPlayer.initするかどうか。
+#if !JAVA
             if ( !AppManager.editorConfig.DoNotAskKeySoundGeneration && cache_is_incomplete ) {
                 FormAskKeySoundGeneration dialog = null;
                 BDialogResult dialog_result = BDialogResult.NO;
@@ -11095,6 +10846,7 @@ namespace org.kbinani.cadencii
                     init_key_sound_player_immediately = false;
                 }
             }
+#endif
 
             if ( init_key_sound_player_immediately ) {
                 try {
@@ -11208,7 +10960,7 @@ namespace org.kbinani.cadencii
         {
             if ( getExtendedState() != BForm.ICONIFIED ) {
                 updateScrollRangeVertical();
-                AppManager.setStartToDrawY( calculateStartToDrawY() );
+                AppManager.setStartToDrawY( calculateStartToDrawY( vScroll.getValue() ) );
             }
         }
 
@@ -11423,11 +11175,11 @@ namespace org.kbinani.cadencii
             }
 
             String dir = AppManager.editorConfig.getLastUsedPathOut( "xvsq" );
-            saveXmlVsqDialog.setInitialDirectory( dir );
+            saveXmlVsqDialog.setSelectedFile( dir );
             int dr = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
             if ( dr == BFileChooser.APPROVE_OPTION ) {
-                String file = ensureExtension( saveXmlVsqDialog.getSelectedFile(), ".xvsq" );
-                AppManager.editorConfig.setLastUsedPathOut( file );
+                String file = saveXmlVsqDialog.getSelectedFile();
+                AppManager.editorConfig.setLastUsedPathOut( file, ".xvsq" );
                 AppManager.saveTo( file );
                 updateRecentFileMenu();
                 setEdited( false );
@@ -11479,13 +11231,13 @@ namespace org.kbinani.cadencii
                 }
 
                 String dir = AppManager.editorConfig.getLastUsedPathOut( "mid" );
-                saveMidiDialog.setInitialDirectory( dir );
+                saveMidiDialog.setSelectedFile( dir );
                 int dialog_result = AppManager.showModalDialog( saveMidiDialog, false, this );
 
                 if ( dialog_result == BFileChooser.APPROVE_OPTION ) {
                     RandomAccessFile fs = null;
-                    String filename = ensureExtension( saveMidiDialog.getSelectedFile(), ".mid" );
-                    AppManager.editorConfig.setLastUsedPathOut( filename );
+                    String filename = saveMidiDialog.getSelectedFile();
+                    AppManager.editorConfig.setLastUsedPathOut( filename, ".mid" );
                     try {
                         fs = new RandomAccessFile( filename, "rw" );
                         // ヘッダー
@@ -11702,19 +11454,19 @@ namespace org.kbinani.cadencii
                 if ( vsq == null ) {
                     return;
                 }
-                String dir = AppManager.editorConfig.getLastUsedPathOut( "xml" );
-                dialog = new BFileChooser( dir );
+                String first = AppManager.editorConfig.getLastUsedPathOut( "xml" );
+                dialog = new BFileChooser();
+                dialog.setSelectedFile( first );
                 dialog.addFileFilter( _( "MusicXML(*.xml)|*.xml" ) );
                 dialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
-                dialog.setInitialDirectory( dir );
                 int result = AppManager.showModalDialog( dialog, false, this );
                 if ( result != BFileChooser.APPROVE_OPTION ) {
                     return;
                 }
-                String file = ensureExtension( dialog.getSelectedFile(), ".xml" );
+                String file = dialog.getSelectedFile();
                 String software = "Cadencii version " + BAssemblyInfo.fileVersion;
                 vsq.printAsMusicXml( file, "UTF-8", software );
-                AppManager.editorConfig.setLastUsedPathOut( file );
+                AppManager.editorConfig.setLastUsedPathOut( file, ".xml" );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileExportMusicXml_Click; ex=" + ex + "\n" );
                 serr.println( "FormMain#menuFileExportMusicXml_Click; ex=" + ex );
@@ -11749,7 +11501,7 @@ namespace org.kbinani.cadencii
                 dir = file_dialog.getSelectedPath();
                 // 1.wavはダミー
                 initial_dir = fsys.combine( dir, "1.wav" );
-                AppManager.editorConfig.setLastUsedPathOut( initial_dir );
+                AppManager.editorConfig.setLastUsedPathOut( initial_dir, ".wav" );
             } catch ( Exception ex ) {
             } finally {
                 if ( file_dialog != null ) {
@@ -11823,7 +11575,8 @@ namespace org.kbinani.cadencii
             String file_name = "";
             try {
                 String last_path = AppManager.editorConfig.getLastUsedPathOut( "ust" );
-                dialog = new BFileChooser( last_path );
+                dialog = new BFileChooser();
+                dialog.setSelectedFile( last_path );
                 dialog.setDialogTitle( _( "Export UTAU (*.ust)" ) );
                 dialog.addFileFilter( _( "UTAU Script Format(*.ust)|*.ust" ) );
                 dialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
@@ -11831,8 +11584,8 @@ namespace org.kbinani.cadencii
                 if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
                     return;
                 }
-                file_name = ensureExtension( dialog.getSelectedFile(), ".ust" );
-                AppManager.editorConfig.setLastUsedPathOut( file_name );
+                file_name = dialog.getSelectedFile();
+                AppManager.editorConfig.setLastUsedPathOut( file_name, ".ust" );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileExportUst_Click; ex=" + ex + "\n" );
             } finally {
@@ -11882,7 +11635,8 @@ namespace org.kbinani.cadencii
             String file_name = "";
             try {
                 String last_path = AppManager.editorConfig.getLastUsedPathOut( "vsq" );
-                dialog = new BFileChooser( last_path );
+                dialog = new BFileChooser();
+                dialog.setSelectedFile( last_path );
                 dialog.setDialogTitle( _( "Export VSQ (*.vsq)" ) );
                 dialog.addFileFilter( _( "VSQ Format(*.vsq)|*.vsq" ) );
                 dialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
@@ -11890,8 +11644,8 @@ namespace org.kbinani.cadencii
                 if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
                     return;
                 }
-                file_name = ensureExtension( dialog.getSelectedFile(), ".vsq" );
-                AppManager.editorConfig.setLastUsedPathOut( file_name );
+                file_name = dialog.getSelectedFile();
+                AppManager.editorConfig.setLastUsedPathOut( file_name, ".vsq" );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileExportVsq_Click; ex=" + ex + "\n" );
             } finally {
@@ -11933,7 +11687,8 @@ namespace org.kbinani.cadencii
             String file_name = "";
             try {
                 String last_path = AppManager.editorConfig.getLastUsedPathOut( "txt" );
-                dialog = new BFileChooser( last_path );
+                dialog = new BFileChooser();
+                dialog.setSelectedFile( last_path );
                 dialog.setDialogTitle( _( "Metatext for vConnect" ) );
                 dialog.addFileFilter( _( "Text File(*.txt)|*.txt" ) );
                 dialog.addFileFilter( _( "All Files(*.*)|*.*" ) );
@@ -11941,8 +11696,8 @@ namespace org.kbinani.cadencii
                 if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
                     return;
                 }
-                file_name = ensureExtension( dialog.getSelectedFile(), ".txt" );
-                AppManager.editorConfig.setLastUsedPathOut( file_name );
+                file_name = dialog.getSelectedFile();
+                AppManager.editorConfig.setLastUsedPathOut( file_name, ".txt" );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileExportVxt_Click; ex=" + ex + "\n" );
             } finally {
@@ -12013,8 +11768,8 @@ namespace org.kbinani.cadencii
 #if DEBUG
                 sout.println( "FormMain#menuFileExportWave_Click; last_path=" + last_path );
 #endif
-                sfd = new BFileChooser( last_path );
-                sfd.setInitialDirectory( last_path );
+                sfd = new BFileChooser();
+                sfd.setSelectedFile( last_path );
                 sfd.setDialogTitle( _( "Wave Export" ) );
                 sfd.addFileFilter( _( "Wave File(*.wav)|*.wav" ) );
                 sfd.addFileFilter( _( "All Files(*.*)|*.*" ) );
@@ -12022,8 +11777,8 @@ namespace org.kbinani.cadencii
                 if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
                     return;
                 }
-                filename = ensureExtension( sfd.getSelectedFile(), ".wav" );
-                AppManager.editorConfig.setLastUsedPathOut( filename );
+                filename = sfd.getSelectedFile();
+                AppManager.editorConfig.setLastUsedPathOut( filename, ".wav" );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileExportWave_Click; ex=" + ex + "\n" );
             } finally {
@@ -12096,7 +11851,7 @@ namespace org.kbinani.cadencii
             mDialogMidiImportAndExport.setMode( FormMidiImExport.FormMidiMode.IMPORT );
 
             String dir = AppManager.editorConfig.getLastUsedPathIn( "mid" );
-            openMidiDialog.setInitialDirectory( dir );
+            openMidiDialog.setSelectedFile( dir );
             int dialog_result = AppManager.showModalDialog( openMidiDialog, true, this );
 
             if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
@@ -12106,7 +11861,7 @@ namespace org.kbinani.cadencii
             MidiFile mf = null;
             try {
                 String filename = openMidiDialog.getSelectedFile();
-                AppManager.editorConfig.setLastUsedPathIn( filename );
+                AppManager.editorConfig.setLastUsedPathIn( filename, ".mid" );
                 mf = new MidiFile( filename );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileImportMidi_Click; ex=" + ex + "\n" );
@@ -12482,13 +12237,14 @@ namespace org.kbinani.cadencii
             try {
                 // 読み込むファイルを選ぶ
                 String dir = AppManager.editorConfig.getLastUsedPathIn( "ust" );
-                dialog = new BFileChooser( dir );
+                dialog = new BFileChooser();
+                dialog.setSelectedFile( dir );
                 int dialog_result = AppManager.showModalDialog( dialog, true, this );
                 if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
                     return;
                 }
                 String file = dialog.getSelectedFile();
-                AppManager.editorConfig.setLastUsedPathIn( file );
+                AppManager.editorConfig.setLastUsedPathIn( file, ".ust" );
 
                 // ustを読み込む
                 UstFile ust = new UstFile( file );
@@ -12593,7 +12349,7 @@ namespace org.kbinani.cadencii
         public void menuFileImportVsq_Click( Object sender, EventArgs e )
         {
             String dir = AppManager.editorConfig.getLastUsedPathIn( AppManager.editorConfig.LastUsedExtension );
-            openMidiDialog.setInitialDirectory( dir );
+            openMidiDialog.setSelectedFile( dir );
             int dialog_result = AppManager.showModalDialog( openMidiDialog, true, this );
 
             if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
@@ -12601,7 +12357,7 @@ namespace org.kbinani.cadencii
             }
             VsqFileEx vsq = null;
             String filename = openMidiDialog.getSelectedFile();
-            AppManager.editorConfig.setLastUsedPathIn( filename );
+            AppManager.editorConfig.setLastUsedPathIn( filename, ".vsq" );
             try {
                 vsq = new VsqFileEx( filename, "Shift_JIS" );
             } catch ( Exception ex ) {
@@ -12749,7 +12505,7 @@ namespace org.kbinani.cadencii
             }
 
             String dir = AppManager.editorConfig.getLastUsedPathIn( "ust" );
-            openUstDialog.setInitialDirectory( dir );
+            openUstDialog.setSelectedFile( dir );
             int dialog_result = AppManager.showModalDialog( openUstDialog, true, this );
 
             if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
@@ -12758,7 +12514,7 @@ namespace org.kbinani.cadencii
 
             try {
                 String filename = openUstDialog.getSelectedFile();
-                AppManager.editorConfig.setLastUsedPathIn( filename );
+                AppManager.editorConfig.setLastUsedPathIn( filename, ".ust" );
                 
                 // ust読み込み
                 UstFile ust = new UstFile( filename );
@@ -12856,16 +12612,19 @@ namespace org.kbinani.cadencii
 
             openMidiDialog.setFileFilter( filter );
             String dir = AppManager.editorConfig.getLastUsedPathIn( filter );
-            openMidiDialog.setInitialDirectory( dir );
+            openMidiDialog.setSelectedFile( dir );
             int dialog_result = AppManager.showModalDialog( openMidiDialog, true, this );
+            String ext = ".vsq";
             if ( dialog_result == BFileChooser.APPROVE_OPTION ) {
 #if DEBUG
                 AppManager.debugWriteLine( "openMidiDialog.getFileFilter()=" + openMidiDialog.getFileFilter() );
 #endif
                 if ( openMidiDialog.getFileFilter().EndsWith( ".mid" ) ) {
                     AppManager.editorConfig.LastUsedExtension = ".mid";
+                    ext = ".mid";
                 } else if ( openMidiDialog.getFileFilter().EndsWith( ".vsq" ) ) {
                     AppManager.editorConfig.LastUsedExtension = ".vsq";
+                    ext = ".vsq";
                 }
             } else {
                 return;
@@ -12873,7 +12632,7 @@ namespace org.kbinani.cadencii
             try {
                 String filename = openMidiDialog.getSelectedFile();
                 VsqFileEx vsq = new VsqFileEx( filename, "Shift_JIS" );
-                AppManager.editorConfig.setLastUsedPathIn( filename );
+                AppManager.editorConfig.setLastUsedPathIn( filename, ext );
                 AppManager.setVsqFile( vsq );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileOpenVsq_Click; ex=" + ex + "\n" );
@@ -13322,7 +13081,7 @@ namespace org.kbinani.cadencii
                     AppManager.updateAutoBackupTimerStatus();
 
                     // editorConfig.PxTrackHeightが変更されている可能性があるので，更新が必要
-                    AppManager.setStartToDrawY( calculateStartToDrawY() );
+                    AppManager.setStartToDrawY( calculateStartToDrawY( vScroll.getValue() ) );
 
                     if ( menuVisualControlTrack.isSelected() ) {
                         splitContainer1.setPanel2MinSize( trackSelector.getPreferredMinSize() );
@@ -14393,7 +14152,7 @@ namespace org.kbinani.cadencii
 
         public void vScroll_ValueChanged( Object sender, EventArgs e )
         {
-            AppManager.setStartToDrawY( calculateStartToDrawY() );
+            AppManager.setStartToDrawY( calculateStartToDrawY( vScroll.getValue() ) );
             if ( AppManager.getEditMode() != EditMode.MIDDLE_DRAG ) {
                 // MIDDLE_DRAGのときは，pictPianoRoll_MouseMoveでrefreshScreenされるので，それ以外のときだけ描画・
                 refreshScreen( true );
@@ -15329,9 +15088,16 @@ namespace org.kbinani.cadencii
         {
 #if DEBUG
             sout.println( "FormMain#menuHelpDebug_Click" );
+            
+            sout.println( "FormMain#menuHelpDebug_Click; menuVisualMixer.mouseEnterEvent.size()=" + menuVisualMixer.mouseEnterEvent.size() );
+            try{
+                menuVisualMixer.mouseEnterEvent.raise( menuVisualMixer, new BEventArgs() );
+            }catch( Exception ex ){
+                ex.printStackTrace();
+            }
 
 #if ENABLE_VOCALOID
-            /*BFileChooser dlg_fout = new BFileChooser( "" );
+            /*BFileChooser dlg_fout = new BFileChooser();
             if ( dlg_fout.showSaveDialog( this ) == BFileChooser.APPROVE_OPTION ) {
                 String fout = dlg_fout.getSelectedFile();
 
@@ -15457,7 +15223,7 @@ namespace org.kbinani.cadencii
 #else
                 boolean prop_editing = false;
 #endif
-                if( input_visible && !prop_editing ){
+                if( !input_visible && !prop_editing ){
                     trackSelector.requestFocus();
                 }
             }
@@ -16237,8 +16003,9 @@ namespace org.kbinani.cadencii
                 if ( vsq.config.EndMarker < clock ) {
                     vsq.config.EndMarker = clock;
                 }
+                menuVisualStartMarker.setSelected( true );
                 setEdited( true );
-                picturePositionIndicator.invalidate();
+                picturePositionIndicator.repaint();
             }
         }
 
@@ -16253,8 +16020,9 @@ namespace org.kbinani.cadencii
                 if ( vsq.config.StartMarker > clock ) {
                     vsq.config.StartMarker = clock;
                 }
+                menuVisualEndMarker.setSelected( true );
                 setEdited( true );
-                picturePositionIndicator.invalidate();
+                picturePositionIndicator.repaint();
             }
         }
         #endregion
@@ -16656,29 +16424,25 @@ namespace org.kbinani.cadencii
             pictPianoRoll.requestFocus();
         }
 
-        public void stripBtnScroll_Click( Object sender, EventArgs e )
+        public void stripBtnScroll_CheckedChanged( Object sender, EventArgs e )
         {
 #if JAVA
             boolean pushed = stripBtnScroll.isSelected();
-            stripBtnScroll.setSelected( !pushed );
 #else
             bool pushed = stripBtnScroll.Pushed;
-            stripBtnScroll.Pushed = !pushed;
 #endif
-            AppManager.mAutoScroll = !pushed;
+            AppManager.mAutoScroll = pushed;
             pictPianoRoll.requestFocus();
         }
 
-        public void stripBtnLoop_Click( Object sender, EventArgs e )
+        public void stripBtnLoop_CheckedChanged( Object sender, EventArgs e )
         {
 #if JAVA
             boolean pushed = stripBtnLoop.isSelected();
-            stripBtnLoop.setSelected( !pushed );
 #else
             boolean pushed = stripBtnLoop.Pushed;
-            stripBtnLoop.Pushed = !pushed;
 #endif
-            AppManager.setRepeatMode( !pushed );
+            AppManager.setRepeatMode( pushed );
             pictPianoRoll.requestFocus();
         }
 
@@ -16869,9 +16633,9 @@ namespace org.kbinani.cadencii
                 //} else if ( e.Button == stripBtnStop ) {
                 //stripBtnStop_Click( e.Button, new EventArgs() );
             } else if ( e.Button == stripBtnScroll ) {
-                stripBtnScroll_Click( e.Button, new EventArgs() );
+                stripBtnScroll.Pushed = !stripBtnScroll.Pushed;
             } else if ( e.Button == stripBtnLoop ) {
-                stripBtnLoop_Click( sender, new EventArgs() );
+                stripBtnLoop.Pushed = !stripBtnLoop.Pushed;
             }
         }
 #endif
@@ -17242,12 +17006,12 @@ namespace org.kbinani.cadencii
                 String last_file = AppManager.editorConfig.getLastUsedPathOut( "xvsq" );
                 if ( !last_file.Equals( "" ) ) {
                     String dir = PortUtil.getDirectoryName( last_file );
-                    saveXmlVsqDialog.setInitialDirectory( dir );
+                    saveXmlVsqDialog.setSelectedFile( dir );
                 }
                 int dr = AppManager.showModalDialog( saveXmlVsqDialog, false, this );
                 if ( dr == BFileChooser.APPROVE_OPTION ) {
-                    file = ensureExtension( saveXmlVsqDialog.getSelectedFile(), ".xvsq" );
-                    AppManager.editorConfig.setLastUsedPathOut( file );
+                    file = saveXmlVsqDialog.getSelectedFile();
+                    AppManager.editorConfig.setLastUsedPathOut( file, ".xvsq" );
                 }
             }
             if ( file != "" ) {
@@ -17263,14 +17027,14 @@ namespace org.kbinani.cadencii
                 return;
             }
             String dir = AppManager.editorConfig.getLastUsedPathIn( "xvsq" );
-            openXmlVsqDialog.setInitialDirectory( dir );
+            openXmlVsqDialog.setSelectedFile( dir );
             int dialog_result = AppManager.showModalDialog( openXmlVsqDialog, true, this );
             if ( dialog_result == BFileChooser.APPROVE_OPTION ) {
                 if ( AppManager.isPlaying() ) {
                     AppManager.setPlaying( false, this );
                 }
                 String file = openXmlVsqDialog.getSelectedFile();
-                AppManager.editorConfig.setLastUsedPathIn( file );
+                AppManager.editorConfig.setLastUsedPathIn( file, ".xvsq" );
                 openVsqCor( file );
                 clearExistingData();
 
@@ -17416,8 +17180,10 @@ namespace org.kbinani.cadencii
         public void handleMenuMouseEnter( Object sender, EventArgs e )
         {
             if ( sender == null ) {
+                System.out.println( "FormMain#handleMenuMouseEnter; exit with sender==null" );
                 return;
             }
+            System.out.println( "FormMain#handleMenuMouseEnter; sender=" + sender );
 
             boolean notfound = false;
             String text = "";
@@ -17864,14 +17630,14 @@ namespace org.kbinani.cadencii
         public void handleBgmAdd_Click( Object sender, EventArgs e )
         {
             String dir = AppManager.editorConfig.getLastUsedPathIn( "wav" );
-            openWaveDialog.setInitialDirectory( dir );
+            openWaveDialog.setSelectedFile( dir );
             int ret = AppManager.showModalDialog( openWaveDialog, true, this );
             if ( ret != BFileChooser.APPROVE_OPTION ) {
                 return;
             }
 
             String file = openWaveDialog.getSelectedFile();
-            AppManager.editorConfig.setLastUsedPathIn( file );
+            AppManager.editorConfig.setLastUsedPathIn( file, ".wav" );
 
             // 既に開かれていたらキャンセル
             int count = AppManager.getBgmCount();

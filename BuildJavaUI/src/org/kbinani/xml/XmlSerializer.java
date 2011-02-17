@@ -161,22 +161,23 @@ public class XmlSerializer{
         NodeList childs = node.getChildNodes();
         int numChild = childs.getLength();
         Object obj;
-        String str = node.getTextContent() + "";
+        System.out.println( "XmlSerializer#parseNode; t=" + t + "; parent_class=" + parent_class );
         if( t.equals( Integer.TYPE ) || t.equals( Integer.class ) ){
-            return Integer.parseInt( str );
+            return Integer.parseInt( node.getTextContent() + "" );
         }else if( t.equals( Byte.TYPE ) || t.equals( Byte.class ) ){
-            return Byte.parseByte( str );
+            return Byte.parseByte( node.getTextContent() + "" );
         }else if( t.equals( Short.TYPE ) || t.equals( Short.class ) ){
-            return Short.parseShort( str );
+            return Short.parseShort( node.getTextContent() + "" );
         }else if( t.equals( Float.TYPE ) || t.equals( Float.class ) ){
-            return Float.parseFloat( str );
+            return Float.parseFloat( node.getTextContent() + "" );
         }else if( t.equals( Double.TYPE ) || t.equals( Double.class ) ){
-            return Double.parseDouble( str );
+            return Double.parseDouble( node.getTextContent() + "" );
         }else if( t.equals( Boolean.TYPE ) || t.equals( Boolean.class ) ){
-            return Boolean.parseBoolean( str );
+            return Boolean.parseBoolean( node.getTextContent() + "" );
         }else if( t.equals( String.class ) ){
-            return str;
+            return node.getTextContent() + "";
         }else if( t.isEnum() ){
+            String str = node.getTextContent() + "";
             Object ret = null;
             for( Object o : t.getEnumConstants() ){
                 if( o.toString().equals( str ) ){

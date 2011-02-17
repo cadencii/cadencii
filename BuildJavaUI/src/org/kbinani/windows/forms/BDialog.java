@@ -28,7 +28,7 @@ public class BDialog extends JDialog
     private static final long serialVersionUID = 6813116345545558212L;
 
     public final BEvent<BFormClosingEventHandler> formClosingEvent = new BEvent<BFormClosingEventHandler>();
-    public final BEvent<BEventHandler> formClosedEvent = new BEvent<BEventHandler>();
+    public final BEvent<BFormClosedEventHandler> formClosedEvent = new BEvent<BFormClosedEventHandler>();
     public final BEvent<BEventHandler> activatedEvent = new BEvent<BEventHandler>();
     public final BEvent<BEventHandler> deactivateEvent = new BEvent<BEventHandler>();
     public final BEvent<BEventHandler> loadEvent = new BEvent<BEventHandler>();
@@ -153,7 +153,7 @@ public class BDialog extends JDialog
     public void windowClosed( WindowEvent e ){
         Toolkit.getDefaultToolkit().removeAWTEventListener( this );
         try{
-            formClosedEvent.raise( this, new BEventArgs() );
+            formClosedEvent.raise( this, new BFormClosedEventArgs() );
         }catch( Exception ex ){
             System.err.println( "BForm#windowClosed; ex=" + ex );
         }

@@ -20,7 +20,7 @@ public class BForm extends JFrame
 {
     private static final long serialVersionUID = -3700177079249925623L;
     public final BEvent<BFormClosingEventHandler> formClosingEvent = new BEvent<BFormClosingEventHandler>();
-    public final BEvent<BEventHandler> formClosedEvent = new BEvent<BEventHandler>();
+    public final BEvent<BFormClosedEventHandler> formClosedEvent = new BEvent<BFormClosedEventHandler>();
     public final BEvent<BEventHandler> activatedEvent = new BEvent<BEventHandler>();
     public final BEvent<BEventHandler> deactivateEvent = new BEvent<BEventHandler>();
     public final BEvent<BEventHandler> loadEvent = new BEvent<BEventHandler>();

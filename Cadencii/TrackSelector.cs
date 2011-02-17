@@ -2137,8 +2137,8 @@ namespace org.kbinani.cadencii
             }
             if ( render_required ) {
                 g.setColor( border );
-                g.drawLine( destRect.x + destRect.width - 10, destRect.y,
-                            destRect.x + destRect.width - 10, destRect.y + destRect.height );
+            g.drawLine( destRect.x + destRect.width - 10, destRect.y,
+                        destRect.x + destRect.width - 10, destRect.y + destRect.height - 1 );
             }
             g.clipRect( destRect.x, destRect.y, destRect.width, destRect.height );
             String title = Utility.trimString( name, AppManager.baseFont8, panel_width );

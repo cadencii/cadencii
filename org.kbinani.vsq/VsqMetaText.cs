@@ -205,6 +205,7 @@ namespace org.kbinani.vsq
 
         public VsqBPList getElement( String curve )
         {
+            if( curve == null ) return null;
             String search = curve.Trim().ToLower();
             if ( str.compare( search, "bre" ) ) {
                 return this.BRE;
@@ -259,6 +260,7 @@ namespace org.kbinani.vsq
 
         public void setElement( String curve, VsqBPList value )
         {
+            if( curve == null ) return;
             String search = curve.Trim().ToLower();
             if ( str.compare( search, "bre" ) ) {
                 this.BRE = value;
@@ -383,10 +385,12 @@ namespace org.kbinani.vsq
         /// </summary>
         public String getSinger()
         {
-            for ( Iterator<VsqEvent> itr = Events.iterator(); itr.hasNext(); ) {
-                VsqEvent item = itr.next();
-                if ( item.ID.type == VsqIDType.Singer ) {
-                    return item.ID.IconHandle.IDS;
+            if( Events != null ){
+                for ( Iterator<VsqEvent> itr = Events.iterator(); itr.hasNext(); ) {
+                    VsqEvent item = itr.next();
+                    if ( item.ID.type == VsqIDType.Singer ) {
+                        return item.ID.IconHandle.IDS;
+                    }
                 }
             }
             return "";
@@ -394,6 +398,7 @@ namespace org.kbinani.vsq
 
         public void setSinger( String value )
         {
+            if( Events == null ) return;
             for ( Iterator<VsqEvent> itr = Events.iterator(); itr.hasNext(); ) {
                 VsqEvent item = itr.next();
                 if ( item.ID.type == VsqIDType.Singer ) {
@@ -409,6 +414,9 @@ namespace org.kbinani.vsq
         /// <returns></returns>
         public int getIndexOfEOS()
         {
+            if( Events == null ){
+                return -1;
+            }
             int result;
             if ( Events.getCount() > 0 ) {
                 int ilast = Events.getCount() - 1;

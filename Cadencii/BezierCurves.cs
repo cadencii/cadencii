@@ -33,7 +33,7 @@ namespace org.kbinani.cadencii {
     /// </summary>
     public class BezierCurves : ICloneable
     {
-        public readonly CurveType[] CURVES = new CurveType[]{
+        public static readonly CurveType[] CURVES = new CurveType[]{
             CurveType.DYN,
             CurveType.BRE,
             CurveType.BRI,

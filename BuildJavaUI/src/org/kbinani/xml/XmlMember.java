@@ -53,6 +53,76 @@ public class XmlMember
     }
 
     /**
+     * 指定したメソッドに付加されているアノテーションを取得します．
+     * スーパークラスについても遡って検出を試みます．
+     * @param m 検出対象のメソッド
+     * @param annotation 取得するアノテーションの型
+     * @return アノテーションが見つかればアノテーションのインスタンス，見つからなければnull
+     */
+    private static <T extends Annotation> T getMethodAnnotationRecurse( Method m, Class<T> annotation )
+    {
+        T ret = m.getAnnotation( annotation );
+        if( ret != null ){
+            return ret;
+        }
+        Class<?> super_class = m.getDeclaringClass().getSuperclass();
+        if( super_class.equals( Object.class ) ){
+            return null;
+        }
+        // スーパークラスにも同じ名前，型のメソッドが宣言されているか？
+        Method mi = null;
+        try{
+            mi = super_class.getMethod( m.getName(), m.getParameterTypes() );
+        }catch( Exception ex ){
+            mi = null;
+        }
+        if( mi == null ){
+            // そんなメソッドは無い
+            return null;
+        }
+        if( !mi.getReturnType().equals( m.getReturnType() ) ){
+            // 型が違う
+            return null;
+        }
+        return getMethodAnnotationRecurse( mi, annotation );
+    }
+    
+    /**
+     * 指定したフィールドに付加されているアノテーションを取得します．
+     * スーパークラスについても遡って検出を試みます．
+     * @param f 検出対象のフィールド
+     * @param annotation 取得するアノテーションの型
+     * @return アノテーションが見つかればアノテーションのインスタンス，見つからなければnull
+     */
+    private static <T extends Annotation> T getFieldAnnotationRecurse( Field f, Class<T> annotation )
+    {
+        T ret = f.getAnnotation( annotation );
+        if( ret != null ){
+            return ret;
+        }
+        Class<?> super_class = f.getDeclaringClass().getSuperclass();
+        if( super_class.equals( Object.class ) ){
+            return null;
+        }
+        // スーパークラスにも同じ名前，型のフィールドが宣言されているか？
+        Field fi = null;
+        try{
+            fi = super_class.getField( f.getName() );
+        }catch( Exception ex ){
+            fi = null;
+        }
+        if( fi == null ){
+            // そんなフィールドは無い
+            return null;
+        }
+        if( !fi.getType().equals( f.getType() ) ){
+            // 型が違う
+            return null;
+        }
+        return getFieldAnnotationRecurse( fi, annotation );
+    }
+    
+    /**
      * getterメソッドまたはフィールドのアノテーションを取得します
      * @param annotation 取得するアノテーションの型
      * @return アノテーションが見つかればアノテーションのインスタンス，見つからなければnull
@@ -61,10 +131,10 @@ public class XmlMember
     {
         T ret = null;
         if( m_field != null ){
-            ret = m_field.getAnnotation( annotation );
+            ret = getFieldAnnotationRecurse( m_field, annotation );
         }else{
             if( m_getter != null ){
-                ret = m_getter.getAnnotation( annotation );
+                ret = getMethodAnnotationRecurse( m_getter, annotation );
             }
         }
         return ret;
@@ -79,10 +149,10 @@ public class XmlMember
     {
         T ret = null;
         if( m_field != null ){
-            ret = m_field.getAnnotation( annotation );
+            ret = getFieldAnnotationRecurse( m_field, annotation );
         }else{
             if( m_setter != null ){
-                ret = m_setter.getAnnotation( annotation );
+                ret = getMethodAnnotationRecurse( m_setter, annotation );
             }
         }
         return ret;
@@ -114,7 +184,7 @@ public class XmlMember
             }
         }
         Vector<String> props = new Vector<String>();
-        for( Field f : t.getDeclaredFields() ){
+        for( Field f : t.getFields() ){
             int m = f.getModifiers();
             if( !Modifier.isPublic( m ) || Modifier.isStatic( m ) ){
                 continue;
@@ -123,7 +193,7 @@ public class XmlMember
         }
     
         // get, set, isで始まるメソッド名を持つ、publicでstaticでないメソッドを抽出
-        for( Method method : t.getDeclaredMethods() ){
+        for( Method method : t.getMethods() ){
             int m = method.getModifiers();
             if( !Modifier.isPublic( m ) || Modifier.isStatic( m ) ){
                 continue;
@@ -173,7 +243,7 @@ public class XmlMember
      * @return プロパティが見つかればそのプロパティを表現するXmlMemberクラスのインスタンス，見つからなければnull
      */
     public static XmlMember extract( Class<?> cls, String property_name ){
-        for( Field f : cls.getDeclaredFields() ){
+        for( Field f : cls.getFields() ){
             int m = f.getModifiers();
             if( !Modifier.isPublic( m ) || Modifier.isStatic( m ) ){
                 continue;
@@ -204,7 +274,7 @@ public class XmlMember
         Method getter = null;
         Method setter = null;
         Class<?> prop_type = null;
-        for( Method method : cls.getDeclaredMethods() ){
+        for( Method method : cls.getMethods() ){
             int m = method.getModifiers();
             if( !Modifier.isPublic( m ) || Modifier.isStatic( m ) ){
                 continue;

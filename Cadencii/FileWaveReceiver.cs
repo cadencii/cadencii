@@ -46,13 +46,19 @@ namespace org.kbinani.cadencii
         private int mBitPerSample;
         private Object mSyncRoot = new Object();
 
-        public FileWaveReceiver( String path, int channel, int bit_per_sample )
+        public FileWaveReceiver( String path, int channel, int bit_per_sample, int sample_rate )
         {
             mPath = path;
             mChannel = channel;
             mBitPerSample = bit_per_sample;
-            //WaveWriter ww = new WaveWriter( path, channel, bit_per_sample, sample_rate );
-            //mAdapter = new WaveRateConvertAdapter( ww, VSTiDllManager.SAMPLE_RATE );
+            try{
+                mAdapter = new WaveWriter( mPath, mChannel, mBitPerSample, sample_rate );
+            }catch( Exception ex ){
+#if JAVA
+                ex.printStackTrace();
+                mAdapter = null;
+#endif
+            }
         }
 
         public override void setGlobalConfig( EditorConfig config )
@@ -89,13 +95,19 @@ namespace org.kbinani.cadencii
                 if ( mAdapter != null ) {
                     mAdapter.close();
                 }
+                if ( mReceiver != null ) {
+                    mReceiver.end();
+                }
             }
         }
 
         public void push( double[] l, double[] r, int length )
         {
             lock ( mSyncRoot ) {
-                if ( mAdapter == null ) {
+#if DEBUG
+                sout.println( "FileWaveReceiver#push; mPath=" + mPath + "; length=" + length );
+#endif
+                /*if ( mAdapter == null ) {
                     int sample_rate = mRoot.getSampleRate();
 #if DEBUG
                     sout.println( "FileWaveReceiver#push; sample_rate=" + sample_rate );
@@ -103,10 +115,13 @@ namespace org.kbinani.cadencii
                     try {
                         mAdapter = new WaveWriter( mPath, mChannel, mBitPerSample, sample_rate );
                     } catch ( Exception ex ) {
+#if JAVA
+                        ex.printStackTrace();
+#endif
                         Logger.write( typeof( FileWaveReceiver ) + ".push; ex=" + ex + "\n" );
                         mAdapter = null;
                     }
-                }
+                }*/
                 mAdapter.append( l, r, length );
                 if ( mReceiver != null ) {
                     mReceiver.push( l, r, length );

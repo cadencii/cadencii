@@ -12,22 +12,5 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
-package org.kbinani.windows.forms;
-
-import org.kbinani.BEventHandler;
-
-    public class BFormClosedEventHandler extends BEventHandler{
-        public BFormClosedEventHandler( Object sender, String method_name )
-        {
- base( sender, method_name, typeof( void ), typeof( Object ), typeof( FormClosedEventArgs ) )
-            ;
-        }
-
-        public BFormClosedEventHandler( Type sender, String method_name )
-        {
- base( sender, method_name, typeof( void ), typeof( Object ), typeof( FormClosedEventArgs ) )
-            ;
-        }
-    }
-
+//INCLUDE ../BuildJavaUI/src/org/kbinani/windows/forms/BFormClosedEventHandler.java
 #endif

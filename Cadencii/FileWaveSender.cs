@@ -94,7 +94,13 @@ namespace org.kbinani.cadencii
 #endif
             lock ( mSyncRoot ) {
                 try {
-                    mConverter.close();
+                    if( mConverter != null ){
+                        mConverter.close();
+                    }else{
+                        if( mReader != null ){
+                            mReader.close();
+                        }
+                    }
                 } catch ( Exception ex ) {
                     sout.println( "FileWaveSender#end; ex=" + ex );
                     Logger.write( typeof( FileWaveSender ) + ".end; ex=" + ex + "\n" );

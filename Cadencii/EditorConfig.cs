@@ -443,7 +443,12 @@ namespace org.kbinani.cadencii
         /// <summary>
         /// トラックを新規作成するときのデフォルトの音声合成システム
         /// </summary>
-        public RendererKind DefaultSynthesizer = RendererKind.VOCALOID2;
+        public RendererKind DefaultSynthesizer
+#if ENABLE_VOCALOID
+            = RendererKind.VOCALOID2;
+#else
+            = RendererKind.VCNT;
+#endif
         /// <summary>
         /// 自動ビブラートを作成するとき，ユーザー定義タイプのビブラートを利用するかどうか．デフォルトではfalse
         /// </summary>
@@ -651,9 +656,9 @@ namespace org.kbinani.cadencii
             return "";
         }
 
-        private static void setLastUsedPathCore( Vector<String> list, String path )
+        private static void setLastUsedPathCore( Vector<String> list, String path, String ext_with_dot )
         {
-            String extension = PortUtil.getExtension( path );
+            String extension = ext_with_dot;
             if ( extension == null ) return;
             if ( extension.Equals( "." ) ) return;
             if ( extension.StartsWith( "." ) ) {
@@ -875,9 +880,9 @@ namespace org.kbinani.cadencii
             if ( ret.Equals( "" ) ) {
                 return getLastUsedPathCore( LastUsedPathOut, extension );
             }
-            if ( !ret.Equals( "" ) ) {
+            /*if ( !ret.Equals( "" ) ) {
                 ret = PortUtil.getDirectoryName( ret );
-            }
+            }*/
             return ret;
         }
 
@@ -885,9 +890,9 @@ namespace org.kbinani.cadencii
         /// 最後に出力したファイルのパスを設定します
         /// </summary>
         /// <param name="path"></param>
-        public void setLastUsedPathIn( String path )
+        public void setLastUsedPathIn( String path, String ext_with_dot )
         {
-            setLastUsedPathCore( LastUsedPathIn, path );
+            setLastUsedPathCore( LastUsedPathIn, path, ext_with_dot );
         }
 
         /// <summary>
@@ -901,9 +906,9 @@ namespace org.kbinani.cadencii
             if ( ret.Equals( "" ) ) {
                 ret = getLastUsedPathCore( LastUsedPathIn, extension );
             }
-            if ( !ret.Equals( "" ) ) {
+            /*if ( !ret.Equals( "" ) ) {
                 ret = PortUtil.getDirectoryName( ret );
-            }
+            }*/
             return ret;
         }
 
@@ -911,9 +916,10 @@ namespace org.kbinani.cadencii
         /// 最後に入力したファイルのパスを設定します
         /// </summary>
         /// <param name="path"></param>
-        public void setLastUsedPathOut( String path )
+        /// <param name="ext_with_dot">ピリオド付きの拡張子（ex. ".txt"）</param>
+        public void setLastUsedPathOut( String path, String ext_with_dot )
         {
-            setLastUsedPathCore( LastUsedPathOut, path );
+            setLastUsedPathCore( LastUsedPathOut, path, ext_with_dot );
         }
 
         /// <summary>

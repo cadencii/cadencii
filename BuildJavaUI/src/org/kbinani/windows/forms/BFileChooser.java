@@ -6,6 +6,7 @@ import java.awt.Frame;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Vector;
+import org.kbinani.PortUtil;
 import org.kbinani.fsys;
 import org.kbinani.str;
 
@@ -14,19 +15,10 @@ public class BFileChooser{
     public static final int CANCEL_OPTION = 1;
     public static final int ERROR_OPTION = -1;
     private FileDialog m_dialog = null;
-    private String mDirectory = "";
     private String mSelected = "";
     private String mTitle = "";
     private Vector<String> mExtensions = new Vector<String>();
-    
-    public BFileChooser( String currentDirectoryPath ){
-        mDirectory = currentDirectoryPath;
-    }
-    
-    public void setInitialDirectory( String path ){
-        mDirectory = path;
-    }
-    
+        
     public void addFileFilter( String filter ){
         int indx = filter.lastIndexOf( "." );
         if( indx >= 0 ){
@@ -100,8 +92,11 @@ public class BFileChooser{
             return BFileChooser.ERROR_OPTION;
         }
         m_dialog.setFilenameFilter( new ExtensionFilenameFilter( mExtensions ) );
-        m_dialog.setDirectory( mDirectory );
-        m_dialog.setFile( mSelected );
+        String dir = PortUtil.getDirectoryName( mSelected );
+        m_dialog.setDirectory( dir );
+        String name = PortUtil.getFileName( mSelected );
+        m_dialog.setFile( name );
+System.out.println( "BFileChooser#showDialogCore; dir=" + dir + "; name=" + name );
         m_dialog.setVisible( true );
         String file = m_dialog.getFile();
         if( file == null ){

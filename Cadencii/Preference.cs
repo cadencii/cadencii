@@ -87,13 +87,13 @@ namespace org.kbinani.cadencii
             fontDialog.dialog.FontMustExist = true;
             fontDialog.dialog.ShowEffects = false;
 #endif
-            openUtauCore = new BFileChooser( "" );
+            openUtauCore = new BFileChooser();
 
 #if JAVA
-            folderBrowserSingers = new BFileChooser( "" );
+            folderBrowserSingers = new BFileChooser();
 #else
 #if DEBUG
-            folderBrowserSingers = new BFileChooser( "" );
+            folderBrowserSingers = new BFileChooser();
 #else
             folderBrowserSingers = new BFolderBrowser();
             folderBrowserSingers.setNewFolderButtonVisible( false );
@@ -1535,9 +1535,8 @@ namespace org.kbinani.cadencii
         public void btnWavtool_Click( Object sender, BEventArgs e )
         {
             if ( !txtWavtool.getText().Equals( "" ) && PortUtil.isDirectoryExists( PortUtil.getDirectoryName( txtWavtool.getText() ) ) ) {
-                openUtauCore.setInitialDirectory( PortUtil.getDirectoryName( txtWavtool.getText() ) );
+                openUtauCore.setSelectedFile( txtWavtool.getText() );
             }
-            openUtauCore.setSelectedFile( "wavtool.exe" );
             int dr = AppManager.showModalDialog( openUtauCore, true, this );
             if ( dr == BFileChooser.APPROVE_OPTION ) {
                 String path = openUtauCore.getSelectedFile();
@@ -1563,11 +1562,10 @@ namespace org.kbinani.cadencii
 
         public void btnAquesTone_Click( Object sender, BEventArgs e )
         {
-            BFileChooser dialog = new BFileChooser( "" );
+            BFileChooser dialog = new BFileChooser();
             if ( !txtAquesTone.getText().Equals( "" ) && PortUtil.isDirectoryExists( PortUtil.getDirectoryName( txtAquesTone.getText() ) ) ) {
-                dialog.setInitialDirectory( PortUtil.getDirectoryName( txtAquesTone.getText() ) );
+                dialog.setSelectedFile( txtAquesTone.getText() );
             }
-            dialog.setSelectedFile( "AquesTone.dll" );
             int dr = AppManager.showModalDialog( dialog, true, this );
             if ( dr == BFileChooser.APPROVE_OPTION ) {
                 String path = dialog.getSelectedFile();

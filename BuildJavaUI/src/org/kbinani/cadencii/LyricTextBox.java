@@ -16,6 +16,7 @@ import java.awt.im.InputContext;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JWindow;
+import javax.swing.border.EmptyBorder;
 import org.kbinani.BEvent;
 import org.kbinani.windows.forms.BKeyEventArgs;
 import org.kbinani.windows.forms.BKeyEventHandler;
@@ -171,11 +172,15 @@ public class LyricTextBox extends JWindow
 
     public void windowGainedFocus( WindowEvent e ){
         System.out.println( "focusGained" );
+        mTextField.requestFocusInWindow();
+        mTextField.selectAll();
     }
     
     public void windowLostFocus( WindowEvent e ){
         System.out.println( "focusLost" );
-        setVisible( false );
+        super.requestFocus();
+        mTextField.requestFocusInWindow();
+        //setVisible( false );
     }
 
     public void componentHidden(ComponentEvent e){
@@ -222,7 +227,8 @@ public class LyricTextBox extends JWindow
         Dimension d = new Dimension( 115, 22 );
         mTextField.setPreferredSize( d );
         mContentPane.setPreferredSize( d );
-        pack();
+        pack();        
+        mTextField.requestFocus();
     }
 
     /**
@@ -266,6 +272,7 @@ public class LyricTextBox extends JWindow
         if (mTextField == null) {
             mTextField = new JTextField();
             mTextField.setFocusTraversalKeysEnabled( false );
+            mTextField.setBorder( new EmptyBorder( 0, 0, 0, 0 ) );
         }
         return mTextField;
     }

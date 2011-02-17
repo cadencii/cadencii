@@ -10,7 +10,7 @@ import org.kbinani.BEventArgs;
 import org.kbinani.BEventHandler;
 
 public class BMenuItem extends JCheckBoxMenuItem 
-                       implements ActionListener, MouseListener
+                       implements ActionListener
 {
     private static final long serialVersionUID = -1354135252399786976L;
     private Object tag;
@@ -23,9 +23,57 @@ public class BMenuItem extends JCheckBoxMenuItem
 
     public BMenuItem(){
         addActionListener( this );
-        addMouseListener( this );
+        final BMenuItem ref = this;
+        this.addMouseListener( new MouseListener(){
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // System.Windows.Forms.ToolStripMenuItemでは、
+                // CheckedChangedイベントの後にClickイベントが発生するのでこれに準じる
+                if( checkOnClick ){
+                    invokeCheckedChangedEvent();
+                }else{
+                    setSelectedSuper( false );
+                }
+                try{
+                    clickEvent.raise( ref, new BEventArgs() );
+                }catch( Exception ex ){
+                    System.err.println( "BMenuItem#mouseClicked; ex=" + ex );
+                }
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+        System.out.println( "BMenuItem#mouseEntered" );
+                try{
+                    mouseEnterEvent.raise( ref, new BEventArgs() );
+                }catch( Exception ex ){
+                    System.err.println( "BMenuItem#mouseEntered; ex=" + ex );
+                }
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                try{
+                    mouseLeaveEvent.raise( ref, new BEventArgs() );
+                }catch( Exception ex ){
+                    System.err.println( "BMenuItem#mouseExited; ex=" + ex );
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+        });
     }
 
+    private void setSelectedSuper( boolean value ){
+        super.setSelected( value );
+    }
+    
     public void setShortcutKeyDisplayString( String value )
     {
         mShortcutDisplayString = value;
@@ -35,7 +83,8 @@ public class BMenuItem extends JCheckBoxMenuItem
     {
         return mShortcutDisplayString;
     }
-    
+
+    @Override
     public void setSelected( boolean value )
     {
         if( super.isSelected() != value ){
@@ -55,7 +104,8 @@ public class BMenuItem extends JCheckBoxMenuItem
             System.err.println( "BMenuItem#invokeCheckedChangedEvent; ex=" + ex );
         }
     }
-    
+
+    @Override
     public void actionPerformed( ActionEvent e )
     {
         if( checkOnClick ){
@@ -86,40 +136,4 @@ public class BMenuItem extends JCheckBoxMenuItem
         checkOnClick = value;
     }
 
-    public void mouseClicked(MouseEvent e) {
-        // System.Windows.Forms.ToolStripMenuItemでは、
-        // CheckedChangedイベントの後にClickイベントが発生するのでこれに準じる
-        if( checkOnClick ){
-            invokeCheckedChangedEvent();
-        }else{
-            super.setSelected( false );
-        }
-        try{
-            clickEvent.raise( this, new BEventArgs() );
-        }catch( Exception ex ){
-            System.err.println( "BMenuItem#mouseClicked; ex=" + ex );
-        }
-    }
-
-    public void mouseEntered(MouseEvent e) {
-        try{
-            mouseEnterEvent.raise( this, new BEventArgs() );
-        }catch( Exception ex ){
-            System.err.println( "BMenuItem#mouseEntered; ex=" + ex );
-        }
-    }
-
-    public void mouseExited(MouseEvent e) {
-        try{
-            mouseLeaveEvent.raise( this, new BEventArgs() );
-        }catch( Exception ex ){
-            System.err.println( "BMenuItem#mouseExited; ex=" + ex );
-        }
-    }
-
-    public void mousePressed(MouseEvent e) {
-    }
-
-    public void mouseReleased(MouseEvent e) {
-    }
 }

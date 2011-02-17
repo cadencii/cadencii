@@ -504,6 +504,10 @@ namespace org.kbinani.cadencii
         /// </summary>
         private static String mID = "";
         /// <summary>
+        /// ダイアログを表示中かどうか
+        /// </summary>
+        private static boolean mShowingDialog = false;
+        /// <summary>
         /// メインの編集画面のインスタンス
         /// </summary>
         public static FormMain mMainWindow = null;
@@ -2053,10 +2057,20 @@ namespace org.kbinani.cadencii
         }
 
         /// <summary>
+        /// beginShowDialogが呼ばれた後，endShowDialogがまだ呼ばれていないときにtrue
+        /// </summary>
+        /// <returns></returns>
+        public static boolean isShowingDialog()
+        {
+            return mShowingDialog;
+        }
+
+        /// <summary>
         /// モーダルなダイアログを出すために，プロパティウィンドウとミキサーウィンドウの「最前面に表示」設定を一時的にOFFにします
         /// </summary>
         private static void beginShowDialog()
         {
+            mShowingDialog = true;
 #if ENABLE_PROPERTY
             if ( propertyWindow != null ) {
                 boolean previous = propertyWindow.isAlwaysOnTop();
@@ -2124,6 +2138,7 @@ namespace org.kbinani.cadencii
                 Logger.write( typeof( AppManager ) + ".endShowDialog; ex=" + ex + "\n" );
                 sout.println( typeof( AppManager ) + ".endShowDialog; ex=" + ex );
             }
+            mShowingDialog = false;
         }
 
         public static BDialogResult showMessageBox( String text, String caption, int optionType, int messageType )

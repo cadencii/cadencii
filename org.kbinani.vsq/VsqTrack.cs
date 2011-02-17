@@ -847,7 +847,11 @@ namespace org.kbinani.vsq
         /// </summary>
         public VsqMaster getMaster()
         {
-            return MetaText.master;
+            if( MetaText == null ){
+                return null;
+            }else{
+                return MetaText.master;
+            }
         }
 
         /// <summary>
@@ -856,7 +860,11 @@ namespace org.kbinani.vsq
         /// <param name="value"></param>
         public void setMaster( VsqMaster value )
         {
-            MetaText.master = value;
+            if( MetaText != null ){
+                MetaText.master = value;
+            }else{
+                serr.println( "VsqTrack#setMaster; MetaText is null" );
+            }
         }
 
         /// <summary>
@@ -864,7 +872,11 @@ namespace org.kbinani.vsq
         /// </summary>
         public VsqMixer getMixer()
         {
-            return MetaText.mixer;
+            if( MetaText == null ){
+                return null;
+            }else{
+                return MetaText.mixer;
+            }
         }
 
         /// <summary>
@@ -873,7 +885,11 @@ namespace org.kbinani.vsq
         /// <param name="value"></param>
         public void setMixer( VsqMixer value )
         {
-            MetaText.mixer = value;
+            if( MetaText != null ){
+                MetaText.mixer = value;
+            }else{
+                serr.println( "VsqTrack#setMixer; MetaText is null" );
+            }
         }
 
         /// <summary>
@@ -882,7 +898,11 @@ namespace org.kbinani.vsq
         /// <returns></returns>
         public VsqCommon getCommon()
         {
-            return MetaText.Common;
+            if( MetaText == null ){
+                return null;
+            }else{
+                return MetaText.Common;
+            }
         }
 
         /// <summary>

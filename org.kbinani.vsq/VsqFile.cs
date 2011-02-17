@@ -3730,7 +3730,7 @@ namespace org.kbinani.vsq
             byte[] ret = new byte[bytes];
             for ( int i = 1; i <= bytes; i++ ) {
                 int num = 0;
-                int count = (byte)0x80;
+                int count = 0x80;
                 for ( int j = (bytes - i + 1) * 7 - 1; j >= (bytes - i + 1) * 7 - 6 - 1; j-- ) {
                     count = count >> 1;
                     if ( bits[j] ) {
@@ -3738,7 +3738,7 @@ namespace org.kbinani.vsq
                     }
                 }
                 if ( i != bytes ) {
-                    num += (byte)0x80;
+                    num += 0x80;
                 }
                 ret[i - 1] = (byte)num;
             }

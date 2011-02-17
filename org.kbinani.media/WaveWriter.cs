@@ -57,6 +57,9 @@ namespace org.kbinani.media {
 #endif
         {
             m_path = path;
+#if DEBUG
+            sout.println( "WaveWriter#.ctor; m_path=" + m_path );
+#endif
             m_stream = new RandomAccessFile( m_path, "rw" );
             m_channel = channel;
             m_bit_per_sample = bit_per_sample;
@@ -223,7 +226,7 @@ namespace org.kbinani.media {
 
         public void close() {
 #if DEBUG
-            sout.println( "WaveWriter#close" );
+            sout.println( "WaveWriter#close; m_path=" + m_path );
 #endif
             if ( m_stream == null ) {
                 return;
@@ -370,6 +373,9 @@ namespace org.kbinani.media {
         }
 
         public void append( double[] L, double[] R, int length ) {
+#if DEBUG
+            sout.println( "WaveWriter#append; m_path=" + m_path + "; length=" + length );
+#endif
             try {
                 if ( m_bit_per_sample == 8 ) {
                     if ( m_channel == 1 ) {

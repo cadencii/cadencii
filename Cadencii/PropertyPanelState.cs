@@ -61,7 +61,7 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// プロパティパネルがドッキングされた状態における表示幅(ピクセル)
         /// </summary>
-        public int DockWidth = 200;
+        public int DockWidth = 240;
     }
 
 #if !JAVA

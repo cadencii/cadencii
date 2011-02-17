@@ -347,10 +347,10 @@ namespace org.kbinani.cadencii {
                 ww = new WaveWriter( file );
                 RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( 1 ) );
                 WaveGenerator generator = VSTiDllManager.getWaveGenerator( kind );
-                FileWaveReceiver receiver = new FileWaveReceiver( file, 1, 16 );
+                int sample_rate = vsq.config.SamplingRate;
+                FileWaveReceiver receiver = new FileWaveReceiver( file, 1, 16, sample_rate );
                 generator.setReceiver( receiver );
                 generator.setGlobalConfig( AppManager.editorConfig );
-                int sample_rate = vsq.config.SamplingRate;
 #if DEBUG
                 sout.println( "FormGenerateKeySound#GenerateSinglePhone; sample_rate=" + sample_rate );
 #endif

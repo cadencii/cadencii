@@ -1,20 +1,15 @@
 package org.kbinani.cadencii;
 //SECTION-BEGIN-IMPORT
 
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
-import java.awt.Insets;
 import java.io.ByteArrayInputStream;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
-import javax.swing.JLabel;
 import javax.swing.JScrollPane;
-import org.kbinani.BEventHandler;
-import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BMouseEventArgs;
 import org.kbinani.windows.forms.BMouseEventHandler;
 import org.kbinani.windows.forms.BPaintEventArgs;
@@ -304,7 +299,7 @@ public class PropertyPanelContainer extends BPanel {
         if (panelMain == null) {
             panelMain = new JScrollPane();
             panelMain.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-            panelMain.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+            panelMain.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
             panelMain.setPreferredSize(new Dimension(4, 4));
             panelMain.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         }

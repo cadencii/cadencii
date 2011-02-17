@@ -10,6 +10,11 @@ public class BEvent<T extends BEventHandler>{
         mDelegates = new Vector<T>();
     }
 
+    public int size()
+    {
+        return mDelegates.size();
+    }
+    
     public void add( T delegate ){
         synchronized( mDelegates ){
             if( delegate == null ){

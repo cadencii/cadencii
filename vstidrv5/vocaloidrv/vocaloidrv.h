@@ -30,6 +30,8 @@ public:
 		mFile = NULL;
 		mUseStdOut = wave.length() == 0;
 		mFileName = wave;
+        mBuffer = NULL;
+        mBufferCount = 0;
 #ifdef _DEBUG
 		cout << "vocaloidrv#.ctor; mUseStdOut=" << (mUseStdOut ? "True" : "False") << "; mFileName=" << mFileName << endl;
 #endif
@@ -87,5 +89,7 @@ private:
 	FILE *mFile;
 	bool mUseStdOut;
 	string mFileName;
+    DWORD *mBuffer;
+    int mBufferCount;
 
 };

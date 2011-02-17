@@ -126,6 +126,9 @@ namespace org.kbinani.media {
             throws IOException, FileNotFoundException
 #endif
         {
+#if DEBUG
+            sout.println( "WaveReader#open; file=" + file );
+#endif
             if ( m_opened ) {
                 m_stream.close();
             }
@@ -176,10 +179,16 @@ namespace org.kbinani.media {
             // チャンネル数
             m_stream.read( buf, 0, 2 );
             m_channel = buf[1] << 8 | buf[0];
+#if DEBUG
+            sout.println( "WaveReader#open; m_channel=" + m_channel );
+#endif
 
             // サンプリングレート
             m_stream.read( buf, 0, 4 );
             m_sample_per_sec = (int)PortUtil.make_uint32_le( buf );
+#if DEBUG
+            sout.println( "WaveReader#open; m_sample_per_sec=" + m_sample_per_sec );
+#endif
 
             // データ速度
             m_stream.read( buf, 0, 4 );
@@ -191,6 +200,9 @@ namespace org.kbinani.media {
             m_stream.read( buf, 0, 2 );
             int bit_per_sample = buf[1] << 8 | buf[0];
             m_byte_per_sample = bit_per_sample / 8;
+#if DEBUG
+            sout.println( "WaveReader#open; m_byte_per_sample=" + m_byte_per_sample );
+#endif
 
             // 拡張部分
             m_stream.seek( fmt_chunk_end_location );
@@ -210,6 +222,9 @@ namespace org.kbinani.media {
             m_stream.read( buf, 0, 4 );
             int size = (int)PortUtil.make_uint32_le( buf );
             m_total_samples = size / (m_channel * m_byte_per_sample);
+#if DEBUG
+            sout.println( "WaveReader#open; m_total_samples=" + m_total_samples + "; total sec=" + (m_total_samples / (double)m_sample_per_sec) );
+#endif
 
             m_opened = true;
             m_header_offset = (int)m_stream.getFilePointer();
@@ -569,6 +584,9 @@ namespace org.kbinani.media {
             throws IOException
 #endif
         {
+#if DEBUG
+            sout.println( "WaveReader#close; m_file=" + m_file );
+#endif
             m_opened = false;
             if ( m_stream != null ) {
                 m_stream.close();
