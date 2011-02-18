@@ -26,7 +26,9 @@ import org.kbinani.vsq.*;
 import org.kbinani.windows.forms.*;
 import org.kbinani.xml.*;
 import org.kbinani.media.*;
+
 #else
+
 using System;
 using System.CodeDom.Compiler;
 using System.Reflection;
@@ -2016,6 +2018,7 @@ namespace org.kbinani.cadencii
         /// ダイアログを，メインウィンドウに対してモーダルに表示し，ダイアログの結果を取得します
         /// </summary>
         /// <param name="dialog"></param>
+        /// <param name="open_mode"></param>
         /// <param name="main_form"></param>
         /// <returns></returns>
 #if JAVA
@@ -3603,6 +3606,74 @@ namespace org.kbinani.cadencii
             }
 #endif
 
+#if JAVA
+            // getvocaloidinfo.exeを呼ぶ
+            String tmp = PortUtil.createTempFile();
+#if DEBUG
+            tmp = fsys.combine( PortUtil.getApplicationStartupPath(), "vocaloidinfo.txt" );
+#endif
+#if JAVA_MAC
+            // wine経由でユーティリティを呼ぶ
+            String vocaloidrv_sh = fsys.combine( PortUtil.getApplicationStartupPath(), "vocaloidrv.sh" );
+            String prefix = Utility.normalizePath( editorConfig.WinePrefix );
+            String winetop = Utility.normalizePath( editorConfig.WineTop );
+            String getvocaloidinfo = 
+                fsys.combine( PortUtil.getApplicationStartupPath(), "getvocaloidinfo.exe" );
+#if DEBUG
+            sout.println( "AppManager#init; isFileExists(getvocaloidinfo)=" + fsys.isFileExists( getvocaloidinfo ) );
+            sout.println( "AppManager#init; isFileExists(vocaloidrv_sh)=" + fsys.isFileExists( vocaloidrv_sh ) );
+            sout.println( "AppManager#init; isDirectoryExists(winetop)=" + PortUtil.isDirectoryExists( winetop ) );
+            sout.println( "AppManager#init; isDirectoryExists(prefix)=" + PortUtil.isDirectoryExists( prefix ) );
+#endif
+            try{
+                Process p = Runtime.getRuntime().exec( new String[]{ "/bin/sh", vocaloidrv_sh, prefix, winetop, getvocaloidinfo, tmp } );
+                while( true ){
+                    try{
+                        p.exitValue();
+                    }catch( Exception ex0 ){
+                        continue;
+                    }
+                    break;
+                }
+            }catch( Exception ex ){
+                ex.printStackTrace();
+            }
+#else // JAVA_MAC
+            //TODO:
+#endif
+            
+            // 戻りのテキストファイルを読み込む
+            Vector<String> reg_list = new Vector<String>();
+            BufferedReader br = null;
+            try{
+                br = new BufferedReader( new InputStreamReader( new FileInputStream( tmp ), "Shift_JIS" ) );
+                String line = "";
+                while( (line = br.readLine()) != null ){
+#if DEBUG
+                    sout.println( "AppManager#init; line=" + line );
+#endif
+                    reg_list.add( line );
+                }
+            }catch( Exception ex ){
+            }finally{
+                if( br != null ){
+                    try{
+                        br.close();
+                    }catch( Exception ex2 ){
+                    }
+                }
+            }
+#if !DEBUG
+            try{
+                PortUtil.deleteFile( tmp );
+            }catch( Exception ex ){
+            }
+#endif
+            VocaloSysUtil.init( reg_list, prefix );
+#endif // JAVA
+
+            editorConfig.check();
+            keyWidth = editorConfig.KeyWidth;
             VSTiDllManager.init();
 #if !JAVA
             // アイコンパレード, VOCALOID1
@@ -4212,24 +4283,7 @@ namespace org.kbinani.cadencii
                 ret = new EditorConfig();
             }
             editorConfig = ret;
-            int count = SymbolTable.getCount();
-            for ( int i = 0; i < count; i++ ) {
-                SymbolTable st = SymbolTable.getSymbolTable( i );
-                boolean found = false;
-                for ( Iterator<String> itr = editorConfig.UserDictionaries.iterator(); itr.hasNext(); ) {
-                    String s = itr.next();
-                    String[] spl = PortUtil.splitString( s, new char[] { '\t' }, 2 );
-                    if ( st.getName().Equals( spl[0] ) ) {
-                        found = true;
-                        break;
-                    }
-                }
-                if ( !found ) {
-                    editorConfig.UserDictionaries.add( st.getName() + "\tT" );
-                }
-            }
 
-            editorConfig.check();
             keyWidth = editorConfig.KeyWidth;
         }
 

@@ -9,29 +9,45 @@ import javax.swing.JSplitPane;
 public class BSplitPane extends JSplitPane implements ComponentListener {
     private static final long serialVersionUID = -7485943135051893345L;
     private boolean panel2Hidden = false;
+    private boolean panel1Hidden = false;
 
     public BSplitPane(){
         super();
         addComponentListener( this );
     }
+
+    public boolean isPanel1Hidden()
+    {
+        return panel1Hidden;
+    }
     
-    public boolean isPanel2Hidden(){
+    public void setPanel1Hidden( boolean value )
+    {
+        panel1Hidden = value;
+    }
+    
+    public boolean isPanel2Hidden()
+    {
         return panel2Hidden;
     }
     
-    public void setPanel2Hidden( boolean value ){
+    public void setPanel2Hidden( boolean value )
+    {
         panel2Hidden = value;
     }
 
-    public boolean isSplitterFixed(){
+    public boolean isSplitterFixed()
+    {
         return !super.isEnabled();
     }
     
-    public void setSplitterFixed( boolean value ){
+    public void setSplitterFixed( boolean value )
+    {
         super.setEnabled( !value );
     }
     
-    public void setPanel1MinSize( int value ){
+    public void setPanel1MinSize( int value )
+    {
         Component left = super.getLeftComponent();
         Dimension old_minsize = left.getMinimumSize();
         if( orientation == JSplitPane.HORIZONTAL_SPLIT ){
@@ -41,7 +57,8 @@ public class BSplitPane extends JSplitPane implements ComponentListener {
         }
     }
 
-    public int getPanel1MinSize(){
+    public int getPanel1MinSize()
+    {
         if( orientation == JSplitPane.HORIZONTAL_SPLIT ){
             return super.getLeftComponent().getMinimumSize().width;
         }else{
@@ -49,7 +66,8 @@ public class BSplitPane extends JSplitPane implements ComponentListener {
         }
     }
     
-    public void setPanel2MinSize( int value ){
+    public void setPanel2MinSize( int value )
+    {
         Component right = super.getRightComponent();
         Dimension old_minsize = right.getMinimumSize();
         if( orientation == JSplitPane.HORIZONTAL_SPLIT ){
@@ -74,8 +92,12 @@ public class BSplitPane extends JSplitPane implements ComponentListener {
     }
 
     public void componentResized(ComponentEvent e) {
+        System.out.println( "BSplitPane#componentResized; leftComponent.getMinimumSize()=" + leftComponent.getMinimumSize() ); 
+        System.out.println( "BSplitPane#componentResized; rightComponent.getMinimumSize()=" + rightComponent.getMinimumSize() ); 
         if( panel2Hidden ){
             this.setDividerLocation( this.getHeight() );
+        }else if( panel1Hidden ){
+            this.setDividerLocation( 0 );
         }
     }
 

@@ -49,6 +49,7 @@ jcadencii_mac: jcadencii ./Cadencii/PkgInfo ./Cadencii/Info.plist ./build/java/W
 	cp ../../vConnect/stand/vConnect-STAND.exe $(APP)/Resources/Java/vConnect-STAND.exe
 	cp ./Cadencii/vocaloidrv.sh ./build/java
 	cp ./vstidrv5/Release/vocaloidrv.exe ./build/java
+	cp ./vstidrv5/Release/getvocaloidinfo.exe ./build/java
 	/Developer/Tools/SetFile -a B ./build/java/Cadencii.app
 	cp -r -p ./build/java/WineMinimum.bundle $(APP)/Resources/WineMinimum.bundle
 	rm $(APP)/Resources/WineMinimum.bundle/Contents/SharedSupport/lib/libwine.1.dylib

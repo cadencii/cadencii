@@ -39,6 +39,7 @@ public class PropertyPanelContainer extends BPanel {
     {
     	super();
     	initialize();
+    	this.setMinimumSize( new Dimension( 0, 0 ) );
     }
 
     /**

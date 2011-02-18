@@ -50,6 +50,8 @@ namespace org.kbinani.vsq
         /// 既定ではfalse。DSE1_1.dllが存在するかどうかで判定。
         /// </summary>
         private static boolean dseVersion101Available = false;
+        private static readonly String header1 = "HKLM\\SOFTWARE\\VOCALOID";
+        private static readonly String header2 = "HKLM\\SOFTWARE\\VOCALOID2";
 
         private VocaloSysUtil()
         {
@@ -80,73 +82,85 @@ namespace org.kbinani.vsq
         public static int getDefaultDseVersion()
         {
             if ( !isInitialized ) {
-                init();
+                serr.println( "VocaloSysUtil#getDefaultDseVersion; not initialized yet" );
+                return 0;
             }
             return defaultDseVersion;
         }
 
-
-
+#if !JAVA
         /// <summary>
-        /// インストールされているVOCALOID / VOCALOID2についての情報を読み込み、初期化します。
+        /// インストールされているVOCALOID / VOCALOID2についての情報を読み込み、初期化します．
+        /// C#はこっちを呼べばOK
         /// </summary>
         public static void init()
-        {
-            init( null );
-        }
-
-        /// <summary>
-        /// インストールされているVOCALOID / VOCALOID2についての情報を読み込み、初期化します。
-        /// </summary>
-        /// <param name="sw"></param>
-        public static void init( BufferedWriter sw )
         {
             if ( isInitialized ) {
                 return;
             }
+            Vector<String> reg_list = new Vector<String>();
+            initPrint( "SOFTWARE\\VOCALOID", header1, reg_list );
+            initPrint( "SOFTWARE\\VOCALOID2", header2, reg_list );
+            init( reg_list );
+        }
+#endif
+
+        /// <summary>
+        /// WINEPREFIXと，その内部のWindows形式の絶対パスを結合し，実際のファイルの絶対パスを取得します
+        /// </summary>
+        public static String combineWinePath( String wine_prefix, String full_path )
+        {
+            char drive_letter = full_path.charAt( 0 );
+            String drive = new String( new char[]{ drive_letter } ).toLowerCase();
+            String inner_path = full_path.substring( 2 ).replace( "\\", "/" );
+            if( wine_prefix == null ){
+                wine_prefix = "";
+            }
+            if( wine_prefix.indexOf( "~" ) >= 0 ){
+                String usr = System.getProperty( "user.name" );
+                wine_prefix = wine_prefix.replace( "~", "/Users/" + usr );
+            }
+            return fsys.combine( fsys.combine( wine_prefix, "drive_" + drive ), inner_path );
+        }
+
+        /// <summary>
+        /// Windowsのレジストリ・エントリを列挙した文字列のリストを指定し，初期化します
+        /// パラメータreg_listの中身は，例えば
+        /// "HKLM\SOFTWARE\VOCALOID2\DATABASE\EXPRESSION\\tEXPRESSIONDIR\\tC:\Program Files\VOCALOID2\expdbdir"
+        /// のような文字列です．
+        /// </summary>
+        /// <param name="reg_list">レジストリ・エントリのリスト</param>
+        /// <param name="wine_prefix">wineを使う場合，WINEPREFIXを指定する．そうでなければ空文字を指定</param>
+        public static void init( Vector<String> reg_list, String wine_prefix )
+        {
+            if( reg_list == null ){
+                return;
+            }
+            if( isInitialized ){
+                return;
+            }
+
+            // reg_listを，VOCALOIDとVOCALOID2の部分に分離する
+            Vector<String> dir1 = new Vector<String>();
+            Vector<String> dir2 = new Vector<String>();
+            foreach( String s in reg_list ){
+                if( str.startsWith( s, header1 + "\\" ) ||
+                    str.startsWith( s, header1 + "\t" ) ){
+                    dir1.add( s );
+                }else if( str.startsWith( s, header2 + "\\" ) ||
+                          str.startsWith( s, header2 + "\t" ) ){
+                    dir2.add( s );
+                }
+            }
+
             ExpressionConfigSys exp_config_sys1 = null;
             try {
-                Vector<String> dir1 = new Vector<String>();
                 ByRef<String> path_voicedb1 = new ByRef<String>( "" );
                 ByRef<String> path_expdb1 = new ByRef<String>( "" );
                 Vector<String> installed_singers1 = new Vector<String>();
-                String header1 = "HKLM\\SOFTWARE\\VOCALOID";
-                initPrint( "SOFTWARE\\VOCALOID", header1, dir1 );
 
                 // テキストファイルにレジストリの内容をプリントアウト
                 boolean close = false;
-#if DEBUG
-                if ( sw == null ) {
-                    close = true;
-                    sw = new BufferedWriter( new FileWriter(
-                        fsys.combine( PortUtil.getApplicationStartupPath(), "reg_keys_vocalo1.txt" ) ) );
-                }
-#endif
-                if ( sw != null ) {
-                    try {
-                        sw.write( "########################################################################" );
-                        sw.newLine();
-                        foreach ( String s in dir1 ) {
-                            sw.write( s );
-                            sw.newLine();
-                        }
-                    } catch ( Exception ex ) {
-                        Logger.write( typeof( VocaloSysUtil ) + ".init; ex=" + ex + "\n" );
-                        serr.println( "VocaloSysUtil#init; ex=" + ex );
-                    } finally {
-                        // ファイルは閉じない
-                        if ( close && sw != null ) {
-                            try {
-                                sw.close();
-                            } catch ( Exception ex2 ) {
-                                Logger.write( typeof( VocaloSysUtil ) + ".init; ex=" + ex2 + "\n" );
-                                serr.println( typeof( VocaloSysUtil ) + ".init; ex2=" + ex2 );
-                            }
-                            sw = null;
-                        }
-                    }
-                }
-
                 ByRef<String> path_vsti = new ByRef<String>( "" );
                 ByRef<String> path_editor = new ByRef<String>( "" );
                 initExtract( dir1,
@@ -158,17 +172,31 @@ namespace org.kbinani.vsq
                          installed_singers1 );
                 s_path_vsti.put( SynthesizerType.VOCALOID1, path_vsti.value );
                 s_path_editor.put( SynthesizerType.VOCALOID1, path_editor.value );
+                String[] act_installed_singers1 = installed_singers1.toArray( new String[]{} );
+                String act_path_voicedb1 = path_voicedb1.value;
+                String act_path_editor1 = path_editor.value;
+                String act_path_expdb1 = path_expdb1.value;
+                String act_vsti1 = path_vsti.value;
+                if( str.length( wine_prefix ) > 0 ){
+                    for( int i = 0; i < act_installed_singers1.Length; i++ ){
+                        act_installed_singers1[i] = combineWinePath( wine_prefix, act_installed_singers1[i] );
+                    }
+                    act_path_voicedb1 = combineWinePath( wine_prefix, act_path_voicedb1 );
+                    act_path_editor1 = combineWinePath( wine_prefix, act_path_editor1 );
+                    act_path_expdb1 = combineWinePath( wine_prefix, act_path_expdb1 );
+                    act_vsti1 = combineWinePath( wine_prefix, act_vsti1 );
+                }
+                String expression_map1 = fsys.combine( act_path_expdb1, "expression.map" );
                 SingerConfigSys singer_config_sys =
-                    new SingerConfigSys( path_voicedb1.value, installed_singers1.toArray( new String[] { } ) );
-                String expression_map = fsys.combine( path_expdb1.value, "expression.map" );
-                if ( PortUtil.isFileExists( expression_map ) ) {
-                    exp_config_sys1 = new ExpressionConfigSys( path_editor.value, path_expdb1.value );
+                    new SingerConfigSys( act_path_voicedb1, act_installed_singers1 );
+                if ( PortUtil.isFileExists( expression_map1 ) ) {
+                    exp_config_sys1 = new ExpressionConfigSys( act_path_editor1, act_path_expdb1 );
                 }
                 s_singer_config_sys.put( SynthesizerType.VOCALOID1, singer_config_sys );
 
                 // DSE1_1.dllがあるかどうか？
-                if ( !path_vsti.value.Equals( "" ) ) {
-                    String path_dll = PortUtil.getDirectoryName( path_vsti.value );
+                if ( !act_vsti1.Equals( "" ) ) {
+                    String path_dll = PortUtil.getDirectoryName( act_vsti1 );
                     String dse1_1 = fsys.combine( path_dll, "DSE1_1.dll" );
                     dseVersion101Available = PortUtil.isFileExists( dse1_1 );
                 } else {
@@ -176,9 +204,9 @@ namespace org.kbinani.vsq
                 }
 
                 // VOCALOID.iniから、DSEVersionを取得
-                if ( path_editor.value != null && !path_editor.value.Equals( "" ) &&
-                     PortUtil.isFileExists( path_editor.value ) ) {
-                    String dir = PortUtil.getDirectoryName( path_editor.value );
+                if ( act_path_editor1 != null && !act_path_editor1.Equals( "" ) &&
+                     PortUtil.isFileExists( act_path_editor1 ) ) {
+                    String dir = PortUtil.getDirectoryName( act_path_editor1 );
                     String ini = fsys.combine( dir, "VOCALOID.ini" );
                     if ( PortUtil.isFileExists( ini ) ) {
                         BufferedReader br = null;
@@ -228,45 +256,12 @@ namespace org.kbinani.vsq
 
             ExpressionConfigSys exp_config_sys2 = null;
             try {
-                Vector<String> dir2 = new Vector<String>();
                 ByRef<String> path_voicedb2 = new ByRef<String>( "" );
                 ByRef<String> path_expdb2 = new ByRef<String>( "" );
                 Vector<String> installed_singers2 = new Vector<String>();
-                String header2 = "HKLM\\SOFTWARE\\VOCALOID2";
-                initPrint( "SOFTWARE\\VOCALOID2", header2, dir2 );
 
                 // レジストリの中身をファイルに出力
                 boolean close = false;
-#if DEBUG
-                if ( sw == null ) {
-                    sw = new BufferedWriter( new FileWriter(
-                        fsys.combine( PortUtil.getApplicationStartupPath(), "reg_keys_vocalo2.txt" ) ) );
-                    close = true;
-                }
-#endif
-                if ( sw != null ) {
-                    try {
-                        sw.write( "########################################################################" );
-                        sw.newLine();
-                        foreach ( String s in dir2 ) {
-                            sw.write( s );
-                            sw.newLine();
-                        }
-                    } catch ( Exception ex ) {
-                        Logger.write( typeof( VocaloSysUtil ) + ".init; ex=" + ex + "\n" );
-                        serr.println( "VocaloSysUtil#.cctor; ex=" + ex );
-                    } finally {
-                        if ( close && sw != null ) {
-                            try {
-                                sw.close();
-                            } catch ( Exception ex2 ) {
-                                Logger.write( typeof( VocaloSysUtil ) + ".init; ex=" + ex2 + "\n" );
-                                serr.println( "VocaloSysUtil#.cctor; ex2=" + ex2 );
-                            }
-                        }
-                    }
-                }
-
                 ByRef<String> path_vsti = new ByRef<String>( "" );
                 ByRef<String> path_editor = new ByRef<String>( "" );
                 initExtract( dir2,
@@ -278,9 +273,24 @@ namespace org.kbinani.vsq
                          installed_singers2 );
                 s_path_vsti.put( SynthesizerType.VOCALOID2, path_vsti.value );
                 s_path_editor.put( SynthesizerType.VOCALOID2, path_editor.value );
-                SingerConfigSys singer_config_sys = new SingerConfigSys( path_voicedb2.value, installed_singers2.toArray( new String[] { } ) );
-                if ( PortUtil.isFileExists( fsys.combine( path_expdb2.value, "expression.map" ) ) ) {
-                    exp_config_sys2 = new ExpressionConfigSys( path_editor.value, path_expdb2.value );
+                String[] act_installed_singers2 = installed_singers2.toArray( new String[]{} );
+                String act_path_expdb2 = path_expdb2.value;
+                String act_path_voicedb2 = path_voicedb2.value;
+                String act_path_editor2 = path_editor.value;
+                String act_vsti2 = path_vsti.value;
+                if( str.length( wine_prefix ) > 0 ){
+                    for( int i = 0; i < act_installed_singers2.Length; i++ ){
+                        act_installed_singers2[i] = combineWinePath( wine_prefix, act_installed_singers2[i] );
+                    }
+                    act_path_expdb2 = combineWinePath( wine_prefix, act_path_expdb2 );
+                    act_path_voicedb2 = combineWinePath( wine_prefix, act_path_voicedb2 );
+                    act_path_editor2 = combineWinePath( wine_prefix, act_path_editor2 );
+                    act_vsti2 = combineWinePath( wine_prefix, act_vsti2 );
+                }
+                String expression_map2 = fsys.combine( act_path_expdb2, "expression.map" );
+                SingerConfigSys singer_config_sys = new SingerConfigSys( act_path_voicedb2, act_installed_singers2 );
+                if ( PortUtil.isFileExists( expression_map2 ) ) {
+                    exp_config_sys2 = new ExpressionConfigSys( act_path_editor2, act_path_expdb2 );
                 }
                 s_singer_config_sys.put( SynthesizerType.VOCALOID2, singer_config_sys );
             } catch ( Exception ex ) {
@@ -310,7 +320,8 @@ namespace org.kbinani.vsq
         public static VibratoHandle getDefaultVibratoHandle( String icon_id, int vibrato_length, SynthesizerType type )
         {
             if ( !isInitialized ) {
-                init();
+                serr.println( "VocaloSysUtil#getDefaultVibratoHandle; not initialized yet" );
+                return null;
             }
             if ( s_exp_config_sys.containsKey( type ) ) {
                 for ( Iterator<VibratoHandle> itr = s_exp_config_sys.get( type ).vibratoConfigIterator(); itr.hasNext(); ) {
@@ -476,7 +487,8 @@ namespace org.kbinani.vsq
         public static Iterator<NoteHeadHandle> attackConfigIterator( SynthesizerType type )
         {
             if ( !isInitialized ) {
-                init();
+                serr.println( "VocaloSysUtil#attackConfigIterator; not initialized yet" );
+                return null;
             }
             if ( s_exp_config_sys.containsKey( type ) ) {
                 return s_exp_config_sys.get( type ).attackConfigIterator();
@@ -493,7 +505,8 @@ namespace org.kbinani.vsq
         public static Iterator<VibratoHandle> vibratoConfigIterator( SynthesizerType type )
         {
             if ( !isInitialized ) {
-                init();
+                serr.println( "VocaloSysUtil#vibratoConfigIterator; not initialized yet" );
+                return null;
             }
             if ( s_exp_config_sys.containsKey( type ) ) {
                 return s_exp_config_sys.get( type ).vibratoConfigIterator();
@@ -510,7 +523,8 @@ namespace org.kbinani.vsq
         public static Iterator<IconDynamicsHandle> dynamicsConfigIterator( SynthesizerType type )
         {
             if ( !isInitialized ) {
-                init();
+                serr.println( "VocaloSysUtil#dynamicsConfigIterator; not initialized yet" );
+                return null;
             }
             if ( s_exp_config_sys.containsKey( type ) ) {
                 return s_exp_config_sys.get( type ).dynamicsConfigIterator();
@@ -529,7 +543,8 @@ namespace org.kbinani.vsq
         public static String getOriginalSinger( int language, int program, SynthesizerType type )
         {
             if ( !isInitialized ) {
-                init();
+                serr.println( "VocaloSysUtil#getOriginalSinger; not initialized yet" );
+                return null;
             }
             String voiceidstr = "";
             if ( !s_singer_config_sys.containsKey( type ) ) {
@@ -565,7 +580,8 @@ namespace org.kbinani.vsq
         public static VsqID getSingerID( int language, int program, SynthesizerType type )
         {
             if ( !isInitialized ) {
-                init();
+                serr.println( "VocaloSysUtil#getSingerID; not initialized yet" );
+                return null;
             }
             if ( !s_singer_config_sys.containsKey( type ) ) {
                 return null;
@@ -582,7 +598,8 @@ namespace org.kbinani.vsq
         public static String getEditorPath( SynthesizerType type )
         {
             if ( !isInitialized ) {
-                init();
+                serr.println( "VocaloSysUtil#getEditorPath; not initialized yet" );
+                return "";
             }
             if ( !s_path_editor.containsKey( type ) ) {
                 return "";
@@ -599,7 +616,8 @@ namespace org.kbinani.vsq
         public static String getDllPathVsti( SynthesizerType type )
         {
             if ( !isInitialized ) {
-                init();
+                serr.println( "VocaloSysUtil#getDllPathVsti; not initialized yet" );
+                return "";
             }
             if ( !s_path_vsti.containsKey( type ) ) {
                 return "";
@@ -616,7 +634,8 @@ namespace org.kbinani.vsq
         public static SingerConfig[] getSingerConfigs( SynthesizerType type )
         {
             if ( !isInitialized ) {
-                init();
+                serr.println( "VocaloSysUtil#getSingerConfigs; not initialized yet" );
+                return new SingerConfig[]{};
             }
             if ( !s_singer_config_sys.containsKey( type ) ) {
                 return new SingerConfig[] { };
@@ -633,7 +652,8 @@ namespace org.kbinani.vsq
         public static VsqVoiceLanguage getLanguageFromName( String name )
         {
             if ( !isInitialized ) {
-                init();
+                serr.println( "VocaloSysUtil#getLanguageFromName; not initialized yet" );
+                return VsqVoiceLanguage.Japanese;
             }
             String search = name.ToLower();
             if ( search.Equals( "meiko" ) ||

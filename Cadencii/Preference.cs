@@ -170,46 +170,6 @@ namespace org.kbinani.cadencii
                 comboDefualtSinger.setSelectedIndex( 0 );
             }
 
-            comboPlatform.removeAllItems();
-
-#if DEBUG
-#if JAVA
-            for( PlatformEnum p : PlatformEnum.values() )
-#else
-            foreach ( PlatformEnum p in Enum.GetValues( typeof( PlatformEnum ) ) )
-#endif
- {
-                comboPlatform.addItem( p + "" );
-            }
-#else // #if DEBUG
-#if JAVA
-            String osname = System.getProperty( "os.name" );
-            if( osname.indexOf( "Windows" ) >= 0 ){
-                comboPlatform.addItem( PlatformEnum.Windows + "" );
-                comboPlatform.setEnabled( false );
-                chkCommandKeyAsControl.setEnabled( false );
-            }else{
-                for( PlatformEnum p : PlatformEnum.values() ){
-                    comboPlatform.addItem( p + "" );
-                }
-            }
-#else // #if JAVA
-            PlatformID platform = Environment.OSVersion.Platform;
-            if ( platform == PlatformID.Win32NT ||
-                 platform == PlatformID.Win32S ||
-                 platform == PlatformID.Win32Windows ||
-                 platform == PlatformID.WinCE ) {
-                comboPlatform.addItem( PlatformEnum.Windows + "" );
-                comboPlatform.setEnabled( false );
-                chkCommandKeyAsControl.setEnabled( false );
-            } else {
-                foreach ( PlatformEnum p in Enum.GetValues( typeof( PlatformEnum ) ) ) {
-                    comboPlatform.addItem( p + "" );
-                }
-            }
-#endif // #if JAVA
-#endif // #if DEBUG
-
             updateMidiDevice();
 
             txtVOCALOID1.setText( VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID1 ) );
@@ -258,6 +218,38 @@ namespace org.kbinani.cadencii
             updateMidiDevice();
             updateCustomVibrato();
             return base.showDialog( parent );
+        }
+
+        /// <summary>
+        /// WINEPREFIXの設定値を取得します
+        /// </summary>
+        public String getWinePrefix()
+        {
+            return textWinePrefix.getText();
+        }
+        
+        /// <summary>
+        /// WINEPREFIXの設定値を設定します
+        /// </summary>
+        public void setWinePrefix( String value )
+        {
+            textWinePrefix.setText( value );
+        }
+        
+        /// <summary>
+        /// WINETOPの設定値を取得します
+        /// </summary>
+        public String getWineTop()
+        {
+            return textWineTop.getText();
+        }
+
+        /// <summary>
+        /// WINETOPの設定値を設定します
+        /// </summary>
+        public void setWineTop( String value )
+        {
+            textWineTop.setText( value );
         }
 
         /// <summary>
@@ -808,23 +800,6 @@ namespace org.kbinani.cadencii
             chkKeepLyricInputMode.setSelected( value );
         }
 
-        public PlatformEnum getPlatform()
-        {
-            return m_platform;
-        }
-
-        public void setPlatform( PlatformEnum value )
-        {
-            m_platform = value;
-            for ( int i = 0; i < comboPlatform.getItemCount(); i++ ) {
-                String title = (String)comboPlatform.getItemAt( i );
-                if ( title.Equals( m_platform + "" ) ) {
-                    comboPlatform.setSelectedIndex( i );
-                    break;
-                }
-            }
-        }
-
         public int getMaximumFrameRate()
         {
             return (int)numMaximumFrameRate.getFloatValue();
@@ -983,14 +958,10 @@ namespace org.kbinani.cadencii
             lblMouseHoverTime.setText( _( "Waiting Time for Preview" ) );
             lblMidiInPort.setText( _( "MIDI In Port Number" ) );
             labelMtcMidiInPort.setText( _( "MTC MIDI In Port Number" ) );
+            chkTranslateRoman.setText( _( "Translate Roman letters into Kana" ) );
             #endregion
 
             #region tabPlatform
-            groupPlatform.setTitle( _( "Platform" ) );
-            lblPlatform.setText( _( "Current Platform" ) );
-            chkCommandKeyAsControl.setText( _( "Use Command key as Control key" ) );
-            chkTranslateRoman.setText( _( "Translate Roman letters into Kana" ) );
-
             groupUtauCores.setTitle( _( "UTAU Cores" ) );
             labelWavtoolPath.setText( _( "Path:" ) );
             chkWavtoolWithWine.setText( _( "Invoke wavtool with Wine" ) );
@@ -1296,16 +1267,6 @@ namespace org.kbinani.cadencii
             }
         }
 
-        public boolean isCommandKeyAsControl()
-        {
-            return chkCommandKeyAsControl.isSelected();
-        }
-
-        public void setCommandKeyAsControl( boolean value )
-        {
-            chkCommandKeyAsControl.setSelected( value );
-        }
-
         public void copyResamplersConfig( Vector<String> ret, Vector<Boolean> with_wine )
         {
             for ( int i = 0; i < listResampler.getItemCountRow(); i++ ) {
@@ -1442,23 +1403,6 @@ namespace org.kbinani.cadencii
                 if ( f != null ) {
                     m_screen_font = f;
                     labelScreenFontName.setText( f.getName() );
-                }
-            }
-        }
-
-        public void comboPlatform_SelectedIndexChanged( Object sender, BEventArgs e )
-        {
-            String title = (String)comboPlatform.getSelectedItem();
-#if JAVA
-            for( PlatformEnum p : PlatformEnum.values() )
-#else
-            foreach ( PlatformEnum p in Enum.GetValues( typeof( PlatformEnum ) ) )
-#endif
- {
-                if ( title.Equals( p + "" ) ) {
-                    m_platform = p;
-                    chkCommandKeyAsControl.setEnabled( p != PlatformEnum.Windows );
-                    break;
                 }
             }
         }
@@ -1687,6 +1631,48 @@ namespace org.kbinani.cadencii
             lblAutoVibratoType2.setEnabled( v );
             lblAutoVibratoTypeCustom.setEnabled( ud );
         }
+        
+        public void buttonWinePrefix_Click( Object sender, BEventArgs e )
+        {
+            BFileChooser dialog = null;
+            try{
+                dialog = new BFileChooser();
+                String dir = textWinePrefix.getText();
+                if( dir != null && str.length( dir ) > 0 ){
+                    dialog.setSelectedFile( fsys.combine( dir, "a" ) );
+                }
+                if( AppManager.showModalDialog( dialog, true, this ) == BFileChooser.APPROVE_OPTION ){
+                    dir = dialog.getSelectedFile();
+                    if( fsys.isFileExists( dir ) ){
+                        // ファイルが選ばれた場合，その所属ディレクトリを値として用いる
+                        dir = PortUtil.getDirectoryName( dir );
+                    }
+                    textWinePrefix.setText( dir );
+                }
+            }catch( Exception ex ){
+            }
+        }
+        
+        public void buttonWineTop_Click( Object sender, BEventArgs e )
+        {
+            BFileChooser dialog = null;
+            try{
+                dialog = new BFileChooser();
+                String dir = textWineTop.getText();
+                if( dir != null && str.length( dir ) > 0 ){
+                    dialog.setSelectedFile( fsys.combine( dir, "a" ) );
+                }
+                if( AppManager.showModalDialog( dialog, true, this ) == BFileChooser.APPROVE_OPTION ){
+                    dir = dialog.getSelectedFile();
+                    if( fsys.isFileExists( dir ) ){
+                        // ファイルが選ばれた場合，その所属ディレクトリを値として用いる
+                        dir = PortUtil.getDirectoryName( dir );
+                    }
+                    textWineTop.setText( dir );
+                }
+            }catch( Exception ex ){
+            }
+        }
         #endregion
 
         #region helper methods
@@ -1839,7 +1825,6 @@ namespace org.kbinani.cadencii
             buttonResamplerUp.Click += new BEventHandler( buttonResamplerUpDown_Click );
             buttonResamplerDown.Click += new BEventHandler( buttonResamplerUpDown_Click );
             btnAquesTone.Click += new BEventHandler( btnAquesTone_Click );
-            comboPlatform.SelectedIndexChanged += new BEventHandler( comboPlatform_SelectedIndexChanged );
             btnRemove.Click += new BEventHandler( btnRemove_Click );
             btnAdd.Click += new BEventHandler( btnAdd_Click );
             btnUp.Click += new BEventHandler( btnUp_Click );
@@ -1851,6 +1836,8 @@ namespace org.kbinani.cadencii
             btnCancel.Click += new BEventHandler( btnCancel_Click );
             chkLoadSecondaryVOCALOID1.CheckedChanged += new BEventHandler( chkLoadSecondaryVOCALOID1_CheckedChanged );
             radioVocaloidEditorCompatible.CheckedChanged += new BEventHandler( commonChangeAutoVibratoType );
+            buttonWinePrefix.Click += new BEventHandler( buttonWinePrefix_Click );
+            buttonWineTop.Click += new BEventHandler( buttonWineTop_Click );
         }
 
         private void setResources()

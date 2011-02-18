@@ -172,7 +172,7 @@ namespace org.kbinani.cadencii
         /// <summary>
         /// 実行環境
         /// </summary>
-        public PlatformEnum Platform = PlatformEnum.Windows;
+        private PlatformEnum __revoked__Platform = PlatformEnum.Windows;
         /// <summary>
         /// ウィンドウが最大化された状態かどうか
         /// </summary>
@@ -296,7 +296,7 @@ namespace org.kbinani.cadencii
         public MidiPortConfig MidiInPort = new MidiPortConfig();
 
         public boolean ViewAtcualPitch = false;
-        public boolean __revoked__InvokeUtauCoreWithWine = false;
+        private boolean __revoked__InvokeUtauCoreWithWine = false;
 #if JAVA
         @XmlGenericType( SingerConfig.class )
 #endif
@@ -549,6 +549,16 @@ namespace org.kbinani.cadencii
         @XmlGenericType( String.class )
 #endif
         public Vector<String> LastUsedPathOut = new Vector<String>();
+        /// <summary>
+        /// 使用するWINEPREFIX
+        /// version 3.3+
+        /// </summary>
+        public String WinePrefix = "~/Library/Application Support/MikuInstaller/prefix/default";
+        /// <summary>
+        /// wineのトップディレクトリ
+        /// version 3.3+
+        /// </summary>
+        public String WineTop = "/Applications/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/SharedSupport";
 
         /// <summary>
         /// バッファーサイズに設定できる最大値
@@ -1262,6 +1272,23 @@ namespace org.kbinani.cadencii
         /// </summary>
         public void check()
         {
+            int count = SymbolTable.getCount();
+            for ( int i = 0; i < count; i++ ) {
+                SymbolTable st = SymbolTable.getSymbolTable( i );
+                boolean found = false;
+                for ( Iterator<String> itr = UserDictionaries.iterator(); itr.hasNext(); ) {
+                    String s = itr.next();
+                    String[] spl = PortUtil.splitString( s, new char[] { '\t' }, 2 );
+                    if ( st.getName().Equals( spl[0] ) ) {
+                        found = true;
+                        break;
+                    }
+                }
+                if ( !found ) {
+                    UserDictionaries.add( st.getName() + "\tT" );
+                }
+            }
+
             // key_widthを最大，最小の間に収める
             int draft_key_width = this.KeyWidth;
             if ( draft_key_width < AppManager.MIN_KEY_WIDTH ) {

@@ -78,6 +78,20 @@ namespace org.kbinani.cadencii
         private static Vector<String> usedAssemblyChache = new Vector<String>();
 
         /// <summary>
+        /// vocaloid.shに渡すために，パス文字列を正規化します
+        /// </summary>
+        public static String normalizePath( String path )
+        {
+            if( path.indexOf( "~" ) >= 0 ){
+                String usr = System.getProperty( "user.name" );
+                String tild = "/Users/" + usr;
+                path = path.replace( "~", tild );
+            }
+            path = path.replace( "\\", "\\\\\\\\" );
+            return path;
+        }
+
+        /// <summary>
         /// 実行中のUTAUがあれば，その実行ファイルのパスを調べます(Windowsのみ)
         /// </summary>
         /// <returns></returns>

@@ -603,8 +603,12 @@ namespace org.kbinani.cadencii
             AppManager.baseFont9 = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.PLAIN, AppManager.FONT_SIZE9 );
             AppManager.baseFont50Bold = new Font( AppManager.editorConfig.BaseFontName, java.awt.Font.BOLD, AppManager.FONT_SIZE50 );
 
-            s_modifier_key = ((AppManager.editorConfig.Platform == PlatformEnum.Macintosh) ? InputEvent.META_MASK : InputEvent.CTRL_MASK);
-
+            s_modifier_key = 
+#if JAVA_MAC
+                InputEvent.META_MASK;
+#else
+                InputEvent.CTRL_MASK;
+#endif
             VsqFileEx tvsq = 
                 new VsqFileEx( 
                     AppManager.editorConfig.DefaultSingerName,
@@ -746,6 +750,7 @@ namespace org.kbinani.cadencii
 #if ENABLE_PROPERTY
 #if JAVA
             splitContainerProperty.setLeftComponent( mPropertyPanelContainer );
+            mPropertyPanelContainer.setMinimumSize( new Dimension( 0, 0 ) );
 #else
             splitContainerProperty.Panel1.Controls.Add( mPropertyPanelContainer );
             mPropertyPanelContainer.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -1089,6 +1094,11 @@ namespace org.kbinani.cadencii
 #if !ENABLE_AQUESTONE
             menuTrackRenderer.remove( menuTrackRendererAquesTone );
             cMenuTrackTabRenderer.remove( cMenuTrackTabRendererAquesTone );
+#endif
+
+#if JAVA
+            menuVisual.remove( menuVisualPluginUi );
+            menuSetting.remove( menuSettingGameControler );
 #endif
 
 #if JAVA_MAC
@@ -2424,6 +2434,7 @@ namespace org.kbinani.cadencii
                 mPropertyPanelContainer.addComponent( AppManager.propertyPanel );
                 menuVisualProperty.setSelected( true );
                 AppManager.editorConfig.PropertyWindowStatus.State = PanelState.Docked;
+                splitContainerProperty.setPanel1Hidden( false );
                 splitContainerProperty.setSplitterFixed( false );
                 splitContainerProperty.setDividerSize( _SPL_SPLITTER_WIDTH );
 #if JAVA
@@ -2462,6 +2473,7 @@ namespace org.kbinani.cadencii
 #else
                 splitContainerProperty.Panel1MinSize = 0;
 #endif
+                splitContainerProperty.setPanel1Hidden( true );
                 splitContainerProperty.setDividerLocation( 0 );
                 splitContainerProperty.setDividerSize( 0 );
                 splitContainerProperty.setSplitterFixed( true );
@@ -2490,6 +2502,7 @@ namespace org.kbinani.cadencii
 #else
                 splitContainerProperty.Panel1MinSize = 0;
 #endif
+                splitContainerProperty.setPanel1Hidden( true );
                 splitContainerProperty.setDividerLocation( 0 );
                 splitContainerProperty.setDividerSize( 0 );
                 splitContainerProperty.setSplitterFixed( true );
@@ -2724,7 +2737,9 @@ namespace org.kbinani.cadencii
 
         public void updateRendererMenu()
         {
-            if ( !VSTiDllManager.isRendererAvailable( RendererKind.VOCALOID1_100 ) ) {
+            String wine_prefix = AppManager.editorConfig.WinePrefix;
+            String wine_top = AppManager.editorConfig.WineTop;
+            if ( !VSTiDllManager.isRendererAvailable( RendererKind.VOCALOID1_100, wine_prefix, wine_top ) ) {
                 cMenuTrackTabRendererVOCALOID100.setIcon( new ImageIcon( Resources.get_slash() ) );
                 menuTrackRendererVOCALOID100.setIcon( new ImageIcon( Resources.get_slash() ) );
             } else {
@@ -2732,7 +2747,7 @@ namespace org.kbinani.cadencii
                 menuTrackRendererVOCALOID100.setIcon( null );
             }
 
-            if ( !VSTiDllManager.isRendererAvailable( RendererKind.VOCALOID1_101 ) ) {
+            if ( !VSTiDllManager.isRendererAvailable( RendererKind.VOCALOID1_101, wine_prefix, wine_top ) ) {
                 cMenuTrackTabRendererVOCALOID101.setIcon( new ImageIcon( Resources.get_slash() ) );
                 menuTrackRendererVOCALOID101.setIcon( new ImageIcon( Resources.get_slash() ) );
             } else {
@@ -2740,7 +2755,7 @@ namespace org.kbinani.cadencii
                 menuTrackRendererVOCALOID101.setIcon( null );
             }
 
-            if ( !VSTiDllManager.isRendererAvailable( RendererKind.VOCALOID2 ) ) {
+            if ( !VSTiDllManager.isRendererAvailable( RendererKind.VOCALOID2, wine_prefix, wine_top ) ) {
                 cMenuTrackTabRendererVOCALOID2.setIcon( new ImageIcon( Resources.get_slash() ) );
                 menuTrackRendererVOCALOID2.setIcon( new ImageIcon( Resources.get_slash() ) );
             } else {
@@ -2748,7 +2763,7 @@ namespace org.kbinani.cadencii
                 menuTrackRendererVOCALOID2.setIcon( null );
             }
 
-            if ( !VSTiDllManager.isRendererAvailable( RendererKind.UTAU ) ) {
+            if ( !VSTiDllManager.isRendererAvailable( RendererKind.UTAU, wine_prefix, wine_top ) ) {
                 cMenuTrackTabRendererUtau.setIcon( new ImageIcon( Resources.get_slash() ) );
                 menuTrackRendererUtau.setIcon( new ImageIcon( Resources.get_slash() ) );
             } else {
@@ -2756,7 +2771,7 @@ namespace org.kbinani.cadencii
                 menuTrackRendererUtau.setIcon( null );
             }
 
-            if ( !VSTiDllManager.isRendererAvailable( RendererKind.VCNT ) ) {
+            if ( !VSTiDllManager.isRendererAvailable( RendererKind.VCNT, wine_prefix, wine_top ) ) {
                 cMenuTrackTabRendererStraight.setIcon( new ImageIcon( Resources.get_slash() ) );
                 menuTrackRendererVCNT.setIcon( new ImageIcon( Resources.get_slash() ) );
             } else {
@@ -2764,7 +2779,7 @@ namespace org.kbinani.cadencii
                 menuTrackRendererVCNT.setIcon( null );
             }
 
-            if ( !VSTiDllManager.isRendererAvailable( RendererKind.AQUES_TONE ) ) {
+            if ( !VSTiDllManager.isRendererAvailable( RendererKind.AQUES_TONE, wine_prefix, wine_top ) ) {
                 cMenuTrackTabRendererAquesTone.setIcon( new ImageIcon( Resources.get_slash() ) );
                 menuTrackRendererAquesTone.setIcon( new ImageIcon( Resources.get_slash() ) );
             } else {
@@ -3798,6 +3813,9 @@ namespace org.kbinani.cadencii
             int modifier = PortUtil.getCurrentModifierKey();
             KeyStroke stroke = KeyStroke.getKeyStroke( e.KeyValue, modifier );
             int keycode = e.KeyValue;
+#if DEBUG
+            sout.println( "FormMain#processSpecialShortcutKey; stroke=" + stroke );
+#endif
 
             if ( onPreviewKeyDown && keycode != 0 ) {
                 foreach ( SpecialShortcutHolder holder in mSpecialShortcutHolders ) {
@@ -4109,201 +4127,144 @@ namespace org.kbinani.cadencii
         {
             mSpecialShortcutHolders.clear();
 
-            if ( AppManager.editorConfig.Platform == PlatformEnum.Macintosh ) {
-                #region Platform.Macintosh
-                String _CO = "";
-                //if ( AppManager.EditorConfig.CommandKeyAsControl ) {
+            TreeMap<String, BKeys[]> dict = AppManager.editorConfig.getShortcutKeysDictionary( this.getDefaultShortcutKeys() );
+            #region menuStripMain
+            ByRef<Object> parent = new ByRef<Object>( null );
+            for ( Iterator<String> itr = dict.keySet().iterator(); itr.hasNext(); ) {
+                String key = itr.next();
+                if ( str.compare( key, "menuEditCopy" ) || str.compare( key, "menuEditCut" ) || str.compare( key, "menuEditPaste" ) || str.compare( key, "SpecialShortcutGoToFirst" ) ) {
+                    continue;
+                }
+                Object menu = searchMenuItemFromName( key, parent );
+                if ( menu != null ) {
+                    String menu_name = "";
 #if JAVA
-                char[] arr = new char[]{ 0x2318 };
-                _CO = new String( arr );
-#else
-                _CO = new String( '\x2318', 1 );
-#endif
-                //} else {
-                //_CO = "^";
-                //}
-                String _SHIFT = "⇧";
-                //if ( AppManager.EditorConfig.CommandKeyAsControl ) {
-                #region menuStripMain
-                menuFileNew.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_N, InputEvent.META_MASK ) );
-                menuFileOpen.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_O, InputEvent.META_MASK ) );
-                menuFileSave.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_S, InputEvent.META_MASK ) );
-                menuFileQuit.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_Q, InputEvent.META_MASK ) );
-
-                menuEditUndo.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_Z, InputEvent.META_MASK ) );
-                menuEditRedo.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_Z, InputEvent.META_MASK | InputEvent.SHIFT_MASK ) );
-                menuEditCut.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_X, InputEvent.META_MASK ) );
-                menuEditCopy.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_C, InputEvent.META_MASK ) );
-                menuEditPaste.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_V, InputEvent.META_MASK ) );
-                menuEditSelectAll.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_A, InputEvent.META_MASK ) );
-                menuEditSelectAllEvents.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_A, InputEvent.META_MASK | InputEvent.SHIFT_MASK ) );
-
-                menuHiddenEditFlipToolPointerPencil.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_W, InputEvent.META_MASK ) );
-                menuHiddenEditFlipToolPointerEraser.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_E, InputEvent.META_MASK ) );
-                menuHiddenVisualForwardParameter.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_RIGHT, 0 ) );
-                menuHiddenVisualBackwardParameter.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_LEFT, 0 ) );
-                menuHiddenTrackNext.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_PAGE_DOWN, 0 ) );
-                menuHiddenTrackBack.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_PAGE_UP, 0 ) );
-                #endregion
-
-                #region cMenuPiano
-                cMenuPianoUndo.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_Z, InputEvent.META_MASK ) );
-                cMenuPianoRedo.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_Z, InputEvent.META_MASK | InputEvent.SHIFT_MASK ) );
-                cMenuPianoCut.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_X, InputEvent.META_MASK ) );
-                cMenuPianoCopy.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_C, InputEvent.META_MASK ) );
-                cMenuPianoSelectAll.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_A, InputEvent.META_MASK ) );
-                cMenuPianoSelectAllEvents.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_A, InputEvent.META_MASK | InputEvent.SHIFT_MASK ) );
-                #endregion
-
-                #region cMenuTrackSelector
-                cMenuTrackSelectorUndo.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_Z, InputEvent.META_MASK ) );
-                cMenuTrackSelectorRedo.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_Z, InputEvent.META_MASK | InputEvent.SHIFT_MASK ) );
-                cMenuTrackSelectorCut.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_X, InputEvent.META_MASK ) );
-                cMenuTrackSelectorCopy.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_C, InputEvent.META_MASK ) );
-                cMenuTrackSelectorPaste.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_V, InputEvent.META_MASK ) );
-                cMenuTrackSelectorSelectAll.setAccelerator( KeyStroke.getKeyStroke( KeyEvent.VK_A, InputEvent.META_MASK | InputEvent.SHIFT_MASK ) );
-                #endregion
-                #endregion
-            } else {
-                TreeMap<String, BKeys[]> dict = AppManager.editorConfig.getShortcutKeysDictionary( this.getDefaultShortcutKeys() );
-                #region menuStripMain
-                ByRef<Object> parent = new ByRef<Object>( null );
-                for ( Iterator<String> itr = dict.keySet().iterator(); itr.hasNext(); ) {
-                    String key = itr.next();
-                    if ( str.compare( key, "menuEditCopy" ) || str.compare( key, "menuEditCut" ) || str.compare( key, "menuEditPaste" ) || str.compare( key, "SpecialShortcutGoToFirst" ) ) {
+                    if( menu instanceof Component ){
+                        menu_name = ((Component)menu).getName();
+                    }else{
                         continue;
                     }
-                    Object menu = searchMenuItemFromName( key, parent );
-                    if ( menu != null ) {
-                        String menu_name = "";
-#if JAVA
-                        if( menu instanceof Component ){
-                            menu_name = ((Component)menu).getName();
-                        }else{
-                            continue;
-                        }
 #else
-                        if ( menu is BMenuItem ) {
-                            menu_name = ((BMenuItem)menu).Name;
-                        } else {
-                            continue;
-                        }
-#endif
-                        applyMenuItemShortcut( dict, menu, menu_name );
+                    if ( menu is BMenuItem ) {
+                        menu_name = ((BMenuItem)menu).Name;
+                    } else {
+                        continue;
                     }
+#endif
+                    applyMenuItemShortcut( dict, menu, menu_name );
                 }
-                if ( dict.containsKey( "menuEditCopy" ) ) {
-                    applyMenuItemShortcut( dict, menuHiddenCopy, "menuEditCopy" );
-                }
-                if ( dict.containsKey( "menuEditCut" ) ) {
-                    applyMenuItemShortcut( dict, menuHiddenCut, "menuEditCut" );
-                }
-                if ( dict.containsKey( "menuEditCopy" ) ) {
-                    applyMenuItemShortcut( dict, menuHiddenPaste, "menuEditPaste" );
-                }
-                #endregion
+            }
+            if ( dict.containsKey( "menuEditCopy" ) ) {
+                applyMenuItemShortcut( dict, menuHiddenCopy, "menuEditCopy" );
+            }
+            if ( dict.containsKey( "menuEditCut" ) ) {
+                applyMenuItemShortcut( dict, menuHiddenCut, "menuEditCut" );
+            }
+            if ( dict.containsKey( "menuEditCopy" ) ) {
+                applyMenuItemShortcut( dict, menuHiddenPaste, "menuEditPaste" );
+            }
+            #endregion
 
-                Vector<ValuePair<String, BMenuItem[]>> work = new Vector<ValuePair<String, BMenuItem[]>>();
-                work.add( new ValuePair<String, BMenuItem[]>( "menuEditUndo", new BMenuItem[] { cMenuPianoUndo, cMenuTrackSelectorUndo } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuEditRedo", new BMenuItem[] { cMenuPianoRedo, cMenuTrackSelectorRedo } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuEditCut", new BMenuItem[] { cMenuPianoCut, cMenuTrackSelectorCut, menuEditCut } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuEditCopy", new BMenuItem[] { cMenuPianoCopy, cMenuTrackSelectorCopy, menuEditCopy } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuEditPaste", new BMenuItem[] { cMenuPianoPaste, cMenuTrackSelectorPaste, menuEditPaste } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuEditSelectAll", new BMenuItem[] { cMenuPianoSelectAll, cMenuTrackSelectorSelectAll } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuEditSelectAllEvents", new BMenuItem[] { cMenuPianoSelectAllEvents } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuEditDelete", new BMenuItem[] { menuEditDelete } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuVisualGridline", new BMenuItem[] { cMenuPianoGrid } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuJobLyric", new BMenuItem[] { cMenuPianoImportLyric } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuLyricExpressionProperty", new BMenuItem[] { cMenuPianoExpressionProperty } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuLyricVibratoProperty", new BMenuItem[] { cMenuPianoVibratoProperty } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackOn", new BMenuItem[] { cMenuTrackTabTrackOn } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackAdd", new BMenuItem[] { cMenuTrackTabAdd } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackCopy", new BMenuItem[] { cMenuTrackTabCopy } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackDelete", new BMenuItem[] { cMenuTrackTabDelete } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRenderCurrent", new BMenuItem[] { cMenuTrackTabRenderCurrent } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRenderAll", new BMenuItem[] { cMenuTrackTabRenderAll } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackOverlay", new BMenuItem[] { cMenuTrackTabOverlay } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererVOCALOID1", new BMenuItem[] { cMenuTrackTabRendererVOCALOID100 } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererVOCALOID2", new BMenuItem[] { cMenuTrackTabRendererVOCALOID2 } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererAquesTone", new BMenuItem[] { menuTrackRendererAquesTone } ) );
-                work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererVCNT", new BMenuItem[] { menuTrackRendererVCNT } ) );
-                int c = work.size();
-                for ( int j = 0; j < c; j++ ) {
-                    ValuePair<String, BMenuItem[]> item = work.get( j );
-                    if ( dict.containsKey( item.getKey() ) ) {
-                        BKeys[] k = dict.get( item.getKey() );
-                        String s = Utility.getShortcutDisplayString( k );
+            Vector<ValuePair<String, BMenuItem[]>> work = new Vector<ValuePair<String, BMenuItem[]>>();
+            work.add( new ValuePair<String, BMenuItem[]>( "menuEditUndo", new BMenuItem[] { cMenuPianoUndo, cMenuTrackSelectorUndo } ) );
+            work.add( new ValuePair<String, BMenuItem[]>( "menuEditRedo", new BMenuItem[] { cMenuPianoRedo, cMenuTrackSelectorRedo } ) );
+            work.add( new ValuePair<String, BMenuItem[]>( "menuEditCut", new BMenuItem[] { cMenuPianoCut, cMenuTrackSelectorCut, menuEditCut } ) );
+            work.add( new ValuePair<String, BMenuItem[]>( "menuEditCopy", new BMenuItem[] { cMenuPianoCopy, cMenuTrackSelectorCopy, menuEditCopy } ) );
+            work.add( new ValuePair<String, BMenuItem[]>( "menuEditPaste", new BMenuItem[] { cMenuPianoPaste, cMenuTrackSelectorPaste, menuEditPaste } ) );
+            work.add( new ValuePair<String, BMenuItem[]>( "menuEditSelectAll", new BMenuItem[] { cMenuPianoSelectAll, cMenuTrackSelectorSelectAll } ) );
+            work.add( new ValuePair<String, BMenuItem[]>( "menuEditSelectAllEvents", new BMenuItem[] { cMenuPianoSelectAllEvents } ) );
+            work.add( new ValuePair<String, BMenuItem[]>( "menuEditDelete", new BMenuItem[] { menuEditDelete } ) );
+            work.add( new ValuePair<String, BMenuItem[]>( "menuVisualGridline", new BMenuItem[] { cMenuPianoGrid } ) );
+            work.add( new ValuePair<String, BMenuItem[]>( "menuJobLyric", new BMenuItem[] { cMenuPianoImportLyric } ) );
+            work.add( new ValuePair<String, BMenuItem[]>( "menuLyricExpressionProperty", new BMenuItem[] { cMenuPianoExpressionProperty } ) );
+            work.add( new ValuePair<String, BMenuItem[]>( "menuLyricVibratoProperty", new BMenuItem[] { cMenuPianoVibratoProperty } ) );
+            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackOn", new BMenuItem[] { cMenuTrackTabTrackOn } ) );
+            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackAdd", new BMenuItem[] { cMenuTrackTabAdd } ) );
+            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackCopy", new BMenuItem[] { cMenuTrackTabCopy } ) );
+            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackDelete", new BMenuItem[] { cMenuTrackTabDelete } ) );
+            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRenderCurrent", new BMenuItem[] { cMenuTrackTabRenderCurrent } ) );
+            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRenderAll", new BMenuItem[] { cMenuTrackTabRenderAll } ) );
+            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackOverlay", new BMenuItem[] { cMenuTrackTabOverlay } ) );
+            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererVOCALOID1", new BMenuItem[] { cMenuTrackTabRendererVOCALOID100 } ) );
+            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererVOCALOID2", new BMenuItem[] { cMenuTrackTabRendererVOCALOID2 } ) );
+            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererAquesTone", new BMenuItem[] { menuTrackRendererAquesTone } ) );
+            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererVCNT", new BMenuItem[] { menuTrackRendererVCNT } ) );
+            int c = work.size();
+            for ( int j = 0; j < c; j++ ) {
+                ValuePair<String, BMenuItem[]> item = work.get( j );
+                if ( dict.containsKey( item.getKey() ) ) {
+                    BKeys[] k = dict.get( item.getKey() );
+                    String s = Utility.getShortcutDisplayString( k );
 #if !JAVA
-                        if ( s != "" ) {
-                            for ( int i = 0; i < item.getValue().Length; i++ ) {
-                                item.getValue()[i].ShortcutKeyDisplayString = s;
-                            }
+                    if ( s != "" ) {
+                        for ( int i = 0; i < item.getValue().Length; i++ ) {
+                            item.getValue()[i].ShortcutKeyDisplayString = s;
                         }
+                    }
 #endif
-                    }
                 }
+            }
 
-                // ミキサーウィンドウ
-                if ( AppManager.mMixerWindow != null ) {
-                    if ( dict.containsKey( "menuVisualMixer" ) ) {
-                        KeyStroke shortcut = BKeysUtility.getKeyStrokeFromBKeys( dict.get( "menuVisualMixer" ) );
-                        AppManager.mMixerWindow.applyShortcut( shortcut );
-                    }
+            // ミキサーウィンドウ
+            if ( AppManager.mMixerWindow != null ) {
+                if ( dict.containsKey( "menuVisualMixer" ) ) {
+                    KeyStroke shortcut = BKeysUtility.getKeyStrokeFromBKeys( dict.get( "menuVisualMixer" ) );
+                    AppManager.mMixerWindow.applyShortcut( shortcut );
                 }
+            }
 
-                // アイコンパレット
-                if ( AppManager.iconPalette != null ) {
-                    if ( dict.containsKey( "menuVisualIconPalette" ) ) {
-                        KeyStroke shortcut = BKeysUtility.getKeyStrokeFromBKeys( dict.get( "menuVisualIconPalette" ) );
-                        AppManager.iconPalette.applyShortcut( shortcut );
-                    }
+            // アイコンパレット
+            if ( AppManager.iconPalette != null ) {
+                if ( dict.containsKey( "menuVisualIconPalette" ) ) {
+                    KeyStroke shortcut = BKeysUtility.getKeyStrokeFromBKeys( dict.get( "menuVisualIconPalette" ) );
+                    AppManager.iconPalette.applyShortcut( shortcut );
                 }
+            }
 
 #if ENABLE_PROPERTY
-                // プロパティ
-                if( AppManager.propertyWindow != null ){
-                    if( dict.containsKey( menuVisualProperty.getName() ) ){
-                        KeyStroke shortcut = BKeysUtility.getKeyStrokeFromBKeys( dict.get( menuVisualProperty.getName() ) );
-                        AppManager.propertyWindow.applyShortcut( shortcut );
-                    }
+            // プロパティ
+            if( AppManager.propertyWindow != null ){
+                if( dict.containsKey( menuVisualProperty.getName() ) ){
+                    KeyStroke shortcut = BKeysUtility.getKeyStrokeFromBKeys( dict.get( menuVisualProperty.getName() ) );
+                    AppManager.propertyWindow.applyShortcut( shortcut );
                 }
+            }
 #endif
 
-                // スクリプトにショートカットを適用
+            // スクリプトにショートカットを適用
 #if JAVA
-                MenuElement[] sub_menu_script = menuScript.getSubElements();
-                for ( int i = 0; i < sub_menu_script.Length; i++ ) {
-                    MenuElement tsi = sub_menu_script[i];
-                    MenuElement[] sub_tsi = tsi.getSubElements();
-                    if ( sub_tsi.Length == 1 ) {
-                        MenuElement dd_run = sub_tsi[0];
+            MenuElement[] sub_menu_script = menuScript.getSubElements();
+            for ( int i = 0; i < sub_menu_script.Length; i++ ) {
+                MenuElement tsi = sub_menu_script[i];
+                MenuElement[] sub_tsi = tsi.getSubElements();
+                if ( sub_tsi.Length == 1 ) {
+                    MenuElement dd_run = sub_tsi[0];
 #if DEBUG
-                        AppManager.debugWriteLine( "    dd_run.name=" + PortUtil.getComponentName( dd_run ) );
+                    AppManager.debugWriteLine( "    dd_run.name=" + PortUtil.getComponentName( dd_run ) );
 #endif
-                        if ( dict.containsKey( PortUtil.getComponentName( dd_run ) ) ) {
-                            applyMenuItemShortcut( dict, tsi, PortUtil.getComponentName( tsi ) );
-                        }
+                    if ( dict.containsKey( PortUtil.getComponentName( dd_run ) ) ) {
+                        applyMenuItemShortcut( dict, tsi, PortUtil.getComponentName( tsi ) );
                     }
                 }
+            }
 #else
-                int count = menuScript.DropDownItems.Count;
-                for ( int i = 0; i < count; i++ ) {
-                    System.Windows.Forms.ToolStripItem tsi = menuScript.DropDownItems[i];
-                    if ( tsi is System.Windows.Forms.ToolStripMenuItem ) {
-                        System.Windows.Forms.ToolStripMenuItem tsmi = (System.Windows.Forms.ToolStripMenuItem)tsi;
-                        if ( tsmi.DropDownItems.Count == 1 ) {
-                            System.Windows.Forms.ToolStripItem subtsi_tsmi = tsmi.DropDownItems[0];
-                            if ( subtsi_tsmi is System.Windows.Forms.ToolStripMenuItem ) {
-                                System.Windows.Forms.ToolStripMenuItem dd_run = (System.Windows.Forms.ToolStripMenuItem)subtsi_tsmi;
-                                if ( dict.containsKey( PortUtil.getComponentName( dd_run ) ) ) {
-                                    applyMenuItemShortcut( dict, tsmi, PortUtil.getComponentName( tsi ) );
-                                }
+            int count = menuScript.DropDownItems.Count;
+            for ( int i = 0; i < count; i++ ) {
+                System.Windows.Forms.ToolStripItem tsi = menuScript.DropDownItems[i];
+                if ( tsi is System.Windows.Forms.ToolStripMenuItem ) {
+                    System.Windows.Forms.ToolStripMenuItem tsmi = (System.Windows.Forms.ToolStripMenuItem)tsi;
+                    if ( tsmi.DropDownItems.Count == 1 ) {
+                        System.Windows.Forms.ToolStripItem subtsi_tsmi = tsmi.DropDownItems[0];
+                        if ( subtsi_tsmi is System.Windows.Forms.ToolStripMenuItem ) {
+                            System.Windows.Forms.ToolStripMenuItem dd_run = (System.Windows.Forms.ToolStripMenuItem)subtsi_tsmi;
+                            if ( dict.containsKey( PortUtil.getComponentName( dd_run ) ) ) {
+                                applyMenuItemShortcut( dict, tsmi, PortUtil.getComponentName( tsi ) );
                             }
                         }
                     }
                 }
-#endif
             }
+#endif
         }
 
         /// <summary>
@@ -12781,7 +12742,6 @@ namespace org.kbinani.cadencii
                 mDialogPreference.setDefaultSingerName( AppManager.editorConfig.DefaultSingerName );
                 mDialogPreference.setScrollHorizontalOnWheel( AppManager.editorConfig.ScrollHorizontalOnWheel );
                 mDialogPreference.setMaximumFrameRate( AppManager.editorConfig.MaximumFrameRate );
-                mDialogPreference.setPlatform( AppManager.editorConfig.Platform );
                 mDialogPreference.setKeepLyricInputMode( AppManager.editorConfig.KeepLyricInputMode );
                 mDialogPreference.setPxTrackHeight( AppManager.editorConfig.PxTrackHeight );
                 mDialogPreference.setMouseHoverTime( AppManager.editorConfig.getMouseHoverTime() );
@@ -12830,8 +12790,6 @@ namespace org.kbinani.cadencii
                 mDialogPreference.setAutoBackupIntervalMinutes( AppManager.editorConfig.AutoBackupIntervalMinutes );
                 mDialogPreference.setUseSpaceKeyAsMiddleButtonModifier( AppManager.editorConfig.UseSpaceKeyAsMiddleButtonModifier );
                 mDialogPreference.setPathAquesTone( AppManager.editorConfig.PathAquesTone );
-                //mDialogPreference.setWaveFileOutputFromMasterTrack( AppManager.editorConfig.WaveFileOutputFromMasterTrack );
-                //mDialogPreference.setWaveFileOutputChannel( AppManager.editorConfig.WaveFileOutputChannel );
                 mDialogPreference.setUseProjectCache( AppManager.editorConfig.UseProjectCache );
                 mDialogPreference.setAquesToneRequired( !AppManager.editorConfig.DoNotUseAquesTone );
                 mDialogPreference.setSecondaryVocaloid1DllRequired( AppManager.editorConfig.LoadSecondaryVocaloid1Dll );
@@ -12841,6 +12799,8 @@ namespace org.kbinani.cadencii
                 mDialogPreference.setBufferSize( AppManager.editorConfig.BufferSizeMilliSeconds );
                 mDialogPreference.setDefaultSynthesizer( AppManager.editorConfig.DefaultSynthesizer );
                 mDialogPreference.setUseUserDefinedAutoVibratoType( AppManager.editorConfig.UseUserDefinedAutoVibratoType );
+                mDialogPreference.setWinePrefix( AppManager.editorConfig.WinePrefix );
+                mDialogPreference.setWineTop( AppManager.editorConfig.WineTop );
 
                 mDialogPreference.setLocation( getFormPreferedLocation( mDialogPreference ) );
 
@@ -12903,8 +12863,6 @@ namespace org.kbinani.cadencii
                     AppManager.editorConfig.MaximumFrameRate = mDialogPreference.getMaximumFrameRate();
                     int fps = 1000 / AppManager.editorConfig.MaximumFrameRate;
                     timer.setDelay( (fps <= 0) ? 1 : fps );
-                    AppManager.editorConfig.Platform = mDialogPreference.getPlatform();
-                    s_modifier_key = ((AppManager.editorConfig.Platform == PlatformEnum.Macintosh) ? InputEvent.META_MASK : InputEvent.CTRL_MASK);
                     applyShortcut();
                     AppManager.editorConfig.KeepLyricInputMode = mDialogPreference.isKeepLyricInputMode();
                     if ( AppManager.editorConfig.PxTrackHeight != mDialogPreference.getPxTrackHeight() ) {
@@ -13072,6 +13030,8 @@ namespace org.kbinani.cadencii
                     AppManager.editorConfig.BufferSizeMilliSeconds = mDialogPreference.getBufferSize();
                     AppManager.editorConfig.DefaultSynthesizer = mDialogPreference.getDefaultSynthesizer();
                     AppManager.editorConfig.UseUserDefinedAutoVibratoType = mDialogPreference.isUseUserDefinedAutoVibratoType();
+                    AppManager.editorConfig.WinePrefix = mDialogPreference.getWinePrefix();
+                    AppManager.editorConfig.WineTop = mDialogPreference.getWineTop();
 
                     AppManager.clearViewingCurve();
                     trackSelector.prepareSingerMenu( VsqFileEx.getTrackRendererKind( AppManager.getVsqFile().Track.get( AppManager.getSelected() ) ) );

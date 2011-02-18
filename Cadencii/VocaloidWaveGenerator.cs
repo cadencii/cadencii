@@ -265,10 +265,10 @@ namespace org.kbinani.cadencii
             }
             split.updateTotalClocks();
 
-#if !JAVA
-            // 対象のトラックの合成を担当するVSTiを検索
             // トラックの合成エンジンの種類
             RendererKind s_working_renderer = VsqFileEx.getTrackRendererKind( vsq_track );
+#if !JAVA
+            // 対象のトラックの合成を担当するVSTiを検索
             mDriver = null;
             for ( int i = 0; i < VSTiDllManager.vocaloidDriver.size(); i++ ) {
                 if ( VSTiDllManager.vocaloidDriver.get( i ).kind == s_working_renderer ) {
@@ -430,19 +430,20 @@ namespace org.kbinani.cadencii
 #if JAVA
             // /bin/sh vocaloidrv.sh WINEPREFIX WINETOP vocaloidrv.exe midi_master.bin midi_body.bin TOTAL_SAMPLES
             String vocaloidrv_sh =
-                normalizePath( fsys.combine( PortUtil.getApplicationStartupPath(), "vocaloidrv.sh" ) );
+                Utility.normalizePath( fsys.combine( PortUtil.getApplicationStartupPath(), "vocaloidrv.sh" ) );
             
             String wine_prefix = 
-                normalizePath( VSTiDllManager.WinePrefix );
+                Utility.normalizePath( mConfig.WinePrefix );
             
             String wine_top =
-                normalizePath( VSTiDllManager.WineTop );
+                Utility.normalizePath( mConfig.WineTop );
             
             String vocaloidrv_exe =
-                normalizePath( fsys.combine( PortUtil.getApplicationStartupPath(), "vocaloidrv.exe" ) );
+                Utility.normalizePath( fsys.combine( PortUtil.getApplicationStartupPath(), "vocaloidrv.exe" ) );
             
+            SynthesizerType st = (s_working_renderer == RendererKind.VOCALOID2) ? SynthesizerType.VOCALOID2 : SynthesizerType.VOCALOID1;
             String dll =
-                normalizePath( VSTiDllManager.WineVocaloid2Dll );
+                Utility.normalizePath( VocaloSysUtil.getDllPathVsti( st ) );
 
 #if DEBUG
             String wave = fsys.combine( PortUtil.getApplicationStartupPath(), "out.wav" );
@@ -558,18 +559,6 @@ namespace org.kbinani.cadencii
         public long getPosition()
         {
             return mTotalAppend;
-        }
-
-        private static String normalizePath( String path )
-        {
-            if( path.indexOf( "~" ) >= 0 ){
-                String usr = System.getProperty( "user.name" );
-                String tild = "/Users/" + usr;
-                path = path.replace( "~", tild );
-            }
-            path = path.replace( "\\", "\\\\\\\\" );
-            //path = path.replace( " ", "\\ " );
-            return path;
         }
     }
 

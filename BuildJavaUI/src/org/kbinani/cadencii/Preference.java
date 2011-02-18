@@ -115,10 +115,6 @@ public class Preference extends BDialog {
 	private BLabel lblMidiInPort = null;
 	private BComboBox comboMidiInPortNumber = null;
 	private BPanel tabPlatform = null;  //  @jve:decl-index=0:visual-constraint="-96,607"
-	private BGroupBox groupPlatform = null;
-	private BLabel lblPlatform = null;
-	private BComboBox comboPlatform = null;
-	private BCheckBox chkCommandKeyAsControl = null;
 	private BCheckBox chkTranslateRoman = null;
 	private BGroupBox groupVsti = null;
 	private BLabel lblVOCALOID1 = null;
@@ -200,6 +196,13 @@ public class Preference extends BDialog {
     private BLabel labelResamplerWithWine = null;
     private BPanel panelBottom = null;
     private BLabel labelStatus = null;
+    private BGroupBox groupWine = null;
+    private BLabel labelWinePrefix = null;
+    private BTextBox textWinePrefix = null;
+    private BButton buttonWinePrefix = null;
+    private BLabel labelWineTop = null;
+    private BTextBox textWineTop = null;
+    private BButton buttonWineTop = null;
     //SECTION-END-FIELD
 	/**
 	 * This is the default constructor
@@ -1533,6 +1536,10 @@ public class Preference extends BDialog {
 	 */
 	private BGroupBox getGroupMisc() {
 		if (groupMisc == null) {
+			GridBagConstraints gridBagConstraints88 = new GridBagConstraints();
+			gridBagConstraints88.gridx = 0;
+			gridBagConstraints88.insets = new Insets(3, 12, 3, 0);
+			gridBagConstraints88.gridy = 4;
 			GridBagConstraints gridBagConstraints136 = new GridBagConstraints();
 			gridBagConstraints136.fill = GridBagConstraints.NONE;
 			gridBagConstraints136.gridx = 1;
@@ -1611,6 +1618,7 @@ public class Preference extends BDialog {
 			groupMisc.add(getComboMidiInPortNumber(), gridBagConstraints86);
 			groupMisc.add(labelMtcMidiInPort, gridBagConstraints135);
 			groupMisc.add(getComboMtcMidiInPortNumber(), gridBagConstraints136);
+			groupMisc.add(getChkTranslateRoman(), gridBagConstraints88);
 		}
 		return groupMisc;
 	}
@@ -1661,11 +1669,17 @@ public class Preference extends BDialog {
 	 */
 	private BPanel getTabPlatform() {
 		if (tabPlatform == null) {
+			GridBagConstraints gridBagConstraints89 = new GridBagConstraints();
+			gridBagConstraints89.gridx = 0;
+			gridBagConstraints89.weightx = 1.0D;
+			gridBagConstraints89.fill = GridBagConstraints.BOTH;
+			gridBagConstraints89.insets = new Insets(3, 12, 3, 12);
+			gridBagConstraints89.gridy = 3;
 			GridBagConstraints gridBagConstraints125 = new GridBagConstraints();
 			gridBagConstraints125.gridx = 0;
 			gridBagConstraints125.fill = GridBagConstraints.NONE;
 			gridBagConstraints125.weighty = 1.0D;
-			gridBagConstraints125.gridy = 3;
+			gridBagConstraints125.gridy = 4;
 			jLabel91 = new BLabel();
 			jLabel91.setText(" ");
 			jLabel91.setPreferredSize(new Dimension(4, 4));
@@ -1673,94 +1687,18 @@ public class Preference extends BDialog {
 			gridBagConstraints106.gridx = 0;
 			gridBagConstraints106.anchor = GridBagConstraints.NORTH;
 			gridBagConstraints106.fill = GridBagConstraints.BOTH;
-			gridBagConstraints106.weighty = 1.0D;
-			gridBagConstraints106.insets = new Insets(3, 12, 3, 12);
+			gridBagConstraints106.weighty = 0.0D;
+			gridBagConstraints106.insets = new Insets(12, 12, 3, 12);
+			gridBagConstraints106.weightx = 1.0D;
 			gridBagConstraints106.gridy = 2;
-			GridBagConstraints gridBagConstraints93 = new GridBagConstraints();
-			gridBagConstraints93.gridx = 0;
-			gridBagConstraints93.anchor = GridBagConstraints.NORTH;
-			gridBagConstraints93.fill = GridBagConstraints.HORIZONTAL;
-			gridBagConstraints93.weightx = 1.0D;
-			gridBagConstraints93.insets = new Insets(12, 12, 3, 12);
-			gridBagConstraints93.gridy = 0;
 			tabPlatform = new BPanel();
 			tabPlatform.setLayout(new GridBagLayout());
 			tabPlatform.setSize(new Dimension(455, 498));
-			tabPlatform.add(getGroupPlatform(), gridBagConstraints93);
 			tabPlatform.add(getGroupUtauCores(), gridBagConstraints106);
 			tabPlatform.add(jLabel91, gridBagConstraints125);
+			tabPlatform.add(getGroupWine(), gridBagConstraints89);
 		}
 		return tabPlatform;
-	}
-
-	/**
-	 * This method initializes groupPlatform	
-	 * 	
-	 * @return javax.swing.BPanel	
-	 */
-	private BGroupBox getGroupPlatform() {
-		if (groupPlatform == null) {
-			GridBagConstraints gridBagConstraints92 = new GridBagConstraints();
-			gridBagConstraints92.gridx = 0;
-			gridBagConstraints92.gridwidth = 2;
-			gridBagConstraints92.insets = new Insets(0, 12, 0, 0);
-			gridBagConstraints92.anchor = GridBagConstraints.WEST;
-			gridBagConstraints92.gridy = 3;
-			GridBagConstraints gridBagConstraints91 = new GridBagConstraints();
-			gridBagConstraints91.gridx = 0;
-			gridBagConstraints91.insets = new Insets(0, 12, 0, 0);
-			gridBagConstraints91.anchor = GridBagConstraints.WEST;
-			gridBagConstraints91.gridwidth = 2;
-			gridBagConstraints91.gridy = 2;
-			GridBagConstraints gridBagConstraints89 = new GridBagConstraints();
-			gridBagConstraints89.fill = GridBagConstraints.NONE;
-			gridBagConstraints89.gridy = 0;
-			gridBagConstraints89.weightx = 1.0;
-			gridBagConstraints89.anchor = GridBagConstraints.WEST;
-			gridBagConstraints89.insets = new Insets(3, 12, 3, 0);
-			gridBagConstraints89.gridx = 1;
-			GridBagConstraints gridBagConstraints88 = new GridBagConstraints();
-			gridBagConstraints88.gridx = 0;
-			gridBagConstraints88.anchor = GridBagConstraints.WEST;
-			gridBagConstraints88.insets = new Insets(3, 12, 3, 0);
-			gridBagConstraints88.gridy = 0;
-			lblPlatform = new BLabel();
-			lblPlatform.setText("Current Platform");
-			groupPlatform = new BGroupBox();
-			groupPlatform.setLayout(new GridBagLayout());
-			groupPlatform.setBorder(BorderFactory.createTitledBorder(null, "Platform", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
-			groupPlatform.add(lblPlatform, gridBagConstraints88);
-			groupPlatform.add(getComboPlatform(), gridBagConstraints89);
-			groupPlatform.add(getChkCommandKeyAsControl(), gridBagConstraints91);
-			groupPlatform.add(getChkTranslateRoman(), gridBagConstraints92);
-		}
-		return groupPlatform;
-	}
-
-	/**
-	 * This method initializes comboPlatform	
-	 * 	
-	 * @return javax.swing.BComboBox	
-	 */
-	private BComboBox getComboPlatform() {
-		if (comboPlatform == null) {
-			comboPlatform = new BComboBox();
-			comboPlatform.setPreferredSize(new Dimension(121, 27));
-		}
-		return comboPlatform;
-	}
-
-	/**
-	 * This method initializes chkCommandKeyAsControl	
-	 * 	
-	 * @return javax.swing.BCheckBox	
-	 */
-	private BCheckBox getChkCommandKeyAsControl() {
-		if (chkCommandKeyAsControl == null) {
-			chkCommandKeyAsControl = new BCheckBox();
-			chkCommandKeyAsControl.setText("Use Command key as Control key");
-		}
-		return chkCommandKeyAsControl;
 	}
 
 	/**
@@ -1853,6 +1791,7 @@ public class Preference extends BDialog {
 	private BTextBox getTxtVOCALOID1() {
 		if (txtVOCALOID1 == null) {
 			txtVOCALOID1 = new BTextBox();
+			txtVOCALOID1.setEditable(false);
 		}
 		return txtVOCALOID1;
 	}
@@ -1865,6 +1804,7 @@ public class Preference extends BDialog {
 	private BTextBox getTxtVOCALOID2() {
 		if (txtVOCALOID2 == null) {
 			txtVOCALOID2 = new BTextBox();
+			txtVOCALOID2.setEditable(false);
 		}
 		return txtVOCALOID2;
 	}
@@ -3029,6 +2969,111 @@ public class Preference extends BDialog {
             panelBottom.add(labelStatus, gridBagConstraints1271);
         }
         return panelBottom;
+    }
+
+    /**
+     * This method initializes groupWine	
+     * 	
+     * @return org.kbinani.windows.forms.BGroupBox	
+     */
+    private BGroupBox getGroupWine() {
+        if (groupWine == null) {
+            GridBagConstraints gridBagConstraints150 = new GridBagConstraints();
+            gridBagConstraints150.gridx = 2;
+            gridBagConstraints150.gridy = 1;
+            GridBagConstraints gridBagConstraints149 = new GridBagConstraints();
+            gridBagConstraints149.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints149.gridy = 1;
+            gridBagConstraints149.weightx = 1.0;
+            gridBagConstraints149.insets = new Insets(0, 6, 0, 0);
+            gridBagConstraints149.gridx = 1;
+            GridBagConstraints gridBagConstraints148 = new GridBagConstraints();
+            gridBagConstraints148.gridx = 0;
+            gridBagConstraints148.anchor = GridBagConstraints.WEST;
+            gridBagConstraints148.insets = new Insets(0, 12, 0, 0);
+            gridBagConstraints148.gridy = 1;
+            labelWineTop = new BLabel();
+            labelWineTop.setText("WINETOP");
+            GridBagConstraints gridBagConstraints93 = new GridBagConstraints();
+            gridBagConstraints93.gridx = 2;
+            gridBagConstraints93.gridy = 0;
+            GridBagConstraints gridBagConstraints92 = new GridBagConstraints();
+            gridBagConstraints92.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints92.gridy = 0;
+            gridBagConstraints92.weightx = 1.0;
+            gridBagConstraints92.insets = new Insets(0, 6, 0, 0);
+            gridBagConstraints92.gridx = 1;
+            GridBagConstraints gridBagConstraints91 = new GridBagConstraints();
+            gridBagConstraints91.gridx = 0;
+            gridBagConstraints91.insets = new Insets(0, 12, 0, 0);
+            gridBagConstraints91.anchor = GridBagConstraints.WEST;
+            gridBagConstraints91.gridy = 0;
+            labelWinePrefix = new BLabel();
+            labelWinePrefix.setText("WINEPREFIX");
+            groupWine = new BGroupBox();
+            groupWine.setLayout(new GridBagLayout());
+            groupWine.setBorder(BorderFactory.createTitledBorder(null, "Platform", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
+            groupWine.setTitle("Wine");
+            groupWine.add(labelWinePrefix, gridBagConstraints91);
+            groupWine.add(getTextWinePrefix(), gridBagConstraints92);
+            groupWine.add(getButtonWinePrefix(), gridBagConstraints93);
+            groupWine.add(labelWineTop, gridBagConstraints148);
+            groupWine.add(getTextWineTop(), gridBagConstraints149);
+            groupWine.add(getButtonWineTop(), gridBagConstraints150);
+        }
+        return groupWine;
+    }
+
+    /**
+     * This method initializes textWinePrefix	
+     * 	
+     * @return org.kbinani.windows.forms.BTextBox	
+     */
+    private BTextBox getTextWinePrefix() {
+        if (textWinePrefix == null) {
+            textWinePrefix = new BTextBox();
+        }
+        return textWinePrefix;
+    }
+
+    /**
+     * This method initializes buttonWinePrefix	
+     * 	
+     * @return org.kbinani.windows.forms.BButton	
+     */
+    private BButton getButtonWinePrefix() {
+        if (buttonWinePrefix == null) {
+            buttonWinePrefix = new BButton();
+            buttonWinePrefix.setPreferredSize(new Dimension(90, 29));
+            buttonWinePrefix.setText("Browse");
+        }
+        return buttonWinePrefix;
+    }
+
+    /**
+     * This method initializes textWineTop	
+     * 	
+     * @return org.kbinani.windows.forms.BTextBox	
+     */
+    private BTextBox getTextWineTop() {
+        if (textWineTop == null) {
+            textWineTop = new BTextBox();
+        }
+        return textWineTop;
+    }
+
+    /**
+     * This method initializes buttonWineTop	
+     * 	
+     * @return org.kbinani.windows.forms.BButton	
+     */
+    private BButton getButtonWineTop() {
+        if (buttonWineTop == null) {
+            buttonWineTop = new BButton();
+            buttonWineTop.setPreferredSize(new Dimension(90, 29));
+            buttonWineTop.setText("Browse");
+        }
+        return buttonWineTop;
     }
 
 	//SECTION-END-METHOD

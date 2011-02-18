@@ -465,7 +465,12 @@ namespace org.kbinani.cadencii
             mMainWindow = main_window;
             registerEventHandlers();
             setResources();
-            mModifierKey = (AppManager.editorConfig.Platform == PlatformEnum.Macintosh) ? InputEvent.META_MASK : InputEvent.CTRL_MASK;
+            mModifierKey =
+#if JAVA_MAC
+                InputEvent.META_MASK;
+#else
+                InputEvent.CTRL_MASK;
+#endif
             cmenuCurveVelocity.setTag( CurveType.VEL );
             cmenuCurveAccent.setTag( CurveType.Accent );
             cmenuCurveDecay.setTag( CurveType.Decay );
@@ -5698,15 +5703,12 @@ namespace org.kbinani.cadencii
                     tag.Program = sc.Program;
                     tsmi.setTag( tag );
                     tsmi.Click += new BEventHandler( cmenusinger_Click );
-                    if ( AppManager.editorConfig.Platform == PlatformEnum.Windows ) {
-                        // TODO: cmenuSinger.ItemsのToolTip。monoで実行するとMouseHoverで落ちる
 #if JAVA
+                    // TODO: tsmi.MouseHover
 #else
-                        tsmi.MouseHover += new BEventHandler( cmenusinger_MouseHover );
+                    tsmi.MouseHover += new BEventHandler( cmenusinger_MouseHover );
 #endif
-                    }
                     cmenuSinger.add( tsmi );
-                    //list.Add( i );
                     count++;
                 }
             }
