@@ -161,7 +161,6 @@ public class XmlSerializer{
         NodeList childs = node.getChildNodes();
         int numChild = childs.getLength();
         Object obj;
-        System.out.println( "XmlSerializer#parseNode; t=" + t + "; parent_class=" + parent_class );
         if( t.equals( Integer.TYPE ) || t.equals( Integer.class ) ){
             return Integer.parseInt( node.getTextContent() + "" );
         }else if( t.equals( Byte.TYPE ) || t.equals( Byte.class ) ){

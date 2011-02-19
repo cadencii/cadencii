@@ -92,8 +92,6 @@ public class BSplitPane extends JSplitPane implements ComponentListener {
     }
 
     public void componentResized(ComponentEvent e) {
-        System.out.println( "BSplitPane#componentResized; leftComponent.getMinimumSize()=" + leftComponent.getMinimumSize() ); 
-        System.out.println( "BSplitPane#componentResized; rightComponent.getMinimumSize()=" + rightComponent.getMinimumSize() ); 
         if( panel2Hidden ){
             this.setDividerLocation( this.getHeight() );
         }else if( panel1Hidden ){

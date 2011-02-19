@@ -47,10 +47,10 @@ jcadencii_mac: jcadencii ./Cadencii/PkgInfo ./Cadencii/Info.plist ./build/java/W
 	perl copy_with_ext.pl ./Cadencii/ $(APP)/Resources/Java/ .po $(TO_DEVNULL)
 	cd ../../vConnect/stand && $(MAKE)
 	cp ../../vConnect/stand/vConnect-STAND.exe $(APP)/Resources/Java/vConnect-STAND.exe
-	cp ./Cadencii/vocaloidrv.sh ./build/java
-	cp ./vstidrv5/Release/vocaloidrv.exe ./build/java
-	cp ./vstidrv5/Release/getvocaloidinfo.exe ./build/java
 	/Developer/Tools/SetFile -a B ./build/java/Cadencii.app
+	cp ./build/java/vocaloidrv.sh $(APP)/Resources/Java
+	cp ./build/java/vocaloidrv.exe $(APP)/Resources/Java
+	cp ./build/java/getvocaloidinfo.exe $(APP)/Resources/Java
 	cp -r -p ./build/java/WineMinimum.bundle $(APP)/Resources/WineMinimum.bundle
 	rm $(APP)/Resources/WineMinimum.bundle/Contents/SharedSupport/lib/libwine.1.dylib
 	rm $(APP)/Resources/WineMinimum.bundle/Contents/SharedSupport/lib/libwine.dylib
@@ -170,6 +170,9 @@ jcadencii: first pp_cs2java.jar $(SRC_JCORLIB) $(SRC_JWINFORMS) $(SRC_JAPPUTIL) 
 	$(MAKE) jpostprocess
 	$(JAVAC) ./build/java/Cadencii.java ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/*.java ./build/java/org/kbinani/apputil/*.java ./build/java/org/kbinani/media/*.java ./build/java/org/kbinani/vsq/*.java ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/componentmodel/*.java ./build/java/org/kbinani/windows/forms/*.java ./build/java/org/kbinani/xml/*.java -encoding UTF8 -target 1.5 -source 1.5
 	cd ./build/java && jar cfm Cadencii.jar Cadencii.mf Cadencii.class org/kbinani/cadencii/*.class org/kbinani/*.class org/kbinani/apputil/*.class org/kbinani/media/*.class org/kbinani/vsq/*.class org/kbinani/cadencii/*.class org/kbinani/componentmodel/*.class org/kbinani/windows/forms/*.class org/kbinani/xml/*.class
+	cp ./Cadencii/vocaloidrv.sh ./build/java
+	cp ./vstidrv5/Release/vocaloidrv.exe ./build/java
+	cp ./vstidrv5/Release/getvocaloidinfo.exe ./build/java
 	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .png $(TO_DEVNULL)
 	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .txt $(TO_DEVNULL)
 	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .ico $(TO_DEVNULL)

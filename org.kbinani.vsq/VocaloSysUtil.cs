@@ -110,9 +110,6 @@ namespace org.kbinani.vsq
         /// </summary>
         public static String combineWinePath( String wine_prefix, String full_path )
         {
-            char drive_letter = full_path.charAt( 0 );
-            String drive = new String( new char[]{ drive_letter } ).toLowerCase();
-            String inner_path = full_path.substring( 2 ).replace( "\\", "/" );
             if( wine_prefix == null ){
                 wine_prefix = "";
             }
@@ -120,6 +117,16 @@ namespace org.kbinani.vsq
                 String usr = System.getProperty( "user.name" );
                 wine_prefix = wine_prefix.replace( "~", "/Users/" + usr );
             }
+            if( full_path == null ){
+                return wine_prefix;
+            }
+            int full_path_len = str.length( full_path );
+            if( full_path_len <= 0 ){
+                return wine_prefix;
+            }
+            char drive_letter = full_path.charAt( 0 );
+            String drive = new String( new char[]{ drive_letter } ).toLowerCase();
+            String inner_path = (full_path_len >= 3) ? full_path.substring( 2 ).replace( "\\", "/" ) : "";
             return fsys.combine( fsys.combine( wine_prefix, "drive_" + drive ), inner_path );
         }
 
@@ -133,6 +140,9 @@ namespace org.kbinani.vsq
         /// <param name="wine_prefix">wineを使う場合，WINEPREFIXを指定する．そうでなければ空文字を指定</param>
         public static void init( Vector<String> reg_list, String wine_prefix )
         {
+#if DEBUG
+            sout.println( "VocaloSysUtil#init; wine_prefix=" + wine_prefix );
+#endif
             if( reg_list == null ){
                 return;
             }
@@ -224,6 +234,9 @@ namespace org.kbinani.vsq
                                             defaultDseVersion = str.toi( str_dse_version );
                                         } catch ( Exception ex ) {
                                             serr.println( "VocaloSysUtil#init; ex=" + ex );
+#if JAVA
+                                            ex.printStackTrace();
+#endif
                                             defaultDseVersion = 100;
                                         }
                                     }
@@ -232,6 +245,9 @@ namespace org.kbinani.vsq
                             }
                         } catch ( Exception ex ) {
                             serr.println( "VocaloSysUtil#init; ex=" + ex );
+#if JAVA
+                            ex.printStackTrace();
+#endif
                         } finally {
                             if ( br != null ) {
                                 try {
@@ -245,6 +261,9 @@ namespace org.kbinani.vsq
                 }
             } catch ( Exception ex ) {
                 serr.println( "VocaloSysUtil#init; ex=" + ex );
+#if JAVA
+                ex.printStackTrace();
+#endif
                 SingerConfigSys singer_config_sys = new SingerConfigSys( "", new String[] { } );
                 exp_config_sys1 = null;
                 s_singer_config_sys.put( SynthesizerType.VOCALOID1, singer_config_sys );
@@ -295,6 +314,9 @@ namespace org.kbinani.vsq
                 s_singer_config_sys.put( SynthesizerType.VOCALOID2, singer_config_sys );
             } catch ( Exception ex ) {
                 serr.println( "VocaloSysUtil..cctor; ex=" + ex );
+#if JAVA
+                ex.printStackTrace();
+#endif
                 SingerConfigSys singer_config_sys = new SingerConfigSys( "", new String[] { } );
                 exp_config_sys2 = null;
                 s_singer_config_sys.put( SynthesizerType.VOCALOID2, singer_config_sys );

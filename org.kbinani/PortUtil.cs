@@ -930,7 +930,7 @@ namespace org.kbinani {
 #if JAVA
             String ret = "";
             try{
-                File.createTempFile( "tmp", "" ).getAbsolutePath();
+                ret = File.createTempFile( "tmp", "" ).getAbsolutePath();
             }catch( Exception ex ){
                 System.out.println( "PortUtil#createTempFile; ex=" + ex );
             }
