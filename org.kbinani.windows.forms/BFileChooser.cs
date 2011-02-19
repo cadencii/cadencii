@@ -26,15 +26,13 @@ namespace org.kbinani.windows.forms {
         public const int CANCEL_OPTION = 1;
         public const int ERROR_OPTION = -1;
 
-        private string m_current_directory = "";
         private List<string> m_filters = new List<string>();
         private OpenFileDialog m_open = new OpenFileDialog();
         private SaveFileDialog m_save = new SaveFileDialog();
         private string m_current_filter = "";
         private string m_selected_file = "";
 
-        public BFileChooser( String currentDirectoryPath ) {
-            m_current_directory = currentDirectoryPath;
+        public BFileChooser() {
         }
 
         public void addFileFilter( String filter ) {
@@ -63,17 +61,15 @@ namespace org.kbinani.windows.forms {
 
         public void setSelectedFile( String value ) {
             m_selected_file = value;
-            m_open.FileName = m_selected_file;
-            m_save.FileName = m_selected_file;
-        }
-
-        public void setInitialDirectory( string value ) {
-            m_open.InitialDirectory = value;
-            m_save.InitialDirectory = value;
+            String dir = PortUtil.getDirectoryName( value );
+            String name = PortUtil.getFileName( value );
+            m_open.FileName = name;
+            m_open.InitialDirectory = dir;
+            m_save.FileName = name;
+            m_save.InitialDirectory = dir;
         }
 
         public int showOpenDialog( Control parent ) {
-            m_open.InitialDirectory = m_current_directory;
             string filter = "";
             int count = 0;
             int selected = -1;
@@ -94,9 +90,6 @@ namespace org.kbinani.windows.forms {
             if ( 0 <= filter_index && filter_index < m_filters.Count ) {
                 m_current_filter = m_filters[filter_index];
             }
-            if ( m_selected_file != "" ) {
-                m_current_directory = Path.GetDirectoryName( m_selected_file );
-            }
             if ( dr == DialogResult.OK ) {
                 return APPROVE_OPTION;
             } else if ( dr == DialogResult.Cancel ) {
@@ -107,7 +100,6 @@ namespace org.kbinani.windows.forms {
         }
 
         public int showSaveDialog( Control parent ) {
-            m_save.InitialDirectory = m_current_directory;
             string filter = "";
             int count = 0;
             int selected = -1;
@@ -127,9 +119,6 @@ namespace org.kbinani.windows.forms {
             int filter_index = m_save.FilterIndex - 1;
             if ( 0 <= filter_index && filter_index < m_filters.Count ) {
                 m_current_filter = m_filters[filter_index];
-            }
-            if ( m_selected_file != "" ) {
-                m_current_directory = Path.GetDirectoryName( m_selected_file );
             }
             if ( dr == DialogResult.OK ) {
                 return APPROVE_OPTION;

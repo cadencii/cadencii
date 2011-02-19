@@ -191,6 +191,11 @@ namespace org.kbinani.java.awt {
             return ret;
         }
 
+        public void setClip( int x, int y, int width, int height )
+        {
+            nativeGraphics.SetClip( new System.Drawing.Rectangle( x, y, width, height ) );
+        }
+
         public void setClip( Shape clip ) {
             if ( clip == null ) {
                 nativeGraphics.Clip = new System.Drawing.Region();

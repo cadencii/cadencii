@@ -25,6 +25,9 @@ vocaloidrv::~vocaloidrv()
 		fwrite( &len, sizeof( unsigned int ), 1, mFile );
 		fclose( mFile );
 	}
+	if( mBuffer ){
+		free( mBuffer );
+	}
 }
 
 bool vocaloidrv::waveIncoming( double *left, double *right, int length )

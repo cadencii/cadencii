@@ -3670,6 +3670,8 @@ namespace org.kbinani.cadencii
             }
 #endif
             VocaloSysUtil.init( reg_list, prefix );
+#else
+            VocaloSysUtil.init();
 #endif // JAVA
 
             editorConfig.check();

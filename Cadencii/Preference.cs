@@ -63,6 +63,13 @@ namespace org.kbinani.cadencii
 
         private BFileChooser openUtauCore;
         private BFontChooser fontDialog;
+        private BGroupBox groupWine;
+        private BLabel labelWinePrefix;
+        private BButton buttonWinePrefix;
+        private BTextBox textWinePrefix;
+        private BLabel labelWineTop;
+        private BButton buttonWineTop;
+        private BTextBox textWineTop;
 #if JAVA
         private BFileChooser folderBrowserSingers;
 #else
@@ -1875,50 +1882,50 @@ namespace org.kbinani.cadencii
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.ListViewGroup listViewGroup1 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup2 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup3 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup4 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup5 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup6 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup7 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup8 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup9 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup10 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup11 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup12 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup13 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup14 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup15 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup16 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup17 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup18 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup19 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup20 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup21 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup22 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup23 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup24 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup25 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup26 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup27 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup28 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup29 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup30 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup31 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup32 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup33 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup34 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup35 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup36 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup37 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup38 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup39 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup40 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup41 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup42 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup43 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
-            System.Windows.Forms.ListViewGroup listViewGroup44 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup45 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup46 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup47 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup48 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup49 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup50 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup51 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup52 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup53 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup54 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup55 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup56 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup57 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup58 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup59 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup60 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup61 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup62 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup63 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup64 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup65 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup66 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup67 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup68 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup69 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup70 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup71 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup72 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup73 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup74 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup75 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup76 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup77 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup78 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup79 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup80 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup81 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup82 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup83 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup84 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup85 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup86 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup87 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
+            System.Windows.Forms.ListViewGroup listViewGroup88 = new System.Windows.Forms.ListViewGroup( "ListViewGroup", System.Windows.Forms.HorizontalAlignment.Left );
             this.tabPreference = new System.Windows.Forms.TabControl();
             this.tabSequence = new System.Windows.Forms.TabPage();
             this.txtAutoVibratoThresholdLength = new org.kbinani.cadencii.NumberTextBox();
@@ -2028,11 +2035,7 @@ namespace org.kbinani.cadencii
             this.btnWavtool = new org.kbinani.windows.forms.BButton();
             this.lblWavtool = new org.kbinani.windows.forms.BLabel();
             this.txtWavtool = new org.kbinani.windows.forms.BTextBox();
-            this.groupPlatform = new org.kbinani.windows.forms.BGroupBox();
             this.chkTranslateRoman = new org.kbinani.windows.forms.BCheckBox();
-            this.comboPlatform = new org.kbinani.windows.forms.BComboBox();
-            this.lblPlatform = new org.kbinani.windows.forms.BLabel();
-            this.chkCommandKeyAsControl = new org.kbinani.windows.forms.BCheckBox();
             this.tabUtausingers = new System.Windows.Forms.TabPage();
             this.btnRemove = new org.kbinani.windows.forms.BButton();
             this.btnAdd = new org.kbinani.windows.forms.BButton();
@@ -2064,6 +2067,13 @@ namespace org.kbinani.cadencii
             this.lblVOCALOID1 = new org.kbinani.windows.forms.BLabel();
             this.btnCancel = new org.kbinani.windows.forms.BButton();
             this.btnOK = new org.kbinani.windows.forms.BButton();
+            this.groupWine = new org.kbinani.windows.forms.BGroupBox();
+            this.labelWinePrefix = new org.kbinani.windows.forms.BLabel();
+            this.buttonWinePrefix = new org.kbinani.windows.forms.BButton();
+            this.textWinePrefix = new org.kbinani.windows.forms.BTextBox();
+            this.labelWineTop = new org.kbinani.windows.forms.BLabel();
+            this.buttonWineTop = new org.kbinani.windows.forms.BButton();
+            this.textWineTop = new org.kbinani.windows.forms.BTextBox();
             this.tabPreference.SuspendLayout();
             this.tabSequence.SuspendLayout();
             this.groupUserDefined.SuspendLayout();
@@ -2084,7 +2094,6 @@ namespace org.kbinani.cadencii
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownEx1)).BeginInit();
             this.tabPlatform.SuspendLayout();
             this.groupUtauCores.SuspendLayout();
-            this.groupPlatform.SuspendLayout();
             this.tabUtausingers.SuspendLayout();
             this.tabFile.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numAutoBackupInterval)).BeginInit();
@@ -2092,6 +2101,7 @@ namespace org.kbinani.cadencii
             this.groupDefaultSynthesizer.SuspendLayout();
             this.groupSynthesizerDll.SuspendLayout();
             this.groupVsti.SuspendLayout();
+            this.groupWine.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabPreference
@@ -2136,10 +2146,10 @@ namespace org.kbinani.cadencii
             this.tabSequence.Controls.Add( this.label3 );
             this.tabSequence.Controls.Add( this.comboVibratoLength );
             this.tabSequence.Controls.Add( this.lblVibratoLength );
-            this.tabSequence.Location = new System.Drawing.Point( 4, 40 );
+            this.tabSequence.Location = new System.Drawing.Point( 4, 38 );
             this.tabSequence.Name = "tabSequence";
             this.tabSequence.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabSequence.Size = new System.Drawing.Size( 454, 439 );
+            this.tabSequence.Size = new System.Drawing.Size( 454, 441 );
             this.tabSequence.TabIndex = 0;
             this.tabSequence.Text = "Sequence";
             this.tabSequence.UseVisualStyleBackColor = true;
@@ -2431,10 +2441,10 @@ namespace org.kbinani.cadencii
             this.tabAnother.Controls.Add( this.numBuffer );
             this.tabAnother.Controls.Add( this.numWait );
             this.tabAnother.Controls.Add( this.numPreSendTime );
-            this.tabAnother.Location = new System.Drawing.Point( 4, 40 );
+            this.tabAnother.Location = new System.Drawing.Point( 4, 38 );
             this.tabAnother.Name = "tabAnother";
             this.tabAnother.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabAnother.Size = new System.Drawing.Size( 454, 439 );
+            this.tabAnother.Size = new System.Drawing.Size( 454, 441 );
             this.tabAnother.TabIndex = 2;
             this.tabAnother.Text = "Other Settings";
             this.tabAnother.UseVisualStyleBackColor = true;
@@ -2597,10 +2607,10 @@ namespace org.kbinani.cadencii
             this.tabAppearance.Controls.Add( this.comboLanguage );
             this.tabAppearance.Controls.Add( this.lblLanguage );
             this.tabAppearance.Controls.Add( this.numTrackHeight );
-            this.tabAppearance.Location = new System.Drawing.Point( 4, 40 );
+            this.tabAppearance.Location = new System.Drawing.Point( 4, 38 );
             this.tabAppearance.Name = "tabAppearance";
             this.tabAppearance.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabAppearance.Size = new System.Drawing.Size( 454, 439 );
+            this.tabAppearance.Size = new System.Drawing.Size( 454, 441 );
             this.tabAppearance.TabIndex = 3;
             this.tabAppearance.Text = "Appearance";
             this.tabAppearance.UseVisualStyleBackColor = true;
@@ -2966,10 +2976,10 @@ namespace org.kbinani.cadencii
             // 
             this.tabOperation.Controls.Add( this.groupMisc );
             this.tabOperation.Controls.Add( this.groupPianoroll );
-            this.tabOperation.Location = new System.Drawing.Point( 4, 40 );
+            this.tabOperation.Location = new System.Drawing.Point( 4, 38 );
             this.tabOperation.Name = "tabOperation";
             this.tabOperation.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabOperation.Size = new System.Drawing.Size( 454, 439 );
+            this.tabOperation.Size = new System.Drawing.Size( 454, 441 );
             this.tabOperation.TabIndex = 5;
             this.tabOperation.Text = "Operation";
             this.tabOperation.UseVisualStyleBackColor = true;
@@ -2985,7 +2995,7 @@ namespace org.kbinani.cadencii
             this.groupMisc.Controls.Add( this.lblMouseHoverTime );
             this.groupMisc.Controls.Add( this.lblMilliSecond );
             this.groupMisc.Controls.Add( this.numMouseHoverTime );
-            this.groupMisc.Location = new System.Drawing.Point( 23, 230 );
+            this.groupMisc.Location = new System.Drawing.Point( 23, 253 );
             this.groupMisc.Name = "groupMisc";
             this.groupMisc.Size = new System.Drawing.Size( 407, 143 );
             this.groupMisc.TabIndex = 91;
@@ -3098,6 +3108,7 @@ namespace org.kbinani.cadencii
             // 
             // groupPianoroll
             // 
+            this.groupPianoroll.Controls.Add( this.chkTranslateRoman );
             this.groupPianoroll.Controls.Add( this.chkUseSpaceKeyAsMiddleButtonModifier );
             this.groupPianoroll.Controls.Add( this.labelWheelOrder );
             this.groupPianoroll.Controls.Add( this.numericUpDownEx1 );
@@ -3108,7 +3119,7 @@ namespace org.kbinani.cadencii
             this.groupPianoroll.Controls.Add( this.chkKeepLyricInputMode );
             this.groupPianoroll.Location = new System.Drawing.Point( 23, 9 );
             this.groupPianoroll.Name = "groupPianoroll";
-            this.groupPianoroll.Size = new System.Drawing.Size( 407, 215 );
+            this.groupPianoroll.Size = new System.Drawing.Size( 407, 238 );
             this.groupPianoroll.TabIndex = 90;
             this.groupPianoroll.TabStop = false;
             this.groupPianoroll.Text = "Piano Roll";
@@ -3206,12 +3217,12 @@ namespace org.kbinani.cadencii
             // 
             // tabPlatform
             // 
+            this.tabPlatform.Controls.Add( this.groupWine );
             this.tabPlatform.Controls.Add( this.groupUtauCores );
-            this.tabPlatform.Controls.Add( this.groupPlatform );
-            this.tabPlatform.Location = new System.Drawing.Point( 4, 40 );
+            this.tabPlatform.Location = new System.Drawing.Point( 4, 38 );
             this.tabPlatform.Name = "tabPlatform";
             this.tabPlatform.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabPlatform.Size = new System.Drawing.Size( 454, 439 );
+            this.tabPlatform.Size = new System.Drawing.Size( 454, 441 );
             this.tabPlatform.TabIndex = 4;
             this.tabPlatform.Text = "Platform";
             this.tabPlatform.UseVisualStyleBackColor = true;
@@ -3230,7 +3241,7 @@ namespace org.kbinani.cadencii
             this.groupUtauCores.Controls.Add( this.btnWavtool );
             this.groupUtauCores.Controls.Add( this.lblWavtool );
             this.groupUtauCores.Controls.Add( this.txtWavtool );
-            this.groupUtauCores.Location = new System.Drawing.Point( 23, 123 );
+            this.groupUtauCores.Location = new System.Drawing.Point( 23, 9 );
             this.groupUtauCores.Name = "groupUtauCores";
             this.groupUtauCores.Size = new System.Drawing.Size( 407, 296 );
             this.groupUtauCores.TabIndex = 108;
@@ -3367,56 +3378,15 @@ namespace org.kbinani.cadencii
             this.txtWavtool.Size = new System.Drawing.Size( 220, 19 );
             this.txtWavtool.TabIndex = 111;
             // 
-            // groupPlatform
-            // 
-            this.groupPlatform.Controls.Add( this.chkTranslateRoman );
-            this.groupPlatform.Controls.Add( this.comboPlatform );
-            this.groupPlatform.Controls.Add( this.lblPlatform );
-            this.groupPlatform.Controls.Add( this.chkCommandKeyAsControl );
-            this.groupPlatform.Location = new System.Drawing.Point( 23, 9 );
-            this.groupPlatform.Name = "groupPlatform";
-            this.groupPlatform.Size = new System.Drawing.Size( 407, 108 );
-            this.groupPlatform.TabIndex = 100;
-            this.groupPlatform.TabStop = false;
-            this.groupPlatform.Text = "Platform";
-            // 
             // chkTranslateRoman
             // 
             this.chkTranslateRoman.AutoSize = true;
-            this.chkTranslateRoman.Location = new System.Drawing.Point( 18, 76 );
+            this.chkTranslateRoman.Location = new System.Drawing.Point( 16, 208 );
             this.chkTranslateRoman.Name = "chkTranslateRoman";
             this.chkTranslateRoman.Size = new System.Drawing.Size( 200, 16 );
             this.chkTranslateRoman.TabIndex = 104;
             this.chkTranslateRoman.Text = "Translate Roman letters into Kana";
             this.chkTranslateRoman.UseVisualStyleBackColor = true;
-            // 
-            // comboPlatform
-            // 
-            this.comboPlatform.FormattingEnabled = true;
-            this.comboPlatform.Location = new System.Drawing.Point( 156, 19 );
-            this.comboPlatform.Name = "comboPlatform";
-            this.comboPlatform.Size = new System.Drawing.Size( 121, 20 );
-            this.comboPlatform.TabIndex = 101;
-            // 
-            // lblPlatform
-            // 
-            this.lblPlatform.AutoSize = true;
-            this.lblPlatform.Location = new System.Drawing.Point( 16, 22 );
-            this.lblPlatform.Name = "lblPlatform";
-            this.lblPlatform.Size = new System.Drawing.Size( 90, 12 );
-            this.lblPlatform.TabIndex = 1;
-            this.lblPlatform.Text = "Current Platform";
-            // 
-            // chkCommandKeyAsControl
-            // 
-            this.chkCommandKeyAsControl.AutoSize = true;
-            this.chkCommandKeyAsControl.Enabled = false;
-            this.chkCommandKeyAsControl.Location = new System.Drawing.Point( 18, 49 );
-            this.chkCommandKeyAsControl.Name = "chkCommandKeyAsControl";
-            this.chkCommandKeyAsControl.Size = new System.Drawing.Size( 199, 16 );
-            this.chkCommandKeyAsControl.TabIndex = 103;
-            this.chkCommandKeyAsControl.Text = "Use Command key as Control key";
-            this.chkCommandKeyAsControl.UseVisualStyleBackColor = true;
             // 
             // tabUtausingers
             // 
@@ -3426,10 +3396,10 @@ namespace org.kbinani.cadencii
             this.tabUtausingers.Controls.Add( this.btnUp );
             this.tabUtausingers.Controls.Add( this.btnDown );
             this.tabUtausingers.Controls.Add( this.listSingers );
-            this.tabUtausingers.Location = new System.Drawing.Point( 4, 40 );
+            this.tabUtausingers.Location = new System.Drawing.Point( 4, 38 );
             this.tabUtausingers.Name = "tabUtausingers";
             this.tabUtausingers.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabUtausingers.Size = new System.Drawing.Size( 454, 439 );
+            this.tabUtausingers.Size = new System.Drawing.Size( 454, 441 );
             this.tabUtausingers.TabIndex = 6;
             this.tabUtausingers.Text = "UTAU Singers";
             this.tabUtausingers.UseVisualStyleBackColor = true;
@@ -3480,139 +3450,139 @@ namespace org.kbinani.cadencii
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.listSingers.FullRowSelect = true;
-            listViewGroup1.Header = "ListViewGroup";
-            listViewGroup1.Name = null;
-            listViewGroup2.Header = "ListViewGroup";
-            listViewGroup2.Name = null;
-            listViewGroup3.Header = "ListViewGroup";
-            listViewGroup3.Name = null;
-            listViewGroup4.Header = "ListViewGroup";
-            listViewGroup4.Name = null;
-            listViewGroup5.Header = "ListViewGroup";
-            listViewGroup5.Name = null;
-            listViewGroup6.Header = "ListViewGroup";
-            listViewGroup6.Name = null;
-            listViewGroup7.Header = "ListViewGroup";
-            listViewGroup7.Name = null;
-            listViewGroup8.Header = "ListViewGroup";
-            listViewGroup8.Name = null;
-            listViewGroup9.Header = "ListViewGroup";
-            listViewGroup9.Name = null;
-            listViewGroup10.Header = "ListViewGroup";
-            listViewGroup10.Name = null;
-            listViewGroup11.Header = "ListViewGroup";
-            listViewGroup11.Name = null;
-            listViewGroup12.Header = "ListViewGroup";
-            listViewGroup12.Name = null;
-            listViewGroup13.Header = "ListViewGroup";
-            listViewGroup13.Name = null;
-            listViewGroup14.Header = "ListViewGroup";
-            listViewGroup14.Name = null;
-            listViewGroup15.Header = "ListViewGroup";
-            listViewGroup15.Name = null;
-            listViewGroup16.Header = "ListViewGroup";
-            listViewGroup16.Name = null;
-            listViewGroup17.Header = "ListViewGroup";
-            listViewGroup17.Name = null;
-            listViewGroup18.Header = "ListViewGroup";
-            listViewGroup18.Name = null;
-            listViewGroup19.Header = "ListViewGroup";
-            listViewGroup19.Name = null;
-            listViewGroup20.Header = "ListViewGroup";
-            listViewGroup20.Name = null;
-            listViewGroup21.Header = "ListViewGroup";
-            listViewGroup21.Name = null;
-            listViewGroup22.Header = "ListViewGroup";
-            listViewGroup22.Name = null;
-            listViewGroup23.Header = "ListViewGroup";
-            listViewGroup23.Name = null;
-            listViewGroup24.Header = "ListViewGroup";
-            listViewGroup24.Name = null;
-            listViewGroup25.Header = "ListViewGroup";
-            listViewGroup25.Name = null;
-            listViewGroup26.Header = "ListViewGroup";
-            listViewGroup26.Name = null;
-            listViewGroup27.Header = "ListViewGroup";
-            listViewGroup27.Name = null;
-            listViewGroup28.Header = "ListViewGroup";
-            listViewGroup28.Name = null;
-            listViewGroup29.Header = "ListViewGroup";
-            listViewGroup29.Name = null;
-            listViewGroup30.Header = "ListViewGroup";
-            listViewGroup30.Name = null;
-            listViewGroup31.Header = "ListViewGroup";
-            listViewGroup31.Name = null;
-            listViewGroup32.Header = "ListViewGroup";
-            listViewGroup32.Name = null;
-            listViewGroup33.Header = "ListViewGroup";
-            listViewGroup33.Name = null;
-            listViewGroup34.Header = "ListViewGroup";
-            listViewGroup34.Name = null;
-            listViewGroup35.Header = "ListViewGroup";
-            listViewGroup35.Name = null;
-            listViewGroup36.Header = "ListViewGroup";
-            listViewGroup36.Name = null;
-            listViewGroup37.Header = "ListViewGroup";
-            listViewGroup37.Name = null;
-            listViewGroup38.Header = "ListViewGroup";
-            listViewGroup38.Name = null;
-            listViewGroup39.Header = "ListViewGroup";
-            listViewGroup39.Name = null;
-            listViewGroup40.Header = "ListViewGroup";
-            listViewGroup40.Name = null;
-            listViewGroup41.Header = "ListViewGroup";
-            listViewGroup41.Name = null;
-            listViewGroup42.Header = "ListViewGroup";
-            listViewGroup42.Name = null;
-            listViewGroup43.Header = "ListViewGroup";
-            listViewGroup43.Name = null;
-            listViewGroup44.Header = "ListViewGroup";
-            listViewGroup44.Name = null;
+            listViewGroup45.Header = "ListViewGroup";
+            listViewGroup45.Name = null;
+            listViewGroup46.Header = "ListViewGroup";
+            listViewGroup46.Name = null;
+            listViewGroup47.Header = "ListViewGroup";
+            listViewGroup47.Name = null;
+            listViewGroup48.Header = "ListViewGroup";
+            listViewGroup48.Name = null;
+            listViewGroup49.Header = "ListViewGroup";
+            listViewGroup49.Name = null;
+            listViewGroup50.Header = "ListViewGroup";
+            listViewGroup50.Name = null;
+            listViewGroup51.Header = "ListViewGroup";
+            listViewGroup51.Name = null;
+            listViewGroup52.Header = "ListViewGroup";
+            listViewGroup52.Name = null;
+            listViewGroup53.Header = "ListViewGroup";
+            listViewGroup53.Name = null;
+            listViewGroup54.Header = "ListViewGroup";
+            listViewGroup54.Name = null;
+            listViewGroup55.Header = "ListViewGroup";
+            listViewGroup55.Name = null;
+            listViewGroup56.Header = "ListViewGroup";
+            listViewGroup56.Name = null;
+            listViewGroup57.Header = "ListViewGroup";
+            listViewGroup57.Name = null;
+            listViewGroup58.Header = "ListViewGroup";
+            listViewGroup58.Name = null;
+            listViewGroup59.Header = "ListViewGroup";
+            listViewGroup59.Name = null;
+            listViewGroup60.Header = "ListViewGroup";
+            listViewGroup60.Name = null;
+            listViewGroup61.Header = "ListViewGroup";
+            listViewGroup61.Name = null;
+            listViewGroup62.Header = "ListViewGroup";
+            listViewGroup62.Name = null;
+            listViewGroup63.Header = "ListViewGroup";
+            listViewGroup63.Name = null;
+            listViewGroup64.Header = "ListViewGroup";
+            listViewGroup64.Name = null;
+            listViewGroup65.Header = "ListViewGroup";
+            listViewGroup65.Name = null;
+            listViewGroup66.Header = "ListViewGroup";
+            listViewGroup66.Name = null;
+            listViewGroup67.Header = "ListViewGroup";
+            listViewGroup67.Name = null;
+            listViewGroup68.Header = "ListViewGroup";
+            listViewGroup68.Name = null;
+            listViewGroup69.Header = "ListViewGroup";
+            listViewGroup69.Name = null;
+            listViewGroup70.Header = "ListViewGroup";
+            listViewGroup70.Name = null;
+            listViewGroup71.Header = "ListViewGroup";
+            listViewGroup71.Name = null;
+            listViewGroup72.Header = "ListViewGroup";
+            listViewGroup72.Name = null;
+            listViewGroup73.Header = "ListViewGroup";
+            listViewGroup73.Name = null;
+            listViewGroup74.Header = "ListViewGroup";
+            listViewGroup74.Name = null;
+            listViewGroup75.Header = "ListViewGroup";
+            listViewGroup75.Name = null;
+            listViewGroup76.Header = "ListViewGroup";
+            listViewGroup76.Name = null;
+            listViewGroup77.Header = "ListViewGroup";
+            listViewGroup77.Name = null;
+            listViewGroup78.Header = "ListViewGroup";
+            listViewGroup78.Name = null;
+            listViewGroup79.Header = "ListViewGroup";
+            listViewGroup79.Name = null;
+            listViewGroup80.Header = "ListViewGroup";
+            listViewGroup80.Name = null;
+            listViewGroup81.Header = "ListViewGroup";
+            listViewGroup81.Name = null;
+            listViewGroup82.Header = "ListViewGroup";
+            listViewGroup82.Name = null;
+            listViewGroup83.Header = "ListViewGroup";
+            listViewGroup83.Name = null;
+            listViewGroup84.Header = "ListViewGroup";
+            listViewGroup84.Name = null;
+            listViewGroup85.Header = "ListViewGroup";
+            listViewGroup85.Name = null;
+            listViewGroup86.Header = "ListViewGroup";
+            listViewGroup86.Name = null;
+            listViewGroup87.Header = "ListViewGroup";
+            listViewGroup87.Name = null;
+            listViewGroup88.Header = "ListViewGroup";
+            listViewGroup88.Name = null;
             this.listSingers.Groups.AddRange( new System.Windows.Forms.ListViewGroup[] {
-            listViewGroup1,
-            listViewGroup2,
-            listViewGroup3,
-            listViewGroup4,
-            listViewGroup5,
-            listViewGroup6,
-            listViewGroup7,
-            listViewGroup8,
-            listViewGroup9,
-            listViewGroup10,
-            listViewGroup11,
-            listViewGroup12,
-            listViewGroup13,
-            listViewGroup14,
-            listViewGroup15,
-            listViewGroup16,
-            listViewGroup17,
-            listViewGroup18,
-            listViewGroup19,
-            listViewGroup20,
-            listViewGroup21,
-            listViewGroup22,
-            listViewGroup23,
-            listViewGroup24,
-            listViewGroup25,
-            listViewGroup26,
-            listViewGroup27,
-            listViewGroup28,
-            listViewGroup29,
-            listViewGroup30,
-            listViewGroup31,
-            listViewGroup32,
-            listViewGroup33,
-            listViewGroup34,
-            listViewGroup35,
-            listViewGroup36,
-            listViewGroup37,
-            listViewGroup38,
-            listViewGroup39,
-            listViewGroup40,
-            listViewGroup41,
-            listViewGroup42,
-            listViewGroup43,
-            listViewGroup44} );
+            listViewGroup45,
+            listViewGroup46,
+            listViewGroup47,
+            listViewGroup48,
+            listViewGroup49,
+            listViewGroup50,
+            listViewGroup51,
+            listViewGroup52,
+            listViewGroup53,
+            listViewGroup54,
+            listViewGroup55,
+            listViewGroup56,
+            listViewGroup57,
+            listViewGroup58,
+            listViewGroup59,
+            listViewGroup60,
+            listViewGroup61,
+            listViewGroup62,
+            listViewGroup63,
+            listViewGroup64,
+            listViewGroup65,
+            listViewGroup66,
+            listViewGroup67,
+            listViewGroup68,
+            listViewGroup69,
+            listViewGroup70,
+            listViewGroup71,
+            listViewGroup72,
+            listViewGroup73,
+            listViewGroup74,
+            listViewGroup75,
+            listViewGroup76,
+            listViewGroup77,
+            listViewGroup78,
+            listViewGroup79,
+            listViewGroup80,
+            listViewGroup81,
+            listViewGroup82,
+            listViewGroup83,
+            listViewGroup84,
+            listViewGroup85,
+            listViewGroup86,
+            listViewGroup87,
+            listViewGroup88} );
             this.listSingers.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.listSingers.HideSelection = false;
             this.listSingers.Location = new System.Drawing.Point( 17, 23 );
@@ -3630,10 +3600,10 @@ namespace org.kbinani.cadencii
             this.tabFile.Controls.Add( this.lblAutoBackupInterval );
             this.tabFile.Controls.Add( this.chkAutoBackup );
             this.tabFile.Controls.Add( this.numAutoBackupInterval );
-            this.tabFile.Location = new System.Drawing.Point( 4, 40 );
+            this.tabFile.Location = new System.Drawing.Point( 4, 38 );
             this.tabFile.Name = "tabFile";
             this.tabFile.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabFile.Size = new System.Drawing.Size( 454, 439 );
+            this.tabFile.Size = new System.Drawing.Size( 454, 441 );
             this.tabFile.TabIndex = 7;
             this.tabFile.Text = "File";
             this.tabFile.UseVisualStyleBackColor = true;
@@ -3699,10 +3669,10 @@ namespace org.kbinani.cadencii
             this.tabSingingSynth.Controls.Add( this.groupDefaultSynthesizer );
             this.tabSingingSynth.Controls.Add( this.groupSynthesizerDll );
             this.tabSingingSynth.Controls.Add( this.groupVsti );
-            this.tabSingingSynth.Location = new System.Drawing.Point( 4, 40 );
+            this.tabSingingSynth.Location = new System.Drawing.Point( 4, 38 );
             this.tabSingingSynth.Name = "tabSingingSynth";
             this.tabSingingSynth.Padding = new System.Windows.Forms.Padding( 3 );
-            this.tabSingingSynth.Size = new System.Drawing.Size( 454, 439 );
+            this.tabSingingSynth.Size = new System.Drawing.Size( 454, 441 );
             this.tabSingingSynth.TabIndex = 8;
             this.tabSingingSynth.Text = "Synthesizer";
             this.tabSingingSynth.UseVisualStyleBackColor = true;
@@ -3903,6 +3873,77 @@ namespace org.kbinani.cadencii
             this.btnOK.Text = "OK";
             this.btnOK.UseVisualStyleBackColor = true;
             // 
+            // groupWine
+            // 
+            this.groupWine.Controls.Add( this.labelWineTop );
+            this.groupWine.Controls.Add( this.buttonWineTop );
+            this.groupWine.Controls.Add( this.textWineTop );
+            this.groupWine.Controls.Add( this.labelWinePrefix );
+            this.groupWine.Controls.Add( this.buttonWinePrefix );
+            this.groupWine.Controls.Add( this.textWinePrefix );
+            this.groupWine.Location = new System.Drawing.Point( 23, 311 );
+            this.groupWine.Name = "groupWine";
+            this.groupWine.Size = new System.Drawing.Size( 407, 92 );
+            this.groupWine.TabIndex = 109;
+            this.groupWine.TabStop = false;
+            this.groupWine.Text = "Wine";
+            // 
+            // labelWinePrefix
+            // 
+            this.labelWinePrefix.AutoSize = true;
+            this.labelWinePrefix.Location = new System.Drawing.Point( 17, 25 );
+            this.labelWinePrefix.Name = "labelWinePrefix";
+            this.labelWinePrefix.Size = new System.Drawing.Size( 71, 12 );
+            this.labelWinePrefix.TabIndex = 120;
+            this.labelWinePrefix.Text = "WINEPREFIX";
+            // 
+            // buttonWinePrefix
+            // 
+            this.buttonWinePrefix.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonWinePrefix.Location = new System.Drawing.Point( 326, 20 );
+            this.buttonWinePrefix.Name = "buttonWinePrefix";
+            this.buttonWinePrefix.Size = new System.Drawing.Size( 75, 23 );
+            this.buttonWinePrefix.TabIndex = 112;
+            this.buttonWinePrefix.Text = "Browse";
+            this.buttonWinePrefix.UseVisualStyleBackColor = true;
+            // 
+            // textWinePrefix
+            // 
+            this.textWinePrefix.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.textWinePrefix.Location = new System.Drawing.Point( 100, 22 );
+            this.textWinePrefix.Name = "textWinePrefix";
+            this.textWinePrefix.Size = new System.Drawing.Size( 220, 19 );
+            this.textWinePrefix.TabIndex = 111;
+            // 
+            // labelWineTop
+            // 
+            this.labelWineTop.AutoSize = true;
+            this.labelWineTop.Location = new System.Drawing.Point( 18, 54 );
+            this.labelWineTop.Name = "labelWineTop";
+            this.labelWineTop.Size = new System.Drawing.Size( 54, 12 );
+            this.labelWineTop.TabIndex = 123;
+            this.labelWineTop.Text = "WINETOP";
+            // 
+            // buttonWineTop
+            // 
+            this.buttonWineTop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonWineTop.Location = new System.Drawing.Point( 326, 49 );
+            this.buttonWineTop.Name = "buttonWineTop";
+            this.buttonWineTop.Size = new System.Drawing.Size( 75, 23 );
+            this.buttonWineTop.TabIndex = 122;
+            this.buttonWineTop.Text = "Browse";
+            this.buttonWineTop.UseVisualStyleBackColor = true;
+            // 
+            // textWineTop
+            // 
+            this.textWineTop.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.textWineTop.Location = new System.Drawing.Point( 100, 51 );
+            this.textWineTop.Name = "textWineTop";
+            this.textWineTop.Size = new System.Drawing.Size( 220, 19 );
+            this.textWineTop.TabIndex = 121;
+            // 
             // Preference
             // 
             this.AcceptButton = this.btnOK;
@@ -3951,8 +3992,6 @@ namespace org.kbinani.cadencii
             this.tabPlatform.ResumeLayout( false );
             this.groupUtauCores.ResumeLayout( false );
             this.groupUtauCores.PerformLayout();
-            this.groupPlatform.ResumeLayout( false );
-            this.groupPlatform.PerformLayout();
             this.tabUtausingers.ResumeLayout( false );
             this.tabFile.ResumeLayout( false );
             this.tabFile.PerformLayout();
@@ -3963,6 +4002,8 @@ namespace org.kbinani.cadencii
             this.groupSynthesizerDll.PerformLayout();
             this.groupVsti.ResumeLayout( false );
             this.groupVsti.PerformLayout();
+            this.groupWine.ResumeLayout( false );
+            this.groupWine.PerformLayout();
             this.ResumeLayout( false );
 
         }
@@ -4007,10 +4048,6 @@ namespace org.kbinani.cadencii
         private BComboBox comboLanguage;
         private BLabel lblLanguage;
         private System.Windows.Forms.TabPage tabPlatform;
-        private BLabel lblPlatform;
-        private BComboBox comboPlatform;
-        private BGroupBox groupPlatform;
-        private BCheckBox chkCommandKeyAsControl;
         private System.Windows.Forms.TabPage tabOperation;
         private NumericUpDownEx numMaximumFrameRate;
         private BLabel lblMaximumFrameRate;

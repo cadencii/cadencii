@@ -82,12 +82,14 @@ namespace org.kbinani.cadencii
         /// </summary>
         public static String normalizePath( String path )
         {
+#if JAVA
             if( path.indexOf( "~" ) >= 0 ){
                 String usr = System.getProperty( "user.name" );
                 String tild = "/Users/" + usr;
                 path = path.replace( "~", tild );
             }
-            path = path.replace( "\\", "\\\\\\\\" );
+#endif
+            path = path.Replace( "\\", "\\\\\\\\" );
             return path;
         }
 

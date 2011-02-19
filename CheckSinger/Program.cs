@@ -21,7 +21,7 @@ namespace CheckSinger {
             BufferedWriter sw = null;
             try {
                 sw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( "result.txt" ), "Shift_JIS" ) );
-                VocaloSysUtil.init( sw );
+                VocaloSysUtil.init();
                 string editor2 = VocaloSysUtil.getEditorPath( SynthesizerType.VOCALOID2 );
                 sw.write( new string( '#', 72 ) );
                 sw.newLine();

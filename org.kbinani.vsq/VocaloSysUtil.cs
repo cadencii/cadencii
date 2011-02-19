@@ -101,7 +101,7 @@ namespace org.kbinani.vsq
             Vector<String> reg_list = new Vector<String>();
             initPrint( "SOFTWARE\\VOCALOID", header1, reg_list );
             initPrint( "SOFTWARE\\VOCALOID2", header2, reg_list );
-            init( reg_list );
+            init( reg_list, "" );
         }
 #endif
 
@@ -113,10 +113,12 @@ namespace org.kbinani.vsq
             if( wine_prefix == null ){
                 wine_prefix = "";
             }
+#if JAVA
             if( wine_prefix.indexOf( "~" ) >= 0 ){
                 String usr = System.getProperty( "user.name" );
                 wine_prefix = wine_prefix.replace( "~", "/Users/" + usr );
             }
+#endif
             if( full_path == null ){
                 return wine_prefix;
             }
@@ -124,9 +126,9 @@ namespace org.kbinani.vsq
             if( full_path_len <= 0 ){
                 return wine_prefix;
             }
-            char drive_letter = full_path.charAt( 0 );
-            String drive = new String( new char[]{ drive_letter } ).toLowerCase();
-            String inner_path = (full_path_len >= 3) ? full_path.substring( 2 ).replace( "\\", "/" ) : "";
+            char drive_letter = str.charAt( full_path, 0 );
+            String drive = str.toLower( new String( new char[]{ drive_letter } ) );
+            String inner_path = (full_path_len >= 3) ? str.sub( full_path, 2 ).Replace( "\\", "/" ) : "";
             return fsys.combine( fsys.combine( wine_prefix, "drive_" + drive ), inner_path );
         }
 

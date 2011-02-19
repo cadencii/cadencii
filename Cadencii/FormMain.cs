@@ -2488,10 +2488,16 @@ namespace org.kbinani.cadencii
                 Point property = new Point( rc.x, rc.y );
                 AppManager.propertyWindow.setBounds( new Rectangle( parent.x + property.x, parent.y + property.y, rc.width, rc.height ) );
                 normalizeFormLocation( AppManager.propertyWindow );
+                // setVisible -> NORMALとすると，javaの場合見栄えが悪くなる
+#if !JAVA
+                AppManager.propertyWindow.setVisible( true );
+#endif
                 if ( AppManager.propertyWindow.getExtendedState() != BForm.NORMAL ) {
                     AppManager.propertyWindow.setExtendedState( BForm.NORMAL );
                 }
+#if JAVA
                 AppManager.propertyWindow.setVisible( true );
+#endif
                 menuVisualProperty.setSelected( true );
                 if ( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Docked ) {
                     AppManager.editorConfig.PropertyWindowStatus.DockWidth = splitContainerProperty.getDividerLocation();
@@ -2507,6 +2513,12 @@ namespace org.kbinani.cadencii
                 splitContainerProperty.setDividerSize( 0 );
                 splitContainerProperty.setSplitterFixed( true );
                 AppManager.editorConfig.PropertyWindowStatus.WindowState = BFormWindowState.Normal;
+#if DEBUG
+                sout.println( "FormMain#updatePropertyPanelState; propertyWindow.getExtendedState()=" + AppManager.propertyWindow.getExtendedState() );
+                sout.println( "    NORMAL=" + BForm.NORMAL );
+                sout.println( "    ICONIFIED=" + BForm.ICONIFIED );
+                sout.println( "    MAXIMIZED_BOTH=" + BForm.MAXIMIZED_BOTH );
+#endif
             }
         }
 #endif
@@ -15049,13 +15061,6 @@ namespace org.kbinani.cadencii
 #if DEBUG
             sout.println( "FormMain#menuHelpDebug_Click" );
             
-            sout.println( "FormMain#menuHelpDebug_Click; menuVisualMixer.mouseEnterEvent.size()=" + menuVisualMixer.mouseEnterEvent.size() );
-            try{
-                menuVisualMixer.mouseEnterEvent.raise( menuVisualMixer, new BEventArgs() );
-            }catch( Exception ex ){
-                ex.printStackTrace();
-            }
-
 #if ENABLE_VOCALOID
             /*BFileChooser dlg_fout = new BFileChooser();
             if ( dlg_fout.showSaveDialog( this ) == BFileChooser.APPROVE_OPTION ) {
@@ -17140,10 +17145,8 @@ namespace org.kbinani.cadencii
         public void handleMenuMouseEnter( Object sender, EventArgs e )
         {
             if ( sender == null ) {
-                System.out.println( "FormMain#handleMenuMouseEnter; exit with sender==null" );
                 return;
             }
-            System.out.println( "FormMain#handleMenuMouseEnter; sender=" + sender );
 
             boolean notfound = false;
             String text = "";

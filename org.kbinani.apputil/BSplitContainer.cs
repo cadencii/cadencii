@@ -80,6 +80,16 @@ namespace org.kbinani.apputil {
             }
         }
 
+        public void setPanel1Hidden( bool value )
+        {
+            if ( value ) {
+                setDividerLocation( 0 );
+                setSplitterFixed( true );
+            } else {
+                setSplitterFixed( false );
+            }
+        }
+
         public System.Windows.Forms.FixedPanel FixedPanel {
             get {
                 return m_fixed_panel;
