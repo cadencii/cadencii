@@ -63,13 +63,6 @@ namespace org.kbinani.cadencii
 
         private BFileChooser openUtauCore;
         private BFontChooser fontDialog;
-        private BGroupBox groupWine;
-        private BLabel labelWinePrefix;
-        private BButton buttonWinePrefix;
-        private BTextBox textWinePrefix;
-        private BLabel labelWineTop;
-        private BButton buttonWineTop;
-        private BTextBox textWineTop;
 #if JAVA
         private BFileChooser folderBrowserSingers;
 #else
@@ -4151,6 +4144,13 @@ namespace org.kbinani.cadencii
         private BLabel labelWavtoolPath;
         private System.Windows.Forms.ColumnHeader columnHeaderPath;
         private BLabel labelResamplerWithWine;
+        private BGroupBox groupWine;
+        private BLabel labelWinePrefix;
+        private BButton buttonWinePrefix;
+        private BTextBox textWinePrefix;
+        private BLabel labelWineTop;
+        private BButton buttonWineTop;
+        private BTextBox textWineTop;
 #endif
         #endregion
 

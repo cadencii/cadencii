@@ -328,14 +328,13 @@ namespace org.kbinani.cadencii
             // 古いイベントをクリア
             mDriver.clearSendEvents();
 #endif
-
             // ドライバーに渡すイベントを準備
             // まず、マスタートラックに渡すテンポ変更イベントを作成
             int tempo_count = split.TempoTable.size();
             byte[] masterEventsSrc = new byte[tempo_count * 3];
             int[] masterClocksSrc = new int[tempo_count];
             int count = -3;
-            for ( int i = 0; i < split.TempoTable.size(); i++ ) {
+            for ( int i = 0; i < tempo_count; i++ ) {
                 count += 3;
                 TempoTableEntry itemi = split.TempoTable.get( i );
                 masterClocksSrc[i] = itemi.Clock;
@@ -347,35 +346,8 @@ namespace org.kbinani.cadencii
                 masterEventsSrc[count + 1] = b1;
                 masterEventsSrc[count + 2] = b2;
             }
+#if !JAVA
             // 送る
-#if JAVA
-#if DEBUG
-            String midi_master_file = fsys.combine( PortUtil.getApplicationStartupPath(), "midi_master.bin" );
-#else
-            String midi_master_file = PortUtil.createTempFile();
-#endif
-            RandomAccessFile fs = null;
-            try{
-                fs = new RandomAccessFile( midi_master_file, "rw" );
-                count = 0;
-                for( int i = 0; i < tempo_count; i++ ){
-                    byte[] buf = PortUtil.getbytes_int32_le( masterClocksSrc[i] );
-                    fs.write( buf, 0, 4 );
-                    fs.write( masterEventsSrc, count, 3 );
-                    count += 3;
-                }
-            }catch( Exception ex ){
-                ex.printStackTrace();
-            }finally{
-                if( fs != null ){
-                    try{
-                        fs.close();
-                    }catch( Exception ex2 ){
-                        ex2.printStackTrace();
-                    }
-                }
-            }
-#else
             mDriver.sendEvent( masterEventsSrc, masterClocksSrc, 0 );
 #endif
 
@@ -386,161 +358,83 @@ namespace org.kbinani.cadencii
             count = -3;
             int last_clock = 0;
             for ( int i = 0; i < numEvents; i++ ) {
+                int c = nrpn[i].getClock();
                 count += 3;
                 bodyEventsSrc[count] = (byte)0xb0;
                 bodyEventsSrc[count + 1] = nrpn[i].getParameter();
                 bodyEventsSrc[count + 2] = nrpn[i].Value;
-                bodyClocksSrc[i] = nrpn[i].getClock();
-                last_clock = nrpn[i].getClock();
+                bodyClocksSrc[i] = c;
+                last_clock = c;
             }
+#if !JAVA
             // 送る
-#if JAVA
-#if DEBUG
-            String midi_body_file = fsys.combine( PortUtil.getApplicationStartupPath(), "midi_body.bin" );
-#else
-            String midi_body_file = PortUtil.createTempFile();
-#endif
-            try{
-                fs = new RandomAccessFile( midi_body_file, "rw" );
-                count = 0;
-                for( int i = 0; i < numEvents; i++ ){
-                    byte[] buf = PortUtil.getbytes_int32_le( bodyClocksSrc[i] );
-                    fs.write( buf, 0, 4 );
-                    fs.write( bodyEventsSrc, count, 3 );
-                    count += 3;
-                }
-            }catch( Exception ex ){
-                ex.printStackTrace();
-            }finally{
-                if( fs != null ){
-                    try{
-                        fs.close();
-                    }catch( Exception ex2 ){
-                        ex2.printStackTrace();
-                    }
-                }
-            }
-#else
             mDriver.sendEvent( bodyEventsSrc, bodyClocksSrc, 1 );
 #endif
 
             // 合成を開始
             // 合成が終わるか、ドライバへのアボート要求が来るまでは制御は返らない
-            // この
 #if JAVA
-            // /bin/sh vocaloidrv.sh WINEPREFIX WINETOP vocaloidrv.exe midi_master.bin midi_body.bin TOTAL_SAMPLES
-            String vocaloidrv_sh =
-                Utility.normalizePath( fsys.combine( PortUtil.getApplicationStartupPath(), "vocaloidrv.sh" ) );
-            
-            String wine_prefix = 
-                Utility.normalizePath( mConfig.WinePrefix );
-            
-            String wine_top =
-                Utility.normalizePath( mConfig.WineTop );
-            
-            String vocaloidrv_exe =
-                Utility.normalizePath( fsys.combine( PortUtil.getApplicationStartupPath(), "vocaloidrv.exe" ) );
-            
-            SynthesizerType st = (s_working_renderer == RendererKind.VOCALOID2) ? SynthesizerType.VOCALOID2 : SynthesizerType.VOCALOID1;
-            String dll =
-                Utility.normalizePath( VocaloSysUtil.getDllPathVsti( st ) );
-
-#if DEBUG
-            String wave = fsys.combine( PortUtil.getApplicationStartupPath(), "out.wav" );
-#else
-            String wave = PortUtil.createTempFile();
-#endif
-            if( fsys.isFileExists( wave ) ){
-                try{
-                    PortUtil.deleteFile( wave );
-                }catch( Exception ex ){
-                }
-            }
-
-            String[] list = new String[]{
-                "/bin/sh",
-                vocaloidrv_sh,
-                wine_prefix,
-                wine_top,
-                vocaloidrv_exe,
-                dll,
-                midi_master_file,
-                midi_body_file,
-                "" + total_samples,
-                wave,
-            };
-#if DEBUG
-            sout.println( "VocaloidWaveGenerator#begin; list=" );
-            for( String s : list ){
-                sout.println( "    " + s );
-            }
-#endif
-            ProcessBuilder pb = new ProcessBuilder( list );
+            int ver = (s_working_renderer == RendererKind.VOCALOID2) ? 2 : 1;
             try{
-                Process process = pb.start();
-                while( true ){
-                    if( mAbortRequired ){
-                        process.destroy();
-                        break;
-                    }
-                    try{
-                        int ecode = process.exitValue();
-                    }catch( Exception ex ){
-                        //ex.printStackTrace();
-                        continue;
-                    }
-                    break;
+                Process process = VSTiDllManager.vocaloidrvDaemon[ver - 1];
+                OutputStream out = process.getOutputStream();
+                // コマンドを送信
+                // マスタートラック
+                out.write( 0x01 );
+                out.write( 0x04 );
+                byte[] buf = PortUtil.getbytes_uint32_le( tempo_count );
+                out.write( buf, 0, 4 );
+                count = 0;
+                for( int i = 0; i < tempo_count; i++ ){
+                    buf = PortUtil.getbytes_uint32_le( masterClocksSrc[i] );
+                    out.write( buf, 0, 4 );
+                    out.write( masterEventsSrc, count, 3 );
+                    count += 3;
                 }
-            }catch( Exception ex ){
-                ex.printStackTrace();
-            }
-            
-            // 出力されてきたwaveを読み込む
-            WaveReader wr = null;
-            try{
-                wr = new WaveReader( wave );
-                // 最初のmTrimRemain分は捨てられるが，その分も読み込まないといけない
-                long remain = total_samples;
+                // 本体トラック
+                out.write( 0x02 );
+                out.write( 0x04 );
+                buf = PortUtil.getbytes_uint32_le( numEvents );
+                out.write( buf, 0, 4 );
+                count = 0;
+                for( int i = 0; i < numEvents; i++ ){
+                    buf = PortUtil.getbytes_uint32_le( bodyClocksSrc[i] );
+                    out.write( buf, 0, 4 );
+                    out.write( bodyEventsSrc, count, 3 );
+                    count += 3;
+                }
+                // 合成開始コマンド
+                long act_total_samples = mTotalSamples + mTrimRemain;
+                out.write( 0x03 );
+                out.write( 0x08 );
+                buf = PortUtil.getbytes_int64_le( act_total_samples );
+                out.write( buf, 0, 8 );
+                out.flush();
+                long remain = act_total_samples;
                 final int BUFLEN = 1024;
                 double[] l = new double[BUFLEN];
                 double[] r = new double[BUFLEN];
-                // トリムの分をwaveIncomingImplで処理するのではなく，ここでヤッてしまう
-                long offset = mTrimRemain;
-                mTrimRemain = 0;
-                while( remain > 0 && !mAbortRequired ){
-                    int amount = (remain > BUFLEN) ? BUFLEN : (int)remain;
-#if DEBUG
-                    sout.println( "VocaloidWaveGenerator#begi; remain=" + remain + "; offset=" + offset + "; amount=" + amount );
-#endif
-                    wr.read( offset, amount, l, r );
+                InputStream in = process.getInputStream();
+                while( remain > 0 ){
+                    if( mAbortRequired ){
+                        break;
+                    }
+                    int amount = remain > BUFLEN ? BUFLEN : (int)remain;
+                    for( int i = 0; i < amount; i++ ){
+                        int lh = in.read();
+                        int ll = in.read();
+                        int rh = in.read();
+                        int rl = in.read();
+                        short il = (short)(0xffff & ((0xff & lh) << 8) | (0xff & ll));
+                        short ir = (short)(0xffff & ((0xff & rh) << 8) | (0xff & rl));
+                        l[i] = il / 32768.0;
+                        r[i] = ir / 32768.0;
+                    }
                     waveIncomingImpl( l, r, amount );
-                    offset += amount;
                     remain -= amount;
                 }
             }catch( Exception ex ){
                 ex.printStackTrace();
-            }finally{
-                if( wr != null ){
-                    try{
-                        wr.close();
-                    }catch( Exception ex2 ){
-                        ex2.printStackTrace();
-                    }
-                }
-            }
-            
-            // いらなくなったwaveなどを削除
-            try{
-                PortUtil.deleteFile( wave );
-            }catch( Exception ex ){
-            }
-            try{
-                PortUtil.deleteFile( midi_master_file );
-            }catch( Exception ex ){
-            }
-            try{
-                PortUtil.deleteFile( midi_body_file );
-            }catch( Exception ex ){
             }
 #else
             mDriver.startRendering(

@@ -54,12 +54,21 @@ namespace org.kbinani.cadencii {
         const float a1 = 86.7312112f;
         const float a2 = -0.237323499f;
         /// <summary>
+        /// 使用するボカロの最大バージョン．2までリリースされているので今は2
+        /// </summary>
+        const int MAX_VOCALO_VERSION = 2;
+        /// <summary>
         /// Wineでインストールされている（かもしれない）AquesToneのvsti dllのパス．windowsのパス区切り形式で代入すること
         /// </summary>
         public static String WineAquesToneDll = "C:\\Program Files\\Steinberg\\VSTplugins\\AquesTone.dll";
 
 #if ENABLE_VOCALOID
-#if !JAVA
+#if JAVA
+        /// <summary>
+        /// vocaloidrv.exeのプロセス
+        /// </summary>
+        public static Process[] vocaloidrvDaemon = null;
+#else
         public static Vector<VocaloidDriver> vocaloidDriver = new Vector<VocaloidDriver>();
 #endif
 #endif
@@ -89,9 +98,72 @@ namespace org.kbinani.cadencii {
             return new EmptyWaveGenerator();
         }
 
+#if JAVA
+        public static void restartVocaloidrvDaemon()
+        {
+            if( vocaloidrvDaemon == null ){
+                vocaloidrvDaemon = new Process[MAX_VOCALO_VERSION];
+            }
+            for( int i = 0; i < vocaloidrvDaemon.length; i++ ){
+                Process p = vocaloidrvDaemon[i];
+                if( p != null ){
+                    p.destroy();
+                }
+            }
+            Thread t = new Thread( new Runnable(){
+                @Override
+                public void run(){
+                    for( int ver = 1; ver <= vocaloidrvDaemon.length; ver++ ){
+                        // /bin/sh vocaloidrv.sh WINEPREFIX WINETOP vocaloidrv.exe midi_master.bin midi_body.bin TOTAL_SAMPLES
+                        String vocaloidrv_sh =
+                            Utility.normalizePath( fsys.combine( PortUtil.getApplicationStartupPath(), "vocaloidrv.sh" ) );
+                        
+                        String wine_prefix = 
+                            Utility.normalizePath( AppManager.editorConfig.WinePrefix );
+            
+                        String wine_top =
+                            Utility.normalizePath( AppManager.editorConfig.WineTop );
+                        
+                        String vocaloidrv_exe =
+                            Utility.normalizePath( fsys.combine( PortUtil.getApplicationStartupPath(), "vocaloidrv.exe" ) );
+                        
+                        SynthesizerType st = (ver == 1) ? SynthesizerType.VOCALOID1 : SynthesizerType.VOCALOID2;
+                        String dll =
+                            Utility.normalizePath( VocaloSysUtil.getDllPathVsti( st ) );
+            
+                        String[] list = new String[]{
+                            "/bin/sh",
+                            vocaloidrv_sh,
+                            wine_prefix,
+                            wine_top,
+                            vocaloidrv_exe,
+                            dll,
+                            "-e",
+                        };
+#if DEBUG
+                        sout.println( "VocaloidWaveGenerator#begin; list=" );
+                        for( String s : list ){
+                            sout.println( "    " + s );
+                        }
+#endif
+                        try{
+                            vocaloidrvDaemon[ver - 1] = Runtime.getRuntime().exec( list );
+                        }catch( Exception ex ){
+                            ex.printStackTrace();
+                            vocaloidrvDaemon[ver - 1] = null;
+                        }
+                    }
+                }
+            } );
+            t.start();
+        }
+#endif
+
         public static void init() {
 #if ENABLE_VOCALOID
-#if !JAVA
+#if JAVA
+            restartVocaloidrvDaemon();
+#else
             int default_dse_version = VocaloSysUtil.getDefaultDseVersion();
             String editor_dir = VocaloSysUtil.getEditorPath( SynthesizerType.VOCALOID1 );
             String ini = "";
@@ -216,7 +288,7 @@ namespace org.kbinani.cadencii {
                     serr.println( "VSTiProxy#initCor; ex=" + ex );
                 }
             }
-#endif // !JAVA
+#endif // JAVA
 #endif // ENABLE_VOCALOID
 
 #if ENABLE_AQUESTONE
@@ -295,7 +367,14 @@ namespace org.kbinani.cadencii {
 
         public static void terminate() {
 #if ENABLE_VOCALOID
-#if !JAVA
+#if JAVA
+            for( int i = 0; i < vocaloidrvDaemon.length; i++ ){
+                Process p = vocaloidrvDaemon[i];
+                if( p != null ){
+                    p.destroy();
+                }
+            }
+#else
             for ( int i = 0; i < vocaloidDriver.size(); i++ ) {
                 if ( vocaloidDriver.get( i ) != null ) {
                     vocaloidDriver.get( i ).close();

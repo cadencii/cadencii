@@ -12814,6 +12814,9 @@ namespace org.kbinani.cadencii
                 mDialogPreference.setWinePrefix( AppManager.editorConfig.WinePrefix );
                 mDialogPreference.setWineTop( AppManager.editorConfig.WineTop );
 
+                String old_wine_prefix = AppManager.editorConfig.WinePrefix;
+                String old_wine_top = AppManager.editorConfig.WineTop;
+
                 mDialogPreference.setLocation( getFormPreferedLocation( mDialogPreference ) );
 
                 BDialogResult dr = AppManager.showModalDialog( mDialogPreference, this );
@@ -13044,6 +13047,14 @@ namespace org.kbinani.cadencii
                     AppManager.editorConfig.UseUserDefinedAutoVibratoType = mDialogPreference.isUseUserDefinedAutoVibratoType();
                     AppManager.editorConfig.WinePrefix = mDialogPreference.getWinePrefix();
                     AppManager.editorConfig.WineTop = mDialogPreference.getWineTop();
+
+#if JAVA
+                    // WinePrefix, WineTopのどちらかが変わっていたら，ドライバー・デーモンを再起動する
+                    if( !str.compare( old_wine_prefix, AppManager.editorConfig.WinePrefix ) ||
+                        !str.compare( old_wine_top, AppManager.editorConfig.WineTop ) ){
+                        VSTiDllManager.restartVocaloidrvDaemon();
+                    }
+#endif
 
                     AppManager.clearViewingCurve();
                     trackSelector.prepareSingerMenu( VsqFileEx.getTrackRendererKind( AppManager.getVsqFile().Track.get( AppManager.getSelected() ) ) );
