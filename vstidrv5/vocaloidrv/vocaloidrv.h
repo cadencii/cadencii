@@ -13,14 +13,15 @@
  */
 #pragma once
 
-// 標準出力にwaveをバイナリモードで出力する場合に定義
-//#define USE_STDOUT 1
+//#define TEST
 
 #include "../vstidrv.h"
 #include <io.h>
 #include <fcntl.h>
+#include <stdint.h>
 
 void print_help();
+void load_midi_from_file( FILE *file, unsigned char *midi, int *clock, int *buffer_num, int *clock_num );
 
 class vocaloidrv : public vstidrv
 {
@@ -32,8 +33,10 @@ public:
 		mFileName = wave;
         mBuffer = NULL;
         mBufferCount = 0;
+        mProcessed = 0;
+        mTotalSamples = 0;
 #ifdef _DEBUG
-		cout << "vocaloidrv#.ctor; mUseStdOut=" << (mUseStdOut ? "True" : "False") << "; mFileName=" << mFileName << endl;
+		cerr << "vocaloidrv#.ctor; mUseStdOut=" << (mUseStdOut ? "True" : "False") << "; mFileName=" << mFileName << endl;
 #endif
 	};
 
@@ -51,7 +54,7 @@ public:
     /// <param name="sample_rate"></param>
     /// <param name="runner">このドライバを駆動しているRenderingRunnerのオブジェクト</param>
     /// <returns></returns>
-    int startRendering( long total_samples, bool mode_infinite, int sample_rate );
+    uint64_t startRendering( uint64_t total_samples, bool mode_infinite, int sample_rate );
 
     bool isRendering()
     {
@@ -74,6 +77,11 @@ private:
 
     static void merge_events( vector<MidiEvent *> &x0, vector<MidiEvent *> &y0, vector<MidiEvent *> &dst );
 
+public:
+#ifdef TEST
+    static FILE *flog;
+#endif
+
 private:
     static const int TIME_FORMAT = 480;
     static const int DEF_TEMPO = 500000;           // デフォルトのテンポ．
@@ -91,5 +99,7 @@ private:
 	string mFileName;
     DWORD *mBuffer;
     int mBufferCount;
+    uint64_t mProcessed;
+    uint64_t mTotalSamples;
 
 };

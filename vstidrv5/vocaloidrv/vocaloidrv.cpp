@@ -13,6 +13,10 @@
  */
 #include "vocaloidrv.h"
 
+#ifdef TEST
+FILE *vocaloidrv::flog = NULL;
+#endif
+
 vocaloidrv::~vocaloidrv()
 {
 	if( !mUseStdOut && mFile ){
@@ -30,16 +34,27 @@ vocaloidrv::~vocaloidrv()
 	}
 }
 
-bool vocaloidrv::waveIncoming( double *left, double *right, int length )
+bool vocaloidrv::waveIncoming( double *left, double *right, int len )
 {
+    int length = len;
+    if( mTotalSamples <= mProcessed ){
+        return true;
+    }
+    if( mProcessed + length >= mTotalSamples ){
+        length = (int)(mTotalSamples - mProcessed);
+    }
+    bool ret = false;
+    if( length != len ){
+        ret = true;
+    }
 	if( mUseStdOut ){
 		for( int i = 0; i < length; i++ ){
 			WORD l = (WORD)(32768 * left[i]);
 			WORD r = (WORD)(32768 * right[i]);
-			putchar( 0xff & l );
 			putchar( 0xff & (l >> 8) );
-			putchar( 0xff & r );
+			putchar( 0xff & l );
 			putchar( 0xff & (r >> 8) );
+			putchar( 0xff & r );
 		}
 	}else{
 		if( !mFile ){
@@ -90,7 +105,8 @@ bool vocaloidrv::waveIncoming( double *left, double *right, int length )
 
         fwrite( mBuffer, length * sizeof( DWORD ), 1, mFile );
     }
-	return false;
+    mProcessed += length;
+	return ret;
 }
 
 void vocaloidrv::merge_events( vector<MidiEvent *> &x0, vector<MidiEvent *> &y0, vector<MidiEvent *> &ret )
@@ -124,13 +140,15 @@ void vocaloidrv::merge_events( vector<MidiEvent *> &x0, vector<MidiEvent *> &y0,
 /// <param name="sample_rate"></param>
 /// <param name="runner">このドライバを駆動しているRenderingRunnerのオブジェクト</param>
 /// <returns></returns>
-int vocaloidrv::startRendering( long total_samples, bool mode_infinite, int sample_rate )
+uint64_t vocaloidrv::startRendering( uint64_t total_samples, bool mode_infinite, int sample_rate )
 {
 #if DEBUG
     sout.println( "VocaloidDriver#startRendering; entry; total_samples=" + total_samples + "; sample_rate=" + sample_rate );
 #endif
     mIsRendering = true;
     mIsCancelRequired = false;
+    mProcessed = 0;
+    mTotalSamples = total_samples;
     sampleRate = sample_rate;
 
     vector<MidiEvent *> all_events;
@@ -157,9 +175,6 @@ int vocaloidrv::startRendering( long total_samples, bool mode_infinite, int samp
     mman.push_back( buffer_l );
     mman.push_back( buffer_r );
 
-#if TEST
-    org.kbinani.debug.push_log( "    calling initial dispatch..." );
-#endif
 #if DEBUG
     sout.println( "VocaloidDriver#startRendering; sampleRate=" + sampleRate );
 #endif
@@ -173,9 +188,6 @@ int vocaloidrv::startRendering( long total_samples, bool mode_infinite, int samp
     for ( int i = 0; i < 3; i++ ) {
         aEffect->processReplacing( aEffect, NULL, out_buffer, sampleRate );
     }
-#if TEST
-    org.kbinani.debug.push_log( "    ...done" );
-#endif
 
     int delay = 0;
     int duration = 0;
@@ -188,11 +200,8 @@ int vocaloidrv::startRendering( long total_samples, bool mode_infinite, int samp
     int addr_msb = 0, addr_lsb = 0;
     int data_msb = 0, data_lsb = 0;
 
-    int total_processed = 0;
-    int total_processed2 = 0;
-#if TEST
-    org.kbinani.debug.push_log( "    getting dwDelay..." );
-#endif
+    uint64_t total_processed = 0;
+    uint64_t total_processed2 = 0;
     dwDelay = 0;
     int list_size = mEvents1.size();
     for ( int i = 0; i < list_size; i++ ) {
@@ -225,18 +234,12 @@ int vocaloidrv::startRendering( long total_samples, bool mode_infinite, int samp
             break;
         }
     }
-#if TEST
-    org.kbinani.debug.push_log( "    ...done; dwDelay=" + dwDelay );
-#endif
 
     while ( !mIsCancelRequired ) {
         vector<void *> mman2;
         int process_event_count = current_count;
         int nEvents = 0;
 
-#if TEST
-        org.kbinani.debug.push_log( "lpEvents.Count=" + lpEvents.size() );
-#endif
         if ( current_count < 0 ) {
             current_count = 0;
             current = all_events[current_count];
@@ -284,12 +287,7 @@ int vocaloidrv::startRendering( long total_samples, bool mode_infinite, int samp
         }
 
         double msNow = msec_from_clock( dwNow );
-        dwDelta = (int)(msNow / 1000.0 * sampleRate) - total_processed;
-#if TEST
-        org.kbinani.debug.push_log( "dwNow=" + dwNow );
-        org.kbinani.debug.push_log( "dwPrev=" + dwPrev );
-        org.kbinani.debug.push_log( "dwDelta=" + dwDelta );
-#endif
+        dwDelta = (int)((uint64_t)(msNow / 1000.0 * sampleRate) - total_processed);
         VstEvents *pVSTEvents = (VstEvents *)malloc( sizeof( VstEvent ) + nEvents * sizeof( VstEvent* ) );
         mman2.push_back( pVSTEvents );
         pVSTEvents->numEvents = 0;
@@ -330,23 +328,11 @@ int vocaloidrv::startRendering( long total_samples, bool mode_infinite, int samp
             }
             process_event_count++;
         }
-#if TEST
-        org.kbinani.debug.push_log( "calling Dispatch with effProcessEvents..." );
-#endif
         aEffect->dispatcher( aEffect, effProcessEvents, 0, 0, pVSTEvents, 0 );
-#if TEST
-        org.kbinani.debug.push_log( "...done" );
-#endif
 
         while ( dwDelta > 0 && !mIsCancelRequired ) {
             int dwFrames = dwDelta > sampleRate ? sampleRate : dwDelta;
-#if TEST
-            org.kbinani.debug.push_log( "calling ProcessReplacing..." );
-#endif
             aEffect->processReplacing( aEffect, NULL, out_buffer, dwFrames );
-#if TEST
-            org.kbinani.debug.push_log( "...done" );
-#endif
 
             int iOffset = dwDelay - dwDeltaDelay;
             if ( iOffset > (int)dwFrames ) {
@@ -382,18 +368,12 @@ int vocaloidrv::startRendering( long total_samples, bool mode_infinite, int samp
 
     double msLast = msec_from_clock( dwNow );
     dwDelta = (int)(sampleRate * ((double)duration + (double)delay) / 1000.0 + dwDeltaDelay);
-    if ( total_samples - total_processed2 > dwDelta ) {
-        dwDelta = (int)total_samples - total_processed2;
+    if ( (int)(total_samples - total_processed2) > dwDelta ) {
+        dwDelta = (int)(total_samples - total_processed2);
     }
     while ( dwDelta > 0 && !mIsCancelRequired ) {
         int dwFrames = dwDelta > sampleRate ? sampleRate : dwDelta;
-#if TEST
-        org.kbinani.debug.push_log( "calling ProcessReplacing..." );
-#endif
         aEffect->processReplacing( aEffect, NULL, out_buffer, dwFrames );
-#if TEST
-        org.kbinani.debug.push_log( "...done" );
-#endif
 
         for ( int i = 0; i < (int)dwFrames; i++ ) {
             buffer_l[i] = out_buffer[0][i];
@@ -407,10 +387,6 @@ int vocaloidrv::startRendering( long total_samples, bool mode_infinite, int samp
         dwDelta -= dwFrames;
         total_processed += dwFrames;
     }
-
-#if TEST
-    sout.println( "vstidrv::StartRendering; total_processed=" + total_processed );
-#endif
 
     if ( mode_infinite ) {
         for ( int i = 0; i < sampleRate; i++ ) {
@@ -456,7 +432,7 @@ int vocaloidrv::startRendering( long total_samples, bool mode_infinite, int samp
     mTempoList.clear();
     mIsCancelRequired = false;
 
-    return 1;
+    return mProcessed;
 }
 
 bool vocaloidrv::sendEvent( unsigned char *midi_data, int *clock_data, int num_data, int targetTrack )

@@ -344,9 +344,6 @@ public:
 
     virtual void close()
     {
-#if TEST
-        sout.println( "vstidrv#close" );
-#endif
         if ( aEffect != NULL ) {
 			aEffect->dispatcher( aEffect, effClose, 0, 0, NULL, 0.0f );
         }
