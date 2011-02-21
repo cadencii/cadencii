@@ -13,7 +13,7 @@
  */
 #pragma once
 
-//#define TEST
+#define TEST
 
 #include "../vstidrv.h"
 #include <io.h>
@@ -64,6 +64,29 @@ public:
         mIsStopRequested = true;
     };
 
+#ifdef TEST
+    static void println( const char *s )
+    {
+        WaitForSingleObject( flogMutex, INFINITE );
+        fprintf( flog, "%s\n", s );
+        fflush( flog );
+        ReleaseMutex( flogMutex );
+    };
+
+    static void openLog( const char *file )
+    {
+        flogMutex = CreateMutex( NULL, FALSE, NULL );
+        flog = fopen( file, "w" );
+    };
+
+    static void closeLog()
+    {
+        WaitForSingleObject( flogMutex, INFINITE );
+        fclose( flog );
+        ReleaseMutex( flogMutex );
+        CloseHandle( flogMutex );
+    };
+#endif
 
 private:
     /// <summary>
@@ -77,9 +100,6 @@ private:
     static void merge_events( vector<MidiEvent *> &x0, vector<MidiEvent *> &y0, vector<MidiEvent *> &dst );
 
 public:
-#ifdef TEST
-    static FILE *flog;
-#endif
 
 private:
     static const int TIME_FORMAT = 480;
@@ -100,5 +120,9 @@ private:
     int mBufferCount;
     uint64_t mProcessed;
     uint64_t mTotalSamples;
+#ifdef TEST
+    static HANDLE flogMutex;
+    static FILE *flog;
+#endif
 
 };

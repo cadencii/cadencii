@@ -15,6 +15,7 @@
 
 #ifdef TEST
 FILE *vocaloidrv::flog = NULL;
+HANDLE vocaloidrv::flogMutex = NULL;
 #endif
 
 vocaloidrv::~vocaloidrv()
