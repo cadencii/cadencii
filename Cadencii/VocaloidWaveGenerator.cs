@@ -194,9 +194,6 @@ namespace org.kbinani.cadencii
         public boolean waveIncomingImpl( double[] l, double[] r, int length )
         {
             int offset = 0;
-#if DEBUG
-            sout.println( "VocaloidWaveGenerator#waveIncomingImpl; length=" + length + "; mTrimRemain=" + mTrimRemain );
-#endif
             if ( mTrimRemain > 0 ) {
                 // トリムしなくちゃいけない分がまだ残っている場合。トリム処理を行う。
                 if ( length <= mTrimRemain ) {
@@ -211,9 +208,6 @@ namespace org.kbinani.cadencii
                 }
             }
             int remain = length - offset;
-#if DEBUG
-            sout.println( "VocaloidWaveGenerator#waveIncomingImpl; remain=" + remain );
-#endif
             while ( remain > 0 ) {
                 if ( mAbortRequired ) {
                     return true;
@@ -224,16 +218,11 @@ namespace org.kbinani.cadencii
                     mBufferR[i] = r[i + offset];
                 }
                 while ( RateConvertContext.convert( mContext, mBufferL, mBufferR, amount ) ) {
-#if DEBUG
-                    sout.println( "VocaloidWaveGenerator#waveIncomingImpl; mContext.length=" + mContext.length );
-#endif
                     mReceiver.push( mContext.bufferLeft, mContext.bufferRight, mContext.length );
                     mTotalAppend += mContext.length;
                 }
-                //mReceiver.push( mBufferL, mBufferR, amount );
                 remain -= amount;
                 offset += amount;
-                //mTotalAppend += amount;
             }
             return false;
         }
@@ -331,17 +320,30 @@ namespace org.kbinani.cadencii
             // ドライバーに渡すイベントを準備
             // まず、マスタートラックに渡すテンポ変更イベントを作成
             int tempo_count = split.TempoTable.size();
+//#if JAVA
+//            int[] masterEventsSrc = new int[tempo_count * 3];
+//#else
             byte[] masterEventsSrc = new byte[tempo_count * 3];
+//#endif
             int[] masterClocksSrc = new int[tempo_count];
             int count = -3;
             for ( int i = 0; i < tempo_count; i++ ) {
                 count += 3;
                 TempoTableEntry itemi = split.TempoTable.get( i );
                 masterClocksSrc[i] = itemi.Clock;
+//#if JAVA
+/*
+                int b0 = 0xff & (itemi.Tempo >>> 16);
+                long u0 = (long)(itemi.Tempo - (b0 << 16));
+                int b1 = 0xff & (u0 >>> 8);
+                int b2 = 0xff & (u0 - (u0 << 8));
+*/
+//#else
                 byte b0 = (byte)(0xff & (itemi.Tempo >> 16));
                 long u0 = (long)(itemi.Tempo - (b0 << 16));
                 byte b1 = (byte)(0xff & (u0 >> 8));
                 byte b2 = (byte)(0xff & (u0 - (u0 << 8)));
+//#endif
                 masterEventsSrc[count] = b0;
                 masterEventsSrc[count + 1] = b1;
                 masterEventsSrc[count + 2] = b2;
@@ -353,7 +355,11 @@ namespace org.kbinani.cadencii
 
             // 次に、合成対象トラックの音符イベントを作成
             int numEvents = nrpn.Length;
+//#if JAVA
+//            int[] bodyEventsSrc = new int[numEvents * 3];
+//#else
             byte[] bodyEventsSrc = new byte[numEvents * 3];
+//#endif
             int[] bodyClocksSrc = new int[numEvents];
             count = -3;
             int last_clock = 0;
@@ -361,8 +367,8 @@ namespace org.kbinani.cadencii
                 int c = nrpn[i].getClock();
                 count += 3;
                 bodyEventsSrc[count] = (byte)0xb0;
-                bodyEventsSrc[count + 1] = nrpn[i].getParameter();
-                bodyEventsSrc[count + 2] = nrpn[i].Value;
+                bodyEventsSrc[count + 1] = (byte)(0xff & nrpn[i].getParameter());
+                bodyEventsSrc[count + 2] = (byte)(0xff & nrpn[i].Value);
                 bodyClocksSrc[i] = c;
                 last_clock = c;
             }
@@ -378,20 +384,68 @@ namespace org.kbinani.cadencii
             try{
                 Process process = VSTiDllManager.vocaloidrvDaemon[ver - 1];
                 OutputStream out = process.getOutputStream();
+                InputStream in = process.getInputStream();
+                // もしかしたら前回レンダリング時のが残っているかもしれないので，取り除く
+                int avail = in.available();
+#if DEBUG
+                sout.println( "VocaloidWaveGenerator#begin; read trailing data of stdout; avail=" + avail );
+#endif
+                for( int i = 0; i < avail; i++ ){
+                    in.read();
+                }
                 // コマンドを送信
                 // マスタートラック
+#if DEBUG
+                sout.println( "VocaloidWaveGenerator#begin; send master" );
+#endif
                 out.write( 0x01 );
                 out.write( 0x04 );
                 byte[] buf = PortUtil.getbytes_uint32_le( tempo_count );
                 out.write( buf, 0, 4 );
                 count = 0;
+#if DEBUG
+                int cnt = 0;
+#endif
                 for( int i = 0; i < tempo_count; i++ ){
                     buf = PortUtil.getbytes_uint32_le( masterClocksSrc[i] );
                     out.write( buf, 0, 4 );
                     out.write( masterEventsSrc, count, 3 );
+#if DEBUG
+                    for( int j = 0; j < buf.length; j++ ){
+                        if( buf[j] == -1 ){
+                            sout.println( "VocaloidWaveGenerator#begin; byte value become -1 at " + cnt );
+                        }
+                        cnt++;
+                    }
+                    for( int j = count; j < count + 3; j++ ){
+                        if( masterEventsSrc[j] == -1 ){
+                            sout.println( "VocaloidWaveGenerator#begin; byte value become -1 at " + cnt );
+                        }
+                        cnt++;
+                    }
+#endif
+                    out.flush();
+                    /*// 戻りの１バイトを読み込む
+#if DEBUG
+                    sout.println( "VocaloidWaveGenerator#begin; try reading return byte..." );
+#endif
+                    while( in.available() < 1 && !mAbortRequired ){
+                        Thread.sleep( 10 );
+                    }
+                    if( mAbortRequired ){
+                        break;
+                    }
+                    in.read();
+#if DEBUG
+                    sout.println( "VocaloidWaveGenerator#begin; return byte ok" );
+#endif
+                    //*/
                     count += 3;
                 }
                 // 本体トラック
+#if DEBUG
+                sout.println( "VocaloidWaveGenerator#begin; send body" );
+#endif
                 out.write( 0x02 );
                 out.write( 0x04 );
                 buf = PortUtil.getbytes_uint32_le( numEvents );
@@ -401,9 +455,28 @@ namespace org.kbinani.cadencii
                     buf = PortUtil.getbytes_uint32_le( bodyClocksSrc[i] );
                     out.write( buf, 0, 4 );
                     out.write( bodyEventsSrc, count, 3 );
+                    out.flush();
+                    /*// 戻りの１バイトを読み込む
+#if DEBUG
+                    sout.println( "VocaloidWaveGenerator#begin; try reading return byte..." );
+#endif
+                    while( in.available() < 1 && !mAbortRequired ){
+                        Thread.sleep( 10 );
+                    }
+                    if( mAbortRequired ){
+                        break;
+                    }
+                    in.read();
+#if DEBUG
+                    sout.println( "VocaloidWaveGenerator#begin; return byte ok" );
+#endif
+                    //*/
                     count += 3;
                 }
                 // 合成開始コマンド
+#if DEBUG
+                sout.println( "VocaloidWaveGenerator#begin; send synth command" );
+#endif
                 long act_total_samples = mTotalSamples + mTrimRemain;
                 out.write( 0x03 );
                 out.write( 0x08 );
@@ -414,13 +487,19 @@ namespace org.kbinani.cadencii
                 final int BUFLEN = 1024;
                 double[] l = new double[BUFLEN];
                 double[] r = new double[BUFLEN];
-                InputStream in = process.getInputStream();
                 while( remain > 0 ){
                     if( mAbortRequired ){
                         break;
                     }
                     int amount = remain > BUFLEN ? BUFLEN : (int)remain;
                     for( int i = 0; i < amount; i++ ){
+                        // 4バイト以上のデータが読み込めるようになるまで待機
+                        while( in.available() < 4 && !mAbortRequired ){
+                            Thread.sleep( 100 );
+                        }
+                        if( mAbortRequired ){
+                            break;
+                        }
                         int lh = in.read();
                         int ll = in.read();
                         int rh = in.read();
@@ -430,8 +509,28 @@ namespace org.kbinani.cadencii
                         l[i] = il / 32768.0;
                         r[i] = ir / 32768.0;
                     }
+                    if( mAbortRequired ){
+                        break;
+                    }
                     waveIncomingImpl( l, r, amount );
                     remain -= amount;
+                }
+
+                if( mAbortRequired ){
+                    // デーモンに合成処理の停止を要求
+                    // draft仕様
+                    out.write( 0x04 );
+                    out.write( 0x00 );
+                    out.flush();//*/
+                }
+                
+                // 途中でアボートした場合に備え，取り残しのstdoutを読み取っておく
+                remain = in.available();
+#if DEBUG
+                sout.println( "VocaloidWaveGenerator#begin; read trailing stdout; remain=" + remain );
+#endif
+                for( long i = 0; i < remain; i++ ){
+                    in.read();
                 }
             }catch( Exception ex ){
                 ex.printStackTrace();

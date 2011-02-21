@@ -1581,6 +1581,7 @@ public class Preference extends BDialog {
 			GridBagConstraints gridBagConstraints83 = new GridBagConstraints();
 			gridBagConstraints83.gridx = 0;
 			gridBagConstraints83.insets = new Insets(3, 12, 3, 0);
+			gridBagConstraints83.anchor = GridBagConstraints.WEST;
 			gridBagConstraints83.gridy = 1;
 			lblMouseHoverTime = new BLabel();
 			lblMouseHoverTime.setText("Waiting Time for Preview");

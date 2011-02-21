@@ -22,7 +22,7 @@ vocaloidrv::~vocaloidrv()
 	if( !mUseStdOut && mFile ){
 		long pos = ftell( mFile );
 		fseek( mFile, 0x4, SEEK_SET );
-		unsigned int len = pos - 0x4 - 0x04;
+		unsigned int len = pos - 0x04 - 0x04;
 		fwrite( &len, sizeof( unsigned int ), 1, mFile );
 		fseek( mFile, 0x28, SEEK_SET );
 		len = pos - 0x28 - 0x04;
@@ -34,7 +34,7 @@ vocaloidrv::~vocaloidrv()
 	}
 }
 
-bool vocaloidrv::waveIncoming( double *left, double *right, int len )
+bool vocaloidrv::wave_incoming( double *left, double *right, int len )
 {
     int length = len;
     if( mTotalSamples <= mProcessed ){
@@ -146,7 +146,7 @@ uint64_t vocaloidrv::startRendering( uint64_t total_samples, bool mode_infinite,
     sout.println( "VocaloidDriver#startRendering; entry; total_samples=" + total_samples + "; sample_rate=" + sample_rate );
 #endif
     mIsRendering = true;
-    mIsCancelRequired = false;
+    mIsStopRequested = false;
     mProcessed = 0;
     mTotalSamples = total_samples;
     sampleRate = sample_rate;
@@ -235,7 +235,7 @@ uint64_t vocaloidrv::startRendering( uint64_t total_samples, bool mode_infinite,
         }
     }
 
-    while ( !mIsCancelRequired ) {
+    while ( !mIsStopRequested ) {
         vector<void *> mman2;
         int process_event_count = current_count;
         int nEvents = 0;
@@ -330,7 +330,7 @@ uint64_t vocaloidrv::startRendering( uint64_t total_samples, bool mode_infinite,
         }
         aEffect->dispatcher( aEffect, effProcessEvents, 0, 0, pVSTEvents, 0 );
 
-        while ( dwDelta > 0 && !mIsCancelRequired ) {
+        while ( dwDelta > 0 && !mIsStopRequested ) {
             int dwFrames = dwDelta > sampleRate ? sampleRate : dwDelta;
             aEffect->processReplacing( aEffect, NULL, out_buffer, dwFrames );
 
@@ -345,8 +345,8 @@ uint64_t vocaloidrv::startRendering( uint64_t total_samples, bool mode_infinite,
                     buffer_r[i] = out_buffer[1][i];
                 }
                 total_processed2 += dwFrames;
-                if ( waveIncoming( buffer_l, buffer_r, dwFrames ) ) {
-                    mIsCancelRequired = true;
+                if ( wave_incoming( buffer_l, buffer_r, dwFrames ) ) {
+                    mIsStopRequested = true;
                 }
             } else {
                 dwDeltaDelay += iOffset;
@@ -371,7 +371,7 @@ uint64_t vocaloidrv::startRendering( uint64_t total_samples, bool mode_infinite,
     if ( (int)(total_samples - total_processed2) > dwDelta ) {
         dwDelta = (int)(total_samples - total_processed2);
     }
-    while ( dwDelta > 0 && !mIsCancelRequired ) {
+    while ( dwDelta > 0 && !mIsStopRequested ) {
         int dwFrames = dwDelta > sampleRate ? sampleRate : dwDelta;
         aEffect->processReplacing( aEffect, NULL, out_buffer, dwFrames );
 
@@ -380,8 +380,8 @@ uint64_t vocaloidrv::startRendering( uint64_t total_samples, bool mode_infinite,
             buffer_r[i] = out_buffer[1][i];
         }
         total_processed2 += dwFrames;
-        if ( waveIncoming( buffer_l, buffer_r, dwFrames ) ) {
-            mIsCancelRequired = true;
+        if ( wave_incoming( buffer_l, buffer_r, dwFrames ) ) {
+            mIsStopRequested = true;
         }
 
         dwDelta -= dwFrames;
@@ -393,10 +393,10 @@ uint64_t vocaloidrv::startRendering( uint64_t total_samples, bool mode_infinite,
             buffer_l[i] = 0.0;
             buffer_r[i] = 0.0;
         }
-        while ( !mIsCancelRequired ) {
+        while ( !mIsStopRequested ) {
             total_processed2 += sampleRate;
-            if ( waveIncoming( buffer_l, buffer_r, sampleRate ) ) {
-                mIsCancelRequired = true;
+            if ( wave_incoming( buffer_l, buffer_r, sampleRate ) ) {
+                mIsStopRequested = true;
             }
         }
     }
@@ -430,7 +430,7 @@ uint64_t vocaloidrv::startRendering( uint64_t total_samples, bool mode_infinite,
         if( ti ) delete ti;
     }
     mTempoList.clear();
-    mIsCancelRequired = false;
+    mIsStopRequested = false;
 
     return mProcessed;
 }
@@ -570,7 +570,7 @@ bool vocaloidrv::open( int block_size, int sample_rate )
     }
     mTempoList.clear();
     //g_numTempoList = 0;
-    mIsCancelRequired = false;
+    mIsStopRequested = false;
     for( int i = 0; i < mEvents0.size(); i++ ){
         MidiEvent *me = mEvents0[i];
         if( me ) delete me;

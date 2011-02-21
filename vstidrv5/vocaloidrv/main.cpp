@@ -12,6 +12,62 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #include "vocaloidrv.h"
+#include <process.h>
+
+void print_help();
+void load_midi_from_file( FILE *file, unsigned char *midi, int *clock, int *buffer_num, int *clock_num );
+// 標準入力を監視するスレッド用
+unsigned int __stdcall monitor_stdin_proc( void *args );
+
+// stdinからの読み込みをどのスレッドが行うかを決めるための同期オブジェクト
+HANDLE gSyncRoot = NULL;
+// 合成処理中にstdinのモニターを行うスレッド
+HANDLE gThread = NULL;
+bool gAbortMonitorRequested = false;
+
+unsigned int __stdcall monitor_stdin_proc( void *args )
+{
+	vocaloidrv *parent = (vocaloidrv *)args;
+	while( !gAbortMonitorRequested ){
+        // mIsRenderingになるのを待機
+        if( !parent->isRendering() ){
+            Sleep( 100 );
+            continue;
+        }
+        // レンダリング中なので，stdinからの入力が無いかどうか調べる
+#ifdef TEST
+        fprintf( parent->flog, "::monitor_stdin_proc; waitForSingleObject...\n" );
+#endif
+        WaitForSingleObject( gSyncRoot, INFINITE );
+#ifdef TEST
+        fprintf( parent->flog, "::monitor_stdin_proc; lock obtained\n" );
+#endif
+        while( !gAbortMonitorRequested ){
+            if( fgetc( stdin ) == 0x04 ){
+                // コマンドのサイズを表すのを1バイト読み込む
+                int c = fgetc( stdin );
+                while( c == EOF && !gAbortMonitorRequested ){
+                    Sleep( 100 );
+                    c = fgetc( stdin );
+                }
+                // 停止要求を発出
+                parent->requestStopRendering();
+                // 停止要求が実行完了するまで待機
+                while( !gAbortMonitorRequested && parent->isRendering() ){
+                    Sleep( 100 );
+                }
+                break;
+            }else{
+                Sleep( 100 );
+            }
+        }
+        ReleaseMutex( gSyncRoot );
+#ifdef TEST
+        fprintf( parent->flog, "::monitor_stdin_proc; lock released\n" );
+#endif
+    }
+	return 0;
+}
 
 uint64_t read_uint64_le( FILE *fp )
 {
@@ -120,12 +176,14 @@ int main( int argc, char* argv[] )
         print_help();
         return -1;
     }
-	bool mode_e = false;
+
+    bool mode_e = false;
 	string s = argv[2];
 	if( s.compare( "-e" ) == 0 ){
 		mode_e = true;
 	}
-    string dll_path = argv[1];// "C:\\Program Files\\Steinberg\\VSTplugins\\VOCALOID2\\VOCALOID2.dll";//argv[1];
+
+    string dll_path = argv[1];
 	string midi_file[2] = { "", "" };
 	long total_samples = 0;
     int sample_rate = 44100;
@@ -178,6 +236,16 @@ int main( int argc, char* argv[] )
 		//     コマンドバイトの長さ: 8 byte
 		//     コマンド: レンダリングするサンプル数をuint64_tで指示
 		//     コマンド依存のデータ: 無し
+        // 0x04  レンダリングの停止要求
+        //     コマンドバイトの長さ: 0 byte
+        //     コマンド: 無し
+        //     コマンド依存のデータ: 無し
+
+        gSyntRoot = CreateMutex( NULL, FALSE, NULL );
+        // スレッドが始まる前にロックを取得
+        WaitForSingleObject( gSyncRoot, INFINITE );
+        gThread = (HANDLE)_beginthreadex( NULL, 0, monitor_stdin_proc, &drv, 0, NULL );
+        
 		while( true ){
 			int kind = fgetc( stdin );
             if( kind == EOF ){
@@ -186,22 +254,23 @@ int main( int argc, char* argv[] )
             }
             int len = fgetc( stdin );
             while( len == EOF ){
+                Sleep( 100 );
                 len = fgetc( stdin );
             }
 #ifdef TEST
-            fprintf( vocaloidrv::flog, "kind=%d; len=%d\n", kind, len );
+            fprintf( vocaloidrv::flog, "::main; kind=%d; len=%d\n", kind, len );
 #endif
             switch( kind ){
 				case 0x01:
 				case 0x02:{
                     int size = read_uint32_le( stdin );
 #ifdef TEST
-                    fprintf( vocaloidrv::flog, "before; size=%d\n", size );
+                    fprintf( vocaloidrv::flog, "::main; before; size=%d\n", size );
                     fflush( vocaloidrv::flog );
 #endif
                     load_midi_from_file( stdin, dat, clocks, &clocks_length, &size );
 #ifdef TEST
-                    fprintf( vocaloidrv::flog, "after; size=%d; clocks_length=%d\n", size, clocks_length );
+                    fprintf( vocaloidrv::flog, "::main; after; size=%d; clocks_length=%d\n", size, clocks_length );
                     fflush( vocaloidrv::flog );
 #endif
                     drv.sendEvent( dat, clocks, size, kind - 1 );
@@ -210,13 +279,24 @@ int main( int argc, char* argv[] )
                 case 0x03:{
                     uint64_t total_samples = read_uint64_le( stdin );
 #ifdef TEST
-                    fprintf( vocaloidrv::flog, "total_samples=%llu\n", total_samples );
+                    fprintf( vocaloidrv::flog, "::main; total_samples=%llu\n", total_samples );
                     fflush( vocaloidrv::flog );
 #endif
+                    // stdinのロックを解除
+#ifdef TEST
+                    fprintf( vocaloidrv::flog, "::main; lock released\n" );
+#endif
+                    ReleaseMutex( gSyncRoot );
                     uint64_t ret = drv.startRendering( total_samples, false, sample_rate );
                     fflush( stdout );
+                    // stdinのロックを取得
 #ifdef TEST
-                    fprintf( vocaloidrv::flog, "rendering done; ret=%llu\n", ret );
+                    fprintf( vocaloidrv::flog, "::main; waitForSingleObject...\n" );
+#endif
+                    WaitForSIngleObject( gSyncRoot, INFINITE );
+#ifdef TEST
+                    fprintf( vocaloidrv::flog, "::main; lock obtained\n" );
+                    fprintf( vocaloidrv::flog, "::main; rendering done; ret=%llu\n", ret );
                     fflush( vocaloidrv::flog );
 #endif
                     break;
@@ -251,7 +331,8 @@ void print_help()
 	cout << "    vocaloidrv [vsti path] [midi master] [midi body] [total samples] {output wave}" << endl;
 	cout << "Usage2:" << endl;
 	cout << "    vocaloidrv [vsti path] -e" << endl;
-	cout << "    (input midi data from stdin, output wave to stdout)" << endl;
+	cout << "    Option -e means daemon mode." << endl;
+    cout << "    (input midi data from stdin, output wave to stdout)" << endl;
 }
 
 VstIntPtr AudioMaster( AEffect* effect, VstInt32 opcode, VstInt32 index, VstIntPtr value, void* ptr, float opt )

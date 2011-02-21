@@ -20,9 +20,6 @@
 #include <fcntl.h>
 #include <stdint.h>
 
-void print_help();
-void load_midi_from_file( FILE *file, unsigned char *midi, int *clock, int *buffer_num, int *clock_num );
-
 class vocaloidrv : public vstidrv
 {
 public:
@@ -35,6 +32,7 @@ public:
         mBufferCount = 0;
         mProcessed = 0;
         mTotalSamples = 0;
+		mIsStopRequested = false;
 #ifdef _DEBUG
 		cerr << "vocaloidrv#.ctor; mUseStdOut=" << (mUseStdOut ? "True" : "False") << "; mFileName=" << mFileName << endl;
 #endif
@@ -44,7 +42,7 @@ public:
 
     bool open( int block_size, int sample_rate );
 
-    bool vocaloidrv::sendEvent( unsigned char *midi_data, int *clock_data, int num_data, int targetTrack );
+    bool sendEvent( unsigned char *midi_data, int *clock_data, int num_data, int targetTrack );
 
     /// <summary>
     /// 
@@ -61,10 +59,11 @@ public:
         return mIsRendering;
     };
 
-    void abortRendering()
+    void requestStopRendering()
     {
-        mIsCancelRequired = true;
+        mIsStopRequested = true;
     };
+
 
 private:
     /// <summary>
@@ -73,7 +72,7 @@ private:
     double msec_from_clock( int timeCode );
 
     // 波形の出力処理を行う．戻り値がtrueの場合，波形処理中に中断要求が行われたことを表す
-    bool waveIncoming( double *left, double *right, int length );
+    bool wave_incoming( double *left, double *right, int length );
 
     static void merge_events( vector<MidiEvent *> &x0, vector<MidiEvent *> &y0, vector<MidiEvent *> &dst );
 
@@ -89,7 +88,7 @@ private:
     vector<MidiEvent *> mEvents0;
     vector<MidiEvent *> mEvents1;
     vector<TempoInfo *> mTempoList;
-    bool mIsCancelRequired;
+    bool mIsStopRequested;
     /// <summary>
     /// StartRenderingメソッドが回っている最中にtrue
     /// </summary>

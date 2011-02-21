@@ -3609,9 +3609,7 @@ namespace org.kbinani.cadencii
 #if JAVA
             // getvocaloidinfo.exeを呼ぶ
             String tmp = PortUtil.createTempFile();
-#if DEBUG
-            tmp = fsys.combine( PortUtil.getApplicationStartupPath(), "vocaloidinfo.txt" );
-#endif
+            String dev_null = PortUtil.createTempFile();
 #if JAVA_MAC
             // wine経由でユーティリティを呼ぶ
             String vocaloidrv_sh = fsys.combine( PortUtil.getApplicationStartupPath(), "vocaloidrv.sh" );
@@ -3626,7 +3624,15 @@ namespace org.kbinani.cadencii
             sout.println( "AppManager#init; isDirectoryExists(prefix)=" + PortUtil.isDirectoryExists( prefix ) );
 #endif
             try{
-                Process p = Runtime.getRuntime().exec( new String[]{ "/bin/sh", vocaloidrv_sh, prefix, winetop, getvocaloidinfo, tmp } );
+                Process p = Runtime.getRuntime().exec( 
+                    new String[]{ 
+                        "/bin/sh",
+                        vocaloidrv_sh,
+                        prefix,
+                        winetop,
+                        getvocaloidinfo,
+                        tmp,
+                     } );
                 while( true ){
                     try{
                         p.exitValue();
@@ -3635,6 +3641,7 @@ namespace org.kbinani.cadencii
                     }
                     break;
                 }
+                PortUtil.deleteFile( dev_null );
             }catch( Exception ex ){
                 ex.printStackTrace();
             }

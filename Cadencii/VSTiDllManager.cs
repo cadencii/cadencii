@@ -130,7 +130,7 @@ namespace org.kbinani.cadencii {
                         SynthesizerType st = (ver == 1) ? SynthesizerType.VOCALOID1 : SynthesizerType.VOCALOID2;
                         String dll =
                             Utility.normalizePath( VocaloSysUtil.getDllPathVsti( st ) );
-            
+
                         String[] list = new String[]{
                             "/bin/sh",
                             vocaloidrv_sh,
@@ -147,7 +147,31 @@ namespace org.kbinani.cadencii {
                         }
 #endif
                         try{
-                            vocaloidrvDaemon[ver - 1] = Runtime.getRuntime().exec( list );
+                            Process p = Runtime.getRuntime().exec( list );;
+                            vocaloidrvDaemon[ver - 1] = p;
+                            final InputStream iserr = p.getErrorStream(); 
+                            Thread t2 = new Thread( new Runnable(){
+                                @Override
+                                public void run()
+                                {
+                                    try{
+                                        final int BUFLEN = 1024;
+                                        byte[] buffer = new byte[BUFLEN];
+                                        while( true ){
+                                            while( iserr.available() < BUFLEN ){
+                                                Thread.sleep( 100 );
+                                            }
+                                            int i = iserr.read( buffer );
+                                            if( i < BUFLEN ){
+                                                break;
+                                            }
+                                        }
+                                    }catch( Exception ex2 ){
+                                        ex2.printStackTrace();
+                                    }
+                                }
+                            } );
+                            t2.start(); //*/
                         }catch( Exception ex ){
                             ex.printStackTrace();
                             vocaloidrvDaemon[ver - 1] = null;
