@@ -65,18 +65,12 @@ public:
     };
 
 #ifdef TEST
-    static void println( const char *s )
+    static void println( string s )
     {
         WaitForSingleObject( flogMutex, INFINITE );
-        fprintf( flog, "%s\n", s );
+        fprintf( flog, "%s\n", s.c_str() );
         fflush( flog );
         ReleaseMutex( flogMutex );
-    };
-
-    static void openLog( const char *file )
-    {
-        flogMutex = CreateMutex( NULL, FALSE, NULL );
-        flog = fopen( file, "w" );
     };
 
     static void closeLog()
@@ -84,7 +78,15 @@ public:
         WaitForSingleObject( flogMutex, INFINITE );
         fclose( flog );
         ReleaseMutex( flogMutex );
-        CloseHandle( flogMutex );
+        flog = NULL;
+    };
+
+    static void openLog( string file )
+    {
+        flogMutex = CreateMutex( NULL, FALSE, NULL );
+        WaitForSingleObject( flogMutex, INFINITE );
+        flog = fopen( file.c_str(), "w" );
+        ReleaseMutex( flogMutex );
     };
 #endif
 
@@ -98,8 +100,6 @@ private:
     bool wave_incoming( double *left, double *right, int length );
 
     static void merge_events( vector<MidiEvent *> &x0, vector<MidiEvent *> &y0, vector<MidiEvent *> &dst );
-
-public:
 
 private:
     static const int TIME_FORMAT = 480;
@@ -121,8 +121,8 @@ private:
     uint64_t mProcessed;
     uint64_t mTotalSamples;
 #ifdef TEST
-    static HANDLE flogMutex;
     static FILE *flog;
+    static HANDLE flogMutex;
 #endif
 
 };

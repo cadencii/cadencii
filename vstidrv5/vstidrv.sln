@@ -5,6 +5,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vocaloidrv", "vocaloidrv\vo
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "getvocaloidinfo", "getvocaloidinfo\getvocaloidinfo.vcxproj", "{52944DCD-C4E8-44A9-AD6D-812213DC537C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "createtempdir", "createtempdir\createtempdir.vcxproj", "{C5767540-0229-44C7-A07A-8700D271F5AD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -19,6 +21,10 @@ Global
 		{52944DCD-C4E8-44A9-AD6D-812213DC537C}.Debug|Win32.Build.0 = Debug|Win32
 		{52944DCD-C4E8-44A9-AD6D-812213DC537C}.Release|Win32.ActiveCfg = Release|Win32
 		{52944DCD-C4E8-44A9-AD6D-812213DC537C}.Release|Win32.Build.0 = Release|Win32
+		{C5767540-0229-44C7-A07A-8700D271F5AD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C5767540-0229-44C7-A07A-8700D271F5AD}.Debug|Win32.Build.0 = Debug|Win32
+		{C5767540-0229-44C7-A07A-8700D271F5AD}.Release|Win32.ActiveCfg = Release|Win32
+		{C5767540-0229-44C7-A07A-8700D271F5AD}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

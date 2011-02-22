@@ -14,94 +14,59 @@
 #include "vocaloidrv.h"
 #include <process.h>
 #include <conio.h>
+#include <shlwapi.h>
+
+#pragma comment(lib, "shlwapi.lib")
 
 void print_help();
 void load_midi_from_file( FILE *file, unsigned char *midi, int *clock, int *buffer_num, int *clock_num );
-// 標準入力を監視するスレッド用
-unsigned int __stdcall monitor_stdin_proc( void *args );
+// モニター用のディレクトリを監視するスレッド用
+unsigned int __stdcall monitor_dir( void *args );
 
-// stdinからの読み込みをどのスレッドが行うかを決めるための同期オブジェクト
-HANDLE gSyncRoot = NULL;
-// 合成処理中にstdinのモニターを行うスレッド
+// 合成処理中にモニター用ディレクトリのモニターを行うスレッド
 HANDLE gThread = NULL;
 bool gAbortMonitorRequested = false;
+string gMonitorDir = "";
 
-unsigned int __stdcall monitor_stdin_proc( void *args )
+unsigned int __stdcall monitor_dir( void *args )
 {
 	vocaloidrv *parent = (vocaloidrv *)args;
+    string stop = gMonitorDir + "\\stop";
 	while( !gAbortMonitorRequested ){
         // mIsRenderingになるのを待機
         if( !parent->isRendering() ){
             Sleep( 100 );
             continue;
         }
-        // レンダリング中なので，stdinからの入力が無いかどうか調べる
 #ifdef TEST
-        vocaloidrv::println( "::monitor_stdin_proc; waitForSingleObject..." );
+        vocaloidrv::println( "::monitor_dir; driver state changed to 'Rendering'" );
 #endif
-        WaitForSingleObject( gSyncRoot, INFINITE );
-#ifdef TEST
-        vocaloidrv::println( "::monitor_stdin_proc; lock obtained" );
-        char buffer[512];
-#endif
+        // レンダリング中なので，モニターディレクトリに停止指示を示すファイル「stop」がないかどうかを調べる
         while( !gAbortMonitorRequested && parent->isRendering() ){
+            if( PathFileExists( stop.c_str() ) ){
 #ifdef TEST
-            vocaloidrv::println( "::monitor_stdin_proc; calling fgetc..." );
+                vocaloidrv::println( "::monitor_dir; calling requestStopRendering..." );
 #endif
-            bool rendering = parent->isRendering();
-            while( !_kbhit() && rendering ){
-                Sleep( 100 );
-                rendering = parent->isRendering();
-            }
-            if( rendering ){
-                break;
-            }
-            int c0 = _getch();
-            if( c0 == 0x04 ){
-#ifdef TEST
-                vocaloidrv::println( "::monitor_stdin_proc; fgetc returned with 0x04" );
-#endif
-                // コマンドのサイズを表すのを1バイト読み込む
-                rendering = parent->isRendering();
-                while( !_kbhit() && rendering ){
-                    Sleep( 100 );
-                    rendering = parent->isRendering();
-                }
-                if( rendering ){
-                    break;
-                }
-                _getch();
                 // 停止要求を発出
                 parent->requestStopRendering();
 #ifdef TEST
-                vocaloidrv::println( "::monitor_stdin_proc; requestStopRendering has done" );
+                vocaloidrv::println( "::monitor_dir; calling requestStopRendering...done" );
 #endif
                 // 停止要求が実行完了するまで待機
-                while( !gAbortMonitorRequested && parent->isRendering() ){
 #ifdef TEST
-                    vocaloidrv::println( "::monitor_stdin_proc; wait until request executed" );
+                vocaloidrv::println( "::monitor_dir; wait until request executed..." );
 #endif
+                while( !gAbortMonitorRequested && parent->isRendering() ){
                     Sleep( 100 );
                 }
 #ifdef TEST
-                vocaloidrv::println( "::monitor_stdin_proc; break" );
+                vocaloidrv::println( "::monitor_dir; wait until request executed...done" );
 #endif
                 break;
             }else{
-#ifdef TEST
-                sprintf( buffer, "::monitor_stdin_proc; fgetc done; c0=%d", c0 );
-                vocaloidrv::println( buffer );
-#endif
                 Sleep( 100 );
             }
         }
-#ifdef TEST
-        vocaloidrv::println( "::monitor_stdin_proc; ReleaseMutex..." );
-#endif
-        ReleaseMutex( gSyncRoot );
-#ifdef TEST
-        vocaloidrv::println( "::monitor_stdin_proc; lock released" );
-#endif
     }
 	return 0;
 }
@@ -114,6 +79,14 @@ uint64_t read_uint64_le( FILE *fp )
     unsigned char buf[8];
     int a = 0;
     for( int k = 0; k < 8; k++ ){
+        /*if( fp == stdin ){
+#ifdef TEST
+            vocaloidrv::println( "::read_uint64_le; fp==stdin" );
+#endif
+            while( !_kbhit() ){
+                Sleep( 100 );
+            }
+        }*/
         int t = fgetc( fp );
         if( t == EOF ){
 #ifdef TEST
@@ -144,6 +117,14 @@ uint32_t read_uint32_le( FILE *fp )
     unsigned char buf[4];
     int a = 0;
     for( int k = 0; k < 4; k++ ){
+        /*if( fp == stdin ){
+#ifdef TEST
+            vocaloidrv::println( "::read_uint32_le; fp==stdin" );
+#endif
+            while( !_kbhit() ){
+                Sleep( 100 );
+            }
+        }*/
         int t = fgetc( fp );
         if( t == EOF ){
 #ifdef TEST
@@ -182,6 +163,14 @@ void load_midi_from_file( FILE *fp, unsigned char *midi, int *clock, int *buffer
         // MIDI data 3 bytes
         int a = 0;
         for( int k = 0; k < 3; k++ ){
+            /*if( fp == stdin ){
+#ifdef TEST
+            vocaloidrv::println( "::load_midi_from_file; fp==stdin" );
+#endif
+                while( !_kbhit() ){
+                    Sleep( 100 );
+                }
+            }*/
             int t = fgetc( fp );
             if( t == EOF ){
 #ifdef TEST
@@ -232,6 +221,9 @@ int main( int argc, char* argv[] )
 	}
 
     string dll_path = argv[1];
+    if( mode_e ){
+        gMonitorDir = argv[3];
+    }
 	string midi_file[2] = { "", "" };
 	long total_samples = 0;
     int sample_rate = 44100;
@@ -266,7 +258,7 @@ int main( int argc, char* argv[] )
     cerr << "mode_e=" << (mode_e ? "True" : "False") << endl;
 
     if( mode_e ){
-        //_setmode( _fileno( stdin ), _O_BINARY );
+        _setmode( _fileno( stdin ), _O_BINARY );
 		// データの書式
 		//   0 byte: コマンド種類
 		//   1 byte: コマンドバイトの長さ(len)
@@ -289,10 +281,7 @@ int main( int argc, char* argv[] )
         //     コマンド: 無し
         //     コマンド依存のデータ: 無し
 
-        gSyncRoot = CreateMutex( NULL, FALSE, NULL );
-        // スレッドが始まる前にロックを取得
-        WaitForSingleObject( gSyncRoot, INFINITE );
-        gThread = (HANDLE)_beginthreadex( NULL, 0, monitor_stdin_proc, &drv, 0, NULL );
+        gThread = (HANDLE)_beginthreadex( NULL, 0, monitor_dir, &drv, 0, NULL );
 #ifdef TEST
         const int BUFLEN = 1024;
         char buffer[BUFLEN];
@@ -335,20 +324,9 @@ int main( int argc, char* argv[] )
                     sprintf_s( buffer, BUFLEN, "::main; total_samples=%llu", total_samples );
                     vocaloidrv::println( buffer );
 #endif
-                    // stdinのロックを解除
-#ifdef TEST
-                    vocaloidrv::println( "::main; lock released" );
-#endif
-                    ReleaseMutex( gSyncRoot );
                     uint64_t ret = drv.startRendering( total_samples, false, sample_rate );
                     fflush( stdout );
-                    // stdinのロックを取得
 #ifdef TEST
-                    vocaloidrv::println( "::main; waitForSingleObject..." );
-#endif
-                    WaitForSingleObject( gSyncRoot, INFINITE );
-#ifdef TEST
-                    vocaloidrv::println( "::main; lock obtained" );
                     sprintf_s( buffer, BUFLEN, "::main; rendering done; ret=%llu", ret );
                     vocaloidrv::println( buffer );
 #endif

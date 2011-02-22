@@ -415,6 +415,10 @@ uint64_t vocaloidrv::startRendering( uint64_t total_samples, bool mode_infinite,
     }
     mman.clear();
 
+    if( mUseStdOut ){
+        fflush( stdout );
+    }
+
     mIsRendering = false;
     for ( int i = 0; i < mEvents0.size(); i++ ) {
         MidiEvent *ptr = mEvents0[i];
