@@ -51,15 +51,6 @@ open( OUT, ">Makefile" );
 "./org.kbinani/Vector.cs",
 );
 
-&getSrcList( "./org.kbinani", "./build/java/org/kbinani/", $src_corlib, $cp_corlib, $dep_corlib );
-&getSrcList( "./org.kbinani.apputil", "./build/java/org/kbinani/apputil/", $src_apputil, $cp_apputil, $dep_apputil );
-&getSrcList( "./org.kbinani.componentmodel", "./build/java/org/kbinani/componentmodel/", $src_componentmodel, $cp_componentmodel, $dep_componentmodel );
-&getSrcList( "./org.kbinani.media", "./build/java/org/kbinani/media/", $src_media, $cp_media, $dep_media );
-&getSrcList( "./org.kbinani.vsq", "./build/java/org/kbinani/vsq/", $src_vsq, $cp_vsq, $dep_vsq );
-&getSrcList( "./org.kbinani.windows.forms", "./build/java/org/kbinani/windows/forms/", $src_winforms, $cp_winforms, $dep_winforms );
-&getSrcList( "./org.kbinani.xml", "./build/java/org/kbinani/xml/", $src_xml, $cp_xml, $dep_xml );
-&getSrcList( "./Cadencii", "./build/java/org/kbinani/cadencii/", $src_cadencii, $cp_cadencii, $dep_cadencii );
-
 if( $ARGV[0] eq "MSWin32" ){
     $djava_mac = "";
     $to_devnull = "";
@@ -87,6 +78,74 @@ if( $ENABLE_AQUESTONE == 0 ){
 }else{
     $denable_aquestone = "-DENABLE_AQUESTONE";
 }
+
+open( CFG, ">./Cadencii/Config.cs" );
+print CFG <<__EOD__;
+\#if JAVA
+
+package org.kbinani.cadencii;
+
+import java.util.*;
+
+\#else
+
+using org.kbinani.java.util;
+
+namespace org.kbinani.cadencii
+{
+
+\#endif
+
+    public class Config
+    {
+        private static TreeMap<String, Boolean> mDirectives = new TreeMap<String, Boolean>();
+
+\#if JAVA
+        static
+\#else
+        static Config()
+\#endif
+        {
+__EOD__
+
+%directives;
+$directives{"debug"} = $ENABLE_DEBUG ? "true" : "false";
+$directives{"property"} = $ENABLE_PROPERTY ? "true" : "false";
+$directives{"vocaloid"} = $ENABLE_VOCALOID ? "true" : "false";
+$directives{"aquestone"} = $ENABLE_AQUESTONE ? "true" : "false";
+foreach $key ( keys %directives )
+{
+    print CFG "            mDirectives.put( \"$key\", $directives{$key} );\n";
+}
+
+print CFG <<__EOD__;
+        }
+
+        public static TreeMap<String, Boolean> getDirectives()
+        {
+            TreeMap<String, Boolean> ret = new TreeMap<String, Boolean>();
+            for( Iterator<String> itr = mDirectives.keySet().iterator(); itr.hasNext(); ){
+                String key = itr.next();
+                ret.put( key, mDirectives.get( key ) );
+            }
+            return ret;
+        }
+
+    }
+\#if !JAVA
+}
+\#endif
+__EOD__
+close( CFG );
+
+&getSrcList( "./org.kbinani", "./build/java/org/kbinani/", $src_corlib, $cp_corlib, $dep_corlib );
+&getSrcList( "./org.kbinani.apputil", "./build/java/org/kbinani/apputil/", $src_apputil, $cp_apputil, $dep_apputil );
+&getSrcList( "./org.kbinani.componentmodel", "./build/java/org/kbinani/componentmodel/", $src_componentmodel, $cp_componentmodel, $dep_componentmodel );
+&getSrcList( "./org.kbinani.media", "./build/java/org/kbinani/media/", $src_media, $cp_media, $dep_media );
+&getSrcList( "./org.kbinani.vsq", "./build/java/org/kbinani/vsq/", $src_vsq, $cp_vsq, $dep_vsq );
+&getSrcList( "./org.kbinani.windows.forms", "./build/java/org/kbinani/windows/forms/", $src_winforms, $cp_winforms, $dep_winforms );
+&getSrcList( "./org.kbinani.xml", "./build/java/org/kbinani/xml/", $src_xml, $cp_xml, $dep_xml );
+&getSrcList( "./Cadencii", "./build/java/org/kbinani/cadencii/", $src_cadencii, $cp_cadencii, $dep_cadencii );
 
 while( $line = <FILE> ){
     $line =~ s/\@SRC_JAPPUTIL\@/$src_apputil/g;

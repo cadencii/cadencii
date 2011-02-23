@@ -50,6 +50,7 @@ jcadencii_mac: jcadencii ./Cadencii/PkgInfo ./Cadencii/Info.plist ./build/java/W
 	/Developer/Tools/SetFile -a B ./build/java/Cadencii.app
 	cp ./build/java/vocaloidrv.sh $(APP)/Resources/Java
 	cp ./build/java/vocaloidrv.exe $(APP)/Resources/Java
+	cp ./build/java/createtempdir.exe $(APP)/Resources/Java
 	cp ./build/java/getvocaloidinfo.exe $(APP)/Resources/Java
 	cp -r -p ./build/java/WineMinimum.bundle $(APP)/Resources/WineMinimum.bundle
 	rm $(APP)/Resources/WineMinimum.bundle/Contents/SharedSupport/lib/libwine.1.dylib
@@ -173,6 +174,7 @@ jcadencii: first pp_cs2java.jar $(SRC_JCORLIB) $(SRC_JWINFORMS) $(SRC_JAPPUTIL) 
 	cp ./Cadencii/vocaloidrv.sh ./build/java
 	cp ./vstidrv5/Release/vocaloidrv.exe ./build/java
 	cp ./vstidrv5/Release/getvocaloidinfo.exe ./build/java
+	cp ./vstidrv5/Release/createtempdir.exe ./build/java
 	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .png $(TO_DEVNULL)
 	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .txt $(TO_DEVNULL)
 	perl copy_with_ext.pl ./Cadencii/resources/ ./build/java/resources/ .ico $(TO_DEVNULL)

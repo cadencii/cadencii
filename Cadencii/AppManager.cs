@@ -722,6 +722,28 @@ namespace org.kbinani.cadencii
         private const String TEMPDIR_NAME = "cadencii";
 
         /// <summary>
+        /// voacloidrv.shからwineを呼ぶために，ProcessBuilderに渡す
+        /// 引数リストの最初の部分を取得します
+        /// </summary>
+        public static Vector<String> getWineProxyArgument()
+        {
+            Vector<String> ret = new Vector<String>();
+            ret.add( "/bin/sh" );
+            String vocaloidrv_sh =
+                Utility.normalizePath( fsys.combine( PortUtil.getApplicationStartupPath(), "vocaloidrv.sh" ) );
+            ret.add( vocaloidrv_sh );
+            
+            String wine_prefix = 
+                Utility.normalizePath( editorConfig.WinePrefix );
+            ret.add( wine_prefix );
+
+            String wine_top =
+                Utility.normalizePath( editorConfig.WineTop );
+            ret.add( wine_top );
+            return ret;            
+        }
+
+        /// <summary>
         /// プレビュー再生を開始します
         /// </summary>
         private static void previewStart( FormMain form )

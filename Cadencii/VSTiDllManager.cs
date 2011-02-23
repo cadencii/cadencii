@@ -32,6 +32,56 @@ namespace org.kbinani.cadencii {
     using boolean = System.Boolean;
 #endif
 
+#if JAVA
+    class VocaloidDaemon
+    {
+        public BufferedOutputStream outputStream;
+        public BufferedInputStream inputStream;
+        private Process mProcess;
+        // 一時ディレクトリの実際のパス
+        private String mTempPathUnixName;
+
+        public VocaloidDaemon( Process p, String temp_path_unix_name )
+        {
+            if( p == null ){
+                return;
+            }
+            mProcess = p;
+            outputStream = new BufferedOutputStream( mProcess.getOutputStream() );
+            inputStream = new BufferedInputStream( mProcess.getInputStream() );
+            mTempPathUnixName = temp_path_unix_name;
+        }
+        
+        public String getTempPathUnixName()
+        {
+            return mTempPathUnixName;
+        }
+        
+        public void terminate()
+        {
+            if( PortUtil.isDirectoryExists( mTempPathUnixName ) ){
+                String stop = fsys.combine( mTempPathUnixName, "stop" );
+                if( fsys.isFileExists( stop ) ){
+                    try{
+                        PortUtil.deleteFile( stop );
+                    }catch( Exception ex ){
+                        ex.printStackTrace();
+                    }
+                }
+                try{
+                    PortUtil.deleteDirectory( mTempPathUnixName );
+                }catch( Exception ex ){
+                    ex.printStackTrace();
+                }
+            }
+            if( mProcess == null ){
+                return;
+            }
+            mProcess.destroy();
+        }
+    }
+#endif
+
     /// <summary>
     /// VSTiのDLLを管理するクラス
     /// </summary>
@@ -67,7 +117,7 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// vocaloidrv.exeのプロセス
         /// </summary>
-        public static Process[] vocaloidrvDaemon = null;
+        public static VocaloidDaemon[] vocaloidrvDaemon = null;
 #else
         public static Vector<VocaloidDriver> vocaloidDriver = new Vector<VocaloidDriver>();
 #endif
@@ -99,47 +149,61 @@ namespace org.kbinani.cadencii {
         }
 
 #if JAVA
+        /// <summary>
+        /// createtempdir.exeユーティリティを呼び出して，wine内の一時ディレクトリに
+        /// 新しいディレクトリを作成します．drive_cから直接作ってもいいけど，
+        /// 一時ディレクトリがどこかはwindowsでGetTempPathを呼ばない限り分からないので．
+        /// </summary>
+        private static String createTempPath()
+        {
+            Vector<String> list = AppManager.getWineProxyArgument();
+            list.add( fsys.combine( PortUtil.getApplicationStartupPath(), "createtempdir.exe" ) );
+            try{
+                Process p = Runtime.getRuntime().exec( list.toArray( new String[0] ) );
+                p.waitFor();
+                InputStream i = p.getInputStream();
+                int avail = i.available();
+                char[] c = new char[avail];
+                for( int j = 0; j < avail; j++ ){
+                    c[j] = (char)i.read();
+                }
+                String ret = new String( c );
+                return ret;
+            }catch( Exception ex ){
+                ex.printStackTrace();
+            }
+            return "";
+        }
+
         public static void restartVocaloidrvDaemon()
         {
             if( vocaloidrvDaemon == null ){
-                vocaloidrvDaemon = new Process[MAX_VOCALO_VERSION];
+                vocaloidrvDaemon = new VocaloidDaemon[MAX_VOCALO_VERSION];
             }
             for( int i = 0; i < vocaloidrvDaemon.length; i++ ){
-                Process p = vocaloidrvDaemon[i];
-                if( p != null ){
-                    p.destroy();
+                VocaloidDaemon vd = vocaloidrvDaemon[i];
+                if( vd == null ){
+                    continue;
                 }
+                vd.terminate();
             }
             Thread t = new Thread( new Runnable(){
                 @Override
                 public void run(){
                     for( int ver = 1; ver <= vocaloidrvDaemon.length; ver++ ){
                         // /bin/sh vocaloidrv.sh WINEPREFIX WINETOP vocaloidrv.exe midi_master.bin midi_body.bin TOTAL_SAMPLES
-                        String vocaloidrv_sh =
-                            Utility.normalizePath( fsys.combine( PortUtil.getApplicationStartupPath(), "vocaloidrv.sh" ) );
-                        
-                        String wine_prefix = 
-                            Utility.normalizePath( AppManager.editorConfig.WinePrefix );
-            
-                        String wine_top =
-                            Utility.normalizePath( AppManager.editorConfig.WineTop );
-                        
+                        Vector<String> list = AppManager.getWineProxyArgument();
                         String vocaloidrv_exe =
                             Utility.normalizePath( fsys.combine( PortUtil.getApplicationStartupPath(), "vocaloidrv.exe" ) );
+                        list.add( vocaloidrv_exe );
                         
                         SynthesizerType st = (ver == 1) ? SynthesizerType.VOCALOID1 : SynthesizerType.VOCALOID2;
                         String dll =
                             Utility.normalizePath( VocaloSysUtil.getDllPathVsti( st ) );
-
-                        String[] list = new String[]{
-                            "/bin/sh",
-                            vocaloidrv_sh,
-                            wine_prefix,
-                            wine_top,
-                            vocaloidrv_exe,
-                            dll,
-                            "-e",
-                        };
+                        list.add( dll );
+                        list.add( "-e" );
+                        String tmp = createTempPath();
+                        list.add( Utility.normalizePath( tmp ) );
 #if DEBUG
                         sout.println( "VocaloidWaveGenerator#begin; list=" );
                         for( String s : list ){
@@ -147,9 +211,13 @@ namespace org.kbinani.cadencii {
                         }
 #endif
                         try{
-                            Process p = Runtime.getRuntime().exec( list );;
-                            vocaloidrvDaemon[ver - 1] = p;
-                            final InputStream iserr = p.getErrorStream(); 
+                            Process p = Runtime.getRuntime().exec( list.toArray( new String[0] ) );
+                            String tmp_unix = 
+                                VocaloSysUtil.combineWinePath(
+                                    Utility.normalizePath( AppManager.editorConfig.WinePrefix ),
+                                    tmp );
+                            vocaloidrvDaemon[ver - 1] = new VocaloidDaemon( p, tmp_unix );
+                            final InputStream iserr = p.getErrorStream();
                             Thread t2 = new Thread( new Runnable(){
                                 @Override
                                 public void run()
@@ -393,10 +461,11 @@ namespace org.kbinani.cadencii {
 #if ENABLE_VOCALOID
 #if JAVA
             for( int i = 0; i < vocaloidrvDaemon.length; i++ ){
-                Process p = vocaloidrvDaemon[i];
-                if( p != null ){
-                    p.destroy();
+                VocaloidDaemon vd = vocaloidrvDaemon[i];
+                if( vd == null ){
+                    continue;
                 }
+                vd.terminate();
             }
 #else
             for ( int i = 0; i < vocaloidDriver.size(); i++ ) {

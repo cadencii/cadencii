@@ -373,9 +373,6 @@ namespace org.kbinani.media {
         }
 
         public void append( double[] L, double[] R, int length ) {
-#if DEBUG
-            sout.println( "WaveWriter#append; m_path=" + m_path + "; length=" + length );
-#endif
             try {
                 if ( m_bit_per_sample == 8 ) {
                     if ( m_channel == 1 ) {

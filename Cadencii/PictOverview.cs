@@ -117,6 +117,7 @@ namespace org.kbinani.cadencii
         private boolean mOverviewButtonMoozMouseDowned = false;
         private FormMain mMainForm = null;
         private Color mBackgroundColor = new Color( 106, 108, 108 );
+        private Object mDrawerSyncRoot;
 
         public PictOverview()
         {
@@ -124,6 +125,7 @@ namespace org.kbinani.cadencii
             this.SetStyle( System.Windows.Forms.ControlStyles.DoubleBuffer, true );
             this.SetStyle( System.Windows.Forms.ControlStyles.UserPaint, true );
 #endif
+            mDrawerSyncRoot = new Object();
             mDrawer = new ImageCachedComponentDrawer( 100, FormMain._OVERVIEW_HEIGHT );
             registerEventHandlers();
         }
@@ -316,8 +318,10 @@ namespace org.kbinani.cadencii
 
         public void updateCachedImage( int width_px )
         {
-            mDrawer.setWidth( width_px );
-            mDrawer.updateCache( this );
+            lock( mDrawerSyncRoot ){
+                mDrawer.setWidth( width_px );
+                mDrawer.updateCache( this );
+            }
         }
 
         public void updateCachedImage()
@@ -447,7 +451,9 @@ namespace org.kbinani.cadencii
             if ( max < total_clocks ) max = total_clocks;
             int min_width = (int)(max * mOverviewPixelPerClock) + getWidth();
             if ( mDrawer.getWidth() < min_width ) {
-                mDrawer.setWidth( min_width );
+                lock( mDrawerSyncRoot ){
+                    mDrawer.setWidth( min_width );
+                }
                 updateCachedImage();
             }
         }

@@ -297,7 +297,25 @@ namespace org.kbinani.cadencii
 
             // アボート要求フラグを初期化
             mAbortRequired = false;
-#if !JAVA
+#if JAVA
+            int ver = (s_working_renderer == RendererKind.VOCALOID2) ? 2 : 1;
+            VocaloidDaemon vd = VSTiDllManager.vocaloidrvDaemon[ver - 1];
+            if( vd == null ){
+                return;
+            }
+            // 停止処理用のファイルが残っていたら消去する
+            String stp = fsys.combine( vd.getTempPathUnixName(), "stop" );
+#if DEBUG
+            sout.println( "VocaloidWaveGenerator#begin; stp=" + stp + "; isFileExists=" + fsys.isFileExists( stp ) );
+#endif
+            if( fsys.isFileExists( stp ) ){
+                try{
+                    PortUtil.deleteFile( stp );
+                }catch( Exception ex ){
+                    ex.printStackTrace();
+                }
+            }
+#else
             // 使いたいドライバーが使用中だった場合、ドライバーにアボート要求を送る。
             // アボートが終了するか、このインスタンス自身にアボート要求が来るまで待つ。
             if ( mDriver.isRendering() ) {
@@ -380,11 +398,9 @@ namespace org.kbinani.cadencii
             // 合成を開始
             // 合成が終わるか、ドライバへのアボート要求が来るまでは制御は返らない
 #if JAVA
-            int ver = (s_working_renderer == RendererKind.VOCALOID2) ? 2 : 1;
             try{
-                Process process = VSTiDllManager.vocaloidrvDaemon[ver - 1];
-                OutputStream out = process.getOutputStream();
-                InputStream in = process.getInputStream();
+                BufferedOutputStream out = vd.outputStream;// process.getOutputStream();
+                BufferedInputStream in = vd.inputStream;
                 // もしかしたら前回レンダリング時のが残っているかもしれないので，取り除く
                 int avail = in.available();
 #if DEBUG
@@ -402,6 +418,7 @@ namespace org.kbinani.cadencii
                 out.write( 0x04 );
                 byte[] buf = PortUtil.getbytes_uint32_le( tempo_count );
                 out.write( buf, 0, 4 );
+                out.flush();
                 count = 0;
 #if DEBUG
                 int cnt = 0;
@@ -424,24 +441,9 @@ namespace org.kbinani.cadencii
                         cnt++;
                     }
 #endif
-                    out.flush();
-                    /*// 戻りの１バイトを読み込む
-#if DEBUG
-                    sout.println( "VocaloidWaveGenerator#begin; try reading return byte..." );
-#endif
-                    while( in.available() < 1 && !mAbortRequired ){
-                        Thread.sleep( 10 );
-                    }
-                    if( mAbortRequired ){
-                        break;
-                    }
-                    in.read();
-#if DEBUG
-                    sout.println( "VocaloidWaveGenerator#begin; return byte ok" );
-#endif
-                    //*/
                     count += 3;
                 }
+                out.flush();
                 // 本体トラック
 #if DEBUG
                 sout.println( "VocaloidWaveGenerator#begin; send body" );
@@ -450,29 +452,15 @@ namespace org.kbinani.cadencii
                 out.write( 0x04 );
                 buf = PortUtil.getbytes_uint32_le( numEvents );
                 out.write( buf, 0, 4 );
+                out.flush();
                 count = 0;
                 for( int i = 0; i < numEvents; i++ ){
                     buf = PortUtil.getbytes_uint32_le( bodyClocksSrc[i] );
                     out.write( buf, 0, 4 );
                     out.write( bodyEventsSrc, count, 3 );
-                    out.flush();
-                    /*// 戻りの１バイトを読み込む
-#if DEBUG
-                    sout.println( "VocaloidWaveGenerator#begin; try reading return byte..." );
-#endif
-                    while( in.available() < 1 && !mAbortRequired ){
-                        Thread.sleep( 10 );
-                    }
-                    if( mAbortRequired ){
-                        break;
-                    }
-                    in.read();
-#if DEBUG
-                    sout.println( "VocaloidWaveGenerator#begin; return byte ok" );
-#endif
-                    //*/
                     count += 3;
                 }
+                out.flush();
                 // 合成開始コマンド
 #if DEBUG
                 sout.println( "VocaloidWaveGenerator#begin; send synth command" );
@@ -487,6 +475,9 @@ namespace org.kbinani.cadencii
                 final int BUFLEN = 1024;
                 double[] l = new double[BUFLEN];
                 double[] r = new double[BUFLEN];
+#if DEBUG
+                long total_read_bytes = 0;
+#endif
                 while( remain > 0 ){
                     if( mAbortRequired ){
                         break;
@@ -504,6 +495,9 @@ namespace org.kbinani.cadencii
                         int ll = in.read();
                         int rh = in.read();
                         int rl = in.read();
+#if DEBUG
+                        total_read_bytes += 4;
+#endif
                         short il = (short)(0xffff & ((0xff & lh) << 8) | (0xff & ll));
                         short ir = (short)(0xffff & ((0xff & rh) << 8) | (0xff & rl));
                         l[i] = il / 32768.0;
@@ -516,12 +510,14 @@ namespace org.kbinani.cadencii
                     remain -= amount;
                 }
 
+#if DEBUG
+                sout.println( "VocaloidWaveGenerator#begin; total_read_bytes=" + total_read_bytes );
+#endif
                 if( mAbortRequired ){
                     // デーモンに合成処理の停止を要求
-                    // draft仕様
-                    out.write( 0x04 );
-                    out.write( 0x00 );
-                    out.flush();//*/
+                    String monitor_dir = vd.getTempPathUnixName();
+                    String stop = fsys.combine( monitor_dir, "stop" );
+                    (new FileOutputStream( stop )).close();
                 }
                 
                 // 途中でアボートした場合に備え，取り残しのstdoutを読み取っておく

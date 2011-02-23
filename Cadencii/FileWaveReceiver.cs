@@ -104,24 +104,6 @@ namespace org.kbinani.cadencii
         public void push( double[] l, double[] r, int length )
         {
             lock ( mSyncRoot ) {
-#if DEBUG
-                sout.println( "FileWaveReceiver#push; mPath=" + mPath + "; length=" + length );
-#endif
-                /*if ( mAdapter == null ) {
-                    int sample_rate = mRoot.getSampleRate();
-#if DEBUG
-                    sout.println( "FileWaveReceiver#push; sample_rate=" + sample_rate );
-#endif
-                    try {
-                        mAdapter = new WaveWriter( mPath, mChannel, mBitPerSample, sample_rate );
-                    } catch ( Exception ex ) {
-#if JAVA
-                        ex.printStackTrace();
-#endif
-                        Logger.write( typeof( FileWaveReceiver ) + ".push; ex=" + ex + "\n" );
-                        mAdapter = null;
-                    }
-                }*/
                 mAdapter.append( l, r, length );
                 if ( mReceiver != null ) {
                     mReceiver.push( l, r, length );
