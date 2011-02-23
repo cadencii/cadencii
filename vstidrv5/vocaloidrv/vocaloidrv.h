@@ -48,11 +48,9 @@ public:
     /// 
     /// </summary>
     /// <param name="total_samples"></param>
-    /// <param name="mode_infinite"></param>
     /// <param name="sample_rate"></param>
-    /// <param name="runner">このドライバを駆動しているRenderingRunnerのオブジェクト</param>
     /// <returns></returns>
-    uint64_t startRendering( uint64_t total_samples, bool mode_infinite, int sample_rate );
+    uint64_t startRendering( uint64_t total_samples, int sample_rate );
 
     bool isRendering()
     {
@@ -61,7 +59,15 @@ public:
 
     void requestStopRendering()
     {
+#ifdef TEST
+        println( "vocaloidrv::requestStopRendering; set mIsStopRequested true..." );
+#endif
         mIsStopRequested = true;
+        mIsRendering = false;
+#ifdef TEST
+        string s = mIsStopRequested ? "True" : "False";
+        println( "vocaloidrv::requestStopRendering; set mIsStopRequested true...done; mIsStopRequested=" + s );
+#endif
     };
 
 #ifdef TEST

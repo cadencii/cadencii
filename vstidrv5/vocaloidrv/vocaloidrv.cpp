@@ -37,19 +37,48 @@ vocaloidrv::~vocaloidrv()
 
 bool vocaloidrv::wave_incoming( double *left, double *right, int len )
 {
+#ifdef TEST
+    println( "vocaloidrv::wave_incoming" );
+#endif
     int length = len;
-    if( mTotalSamples <= mProcessed ){
-        return true;
-    }
-    if( mProcessed + length >= mTotalSamples ){
-        length = (int)(mTotalSamples - mProcessed);
-    }
     bool ret = false;
+    int ret_length = 0;
+    if( mTotalSamples <= mProcessed ){
+#ifdef TEST
+        println( "vocaloidrv::wave_incoming; goto heaven; mTotalSamples <= mProcessed" );
+#endif
+        length = 0;
+        ret = true;
+        goto heaven;
+    }
+    if( mProcessed + len >= mTotalSamples ){
+        length = (int)(mTotalSamples - mProcessed);
+#ifdef TEST
+        {
+            char buf[50];
+            sprintf( buf, "%d", length );
+            string s = buf;
+            println( "vocaloidrv::wave_incoming; mProcessed + len >= mTotalSamples; length=" + s );
+        }
+#endif
+    }
     if( length != len ){
         ret = true;
     }
 	if( mUseStdOut ){
-		for( int i = 0; i < length; i++ ){
+#ifdef TEST
+        {
+            char buf[50];
+            sprintf( buf, "%d", length );
+            string s = buf;
+            println( "vocaloidrv::wave_incoming; mUseStdOut=true; length=" + s );
+        }
+#endif
+        for( int i = 0; i < length; i++ ){
+            ret_length = i + 1;
+            if( mIsStopRequested ){
+                break;
+            }
 			WORD l = (WORD)(32768 * left[i]);
 			WORD r = (WORD)(32768 * right[i]);
 			putchar( 0xff & (l >> 8) );
@@ -105,8 +134,19 @@ bool vocaloidrv::wave_incoming( double *left, double *right, int len )
 		}
 
         fwrite( mBuffer, length * sizeof( DWORD ), 1, mFile );
+        ret_length = length;
     }
-    mProcessed += length;
+heaven:
+#ifdef TEST
+    {
+        char buf[50];
+        sprintf( buf, "%d", length );
+        string s = buf;
+        string sret = ret ? "True" : "False";
+        println( "voacloidrv::wave_incoming; exit; length=" + s + "; ret=" + sret );
+    }
+#endif
+    mProcessed += ret_length;
 	return ret;
 }
 
@@ -141,7 +181,7 @@ void vocaloidrv::merge_events( vector<MidiEvent *> &x0, vector<MidiEvent *> &y0,
 /// <param name="sample_rate"></param>
 /// <param name="runner">このドライバを駆動しているRenderingRunnerのオブジェクト</param>
 /// <returns></returns>
-uint64_t vocaloidrv::startRendering( uint64_t total_samples, bool mode_infinite, int sample_rate )
+uint64_t vocaloidrv::startRendering( uint64_t total_samples, int sample_rate )
 {
 #if DEBUG
     sout.println( "VocaloidDriver#startRendering; entry; total_samples=" + total_samples + "; sample_rate=" + sample_rate );
@@ -205,6 +245,9 @@ uint64_t vocaloidrv::startRendering( uint64_t total_samples, bool mode_infinite,
     uint64_t total_processed2 = 0;
     dwDelay = 0;
     int list_size = mEvents1.size();
+#ifdef TEST
+    println( "vocaloidrv::startRendering; check dwDelay..." );
+#endif
     for ( int i = 0; i < list_size; i++ ) {
         MidiEvent *work = mEvents1[i];
         if ( (work->firstByte & 0xf0) == 0xb0 ) {
@@ -235,8 +278,19 @@ uint64_t vocaloidrv::startRendering( uint64_t total_samples, bool mode_infinite,
             break;
         }
     }
+#ifdef TEST
+    {
+        char buf[50];
+        sprintf( buf, "%d", dwDelay );
+        string s = buf;
+        println( "vocaloidrv::startRendering; check dwDelay...done; dwDelay=" + s );
+    }
+#endif
 
     while ( !mIsStopRequested ) {
+#ifdef TEST
+        println( "vocaloidrv::startRendering; preparing events..." );
+#endif
         vector<void *> mman2;
         int process_event_count = current_count;
         int nEvents = 0;
@@ -329,11 +383,27 @@ uint64_t vocaloidrv::startRendering( uint64_t total_samples, bool mode_infinite,
             }
             process_event_count++;
         }
+#ifdef TEST
+        println( "vocaloidrv::startRendering; preparing events...done" );
+        println( "vocaloidrv::startRendering; dispatch events..." );
+#endif
         aEffect->dispatcher( aEffect, effProcessEvents, 0, 0, pVSTEvents, 0 );
+#ifdef TEST
+        println( "vocaloidrv::startRendering; dispatch events...done" );
+#endif
 
+#ifdef TEST
+        println( "vocaloidrv::startRendering; process..." );
+#endif
         while ( dwDelta > 0 && !mIsStopRequested ) {
             int dwFrames = dwDelta > sampleRate ? sampleRate : dwDelta;
+#ifdef TEST
+            println( "vocaloidrv::startRendering; calling processReplacing..." );
+#endif
             aEffect->processReplacing( aEffect, NULL, out_buffer, dwFrames );
+#ifdef TEST
+            println( "vocaloidrv::startRendering; calling processReplacing...done" );
+#endif
 
             int iOffset = dwDelay - dwDeltaDelay;
             if ( iOffset > (int)dwFrames ) {
@@ -346,15 +416,27 @@ uint64_t vocaloidrv::startRendering( uint64_t total_samples, bool mode_infinite,
                     buffer_r[i] = out_buffer[1][i];
                 }
                 total_processed2 += dwFrames;
+#ifdef TEST
+                println( "vocaloidrv::startRendering; calling wave_incoming..." );
+#endif
                 if ( wave_incoming( buffer_l, buffer_r, dwFrames ) ) {
                     mIsStopRequested = true;
                 }
+#ifdef TEST
+                println( "vocaloidrv::startRendering; calling wave_incoming...done" );
+#endif
             } else {
                 dwDeltaDelay += iOffset;
             }
             dwDelta -= dwFrames;
             total_processed += dwFrames;
         }
+#ifdef TEST
+        {
+            string s = mIsStopRequested ? "True" : "False";
+            println( "vocaloidrv::startRendering; process...done; mIsStopRequested=" + s );
+        }
+#endif
 
         dwPrev = dwNow;
         dwNow = (int)current->clock;
@@ -389,19 +471,6 @@ uint64_t vocaloidrv::startRendering( uint64_t total_samples, bool mode_infinite,
         total_processed += dwFrames;
     }
 
-    if ( mode_infinite ) {
-        for ( int i = 0; i < sampleRate; i++ ) {
-            buffer_l[i] = 0.0;
-            buffer_r[i] = 0.0;
-        }
-        while ( !mIsStopRequested ) {
-            total_processed2 += sampleRate;
-            if ( wave_incoming( buffer_l, buffer_r, sampleRate ) ) {
-                mIsStopRequested = true;
-            }
-        }
-    }
-
     aEffect->dispatcher( aEffect, effMainsChanged, 0, 0, NULL, 0 );
     // all_eventsの中身はmEvents0, mEvents1なので，ここでfreeしなくていい
     all_events.clear();
@@ -419,7 +488,14 @@ uint64_t vocaloidrv::startRendering( uint64_t total_samples, bool mode_infinite,
         fflush( stdout );
     }
 
+#ifdef TEST
+    println( "vocaloidrv::startRendering; set mIsRendering to false..." );
+#endif
     mIsRendering = false;
+#ifdef TEST
+    string s = (mIsRendering ? "True" : "False");
+    println( "vocaloidrv::startRendering; set mIsRendering to false...done; mIsRendering=" + s );
+#endif
     for ( int i = 0; i < mEvents0.size(); i++ ) {
         MidiEvent *ptr = mEvents0[i];
         if( ptr ) delete ptr;
@@ -437,6 +513,11 @@ uint64_t vocaloidrv::startRendering( uint64_t total_samples, bool mode_infinite,
     mTempoList.clear();
     mIsStopRequested = false;
 
+#ifdef TEST
+    char buf[100];
+    sprintf_s( buf, sizeof( char ) * 100, "vocaloidrv::startRendering; mProcessed=%llu, mTotalSamples=%llu", mProcessed, mTotalSamples );
+    println( buf );
+#endif
     return mProcessed;
 }
 

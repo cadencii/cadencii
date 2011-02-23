@@ -35,7 +35,12 @@ unsigned int __stdcall monitor_dir( void *args )
 	while( !gAbortMonitorRequested ){
         // mIsRenderingになるのを待機
         if( !parent->isRendering() ){
+#ifdef TEST
+            vocaloidrv::println( "::monitor_dir; driver is not rendering; continue" );
+            Sleep( 1000 );
+#else
             Sleep( 100 );
+#endif
             continue;
         }
 #ifdef TEST
@@ -56,8 +61,15 @@ unsigned int __stdcall monitor_dir( void *args )
 #ifdef TEST
                 vocaloidrv::println( "::monitor_dir; wait until request executed..." );
 #endif
-                while( !gAbortMonitorRequested && parent->isRendering() ){
+                bool rendering = parent->isRendering();
+                while( !gAbortMonitorRequested && rendering ){
+#ifdef TEST
+                    string s = "::monitor_dir; wait until request executed...rendering=";
+                    s += (rendering ? "True" : "False");
+                    vocaloidrv::println( s );
+#endif
                     Sleep( 100 );
+                    rendering = parent->isRendering();
                 }
 #ifdef TEST
                 vocaloidrv::println( "::monitor_dir; wait until request executed...done" );
@@ -149,7 +161,6 @@ void load_midi_from_file( FILE *fp, unsigned char *midi, int *clock, int *buffer
 	if( NULL == fp ){
 		return;
 	}
-    unsigned char buf[4];
     unsigned char mid[3];
 	const int UNIT_LEN = 512;
     int i = 0;
@@ -324,7 +335,7 @@ int main( int argc, char* argv[] )
                     sprintf_s( buffer, BUFLEN, "::main; total_samples=%llu", total_samples );
                     vocaloidrv::println( buffer );
 #endif
-                    uint64_t ret = drv.startRendering( total_samples, false, sample_rate );
+                    uint64_t ret = drv.startRendering( total_samples, sample_rate );
                     fflush( stdout );
 #ifdef TEST
                     sprintf_s( buffer, BUFLEN, "::main; rendering done; ret=%llu", ret );
@@ -349,7 +360,7 @@ int main( int argc, char* argv[] )
 		if( clocks ) free( clocks );
 		if( dat ) free( dat );
 
-		drv.startRendering( total_samples, false, sample_rate );
+		drv.startRendering( total_samples, sample_rate );
 	}
     return 0;
 }
