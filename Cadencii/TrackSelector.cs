@@ -3398,6 +3398,9 @@ namespace org.kbinani.cadencii
             mMouseDownLocation.y = e.Y;
             int clock = AppManager.clockFromXCoord( e.X );
             int selected = AppManager.getSelected();
+            int height = getHeight();
+            int width = getWidth();
+            int key_width = AppManager.keyWidth;
             VsqTrack vsq_track = vec.get( vsq.Track, selected );
             mMouseMoved = false;
             mMouseDowned = true;
@@ -3418,7 +3421,7 @@ namespace org.kbinani.cadencii
                 value = max;
             }
 
-            if ( getHeight() - OFFSET_TRACK_TAB <= e.Y && e.Y < getHeight() ) {
+            if ( height - OFFSET_TRACK_TAB <= e.Y && e.Y < height ) {
                 if ( e.Button == BMouseButtons.Left ) {
                     #region MouseDown occured on track list
                     mMouseDownMode = MouseDownMode.TRACK_LIST;
@@ -3427,7 +3430,7 @@ namespace org.kbinani.cadencii
                     int selecter_width = getSelectorWidth();
                     if ( vsq != null ) {
                         for ( int i = 0; i < 16; i++ ) {
-                            int x = AppManager.keyWidth + i * selecter_width;
+                            int x = key_width + i * selecter_width;
                             if ( vec.size( vsq.Track ) > i + 1 ) {
                                 if ( x <= e.X && e.X < x + selecter_width ) {
                                     int new_selected = i + 1;
@@ -3467,12 +3470,15 @@ namespace org.kbinani.cadencii
                     }
                     #endregion
                 }
-            } else if ( getHeight() - 2 * OFFSET_TRACK_TAB <= e.Y && e.Y < getHeight() - OFFSET_TRACK_TAB ) {
+            } else if ( height - 2 * OFFSET_TRACK_TAB <= e.Y && e.Y < height - OFFSET_TRACK_TAB ) {
                 #region MouseDown occured on singer tab
                 mMouseDownMode = MouseDownMode.SINGER_LIST;
                 AppManager.clearSelectedPoint();
                 mMouseTracer.clear();
-                VsqEvent ve = findItemAt( e.X, e.Y );
+                VsqEvent ve = null;
+                if ( key_width <= e.X && e.X <= width ){
+                    ve = findItemAt( e.X, e.Y );
+                }
                 if ( AppManager.getSelectedTool() == EditTool.ERASER ) {
                     #region EditTool.Eraser
                     if ( ve != null && ve.Clock > 0 ) {
@@ -5413,18 +5419,25 @@ namespace org.kbinani.cadencii
             }
 #endif
 
+            VsqFileEx vsq = AppManager.getVsqFile();
+            int selected = AppManager.getSelected();
+            VsqTrack vsq_track = vsq.Track.get( selected );
+            int height = getHeight();
+            int width = getWidth();
+            int key_width = AppManager.keyWidth;
+
             if ( e.Button == BMouseButtons.Left ) {
-                if ( 0 <= e.Y && e.Y <= getHeight() - 2 * OFFSET_TRACK_TAB ) {
+                if ( 0 <= e.Y && e.Y <= height - 2 * OFFSET_TRACK_TAB ) {
                     #region MouseDown occured on curve-pane
-                    if ( AppManager.keyWidth <= e.X && e.X <= getWidth() ) {
+                    if ( key_width <= e.X && e.X <= width ) {
                         if ( !mSelectedCurve.equals( CurveType.VEL ) &&
                              !mSelectedCurve.equals( CurveType.Accent ) &&
                              !mSelectedCurve.equals( CurveType.Decay ) &&
                              !mSelectedCurve.equals( CurveType.Env ) ) {
                             // ベジエデータ点にヒットしているかどうかを検査
-                            int track = AppManager.getSelected();
+                            //int track = AppManager.getSelected();
                             int clock = AppManager.clockFromXCoord( e.X );
-                            Vector<BezierChain> dict = AppManager.getVsqFile().AttachedCurves.get( track - 1 ).get( mSelectedCurve );
+                            Vector<BezierChain> dict = vsq.AttachedCurves.get( selected - 1 ).get( mSelectedCurve );
                             BezierChain target_chain = null;
                             BezierPoint target_point = null;
                             boolean found = false;
@@ -5482,22 +5495,26 @@ namespace org.kbinani.cadencii
                                     BDialogResult ret = AppManager.showModalDialog( fbpe, mMainWindow );
                                     mEditingChainID = -1;
                                     mEditingPointID = -1;
-                                    BezierChain after = AppManager.getVsqFile().AttachedCurves.get( AppManager.getSelected() - 1 ).getBezierChain( mSelectedCurve, chain_id );
+                                    BezierChain after = vsq.AttachedCurves.get( selected - 1 ).getBezierChain( mSelectedCurve, chain_id );
                                     // 編集前の状態に戻す
-                                    CadenciiCommand revert = VsqFileEx.generateCommandReplaceBezierChain( track,
-                                                                                                   mSelectedCurve,
-                                                                                                   chain_id,
-                                                                                                   before,
-                                                                                                   AppManager.editorConfig.getControlCurveResolutionValue() );
+                                    CadenciiCommand revert =
+                                        VsqFileEx.generateCommandReplaceBezierChain(
+                                            selected,
+                                            mSelectedCurve,
+                                            chain_id,
+                                            before,
+                                            AppManager.editorConfig.getControlCurveResolutionValue() );
                                     executeCommand( revert, false );
                                     if ( ret == BDialogResult.OK ) {
                                         // ダイアログの結果がOKで、かつベジエ曲線が単調増加なら編集を適用
                                         if ( BezierChain.isBezierImplicit( target_chain ) ) {
-                                            CadenciiCommand run = VsqFileEx.generateCommandReplaceBezierChain( track,
-                                                                                                        mSelectedCurve,
-                                                                                                        chain_id,
-                                                                                                        after,
-                                                                                                        AppManager.editorConfig.getControlCurveResolutionValue() );
+                                            CadenciiCommand run =
+                                                VsqFileEx.generateCommandReplaceBezierChain(
+                                                    selected,
+                                                    mSelectedCurve,
+                                                    chain_id,
+                                                    after,
+                                                    AppManager.editorConfig.getControlCurveResolutionValue() );
                                             executeCommand( run, true );
                                         }
                                     }
@@ -5513,7 +5530,7 @@ namespace org.kbinani.cadencii
                                 #endregion
                             } else {
                                 #region ダブルクリックした位置にベジエデータ点が無かった場合
-                                VsqBPList list = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getCurve( mSelectedCurve.getName() );
+                                VsqBPList list = vsq_track.getCurve( mSelectedCurve.getName() );
                                 boolean bp_found = false;
                                 long bp_id = -1;
                                 int tclock = 0;
@@ -5541,11 +5558,13 @@ namespace org.kbinani.cadencii
                                 if ( bp_found ) {
                                     AppManager.clearSelectedPoint();
                                     AppManager.addSelectedPoint( mSelectedCurve, bp_id );
-                                    FormCurvePointEdit dialog = new FormCurvePointEdit( mMainWindow, bp_id, mSelectedCurve );
+                                    FormCurvePointEdit dialog =
+                                        new FormCurvePointEdit( mMainWindow, bp_id, mSelectedCurve );
                                     int tx = AppManager.xCoordFromClocks( tclock );
                                     Point pt = pointToScreen( new Point( tx, 0 ) );
                                     invalidate();
-                                    dialog.setLocation( new Point( pt.x - dialog.getWidth() / 2, pt.y - dialog.getHeight() ) );
+                                    dialog.setLocation(
+                                        new Point( pt.x - dialog.getWidth() / 2, pt.y - dialog.getHeight() ) );
                                     AppManager.showModalDialog( dialog, mMainWindow );
                                 }
                                 #endregion
@@ -5553,20 +5572,20 @@ namespace org.kbinani.cadencii
                         }
                     }
                     #endregion
-                } else if ( getHeight() - 2 * OFFSET_TRACK_TAB <= e.Y && e.Y <= getHeight() - OFFSET_TRACK_TAB ) {
+                } else if ( height - 2 * OFFSET_TRACK_TAB <= e.Y && e.Y <= height - OFFSET_TRACK_TAB ) {
                     #region MouseDown occured on singer list
                     if ( AppManager.getSelectedTool() != EditTool.ERASER ) {
-                        VsqEvent ve = findItemAt( e.X, e.Y );
-                        VsqFileEx vsq = AppManager.getVsqFile();
-                        int selected = AppManager.getSelected();
-                        VsqTrack vsq_track = vsq.Track.get( selected );
+                        VsqEvent ve = null;
+                        if( key_width <= e.X && e.X <= width ){
+                            ve = findItemAt( e.X, e.Y );
+                        }
                         RendererKind renderer = VsqFileEx.getTrackRendererKind( vsq_track );
                         if ( ve == null ) {
-                            int x_at_left = AppManager.keyWidth + AppManager.keyOffset;
+                            int x_at_left = key_width + AppManager.keyOffset;
                             Rectangle rc_left_singer_box =
                                 new Rectangle(
                                     x_at_left,
-                                    this.getHeight() - 2 * OFFSET_TRACK_TAB + 1,
+                                    height - 2 * OFFSET_TRACK_TAB + 1,
                                     SINGER_ITEM_WIDTH, OFFSET_TRACK_TAB - 2 );
                             if ( isInRect( e.X, e.Y, rc_left_singer_box ) ) {
                                 // マウス位置に歌手変更が無かった場合であって、かつ、
@@ -5599,7 +5618,7 @@ namespace org.kbinani.cadencii
                                 }
                             }
                             cmenuSinger.show( this, e.X, e.Y );
-                        } else {
+                        } else if ( key_width <= e.X && e.X <= width ) {
                             // マウス位置に何もアイテムが無かった場合
                             if ( !mCMenuSingerPrepared.Equals( renderer ) ) {
                                 prepareSingerMenu( renderer );
@@ -5607,7 +5626,7 @@ namespace org.kbinani.cadencii
                             String singer = AppManager.editorConfig.DefaultSingerName;
                             int clock = AppManager.clockFromXCoord( e.X );
                             int last_clock = 0;
-                            for ( Iterator<VsqEvent> itr = AppManager.getVsqFile().Track.get( AppManager.getSelected() ).getSingerEventIterator(); itr.hasNext(); ) {
+                            for ( Iterator<VsqEvent> itr = vsq_track.getSingerEventIterator(); itr.hasNext(); ) {
                                 VsqEvent ve2 = itr.next();
                                 if ( last_clock <= clock && clock < ve2.Clock ) {
                                     singer = ((IconHandle)ve2.ID.IconHandle).IDS;

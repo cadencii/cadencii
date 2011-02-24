@@ -1740,7 +1740,7 @@ namespace org.kbinani.cadencii
         }
 
         public static String getVersion() {
-            String prefix = "";
+            String suffix = "";
             String rev = "";
             // $Id: AppManager.cs 474 2009-09-23 11:31:07Z kbinani $
             String id = BAssemblyInfo.id;
@@ -1758,13 +1758,16 @@ namespace org.kbinani.cadencii
             if ( str.compare( rev, "" ) ) {
                 rev = "?";
             }
-#if DEBUG
-            prefix = "\n(rev: " + rev + "; build: debug)";
-#else
-            prefix = "\n(rev: " + rev + "; build: release)";
-#endif
 
-            return BAssemblyInfo.fileVersion + " " + prefix;
+            TreeMap<String, Boolean> directives = Config.getDirectives();
+            suffix = "\nrev: " + rev + "\n";
+            suffix += "\n";
+            for( Iterator<String> itr = directives.keySet().iterator(); itr.hasNext(); ){
+                String k = itr.next();
+                Boolean v = directives.get( k );
+                suffix += k + ": " +  (v ? "enabled" : "disabled") + "\n";
+            }
+            return BAssemblyInfo.fileVersion + " " + suffix;
         }
 
 #if !JAVA

@@ -1118,7 +1118,7 @@ namespace org.kbinani.cadencii
                     if( handleFormClosing() ){
                         arg1.cancelQuit();
                     }else{
-                        arg1.performQuit();
+                        dispose();
                     }
                 }
             } );
@@ -10493,6 +10493,9 @@ namespace org.kbinani.cadencii
 #endif
         public void FormMain_FormClosed( Object sender, BFormClosedEventArgs e )
         {
+#if DEBUG
+            sout.println( "FormMain#FormMain_FormClosed" );
+#endif
             clearTempWave();
             String tempdir = fsys.combine( AppManager.getCadenciiTempDir(), AppManager.getID() );
             if ( !PortUtil.isDirectoryExists( tempdir ) ) {

@@ -12,6 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
+
 package org.kbinani.cadencii;
 
 //INCLUDE-SECTION IMPORT ../BuildJavaUI/src/org/kbinani/cadencii/VersionInfo.java
@@ -22,7 +23,9 @@ import java.awt.image.*;
 import org.kbinani.*;
 import org.kbinani.windows.forms.*;
 import org.kbinani.apputil.*;
+
 #else
+
 using System;
 using System.Windows.Forms;
 using org.kbinani.apputil;
@@ -49,6 +52,11 @@ namespace org.kbinani.cadencii
 #endif
         const float m_speed = 35f;
         const int m_height = 380;
+#if JAVA
+        const int FONT_SIZE = 12;
+#else
+        const int FONT_SIZE = 10;
+#endif
 
         private readonly Color m_background = Color.white;
 
@@ -198,8 +206,7 @@ namespace org.kbinani.cadencii
         {
             int shadow_shift = 2;
             String font_name = "Arial";
-            int font_size = 10;
-            Font font = new Font( font_name, java.awt.Font.PLAIN, font_size );
+            Font font = new Font( font_name, java.awt.Font.PLAIN, FONT_SIZE );
             Dimension size = Util.measureString( "the quick brown fox jumped over the lazy dogs. THE QUICK BROWN FOX JUMPED OVER THE LAZY DOGS. 0123456789", font );
             int width = getWidth();
             int height = size.height;
@@ -211,7 +218,7 @@ namespace org.kbinani.cadencii
             int align = 0;
             int valign = 0;
             //sf.Alignment = StringAlignment.Center;
-            Font f = new Font( font_name, java.awt.Font.BOLD, (int)(font_size * 1.1f) );
+            Font f = new Font( font_name, java.awt.Font.BOLD, (int)(FONT_SIZE * 1.2f) );
             if ( m_shadow_enablde ) {
                 g.setColor( new Color( 0, 0, 0, 40 ) );
                 PortUtil.drawStringEx(
@@ -240,7 +247,7 @@ namespace org.kbinani.cadencii
                 valign );
             for ( int i = 0; i < m_credit.Length; i++ ) {
                 AuthorListEntry itemi = m_credit[i];
-                Font f2 = new Font( font_name, itemi.getStyle(), font_size );
+                Font f2 = new Font( font_name, itemi.getStyle(), FONT_SIZE );
                 String id = show_twitter_id ? itemi.getTwitterID() : "";
                 if ( id == null ) {
                     id = "";
@@ -385,11 +392,20 @@ namespace org.kbinani.cadencii
                 g.clipRect( 0, m_height - grad_height + 1, getWidth(), grad_height - 1 );
                 g.setClip( null );
             } else {
-                g.setFont( new Font( "Century Gorhic", java.awt.Font.BOLD, 24 ) );
+                g.setFont( new Font( "Century Gorhic", java.awt.Font.BOLD, FONT_SIZE * 2 ) );
                 g.setColor( m_app_name_color );
                 g.drawString( m_app_name, 20, 60 );
-                g.setFont( new Font( "Arial", 0, 10 ) );
-                g.drawString( "version " + m_version, 25, 100 );
+                g.setFont( new Font( "Arial", 0, FONT_SIZE ) );
+                String[] spl = PortUtil.splitString( m_version, '\n' );
+                int y = 100;
+                int delta = (int)(FONT_SIZE * 1.1);
+                if( delta == FONT_SIZE ){
+                    delta++;
+                }
+                for( int i = 0; i < spl.Length; i++ ){
+                    g.drawString( (i == 0 ? "version" : "") + spl[i], 25, y );
+                    y += delta;
+                }
             }
         }
 

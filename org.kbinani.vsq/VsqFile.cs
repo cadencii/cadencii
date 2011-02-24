@@ -13,6 +13,7 @@
  */
 #define NEW_IMPL
 #if JAVA
+
 package org.kbinani.vsq;
 
 import java.util.*;
@@ -21,6 +22,7 @@ import org.kbinani.*;
 import org.kbinani.xml.*;
 
 #else
+
 using System;
 using System.Collections.Generic;
 using org.kbinani;
@@ -2770,8 +2772,50 @@ namespace org.kbinani.vsq
             }
 
             int last = 0;
+#if DEBUG
             VsqNrpn[] data = generateNRPN( vsq, track, msPreSend );
+#if JAVA
+            String suffix = "_java";
+#else
+            String suffix = "_win";
+#endif 
+            String path = fsys.combine( PortUtil.getApplicationStartupPath(), "data_" + track + suffix + ".txt" );
+            BufferedWriter bw = null;
+            try{
+                bw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( path ), "UTF-8" ) );
+                for( int i = 0; i < data.Length; i++ ){
+                    VsqNrpn item = data[i];
+                    bw.write( item.Clock + "\t0x" + PortUtil.toHexString( item.Nrpn, 4 ) + "\t0x" + PortUtil.toHexString( item.DataMsb, 2 ) + "\t0x" + PortUtil.toHexString( item.DataLsb, 2 ) );
+                    bw.newLine();
+                }
+            }catch( Exception ex ){
+#if JAVA
+                ex.printStackTrace();
+#endif
+            }finally{
+                if( bw != null ){
+                    try{
+                        bw.close();
+                    }catch( Exception ex2 ){
+                    }
+                }
+                bw = null;
+            }
+#endif
             NrpnData[] nrpns = VsqNrpn.convert( data );
+#if DEBUG
+            path = fsys.combine( PortUtil.getApplicationStartupPath(), "nrpns_" + track + suffix + ".txt" );
+            try{
+                bw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( path ), "UTF-8" ) );
+                for( int i = 0; i < nrpns.Length; i++ ){
+                    NrpnData item = nrpns[i];
+                    bw.write( item.getClock() + "\t0x" + PortUtil.toHexString( item.getParameter(), 2 ) + "\t0x" + PortUtil.toHexString( item.Value, 2 ) );
+                    bw.newLine();
+                }
+            }catch( Exception ex ){
+            }finally{
+            }
+#endif
             for ( int i = 0; i < nrpns.Length; i++ ) {
                 writeFlexibleLengthUnsignedLong( fs, (long)(nrpns[i].getClock() - last) );
                 fs.write( (byte)0xb0 );
