@@ -338,30 +338,17 @@ namespace org.kbinani.cadencii
             // ドライバーに渡すイベントを準備
             // まず、マスタートラックに渡すテンポ変更イベントを作成
             int tempo_count = split.TempoTable.size();
-//#if JAVA
-//            int[] masterEventsSrc = new int[tempo_count * 3];
-//#else
             byte[] masterEventsSrc = new byte[tempo_count * 3];
-//#endif
             int[] masterClocksSrc = new int[tempo_count];
             int count = -3;
             for ( int i = 0; i < tempo_count; i++ ) {
                 count += 3;
                 TempoTableEntry itemi = split.TempoTable.get( i );
                 masterClocksSrc[i] = itemi.Clock;
-//#if JAVA
-/*
-                int b0 = 0xff & (itemi.Tempo >>> 16);
-                long u0 = (long)(itemi.Tempo - (b0 << 16));
-                int b1 = 0xff & (u0 >>> 8);
-                int b2 = 0xff & (u0 - (u0 << 8));
-*/
-//#else
                 byte b0 = (byte)(0xff & (itemi.Tempo >> 16));
                 long u0 = (long)(itemi.Tempo - (b0 << 16));
                 byte b1 = (byte)(0xff & (u0 >> 8));
                 byte b2 = (byte)(0xff & (u0 - (u0 << 8)));
-//#endif
                 masterEventsSrc[count] = b0;
                 masterEventsSrc[count + 1] = b1;
                 masterEventsSrc[count + 2] = b2;
@@ -373,11 +360,7 @@ namespace org.kbinani.cadencii
 
             // 次に、合成対象トラックの音符イベントを作成
             int numEvents = nrpn.Length;
-//#if JAVA
-//            int[] bodyEventsSrc = new int[numEvents * 3];
-//#else
             byte[] bodyEventsSrc = new byte[numEvents * 3];
-//#endif
             int[] bodyClocksSrc = new int[numEvents];
             count = -3;
             int last_clock = 0;
@@ -574,13 +557,64 @@ namespace org.kbinani.cadencii
             }catch( Exception ex ){
                 ex.printStackTrace();
             }
-#else
+#else // JAVA
+#if DEBUG
+            // master
+            RandomAccessFile fos_master =
+                new RandomAccessFile(
+                    fsys.combine(
+                        PortUtil.getApplicationStartupPath(),
+                        "src_master.bin" ), "rw" ); 
+            fos_master.write( 0x01 );
+            fos_master.write( 0x04 );
+            fos_master.write( buf, 0, 4 );
+            for( int i = 0; i < tempo_count; i++ ){
+                buf = PortUtil.getbytes_uint32_le( masterClocksSrc[i] );
+                fos_master.write( buf, 0, 4 );
+                fos_master.write( masterEventsSrc, count, 3 );
+                count += 3;
+            }
+            fos_master.close();
+            // body
+            RandomAccessFile fos_body =
+                new RandomAccessFile(
+                    fsys.combine(
+                        PortUtil.getApplicationStartupPath(),
+                        "src_body.bin" ), "rw" ); 
+            buf = PortUtil.getbytes_uint32_le( numEvents );
+            fos_body.write( 0x02 );
+            fos_body.write( 0x04 );
+            fos_body.write( buf, 0, 4 );
+            count = 0;
+            for( int i = 0; i < numEvents; i++ ){
+                buf = PortUtil.getbytes_uint32_le( bodyClocksSrc[i] );
+                fos_body.write( buf, 0, 4 );
+                fos_body.write( bodyEventsSrc, count , 3 );
+                count += 3;
+            }
+            fos_body.close();
+            // synth
+            long act_total_samples = mTotalSamples + mTrimRemain;
+            out.write( 0x03 );
+            out.write( 0x08 );
+            buf = PortUtil.getbytes_int64_le( act_total_samples );
+            out.write( buf, 0, 8 );
+            RandomAccessFile fos_synth =
+                new RandomAccessFile(
+                    fsys.combine(
+                        PortUtil.getApplicationStartupPath(),
+                        "src_synth.bin" ), "rw" ); 
+            fos_synth.write( 0x03 );
+            fos_synth.write( 0x08 );
+            fos_synth.write( buf, 0, 8 );
+            fos_synth.close();
+#endif
             mDriver.startRendering(
                 mTotalSamples + mTrimRemain + (int)(ms_present / 1000.0 * mDriverSampleRate),
                 false,
                 mDriverSampleRate,
                 this );
-#endif
+#endif // !JAVA
 
             // ここに来るということは合成が終わったか、ドライバへのアボート要求が実行されたってこと。
             // このインスタンスが受け持っている波形レシーバに、処理終了を知らせる。

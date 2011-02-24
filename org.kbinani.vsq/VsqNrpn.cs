@@ -12,10 +12,14 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
+
 package org.kbinani.vsq;
 
 import java.util.*;
+import org.kbinani.*;
+
 #else
+
 using System;
 using org.kbinani;
 using org.kbinani.java.util;
@@ -26,11 +30,11 @@ namespace org.kbinani.vsq
 #endif
 
 #if JAVA
-    public class VsqNrpn implements Comparable<VsqNrpn> {
+    public class VsqNrpn implements Comparable<VsqNrpn>
 #else
     public class VsqNrpn : IComparable<VsqNrpn>
-    {
 #endif
+    {
         public int Clock;
         public int Nrpn;
         public byte DataMsb;
@@ -83,43 +87,53 @@ namespace org.kbinani.vsq
         {
             Vector<VsqNrpn> ret = new Vector<VsqNrpn>();
             Collections.sort( list );
-            if ( list.size() >= 2 ) {
+            int list_size = vec.size( list );
+            if ( list_size >= 2 ) {
                 Vector<VsqNrpn> work = new Vector<VsqNrpn>(); //workには、clockが同じNRPNだけが入る
-                int last_clock = list.get( 0 ).Clock;
-                work.add( list.get( 0 ) );
-                for ( int i = 1; i < list.size(); i++ ) {
-                    if ( list.get( i ).Clock == last_clock ) {
-                        work.add( list.get( i ) );
+                int last_clock = vec.get( list, 0 ).Clock;
+                work.add( vec.get( list, 0 ) );
+                for ( int i = 1; i < list_size; i++ ) {
+                    VsqNrpn itemi = vec.get( list, i );
+                    if ( itemi.Clock == last_clock ) {
+                        work.add( itemi );
                     } else {
                         // まずworkを並べ替え
-                        last_clock = list.get( i ).Clock;
+                        last_clock = itemi.Clock;
                         boolean changed = true;
+                        int work_size = vec.size( work );
                         while ( changed ) {
                             changed = false;
-                            for ( int j = 0; j < work.size() - 1; j++ ) {
-                                byte nrpn_msb0 = (byte)((work.get( j ).Nrpn >> 8) & 0xff);
-                                byte nrpn_msb1 = (byte)((work.get( j + 1 ).Nrpn >> 8) & 0xff);
+                            for ( int j = 0; j < work_size - 1; j++ ) {
+                                VsqNrpn itemj = vec.get( work, j );
+                                VsqNrpn itemjn = vec.get( work, j + 1 );
+#if JAVA
+                                int nrpn_msb0 = (itemj.Nrpn >>> 8) & 0xff;
+                                int nrpn_msb1 = (itemjn.Nrpn >>> 8) & 0xff;
+#else
+                                int nrpn_msb0 = (itemj.Nrpn >> 8) & 0xff;
+                                int nrpn_msb1 = (itemjn.Nrpn >> 8) & 0xff;
+#endif
                                 if ( nrpn_msb1 > nrpn_msb0 ) {
-                                    VsqNrpn buf = work.get( j );
-                                    work.set( j, work.get( j + 1 ) );
-                                    work.set( j + 1, buf );
+                                    VsqNrpn buf = itemj;
+                                    vec.set( work, j, itemjn );
+                                    vec.set( work, j + 1, buf );
                                     changed = true;
                                 }
                             }
                         }
-                        for ( int j = 0; j < work.size(); j++ ) {
-                            ret.add( work.get( j ) );
+                        for ( int j = 0; j < work_size; j++ ) {
+                            vec.add( ret, vec.get( work, j ) );
                         }
-                        work.clear();
-                        work.add( list.get( i ) );
+                        vec.clear( work );
+                        vec.add( work, vec.get( list, i ) );
                     }
                 }
                 for ( int j = 0; j < work.size(); j++ ) {
-                    ret.add( work.get( j ) );
+                    vec.add( ret, vec.get( work, j ) );
                 }
             } else {
                 for ( int i = 0; i < list.size(); i++ ) {
-                    ret.add( list.get( i ) );
+                    vec.add( ret, vec.get( list, i ) );
                 }
             }
             return ret;
