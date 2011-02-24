@@ -413,6 +413,11 @@ namespace org.kbinani.cadencii
                 // マスタートラック
 #if DEBUG
                 sout.println( "VocaloidWaveGenerator#begin; send master" );
+                RandomAccessFile fos_master =
+                    new RandomAccessFile(
+                        fsys.combine(
+                            PortUtil.getApplicationStartupPath(),
+                            "src_master.bin" ), "rw" ); 
 #endif
                 out.write( 0x01 );
                 out.write( 0x04 );
@@ -421,12 +426,19 @@ namespace org.kbinani.cadencii
                 out.flush();
                 count = 0;
 #if DEBUG
+                fos_master.write( 0x01 );
+                fos_master.write( 0x04 );
+                fos_master.write( buf, 0, 4 );
                 int cnt = 0;
 #endif
                 for( int i = 0; i < tempo_count; i++ ){
                     buf = PortUtil.getbytes_uint32_le( masterClocksSrc[i] );
                     out.write( buf, 0, 4 );
                     out.write( masterEventsSrc, count, 3 );
+#if DEBUG
+                    fos_master.write( buf, 0, 4 );
+                    fos_master.write( masterEventsSrc, count, 3 );
+#endif
 #if DEBUG
                     for( int j = 0; j < buf.length; j++ ){
                         if( buf[j] == -1 ){
@@ -444,23 +456,43 @@ namespace org.kbinani.cadencii
                     count += 3;
                 }
                 out.flush();
+#if DEBUG
+                fos_master.close();
+#endif
                 // 本体トラック
 #if DEBUG
                 sout.println( "VocaloidWaveGenerator#begin; send body" );
+                RandomAccessFile fos_body =
+                    new RandomAccessFile(
+                        fsys.combine(
+                            PortUtil.getApplicationStartupPath(),
+                            "src_body.bin" ), "rw" ); 
 #endif
                 out.write( 0x02 );
                 out.write( 0x04 );
                 buf = PortUtil.getbytes_uint32_le( numEvents );
                 out.write( buf, 0, 4 );
                 out.flush();
+#if DEBUG
+                fos_body.write( 0x02 );
+                fos_body.write( 0x04 );
+                fos_body.write( buf, 0, 4 );
+#endif
                 count = 0;
                 for( int i = 0; i < numEvents; i++ ){
                     buf = PortUtil.getbytes_uint32_le( bodyClocksSrc[i] );
                     out.write( buf, 0, 4 );
                     out.write( bodyEventsSrc, count, 3 );
+#if DEBUG
+                    fos_body.write( buf, 0, 4 );
+                    fos_body.write( bodyEventsSrc, count , 3 );
+#endif
                     count += 3;
                 }
                 out.flush();
+#if DEBUG
+                fos_body.close();
+#endif
                 // 合成開始コマンド
 #if DEBUG
                 sout.println( "VocaloidWaveGenerator#begin; send synth command" );
@@ -470,6 +502,17 @@ namespace org.kbinani.cadencii
                 out.write( 0x08 );
                 buf = PortUtil.getbytes_int64_le( act_total_samples );
                 out.write( buf, 0, 8 );
+#if DEBUG
+                RandomAccessFile fos_synth =
+                    new RandomAccessFile(
+                        fsys.combine(
+                            PortUtil.getApplicationStartupPath(),
+                            "src_synth.bin" ), "rw" ); 
+                fos_synth.write( 0x03 );
+                fos_synth.write( 0x08 );
+                fos_synth.write( buf, 0, 8 );
+                fos_synth.close();
+#endif
                 out.flush();
                 long remain = act_total_samples;
                 final int BUFLEN = 1024;
