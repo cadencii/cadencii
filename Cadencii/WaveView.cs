@@ -37,10 +37,11 @@ namespace org.kbinani.cadencii {
     /// トラック16個分の波形描画コンテキストを保持し、それらの描画を行うコンポーネントです。
     /// </summary>
 #if JAVA
-    public class WaveView extends BPanel {
+    public class WaveView extends BPanel
 #else
-    public class WaveView : BPanel {
+    public class WaveView : BPanel
 #endif
+    {
         /// <summary>
         /// 波形描画用のコンテキスト
         /// </summary>
@@ -265,14 +266,20 @@ namespace org.kbinani.cadencii {
         }
 
         /// <summary>
-        /// 波形コンテキストに、指定したWAVEファイルを読み込みます。
+        /// 波形描画コンテキストに、指定したWAVEファイルを読み込みます。
         /// </summary>
         /// <param name="index">読込を行わせる波形描画コンテキストのインデックス</param>
         /// <param name="wave_path">読み込むWAVEファイルのパス</param>
         public void load( int index, String wave_path ) {
             if ( index < 0 || mDrawer.Length <= index ) {
+#if DEBUG
+                sout.println( "WaveView#load; index out of range" );
+#endif
                 return;
             }
+#if DEBUG
+            sout.println( "WaveView#load; index=" + index );
+#endif
             if ( mDrawer[index] == null ) {
                 mDrawer[index] = new WaveDrawContext();
             }

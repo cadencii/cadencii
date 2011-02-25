@@ -1874,31 +1874,35 @@ namespace org.kbinani.cadencii
             }
         }
 
-        public static void deserializeRenderingStatus( String temppath, int track )
+        /// <summary>
+        /// 指定したディレクトリにある合成ステータスのxmlデータを読み込みます
+        /// </summary>
+        /// <param name="directory">読み込むxmlが保存されたディレクトリ</param>
+        /// <param name="track">読み込みを行うトラックの番号</param>
+        public static void deserializeRenderingStatus( String directory, int track )
         {
-            String xml = fsys.combine( temppath, track + ".xml" );
-            if ( !PortUtil.isFileExists( xml ) ) {
-                return;
-            }
-            FileInputStream fs = null;
+            String xml = fsys.combine( directory, track + ".xml" );
             RenderedStatus status = null;
-            try {
-                fs = new FileInputStream( xml );
-                Object obj = mRenderingStatusSerializer.deserialize( fs );
-                if ( obj != null && obj is RenderedStatus ) {
-                    status = (RenderedStatus)obj;
-                }
-            } catch ( Exception ex ) {
-                Logger.write( typeof( AppManager ) + ".deserializeRederingStatus; ex=" + ex + "\n" );
-                status = null;
-                serr.println( "AppManager#deserializeRederingStatus; ex=" + ex );
-            } finally {
-                if ( fs != null ) {
-                    try {
-                        fs.close();
-                    } catch ( Exception ex2 ) {
-                        Logger.write( typeof( AppManager ) + ".deserializeRederingStatus; ex=" + ex2 + "\n" );
-                        serr.println( "AppManager#deserializeRederingStatus; ex2=" + ex2 );
+            if ( PortUtil.isFileExists( xml ) ) {
+                FileInputStream fs = null;
+                try {
+                    fs = new FileInputStream( xml );
+                    Object obj = mRenderingStatusSerializer.deserialize( fs );
+                    if ( obj != null && obj is RenderedStatus ) {
+                        status = (RenderedStatus)obj;
+                    }
+                } catch ( Exception ex ) {
+                    Logger.write( typeof( AppManager ) + ".deserializeRederingStatus; ex=" + ex + "\n" );
+                    status = null;
+                    serr.println( "AppManager#deserializeRederingStatus; ex=" + ex );
+                } finally {
+                    if ( fs != null ) {
+                        try {
+                            fs.close();
+                        } catch ( Exception ex2 ) {
+                            Logger.write( typeof( AppManager ) + ".deserializeRederingStatus; ex=" + ex2 + "\n" );
+                            serr.println( "AppManager#deserializeRederingStatus; ex2=" + ex2 );
+                        }
                     }
                 }
             }
@@ -1908,9 +1912,12 @@ namespace org.kbinani.cadencii
         public static void serializeRenderingStatus( String temppath, int track )
         {
             FileOutputStream fs = null;
+            boolean failed = true;
+            String xml = fsys.combine( temppath, track + ".xml" );
             try {
-                fs = new FileOutputStream( fsys.combine( temppath, track + ".xml" ) );
+                fs = new FileOutputStream( xml );
                 mRenderingStatusSerializer.serialize( fs, mLastRenderedStatus[track - 1] );
+                failed = false;
             } catch ( Exception ex ) {
                 serr.println( "FormMain#patchWorkToFreeze; ex=" + ex );
                 Logger.write( typeof( AppManager ) + ".serializeRenderingStauts; ex=" + ex + "\n" );
@@ -1921,6 +1928,20 @@ namespace org.kbinani.cadencii
                     } catch ( Exception ex2 ) {
                         serr.println( "FormMain#patchWorkToFreeze; ex2=" + ex2 );
                         Logger.write( typeof( AppManager ) + ".serializeRenderingStatus; ex=" + ex2 + "\n" );
+                    }
+                }
+            }
+            
+            // シリアライズに失敗した場合，該当するxmlを削除する
+            if( failed ){
+                if( fsys.isFileExists( xml ) ){
+                    try{
+                        PortUtil.deleteFile( xml );
+                    }catch( Exception ex ){
+                        Logger.write( typeof( AppManager ) + ".serializeRendererStatus; ex=" + ex + "\n" );
+#if JAVA
+                        ex.printStackTrace();
+#endif
                     }
                 }
             }

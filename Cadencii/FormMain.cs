@@ -7015,53 +7015,52 @@ namespace org.kbinani.cadencii
                 String name = PortUtil.getFileNameWithoutExtension( file );
                 String estimatedCacheDir = fsys.combine( dir, name + ".cadencii" ); // ファイル名から推測されるキャッシュディレクトリ
                 if ( cacheDir == null ) cacheDir = "";
-                if ( !str.compare( cacheDir, "" ) && PortUtil.isDirectoryExists( cacheDir ) ) {
-                    if ( !str.compare( estimatedCacheDir, "" ) &&
-                         !str.compare( cacheDir, estimatedCacheDir ) ) {
-                        // ファイル名から推測されるキャッシュディレクトリ名と
-                        // xvsqに指定されているキャッシュディレクトリと異なる場合
-                        // cacheDirの必要な部分をestimatedCacheDirに移す
+                if ( !str.compare( cacheDir, "" ) && 
+                     PortUtil.isDirectoryExists( cacheDir ) &&
+                     !str.compare( estimatedCacheDir, "" ) &&
+                     !str.compare( cacheDir, estimatedCacheDir ) ) {
+                    // ファイル名から推測されるキャッシュディレクトリ名と
+                    // xvsqに指定されているキャッシュディレクトリと異なる場合
+                    // cacheDirの必要な部分をestimatedCacheDirに移す
 
-                        // estimatedCacheDirが存在しない場合、新しく作る
-                        if ( !PortUtil.isDirectoryExists( estimatedCacheDir ) ) {
+                    // estimatedCacheDirが存在しない場合、新しく作る
+                    if ( !PortUtil.isDirectoryExists( estimatedCacheDir ) ) {
+                        try {
+                            PortUtil.createDirectory( estimatedCacheDir );
+                        } catch ( Exception ex ) {
+                            Logger.write( typeof( FormMain ) + ".openVsqCor; ex=" + ex + "\n" );
+                            serr.println( "FormMain#openVsqCor; ex=" + ex );
+                            AppManager.showMessageBox( PortUtil.formatMessage( _( "cannot create cache directory: '{0}'" ), estimatedCacheDir ),
+                                                       _( "Info." ),
+                                                       PortUtil.OK_OPTION,
+                                                       org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+                            return;
+                        }
+                    }
+
+                    // ファイルを移す
+                    for ( int i = 1; i < vsq.Track.size(); i++ ) {
+                        String wavFrom = fsys.combine( cacheDir, i + ".wav" );
+                        String xmlFrom = fsys.combine( cacheDir, i + ".xml" );
+
+                        String wavTo = fsys.combine( estimatedCacheDir, i + ".wav" );
+                        String xmlTo = fsys.combine( estimatedCacheDir, i + ".xml" );
+                        if ( PortUtil.isFileExists( wavFrom ) ) {
                             try {
-                                PortUtil.createDirectory( estimatedCacheDir );
+                                PortUtil.moveFile( wavFrom, wavTo );
                             } catch ( Exception ex ) {
-                                Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex + "\n" );
-                                serr.println( "FormMain#handleFileOpen_Click; ex=" + ex );
-                                AppManager.showMessageBox( PortUtil.formatMessage( _( "cannot create cache directory: '{0}'" ), estimatedCacheDir ),
-                                                           _( "Info." ),
-                                                           PortUtil.OK_OPTION,
-                                                           org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
-                                return;
+                                Logger.write( typeof( FormMain ) + ".openVsqCor; ex=" + ex + "\n" );
+                                serr.println( "FormMain#openVsqCor; ex=" + ex );
                             }
                         }
-
-                        // ファイルを移す
-                        for ( int i = 1; i < vsq.Track.size(); i++ ) {
-                            String wavFrom = fsys.combine( cacheDir, i + ".wav" );
-                            String xmlFrom = fsys.combine( cacheDir, i + ".xml" );
-
-                            String wavTo = fsys.combine( estimatedCacheDir, i + ".wav" );
-                            String xmlTo = fsys.combine( estimatedCacheDir, i + ".xml" );
-                            if ( PortUtil.isFileExists( wavFrom ) ) {
-                                try {
-                                    PortUtil.moveFile( wavFrom, wavTo );
-                                } catch ( Exception ex ) {
-                                    Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex + "\n" );
-                                    serr.println( "FormMain#commonFileOpen; ex=" + ex );
-                                }
-                            }
-                            if ( PortUtil.isFileExists( xmlFrom ) ) {
-                                try {
-                                    PortUtil.moveFile( xmlFrom, xmlTo );
-                                } catch ( Exception ex ) {
-                                    Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex + "\n" );
-                                    serr.println( "FormMain#commonFileOpen; ex=" + ex );
-                                }
+                        if ( PortUtil.isFileExists( xmlFrom ) ) {
+                            try {
+                                PortUtil.moveFile( xmlFrom, xmlTo );
+                            } catch ( Exception ex ) {
+                                Logger.write( typeof( FormMain ) + ".openVsqCor; ex=" + ex + "\n" );
+                                serr.println( "FormMain#openVsqCor; ex=" + ex );
                             }
                         }
-
                     }
                 }
                 cacheDir = estimatedCacheDir;
@@ -7071,8 +7070,8 @@ namespace org.kbinani.cadencii
                     try {
                         PortUtil.createDirectory( cacheDir );
                     } catch ( Exception ex ) {
-                        Logger.write( typeof( FormMain ) + ".handleFileOpen_Click; ex=" + ex + "\n" );
-                        serr.println( "FormMain#handleFileOpen_Click; ex=" + ex );
+                        Logger.write( typeof( FormMain ) + ".openVsqCor; ex=" + ex + "\n" );
+                        serr.println( "FormMain#openVsqCor; ex=" + ex );
                         AppManager.showMessageBox( PortUtil.formatMessage( _( "cannot create cache directory: '{0}'" ), estimatedCacheDir ),
                                                    _( "Info." ),
                                                    PortUtil.OK_OPTION,
@@ -7090,6 +7089,9 @@ namespace org.kbinani.cadencii
                 waveView.unloadAll();
                 for ( int i = 1; i < vsq.Track.size(); i++ ) {
                     String wav = fsys.combine( cacheDir, i + ".wav" );
+#if DEBUG
+                    sout.println( "FormMain#openVsqCor; wav=" + wav + "; isExists=" + fsys.isFileExists( wav ) );
+#endif
                     if ( !PortUtil.isFileExists( wav ) ) {
                         continue;
                     }
@@ -16815,7 +16817,14 @@ namespace org.kbinani.cadencii
                 BMenuItem item = (BMenuItem)sender;
                 if ( item.getTag() is String ) {
                     String filename = (String)item.getTag();
+                    if( !dirtyCheck() ){
+                        return;
+                    }
                     openVsqCor( filename );
+                    clearExistingData();
+                    AppManager.mMixerWindow.updateStatus();
+                    clearTempWave();
+                    updateDrawObjectList();
                     refreshScreen();
                 }
             }

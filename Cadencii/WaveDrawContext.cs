@@ -256,6 +256,9 @@ namespace org.kbinani.cadencii {
 #endif
                 }
             } catch ( Exception ex ) {
+#if JAVA
+                ex.printStackTrace();
+#endif
             } finally {
                 if ( wr != null ) {
                     try {
