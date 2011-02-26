@@ -2,6 +2,7 @@ my $ENABLE_DEBUG = 0;
 my $ENABLE_PROPERTY = 1;
 my $ENABLE_VOCALOID = 0;
 my $ENABLE_AQUESTONE = 0;
+my $WINE_VERSION = "1.1.2";
 
 for( my $i = 0; $i <= $#ARGV; $i++ ){
     my $arg = $ARGV[$i];
@@ -122,6 +123,11 @@ foreach $key ( keys %directives )
 print CFG <<__EOD__;
         }
 
+        public static String getWineVersion()
+        {
+            return "$WINE_VERSION";
+        }
+
         public static TreeMap<String, Boolean> getDirectives()
         {
             TreeMap<String, Boolean> ret = new TreeMap<String, Boolean>();
@@ -172,6 +178,7 @@ while( $line = <FILE> ){
     $line =~ s/\@DENABLE_VOCALOID\@/$denable_vocaloid/g;
     $line =~ s/\@DENABLE_AQUESTONE\@/$denable_aquestone/g;
     $line =~ s/\@TO_DEVNULL\@/$to_devnull/g;
+    $line =~ s/\@WINE_VERSION\@/$WINE_VERSION/g;
 
     #if( $ARGV[0] eq "MSWin32" ){
     #    if( ($line =~ /\$\(CP\)/) | ($line =~ /\$\(RM\)/) | ($line =~ /\$\(MKDIR\)/) ){

@@ -881,7 +881,7 @@ namespace org.kbinani.cadencii
                 if( p == tabSequence ){
                     tabPane.setTitleAt( i, _( "Sequence" ) );
                 }else if( p == tabAnother ){
-                    tabPane.setTitleAt( i, _( "Other Settings" ) );
+                    tabPane.setTitleAt( i, _( "Other" ) );
                 }else if( p == tabAppearance ){
                     tabPane.setTitleAt( i, _( "Appearance" ) );
                 }else if( p == tabOperation ){
@@ -898,7 +898,7 @@ namespace org.kbinani.cadencii
             }
 #else
             tabSequence.Text = _( "Sequence" );
-            tabAnother.Text = _( "Other Settings" );
+            tabAnother.Text = _( "Other" );
             tabAppearance.Text = _( "Appearance" );
             tabOperation.Text = _( "Operation" );
             tabPlatform.Text = _( "Platform" );

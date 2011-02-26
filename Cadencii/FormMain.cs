@@ -4854,7 +4854,7 @@ namespace org.kbinani.cadencii
             menuHelpLogOpen.setMnemonic( KeyEvent.VK_O );
             menuHelpAbout.setText( _( "About Cadencii" ) );
             menuHelpAbout.setMnemonic( KeyEvent.VK_A );
-            menuHelpManual.setText( _( "Manual" ) + " (PDF" );
+            menuHelpManual.setText( _( "Manual" ) + " (PDF)" );
 
             menuHiddenCopy.setText( _( "Copy" ) );
             menuHiddenCut.setText( _( "Cut" ) );
@@ -15153,7 +15153,7 @@ namespace org.kbinani.cadencii
             // ログファイルを開く
 #if JAVA
             try{
-                Runtime.getRuntime().exec( new String[] { file } );
+                Runtime.getRuntime().exec( new String[] { "open", file } );
             }catch( Exception ex ){
             }
 #else

@@ -1767,6 +1767,10 @@ namespace org.kbinani.cadencii
                 Boolean v = directives.get( k );
                 suffix += k + ": " +  (v ? "enabled" : "disabled") + "\n";
             }
+#if JAVA
+            suffix += "\n";
+            suffix += "wine:" + Config.getWineVersion();
+#endif
             return BAssemblyInfo.fileVersion + " " + suffix;
         }
 
