@@ -316,6 +316,7 @@ public class FormMain extends BForm {
     private BMenu menuWindow = null;
     private BMenuItem menuWindowMinimize = null;
     private BPanel panel21 = null;
+    private BMenuItem menuHelpManual = null;
     //SECTION-END-FIELD
     public FormMain( String vsq_file ) {
         super();
@@ -2046,6 +2047,7 @@ public class FormMain extends BForm {
             menuHelp = new BMenu();
             menuHelp.setText("Help");
             menuHelp.add(getBMenuItem39());
+            menuHelp.add(getMenuHelpManual());
             menuHelp.add(getMenuHelpLog());
             menuHelp.add(getMenuHelpDebug());
         }
@@ -4403,6 +4405,19 @@ public class FormMain extends BForm {
             panel21.add(getJPanel2(), gridBagConstraints1);
         }
         return panel21;
+    }
+
+    /**
+     * This method initializes menuHelpManual	
+     * 	
+     * @return org.kbinani.windows.forms.BMenuItem	
+     */
+    private BMenuItem getMenuHelpManual() {
+        if (menuHelpManual == null) {
+            menuHelpManual = new BMenuItem();
+            menuHelpManual.setText("Manual(PDF)");
+        }
+        return menuHelpManual;
     }
 
     //SECTION-END-METHOD

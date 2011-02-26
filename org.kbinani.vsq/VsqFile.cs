@@ -2772,8 +2772,8 @@ namespace org.kbinani.vsq
             }
 
             int last = 0;
-#if DEBUG
             VsqNrpn[] data = generateNRPN( vsq, track, msPreSend );
+#if DEBUG
 #if JAVA
             String suffix = "_java";
 #else
@@ -2791,7 +2791,7 @@ namespace org.kbinani.vsq
             }catch( Exception ex ){
 #if JAVA
                 ex.printStackTrace();
-#endif
+#endif // JAVA
             }finally{
                 if( bw != null ){
                     try{
@@ -2801,7 +2801,7 @@ namespace org.kbinani.vsq
                 }
                 bw = null;
             }
-#endif
+#endif // DEBUG
             NrpnData[] nrpns = VsqNrpn.convert( data );
 #if DEBUG
             path = fsys.combine( PortUtil.getApplicationStartupPath(), "nrpns_" + track + suffix + ".txt" );

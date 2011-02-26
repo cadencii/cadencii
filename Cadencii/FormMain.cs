@@ -7528,6 +7528,7 @@ namespace org.kbinani.cadencii
             menuWindowMinimize.Click += new BEventHandler( menuWindowMinimize_Click );
 #endif
             menuHelpAbout.Click += new BEventHandler( menuHelpAbout_Click );
+            menuHelpManual.Click += new BEventHandler( menuHelpManual_Click );
             menuHelpLogSwitch.CheckedChanged += new BEventHandler( menuHelpLogSwitch_CheckedChanged );
             menuHelpLogOpen.Click += new BEventHandler( menuHelpLogOpen_Click );
             menuHelpDebug.Click += new BEventHandler( menuHelpDebug_Click );
@@ -15103,6 +15104,24 @@ namespace org.kbinani.cadencii
 #endif
 
 #endif
+        }
+
+        public void menuHelpManual_Click( Object sender, BEventArgs e )
+        {
+            String pdf = fsys.combine( PortUtil.getApplicationStartupPath(), "manual.pdf" );
+            if( !fsys.isFileExists( pdf ) ){
+                AppManager.showMessageBox(
+                    _( "file not found" ),
+                    _APP_NAME,
+                    org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
+                    org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
+                return;
+            }
+            try{
+                Runtime.getRuntime().exec( new String[]{ "open", pdf } );
+            }catch( Exception ex ){
+                ex.printStackTrace();
+            }
         }
 
         public void menuHelpLogSwitch_CheckedChanged( Object sender, EventArgs e )
