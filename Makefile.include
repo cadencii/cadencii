@@ -19,7 +19,7 @@ TO_DEVNULL=@TO_DEVNULL@
 WINE_VERSION=1.1.2
 WINE_DIR=./wine-$(WINE_VERSION)/
 JAVAC=javac
-BUNDLE=build/java/WineMinimum.bundle/Contents/SharedSupport
+BUNDLE=build/java/Wine.bundle/Contents/SharedSupport
 APP=build/java/Cadencii.app/Contents
 
 SRC_JAPPUTIL=@SRC_JAPPUTIL@
@@ -33,7 +33,7 @@ SRC_JXML=@SRC_JXML@
 
 all: jcadencii_mac
 
-jcadencii_mac: jcadencii ./Cadencii/PkgInfo ./Cadencii/Info.plist ./build/java/WineMinimum.bundle
+jcadencii_mac: jcadencii ./Cadencii/PkgInfo ./Cadencii/Info.plist ./build/java/Wine.bundle
 	rm -rf ./build/java/Cadencii.app
 	mkdir -p $(APP)/Resources/Java
 	mkdir -p $(APP)/MacOS
@@ -53,14 +53,14 @@ jcadencii_mac: jcadencii ./Cadencii/PkgInfo ./Cadencii/Info.plist ./build/java/W
 	cp ./build/java/createtempdir.exe $(APP)/Resources/Java
 	cp ./build/java/getvocaloidinfo.exe $(APP)/Resources/Java
 	cp ./build/java/manual.pdf $(APP)/Resources/Java
-	cp -r -p ./build/java/WineMinimum.bundle $(APP)/Resources/WineMinimum.bundle
-	rm $(APP)/Resources/WineMinimum.bundle/Contents/SharedSupport/lib/libwine.1.dylib
-	rm $(APP)/Resources/WineMinimum.bundle/Contents/SharedSupport/lib/libwine.dylib
-	ln -s libwine.1.0.dylib $(APP)/Resources/WineMinimum.bundle/Contents/SharedSupport/lib/libwine.1.dylib
-	ln -s libwine.1.0.dylib $(APP)/Resources/WineMinimum.bundle/Contents/SharedSupport/lib/libwine.dylib
+	cp -r -p ./build/java/Wine.bundle $(APP)/Resources/Wine.bundle
+#	rm $(APP)/Resources/Wine.bundle/Contents/SharedSupport/lib/libwine.1.dylib
+#	rm $(APP)/Resources/Wine.bundle/Contents/SharedSupport/lib/libwine.dylib
+#	ln -s libwine.1.0.dylib $(APP)/Resources/Wine.bundle/Contents/SharedSupport/lib/libwine.1.dylib
+#	ln -s libwine.1.0.dylib $(APP)/Resources/Wine.bundle/Contents/SharedSupport/lib/libwine.dylib
 
 ########################################################################
-# prepare WineMinimum.bundle
+# prepare Wine.bundle
 #
 # wget source of wine
 ./wine-$(WINE_VERSION).tar.bz2:
@@ -73,16 +73,15 @@ jcadencii_mac: jcadencii ./Cadencii/PkgInfo ./Cadencii/Info.plist ./build/java/W
 	  wd=`pwd`; \
 	  cd wine-$(WINE_VERSION) && ./configure --prefix=$$wd/$(BUNDLE); \
 	}
-	
+	cd wine-$(WINE_VERSION) && $(MAKE) depend && $(MAKE); \
 
 # prepare bundle
-./build/java/WineMinimum.bundle: ./wine-$(WINE_VERSION)/Makefile
-	rm -rf ./build/java/WineMinimum.bundle
+./build/java/Wine.bundle: ./wine-$(WINE_VERSION)/Makefile
+	rm -rf ./build/java/Wine.bundle
 	mkdir -p $(BUNDLE)
-	cd wine-$(WINE_VERSION) && $(MAKE) depend && $(MAKE)
 	cd wine-$(WINE_VERSION) && $(MAKE) install
 	{ \
-	  wine_version=`PATH='./build/java/WineMinimum.bundle/Contents/SharedSupport/bin'":$PATH";wine --version`; \
+	  wine_version=`PATH='./build/java/Wine.bundle/Contents/SharedSupport/bin'":$PATH";wine --version`; \
 	  cadencii_version=`java -jar ./build/java/Cadencii.jar --version`; \
 	  echo '<?xml version="1.0" encoding="UTF-8"?>'; \
 	  echo '<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">'; \
@@ -99,11 +98,11 @@ jcadencii_mac: jcadencii ./Cadencii/PkgInfo ./Cadencii/Info.plist ./build/java/W
 	  echo '    <key>CFBundlePackageType</key>'; \
 	  echo '    <string>thng</string>'; \
 	  echo '    <key>CFBundleIdentifier</key>'; \
-	  echo '    <string>jp.sourceforge.cadencii.WineMinimum</string>'; \
+	  echo '    <string>jp.sourceforge.cadencii.Wine</string>'; \
 	  echo '</dict>'; \
 	  echo '</plist>'; \
-	} > ./build/java/WineMinimum.bundle/Contents/Info.plist
-	/Developer/Tools/SetFile -a B ./build/java/WineMinimum.bundle
+	} > ./build/java/Wine.bundle/Contents/Info.plist
+	/Developer/Tools/SetFile -a B ./build/java/Wine.bundle
 
 ########################################################################
 # pre process

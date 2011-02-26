@@ -253,6 +253,23 @@ namespace org.kbinani.cadencii
         }
 
         /// <summary>
+        /// Cadencii付属のWineを使うかどうかを表す設定値を取得します
+        /// </summary>
+        public boolean isWineBuiltin()
+        {
+            return radioWineBuiltin.isSelected();
+        }
+
+        /// <summary>
+        /// Cadencii付属のWineを使うかどうかを表す設定値を設定します
+        /// </summary>        
+        public void setWineBuiltin( boolean value )
+        {
+            radioWineBuiltin.setSelected( value );
+            radioWineCustom.setSelected( !value );
+        }
+
+        /// <summary>
         /// 自動ビブラートを作成するとき，ユーザー定義タイプのビブラートを利用するかどうか，を表す値を取得します
         /// </summary>
         /// <returns></returns>
@@ -1673,6 +1690,13 @@ namespace org.kbinani.cadencii
             }catch( Exception ex ){
             }
         }
+
+        public void radioWineBuiltin_CheckedChanged( Object sender, BEventArgs e )
+        {
+            boolean enable = !radioWineBuiltin.isSelected();
+            textWineTop.setEnabled( enable );
+            buttonWineTop.setEnabled( enable );
+        }
         #endregion
 
         #region helper methods
@@ -1838,6 +1862,7 @@ namespace org.kbinani.cadencii
             radioVocaloidEditorCompatible.CheckedChanged += new BEventHandler( commonChangeAutoVibratoType );
             buttonWinePrefix.Click += new BEventHandler( buttonWinePrefix_Click );
             buttonWineTop.Click += new BEventHandler( buttonWineTop_Click );
+            radioWineBuiltin.CheckedChanged += new BEventHandler( radioWineBuiltin_CheckedChanged );
         }
 
         private void setResources()

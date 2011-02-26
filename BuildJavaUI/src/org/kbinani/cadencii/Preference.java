@@ -31,7 +31,7 @@ public class Preference extends BDialog {
     //SECTION-BEGIN-FIELD
 
     private static final long serialVersionUID = 1L;
-	private BPanel tabSequence = null;  //  @jve:decl-index=0:visual-constraint="-88,1076"
+	private BPanel tabSequence = null;  //  @jve:decl-index=0:visual-constraint="-96,1204"
 	private BLabel lblResolution = null;
 	private BPanel BPanel = null;
 	private BLabel lblResolControlCurve = null;
@@ -50,7 +50,7 @@ public class Preference extends BDialog {
 	private BComboBox comboAutoVibratoType1 = null;
 	private BLabel lblAutoVibratoType2 = null;
 	private BComboBox comboAutoVibratoType2 = null;
-	private BPanel tabAnother = null;  //  @jve:decl-index=0:visual-constraint="399,949"
+	private BPanel tabAnother = null;  //  @jve:decl-index=0:visual-constraint="384,989"
 	private BLabel lblDefaultSinger = null;
 	private BComboBox comboDefualtSinger = null;
 	private BLabel lblPreSendTime = null;
@@ -127,7 +127,7 @@ public class Preference extends BDialog {
 	private BTextBox txtWavtool = null;
 	private BButton btnWavtool = null;
 	private BCheckBox chkWavtoolWithWine = null;
-	private BPanel tabUtausingers = null;  //  @jve:decl-index=0:visual-constraint="-81,1502"
+	private BPanel tabUtausingers = null;  //  @jve:decl-index=0:visual-constraint="-95,1685"
 	private BListView listSingers = null;
 	private BButton btnAdd = null;
 	private BButton btnRemove = null;
@@ -203,6 +203,9 @@ public class Preference extends BDialog {
     private BLabel labelWineTop = null;
     private BTextBox textWineTop = null;
     private BButton buttonWineTop = null;
+    private BRadioButton radioWineCustom = null;
+    private BPanel BPanel1 = null;
+    private BRadioButton radioWineBuiltin = null;
     //SECTION-END-FIELD
 	/**
 	 * This is the default constructor
@@ -232,6 +235,9 @@ public class Preference extends BDialog {
         mManager = new RadioButtonManager();
         mManager.add( radioUserDefined );
         mManager.add( radioVocaloidEditorCompatible );
+        RadioButtonManager rbm2 = new RadioButtonManager();
+        rbm2.add( radioWineBuiltin );
+        rbm2.add( radioWineCustom );
         setCancelButton( btnCancel );
 		//SECTION-END-CTOR
 	}
@@ -1694,7 +1700,7 @@ public class Preference extends BDialog {
 			gridBagConstraints106.gridy = 2;
 			tabPlatform = new BPanel();
 			tabPlatform.setLayout(new GridBagLayout());
-			tabPlatform.setSize(new Dimension(455, 498));
+			tabPlatform.setSize(new Dimension(455, 538));
 			tabPlatform.add(getGroupUtauCores(), gridBagConstraints106);
 			tabPlatform.add(jLabel91, gridBagConstraints125);
 			tabPlatform.add(getGroupWine(), gridBagConstraints89);
@@ -2979,15 +2985,23 @@ public class Preference extends BDialog {
      */
     private BGroupBox getGroupWine() {
         if (groupWine == null) {
-            GridBagConstraints gridBagConstraints150 = new GridBagConstraints();
-            gridBagConstraints150.gridx = 2;
-            gridBagConstraints150.gridy = 1;
-            GridBagConstraints gridBagConstraints149 = new GridBagConstraints();
-            gridBagConstraints149.fill = GridBagConstraints.HORIZONTAL;
-            gridBagConstraints149.gridy = 1;
-            gridBagConstraints149.weightx = 1.0;
-            gridBagConstraints149.insets = new Insets(0, 6, 0, 0);
-            gridBagConstraints149.gridx = 1;
+            GridBagConstraints gridBagConstraints154 = new GridBagConstraints();
+            gridBagConstraints154.anchor = GridBagConstraints.WEST;
+            gridBagConstraints154.gridy = 2;
+            gridBagConstraints154.gridwidth = 2;
+            gridBagConstraints154.insets = new Insets(0, 36, 0, 0);
+            gridBagConstraints154.gridx = 0;
+            GridBagConstraints gridBagConstraints156 = new GridBagConstraints();
+            gridBagConstraints156.gridx = 3;
+            gridBagConstraints156.weighty = 0.0D;
+            gridBagConstraints156.gridy = 4;
+            GridBagConstraints gridBagConstraints153 = new GridBagConstraints();
+            gridBagConstraints153.gridx = 0;
+            gridBagConstraints153.gridwidth = 2;
+            gridBagConstraints153.fill = GridBagConstraints.BOTH;
+            gridBagConstraints153.insets = new Insets(0, 36, 0, 0);
+            gridBagConstraints153.gridheight = 2;
+            gridBagConstraints153.gridy = 3;
             GridBagConstraints gridBagConstraints148 = new GridBagConstraints();
             gridBagConstraints148.gridx = 0;
             gridBagConstraints148.anchor = GridBagConstraints.WEST;
@@ -2996,7 +3010,7 @@ public class Preference extends BDialog {
             labelWineTop = new BLabel();
             labelWineTop.setText("WINETOP");
             GridBagConstraints gridBagConstraints93 = new GridBagConstraints();
-            gridBagConstraints93.gridx = 2;
+            gridBagConstraints93.gridx = 3;
             gridBagConstraints93.gridy = 0;
             GridBagConstraints gridBagConstraints92 = new GridBagConstraints();
             gridBagConstraints92.fill = GridBagConstraints.HORIZONTAL;
@@ -3019,8 +3033,9 @@ public class Preference extends BDialog {
             groupWine.add(getTextWinePrefix(), gridBagConstraints92);
             groupWine.add(getButtonWinePrefix(), gridBagConstraints93);
             groupWine.add(labelWineTop, gridBagConstraints148);
-            groupWine.add(getTextWineTop(), gridBagConstraints149);
-            groupWine.add(getButtonWineTop(), gridBagConstraints150);
+            groupWine.add(getBPanel1(), gridBagConstraints153);
+            groupWine.add(getButtonWineTop(), gridBagConstraints156);
+            groupWine.add(getRadioWineBuiltin(), gridBagConstraints154);
         }
         return groupWine;
     }
@@ -3075,6 +3090,62 @@ public class Preference extends BDialog {
             buttonWineTop.setText("Browse");
         }
         return buttonWineTop;
+    }
+
+    /**
+     * This method initializes radioWineCustom	
+     * 	
+     * @return org.kbinani.windows.forms.BRadioButton	
+     */
+    private BRadioButton getRadioWineCustom() {
+        if (radioWineCustom == null) {
+            radioWineCustom = new BRadioButton();
+            radioWineCustom.setText("custom");
+        }
+        return radioWineCustom;
+    }
+
+    /**
+     * This method initializes BPanel1	
+     * 	
+     * @return org.kbinani.windows.forms.BPanel	
+     */
+    private BPanel getBPanel1() {
+        if (BPanel1 == null) {
+            GridBagConstraints gridBagConstraints150 = new GridBagConstraints();
+            gridBagConstraints150.gridx = 3;
+            gridBagConstraints150.gridy = 3;
+            GridBagConstraints gridBagConstraints149 = new GridBagConstraints();
+            gridBagConstraints149.fill = GridBagConstraints.HORIZONTAL;
+            gridBagConstraints149.gridx = 1;
+            gridBagConstraints149.gridy = 1;
+            gridBagConstraints149.weightx = 1.0;
+            gridBagConstraints149.insets = new Insets(0, 6, 0, 0);
+            GridBagConstraints gridBagConstraints152 = new GridBagConstraints();
+            gridBagConstraints152.gridx = 0;
+            gridBagConstraints152.weightx = 0.0D;
+            gridBagConstraints152.anchor = GridBagConstraints.WEST;
+            gridBagConstraints152.gridy = 1;
+            BPanel1 = new BPanel();
+            BPanel1.setLayout(new GridBagLayout());
+            BPanel1.add(getRadioWineCustom(), gridBagConstraints152);
+            BPanel1.add(getTextWineTop(), gridBagConstraints149);
+        }
+        return BPanel1;
+    }
+
+    /**
+     * This method initializes radioWineBuiltin	
+     * 	
+     * @return org.kbinani.windows.forms.BRadioButton	
+     */
+    private BRadioButton getRadioWineBuiltin() {
+        if (radioWineBuiltin == null) {
+            radioWineBuiltin = new BRadioButton();
+            radioWineBuiltin.setText("built-in");
+            radioWineBuiltin.setPreferredSize(new Dimension(4, 29));
+        }
+        return radioWineBuiltin;
     }
 
 	//SECTION-END-METHOD

@@ -559,6 +559,11 @@ namespace org.kbinani.cadencii
         /// version 3.3+
         /// </summary>
         public String WineTop = "/Applications/MikuInstaller.app/Contents/Resources/Wine.bundle/Contents/SharedSupport";
+        /// <summary>
+        /// Cadencii付属のWineを使う場合にtrue，そうでなければWineTopで指定されたWineが利用される
+        /// version 3.3+
+        /// </summary>
+        public boolean WineTopBuiltin = true;
 
         /// <summary>
         /// バッファーサイズに設定できる最大値
@@ -704,29 +709,48 @@ namespace org.kbinani.cadencii
         }
 
         /// <summary>
-        /// wineの実行ファイルのパスを取得します
+        /// 使用するWineのインストールディレクトリを取得します
         /// </summary>
-        public String getWineExecutable()
+        public String getWineTop()
+        {
+            if( WineTopBuiltin ){
+                return getBuiltinWineTop();
+            }else{
+                return WineTop;
+            }
+        }
+        
+        /// <summary>
+        /// Cadencii付属のWineのインストールディレクトリを取得します
+        /// </summary>
+        private String getBuiltinWineTop()
         {
             String appstart = PortUtil.getApplicationStartupPath();
-            // WineMinimum.bundleの場所は../WineMinimum.bundleまたは./WineMinimum.bundleのどちらか
+            // Wine.bundleの場所は../Wine.bundleまたは./Wine.bundleのどちらか
             // まず../Wine.bundleがあるかどうかチェック
             String parent = PortUtil.getDirectoryName( appstart );
-            String ret = fsys.combine( parent, "WineMinimum.bundle" );
+            String ret = fsys.combine( parent, "Wine.bundle" );
             ret = fsys.combine( ret, "Contents" );
             ret = fsys.combine( ret, "SharedSupport" );
-            ret = fsys.combine( ret, "bin" );
-            ret = fsys.combine( ret, "wine" );
             if( !fsys.isFileExists( ret ) ){
-                // ../WineMinimum.bundleが無い場合
-                ret = fsys.combine( appstart, "WineMinimum.bundle" );
+                // ../Wine.bundleが無い場合
+                ret = fsys.combine( appstart, "Wine.bundle" );
                 ret = fsys.combine( ret, "Contents" );
                 ret = fsys.combine( ret, "SharedSupport" );
-                ret = fsys.combine( ret, "bin" );
-                ret = fsys.combine( ret, "wine" );
             }
+            return ret;
+        }
+
+        /// <summary>
+        /// wineの実行ファイルのパスを取得します
+        /// </summary>
+        public String getBuiltinWineExecutable()
+        {
+            String ret = getBuiltinWineTop();
+            ret = fsys.combine( ret, "bin" );
+            ret = fsys.combine( ret, "wine" );
 #if DEBUG
-            sout.println( "EditorConfig#getWineExecutable; ret=" + ret );
+            sout.println( "EditorConfig#getBuiltinWineExecutable; ret=" + ret );
 #endif
             return ret;
         }

@@ -4850,10 +4850,11 @@ namespace org.kbinani.cadencii
             menuHelpLog.setMnemonic( KeyEvent.VK_L );
             menuHelpLogSwitch.setText( Logger.isEnabled() ? _( "Enabled" ) : _( "Disabled" ) );
             menuHelpLogSwitch.setMnemonic( KeyEvent.VK_L );
-            menuHelpLogOpen.setText( "Open" );
+            menuHelpLogOpen.setText( _( "Open" ) );
             menuHelpLogOpen.setMnemonic( KeyEvent.VK_O );
             menuHelpAbout.setText( _( "About Cadencii" ) );
             menuHelpAbout.setMnemonic( KeyEvent.VK_A );
+            menuHelpManual.setText( _( "Manual" ) + " (PDF" );
 
             menuHiddenCopy.setText( _( "Copy" ) );
             menuHiddenCut.setText( _( "Cut" ) );
@@ -12819,9 +12820,10 @@ namespace org.kbinani.cadencii
                 mDialogPreference.setUseUserDefinedAutoVibratoType( AppManager.editorConfig.UseUserDefinedAutoVibratoType );
                 mDialogPreference.setWinePrefix( AppManager.editorConfig.WinePrefix );
                 mDialogPreference.setWineTop( AppManager.editorConfig.WineTop );
+                mDialogPreference.setWineBuiltin( AppManager.editorConfig.WineTopBuiltin );
 
                 String old_wine_prefix = AppManager.editorConfig.WinePrefix;
-                String old_wine_top = AppManager.editorConfig.WineTop;
+                String old_wine_top = AppManager.editorConfig.getWineTop();
 
                 mDialogPreference.setLocation( getFormPreferedLocation( mDialogPreference ) );
 
@@ -13053,11 +13055,12 @@ namespace org.kbinani.cadencii
                     AppManager.editorConfig.UseUserDefinedAutoVibratoType = mDialogPreference.isUseUserDefinedAutoVibratoType();
                     AppManager.editorConfig.WinePrefix = mDialogPreference.getWinePrefix();
                     AppManager.editorConfig.WineTop = mDialogPreference.getWineTop();
+                    AppManager.editorConfig.WineTopBuiltin = mDialogPreference.isWineBuiltin();
 
 #if JAVA
                     // WinePrefix, WineTopのどちらかが変わっていたら，ドライバー・デーモンを再起動する
                     if( !str.compare( old_wine_prefix, AppManager.editorConfig.WinePrefix ) ||
-                        !str.compare( old_wine_top, AppManager.editorConfig.WineTop ) ){
+                        !str.compare( old_wine_top, AppManager.editorConfig.getWineTop() ) ){
                         VSTiDllManager.restartVocaloidrvDaemon();
                     }
 #endif

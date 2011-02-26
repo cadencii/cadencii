@@ -157,7 +157,7 @@ namespace org.kbinani.cadencii
             mTempDir = fsys.combine( AppManager.getCadenciiTempDir(), AppManager.getID() );
             mResamplerWithWine = mConfig.isResamplerWithWineAt( resampler_index );
             mWavtoolWithWine = mConfig.WavtoolWithWine;
-            mWine = mConfig.getWineExecutable();
+            mWine = mConfig.getBuiltinWineExecutable();
 
             mVsq = (VsqFileEx)vsq.clone();
             mVsq.updateTotalClocks();

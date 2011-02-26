@@ -4415,7 +4415,7 @@ public class FormMain extends BForm {
     private BMenuItem getMenuHelpManual() {
         if (menuHelpManual == null) {
             menuHelpManual = new BMenuItem();
-            menuHelpManual.setText("Manual(PDF)");
+            menuHelpManual.setText("Manual (PDF)");
         }
         return menuHelpManual;
     }
