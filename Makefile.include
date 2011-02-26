@@ -19,8 +19,8 @@ TO_DEVNULL=@TO_DEVNULL@
 WINE_VERSION=1.1.2
 WINE_DIR=./wine-$(WINE_VERSION)/
 JAVAC=javac
-BUNDLE=./build/java/WineMinimum.bundle/Contents/SharedSupport
-APP=./build/java/Cadencii.app/Contents
+BUNDLE=build/java/WineMinimum.bundle/Contents/SharedSupport
+APP=build/java/Cadencii.app/Contents
 
 SRC_JAPPUTIL=@SRC_JAPPUTIL@
 SRC_JCORLIB=@SRC_JCORLIB@
@@ -52,7 +52,7 @@ jcadencii_mac: jcadencii ./Cadencii/PkgInfo ./Cadencii/Info.plist ./build/java/W
 	cp ./build/java/vocaloidrv.exe $(APP)/Resources/Java
 	cp ./build/java/createtempdir.exe $(APP)/Resources/Java
 	cp ./build/java/getvocaloidinfo.exe $(APP)/Resources/Java
-	cp ./build/manual.pdf $(APP)/Resources/Java
+	cp ./build/java/manual.pdf $(APP)/Resources/Java
 	cp -r -p ./build/java/WineMinimum.bundle $(APP)/Resources/WineMinimum.bundle
 	rm $(APP)/Resources/WineMinimum.bundle/Contents/SharedSupport/lib/libwine.1.dylib
 	rm $(APP)/Resources/WineMinimum.bundle/Contents/SharedSupport/lib/libwine.dylib
@@ -65,46 +65,22 @@ jcadencii_mac: jcadencii ./Cadencii/PkgInfo ./Cadencii/Info.plist ./build/java/W
 # wget source of wine
 ./wine-$(WINE_VERSION).tar.bz2:
 	curl -o ./wine-$(WINE_VERSION).tar.bz2 http://ibiblio.org/pub/linux/system/emulators/wine/wine-$(WINE_VERSION).tar.bz2
+
+./wine-$(WINE_VERSION)/Makefile: ./wine-$(WINE_VERSION).tar.bz2
 	tar jxvf ./wine-$(WINE_VERSION).tar.bz2
-	cd wine-$(WINE_VERSION) && ./configure && $(MAKE) depend && $(MAKE)
+	mkdir -p $(BUNDLE)
+	{ \
+	  wd=`pwd`; \
+	  cd wine-$(WINE_VERSION) && ./configure --prefix=$$wd/$(BUNDLE); \
+	}
+	
 
 # prepare bundle
-./build/java/WineMinimum.bundle: ./wine-$(WINE_VERSION).tar.bz2
+./build/java/WineMinimum.bundle: ./wine-$(WINE_VERSION)/Makefile
 	rm -rf ./build/java/WineMinimum.bundle
-	mkdir -p $(BUNDLE)/bin
-	mkdir -p $(BUNDLE)/lib/wine
-	cp $(WINE_DIR)loader/wine-pthread $(BUNDLE)/bin/wine
-	cp $(WINE_DIR)server/wineserver $(BUNDLE)/bin/wineserver
-	install_name_tool -change @executable_path/../libs/wine/libwine.1.dylib @executable_path/../lib/libwine.1.dylib $(BUNDLE)/bin/wine
-	install_name_tool -change @executable_path/../libs/wine/libwine.1.dylib @executable_path/../lib/libwine.1.dylib $(BUNDLE)/bin/wineserver
-	cp $(WINE_DIR)libs/wine/libwine.1.0.dylib $(BUNDLE)/lib/libwine.1.0.dylib
-	ln -s libwine.1.0.dylib $(BUNDLE)/lib/libwine.1.dylib
-	ln -s libwine.1.0.dylib $(BUNDLE)/lib/libwine.dylib
-	cp $(WINE_DIR)dlls/advapi32/advapi32.dll.so $(BUNDLE)/lib/wine/advapi32.dll.so
-	cp $(WINE_DIR)dlls/iphlpapi/iphlpapi.dll.so $(BUNDLE)/lib/wine/iphlpapi.dll.so
-	cp $(WINE_DIR)dlls/kernel32/kernel32.dll.so $(BUNDLE)/lib/wine/kernel32.dll.so
-	cp $(WINE_DIR)dlls/ntdll/ntdll.dll.so $(BUNDLE)/lib/wine/ntdll.dll.so
-	cp $(WINE_DIR)dlls/rpcrt4/rpcrt4.dll.so $(BUNDLE)/lib/wine/rpcrt4.dll.so
-	cp $(WINE_DIR)dlls/version/version.dll.so $(BUNDLE)/lib/wine/version.dll.so
-	cp $(WINE_DIR)dlls/user32/user32.dll.so $(BUNDLE)/lib/wine/user32.dll.so
-	cp $(WINE_DIR)dlls/gdi32/gdi32.dll.so $(BUNDLE)/lib/wine/gdi32.dll.so
-	cp $(WINE_DIR)dlls/comdlg32/comdlg32.dll.so $(BUNDLE)/lib/wine/comdlg32.dll.so
-	cp $(WINE_DIR)dlls/shell32/shell32.dll.so $(BUNDLE)/lib/wine/shell32.dll.so
-	cp $(WINE_DIR)dlls/ole32/ole32.dll.so $(BUNDLE)/lib/wine/ole32.dll.so
-	cp $(WINE_DIR)dlls/lz32/lz32.dll.so $(BUNDLE)/lib/wine/lz32.dll.so
-	cp $(WINE_DIR)dlls/shlwapi/shlwapi.dll.so $(BUNDLE)/lib/wine/shlwapi.dll.so
-	cp $(WINE_DIR)dlls/winspool.drv/winspool.drv.so $(BUNDLE)/lib/wine/winspool.drv.so
-	cp $(WINE_DIR)dlls/comctl32/comctl32.dll.so $(BUNDLE)/lib/wine/comctl32.dll.so
-	cp $(WINE_DIR)dlls/uxtheme/uxtheme.dll.so $(BUNDLE)/lib/wine/uxtheme.dll.so
-	cp $(WINE_DIR)dlls/winmm/winmm.dll.so $(BUNDLE)/lib/wine/winmm.dll.so
-	cp $(WINE_DIR)dlls/oleaut32/oleaut32.dll.so $(BUNDLE)/lib/wine/oleaut32.dll.so
-	cp $(WINE_DIR)dlls/winex11.drv/winex11.drv.so $(BUNDLE)/lib/wine/winex11.drv.so
-	cp $(WINE_DIR)dlls/imm32/imm32.dll.so $(BUNDLE)/lib/wine/imm32.dll.so
-	cp $(WINE_DIR)dlls/winequartz.drv/winequartz.drv.so $(BUNDLE)/lib/wine/winequartz.drv.so
-	cp $(WINE_DIR)dlls/ntoskrnl.exe/ntoskrnl.exe.so $(BUNDLE)/lib/wine/ntoskrnl.exe.so
-	cp $(WINE_DIR)programs/services/services.exe.so $(BUNDLE)/lib/wine/services.exe.so
-	cp $(WINE_DIR)programs/wineboot/wineboot.exe.so $(BUNDLE)/lib/wine/wineboot.exe.so
-#	cp $(WINE_DIR)programs/winedevice/winedevice.exe.so $(BUNDLE)/lib/wine/winedevice.exe.so
+	mkdir -p $(BUNDLE)
+	cd wine-$(WINE_VERSION) && $(MAKE) depend && $(MAKE)
+	cd wine-$(WINE_VERSION) && $(MAKE) install
 	{ \
 	  wine_version=`PATH='./build/java/WineMinimum.bundle/Contents/SharedSupport/bin'":$PATH";wine --version`; \
 	  cadencii_version=`java -jar ./build/java/Cadencii.jar --version`; \
@@ -215,7 +191,7 @@ jcorlib: pp_cs2java.jar $(SRC_JCORLIB)
 ########################################################################
 # post process for BuildJavaUI
 #
-jpostprocess: ./BuildJavaUI/src/org/kbinani/math.java ./BuildJavaUI/src/org/kbinani/PortUtil.java ./BuildJavaUI/src/org/kbinani/InternalStdErr.java ./BuildJavaUI/src/org/kbinani/InternalStdOut.java ./BuildJavaUI/src/org/kbinani/ByRef.java ./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java ./BuildJavaUI/src/org/kbinani/cadencii/IconParader.java ./BuildJavaUI/src/org/kbinani/fsys.java ./BuildJavaUI/src/org/kbinani/str.java ./BuildJavaUI/src/org/kbinani/vec.java
+jpostprocess: ./BuildJavaUI/src/org/kbinani/math.java ./BuildJavaUI/src/org/kbinani/PortUtil.java ./BuildJavaUI/src/org/kbinani/ByRef.java ./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java ./BuildJavaUI/src/org/kbinani/cadencii/IconParader.java ./BuildJavaUI/src/org/kbinani/fsys.java ./BuildJavaUI/src/org/kbinani/str.java ./BuildJavaUI/src/org/kbinani/vec.java
 
 ./BuildJavaUI/src/org/kbinani/math.java: ./build/java/org/kbinani/math.java
 	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/math.java $(TO_DEVNULL)
