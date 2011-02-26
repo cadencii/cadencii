@@ -57,22 +57,28 @@ public:
 	int dataLength;
     int *data;
 
-    int compareTo( MidiEvent *item ){
-        if ( clock != item->clock ) {
-            return (int)(clock - item->clock);
+    int compareTo( const MidiEvent *item )
+    {
+        return compare( this, item );
+    }
+
+    static int compare( const MidiEvent *item0, const MidiEvent *item1 )
+    {
+        if ( item0->clock != item1->clock ) {
+            return (int)(item0->clock - item1->clock);
         } else {
-            int first_this = firstByte & 0xf0;
-            int first_item = item->firstByte & 0xf0;
+            int first_this = item0->firstByte & 0xf0;
+            int first_item = item1->firstByte & 0xf0;
 
             if ( (first_this == 0x80 || first_this == 0x90) && (first_item == 0x80 || first_item == 0x90) ) {
-                if ( data != NULL && dataLength >= 2 && item->data != NULL && item->dataLength >= 2 ) {
-                    if ( first_item == 0x90 && item->data[1] == 0 ) {
+                if ( item0->data != NULL && item0->dataLength >= 2 && item1->data != NULL && item1->dataLength >= 2 ) {
+                    if ( first_item == 0x90 && item1->data[1] == 0 ) {
                         first_item = 0x80;
                     }
-                    if ( first_this == 0x90 && data[1] == 0 ) {
+                    if ( first_this == 0x90 && item0->data[1] == 0 ) {
                         first_this = 0x80;
                     }
-                    if ( data[0] == item->data[0] ) {
+                    if ( item0->data[0] == item1->data[0] ) {
                         if ( first_this == 0x90 ) {
                             if ( first_item == 0x80 ) {
                                 // ON -> OFF
@@ -93,13 +99,21 @@ public:
                     }
                 }
             }
-            return (int)(clock - item->clock);
+            return (int)(item0->clock - item1->clock);
         }
     }
 
     ~MidiEvent(){
         dataLength = 0;
         if( data ) delete[] data;
+    }
+};
+
+struct midieventpred
+{
+    bool operator()( const MidiEvent *left, const MidiEvent *right ) const {
+        // rightが順序大ならtrue
+        return MidiEvent::compare( right, left ) > 0;
     }
 };
 

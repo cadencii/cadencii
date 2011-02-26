@@ -30,6 +30,7 @@ using System.Windows.Forms;
 using System.Threading;
 using org.kbinani;
 using org.kbinani.java.awt;
+using org.kbinani.java.io;
 using org.kbinani.java.util;
 using org.kbinani.media;
 using org.kbinani.vsq;
@@ -273,7 +274,41 @@ namespace org.kbinani.cadencii
 
             // NRPNを作成
             int ms_present = mConfig.PreSendTime;
+#if DEBUG
+            sout.println( "VocaloidWaveGenerator#begin; ms_present=" + ms_present );
+#endif
             VsqNrpn[] vsq_nrpn = VsqFile.generateNRPN( split, mTrack, ms_present );
+#if DEBUG
+#if JAVA
+            String suffix = "_java";
+#else
+            String suffix = "_win";
+#endif
+            String path = fsys.combine( PortUtil.getApplicationStartupPath(), "vocaloid_wave_generator_begin_data_" + mTrack + suffix + ".txt" );
+            BufferedWriter bw = null;
+            try {
+                bw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( path ), "UTF-8" ) );
+                const String format = "    {0,8} 0x{1:X4} {2,-35} 0x{3:X2} 0x{4:X2}";
+                for ( int i = 0; i < vsq_nrpn.Length; i++ ) {
+                    VsqNrpn item = vsq_nrpn[i];
+                    String name = NRPN.getName( item.Nrpn );
+                    bw.write( string.Format( format, item.Clock, item.Nrpn, name, item.DataMsb, item.DataLsb ) );
+                    bw.newLine();
+                }
+            } catch ( Exception ex ) {
+#if JAVA
+                ex.printStackTrace();
+#endif
+            } finally {
+                if ( bw != null ) {
+                    try {
+                        bw.close();
+                    } catch ( Exception ex2 ) {
+                    }
+                }
+                bw = null;
+            }
+#endif
             NrpnData[] nrpn = VsqNrpn.convert( vsq_nrpn );
 
             // 最初のテンポ指定を検索
@@ -567,7 +602,9 @@ namespace org.kbinani.cadencii
                         "src_master.bin" ), "rw" ); 
             fos_master.write( 0x01 );
             fos_master.write( 0x04 );
+            byte[] buf = PortUtil.getbytes_uint32_le( tempo_count );
             fos_master.write( buf, 0, 4 );
+            count = 0;
             for( int i = 0; i < tempo_count; i++ ){
                 buf = PortUtil.getbytes_uint32_le( masterClocksSrc[i] );
                 fos_master.write( buf, 0, 4 );
@@ -595,10 +632,7 @@ namespace org.kbinani.cadencii
             fos_body.close();
             // synth
             long act_total_samples = mTotalSamples + mTrimRemain;
-            out.write( 0x03 );
-            out.write( 0x08 );
             buf = PortUtil.getbytes_int64_le( act_total_samples );
-            out.write( buf, 0, 8 );
             RandomAccessFile fos_synth =
                 new RandomAccessFile(
                     fsys.combine(

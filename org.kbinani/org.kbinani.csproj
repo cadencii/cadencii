@@ -88,8 +88,6 @@
     <Compile Include="fft.cs" />
     <Compile Include="fsys.cs" />
     <Compile Include="imageio.cs" />
-    <Compile Include="InternalStdErr.cs" />
-    <Compile Include="InternalStdOut.cs" />
     <Compile Include="io.cs" />
     <Compile Include="Iterator.cs" />
     <Compile Include="lang.cs" />

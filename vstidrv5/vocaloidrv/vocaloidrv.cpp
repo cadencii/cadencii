@@ -158,7 +158,8 @@ void vocaloidrv::merge_events( vector<MidiEvent *> &x0, vector<MidiEvent *> &y0,
     for ( int i = 0; i < y0.size(); i++ ) {
         ret.push_back( y0[i] );
     }
-    bool changed = true;
+    stable_sort( ret.begin(), ret.end(), midieventpred() );
+    /*bool changed = true;
     while ( changed ) {
         changed = false;
         for ( int i = 0; i < ret.size() - 1; i++ ) {
@@ -169,8 +170,7 @@ void vocaloidrv::merge_events( vector<MidiEvent *> &x0, vector<MidiEvent *> &y0,
                 changed = true;
             }
         }
-
-    }
+    }//*/
 }
 
 /// <summary>
@@ -198,13 +198,9 @@ uint64_t vocaloidrv::startRendering( uint64_t total_samples, int sample_rate )
     MidiEvent *current = NULL;// = new MidiEvent();// = lpEvents;
     vector<void *> mman;
 
-    float *left_ch;
-    float *right_ch;
-    float **out_buffer;
-
-    left_ch = new float[sampleRate];// (float *)malloc( sizeof( float ) * sampleRate );
-    right_ch = new float[sampleRate];// (float *)malloc( sizeof( float ) * sampleRate );
-    out_buffer = new float*[2];// (float **)malloc( sizeof( float* ) * 2 );
+    float *left_ch = new float[sampleRate];// (float *)malloc( sizeof( float ) * sampleRate );
+    float *right_ch = new float[sampleRate];// (float *)malloc( sizeof( float ) * sampleRate );
+    float **out_buffer = new float*[2];// (float **)malloc( sizeof( float* ) * 2 );
     mman.push_back( left_ch );
     mman.push_back( right_ch );
     mman.push_back( out_buffer );
@@ -270,6 +266,14 @@ uint64_t vocaloidrv::startRendering( uint64_t total_samples, int sample_rate )
                     if ( addr_msb == 0x50 && addr_lsb == 0x01 ) {
                         dwDelay = (data_msb & 0xff) << 7 | (data_lsb & 0x7f);
                     }
+#ifdef TEST
+                    {
+                        char buf[512];
+                        sprintf( buf, "addr_msb=0x%02X; addr_lsb=0x%02X; data_msb=0x%02X; data_lsb=0x%02X", addr_msb, addr_lsb, data_msb, data_lsb );
+                        string s = buf;
+                        println( "vocaloidrv::startRendering;     " + s );
+                    }
+#endif
                     break;
                 }
             }
@@ -626,6 +630,12 @@ bool vocaloidrv::sendEvent( unsigned char *midi_data, int *clock_data, int num_d
             pEvent->data[1] = midi_data[count + 2];
             pEvent->data[2] = 0x00;
 			pEvent->dataLength = 3;
+#ifdef TEST
+            char buf[50];
+            sprintf( buf, "0x%02X 0x%02X 0x%02X", midi_data[count], midi_data[count + 1], midi_data[count + 2] );
+            string s = buf;
+            println( "vocaloidrv::sendEvent; " + s );
+#endif
         }
         (targetTrack == 0 ? mEvents0 : mEvents1).push_back( pEvent );
     }

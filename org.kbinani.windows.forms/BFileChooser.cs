@@ -61,7 +61,10 @@ namespace org.kbinani.windows.forms {
 
         public void setSelectedFile( String value ) {
             m_selected_file = value;
-            String dir = PortUtil.getDirectoryName( value );
+            String dir = "";
+            if ( value != null && value.Length > 0 ) {
+                dir = PortUtil.getDirectoryName( value );
+            }
             String name = PortUtil.getFileName( value );
             m_open.FileName = name;
             m_open.InitialDirectory = dir;

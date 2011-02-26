@@ -11,6 +11,7 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#define MIDI_PRINT_TO_FILE
 #if JAVA
 package org.kbinani.vsq;
 
@@ -116,14 +117,14 @@ namespace org.kbinani.vsq
                             if ( m_events.get( track ).get( i ).firstByte == 0xb0 ) {
                                 switch ( m_events.get( track ).get( i ).data[0] ) {
                                     case 0x63:
-                                        msb = m_events.get( track ).get( i ).data[1];
+                                        msb = (byte)(0xff & m_events.get( track ).get( i ).data[1]);
                                         lsb = 0x0;
                                         break;
                                     case 0x62:
-                                        lsb = m_events.get( track ).get( i ).data[1];
+                                        lsb = (byte)(0xff & m_events.get( track ).get( i ).data[1]);
                                         break;
                                     case 0x06:
-                                        data_msb = m_events.get( track ).get( i ).data[1];
+                                        data_msb = (byte)(0xff & m_events.get( track ).get( i ).data[1]);
                                         ushort nrpn = (ushort)(msb << 8 | lsb);
                                         String name = NRPN.getName( nrpn );
                                         if ( name.Equals( "" ) ) {
@@ -138,7 +139,7 @@ namespace org.kbinani.vsq
                                         }
                                         break;
                                     case 0x26:
-                                        data_lsb = m_events.get( track ).get( i ).data[1];
+                                        data_lsb = (byte)(0xff & m_events.get( track ).get( i ).data[1]);
                                         ushort nrpn2 = (ushort)(msb << 8 | lsb);
                                         String name2 = NRPN.getName( nrpn2 );
                                         if ( name2.Equals( "" ) ) {

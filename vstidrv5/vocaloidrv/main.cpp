@@ -19,7 +19,7 @@
 #pragma comment(lib, "shlwapi.lib")
 
 void print_help();
-void load_midi_from_file( FILE *file, unsigned char *midi, int *clock, int *buffer_num, int *clock_num );
+void load_midi_from_file( FILE *file, dataset *data, FILE *debug );
 // モニター用のディレクトリを監視するスレッド用
 unsigned int __stdcall monitor_dir( void *args );
 
@@ -83,7 +83,7 @@ unsigned int __stdcall monitor_dir( void *args )
 	return 0;
 }
 
-uint64_t read_uint64_le( FILE *fp )
+uint64_t read_uint64_le( FILE *fp, FILE *debug )
 {
 #ifdef _DEBUG
     cerr << "read_uint64_le" << endl;
@@ -106,6 +106,9 @@ uint64_t read_uint64_le( FILE *fp )
 #endif
             continue;
         }
+        if( debug ){
+            fputc( t, debug );
+        }
         a++;
         buf[k] = (unsigned char)(0xff & t);
     }
@@ -121,7 +124,7 @@ uint64_t read_uint64_le( FILE *fp )
     return ret;
 }
 
-uint32_t read_uint32_le( FILE *fp )
+uint32_t read_uint32_le( FILE *fp, FILE *debug )
 {
 #ifdef _DEBUG
     cerr << "read_uint32_le" << endl;
@@ -144,6 +147,9 @@ uint32_t read_uint32_le( FILE *fp )
 #endif
             continue;
         }
+        if( debug ){
+            fputc( t, debug );
+        }
         a++;
         buf[k] = (unsigned char)(0xff & t);
     }
@@ -153,7 +159,7 @@ uint32_t read_uint32_le( FILE *fp )
     return buf[0] | (buf[1] << 8) | (buf[2] << 16) | (buf[3] << 24);
 }
 
-void load_midi_from_file( FILE *fp, unsigned char *midi, int *clock, int *buffer_num, int *clock_num )
+void load_midi_from_file( FILE *fp, dataset *data, FILE *debug )
 {
 #ifdef _DEBUG
     cerr << "load_midi_from_file" << endl;
@@ -165,12 +171,12 @@ void load_midi_from_file( FILE *fp, unsigned char *midi, int *clock, int *buffer
 	const int UNIT_LEN = 512;
     int i = 0;
     int j = 0;
-    int maxcount = *clock_num;
-	*clock_num = 0;
+    int maxcount = data->data_count;
+    data->data_count = 0;
     bool consider_maxcount = maxcount > 0;
     while( consider_maxcount && i < maxcount ){
         // クロック，4 bytes
-        int c = (int)read_uint32_le( fp );
+        int c = (int)read_uint32_le( fp, debug );
         // MIDI data 3 bytes
         int a = 0;
         for( int k = 0; k < 3; k++ ){
@@ -189,6 +195,9 @@ void load_midi_from_file( FILE *fp, unsigned char *midi, int *clock, int *buffer
 #endif
                 continue;
             }
+            if( debug ){
+                fputc( t, debug );
+            }
             a++;
             mid[k] = (unsigned char)(0xff & t);
         }
@@ -197,19 +206,17 @@ void load_midi_from_file( FILE *fp, unsigned char *midi, int *clock, int *buffer
         if( a < 3 ){
             break;
         }
-        if( i >= (*buffer_num) ){
-            (*buffer_num) += UNIT_LEN;
-            clock = (int *)realloc( clock, sizeof( int ) * (*buffer_num) );
-            midi = (unsigned char *)realloc( midi, sizeof( unsigned char ) * ((*buffer_num) * 3) );
+        if( data->ensureCapacity( i + 1 ) == false ){
+            break;
         }
-        clock[i] = c;
-        midi[j] = mid[0];
-        midi[j + 1] = mid[1];
-        midi[j + 2] = mid[2];
+        data->clock[i] = c;
+        data->midi[j] = mid[0];
+        data->midi[j + 1] = mid[1];
+        data->midi[j + 2] = mid[2];
         i++;
         j += 3;
     }
-	*clock_num = i;
+    data->data_count = i;
 }
 
 int main( int argc, char* argv[] )
@@ -261,11 +268,6 @@ int main( int argc, char* argv[] )
 		_setmode( _fileno( stdout ), _O_BINARY );
 	}
 
-	const int UNIT_LEN = 512;
-	int clocks_length = UNIT_LEN;
-	int *clocks = (int *)malloc( sizeof( int ) * clocks_length );
-	unsigned char *dat = (unsigned char *)malloc( sizeof( unsigned char ) * (clocks_length * 3) );
-
     cerr << "mode_e=" << (mode_e ? "True" : "False") << endl;
 
     if( mode_e ){
@@ -316,21 +318,34 @@ int main( int argc, char* argv[] )
             switch( kind ){
 				case 0x01:
 				case 0x02:{
-                    int size = read_uint32_le( stdin );
+                    FILE *debug = NULL;
+#ifdef TEST
+                    if( kind == 0x01 ){
+                        debug = fopen( "received_master.bin", "wb" );
+                    }else{
+                        debug = fopen( "received_body.bin", "wb" );
+                    }
+                    fputc( kind, debug );
+                    fputc( len, debug );
+#endif
+                    int size = read_uint32_le( stdin, debug );
 #ifdef TEST
                     sprintf_s( buffer, BUFLEN, "::main; before; size=%d", size );
                     vocaloidrv::println( buffer );
 #endif
-                    load_midi_from_file( stdin, dat, clocks, &clocks_length, &size );
+                    dataset d;
+                    d.data_count = size;
+                    load_midi_from_file( stdin, &d, debug );
 #ifdef TEST
-                    sprintf_s( buffer, BUFLEN, "::main; after; size=%d; clocks_length=%d", size, clocks_length );
+                    fclose( debug );
+                    sprintf_s( buffer, BUFLEN, "::main; after; size=%d; d.data_count=%d", size, d.data_count );
                     vocaloidrv::println( buffer );
 #endif
-                    drv.sendEvent( dat, clocks, size, kind - 1 );
+                    drv.sendEvent( d.midi, d.clock, d.data_count, kind - 1 );
                     break;
                 }
                 case 0x03:{
-                    uint64_t total_samples = read_uint64_le( stdin );
+                    uint64_t total_samples = read_uint64_le( stdin, NULL );
 #ifdef TEST
                     sprintf_s( buffer, BUFLEN, "::main; total_samples=%llu", total_samples );
                     vocaloidrv::println( buffer );
@@ -353,12 +368,11 @@ int main( int argc, char* argv[] )
 			if( NULL == fp ){
 				continue;
 			}
-			load_midi_from_file( fp, dat, clocks, &clocks_length, &num );
+            dataset d;
+            load_midi_from_file( fp, &d, NULL );
 			fclose( fp );
-			drv.sendEvent( dat, clocks, num, track );
+            drv.sendEvent( d.midi, d.clock, d.data_count, track );
 		}
-		if( clocks ) free( clocks );
-		if( dat ) free( dat );
 
 		drv.startRendering( total_samples, sample_rate );
 	}

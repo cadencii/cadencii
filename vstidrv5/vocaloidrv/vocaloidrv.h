@@ -13,12 +13,68 @@
  */
 #pragma once
 
-#define TEST
+//#define TEST
 
 #include "../vstidrv.h"
 #include <io.h>
 #include <fcntl.h>
 #include <stdint.h>
+#include <algorithm>
+
+class dataset
+{
+public:
+    dataset()
+    {
+        buffer_count = BUFLEN;
+        midi = (unsigned char*)malloc( sizeof( unsigned char ) * (buffer_count * 3) );
+        clock = (int *)malloc( sizeof( int ) * buffer_count );
+        data_count = 0;
+    };
+
+    ~dataset()
+    {
+        buffer_count = 0;
+        data_count = 0;
+        if( midi ) free( midi );
+        if( clock ) free( clock );
+    };
+
+    bool ensureCapacity( int count )
+    {
+        int delta = BUFLEN;
+        if( count > buffer_count ){
+            while( count > buffer_count + delta ){
+                delta += BUFLEN;
+            }
+            buffer_count += delta;
+            void *ptr = NULL;
+            if( (ptr = realloc( clock, sizeof( int ) * buffer_count )) == NULL ){
+                goto hell;
+            }
+            clock = (int *)ptr;
+            ptr = NULL;
+            if( (ptr = realloc( midi, sizeof( unsigned char ) * (buffer_count * 3) )) == NULL ){
+                goto hell;
+            }
+            midi = (unsigned char*)ptr;
+        }
+        return true;
+    hell:
+        buffer_count -= delta;
+        return false;
+    };
+
+public:
+    unsigned char *midi;
+    int *clock;
+    int data_count;
+
+private:
+    static const int BUFLEN = 512;
+    int buffer_count;
+
+};
 
 class vocaloidrv : public vstidrv
 {

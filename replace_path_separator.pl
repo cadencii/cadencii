@@ -89,6 +89,7 @@ import java.util.*;
 
 \#else
 
+using System;
 using org.kbinani.java.util;
 
 namespace org.kbinani.cadencii
