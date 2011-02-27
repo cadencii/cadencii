@@ -12,13 +12,26 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
+
 package org.kbinani.apputil;
 
-import java.util.*;
-import java.io.*;
-import java.awt.image.*;
-import org.kbinani.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.util.Iterator;
+import java.util.TreeMap;
+import java.util.Vector;
+
+import org.kbinani.ByRef;
+import org.kbinani.PortUtil;
+import org.kbinani.str;
+
 #else
+
 using System;
 using org.kbinani;
 using org.kbinani.java.util;
@@ -28,7 +41,8 @@ namespace org.kbinani.apputil {
     using boolean = System.Boolean;
 #endif
 
-    public class MessageBody {
+    public class MessageBody
+    {
         public String lang;
         public String poHeader = "";
         public TreeMap<String, MessageBodyEntry> list = new TreeMap<String, MessageBodyEntry>();
@@ -194,7 +208,7 @@ namespace org.kbinani.apputil {
             message.value = str.sub( message.value, 0, PortUtil.getStringLength( message.value ) - 1 );
         }
 
-        private static String readTillMessageEnd( BufferedReader sr, String first_line, String entry, ByRef<String> msg, ByRef<String[]> locations )
+        private static String readTillMessageEnd( java.io.BufferedReader sr, String first_line, String entry, ByRef<String> msg, ByRef<String[]> locations )
 #if JAVA
             throws IOException
 #endif

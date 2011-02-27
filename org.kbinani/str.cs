@@ -12,10 +12,12 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
+
 package org.kbinani;
 
-import java.text.*;
-import java.util.*;
+import java.text.DecimalFormat;
+import java.util.Vector;
+
 #else
 
 #if __cplusplus

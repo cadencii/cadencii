@@ -14,7 +14,8 @@
 #if JAVA
 package org.kbinani.apputil;
 
-import java.util.*;
+import java.util.Vector;
+
 #else
 using System;
 using org.kbinani.java.util;

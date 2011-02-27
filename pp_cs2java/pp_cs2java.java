@@ -395,7 +395,7 @@ class pp_cs2java {
                     if ( (new File( include_path )).exists() ) {
                     	BufferedReader sr_include = null;
                         try{
-                        	sr_include = new BufferedReader( new InputStreamReader( new BOMSkipFileInputStream( include_path ) ) );
+                        	sr_include = new BufferedReader( new InputStreamReader( new BOMSkipFileInputStream( include_path ), s_encoding ) );
                             String line2 = "";
                             while ( (line2 = sr_include.readLine()) != null ) {
                                 sw.write( indent + line2 );
@@ -427,7 +427,7 @@ class pp_cs2java {
                     if ( (new File( include_path )).exists() ) {
                     	BufferedReader sr_include = null;
                     	try{
-                    		sr_include = new BufferedReader( new InputStreamReader( new BOMSkipFileInputStream( include_path ) ) );
+                    		sr_include = new BufferedReader( new InputStreamReader( new BOMSkipFileInputStream( include_path ), s_encoding ) );
                             String line2 = "";
                             boolean section_begin = false;
                             while ( (line2 = sr_include.readLine()) != null ) {
@@ -497,7 +497,7 @@ class pp_cs2java {
         sw = null;
         sr = null;
         try{
-        	sw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( tmp ), enc ) );
+        	sw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( tmp ), s_encoding ) );
         	sr = new BufferedReader( new InputStreamReader( new BOMSkipFileInputStream( tmp2 ), s_encoding ) );
             String line = "";
             int line_num = 0;

@@ -12,16 +12,21 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
+
 package org.kbinani.apputil;
 
 import org.kbinani.*;
-import java.util.*;
+import java.util.Vector;
+import java.util.Iterator;
+
 #else
+
 using System;
 using org.kbinani;
 using org.kbinani.java.util;
 
-namespace org.kbinani.apputil {
+namespace org.kbinani.apputil
+{
 #endif
 
     public class Messaging {
