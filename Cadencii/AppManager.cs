@@ -3652,11 +3652,10 @@ namespace org.kbinani.cadencii
 #if JAVA
             // getvocaloidinfo.exeを呼ぶ
             String tmp = PortUtil.createTempFile();
-            String dev_null = PortUtil.createTempFile();
+            String prefix = Utility.normalizePath( editorConfig.WinePrefix );
 #if JAVA_MAC
             // wine経由でユーティリティを呼ぶ
             String vocaloidrv_sh = fsys.combine( PortUtil.getApplicationStartupPath(), "vocaloidrv.sh" );
-            String prefix = Utility.normalizePath( editorConfig.WinePrefix );
             String winetop = Utility.normalizePath( editorConfig.WineTop );
             String getvocaloidinfo = 
                 fsys.combine( PortUtil.getApplicationStartupPath(), "getvocaloidinfo.exe" );
@@ -3665,7 +3664,7 @@ namespace org.kbinani.cadencii
             sout.println( "AppManager#init; isFileExists(vocaloidrv_sh)=" + fsys.isFileExists( vocaloidrv_sh ) );
             sout.println( "AppManager#init; isDirectoryExists(winetop)=" + PortUtil.isDirectoryExists( winetop ) );
             sout.println( "AppManager#init; isDirectoryExists(prefix)=" + PortUtil.isDirectoryExists( prefix ) );
-#endif
+#endif // DEBUG
             try{
                 Process p = Runtime.getRuntime().exec( 
                     new String[]{ 
@@ -3690,7 +3689,7 @@ namespace org.kbinani.cadencii
             }
 #else // JAVA_MAC
             //TODO:
-#endif
+#endif // JAVA_MAC
             
             // 戻りのテキストファイルを読み込む
             Vector<String> reg_list = new Vector<String>();
@@ -3701,7 +3700,7 @@ namespace org.kbinani.cadencii
                 while( (line = br.readLine()) != null ){
 #if DEBUG
                     sout.println( "AppManager#init; line=" + line );
-#endif
+#endif // DEBUG
                     reg_list.add( line );
                 }
             }catch( Exception ex ){
@@ -3718,9 +3717,9 @@ namespace org.kbinani.cadencii
                 PortUtil.deleteFile( tmp );
             }catch( Exception ex ){
             }
-#endif
+#endif // !DEBUG
             VocaloSysUtil.init( reg_list, prefix );
-#else
+#else // JAVA
             VocaloSysUtil.init();
 #endif // JAVA
 

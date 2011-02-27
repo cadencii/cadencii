@@ -74,7 +74,7 @@ namespace org.kbinani.vsq
             "w",
             "N\\",
         };
-        private static String[] _SYMBOL_EN = new String[]{
+        private static String[] _SYMBOL_VOWEL_EN = new String[]{
             "@",
             "V",
             "e",
@@ -97,6 +97,8 @@ namespace org.kbinani.vsq
             "U@",
             "O@",
             "Q@",
+        };
+        private static String[] _SYMBOL_CONSONANT_EN = new String[]{        
             "w",
             "j",
             "b",
@@ -145,6 +147,11 @@ namespace org.kbinani.vsq
                     return true;
                 }
             }
+            foreach ( String s in _SYMBOL_CONSONANT_EN ) {
+                if ( str.compare( s, symbol ) ) {
+                    return true;
+                }
+            }
             return false;
         }
 
@@ -155,21 +162,23 @@ namespace org.kbinani.vsq
         /// <returns></returns>
         public static boolean isValidSymbol( String symbol )
         {
-            for ( int i = 0; i < _SYMBOL_VOWEL_JP.Length; i++ ) {
-                String s = _SYMBOL_VOWEL_JP[i];
-                if ( s.Equals( symbol ) ) {
+            foreach ( String s in _SYMBOL_VOWEL_JP ) {
+                if ( str.compare( s, symbol ) ) {
                     return true;
                 }
             }
-            for ( int i = 0; i < _SYMBOL_CONSONANT_JP.Length; i++ ) {
-                String s = _SYMBOL_CONSONANT_JP[i];
-                if ( s.Equals( symbol ) ) {
+            foreach ( String s in _SYMBOL_CONSONANT_JP ) {
+                if ( str.compare( s, symbol ) ) {
                     return true;
                 }
             }
-            for ( int i = 0; i < _SYMBOL_EN.Length; i++ ) {
-                String s = _SYMBOL_EN[i];
-                if ( s.Equals( symbol ) ) {
+            foreach ( String s in _SYMBOL_VOWEL_EN ) {
+                if ( str.compare( s, symbol ) ) {
+                    return true;
+                }
+            }
+            foreach ( String s in _SYMBOL_CONSONANT_EN ) {
+                if ( str.compare( s, symbol ) ) {
                     return true;
                 }
             }

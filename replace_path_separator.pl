@@ -25,13 +25,14 @@ open( OUT, ">Makefile" );
 
 @special_dependencies = (
 "./BuildJavaUI/src/org/kbinani/ByRef.java",
-"./BuildJavaUI/src/org/kbinani/InternalStdErr.java",
-"./BuildJavaUI/src/org/kbinani/InternalStdOut.java",
 "./BuildJavaUI/src/org/kbinani/math.java",
 "./BuildJavaUI/src/org/kbinani/PortUtil.java",
 "./BuildJavaUI/src/org/kbinani/str.java",
 "./BuildJavaUI/src/org/kbinani/fsys.java",
 "./BuildJavaUI/src/org/kbinani/vec.java",
+"./BuildJavaUI/src/org/kbinani/cadencii/IconParader.java",
+"./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java",
+"./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java",
 );
 
 @ignore = (

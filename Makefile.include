@@ -259,14 +259,17 @@ makeRes.class: ./makeRes.java
 	java makeRes -i ./Cadencii/Resources.list -o ./Cadencii/Resources.cs -p org.kbinani.cadencii -n org.kbinani.cadencii
 
 doc: jcadencii
-	mkdir -p ./build/docwork
-	mkdir -p ./build/docwork/org/kbinani/windows/forms
-	mkdir -p ./build/docwork/org/kbinani/componentmodel
-	mkdir -p ./build/docwork/org/kbinani/apputil
-	mkdir -p ./build/docwork/org/kbinani/cadencii
-	mkdir -p ./build/docwork/org/kbinani/vsq
-	mkdir -p ./build/docwork/org/kbinani/media
-	mkdir -p ./build/docwork/org/kbinani/xml
+	perl safe_mkdir.pl ./build/docwork
+	perl safe_mkdir.pl ./build/docwork/org
+	perl safe_mkdir.pl ./build/docwork/org/kbinani
+	perl safe_mkdir.pl ./build/docwork/org/kbinani/windows
+	perl safe_mkdir.pl ./build/docwork/org/kbinani/windows/forms
+	perl safe_mkdir.pl ./build/docwork/org/kbinani/componentmodel
+	perl safe_mkdir.pl ./build/docwork/org/kbinani/apputil
+	perl safe_mkdir.pl ./build/docwork/org/kbinani/cadencii
+	perl safe_mkdir.pl ./build/docwork/org/kbinani/vsq
+	perl safe_mkdir.pl ./build/docwork/org/kbinani/media
+	perl safe_mkdir.pl ./build/docwork/org/kbinani/xml
 	perl copy_with_ext.pl ./build/java/org/kbinani/ ./build/docwork/org/kbinani/ .java
 	perl copy_with_ext.pl ./build/java/org/kbinani/windows/forms/ ./build/docwork/org/kbinani/windows/forms/ .java
 	perl copy_with_ext.pl ./build/java/org/kbinani/componentmodel/ ./build/docwork/org/kbinani/componentmodel/ .java
@@ -275,7 +278,7 @@ doc: jcadencii
 	perl copy_with_ext.pl ./build/java/org/kbinani/vsq/ ./build/docwork/org/kbinani/vsq/ .java
 	perl copy_with_ext.pl ./build/java/org/kbinani/media/ ./build/docwork/org/kbinani/media/ .java
 	perl copy_with_ext.pl ./build/java/org/kbinani/xml/ ./build/docwork/org/kbinani/xml/ .java
-	javadoc -sourcepath ./build/docwork org.kbinani.windows.forms org.kbinani.vsq org.kbinani org.kbinani.apputil org.kbinani.media org.kbinani.cadencii -encoding UTF8 -use -public -d ./docs/javadoc/
+	javadoc -charset UTF8 -docencoding UTF8 -sourcepath ./build/docwork org.kbinani.windows.forms org.kbinani.vsq org.kbinani org.kbinani.apputil org.kbinani.media org.kbinani.cadencii -encoding UTF8 -use -public -d ./docs/javadoc/
 
 clean:
 	$(RM) ./build/java/org/kbinani/*.java ./build/java/org/kbinani/apputil/*.java ./build/java/org/kbinani/media/*.java ./build/java/org/kbinani/vsq/*.java ./build/java/org/kbinani/cadencii/*.java ./build/java/org/kbinani/componentmodel/*.java ./build/java/org/kbinani/windows/forms/*.java ./build/java/org/kbinani/xml/*.java

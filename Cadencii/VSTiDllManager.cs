@@ -12,6 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
+
 package org.kbinani.cadencii;
 
 import java.io.*;
@@ -19,7 +20,9 @@ import java.util.*;
 import org.kbinani.*;
 import org.kbinani.media.*;
 import org.kbinani.vsq.*;
+
 #else
+
 using System;
 using System.Threading;
 using org.kbinani;
@@ -173,10 +176,13 @@ namespace org.kbinani.cadencii {
             }
             return "";
         }
+#endif
 
+#if JAVA
         public static void restartVocaloidrvDaemon()
         {
-            if( vocaloidrvDaemon == null ){
+#if ENABLE_VOCALOID
+        if( vocaloidrvDaemon == null ){
                 vocaloidrvDaemon = new VocaloidDaemon[MAX_VOCALO_VERSION];
             }
             for( int i = 0; i < vocaloidrvDaemon.length; i++ ){
@@ -247,8 +253,9 @@ namespace org.kbinani.cadencii {
                 }
             } );
             t.start();
+#endif // ENABLE_VOCALOID
         }
-#endif
+#endif // JAVA
 
         public static void init() {
 #if ENABLE_VOCALOID
@@ -391,14 +398,6 @@ namespace org.kbinani.cadencii {
                 }
             }
             vocaloidDriver.clear();
-#endif // !JAVA
-#if !MONO
-#if !JAVA
-            if ( org.kbinani.cadencii.util.DllLoad.isInitialized() ) {
-                //うおお・・・
-                org.kbinani.cadencii.util.DllLoad.terminate();
-            }
-#endif // !MONO
 #endif // !JAVA
 #endif // !ENABLE_VOCALOID
 

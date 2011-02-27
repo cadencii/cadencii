@@ -1085,11 +1085,9 @@ namespace org.kbinani.cadencii
 
 #if !ENABLE_VOCALOID
             menuTrackRenderer.remove( menuTrackRendererVOCALOID2 );
-            menuTrackRenderer.remove( menuTrackRendererVOCALOID100 );
-            menuTrackRenderer.remove( menuTrackRendererVOCALOID101 );
+            menuTrackRenderer.remove( menuTrackRendererVOCALOID1 );
             cMenuTrackTabRenderer.remove( cMenuTrackTabRendererVOCALOID2 );
-            cMenuTrackTabRenderer.remove( cMenuTrackTabRendererVOCALOID100 );
-            cMenuTrackTabRenderer.remove( cMenuTrackTabRendererVOCALOID101 );
+            cMenuTrackTabRenderer.remove( cMenuTrackTabRendererVOCALOID1 );
 #endif
 
 #if !ENABLE_AQUESTONE
@@ -3480,6 +3478,9 @@ namespace org.kbinani.cadencii
                         } else {
                             phonetic_symbol[0] = entry.getSymbol();
                             // 分節の分割記号'-'が入っている場合
+#if DEBUG
+                            sout.println( "FormMain#executeLyricChangeCommand; word=" + entry.Word + "; symbol=" + entry.getSymbol() + "; rawSymbol=" + entry.getRawSymbol() );
+#endif
                             if ( entry.Word.IndexOf( '-' ) >= 0 ) {
                                 String[] spl_phrase = PortUtil.splitString( entry.Word, '\t' );
                                 if ( spl_phrase.Length <= count ) {
@@ -3526,12 +3527,8 @@ namespace org.kbinani.cadencii
                         List<String> spl = items[j].ID.LyricHandle.L0.getPhoneticSymbolList();
 #endif
                         Vector<Integer> adjustment = new Vector<Integer>();
-                        for ( int i = 0; i < spl.Count; i++ ) {
-#if JAVA
-                            String s = spl.get( i );
-#else
-                            String s = spl[i];
-#endif
+                        for ( int i = 0; i < vec.size( spl ); i++ ) {
+                            String s = vec.get( spl, i );
                             adjustment.add( VsqPhoneticSymbol.isConsonant( s ) ? 64 : 0 );
                         }
                         items[j].ID.LyricHandle.L0.setConsonantAdjustmentList( adjustment );

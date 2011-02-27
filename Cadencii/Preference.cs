@@ -181,17 +181,21 @@ namespace org.kbinani.cadencii
 
             // default synthesizer
             comboDefaultSynthesizer.removeAllItems();
+            Vector<String> added = new Vector<String>();
 #if JAVA
             for( RendererKind p : RendererKind.values() ) {
 #else
             foreach ( RendererKind p in Enum.GetValues( typeof( RendererKind ) ) ) {
 #endif
-                if ( p == RendererKind.NULL ||
-                     p == RendererKind.VOCALOID1_100 ||
-                     p == RendererKind.VOCALOID1_101 ) {
+                if ( p == RendererKind.NULL ) {
                     continue;
                 }
-                comboDefaultSynthesizer.addItem( RendererKindUtil.getString( p ) );
+                String s = RendererKindUtil.getString( p );
+                if ( added.contains( s ) ) {
+                    continue;
+                }
+                added.add( s );
+                comboDefaultSynthesizer.addItem( s );
             }
             comboDefaultSynthesizer.setSelectedIndex( 0 );
 
