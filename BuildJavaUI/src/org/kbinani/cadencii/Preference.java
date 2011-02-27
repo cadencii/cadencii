@@ -158,9 +158,7 @@ public class Preference extends BDialog {
     private BComboBox comboMtcMidiInPortNumber = null;
     private BPanel tabSingingSynth = null;  //  @jve:decl-index=0:visual-constraint="385,596"
     private BGroupBox groupSynthesizerDll = null;
-    private BCheckBox chkLoadSecondaryVOCALOID1 = null;
-    private BCheckBox chkLoadVocaloid100 = null;
-    private BCheckBox chkLoadVocaloid101 = null;
+    private BCheckBox chkLoadVocaloid1 = null;
     private BCheckBox chkLoadVocaloid2 = null;
     private BCheckBox chkLoadAquesTone = null;
     private BCheckBox chkKeepProjectCache = null;
@@ -2445,37 +2443,24 @@ public class Preference extends BDialog {
             GridBagConstraints gridBagConstraints142 = new GridBagConstraints();
             gridBagConstraints142.gridy = 4;
             gridBagConstraints142.anchor = GridBagConstraints.WEST;
-            gridBagConstraints142.insets = new Insets(0, 64, 0, 0);
+            gridBagConstraints142.insets = new Insets(0, 12, 0, 0);
             gridBagConstraints142.gridx = 0;
             GridBagConstraints gridBagConstraints141 = new GridBagConstraints();
             gridBagConstraints141.gridy = 3;
             gridBagConstraints141.anchor = GridBagConstraints.WEST;
-            gridBagConstraints141.insets = new Insets(0, 64, 0, 0);
+            gridBagConstraints141.insets = new Insets(0, 12, 0, 0);
             gridBagConstraints141.gridx = 0;
-            GridBagConstraints gridBagConstraints140 = new GridBagConstraints();
-            gridBagConstraints140.gridx = 0;
-            gridBagConstraints140.anchor = GridBagConstraints.WEST;
-            gridBagConstraints140.insets = new Insets(0, 64, 0, 0);
-            gridBagConstraints140.gridy = 2;
             GridBagConstraints gridBagConstraints139 = new GridBagConstraints();
             gridBagConstraints139.gridx = 0;
             gridBagConstraints139.anchor = GridBagConstraints.WEST;
             gridBagConstraints139.weightx = 1.0D;
-            gridBagConstraints139.insets = new Insets(0, 64, 0, 0);
+            gridBagConstraints139.insets = new Insets(0, 12, 0, 0);
             gridBagConstraints139.gridy = 1;
-            GridBagConstraints gridBagConstraints138 = new GridBagConstraints();
-            gridBagConstraints138.gridx = 0;
-            gridBagConstraints138.weightx = 1.0D;
-            gridBagConstraints138.anchor = GridBagConstraints.WEST;
-            gridBagConstraints138.insets = new Insets(0, 12, 0, 0);
-            gridBagConstraints138.gridy = 0;
             groupSynthesizerDll = new BGroupBox();
             groupSynthesizerDll.setLayout(new GridBagLayout());
             groupSynthesizerDll.setBorder(BorderFactory.createTitledBorder(null, "Synthesizer DLL Usage", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
             groupSynthesizerDll.setTitle("Synthesizer DLL Usage");
-            groupSynthesizerDll.add(getChkLoadSecondaryVOCALOID1(), gridBagConstraints138);
-            groupSynthesizerDll.add(getChkLoadVocaloid100(), gridBagConstraints139);
-            groupSynthesizerDll.add(getChkLoadVocaloid101(), gridBagConstraints140);
+            groupSynthesizerDll.add(getChkLoadVocaloid1(), gridBagConstraints139);
             groupSynthesizerDll.add(getChkLoadVocaloid2(), gridBagConstraints141);
             groupSynthesizerDll.add(getChkLoadAquesTone(), gridBagConstraints142);
         }
@@ -2483,42 +2468,17 @@ public class Preference extends BDialog {
     }
 
     /**
-     * This method initializes chkLoadSecondaryVOCALOID1	
+     * This method initializes chkLoadVocaloid1	
      * 	
      * @return org.kbinani.windows.forms.BCheckBox	
      */
-    private BCheckBox getChkLoadSecondaryVOCALOID1() {
-        if (chkLoadSecondaryVOCALOID1 == null) {
-            chkLoadSecondaryVOCALOID1 = new BCheckBox();
-            chkLoadSecondaryVOCALOID1.setText("Load secondary VOCALOID1 VSTi DLL");
+    private BCheckBox getChkLoadVocaloid1() {
+        if (chkLoadVocaloid1 == null) {
+            chkLoadVocaloid1 = new BCheckBox();
+            chkLoadVocaloid1.setText("VOCALOID1");
+            chkLoadVocaloid1.setActionCommand("VOCALOID1");
         }
-        return chkLoadSecondaryVOCALOID1;
-    }
-
-    /**
-     * This method initializes chkLoadVocaloid100	
-     * 	
-     * @return org.kbinani.windows.forms.BCheckBox	
-     */
-    private BCheckBox getChkLoadVocaloid100() {
-        if (chkLoadVocaloid100 == null) {
-            chkLoadVocaloid100 = new BCheckBox();
-            chkLoadVocaloid100.setText("VOCALOID1 [1.0]");
-        }
-        return chkLoadVocaloid100;
-    }
-
-    /**
-     * This method initializes chkLoadVocaloid101	
-     * 	
-     * @return org.kbinani.windows.forms.BCheckBox	
-     */
-    private BCheckBox getChkLoadVocaloid101() {
-        if (chkLoadVocaloid101 == null) {
-            chkLoadVocaloid101 = new BCheckBox();
-            chkLoadVocaloid101.setText("VOCALOID1 [1.1]");
-        }
-        return chkLoadVocaloid101;
+        return chkLoadVocaloid1;
     }
 
     /**

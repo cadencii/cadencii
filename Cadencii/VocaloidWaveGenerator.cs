@@ -288,11 +288,14 @@ namespace org.kbinani.cadencii
             BufferedWriter bw = null;
             try {
                 bw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( path ), "UTF-8" ) );
-                const String format = "    {0,8} 0x{1:X4} {2,-35} 0x{3:X2} 0x{4:X2}";
                 for ( int i = 0; i < vsq_nrpn.Length; i++ ) {
                     VsqNrpn item = vsq_nrpn[i];
                     String name = NRPN.getName( item.Nrpn );
-                    bw.write( string.Format( format, item.Clock, item.Nrpn, name, item.DataMsb, item.DataLsb ) );
+                    int len = str.length( name );
+                    for( int j = len; j < 35; j++ ){
+                        name += " ";
+                    }
+                    bw.write( "     " + str.format( item.Clock, 8, 10 ) + " 0x" + str.format( item.Nrpn, 4, 16 ) + " " + name + " 0x" + str.format( item.DataMsb, 2, 16 ) + " 0x" + str.format( item.DataLsb, 2, 16 ) );
                     bw.newLine();
                 }
             } catch ( Exception ex ) {

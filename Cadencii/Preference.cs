@@ -63,8 +63,6 @@ namespace org.kbinani.cadencii
 
         private BFileChooser openUtauCore;
         private BFontChooser fontDialog;
-        private BRadioButton radioWineCustom;
-        private BRadioButton radioWineBuiltin;
 #if JAVA
         private BFileChooser folderBrowserSingers;
 #else
@@ -188,7 +186,9 @@ namespace org.kbinani.cadencii
 #else
             foreach ( RendererKind p in Enum.GetValues( typeof( RendererKind ) ) ) {
 #endif
-                if ( p == RendererKind.NULL ) {
+                if ( p == RendererKind.NULL ||
+                     p == RendererKind.VOCALOID1_100 ||
+                     p == RendererKind.VOCALOID1_101 ) {
                     continue;
                 }
                 comboDefaultSynthesizer.addItem( RendererKindUtil.getString( p ) );
@@ -4092,6 +4092,8 @@ namespace org.kbinani.cadencii
         private BLabel labelWineTop;
         private BButton buttonWineTop;
         private BTextBox textWineTop;
+        private BRadioButton radioWineCustom;
+        private BRadioButton radioWineBuiltin;
 #endif
         #endregion
 

@@ -234,7 +234,7 @@ public class FormMain extends BForm {
     private BMenuItem cMenuTrackTabOverlay = null;
     private BMenu cMenuTrackTabRenderer = null;
     private BMenuItem cMenuTrackTabRendererVOCALOID2 = null;
-    private BMenuItem cMenuTrackTabRendererVOCALOID100 = null;
+    private BMenuItem cMenuTrackTabRendererVOCALOID1 = null;
     private BMenu cMenuTrackTabRendererUtau = null;
     private BMenuItem cMenuTrackTabRendererStraight = null;
     private BMenuItem cMenuPianoQuantizeOff = null;
@@ -261,7 +261,7 @@ public class FormMain extends BForm {
     private BMenuItem menuHiddenCopy = null;
     private BMenuItem menuHiddenPaste = null;
     private BMenuItem menuHiddenCut = null;
-    private BMenuItem menuTrackRendererVOCALOID100 = null;
+    private BMenuItem menuTrackRendererVOCALOID1 = null;
     private BMenuItem menuTrackRendererVOCALOID2 = null;
     private BMenu menuTrackRendererUtau = null;
     private BMenuItem menuTrackRendererVCNT = null;
@@ -271,8 +271,7 @@ public class FormMain extends BForm {
     private BMenuItem menuHelpDebug = null;
     private BPanel pictureBox2 = null;
     private BMenu menuVisualPluginUi = null;
-    private BMenuItem menuVisualPluginUiVocaloid100 = null;
-    private BMenuItem menuVisualPluginUiVocaloid101 = null;
+    private BMenuItem menuVisualPluginUiVocaloid1 = null;
     private BMenuItem menuVisualPluginUiVocaloid2 = null;
     private BMenuItem menuVisualPluginUiAquesTone = null;
     private BMenuItem menuHiddenSelectForward = null;
@@ -286,8 +285,6 @@ public class FormMain extends BForm {
     private BMenuItem menuHiddenGoToStartMarker = null;
     private BMenuItem menuHiddenGoToEndMarker = null;
     private BMenuItem menuFileExportMusicXml = null;
-    private BMenuItem cMenuTrackTabRendererVOCALOID101 = null;
-    private BMenuItem menuTrackRendererVOCALOID101 = null;
     private BMenuItem menuTrackRendererAquesTone = null;
     private BMenuItem cMenuTrackTabRendererAquesTone = null;
     private BMenuItem menuVisualIconPalette = null;
@@ -384,32 +381,6 @@ public class FormMain extends BForm {
             menuFileExportMusicXml.setText("MusicXML");
         }
         return menuFileExportMusicXml;
-    }
-
-    /**
-     * This method initializes cMenuTrackTabRendererVOCALOID101	
-     * 	
-     * @return org.kbinani.windows.forms.BMenuItem	
-     */
-    private BMenuItem getCMenuTrackTabRendererVOCALOID101() {
-        if (cMenuTrackTabRendererVOCALOID101 == null) {
-            cMenuTrackTabRendererVOCALOID101 = new BMenuItem();
-            cMenuTrackTabRendererVOCALOID101.setText("VOCALOID1 [1.1]");
-        }
-        return cMenuTrackTabRendererVOCALOID101;
-    }
-
-    /**
-     * This method initializes menuTrackRendererVOCALOID101	
-     * 	
-     * @return org.kbinani.windows.forms.BMenuItem	
-     */
-    private BMenuItem getMenuTrackRendererVOCALOID101() {
-        if (menuTrackRendererVOCALOID101 == null) {
-            menuTrackRendererVOCALOID101 = new BMenuItem();
-            menuTrackRendererVOCALOID101.setText("VOCALOID1 [1.1]");
-        }
-        return menuTrackRendererVOCALOID101;
     }
 
     /**
@@ -1626,8 +1597,7 @@ public class FormMain extends BForm {
         if (menuTrackRenderer == null) {
             menuTrackRenderer = new BMenu();
             menuTrackRenderer.setText("Renderer");
-            menuTrackRenderer.add(getMenuTrackRendererVOCALOID100());
-            menuTrackRenderer.add(getMenuTrackRendererVOCALOID101());
+            menuTrackRenderer.add(getMenuTrackRendererVOCALOID1());
             menuTrackRenderer.add(getMenuTrackRendererVOCALOID2());
             menuTrackRenderer.add(getMenuTrackRendererUtau());
             menuTrackRenderer.add(getMenuTrackRendererVCNT());
@@ -3453,8 +3423,7 @@ public class FormMain extends BForm {
     private BMenu getCMenuTrackTabRenderer() {
         if (cMenuTrackTabRenderer == null) {
             cMenuTrackTabRenderer = new BMenu();
-            cMenuTrackTabRenderer.add(getCMenuTrackTabRendererVOCALOID100());
-            cMenuTrackTabRenderer.add(getCMenuTrackTabRendererVOCALOID101());
+            cMenuTrackTabRenderer.add(getCMenuTrackTabRendererVOCALOID1());
             cMenuTrackTabRenderer.add(getCMenuTrackTabRendererVOCALOID2());
             cMenuTrackTabRenderer.add(getCMenuTrackTabRendererUtau());
             cMenuTrackTabRenderer.add(getCMenuTrackTabRendererStraight());
@@ -3477,16 +3446,16 @@ public class FormMain extends BForm {
     }
 
     /**
-     * This method initializes cMenuTrackTabRendererVOCALOID100   
+     * This method initializes cMenuTrackTabRendererVOCALOID1   
      *  
      * @return javax.swing.BMenuItem    
      */
-    private BMenuItem getCMenuTrackTabRendererVOCALOID100() {
-        if (cMenuTrackTabRendererVOCALOID100 == null) {
-            cMenuTrackTabRendererVOCALOID100 = new BMenuItem();
-            cMenuTrackTabRendererVOCALOID100.setText("VOCALOID1 [1.0]");
+    private BMenuItem getCMenuTrackTabRendererVOCALOID1() {
+        if (cMenuTrackTabRendererVOCALOID1 == null) {
+            cMenuTrackTabRendererVOCALOID1 = new BMenuItem();
+            cMenuTrackTabRendererVOCALOID1.setText("VOCALOID1");
         }
-        return cMenuTrackTabRendererVOCALOID100;
+        return cMenuTrackTabRendererVOCALOID1;
     }
 
     /**
@@ -3911,16 +3880,16 @@ public class FormMain extends BForm {
     }
 
     /**
-     * This method initializes menuTrackRendererVOCALOID100	
+     * This method initializes menuTrackRendererVOCALOID1	
      * 	
      * @return javax.swing.JMenuItem	
      */
-    private BMenuItem getMenuTrackRendererVOCALOID100() {
-        if (menuTrackRendererVOCALOID100 == null) {
-            menuTrackRendererVOCALOID100 = new BMenuItem();
-            menuTrackRendererVOCALOID100.setText("VOCALOID1 [1.0]");
+    private BMenuItem getMenuTrackRendererVOCALOID1() {
+        if (menuTrackRendererVOCALOID1 == null) {
+            menuTrackRendererVOCALOID1 = new BMenuItem();
+            menuTrackRendererVOCALOID1.setText("VOCALOID1");
         }
-        return menuTrackRendererVOCALOID100;
+        return menuTrackRendererVOCALOID1;
     }
 
     /**
@@ -4051,8 +4020,7 @@ public class FormMain extends BForm {
         if (menuVisualPluginUi == null) {
             menuVisualPluginUi = new BMenu();
             menuVisualPluginUi.setText("VSTi Plugin UI");
-            menuVisualPluginUi.add(getMenuVisualPluginUiVocaloid100());
-            menuVisualPluginUi.add(getMenuVisualPluginUiVocaloid101());
+            menuVisualPluginUi.add(getMenuVisualPluginUiVocaloid1());
             menuVisualPluginUi.add(getMenuVisualPluginUiVocaloid2());
             menuVisualPluginUi.add(getMenuVisualPluginUiAquesTone());
         }
@@ -4060,29 +4028,16 @@ public class FormMain extends BForm {
     }
 
     /**
-     * This method initializes menuVisualPluginUiVocaloid100	
+     * This method initializes menuVisualPluginUiVocaloid1	
      * 	
      * @return org.kbinani.windows.forms.BMenuItem	
      */
-    private BMenuItem getMenuVisualPluginUiVocaloid100() {
-        if (menuVisualPluginUiVocaloid100 == null) {
-            menuVisualPluginUiVocaloid100 = new BMenuItem();
-            menuVisualPluginUiVocaloid100.setText("VOCALOID1 [1.0]");
+    private BMenuItem getMenuVisualPluginUiVocaloid1() {
+        if (menuVisualPluginUiVocaloid1 == null) {
+            menuVisualPluginUiVocaloid1 = new BMenuItem();
+            menuVisualPluginUiVocaloid1.setText("VOCALOID1 [1.0]");
         }
-        return menuVisualPluginUiVocaloid100;
-    }
-
-    /**
-     * This method initializes menuVisualPluginUiVocaloid101	
-     * 	
-     * @return org.kbinani.windows.forms.BMenuItem	
-     */
-    private BMenuItem getMenuVisualPluginUiVocaloid101() {
-        if (menuVisualPluginUiVocaloid101 == null) {
-            menuVisualPluginUiVocaloid101 = new BMenuItem();
-            menuVisualPluginUiVocaloid101.setText("VOCALOID1 [1.1]");
-        }
-        return menuVisualPluginUiVocaloid101;
+        return menuVisualPluginUiVocaloid1;
     }
 
     /**
