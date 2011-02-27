@@ -2724,7 +2724,7 @@ namespace org.kbinani.cadencii
                             }
                         }
                         RendererKind kind = VsqFileEx.getTrackRendererKind( AppManager.getVsqFile().Track.get( AppManager.getSelected() ) );
-                        if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
+                        if ( kind == RendererKind.VOCALOID1 ) {
                             cmenuCurveVelocity.setVisible( true );
                             cmenuCurveAccent.setVisible( true );
                             cmenuCurveDecay.setVisible( true );
@@ -5661,7 +5661,7 @@ namespace org.kbinani.cadencii
             Vector<SingerConfig> items = null;
             if ( renderer == RendererKind.UTAU || renderer == RendererKind.VCNT ) {
                 items = AppManager.editorConfig.UtauSingers;
-            } else if ( renderer == RendererKind.VOCALOID1_100 || renderer == RendererKind.VOCALOID1_101 ) {
+            } else if ( renderer == RendererKind.VOCALOID1 ) {
                 items = new Vector<SingerConfig>( Arrays.asList( VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID1 ) ) );
             } else if ( renderer == RendererKind.VOCALOID2 ) {
                 items = new Vector<SingerConfig>( Arrays.asList( VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID2 ) ) );
@@ -5685,7 +5685,7 @@ namespace org.kbinani.cadencii
                         tip = "Name: " + sc.VOICENAME +
                               "\nDirectory: " + sc.VOICEIDSTR;
                     }
-                } else if ( renderer == RendererKind.VOCALOID1_100 || renderer == RendererKind.VOCALOID1_101 ) {
+                } else if ( renderer == RendererKind.VOCALOID1 ) {
                     if ( sc != null ) {
                         tip = "Original: " + VocaloSysUtil.getOriginalSinger( sc.Language, sc.Program, SynthesizerType.VOCALOID1 ) +
                               "\nHarmonics: " + sc.Harmonics +

@@ -397,7 +397,7 @@ namespace org.kbinani.cadencii {
                     white = COLOR_UTAU_WHITE;
                     bar = COLOR_UTAU_BAR;
                     beat = COLOR_UTAU_BEAT;
-                } else if ( renderer == RendererKind.VOCALOID1_100 || renderer == RendererKind.VOCALOID1_101 ) {
+                } else if ( renderer == RendererKind.VOCALOID1 ) {
                     black = COLOR_VOCALO1_BLACK;
                     white = COLOR_VOCALO1_WHITE;
                     bar = COLOR_VOCALO1_BAR;
@@ -607,10 +607,8 @@ namespace org.kbinani.cadencii {
                     String str = "VOCALOID2";
                     if ( renderer == RendererKind.AQUES_TONE ) {
                         str = "AquesTone";
-                    } else if ( renderer == RendererKind.VOCALOID1_100 ) {
-                        str = "VOCALOID1 [1.0]";
-                    } else if ( renderer == RendererKind.VOCALOID1_101 ) {
-                        str = "VOCALOID1 [1.1]";
+                    } else if ( renderer == RendererKind.VOCALOID1 ) {
+                        str = "VOCALOID1";
                     } else if ( renderer == RendererKind.VCNT ) {
                         str = "vConnect-STAND";
                     } else if ( renderer == RendererKind.UTAU ) {

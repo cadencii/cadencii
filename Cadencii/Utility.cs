@@ -117,7 +117,7 @@ namespace org.kbinani.cadencii
         public static VsqID getSingerID( RendererKind renderer_kind, int program, int language )
         {
             VsqID item = null;
-            if ( renderer_kind == RendererKind.VOCALOID1_100 || renderer_kind == RendererKind.VOCALOID1_101 ) {
+            if ( renderer_kind == RendererKind.VOCALOID1 ) {
                 item = VocaloSysUtil.getSingerID( language, program, SynthesizerType.VOCALOID1 );
             } else if ( renderer_kind == RendererKind.VOCALOID2 ) {
                 item = VocaloSysUtil.getSingerID( language, program, SynthesizerType.VOCALOID2 );

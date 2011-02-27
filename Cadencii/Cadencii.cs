@@ -108,7 +108,7 @@ namespace org.kbinani.cadencii
             }
 
             Logger.setEnabled( false );
-            Logger.setPath( PortUtil.createTempFile() ) );
+            Logger.setPath( PortUtil.createTempFile() );
 #if DEBUG
             Logger.setEnabled( true );
 #endif

@@ -57,7 +57,7 @@ namespace org.kbinani.cadencii
         /// StartRenderingメソッドが回っている最中にtrue
         /// </summary>
         boolean rendering = false;
-        int dseVersion;
+        //int dseVersion;
         private Object locker = new Object();
 
         public void clearSendEvents()
@@ -69,10 +69,10 @@ namespace org.kbinani.cadencii
             }
         }
 
-        public int getDseVersion()
+        /*public int getDseVersion()
         {
             return dseVersion;
-        }
+        }*/
 
         public override void close()
         {
@@ -112,14 +112,9 @@ namespace org.kbinani.cadencii
             return ret;
         }
 
-        public VocaloidDriver( int dse_version )
+        public override boolean open( int block_size, int sample_rate )
         {
-            dseVersion = dse_version;
-        }
-
-        public override boolean open( int block_size, int sample_rate, boolean use_native_dll_loader )
-        {
-            boolean ret = base.open( block_size, sample_rate, use_native_dll_loader );
+            boolean ret = base.open( block_size, sample_rate );
 #if DEBUG
             sout.println( "VocaloidDriver#open; dllHandle=0x" + PortUtil.toHexString( dllHandle.ToInt32() ).ToUpper() );
 #endif

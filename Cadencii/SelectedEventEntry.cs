@@ -173,7 +173,7 @@ namespace org.kbinani.cadencii
             if ( vsq != null ) {
                 SynthesizerType type = SynthesizerType.VOCALOID2;
                 RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( track ) );
-                if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
+                if ( kind == RendererKind.VOCALOID1 ) {
                     type = SynthesizerType.VOCALOID1;
                 }
 
@@ -1400,7 +1400,7 @@ namespace org.kbinani.cadencii
             if ( vsq != null ) {
                 SynthesizerType type = SynthesizerType.VOCALOID2;
                 RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
-                if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
+                if ( kind == RendererKind.VOCALOID1 ) {
                     type = SynthesizerType.VOCALOID1;
                 }
 
@@ -1568,7 +1568,7 @@ namespace org.kbinani.cadencii
                         if ( vsq != null ) {
                             SynthesizerType type = SynthesizerType.VOCALOID2;
                             RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
-                            if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
+                            if ( kind == RendererKind.VOCALOID1 ) {
                                 type = SynthesizerType.VOCALOID1;
                             }
                             for ( Iterator<VibratoHandle> itr = VocaloSysUtil.vibratoConfigIterator( type ); itr.hasNext(); ) {
@@ -1640,8 +1640,7 @@ namespace org.kbinani.cadencii
                         String iconid = AppManager.editorConfig.AutoVibratoType2;
                         SynthesizerType type = SynthesizerType.VOCALOID2;
                         RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
-                        if ( kind == RendererKind.VOCALOID1_100 ||
-                            kind == RendererKind.VOCALOID1_101 ) {
+                        if ( kind == RendererKind.VOCALOID1 ) {
                             type = SynthesizerType.VOCALOID1;
                         }
                         editing.ID.VibratoHandle = AppManager.editorConfig.createAutoVibrato( type, 480 ); // 480はダミー

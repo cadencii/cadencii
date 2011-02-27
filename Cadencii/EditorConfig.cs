@@ -418,12 +418,14 @@ namespace org.kbinani.cadencii
         public boolean DoNotAskKeySoundGeneration = false;
         /// <summary>
         /// VOCALOID1 (1.0)のDLLを読み込まない場合true。既定ではfalse
+        /// 3.3で廃止
         /// </summary>
-        public boolean DoNotUseVocaloid100 = false;
+        private boolean __revoked__DoNotUseVocaloid100 = false;
         /// <summary>
         /// VOCALOID1 (1.1)のDLLを読み込まない場合true。既定ではfalse
+        /// 3.3で廃止
         /// </summary>
-        public boolean DoNotUseVocaloid101 = false;
+        private boolean __revoked__DoNotUseVocaloid101 = false;
         /// <summary>
         /// VOCALOID2のDLLを読み込まない場合true。既定ではfalse
         /// </summary>
@@ -434,8 +436,13 @@ namespace org.kbinani.cadencii
         public boolean DoNotUseAquesTone = false;
         /// <summary>
         /// 2個目のVOCALOID1 DLLを読み込むかどうか。既定ではfalse
+        /// 3.3で廃止
         /// </summary>
-        public boolean LoadSecondaryVocaloid1Dll = false;
+        private boolean __revoked__LoadSecondaryVocaloid1Dll = false;
+        /// <summary>
+        /// VOALOID1のDLLを読み込まない場合はtrue．既定ではfalse
+        /// </summary>
+        public boolean DoNotUseVocaloid1 = false;
         /// <summary>
         /// WAVE再生時のバッファーサイズ。既定では1000ms。
         /// </summary>
@@ -1339,6 +1346,12 @@ namespace org.kbinani.cadencii
                         vec.add( ResamplersWithWine, false );
                     }
                 }
+            }
+
+            // SynthEngineの違いを識別しないように変更．VOALOID1に縮約する
+            if ( DefaultSynthesizer == RendererKind.VOCALOID1_100 ||
+                DefaultSynthesizer == RendererKind.VOCALOID1_101 ) {
+                DefaultSynthesizer = RendererKind.VOCALOID1;
             }
         }
         #endregion

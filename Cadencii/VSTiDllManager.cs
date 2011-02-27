@@ -138,8 +138,7 @@ namespace org.kbinani.cadencii {
                 return new VConnectWaveGenerator();
             } else if ( kind == RendererKind.UTAU ) {
                 return new UtauWaveGenerator();
-            } else if ( kind == RendererKind.VOCALOID1_100 ||
-                        kind == RendererKind.VOCALOID1_101 ||
+            } else if ( kind == RendererKind.VOCALOID1 ||
                         kind == RendererKind.VOCALOID2 ) {
 #if ENABLE_VOCALOID
                 return new VocaloidWaveGenerator();
@@ -264,44 +263,23 @@ namespace org.kbinani.cadencii {
             }
             String vocalo2_dll_path = VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID2 );
             String vocalo1_dll_path = VocaloSysUtil.getDllPathVsti( SynthesizerType.VOCALOID1 );
-            if ( vocalo2_dll_path != "" && PortUtil.isFileExists( vocalo2_dll_path ) ) {
-                if ( !AppManager.editorConfig.DoNotUseVocaloid2 ) {
-                    VocaloidDriver vr = new VocaloidDriver( 200 );
-                    vr.path = vocalo2_dll_path;
-                    vr.loaded = false;
-                    vr.kind = RendererKind.VOCALOID2;
-                    vocaloidDriver.add( vr );
-                }
+            if ( !str.compare( vocalo2_dll_path, "" ) &&
+                    PortUtil.isFileExists( vocalo2_dll_path ) &&
+                    !AppManager.editorConfig.DoNotUseVocaloid2 ) {
+                VocaloidDriver vr = new VocaloidDriver();//200
+                vr.path = vocalo2_dll_path;
+                vr.loaded = false;
+                vr.kind = RendererKind.VOCALOID2;
+                vocaloidDriver.add( vr );
             }
-            if ( vocalo1_dll_path != "" && PortUtil.isFileExists( vocalo1_dll_path ) ) {
-                // VOCALOID.iniを読み込んでデフォルトのDSEVersionを調べる
-#if DEBUG
-                sout.println( "VSTiProxy#init; ini=" + ini );
-#endif
-                if ( !ini.Equals( "" ) && PortUtil.isFileExists( ini ) ) {
-                    // デフォルトのDSEバージョンのVOCALOID1 VSTi DLL
-                    if ( default_dse_version == 100 && !AppManager.editorConfig.DoNotUseVocaloid100 ||
-                         default_dse_version == 101 && !AppManager.editorConfig.DoNotUseVocaloid101 ) {
-                        VocaloidDriver vr = new VocaloidDriver( default_dse_version );
-                        vr.path = vocalo1_dll_path;
-                        vr.loaded = false;
-                        vr.kind = (default_dse_version == 100) ? RendererKind.VOCALOID1_100 : RendererKind.VOCALOID1_101;
-                        vocaloidDriver.add( vr );
-                    }
-
-                    // デフォルトじゃない方のVOCALOID1 VSTi DLLを読み込む
-                    if ( AppManager.editorConfig.LoadSecondaryVocaloid1Dll ) {
-                        int another_dse_version = (default_dse_version == 100) ? 101 : 100;
-                        if ( another_dse_version == 100 && !AppManager.editorConfig.DoNotUseVocaloid100 ||
-                             another_dse_version == 101 && !AppManager.editorConfig.DoNotUseVocaloid101 ) {
-                            VocaloidDriver vr2 = new VocaloidDriver( another_dse_version );
-                            vr2.path = (default_dse_version == 0) ? "" : vocalo1_dll_path; // DSEVersionが取得できない=>1.0しか使用できない
-                            vr2.loaded = false;
-                            vr2.kind = (another_dse_version == 100) ? RendererKind.VOCALOID1_100 : RendererKind.VOCALOID1_101;
-                            vocaloidDriver.add( vr2 );
-                        }
-                    }
-                }
+            if ( !str.compare( vocalo1_dll_path, "" ) && 
+                    PortUtil.isFileExists( vocalo1_dll_path ) &&
+                    !AppManager.editorConfig.DoNotUseVocaloid1 ) {
+                VocaloidDriver vr = new VocaloidDriver();
+                vr.path = vocalo1_dll_path;
+                vr.loaded = false;
+                vr.kind = RendererKind.VOCALOID1;
+                vocaloidDriver.add( vr );
             }
 
             for ( int i = 0; i < vocaloidDriver.size(); i++ ) {
@@ -309,69 +287,8 @@ namespace org.kbinani.cadencii {
                 boolean loaded = false;
                 try {
                     if ( dll_path != "" ) {
-                        // VOCALOID1を読み込む場合で、かつ、DSEVersionがVOCALOID.iniの指定と異なるバージョンを読み込む場合、
-                        // VOCALOID.iniの設定を一時的に書き換える。
-                        boolean use_native_dll_loader = true;
-                        int dse_version = vocaloidDriver.get( i ).getDseVersion();
-                        if ( dse_version != 0 && dse_version != 200 && dse_version != default_dse_version ) {
-                            use_native_dll_loader = false;
-                        }
-                        String copy_ini = "";
-                        if ( !use_native_dll_loader ) {
-                            // DSEVersionを強制的に書き換える。
-                            copy_ini = PortUtil.createTempFile();
-                            if ( PortUtil.isFileExists( ini ) ) {
-                                PortUtil.deleteFile( copy_ini );
-                                PortUtil.copyFile( ini, copy_ini );
-                                BufferedReader br = null;
-                                BufferedWriter bw = null;
-                                try {
-                                    br = new BufferedReader( new InputStreamReader( new FileInputStream( copy_ini ), "Shift_JIS" ) );
-                                    bw = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( ini ), "Shift_JIS" ) );
-                                    while ( br.ready() ) {
-                                        String line = br.readLine();
-                                        if ( line == null ) {
-                                            bw.newLine();
-                                        } else if ( line.StartsWith( "DSEVersion" ) ) {
-                                            bw.write( "DSEVersion = " + dse_version ); bw.newLine();
-                                        } else {
-                                            bw.write( line ); bw.newLine();
-                                        }
-                                    }
-                                } catch ( Exception ex ) {
-                                    serr.println( "VSTiProxy#initCor; ex=" + ex );
-                                } finally {
-                                    if ( bw != null ) {
-                                        try {
-                                            bw.close();
-                                        } catch ( Exception ex2 ) {
-                                            serr.println( "VSTiProxy#initCor; ex2=" + ex2 );
-                                        }
-                                    }
-                                    if ( br != null ) {
-                                        try {
-                                            br.close();
-                                        } catch ( Exception ex2 ) {
-                                            serr.println( "VSTiProxy#initCor; ex2=" + ex2 );
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        
                         // 読込み。
-                        loaded = vocaloidDriver.get( i ).open( 44100, 44100, use_native_dll_loader );
-
-                        // VOCALOID.iniをもとにもどす。
-                        if ( !use_native_dll_loader ) {
-                            try {
-                                PortUtil.deleteFile( ini );
-                                PortUtil.copyFile( copy_ini, ini );
-                                PortUtil.deleteFile( copy_ini );
-                            } catch ( Exception ex ) {
-                                serr.println( "VSTiProxy#initCor; ex=" + ex );
-                            }
-                        }
+                        loaded = vocaloidDriver.get( i ).open( 44100, 44100 );
                     } else {
                         loaded = false;
                     }

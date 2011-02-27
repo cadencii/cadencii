@@ -28,6 +28,7 @@ namespace org.kbinani.cadencii {
     public class RendererKindUtil {
         const String VOCALOID1_100 = "VOCALOID1 [1.0]";
         const String VOCALOID1_101 = "VOCALOID1 [1.1]";
+        const String VOCALOID1 = "VOCALOID1";
         const String VOCALOID2 = "VOCALOID2";
         const String VCNT = "vConnect-STAND";
         const String UTAU = "UTAU";
@@ -35,9 +36,11 @@ namespace org.kbinani.cadencii {
 
         public static String getString( RendererKind value ) {
             if ( value == RendererKind.VOCALOID1_100 ) {
-                return VOCALOID1_100;
+                return VOCALOID1;
             } else if ( value == RendererKind.VOCALOID1_101 ) {
-                return VOCALOID1_101;
+                return VOCALOID1;
+            } else if ( value == RendererKind.VOCALOID1 ){
+                return VOCALOID1;
             } else if ( value == RendererKind.VOCALOID2 ) {
                 return VOCALOID2;
             } else if ( value == RendererKind.VCNT ) {
@@ -56,9 +59,11 @@ namespace org.kbinani.cadencii {
                 return RendererKind.NULL;
             }
             if ( str.compare( value, VOCALOID1_100 ) ) {
-                return RendererKind.VOCALOID1_100;
+                return RendererKind.VOCALOID1;
             } else if ( str.compare( value, VOCALOID1_101 ) ) {
-                return RendererKind.VOCALOID1_101;
+                return RendererKind.VOCALOID1;
+            } else if ( str.compare( value, VOCALOID1 ) ){
+                return RendererKind.VOCALOID1;
             } else if ( str.compare( value, VOCALOID2 ) ) {
                 return RendererKind.VOCALOID2;
             } else if ( str.compare( value, VCNT ) ) {

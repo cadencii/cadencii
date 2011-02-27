@@ -148,7 +148,7 @@ namespace org.kbinani.cadencii
             if ( !aques_tone.Equals( "" ) && PortUtil.isFileExists( aques_tone ) && !AppManager.editorConfig.DoNotUseAquesTone ) {
                 boolean loaded = false;
                 try {
-                    loaded = mInstance.open( sample_rate, sample_rate, true );
+                    loaded = mInstance.open( sample_rate, sample_rate );
                 } catch ( Exception ex ) {
                     serr.println( "VSTiProxy#realoadAquesTone; ex=" + ex );
                     loaded = false;
@@ -165,7 +165,7 @@ namespace org.kbinani.cadencii
 #endif
         }
 
-        public override boolean open( int block_size, int sample_rate, boolean use_native_dll_loader )
+        public override boolean open( int block_size, int sample_rate )
         {
 #if DEBUG
             sout.println( "AquesToneDriver#open" );
@@ -183,7 +183,7 @@ namespace org.kbinani.cadencii
             win32.WriteProfileString( "AquesTone", "FileKoe_00", required );
             boolean ret = false;
             try {
-                ret = base.open( block_size, sample_rate, true );
+                ret = base.open( block_size, sample_rate );
             } catch ( Exception ex ) {
                 ret = false;
                 serr.println( "AquesToneDriver#open; ex=" + ex );

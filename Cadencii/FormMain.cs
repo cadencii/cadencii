@@ -570,6 +570,7 @@ namespace org.kbinani.cadencii
         /// </summary>
         private float mFps = 0f;
         private double[] mFpsDrawTime2 = new double[128];
+        public BMenuItem menuHelpManual;
         private float mFps2 = 0f;
 #endif
         #endregion
@@ -1456,7 +1457,7 @@ namespace org.kbinani.cadencii
                     }
                     SynthesizerType type = SynthesizerType.VOCALOID2;
                     RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( selected ) );
-                    if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
+                    if ( kind == RendererKind.VOCALOID1 ) {
                         type = SynthesizerType.VOCALOID1;
                     }
                     vibrato = AppManager.editorConfig.createAutoVibrato( type, vibrato_clocks );
@@ -2068,8 +2069,7 @@ namespace org.kbinani.cadencii
                 new ValuePairOfStringArrayOfKeys( menuTrackRenderCurrent.getName(), new BKeys[]{} ),
                 new ValuePairOfStringArrayOfKeys( menuTrackRenderAll.getName(), new BKeys[]{} ),
                 new ValuePairOfStringArrayOfKeys( menuTrackOverlay.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackRendererVOCALOID100.getName(), new BKeys[]{} ),
-                new ValuePairOfStringArrayOfKeys( menuTrackRendererVOCALOID101.getName(), new BKeys[]{} ),
+                new ValuePairOfStringArrayOfKeys( menuTrackRendererVOCALOID1.getName(), new BKeys[]{} ),
                 new ValuePairOfStringArrayOfKeys( menuTrackRendererVOCALOID2.getName(), new BKeys[]{} ),
                 new ValuePairOfStringArrayOfKeys( menuTrackRendererUtau.getName(), new BKeys[]{} ),
                 new ValuePairOfStringArrayOfKeys( menuLyricExpressionProperty.getName(), new BKeys[]{} ),
@@ -2751,20 +2751,12 @@ namespace org.kbinani.cadencii
         {
             String wine_prefix = AppManager.editorConfig.WinePrefix;
             String wine_top = AppManager.editorConfig.WineTop;
-            if ( !VSTiDllManager.isRendererAvailable( RendererKind.VOCALOID1_100, wine_prefix, wine_top ) ) {
-                cMenuTrackTabRendererVOCALOID100.setIcon( new ImageIcon( Resources.get_slash() ) );
-                menuTrackRendererVOCALOID100.setIcon( new ImageIcon( Resources.get_slash() ) );
+            if ( !VSTiDllManager.isRendererAvailable( RendererKind.VOCALOID1, wine_prefix, wine_top ) ) {
+                cMenuTrackTabRendererVOCALOID1.setIcon( new ImageIcon( Resources.get_slash() ) );
+                menuTrackRendererVOCALOID1.setIcon( new ImageIcon( Resources.get_slash() ) );
             } else {
-                cMenuTrackTabRendererVOCALOID100.setIcon( null );
-                menuTrackRendererVOCALOID100.setIcon( null );
-            }
-
-            if ( !VSTiDllManager.isRendererAvailable( RendererKind.VOCALOID1_101, wine_prefix, wine_top ) ) {
-                cMenuTrackTabRendererVOCALOID101.setIcon( new ImageIcon( Resources.get_slash() ) );
-                menuTrackRendererVOCALOID101.setIcon( new ImageIcon( Resources.get_slash() ) );
-            } else {
-                cMenuTrackTabRendererVOCALOID101.setIcon( null );
-                menuTrackRendererVOCALOID101.setIcon( null );
+                cMenuTrackTabRendererVOCALOID1.setIcon( null );
+                menuTrackRendererVOCALOID1.setIcon( null );
             }
 
             if ( !VSTiDllManager.isRendererAvailable( RendererKind.VOCALOID2, wine_prefix, wine_top ) ) {
@@ -4197,7 +4189,7 @@ namespace org.kbinani.cadencii
             work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRenderCurrent", new BMenuItem[] { cMenuTrackTabRenderCurrent } ) );
             work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRenderAll", new BMenuItem[] { cMenuTrackTabRenderAll } ) );
             work.add( new ValuePair<String, BMenuItem[]>( "menuTrackOverlay", new BMenuItem[] { cMenuTrackTabOverlay } ) );
-            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererVOCALOID1", new BMenuItem[] { cMenuTrackTabRendererVOCALOID100 } ) );
+            work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererVOCALOID1", new BMenuItem[] { cMenuTrackTabRendererVOCALOID1 } ) );
             work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererVOCALOID2", new BMenuItem[] { cMenuTrackTabRendererVOCALOID2 } ) );
             work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererAquesTone", new BMenuItem[] { menuTrackRendererAquesTone } ) );
             work.add( new ValuePair<String, BMenuItem[]>( "menuTrackRendererVCNT", new BMenuItem[] { menuTrackRendererVCNT } ) );
@@ -4785,8 +4777,7 @@ namespace org.kbinani.cadencii
             menuTrackOverlay.setMnemonic( KeyEvent.VK_O );
             menuTrackRenderer.setText( _( "Renderer" ) );
             menuTrackRenderer.setMnemonic( KeyEvent.VK_R );
-            menuTrackRendererVOCALOID100.setMnemonic( KeyEvent.VK_1 );
-            menuTrackRendererVOCALOID101.setMnemonic( KeyEvent.VK_2 );
+            menuTrackRendererVOCALOID1.setMnemonic( KeyEvent.VK_1 );
             menuTrackRendererVOCALOID2.setMnemonic( KeyEvent.VK_3 );
             menuTrackRendererUtau.setMnemonic( KeyEvent.VK_4 );
             menuTrackRendererVCNT.setMnemonic( KeyEvent.VK_5 );
@@ -5177,7 +5168,7 @@ namespace org.kbinani.cadencii
             VsqFileEx vsq = AppManager.getVsqFile();
             RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( selected ) );
             SynthesizerType type = SynthesizerType.VOCALOID2;
-            if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
+            if ( kind == RendererKind.VOCALOID1 ) {
                 type = SynthesizerType.VOCALOID1;
             }
             FormVibratoConfig dlg = null;
@@ -5234,7 +5225,7 @@ namespace org.kbinani.cadencii
             int selected = AppManager.getSelected();
             VsqFileEx vsq = AppManager.getVsqFile();
             RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( selected ) );
-            if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
+            if ( kind == RendererKind.VOCALOID1 ) {
                 type = SynthesizerType.VOCALOID1;
             }
             FormNoteExpressionConfig dlg = null;
@@ -7440,8 +7431,7 @@ namespace org.kbinani.cadencii
             menuVisualPitchLine.MouseEnter += new BEventHandler( handleMenuMouseEnter );
             menuVisualPluginUi.MouseEnter += new BEventHandler( handleMenuMouseEnter );
             menuVisualPluginUi.DropDownOpening += new BEventHandler( menuVisualPluginUi_DropDownOpening );
-            menuVisualPluginUiVocaloid100.Click += new BEventHandler( menuVisualPluginUiVocaloidCommon_Click );
-            menuVisualPluginUiVocaloid101.Click += new BEventHandler( menuVisualPluginUiVocaloidCommon_Click );
+            menuVisualPluginUiVocaloid1.Click += new BEventHandler( menuVisualPluginUiVocaloidCommon_Click );
             menuVisualPluginUiVocaloid2.Click += new BEventHandler( menuVisualPluginUiVocaloidCommon_Click );
             menuVisualPluginUiAquesTone.Click += new BEventHandler( menuVisualPluginUiAquesTone_Click );
             menuJob.DropDownOpening += new BEventHandler( menuJob_DropDownOpening );
@@ -7477,13 +7467,12 @@ namespace org.kbinani.cadencii
             menuTrackOverlay.Click += new BEventHandler( menuTrackOverlay_Click );
             menuTrackRenderer.MouseEnter += new BEventHandler( handleMenuMouseEnter );
             menuTrackRenderer.DropDownOpening += new BEventHandler( menuTrackRenderer_DropDownOpening );
-            menuTrackRendererVOCALOID100.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuTrackRendererVOCALOID100.Click += new BEventHandler( handleChangeRenderer );
-            menuTrackRendererVOCALOID101.MouseEnter += new BEventHandler( handleMenuMouseEnter );
-            menuTrackRendererVOCALOID101.Click += new BEventHandler( handleChangeRenderer );
+            menuTrackRendererVOCALOID1.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuTrackRendererVOCALOID1.Click += new BEventHandler( handleChangeRenderer );
             menuTrackRendererVOCALOID2.MouseEnter += new BEventHandler( handleMenuMouseEnter );
             menuTrackRendererVOCALOID2.Click += new BEventHandler( handleChangeRenderer );
             menuTrackRendererUtau.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            //UTAUはresamplerを識別するのでmenuTrackRendererUtauのサブアイテムのClickイベントを拾う
             //menuTrackRendererUtau.Click += new BEventHandler( handleChangeRenderer );
             menuTrackRendererVCNT.MouseEnter += new BEventHandler( handleMenuMouseEnter );
             menuTrackRendererVCNT.Click += new BEventHandler( handleChangeRenderer );
@@ -7603,8 +7592,7 @@ namespace org.kbinani.cadencii
             cMenuTrackTabRenderAll.Click += new BEventHandler( handleTrackRenderAll_Click );
             cMenuTrackTabOverlay.Click += new BEventHandler( cMenuTrackTabOverlay_Click );
             cMenuTrackTabRenderer.DropDownOpening += new BEventHandler( cMenuTrackTabRenderer_DropDownOpening );
-            cMenuTrackTabRendererVOCALOID100.Click += new BEventHandler( handleChangeRenderer );
-            cMenuTrackTabRendererVOCALOID101.Click += new BEventHandler( handleChangeRenderer );
+            cMenuTrackTabRendererVOCALOID1.Click += new BEventHandler( handleChangeRenderer );
             cMenuTrackTabRendererVOCALOID2.Click += new BEventHandler( handleChangeRenderer );
             cMenuTrackTabRendererStraight.Click += new BEventHandler( handleChangeRenderer );
             cMenuTrackTabRendererAquesTone.Click += new BEventHandler( handleChangeRenderer );
@@ -8366,7 +8354,7 @@ namespace org.kbinani.cadencii
 #endif
                                 SynthesizerType type = SynthesizerType.VOCALOID2;
                                 RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( selected ) );
-                                if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
+                                if ( kind == RendererKind.VOCALOID1 ) {
                                     type = SynthesizerType.VOCALOID1;
                                 }
                                 FormNoteExpressionConfig dlg = null;
@@ -8437,7 +8425,7 @@ namespace org.kbinani.cadencii
 #if DEBUG
                                 sout.println( "FormMain#pictPianoRoll_MouseDoubleClick; kind=" + kind );
 #endif
-                                if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
+                                if ( kind == RendererKind.VOCALOID1 ) {
                                     type = SynthesizerType.VOCALOID1;
                                 }
                                 FormVibratoConfig dlg = null;
@@ -10075,10 +10063,8 @@ namespace org.kbinani.cadencii
                     chkv = false;
                 }
                 RendererKind kind = vd.kind;
-                if ( kind == RendererKind.VOCALOID1_100 ) {
-                    menuVisualPluginUiVocaloid100.setSelected( chkv );
-                } else if ( kind == RendererKind.VOCALOID1_101 ) {
-                    menuVisualPluginUiVocaloid101.setSelected( chkv );
+                if ( kind == RendererKind.VOCALOID1 ) {
+                    menuVisualPluginUiVocaloid1.setSelected( chkv );
                 } else if ( kind == RendererKind.VOCALOID2 ) {
                     menuVisualPluginUiVocaloid2.setSelected( chkv );
                 }
@@ -10112,14 +10098,12 @@ namespace org.kbinani.cadencii
         {
             RendererKind search = RendererKind.NULL;
             //int vocaloid = 0;
-            if ( sender == menuVisualPluginUiVocaloid100 ) {
-                search = RendererKind.VOCALOID1_100;
+            if ( sender == menuVisualPluginUiVocaloid1 ) {
+                search = RendererKind.VOCALOID1;
                 //vocaloid = 1;
             } else if ( sender == menuVisualPluginUiVocaloid2 ) {
                 search = RendererKind.VOCALOID2;
                 //vocaloid = 2;
-            } else if ( sender == menuVisualPluginUiVocaloid101 ) {
-                search = RendererKind.VOCALOID1_101;
             } else {
                 return;
             }
@@ -10151,13 +10135,9 @@ namespace org.kbinani.cadencii
                 RendererKind kind = vd.kind;
                 boolean v = true;
                 if ( kind == search ) {
-                    if ( search == RendererKind.VOCALOID1_100 ) {
-                        v = !menuVisualPluginUiVocaloid100.isSelected();
-                        menuVisualPluginUiVocaloid100.setSelected( v );
-                        vd.getUi( this ).setVisible( v );
-                    } else if ( search == RendererKind.VOCALOID1_101 ) {
-                        v = !menuVisualPluginUiVocaloid101.isSelected();
-                        menuVisualPluginUiVocaloid101.setSelected( v );
+                    if ( search == RendererKind.VOCALOID1 ) {
+                        v = !menuVisualPluginUiVocaloid1.isSelected();
+                        menuVisualPluginUiVocaloid1.setSelected( v );
                         vd.getUi( this ).setVisible( v );
                     } else if ( search == RendererKind.VOCALOID2 ) {
                         v = !menuVisualPluginUiVocaloid2.isSelected();
@@ -12811,9 +12791,7 @@ namespace org.kbinani.cadencii
                 mDialogPreference.setPathAquesTone( AppManager.editorConfig.PathAquesTone );
                 mDialogPreference.setUseProjectCache( AppManager.editorConfig.UseProjectCache );
                 mDialogPreference.setAquesToneRequired( !AppManager.editorConfig.DoNotUseAquesTone );
-                mDialogPreference.setSecondaryVocaloid1DllRequired( AppManager.editorConfig.LoadSecondaryVocaloid1Dll );
-                mDialogPreference.setVocaloid100Required( !AppManager.editorConfig.DoNotUseVocaloid100 );
-                mDialogPreference.setVocaloid101Required( !AppManager.editorConfig.DoNotUseVocaloid101 );
+                mDialogPreference.setVocaloid1Required( !AppManager.editorConfig.DoNotUseVocaloid1 );
                 mDialogPreference.setVocaloid2Required( !AppManager.editorConfig.DoNotUseVocaloid2 );
                 mDialogPreference.setBufferSize( AppManager.editorConfig.BufferSizeMilliSeconds );
                 mDialogPreference.setDefaultSynthesizer( AppManager.editorConfig.DefaultSynthesizer );
@@ -13046,10 +13024,8 @@ namespace org.kbinani.cadencii
                     }
                     AppManager.editorConfig.UseProjectCache = mDialogPreference.isUseProjectCache();
                     AppManager.editorConfig.DoNotUseAquesTone = !mDialogPreference.isAquesToneRequired();
-                    AppManager.editorConfig.DoNotUseVocaloid100 = !mDialogPreference.isVocaloid100Required();
-                    AppManager.editorConfig.DoNotUseVocaloid101 = !mDialogPreference.isVocaloid101Required();
+                    AppManager.editorConfig.DoNotUseVocaloid1 = !mDialogPreference.isVocaloid1Required();
                     AppManager.editorConfig.DoNotUseVocaloid2 = !mDialogPreference.isVocaloid2Required();
-                    AppManager.editorConfig.LoadSecondaryVocaloid1Dll = mDialogPreference.isSecondaryVocaloid1DllRequired();
                     AppManager.editorConfig.BufferSizeMilliSeconds = mDialogPreference.getBufferSize();
                     AppManager.editorConfig.DefaultSynthesizer = mDialogPreference.getDefaultSynthesizer();
                     AppManager.editorConfig.UseUserDefinedAutoVibratoType = mDialogPreference.isUseUserDefinedAutoVibratoType();
@@ -15120,11 +15096,15 @@ namespace org.kbinani.cadencii
                     org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
                 return;
             }
+#if JAVA
             try{
                 Runtime.getRuntime().exec( new String[]{ "open", pdf } );
             }catch( Exception ex ){
                 ex.printStackTrace();
             }
+#else
+            System.Diagnostics.Process.Start( pdf );
+#endif
         }
 
         public void menuHelpLogSwitch_CheckedChanged( Object sender, EventArgs e )
@@ -15416,7 +15396,7 @@ namespace org.kbinani.cadencii
                 int selected = AppManager.getSelected();
                 SynthesizerType type = SynthesizerType.VOCALOID2;
                 RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( selected ) );
-                if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
+                if ( kind == RendererKind.VOCALOID1 ) {
                     type = SynthesizerType.VOCALOID1;
                 }
                 VsqEvent original = AppManager.getLastSelectedEvent().original;
@@ -15940,10 +15920,8 @@ namespace org.kbinani.cadencii
             menuTrackRenderCurrent.setEnabled( !AppManager.isPlaying() );
             cMenuTrackTabRenderAll.setEnabled( !AppManager.isPlaying() );
             menuTrackRenderAll.setEnabled( !AppManager.isPlaying() );
-            cMenuTrackTabRendererVOCALOID100.setSelected( false );
-            menuTrackRendererVOCALOID100.setSelected( false );
-            cMenuTrackTabRendererVOCALOID101.setSelected( false );
-            menuTrackRendererVOCALOID101.setSelected( false );
+            cMenuTrackTabRendererVOCALOID1.setSelected( false );
+            menuTrackRendererVOCALOID1.setSelected( false );
             cMenuTrackTabRendererVOCALOID2.setSelected( false );
             menuTrackRendererVOCALOID2.setSelected( false );
             cMenuTrackTabRendererUtau.setSelected( false );
@@ -15954,12 +15932,9 @@ namespace org.kbinani.cadencii
             menuTrackRendererAquesTone.setSelected( false );
 
             RendererKind kind = VsqFileEx.getTrackRendererKind( vsq_track );
-            if ( kind == RendererKind.VOCALOID1_100 ) {
-                cMenuTrackTabRendererVOCALOID100.setSelected( true );
-                menuTrackRendererVOCALOID100.setSelected( true );
-            } else if ( kind == RendererKind.VOCALOID1_101 ) {
-                cMenuTrackTabRendererVOCALOID101.setSelected( true );
-                menuTrackRendererVOCALOID101.setSelected( true );
+            if ( kind == RendererKind.VOCALOID1 ) {
+                cMenuTrackTabRendererVOCALOID1.setSelected( true );
+                menuTrackRendererVOCALOID1.setSelected( true );
             } else if ( kind == RendererKind.VOCALOID2 ) {
                 cMenuTrackTabRendererVOCALOID2.setSelected( true );
                 menuTrackRendererVOCALOID2.setSelected( true );
@@ -17351,10 +17326,8 @@ namespace org.kbinani.cadencii
                 text = _( "UTAU" );
             } else if ( sender == menuTrackRendererVCNT ) {
                 text = _( "vConnect-STAND" );
-            } else if ( sender == menuTrackRendererVOCALOID100 ) {
-                text = _( "VOCALOID1 [1.0]" );
-            } else if ( sender == menuTrackRendererVOCALOID101 ) {
-                text = _( "VOCALOID1 [1.1]" );
+            } else if ( sender == menuTrackRendererVOCALOID1 ) {
+                text = _( "VOCALOID1" );
             } else if ( sender == menuTrackRendererVOCALOID2 ) {
                 text = _( "VOCALOID2" );
             } else {
@@ -17404,10 +17377,8 @@ namespace org.kbinani.cadencii
                 kind = RendererKind.AQUES_TONE;
             } else if ( sender == cMenuTrackTabRendererStraight || sender == menuTrackRendererVCNT ) {
                 kind = RendererKind.VCNT;
-            } else if ( sender == cMenuTrackTabRendererVOCALOID100 || sender == menuTrackRendererVOCALOID100 ) {
-                kind = RendererKind.VOCALOID1_100;
-            } else if ( sender == cMenuTrackTabRendererVOCALOID101 || sender == menuTrackRendererVOCALOID101 ) {
-                kind = RendererKind.VOCALOID1_101;
+            } else if ( sender == cMenuTrackTabRendererVOCALOID1 || sender == menuTrackRendererVOCALOID1 ) {
+                kind = RendererKind.VOCALOID1;
             } else if ( sender == cMenuTrackTabRendererVOCALOID2 || sender == menuTrackRendererVOCALOID2 ) {
                 kind = RendererKind.VOCALOID2;
             } else {
@@ -17511,13 +17482,11 @@ namespace org.kbinani.cadencii
 #if DEBUG
                 sout.println( "FormMain#handleChangeRenderer; after executing command; resamplerUsed=" + VsqFileEx.getTrackResamplerUsed( vsq.Track.get( selected ) ) );
 #endif
-                cMenuTrackTabRendererVOCALOID100.setSelected( kind == RendererKind.VOCALOID1_100 );
-                cMenuTrackTabRendererVOCALOID101.setSelected( kind == RendererKind.VOCALOID1_101 );
+                cMenuTrackTabRendererVOCALOID1.setSelected( kind == RendererKind.VOCALOID1 );
                 cMenuTrackTabRendererVOCALOID2.setSelected( kind == RendererKind.VOCALOID2 );
                 cMenuTrackTabRendererUtau.setSelected( kind == RendererKind.UTAU );
                 cMenuTrackTabRendererStraight.setSelected( kind == RendererKind.VCNT );
-                menuTrackRendererVOCALOID100.setSelected( kind == RendererKind.VOCALOID1_100 );
-                menuTrackRendererVOCALOID101.setSelected( kind == RendererKind.VOCALOID1_101 );
+                menuTrackRendererVOCALOID1.setSelected( kind == RendererKind.VOCALOID1 );
                 menuTrackRendererVOCALOID2.setSelected( kind == RendererKind.VOCALOID2 );
                 menuTrackRendererUtau.setSelected( kind == RendererKind.UTAU );
                 menuTrackRendererVCNT.setSelected( kind == RendererKind.VCNT );
@@ -18161,8 +18130,7 @@ namespace org.kbinani.cadencii
             this.menuVisualProperty = new org.kbinani.windows.forms.BMenuItem();
             this.menuVisualOverview = new org.kbinani.windows.forms.BMenuItem();
             this.menuVisualPluginUi = new org.kbinani.windows.forms.BMenuItem();
-            this.menuVisualPluginUiVocaloid100 = new org.kbinani.windows.forms.BMenuItem();
-            this.menuVisualPluginUiVocaloid101 = new org.kbinani.windows.forms.BMenuItem();
+            this.menuVisualPluginUiVocaloid1 = new org.kbinani.windows.forms.BMenuItem();
             this.menuVisualPluginUiVocaloid2 = new org.kbinani.windows.forms.BMenuItem();
             this.menuVisualPluginUiAquesTone = new org.kbinani.windows.forms.BMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
@@ -18196,8 +18164,7 @@ namespace org.kbinani.cadencii
             this.toolStripMenuItem23 = new System.Windows.Forms.ToolStripSeparator();
             this.menuTrackOverlay = new org.kbinani.windows.forms.BMenuItem();
             this.menuTrackRenderer = new org.kbinani.windows.forms.BMenuItem();
-            this.menuTrackRendererVOCALOID100 = new org.kbinani.windows.forms.BMenuItem();
-            this.menuTrackRendererVOCALOID101 = new org.kbinani.windows.forms.BMenuItem();
+            this.menuTrackRendererVOCALOID1 = new org.kbinani.windows.forms.BMenuItem();
             this.menuTrackRendererVOCALOID2 = new org.kbinani.windows.forms.BMenuItem();
             this.menuTrackRendererUtau = new org.kbinani.windows.forms.BMenuItem();
             this.menuTrackRendererVCNT = new org.kbinani.windows.forms.BMenuItem();
@@ -18238,6 +18205,7 @@ namespace org.kbinani.cadencii
             this.menuSettingSingerProperty = new org.kbinani.windows.forms.BMenuItem();
             this.menuHelp = new org.kbinani.windows.forms.BMenuItem();
             this.menuHelpAbout = new org.kbinani.windows.forms.BMenuItem();
+            this.menuHelpManual = new org.kbinani.windows.forms.BMenuItem();
             this.menuHelpLog = new org.kbinani.windows.forms.BMenuItem();
             this.menuHelpLogSwitch = new org.kbinani.windows.forms.BMenuItem();
             this.menuHelpLogOpen = new org.kbinani.windows.forms.BMenuItem();
@@ -18327,8 +18295,7 @@ namespace org.kbinani.cadencii
             this.toolStripMenuItem27 = new System.Windows.Forms.ToolStripSeparator();
             this.cMenuTrackTabOverlay = new org.kbinani.windows.forms.BMenuItem();
             this.cMenuTrackTabRenderer = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuTrackTabRendererVOCALOID100 = new org.kbinani.windows.forms.BMenuItem();
-            this.cMenuTrackTabRendererVOCALOID101 = new org.kbinani.windows.forms.BMenuItem();
+            this.cMenuTrackTabRendererVOCALOID1 = new org.kbinani.windows.forms.BMenuItem();
             this.cMenuTrackTabRendererVOCALOID2 = new org.kbinani.windows.forms.BMenuItem();
             this.cMenuTrackTabRendererUtau = new org.kbinani.windows.forms.BMenuItem();
             this.cMenuTrackTabRendererStraight = new org.kbinani.windows.forms.BMenuItem();
@@ -18822,36 +18789,29 @@ namespace org.kbinani.cadencii
             // menuVisualPluginUi
             // 
             this.menuVisualPluginUi.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            this.menuVisualPluginUiVocaloid100,
-            this.menuVisualPluginUiVocaloid101,
+            this.menuVisualPluginUiVocaloid1,
             this.menuVisualPluginUiVocaloid2,
             this.menuVisualPluginUiAquesTone} );
             this.menuVisualPluginUi.Name = "menuVisualPluginUi";
             this.menuVisualPluginUi.Size = new System.Drawing.Size( 213, 22 );
             this.menuVisualPluginUi.Text = "VSTi Plugin UI(&U)";
             // 
-            // menuVisualPluginUiVocaloid100
+            // menuVisualPluginUiVocaloid1
             // 
-            this.menuVisualPluginUiVocaloid100.Name = "menuVisualPluginUiVocaloid100";
-            this.menuVisualPluginUiVocaloid100.Size = new System.Drawing.Size( 159, 22 );
-            this.menuVisualPluginUiVocaloid100.Text = "VOCALOID1 [1.0]";
-            // 
-            // menuVisualPluginUiVocaloid101
-            // 
-            this.menuVisualPluginUiVocaloid101.Name = "menuVisualPluginUiVocaloid101";
-            this.menuVisualPluginUiVocaloid101.Size = new System.Drawing.Size( 159, 22 );
-            this.menuVisualPluginUiVocaloid101.Text = "VOCALOID1 [1.1]";
+            this.menuVisualPluginUiVocaloid1.Name = "menuVisualPluginUiVocaloid1";
+            this.menuVisualPluginUiVocaloid1.Size = new System.Drawing.Size( 152, 22 );
+            this.menuVisualPluginUiVocaloid1.Text = "VOCALOID1";
             // 
             // menuVisualPluginUiVocaloid2
             // 
             this.menuVisualPluginUiVocaloid2.Name = "menuVisualPluginUiVocaloid2";
-            this.menuVisualPluginUiVocaloid2.Size = new System.Drawing.Size( 159, 22 );
+            this.menuVisualPluginUiVocaloid2.Size = new System.Drawing.Size( 152, 22 );
             this.menuVisualPluginUiVocaloid2.Text = "VOCALOID2";
             // 
             // menuVisualPluginUiAquesTone
             // 
             this.menuVisualPluginUiAquesTone.Name = "menuVisualPluginUiAquesTone";
-            this.menuVisualPluginUiAquesTone.Size = new System.Drawing.Size( 159, 22 );
+            this.menuVisualPluginUiAquesTone.Size = new System.Drawing.Size( 152, 22 );
             this.menuVisualPluginUiAquesTone.Text = "AquesTone(&A)";
             // 
             // toolStripMenuItem1
@@ -19071,8 +19031,7 @@ namespace org.kbinani.cadencii
             // menuTrackRenderer
             // 
             this.menuTrackRenderer.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            this.menuTrackRendererVOCALOID100,
-            this.menuTrackRendererVOCALOID101,
+            this.menuTrackRendererVOCALOID1,
             this.menuTrackRendererVOCALOID2,
             this.menuTrackRendererUtau,
             this.menuTrackRendererVCNT,
@@ -19081,41 +19040,35 @@ namespace org.kbinani.cadencii
             this.menuTrackRenderer.Size = new System.Drawing.Size( 196, 22 );
             this.menuTrackRenderer.Text = "Renderer(&R)";
             // 
-            // menuTrackRendererVOCALOID100
+            // menuTrackRendererVOCALOID1
             // 
-            this.menuTrackRendererVOCALOID100.Name = "menuTrackRendererVOCALOID100";
-            this.menuTrackRendererVOCALOID100.Size = new System.Drawing.Size( 177, 22 );
-            this.menuTrackRendererVOCALOID100.Text = "VOCALOID1 [1.0] (&1)";
-            // 
-            // menuTrackRendererVOCALOID101
-            // 
-            this.menuTrackRendererVOCALOID101.Name = "menuTrackRendererVOCALOID101";
-            this.menuTrackRendererVOCALOID101.Size = new System.Drawing.Size( 177, 22 );
-            this.menuTrackRendererVOCALOID101.Text = "VOCALOID1 [1.1] (&2)";
+            this.menuTrackRendererVOCALOID1.Name = "menuTrackRendererVOCALOID1";
+            this.menuTrackRendererVOCALOID1.Size = new System.Drawing.Size( 176, 22 );
+            this.menuTrackRendererVOCALOID1.Text = "VOCALOID1(&1)";
             // 
             // menuTrackRendererVOCALOID2
             // 
             this.menuTrackRendererVOCALOID2.Name = "menuTrackRendererVOCALOID2";
-            this.menuTrackRendererVOCALOID2.Size = new System.Drawing.Size( 177, 22 );
-            this.menuTrackRendererVOCALOID2.Text = "VOCALOID2(&3)";
+            this.menuTrackRendererVOCALOID2.Size = new System.Drawing.Size( 176, 22 );
+            this.menuTrackRendererVOCALOID2.Text = "VOCALOID2(&2)";
             // 
             // menuTrackRendererUtau
             // 
             this.menuTrackRendererUtau.Name = "menuTrackRendererUtau";
-            this.menuTrackRendererUtau.Size = new System.Drawing.Size( 177, 22 );
-            this.menuTrackRendererUtau.Text = "UTAU(&4)";
+            this.menuTrackRendererUtau.Size = new System.Drawing.Size( 176, 22 );
+            this.menuTrackRendererUtau.Text = "UTAU(&3)";
             // 
             // menuTrackRendererVCNT
             // 
             this.menuTrackRendererVCNT.Name = "menuTrackRendererVCNT";
-            this.menuTrackRendererVCNT.Size = new System.Drawing.Size( 177, 22 );
-            this.menuTrackRendererVCNT.Text = "vConnect-STAND(&5)";
+            this.menuTrackRendererVCNT.Size = new System.Drawing.Size( 176, 22 );
+            this.menuTrackRendererVCNT.Text = "vConnect-STAND(&4)";
             // 
             // menuTrackRendererAquesTone
             // 
             this.menuTrackRendererAquesTone.Name = "menuTrackRendererAquesTone";
-            this.menuTrackRendererAquesTone.Size = new System.Drawing.Size( 177, 22 );
-            this.menuTrackRendererAquesTone.Text = "AquesTone(&6)";
+            this.menuTrackRendererAquesTone.Size = new System.Drawing.Size( 176, 22 );
+            this.menuTrackRendererAquesTone.Text = "AquesTone(&5)";
             // 
             // toolStripMenuItem4
             // 
@@ -19356,6 +19309,7 @@ namespace org.kbinani.cadencii
             // 
             this.menuHelp.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
             this.menuHelpAbout,
+            this.menuHelpManual,
             this.menuHelpLog,
             this.menuHelpDebug} );
             this.menuHelp.Name = "menuHelp";
@@ -19367,6 +19321,12 @@ namespace org.kbinani.cadencii
             this.menuHelpAbout.Name = "menuHelpAbout";
             this.menuHelpAbout.Size = new System.Drawing.Size( 164, 22 );
             this.menuHelpAbout.Text = "About Cadencii(&A)";
+            // 
+            // menuHelpManual
+            // 
+            this.menuHelpManual.Name = "menuHelpManual";
+            this.menuHelpManual.Size = new System.Drawing.Size( 164, 22 );
+            this.menuHelpManual.Text = "Manual (PDF)";
             // 
             // menuHelpLog
             // 
@@ -19996,8 +19956,7 @@ namespace org.kbinani.cadencii
             // cMenuTrackTabRenderer
             // 
             this.cMenuTrackTabRenderer.DropDownItems.AddRange( new System.Windows.Forms.ToolStripItem[] {
-            this.cMenuTrackTabRendererVOCALOID100,
-            this.cMenuTrackTabRendererVOCALOID101,
+            this.cMenuTrackTabRendererVOCALOID1,
             this.cMenuTrackTabRendererVOCALOID2,
             this.cMenuTrackTabRendererUtau,
             this.cMenuTrackTabRendererStraight,
@@ -20006,41 +19965,35 @@ namespace org.kbinani.cadencii
             this.cMenuTrackTabRenderer.Size = new System.Drawing.Size( 196, 22 );
             this.cMenuTrackTabRenderer.Text = "Renderer(&R)";
             // 
-            // cMenuTrackTabRendererVOCALOID100
+            // cMenuTrackTabRendererVOCALOID1
             // 
-            this.cMenuTrackTabRendererVOCALOID100.Name = "cMenuTrackTabRendererVOCALOID100";
-            this.cMenuTrackTabRendererVOCALOID100.Size = new System.Drawing.Size( 177, 22 );
-            this.cMenuTrackTabRendererVOCALOID100.Text = "VOCALOID1 [1.0] (&1)";
-            // 
-            // cMenuTrackTabRendererVOCALOID101
-            // 
-            this.cMenuTrackTabRendererVOCALOID101.Name = "cMenuTrackTabRendererVOCALOID101";
-            this.cMenuTrackTabRendererVOCALOID101.Size = new System.Drawing.Size( 177, 22 );
-            this.cMenuTrackTabRendererVOCALOID101.Text = "VOCALOID1 [1.1] (&2)";
+            this.cMenuTrackTabRendererVOCALOID1.Name = "cMenuTrackTabRendererVOCALOID1";
+            this.cMenuTrackTabRendererVOCALOID1.Size = new System.Drawing.Size( 180, 22 );
+            this.cMenuTrackTabRendererVOCALOID1.Text = "VOCALOID1(&1)";
             // 
             // cMenuTrackTabRendererVOCALOID2
             // 
             this.cMenuTrackTabRendererVOCALOID2.Name = "cMenuTrackTabRendererVOCALOID2";
-            this.cMenuTrackTabRendererVOCALOID2.Size = new System.Drawing.Size( 177, 22 );
-            this.cMenuTrackTabRendererVOCALOID2.Text = "VOCALOID2(&3)";
+            this.cMenuTrackTabRendererVOCALOID2.Size = new System.Drawing.Size( 180, 22 );
+            this.cMenuTrackTabRendererVOCALOID2.Text = "VOCALOID2(&2)";
             // 
             // cMenuTrackTabRendererUtau
             // 
             this.cMenuTrackTabRendererUtau.Name = "cMenuTrackTabRendererUtau";
-            this.cMenuTrackTabRendererUtau.Size = new System.Drawing.Size( 177, 22 );
-            this.cMenuTrackTabRendererUtau.Text = "UTAU(&4)";
+            this.cMenuTrackTabRendererUtau.Size = new System.Drawing.Size( 180, 22 );
+            this.cMenuTrackTabRendererUtau.Text = "UTAU(&3)";
             // 
             // cMenuTrackTabRendererStraight
             // 
             this.cMenuTrackTabRendererStraight.Name = "cMenuTrackTabRendererStraight";
-            this.cMenuTrackTabRendererStraight.Size = new System.Drawing.Size( 177, 22 );
-            this.cMenuTrackTabRendererStraight.Text = "Straight X UTAU(&5) ";
+            this.cMenuTrackTabRendererStraight.Size = new System.Drawing.Size( 180, 22 );
+            this.cMenuTrackTabRendererStraight.Text = "vConnect-STAND(&4) ";
             // 
             // cMenuTrackTabRendererAquesTone
             // 
             this.cMenuTrackTabRendererAquesTone.Name = "cMenuTrackTabRendererAquesTone";
-            this.cMenuTrackTabRendererAquesTone.Size = new System.Drawing.Size( 177, 22 );
-            this.cMenuTrackTabRendererAquesTone.Text = "AquesTone(&6)";
+            this.cMenuTrackTabRendererAquesTone.Size = new System.Drawing.Size( 180, 22 );
+            this.cMenuTrackTabRendererAquesTone.Text = "AquesTone(&5)";
             // 
             // cMenuTrackSelector
             // 
@@ -20259,7 +20212,7 @@ namespace org.kbinani.cadencii
             this.toolStripBottom.Location = new System.Drawing.Point( 15, 0 );
             this.toolStripBottom.Name = "toolStripBottom";
             this.toolStripBottom.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.toolStripBottom.Size = new System.Drawing.Size( 296, 25 );
+            this.toolStripBottom.Size = new System.Drawing.Size( 294, 25 );
             this.toolStripBottom.TabIndex = 22;
             // 
             // toolStripStatusLabel1
@@ -20615,7 +20568,7 @@ namespace org.kbinani.cadencii
             this.rebar.Dock = System.Windows.Forms.DockStyle.Top;
             this.rebar.Location = new System.Drawing.Point( 0, 24 );
             this.rebar.Name = "rebar";
-            this.rebar.Size = new System.Drawing.Size( 955, 28 );
+            this.rebar.Size = new System.Drawing.Size( 955, 4 );
             this.rebar.TabIndex = 19;
             this.rebar.ToggleDoubleClick = true;
             // 
@@ -20898,13 +20851,13 @@ namespace org.kbinani.cadencii
             this.toolStripContainer1.ContentPanel.Controls.Add( this.panel1 );
             this.toolStripContainer1.ContentPanel.Controls.Add( this.panel2 );
             this.toolStripContainer1.ContentPanel.Controls.Add( this.splitContainerProperty );
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size( 955, 590 );
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size( 955, 614 );
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer1.LeftToolStripPanelVisible = false;
-            this.toolStripContainer1.Location = new System.Drawing.Point( 0, 52 );
+            this.toolStripContainer1.Location = new System.Drawing.Point( 0, 28 );
             this.toolStripContainer1.Name = "toolStripContainer1";
             this.toolStripContainer1.RightToolStripPanelVisible = false;
-            this.toolStripContainer1.Size = new System.Drawing.Size( 955, 637 );
+            this.toolStripContainer1.Size = new System.Drawing.Size( 955, 661 );
             this.toolStripContainer1.TabIndex = 26;
             this.toolStripContainer1.Text = "toolStripContainer1";
             this.toolStripContainer1.TopToolStripPanelVisible = false;
@@ -21206,7 +21159,7 @@ namespace org.kbinani.cadencii
         public System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
         //public BMenuItem menuJobRealTime;
         public BMenuItem cMenuTrackTabRenderer;
-        public BMenuItem cMenuTrackTabRendererVOCALOID100;
+        public BMenuItem cMenuTrackTabRendererVOCALOID1;
         public BMenuItem cMenuTrackTabRendererVOCALOID2;
         public BMenuItem cMenuTrackTabRendererUtau;
         public BMenuItem menuVisualPitchLine;
@@ -21227,7 +21180,7 @@ namespace org.kbinani.cadencii
         public System.Windows.Forms.ToolStripSeparator toolStripSeparator15;
         public BMenuItem menuSettingPaletteTool;
         public BMenuItem menuTrackRenderer;
-        public BMenuItem menuTrackRendererVOCALOID100;
+        public BMenuItem menuTrackRendererVOCALOID1;
         public BMenuItem menuTrackRendererVOCALOID2;
         public BMenuItem menuTrackRendererUtau;
         public BMenuItem menuFileImportVsq;
@@ -21256,13 +21209,10 @@ namespace org.kbinani.cadencii
         private BMenuItem cMenuTrackTabRendererAquesTone;
         private BMenuItem menuVisualPluginUi;
         private BMenuItem menuVisualPluginUiAquesTone;
-        private BMenuItem menuVisualPluginUiVocaloid100;
+        private BMenuItem menuVisualPluginUiVocaloid1;
         private BMenuItem menuVisualPluginUiVocaloid2;
         private BMenuItem menuVisualIconPalette;
         private BMenuItem menuFileExportMusicXml;
-        public BMenuItem menuTrackRendererVOCALOID101;
-        public BMenuItem cMenuTrackTabRendererVOCALOID101;
-        private BMenuItem menuVisualPluginUiVocaloid101;
         public BMenuItem menuHiddenSelectForward;
         public BMenuItem menuHiddenSelectBackward;
         public BMenuItem menuHiddenMoveUp;

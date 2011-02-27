@@ -105,10 +105,10 @@ namespace org.kbinani.cadencii
         /// UIウィンドウのサイズ
         /// </summary>
         private Dimension uiWindowRect = new Dimension( 373, 158 );
-        /// <summary>
+        /* /// <summary>
         /// win32.LoadLibraryExを使うかどうか。trueならwin32.LoadLibraryExを使い、falseならutil.dllのLoadDllをつかう。既定ではtrue
         /// </summary>
-        private boolean useNativeDllLoader = true;
+        private boolean useNativeDllLoader = true;*/
         protected MemoryManager memoryManager = new MemoryManager();
         private Object mSyncRoot = new Object();
 
@@ -362,32 +362,15 @@ namespace org.kbinani.cadencii
 #endif
         }
 
-        public virtual bool open( int block_size, int sample_rate, boolean use_native_dll_loader )
+        public virtual bool open( int block_size, int sample_rate )
         {
-            useNativeDllLoader = use_native_dll_loader;
-
-            if ( useNativeDllLoader ) {
-                dllHandle = win32.LoadLibraryExW( path, IntPtr.Zero, win32.LOAD_WITH_ALTERED_SEARCH_PATH );
-            } else {
-#if !MONO
-                if ( !org.kbinani.cadencii.util.DllLoad.isInitialized() ) {
-                    org.kbinani.cadencii.util.DllLoad.initialize();
-                }
-                dllHandle = org.kbinani.cadencii.util.DllLoad.loadDll( path );
-#endif
-            }
+            dllHandle = win32.LoadLibraryExW( path, IntPtr.Zero, win32.LOAD_WITH_ALTERED_SEARCH_PATH );
             if ( dllHandle == IntPtr.Zero ) {
                 serr.println( "vstidrv#open; dllHandle is null" );
                 return false;
             }
 
-            if ( useNativeDllLoader ) {
-                mainProcPointer = win32.GetProcAddress( dllHandle, "main" );
-            } else {
-#if !MONO
-                mainProcPointer = org.kbinani.cadencii.util.DllLoad.getProcAddress( dllHandle, "main" );
-#endif
-            }
+            mainProcPointer = win32.GetProcAddress( dllHandle, "main" );
             mainDelegate = (PVSTMAIN)Marshal.GetDelegateForFunctionPointer( mainProcPointer,
                                                                             typeof( PVSTMAIN ) );
             if ( mainDelegate == null ) {
@@ -476,14 +459,7 @@ namespace org.kbinani.cadencii
                     }
                     sout.println( "vstidrv#close; dllHandle=" + dllHandle );
                     if ( dllHandle != IntPtr.Zero ) {
-                        sout.println( "vstidrv#close; useNativeDllLoader=" + useNativeDllLoader );
-                        if ( useNativeDllLoader ) {
-                            win32.FreeLibrary( dllHandle );
-                        } else {
-#if !MONO
-                            org.kbinani.cadencii.util.DllLoad.freeDll( dllHandle );
-#endif
-                        }
+                        win32.FreeLibrary( dllHandle );
                     }
                     aEffect = null;
                     dllHandle = IntPtr.Zero;

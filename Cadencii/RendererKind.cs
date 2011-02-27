@@ -19,6 +19,7 @@ package org.kbinani.cadencii;
     /// </summary>
     public enum RendererKind
     {
+        VOCALOID1,
         /// <summary>
         /// Synthesize Engine 1.0のVOCALOID1
         /// </summary>
@@ -60,13 +61,17 @@ namespace org.kbinani.cadencii{
     public enum RendererKind : int
     {
         /// <summary>
-        /// Synthesize Engine 1.0のVOCALOID1
+        /// VOCALOID1
+        /// </summary>
+        VOCALOID1 = 1,
+        /// <summary>
+        /// Synthesize Engine 1.0のVOCALOID1．過去のバージョンとの互換性のために残存．
         /// </summary>
         VOCALOID1_100 = 1,
         /// <summary>
-        /// Synthesize Engine 1.1のVOCALOID1
+        /// Synthesize Engine 1.1のVOCALOID1．過去のバージョンとの互換性のために残存．
         /// </summary>
-        VOCALOID1_101 = 2,
+        VOCALOID1_101 = 1,
         /// <summary>
         /// VOCALOID2
         /// </summary>

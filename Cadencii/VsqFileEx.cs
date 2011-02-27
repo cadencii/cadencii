@@ -153,14 +153,7 @@ namespace org.kbinani.cadencii
             } else if ( version.StartsWith( VSTiDllManager.RENDERER_NULL ) ) {
                 return RendererKind.NULL;
             } else {
-                // ここにくる場合は、VOCALOID1_100またはVOCALOID1_101のどちらか。
-                // システムのデフォルトのDSEVersionから、どちらかを判定する。不可能なら、VOCALOID1_100にする。
-                int default_dse_version = VocaloSysUtil.getDefaultDseVersion();
-                if ( default_dse_version == 101 ) {
-                    return RendererKind.VOCALOID1_101;
-                } else {
-                    return RendererKind.VOCALOID1_100;
-                }
+                return RendererKind.VOCALOID1;
             }
         }
 
@@ -175,7 +168,7 @@ namespace org.kbinani.cadencii
                     vsq_common.Version = VSTiDllManager.RENDERER_STR0;
                 } else if ( renderer_kind == RendererKind.UTAU ) {
                     vsq_common.Version = VSTiDllManager.RENDERER_UTU0;
-                } else if ( renderer_kind == RendererKind.VOCALOID1_100 || renderer_kind == RendererKind.VOCALOID1_101 ) {
+                } else if ( renderer_kind == RendererKind.VOCALOID1 ) {
                     vsq_common.Version = VSTiDllManager.RENDERER_DSB2;
                 } else if ( renderer_kind == RendererKind.VOCALOID2 ) {
                     vsq_common.Version = VSTiDllManager.RENDERER_DSB3;

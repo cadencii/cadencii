@@ -124,7 +124,7 @@ namespace org.kbinani.cadencii
                 VsqFileEx vsq = AppManager.getVsqFile();
                 if ( vsq != null ) {
                     RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
-                    if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
+                    if ( kind == RendererKind.VOCALOID1 ) {
                         type = SynthesizerType.VOCALOID1;
                     }
                     String svalue = (String)value;
@@ -149,7 +149,7 @@ namespace org.kbinani.cadencii
             VsqFileEx vsq = AppManager.getVsqFile();
             if ( vsq != null ) {
                 RendererKind kind = VsqFileEx.getTrackRendererKind( vsq.Track.get( AppManager.getSelected() ) );
-                if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ){
+                if ( kind == RendererKind.VOCALOID1 ){
                     type = SynthesizerType.VOCALOID1;
                 }
             }

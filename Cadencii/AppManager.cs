@@ -1780,7 +1780,7 @@ namespace org.kbinani.cadencii
                 return "STR000";
             } else if ( kind == RendererKind.UTAU ) {
                 return "UTU000";
-            } else if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
+            } else if ( kind == RendererKind.VOCALOID1 ) {
                 return "DSB202";
             } else if ( kind == RendererKind.VOCALOID2 ) {
                 return "DSB301";
@@ -1812,7 +1812,7 @@ namespace org.kbinani.cadencii
                     SingerConfig sc = itr.next();
                     singers.add( getSingerIDUtau( sc.Language, sc.Program ) );
                 }
-            } else if ( kind == RendererKind.VOCALOID1_100 || kind == RendererKind.VOCALOID1_101 ) {
+            } else if ( kind == RendererKind.VOCALOID1 ) {
                 SingerConfig[] configs = VocaloSysUtil.getSingerConfigs( SynthesizerType.VOCALOID1 );
                 singers = new Vector<VsqID>();
                 for ( int i = 0; i < configs.Length; i++ ) {
