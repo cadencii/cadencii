@@ -14,6 +14,8 @@
 #if JAVA
 //INCLUDE ../BuildJavaUI/src/org/kbinani/media/MidiReceivedEventHandler.java
 #else
+using System;
+using org.kbinani;
 
 namespace org.kbinani.media
 {

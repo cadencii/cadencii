@@ -15083,26 +15083,6 @@ namespace org.kbinani.cadencii
 #if DEBUG
             sout.println( "FormMain#menuHelpDebug_Click" );
 
-            try{
-                javax.sound.midi.MidiDevice.Info[] info = javax.sound.midi.MidiSystem.getMidiDeviceInfo();
-                System.err.println("There are " + info.length + " devices.");
-                for (int i = 0; i < info.length; i++) {
-                    System.err.println("*** " + i + " ***");
-                    System.err.println("  Description:" + info[i].getDescription());
-                    System.err.println("  Name:" + info[i].getName());
-                    System.err.println("  Vendor:" + info[i].getVendor());
-                    javax.sound.midi.MidiDevice device = javax.sound.midi.MidiSystem.getMidiDevice(info[i]);
-                    if (device instanceof javax.sound.midi.Sequencer) {
-                        System.err.println("  *** This is Sequencer.");
-                    }
-                    if (device instanceof javax.sound.midi.Synthesizer) {
-                        System.err.println("  *** This is Synthesizer.");
-                    }
-                    System.err.println();
-                }
-            }catch( Exception ex ){
-            }
-
 #if ENABLE_VOCALOID
             /*BFileChooser dlg_fout = new BFileChooser();
             if ( dlg_fout.showSaveDialog( this ) == BFileChooser.APPROVE_OPTION ) {

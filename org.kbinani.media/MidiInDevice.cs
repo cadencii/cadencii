@@ -249,17 +249,23 @@ namespace org.kbinani.media
                             case 0xb0:
                             case 0xe0: {
                                 if ( MidiReceived != null ) {
-                                    MidiReceived.Invoke( now, new byte[] { (byte)(receive & 0xff),
-                                                                    (byte)((receive & 0xffff) >> 8),
-                                                                    (byte)((receive & ((2 << 24) - 1)) >> 16) } );
+                                    javax.sound.midi.MidiMessage msg = 
+                                        new org.kbinani.javax.sound.midi.MidiMessage( 
+                                            new byte[] { (byte)(receive & 0xff),
+                                                         (byte)((receive & 0xffff) >> 8),
+                                                         (byte)((receive & ((2 << 24) - 1)) >> 16) } );
+                                    MidiReceived.Invoke( this, msg );
                                 }
                                 break;
                             }
                             case 0xc0:
                             case 0xd0: {
                                 if ( MidiReceived != null ) {
-                                    MidiReceived.Invoke( now, new byte[] { (byte)( receive & 0xff ),
-                                                                    (byte)((receive & 0xffff) >> 8) } );
+                                    javax.sound.midi.MidiMessage msg =
+                                        new org.kbinani.javax.sound.midi.MidiMessage(
+                                            new byte[] { (byte)( receive & 0xff ),
+                                                         (byte)((receive & 0xffff) >> 8) } );
+                                    MidiReceived.Invoke( this, msg );
                                 }
                                 break;
                             }
@@ -272,7 +278,9 @@ namespace org.kbinani.media
                                     if ( b0 == 0xf1 ) {
                                         // MTC quater frame message
                                         if ( MidiReceived != null ) {
-                                            MidiReceived.Invoke( now, new byte[] { b0, b1, b2 } );
+                                            javax.sound.midi.MidiMessage msg =
+                                                new org.kbinani.javax.sound.midi.MidiMessage( new byte[] { b0, b1, b2 } );
+                                            MidiReceived.Invoke( this, msg );
                                         }
                                     } else if ( b0 == 0xf2 ) {
                                         // song position pointer
@@ -287,9 +295,9 @@ namespace org.kbinani.media
                                     byte b2 = (byte)((receive >> 16) & 0xff);
                                     byte b3 = (byte)((receive >> 24) & 0xff);
                                     if ( b0 == 0xfa ) {
-                                        MidiReceived.Invoke( now, new byte[] { b0 } );
+                                        MidiReceived.Invoke( this, new javax.sound.midi.MidiMessage( new byte[] { b0 } ) );
                                     } else if ( b0 == 0xfc ) {
-                                        MidiReceived.Invoke( now, new byte[] { b0 } );
+                                        MidiReceived.Invoke( this, new javax.sound.midi.MidiMessage( new byte[] { b0 } ) );
                                     }
                                 }
                                 break;

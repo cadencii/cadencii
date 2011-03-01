@@ -35,6 +35,7 @@ using org.kbinani.java.awt;
 using org.kbinani.java.awt.event_;
 using org.kbinani.java.io;
 using org.kbinani.java.util;
+using org.kbinani.javax.sound.midi;
 using org.kbinani.media;
 using org.kbinani.vsq;
 using org.kbinani.windows.forms;

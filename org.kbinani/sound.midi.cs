@@ -87,6 +87,12 @@ namespace org.kbinani.javax.sound.midi
                 return mName;
             }        
         }
+
+        public int getMaxTransmitters()
+        {
+            //TODO:
+            return 0;
+        }
     }
 
     public class MidiMessage
@@ -94,17 +100,21 @@ namespace org.kbinani.javax.sound.midi
         protected byte[] data;
         protected int length;
 
-        protected MidiMessage( byte[] data )
+        /// <summary>
+        /// 本来はprotected
+        /// </summary>
+        /// <param name="data"></param>
+        public MidiMessage( byte[] data )
         {
             if( data == null ){
                 this.data = new byte[0];
                 this.length = 0;
             }else{
-                this.data = new byte[data.length];
-                for( int i = 0; i < data.length; i++ ){
+                this.data = new byte[data.Length];
+                for( int i = 0; i < data.Length; i++ ){
                     this.data[i] = (byte)(0xff & data[i]);
                 }
-                this.length = data.length;
+                this.length = data.Length;
             }
         }
 
@@ -130,12 +140,12 @@ namespace org.kbinani.javax.sound.midi
         /// <summary>
         /// アプリケーションによるレシーバの使用が終了し、レシーバが要求する限られたリソースを解放または使用可能にできることを示します。
         /// </summary>
-        public void close();
+        void close();
 
         /// <summary>
         /// MIDI メッセージおよび時刻表示をこのレシーバに送信します。
         /// </summary>          
-        public void send( MidiMessage message, long timeStamp );
+        void send( MidiMessage message, long timeStamp );
     }
     
     public interface Transmitter
@@ -143,17 +153,17 @@ namespace org.kbinani.javax.sound.midi
         /// <summary>
         /// アプリケーションによるレシーバの使用が終了し、トランスミッタが要求する限られたリソースを解放または使用可能にできることを示します。
         /// </summary>
-        public void close();
+        void close();
 
         /// <summary>
         /// このトランスミッタで MIDI メッセージを配信する現在のレシーバを取得します。
         /// </summary>          
-        public Receiver getReceiver();
+        Receiver getReceiver();
 
         /// <summary>
         /// このトランスミッタで MIDI メッセージを配信するレシーバを設定します。
         /// </summary>
-        public void setReceiver( Receiver receiver )
+        void setReceiver( Receiver receiver );
     }
 
     public class MidiSystem
@@ -200,6 +210,22 @@ namespace org.kbinani.javax.sound.midi
             {
                 mInfo = info;
             }
+
+            public void setReceiver( Receiver rc )
+            {
+                //TODO:
+            }
+
+            public Receiver getReceiver()
+            {
+                //TODO:
+                return null;
+            }
+
+            public void close()
+            {
+                //TODO:
+            }
         }
         
         private class MidiDeviceReceiverImpl : MidiDevice, Receiver
@@ -209,6 +235,16 @@ namespace org.kbinani.javax.sound.midi
             public MidiDeviceReceiverImpl( MidiDeviceInfoImpl info )
             {
                 mInfo = info;
+            }
+
+            public void send( MidiMessage message, long time )
+            {
+                //TODO:
+            }
+
+            public void close()
+            {
+                //TODO:
             }
         }
         
@@ -240,10 +276,10 @@ namespace org.kbinani.javax.sound.midi
                 }
                 for ( int i = 0; i < num; i++ ) {
                     MIDIINCAPS m = new MIDIINCAPS();
-                    uint r = win32.midiInGetDevCaps( i, ref m, (uint)Marshal.SizeOf( m ) );
+                    uint r = win32.midiInGetDevCaps( (uint)i, ref m, (uint)System.Runtime.InteropServices.Marshal.SizeOf( m ) );
                     MidiDeviceInfoImpl impl =
-                        new MidiDeviceInfoImpl( m.szName, "", "", m.vDriverVersion + "", true, i );
-                    mMidiIn.add( impl );
+                        new MidiDeviceInfoImpl( m.szPname, "", "", m.vDriverVersion + "", true, i );
+                    mMidiIn.Add( impl );
                 }
             }
             return mMidiIn;
@@ -261,10 +297,10 @@ namespace org.kbinani.javax.sound.midi
                 }
                 for ( int i = 0; i < num; i++ ) {
                     MIDIOUTCAPSA m = new MIDIOUTCAPSA();
-                    uint r = win32.midiInGetDevCaps( i, ref m, (uint)Marshal.SizeOf( m ) );
+                    uint r = win32.midiOutGetDevCapsA( (uint)i, ref m, (uint)System.Runtime.InteropServices.Marshal.SizeOf( m ) );
                     MidiDeviceInfoImpl impl =
-                        new MidiDeviceInfoImpl( m.szName, "", "", m.vDriverVersion + "", false, i );
-                    mMidiOut.add( impl );
+                        new MidiDeviceInfoImpl( m.szPname, "", "", m.vDriverVersion + "", false, i );
+                    mMidiOut.Add( impl );
                 }
             }
             return mMidiOut;
@@ -272,7 +308,7 @@ namespace org.kbinani.javax.sound.midi
         
         public static MidiDevice.Info[] getMidiDeviceInfo()
         {
-            int num = getMidiIn().size() + getMidiOut().size();
+            int num = getMidiIn().Count + getMidiOut().Count;
             MidiDevice.Info[] arr = new MidiDevice.Info[num];
             int i = 0;
             foreach( MidiDeviceInfoImpl info in getMidiIn() ){

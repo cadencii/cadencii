@@ -98,6 +98,7 @@
     <Compile Include="PortUtil.cs" />
     <Compile Include="RandomAccessFile.cs" />
     <Compile Include="serr.cs" />
+    <Compile Include="sound.midi.cs" />
     <Compile Include="sout.cs" />
     <Compile Include="str.cs" />
     <Compile Include="swing.cs">
