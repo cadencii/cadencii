@@ -1545,7 +1545,7 @@ public class Preference extends BDialog {
 			gridBagConstraints88.insets = new Insets(3, 12, 3, 0);
 			gridBagConstraints88.gridy = 4;
 			GridBagConstraints gridBagConstraints136 = new GridBagConstraints();
-			gridBagConstraints136.fill = GridBagConstraints.NONE;
+			gridBagConstraints136.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints136.gridx = 1;
 			gridBagConstraints136.gridy = 3;
 			gridBagConstraints136.anchor = GridBagConstraints.WEST;
@@ -1560,9 +1560,9 @@ public class Preference extends BDialog {
 			labelMtcMidiInPort = new BLabel();
 			labelMtcMidiInPort.setText("MTC MIDI In Port Number");
 			GridBagConstraints gridBagConstraints86 = new GridBagConstraints();
-			gridBagConstraints86.fill = GridBagConstraints.NONE;
+			gridBagConstraints86.fill = GridBagConstraints.HORIZONTAL;
 			gridBagConstraints86.gridy = 2;
-			gridBagConstraints86.weightx = 1.0D;
+			gridBagConstraints86.weightx = 0.0D;
 			gridBagConstraints86.anchor = GridBagConstraints.WEST;
 			gridBagConstraints86.insets = new Insets(3, 12, 3, 0);
 			gridBagConstraints86.gridwidth = 2;
@@ -1662,7 +1662,7 @@ public class Preference extends BDialog {
 	private BComboBox getComboMidiInPortNumber() {
 		if (comboMidiInPortNumber == null) {
 			comboMidiInPortNumber = new BComboBox();
-			comboMidiInPortNumber.setPreferredSize(new Dimension(239, 27));
+			comboMidiInPortNumber.setPreferredSize(new Dimension(200, 27));
 		}
 		return comboMidiInPortNumber;
 	}
@@ -2390,7 +2390,6 @@ public class Preference extends BDialog {
     private BComboBox getComboMtcMidiInPortNumber() {
         if (comboMtcMidiInPortNumber == null) {
             comboMtcMidiInPortNumber = new BComboBox();
-            comboMtcMidiInPortNumber.setPreferredSize(new Dimension(239, 27));
         }
         return comboMtcMidiInPortNumber;
     }

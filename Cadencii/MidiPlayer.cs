@@ -1,4 +1,4 @@
-#if ENABLE_MIDI
+#if FOO_ENABLE_MIDI
 /*
  * Metronome.cs
  * Copyright © 2009-2011 kbinani

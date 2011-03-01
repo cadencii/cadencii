@@ -3683,7 +3683,6 @@ namespace org.kbinani.cadencii
                     }
                     break;
                 }
-                PortUtil.deleteFile( dev_null );
             }catch( Exception ex ){
                 ex.printStackTrace();
             }

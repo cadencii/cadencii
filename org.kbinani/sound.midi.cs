@@ -1,0 +1,290 @@
+#if !JAVA
+/*
+ * sound.midi.cs
+ * Copyright © 2011 kbinani
+ *
+ * This file is part of org.kbinani.
+ *
+ * org.kbinani is free software; you can redistribute it and/or
+ * modify it under the terms of the BSD License.
+ *
+ * org.kbinani is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+using System;
+using System.Collections.Generic;
+
+namespace org.kbinani.javax.sound.midi
+{
+
+    // 本来ならinterface
+    public class MidiDevice
+    {
+        public class Info
+        {
+            protected String mName;
+            protected String mVendor;
+            protected String mDescription;
+            protected String mVersion;
+
+            /// <summary>
+            /// デバイス情報オブジェクトを構築します。
+            /// </summary>
+            protected Info( String name, String vendor, String description, String version )
+            {
+                mName = name;
+                mVendor = vendor;
+                mDescription = description;
+                mVersion = version;
+            }
+          
+            /// <summary>
+            /// 2つのオブジェクトが等しいかどうかを報告します。
+            /// </summary>
+            public bool equals( Object obj )
+            {
+                return base.Equals( obj );
+            }
+
+            /// <summary>
+            /// デバイスの説明を取得します。
+            /// </summary>
+            public String getDescription()
+            {
+                return mDescription;
+            }
+
+            /// <summary>
+            /// デバイスの名前を取得します。
+            /// </summary>          
+            public String getName()
+            {
+                return mName;
+            }
+
+            /// <summary>
+            /// デバイスの供給会社の名前を取得します。
+            /// </summary> 
+            public String getVendor()
+            {
+                return mVendor;
+            }
+            
+            /// <summary>
+            /// デバイスのバージョンを取得します。
+            /// </summary>
+            public String getVersion()
+            {
+                return mVersion;
+            }
+
+            /// <summary>
+            /// デバイス情報の文字列表現を提供します。
+            /// </summary>
+            public String toString()
+            {
+                return mName;
+            }        
+        }
+    }
+
+    public class MidiMessage
+    {
+        protected byte[] data;
+        protected int length;
+
+        protected MidiMessage( byte[] data )
+        {
+            if( data == null ){
+                this.data = new byte[0];
+                this.length = 0;
+            }else{
+                this.data = new byte[data.length];
+                for( int i = 0; i < data.length; i++ ){
+                    this.data[i] = (byte)(0xff & data[i]);
+                }
+                this.length = data.length;
+            }
+        }
+
+        public int getLength(){
+            return length;
+        }
+
+        public byte[] getMessage()
+        {
+            return data;
+        }
+
+        public int getStatus(){
+            if( data != null && data.Length > 0 ){
+                return data[0];
+            }
+            return 0;
+        }
+    }
+
+    public interface Receiver
+    {
+        /// <summary>
+        /// アプリケーションによるレシーバの使用が終了し、レシーバが要求する限られたリソースを解放または使用可能にできることを示します。
+        /// </summary>
+        public void close();
+
+        /// <summary>
+        /// MIDI メッセージおよび時刻表示をこのレシーバに送信します。
+        /// </summary>          
+        public void send( MidiMessage message, long timeStamp );
+    }
+    
+    public interface Transmitter
+    {
+        /// <summary>
+        /// アプリケーションによるレシーバの使用が終了し、トランスミッタが要求する限られたリソースを解放または使用可能にできることを示します。
+        /// </summary>
+        public void close();
+
+        /// <summary>
+        /// このトランスミッタで MIDI メッセージを配信する現在のレシーバを取得します。
+        /// </summary>          
+        public Receiver getReceiver();
+
+        /// <summary>
+        /// このトランスミッタで MIDI メッセージを配信するレシーバを設定します。
+        /// </summary>
+        public void setReceiver( Receiver receiver )
+    }
+
+    public class MidiSystem
+    {
+        private static List<MidiDeviceInfoImpl> mMidiIn = null;
+        private static List<MidiDeviceInfoImpl> mMidiOut = null;
+
+        private class MidiDeviceInfoImpl : MidiDevice.Info
+        {
+            private int mIndex;
+            private bool mIsMidiIn;
+
+            public MidiDeviceInfoImpl( String name, String vendor, String description, String version, bool is_midi_in, int index )
+                : base( name, vendor, description, version )
+            {
+                mIndex = index;
+                mIsMidiIn = is_midi_in;
+            }
+            
+            public bool equals( Object obj )
+            {
+                if( obj == null ) return false;
+                if( !(obj is MidiDeviceInfoImpl) ) return false;
+                MidiDeviceInfoImpl info = (MidiDeviceInfoImpl)obj;
+                if( info.mIndex == this.mIndex &&
+                    info.mIsMidiIn == this.mIsMidiIn ){
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+            
+            public Object clone()
+            {
+                return new MidiDeviceInfoImpl( mName, mVendor, mDescription, mVersion, mIsMidiIn, mIndex );
+            }
+        }
+        
+        private class MidiDeviceTransmitterImpl : MidiDevice, Transmitter
+        {
+            private MidiDeviceInfoImpl mInfo;
+
+            public MidiDeviceTransmitterImpl( MidiDeviceInfoImpl info )
+            {
+                mInfo = info;
+            }
+        }
+        
+        private class MidiDeviceReceiverImpl : MidiDevice, Receiver
+        {
+            private MidiDeviceInfoImpl mInfo;
+
+            public MidiDeviceReceiverImpl( MidiDeviceInfoImpl info )
+            {
+                mInfo = info;
+            }
+        }
+        
+        public static MidiDevice getMidiDevice( MidiDevice.Info info )
+        {
+            foreach( MidiDeviceInfoImpl i in getMidiIn() ){
+                if( i.equals( info ) ){
+                    return new MidiDeviceTransmitterImpl( i );
+                }
+            }
+            foreach( MidiDeviceInfoImpl i in getMidiOut() ){
+                if( i.equals( info ) ){
+                    return new MidiDeviceReceiverImpl( i );
+                }
+            }
+            // javaではIllegalArgumentException
+            throw new ArgumentException();
+        }
+        
+        private static List<MidiDeviceInfoImpl> getMidiIn()
+        {
+            if( mMidiIn == null ){
+                mMidiIn = new List<MidiDeviceInfoImpl>();
+                int num = 0;
+                try {
+                    num = (int)win32.midiInGetNumDevs();
+                } catch {
+                    num = 0;
+                }
+                for ( int i = 0; i < num; i++ ) {
+                    MIDIINCAPS m = new MIDIINCAPS();
+                    uint r = win32.midiInGetDevCaps( i, ref m, (uint)Marshal.SizeOf( m ) );
+                    MidiDeviceInfoImpl impl =
+                        new MidiDeviceInfoImpl( m.szName, "", "", m.vDriverVersion + "", true, i );
+                    mMidiIn.add( impl );
+                }
+            }
+            return mMidiIn;
+        }
+        
+        private static List<MidiDeviceInfoImpl> getMidiOut()
+        {
+            if( mMidiOut == null ){
+                mMidiOut = new List<MidiDeviceInfoImpl>();
+                int num = 0;
+                try {
+                    num = (int)win32.midiOutGetNumDevs();
+                } catch {
+                    num = 0;
+                }
+                for ( int i = 0; i < num; i++ ) {
+                    MIDIOUTCAPSA m = new MIDIOUTCAPSA();
+                    uint r = win32.midiInGetDevCaps( i, ref m, (uint)Marshal.SizeOf( m ) );
+                    MidiDeviceInfoImpl impl =
+                        new MidiDeviceInfoImpl( m.szName, "", "", m.vDriverVersion + "", false, i );
+                    mMidiOut.add( impl );
+                }
+            }
+            return mMidiOut;
+        }
+        
+        public static MidiDevice.Info[] getMidiDeviceInfo()
+        {
+            int num = getMidiIn().size() + getMidiOut().size();
+            MidiDevice.Info[] arr = new MidiDevice.Info[num];
+            int i = 0;
+            foreach( MidiDeviceInfoImpl info in getMidiIn() ){
+                arr[i] = (MidiDevice.Info)(MidiDeviceInfoImpl)info.clone();
+                i++;
+            }
+            foreach( MidiDeviceInfoImpl info in getMidiOut() ){
+                arr[i] = (MidiDevice.Info)(MidiDeviceInfoImpl)info.clone();
+            }
+            return arr;
+        }
+    }
+
+}
+#endif

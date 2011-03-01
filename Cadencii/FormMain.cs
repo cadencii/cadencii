@@ -21,6 +21,10 @@ import java.awt.event.*;
 import java.io.*;
 import java.util.*;
 import javax.swing.*;
+import javax.sound.midi.MidiSystem;
+import javax.sound.midi.Transmitter;
+import javax.sound.midi.Receiver;
+import javax.sound.midi.MidiDevice;
 import org.kbinani.*;
 import org.kbinani.apputil.*;
 import org.kbinani.componentmodel.*;
@@ -45,6 +49,7 @@ using org.kbinani.java.awt.event_;
 using org.kbinani.java.io;
 using org.kbinani.java.util;
 using org.kbinani.javax.swing;
+using org.kbinani.javax.sound.midi;
 using org.kbinani.media;
 using org.kbinani.vsq;
 using org.kbinani.windows.forms;
@@ -630,8 +635,8 @@ namespace org.kbinani.cadencii
             getCMenuPiano();
             getCMenuTrackTab();
             getCMenuTrackSelector();
-            // MIDIステップ入力は使えないことにする
-            toolStripTool.remove( getStripBtnStepSequencer() );
+// MIDIステップ入力は使えないことにする
+//            toolStripTool.remove( getStripBtnStepSequencer() );
 #else
             InitializeComponent();
             timer = new BTimer( this.components );
@@ -3601,8 +3606,8 @@ namespace org.kbinani.cadencii
         public void reloadMidiIn()
         {
             if ( mMidiIn != null ) {
-                mMidiIn.MidiReceived -= mMidiIn_MidiReceived;
-                mMidiIn.Dispose();
+                mMidiIn.MidiReceived -= new MidiReceivedEventHandler( mMidiIn_MidiReceived );
+                mMidiIn.close();
                 mMidiIn = null;
             }
             int portNumber = AppManager.editorConfig.MidiInPort.PortNumber;
@@ -3612,7 +3617,7 @@ namespace org.kbinani.cadencii
 #endif
             try {
                 mMidiIn = new MidiInDevice( portNumber );
-                mMidiIn.MidiReceived += mMidiIn_MidiReceived;
+                mMidiIn.MidiReceived += new MidiReceivedEventHandler( mMidiIn_MidiReceived );
 #if ENABLE_MTC
                 if ( portNumber == portNumberMtc ) {
                     m_midi_in.setReceiveSystemCommonMessage( true );
@@ -3628,6 +3633,9 @@ namespace org.kbinani.cadencii
                 mMidiIn.setReceiveSystemRealtimeMessage( false );
 #endif
             } catch ( Exception ex ) {
+#if JAVA
+                ex.printStackTrace();
+#endif
                 Logger.write( typeof( FormMain ) + ".reloadMidiIn; ex=" + ex + "\n" );
                 serr.println( "FormMain#reloadMidiIn; ex=" + ex );
             }
@@ -3659,17 +3667,38 @@ namespace org.kbinani.cadencii
         public void updateMidiInStatus()
         {
             int midiport = AppManager.editorConfig.MidiInPort.PortNumber;
-            org.kbinani.MIDIINCAPS[] devices = MidiInDevice.GetMidiInDevices();
-            if ( midiport < 0 || devices.Length <= 0 ) {
+            Vector<MidiDevice.Info> devices = new Vector<MidiDevice.Info>();
+            foreach ( MidiDevice.Info info in MidiSystem.getMidiDeviceInfo() ){
+                MidiDevice device = null;
+                try{
+                    device = MidiSystem.getMidiDevice( info );
+                }catch( Exception ex ){
+                    device = null;
+                }
+                if( device == null ) continue;
+                int max = device.getMaxTransmitters();
+                if( max > 0 || max == -1 ){
+                    devices.add( info );
+                }
+            }
+            if ( midiport < 0 || vec.size( devices ) <= 0 ) {
+#if JAVA
+                stripBtnStepSequencer.setEnabled( false );
+#else
                 stripLblMidiIn.setText( _( "Disabled" ) );
                 stripLblMidiIn.setIcon( new ImageIcon( Resources.get_slash() ) );
+#endif
             } else {
-                if ( midiport >= devices.Length ) {
+                if ( midiport >= vec.size( devices ) ) {
                     midiport = 0;
                     AppManager.editorConfig.MidiInPort.PortNumber = midiport;
                 }
-                stripLblMidiIn.setText( devices[midiport].szPname );
+#if JAVA
+                stripBtnStepSequencer.setEnabled( true );
+#else
+                stripLblMidiIn.setText( vec.get( devices, midiport ).getName() );
                 stripLblMidiIn.setIcon( new ImageIcon( Resources.get_piano() ) );
+#endif
             }
         }
 #endif
@@ -8003,7 +8032,7 @@ namespace org.kbinani.cadencii
                 AppManager.mDrawStartIndex[i] = 0;
             }
 #if ENABLE_MIDI
-            MidiPlayer.Stop();
+            //MidiPlayer.stop();
 #endif // ENABLE_MIDI
         }
 
@@ -10498,9 +10527,9 @@ namespace org.kbinani.cadencii
             AppManager.stopGenerator();
             VSTiDllManager.terminate();
 #if ENABLE_MIDI
-            MidiPlayer.Stop();
+            //MidiPlayer.stop();
             if ( mMidiIn != null ) {
-                mMidiIn.Close();
+                mMidiIn.close();
             }
 #endif
 #if ENABLE_MTC
@@ -10576,7 +10605,7 @@ namespace org.kbinani.cadencii
 
 #if ENABLE_MIDI
             if ( mMidiIn != null ) {
-                mMidiIn.Dispose();
+                mMidiIn.close();
             }
 #endif
 #if !JAVA
@@ -15053,7 +15082,27 @@ namespace org.kbinani.cadencii
         {
 #if DEBUG
             sout.println( "FormMain#menuHelpDebug_Click" );
-            
+
+            try{
+                javax.sound.midi.MidiDevice.Info[] info = javax.sound.midi.MidiSystem.getMidiDeviceInfo();
+                System.err.println("There are " + info.length + " devices.");
+                for (int i = 0; i < info.length; i++) {
+                    System.err.println("*** " + i + " ***");
+                    System.err.println("  Description:" + info[i].getDescription());
+                    System.err.println("  Name:" + info[i].getName());
+                    System.err.println("  Vendor:" + info[i].getVendor());
+                    javax.sound.midi.MidiDevice device = javax.sound.midi.MidiSystem.getMidiDevice(info[i]);
+                    if (device instanceof javax.sound.midi.Sequencer) {
+                        System.err.println("  *** This is Sequencer.");
+                    }
+                    if (device instanceof javax.sound.midi.Synthesizer) {
+                        System.err.println("  *** This is Synthesizer.");
+                    }
+                    System.err.println();
+                }
+            }catch( Exception ex ){
+            }
+
 #if ENABLE_VOCALOID
             /*BFileChooser dlg_fout = new BFileChooser();
             if ( dlg_fout.showSaveDialog( this ) == BFileChooser.APPROVE_OPTION ) {
@@ -16435,9 +16484,9 @@ namespace org.kbinani.cadencii
             // MIDIの受信を開始
 #if ENABLE_MIDI
             if ( mStepSequencerEnabled ) {
-                mMidiIn.Start();
+                mMidiIn.start();
             } else {
-                mMidiIn.Stop();
+                mMidiIn.stop();
             }
 #endif
         }
@@ -17826,18 +17875,24 @@ namespace org.kbinani.cadencii
 #endif
 
 #if ENABLE_MIDI
-        public void mMidiIn_MidiReceived( double time, byte[] data )
+        public void mMidiIn_MidiReceived( Object sender, javax.sound.midi.MidiMessage message )
         {
-#if !JAVA
+            byte[] data = message.getMessage();
 #if DEBUG
-            sout.println( "FormMain#mMidiIn_MidiReceived; time=" + time );
+            sout.println( "FormMain#mMidiIn_MidiReceived; data.Length=" + data.Length );
 #endif
             if ( data.Length <= 2 ) {
                 return;
             }
+#if DEBUG
+            sout.println( "FormMain#mMidiIn_MidiReceived; AppManager.isPlaying()=" + AppManager.isPlaying() );
+#endif
             if ( AppManager.isPlaying() ) {
                 return;
             }
+#if DEBUG
+            sout.println( "FormMain#mMidiIn_MidiReceived; isStepSequencerEnabeld()=" + isStepSequencerEnabled() );
+#endif
             if ( !isStepSequencerEnabled() ) {
                 return;
             }
@@ -17849,7 +17904,7 @@ namespace org.kbinani.cadencii
                 code = 0x80;//ベロシティ0のNoteOnはNoteOff
             }
 
-            byte note = data[1];
+            int note = (0xff & data[1]);
 
             int clock = AppManager.getCurrentClock();
             int unit = AppManager.getPositionQuantizeClock();
@@ -17857,6 +17912,9 @@ namespace org.kbinani.cadencii
                 clock = doQuantize( clock, unit );
             }
 
+#if DEBUG
+            sout.println( "FormMain#mMidiIn_Received; clock=" + clock + "; note=" + note );
+#endif
             if ( code == 0x80 ) {
                 /*if ( AppManager.mAddingEvent != null ) {
                     int len = clock - AppManager.mAddingEvent.Clock;
@@ -17910,6 +17968,9 @@ namespace org.kbinani.cadencii
                 AppManager.setCurrentClock( clock + length );
 
                 // 画面を再描画
+#if JAVA
+                refreshScreen();
+#else
                 if ( this.InvokeRequired ) {
                     DelegateRefreshScreen deleg = null;
                     try {
@@ -17923,9 +17984,10 @@ namespace org.kbinani.cadencii
                 } else {
                     refreshScreen( true );
                 }
+#endif
+                // 鍵盤音を鳴らす
                 KeySoundPlayer.play( note );
             }
-#endif
         }
 #endif
         #endregion

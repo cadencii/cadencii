@@ -12,58 +12,110 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
+
 package org.kbinani.media;
 
-public class MidiInDevice{
+import org.kbinani.*;
 
-}
 #else
+
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using org.kbinani;
 
-namespace org.kbinani.media {
+namespace org.kbinani.media
+{
     using boolean = System.Boolean;
+#endif
 
-    public delegate void MidiReceivedEventHandler( double time, byte[] data );
-
-    public class MidiInDevice : IDisposable {
+#if JAVA
+    public class MidiInDevice implements javax.sound.midi.Receiver
+#else
+    public class MidiInDevice : IDisposable 
+#endif
+    {
+#if JAVA
+#else
         delegate void MidiInProcDelegate( uint hMidiIn, uint wMsg, int dwInstance, int dwParam1, int dwParam2 );
 
         private volatile MidiInProcDelegate m_delegate;
         private volatile IntPtr m_delegate_pointer;
         private uint m_hmidiin = 0;
+#endif
         private int m_port_number;
-        private boolean receiveSystemCommonMessage = false;
-        private boolean receiveSystemRealtimeMessage = false;
-        
+        private boolean mReceiveSystemCommonMessage = false;
+        private boolean mReceiveSystemRealtimeMessage = false;
+        private boolean mIsActive = false;
+
+#if JAVA
+        public final BEvent<MidiReceivedEventHandler> midiReceivedEvent = new BEvent<MidiReceivedEventHandler>();
+#else         
         public event MidiReceivedEventHandler MidiReceived;
+#endif
 
         public MidiInDevice( int port_number ) {
             m_port_number = port_number;
+#if JAVA
+            javax.sound.midi.MidiDevice.Info[] info = javax.sound.midi.MidiSystem.getMidiDeviceInfo();
+            if( port_number < 0 || info.length <= port_number ){
+                System.err.println( "MidiInDevice#.ctor; invalid port-number" );
+                return;
+            }
+            javax.sound.midi.Transmitter trans = null;
+            javax.sound.midi.MidiDevice device = null;
+            try{
+                device = javax.sound.midi.MidiSystem.getMidiDevice( info[port_number] );
+            }catch( Exception ex ){
+                ex.printStackTrace();
+                device = null;
+            }
+            if( device == null ) return;
+            int max = device.getMaxTransmitters();
+            if( max != -1 && max <= 0 ){
+                System.err.println( "MidiInDevice#.ctor; cannot connect to device" );
+                return;
+            }
+            if( !device.isOpen() ){
+                try{
+                    device.open();
+                }catch( Exception ex ){
+                    ex.printStackTrace();
+                    return;
+                }
+            }
+            try{
+                trans = device.getTransmitter();
+            }catch( Exception ex ){
+                ex.printStackTrace();
+            }
+            trans.setReceiver( this );
+#else
             m_delegate = new MidiInProcDelegate( MidiInProc );
             m_delegate_pointer = Marshal.GetFunctionPointerForDelegate( m_delegate );
             win32.midiInOpen( ref m_hmidiin, port_number, m_delegate_pointer, 0, win32.CALLBACK_FUNCTION );
+#endif
         }
 
         public boolean isReceiveSystemRealtimeMessage() {
-            return receiveSystemRealtimeMessage;
+            return mReceiveSystemRealtimeMessage;
         }
 
         public void setReceiveSystemRealtimeMessage( boolean value ) {
-            receiveSystemRealtimeMessage = value;
+            mReceiveSystemRealtimeMessage = value;
         }
 
         public boolean isReceiveSystemCommonMessage() {
-            return receiveSystemCommonMessage;
+            return mReceiveSystemCommonMessage;
         }
 
         public void setReceiveSystemCommonMessage( boolean value ) {
-            receiveSystemCommonMessage = value;
+            mReceiveSystemCommonMessage = value;
         }
 
-        public void Start() {
+        public void start() {
+            mIsActive = true;
+#if !JAVA
             if ( m_hmidiin > 0 ) {
                 try {
                     win32.midiInStart( m_hmidiin );
@@ -72,9 +124,12 @@ namespace org.kbinani.media {
                     debug.push_log( "    ex=" + ex );
                 }
             }
+#endif
         }
 
-        public void Stop() {
+        public void stop() {
+            mIsActive = false;
+#if !JAVA
             if ( m_hmidiin > 0 ) {
                 try {
                     win32.midiInReset( m_hmidiin );
@@ -83,9 +138,12 @@ namespace org.kbinani.media {
                     debug.push_log( "    ex=" + ex );
                 }
             }
+#endif
         }
 
-        public void Close() {
+        public void close() {
+            mIsActive = false;
+#if !JAVA
             if ( m_hmidiin > 0 ) {
                 try {
                     win32.midiInClose( m_hmidiin );
@@ -95,13 +153,20 @@ namespace org.kbinani.media {
                 }
             }
             m_hmidiin = 0;
+#endif
         }
 
+#if !JAVA
         public void Dispose() {
-            Close();
+            close();
         }
+#endif
 
-        public static int GetNumDevs() {
+/*
+        public static int getNumDevs() {
+#if JAVA
+            return javax.sound.midi.MidiSystem.getMidiDeviceInfo().length;
+#else
             try {
                 int i = (int)win32.midiInGetNumDevs();
                 return i;
@@ -110,9 +175,10 @@ namespace org.kbinani.media {
                 debug.push_log( "    ex=" + ex );
             }
             return 0;
+#endif
         }
-
-        public static MIDIINCAPS[] GetMidiInDevices() {
+*/
+        /*public static MIDIINCAPS[] GetMidiInDevices() {
             List<MIDIINCAPS> ret = new List<MIDIINCAPS>();
             uint num = 0;
             try {
@@ -129,8 +195,41 @@ namespace org.kbinani.media {
                 ret.Add( m );
             }
             return ret.ToArray();
-        }
+        }*/
 
+#if JAVA
+        public void send( javax.sound.midi.MidiMessage message, long time )
+        {
+#if DEBUG
+            sout.println( "MidiDevice#send; message.getStatus()=" + message.getStatus() );
+#endif
+            if( !mIsActive ) return;
+            int status = message.getStatus();
+            if( status >= 0xf8 ){
+                if( !mReceiveSystemRealtimeMessage ){
+                    return;
+                }
+            }
+            if( status >= 0xf1 ){
+                if( !mReceiveSystemCommonMessage ){
+                    return;
+                }
+            }
+#if DEBUG
+            if( !mIsActive ){
+                sout.println( "MidiInDevice#send; return because mIsActive==false" );
+            }
+#endif
+            try{
+                midiReceivedEvent.raise( this, message );
+            }catch( Exception ex ){
+                ex.printStackTrace();
+            }
+            sout.println( "MidiInDevice#send; message.getStatus()=0x" + PortUtil.toHexString( message.getStatus(), 2 ) );
+        }
+#endif
+
+#if !JAVA
         public void MidiInProc( uint hMidiIn, uint wMsg, int dwInstance, int dwParam1, int dwParam2 ) {
             try {
                 switch ( wMsg ) {
@@ -165,7 +264,7 @@ namespace org.kbinani.media {
                                 break;
                             }
                             case 0xf0: {
-                                if ( receiveSystemCommonMessage ) {
+                                if ( mReceiveSystemCommonMessage ) {
                                     byte b0 = (byte)(receive & 0xff);
                                     byte b1 = (byte)((receive >> 8) & 0xff);
                                     byte b2 = (byte)((receive >> 16) & 0xff);
@@ -182,7 +281,7 @@ namespace org.kbinani.media {
 #endif
                                     }
                                 }
-                                if ( receiveSystemRealtimeMessage && MidiReceived != null ) {
+                                if ( mReceiveSystemRealtimeMessage && MidiReceived != null ) {
                                     byte b0 = (byte)(receive & 0xff);
                                     byte b1 = (byte)((receive >> 8) & 0xff);
                                     byte b2 = (byte)((receive >> 16) & 0xff);
@@ -213,7 +312,9 @@ namespace org.kbinani.media {
                 debug.push_log( "    ex=" + ex );
             }
         }
+#endif
     }
 
+#if !JAVA
 }
 #endif

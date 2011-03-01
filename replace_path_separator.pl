@@ -1,7 +1,8 @@
 my $ENABLE_DEBUG = 0;
 my $ENABLE_PROPERTY = 1;
-my $ENABLE_VOCALOID = 0;
+my $ENABLE_VOCALOID = 1;
 my $ENABLE_AQUESTONE = 0;
+my $ENABLE_MIDI = 1;
 my $WINE_VERSION = "1.1.2";
 
 for( my $i = 0; $i <= $#ARGV; $i++ ){
@@ -9,14 +10,36 @@ for( my $i = 0; $i <= $#ARGV; $i++ ){
     if( $arg eq "--enable-debug" ){
         $ENABLE_DEBUG = 1;
     }
+    if( $arg eq "--disable-debug" ){
+        $ENABLE_DEBUG = 0;
+    }
+    if( $arg eq "--enable-property" ){
+        $ENABLE_PROPERTY = 1;
+    }
     if( $arg eq "--disable-property" ){
         $ENABLE_PROPERTY = 0;
     }
     if( $arg eq "--enable-vocaloid" ){
         $ENABLE_VOCALOID = 1;
     }
+    if( $arg eq "--disable-vocaloid" ){
+        $ENABLE_VOCALOID = 0;
+    }
     if( $arg eq "--enable-aquestone" ){
         $ENABLE_AQUESTONE = 1;
+    }
+    if( $arg eq "--disable-aquestone" ){
+        $ENABLE_AQUESTONE = 0;
+    }
+    if( $arg eq "--enable-midi" ){
+        $ENABLE_MIDI = 1;
+    }
+    if( $arg eq "--disable-midi" ){
+        $ENABLE_MIDI = 0;
+    }
+    my $search = "--wine-version=";
+    if( index( $arg, $search ) == 0 ){
+        $WINE_VERSION = substr( $arg, length( $search ) );
     }
 }
 
@@ -80,6 +103,11 @@ if( $ENABLE_AQUESTONE == 0 ){
 }else{
     $denable_aquestone = "-DENABLE_AQUESTONE";
 }
+if( $ENABLE_MIDI == 0 ){
+    $denable_midi = "";
+}else{
+    $denable_midi = "-DENABLE_MIDI";
+}
 
 open( CFG, ">./Cadencii/Config.cs" );
 print CFG <<__EOD__;
@@ -116,10 +144,13 @@ $directives{"debug"} = $ENABLE_DEBUG ? "true" : "false";
 $directives{"property"} = $ENABLE_PROPERTY ? "true" : "false";
 $directives{"vocaloid"} = $ENABLE_VOCALOID ? "true" : "false";
 $directives{"aquestone"} = $ENABLE_AQUESTONE ? "true" : "false";
+$directives{"midi"} = $ENABLE_MIDI ? "true" : "false";
 foreach $key ( keys %directives )
 {
     print CFG "            mDirectives.put( \"$key\", $directives{$key} );\n";
+    print "$key: $directives{$key}\n";
 }
+print "WINE_VERSION: $WINE_VERSION\n";
 
 print CFG <<__EOD__;
         }
@@ -180,6 +211,7 @@ while( $line = <FILE> ){
     $line =~ s/\@DENABLE_AQUESTONE\@/$denable_aquestone/g;
     $line =~ s/\@TO_DEVNULL\@/$to_devnull/g;
     $line =~ s/\@WINE_VERSION\@/$WINE_VERSION/g;
+    $line =~ s/\@DENABLE_MIDI\@/$denable_midi/g;
 
     #if( $ARGV[0] eq "MSWin32" ){
     #    if( ($line =~ /\$\(CP\)/) | ($line =~ /\$\(RM\)/) | ($line =~ /\$\(MKDIR\)/) ){

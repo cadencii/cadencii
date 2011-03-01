@@ -20,6 +20,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
 import java.io.*;
+import javax.sound.midi.MidiDevice;
+import javax.sound.midi.MidiSystem;
+import javax.sound.midi.Receiver;
 import org.kbinani.*;
 import org.kbinani.apputil.*;
 import org.kbinani.media.*;
@@ -1686,26 +1689,50 @@ namespace org.kbinani.cadencii
             comboMidiInPortNumber.removeAllItems();
             comboMtcMidiInPortNumber.removeAllItems();
 #if ENABLE_MIDI
-            MIDIINCAPS[] midiins = MidiInDevice.GetMidiInDevices();
-            for ( int i = 0; i < midiins.Length; i++ ) {
-                comboMidiInPortNumber.addItem( midiins[i] );
-                comboMtcMidiInPortNumber.addItem( midiins[i] );
+            Vector<MidiDevice.Info> midiins = new Vector<MidiDevice.Info>();
+            foreach( MidiDevice.Info info in MidiSystem.getMidiDeviceInfo() ) {
+#if DEBUG
+                sout.println( "Preference#updateMidiDevice; info.getName()=" + info.getName() );
+#endif
+                MidiDevice device = null;
+                try{
+                    device = MidiSystem.getMidiDevice( info );
+                }catch( Exception ex ){
+#if JAVA
+                    ex.printStackTrace();
+#endif
+                    device = null;
+                }
+                if( device == null ) continue;
+#if DEBUG
+                sout.println( "Preference#updateMidiDevice; (device is Receiver)=" + (device is Receiver) );
+#endif
+                // MIDI-OUTの最大接続数．-1は制限なしを表す
+                int max = device.getMaxTransmitters();
+                if( max > 0 || max == -1 ){
+                    midiins.add( info );
+                }
             }
-            if ( midiins.Length <= 0 ) {
+            
+            foreach( MidiDevice.Info info in midiins ){
+                comboMidiInPortNumber.addItem( info );
+                comboMtcMidiInPortNumber.addItem( info );
+            }
+            if ( vec.size( midiins ) <= 0 ) {
                 comboMtcMidiInPortNumber.setEnabled( false );
                 comboMidiInPortNumber.setEnabled( false );
             } else {
 #if ENABLE_MTC
                 comboMtcMidiInPortNumber.setEnabled( true );
-#else
+#else // ENABLE_MTC
                 comboMtcMidiInPortNumber.setEnabled( false );
-#endif
+#endif // ENABLE_MTC
                 comboMidiInPortNumber.setEnabled( true );
             }
-#else
+#else // ENABLE_MIDI
             comboMtcMidiInPortNumber.setEnabled( false );
             comboMidiInPortNumber.setEnabled( false );
-#endif
+#endif // ENABLE_MIDI
 
             // 可能なら選択状態を復帰
             if ( sel_midi >= 0 ) {
