@@ -230,11 +230,63 @@ namespace org.kbinani.cadencii {
                                     try{
                                         final int BUFLEN = 1024;
                                         byte[] buffer = new byte[BUFLEN];
+#if DEBUG
+                                        byte[] line = new byte[BUFLEN];
+                                        int pos = 0;
+#endif
                                         while( true ){
                                             while( iserr.available() < BUFLEN ){
                                                 Thread.sleep( 100 );
                                             }
                                             int i = iserr.read( buffer );
+#if DEBUG
+                                            if( pos + i >= line.length ){
+                                                byte[] tmp = line;
+                                                line = new byte[tmp.length + BUFLEN];
+                                                for( int j = 0; j < tmp.length; j++ ){
+                                                    line[j] = tmp[j];
+                                                }
+                                            }
+                                            for( int j = 0; j < i; j++ ){
+                                                line[pos + j] = buffer[j];
+                                            }
+                                            pos += i;
+                                            // lineのどこかに0x0d, 0x0aが入っているか探す
+                                            int indx_nl = 0;
+                                            while( indx_nl >= 0 ){
+                                                indx_nl = -1;
+                                                for( int j = 0; j < pos; j++ ){
+                                                    int code = (0xff & line[j]);
+                                                    if( code == 0x0d || code == 0x0a ){
+                                                        indx_nl = j;
+                                                        // 次の文字も0x0d, 0x0aなら，無視するようにする
+                                                        if( j + 1 < pos ){
+                                                            int coden = (0xff & line[j + 1]);
+                                                            if( coden == 0x0d || coden == 0x0a ){
+                                                                for( int k = j + 1; k < pos - 1; k++ ){
+                                                                    line[k] = line[k + 1];
+                                                                }
+                                                                pos--;
+                                                            }
+                                                        }
+                                                        break;
+                                                    }
+                                                }
+                                                if( indx_nl >= 0 ){
+                                                    // 0からindx_nl - 1までをプリントアウトする
+                                                    String sl = new String( line, 0, indx_nl );
+                                                    if( !sl.startsWith( "fixme:font:" ) &&
+                                                        !sl.startsWith( "Font metrics:" ) &&
+                                                        !sl.startsWith( "err:font:" ) ){ 
+                                                        System.err.println( sl );
+                                                    }
+                                                    for( int j = indx_nl + 1; j < pos; j++ ){
+                                                        line[j - indx_nl - 1] = line[j];
+                                                    }
+                                                    pos -= (indx_nl + 1);
+                                                }
+                                            }
+#endif
                                             if( i < BUFLEN ){
                                                 break;
                                             }

@@ -200,9 +200,6 @@ namespace org.kbinani.media
 #if JAVA
         public void send( javax.sound.midi.MidiMessage message, long time )
         {
-#if DEBUG
-            sout.println( "MidiDevice#send; message.getStatus()=" + message.getStatus() );
-#endif
             if( !mIsActive ) return;
             int status = message.getStatus();
             if( status >= 0xf8 ){
