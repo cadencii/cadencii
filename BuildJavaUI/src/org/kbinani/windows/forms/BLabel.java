@@ -18,7 +18,6 @@ public class BLabel extends JLabel{
     private int drawCount = 0;
     private GlyphVector gvtext;
     private boolean autoEllipsis = false;
-    private Object tag;
 
     public BLabel(){
         super();
@@ -30,16 +29,6 @@ public class BLabel extends JLabel{
         } );
     }
 
-    public Object getTag()
-    {
-        return tag;
-    }
-    
-    public void setTag( Object value )
-    {
-        tag = value;
-    }
-    
     public void setMnemonic( int value, Component comp )
     {
         String text = getText();

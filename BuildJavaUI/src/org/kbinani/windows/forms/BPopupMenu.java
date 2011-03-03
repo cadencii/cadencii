@@ -16,21 +16,12 @@ public class BPopupMenu extends JPopupMenu
                                    PopupMenuListener
 {
     private static final long serialVersionUID = 363411779635481115L;
-    private Object tag = null;
 
     public BPopupMenu()
     {
         super();
         addComponentListener( this );
         addPopupMenuListener( this );
-    }
-    
-    public Object getTag(){
-        return tag;
-    }
-    
-    public void setTag( Object value ){
-        tag = value;
     }
 
     /* root impl of PopupMenuListener */

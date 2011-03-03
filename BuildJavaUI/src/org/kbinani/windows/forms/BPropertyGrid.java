@@ -1691,6 +1691,30 @@ class BPropertyGridExpandMark extends BPropertyGridHeaderBase
    }
 }
 
+class BPropertyGridComboBoxLabel extends JLabel
+{
+    /**
+     * 現在表示している値
+     */
+    private Object mViewing = null;
+    
+    /**
+     * 現在このラベルが表示している文字列の元となっているオブジェクトを取得します
+     */
+    public Object getViewing()
+    {
+        return mViewing;
+    }
+    
+    /**
+     * 現在このラベルが表示している文字列の元となっているオブジェクトを設定します
+     */
+    public void setViewing( Object value )
+    {
+        mViewing = value;
+    }
+}
+
 /**
  * 小さなコンボボックス
  */
@@ -1698,7 +1722,7 @@ class BPropertyGridComboBox extends JPanel
                             implements ActionListener, ItemSelectable
 {
     private static final long serialVersionUID = -6834563484239011621L;
-    private BLabel labelValue = null;
+    private BPropertyGridComboBoxLabel labelValue = null;
     private JButton buttonDropdown = null;
     private BPropertyGridComboBoxDropdown windowDropdown = null;  //  @jve:decl-index=0:visual-constraint="184,55"
     private Vector<ItemListener> mItemListeners = new Vector<ItemListener>();
@@ -1861,7 +1885,7 @@ class BPropertyGridComboBox extends JPanel
             sel = windowDropdown.getItemAt( indx );
             labelValue.setText( "" + sel );
         }
-        labelValue.setTag( sel );
+        labelValue.setViewing( sel );
         int old = mSelectedIndex;
         mSelectedIndex = value;
         if( old != mSelectedIndex ){
@@ -1923,7 +1947,7 @@ class BPropertyGridComboBox extends JPanel
         int indx = windowDropdown.getSelectedIndex();
         if( 0 <= indx && indx < windowDropdown.getItemCount() ){
             Object sel = windowDropdown.getItemAt( indx );
-            Object viewing = labelValue.getTag();
+            Object viewing = labelValue.getViewing();
             if( sel != null && viewing != null ){
                 if( !sel.equals( viewing ) ){
                     for( int i = 0; i < windowDropdown.getItemCount(); i++ ){
@@ -1997,7 +2021,7 @@ class BPropertyGridComboBox extends JPanel
         gridBagConstraints.weightx = 1.0D;
         gridBagConstraints.weighty = 1.0D;
         gridBagConstraints.gridx = 0;
-        labelValue = new BLabel();
+        labelValue = new BPropertyGridComboBoxLabel();
         labelValue.setText("");
         labelValue.setPreferredSize(new Dimension(16, 16));
         mController.registPreferredHeightSpecified( labelValue );

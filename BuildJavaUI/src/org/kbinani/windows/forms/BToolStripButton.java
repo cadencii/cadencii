@@ -10,7 +10,6 @@ import org.kbinani.BEventHandler;
 public class BToolStripButton extends JToggleButton implements ActionListener{
     private static final long serialVersionUID = -9098464491775550703L;
     public final BEvent<BEventHandler> clickEvent = new BEvent<BEventHandler>();
-    private Object tag;
     private boolean checkOnClick = true;
     
     public BToolStripButton(){
@@ -35,13 +34,5 @@ public class BToolStripButton extends JToggleButton implements ActionListener{
         }catch( Exception ex ){
             System.err.println( "BToolStripButton#actionPerformed; ex=" + ex );
         }
-    }
-    
-    public Object getTag(){
-        return tag;
-    }
-    
-    public void setTag( Object value ){
-        tag = value;
     }
 }

@@ -55,6 +55,7 @@ namespace org.kbinani.cadencii
 #endif
         private FormMain m_parent;
         private Vector<VolumeTracker> m_tracker = null;
+        private boolean mPreviousAlwaysOnTop;
 
 #if JAVA
         public BEvent<FederChangedEventHandler> federChangedEvent = new BEvent<FederChangedEventHandler>();
@@ -114,6 +115,22 @@ namespace org.kbinani.cadencii
         }
 
         #region public methods
+        /// <summary>
+        /// AlwaysOnTopが強制的にfalseにされる直前の，AlwaysOnTop値を取得します．
+        /// </summary>
+        public boolean getPreviousAlwaysOnTop()
+        {
+            return mPreviousAlwaysOnTop;
+        }
+        
+        /// <summary>
+        /// AlwaysOnTopが強制的にfalseにされる直前の，AlwaysOnTop値を設定しておきます．
+        /// </summary>
+        public void setPreviousAlwaysOnTop( boolean value )
+        {
+            mPreviousAlwaysOnTop = value;
+        }
+
         /// <summary>
         /// マスターボリュームのUIコントロールを取得します
         /// </summary>

@@ -8,12 +8,13 @@ JROOT=./build/java/org/kbinani
 
 DJAVA_MAC=@DJAVA_MAC@
 DENABLE_PROPERTY=@DENABLE_PROPERTY@
-DDEBUG=@DDEBUG@
+DENABLE_DEBUG=@DENABLE_DEBUG@
 DENABLE_VOCALOID=@DENABLE_VOCALOID@
 DENABLE_AQUESTONE=@DENABLE_AQUESTONE@
 DENABLE_MIDI=@DENABLE_MIDI@
+DENABLE_SCRIPT=@DENABLE_SCRIPT@
 
-PPCS2JAVA_OPT=--replace-java -DJAVA -DJAVA_1_5 $(DDEBUG) $(DENABLE_MIDI) -DCLIPBOARD_AS_TEXT $(DJAVA_MAC) $(DENABLE_PROPERTY) $(DENABLE_VOCALOID) $(DENABLE_AQUESTONE) -encoding "UTF-8" -s -4 -c -e -l pp_cs2java.log
+PPCS2JAVA_OPT=--replace-java -DJAVA -DJAVA_1_5 $(DENABLE_DEBUG) $(DENABLE_SCRIPT) $(DENABLE_MIDI) -DCLIPBOARD_AS_TEXT $(DJAVA_MAC) $(DENABLE_PROPERTY) $(DENABLE_VOCALOID) $(DENABLE_AQUESTONE) -encoding "UTF-8" -s -4 -c -e -l pp_cs2java.log
 PPCS2CPP_OPT=--replace-cpp -D__cplusplus
 MONO=@MONO@
 TO_DEVNULL=@TO_DEVNULL@
@@ -191,7 +192,7 @@ jcorlib: pp_cs2java.jar $(SRC_JCORLIB)
 ########################################################################
 # post process for BuildJavaUI
 #
-jpostprocess: ./BuildJavaUI/src/org/kbinani/math.java ./BuildJavaUI/src/org/kbinani/PortUtil.java ./BuildJavaUI/src/org/kbinani/ByRef.java ./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java ./BuildJavaUI/src/org/kbinani/cadencii/IconParader.java ./BuildJavaUI/src/org/kbinani/fsys.java ./BuildJavaUI/src/org/kbinani/str.java ./BuildJavaUI/src/org/kbinani/vec.java
+jpostprocess: ./BuildJavaUI/src/org/kbinani/math.java ./BuildJavaUI/src/org/kbinani/PortUtil.java ./BuildJavaUI/src/org/kbinani/ByRef.java ./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java ./BuildJavaUI/src/org/kbinani/cadencii/IconParader.java ./BuildJavaUI/src/org/kbinani/fsys.java ./BuildJavaUI/src/org/kbinani/str.java ./BuildJavaUI/src/org/kbinani/vec.java ./BuildJavaUI/src/org/kbinani/cadencii/TrackSelectorSingerPopupMenu.java
 
 ./BuildJavaUI/src/org/kbinani/math.java: ./build/java/org/kbinani/math.java
 	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/math.java $(TO_DEVNULL)
@@ -228,6 +229,10 @@ jpostprocess: ./BuildJavaUI/src/org/kbinani/math.java ./BuildJavaUI/src/org/kbin
 ./BuildJavaUI/src/org/kbinani/cadencii/IconParader.java: ./build/java/org/kbinani/cadencii/IconParader.java
 	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/cadencii/IconParader.java $(TO_DEVNULL)
 	$(CP) ./build/java/org/kbinani/cadencii/IconParader.java ./BuildJavaUI/src/org/kbinani/cadencii/IconParader.java
+
+./BuildJavaUI/src/org/kbinani/cadencii/TrackSelectorSingerPopupMenu.java: ./build/java/org/kbinani/cadencii/TrackSelectorSingerPopupMenu.java
+	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/cadencii/TrackSelectorSingerPopupMenu.java $(TO_DEVNULL)
+	$(CP) ./build/java/org/kbinani/cadencii/TrackSelectorSingerPopupMenu.java ./BuildJavaUI/src/org/kbinani/cadencii/TrackSelectorSingerPopupMenu.java
 
 ########################################################################
 # jcomponentmodel

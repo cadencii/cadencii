@@ -43,6 +43,8 @@ namespace org.kbinani.cadencii
     public class FormNoteProperty : BForm
     {
 #endif
+        boolean mPreviousAlwaysOnTop;
+
         public FormNoteProperty()
         {
 #if JAVA
@@ -58,6 +60,22 @@ namespace org.kbinani.cadencii
         }
 
         #region public methods
+        /// <summary>
+        /// AlwaysOnTopが強制的にfalseにされる直前の，AlwaysOnTop値を取得します．
+        /// </summary>
+        public boolean getPreviousAlwaysOnTop()
+        {
+            return mPreviousAlwaysOnTop;
+        }
+        
+        /// <summary>
+        /// AlwaysOnTopが強制的にfalseにされる直前の，AlwaysOnTop値を設定しておきます．
+        /// </summary>
+        public void setPreviousAlwaysOnTop( boolean value )
+        {
+            mPreviousAlwaysOnTop = value;
+        }
+                
 #if !JAVA
         public void addComponent( System.Windows.Forms.Control c )
         {

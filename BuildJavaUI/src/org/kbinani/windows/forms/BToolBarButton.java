@@ -2,6 +2,8 @@ package org.kbinani.windows.forms;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import javax.swing.JToggleButton;
@@ -11,16 +13,17 @@ import org.kbinani.BEventHandler;
 
 public class BToolBarButton extends JToggleButton
                             implements ActionListener,
-                                       ItemListener
+                                       ItemListener,
+                                       FocusListener
 {
     private static final long serialVersionUID = -4646914775808502496L;
-    private Object mTag = null;
     private boolean mCheckOnClick = false;
 
     public BToolBarButton(){
         super();
         addActionListener( this );
         addItemListener( this );
+        addFocusListener( this );
     }
 
     public boolean isCheckOnClick(){
@@ -31,14 +34,24 @@ public class BToolBarButton extends JToggleButton
         mCheckOnClick = value;
     }
     
-    public Object getTag(){
-        return mTag;
+    // root impl of FocusListener is in BButton
+    public final BEvent<BEventHandler> enterEvent = new BEvent<BEventHandler>();
+    public final BEvent<BEventHandler> leaveEvent = new BEvent<BEventHandler>();
+    public void focusGained(FocusEvent e) {
+        try{
+            enterEvent.raise( this, new BEventArgs() );
+        }catch( Exception ex ){
+            System.err.println( "BToolBarButton#focusGained; ex=" + ex );
+        }
     }
-    
-    public void setTag( Object value ){
-        mTag = value;
+    public void focusLost(FocusEvent e) {
+        try{
+            leaveEvent.raise( this, new BEventArgs() );
+        }catch( Exception ex ){
+            System.err.println( "BToolBarButton#focusLost; ex=" + ex );
+        }
     }
-    
+
     // root impl of ItemListener is in BCheckBox
     public final BEvent<BEventHandler> checkedChangedEvent = new BEvent<BEventHandler>();
     public void itemStateChanged(ItemEvent e) {

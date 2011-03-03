@@ -67,21 +67,7 @@ public class BTextBox extends JTextField
             System.err.println( "BTextBox#setImeModeOn; ex=" + ex );
         }
     }
-    
-    /* root implementation of bocoree.windows.forms.[component] */
-    /* REGION bocoree.windows.forms.[component] */
-    /* root implementation of bocoree.windows.forms.[component] instanceof in BTextBox.cs */
-    private Object m_tag = null;
-    
-    public Object getTag(){
-        return m_tag;
-    }
-    
-    public void setTag( Object value ){
-        m_tag = value;
-    }
-    /* END REGION */
-    
+
     // root impl of KeyListener is in BButton
     public final BEvent<BPreviewKeyDownEventHandler> previewKeyDownEvent = new BEvent<BPreviewKeyDownEventHandler>();
     public final BEvent<BKeyEventHandler> keyDownEvent = new BEvent<BKeyEventHandler>();

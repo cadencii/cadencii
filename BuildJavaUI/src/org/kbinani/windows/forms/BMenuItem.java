@@ -13,7 +13,6 @@ public class BMenuItem extends JCheckBoxMenuItem
                        implements ActionListener
 {
     private static final long serialVersionUID = -1354135252399786976L;
-    private Object tag;
     private boolean checkOnClick = false;
     private String mShortcutDisplayString = "";
     public final BEvent<BEventHandler> clickEvent = new BEvent<BEventHandler>();
@@ -118,14 +117,6 @@ public class BMenuItem extends JCheckBoxMenuItem
         }catch( Exception ex ){
             System.err.println( "BMenuItem#actionPerformed; ex=" + ex );
         }
-    }
-
-    public Object getTag(){
-        return tag;
-    }
-    
-    public void setTag( Object value ){
-        tag = value;
     }
 
     public boolean isCheckOnClick(){

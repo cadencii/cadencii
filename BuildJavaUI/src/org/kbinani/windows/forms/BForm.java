@@ -25,7 +25,6 @@ public class BForm extends JFrame
     public final BEvent<BEventHandler> deactivateEvent = new BEvent<BEventHandler>();
     public final BEvent<BEventHandler> loadEvent = new BEvent<BEventHandler>();
     public final BEvent<BEventHandler> windowStateChangedEvent = new BEvent<BEventHandler>();
-    private Object mTag = null;
     
     public BForm(){
         this( "" );
@@ -43,15 +42,7 @@ public class BForm extends JFrame
         }catch( Exception e ){
         }
     }
-    
-    public void setTag( Object value ){
-        mTag = value;
-    }
-    
-    public Object getTag(){
-        return mTag;
-    }
-    
+        
     // root imol of KeyListener is in BButton
     public final BEvent<BPreviewKeyDownEventHandler> previewKeyDownEvent = new BEvent<BPreviewKeyDownEventHandler>();
     public final BEvent<BKeyEventHandler> keyDownEvent = new BEvent<BKeyEventHandler>();

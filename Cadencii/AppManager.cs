@@ -2120,7 +2120,7 @@ namespace org.kbinani.cadencii
 #if ENABLE_PROPERTY
             if ( propertyWindow != null ) {
                 boolean previous = propertyWindow.isAlwaysOnTop();
-                propertyWindow.setTag( previous );
+                propertyWindow.setPreviousAlwaysOnTop( previous );
                 if ( previous ) {
                     propertyWindow.setAlwaysOnTop( false );
                 }
@@ -2128,7 +2128,7 @@ namespace org.kbinani.cadencii
 #endif
             if ( mMixerWindow != null ) {
                 boolean previous = mMixerWindow.isAlwaysOnTop();
-                mMixerWindow.setTag( previous );
+                mMixerWindow.setPreviousAlwaysOnTop( previous );
                 if ( previous ) {
                     mMixerWindow.setAlwaysOnTop( false );
                 }
@@ -2136,7 +2136,7 @@ namespace org.kbinani.cadencii
 
             if ( iconPalette != null ) {
                 boolean previous = iconPalette.isAlwaysOnTop();
-                iconPalette.setTag( previous );
+                iconPalette.setPreviousAlwaysOnTop( previous );
                 if ( previous ) {
                     iconPalette.setAlwaysOnTop( false );
                 }
@@ -2150,24 +2150,15 @@ namespace org.kbinani.cadencii
         {
 #if ENABLE_PROPERTY
             if ( propertyWindow != null ) {
-                Object tag = propertyWindow.getTag();
-                if ( tag != null && tag is Boolean ) {
-                    propertyWindow.setAlwaysOnTop( (Boolean)tag );
-                }
+                propertyWindow.setAlwaysOnTop( propertyWindow.getPreviousAlwaysOnTop() );
             }
 #endif
             if ( mMixerWindow != null ) {
-                Object tag = mMixerWindow.getTag();
-                if ( tag != null && tag is Boolean ) {
-                    mMixerWindow.setAlwaysOnTop( (Boolean)tag );
-                }
+                mMixerWindow.setAlwaysOnTop( mMixerWindow.getPreviousAlwaysOnTop() );
             }
 
             if ( iconPalette != null ) {
-                Object tag = iconPalette.getTag();
-                if ( tag != null && tag is Boolean ) {
-                    iconPalette.setAlwaysOnTop( (Boolean)tag );
-                }
+                iconPalette.setAlwaysOnTop( iconPalette.getPreviousAlwaysOnTop() );
             }
 
             try {

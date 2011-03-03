@@ -123,19 +123,6 @@ public class LyricTextBox extends JWindow
         }
     }
 
-    /* REGION bocoree.windows.forms.[component] */
-    /* root implementation of bocoree.windows.forms.[component] is in BTextBox.cs */
-    private Object m_tag = null;
-
-    public Object getTag(){
-        return m_tag;
-    }
-
-    public void setTag( Object value ){
-        m_tag = value;
-    }
-    /* END REGION */
-
     /* REGION java.awt.Component */
     /* root implementation of java.awt.Component is in BForm.cs(java) */
     public final BEvent<BKeyEventHandler> keyUpEvent = new BEvent<BKeyEventHandler>();

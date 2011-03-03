@@ -564,6 +564,10 @@ namespace org.kbinani.cadencii
         /// 再生中にソングポジションが前進だけしてほしいので，逆行を防ぐために前回のソングポジションを覚えておく
         /// </summary>
         private int mLastClock = 0;
+        /// <summary>
+        /// PositionIndicatorに表示しているポップアップのクロック位置
+        /// </summary>
+        private int mPositionIndicatorPopupShownClock;
 #if MONITOR_FPS
         /// <summary>
         /// パフォーマンスカウンタ
@@ -575,7 +579,6 @@ namespace org.kbinani.cadencii
         /// </summary>
         private float mFps = 0f;
         private double[] mFpsDrawTime2 = new double[128];
-        public BMenuItem menuHelpManual;
         private float mFps2 = 0f;
 #endif
         #endregion
@@ -2393,25 +2396,22 @@ namespace org.kbinani.cadencii
                     menu.setText( PortUtil.getFileName( item.file ) );
                     menu.setToolTipText( item.file );
 
-                    BMenuItem menu_remove = new BMenuItem();
+                    BgmMenuItem menu_remove = new BgmMenuItem( i );
                     menu_remove.setText( _( "Remove" ) );
                     menu_remove.setToolTipText( item.file );
-                    menu_remove.setTag( (int)i );
                     menu_remove.Click += new BEventHandler( handleBgmRemove_Click );
                     menu.add( menu_remove );
 
-                    BMenuItem menu_start_after_premeasure = new BMenuItem();
+                    BgmMenuItem menu_start_after_premeasure = new BgmMenuItem( i );
                     menu_start_after_premeasure.setText( _( "Start After Premeasure" ) );
                     menu_start_after_premeasure.setName( "menu_start_after_premeasure" + i );
-                    menu_start_after_premeasure.setTag( (int)i );
                     menu_start_after_premeasure.setCheckOnClick( true );
                     menu_start_after_premeasure.setSelected( item.startAfterPremeasure );
                     menu_start_after_premeasure.CheckedChanged += new BEventHandler( handleBgmStartAfterPremeasure_CheckedChanged );
                     menu.add( menu_start_after_premeasure );
 
-                    BMenuItem menu_offset_second = new BMenuItem();
+                    BgmMenuItem menu_offset_second = new BgmMenuItem( i );
                     menu_offset_second.setText( _( "Set Offset Seconds" ) );
-                    menu_offset_second.setTag( (int)i );
                     menu_offset_second.setToolTipText( item.readOffsetSeconds + " " + _( "seconds" ) );
                     menu_offset_second.Click += new BEventHandler( handleBgmOffsetSeconds_Click );
                     menu.add( menu_offset_second );
@@ -2989,26 +2989,23 @@ namespace org.kbinani.cadencii
                 toolBarTool.Buttons.Add( tsb );
 
                 // cMenuTrackSelector
-                BMenuItem tsmi = new BMenuItem();
+                PaletteToolMenuItem tsmi = new PaletteToolMenuItem( id );
                 tsmi.setText( name );
                 tsmi.setToolTipText( desc );
-                tsmi.setTag( id );
                 tsmi.Click += new BEventHandler( handleStripPaletteTool_Click );
                 cMenuTrackSelectorPaletteTool.add( tsmi );
 
                 // cMenuPiano
-                BMenuItem tsmi2 = new BMenuItem();
+                PaletteToolMenuItem tsmi2 = new PaletteToolMenuItem( id );
                 tsmi2.setText( name );
                 tsmi2.setToolTipText( desc );
-                tsmi2.setTag( id );
                 tsmi2.Click += new BEventHandler( handleStripPaletteTool_Click );
                 cMenuPianoPaletteTool.add( tsmi2 );
 
                 // menuSettingPaletteTool
                 if ( ipt.hasDialog() ) {
-                    BMenuItem tsmi3 = new BMenuItem();
+                    PaletteToolMenuItem tsmi3 = new PaletteToolMenuItem( id );
                     tsmi3.setText( name );
-                    tsmi3.setTag( id );
                     tsmi3.Click += new BEventHandler( handleSettingPaletteTool );
                     menuSettingPaletteTool.add( tsmi3 );
                     num_has_dialog++;
@@ -6407,22 +6404,18 @@ namespace org.kbinani.cadencii
                 Object tsi = toolBarTool.Buttons[i];
 #endif
 #if JAVA
-                if( tsi instanceof BToggleButton ){
-                    BToggleButton tsb = (BToggleButton)tsi;
-                    Object tag = tsb.getTag();
-                    if( tag != null && tag instanceof String ){
+                if( tsi instanceof PaletteToolButton ){
+                    BToggleButton tsb = (PaletteToolButton)tsi;
+                    boolean sel = false;
 #if ENABLE_SCRIPT
-                        if( tool == EditTool.PALETTE_TOOL )
-                        {
-                            String id = (String)tag;
-                            tsb.setSelected( (AppManager.mSelectedPaletteTool.Equals( id )) );
-                        }
-                        else
-#endif // ENABLE_SCRIPT
-                        {
-                            tsb.setSelected( false );
+                    String id = tsb.getPaletteToolID();
+                    if( id != null ){
+                        if( tool == EditTool.PALETTE_TOOL ){
+                            sel = str.compare( AppManager.mSelectedPaletteTool, id );
                         }
                     }
+#endif // ENABLE_SCRIPT
+                    tsb.setSelected( sel );
                 }
 #else // JAVA
                 if ( tsi is System.Windows.Forms.ToolBarButton ) {
@@ -6444,39 +6437,31 @@ namespace org.kbinani.cadencii
             }
             MenuElement[] items = cMenuTrackSelectorPaletteTool.getSubElements();
             foreach ( MenuElement tsi in items ) {
-                if ( tsi is BMenuItem ) {
-                    BMenuItem tsmi = (BMenuItem)tsi;
-                    Object tag = tsmi.getTag();
-                    if ( tag != null && tag is String ) {
+                if ( tsi is PaletteToolMenuItem ) {
+                    PaletteToolMenuItem tsmi = (PaletteToolMenuItem)tsi;
+                    String id = tsmi.getPaletteToolID();
+                    boolean sel = false;
 #if ENABLE_SCRIPT
-                        if ( tool == EditTool.PALETTE_TOOL ) {
-                            String id = (String)tsmi.getTag();
-                            tsmi.setSelected( str.compare( AppManager.mSelectedPaletteTool, id ) );
-                        } else
-#endif
- {
-                            tsmi.setSelected( false );
-                        }
+                    if ( tool == EditTool.PALETTE_TOOL ) {
+                        sel = str.compare( AppManager.mSelectedPaletteTool, id );
                     }
+#endif
+                    tsmi.setSelected( sel );
                 }
             }
 
             items = cMenuPianoPaletteTool.getSubElements();
             foreach ( MenuElement tsi in items ) {
-                if ( tsi is BMenuItem ) {
-                    BMenuItem tsmi = (BMenuItem)tsi;
-                    Object tag = tsmi.getTag();
-                    if ( tag != null && tag is String ) {
+                if ( tsi is PaletteToolMenuItem ) {
+                    PaletteToolMenuItem tsmi = (PaletteToolMenuItem)tsi;
+                    String id = tsmi.getPaletteToolID();
+                    boolean sel = false;
 #if ENABLE_SCRIPT
-                        if ( tool == EditTool.PALETTE_TOOL ) {
-                            String id = (String)tsmi.getTag();
-                            tsmi.setSelected( str.compare( AppManager.mSelectedPaletteTool, id ) );
-                        } else
-#endif
- {
-                            tsmi.setSelected( false );
-                        }
+                    if ( tool == EditTool.PALETTE_TOOL ) {
+                        sel = str.compare( AppManager.mSelectedPaletteTool, id );
                     }
+#endif
+                    tsmi.setSelected( sel );
                 }
             }
 
@@ -6806,7 +6791,7 @@ namespace org.kbinani.cadencii
                     if ( item != "" ) {
                         String short_name = PortUtil.getFileName( item );
                         boolean available = PortUtil.isFileExists( item );
-                        BMenuItem itm = new BMenuItem();
+                        RecentFileMenuItem itm = new RecentFileMenuItem( item );
                         itm.setText( short_name );
                         String tooltip = "";
                         if ( !available ) {
@@ -6814,7 +6799,6 @@ namespace org.kbinani.cadencii
                         }
                         tooltip += item;
                         itm.setToolTipText( tooltip );
-                        itm.setTag( item );
                         itm.setEnabled( available );
                         itm.Click += new BEventHandler( handleRecentFileMenuItem_Click );
                         itm.MouseEnter += new BEventHandler( handleRecentFileMenuItem_MouseEnter );
@@ -7695,28 +7679,50 @@ namespace org.kbinani.cadencii
 #endif
 #if JAVA
             stripBtnFileNew.clickEvent.add( new BEventHandler( this, "handleFileNew_Click" ) );
+            stripBtnFileNew.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
             stripBtnFileOpen.clickEvent.add( new BEventHandler( this, "handleFileOpen_Click" ) );
+            stripBtnFileOpen.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
             stripBtnFileSave.clickEvent.add( new BEventHandler( this, "handleFileSave_Click" ) );
+            stripBtnFileSave.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
             stripBtnCut.clickEvent.add( new BEventHandler( this, "handleEditCut_Click" ) );
+            stripBtnCut.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
             stripBtnCopy.clickEvent.add( new BEventHandler( this, "handleEditCopy_Click" ) );
+            stripBtnCopy.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
             stripBtnPaste.clickEvent.add( new BEventHandler( this, "handleEditPaste_Click" ) );
+            stripBtnPaste.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
             stripBtnUndo.clickEvent.add( new BEventHandler( this, "handleEditUndo_Click" ) );
+            stripBtnUndo.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
             stripBtnRedo.clickEvent.add( new BEventHandler( this, "handleEditRedo_Click" ) );
+            stripBtnRedo.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
 
             stripBtnMoveTop.clickEvent.add( new BEventHandler( this, "stripBtnMoveTop_Click" ) );
+            stripBtnMoveTop.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
             stripBtnRewind.clickEvent.add( new BEventHandler( this, "stripBtnRewind_Click" ) );
+            stripBtnRewind.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
             stripBtnForward.clickEvent.add( new BEventHandler( this, "stripBtnForward_Click" ) );
+            stripBtnForward.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
             stripBtnMoveEnd.clickEvent.add( new BEventHandler( this, "stripBtnMoveEnd_Click" ) );
+            stripBtnMoveEnd.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
             stripBtnPlay.clickEvent.add( new BEventHandler( this, "stripBtnPlay_Click" ) );
+            stripBtnPlay.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
             stripBtnScroll.checkedChangedEvent.add( new BEventHandler( this, "stripBtnScroll_CheckedChanged" ) );
+            stripBtnScroll.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
             stripBtnLoop.checkedChangedEvent.add( new BEventHandler( this, "stripBtnLoop_CheckedChanged" ) );
+            stripBtnLoop.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
 
             stripBtnPointer.clickEvent.add( new BEventHandler( this, "stripBtnArrow_Click" ) );
+            stripBtnPointer.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
             stripBtnPencil.clickEvent.add( new BEventHandler( this, "stripBtnPencil_Click" ) );
+            stripBtnPencil.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
             stripBtnLine.clickEvent.add( new BEventHandler( this, "stripBtnLine_Click" ) );
+            stripBtnLine.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
             stripBtnEraser.clickEvent.add( new BEventHandler( this, "stripBtnEraser_Click" ) );
+            stripBtnEraser.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
             stripBtnGrid.clickEvent.add( new BEventHandler( this, "stripBtnGrid_Click" ) );
+            stripBtnGrid.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
             stripBtnCurve.clickEvent.add( new BEventHandler( this, "stripBtnCurve_Click" ) );
+            stripBtnCurve.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
+            stripBtnStepSequencer.enterEvent.add( new BEventHandler( this, "handleStripButton_Enter" ) );
 #else
             toolBarTool.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler( toolBarTool_ButtonClick );
             rebar.SizeChanged += new BEventHandler( toolStripContainer_TopToolStripPanel_SizeChanged );// toolStripContainer.TopToolStripPanel.SizeChanged += new BEventHandler( toolStripContainer_TopToolStripPanel_SizeChanged );
@@ -14249,7 +14255,7 @@ namespace org.kbinani.cadencii
                 if ( clock < 0 ) {
                     clock = 0;
                 }
-                cMenuPositionIndicator.setTag( clock );
+                mPositionIndicatorPopupShownClock = clock;
                 cMenuPositionIndicator.show( picturePositionIndicator, e.X, e.Y );
             }
         }
@@ -15998,36 +16004,30 @@ namespace org.kbinani.cadencii
         #region cPotisionIndicator
         public void cMenuPositionIndicatorStartMarker_Click( Object sender, EventArgs e )
         {
-            Object tag = cMenuPositionIndicator.getTag();
-            if ( tag != null && tag is Integer ) {
-                int clock = (Integer)tag;
-                VsqFileEx vsq = AppManager.getVsqFile();
-                vsq.config.StartMarkerEnabled = true;
-                vsq.config.StartMarker = clock;
-                if ( vsq.config.EndMarker < clock ) {
-                    vsq.config.EndMarker = clock;
-                }
-                menuVisualStartMarker.setSelected( true );
-                setEdited( true );
-                picturePositionIndicator.repaint();
+            int clock = mPositionIndicatorPopupShownClock;
+            VsqFileEx vsq = AppManager.getVsqFile();
+            vsq.config.StartMarkerEnabled = true;
+            vsq.config.StartMarker = clock;
+            if ( vsq.config.EndMarker < clock ) {
+                vsq.config.EndMarker = clock;
             }
+            menuVisualStartMarker.setSelected( true );
+            setEdited( true );
+            picturePositionIndicator.repaint();
         }
 
         public void cMenuPositionIndicatorEndMarker_Click( Object sender, EventArgs e )
         {
-            Object tag = cMenuPositionIndicator.getTag();
-            if ( tag != null && tag is Integer ) {
-                int clock = (Integer)tag;
-                VsqFileEx vsq = AppManager.getVsqFile();
-                vsq.config.EndMarkerEnabled = true;
-                vsq.config.EndMarker = clock;
-                if ( vsq.config.StartMarker > clock ) {
-                    vsq.config.StartMarker = clock;
-                }
-                menuVisualEndMarker.setSelected( true );
-                setEdited( true );
-                picturePositionIndicator.repaint();
+            int clock = mPositionIndicatorPopupShownClock;
+            VsqFileEx vsq = AppManager.getVsqFile();
+            vsq.config.EndMarkerEnabled = true;
+            vsq.config.EndMarker = clock;
+            if ( vsq.config.StartMarker > clock ) {
+                vsq.config.StartMarker = clock;
             }
+            menuVisualEndMarker.setSelected( true );
+            setEdited( true );
+            picturePositionIndicator.repaint();
         }
         #endregion
 
@@ -16836,27 +16836,25 @@ namespace org.kbinani.cadencii
 
         public void handleRecentFileMenuItem_Click( Object sender, EventArgs e )
         {
-            if ( sender is BMenuItem ) {
-                BMenuItem item = (BMenuItem)sender;
-                if ( item.getTag() is String ) {
-                    String filename = (String)item.getTag();
-                    if( !dirtyCheck() ){
-                        return;
-                    }
-                    openVsqCor( filename );
-                    clearExistingData();
-                    AppManager.mMixerWindow.updateStatus();
-                    clearTempWave();
-                    updateDrawObjectList();
-                    refreshScreen();
+            if ( sender is RecentFileMenuItem ) {
+                RecentFileMenuItem item = (RecentFileMenuItem)sender;
+                String filename = item.getFilePath();
+                if( !dirtyCheck() ){
+                    return;
                 }
+                openVsqCor( filename );
+                clearExistingData();
+                AppManager.mMixerWindow.updateStatus();
+                clearTempWave();
+                updateDrawObjectList();
+                refreshScreen();
             }
         }
 
         public void handleRecentFileMenuItem_MouseEnter( Object sender, EventArgs e )
         {
-            if ( sender is BMenuItem ) {
-                BMenuItem item = (BMenuItem)sender;
+            if ( sender is RecentFileMenuItem ) {
+                RecentFileMenuItem item = (RecentFileMenuItem)sender;
 #if JAVA
                 statusLabel.setText( item.getToolTipText() );
 #else
@@ -16900,15 +16898,11 @@ namespace org.kbinani.cadencii
                 Object item = toolBarTool.Buttons[i];
 #endif
 #if JAVA
-                if( item instanceof BToggleButton ){
-                    BToggleButton button = (BToggleButton)item;
-                    Object tag = button.getTag();
-                    if( tag != null && tag instanceof String ){
-                        if( id.equals( (String)tag ) ){
-                            button.setSelected( true );
-                        }else{
-                            button.setSelected( false );
-                        }
+                if( item instanceof PaletteToolButton ){
+                    PaletteToolButton button = (PaletteToolButton)item;
+                    String tag = button.getPaletteToolID();
+                    if( tag != null ){
+                        button.setSelected( str.compare( id, tag ) );
                     }else{
                         button.setSelected( false );
                     }
@@ -16930,30 +16924,20 @@ namespace org.kbinani.cadencii
             MenuElement[] sub_cmenu_piano_palette_tool = cMenuPianoPaletteTool.getSubElements();
             for ( int i = 0; i < sub_cmenu_piano_palette_tool.Length; i++ ) {
                 MenuElement item = sub_cmenu_piano_palette_tool[i];
-                if ( item is BMenuItem ) {
-                    BMenuItem menu = (BMenuItem)item;
-                    if ( menu.getTag() != null && menu.getTag() is String ) {
-                        if ( ((String)menu.getTag()).Equals( id ) ) {
-                            menu.setSelected( true );
-                        } else {
-                            menu.setSelected( false );
-                        }
-                    }
+                if ( item is PaletteToolMenuItem ) {
+                    PaletteToolMenuItem menu = (PaletteToolMenuItem)item;
+                    String tagged_id = menu.getPaletteToolID();
+                    menu.setSelected( str.compare( id, tagged_id ) );
                 }
             }
 
             MenuElement[] sub_cmenu_track_selectro_palette_tool = cMenuTrackSelectorPaletteTool.getSubElements();
             for ( int i = 0; i < sub_cmenu_track_selectro_palette_tool.Length; i++ ) {
                 MenuElement item = sub_cmenu_track_selectro_palette_tool[i];
-                if ( item is BMenuItem ) {
-                    BMenuItem menu = (BMenuItem)item;
-                    if ( menu.getTag() != null && menu.getTag() is String ) {
-                        if ( ((String)menu.getTag()).Equals( id ) ) {
-                            menu.setSelected( true );
-                        } else {
-                            menu.setSelected( false );
-                        }
-                    }
+                if ( item is PaletteToolMenuItem ) {
+                    PaletteToolMenuItem menu = (PaletteToolMenuItem)item;
+                    String tagged_id = menu.getPaletteToolID();
+                    menu.setSelected( str.compare( id, tagged_id ) );
                 }
             }
         }
@@ -17055,6 +17039,11 @@ namespace org.kbinani.cadencii
                 updateDrawObjectList();
                 refreshScreen();
             }
+        }
+
+        public void handleStripButton_Enter( Object sender, EventArgs e )
+        {
+            pictPianoRoll.requestFocus();
         }
 
         public void handleFileNew_Click( Object sender, EventArgs e )
@@ -17544,17 +17533,11 @@ namespace org.kbinani.cadencii
 
         public void handleBgmOffsetSeconds_Click( Object sender, EventArgs e )
         {
-            if ( !(sender is BMenuItem) ) {
+            if ( !(sender is BgmMenuItem) ) {
                 return;
             }
-            BMenuItem parent = (BMenuItem)sender;
-            if ( parent.getTag() == null ) {
-                return;
-            }
-            if ( !(parent.getTag() is Integer) ) {
-                return;
-            }
-            int index = (Integer)parent.getTag();
+            BgmMenuItem menu = (BgmMenuItem)sender;
+            int index = menu.getBgmIndex();
             InputBox ib = null;
             try {
                 ib = new InputBox( _( "Input Offset Seconds" ) );
@@ -17579,7 +17562,7 @@ namespace org.kbinani.cadencii
                 try {
                     draft = str.tof( ib.getResult() );
                     item.readOffsetSeconds = draft;
-                    parent.setToolTipText( draft + " " + _( "seconds" ) );
+                    menu.setToolTipText( draft + " " + _( "seconds" ) );
                 } catch ( Exception ex3 ) {
                     Logger.write( typeof( FormMain ) + ".handleBgmOffsetSeconds_Click; ex=" + ex3 + "\n" );
                 }
@@ -17603,23 +17586,17 @@ namespace org.kbinani.cadencii
 
         public void handleBgmStartAfterPremeasure_CheckedChanged( Object sender, EventArgs e )
         {
-            if ( !(sender is BMenuItem) ) {
+            if ( !(sender is BgmMenuItem) ) {
                 return;
             }
-            BMenuItem parent = (BMenuItem)sender;
-            if ( parent.getTag() == null ) {
-                return;
-            }
-            if ( !(parent.getTag() is Integer) ) {
-                return;
-            }
-            int index = (Integer)parent.getTag();
+            BgmMenuItem menu = (BgmMenuItem)sender;
+            int index = menu.getBgmIndex();
             Vector<BgmFile> list = new Vector<BgmFile>();
             int count = AppManager.getBgmCount();
             for ( int i = 0; i < count; i++ ) {
                 if ( i == index ) {
                     BgmFile item = (BgmFile)AppManager.getBgm( i ).clone();
-                    item.startAfterPremeasure = parent.isSelected();
+                    item.startAfterPremeasure = menu.isSelected();
                     list.add( item );
                 } else {
                     list.add( AppManager.getBgm( i ) );
@@ -17669,17 +17646,11 @@ namespace org.kbinani.cadencii
 
         public void handleBgmRemove_Click( Object sender, EventArgs e )
         {
-            if ( !(sender is BMenuItem) ) {
+            if ( !(sender is BgmMenuItem) ) {
                 return;
             }
-            BMenuItem parent = (BMenuItem)sender;
-            if ( parent.getTag() == null ) {
-                return;
-            }
-            if ( !(parent.getTag() is Integer) ) {
-                return;
-            }
-            int index = (Integer)parent.getTag();
+            BgmMenuItem parent = (BgmMenuItem)sender;
+            int index = parent.getBgmIndex();
             BgmFile bgm = AppManager.getBgm( index );
             if ( AppManager.showMessageBox( PortUtil.formatMessage( _( "remove '{0}'?" ), bgm.file ),
                                   "Cadencii",
@@ -17695,36 +17666,36 @@ namespace org.kbinani.cadencii
         public void handleSettingPaletteTool( Object sender, EventArgs e )
         {
 #if ENABLE_SCRIPT
-            if ( sender is BMenuItem ) {
-                BMenuItem tsmi = (BMenuItem)sender;
-                if ( tsmi.getTag() != null && tsmi.getTag() is String ) {
-                    String id = (String)tsmi.getTag();
-                    if ( PaletteToolServer.loadedTools.containsKey( id ) ) {
-                        Object instance = PaletteToolServer.loadedTools.get( id );
-                        IPaletteTool ipt = (IPaletteTool)instance;
-                        if ( ipt.openDialog() == System.Windows.Forms.DialogResult.OK ) {
-                            XmlSerializer xsms = new XmlSerializer( instance.GetType(), true );
-                            String dir = fsys.combine( Utility.getApplicationDataPath(), "tool" );
-                            if ( !PortUtil.isDirectoryExists( dir ) ) {
-                                PortUtil.createDirectory( dir );
-                            }
-                            String cfg = id + ".config";
-                            String config = fsys.combine( dir, cfg );
-                            FileOutputStream fs = null;
-                            try {
-                                fs = new FileOutputStream( config );
-                                xsms.serialize( fs, null );
-                            } catch ( Exception ex ) {
-                                Logger.write( typeof( FormMain ) + ".handleSettingPaletteTool; ex=" + ex + "\n" );
-                            } finally {
-                                if ( fs != null ) {
-                                    try {
-                                        fs.close();
-                                    } catch ( Exception ex2 ) {
-                                        Logger.write( typeof( FormMain ) + ".handleSettingPaletteTool; ex=" + ex2 + "\n" );
-                                    }
-                                }
-                            }
+            if ( !(sender is PaletteToolMenuItem) ) {
+                return;
+            }
+            PaletteToolMenuItem tsmi = (PaletteToolMenuItem)sender;
+            String id = tsmi.getPaletteToolID();
+            if ( !PaletteToolServer.loadedTools.containsKey( id ) ) {
+                return;
+            }
+            Object instance = PaletteToolServer.loadedTools.get( id );
+            IPaletteTool ipt = (IPaletteTool)instance;
+            if ( ipt.openDialog() == System.Windows.Forms.DialogResult.OK ) {
+                XmlSerializer xsms = new XmlSerializer( instance.GetType(), true );
+                String dir = fsys.combine( Utility.getApplicationDataPath(), "tool" );
+                if ( !PortUtil.isDirectoryExists( dir ) ) {
+                    PortUtil.createDirectory( dir );
+                }
+                String cfg = id + ".config";
+                String config = fsys.combine( dir, cfg );
+                FileOutputStream fs = null;
+                try {
+                    fs = new FileOutputStream( config );
+                    xsms.serialize( fs, null );
+                } catch ( Exception ex ) {
+                    Logger.write( typeof( FormMain ) + ".handleSettingPaletteTool; ex=" + ex + "\n" );
+                } finally {
+                    if ( fs != null ) {
+                        try {
+                            fs.close();
+                        } catch ( Exception ex2 ) {
+                            Logger.write( typeof( FormMain ) + ".handleSettingPaletteTool; ex=" + ex2 + "\n" );
                         }
                     }
                 }
@@ -17741,8 +17712,8 @@ namespace org.kbinani.cadencii
             try {
                 String dir = Utility.getScriptPath();
                 String id = "";
-                if ( sender is BMenuItem ) {
-                    id = (String)((BMenuItem)sender).getTag();
+                if ( sender is PaletteToolMenuItem ) {
+                    id = ((PaletteToolMenuItem)sender).getPaletteToolID();
                 }
 #if DEBUG
                 sout.println( "FormMain#handleScriptMenuItem_Click; id=" + id );
@@ -18434,7 +18405,7 @@ namespace org.kbinani.cadencii
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.cMenuPositionIndicator = new org.kbinani.windows.forms.BPopupMenu( this.components );
+            this.cMenuPositionIndicator = new org.kbinani.cadencii.PositionIndicatorPopupMenu( this.components );
             this.cMenuPositionIndicatorStartMarker = new org.kbinani.windows.forms.BMenuItem();
             this.cMenuPositionIndicatorEndMarker = new org.kbinani.windows.forms.BMenuItem();
             this.menuStripMain.SuspendLayout();
@@ -21304,9 +21275,10 @@ namespace org.kbinani.cadencii
         public BMenuItem menuFileExportParaWave;
         public BMenuItem menuFileImportUst;
         private System.Windows.Forms.ToolStripButton stripBtnStepSequencer;
-        public BPopupMenu cMenuPositionIndicator;
+        public PositionIndicatorPopupMenu cMenuPositionIndicator;
         public BMenuItem cMenuPositionIndicatorStartMarker;
         public BMenuItem cMenuPositionIndicatorEndMarker;
+        public BMenuItem menuHelpManual;
         public WaveView waveView;
 
 #endif

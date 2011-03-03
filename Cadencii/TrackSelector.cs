@@ -394,6 +394,18 @@ namespace org.kbinani.cadencii
         /// Overlap, Presendを描画するときに使うフォントの，文字の描画高さ
         /// </summary>
         private int mTextHeight = 0;
+        /// <summary>
+        /// カーブ種類とメニューアイテムを紐付けるマップ
+        /// </summary>
+        private TreeMap<CurveType, BMenuItem> mMenuMap = new TreeMap<CurveType, BMenuItem>();
+        /// <summary>
+        /// ツールチップに表示されるプログラム
+        /// </summary>
+        private int mTooltipProgram;
+        /// <summary>
+        /// ツールチップに表示されるLanguage
+        /// </summary>
+        private int mTooltipLanguage;
 
         /// <summary>
         /// 最前面に表示するカーブの種類が変更されたとき発生するイベント．
@@ -471,40 +483,55 @@ namespace org.kbinani.cadencii
 #else
                 InputEvent.CTRL_MASK;
 #endif
-            cmenuCurveVelocity.setTag( CurveType.VEL );
-            cmenuCurveAccent.setTag( CurveType.Accent );
-            cmenuCurveDecay.setTag( CurveType.Decay );
+            mMenuMap.put( CurveType.VEL, cmenuCurveVelocity );
+            mMenuMap.put( CurveType.Accent, cmenuCurveAccent );
+            mMenuMap.put( CurveType.Decay, cmenuCurveDecay );
 
-            cmenuCurveDynamics.setTag( CurveType.DYN );
-            cmenuCurveVibratoRate.setTag( CurveType.VibratoRate );
-            cmenuCurveVibratoDepth.setTag( CurveType.VibratoDepth );
+            mMenuMap.put( CurveType.DYN, cmenuCurveDynamics );
+            mMenuMap.put( CurveType.VibratoRate, cmenuCurveVibratoRate );
+            mMenuMap.put( CurveType.VibratoDepth, cmenuCurveVibratoDepth );
 
-            cmenuCurveReso1Amp.setTag( CurveType.reso1amp );
-            cmenuCurveReso1BW.setTag( CurveType.reso1bw );
-            cmenuCurveReso1Freq.setTag( CurveType.reso1freq );
-            cmenuCurveReso2Amp.setTag( CurveType.reso2amp );
-            cmenuCurveReso2BW.setTag( CurveType.reso2bw );
-            cmenuCurveReso2Freq.setTag( CurveType.reso2freq );
-            cmenuCurveReso3Amp.setTag( CurveType.reso3amp );
-            cmenuCurveReso3BW.setTag( CurveType.reso3bw );
-            cmenuCurveReso3Freq.setTag( CurveType.reso3freq );
-            cmenuCurveReso4Amp.setTag( CurveType.reso4amp );
-            cmenuCurveReso4BW.setTag( CurveType.reso4bw );
-            cmenuCurveReso4Freq.setTag( CurveType.reso4freq );
+            mMenuMap.put( CurveType.reso1amp, cmenuCurveReso1Amp );
+            mMenuMap.put( CurveType.reso1bw, cmenuCurveReso1BW );
+            mMenuMap.put( CurveType.reso1freq, cmenuCurveReso1Freq );
+            mMenuMap.put( CurveType.reso2amp, cmenuCurveReso2Amp );
+            mMenuMap.put( CurveType.reso2bw, cmenuCurveReso2BW );
+            mMenuMap.put( CurveType.reso2freq, cmenuCurveReso2Freq );
+            mMenuMap.put( CurveType.reso3amp, cmenuCurveReso3Amp );
+            mMenuMap.put( CurveType.reso3bw, cmenuCurveReso3BW );
+            mMenuMap.put( CurveType.reso3freq, cmenuCurveReso3Freq );
+            mMenuMap.put( CurveType.reso4amp, cmenuCurveReso4Amp );
+            mMenuMap.put( CurveType.reso4bw, cmenuCurveReso4BW );
+            mMenuMap.put( CurveType.reso4freq, cmenuCurveReso4Freq );
 
-            cmenuCurveHarmonics.setTag( CurveType.harmonics );
-            cmenuCurveBreathiness.setTag( CurveType.BRE );
-            cmenuCurveBrightness.setTag( CurveType.BRI );
-            cmenuCurveClearness.setTag( CurveType.CLE );
-            cmenuCurveOpening.setTag( CurveType.OPE );
-            cmenuCurveGenderFactor.setTag( CurveType.GEN );
+            mMenuMap.put( CurveType.harmonics, cmenuCurveHarmonics );
+            mMenuMap.put( CurveType.BRE, cmenuCurveBreathiness );
+            mMenuMap.put( CurveType.BRI, cmenuCurveBrightness );
+            mMenuMap.put( CurveType.CLE, cmenuCurveClearness );
+            mMenuMap.put( CurveType.OPE, cmenuCurveOpening );
+            mMenuMap.put( CurveType.GEN, cmenuCurveGenderFactor );
 
-            cmenuCurvePortamentoTiming.setTag( CurveType.POR );
-            cmenuCurvePitchBend.setTag( CurveType.PIT );
-            cmenuCurvePitchBendSensitivity.setTag( CurveType.PBS );
+            mMenuMap.put( CurveType.POR, cmenuCurvePortamentoTiming );
+            mMenuMap.put( CurveType.PIT, cmenuCurvePitchBend );
+            mMenuMap.put( CurveType.PBS, cmenuCurvePitchBendSensitivity );
 
-            cmenuCurveEffect2Depth.setTag( CurveType.fx2depth );
-            cmenuCurveEnvelope.setTag( CurveType.Env );
+            mMenuMap.put( CurveType.fx2depth, cmenuCurveEffect2Depth );
+            mMenuMap.put( CurveType.Env, cmenuCurveEnvelope );
+        }
+
+        /// <summary>
+        /// メニューアイテムから，そのアイテムが担当しているカーブ種類を取得します
+        /// </summary>
+        private CurveType getCurveTypeFromMenu( BMenuItem menu )
+        {
+            for( Iterator<CurveType> itr = mMenuMap.keySet().iterator(); itr.hasNext(); ){
+                CurveType curve = itr.next();
+                BMenuItem search = mMenuMap.get( curve );
+                if( menu == search ){
+                    return curve;
+                }
+            }
+            return CurveType.Empty;
         }
 
 #if !JAVA
@@ -2835,30 +2862,26 @@ namespace org.kbinani.cadencii
                             MenuElement tsi = sub_cmenu_curve[i];
                             if ( tsi is BMenuItem ) {
                                 BMenuItem tsmi = (BMenuItem)tsi;
-                                if ( tsmi.getTag() is CurveType ) {
-                                    CurveType ct = (CurveType)tsmi.getTag();
-                                    if ( ct.equals( mSelectedCurve ) ) {
-                                        tsmi.setSelected( true );
-                                        break;
-                                    }
+                                CurveType ct = getCurveTypeFromMenu( tsmi );
+                                if ( ct.equals( mSelectedCurve ) ) {
+                                    tsmi.setSelected( true );
+                                    break;
                                 }
                                 MenuElement[] sub_tsmi = tsmi.getSubElements();
                                 for ( int j = 0; j < sub_tsmi.Length; j++ ) {
                                     MenuElement tsi2 = sub_tsmi[j];
                                     if ( tsi2 is BMenuItem ) {
                                         BMenuItem tsmi2 = (BMenuItem)tsi2;
-                                        if ( tsmi2.getTag() is CurveType ) {
-                                            CurveType ct2 = (CurveType)tsmi2.getTag();
-                                            if ( ct2.equals( mSelectedCurve ) ) {
-                                                tsmi2.setSelected( true );
-                                                if ( ct2.equals( CurveType.reso1amp ) || ct2.equals( CurveType.reso1bw ) || ct2.equals( CurveType.reso1freq ) ||
-                                                     ct2.equals( CurveType.reso2amp ) || ct2.equals( CurveType.reso2bw ) || ct2.equals( CurveType.reso2freq ) ||
-                                                     ct2.equals( CurveType.reso3amp ) || ct2.equals( CurveType.reso3bw ) || ct2.equals( CurveType.reso3freq ) ||
-                                                     ct2.equals( CurveType.reso4amp ) || ct2.equals( CurveType.reso4bw ) || ct2.equals( CurveType.reso4freq ) ) {
-                                                    tsmi.setSelected( true );//親アイテムもチェック。Resonance*用
-                                                }
-                                                break;
+                                        CurveType ct2 = getCurveTypeFromMenu( tsmi2 );
+                                        if ( ct2.equals( mSelectedCurve ) ) {
+                                            tsmi2.setSelected( true );
+                                            if ( ct2.equals( CurveType.reso1amp ) || ct2.equals( CurveType.reso1bw ) || ct2.equals( CurveType.reso1freq ) ||
+                                                 ct2.equals( CurveType.reso2amp ) || ct2.equals( CurveType.reso2bw ) || ct2.equals( CurveType.reso2freq ) ||
+                                                 ct2.equals( CurveType.reso3amp ) || ct2.equals( CurveType.reso3bw ) || ct2.equals( CurveType.reso3freq ) ||
+                                                 ct2.equals( CurveType.reso4amp ) || ct2.equals( CurveType.reso4bw ) || ct2.equals( CurveType.reso4freq ) ) {
+                                                tsmi.setSelected( true );//親アイテムもチェック。Resonance*用
                                             }
+                                            break;
                                         }
                                     }
                                 }
@@ -5602,16 +5625,14 @@ namespace org.kbinani.cadencii
                             if ( !mCMenuSingerPrepared.Equals( renderer ) ) {
                                 prepareSingerMenu( renderer );
                             }
-                            TagForCMenusinger tag = new TagForCMenusinger();
-                            tag.SingerChangeExists = true;
-                            tag.InternalID = ve.InternalID;
-                            cmenuSinger.setTag( tag );//                        new KeyValuePair<boolean, int>( true, ve.InternalID );
+                            cmenuSinger.SingerChangeExists = true;
+                            cmenuSinger.InternalID = ve.InternalID;
                             MenuElement[] sub_cmenu_singer = cmenuSinger.getSubElements();
                             for ( int i = 0; i < sub_cmenu_singer.Length; i++ ) {
-                                BMenuItem tsmi = (BMenuItem)sub_cmenu_singer[i];
-                                TagForCMenusingerDropDown tag2 = (TagForCMenusingerDropDown)tsmi.getTag();
-                                if ( tag2.Language == ve.ID.IconHandle.Language &&
-                                     tag2.Program == ve.ID.IconHandle.Program ) {
+                                TrackSelectorSingerDropdownMenuItem tsmi =
+                                    (TrackSelectorSingerDropdownMenuItem)sub_cmenu_singer[i];
+                                if ( tsmi.Language == ve.ID.IconHandle.Language &&
+                                     tsmi.Program == ve.ID.IconHandle.Program ) {
                                     tsmi.setSelected( true );
                                 } else {
                                     tsmi.setSelected( false );
@@ -5634,10 +5655,8 @@ namespace org.kbinani.cadencii
                                 }
                                 last_clock = ve2.Clock;
                             }
-                            TagForCMenusinger tag = new TagForCMenusinger();
-                            tag.SingerChangeExists = false;
-                            tag.Clock = clock;
-                            cmenuSinger.setTag( tag );//                        new KeyValuePair<boolean, int>( false, clock );
+                            cmenuSinger.SingerChangeExists = false;
+                            cmenuSinger.Clock = clock;
                             MenuElement[] sub_cmenu_singer = cmenuSinger.getSubElements();
                             for ( int i = 0; i < sub_cmenu_singer.Length; i++ ) {
                                 BMenuItem tsmi = (BMenuItem)sub_cmenu_singer[i];
@@ -5713,14 +5732,13 @@ namespace org.kbinani.cadencii
                     }
                 }
                 if ( sc != null ) {
-                    BMenuItem tsmi = new BMenuItem();
+                    TrackSelectorSingerDropdownMenuItem tsmi =
+                        new TrackSelectorSingerDropdownMenuItem();
                     tsmi.setText( sc.VOICENAME );
-                    TagForCMenusingerDropDown tag = new TagForCMenusingerDropDown();
-                    tag.ToolTipText = tip;
-                    tag.ToolTipPxWidth = 0;
-                    tag.Language = sc.Language;
-                    tag.Program = sc.Program;
-                    tsmi.setTag( tag );
+                    tsmi.ToolTipText = tip;
+                    tsmi.ToolTipPxWidth = 0;
+                    tsmi.Language = sc.Language;
+                    tsmi.Program = sc.Program;
                     tsmi.Click += new BEventHandler( cmenusinger_Click );
 #if JAVA
                     // TODO: tsmi.MouseHover
@@ -5761,33 +5779,32 @@ namespace org.kbinani.cadencii
         {
 #if !JAVA
             try {
-                TagForCMenusingerDropDown tag = (TagForCMenusingerDropDown)((BMenuItem)sender).getTag();
-                String tip = tag.ToolTipText;
-                int language = tag.Language;
-                int program = tag.Program;
+                TrackSelectorSingerDropdownMenuItem menu =
+                    (TrackSelectorSingerDropdownMenuItem)sender;
+                String tip = menu.ToolTipText;
+                int language = menu.Language;
+                int program = menu.Program;
 
                 // tooltipを表示するy座標を決める
                 int y = 0;
                 MenuElement[] sub = cmenuSinger.getSubElements();
                 for ( int i = 0; i < sub.Length; i++ ) {
-                    BMenuItem item = (BMenuItem)sub[i];
-                    TagForCMenusingerDropDown tag2 = (TagForCMenusingerDropDown)item.getTag();
-                    if ( language == tag2.Language &&
-                         program == tag2.Program ) {
+                    TrackSelectorSingerDropdownMenuItem item =
+                        (TrackSelectorSingerDwopdownMenuItem)sub[i];
+                    if ( language == item.Language &&
+                         program == item.Program ) {
                         break;
                     }
                     y += item.getHeight();
                 }
 
-                int tip_width = tag.ToolTipPxWidth;
+                int tip_width = menu.ToolTipPxWidth;
                 Point ppts = cmenuSinger.pointToScreen( new Point( 0, 0 ) );
                 Point pts = new Point( ppts.x, ppts.y );
                 Rectangle rrc = PortUtil.getScreenBounds( this );
                 Rectangle rc = new Rectangle( rrc.x, rrc.y, rrc.width, rrc.height );
-                TagForCMenusingerDropDown tag3 = new TagForCMenusingerDropDown();
-                tag3.Program = program;
-                tag3.Language = language;
-                toolTip.Tag = tag3;
+                mTooltipProgram = program;
+                mTooltipLanguage = language;
                 if ( pts.x + cmenuSinger.getWidth() + tip_width > rc.width ) {
                     toolTip.Show( tip, cmenuSinger, new System.Drawing.Point( -tip_width, y ), 5000 );
                 } else {
@@ -5800,45 +5817,30 @@ namespace org.kbinani.cadencii
 #endif
         }
 
-        private struct TagForCMenusinger
-        {
-            public boolean SingerChangeExists;
-            public int Clock;
-            public int InternalID;
-        }
-
-        private struct TagForCMenusingerDropDown
-        {
-            public int ToolTipPxWidth;
-            public String ToolTipText;
-            public int Language;
-            public int Program;
-        }
-
         public void cmenusinger_Click( Object sender, BEventArgs e )
         {
-            if ( sender is BMenuItem ) {
-                TagForCMenusinger tag = (TagForCMenusinger)cmenuSinger.getTag();
-                TagForCMenusingerDropDown tag_dditem = (TagForCMenusingerDropDown)((BMenuItem)sender).getTag();
-                int language = tag_dditem.Language;
-                int program = tag_dditem.Program;
-                VsqID item = Utility.getSingerID( mCMenuSingerPrepared, program, language );
-                if ( item != null ) {
-                    int selected = AppManager.getSelected();
-                    if ( tag.SingerChangeExists ) {
-                        int id = tag.InternalID;
-                        CadenciiCommand run = new CadenciiCommand(
-                            VsqCommand.generateCommandEventChangeIDContaints( selected, id, item ) );
+            if ( !(sender is TrackSelectorSingerDropdownMenuItem) ) {
+                return;
+            }
+            TrackSelectorSingerDropdownMenuItem menu = (TrackSelectorSingerDropdownMenuItem)sender;
+            int language = menu.Language;
+            int program = menu.Program;
+            VsqID item = Utility.getSingerID( mCMenuSingerPrepared, program, language );
+            if ( item != null ) {
+                int selected = AppManager.getSelected();
+                if ( cmenuSinger.SingerChangeExists ) {
+                    int id = cmenuSinger.InternalID;
+                    CadenciiCommand run = new CadenciiCommand(
+                        VsqCommand.generateCommandEventChangeIDContaints( selected, id, item ) );
 #if DEBUG
-                        AppManager.debugWriteLine( "TrackSelector#tsmi_Click; item.IconHandle.Program" + item.IconHandle.Program );
+                    AppManager.debugWriteLine( "TrackSelector#tsmi_Click; item.IconHandle.Program" + item.IconHandle.Program );
 #endif
-                        executeCommand( run, true );
-                    } else {
-                        int clock = tag.Clock;
-                        VsqEvent ve = new VsqEvent( clock, item );
-                        CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventAdd( selected, ve ) );
-                        executeCommand( run, true );
-                    }
+                    executeCommand( run, true );
+                } else {
+                    int clock = cmenuSinger.Clock;
+                    VsqEvent ve = new VsqEvent( clock, item );
+                    CadenciiCommand run = new CadenciiCommand( VsqCommand.generateCommandEventAdd( selected, ve ) );
+                    executeCommand( run, true );
                 }
             }
         }
@@ -5856,33 +5858,18 @@ namespace org.kbinani.cadencii
             sout.println( "TrackSelector#toolTip_Draw; sender.GetType()=" + sender.GetType() );
 #endif
 
-            System.Windows.Forms.ToolTip tooltip = (System.Windows.Forms.ToolTip)sender;
-            if ( tooltip.Tag == null ) {
-                return;
-            }
-            if ( !(tooltip.Tag is TagForCMenusingerDropDown) ) {
-                return;
-            }
-            TagForCMenusingerDropDown tag_tooltip = (TagForCMenusingerDropDown)tooltip.Tag;
             MenuElement[] sub_cmenu_singer = cmenuSinger.getSubElements();
             for ( int i = 0; i < sub_cmenu_singer.Length; i++ ) {
                 MenuElement tsi = sub_cmenu_singer[i];
-                if ( !(tsi is BMenuItem) ) {
+                if ( !(tsi is TrackSelectorSingerDropdownMenuItem) ) {
                     continue;
                 }
-                BMenuItem menu = (BMenuItem)tsi;
-                Object obj = menu.getTag();
-                if ( obj == null ) {
-                    continue;
-                }
-                if ( !(obj is TagForCMenusingerDropDown) ) {
-                    continue;
-                }
-                TagForCMenusingerDropDown tag = (TagForCMenusingerDropDown)obj;
-                if ( tag.Language == tag_tooltip.Language &&
-                     tag.Program == tag_tooltip.Program ) {
+                TrackSelectorSingerDropdownMenuItem menu =
+                    (TrackSelectorSingerDropdownMenuItem)tsi;
+                if ( menu.Language == mTooltipLanguage &&
+                     menu.Program == mTooltipProgram ) {
                     tag.ToolTipPxWidth = rc.width;
-                    ((BMenuItem)tsi).setTag( tag );
+                    //((BMenuItem)tsi).setTag( tag ); <- ??
                     break;
                 }
             }
@@ -5920,8 +5907,8 @@ namespace org.kbinani.cadencii
         {
             if ( sender is BMenuItem ) {
                 BMenuItem tsmi = (BMenuItem)sender;
-                if ( tsmi.getTag() is CurveType ) {
-                    CurveType curve = (CurveType)tsmi.getTag();
+                CurveType curve = getCurveTypeFromMenu( tsmi );
+                if( !curve.Equals( CurveType.Empty ) ){
                     changeCurve( curve );
                 }
             }
@@ -6359,7 +6346,7 @@ namespace org.kbinani.cadencii
 
         #endregion
 
-        private BPopupMenu cmenuSinger;
+        private TrackSelectorSingerPopupMenu cmenuSinger;
         private System.Windows.Forms.ToolTip toolTip;
         private BPopupMenu cmenuCurve;
         private BMenuItem cmenuCurveVelocity;

@@ -1,41 +1,24 @@
-my $ENABLE_DEBUG = 0;
-my $ENABLE_PROPERTY = 1;
-my $ENABLE_VOCALOID = 1;
-my $ENABLE_AQUESTONE = 0;
-my $ENABLE_MIDI = 1;
+my %directive = (
+    "debug"     => 0,
+    "property"  => 1,
+    "vocaloid"  => 1,
+    "aquestone" => 0,
+    "midi"      => 1,
+    "script"    => 0,
+);
 my $WINE_VERSION = "1.1.2";
 
 for( my $i = 0; $i <= $#ARGV; $i++ ){
     my $arg = $ARGV[$i];
-    if( $arg eq "--enable-debug" ){
-        $ENABLE_DEBUG = 1;
-    }
-    if( $arg eq "--disable-debug" ){
-        $ENABLE_DEBUG = 0;
-    }
-    if( $arg eq "--enable-property" ){
-        $ENABLE_PROPERTY = 1;
-    }
-    if( $arg eq "--disable-property" ){
-        $ENABLE_PROPERTY = 0;
-    }
-    if( $arg eq "--enable-vocaloid" ){
-        $ENABLE_VOCALOID = 1;
-    }
-    if( $arg eq "--disable-vocaloid" ){
-        $ENABLE_VOCALOID = 0;
-    }
-    if( $arg eq "--enable-aquestone" ){
-        $ENABLE_AQUESTONE = 1;
-    }
-    if( $arg eq "--disable-aquestone" ){
-        $ENABLE_AQUESTONE = 0;
-    }
-    if( $arg eq "--enable-midi" ){
-        $ENABLE_MIDI = 1;
-    }
-    if( $arg eq "--disable-midi" ){
-        $ENABLE_MIDI = 0;
+    foreach my $key ( keys %directive ){
+        my $search_enable = "--enable-" . $key;
+        if( $arg eq $search_enable ){
+            $directive{$key} = 1;
+        }
+        my $search_disable = "--disable-" . $key;
+        if( $arg eq $search ){
+            $directive{$key} = 0;
+        }
     }
     my $search = "--wine-version=";
     if( index( $arg, $search ) == 0 ){
@@ -46,34 +29,35 @@ for( my $i = 0; $i <= $#ARGV; $i++ ){
 open( FILE, "<Makefile.include" );
 open( OUT, ">Makefile" );
 
-@special_dependencies = (
-"./BuildJavaUI/src/org/kbinani/ByRef.java",
-"./BuildJavaUI/src/org/kbinani/math.java",
-"./BuildJavaUI/src/org/kbinani/PortUtil.java",
-"./BuildJavaUI/src/org/kbinani/str.java",
-"./BuildJavaUI/src/org/kbinani/fsys.java",
-"./BuildJavaUI/src/org/kbinani/vec.java",
-"./BuildJavaUI/src/org/kbinani/cadencii/IconParader.java",
-"./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java",
-"./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java",
+my @special_dependencies = (
+    "./BuildJavaUI/src/org/kbinani/ByRef.java",
+    "./BuildJavaUI/src/org/kbinani/math.java",
+    "./BuildJavaUI/src/org/kbinani/PortUtil.java",
+    "./BuildJavaUI/src/org/kbinani/str.java",
+    "./BuildJavaUI/src/org/kbinani/fsys.java",
+    "./BuildJavaUI/src/org/kbinani/vec.java",
+    "./BuildJavaUI/src/org/kbinani/cadencii/IconParader.java",
+    "./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java",
+    "./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java",
+    "./BuildJavaUI/src/org/kbinani/cadencii/TrackSelectorSingerPopupMenu.java",
 );
 
-@ignore = (
-"./org.kbinani/Arrays.cs",
-"./org.kbinani/awt.cs",
-"./org.kbinani/awt.event.cs",
-"./org.kbinani/awt.geom.cs",
-"./org.kbinani/awt.image.cs",
-"./org.kbinani/Collections.cs",
-"./org.kbinani/imageio.cs",
-"./org.kbinani/io.cs",
-"./org.kbinani/Iterator.cs",
-"./org.kbinani/lang.cs",
-"./org.kbinani/ListIterator.cs",
-"./org.kbinani/RandomAccessFile.cs",
-"./org.kbinani/swing.cs",
-"./org.kbinani/util.cs",
-"./org.kbinani/Vector.cs",
+my @ignore = (
+    "./org.kbinani/Arrays.cs",
+    "./org.kbinani/awt.cs",
+    "./org.kbinani/awt.event.cs",
+    "./org.kbinani/awt.geom.cs",
+    "./org.kbinani/awt.image.cs",
+    "./org.kbinani/Collections.cs",
+    "./org.kbinani/imageio.cs",
+    "./org.kbinani/io.cs",
+    "./org.kbinani/Iterator.cs",
+    "./org.kbinani/lang.cs",
+    "./org.kbinani/ListIterator.cs",
+    "./org.kbinani/RandomAccessFile.cs",
+    "./org.kbinani/swing.cs",
+    "./org.kbinani/util.cs",
+    "./org.kbinani/Vector.cs",
 );
 
 if( $ARGV[0] eq "MSWin32" ){
@@ -82,31 +66,6 @@ if( $ARGV[0] eq "MSWin32" ){
 }else{
     $djava_mac = "-DJAVA_MAC";
     $to_devnull = "2>/dev/null";
-}
-if( $ENABLE_DEBUG == 0 ){
-    $ddebug = "";
-}else{
-    $ddebug = "-DDEBUG";
-}
-if( $ENABLE_PROPERTY == 0 ){
-    $denable_property = "";
-}else{
-    $denable_property = "-DENABLE_PROPERTY";
-}
-if( $ENABLE_VOCALOID == 0 ){
-    $denable_vocaloid = "";
-}else{
-    $denable_vocaloid = "-DENABLE_VOCALOID";
-}
-if( $ENABLE_AQUESTONE == 0 ){
-    $denable_aquestone = "";
-}else{
-    $denable_aquestone = "-DENABLE_AQUESTONE";
-}
-if( $ENABLE_MIDI == 0 ){
-    $denable_midi = "";
-}else{
-    $denable_midi = "-DENABLE_MIDI";
 }
 
 open( CFG, ">./Cadencii/Config.cs" );
@@ -139,16 +98,11 @@ namespace org.kbinani.cadencii
         {
 __EOD__
 
-%directives;
-$directives{"debug"} = $ENABLE_DEBUG ? "true" : "false";
-$directives{"property"} = $ENABLE_PROPERTY ? "true" : "false";
-$directives{"vocaloid"} = $ENABLE_VOCALOID ? "true" : "false";
-$directives{"aquestone"} = $ENABLE_AQUESTONE ? "true" : "false";
-$directives{"midi"} = $ENABLE_MIDI ? "true" : "false";
-foreach $key ( keys %directives )
+foreach $key ( keys %directive )
 {
-    print CFG "            mDirectives.put( \"$key\", $directives{$key} );\n";
-    print "$key: $directives{$key}\n";
+    my $tbool = $directive{$key} == 0 ? "false" : "true";
+    print CFG "            mDirectives.put( \"$key\", $tbool );\n";
+    print "$key: $tbool\n";
 }
 print "WINE_VERSION: $WINE_VERSION\n";
 
@@ -205,13 +159,17 @@ while( $line = <FILE> ){
     $line =~ s/\@DEP_JCOMPONENTMODEL\@/$dep_componentmodel/g;
     $line =~ s/\@DEP_JXML\@/$dep_xml/g;
     $line =~ s/\@DJAVA_MAC\@/$djava_mac/g;
-    $line =~ s/\@DDEBUG\@/$ddebug/g;
-    $line =~ s/\@DENABLE_PROPERTY\@/$denable_property/g;
-    $line =~ s/\@DENABLE_VOCALOID\@/$denable_vocaloid/g;
-    $line =~ s/\@DENABLE_AQUESTONE\@/$denable_aquestone/g;
+    foreach $key ( keys %directive ){
+        my $search = "\@DENABLE_" . (uc $key) . "\@";
+        my $rep_draft = "-DENABLE_" . (uc $key);
+        if( $key eq "debug" ){
+            $rep_draft = "-DDEBUG";
+        }
+        my $rep = $directive{$key} == 0 ? "" : $rep_draft;
+        $line =~ s/$search/$rep/g;
+    }
     $line =~ s/\@TO_DEVNULL\@/$to_devnull/g;
     $line =~ s/\@WINE_VERSION\@/$WINE_VERSION/g;
-    $line =~ s/\@DENABLE_MIDI\@/$denable_midi/g;
 
     #if( $ARGV[0] eq "MSWin32" ){
     #    if( ($line =~ /\$\(CP\)/) | ($line =~ /\$\(RM\)/) | ($line =~ /\$\(MKDIR\)/) ){

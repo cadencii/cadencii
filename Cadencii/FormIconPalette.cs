@@ -50,6 +50,8 @@ namespace org.kbinani.cadencii
 #if JAVA
     class DraggableBButton extends BButton
     {
+        private IconDynamicsHandle mHandle = null;
+
         public DraggableBButton()
         {
             super();
@@ -65,20 +67,26 @@ namespace org.kbinani.cadencii
     
                         // 2) transfer data
                         // タグにはIconDynamicsHandleが格納されている
-                        Object obj = getTag();
-                        if( obj == null ){
+                        if( mHandle == null ){
                             return;
                         }
-                        if( !(obj instanceof IconDynamicsHandle) ){
-                            return;
-                        }
-                        String icon_id = ((IconDynamicsHandle)obj).IconID;
+                        String icon_id = mHandle.IconID;
                         StringSelection transferable = new StringSelection( AppManager.CLIP_PREFIX + ":" + icon_id );
     
                         // 3) start drag
                         e.startDrag( dragCursor, transferable );
                     }
                 } );
+        }
+        
+        public IconDynamicsHandle getHandle()
+        {
+            return mHandle;
+        }
+        
+        public void setHandle( IconDynamicsHandle value )
+        {
+            mHandle = value;
         }
     }
 #endif
@@ -94,6 +102,7 @@ namespace org.kbinani.cadencii
         private Vector<BButton> decrescendButtons = new Vector<BButton>();
         private int buttonWidth = 40;
         private FormMain mMainWindow = null;
+        private boolean mPreviousAlwaysOnTop;
 
         public FormIconPalette( FormMain main_window )
         {
@@ -117,6 +126,22 @@ namespace org.kbinani.cadencii
         }
     
         #region public methods
+        /// <summary>
+        /// AlwaysOnTopが強制的にfalseにされる直前の，AlwaysOnTop値を取得します．
+        /// </summary>
+        public boolean getPreviousAlwaysOnTop()
+        {
+            return mPreviousAlwaysOnTop;
+        }
+        
+        /// <summary>
+        /// AlwaysOnTopが強制的にfalseにされる直前の，AlwaysOnTop値を設定しておきます．
+        /// </summary>
+        public void setPreviousAlwaysOnTop( boolean value )
+        {
+            mPreviousAlwaysOnTop = value;
+        }
+
         public void applyLanguage()
         {
             setTitle( _( "Icon Palette" ) );
@@ -152,7 +177,7 @@ namespace org.kbinani.cadencii
                 BButton btn = new BButton();
 #endif
                 btn.setName( icon_id );
-                btn.setTag( handle );
+                btn.setHandle( handle );
                 String buttonIconPath = handle.getButtonImageFullPath();
 
                 boolean setimg = PortUtil.isFileExists( buttonIconPath );
@@ -316,12 +341,12 @@ namespace org.kbinani.cadencii
             if ( AppManager.getEditMode() != EditMode.NONE ) {
                 return;
             }
-            BButton btn = (BButton)sender;
+            DraggableBButton btn = (DraggableBButton)sender;
             if ( mMainWindow != null ) {
                 mMainWindow.toFront();
             }
 
-            IconDynamicsHandle handle = (IconDynamicsHandle)btn.getTag();
+            IconDynamicsHandle handle = btn.getHandle();
             VsqEvent item = new VsqEvent();
             item.Clock = 0;
             item.ID.Note = 60;

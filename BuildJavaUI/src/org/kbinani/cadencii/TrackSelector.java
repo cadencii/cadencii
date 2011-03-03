@@ -55,7 +55,7 @@ public class TrackSelector extends JPanel {
     private JSeparator cmenuCurveSeparator3 = null;
     private JSeparator cmenuCurveSeparator4 = null;
     private JSeparator cmenuCurveSeparator5 = null;
-    private BPopupMenu cmenuSinger = null;  //  @jve:decl-index=0:visual-constraint="305,282"
+    private TrackSelectorSingerPopupMenu cmenuSinger = null;  //  @jve:decl-index=0:visual-constraint="305,282"
     private JToolTip toolTip = null;  //  @jve:decl-index=0:visual-constraint="468,277"
 
     //SECTION-END-FIELD
@@ -624,11 +624,11 @@ public class TrackSelector extends JPanel {
     /**
      * This method initializes cmenuSinger	
      * 	
-     * @return javax.swing.JPopupMenu	
+     * @return org.kbinani.cadencii.TrackSelectorSingerPopupMenu
      */
-    private BPopupMenu getCmenuSinger() {
+    private TrackSelectorSingerPopupMenu getCmenuSinger() {
         if (cmenuSinger == null) {
-            cmenuSinger = new BPopupMenu();
+            cmenuSinger = new TrackSelectorSingerPopupMenu();
         }
         return cmenuSinger;
     }
