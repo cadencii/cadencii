@@ -19,6 +19,7 @@ import org.kbinani.windows.forms.*;
 
 #else
 
+using System;
 using org.kbinani.windows.forms;
 
 namespace org.kbinani.cadencii

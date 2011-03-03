@@ -49,9 +49,12 @@ namespace org.kbinani.cadencii
 
 #if JAVA
     class DraggableBButton extends BButton
+#else
+    class DraggableBButton : BButton
+#endif
     {
         private IconDynamicsHandle mHandle = null;
-
+#if JAVA
         public DraggableBButton()
         {
             super();
@@ -78,6 +81,7 @@ namespace org.kbinani.cadencii
                     }
                 } );
         }
+#endif
         
         public IconDynamicsHandle getHandle()
         {
@@ -89,7 +93,6 @@ namespace org.kbinani.cadencii
             mHandle = value;
         }
     }
-#endif
 
 #if JAVA
     public class FormIconPalette extends BForm
@@ -174,7 +177,7 @@ namespace org.kbinani.cadencii
 #if JAVA
                 DraggableBButton btn = new DraggableBButton();
 #else
-                BButton btn = new BButton();
+                DraggableBButton btn = new DraggableBButton();
 #endif
                 btn.setName( icon_id );
                 btn.setHandle( handle );

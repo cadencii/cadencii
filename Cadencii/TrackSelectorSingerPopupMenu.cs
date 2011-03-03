@@ -23,6 +23,7 @@ using org.kbinani.windows.forms;
 
 namespace org.kbinani.cadencii
 {
+    using boolean = System.Boolean;
 #endif
 
 #if JAVA
@@ -34,6 +35,13 @@ namespace org.kbinani.cadencii
         public boolean SingerChangeExists;
         public int Clock;
         public int InternalID;
+
+#if !JAVA
+        public TrackSelectorSingerPopupMenu( System.ComponentModel.IContainer cont )
+            : base( cont )
+        {
+        }
+#endif
     }
 
 #if !JAVA

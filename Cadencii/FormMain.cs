@@ -18405,7 +18405,7 @@ namespace org.kbinani.cadencii
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this.statusStrip = new System.Windows.Forms.StatusStrip();
             this.statusLabel = new System.Windows.Forms.ToolStripStatusLabel();
-            this.cMenuPositionIndicator = new org.kbinani.cadencii.PositionIndicatorPopupMenu( this.components );
+            this.cMenuPositionIndicator = new BPopupMenu( this.components );
             this.cMenuPositionIndicatorStartMarker = new org.kbinani.windows.forms.BMenuItem();
             this.cMenuPositionIndicatorEndMarker = new org.kbinani.windows.forms.BMenuItem();
             this.menuStripMain.SuspendLayout();
@@ -21275,7 +21275,7 @@ namespace org.kbinani.cadencii
         public BMenuItem menuFileExportParaWave;
         public BMenuItem menuFileImportUst;
         private System.Windows.Forms.ToolStripButton stripBtnStepSequencer;
-        public PositionIndicatorPopupMenu cMenuPositionIndicator;
+        public BPopupMenu cMenuPositionIndicator;
         public BMenuItem cMenuPositionIndicatorStartMarker;
         public BMenuItem cMenuPositionIndicatorEndMarker;
         public BMenuItem menuHelpManual;

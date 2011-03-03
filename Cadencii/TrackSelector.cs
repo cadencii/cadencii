@@ -5790,7 +5790,7 @@ namespace org.kbinani.cadencii
                 MenuElement[] sub = cmenuSinger.getSubElements();
                 for ( int i = 0; i < sub.Length; i++ ) {
                     TrackSelectorSingerDropdownMenuItem item =
-                        (TrackSelectorSingerDwopdownMenuItem)sub[i];
+                        (TrackSelectorSingerDropdownMenuItem)sub[i];
                     if ( language == item.Language &&
                          program == item.Program ) {
                         break;
@@ -5868,7 +5868,7 @@ namespace org.kbinani.cadencii
                     (TrackSelectorSingerDropdownMenuItem)tsi;
                 if ( menu.Language == mTooltipLanguage &&
                      menu.Program == mTooltipProgram ) {
-                    tag.ToolTipPxWidth = rc.width;
+                    menu.ToolTipPxWidth = rc.width;
                     //((BMenuItem)tsi).setTag( tag ); <- ??
                     break;
                 }
@@ -5999,7 +5999,7 @@ namespace org.kbinani.cadencii
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.cmenuSinger = new org.kbinani.windows.forms.BPopupMenu( this.components );
+            this.cmenuSinger = new TrackSelectorSingerPopupMenu( this.components );
             this.toolTip = new System.Windows.Forms.ToolTip( this.components );
             this.cmenuCurve = new org.kbinani.windows.forms.BPopupMenu( this.components );
             this.cmenuCurveVelocity = new org.kbinani.windows.forms.BMenuItem();
