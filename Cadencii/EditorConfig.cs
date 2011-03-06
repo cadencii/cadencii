@@ -721,44 +721,47 @@ namespace org.kbinani.cadencii
         public String getWineTop()
         {
             if( WineTopBuiltin ){
-                return getBuiltinWineTop();
+                return getBuiltinWineTop( "Wine.bundle" );
             }else{
                 return WineTop;
             }
         }
         
         /// <summary>
-        /// Cadencii付属のWineのインストールディレクトリを取得します
+        /// 指定した名前のバンドルの，Wineのインストールディレクトリを取得します
         /// </summary>
-        private String getBuiltinWineTop()
+        private String getBuiltinWineTop( String bundle_name )
         {
             String appstart = PortUtil.getApplicationStartupPath();
             // Wine.bundleの場所は../Wine.bundleまたは./Wine.bundleのどちらか
             // まず../Wine.bundleがあるかどうかチェック
             String parent = PortUtil.getDirectoryName( appstart );
-            String ret = fsys.combine( parent, "Wine.bundle" );
+            String ret = fsys.combine( parent, bundle_name );
+            if( !fsys.isDirectoryExists( ret ) ){
+                // ../Wine.bundleが無い場合
+                ret = fsys.combine( appstart, bundle_name );
+            }
             ret = fsys.combine( ret, "Contents" );
             ret = fsys.combine( ret, "SharedSupport" );
-            if( !fsys.isFileExists( ret ) ){
-                // ../Wine.bundleが無い場合
-                ret = fsys.combine( appstart, "Wine.bundle" );
-                ret = fsys.combine( ret, "Contents" );
-                ret = fsys.combine( ret, "SharedSupport" );
-            }
+            return ret;
+        }
+
+        public String getBuiltinWineMinimumExecutable()
+        {
+            String ret = getBuiltinWineTop( "WineMinimum.bundle" );
+            ret = fsys.combine( ret, "bin" );
+            ret = fsys.combine( ret, "wine" );
             return ret;
         }
 
         /// <summary>
         /// wineの実行ファイルのパスを取得します
         /// </summary>
-        public String getBuiltinWineExecutable()
+        public String getBuiltinWineExecutable__()
         {
-            String ret = getBuiltinWineTop();
+            String ret = getBuiltinWineTop( "Wine.bundle" );
             ret = fsys.combine( ret, "bin" );
             ret = fsys.combine( ret, "wine" );
-#if DEBUG
-            sout.println( "EditorConfig#getBuiltinWineExecutable; ret=" + ret );
-#endif
             return ret;
         }
 

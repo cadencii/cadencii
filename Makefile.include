@@ -22,6 +22,7 @@ WINE_VERSION=@WINE_VERSION@
 WINE_DIR=./wine-$(WINE_VERSION)/
 JAVAC=javac
 BUNDLE=build/java/Wine.bundle/Contents/SharedSupport
+MIN_BUNDLE=build/java/WineMinimum.bundle/Contents/SharedSupport
 APP=build/java/Cadencii.app/Contents
 
 SRC_JAPPUTIL=@SRC_JAPPUTIL@
@@ -35,7 +36,7 @@ SRC_JXML=@SRC_JXML@
 
 all: jcadencii_mac
 
-jcadencii_mac: jcadencii ./Cadencii/PkgInfo ./Cadencii/Info.plist ./build/java/Wine.bundle
+jcadencii_mac: jcadencii ./Cadencii/PkgInfo ./Cadencii/Info.plist ./build/java/Wine.bundle ./build/java/WineMinimum.bundle
 	rm -rf ./build/java/Cadencii.app
 	mkdir -p $(APP)/Resources/Java
 	mkdir -p $(APP)/MacOS
@@ -56,10 +57,11 @@ jcadencii_mac: jcadencii ./Cadencii/PkgInfo ./Cadencii/Info.plist ./build/java/W
 	cp ./build/java/getvocaloidinfo.exe $(APP)/Resources/Java
 	cp ./build/java/manual.pdf $(APP)/Resources/Java
 	cp -r -p ./build/java/Wine.bundle $(APP)/Resources/Wine.bundle
-#	rm $(APP)/Resources/Wine.bundle/Contents/SharedSupport/lib/libwine.1.dylib
-#	rm $(APP)/Resources/Wine.bundle/Contents/SharedSupport/lib/libwine.dylib
-#	ln -s libwine.1.0.dylib $(APP)/Resources/Wine.bundle/Contents/SharedSupport/lib/libwine.1.dylib
-#	ln -s libwine.1.0.dylib $(APP)/Resources/Wine.bundle/Contents/SharedSupport/lib/libwine.dylib
+	cp -r -p ./build/java/WineMinimum.bundle $(APP)/Resources/WineMinimum.bundle
+	rm $(APP)/Resources/WineMinimum.bundle/Contents/SharedSupport/lib/libwine.1.dylib
+	rm $(APP)/Resources/WineMinimum.bundle/Contents/SharedSupport/lib/libwine.dylib
+	ln -s libwine.1.0.dylib $(APP)/Resources/WineMinimum.bundle/Contents/SharedSupport/lib/libwine.1.dylib
+	ln -s libwine.1.0.dylib $(APP)/Resources/WineMinimum.bundle/Contents/SharedSupport/lib/libwine.dylib
 
 ########################################################################
 # prepare Wine.bundle
@@ -105,6 +107,67 @@ jcadencii_mac: jcadencii ./Cadencii/PkgInfo ./Cadencii/Info.plist ./build/java/W
 	  echo '</plist>'; \
 	} > ./build/java/Wine.bundle/Contents/Info.plist
 	/Developer/Tools/SetFile -a B ./build/java/Wine.bundle
+
+# prepare wine-minimum bundle
+./build/java/WineMinimum.bundle: ./build/java/Wine.bundle
+	rm -rf ./build/java/WineMinimum.bundle
+	mkdir -p $(MIN_BUNDLE)/bin
+	mkdir -p $(MIN_BUNDLE)/lib/wine
+	cp $(WINE_DIR)loader/wine-pthread $(MIN_BUNDLE)/bin/wine
+	cp $(WINE_DIR)server/wineserver $(MIN_BUNDLE)/bin/wineserver
+	install_name_tool -change @executable_path/../libs/wine/libwine.1.dylib @executable_path/../lib/libwine.1.dylib $(MIN_BUNDLE)/bin/wine
+	install_name_tool -change @executable_path/../libs/wine/libwine.1.dylib @executable_path/../lib/libwine.1.dylib $(MIN_BUNDLE)/bin/wineserver
+	cp $(WINE_DIR)libs/wine/libwine.1.0.dylib $(MIN_BUNDLE)/lib/libwine.1.0.dylib
+	ln -s libwine.1.0.dylib $(MIN_BUNDLE)/lib/libwine.1.dylib
+	ln -s libwine.1.0.dylib $(MIN_BUNDLE)/lib/libwine.dylib
+	cp $(WINE_DIR)dlls/advapi32/advapi32.dll.so $(MIN_BUNDLE)/lib/wine/advapi32.dll.so
+	cp $(WINE_DIR)dlls/iphlpapi/iphlpapi.dll.so $(MIN_BUNDLE)/lib/wine/iphlpapi.dll.so
+	cp $(WINE_DIR)dlls/kernel32/kernel32.dll.so $(MIN_BUNDLE)/lib/wine/kernel32.dll.so
+	cp $(WINE_DIR)dlls/ntdll/ntdll.dll.so $(MIN_BUNDLE)/lib/wine/ntdll.dll.so
+	cp $(WINE_DIR)dlls/rpcrt4/rpcrt4.dll.so $(MIN_BUNDLE)/lib/wine/rpcrt4.dll.so
+	cp $(WINE_DIR)dlls/version/version.dll.so $(MIN_BUNDLE)/lib/wine/version.dll.so
+	cp $(WINE_DIR)dlls/user32/user32.dll.so $(MIN_BUNDLE)/lib/wine/user32.dll.so
+	cp $(WINE_DIR)dlls/gdi32/gdi32.dll.so $(MIN_BUNDLE)/lib/wine/gdi32.dll.so
+	cp $(WINE_DIR)dlls/comdlg32/comdlg32.dll.so $(MIN_BUNDLE)/lib/wine/comdlg32.dll.so
+	cp $(WINE_DIR)dlls/shell32/shell32.dll.so $(MIN_BUNDLE)/lib/wine/shell32.dll.so
+	cp $(WINE_DIR)dlls/ole32/ole32.dll.so $(MIN_BUNDLE)/lib/wine/ole32.dll.so
+	cp $(WINE_DIR)dlls/lz32/lz32.dll.so $(MIN_BUNDLE)/lib/wine/lz32.dll.so
+	cp $(WINE_DIR)dlls/shlwapi/shlwapi.dll.so $(MIN_BUNDLE)/lib/wine/shlwapi.dll.so
+	cp $(WINE_DIR)dlls/winspool.drv/winspool.drv.so $(MIN_BUNDLE)/lib/wine/winspool.drv.so
+	cp $(WINE_DIR)dlls/comctl32/comctl32.dll.so $(MIN_BUNDLE)/lib/wine/comctl32.dll.so
+	cp $(WINE_DIR)dlls/uxtheme/uxtheme.dll.so $(MIN_BUNDLE)/lib/wine/uxtheme.dll.so
+	cp $(WINE_DIR)dlls/winmm/winmm.dll.so $(MIN_BUNDLE)/lib/wine/winmm.dll.so
+	cp $(WINE_DIR)dlls/oleaut32/oleaut32.dll.so $(MIN_BUNDLE)/lib/wine/oleaut32.dll.so
+	cp $(WINE_DIR)dlls/winex11.drv/winex11.drv.so $(MIN_BUNDLE)/lib/wine/winex11.drv.so
+	cp $(WINE_DIR)dlls/imm32/imm32.dll.so $(MIN_BUNDLE)/lib/wine/imm32.dll.so
+	cp $(WINE_DIR)dlls/winequartz.drv/winequartz.drv.so $(MIN_BUNDLE)/lib/wine/winequartz.drv.so
+	cp $(WINE_DIR)dlls/ntoskrnl.exe/ntoskrnl.exe.so $(MIN_BUNDLE)/lib/wine/ntoskrnl.exe.so
+	cp $(WINE_DIR)programs/services/services.exe.so $(MIN_BUNDLE)/lib/wine/services.exe.so
+	cp $(WINE_DIR)programs/wineboot/wineboot.exe.so $(MIN_BUNDLE)/lib/wine/wineboot.exe.so
+#	cp $(WINE_DIR)programs/winedevice/winedevice.exe.so $(MIN_BUNDLE)/lib/wine/winedevice.exe.so
+	{ \
+	  wine_version=`PATH='./build/java/WineMinimum.bundle/Contents/SharedSupport/bin'":$PATH";wine --version`; \
+	  cadencii_version=`java -jar ./build/java/Cadencii.jar --version`; \
+	  echo '<?xml version="1.0" encoding="UTF-8"?>'; \
+	  echo '<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">'; \
+	  echo '<plist version="1.0">'; \
+	  echo '<dict>'; \
+	  echo '    <key>CFBundleInfoDictionaryVersion</key>'; \
+	  echo '    <string>6.0</string>'; \
+	  echo '    <key>CFBundleGetInfoString</key>'; \
+	  echo '    <string>Cadencii '"$$cadencii_version"', '"$$wine_version"'</string>'; \
+	  echo '    <key>CFBundleName</key>'; \
+	  echo '    <string>Cadencii</string>'; \
+	  echo '    <key>CFBundleVersion</key>'; \
+	  echo '    <string>Cadencii '"$$cadencii_version"', '"$$wine_version"'</string>'; \
+	  echo '    <key>CFBundlePackageType</key>'; \
+	  echo '    <string>thng</string>'; \
+	  echo '    <key>CFBundleIdentifier</key>'; \
+	  echo '    <string>jp.sourceforge.cadencii.WineMinimum</string>'; \
+	  echo '</dict>'; \
+	  echo '</plist>'; \
+	} > ./build/java/WineMinimum.bundle/Contents/Info.plist
+	/Developer/Tools/SetFile -a B ./build/java/WineMinimum.bundle
 
 ########################################################################
 # pre process

@@ -116,6 +116,38 @@ namespace org
             }
 
 #if JAVA
+            public static boolean isDirectoryExists( String path )
+#elif __cplusplus
+            // requires <dirent.h>
+            static bool isDirectoryExists( string path )
+#else
+            public static bool isDirectoryExists( string path )
+#endif
+            {
+#if JAVA
+                File f = new File( path );
+                if( f.exists() ){
+                    if( f.isFile() ){
+                        return false;
+                    }else{
+                        return true;
+                    }
+                }else{
+                    return false;
+                }
+#elif __cplusplus
+                DIR *dir = opendir( path.c_str() );
+                bool ret = (dir != NULL);
+                if( ret ){
+                    closedir( dir );
+                }
+                return ret;
+#else
+                return Directory.Exists( path );
+#endif
+            }
+
+#if JAVA
             public static boolean isFileExists( String path )
 #elif __cplusplus
             static bool isFileExists( string path )

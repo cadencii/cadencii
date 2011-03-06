@@ -20,7 +20,9 @@ import java.util.*;
 import org.kbinani.*;
 import org.kbinani.media.*;
 import org.kbinani.vsq.*;
+
 #else
+
 using System;
 using System.Diagnostics;
 using System.Threading;
@@ -157,7 +159,7 @@ namespace org.kbinani.cadencii
             mTempDir = fsys.combine( AppManager.getCadenciiTempDir(), AppManager.getID() );
             mResamplerWithWine = mConfig.isResamplerWithWineAt( resampler_index );
             mWavtoolWithWine = mConfig.WavtoolWithWine;
-            mWine = mConfig.getBuiltinWineExecutable();
+            mWine = mConfig.getBuiltinWineMinimumExecutable();
 
             mVsq = (VsqFileEx)vsq.clone();
             mVsq.updateTotalClocks();
