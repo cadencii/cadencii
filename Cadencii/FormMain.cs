@@ -17061,6 +17061,9 @@ namespace org.kbinani.cadencii
 
             AppManager.setVsqFile( vsq );
             clearExistingData();
+            for ( int i = 0; i < AppManager.mLastRenderedStatus.Length; i++ ){
+                AppManager.mLastRenderedStatus[i] = null;
+            }
             setEdited( false );
             AppManager.mMixerWindow.updateStatus();
             clearTempWave();
