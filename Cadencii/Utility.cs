@@ -665,7 +665,7 @@ namespace org.kbinani.cadencii
             String name = null;
             String image = "";
             int mode = 0;
-            if ( PortUtil.isFileExists( character ) ) {
+            if ( fsys.isFileExists( character ) ) {
                 // 読み込みを試みるエンコーディングのリスト
                 foreach ( String encoding in AppManager.TEXT_ENCODINGS_IN_UTAU ) {
                     BufferedReader sr2 = null;
@@ -1397,11 +1397,11 @@ namespace org.kbinani.cadencii
 #else
             String dir = fsys.combine( Environment.GetFolderPath( Environment.SpecialFolder.LocalApplicationData ), "Boare" );
 #endif
-            if ( !PortUtil.isDirectoryExists( dir ) ) {
+            if ( !fsys.isDirectoryExists( dir ) ) {
                 PortUtil.createDirectory( dir );
             }
             String dir2 = fsys.combine( dir, CONFIG_DIR_NAME );
-            if ( !PortUtil.isDirectoryExists( dir2 ) ) {
+            if ( !fsys.isDirectoryExists( dir2 ) ) {
                 PortUtil.createDirectory( dir2 );
             }
             return dir2;
@@ -1414,7 +1414,7 @@ namespace org.kbinani.cadencii
         public static String getConfigPath() {
             String dir2 = getApplicationDataPath();
             String dir3 = fsys.combine( dir2, BAssemblyInfo.fileVersionMeasure + "." + BAssemblyInfo.fileVersionMinor );
-            if ( !PortUtil.isDirectoryExists( dir3 ) ) {
+            if ( !fsys.isDirectoryExists( dir3 ) ) {
                 PortUtil.createDirectory( dir3 );
             }
             return dir3;
@@ -1450,7 +1450,7 @@ namespace org.kbinani.cadencii
             String md5 = PortUtil.getMD5FromString( code ).Replace( "_", "" );
             String cached_asm_file = fsys.combine( getCachedAssemblyPath(), md5 + ".dll" );
             boolean compiled = false;
-            if ( PortUtil.isFileExists( cached_asm_file ) ) {
+            if ( fsys.isFileExists( cached_asm_file ) ) {
                 ret = Assembly.LoadFile( cached_asm_file );
                 if ( ret != null ) {
                     if ( !usedAssemblyChache.contains( cached_asm_file ) ) {
@@ -1500,7 +1500,7 @@ namespace org.kbinani.cadencii
                 if ( !usedAssemblyChache.contains( cached_asm_file ) ) {
                     usedAssemblyChache.add( cached_asm_file );
                 }
-                if ( PortUtil.isFileExists( cached_asm_file ) ) {
+                if ( fsys.isFileExists( cached_asm_file ) ) {
                     try {
                         PortUtil.deleteFile( cached_asm_file );
                     } catch ( Exception ex ) {
@@ -1622,7 +1622,7 @@ namespace org.kbinani.cadencii
 #endif
                         ret.getDisplayNameDelegate = getDisplayNameDelegate;
 
-                        if ( !PortUtil.isFileExists( config_file ) ) {
+                        if ( !fsys.isFileExists( config_file ) ) {
                             continue;
                         }
 
@@ -1696,7 +1696,7 @@ namespace org.kbinani.cadencii
         /// <returns></returns>
         public static String getScriptPath() {
             String dir = fsys.combine( PortUtil.getApplicationStartupPath(), "script" );
-            if ( !PortUtil.isDirectoryExists( dir ) ) {
+            if ( !fsys.isDirectoryExists( dir ) ) {
                 PortUtil.createDirectory( dir );
             }
             return dir;
@@ -1708,7 +1708,7 @@ namespace org.kbinani.cadencii
         /// <returns></returns>
         public static String getCachedAssemblyPath() {
             String dir = fsys.combine( Utility.getApplicationDataPath(), "cachedAssembly" );
-            if ( !PortUtil.isDirectoryExists( dir ) ) {
+            if ( !fsys.isDirectoryExists( dir ) ) {
                 PortUtil.createDirectory( dir );
             }
             return dir;
@@ -1720,7 +1720,7 @@ namespace org.kbinani.cadencii
         /// <returns></returns>
         public static String getToolPath() {
             String dir = fsys.combine( PortUtil.getApplicationStartupPath(), "tool" );
-            if ( !PortUtil.isDirectoryExists( dir ) ) {
+            if ( !fsys.isDirectoryExists( dir ) ) {
                 PortUtil.createDirectory( dir );
             }
             return dir;
@@ -1733,7 +1733,7 @@ namespace org.kbinani.cadencii
         public static String getKeySoundPath() {
             String data_path = getApplicationDataPath();
             String ret = fsys.combine( data_path, "cache" );
-            if ( !PortUtil.isDirectoryExists( ret ) ) {
+            if ( !fsys.isDirectoryExists( ret ) ) {
                 PortUtil.createDirectory( ret );
             }
             return ret;

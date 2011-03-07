@@ -51,7 +51,7 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="oto_ini">原音設定のパス</param>
         private void readOtoIni( String oto_ini ) {
-            if ( !PortUtil.isFileExists( oto_ini ) ) {
+            if ( !fsys.isFileExists( oto_ini ) ) {
                 return;
             }
 
@@ -78,7 +78,7 @@ namespace org.kbinani.cadencii {
 
                         // ファイルがちゃんとあるかどうか？
                         String fullpath = fsys.combine( dir, file_name );
-                        if ( !PortUtil.isFileExists( fullpath ) ) {
+                        if ( !fsys.isFileExists( fullpath ) ) {
                             continue;
                         }
 

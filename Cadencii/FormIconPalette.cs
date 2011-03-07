@@ -183,7 +183,7 @@ namespace org.kbinani.cadencii
                 btn.setHandle( handle );
                 String buttonIconPath = handle.getButtonImageFullPath();
 
-                boolean setimg = PortUtil.isFileExists( buttonIconPath );
+                boolean setimg = fsys.isFileExists( buttonIconPath );
                 if ( setimg ) {
                     Image img = null;
 #if JAVA

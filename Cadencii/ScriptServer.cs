@@ -34,9 +34,9 @@ namespace org.kbinani.cadencii {
             String dir = Utility.getScriptPath();
             String file = fsys.combine( dir, id );
 #if DEBUG
-            sout.println( "ScriptServer#reload; file=" + file + "; isFileExists(file)=" + PortUtil.isFileExists( file ) );
+            sout.println( "ScriptServer#reload; file=" + file + "; isFileExists(file)=" + fsys.isFileExists( file ) );
 #endif
-            if ( !PortUtil.isFileExists( file ) ) {
+            if ( !fsys.isFileExists( file ) ) {
                 return;
             }
 
@@ -175,7 +175,7 @@ namespace org.kbinani.cadencii {
         /// <returns></returns>
         public static String configFileNameFromScriptFileName( String script_file ) {
             String dir = fsys.combine( Utility.getApplicationDataPath(), "script" );
-            if ( !PortUtil.isDirectoryExists( dir ) ) {
+            if ( !fsys.isDirectoryExists( dir ) ) {
                 PortUtil.createDirectory( dir );
             }
             return fsys.combine( dir, PortUtil.getFileNameWithoutExtension( script_file ) + ".config" );

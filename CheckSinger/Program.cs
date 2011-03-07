@@ -234,7 +234,7 @@ namespace CheckSinger {
 
             // voice.mapがあるかどうか
             string path_voicemap = Path.Combine( voicedbdir, "voice.map" );
-            if ( PortUtil.isFileExists( path_voicemap ) ) {
+            if ( fsys.isFileExists( path_voicemap ) ) {
                 println( sw, "reading 'voice.map'..." );
                 using ( FileStream fs = new FileStream( path_voicemap, FileMode.Open, FileAccess.Read ) ) {
                     byte[] dat = new byte[8];

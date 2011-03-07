@@ -88,7 +88,7 @@ namespace org.kbinani.cadencii {
                             String dir = Path.Combine( Utility.getApplicationDataPath(), "tool" );
                             String cfg = Path.GetFileNameWithoutExtension( file.FullName ) + ".config";
                             String config = Path.Combine( dir, cfg );
-                            if ( PortUtil.isFileExists( config ) ) {
+                            if ( fsys.isFileExists( config ) ) {
                                 XmlStaticMemberSerializer xsms = new XmlStaticMemberSerializer( instance.GetType() );
                                 FileStream fs = null;
                                 boolean errorOnDeserialize = false;

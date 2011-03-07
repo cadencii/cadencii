@@ -152,17 +152,17 @@ namespace org.kbinani.generatekeysound {
             String dir = arg.directory;
             bool replace = arg.replace;
             // 音源を準備
-            if ( !PortUtil.isDirectoryExists( dir ) ) {
+            if ( !fsys.isDirectoryExists( dir ) ) {
                 System.IO.Directory.CreateDirectory( dir );
             }
 
             for ( int i = 0; i < 127; i++ ) {
                 string path = fsys.combine( dir, i + ".wav" );
                 Console.Write( "writing \"" + path + "\" ..." );
-                if ( replace || (!replace && !PortUtil.isFileExists( path )) ) {
+                if ( replace || (!replace && !fsys.isFileExists( path )) ) {
                     try {
                         FormGenerateKeySound.GenerateSinglePhone( i, singer, path, amp );
-                        if ( PortUtil.isFileExists( path ) ) {
+                        if ( fsys.isFileExists( path ) ) {
                             try {
                                 Wave wv = new Wave( path );
                                 wv.trimSilence();

@@ -1367,7 +1367,7 @@ namespace org.kbinani.cadencii
                     // wavtoolの欄が空欄だった場合のみ，
                     // wavtoolの候補を登録する(wavtoolがあれば)
                     String wavtool = fsys.combine( PortUtil.getDirectoryName( path ), "wavtool.exe" );
-                    if ( PortUtil.isFileExists( wavtool ) ) {
+                    if ( fsys.isFileExists( wavtool ) ) {
                         txtWavtool.setText( wavtool );
                         check = false;
                         if( is_mac ){
@@ -1422,7 +1422,7 @@ namespace org.kbinani.cadencii
 
         public void btnWavtool_Click( Object sender, BEventArgs e )
         {
-            if ( !txtWavtool.getText().Equals( "" ) && PortUtil.isDirectoryExists( PortUtil.getDirectoryName( txtWavtool.getText() ) ) ) {
+            if ( !txtWavtool.getText().Equals( "" ) && fsys.isDirectoryExists( PortUtil.getDirectoryName( txtWavtool.getText() ) ) ) {
                 openUtauCore.setSelectedFile( txtWavtool.getText() );
             }
             int dr = AppManager.showModalDialog( openUtauCore, true, this );
@@ -1437,7 +1437,7 @@ namespace org.kbinani.cadencii
                 chkWavtoolWithWine.setSelected( check );
                 if ( listResampler.getItemCountRow() == 0 ) {
                     String resampler = fsys.combine( PortUtil.getDirectoryName( path ), "resampler.exe" );
-                    if ( PortUtil.isFileExists( resampler ) ) {
+                    if ( fsys.isFileExists( resampler ) ) {
                         check = false;
                         if( is_mac ){
                             check = isWindowsExecutable( resampler );
@@ -1451,7 +1451,7 @@ namespace org.kbinani.cadencii
         public void btnAquesTone_Click( Object sender, BEventArgs e )
         {
             BFileChooser dialog = new BFileChooser();
-            if ( !txtAquesTone.getText().Equals( "" ) && PortUtil.isDirectoryExists( PortUtil.getDirectoryName( txtAquesTone.getText() ) ) ) {
+            if ( !txtAquesTone.getText().Equals( "" ) && fsys.isDirectoryExists( PortUtil.getDirectoryName( txtAquesTone.getText() ) ) ) {
                 dialog.setSelectedFile( txtAquesTone.getText() );
             }
             int dr = AppManager.showModalDialog( dialog, true, this );
@@ -1477,10 +1477,10 @@ namespace org.kbinani.cadencii
 #endif
 #if DEBUG
                 sout.println( "Preference#btnAdd_Click; dir=" + dir );
-                sout.println( "Preference#btnAdd_Clicl; PortUtil.isDirectoryExists(dir)=" + PortUtil.isDirectoryExists( dir ) );
-                sout.println( "Preference#btnAdd_Clicl; PortUtil.isFileExists(dir)=" + PortUtil.isFileExists( dir ) );
+                sout.println( "Preference#btnAdd_Clicl; PortUtil.isDirectoryExists(dir)=" + fsys.isDirectoryExists( dir ) );
+                sout.println( "Preference#btnAdd_Clicl; PortUtil.isFileExists(dir)=" + fsys.isFileExists( dir ) );
 #endif
-                if ( !PortUtil.isDirectoryExists( dir ) && PortUtil.isFileExists( dir ) ) {
+                if ( !fsys.isDirectoryExists( dir ) && fsys.isFileExists( dir ) ) {
                     // dirの指すパスがフォルダではなくファイルだった場合、
                     // そのファイルの存在するパスに修正
                     dir = PortUtil.getDirectoryName( dir );

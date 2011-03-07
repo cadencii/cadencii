@@ -291,7 +291,7 @@ namespace org.kbinani.cadencii
                                 for ( int i = 1; i < numTrack; i++ ) {
                                     if ( i == track ) continue;
                                     String file = fsys.combine( tmppath, i + ".wav" );
-                                    if ( !PortUtil.isFileExists( file ) ) {
+                                    if ( !fsys.isFileExists( file ) ) {
                                         // mixするべきファイルが揃っていないのでbailout
                                         return;
                                     }

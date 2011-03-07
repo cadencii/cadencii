@@ -1196,7 +1196,7 @@ namespace org.kbinani.cadencii
 
                 // レンダリング済みのwaveがあれば、zoneに格納された編集範囲に隣接する前後が無音でない場合、
                 // 編集範囲を無音部分まで延長する。
-                if ( PortUtil.isFileExists( wavePath ) ) {
+                if ( fsys.isFileExists( wavePath ) ) {
                     WaveReader wr = null;
                     try {
                         wr = new WaveReader( wavePath );
@@ -1883,7 +1883,7 @@ namespace org.kbinani.cadencii
         {
             String xml = fsys.combine( directory, track + ".xml" );
             RenderedStatus status = null;
-            if ( PortUtil.isFileExists( xml ) ) {
+            if ( fsys.isFileExists( xml ) ) {
                 FileInputStream fs = null;
                 try {
                     fs = new FileInputStream( xml );
@@ -2317,11 +2317,11 @@ namespace org.kbinani.cadencii
 #if DEBUG
             sout.println( "AppManager::handleAutoBackupTimerTick" );
 #endif
-            if ( !mFile.Equals( "" ) && PortUtil.isFileExists( mFile ) ) {
+            if ( !mFile.Equals( "" ) && fsys.isFileExists( mFile ) ) {
                 String path = PortUtil.getDirectoryName( mFile );
                 String backup = fsys.combine( path, "~$" + PortUtil.getFileName( mFile ) );
                 String file2 = fsys.combine( path, PortUtil.getFileNameWithoutExtension( backup ) + ".vsq" );
-                if ( PortUtil.isFileExists( backup ) ) {
+                if ( fsys.isFileExists( backup ) ) {
                     try {
                         PortUtil.deleteFile( backup );
                     } catch ( Exception ex ) {
@@ -2329,7 +2329,7 @@ namespace org.kbinani.cadencii
                         Logger.write( typeof( AppManager ) + ".handleAutoBackupTimerTick; ex=" + ex + "\n" );
                     }
                 }
-                if ( PortUtil.isFileExists( file2 ) ) {
+                if ( fsys.isFileExists( file2 ) ) {
                     try {
                         PortUtil.deleteFile( file2 );
                     } catch ( Exception ex ) {
@@ -2403,7 +2403,7 @@ namespace org.kbinani.cadencii
         public static String getCadenciiTempDir()
         {
             String temp = fsys.combine( PortUtil.getTempPath(), TEMPDIR_NAME );
-            if ( !PortUtil.isDirectoryExists( temp ) ) {
+            if ( !fsys.isDirectoryExists( temp ) ) {
                 PortUtil.createDirectory( temp );
             }
             return temp;
@@ -3352,7 +3352,7 @@ namespace org.kbinani.cadencii
                     String name = PortUtil.getFileNameWithoutExtension( file );
                     String cacheDir = fsys.combine( dir, name + ".cadencii" );
 
-                    if ( !PortUtil.isDirectoryExists( cacheDir ) ) {
+                    if ( !fsys.isDirectoryExists( cacheDir ) ) {
                         try {
                             PortUtil.createDirectory( cacheDir );
                         } catch ( Exception ex ) {
@@ -3371,8 +3371,8 @@ namespace org.kbinani.cadencii
                         for ( int i = 1; i < mVsq.Track.size(); i++ ) {
                             String wavFrom = fsys.combine( currentCacheDir, i + ".wav" );
                             String wavTo = fsys.combine( cacheDir, i + ".wav" );
-                            if ( PortUtil.isFileExists( wavFrom ) ) {
-                                if ( PortUtil.isFileExists( wavTo ) ) {
+                            if ( fsys.isFileExists( wavFrom ) ) {
+                                if ( fsys.isFileExists( wavTo ) ) {
                                     try {
                                         PortUtil.deleteFile( wavTo );
                                     } catch ( Exception ex ) {
@@ -3395,8 +3395,8 @@ namespace org.kbinani.cadencii
 
                             String xmlFrom = fsys.combine( currentCacheDir, i + ".xml" );
                             String xmlTo = fsys.combine( cacheDir, i + ".xml" );
-                            if ( PortUtil.isFileExists( xmlFrom ) ) {
-                                if ( PortUtil.isFileExists( xmlTo ) ) {
+                            if ( fsys.isFileExists( xmlFrom ) ) {
+                                if ( fsys.isFileExists( xmlTo ) ) {
                                     try {
                                         PortUtil.deleteFile( xmlTo );
                                     } catch ( Exception ex ) {
@@ -3834,7 +3834,7 @@ namespace org.kbinani.cadencii
 #if !TREECOM
             mID = PortUtil.getMD5FromString( (long)PortUtil.getCurrentTime() + "" ).Replace( "_", "" );
             mTempWaveDir = fsys.combine( getCadenciiTempDir(), mID );
-            if ( !PortUtil.isDirectoryExists( mTempWaveDir ) ) {
+            if ( !fsys.isDirectoryExists( mTempWaveDir ) ) {
                 PortUtil.createDirectory( mTempWaveDir );
             }
             String log = fsys.combine( getTempWaveDir(), "run.log" );
@@ -4219,7 +4219,7 @@ namespace org.kbinani.cadencii
             sout.println( "AppManager#loadConfig; config_file=" + config_file );
 #endif
             EditorConfig ret = null;
-            if ( PortUtil.isFileExists( config_file ) ) {
+            if ( fsys.isFileExists( config_file ) ) {
                 // このバージョン用の設定ファイルがあればそれを利用
                 try {
                     ret = deserializeEditorConfig( config_file );
@@ -4289,7 +4289,7 @@ namespace org.kbinani.cadencii
                         continue;
                     }
                     config_file = fsys.combine( fsys.combine( appdata, vs.getRawString() ), CONFIG_FILE_NAME );
-                    if ( PortUtil.isFileExists( config_file ) ) {
+                    if ( fsys.isFileExists( config_file ) ) {
                         try {
                             ret = deserializeEditorConfig( config_file );
                         } catch ( Exception ex ) {
@@ -4306,7 +4306,7 @@ namespace org.kbinani.cadencii
                 // 設定ファイルを読みに行く
                 if ( ret == null ) {
                     config_file = fsys.combine( appdata, CONFIG_FILE_NAME );
-                    if ( PortUtil.isFileExists( config_file ) ) {
+                    if ( fsys.isFileExists( config_file ) ) {
                         try {
                             ret = deserializeEditorConfig( config_file );
                         } catch ( Exception ex ) {

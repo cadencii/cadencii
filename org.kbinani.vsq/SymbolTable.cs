@@ -126,7 +126,7 @@ namespace org
                     String editor_path = VocaloSysUtil.getEditorPath( SynthesizerType.VOCALOID2 );
                     if ( editor_path != "" ) {
                         String path = fsys.combine( PortUtil.getDirectoryName( editor_path ), "UDIC" );
-                        if ( !PortUtil.isDirectoryExists( path ) ) {
+                        if ( !fsys.isDirectoryExists( path ) ) {
                             return;
                         }
                         String[] files = PortUtil.listFiles( path, "*.udc" );
@@ -146,7 +146,7 @@ namespace org
                 public static void loadAllDictionaries( String directory )
                 {
                     // 起動ディレクトリ
-                    if ( PortUtil.isDirectoryExists( directory ) ) {
+                    if ( fsys.isDirectoryExists( directory ) ) {
                         String[] files2 = PortUtil.listFiles( directory, "*.eudc" );
                         for ( int i = 0; i < files2.Length; i++ ) {
                             files2[i] = PortUtil.getFileName( files2[i] );
@@ -293,7 +293,7 @@ namespace org
                 {
                     mDict = new TreeMap<String, SymbolTableEntry>();
                     mEnabled = enabled;
-                    if ( !PortUtil.isFileExists( path ) ) {
+                    if ( !fsys.isFileExists( path ) ) {
                         return;
                     }
                     mName = PortUtil.getFileName( path );

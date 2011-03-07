@@ -424,7 +424,7 @@ namespace org.kbinani.cadencii
                 //WaveReader wr = null;
                 WaveRateConverter wr = null;
                 try {
-                    if ( PortUtil.isFileExists( tmp_file + ".wav" ) ) {
+                    if ( fsys.isFileExists( tmp_file + ".wav" ) ) {
                         wr = new WaveRateConverter( new WaveReader( tmp_file + ".wav" ), mSampleRate );
                     }
                 } catch ( Exception ex ) {
@@ -908,7 +908,7 @@ namespace org.kbinani.cadencii
                 return;
             }
             String oto_ini = fsys.combine( singer_path, "oto.ini" );
-            if ( !PortUtil.isFileExists( oto_ini ) ) {
+            if ( !fsys.isFileExists( oto_ini ) ) {
                 // STRAIGHT合成用のoto.iniが存在しないので離脱
                 return;
             }

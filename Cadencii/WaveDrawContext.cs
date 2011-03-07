@@ -95,7 +95,7 @@ namespace org.kbinani.cadencii {
         /// <param name="sec_from"></param>
         /// <param name="sec_to"></param>
         public void reloadPartial( String file, double sec_from, double sec_to ) {
-            if ( !PortUtil.isFileExists( file ) ) {
+            if ( !fsys.isFileExists( file ) ) {
                 return;
             }
 
@@ -211,7 +211,7 @@ namespace org.kbinani.cadencii {
         /// </summary>
         /// <param name="file">読み込むWAVEファイルのパス</param>
         public void load( String file ) {
-            if ( !PortUtil.isFileExists( file ) ) {
+            if ( !fsys.isFileExists( file ) ) {
 #if JAVA
                 mWave = new byte[0];
 #else

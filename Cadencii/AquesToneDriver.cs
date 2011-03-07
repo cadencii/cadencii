@@ -145,7 +145,7 @@ namespace org.kbinani.cadencii
                 mInstance.loaded = false;
             }
             mInstance.path = aques_tone;
-            if ( !aques_tone.Equals( "" ) && PortUtil.isFileExists( aques_tone ) && !AppManager.editorConfig.DoNotUseAquesTone ) {
+            if ( !aques_tone.Equals( "" ) && fsys.isFileExists( aques_tone ) && !AppManager.editorConfig.DoNotUseAquesTone ) {
                 boolean loaded = false;
                 try {
                     loaded = mInstance.open( sample_rate, sample_rate );

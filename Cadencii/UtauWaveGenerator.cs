@@ -254,7 +254,7 @@ namespace org.kbinani.cadencii
                 double sample_length = mVsq.getSecFromClock( mVsq.TotalClocks ) * mSampleRate;
                 mAbortRequired = false;
                 mRunning = true;
-                if ( !PortUtil.isDirectoryExists( mTempDir ) ) {
+                if ( !fsys.isDirectoryExists( mTempDir ) ) {
                     PortUtil.createDirectory( mTempDir );
                 }
 
@@ -265,15 +265,15 @@ namespace org.kbinani.cadencii
                 VsqTrack target = mVsq.Track.get( mTrack );
 
                 String file = fsys.combine( mTempDir, FILEBASE );
-                if ( PortUtil.isFileExists( file ) ) {
+                if ( fsys.isFileExists( file ) ) {
                     PortUtil.deleteFile( file );
                 }
                 String file_whd = fsys.combine( mTempDir, FILEBASE + ".whd" );
-                if ( PortUtil.isFileExists( file_whd ) ) {
+                if ( fsys.isFileExists( file_whd ) ) {
                     PortUtil.deleteFile( file_whd );
                 }
                 String file_dat = fsys.combine( mTempDir, FILEBASE + ".dat" );
-                if ( PortUtil.isFileExists( file_dat ) ) {
+                if ( fsys.isFileExists( file_dat ) ) {
                     PortUtil.deleteFile( file_dat );
                 }
 #if DEBUG

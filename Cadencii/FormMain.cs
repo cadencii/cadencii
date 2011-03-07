@@ -902,7 +902,7 @@ namespace org.kbinani.cadencii
 
             // ファイルを開く
             if ( !str.compare( file, "" ) ) {
-                if ( PortUtil.isFileExists( file ) ) {
+                if ( fsys.isFileExists( file ) ) {
                     String low_file = file.ToLower();
                     if ( low_file.EndsWith( ".xvsq" ) ) {
                         openVsqCor( low_file );
@@ -1308,7 +1308,7 @@ namespace org.kbinani.cadencii
                     // 歌手
                     if ( dialog.isSingerChecked() ) {
                         String path = dialog.getSingerPath();
-                        if ( PortUtil.isDirectoryExists( path ) ) {
+                        if ( fsys.isDirectoryExists( path ) ) {
                             SingerConfig sc = new SingerConfig();
                             Utility.readUtauSingerConfig( path, sc );
                             vec.add( AppManager.editorConfig.UtauSingers, sc );
@@ -4487,7 +4487,7 @@ namespace org.kbinani.cadencii
         public void clearTempWave()
         {
             String tmppath = fsys.combine( AppManager.getCadenciiTempDir(), AppManager.getID() );
-            if ( !PortUtil.isDirectoryExists( tmppath ) ) {
+            if ( !fsys.isDirectoryExists( tmppath ) ) {
                 return;
             }
 
@@ -4497,7 +4497,7 @@ namespace org.kbinani.cadencii
             // このFormMainのインスタンスが使用したデータを消去する
             for ( int i = 1; i <= 16; i++ ) {
                 String file = fsys.combine( tmppath, i + ".wav" );
-                if ( PortUtil.isFileExists( file ) ) {
+                if ( fsys.isFileExists( file ) ) {
                     for ( int error = 0; error < 100; error++ ) {
                         try {
                             PortUtil.deleteFile( file );
@@ -4526,7 +4526,7 @@ namespace org.kbinani.cadencii
                 }
             }
             String whd = fsys.combine( tmppath, UtauWaveGenerator.FILEBASE + ".whd" );
-            if ( PortUtil.isFileExists( whd ) ) {
+            if ( fsys.isFileExists( whd ) ) {
                 try {
                     PortUtil.deleteFile( whd );
                 } catch ( Exception ex ) {
@@ -4534,7 +4534,7 @@ namespace org.kbinani.cadencii
                 }
             }
             String dat = fsys.combine( tmppath, UtauWaveGenerator.FILEBASE + ".dat" );
-            if ( PortUtil.isFileExists( dat ) ) {
+            if ( fsys.isFileExists( dat ) ) {
                 try {
                     PortUtil.deleteFile( dat );
                 } catch ( Exception ex ) {
@@ -6602,7 +6602,7 @@ namespace org.kbinani.cadencii
                                         (oa.fileName != null && str.compare( oa.fileName, "" )) ) {
                                         is_valid_for_utau = false;
                                     } else {
-                                        is_valid_for_utau = PortUtil.isFileExists( fsys.combine( sc.VOICEIDSTR, oa.fileName ) );
+                                        is_valid_for_utau = fsys.isFileExists( fsys.combine( sc.VOICEIDSTR, oa.fileName ) );
                                     }
                                 }
                             }
@@ -6790,7 +6790,7 @@ namespace org.kbinani.cadencii
                     }
                     if ( item != "" ) {
                         String short_name = PortUtil.getFileName( item );
-                        boolean available = PortUtil.isFileExists( item );
+                        boolean available = fsys.isFileExists( item );
                         RecentFileMenuItem itm = new RecentFileMenuItem( item );
                         itm.setText( short_name );
                         String tooltip = "";
@@ -7018,7 +7018,7 @@ namespace org.kbinani.cadencii
                 String estimatedCacheDir = fsys.combine( dir, name + ".cadencii" ); // ファイル名から推測されるキャッシュディレクトリ
                 if ( cacheDir == null ) cacheDir = "";
                 if ( !str.compare( cacheDir, "" ) && 
-                     PortUtil.isDirectoryExists( cacheDir ) &&
+                     fsys.isDirectoryExists( cacheDir ) &&
                      !str.compare( estimatedCacheDir, "" ) &&
                      !str.compare( cacheDir, estimatedCacheDir ) ) {
                     // ファイル名から推測されるキャッシュディレクトリ名と
@@ -7026,7 +7026,7 @@ namespace org.kbinani.cadencii
                     // cacheDirの必要な部分をestimatedCacheDirに移す
 
                     // estimatedCacheDirが存在しない場合、新しく作る
-                    if ( !PortUtil.isDirectoryExists( estimatedCacheDir ) ) {
+                    if ( !fsys.isDirectoryExists( estimatedCacheDir ) ) {
                         try {
                             PortUtil.createDirectory( estimatedCacheDir );
                         } catch ( Exception ex ) {
@@ -7047,7 +7047,7 @@ namespace org.kbinani.cadencii
 
                         String wavTo = fsys.combine( estimatedCacheDir, i + ".wav" );
                         String xmlTo = fsys.combine( estimatedCacheDir, i + ".xml" );
-                        if ( PortUtil.isFileExists( wavFrom ) ) {
+                        if ( fsys.isFileExists( wavFrom ) ) {
                             try {
                                 PortUtil.moveFile( wavFrom, wavTo );
                             } catch ( Exception ex ) {
@@ -7055,7 +7055,7 @@ namespace org.kbinani.cadencii
                                 serr.println( "FormMain#openVsqCor; ex=" + ex );
                             }
                         }
-                        if ( PortUtil.isFileExists( xmlFrom ) ) {
+                        if ( fsys.isFileExists( xmlFrom ) ) {
                             try {
                                 PortUtil.moveFile( xmlFrom, xmlTo );
                             } catch ( Exception ex ) {
@@ -7068,7 +7068,7 @@ namespace org.kbinani.cadencii
                 cacheDir = estimatedCacheDir;
 
                 // キャッシュが無かったら作成
-                if ( !PortUtil.isDirectoryExists( cacheDir ) ) {
+                if ( !fsys.isDirectoryExists( cacheDir ) ) {
                     try {
                         PortUtil.createDirectory( cacheDir );
                     } catch ( Exception ex ) {
@@ -7094,7 +7094,7 @@ namespace org.kbinani.cadencii
 #if DEBUG
                     sout.println( "FormMain#openVsqCor; wav=" + wav + "; isExists=" + fsys.isFileExists( wav ) );
 #endif
-                    if ( !PortUtil.isFileExists( wav ) ) {
+                    if ( !fsys.isFileExists( wav ) ) {
                         continue;
                     }
                     waveView.load( i - 1, wav );
@@ -10514,7 +10514,7 @@ namespace org.kbinani.cadencii
 #endif
             clearTempWave();
             String tempdir = fsys.combine( AppManager.getCadenciiTempDir(), AppManager.getID() );
-            if ( !PortUtil.isDirectoryExists( tempdir ) ) {
+            if ( !fsys.isDirectoryExists( tempdir ) ) {
                 PortUtil.createDirectory( tempdir );
             }
             String log = fsys.combine( tempdir, "run.log" );
@@ -10522,7 +10522,7 @@ namespace org.kbinani.cadencii
             org.kbinani.debug.close();
 #endif
             try {
-                if ( PortUtil.isFileExists( log ) ) {
+                if ( fsys.isFileExists( log ) ) {
                     PortUtil.deleteFile( log );
                 }
                 PortUtil.deleteDirectory( tempdir, true );
@@ -10760,11 +10760,11 @@ namespace org.kbinani.cadencii
             // 鍵盤用のキャッシュが古い位置に保存されている場合。
             String cache_new = Utility.getKeySoundPath();
             String cache_old = fsys.combine( PortUtil.getApplicationStartupPath(), "cache" );
-            if ( PortUtil.isDirectoryExists( cache_old ) ) {
+            if ( fsys.isDirectoryExists( cache_old ) ) {
                 boolean exists = false;
                 for ( int i = 0; i < 127; i++ ) {
                     String s = fsys.combine( cache_new, i + ".wav" );
-                    if ( PortUtil.isFileExists( s ) ) {
+                    if ( fsys.isFileExists( s ) ) {
                         exists = true;
                         break;
                     }
@@ -10775,7 +10775,7 @@ namespace org.kbinani.cadencii
                     for ( int i = 0; i < 127; i++ ) {
                         String wav_from = fsys.combine( cache_old, i + ".wav" );
                         String wav_to = fsys.combine( cache_new, i + ".wav" );
-                        if ( PortUtil.isFileExists( wav_from ) ) {
+                        if ( fsys.isFileExists( wav_from ) ) {
                             try {
                                 PortUtil.copyFile( wav_from, wav_to );
                                 PortUtil.deleteFile( wav_from );
@@ -10792,7 +10792,7 @@ namespace org.kbinani.cadencii
             boolean cache_is_incomplete = false;
             for ( int i = 0; i < 127; i++ ) {
                 String wav = fsys.combine( cache_new, i + ".wav" );
-                if ( !PortUtil.isFileExists( wav ) ) {
+                if ( !fsys.isFileExists( wav ) ) {
                     cache_is_incomplete = true;
                     break;
                 }
@@ -12990,16 +12990,16 @@ namespace org.kbinani.cadencii
                             String name = PortUtil.getFileNameWithoutExtension( file );
                             String projectCacheDir = fsys.combine( dir, name + ".cadencii" );
                             String commonCacheDir = fsys.combine( AppManager.getCadenciiTempDir(), AppManager.getID() );
-                            if ( PortUtil.isDirectoryExists( projectCacheDir ) ) {
+                            if ( fsys.isDirectoryExists( projectCacheDir ) ) {
                                 VsqFileEx vsq = AppManager.getVsqFile();
                                 for ( int i = 1; i < vsq.Track.size(); i++ ) {
                                     // wavを移動
                                     String wavFrom = fsys.combine( projectCacheDir, i + ".wav" );
                                     String wavTo = fsys.combine( commonCacheDir, i + ".wav" );
-                                    if ( !PortUtil.isFileExists( wavFrom ) ) {
+                                    if ( !fsys.isFileExists( wavFrom ) ) {
                                         continue;
                                     }
-                                    if ( PortUtil.isFileExists( wavTo ) ) {
+                                    if ( fsys.isFileExists( wavTo ) ) {
                                         try {
                                             PortUtil.deleteFile( wavTo );
                                         } catch ( Exception ex ) {
@@ -13018,10 +13018,10 @@ namespace org.kbinani.cadencii
                                     // xmlを移動
                                     String xmlFrom = fsys.combine( projectCacheDir, i + ".xml" );
                                     String xmlTo = fsys.combine( commonCacheDir, i + ".xml" );
-                                    if ( !PortUtil.isFileExists( xmlFrom ) ) {
+                                    if ( !fsys.isFileExists( xmlFrom ) ) {
                                         continue;
                                     }
-                                    if ( PortUtil.isFileExists( xmlTo ) ) {
+                                    if ( fsys.isFileExists( xmlTo ) ) {
                                         try {
                                             PortUtil.deleteFile( xmlTo );
                                         } catch ( Exception ex ) {
@@ -15152,7 +15152,7 @@ namespace org.kbinani.cadencii
         public void menuHelpLogOpen_Click( Object sender, EventArgs e )
         {
             String file = Logger.getPath();
-            if ( file == null || (file != null && (!PortUtil.isFileExists( file ))) ) {
+            if ( file == null || (file != null && (!fsys.isFileExists( file ))) ) {
                 // ログがまだできてないのでダイアログ出す
                 AppManager.showMessageBox(
                     _( "Log file has not generated yet." ),
@@ -17679,7 +17679,7 @@ namespace org.kbinani.cadencii
             if ( ipt.openDialog() == System.Windows.Forms.DialogResult.OK ) {
                 XmlSerializer xsms = new XmlSerializer( instance.GetType(), true );
                 String dir = fsys.combine( Utility.getApplicationDataPath(), "tool" );
-                if ( !PortUtil.isDirectoryExists( dir ) ) {
+                if ( !fsys.isDirectoryExists( dir ) ) {
                     PortUtil.createDirectory( dir );
                 }
                 String cfg = id + ".config";

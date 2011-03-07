@@ -103,7 +103,7 @@ namespace org.kbinani {
                     serr.println( "Logger#setPath; ex=" + ex );
                 }
                 log = null;
-                if( PortUtil.isFileExists( file ) ){
+                if( fsys.isFileExists( file ) ){
                     try{
                         PortUtil.deleteFile( file );
                     }catch( Exception ex ){

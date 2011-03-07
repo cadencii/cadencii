@@ -201,7 +201,7 @@ namespace org.kbinani.vsq
                 String expression_map1 = fsys.combine( act_path_expdb1, "expression.map" );
                 SingerConfigSys singer_config_sys =
                     new SingerConfigSys( act_path_voicedb1, act_installed_singers1 );
-                if ( PortUtil.isFileExists( expression_map1 ) ) {
+                if ( fsys.isFileExists( expression_map1 ) ) {
                     exp_config_sys1 = new ExpressionConfigSys( act_path_editor1, act_path_expdb1 );
                 }
                 s_singer_config_sys.put( SynthesizerType.VOCALOID1, singer_config_sys );
@@ -210,17 +210,17 @@ namespace org.kbinani.vsq
                 if ( !act_vsti1.Equals( "" ) ) {
                     String path_dll = PortUtil.getDirectoryName( act_vsti1 );
                     String dse1_1 = fsys.combine( path_dll, "DSE1_1.dll" );
-                    dseVersion101Available = PortUtil.isFileExists( dse1_1 );
+                    dseVersion101Available = fsys.isFileExists( dse1_1 );
                 } else {
                     dseVersion101Available = false;
                 }
 
                 // VOCALOID.iniから、DSEVersionを取得
                 if ( act_path_editor1 != null && !act_path_editor1.Equals( "" ) &&
-                     PortUtil.isFileExists( act_path_editor1 ) ) {
+                     fsys.isFileExists( act_path_editor1 ) ) {
                     String dir = PortUtil.getDirectoryName( act_path_editor1 );
                     String ini = fsys.combine( dir, "VOCALOID.ini" );
-                    if ( PortUtil.isFileExists( ini ) ) {
+                    if ( fsys.isFileExists( ini ) ) {
                         BufferedReader br = null;
                         try {
                             br = new BufferedReader( new InputStreamReader( new FileInputStream( ini ), "Shift_JIS" ) );
@@ -310,7 +310,7 @@ namespace org.kbinani.vsq
                 }
                 String expression_map2 = fsys.combine( act_path_expdb2, "expression.map" );
                 SingerConfigSys singer_config_sys = new SingerConfigSys( act_path_voicedb2, act_installed_singers2 );
-                if ( PortUtil.isFileExists( expression_map2 ) ) {
+                if ( fsys.isFileExists( expression_map2 ) ) {
                     exp_config_sys2 = new ExpressionConfigSys( act_path_editor2, act_path_expdb2 );
                 }
                 s_singer_config_sys.put( SynthesizerType.VOCALOID2, singer_config_sys );

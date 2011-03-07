@@ -1004,7 +1004,7 @@ namespace org.kbinani.vsq
 
             String base_path = PortUtil.getDirectoryName( path_editor );
             String aiconDB_def = fsys.combine( base_path, "AiconDB.def" );
-            if ( PortUtil.isFileExists( aiconDB_def ) ) {
+            if ( fsys.isFileExists( aiconDB_def ) ) {
                 String folder_name = "";
                 TreeMap<String, Vector<String>> list = new TreeMap<String, Vector<String>>();
                 BufferedReader sr = null;
@@ -1059,12 +1059,12 @@ namespace org.kbinani.vsq
 
                 if ( !folder_name.Equals( "" ) ) {
                     String aiconDB_path = fsys.combine( base_path, folder_name );
-                    if ( PortUtil.isDirectoryExists( aiconDB_path ) ) {
+                    if ( fsys.isDirectoryExists( aiconDB_path ) ) {
                         for ( Iterator<String> itr = list.keySet().iterator(); itr.hasNext(); ) {
                             String key = itr.next();
                             String section_name = key.Replace( "[", "" ).Replace( "]", "" );
                             String section_path = fsys.combine( aiconDB_path, section_name );
-                            if ( PortUtil.isDirectoryExists( section_path ) ) {
+                            if ( fsys.isDirectoryExists( section_path ) ) {
                                 for ( Iterator<String> itr2 = list.get( key ).iterator(); itr2.hasNext(); ) {
                                     String line = itr2.next();
                                     String[] spl = PortUtil.splitString( line, '=' );
@@ -1089,7 +1089,7 @@ namespace org.kbinani.vsq
                                         String aic_path = fsys.combine( section_path, aic_name );
                                         String ids = spl2[i];
                                         String icon_id = preset + PortUtil.formatDecimal( "0000", i );
-                                        if ( PortUtil.isFileExists( aic_path ) ) {
+                                        if ( fsys.isFileExists( aic_path ) ) {
                                             IconDynamicsHandle handle = new IconDynamicsHandle( aic_path, ids, icon_id, i );
                                             handle.setButtonImageFullPath( fsys.combine( section_path, handle.getButton() ) );
                                             m_dynamics_configs.add( handle );
@@ -1103,7 +1103,7 @@ namespace org.kbinani.vsq
             }
 
             String expression = fsys.combine( path_expdb, "expression.map" );
-            if ( !PortUtil.isFileExists( expression ) ) {
+            if ( !fsys.isFileExists( expression ) ) {
                 return;
             }
             RandomAccessFile fs = null;
@@ -1119,11 +1119,11 @@ namespace org.kbinani.vsq
                     }
 
                     String ved = fsys.combine( path_expdb, "vexp" + value + ".ved" );
-                    if ( !PortUtil.isFileExists( ved ) ) {
+                    if ( !fsys.isFileExists( ved ) ) {
                         continue;
                     }
                     String vexp_dir = fsys.combine( path_expdb, "vexp" + value );
-                    if ( !PortUtil.isDirectoryExists( vexp_dir ) ) {
+                    if ( !fsys.isDirectoryExists( vexp_dir ) ) {
                         continue;
                     }
 
@@ -1171,7 +1171,7 @@ namespace org.kbinani.vsq
                                 // ex: 1,1,"normal","normal2_type1.aic","[Normal]:Type:1","Standard","YAMAHA",0
                                 String file = spl2[3].Replace( "\"", "" );
                                 String aic_path = fsys.combine( vexp_dir, file );
-                                if ( !PortUtil.isFileExists( aic_path ) ) {
+                                if ( !fsys.isFileExists( aic_path ) ) {
                                     continue;
                                 }
                                 String ids = "";// spl2[2].Replace( "\"", "" );

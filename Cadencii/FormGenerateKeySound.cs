@@ -100,8 +100,8 @@ namespace org.kbinani.cadencii {
             // 取りあえず最初に登録されているresamplerを使うってことで
             String resampler = AppManager.editorConfig.getResamplerAt( 0 );
             if ( m_singer_config_utau.Length > 0 &&
-                 AppManager.editorConfig.PathWavtool != null && PortUtil.isFileExists( AppManager.editorConfig.PathWavtool ) &&
-                 resampler != null && PortUtil.isFileExists( resampler ) ) {
+                 AppManager.editorConfig.PathWavtool != null && fsys.isFileExists( AppManager.editorConfig.PathWavtool ) &&
+                 resampler != null && fsys.isFileExists( resampler ) ) {
                 comboSingingSynthSystem.addItem( "UTAU" );
             }
             if ( comboSingingSynthSystem.getItemCount() > 0 ) {
@@ -217,17 +217,17 @@ namespace org.kbinani.cadencii {
             String dir = arg.directory;
             boolean replace = arg.replace;
             // 音源を準備
-            if ( !PortUtil.isDirectoryExists( dir ) ) {
+            if ( !fsys.isDirectoryExists( dir ) ) {
                 PortUtil.createDirectory( dir );
             }
 
             for ( int i = 0; i < 127; i++ ) {
                 String path = fsys.combine( dir, i + ".wav" );
                 sout.println( "writing \"" + path + "\" ..." );
-                if ( replace || (!replace && !PortUtil.isFileExists( path )) ) {
+                if ( replace || (!replace && !fsys.isFileExists( path )) ) {
                     try {
                         GenerateSinglePhone( i, singer, path, amp );
-                        if ( PortUtil.isFileExists( path ) ) {
+                        if ( fsys.isFileExists( path ) ) {
                             try {
                                 Wave wv = new Wave( path );
                                 wv.trimSilence();
@@ -333,7 +333,7 @@ namespace org.kbinani.cadencii {
             vsq.updateTotalClocks();
             int ms_presend = 500;
             String tempdir = fsys.combine( AppManager.getCadenciiTempDir(), AppManager.getID() );
-            if ( !PortUtil.isDirectoryExists( tempdir ) ) {
+            if ( !fsys.isDirectoryExists( tempdir ) ) {
                 try {
                     PortUtil.createDirectory( tempdir );
                 } catch ( Exception ex ) {

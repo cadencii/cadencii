@@ -40,10 +40,6 @@ namespace org.kbinani.vsq
                 TempoTableEntry itemi = vec.get( tv, i );
                 sout.println( "   #" + i + "; " + itemi.Clock + "; " + itemi.Time + "; " + (60e6 / itemi.Tempo) );
             }
-            /*
-  #0; 0; 0; 120
-  #1; 1920; 2; 120
-  #2; 3820; 3.97916666666667; 120             */
             TempoVectorSearchContext c = new TempoVectorSearchContext();
             sout.println( "getClockFromSec; time=1.0; c.mSec2ClockIndex=" + c.mSec2ClockIndex + "; c.mSec2ClockSec=" + c.mSec2ClockSec );
             double cl = tv.getClockFromSec( 1.0, c );

@@ -237,7 +237,7 @@ class UtauPluginManager : Form {
     }
 
     private static string getPluginName( string plugin_txt_file ) {
-        if ( !PortUtil.isFileExists( plugin_txt_file ) ) {
+        if ( !fsys.isFileExists( plugin_txt_file ) ) {
             return "";
         }
 
@@ -340,7 +340,7 @@ class UtauPluginManager : Form {
                     string name = getPluginName( file );
                     if ( name != "" ) {
                         string script_path = fsys.combine( Utility.getScriptPath(), name + ".txt" );
-                        if ( PortUtil.isFileExists( script_path ) ) {
+                        if ( fsys.isFileExists( script_path ) ) {
                             PortUtil.deleteFile( script_path );
                         }
                     }
@@ -349,7 +349,7 @@ class UtauPluginManager : Form {
         }
 
         foreach ( string file in getPlugins() ) {
-            if ( !PortUtil.isFileExists( file ) ) {
+            if ( !fsys.isFileExists( file ) ) {
                 continue;
             }
 

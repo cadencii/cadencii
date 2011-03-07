@@ -3554,7 +3554,7 @@ namespace org.kbinani.vsq
                 }
             }
 
-            if ( PortUtil.isFileExists( file ) ) {
+            if ( fsys.isFileExists( file ) ) {
                 try {
                     PortUtil.deleteFile( file );
                 } catch ( Exception ex ) {

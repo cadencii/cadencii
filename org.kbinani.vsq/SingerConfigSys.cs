@@ -44,7 +44,7 @@ namespace org.kbinani.vsq
             m_installed_singers = new Vector<SingerConfig>();
             m_singer_configs = new Vector<SingerConfig>();
             String map = fsys.combine( path_voicedb, "voice.map" );
-            if ( !PortUtil.isFileExists( map ) ) {
+            if ( !fsys.isFileExists( map ) ) {
                 return;
             }
 
@@ -57,7 +57,7 @@ namespace org.kbinani.vsq
                 //TODO: ここでエラー起こる場合があるよ。SingerConfigSys::.ctor
                 //      実際にディレクトリがある場合にのみ，ファイルのリストアップをするようにした．
                 //      これで治っているかどうか要確認
-                if ( PortUtil.isDirectoryExists( ipath ) ) {
+                if ( fsys.isDirectoryExists( ipath ) ) {
                     String[] vvds = PortUtil.listFiles( ipath, "*.vvd" );
                     if ( vvds.Length > 0 ) {
                         SingerConfig installed = SingerConfig.fromVvd( vvds[0], 0, 0 );

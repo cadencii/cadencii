@@ -1034,39 +1034,21 @@ namespace org.kbinani {
 #endif
         }
 
-        public static boolean isDirectoryExists( String path ) {
-#if JAVA
-            File f = new File( path );
-            if( f.exists() ){
-                if( f.isFile() ){
-                    return false;
-                }else{
-                    return true;
-                }
-            }else{
-                return false;
-            }
-#else
-            return Directory.Exists( path );
-#endif
+#if !JAVA
+        [Obsolete]
+        public static bool isDirectoryExists( String path )
+        {
+            return System.IO.Directory.Exists( path );
         }
+#endif
 
-        public static boolean isFileExists( String path ) {
-#if JAVA
-            File f = new File( path );
-            if( f.exists() ){
-                if( f.isFile() ){
-                    return true;
-                }else{
-                    return false;
-                }
-            }else{
-                return false;
-            }
-#else
+#if !JAVA
+        [Obsolete]
+        public static boolean isFileExists( String path ) 
+        {
             return System.IO.File.Exists( path );
-#endif
         }
+#endif
 
         /*public static String combinePath( String path1, String path2 ) {
 #if JAVA

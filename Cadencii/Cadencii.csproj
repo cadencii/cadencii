@@ -144,6 +144,9 @@
     <Compile Include="FormVibratoPreset.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="FormWorkerUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="IAmplifierView.cs" />
     <Compile Include="IImageCachedComponentDrawer.cs" />
     <Compile Include="ImageCachedComponentDrawer.cs" />
@@ -378,6 +381,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormVibratoPreset.resx">
       <DependentUpon>FormVibratoPreset.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormWorkerUI.resx">
+      <DependentUpon>FormWorkerUI.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Preference.resx">
       <DependentUpon>Preference.cs</DependentUpon>

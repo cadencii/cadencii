@@ -124,7 +124,7 @@ public class RenderAsUtau : Form {
             return;
         }
         string character = Path.Combine( Singer, "character.txt" );
-        if ( PortUtil.isFileExists( character ) ) {
+        if ( fsys.isFileExists( character ) ) {
             using ( cp932reader sr = new cp932reader( character ) ) {
                 string line = "";
                 while ( (line = sr.ReadLine()) != null ) {
@@ -134,7 +134,7 @@ public class RenderAsUtau : Form {
                             lblName.Text = spl[1];
                         } else if ( spl[0].ToLower() == "image" ) {
                             string image = Path.Combine( Singer, spl[1] );
-                            if ( PortUtil.isFileExists( image ) ) {
+                            if ( fsys.isFileExists( image ) ) {
                                 try {
                                     pictSumbnail.Image = System.Drawing.Bitmap.FromFile( image );
                                 } catch {
@@ -147,7 +147,7 @@ public class RenderAsUtau : Form {
         }
 
         string readme = Path.Combine( Singer, "readme.txt" );
-        if ( PortUtil.isFileExists( readme ) ) {
+        if ( fsys.isFileExists( readme ) ) {
             using ( cp932reader sr = new cp932reader( readme ) ) {
                 txtProf.Text = sr.ReadToEnd();
             }
@@ -180,7 +180,7 @@ public class RenderAsUtau : Form {
                 sw.WriteLine( "singer_name=" + singer_name );
                 sw.WriteLine( "config_file=" + config_file );
 #endif
-                if ( PortUtil.isFileExists( config_file ) ) {
+                if ( fsys.isFileExists( config_file ) ) {
                     using ( cp932reader sr = new cp932reader( config_file ) ) {
                         string line;
                         while ( sr.Peek() >= 0 ) {
@@ -240,7 +240,7 @@ public class RenderAsUtau : Form {
                     sw.WriteLine( "filename=" + filename );
                     sw.WriteLine();
 #endif
-                    if ( PortUtil.isFileExists( filename ) ) {
+                    if ( fsys.isFileExists( filename ) ) {
                         PortUtil.deleteFile( filename );
                     }
 
@@ -272,15 +272,15 @@ public class RenderAsUtau : Form {
 
                 string filebase = "temp.wav";
                 string file = Path.Combine( temp_dir, filebase );
-                if ( PortUtil.isFileExists( file ) ) {
+                if ( fsys.isFileExists( file ) ) {
                     PortUtil.deleteFile( file );
                 }
                 string file_whd = Path.Combine( temp_dir, filebase + ".whd" );
-                if ( PortUtil.isFileExists( file_whd ) ) {
+                if ( fsys.isFileExists( file_whd ) ) {
                     PortUtil.deleteFile( file_whd );
                 }
                 string file_dat = Path.Combine( temp_dir, filebase + ".dat" );
-                if ( PortUtil.isFileExists( file_dat ) ) {
+                if ( fsys.isFileExists( file_dat ) ) {
                     PortUtil.deleteFile( file_dat );
                 }
 
@@ -334,20 +334,20 @@ public class RenderAsUtau : Form {
                 // 後片付け
                 foreach ( Phon ph in phons ) {
                     if ( !ph.ModeR ) {
-                        if ( PortUtil.isFileExists( ph.FileName ) ) {
+                        if ( fsys.isFileExists( ph.FileName ) ) {
                             PortUtil.deleteFile( ph.FileName );
                         }
                     }
                 }
-                if ( PortUtil.isFileExists( file_whd ) ) {
+                if ( fsys.isFileExists( file_whd ) ) {
                     PortUtil.deleteFile( file_whd );
                 }
-                if ( PortUtil.isFileExists( file_dat ) ) {
+                if ( fsys.isFileExists( file_dat ) ) {
                     PortUtil.deleteFile( file_dat );
                 }
 
                 if ( saveFileDialog.ShowDialog() == DialogResult.OK ) {
-                    if ( PortUtil.isFileExists( saveFileDialog.FileName ) ) {
+                    if ( fsys.isFileExists( saveFileDialog.FileName ) ) {
                         PortUtil.deleteFile( saveFileDialog.FileName );
                     }
                     LastWave = saveFileDialog.FileName;
@@ -613,7 +613,7 @@ public class RenderAsUtau : Form {
     }
 
     private void CheckOkButtonAvailable() {
-        if ( !PortUtil.isFileExists( Resampler ) || !PortUtil.isFileExists( WavTool ) || !Directory.Exists( Singer ) ) {
+        if ( !fsys.isFileExists( Resampler ) || !fsys.isFileExists( WavTool ) || !Directory.Exists( Singer ) ) {
             btnOk.Enabled = false;
         } else {
             btnOk.Enabled = true;
