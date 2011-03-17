@@ -144,7 +144,9 @@
     <Compile Include="FormVibratoPreset.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormWorkerUI.cs">
+    <Compile Include="FormWorker.cs" />
+    <Compile Include="FormWorkerJobState.cs" />
+    <Compile Include="FormWorkerUi.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="IAmplifierView.cs" />
@@ -161,10 +163,15 @@
     <Compile Include="Preference.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="ProgressBarWithLabel.cs" />
+    <Compile Include="ProgressBarWithLabelUi.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="RecentFileMenuItem.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="SequenceConfig.cs" />
+    <Compile Include="TestFormWorker.cs" />
     <Compile Include="TrackSelectorSingerDropdownMenuItem.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -382,11 +389,14 @@
     <EmbeddedResource Include="FormVibratoPreset.resx">
       <DependentUpon>FormVibratoPreset.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormWorkerUI.resx">
-      <DependentUpon>FormWorkerUI.cs</DependentUpon>
+    <EmbeddedResource Include="FormWorkerUi.resx">
+      <DependentUpon>FormWorkerUi.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Preference.resx">
       <DependentUpon>Preference.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProgressBarWithLabelUi.resx">
+      <DependentUpon>ProgressBarWithLabelUi.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

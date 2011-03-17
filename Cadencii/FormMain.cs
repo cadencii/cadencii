@@ -15089,6 +15089,8 @@ namespace org.kbinani.cadencii
 #if DEBUG
             sout.println( "FormMain#menuHelpDebug_Click" );
 
+            TestFormWorker.run();
+
 #if ENABLE_VOCALOID
             /*BFileChooser dlg_fout = new BFileChooser();
             if ( dlg_fout.showSaveDialog( this ) == BFileChooser.APPROVE_OPTION ) {
@@ -15167,9 +15169,14 @@ namespace org.kbinani.cadencii
             try{
                 Runtime.getRuntime().exec( new String[] { "open", file } );
             }catch( Exception ex ){
+                ex.printStackTrace();
             }
 #else
-            System.Diagnostics.Process.Start( file );
+            try {
+                System.Diagnostics.Process.Start( file );
+            } catch ( Exception ex ) {
+                Logger.write( typeof( FormMain ) + ".menuHelpLogOpen_Click; ex=" + ex + "\n" );
+            }
 #endif
         }
         #endregion

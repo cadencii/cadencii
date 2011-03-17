@@ -95,6 +95,7 @@
     <Compile Include="Logger.cs" />
     <Compile Include="math.cs" />
     <Compile Include="Misc.cs" />
+    <Compile Include="mman.cs" />
     <Compile Include="PortUtil.cs" />
     <Compile Include="RandomAccessFile.cs" />
     <Compile Include="serr.cs" />

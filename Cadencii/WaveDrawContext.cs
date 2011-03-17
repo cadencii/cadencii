@@ -12,6 +12,7 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
+
 package org.kbinani.cadencii;
 
 import java.awt.*;
@@ -20,7 +21,9 @@ import org.kbinani.*;
 import org.kbinani.apputil.*;
 import org.kbinani.media.*;
 import org.kbinani.vsq.*;
+
 #else
+
 using System;
 using org.kbinani.media;
 using org.kbinani;
@@ -29,7 +32,108 @@ using org.kbinani.java.util;
 using org.kbinani.vsq;
 using org.kbinani.apputil;
 
-namespace org.kbinani.cadencii {
+namespace org.kbinani.cadencii.new_
+{
+    using boolean = System.Boolean;
+
+    public class WaveDrawContext : IDisposable
+    {
+        private short[] mEnvOut = null;
+
+        public void load( String file )
+        {
+
+        }
+
+        public void dispose()
+        {
+        }
+
+        /// <summary>
+        /// このWAVE描画コンテキストが保持しているWAVEデータを、ゲートタイム基準でグラフィクスに描画します。
+        /// 縦軸の拡大率は引数<paramref name="scale_y"/>で指定します。
+        /// </summary>
+        /// <param name="g">描画に使用するグラフィクスオブジェクト</param>
+        /// <param name="pen">描画に使用するペン</param>
+        /// <param name="rect">描画範囲</param>
+        /// <param name="clock_start">描画開始位置のゲートタイム</param>
+        /// <param name="clock_end">描画終了位置のゲートタイム</param>
+        /// <param name="tempo_table">ゲートタイムから秒数を調べる際使用するテンポ・テーブル</param>
+        /// <param name="pixel_per_clock">ゲートタイムあたりの秒数</param>
+        /// <param name="scale_y">Y軸方向の描画スケール。デフォルトは1.0</param>
+        public void draw(
+            Graphics2D g,
+            Color pen,
+            Rectangle rect,
+            int clock_start,
+            int clock_end,
+            TempoVector tempo_table,
+            float pixel_per_clock,
+            float scale_y )
+        {
+            drawCore( g, pen, rect, clock_start, clock_end, tempo_table, pixel_per_clock, scale_y, false );
+        }
+
+        /// <summary>
+        /// このWAVE描画コンテキストが保持しているWAVEデータを、ゲートタイム基準でグラフィクスに描画します。
+        /// 縦軸は最大振幅がちょうど描画範囲に収まるよう調節されます。
+        /// </summary>
+        /// <param name="g">描画に使用するグラフィクスオブジェクト</param>
+        /// <param name="pen">描画に使用するペン</param>
+        /// <param name="rect">描画範囲</param>
+        /// <param name="clock_start">描画開始位置のゲートタイム</param>
+        /// <param name="clock_end">描画終了位置のゲートタイム</param>
+        /// <param name="tempo_table">ゲートタイムから秒数を調べる際使用するテンポ・テーブル</param>
+        /// <param name="pixel_per_clock">ゲートタイムあたりの秒数</param>
+        public void draw(
+            Graphics2D g,
+            Color pen,
+            Rectangle rect,
+            int clock_start,
+            int clock_end,
+            TempoVector tempo_table,
+            float pixel_per_clock )
+        {
+            drawCore( g, pen, rect, clock_start, clock_end, tempo_table, pixel_per_clock, 1.0f, true );
+        }
+
+        /// <summary>
+        /// このWAVE描画コンテキストが保持しているWAVEデータを、ゲートタイム基準でグラフィクスに描画します。
+        /// </summary>
+        /// <param name="g">描画に使用するグラフィクスオブジェクト</param>
+        /// <param name="pen">描画に使用するペン</param>
+        /// <param name="rect">描画範囲</param>
+        /// <param name="clock_start">描画開始位置のゲートタイム</param>
+        /// <param name="clock_end">描画終了位置のゲートタイム</param>
+        /// <param name="tempo_table">ゲートタイムから秒数を調べる際使用するテンポ・テーブル</param>
+        /// <param name="pixel_per_clock">ゲートタイムあたりの秒数</param>
+        /// <param name="scale_y">Y軸方向の描画スケール。デフォルトは1.0</param>
+        /// <param name="auto_maximize">自動で最大化するかどうか</param>
+        private void drawCore(
+            Graphics2D g,
+            Color pen,
+            Rectangle rect,
+            int clock_start,
+            int clock_end,
+            TempoVector tempo_table,
+            float pixel_per_clock,
+            float scale_y,
+            boolean auto_maximize )
+        {
+        }
+
+#if !JAVA
+        public void Dispose()
+        {
+            dispose();
+        }
+#endif
+    }
+
+}
+
+namespace org.kbinani.cadencii
+{
     using boolean = System.Boolean;
 #endif
 
@@ -37,10 +141,11 @@ namespace org.kbinani.cadencii {
     /// WAVEファイルのデータをグラフィクスに書き込む操作を行うクラス
     /// </summary>
 #if JAVA
-    public class WaveDrawContext{
+    public class WaveDrawContext
 #else
-    public class WaveDrawContext : IDisposable {
+    public class WaveDrawContext : IDisposable
 #endif
+    {
 #if JAVA
         private byte[] mWave;
 #else
@@ -57,7 +162,8 @@ namespace org.kbinani.cadencii {
         /// 読み込むWAVEファイルを指定したコンストラクタ。初期化と同時にWAVEファイルの読込みを行います。
         /// </summary>
         /// <param name="file">読み込むWAVEファイルのパス</param>
-        public WaveDrawContext( String file ) {
+        public WaveDrawContext( String file )
+        {
             load( file );
             mDrawer = new PolylineDrawer( null, 1024 );
         }
@@ -65,7 +171,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// デフォルトのコンストラクタ。
         /// </summary>
-        public WaveDrawContext() {
+        public WaveDrawContext()
+        {
 #if JAVA
             mWave = new byte[0];
 #else
@@ -78,7 +185,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// 保持しているWAVEデータを破棄します。
         /// </summary>
-        public void unload() {
+        public void unload()
+        {
             mDrawer.clear();
 #if JAVA
             mWave = new byte[0];
@@ -94,7 +202,8 @@ namespace org.kbinani.cadencii {
         /// <param name="file"></param>
         /// <param name="sec_from"></param>
         /// <param name="sec_to"></param>
-        public void reloadPartial( String file, double sec_from, double sec_to ) {
+        public void reloadPartial( String file, double sec_from, double sec_to )
+        {
             if ( !fsys.isFileExists( file ) ) {
                 return;
             }
@@ -210,7 +319,8 @@ namespace org.kbinani.cadencii {
         /// WAVEファイルを読み込みます。
         /// </summary>
         /// <param name="file">読み込むWAVEファイルのパス</param>
-        public void load( String file ) {
+        public void load( String file )
+        {
             if ( !fsys.isFileExists( file ) ) {
 #if JAVA
                 mWave = new byte[0];
@@ -282,7 +392,8 @@ namespace org.kbinani.cadencii {
         /// このWAVE描画コンテキストの名前を取得します。
         /// </summary>
         /// <returns>この描画コンテキストの名前</returns>
-        public String getName() {
+        public String getName()
+        {
             return mName;
         }
 
@@ -290,7 +401,8 @@ namespace org.kbinani.cadencii {
         /// このWAVE描画コンテキストの名前を設定します。
         /// </summary>
         /// <param name="value">この描画コンテキストの名前</param>
-        public void setName( String value ) {
+        public void setName( String value )
+        {
             mName = value;
         }
 
@@ -298,7 +410,8 @@ namespace org.kbinani.cadencii {
         /// このWAVE描画コンテキストが保持しているWAVEデータの、秒数を取得します。
         /// </summary>
         /// <returns>保持しているWAVEデータの長さ(秒)</returns>
-        public float getLength() {
+        public float getLength()
+        {
             return mLength;
         }
 
@@ -306,7 +419,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// デストラクタ。disposeメソッドを呼び出します。
         /// </summary>
-        ~WaveDrawContext() {
+        ~WaveDrawContext()
+        {
             dispose();
         }
 #endif
@@ -315,7 +429,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// このWAVE描画コンテキストが使用しているリソースを開放します。
         /// </summary>
-        public void Dispose(){
+        public void Dispose()
+        {
             dispose();
         }
 #endif
@@ -323,7 +438,8 @@ namespace org.kbinani.cadencii {
         /// <summary>
         /// このWAVE描画コンテキストが使用しているリソースを開放します。
         /// </summary>
-        public void dispose() {
+        public void dispose()
+        {
             mWave = null;
 #if JAVA
             System.gc();
@@ -352,7 +468,8 @@ namespace org.kbinani.cadencii {
             int clock_end,
             TempoVector tempo_table,
             float pixel_per_clock,
-            float scale_y ) {
+            float scale_y )
+        {
             drawCore( g, pen, rect, clock_start, clock_end, tempo_table, pixel_per_clock, scale_y, false );
         }
 
@@ -374,7 +491,8 @@ namespace org.kbinani.cadencii {
             int clock_start,
             int clock_end,
             TempoVector tempo_table,
-            float pixel_per_clock ) {
+            float pixel_per_clock )
+        {
             drawCore( g, pen, rect, clock_start, clock_end, tempo_table, pixel_per_clock, 1.0f, true );
         }
 
@@ -395,8 +513,8 @@ namespace org.kbinani.cadencii {
             Color pen,
             Rectangle rect,
             int clock_start,
-            int clock_end, 
-            TempoVector tempo_table, 
+            int clock_end,
+            TempoVector tempo_table,
             float pixel_per_clock,
             float scale_y,
             boolean auto_maximize )
@@ -450,7 +568,7 @@ namespace org.kbinani.cadencii {
                     cEnd = clock_end;
                 }
                 int sEnd = (int)(time * mSampleRate);
-                
+
                 // sStartサンプルからsThisEndサンプルまでを描画する(必要なら!)
                 if ( sEnd < sStart0 ) {
                     sStart = sEnd;
