@@ -48,8 +48,7 @@ namespace org.kbinani.cadencii {
         /// <param name="l">左チャンネルの波形データ</param>
         /// <param name="r">右チャンネルの波形データ</param>
         /// <param name="length">波形データの長さ。配列の長さよりも短い場合がある</param>
-        /// <returns>ドライバにアボート要求を行う場合true、そうでなければfalseを返す(そのように実装する)</returns>
-        boolean waveIncomingImpl( double[] l, double[] r, int length );
+        void waveIncomingImpl( double[] l, double[] r, int length, WorkerState state );
     }
 }
 
@@ -73,7 +72,7 @@ namespace org.kbinani.cadencii
         private int mStartClock;
         private int mEndClock;
         private long mTotalSamples;
-        private boolean mAbortRequired = false;
+        //private boolean mAbortRequired = false;
         private double[] mBufferL = new double[BUFLEN];
         private double[] mBufferR = new double[BUFLEN];
         private WaveReceiver mReceiver = null;
@@ -94,6 +93,7 @@ namespace org.kbinani.cadencii
         /// サンプリング周波数変換器
         /// </summary>
         private RateConvertContext mContext;
+        //private WorkerState mState;
 
         public int getSampleRate()
         {
@@ -119,7 +119,7 @@ namespace org.kbinani.cadencii
             }
         }
 
-        public void stop()
+        /*public void stop()
         {
             if ( mRunning ) {
 #if !JAVA
@@ -139,7 +139,7 @@ namespace org.kbinani.cadencii
 #endif
                 }
             }
-        }
+        }*/
 
         public override void setConfig( String parameter )
         {
@@ -192,7 +192,7 @@ namespace org.kbinani.cadencii
         /// <param name="l"></param>
         /// <param name="r"></param>
         /// <param name="length"></param>
-        public boolean waveIncomingImpl( double[] l, double[] r, int length )
+        public void waveIncomingImpl( double[] l, double[] r, int length, WorkerState state )
         {
             int offset = 0;
             if ( mTrimRemain > 0 ) {
@@ -200,7 +200,7 @@ namespace org.kbinani.cadencii
                 if ( length <= mTrimRemain ) {
                     // 受け取った波形の長さをもってしても、トリム分が0にならない場合
                     mTrimRemain -= length;
-                    return false;
+                    return;
                 } else {
                     // 受け取った波形の内の一部をトリムし、残りを波形レシーバに渡す
                     offset = mTrimRemain;
@@ -210,8 +210,8 @@ namespace org.kbinani.cadencii
             }
             int remain = length - offset;
             while ( remain > 0 ) {
-                if ( mAbortRequired ) {
-                    return true;
+                if ( state.isCancelRequested() ) {
+                    return;
                 }
                 int amount = (remain > BUFLEN) ? BUFLEN : remain;
                 for ( int i = 0; i < amount; i++ ) {
@@ -221,14 +221,15 @@ namespace org.kbinani.cadencii
                 while ( RateConvertContext.convert( mContext, mBufferL, mBufferR, amount ) ) {
                     mReceiver.push( mContext.bufferLeft, mContext.bufferRight, mContext.length );
                     mTotalAppend += mContext.length;
+                    state.reportProgress( mTotalAppend );
                 }
                 remain -= amount;
                 offset += amount;
             }
-            return false;
+            return;
         }
 
-        public void begin( long total_samples )
+        public void begin( long total_samples, WorkerState state )
         {
             // 渡されたVSQの、合成に不要な部分を削除する
             VsqFileEx split = (VsqFileEx)mVsq.clone();
@@ -334,7 +335,7 @@ namespace org.kbinani.cadencii
 #endif
 
             // アボート要求フラグを初期化
-            mAbortRequired = false;
+            //mAbortRequired = false;
 #if JAVA
             int ver = (s_working_renderer == RendererKind.VOCALOID2) ? 2 : 1;
             VocaloidDaemon vd = VSTiDllManager.vocaloidrvDaemon[ver - 1];
@@ -358,8 +359,8 @@ namespace org.kbinani.cadencii
             // アボートが終了するか、このインスタンス自身にアボート要求が来るまで待つ。
             if ( mDriver.isRendering() ) {
                 // ドライバーにアボート要求
-                mDriver.abortRendering();
-                while ( mDriver.isRendering() && !mAbortRequired ) {
+                //mDriver.abortRendering();
+                while ( mDriver.isRendering() && !state.isCancelRequested() ) {
                     // 待つ
                     Thread.Sleep( 100 );
                 }
@@ -650,13 +651,17 @@ namespace org.kbinani.cadencii
                 mTotalSamples + mTrimRemain + (int)(ms_present / 1000.0 * mDriverSampleRate),
                 false,
                 mDriverSampleRate,
-                this );
+                this,
+                state );
 #endif // !JAVA
 
             // ここに来るということは合成が終わったか、ドライバへのアボート要求が実行されたってこと。
             // このインスタンスが受け持っている波形レシーバに、処理終了を知らせる。
             mReceiver.end();
             mRunning = false;
+            if ( state.isCancelRequested() == false ) {
+                state.reportComplete();
+            }
         }
 
         public long getPosition()

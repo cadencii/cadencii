@@ -19,9 +19,11 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
+using org.kbinani.windows.forms;
+
 namespace org.kbinani.cadencii
 {
-    public class FormWorkerUi : Form
+    public class FormWorkerUi : BDialog
     {
         private ProgressBar progressBar1;
         private FlowLayoutPanel flowLayoutPanel1;
@@ -47,9 +49,13 @@ namespace org.kbinani.cadencii
             mFullHeight = this.Height;
         }
 
-        public void show()
+        public void show( Object obj )
         {
-            Show();
+            if ( obj != null && obj is IWin32Window ) {
+                Show( (IWin32Window)obj );
+            } else {
+                Show();
+            }
         }
 
         /// <summary>
@@ -57,6 +63,7 @@ namespace org.kbinani.cadencii
         /// </summary>
         public void close()
         {
+            this.DialogResult = DialogResult.OK;
             Close();
         }
 
@@ -151,7 +158,24 @@ namespace org.kbinani.cadencii
 
         private void setTotalProgressUnsafe( int percentage )
         {
+            if ( percentage < progressBar1.Minimum ) percentage = progressBar1.Minimum;
+            if ( progressBar1.Maximum < percentage ) percentage = progressBar1.Maximum;
             progressBar1.Value = percentage;
+        }
+
+        /// <summary>
+        /// このフォームを指定したウィンドウに対してモーダルに表示します．
+        /// フォームがキャンセルされた場合true，そうでない場合はfalseを返します
+        /// </summary>
+        /// <param name="main_window"></param>
+        /// <returns></returns>
+        public bool showDialog( FormMain main_window )
+        {
+            if ( ShowDialog( main_window ) == DialogResult.Cancel ) {
+                return true;
+            } else {
+                return false;
+            }
         }
 
         /// <summary>
@@ -251,7 +275,7 @@ namespace org.kbinani.cadencii
             this.Name = "FormWorkerUi";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "FormWorker";
             this.SizeChanged += new System.EventHandler( this.FormWorkerUi_SizeChanged );
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler( this.FormWorkerUi_FormClosing );

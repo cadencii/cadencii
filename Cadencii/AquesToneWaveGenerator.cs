@@ -42,7 +42,7 @@ namespace org.kbinani.cadencii
         private int mStartClock;
         private int mEndClock;
         private boolean mRunning = false;
-        private boolean mAbortRequired;
+        //private boolean mAbortRequired;
         private long mTotalSamples;
         private int mSampleRate;
         /// <summary>
@@ -94,16 +94,6 @@ namespace org.kbinani.cadencii
                 return 0.0;
             } else {
                 return mTotalAppend / (double)mTotalSamples;
-            }
-        }
-
-        public void stop()
-        {
-            if ( mRunning ) {
-                mAbortRequired = true;
-                while ( mRunning ) {
-                    Thread.Sleep( 100 );
-                }
             }
         }
 
@@ -163,7 +153,7 @@ namespace org.kbinani.cadencii
             mReceiver = r;
         }
 
-        public void begin( long total_samples )
+        public void begin( long total_samples, WorkerState state )
         {
 #if DEBUG
             sout.println( "AquesToneRenderingRunner#begin; (mDriver==null)=" + (mDriver == null) );
@@ -176,6 +166,7 @@ namespace org.kbinani.cadencii
                 log.WriteLine( "mDriver==null" );
                 log.Close();
 #endif
+                state.reportComplete();
                 return;
             }
 
@@ -187,11 +178,12 @@ namespace org.kbinani.cadencii
                 log.WriteLine( "mDriver.loaded=" + mDriver.loaded );
                 log.Close();
 #endif
+                state.reportComplete();
                 return;
             }
 
             mRunning = true;
-            mAbortRequired = false;
+            //mAbortRequired = false;
             mTotalSamples = total_samples;
 #if DEBUG
             sout.println( "AquesToneWaveGenerator#begin; mTotalSamples=" + mTotalSamples );
@@ -264,7 +256,7 @@ namespace org.kbinani.cadencii
                     log.WriteLine( "saRemain=" + saRemain );
 #endif
                     while ( saRemain > 0 ) {
-                        if ( mAbortRequired ) {
+                        if ( state.isCancelRequested() ) {
                             goto heaven;
                         }
                         int len = saRemain > BUFLEN ? BUFLEN : saRemain;
@@ -272,6 +264,7 @@ namespace org.kbinani.cadencii
                         waveIncoming( left, right, len );
                         saRemain -= len;
                         saProcessed += len;
+                        state.reportProgress( saProcessed );
                         //mTotalAppend += len; <- waveIncomingで計算されるので
                     }
 
@@ -351,7 +344,7 @@ namespace org.kbinani.cadencii
             sout.println( "AquesToneRenderingRunner#run; totalSamples=" + mTotalSamples + "; mTotalAppend=" + mTotalAppend + "; saRemain=" + saRemain );
 #endif
             while ( saRemain > 0 ) {
-                if ( mAbortRequired ) {
+                if ( state.isCancelRequested() ) {
                     goto heaven;
                 }
                 int len = saRemain > BUFLEN ? BUFLEN : saRemain;
@@ -359,6 +352,7 @@ namespace org.kbinani.cadencii
                 waveIncoming( left, right, len );
                 saRemain -= len;
                 saProcessed += len;
+                state.reportProgress( saProcessed );
                 //mTotalAppend += len;
             }
         heaven:
@@ -366,8 +360,9 @@ namespace org.kbinani.cadencii
             log.Close();
 #endif
             mRunning = false;
-            mAbortRequired = false;
+            //mAbortRequired = false;
             mReceiver.end();
+            state.reportComplete();
         }
 
         private void waveIncoming( double[] l, double[] r, int length )

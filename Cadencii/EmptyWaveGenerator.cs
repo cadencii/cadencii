@@ -81,7 +81,7 @@ namespace org.kbinani.cadencii
             // do nothing
         }
 
-        public void begin( long samples )
+        public void begin( long samples, WorkerState state )
         {
             if ( mReceiver == null ) return;
             mRunning = true;

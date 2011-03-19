@@ -145,7 +145,6 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="FormWorker.cs" />
-    <Compile Include="FormWorkerJobState.cs" />
     <Compile Include="FormWorkerUi.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -171,6 +170,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="SequenceConfig.cs" />
+    <Compile Include="SynthesizeWorker.cs" />
     <Compile Include="TestFormWorker.cs" />
     <Compile Include="TrackSelectorSingerDropdownMenuItem.cs">
       <SubType>Component</SubType>
@@ -341,9 +341,6 @@
     <Compile Include="FormSingerStyleConfig.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormSynthesize.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="FormTempoConfig.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -445,6 +442,8 @@
     <Compile Include="WaveViewRealoadRequiredEventArgs.cs" />
     <Compile Include="WaveViewRealoadRequiredEventHandler.cs" />
     <Compile Include="winmmhelp.cs" />
+    <Compile Include="WorkerState.cs" />
+    <Compile Include="WorkerStateImp.cs" />
     <Compile Include="XmlStaticMemberSerializerEx.cs" />
   </ItemGroup>
   <ItemGroup>

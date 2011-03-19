@@ -11531,23 +11531,33 @@ namespace org.kbinani.cadencii
                 q.clockEnd = clockEnd;
                 q.file = fsys.combine( dir, i + ".wav" );
                 q.renderAll = true;
+                q.p_vsq = vsq;
                 queue.add( q );
             }
 
             // 合成ダイアログを出す
-            FormSynthesize fs = null;
+            FormWorker fw = null;
             try {
-                fs = new FormSynthesize( this, vsq, AppManager.editorConfig.PreSendTime, queue );
-                fs.setLocation( getFormPreferedLocation( fs ) );
-                BDialogResult ret = AppManager.showModalDialog( fs, this );
-                if ( ret != BDialogResult.OK ) {
-                    return;
+                fw = new FormWorker();
+                fw.setupUi( new FormWorkerUi( fw ) );
+                fw.getUi().setTitle( _( "Synthesize" ) );
+                fw.getUi().setText( _( "now synthesizing..." ) );
+
+                SynthesizeWorker worker = new SynthesizeWorker( this );
+
+                for( int i  = 0; i < queue.size(); i++ ){
+                    PatchWorkQueue q = vec.get( queue, i );
+                    fw.addJob( worker, "processQueue", q.getMessage(), q.getJobAmount(), q );
                 }
+
+                fw.startJob();
+                AppManager.showModalDialog( fw.getUi(), this );
             } catch ( Exception ex ) {
+                Logger.write( typeof( FormMain ) + ".menuFileExportParaWave; ex=" + ex + "\n" );
             } finally {
-                if ( fs != null ) {
+                if ( fw != null ) {
                     try {
-                        fs.close();
+                        fw.getUi().close();
                     } catch ( Exception ex2 ) {
                     }
                 }
@@ -11785,48 +11795,58 @@ namespace org.kbinani.cadencii
                 }
             }
 
-            FormSynthesize fs = null;
+            VsqFileEx vsq = AppManager.getVsqFile();
+            int clockStart = vsq.config.StartMarkerEnabled ? vsq.config.StartMarker : 0;
+            int clockEnd = vsq.config.EndMarkerEnabled ? vsq.config.EndMarker : vsq.TotalClocks + 240;
+            if ( clockStart > clockEnd ) {
+                AppManager.showMessageBox(
+                    _( "invalid rendering region; start>=end" ),
+                    _( "Error" ),
+                    PortUtil.OK_OPTION,
+                    org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
+                return;
+            }
+            Vector<Integer> other_tracks = new Vector<Integer>();
+            int selected = AppManager.getSelected();
+            for ( int i = 1; i < vsq.Track.size(); i++ ) {
+                if ( i != selected ) {
+                    other_tracks.add( i );
+                }
+            }
+            Vector<PatchWorkQueue> queue =
+                AppManager.patchWorkCreateQueue( other_tracks );
+            PatchWorkQueue q = new PatchWorkQueue();
+            q.track = selected;
+            q.clockStart = clockStart;
+            q.clockEnd = clockEnd;
+            q.file = filename;
+            q.renderAll = true;
+            q.p_vsq = vsq;
+            // 末尾に追加
+            queue.add( q );
+            double started = PortUtil.getCurrentTime();
+
+            FormWorker fs = null;
             try {
-                VsqFileEx vsq = AppManager.getVsqFile();
-                int clockStart = vsq.config.StartMarkerEnabled ? vsq.config.StartMarker : 0;
-                int clockEnd = vsq.config.EndMarkerEnabled ? vsq.config.EndMarker : vsq.TotalClocks + 240;
-                if ( clockStart > clockEnd ) {
-                    AppManager.showMessageBox( 
-                        _( "invalid rendering region; start>=end" ), 
-                        _( "Error" ), 
-                        PortUtil.OK_OPTION, 
-                        org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
-                    return;
+                fs = new FormWorker();
+                fs.setupUi( new FormWorkerUi( fs ) );
+                fs.getUi().setTitle( _( "Synthesize" ) );
+                fs.getUi().setText( _( "now synthesizing..." ) );
+
+                SynthesizeWorker worker = new SynthesizeWorker( this );
+
+                foreach ( PatchWorkQueue qb in queue ) {
+                    fs.addJob( worker, "processQueue", qb.getMessage(), qb.getJobAmount(), qb );
                 }
-                Vector<Integer> other_tracks = new Vector<Integer>();
-                int selected = AppManager.getSelected();
-                for ( int i = 1; i < vsq.Track.size(); i++ ) {
-                    if ( i != selected ) {
-                        other_tracks.add( i );
-                    }
-                }
-                Vector<PatchWorkQueue> queue =
-                    AppManager.patchWorkCreateQueue( other_tracks );
-                PatchWorkQueue q = new PatchWorkQueue();
-                q.track = selected;
-                q.clockStart = clockStart;
-                q.clockEnd = clockEnd;
-                q.file = filename;
-                q.renderAll = true;
-                // 末尾に追加
-                queue.add( q );
-                fs = new FormSynthesize( this,
-                                         vsq,
-                                         AppManager.editorConfig.PreSendTime,
-                                         queue );
-                double started = PortUtil.getCurrentTime();
-                AppManager.showModalDialog( fs, this );
+
+                fs.startJob();
+                AppManager.showModalDialog( fs.getUi(), this );
             } catch ( Exception ex ) {
                 Logger.write( typeof( FormMain ) + ".menuFileExportWave_Click; ex=" + ex + "\n" );
             } finally {
                 if ( fs != null ) {
                     try {
-                        fs.close();
+                        fs.getUi().close();
                     } catch ( Exception ex2 ) {
                         Logger.write( typeof( FormMain ) + ".menuFileExportWave_Click; ex=" + ex2 + "\n" );
                     }

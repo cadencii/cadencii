@@ -31,7 +31,7 @@ namespace org.kbinani.cadencii
         {
             FormWorker fw = new FormWorker();
             fw.setupUi( new FormWorkerUi( fw ) );
-            fw.show();
+            fw.getUi().show( null );
             TestFormWorker test_instance = new TestFormWorker();
             fw.addJob( test_instance, "testMethod", "job1", 5000, 5000 );
             fw.addJob( test_instance, "testMethod", "job2", 10000, 10000 );
@@ -43,7 +43,7 @@ namespace org.kbinani.cadencii
             //fw.cancelJob();
         }
 
-        public void testMethod( FormWorkerJobState receiver, Object argument )
+        public void testMethod( WorkerState receiver, Object argument )
         {
             int wait_ms = 10;
             int amount = ((int)argument) / wait_ms;

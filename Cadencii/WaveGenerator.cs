@@ -39,7 +39,8 @@ namespace org.kbinani.cadencii {
         /// (この順番に呼ばれることを前提とした実装をしなくてはならない)
         /// </summary>
         /// <param name="samples"></param>
-        void begin( long samples );
+        /// <param name="state"></param>
+        void begin( long samples, WorkerState state );
 
         /// <summary>
         /// この音声波形器が生成した波形を受け取る装置を設定します．
@@ -60,11 +61,12 @@ namespace org.kbinani.cadencii {
         /// </param>
         void init( VsqFileEx vsq, int track, int start_clock, int end_clock, int sample_rate );
 
+        /*
         /// <summary>
         /// 停止を要求します．
         /// 停止が完了するまで処理は戻りません
         /// </summary>
-        void stop();
+        void stop();*/
 
         /// <summary>
         /// エディターの設定値を指定します

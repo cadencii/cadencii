@@ -51,7 +51,7 @@ namespace org.kbinani.cadencii
         int g_saTotalSamples;
         Vector<TempoInfo> g_tempoList;
         int g_numTempoList;
-        boolean g_cancelRequired;
+        //boolean g_cancelRequired;
         double g_progress;
         /// <summary>
         /// StartRenderingメソッドが回っている最中にtrue
@@ -76,7 +76,7 @@ namespace org.kbinani.cadencii
 
         public override void close()
         {
-            if ( rendering ) {
+            /*if ( rendering ) {
                 g_cancelRequired = true;
                 while ( rendering ) {
 #if JAVA
@@ -85,7 +85,7 @@ namespace org.kbinani.cadencii
                     System.Windows.Forms.Application.DoEvents();
 #endif
                 }
-            }
+            }*/
             base.close();
         }
 
@@ -127,7 +127,7 @@ namespace org.kbinani.cadencii
             g_saTotalSamples = 0;
             g_tempoList = new Vector<TempoInfo>();
             g_numTempoList = 0;
-            g_cancelRequired = false;
+            //g_cancelRequired = false;
             g_progress = 0.0;
             s_track_events = new Vector<Vector<MidiEvent>>();
             s_track_events.add( new Vector<MidiEvent>() );
@@ -242,14 +242,14 @@ namespace org.kbinani.cadencii
         /// <param name="sample_rate"></param>
         /// <param name="runner">このドライバを駆動しているRenderingRunnerのオブジェクト</param>
         /// <returns></returns>
-        public int startRendering( long total_samples, boolean mode_infinite, int sample_rate, IWaveIncoming runner )
+        public int startRendering( long total_samples, boolean mode_infinite, int sample_rate, IWaveIncoming runner, WorkerState state )
         {
 #if DEBUG
             sout.println( "VocaloidDriver#startRendering; entry; total_samples=" + total_samples + "; sample_rate=" + sample_rate );
 #endif
             lock ( locker ) {
                 rendering = true;
-                g_cancelRequired = false;
+                //g_cancelRequired = false;
                 g_progress = 0.0;
                 sampleRate = sample_rate;
 
@@ -341,7 +341,7 @@ namespace org.kbinani.cadencii
                     org.kbinani.debug.push_log( "    ...done; dwDelay=" + dwDelay );
 #endif
 
-                    while ( !g_cancelRequired ) {
+                    while ( !state.isCancelRequested() ) {
                         int process_event_count = current_count;
                         int nEvents = 0;
 
@@ -442,7 +442,7 @@ namespace org.kbinani.cadencii
                         org.kbinani.debug.push_log( "...done" );
 #endif
 
-                        while ( dwDelta > 0 && !g_cancelRequired ) {
+                        while ( dwDelta > 0 && !state.isCancelRequested() ) {
                             int dwFrames = dwDelta > sampleRate ? sampleRate : dwDelta;
 #if TEST
                             org.kbinani.debug.push_log( "calling ProcessReplacing..." );
@@ -463,9 +463,7 @@ namespace org.kbinani.cadencii
                                     buffer_r[i] = out_buffer[1][i];
                                 }
                                 total_processed2 += dwFrames;
-                                if ( runner.waveIncomingImpl( buffer_l, buffer_r, dwFrames ) ) {
-                                    g_cancelRequired = true;
-                                }
+                                runner.waveIncomingImpl( buffer_l, buffer_r, dwFrames, state );
                             } else {
                                 dwDeltaDelay += iOffset;
                             }
@@ -483,7 +481,7 @@ namespace org.kbinani.cadencii
                     if ( total_samples - total_processed2 > dwDelta ) {
                         dwDelta = (int)total_samples - total_processed2;
                     }
-                    while ( dwDelta > 0 && !g_cancelRequired ) {
+                    while ( dwDelta > 0 && !state.isCancelRequested() ) {
                         int dwFrames = dwDelta > sampleRate ? sampleRate : dwDelta;
 #if TEST
                         org.kbinani.debug.push_log( "calling ProcessReplacing..." );
@@ -498,9 +496,7 @@ namespace org.kbinani.cadencii
                             buffer_r[i] = out_buffer[1][i];
                         }
                         total_processed2 += dwFrames;
-                        if ( runner.waveIncomingImpl( buffer_l, buffer_r, dwFrames ) ) {
-                            g_cancelRequired = true;
-                        }
+                        runner.waveIncomingImpl( buffer_l, buffer_r, dwFrames, state );
 
                         dwDelta -= dwFrames;
                         total_processed += dwFrames;
@@ -515,11 +511,9 @@ namespace org.kbinani.cadencii
                             buffer_l[i] = 0.0;
                             buffer_r[i] = 0.0;
                         }
-                        while ( !g_cancelRequired ) {
+                        while ( !state.isCancelRequested() ) {
                             total_processed2 += sampleRate;
-                            if ( runner.waveIncomingImpl( buffer_l, buffer_r, sampleRate ) ) {
-                                g_cancelRequired = true;
-                            }
+                            runner.waveIncomingImpl( buffer_l, buffer_r, sampleRate, state );
                         }
                     }
 
@@ -545,7 +539,7 @@ namespace org.kbinani.cadencii
                     s_track_events.get( i ).clear();
                 }
                 g_tempoList.clear();
-                g_cancelRequired = false;
+                //g_cancelRequired = false;
             }
             return 1;
         }
@@ -555,10 +549,10 @@ namespace org.kbinani.cadencii
             return rendering;
         }
 
-        public void abortRendering()
+        /*public void abortRendering()
         {
             g_cancelRequired = true;
-        }
+        }*/
 
         public double getProgress()
         {

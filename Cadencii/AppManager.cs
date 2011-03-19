@@ -375,6 +375,10 @@ namespace org.kbinani.cadencii
         /// </summary>
         private static WaveGenerator mWaveGenerator = null;
         /// <summary>
+        /// mWaveGeneratorの停止を行うためのコマンダー
+        /// </summary>
+        private static WorkerStateImp mWaveGeneratorState = new WorkerStateImp();
+        /// <summary>
         /// mWaveGeneratorを動かしているスレッド
         /// </summary>
         private static Thread mPreviewThread;
@@ -744,9 +748,10 @@ namespace org.kbinani.cadencii
         }
 
         /// <summary>
-        /// プレビュー再生を開始します
+        /// プレビュー再生を開始します．
+        /// 合成処理などが途中でキャンセルされた場合にtrue，それ以外の場合にfalseを返します
         /// </summary>
-        private static void previewStart( FormMain form )
+        private static boolean previewStart( FormMain form )
         {
             int selected = mSelected;
             RendererKind renderer = VsqFileEx.getTrackRendererKind( mVsq.Track.get( selected ) );
@@ -762,7 +767,13 @@ namespace org.kbinani.cadencii
                 tracks.add( track );
             }
 
-            patchWorkToFreeze( form, tracks );
+            if ( patchWorkToFreeze( form, tracks ) ) {
+                // キャンセルされた
+#if DEBUG
+                sout.println( "AppManager#previewStart; patchWorkToFreeze returns true" );
+#endif
+                return true;
+            }
 
             WaveSenderDriver driver = new WaveSenderDriver();
             Vector<Amplifier> waves = new Vector<Amplifier>();
@@ -862,6 +873,7 @@ namespace org.kbinani.cadencii
 #if DEBUG
             sout.println( "AppManager.previewStart; calling runGenerator... done" );
 #endif
+            return false;
         }
 
         public static int getPreviewEndingClock()
@@ -877,15 +889,15 @@ namespace org.kbinani.cadencii
             stopGenerator();
         }
 
+        /*
         /// <summary>
         /// 指定したトラックのレンダリングが必要な部分を再レンダリングし，ツギハギすることでトラックのキャッシュを最新の状態にします
         /// </summary>
         /// <param name="tracks"></param>
-        public static void patchWorkToFreeze( FormMain main_window, Vector<Integer> tracks )
+        public static void __old__patchWorkToFreeze( FormMain main_window, Vector<Integer> tracks )
         {
             mVsq.updateTotalClocks();
             String temppath = getTempWaveDir();
-            int presend = editorConfig.PreSendTime;
             int totalClocks = mVsq.TotalClocks;
 
             Vector<PatchWorkQueue> queue = patchWorkCreateQueue( tracks );
@@ -898,7 +910,6 @@ namespace org.kbinani.cadencii
             try {
                 dialog = new FormSynthesize( main_window,
                                              mVsq,
-                                             presend,
                                              queue );
                 dialog.showDialog( main_window );
                 int finished = dialog.getFinished();
@@ -1096,7 +1107,7 @@ namespace org.kbinani.cadencii
                         double secEnd = mVsq.getSecFromClock( clockEnd );
 
                         invokeWaveViewReloadRequiredEvent( tracks.get( k ), wavePath, secStart, secEnd );
-                    }*/
+                    } * /
                     invokeWaveViewReloadRequiredEvent( track, wavePath, 1, -1 );
                 }
             } catch ( Exception ex ) {
@@ -1118,9 +1129,49 @@ namespace org.kbinani.cadencii
                     }
                 }
             }
+        }*/
+
+        /// <summary>
+        /// 指定したトラックのレンダリングが必要な部分を再レンダリングし，ツギハギすることでトラックのキャッシュを最新の状態にします．
+        /// レンダリングが途中でキャンセルされた場合にtrue，そうでない場合にfalseを返します．
+        /// </summary>
+        /// <param name="tracks"></param>
+        public static boolean patchWorkToFreeze( FormMain main_window, Vector<Integer> tracks )
+        {
+            mVsq.updateTotalClocks();
+            Vector<PatchWorkQueue> queue = patchWorkCreateQueue( tracks );
+
+            FormWorker fw = new FormWorker();
+            fw.setupUi( new FormWorkerUi( fw ) );
+            fw.getUi().setTitle( _( "Synthesize" ) );
+            fw.getUi().setText( _( "now synthesizing..." ) );
+
+            double total = 0;
+            SynthesizeWorker worker = new SynthesizeWorker( main_window );
+            foreach( PatchWorkQueue q in queue ){
+                // ジョブを追加
+                double job_amount = q.getJobAmount();
+                fw.addJob( worker, "processQueue", q.getMessage(), job_amount, q );
+                total += job_amount;
+            }
+
+            // パッチワークをするジョブを追加
+            fw.addJob( worker, "patchWork", _( "patchwork" ), total, new Object[] { queue, tracks } );
+
+            // ジョブを開始
+            fw.startJob();
+
+            // ダイアログを表示する
+            beginShowDialog();
+            boolean ret = fw.getUi().showDialog( main_window );
+#if DEBUG
+            sout.println( "AppManager#patchWorkToFreeze; showDialog returns " + ret );
+#endif
+            endShowDialog();
+            return ret;
         }
 
-        private static void invokeWaveViewReloadRequiredEvent( int track, String wavePath, double secStart, double secEnd )
+        public static void invokeWaveViewReloadRequiredEvent( int track, String wavePath, double secStart, double secEnd )
         {
             try {
 #if QT_VERSION
@@ -1176,6 +1227,7 @@ namespace org.kbinani.cadencii
                     q.clockStart = 0;
                     q.clockEnd = totalClocks + 240;
                     q.file = wavePath;
+                    q.p_vsq = mVsq;
                     queue.add( q );
                     continue;
                 }
@@ -1338,6 +1390,7 @@ namespace org.kbinani.cadencii
                     sout.println( "    start=" + unit.mStart + "; end=" + unit.mEnd );
 #endif
                     q.file = fsys.combine( temppath, track + "_" + j + ".wav" );
+                    q.p_vsq = mVsq;
                     queue.add( q );
                 }
             }
@@ -1483,7 +1536,10 @@ namespace org.kbinani.cadencii
             lock ( mLocker ) {
                 WaveGenerator g = mWaveGenerator;
                 if ( g != null ) {
-                    g.stop();
+                    mWaveGeneratorState.requestCancel();
+                    while ( mWaveGenerator.isRunning() ) {
+                        Thread.Sleep( 100 );
+                    }
                 }
                 mWaveGenerator = null;
             }
@@ -1498,7 +1554,10 @@ namespace org.kbinani.cadencii
             lock ( mLocker ) {
                 WaveGenerator g = mWaveGenerator;
                 if ( g != null ) {
-                    g.stop();
+                    mWaveGeneratorState.requestCancel();
+                    while ( g.isRunning() ) {
+                        Thread.Sleep( 100 );
+                    }
                 }
                 mWaveGenerator = generator;
             }
@@ -1530,7 +1589,10 @@ namespace org.kbinani.cadencii
 #endif
                         WaveGenerator g = mWaveGenerator;
                         if ( g != null ) {
-                            g.stop();
+                            mWaveGeneratorState.requestCancel();
+                            while ( mWaveGenerator.isRunning() ) {
+                                Thread.Sleep( 100 );
+                            }
                         }
 #if DEBUG
                         sout.println( "AppManager#runGenerator; waiting stop..." );
@@ -1553,6 +1615,7 @@ namespace org.kbinani.cadencii
                     }
                 }
 
+                mWaveGeneratorState.reset();
 #if JAVA
                 mPreviewThread = new GeneratorRunner( mWaveGenerator, samples );
                 mPreviewThread.start();
@@ -1573,7 +1636,7 @@ namespace org.kbinani.cadencii
             WaveGenerator g = q.generator;
             long samples = q.samples;
             try {
-                g.begin( samples );
+                g.begin( samples, mWaveGeneratorState );
             } catch ( Exception ex ) {
                 Logger.write( typeof( AppManager ) + ".runGeneratorCore; ex=" + ex + "\n" );
                 sout.println( "AppManager#runGeneratorCore; ex=" + ex );
@@ -3269,7 +3332,13 @@ namespace org.kbinani.cadencii
                 if ( previous != mPlaying ) {
                     if ( mPlaying ) {
                         try {
-                            previewStart( form );
+                            if( previewStart( form ) ){
+#if DEBUG
+                                sout.println( "AppManager#setPlaying; previewStart returns true" );
+#endif
+                                mPlaying = false;
+                                return;
+                            }
 #if JAVA
                             previewStartedEvent.raise( typeof( AppManager ), new BEventArgs() );
 #elif QT_VERSION

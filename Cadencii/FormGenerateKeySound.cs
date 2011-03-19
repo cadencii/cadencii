@@ -356,7 +356,8 @@ namespace org.kbinani.cadencii {
 #endif
                 generator.init( vsq, 1, 0, vsq.TotalClocks, sample_rate );
                 double total_sec = vsq.getSecFromClock( vsq.TotalClocks ) + 1.0;
-                generator.begin( (long)(total_sec * sample_rate) );
+                WorkerStateImp state = new WorkerStateImp();
+                generator.begin( (long)(total_sec * sample_rate), state );
             } catch ( Exception ex ) {
                 serr.println( "FormGenerateKeySound#GenerateSinglePhone; ex=" + ex );
                 Logger.write( typeof( FormGenerateKeySound ) + ".GenerateSinglePhone; ex=" + ex + "\n" );

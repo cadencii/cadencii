@@ -15,6 +15,12 @@
 
 package org.kbinani.cadencii;
 
+#elif __cplusplus
+
+namespace org{
+namespace kbinani{
+namespace cadencii{
+
 #else
 
 using System;
@@ -33,13 +39,13 @@ namespace org.kbinani.cadencii
         public String name;
         public Object arguments;
         public int index;
-        public FormWorkerJobState state;
+        public WorkerState state;
     }
 
 #if JAVA
 #elif __cplusplus
 #else
-    class FormWorkerJobStateImp : FormWorkerJobState
+    class FormWorkerJobStateImp : WorkerState
     {
         private BackgroundWorker mWorker;
         private bool mIsCancelRequested;
@@ -203,15 +209,6 @@ namespace org.kbinani.cadencii
         }
 
         /// <summary>
-        /// フォームを表示します
-        /// </summary>
-        public void show()
-        {
-            if ( ptrUi == null ) return;
-            ptrUi.show();
-        }
-
-        /// <summary>
         /// ビューのインスタンスを取得します
         /// </summary>
         /// <returns></returns>
@@ -243,6 +240,9 @@ namespace org.kbinani.cadencii
 
         private void workerCompleted( int index )
         {
+#if DEBUG
+            sout.println( "FormWorker#workerCompleted; index=" + index );
+#endif
             ProgressBarWithLabel label = vec.get( mLabels, index );
             ptrUi.removeProgressBar( label.getUi() );
             mman.del( label );
@@ -289,7 +289,10 @@ namespace org.kbinani.cadencii
                 BackgroundWorker w = mThreads[i];
                 if ( w == null ) continue;
                 if ( w == sender ) {
-                    workerCompleted( i );
+                    WorkerState state = vec.get( mArguments, i ).state;
+                    if ( state.isCancelRequested() == false ) {
+                        workerCompleted( i );
+                    }
                     break;
                 }
             }
@@ -300,7 +303,13 @@ namespace org.kbinani.cadencii
             FormWorkerJobArgument o = (FormWorkerJobArgument)e.Argument;
             MethodInfo mi = null;
             try {
-                mi = o.invoker.GetType().GetMethod( o.name, new Type[] { typeof( FormWorkerJobState ), typeof( Object ) } );
+                Type type = null;
+                if ( o.invoker is Type ) {
+                    type = (Type)o.invoker;
+                } else {
+                    type = o.invoker.GetType();
+                }
+                mi = type.GetMethod( o.name, new Type[] { typeof( WorkerState ), typeof( Object ) } );
             } catch ( Exception ex ) {
                 serr.println( typeof( FormWorker ) + ".startWork; ex=" + ex );
             }
@@ -315,6 +324,9 @@ namespace org.kbinani.cadencii
 #endif
     }
 
-#if !JAVA
+#if JAVA
+#elif __cplusplus
+} } }
+#else
 }
 #endif

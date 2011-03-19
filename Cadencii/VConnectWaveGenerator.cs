@@ -67,7 +67,7 @@ namespace org.kbinani.cadencii
         /// </summary>
         protected long mTotalAppend = 0;
         protected int mTrimRemain = 0;
-        protected boolean mAbortRequired = false;
+        //protected boolean mAbortRequired = false;
 
         protected int mTrack = 0;
         protected int mTrimMillisec;
@@ -86,6 +86,7 @@ namespace org.kbinani.cadencii
         private double mRunningRate;
         private WaveReceiver mReceiver;
         private VsqFileEx mVsq;
+        private WorkerState mState;
 
         public int getSampleRate()
         {
@@ -116,7 +117,7 @@ namespace org.kbinani.cadencii
             }
         }
 
-        public void stop()
+        /*public void stop()
         {
             if ( mRunning ) {
                 mAbortRequired = true;
@@ -131,7 +132,7 @@ namespace org.kbinani.cadencii
 #endif
                 }
             }
-        }
+        }*/
 
         public override int getVersion()
         {
@@ -226,12 +227,13 @@ namespace org.kbinani.cadencii
             }
         }
 
-        public void begin( long samples )
+        public void begin( long samples, WorkerState state )
         {
+            mState = state;
             mTotalSamples = samples;
             mStartedDate = PortUtil.getCurrentTime();
             mRunning = true;
-            mAbortRequired = false;
+            //mAbortRequired = false;
             double[] bufL = new double[BUFLEN];
             double[] bufR = new double[BUFLEN];
             String straight_synth = fsys.combine( PortUtil.getApplicationStartupPath(), STRAIGHT_SYNTH );
@@ -269,7 +271,7 @@ namespace org.kbinani.cadencii
                     }
                     long remain = queue.startSample;
                     while ( remain > 0 ) {
-                        if ( mAbortRequired ) {
+                        if ( state.isCancelRequested() ) {
                             postProcess();
                             return;
                         }
@@ -286,7 +288,7 @@ namespace org.kbinani.cadencii
             double processed_samples = 0.0;
 
             for ( int i = 0; i < count; i++ ) {
-                if ( mAbortRequired ) {
+                if ( state.isCancelRequested() ) {
                     postProcess();
                     return;
                 }
@@ -449,7 +451,7 @@ namespace org.kbinani.cadencii
                         int remain = wave_samples;
                         long pos = 0;
                         while ( remain > 0 ) {
-                            if ( mAbortRequired ) {
+                            if ( state.isCancelRequested() ) {
                                 postProcess();
                                 return;
                             }
@@ -832,13 +834,14 @@ namespace org.kbinani.cadencii
 #if DEBUG
             sout.println( "UtauRenderingRunner#run; tremain=" + tremain );
 #endif
-            while ( tremain > 0 && !mAbortRequired ) {
+            while ( tremain > 0 && !state.isCancelRequested() ) {
                 int tlength = tremain > BUFLEN ? BUFLEN : tremain;
                 waveIncoming( bufL, bufR, tlength );
                 tremain -= tlength;
             }
 
             postProcess();
+            state.reportComplete();
         }
 
         /// <summary>
@@ -846,7 +849,7 @@ namespace org.kbinani.cadencii
         /// </summary>
         private void postProcess()
         {
-            mAbortRequired = false;
+            //mAbortRequired = false;
             mRunning = false;
             mReceiver.end();
         }
@@ -879,6 +882,7 @@ namespace org.kbinani.cadencii
                         offset += amount;
                         remain -= amount;
                         mTotalAppend += amount;
+                        mState.reportProgress( mTotalAppend );
                     }
                 }
             }

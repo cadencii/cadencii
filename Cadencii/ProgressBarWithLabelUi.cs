@@ -53,6 +53,8 @@ namespace org.kbinani.cadencii
 
         public void setProgress( int value )
         {
+            if ( value < progressBar1.Minimum ) value = progressBar1.Minimum;
+            if ( progressBar1.Maximum < value ) value = progressBar1.Maximum;
             progressBar1.Value = value;
         }
 

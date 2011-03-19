@@ -1,5 +1,5 @@
 ﻿/*
- * FormWorkerJobState.cs
+ * WorkerState.cs
  * Copyright © 2011 kbinani
  *
  * This file is part of org.kbinani.cadencii.
@@ -31,7 +31,7 @@ namespace org.kbinani.cadencii
     /// <summary>
     /// FormWorkerに登録されている1個のジョブについての状態を表現します
     /// </summary>
-    public interface FormWorkerJobState
+    public interface WorkerState
     {
         /// <summary>
         /// workerスレッドから呼び出し元に進捗を通知します

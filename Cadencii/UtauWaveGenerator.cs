@@ -65,7 +65,7 @@ namespace org.kbinani.cadencii
         private String mTempDir;
         private boolean mResamplerWithWine;
         private boolean mWavtoolWithWine;
-        private boolean mAbortRequired = false;
+        //private boolean mAbortRequired = false;
         private boolean mRunning = false;
         private String mWine = "";
 
@@ -83,6 +83,7 @@ namespace org.kbinani.cadencii
         /// </summary>
         private int mThisSampleRate = 44100;
         private RateConvertContext mContext = null;
+        private WorkerState mState;
 
         public int getSampleRate()
         {
@@ -108,7 +109,7 @@ namespace org.kbinani.cadencii
             }
         }
 
-        public void stop()
+        /*public void stop()
         {
             if ( mRunning ) {
                 mAbortRequired = true;
@@ -123,7 +124,7 @@ namespace org.kbinani.cadencii
 #endif
                 }
             }
-        }
+        }*/
 
         public override void setConfig( String parameter )
         {
@@ -237,8 +238,9 @@ namespace org.kbinani.cadencii
             mCache.clear();
         }
 
-        public void begin( long total_samples )
+        public void begin( long total_samples, WorkerState state )
         {
+            mState = state;
             mTotalSamples = total_samples;
 #if MAKEBAT_SP
             StreamWriter bat = null;
@@ -252,7 +254,7 @@ namespace org.kbinani.cadencii
 #endif
             try {
                 double sample_length = mVsq.getSecFromClock( mVsq.TotalClocks ) * mSampleRate;
-                mAbortRequired = false;
+                //mAbortRequired = false;
                 mRunning = true;
                 if ( !fsys.isDirectoryExists( mTempDir ) ) {
                     PortUtil.createDirectory( mTempDir );
@@ -326,7 +328,7 @@ namespace org.kbinani.cadencii
 #if MAKEBAT_SP
                     log.Write( "; pc=" + program_change );
 #endif
-                    if ( mAbortRequired ) {
+                    if ( state.isCancelRequested() ) {
                         return;
                     }
                     count++;
@@ -696,7 +698,7 @@ namespace org.kbinani.cadencii
                         }
 #endif
                     }
-                    if ( mAbortRequired ) {
+                    if ( state.isCancelRequested() ) {
                         break;
                     }
 
@@ -865,7 +867,7 @@ namespace org.kbinani.cadencii
                             if ( byte_per_sample == 1 ) {
                                 if ( channel == 1 ) {
                                     while ( remain > 0 ) {
-                                        if ( mAbortRequired ) {
+                                        if ( state.isCancelRequested() ) {
                                             break;
                                         }
                                         int len = dat.read( wavbuf, 0, buflen );
@@ -874,7 +876,7 @@ namespace org.kbinani.cadencii
                                         }
                                         int c = 0;
                                         while ( len > 0 && remain > 0 ) {
-                                            if ( mAbortRequired ) {
+                                            if ( state.isCancelRequested() ) {
                                                 break;
                                             }
                                             len -= 1;
@@ -896,7 +898,7 @@ namespace org.kbinani.cadencii
                                     }
                                 } else {
                                     while ( remain > 0 ) {
-                                        if ( mAbortRequired ) {
+                                        if ( state.isCancelRequested() ) {
                                             break;
                                         }
                                         int len = dat.read( wavbuf, 0, buflen );
@@ -905,7 +907,7 @@ namespace org.kbinani.cadencii
                                         }
                                         int c = 0;
                                         while ( len > 0 && remain > 0 ) {
-                                            if ( mAbortRequired ) {
+                                            if ( state.isCancelRequested() ) {
                                                 break;
                                             }
                                             len -= 2;
@@ -930,7 +932,7 @@ namespace org.kbinani.cadencii
                             } else if ( byte_per_sample == 2 ) {
                                 if ( channel == 1 ) {
                                     while ( remain > 0 ) {
-                                        if ( mAbortRequired ) {
+                                        if ( state.isCancelRequested() ) {
                                             break;
                                         }
                                         int len = dat.read( wavbuf, 0, buflen );
@@ -939,7 +941,7 @@ namespace org.kbinani.cadencii
                                         }
                                         int c = 0;
                                         while ( len > 0 && remain > 0 ) {
-                                            if ( mAbortRequired ) {
+                                            if ( state.isCancelRequested() ) {
                                                 break;
                                             }
                                             len -= 2;
@@ -961,7 +963,7 @@ namespace org.kbinani.cadencii
                                     }
                                 } else {
                                     while ( remain > 0 ) {
-                                        if ( mAbortRequired ) {
+                                        if ( state.isCancelRequested() ) {
                                             break;
                                         }
                                         int len = dat.read( wavbuf, 0, buflen );
@@ -970,7 +972,7 @@ namespace org.kbinani.cadencii
                                         }
                                         int c = 0;
                                         while ( len > 0 && remain > 0 ) {
-                                            if ( mAbortRequired ) {
+                                            if ( state.isCancelRequested() ) {
                                                 break;
                                             }
                                             len -= 4;
@@ -1009,8 +1011,8 @@ namespace org.kbinani.cadencii
                             }
                         }
 
-                        if ( mAbortRequired ) {
-                            mAbortRequired = false;
+                        if ( state.isCancelRequested() ) {
+                            //mAbortRequired = false;
                             return;
                         }
 #if DEBUG
@@ -1046,7 +1048,7 @@ namespace org.kbinani.cadencii
                     mBufferL[i] = 0.0;
                     mBufferR[i] = 0.0;
                 }
-                while ( tremain > 0 && !mAbortRequired ) {
+                while ( tremain > 0 && !state.isCancelRequested() ) {
                     int amount = (tremain > BUFLEN) ? BUFLEN : tremain;
                     waveIncoming( mBufferL, mBufferR, amount, mThisSampleRate );
                     tremain -= amount;
@@ -1075,8 +1077,9 @@ namespace org.kbinani.cadencii
 #endif
 #endif
                 mRunning = false;
-                mAbortRequired = false;
+                //mAbortRequired = false;
                 mReceiver.end();
+                state.reportComplete();
             }
         }
 
@@ -1187,6 +1190,7 @@ namespace org.kbinani.cadencii
             }
             if ( mContext == null ) {
                 mTotalAppend += length;
+                mState.reportProgress( mTotalAppend );
                 return;
             }
 
@@ -1199,6 +1203,7 @@ namespace org.kbinani.cadencii
                 while ( RateConvertContext.convert( mContext, mBufferL, mBufferR, amount ) ) {
                     mReceiver.push( mContext.bufferLeft, mContext.bufferRight, mContext.length );
                     mTotalAppend += mContext.length;
+                    mState.reportProgress( mTotalAppend );
                 }
                 remain -= amount;
                 offset += amount;

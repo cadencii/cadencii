@@ -47,7 +47,7 @@ namespace org.kbinani.cadencii
         private long mTotalSamples = 1L;
         private WaveReceiver mReceiver = null;
         private int mVersion = 0;
-        private boolean mAbortRequired = false;
+        //private boolean mAbortRequired = false;
         private boolean mRunning = false;
         private int mSampleRate;
 
@@ -75,7 +75,7 @@ namespace org.kbinani.cadencii
             }
         }
 
-        public void stop()
+        /*public void stop()
         {
             if ( mRunning ) {
                 mAbortRequired = true;
@@ -90,7 +90,7 @@ namespace org.kbinani.cadencii
 #endif
                 }
             }
-        }
+        }*/
 
         public override int getVersion()
         {
@@ -135,12 +135,12 @@ namespace org.kbinani.cadencii
             return mTotalAppend;
         }
 
-        public void begin( long length )
+        public void begin( long length, WorkerState state )
         {
             mRunning = true;
             mTotalSamples = length;
             long remain = length;
-            while ( remain > 0 && !mAbortRequired ) {
+            while ( remain > 0 && !state.isCancelRequested() ) {
                 int amount = (remain > BUFLEN) ? BUFLEN : (int)remain;
                 mWaveSender.pull( mBufferL, mBufferR, amount );
                 mReceiver.push( mBufferL, mBufferR, amount );
