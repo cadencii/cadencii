@@ -3664,6 +3664,7 @@ namespace org.kbinani.cadencii
             //int bar = mVsq.getPreMeasure() + 1;
             //mEndMarker = mVsq.getClockFromBarCount( bar );
             mAutoBackupTimer.stop();
+            setCurrentClock( mVsq.getPreMeasureClocks() );
             try {
 #if JAVA
                 updateBgmStatusRequiredEvent.raise( typeof( AppManager ), new EventArgs() );

@@ -453,15 +453,8 @@
     <None Include="makefile" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="manual\img\screen_shot.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="manual\style.css">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Properties\cursor.cur" />
     <Content Include="Properties\Icon1.ico" />
-    <None Include="manual\index.php" />
     <None Include="Properties\app.manifest" />
     <None Include="Resources.list" />
     <None Include="zh-CN.po">
@@ -1080,6 +1073,9 @@
       <FileType>File</FileType>
     </PublishFile>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="manual\" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -1089,8 +1085,7 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>copy "$(ProjectDir)manual\manual.pdf" "$(TargetDir)manual.pdf"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>javac "$(SolutionDir)makeRes.java" -encoding UTF8

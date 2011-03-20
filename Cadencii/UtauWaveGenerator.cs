@@ -400,7 +400,7 @@ namespace org.kbinani.cadencii
 #endif
                     RenderQueue rq2 = new RenderQueue();
                     String wavPath = "";
-                    if ( str.length( oa.fileName ) > 0 ) {
+                    if ( oa.fileName != null && str.length( oa.fileName ) > 0 ) {
                         wavPath = fsys.combine( singer, oa.fileName );
                     } else {
                         wavPath = fsys.combine( singer, lyric + ".wav" );

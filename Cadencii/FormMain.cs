@@ -685,7 +685,6 @@ namespace org.kbinani.cadencii
             menuVisualOverview.setSelected( AppManager.editorConfig.OverviewEnabled );
 #if ENABLE_PROPERTY
             mPropertyPanelContainer = new PropertyPanelContainer();
-            updatePropertyPanelState( AppManager.editorConfig.PropertyWindowStatus.State );
 #endif
 
             registerEventHandlers();
@@ -810,6 +809,8 @@ namespace org.kbinani.cadencii
             panel1.ResumeLayout();
             splitContainer2.Panel1.ResumeLayout();
 #endif
+
+            updatePropertyPanelState( AppManager.editorConfig.PropertyWindowStatus.State );
 
             pictPianoRoll.MouseWheel += new BMouseEventHandler( pictPianoRoll_MouseWheel );
             trackSelector.MouseWheel += new BMouseEventHandler( trackSelector_MouseWheel );
@@ -2450,6 +2451,9 @@ namespace org.kbinani.cadencii
                     w = _PROPERTY_DOCK_MIN_WIDTH;
                 }
                 splitContainerProperty.setDividerLocation( w );
+#if DEBUG
+                sout.println( "FormMain#updatePropertyPanelState; state=Docked; w=" + w );
+#endif
                 AppManager.editorConfig.PropertyWindowStatus.WindowState = BFormWindowState.Minimized;
 #if JAVA
                 int before = AppManager.propertyWindow.formClosingEvent.size();
@@ -10556,6 +10560,9 @@ namespace org.kbinani.cadencii
             if( AppManager.editorConfig.ViewWaveform ){
                 AppManager.editorConfig.SplitContainer2LastDividerLocation = splitContainer2.getDividerLocation();
             }
+            if ( AppManager.editorConfig.PropertyWindowStatus.State == PanelState.Docked ) {
+                AppManager.editorConfig.PropertyWindowStatus.DockWidth = splitContainerProperty.getDividerLocation();
+            }
 #if !JAVA
             if ( e.CloseReason == System.Windows.Forms.CloseReason.WindowsShutDown ) {
                 return;
@@ -16463,6 +16470,9 @@ namespace org.kbinani.cadencii
             bool pushed = stripBtnScroll.Pushed;
 #endif
             AppManager.mAutoScroll = pushed;
+#if DEBUG
+            sout.println( "FormMain#stripBtnScroll_CheckedChanged; pushed=" + pushed );
+#endif
             pictPianoRoll.requestFocus();
         }
 
@@ -16665,8 +16675,10 @@ namespace org.kbinani.cadencii
                 //stripBtnStop_Click( e.Button, new EventArgs() );
             } else if ( e.Button == stripBtnScroll ) {
                 stripBtnScroll.Pushed = !stripBtnScroll.Pushed;
+                stripBtnScroll_CheckedChanged( e.Button, new EventArgs() );
             } else if ( e.Button == stripBtnLoop ) {
                 stripBtnLoop.Pushed = !stripBtnLoop.Pushed;
+                stripBtnLoop_CheckedChanged( e.Button, new EventArgs() );
             }
         }
 #endif
