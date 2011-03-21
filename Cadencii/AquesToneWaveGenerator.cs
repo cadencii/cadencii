@@ -153,6 +153,16 @@ namespace org.kbinani.cadencii
             mReceiver = r;
         }
 
+        /// <summary>
+        /// beginメソッドを抜けるときの共通処理を行います
+        /// </summary>
+        private void exitBegin()
+        {
+            mRunning = false;
+            //mAbortRequired = false;
+            mReceiver.end();
+        }
+
         public void begin( long total_samples, WorkerState state )
         {
 #if DEBUG
@@ -166,6 +176,7 @@ namespace org.kbinani.cadencii
                 log.WriteLine( "mDriver==null" );
                 log.Close();
 #endif
+                exitBegin();
                 state.reportComplete();
                 return;
             }
@@ -178,6 +189,7 @@ namespace org.kbinani.cadencii
                 log.WriteLine( "mDriver.loaded=" + mDriver.loaded );
                 log.Close();
 #endif
+                exitBegin();
                 state.reportComplete();
                 return;
             }
@@ -359,9 +371,7 @@ namespace org.kbinani.cadencii
 #if DEBUG
             log.Close();
 #endif
-            mRunning = false;
-            //mAbortRequired = false;
-            mReceiver.end();
+            exitBegin();
             state.reportComplete();
         }
 

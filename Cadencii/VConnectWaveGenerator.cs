@@ -241,7 +241,7 @@ namespace org.kbinani.cadencii
 #if DEBUG
                 sout.println( "VConnectWaveGenerator#begin; \"" + straight_synth + "\" does not exists" );
 #endif
-                postProcess();
+                exitBegin();
                 return;
             }
             int count = mQueue.size();
@@ -272,7 +272,7 @@ namespace org.kbinani.cadencii
                     long remain = queue.startSample;
                     while ( remain > 0 ) {
                         if ( state.isCancelRequested() ) {
-                            postProcess();
+                            exitBegin();
                             return;
                         }
                         int len = (remain > BUFLEN) ? BUFLEN : (int)remain;
@@ -289,7 +289,7 @@ namespace org.kbinani.cadencii
 
             for ( int i = 0; i < count; i++ ) {
                 if ( state.isCancelRequested() ) {
-                    postProcess();
+                    exitBegin();
                     return;
                 }
                 VConnectRenderingQueue queue = mQueue.get( i );
@@ -452,7 +452,7 @@ namespace org.kbinani.cadencii
                         long pos = 0;
                         while ( remain > 0 ) {
                             if ( state.isCancelRequested() ) {
-                                postProcess();
+                                exitBegin();
                                 return;
                             }
                             int len = (remain > BUFLEN) ? BUFLEN : remain;
@@ -840,14 +840,14 @@ namespace org.kbinani.cadencii
                 tremain -= tlength;
             }
 
-            postProcess();
+            exitBegin();
             state.reportComplete();
         }
 
         /// <summary>
         /// beginメソッドから抜ける直前に行う処理
         /// </summary>
-        private void postProcess()
+        private void exitBegin()
         {
             //mAbortRequired = false;
             mRunning = false;

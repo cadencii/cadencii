@@ -207,6 +207,15 @@ namespace org.kbinani.cadencii
             return;
         }
 
+        /// <summary>
+        /// beginメソッドを抜けるときに共通する処理を行います
+        /// </summary>
+        private void exitBegin()
+        {
+            mReceiver.end();
+            mRunning = false;
+        }
+
         public void begin( long total_samples, WorkerState state )
         {
             // 渡されたVSQの、合成に不要な部分を削除する
@@ -246,9 +255,15 @@ namespace org.kbinani.cadencii
                 }
             }
             // ドライバー見つからなかったらbail out
-            if ( mDriver == null ) return;
+            if ( mDriver == null ) {
+                exitBegin();
+                return;
+            }
             // ドライバーが読み込み完了していなかったらbail out
-            if ( !mDriver.loaded ) return;
+            if ( !mDriver.loaded ) {
+                exitBegin();
+                return;
+            }
 #endif
 
             // NRPNを作成
@@ -318,6 +333,7 @@ namespace org.kbinani.cadencii
             int ver = (s_working_renderer == RendererKind.VOCALOID2) ? 2 : 1;
             VocaloidDaemon vd = VSTiDllManager.vocaloidrvDaemon[ver - 1];
             if( vd == null ){
+                exitBegin();
                 return;
             }
             // 停止処理用のファイルが残っていたら消去する
@@ -635,8 +651,7 @@ namespace org.kbinani.cadencii
 
             // ここに来るということは合成が終わったか、ドライバへのアボート要求が実行されたってこと。
             // このインスタンスが受け持っている波形レシーバに、処理終了を知らせる。
-            mReceiver.end();
-            mRunning = false;
+            exitBegin();
             if ( state.isCancelRequested() == false ) {
                 state.reportComplete();
             }

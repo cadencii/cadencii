@@ -329,6 +329,7 @@ namespace org.kbinani.cadencii
                     log.Write( "; pc=" + program_change );
 #endif
                     if ( state.isCancelRequested() ) {
+                        exitBegin();
                         return;
                     }
                     count++;
@@ -1013,6 +1014,7 @@ namespace org.kbinani.cadencii
 
                         if ( state.isCancelRequested() ) {
                             //mAbortRequired = false;
+                            exitBegin();
                             return;
                         }
 #if DEBUG
@@ -1076,11 +1078,19 @@ namespace org.kbinani.cadencii
                 sw2.Close();
 #endif
 #endif
-                mRunning = false;
-                //mAbortRequired = false;
-                mReceiver.end();
+                exitBegin();
                 state.reportComplete();
             }
+        }
+
+        /// <summary>
+        /// beginメソッドを抜けるときの共通処理を行います
+        /// </summary>
+        private void exitBegin()
+        {
+            mRunning = false;
+            //mAbortRequired = false;
+            mReceiver.end();
         }
 
         private void processWavtool( Vector<String> arg, String filebase, String temp_dir, String wavtool, boolean invoke_with_wine )

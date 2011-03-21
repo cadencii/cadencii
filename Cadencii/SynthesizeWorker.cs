@@ -324,9 +324,9 @@ namespace org.kbinani.cadencii
                             return;// true;
                         }
                         WaveReader r = null;
-                        try{
+                        try {
                             r = new WaveReader( file );
-                        }catch( Exception ex ){
+                        } catch ( Exception ex ) {
                             Logger.write( typeof( SynthesizeWorker ) + ".processQueue; ex=" + ex + "\n" );
                             r = null;
                         }
