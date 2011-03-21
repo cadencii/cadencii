@@ -11,6 +11,12 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+
+//INCLUDE ../BuildJavaUI/src/org/kbinani/cadencii/ProgressBarWithLabelUi.java
+
+#else
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -121,3 +127,4 @@ namespace org.kbinani.cadencii
     }
 
 }
+#endif

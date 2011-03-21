@@ -352,7 +352,7 @@ namespace org.kbinani.cadencii
                     try{
                         Process process = pb.start();
                         InputStream stream = process.getInputStream();
-                        while( stream.read() >= 0 && !mAbortRequired );
+                        while( stream.read() >= 0 && !state.isCancelRequested() );
                     }catch( Exception ex ){
                         System.err.println( "VConnectWaveGenerator#begin; ex=" + ex );
 #if DEBUG

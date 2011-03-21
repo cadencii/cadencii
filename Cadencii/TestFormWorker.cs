@@ -16,6 +16,8 @@
 
 package org.kbinani.cadencii;
 
+import org.kbinani.*;
+
 #else
 
 using System;
@@ -46,7 +48,7 @@ namespace org.kbinani.cadencii
         public void testMethod( WorkerState receiver, Object argument )
         {
             int wait_ms = 10;
-            int amount = ((int)argument) / wait_ms;
+            int amount = ((Integer)argument) / wait_ms;
             int proc = 0;
             for ( int i = 0; i < amount; i++ ) {
                 // 中止処理後にreportCompleteを送ってはいけない
@@ -55,7 +57,14 @@ namespace org.kbinani.cadencii
                     return;
                 }
                 receiver.reportProgress( proc );
+#if JAVA
+                try{
+                    Thread.sleep( wait_ms );
+                }catch( Exception ex ){
+                }
+#else
                 Thread.Sleep( wait_ms );
+#endif
                 proc += wait_ms;
             }
             receiver.reportComplete();

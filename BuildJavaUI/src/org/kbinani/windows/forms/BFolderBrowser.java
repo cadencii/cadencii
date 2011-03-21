@@ -84,6 +84,7 @@ public class BFolderBrowser extends BDialog {
     	super();
     	initialize();
     	dialog = new JFileChooser();
+    	dialog.setFileSelectionMode( JFileChooser.DIRECTORIES_ONLY );
     }
     
     /**

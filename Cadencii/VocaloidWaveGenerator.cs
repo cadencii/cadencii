@@ -119,28 +119,6 @@ namespace org.kbinani.cadencii
             }
         }
 
-        /*public void stop()
-        {
-            if ( mRunning ) {
-#if !JAVA
-                mDriver.abortRendering();
-#endif
-                mAbortRequired = true;
-                while ( mRunning ) {
-#if JAVA
-                    try{
-                        Thread.sleep( 100 );
-                    }catch( Exception ex ){
-                        ex.printStackTrace();
-                        break;
-                    }
-#else
-                    Thread.Sleep( 100 );
-#endif
-                }
-            }
-        }*/
-
         public override void setConfig( String parameter )
         {
             // do nothing
@@ -544,16 +522,16 @@ namespace org.kbinani.cadencii
                 long total_read_bytes = 0;
 #endif
                 while( remain > 0 ){
-                    if( mAbortRequired ){
+                    if( state.isCancelRequested() ){
                         break;
                     }
                     int amount = remain > BUFLEN ? BUFLEN : (int)remain;
                     for( int i = 0; i < amount; i++ ){
                         // 4バイト以上のデータが読み込めるようになるまで待機
-                        while( in.available() < 4 && !mAbortRequired ){
+                        while( in.available() < 4 && !state.isCancelRequested() ){
                             Thread.sleep( 100 );
                         }
-                        if( mAbortRequired ){
+                        if( state.isCancelRequested() ){
                             break;
                         }
                         int lh = in.read();
@@ -568,17 +546,17 @@ namespace org.kbinani.cadencii
                         l[i] = il / 32768.0;
                         r[i] = ir / 32768.0;
                     }
-                    if( mAbortRequired ){
+                    if( state.isCancelRequested() ){
                         break;
                     }
-                    waveIncomingImpl( l, r, amount );
+                    waveIncomingImpl( l, r, amount, state );
                     remain -= amount;
                 }
 
 #if DEBUG
                 sout.println( "VocaloidWaveGenerator#begin; total_read_bytes=" + total_read_bytes );
 #endif
-                if( mAbortRequired ){
+                if( state.isCancelRequested() ){
                     // デーモンに合成処理の停止を要求
                     String monitor_dir = vd.getTempPathUnixName();
                     String stop = fsys.combine( monitor_dir, "stop" );

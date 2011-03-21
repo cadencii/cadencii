@@ -914,7 +914,7 @@ namespace org.kbinani.cadencii
             groupPianoroll.setTitle( _( "Piano Roll" ) );
             labelWheelOrder.setText( _( "Mouse wheel Rate" ) );
 
-            chkCursorFix.setText( _( "Fix Play Cursor to Center" ) );
+            chkCursorFix.setText( _( "Fix Song position to Center" ) );
             chkScrollHorizontal.setText( _( "Horizontal Scroll when Mouse wheel" ) );
             chkKeepLyricInputMode.setText( _( "Keep Lyric Input Mode" ) );
             chkPlayPreviewWhenRightClick.setText( _( "Play Preview On Right Click" ) );

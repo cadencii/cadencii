@@ -15,6 +15,8 @@
 
 package org.kbinani.cadencii;
 
+import org.kbinani.*;
+
 #else
 
 using System;
@@ -32,12 +34,14 @@ namespace org.kbinani.cadencii
         private ProgressBarWithLabelUi ptrUi = null;
         private Object ptrArgument = null;
 
+#if !JAVA
         ~ProgressBarWithLabel()
         {
 #if __cplusplus
             mman.del( ptrUi );
 #endif
         }
+#endif
 
         public void setWidth( int value )
         {

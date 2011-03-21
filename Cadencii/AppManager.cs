@@ -57,18 +57,20 @@ namespace org.kbinani.cadencii
 #if JAVA
     class GeneratorRunner extends Thread
     {
-        WaveGenerator mGenerator = null;
-        long mSamples;
+        private WaveGenerator mGenerator = null;
+        private long mSamples;
+        private WorkerState mState;
 
-        public GeneratorRunner( WaveGenerator generator, long samples )
+        public GeneratorRunner( WaveGenerator generator, long samples, WorkerState state )
         {
             mGenerator = generator;
             mSamples = samples;
+            mState = state;
         }
 
         public void run()
         {
-            mGenerator.begin( mSamples );
+            mGenerator.begin( mSamples, mState );
         }
     }
 #endif
@@ -889,248 +891,6 @@ namespace org.kbinani.cadencii
             stopGenerator();
         }
 
-        /*
-        /// <summary>
-        /// 指定したトラックのレンダリングが必要な部分を再レンダリングし，ツギハギすることでトラックのキャッシュを最新の状態にします
-        /// </summary>
-        /// <param name="tracks"></param>
-        public static void __old__patchWorkToFreeze( FormMain main_window, Vector<Integer> tracks )
-        {
-            mVsq.updateTotalClocks();
-            String temppath = getTempWaveDir();
-            int totalClocks = mVsq.TotalClocks;
-
-            Vector<PatchWorkQueue> queue = patchWorkCreateQueue( tracks );
-            if ( queue.size() <= 0 ) {
-                return;
-            }
-
-            FormSynthesize dialog = null;
-            String tempWave = fsys.combine( temppath, "temp.wav" );
-            try {
-                dialog = new FormSynthesize( main_window,
-                                             mVsq,
-                                             queue );
-                dialog.showDialog( main_window );
-                int finished = dialog.getFinished();
-                for ( int k = 0; k < tracks.size(); k++ ) {
-                    int track = tracks.get( k );
-                    String wavePath = fsys.combine( temppath, track + ".wav" );
-                    Vector<Integer> queueIndex = new Vector<Integer>();
-
-                    for ( int i = 0; i < queue.size(); i++ ) {
-                        if ( queue.get( i ).track == track ) {
-                            queueIndex.add( i );
-                        }
-                    }
-
-                    if ( queueIndex.size() <= 0 ) {
-                        // 第trackトラックに対してパッチワークを行う必要無し
-                        continue;
-                    }
-
-#if DEBUG
-                    sout.println( "AppManager#pathWorkToFreeze; wavePath=" + wavePath + "; queue.get( queueIndex.get( 0 ) ).file=" + queue.get( queueIndex.get( 0 ) ).file );
-                    sout.println( "AppManager#pathWorkToFreeze; queueIndex.size()=" + queueIndex.size() );
-#endif
-                    if ( queueIndex.size() == 1 && wavePath.Equals( queue.get( queueIndex.get( 0 ) ).file ) ) {
-                        // 第trackトラック全体の合成を指示するキューだった場合．
-                        // このとき，パッチワークを行う必要なし．
-                        mLastRenderedStatus[track - 1] =
-                            new RenderedStatus( (VsqTrack)mVsq.Track.get( track ).clone(), mVsq.TempoTable, (SequenceConfig)mVsq.config.clone() );
-                        serializeRenderingStatus( temppath, track );
-                        invokeWaveViewReloadRequiredEvent( track, wavePath, 1, -1 );
-                        continue;
-                    }
-
-                    WaveWriter writer = null;
-                    try {
-                        int sampleRate = mVsq.config.SamplingRate;
-                        long totalLength = (long)((mVsq.getSecFromClock( mVsq.TotalClocks ) + 1.0) * sampleRate);
-                        writer = new WaveWriter( wavePath, mVsq.config.WaveFileOutputChannel, 16, sampleRate );
-                        int BUFLEN = 1024;
-                        double[] bufl = new double[BUFLEN];
-                        double[] bufr = new double[BUFLEN];
-                        for ( int m = 0; m < queueIndex.size(); m++ ) {
-                            int i = queueIndex.get( m );
-                            if ( finished <= i ) {
-                                break;
-                            }
-                            double secStart = mVsq.getSecFromClock( queue.get( i ).clockStart );
-                            int clockEnd = queue.get( i ).clockEnd;
-                            if ( clockEnd == int.MaxValue ) {
-                                clockEnd = mVsq.TotalClocks + 240;
-                            }
-                            double secEnd = mVsq.getSecFromClock( clockEnd );
-                            long sampleStart = (long)(secStart * sampleRate);
-                            long sampleEnd = (long)(secEnd * sampleRate);
-
-                            WaveReader wr = null;
-                            try {
-                                wr = new WaveReader( queue.get( i ).file );
-                                long remain2 = sampleEnd - sampleStart;
-                                long proc = 0;
-                                while ( remain2 > 0 ) {
-                                    int delta = remain2 > BUFLEN ? BUFLEN : (int)remain2;
-                                    wr.read( proc, delta, bufl, bufr );
-                                    writer.replace( sampleStart + proc, delta, bufl, bufr );
-                                    proc += delta;
-                                    remain2 -= delta;
-                                }
-                            } catch ( Exception ex ) {
-                                Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
-                                serr.println( "AppManager#patchWorkToFreeze; ex=" + ex );
-#if JAVA
-                                ex.printStackTrace();
-#endif
-                            } finally {
-                                if ( wr != null ) {
-                                    try {
-                                        wr.close();
-                                    } catch ( Exception ex2 ) {
-                                        Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
-                                        serr.println( "AppManager#patchWorkToFreeze; ex2=" + ex2 );
-#if JAVA
-                                        ex2.printStackTrace();
-#endif
-                                    }
-                                }
-                            }
-
-                            try {
-                                PortUtil.deleteFile( queue.get( i ).file );
-                            } catch ( Exception ex ) {
-                                Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
-                                serr.println( "AppManager#patchWorkToFreeze; ex=" + ex );
-#if JAVA
-                                ex.printStackTrace();
-#endif
-                            }
-                        }
-
-                        VsqTrack vsq_track = mVsq.Track.get( track );
-                        if ( queueIndex.get( queueIndex.size() - 1 ) <= finished ) {
-                            // 途中で終了せず，このトラックの全てのパッチワークが完了した．
-                            mLastRenderedStatus[track - 1] =
-                                new RenderedStatus( (VsqTrack)vsq_track.clone(), mVsq.TempoTable, (SequenceConfig)mVsq.config.clone() );
-                            serializeRenderingStatus( temppath, track );
-                            setRenderRequired( track, false );
-                        } else {
-                            // パッチワークの作成途中で，キャンセルされた
-                            // キャンセルされたやつ以降の範囲に、プログラムチェンジ17の歌手変更イベントを挿入する。→AppManager#detectTrackDifferenceに必ず検出してもらえる。
-                            VsqTrack copied = (VsqTrack)vsq_track.clone();
-                            VsqEvent dumy = new VsqEvent();
-                            dumy.ID.type = VsqIDType.Singer;
-                            dumy.ID.IconHandle = new IconHandle();
-                            dumy.ID.IconHandle.Program = 17;
-                            for ( int m = 0; m < queueIndex.size(); m++ ) {
-                                int i = queueIndex.get( m );
-                                if ( i < finished ) {
-                                    continue;
-                                }
-                                int start = queue.get( i ).clockStart;
-                                int end = queue.get( i ).clockEnd;
-                                VsqEvent singerAtEnd = vsq_track.getSingerEventAt( end );
-
-                                // startの位置に歌手変更が既に指定されていないかどうかを検査
-                                int foundStart = -1;
-                                int foundEnd = -1;
-                                for ( Iterator<Integer> itr = copied.indexIterator( IndexIteratorKind.SINGER ); itr.hasNext(); ) {
-                                    int j = itr.next();
-                                    VsqEvent ve = copied.getEvent( j );
-                                    if ( ve.Clock == start ) {
-                                        foundStart = j;
-                                    }
-                                    if ( ve.Clock == end ) {
-                                        foundEnd = j;
-                                    }
-                                    if ( end < ve.Clock ) {
-                                        break;
-                                    }
-                                }
-
-                                VsqEvent dumyStart = (VsqEvent)dumy.clone();
-                                dumyStart.Clock = start;
-                                if ( foundStart >= 0 ) {
-                                    copied.setEvent( foundStart, dumyStart );
-                                } else {
-                                    copied.addEvent( dumyStart );
-                                }
-
-                                if ( end != int.MaxValue ) {
-                                    VsqEvent dumyEnd = (VsqEvent)singerAtEnd.clone();
-                                    dumyEnd.Clock = end;
-                                    if ( foundEnd >= 0 ) {
-                                        copied.setEvent( foundEnd, dumyEnd );
-                                    } else {
-                                        copied.addEvent( dumyEnd );
-                                    }
-                                }
-
-                                copied.sortEvent();
-                            }
-
-                            mLastRenderedStatus[track - 1] = new RenderedStatus( copied, mVsq.TempoTable, (SequenceConfig)mVsq.config.clone() );
-                            serializeRenderingStatus( temppath, track );
-                        }
-                    } catch ( Exception ex ) {
-                        Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
-                        serr.println( "AppManager#patchWorkToFreeze; ex=" + ex );
-#if JAVA
-                        ex.printStackTrace();
-#endif
-                    } finally {
-                        if ( writer != null ) {
-                            try {
-                                writer.close();
-                            } catch ( Exception ex2 ) {
-                                Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
-                                serr.println( "AppManager#patchWorkToFreeze; ex2=" + ex2 );
-#if JAVA
-                                ex2.printStackTrace();
-#endif
-                            }
-                        }
-                    }
-
-                    // 波形表示用のWaveDrawContextの内容を更新する。
-                    /*for ( int j = 0; j < queueIndex.size(); j++ ) {
-                        int i = queueIndex.get( j );
-                        if ( i >= finished ) {
-                            continue;
-                        }
-                        double secStart = mVsq.getSecFromClock( queue.get( i ).clockStart );
-                        int clockEnd = queue.get( i ).clockEnd;
-                        if ( clockEnd == int.MaxValue ) {
-                            clockEnd = mVsq.TotalClocks + 240;
-                        }
-                        double secEnd = mVsq.getSecFromClock( clockEnd );
-
-                        invokeWaveViewReloadRequiredEvent( tracks.get( k ), wavePath, secStart, secEnd );
-                    } * /
-                    invokeWaveViewReloadRequiredEvent( track, wavePath, 1, -1 );
-                }
-            } catch ( Exception ex ) {
-                Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex + "\n" );
-                serr.println( "AppManager#patchWorkToFreeze; ex=" + ex );
-#if JAVA
-                ex.printStackTrace();
-#endif
-            } finally {
-                if ( dialog != null ) {
-                    try {
-                        dialog.close();
-                    } catch ( Exception ex2 ) {
-                        Logger.write( typeof( AppManager ) + ".patchWorkToFreeze; ex=" + ex2 + "\n" );
-                        serr.println( "AppManager#patchWorkToFreeez; ex2=" + ex2 );
-#if JAVA
-                        ex2.printStackTrace();
-#endif
-                    }
-                }
-            }
-        }*/
-
         /// <summary>
         /// 指定したトラックのレンダリングが必要な部分を再レンダリングし，ツギハギすることでトラックのキャッシュを最新の状態にします．
         /// レンダリングが途中でキャンセルされた場合にtrue，そうでない場合にfalseを返します．
@@ -1538,7 +1298,16 @@ namespace org.kbinani.cadencii
                 if ( g != null ) {
                     mWaveGeneratorState.requestCancel();
                     while ( mWaveGenerator.isRunning() ) {
+#if JAVA
+                        try{
+                            Thread.sleep( 100 );
+                        }catch( Exception ex ){
+                        }
+#elif __cplusplus
+                        TODO
+#else
                         Thread.Sleep( 100 );
+#endif
                     }
                 }
                 mWaveGenerator = null;
@@ -1556,7 +1325,16 @@ namespace org.kbinani.cadencii
                 if ( g != null ) {
                     mWaveGeneratorState.requestCancel();
                     while ( g.isRunning() ) {
+#if JAVA
+                        try{
+                            Thread.sleep( 100 );
+                        }catch( Exception ex ){
+                        }
+#elif __cplusplus
+                        TODO
+#else
                         Thread.Sleep( 100 );
+#endif
                     }
                 }
                 mWaveGenerator = generator;
@@ -1591,7 +1369,16 @@ namespace org.kbinani.cadencii
                         if ( g != null ) {
                             mWaveGeneratorState.requestCancel();
                             while ( mWaveGenerator.isRunning() ) {
+#if JAVA
+                                try{
+                                    Thread.sleep( 100 );
+                                }catch( Exception ex ){
+                                }
+#elif __cplusplus
+                                TODO
+#else
                                 Thread.Sleep( 100 );
+#endif
                             }
                         }
 #if DEBUG
@@ -1617,7 +1404,7 @@ namespace org.kbinani.cadencii
 
                 mWaveGeneratorState.reset();
 #if JAVA
-                mPreviewThread = new GeneratorRunner( mWaveGenerator, samples );
+                mPreviewThread = new GeneratorRunner( mWaveGenerator, samples, mWaveGeneratorState );
                 mPreviewThread.start();
 #else
                 RunGeneratorQueue q = new RunGeneratorQueue();
@@ -3723,8 +3510,8 @@ namespace org.kbinani.cadencii
 #if DEBUG
             sout.println( "AppManager#init; isFileExists(getvocaloidinfo)=" + fsys.isFileExists( getvocaloidinfo ) );
             sout.println( "AppManager#init; isFileExists(vocaloidrv_sh)=" + fsys.isFileExists( vocaloidrv_sh ) );
-            sout.println( "AppManager#init; isDirectoryExists(winetop)=" + PortUtil.isDirectoryExists( winetop ) );
-            sout.println( "AppManager#init; isDirectoryExists(prefix)=" + PortUtil.isDirectoryExists( prefix ) );
+            sout.println( "AppManager#init; isDirectoryExists(winetop)=" + fsys.isDirectoryExists( winetop ) );
+            sout.println( "AppManager#init; isDirectoryExists(prefix)=" + fsys.isDirectoryExists( prefix ) );
 #endif // DEBUG
             try{
                 Process p = Runtime.getRuntime().exec( 

@@ -314,6 +314,7 @@ public class FormMain extends BForm {
     private BMenuItem menuWindowMinimize = null;
     private BPanel panel21 = null;
     private BMenuItem menuHelpManual = null;
+    private BMenuItem menuFileRecentClear = null;
     //SECTION-END-FIELD
     public FormMain( String vsq_file ) {
         super();
@@ -844,6 +845,7 @@ public class FormMain extends BForm {
         if (menuFileRecent == null) {
             menuFileRecent = new BMenu();
             menuFileRecent.setText("Recent Files");
+            menuFileRecent.add(getMenuFileRecentClear());
         }
         return menuFileRecent;
     }
@@ -4373,6 +4375,19 @@ public class FormMain extends BForm {
             menuHelpManual.setText("Manual (PDF)");
         }
         return menuHelpManual;
+    }
+
+    /**
+     * This method initializes menuFileRecentClear	
+     * 	
+     * @return org.kbinani.windows.forms.BMenuItem	
+     */
+    private BMenuItem getMenuFileRecentClear() {
+        if (menuFileRecentClear == null) {
+            menuFileRecentClear = new BMenuItem();
+            menuFileRecentClear.setText("Clear Menu");
+        }
+        return menuFileRecentClear;
     }
 
     //SECTION-END-METHOD

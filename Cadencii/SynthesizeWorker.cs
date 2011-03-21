@@ -1,6 +1,25 @@
-﻿#if JAVA
+/*
+ * SynthesizeWorker.cs
+ * Copyright © 2011 kbinani
+ *
+ * This file is part of org.kbinani.cadencii.
+ *
+ * org.kbinani.cadencii is free software; you can redistribute it and/or
+ * modify it under the terms of the GPLv3 License.
+ *
+ * org.kbinani.cadencii is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ */
+#if JAVA
 
 package org.kbinani.cadencii;
+
+import java.util.*;
+
+import org.kbinani.*;
+import org.kbinani.media.*;
+import org.kbinani.vsq.*;
 
 #elif __cplusplus
 
@@ -18,6 +37,7 @@ using org.kbinani.java.util;
 namespace org.kbinani.cadencii
 {
     using Integer = System.Int32;
+    using boolean = System.Boolean;
 #endif
 
     public class SynthesizeWorker
@@ -243,9 +263,13 @@ namespace org.kbinani.cadencii
                 }*/
                 AppManager.invokeWaveViewReloadRequiredEvent( track, wavePath, 1, -1 );
             }
+#if DEBUG
+            sout.println( "SynthesizeWorker#patchWork; done" );
+#endif
+            state.reportComplete();
         }
 
-        public bool processQueue( WorkerState state, Object arg )
+        public void processQueue( WorkerState state, Object arg )
         {
 #if DEBUG
             sout.println( "SynthesizeWorker#processQueue" );
@@ -263,7 +287,7 @@ namespace org.kbinani.cadencii
             VsqTrack vsq_track = vsq.Track.get( track );
             int count = vsq_track.getEventCount();
             if ( count <= 0 ) {
-                return false;
+                return;// false;
             }
             double amp_track = VocaloSysUtil.getAmplifyCoeffFromFeder( vsq.Mixer.Slave.get( track - 1 ).Feder );
             double pan_left_track = VocaloSysUtil.getAmplifyCoeffFromPanLeft( vsq.Mixer.Slave.get( track - 1 ).Panpot );
@@ -297,9 +321,18 @@ namespace org.kbinani.cadencii
                         String file = fsys.combine( tmppath, i + ".wav" );
                         if ( !fsys.isFileExists( file ) ) {
                             // mixするべきファイルが揃っていないのでbailout
-                            return true;
+                            return;// true;
                         }
-                        WaveReader r = new WaveReader( file );
+                        WaveReader r = null;
+                        try{
+                            r = new WaveReader( file );
+                        }catch( Exception ex ){
+                            Logger.write( typeof( SynthesizeWorker ) + ".processQueue; ex=" + ex + "\n" );
+                            r = null;
+                        }
+                        if( r == null ){
+                            return;// true;
+                        }
                         double end_sec = vsq.getSecFromClock( q.clockStart );
                         r.setOffsetSeconds( end_sec );
                         Amplifier amp_i_unit = new Amplifier();
@@ -350,7 +383,7 @@ namespace org.kbinani.cadencii
             long samples = (long)((sec_end - sec_start) * sample_rate);
             mGenerator.begin( samples, state );
 
-            return false;
+            return;// false;
         }
     }
 

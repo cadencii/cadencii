@@ -4716,8 +4716,9 @@ namespace org.kbinani.cadencii
             menuFileExportParaWave.setText( _( "Serial numbered WAVEs" ) );
             menuFileExportUst.setText( _( "UTAU project file" ) );
             menuFileExportVxt.setText( _( "Metatext for vConnect" ) );
-            menuFileRecent.setText( _( "Recent files" ) );
+            menuFileRecent.setText( _( "Open Recent" ) );
             menuFileRecent.setMnemonic( KeyEvent.VK_R );
+            menuFileRecentClear.setText( _( "Clear Menu" ) );
             menuFileQuit.setText( _( "Quit" ) );
             menuFileQuit.setMnemonic( KeyEvent.VK_Q );
 
@@ -6813,11 +6814,9 @@ namespace org.kbinani.cadencii
             } else {
                 AppManager.editorConfig.pushRecentFiles( "" );
             }
-            if ( added == 0 ) {
-                menuFileRecent.setEnabled( false );
-            } else {
-                menuFileRecent.setEnabled( true );
-            }
+            menuFileRecent.addSeparator();
+            menuFileRecent.add( menuFileRecentClear );
+            menuFileRecent.setEnabled( true );
         }
 
         /// <summary>
@@ -7399,6 +7398,8 @@ namespace org.kbinani.cadencii
             menuFileExportVxt.MouseEnter += new BEventHandler( handleMenuMouseEnter );
             menuFileExportVxt.Click += new BEventHandler( menuFileExportVxt_Click );
             menuFileRecent.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuFileRecentClear.MouseEnter += new BEventHandler( handleMenuMouseEnter );
+            menuFileRecentClear.Click += new BEventHandler( menuFileRecentClear_Click );
             menuFileQuit.MouseEnter += new BEventHandler( handleMenuMouseEnter );
             menuFileQuit.Click += new BEventHandler( menuFileQuit_Click );
             menuEdit.DropDownOpening += new BEventHandler( menuEdit_DropDownOpening );
@@ -11158,6 +11159,14 @@ namespace org.kbinani.cadencii
 
         //BOOKMARK: menuFile
         #region menuFile*
+        public void menuFileRecentClear_Click( Object sender, BEventArgs e )
+        {
+            if( AppManager.editorConfig.RecentFiles != null ){
+                AppManager.editorConfig.RecentFiles.clear();
+            }
+            updateRecentFileMenu();
+        }
+        
         public void menuFileSaveNamed_Click( Object sender, EventArgs e )
         {
             for ( int track = 1; track < AppManager.getVsqFile().Track.size(); track++ ) {
@@ -17387,6 +17396,8 @@ namespace org.kbinani.cadencii
                 text = _( "VOCALOID1" );
             } else if ( sender == menuTrackRendererVOCALOID2 ) {
                 text = _( "VOCALOID2" );
+            } else if ( sender == menuFileRecentClear ) {
+                text = _( "Clear menu items" );
             } else {
                 notfound = true;
             }

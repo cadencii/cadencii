@@ -62,7 +62,7 @@ namespace org.kbinani.cadencii {
         
         public void terminate()
         {
-            if( PortUtil.isDirectoryExists( mTempPathUnixName ) ){
+            if( fsys.isDirectoryExists( mTempPathUnixName ) ){
                 String stop = fsys.combine( mTempPathUnixName, "stop" );
                 if( fsys.isFileExists( stop ) ){
                     try{

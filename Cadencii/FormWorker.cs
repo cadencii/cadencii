@@ -15,6 +15,9 @@
 
 package org.kbinani.cadencii;
 
+import java.util.*;
+import org.kbinani.*;
+
 #elif __cplusplus
 
 namespace org{
@@ -93,6 +96,81 @@ namespace org.kbinani.cadencii
     }
 #endif
 
+#if JAVA
+    class FormWorkerThread extends Thread
+    {
+        private BDelegate mDelegate = null;
+        private FormWorkerJobArgument mArgument = null;
+        private ProgressBarWithLabel mProgressBar;
+        private double mJobAmount;
+        private int mIndex;
+        private FormWorker mControl;
+        
+        public FormWorkerThread( Object invoker, String method_name, FormWorkerJobArgument arg, ProgressBarWithLabel progress_bar, double job_amount, int index, FormWorker worker )
+        {
+            try{
+                mDelegate = new BDelegate( invoker, method_name, Void.TYPE, WorkerState.class, Object.class );
+            }catch( Exception ex ){
+                Logger.write( FormWorkerThread.class + "..ctor; ex=" + ex + "\n" );
+                mDelegate = null;
+            }
+            mArgument = arg;
+            mProgressBar = progress_bar;
+            mJobAmount = job_amount;
+            mControl = worker;
+            mIndex = index;
+            mArgument.state = new WorkerState(){
+                private boolean mCancelRequested = false;
+                private double mProcessedJob = 0.0;
+
+                @Override
+                public void reportProgress(double processed_job) {
+                    mProcessedJob = processed_job;
+                    int prog = (int)(processed_job / mJobAmount * 100.0);
+                    if( prog < 0 ) prog = 0;
+                    if( 100 < prog ) prog = 100;
+                    mProgressBar.setProgress( prog );
+                    mControl.workerProgressChanged( mIndex, prog );
+                }
+
+                @Override
+                public void reportComplete() {
+                    mControl.workerCompleted( mIndex );
+                }
+
+                @Override
+                public boolean isCancelRequested() {
+                    return mCancelRequested;
+                }
+
+                @Override
+                public void requestCancel() {
+                    mCancelRequested = true;
+                }
+
+                @Override
+                public double getProcessedAmount() {
+                    return mProcessedJob;
+                }
+
+                @Override
+                public double getJobAmount() {
+                    return mJobAmount;
+                }
+            };
+        }
+        
+        public void run()
+        {
+            if( mDelegate == null ) return;
+            try{
+                mDelegate.invoke( mArgument.state, mArgument.arguments );
+            }catch( Exception ex ){
+            }
+        }
+    }
+#endif
+
     /// <summary>
     /// 複数のジョブを順に実行し，その進捗状況を表示するダイアログを表示します
     /// </summary>
@@ -103,6 +181,7 @@ namespace org.kbinani.cadencii
         private mman mMemManager;
         private Vector<FormWorkerJobArgument> mArguments;
 #if JAVA
+        private Vector<FormWorkerThread> mThreads;
 #elif __cplusplus
 #else
         private Vector<BackgroundWorker> mThreads;
@@ -121,6 +200,7 @@ namespace org.kbinani.cadencii
 #endif
 
 #if JAVA
+            mThreads = new Vector<FormWorkerThread>();
 #elif __cplusplus
 #else
             mThreads = new Vector<BackgroundWorker>();
@@ -144,12 +224,13 @@ namespace org.kbinani.cadencii
         public void setupUi( FormWorkerUi value )
         {
             ptrUi = value;
+            ptrUi.applyLanguage();
         }
 
         /// <summary>
         /// ジョブを追加します．objで指定したオブジェクトの，名前がnameであるメソッドを呼び出します．
-        /// 当該メソッドは，戻り値は任意，引数は( FormWorkerProgressReceiver, Object )である必要があります．
-        /// また，当該メソッドは第一引数で渡されたFormWorkerProgressReceiverのインスタンスのisCancelRequestedメソッドを
+        /// 当該メソッドは，戻り値は任意，引数は( WorkerState, Object )である必要があります．
+        /// また，当該メソッドは第一引数で渡されたWorkerStateのインスタンスのisCancelRequestedメソッドを
         /// 監視し，その戻り値がtrueの場合速やかに処理を中止しなければなりません．その際，処理の中止後にreportCompleteの呼び出しを
         /// 行ってはいけません．
         /// </summary>
@@ -180,7 +261,11 @@ namespace org.kbinani.cadencii
             arg.arguments = argument;
             arg.index = index;
 #if JAVA
-            // TODO:
+            FormWorkerThread worker = 
+                new FormWorkerThread(
+                    obj, method_name, arg, 
+                    label, job_amount, index, this );
+            vec.add( mThreads, worker );
 #elif __cplusplus
             // TODO:
 #else
@@ -217,7 +302,7 @@ namespace org.kbinani.cadencii
             return ptrUi;
         }
 
-        private void workerProgressChanged( int index, int percentage )
+        public void workerProgressChanged( int index, int percentage )
         {
             ProgressBarWithLabel label = vec.get( mLabels, index );
             if ( label != null ) {
@@ -236,9 +321,10 @@ namespace org.kbinani.cadencii
                 }
             }
             ptrUi.setTotalProgress( (int)(processed / total * 100.0) );
+            ptrUi.repaint();
         }
 
-        private void workerCompleted( int index )
+        public void workerCompleted( int index )
         {
 #if DEBUG
             sout.println( "FormWorker#workerCompleted; index=" + index );
@@ -252,7 +338,7 @@ namespace org.kbinani.cadencii
             if ( index < size ) {
                 startWorker( index );
             } else {
-                ptrUi.close();
+                ptrUi.close( false );//.setDialogResult( BDialogResult.OK );//.close();
             }
         }
 
@@ -260,6 +346,7 @@ namespace org.kbinani.cadencii
         {
             FormWorkerJobArgument arg = vec.get( mArguments, index );
 #if JAVA
+            vec.get( mThreads, index ).start();
 #elif __cplusplus
 #else
             vec.get( mThreads, index ).RunWorkerAsync( arg );

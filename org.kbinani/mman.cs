@@ -3,7 +3,8 @@ package org.kbinani;
 
 #elif __cplusplus
 
-namespace org{ namespace kbinani {
+namespace org{
+namespace kbinani{
 
 #else
 
@@ -21,6 +22,7 @@ namespace org.kbinani
         {
         }
 
+#if !JAVA
         ~mman()
         {
 #if __cplusplus
@@ -36,6 +38,7 @@ namespace org.kbinani
             mManArray.clear();
 #endif
         }
+#endif // !JAVA
 
 #if JAVA
         public void add( Object obj )

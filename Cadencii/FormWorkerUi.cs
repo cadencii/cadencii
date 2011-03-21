@@ -11,6 +11,12 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+
+//INCLUDE ../BuildJavaUI/src/org/kbinani/cadencii/FormWorkerUi.java
+
+#else
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -49,6 +55,12 @@ namespace org.kbinani.cadencii
             mFullHeight = this.Height;
         }
 
+        public void applyLanguage()
+        {
+            buttonCancel.Text = _( "Cancel" );
+            buttonDetail.Text = _( "detail" );
+        }
+    
         public void show( Object obj )
         {
             if ( obj != null && obj is IWin32Window ) {
@@ -323,3 +335,4 @@ namespace org.kbinani.cadencii
         }
     }
 }
+#endif

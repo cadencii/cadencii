@@ -12,8 +12,11 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
 #if JAVA
+
 package org.kbinani.cadencii;
+
 #else
+
 using System;
 
 namespace org.kbinani.cadencii {
@@ -60,13 +63,6 @@ namespace org.kbinani.cadencii {
         /// この波形生成器が生成するサンプリングレートを指定するのではないので注意
         /// </param>
         void init( VsqFileEx vsq, int track, int start_clock, int end_clock, int sample_rate );
-
-        /*
-        /// <summary>
-        /// 停止を要求します．
-        /// 停止が完了するまで処理は戻りません
-        /// </summary>
-        void stop();*/
 
         /// <summary>
         /// エディターの設定値を指定します

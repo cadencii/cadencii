@@ -255,7 +255,7 @@ jcorlib: pp_cs2java.jar $(SRC_JCORLIB)
 ########################################################################
 # post process for BuildJavaUI
 #
-jpostprocess: ./BuildJavaUI/src/org/kbinani/math.java ./BuildJavaUI/src/org/kbinani/PortUtil.java ./BuildJavaUI/src/org/kbinani/ByRef.java ./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java ./BuildJavaUI/src/org/kbinani/cadencii/IconParader.java ./BuildJavaUI/src/org/kbinani/fsys.java ./BuildJavaUI/src/org/kbinani/str.java ./BuildJavaUI/src/org/kbinani/vec.java ./BuildJavaUI/src/org/kbinani/cadencii/TrackSelectorSingerPopupMenu.java
+jpostprocess: ./BuildJavaUI/src/org/kbinani/math.java ./BuildJavaUI/src/org/kbinani/PortUtil.java ./BuildJavaUI/src/org/kbinani/ByRef.java ./BuildJavaUI/src/org/kbinani/cadencii/NumberTextBox.java ./BuildJavaUI/src/org/kbinani/cadencii/NumericUpDownEx.java ./BuildJavaUI/src/org/kbinani/cadencii/IconParader.java ./BuildJavaUI/src/org/kbinani/fsys.java ./BuildJavaUI/src/org/kbinani/str.java ./BuildJavaUI/src/org/kbinani/vec.java ./BuildJavaUI/src/org/kbinani/cadencii/TrackSelectorSingerPopupMenu.java ./BuildJavaUI/src/org/kbinani/apputil/Messaging.java ./BuildJavaUI/src/org/kbinani/apputil/MessageBody.java ./BuildJavaUI/src/org/kbinani/apputil/MessageBodyEntry.java
 
 ./BuildJavaUI/src/org/kbinani/math.java: ./build/java/org/kbinani/math.java
 	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/math.java $(TO_DEVNULL)
@@ -296,6 +296,21 @@ jpostprocess: ./BuildJavaUI/src/org/kbinani/math.java ./BuildJavaUI/src/org/kbin
 ./BuildJavaUI/src/org/kbinani/cadencii/TrackSelectorSingerPopupMenu.java: ./build/java/org/kbinani/cadencii/TrackSelectorSingerPopupMenu.java
 	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/cadencii/TrackSelectorSingerPopupMenu.java $(TO_DEVNULL)
 	$(CP) ./build/java/org/kbinani/cadencii/TrackSelectorSingerPopupMenu.java ./BuildJavaUI/src/org/kbinani/cadencii/TrackSelectorSingerPopupMenu.java
+
+./BuildJavaUI/src/org/kbinani/apputil/Messaging.java: ./build/java/org/kbinani/apputil/Messaging.java
+	perl safe_mkdir.pl ./BuildJavaUI/src/org/kbinani/apputil
+	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/apputil/Messaging.java $(TO_DEVNULL)
+	$(CP) ./build/java/org/kbinani/apputil/Messaging.java ./BuildJavaUI/src/org/kbinani/apputil/Messaging.java
+
+./BuildJavaUI/src/org/kbinani/apputil/MessageBody.java: ./build/java/org/kbinani/apputil/MessageBody.java
+	perl safe_mkdir.pl ./BuildJavaUI/src/org/kbinani/apputil
+	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/apputil/MessageBody.java $(TO_DEVNULL)
+	$(CP) ./build/java/org/kbinani/apputil/MessageBody.java ./BuildJavaUI/src/org/kbinani/apputil/MessageBody.java
+
+./BuildJavaUI/src/org/kbinani/apputil/MessageBodyEntry.java: ./build/java/org/kbinani/apputil/MessageBodyEntry.java
+	perl safe_mkdir.pl ./BuildJavaUI/src/org/kbinani/apputil
+	perl safe_rm.pl ./BuildJavaUI/src/org/kbinani/apputil/MessageBodyEntry.java $(TO_DEVNULL)
+	$(CP) ./build/java/org/kbinani/apputil/MessageBodyEntry.java ./BuildJavaUI/src/org/kbinani/apputil/MessageBodyEntry.java
 
 ########################################################################
 # jcomponentmodel
