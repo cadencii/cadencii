@@ -26,6 +26,7 @@ using System.Text;
 using System.Windows.Forms;
 
 using org.kbinani.windows.forms;
+using org.kbinani.apputil;
 
 namespace org.kbinani.cadencii
 {
@@ -55,6 +56,11 @@ namespace org.kbinani.cadencii
             mFullHeight = this.Height;
         }
 
+        private static String _(String id)
+        {
+            return Messaging.getMessage( id );
+        }
+
         public void applyLanguage()
         {
             buttonCancel.Text = _( "Cancel" );
@@ -68,6 +74,21 @@ namespace org.kbinani.cadencii
             } else {
                 Show();
             }
+        }
+
+        /// <summary>
+        /// フォームを閉じます．
+        /// valueがtrueのときダイアログの結果をCancelに，それ以外の場合はOKとなるようにします．
+        /// </summary>
+        /// <param name="value"></param>
+        public void close( bool value )
+        {
+            if ( value ) {
+                this.DialogResult = DialogResult.Cancel;
+            } else {
+                this.DialogResult = DialogResult.OK;
+            }
+            this.Close();
         }
 
         /// <summary>

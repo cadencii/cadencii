@@ -25,6 +25,7 @@ using System.Threading;
 
 namespace org.kbinani.cadencii
 {
+    using Integer = System.Int32;
 #endif
 
     public class TestFormWorker

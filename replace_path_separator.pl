@@ -60,12 +60,15 @@ my @ignore = (
     "./org.kbinani/Vector.cs",
 );
 
+my $djava_mac = "-DJAVA_MAC";
+my $to_devnull = "2>/dev/null";
+my $cp = "cp";
+my $rm = "rm";
 if( $ARGV[0] eq "MSWin32" ){
     $djava_mac = "";
     $to_devnull = "";
-}else{
-    $djava_mac = "-DJAVA_MAC";
-    $to_devnull = "2>/dev/null";
+    $cp = "copy";
+    $rm = "rm";
 }
 
 open( CFG, ">./Cadencii/Config.cs" );
@@ -171,6 +174,12 @@ while( $line = <FILE> ){
     $line =~ s/\@TO_DEVNULL\@/$to_devnull/g;
     $line =~ s/\@WINE_VERSION\@/$WINE_VERSION/g;
 
+    if( $ARGV[0] eq "MSWin32" ){
+        if( ($line =~ /\$\(CP\)/) | ($line =~ /\$\(RM\)/) | ($line =~ /\$\(MKDIR\)/) ){
+            $line =~ s/\//\\/g;
+        }
+    }
+
     #if( $ARGV[0] eq "MSWin32" ){
     #    if( ($line =~ /\$\(CP\)/) | ($line =~ /\$\(RM\)/) | ($line =~ /\$\(MKDIR\)/) ){
     #        $line =~ s/\//\\/g;
@@ -182,8 +191,8 @@ while( $line = <FILE> ){
     #    $line =~ s/\@PLAY_SOUND_DLL\@/\$\(TARGET\)\\PlaySound\.dll/g;
     #    $line =~ s/\@MONO\@//g;
     #}else{
-        $line =~ s/\@CP\@/cp/g;
-        $line =~ s/\@RM\@/rm/g;
+        $line =~ s/\@CP\@/$cp/g;
+        $line =~ s/\@RM\@/$rm/g;
         $line =~ s/\@TARGET\@/\.\/build\/win/g;
         $line =~ s/\@MKDIR\@/perl safe_mkdir\.pl/g;
         $line =~ s/\@PLAY_SOUND_DLL\@//g;
