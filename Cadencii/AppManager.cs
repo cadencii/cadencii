@@ -3362,10 +3362,11 @@ namespace org.kbinani.cadencii
 #endif
 
         /// <summary>
-        /// vsqファイルを読込みます
+        /// xvsqファイルを読込みます．キャッシュディレクトリの更新は行われません
         /// </summary>
         /// <param name="file"></param>
-        public static void readVsq( String file )
+        /// <returns>ファイルの読み込みに成功した場合にtrueを，それ以外の場合はfalseを返します</returns>
+        public static boolean readVsq( String file )
         {
             mSelected = 1;
             mFile = file;
@@ -3378,10 +3379,10 @@ namespace org.kbinani.cadencii
                 ex.printStackTrace();
 #endif
                 Logger.write( typeof( AppManager ) + ".readVsq; ex=" + ex + "\n" );
-                return;
+                return true;
             }
             if ( newvsq == null ) {
-                return;
+                return true;
             }
             mVsq = newvsq;
             for ( int i = 0; i < mVsq.editorStatus.renderRequired.Length; i++ ) {
@@ -3413,6 +3414,7 @@ namespace org.kbinani.cadencii
                 Logger.write( typeof( AppManager ) + ".readVsq; ex=" + ex + "\n" );
                 serr.println( typeof( AppManager ) + ".readVsq; ex=" + ex );
             }
+            return false;
         }
 
 #if !TREECOM

@@ -923,7 +923,7 @@ namespace org.kbinani.cadencii
 
             groupMisc.setTitle( _( "Misc" ) );
             lblMaximumFrameRate.setText( _( "Maximum Frame Rate" ) );
-            lblMilliSecond.setText( _( "milli second" ) );
+            lblMilliSecond.setText( _( "frame per second" ) );
             lblMouseHoverTime.setText( _( "Waiting Time for Preview" ) );
             lblMidiInPort.setText( _( "MIDI In Port Number" ) );
             labelMtcMidiInPort.setText( _( "MTC MIDI In Port Number" ) );

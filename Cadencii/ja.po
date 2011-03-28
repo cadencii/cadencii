@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-03-21 22:03+0900\n"
+"POT-Creation-Date: 2011-03-24 16:38+0900\n"
 "PO-Revision-Date: \n"
 "Last-Translator: kbinani <kbinani@msn.com>\n"
 "Language-Team: \n"
@@ -255,7 +255,7 @@ msgstr "小節"
 #: Cadencii/FormMain.cs:2245
 #: Cadencii/FormMain.cs:3689
 #: Cadencii/FormMain.cs:4870
-#: Cadencii/FormMain.cs:15186
+#: Cadencii/FormMain.cs:15193
 msgid "Disabled"
 msgstr "無効"
 
@@ -285,7 +285,7 @@ msgid "Set Offset Seconds"
 msgstr "オフセット秒数を設定"
 
 #: Cadencii/FormMain.cs:2416
-#: Cadencii/FormMain.cs:17618
+#: Cadencii/FormMain.cs:17633
 #: Cadencii/FormMidiImExport.cs:108
 #: Cadencii/FormMidiImExport.cs:342
 msgid "seconds"
@@ -296,12 +296,12 @@ msgid "Add"
 msgstr "追加"
 
 #: Cadencii/FormMain.cs:3142
-#: Cadencii/FormMain.cs:10595
+#: Cadencii/FormMain.cs:10602
 msgid "Save this sequence?"
 msgstr "このシーケンスを保存しますか？"
 
 #: Cadencii/FormMain.cs:3143
-#: Cadencii/FormMain.cs:10596
+#: Cadencii/FormMain.cs:10603
 msgid "Affirmation"
 msgstr "確認"
 
@@ -316,16 +316,16 @@ msgstr "XML-VSQフォーマット(*.xvsq)|*.xvsq"
 #: Cadencii/FormMain.cs:4608
 #: Cadencii/FormMain.cs:4620
 #: Cadencii/FormMain.cs:4631
-#: Cadencii/FormMain.cs:11469
-#: Cadencii/FormMain.cs:11600
-#: Cadencii/FormMain.cs:11660
-#: Cadencii/FormMain.cs:11712
-#: Cadencii/FormMain.cs:11793
+#: Cadencii/FormMain.cs:11476
+#: Cadencii/FormMain.cs:11607
+#: Cadencii/FormMain.cs:11667
+#: Cadencii/FormMain.cs:11719
+#: Cadencii/FormMain.cs:11800
 msgid "All Files(*.*)|*.*"
 msgstr "全てのファイル(*.*)|*.*"
 
 #: Cadencii/FormMain.cs:4596
-#: Cadencii/FormMain.cs:11599
+#: Cadencii/FormMain.cs:11606
 msgid "UTAU Script Format(*.ust)|*.ust"
 msgstr "UTAUスクリプト形式(*.ust)|*.ust"
 
@@ -336,12 +336,12 @@ msgstr "MIDIフォーマット(*.mid)|*.mid"
 
 #: Cadencii/FormMain.cs:4607
 #: Cadencii/FormMain.cs:4619
-#: Cadencii/FormMain.cs:11659
+#: Cadencii/FormMain.cs:11666
 msgid "VSQ Format(*.vsq)|*.vsq"
 msgstr "VSQフォーマット(*.vsq)|*.vsq"
 
 #: Cadencii/FormMain.cs:4630
-#: Cadencii/FormMain.cs:11792
+#: Cadencii/FormMain.cs:11799
 msgid "Wave File(*.wav)|*.wav"
 msgstr "Waveファイル(*.wav)|*.wav"
 
@@ -399,15 +399,15 @@ msgstr "グリッド"
 
 #: Cadencii/FormMain.cs:4662
 #: Cadencii/FormMain.cs:4680
-#: Cadencii/FormMain.cs:8066
-#: Cadencii/FormMain.cs:8069
+#: Cadencii/FormMain.cs:8073
+#: Cadencii/FormMain.cs:8076
 msgid "Stop"
 msgstr "停止"
 
 #: Cadencii/FormMain.cs:4664
 #: Cadencii/FormMain.cs:4682
-#: Cadencii/FormMain.cs:8035
-#: Cadencii/FormMain.cs:8038
+#: Cadencii/FormMain.cs:8042
+#: Cadencii/FormMain.cs:8045
 msgid "Play"
 msgstr "再生"
 
@@ -489,7 +489,7 @@ msgid "UTAU project file"
 msgstr "UTAUプロジェクトファイル"
 
 #: Cadencii/FormMain.cs:4718
-#: Cadencii/FormMain.cs:11710
+#: Cadencii/FormMain.cs:11717
 msgid "Metatext for vConnect"
 msgstr "vConnect用メタテキスト"
 
@@ -797,7 +797,7 @@ msgid "Log"
 msgstr "ログ"
 
 #: Cadencii/FormMain.cs:4870
-#: Cadencii/FormMain.cs:15184
+#: Cadencii/FormMain.cs:15191
 msgid "Enabled"
 msgstr "有効"
 
@@ -964,10 +964,10 @@ msgid "Game Controler"
 msgstr "ゲームコントローラ"
 
 #: Cadencii/FormMain.cs:5487
-#: Cadencii/FormMain.cs:14328
-#: Cadencii/FormMain.cs:14484
-#: Cadencii/FormMain.cs:14855
-#: Cadencii/FormMain.cs:14895
+#: Cadencii/FormMain.cs:14335
+#: Cadencii/FormMain.cs:14491
+#: Cadencii/FormMain.cs:14862
+#: Cadencii/FormMain.cs:14902
 msgid "Cannot remove first symbol of track!"
 msgstr "曲頭のシンボルは削除できません！"
 
@@ -984,14 +984,14 @@ msgstr "トラック{0} : '{1}'を削除しますか？"
 msgid "[file not found]"
 msgstr "[ファイルが見つかりません]"
 
-#: Cadencii/FormMain.cs:7038
-#: Cadencii/FormMain.cs:7080
+#: Cadencii/FormMain.cs:7044
+#: Cadencii/FormMain.cs:7086
 #, csharp-format
 msgid "cannot create cache directory: '{0}'"
 msgstr "キャッシュディレクトリ '{0}' が見つかりませんでした。"
 
-#: Cadencii/FormMain.cs:11176
-#: Cadencii/FormMain.cs:17038
+#: Cadencii/FormMain.cs:11183
+#: Cadencii/FormMain.cs:17045
 #, csharp-format
 msgid ""
 "Invalid note data.\n"
@@ -1000,28 +1000,28 @@ msgid ""
 "-> Piano roll : Blank sequence."
 msgstr "不正な音符データです. トラック {0} : {1}  -> ピアノロール : 空のシーケンスです."
 
-#: Cadencii/FormMain.cs:11468
+#: Cadencii/FormMain.cs:11475
 msgid "MusicXML(*.xml)|*.xml"
 msgstr "MusicXML(*.xml)|*.xml"
 
-#: Cadencii/FormMain.cs:11503
+#: Cadencii/FormMain.cs:11510
 msgid "Choose destination directory"
 msgstr "出力先のディレクトリを選択して下さい"
 
-#: Cadencii/FormMain.cs:11537
-#: Cadencii/FormMain.cs:11819
+#: Cadencii/FormMain.cs:11544
+#: Cadencii/FormMain.cs:11826
 msgid "invalid rendering region; start>=end"
 msgstr "レンダリング区間が無効です; 開始位置>=終了位置"
 
-#: Cadencii/FormMain.cs:11598
+#: Cadencii/FormMain.cs:11605
 msgid "Export UTAU (*.ust)"
 msgstr "UTAU形式で出力 (*.ust)"
 
-#: Cadencii/FormMain.cs:11658
+#: Cadencii/FormMain.cs:11665
 msgid "Export VSQ (*.vsq)"
 msgstr "VSQ形式で出力 (*.vsq)"
 
-#: Cadencii/FormMain.cs:11691
+#: Cadencii/FormMain.cs:11698
 msgid ""
 "UTAU singer not registered yet.\n"
 "Continue ?"
@@ -1029,385 +1029,389 @@ msgstr ""
 "UTAUの原音が登録されていません\n"
 "続けますか?"
 
-#: Cadencii/FormMain.cs:11692
-#: Cadencii/FormMain.cs:15197
+#: Cadencii/FormMain.cs:11699
+#: Cadencii/FormMain.cs:15204
 msgid "Info"
 msgstr "情報"
 
-#: Cadencii/FormMain.cs:11711
+#: Cadencii/FormMain.cs:11718
 msgid "Text File(*.txt)|*.txt"
 msgstr "テキストファイル(*.txt)|*.txt"
 
-#: Cadencii/FormMain.cs:11791
+#: Cadencii/FormMain.cs:11798
 msgid "Wave Export"
 msgstr "Waveファイルの書き出し"
 
-#: Cadencii/FormMain.cs:11897
-#: Cadencii/FormMain.cs:11905
+#: Cadencii/FormMain.cs:11904
+#: Cadencii/FormMain.cs:11912
 msgid "Invalid MIDI file."
 msgstr "無効なMIDIファイルです"
 
-#: Cadencii/FormMain.cs:12393
-#: Cadencii/FormMain.cs:12671
+#: Cadencii/FormMain.cs:12400
+#: Cadencii/FormMain.cs:12678
 msgid "Invalid VSQ/VOCALOID MIDI file"
 msgstr "無効な VSQ/VOCALOID MIDIファイルです"
 
-#: Cadencii/FormMain.cs:13233
+#: Cadencii/FormMain.cs:13240
 msgid "Go to the first"
 msgstr "先頭へ移動"
 
-#: Cadencii/FormMain.cs:13695
+#: Cadencii/FormMain.cs:13702
 msgid "input pre-measure"
 msgstr "プリメジャー値を入力して下さい"
 
-#: Cadencii/FormMain.cs:15163
+#: Cadencii/FormMain.cs:15170
 msgid "file not found"
 msgstr "ファイルが見つかりません"
 
-#: Cadencii/FormMain.cs:15196
+#: Cadencii/FormMain.cs:15203
 msgid "Log file has not generated yet."
 msgstr "ログファイルが未だ作成されていません"
 
-#: Cadencii/FormMain.cs:17240
+#: Cadencii/FormMain.cs:17092
+msgid "Invalid XVSQ file"
+msgstr "無効なXVSQファイルです"
+
+#: Cadencii/FormMain.cs:17255
 msgid "Undo."
 msgstr "元に戻す"
 
-#: Cadencii/FormMain.cs:17242
+#: Cadencii/FormMain.cs:17257
 msgid "Redo."
 msgstr "やり直し"
 
-#: Cadencii/FormMain.cs:17244
+#: Cadencii/FormMain.cs:17259
 msgid "Cut selected items."
 msgstr "選択されたアイテムを切り取る"
 
-#: Cadencii/FormMain.cs:17246
+#: Cadencii/FormMain.cs:17261
 msgid "Copy selected items."
 msgstr "選択されたアイテムをコピー"
 
-#: Cadencii/FormMain.cs:17248
+#: Cadencii/FormMain.cs:17263
 msgid "Paste copied items to current song position."
 msgstr "現在のソングポジションに、コピーしたアイテムを貼り付ける"
 
-#: Cadencii/FormMain.cs:17250
+#: Cadencii/FormMain.cs:17265
 msgid "Delete selected items."
 msgstr "選択されたアイテムを削除する"
 
-#: Cadencii/FormMain.cs:17252
+#: Cadencii/FormMain.cs:17267
 msgid "Avoid automaticaly polyphonic editing."
 msgstr "ポリフォニックな音符配置を自動回避"
 
-#: Cadencii/FormMain.cs:17254
+#: Cadencii/FormMain.cs:17269
 msgid "Select all items and control curves of current track."
 msgstr "現在のトラックの、全ての音符とコントロールカーブを選択する"
 
-#: Cadencii/FormMain.cs:17256
+#: Cadencii/FormMain.cs:17271
 msgid "Select all items of current track."
 msgstr "現在のトラックの全ての音符を選択する"
 
-#: Cadencii/FormMain.cs:17258
+#: Cadencii/FormMain.cs:17273
 msgid "Show/Hide control curves."
 msgstr "コントロールカーブを表示/非表示"
 
-#: Cadencii/FormMain.cs:17260
+#: Cadencii/FormMain.cs:17275
 msgid "Enable/Disable end marker."
 msgstr "エンドマーカーを有効化/無効化"
 
-#: Cadencii/FormMain.cs:17262
+#: Cadencii/FormMain.cs:17277
 msgid "Show/Hide grid line."
 msgstr "グリッドラインを表示/非表示"
 
-#: Cadencii/FormMain.cs:17264
+#: Cadencii/FormMain.cs:17279
 msgid "Show/Hide icon palette"
 msgstr "アイコンパレットを表示/非表示"
 
-#: Cadencii/FormMain.cs:17266
+#: Cadencii/FormMain.cs:17281
 msgid "Show/Hide lyrics."
 msgstr "歌詞を表示/非表示"
 
-#: Cadencii/FormMain.cs:17268
+#: Cadencii/FormMain.cs:17283
 msgid "Show/Hide mixer window."
 msgstr "ミキサーウィンドウを表示/非表示"
 
-#: Cadencii/FormMain.cs:17270
+#: Cadencii/FormMain.cs:17285
 msgid "Show/Hide expression lines."
 msgstr "表情線を表示/非表示"
 
-#: Cadencii/FormMain.cs:17272
+#: Cadencii/FormMain.cs:17287
 msgid "Show/Hide navigation view"
 msgstr "ナビゲーションを表示/非表示"
 
-#: Cadencii/FormMain.cs:17274
+#: Cadencii/FormMain.cs:17289
 msgid "Show/Hide pitch bend lines."
 msgstr "ピッチベンド曲線を表示/非表示"
 
-#: Cadencii/FormMain.cs:17276
+#: Cadencii/FormMain.cs:17291
 msgid "Open VSTi plugin window"
 msgstr "VSTiプラグイン画面を開く"
 
-#: Cadencii/FormMain.cs:17278
+#: Cadencii/FormMain.cs:17293
 msgid "Show/Hide property window."
 msgstr "プロパティウィンドウを表示/非表示"
 
-#: Cadencii/FormMain.cs:17280
+#: Cadencii/FormMain.cs:17295
 msgid "Enable/Disable start marker."
 msgstr "スタートマーカーを有効化/無効化"
 
-#: Cadencii/FormMain.cs:17282
+#: Cadencii/FormMain.cs:17297
 msgid "Show/Hide waveform."
 msgstr "波形を表示/非表示"
 
-#: Cadencii/FormMain.cs:17284
+#: Cadencii/FormMain.cs:17299
 msgid "Create new project."
 msgstr "新しいプロジェクトを作成"
 
-#: Cadencii/FormMain.cs:17286
+#: Cadencii/FormMain.cs:17301
 msgid "Open Cadencii project."
 msgstr "Cadenciiプロジェクトを開く"
 
-#: Cadencii/FormMain.cs:17288
+#: Cadencii/FormMain.cs:17303
 msgid "Save current project."
 msgstr "このプロジェクトを保存"
 
-#: Cadencii/FormMain.cs:17290
+#: Cadencii/FormMain.cs:17305
 msgid "Save current project with new name."
 msgstr "このプロジェクトを新しいファイル名で保存"
 
-#: Cadencii/FormMain.cs:17292
+#: Cadencii/FormMain.cs:17307
 msgid "Open VSQ / VOCALOID MIDI and create new project."
 msgstr "VSQ / VOCALOID MIDIから、新しいプロジェクトを作成する"
 
-#: Cadencii/FormMain.cs:17294
+#: Cadencii/FormMain.cs:17309
 msgid "Open UTAU project and create new project."
 msgstr "UTAUプロジェクトから、新しいプロジェクトを作成する"
 
-#: Cadencii/FormMain.cs:17296
+#: Cadencii/FormMain.cs:17311
 msgid "Import."
 msgstr "インポート"
 
-#: Cadencii/FormMain.cs:17298
+#: Cadencii/FormMain.cs:17313
 msgid "Import Standard MIDI."
 msgstr "Standard MIDIファイルをインポートする"
 
-#: Cadencii/FormMain.cs:17300
+#: Cadencii/FormMain.cs:17315
 msgid "Import UTAU project"
 msgstr "UTAUプロジェクトファイルをインポートする"
 
-#: Cadencii/FormMain.cs:17302
+#: Cadencii/FormMain.cs:17317
 msgid "Import VSQ / VOCALOID MIDI."
 msgstr "VSQ / VOCALOID MIDIファイルをインポートする"
 
-#: Cadencii/FormMain.cs:17304
+#: Cadencii/FormMain.cs:17319
 msgid "Export."
 msgstr "エクスポート"
 
-#: Cadencii/FormMain.cs:17306
+#: Cadencii/FormMain.cs:17321
 msgid "Export all tracks to serial numbered WAVEs"
 msgstr "全トラックを連番WAVEに出力"
 
-#: Cadencii/FormMain.cs:17308
+#: Cadencii/FormMain.cs:17323
 msgid "Export to WAVE file."
 msgstr "WAVEファイルにエクスポート"
 
-#: Cadencii/FormMain.cs:17310
+#: Cadencii/FormMain.cs:17325
 msgid "Export current track as Music XML"
 msgstr "現在のトラックをMusicXMLに出力"
 
-#: Cadencii/FormMain.cs:17312
+#: Cadencii/FormMain.cs:17327
 msgid "Export to Standard MIDI."
 msgstr "Standard MIDIファイルにエクスポート"
 
-#: Cadencii/FormMain.cs:17314
+#: Cadencii/FormMain.cs:17329
 msgid "Export current track as UTAU project file"
 msgstr "現在のトラックをUTAUプロジェクトファイルに出力"
 
-#: Cadencii/FormMain.cs:17316
+#: Cadencii/FormMain.cs:17331
 msgid "Export to VSQ"
 msgstr "VSQファイルにエクスポート"
 
-#: Cadencii/FormMain.cs:17318
+#: Cadencii/FormMain.cs:17333
 msgid "Export current track as Meta-text for vConnect"
 msgstr "現在のトラックをvConnect用メタテキストに出力"
 
-#: Cadencii/FormMain.cs:17320
+#: Cadencii/FormMain.cs:17335
 msgid "Recent projects."
 msgstr "最近使ったプロジェクト"
 
-#: Cadencii/FormMain.cs:17322
+#: Cadencii/FormMain.cs:17337
 msgid "Close this window."
 msgstr "このウィンドウを閉じる"
 
-#: Cadencii/FormMain.cs:17324
+#: Cadencii/FormMain.cs:17339
 msgid "Lengthen note end to neighboring note."
 msgstr "音符の末尾を、直後の音符の先頭まで延長する"
 
-#: Cadencii/FormMain.cs:17326
+#: Cadencii/FormMain.cs:17341
 msgid "Import lyric."
 msgstr "歌詞の流し込み"
 
-#: Cadencii/FormMain.cs:17329
+#: Cadencii/FormMain.cs:17344
 msgid "Import tempo from ReWire host."
 msgstr "ReWireホストからテンポをインポートする"
 
-#: Cadencii/FormMain.cs:17329
-#: Cadencii/FormMain.cs:17331
+#: Cadencii/FormMain.cs:17344
+#: Cadencii/FormMain.cs:17346
 msgid "(not implemented)"
 msgstr "(未実装)"
 
-#: Cadencii/FormMain.cs:17331
+#: Cadencii/FormMain.cs:17346
 msgid "Reload VSTi dll."
 msgstr "VSTi DLLをリロード"
 
-#: Cadencii/FormMain.cs:17334
+#: Cadencii/FormMain.cs:17349
 msgid "Correct overlapped item."
 msgstr "重複したアイテムを補正する"
 
-#: Cadencii/FormMain.cs:17336
+#: Cadencii/FormMain.cs:17351
 msgid "Insert bar."
 msgstr "小節を挿入"
 
-#: Cadencii/FormMain.cs:17338
+#: Cadencii/FormMain.cs:17353
 msgid "Delete bar."
 msgstr "小節を削除"
 
-#: Cadencii/FormMain.cs:17340
+#: Cadencii/FormMain.cs:17355
 msgid "Randomize items."
 msgstr "アイテムをランダマイズする"
 
-#: Cadencii/FormMain.cs:17342
+#: Cadencii/FormMain.cs:17357
 msgid "Edit portamento/accent/decay of selected item"
 msgstr "選択アイテムのポルタメント・アクセント・ディケイを編集"
 
-#: Cadencii/FormMain.cs:17344
+#: Cadencii/FormMain.cs:17359
 msgid "Edit vibrato length and type of selected item"
 msgstr "選択アイテムのビブラートの長さと種類を編集"
 
-#: Cadencii/FormMain.cs:17346
+#: Cadencii/FormMain.cs:17361
 msgid "Translate all phrase into phonetic symbol"
 msgstr "全ての歌詞を発音記号に変換します"
 
-#: Cadencii/FormMain.cs:17348
+#: Cadencii/FormMain.cs:17363
 msgid "Open configuration dialog for phonetic symnol dictionaries"
 msgstr "発音記号の辞書についての設定ダイアログを開きます"
 
-#: Cadencii/FormMain.cs:17350
+#: Cadencii/FormMain.cs:17365
 msgid "Copy vibrato config of selected item into vibrato preset"
 msgstr "選択アイテムのビブラートをビブラートプリセットにコピー"
 
-#: Cadencii/FormMain.cs:17352
+#: Cadencii/FormMain.cs:17367
 msgid "Read and compile all scripts and update the list of them"
 msgstr "ユーザースクリプトの読み込みとコンパイルを行います"
 
-#: Cadencii/FormMain.cs:17354
+#: Cadencii/FormMain.cs:17369
 msgid "Open configuration dialog for editor configs"
 msgstr "エディタの設定画面を開きます"
 
-#: Cadencii/FormMain.cs:17356
+#: Cadencii/FormMain.cs:17371
 msgid "Change quantize resolution"
 msgstr "クォンタイズの単位長さを変えます"
 
-#: Cadencii/FormMain.cs:17358
+#: Cadencii/FormMain.cs:17373
 msgid "Connect/Remove/Configure game controler"
 msgstr "ゲームコントローラの接続・取り外し・設定を行います"
 
-#: Cadencii/FormMain.cs:17360
+#: Cadencii/FormMain.cs:17375
 msgid "Configuration of palette tool"
 msgstr "パレットツールの設定"
 
-#: Cadencii/FormMain.cs:17362
+#: Cadencii/FormMain.cs:17377
 msgid "Open configuration dialog for shortcut key"
 msgstr "ショートカットキーの設定画面を開きます"
 
-#: Cadencii/FormMain.cs:17364
+#: Cadencii/FormMain.cs:17379
 msgid "Open configuration dialog for vibrato preset"
 msgstr "定義済みビブラートの設定ダイアログを開く"
 
-#: Cadencii/FormMain.cs:17366
+#: Cadencii/FormMain.cs:17381
 msgid "Edit default singer style"
 msgstr "デフォルト歌唱スタイルを編集"
 
-#: Cadencii/FormMain.cs:17368
+#: Cadencii/FormMain.cs:17383
 msgid "Configuration of this sequence."
 msgstr "このシーケンスの設定"
 
-#: Cadencii/FormMain.cs:17370
+#: Cadencii/FormMain.cs:17385
 msgid "Add new track."
 msgstr "新しいトラックを追加"
 
-#: Cadencii/FormMain.cs:17372
+#: Cadencii/FormMain.cs:17387
 msgid "Add/Remove/Edit background music"
 msgstr "BGMの追加・削除・設定を行います"
 
-#: Cadencii/FormMain.cs:17374
+#: Cadencii/FormMain.cs:17389
 msgid "Enable current track."
 msgstr "このトラックを有効化する"
 
-#: Cadencii/FormMain.cs:17376
+#: Cadencii/FormMain.cs:17391
 msgid "Copy current track."
 msgstr "このトラックをコピー"
 
-#: Cadencii/FormMain.cs:17378
+#: Cadencii/FormMain.cs:17393
 msgid "Change track name."
 msgstr "このトラックの名前を変更"
 
-#: Cadencii/FormMain.cs:17380
+#: Cadencii/FormMain.cs:17395
 msgid "Delete current track."
 msgstr "このトラックを削除する"
 
-#: Cadencii/FormMain.cs:17382
+#: Cadencii/FormMain.cs:17397
 msgid "Render current track."
 msgstr "現在のトラックを合成"
 
-#: Cadencii/FormMain.cs:17384
+#: Cadencii/FormMain.cs:17399
 msgid "Render all tracks."
 msgstr "全てのトラックを合成"
 
-#: Cadencii/FormMain.cs:17386
+#: Cadencii/FormMain.cs:17401
 msgid "Show background items."
 msgstr "バックに他のトラックのアイテムを表示する"
 
-#: Cadencii/FormMain.cs:17388
+#: Cadencii/FormMain.cs:17403
 msgid "Select voice synthesis engine."
 msgstr "歌声合成エンジンを選択"
 
-#: Cadencii/FormMain.cs:17390
+#: Cadencii/FormMain.cs:17405
 msgid "AquesTone"
 msgstr "AquesTone"
 
-#: Cadencii/FormMain.cs:17392
+#: Cadencii/FormMain.cs:17407
 msgid "UTAU"
 msgstr "UTAU"
 
-#: Cadencii/FormMain.cs:17394
+#: Cadencii/FormMain.cs:17409
 msgid "vConnect-STAND"
 msgstr "vConnect-STAND"
 
-#: Cadencii/FormMain.cs:17396
+#: Cadencii/FormMain.cs:17411
 msgid "VOCALOID1"
 msgstr "VOCALOID1"
 
-#: Cadencii/FormMain.cs:17398
+#: Cadencii/FormMain.cs:17413
 msgid "VOCALOID2"
 msgstr "VOCALOID2"
 
-#: Cadencii/FormMain.cs:17400
+#: Cadencii/FormMain.cs:17415
 msgid "Clear menu items"
 msgstr "メニューアイテムを消去"
 
-#: Cadencii/FormMain.cs:17596
+#: Cadencii/FormMain.cs:17611
 msgid "Input Offset Seconds"
 msgstr "オフセット秒数を入力"
 
-#: Cadencii/FormMain.cs:17687
+#: Cadencii/FormMain.cs:17702
 #, csharp-format
 msgid "file '{0}' is already registered as BGM."
 msgstr "ファイル '{0}' は既にBGMに指定されています"
 
-#: Cadencii/FormMain.cs:17708
+#: Cadencii/FormMain.cs:17723
 #, csharp-format
 msgid "remove '{0}'?"
 msgstr "'{0}'を取り除きますか?"
 
-#: Cadencii/FormMain.cs:17793
+#: Cadencii/FormMain.cs:17808
 msgid "Failed loading script."
 msgstr "スクリプトのロードに失敗しました"
 
@@ -1731,7 +1735,7 @@ msgstr "利用可能な辞書"
 msgid "Name of dictionary"
 msgstr "辞書の名前"
 
-#: Cadencii/FormWorkerUi.cs:61
+#: Cadencii/FormWorkerUi.cs:67
 msgid "detail"
 msgstr "詳細"
 
@@ -1913,8 +1917,8 @@ msgid "Maximum Frame Rate"
 msgstr "最大フレームレート"
 
 #: Cadencii/Preference.cs:926
-msgid "milli second"
-msgstr "ミリ秒"
+msgid "frame per second"
+msgstr "フレーム毎秒"
 
 #: Cadencii/Preference.cs:927
 msgid "Waiting Time for Preview"
@@ -2215,6 +2219,9 @@ msgstr "音源設定ファイルを新しいファイル名で保存"
 #: EditOtoIni/FormUtauVoiceConfig.cs:1152
 msgid "Do you want to save this config?"
 msgstr "保存しますか?"
+
+#~ msgid "milli second"
+#~ msgstr "ミリ秒"
 
 #~ msgid "Recent files"
 #~ msgstr "最近使ったファイル"

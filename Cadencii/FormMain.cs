@@ -6999,9 +6999,15 @@ namespace org.kbinani.cadencii
             }
         }
 
-        public void openVsqCor( String file )
+        /// <summary>
+        /// xvsqファイルを開きます
+        /// </summary>
+        /// <returns>ファイルを開くのに成功した場合trueを，それ以外はfalseを返します</returns>
+        public boolean openVsqCor( String file )
         {
-            AppManager.readVsq( file );
+            if( AppManager.readVsq( file ) ){
+                return true;
+            }
             if ( AppManager.getVsqFile().Track.size() >= 2 ) {
                 updateScrollRangeHorizontal();
             }
@@ -7039,7 +7045,7 @@ namespace org.kbinani.cadencii
                                                        _( "Info." ),
                                                        PortUtil.OK_OPTION,
                                                        org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
-                            return;
+                            return true;
                         }
                     }
 
@@ -7081,7 +7087,7 @@ namespace org.kbinani.cadencii
                                                    _( "Info." ),
                                                    PortUtil.OK_OPTION,
                                                    org.kbinani.windows.forms.Utility.MSGBOX_INFORMATION_MESSAGE );
-                        return;
+                        return true;
                     }
                 }
 
@@ -7107,6 +7113,7 @@ namespace org.kbinani.cadencii
                 AppManager.setTempWaveDir( cacheDir );
                 #endregion
             }
+            return false;
         }
 
         public void updateMenuFonts()
@@ -17072,21 +17079,29 @@ namespace org.kbinani.cadencii
             String dir = AppManager.editorConfig.getLastUsedPathIn( "xvsq" );
             openXmlVsqDialog.setSelectedFile( dir );
             int dialog_result = AppManager.showModalDialog( openXmlVsqDialog, true, this );
-            if ( dialog_result == BFileChooser.APPROVE_OPTION ) {
-                if ( AppManager.isPlaying() ) {
-                    AppManager.setPlaying( false, this );
-                }
-                String file = openXmlVsqDialog.getSelectedFile();
-                AppManager.editorConfig.setLastUsedPathIn( file, ".xvsq" );
-                openVsqCor( file );
-                clearExistingData();
-
-                setEdited( false );
-                AppManager.mMixerWindow.updateStatus();
-                clearTempWave();
-                updateDrawObjectList();
-                refreshScreen();
+            if ( dialog_result != BFileChooser.APPROVE_OPTION ) {
+                return;
             }
+            if ( AppManager.isPlaying() ) {
+                AppManager.setPlaying( false, this );
+            }
+            String file = openXmlVsqDialog.getSelectedFile();
+            AppManager.editorConfig.setLastUsedPathIn( file, ".xvsq" );
+            if( openVsqCor( file ) ){
+                AppManager.showMessageBox(
+                    _( "Invalid XVSQ file" ),
+                    _( "Error" ),
+                    org.kbinani.windows.forms.Utility.MSGBOX_DEFAULT_OPTION,
+                    org.kbinani.windows.forms.Utility.MSGBOX_WARNING_MESSAGE );
+                return;
+            }
+            clearExistingData();
+
+            setEdited( false );
+            AppManager.mMixerWindow.updateStatus();
+            clearTempWave();
+            updateDrawObjectList();
+            refreshScreen();
         }
 
         public void handleStripButton_Enter( Object sender, EventArgs e )
