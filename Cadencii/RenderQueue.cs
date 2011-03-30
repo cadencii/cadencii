@@ -34,6 +34,10 @@ namespace org.kbinani.cadencii {
         public double secStart;
         public String FileName;
         public boolean ResamplerFinished;
+        /// <summary>
+        /// MD5ハッシュによるファイル名の生成元となる文字列
+        /// </summary>
+        public String hashSource;
 
         /// <summary>
         /// このキューの引数リストに、引数を1つ追加します

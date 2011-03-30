@@ -42,6 +42,14 @@ namespace org.kbinani.vsq
 #endif
         public Vector<UstPortamentoPoint> Points = new Vector<UstPortamentoPoint>();
         public int Start;
+        /// <summary>
+        /// PBSの末尾のセミコロンの後ろについている整数
+        /// </summary>
+        private int mUnknownInt;
+        /// <summary>
+        /// mUnknownIntが設定されているかどうか
+        /// </summary>
+        private boolean mIsUnknownIntSpecified = false;
 
         /// <summary>
         /// このクラスの指定した名前のプロパティをXMLシリアライズする際に使用する
@@ -66,7 +74,7 @@ namespace org.kbinani.vsq
             for ( int i = 0; i < count; i++ ) {
                 String comma = (i == 0 ? "" : ",");
                 pbw += comma + Points.get( i ).Step;
-                pby += comma + Points.get( i ).Value;
+                pby += Points.get( i ).Value + ",";
                 String type = "";
                 UstPortamentoType ut = Points.get( i ).Type;
                 if ( ut == UstPortamentoType.S ) {
@@ -82,7 +90,7 @@ namespace org.kbinani.vsq
             }
             sw.write( "PBW=" + pbw );
             sw.newLine();
-            sw.write( "PBS=" + Start );
+            sw.write( "PBS=" + Start + (mIsUnknownIntSpecified ? (";" + mUnknownInt) : "") );
             sw.newLine();
             if ( vec.size( Points ) >= 2 ) {
                 sw.write( "PBY=" + pby );
@@ -100,6 +108,8 @@ namespace org.kbinani.vsq
                 ret.Points.add( Points.get( i ) );
             }
             ret.Start = Start;
+            ret.mIsUnknownIntSpecified = mIsUnknownIntSpecified;
+            ret.mUnknownInt = mUnknownInt;
             return ret;
         }
 
@@ -116,7 +126,7 @@ namespace org.kbinani.vsq
         PBY=-15.9,-20,-31.5,-26.6
         PBM=,s,r,j,s,s,s,s,s
         */
-        public void ParseLine( String line )
+        public void parseLine( String line )
         {
             line = line.ToLower();
             String[] spl = PortUtil.splitString( line, '=' );
@@ -125,7 +135,17 @@ namespace org.kbinani.vsq
             }
             String[] values = PortUtil.splitString( spl[1], ',' );
             if ( line.StartsWith( "pbs=" ) ) {
-                Start = str.toi( values[0] );
+                String v = values[0];
+                int indx = str.find( values[0], ";" );
+                if ( indx >= 0 ) {
+                    v = str.sub( values[0], 0, indx );
+                    if ( str.length( values[0] ) > indx + 1 ) {
+                        String unknown = str.sub( values[0], indx + 1 );
+                        mIsUnknownIntSpecified = true;
+                        mUnknownInt = str.toi( unknown );
+                    }
+                }
+                Start = str.toi( v );
             } else if ( line.StartsWith( "pbw=" ) ) {
                 for ( int i = 0; i < values.Length; i++ ) {
                     if ( i >= Points.size() ) {
@@ -137,6 +157,9 @@ namespace org.kbinani.vsq
                 }
             } else if ( line.StartsWith( "pby=" ) ) {
                 for ( int i = 0; i < values.Length; i++ ) {
+                    if ( str.length( values[i] ) <= 0 ) {
+                        continue;
+                    }
                     if ( i >= Points.size() ) {
                         Points.add( new UstPortamentoPoint() );
                     }

@@ -56,7 +56,7 @@ namespace org.kbinani.cadencii
         /// <summary>
         /// シーケンスのインスタンス
         /// </summary>
-        public VsqFileEx p_vsq;
+        public VsqFileEx vsq;
 
         /// <summary>
         /// このキューの概要を記した文字列を取得します
@@ -68,12 +68,12 @@ namespace org.kbinani.cadencii
 #if DEBUG
             sout.println( "PatchWorkQueue#getMessage; q.clockStart=" + this.clockStart + "; q.clockEnd=" + this.clockEnd );
 #endif
-            double start = this.p_vsq.getSecFromClock( this.clockStart );
+            double start = this.vsq.getSecFromClock( this.clockStart );
             double cend = this.clockEnd;
             if ( this.clockEnd == int.MaxValue ) {
-                cend = this.p_vsq.TotalClocks + 240;
+                cend = this.vsq.TotalClocks + 240;
             }
-            double end = this.p_vsq.getSecFromClock( cend );
+            double end = this.vsq.getSecFromClock( cend );
             int istart = (int)Math.Floor( start );
             int iend = (int)Math.Floor( end );
             message += istart + "." + str.format( (int)((start - istart) * 100), 2 ) + " " + _( "sec" );
@@ -85,13 +85,13 @@ namespace org.kbinani.cadencii
 
         public double getJobAmount()
         {
-            double start = this.p_vsq.getSecFromClock( this.clockStart );
+            double start = this.vsq.getSecFromClock( this.clockStart );
             double cend = this.clockEnd;
             if ( this.clockEnd == int.MaxValue ) {
-                cend = this.p_vsq.TotalClocks + 240;
+                cend = this.vsq.TotalClocks + 240;
             }
-            double end = this.p_vsq.getSecFromClock( cend );
-            return (end - start) * p_vsq.config.SamplingRate;
+            double end = this.vsq.getSecFromClock( cend );
+            return (end - start) * vsq.config.SamplingRate;
         }
 
         private static String _( String id )

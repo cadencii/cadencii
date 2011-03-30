@@ -200,7 +200,7 @@ namespace org.kbinani.vsq
                                     if ( ue.getPortamento() == null ) {
                                         ue.setPortamento( new UstPortamento() );
                                     }
-                                    ue.getPortamento().ParseLine( line );
+                                    ue.getPortamento().parseLine( line );
                                 } else if ( str.compare( spl[0], "Envelope" ) ) {
                                     ue.setEnvelope( new UstEnvelope( line ) );
                                     //PreUtterance=1

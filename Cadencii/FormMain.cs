@@ -1268,6 +1268,9 @@ namespace org.kbinani.cadencii
 
             // リサンプラーが知っているやつかどうか
             boolean check_unknwon_resampler = false;
+#if DEBUG
+            sout.println( "FormMain#checkUnknownResamplerAndSinger; resampler_path.value=" + resampler_path.value );
+#endif
             String resampler_dir = PortUtil.getDirectoryName( resampler_path.value );
             if ( str.compare( resampler_dir, "" ) ) {
                 // ディレクトリが空欄なので，UTAUのデフォルトのリサンプラー指定である
@@ -3517,14 +3520,7 @@ namespace org.kbinani.cadencii
                     } else {
                         items[j].ID.LyricHandle.L0.Phrase = phrase[j];
                         items[j].ID.LyricHandle.L0.setPhoneticSymbol( phonetic_symbol[j] );
-                        VsqEvent singer = vsq_track.getSingerEventAt( items[j].Clock );
-                        SingerConfig sc = AppManager.getSingerInfoUtau( singer.ID.IconHandle.Language, singer.ID.IconHandle.Program );
-                        if ( sc != null && AppManager.mUtauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
-                            UtauVoiceDB db = AppManager.mUtauVoiceDB.get( sc.VOICEIDSTR );
-                            OtoArgs oa = db.attachFileNameFromLyric( phrase[j] );
-                            items[j].UstEvent.setPreUtterance( oa.msPreUtterance );
-                            items[j].UstEvent.setVoiceOverlap( oa.msOverlap );
-                        }
+                        AppManager.applyUtauParameter( vsq_track, items[j] );
                     }
                     if ( !str.compare( original_symbol[j], phonetic_symbol[j] ) ) {
 #if JAVA
@@ -5150,8 +5146,7 @@ namespace org.kbinani.cadencii
                             }
                         }
                     }
-                    VsqID[] new_ids = new VsqID[new_phrases.size()];
-                    int[] ids = new int[new_phrases.size()];
+                    VsqEvent[] new_events = new VsqEvent[new_phrases.size()];
                     int indx = -1;
                     for ( Iterator<Integer> itr = vsq_track.indexIterator( IndexIteratorKind.NOTE ); itr.hasNext(); ) {
                         int index = itr.next();
@@ -5160,16 +5155,16 @@ namespace org.kbinani.cadencii
                         }
                         indx++;
                         VsqEvent item = vsq_track.getEvent( index );
-                        new_ids[indx] = (VsqID)item.ID.clone();
-                        new_ids[indx].LyricHandle.L0.Phrase = new_phrases.get( indx );
-                        new_ids[indx].LyricHandle.L0.setPhoneticSymbol( new_symbols.get( indx ) );
-                        ids[indx] = item.InternalID;
+                        new_events[indx] = (VsqEvent)item.clone();
+                        new_events[indx].ID.LyricHandle.L0.Phrase = new_phrases.get( indx );
+                        new_events[indx].ID.LyricHandle.L0.setPhoneticSymbol( new_symbols.get( indx ) );
+                        AppManager.applyUtauParameter( vsq_track, new_events[indx] );
                         if ( indx + 1 >= new_phrases.size() ) {
                             break;
                         }
                     }
                     CadenciiCommand run = new CadenciiCommand(
-                        VsqCommand.generateCommandEventChangeIDContaintsRange( selected, ids, new_ids ) );
+                        VsqCommand.generateCommandEventReplaceRange( selected, new_events ) );
                     AppManager.register( vsq.executeCommand( run ) );
                     setEdited( true );
                     repaint();
@@ -10822,16 +10817,17 @@ namespace org.kbinani.cadencii
                 boolean always_check_this = !AppManager.editorConfig.DoNotAskKeySoundGeneration;
                 try {
                     dialog = new FormAskKeySoundGeneration();
-                    dialog.setAlwaysPerformThisCheck( always_check_this );
-                    dialog_result = AppManager.showModalDialog( dialog, this );
-                    always_check_this = dialog.isAlwaysPerformThisCheck();
+                    dialog.setupUi( new FormAskKeySoundGenerationUi( dialog ) );
+                    dialog.getUi().setAlwaysPerformThisCheck( always_check_this );
+                    dialog_result = AppManager.showModalDialog( dialog.getUi(), this );
+                    always_check_this = dialog.getUi().isAlwaysPerformThisCheck();
                 } catch ( Exception ex ) {
                     Logger.write( typeof( FormMain ) + ".FormMain_Load; ex=" + ex + "\n" );
                     serr.println( "FormMain#FormMain_Load; ex=" + ex );
                 } finally {
                     if ( dialog != null ) {
                         try {
-                            dialog.close();
+                            dialog.getUi().close();
                         } catch ( Exception ex2 ) {
                             Logger.write( typeof( FormMain ) + ".FormMain_Load; ex=" + ex2 + "\n" );
                             serr.println( "FormMain#FormMain_Load; ex2=" + ex2 );
@@ -11554,7 +11550,7 @@ namespace org.kbinani.cadencii
                 q.clockEnd = clockEnd;
                 q.file = fsys.combine( dir, i + ".wav" );
                 q.renderAll = true;
-                q.p_vsq = vsq;
+                q.vsq = vsq;
                 queue.add( q );
             }
 
@@ -11844,7 +11840,7 @@ namespace org.kbinani.cadencii
             q.clockEnd = clockEnd;
             q.file = filename;
             q.renderAll = true;
-            q.p_vsq = vsq;
+            q.vsq = vsq;
             // 末尾に追加
             queue.add( q );
             double started = PortUtil.getCurrentTime();

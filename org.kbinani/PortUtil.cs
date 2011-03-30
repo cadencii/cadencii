@@ -936,6 +936,12 @@ namespace org.kbinani {
             File f = new File( path );
             return f.getParent();
 #else
+            if ( path == null ) {
+                return "";
+            }
+            if ( str.length( path ) == 0 ) {
+                return "";
+            }
             return System.IO.Path.GetDirectoryName( path );
 #endif
         }

@@ -900,6 +900,9 @@ namespace org.kbinani.cadencii
         {
             mVsq.updateTotalClocks();
             Vector<PatchWorkQueue> queue = patchWorkCreateQueue( tracks );
+#if DEBUG
+            sout.println( "AppManager#patchWorkToFreeze; queue.size()=" + queue.size() );
+#endif
 
             FormWorker fw = new FormWorker();
             fw.setupUi( new FormWorkerUi( fw ) );
@@ -987,7 +990,7 @@ namespace org.kbinani.cadencii
                     q.clockStart = 0;
                     q.clockEnd = totalClocks + 240;
                     q.file = wavePath;
-                    q.p_vsq = mVsq;
+                    q.vsq = mVsq;
                     queue.add( q );
                     continue;
                 }
@@ -1003,8 +1006,8 @@ namespace org.kbinani.cadencii
                 // areasとかぶっている音符がどれかを判定する
                 EditedZone zone = new EditedZone();
                 zone.add( areas );
-                checkSerializedEvents( zone, vsq_track, areas );
-                checkSerializedEvents( zone, mLastRenderedStatus[track - 1].track, areas );
+                checkSerializedEvents( zone, vsq_track, mVsq.TempoTable, areas );
+                checkSerializedEvents( zone, mLastRenderedStatus[track - 1].track, mLastRenderedStatus[track - 1].tempo, areas );
 
                 // レンダリング済みのwaveがあれば、zoneに格納された編集範囲に隣接する前後が無音でない場合、
                 // 編集範囲を無音部分まで延長する。
@@ -1150,7 +1153,7 @@ namespace org.kbinani.cadencii
                     sout.println( "    start=" + unit.mStart + "; end=" + unit.mEnd );
 #endif
                     q.file = fsys.combine( temppath, track + "_" + j + ".wav" );
-                    q.p_vsq = mVsq;
+                    q.vsq = mVsq;
                     queue.add( q );
                 }
             }
@@ -1172,8 +1175,9 @@ namespace org.kbinani.cadencii
         /// </summary>
         /// <param name="zone"></param>
         /// <param name="vsq_track"></param>
+        /// <param name="tempo_vector"></param>
         /// <param name="areas"></param>
-        private static void checkSerializedEvents( EditedZone zone, VsqTrack vsq_track, EditedZoneUnit[] areas )
+        private static void checkSerializedEvents( EditedZone zone, VsqTrack vsq_track, TempoVector tempo_vector, EditedZoneUnit[] areas )
         {
             if ( vsq_track == null || zone == null || areas == null ) {
                 return;
@@ -1181,32 +1185,71 @@ namespace org.kbinani.cadencii
             if ( areas.Length == 0 ) {
                 return;
             }
+
+            // まず，先行発音も考慮した音符の範囲を列挙する
+            Vector<Integer> clockStartList = new Vector<Integer>();
+            Vector<Integer> clockEndList = new Vector<Integer>();
+            Vector<Integer> internalIdList = new Vector<Integer>();
+            int size = vsq_track.getEventCount();
+            RendererKind kind = VsqFileEx.getTrackRendererKind( vsq_track );
+            for ( int i = 0; i < size; i++ ) {
+                VsqEvent item = vsq_track.getEvent( i );
+                int clock_start = item.Clock;
+                int clock_end = item.Clock + item.ID.getLength();
+                int internal_id = item.InternalID;
+                if ( item.ID.type == VsqIDType.Anote ) {
+                    if ( kind == RendererKind.UTAU ) {
+                        // 秒単位の先行発音
+                        double sec_pre_utterance = item.UstEvent.getPreUtterance() / 1000.0;
+                        // 先行発音を考慮した，音符の開始秒
+                        double sec_at_clock_start_act = tempo_vector.getSecFromClock( clock_start ) - sec_pre_utterance;
+                        // 上記をクロック数に変換した物
+                        int clock_start_draft = (int)tempo_vector.getClockFromSec( sec_at_clock_start_act );
+                        // くり上がりがあるかもしれないので検査
+                        while ( sec_at_clock_start_act < tempo_vector.getSecFromClock( clock_start_draft ) && 0 < clock_start_draft ) {
+                            clock_start_draft--;
+                        }
+                        clock_start = clock_start_draft;
+                    }
+                } else {
+                    internal_id = -1;
+                }
+
+                // リストに追加
+                clockStartList.add( clock_start );
+                clockEndList.add( clock_end );
+                internalIdList.add( internal_id );
+            }
+
             TreeMap<Integer, Integer> ids = new TreeMap<Integer, Integer>();
-            for ( Iterator<Integer> itr = vsq_track.indexIterator( IndexIteratorKind.NOTE ); itr.hasNext(); ) {
-                int indx = itr.next();
-                VsqEvent item = vsq_track.getEvent( indx );
-                int clockStart = item.Clock;
-                int clockEnd = clockStart + item.ID.getLength();
+            //for ( Iterator<Integer> itr = vsq_track.indexIterator( IndexIteratorKind.NOTE ); itr.hasNext(); ) {
+            for( int indx = 0; indx < size; indx++ ){
+                int internal_id = internalIdList.get( indx );
+                if ( internal_id == -1 ) {
+                    continue;
+                }
+                int clockStart = clockStartList.get( indx );// item.Clock;
+                int clockEnd = clockEndList.get( indx );// clockStart + item.ID.getLength();
                 for ( int i = 0; i < areas.Length; i++ ) {
                     EditedZoneUnit area = areas[i];
                     if ( clockStart < area.mEnd && area.mEnd <= clockEnd ) {
-                        if ( !ids.containsKey( item.InternalID ) ) {
-                            ids.put( item.InternalID, indx );
+                        if ( !ids.containsKey( internal_id ) ) {
+                            ids.put( internal_id, indx );
                             zone.add( clockStart, clockEnd );
                         }
                     } else if ( clockStart <= area.mStart && area.mStart < clockEnd ) {
-                        if ( !ids.containsKey( item.InternalID ) ) {
-                            ids.put( item.InternalID, indx );
+                        if ( !ids.containsKey( internal_id ) ) {
+                            ids.put( internal_id, indx );
                             zone.add( clockStart, clockEnd );
                         }
                     } else if ( area.mStart <= clockStart && clockEnd < area.mEnd ) {
-                        if ( !ids.containsKey( item.InternalID ) ) {
-                            ids.put( item.InternalID, indx );
+                        if ( !ids.containsKey( internal_id ) ) {
+                            ids.put( internal_id, indx );
                             zone.add( clockStart, clockEnd );
                         }
                     } else if ( clockStart <= area.mStart && area.mEnd < clockEnd ) {
-                        if ( !ids.containsKey( item.InternalID ) ) {
-                            ids.put( item.InternalID, indx );
+                        if ( !ids.containsKey( internal_id ) ) {
+                            ids.put( internal_id, indx );
                             zone.add( clockStart, clockEnd );
                         }
                     }
@@ -1221,21 +1264,24 @@ namespace org.kbinani.cadencii
                 for ( Iterator<Integer> itr = ids.keySet().iterator(); itr.hasNext(); ) {
                     int id = itr.next();
                     int indx = ids.get( id ); // InternalIDがidのアイテムの禁書目録
-                    VsqEvent item = vsq_track.getEvent( indx );
+                    //VsqEvent item = vsq_track.getEvent( indx );
 
                     // アイテムを遡り、連続していれば追加する
-                    int clock = item.Clock;
+                    int clock = clockStartList.get( indx );// item.Clock;
                     for ( int i = indx - 1; i >= 0; i-- ) {
-                        VsqEvent search = vsq_track.getEvent( i );
-                        if ( search.ID.type != VsqIDType.Anote ) {
+                        //VsqEvent search = vsq_track.getEvent( i );
+                        int internal_id = internalIdList.get( i );
+                        if ( internal_id == -1 ) {
                             continue;
                         }
-                        int searchClock = search.Clock;
-                        int searchLength = search.ID.getLength();
-                        if ( searchClock + searchLength == clock ) {
-                            if ( !ids.containsKey( search.InternalID ) ) {
-                                ids.put( search.InternalID, i );
-                                zone.add( searchClock, searchClock + searchLength );
+                        int searchClock = clockStartList.get( i );// search.Clock;
+                        //int searchLength = search.ID.getLength();
+                        int searchClockEnd = clockEndList.get( i );//
+                        // 一個前の音符の終了位置が，この音符の開始位置と同じが後ろにある場合 -> 重なり有りと判定
+                        if ( clock <= searchClockEnd ) {
+                            if ( !ids.containsKey( internal_id ) ) {
+                                ids.put( internal_id, i );
+                                zone.add( searchClock, searchClockEnd );
                                 changed = true;
                             }
                             clock = searchClock;
@@ -1245,21 +1291,23 @@ namespace org.kbinani.cadencii
                     }
 
                     // アイテムを辿り、連続していれば追加する
-                    clock = item.Clock + item.ID.getLength();
+                    clock = clockEndList.get( indx );// item.Clock + item.ID.getLength();
                     for ( int i = indx + 1; i < numEvents; i++ ) {
-                        VsqEvent search = vsq_track.getEvent( i );
-                        if ( search.ID.type != VsqIDType.Anote ) {
+                        //VsqEvent search = vsq_track.getEvent( i );
+                        int internal_id = internalIdList.get( i );
+                        if ( internal_id == -1 ) {
                             continue;
                         }
-                        int searchClock = search.Clock;
-                        int searchLength = search.ID.getLength();
-                        if ( clock == searchClock ) {
-                            if ( !ids.containsKey( search.InternalID ) ) {
-                                ids.put( search.InternalID, i );
-                                zone.add( searchClock, searchClock + searchLength );
+                        int searchClock = clockStartList.get( i );// search.Clock;
+                        int searchClockEnd = clockEndList.get( i );// search.ID.getLength();
+                        // 一行後ろの音符の開始位置が，この音符の終了位置と同じが後ろにある場合 -> 重なり有りと判定
+                        if ( searchClock <= clock ) {
+                            if ( !ids.containsKey( internal_id ) ) {
+                                ids.put( internal_id, i );
+                                zone.add( searchClock, searchClockEnd );
                                 changed = true;
                             }
-                            clock = searchClock + searchLength;
+                            clock = searchClockEnd;
                         } else {
                             break;
                         }
@@ -1681,46 +1729,22 @@ namespace org.kbinani.cadencii
         }
 
         /// <summary>
-        /// 指定したVSQファイルの，指定したトラック上の，指定したゲートタイム位置に音符イベントがあると仮定して，
-        /// 指定した音符イベントの歌詞を指定した値に変更します．Consonant Adjustment，VoiceOverlap，およびPreUtteranceが同時に自動で変更されます．
+        /// 指定したトラックの，指定した音符イベントについて，UTAUのパラメータを適用します
         /// </summary>
-        /// <param name="vsq"></param>
-        /// <param name="track"></param>
+        /// <param name="vsq_track"></param>
         /// <param name="item"></param>
-        /// <param name="clock"></param>
-        /// <param name="new_phrase"></param>
-        public static void changePhrase( VsqFileEx vsq, int track, VsqEvent item, int clock, String new_phrase )
+        public static void applyUtauParameter( VsqTrack vsq_track, VsqEvent item )
         {
-            String phonetic_symbol = "";
-            SymbolTableEntry entry = SymbolTable.attatch( new_phrase );
-            if ( entry == null ) {
-                phonetic_symbol = "a";
-            } else {
-                phonetic_symbol = entry.getSymbol();
-            }
-            String str_phonetic_symbol = phonetic_symbol;
-
-            // consonant adjustment
-            String[] spl = PortUtil.splitString( str_phonetic_symbol, new char[] { ' ', ',' }, true );
-            String consonant_adjustment = "";
-            for ( int i = 0; i < spl.Length; i++ ) {
-                consonant_adjustment += (i == 0 ? "" : " ") + (VsqPhoneticSymbol.isConsonant( spl[i] ) ? 64 : 0);
-            }
-
-            // overlap, preUtterancec
-            if ( vsq != null ) {
-                VsqTrack vsq_track = vsq.Track.get( track );
-                VsqEvent singer = vsq_track.getSingerEventAt( clock );
-                SingerConfig sc = getSingerInfoUtau( singer.ID.IconHandle.Language, singer.ID.IconHandle.Program );
-                if ( sc != null && mUtauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
-                    UtauVoiceDB db = mUtauVoiceDB.get( sc.VOICEIDSTR );
-                    OtoArgs oa = db.attachFileNameFromLyric( new_phrase );
-                    if ( item.UstEvent == null ) {
-                        item.UstEvent = new UstEvent();
-                    }
-                    item.UstEvent.setVoiceOverlap( oa.msOverlap );
-                    item.UstEvent.setPreUtterance( oa.msPreUtterance );
+            VsqEvent singer = vsq_track.getSingerEventAt( item.Clock );
+            SingerConfig sc = getSingerInfoUtau( singer.ID.IconHandle.Language, singer.ID.IconHandle.Program );
+            if ( sc != null && mUtauVoiceDB.containsKey( sc.VOICEIDSTR ) ) {
+                UtauVoiceDB db = mUtauVoiceDB.get( sc.VOICEIDSTR );
+                OtoArgs oa = db.attachFileNameFromLyric( item.ID.LyricHandle.L0.Phrase );
+                if ( item.UstEvent == null ) {
+                    item.UstEvent = new UstEvent();
                 }
+                item.UstEvent.setVoiceOverlap( oa.msOverlap );
+                item.UstEvent.setPreUtterance( oa.msPreUtterance );
             }
         }
 

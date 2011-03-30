@@ -35,7 +35,7 @@ namespace org.kbinani.cadencii
         private ProgressBar progressBar1;
         private FlowLayoutPanel flowLayoutPanel1;
         private Label label1;
-        private FormWorker mControl;
+        private IFormWorkerControl mControl;
         private Button buttonCancel;
         private Button buttonDetail;
         private bool mDetailVisible = true;
@@ -49,7 +49,7 @@ namespace org.kbinani.cadencii
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        public FormWorkerUi( FormWorker control )
+        public FormWorkerUi( IFormWorkerControl control )
         {
             InitializeComponent();
             mControl = control;

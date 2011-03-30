@@ -105,13 +105,17 @@ namespace org.kbinani.cadencii
                         if ( finished <= i ) {
                             break;
                         }
+
+                        // パッチワークの開始秒時
                         double secStart = vsq.getSecFromClock( queue.get( i ).clockStart );
+                        long sampleStart = (long)(secStart * sampleRate);
+
+                        // パッチワークの終了秒時
                         int clockEnd = queue.get( i ).clockEnd;
                         if ( clockEnd == int.MaxValue ) {
                             clockEnd = vsq.TotalClocks + 240;
                         }
                         double secEnd = vsq.getSecFromClock( clockEnd );
-                        long sampleStart = (long)(secStart * sampleRate);
                         long sampleEnd = (long)(secEnd * sampleRate);
 
                         WaveReader wr = null;
@@ -275,7 +279,7 @@ namespace org.kbinani.cadencii
             sout.println( "SynthesizeWorker#processQueue" );
 #endif
             PatchWorkQueue q = (PatchWorkQueue)arg;
-            VsqFileEx vsq = q.p_vsq;
+            VsqFileEx vsq = q.vsq;
             int channel = vsq.config.WaveFileOutputChannel == 1 ? 1 : 2;
             double amp_master = VocaloSysUtil.getAmplifyCoeffFromFeder( vsq.Mixer.MasterFeder );
             double pan_left_master = VocaloSysUtil.getAmplifyCoeffFromPanLeft( vsq.Mixer.MasterPanpot );
