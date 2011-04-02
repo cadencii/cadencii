@@ -4863,7 +4863,7 @@ namespace org.kbinani.cadencii
             menuHelp.setMnemonic( KeyEvent.VK_H );
             menuHelpLog.setText( _( "Log" ) );
             menuHelpLog.setMnemonic( KeyEvent.VK_L );
-            menuHelpLogSwitch.setText( Logger.isEnabled() ? _( "Enabled" ) : _( "Disabled" ) );
+            menuHelpLogSwitch.setText( Logger.isEnabled() ? _( "Disable" ) : _( "Enable" ) );
             menuHelpLogSwitch.setMnemonic( KeyEvent.VK_L );
             menuHelpLogOpen.setText( _( "Open" ) );
             menuHelpLogOpen.setMnemonic( KeyEvent.VK_O );

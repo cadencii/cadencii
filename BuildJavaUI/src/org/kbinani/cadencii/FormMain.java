@@ -125,7 +125,6 @@ public class FormMain extends BForm {
     private BMenuItem menuSettingDefaultSingerStyle = null;
     private JSeparator toolStripMenuItem103212 = null;
     private BMenu menuSettingPositionQuantize = null;
-    private BMenuItem menuSettingSingerProperty = null;
     private BMenu menuSettingPaletteTool = null;
     private BMenuItem menuSettingPositionQuantize04 = null;
     private BMenuItem menuSettingPositionQuantize08 = null;
@@ -1749,7 +1748,6 @@ public class FormMain extends BForm {
             menuSetting.add(getBMenuItem44());
             menuSetting.add(getToolStripMenuItem103212());
             menuSetting.add(getBMenuItem54());
-            menuSetting.add(getBMenuItem64());
         }
         return menuSetting;
     }
@@ -1866,18 +1864,6 @@ public class FormMain extends BForm {
             menuSettingPositionQuantize.add(getBMenuItem74());
         }
         return menuSettingPositionQuantize;
-    }
-
-    /**
-     * This method initializes BMenuItem6   
-     *  
-     * @return javax.swing.BMenuItem    
-     */
-    private BMenuItem getBMenuItem64() {
-        if (menuSettingSingerProperty == null) {
-            menuSettingSingerProperty = new BMenuItem();
-        }
-        return menuSettingSingerProperty;
     }
 
     /**
