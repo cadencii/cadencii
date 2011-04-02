@@ -3723,10 +3723,9 @@ namespace org.kbinani.cadencii
                 // こうしておくと，menuSettingShortcut_Clickで，スクリプトのメニューが
                 // menuScriptの子だと自動で認識される
                 String name = "menuScript" + id.Replace( '.', '_' );
-                BMenuItem item = new BMenuItem();
+                PaletteToolMenuItem item = new PaletteToolMenuItem( id );
                 item.setText( display );
                 item.setName( name );
-                item.setTag( id );
                 item.Click += new BEventHandler( handleScriptMenuItem_Click );
                 menuScript.add( item );
                 count++;

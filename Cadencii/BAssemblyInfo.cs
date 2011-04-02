@@ -43,7 +43,6 @@ namespace org.kbinani.cadencii {
         public const String fileVersion = fileVersionMeasure + "." + fileVersionMinor + ".8";
     }
 
-
 #if !JAVA
 }
 #endif
