@@ -11,6 +11,12 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  */
+#if JAVA
+
+//INCLUDE ../BuildJavaUI/src/org/kbinani/cadencii/FormAskKeySoundGenerationUi.java
+
+#else
+
 using System;
 using org.kbinani.windows.forms;
 using org.kbinani.apputil;
@@ -176,6 +182,5 @@ namespace org.kbinani.cadencii
         #endregion
     }
 
-#if !JAVA
 }
 #endif

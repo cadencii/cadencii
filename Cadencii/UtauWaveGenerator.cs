@@ -1105,9 +1105,11 @@ namespace org.kbinani.cadencii
 
         private void debugWriteLine( String value )
         {
+#if DEBUG
             if ( !mIsQuiet ) {
                 sout.println( value );
             }
+#endif
         }
 
         /// <summary>

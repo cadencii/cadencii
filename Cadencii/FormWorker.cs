@@ -174,7 +174,11 @@ namespace org.kbinani.cadencii
     /// <summary>
     /// 複数のジョブを順に実行し，その進捗状況を表示するダイアログを表示します
     /// </summary>
+#if JAVA
+    public class FormWorker implements IFormWorkerControl
+#else
     public class FormWorker : IFormWorkerControl
+#endif
     {
         private FormWorkerUi ptrUi = null;
         private Vector<ProgressBarWithLabel> mLabels;

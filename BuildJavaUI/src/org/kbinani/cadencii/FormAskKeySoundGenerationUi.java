@@ -9,10 +9,11 @@ import javax.swing.JPanel;
 import org.kbinani.windows.forms.BButton;
 import org.kbinani.windows.forms.BCheckBox;
 import org.kbinani.windows.forms.BDialog;
+import org.kbinani.windows.forms.BDialogResult;
 import org.kbinani.windows.forms.BLabel;
 
 //SECTION-END-IMPORT
-public class FormAskKeySoundGeneration extends BDialog {
+public class FormAskKeySoundGenerationUi extends BDialog {
 //SECTION-BEGIN-FIELD
 
     private static final long serialVersionUID = 1L;
@@ -24,7 +25,7 @@ public class FormAskKeySoundGeneration extends BDialog {
     private BCheckBox chkAlwaysPerformThisCheck = null;
 
     //SECTION-END-FIELD
-    public FormAskKeySoundGeneration() {
+    public FormAskKeySoundGenerationUi() {
     	super();
     	initialize();
     }
@@ -40,6 +41,15 @@ public class FormAskKeySoundGeneration extends BDialog {
         setCancelButton( btnNo );
     }
 
+    public void close( boolean value )
+    {
+        if( value ){
+            super.setDialogResult( BDialogResult.CANCEL );
+        }else{
+            super.setDialogResult( BDialogResult.OK );
+        }
+    }
+    
     /**
      * This method initializes jPanel	
      * 	

@@ -31,7 +31,11 @@ namespace org.kbinani.cadencii
     using BEventHandler = System.EventHandler;
 #endif
 
+#if JAVA
+    public class FormAskKeySoundGeneration implements IFormAskKeySoundGenerationControl
+#else
     public class FormAskKeySoundGeneration : IFormAskKeySoundGenerationControl
+#endif
     {
         private FormAskKeySoundGenerationUi mUi = null;
 
