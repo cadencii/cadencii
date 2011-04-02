@@ -426,10 +426,6 @@ namespace org.kbinani.cadencii
         /// 最後に選択されたベジエ点
         /// </summary>
         private static SelectedBezierPoint mLastSelectedBezier = new SelectedBezierPoint();
-        /// <summary>
-        /// 現在の演奏カーソルの位置(m_current_clockと意味は同じ。CurrentClockが変更されると、自動で更新される)
-        /// </summary>
-        private static PlayPositionSpecifier mCurrentPlayPosition = new PlayPositionSpecifier();
 
         /// <summary>
         /// selectedPointIDsに格納されているデータ点の，CurveType
@@ -1478,18 +1474,27 @@ namespace org.kbinani.cadencii
             }
         }
 
+        /// <summary>
+        /// コントロールトラックに表示しているカーブ種類の個数を取得します．
+        /// </summary>
+        /// <returns></returns>
         public static int getViewingCurveCount()
         {
             return mViewingCurves.size();
         }
 
+        /// <summary>
+        /// コントロールトラックに表示している，第index番目のカーブ種類を取得します．
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         public static CurveType getViewingCurveElement( int index )
         {
             return mViewingCurves.get( index );
         }
 
         /// <summary>
-        /// TrackSelectorに表示させるコントロール・カーブの種類を追加します
+        /// コントロールトラックに表示しているカーブ種類のリストに，カーブ種類を追加します．
         /// </summary>
         /// <param name="curve"></param>
         public static void addViewingCurveRange( CurveType[] curve )
@@ -1522,11 +1527,18 @@ namespace org.kbinani.cadencii
             }
         }
 
+        /// <summary>
+        /// コントロールトラックに表示しているカーブ種類のリストに，カーブ種類を追加します．
+        /// </summary>
+        /// <param name="curve"></param>
         public static void addViewingCurve( CurveType curve )
         {
             addViewingCurveRange( new CurveType[] { curve } );
         }
 
+        /// <summary>
+        /// コントロールトラックに表示しているカーブ種類のリストをクリアします．
+        /// </summary>
         public static void clearViewingCurve()
         {
             mViewingCurves.clear();
@@ -1640,6 +1652,12 @@ namespace org.kbinani.cadencii
             return yCoordFromNote( note, mStartToDrawY );
         }
 
+        /// <summary>
+        /// 音の高さを表すnoteから、画面に描くべきy座標を計算します
+        /// </summary>
+        /// <param name="note"></param>
+        /// <param name="start_to_draw_y"></param>
+        /// <returns></returns>
         public static int yCoordFromNote( float note, int start_to_draw_y )
         {
             return (int)(-1 * (note - 127.0f) * (int)(getScaleY() * 100)) - start_to_draw_y;
@@ -1655,6 +1673,11 @@ namespace org.kbinani.cadencii
             return 127 - (int)noteFromYCoordCore( y );
         }
 
+        /// <summary>
+        /// ピアノロール画面のy座標から、その位置における音の高さを取得します
+        /// </summary>
+        /// <param name="y"></param>
+        /// <returns></returns>
         public static double noteFromYCoordDoublePrecision( int y )
         {
             return 127.0 - noteFromYCoordCore( y );
@@ -1783,6 +1806,11 @@ namespace org.kbinani.cadencii
             mLastRenderedStatus[track - 1] = status;
         }
 
+        /// <summary>
+        /// 指定したトラックの合成ステータスを，指定したxmlファイルに保存します．
+        /// </summary>
+        /// <param name="temppath"></param>
+        /// <param name="track"></param>
         public static void serializeRenderingStatus( String temppath, int track )
         {
             FileOutputStream fs = null;
@@ -2242,6 +2270,11 @@ namespace org.kbinani.cadencii
             return mID;
         }
 
+        /// <summary>
+        /// gettext
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public static String _( String id )
         {
             return Messaging.getMessage( id );
@@ -3070,26 +3103,34 @@ namespace org.kbinani.cadencii
         }
 
         /// <summary>
-        /// 現在の編集モード
+        /// 現在の編集モードを取得します．
         /// </summary>
         public static EditMode getEditMode()
         {
             return mEditMode;
         }
 
+        /// <summary>
+        /// 現在の編集モードを設定します．
+        /// </summary>
+        /// <param name="value"></param>
         public static void setEditMode( EditMode value )
         {
             mEditMode = value;
         }
 
         /// <summary>
-        /// グリッドを表示するか否かを表すフラグを取得または設定します
+        /// グリッドを表示するか否かを表す値を取得します
         /// </summary>
         public static boolean isGridVisible()
         {
             return mGridVisible;
         }
 
+        /// <summary>
+        /// グリッドを表示するか否かを設定します
+        /// </summary>
+        /// <param name="value"></param>
         public static void setGridVisible( boolean value )
         {
             if ( value != mGridVisible ) {
@@ -3112,26 +3153,35 @@ namespace org.kbinani.cadencii
         }
 
         /// <summary>
-        /// 現在のプレビューがリピートモードであるかどうかを表す値を取得または設定します
+        /// 現在のプレビューがリピートモードであるかどうかを表す値を取得します
         /// </summary>
         public static boolean isRepeatMode()
         {
             return mRepeatMode;
         }
 
+        /// <summary>
+        /// 現在のプレビューがリピートモードかどうかを設定します
+        /// </summary>
+        /// <param name="value"></param>
         public static void setRepeatMode( boolean value )
         {
             mRepeatMode = value;
         }
 
         /// <summary>
-        /// 現在プレビュー中かどうかを示す値を取得または設定します
+        /// 現在プレビュー中かどうかを示す値を取得します
         /// </summary>
         public static boolean isPlaying()
         {
             return mPlaying;
         }
 
+        /// <summary>
+        /// プレビュー再生中かどうかを設定します．このプロパティーを切り替えることで，再生の開始と停止を行います．
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="form"></param>
         public static void setPlaying( boolean value, FormMain form )
         {
 #if DEBUG
@@ -3334,27 +3384,7 @@ namespace org.kbinani.cadencii
         /// </summary>
         public static void setCurrentClock( int value )
         {
-            int old = mCurrentClock;
             mCurrentClock = value;
-            int barcount = mVsq.getBarCountFromClock( mCurrentClock );
-            int bar_top_clock = mVsq.getClockFromBarCount( barcount );
-            Timesig timesig = mVsq.getTimesigAt( mCurrentClock );
-            int clock_per_beat = 480 / 4 * timesig.denominator;
-            int beat = (mCurrentClock - bar_top_clock) / clock_per_beat;
-            mCurrentPlayPosition.barCount = barcount - mVsq.getPreMeasure() + 1;
-            mCurrentPlayPosition.beat = beat + 1;
-            mCurrentPlayPosition.clock = mCurrentClock - bar_top_clock - clock_per_beat * beat;
-            mCurrentPlayPosition.denominator = timesig.denominator;
-            mCurrentPlayPosition.numerator = timesig.numerator;
-            mCurrentPlayPosition.tempo = mVsq.getTempoAt( mCurrentClock );
-        }
-
-        /// <summary>
-        /// 現在の演奏カーソルの位置(m_current_clockと意味は同じ。CurrentClockが変更されると、自動で更新される)
-        /// </summary>
-        public static PlayPositionSpecifier getPlayPosition()
-        {
-            return mCurrentPlayPosition;
         }
 
         /// <summary>
