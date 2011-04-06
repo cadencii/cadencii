@@ -228,6 +228,20 @@ namespace org.kbinani.cadencii
             double start_sec = mVsq.getSecFromClock( mStartClock );
             double end_sec = mVsq.getSecFromClock( mEndClock );
 
+            // トラックの合成エンジンの種類
+            RendererKind s_working_renderer = VsqFileEx.getTrackRendererKind( vsq_track );
+
+            // VOCALOIDのドライバの場合，末尾に余分な音符を入れる
+            int extra_note_clock = (int)mVsq.getClockFromSec( (float)end_sec + 10.0f );
+            int extra_note_clock_end = (int)mVsq.getClockFromSec( (float)end_sec + 10.0f + 3.1f ); //ブロックサイズが1秒分で、バッファの個数が3だから +3.1f。0.1fは安全のため。
+            VsqEvent extra_note = new VsqEvent( extra_note_clock, new VsqID( 0 ) );
+            extra_note.ID.type = VsqIDType.Anote;
+            extra_note.ID.Note = 60;
+            extra_note.ID.setLength( extra_note_clock_end - extra_note_clock );
+            extra_note.ID.VibratoHandle = null;
+            extra_note.ID.LyricHandle = new LyricHandle( "a", "a" );
+            vsq_track.addEvent( extra_note );
+            
             // VSTiが渡してくる波形のうち、先頭からtrim_sec秒分だけ省かないといけない
             // プリセンドタイムがあるので、無条件に合成開始位置以前のデータを削除すると駄目なので。
             double trim_sec = 0.0;
@@ -242,9 +256,6 @@ namespace org.kbinani.cadencii
                 trim_sec = split.getSecFromClock( split.getPreMeasureClocks() );
             }
             split.updateTotalClocks();
-
-            // トラックの合成エンジンの種類
-            RendererKind s_working_renderer = VsqFileEx.getTrackRendererKind( vsq_track );
 #if !JAVA
             // 対象のトラックの合成を担当するVSTiを検索
             mDriver = null;
